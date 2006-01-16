@@ -1,0 +1,120 @@
+// Copyright (c) 2005, Rodrigo Braz Monteiro
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//   * Redistributions of source code must retain the above copyright notice,
+//     this list of conditions and the following disclaimer.
+//   * Redistributions in binary form must reproduce the above copyright notice,
+//     this list of conditions and the following disclaimer in the documentation
+//     and/or other materials provided with the distribution.
+//   * Neither the name of the Aegisub Group nor the names of its contributors
+//     may be used to endorse or promote products derived from this software
+//     without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// -----------------------------------------------------------------------------
+//
+// AEGISUB
+//
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
+//
+
+new_toolbutton BITMAP "bitmaps/new.bmp"
+open_toolbutton BITMAP "bitmaps/open.bmp"
+save_toolbutton BITMAP "bitmaps/save.bmp"
+style_toolbutton BITMAP "bitmaps/style_manager.bmp"
+styling_toolbutton BITMAP "bitmaps/styling_assistant.bmp"
+translation_toolbutton BITMAP "bitmaps/translation.bmp"
+properties_toolbutton BITMAP "bitmaps/properties.bmp"
+automation_toolbutton BITMAP "bitmaps/automation.bmp"
+spellcheck_toolbutton BITMAP "bitmaps/spellcheck.bmp"
+resample_toolbutton BITMAP "bitmaps/resample.bmp"
+timing_processor_toolbutton BITMAP "bitmaps/timing_processor.bmp"
+jumpto_button BITMAP "bitmaps/jumpto.bmp"
+jumpto_disable_button BITMAP "bitmaps/jumpto_disable.bmp"
+contents_button BITMAP "bitmaps/contents.bmp"
+zoom_in_button BITMAP "bitmaps/zoom_in.bmp"
+zoom_out_button BITMAP "bitmaps/zoom_out.bmp"
+font_collector_button BITMAP "bitmaps/fontcollect.bmp"
+hotkeys_button BITMAP "bitmaps/hotkeys.bmp"
+substart_to_video BITMAP "bitmaps/substart_to_video.bmp"
+subend_to_video BITMAP "bitmaps/subend_to_video.bmp"
+video_to_substart BITMAP "bitmaps/video_to_substart.bmp"
+video_to_subend BITMAP "bitmaps/video_to_subend.bmp"
+substart_to_video_disable BITMAP "bitmaps/substart_to_video_disable.bmp"
+subend_to_video_disable BITMAP "bitmaps/subend_to_video_disable.bmp"
+video_to_substart_disable BITMAP "bitmaps/video_to_substart_disable.bmp"
+video_to_subend_disable BITMAP "bitmaps/video_to_subend_disable.bmp"
+snap_subs_to_scene BITMAP "bitmaps/snap_to_scene.bmp"
+snap_subs_to_scene_disable BITMAP "bitmaps/snap_to_scene_disable.bmp"
+copy_button BITMAP "bitmaps/copy.bmp"
+paste_button BITMAP "bitmaps/paste.bmp"
+cut_button BITMAP "bitmaps/cut.bmp"
+undo_button BITMAP "bitmaps/undo.bmp"
+copy_disable_button BITMAP "bitmaps/copy_disable.bmp"
+paste_disable_button BITMAP "bitmaps/paste_disable.bmp"
+cut_disable_button BITMAP "bitmaps/cut_disable.bmp"
+undo_disable_button BITMAP "bitmaps/undo_disable.bmp"
+irc_button BITMAP "bitmaps/irc.bmp"
+find_button BITMAP "bitmaps/find.bmp"
+null_button BITMAP "bitmaps/null_button.bmp"
+select_visible_button BITMAP "bitmaps/select_visible.bmp"
+toggle_tag_hiding BITMAP "bitmaps/toggle_tag_hiding.bmp"
+shift_to_frame BITMAP "bitmaps/shift_to_frame.bmp"
+shift_to_frame_disable BITMAP "bitmaps/shift_to_frame_disable.bmp"
+
+button_play BITMAP "bitmaps/button_play.bmp"
+button_stop BITMAP "bitmaps/button_stop.bmp"
+button_bold BITMAP "bitmaps/button_bold.bmp"
+button_italics BITMAP "bitmaps/button_italics.bmp"
+button_underline BITMAP "bitmaps/button_underline.bmp"
+button_strikeout BITMAP "bitmaps/button_strikeout.bmp"
+button_fontname BITMAP "bitmaps/button_fontname.bmp"
+button_color1 BITMAP "bitmaps/button_color1.bmp"
+button_color2 BITMAP "bitmaps/button_color2.bmp"
+button_color3 BITMAP "bitmaps/button_color3.bmp"
+button_color4 BITMAP "bitmaps/button_color4.bmp"
+
+button_prev BITMAP "bitmaps/button_prev.bmp"
+button_next BITMAP "bitmaps/button_next.bmp"
+button_playsel BITMAP "bitmaps/button_playline.bmp"
+button_playline BITMAP "bitmaps/button_playsel.bmp"
+button_playfirst500 BITMAP "bitmaps/button_playfirst500.bmp"
+button_playlast500 BITMAP "bitmaps/button_playlast500.bmp"
+button_play500before BITMAP "bitmaps/button_play500before.bmp"
+button_play500after BITMAP "bitmaps/button_play500after.bmp"
+button_playtoend BITMAP "bitmaps/button_playtoend.bmp"
+button_audio_goto BITMAP "bitmaps/button_audio_go.bmp"
+button_audio_commit BITMAP "bitmaps/button_audio_commit.bmp"
+button_leadin BITMAP "bitmaps/button_leadin.bmp"
+button_leadout BITMAP "bitmaps/button_leadout.bmp"
+
+toggle_audio_autoscroll BITMAP "bitmaps/toggle_audio_autoscroll.bmp"
+toggle_audio_autocommit BITMAP "bitmaps/toggle_audio_autocommit.bmp"
+toggle_audio_ssa BITMAP "bitmaps/toggle_audio_ssa.bmp"
+toggle_audio_spectrum BITMAP "bitmaps/toggle_audio_spectrum.bmp"
+toggle_video_autoscroll BITMAP "bitmaps/toggle_video_autoscroll.bmp"
+
+splash_01 BITMAP "bitmaps/splash_01.bmp"
+splash_02 BITMAP "bitmaps/splash_02.bmp"
+splash_03 BITMAP "bitmaps/splash_03.bmp"
+splash_04 BITMAP "bitmaps/splash_04.bmp"
+splash_05 BITMAP "bitmaps/splash_05.bmp"
+
+wxicon ICON "bitmaps/icon.ico"
+
+#include "wx/msw/wx.rc"

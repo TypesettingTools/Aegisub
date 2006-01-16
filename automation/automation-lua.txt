@@ -1,0 +1,548 @@
+Aegisub Automation documentation
+Version 3
+Copyright 2005 Niels Martin Hansen.
+
+---
+
+This document describes version 3 of the automation system used in Aegisub.
+The automation system uses the Lua language for scripting engine.
+See <http://www.lua.org/> for more information.
+
+---
+
+What is Automation?
+
+Aegisub Automation is a scripting system designed to automate many processing
+tasks of ASS subtitles, instead of using tedious, error-prone manual
+processing. The primary purpose is creating karaoke effects for anime fansubs.
+
+The Automation script is given the complete subtitle data from a subtitle
+file, in a format suited for creating special effects.
+The script will return a complete substiture for the original subtitle
+data, allowing full freedom of processing.
+
+A number of helper functions are provided, to aid in finding errors in
+scripts, as well as retrieve further data about the subtitles, needed to
+created advanced effects.
+
+---
+
+Scripts, files, functions:
+
+A script is a file containing Lua code. One file can define just one script,
+but several scripts can share code by the help of including other files.
+
+All scripts are run in a separate interpreter, and as such don't have any way
+of interacting with other loaded scripts.
+
+All strings in a script should be in UTF-8 encoding, without byte-order mark.
+All strings input to a script are encoded as UTF-8.
+Script files may start with an UTF-8 BOM (byte-order mark) or not, but this
+is currently not well tested.
+
+A script must define certain global variables:
+
+version
+  Number. Version of the scripting interface used.
+  The version described in this file is 3.
+  To comply with version 3, version must be: 3 <= version < 4
+kind
+  String. Not used, but mandatory. Set it to "basic_ass" for now.
+name
+  String. Displayed name of the script.
+description
+  String. Optional. Long description of the script.
+process_lines
+  Function. The main script function.
+configuration
+  Table. Optional. Configuration options for the script.
+
+The functions are described in detail in the following.
+
+The script may define further global variables, but they do not have any
+special meaning. Be aware, however, that later versions of the scripting
+system might define further global variables with special meanings, so be
+careful choosing names for private use globals.
+It's recommended to prefix private global variables with "p_"; the scripting
+system will never assign special meanings to global variables with that
+prefix.
+
+The scripting system defines a global variable with name "aegisub", which
+contains important values. You should not hide the "aegisub" variable.
+
+---
+
+The processing function:
+
+The processing function is the heart of the script.
+
+It takes as input some meta-information about the subtitles, the styles
+used in the subtitles, as well as the actual subtitle data to process.
+
+The output is a set of subtitle data in the same format as the input.
+The output subtitle data will be used as a complete replacement of the
+input data.
+Future versions might allow modifying style data and meta data as well.
+
+
+The processing function is defined as follows:
+
+function process_lines(meta, styles, lines, config)
+
+The arguments are:
+
+@meta
+  Table. Meta information about the script. (Script Info section.)
+@styles
+  Table. Style definitions. (V4+ Styles section.)
+@lines
+  Table. Subtitle events. (Events section.)
+@config
+  Table. Values set for the configuration options provided. If no
+  configuration options were provided, this will be an empty table.
+
+Returns: One value.
+This value must be a table, using the same format as @lines.
+Note that the indexes in the return value may be either zero-based or
+one-based, to allow for greater compatibility. You are encouraged to
+use one-based indexes.
+
+
+Description of @meta:
+
+This is a table with the following keys:
+
+res_x
+  Horizontal resolution of the script.
+res_y
+  Vertical resolution of the script.
+
+
+Description of @styles:
+
+This is a table with the following keys:
+
+-1
+  Number. The amount of styles defined, called "n".
+0 -> n-1
+  Table. The actual style definitions.
+<string "name">
+  Table. The style definition with the specified name.
+
+The key -1 is used for count rather than "n", since one might have a style
+definition with the name "n".
+
+A style definition is a table with the following keys:
+
+name
+  String. Name of the style.
+fontname
+  String. Name of the font used.
+fontsize
+  Number. Size of the font used.
+color1
+  String. Primary color.
+  All color fields use raw hexadecimal format, that is, no special characters
+  before or after the hex string.
+color2
+  String. Secondary color.
+color3
+  String. Outline color.
+color4
+  String. Shadow color.
+bold
+  Boolean. Bold text or not.
+italic
+  Boolean. Italic text or not.
+underline
+  Boolean. Underlined text or not.
+strikeout
+  Boolean. Striked-out text or not.
+scale_x
+  Number. Horizontal scale.
+scale_y
+  Number. Vertical scale.
+spacing
+  Number. Spacing between characters.
+angle
+  Number. Rotation angle in degrees.
+borderstyle
+  Number. 1=Outline + drop shadow, 3=Opaque box  (not really used???)
+outline
+  Number. Thickness of outline.
+shadow
+  Number. Distance of shadow from text.
+align
+  Number. Numpad style alignment.
+margin_l
+  Number. Left margin in pixels.
+margin_r
+  Number. Right margin in pixels.
+margin_v
+  Number. Vertical margin in pixels.
+encoding
+  Number. Font encoding used.
+
+
+Description of @lines:
+
+This is a table with the following keys:
+
+n
+  Number. The amount of lines.
+0 -> n-1
+  Table. The actual lines.
+
+A line is a table with the following key:
+
+kind
+  String. Can be "blank", "scomment", "comment" or "dialogue".
+
+The keys otherwise defined depends on the kind of the line.
+
+If the kind if "blank", no further fields are defined.
+
+If the kind is "scomment", the line is a "semicolon comment", and the
+following key is defined:
+
+text
+  String. Text following the semicolon until end of line. EOL not included.
+
+If the kind is "comment" or "dialogue", the line is either a Comment: or
+a Dialogue: line. In both cases, the following keys are defined:
+
+layer
+  Number.
+start_time
+  Number. Start time of line in centiseconds.
+  (Might change to userdata later.)
+end_time
+  Number. End time of line in centiseconds.
+  (Might change to userdata later.)
+style
+  String. Style used for this line.
+name
+  String. Character name speaking this line.
+margin_l
+  Number. Left margin override, in pixels. (0=no override)
+margin_r
+  Number. Right margin override, in pixels. (0=no override)
+margin_v
+  Number. Right margin override, in pixels. (0=no override)
+effect
+  String. Effect to apply to the line. (No error checking done.)
+text
+  String. Text to display.
+text_stripped
+  String. Same as text, but stripped for all tags, and newline/hardspace
+  tags are converted to real newlines/spaces. Non-hard spaces at the start/
+  end of lines are stripped.
+karaoke
+  Table. Line split into karaoke syllables. See below for more information.
+
+Note about output:
+Neither text_stripped nor karaoke are used when the results are parsed, they
+are only passed to simplify processing. You should set text to the final text
+of the line, you want in the output.
+It is encouraged to entirely leave text_stripped and karaoke out of the
+tables in the result.
+
+
+Karaoke tables:
+
+A karaoke table has a number of values indexed by numbers. Each value
+represents a karaoke syllable.
+Key "n" holds the number of syllables. The syllables can be accessed from
+index 0 and up. The syllables are indexed chronologically.
+A karaoke table always has at least one syllable. The first syllable (index
+0) contains all data before the first timed syllable.
+Each syllable is a table containing the following keys:
+
+duration
+  Number. Duration of the syllable in centiseconds. Always 0 for first
+  syllable.
+kind
+  String. "Kind" of the karaoke, the name of the tag. For a \k type syllable,
+  kind is "k", for a \kf syllable kind is "kf". Freeform tags can be used, as
+  long as they start with the letter "k" or "K".
+  Always the empty string ("") for the first syllable.
+text
+  String. Text of the syllable. This includes formatting tags.
+  For the first syllable, this contains everything before the first karaoke
+  timing tag.
+text_stripped
+  String. Same as text, but with all formatting tags stripped.
+
+
+Description of @config:
+
+This is a table. The keys are the names for the options defined in the global
+"configuration" table. The values are the values provided by the user.
+
+---
+
+Script configuration:
+
+An automation script can provide a configuration set, allowing the user to
+set certain options before the script is called.
+
+This is performed through the "configuration" value.
+
+Scripts can define configuration options of the following types:
+
+label
+  A static, non-editable text displayed to the user. (Useful for adding
+  additional explanations for some options.)
+text
+  Freeform text entry.
+int
+  Integer numbers. A range of valid values can be specified.
+float
+  Any kind of number. A range of valid values can be specified.
+bool
+  A boolean on/off value.
+colour
+  An RGB colour value.
+style
+  The name of a style defined in the subtitles.
+
+
+The "configuration" table:
+
+The "configuration" table contains a number of values indexed by numbers.
+Each value defines a configuration option.
+The configuration options must be in keys numbered from 1 to n, where n
+is the number of options. No "n" key is required.
+The configuration options will be presented to the user in the order defined.
+Each configuration option is a table containing the following keys:
+
+name
+  String. The internal name used to refer to the configuration option.
+  Must not contain the colon or pipe characters. (ASCII 58 and 124.)
+kind
+  String. One of "label", "text", "int", "float", "bool", "colour" and
+  "style". Defines what kind of option this is.
+label
+  String. Name of the option, presented to the user. Should be very short.
+hint
+  String. Longer description of the option, presented to the user as a
+  tooltip. Ignored for "label" kind options.
+min
+  Number. Optional. Lowest value allowed. Only used for "int" and "float" kinds.
+max
+  Number. Optional. Highest value allowed. Only used for "int" and "float" kinds.
+default.
+  Type depends on "kind". The value given to this configuration option before
+  the user has entered another value. Ignored for "label" kind options.
+
+Data types for the different kinds:
+
+label
+  None. A label doesn't have a value, and won't be present in the @config
+  table in the process_lines function.
+text
+  String. You might want to do some kind of extra validation on text input, as
+  it might be anything.
+int
+  Number. Guaranteed to always be integer.
+float
+  Number. Can be integer or not.
+bool
+  Boolean.
+colour
+  String. An ASS hex colourcode in "&HBBGGRR&" format.
+style
+  String. The name of the style. The style can't be guaranteed to exist, as
+  another export filter in Aegisub might have removed it before your script
+  gets to run.
+
+---
+
+Script environment and registration:
+
+A script is assigned to a subtitle file by adding it to the
+"Automation Scripts" extra header in the [Script Info] section. This header
+contains a list of script filenames, separated by pipe characters. Example:
+
+  Automation Scripts: test1.lua|test2.lua
+
+All scripts run in their own separate interpreter. This means there is no
+risk of name collisions, though also that scripts can't easily share code.
+
+If you need to share code between several scripts, you should create a
+subdirectory to the script directory, and place include files there.
+
+
+The settings for the configuration options for a script are stored in the ASS
+file in the following way:
+
+Each script gets one line for configuration, named "Automation Settings" plus
+a space plus the filename of the script. The filename used is stripped of all
+path specifiers. (Use unique filenames for your scripts!)
+
+The value of the line is a pipe-separated list of "name:value" pairs. The name
+is the internal name given by the "name" key. It is not mangled in any way.
+
+The way the value is stored depends on the kind of the option.
+
+label
+  Not stored.
+text
+  The string is stored in an URL-encoding like manner. Some unsafe characters
+  are replaced with escape-sequences of the form #xx, where xx is a two-digit
+  hexadecimal number for the ASCII code of the escaped character. Only ASCII-
+  characters can be escaped this way, Unicode characters aren't supported.
+int
+  Stored in ASCII base 10 without any group separators.
+float
+  Stored in exponential notation, using ASCII base 10. (As the %e sprintf()
+  argument.)
+bool
+  True is stored as "1", false as "0".
+colour
+  Stored as in ASS hex format without any mangling.
+style
+  Stored in the same manner as "text" kind options.
+
+---
+
+Helper functions:
+
+There is a gloabl variable names "aegisub". This is a table containing
+various helper functions.
+
+The following helper functions are defined:
+
+
+function aegisub.set_status(text)
+
+Sets the current status-message. (Used for progress-reporting.)
+
+@text
+  String. The status message.
+
+Returns: nothing.
+
+
+function aegisub.output_debug(text)
+
+Output text to a debug console.
+
+@text
+  String. The text to output.
+
+Returns: nothing.
+
+
+function aegisub.colorstring_to_rgb(colorstring)
+
+Convert an ASS color-string to a set of RGB values.
+
+@colorstring
+  String. The color-string to convert.
+
+Returns: Four values, all numbers, being the color components in this
+order: Red, Green, Blue, Alpha-channel
+
+
+function aegisub.report_progress(percent)
+
+Report the progress of the processing.
+
+@percent
+  Number. How much of the data have been processed so far. (Percent)
+
+Returns: nothing.
+
+
+function aegisub.text_extents(style, text)
+
+Calculate the on-screen pixel size of the given text using the given style.
+
+@style
+  Table. A single style definition like those passed to process_lines.
+@text
+  String. The text to calculate the extents for. This should not contain
+  formatting codes, as they will be treated as part of the text.
+
+Returns 4 values:
+1: Number. Width of the text, in pixels.
+2: Number. Height of the text, in pixels.
+3: Number. Descent of the text, in pixels.
+4: Number. External leading for the text, in pixels.
+
+Short description of the values returned:
+Width: The X advance of the text, how much the "cursor" moves forward when
+this text is rendered.
+Height: The total height of the text, including internal leading.
+Descent: How far below the baseline a character can extend. The ascent of
+the text can be calculated as (height - descent).
+External leading: How much vertical spacing will be added between the lines
+of text rendered with this font. The total height of a line is
+(height + external_leading).
+
+
+function aegisub.frame_from_ms(ms)
+
+Return the video frame-number for the given time.
+
+@ms
+  Number. Time in miliseconds to get the frame number for.
+
+Returns: A number, the frame numer. If there is no framerate data, returns
+nil.
+
+
+function aegisub.ms_from_frame(frame)
+
+Returns the start-time for the given video frame-number.
+
+@frame
+  Number. Frame-number to get start-time from.
+
+Returns: A number, the start-time of the frame. If there is no framerate
+data, returns nil.
+
+
+function include(filename)
+
+Include the named script. The script search-path defined in Aegisub will be
+used, searching for the script.
+If the filename is relative, the regular search path will not be used, but
+instead the filename will be taken as relative to the directory the current
+script is located in.
+Note that if you use include() inside an included script, relative paths
+will still be taken relative to the original script, and not relative to the
+current included script. This is a design limitation.
+The included script is loaded as an anonymous function, which is executed in
+the current environment. This has two implications: You can include files
+based on conditional statements, and even in loops, and included files can
+return values using the "return" statement.
+
+@filename
+  String. Name of the file to include.
+  
+Returns: Depends on the script included.
+
+Note that if the file couldn't be found, the script will be terminated
+(or fail to load.)
+
+---
+
+Versions of the scripting interface:
+
+Here's a quick history of the scripting interface:
+
+Version 1
+  Using Lua as engine.
+  The scripts used in the Karaoke Effector application, avaible at:
+  <http://www.jiifurusu.dk/files/programming/effector/>
+
+Version 2
+  Using Python as engine.
+  The first draft for an Aegisub automation engine.
+  Never implemented.
+
+Version 3
+  Using Lua as engine.
+  The current version.

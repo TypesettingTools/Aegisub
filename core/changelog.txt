@@ -1,0 +1,317 @@
+Aegisub changelog
+Please visit http://aegisub.net to download latest version
+
+= 1.10 beta - 2006.01.?? ===========================
+
+- Always defaults to Audio Cache=1 (ram) now (Myrsloik)
+
+= 1.09 beta - 2006.01.16 ===========================
+
+- Implemented Timing Post-Processor dialog to automatically add lead-in/lead-out, scene timing and adjascence adjustment for sharp-timed subs (AMZ)
+- Aegisub is now translateable, with proper localization files. (AMZ) Available now are:
+   o Brazilian Portuguese
+   o French (thanks to TechNiko and Kurasu)
+   o Russian (thanks to ]thrash_sensei[)
+   o German (thanks to equinox)
+- Fixed saving of hotkeys (AMZ)
+- Fixed behavior of Insert key in Translation Assistant (AMZ)
+- Ctrl+Enter now previews in translation assistant (AMZ)
+- Fixed "make times continuous" bug (AMZ)
+- Checks if there's enough free space when using disk cache and asks if disk cache should be used when there isn't enough ram available (Myrsloik)
+- Always enforces the set memory limit for avisynth even if no video is opened (Myrsloik)
+- Fixed crashes when not enough memory could be allocated for ram cache (Myrsloik)
+- Properties dialog will no longer flag file as modified if nothing changed (AMZ)
+- The config.dat file is now fully documented again, for the first time since beta 1.00... let's see how long it lasts. (TheFluff)
+- Selected line is now properly enabled on audio display when audio is loaded (AMZ)
+- Cosmetic improvements to toolbar (AMZ)
+- Improved command line and drag-and-drop opening of files (extended to allow video and audio at the same time as well) (AMZ)
+- Fixed audio glitches when using disk cache and scrolling the audio display while playing (Myrsloik)
+- Improved the ram cache allocation so it should work for really large files if enough ram is available (Myrsloik)
+- Fixed exporting of SSA styles (AMZ)
+- Automation: The precalculation step in karaskel.lua is now in a function by itself, precalc_syllable_data (jfs)
+- Automation: New function added to utils.lua, string.headtail(s): treats s as a list of words separated by spaces, returns two strings, the first word (the head) and the rest of the string (the tail), like car/cdr (jfs)
+- Fixed behavior of dialog that asks you to change script resolution based on video resolution (AMZ)
+- Video and audio displays can now be hidden via the View menu (AMZ)
+- Translation assistant now shows proper text color (AMZ)
+- Translation assistant now shows total line count (AMZ)
+- Hotkeys for translation and styling assistants are now customizeable (AMZ)
+- Default character encoding for saving can now be set via the evil "save charset" in config.dat. (AMZ) A few examples:
+   o "save charset=UTF-8" - Default setting. RECOMMENDED.
+   o "save charset=UTF-16" - Saves as UTF-16 instead of UTF-8. This solves issues if you must deal with a program that can't support UTF-8, such as ancient textsub or wordpad.
+   o "save charset=local" - Kills unicode support in saving subtitles, and saves as local charset. THIS OPTION IS NOT RECOMMENDED! It will, however, make scripts compatible with Medusa and other non-unicode programs.
+   o "save charset=Shift_JIS" - Same as above, but saves as Shift_JIS (japanese script). NOT RECOMMENDED!
+   o "save charset=ISO-8859-1" - Same as above, but saves as ISO-8859-1 (western script). NOT RECOMMENDED!
+   Remember: You can always save to another charset via the File->Export option. This is much safer!
+- Setting "Use nonstandard milisecond times" in config.dat makes Aegisub use miliseconds instead of centiseconds for ASS times. DO NOT use it unless you know EXACTLY why you should! NORMAL VSFILTER CAN'T HANDLE THIS. (AMZ)
+- Resolution resampler now affects drawing commands as well (AMZ)
+
+
+= 1.08 beta - 2006.01.03 ===========================
+
+- Fixed crash when trying to shift times of selected rows with none selected (AMZ)
+- Added option to make audio autocommit only work when SSA mode is disabled (AMZ)
+- Implemented exporting to SSA (Substation Alpha) subtitles format (AMZ)
+- Added *.mka to list of recognized audio formats (AMZ)
+- Fixed (harmless) unhandled exception when cancelling audio loading (AMZ)
+- Added recent lists to video and audio (AMZ)
+- Added option to allow user to disable jumping to next line when commiting in SSA mode (AMZ)
+- Fixed line jump to in SSA mode (AMZ)
+- Aegisub no longer tries to open .vob files with mpeg2source (Myrsloik)
+- Implemented saving of PNG snapshots from video (AMZ)
+- Implemented customizeable hotkeys for most shortcuts (AMZ)
+- Added hotkey customizing dialog (AMZ)
+- Bugfix: simple-k-replacer.lua never worked (jfs)
+- Added "apply only to this style" options to simple-k-replacer.lua and line-per-syllable.lua (jfs)
+- Fixed selection being reset after lines were joined (AMZ)
+- Duplicated lines are now created after selection, and first one is selected (AMZ)
+- Added duplicate and shift by one frame option for easier frame-by-frame typesetting (AMZ)
+- Fixed crash related to setting style overrides via buttons (AMZ)
+- Main program window can now be freely resized (AMZ)
+- Zoom slider under video was replaced with a drop-down box on toolbar (AMZ)
+- Drawing command blocks are now parsed properly (not that it matters much) (AMZ)
+- Video slider is now a custom control (AMZ)
+- Automation: The frame_from_ms and ms_from_frame functions weren't actually available. They are now. Oops... (jfs)
+- Automation: Fixed error reporting during script execution so you have a chance to see the error messages again (jfs)
+- Mouse wheel now scrolls the audio display, or zooms if shift is held down (you can invert the two in config.dat) (AMZ)
+- New lines now keep the style of 'parent' line (AMZ)
+- First line of script will now be selected when it's loaded (AMZ)
+- Renamed "Audio Draw Boundary Lines" into "Audio Draw Secondary Lines" (AMZ)
+- Added Undo/Cut/Copy/Paste/Select All to subtitles edit box context menu (AMZ)
+- Added a "OK" button to style editor dialog, and now "Apply" applies changes without closing it (AMZ)
+- Paths to video/audio/timecodes files are now stored relative to subtitles (instead of as absolute paths) in [Script Info] (AMZ)
+- Audio display now shows previous line in grey (this feature can be disabled (0) or extended to every line (2) with "Audio Inactive Lines Display Mode" on config.dat) (AMZ)
+- Audio display height can now be adjusted by drawing the sash under it (AMZ)
+- Holding shift while clicking on video seek bar now snaps to keyframes (AMZ)
+- Fixed positioning of subs on video while shift is held down (AMZ)
+
+
+= 1.07 beta - 2005.12.26 ===========================
+
+- Aegisub is now Open Source under the 3-clause BSD license
+- Bugfix: Crash in Styles Manager related to copying styles (jfs)
+- Automation: Fixed progress-reporting in karaskel.lua (jfs)
+- Installer now shows the icon in add/remove programs (Myrsloik)
+- Installer defaults to the directory of the previous install (Myrsloik)
+- Fixed behavior of "Don't create start menu shortcuts" in installer (Myrsloik)
+- Bugfix: The actor dropdown list didn't always work, it's hopefully fixed now (jfs)
+- Automation: Yet another attempt at fixing the slowdown bug (jfs)
+- Added option "Audio Draw Boundary Lines", if disabled, no vertical lines (except for current selection) are drawn on the audio waveform. Karaoke syllable boundaries are always drawn (jfs)
+- Added option "Audio Draw Selection Background", if disabled, the background and waveform color isn't changed for the selection in waveform display mode (jfs)
+- SSA Mode: Committing changes now switches to next line and sets the selection to the part following the old selection (jfs)
+- SSA Mode: Selecting another line in the grid no longer changes the audio selection (jfs)
+- SSA Mode: "Play current line" sets the selection to the current line (jfs)
+- SSA Mode: Committing works even when no changes were made (just go to next row) and negative timings are accepted (jfs)
+- When loading video, if the video and subs resolution don't match, ask to change the subs resolution (jfs)
+- New config option to control the above, "Video Check Script Res" (jfs), it can take the following values 
+   (0) Never change subs resolution to match video
+   (1) Ask to change subs resolution on mismatch
+   (2) Always change subs resolution on mismatch (never ask)
+- New subs have default resolution 640x480 (to match most common videos) (jfs)
+- New config option: "Audio Line boundaries Thickness" controls the thickness of the lines marking the start/end of the current selection (jfs)
+- Bugfix: Loading audio files of different sample rates without closing the program resulted in audio playing too slow/fast (jfs)
+- New color picker dialog (jfs)
+   o Graphically pick colors from different colorspaces (RGB, PC-YUV, HSL, HSV)
+   o Manually enter color values in those colorspaces
+   o ASS and HTML hex input
+   o 24 recently-used colors (automatically managed)
+   o "Screen eyedropper" to make a screengrab and pick a color from that
+- The following windows remember their last used position (not across program restarts, though) (jfs)
+   o Styles Manager
+   o Styling Assistant
+   o Translation Assistant
+- Most dialog windows now center on the window behind them (jfs)
+- The start and end markers for audio selection can now have different colors, use the "Audio Line boundary start" and "Audio Line boundary end" options to change them, the old "Audio Line boundaries" option is no longer used (jfs)
+- Blank script resolution will now be interpreted as 384x288 (VSFilter's default) if script res is blank (AMZ)
+- Audio playing of selection will now play until new end time when it's changed during playback (AMZ)
+- Aegisub will now display a proper error message if it attempts to load an outdated avisynth.dll, instead of just crashing (Myrsloik)
+- Automation: Changed the result array from process_lines to use one-based indexes, instead of zero-based indexes, to follow Lua standards. Zero-based indexes still work. The input arrays are still zero-based. (jfs)
+- Automation: Added new factorybrew script, line-per-syllable.lua. Allows you to make line-per-syllable karaoke effects by using variable substitution and calculation. Built off karaskel-adv.lua (jfs)
+- Automation: Updated simple-k-replacer.lua to also allow for calculations, and it is based on karaskel.lua now (jfs)
+- Fixed count of matches in Replace All dialog (AMZ)
+- Fixed extra line breaks bug in importing from txt (AMZ)
+- The automation samples are now always installed (Myrsloik)
+- Aegisub will now install VSFilter 2.37 (AMZ)
+
+
+= 1.06a beta - 2005.11.30 ==========================
+
+- Current audio selection is now shown in inverse colors when using spectrum analyser mode. Can be disabled with "Audio Spectrum invert selection" option (jfs)
+- Bugfix: Clean Script Info export filter errorneously removed the PlayResY line (jfs)
+- Fixed critical bug in installer (thank movax for that) that could corrupt Windows's Uninstaller information (Myrsloik)
+- Installer will no longer always ask you if you want to keep the styles dir (Myrsloik)
+- Installer now saves the avisynth installer/source to the desktop, so you can proceed if downloading fails (Myrsloik)
+
+
+= 1.06 beta - 2005.11.29 ==========================
+
+- Fixed severe audio stability issues (AMZ)
+- Fixed size of last character in editbox with syntax highlight off (AMZ)
+- Fixed audio stopping issue (e.g. forcing you to press 'S' or 'Space' twice) (AMZ)
+- Five splash screens are now available. Set "Splash number" to 0 in config.dat to get a random one. Defaults to Akari. (AMZ)
+  (1) Misuzu from Air TV
+  (2) Lucy from Elfen Lied
+  (3) Kozue from Mahoraba
+  (4) Lamhirh (aka Lafiel) from Crest of the Stars
+  (5) Akari from Aria
+- Added function (Ctrl+6) to shift selection so first line goes to current frame (AMZ)
+- Automation now loads scripts both with and without UTF-8 BOM. They are still required to be UTF-8 encoded. (jfs)
+- Fixed crash-bug in Automation related to internal item-count in tables used as arrays (jfs)
+- Automation now displays a proper progress-bar during processing
+- New function in Automation: aegisub.set_status(text), displays a status message below the progress bar during processing. aegisub.output_debug(text) also does that, but additionally adds the message to the debug log. Debug log is only shown if output_debug was actually called. (jfs)
+- New functions in Automation: aegisub.frame_from_ms(ms) and aegisub.ms_from_frame(frame) for doing per-frame effects (jfs)
+- Modified some of the example scripts for Automation. Scripts based on karaskel.lua might break now! (jfs)
+- Added some UTF-8 handling functions to utils.lua (jfs)
+
+
+= 1.05 beta - 2005.11.20 ==========================
+
+- Finally and TRULY fixed the damn audio innacuracy. Now it's 100% reliable (AMZ)
+- Added Spectrum Analyzer display mode to audio (AMZ)
+- Automation: Added colorstring_to_rgb user-callable function (jfs)
+- Automation: Removed useless and unimplemented csec_to_timestamp function from specs (jfs)
+- Automation: Made "Reload" button in GUI reselect the script in the list after reloading (jfs)
+- Tweaked range necessary to grab bars in audio mode (AMZ)
+- Added toggle image buttons for audio Autocommit, Autoscroll, SSA Mode and Spectrum Analyzer mode (AMZ)
+- Added display of keyframes on audio (AMZ)
+- Grid will now only stop video playback if autojump is enabled (AMZ)
+- Inserted lines will now always have positive duration (AMZ)
+- Forced behavior of color and font choosing dialogs to be modal, to prevent double opening (AMZ)
+- Fixed behavior of actor combobox when adding new actors (AMZ)
+- Grid font size now customizeable in config.dat (AMZ)
+- Hopefully fixed plain karaoke timing with VFR files (AMZ)
+- Installer no longer unregisters vsfilter (which it never registered in the first place) (movax)
+- Added a button to toggle auto-seeking of video to start of selected line (AMZ)
+- Video will now be stopped before any dialog is opened (AMZ)
+- You can now use 'Z' and 'X' keys to move to previous/next selection in audio display (AMZ)
+- Highly increased audio display scroll speed (12x, in fact) (AMZ)
+- Audio horizontal zoom is now centered (AMZ)
+- Replace All will now only affect selected rows (AMZ)
+- Added a toolbar button to cycle through override tag hiding modes (AMZ)
+- Split "Make Times Continuous" in two functions, one changing start and another changing end (AMZ)
+- Added "Add Lead In" and "Add Lead Out" buttons to audio mode (AMZ)
+- Translation assistant can now play audio as well (AMZ)
+- Ctrl+Enter now accepts changes without going to next line in Styling Assistant (AMZ)
+- Added some new shortcuts to manual (manual is still not up to date, though) (AMZ)
+
+
+= 1.04a beta - 2005.11.16 =========================
+
+- Fixed audio horizontal zoom oddity (AMZ)
+- Pressing 'S' or 'Space' in audio mode will now stop audio if it's playing (AMZ)
+- Fixed the karaoke timing that was supposed to be fixed on 1.04 (AMZ)
+- Fixed random breakups on audio bars dragging (AMZ)
+- Fixed undoing syllable timing with autocommit on (AMZ)
+
+
+= 1.04 beta - 2005.11.16 ==========================
+
+- Fixed audio vanishing when video aspect ratio is overriden (AMZ)
+- Added "End" hotkey to play audio in styling assistant (AMZ)
+- Improved the way that the TXT parser handles comments (AMZ)
+- Autocommit with SSA mode will no longer popup warning if you have negative time (AMZ)
+- Added "Resample Resolution" tool that changes resolution and modifies everything in script to conform to it (AMZ)
+- Aegisub now asks if you want to load files linked with subs (AMZ)
+- Changed audio autofocus to be an option (disabled by default) (AMZ)
+- New lines created by reaching end of file and pressing enter now default time to end of last line, lasting 5 seconds (AMZ)
+- Fixed issues with duplicated lines (AMZ)
+- Styles manager now properly flag file as modified (AMZ)
+- Styles editor now commits changes to video imediately (AMZ)
+- Audio commit no longer resets selected syllable to first (AMZ)
+- Added "Apply now" button in Automation Manager to instantly apply a script to the currently loaded subs (jfs)
+- Moved encoding selection during export to a combobox in the Export window (jfs)
+- Fixed bug where the [Script Info] line disappeared when exporting to a non-UTF encoding (jfs)
+- Fixed small layout issue on Export dialog (AMZ)
+- Fixed another crash with karaoke timing (AMZ)
+
+
+= 1.03 beta - 2005.11.12 ==========================
+
+- Fixed bug that caused an unhandled exception if you tried to enter letters for margin value (AMZ)
+- Fixed bug in style manager which allowed you to try to delete/edit/move zero styles after a deletion (AMZ)
+- Fixed several bugs related to deleting storages from styles catalog (AMZ)
+- Manual edited and updated (Jcubed, AMZ)
+- Audio display now has a green outline when focused (AMZ)
+- Clicking the audio buttons now sends focus back to display (AMZ)
+- Fixed long delay when playing audio for the first time (AMZ)
+- Substation Alpha style shortcuts implemented when audio display is focused (AMZ): 
+  'a' moves back
+  's' plays selection
+  'd' plays 500ms before end of selection
+  'f' moves forward
+  'g' commits (also Ctrl+Enter)
+  And the following non-SSA shortcuts:
+  'r' plays original
+  'q' plays 500ms before selection
+  'w' plays 500ms after selection
+  'e' plays 500ms after start of selection
+- Added shortcut descriptions to buttons on toolbar (AMZ)
+- Splash screen no longer has a taskbar button for it (AMZ)
+- Fixed bug which locked program on frame mode after closing video or timecodes (AMZ)
+- Fixed width of time columns when switching from frame to time modes and vice-versa (AMZ)
+- Added delete rows shortcut (Ctrl+Del) (AMZ)
+- Grid popup menu now shows shortcuts (AMZ)
+- Fixed audio imprecision when playing (AMZ)
+- Fixed audio randomly not working (AMZ)
+- Fixed crash when trying to close Aegisub with audio playing (AMZ)
+- Numeric editboxes no longer accept non-numeric input (AMZ)
+- Video playback now stops if you click on a line on grid (AMZ)
+- Added shortcuts to zoom video in and out (Ctrl+Numpad + and Ctrl+Numpad -) (AMZ)
+- Added Drag and Drop support for subtitles, audio and video files (AMZ)
+- Added "Play Audio" button to Styling Assistant (AMZ)
+- SSA mode timing now allows backwards times, but will warn you and won't let you commit (AMZ)
+- Added cursor to audio mode showing current time (AMZ)
+
+
+= 1.02a beta - 2005.11.09 =========================
+
+- Added karaskel-adv.lua script, which should be in 1.02... shippai, shippai ^_^" (AMZ)
+
+
+= 1.02 beta - 2005.11.08 ==========================
+
+- Aegisub will now look for vsfilter on its path before anywhere else (AMZ)
+- Aegisub will now prompt you to unload timecodes when you load a new video (AMZ)
+- Fixed behavior of "Opaque" checkbox in style editor (AMZ)
+- Added spacing edit box on style editor (AMZ)
+- F2 now behaves the same as Ctrl+S (that is, saves) (AMZ)
+- Avisynth cache fixed (should make seeking backwards much faster) (AMZ)
+- Setting "Avisynth MemoryMax" on config.dat to 0 now uncaps memory (AMZ)
+- TXT parser now only accepts actor name if there are no spaces before it, to prevent misinterpretations (AMZ)
+- Fixed bug with Copy and Delete which caused them to assume that a continuous range was used (AMZ)
+- Fixed glitch on export dialog with too long configurations from automation script (AMZ)
+- Installer now waits properly for uninstall (movax)
+- Installer now checks for Avisynth version for overwriting (movax)
+- Installer now installs VSFilter anyway if it's checked, and won't register it as DirectShow filter (movax)
+- Installer now detects another copy of installer already running (movax)
+- Fixed bug in Automation demo 4: used a wrong function name (jfs)
+- Fixed bug in Automation demo 8: Forgot &H& around hex color (jfs)
+- Hopefully fixed VFR timing to fix 1 frame errors on a few lines (AMZ)
+- Removed some redundant logging function that I forgot to remove from VFR code, which was creating an empty aegisub.txt on c: (AMZ)
+- Fixed loading of files with spacing on dialogue margins columns (e.g. generated from Sabbu) (AMZ)
+- Fixed styling assistant's "Help" button (AMZ)
+- Output sample rate can now be set in config.dat for lower memory usage at the cost of A LOT of opening time (AMZ)
+- Fixed Translation Assistant video preview (AMZ)
+- Audio cache now defaults to HD if user has less than 400 MB RAM (yes, semi-random number) (AMZ)
+- New advanced (lines-per-syllable) karaoke skeleton Automation include file (karaskel-adv.lua), including demo (9-skeleton-advanced.lua) (jfs)
+
+
+= 1.01 Beta - 2005.11.06 ==========================
+
+- Substation Alpha style audio timing (left click = start, right click = end) implemented as an option (AMZ)
+- Fixed loading of SSA styles in VB Hex if they contained a space or tab around them (AMZ)
+- Fixed crash when trying to apply overrides on a line with *Default or non-existing style (AMZ)
+- Fixed unhandled exception when attempting to load unknown audio formats (AMZ)
+- Fixed bug causing artifacts like {\fs40{\fnArial}} if you tried to insert style with cursor positioned just to the left of "}" (AMZ)
+- Fixed bug causing crashes on lines with multiple adjascent override groups (AMZ)
+- Fixed delay in playing audio by switching implementation from WMME to DirectShow (AMZ)
+- Focus is now set back to editbox when you click on of the style override buttons (AMZ)
+- Installer now checks for user level and OS compatibility before installing (movax)
+- Holding down shift while hovering video now shows coordinates relative to bottomright corner (AMZ)
+- Pressing Play when video plays now pauses it (AMZ)
+- Can now choose font for text field on grid and edit box (AMZ)
+- Added karaoke "skeleton" include Lua script (karaskel.lua) and a demo showing its usage (8-skeleton.lua) (jfs)
+
+
+= 1.00 Beta - 2005.11.05 ==========================
+
+- First public release

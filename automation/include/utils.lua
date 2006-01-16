@@ -1,0 +1,167 @@
+--[[
+ Copyright (c) 2005, Niels Martin Hansen, Rodrigo Braz Monteiro
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+   * Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+   * Neither the name of the Aegisub Group nor the names of its contributors
+     may be used to endorse or promote products derived from this software
+     without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+ ]]
+
+-- Variables with tables only hold references to the actual tables
+-- Since a line is a table, a line needs to be copied, otherwise things break in bad ways
+function copy_line(input)
+	output = {}
+	output.kind = input.kind
+	if input.kind == "scomment" then
+		output.text = input.text
+	elseif input.kind == "comment" or input.kind == "dialogue" then
+		output.layer = input.layer
+		output.start_time = input.start_time
+		output.end_time = input.end_time
+		output.style = input.style
+		output.name = input.name
+		output.margin_l = input.margin_l
+		output.margin_r = input.margin_r
+		output.margin_v = input.margin_v
+		output.effect = input.effect
+		output.text = input.text
+		output.text_stripped = input.text_stripped		
+		output.karaoke = input.karaoke -- Don't bother copying the karaoke table, it shouldn't be changed anyway
+	end
+	return output
+end
+
+
+-- Generates ASS hexadecimal string from R,G,B integer components, in &HBBGGRR& format
+function ass_color(r,g,b)
+	return string.format("&H%02X%02X%02X&",b,g,r)
+end
+
+
+-- Converts HSV (Hue, Saturation, Value)  to RGB
+function HSV_to_RGB(H,S,V)
+	local r,g,b;
+
+	-- Saturation is zero, make grey
+	if S == 0 then
+		r = V*255
+		if r < 0 then
+			r = 0
+		end
+		if r > 255 then
+			r = 255
+		end
+		g = r
+		b = r
+		
+	-- Else, calculate color
+	else
+		-- Calculate subvalues
+		local Hi = math.floor(H/60)
+		local f = H/60.0 - Hi
+		local p = V*(1-S)
+		local q = V*(1-f*S)
+		local t = V*(1-(1-f)*S)
+		
+		-- Do math based on hue index
+		if Hi == 0 then
+			r = V*255.0
+			g = t*255.0
+			b = p*255.0
+		elseif Hi == 1 then
+			r = q*255.0
+			g = V*255.0
+			b = p*255.0
+		elseif Hi == 2 then
+			r = p*255.0
+			g = V*255.0
+			b = t*255.0
+		elseif Hi == 3 then
+			r = p*255.0
+			g = q*255.0
+			b = V*255.0
+		elseif Hi == 4 then
+			r = t*255.0
+			g = p*255.0
+			b = V*255.0
+		elseif Hi == 5 then
+			r = V*255.0
+			g = p*255.0
+			b = q*255.0
+		end
+	end
+	
+	r = math.floor(r)
+	g = math.floor(g)
+	b = math.floor(b)
+	return r,g,b
+end
+
+
+-- Removes spaces at the start and end of string
+function trim (s)
+	return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
+end
+
+
+-- UTF-8 string handling functions
+-- Contributed by roxfan
+
+-- Get the offset for the next character in the string, given the current offset
+function next_utf_char(str, off)
+	local leadb = string.byte(str, off)
+	if leadb < 128 then
+		return off+1
+	elseif leadb < 224 then
+		return off+2
+	elseif leadb < 240 then
+		return off+3
+	elseif leadb < 248 then
+		return off+4
+	end
+	aegisub.output_debug(string.format("bad utf-8 in %q at %d",str,off))
+	return -1
+end
+
+-- Get the number of characters in the UTF-8 string (not the number of bytes)
+function utf_len(str)
+	local i = 1
+	local len = 0
+	while i<=string.len(str) do
+		i = next_utf_char(str, i)
+		len = len + 1
+	end
+	-- aegisub.output_debug(string.format("utf_len(%q)=%d",str,len))
+	return len
+end
+
+
+-- Get the "head" and "tail" of a string, treating it as a sequence of words separated by one or more space-characters
+function string.headtail(s)
+	local a, b, head, tail = string.find(s, "(.-)%s+(.*)")
+	if a then
+		return head, tail
+	else
+		return s, ""
+	end
+end
