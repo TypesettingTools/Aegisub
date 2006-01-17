@@ -165,3 +165,9 @@ function string.headtail(s)
 		return s, ""
 	end
 end
+
+
+-- Exclusive or of two boolean values
+function xor(a, b)
+	return (a or b) and not (a and b)
+end

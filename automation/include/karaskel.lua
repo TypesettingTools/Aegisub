@@ -66,45 +66,66 @@
 --   end_time - End time of the syllable, similar to start_time
 
 
+-- This one is used
+aegisub.output_warning = aegisub.output_debug
+-- Comment out this line to enable debugging messages
+aegisub.output_debug = function() end
+
 -- Return a replacement text for a syllable
 function default_do_syllable(meta, styles, config, line, syl)
+	aegisub.output_debug("default_do_syllable")
 	return syl.text
 end
 
 -- Decide whether or not to process a line
 function default_do_line_decide(meta, styles, config, line)
+	aegisub.output_debug("default_do_line_decide")
 	return line.kind == "dialogue"
 end
 
 -- Return a text to prefix the line
 function default_do_line_start(meta, styles, config, line)
+	aegisub.output_debug("default_do_line_start")
 	return ""
 end
 
 -- Return a text to suffix the line
 function default_do_line_end(meta, styles, config, line)
+	aegisub.output_debug("default_do_line_end")
 	return ""
 end
 
 -- Process an entire line (which has pre-calculated extra data in it already)
 -- Return a table of replacement lines
 function default_do_line(meta, styles, config, line)
+	aegisub.output_debug("default_do_line")
+	
 	-- Check if the line should be processed at all
 	if not do_line_decide(meta, styles, config, line) then
 		return {n=0}
 	end
+	aegisub.output_debug("default_do_line:2")
+	
 	-- Create a new local var for the line replacement text, set it to line prefix
 	-- This is to make sure the actual line text isn't replaced before the line has been completely processed
 	local newtext = do_line_start(meta, styles, config, line)
+	aegisub.output_debug("default_do_line:3")
+	
 	-- Loop over the syllables
 	for i = 0, line.karaoke.n-1 do
+		aegisub.output_debug("default_do_line:4:"..i)
 		-- Append the replacement for each syllable onto the line
 		newtext = newtext .. do_syllable(meta, styles, config, line, line.karaoke[i])
 	end
+	aegisub.output_debug("default_do_line:5")
+	
 	-- Append line suffix
 	newtext = newtext .. do_line_end(meta, styles, config, line)
+	aegisub.output_debug("default_do_line:6")
+	
 	-- Now replace the line text
 	line.text = newtext
+	
 	-- And return a table with one entry
 	return {n=1; [1]=line}
 end
@@ -119,16 +140,30 @@ do_line = default_do_line
 precalc_start_progress = 0
 precalc_end_progress = 50
 function precalc_syllable_data(meta, styles, lines)
+	aegisub.output_debug("precalc_syllable_data")
 	aegisub.set_status("Preparing syllable-data")
 	for i = 0, lines.n-1 do
+		aegisub.output_debug("precalc_syllable_data:2:"..i)
 		aegisub.report_progress(precalc_start_progress + i/lines.n*(precalc_end_progress-precalc_start_progress))
 		local line, style = lines[i]
 		-- Index number of the line
 		line.i = i
+		-- Linked list-style access
+		line.prev = lines[i-1]
+		line.next = lines[i+1]
+		aegisub.output_debug("precalc_syllable_data:3:")
 		if line.kind == "dialogue" or line.kind == "comment" then
+			aegisub.output_debug("precalc_syllable_data:4:")
 			local style = styles[line.style]
+			if not style then
+				-- ok, so the named style does not exist... well there MUST be at least ONE style
+				-- pick the first one
+				style = styles[0]
+				aegisub.output_warning(string.format("WARNING! You have a line using a style named \"%s\", but that style does not exist! Using the first defined style (\"%s\") instead.", line.style, style.name))
+			end
 			-- Line dimensions
 			line.width, line.height, line.ascent, line.extlead = aegisub.text_extents(style, line.text_stripped)
+			aegisub.output_debug("precalc_syllable_data:5:")
 			-- Line position
 			line.centerleft = math.floor((meta.res_x - line.width) / 2)
 			line.centerright = meta.res_x - line.centerleft
@@ -136,14 +171,17 @@ function precalc_syllable_data(meta, styles, lines)
 			line.duration = (line.end_time - line.start_time) * 10
 			-- Style reference
 			line.styleref = style
+			aegisub.output_debug("precalc_syllable_data:6:")
 			-- Process the syllables
 			local curx, curtime = 0, 0
 			for j = 0, line.karaoke.n-1 do
+				aegisub.output_debug("precalc_syllable_data:7::"..j)
 				local syl = line.karaoke[j]
 				-- Syllable index
 				syl.i = j
 				-- Syllable dimensions
 				syl.width, syl.height, syl.ascent, syl.extlead = aegisub.text_extents(style, syl.text_stripped)
+				aegisub.output_debug("precalc_syllable_data:8::")
 				-- Syllable positioning
 				syl.left = curx
 				syl.center = math.floor(curx + syl.width/2)
@@ -160,15 +198,19 @@ end
 
 -- Everything else is done in the process_lines function
 function skel_process_lines(meta, styles, lines, config)
+	aegisub.output_debug("skel_process_lines")
 	-- Do a little pre-calculation for each line and syllable
 	precalc_syllable_data(meta, styles, lines)
+	aegisub.output_debug("skel_process_lines:2")
 	-- A var for the new output
 	local result = {n=0}
 	aegisub.set_status("Running main-processing")
 	-- Now do the usual processing
 	for i = 0, lines.n-1 do
+		aegisub.output_debug("skel_process_lines:3:"..i)
 		aegisub.report_progress(50+i/lines.n*50)
 		if do_line_decide(meta, styles, config, lines[i]) then
+			aegisub.output_debug("skel_process_lines:4:..i")
 			-- Get replacement lines
 			repl = do_line(meta, styles, config, lines[i])
 			-- Append to result table

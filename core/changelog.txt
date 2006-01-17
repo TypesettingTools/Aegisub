@@ -4,6 +4,12 @@ Please visit http://aegisub.net to download latest version
 = 1.10 beta - 2006.01.?? ===========================
 
 - Always defaults to Audio Cache=1 (ram) now (Myrsloik)
+- Automation: Added xor(a,b) boolean logical function to utils.lua (jfs)
+- Automation: Various changes to karaskel.lua and karaskel-adv.lua: (jfs)
+   o Added some debug-calls (which are disable by default; aegisub.output_debug is replaced with a do-nothing function (you can change this in karaskel.lua)
+   o The regular aegisub.output_debug is aliased to aegisub.output_warning, in order to always be able to show real warnings, in case something goes wrong
+   o Fixed bug, triggered when a line had a style not defined in the subs. A warning is now shown instead.
+
 
 = 1.09 beta - 2006.01.16 ===========================
 
