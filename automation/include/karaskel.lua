@@ -68,8 +68,10 @@
 
 -- This one is used
 aegisub.output_warning = aegisub.output_debug
--- Comment out this line to enable debugging messages
-aegisub.output_debug = function() end
+-- Set the variable show_debug_output to non-nil non-false before including karaskel.lua, to get debug output
+if not show_debug_output then
+	aegisub.output_debug = function() end
+end
 
 -- Return a replacement text for a syllable
 function default_do_syllable(meta, styles, config, line, syl)
