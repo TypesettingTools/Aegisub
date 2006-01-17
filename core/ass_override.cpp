@@ -561,8 +561,6 @@ void AssOverrideTag::ParseParameters(wxString text) {
 	int totalPars = paramList.GetCount();
 
 	// Get optional parameters flag
-	//wxStringTokenizer tkn(text,_T(",()"),wxTOKEN_STRTOK);
-	//int totalPars = tkn.CountTokens();
 	ASS_ParameterOptional parsFlag = OPTIONAL_0;
 	switch (totalPars) {
 		case 1: parsFlag = OPTIONAL_1; break;
@@ -598,7 +596,8 @@ void AssOverrideTag::ParseParameters(wxString text) {
 		curtok = paramList[curPar];
 		curPar++;
 	}
-	//while (curtok != _T("")) {
+
+	// For each parameter
 	while (n < proto->params.size()) {
 		AssOverrideParamProto *curproto = &proto->params[n];
 		bool isDefault = false;
@@ -609,22 +608,24 @@ void AssOverrideTag::ParseParameters(wxString text) {
 
 		// Check if it's optional and not set (set to default)
 		if (!(curproto->optional & parsFlag)) {
-			isDefault = true;
-			newparam->CopyFrom(curproto->defaultValue);
+			if (curproto->defaultValue.GetType() != VARDATA_NONE) {
+				isDefault = true;
+				newparam->CopyFrom(curproto->defaultValue);
+			}
 			newparam->ommited = true;
 		}
 
-		else {
+		if (isDefault == false) {
 			// Determine parameter type and set value
 			switch (curproto->type) {
 				case VARDATA_INT: {
-					long temp;
+					long temp = 0;
 					curtok.ToLong(&temp);
 					newparam->SetInt(temp);
 					break;
 				}
 				case VARDATA_FLOAT: {
-					double temp;
+					double temp = 0.0;
 					curtok.ToDouble(&temp);
 					newparam->SetFloat(temp);
 					break;
@@ -634,7 +635,7 @@ void AssOverrideTag::ParseParameters(wxString text) {
 					break;
 				}
 				case VARDATA_BOOL: {
-					long temp;
+					long temp = false;
 					curtok.ToLong(&temp);
 					newparam->SetBool(temp != 0);
 					break;
