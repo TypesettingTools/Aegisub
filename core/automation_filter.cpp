@@ -45,7 +45,7 @@
 
 
 AutomationScriptThread::AutomationScriptThread(AutomationScript *a_script, AssFile *a_subs)
-: wxThread(wxTHREAD_JOINABLE), subs(a_subs), script(a_script)
+: wxThread(wxTHREAD_JOINABLE), script(a_script), subs(a_subs)
 {
 	Create();
 }

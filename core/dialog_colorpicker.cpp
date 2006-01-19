@@ -47,7 +47,7 @@
 
 
 ColorPickerSpectrum::ColorPickerSpectrum(wxWindow *parent, wxWindowID id, wxBitmap *_background, int xx, int yy, PickerDirection _direction)
-: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER), background(_background), x(xx), y(yy), direction(_direction)
+: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER), x(xx), y(yy), background(_background), direction(_direction)
 {
 	// empty
 }
@@ -150,7 +150,7 @@ void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt)
 
 
 ColorPickerRecent::ColorPickerRecent(wxWindow *parent, wxWindowID id, wxSize size, int _cols, int _rows)
-: wxControl(parent, id, wxDefaultPosition, size, wxSTATIC_BORDER), cols(_cols), rows(_rows)
+: wxControl(parent, id, wxDefaultPosition, size, wxSTATIC_BORDER), rows(_rows), cols(_cols)
 {
 	LoadFromString(wxEmptyString);
 }
