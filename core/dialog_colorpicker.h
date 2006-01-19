@@ -70,7 +70,7 @@ public:
 	void SetXY(int xx, int yy);
 	void SetBackground(wxBitmap *new_background);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 DECLARE_EVENT_TYPE(wxSPECTRUM_CHANGE, -1)
@@ -91,7 +91,7 @@ public:
 	wxString StoreToString();
 	void AddColor(wxColour color);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 DECLARE_EVENT_TYPE(wxRECENT_SELECT, -1)
@@ -109,10 +109,10 @@ private:
 public:
 	ColorPickerScreenDropper(wxWindow *parent, wxWindowID id, int _resx, int _resy, int _magnification);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
-DECLARE_EVENT_TYPE(wxDROPPER_SELECT, -1);
+DECLARE_EVENT_TYPE(wxDROPPER_SELECT, -1)
 
 
 wxColour GetColorFromUser(wxWindow *parent, wxColour original);
@@ -198,7 +198,7 @@ public:
 	void SetColor(wxColour new_color);
 	wxColour GetColor();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -221,7 +221,7 @@ enum {
 	SELECTOR_ASS_INPUT,
 	SELECTOR_HTML_INPUT,
 	SELECTOR_RECENT,
-	SELECTOR_DROPPER,
+	SELECTOR_DROPPER
 };
 
 

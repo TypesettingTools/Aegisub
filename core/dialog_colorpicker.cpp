@@ -78,7 +78,7 @@ BEGIN_EVENT_TABLE(ColorPickerSpectrum, wxControl)
 	EVT_MOUSE_EVENTS(ColorPickerSpectrum::OnMouse)
 END_EVENT_TABLE()
 
-DEFINE_EVENT_TYPE(wxSPECTRUM_CHANGE);
+DEFINE_EVENT_TYPE(wxSPECTRUM_CHANGE)
 
 void ColorPickerSpectrum::OnPaint(wxPaintEvent &evt)
 {
@@ -197,7 +197,7 @@ BEGIN_EVENT_TABLE(ColorPickerRecent, wxControl)
 	EVT_LEFT_DOWN(ColorPickerRecent::OnClick)
 END_EVENT_TABLE()
 
-DEFINE_EVENT_TYPE(wxRECENT_SELECT);
+DEFINE_EVENT_TYPE(wxRECENT_SELECT)
 
 void ColorPickerRecent::OnClick(wxMouseEvent &evt)
 {
@@ -264,7 +264,7 @@ BEGIN_EVENT_TABLE(ColorPickerScreenDropper, wxControl)
 	EVT_MOUSE_EVENTS(ColorPickerScreenDropper::OnMouse)
 END_EVENT_TABLE()
 
-DEFINE_EVENT_TYPE(wxDROPPER_SELECT);
+DEFINE_EVENT_TYPE(wxDROPPER_SELECT)
 
 void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 {

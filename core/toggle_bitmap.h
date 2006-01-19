@@ -59,7 +59,7 @@ public:
 	bool GetValue();
 	void SetValue(bool state);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

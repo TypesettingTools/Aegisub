@@ -91,7 +91,7 @@ private:
 public:
 	DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *grid);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

@@ -119,7 +119,7 @@ public:
 	void SetFile(wxString file,bool FromVideo);
 	void SetKaraokeButtons(bool join,bool split);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

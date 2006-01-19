@@ -56,5 +56,5 @@ public:
 	static bool CheckAssociation(wxString type);
 	static void AssociateType(wxString type);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };

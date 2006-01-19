@@ -72,7 +72,7 @@ public:
 
 	static void EditScript(AutomationScript *script);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 enum {

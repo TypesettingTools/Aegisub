@@ -84,7 +84,7 @@ public:
 	void Play();
 	void OnTransBoxKey(wxKeyEvent &event);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -99,7 +99,7 @@ private:
 
 public:
 	DialogTranslationEvent(DialogTranslation *control);
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

@@ -111,7 +111,7 @@ public:
 	void Join();
 	void Split();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

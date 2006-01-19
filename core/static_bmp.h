@@ -52,5 +52,5 @@ private:
 public:
 	BitmapControl(wxWindow *parent,wxBitmap _bmp,int style=0);
 	
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };

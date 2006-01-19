@@ -62,7 +62,7 @@ private:
 public:
 	StyleEditBox(DialogStyling *parent);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -103,7 +103,7 @@ public:
 
 	void JumpToLine(int n);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

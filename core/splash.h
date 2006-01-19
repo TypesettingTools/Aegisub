@@ -59,7 +59,7 @@ public:
 	void OnMouseEvent(wxMouseEvent& event);
 	void OnTimer(wxTimerEvent &event);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

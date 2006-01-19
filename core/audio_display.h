@@ -151,7 +151,7 @@ public:
 	void GetTimesSelection(int &start,int &end);
 	void SetSelection(int start, int end);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

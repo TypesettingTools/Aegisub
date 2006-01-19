@@ -82,7 +82,7 @@ public:
 	void OnRadioTime(wxCommandEvent &event);
 	void OnRadioFrame(wxCommandEvent &event);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

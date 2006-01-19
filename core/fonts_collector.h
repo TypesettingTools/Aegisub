@@ -102,7 +102,7 @@ public:
 	DialogFontsCollector(wxWindow *parent);
 	~DialogFontsCollector();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

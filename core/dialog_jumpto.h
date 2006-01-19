@@ -86,7 +86,7 @@ private:
 
 public:
 	DialogJumpToEvent(DialogJumpTo *control);
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

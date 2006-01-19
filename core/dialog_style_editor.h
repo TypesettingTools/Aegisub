@@ -123,7 +123,7 @@ public:
 	void Apply (bool apply,bool close);
 	void OnSetColor (int n);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

@@ -109,7 +109,7 @@ public:
 	DialogSearchReplace(wxWindow *parent,bool hasReplace,wxString name);
 	~DialogSearchReplace();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

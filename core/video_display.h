@@ -161,7 +161,7 @@ public:
 	void PlayLine();
 	void Stop();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

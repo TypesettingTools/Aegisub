@@ -105,7 +105,7 @@ public:
 	void OnStorageDelete (wxCommandEvent &event);
 	void OnCurrentDelete (wxCommandEvent &event);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

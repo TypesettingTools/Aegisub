@@ -66,5 +66,5 @@ public:
 	void SetTime(int ms);
 	void Update();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };

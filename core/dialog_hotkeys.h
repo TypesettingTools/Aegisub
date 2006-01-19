@@ -68,7 +68,7 @@ private:
 public:
 	DialogHotkeys(FrameMain *parent);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -83,7 +83,7 @@ private:
 public:
 	CaptureKey(DialogInputHotkey *parent);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

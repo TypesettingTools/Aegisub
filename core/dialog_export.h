@@ -79,7 +79,7 @@ public:
 	DialogExport(wxWindow *parent);
 	~DialogExport();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -92,5 +92,5 @@ enum {
 	Button_Select_All,
 	Button_Select_None,
 	Filter_List_Box,
-	Charset_List_Box,
+	Charset_List_Box
 };

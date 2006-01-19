@@ -59,7 +59,7 @@ public:
 	void SetText(wxString text);
 	void Run();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

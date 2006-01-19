@@ -76,7 +76,7 @@ public:
 	DialogProperties(wxWindow *parent, VideoDisplay *vid);
 	~DialogProperties();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

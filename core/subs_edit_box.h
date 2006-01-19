@@ -62,7 +62,7 @@ public:
 	SubsEditBox *control;
 	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -159,7 +159,7 @@ public:
 	void UpdateFrameTiming();
 	void KeyPress(wxKeyEvent &event);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -172,7 +172,7 @@ private:
 
 public:
 	SubsEditBoxEvent(SubsEditBox *control);
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

@@ -131,7 +131,7 @@ public:
 	__int64 GetNumSamples();
 	int GetSampleRate();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

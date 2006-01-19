@@ -81,7 +81,7 @@ public:
 	int GetValue();
 	void SetValue(int value);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

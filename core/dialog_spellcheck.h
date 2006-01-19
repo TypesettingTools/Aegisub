@@ -142,7 +142,7 @@ private:
 	void OnListDoubleClick (wxCommandEvent &event);
 	void OnTextChange(wxCommandEvent &event);
 	
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 
 
 	enum actioncodes {

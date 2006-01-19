@@ -77,7 +77,7 @@ public:
 #endif
 
 	//int OnRun();
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

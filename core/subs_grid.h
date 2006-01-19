@@ -145,7 +145,7 @@ public:
 	void SetScrollbar (int orientation, int position, int thumbSize, int range, bool refresh);
 	wxString GetTempWorkFile ();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 

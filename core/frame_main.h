@@ -223,7 +223,7 @@ public:
 	void SetAccelerators();
 	void InitMenu();
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };
 
 
