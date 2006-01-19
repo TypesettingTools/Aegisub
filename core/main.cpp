@@ -34,6 +34,13 @@
 //
 
 
+////////////////////////////
+// Enable XP-style controls
+//#if defined(__WXMSW__) && !defined(__WXWINCE__)
+//#pragma comment(linker, "\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='X86' publicKeyToken='6595b64144ccf1df'\"")
+//#endif
+
+
 ////////////
 // Includes
 #include <wx/wxprec.h>

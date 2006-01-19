@@ -36,6 +36,7 @@
 
 ///////////
 // Headers
+#include <wx/wxprec.h>
 #include <wx/regex.h>
 #include "dialog_search_replace.h"
 #include "ass_file.h"

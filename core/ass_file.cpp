@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include <list>
+#include <fstream>
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
@@ -46,7 +48,6 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
-#include <fstream>
 
 
 ////////////////////// AssFile //////////////////////
@@ -482,7 +483,7 @@ void AssFile::SaveSRT (wxString _filename,const wxString encoding) {
 void AssFile::DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator prev) {
 	using std::list;
 	AssDialogue *previous;
-	if (prev != NULL) previous = AssEntry::GetAsDialogue(*prev);
+	if (prev != Line.end()) previous = AssEntry::GetAsDialogue(*prev);
 	else previous = NULL;
 
 	// Strip ASS tags
@@ -522,7 +523,7 @@ void AssFile::DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator 
 void AssFile::ConvertToSRT () {
 	using std::list;
 	list<AssEntry*>::iterator next;
-	list<AssEntry*>::iterator prev = NULL;
+	list<AssEntry*>::iterator prev = Line.end();
 
 	// Sort lines
 	Line.sort(LessByPointedToValue<AssEntry>());
@@ -702,7 +703,7 @@ void AssFile::InsertStyle (AssStyle *style) {
 	// Variables
 	using std::list;
 	AssEntry *curEntry;
-	list<AssEntry*>::iterator lastStyle = NULL;
+	list<AssEntry*>::iterator lastStyle = Line.end();
 	list<AssEntry*>::iterator cur;
 	int lasttime;
 	wxString lastGroup;
@@ -718,7 +719,7 @@ void AssFile::InsertStyle (AssStyle *style) {
 	}
 
 	// No styles found, add them
-	if (lastStyle == NULL) {
+	if (lastStyle == Line.end()) {
 		// Add space
 		curEntry = new AssEntry(_T(""));
 		curEntry->group = lastGroup;
