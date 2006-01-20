@@ -50,7 +50,7 @@
 ///////////////
 // Constructor
 VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
-: wxWindow (parent,id,wxDefaultPosition,wxDefaultSize,wxWANTS_CHARS)
+: wxWindow (parent,id,wxDefaultPosition,wxDefaultSize,wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
 {
 	Display = NULL;
 	SetClientSize(20,25);
