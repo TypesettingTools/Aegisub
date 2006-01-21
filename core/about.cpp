@@ -63,7 +63,7 @@ AboutScreen::AboutScreen(wxWindow *parent,bool easter)
 
 	// Text sizer
 	wxSizer *TextSizer = new wxBoxSizer(wxVERTICAL);
-	TextSizer->Add(new wxStaticText(this,-1,wxString(_T("Aegisub ")) + VERSION_STRING + _(" by ArchMage ZeratuL.\n\nCopyright (c) 2005 - Rodrigo Braz Monteiro. All rights reserved.\nAutomation module and is Copyright (c) 2005 Niels Martin Hansen (aka jfs).\nAll rights reserved.\nCoding by ArchMageZeratuL, jfs, Myrsloik and nmap.\nManual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\nForum hosting by Malakith.\nSee the help file for full credits.")),1);
+	TextSizer->Add(new wxStaticText(this,-1,wxString(_T("Aegisub ")) + VERSION_STRING + _(" by ArchMage ZeratuL.\n\nCopyright (c) 2005-2006 - Rodrigo Braz Monteiro. All rights reserved.\nAutomation module and is Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\nAll rights reserved.\nCoding by ArchMageZeratuL, jfs, Myrsloik and nmap.\nManual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\nForum hosting by Bot1.\nSee the help file for full credits.")),1);
 
 	// Button sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
