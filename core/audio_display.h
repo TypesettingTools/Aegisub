@@ -66,7 +66,7 @@ private:
 	__int64 PositionSample;
 	float scale;
 	int samples;
-	int Position;
+	__int64 Position;
 	int samplesPercent;
 	int oldCurPos;
 	bool hasFocus;

@@ -40,6 +40,7 @@
 #include <wx/filename.h>
 #include <Mmreg.h>
 #include "avisynth_wrap.h"
+#include "utils.h"
 #include "audio_provider.h"
 #include "video_display.h"
 #include "options.h"
@@ -50,15 +51,6 @@
 extern "C" {
 #include <portaudio.h>
 }
-
-//stupid msvc
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
-#endif
 
 int AudioProvider::pa_refcount = 0;
 
@@ -222,30 +214,28 @@ void AudioProvider::ConvertToRAMCache(PClip &tempclip) {
 		blockcache[i] = NULL;
 
 	try {
-		for (int i = 0; i < blockcount - 1; i++)
-			blockcache[i] = new char[CacheBlockSize];
-		blockcache[blockcount-1] = new char[ssize-(blockcount-1)*CacheBlockSize];
+		for (int i = 0; i < blockcount; i++)
+			blockcache[i] = new char[MIN(CacheBlockSize,ssize-i*CacheBlockSize)];
 	} catch (...) { 
 		for (int i = 0; i < blockcount; i++)
-			if (blockcache[i])
-				delete blockcache[i];
+			delete blockcache[i];
 		delete blockcache;
 			
 		blockcache = NULL;
 		blockcount = 0;
 
 		if (wxMessageBox(_("Not enough ram available. Use disk cache instead?"),_("Audio Information"),wxICON_INFORMATION | wxYES_NO) == wxYES) {
-		ConvertToDiskCache(tempclip);
-		return;
-	} else
-		throw wxString(_T("Couldn't open audio, not enough ram available."));
+			ConvertToDiskCache(tempclip);
+			return;
+		} else
+			throw wxString(_T("Couldn't open audio, not enough ram available."));
 	}
 
 	// Start progress
 	volatile bool canceled = false;
 	DialogProgress *progress = new DialogProgress(NULL,_("Load audio"),&canceled,_("Reading into RAM"),0,num_samples);
 	progress->Show();
-	progress->SetProgress(0,blockcount-1);
+	progress->SetProgress(0,1);
 
 	// Read cache
 	int readsize = CacheBlockSize / bytes_per_sample;
@@ -344,15 +334,21 @@ void AudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 
 		// RAM Cache
 		if (type == AUDIO_PROVIDER_CACHE) {
-			int startblock = (start*bytes_per_sample) >> CacheBits;
-			int endblock = (min(start+count, num_samples)*bytes_per_sample) >> CacheBits;
-			__int64 start_offset = (start*bytes_per_sample) & (CacheBlockSize-1);
+			int i = (start*bytes_per_sample) >> CacheBits;
+			int start_offset = (start*bytes_per_sample) & (CacheBlockSize-1);
 
-			for (int i = startblock; i <= endblock; i++) {
-				int readsize = min((i+1)*CacheBlockSize,(start+count)*bytes_per_sample) - max(i*CacheBlockSize,start*bytes_per_sample);
-				memcpy(charbuf,(char *)blockcache[i]+start_offset,readsize);	
+			__int64 bytesremaining = count*bytes_per_sample;
+			
+			while (bytesremaining) {
+				int readsize=MIN(bytesremaining,CacheBlockSize); 
+				readsize = MIN(readsize,CacheBlockSize - start_offset);
+
+				memcpy(charbuf,(char *)(blockcache[i++]+start_offset),readsize);
+
 				charbuf+=readsize;
-				start_offset = 0;
+
+				start_offset=0;
+				bytesremaining-=readsize;
 			}
 		}
 
