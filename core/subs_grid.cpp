@@ -1640,7 +1640,9 @@ void SubtitlesGrid::CommitChanges(bool force) {
 		// Export
 		wxString workfile = GetTempWorkFile();
 		ass->Export(workfile);
-		video->RefreshVideo(true);
+
+		if (video->loaded)
+			video->RefreshSubtitles();
 
 		// Resume play
 		if (playing) video->Play();

@@ -42,55 +42,31 @@
 // Headers
 #include <wx/wxprec.h>
 #include <windows.h>
-#include "avisynth_wrap.h"
 #include <time.h>
+#include "video_provider.h"
 
 
 //////////////
 // Prototypes
 class SubtitlesGrid;
-class VideoDisplay;
 class VideoSlider;
 class AudioProvider;
 class AudioDisplay;
 class AssDialogue;
-
-
-////////////////////
-// Get Frame thread
-class GetFrameThread: public wxThread {
-private:
-	VideoDisplay *display;
-	int image_n;
-
-public:
-	GetFrameThread(VideoDisplay *parent,int n);
-	wxThread::ExitCode Entry();
-};
-
+class VideoProvider;
 
 //////////////
 // Main class
-class VideoDisplay: public wxWindow, public AviSynthWrapper {
-	friend class GetFrameThread;
+class VideoDisplay: public wxWindow {
 	friend class AudioProvider;
 
 private:
 	int mouse_x,mouse_y;
 	wxBitmap *backbuffer;
-	wxString subsName;
-	wxString VSFilterPath;
 
-	PClip sublessVideo;
-	PClip video;
-	double zoom;
 	wxSize origSize;
-	bool isLocked;
 	bool threaded;
-	bool gettingFrame;
 	int nextFrame;
-	int framesSkipped;
-	wxMutex BitmapMutex;
 
 	clock_t PlayTime;
 	clock_t StartTime;
@@ -99,12 +75,10 @@ private:
 	int EndFrame;
 	int PlayNextFrame;
 
-	void GetFrameImage(int n);
-	void GetFrame(int n);
-	void FrameReady();
+	wxBitmap GetFrame(int n);
+	wxBitmap GetFrame() { return GetFrame(frame_n); };
 
-	void SetZoom(double value);
-	wxString GetVSFilter();
+	void UpdateSize();
 	void SaveSnapshot();
 
 	void OnPaint(wxPaintEvent& event);
@@ -116,20 +90,19 @@ private:
 	void OnPlayTimer(wxTimerEvent &event);
 
 public:
-	wxBitmap *curFrame;
+	VideoProvider *provider;
+
 	wxArrayInt KeyFrames;
 	SubtitlesGrid *grid;
 	wxString videoName;
 	int arType;
 	int w,h;
-	int orig_w,orig_h;
 	int frame_n;
 	int length;
 	bool loaded;
 	bool IsPlaying;
 	double fps;
 	VideoSlider *ControlSlider;
-	//wxSlider *zoomSlider;
 	wxComboBox *zoomBox;
 	wxTextCtrl *PositionDisplay;
 	wxTextCtrl *SubsPosition;
@@ -139,21 +112,18 @@ public:
 	VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
 	~VideoDisplay();
 
-	void OpenAVSVideo();
-	void OpenAVSSubs();
-	void PrepareAfterAVS();
 	void SetVideo(const wxString &filename);
-	void SetSubtitles(const wxString &filename);
 	void Reset();
 	void Unload();
 	void JumpToFrame(int n);
 	void JumpToTime(int ms);
-	void RefreshVideo(bool force=false);
+	void RefreshSubtitles();
+	void RefreshVideo();
 	void UpdatePositionDisplay();
 	void SetAspectRatio(int type);
+	void SetZoom(double value);
 	int GetAspectRatio() { return arType; }
 	void SetZoomPos(int pos);
-	void Locked(bool state);
 	void UpdateSubsRelativeTime();
 	void GetScriptSize(int &w,int &h);
 

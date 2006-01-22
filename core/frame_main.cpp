@@ -465,8 +465,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	}
 
 	// Setup
-	bool isFile = true;
-	if (filename == _T("")) isFile = false;
+	bool isFile = (filename != _T(""));
 
 	// Load
 	try {
@@ -513,7 +512,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	SynchronizeProject(true);
 
 	// Update video
-	videoBox->videoDisplay->SetSubtitles(filename);
+	//videoBox->videoDisplay->SetSubtitles(filename); //fix me, remove?
 
 	// Update title bar
 	UpdateTitle();
@@ -523,9 +522,6 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 //////////////////
 // Save subtitles
 bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
-	// Synchronize
-	SynchronizeProject();
-
 	// Try to get filename from file
 	wxString filename;
 	if (saveas == false && AssFile::top->IsASS) filename = AssFile::top->filename;
@@ -534,7 +530,11 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	if (filename == _T("")) {
 		videoBox->videoDisplay->Stop();
 		filename = 	wxFileSelector(_("Save subtitles file"),_T(""),_T(""),_T(""),_T("Advanced Substation Alpha (*.ass)|*.ass"),wxSAVE | wxOVERWRITE_PROMPT,this);
+		AssFile::top->filename = filename; //fix me, ghetto hack for correct relative path generation in SynchronizeProject()
 	}
+
+	// Synchronize
+	SynchronizeProject();
 
 	// Actually save
 	if (!filename.empty()) {
@@ -548,7 +548,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 
 		// Save
 		try {
-			videoBox->videoDisplay->SetSubtitles(filename);
+			//videoBox->videoDisplay->SetSubtitles(filename); fix me, remove?
 			AssFile::top->Save(filename,true,true,charset);
 			UpdateTitle();
 		}
@@ -641,7 +641,6 @@ void FrameMain::SetDisplayMode(int mode) {
 	// Update
 	curMode = mode;
 	UpdateToolbar();
-	videoBox->videoDisplay->RefreshVideo();
 	videoBox->VideoSizer->Layout();
 	MainSizer->Layout();
 	//Layout();
@@ -760,8 +759,6 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 
 			// Video
 			if (curSubsVideo != videoBox->videoDisplay->videoName) {
-				videoBox->videoDisplay->Locked(true);
-				videoBox->videoDisplay->Reset();
 				if (curSubsVideo != _T("")) {
 					LoadVideo(curSubsVideo);
 					if (videoBox->videoDisplay->loaded) {
@@ -770,7 +767,6 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 						videoBox->videoDisplay->SetZoomPos(videoZoom-1);
 					}
 				}
-				videoBox->videoDisplay->Locked(false);
 			}
 
 			// Audio
@@ -851,7 +847,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	if (videoBox->videoDisplay->loaded) {
 		int scriptx = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResX"));
 		int scripty = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResY"));
-		int vidx = videoBox->videoDisplay->orig_w, vidy = videoBox->videoDisplay->orig_h;
+		int vidx = videoBox->videoDisplay->provider->GetSourceWidth(), vidy = videoBox->videoDisplay->provider->GetSourceHeight();
 		if (scriptx != vidx || scripty != vidy) {
 			switch (Options.AsInt(_T("Video Check Script Res"))) {
 				case 1:
@@ -929,7 +925,6 @@ void FrameMain::LoadVFR(wxString filename) {
 
 	SubsBox->CommitChanges();
 	EditBox->UpdateFrameTiming();
-	//SynchronizeProject();
 }
 
 

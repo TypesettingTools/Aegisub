@@ -191,7 +191,7 @@ int DialogProperties::SetInfoIfDifferent(wxString key,wxString value) {
 //////////////////////////
 // Set res to match video
 void DialogProperties::OnSetFromVideo(wxCommandEvent &event) {
-	ResX->SetValue(wxString::Format(_T("%i"),vid->orig_w));
-	ResY->SetValue(wxString::Format(_T("%i"),vid->orig_h));
+	ResX->SetValue(wxString::Format(_T("%i"),vid->provider->GetSourceWidth())); //fix me, null check?
+	ResY->SetValue(wxString::Format(_T("%i"),vid->provider->GetSourceHeight())); //fix me, identical to other set?
 	event.Skip();
 }

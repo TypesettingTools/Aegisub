@@ -37,7 +37,6 @@
 ////////////
 // Includes
 #include "video_display.h"
-#include "avisynth_wrap.h"
 #include "vfr.h"
 #include "ass_file.h"
 #include "ass_time.h"
@@ -86,22 +85,18 @@ END_EVENT_TABLE()
 VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
              : wxWindow (parent, id, pos, size, style, name)
 {
+	provider = NULL;
 	curLine = NULL;
-	curFrame = NULL;
 	backbuffer = NULL;
 	ControlSlider = NULL;
 	PositionDisplay = NULL;
 	loaded = false;
 	frame_n = 0;
 	origSize = size;
-	zoom = 0.75;
 	arType = 0;
-	isLocked = false;
-	gettingFrame = false;
 	IsPlaying = false;
 	threaded = Options.AsBool(_T("Threaded Video"));
 	nextFrame = -1;
-	framesSkipped = 0;
 
 	// Create PNG handler
 	wxPNGHandler *png = new wxPNGHandler;
@@ -116,445 +111,94 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 //////////////
 // Destructor
 VideoDisplay::~VideoDisplay () {
-	ControlSlider = NULL;
-	Unload();
-	if (backbuffer) delete backbuffer;
-	backbuffer = NULL;
+	SetVideo(_T(""));
+	delete backbuffer;
 }
 
-///////////////////////
-// Sets video filename
-void VideoDisplay::SetVideo(const wxString &filename) {
-	try {
-		if (!filename.empty()) {
-			// Verify if file exists
-			wxFileName filetest(filename);
-			if (!filetest.FileExists()) throw _T("File not found.");
-
-			// OK to load
-			if (videoName != filename) {
-				Unload();
-				videoName = filename;
-				OpenAVSVideo();
-				if (!loaded) Reset();
-				else RefreshVideo();
-
-				// Set keyframes
-				if (filename.Right(4).Lower() == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
-				else KeyFrames.Clear();
-
-				// Add to recent
-				Options.AddToRecentList(filename,_T("Recent vid"));
-			}
-
-			else Reset();
-		}
-		else Reset();
-	}
-
-	catch (wchar_t *error) {
-		wxMessageBox(error,_T("Error setting video"),wxICON_ERROR | wxOK);
-		Reset();
-	}
-
-	catch (...) {
-		wxMessageBox(_T("Unhandled exception"),_T("Error setting video"),wxICON_ERROR | wxOK);
-		Reset();
-	}
-}
-
-
-///////////////////////
-// Sets subtitles filename
-void VideoDisplay::SetSubtitles(const wxString &filename) {
-	if (!loaded) return;
-	wxString old = subsName;
-	subsName = filename;
-
-	if (!videoName.empty()) {
-		OpenAVSSubs();
-		RefreshVideo();
-	}
-}
-
-
-////////////
-// Open AVS
-void VideoDisplay::OpenAVSVideo() {
-	if (videoName.empty()) return;
-	bool directShow = false;
-
-	// Create AviSynth environment
-	{
-		wxMutexLocker lock(AviSynthMutex);
-		AVSValue script;
-
-		// Load VSFilter
-		try {
-			env->Invoke("LoadPlugin", env->SaveString(GetVSFilter().mb_str(wxConvLocal)));
-		}
-		catch (AvisynthError &) {
-			throw _T("Failed opening VSfilter");
-		}
-
-		try {
-			// Prepare filename
-			char *videoFilename = env->SaveString(videoName.mb_str(wxConvLocal));
-
-			wxString extension = videoName.Right(4);
-			extension.LowerCase();
-
-			// Load depending on extension
-			if (extension == _T(".avs")) { 
-				script = env->Invoke("Import", videoFilename);
-			} else if (extension == _T(".avi")) {
-				try {
-					const char *argnames[2] = { 0, "audio" };
-					AVSValue args[2] = { videoFilename, false };
-					script = env->Invoke("AviSource", AVSValue(args,2), argnames);
-					//fix me, check for video?
-				} catch (AvisynthError &) {
-					const char *argnames[3] = { 0, "video", "audio" };
-					AVSValue args[3] = { videoFilename, true, false };
-					script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
-					directShow = true;
-				}
-			}
-			else if (extension == _T(".d2v") && env->FunctionExists("mpeg2dec3_Mpeg2Source")) //prefer mpeg2dec3 
-				script = env->Invoke("mpeg2dec3_Mpeg2Source", videoFilename);
-			else if (extension == _T(".d2v")) //try other mpeg2source
-				script = env->Invoke("Mpeg2Source", videoFilename);
-			else {
-				const char *argnames[3] = { 0, "video", "audio" };
-				AVSValue args[3] = { videoFilename, true, false };
-				script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
-				directShow = true;
-			}
-		} catch (AvisynthError &err) {
-			wxMessageBox (wxString(_T("AviSynth error: ")) + wxString(err.msg,wxConvLocal), _T("Error"), wxOK | wxICON_ERROR);
-		}
-
-		// Check if video is valid
-		PClip clip = script.AsClip();
-		VideoInfo vi = clip->GetVideoInfo();
-
-		if (!vi.HasVideo())
-			wxMessageBox (wxString(_T("No video found: ")), _T("Error"), wxOK | wxICON_ERROR);
-
-		// Get resolution
-		orig_w = vi.width;
-		orig_h = vi.height;
-
-		// Convert to RGB32 if needed
-		script = env->Invoke("ConvertToRGB32", clip);
-
-		// Cache
-		sublessVideo = (env->Invoke("InternalCache", script)).AsClip();
-	}
-
-	// Continue with subs
-	OpenAVSSubs();
-
-	// Issue warning if it's DirectShow
-	if (directShow) wxMessageBox (_("This file is being loaded using DirectShow, which has UNRELIABLE seeking. Frame numbers MIGHT NOT match display, so precise timing CANNOT be trusted."), _("Warning!"), wxOK | wxICON_WARNING);
-}
-
-
-///////////////////
-// Opens subtitles
-void VideoDisplay::OpenAVSSubs () {
-	// Vars
-	{
-		wxMutexLocker lock(AviSynthMutex);
-		AVSValue script;
-		video = sublessVideo;
-
-		// Make sure there is a workfile
-		wxString workfile = grid->GetTempWorkFile();
-		wxFileName file(workfile);
-		if (!file.FileExists()) {
-			grid->CommitChanges(true);
-		}
-		if (!file.FileExists()) {
-			throw _T("Failed creating temporary subs file. Make sure you have write permission on folder.");
-		}
-
-		// Insert subs
-		try {
-			PClip clip = video;
-			char temp[512];
-			strcpy(temp,workfile.mb_str(wxConvLocal));
-			AVSValue args1[2] = { clip, temp };
-			script = env->Invoke("TextSub", AVSValue(args1,2));
-			video = script.AsClip();
-		} catch (AvisynthError &err) {
-			wxMessageBox (wxString(_T("AviSynth error: ")) + wxString(err.msg,wxConvLocal), _T("Error"), wxOK | wxICON_ERROR);
-			return;
-		}
-
-		// Zoom & AR
-		if (zoom != 1.0 || arType != 0) {
-			try {
-				// Get video data
-				PClip clip = video;
-				VideoInfo vi = clip->GetVideoInfo();
-
-				// Get aspect ratio data
-				int pos_h = vi.height;
-				int pos_w = vi.width;
-				switch (arType) {
-					case 1: pos_w = pos_h * 4 / 3; break;
-					case 2: pos_w = pos_h * 16 / 9; break;
-				}
-
-				// Resize
-				AVSValue args[3] = { clip, int(zoom*pos_w), int(zoom*pos_h) };
-				script = env->Invoke(Options.AsText(_T("Video resizer")).mb_str(wxConvLocal), AVSValue(args,3));
-				video = script.AsClip();
-			} catch (AvisynthError &err) {
-				wxMessageBox (wxString(_T("AviSynth error: ")) + wxString(err.msg,wxConvLocal), _T("Error"), wxOK | wxICON_ERROR);
-				return;
-			}
-		}
-
-		// Cache
-		video = (env->Invoke("InternalCache", video)).AsClip();
-	}
-
-	// Set final
-	PrepareAfterAVS();
-}
-
-
-////////////////////////////////////////
-// Sets control up after loading an AVS
-void VideoDisplay::PrepareAfterAVS() {
-	{
-		// Gather video parameters
-		wxMutexLocker lock(AviSynthMutex);
-		VideoInfo vi = video->GetVideoInfo();
-		w = vi.width;
-		h = vi.height;
-		length = vi.num_frames;
-		if (vi.fps_denominator != 0) fps = double(vi.fps_numerator) / double(vi.fps_denominator);
-		else fps = 0;
-		VFR_Input.SetCFR(fps);
-		if (!VFR_Output.loaded) VFR_Output.SetCFR(fps,true);
+void  VideoDisplay::UpdateSize() {
+	if (provider) {
+		w = provider->GetWidth();
+		h = provider->GetHeight();
 
 		// Set the size for this control
 		SetClientSize(w,h);
 		int _w,_h;
 		GetSize(&_w,&_h);
 		SetSizeHints(_w,_h,_w,_h);
-
-		// Set range of slider
-		if (ControlSlider) ControlSlider->SetRange(0,vi.num_frames-1);
-
-		// Clear frame
-		if (curFrame) delete curFrame;
-		curFrame = NULL;
-
-		// Flag as loaded
-		loaded = true;
 	}
 }
 
-
-///////////
-// Unloads
-void VideoDisplay::Unload() {
-	{
-		wxMutexLocker lock(AviSynthMutex);
-
-		// AviSynth cleanup
-		video = NULL;
-		sublessVideo = NULL;
-
-		// Internal cleanup
-		loaded = false;
-		if (curFrame) delete curFrame;
-		curFrame = NULL;
-		videoName = _T("");
+///////////////////////
+// Sets video filename
+void VideoDisplay::SetVideo(const wxString &filename) {
+	if (filename == _T("")) {
+		delete provider;
+		provider = NULL;
 		if (VFR_Output.vfr == NULL) VFR_Output.Unload();
 		VFR_Input.Unload();
 
+		videoName = _T("");
+
 		frame_n = 0;
-		if (ControlSlider) {
-			ControlSlider->SetRange(0,0);
+
+		Reset();
+	} else {
+		SetVideo(_T(""));
+
+		try {
+			grid->CommitChanges(true);
+
+			bool usedDirectshow;
+
+			provider = new VideoProvider(filename,grid->GetTempWorkFile(),0.75,usedDirectshow,true);
+
+			// Set keyframes
+			if (filename.Right(4).Lower() == _T(".avi"))
+				KeyFrames = VFWWrapper::GetKeyFrames(filename);
+			else
+				KeyFrames.Clear();
+
+			UpdateSize();
+
+			//Gather video parameters
+			length = provider->GetFrameCount();
+			fps = provider->GetFPS();
+			VFR_Input.SetCFR(fps);
+			if (!VFR_Output.loaded) VFR_Output.SetCFR(fps,true);
+
+			// Set range of slider
+			ControlSlider->SetRange(0,length-1);
 			ControlSlider->SetValue(0);
+
+			videoName = filename;
+
+			// Add to recent
+			Options.AddToRecentList(filename,_T("Recent vid"));
+
+			RefreshVideo();
+		} catch (wxString &e) {
+			wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
 		}
 	}
-}
 
+	loaded = provider != NULL;
+	
+}
 
 //////////
 // Resets
 void VideoDisplay::Reset() {
-	Unload();
 	w = origSize.GetX();
 	h = origSize.GetY();
 	SetClientSize(w,h);
 	int _w,_h;
 	GetSize(&_w,&_h);
 	SetSizeHints(_w,_h,_w,_h);
-	RefreshVideo();
 }
 
-
-//////////////////////
-// Gets a frame image
-void VideoDisplay::GetFrameImage(int n) {
-	// Prepare copy
-	unsigned char *data;
-	VideoInfo vi = video->GetVideoInfo();
-	PVideoFrame avsFrame;
-	try {
-		avsFrame = video->GetFrame(n,env);
-	}
-	catch (AvisynthError err) {
-		wxMessageBox (wxString(_T("AviSynth error: ")) + wxString(err.msg,wxConvLocal), _T("Error getting frame"), wxOK | wxICON_ERROR);
-		return;
-	}
-	catch (...) {
-		wxMessageBox(_T("AviSynth threw an exception while trying to retrieve frame."),_T("Error getting frame"),wxICON_ERROR | wxOK);
-		return;
-	}
-	unsigned int pitch = avsFrame->GetPitch();
-	unsigned int read_w = avsFrame->GetRowSize();
-	unsigned int read_h = avsFrame->GetHeight();
-	int depth = wxDisplayDepth();
-	int bpp = depth/8;
-	unsigned int x,y,dx;
-
-	// Output
-	data = (unsigned char*) malloc(w*h*bpp);
-
-	// RGB24
-	if (vi.IsRGB24()) {
-		if (depth == 16) {
-			// Get pointers
-			const unsigned char *read_ptr = avsFrame->GetReadPtr();
-			unsigned short *write_ptr = (unsigned short*) (data+(w*h*2));
-			unsigned char r,g,b;
-
-			for (y=0;y<read_h;y++) {
-				write_ptr = write_ptr - read_w/3;
-				for (x=0,dx=0;x<read_w;x+=3,dx++) {
-					r = *(read_ptr+x+2);
-					g = *(read_ptr+x+1);
-					b = *(read_ptr+x);
-					*(write_ptr+dx) = ((r>>3)<<11) | ((g>>2)<<5) | b>>3;
-				}
-				read_ptr = read_ptr + pitch;
-			}
-		}
-
-		if (depth == 24) {
-			// Get pointers
-			const unsigned char *read_ptr = avsFrame->GetReadPtr();
-			unsigned char *write_ptr = data+(w*h*3);
-
-			for (y=0;y<read_h;y++) {
-				write_ptr = write_ptr - read_w;
-				for (x=0;x<read_w;x+=3) {
-					*(write_ptr+x) = *(read_ptr+x);
-					*(write_ptr+x+1) = *(read_ptr+x+1);
-					*(write_ptr+x+2) = *(read_ptr+x+2);
-				}
-				read_ptr = read_ptr + pitch;
-			}
-		}
-
-		if (depth == 32) {
-			// Get pointers
-			const unsigned char *read_ptr = avsFrame->GetReadPtr();
-			unsigned char *write_ptr = data+(w*h*4);
-			unsigned int delta = pitch-read_w;
-			unsigned int linelen = read_w*4/3;
-			int wid = read_w/3;
-			int i,j;
-
-			for (j=read_h;--j>=0;) {
-				write_ptr -= linelen;
-				for (i=wid;--i>=0;) {
-					*(write_ptr++) = *(read_ptr++);
-					*(write_ptr++) = *(read_ptr++);
-					*(write_ptr++) = *(read_ptr++);
-					write_ptr++;
-				}
-				read_ptr = read_ptr += delta;
-				write_ptr -= linelen;
-			}
-		}
-	}
-
-	// RGB32
-	else if (vi.IsRGB32()) {
-		if (depth == 8) {
-			throw _T("8-bit display not supported");
-		}
-
-		if (depth == 15) {
-			throw _T("15-bit display not supported");
-		}
-
-		if (depth == 16) {
-			// Get pointers
-			const unsigned char *read_ptr = avsFrame->GetReadPtr();
-			unsigned short *write_ptr = (unsigned short*) (data+(w*h*2));
-			unsigned char r,g,b;
-
-			for (y=0;y<read_h;y++) {
-				write_ptr = write_ptr - read_w/4;
-				for (x=0,dx=0;x<read_w;x+=4,dx++) {
-					r = *(read_ptr+x+2);
-					g = *(read_ptr+x+1);
-					b = *(read_ptr+x);
-					*(write_ptr+dx) = ((r>>3)<<11) | ((g>>2)<<5) | b>>3;
-				}
-				read_ptr = read_ptr + pitch;
-			}
-		}
-
-		if (depth == 24) {
-			throw _T("24-bit display not supported");
-		}
-
-		if (depth == 32) {
-			// Get pointers
-			const unsigned int *read_ptr = (const unsigned int *) avsFrame->GetReadPtr();
-			unsigned int *write_ptr = ((unsigned int *) (data))+(w*h);
-			unsigned int delta = (pitch-read_w)/4;
-			unsigned int linelen = read_w/4;
-			int i;
-
-			for (i=read_h;--i>=0;) {
-				write_ptr -= linelen;
-				memcpy(write_ptr,read_ptr,read_w);
-				read_ptr += linelen + delta;
-			}
-		}
-	}
-
-	else {
-		throw _T("Wrong colour format.");
-	}
-
-	// Copy to image
-	BitmapMutex.Lock();
-	try {
-		if (curFrame) {
-			delete curFrame;
-			curFrame = NULL;
-		}
-		curFrame = new wxBitmap((const char*)data,w,h,depth);
-	}
-	catch (...) {}
-	BitmapMutex.Unlock();
-	free(data);
-
-	// Done
-	frame_n = n;
+void VideoDisplay::RefreshSubtitles() {
+	provider->RefreshSubtitles();
+	RefreshVideo();
 }
 
 
@@ -563,27 +207,10 @@ void VideoDisplay::GetFrameImage(int n) {
 void VideoDisplay::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 
-	// Try to grab frame if none
-	{
-		wxMutexLocker locker(BitmapMutex);
-		if (!curFrame) GetFrame(frame_n);
-	}
-
 	// Draw frame
-	if (curFrame) {
-		wxMutexLocker locker(BitmapMutex);
-		dc.BeginDrawing();
-		dc.DrawBitmap(*curFrame,0,0);
-		dc.EndDrawing();
-	}
-
-	// Failed
-	else {
-		dc.BeginDrawing();
-		dc.SetBrush(*wxBLUE_BRUSH);
-		dc.DrawRectangle(0,0,w,h);
-		dc.EndDrawing();
-	}
+	dc.BeginDrawing();
+	dc.DrawBitmap(GetFrame(frame_n),0,0);
+	dc.EndDrawing();
 }
 
 
@@ -640,7 +267,6 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (needCreate) backbuffer = new wxBitmap(w,h);
 
 		// Prepare drawing
-		wxMutexLocker locker(BitmapMutex);
 		wxMemoryDC dc;
 		dc.SelectObject(*backbuffer);
 		dc.BeginDrawing();
@@ -648,7 +274,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		dc.SetLogicalFunction(wxINVERT);
 
 		// Draw frame
-		dc.DrawBitmap(*curFrame,0,0);
+		dc.DrawBitmap(GetFrame(frame_n),0,0);
 
 		// Current position info
 		if (x >= 0 && x < w && y >= 0 && y < h) {
@@ -703,14 +329,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 	if (IsPlaying) return;
 
-	// Refresh display
-	{
-		wxMutexLocker locker(BitmapMutex);
-		wxClientDC dc(this);
-		dc.BeginDrawing();
-		dc.DrawBitmap(*curFrame,0,0);
-		dc.EndDrawing();
-	}
+	RefreshVideo();
 }
 
 
@@ -724,10 +343,14 @@ void VideoDisplay::JumpToFrame(int n) {
 	if (IsPlaying && n != PlayNextFrame) return;
 
 	// Set frame
-	if (frame_n != n) GetFrame(n);
+	GetFrame(n);
+
+	// Display
+	RefreshVideo();
+	UpdatePositionDisplay();
 
 	// Update slider
-	if (ControlSlider) ControlSlider->SetValue(n);
+	ControlSlider->SetValue(n);
 
 	// Update grid
 	if (!IsPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->UpdateRowColours();
@@ -744,13 +367,11 @@ void VideoDisplay::JumpToTime(int ms) {
 ///////////////////
 // Sets zoom level
 void VideoDisplay::SetZoom(double value) {
-	if (value != zoom) {
-		zoom = value;
-		if (loaded) {
-			OpenAVSSubs();
-			RefreshVideo();
-			GetParent()->Layout();
-		}
+	if (provider) {
+		provider->SetZoom(value);
+		UpdateSize();
+		RefreshVideo();
+		GetParent()->Layout();
 	}
 }
 
@@ -768,15 +389,17 @@ void VideoDisplay::SetZoomPos(int value) {
 ///////////////////
 // Sets zoom level
 void VideoDisplay::SetAspectRatio(int value) {
-	if (value != arType) {
-		arType = value;
-		if (loaded) {
-			//GetParent()->Freeze();
-			OpenAVSSubs();
-			RefreshVideo();
-			GetParent()->Layout();
-			//GetParent()->Thaw();
-		}
+	if (provider) {
+		if (value == 0)
+			provider->SetDAR((float)provider->GetSourceWidth()/(float)provider->GetSourceHeight());
+		else if (value == 1)
+			provider->SetDAR(4.0/3.0);
+		else if (value == 2)
+			provider->SetDAR(16.0/9.0);
+
+		UpdateSize();
+		RefreshVideo();
+		GetParent()->Layout();
 	}
 }
 
@@ -854,21 +477,11 @@ void VideoDisplay::UpdateSubsRelativeTime() {
 }
 
 
-//////////////////////////
-// Locks/unlocks updating
-void VideoDisplay::Locked(bool state) {
-	bool oldState = isLocked;
-	isLocked = state;
-	if (loaded && oldState == true && isLocked == false) RefreshVideo();
-}
-
-
 /////////////////////
 // Copy to clipboard
 void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
-		wxMutexLocker locker(BitmapMutex);
-		wxTheClipboard->SetData(new wxBitmapDataObject(*curFrame));
+		wxTheClipboard->SetData(new wxBitmapDataObject(GetFrame(frame_n)));
 		wxTheClipboard->Close();
 	}
 }
@@ -892,7 +505,7 @@ void VideoDisplay::SaveSnapshot() {
 	}
 
 	// Save
-	curFrame->ConvertToImage().SaveFile(path,wxBITMAP_TYPE_PNG);
+	GetFrame(frame_n).ConvertToImage().SaveFile(path,wxBITMAP_TYPE_PNG);
 }
 
 
@@ -910,152 +523,24 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 }
 
 
-/////////////////////////
-// Get VSFilter filename
-wxString VideoDisplay::GetVSFilter() {
-	if (VSFilterPath.IsEmpty()) {
-		wxFileName vsfilterPath(AegisubApp::folderName + _T("vsfilter.dll"));
-		if (vsfilterPath.FileExists()) {
-			VSFilterPath = AegisubApp::folderName + _T("vsfilter.dll");
-		}
-		else {
-			wxRegKey reg(_T("HKEY_CLASSES_ROOT\\CLSID\\{9852A670-F845-491B-9BE6-EBD841B8A613}\\InprocServer32"));
-			if (reg.Exists()) {
-				reg.QueryValue(_T(""),VSFilterPath);
-				wxFileName file(VSFilterPath);
-				if (!file.FileExists()) VSFilterPath = _T("vsfilter.dll");
-			}
-			else {
-				VSFilterPath = _T("vsfilter.dll");
-			}
-		}
-	}
-	return VSFilterPath;
-}
-
-
 //////////////////
 // Refresh screen
-void VideoDisplay::RefreshVideo(bool force) {
-	// Prepare
-	if (isLocked) return;
-
-	// Not loaded
-	if (!loaded) {
-		wxClientDC dc(this);
-		dc.BeginDrawing();
-		dc.SetBrush(*wxBLUE_BRUSH);
-		dc.DrawRectangle(0,0,w,h);
-		dc.EndDrawing();
-	}
-
-	else {
-		// Forced
-		if (force) {
-			int n = frame_n;
-			frame_n = -1;
-			OpenAVSSubs();
-			GetFrame(n);
-		}
-
-		// No frame, try to get one
-		{
-			wxMutexLocker locker(BitmapMutex);
-			if (!curFrame) GetFrame(frame_n);
-		}
-
-		// Draw frame
-		if (curFrame) {
-			wxMutexLocker locker(BitmapMutex);
-			wxClientDC dc(this);
-			dc.BeginDrawing();
-			dc.DrawBitmap(*curFrame,0,0);
-			dc.EndDrawing();
-			//Refresh(false);
-		}
-
-		// Draw black
-		else {
-			wxClientDC dc(this);
-			dc.BeginDrawing();
-			dc.Clear();
-			dc.EndDrawing();
-		}
-	}
-
-	// Display
-	UpdatePositionDisplay();
+void VideoDisplay::RefreshVideo() {
+	// Draw frame
+	wxClientDC dc(this);
+	dc.BeginDrawing();
+	dc.DrawBitmap(GetFrame(),0,0);
+	dc.EndDrawing();
 }
 
 
 ////////////////////////
 // Requests a new frame
-void VideoDisplay::GetFrame(int n) {
-	// Make sure it's loaded
-	if (!loaded) {
-		//throw _T("Video not loaded");
-		return;
-	}
-
-	// Threaded mode
-	if (threaded) {
-		nextFrame = n;
-		if (!gettingFrame || framesSkipped > 999999) {
-			framesSkipped = 0;
-			gettingFrame = true;
-			wxThread *thread = new GetFrameThread(this,n);
-			thread->Create();
-			thread->Run();
-		}
-		else {
-			framesSkipped++;
-		}
-	}
-
-	// Simple mode
-	else {
-		GetFrameImage(n);
-		RefreshVideo();
-	}
-}
-
-
-////////////////////////////////
-// Get frame thread constructor
-GetFrameThread::GetFrameThread(VideoDisplay *parent,int n)
-: wxThread(wxTHREAD_DETACHED)
-{
-	display = parent;
-	image_n = n;
-}
-
-
-//////////////////////////
-// Get Frame thread entry
-wxThread::ExitCode GetFrameThread::Entry() {
-	// Get frame
-	display->gettingFrame = true;
-	AviSynthWrapper::AviSynthMutex.Lock();
-	try { display->GetFrameImage(image_n); }
-	catch (...) { }
-	AviSynthWrapper::AviSynthMutex.Unlock();
-
-	// Refresh video
-	//wxMutexGuiEnter();
-	try {
-		display->RefreshVideo();
-	}
-	catch (...) { }
-	//wxMutexGuiLeave();
-	display->gettingFrame = false;
-
-	if (display->nextFrame != image_n) {
-		display->GetFrame(display->nextFrame);
-	}
+wxBitmap VideoDisplay::GetFrame(int n) {
+	frame_n = n;
 	
-	// Return
-	Exit();
-	return 0;
+	return provider->GetFrame(n);
+	RefreshVideo();
 }
 
 
@@ -1077,7 +562,6 @@ void VideoDisplay::GetScriptSize(int &sw,int &sh) {
 	// Width
 	temp = grid->ass->GetScriptInfo(_T("PlayResX"));
 	if (temp == _T("") || !temp.IsNumber()) {
-		//sw = orig_w * sh / orig_h;
 		sw = 288;
 	}
 	else {
