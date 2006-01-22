@@ -605,7 +605,6 @@ void FrameMain::OnOpenProperties (wxCommandEvent &event) {
 	int res = Properties.ShowModal();
 	if (res) {
 		SubsBox->CommitChanges();
-		videoBox->videoDisplay->RefreshVideo();
 	}
 }
 
