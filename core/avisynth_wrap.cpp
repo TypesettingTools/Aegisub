@@ -49,7 +49,7 @@ wxMutex AviSynthWrapper::AviSynthMutex;
 ////////////////////////
 // AviSynth constructor
 AviSynthWrapper::AviSynthWrapper() {
-	if (!avs_refcount++) {
+	if (!avs_refcount) {
 		hLib=LoadLibrary(_T("avisynth.dll"));
 
 		if (hLib == NULL) 
@@ -74,6 +74,7 @@ AviSynthWrapper::AviSynthWrapper() {
 		if (memoryMax != 0)
 			env->SetMemoryMax(memoryMax);
 
+		avs_refcount++;
 	}
 }
 
