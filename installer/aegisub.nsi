@@ -280,7 +280,7 @@ SetOutPath $INSTDIR
 
    ReadRegStr $R2 HKLM "Software\Avisynth" ""
    ${if} $R2 != ""
-    MessageBox MB_ICONQUESTION|MB_YESNO "Avisynth is already installed. Would you like to install over the current version? (required if your version is older than 2.5.0)" IDNO lbl_avisynth_end
+    MessageBox MB_ICONQUESTION|MB_YESNO "Avisynth is already installed. Would you like to install over the current version? (required if your version is older than 2.5.3)" IDNO lbl_avisynth_end
    ${endif}
 
    GetTempFilename $R1 $TEMP
