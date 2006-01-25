@@ -657,7 +657,6 @@ void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 	SpellCheck.ShowModal();
 
 	SubsBox->CommitChanges();    
-	videoBox->videoDisplay->RefreshVideo();
 	#endif
 }
 
