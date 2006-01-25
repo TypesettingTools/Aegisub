@@ -617,7 +617,6 @@ void FrameMain::OnOpenStylesManager(wxCommandEvent& WXUNUSED(event)) {
 	StyleManager.ShowModal();
 	EditBox->UpdateGlobals();
 	SubsBox->CommitChanges();
-	videoBox->videoDisplay->RefreshVideo();
 }
 
 
