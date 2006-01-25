@@ -54,6 +54,9 @@ extern "C" {
 
 int AudioProvider::pa_refcount = 0;
 
+#define CacheBits ((22))
+#define CacheBlockSize ((1 << CacheBits))
+
 //////////////
 // Constructor
 AudioProvider::AudioProvider(wxString _filename, AudioDisplay *_display) {
@@ -202,8 +205,6 @@ void AudioProvider::LoadFromClip(AVSValue _clip) {
 /////////////
 // RAM Cache
 void AudioProvider::ConvertToRAMCache(PClip &tempclip) {
-#define CacheBits ((24))
-#define CacheBlockSize ((1 << CacheBits))
 
 	// Allocate cache
 	__int64 ssize = num_samples * bytes_per_sample;
