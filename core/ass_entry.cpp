@@ -41,6 +41,34 @@
 #include "ass_entry.h"
 
 
+////////////////////// AssEntry //////////////////////
+///////////////////////
+// Constructs AssEntry
+AssEntry::AssEntry() {
+	Type = ENTRY_BASE;
+	Valid = true;
+}
+
+AssEntry::AssEntry(wxString _data) {
+	data = _data;
+	Type = ENTRY_BASE;
+	Valid = true;
+}
+
+
+///////////////////////////
+// Destructor for AssEntry
+AssEntry::~AssEntry() {
+}
+
+
+///////////////////////////
+// Comparison for STL Sort
+bool operator < (const AssEntry &t1, const AssEntry &t2) {
+	return (t1.StartMS < t2.StartMS);
+}
+
+
 ////////////////////////////////////////////////////////////////
 // Returns an entry as dialogue if possible, else, returns NULL
 AssDialogue *AssEntry::GetAsDialogue(AssEntry *base) {
