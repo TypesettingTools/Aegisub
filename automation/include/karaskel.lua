@@ -65,6 +65,8 @@
 --   start_time - Start time of the syllable, in miliseconds, relative to the start of the line
 --   end_time - End time of the syllable, similar to start_time
 
+-- Since utils.lua is always useful, include it here
+include("utils.lua")
 
 -- This one is used
 aegisub.output_warning = aegisub.output_debug

@@ -30,7 +30,7 @@
 -- Variables with tables only hold references to the actual tables
 -- Since a line is a table, a line needs to be copied, otherwise things break in bad ways
 function copy_line(input)
-	output = {}
+	local output = {}
 	output.kind = input.kind
 	if input.kind == "scomment" then
 		output.text = input.text

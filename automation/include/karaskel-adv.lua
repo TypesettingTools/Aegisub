@@ -33,8 +33,6 @@
 
 -- It automatically includes and re-setups karaskel.lua, so you should not include that yourself!
 include("karaskel.lua")
--- Also include utils.lua, since you'll most likely need to use the copy_line function
-include("utils.lua")
 
 -- The interface here has been greatly simplified, there is only one function to override, do_syllable
 -- The format for that one has changed.
