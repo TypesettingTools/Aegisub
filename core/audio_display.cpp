@@ -962,7 +962,7 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 //////////////////
 // Commit changes
 void AudioDisplay::CommitChanges () {
-	if (!Options.AsBool(_T("Audio SSA Mode"))) {
+	if (!Options.AsBool(_T("Audio SSA Mode")) && !box->audioKaraoke->splitting) {
 		// Check if there's any need to commit
 		if (!NeedCommit) return;
 
