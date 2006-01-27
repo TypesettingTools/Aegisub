@@ -11,7 +11,10 @@ Please visit http://aegisub.net to download latest version
    o Fixed bug, triggered when a line had a style not defined in the subs. A warning is now shown instead.
 - Fixed bug in parser that would cause Aegisub to crash if you had a \fn without parameters and tried to pick font. (AMZ)
 - Fixed crash when opening audio that appeared in 1.08 (Myrsloik)
-- Implemented new graphical, mouse-controlled karaoke syllable splitter (jfs)
+- Karaoke mode changes: (jfs)
+   o New syllable-splitter: Click "split" to enable splitting-mode, click in syllable view to set split-markers, then click commit to do the splitting
+   o The correct \k tag (\k, \kf, \ko, \K) is now kept when splitting/joining
+   o When editing karaoke-timing for a line and not splitting/joining, all tags are kept intact, so only the \k tag timings are changed (BROKEN WITH \t TAGS ATM!)
 
 
 = 1.09 beta - 2006.01.16 ===========================

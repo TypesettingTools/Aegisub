@@ -48,6 +48,8 @@
 // Prototypes
 class AssDialogue;
 class AssDialogueBlockOverride;
+class AssOverrideTag;
+class AssOverrideParameter;
 class AudioDisplay;
 class AudioBox;
 
@@ -63,6 +65,8 @@ public:
 	wxString contents;
 	wxString tag;
 	bool selected;
+
+	AssOverrideParameter *original_tagdata;
 
 	std::vector<int> pending_splits;
 
@@ -81,11 +85,12 @@ class AudioKaraoke : public wxWindow {
 private:
 	AssDialogue *diag;
 	int startClickSyl;
+	bool must_rebuild;
 
 	int split_cursor_syl;
 	int split_cursor_x;
 
-	int GetKaraokeLength(AssDialogueBlockOverride *block);
+	AssOverrideTag *GetKaraokeLength(AssDialogueBlockOverride *block);
 	wxString GetSyllableTag(AssDialogueBlockOverride *block,int n);
 	void AutoSplit();
 	bool ParseDialogue(AssDialogue *diag);

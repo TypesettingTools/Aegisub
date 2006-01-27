@@ -52,8 +52,10 @@ KaraokeSyllable::KaraokeSyllable() {
 	position = 0;
 	display_w = 0;
 	display_x = 0;
+	tag = _T('\\k');
 	pending_splits.clear();
 	selected = false;
+	original_tagdata = 0;
 }
 
 
@@ -86,6 +88,7 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	}
 
 	// Split
+	must_rebuild = false;
 	bool hasKar = ParseDialogue(diag);
 
 	// No karaoke, autosplit
@@ -102,14 +105,13 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 
 ///////////////////////////////
 // Calculate length of karaoke
-int AudioKaraoke::GetKaraokeLength(AssDialogueBlockOverride *block) {
-	AssOverrideTag *tag;
+AssOverrideTag * AudioKaraoke::GetKaraokeLength(AssDialogueBlockOverride *block) {
+	AssOverrideTag *tag, *len = 0;
 	size_t n = block->Tags.size();
-	int len = -1;
 	for (size_t i=0;i<n;i++) {
 		tag = block->Tags.at(i);
 		if (tag->Name == _T("\\k") || tag->Name == _T("\\K") || tag->Name == _T("\\kf") || tag->Name == _T("\\ko")) {
-			len = tag->Params.at(0)->AsInt();
+			len = tag;
 		}
 	}
 	return len;
@@ -132,12 +134,24 @@ void AudioKaraoke::Commit() {
 	wxString finalText = _T("");
 	KaraokeSyllable *syl;
 	size_t n = syllables.size();
-	for (size_t i=0;i<n;i++) {
-		syl = &syllables.at(i);
-		finalText += wxString::Format(_T("{\\k%i}"),syl->length) + syl->contents;
+	if (must_rebuild) {
+		for (size_t i=0;i<n;i++) {
+			syl = &syllables.at(i);
+			finalText += wxString::Format(_T("{%s%i}"), syl->tag, syl->length) + syl->contents;
+		}
+		diag->Text = finalText;
+		diag->ParseASSTags();
+	} else {
+		wxLogDebug(_T("Updating karaoke without rebuild"));
+		for (size_t i = 0; i < n; i++) {
+			wxLogDebug(_T("Updating syllable %d"), i);
+			syl = &syllables.at(i);
+			wxLogDebug(_T("Syllable pointer: %p; tagdata pointer: %p; length: %d"), syl, syl->original_tagdata, syl->length);
+			syl->original_tagdata->SetInt(syl->length);
+		}
+		wxLogDebug(_T("Done updating syllables"));
+		diag->UpdateText();
 	}
-	diag->Text = finalText;
-	diag->ParseASSTags();
 }
 
 
@@ -166,6 +180,7 @@ void AudioKaraoke::AutoSplit() {
 	}
 
 	// Load
+	must_rebuild = true;
 	AssDialogue newDiag(diag->data);
 	newDiag.Text = newText;
 	newDiag.ParseASSTags();
@@ -197,15 +212,17 @@ bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 		block = curDiag->Blocks.at(i);
 		override = AssDialogueBlock::GetAsOverride(block);
 		if (override) {
-			int len = GetKaraokeLength(override);
-			if (len != -1) {
+			AssOverrideTag *len = GetKaraokeLength(override);
+			if (len) {
 				if (foundOne) syllables.push_back(temp);
 				foundOne = true;
 				foundBlock = true;
 				pos += temp.length;
-				temp.length = len;
+				temp.length = len->Params.at(0)->AsInt();
 				temp.position = pos;
 				temp.contents = _T("");
+				temp.tag = len->Name;
+				temp.original_tagdata = len->Params.at(0);
 			}
 		}
 		else {
@@ -534,6 +551,7 @@ void AudioKaraoke::Join() {
 	curSyllable = first;
 
 	// Update
+	must_rebuild = true;
 	display->NeedCommit = true;
 	display->Update();
 	Refresh(false);
@@ -571,6 +589,7 @@ void AudioKaraoke::EndSplit(bool commit) {
 
 	// Update
 	if (hasSplit) {
+		must_rebuild = true;
 		display->NeedCommit = true;
 		display->Update();
 	}
@@ -607,6 +626,7 @@ int AudioKaraoke::SplitSyl (int n) {
 		}
 		temp.length = originalDuration * temp.contents.Length() / originalText.Length();
 		temp.position = curpos;
+		temp.tag = syllables[n].tag;
 		curpos += temp.length;
 		syllables.insert(syllables.begin()+n+i+1, temp);
 	}
