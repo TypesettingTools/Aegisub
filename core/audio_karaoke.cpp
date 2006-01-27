@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,7 @@
 #include "audio_box.h"
 #include "ass_dialogue.h"
 #include "ass_override.h"
+#include <algorithm>
 
 
 ////////////////////////
@@ -51,6 +52,7 @@ KaraokeSyllable::KaraokeSyllable() {
 	position = 0;
 	display_w = 0;
 	display_x = 0;
+	pending_splits.clear();
 	selected = false;
 }
 
@@ -61,6 +63,8 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent)
 : wxWindow (parent,-1,wxDefaultPosition,wxSize(10,5),wxTAB_TRAVERSAL|wxBORDER_SUNKEN)
 {
 	enabled = false;
+	splitting = false;
+	split_cursor_syl = -1;
 	curSyllable = 0;
 	diag = NULL;
 }
@@ -69,6 +73,11 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent)
 //////////////////////
 // Load from dialogue
 bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
+	// Make sure we're not in splitting-mode
+	if (splitting) {
+		EndSplit(false);
+	}
+
 	// Set dialogue
 	diag = _diag;
 	if (!diag) {
@@ -117,6 +126,9 @@ wxString AudioKaraoke::GetSyllableTag(AssDialogueBlockOverride *block,int n) {
 ////////////////////
 // Writes line back
 void AudioKaraoke::Commit() {
+	if (splitting) {
+		EndSplit(true);
+	}
 	wxString finalText = _T("");
 	KaraokeSyllable *syl;
 	size_t n = syllables.size();
@@ -255,7 +267,6 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 	// Set syllable font
 	wxFont curFont(9,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Verdana"),wxFONTENCODING_SYSTEM);
 	dc.SetFont(curFont);
-	dc.SetPen(wxPen(wxColour(0,0,0)));
 
 	// Draw syllables
 	if (enabled) {
@@ -266,17 +277,22 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 		int delta;
 		int dlen;
 		for (size_t i=0;i<syln;i++) {
+			KaraokeSyllable &syl = syllables.at(i);
 			// Calculate text length
-			temptext = syllables.at(i).contents;
-			temptext.Trim(true);
-			temptext.Trim(false);
+			temptext = syl.contents;
+			// If we're splitting, every character must be drawn
+			if (!splitting) {
+				temptext.Trim(true);
+				temptext.Trim(false);
+			}
 			GetTextExtent(temptext,&tw,&th,NULL,NULL,&curFont);
 			delta = 0;
 			if (tw < 10) delta = 10 - tw;
 			dlen = tw + 8 + delta;
 
 			// Draw border
-			if (syllables.at(i).selected) {
+			dc.SetPen(wxPen(wxColour(0,0,0)));
+			if (syl.selected && !splitting) {
 				dc.SetBrush(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT)));
 				dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT));
 			}
@@ -287,11 +303,35 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 			dc.DrawRectangle(dx,0,dlen,h);
 
 			// Draw text
-			dc.DrawText(temptext,dx+(delta/2)+4,(h-th)/2);
+			if (splitting) {
+				// Make sure the text position is more predictable in case of splitting
+				dc.DrawText(temptext,dx+4,(h-th)/2);
+			} else {
+				dc.DrawText(temptext,dx+(delta/2)+4,(h-th)/2);
+			}
+
+			// Draw pending splits
+			if (syl.pending_splits.size() > 0) {
+				wxArrayInt widths;
+				if (dc.GetPartialTextExtents(temptext, widths)) {
+					for (int i = 0; i < syl.pending_splits.size(); i++) {
+						dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
+						dc.DrawLine(dx+4+widths[syl.pending_splits[i]], 0, dx+4+widths[syl.pending_splits[i]], h);
+					}
+				} else {
+					wxLogError(_T("WTF? Failed to GetPartialTextExtents"));
+				}
+			}
+
+			if (splitting && split_cursor_syl == i && split_cursor_x > 0) {
+				dc.SetPen(*wxRED);
+				dc.DrawLine(dx+4+split_cursor_x, 0, dx+4+split_cursor_x, h);
+				dc.SetPen(wxPen(wxColour(0,0,0)));
+			}
 
 			// Set syllable data
-			syllables.at(i).display_x = dx;
-			syllables.at(i).display_w = dlen;
+			syl.display_x = dx;
+			syl.display_w = dlen;
 
 			// Increment dx
 			dx += dlen;
@@ -319,23 +359,99 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	int y = event.GetY();
 	bool shift = event.m_shiftDown;
 
-	// Left button down
-	if (event.LeftDown()) {
-		int syl = GetSylAtX(x);
+	if (!splitting) {
+		// Left button down
+		if (event.LeftDown()) {
+			int syl = GetSylAtX(x);
 
-		if (syl != -1) {
-			if (shift) {
-				SetSelection(syl,startClickSyl);
-				Refresh(false);
+			if (syl != -1) {
+				if (shift) {
+					SetSelection(syl,startClickSyl);
+					Refresh(false);
+				}
+
+				else {
+					SetSelection(syl);
+					startClickSyl = syl;
+					curSyllable = syl;
+					Refresh(false);
+					display->Update();
+				}
+			}
+		}
+	} else {
+		int syli = GetSylAtX(x);
+
+		if (syli != -1) {
+			KaraokeSyllable &syl = syllables.at(syli);
+
+			// Get the widths after each character in the text
+			wxClientDC dc(this);
+			wxFont curFont(9,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Verdana"),wxFONTENCODING_SYSTEM);
+			dc.SetFont(curFont);
+			wxArrayInt widths;
+			dc.GetPartialTextExtents(syl.contents, widths);
+
+			// Find the character closest to the mouse
+			int rx = x - syl.display_x - 4;
+			int split_cursor_char = -1;
+			split_cursor_syl = -1;
+			split_cursor_x = -1;
+			if (syl.contents.Len() >= 2) {
+				int lastx = widths[0];
+				split_cursor_syl = syli;
+				for (int i = 1; i < widths.size()-1; i++) {
+					//wxLogDebug(_T("rx=%d, lastx=%d, widths[i]=%d, i=%d, widths.size()=%d, syli=%d"), rx, lastx, widths[i], i, widths.size(), syli);
+					if (lastx - rx < widths[i] - rx) {
+						if (rx - lastx < widths[i] - rx) {
+							//wxLogDebug(_T("Found at PREV!"));
+							split_cursor_x = lastx;
+							split_cursor_char = i - 1;
+							break;
+						} else if (rx < widths[i]) {
+							//wxLogDebug(_T("Found at CURRENT!"));
+							split_cursor_x = widths[i];
+							split_cursor_char = i;
+							break;
+						}
+					}
+					lastx = widths[i];
+				}
+				// If no split-point was caught by the for-loop, it must be over the last character,
+				// ie. split at next-to-last position
+				if (split_cursor_x < 0) {
+					//wxLogDebug(_T("Emergency picking LAST!"));
+					split_cursor_x = widths[widths.size()-2];
+					split_cursor_char = widths.size() - 2;
+				}
 			}
 
-			else {
-				SetSelection(syl);
-				startClickSyl = syl;
-				curSyllable = syl;
-				Refresh(false);
-				display->Update();
+			// Do something if there was a click and we're at a valid position
+			if (event.LeftDown() && split_cursor_char >= 0) {
+				//wxLogDebug(_T("A click!"));
+				int num_removed = 0;
+				std::vector<int>::iterator i = syl.pending_splits.begin();
+				while (i != syl.pending_splits.end()) {
+					if (split_cursor_char == *i) {
+						//wxLogDebug(_T("Erasing entry"));
+						num_removed++;
+						syl.pending_splits.erase(i);
+					} else {
+						i++;
+					}
+				}
+				if (num_removed == 0) {
+					syl.pending_splits.push_back(split_cursor_char);
+				}
 			}
+
+		} else {
+			split_cursor_syl = -1;
+			split_cursor_x = -1;
+		}
+
+		if (split_cursor_syl >= 0) {
+			Refresh(false);
 		}
 	}
 }
@@ -424,84 +540,98 @@ void AudioKaraoke::Join() {
 }
 
 
-///////////////////
-// Split syllables
-void AudioKaraoke::Split() {
-	// Variables
-	bool hasSplit = false;
+////////////////////////
+// Enter splitting-mode
+void AudioKaraoke::BeginSplit() {
+	splitting = true;
+	split_cursor_syl = -1;
+	split_cursor_x = -1;
+	box->SetKaraokeButtons(false, true);
+	Refresh(false);
+}
 
-	// Loop
-	size_t syls = syllables.size();
-	for (size_t i=0;i<syls;i++) {
-		if (syllables.at(i).selected) {
-			int split = SplitSyl(i);
-			if (split > 0) {
-				syls += split;
-				i += split;
+
+////////////////////////////////////////////
+// Leave splitting-mode, committing changes
+void AudioKaraoke::EndSplit(bool commit) {
+	splitting = false;
+	bool hasSplit = false;
+	for (int i = 0; i < syllables.size(); i ++) {
+		if (syllables[i].pending_splits.size() > 0) {
+			if (commit) {
+				SplitSyl(i);
 				hasSplit = true;
+			} else {
+				syllables[i].pending_splits.clear();
 			}
-			if (split == -1) break;
 		}
 	}
+
+	SetSelection(0);
 
 	// Update
 	if (hasSplit) {
 		display->NeedCommit = true;
 		display->Update();
-		Refresh(false);
 	}
+	// Always redraw, since the display is different in splitting mode
+	Refresh(false);
 }
 
 
-////////////////////
-// Split a syllable
+/////////////////////////////////////////////////
+// Split a syllable using the pending_slits data
 int AudioKaraoke::SplitSyl (int n) {
-	// Get split text
-	KaraokeSyllable *curSyl = &syllables.at(n);
-	wxString result = wxGetTextFromUser(_("Enter pipes (\"|\") to split:"), _("Split syllable"), curSyl->contents);
-	if (result.IsEmpty()) return -1;
+	syllables.reserve(syllables.size() + syllables[n].pending_splits.size());
 
-	// Prepare parsing
-	const int splits = result.Freq(_T('|'));
-	const int totalCharLen = curSyl->contents.Length() + splits + 1;
-	const int charRound = totalCharLen / 2;
-	const int totalTimeLen = curSyl->length;
-	int curpos = curSyl->position;
-	int curlen = 0;
-	wxStringTokenizer tkn(result,_T("|"),wxTOKEN_RET_EMPTY_ALL);
-	bool isFirst = true;
+	// Start by sorting the split points
+	std::sort(syllables[n].pending_splits.begin(),syllables[n].pending_splits.end());
 
-	// Parse
-	for (int curn=n;tkn.HasMoreTokens();curn++) {
-		// Prepare syllable
-		if (!isFirst) {
-			KaraokeSyllable temp;
-			syllables.insert(syllables.begin()+curn,temp);
-			temp.selected = true;
+	wxString originalText = syllables[n].contents;
+	int originalDuration = syllables[n].length;
+
+	// Fixup the first syllable
+	syllables[n].contents = originalText.Mid(0, syllables[n].pending_splits[0] + 1);
+	syllables[n].length = originalDuration * syllables[n].contents.Length() / originalText.Length();
+	int curpos = syllables[n].position + syllables[n].length;
+
+	// For each split, make a new syllable
+	for (int i = 0; i < syllables[n].pending_splits.size(); i++) {
+		KaraokeSyllable temp;
+		if (i < syllables[n].pending_splits.size()-1) {
+			// in the middle
+			temp.contents = originalText.Mid(syllables[n].pending_splits[i]+1, syllables[n].pending_splits[i+1] - syllables[n].pending_splits[i]);
+		} else {
+			// the last one (take the rest)
+			temp.contents = originalText.Mid(syllables[n].pending_splits[i]+1);
 		}
-		curSyl = &syllables.at(curn);
-
-		// Set text
-		wxString token = tkn.GetNextToken();
-		curSyl->contents = token;
-
-		// Set position
-		int len = (totalTimeLen * (token.Length() + 1) + charRound) / totalCharLen;
-		curlen += len;
-		if (curlen > totalTimeLen) {
-			len -= totalTimeLen - curlen;
-			curlen = totalTimeLen;
-		}
-		curSyl->length = len;
-		curSyl->position = curpos;
-		curpos += len;
-
-		// Done
-		isFirst = false;
+		temp.length = originalDuration * temp.contents.Length() / originalText.Length();
+		temp.position = curpos;
+		curpos += temp.length;
+		syllables.insert(syllables.begin()+n+i+1, temp);
 	}
 
-	// Return splits
-	return splits;
+	// The total duration of the new syllables will be equal to or less than the original duration
+	// Fix this, so they'll always add up
+	// Use an unfair method, just adding 1 to each syllable one after another, until it's correct
+	int newDuration = 0;
+	for (int j = n; j < syllables[n].pending_splits.size()+n+1; j++) {
+		newDuration += syllables[j].length;
+	}
+	int k = n;
+	while (newDuration < originalDuration) {
+		syllables[k].length++;
+		k++;
+		if (k >= syllables.size()) {
+			k = n;
+		}
+		newDuration++;
+	}
+
+	// Prepare for return and clear pending splits
+	int numsplits = syllables[n].pending_splits.size();
+	syllables[n].pending_splits.clear();
+	return numsplits;
 }
 
 

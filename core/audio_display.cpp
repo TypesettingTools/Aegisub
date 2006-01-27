@@ -979,7 +979,9 @@ void AudioDisplay::CommitChanges () {
 
 	// Update karaoke
 	int karSyl = 0;
+	bool wasKaraSplitting = false;
 	if (karaoke->enabled) {
+		wasKaraSplitting = box->audioKaraoke->splitting;
 		karaoke->Commit();
 		karSyl = karaoke->curSyllable;
 	}
@@ -996,8 +998,8 @@ void AudioDisplay::CommitChanges () {
 	karaoke->curSyllable = karSyl;
 	blockUpdate = false;
 
-	// If in SSA mode, select next line and "move timing forward"
-	if (Options.AsBool(_T("Audio SSA Mode")) && Options.AsBool(_T("Audio SSA Next Line on Commit"))) {
+	// If in SSA mode, select next line and "move timing forward" (unless the user was splitting karaoke)
+	if (Options.AsBool(_T("Audio SSA Mode")) && Options.AsBool(_T("Audio SSA Next Line on Commit")) && !wasKaraSplitting) {
 		dontReadTimes = true;
 		Next();
 		dontReadTimes = false;

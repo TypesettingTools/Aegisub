@@ -64,6 +64,8 @@ public:
 	wxString tag;
 	bool selected;
 
+	std::vector<int> pending_splits;
+
 	KaraokeSyllable();
 };
 
@@ -79,6 +81,9 @@ class AudioKaraoke : public wxWindow {
 private:
 	AssDialogue *diag;
 	int startClickSyl;
+
+	int split_cursor_syl;
+	int split_cursor_x;
 
 	int GetKaraokeLength(AssDialogueBlockOverride *block);
 	wxString GetSyllableTag(AssDialogueBlockOverride *block,int n);
@@ -98,8 +103,8 @@ public:
 
 	int curSyllable;
 	bool enabled;
+	bool splitting;
 	SylVector syllables;
-	SylVector origSyl;
 
 	AudioKaraoke(wxWindow *parent);
 	bool LoadFromDialogue(AssDialogue *diag);
@@ -109,7 +114,8 @@ public:
 	bool SyllableDelta(int n,int delta,int mode);
 
 	void Join();
-	void Split();
+	void BeginSplit();
+	void EndSplit(bool commit=true);
 
 	DECLARE_EVENT_TABLE()
 };

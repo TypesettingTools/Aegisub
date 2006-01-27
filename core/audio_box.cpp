@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -171,9 +171,10 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	JoinButton->SetToolTip(_("Join selected syllables"));
 	JoinButton->Enable(false);
 	karaokeSizer->Add(JoinButton,0,wxRIGHT,0);
-	SplitButton = new wxButton(this,Audio_Button_Split,_("Split"),wxDefaultPosition,wxSize(-1,-1));
-	SplitButton->SetToolTip(_("Split selected syllables"));
+	SplitButton = new wxToggleButton(this,Audio_Button_Split,_("Split"),wxDefaultPosition,wxSize(-1,-1));
+	SplitButton->SetToolTip(_("Toggle splitting-mode"));
 	SplitButton->Enable(false);
+	SplitButton->SetValue(false);
 	karaokeSizer->Add(SplitButton,0,wxRIGHT,5);
 	karaokeSizer->Add(audioKaraoke,1,wxEXPAND,0);
 
@@ -234,12 +235,12 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_BUTTON(Audio_Button_Commit, AudioBox::OnCommit)
 	EVT_BUTTON(Audio_Button_Goto, AudioBox::OnGoto)
 	EVT_BUTTON(Audio_Button_Join,AudioBox::OnJoin)
-	EVT_BUTTON(Audio_Button_Split,AudioBox::OnSplit)
 	EVT_BUTTON(Audio_Button_Leadin,AudioBox::OnLeadIn)
 	EVT_BUTTON(Audio_Button_Leadout,AudioBox::OnLeadOut)
 
 	EVT_TOGGLEBUTTON(Audio_Button_Karaoke, AudioBox::OnKaraoke)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoGoto,AudioBox::OnAutoGoto)
+	EVT_TOGGLEBUTTON(Audio_Button_Split,AudioBox::OnSplit)
 	EVT_TOGGLEBUTTON(Audio_Check_SSA,AudioBox::OnSSAMode)
 	EVT_TOGGLEBUTTON(Audio_Check_Spectrum,AudioBox::OnSpectrumMode)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoCommit,AudioBox::OnAutoCommit)
@@ -427,6 +428,9 @@ void AudioBox::OnCommit(wxCommandEvent &event) {
 void AudioBox::OnKaraoke(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	if (karaokeMode) {
+		if (audioKaraoke->splitting) {
+			audioKaraoke->EndSplit(false);
+		}
 		karaokeMode = false;
 		audioKaraoke->enabled = false;
 		SetKaraokeButtons(false,false);
@@ -447,8 +451,14 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 // Sets karaoke buttons
 void AudioBox::SetKaraokeButtons(bool join,bool split) {
 	audioDisplay->SetFocus();
-	JoinButton->Enable(join);
+	JoinButton->Enable(join && !audioKaraoke->splitting);
 	SplitButton->Enable(split);
+	SplitButton->SetValue(audioKaraoke->splitting);
+	if (audioKaraoke->splitting) {
+		SplitButton->SetLabel(_("Cancel Split"));
+	} else {
+		SplitButton->SetLabel(_("Split"));
+	}
 }
 
 
@@ -464,7 +474,11 @@ void AudioBox::OnJoin(wxCommandEvent &event) {
 // Split button
 void AudioBox::OnSplit(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
-	audioKaraoke->Split();
+	if (!audioKaraoke->splitting) {
+		audioKaraoke->BeginSplit();
+	} else {
+		audioKaraoke->EndSplit(false);
+	}
 }
 
 

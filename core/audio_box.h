@@ -69,7 +69,7 @@ private:
 	wxSizer *DisplaySizer;
 	wxSashWindow *Sash;
 
-	wxButton *SplitButton;
+	wxToggleButton *SplitButton;
 	wxButton *JoinButton;
 	ToggleBitmap *AutoScroll;
 	ToggleBitmap *SSAMode;

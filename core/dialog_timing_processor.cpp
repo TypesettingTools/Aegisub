@@ -157,6 +157,8 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 
+	CenterOnParent();
+
 	// Update
 	UpdateControls();
 }
