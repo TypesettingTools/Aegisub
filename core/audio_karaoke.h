@@ -96,7 +96,7 @@ private:
 	bool ParseDialogue(AssDialogue *diag);
 
 	int GetSylAtX(int x);
-	int SplitSyl(int n);
+	int SplitSyl(unsigned int n);
 
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);

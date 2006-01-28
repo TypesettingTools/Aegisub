@@ -52,7 +52,7 @@ KaraokeSyllable::KaraokeSyllable() {
 	position = 0;
 	display_w = 0;
 	display_x = 0;
-	tag = _T('\\k');
+	tag = _T("\\k");
 	pending_splits.clear();
 	selected = false;
 	original_tagdata = 0;
@@ -331,7 +331,7 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 			if (syl.pending_splits.size() > 0) {
 				wxArrayInt widths;
 				if (dc.GetPartialTextExtents(temptext, widths)) {
-					for (int i = 0; i < syl.pending_splits.size(); i++) {
+					for (unsigned int i = 0; i < syl.pending_splits.size(); i++) {
 						dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
 						dc.DrawLine(dx+4+widths[syl.pending_splits[i]], 0, dx+4+widths[syl.pending_splits[i]], h);
 					}
@@ -417,7 +417,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 			if (syl.contents.Len() >= 2) {
 				int lastx = widths[0];
 				split_cursor_syl = syli;
-				for (int i = 1; i < widths.size()-1; i++) {
+				for (unsigned int i = 1; i < widths.size()-1; i++) {
 					//wxLogDebug(_T("rx=%d, lastx=%d, widths[i]=%d, i=%d, widths.size()=%d, syli=%d"), rx, lastx, widths[i], i, widths.size(), syli);
 					if (lastx - rx < widths[i] - rx) {
 						if (rx - lastx < widths[i] - rx) {
@@ -574,7 +574,7 @@ void AudioKaraoke::BeginSplit() {
 void AudioKaraoke::EndSplit(bool commit) {
 	splitting = false;
 	bool hasSplit = false;
-	for (int i = 0; i < syllables.size(); i ++) {
+	for (unsigned int i = 0; i < syllables.size(); i ++) {
 		if (syllables[i].pending_splits.size() > 0) {
 			if (commit) {
 				SplitSyl(i);
@@ -600,7 +600,7 @@ void AudioKaraoke::EndSplit(bool commit) {
 
 /////////////////////////////////////////////////
 // Split a syllable using the pending_slits data
-int AudioKaraoke::SplitSyl (int n) {
+int AudioKaraoke::SplitSyl (unsigned int n) {
 	syllables.reserve(syllables.size() + syllables[n].pending_splits.size());
 
 	// Start by sorting the split points
@@ -615,7 +615,7 @@ int AudioKaraoke::SplitSyl (int n) {
 	int curpos = syllables[n].position + syllables[n].length;
 
 	// For each split, make a new syllable
-	for (int i = 0; i < syllables[n].pending_splits.size(); i++) {
+	for (unsigned int i = 0; i < syllables[n].pending_splits.size(); i++) {
 		KaraokeSyllable temp;
 		if (i < syllables[n].pending_splits.size()-1) {
 			// in the middle
@@ -635,10 +635,10 @@ int AudioKaraoke::SplitSyl (int n) {
 	// Fix this, so they'll always add up
 	// Use an unfair method, just adding 1 to each syllable one after another, until it's correct
 	int newDuration = 0;
-	for (int j = n; j < syllables[n].pending_splits.size()+n+1; j++) {
+	for (unsigned int j = n; j < syllables[n].pending_splits.size()+n+1; j++) {
 		newDuration += syllables[j].length;
 	}
-	int k = n;
+	unsigned int k = n;
 	while (newDuration < originalDuration) {
 		syllables[k].length++;
 		k++;
