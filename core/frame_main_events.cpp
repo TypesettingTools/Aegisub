@@ -87,6 +87,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_BUTTON(Video_Stop, FrameMain::OnVideoStop)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, FrameMain::OnVideoToggleScroll)
 	EVT_BUTTON(Video_Track_Points, FrameMain::OnVideoTrackPoints)
+	EVT_BUTTON(Video_Track_Point_Add, FrameMain::OnVideoTrackPointAdd)
+	EVT_BUTTON(Video_Track_Point_Del, FrameMain::OnVideoTrackPointDel)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 
@@ -1165,6 +1167,20 @@ void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
 	delete movie;
 
 	videoBox->videoDisplay->RefreshVideo();
+}
+
+
+///////////////////
+// Increase Influence
+void FrameMain::OnVideoTrackPointAdd(wxCommandEvent &event) {
+	videoBox->videoDisplay->TrackerEdit = 1;
+}
+
+
+///////////////////
+// Decrease Influence
+void FrameMain::OnVideoTrackPointDel(wxCommandEvent &event) {
+	videoBox->videoDisplay->TrackerEdit = -1;
 }
 
 

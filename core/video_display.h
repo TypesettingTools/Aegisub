@@ -104,6 +104,8 @@ public:
 	bool loaded;
 	bool IsPlaying;
 	double fps;
+	double TrackerEdit;
+	bool bTrackerEditing;
 	VideoSlider *ControlSlider;
 	wxComboBox *zoomBox;
 	wxTextCtrl *PositionDisplay;

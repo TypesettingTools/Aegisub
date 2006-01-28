@@ -72,6 +72,7 @@ public:
 	FexTrackerConfig  Cfg;
 //work
 	void ProcessImage( float *Img, bool bFirst=0 ); //we assume grayscale image here
+	void InfluenceFeatures( int Frame, float x, float y, float off );
 
 	FexTrackingFeature* operator [] ( int i );
 	inline int GetCount(){ return nFeatures; };

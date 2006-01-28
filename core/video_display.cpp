@@ -232,9 +232,28 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		return;
 	}
 
+	if( event.ButtonDown(wxMOUSE_BTN_LEFT) )
+		bTrackerEditing = 1;
+	if( event.ButtonUp(wxMOUSE_BTN_LEFT) )
+		bTrackerEditing = 0;
+
 	// Coords
 	int x = event.GetX();
 	int y = event.GetY();
+
+	// Do tracker influence if needed
+	if( bTrackerEditing )
+	{
+		AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
+		int StartFrame, EndFrame, localframe;
+		if( curline 
+			&& curline->Tracker 
+			&& (StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true)) <= frame_n
+			&& (EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false)) >= frame_n 
+			&& (localframe = frame_n - StartFrame) < curline->Tracker->GetFrame() 
+		) 
+		curline->Tracker->InfluenceFeatures( localframe, float(x)/provider->GetZoom(), float(y)/provider->GetZoom(), TrackerEdit );
+	}
 
 	// Text of current coords
 	int sw,sh;
@@ -272,13 +291,14 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		wxMemoryDC dc;
 		dc.SelectObject(*backbuffer);
 		dc.BeginDrawing();
-		dc.SetPen(wxPen(wxColour(255,255,255),1));
-		dc.SetLogicalFunction(wxINVERT);
 
 		// Draw frame
 		dc.DrawBitmap(GetFrame(frame_n),0,0);
 		// Draw the control points for FexTracker
 		DrawTrackingOverlay( dc );
+
+		dc.SetPen(wxPen(wxColour(255,255,255),1));
+		dc.SetLogicalFunction(wxINVERT);
 
 		// Current position info
 		if (x >= 0 && x < w && y >= 0 && y < h) {
@@ -332,6 +352,8 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 // Mouse left display
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 	if (IsPlaying) return;
+
+	bTrackerEditing = 0;
 
 	RefreshVideo();
 }
@@ -545,8 +567,7 @@ void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 	int localframe = frame_n - StartFrame;
 	if( curline->Tracker->GetFrame() <= localframe ) return;
 
-	dc.SetPen(wxPen(wxColour(255,255,255),1));
-	dc.SetLogicalFunction(wxINVERT);
+	dc.SetLogicalFunction(wxCOPY);
 
 	for( int i=0;i<curline->Tracker->GetCount();i++ )
 	{
@@ -559,8 +580,13 @@ void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 		pt.y *= provider->GetZoom();
 		pt.x = int(pt.x);
 		pt.y = int(pt.y);
-		dc.DrawLine( pt.x-2, pt.y, pt.x+3, pt.y );
-		dc.DrawLine( pt.x, pt.y-2, pt.x, pt.y+3 );
+
+		dc.SetPen(wxPen(wxColour(255*(1-f->Influence),255*f->Influence,0),1));
+
+		dc.DrawLine( pt.x-2, pt.y, pt.x, pt.y );
+		dc.DrawLine( pt.x, pt.y-2, pt.x, pt.y );
+		dc.DrawLine( pt.x+1, pt.y, pt.x+3, pt.y );
+		dc.DrawLine( pt.x, pt.y+1, pt.x, pt.y+3 );
 	}
 }
 

@@ -61,6 +61,10 @@ VideoBox::VideoBox(wxPanel *parent) {
 	AutoScroll->SetValue(Options.AsBool(_T("Sync video with subs")));
 	wxBitmapButton *VideoTrackPointsButton = new wxBitmapButton(videoPage,Video_Track_Points,wxBITMAP(button_track_points),wxDefaultPosition,wxSize(25,-1));
 	VideoTrackPointsButton->SetToolTip(_("Track point movements in video"));
+	wxBitmapButton *VideoTrackPointAddButton = new wxBitmapButton(videoPage,Video_Track_Point_Add,wxBITMAP(button_track_point_add),wxDefaultPosition,wxSize(25,-1));
+	VideoTrackPointAddButton->SetToolTip(_("Increase influence of tracking points"));
+	wxBitmapButton *VideoTrackPointDelButton = new wxBitmapButton(videoPage,Video_Track_Point_Del,wxBITMAP(button_track_point_del),wxDefaultPosition,wxSize(25,-1));
+	VideoTrackPointDelButton->SetToolTip(_("Decrease influence of tracking points"));
 
 	// Seek
 	videoSlider = new VideoSlider(videoPage,-1);
@@ -96,6 +100,8 @@ VideoBox::VideoBox(wxPanel *parent) {
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
 	videoBottomSizer->Add(VideoTrackPointsButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
+	videoBottomSizer->Add(VideoTrackPointAddButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
+	videoBottomSizer->Add(VideoTrackPointDelButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(videoDisplay,0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
