@@ -73,9 +73,9 @@ AviSynthWrapper::AviSynthWrapper() {
 		int memoryMax = Options.AsInt(_T("Avisynth MemoryMax"));
 		if (memoryMax != 0)
 			env->SetMemoryMax(memoryMax);
-
-		avs_refcount++;
 	}
+
+	avs_refcount++;
 }
 
 ///////////////////////
