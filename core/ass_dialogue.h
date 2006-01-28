@@ -42,6 +42,7 @@
 #include <vector>
 #include "ass_entry.h"
 #include "ass_time.h"
+class FexTracker;
 
 
 //////////////
@@ -165,6 +166,7 @@ public:
 	wxString Actor;					// Actor name
 	wxString Effect;				// Effect name
 	wxString Text;					// Raw text data
+	FexTracker *Tracker;			// Point tracker
 
 	bool Parse(bool IsSSA=false);	// Parses raw ASS data into everything else
 	void ParseASSTags();			// Parses text to generate block information (doesn't update data)

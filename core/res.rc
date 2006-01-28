@@ -79,6 +79,8 @@ shift_to_frame_disable BITMAP "bitmaps/shift_to_frame_disable.bmp"
 
 button_play BITMAP "bitmaps/button_play.bmp"
 button_stop BITMAP "bitmaps/button_stop.bmp"
+button_track_points BITMAP "bitmaps/button_track_points.bmp"
+
 button_bold BITMAP "bitmaps/button_bold.bmp"
 button_italics BITMAP "bitmaps/button_italics.bmp"
 button_underline BITMAP "bitmaps/button_underline.bmp"

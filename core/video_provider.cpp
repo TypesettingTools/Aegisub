@@ -57,15 +57,22 @@ VideoProvider::VideoProvider(wxString _filename, wxString _subfilename, double _
 
 	dar = GetSourceWidth()/(double)GetSourceHeight();
 
-	SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
+	if( _subfilename == _T("") ) SubtitledVideo = RGB32Video;
+	else SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
+/*
+	if( _zoom == 1.0 ) ResizedVideo = SubtitledVideo;
+	else ResizedVideo = ApplyDARZoom(zoom, dar, SubtitledVideo);
+*/
 	ResizedVideo = ApplyDARZoom(zoom, dar, SubtitledVideo);
+
+	vi = ResizedVideo->GetVideoInfo();
 }
 
 VideoProvider::~VideoProvider() {
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
 	ResizedVideo = NULL;
-	delete data;
+	if( data ) delete data;
 }
 
 void VideoProvider::RefreshSubtitles() {
@@ -226,6 +233,25 @@ wxBitmap VideoProvider::GetFrame(int n, bool force) {
 	}
 
 	return wxBitmap(last_frame);
+}
+
+void VideoProvider::GetFloatFrame(float* Buffer, int n) {
+	wxMutexLocker lock(AviSynthMutex);
+
+	PVideoFrame frame = ResizedVideo->GetFrame(n,env);
+
+	int rs = vi.RowSize();
+	const unsigned char* src = frame->GetReadPtr();
+	int srcpitch = frame->GetPitch();
+
+	for( int i = 0; i < vi.height; i++ ) 
+	{
+		for( int x=0; x<vi.width;x++ )
+		{
+			Buffer[(vi.height-i-1)*vi.width+x] = src[x*4+0]*0.3 + src[x*4+1]*0.4 + src[x*4+2]*0.3;
+		}
+		src+=srcpitch;
+	}
 }
 
 void VideoProvider::LoadVSFilter() {

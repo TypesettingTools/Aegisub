@@ -105,6 +105,7 @@ private:
 	void OnVideoPlayLine(wxCommandEvent &event);
 	void OnVideoStop(wxCommandEvent &event);
 	void OnVideoToggleScroll(wxCommandEvent &event);
+	void OnVideoTrackPoints(wxCommandEvent &event);
 
 	void OnKeyDown(wxKeyEvent &event);
 
@@ -321,6 +322,7 @@ enum {
 	Video_Play_Line,
 	Video_Stop,
 	Video_Auto_Scroll,
+	Video_Track_Points,
 
 	Menu_File_Recent = 2000,
 	Menu_Video_Recent = 2200,

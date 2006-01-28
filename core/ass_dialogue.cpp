@@ -47,6 +47,8 @@
 ////////////////////// AssDialogue //////////////////////
 // Constructs AssDialogue
 AssDialogue::AssDialogue() {
+	Tracker = 0;
+
 	Type = ENTRY_DIALOGUE;
 	group = _T("[Events]");
 
@@ -67,6 +69,8 @@ AssDialogue::AssDialogue() {
 
 
 AssDialogue::AssDialogue(wxString _data,bool IsSSA) {
+	Tracker = 0;
+
 	Type = ENTRY_DIALOGUE;
 	group = _T("[Events]");
 	data = _data;

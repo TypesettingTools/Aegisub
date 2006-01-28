@@ -40,6 +40,7 @@
 #include <wx/mimetype.h>
 #include <wx/filename.h>
 #include <wx/tglbtn.h>
+#include <wx/rawbmp.h>
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "video_display.h"
@@ -71,6 +72,8 @@
 #include "toggle_bitmap.h"
 #include "dialog_hotkeys.h"
 #include "dialog_timing_processor.h"
+#include "FexTracker.h"
+#include "FexTrackingFeature.h"
 
 
 ////////////////////
@@ -83,6 +86,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_BUTTON(Video_Play_Line, FrameMain::OnVideoPlayLine)
 	EVT_BUTTON(Video_Stop, FrameMain::OnVideoStop)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, FrameMain::OnVideoToggleScroll)
+	EVT_BUTTON(Video_Track_Points, FrameMain::OnVideoTrackPoints)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 
@@ -1120,6 +1124,47 @@ void FrameMain::OnVideoStop(wxCommandEvent &event) {
 void FrameMain::OnVideoToggleScroll(wxCommandEvent &event) {
 	Options.SetBool(_T("Sync video with subs"),videoBox->AutoScroll->GetValue());
 	Options.Save();
+}
+
+
+///////////////////
+// Track current line
+void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
+	videoBox->videoDisplay->Stop();
+
+	// Get line
+	AssDialogue *curline = SubsBox->GetDialogue(EditBox->linen);
+	if (!curline) return;
+
+	// Get Video
+	bool usedDirectshow;
+	VideoProvider *movie = new VideoProvider(videoBox->videoDisplay->videoName, wxString(_T("")), 1.0,usedDirectshow,true);
+
+	// Create Tracker
+	if( curline->Tracker ) delete curline->Tracker;
+	curline->Tracker = new FexTracker( movie->GetWidth(), movie->GetHeight(), 250 );
+	curline->Tracker->minFeatures = 250;
+
+	// Allocate temp image
+	float* FloatImg = new float[ movie->GetWidth()*movie->GetHeight() ];
+
+	int StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
+	int EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
+
+	for( int Frame = StartFrame; Frame <= EndFrame; Frame ++ )
+	{
+		wxString Text;
+		Text = wxString::Format( _T("Tracking ... %.2f %%"), float(Frame-StartFrame)/(EndFrame-StartFrame)*100.0f );
+		videoBox->videoDisplay->DrawText( wxPoint(20,20), Text );
+
+		movie->GetFloatFrame( FloatImg, Frame );
+		curline->Tracker->ProcessImage( FloatImg );
+	}
+
+	delete FloatImg;
+	delete movie;
+
+	videoBox->videoDisplay->RefreshVideo();
 }
 
 

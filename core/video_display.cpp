@@ -53,6 +53,8 @@
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
 #include <wx/config.h>
+#include "FexTracker.h"
+#include "FexTrackingFeature.h"
 
 
 ///////
@@ -275,6 +277,8 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 		// Draw frame
 		dc.DrawBitmap(GetFrame(frame_n),0,0);
+		// Draw the control points for FexTracker
+		DrawTrackingOverlay( dc );
 
 		// Current position info
 		if (x >= 0 && x < w && y >= 0 && y < h) {
@@ -524,12 +528,73 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 
 
 //////////////////
+// Draw Tracking Overlay
+void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
+{
+	if( IsPlaying ) return;
+
+	// Get line
+	AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
+	if( !curline || !curline->Tracker ) return;
+
+	int StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
+	int EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
+	
+	if( frame_n<StartFrame || frame_n>EndFrame ) return;
+
+	int localframe = frame_n - StartFrame;
+	if( curline->Tracker->GetFrame() <= localframe ) return;
+
+	dc.SetPen(wxPen(wxColour(255,255,255),1));
+	dc.SetLogicalFunction(wxINVERT);
+
+	for( int i=0;i<curline->Tracker->GetCount();i++ )
+	{
+		FexTrackingFeature* f = (*curline->Tracker)[i];
+		if( f->StartTime > localframe ) continue;
+		int llf = localframe - f->StartTime;
+		if( f->Pos.size() <= llf ) continue;
+		vec2 pt = f->Pos[llf];
+		pt.x *= provider->GetZoom();
+		pt.y *= provider->GetZoom();
+		pt.x = int(pt.x);
+		pt.y = int(pt.y);
+		dc.DrawLine( pt.x-2, pt.y, pt.x+3, pt.y );
+		dc.DrawLine( pt.x, pt.y-2, pt.x, pt.y+3 );
+	}
+}
+
+
+//////////////////
 // Refresh screen
 void VideoDisplay::RefreshVideo() {
 	// Draw frame
 	wxClientDC dc(this);
 	dc.BeginDrawing();
 	dc.DrawBitmap(GetFrame(),0,0);
+
+	// Draw the control points for FexTracker
+	DrawTrackingOverlay( dc );
+
+	dc.EndDrawing();
+}
+
+
+//////////////////
+// DrawVideoWithOverlay
+void VideoDisplay::DrawText( wxPoint Pos, wxString text ) {
+	// Draw frame
+	wxClientDC dc(this);
+	dc.BeginDrawing();
+	dc.SetBrush(wxBrush(wxColour(128,128,128),wxSOLID));
+	dc.DrawRectangle( 0,0, provider->GetWidth(), provider->GetHeight() );
+	dc.SetTextForeground(wxColour(64,64,64));
+	dc.DrawText(text,Pos.x+1,Pos.y-1);
+	dc.DrawText(text,Pos.x+1,Pos.y+1);
+	dc.DrawText(text,Pos.x-1,Pos.y-1);
+	dc.DrawText(text,Pos.x-1,Pos.y+1);
+	dc.SetTextForeground(wxColour(255,255,255));
+	dc.DrawText(text,Pos.x,Pos.y);
 	dc.EndDrawing();
 }
 

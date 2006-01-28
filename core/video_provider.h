@@ -84,6 +84,7 @@ public:
 	void SetZoom(double _zoom);
 
 	wxBitmap GetFrame(int n) { return GetFrame(n,false); };
+	void GetFloatFrame(float* Buffer, int n);
 
 	// properties
 	int GetPosition() { return last_fnum; };
@@ -92,6 +93,7 @@ public:
 
 	int GetWidth() { return vi.width; };
 	int GetHeight() { return vi.height; };
+	double GetZoom() { return zoom; };
 
 	int GetSourceWidth() { return RGB32Video->GetVideoInfo().width; };
 	int GetSourceHeight() { return RGB32Video->GetVideoInfo().height; };

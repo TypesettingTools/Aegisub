@@ -89,6 +89,8 @@ private:
 	void OnCopyCoords(wxCommandEvent &event);
 	void OnPlayTimer(wxTimerEvent &event);
 
+	void DrawTrackingOverlay( wxDC &dc );
+
 public:
 	VideoProvider *provider;
 
@@ -119,6 +121,7 @@ public:
 	void JumpToTime(int ms);
 	void RefreshSubtitles();
 	void RefreshVideo();
+	void DrawText( wxPoint Pos, wxString Text );
 	void UpdatePositionDisplay();
 	void SetAspectRatio(int type);
 	void SetZoom(double value);
