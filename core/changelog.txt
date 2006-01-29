@@ -14,8 +14,9 @@ Please visit http://aegisub.net to download latest version
 - Karaoke mode changes: (jfs)
    o New syllable-splitter: Click "split" to enable splitting-mode, click in syllable view to set split-markers, then click commit to do the splitting
    o The correct \k tag (\k, \kf, \ko, \K) is now kept when splitting/joining
-   o When editing karaoke-timing for a line and not splitting/joining, all tags are kept intact, so only the \k tag timings are changed (BROKEN WITH \t TAGS ATM!)
+   o When editing karaoke-timing for a line and not splitting/joining, all tags are kept intact, so only the \k tag timings are changed
 - Fixed bug where \t tags (among others?) would lose their parameters when being rebuilt (happens with Framerate Transport export filter, Automation and during the karaoke timing improvements listed above, among other places) (jfs)
+- Implemented FexTracker, for automatically tracking positions on the video and placing text accordingly (Tentacle)
 
 
 = 1.09 beta - 2006.01.16 ===========================
