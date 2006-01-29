@@ -233,14 +233,18 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		return;
 	}
 
-	if( event.ButtonDown(wxMOUSE_BTN_LEFT) )
-		bTrackerEditing = 1;
-	if( event.ButtonUp(wxMOUSE_BTN_LEFT) )
-		bTrackerEditing = 0;
-
 	// Coords
 	int x = event.GetX();
 	int y = event.GetY();
+
+	if( event.ButtonDown(wxMOUSE_BTN_LEFT) )
+	{
+		MouseDownX = x;
+		MouseDownY = y;
+		bTrackerEditing = 1;
+	}
+	if( event.ButtonUp(wxMOUSE_BTN_LEFT) )
+		bTrackerEditing = 0;
 
 	// Do tracker influence if needed
 	if( bTrackerEditing )
@@ -248,12 +252,32 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
 		int StartFrame, EndFrame, localframe;
 		if( curline 
-			&& curline->Tracker 
 			&& (StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true)) <= frame_n
 			&& (EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false)) >= frame_n 
-			&& (localframe = frame_n - StartFrame) < curline->Tracker->GetFrame() 
 		) 
-		curline->Tracker->InfluenceFeatures( localframe, float(x)/provider->GetZoom(), float(y)/provider->GetZoom(), TrackerEdit );
+		{
+			localframe = frame_n - StartFrame;
+			if( curline->Tracker && localframe < curline->Tracker->GetFrame() )
+				curline->Tracker->InfluenceFeatures( localframe, float(x)/provider->GetZoom(), float(y)/provider->GetZoom(), TrackerEdit );
+			else if( curline->Movement && localframe < curline->Movement->Frames.size() )
+			{// no /provider->GetZoom() to improve precision
+				if( MovementEdit==1 )
+				{
+					for( int i=0;i<curline->Movement->Frames.size();i++ )
+					{
+						curline->Movement->Frames[i].Pos.x += float(x-MouseDownX);
+						curline->Movement->Frames[i].Pos.y += float(y-MouseDownY);
+					}
+				}
+				else if( MovementEdit==2 )
+				{
+					curline->Movement->Frames[localframe].Pos.x += float(x-MouseDownX);
+					curline->Movement->Frames[localframe].Pos.y += float(y-MouseDownY);
+				}
+			}
+			MouseDownX = x;
+			MouseDownY = y;
+		}
 	}
 
 	// Text of current coords

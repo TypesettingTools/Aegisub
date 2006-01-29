@@ -76,6 +76,7 @@
 #include "FexTrackingFeature.h"
 #include "FexMovement.h"
 #include "dialog_progress.h"
+#include "dialog_fextracker.h"
 
 
 ////////////////////
@@ -94,6 +95,9 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Video_Track_Point_Add, FrameMain::OnVideoTrackPointAdd)
 	EVT_MENU(Video_Track_Point_Del, FrameMain::OnVideoTrackPointDel)
 	EVT_MENU(Video_Track_Movement, FrameMain::OnVideoTrackMovement)
+	EVT_BUTTON(Video_Tracker_Menu2, FrameMain::OnVideoTrackerMenu2)
+	EVT_MENU(Video_Track_Movement_MoveAll, FrameMain::OnVideoTrackMovementMoveAll)
+	EVT_MENU(Video_Track_Movement_MoveOne, FrameMain::OnVideoTrackMovementMoveOne)
 	EVT_MENU(Video_Track_Split_Line, FrameMain::OnVideoTrackSplitLine)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
@@ -1132,153 +1136,6 @@ void FrameMain::OnVideoStop(wxCommandEvent &event) {
 void FrameMain::OnVideoToggleScroll(wxCommandEvent &event) {
 	Options.SetBool(_T("Sync video with subs"),videoBox->AutoScroll->GetValue());
 	Options.Save();
-}
-
-
-///////////////////
-// Track current line
-void FrameMain::OnVideoTrackerMenu(wxCommandEvent &event) {
-	wxMenu menu( _("FexTracker") );
-	AppendBitmapMenuItem(&menu, Video_Track_Points, _("track points"), _(""), wxBITMAP(button_track_points));
-	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Point_Add, _("add points to movement"), _(""), wxBITMAP(button_track_point_add));
-	AppendBitmapMenuItem(&menu, Video_Track_Point_Del, _("remove points from movement"), _(""), wxBITMAP(button_track_point_del));
-	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Movement, _("generate movement from points"), _(""), wxBITMAP(button_track_movement));
-	AppendBitmapMenuItem(&menu, Video_Track_Split_Line, _("split line for movement"), _(""), wxBITMAP(button_track_split_line));
-	PopupMenu(&menu);
-}
-
-	
-///////////////////
-// Track current line
-void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
-
-	// Get line
-	AssDialogue *curline = SubsBox->GetDialogue(EditBox->linen);
-	if (!curline) return;
-
-	// Get Video
-	bool usedDirectshow;
-	VideoProvider *movie = new VideoProvider(videoBox->videoDisplay->videoName, wxString(_T("")), 1.0,usedDirectshow,true);
-
-	// Create Tracker
-	if( curline->Tracker ) delete curline->Tracker;
-	curline->Tracker = new FexTracker( movie->GetWidth(), movie->GetHeight(), 250 );
-	curline->Tracker->minFeatures = 250;
-
-	// Start progress
-	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(this,_("FexTracker"),&canceled,_("Tracking points"),0,1);
-	progress->Show();
-
-	// Allocate temp image
-	float* FloatImg = new float[ movie->GetWidth()*movie->GetHeight() ];
-
-	int StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
-	int EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
-
-	for( int Frame = StartFrame; Frame <= EndFrame; Frame ++ )
-	{
-		progress->SetProgress( Frame-StartFrame, EndFrame-StartFrame );
-		if( canceled ) break;
-
-		movie->GetFloatFrame( FloatImg, Frame );
-		curline->Tracker->ProcessImage( FloatImg );
-	}
-
-	delete FloatImg;
-	delete movie;
-
-	// Clean up progress
-	if (!canceled) 
-		progress->Destroy();
-	else
-	{
-		delete curline->Tracker;
-		curline->Tracker = 0;
-	}
-
-	videoBox->videoDisplay->RefreshVideo();
-}
-
-
-///////////////////
-// Track current line
-void FrameMain::OnVideoTrackMovement(wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
-
-	// Get line
-	AssDialogue *curline = SubsBox->GetDialogue(EditBox->linen);
-	if (!curline) return;
-	if( !curline->Tracker ) return;
-
-	// Create Movement
-	if( curline->Movement ) DeleteMovement( curline->Movement );
-	curline->Movement = curline->Tracker->GetMovement();
-
-	// Remove Tracker
-	delete curline->Tracker;
-	curline->Tracker = 0;
-
-	videoBox->videoDisplay->RefreshVideo();
-}
-
-
-///////////////////
-// split current line
-void FrameMain::OnVideoTrackSplitLine(wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
-
-	// Get line
-	AssDialogue *curline = SubsBox->GetDialogue(EditBox->linen);
-	if (!curline) return;
-	if( !curline->Movement ) return;
-
-	// Create split lines
-	int StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
-	int EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
-
-	for( int Frame = StartFrame; Frame < EndFrame; Frame ++ )
-	{
-		int localframe = Frame - StartFrame;
-
-		while( curline->Movement->Frames.size() <= localframe ) localframe--;
-		FexMovementFrame f = curline->Movement->Frames[localframe];
-//		f.Pos.x /= videoBox->videoDisplay->GetW
-
-		AssDialogue *cur = new AssDialogue( curline->data );
-		cur->Start.SetMS(VFR_Output.CorrectTimeAtFrame(Frame,true));
-		cur->End.SetMS(VFR_Output.CorrectTimeAtFrame(Frame,false));
-		cur->Text = wxString::Format( _T("{\\pos(%.0f,%.0f)\\fscx%.2f\\fscy%.2f}"), f.Pos.x, f.Pos.y, f.Scale.x*100, f.Scale.y*100 ) + cur->Text;
-		cur->UpdateData();
-
-		SubsBox->InsertLine(cur,EditBox->linen + Frame - StartFrame,true,false);
-	}
-
-	// Remove Movement
-	DeleteMovement( curline->Movement );
-	curline->Movement = 0;
-
-	// Remove this line
-	SubsBox->DeleteLines( EditBox->linen, EditBox->linen, false );
-
-	videoBox->videoDisplay->RefreshVideo();
-}
-
-
-///////////////////
-// Increase Influence
-void FrameMain::OnVideoTrackPointAdd(wxCommandEvent &event) {
-	videoBox->videoDisplay->TrackerEdit = 1;
-}
-
-
-///////////////////
-// Decrease Influence
-void FrameMain::OnVideoTrackPointDel(wxCommandEvent &event) {
-	videoBox->videoDisplay->TrackerEdit = -1;
 }
 
 

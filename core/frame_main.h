@@ -110,7 +110,10 @@ private:
 	void OnVideoTrackPoints(wxCommandEvent &event);
 	void OnVideoTrackPointAdd(wxCommandEvent &event);
 	void OnVideoTrackPointDel(wxCommandEvent &event);
+	void OnVideoTrackerMenu2(wxCommandEvent &event);
 	void OnVideoTrackMovement(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveAll(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveOne(wxCommandEvent &event);
 	void OnVideoTrackSplitLine(wxCommandEvent &event);
 
 	void OnKeyDown(wxKeyEvent &event);
@@ -333,7 +336,10 @@ enum {
 	Video_Track_Points,
 	Video_Track_Point_Add,
 	Video_Track_Point_Del,
+	Video_Tracker_Menu2,
 	Video_Track_Movement,
+	Video_Track_Movement_MoveAll,
+	Video_Track_Movement_MoveOne,
 	Video_Track_Split_Line,
 
 	Menu_File_Recent = 2000,

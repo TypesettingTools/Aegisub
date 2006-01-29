@@ -62,6 +62,8 @@ VideoBox::VideoBox(wxPanel *parent) {
 
 	wxBitmapButton *VideoTrackerMenuButton = new wxBitmapButton(videoPage,Video_Tracker_Menu,wxBITMAP(button_track_points),wxDefaultPosition,wxSize(25,-1));
 	VideoTrackerMenuButton->SetToolTip(_("FexTracker"));
+	wxBitmapButton *VideoTrackerMenu2Button = new wxBitmapButton(videoPage,Video_Tracker_Menu2,wxBITMAP(button_track_trail),wxDefaultPosition,wxSize(25,-1));
+	VideoTrackerMenu2Button->SetToolTip(_("FexMovement"));
 
 	// Seek
 	videoSlider = new VideoSlider(videoPage,-1);
@@ -97,6 +99,7 @@ VideoBox::VideoBox(wxPanel *parent) {
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
 	videoBottomSizer->Add(VideoTrackerMenuButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
+	videoBottomSizer->Add(VideoTrackerMenu2Button,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(videoDisplay,0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);

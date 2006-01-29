@@ -17,6 +17,7 @@ class FEXTRACKER_API FexTrackerConfig
 {
 public:
 	inline FexTrackerConfig() : 
+		FeatureNumber(0),
 		EdgeDetectSigma(1.f),
 		WindowX(3), WindowY(3), 
 		SearchRange(15),
@@ -28,6 +29,8 @@ public:
 		DetectSmoothSigma(0.9f),
 		MinDistanceSquare(100.f)
 	{};
+
+	int		FeatureNumber;
 
 	int		WindowX, WindowY;				//static const int window_size = 7;
 	int		SearchRange;

@@ -85,6 +85,8 @@ button_track_point_add BITMAP "bitmaps/button_track_point_add.bmp"
 button_track_point_del BITMAP "bitmaps/button_track_point_del.bmp"
 button_track_movement BITMAP "bitmaps/button_track_movement.bmp"
 button_track_split_line BITMAP "bitmaps/button_track_split_line.bmp"
+button_track_trail BITMAP "bitmaps/button_track_trail.bmp"
+button_track_move BITMAP "bitmaps/button_track_move.bmp"
 
 button_bold BITMAP "bitmaps/button_bold.bmp"
 button_italics BITMAP "bitmaps/button_italics.bmp"
