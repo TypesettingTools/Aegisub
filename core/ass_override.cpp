@@ -232,9 +232,9 @@ void AssOverrideTagProto::LoadProtos () {
 	// \fade(<a1>,<a2>,<a3>,<t1>,<t2>,<t3>,<t4>)
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\fade");
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_TEXT));
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_TEXT));
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_TEXT));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_RELATIVE_TIME_START));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_RELATIVE_TIME_START));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_RELATIVE_TIME_START));
@@ -501,6 +501,7 @@ void AssOverrideTag::SetText (wxString text) {
 
 	// Set tag name
 	if (!Name.empty()) {
+		wxLogDebug(_T("Parsing tag: %s"), Name);
 		ParseParameters(text.Mid(Name.length()));
 		valid = true;
 	}
@@ -523,42 +524,64 @@ bool AssOverrideTag::IsValid() {
 /////////////////////
 // Parses parameters
 void AssOverrideTag::ParseParameters(wxString text) {
-	// Split parameters
+	// text is all text following the name until the next \ or the end of the override block
+
+	// Tokenize text, attempting to find all parameters
 	wxArrayString paramList;
-	size_t start = 0;
 	wxString work;
-	int parDepth = 0;
-	for (size_t i=0;i<text.Length();i++) {
-		// Started an overrides block
-		if (text[i] == _T('\\')) {
-			work = text.Mid(start);
-			while (parDepth > 0 && work.Right(1) == _T(")")) {
-				work = work.Left(work.Length()-1);
-				work.Trim(true);
-				work.Trim(false);
-				parDepth--;
+
+	{
+		if (text.IsEmpty() || text[0] != _T('(')) {
+			// There's just one (or none at all) parameter (because there's no parantheses)
+			// This means text is all our parameters
+			paramList.Add(text.Trim(true).Trim(false));
+			// Only using goto here to avoid yet another nested block (keeps the code cleaner!)
+			goto end_tokenizing;
+		}
+
+		// Ok, so there are parantheses used here, so there may be more than one parameter
+		// Enter fullscale parsing!
+		size_t i = 0, textlen = text.Length();
+		size_t start = 0;
+		int parDepth = 1;
+		while (i < textlen && parDepth > 0) {
+			// Just skip until next ',' or ')', whichever comes first
+			// (Next ')' is achieved when parDepth == 0)
+			start = ++i;
+			while (i < textlen && parDepth > 0) {
+				if (text[i] == _T('(')) parDepth++;
+				if (text[i] == _T(')')) parDepth--;
+				// parDepth 1 is where we start, and the tag-level we're interested in parsing on
+				if (text[i] == _T(',') && parDepth == 1) break;
+				if (parDepth < 0) {
+					wxLogWarning(_T("Unmatched parenthesis near '%s'!\nTag-parsing incomplete."), text.SubString(i, 10));
+					goto end_tokenizing;
+				}
+				if (parDepth == 0) {
+					// We just ate the paranthesis ending this parameter block
+					// Make sure it doesn't get included in the parameter text
+					break;
+				}
+				i++;
 			}
+			// i now points to the first character not member of this parameter
+			work = text.SubString(start, i-1);
+			work.Trim(true).Trim(false);
 			paramList.Add(work);
-			start = text.Length();
-			break;
+			wxLogDebug(_T("Got parameter: %s"), work);
 		}
-		else if (text[i] == _T(',') || text[i] == _T('(') || text[i] == _T(')')) {
-			if (text[i] == _T('(')) parDepth++;
-			work = text.SubString(start,i-1);
-			work.Trim(true);
-			work.Trim(false);
-			if (work != _T("")) paramList.Add(work);
-			start = i+1;
+
+		if (i+1 < textlen) {
+			// There's some additional garbage after the parantheses
+			// Just add it in for completeness
+			paramList.Add(text.Mid(i+1));
 		}
-		else if (text[i] == _T(')')) parDepth--;
 	}
-	work = text.Mid(start);
-	work.Trim(true);
-	work.Trim(false);
-	if (work != _T(""))
-		paramList.Add(work);
+	// This label is only gone to from inside the previous block, if the tokenizing needs to end early
+end_tokenizing:
+
 	int curPar = 0;
-	int totalPars = paramList.GetCount();
+	size_t totalPars = paramList.GetCount();
 
 	// Get optional parameters flag
 	ASS_ParameterOptional parsFlag = OPTIONAL_0;
@@ -613,6 +636,9 @@ void AssOverrideTag::ParseParameters(wxString text) {
 				newparam->CopyFrom(curproto->defaultValue);
 			}
 			newparam->ommited = true;
+			// This parameter doesn't really count against the number of parsed parameters,
+			// since it's left out. Don't count it.
+			curPar--;
 		}
 
 		if (isDefault == false) {
@@ -651,8 +677,11 @@ void AssOverrideTag::ParseParameters(wxString text) {
 
 			// Get next actual parameter
 			if (curPar < totalPars) {
-				curtok = paramList[curPar];
-				curPar++;
+				// Unless this parameter was omitted (in which case the token shouldn't be eaten)
+				if (!newparam->ommited) {
+					curtok = paramList[curPar];
+					curPar++;
+				}
 			}
 			else curtok = _T("");
 		}
@@ -670,7 +699,7 @@ wxString AssOverrideTag::ToString() {
 	// Start with name
 	wxString result = Name;
 
-	// Determine if it needs parenthesis
+	// Determine if it needs parentheses
 	bool parenthesis = false;
 	if (Name == _T("\\t") || Name == _T("\\pos") || Name == _T("\\fad") || Name == _T("\\org") || Name == _T("\\clip") || Name == _T("\\move") || Name == _T("\\fade")) parenthesis = true;
 	if (parenthesis) result += _T("(");
