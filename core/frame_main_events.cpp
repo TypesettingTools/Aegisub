@@ -75,6 +75,7 @@
 #include "FexTracker.h"
 #include "FexTrackingFeature.h"
 #include "FexMovement.h"
+#include "dialog_progress.h"
 
 
 ////////////////////
@@ -1167,6 +1168,11 @@ void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
 	curline->Tracker = new FexTracker( movie->GetWidth(), movie->GetHeight(), 250 );
 	curline->Tracker->minFeatures = 250;
 
+	// Start progress
+	volatile bool canceled = false;
+	DialogProgress *progress = new DialogProgress(this,_("FexTracker"),&canceled,_("Tracking points"),0,1);
+	progress->Show();
+
 	// Allocate temp image
 	float* FloatImg = new float[ movie->GetWidth()*movie->GetHeight() ];
 
@@ -1175,9 +1181,8 @@ void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
 
 	for( int Frame = StartFrame; Frame <= EndFrame; Frame ++ )
 	{
-		wxString Text;
-		Text = wxString::Format( _T("Tracking ... %.2f %%"), float(Frame-StartFrame)/(EndFrame-StartFrame)*100.0f );
-		videoBox->videoDisplay->DrawText( wxPoint(20,20), Text );
+		progress->SetProgress( Frame-StartFrame, EndFrame-StartFrame );
+		if( canceled ) break;
 
 		movie->GetFloatFrame( FloatImg, Frame );
 		curline->Tracker->ProcessImage( FloatImg );
@@ -1185,6 +1190,15 @@ void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
 
 	delete FloatImg;
 	delete movie;
+
+	// Clean up progress
+	if (!canceled) 
+		progress->Destroy();
+	else
+	{
+		delete curline->Tracker;
+		curline->Tracker = 0;
+	}
 
 	videoBox->videoDisplay->RefreshVideo();
 }
