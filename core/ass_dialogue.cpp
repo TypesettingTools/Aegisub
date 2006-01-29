@@ -42,12 +42,15 @@
 #include "utils.h"
 #include <fstream>
 #include <wx/tokenzr.h>
+#include "FexTracker.h"
+#include "FexMovement.h"
 
 
 ////////////////////// AssDialogue //////////////////////
 // Constructs AssDialogue
 AssDialogue::AssDialogue() {
 	Tracker = 0;
+	Movement = 0;
 
 	Type = ENTRY_DIALOGUE;
 	group = _T("[Events]");
@@ -70,6 +73,7 @@ AssDialogue::AssDialogue() {
 
 AssDialogue::AssDialogue(wxString _data,bool IsSSA) {
 	Tracker = 0;
+	Movement = 0;
 
 	Type = ENTRY_DIALOGUE;
 	group = _T("[Events]");
@@ -97,6 +101,17 @@ void AssDialogue::Clear () {
 		delete *cur;
 	}
 	Blocks.clear();
+
+	if( Tracker )
+	{
+		delete Tracker;
+		Tracker = 0;
+	}
+	if( Movement )
+	{
+		DeleteMovement( Movement );
+		Movement = 0;
+	}
 }
 
 

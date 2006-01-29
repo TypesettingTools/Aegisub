@@ -55,6 +55,7 @@
 #include <wx/config.h>
 #include "FexTracker.h"
 #include "FexTrackingFeature.h"
+#include "FexMovement.h"
 
 
 ///////
@@ -557,7 +558,7 @@ void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 
 	// Get line
 	AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
-	if( !curline || !curline->Tracker ) return;
+	if( !curline ) return;
 
 	int StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
 	int EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
@@ -565,28 +566,45 @@ void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 	if( frame_n<StartFrame || frame_n>EndFrame ) return;
 
 	int localframe = frame_n - StartFrame;
-	if( curline->Tracker->GetFrame() <= localframe ) return;
 
-	dc.SetLogicalFunction(wxCOPY);
-
-	for( int i=0;i<curline->Tracker->GetCount();i++ )
+	if( curline->Tracker )
 	{
-		FexTrackingFeature* f = (*curline->Tracker)[i];
-		if( f->StartTime > localframe ) continue;
-		int llf = localframe - f->StartTime;
-		if( f->Pos.size() <= llf ) continue;
-		vec2 pt = f->Pos[llf];
-		pt.x *= provider->GetZoom();
-		pt.y *= provider->GetZoom();
-		pt.x = int(pt.x);
-		pt.y = int(pt.y);
+		if( curline->Tracker->GetFrame() <= localframe ) return;
 
-		dc.SetPen(wxPen(wxColour(255*(1-f->Influence),255*f->Influence,0),1));
+		dc.SetLogicalFunction(wxCOPY);
 
-		dc.DrawLine( pt.x-2, pt.y, pt.x, pt.y );
-		dc.DrawLine( pt.x, pt.y-2, pt.x, pt.y );
-		dc.DrawLine( pt.x+1, pt.y, pt.x+3, pt.y );
-		dc.DrawLine( pt.x, pt.y+1, pt.x, pt.y+3 );
+		for( int i=0;i<curline->Tracker->GetCount();i++ )
+		{
+			FexTrackingFeature* f = (*curline->Tracker)[i];
+			if( f->StartTime > localframe ) continue;
+			int llf = localframe - f->StartTime;
+			if( f->Pos.size() <= llf ) continue;
+			vec2 pt = f->Pos[llf];
+			pt.x *= provider->GetZoom();
+			pt.y *= provider->GetZoom();
+			pt.x = int(pt.x);
+			pt.y = int(pt.y);
+
+			dc.SetPen(wxPen(wxColour(255*(1-f->Influence),255*f->Influence,0),1));
+
+			dc.DrawLine( pt.x-2, pt.y, pt.x, pt.y );
+			dc.DrawLine( pt.x, pt.y-2, pt.x, pt.y );
+			dc.DrawLine( pt.x+1, pt.y, pt.x+3, pt.y );
+			dc.DrawLine( pt.x, pt.y+1, pt.x, pt.y+3 );
+		}
+	}
+	else if( curline->Movement )
+	{
+		if( curline->Movement->Frames.size() <= localframe ) return;
+
+		dc.SetPen(wxPen(wxColour(255,0,0),2));
+		FexMovementFrame f = curline->Movement->Frames.lVal[localframe];
+		f.Pos.x *= provider->GetZoom();
+		f.Pos.y *= provider->GetZoom();
+		f.Scale.x *= 30* provider->GetZoom();
+		f.Scale.y *= 30* provider->GetZoom();
+		dc.DrawLine( f.Pos.x-f.Scale.x, f.Pos.y, f.Pos.x+f.Scale.x+1, f.Pos.y );
+		dc.DrawLine( f.Pos.x, f.Pos.y-f.Scale.y, f.Pos.x, f.Pos.y+f.Scale.y+1 );
 	}
 }
 

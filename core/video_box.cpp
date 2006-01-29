@@ -59,12 +59,9 @@ VideoBox::VideoBox(wxPanel *parent) {
 	AutoScroll = new ToggleBitmap(videoPage,Video_Auto_Scroll,wxBITMAP(toggle_video_autoscroll),wxSize(30,-1));
 	AutoScroll->SetToolTip(_("Toggle autoscroll of video"));
 	AutoScroll->SetValue(Options.AsBool(_T("Sync video with subs")));
-	wxBitmapButton *VideoTrackPointsButton = new wxBitmapButton(videoPage,Video_Track_Points,wxBITMAP(button_track_points),wxDefaultPosition,wxSize(25,-1));
-	VideoTrackPointsButton->SetToolTip(_("Track point movements in video"));
-	wxBitmapButton *VideoTrackPointAddButton = new wxBitmapButton(videoPage,Video_Track_Point_Add,wxBITMAP(button_track_point_add),wxDefaultPosition,wxSize(25,-1));
-	VideoTrackPointAddButton->SetToolTip(_("Increase influence of tracking points"));
-	wxBitmapButton *VideoTrackPointDelButton = new wxBitmapButton(videoPage,Video_Track_Point_Del,wxBITMAP(button_track_point_del),wxDefaultPosition,wxSize(25,-1));
-	VideoTrackPointDelButton->SetToolTip(_("Decrease influence of tracking points"));
+
+	wxBitmapButton *VideoTrackerMenuButton = new wxBitmapButton(videoPage,Video_Tracker_Menu,wxBITMAP(button_track_points),wxDefaultPosition,wxSize(25,-1));
+	VideoTrackerMenuButton->SetToolTip(_("FexTracker"));
 
 	// Seek
 	videoSlider = new VideoSlider(videoPage,-1);
@@ -99,9 +96,7 @@ VideoBox::VideoBox(wxPanel *parent) {
 	videoBottomSizer->Add(AutoScroll,0,wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,2);
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
-	videoBottomSizer->Add(VideoTrackPointsButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
-	videoBottomSizer->Add(VideoTrackPointAddButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
-	videoBottomSizer->Add(VideoTrackPointDelButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
+	videoBottomSizer->Add(VideoTrackerMenuButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(videoDisplay,0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);

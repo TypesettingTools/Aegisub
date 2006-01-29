@@ -18,7 +18,7 @@ public:
 
 	int				Eigenvalue;
 	tenlist<vec2>	Pos;
-
+ 
 	int				StartTime;
 
 	float			Influence;

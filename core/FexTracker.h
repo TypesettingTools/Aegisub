@@ -60,8 +60,13 @@ typedef struct{
 	float x, y;
 }vec2;
 
+typedef struct{
+	float x, y, z;
+}vec3;
+
 class FexImgPyramid;
 class FexTrackingFeature;
+class FexMovement;
 
 class FEXTRACKER_API FexTracker 
 {
@@ -72,8 +77,13 @@ public:
 	FexTrackerConfig  Cfg;
 //work
 	void ProcessImage( float *Img, bool bFirst=0 ); //we assume grayscale image here
-	void InfluenceFeatures( int Frame, float x, float y, float off );
+	void ProcessingDone();	// call after last call to ProcessImage to clear temporary storage
 
+//point -> movement
+	void InfluenceFeatures( int Frame, float x, float y, float off );
+	FexMovement* GetMovement();
+
+//feature access
 	FexTrackingFeature* operator [] ( int i );
 	inline int GetCount(){ return nFeatures; };
 	inline int GetFrame(){ return CurFrame; };
