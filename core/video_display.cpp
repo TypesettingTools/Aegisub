@@ -627,8 +627,35 @@ void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 		f.Pos.y *= provider->GetZoom();
 		f.Scale.x *= 30* provider->GetZoom();
 		f.Scale.y *= 30* provider->GetZoom();
+
+		FexMovementFrame f3 = f;
+		dc.SetPen(wxPen(wxColour(0,0,255),1));
+		int nBack = 8;
+		while( --localframe>0 && nBack-- >0 )
+		{
+			FexMovementFrame f2 = curline->Movement->Frames.lVal[localframe];
+			f2.Pos.x *= provider->GetZoom();
+			f2.Pos.y *= provider->GetZoom();
+			dc.DrawLine( f2.Pos.x, f2.Pos.y, f3.Pos.x, f3.Pos.y );
+			f3 = f2;
+		}
+
+		dc.SetPen(wxPen(wxColour(255,0,0),2));
 		dc.DrawLine( f.Pos.x-f.Scale.x, f.Pos.y, f.Pos.x+f.Scale.x+1, f.Pos.y );
 		dc.DrawLine( f.Pos.x, f.Pos.y-f.Scale.y, f.Pos.x, f.Pos.y+f.Scale.y+1 );
+
+		f3 = f;
+		dc.SetPen(wxPen(wxColour(0,255,0),1));
+		int nFront = 8;
+		localframe = frame_n - StartFrame;
+		while( ++localframe<curline->Movement->Frames.size() && nFront-- >0 )
+		{
+			FexMovementFrame f2 = curline->Movement->Frames.lVal[localframe];
+			f2.Pos.x *= provider->GetZoom();
+			f2.Pos.y *= provider->GetZoom();
+			dc.DrawLine( f2.Pos.x, f2.Pos.y, f3.Pos.x, f3.Pos.y );
+			f3 = f2;
+		}
 	}
 }
 
