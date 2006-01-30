@@ -73,7 +73,7 @@ FrameMain::FrameMain (wxArrayString args)
 	// Splash screen
 	#ifndef _DEBUG
 	if (Options.AsBool(_T("Show Splash"))) {
-		SplashScreen *splash = new SplashScreen(this);
+		SplashScreen *splash = new SplashScreen(NULL);
 		splash->Show(true);
 	}
 	else {
