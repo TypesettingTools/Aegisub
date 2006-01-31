@@ -48,8 +48,9 @@
 #include "string_codec.h"
 #include "vfr.h"
 
-#ifdef WIN32_MULDIV
+#ifdef WIN32
 #include <windows.h>
+#include <wchar.h>
 #else
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -292,18 +293,72 @@ namespace AutomationHelper {
 		double scale_x = L_gettableN(L, "scale_x");
 		double scale_y = L_gettableN(L, "scale_y");
 		int spacing = (int)L_gettableN(L, "spacing");
+		int charset = (int)L_gettableN(L, "encoding");
 
+		wxLogDebug(_T("text_extents for: %s:%f:%d%d%d%d:%f:%f:%d:%d"), fontname, fontsize, bold, italic, underline, strikeout, scale_x, scale_y, spacing, charset);
+
+#ifdef WIN32
+		HDC thedc = CreateCompatibleDC(0);
+		if (!thedc) return 0;
+		SetMapMode(thedc, MM_TEXT);
+
+		fontsize = -MulDiv((int)(fontsize+0.5), GetDeviceCaps(thedc, LOGPIXELSY), 72);
+
+		LOGFONT lf;
+		ZeroMemory(&lf, sizeof(lf));
+		lf.lfHeight = fontsize;
+		lf.lfWeight = bold ? FW_BOLD : FW_NORMAL;
+		lf.lfItalic = italic;
+		lf.lfUnderline = underline;
+		lf.lfStrikeOut = strikeout;
+		lf.lfCharSet = charset;
+		lf.lfOutPrecision = OUT_TT_PRECIS;
+		lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+		lf.lfQuality = ANTIALIASED_QUALITY;
+		lf.lfPitchAndFamily = DEFAULT_PITCH|FF_DONTCARE;
+		wcsncpy(lf.lfFaceName, fontname.wc_str(), 32);
+
+		HFONT thefont = CreateFontIndirect(&lf);
+		if (!thefont) return 0;
+		SelectObject(thedc, thefont);
+		
+		SIZE sz;
+		if (spacing) {
+			resx = 0;
+			for (unsigned int i = 0; i < intext.length(); i++) {
+				wchar_t c = intext[i];
+				GetTextExtentPoint32(thedc, &c, 1, &sz);
+				resx += sz.cx + spacing;
+				resy = sz.cy;
+			}
+		} else {
+			GetTextExtentPoint32(thedc, intext.wc_str(), intext.Length(), &sz);
+			resx = sz.cx;
+			resy = sz.cy;
+		}
+
+		// HACKISH FIX! This seems to work, but why? It shouldn't be needed?!?
+		fontsize = L_gettableN(L, "fontsize");
+		resx = (int)(resx * fontsize/resy + 0.5);
+		resy = (int)(fontsize + 0.5);
+
+		TEXTMETRIC tm;
+		GetTextMetrics(thedc, &tm);
+		resd = tm.tmDescent;
+		resl = tm.tmExternalLeading;
+
+		DeleteObject(thedc);
+		DeleteObject(thefont);
+
+#else // not WIN32
 		wxMemoryDC thedc;
 
 		// fix fontsize to be 72 DPI
-#ifdef WIN32_MULDIV
-		fontsize = -MulDiv((int)(fontsize+0.5), 72, thedc.GetPPI().y);
-#else
 		fontsize = -FT_MulDiv((int)(fontsize+0.5), 72, thedc.GetPPI().y);
-#endif
 
 		// now try to get a font!
 		// use the font list to get some caching... (chance is the script will need the same font very often)
+		// USING wxTheFontList SEEMS TO CAUSE BAD LEAKS!
 		//wxFont *thefont = wxTheFontList->FindOrCreateFont(
 		wxFont thefont(
 			fontsize,
@@ -315,19 +370,24 @@ namespace AutomationHelper {
 			wxFONTENCODING_SYSTEM);
 		thedc.SetFont(thefont);
 
-		thedc.GetTextExtent(intext, &resx, &resy, &resd, &resl);
-		// alternative: calculate per-character sizing. this might be more consistent for fonts with kerning information.
-/*		for (unsigned int i = 0; i < intext.length(); i++) {
-			int a, b, c, d;
-			thedc.GetTextExtent(intext[i], &a, &b, &c, &d);
-			resx += a;
-			resy = b > resy ? b : resy;
-			resd = c > resd ? c : resd;
-			resl = d > resl ? d : resl;
+		if (spacing) {
+			// If there's inter-character spacing, kerning info must not be used, so calculate width per character
+			for (unsigned int i = 0; i < intext.length(); i++) {
+				int a, b, c, d;
+				thedc.GetTextExtent(intext[i], &a, &b, &c, &d);
+				resx += a + spacing;
+				resy = b > resy ? b : resy;
+				resd = c > resd ? c : resd;
+				resl = d > resl ? d : resl;
+			}
+		} else {
+			// If the inter-character spacing should be zero, kerning info can (and must) be used, so calculate everything in one go
+			thedc.GetTextExtent(intext, &resx, &resy, &resd, &resl);
 		}
-*/
+#endif
 
-		resx = (int)(scale_x / 100 * (intext.length() * spacing + resx) + 0.5);
+		// Compensate for scaling
+		resx = (int)(scale_x / 100 * resx + 0.5);
 		resy = (int)(scale_y / 100 * resy + 0.5);
 		resd = (int)(scale_y / 100 * resd + 0.5);
 		resl = (int)(scale_y / 100 * resl + 0.5);
