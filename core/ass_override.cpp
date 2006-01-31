@@ -680,8 +680,8 @@ end_tokenizing:
 				// Unless this parameter was omitted (in which case the token shouldn't be eaten)
 				if (!newparam->ommited) {
 					curtok = paramList[curPar];
-					curPar++;
 				}
+				curPar++;
 			}
 			else curtok = _T("");
 		}
