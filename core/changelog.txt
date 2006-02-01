@@ -18,7 +18,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed bug where \t tags (among others?) would lose their parameters when being rebuilt (happens with Framerate Transport export filter, Automation and during the karaoke timing improvements listed above, among other places) (jfs)
 - Implemented FexTracker, for automatically tracking positions on the video and placing text accordingly (Tentacle)
 - Drag-and-drop files onto the program no longer causes the subs to be unloaded every time, even if no subs were dropped (jfs)
-- Recombining lines (1,1+2 and 1+2,2) where the lone line is a substring of the line only appearing combined no longer causes incorrect results (as a side-effect, more strict prefix/suffix-checking has also been implemented) (jfs)
+- 1,1+2 recombining lines where 1 is a substring of 2 no longer causes incorrect behavior. 1+2,2 similarly fixed. This fix also gives more sanity-checking in the recombining (jfs)
 
 
 = 1.09 beta - 2006.01.16 ===========================

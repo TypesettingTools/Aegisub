@@ -103,6 +103,7 @@ FrameMain::FrameMain (wxArrayString args)
 	InitContents();
 
 	// Parse arguments
+	LoadSubtitles(_T(""));
 	LoadList(args);
 
 	// Set autosave timer
