@@ -1088,7 +1088,9 @@ bool FrameMain::LoadList(wxArrayString list) {
 	blockVideoLoad = (video != _T(""));
 
 	// Load files
-	LoadSubtitles(subs);
+	if (subs != _T("")) {
+		LoadSubtitles(subs);
+	}
 	if (blockVideoLoad) {
 		blockVideoLoad = false;
 		LoadVideo(video);

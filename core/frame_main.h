@@ -207,7 +207,6 @@ private:
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
 	int TryToCloseSubs(bool enableCancel=true);
 	void SetDisplayMode(int mode);
-	void StatusTimeout(wxString text,int ms=10000);
 
 	void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp);
 	wxMenuItem *RebuildMenuItem(wxMenu *menu,int id,wxBitmap bmp1,wxBitmap bmp2,bool state);
@@ -229,6 +228,7 @@ public:
 	static wxArrayString GetEncodings();
 	void UpdateTitle();
 	void SetSelectionFlag (bool HasSelection);
+	void StatusTimeout(wxString text,int ms=10000);
 
 	void SetAccelerators();
 	void InitMenu();

@@ -823,21 +823,29 @@ void SubtitlesGrid::On122Recombine(wxCommandEvent &event) {
 	AssDialogue *n1,*n2;
 	n1 = GetDialogue(n);
 	n2 = GetDialogue(n+1);
-	n1->Text.Replace(n2->Text,_T(""));
-	n1->Text.Trim(true);
-	n1->Text.Trim(false);
-	if (n1->Text.Left(2) == _T("\\N") || n1->Text.Left(2) == _T("\\n")) n1->Text = n1->Text.Mid(2);
-	if (n1->Text.Right(2) == _T("\\N") || n1->Text.Right(2) == _T("\\n")) n1->Text = n1->Text.Mid(0,n1->Text.Length()-2);
-	n2->Start = n1->Start;
-	n1->ParseASSTags();
-	n1->UpdateData();
-	n2->UpdateData();
+	n1->Text.Trim(true).Trim(false);
+	n2->Text.Trim(true).Trim(false);
 
-	// Commit
-	SetRowToLine(n,n1);
-	SetRowToLine(n+1,n2);
-	ass->FlagAsModified();
-	CommitChanges();
+	// Check if n2 is a suffix of n1
+	if (n1->Text.Right(n2->Text.Length()) == n2->Text) {
+		n1->Text = n1->Text.SubString(0, n1->Text.Length() - n2->Text.Length() - 1).Trim(true).Trim(false);
+		while (n1->Text.Left(2) == _T("\\N") || n1->Text.Left(2) == _T("\\n"))
+			n1->Text = n1->Text.Mid(2);
+		while (n1->Text.Right(2) == _T("\\N") || n1->Text.Right(2) == _T("\\n"))
+			n1->Text = n1->Text.Mid(0,n1->Text.Length()-2);
+		n2->Start = n1->Start;
+		n1->ParseASSTags();
+		n1->UpdateData();
+		n2->UpdateData();
+
+		// Commit
+		SetRowToLine(n,n1);
+		SetRowToLine(n+1,n2);
+		ass->FlagAsModified();
+		CommitChanges();
+	} else {
+		parentFrame->StatusTimeout(_T("Unable to recombine: Second line is not a suffix of first one."));
+	}
 }
 
 
@@ -854,21 +862,29 @@ void SubtitlesGrid::On112Recombine(wxCommandEvent &event) {
 	AssDialogue *n1,*n2;
 	n1 = GetDialogue(n);
 	n2 = GetDialogue(n+1);
-	n2->Text.Replace(n1->Text,_T(""));
-	n2->Text.Trim(true);
-	n2->Text.Trim(false);
-	if (n2->Text.Left(2) == _T("\\N") || n2->Text.Left(2) == _T("\\n")) n2->Text = n2->Text.Mid(2);
-	if (n2->Text.Right(2) == _T("\\N") || n2->Text.Right(2) == _T("\\n")) n2->Text = n2->Text.Mid(0,n2->Text.Length()-2);
-	n1->End = n2->End;
-	n2->ParseASSTags();
-	n1->UpdateData();
-	n2->UpdateData();
+	n1->Text.Trim(true).Trim(false);
+	n2->Text.Trim(true).Trim(false);
 
-	// Commit
-	SetRowToLine(n,n1);
-	SetRowToLine(n+1,n2);
-	ass->FlagAsModified();
-	CommitChanges();
+	// Check if n1 is a prefix of n2 and recombine
+	if (n2->Text.Left(n1->Text.Length()) == n1->Text) {
+		n2->Text = n2->Text.Mid(n1->Text.Length()).Trim(true).Trim(false);
+		while (n2->Text.Left(2) == _T("\\N") || n2->Text.Left(2) == _T("\\n"))
+			n2->Text = n2->Text.Mid(2);
+		while (n2->Text.Right(2) == _T("\\N") || n2->Text.Right(2) == _T("\\n"))
+			n2->Text = n2->Text.Mid(0,n2->Text.Length()-2);
+		n1->End = n2->End;
+		n2->ParseASSTags();
+		n1->UpdateData();
+		n2->UpdateData();
+
+		// Commit
+		SetRowToLine(n,n1);
+		SetRowToLine(n+1,n2);
+		ass->FlagAsModified();
+		CommitChanges();
+	} else {
+		parentFrame->StatusTimeout(_T("Unable to recombine: First line is not a prefix of second one."));
+	}
 }
 
 
