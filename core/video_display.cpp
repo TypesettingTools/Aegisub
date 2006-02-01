@@ -223,6 +223,14 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Disable when playing
 	if (IsPlaying) return;
 
+	if (event.Leaving()) {
+		// OnMouseLeave isn't called as long as we have an OnMouseEvent
+		// Just check for it and call it manually instead
+		OnMouseLeave(event);
+		event.Skip(true);
+		return;
+	}
+
 	// Right click
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
 		wxMenu menu;
@@ -338,10 +346,8 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 			GetTextExtent(text,&tw,&th,NULL,NULL,&font);
 
 			// Inversion
-			bool left = false;
-			bool bottom = false;
-			if (x > w/2) left = true;
-			if (y < h/2) bottom = true;
+			bool left = x > w/2;
+			bool bottom = y < h/2;
 
 			// Text draw coords
 			int dx = x,dy = y;
