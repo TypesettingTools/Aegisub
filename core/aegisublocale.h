@@ -53,6 +53,7 @@ public:
 	int curCode;
 
 	AegisubLocale();
+	~AegisubLocale();
 	void Init(int language);
 	int PickLanguage();
 };

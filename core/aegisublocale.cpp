@@ -53,6 +53,9 @@ AegisubLocale::AegisubLocale () {
 	curCode = -1;
 }
 
+AegisubLocale::~AegisubLocale() {
+	delete locale;
+}
 
 //////////////
 // Initialize
