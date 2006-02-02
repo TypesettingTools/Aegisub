@@ -512,9 +512,6 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	// Sync
 	SynchronizeProject(true);
 
-	// Update video
-	//videoBox->videoDisplay->SetSubtitles(filename); //fix me, remove?
-
 	// Update title bar
 	UpdateTitle();
 }
@@ -549,7 +546,6 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 
 		// Save
 		try {
-			//videoBox->videoDisplay->SetSubtitles(filename); fix me, remove?
 			AssFile::top->Save(filename,true,true,charset);
 			UpdateTitle();
 		}

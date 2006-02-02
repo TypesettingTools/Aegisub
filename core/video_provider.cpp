@@ -127,7 +127,6 @@ PClip VideoProvider::OpenVideo(wxString _filename, bool &usedDirectshow, bool mp
 				const char *argnames[2] = { 0, "audio" };
 				AVSValue args[2] = { videoFilename, false };
 				script = env->Invoke("AviSource", AVSValue(args,2), argnames);
-				//fix me, check for video?
 			} catch (AvisynthError &) {
 				goto directshowOpen;
 			}

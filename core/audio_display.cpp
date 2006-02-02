@@ -202,7 +202,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 	// Draw seconds boundaries
 	if (draw_boundary_lines) {
 		__int64 start = Position*samples;
-		int rate = provider ? provider->GetSampleRate() : 0; //fix me?
+		int rate = provider->GetSampleRate();
 		int pixBounds = rate / samples;
 		dc.SetPen(wxPen(Options.AsColour(_T("Audio Seconds Boundaries")),1,wxDOT));
 		if (pixBounds >= 8) {
@@ -688,12 +688,10 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 	if (update) {
 		// Center scroll
 		int oldSamples = samples;
-		UpdateSamples();
 		PositionSample += (oldSamples-samples)*w*pivot;
 		if (PositionSample < 0) PositionSample = 0;
 
 		// Update
-		UpdateSamples();
 		UpdateScrollbar();
 		UpdateImage();
 		Refresh(false);
@@ -705,7 +703,7 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 // Update samples
 void AudioDisplay::UpdateSamples() {
 	// Set samples
-	__int64 totalSamples = provider ? provider->GetNumSamples() : 0; //fix me?
+	__int64 totalSamples = provider->GetNumSamples();
 	int total = totalSamples / w;
 	int max = 5760000 / w;	// 2 minutes at 48 kHz maximum
 	if (total > max) total = max;
@@ -742,30 +740,33 @@ void AudioDisplay::SetFile(wxString file) {
 			delete provider;
 		provider = NULL;
 		Reset();
+
+		loaded = false;
 	}
-	
 	else {
 		SetFile(_T(""));
 		try {
 			provider = new AudioProvider(file, this);
 
+			loaded = true;
+
 			// Add to recent
 			Options.AddToRecentList(file,_T("Recent aud"));
+
+			// Update
+			UpdateImage();
+			Refresh(false);
 		}
 		catch (wxString &err) {
 			wxMessageBox(err,_T("Error loading audio"),wxICON_ERROR | wxOK);
 		}
 	}
 
-	loaded = (provider != NULL);
+	assert(loaded == (provider != NULL));
 
 	// Set default selection
 	int n = grid->editBox->linen;
 	SetDialogue(grid,grid->GetDialogue(n),n);
-
-	// Update
-	UpdateImage();
-	Refresh(false);
 }
 
 
@@ -809,40 +810,28 @@ int AudioDisplay::GetXAtSample(__int64 n) {
 /////////////////
 // Get MS from X
 int AudioDisplay::GetMSAtX(__int64 x) {
-	//fix me?
-	if (provider)
-		return (PositionSample+(x*samples)) * 1000 / provider->GetSampleRate();
-	return 0;
+	return (PositionSample+(x*samples)) * 1000 / provider->GetSampleRate();
 }
 
 
 /////////////////
 // Get X from MS
 int AudioDisplay::GetXAtMS(__int64 ms) {
-	//fix me?
-	if (provider)
-		return ((ms * provider->GetSampleRate() / 1000)-PositionSample)/samples;
-	return 0;
+	return ((ms * provider->GetSampleRate() / 1000)-PositionSample)/samples;
 }
 
 
 ////////////////////
 // Get MS At sample
 int AudioDisplay::GetMSAtSample(__int64 x) {
-	//fix me?
-	if (provider)
-		return x * 1000 / provider->GetSampleRate();
-	return 0;
+	return x * 1000 / provider->GetSampleRate();
 }
 
 
 ////////////////////
 // Get Sample at MS
 __int64 AudioDisplay::GetSampleAtMS(__int64 ms) {
-	//fix me?
-	if (provider)
-		return ms * provider->GetSampleRate() / 1000;
-	return 0;
+	return ms * provider->GetSampleRate() / 1000;
 }
 
 

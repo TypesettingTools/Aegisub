@@ -232,7 +232,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 /////////////////////////////////////////
 // Get destination resolution from video
 void DialogResample::OnGetDestRes (wxCommandEvent &event) {
-	ResX->SetValue(wxString::Format(_T("%i"),vid->provider->GetSourceWidth())); //fix me, null check?
+	ResX->SetValue(wxString::Format(_T("%i"),vid->provider->GetSourceWidth()));
 	ResY->SetValue(wxString::Format(_T("%i"),vid->provider->GetSourceHeight()));
 }
 
