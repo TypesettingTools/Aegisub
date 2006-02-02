@@ -363,6 +363,8 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 	// Done
 	dc.EndDrawing();
+
+	Refresh(false);
 }
 
 
@@ -618,11 +620,10 @@ void AudioDisplay::GetKaraokePos(__int64 &karStart,__int64 &karEnd, bool cap) {
 void AudioDisplay::Update() {
 	if (blockUpdate) return;
 	if (loaded) {
-		if (Options.AsBool(_T("Audio Autoscroll"))) MakeDialogueVisible();
-		else {
+		if (Options.AsBool(_T("Audio Autoscroll")))
+			MakeDialogueVisible();
+		else
 			UpdateImage(true);
-			Refresh(false);
-		}
 	}
 }
 
@@ -644,7 +645,6 @@ void AudioDisplay::MakeDialogueVisible(bool force) {
 
 	// Update
 	UpdateImage();
-	Refresh(false);
 }
 
 
@@ -654,7 +654,6 @@ void AudioDisplay::SetPosition(int pos) {
 	Position = pos;
 	PositionSample = pos * samples;
 	UpdateImage();
-	Refresh(false);
 }
 
 
@@ -694,7 +693,6 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 		// Update
 		UpdateScrollbar();
 		UpdateImage();
-		Refresh(false);
 	}
 }
 
@@ -728,7 +726,6 @@ void AudioDisplay::SetScale(float _scale) {
 	if (scale == _scale) return;
 	scale = _scale;
 	UpdateImage();
-	Refresh(false);
 }
 
 
@@ -755,7 +752,6 @@ void AudioDisplay::SetFile(wxString file) {
 
 			// Update
 			UpdateImage();
-			Refresh(false);
 		}
 		catch (wxString &err) {
 			wxMessageBox(err,_T("Error loading audio"),wxICON_ERROR | wxOK);
@@ -1083,9 +1079,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		else {
 			int step = event.GetWheelRotation() * w / 360;
 			UpdatePosition(Position+step,false);
-			//SetFocus();
 			UpdateImage();
-			Refresh(false);
 		}
 	}
 
@@ -1188,13 +1182,10 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 			// Commit
 			NeedCommit = true;
-			if (Options.AsBool(_T("Audio SSA Allow Autocommit")) && Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS) {
+			if (Options.AsBool(_T("Audio SSA Allow Autocommit")) && Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS)
 				CommitChanges();
-			}
-			else {
+			else 
 				UpdateImage(true);
-				Refresh(false);
-			}
 		}
 	}
 
@@ -1356,7 +1347,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						wxCursor cursor(wxCURSOR_SIZEWE);
 						SetCursor(cursor);
 						UpdateImage(true);
-						Refresh(false);
 					}
 				}
 
@@ -1366,13 +1356,10 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 					if (diagUpdated) {
 						diagUpdated = false;
 						NeedCommit = true;
-						if (Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS) {
+						if (Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS) 
 							CommitChanges();
-						}
-						else {
+						else 
 							UpdateImage(true);
-							Refresh(false);
-						}
 					}
 
 					// Single click on nothing
@@ -1383,7 +1370,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 							if (syl != -1) {
 								karaoke->SetSyllable(syl);
 								UpdateImage(true);
-								Refresh(false);
 							}
 						}
 					}
@@ -1415,7 +1401,6 @@ void AudioDisplay::OnSize(wxSizeEvent &event) {
 
 	// Update image
 	UpdateImage();
-	Refresh(false);
 	
 	// Update scrollbar
 	UpdateScrollbar();
@@ -1537,14 +1522,12 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 	if (Hotkeys.IsPressed(_T("Audio Scroll Left"))) {
 		UpdatePosition(Position-128,false);
 		UpdateImage();
-		Refresh(false);
 	}
 
 	// Move forward
 	if (Hotkeys.IsPressed(_T("Audio Scroll Right"))) {
 		UpdatePosition(Position+128,false);
 		UpdateImage();
-		Refresh(false);
 	}
 
 	// Play first 500 ms
@@ -1603,13 +1586,10 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 	if (diagUpdated) {
 		diagUpdated = false;
 		NeedCommit = true;
-		if ((Options.AsBool(_T("Audio SSA Allow Autocommit")) || Options.AsBool(_T("Audio SSA Mode")) == false) && Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS) {
+		if ((Options.AsBool(_T("Audio SSA Allow Autocommit")) || Options.AsBool(_T("Audio SSA Mode")) == false) && Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS)
 			CommitChanges();
-		}
-		else {
+		else
 			UpdateImage(true);
-			Refresh(false);
-		}
 	}
 }
 
@@ -1628,10 +1608,8 @@ void AudioDisplay::ChangeLine(int delta) {
 		dialogue = NULL;
 		grid->editBox->SetToLine(next);
 		grid->SelectRow(next);
-		if (!dialogue) {
+		if (!dialogue)
 			UpdateImage(true);
-			Refresh(false);
-		}
 		line_n = next;
 	}
 }
@@ -1739,7 +1717,6 @@ void AudioDisplay::OnGetFocus(wxFocusEvent &event) {
 	if (!hasFocus) {
 		hasFocus = true;
 		UpdateImage(true);
-		Refresh(false);
 	}
 }
 
