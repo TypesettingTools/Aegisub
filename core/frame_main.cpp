@@ -125,6 +125,7 @@ FrameMain::FrameMain (wxArrayString args)
 ////////////////////////
 // FrameMain destructor
 FrameMain::~FrameMain () {
+	DeInitContents();
 }
 
 
@@ -374,6 +375,10 @@ void FrameMain::InitContents() {
 	Layout();
 }
 
+void FrameMain::DeInitContents() {
+	delete EditBox;
+	delete videoBox;
+}
 
 //////////////////
 // Update toolbar

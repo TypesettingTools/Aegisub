@@ -97,6 +97,7 @@ private:
 
 	void InitToolbar();
 	void InitContents();
+	void DeInitContents();
 
 	void OnAutoSave(wxTimerEvent &event);
 	void OnStatusClear(wxTimerEvent &event);
