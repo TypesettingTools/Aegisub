@@ -376,6 +376,10 @@ void FrameMain::InitContents() {
 }
 
 void FrameMain::DeInitContents() {
+	//ghetto hack to free all AssFile junk properly, eliminates lots of memory leaks
+	AssFile::StackReset();
+	delete AssFile::top;
+
 	delete EditBox;
 	delete videoBox;
 }
