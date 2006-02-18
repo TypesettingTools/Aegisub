@@ -59,7 +59,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	lastRow = -1;
 	yPos = 0;
 	bmp = NULL;
-	holding = true;
+	holding = false;
 
 	// Set font
 	wxString fontname = Options.AsText(_T("Font Face"));
@@ -436,15 +436,39 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	bool alt = event.m_altDown;
 	bool ctrl = event.m_controlDown;
 
-	// Click type
-	bool click = event.ButtonDown(wxMOUSE_BTN_LEFT);
-	if (click) holding = true;
-	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT)) holding = false;
-
 	// Row that mouse is over
+	bool click = event.ButtonDown(wxMOUSE_BTN_LEFT);
 	int row = event.GetY()/lineHeight + yPos - 1;
+	if (holding && !click) {
+		row = MID(0,row,GetRows()-1);
+	}
 	bool validRow = row >= 0 && row < GetRows();
 	if (!validRow) row = -1;
+
+	// Click type
+	if (click && !holding && validRow) {
+		holding = true;
+		CaptureMouse();
+	}
+	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT) && holding) {
+		holding = false;
+		ReleaseMouse();
+	}
+
+	// Scroll to keep visible
+	if (holding) {
+		// Find direction
+		int minVis = yPos+1;
+		int maxVis = yPos+h/lineHeight-3;
+		int delta = 0;
+		if (row < minVis) delta = -1;
+		if (row > maxVis) delta = +1;
+
+		// Scroll
+		yPos = MID(0,yPos+delta*3,GetRows()+2 - h/lineHeight);
+		scrollBar->SetThumbPosition(yPos);
+		Refresh(false);
+	}
 
 	// Click
 	if ((click || holding) && validRow) {
