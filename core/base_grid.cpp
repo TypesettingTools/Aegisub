@@ -134,6 +134,21 @@ void BaseGrid::EndBatch() {
 //////////////////////
 // Makes cell visible
 void BaseGrid::MakeCellVisible(int row, int col) {
+	// Get size
+	int w = 0;
+	int h = 0;
+	GetClientSize(&w,&h);
+	bool forceCenter = true;
+
+	// Get min and max visible
+	int minVis = yPos+1;
+	int maxVis = yPos+h/lineHeight-3;
+
+	// Make visible
+	if (forceCenter || row < minVis || row > maxVis) {
+		yPos = MID(0,row - h/lineHeight/2 + 1,GetRows()+2 - h/lineHeight);
+		scrollBar->SetThumbPosition(yPos);
+	}
 }
 
 
