@@ -43,6 +43,7 @@
 #include <wx/grid.h>
 #include <vector>
 #include <list>
+#include "base_grid.h"
 
 
 //////////////
@@ -63,20 +64,16 @@ typedef std::list<AssEntry*>::iterator entryIter;
 
 //////////////
 // Main class
-class SubtitlesGrid: public wxGrid {
+class SubtitlesGrid: public BaseGrid {
 private:
 	wxString tempfile;
 	bool changingCol;
 	bool ready;
-	FrameMain *parentFrame;
-	bool byFrame;
 	int RowHeight;
 
 public:
 	AssFile *ass;
-	SubsEditBox *editBox;
 	VideoDisplay *video;
-	std::vector<entryIter> diagMap;
 
 	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, VideoDisplay* video, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~SubtitlesGrid();
@@ -85,7 +82,7 @@ public:
 	void OnCellLeftClick(wxGridEvent &event);
 	void OnCellChange(wxGridEvent &event);
 	void OnSelectCell(wxGridEvent &event);
-	void OnPopupMenu(wxGridEvent &event);
+	void OnPopupMenu();
 	void OnKeyDown(wxKeyEvent &event);
 
 	void OnSwap(wxCommandEvent &event);
@@ -112,9 +109,6 @@ public:
 	void On122Recombine(wxCommandEvent &event);
 	void On112Recombine(wxCommandEvent &event);
 	
-	void OnSize(wxSizeEvent &event);
-	void OnPaint(wxPaintEvent &event);
-
 	void LoadDefault(AssFile *ass=NULL);
 	void Clear();
 	void SetRowColour(int n,AssDialogue *line=NULL);
@@ -138,11 +132,8 @@ public:
 	void SplitLine(int n,int pos,int mode);
 	int GetFirstSelRow();
 	wxArrayInt GetSelection(bool *continuous=NULL);
-	AssDialogue *GetDialogue(int n);
 
 	void SetByFrame (bool state);
-	void FitColumns ();
-	void SetScrollbar (int orientation, int position, int thumbSize, int range, bool refresh);
 	wxString GetTempWorkFile ();
 
 	DECLARE_EVENT_TABLE()

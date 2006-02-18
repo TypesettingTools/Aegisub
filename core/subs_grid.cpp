@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,13 +54,10 @@
 
 ///////////////
 // Event table
-BEGIN_EVENT_TABLE(SubtitlesGrid, wxGrid)
+BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_GRID_CELL_LEFT_CLICK(SubtitlesGrid::OnCellLeftClick)
-	EVT_GRID_CELL_RIGHT_CLICK(SubtitlesGrid::OnPopupMenu)
-	EVT_GRID_CELL_CHANGE(SubtitlesGrid::OnCellChange)
 	EVT_GRID_SELECT_CELL(SubtitlesGrid::OnSelectCell)
 	EVT_KEY_DOWN(SubtitlesGrid::OnKeyDown)
-	EVT_PAINT(SubtitlesGrid::OnPaint)
 
 	EVT_MENU(MENU_SWAP,SubtitlesGrid::OnSwap)
 	EVT_MENU(MENU_DUPLICATE,SubtitlesGrid::OnDuplicate)
@@ -93,7 +90,7 @@ END_EVENT_TABLE()
 ///////////////
 // Constructor
 SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID id, VideoDisplay *_video, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-                        : wxGrid(parent,id,pos,size,style,name)
+                        : BaseGrid(parent,id,pos,size,style,name)
 {
 	// Vars
 	changingCol = false;
@@ -114,93 +111,8 @@ SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID i
 	RowHeight = h+4;
 
 	// Set up
-	BeginBatch();
-	EnableDragRowSize(false);
-	EnableDragColSize(false);
-	SetRowMinimalAcceptableHeight(h);
-	SetColLabelSize(18);
-	SetRowLabelSize(30);
-	SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_BOTTOM);
-	CreateGrid(1,10,wxGrid::wxGridSelectRows);
-	//SetSelectionMode(wxGrid::wxGridSelectRows);
-	SetSelectionBackground(Options.AsColour(_T("Grid selection background")));
-	SetSelectionForeground(Options.AsColour(_T("Grid selection foreground")));
-
-	// Initialize columns
-	SetColLabelValue(0,_("L"));
-	SetColLabelValue(1,_("Start"));
-	SetColLabelValue(2,_("End"));
-	SetColLabelValue(3,_("Style"));
-	SetColLabelValue(4,_("Act"));
-	SetColLabelValue(5,_("Eff"));
-	SetColLabelValue(6,_("Lef"));
-	SetColLabelValue(7,_("Rig"));
-	SetColLabelValue(8,_("Ver"));
-	SetColLabelValue(9,_("Dialogue"));
-
-	// Set column attributes
-	wxGridCellAttr *attr;
-	attr = new wxGridCellAttr();
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(0,attr);
-
-	attr = new wxGridCellAttr();
-	//attr->SetAlignment(wxALIGN_LEFT,wxALIGN_BOTTOM);
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(1,attr);
-
-	attr = new wxGridCellAttr();
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(2,attr);
-
-	attr = new wxGridCellAttr();
-	attr->SetAlignment(wxALIGN_LEFT,wxALIGN_BOTTOM);
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(3,attr);
-
-	attr = new wxGridCellAttr();
-	attr->SetAlignment(wxALIGN_LEFT,wxALIGN_BOTTOM);
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(4,attr);
-
-	attr = new wxGridCellAttr();
-	attr->SetAlignment(wxALIGN_LEFT,wxALIGN_BOTTOM);
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(5,attr);
-
-	attr = new wxGridCellAttr();
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(6,attr);
-
-	attr = new wxGridCellAttr();
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(7,attr);
-
-	attr = new wxGridCellAttr();
-	attr->SetReadOnly(true);
-	attr->SetFont(font);
-	SetColAttr(8,attr);
-
-	attr = new wxGridCellAttr();
-	wxString fontname = Options.AsText(_T("Font Face"));
-	if (fontname != _T("")) {
-		font.SetFaceName(fontname);
-	}
-	attr->SetFont(font);
-	attr->SetAlignment(wxALIGN_LEFT,wxALIGN_BOTTOM);
-	attr->SetReadOnly(true);
-	SetColAttr(9,attr);
-
-	// Apply
-	EndBatch();
+	//SetSelectionBackground(Options.AsColour(_T("Grid selection background")));
+	//SetSelectionForeground(Options.AsColour(_T("Grid selection foreground")));
 }
 
 
@@ -214,7 +126,7 @@ SubtitlesGrid::~SubtitlesGrid() {
 
 //////////////
 // Popup menu
-void SubtitlesGrid::OnPopupMenu(wxGridEvent &event) {
+void SubtitlesGrid::OnPopupMenu() {
 	// Get selections
 	bool continuous;
 	wxArrayInt selections = GetSelection(&continuous);
@@ -913,97 +825,6 @@ void SubtitlesGrid::OnSelectCell(wxGridEvent &event) {
 }
 
 
-////////////////
-// Cell updated
-void SubtitlesGrid::OnCellChange (wxGridEvent &event) {
-	// Some strange wxWidgets thing makes AutoSizeColumn throw this
-	// event, causing an infinite loop... so, workaround.
-	if (changingCol) {
-		event.Skip();
-		return;
-	}
-	throw _T("This shouldn't be used anymore!!");
-
-/*	leftovers from in grid editing
-
-	// Get position
-	changingCol = true;
-	int row = event.GetRow();
-	int col = event.GetCol();
-	BeginBatch();
-
-	AssDialogue *entry = GetDialogue(row);
-	long longt;
-	switch (col) {
-		// Layer
-		case 0:
-			GetCellValue(row,col).ToLong(&longt);
-			entry->Layer = longt;
-			AutoSizeColumn(col,false);
-			break;
-		// Start time
-		case 1:
-			entry->Start.ParseASS(GetCellValue(row,col));
-			SetCellValue(row,col,entry->Start.GetASSFormated());
-			break;
-		// End time
-		case 2:
-			entry->End.ParseASS(GetCellValue(row,col));
-			SetCellValue(row,col,entry->End.GetASSFormated());
-			break;
-		// Style
-		case 3:
-			entry->Style = GetCellValue(row,col);
-			AutoSizeColumn(col,false);
-			break;
-		// Actor
-		case 4:
-			entry->Actor = GetCellValue(row,col);
-			AutoSizeColumn(col,false);
-			break;
-		// Effect
-		case 5:
-			entry->Effect = GetCellValue(row,col);
-			AutoSizeColumn(col,false);
-			break;
-		// Margin left
-		case 6:
-			entry->SetMarginString(GetCellValue(row,col),1);
-			SetCellValue(row,col,entry->GetMarginString(1));
-			break;
-		// Margin right
-		case 7:
-			entry->SetMarginString(GetCellValue(row,col),2);
-			SetCellValue(row,col,entry->GetMarginString(2));
-			break;
-		// Margin vertical
-		case 8:
-			entry->SetMarginString(GetCellValue(row,col),3);
-			SetCellValue(row,col,entry->GetMarginString(3));
-			break;
-		// Text
-		case 9:
-			entry->Text = GetCellValue(row,col);
-			entry->ParseASSTags();
-			break;
-	}
-
-	// Update value on subs
-	entry->UpdateData();
-
-	// Clear up
-	EndBatch();
-	changingCol = false;
-
-	// Commit
-	editBox->SetToLine(row);
-	CommitChanges();
-	ass->FlagAsModified();
-	event.Skip();
-*/
-}
-
-
 //////////////////////////////////////
 // Clears grid and sets it to default
 void SubtitlesGrid::LoadDefault (AssFile *_ass) {
@@ -1018,8 +839,9 @@ void SubtitlesGrid::LoadDefault (AssFile *_ass) {
 ///////////////
 // Clears grid
 void SubtitlesGrid::Clear () {
-	if (GetNumberRows() > 0) DeleteRows(0,GetNumberRows());
+	//if (GetNumberRows() > 0) DeleteRows(0,GetNumberRows());
 	diagMap.clear();
+	selMap.clear();
 }
 
 
@@ -1045,21 +867,6 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 		if (!ass) throw _T("Trying to set subs grid to current ass file, but there is none");
 	}
 
-	// Set styles editor
-	/*wxArrayString styles;
-	AssStyle *curstyle;
-	for (entryIter cur=ass->Line.begin();cur != ass->Line.end();cur++) {
-		curstyle = AssEntry::GetAsStyle(*cur);
-		if (curstyle) {
-			styles.Add(curstyle->name);
-		}
-	}
-	if (styles.GetCount() == 0) styles.Add(_T("Default"));
-	wxGridCellAttr *attr1 = new wxGridCellAttr;
-	attr1->SetEditor(new wxGridCellChoiceEditor(styles));
-	attr1->SetAlignment(wxALIGN_LEFT,wxALIGN_BOTTOM);
-	SetColAttr(3,attr1);*/
-
 	// Run through subs adding them
 	int n = 0;
 	AssDialogue *curdiag;
@@ -1067,9 +874,10 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 	for (entryIter cur=ass->Line.begin();cur != ass->Line.end();cur++) {
 		curdiag = AssEntry::GetAsDialogue(*cur);
 		if (curdiag) {
-			AppendRows(1);
+			//AppendRows(1);
 			SetRowToLine(n,curdiag);
 			diagMap.push_back(cur);
+			selMap.push_back(false);
 			n++;
 		}
 	}
@@ -1088,8 +896,6 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 	}
 
 	// Finish setting layout
-	AutoSizeColumns();
-	FitColumns();
 	EndBatch();
 
 	// Commit
@@ -1118,63 +924,63 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 /////////////////////////////////////////
 // Sets one line to a line from the subs
 void SubtitlesGrid::SetRowToLine(int n,AssDialogue *line) {
-	BeginBatch();
+	//BeginBatch();
 
-	// Times
-	if (byFrame) {
-		SetCellValue(n,1,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true)));
-		SetCellValue(n,2,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false)));
-	}
-	else {
-		SetCellValue(n,1,line->Start.GetASSFormated());
-		SetCellValue(n,2,line->End.GetASSFormated());
-	}
+	//// Times
+	//if (byFrame) {
+	//	SetCellValue(n,1,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true)));
+	//	SetCellValue(n,2,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false)));
+	//}
+	//else {
+	//	SetCellValue(n,1,line->Start.GetASSFormated());
+	//	SetCellValue(n,2,line->End.GetASSFormated());
+	//}
 
-	// Fields
-	SetCellValue(n,0,wxString::Format(_T("%d"),line->Layer));
-	SetCellValue(n,3,line->Style);
-	SetCellValue(n,4,line->Actor);
-	SetCellValue(n,5,line->Effect);
-	SetCellValue(n,6,wxString::Format(_T("%04d"),line->MarginL));
-	SetCellValue(n,7,wxString::Format(_T("%04d"),line->MarginR));
-	SetCellValue(n,8,wxString::Format(_T("%04d"),line->MarginV));
+	//// Fields
+	//SetCellValue(n,0,wxString::Format(_T("%d"),line->Layer));
+	//SetCellValue(n,3,line->Style);
+	//SetCellValue(n,4,line->Actor);
+	//SetCellValue(n,5,line->Effect);
+	//SetCellValue(n,6,wxString::Format(_T("%04d"),line->MarginL));
+	//SetCellValue(n,7,wxString::Format(_T("%04d"),line->MarginR));
+	//SetCellValue(n,8,wxString::Format(_T("%04d"),line->MarginV));
 
-	// Text
-	int mode = Options.AsInt(_T("Grid Hide Overrides"));
-	wxString value = _T("");
+	//// Text
+	//int mode = Options.AsInt(_T("Grid Hide Overrides"));
+	//wxString value = _T("");
 
-	// Hid overrides
-	if (mode == 1 || mode == 2) {
-		wxString replaceWith = Options.AsText(_T("Grid hide overrides char"));
-		line->ParseASSTags();
-		size_t n = line->Blocks.size();
-		for (size_t i=0;i<n;i++) {
-			AssDialogueBlock *block = line->Blocks.at(i);
-			AssDialogueBlockPlain *plain = AssDialogueBlock::GetAsPlain(block);
-			if (plain) {
-				value += plain->GetText();
-			}
-			else {
-				if (mode == 1) {
-					value += replaceWith;
-				}
-			}
-		}
-	}
+	//// Hid overrides
+	//if (mode == 1 || mode == 2) {
+	//	wxString replaceWith = Options.AsText(_T("Grid hide overrides char"));
+	//	line->ParseASSTags();
+	//	size_t n = line->Blocks.size();
+	//	for (size_t i=0;i<n;i++) {
+	//		AssDialogueBlock *block = line->Blocks.at(i);
+	//		AssDialogueBlockPlain *plain = AssDialogueBlock::GetAsPlain(block);
+	//		if (plain) {
+	//			value += plain->GetText();
+	//		}
+	//		else {
+	//			if (mode == 1) {
+	//				value += replaceWith;
+	//			}
+	//		}
+	//	}
+	//}
 
-	// Show overrides
-	else value = line->Text;
+	//// Show overrides
+	//else value = line->Text;
 
-	// Cap length and set text
-	if (value.Length() > 128) value = value.Left(128) + _T("...");
-	SetCellValue(n,9,value);
+	//// Cap length and set text
+	//if (value.Length() > 128) value = value.Left(128) + _T("...");
+	//SetCellValue(n,9,value);
 
-	// Colour
-	SetRowColour(n,line);
+	//// Colour
+	//SetRowColour(n,line);
 
-	// Size
-	SetRowSize(n,RowHeight);
-	EndBatch();
+	//// Size
+	//SetRowSize(n,RowHeight);
+	//EndBatch();
 }
 
 
@@ -1199,7 +1005,7 @@ void SubtitlesGrid::SetRowColour(int n,AssDialogue *line) {
 	}
 
 	// Set
-	SetRowAttr(n,attr);
+	//SetRowAttr(n,attr);
 }
 
 
@@ -1209,7 +1015,7 @@ void SubtitlesGrid::UpdateRowColours() {
 	BeginBatch();
 	int rows = GetRows();
 	for (int i=0;i<rows;i++) {
-		SetRowColour(i);
+		//SetRowColour(i);
 	}
 	EndBatch();
 }
@@ -1252,9 +1058,10 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	}
 	line->UpdateData();
 	entryIter newIter = ass->Line.insert(pos,line);
-	InsertRows(n);
-	SetRowToLine(n,line);
+	//InsertRows(n);
+	//SetRowToLine(n,line);
 	diagMap.insert(diagMap.begin() + n,newIter);
+	selMap.insert(selMap.begin() + n,false);
 
 	// Update
 	if (update) {
@@ -1628,18 +1435,6 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 }
 
 
-//////////////////////////
-// Gets dialogue from map
-AssDialogue *SubtitlesGrid::GetDialogue(int n) {
-	try {
-		return AssEntry::GetAsDialogue(*(diagMap.at(n)));
-	}
-	catch (...) {
-		return NULL;
-	}
-}
-
-
 //////////////////
 // Commit changes
 // --------------
@@ -1665,46 +1460,6 @@ void SubtitlesGrid::CommitChanges(bool force) {
 	}
 	parentFrame->UpdateTitle();
 }
-
-
-//////////////
-// Size event
-void SubtitlesGrid::OnSize(wxSizeEvent &event) {
-	FitColumns();
-	event.Skip();
-}
-
-
-///////////////
-// Paint event
-void SubtitlesGrid::OnPaint(wxPaintEvent &event) {
-	FitColumns();
-	event.Skip();
-}
-
-
-///////////////
-// Fit columns
-void SubtitlesGrid::FitColumns() {
-	int w,h;
-	GetClientSize(&w,&h);
-	int i;
-	int colw=0;
-	for (i=0;i<GetCols()-1;i++) {
-		colw += GetColSize(i);
-	}
-	colw += GetRowLabelSize();
-	int idealSize = w-colw;
-	if (GetColSize(i) != idealSize) SetColSize(i,idealSize);
-}
-
-
-/////////////////////////
-// SetScrollbar override
-void SubtitlesGrid::SetScrollbar (int orientation, int position, int thumbSize, int range, bool refresh) {
-	if (orientation != wxHORIZONTAL) wxGrid::SetScrollbar (orientation, position, thumbSize, range, refresh);
-	else wxGrid::SetScrollbar (orientation, 0, 0, 0);
-} 
 
 
 ///////////////////////////
@@ -1749,30 +1504,30 @@ wxArrayInt SubtitlesGrid::GetSelection(bool *cont) {
 void SubtitlesGrid::SetByFrame (bool state) {
 	// Check if it's already the same
 	if (byFrame == state) return;
-
-	BeginBatch();
-	// Update rows
 	byFrame = state;
-	int nrows = GetRows();
-	AssDialogue *line;
-	for (int i=0;i<nrows;i++) {
-		line = GetDialogue(i);
-		if (byFrame) {
-			SetCellValue(i,1,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true)));
-			SetCellValue(i,2,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false)));
-		}
-		else {
-			SetCellValue(i,1,line->Start.GetASSFormated());
-			SetCellValue(i,2,line->End.GetASSFormated());
-		}
-	}
 
-	// Update columns
-	//AutoSizeColumn(1,false);
-	//AutoSizeColumn(2,false);
-	AutoSizeColumns();
-	FitColumns();
-	EndBatch();
+	//// Update rows
+	//BeginBatch();
+	//int nrows = GetRows();
+	//AssDialogue *line;
+	//for (int i=0;i<nrows;i++) {
+	//	line = GetDialogue(i);
+	//	if (byFrame) {
+	//		SetCellValue(i,1,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true)));
+	//		SetCellValue(i,2,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false)));
+	//	}
+	//	else {
+	//		SetCellValue(i,1,line->Start.GetASSFormated());
+	//		SetCellValue(i,2,line->End.GetASSFormated());
+	//	}
+	//}
+
+	//// Update columns
+	////AutoSizeColumn(1,false);
+	////AutoSizeColumn(2,false);
+	//AutoSizeColumns();
+	//FitColumns();
+	//EndBatch();
 }
 
 

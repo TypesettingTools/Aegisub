@@ -58,6 +58,7 @@
 #include "export_framerate.h"
 #include "ass_export_filter.h"
 #include "ass_time.h"
+#include "subs_grid.h"
 
 
 ///////////////////
@@ -293,7 +294,7 @@ END_EVENT_TABLE()
 void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
 	wxPoint pt;
 	wxWindow *target = wxFindWindowAtPointer(pt);
-	if (target == frame->audioBox->audioDisplay) {
+	if (target == frame->audioBox->audioDisplay || target == frame->SubsBox) {
 		target->AddPendingEvent(event);
 	}
 	else event.Skip();
