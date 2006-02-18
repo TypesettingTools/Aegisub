@@ -62,6 +62,7 @@ private:
 	int colWidth[16];
 	int yPos;
 	int lastRow;
+	bool holding;
 	wxFont font;
 	wxScrollBar *scrollBar;
 	wxBitmap *bmp;

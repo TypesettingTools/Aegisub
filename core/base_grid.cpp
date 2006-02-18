@@ -59,6 +59,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	lastRow = -1;
 	yPos = 0;
 	bmp = NULL;
+	holding = true;
 
 	// Set font
 	wxString fontname = Options.AsText(_T("Font Face"));
@@ -101,7 +102,15 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 		bool cur = selMap.at(row);
 		if (select != cur) {
 			selMap.at(row) = select;
-			Refresh(false);
+			
+			if (!addToSelected) Refresh(false);
+
+			else {
+				int w = 0;
+				int h = 0;
+				GetClientSize(&w,&h);
+				RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
+			}
 		}
 	}
 	catch (...) {}
@@ -429,7 +438,8 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Click type
 	bool click = event.ButtonDown(wxMOUSE_BTN_LEFT);
-	bool hold = event.ButtonIsDown(wxMOUSE_BTN_LEFT);
+	if (click) holding = true;
+	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT)) holding = false;
 
 	// Row that mouse is over
 	int row = event.GetY()/lineHeight + yPos - 1;
@@ -437,14 +447,24 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	if (!validRow) row = -1;
 
 	// Click
-	if ((click || hold) && validRow) {
+	if ((click || holding) && validRow) {
 		// Toggle selected
 		if (click && ctrl && !shift) {
 			SelectRow(row,true,!IsInSelection(row,0));
+			return;
+		}
+
+		// Normal click
+		if (click && !shift && !ctrl && !alt) {
+			editBox->SetToLine(row);
+			parentFrame->SetSelectionFlag(validRow);
+			SelectRow(row,false);
+			lastRow = row;
+			return;
 		}
 
 		// Block select
-		if ((click && shift && !ctrl) || (hold)) {
+		if ((click && shift && !ctrl) || (holding)) {
 			if (lastRow != -1) {
 				// Set boundaries
 				int i1 = row;
@@ -462,15 +482,9 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 					notFirst = true;
 				}
 			}
+			return;
 		}
 
-		// Normal click
-		if (click && !shift && !ctrl && !alt) {
-			editBox->SetToLine(row);
-			parentFrame->SetSelectionFlag(validRow);
-			SelectRow(row,false);
-			lastRow = row;
-		}
 		return;
 	}
 
