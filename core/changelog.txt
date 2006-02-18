@@ -19,6 +19,7 @@ Please visit http://aegisub.net to download latest version
 - Implemented FexTracker, for automatically tracking positions on the video and placing text accordingly (Tentacle)
 - Drag-and-drop files onto the program no longer causes the subs to be unloaded every time, even if no subs were dropped (jfs)
 - 1,1+2 recombining lines where 1 is a substring of 2 no longer causes incorrect behavior. 1+2,2 similarly fixed. This fix also gives more sanity-checking in the recombining (jfs)
+- Replaced the subtitles grid with a custom control, which should hopefully behave and look better (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
