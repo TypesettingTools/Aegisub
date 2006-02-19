@@ -73,7 +73,6 @@ private:
 
 public:
 	AssFile *ass;
-	VideoDisplay *video;
 
 	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, VideoDisplay* video, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~SubtitlesGrid();
@@ -114,7 +113,6 @@ public:
 	void SetRowColour(int n,AssDialogue *line=NULL);
 	void UpdateRowColours();
 	void SelectVisible();
-	bool IsDisplayed(AssDialogue *line);
 	void SetRowToLine(int n,AssDialogue *line);
 	void LoadFromAss(AssFile *ass=NULL,bool keepSelection=false,bool dontModify=false);
 	void CommitChanges(bool force=false);

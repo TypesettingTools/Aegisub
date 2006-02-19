@@ -177,6 +177,7 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	// HACK: Fix colour of bg of editbox
 	origBgColour = TextEdit->GetBackgroundColour();
 	disabledBgColour = GetBackgroundColour();
+	Update();
 }
 
 

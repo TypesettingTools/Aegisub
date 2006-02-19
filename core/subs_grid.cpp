@@ -924,100 +924,21 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 /////////////////////////////////////////
 // Sets one line to a line from the subs
 void SubtitlesGrid::SetRowToLine(int n,AssDialogue *line) {
-	//BeginBatch();
-
-	//// Times
-	//if (byFrame) {
-	//	SetCellValue(n,1,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true)));
-	//	SetCellValue(n,2,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false)));
-	//}
-	//else {
-	//	SetCellValue(n,1,line->Start.GetASSFormated());
-	//	SetCellValue(n,2,line->End.GetASSFormated());
-	//}
-
-	//// Fields
-	//SetCellValue(n,0,wxString::Format(_T("%d"),line->Layer));
-	//SetCellValue(n,3,line->Style);
-	//SetCellValue(n,4,line->Actor);
-	//SetCellValue(n,5,line->Effect);
-	//SetCellValue(n,6,wxString::Format(_T("%04d"),line->MarginL));
-	//SetCellValue(n,7,wxString::Format(_T("%04d"),line->MarginR));
-	//SetCellValue(n,8,wxString::Format(_T("%04d"),line->MarginV));
-
-	//// Text
-	//int mode = Options.AsInt(_T("Grid Hide Overrides"));
-	//wxString value = _T("");
-
-	//// Hid overrides
-	//if (mode == 1 || mode == 2) {
-	//	wxString replaceWith = Options.AsText(_T("Grid hide overrides char"));
-	//	line->ParseASSTags();
-	//	size_t n = line->Blocks.size();
-	//	for (size_t i=0;i<n;i++) {
-	//		AssDialogueBlock *block = line->Blocks.at(i);
-	//		AssDialogueBlockPlain *plain = AssDialogueBlock::GetAsPlain(block);
-	//		if (plain) {
-	//			value += plain->GetText();
-	//		}
-	//		else {
-	//			if (mode == 1) {
-	//				value += replaceWith;
-	//			}
-	//		}
-	//	}
-	//}
-
-	//// Show overrides
-	//else value = line->Text;
-
-	//// Cap length and set text
-	//if (value.Length() > 128) value = value.Left(128) + _T("...");
-	//SetCellValue(n,9,value);
-
-	//// Colour
-	//SetRowColour(n,line);
-
-	//// Size
-	//SetRowSize(n,RowHeight);
-	//EndBatch();
+	Refresh(false);
 }
 
 
 //////////////////
 // Sets row color
 void SubtitlesGrid::SetRowColour(int n,AssDialogue *line) {
-	// Get line
-	if (!line) line = GetDialogue(n);
-	if (!line) return;
-	wxGridCellAttr* attr = new wxGridCellAttr;
-
-	// Comment
-	if (line->Comment) {
-		attr->SetTextColour(Options.AsColour(_T("Grid selection foreground")));
-		attr->SetBackgroundColour(Options.AsColour(_T("Grid comment background")));
-	}
-
-	// In video
-	else if (Options.AsBool(_T("Highlight subs in frame")) && IsDisplayed(line)) {
-		attr->SetTextColour(Options.AsColour(_T("Grid selection foreground")));
-		attr->SetBackgroundColour(Options.AsColour(_T("Grid inframe background")));
-	}
-
-	// Set
-	//SetRowAttr(n,attr);
+	Refresh(false);
 }
 
 
 //////////////////////
 // Update row colours
 void SubtitlesGrid::UpdateRowColours() {
-	BeginBatch();
-	int rows = GetRows();
-	for (int i=0;i<rows;i++) {
-		//SetRowColour(i);
-	}
-	EndBatch();
+	Refresh(false);
 }
 
 
@@ -1505,29 +1426,8 @@ void SubtitlesGrid::SetByFrame (bool state) {
 	// Check if it's already the same
 	if (byFrame == state) return;
 	byFrame = state;
-
-	//// Update rows
-	//BeginBatch();
-	//int nrows = GetRows();
-	//AssDialogue *line;
-	//for (int i=0;i<nrows;i++) {
-	//	line = GetDialogue(i);
-	//	if (byFrame) {
-	//		SetCellValue(i,1,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true)));
-	//		SetCellValue(i,2,wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false)));
-	//	}
-	//	else {
-	//		SetCellValue(i,1,line->Start.GetASSFormated());
-	//		SetCellValue(i,2,line->End.GetASSFormated());
-	//	}
-	//}
-
-	//// Update columns
-	////AutoSizeColumn(1,false);
-	////AutoSizeColumn(2,false);
-	//AutoSizeColumns();
-	//FitColumns();
-	//EndBatch();
+	SetColumnWidths();
+	Refresh(false);
 }
 
 
@@ -1539,17 +1439,6 @@ wxString SubtitlesGrid::GetTempWorkFile () {
 		tempfile += _T(".ass");
 	}
 	return tempfile;
-}
-
-
-////////////////////////////////////
-// Check if line is being displayed
-bool SubtitlesGrid::IsDisplayed(AssDialogue *line) {
-	if (!video->loaded) return false;
-	int f1 = VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true);
-	int f2 = VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false);
-	if (f1 <= video->frame_n && f2 >= video->frame_n) return true;
-	return false;
 }
 
 

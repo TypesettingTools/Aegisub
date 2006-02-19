@@ -51,6 +51,7 @@ class AssEntry;
 class AssDialogue;
 class SubsEditBox;
 class FrameMain;
+class VideoDisplay;
 typedef std::list<AssEntry*>::iterator entryIter;
 
 
@@ -73,7 +74,6 @@ private:
 	void OnMouseEvent(wxMouseEvent &event);
 
 	void AdjustScrollbar();
-	void SetColumnWidths();
 	void DrawImage(wxDC &dc);
 
 protected:
@@ -82,10 +82,13 @@ protected:
 
 public:
 	SubsEditBox *editBox;
+	VideoDisplay *video;
+
 	bool byFrame;
 	std::vector<entryIter> diagMap;
 	std::vector<bool> selMap;
 
+	void SetColumnWidths();
 	void BeginBatch();
 	void EndBatch();
 	void MakeCellVisible(int row, int col);
@@ -93,6 +96,8 @@ public:
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
 	void ClearSelection();
 	bool IsInSelection(int row, int col) const;
+	bool IsDisplayed(AssDialogue *line);
+	int GetNumberSelection();
 
 	int GetRows() const;
 	int GetNumberRows() const { return GetRows(); }

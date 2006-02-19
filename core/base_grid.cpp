@@ -48,6 +48,7 @@
 #include "vfr.h"
 #include "subs_edit_box.h"
 #include "frame_main.h"
+#include "video_display.h"
 
 
 ///////////////
@@ -266,9 +267,17 @@ void BaseGrid::DrawImage(wxDC &dc) {
 
 	// Row colors
 	std::vector<wxBrush> rowColors;
-	rowColors.push_back(wxBrush(wxColour(255,255,255)));
-	rowColors.push_back(wxBrush(wxColour(165,207,231)));
-	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid selection background"))));
+	std::vector<wxBrush> foreColors;
+	rowColors.push_back(wxBrush(wxColour(255,255,255)));								// 0 = Standard
+	foreColors.push_back(wxBrush(wxColour(0,0,0)));
+	rowColors.push_back(wxBrush(wxColour(165,207,231)));								// 1 = Header
+	foreColors.push_back(wxBrush(wxColour(0,0,0)));
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid selection background"))));	// 2 = Selected
+	foreColors.push_back(wxBrush(Options.AsColour(_T("Grid selection foreground"))));
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid comment background"))));		// 3 = Commented
+	foreColors.push_back(wxBrush(Options.AsColour(_T("Grid selection foreground"))));
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid inframe background"))));		// 4 = Video Highlighted
+	foreColors.push_back(wxBrush(Options.AsColour(_T("Grid selection foreground"))));
 
 	// First grid row
 	bool drawGrid = true;
@@ -314,8 +323,14 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			// Set fields
 			strings.Add(wxString::Format(_T("%i"),curRow+1));
 			strings.Add(wxString::Format(_T("%i"),curDiag->Layer));
-			strings.Add(curDiag->Start.GetASSFormated());
-			strings.Add(curDiag->End.GetASSFormated());
+			if (byFrame) {
+				strings.Add(wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(curDiag->Start.GetMS(),true)));
+				strings.Add(wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(curDiag->End.GetMS(),true)));
+			}
+			else {
+				strings.Add(curDiag->Start.GetASSFormated());
+				strings.Add(curDiag->End.GetASSFormated());
+			}
 			strings.Add(curDiag->Style);
 			strings.Add(curDiag->Actor);
 			strings.Add(curDiag->Effect);
@@ -350,12 +365,14 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			else value = curDiag->Text;
 
 			// Cap length and set text
-			if (value.Length() > 128) value = value.Left(128) + _T("...");
+			if (value.Length() > 512) value = value.Left(512) + _T("...");
 			strings.Add(value);
 
 			// Set color
 			curColor = 0;
 			if (IsInSelection(curRow,0)) curColor = 2;
+			else if (curDiag->Comment) curColor = 3;
+			else if (Options.AsBool(_T("Highlight subs in frame")) && IsDisplayed(curDiag)) curColor = 4;
 		}
 
 		else {
@@ -490,14 +507,15 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		// Toggle selected
 		if (click && ctrl && !shift) {
 			SelectRow(row,true,!IsInSelection(row,0));
+			parentFrame->SetSelectionFlag(GetNumberSelection());
 			return;
 		}
 
 		// Normal click
 		if (click && !shift && !ctrl && !alt) {
 			editBox->SetToLine(row);
-			parentFrame->SetSelectionFlag(validRow);
 			SelectRow(row,false);
+			parentFrame->SetSelectionFlag(GetNumberSelection());
 			lastRow = row;
 			return;
 		}
@@ -520,6 +538,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 					SelectRow(i,notFirst,true);
 					notFirst = true;
 				}
+				parentFrame->SetSelectionFlag(GetNumberSelection());
 			}
 			return;
 		}
@@ -553,7 +572,7 @@ void BaseGrid::AdjustScrollbar() {
 	GetClientSize(&w,&h);
 	scrollBar->Freeze();
 	scrollBar->GetSize(&sw,&sh);
-	scrollBar->SetSize(w-sw-4,0,sw,h-4);
+	scrollBar->SetSize(w-sw,0,sw,h);
 
 	// Set parameters
 	int drawPerScreen = h/lineHeight;
@@ -669,4 +688,15 @@ AssDialogue *BaseGrid::GetDialogue(int n) {
 	catch (...) {
 		return NULL;
 	}
+}
+
+
+////////////////////////////////////
+// Check if line is being displayed
+bool BaseGrid::IsDisplayed(AssDialogue *line) {
+	if (!video->loaded) return false;
+	int f1 = VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true);
+	int f2 = VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false);
+	if (f1 <= video->frame_n && f2 >= video->frame_n) return true;
+	return false;
 }
