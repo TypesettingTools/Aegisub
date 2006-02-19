@@ -996,23 +996,34 @@ void FrameMain::OnOpenStylingAssistant (wxCommandEvent &event) {
 // Auto backup
 void FrameMain::OnAutoSave(wxTimerEvent &event) {
 	// Auto Save
-	if (AssFile::top->loaded && AssFile::top->IsASS) {
-		// Set path
-		wxFileName origfile(AssFile::top->filename);
-		wxString path = Options.AsText(_T("Auto save path"));
-		if (path == _T("")) path = origfile.GetPath();
-		wxFileName dstpath(path);
-		if (!dstpath.IsAbsolute()) path = AegisubApp::folderName + path;
-		path += _T("/");
-		dstpath.Assign(path);
-		if (!dstpath.DirExists()) wxMkdir(path);
+	try {
+		if (AssFile::top->loaded && AssFile::top->IsASS) {
+			// Set path
+			wxFileName origfile(AssFile::top->filename);
+			wxString path = Options.AsText(_T("Auto save path"));
+			if (path == _T("")) path = origfile.GetPath();
+			wxFileName dstpath(path);
+			if (!dstpath.IsAbsolute()) path = AegisubApp::folderName + path;
+			path += _T("/");
+			dstpath.Assign(path);
+			if (!dstpath.DirExists()) wxMkdir(path);
 
-		// Save
-		wxString backup = path + origfile.GetName() + _T(".AUTOSAVE.") + origfile.GetExt();
-		AssFile::top->Save(backup,false,false);
+			// Save
+			wxString backup = path + origfile.GetName() + _T(".AUTOSAVE.") + origfile.GetExt();
+			AssFile::top->Save(backup,false,false);
 
-		// Set status bar
-		StatusTimeout(_("File backup saved as \"") + backup + _T("\"."));
+			// Set status bar
+			StatusTimeout(_("File backup saved as \"") + backup + _T("\"."));
+		}
+	}
+	catch (wxString err) {
+		StatusTimeout(_T("Exception when attempting to autosave file: ") + err);
+	}
+	catch (wchar_t *err) {
+		StatusTimeout(_T("Exception when attempting to autosave file: ") + wxString(err));
+	}
+	catch (...) {
+		StatusTimeout(_T("Unhandled exception when attempting to autosave file."));
 	}
 }
 
@@ -1106,7 +1117,7 @@ void FrameMain::OnToggleTags(wxCommandEvent &event) {
 	Options.Save();
 
 	// Refresh grid
-	SubsBox->LoadFromAss(NULL,true,true);
+	SubsBox->Refresh(false);
 }
 
 

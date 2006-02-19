@@ -27,6 +27,7 @@ Please visit http://aegisub.net to download latest version
 - Default video zoom can now be set in config.dat and is defaulted to 100% (AMZ)
 - Fixed crash in Translation and Styling assistants, when you attempted to move past end of file, and then play (AMZ)
 - Fixed linked commit of times, so it will only commit both times if the other was changed (to prevent damage when editing multiple lines) (AMZ)
+- Fixed bug related to tag cycling, which would reset grid, move video and force a refresh of everything (slow, and could undo uncommited changes) (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
