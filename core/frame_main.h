@@ -212,7 +212,6 @@ private:
 	void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp);
 	wxMenuItem *RebuildMenuItem(wxMenu *menu,int id,wxBitmap bmp1,wxBitmap bmp2,bool state);
 	void MenuItemEnable(int id,bool state,wxBitmap &bmp1,wxBitmap &bmp2);
-	void UpdateToolbar();
 	void SynchronizeProject(bool FromSubs=false);
 
 public:
@@ -228,11 +227,11 @@ public:
 	static void OpenHelp(wxString page=_T(""));
 	static wxArrayString GetEncodings();
 	void UpdateTitle();
-	void SetSelectionFlag (bool HasSelection);
 	void StatusTimeout(wxString text,int ms=10000);
 
 	void SetAccelerators();
 	void InitMenu();
+	void UpdateToolbar();
 
 	DECLARE_EVENT_TABLE()
 };

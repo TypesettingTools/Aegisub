@@ -390,6 +390,7 @@ void FrameMain::UpdateToolbar() {
 	// Collect flags
 	bool isVideo = (curMode == 1) || (curMode == 2);
 	HasSelection = true;
+	int selRows = SubsBox->GetNumberSelection();
 
 	// Update
 	wxToolBar* toolbar = GetToolBar();
@@ -397,13 +398,13 @@ void FrameMain::UpdateToolbar() {
 	toolbar->FindById(Menu_Video_Zoom_In)->Enable(isVideo);
 	toolbar->FindById(Menu_Video_Zoom_Out)->Enable(isVideo);
 	ZoomBox->Enable(isVideo);
-	toolbar->FindById(Menu_Subs_Snap_Start_To_Video)->Enable(isVideo && HasSelection);
-	toolbar->FindById(Menu_Subs_Snap_End_To_Video)->Enable(isVideo && HasSelection);
-	toolbar->FindById(Menu_Subs_Snap_Video_To_Start)->Enable(isVideo && HasSelection);
-	toolbar->FindById(Menu_Subs_Snap_Video_To_End)->Enable(isVideo && HasSelection);
+	toolbar->FindById(Menu_Subs_Snap_Start_To_Video)->Enable(isVideo && selRows > 0);
+	toolbar->FindById(Menu_Subs_Snap_End_To_Video)->Enable(isVideo && selRows > 0);
+	toolbar->FindById(Menu_Subs_Snap_Video_To_Start)->Enable(isVideo && selRows == 1);
+	toolbar->FindById(Menu_Subs_Snap_Video_To_End)->Enable(isVideo && selRows == 1);
 	toolbar->FindById(Menu_Video_Select_Visible)->Enable(isVideo);
-	toolbar->FindById(Menu_Video_Snap_To_Scene)->Enable(isVideo && HasSelection);
-	toolbar->FindById(Menu_Video_Shift_To_Frame)->Enable(isVideo && HasSelection);
+	toolbar->FindById(Menu_Video_Snap_To_Scene)->Enable(isVideo && selRows > 0);
+	toolbar->FindById(Menu_Video_Shift_To_Frame)->Enable(isVideo && selRows > 0);
 	toolbar->Realize();
 }
 
@@ -942,16 +943,6 @@ void FrameMain::OpenHelp(wxString page) {
 	if (type) {
 		wxString command = type->GetOpenCommand(AegisubApp::folderName + _T("Aegisub.chm"));
 		if (!command.empty()) wxExecute(command + page);
-	}
-}
-
-
-//////////////////////
-// Set selection flag
-void FrameMain::SetSelectionFlag(bool sel) {
-	if (HasSelection != sel) {
-		HasSelection = sel;
-		UpdateToolbar();
 	}
 }
 

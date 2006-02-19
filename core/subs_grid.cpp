@@ -55,10 +55,7 @@
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
-	EVT_GRID_CELL_LEFT_CLICK(SubtitlesGrid::OnCellLeftClick)
-	EVT_GRID_SELECT_CELL(SubtitlesGrid::OnSelectCell)
 	EVT_KEY_DOWN(SubtitlesGrid::OnKeyDown)
-
 	EVT_MENU(MENU_SWAP,SubtitlesGrid::OnSwap)
 	EVT_MENU(MENU_DUPLICATE,SubtitlesGrid::OnDuplicate)
 	EVT_MENU(MENU_DUPLICATE_NEXT_FRAME,SubtitlesGrid::OnDuplicateNextFrame)
@@ -797,31 +794,6 @@ void SubtitlesGrid::On112Recombine(wxCommandEvent &event) {
 	} else {
 		parentFrame->StatusTimeout(_T("Unable to recombine: First line is not a prefix of second one."));
 	}
-}
-
-
-///////////////////
-// Cell left click
-void SubtitlesGrid::OnCellLeftClick (wxGridEvent &event) {
-	//SetGridCursor(GetGridCursorRow(),0);
-	event.Skip();
-}
-
-
-/////////////////////////
-// Cell change selection
-void SubtitlesGrid::OnSelectCell(wxGridEvent &event) {
-	int row = event.GetRow();
-
-	// Update editbox
-	if (editBox && event.Selecting() && ready) {
-		editBox->SetToLine(row);
-	}
-
-	// Update parent
-	parentFrame->SetSelectionFlag(row >= 0);
-
-	event.Skip();
 }
 
 

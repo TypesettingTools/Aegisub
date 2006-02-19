@@ -177,6 +177,18 @@ bool BaseGrid::IsInSelection(int row, int col) const {
 }
 
 
+///////////////////////////
+// Number of selected rows
+int BaseGrid::GetNumberSelection() {
+	int count = 0;
+	int rows = selMap.size();
+	for (int i=0;i<rows;i++) {
+		if (selMap[i]) count++;
+	}
+	return count;
+}
+
+
 //////////////////////
 // Get number of rows
 int BaseGrid::GetRows() const {
@@ -507,7 +519,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		// Toggle selected
 		if (click && ctrl && !shift) {
 			SelectRow(row,true,!IsInSelection(row,0));
-			parentFrame->SetSelectionFlag(GetNumberSelection());
+			parentFrame->UpdateToolbar();
 			return;
 		}
 
@@ -515,7 +527,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		if (click && !shift && !ctrl && !alt) {
 			editBox->SetToLine(row);
 			SelectRow(row,false);
-			parentFrame->SetSelectionFlag(GetNumberSelection());
+			parentFrame->UpdateToolbar();
 			lastRow = row;
 			return;
 		}
@@ -538,7 +550,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 					SelectRow(i,notFirst,true);
 					notFirst = true;
 				}
-				parentFrame->SetSelectionFlag(GetNumberSelection());
+				parentFrame->UpdateToolbar();
 			}
 			return;
 		}
