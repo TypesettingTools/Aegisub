@@ -55,6 +55,7 @@ VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 	Display = NULL;
 	SetClientSize(20,25);
 	locked = false;
+	SetRange(0,1);
 }
 
 
@@ -80,9 +81,12 @@ void VideoSlider::SetValue(int value) {
 /////////////
 // Set range
 void VideoSlider::SetRange(int from,int to) {
+	wxASSERT(from <= to);
+
 	locked = false;
 	min = from;
 	max = to;
+	val = from;
 	UpdateImage();
 }
 
