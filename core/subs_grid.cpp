@@ -814,6 +814,8 @@ void SubtitlesGrid::Clear () {
 	//if (GetNumberRows() > 0) DeleteRows(0,GetNumberRows());
 	diagMap.clear();
 	selMap.clear();
+	yPos = 0;
+	AdjustScrollbar();
 }
 
 
@@ -869,6 +871,7 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 
 	// Finish setting layout
 	EndBatch();
+	AdjustScrollbar();
 
 	// Commit
 	if (!AssFile::Popping) {

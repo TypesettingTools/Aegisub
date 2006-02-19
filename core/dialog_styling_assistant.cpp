@@ -180,8 +180,9 @@ void DialogStyling::JumpToLine(int n) {
 	if (n == -1) return;
 
 	// Get line
-	line = grid->GetDialogue(n);
-	if (!line) return;
+	AssDialogue *nextLine = grid->GetDialogue(n);
+	if (!nextLine) return;
+	line = nextLine;
 
 	// Set number
 	linen = n;

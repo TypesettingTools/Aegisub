@@ -134,12 +134,14 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 // Jumps to line at block
 bool DialogTranslation::JumpToLine(int n,int block) {
 	using std::vector;
+	AssDialogue *nextLine;
 	try {
-		current = grid->GetDialogue(n);
+		nextLine = grid->GetDialogue(n);
 	} catch (...) {
 		return false;
 	}
-	if (!current) return false;
+	if (!nextLine) return false;
+	current = nextLine;
 
 	// Count blocks
 	int nblocks = 0;

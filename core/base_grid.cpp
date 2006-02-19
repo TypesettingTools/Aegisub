@@ -129,6 +129,7 @@ void BaseGrid::BeginBatch() {
 // End batch
 void BaseGrid::EndBatch() {
 	//Thaw();
+	AdjustScrollbar();
 }
 
 
@@ -147,8 +148,7 @@ void BaseGrid::MakeCellVisible(int row, int col) {
 
 	// Make visible
 	if (forceCenter || row < minVis || row > maxVis) {
-		yPos = MID(0,row - h/lineHeight/2 + 1,GetRows()+2 - h/lineHeight);
-		scrollBar->SetThumbPosition(yPos);
+		ScrollTo(row - h/lineHeight/2 + 1);
 	}
 }
 
@@ -223,7 +223,9 @@ void BaseGrid::OnPaint (wxPaintEvent &event) {
 	bool direct = false;
 
 	if (direct) {
+		dc.BeginDrawing();
 		DrawImage(dc);
+		dc.EndDrawing();
 	}
 
 	else {
@@ -509,9 +511,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		if (row > maxVis) delta = +1;
 
 		// Scroll
-		yPos = MID(0,yPos+delta*3,GetRows()+2 - h/lineHeight);
-		scrollBar->SetThumbPosition(yPos);
-		Refresh(false);
+		ScrollTo(yPos+delta*3);
 	}
 
 	// Click
@@ -566,9 +566,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	// Mouse wheel
 	if (event.GetWheelRotation() != 0) {
 		int step = 3 * event.GetWheelRotation() / event.GetWheelDelta();
-		yPos = MID(0,yPos - step,GetRows()+2 - h/lineHeight);
-		scrollBar->SetThumbPosition(yPos);
-		Refresh(false);
+		ScrollTo(yPos - step);
 		return;
 	}
 
@@ -576,21 +574,41 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 }
 
 
+/////////////
+// Scroll to
+void BaseGrid::ScrollTo(int y) {
+	int w,h;
+	GetClientSize(&w,&h);
+	int nextY = MID(0,y,GetRows()+2 - h/lineHeight);
+	if (yPos != nextY) {
+		yPos = nextY;
+		if (scrollBar->IsEnabled()) scrollBar->SetThumbPosition(yPos);
+		Refresh(false);
+	}
+}
+
+
 ////////////////////
 // Adjust scrollbar
 void BaseGrid::AdjustScrollbar() {
-	// Set size
+	// Variables
 	int w,h,sw,sh;
 	GetClientSize(&w,&h);
+	int drawPerScreen = h/lineHeight;
+	int rows = GetRows();
+	bool barToEnable = drawPerScreen < rows+2;
+	bool barEnabled = scrollBar->IsEnabled();
+
+	// Set size
 	scrollBar->Freeze();
 	scrollBar->GetSize(&sw,&sh);
 	scrollBar->SetSize(w-sw,0,sw,h);
 
 	// Set parameters
-	int drawPerScreen = h/lineHeight;
-	int rows = GetRows();
-	scrollBar->SetScrollbar(yPos,drawPerScreen,rows+2,drawPerScreen-2,true);
-	scrollBar->Enable(drawPerScreen < rows);
+	if (barEnabled) {
+		scrollBar->SetScrollbar(yPos,drawPerScreen,rows+2,drawPerScreen-2,true);
+	}
+	if (barToEnable != barEnabled) scrollBar->Enable(barToEnable);
 	scrollBar->Thaw();
 }
 

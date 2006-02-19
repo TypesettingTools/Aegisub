@@ -61,7 +61,6 @@ class BaseGrid : public wxWindow {
 private:
 	int lineHeight;
 	int colWidth[16];
-	int yPos;
 	int lastRow;
 	bool holding;
 	wxFont font;
@@ -73,12 +72,14 @@ private:
 	void OnScroll(wxScrollEvent &event);
 	void OnMouseEvent(wxMouseEvent &event);
 
-	void AdjustScrollbar();
 	void DrawImage(wxDC &dc);
 
 protected:
 	FrameMain *parentFrame;
 	virtual void OnPopupMenu() {}
+	void AdjustScrollbar();
+	void ScrollTo(int y);
+	int yPos;
 
 public:
 	SubsEditBox *editBox;
