@@ -1631,7 +1631,7 @@ void AudioDisplay::Next() {
 					CommitChanges();
 				}
 				else if (result == wxCANCEL) {
-					karaoke->curSyllable--;
+					karaoke->curSyllable = karaoke->syllables.size()-1;
 					return;
 				}
 			}
@@ -1669,7 +1669,7 @@ void AudioDisplay::Prev() {
 					CommitChanges();
 				}
 				else if (result == wxCANCEL) {
-					karaoke->curSyllable++;
+					karaoke->curSyllable = 0;
 					return;
 				}
 			}

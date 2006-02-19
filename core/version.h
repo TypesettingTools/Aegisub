@@ -37,5 +37,5 @@
 #ifdef _DEBUG
 #define VERSION_STRING _T("v1.10 Beta (debug)")
 #else
-#define VERSION_STRING _T("v1.10 Beta")
+#define VERSION_STRING _T("v1.10 Beta PRE-RELEASE")
 #endif
