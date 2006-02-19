@@ -1312,13 +1312,14 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	// End
 	if (hasEnd && selend != selstart) {
 		// Prepare variables again
+		int origStart = selstart;
+		selstart = selend + shift;
 		insert = insert2;
-		blockn = BlockAtPos(selend);
+		SetText(line->Text);
+		blockn = BlockAtPos(selstart);
 		block = line->Blocks.at(blockn);
 		plain = AssDialogueBlock::GetAsPlain(block);
 		override = AssDialogueBlock::GetAsOverride(block);
-		int origStart = selstart;
-		selstart = selend + shift;
 
 		// Plain
 		if (plain) {
