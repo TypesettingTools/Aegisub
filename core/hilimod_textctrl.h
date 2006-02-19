@@ -59,6 +59,7 @@ public:
 	void Modified();
 	void Commited();
 	void SetValue(const wxString& value);
+	bool HasBeenModified() { return isModified; }
 };
 
 

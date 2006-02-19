@@ -79,9 +79,10 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 
 	// Colour
 	if (showModified && !modified) {
-		modified = true;
 		SetBackgroundColour(Options.AsColour(_T("Edit Box Need Enter Background")));
 	}
+	modified = true;
+	wxLogMessage(_T("Time modified!"));
 
 	// Done
 	ready = true;
@@ -154,11 +155,11 @@ void TimeEdit::Update() {
 	}
 
 	// Update modified status
-	if (modified) {
+	if (modified && showModified) {
 		SetBackgroundColour(wxNullColour);
 		Refresh();
-		modified = false;
 	}
+	modified = false;
 }
 
 

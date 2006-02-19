@@ -65,6 +65,7 @@ public:
 	void SetByFrame(bool enable);
 	void SetTime(int ms);
 	void Update();
+	bool HasBeenModified() { return modified; }
 
 	DECLARE_EVENT_TABLE()
 };

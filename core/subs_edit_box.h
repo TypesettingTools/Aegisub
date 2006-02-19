@@ -102,7 +102,7 @@ private:
 	wxButton *Color4;
 
 	void SetControlsState(bool state);
-	void CommitTimes(bool start,bool end);
+	void CommitTimes(bool start,bool end,bool fromStart);
 
 	int BlockAtPos(int pos);
 

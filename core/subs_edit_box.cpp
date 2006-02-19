@@ -646,10 +646,10 @@ void SubsEditBox::OnLayerChange(wxCommandEvent &event) {
 // Start time changed
 void SubsEditBox::OnStartTimeChange(wxCommandEvent &event) {
 	if (StartTime->time > EndTime->time) StartTime->SetTime(EndTime->time.GetMS());
-	bool join = Options.AsBool(_T("Link Time Boxes Commit"));
+	bool join = Options.AsBool(_T("Link Time Boxes Commit")) && EndTime->HasBeenModified();
 	StartTime->Update();
 	if (join) EndTime->Update();
-	CommitTimes(true,join);
+	CommitTimes(true,join,true);
 }
 
 
@@ -657,10 +657,10 @@ void SubsEditBox::OnStartTimeChange(wxCommandEvent &event) {
 // End time changed
 void SubsEditBox::OnEndTimeChange(wxCommandEvent &event) {
 	if (StartTime->time > EndTime->time) EndTime->SetTime(StartTime->time.GetMS());
-	bool join = Options.AsBool(_T("Link Time Boxes Commit"));
+	bool join = Options.AsBool(_T("Link Time Boxes Commit")) && StartTime->HasBeenModified();
 	EndTime->Update();
 	if (join) StartTime->Update();
-	CommitTimes(join,true);
+	CommitTimes(join,true,false);
 }
 
 
@@ -669,13 +669,13 @@ void SubsEditBox::OnEndTimeChange(wxCommandEvent &event) {
 void SubsEditBox::OnDurationChange(wxCommandEvent &event) {
 	EndTime->SetTime(StartTime->time.GetMS() + Duration->time.GetMS());
 	Duration->Update();
-	CommitTimes(false,true);
+	CommitTimes(false,true,true);
 }
 
 
 ///////////////////////
 // Commit time changes
-void SubsEditBox::CommitTimes(bool start,bool end) {
+void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart) {
 	// Get selection
 	if (!start && !end) return;
 	grid->BeginBatch();
@@ -689,8 +689,17 @@ void SubsEditBox::CommitTimes(bool start,bool end) {
 	for (int i=0;i<n;i++) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
+			// Set times
 			if (start) cur->Start = StartTime->time;
 			if (end) cur->End = EndTime->time;
+
+			// Ensure that they have positive length
+			if (cur->Start > cur->End) {
+				if (fromStart) cur->End = cur->Start;
+				else cur->Start = cur->End;
+			}
+
+			// Update
 			cur->UpdateData();
 			grid->SetRowToLine(sel[i],cur);
 		}
