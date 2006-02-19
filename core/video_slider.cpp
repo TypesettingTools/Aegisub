@@ -125,7 +125,10 @@ int VideoSlider::GetXAtValue(int value) {
 // Next frame hotkey
 void VideoSlider::NextFrame() {
 	if (Display->IsPlaying) return;
-	Display->JumpToFrame(GetValue()+1);
+
+	//don't request out of range frames
+	if (GetValue() < max)
+		Display->JumpToFrame(GetValue()+1);
 }
 
 
@@ -133,7 +136,10 @@ void VideoSlider::NextFrame() {
 // Previous frame hotkey
 void VideoSlider::PrevFrame() {
 	if (Display->IsPlaying) return;
-	Display->JumpToFrame(GetValue()-1);
+
+	//don't request out of range frames
+	if (GetValue() > min)
+		Display->JumpToFrame(GetValue()-1);
 }
 
 
