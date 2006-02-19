@@ -100,6 +100,7 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	IsPlaying = false;
 	threaded = Options.AsBool(_T("Threaded Video"));
 	nextFrame = -1;
+	zoomValue = 0.5;
 
 	// Create PNG handler
 	wxPNGHandler *png = new wxPNGHandler;
@@ -153,7 +154,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 
 			bool usedDirectshow;
 
-			provider = new VideoProvider(filename,grid->GetTempWorkFile(),0.75,usedDirectshow,true);
+			provider = new VideoProvider(filename,grid->GetTempWorkFile(),zoomValue,usedDirectshow,true);
 
 			// Set keyframes
 			if (filename.Right(4).Lower() == _T(".avi"))
@@ -424,6 +425,7 @@ void VideoDisplay::JumpToTime(int ms) {
 ///////////////////
 // Sets zoom level
 void VideoDisplay::SetZoom(double value) {
+	zoomValue = value;
 	if (provider) {
 		provider->SetZoom(value);
 		UpdateSize();
@@ -454,6 +456,7 @@ void VideoDisplay::SetAspectRatio(int value) {
 		else if (value == 2)
 			provider->SetDAR(16.0/9.0);
 
+		arType = value;
 		UpdateSize();
 		RefreshVideo();
 		GetParent()->Layout();

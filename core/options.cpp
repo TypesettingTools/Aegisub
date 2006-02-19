@@ -124,6 +124,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Avisynth MemoryMax"),64);
 	SetText(_T("Video resizer"),_T("BilinearResize"));
 	SetInt(_T("Video Check Script Res"), 0);
+	SetInt(_T("Video Default Zoom"), 7);
 
 	SetInt(_T("Audio Cache"),1);
 	SetInt(_T("Audio Sample Rate"),0);

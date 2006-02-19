@@ -20,6 +20,11 @@ Please visit http://aegisub.net to download latest version
 - Drag-and-drop files onto the program no longer causes the subs to be unloaded every time, even if no subs were dropped (jfs)
 - 1,1+2 recombining lines where 1 is a substring of 2 no longer causes incorrect behavior. 1+2,2 similarly fixed. This fix also gives more sanity-checking in the recombining (jfs)
 - Replaced the subtitles grid with a custom control, which should hopefully behave and look better (AMZ)
+- Currently active line is now highlighted with a border in the grid (AMZ)
+- The subtitles grid can no longer receive focus (AMZ)
+- Toolbar will now properly disable the Jump To buttons if more than one line is selected (AMZ)
+- Fixed the toolbar "grey area" glitch (was actually a wxWidgets issue) (AMZ)
+- Default video zoom can now be set in config.dat and is defaulted to 100% (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

@@ -347,6 +347,7 @@ void FrameMain::InitContents() {
 	AssFile::StackReset();
 	videoBox->videoSlider->grid = SubsBox;
 	videoBox->videoDisplay->grid = SubsBox;
+	videoBox->videoDisplay->SetZoomPos(Options.AsInt(_T("Video Default Zoom")));
 	Search.grid = SubsBox;
 
 	// Audio area
@@ -650,12 +651,9 @@ void FrameMain::SetDisplayMode(int mode) {
 	UpdateToolbar();
 	videoBox->VideoSizer->Layout();
 	MainSizer->Layout();
-	//Layout();
-	//Refresh();
-	//GetToolBar()->SetBestFittingSize();
-	int cw,ch;
-	GetSize(&cw,&ch);
-	SetSize(cw-1,ch-1);
+	//int cw,ch;
+	//GetSize(&cw,&ch);
+	//SetSize(cw-1,ch-1);
 	Thaw();
 }
 

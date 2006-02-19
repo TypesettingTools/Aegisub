@@ -261,9 +261,9 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.loaded && VFR_Output.vfr);
 
 		// Set AR radio
-		if (videoBox->videoDisplay->arType == 0 && !MenuBar->IsChecked(Menu_Video_AR_Default)) MenuBar->Check(Menu_Video_AR_Default,true);
-		if (videoBox->videoDisplay->arType == 1 && !MenuBar->IsChecked(Menu_Video_AR_Full)) MenuBar->Check(Menu_Video_AR_Full,true);
-		if (videoBox->videoDisplay->arType == 2 && !MenuBar->IsChecked(Menu_Video_AR_Wide)) MenuBar->Check(Menu_Video_AR_Wide,true);
+		if (videoBox->videoDisplay->arType == 0) MenuBar->Check(Menu_Video_AR_Default,true);
+		if (videoBox->videoDisplay->arType == 1) MenuBar->Check(Menu_Video_AR_Full,true);
+		if (videoBox->videoDisplay->arType == 2) MenuBar->Check(Menu_Video_AR_Wide,true);
 
 		// Wipe recent
 		int count = RecentVids->GetMenuItemCount();

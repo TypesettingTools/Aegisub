@@ -104,6 +104,7 @@ public:
 	bool loaded;
 	bool IsPlaying;
 	double fps;
+	double zoomValue;
 
 	bool bTrackerEditing;
 	int MovementEdit;
