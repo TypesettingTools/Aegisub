@@ -52,6 +52,9 @@
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
 #include "dialog_colorpicker.h"
+#include "main.h"
+#include "frame_main.h"
+#include "utils.h"
 
 
 ///////////////
@@ -994,10 +997,151 @@ int SubsEditBox::BlockAtPos(int pos) {
 
 ///////////////
 // Set a color
-void SubsEditBox::SetOverride(wxString tagname,wxString preValue,int forcePos) {
-	// Check if it's enabled
-	if (!enabled) return;
+//void SubsEditBox::SetOverride(wxString tagname,wxString preValue,int forcePos) {
+//	// Check if it's enabled
+//	if (!enabled) return;
+//
+//	// Selection
+//	long selstart, selend;
+//	if (forcePos != -1) {
+//		selstart = forcePos;
+//		selend = forcePos;
+//	}
+//	else TextEdit->GetSelection(&selstart,&selend);
+//
+//	// Get block at start
+//	size_t blockn = BlockAtPos(selstart);
+//	AssDialogue *line = new AssDialogue();
+//	line->Text = TextEdit->GetValue();
+//	line->ParseASSTags();
+//	AssDialogueBlock *block = line->Blocks.at(blockn);
+//
+//	// Current tag name
+//	wxString alttagname = tagname;
+//	if (tagname == _T("\\1c")) tagname = _T("\\c");
+//
+//	// Prepare defaults
+//	bool isColor = false;
+//	bool isFont = false;
+//	bool isPos = false;
+//	wxColour startcolor;
+//	wxString startfont;
+//	AssStyle *style = AssFile::top->GetStyle(grid->GetDialogue(linen)->Style);
+//	AssStyle defStyle;
+//	if (style == NULL) style = &defStyle; 
+//
+//	// Get default parameter from tag type
+//	if (tagname == _T("\\c")) {
+//		startcolor = style->primary.GetWXColor();
+//		isColor = true;
+//	}
+//	else if (tagname == _T("\\2c")) {
+//		startcolor = style->secondary.GetWXColor();
+//		isColor = true;
+//	}
+//	else if (tagname == _T("\\3c")) {
+//		startcolor = style->outline.GetWXColor();
+//		isColor = true;
+//	}
+//	else if (tagname == _T("\\4c")) {
+//		startcolor = style->shadow.GetWXColor();
+//		isColor = true;
+//	}
+//	else if (tagname == _T("\\fn")) {
+//		startfont = style->font;
+//		isFont = true;
+//	}
+//	else if (tagname == _T("\\pos")) {
+//		isPos = true;
+//	}
+//
+//	// Find current value
+//	AssDialogueBlockOverride *override;
+//	AssOverrideTag *tag;
+//	if (isFont || isColor) {
+//		for (size_t i=0;i<=blockn;i++) {
+//			override = AssDialogueBlock::GetAsOverride(line->Blocks.at(i));
+//			if (override) {
+//				for (size_t j=0;j<override->Tags.size();j++) {
+//					tag = override->Tags.at(j);
+//					if (tag->Name == tagname || tag->Name == alttagname) {
+//						if (isColor) startcolor = tag->Params.at(0)->AsColour();
+//						if (isFont) startfont = tag->Params.at(0)->AsText();
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	// String to be insert
+//	wxString insert;
+//
+//	// Choose color
+//	if (isColor) {
+//		// Pick from dialog
+//		//wxColour color = wxGetColourFromUser(this,startcolor);
+//		wxColour color = GetColorFromUser(this, startcolor);
+//		if (!color.Ok() || color == startcolor) return;
+//
+//		// Generate insert string 
+//		AssColor asscolor(color);
+//		insert = tagname + asscolor.GetASSFormatted(false);
+//	}
+//
+//	// Choose font
+//	if (isFont) {
+//		// Pick from dialog
+//		wxFont origFont;
+//		origFont.SetFaceName(startfont);
+//		wxFont font = wxGetFontFromUser(this,origFont);
+//		if (!font.Ok()) return;
+//
+//		// Generate insert string
+//		insert = tagname + font.GetFaceName();
+//	}
+//
+//	// Pos
+//	if (isPos) {
+//		insert = tagname + preValue;
+//	}
+//
+//	// Get current block as plain or override
+//	AssDialogueBlockPlain *plain = AssDialogueBlock::GetAsPlain(block);
+//	override = AssDialogueBlock::GetAsOverride(block);
+//
+//	// Plain
+//	if (plain) {
+//		// Insert in text
+//		line->Text = line->Text.Left(selstart) + _T("{") + insert + _T("}") + line->Text.Mid(selstart);
+//	}
+//
+//	// Override
+//	else if (override) {
+//		// Insert new tag
+//		override->text += insert;
+//		override->ParseTags();
+//
+//		// Remove old of same
+//		for (size_t i=0;i<override->Tags.size()-1;i++) {
+//			if (override->Tags.at(i)->Name == tagname || override->Tags.at(i)->Name == alttagname) {
+//				override->Tags.erase(override->Tags.begin() + i);
+//				i--;
+//			}
+//		}
+//
+//		// Update line
+//		line->UpdateText();
+//	}
+//
+//	// Commit changes
+//	SetText(line->Text);
+//	TextEdit->SetFocus();
+//}
 
+
+////////////////
+// Set override
+void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) {
 	// Selection
 	long selstart, selend;
 	if (forcePos != -1) {
@@ -1005,6 +1149,13 @@ void SubsEditBox::SetOverride(wxString tagname,wxString preValue,int forcePos) {
 		selend = forcePos;
 	}
 	else TextEdit->GetSelection(&selstart,&selend);
+	int len = TextEdit->GetValue().Length();
+	selstart = MID(0,selstart,len);
+	selend = MID(0,selend,len);
+
+	// Current tag name
+	wxString alttagname = tagname;
+	if (tagname == _T("\\1c")) tagname = _T("\\c");
 
 	// Get block at start
 	size_t blockn = BlockAtPos(selstart);
@@ -1013,22 +1164,43 @@ void SubsEditBox::SetOverride(wxString tagname,wxString preValue,int forcePos) {
 	line->ParseASSTags();
 	AssDialogueBlock *block = line->Blocks.at(blockn);
 
-	// Current tag name
-	wxString alttagname = tagname;
-	if (tagname == _T("\\1c")) tagname = _T("\\c");
+	// Insert variables
+	wxString insert;
+	wxString insert2;
+	int shift;
 
-	// Prepare defaults
+	// Default value
+	wxColour startcolor;
+	wxString startfont;
 	bool isColor = false;
 	bool isFont = false;
 	bool isPos = false;
-	wxColour startcolor;
-	wxString startfont;
+	bool isFlag = false;
+	bool state = false;
 	AssStyle *style = AssFile::top->GetStyle(grid->GetDialogue(linen)->Style);
 	AssStyle defStyle;
 	if (style == NULL) style = &defStyle; 
-
-	// Get default parameter from tag type
-	if (tagname == _T("\\c")) {
+	if (tagname == _T("\\b")) {
+		state = style->bold;
+		isFlag = true;
+	}
+	else if (tagname == _T("\\i")) {
+		state = style->italic;
+		isFlag = true;
+	}
+	else if (tagname == _T("\\u")) {
+		state = style->underline;
+		isFlag = true;
+	}
+	else if (tagname == _T("\\s")) {
+		state = style->strikeout;
+		isFlag = true;
+	}
+	else if (tagname == _T("\\fn")) {
+		startfont = style->font;
+		isFont = true;
+	}
+	else if (tagname == _T("\\c")) {
 		startcolor = style->primary.GetWXColor();
 		isColor = true;
 	}
@@ -1044,18 +1216,12 @@ void SubsEditBox::SetOverride(wxString tagname,wxString preValue,int forcePos) {
 		startcolor = style->shadow.GetWXColor();
 		isColor = true;
 	}
-	else if (tagname == _T("\\fn")) {
-		startfont = style->font;
-		isFont = true;
-	}
-	else if (tagname == _T("\\pos")) {
-		isPos = true;
-	}
+	bool hasEnd = isFlag;
 
-	// Find current value
+	// Find current value of style
 	AssDialogueBlockOverride *override;
 	AssOverrideTag *tag;
-	if (isFont || isColor) {
+	if (isFont || isColor || isFlag) {
 		for (size_t i=0;i<=blockn;i++) {
 			override = AssDialogueBlock::GetAsOverride(line->Blocks.at(i));
 			if (override) {
@@ -1064,20 +1230,29 @@ void SubsEditBox::SetOverride(wxString tagname,wxString preValue,int forcePos) {
 					if (tag->Name == tagname || tag->Name == alttagname) {
 						if (isColor) startcolor = tag->Params.at(0)->AsColour();
 						if (isFont) startfont = tag->Params.at(0)->AsText();
+						if (isFlag) state = tag->Params.at(0)->AsBool();
 					}
 				}
 			}
 		}
 	}
 
-	// String to be insert
-	wxString insert;
+	// Toggle value
+	if (isFlag) {
+		state = !state;
+		int stateval = 0;
+		if (state) stateval = 1;
+
+		// Generate insert string
+		insert = tagname + wxString::Format(_T("%i"),stateval);
+		insert2 = tagname + wxString::Format(_T("%i"),1-stateval);
+	}
 
 	// Choose color
 	if (isColor) {
 		// Pick from dialog
 		//wxColour color = wxGetColourFromUser(this,startcolor);
-		wxColour color = GetColorFromUser(this, startcolor);
+		wxColour color = GetColorFromUser(((AegisubApp*)wxTheApp)->frame, startcolor);
 		if (!color.Ok() || color == startcolor) return;
 
 		// Generate insert string 
@@ -1101,93 +1276,6 @@ void SubsEditBox::SetOverride(wxString tagname,wxString preValue,int forcePos) {
 	if (isPos) {
 		insert = tagname + preValue;
 	}
-
-	// Get current block as plain or override
-	AssDialogueBlockPlain *plain = AssDialogueBlock::GetAsPlain(block);
-	override = AssDialogueBlock::GetAsOverride(block);
-
-	// Plain
-	if (plain) {
-		// Insert in text
-		line->Text = line->Text.Left(selstart) + _T("{") + insert + _T("}") + line->Text.Mid(selstart);
-	}
-
-	// Override
-	else if (override) {
-		// Insert new tag
-		override->text += insert;
-		override->ParseTags();
-
-		// Remove old of same
-		for (size_t i=0;i<override->Tags.size()-1;i++) {
-			if (override->Tags.at(i)->Name == tagname || override->Tags.at(i)->Name == alttagname) {
-				override->Tags.erase(override->Tags.begin() + i);
-				i--;
-			}
-		}
-
-		// Update line
-		line->UpdateText();
-	}
-
-	// Commit changes
-	SetText(line->Text);
-	TextEdit->SetFocus();
-}
-
-
-//////////////////
-// Set style flag
-void SubsEditBox::SetStyleFlag (wxString tagname,bool hasEnd) {
-	// Selection
-	long selstart, selend;
-	TextEdit->GetSelection(&selstart,&selend);
-
-	// Get block at start
-	size_t blockn = BlockAtPos(selstart);
-	AssDialogue *line = new AssDialogue();
-	line->Text = TextEdit->GetValue();
-	line->ParseASSTags();
-	AssDialogueBlock *block = line->Blocks.at(blockn);
-
-	// Insert variables
-	wxString insert;
-	wxString insert2;
-	int shift;
-
-	// Default value
-	bool state = false;
-	AssStyle *style = AssFile::top->GetStyle(grid->GetDialogue(linen)->Style);
-	AssStyle defStyle;
-	if (style == NULL) style = &defStyle; 
-	if (tagname == _T("\\b")) state = style->bold;
-	else if (tagname == _T("\\i")) state = style->italic;
-	else if (tagname == _T("\\u")) state = style->underline;
-	else if (tagname == _T("\\s")) state = style->strikeout;
-
-	// Find current value of style
-	AssDialogueBlockOverride *override;
-	AssOverrideTag *tag;
-	for (size_t i=0;i<=blockn;i++) {
-		override = AssDialogueBlock::GetAsOverride(line->Blocks.at(i));
-		if (override) {
-			for (size_t j=0;j<override->Tags.size();j++) {
-				tag = override->Tags.at(j);
-				if (tag->Name == tagname) {
-					state = tag->Params.at(0)->AsBool();
-				}
-			}
-		}
-	}
-
-	// Toggle value
-	state = !state;
-	int stateval = 0;
-	if (state) stateval = 1;
-
-	// Generate insert string
-	insert = tagname + wxString::Format(_T("%i"),stateval);
-	insert2 = tagname + wxString::Format(_T("%i"),1-stateval);
 
 	// Get current block as plain or override
 	AssDialogueBlockPlain *plain = AssDialogueBlock::GetAsPlain(block);
@@ -1258,11 +1346,13 @@ void SubsEditBox::SetStyleFlag (wxString tagname,bool hasEnd) {
 		}
 
 		// Shift selection
+		selstart = origStart;
 		TextEdit->SetSelection(origStart+shift,selend+shift);
 	}
 
-	// Commit changes
+	// Commit changes and shift selection
 	SetText(line->Text);
+	TextEdit->SetSelection(selstart+shift,selend+shift);
 	TextEdit->SetFocus();
 }
 
@@ -1305,27 +1395,27 @@ void SubsEditBox::OnButtonFontFace(wxCommandEvent &event) {
 ////////
 // Bold
 void SubsEditBox::OnButtonBold(wxCommandEvent &event) {
-	SetStyleFlag(_T("\\b"),true);
+	SetOverride(_T("\\b"));
 }
 
 
 ///////////
 // Italics
 void SubsEditBox::OnButtonItalics(wxCommandEvent &event) {
-	SetStyleFlag(_T("\\i"),true);
+	SetOverride(_T("\\i"));
 }
 
 
 /////////////
 // Underline
 void SubsEditBox::OnButtonUnderline(wxCommandEvent &event) {
-	SetStyleFlag(_T("\\u"),true);
+	SetOverride(_T("\\u"));
 }
 
 
 /////////////
 // Strikeout
 void SubsEditBox::OnButtonStrikeout(wxCommandEvent &event) {
-	SetStyleFlag(_T("\\s"),true);
+	SetOverride(_T("\\s"));
 }
 

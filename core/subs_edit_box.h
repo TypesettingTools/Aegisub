@@ -149,7 +149,7 @@ public:
 	SubsEditBox(wxWindow *parent,SubtitlesGrid *gridp);
 
 	void SetOverride (wxString tag,wxString preValue=_T(""),int pos=-1);
-	void SetStyleFlag (wxString tag,bool hasEnd=false);
+	void SetStyleFlag (wxString tag,wxString preValue=_T(""),int pos=-1);
 
 	void CommitText();
 	void SetText(const wxString text);
