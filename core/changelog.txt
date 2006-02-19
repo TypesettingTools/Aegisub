@@ -25,6 +25,8 @@ Please visit http://aegisub.net to download latest version
 - Toolbar will now properly disable the Jump To buttons if more than one line is selected (AMZ)
 - Fixed the toolbar "grey area" glitch (was actually a wxWidgets issue) (AMZ)
 - Default video zoom can now be set in config.dat and is defaulted to 100% (AMZ)
+- Fixed crash in Translation and Styling assistants, when you attempted to move past end of file, and then play (AMZ)
+- Fixed linked commit of times, so it will only commit both times if the other was changed (to prevent damage when editing multiple lines) (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
