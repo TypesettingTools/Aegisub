@@ -110,6 +110,7 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Grid selection background"),wxColour(206,255,231));
 	SetColour(_T("Grid selection foreground"),wxColour(0,0,0));
 	SetColour(_T("Grid comment background"),wxColour(216,222,245));
+	SetColour(_T("Grid selected comment background"),wxColour(211,238,238));
 	SetColour(_T("Grid inframe background"),wxColour(255,253,234));
 	SetInt(_T("Grid hide overrides"),1);
 	wchar_t temp = 0x2600;

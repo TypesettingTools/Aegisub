@@ -35,6 +35,7 @@ Please visit http://aegisub.net to download latest version
 - Added a simple audio resync method for video playback (AMZ)
 - Audio timing will now apply to all selected lines, as well as active line (AMZ)
 - Rows colliding with the currently active one will now be highlighted in grid (AMZ)
+- Selected comments are now highlighted in a different color (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

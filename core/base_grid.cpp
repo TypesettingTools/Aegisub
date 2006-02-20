@@ -282,15 +282,17 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	// Row colors
 	std::vector<wxBrush> rowColors;
 	std::vector<wxColor> foreColors;
-	rowColors.push_back(wxBrush(wxColour(255,255,255)));								// 0 = Standard
+	rowColors.push_back(wxBrush(wxColour(255,255,255)));									// 0 = Standard
 	foreColors.push_back(wxColour(0,0,0));
-	rowColors.push_back(wxBrush(wxColour(165,207,231)));								// 1 = Header
+	rowColors.push_back(wxBrush(wxColour(165,207,231)));									// 1 = Header
 	foreColors.push_back(wxColour(0,0,0));
-	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid selection background"))));	// 2 = Selected
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid selection background"))));		// 2 = Selected
 	foreColors.push_back(Options.AsColour(_T("Grid selection foreground")));
-	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid comment background"))));		// 3 = Commented
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid comment background"))));			// 3 = Commented
 	foreColors.push_back(Options.AsColour(_T("Grid selection foreground")));
-	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid inframe background"))));		// 4 = Video Highlighted
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid inframe background"))));			// 4 = Video Highlighted
+	foreColors.push_back(Options.AsColour(_T("Grid selection foreground")));
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid selected comment background"))));	// 5 = Commented & selected
 	foreColors.push_back(Options.AsColour(_T("Grid selection foreground")));
 
 	// First grid row
@@ -393,7 +395,9 @@ void BaseGrid::DrawImage(wxDC &dc) {
 
 			// Set color
 			curColor = 0;
-			if (IsInSelection(curRow,0)) curColor = 2;
+			bool inSel = IsInSelection(curRow,0);
+			if (inSel && curDiag->Comment) curColor = 5;
+			else if (inSel) curColor = 2;
 			else if (curDiag->Comment) curColor = 3;
 			else if (Options.AsBool(_T("Highlight subs in frame")) && IsDisplayed(curDiag)) curColor = 4;
 		}
