@@ -29,6 +29,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed linked commit of times, so it will only commit both times if the other was changed (to prevent damage when editing multiple lines) (AMZ)
 - Fixed bug related to tag cycling, which would reset grid, move video and force a refresh of everything (slow, and could undo uncommited changes) (AMZ)
 - Fixed some bugs related to inserting overrides via the buttons over the edit box (AMZ)
+- Implemented Redo (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
