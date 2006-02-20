@@ -107,12 +107,6 @@ private:
 	void GetKaraokePos(__int64 &start,__int64 &end,bool cap);
 	void UpdatePosition(int pos,bool IsSample=false);
 
-	int GetMSAtX(__int64 x);
-	int GetXAtMS(__int64 ms);
-	int GetMSAtSample(__int64 x);
-	__int64 GetSampleAtMS(__int64 ms);
-	int GetSyllableAtX(int x);
-
 public:
 	bool NeedCommit;
 	bool loaded;
@@ -135,9 +129,15 @@ public:
 	void SetFile(wxString file);
 	void SetFromVideo();
 	void UpdateScrollbar();
+	void SetDialogue(SubtitlesGrid *_grid=NULL,AssDialogue *diag=NULL,int n=-1);
+
 	__int64 GetSampleAtX(int x);
 	int GetXAtSample(__int64 n);
-	void SetDialogue(SubtitlesGrid *_grid=NULL,AssDialogue *diag=NULL,int n=-1);
+	int GetMSAtX(__int64 x);
+	int GetXAtMS(__int64 ms);
+	int GetMSAtSample(__int64 x);
+	__int64 GetSampleAtMS(__int64 ms);
+	int GetSyllableAtX(int x);
 
 	void MakeDialogueVisible(bool force=false);
 	void CommitChanges();

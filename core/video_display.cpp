@@ -836,4 +836,11 @@ void VideoDisplay::OnPlayTimer(wxTimerEvent &event) {
 	// Jump to next frame
 	PlayNextFrame = nextFrame;
 	JumpToFrame(nextFrame);
+
+	// Sync audio
+	if (nextFrame % 25 == 0) {
+		__int64 audPos = audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame));
+		audio->provider->playPos = audPos;
+		audio->provider->realPlayPos = audPos;
+	}
 }

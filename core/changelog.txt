@@ -32,6 +32,7 @@ Please visit http://aegisub.net to download latest version
 - Implemented Redo (AMZ)
 - Fonts collector will now default collection to same folder as script (Set to "?script" on config.dat) (AMZ)
 - Alt+Left/Right on the video seek bar will now seek by increments of 10 frames (increment is customizeable in config.dat) (AMZ)
+- Added a simple audio resync method for video playback (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
