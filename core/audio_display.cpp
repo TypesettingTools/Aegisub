@@ -976,11 +976,24 @@ void AudioDisplay::CommitChanges () {
 		karSyl = karaoke->curSyllable;
 	}
 
-	// Update dialogue
+	// Update dialogues
 	blockUpdate = true;
-	dialogue->Start.SetMS(curStartMS);
-	dialogue->End.SetMS(curEndMS);
-	dialogue->UpdateData();
+	wxArrayInt sel = grid->GetSelection();
+	int sels = sel.Count();
+	AssDialogue *curDiag;
+	for (int i=-1;i<sels;i++) {
+		if (i == -1) curDiag = dialogue;
+		else {
+			curDiag = grid->GetDialogue(sel[i]);
+			if (curDiag == dialogue) continue;
+		}
+
+		curDiag->Start.SetMS(curStartMS);
+		curDiag->End.SetMS(curEndMS);
+		curDiag->UpdateData();
+	}
+
+	// Update grid
 	grid->SetRowToLine(line_n,dialogue);
 	grid->editBox->Update(!karaoke->enabled);
 	grid->ass->FlagAsModified();
