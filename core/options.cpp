@@ -118,7 +118,7 @@ void OptionsManager::LoadDefaults() {
 
 	SetBool(_T("Highlight subs in frame"),true);
 
-	SetText(_T("Fonts Collector Destination"),AegisubApp::folderName + _T("fonts"));
+	SetText(_T("Fonts Collector Destination"),_T("?script"));
 
 	SetBool(_T("Threaded Video"),false);
 	SetInt(_T("Avisynth MemoryMax"),64);

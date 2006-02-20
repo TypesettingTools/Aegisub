@@ -56,7 +56,12 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 : wxDialog(parent,-1,_("Fonts Collector"),wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
 	// Destination box
-	DestBox = new wxTextCtrl(this,-1,Options.AsText(_T("Fonts Collector Destination")),wxDefaultPosition,wxSize(250,20),0);
+	wxString dest = Options.AsText(_T("Fonts Collector Destination"));
+	if (dest == _T("?script")) {
+		wxFileName filename(AssFile::top->filename);
+		dest = filename.GetPath();
+	}
+	DestBox = new wxTextCtrl(this,-1,dest,wxDefaultPosition,wxSize(250,20),0);
 	BrowseButton = new wxButton(this,BROWSE_BUTTON,_("&Browse..."));
 	wxSizer *DestBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText *DestLabel = new wxStaticText(this,-1,_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
@@ -153,7 +158,12 @@ void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 		worker->Run();
 
 		// Set options
-		Options.SetText(_T("Fonts Collector Destination"),foldername);
+		wxString dest = foldername;
+		wxFileName filename(AssFile::top->filename);
+		if (filename.GetPath() == dest) {
+			dest = _T("?script");
+		}
+		Options.SetText(_T("Fonts Collector Destination"),dest);
 		Options.Save();
 
 		// Set buttons
