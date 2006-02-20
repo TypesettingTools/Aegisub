@@ -45,6 +45,7 @@
 #include "vfr.h"
 #include "subs_edit_box.h"
 #include "options.h"
+#include "utils.h"
 
 
 ///////////////
@@ -260,6 +261,14 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 		if (!ctrl && !shift && !alt) {
 			if (direction == 1) NextFrame();
 			else PrevFrame();
+			return;
+		}
+
+		// Fast move
+		if (!ctrl && !shift && alt) {
+			if (Display->IsPlaying) return;
+			int target = MID(min,GetValue() + direction * Options.AsInt(_T("Video Fast Jump Step")),max);
+			if (target != GetValue()) Display->JumpToFrame(target);
 			return;
 		}
 
