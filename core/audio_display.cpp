@@ -305,23 +305,23 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 		// Draw karaoke
 		if (hasKaraoke) {
-			// Prepare
-			wxPen curPen(Options.AsColour(_T("Audio Syllable boundaries")),1,wxDOT);
-			dc.SetPen(curPen);
-			wxFont curFont(9,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"),wxFONTENCODING_SYSTEM);
-			dc.SetFont(curFont);
-			if (!spectrum) dc.SetTextForeground(Options.AsColour(_T("Audio Syllable text")));
-			else dc.SetTextForeground(wxColour(255,255,255));
-			size_t karn = karaoke->syllables.size();
-			__int64 pos1,pos2;
-			int len,curpos;
-			wxCoord tw=0,th=0;
-			KaraokeSyllable *curSyl;
-			wxString temptext;
+			try {
+				// Prepare
+				wxPen curPen(Options.AsColour(_T("Audio Syllable boundaries")),1,wxDOT);
+				dc.SetPen(curPen);
+				wxFont curFont(9,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"),wxFONTENCODING_SYSTEM);
+				dc.SetFont(curFont);
+				if (!spectrum) dc.SetTextForeground(Options.AsColour(_T("Audio Syllable text")));
+				else dc.SetTextForeground(wxColour(255,255,255));
+				size_t karn = karaoke->syllables.size();
+				__int64 pos1,pos2;
+				int len,curpos;
+				wxCoord tw=0,th=0;
+				KaraokeSyllable *curSyl;
+				wxString temptext;
 
-			// Draw syllables
-			for (size_t i=0;i<karn;i++) {
-				try {
+				// Draw syllables
+				for (size_t i=0;i<karn;i++) {
 					curSyl = &karaoke->syllables.at(i);
 					len = curSyl->length*10;
 					curpos = curSyl->position*10;
@@ -336,8 +336,8 @@ void AudioDisplay::UpdateImage(bool weak) {
 						dc.DrawText(temptext,(pos1+pos2-tw)/2,h-th-4);
 					}
 				}
-				catch (...) {
-				}
+			}
+			catch (...) {
 			}
 		}
 	}
@@ -592,25 +592,29 @@ void AudioDisplay::GetDialoguePos(__int64 &selStart,__int64 &selEnd, bool cap) {
 ////////////////////////
 // Get karaoke position
 void AudioDisplay::GetKaraokePos(__int64 &karStart,__int64 &karEnd, bool cap) {
-	// Wrap around
-	int nsyls = karaoke->syllables.size();
-	if (karaoke->curSyllable == -1) {
-		karaoke->SetSyllable(nsyls-1);
+	try {
+		// Wrap around
+		int nsyls = karaoke->syllables.size();
+		if (karaoke->curSyllable == -1) {
+			karaoke->SetSyllable(nsyls-1);
+		}
+		if (karaoke->curSyllable >= nsyls) karaoke->curSyllable = nsyls-1;
+
+		// Get positions
+		int pos = karaoke->syllables.at(karaoke->curSyllable).position;
+		int len = karaoke->syllables.at(karaoke->curSyllable).length;
+		karStart = GetXAtMS(curStartMS+pos*10);
+		karEnd = GetXAtMS(curStartMS+pos*10+len*10);
+
+		// Cap
+		if (cap) {
+			if (karStart < 0) karStart = 0;
+			if (karEnd < 0) karEnd = 0;
+			if (karStart >= w) karStart = w-1;
+			if (karEnd >= w) karEnd = w-1;
+		}
 	}
-	if (karaoke->curSyllable >= nsyls) karaoke->curSyllable = nsyls-1;
-
-	// Get positions
-	int pos = karaoke->syllables.at(karaoke->curSyllable).position;
-	int len = karaoke->syllables.at(karaoke->curSyllable).length;
-	karStart = GetXAtMS(curStartMS+pos*10);
-	karEnd = GetXAtMS(curStartMS+pos*10+len*10);
-
-	// Cap
-	if (cap) {
-		if (karStart < 0) karStart = 0;
-		if (karEnd < 0) karEnd = 0;
-		if (karStart >= w) karStart = w-1;
-		if (karEnd >= w) karEnd = w-1;
+	catch (...) {
 	}
 }
 
@@ -881,22 +885,23 @@ void AudioDisplay::GetTimesDialogue(int &start,int &end) {
 ////////////////////////////
 // Get samples of selection
 void AudioDisplay::GetTimesSelection(int &start,int &end) {
-	if (!dialogue) {
-		start = 0;
-		end = 0;
-		return;
-	}
+	start = 0;
+	end = 0;
+	if (!dialogue) return;
 
-	if (karaoke->enabled) {
-		int pos = karaoke->syllables.at(karaoke->curSyllable).position;
-		int len = karaoke->syllables.at(karaoke->curSyllable).length;
-		start = curStartMS+pos*10;
-		end = curStartMS+pos*10+len*10;
+	try {
+		if (karaoke->enabled) {
+			int pos = karaoke->syllables.at(karaoke->curSyllable).position;
+			int len = karaoke->syllables.at(karaoke->curSyllable).length;
+			start = curStartMS+pos*10;
+			end = curStartMS+pos*10+len*10;
+		}
+		else {
+			start = curStartMS;
+			end = curEndMS;
+		}
 	}
-	else {
-		start = curStartMS;
-		end = curEndMS;
-	}
+	catch (...) {}
 }
 
 
@@ -1600,16 +1605,16 @@ void AudioDisplay::ChangeLine(int delta) {
 	if (dialogue) {
 		// Get next line number and make sure it's within bounds
 		int next = line_n+delta;
-		if (next == -1) return;
-		if (next == grid->GetRows()) return;
+		if (next == -1) next = 0;
+		if (next == grid->GetRows()) next = grid->GetRows() - 1;
 
 		// Set stuff
 		NeedCommit = false;
 		dialogue = NULL;
 		grid->editBox->SetToLine(next);
 		grid->SelectRow(next);
-		if (!dialogue)
-			UpdateImage(true);
+		if (!dialogue) UpdateImage(true);
+		else UpdateImage(false);
 		line_n = next;
 	}
 }
@@ -1620,10 +1625,14 @@ void AudioDisplay::ChangeLine(int delta) {
 void AudioDisplay::Next() {
 	// Karaoke
 	if (karaoke->enabled) {
-		karaoke->curSyllable++;
+		int nextSyl = karaoke->curSyllable+1;
+		bool needsUpdate = true;
 
 		// Last syllable; jump to next
-		if (karaoke->curSyllable >= (signed int)karaoke->syllables.size()) {
+		if (nextSyl >= (signed int)karaoke->syllables.size()) {
+			// Already last?
+			if (line_n == grid->GetRows()-1) return;
+
 			if (NeedCommit) {
 				int result = wxMessageBox(_("Do you want to commit your changes? If you choose No, they will be discarded."),_("Commit?"),wxYES_NO | wxCANCEL | wxICON_QUESTION);
 				//int result = wxNO;
@@ -1635,13 +1644,15 @@ void AudioDisplay::Next() {
 					return;
 				}
 			}
+			nextSyl = 0;
 			karaoke->curSyllable = 0;
 			ChangeLine(1);
+			needsUpdate = false;
 		}
-		else Update();
 
 		// Set syllable
-		karaoke->SetSyllable(karaoke->curSyllable);
+		karaoke->SetSyllable(nextSyl);
+		if (needsUpdate) Update();
 		int start=0,end=0;
 		GetTimesSelection(start,end);
 		Play(start,end);
@@ -1659,10 +1670,14 @@ void AudioDisplay::Next() {
 void AudioDisplay::Prev() {
 	// Karaoke
 	if (karaoke->enabled) {
-		karaoke->curSyllable--;
+		int nextSyl = karaoke->curSyllable-1;
+		bool needsUpdate = true;
 
 		// First syllable; jump line
-		if (karaoke->curSyllable < 0) {
+		if (nextSyl < 0) {
+			// Already first?
+			if (line_n == 0) return;
+
 			if (NeedCommit) {
 				int result = wxMessageBox(_("Do you want to commit your changes? If you choose No, they will be discarded."),_("Commit?"),wxYES_NO | wxCANCEL);
 				if (result == wxYES) {
@@ -1673,12 +1688,14 @@ void AudioDisplay::Prev() {
 					return;
 				}
 			}
+			karaoke->curSyllable = -1;
 			ChangeLine(-1);
+			needsUpdate = false;
 		}
-		else Update();
 
 		// Set syllable
-		karaoke->SetSyllable(karaoke->curSyllable);
+		karaoke->SetSyllable(nextSyl);
+		if (needsUpdate) Update();
 		int start=0,end=0;
 		GetTimesSelection(start,end);
 		Play(start,end);

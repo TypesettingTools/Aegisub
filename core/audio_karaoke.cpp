@@ -97,8 +97,10 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	}
 
 	// Done
-	SetSelection(curSyllable);
-	Refresh(false);
+	//if (curSyllable < 0) curSyllable = syllables.size()-1;
+	//if (curSyllable >= (signed) syllables.size()) curSyllable = 0;
+	//SetSelection(curSyllable);
+	//Refresh(false);
 	return !hasKar;
 }
 
@@ -249,6 +251,8 @@ bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 ////////////////
 // Set syllable
 void AudioKaraoke::SetSyllable(int n) {
+	if (n == -1) n = syllables.size()-1;
+	if (n >= syllables.size()) n = 0;
 	curSyllable = n;
 	startClickSyl = n;
 	SetSelection(n);

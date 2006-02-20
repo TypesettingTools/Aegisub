@@ -167,9 +167,12 @@ int AegisubApp::OnRun() {
 		wxMessageBox(err, _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
 	}
 
-	catch (wchar_t *error) {
-		wxString err (error,wxConvUTF8);
-		wxMessageBox(err, _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
+	catch (wxChar *error) {
+		wxMessageBox(error, _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
+	}
+
+	catch (std::exception e) {
+		wxMessageBox(wxString(_T("std::exception: ")) + wxString(e.what(),wxConvUTF8), _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
 	}
 
 	catch (...) {
