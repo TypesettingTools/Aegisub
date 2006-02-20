@@ -68,6 +68,7 @@ AudioProvider::AudioProvider(wxString _filename, AudioDisplay *_display) {
 	raw = NULL;
 	display = _display;
 	blockcount = 0;
+	volume = 1.0f;
 
 	filename = _filename;
 
@@ -501,8 +502,11 @@ int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuf
 		provider->softStop = true;
 	}
 
-	// Fill rest with blank
+	// Set volume
 	short *output = (short*) outputBuffer;
+	for (unsigned int i=0;i<avail;i++) output[i] = MID(-(1<<15),int(output[i] * provider->volume),(1<<15)-1);
+
+	// Fill rest with blank
 	for (unsigned int i=avail;i<framesPerBuffer;i++) output[i]=0;
 
 	// Set play position (and real one)

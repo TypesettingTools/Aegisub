@@ -63,11 +63,9 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	audioScroll = new wxScrollBar(this,Audio_Scrollbar);
 	audioScroll->SetToolTip(_("Seek bar"));
 	Sash = new wxSashWindow(this,Audio_Sash,wxDefaultPosition,wxDefaultSize,wxCLIP_CHILDREN | wxSW_3DBORDER);
-	//Sash = new wxSashLayoutWindow(this,Audio_Sash,wxDefaultPosition,wxDefaultSize);
 	sashSizer = new wxBoxSizer(wxVERTICAL);
 	audioDisplay = new AudioDisplay(Sash,display);
 	sashSizer->Add(audioDisplay,1,wxEXPAND,0);
-	//sashSizer->SetSizeHints(Sash);
 	Sash->SetSizer(sashSizer);
 	Sash->SetSashVisible(wxSASH_BOTTOM,true);
 	Sash->SetSashBorder(wxSASH_BOTTOM,true);
@@ -77,7 +75,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	HorizontalZoom = new wxSlider(this,Audio_Horizontal_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL);
 	HorizontalZoom->SetToolTip(_("Horizontal zoom"));
 	VerticalZoom = new wxSlider(this,Audio_Vertical_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_INVERSE);
-	VerticalZoom->SetToolTip(_("Vertical zoom"));
+	VerticalZoom->SetToolTip(_("Vertical zoom/Volume"));
 
 	// Display sizer
 	DisplaySizer = new wxBoxSizer(wxVERTICAL);
