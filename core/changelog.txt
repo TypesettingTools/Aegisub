@@ -34,6 +34,7 @@ Please visit http://aegisub.net to download latest version
 - Alt+Left/Right on the video seek bar will now seek by increments of 10 frames (increment is customizeable in config.dat) (AMZ)
 - Added a simple audio resync method for video playback (AMZ)
 - Audio timing will now apply to all selected lines, as well as active line (AMZ)
+- Rows colliding with the currently active one will now be highlighted in grid (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

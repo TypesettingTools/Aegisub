@@ -281,17 +281,17 @@ void BaseGrid::DrawImage(wxDC &dc) {
 
 	// Row colors
 	std::vector<wxBrush> rowColors;
-	std::vector<wxBrush> foreColors;
+	std::vector<wxColor> foreColors;
 	rowColors.push_back(wxBrush(wxColour(255,255,255)));								// 0 = Standard
-	foreColors.push_back(wxBrush(wxColour(0,0,0)));
+	foreColors.push_back(wxColour(0,0,0));
 	rowColors.push_back(wxBrush(wxColour(165,207,231)));								// 1 = Header
-	foreColors.push_back(wxBrush(wxColour(0,0,0)));
+	foreColors.push_back(wxColour(0,0,0));
 	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid selection background"))));	// 2 = Selected
-	foreColors.push_back(wxBrush(Options.AsColour(_T("Grid selection foreground"))));
+	foreColors.push_back(Options.AsColour(_T("Grid selection foreground")));
 	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid comment background"))));		// 3 = Commented
-	foreColors.push_back(wxBrush(Options.AsColour(_T("Grid selection foreground"))));
+	foreColors.push_back(Options.AsColour(_T("Grid selection foreground")));
 	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid inframe background"))));		// 4 = Video Highlighted
-	foreColors.push_back(wxBrush(Options.AsColour(_T("Grid selection foreground"))));
+	foreColors.push_back(Options.AsColour(_T("Grid selection foreground")));
 
 	// First grid row
 	bool drawGrid = true;
@@ -312,6 +312,15 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		curDiag = GetDialogue(curRow);
 		dx = 0;
 		dy = i*lineHeight;
+
+		// Check for collisions
+		bool collides = false;
+		if (curDiag) {
+			AssDialogue *sel = GetDialogue(editBox->linen);
+			if (sel && sel != curDiag) {
+				if (curDiag->CollidesWith(sel)) collides = true;
+			}
+		}
 
 		// Text array
 		wxArrayString strings;
@@ -356,7 +365,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			int mode = Options.AsInt(_T("Grid Hide Overrides"));
 			wxString value = _T("");
 
-			// Hid overrides
+			// Hidden overrides
 			if (mode == 1 || mode == 2) {
 				wxString replaceWith = Options.AsText(_T("Grid hide overrides char"));
 				curDiag->ParseASSTags();
@@ -399,6 +408,12 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			dc.DrawRectangle((curColor == 1) ? 0 : colWidth[0],i*lineHeight+1,w,lineHeight);
 		}
 
+		// Set text color
+		if (collides) dc.SetTextForeground(wxColour(255,0,0));
+		else {
+			dc.SetTextForeground(foreColors[curColor]);
+		}
+
 		// Draw text
 		wxRect cur;
 		bool isCenter;
@@ -417,6 +432,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			dc.DrawLabel(strings[j],cur,isCenter ? wxALIGN_CENTER : (wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT));
 			dx += colWidth[j];
 		}
+		//if (collides) dc.SetPen(wxPen(wxColour(255,0,0)));
 
 		// Draw grid
 		dc.DestroyClippingRegion();

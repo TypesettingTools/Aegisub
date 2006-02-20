@@ -106,10 +106,6 @@ SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID i
 	int w,h;
 	dc.GetTextExtent(_T("#TWFfgGhH"), &w, &h, NULL, NULL, &font);
 	RowHeight = h+4;
-
-	// Set up
-	//SetSelectionBackground(Options.AsColour(_T("Grid selection background")));
-	//SetSelectionForeground(Options.AsColour(_T("Grid selection foreground")));
 }
 
 
