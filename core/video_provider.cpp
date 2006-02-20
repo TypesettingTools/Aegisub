@@ -57,7 +57,7 @@ VideoProvider::VideoProvider(wxString _filename, wxString _subfilename, double _
 
 	dar = GetSourceWidth()/(double)GetSourceHeight();
 
-	if( _subfilename == _T("") ) SubtitledVideo = RGB32Video;
+	if( _subfilename.IsEmpty() ) SubtitledVideo = RGB32Video;
 	else SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
 /*
 	if( _zoom == 1.0 ) ResizedVideo = SubtitledVideo;

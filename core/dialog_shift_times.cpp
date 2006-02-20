@@ -221,7 +221,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 		wxString message = _T("");
 		wxFileName assfile(AssFile::top->filename);
 		wxString filename = assfile.GetFullName();
-		if (filename == _T("")) message << _("unsaved, ");
+		if (filename.IsEmpty()) message << _("unsaved, ");
 		else message << filename << _T(", ");
 		if (byTime) message << ShiftTime->GetValue() << _T(" ");
 		else message << len << _(" frames ");
@@ -286,7 +286,7 @@ void DialogShiftTimes::OnRadioFrame(wxCommandEvent &event) {
 // Appends a line to history
 void DialogShiftTimes::AppendToHistory(wxString text) {
 	// Open file
-	if (HistoryFile == _T("")) return;
+	if (HistoryFile.IsEmpty()) return;
 	using namespace std;
 	ofstream file;
 	file.open(HistoryFile.mb_str(wxConvLocal),ios::out | ios::app);

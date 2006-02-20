@@ -229,6 +229,7 @@ void FrameMain::InitMenu() {
 	// Create Edit menu
 	editMenu = new wxMenu();
 	AppendBitmapMenuItem (editMenu,Menu_Edit_Undo, _("&Undo\t") + Hotkeys.GetText(_T("Undo")), _("Undoes last action"),wxBITMAP(undo_button));
+	AppendBitmapMenuItem (editMenu,Menu_Edit_Redo, _("&Redo\t") + Hotkeys.GetText(_T("Redo")), _("Redoes last action"),wxBITMAP(redo_button));
 	editMenu->AppendSeparator();
 	editMenu->Append(Menu_Edit_Select, _("&Select lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"));
 	editMenu->Append(Menu_Edit_Shift, _("S&hift times...\t") + Hotkeys.GetText(_T("Shift times")), _("Shift subtitles by time or frames"));
@@ -508,7 +509,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	if (Options.AsBool(_T("Auto backup")) && origfile.FileExists()) {
 		// Get path
 		wxString path = Options.AsText(_T("Auto backup path"));
-		if (path == _T("")) path = origfile.GetPath();
+		if (path.IsEmpty()) path = origfile.GetPath();
 		wxFileName dstpath(path);
 		if (!dstpath.IsAbsolute()) path = AegisubApp::folderName + path;
 		path += _T("/");
@@ -536,7 +537,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	if (saveas == false && AssFile::top->IsASS) filename = AssFile::top->filename;
 
 	// Failed, ask user
-	if (filename == _T("")) {
+	if (filename.IsEmpty()) {
 		videoBox->videoDisplay->Stop();
 		filename = 	wxFileSelector(_("Save subtitles file"),_T(""),_T(""),_T(""),_T("Advanced Substation Alpha (*.ass)|*.ass"),wxSAVE | wxOVERWRITE_PROMPT,this);
 		AssFile::top->filename = filename; //fix me, ghetto hack for correct relative path generation in SynchronizeProject()
@@ -552,7 +553,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 		if (withCharset) {
 			wxArrayString choices = GetEncodings();
 			charset = wxGetSingleChoice(_("Choose charset code:"), _T("Charset"),choices,this,-1, -1,true,250,200);
-			if (charset == _T("")) return false;
+			if (charset.IsEmpty()) return false;
 		}
 
 		// Save
@@ -1073,9 +1074,9 @@ bool FrameMain::LoadList(wxArrayString list) {
 		wxFileName file(List[i]);
 		ext = file.GetExt().Lower();
 
-		if (subs == _T("") && subsList.Index(ext) != wxNOT_FOUND) subs = List[i];
-		if (video == _T("") && videoList.Index(ext) != wxNOT_FOUND) video = List[i];
-		if (audio == _T("") && audioList.Index(ext) != wxNOT_FOUND) audio = List[i];
+		if (subs.IsEmpty() && subsList.Index(ext) != wxNOT_FOUND) subs = List[i];
+		if (video.IsEmpty() && videoList.Index(ext) != wxNOT_FOUND) video = List[i];
+		if (audio.IsEmpty() && audioList.Index(ext) != wxNOT_FOUND) audio = List[i];
 	}
 
 	// Set blocking

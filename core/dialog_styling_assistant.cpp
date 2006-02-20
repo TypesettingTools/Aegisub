@@ -192,7 +192,7 @@ void DialogStyling::JumpToLine(int n) {
 
 	// Set focus
 	TypeBox->SetFocus();
-	if (TypeBox->GetValue() == _T("")) TypeBox->SetValue(Styles->GetString(0));
+	if (TypeBox->GetValue().IsEmpty()) TypeBox->SetValue(Styles->GetString(0));
 	TypeBox->SetSelection(0,TypeBox->GetValue().Length());
 
 	// Update grid

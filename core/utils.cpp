@@ -86,7 +86,7 @@ bool Backup(wxString src,wxString dst) {
 /////////////////////////////////////
 // Make a path relative to reference
 wxString MakeRelativePath(wxString _path,wxString reference) {
-	if (_path == _T("")) return _T("");
+	if (_path.IsEmpty()) return _T("");
 	if (_path.Left(1) == _T("?")) return _path;
 	wxFileName path(_path);
 	wxFileName refPath(reference);
@@ -98,7 +98,7 @@ wxString MakeRelativePath(wxString _path,wxString reference) {
 ///////////////////////////////////////
 // Extract original path from relative
 wxString DecodeRelativePath(wxString _path,wxString reference) {
-	if (_path == _T("")) return _T("");
+	if (_path.IsEmpty()) return _T("");
 	if (_path.Left(1) == _T("?")) return _path;
 	wxFileName path(_path);
 	wxFileName refPath(reference);

@@ -174,7 +174,7 @@ void DialogStyleManager::LoadCatalog () {
 	// Set to default if available
 	StorageActions(false);
 	wxString pickStyle = AssFile::top->GetScriptInfo(_T("Last Style Storage"));
-	if (pickStyle == _T("")) pickStyle = _T("Default");
+	if (pickStyle.IsEmpty()) pickStyle = _T("Default");
 	int opt = CatalogList->FindString(pickStyle);
 	if (opt != wxNOT_FOUND) {
 		CatalogList->SetSelection(opt);

@@ -1252,7 +1252,7 @@ void AutomationScript::process_lines(AssFile *input)
 				// not a dialogue/comment event
 
 				// start checking for a blank line
-				if (e->data == _T("")) {
+				if (e->data.IsEmpty()) {
 					lua_newtable(L);
 					L_settable(L, -1, "kind", wxString(_T("blank")));
 				} else if (e->data[0] == _T(';')) {

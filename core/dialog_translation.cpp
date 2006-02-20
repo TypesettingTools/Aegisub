@@ -283,7 +283,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 	}
 
 	// Next
-	if (Hotkeys.IsPressed(_T("Translation Assistant Next")) || (Hotkeys.IsPressed(_T("Translation Assistant Accept")) && TransText->GetValue() == _T(""))) {
+	if (Hotkeys.IsPressed(_T("Translation Assistant Next")) || (Hotkeys.IsPressed(_T("Translation Assistant Accept")) && TransText->GetValue().IsEmpty())) {
 		bool ok = JumpToLine(curline,curblock+1);
 		if (ok) {
 			TransText->Clear();

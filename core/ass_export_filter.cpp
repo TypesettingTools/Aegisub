@@ -115,7 +115,7 @@ void AssExportFilter::Unregister () {
 // Checks if it's registered
 bool AssExportFilter::IsRegistered() {
 	// Check name
-	if (RegisterName == _T("")) {
+	if (RegisterName.IsEmpty()) {
 		return false;
 	}
 

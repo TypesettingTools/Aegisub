@@ -143,7 +143,7 @@ void AssExporter::Export(wxString filename, wxString charset) {
 	if (withCharset) {
 		wxArrayString choices = FrameMain::GetEncodings();
 		charset = wxGetSingleChoice(_T("Choose charset code:"), _T("Charset"),choices,NULL,-1, -1,true,250,200);
-		if (charset == _T("")) {
+		if (charset.IsEmpty()) {
 			delete Subs;
 			return;
 		}

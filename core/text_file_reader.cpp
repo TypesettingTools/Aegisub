@@ -56,7 +56,7 @@ TextFileReader::TextFileReader(wxString _filename,wxString enc,bool _trim) {
 
 	// Set encoding
 	encoding = enc;
-	if (encoding == _T("")) encoding = GetEncoding(filename);
+	if (encoding.IsEmpty()) encoding = GetEncoding(filename);
 	SetEncodingConfiguration();
 }
 

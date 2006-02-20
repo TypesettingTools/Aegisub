@@ -62,7 +62,8 @@ private:
 	bool Modified;
 
 	// Stack operations
-	static std::list<AssFile*> SubsStack;
+	static std::list<AssFile*> UndoStack;
+	static std::list<AssFile*> RedoStack;
 	static bool StackModified;
 	static void StackClear();
 
@@ -112,9 +113,11 @@ public:
 	void AddComment(const wxString comment);						// Adds a ";" comment under [Script Info].
 
 	static void StackPop();		// Pop subs from stack and sets 'top' to it
+	static void StackRedo();	// Redoes action on stack
 	static void StackPush();	// Puts a copy of 'top' on the stack
 	static void StackReset();	// Resets stack. Do this before loading new subtitles.
-	static bool StackEmpty();	// Checks if stack is empty
+	static bool IsUndoStackEmpty();	// Checks if undo stack is empty
+	static bool IsRedoStackEmpty();	// Checks if undo stack is empty
 	static bool Popping;		// Flags the stack as popping. You must unset this after popping
 	static AssFile *top;		// Current script file. It is "above" the stack.
 };

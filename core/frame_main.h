@@ -167,6 +167,7 @@ private:
 	void OnViewSubs (wxCommandEvent &event);
 
 	void OnUndo (wxCommandEvent &event);
+	void OnRedo (wxCommandEvent &event);
 	void OnCut (wxCommandEvent &event);
 	void OnCopy (wxCommandEvent &event);
 	void OnPaste (wxCommandEvent &event);
@@ -280,6 +281,7 @@ enum {
 
 	Menu_Edit_Select,
 	Menu_Edit_Undo,
+	Menu_Edit_Redo,
 	Menu_Edit_Find,
 	Menu_Edit_Find_Next,
 	Menu_Edit_Replace,

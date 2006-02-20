@@ -252,7 +252,7 @@ bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 // Set syllable
 void AudioKaraoke::SetSyllable(int n) {
 	if (n == -1) n = syllables.size()-1;
-	if (n >= syllables.size()) n = 0;
+	if (n >= (signed) syllables.size()) n = 0;
 	curSyllable = n;
 	startClickSyl = n;
 	SetSelection(n);

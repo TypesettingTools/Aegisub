@@ -73,7 +73,7 @@ void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs) {
 		if (curEntry->group != _T("[Script Info]")) {
 			continue;
 		}
-		if (curEntry->data == _T("")) {
+		if (curEntry->data.IsEmpty()) {
 			continue;
 		}
 		if (curEntry->data == _T("[Script Info]")) {

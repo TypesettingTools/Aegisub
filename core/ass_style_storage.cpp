@@ -46,7 +46,7 @@
 ///////////////////////
 // Save styles to disk
 void AssStyleStorage::Save(wxString name) {
-	if (name == _T("")) return;
+	if (name.IsEmpty()) return;
 
 	using namespace std;
 	ofstream file;
@@ -68,7 +68,7 @@ void AssStyleStorage::Save(wxString name) {
 /////////////////////////
 // Load styles from disk
 void AssStyleStorage::Load(wxString name) {
-	if (name == _T("")) return;
+	if (name.IsEmpty()) return;
 
 	using namespace std;
 	char buffer[65536];

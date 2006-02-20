@@ -607,7 +607,7 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 	}
 
 	// Add actor to list
-	if (ActorBox->GetString(0) == _T("")) ActorBox->Delete(0);
+	if (ActorBox->GetString(0).IsEmpty()) ActorBox->Delete(0);
 	if (ActorBox->FindString(actor) == wxNOT_FOUND) {
 		ActorBox->Append(actor);
 	}

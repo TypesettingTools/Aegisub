@@ -135,7 +135,7 @@ void  VideoDisplay::UpdateSize() {
 ///////////////////////
 // Sets video filename
 void VideoDisplay::SetVideo(const wxString &filename) {
-	if (filename == _T("")) {
+	if (filename.IsEmpty()) {
 		delete provider;
 		provider = NULL;
 		if (VFR_Output.vfr == NULL) VFR_Output.Unload();
@@ -718,7 +718,7 @@ wxBitmap VideoDisplay::GetFrame(int n) {
 void VideoDisplay::GetScriptSize(int &sw,int &sh) {
 	// Height
 	wxString temp = grid->ass->GetScriptInfo(_T("PlayResY"));
-	if (temp == _T("") || !temp.IsNumber()) {
+	if (temp.IsEmpty() || !temp.IsNumber()) {
 		//sh = orig_h;
 		sh = 384;
 	}
@@ -730,7 +730,7 @@ void VideoDisplay::GetScriptSize(int &sw,int &sh) {
 
 	// Width
 	temp = grid->ass->GetScriptInfo(_T("PlayResX"));
-	if (temp == _T("") || !temp.IsNumber()) {
+	if (temp.IsEmpty() || !temp.IsNumber()) {
 		sw = 288;
 	}
 	else {

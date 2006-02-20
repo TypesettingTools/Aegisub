@@ -334,7 +334,7 @@ void FrameRate::Load(wxString filename) {
 			file.getline (buffer,65536);
 			wxString wxbuffer (buffer,wxConvUTF8);
 			curline = wxbuffer;
-			if (curline == _T("")) continue;
+			if (curline.IsEmpty()) continue;
 			wxString temp;
 
 			// Get start frame

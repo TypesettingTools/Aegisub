@@ -248,7 +248,7 @@ void OptionsManager::Load() {
 	while (file.HasMoreLines()) {
 		// Parse line
 		curLine = file.ReadLineFromFile();
-		if (curLine == _T("")) continue;
+		if (curLine.IsEmpty()) continue;
 		size_t pos = curLine.Find(_T("="));
 		if (pos == wxString::npos) continue;
 		wxString key = curLine.Left(pos);

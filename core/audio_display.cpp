@@ -736,7 +736,7 @@ void AudioDisplay::SetScale(float _scale) {
 //////////////////
 // Load from file
 void AudioDisplay::SetFile(wxString file) {
-	if (file == _T("")) {
+	if (file.IsEmpty()) {
 		if (provider)
 			delete provider;
 		provider = NULL;

@@ -82,7 +82,7 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 
 		// Find file encoding
 		wxString enc;
-		if (charset == _T("")) enc = TextFileReader::GetEncoding(_filename);
+		if (charset.IsEmpty()) enc = TextFileReader::GetEncoding(_filename);
 		else enc = charset;
 		TextFileReader::EnsureValid(enc);
 
@@ -228,7 +228,7 @@ void AssFile::LoadSRT (wxString _filename,wxString encoding) {
 		switch (mode) {
 			case 0:
 				// Checks if there is anything to read
-				if (curline == _T("")) continue;
+				if (curline.IsEmpty()) continue;
 
 				// Check if it's a line number
 				if (!curline.IsNumber()) {
@@ -258,7 +258,7 @@ void AssFile::LoadSRT (wxString _filename,wxString encoding) {
 
 			case 2:
 				// Checks if it's done
-				if (curline == _T("")) {
+				if (curline.IsEmpty()) {
 					mode = 0;
 					linen++;
 					line->group = _T("[Events]");
@@ -333,7 +333,7 @@ void AssFile::LoadTXT (wxString _filename,wxString encoding) {
 		line->Style = _T("Default");
 		if (isComment) line->Actor = _T("");
 		else line->Actor = actor;
-		if (value == _T("")) {
+		if (value.IsEmpty()) {
 			line->Actor = _T("");
 			isComment = true;
 		}
@@ -934,6 +934,16 @@ bool AssFile::IsModified() {
 /////////////////////////
 // Flag file as modified
 void AssFile::FlagAsModified() {
+	// Clear redo
+	if (!RedoStack.empty()) {
+		//StackPush();
+		//UndoStack.push_back(new AssFile(*UndoStack.back()));
+		for (std::list<AssFile*>::iterator cur=RedoStack.begin();cur!=RedoStack.end();cur++) {
+			delete *cur;
+		}
+		RedoStack.clear();
+	}
+
 	Modified = true;
 	StackPush();
 }
@@ -944,18 +954,18 @@ void AssFile::FlagAsModified() {
 void AssFile::StackPush() {
 	// Places copy on stack
 	AssFile *curcopy = new AssFile(*top);
-	SubsStack.push_back(curcopy);
+	UndoStack.push_back(curcopy);
 	StackModified = true;
 
 	// Cap depth
 	int n = 0;
-	for (std::list<AssFile*>::iterator cur=SubsStack.begin();cur!=SubsStack.end();cur++) {
+	for (std::list<AssFile*>::iterator cur=UndoStack.begin();cur!=UndoStack.end();cur++) {
 		n++;
 	}
 	int depth = Options.AsInt(_T("Undo levels"));
 	while (n > depth) {
-		delete SubsStack.front();
-		SubsStack.pop_front();
+		delete UndoStack.front();
+		UndoStack.pop_front();
 		n--;
 	}
 }
@@ -966,16 +976,42 @@ void AssFile::StackPush() {
 void AssFile::StackPop() {
 	bool addcopy = false;
 	if (StackModified) {
-		SubsStack.pop_back();
+		UndoStack.pop_back();
 		StackModified = false;
 		addcopy = true;
 	}
 
-	if (!SubsStack.empty()) {
-		delete top;
-		top = SubsStack.back();
-		SubsStack.pop_back();
+	if (!UndoStack.empty()) {
+		//delete top;
+		RedoStack.push_back(top);
+		top = UndoStack.back();
+		UndoStack.pop_back();
 		Popping = true;
+	}
+
+	if (addcopy) {
+		StackPush();
+	}
+}
+
+
+//////////////
+// Stack redo
+void AssFile::StackRedo() {
+
+	bool addcopy = false;
+	if (StackModified) {
+		UndoStack.pop_back();
+		StackModified = false;
+		addcopy = true;
+	}
+
+	if (!RedoStack.empty()) {
+		UndoStack.push_back(top);
+		top = RedoStack.back();
+		RedoStack.pop_back();
+		Popping = true;
+		//StackModified = false;
 	}
 
 	if (addcopy) {
@@ -987,10 +1023,18 @@ void AssFile::StackPop() {
 ///////////////
 // Stack clear
 void AssFile::StackClear() {
-	for (std::list<AssFile*>::iterator cur=SubsStack.begin();cur!=SubsStack.end();cur++) {
+	// Clear undo
+	for (std::list<AssFile*>::iterator cur=UndoStack.begin();cur!=UndoStack.end();cur++) {
 		delete *cur;
 	}
-	SubsStack.clear();
+	UndoStack.clear();
+
+	// Clear redo
+	for (std::list<AssFile*>::iterator cur=RedoStack.begin();cur!=RedoStack.end();cur++) {
+		delete *cur;
+	}
+	RedoStack.clear();
+
 	Popping = false;
 }
 
@@ -1005,18 +1049,26 @@ void AssFile::StackReset() {
 }
 
 
-/////////////////////////////
-// Returns if stack is empty
-bool AssFile::StackEmpty() {
-	if (StackModified) return (SubsStack.size() <= 1);
-	else return SubsStack.empty();
+//////////////////////////////////
+// Returns if undo stack is empty
+bool AssFile::IsUndoStackEmpty() {
+	if (StackModified) return (UndoStack.size() <= 1);
+	else return UndoStack.empty();
+}
+
+
+//////////////////////////////////
+// Returns if redo stack is empty
+bool AssFile::IsRedoStackEmpty() {
+	return RedoStack.empty();
 }
 
 
 //////////
 // Global
 AssFile *AssFile::top;
-std::list<AssFile*> AssFile::SubsStack;
+std::list<AssFile*> AssFile::UndoStack;
+std::list<AssFile*> AssFile::RedoStack;
 bool AssFile::Popping;
 bool AssFile::StackModified;
 

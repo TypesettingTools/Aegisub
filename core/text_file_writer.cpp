@@ -52,9 +52,9 @@ TextFileWriter::TextFileWriter(wxString _filename,wxString enc) {
 
 	// Set encoding
 	encoding = enc;
-	if (encoding == _T("Local") || (encoding == _T("") && Options.AsText(_T("Save Charset")).Lower() == _T("local"))) conv = &wxConvLocal;
+	if (encoding == _T("Local") || (encoding.IsEmpty() && Options.AsText(_T("Save Charset")).Lower() == _T("local"))) conv = &wxConvLocal;
 	else {
-		if (encoding == _T("")) encoding = Options.AsText(_T("Save Charset"));
+		if (encoding.IsEmpty()) encoding = Options.AsText(_T("Save Charset"));
 		if (encoding == _T("US-ASCII")) encoding = _T("ISO-8859-1");
 		conv = new wxCSConv(encoding);
 		customConv = true;

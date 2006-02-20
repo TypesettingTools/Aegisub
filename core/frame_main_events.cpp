@@ -142,6 +142,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Audio_Close, FrameMain::OnCloseAudio)	
 
 	EVT_MENU(Menu_Edit_Undo, FrameMain::OnUndo)
+	EVT_MENU(Menu_Edit_Redo, FrameMain::OnRedo)
 	EVT_MENU(Menu_Edit_Cut, FrameMain::OnCut)
 	EVT_MENU(Menu_Edit_Copy, FrameMain::OnCopy)
 	EVT_MENU(Menu_Edit_Paste, FrameMain::OnPaste)
@@ -317,9 +318,9 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// Edit menu
 	else if (curMenu == editMenu) {
-
 		// Undo state
-		RebuildMenuItem(editMenu,Menu_Edit_Undo,wxBITMAP(undo_button),wxBITMAP(undo_disable_button),!AssFile::StackEmpty());
+		RebuildMenuItem(editMenu,Menu_Edit_Undo,wxBITMAP(undo_button),wxBITMAP(undo_disable_button),!AssFile::IsUndoStackEmpty());
+		RebuildMenuItem(editMenu,Menu_Edit_Redo,wxBITMAP(redo_button),wxBITMAP(redo_disable_button),!AssFile::IsRedoStackEmpty());
 
 		// Copy/cut/paste
 		wxArrayInt sels = SubsBox->GetSelection();
@@ -655,7 +656,7 @@ void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 	wxArrayInt selList = SubsBox->GetSelection();
 	if (selList.GetCount() == 1){
 		AssDialogue * a = SubsBox->GetDialogue(selList.Item(0));
-		if (a->Text == _T("")){
+		if (a->Text.IsEmpty()){
 			wxMessageDialog Question(this, _T(
 				"You've selected a single row with no text. Instead would you like to check the entire document?"),
 				_T("Single Row Selection"),
@@ -878,6 +879,16 @@ void FrameMain::OnUndo(wxCommandEvent& WXUNUSED(event)) {
 
 
 ////////
+// Redo
+void FrameMain::OnRedo(wxCommandEvent& WXUNUSED(event)) {
+	videoBox->videoDisplay->Stop();
+	AssFile::StackRedo();
+	SubsBox->LoadFromAss(AssFile::top,true);
+	AssFile::Popping = false;
+}
+
+
+////////
 // Find
 void FrameMain::OnFind(wxCommandEvent &event) {
 	videoBox->videoDisplay->Stop();
@@ -1001,7 +1012,7 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 			// Set path
 			wxFileName origfile(AssFile::top->filename);
 			wxString path = Options.AsText(_T("Auto save path"));
-			if (path == _T("")) path = origfile.GetPath();
+			if (path.IsEmpty()) path = origfile.GetPath();
 			wxFileName dstpath(path);
 			if (!dstpath.IsAbsolute()) path = AegisubApp::folderName + path;
 			path += _T("/");

@@ -210,7 +210,7 @@ void AssTime::UpdateFromTextCtrl(wxTextCtrl *ctrl) {
 			start++;
 			end++;
 		}
-		else if (nextChar == _T("")) text.Remove(start-1,1);
+		else if (nextChar.IsEmpty()) text.Remove(start-1,1);
 		else text.Remove(start,1);
 	}
 
