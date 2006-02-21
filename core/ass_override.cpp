@@ -615,7 +615,7 @@ end_tokenizing:
 	// Get parameters
 	size_t n=0;
 	wxString curtok = _T("");
-	if (curPar < totalPars) {
+	if (curPar < (signed)totalPars) {
 		curtok = paramList[curPar];
 		curPar++;
 	}
@@ -676,7 +676,7 @@ end_tokenizing:
 			}
 
 			// Get next actual parameter
-			if (curPar < totalPars) {
+			if (curPar < (signed)totalPars) {
 				// Unless this parameter was omitted (in which case the token shouldn't be eaten)
 				if (!newparam->ommited) {
 					curtok = paramList[curPar];

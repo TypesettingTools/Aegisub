@@ -46,7 +46,7 @@
 ////////////////////// AssTime //////////////////////
 // AssTime constructors
 AssTime::AssTime () {
-	h = m = s = ms = 0;
+	time = 0;
 }
 
 
@@ -94,13 +94,7 @@ void AssTime::ParseASS (const wxString _text) {
 	}
 
 	// OK, set values
-	h = th;
-	m = tm;
-	s = ts;
-	ms = tms;
-
-	// This should clamp values properly
-	SetMS(GetMS());
+	time = tms + ts*1000 + tm*60000 + th*3600000;
 }
 
 
@@ -113,6 +107,7 @@ void AssTime::ParseSRT (const wxString _text) {
 	text.Trim(true);
 	long tempv;
 	wxString temp;
+	int ms,s,m,h;
 
 	// Parse
 	temp = text.Mid(0,2);
@@ -127,17 +122,30 @@ void AssTime::ParseSRT (const wxString _text) {
 	temp = text.Mid(9,3);
 	temp.ToLong(&tempv);
 	ms = tempv;
+
+	// Set value
+	time = ms + s*1000 + m*60000 + h*3600000;
 }
 
 
 //////////////////////////////////////////
 // AssTime conversion to/from miliseconds
 int AssTime::GetMS () {
-	if (!UseMSPrecision) return ms/10*10 + s*1000 + m*60000 + h*3600000;
-	else return ms + s*1000 + m*60000 + h*3600000;
+	if (!UseMSPrecision) return time/10*10;
+	else return time;
 }
 
 void AssTime::SetMS (int _ms) {
+	time = _ms;
+}
+
+
+////////////////
+// ASS Formated
+wxString AssTime::GetASSFormated () {
+	int h,m,s,ms;
+	int _ms = time;
+
 	// Centisecond precision
 	if (!UseMSPrecision) _ms = _ms/10*10;
 
@@ -157,7 +165,6 @@ void AssTime::SetMS (int _ms) {
 		m = 59;
 		s = 59;
 		ms = 999;
-		return;
 	}
 
 	// Minutes
@@ -172,14 +179,6 @@ void AssTime::SetMS (int _ms) {
 		s++;
 	}
 
-	// Miliiseconds
-	ms = _ms;
-}
-
-
-////////////////
-// ASS Formated
-wxString AssTime::GetASSFormated () {
 	if (UseMSPrecision) return wxString::Format(_T("%01i:%02i:%02i.%03i"),h,m,s,ms);
 	else return wxString::Format(_T("%01i:%02i:%02i.%02i"),h,m,s,ms/10);
 }
@@ -188,6 +187,42 @@ wxString AssTime::GetASSFormated () {
 ////////////////
 // SRT Formated
 wxString AssTime::GetSRTFormated () {
+	int h,m,s,ms;
+	int _ms = time;
+
+	// Centisecond precision
+	if (!UseMSPrecision) _ms = _ms/10*10;
+
+	// Reset
+	h = m = s = ms = 0;
+	if (_ms < 0) _ms = 0;
+
+	// Hours
+	while (_ms >= 3600000) {
+		_ms -= 3600000;
+		h++;
+	}
+
+	// Ass overflow
+	if (h > 9) {
+		h = 9;
+		m = 59;
+		s = 59;
+		ms = 999;
+	}
+
+	// Minutes
+	while (_ms >= 60000) {
+		_ms -= 60000;
+		m++;
+	}
+
+	// Seconds
+	while (_ms >= 1000) {
+		_ms -= 1000;
+		s++;
+	}
+
 	wxString result = wxString::Format(_T("%02i:%02i:%02i,%03i"),h,m,s,ms);
 	return result;
 }
@@ -218,14 +253,6 @@ void AssTime::UpdateFromTextCtrl(wxTextCtrl *ctrl) {
 	ParseASS(text);
 	ctrl->SetValue(GetASSFormated());
 	ctrl->SetSelection(start,end);
-}
-
-
-///////////////////
-// AssTime ostream
-std::ostream& operator << (std::ostream &os,AssTime &time) {
-	os << time.GetASSFormated();
-	return os;
 }
 
 

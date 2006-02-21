@@ -46,10 +46,7 @@
 // Class for Ass format time
 class AssTime {
 private:
-	int h;		// Hours
-	int m;		// Minutes
-	int s;		// Seconds
-	int ms;		// Miliseconds
+	int time;		// Miliseconds
 
 public:
 	static bool UseMSPrecision;
