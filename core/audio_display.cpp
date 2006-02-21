@@ -729,7 +729,6 @@ void AudioDisplay::UpdateSamples() {
 void AudioDisplay::SetScale(float _scale) {
 	if (scale == _scale) return;
 	scale = _scale;
-	provider->volume = scale;
 	UpdateImage();
 }
 

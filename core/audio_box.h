@@ -63,11 +63,13 @@ private:
 	wxScrollBar *audioScroll;
 	wxSlider *HorizontalZoom;
 	wxSlider *VerticalZoom;
+	wxSlider *VolumeBar;
 	wxSizer *MainSizer;
 	wxSizer *TopSizer;
 	wxSizer *sashSizer;
 	wxSizer *DisplaySizer;
 	wxSashWindow *Sash;
+	ToggleBitmap *VerticalLink;
 
 	wxToggleButton *SplitButton;
 	wxButton *JoinButton;
@@ -79,6 +81,8 @@ private:
 	void OnScrollbar(wxScrollEvent &event);
 	void OnHorizontalZoom(wxScrollEvent &event);
 	void OnVerticalZoom(wxScrollEvent &event);
+	void OnVolume(wxScrollEvent &event);
+	void OnVerticalLink(wxCommandEvent &event);
 	void OnSash(wxSashEvent &event);
 
 	void OnPlaySelection(wxCommandEvent &event);
@@ -129,7 +133,9 @@ enum {
 	Audio_Scrollbar = 1600,
 	Audio_Horizontal_Zoom,
 	Audio_Vertical_Zoom,
+	Audio_Volume,
 	Audio_Sash,
+	Audio_Vertical_Link,
 
 	Audio_Button_Play,
 	Audio_Button_Stop,

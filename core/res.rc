@@ -118,6 +118,7 @@ toggle_audio_autoscroll BITMAP "bitmaps/toggle_audio_autoscroll.bmp"
 toggle_audio_autocommit BITMAP "bitmaps/toggle_audio_autocommit.bmp"
 toggle_audio_ssa BITMAP "bitmaps/toggle_audio_ssa.bmp"
 toggle_audio_spectrum BITMAP "bitmaps/toggle_audio_spectrum.bmp"
+toggle_audio_link BITMAP "bitmaps/toggle_audio_link.bmp"
 toggle_video_autoscroll BITMAP "bitmaps/toggle_video_autoscroll.bmp"
 
 splash_01 BITMAP "bitmaps/splash_01.bmp"

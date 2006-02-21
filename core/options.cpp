@@ -131,6 +131,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Audio Cache"),1);
 	SetInt(_T("Audio Sample Rate"),0);
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
+	SetBool(_T("Audio Link"),true);
 	SetBool(_T("Audio Autocommit"),false);
 	SetBool(_T("Audio Autoscroll"),true);
 	SetBool(_T("Audio SSA Mode"),false);

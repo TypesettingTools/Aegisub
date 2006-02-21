@@ -70,11 +70,11 @@ VideoBox::VideoBox(wxPanel *parent) {
 	videoSlider->SetToolTip(_("Seek video."));
 
 	// Position
-	VideoPosition = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxSize(125,20),wxTE_READONLY);
+	VideoPosition = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
 	VideoPosition->SetToolTip(_("Current frame time and number."));
 
 	// Times of sub relative to video
-	VideoSubsPos = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxSize(125,20),wxTE_READONLY);
+	VideoSubsPos = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
 	VideoSubsPos->SetToolTip(_("Time of this frame relative to start and end of current subs."));
 
 	// Display
@@ -96,10 +96,10 @@ VideoBox::VideoBox(wxPanel *parent) {
 	videoBottomSizer->Add(VideoPlayLineButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
 	videoBottomSizer->Add(VideoStopButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
 	videoBottomSizer->Add(AutoScroll,0,wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,2);
+	videoBottomSizer->Add(VideoTrackerMenuButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,2);
+	videoBottomSizer->Add(VideoTrackerMenu2Button,0,wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,2);
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
-	videoBottomSizer->Add(VideoTrackerMenuButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
-	videoBottomSizer->Add(VideoTrackerMenu2Button,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(videoDisplay,0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);

@@ -75,7 +75,12 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	HorizontalZoom = new wxSlider(this,Audio_Horizontal_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL);
 	HorizontalZoom->SetToolTip(_("Horizontal zoom"));
 	VerticalZoom = new wxSlider(this,Audio_Vertical_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_INVERSE);
-	VerticalZoom->SetToolTip(_("Vertical zoom/Volume"));
+	VerticalZoom->SetToolTip(_("Vertical zoom"));
+	VolumeBar = new wxSlider(this,Audio_Volume,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_INVERSE);
+	VolumeBar->SetToolTip(_("Audio Volume"));
+	VerticalLink = new ToggleBitmap(this,Audio_Vertical_Link,wxBITMAP(toggle_audio_link));
+	VerticalLink->SetToolTip(_("Link vertical zoom and volxmlume sliders"));
+	VerticalLink->SetValue(Options.AsBool(_T("Audio Link")));
 
 	// Display sizer
 	DisplaySizer = new wxBoxSizer(wxVERTICAL);
@@ -83,11 +88,19 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	DisplaySizer->Add(Sash,0,wxEXPAND,0);
 	DisplaySizer->Add(audioScroll,0,wxEXPAND,0);
 
+	// VertVol sider
+	wxSizer *VertVol = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *VertVolArea = new wxBoxSizer(wxVERTICAL);
+	VertVol->Add(VerticalZoom,1,wxEXPAND,0);
+	VertVol->Add(VolumeBar,1,wxEXPAND,0);
+	VertVolArea->Add(VertVol,1,wxEXPAND,0);
+	VertVolArea->Add(VerticalLink,0,wxEXPAND,0);
+
 	// Top sizer
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	TopSizer->Add(DisplaySizer,1,wxEXPAND,0);
 	TopSizer->Add(HorizontalZoom,0,wxEXPAND,0);
-	TopSizer->Add(VerticalZoom,0,wxEXPAND,0);
+	TopSizer->Add(VertVolArea,0,wxEXPAND,0);
 
 	// Buttons sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -218,6 +231,7 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_COMMAND_SCROLL(Audio_Scrollbar, AudioBox::OnScrollbar)
 	EVT_COMMAND_SCROLL(Audio_Horizontal_Zoom, AudioBox::OnHorizontalZoom)
 	EVT_COMMAND_SCROLL(Audio_Vertical_Zoom, AudioBox::OnVerticalZoom)
+	EVT_COMMAND_SCROLL(Audio_Volume, AudioBox::OnVolume)
 	EVT_SASH_DRAGGED(Audio_Sash,AudioBox::OnSash)
 
 	EVT_BUTTON(Audio_Button_Play, AudioBox::OnPlaySelection)
@@ -236,6 +250,7 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_BUTTON(Audio_Button_Leadin,AudioBox::OnLeadIn)
 	EVT_BUTTON(Audio_Button_Leadout,AudioBox::OnLeadOut)
 
+	EVT_TOGGLEBUTTON(Audio_Vertical_Link, AudioBox::OnVerticalLink)
 	EVT_TOGGLEBUTTON(Audio_Button_Karaoke, AudioBox::OnKaraoke)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoGoto,AudioBox::OnAutoGoto)
 	EVT_TOGGLEBUTTON(Audio_Button_Split,AudioBox::OnSplit)
@@ -265,7 +280,42 @@ void AudioBox::OnVerticalZoom(wxScrollEvent &event) {
 	int pos = event.GetPosition();
 	if (pos < 1) pos = 1;
 	if (pos > 100) pos = 100;
-	audioDisplay->SetScale(pow(float(pos)/50.0f,3));
+	float value = pow(float(pos)/50.0f,3);
+	audioDisplay->SetScale(value);
+	if (VerticalLink->GetValue()) {
+		audioDisplay->provider->volume = value;
+		VolumeBar->SetValue(pos);
+	}
+}
+
+
+//////////////////////
+// Volume bar changed
+void AudioBox::OnVolume(wxScrollEvent &event) {
+	if (!VerticalLink->GetValue()) {
+		int pos = event.GetPosition();
+		if (pos < 1) pos = 1;
+		if (pos > 100) pos = 100;
+		audioDisplay->provider->volume = pow(float(pos)/50.0f,3);
+	}
+}
+
+
+////////////////////////
+// Bars linked/unlinked
+void AudioBox::OnVerticalLink(wxCommandEvent &event) {
+	int pos = VerticalZoom->GetValue();
+	if (pos < 1) pos = 1;
+	if (pos > 100) pos = 100;
+	float value = pow(float(pos)/50.0f,3);
+	if (VerticalLink->GetValue()) {
+		audioDisplay->provider->volume = value;
+		VolumeBar->SetValue(pos);
+	}
+	VolumeBar->Enable(!VerticalLink->GetValue());
+
+	Options.SetBool(_T("Audio Link"),VerticalLink->GetValue());
+	Options.Save();
 }
 
 
