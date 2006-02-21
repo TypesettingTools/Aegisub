@@ -538,7 +538,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	// Click
 	if ((click || holding) && validRow) {
 		// Toggle selected
-		if (click && ctrl && !shift) {
+		if (click && ctrl && !shift && !alt) {
 			SelectRow(row,true,!IsInSelection(row,0));
 			parentFrame->UpdateToolbar();
 			return;
@@ -553,8 +553,14 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 			return;
 		}
 
+		// Keep selection
+		if (click && !shift && !ctrl && alt) {
+			editBox->SetToLine(row);
+			return;
+		}
+
 		// Block select
-		if ((click && shift && !ctrl) || (holding)) {
+		if ((click && shift && !ctrl && !alt) || (holding)) {
 			if (lastRow != -1) {
 				// Set boundaries
 				int i1 = row;
