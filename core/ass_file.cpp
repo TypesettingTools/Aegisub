@@ -924,6 +924,23 @@ void AssFile::AddToRecent(wxString file) {
 }
 
 
+////////////////////////////////////////////
+// Compress/decompress for storage on stack
+void AssFile::CompressForStack(bool compress) {
+	AssDialogue *diag;
+	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
+		diag = AssEntry::GetAsDialogue(*cur);
+		if (diag) {
+			if (compress) {
+				diag->data.Clear();
+				diag->ClearBlocks();
+			}
+			else diag->UpdateData();
+		}
+	}
+}
+
+
 //////////////////////////////
 // Checks if file is modified
 bool AssFile::IsModified() {
@@ -954,6 +971,7 @@ void AssFile::FlagAsModified() {
 void AssFile::StackPush() {
 	// Places copy on stack
 	AssFile *curcopy = new AssFile(*top);
+	curcopy->CompressForStack(true);
 	UndoStack.push_back(curcopy);
 	StackModified = true;
 
@@ -983,8 +1001,10 @@ void AssFile::StackPop() {
 
 	if (!UndoStack.empty()) {
 		//delete top;
+		top->CompressForStack(true);
 		RedoStack.push_back(top);
 		top = UndoStack.back();
+		top->CompressForStack(false);
 		UndoStack.pop_back();
 		Popping = true;
 	}
@@ -1007,8 +1027,10 @@ void AssFile::StackRedo() {
 	}
 
 	if (!RedoStack.empty()) {
+		top->CompressForStack(true);
 		UndoStack.push_back(top);
 		top = RedoStack.back();
+		top->CompressForStack(false);
 		RedoStack.pop_back();
 		Popping = true;
 		//StackModified = false;

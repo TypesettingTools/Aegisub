@@ -97,6 +97,7 @@ public:
 	bool IsModified();									// Returns if file has unmodified changes
 	void FlagAsModified();								// Flag file as being modified, will automatically put a copy on stack
 	void Clear();										// Wipes file
+	void CompressForStack(bool compress);				// Compress/decompress for storage on stack
 	void LoadDefault(bool noline=true);					// Loads default file. Pass true to prevent it from adding a default line too
 	void InsertStyle(AssStyle *style);					// Inserts a style to file
 	wxArrayString GetStyles();							// Gets a list of all styles available
