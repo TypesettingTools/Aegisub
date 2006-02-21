@@ -548,6 +548,7 @@ void DialogSpellCheck::ComputeAction(int action) {
 
 bool DialogSpellCheck::LineComputation() {
 	AssDialogueBlockPlain *curPlain;
+	current_line->ParseASSTags();
 	size_t size_blocks = current_line->Blocks.size();
 	for (size_t i=(curBlockNumber+1);i<size_blocks;i++) {
 		curPlain = AssDialogueBlock::GetAsPlain(current_line->Blocks.at(i));
@@ -559,10 +560,12 @@ bool DialogSpellCheck::LineComputation() {
 	}
 	curPlain = 0;
 	curBlockNumber = -1; 
+	current_line->ClearBlocks();
 	return false;
 }
 
 void DialogSpellCheck::BlockStore() {
+	current_line->ParseASSTags();
 	AssDialogueBlockPlain *curPlain = AssDialogueBlock::GetAsPlain(current_line->Blocks.at(curBlockNumber));
 		if (curPlain) {
 			curPlain->text = current_block;
@@ -572,6 +575,7 @@ void DialogSpellCheck::BlockStore() {
 			subs->FlagAsModified();
 		}
 	curPlain = 0;
+	current_line->ClearBlocks();
 }
 
 #endif

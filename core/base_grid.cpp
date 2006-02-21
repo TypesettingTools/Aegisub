@@ -384,6 +384,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 						}
 					}
 				}
+				curDiag->ClearBlocks();
 			}
 
 			// Show overrides

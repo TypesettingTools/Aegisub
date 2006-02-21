@@ -38,6 +38,7 @@ Please visit http://aegisub.net to download latest version
 - Selected comments are now highlighted in a different color (AMZ)
 - Added a volume slider bar to audio mode (AMZ)
 - Fixed behavior of deleting and joining lines on subtitles grid (AMZ)
+- Fixed some internal workings, which should make Aegisub use considerably less RAM (especially for large Karaoke files, 3x less RAM usage measured) (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

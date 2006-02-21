@@ -194,6 +194,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 				// Update
 				curDiag->UpdateText();
 				curDiag->UpdateData();
+				curDiag->ClearBlocks();
 				continue;
 			}
 			catch (wchar_t *err) {

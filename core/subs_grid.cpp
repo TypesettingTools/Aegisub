@@ -739,7 +739,7 @@ void SubtitlesGrid::On122Recombine(wxCommandEvent &event) {
 		while (n1->Text.Right(2) == _T("\\N") || n1->Text.Right(2) == _T("\\n"))
 			n1->Text = n1->Text.Mid(0,n1->Text.Length()-2);
 		n2->Start = n1->Start;
-		n1->ParseASSTags();
+		//n1->ParseASSTags();
 		n1->UpdateData();
 		n2->UpdateData();
 
@@ -778,7 +778,7 @@ void SubtitlesGrid::On112Recombine(wxCommandEvent &event) {
 		while (n2->Text.Right(2) == _T("\\N") || n2->Text.Right(2) == _T("\\n"))
 			n2->Text = n2->Text.Mid(0,n2->Text.Length()-2);
 		n1->End = n2->End;
-		n2->ParseASSTags();
+		//n2->ParseASSTags();
 		n1->UpdateData();
 		n2->UpdateData();
 
@@ -1307,8 +1307,8 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 	wxString orig = n1->Text;
 	n1->Text = orig.Left(pos);
 	n2->Text = orig.Mid(pos);
-	n1->ParseASSTags();
-	n2->ParseASSTags();
+	//n1->ParseASSTags();
+	//n2->ParseASSTags();
 
 	// Modify time
 	if (mode == 1) {

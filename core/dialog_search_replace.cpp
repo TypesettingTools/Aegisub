@@ -363,7 +363,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 			// Update
 			AssDialogue *cur = grid->GetDialogue(curLine);
-			cur->ParseASSTags();
+			//cur->ParseASSTags();
 			cur->UpdateData();
 
 			// Commit
@@ -454,7 +454,7 @@ void SearchReplaceEngine::ReplaceAll() {
 		if (replaced) {
 			AssDialogue *cur = grid->GetDialogue(i);
 			cur->UpdateData();
-			cur->ParseASSTags();
+			//cur->ParseASSTags();
 			grid->SetRowToLine(i,cur);
 		}
 	}

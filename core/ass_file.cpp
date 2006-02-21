@@ -343,7 +343,7 @@ void AssFile::LoadTXT (wxString _filename,wxString encoding) {
 		line->Start.SetMS(0);
 		line->End.SetMS(0);
 		line->UpdateData();
-		line->ParseASSTags();
+		//line->ParseASSTags();
 
 		// Adds line
 		Line.push_back(line);
@@ -561,7 +561,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 		if ((data.Left(9) == _T("Dialogue:") || data.Left(8) == _T("Comment:"))) {
 			AssDialogue *diag = new AssDialogue(data,IsSSA);
 			lasttime = diag->Start.GetMS();
-			diag->ParseASSTags();
+			//diag->ParseASSTags();
 			entry = diag;
 			entry->StartMS = lasttime;
 			entry->group = group;

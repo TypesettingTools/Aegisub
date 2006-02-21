@@ -1314,6 +1314,7 @@ void AutomationScript::process_lines(AssFile *input)
 				wxString ktext = _T("");
 				wxString ktext_stripped = _T("");
 
+				dia->ParseASSTags();
 				for (std::vector<AssDialogueBlock*>::iterator block = dia->Blocks.begin(); block != dia->Blocks.end(); block++) {
 
 					switch ((*block)->type) {
@@ -1374,6 +1375,7 @@ void AutomationScript::process_lines(AssFile *input)
 					}
 
 				}
+				dia->ClearBlocks();
 
 				// add the final karaoke block to the table
 				// (even if there's no karaoke in the line, there's always at least one karaoke block)
@@ -1552,7 +1554,7 @@ void AutomationScript::process_lines(AssFile *input)
 					e->Comment = kind == _T("comment");
 					lua_settop(L, -11);
 					e->StartMS = e->Start.GetMS();
-					e->ParseASSTags();
+					//e->ParseASSTags();
 					e->UpdateData();
 					input->Line.push_back(e);
 					wxLogDebug(_T("Produced new dialogue event in output subs"));

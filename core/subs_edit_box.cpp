@@ -874,7 +874,7 @@ void SubsEditBox::CommitText() {
 	// Update line
 	if (cur) {
 		cur->Text = TextEdit->GetValue();
-		cur->ParseASSTags();
+		//cur->ParseASSTags();
 		cur->UpdateData();
 		grid->SetRowToLine(linen,cur);
 		audio->SetDialogue(grid,cur,linen);
@@ -1353,6 +1353,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 
 	// Commit changes and shift selection
 	SetText(line->Text);
+	line->ClearBlocks();
 	TextEdit->SetSelection(selstart+shift,selend+shift);
 	TextEdit->SetFocus();
 }

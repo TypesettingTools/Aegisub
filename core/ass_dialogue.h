@@ -183,6 +183,7 @@ public:
 	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *userData),void *userData=NULL);	// Callback to process parameters
 	wxString GetSSAText();
 	bool CollidesWith(AssDialogue *target);					// Checks if two lines collide
+	void ClearBlocks();
 
 	AssDialogue();
 	AssDialogue(wxString data,bool IsSSA=false);

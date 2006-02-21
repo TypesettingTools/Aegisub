@@ -145,6 +145,7 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 
 	// Count blocks
 	int nblocks = 0;
+	current->ParseASSTags();
 	size_t size_blocks = current->Blocks.size();
 	for (size_t i=0;i<size_blocks;i++) {
 		if (current->Blocks.at(i)->type == BLOCK_PLAIN) nblocks++;
@@ -207,6 +208,7 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 	}
 	OrigText->SetDefaultStyle(Normal);
 	TransText->SetDefaultStyle(Normal);
+	current->ClearBlocks();
 
 	return true;
 }
@@ -298,6 +300,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 	if (Hotkeys.IsPressed(_T("Translation Assistant Accept")) || Hotkeys.IsPressed(_T("Translation Assistant Preview"))) {
 		// Store
 		AssDialogue *cur = grid->GetDialogue(curline);
+		cur->ParseASSTags();
 		int nblock = -1;
 		for (unsigned int i=0;i<cur->Blocks.size();i++) {
 			if (cur->Blocks.at(i)->type == BLOCK_PLAIN) nblock++;
@@ -310,6 +313,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		// Update line
 		cur->UpdateText();
 		cur->UpdateData();
+		cur->ClearBlocks();
 		grid->SetRowToLine(curline,cur);
 		subs->FlagAsModified();
 		grid->CommitChanges();
@@ -331,6 +335,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		using std::vector;
 		AssDialogueBlock *curBlock;
 		int pos = -1;
+		current->ParseASSTags();
 		for (vector<AssDialogueBlock*>::iterator cur=current->Blocks.begin();cur!=current->Blocks.end();cur++) {
 			curBlock = *cur;
 			if (curBlock->type == BLOCK_PLAIN) {
@@ -340,6 +345,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 				}
 			}
 		}
+		current->ClearBlocks();
 		return;
 	}
 

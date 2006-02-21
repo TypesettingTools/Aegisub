@@ -256,11 +256,13 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 			data.ko = 0;
 
 			// Process stuff
+			curDialogue->ParseASSTags();
 			curDialogue->ProcessParameters(TransformTimeTags,&data);
 			curDialogue->Start.SetMS(Input->CorrectTimeAtFrame(Output->CorrectFrameAtTime(curDialogue->Start.GetMS(),true),true));
 			curDialogue->End.SetMS(Input->CorrectTimeAtFrame(Output->CorrectFrameAtTime(curDialogue->End.GetMS(),false),false));
 			curDialogue->UpdateText();
 			curDialogue->UpdateData();
+			curDialogue->ClearBlocks();
 			n++;
 		}
 	}

@@ -96,12 +96,7 @@ AssDialogue::~AssDialogue () {
 /////////
 // Clear
 void AssDialogue::Clear () {
-	using std::vector;
-	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
-		delete *cur;
-	}
-	Blocks.clear();
-
+	ClearBlocks();
 	if( Tracker )
 	{
 		delete Tracker;
@@ -112,6 +107,17 @@ void AssDialogue::Clear () {
 		DeleteMovement( Movement );
 		Movement = 0;
 	}
+}
+
+
+////////////////
+// Clear blocks
+void AssDialogue::ClearBlocks() {
+	using std::vector;
+	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
+		delete *cur;
+	}
+	Blocks.clear();
 }
 
 
@@ -392,8 +398,7 @@ void AssDialogue::ParseSRTTags () {
 	Text.Replace(_T("}{"),_T(""));
 
 	// Update all stuff
-	ParseASSTags();
-	if (total > 0) UpdateText();
+	//if (total > 0) UpdateText();
 	UpdateData();
 }
 
@@ -402,10 +407,7 @@ void AssDialogue::ParseSRTTags () {
 // Parse ASS tags
 void AssDialogue::ParseASSTags () {
 	// Clear blocks
-	for (size_t i=0;i<Blocks.size();i++) {
-		delete Blocks.at(i);
-	}
-	Blocks.clear();
+	ClearBlocks();
 
 	// Is drawing?
 	int drawingLevel = 0;
@@ -490,6 +492,7 @@ void AssDialogue::ParseASSTags () {
 void AssDialogue::StripTags () {
 	using std::list;
 	using std::vector;
+	ParseASSTags();
 	vector<AssDialogueBlock*>::iterator next;
 	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur=next) {
 		next = cur;
@@ -501,6 +504,7 @@ void AssDialogue::StripTags () {
 	}
 	UpdateText();
 	UpdateData();
+	ClearBlocks();
 }
 
 
@@ -521,6 +525,7 @@ void AssDialogue::ConvertTagsToSRT () {
 	bool temp;
 
 	// Iterate through blocks
+	ParseASSTags();
 	for (size_t i=0;i<Blocks.size();i++) {
 		curBlock = AssDialogueBlock::GetAsOverride(Blocks.at(i));
 		if (curBlock) {
@@ -594,6 +599,7 @@ void AssDialogue::ConvertTagsToSRT () {
 
 	Text = final;
 	UpdateData();
+	ClearBlocks();
 }
 
 
@@ -665,12 +671,14 @@ wxString AssDialogue::GetMarginString(int which) {
 void AssDialogue::ProcessParameters(void (*callback)(wxString tagName,int par_n,AssOverrideParameter *param,void *userData),void *userData) {
 	// Apply for all override blocks
 	AssDialogueBlockOverride *curBlock;
+	//ParseASSTags();
 	for (std::vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
 		if ((*cur)->type == BLOCK_OVERRIDE) {
 			curBlock = static_cast<AssDialogueBlockOverride*> (*cur);
 			curBlock->ProcessParameters(callback,userData);
 		}
 	}
+	//ClearBlocks();
 }
 
 
