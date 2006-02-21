@@ -6,7 +6,7 @@ Please visit http://aegisub.net to download latest version
 - Always defaults to Audio Cache=1 (ram) now (Myrsloik)
 - Automation: Added xor(a,b) boolean logical function to utils.lua (jfs)
 - Automation: Various changes to karaskel.lua and karaskel-adv.lua: (jfs)
-   o Added some debug-calls (which are disable by default; aegisub.output_debug is replaced with a do-nothing function (you can change this in karaskel.lua)
+   o Added some debug-calls (which are disabled by default; aegisub.output_debug is replaced with a do-nothing function (you can change this in karaskel.lua)
    o The regular aegisub.output_debug is aliased to aegisub.output_warning, in order to always be able to show real warnings, in case something goes wrong
    o Fixed bug, triggered when a line had a style not defined in the subs. A warning is now shown instead.
 - Fixed bug in parser that would cause Aegisub to crash if you had a \fn without parameters and tried to pick font. (AMZ)
@@ -19,25 +19,25 @@ Please visit http://aegisub.net to download latest version
 - Implemented FexTracker, for automatically tracking positions on the video and placing text accordingly (Tentacle)
 - Drag-and-drop files onto the program no longer causes the subs to be unloaded every time, even if no subs were dropped (jfs)
 - 1,1+2 recombining lines where 1 is a substring of 2 no longer causes incorrect behavior. 1+2,2 similarly fixed. This fix also gives more sanity-checking in the recombining (jfs)
-- Replaced the subtitles grid with a custom control, which should hopefully behave and look better. (AMZ)
-- Currently active line is now highlighted with a border in the grid. (AMZ)
-- The subtitles grid can no longer receive focus. (AMZ)
+- Replaced the subtitles grid with a custom control, which should hopefully behave and look better. (AMZ) Changes are:
+   o Currently active line is now highlighted with a border.
+   o The grid can no longer receive focus.
+   o Fixed bug related to tag cycling, which would reset grid, move video and force a refresh of everything (slow, and could undo uncommited changes).
+   o Rows colliding with the currently active one will now be highlighted in grid.
+   o Selected comments are now highlighted in a different color.
+   o Fixed behavior of deleting and joining lines on grid.
 - Toolbar will now properly disable the Jump To buttons if more than one line is selected. (AMZ)
 - Fixed the toolbar "grey area" glitch (was actually a wxWidgets issue). (AMZ)
 - Default video zoom can now be set in config.dat and is defaulted to 100%. (AMZ)
 - Fixed crash in Translation and Styling assistants, when you attempted to move past end of file, and then play. (AMZ)
 - Fixed linked commit of times, so it will only commit both times if the other was changed (to prevent damage when editing multiple lines). (AMZ)
-- Fixed bug related to tag cycling, which would reset grid, move video and force a refresh of everything (slow, and could undo uncommited changes). (AMZ)
 - Fixed some bugs related to inserting overrides via the buttons over the edit box. (AMZ)
 - Implemented Redo. (AMZ)
 - Fonts collector will now default collection to same folder as script (Set to "?script" on config.dat). (AMZ)
 - Alt+Left/Right on the video seek bar will now seek by increments of 10 frames (increment is customizeable in config.dat). (AMZ)
 - Added a simple audio resync method afor video playback. (AMZ)
 - Audio timing will now apply to all selected lines, as well as active line. (AMZ)
-- Rows colliding with the currently active one will now be highlighted in grid. (AMZ)
-- Selected comments are now highlighted in a different color. (AMZ)
 - Added a volume slider bar to audio mode. (AMZ)
-- Fixed behavior of deleting and joining lines on subtitles grid. (AMZ)
 - Fixed some internal workings, which should make Aegisub use considerably less RAM (especially for large Karaoke files, 3x less RAM usage measured). (AMZ)
 - Aegisub will now dump the stack to stack.txt when it crashes with a fatal exception, which might or might not work. (AMZ)
 

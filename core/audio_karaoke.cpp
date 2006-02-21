@@ -338,7 +338,7 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 				wxArrayInt widths;
 				if (dc.GetPartialTextExtents(temptext, widths)) {
 					for (unsigned int i = 0; i < syl.pending_splits.size(); i++) {
-						dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
+						dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
 						dc.DrawLine(dx+4+widths[syl.pending_splits[i]], 0, dx+4+widths[syl.pending_splits[i]], h);
 					}
 				} else {
@@ -464,6 +464,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 						//wxLogDebug(_T("Erasing entry"));
 						num_removed++;
 						syl.pending_splits.erase(i);
+						break;
 					} else {
 						i++;
 					}
