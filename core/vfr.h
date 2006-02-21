@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2006, Rodrigo Braz Monteiro, Fredrik Mellbin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,10 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+// The FrameRate class stores all times internally as ints in ms precision
+// V1 timecodes are partially expanded to v2 up until their last override line
+// V2 timecodes are kept as is and if n frames beyond the end is requested a
+// time is calculated by last_time+n/average_fps
 
 #pragma once
 
@@ -52,71 +56,28 @@ enum ASS_FrameRateType {
 	VFR
 };
 
-
-///////////////////////
-// Base abstract class
-class VFR_Base {
-public:
-	virtual int GetFrameAtTime(int ms)=0;
-	virtual int GetTimeAtFrame(int frame)=0;
-	virtual double GetAverage()=0;
-};
-
-
-////////////////////////
-// V1 Timecodes Classes
-class VFR_v1_Range {
-public:
-	bool isDefault;
-	int start;
-	int end;
-	double fps;
-};
-
-class VFR_v1 : public VFR_Base {
-private:
-	std::list<VFR_v1_Range> Range;
-	double DefaultFPS;
-
-public:
-	VFR_v1();
-	~VFR_v1();
-	void Clear();
-	void AddRange(int start,int end,double fps,bool isdefault);
-	int GetFrameAtTime(int ms);
-	int GetTimeAtFrame(int frame);
-	double GetAverage();
-};
-
-
-//////////////////////
-// V2 Timecodes Class
-class VFR_v2 : public VFR_Base {
-public:
-	std::vector<double> Frame;
-
-	VFR_v2();
-	~VFR_v2();
-	void Clear();
-	void AddFrame(double fps);
-	int GetFrameAtTime(int ms);
-	int GetTimeAtFrame(int frame);
-	double GetAverage();
-};
-
-
 ///////////////////
 // Framerate class
 class FrameRate {
+private:
+	double last_time;
+	int last_frame;
+	std::vector<int> Frame;
+	double assumefps;
+	double AverageFrameRate;
+
+	void AddFrame(int ms);
+	void Clear();
+
+	void CalcAverage();
 public:
 	FrameRate();
 	~FrameRate();
 
+
 	wxString vfrFile;
 	bool loaded;
 	ASS_FrameRateType FrameRateType;
-	double AverageFrameRate;
-	VFR_Base *vfr;
 
 	void SetCFR(double fps,bool ifunset=false);
 	void Load(wxString file);
@@ -125,7 +86,8 @@ public:
 	int GetTimeAtFrame(int frame);
 	int CorrectFrameAtTime(int ms,bool start);
 	int CorrectTimeAtFrame(int frame,bool start);
-	double GetTrueRate(double fps);
+
+	double GetAverage() { return AverageFrameRate; };
 };
 
 

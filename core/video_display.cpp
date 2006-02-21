@@ -138,7 +138,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 	if (filename.IsEmpty()) {
 		delete provider;
 		provider = NULL;
-		if (VFR_Output.vfr == NULL) VFR_Output.Unload();
+		if (VFR_Output.FrameRateType == VFR) VFR_Output.Unload();
 		VFR_Input.Unload();
 
 		videoName = _T("");
