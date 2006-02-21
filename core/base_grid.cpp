@@ -266,12 +266,12 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	dc.SetFont(font);
 
 	// Clear background
-	dc.SetBackground(wxBrush(wxColour(255,255,255)));
+	dc.SetBackground(wxBrush(Options.AsColour(_T("Grid Background"))));
 	dc.Clear();
 
 	// Draw labels
 	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.SetBrush(wxBrush(wxColour(196,236,201)));
+	dc.SetBrush(wxBrush(Options.AsColour(_T("Grid left column"))));
 	dc.DrawRectangle(0,lineHeight,colWidth[0],h-lineHeight);
 
 	// Visible lines
@@ -282,10 +282,10 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	// Row colors
 	std::vector<wxBrush> rowColors;
 	std::vector<wxColor> foreColors;
-	rowColors.push_back(wxBrush(wxColour(255,255,255)));									// 0 = Standard
-	foreColors.push_back(wxColour(0,0,0));
-	rowColors.push_back(wxBrush(wxColour(165,207,231)));									// 1 = Header
-	foreColors.push_back(wxColour(0,0,0));
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid Background"))));					// 0 = Standard
+	foreColors.push_back(Options.AsColour(_T("Grid standard foreground")));
+	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid Header"))));						// 1 = Header
+	foreColors.push_back(Options.AsColour(_T("Grid standard foreground")));
 	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid selection background"))));		// 2 = Selected
 	foreColors.push_back(Options.AsColour(_T("Grid selection foreground")));
 	rowColors.push_back(wxBrush(Options.AsColour(_T("Grid comment background"))));			// 3 = Commented
@@ -298,7 +298,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	// First grid row
 	bool drawGrid = true;
 	if (drawGrid) {
-		dc.SetPen(wxPen(wxColour(128,128,128)));
+		dc.SetPen(wxPen(Options.AsColour(_T("Grid lines"))));
 		dc.DrawLine(0,0,w,0);
 		dc.SetPen(*wxTRANSPARENT_PEN);
 	}
@@ -414,7 +414,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		}
 
 		// Set text color
-		if (collides) dc.SetTextForeground(wxColour(255,0,0));
+		if (collides) dc.SetTextForeground(Options.AsColour(_T("Grid collision foreground")));
 		else {
 			dc.SetTextForeground(foreColors[curColor]);
 		}
@@ -442,7 +442,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		// Draw grid
 		dc.DestroyClippingRegion();
 		if (drawGrid) {
-			dc.SetPen(wxPen(wxColour(128,128,128)));
+			dc.SetPen(wxPen(Options.AsColour(_T("Grid lines"))));
 			dc.DrawLine(0,dy+lineHeight,w,dy+lineHeight);
 			dc.SetPen(*wxTRANSPARENT_PEN);
 		}
@@ -451,7 +451,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	// Draw grid columns
 	dx = 0;
 	if (drawGrid) {
-		dc.SetPen(wxPen(wxColour(128,128,128)));
+		dc.SetPen(wxPen(Options.AsColour(_T("Grid lines"))));
 		for (int i=0;i<10;i++) {
 			dx += colWidth[i];
 			dc.DrawLine(dx,0,dx,maxH);
@@ -461,7 +461,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	}
 
 	// Draw currently active line border
-	dc.SetPen(wxPen(wxColour(255,91,239)));
+	dc.SetPen(wxPen(Options.AsColour(_T("Grid Active border"))));
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
 	dy = (editBox->linen+1-yPos) * lineHeight;
 	dc.DrawRectangle(0,dy,w,lineHeight+1);

@@ -40,6 +40,7 @@
 #include <wx/filename.h>
 #include <fstream>
 #include <wx/intl.h>
+#include <wx/settings.h>
 #include "options.h"
 #include "main.h"
 #include "text_file_reader.h"
@@ -107,11 +108,19 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Find Affect"),0);
 	SetInt(_T("Find Field"),0);
 
+	SetColour(_T("Grid standard foreground"),wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
 	SetColour(_T("Grid selection background"),wxColour(206,255,231));
-	SetColour(_T("Grid selection foreground"),wxColour(0,0,0));
+	SetColour(_T("Grid selection foreground"),wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
 	SetColour(_T("Grid comment background"),wxColour(216,222,245));
+	SetColour(_T("Grid collision foreground"),wxColour(255,0,0));
 	SetColour(_T("Grid selected comment background"),wxColour(211,238,238));
 	SetColour(_T("Grid inframe background"),wxColour(255,253,234));
+	SetColour(_T("Grid background"),wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+	SetColour(_T("Grid header"),wxColour(165,207,231));
+	SetColour(_T("Grid left column"),wxColour(196,236,201));
+	SetColour(_T("Grid active border"),wxColour(255,91,239));
+	SetColour(_T("Grid lines"),wxColour(128,128,128));
+
 	SetInt(_T("Grid hide overrides"),1);
 	wchar_t temp = 0x2600;
 	SetText(_T("Grid hide overrides char"),temp);
