@@ -41,6 +41,7 @@ Please visit http://aegisub.net to download latest version
 - Added a volume slider bar to audio mode. (AMZ)
 - Fixed some internal workings, which should make Aegisub use considerably less RAM (especially for large Karaoke files, 3x less RAM usage measured). (AMZ)
 - Aegisub will now dump the stack to stack.txt when it crashes with a fatal exception, which might or might not work. (AMZ)
+- Audio display in SSA mode will no longer ignore clicks if it wasn't focused (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

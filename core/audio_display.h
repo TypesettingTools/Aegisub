@@ -76,6 +76,7 @@ private:
 	bool hasSel;
 	bool hasKaraoke;
 	bool diagUpdated;
+	bool holding;
 	__int64 selStart;
 	__int64 selEnd;
 	__int64 lineStart;

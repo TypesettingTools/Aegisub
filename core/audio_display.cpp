@@ -73,6 +73,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 	loaded = false;
 	blockUpdate = false;
 	dontReadTimes = false;
+	holding = false;
 	Position = 0;
 	PositionSample = 0;
 	oldCurPos = 0;
@@ -1079,6 +1080,16 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (wxWindow::FindFocus() != this && Options.AsBool(_T("Audio Autofocus"))) SetFocus();
 	}
 
+	// Click type
+	if (event.ButtonDown(wxMOUSE_BTN_LEFT) && !holding) {
+		holding = true;
+		CaptureMouse();
+	}
+	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT) && holding) {
+		holding = false;
+		ReleaseMouse();
+	}
+
 	// Mouse wheel
 	if (event.GetWheelRotation() != 0) {
 		// Zoom or scroll?
@@ -1152,14 +1163,15 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 	// Left click
 	if (event.ButtonDown(wxMOUSE_BTN_LEFT)) {
-		if (wxWindow::FindFocus() != this) {
+		//if (wxWindow::FindFocus() != this) {
 			SetFocus();
-			return;
-		}
+			//return;
+		//}
 	}
 
 	// Right click
 	if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
+		SetFocus();
 		if (karaoke->enabled) {
 			int syl = GetSyllableAtX(x);
 			if (syl != -1) {
