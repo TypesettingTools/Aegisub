@@ -87,6 +87,7 @@ public:
 
 	bool byFrame;
 	std::vector<entryIter> diagMap;
+	std::vector<AssDialogue *> diagPtrMap;
 	std::vector<bool> selMap;
 
 	void SetColumnWidths();
@@ -99,6 +100,7 @@ public:
 	bool IsInSelection(int row, int col) const;
 	bool IsDisplayed(AssDialogue *line);
 	int GetNumberSelection();
+	void UpdateMaps();
 
 	int GetRows() const;
 	int GetNumberRows() const { return GetRows(); }

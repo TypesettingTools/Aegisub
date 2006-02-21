@@ -750,3 +750,49 @@ bool BaseGrid::IsDisplayed(AssDialogue *line) {
 	if (f1 <= video->frame_n && f2 >= video->frame_n) return true;
 	return false;
 }
+
+
+///////////////
+// Update maps
+void BaseGrid::UpdateMaps() {
+	// Store old
+	int len = diagMap.size();
+	std::vector<AssDialogue *> tmpDiagPtrMap;
+	std::vector<bool> tmpSelMap;
+	for (int i=0;i<len;i++) {
+		tmpDiagPtrMap.push_back(diagPtrMap[i]);
+		tmpSelMap.push_back(selMap[i]);
+	}
+
+	// Clear old
+	diagPtrMap.clear();
+	diagMap.clear();
+	selMap.clear();
+	
+	// Re-generate lines
+	int n = 0;
+	AssDialogue *curdiag;
+	for (entryIter cur=AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
+		curdiag = AssEntry::GetAsDialogue(*cur);
+		if (curdiag) {
+			// Find old pos
+			bool sel = false;
+			for (int i=0;i<len;i++) {
+				if (tmpDiagPtrMap[i] == curdiag) {
+					sel = tmpSelMap[i];
+					break;
+				}
+			}
+
+			// Add new
+			diagMap.push_back(cur);
+			diagPtrMap.push_back(curdiag);
+			selMap.push_back(sel);
+
+			n++;
+		}
+	}
+
+	// Refresh
+	Refresh(false);
+}

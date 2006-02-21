@@ -809,6 +809,7 @@ void SubtitlesGrid::LoadDefault (AssFile *_ass) {
 void SubtitlesGrid::Clear () {
 	//if (GetNumberRows() > 0) DeleteRows(0,GetNumberRows());
 	diagMap.clear();
+	diagPtrMap.clear();
 	selMap.clear();
 	yPos = 0;
 	AdjustScrollbar();
@@ -845,8 +846,9 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 		curdiag = AssEntry::GetAsDialogue(*cur);
 		if (curdiag) {
 			//AppendRows(1);
-			SetRowToLine(n,curdiag);
+			//SetRowToLine(n,curdiag);
 			diagMap.push_back(cur);
+			diagPtrMap.push_back(curdiag);
 			selMap.push_back(false);
 			n++;
 		}
@@ -866,8 +868,9 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 	}
 
 	// Finish setting layout
-	EndBatch();
 	AdjustScrollbar();
+	SetColumnWidths();
+	EndBatch();
 
 	// Commit
 	if (!AssFile::Popping) {
@@ -1080,7 +1083,10 @@ void SubtitlesGrid::DeleteLines(int n1,int n2,bool sel) {
 	}
 
 	// Update
-	LoadFromAss();
+	UpdateMaps();
+	AdjustScrollbar();
+	ass->FlagAsModified();
+	CommitChanges();
 }
 
 

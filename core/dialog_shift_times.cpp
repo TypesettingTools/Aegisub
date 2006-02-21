@@ -259,7 +259,8 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	Options.Save();
 
 	// End dialog
-	grid->LoadFromAss(NULL,true);
+	//grid->LoadFromAss(NULL,true);
+	grid->UpdateMaps();
 	EndModal(0);
 }
 
