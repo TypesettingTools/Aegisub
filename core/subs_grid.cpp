@@ -483,6 +483,8 @@ void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 
 	// Insert it
 	InsertLine(def,n,false);
+	SelectRow(n);
+	editBox->SetToLine(n);
 }
 
 
@@ -515,6 +517,8 @@ void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 
 	// Insert it
 	InsertLine(def,n,true);
+	SelectRow(n+1);
+	editBox->SetToLine(n+1);
 }
 
 
@@ -540,6 +544,8 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 
 	// Insert it
 	InsertLine(def,n,false);
+	SelectRow(n);
+	editBox->SetToLine(n);
 }
 
 
@@ -565,6 +571,8 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 
 	// Insert it
 	InsertLine(def,n,true);
+	SelectRow(n+1);
+	editBox->SetToLine(n+1);
 }
 
 

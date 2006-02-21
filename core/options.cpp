@@ -45,6 +45,8 @@
 #include "main.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
+#include "colorspace.h"
+#include "utils.h"
 
 
 ///////////////
@@ -108,18 +110,35 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Find Affect"),0);
 	SetInt(_T("Find Field"),0);
 
-	SetColour(_T("Grid standard foreground"),wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
-	SetColour(_T("Grid selection background"),wxColour(206,255,231));
-	SetColour(_T("Grid selection foreground"),wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
-	SetColour(_T("Grid comment background"),wxColour(216,222,245));
-	SetColour(_T("Grid collision foreground"),wxColour(255,0,0));
-	SetColour(_T("Grid selected comment background"),wxColour(211,238,238));
-	SetColour(_T("Grid inframe background"),wxColour(255,253,234));
-	SetColour(_T("Grid background"),wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
-	SetColour(_T("Grid header"),wxColour(165,207,231));
-	SetColour(_T("Grid left column"),wxColour(196,236,201));
-	SetColour(_T("Grid active border"),wxColour(255,91,239));
-	SetColour(_T("Grid lines"),wxColour(128,128,128));
+	// Generate colors
+	wxColour tempCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+	float r = tempCol.Red() / 255.0;
+	float g = tempCol.Green() / 255.0;
+	float b = tempCol.Blue() / 255.0;
+	wxColour textCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+	wxColour background = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+	wxColour comment = wxColour(216,222,245);
+	wxColour selection = wxColour(206,255,231);
+	wxColour selComment = wxColour(211,238,238);
+	wxColour header = wxColour(165,207,231);
+	wxColour labels = wxColour(196,236,201);
+	wxColour inframe = wxColour(255,253,234);
+	wxColour active = wxColour(255,91,239);
+	wxColour grid = wxColour(128,128,128);
+	wxColour collision = wxColour(255,0,0);
+
+	SetColour(_T("Grid standard foreground"),textCol);
+	SetColour(_T("Grid selection background"),selection);
+	SetColour(_T("Grid selection foreground"),textCol);
+	SetColour(_T("Grid comment background"),comment);
+	SetColour(_T("Grid collision foreground"),collision);
+	SetColour(_T("Grid selected comment background"),selComment);
+	SetColour(_T("Grid inframe background"),inframe);
+	SetColour(_T("Grid background"),background);
+	SetColour(_T("Grid header"),header);
+	SetColour(_T("Grid left column"),labels);
+	SetColour(_T("Grid active border"),active);
+	SetColour(_T("Grid lines"),grid);
 
 	SetInt(_T("Grid hide overrides"),1);
 	wchar_t temp = 0x2600;

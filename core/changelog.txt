@@ -26,6 +26,7 @@ Please visit http://aegisub.net to download latest version
    o Rows colliding with the currently active one will now be highlighted in grid.
    o Selected comments are now highlighted in a different color.
    o Fixed behavior of deleting and joining lines on grid.
+   o Inserted lines will now be automatically selected.
 - Toolbar will now properly disable the Jump To buttons if more than one line is selected. (AMZ)
 - Fixed the toolbar "grey area" glitch (was actually a wxWidgets issue). (AMZ)
 - Default video zoom can now be set in config.dat and is defaulted to 100%. (AMZ)
