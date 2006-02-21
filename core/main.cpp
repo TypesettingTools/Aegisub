@@ -77,9 +77,9 @@ bool AegisubApp::OnInit() {
 
 		// App name
 		SetAppName(_T("Aegisub"));
-		#ifndef _DEBUG
+		//#ifndef _DEBUG
 		wxHandleFatalExceptions(true);
-		#endif
+		//#endif
 
 		// Set config file
 		GetFullPath(argv[0]);
@@ -133,13 +133,16 @@ bool AegisubApp::OnInit() {
 }
 
 
-#ifndef _DEBUG
+//#ifndef _DEBUG
 ///////////////////////
 // Unhandled exception
 void AegisubApp::OnUnhandledException() {
+	// Attempt to recover file
 	wxFileName orig(AssFile::top->filename);
 	wxString filename = folderName + orig.GetName() + _T(".RECOVER.ass");
 	AssFile::top->Save(filename,false,false);
+
+	// Inform user of crash
 	wxMessageBox(_T("Aegisub has encountered an unhandled exception error and will terminate now. The subtitles you were working on were saved to \"") + filename + _T("\", but they might be corrupt."), _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
 }
 
@@ -147,12 +150,46 @@ void AegisubApp::OnUnhandledException() {
 ///////////////////
 // Fatal exception
 void AegisubApp::OnFatalException() {
+	// Attempt to recover file
 	wxFileName orig(AssFile::top->filename);
 	wxString filename = folderName + orig.GetName() + _T(".RECOVER.ass");
 	AssFile::top->Save(filename,false,false);
-	wxMessageBox(_T("Aegisub has encountered a fatal error and will terminate now. The subtitles you were working on were saved to \"") + filename + _T("\", but they have a considerable chance of being corrupt."), _T("Fatal error"), wxOK | wxICON_ERROR, NULL);
+
+	// Stack walk
+	StackWalker walker;
+	walker.WalkFromException();
+
+	// Inform user of crash
+	wxMessageBox(_T("Aegisub has encountered a fatal error and will terminate now. The subtitles you were working on were saved to \"") + filename + _T("\", but they might be corrupt."), _T("Fatal error"), wxOK | wxICON_ERROR, NULL);
 }
-#endif
+//#endif
+
+
+////////////////
+// Stack walker
+void StackWalker::OnStackFrame(const wxStackFrame &frame) {
+	wxString dst = wxString::Format(_T("%03i - 0x%08X: "),frame.GetLevel(),frame.GetAddress()) + frame.GetName() + _T(" on ") + frame.GetFileName() + wxString::Format(_T(":%i"),frame.GetLine());
+	char temp[2048];
+	if (file.is_open()) {
+		strcpy(temp,dst.mb_str());
+		file << temp << std::endl;
+	}
+	else wxLogMessage(dst);
+}
+
+StackWalker::StackWalker() {
+	file.open(wxString(AegisubApp::folderName + _T("/stack.txt")).mb_str(),std::ios::out | std::ios::app);
+	if (file.is_open()) {
+		file << std::endl << "Begining stack dump:\n";
+	}
+}
+
+StackWalker::~StackWalker() {
+	if (file.is_open()) {
+		file << "End of stack dump.\n\n";
+		file.close();
+	}
+}
 
 
 //////////////////

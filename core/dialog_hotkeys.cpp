@@ -38,6 +38,7 @@
 // Includes
 #include "dialog_hotkeys.h"
 #include "frame_main.h"
+#include "main.h"
 
 
 ///////////////

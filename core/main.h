@@ -41,6 +41,8 @@
 ///////////////////
 // Include headers
 #include <wx/wxprec.h>
+#include <wx/stackwalk.h>
+#include <fstream>
 #include "aegisublocale.h"
 
 
@@ -71,13 +73,26 @@ public:
 	bool OnInit();
 	int OnRun();
 
-#ifndef _DEBUG
+//#ifndef _DEBUG
 	void OnUnhandledException();
 	void OnFatalException();
-#endif
+//#endif
 
 	//int OnRun();
 	DECLARE_EVENT_TABLE()
+};
+
+
+////////////////
+// Stack walker
+class StackWalker: public wxStackWalker {
+private:
+	std::ofstream file;
+
+public:
+	StackWalker();
+	~StackWalker();
+	void OnStackFrame(const wxStackFrame& frame);
 };
 
 
