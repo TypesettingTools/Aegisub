@@ -42,6 +42,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed some internal workings, which should make Aegisub use considerably less RAM (especially for large Karaoke files, 3-4x less RAM usage was measured with a 9 MB file). (AMZ)
 - Aegisub will now dump the stack to stack.txt when it crashes with a fatal exception, which might or might not work. (AMZ)
 - Audio display in SSA mode will no longer ignore clicks if it wasn't focused (AMZ)
+- The font override button in the subtitles edit box can now modify font size, italics, bold and underline as well as font face (no strikeout, as wx does not provide an interface to access that data). (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

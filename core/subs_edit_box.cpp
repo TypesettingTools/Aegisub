@@ -1027,8 +1027,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 
 	// Default value
 	wxColour startcolor;
-	wxString startfont;
-	int startfontpoint;
+	wxFont startfont;
 	bool isColor = false;
 	bool isFont = false;
 	bool isPos = false;
@@ -1054,9 +1053,11 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		isFlag = true;
 	}
 	else if (tagname == _T("\\fn")) {
-		alttagname = _T("\\fs");
-		startfont = style->font;
-		startfontpoint = style->fontsize;
+		startfont.SetFaceName(style->font);
+		startfont.SetPointSize(style->fontsize);
+		startfont.SetWeight(style->bold ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL);
+		startfont.SetStyle(style->italic ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
+		startfont.SetUnderlined(style->underline);
 		isFont = true;
 	}
 	else if (tagname == _T("\\c")) {
@@ -1086,13 +1087,16 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 			if (override) {
 				for (size_t j=0;j<override->Tags.size();j++) {
 					tag = override->Tags.at(j);
-					if (tag->Name == tagname || tag->Name == alttagname) {
+					if (tag->Name == tagname || tag->Name == alttagname || tagname == _T("\\fn")) {
 						if (isColor) startcolor = tag->Params.at(0)->AsColour();
-						if (isFont) {
-							if (tag->Name == tagname) startfont = tag->Params.at(0)->AsText();
-							else startfontpoint = tag->Params.at(0)->AsInt();
-						}
 						if (isFlag) state = tag->Params.at(0)->AsBool();
+						if (isFont) {
+							if (tag->Name == _T("\\fn")) startfont.SetFaceName(tag->Params.at(0)->AsText());
+							if (tag->Name == _T("\\fs")) startfont.SetPointSize(tag->Params.at(0)->AsInt());
+							if (tag->Name == _T("\\b")) startfont.SetWeight((tag->Params.at(0)->AsInt() > 0) ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL);
+							if (tag->Name == _T("\\i")) startfont.SetStyle(tag->Params.at(0)->AsBool() ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
+							if (tag->Name == _T("\\u")) startfont.SetUnderlined(tag->Params.at(0)->AsBool());
+						}
 					}
 				}
 			}
@@ -1125,15 +1129,15 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	// Choose font
 	if (isFont) {
 		// Pick from dialog
-		wxFont origFont;
-		origFont.SetFaceName(startfont);
-		origFont.SetPointSize(startfontpoint);
-		wxFont font = wxGetFontFromUser(this,origFont);
+		wxFont font = wxGetFontFromUser(this,startfont);
 		if (!font.Ok()) return;
 
 		// Generate insert string
-		if (font.GetFaceName() != startfont) insert = tagname + font.GetFaceName();
-		if (font.GetPointSize() != startfontpoint) insert += alttagname + wxString::Format(_T("%i"),font.GetPointSize());
+		if (font.GetFaceName() != startfont.GetFaceName()) insert = _T("\\fn") + font.GetFaceName();
+		if (font.GetPointSize() != startfont.GetPointSize()) insert += _T("\\fs") + wxString::Format(_T("%i"),font.GetPointSize());
+		if (font.GetWeight() != startfont.GetWeight()) insert += _T("\\b") + wxString::Format(_T("%i"),font.GetWeight() == wxFONTWEIGHT_BOLD ? 1 : 0);
+		if (font.GetStyle() != startfont.GetStyle()) insert += _T("\\i") + wxString::Format(_T("%i"),font.GetStyle() == wxFONTSTYLE_ITALIC ? 1 : 0);
+		if (font.GetUnderlined() != startfont.GetUnderlined()) insert += _T("\\u") + wxString::Format(_T("%i"),font.GetUnderlined() ? 1 : 0);
 		if (insert.IsEmpty()) return;
 	}
 
