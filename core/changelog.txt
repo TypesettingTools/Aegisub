@@ -28,6 +28,7 @@ Please visit http://aegisub.net to download latest version
    o Fixed behavior of deleting and joining lines on grid.
    o Inserted lines will now be automatically selected.
    o Alt+Click on grid will activate the clicked line, without modifying selection.
+   o Actor and effect columns are now only visible if they are being used.
 - Toolbar will now properly disable the Jump To buttons if more than one line is selected. (AMZ)
 - Fixed the toolbar "grey area" glitch (was actually a wxWidgets issue). (AMZ)
 - Default video zoom can now be set in config.dat and is defaulted to 100%. (AMZ)
