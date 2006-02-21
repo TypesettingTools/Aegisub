@@ -382,6 +382,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	int y = event.GetY();
 	bool shift = event.m_shiftDown;
 
+	// Syllable selection mode
 	if (!splitting) {
 		// Left button down
 		if (event.LeftDown()) {
@@ -402,9 +403,13 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 				}
 			}
 		}
-	} else {
+	}
+	
+	// Karaoke syllable splitting mode
+	else {
 		int syli = GetSylAtX(x);
 
+		// Valid syllable
 		if (syli != -1) {
 			KaraokeSyllable &syl = syllables.at(syli);
 
@@ -468,7 +473,10 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 				}
 			}
 
-		} else {
+		}
+		
+		// Invalid syllable (int syli = GetSylAtX(x); returned -1)
+		else {
 			split_cursor_syl = -1;
 			split_cursor_x = -1;
 		}
