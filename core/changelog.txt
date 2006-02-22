@@ -21,7 +21,7 @@ Please visit http://aegisub.net to download latest version
 - 1,1+2 recombining lines where 1 is a substring of 2 no longer causes incorrect behavior. 1+2,2 similarly fixed. This fix also gives more sanity-checking in the recombining (jfs)
 - Replaced the subtitles grid with a custom control, which should hopefully behave and look better. (AMZ) Changes are:
    o Currently active line is now highlighted with a border.
-   o The grid can no longer receive focus.
+   o The grid can optionally no longer receive focus (this behavior is disabled by default, change "Grid Allow Focus" to 0 in config.dat to prevent it from getting focus).
    o Fixed bug related to tag cycling, which would reset grid, move video and force a refresh of everything (slow, and could undo uncommited changes).
    o Rows colliding with the currently active one will now be highlighted in grid.
    o Selected comments are now highlighted in a different color.
@@ -38,7 +38,7 @@ Please visit http://aegisub.net to download latest version
 - Implemented Redo. (AMZ)
 - Fonts collector will now default collection to same folder as script (Set to "?script" on config.dat). (AMZ)
 - Alt+Left/Right on the video seek bar will now seek by increments of 10 frames (increment is customizeable in config.dat). (AMZ)
-- Added a simple audio resync method afor video playback. (AMZ)
+- Added a simple audio resync method for video playback. (AMZ)
 - Audio timing will now apply to all selected lines, as well as active line. (AMZ)
 - Added a volume slider bar to audio mode. (AMZ)
 - Fixed some internal workings, which should make Aegisub use considerably less RAM (especially for large Karaoke files, 3-4x less RAM usage was measured with a 9 MB file). (AMZ)

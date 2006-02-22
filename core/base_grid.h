@@ -62,6 +62,7 @@ private:
 	int lineHeight;
 	int colWidth[16];
 	int lastRow;
+	int extendRow;
 	bool holding;
 	wxFont font;
 	wxScrollBar *scrollBar;
@@ -71,6 +72,7 @@ private:
 	void OnSize(wxSizeEvent &event);
 	void OnScroll(wxScrollEvent &event);
 	void OnMouseEvent(wxMouseEvent &event);
+	void OnKeyPress(wxKeyEvent &event);
 
 	void DrawImage(wxDC &dc);
 
@@ -93,7 +95,7 @@ public:
 	void SetColumnWidths();
 	void BeginBatch();
 	void EndBatch();
-	void MakeCellVisible(int row, int col);
+	void MakeCellVisible(int row, int col,bool center=true);
 
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
 	void ClearSelection();

@@ -49,6 +49,7 @@
 #include "subs_edit_box.h"
 #include "frame_main.h"
 #include "video_display.h"
+#include "video_slider.h"
 
 
 ///////////////
@@ -59,6 +60,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	// Misc variables
 	lastRow = -1;
 	yPos = 0;
+	extendRow = -1;
 	bmp = NULL;
 	holding = false;
 
@@ -135,12 +137,12 @@ void BaseGrid::EndBatch() {
 
 //////////////////////
 // Makes cell visible
-void BaseGrid::MakeCellVisible(int row, int col) {
+void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 	// Get size
 	int w = 0;
 	int h = 0;
 	GetClientSize(&w,&h);
-	bool forceCenter = true;
+	bool forceCenter = !center;
 
 	// Get min and max visible
 	int minVis = yPos+1;
@@ -148,7 +150,14 @@ void BaseGrid::MakeCellVisible(int row, int col) {
 
 	// Make visible
 	if (forceCenter || row < minVis || row > maxVis) {
-		ScrollTo(row - h/lineHeight/2 + 1);
+		if (center) {
+			ScrollTo(row - h/lineHeight/2 + 1);
+		}
+
+		else {
+			if (row < minVis) ScrollTo(row - 1);
+			if (row > maxVis) ScrollTo(row - h/lineHeight + 3);
+		}
 	}
 }
 
@@ -212,6 +221,7 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 	EVT_SIZE(BaseGrid::OnSize)
 	EVT_COMMAND_SCROLL(GRID_SCROLLBAR,BaseGrid::OnScroll)
 	EVT_MOUSE_EVENTS(BaseGrid::OnMouseEvent)
+	EVT_KEY_DOWN(BaseGrid::OnKeyPress)
 END_EVENT_TABLE()
 
 
@@ -512,6 +522,13 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	bool validRow = row >= 0 && row < GetRows();
 	if (!validRow) row = -1;
 
+	// Get focus
+	if (event.ButtonDown()) {
+		if (Options.AsBool(_T("Grid Allow Focus"))) {
+			SetFocus();
+		}
+	}
+
 	// Click type
 	if (click && !holding && validRow) {
 		holding = true;
@@ -537,6 +554,9 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Click
 	if ((click || holding) && validRow) {
+		// Disable extending
+		extendRow = -1;
+
 		// Toggle selected
 		if (click && ctrl && !shift && !alt) {
 			SelectRow(row,true,!IsInSelection(row,0));
@@ -802,4 +822,85 @@ void BaseGrid::UpdateMaps() {
 
 	// Refresh
 	Refresh(false);
+}
+
+
+/////////////
+// Key press
+void BaseGrid::OnKeyPress(wxKeyEvent &event) {
+	int key = event.KeyCode();
+
+	// Left/right, forward to seek bar if video is loaded
+	if (key == WXK_LEFT || key == WXK_RIGHT) {
+		if (video->loaded) {
+			video->ControlSlider->SetFocus();
+			video->ControlSlider->AddPendingEvent(event);
+			return;
+		}
+		event.Skip();
+		return;
+	}
+
+	// Up/down
+	int dir = 0;
+	if (key == WXK_UP) dir = -1;
+	if (key == WXK_DOWN) dir = 1;
+
+	// Moving
+	if (dir) {
+		// Modifiers
+		bool ctrl = event.m_controlDown;
+		bool alt = event.m_altDown;
+		bool shift = event.m_shiftDown;
+
+		// Move selection
+		if (!ctrl && !shift && !alt) {
+			int next = editBox->linen+dir;
+			editBox->SetToLine(next);
+			SelectRow(next);
+			MakeCellVisible(next,0,false);
+			extendRow = -1;
+			return;
+		}
+
+		// Move active only
+		if (alt && !shift && !ctrl) {
+			int next = editBox->linen+dir;
+			editBox->SetToLine(next);
+			Refresh(false);
+			MakeCellVisible(next,0,false);
+			extendRow = -1;
+			return;
+		}
+
+		// Add to selection
+		if (shift && !ctrl && !alt) {
+			if (extendRow == -1) {
+				extendRow = editBox->linen+dir;
+				extendRow = MID(0,extendRow,GetRows());
+				SelectRow(extendRow,true);
+			}
+
+			else {
+				// Add
+				if ((extendRow > editBox->linen && dir == 1) || (extendRow < editBox->linen && dir == -1) || extendRow == editBox->linen) {
+					extendRow += dir;
+					extendRow = MID(0,extendRow,GetRows());
+					SelectRow(extendRow,true);
+				}
+
+				// Remove (moving back)
+				else {
+					SelectRow(extendRow,true,false);
+					extendRow += dir;
+					extendRow = MID(0,extendRow,GetRows());
+				}
+			}
+
+			MakeCellVisible(extendRow,0,false);
+			return;
+		}
+	}
+
+	event.Skip();
 }

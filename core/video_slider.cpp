@@ -373,6 +373,13 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 		}
 	}
 
+	// Forward up/down to grid
+	if (key == WXK_UP || key == WXK_DOWN) {
+		grid->AddPendingEvent(event);
+		grid->SetFocus();
+		return;
+	}
+
 	event.Skip();
 }
 

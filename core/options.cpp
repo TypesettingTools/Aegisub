@@ -144,6 +144,7 @@ void OptionsManager::LoadDefaults() {
 	wchar_t temp = 0x2600;
 	SetText(_T("Grid hide overrides char"),temp);
 	SetInt(_T("Grid font size"),8);
+	SetBool(_T("Grid allow focus"),true);
 
 	SetBool(_T("Highlight subs in frame"),true);
 
