@@ -60,15 +60,14 @@ AviSynthWrapper::AviSynthWrapper() {
 		if (CreateScriptEnv == NULL)
 			throw _T("Failed to get function from avisynth.dll");
 
-		env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
+		// Require Avisynth 2.5.6+?
+		if (Options.AsBool(_T("Allow Ancient Avisynth")))
+			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION-1);
+		else
+			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
 		if (env == NULL)
 			throw _T("Failed to create a new avisynth script environment. Avisynth is too old?");
-
-		// Check for a new enough avisynth version by looking for the most obscure function used
-		// fix me, no longer useful with "Cache"?
-		if (!env->FunctionExists("Cache"))
-			throw _T("Installed version of avisynth is too old");
 
 		// Set memory limit
 		int memoryMax = Options.AsInt(_T("Avisynth MemoryMax"));
