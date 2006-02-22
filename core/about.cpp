@@ -61,9 +61,23 @@ AboutScreen::AboutScreen(wxWindow *parent,bool easter)
 	wxSizer *PicSizer = new wxBoxSizer(wxHORIZONTAL);
 	PicSizer->Add(new BitmapControl(this,splash));
 
+	// Generate about string
+	wxString aboutString;
+	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
+	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
+	aboutString += wxString(_T("Aegisub ")) + VERSION_STRING + _(" by ArchMage ZeratuL.\n");
+	aboutString += _("Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n\n");
+	aboutString += _("Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\n");
+	aboutString += _("Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n");
+	aboutString += _("Coding by ArchMageZeratuL, jfs, Myrsloik, Tentacle and nmap.\n");
+	aboutString += _("Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n");
+	aboutString += _("Forum and bug tracker hosting by Bot1.\n");
+	aboutString += translatorCredit;
+	aboutString += _("\nSee the help file for full credits.");
+
 	// Text sizer
 	wxSizer *TextSizer = new wxBoxSizer(wxVERTICAL);
-	TextSizer->Add(new wxStaticText(this,-1,wxString(_T("Aegisub ")) + VERSION_STRING + _(" by ArchMage ZeratuL.\n\nCopyright (c) 2005-2006 - Rodrigo Braz Monteiro. All rights reserved.\nAutomation module and is Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\nAll rights reserved.\nCoding by ArchMageZeratuL, jfs, Myrsloik and nmap.\nManual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\nForum hosting by Bot1.\nSee the help file for full credits.")),1);
+	TextSizer->Add(new wxStaticText(this,-1,aboutString),1);
 
 	// Button sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
