@@ -178,6 +178,7 @@ wxString AssTime::GetASSFormated () {
 		_ms -= 1000;
 		s++;
 	}
+	ms = _ms;
 
 	if (UseMSPrecision) return wxString::Format(_T("%01i:%02i:%02i.%03i"),h,m,s,ms);
 	else return wxString::Format(_T("%01i:%02i:%02i.%02i"),h,m,s,ms/10);
@@ -222,6 +223,7 @@ wxString AssTime::GetSRTFormated () {
 		_ms -= 1000;
 		s++;
 	}
+	ms = _ms;
 
 	wxString result = wxString::Format(_T("%02i:%02i:%02i,%03i"),h,m,s,ms);
 	return result;
