@@ -911,6 +911,9 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	// Get scan code
 	int key = event.KeyCode();
+	bool ctrl = event.m_controlDown;
+	bool alt = event.m_altDown;
+	bool shift = event.m_shiftDown;
 
 	// Left/right, forward to seek bar if video is loaded
 	if (key == WXK_LEFT || key == WXK_RIGHT) {
@@ -921,6 +924,12 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 		}
 		event.Skip();
 		return;
+	}
+
+	// Select all
+	if (key == 'A' && ctrl && !alt && !shift) {
+		int rows = GetRows();
+		for (int i=0;i<rows;i++) SelectRow(i,true);
 	}
 
 	// Up/down
@@ -947,11 +956,6 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	// Moving
 	if (dir) {
-		// Modifiers
-		bool ctrl = event.m_controlDown;
-		bool alt = event.m_altDown;
-		bool shift = event.m_shiftDown;
-
 		// Move selection
 		if (!ctrl && !shift && !alt) {
 			// Move to extent first
