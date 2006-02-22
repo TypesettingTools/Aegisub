@@ -704,6 +704,9 @@ void BaseGrid::AdjustScrollbar() {
 	bool barToEnable = drawPerScreen < rows+2;
 	bool barEnabled = scrollBar->IsEnabled();
 
+	// Set yPos
+	yPos = MID(0,yPos,rows - drawPerScreen);
+
 	// Set size
 	scrollBar->Freeze();
 	scrollBar->GetSize(&sw,&sh);
@@ -1014,3 +1017,21 @@ void BaseGrid::SetByFrame (bool state) {
 	Refresh(false);
 }
 
+
+///////////////////////////////////////////////
+// Generates an array covering inclusive range
+wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) {
+	// Swap if in wrong order
+	if (n2 < n1) {
+		int aux = n1;
+		n1 = n2;
+		n2 = aux;
+	}
+
+	// Generate array
+	wxArrayInt target;
+	for (int i=n1;i<=n2;i++) {
+		target.Add(i);
+	}
+	return target;
+}

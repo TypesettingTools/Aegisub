@@ -206,7 +206,7 @@ void FrameMain::OnVideoTrackSplitLine(wxCommandEvent &event) {
 	curline->Movement = 0;
 
 	// Remove this line
-	SubsBox->DeleteLines( EditBox->linen, EditBox->linen, false );
+	SubsBox->DeleteLines(SubsBox->GetRangeArray(EditBox->linen, EditBox->linen));
 
 	videoBox->videoDisplay->RefreshVideo();
 }

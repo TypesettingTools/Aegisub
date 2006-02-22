@@ -110,7 +110,7 @@ public:
 	void UpdateMaps();
 
 	int GetRows() const;
-	int GetNumberRows() const { return GetRows(); }
+	wxArrayInt GetRangeArray(int n1,int n2);
 	void MakeCellVisible(int row, int col,bool center=true);
 
 	AssDialogue *GetDialogue(int n);

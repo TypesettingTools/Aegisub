@@ -218,7 +218,7 @@ void DialogSpellCheck::LineSetUp(){
 	
 	if ((lnList.GetCount() == 0) || (alt == true)) {
 			start = 0;
-			end = grid->GetNumberRows() - 1;
+			end = grid->GetRows() - 1;
 			curLineNumber = 0;
 			current_line = grid->GetDialogue(curLineNumber);
 			return;

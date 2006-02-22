@@ -239,7 +239,7 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 
 		// Delete
 		if (Hotkeys.IsPressed(_T("Grid delete rows"))) {
-			DeleteLines(-1,-1,true);
+			DeleteLines(GetSelection());
 			return;
 		}
 
@@ -587,7 +587,7 @@ void SubtitlesGrid::OnPasteLines (wxCommandEvent &WXUNUSED(&event)) {
 ///////////////////////////////
 // Copy selection to clipboard
 void SubtitlesGrid::OnDeleteLines (wxCommandEvent &WXUNUSED(&event)) {
-	DeleteLines(-1,-1,true);
+	DeleteLines(GetSelection());
 }
 
 
@@ -639,7 +639,7 @@ void SubtitlesGrid::On1122Recombine(wxCommandEvent &event) {
 	n3->UpdateData();
 
 	// Delete middle
-	DeleteLines(n+1,n+1,false);
+	DeleteLines(GetRangeArray(n+1,n+1));
 }
 
 
@@ -818,7 +818,9 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 
 	// Update mapping
 	diagMap[n1] = src1;
+	diagPtrMap[n1] = (AssDialogue*) *src1;
 	diagMap[n2] = src2;
+	diagPtrMap[n2] = (AssDialogue*) *src2;
 	ass->FlagAsModified();
 	CommitChanges();
 }
@@ -840,6 +842,7 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	//InsertRows(n);
 	//SetRowToLine(n,line);
 	diagMap.insert(diagMap.begin() + n,newIter);
+	diagPtrMap.insert(diagPtrMap.begin() + n,(AssDialogue*)(*newIter));
 	selMap.insert(selMap.begin() + n,false);
 
 	// Update
@@ -879,7 +882,7 @@ void SubtitlesGrid::CopyLines() {
 // Cut to clipboard
 void SubtitlesGrid::CutLines() {
 	CopyLines();
-	DeleteLines(-1,-1,true);
+	DeleteLines(GetSelection());
 }
 
 
@@ -918,6 +921,7 @@ void SubtitlesGrid::PasteLines(int n) {
 
 		if (inserted > 0) {
 			// Commit
+			UpdateMaps();
 			ass->FlagAsModified();
 			CommitChanges();
 
@@ -934,33 +938,41 @@ void SubtitlesGrid::PasteLines(int n) {
 
 /////////////////////////
 // Delete selected lines
-void SubtitlesGrid::DeleteLines(int n1,int n2,bool sel) {
+void SubtitlesGrid::DeleteLines(wxArrayInt target) {
 	// Check if it's wiping file
 	int deleted = 0;
 
-	// Range
-	if (!sel) {
-		// Deallocate lines
-		for (int i=n1;i<=n2;i++) {
-			delete GetDialogue(i);
-		}
+	//// Range
+	//if (!sel) {
+	//	// Deallocate lines
+	//	for (int i=n1;i<=n2;i++) {
+	//		delete GetDialogue(i);
+	//	}
 
-		// Remove from AssFile
-		if (n1 != n2) ass->Line.erase(diagMap.at(n1),++diagMap.at(n2));
-		else ass->Line.erase(diagMap.at(n1));
-		deleted = n2-n1+1;
-	}
+	//	// Remove from AssFile
+	//	if (n1 != n2) ass->Line.erase(diagMap.at(n1),++diagMap.at(n2));
+	//	else ass->Line.erase(diagMap.at(n1));
+	//	deleted = n2-n1+1;
+	//}
 
-	// Selection
-	else {
-		int nlines = GetRows();
-		for (int i=0;i<nlines;i++) {
-			if (IsInSelection(i,0)) {
-				delete (AssDialogue*)(*diagMap.at(i));
-				ass->Line.erase(diagMap.at(i));
-				deleted++;
-			}
-		}
+	//// Selection
+	//else {
+	//	int nlines = GetRows();
+	//	for (int i=0;i<nlines;i++) {
+	//		if (IsInSelection(i,0)) {
+	//			delete (AssDialogue*)(*diagMap.at(i));
+	//			ass->Line.erase(diagMap.at(i));
+	//			deleted++;
+	//		}
+	//	}
+	//}
+
+	// Delete lines
+	int size = target.Count();
+	for (int i=0;i<size;i++) {
+		delete (*diagMap.at(target[i]));
+		ass->Line.erase(diagMap.at(target[i]));
+		deleted++;
 	}
 
 	// Add default line if file was wiped
@@ -1010,7 +1022,7 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	cur->UpdateData();
 
 	// Delete remaining lines (this will auto commit)
-	DeleteLines(n1+1,n2,false);
+	DeleteLines(GetRangeArray(n1+1,n2));
 
 	// Select new line
 	editBox->SetToLine(n1);
@@ -1094,7 +1106,7 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 	cur->UpdateData();
 
 	// Delete remaining lines (this will auto commit)
-	DeleteLines(n1+1,n2,false);
+	DeleteLines(GetRangeArray(n1+1,n2));
 
 	// Select new line
 	editBox->SetToLine(n1);

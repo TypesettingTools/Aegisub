@@ -114,7 +114,7 @@ public:
 
 	void SwapLines(int n1,int n2);
 	void DuplicateLines(int n1,int n2,bool nextFrame=false);
-	void DeleteLines(int n1,int n2,bool sel);
+	void DeleteLines(wxArrayInt lines);
 	void JoinLines(int n1,int n2,bool concat=true);
 	void JoinAsKaraoke(int n1,int n2);
 	void AdjoinLines(int n1,int n2,bool setStart);
