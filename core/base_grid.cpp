@@ -198,6 +198,43 @@ int BaseGrid::GetNumberSelection() {
 }
 
 
+///////////////////////////
+// Gets first selected row
+int BaseGrid::GetFirstSelRow() {
+	int nrows = GetRows();
+	for (int i=0;i<nrows;i++) {
+		if (IsInSelection(i,0)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+
+//////////////////////////
+// Gets all selected rows
+wxArrayInt BaseGrid::GetSelection(bool *cont) {
+	// Prepare
+	int nrows = GetRows();
+	int last = -1;
+	bool continuous = true;
+	wxArrayInt selections;
+
+	// Scan
+	for (int i=0;i<nrows;i++) {
+		if (IsInSelection(i,0)) {
+			selections.Add(i);
+			if (last != -1 && i != last+1) continuous = false;
+			last = i;
+		}
+	}
+
+	// Return
+	if (cont) *cont = continuous;
+	return selections;
+}
+
+
 //////////////////////
 // Get number of rows
 int BaseGrid::GetRows() const {
@@ -928,3 +965,15 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	event.Skip();
 }
+
+
+////////////////////////////////
+// Sets display by frame or not
+void BaseGrid::SetByFrame (bool state) {
+	// Check if it's already the same
+	if (byFrame == state) return;
+	byFrame = state;
+	SetColumnWidths();
+	Refresh(false);
+}
+

@@ -288,9 +288,6 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 
 			// Jump to next sub boundary
 			if (direction != 0) {
-				wxCommandEvent dummy;
-				//int target1 = VFR_Output.GetFrameAtTime(curDiag->Start.GetMS()+1)+1;
-				//int target2 = VFR_Output.GetFrameAtTime(curDiag->End.GetMS());
 				int target1 = VFR_Output.CorrectFrameAtTime(curDiag->Start.GetMS(),true);
 				int target2 = VFR_Output.CorrectFrameAtTime(curDiag->End.GetMS(),false);
 				bool drawn = false;
@@ -301,12 +298,11 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 					else if (Display->frame_n < target2) Display->JumpToFrame(target2);
 					else {
 						if (cur+1 >= grid->GetRows()) return;
-						grid->BeginBatch();
 						grid->editBox->SetToLine(cur+1);
 						grid->SelectRow(cur+1);
 						grid->MakeCellVisible(cur+1,0);
-						grid->OnSetVideoToStart(dummy);
-						grid->EndBatch();
+						grid->SetVideoToSubs(true);
+						grid->Refresh(false);
 						drawn = true;
 					}
 					return;
@@ -318,27 +314,15 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 					else if (Display->frame_n > target1) Display->JumpToFrame(target1);
 					else {
 						if (cur-1 < 0) return;
-						grid->BeginBatch();
 						grid->editBox->SetToLine(cur-1);
 						grid->SelectRow(cur-1);
 						grid->MakeCellVisible(cur-1,0);
-						grid->OnSetVideoToEnd(dummy);
-						grid->EndBatch();
+						grid->SetVideoToSubs(false);
+						grid->Refresh(false);
 						drawn = true;
 					}
 					return;
 				}
-
-				// Text
-				/*
-				if (drawn) {
-					wxMemoryDC dc;
-					dc.SelectObject(*Display->curFrame);
-					dc.BeginDrawing();
-					dc.DrawText(_T("Hello world!"),10,10);
-					dc.EndDrawing();
-				}
-				*/
 			}
 		}
 

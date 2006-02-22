@@ -79,8 +79,6 @@ BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_MENU(MENU_1_12_2_RECOMBINE,SubtitlesGrid::On1122Recombine)
 	EVT_MENU(MENU_12_2_RECOMBINE,SubtitlesGrid::On122Recombine)
 	EVT_MENU(MENU_1_12_RECOMBINE,SubtitlesGrid::On112Recombine)
-
-	EVT_ERASE_BACKGROUND(SubtitlesGrid::OnEraseBackground)
 END_EVENT_TABLE()
 
 
@@ -90,22 +88,11 @@ SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID i
                         : BaseGrid(parent,id,pos,size,style,name)
 {
 	// Vars
-	changingCol = false;
 	byFrame = false;
 	ass = NULL;
 	video = _video;
 	editBox = NULL;
 	parentFrame = parentFr;
-
-	// Font size
-	int fontSize = Options.AsInt(_T("Grid font size"));
-	wxFont font;
-	font.SetPointSize(fontSize);
-	wxClientDC dc(this);
-	dc.SetFont(font);
-	int w,h;
-	dc.GetTextExtent(_T("#TWFfgGhH"), &w, &h, NULL, NULL, &font);
-	RowHeight = h+4;
 }
 
 
@@ -586,24 +573,14 @@ void SubtitlesGrid::OnCopyLines (wxCommandEvent &WXUNUSED(&event)) {
 ///////////////////////////////
 // Cuts selection to clipboard
 void SubtitlesGrid::OnCutLines (wxCommandEvent &WXUNUSED(&event)) {
-	CopyLines();
-	DeleteLines(-1,-1,true);
+	CutLines();
 }
 
 
 ////////////////////////
 // Paste from clipboard
 void SubtitlesGrid::OnPasteLines (wxCommandEvent &WXUNUSED(&event)) {
-	int n;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			n = i;
-			break;
-		}
-	}
-
-	PasteLines(n);
+	PasteLines(GetFirstSelRow());
 }
 
 
@@ -617,85 +594,28 @@ void SubtitlesGrid::OnDeleteLines (wxCommandEvent &WXUNUSED(&event)) {
 //////////////////////////
 // Set start to video pos
 void SubtitlesGrid::OnSetStartToVideo(wxCommandEvent &event) {
-	// Check if it's OK to do it
-	if (!VFR_Output.loaded) return;
-
-	// Get new time
-	int ms = VFR_Output.CorrectTimeAtFrame(video->frame_n,true);
-
-	// Update selection
-	wxArrayInt sel = GetSelection();
-	AssDialogue *cur;
-	int modified =0;
-	for (size_t i=0;i<sel.Count();i++) {
-		cur = GetDialogue(sel[i]);
-		if (cur) {
-			modified++;
-			cur->Start.SetMS(ms);
-			cur->UpdateData();
-			SetRowToLine(sel[i],cur);
-		}
-	}
-
-	// Commit
-	if (modified) {
-		ass->FlagAsModified();
-		CommitChanges();
-		editBox->Update();
-	}
+	SetSubsToVideo(true);
 }
 
 
 ////////////////////////
 // Set end to video pos
 void SubtitlesGrid::OnSetEndToVideo(wxCommandEvent &event) {
-	// Check if it's OK to do it
-	if (!VFR_Output.loaded) return;
-
-	// Get new time
-	int ms = VFR_Output.CorrectTimeAtFrame(video->frame_n,false);
-
-	// Update selection
-	wxArrayInt sel = GetSelection();
-	AssDialogue *cur;
-	int modified = 0;
-	for (size_t i=0;i<sel.Count();i++) {
-		cur = GetDialogue(sel[i]);
-		if (cur) {
-			cur->End.SetMS(ms);
-			cur->UpdateData();
-			modified++;
-			SetRowToLine(sel[i],cur);
-		}
-	}
-
-	// Commit
-	if (modified) {
-		ass->FlagAsModified();
-		CommitChanges();
-		editBox->Update();
-	}
+	SetSubsToVideo(false);
 }
 
 
 //////////////////////////
 // Set video pos to start
 void SubtitlesGrid::OnSetVideoToStart(wxCommandEvent &event) {
-	wxArrayInt sel = GetSelection();
-	if (sel.Count() == 0) return;
-	AssDialogue *cur = GetDialogue(sel[0]);
-	if (cur) video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->Start.GetMS(),true));
+	SetVideoToSubs(true);
 }
 
 
 ////////////////////////
 // Set video pos to end
 void SubtitlesGrid::OnSetVideoToEnd(wxCommandEvent &event) {
-	wxArrayInt sel = GetSelection();
-	if (sel.Count() == 0) return;
-	AssDialogue *cur = GetDialogue(sel[0]);
-	//if (cur) video->JumpToTime(cur->End.GetMS());
-	if (cur) video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->End.GetMS(),false));
+	SetVideoToSubs(false);
 }
 
 
@@ -752,8 +672,6 @@ void SubtitlesGrid::On122Recombine(wxCommandEvent &event) {
 		n2->UpdateData();
 
 		// Commit
-		SetRowToLine(n,n1);
-		SetRowToLine(n+1,n2);
 		ass->FlagAsModified();
 		CommitChanges();
 	} else {
@@ -791,8 +709,6 @@ void SubtitlesGrid::On112Recombine(wxCommandEvent &event) {
 		n2->UpdateData();
 
 		// Commit
-		SetRowToLine(n,n1);
-		SetRowToLine(n+1,n2);
 		ass->FlagAsModified();
 		CommitChanges();
 	} else {
@@ -903,27 +819,6 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 }
 
 
-/////////////////////////////////////////
-// Sets one line to a line from the subs
-void SubtitlesGrid::SetRowToLine(int n,AssDialogue *line) {
-	Refresh(false);
-}
-
-
-//////////////////
-// Sets row color
-void SubtitlesGrid::SetRowColour(int n,AssDialogue *line) {
-	Refresh(false);
-}
-
-
-//////////////////////
-// Update row colours
-void SubtitlesGrid::UpdateRowColours() {
-	Refresh(false);
-}
-
-
 ///////////////////
 // Swaps two lines
 void SubtitlesGrid::SwapLines(int n1,int n2) {
@@ -935,10 +830,6 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 	
 	// Swaps
 	iter_swap(src1,src2);
-
-	// Update display
-	SetRowToLine(n1,AssEntry::GetAsDialogue(*src1));
-	SetRowToLine(n2,AssEntry::GetAsDialogue(*src2));
 
 	// Update mapping
 	diagMap[n1] = src1;
@@ -996,6 +887,14 @@ void SubtitlesGrid::CopyLines() {
 		wxTheClipboard->SetData(new wxTextDataObject(data));
 		wxTheClipboard->Close();
 	}
+}
+
+
+////////////////////
+// Cut to clipboard
+void SubtitlesGrid::CutLines() {
+	CopyLines();
+	DeleteLines(-1,-1,true);
 }
 
 
@@ -1151,7 +1050,6 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 			if (!cur) return;
 			cur->Start = prev->End;
 			cur->UpdateData();
-			SetRowToLine(i,cur);
 			prev = cur;
 		}
 	}
@@ -1165,7 +1063,6 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 			if (!next) return;
 			cur->End = next->Start;
 			cur->UpdateData();
-			SetRowToLine(i,cur);
 			cur = next;
 		}
 	}
@@ -1329,8 +1226,6 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 	// Update data
 	n1->UpdateData();
 	n2->UpdateData();
-	SetRowToLine(n,n1);
-	SetRowToLine(n+1,n2);
 
 	// Update editbox and audio
 	editBox->SetToLine(n);
@@ -1365,53 +1260,6 @@ void SubtitlesGrid::CommitChanges(bool force) {
 		if (playing) video->Play();
 	}
 	parentFrame->UpdateTitle();
-}
-
-
-///////////////////////////
-// Gets first selected row
-int SubtitlesGrid::GetFirstSelRow() {
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-
-//////////////////////////
-// Gets all selected rows
-wxArrayInt SubtitlesGrid::GetSelection(bool *cont) {
-	// Prepare
-	int nrows = GetRows();
-	int last = -1;
-	bool continuous = true;
-	wxArrayInt selections;
-
-	// Scan
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			selections.Add(i);
-			if (last != -1 && i != last+1) continuous = false;
-			last = i;
-		}
-	}
-
-	// Return
-	if (cont) *cont = continuous;
-	return selections;
-}
-
-
-////////////////////////////////
-// Sets display by frame or not
-void SubtitlesGrid::SetByFrame (bool state) {
-	// Check if it's already the same
-	if (byFrame == state) return;
-	byFrame = state;
-	SetColumnWidths();
 	Refresh(false);
 }
 
@@ -1443,5 +1291,50 @@ void SubtitlesGrid::SelectVisible() {
 				SelectRow(i,true);
 			}
 		}
+	}
+}
+
+
+//////////////////////////
+// Set start to video pos
+void SubtitlesGrid::SetSubsToVideo(bool start) {
+	// Check if it's OK to do it
+	if (!VFR_Output.loaded) return;
+
+	// Get new time
+	int ms = VFR_Output.CorrectTimeAtFrame(video->frame_n,true);
+
+	// Update selection
+	wxArrayInt sel = GetSelection();
+	AssDialogue *cur;
+	int modified =0;
+	for (size_t i=0;i<sel.Count();i++) {
+		cur = GetDialogue(sel[i]);
+		if (cur) {
+			modified++;
+			if (start) cur->Start.SetMS(ms);
+			else cur->End.SetMS(ms);
+			cur->UpdateData();
+		}
+	}
+
+	// Commit
+	if (modified) {
+		ass->FlagAsModified();
+		CommitChanges();
+		editBox->Update();
+	}
+}
+
+
+//////////////////////////////
+// Set video pos to start/end
+void SubtitlesGrid::SetVideoToSubs(bool start) {
+	wxArrayInt sel = GetSelection();
+	if (sel.Count() == 0) return;
+	AssDialogue *cur = GetDialogue(sel[0]);
+	if (cur) {
+		if (start) video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->Start.GetMS(),true));
+		else video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->End.GetMS(),false));
 	}
 }

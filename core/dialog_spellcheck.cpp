@@ -571,8 +571,8 @@ void DialogSpellCheck::BlockStore() {
 			curPlain->text = current_block;
 			current_line->UpdateText();
 			current_line->UpdateData();
-			grid->SetRowToLine(curLineNumber,current_line);
 			subs->FlagAsModified();
+			grid->CommitChanges();
 		}
 	curPlain = 0;
 	current_line->ClearBlocks();

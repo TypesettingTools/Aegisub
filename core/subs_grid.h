@@ -67,17 +67,8 @@ typedef std::list<AssEntry*>::iterator entryIter;
 class SubtitlesGrid: public BaseGrid {
 private:
 	wxString tempfile;
-	bool changingCol;
 	bool ready;
-	int RowHeight;
 
-public:
-	AssFile *ass;
-
-	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, VideoDisplay* video, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
-	~SubtitlesGrid();
-
-	void OnEraseBackground(wxEraseEvent& event) {}
 	void OnCellLeftClick(wxGridEvent &event);
 	void OnCellChange(wxGridEvent &event);
 	void OnSelectCell(wxGridEvent &event);
@@ -107,31 +98,38 @@ public:
 	void On1122Recombine(wxCommandEvent &event);
 	void On122Recombine(wxCommandEvent &event);
 	void On112Recombine(wxCommandEvent &event);
-	
+
+public:
+	AssFile *ass;
+
+	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, VideoDisplay* video, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
+	~SubtitlesGrid();
+
 	void LoadDefault(AssFile *ass=NULL);
-	void Clear();
-	void SetRowColour(int n,AssDialogue *line=NULL);
-	void UpdateRowColours();
-	void SelectVisible();
-	void SetRowToLine(int n,AssDialogue *line);
 	void LoadFromAss(AssFile *ass=NULL,bool keepSelection=false,bool dontModify=false);
 	void CommitChanges(bool force=false);
+
+	void Clear();
+	void SelectVisible();
+
+	void SetVideoToSubs(bool start);
+	void SetSubsToVideo(bool start);
+
 	void SwapLines(int n1,int n2);
-	void CopyLines();
 	void DuplicateLines(int n1,int n2,bool nextFrame=false);
-	void PasteLines(int n);
 	void DeleteLines(int n1,int n2,bool sel);
 	void JoinLines(int n1,int n2,bool concat=true);
+	void JoinAsKaraoke(int n1,int n2);
 	void AdjoinLines(int n1,int n2,bool setStart);
 	void InsertLine(AssDialogue *line,int n,bool after,bool update=true);
 	void ShiftLineByTime(int n,int len,int type);
 	void ShiftLineByFrames(int n,int len,int type);
-	void JoinAsKaraoke(int n1,int n2);
 	void SplitLine(int n,int pos,int mode);
-	int GetFirstSelRow();
-	wxArrayInt GetSelection(bool *continuous=NULL);
 
-	void SetByFrame (bool state);
+	void CopyLines();
+	void CutLines();
+	void PasteLines(int n);
+
 	wxString GetTempWorkFile ();
 
 	DECLARE_EVENT_TABLE()

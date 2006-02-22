@@ -577,7 +577,6 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &event) {
 		if (cur) {
 			cur->Style = StyleBox->GetValue();
 			cur->UpdateData();
-			grid->SetRowToLine(sel[i],cur);
 		}
 	}
 	grid->AutoSizeColumn(3);
@@ -602,7 +601,6 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 		if (cur) {
 			cur->Actor = actor;
 			cur->UpdateData();
-			grid->SetRowToLine(sel[i],cur);
 		}
 	}
 
@@ -635,7 +633,6 @@ void SubsEditBox::OnLayerChange(wxCommandEvent &event) {
 			Layer->GetValue().ToLong(&temp);
 			cur->Layer = temp;
 			cur->UpdateData();
-			grid->SetRowToLine(sel[i],cur);
 		}
 	}
 	grid->AutoSizeColumn(0);
@@ -704,7 +701,6 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart) {
 
 			// Update
 			cur->UpdateData();
-			grid->SetRowToLine(sel[i],cur);
 		}
 	}
 
@@ -730,7 +726,6 @@ void SubsEditBox::OnMarginLChange(wxCommandEvent &event) {
 		if (cur) {
 			cur->SetMarginString(MarginL->GetValue(),1);
 			cur->UpdateData();
-			grid->SetRowToLine(sel[i],cur);
 		}
 	}
 	MarginL->SetValue(cur->GetMarginString(1));
@@ -753,7 +748,6 @@ void SubsEditBox::OnMarginRChange(wxCommandEvent &event) {
 		if (cur) {
 			cur->SetMarginString(MarginR->GetValue(),2);
 			cur->UpdateData();
-			grid->SetRowToLine(sel[i],cur);
 		}
 	}
 	MarginR->SetValue(cur->GetMarginString(2));
@@ -776,7 +770,6 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 		if (cur) {
 			cur->SetMarginString(MarginV->GetValue(),3);
 			cur->UpdateData();
-			grid->SetRowToLine(sel[i],cur);
 		}
 	}
 	MarginV->SetValue(cur->GetMarginString(3));
@@ -798,7 +791,6 @@ void SubsEditBox::OnCommentChange(wxCommandEvent &event) {
 		if (cur) {
 			cur->Comment = CommentBox->GetValue();
 			cur->UpdateData();
-			grid->SetRowToLine(sel[i],cur);
 		}
 	}
 	grid->ass->FlagAsModified();
@@ -876,7 +868,7 @@ void SubsEditBox::CommitText() {
 		cur->Text = TextEdit->GetValue();
 		//cur->ParseASSTags();
 		cur->UpdateData();
-		grid->SetRowToLine(linen,cur);
+		grid->Refresh(false);
 		audio->SetDialogue(grid,cur,linen);
 	}
 }

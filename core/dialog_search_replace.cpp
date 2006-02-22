@@ -367,7 +367,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			cur->UpdateData();
 
 			// Commit
-			grid->SetRowToLine(curLine,cur);
 			grid->ass->FlagAsModified();
 		}
 
@@ -387,8 +386,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		// Update video
 		if (updateVideo) {
 			grid->CommitChanges();
-			wxCommandEvent dummy;
-			grid->OnSetVideoToStart(dummy);
+			grid->SetVideoToSubs(true);
 		}
 		else if (DoReplace) Modified = true;
 
@@ -455,7 +453,6 @@ void SearchReplaceEngine::ReplaceAll() {
 			AssDialogue *cur = grid->GetDialogue(i);
 			cur->UpdateData();
 			//cur->ParseASSTags();
-			grid->SetRowToLine(i,cur);
 		}
 	}
 

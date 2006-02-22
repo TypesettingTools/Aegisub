@@ -95,17 +95,20 @@ public:
 	void SetColumnWidths();
 	void BeginBatch();
 	void EndBatch();
-	void MakeCellVisible(int row, int col,bool center=true);
+	void SetByFrame (bool state);
 
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
 	void ClearSelection();
 	bool IsInSelection(int row, int col) const;
 	bool IsDisplayed(AssDialogue *line);
 	int GetNumberSelection();
-	void UpdateMaps();
+	int GetFirstSelRow();
+	wxArrayInt GetSelection(bool *continuous=NULL);
 
+	void UpdateMaps();
 	int GetRows() const;
 	int GetNumberRows() const { return GetRows(); }
+	void MakeCellVisible(int row, int col,bool center=true);
 
 	void AutoSizeColumn(int col, bool setAsMin = true);
 	AssDialogue *GetDialogue(int n);

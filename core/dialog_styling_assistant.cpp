@@ -215,7 +215,7 @@ void DialogStyling::SetStyle (wxString curName, bool jump) {
 	line->UpdateData();
 
 	// Update grid/subs
-	grid->SetRowToLine(linen,line);
+	grid->Refresh(false);
 	if (PreviewCheck->IsChecked()) {
 		grid->ass->FlagAsModified();
 		grid->CommitChanges();

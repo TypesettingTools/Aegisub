@@ -995,7 +995,6 @@ void AudioDisplay::CommitChanges () {
 	}
 
 	// Update grid
-	grid->SetRowToLine(line_n,dialogue);
 	grid->editBox->Update(!karaoke->enabled);
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();

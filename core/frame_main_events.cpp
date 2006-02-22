@@ -729,9 +729,7 @@ void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &event) {
 		wxArrayInt sel = SubsBox->GetSelection();
 		if (sel.Count() > 0) {
 			wxCommandEvent dummy;
-			SubsBox->OnSetStartToVideo(dummy);
-			//SubsBox->ass->FlagAsModified();
-			//SubsBox->CommitChanges();
+			SubsBox->SetSubsToVideo(true);
 		}
 	}
 }
@@ -741,9 +739,7 @@ void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &event) {
 		wxArrayInt sel = SubsBox->GetSelection();
 		if (sel.Count() > 0) {
 			wxCommandEvent dummy;
-			SubsBox->OnSetEndToVideo(dummy);
-			//SubsBox->ass->FlagAsModified();
-			//SubsBox->CommitChanges();
+			SubsBox->SetSubsToVideo(false);
 		}
 	}
 }
@@ -756,7 +752,7 @@ void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &event) {
 		wxArrayInt sel = SubsBox->GetSelection();
 		if (sel.Count() > 0) {
 			wxCommandEvent dummy;
-			SubsBox->OnSetVideoToStart(dummy);
+			SubsBox->SetVideoToSubs(true);
 		}
 	}
 }
@@ -766,7 +762,7 @@ void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &event) {
 		wxArrayInt sel = SubsBox->GetSelection();
 		if (sel.Count() > 0) {
 			wxCommandEvent dummy;
-			SubsBox->OnSetVideoToEnd(dummy);
+			SubsBox->SetVideoToSubs(false);
 		}
 	}
 }
@@ -822,7 +818,6 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 			cur->Start.SetMS(start_ms);
 			cur->End.SetMS(end_ms);
 			cur->UpdateData();
-			SubsBox->SetRowToLine(sel[i],cur);
 		}
 
 		// Commit
@@ -853,7 +848,6 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 				cur->Start.SetMS(cur->Start.GetMS()+shiftBy);
 				cur->End.SetMS(cur->End.GetMS()+shiftBy);
 				cur->UpdateData();
-				SubsBox->SetRowToLine(sels[i],cur);
 			}
 		}
 
@@ -962,18 +956,15 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 //////////////////
 // Cut/copy/paste
 void FrameMain::OnCut (wxCommandEvent &event) {
-	wxCommandEvent dummy;
-	SubsBox->OnCutLines(dummy);
+	SubsBox->CutLines();
 }
 
 void FrameMain::OnCopy (wxCommandEvent &event) {
-	wxCommandEvent dummy;
-	SubsBox->OnCopyLines(dummy);
+	SubsBox->CopyLines();
 }
 
 void FrameMain::OnPaste (wxCommandEvent &event) {
-	wxCommandEvent dummy;
-	SubsBox->OnPasteLines(dummy);
+	SubsBox->PasteLines(SubsBox->GetFirstSelRow());
 }
 
 

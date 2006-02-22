@@ -411,7 +411,7 @@ void VideoDisplay::JumpToFrame(int n) {
 	ControlSlider->SetValue(n);
 
 	// Update grid
-	if (!IsPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->UpdateRowColours();
+	if (!IsPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
 }
 
 

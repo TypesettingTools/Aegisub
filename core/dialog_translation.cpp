@@ -314,7 +314,6 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		cur->UpdateText();
 		cur->UpdateData();
 		cur->ClearBlocks();
-		grid->SetRowToLine(curline,cur);
 		subs->FlagAsModified();
 		grid->CommitChanges();
 		((FrameMain*)main)->UpdateTitle();
