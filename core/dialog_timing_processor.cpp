@@ -511,7 +511,6 @@ void DialogTimingProcessor::Process() {
 	}
 
 	// Update grid
-	//grid->ass->FlagAsModified();
-	//grid->CommitChanges();
-	grid->LoadFromAss(NULL,true,false);
+	grid->ass->FlagAsModified();
+	grid->CommitChanges();
 }

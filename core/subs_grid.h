@@ -109,9 +109,6 @@ public:
 	void LoadFromAss(AssFile *ass=NULL,bool keepSelection=false,bool dontModify=false);
 	void CommitChanges(bool force=false);
 
-	void Clear();
-	void SelectVisible();
-
 	void SetVideoToSubs(bool start);
 	void SetSubsToVideo(bool start);
 

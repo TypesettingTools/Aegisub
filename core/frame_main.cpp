@@ -910,7 +910,7 @@ void FrameMain::LoadVFR(wxString filename) {
 	if (filename != _T("")) {
 		try {
 			VFR_Output.Load(filename);
-			SubsBox->LoadFromAss(NULL,true,true);
+			SubsBox->Refresh(false);
 		}
 		// Fail
 		catch (wchar_t *error) {

@@ -103,14 +103,16 @@ public:
 	bool IsDisplayed(AssDialogue *line);
 	int GetNumberSelection();
 	int GetFirstSelRow();
+	void SelectVisible();
 	wxArrayInt GetSelection(bool *continuous=NULL);
 
+	void Clear();
 	void UpdateMaps();
+
 	int GetRows() const;
 	int GetNumberRows() const { return GetRows(); }
 	void MakeCellVisible(int row, int col,bool center=true);
 
-	void AutoSizeColumn(int col, bool setAsMin = true);
 	AssDialogue *GetDialogue(int n);
 
 	BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);

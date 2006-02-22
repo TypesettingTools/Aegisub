@@ -96,27 +96,14 @@ BaseGrid::~BaseGrid() {
 }
 
 
-
-////////////////
-// Select a row
-void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
-	if (!addToSelected) ClearSelection();
-	try {
-		bool cur = selMap.at(row);
-		if (select != cur) {
-			selMap.at(row) = select;
-			
-			if (!addToSelected) Refresh(false);
-
-			else {
-				int w = 0;
-				int h = 0;
-				GetClientSize(&w,&h);
-				RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
-			}
-		}
-	}
-	catch (...) {}
+///////////////
+// Clears grid
+void BaseGrid::Clear () {
+	diagMap.clear();
+	diagPtrMap.clear();
+	selMap.clear();
+	yPos = 0;
+	AdjustScrollbar();
 }
 
 
@@ -157,6 +144,49 @@ void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 		else {
 			if (row < minVis) ScrollTo(row - 1);
 			if (row > maxVis) ScrollTo(row - h/lineHeight + 3);
+		}
+	}
+}
+
+
+////////////////
+// Select a row
+void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
+	if (!addToSelected) ClearSelection();
+	try {
+		bool cur = selMap.at(row);
+		if (select != cur) {
+			selMap.at(row) = select;
+			
+			if (!addToSelected) Refresh(false);
+
+			else {
+				int w = 0;
+				int h = 0;
+				GetClientSize(&w,&h);
+				RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
+			}
+		}
+	}
+	catch (...) {}
+}
+
+
+/////////////////////////
+// Selects visible lines
+void BaseGrid::SelectVisible() {
+	int rows = GetRows();
+	bool selectedOne = false;
+	for (int i=0;i<rows;i++) {
+		if (IsDisplayed(GetDialogue(i))) {
+			if (!selectedOne) {
+				SelectRow(i,false);
+				MakeCellVisible(i,0);
+				selectedOne = true;
+			}
+			else {
+				SelectRow(i,true);
+			}
 		}
 	}
 }
@@ -239,15 +269,6 @@ wxArrayInt BaseGrid::GetSelection(bool *cont) {
 // Get number of rows
 int BaseGrid::GetRows() const {
 	return diagMap.size();
-}
-
-
-/////////////////////
-// Auto size columns
-void BaseGrid::AutoSizeColumn(int col, bool setAsMin) {
-	(void) col;
-	(void) setAsMin;
-	SetColumnWidths();
 }
 
 
@@ -721,44 +742,60 @@ void BaseGrid::SetColumnWidths() {
 	if (!byFrame) {
 		AssTime time;
 		dc.GetTextExtent(time.GetASSFormated(), &fw, &fh, NULL, NULL, &font);
-		startLen = fw;
-		endLen = fw;
+		startLen = fw + 10;
+		endLen = fw + 10;
 	}
 
 	// O(n) widths
-	int layerLen = 0;
 	int actorLen = 0;
 	int effectLen = 0;
+	int maxLayer = 0;
+	int maxStart = 0;
+	int maxEnd = 0;
 	AssDialogue *curDiag;
 	for (int i=0;i<GetRows();i++) {
 		curDiag = GetDialogue(i);
 		if (curDiag) {
 			// Layer
-			dc.GetTextExtent(wxString::Format(_T("%i"),curDiag->Layer), &fw, &fh, NULL, NULL, &font);
-			if (fw > layerLen) layerLen = fw;
+			if (curDiag->Layer > maxLayer) maxLayer = curDiag->Layer;
 
 			// Actor
-			dc.GetTextExtent(curDiag->Actor, &fw, &fh, NULL, NULL, &font);
-			if (fw > actorLen) actorLen = fw;
+			if (!curDiag->Actor.IsEmpty()) {
+				dc.GetTextExtent(curDiag->Actor, &fw, &fh, NULL, NULL, &font);
+				if (fw > actorLen) actorLen = fw;
+			}
 
 			// Effect
-			dc.GetTextExtent(curDiag->Effect, &fw, &fh, NULL, NULL, &font);
-			if (fw > effectLen) effectLen = fw;
+			if (!curDiag->Effect.IsEmpty()) {
+				dc.GetTextExtent(curDiag->Effect, &fw, &fh, NULL, NULL, &font);
+				if (fw > effectLen) effectLen = fw;
+			}
 
 			// Times
 			if (byFrame) {
-				dc.GetTextExtent(wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(curDiag->Start.GetMS(),true)), &fw, &fh, NULL, NULL, &font);
-				if (fw > startLen) startLen = fw;
-				dc.GetTextExtent(wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(curDiag->End.GetMS(),true)), &fw, &fh, NULL, NULL, &font);
-				if (fw > endLen) endLen = fw;
+				int tmp = VFR_Output.CorrectFrameAtTime(curDiag->Start.GetMS(),true);
+				if (tmp > maxStart) maxStart = tmp;
+				tmp = VFR_Output.CorrectFrameAtTime(curDiag->End.GetMS(),true);
+				if (tmp > maxEnd) maxEnd = tmp;
 			}
 		}
 	}
-	layerLen += 10;
+
+	// Finish layer
+	dc.GetTextExtent(wxString::Format(_T("%i"),maxLayer), &fw, &fh, NULL, NULL, &font);
+	int layerLen = fw + 10;
+
+	// Finish times
+	if (byFrame) {
+		dc.GetTextExtent(wxString::Format(_T("%i"),maxStart), &fw, &fh, NULL, NULL, &font);
+		startLen = fw + 10;
+		dc.GetTextExtent(wxString::Format(_T("%i"),maxEnd), &fw, &fh, NULL, NULL, &font);
+		endLen = fw + 10;
+	}
+
+	// Finish actor/effect
 	if (actorLen) actorLen += 10;
 	if (effectLen) effectLen += 10;
-	startLen += 10;
-	endLen += 10;
 
 	// Style length
 	int styleLen = 0;

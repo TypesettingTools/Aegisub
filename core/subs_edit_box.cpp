@@ -579,7 +579,6 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &event) {
 			cur->UpdateData();
 		}
 	}
-	grid->AutoSizeColumn(3);
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
@@ -611,7 +610,6 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 	}
 
 	// Update grid
-	grid->AutoSizeColumn(4);
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
@@ -635,7 +633,6 @@ void SubsEditBox::OnLayerChange(wxCommandEvent &event) {
 			cur->UpdateData();
 		}
 	}
-	grid->AutoSizeColumn(0);
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();

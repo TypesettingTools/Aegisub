@@ -728,18 +728,6 @@ void SubtitlesGrid::LoadDefault (AssFile *_ass) {
 }
 
 
-///////////////
-// Clears grid
-void SubtitlesGrid::Clear () {
-	//if (GetNumberRows() > 0) DeleteRows(0,GetNumberRows());
-	diagMap.clear();
-	diagPtrMap.clear();
-	selMap.clear();
-	yPos = 0;
-	AdjustScrollbar();
-}
-
-
 /////////////////////////////////////
 // Read data from ASS file structure
 void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModify) {
@@ -769,8 +757,6 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 	for (entryIter cur=ass->Line.begin();cur != ass->Line.end();cur++) {
 		curdiag = AssEntry::GetAsDialogue(*cur);
 		if (curdiag) {
-			//AppendRows(1);
-			//SetRowToLine(n,curdiag);
 			diagMap.push_back(cur);
 			diagPtrMap.push_back(curdiag);
 			selMap.push_back(false);
@@ -793,7 +779,6 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 
 	// Finish setting layout
 	AdjustScrollbar();
-	SetColumnWidths();
 	EndBatch();
 
 	// Commit
@@ -924,11 +909,6 @@ void SubtitlesGrid::PasteLines(int n) {
 			curdata.Trim(false);
 			try { 
 				AssDialogue *curdiag = new AssDialogue(curdata);
-				//AssDialogue *curdiag = new AssDialogue;
-				//curdiag->data = curdata;
-				//curdiag->Parse();
-				//curdiag->UpdateData();
-				//InsertLine(curdiag,n,true,false);
 				InsertLine(curdiag,n+inserted,false,false);
 				inserted++;
 			}
@@ -1212,8 +1192,6 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 	wxString orig = n1->Text;
 	n1->Text = orig.Left(pos);
 	n2->Text = orig.Mid(pos);
-	//n1->ParseASSTags();
-	//n2->ParseASSTags();
 
 	// Modify time
 	if (mode == 1) {
@@ -1260,6 +1238,7 @@ void SubtitlesGrid::CommitChanges(bool force) {
 		if (playing) video->Play();
 	}
 	parentFrame->UpdateTitle();
+	SetColumnWidths();
 	Refresh(false);
 }
 
@@ -1272,26 +1251,6 @@ wxString SubtitlesGrid::GetTempWorkFile () {
 		tempfile += _T(".ass");
 	}
 	return tempfile;
-}
-
-
-/////////////////////////
-// Selects visible lines
-void SubtitlesGrid::SelectVisible() {
-	int rows = GetRows();
-	bool selectedOne = false;
-	for (int i=0;i<rows;i++) {
-		if (IsDisplayed(GetDialogue(i))) {
-			if (!selectedOne) {
-				SelectRow(i,false);
-				MakeCellVisible(i,0);
-				selectedOne = true;
-			}
-			else {
-				SelectRow(i,true);
-			}
-		}
-	}
 }
 
 
