@@ -285,6 +285,22 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 					curline->Movement->Frames[localframe].Pos.x += float(x-MouseDownX);
 					curline->Movement->Frames[localframe].Pos.y += float(y-MouseDownY);
 				}
+				else if( MovementEdit==3 )
+				{
+					for( int i=0;i<=localframe;i++ )
+					{
+						curline->Movement->Frames[i].Pos.x += float(x-MouseDownX);
+						curline->Movement->Frames[i].Pos.y += float(y-MouseDownY);
+					}
+				}
+				else if( MovementEdit==4 )
+				{
+					for( int i=localframe;i<curline->Movement->Frames.size();i++ )
+					{
+						curline->Movement->Frames[i].Pos.x += float(x-MouseDownX);
+						curline->Movement->Frames[i].Pos.y += float(y-MouseDownY);
+					}
+				}
 			}
 			MouseDownX = x;
 			MouseDownY = y;
