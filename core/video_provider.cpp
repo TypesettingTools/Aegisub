@@ -158,7 +158,7 @@ PClip VideoProvider::OpenVideo(wxString _filename, bool &usedDirectshow, bool mp
 	script = env->Invoke("ConvertToRGB32", script);
 
 	// Cache
-	return (env->Invoke("InternalCache", script)).AsClip();
+	return (env->Invoke("Cache", script)).AsClip();
 }
 
 PClip VideoProvider::ApplySubtitles(wxString _filename, PClip videosource) {
@@ -177,7 +177,7 @@ PClip VideoProvider::ApplySubtitles(wxString _filename, PClip videosource) {
 	}
 
 	// Cache
-	return (env->Invoke("InternalCache", script)).AsClip();
+	return (env->Invoke("Cache", script)).AsClip();
 }
 
 PClip VideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip videosource) {
@@ -202,7 +202,7 @@ PClip VideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip videosource) 
 
 	vi = script.AsClip()->GetVideoInfo();
 
-	return (env->Invoke("InternalCache",script)).AsClip();
+	return (env->Invoke("Cache",script)).AsClip();
 }
 
 wxBitmap VideoProvider::GetFrame(int n, bool force) {

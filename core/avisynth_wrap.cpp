@@ -66,7 +66,8 @@ AviSynthWrapper::AviSynthWrapper() {
 			throw _T("Failed to create a new avisynth script environment. Avisynth is too old?");
 
 		// Check for a new enough avisynth version by looking for the most obscure function used
-		if (!env->FunctionExists("InternalCache"))
+		// fix me, no longer useful with "Cache"?
+		if (!env->FunctionExists("Cache"))
 			throw _T("Installed version of avisynth is too old");
 
 		// Set memory limit
