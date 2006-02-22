@@ -98,6 +98,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_BUTTON(Video_Tracker_Menu2, FrameMain::OnVideoTrackerMenu2)
 	EVT_MENU(Video_Track_Movement_MoveAll, FrameMain::OnVideoTrackMovementMoveAll)
 	EVT_MENU(Video_Track_Movement_MoveOne, FrameMain::OnVideoTrackMovementMoveOne)
+	EVT_MENU(Video_Track_Movement_MoveBefore, FrameMain::OnVideoTrackMovementMoveBefore)
+	EVT_MENU(Video_Track_Movement_MoveAfter, FrameMain::OnVideoTrackMovementMoveAfter)
 	EVT_MENU(Video_Track_Split_Line, FrameMain::OnVideoTrackSplitLine)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)

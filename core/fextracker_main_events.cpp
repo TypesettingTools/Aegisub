@@ -70,7 +70,10 @@ void FrameMain::OnVideoTrackerMenu(wxCommandEvent &event) {
 void FrameMain::OnVideoTrackerMenu2(wxCommandEvent &event) {
 	wxMenu menu( _("FexMovement") );
 	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAll, _("Move subtitle"), _(""), wxBITMAP(button_track_move));
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveOne, _("Move subtitle only in this frame"), _(""), wxBITMAP(button_track_move));
+	menu.AppendSeparator();
+	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveBefore, _("Move subtitle (this frame and preceeding frames)"), _(""), wxBITMAP(button_track_move));
+	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveOne, _("Move subtitle (this frame)"), _(""), wxBITMAP(button_track_move));
+	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAfter, _("Move subtitle (this frame and following frames)"), _(""), wxBITMAP(button_track_move));
 	menu.AppendSeparator();
 	AppendBitmapMenuItem(&menu, Video_Track_Split_Line, _("Split line for movement"), _(""), wxBITMAP(button_track_split_line));
 	PopupMenu(&menu);
@@ -240,6 +243,22 @@ void FrameMain::OnVideoTrackMovementMoveAll(wxCommandEvent &event) {
 // Move One
 void FrameMain::OnVideoTrackMovementMoveOne(wxCommandEvent &event) {
 	videoBox->videoDisplay->MovementEdit = 2;
+	videoBox->videoDisplay->bTrackerEditing = 0;
+}
+
+
+///////////////////
+// Move Before
+void FrameMain::OnVideoTrackMovementMoveBefore(wxCommandEvent &event) {
+	videoBox->videoDisplay->MovementEdit = 3;
+	videoBox->videoDisplay->bTrackerEditing = 0;
+}
+
+
+///////////////////
+// Move After
+void FrameMain::OnVideoTrackMovementMoveAfter(wxCommandEvent &event) {
+	videoBox->videoDisplay->MovementEdit = 4;
 	videoBox->videoDisplay->bTrackerEditing = 0;
 }
 
