@@ -45,6 +45,7 @@ Please visit http://aegisub.net to download latest version
 - Aegisub will now dump the stack to stack.txt when it crashes with a fatal exception, which might or might not work. (AMZ)
 - Audio display in SSA mode will no longer ignore clicks if it wasn't focused (AMZ)
 - The font override button in the subtitles edit box can now modify font size, italics, bold and underline as well as font face (no strikeout, as wx does not provide an interface to access that data). (AMZ)
+- Now requires Avisynth 2.5.6a or later, added an option to override it to config.dat (Myrsloik)
 
 
 = 1.09 beta - 2006.01.16 ===========================
