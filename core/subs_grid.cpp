@@ -99,8 +99,6 @@ SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID i
 //////////////
 // Destructor
 SubtitlesGrid::~SubtitlesGrid() {
-	wxRemoveFile(tempfile);
-	tempfile = _T("");
 }
 
 
@@ -267,178 +265,61 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 ///////////////////////
 // Duplicate selection
 void SubtitlesGrid::OnDuplicate (wxCommandEvent &WXUNUSED(&event)) {
-	int n1 = -1;
-	int n2 = -1;
-	bool gotfirst = false;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (!gotfirst) {
-				n1 = i;
-				gotfirst = true;
-			}
-			else n2 = i;
-		}
-	}
-
-	if (n1 == -1) return;
-	if (n2 == -1) n2 = n1;
-	DuplicateLines(n1,n2);
+	wxArrayInt sels = GetSelection();
+	DuplicateLines(sels.front(),sels.back());
 }
 
 
 //////////////////////////////////////////////
 // Duplicate selection and shift by one frame
 void SubtitlesGrid::OnDuplicateNextFrame (wxCommandEvent &WXUNUSED(&event)) {
-	int n1 = -1;
-	int n2 = -1;
-	bool gotfirst = false;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (!gotfirst) {
-				n1 = i;
-				gotfirst = true;
-			}
-			else n2 = i;
-		}
-	}
-
-	// Duplicate
-	if (n1 == -1) return;
-	if (n2 == -1) n2 = n1;
-	DuplicateLines(n1,n2,true);
+	wxArrayInt sels = GetSelection();
+	DuplicateLines(sels.front(),sels.back(),true);
 }
 
 
 /////////////
 // Call swap
 void SubtitlesGrid::OnSwap (wxCommandEvent &event) {
-	int n1,n2;
-	int n_found = 0;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (n_found == 0) n1 = i;
-			else if (n_found == 1) n2 = i;
-			else throw _T("Too many lines found!");
-			n_found++;
-		}
-	}
-	SwapLines(n1,n2);
+	wxArrayInt sels = GetSelection();
+	SwapLines(sels.front(),sels.back());
 }
 
 
 ///////////////////////////
 // Call join (concatenate)
 void SubtitlesGrid::OnJoinConcat (wxCommandEvent &event) {
-	int n1 = -1;
-	int n2 = -1;
-	bool gotfirst = false;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (!gotfirst) {
-				n1 = i;
-				gotfirst = true;
-			}
-			else n2 = i;
-		}
-	}
-
-	if (n1 == -1) return;
-	if (n2 == -1) n2 = n1;
-	JoinLines(n1,n2,true);
+	wxArrayInt sels = GetSelection();
+	JoinLines(sels.front(),sels.back(),true);
 }
 
 
 ///////////////////////
 // Call join (replace)
 void SubtitlesGrid::OnJoinReplace (wxCommandEvent &event) {
-	int n1 = -1;
-	int n2 = -1;
-	bool gotfirst = false;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (!gotfirst) {
-				n1 = i;
-				gotfirst = true;
-			}
-			else n2 = i;
-		}
-	}
-
-	if (n1 == -1) return;
-	if (n2 == -1) n2 = n1;
-	JoinLines(n1,n2,false);
+	wxArrayInt sels = GetSelection();
+	JoinLines(sels.front(),sels.back(),false);
 }
 
 
 ////////////////
 // Adjoin lines
 void SubtitlesGrid::OnAdjoin (wxCommandEvent &event) {
-	int n1 = -1;
-	int n2 = -1;
-	bool gotfirst = false;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (!gotfirst) {
-				n1 = i;
-				gotfirst = true;
-			}
-			else n2 = i;
-		}
-	}
-
-	if (n1 == -1) return;
-	if (n2 == -1) n2 = n1;
-	AdjoinLines(n1,n2,true);
+	wxArrayInt sels = GetSelection();
+	AdjoinLines(sels.front(),sels.back(),true);
 }
 
 void SubtitlesGrid::OnAdjoin2 (wxCommandEvent &event) {
-	int n1 = -1;
-	int n2 = -1;
-	bool gotfirst = false;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (!gotfirst) {
-				n1 = i;
-				gotfirst = true;
-			}
-			else n2 = i;
-		}
-	}
-
-	if (n1 == -1) return;
-	if (n2 == -1) n2 = n1;
-	AdjoinLines(n1,n2,false);
+	wxArrayInt sels = GetSelection();
+	AdjoinLines(sels.front(),sels.back(),false);
 }
-
 
 
 ////////////////////////
 // Call join as karaoke
 void SubtitlesGrid::OnJoinAsKaraoke (wxCommandEvent &event) {
-	int n1 = -1;
-	int n2 = -1;
-	bool gotfirst = false;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (!gotfirst) {
-				n1 = i;
-				gotfirst = true;
-			}
-			else n2 = i;
-		}
-	}
-
-	if (n1 == -1) return;
-	if (n2 == -1) n2 = n1;
-	JoinAsKaraoke(n1,n2);
+	wxArrayInt sels = GetSelection();
+	JoinAsKaraoke(sels.front(),sels.back());
 }
 
 
@@ -446,14 +327,7 @@ void SubtitlesGrid::OnJoinAsKaraoke (wxCommandEvent &event) {
 // Call insert before
 void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 	// Find line
-	int n;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			n = i;
-			break;
-		}
-	}
+	int n = GetFirstSelRow();
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
@@ -479,14 +353,8 @@ void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 // Call insert after
 void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 	// Find line
-	int n;
+	int n = GetFirstSelRow();
 	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			n = i;
-			break;
-		}
-	}
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
@@ -513,14 +381,7 @@ void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 // Call insert before with video
 void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 	// Find line
-	int n;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			n = i;
-			break;
-		}
-	}
+	int n = GetFirstSelRow();
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
@@ -540,14 +401,7 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 // Call insert after with video
 void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 	// Find line
-	int n;
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			n = i;
-			break;
-		}
-	}
+	int n = GetFirstSelRow();
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
@@ -566,14 +420,14 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 ///////////////////////////////
 // Copy selection to clipboard
 void SubtitlesGrid::OnCopyLines (wxCommandEvent &WXUNUSED(&event)) {
-	CopyLines();
+	CopyLines(GetSelection());
 }
 
 
 ///////////////////////////////
 // Cuts selection to clipboard
 void SubtitlesGrid::OnCutLines (wxCommandEvent &WXUNUSED(&event)) {
-	CutLines();
+	CutLines(GetSelection());
 }
 
 
@@ -855,19 +709,17 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 
 ///////////////////////////
 // Copy lines to clipboard
-void SubtitlesGrid::CopyLines() {
+void SubtitlesGrid::CopyLines(wxArrayInt target) {
 	// Prepare text
 	wxString data = _T("");
 	AssDialogue *cur;
-	int nrows = GetRows();
+	int nrows = target.Count();
 	bool first = true;
 	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			if (!first) data += _T("\r\n");
-			first = false;
-			cur = GetDialogue(i);
-			data += cur->data;
-		}
+		if (!first) data += _T("\r\n");
+		first = false;
+		cur = GetDialogue(target[i]);
+		data += cur->data;
 	}
 
 	// Send to clipboard
@@ -880,9 +732,9 @@ void SubtitlesGrid::CopyLines() {
 
 ////////////////////
 // Cut to clipboard
-void SubtitlesGrid::CutLines() {
-	CopyLines();
-	DeleteLines(GetSelection());
+void SubtitlesGrid::CutLines(wxArrayInt target) {
+	CopyLines(target);
+	DeleteLines(target);
 }
 
 
@@ -941,31 +793,6 @@ void SubtitlesGrid::PasteLines(int n) {
 void SubtitlesGrid::DeleteLines(wxArrayInt target) {
 	// Check if it's wiping file
 	int deleted = 0;
-
-	//// Range
-	//if (!sel) {
-	//	// Deallocate lines
-	//	for (int i=n1;i<=n2;i++) {
-	//		delete GetDialogue(i);
-	//	}
-
-	//	// Remove from AssFile
-	//	if (n1 != n2) ass->Line.erase(diagMap.at(n1),++diagMap.at(n2));
-	//	else ass->Line.erase(diagMap.at(n1));
-	//	deleted = n2-n1+1;
-	//}
-
-	//// Selection
-	//else {
-	//	int nlines = GetRows();
-	//	for (int i=0;i<nlines;i++) {
-	//		if (IsInSelection(i,0)) {
-	//			delete (AssDialogue*)(*diagMap.at(i));
-	//			ass->Line.erase(diagMap.at(i));
-	//			deleted++;
-	//		}
-	//	}
-	//}
 
 	// Delete lines
 	int size = target.Count();
@@ -1240,7 +1067,7 @@ void SubtitlesGrid::CommitChanges(bool force) {
 		}
 
 		// Export
-		wxString workfile = GetTempWorkFile();
+		wxString workfile = video->GetTempWorkFile();
 		ass->Export(workfile);
 
 		if (video->loaded)
@@ -1252,17 +1079,6 @@ void SubtitlesGrid::CommitChanges(bool force) {
 	parentFrame->UpdateTitle();
 	SetColumnWidths();
 	Refresh(false);
-}
-
-
-//////////////////////////////
-// Get name of temp work file
-wxString SubtitlesGrid::GetTempWorkFile () {
-	if (tempfile.IsEmpty()) {
-		tempfile = wxFileName::CreateTempFileName(_T("aegisub"));
-		tempfile += _T(".ass");
-	}
-	return tempfile;
 }
 
 

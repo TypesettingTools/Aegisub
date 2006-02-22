@@ -956,11 +956,11 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 //////////////////
 // Cut/copy/paste
 void FrameMain::OnCut (wxCommandEvent &event) {
-	SubsBox->CutLines();
+	SubsBox->CutLines(SubsBox->GetSelection());
 }
 
 void FrameMain::OnCopy (wxCommandEvent &event) {
-	SubsBox->CopyLines();
+	SubsBox->CopyLines(SubsBox->GetSelection());
 }
 
 void FrameMain::OnPaste (wxCommandEvent &event) {

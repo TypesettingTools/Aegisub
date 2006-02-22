@@ -61,6 +61,8 @@ class VideoDisplay: public wxWindow {
 	friend class AudioProvider;
 
 private:
+	wxString tempfile;
+
 	int mouse_x,mouse_y;
 	wxBitmap *backbuffer;
 
@@ -136,6 +138,7 @@ public:
 	void SetZoomPos(int pos);
 	void UpdateSubsRelativeTime();
 	void GetScriptSize(int &w,int &h);
+	wxString GetTempWorkFile ();
 
 	void Play();
 	void PlayLine();

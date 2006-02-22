@@ -66,12 +66,8 @@ typedef std::list<AssEntry*>::iterator entryIter;
 // Main class
 class SubtitlesGrid: public BaseGrid {
 private:
-	wxString tempfile;
 	bool ready;
 
-	void OnCellLeftClick(wxGridEvent &event);
-	void OnCellChange(wxGridEvent &event);
-	void OnSelectCell(wxGridEvent &event);
 	void OnPopupMenu();
 	void OnKeyDown(wxKeyEvent &event);
 
@@ -112,22 +108,22 @@ public:
 	void SetVideoToSubs(bool start);
 	void SetSubsToVideo(bool start);
 
-	void SwapLines(int n1,int n2);
-	void DuplicateLines(int n1,int n2,bool nextFrame=false);
+	void JoinLines(int first,int last,bool concat=true);
+	void JoinAsKaraoke(int first,int last);
+	void AdjoinLines(int first,int last,bool setStart);
+	void SplitLine(int lineNumber,int splitPosition,int mode);
+	void DuplicateLines(int first,int last,bool nextFrame=false);
+
+	void SwapLines(int line1,int line2);
+	void ShiftLineByTime(int lineNumber,int len,int type);
+	void ShiftLineByFrames(int lineNumber,int len,int type);
+
+	void InsertLine(AssDialogue *line,int position,bool insertAfter,bool update=true);
 	void DeleteLines(wxArrayInt lines);
-	void JoinLines(int n1,int n2,bool concat=true);
-	void JoinAsKaraoke(int n1,int n2);
-	void AdjoinLines(int n1,int n2,bool setStart);
-	void InsertLine(AssDialogue *line,int n,bool after,bool update=true);
-	void ShiftLineByTime(int n,int len,int type);
-	void ShiftLineByFrames(int n,int len,int type);
-	void SplitLine(int n,int pos,int mode);
 
-	void CopyLines();
-	void CutLines();
-	void PasteLines(int n);
-
-	wxString GetTempWorkFile ();
+	void CopyLines(wxArrayInt lines);
+	void CutLines(wxArrayInt lines);
+	void PasteLines(int pos);
 
 	DECLARE_EVENT_TABLE()
 };

@@ -115,6 +115,8 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 //////////////
 // Destructor
 VideoDisplay::~VideoDisplay () {
+	wxRemoveFile(tempfile);
+	tempfile = _T("");
 	SetVideo(_T(""));
 	delete backbuffer;
 }
@@ -154,7 +156,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 
 			bool usedDirectshow;
 
-			provider = new VideoProvider(filename,grid->GetTempWorkFile(),zoomValue,usedDirectshow,true);
+			provider = new VideoProvider(filename,GetTempWorkFile(),zoomValue,usedDirectshow,true);
 
 			// Set keyframes
 			if (filename.Right(4).Lower() == _T(".avi"))
@@ -843,4 +845,15 @@ void VideoDisplay::OnPlayTimer(wxTimerEvent &event) {
 		audio->provider->playPos = audPos;
 		audio->provider->realPlayPos = audPos;
 	}
+}
+
+
+//////////////////////////////
+// Get name of temp work file
+wxString VideoDisplay::GetTempWorkFile () {
+	if (tempfile.IsEmpty()) {
+		tempfile = wxFileName::CreateTempFileName(_T("aegisub"));
+		tempfile += _T(".ass");
+	}
+	return tempfile;
 }

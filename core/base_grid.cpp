@@ -252,7 +252,7 @@ wxArrayInt BaseGrid::GetSelection(bool *cont) {
 
 	// Scan
 	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
+		if (selMap[i]) {
 			selections.Add(i);
 			if (last != -1 && i != last+1) continuous = false;
 			last = i;
