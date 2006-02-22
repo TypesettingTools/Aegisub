@@ -828,6 +828,11 @@ void BaseGrid::UpdateMaps() {
 /////////////
 // Key press
 void BaseGrid::OnKeyPress(wxKeyEvent &event) {
+	// Get size
+	int w,h;
+	GetClientSize(&w,&h);
+
+	// Get scan code
 	int key = event.KeyCode();
 
 	// Left/right, forward to seek bar if video is loaded
@@ -843,8 +848,25 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	// Up/down
 	int dir = 0;
+	int step = 1;
 	if (key == WXK_UP) dir = -1;
 	if (key == WXK_DOWN) dir = 1;
+	if (key == WXK_PRIOR) {
+		dir = -1;
+		step = h/lineHeight - 2;
+	}
+	if (key == WXK_NEXT) {
+		dir = 1;
+		step = h/lineHeight - 2;
+	}
+	if (key == WXK_HOME) {
+		dir = -1;
+		step = GetRows();
+	}
+	if (key == WXK_END) {
+		dir = 1;
+		step = GetRows();
+	}
 
 	// Moving
 	if (dir) {
@@ -855,50 +877,52 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 		// Move selection
 		if (!ctrl && !shift && !alt) {
-			int next = editBox->linen+dir;
+			// Move to extent first
+			int curLine = editBox->linen;
+			if (extendRow != -1) {
+				curLine = extendRow;
+				extendRow = -1;
+			}
+
+			int next = MID(0,curLine+dir*step,GetRows()-1);
 			editBox->SetToLine(next);
 			SelectRow(next);
 			MakeCellVisible(next,0,false);
-			extendRow = -1;
 			return;
 		}
 
 		// Move active only
 		if (alt && !shift && !ctrl) {
-			int next = editBox->linen+dir;
+			extendRow = -1;
+			int next = MID(0,editBox->linen+dir*step,GetRows()-1);
 			editBox->SetToLine(next);
 			Refresh(false);
 			MakeCellVisible(next,0,false);
-			extendRow = -1;
 			return;
 		}
 
-		// Add to selection
+		// Shift-selection
 		if (shift && !ctrl && !alt) {
-			if (extendRow == -1) {
-				extendRow = editBox->linen+dir;
-				extendRow = MID(0,extendRow,GetRows());
-				SelectRow(extendRow,true);
+			// Find end
+			if (extendRow == -1) extendRow = editBox->linen;
+			extendRow = MID(0,extendRow+dir*step,GetRows()-1);
+
+			// Set range
+			int i1 = editBox->linen;
+			int i2 = extendRow;
+			if (i2 < i1) {
+				int aux = i1;
+				i1 = i2;
+				i2 = aux;
 			}
 
-			else {
-				// Add
-				if ((extendRow > editBox->linen && dir == 1) || (extendRow < editBox->linen && dir == -1) || extendRow == editBox->linen) {
-					extendRow += dir;
-					extendRow = MID(0,extendRow,GetRows());
-					SelectRow(extendRow,true);
-				}
-
-				// Remove (moving back)
-				else {
-					SelectRow(extendRow,true,false);
-					extendRow += dir;
-					extendRow = MID(0,extendRow,GetRows());
-				}
+			// Select range
+			ClearSelection();
+			for (int i=i1;i<=i2;i++) {
+				SelectRow(i,true);
 			}
 
 			MakeCellVisible(extendRow,0,false);
-			return;
 		}
 	}
 

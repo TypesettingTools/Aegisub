@@ -867,7 +867,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 ////////
 // Undo
 void FrameMain::OnUndo(wxCommandEvent& WXUNUSED(event)) {
-	// Block if it's on a editbox (doesn't work for whatever reason)
+	// Block if it's on a editbox
 	//wxWindow *focused = wxWindow::FindFocus();
 	//if (focused && focused->IsKindOf(CLASSINFO(wxTextCtrl))) return;
 
