@@ -60,10 +60,10 @@ void FrameRate::AddFrame(int ms) {
 // V2 Get Average
 void FrameRate::CalcAverage() {
 
-	if (Frame.size() <= 0)
+	if (Frame.size() <= 1)
 		throw _("No timecodes to average");
 
-	AverageFrameRate = double(Frame.back()) / Frame.size();
+	AverageFrameRate = double(Frame.back()) / (Frame.size()-1);
 }
 
 
