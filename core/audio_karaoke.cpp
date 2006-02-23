@@ -68,7 +68,15 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent)
 	splitting = false;
 	split_cursor_syl = -1;
 	curSyllable = 0;
-	diag = NULL;
+	diag = 0;
+	workDiag = 0;
+}
+
+
+//////////////
+// Destructor
+AudioKaraoke::~AudioKaraoke() {
+	delete workDiag;
 }
 
 
@@ -81,6 +89,7 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	}
 
 	// Set dialogue
+	delete workDiag;
 	diag = _diag;
 	if (!diag) {
 		Refresh(false);
@@ -88,8 +97,10 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	}
 
 	// Split
+	workDiag = new AssDialogue(diag->data, false);
+	workDiag->ParseASSTags();
 	must_rebuild = false;
-	bool hasKar = ParseDialogue(diag);
+	bool hasKar = ParseDialogue(workDiag);
 
 	// No karaoke, autosplit
 	if (!hasKar) {
@@ -137,12 +148,14 @@ void AudioKaraoke::Commit() {
 	KaraokeSyllable *syl;
 	size_t n = syllables.size();
 	if (must_rebuild) {
+		workDiag->ClearBlocks();
 		for (size_t i=0;i<n;i++) {
 			syl = &syllables.at(i);
 			finalText += wxString::Format(_T("{%s%i}"), syl->tag, syl->length) + syl->contents;
 		}
+		workDiag->Text = finalText;
+		workDiag->ParseASSTags();
 		diag->Text = finalText;
-		//diag->ParseASSTags();
 	} else {
 		wxLogDebug(_T("Updating karaoke without rebuild"));
 		for (size_t i = 0; i < n; i++) {
@@ -152,7 +165,10 @@ void AudioKaraoke::Commit() {
 			syl->original_tagdata->SetInt(syl->length);
 		}
 		wxLogDebug(_T("Done updating syllables"));
-		diag->UpdateText();
+		workDiag->UpdateText();
+		workDiag->ClearBlocks();
+		workDiag->ParseASSTags();
+		diag->Text = workDiag->Text;
 	}
 }
 

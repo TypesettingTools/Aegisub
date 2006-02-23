@@ -49,6 +49,7 @@ Please visit http://aegisub.net to download latest version
 - Added reading of keyframe and timecode data from Matroska files (which are still not recommended, due to their dependency on DirectShowSource). (AMZ)
 - Added forums and bugtracker to Help menu. (AMZ)
 - Fixed Fonts Collector behavior with font shortcuts. (AMZ)
+- Better error reporting when loading Automation scripts (jfs)
 
 
 = 1.09 beta - 2006.01.16 ===========================

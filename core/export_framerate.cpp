@@ -201,7 +201,7 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 			curKarPos = lineData->ko;
 			lineData->ko += parVal/10;
 		}
-		else throw _T("Unknown karaoke tag!");
+		else throw wxString::Format(_T("Unknown karaoke tag! '%s'"), name);
 		curKarPos *= 10;
 		parVal += curKarPos;
 	}

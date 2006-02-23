@@ -32,7 +32,8 @@
 -- positioning of karaoke.
 
 -- It automatically includes and re-setups karaskel.lua, so you should not include that yourself!
-include("karaskel.lua")
+include("karaskel-base.lua")
+karaskel.engage_positioning = true
 
 -- The interface here has been greatly simplified, there is only one function to override, do_syllable
 -- The format for that one has changed.
@@ -44,23 +45,26 @@ include("karaskel.lua")
 -- The return value is different now, though.
 -- It is required to be in the same format as the do_line function:
 -- A table with an "n" key, and keys 0..n-1 with line structures.
-function default_do_syllable(meta, styles, config, line, syl)
-	aegisub.output_debug("default_do_syllable")
+function karaskel.do_syllable(meta, styles, config, line, syl)
+	karaskel.trace("default_do_syllable")
 	return {n=0}
 end
-do_syllable = default_do_syllable
+do_syllable = karaskel.do_syllable
 
-function adv_do_line(meta, styles, config, line)
-	aegisub.output_debug("adv_do_line")
+function karaskel.do_line(meta, styles, config, line)
+	karaskel.trace("adv_do_line")
+	if line.kind ~= "dialogue" then
+		return {n=1, [1]=line}
+	end
 	local result = {n=0}
 	for i = 0, line.karaoke.n-1 do
-		aegisub.output_debug("adv_do_line:2:"..i)
+		karaskel.trace("adv_do_line:2:"..i)
 		local out = do_syllable(meta, styles, config, line, line.karaoke[i])
 		for j = 1, out.n do
 			table.insert(result, out[j])
 		end
 	end
-	aegisub.output_debug("adv_do_line:3")
+	karaskel.trace("adv_do_line:3")
 	return result
 end
-do_line = adv_do_line
+do_line = karaskel.do_line

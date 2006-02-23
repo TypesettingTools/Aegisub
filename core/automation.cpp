@@ -1320,7 +1320,7 @@ void AutomationScript::process_lines(AssFile *input)
 					switch ((*block)->type) {
 
 						case BLOCK_BASE:
-							throw _T("BLOCK_BASE found processing dialogue blocks. This should never happen.");
+							throw wxString(_T("BLOCK_BASE found processing dialogue blocks. This should never happen."));
 
 						case BLOCK_PLAIN:
 							ktext += (*block)->text;

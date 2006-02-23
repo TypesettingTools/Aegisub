@@ -211,7 +211,7 @@ wxArrayString FontsCollectorThread::GetFontFiles (wxString face) {
 			n++;
 		}
 	}
-	if (n==0) throw _T("Font not found");
+	if (n==0) throw wxString(_T("Font not found: %s"), face);
 
 	return files;
 }

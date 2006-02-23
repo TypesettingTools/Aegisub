@@ -76,7 +76,7 @@ AudioProvider::AudioProvider(wxString _filename, AudioDisplay *_display) {
 	if (!pa_refcount) {
 		PaError err = Pa_Initialize();
 		if (err != paNoError)
-			throw _T("Failed opening PortAudio with error: ") + wxString(Pa_GetErrorText(err),wxConvLocal);
+			throw wxString::Format(_T("Failed opening PortAudio with error: %s"), wxString(Pa_GetErrorText(err),wxConvLocal));
 		pa_refcount++;
 	}
 
@@ -144,7 +144,7 @@ void AudioProvider::OpenAVSAudio() {
 		LoadFromClip(script);
 
 	} catch (AvisynthError &err) {
-		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
+		throw wxString::Format(_T("AviSynth error: %s"), wxString(err.msg,wxConvLocal));
 	}
 }
 

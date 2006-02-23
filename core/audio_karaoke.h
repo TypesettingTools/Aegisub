@@ -84,6 +84,7 @@ typedef std::vector<KaraokeSyllable> SylVector;
 class AudioKaraoke : public wxWindow {
 private:
 	AssDialogue *diag;
+	AssDialogue *workDiag;
 	int startClickSyl;
 	bool must_rebuild;
 
@@ -112,6 +113,8 @@ public:
 	SylVector syllables;
 
 	AudioKaraoke(wxWindow *parent);
+	virtual ~AudioKaraoke();
+
 	bool LoadFromDialogue(AssDialogue *diag);
 	void Commit();
 	void SetSyllable(int n);

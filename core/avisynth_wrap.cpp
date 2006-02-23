@@ -55,12 +55,12 @@ AviSynthWrapper::AviSynthWrapper() {
 		hLib=LoadLibrary(_T("avisynth.dll"));
 
 		if (hLib == NULL) 
-			throw _T("Could not load avisynth.dll");
+			throw wxString(_T("Could not load avisynth.dll"));
 		
 		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
 
 		if (CreateScriptEnv == NULL)
-			throw _T("Failed to get function from avisynth.dll");
+			throw wxString(_T("Failed to get function from avisynth.dll"));
 
 		// Require Avisynth 2.5.6+?
 		if (Options.AsBool(_T("Allow Ancient Avisynth")))
@@ -69,8 +69,7 @@ AviSynthWrapper::AviSynthWrapper() {
 			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
 		if (env == NULL)
-			throw _T("Failed to create a new avisynth script environment. Avisynth is too old?");
-
+			throw wxString(_T("Failed to create a new avisynth script environment. Avisynth is too old?"));
 		// Set memory limit
 		int memoryMax = Options.AsInt(_T("Avisynth MemoryMax"));
 		if (memoryMax != 0)

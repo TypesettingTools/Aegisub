@@ -67,7 +67,7 @@ AssExportFilter::~AssExportFilter() {
 void AssExportFilter::Register (wxString name,int priority) {
 	// Check if it's registered
 	if (RegisterName != _T("")) {
-		throw _T("Register export filter: filter with name \"") + name + _T("\" is already registered.");
+		throw wxString::Format(_T("Register export filter: filter with name \"%s\" is already registered."), name);
 	}
 
 	// Remove pipes from name
@@ -78,7 +78,7 @@ void AssExportFilter::Register (wxString name,int priority) {
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
 		if ((*cur)->RegisterName == name) {
-			throw _T("Register export filter: name \"") + name + _T("\" already exists.");
+			throw wxString::Format(_T("Register export filter: name \"%s\" already exists."), name);
 		}
 	}
 
@@ -103,7 +103,7 @@ void AssExportFilter::Register (wxString name,int priority) {
 // Unregister
 void AssExportFilter::Unregister () {
 	// Check if it's registered
-	if (!IsRegistered()) throw _T("Unregister export filter: name \"") + RegisterName + _T("\" is not registered.");
+	if (!IsRegistered()) throw wxString::Format(_T("Unregister export filter: name \"%s\" is not registered."), RegisterName);
 
 	// Unregister
 	RegisterName = _T("");

@@ -147,7 +147,7 @@ AutomationFilterConfigDialog::AutomationFilterConfigDialog(wxWindow *parent, Aut
 AssAutomationFilter::AssAutomationFilter(AutomationScript *a_script)
 : script(a_script), dialog(0)
 {
-	Register(wxString::Format(_T("Automation: %s"), script->name.c_str()), 100);
+	Register(wxString::Format(_T("Automation: %s"), script->name.c_str()), 2000);
 	if (script->description.IsEmpty()) {
 		Description = wxString::Format(_T("%s\r\n(This Automation script has not provided a description.)"), script->name.c_str());
 	} else {

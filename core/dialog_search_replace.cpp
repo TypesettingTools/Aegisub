@@ -515,7 +515,7 @@ wxString *SearchReplaceEngine::GetText(int n,int field) {
 	if (field == 0) return &cur->Text;
 	else if (field == 1) return &cur->Style;
 	else if (field == 2) return &cur->Actor;
-	else throw _T("Invalid field");
+	else throw wxString(_T("Invalid field"));
 }
 
 
