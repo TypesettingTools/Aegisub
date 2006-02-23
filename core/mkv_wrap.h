@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2006, Rodrigo Braz Monteiro, Fredrik Mellbin
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,67 +33,62 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-// The FrameRate class stores all times internally as ints in ms precision
-// V1 timecodes are partially expanded to v2 up until their last override line
-// V2 timecodes are kept as is and if n frames beyond the end is requested a
-// time is calculated by last_time+n/average_fps
 
 #pragma once
 
 
 ///////////
 // Headers
-#include <list>
-#include <vector>
 #include <wx/wxprec.h>
+#include <stdio.h>
+#include <vector>
+#include "MatroskaParser.h"
+#include "vfr.h"
 
 
-///////////////////////
-// Framerate type enum
-enum ASS_FrameRateType {
-	NONE,
-	CFR,
-	VFR
+/////////////////////////////
+// STD IO for MatroskaParser
+class MkvStdIO : public InputStream {
+public:
+	MkvStdIO(wxString filename);
+	FILE *fp;
+	int error;
 };
 
-///////////////////
-// Framerate class
-class FrameRate {
+
+//////////////////
+// MkvFrame class
+class MkvFrame {
+public:
+	double time;
+	bool isKey;
+
+	MkvFrame(bool keyframe,double timecode) {
+		isKey = keyframe;
+		time = timecode;
+	}
+};
+
+bool operator < (MkvFrame &t1, MkvFrame &t2);
+
+
+//////////////////////////
+// Matroska wrapper class
+class MatroskaWrapper {
 private:
-	double last_time;
-	int last_frame;
-	std::vector<int> Frame;
-	double assumefps;
-	double AverageFrameRate;
+	MatroskaFile *file;
+	MkvStdIO *input;
+	wxArrayInt keyFrames;
+	std::vector<double> timecodes;
 
-	void AddFrame(int ms);
-	void Clear();
-
-	void CalcAverage();
+	void Parse();
 
 public:
-	FrameRate();
-	~FrameRate();
+	MatroskaWrapper();
+	~MatroskaWrapper();
 
-	wxString vfrFile;
-	bool loaded;
-	ASS_FrameRateType FrameRateType;
-
-	void SetCFR(double fps,bool ifunset=false);
-	void SetVFR(std::vector<int> times);
-
-	void Load(wxString file);
-	void Unload();
-	int GetFrameAtTime(int ms);
-	int GetTimeAtFrame(int frame);
-	int CorrectFrameAtTime(int ms,bool start);
-	int CorrectTimeAtFrame(int frame,bool start);
-
-	double GetAverage() { return AverageFrameRate; };
+	void Open(wxString filename);
+	void Close();
+	void SetToTimecodes(FrameRate &target);
+	wxArrayInt GetKeyFrames();
 };
-
-
-///////////
-// Globals
-extern FrameRate VFR_Output;
-extern FrameRate VFR_Input;

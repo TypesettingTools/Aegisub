@@ -43,6 +43,7 @@
 #include "ass_dialogue.h"
 #include "subs_grid.h"
 #include "vfw_wrap.h"
+#include "mkv_wrap.h"
 #include "options.h"
 #include "subs_edit_box.h"
 #include "audio_display.h"
@@ -159,10 +160,25 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			provider = new VideoProvider(filename,GetTempWorkFile(),zoomValue,usedDirectshow,true);
 
 			// Set keyframes
-			if (filename.Right(4).Lower() == _T(".avi"))
-				KeyFrames = VFWWrapper::GetKeyFrames(filename);
-			else
-				KeyFrames.Clear();
+			wxString ext = filename.Right(4).Lower();
+			if (ext == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
+			else if (ext == _T(".mkv")) {
+				// Parse mkv
+				MatroskaWrapper mkvwrap;
+				mkvwrap.Open(filename);
+
+				// Get keyframes
+				KeyFrames = mkvwrap.GetKeyFrames();
+
+				// Ask to override timecodes
+				int override = wxYES;
+				if (VFR_Output.FrameRateType == VFR) override = wxMessageBox(_T("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_T("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
+				if (override == wxYES) mkvwrap.SetToTimecodes(VFR_Output);
+
+				// Close mkv
+				mkvwrap.Close();
+			}
+			else KeyFrames.Clear();
 
 			UpdateSize();
 

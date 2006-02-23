@@ -314,6 +314,24 @@ void FrameRate::SetCFR(double fps,bool ifunset) {
 	AverageFrameRate = fps;
 }
 
+
+///////////////
+// Sets to VFR
+void FrameRate::SetVFR(std::vector<int> newTimes) {
+	// Prepare
+	Unload();
+	loaded = true;
+	vfrFile = _T("");
+	FrameRateType = VFR;
+
+	// Set new VFR
+	AverageFrameRate = newTimes.back() / (newTimes.size()-1);
+	Frame = newTimes;
+	last_time = newTimes.back();
+	last_frame = newTimes.size()-1;
+}
+
+
 /////////////////////////////
 // Get correct frame at time
 // returns the adjusted time for end frames when start=false
