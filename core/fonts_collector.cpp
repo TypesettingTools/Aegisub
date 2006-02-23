@@ -211,7 +211,7 @@ wxArrayString FontsCollectorThread::GetFontFiles (wxString face) {
 			n++;
 		}
 	}
-	if (n==0) throw wxString(_T("Font not found: %s"), face);
+	if (n==0) throw wxString(_T("Font not found"));
 
 	return files;
 }
@@ -229,7 +229,7 @@ void FontsCollectorThread::CollectFontData () {
 		reg = new wxRegKey(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Fonts"));
 		if (!reg->Exists()) {
 			delete reg;
-			throw _("Could not locate fonts directory");
+			throw _T("Could not locate fonts directory");
 		}
 	}
 	wxString curName;
@@ -345,7 +345,18 @@ void FontsCollectorThread::Collect() {
 		try {
 			work = GetFontFiles(fonts[i]);
 			for (size_t j=0;j<work.GetCount();j++) {
-				wxString dstFile = destination + work[j];
+				// Get path to font file
+				wxString srcFile,dstFile;
+				wxFileName srcFileName(work[j]);
+				if (srcFileName.FileExists() && srcFileName.IsAbsolute()) {
+					srcFile = work[j];
+					dstFile = destination + srcFileName.GetFullName();
+				}
+				else {
+					srcFile = source + work[j];
+					dstFile = destination + work[j];
+				}
+
 				if (copied.Index(work[j]) == wxNOT_FOUND) {
 					copied.Add(work[j]);
 
@@ -360,12 +371,6 @@ void FontsCollectorThread::Collect() {
 
 					// Copy
 					else {
-						// Get path to font file
-						wxString srcFile;
-						wxFileName srcFileName(work[j]);
-						if (srcFileName.FileExists() && srcFileName.IsAbsolute()) srcFile = work[j];
-						else srcFile = source + work[j];
-
 						// Copy font
 						bool success = Copy(srcFile,dstFile);
 
@@ -377,7 +382,7 @@ void FontsCollectorThread::Collect() {
 						}
 						else {
 							LogBox->SetDefaultStyle(wxTextAttr(wxColour(220,0,0)));
-							LogBox->AppendText(wxString(_("Failed copying \"")) + work[j] + _T("\".\n"));
+							LogBox->AppendText(wxString(_("Failed copying \"")) + srcFile + _T("\".\n"));
 						}
 						wxSafeYield();
 						wxMutexGuiLeave();
