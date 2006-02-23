@@ -37,6 +37,8 @@
 ////////////
 // Includes
 #include "avisynth_wrap.h"
+
+#ifdef __WINDOWS__
 #include "options.h"
 
 ///////////////////////////////
@@ -86,3 +88,5 @@ AviSynthWrapper::~AviSynthWrapper() {
 		FreeLibrary(hLib);
 	}
 }
+
+#endif

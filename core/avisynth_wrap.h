@@ -40,9 +40,12 @@
 
 ///////////
 // Headers
-#include <windows.h>
 #include <wx/wxprec.h>
+
+#ifdef __WINDOWS__
+#include <windows.h>
 #include "avisynth.h"
+
 
 //////////////////////////////////
 // Typedef to make my life easier
@@ -64,4 +67,5 @@ public:
 	~AviSynthWrapper();
 };
 
+#endif
 #endif

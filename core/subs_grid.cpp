@@ -1056,7 +1056,7 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 //////////////////
 // Commit changes
 // --------------
-// This will save the work .ass and make avisynth refresh it
+// This will save the work .ass and refresh it
 void SubtitlesGrid::CommitChanges(bool force) {
 	if (video->loaded || force) {
 		// Check if it's playing

@@ -893,10 +893,12 @@ void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 		wxString err(error);
 		wxMessageBox(err, _T("Error opening audio file"), wxOK | wxICON_ERROR, this);
 	}
+	#ifdef __WINDOWS__ 
 	catch (AvisynthError err) {
 		wxMessageBox (wxString(_T("AviSynth error: ")) + wxString(err.msg,wxConvUTF8), _T("Error loading audio"), wxOK | wxICON_ERROR);
 		return;
 	}
+	#endif
 	catch (...) {
 		wxMessageBox(_T("Unknown error"), _T("Error opening audio file"), wxOK | wxICON_ERROR, this);
 	}
