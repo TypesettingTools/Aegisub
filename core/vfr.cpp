@@ -59,14 +59,11 @@ void FrameRate::AddFrame(int ms) {
 //////////////////
 // V2 Get Average
 void FrameRate::CalcAverage() {
-	double last = 0.0;
-	int frames = 0;
-	for (std::vector<int>::iterator cur=Frame.begin();cur!=Frame.end();cur++) {
-		last = *cur;
-		frames++;
-	}
 
-	AverageFrameRate = double(frames)*1000.0/last;
+	if (Frame.size() <= 0)
+		throw _("No timecodes to average");
+
+	AverageFrameRate = double(Frame.back()) / Frame.size();
 }
 
 
@@ -246,13 +243,21 @@ void FrameRate::Load(wxString filename) {
 
 			wxString tmp = curLine.BeforeFirst(_T('.'));
 			tmp.ToLong(&cftime);
-			wxASSERT(lftime < cftime);
+
+			if (lftime < cftime) {
+				file.close();
+				Unload();
+				throw _T("Out of order timecodes found");
+			}
+
 			AddFrame(cftime);
 			lftime = cftime;
 		}
 
 		last_time = cftime;
 		last_frame = Frame.size();
+
+		CalcAverage();
 
 	}
 
@@ -284,7 +289,6 @@ void FrameRate::Load(wxString filename) {
 	loaded = true;
 	vfrFile = filename;
 	FrameRateType = VFR;
-	CalcAverage();
 }
 
 
@@ -309,7 +313,6 @@ void FrameRate::SetCFR(double fps,bool ifunset) {
 
 	Unload();
 	loaded = true;
-	vfrFile = _T("");
 	FrameRateType = CFR;
 	AverageFrameRate = fps;
 }
@@ -320,15 +323,15 @@ void FrameRate::SetCFR(double fps,bool ifunset) {
 void FrameRate::SetVFR(std::vector<int> newTimes) {
 	// Prepare
 	Unload();
+
 	loaded = true;
-	vfrFile = _T("");
 	FrameRateType = VFR;
 
-	// Set new VFR
-	AverageFrameRate = newTimes.back() / (newTimes.size()-1);
+	// Set new VFR;
 	Frame = newTimes;
+	CalcAverage();
 	last_time = newTimes.back();
-	last_frame = newTimes.size()-1;
+	last_frame = newTimes.size();
 }
 
 
