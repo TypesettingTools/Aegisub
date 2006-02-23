@@ -43,21 +43,21 @@ class VideoProvider {
 public:
 	virtual ~VideoProvider() {}
 
-	virtual void RefreshSubtitles()=0;
-	virtual void SetDAR(double _dar)=0;
-	virtual void SetZoom(double _zoom)=0;
+	virtual void RefreshSubtitles()=0;		// Refresh subtitles display
 
-	virtual wxBitmap GetFrame(int n)=0;
-	virtual void GetFloatFrame(float* Buffer, int n)=0;
+	virtual wxBitmap GetFrame(int n)=0;						// Get frame as bitmap
+	virtual void GetFloatFrame(float* Buffer, int n)=0;		// Get frame as float (for FexTracker)
 
-	virtual int GetPosition()=0;
-	virtual int GetFrameCount()=0;
-	virtual double GetFPS()=0;
+	virtual int GetPosition()=0;			// Get the current frame being displayed
+	virtual int GetFrameCount()=0;			// Get total number of frames
+	virtual double GetFPS()=0;				// Get framerate in frames per second
 
-	virtual int GetWidth()=0;
-	virtual int GetHeight()=0;
-	virtual double GetZoom()=0;
+	virtual void SetDAR(double dar)=0;		// Set display aspect ratio (width/height)
+	virtual void SetZoom(double zoom)=0;	// Set zoom factor
+	virtual int GetWidth()=0;				// Returns the display width in pixels
+	virtual int GetHeight()=0;				// Returns the display height in pixels
+	virtual double GetZoom()=0;				// Returns the zoom factor
 
-	virtual int GetSourceWidth()=0;
-	virtual int GetSourceHeight()=0;
+	virtual int GetSourceWidth()=0;			// Returns the original source width in pixels
+	virtual int GetSourceHeight()=0;		// Returns the original source height in pixels
 };
