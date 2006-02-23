@@ -97,7 +97,7 @@ void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
 
 	// Get Video
 	bool usedDirectshow;
-	VideoProvider *movie = new VideoProvider(videoBox->videoDisplay->videoName, wxString(_T("")), 1.0,usedDirectshow,true);
+	VideoProvider *movie = new AvisynthVideoProvider(videoBox->videoDisplay->videoName, wxString(_T("")), 1.0,usedDirectshow,true);
 
 	// Create Tracker
 	if( curline->Tracker ) delete curline->Tracker;

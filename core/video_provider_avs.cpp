@@ -35,12 +35,12 @@
 
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
-#include "video_provider.h"
+#include "video_provider_avs.h"
 #include "options.h"
 #include "main.h"
 
 
-VideoProvider::VideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow, bool mpeg2dec3_priority) {
+AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow, bool mpeg2dec3_priority) {
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
 	ResizedVideo = NULL;
@@ -68,14 +68,14 @@ VideoProvider::VideoProvider(wxString _filename, wxString _subfilename, double _
 	vi = ResizedVideo->GetVideoInfo();
 }
 
-VideoProvider::~VideoProvider() {
+AvisynthVideoProvider::~AvisynthVideoProvider() {
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
 	ResizedVideo = NULL;
 	if( data ) delete data;
 }
 
-void VideoProvider::RefreshSubtitles() {
+void AvisynthVideoProvider::RefreshSubtitles() {
 	ResizedVideo = NULL;
 	SubtitledVideo = NULL;
 
@@ -84,7 +84,7 @@ void VideoProvider::RefreshSubtitles() {
 	GetFrame(last_fnum,true);
 }
 
-void VideoProvider::SetDAR(double _dar) {
+void AvisynthVideoProvider::SetDAR(double _dar) {
 	dar = _dar;
 	ResizedVideo = NULL;
 	
@@ -95,7 +95,7 @@ void VideoProvider::SetDAR(double _dar) {
 	GetFrame(last_fnum,true);
 }
 
-void VideoProvider::SetZoom(double _zoom) {
+void AvisynthVideoProvider::SetZoom(double _zoom) {
 	zoom = _zoom;
 	ResizedVideo = NULL;
 
@@ -106,7 +106,7 @@ void VideoProvider::SetZoom(double _zoom) {
 	GetFrame(last_fnum,true);
 }
 
-PClip VideoProvider::OpenVideo(wxString _filename, bool &usedDirectshow, bool mpeg2dec3_priority) {
+PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool &usedDirectshow, bool mpeg2dec3_priority) {
 	wxMutexLocker lock(AviSynthMutex);
 	AVSValue script;
 
@@ -161,7 +161,7 @@ PClip VideoProvider::OpenVideo(wxString _filename, bool &usedDirectshow, bool mp
 	return (env->Invoke("Cache", script)).AsClip();
 }
 
-PClip VideoProvider::ApplySubtitles(wxString _filename, PClip videosource) {
+PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosource) {
 	wxMutexLocker lock(AviSynthMutex);
 
 	// Insert subs
@@ -180,7 +180,7 @@ PClip VideoProvider::ApplySubtitles(wxString _filename, PClip videosource) {
 	return (env->Invoke("Cache", script)).AsClip();
 }
 
-PClip VideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip videosource) {
+PClip AvisynthVideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip videosource) {
 	wxMutexLocker lock(AviSynthMutex);
 
 	AVSValue script;
@@ -205,7 +205,7 @@ PClip VideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip videosource) 
 	return (env->Invoke("Cache",script)).AsClip();
 }
 
-wxBitmap VideoProvider::GetFrame(int n, bool force) {
+wxBitmap AvisynthVideoProvider::GetFrame(int n, bool force) {
 	if (n != last_fnum || force) {
 
 		wxMutexLocker lock(AviSynthMutex);
@@ -234,7 +234,7 @@ wxBitmap VideoProvider::GetFrame(int n, bool force) {
 	return wxBitmap(last_frame);
 }
 
-void VideoProvider::GetFloatFrame(float* Buffer, int n) {
+void AvisynthVideoProvider::GetFloatFrame(float* Buffer, int n) {
 	wxMutexLocker lock(AviSynthMutex);
 
 	PVideoFrame frame = ResizedVideo->GetFrame(n,env);
@@ -253,7 +253,7 @@ void VideoProvider::GetFloatFrame(float* Buffer, int n) {
 	}
 }
 
-void VideoProvider::LoadVSFilter() {
+void AvisynthVideoProvider::LoadVSFilter() {
 	// Loading an avisynth plugin multiple times does almost nothing
 
 	wxFileName vsfilterPath(AegisubApp::folderName + _T("vsfilter.dll"));

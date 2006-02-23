@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro, Fredrik Mellbin
+// Copyright (c) 2006, Fredrik Mellbin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,31 +33,71 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#ifndef VIDEO_PROVIDER_AVS_H
+#define VIDEO_PROVIDER_AVS_H
 
-#pragma once
+#include "avisynth_wrap.h"
+#include "video_provider.h"
 
+/*class GetFrameVPThread: public wxThread {
+private:
+	int getting_n;
+	int current_n;
 
-////////////////////////////
-// Video Provider interface
-class VideoProvider {
+	PClip video;
+
+	wxThread::ExitCode Entry();
 public:
-	virtual ~VideoProvider() {}
+	void GetFrame(int n);
+	GetFrameVPThread(PClip clip);
+};*/
 
-	virtual void RefreshSubtitles()=0;
-	virtual void SetDAR(double _dar)=0;
-	virtual void SetZoom(double _zoom)=0;
+class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
+private:
+	VideoInfo vi;
 
-	virtual wxBitmap GetFrame(int n)=0;
-	virtual void GetFloatFrame(float* Buffer, int n)=0;
+	wxString subfilename;
 
-	virtual int GetPosition()=0;
-	virtual int GetFrameCount()=0;
-	virtual double GetFPS()=0;
+	int last_fnum;
 
-	virtual int GetWidth()=0;
-	virtual int GetHeight()=0;
-	virtual double GetZoom()=0;
+	unsigned char* data;
+	wxBitmap last_frame;
 
-	virtual int GetSourceWidth()=0;
-	virtual int GetSourceHeight()=0;
+	double dar;
+	double zoom;
+
+	PClip RGB32Video;
+	PClip SubtitledVideo;
+	PClip ResizedVideo;
+
+	PClip OpenVideo(wxString _filename, bool &usedDirectshow, bool mpeg2dec3_priority = true);
+	PClip ApplySubtitles(wxString _filename, PClip videosource);
+	PClip ApplyDARZoom(double _zoom, double _dar, PClip videosource);
+	wxBitmap GetFrame(int n, bool force);
+	void LoadVSFilter();
+
+public:
+	AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow, bool mpeg2dec3_priority = true);
+	~AvisynthVideoProvider();
+
+	void RefreshSubtitles();
+	void SetDAR(double _dar);
+	void SetZoom(double _zoom);
+
+	wxBitmap GetFrame(int n) { return GetFrame(n,false); };
+	void GetFloatFrame(float* Buffer, int n);
+
+	// properties
+	int GetPosition() { return last_fnum; };
+	int GetFrameCount() { return vi.num_frames; };
+	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
+
+	int GetWidth() { return vi.width; };
+	int GetHeight() { return vi.height; };
+	double GetZoom() { return zoom; };
+
+	int GetSourceWidth() { return RGB32Video->GetVideoInfo().width; };
+	int GetSourceHeight() { return RGB32Video->GetVideoInfo().height; };
 };
+
+#endif

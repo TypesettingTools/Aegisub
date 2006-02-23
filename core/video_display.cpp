@@ -157,7 +157,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 
 			bool usedDirectshow;
 
-			provider = new VideoProvider(filename,GetTempWorkFile(),zoomValue,usedDirectshow,true);
+			provider = new AvisynthVideoProvider(filename,GetTempWorkFile(),zoomValue,usedDirectshow,true);
 
 			// Set keyframes
 			wxString ext = filename.Right(4).Lower();

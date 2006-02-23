@@ -43,7 +43,7 @@
 #include <wx/wxprec.h>
 #include <windows.h>
 #include <time.h>
-#include "video_provider.h"
+#include "video_provider_avs.h"
 
 
 //////////////
