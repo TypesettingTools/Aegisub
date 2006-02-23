@@ -1065,6 +1065,9 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		startcolor = style->shadow.GetWXColor();
 		isColor = true;
 	}
+	else if (tagname == _T("\\pos")) {
+		isPos = true;
+	}
 	bool hasEnd = isFlag;
 
 	// Find current value of style
