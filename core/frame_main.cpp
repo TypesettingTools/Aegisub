@@ -62,6 +62,7 @@
 #include "drop.h"
 #include "hotkeys.h"
 #include "utils.h"
+#include "text_file_reader.h"
 
 
 /////////////////////////
@@ -489,6 +490,16 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		if (isFile) {
 			wxFileName fileCheck(filename);
 			if (!fileCheck.FileExists()) throw _T("File does not exist.");
+
+			// Make sure that file isn't actually a timecode file
+			TextFileReader testSubs(filename);
+			if (testSubs.HasMoreLines()) {
+				wxString cur = testSubs.ReadLineFromFile();
+				if (cur.Left(10) == _T("# timecode")) {
+					LoadVFR(filename);
+					return;
+				}
+			}
 		}
 
 		// Proceed into loading

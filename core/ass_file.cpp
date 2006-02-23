@@ -303,6 +303,11 @@ void AssFile::LoadTXT (wxString _filename,wxString encoding) {
 		// Reads line
 		wxString value = file.ReadLineFromFile();
 
+		// Check if this isn't a timecodes file
+		if (value.Left(10) == _T("# timecode")) {
+			throw _T("File is a timecode file, cannot load as subtitles.");
+		}
+
 		// Read comment data
 		isComment = false;
 		if (comment != _T("") && value.Left(comment.Length()) == comment) {
