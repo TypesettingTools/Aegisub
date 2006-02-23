@@ -48,6 +48,7 @@ Please visit http://aegisub.net to download latest version
 - Now requires Avisynth 2.5.6a or later, added an option ("allow ancient avisynth") to override it to config.dat. (Myrsloik)
 - Added reading of keyframe and timecode data from Matroska files (which are still not recommended, due to their dependency on DirectShowSource). (AMZ)
 - Added forums and bugtracker to Help menu. (AMZ)
+- Fixed Fonts Collector behavior with font shortcuts. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

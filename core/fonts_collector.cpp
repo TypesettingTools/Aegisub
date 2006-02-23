@@ -360,8 +360,16 @@ void FontsCollectorThread::Collect() {
 
 					// Copy
 					else {
-						wxString srcFile = source + work[j];
+						// Get path to font file
+						wxString srcFile;
+						wxFileName srcFileName(work[j]);
+						if (srcFileName.FileExists() && srcFileName.IsAbsolute()) srcFile = work[j];
+						else srcFile = source + work[j];
+
+						// Copy font
 						bool success = Copy(srcFile,dstFile);
+
+						// Report
 						wxMutexGuiEnter();
 						if (success) {
 							LogBox->SetDefaultStyle(wxTextAttr(wxColour(0,180,0)));
