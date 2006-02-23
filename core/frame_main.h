@@ -131,6 +131,8 @@ private:
 	void OnAbout (wxCommandEvent &event);
 	void OnContents (wxCommandEvent &event);
 	void OnWebsite (wxCommandEvent &event);
+	void OnForums (wxCommandEvent &event);
+	void OnBugTracker (wxCommandEvent &event);
 	void OnIRCChannel (wxCommandEvent &event);
 
 	void OnOpenProject (wxCommandEvent &event);
@@ -312,6 +314,9 @@ enum {
 	Menu_Help_Contents,
 	Menu_Help_IRCChannel,
 	Menu_Help_Website,
+	Menu_Help_Forums,
+	Menu_Help_BugTracker,
+	Menu_Help_Check_Updates,
 	Menu_Help_About,
 
 	Menu_Subs_Snap_Start_To_Video,

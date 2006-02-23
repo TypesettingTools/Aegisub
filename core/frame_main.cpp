@@ -314,7 +314,10 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (helpMenu,Menu_Help_Contents, _("&Contents...\t") + Hotkeys.GetText(_T("Help")), _("Help topics"), wxBITMAP(contents_button));
 	helpMenu->AppendSeparator();
 	helpMenu->Append(Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"));
+	helpMenu->Append(Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"));
+	helpMenu->Append(Menu_Help_BugTracker, _("&Bug tracker..."), _("Visit Aegisub's bug tracker"));
 	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC channel..."), _("Visit Aegisub's official IRC channel"), wxBITMAP(irc_button));
+	helpMenu->AppendSeparator();
 	helpMenu->Append(Menu_Help_About, _("&About..."), _("About Aegisub"));
 	MenuBar->Append(helpMenu, _("&Help"));
 

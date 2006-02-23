@@ -174,6 +174,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 
 	EVT_MENU(Menu_Help_Contents, FrameMain::OnContents)
 	EVT_MENU(Menu_Help_Website, FrameMain::OnWebsite)
+	EVT_MENU(Menu_Help_Forums, FrameMain::OnForums)
+	EVT_MENU(Menu_Help_BugTracker, FrameMain::OnBugTracker)
 	EVT_MENU(Menu_Help_IRCChannel, FrameMain::OnIRCChannel)
 	EVT_MENU(Menu_Help_About, FrameMain::OnAbout)
 
@@ -394,7 +396,29 @@ void FrameMain::OnContents(wxCommandEvent& WXUNUSED(event)) {
 void FrameMain::OnWebsite(wxCommandEvent& WXUNUSED(event)) {
 	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
 	if (type) {
-		wxString command = type->GetOpenCommand(_T("http://aegisub.net/"));
+		wxString command = type->GetOpenCommand(_T("http://www.aegisub.net/"));
+		if (!command.empty()) wxExecute(command);
+	}
+}
+
+
+///////////////
+// Open forums
+void FrameMain::OnForums(wxCommandEvent& WXUNUSED(event)) {
+	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
+	if (type) {
+		wxString command = type->GetOpenCommand(_T("http://www.malakith.net/aegisub/"));
+		if (!command.empty()) wxExecute(command);
+	}
+}
+
+
+///////////////////
+// Open bugtracker
+void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
+	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
+	if (type) {
+		wxString command = type->GetOpenCommand(_T("http://www.malakith.net/aegibug/"));
 		if (!command.empty()) wxExecute(command);
 	}
 }

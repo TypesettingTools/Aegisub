@@ -216,23 +216,17 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 	if (n_found >= 1) {
 		// Copy
 		if (Hotkeys.IsPressed(_T("Copy"))) {
-			wxCommandEvent dummy;
-			OnCopyLines(dummy);
-			return;
+			CopyLines(GetSelection());
 		}
 
 		// Cut
 		if (Hotkeys.IsPressed(_T("Cut"))) {
-			wxCommandEvent dummy;
-			OnCutLines(dummy);
-			return;
+			CutLines(GetSelection());
 		}
 
 		// Paste
 		if (Hotkeys.IsPressed(_T("Paste"))) {
-			wxCommandEvent dummy;
-			OnPasteLines(dummy);
-			return;
+			PasteLines(GetFirstSelRow());
 		}
 
 		// Delete
@@ -774,6 +768,7 @@ void SubtitlesGrid::PasteLines(int n) {
 		if (inserted > 0) {
 			// Commit
 			UpdateMaps();
+			AdjustScrollbar();
 			ass->FlagAsModified();
 			CommitChanges();
 

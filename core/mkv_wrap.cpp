@@ -156,11 +156,9 @@ void MatroskaWrapper::Parse() {
 			int frameN = 0;
 			while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
 				// Read value
-				double curTime = double(startTime) / timecodeScale;
-				if (!(frameFlags & FRAME_GAP)) {
-					frames.push_back(MkvFrame((frameFlags & FRAME_KF) != 0,curTime));
-					frameN++;
-				}
+				double curTime = double(startTime) / 1000000.0;
+				frames.push_back(MkvFrame((frameFlags & FRAME_KF) != 0,curTime));
+				frameN++;
 
 				// Cancelled?
 				if (canceled) {
