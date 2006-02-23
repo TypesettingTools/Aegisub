@@ -38,6 +38,7 @@
 // Headers
 #include <algorithm>
 #include "mkv_wrap.h"
+#include "dialog_progress.h"
 
 
 ///////////
@@ -144,14 +145,35 @@ void MatroskaWrapper::Parse() {
 			// Mask other tracks away
 			mkv_SetTrackMask(file, ~(1 << track));
 
+			// Progress bar
+			int totalTime = double(segInfo->Duration) / timecodeScale;
+			volatile bool canceled = false;
+			DialogProgress *progress = new DialogProgress(NULL,_("Parsing Matroska"),&canceled,_("Reading keyframe and timecode data from Matroska file."),0,totalTime);
+			progress->Show();
+			progress->SetProgress(0,1);
+
 			// Read frames
 			int frameN = 0;
 			while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
+				// Read value
+				double curTime = double(startTime) / timecodeScale;
 				if (!(frameFlags & FRAME_GAP)) {
-					frames.push_back(MkvFrame((frameFlags & FRAME_KF) != 0,double(startTime) / timecodeScale));
+					frames.push_back(MkvFrame((frameFlags & FRAME_KF) != 0,curTime));
 					frameN++;
 				}
+
+				// Cancelled?
+				if (canceled) {
+					Close();
+					throw _T("Canceled");
+				}
+
+				// Update progress
+				progress->SetProgress(curTime,totalTime);
 			}
+
+			// Clean up progress
+			if (!canceled) progress->Destroy();
 
 			break;
 		}
