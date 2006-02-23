@@ -50,6 +50,7 @@ Please visit http://aegisub.net to download latest version
 - Added forums and bugtracker to Help menu. (AMZ)
 - Fixed Fonts Collector behavior with font shortcuts. (AMZ)
 - Better error reporting when loading Automation scripts (jfs)
+- Attempting to load a file which does not exist no longer unloads previous subtitles. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

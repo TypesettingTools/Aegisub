@@ -485,6 +485,13 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 	// Load
 	try {
+		// File exists?
+		if (isFile) {
+			wxFileName fileCheck(filename);
+			if (!fileCheck.FileExists()) throw _T("File does not exist.");
+		}
+
+		// Proceed into loading
 		SubsBox->Clear();
 		AssFile::StackReset();
 		if (isFile) {
@@ -501,6 +508,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	}
 	catch (AutomationError &err) {
 		wxMessageBox(wxString(_T("Automation exception: ")) + err.message, _T("Error"), wxOK | wxICON_ERROR, NULL);
+		return;
 	}
 	catch (...) {
 		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
