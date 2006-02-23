@@ -96,7 +96,7 @@ function karaskel.precalc_syllable_data(meta, styles, lines)
 				karaskel.split_furigana_data(line)
 				line.text_stripped = ""
 				for k = 0, line.karaoke.n-1 do
-					line.text_stripped = line.text_stripped .. line.karaoke[k].text
+					line.text_stripped = line.text_stripped .. line.karaoke[k].text_stripped
 				end
 			end
 			if karaskel.engage_positioning then
@@ -113,7 +113,8 @@ function karaskel.precalc_syllable_data(meta, styles, lines)
 			line.styleref = style
 			karaskel.trace("precalc_syllable_data:6:")
 			-- Process the syllables
-			local curx, curtime = 0, 0
+			local curtime = 0
+			local sumtext = ""
 			local inline_fx = karaskel.inline_fx_default
 			for j = 0, line.karaoke.n-1 do
 				karaskel.trace("precalc_syllable_data:7::"..j)
@@ -129,15 +130,17 @@ function karaskel.precalc_syllable_data(meta, styles, lines)
 				end
 				syl.inline_fx = inline_fx
 				-- Do positioning calculations, if applicable
+				sumtext = sumtext .. syl.text_stripped
 				if karaskel.engage_positioning then
+					-- Summed text dimensions
+					local sumwidth = aegisub.text_extents(style, sumtext)
 					-- Syllable dimensions
 					syl.width, syl.height, syl.ascent, syl.extlead = aegisub.text_extents(style, syl.text_stripped)
 					karaskel.trace("precalc_syllable_data:8::")
 					-- Syllable positioning
-					syl.left = curx
-					syl.center = math.floor(curx + syl.width/2)
-					syl.right = curx + syl.width
-					curx = syl.right
+					syl.right = sumwidth
+					syl.left = sumwidth - syl.width
+					syl.center = math.floor(sumwidth - syl.width/2)
 					if syl.furigana then
 						karaskel.calc_furigana_sizes(line, syl)
 					end
