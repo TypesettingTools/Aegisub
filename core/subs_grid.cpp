@@ -1084,7 +1084,7 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 	if (!VFR_Output.loaded) return;
 
 	// Get new time
-	int ms = VFR_Output.CorrectTimeAtFrame(video->frame_n,true);
+	int ms = VFR_Output.CorrectTimeAtFrame(video->frame_n,start);
 
 	// Update selection
 	wxArrayInt sel = GetSelection();
@@ -1116,7 +1116,7 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 	if (sel.Count() == 0) return;
 	AssDialogue *cur = GetDialogue(sel[0]);
 	if (cur) {
-		if (start) video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->Start.GetMS(),true));
+		if (start) video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->Start.GetMS(),start));
 		else video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->End.GetMS(),false));
 	}
 }
