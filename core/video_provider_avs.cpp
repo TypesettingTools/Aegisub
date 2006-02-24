@@ -40,7 +40,8 @@
 #include "main.h"
 
 
-AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow, bool mpeg2dec3_priority) {
+AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow) {
+	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
 	ResizedVideo = NULL;

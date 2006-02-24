@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Fredrik Mellbin
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,71 +33,39 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#ifndef VIDEO_PROVIDER_AVS_H
-#define VIDEO_PROVIDER_AVS_H
+#pragma once
 
-#include "avisynth_wrap.h"
+
+///////////
+// Headers
+#ifdef USE_LAVC
 #include "video_provider.h"
 
-/*class GetFrameVPThread: public wxThread {
-private:
-	int getting_n;
-	int current_n;
 
-	PClip video;
-
-	wxThread::ExitCode Entry();
+///////////////////////
+// LibAVCodec provider
+class LAVCVideoProvider : public VideoProvider {
 public:
-	void GetFrame(int n);
-	GetFrameVPThread(PClip clip);
-};*/
-
-class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
-private:
-	VideoInfo vi;
-
-	wxString subfilename;
-
-	int last_fnum;
-
-	unsigned char* data;
-	wxBitmap last_frame;
-
-	double dar;
-	double zoom;
-
-	PClip RGB32Video;
-	PClip SubtitledVideo;
-	PClip ResizedVideo;
-
-	PClip OpenVideo(wxString _filename, bool &usedDirectshow, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
-	PClip ApplyDARZoom(double _zoom, double _dar, PClip videosource);
-	wxBitmap GetFrame(int n, bool force);
-	void LoadVSFilter();
-
-public:
-	AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow);
-	~AvisynthVideoProvider();
+	LAVCVideoProvider(wxString filename, wxString subfilename, double zoom);
+	~LAVCVideoProvider();
 
 	void RefreshSubtitles();
-	void SetDAR(double _dar);
-	void SetZoom(double _zoom);
 
-	wxBitmap GetFrame(int n) { return GetFrame(n,false); };
+	wxBitmap GetFrame(int n);
 	void GetFloatFrame(float* Buffer, int n);
 
-	// properties
-	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return vi.num_frames; };
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
+	int GetPosition();
+	int GetFrameCount();
+	double GetFPS();
 
-	int GetWidth() { return vi.width; };
-	int GetHeight() { return vi.height; };
-	double GetZoom() { return zoom; };
+	void SetDAR(double dar);
+	void SetZoom(double zoom);
+	int GetWidth();
+	int GetHeight();
+	double GetZoom();
 
-	int GetSourceWidth() { return RGB32Video->GetVideoInfo().width; };
-	int GetSourceHeight() { return RGB32Video->GetVideoInfo().height; };
+	int GetSourceWidth();
+	int GetSourceHeight();
 };
 
 #endif

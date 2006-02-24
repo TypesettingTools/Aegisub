@@ -41,6 +41,7 @@
 #include "ass_file.h"
 #include "video_display.h"
 #include "validators.h"
+#include "video_provider.h"
 
 
 ///////////////

@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Fredrik Mellbin
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,71 +33,121 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#ifndef VIDEO_PROVIDER_AVS_H
-#define VIDEO_PROVIDER_AVS_H
 
-#include "avisynth_wrap.h"
-#include "video_provider.h"
+///////////
+// Headers
+#ifdef USE_LAVC
+#define EMULATE_INTTYPES
+#include <wx/wxprec.h>
+#include <lavc/avcodec.h>
+#include <lavc/avformat.h>
+#include "video_provider_lavc.h"
 
-/*class GetFrameVPThread: public wxThread {
-private:
-	int getting_n;
-	int current_n;
 
-	PClip video;
+///////////////
+// Constructor
+LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename, double zoom) {
+	// Register types
+	static bool avRegistered = false;
+	if (!avRegistered) {
+		av_register_all();
+		avRegistered = true;
+	}
+}
 
-	wxThread::ExitCode Entry();
-public:
-	void GetFrame(int n);
-	GetFrameVPThread(PClip clip);
-};*/
 
-class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
-private:
-	VideoInfo vi;
+//////////////
+// Destructor
+LAVCVideoProvider::~LAVCVideoProvider() {
+}
 
-	wxString subfilename;
 
-	int last_fnum;
+//
+//
+void LAVCVideoProvider::RefreshSubtitles() {
+}
 
-	unsigned char* data;
-	wxBitmap last_frame;
 
-	double dar;
-	double zoom;
+//
+//
+wxBitmap LAVCVideoProvider::GetFrame(int n) {
+	wxBitmap frame;
+	return frame;
+}
 
-	PClip RGB32Video;
-	PClip SubtitledVideo;
-	PClip ResizedVideo;
 
-	PClip OpenVideo(wxString _filename, bool &usedDirectshow, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
-	PClip ApplyDARZoom(double _zoom, double _dar, PClip videosource);
-	wxBitmap GetFrame(int n, bool force);
-	void LoadVSFilter();
+//
+//
+void LAVCVideoProvider::GetFloatFrame(float* Buffer, int n) {
+}
 
-public:
-	AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow);
-	~AvisynthVideoProvider();
 
-	void RefreshSubtitles();
-	void SetDAR(double _dar);
-	void SetZoom(double _zoom);
+//
+//
+int LAVCVideoProvider::GetPosition() {
+	return 0;
+}
 
-	wxBitmap GetFrame(int n) { return GetFrame(n,false); };
-	void GetFloatFrame(float* Buffer, int n);
 
-	// properties
-	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return vi.num_frames; };
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
+//
+//
+int LAVCVideoProvider::GetFrameCount() {
+	return 0;
+}
 
-	int GetWidth() { return vi.width; };
-	int GetHeight() { return vi.height; };
-	double GetZoom() { return zoom; };
 
-	int GetSourceWidth() { return RGB32Video->GetVideoInfo().width; };
-	int GetSourceHeight() { return RGB32Video->GetVideoInfo().height; };
-};
+//
+//
+double LAVCVideoProvider::GetFPS() {
+	return 1;
+}
+
+
+//
+//
+void LAVCVideoProvider::SetDAR(double dar) {
+}
+
+
+//
+//
+void LAVCVideoProvider::SetZoom(double zoom) {
+}
+
+
+//
+//
+int LAVCVideoProvider::GetWidth() {
+	return 640;
+}
+
+
+//
+//
+int LAVCVideoProvider::GetHeight() {
+	return 480;
+}
+
+
+//
+//
+double LAVCVideoProvider::GetZoom() {
+	return 1;
+}
+
+
+//
+//
+int LAVCVideoProvider::GetSourceWidth() {
+	return 640;
+}
+
+
+//
+//
+int LAVCVideoProvider::GetSourceHeight() {
+	return 480;
+}
+
 
 #endif

@@ -14,35 +14,14 @@
 #include <wx/rawbmp.h>
 #include "subs_grid.h"
 #include "frame_main.h"
+#include "video_provider_avs.h"
 #include "video_display.h"
-#include "video_slider.h"
-#include "video_zoom.h"
 #include "video_box.h"
 #include "ass_file.h"
-#include "dialog_style_manager.h"
-#include "dialog_translation.h"
-#include "dialog_jumpto.h"
-#include "dialog_shift_times.h"
-#include "dialog_search_replace.h"
+#include "ass_dialogue.h"
 #include "vfr.h"
 #include "subs_edit_box.h"
 #include "options.h"
-#include "dialog_properties.h"
-#include "main.h"
-#include "fonts_collector.h"
-#include "about.h"
-#include "automation_gui.h"
-#include "dialog_export.h"
-#include "audio_box.h"
-#include "aspell_wrap.h"
-#include "dialog_spellcheck.h"
-#include "dialog_selection.h"
-#include "dialog_styling_assistant.h"
-#include "dialog_resample.h"
-#include "audio_display.h"
-#include "toggle_bitmap.h"
-#include "dialog_hotkeys.h"
-#include "dialog_timing_processor.h"
 #include "FexTracker.h"
 #include "FexTrackingFeature.h"
 #include "FexMovement.h"
@@ -97,7 +76,7 @@ void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
 
 	// Get Video
 	bool usedDirectshow;
-	VideoProvider *movie = new AvisynthVideoProvider(videoBox->videoDisplay->videoName, wxString(_T("")), 1.0,usedDirectshow,true);
+	VideoProvider *movie = new AvisynthVideoProvider(videoBox->videoDisplay->videoName, wxString(_T("")), 1.0,usedDirectshow);
 
 	// Create Tracker
 	if( curline->Tracker ) delete curline->Tracker;

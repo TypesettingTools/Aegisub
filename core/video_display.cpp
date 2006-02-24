@@ -37,6 +37,8 @@
 ////////////
 // Includes
 #include "video_display.h"
+#include "video_provider_avs.h"
+#include "video_provider_lavc.h"
 #include "vfr.h"
 #include "ass_file.h"
 #include "ass_time.h"
@@ -155,9 +157,13 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 		try {
 			grid->CommitChanges(true);
 
-			bool usedDirectshow;
+			bool usedDirectshow = false;
 
-			provider = new AvisynthVideoProvider(filename,GetTempWorkFile(),zoomValue,usedDirectshow,true);
+			#ifndef USE_LAVC
+			provider = new AvisynthVideoProvider(filename,GetTempWorkFile(),zoomValue,usedDirectshow);
+			#else
+			provider = new LAVCVideoProvider(filename,GetTempWorkFile(),zoomValue);
+			#endif
 
 			// Set keyframes
 			wxString ext = filename.Right(4).Lower();

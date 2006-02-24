@@ -44,6 +44,7 @@
 #include "subs_grid.h"
 #include "validators.h"
 #include "video_display.h"
+#include "video_provider.h"
 
 
 ///////////////

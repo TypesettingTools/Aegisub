@@ -43,7 +43,9 @@
 #include <wx/tokenzr.h>
 #include "subs_grid.h"
 #include "frame_main.h"
+#include "avisynth_wrap.h"
 #include "video_display.h"
+#include "video_provider.h"
 #include "video_slider.h"
 #include "video_zoom.h"
 #include "ass_file.h"
