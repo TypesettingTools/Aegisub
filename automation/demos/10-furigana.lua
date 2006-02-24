@@ -40,3 +40,10 @@ function do_syllable(meta, styles, config, line, syl)
 	end
 	return result
 end
+
+-- Trick: The script includes itself on apply, meaning it's automatically reloaded
+function process_lines(meta, styles, lines, config)
+	include("10-furigana.lua")
+	-- Make sure to call the karaskel.process_lines function to do the work
+	return karaskel.process_lines(meta, styles, lines, config)
+end

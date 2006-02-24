@@ -73,6 +73,27 @@ end
 function karaskel.precalc_syllable_data(meta, styles, lines)
 	karaskel.trace("precalc_syllable_data")
 	aegisub.set_status("Preparing syllable-data")
+	
+	-- Fix missing resolution data
+	if meta.res_x == 0 and meta_res_y == 0 then
+		meta.res_x = 384
+		meta.res_y = 288
+	elseif meta.res_x == 0 then
+		-- This is braindead, but it's how TextSub does things...
+		if meta.res_x == 1024 then
+			meta.res_x = 1280
+		else
+			meta.res_x = meta.res_y / 3 * 4
+		end
+	elseif meta.res_y == 0 then
+		-- As if 1280x960 didn't exist
+		if meta.res_x == 1280 then
+			meta.res_y = 1024
+		else
+			meta.res_y = meta.res_x * 3 / 4
+		end
+	end
+	
 	for i = 0, lines.n-1 do
 		karaskel.trace("precalc_syllable_data:2:"..i)
 		aegisub.report_progress(karaskel.precalc_start_progress + i/lines.n*(karaskel.precalc_end_progress-karaskel.precalc_start_progress))
@@ -87,7 +108,7 @@ function karaskel.precalc_syllable_data(meta, styles, lines)
 			karaskel.trace("precalc_syllable_data:4:")
 			local style = styles[line.style]
 			if not style then
-				-- ok, so the named style does not exist... well there MUST be at least ONE style
+				-- ok, so the named style does not exist... well there MUST be at least ONE style (assume this)
 				-- pick the first one
 				style = styles[0]
 				karaskel.warning(string.format("You have a line using a style named \"%s\", but that style does not exist! Using the first defined style (\"%s\") instead.", line.style, style.name))
@@ -99,10 +120,12 @@ function karaskel.precalc_syllable_data(meta, styles, lines)
 					line.text_stripped = line.text_stripped .. line.karaoke[k].text_stripped
 				end
 			end
+			-- This should make things more predictable
+			line.text_stripped = trim(line.text_stripped)
 			if karaskel.engage_positioning then
 				-- Line dimensions
 				line.width, line.height, line.ascent, line.extlead = aegisub.text_extents(style, line.text_stripped)
-				karaskel.trace("precalc_syllable_data:5:")
+				karaskel.trace(string.format("precalc_syllable_data:5: text_stripped='%s', width=%d", line.text_stripped, line.width))
 				-- Line position
 				line.centerleft = math.floor((meta.res_x - line.width) / 2)
 				line.centerright = meta.res_x - line.centerleft
@@ -134,13 +157,18 @@ function karaskel.precalc_syllable_data(meta, styles, lines)
 				if karaskel.engage_positioning then
 					-- Summed text dimensions
 					local sumwidth = aegisub.text_extents(style, sumtext)
+					-- Strip some spaces
+					local tmp1, tmp2, prespc, syltxt, postspc = string.find(syl.text_stripped, "^(%s*)(.-)(%s*)$")
+					-- Pre/post space dimensions
+					local prespc_width = aegisub.text_extents(style, prespc)
+					local postspc_width = aegisub.text_extents(style, postspc)
 					-- Syllable dimensions
-					syl.width, syl.height, syl.ascent, syl.extlead = aegisub.text_extents(style, syl.text_stripped)
+					syl.width, syl.height, syl.ascent, syl.extlead = aegisub.text_extents(style, syltxt)
 					karaskel.trace("precalc_syllable_data:8::")
 					-- Syllable positioning
-					syl.right = sumwidth
-					syl.left = sumwidth - syl.width
-					syl.center = math.floor(sumwidth - syl.width/2)
+					syl.right = sumwidth - postspc_width
+					syl.left = sumwidth - syl.width + prespc_width
+					syl.center = math.floor(syl.left + (syl.right - syl.left) / 2)
 					if syl.furigana then
 						karaskel.calc_furigana_sizes(line, syl)
 					end
