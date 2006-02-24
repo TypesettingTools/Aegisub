@@ -1070,6 +1070,12 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	bool shiftDown = event.m_shiftDown;
 	bool ctrlDown = event.m_controlDown;
 
+	// Leaving event
+	if (event.Leaving()) {
+		event.Skip();
+		return;
+	}
+
 	// Is inside?
 	bool inside = false;
 	if (x >= 0 && y >= 0 && x < w && y < h) {
