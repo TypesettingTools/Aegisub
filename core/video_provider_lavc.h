@@ -56,13 +56,22 @@ private:
 	AVFrame *frame;
 	int vidStream;
 
+	double zoom;
+	double dar;
+	int display_w;
+	int display_h;
+
 	__int64 lastDecodeTime;
 	int frameNumber;
 	wxBitmap curFrame;
+	bool validFrame;
 
-	uint8_t *buffer;
-	int bufferSize;
+	uint8_t *buffer1;
+	uint8_t *buffer2;
+	int buffer1Size;
+	int buffer2Size;
 
+	void UpdateDisplaySize();
 	void GetNextFrame();
 	void LoadVideo(wxString filename);
 	void Close();
