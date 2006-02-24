@@ -40,6 +40,9 @@
 #include "main.h"
 
 
+#ifdef __WINDOWS__
+
+
 AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow) {
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
@@ -281,3 +284,6 @@ void AvisynthVideoProvider::LoadVSFilter() {
 			throw _T("Couldn't locate VSFilter");
 	}
 }
+
+
+#endif

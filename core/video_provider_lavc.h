@@ -36,6 +36,15 @@
 #pragma once
 
 
+///////////////////////////////////
+// Auto-enable LAVC on non-windows
+#ifndef __WINDOWS__
+#ifndef USE_LAVC
+#define USE_LAVC
+#endif
+#endif
+
+
 ///////////
 // Headers
 #ifdef USE_LAVC

@@ -60,4 +60,6 @@ public:
 
 	virtual int GetSourceWidth()=0;			// Returns the original source width in pixels
 	virtual int GetSourceHeight()=0;		// Returns the original source height in pixels
+
+	static VideoProvider *GetProvider(wxString video,wxString subtitles);
 };

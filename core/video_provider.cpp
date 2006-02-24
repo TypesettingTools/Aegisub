@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Fredrik Mellbin
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,76 +34,54 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
-#include <wx/wxprec.h>
+#include "video_provider_avs.h"
+#include "video_provider_lavc.h"
+#include "options.h"
 
-#ifdef __WINDOWS__
-#include "avisynth_wrap.h"
-#include "video_provider.h"
 
-/*class GetFrameVPThread: public wxThread {
-private:
-	int getting_n;
-	int current_n;
+////////////////
+// Get provider
+VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
+	// Check if avisynth is available
+	bool avisynthAvailable = false;
+	#ifdef __WINDOWS__
+	try {
+		// If avisynth.dll cannot be loaded, an exception will be thrown and avisynthAvailable will never be set to true
+		AviSynthWrapper avs;
+		avisynthAvailable = true;
+	}
+	catch (...) {}
+	#endif
 
-	PClip video;
+	// Initialize to null
+	VideoProvider *provider = NULL;
 
-	wxThread::ExitCode Entry();
-public:
-	void GetFrame(int n);
-	GetFrameVPThread(PClip clip);
-};*/
+	// See if it's OK to use LAVC
+	#ifdef USE_LAVC
+	if (Options.AsBool(_T("Use ffmpeg"))) {
+		try {
+			provider = new LAVCVideoProvider(video,subtitles,1.0);
+		}
+		catch (...) {
+			if (avisynthAvailable) {
+				wxMessageBox(_T("Failed loading FFmpeg decoder for video, falling back to Avisynth."),_T("FFmpeg error."));
+				provider = NULL;
+			}
 
-class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
-private:
-	VideoInfo vi;
+			// Out of options, rethrow
+			else throw;
+		}
+	}
+	#endif
 
-	wxString subfilename;
+	// Use avisynth provider
+	#ifdef __WINDOWS__
+	bool usedDirectshow = false;
+	if (!provider) provider = new AvisynthVideoProvider(video,subtitles,1.0,usedDirectshow);
+	#endif
 
-	int last_fnum;
-
-	unsigned char* data;
-	wxBitmap last_frame;
-
-	double dar;
-	double zoom;
-
-	PClip RGB32Video;
-	PClip SubtitledVideo;
-	PClip ResizedVideo;
-
-	PClip OpenVideo(wxString _filename, bool &usedDirectshow, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
-	PClip ApplyDARZoom(double _zoom, double _dar, PClip videosource);
-	wxBitmap GetFrame(int n, bool force);
-	void LoadVSFilter();
-
-public:
-	AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow);
-	~AvisynthVideoProvider();
-
-	void RefreshSubtitles();
-	void SetDAR(double _dar);
-	void SetZoom(double _zoom);
-
-	wxBitmap GetFrame(int n) { return GetFrame(n,false); };
-	void GetFloatFrame(float* Buffer, int n);
-
-	// properties
-	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return vi.num_frames; };
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
-
-	int GetWidth() { return vi.width; };
-	int GetHeight() { return vi.height; };
-	double GetZoom() { return zoom; };
-
-	int GetSourceWidth() { return RGB32Video->GetVideoInfo().width; };
-	int GetSourceHeight() { return RGB32Video->GetVideoInfo().height; };
-};
-
-#endif
+	// Return provider
+	return provider;
+}

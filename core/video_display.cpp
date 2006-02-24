@@ -37,8 +37,7 @@
 ////////////
 // Includes
 #include "video_display.h"
-#include "video_provider_avs.h"
-#include "video_provider_lavc.h"
+#include "video_provider.h"
 #include "vfr.h"
 #include "ass_file.h"
 #include "ass_time.h"
@@ -140,6 +139,7 @@ void  VideoDisplay::UpdateSize() {
 ///////////////////////
 // Sets video filename
 void VideoDisplay::SetVideo(const wxString &filename) {
+	// Unload video
 	if (filename.IsEmpty()) {
 		delete provider;
 		provider = NULL;
@@ -151,20 +151,19 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 		frame_n = 0;
 
 		Reset();
-	} else {
+	}
+	
+	// Load video
+	else {
 		SetVideo(_T(""));
 
 		try {
 			grid->CommitChanges(true);
 
+			// Choose a provider
 			bool usedDirectshow = false;
-
-			#ifndef USE_LAVC
-			provider = new AvisynthVideoProvider(filename,GetTempWorkFile(),zoomValue,usedDirectshow);
-			#else
-			provider = new LAVCVideoProvider(filename,GetTempWorkFile(),zoomValue);
-			#endif
-
+			provider = VideoProvider::GetProvider(filename,GetTempWorkFile());
+			
 			// Set keyframes
 			wxString ext = filename.Right(4).Lower();
 			if (ext == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
