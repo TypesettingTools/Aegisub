@@ -53,10 +53,16 @@ private:
 	AVCodecContext *codecContext;
 	AVStream *stream;
 	AVCodec *codec;
+	AVFrame *frame;
 	int vidStream;
 
+	uint8_t *buffer;
+	int bufferSize;
+
+	void GetNextFrame();
 	void LoadVideo(wxString filename);
 	void Close();
+	wxBitmap AVFrameToWX(AVFrame *frame);
 
 public:
 	LAVCVideoProvider(wxString filename, wxString subfilename, double zoom);

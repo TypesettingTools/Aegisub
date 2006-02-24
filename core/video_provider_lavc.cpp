@@ -49,6 +49,9 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename, do
 	formatContext = NULL;
 	codec = NULL;
 	stream = NULL;
+	frame = NULL;
+	buffer = NULL;
+	bufferSize = 0;
 	vidStream = -1;
 
 	// Register types
@@ -113,6 +116,9 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 		// Open codec
 		result = avcodec_open(codecContext,codec);
 		if (result < 0) throw _T("Failed to open video decoder");
+
+		// Allocate frame
+		frame = avcodec_alloc_frame();
 	}
 
 	// Catch errors
@@ -126,14 +132,116 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 ///////////////
 // Close video
 void LAVCVideoProvider::Close() {
+	// Clean buffer
+	if (buffer) delete buffer;
+	buffer = NULL;
+	bufferSize = 0;
+
+	// Clean frame
+	if (frame) av_free(frame);
+	frame = NULL;
+	
 	// Close codec context
-	if (codec) avcodec_close(codecContext);
+	if (codec && codecContext) avcodec_close(codecContext);
 	codecContext = NULL;
 	codec = NULL;
 
 	// Close format context
 	if (formatContext) av_close_input_file(formatContext);
 	formatContext = NULL;
+}
+
+
+//////////////////
+// Get next frame
+void LAVCVideoProvider::GetNextFrame() {
+	static AVPacket packet;
+	static bool firstTime = true;
+	static int bytesRemaining = 0;
+	static uint8_t *rawdata;
+	int decoded;
+	int frameFinished;
+
+	// First call
+	if (firstTime) {
+		firstTime = false;
+		packet.data = NULL;
+	}
+
+	// Start processing packets
+	bool run = true;
+	while (run) {
+		// Current packet has more bytes
+		while (bytesRemaining > 0) {
+			// Decode
+			decoded = avcodec_decode_video(codecContext,frame,&frameFinished,rawdata,bytesRemaining);
+
+			// Error?
+			if (decoded < 0) throw _T("Error reading frame");
+
+			// Update counts
+			bytesRemaining -= decoded;
+			rawdata += decoded;
+
+			// Finished?
+			if (frameFinished) return;
+		}
+
+		// Get a packet
+		do {
+			// Free packet
+			if (packet.data != NULL) av_free_packet(&packet);
+			
+			// Get new
+			int result = av_read_packet(formatContext,&packet);
+			if (result < 0) {
+				run = false;
+				break;
+			}
+		} while (packet.stream_index != vidStream);
+
+		// Get packet data
+		if (run) {
+			bytesRemaining = packet.size;
+			rawdata = packet.data;
+		}
+	}
+
+	// End of last pack
+	decoded = avcodec_decode_video(codecContext,frame,&frameFinished,rawdata,bytesRemaining);
+	if (packet.data != NULL) av_free_packet(&packet);
+
+	// Frame finished?
+	if (!frameFinished) throw _T("Unable to finish decoding frame");
+}
+
+
+///////////////////////////////
+// Convert AVFrame to wxBitmap
+wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source) {
+	// Get sizes
+	int w = codecContext->width;
+	int h = codecContext->height;
+	PixelFormat format = PIX_FMT_RGBA32;
+	unsigned int size = avpicture_get_size(format,w,h);
+
+	// Prepare buffer
+	if (!buffer || bufferSize != size) {
+		if (buffer) delete buffer;
+		buffer = new uint8_t[size];
+		bufferSize = size;
+	}
+
+	// Allocate RGB32 buffer
+	AVFrame *frameRGB = avcodec_alloc_frame();
+	avpicture_fill((AVPicture*) frameRGB, buffer, format, w, h);
+
+	// Convert to RGB32
+	img_convert((AVPicture*) frameRGB, format, (AVPicture*) source, codecContext->pix_fmt, w, h);
+
+	// Convert to wxBitmap
+	wxBitmap bmp((const char*) frameRGB->data[0],w,h,32);
+	return bmp;
 }
 
 
@@ -146,8 +254,14 @@ void LAVCVideoProvider::RefreshSubtitles() {
 /////////////
 // Get frame
 wxBitmap LAVCVideoProvider::GetFrame(int n) {
-	wxBitmap frame(GetWidth(),GetHeight());
-	return frame;
+	// Get frame
+	GetNextFrame();
+
+	// Bitmap
+	wxBitmap bmp = AVFrameToWX(frame);
+
+	// Return
+	return bmp;
 }
 
 
