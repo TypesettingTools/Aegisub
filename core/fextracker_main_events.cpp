@@ -133,10 +133,6 @@ void FrameMain::OnVideoTrackMovement(wxCommandEvent &event) {
 	if( curline->Movement ) DeleteMovement( curline->Movement );
 	curline->Movement = curline->Tracker->GetMovement();
 
-	// Remove Tracker
-	delete curline->Tracker;
-	curline->Tracker = 0;
-
 	videoBox->videoDisplay->RefreshVideo();
 }
 
@@ -185,6 +181,10 @@ void FrameMain::OnVideoTrackSplitLine(wxCommandEvent &event) {
 	// Remove Movement
 	DeleteMovement( curline->Movement );
 	curline->Movement = 0;
+
+	// Remove Tracker
+	delete curline->Tracker;
+	curline->Tracker = 0;
 
 	// Remove this line
 	SubsBox->DeleteLines(SubsBox->GetRangeArray(EditBox->linen, EditBox->linen));

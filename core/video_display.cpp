@@ -293,9 +293,9 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		) 
 		{
 			localframe = frame_n - StartFrame;
-			if( curline->Tracker && localframe < curline->Tracker->GetFrame() )
+			if( TrackerEdit!=0 && curline->Tracker && localframe < curline->Tracker->GetFrame() )
 				curline->Tracker->InfluenceFeatures( localframe, float(x)/provider->GetZoom(), float(y)/provider->GetZoom(), TrackerEdit );
-			else if( curline->Movement && localframe < curline->Movement->Frames.size() )
+			if( MovementEdit!=0 && curline->Movement && localframe < curline->Movement->Frames.size() )
 			{// no /provider->GetZoom() to improve precision
 				if( MovementEdit==1 )
 				{
@@ -494,6 +494,7 @@ double VideoDisplay::GetARFromType(int type) {
 	if (type == 0) return (double)provider->GetSourceWidth()/(double)provider->GetSourceHeight();
 	if (type == 1) return 4.0/3.0;
 	if (type == 2) return 16.0/9.0;
+	return 1;  //error
 }
 
 
@@ -672,7 +673,7 @@ void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 			dc.DrawLine( pt.x, pt.y+1, pt.x, pt.y+3 );
 		}
 	}
-	else if( curline->Movement )
+	if( curline->Movement )
 	{
 		if( curline->Movement->Frames.size() <= localframe ) return;
 
