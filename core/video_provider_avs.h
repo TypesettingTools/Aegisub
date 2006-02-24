@@ -83,7 +83,7 @@ private:
 	void LoadVSFilter();
 
 public:
-	AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow);
+	AvisynthVideoProvider(wxString _filename, wxString _subfilename, bool &usedDirectshow);
 	~AvisynthVideoProvider();
 
 	void RefreshSubtitles();

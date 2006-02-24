@@ -87,7 +87,7 @@ private:
 	wxBitmap AVFrameToWX(AVFrame *frame);
 
 public:
-	LAVCVideoProvider(wxString filename, wxString subfilename, double zoom);
+	LAVCVideoProvider(wxString filename, wxString subfilename);
 	~LAVCVideoProvider();
 
 	void RefreshSubtitles();

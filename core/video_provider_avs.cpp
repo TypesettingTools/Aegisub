@@ -43,7 +43,7 @@
 #ifdef __WINDOWS__
 
 
-AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _zoom, bool &usedDirectshow) {
+AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, bool &usedDirectshow) {
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
@@ -53,7 +53,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfi
 	last_fnum = -1;
 
 	subfilename = _subfilename;
-	zoom = _zoom;
+	zoom = 1.0;
 
 	LoadVSFilter();
 

@@ -131,6 +131,7 @@ public:
 	void RefreshVideo();
 	void DrawText( wxPoint Pos, wxString Text );
 	void UpdatePositionDisplay();
+	double GetARFromType(int type);
 	void SetAspectRatio(int type);
 	void SetZoom(double value);
 	int GetAspectRatio() { return arType; }

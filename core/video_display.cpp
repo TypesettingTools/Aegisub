@@ -163,6 +163,8 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			// Choose a provider
 			bool usedDirectshow = false;
 			provider = VideoProvider::GetProvider(filename,GetTempWorkFile());
+			provider->SetZoom(zoomValue);
+			provider->SetDAR(GetARFromType(arType));
 			
 			// Set keyframes
 			wxString ext = filename.Right(4).Lower();
@@ -484,17 +486,20 @@ void VideoDisplay::SetZoomPos(int value) {
 }
 
 
-///////////////////
-// Sets zoom level
+//////////////////////////
+// Calculate aspect ratio
+double VideoDisplay::GetARFromType(int type) {
+	if (type == 0) return (double)provider->GetSourceWidth()/(double)provider->GetSourceHeight();
+	if (type == 1) return 4.0/3.0;
+	if (type == 2) return 16.0/9.0;
+}
+
+
+/////////////////////
+// Sets aspect ratio
 void VideoDisplay::SetAspectRatio(int value) {
 	if (provider) {
-		if (value == 0)
-			provider->SetDAR((float)provider->GetSourceWidth()/(float)provider->GetSourceHeight());
-		else if (value == 1)
-			provider->SetDAR(4.0/3.0);
-		else if (value == 2)
-			provider->SetDAR(16.0/9.0);
-
+		provider->SetDAR(GetARFromType(value));
 		arType = value;
 		UpdateSize();
 		RefreshVideo();

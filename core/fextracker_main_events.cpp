@@ -14,7 +14,7 @@
 #include <wx/rawbmp.h>
 #include "subs_grid.h"
 #include "frame_main.h"
-#include "video_provider_avs.h"
+#include "video_provider.h"
 #include "video_display.h"
 #include "video_box.h"
 #include "ass_file.h"
@@ -75,8 +75,7 @@ void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
 	if( !config.FeatureNumber ) return;
 
 	// Get Video
-	bool usedDirectshow;
-	VideoProvider *movie = new AvisynthVideoProvider(videoBox->videoDisplay->videoName, wxString(_T("")), 1.0,usedDirectshow);
+	VideoProvider *movie = VideoProvider::GetProvider(videoBox->videoDisplay->videoName, wxString(_T("")));
 
 	// Create Tracker
 	if( curline->Tracker ) delete curline->Tracker;

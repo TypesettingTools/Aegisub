@@ -62,9 +62,13 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	#ifdef USE_LAVC
 	if (Options.AsBool(_T("Use ffmpeg"))) {
 		try {
-			provider = new LAVCVideoProvider(video,subtitles,1.0);
+			provider = new LAVCVideoProvider(video,subtitles);
 		}
 		catch (...) {
+			// Delete old provider
+			delete provider;
+
+			// Try to fallback to avisynth
 			if (avisynthAvailable) {
 				wxMessageBox(_T("Failed loading FFmpeg decoder for video, falling back to Avisynth."),_T("FFmpeg error."));
 				provider = NULL;
@@ -79,7 +83,15 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	// Use avisynth provider
 	#ifdef __WINDOWS__
 	bool usedDirectshow = false;
-	if (!provider) provider = new AvisynthVideoProvider(video,subtitles,1.0,usedDirectshow);
+	if (!provider) {
+		try {
+			provider = new AvisynthVideoProvider(video,subtitles,usedDirectshow);
+		}
+		catch (...) {
+			delete provider;
+			throw;
+		}
+	}
 	#endif
 
 	// Return provider

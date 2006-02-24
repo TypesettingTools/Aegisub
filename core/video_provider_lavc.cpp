@@ -45,7 +45,7 @@
 
 ///////////////
 // Constructor
-LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename, double _zoom) {
+LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
 	// Init variables
 	codecContext = NULL;
 	formatContext = NULL;
@@ -57,7 +57,7 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename, do
 	buffer1Size = 0;
 	buffer2Size = 0;
 	vidStream = -1;
-	zoom = _zoom;
+	zoom = 1.0;
 	validFrame = false;
 
 	// Register types
