@@ -317,7 +317,10 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 
 				// If it is, is the previous smaller?
 				// If so, this is the frame we're looking for
-				if (largerEqual && (cur == 0 || Frame[cur-1] < ms))	return cur;
+				if (largerEqual && (cur == 0 || Frame[cur-1] < ms))	{
+					if (useceil) return cur;
+					return cur-1;
+				}
 				
 				// Not found, continue search
 				if (largerEqual) end = cur-1;
@@ -388,8 +391,9 @@ int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) {
 			finalTime = (PTimeAtFrame(frame-1) + PTimeAtFrame(frame))/2;
 		}
 		else {
-			if (FrameRateType == VFR) finalTime = PTimeAtFrame(frame);
-			else finalTime = (PTimeAtFrame(frame) + PTimeAtFrame(frame+1))/2;
+			//if (FrameRateType == VFR) finalTime = PTimeAtFrame(frame);
+			//else finalTime = (PTimeAtFrame(frame) + PTimeAtFrame(frame+1))/2;
+			finalTime = (PTimeAtFrame(frame) + PTimeAtFrame(frame+1))/2;
 		}
 	}
 
