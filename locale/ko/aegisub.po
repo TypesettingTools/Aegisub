@@ -1,0 +1,2547 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Aegisub\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-01-14 03:51-0200\n"
+"PO-Revision-Date: 2006-02-23 22:40-0300\n"
+"Last-Translator: Rodrigo Braz Monteiro <zeratul@cellosoft.com>\n"
+"Language-Team: KAA <oblisk@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Korean\n"
+"X-Poedit-Country: KOREA, REPUBLIC OF\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: about.cpp:48
+#: frame_main.cpp:305
+msgid "About Aegisub"
+msgstr "대하여"
+
+#: about.cpp:66
+msgid ""
+" by ArchMage ZeratuL.\n"
+"\n"
+"Copyright (c) 2005 - Rodrigo Braz Monteiro. All rights reserved.\n"
+"Automation module and is Copyright (c) 2005 Niels Martin Hansen (aka jfs).\n"
+"All rights reserved.\n"
+"Coding by ArchMageZeratuL, jfs, Myrsloik and nmap.\n"
+"Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n"
+"Forum hosting by Malakith.\n"
+"See the help file for full credits."
+msgstr ""
+"ArchMage ZeratuL씀.\n"
+"\n"
+"저작권 2005 - Rodrigo Braz Monteiro 판권 소유.\n"
+"자동모두얼 Niels Martin Hansen (aka jfs)씀. 판권 소유.\n"
+"판권 소유.\n"
+"작가 by ArchMageZeratuL, jfs, Myrsloik & nmap.\n"
+"메뉴얼 by  ArchMage ZeratuL, jfs, movax, Kobi, TheFluff & Jcubed.\n"
+"게시판 호스팅 by Malakith.\n"
+"전체 제작진는 도움 파일에 있슴니다."
+
+#: audio_box.cpp:64
+msgid "Seek bar"
+msgstr "탐색"
+
+#: audio_box.cpp:78
+msgid "Horizontal zoom"
+msgstr "수평 크기"
+
+#: audio_box.cpp:80
+msgid "Vertical zoom"
+msgstr "수직 크기"
+
+#: audio_box.cpp:98
+msgid "Previous line/syllable ("
+msgstr "이전 줄/음절 ("
+
+#: audio_box.cpp:101
+msgid "Next line/syllable ("
+msgstr "다음 줄/음절 ("
+
+#: audio_box.cpp:104
+msgid "Play selection ("
+msgstr "선택 재생 ("
+
+#: audio_box.cpp:107
+msgid "Play current line ("
+msgstr "현재줄 재생 ("
+
+#: audio_box.cpp:110
+msgid "Stop"
+msgstr "정지"
+
+#: audio_box.cpp:114
+msgid "Play 500 ms before selection ("
+msgstr "선택 500 ms 전 재생"
+
+#: audio_box.cpp:117
+msgid "Play 500 ms after selection ("
+msgstr "선택 500 ms 후에 재생"
+
+#: audio_box.cpp:120
+msgid "Play first 500ms of selection ("
+msgstr "시작에서 500 ms 까지 재생"
+
+#: audio_box.cpp:123
+msgid "Play last 500ms of selection ("
+msgstr "마지막 500 ms  재생"
+
+#: audio_box.cpp:126
+msgid "Play from selection start to end of file"
+msgstr "선택부터 끝가지 재생"
+
+#: audio_box.cpp:130
+msgid "Add lead in ("
+msgstr "르드 인 추가 ("
+
+#: audio_box.cpp:133
+msgid "Add lead out ("
+msgstr "르드 아웃 추가 ("
+
+#: audio_box.cpp:137
+msgid "Commit changes ("
+msgstr "적용 ("
+
+#: audio_box.cpp:140
+msgid "Go to selection"
+msgstr "선택가기"
+
+#: audio_box.cpp:144
+msgid "Automatically commit all changes"
+msgstr "자동 적용 "
+
+#: audio_box.cpp:148
+msgid "Auto scrolls audio display to selected line"
+msgstr "오디오 디스플래이 선텍한데로 자동 스크롤 "
+
+#: audio_box.cpp:152
+msgid "Substation Alpha Mode - Left click sets start and right click sets end"
+msgstr "섭스테이션 알파모드 - 왼쪽클릭[시작] 오른쪽 클릭[끝]"
+
+#: audio_box.cpp:156
+msgid "Spectrum analyzer mode"
+msgstr "스팩트람 아나라이즈 모드"
+
+#: audio_box.cpp:167
+msgid "Karaoke"
+msgstr "가라오케"
+
+#: audio_box.cpp:168
+msgid "Toggle karaoke mode"
+msgstr "가라오케 모드"
+
+#: audio_box.cpp:170
+msgid "Join"
+msgstr "붙이기"
+
+#: audio_box.cpp:171
+msgid "Join selected syllables"
+msgstr "선택한 음절  붙이기"
+
+#: audio_box.cpp:174
+msgid "Split"
+msgstr "스프릿"
+
+#: audio_box.cpp:175
+msgid "Split selected syllables"
+msgstr "선택 음절 스프릿"
+
+#: audio_display.cpp:1659
+#: audio_display.cpp:1698
+msgid "Do you want to commit your changes? If you choose No, they will be discarded."
+msgstr "저장을 안하실라면 'No\"를 선텍하십시요."
+
+#: audio_display.cpp:1659
+#: audio_display.cpp:1698
+msgid "Commit?"
+msgstr "저장할가요?"
+
+#: audio_provider.cpp:230
+msgid "Not enough ram available. Use disk cache instead?"
+msgstr "메모리가 없슴니다. 디스크 케싱으로 봐꿈?"
+
+#: audio_provider.cpp:230
+msgid "Audio Information"
+msgstr "오디오 정보"
+
+#: audio_provider.cpp:239
+msgid "Load audio"
+msgstr "오디오 열기"
+
+#: audio_provider.cpp:239
+msgid "Reading into RAM"
+msgstr "메모리로 읽기"
+
+#: automation_gui.cpp:46
+msgid "Automation Manager"
+msgstr "자동일 메네저"
+
+#: automation_gui.cpp:52
+msgid "&Create..."
+msgstr "만들기 (&C)"
+
+#: automation_gui.cpp:53
+msgid "&Add..."
+msgstr "추가 (&A)"
+
+#: automation_gui.cpp:54
+msgid "&Remove"
+msgstr "지우기 (&R)"
+
+#: automation_gui.cpp:55
+msgid "&Apply now"
+msgstr "지금적용 "
+
+#: automation_gui.cpp:56
+msgid "&Edit..."
+msgstr "편집 (&E)"
+
+#: automation_gui.cpp:57
+msgid "Rel&oad"
+msgstr "재장전"
+
+#: automation_gui.cpp:58
+msgid "C&lose"
+msgstr "닫기"
+
+#: automation_gui.cpp:61
+msgid "Script name"
+msgstr "스크립 이름"
+
+#: automation_gui.cpp:62
+msgid "File"
+msgstr "파일"
+
+#: automation_gui.cpp:64
+msgid "Description"
+msgstr "설명"
+
+#: automation_gui.cpp:119
+msgid "Create Automation script"
+msgstr "자동일 스크립 만들기"
+
+#: automation_gui.cpp:165
+msgid "Load Automation script"
+msgstr "자동일 스크립 열기"
+
+#: dialog_associations.cpp:46
+msgid "Associate extensions"
+msgstr "파일 종유 추가"
+
+#: dialog_associations.cpp:59
+msgid ""
+"Please select the formats you want to\n"
+"associate with Aegisub:"
+msgstr "에이지썹 하고 같이쓸  파일 종유을 선텍하시요."
+
+#: dialog_associations.cpp:60
+msgid "Associations"
+msgstr "같이쓸  파일 종유"
+
+#: dialog_colorpicker.cpp:356
+msgid "Select Color"
+msgstr "컬러 선택"
+
+#: dialog_colorpicker.cpp:438
+msgid "Color spectrum"
+msgstr "컬러 스팩트람 "
+
+#: dialog_colorpicker.cpp:445
+msgid "RGB/R"
+msgstr "RGB/R"
+
+#: dialog_colorpicker.cpp:445
+msgid "RGB/G"
+msgstr "RGB/G"
+
+#: dialog_colorpicker.cpp:445
+msgid "RGB/B"
+msgstr "RGB/B"
+
+#: dialog_colorpicker.cpp:445
+msgid "YUV/Y"
+msgstr "YUV/Y"
+
+#: dialog_colorpicker.cpp:445
+msgid "HSL/L"
+msgstr "HSL/L"
+
+#: dialog_colorpicker.cpp:445
+msgid "HSV/H"
+msgstr "HSV/H"
+
+#: dialog_colorpicker.cpp:451
+msgid "RGB color"
+msgstr "RGB 컬러"
+
+#: dialog_colorpicker.cpp:456
+msgid "YUV color"
+msgstr "YUV 컬러"
+
+#: dialog_colorpicker.cpp:461
+msgid "HSL color"
+msgstr "HSL 컬러"
+
+#: dialog_colorpicker.cpp:466
+msgid "HSV color"
+msgstr "HSV 컬러"
+
+#: dialog_colorpicker.cpp:491
+msgid "Spectrum mode:"
+msgstr "스팩트람 모드:"
+
+#: dialog_colorpicker.cpp:503
+msgid "Red:"
+msgstr "빨강:"
+
+#: dialog_colorpicker.cpp:505
+msgid "Green:"
+msgstr "녹색:"
+
+#: dialog_colorpicker.cpp:507
+msgid "Blue:"
+msgstr "파란:"
+
+#: dialog_colorpicker.cpp:512
+msgid "Y:"
+msgstr "Y:"
+
+#: dialog_colorpicker.cpp:514
+msgid "U:"
+msgstr "U:"
+
+#: dialog_colorpicker.cpp:516
+msgid "V:"
+msgstr "V:"
+
+#: dialog_colorpicker.cpp:521
+#: dialog_colorpicker.cpp:530
+msgid "Hue:"
+msgstr "색상:"
+
+#: dialog_colorpicker.cpp:523
+#: dialog_colorpicker.cpp:532
+msgid "Sat.:"
+msgstr "Sat.:"
+
+#: dialog_colorpicker.cpp:525
+msgid "Lum.:"
+msgstr "Lum.:"
+
+#: dialog_colorpicker.cpp:534
+msgid "Value:"
+msgstr "밸유"
+
+#: dialog_export.cpp:49
+msgid "Export"
+msgstr "밖으로 저장"
+
+#: dialog_export.cpp:82
+msgid "Move up"
+msgstr "위로"
+
+#: dialog_export.cpp:83
+msgid "Move down"
+msgstr "아래로"
+
+#: dialog_export.cpp:84
+msgid "Select all"
+msgstr "다 선택"
+
+#: dialog_export.cpp:85
+msgid "Select none"
+msgstr "선택 안함"
+
+#: dialog_export.cpp:88
+msgid "Text encoding:"
+msgstr "글 엔코딩"
+
+#: dialog_export.cpp:108
+msgid "Export..."
+msgstr "밖으로 저장..."
+
+#: dialog_export.cpp:180
+msgid "Export subtitles file"
+msgstr "자막 밖으로 저장"
+
+#: dialog_hotkeys.cpp:46
+msgid "Hotkeys"
+msgstr "핫키"
+
+#: dialog_hotkeys.cpp:56
+msgid "List of all hotkeys (shortcuts) available in Aegisub. Double click on any item to reassign it."
+msgstr "에이지썹 핫키들 보기. 키를 편집하실려면 더브클릭하세요."
+
+#: dialog_hotkeys.cpp:60
+msgid "Function"
+msgstr "기능"
+
+#: dialog_hotkeys.cpp:61
+msgid "Key"
+msgstr "키"
+
+#: dialog_hotkeys.cpp:153
+msgid "Press Key"
+msgstr "키를 누름"
+
+#: dialog_hotkeys.cpp:159
+msgid "Press key to bind to \""
+msgstr "키 누름 \" 르로 바꾸기"
+
+#: dialog_hotkeys.cpp:159
+msgid "\" or esc to cancel."
+msgstr "취소를하시려면 \" 아니면 esc "
+
+#: dialog_jumpto.cpp:47
+msgid "Jump to"
+msgstr "가기"
+
+#: dialog_jumpto.cpp:56
+#: dialog_shift_times.cpp:65
+msgid "Time: "
+msgstr "시간:"
+
+#: dialog_jumpto.cpp:57
+msgid "Frame: "
+msgstr "프래임:"
+
+#: dialog_properties.cpp:49
+msgid "Script Properties"
+msgstr "스크립 정보"
+
+#: dialog_properties.cpp:56
+msgid "Title:"
+msgstr "제목:"
+
+#: dialog_properties.cpp:58
+msgid "Original script:"
+msgstr "원래 스크립"
+
+#: dialog_properties.cpp:60
+msgid "Translation:"
+msgstr "번역:"
+
+#: dialog_properties.cpp:62
+msgid "Editing:"
+msgstr "편집함:"
+
+#: dialog_properties.cpp:64
+msgid "Timing:"
+msgstr "타이밍:"
+
+#: dialog_properties.cpp:66
+msgid "Synch point:"
+msgstr "씬크 포인트"
+
+#: dialog_properties.cpp:68
+msgid "Updated by:"
+msgstr "격상함:"
+
+#: dialog_properties.cpp:70
+msgid "Update details:"
+msgstr "격상 정보:"
+
+#: dialog_properties.cpp:72
+msgid "Script"
+msgstr "스크립"
+
+#: dialog_properties.cpp:93
+#: dialog_resample.cpp:60
+msgid "Resolution"
+msgstr "해상도"
+
+#: dialog_properties.cpp:99
+#: dialog_resample.cpp:67
+msgid "From video"
+msgstr "비디오 에서"
+
+#: dialog_properties.cpp:107
+msgid "Wrap style"
+msgstr "포장 스타일"
+
+#: dialog_properties.cpp:109
+msgid "0: Smart wrapping, top line is wider"
+msgstr "0: 스마트 포장, 윗줄이 더큼"
+
+#: dialog_properties.cpp:110
+msgid "1: End-of-line word wrapping, only \\N breaks"
+msgstr ""
+"1: 끝단어 포장, \\n"
+" 만 잘라짐"
+
+#: dialog_properties.cpp:111
+msgid ""
+"2: No word wrapping, both \\n"
+" and \\N break"
+msgstr ""
+"2: 단어 포장 없기, \\n"
+"이랑 \\N 잘라짐"
+
+#: dialog_properties.cpp:112
+msgid "3: Smart wrapping, bottom line is wider"
+msgstr "3: 스마트 포장, 아레줄이 더큼"
+
+#: dialog_resample.cpp:52
+msgid "Resample resolution"
+msgstr "해상도 다시보기"
+
+#: dialog_resample.cpp:66
+msgid "x"
+msgstr "x"
+
+#: dialog_resample.cpp:75
+msgid "Change aspect ratio"
+msgstr "종횡비 바꾸기"
+
+#: dialog_resample.cpp:82
+#: frame_main.cpp:181
+msgid "Resample"
+msgstr "다시보기"
+
+#: dialog_search_replace.cpp:61
+msgid "Find what:"
+msgstr "찾기:"
+
+#: dialog_search_replace.cpp:67
+msgid "Replace with:"
+msgstr "봐꿈"
+
+#: dialog_search_replace.cpp:74
+#: dialog_selection.cpp:61
+msgid "Match case"
+msgstr "케이스 맞추기"
+
+#: dialog_search_replace.cpp:75
+msgid "Use regular expressions"
+msgstr "보통 표정쓰기"
+
+#: dialog_search_replace.cpp:76
+msgid "Update Video (slow)"
+msgstr "비디오 업데이트 (느림)"
+
+#: dialog_search_replace.cpp:88
+#: dialog_selection.cpp:86
+msgid "Text"
+msgstr "텍스트"
+
+#: dialog_search_replace.cpp:89
+#: dialog_selection.cpp:87
+#: subs_grid.cpp:133
+msgid "Style"
+msgstr "스타일"
+
+#: dialog_search_replace.cpp:90
+#: dialog_selection.cpp:88
+msgid "Actor"
+msgstr "엑터"
+
+#: dialog_search_replace.cpp:92
+#: dialog_shift_times.cpp:98
+msgid "All rows"
+msgstr "모든줄"
+
+#: dialog_search_replace.cpp:93
+#: dialog_shift_times.cpp:98
+msgid "Selected rows"
+msgstr "줄들 선택하기"
+
+#: dialog_search_replace.cpp:94
+#: dialog_selection.cpp:89
+msgid "In Field"
+msgstr "공간 안에"
+
+#: dialog_search_replace.cpp:95
+msgid "Limit to"
+msgstr "제한"
+
+#: dialog_search_replace.cpp:110
+msgid "Find next"
+msgstr "다음 검색"
+
+#: dialog_search_replace.cpp:114
+msgid "Replace next"
+msgstr "다음 봐꿈"
+
+#: dialog_search_replace.cpp:115
+msgid "Replace all"
+msgstr "전체 봐꿈"
+
+#: dialog_search_replace.cpp:466
+#, possible-c-format
+msgid "%i matches were replaced."
+msgstr "%i 들 메치를 잘못두엇슴니다."
+
+#: dialog_search_replace.cpp:471
+msgid "No matches found."
+msgstr "결과없슴."
+
+#: dialog_search_replace.cpp:506
+#: hotkeys.cpp:322
+msgid "Replace"
+msgstr "봐꾸기"
+
+#: dialog_search_replace.cpp:507
+#: hotkeys.cpp:320
+msgid "Find"
+msgstr "검색"
+
+#: dialog_selection.cpp:49
+msgid "Select"
+msgstr "선택"
+
+#: dialog_selection.cpp:56
+msgid "Exact match"
+msgstr "똑같은 메치"
+
+#: dialog_selection.cpp:57
+msgid "Contains"
+msgstr "드러있는"
+
+#: dialog_selection.cpp:58
+msgid "Regular Expression match"
+msgstr "보통 표정 메치"
+
+#: dialog_selection.cpp:59
+msgid "Matches"
+msgstr "메치"
+
+#: dialog_selection.cpp:60
+msgid "Doesn't Match"
+msgstr "메치 못함"
+
+#: dialog_selection.cpp:64
+msgid "Match"
+msgstr "메치"
+
+#: dialog_selection.cpp:78
+msgid "Set selection"
+msgstr "선택 쓰기"
+
+#: dialog_selection.cpp:79
+msgid "Add to selection"
+msgstr "선택 더하기"
+
+#: dialog_selection.cpp:80
+msgid "Subtract from selection"
+msgstr "선택에서 빼오기"
+
+#: dialog_selection.cpp:81
+msgid "Intersect with selection"
+msgstr "선택이랑 통과하기"
+
+#: dialog_selection.cpp:82
+msgid "Action"
+msgstr "엑션"
+
+#: dialog_selection.cpp:238
+#, possible-c-format
+msgid "Selection was set to %i lines"
+msgstr "선택이 %i 개들 줄로돼있다"
+
+#: dialog_selection.cpp:238
+#: dialog_selection.cpp:239
+#: dialog_selection.cpp:240
+msgid "Selection"
+msgstr "선택"
+
+#: dialog_selection.cpp:239
+#, possible-c-format
+msgid "%i lines were added to selection"
+msgstr "%i 들 줄들이 추가 됏슴"
+
+#: dialog_selection.cpp:240
+#, possible-c-format
+msgid "%i lines were removed from selection"
+msgstr "%i 들 줄들이 제거 됏슴"
+
+#: dialog_shift_times.cpp:57
+#: hotkeys.cpp:319
+msgid "Shift Times"
+msgstr "시간 움지기기"
+
+#: dialog_shift_times.cpp:66
+msgid "Frames: "
+msgstr "프래임:"
+
+#: dialog_shift_times.cpp:69
+msgid "Enter time in h:mm:ss.cs notation"
+msgstr "시간을 h:mm:ss.cs 으로 쓰십시요."
+
+#: dialog_shift_times.cpp:70
+msgid "Shift by time"
+msgstr "시간으로 움지기기"
+
+#: dialog_shift_times.cpp:74
+msgid "Enter number of frames to shift by"
+msgstr "프래임 자리를 움지길 수 입력"
+
+#: dialog_shift_times.cpp:75
+msgid "Shift by frames"
+msgstr "프래임으로 움지기기"
+
+#: dialog_shift_times.cpp:85
+msgid "Forward"
+msgstr "앞으로"
+
+#: dialog_shift_times.cpp:86
+msgid "Backward"
+msgstr "뒤로"
+
+#: dialog_shift_times.cpp:87
+msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
+msgstr ""
+
+#: dialog_shift_times.cpp:88
+msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
+msgstr ""
+
+#: dialog_shift_times.cpp:92
+msgid "Shift by"
+msgstr "움지기"
+
+#: dialog_shift_times.cpp:99
+msgid "Affect"
+msgstr "영향"
+
+#: dialog_shift_times.cpp:102
+msgid "Start and End times"
+msgstr "시작/끝 시간들"
+
+#: dialog_shift_times.cpp:102
+msgid "Start times only"
+msgstr "시작 시간만"
+
+#: dialog_shift_times.cpp:102
+msgid "End times only"
+msgstr "끝 시간만"
+
+#: dialog_shift_times.cpp:103
+msgid "Times"
+msgstr "시간들"
+
+#: dialog_shift_times.cpp:106
+msgid "History"
+msgstr "히스토리"
+
+#: dialog_shift_times.cpp:224
+msgid "unsaved, "
+msgstr "저장 안한,"
+
+#: dialog_shift_times.cpp:227
+msgid " frames "
+msgstr "프래임들"
+
+#: dialog_shift_times.cpp:228
+msgid "backward, "
+msgstr "뒤로,"
+
+#: dialog_shift_times.cpp:229
+msgid "forward, "
+msgstr "앞으로,"
+
+#: dialog_shift_times.cpp:230
+msgid "s+e, "
+msgstr "s+e,"
+
+#: dialog_shift_times.cpp:231
+msgid "s, "
+msgstr "s,"
+
+#: dialog_shift_times.cpp:232
+msgid "e, "
+msgstr "e, "
+
+#: dialog_shift_times.cpp:233
+msgid "all"
+msgstr "전체"
+
+#: dialog_shift_times.cpp:235
+msgid "sel "
+msgstr "sel"
+
+#: dialog_style_editor.cpp:52
+msgid "Style Editor"
+msgstr "스타일 편집"
+
+#: dialog_style_editor.cpp:62
+msgid "Style name"
+msgstr "스타일 이름"
+
+#: dialog_style_editor.cpp:69
+msgid "Font face"
+msgstr "글꼴 페이쓰"
+
+#: dialog_style_editor.cpp:70
+msgid "Font size"
+msgstr "글꼴 사이즈"
+
+#: dialog_style_editor.cpp:71
+msgid "Choose"
+msgstr "선택"
+
+#: dialog_style_editor.cpp:72
+msgid "Font"
+msgstr "글꼴"
+
+#: dialog_style_editor.cpp:75
+#: subs_edit_box.cpp:128
+msgid "Bold"
+msgstr "굵게"
+
+#: dialog_style_editor.cpp:76
+msgid "Italic"
+msgstr "기울임"
+
+#: dialog_style_editor.cpp:77
+#: subs_edit_box.cpp:132
+msgid "Underline"
+msgstr "밑줄"
+
+#: dialog_style_editor.cpp:78
+#: subs_edit_box.cpp:134
+msgid "Strikeout"
+msgstr "가로지르"
+
+#: dialog_style_editor.cpp:96
+msgid "Colors"
+msgstr "칼러들"
+
+#: dialog_style_editor.cpp:115
+#: dialog_style_editor.cpp:116
+#: dialog_style_editor.cpp:117
+#: dialog_style_editor.cpp:118
+msgid "Click to choose color"
+msgstr "칼러선택을 마우스 킬릭으로 "
+
+#: dialog_style_editor.cpp:127
+#: dialog_style_editor.cpp:128
+#: dialog_style_editor.cpp:129
+#: dialog_style_editor.cpp:130
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr ""
+
+#: dialog_style_editor.cpp:131
+msgid "Primary"
+msgstr "프라이머리"
+
+#: dialog_style_editor.cpp:132
+msgid "Secondary"
+msgstr "세컨더리"
+
+#: dialog_style_editor.cpp:133
+#: dialog_style_editor.cpp:188
+msgid "Outline"
+msgstr "아웃트라인"
+
+#: dialog_style_editor.cpp:134
+msgid "Shadow"
+msgstr "그림자"
+
+#: dialog_style_editor.cpp:145
+msgid "Margins"
+msgstr "마진"
+
+#: dialog_style_editor.cpp:155
+msgid "Distance from left edge, in pixels"
+msgstr ""
+
+#: dialog_style_editor.cpp:156
+msgid "Distance from right edge, in pixels"
+msgstr ""
+
+#: dialog_style_editor.cpp:157
+msgid "Distance from top/bottom edge, in pixels"
+msgstr ""
+
+#: dialog_style_editor.cpp:159
+msgid "Left"
+msgstr "왼쪽"
+
+#: dialog_style_editor.cpp:163
+msgid "Right"
+msgstr "오른쪽"
+
+#: dialog_style_editor.cpp:167
+msgid "Vert"
+msgstr "Vert"
+
+#: dialog_style_editor.cpp:178
+msgid "Alignment"
+msgstr "맞춤"
+
+#: dialog_style_editor.cpp:179
+msgid "Alignment in screen, in numpad style"
+msgstr "스크린 안에서 맞춤. 넘버패드 스타일"
+
+#: dialog_style_editor.cpp:189
+msgid "Opaque box"
+msgstr "투명 박스"
+
+#: dialog_style_editor.cpp:194
+msgid "Checking this will display an opaque box instead of outline"
+msgstr ""
+
+#: dialog_style_editor.cpp:195
+msgid "Outline width, in pixels"
+msgstr "화소 아웃트라인 넓기"
+
+#: dialog_style_editor.cpp:196
+msgid "Shadow distance, in pixels"
+msgstr "그림자 거리 (화소)"
+
+#: dialog_style_editor.cpp:198
+msgid "Outline:"
+msgstr "아우트라인:"
+
+#: dialog_style_editor.cpp:200
+msgid "Shadow:"
+msgstr "그림자:"
+
+#: dialog_style_editor.cpp:207
+msgid "Miscelaneous"
+msgstr "기타"
+
+#: dialog_style_editor.cpp:220
+msgid "Scale X, in percentage"
+msgstr "화소 X 크기"
+
+#: dialog_style_editor.cpp:221
+msgid "Scale Y, in percentage"
+msgstr "화소 Y 크기"
+
+#: dialog_style_editor.cpp:222
+msgid "Angle to rotate in Z axis, in degrees"
+msgstr ""
+
+#: dialog_style_editor.cpp:223
+msgid "Encoding, useless for unicode. 0=ASCII, 128=Japanese"
+msgstr ""
+
+#: dialog_style_editor.cpp:224
+msgid "Character spacing, in pixels"
+msgstr "글짜 거리 (화소)"
+
+#: dialog_style_editor.cpp:226
+msgid "Scale X%:"
+msgstr "크기 X%:"
+
+#: dialog_style_editor.cpp:228
+msgid "Scale Y%:"
+msgstr "크기 Y%:"
+
+#: dialog_style_editor.cpp:232
+msgid "Angle:"
+msgstr "각도:"
+
+#: dialog_style_editor.cpp:234
+msgid "Encoding:"
+msgstr "엔코딩:"
+
+#: dialog_style_editor.cpp:236
+msgid "Spacing:"
+msgstr "스페이씽"
+
+#: dialog_style_editor.cpp:397
+msgid ""
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
+"of computing, so please avoid using it unless it's REALLY suitable. Thanks."
+msgstr ""
+
+#: dialog_style_editor.cpp:397
+msgid "Warning"
+msgstr "경고"
+
+#: dialog_style_manager.cpp:52
+#: frame_main.cpp:170
+msgid "Styles Manager"
+msgstr "스타일 메네저"
+
+#: dialog_style_manager.cpp:58
+msgid "Catalog of available storages"
+msgstr ""
+
+#: dialog_style_manager.cpp:60
+#: dialog_style_manager.cpp:71
+#: dialog_style_manager.cpp:89
+#: frame_main.cpp:138
+msgid "New"
+msgstr "세로"
+
+#: dialog_style_manager.cpp:61
+#: dialog_style_manager.cpp:73
+#: dialog_style_manager.cpp:91
+#: subs_grid.cpp:279
+msgid "Delete"
+msgstr "지우기"
+
+#: dialog_style_manager.cpp:68
+msgid "Storage"
+msgstr "저장방"
+
+#: dialog_style_manager.cpp:70
+msgid "Copy to current script ->"
+msgstr ""
+
+#: dialog_style_manager.cpp:72
+#: dialog_style_manager.cpp:90
+#: hotkeys.cpp:324
+msgid "Copy"
+msgstr "복사"
+
+#: dialog_style_manager.cpp:86
+msgid "Current script"
+msgstr "현재 스크립"
+
+#: dialog_style_manager.cpp:88
+msgid "<- Copy to storage"
+msgstr ""
+
+#: dialog_style_manager.cpp:304
+msgid "New storage name:"
+msgstr ""
+
+#: dialog_style_manager.cpp:304
+msgid "New catalog entry"
+msgstr ""
+
+#: dialog_style_manager.cpp:330
+msgid "Are you sure you want to delete the storage \""
+msgstr ""
+
+#: dialog_style_manager.cpp:332
+msgid "\" from the catalog?"
+msgstr ""
+
+#: dialog_style_manager.cpp:333
+#: dialog_style_manager.cpp:579
+#: dialog_style_manager.cpp:612
+msgid "Confirm delete"
+msgstr "지울까요"
+
+#: dialog_style_manager.cpp:492
+#: dialog_style_manager.cpp:515
+msgid "Copy of "
+msgstr ""
+
+#: dialog_style_manager.cpp:574
+#: dialog_style_manager.cpp:607
+msgid "Are you sure you want to delete these "
+msgstr "진짜 지움니까"
+
+#: dialog_style_manager.cpp:576
+#: dialog_style_manager.cpp:609
+msgid " styles?"
+msgstr "스타일?"
+
+#: dialog_style_manager.cpp:578
+#: dialog_style_manager.cpp:611
+msgid "Are you sure you want to delete this style?"
+msgstr "이 스타일을 지울까요?"
+
+#: dialog_styling_assistant.cpp:55
+msgid "Styling assistant"
+msgstr "스타일 도움"
+
+#: dialog_styling_assistant.cpp:64
+#: dialog_styling_assistant.cpp:65
+msgid "Current line"
+msgstr "현재 줄"
+
+#: dialog_styling_assistant.cpp:70
+msgid "Styles available"
+msgstr ""
+
+#: dialog_styling_assistant.cpp:75
+msgid "Set style"
+msgstr ""
+
+#: dialog_styling_assistant.cpp:76
+#: dialog_translation.cpp:80
+msgid "Keys"
+msgstr "키"
+
+#: dialog_styling_assistant.cpp:79
+msgid ""
+"Enter:\t\tAccept changes\n"
+"Page up:\tPrevious line\n"
+"Page down:\tNext line\n"
+"End:\t\tPlay sound\n"
+"Click on list:\tSet style\n"
+"Ctrl+enter:\tAccept without going to next"
+msgstr ""
+
+#: dialog_styling_assistant.cpp:80
+msgid "Enable preview (slow)"
+msgstr ""
+
+#: dialog_styling_assistant.cpp:96
+#: dialog_translation.cpp:91
+msgid "Play Audio"
+msgstr "오디오 재생"
+
+#: dialog_timing_processor.cpp:54
+#: frame_main.cpp:182
+msgid "Timing Post-Processor"
+msgstr ""
+
+#: dialog_timing_processor.cpp:65
+msgid "Lead-in/Lead-out"
+msgstr ""
+
+#: dialog_timing_processor.cpp:66
+msgid "Lead in:"
+msgstr ""
+
+#: dialog_timing_processor.cpp:67
+msgid "Enable adding of lead-ins to lines."
+msgstr ""
+
+#: dialog_timing_processor.cpp:70
+msgid "Lead in to be added, in miliseconds."
+msgstr ""
+
+#: dialog_timing_processor.cpp:71
+msgid "Lead out:"
+msgstr ""
+
+#: dialog_timing_processor.cpp:72
+msgid "Enable adding of lead-outs to lines."
+msgstr ""
+
+#: dialog_timing_processor.cpp:75
+msgid "Lead out to be added, in miliseconds."
+msgstr ""
+
+#: dialog_timing_processor.cpp:83
+msgid "Keyframe snapping"
+msgstr ""
+
+#: dialog_timing_processor.cpp:84
+#: dialog_timing_processor.cpp:102
+msgid "Enable"
+msgstr "가능하게"
+
+#: dialog_timing_processor.cpp:85
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgstr ""
+
+#: dialog_timing_processor.cpp:87
+msgid "Overlength thres.:"
+msgstr ""
+
+#: dialog_timing_processor.cpp:89
+msgid "Threshold for 'overlength' distance, that is, starting before keyframe or ending after. In frames (inclusive)."
+msgstr ""
+
+#: dialog_timing_processor.cpp:90
+msgid "Underlength thres.:"
+msgstr ""
+
+#: dialog_timing_processor.cpp:92
+msgid "Threshold for 'underlength' distance, that is, starting after keyframe or ending before. In frames (inclusive)."
+msgstr ""
+
+#: dialog_timing_processor.cpp:101
+msgid "Make adjascent subtitles continuous"
+msgstr ""
+
+#: dialog_timing_processor.cpp:103
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgstr ""
+
+#: dialog_timing_processor.cpp:105
+msgid "Threshold:"
+msgstr ""
+
+#: dialog_timing_processor.cpp:107
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in miliseconds."
+msgstr ""
+
+#: dialog_timing_processor.cpp:130
+msgid "All"
+msgstr "전채"
+
+#: dialog_timing_processor.cpp:131
+msgid "Select all styles."
+msgstr "전채 스타일을 선택"
+
+#: dialog_timing_processor.cpp:132
+msgid "None"
+msgstr "없음"
+
+#: dialog_timing_processor.cpp:133
+msgid "Deselect all styles."
+msgstr "전채 스타일을 선택 안함"
+
+#: dialog_timing_processor.cpp:138
+msgid "Apply to styles"
+msgstr ""
+
+#: dialog_timing_processor.cpp:141
+msgid "Select styles to process. Unchecked ones will be ignored."
+msgstr ""
+
+#: dialog_timing_processor.cpp:276
+#, possible-c-format
+msgid "One of the lines in the file (%i) has negative duration. Aborting."
+msgstr ""
+
+#: dialog_timing_processor.cpp:276
+msgid "Invalid script"
+msgstr "못 돼는 스크립"
+
+#: dialog_translation.cpp:54
+#: frame_main.cpp:179
+msgid "Translation Assistant"
+msgstr "번역 도움"
+
+#: dialog_translation.cpp:70
+msgid "Original"
+msgstr "오리지날"
+
+#: dialog_translation.cpp:71
+msgid "Translation"
+msgstr "번역"
+
+#: dialog_translation.cpp:72
+msgid "Current line: ?"
+msgstr ""
+
+#: dialog_translation.cpp:81
+msgid ""
+"Enter:\t\tAccept changes\n"
+"Ctrl+Enter:\tPreview\n"
+"Page up:\tPrevious line\n"
+"Page down:\tNext line\n"
+"Insert:\t\tCopy text from original\n"
+"End:\t\tPlay audio"
+msgstr ""
+
+#: dialog_translation.cpp:82
+msgid "Enable preview"
+msgstr "전채보기"
+
+#: dialog_translation.cpp:154
+msgid "Current line: "
+msgstr "현제 줄:"
+
+#: export_clean_info.cpp:49
+msgid "Clean Script Info"
+msgstr ""
+
+#: export_clean_info.cpp:50
+msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
+msgstr ""
+
+#: export_fixstyle.cpp:49
+msgid "Fix Styles"
+msgstr ""
+
+#: export_fixstyle.cpp:50
+msgid "Fixes styles by replacing any style that isn't available on file with Default."
+msgstr ""
+
+#: export_framerate.cpp:50
+msgid "Transform Framerate"
+msgstr ""
+
+#: export_framerate.cpp:51
+msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
+msgstr ""
+
+#: export_framerate.cpp:77
+msgid "From Video"
+msgstr "비디오 에서"
+
+#: export_framerate.cpp:94
+msgid "Variable"
+msgstr ""
+
+#: export_framerate.cpp:98
+msgid "Constant: "
+msgstr ""
+
+#: export_framerate.cpp:115
+msgid "Input framerate: "
+msgstr ""
+
+#: export_framerate.cpp:117
+msgid "Output: "
+msgstr ""
+
+#: fonts_collector.cpp:54
+#: frame_main.cpp:180
+msgid "Fonts Collector"
+msgstr "글꼴 모우기"
+
+#: fonts_collector.cpp:58
+msgid "&Browse..."
+msgstr "찾기 (&B)"
+
+#: fonts_collector.cpp:60
+msgid ""
+"Choose the folder where the fonts will be collected to.\n"
+"It will be created if it doesn't exist."
+msgstr ""
+
+#: fonts_collector.cpp:63
+msgid "Destination"
+msgstr "목적지"
+
+#: fonts_collector.cpp:69
+msgid "Log"
+msgstr ""
+
+#: fonts_collector.cpp:73
+msgid "&Start!"
+msgstr "시작!"
+
+#: fonts_collector.cpp:116
+msgid "\" found on dialogue line "
+msgstr ""
+
+#: fonts_collector.cpp:167
+msgid "Invalid folder"
+msgstr ""
+
+#: fonts_collector.cpp:167
+msgid "Error"
+msgstr "에러"
+
+#: fonts_collector.cpp:182
+msgid "Select folder to save fonts on"
+msgstr ""
+
+#: fonts_collector.cpp:219
+msgid "Could not locate fonts directory"
+msgstr ""
+
+#: fonts_collector.cpp:278
+msgid "Searching for fonts in file...\n"
+msgstr ""
+
+#: fonts_collector.cpp:293
+msgid "\" found on style \""
+msgstr ""
+
+#: fonts_collector.cpp:311
+msgid ""
+"\n"
+"Reading fonts from registry...\n"
+msgstr ""
+
+#: fonts_collector.cpp:341
+msgid "\" already exists on destination.\n"
+msgstr ""
+
+#: fonts_collector.cpp:353
+msgid "\" copied.\n"
+msgstr ""
+
+#: fonts_collector.cpp:357
+msgid "Failed copying \""
+msgstr ""
+
+#: fonts_collector.cpp:369
+msgid "Could not find font "
+msgstr ""
+
+#: frame_main.cpp:138
+#: frame_main.cpp:214
+#: hotkeys.cpp:311
+msgid "New subtitles"
+msgstr "새 자막"
+
+#: frame_main.cpp:139
+msgid "Open"
+msgstr "열기"
+
+#: frame_main.cpp:139
+#: hotkeys.cpp:312
+msgid "Open subtitles"
+msgstr "자막 열기"
+
+#: frame_main.cpp:140
+msgid "Save"
+msgstr "저장"
+
+#: frame_main.cpp:140
+#: hotkeys.cpp:313
+msgid "Save subtitles"
+msgstr "자막 저장"
+
+#: frame_main.cpp:144
+msgid "Jump To..."
+msgstr "가기..."
+
+#: frame_main.cpp:144
+msgid "Jump video to time/frame"
+msgstr "비디오 시간/프래임으로 가기"
+
+#: frame_main.cpp:145
+msgid "Zoom in"
+msgstr "줌인"
+
+#: frame_main.cpp:145
+msgid "Zoom video in"
+msgstr "비디오 줌인"
+
+#: frame_main.cpp:146
+msgid "Zoom out"
+msgstr "줌아우트"
+
+#: frame_main.cpp:146
+msgid "Zoom video out"
+msgstr "비디오 줌아우트"
+
+#: frame_main.cpp:159
+#: subs_grid.cpp:239
+msgid "Jump video to start"
+msgstr "비디오 시작으로 가기"
+
+#: frame_main.cpp:159
+#: frame_main.cpp:259
+msgid "Jumps the video to the start frame of current subtitle"
+msgstr "비디오 현재 자막 시작으로 가기"
+
+#: frame_main.cpp:160
+#: subs_grid.cpp:240
+msgid "Jump video to end"
+msgstr "비디이 끝으로 가기"
+
+#: frame_main.cpp:160
+#: frame_main.cpp:260
+msgid "Jumps the video to the end frame of current subtitle"
+msgstr "비디오 현재 자막 끝으로 가기"
+
+#: frame_main.cpp:161
+msgid "Snap start to video"
+msgstr "첫비디오를 스냅 "
+
+#: frame_main.cpp:161
+#: frame_main.cpp:261
+msgid "Set start of selected subtitles to current video frame"
+msgstr "자막시작을 현재 비디오 프래임에 는다"
+
+#: frame_main.cpp:162
+msgid "Snap end to video"
+msgstr "마지막 비디오를 스냅"
+
+#: frame_main.cpp:162
+#: frame_main.cpp:262
+msgid "Set end of selected subtitles to current video frame"
+msgstr "자막끝을 현재 비디오 프래임에 는다"
+
+#: frame_main.cpp:163
+msgid "Select visible"
+msgstr "보이기"
+
+#: frame_main.cpp:163
+msgid "Selects all lines that are currently visible on video frame"
+msgstr ""
+
+#: frame_main.cpp:164
+msgid "Snap subtitles to scene"
+msgstr ""
+
+#: frame_main.cpp:164
+msgid "Snap selected subtitles so they match current scene start/end"
+msgstr ""
+
+#: frame_main.cpp:165
+msgid "Shift subtitles to frame"
+msgstr ""
+
+#: frame_main.cpp:165
+msgid "Shift selected subtitles so first selected starts at this frame"
+msgstr ""
+
+#: frame_main.cpp:169
+msgid "Properties"
+msgstr "정보"
+
+#: frame_main.cpp:169
+msgid "Open Properties"
+msgstr "정보열기"
+
+#: frame_main.cpp:170
+msgid "Open Styles Manager"
+msgstr "스타일 매네저 열기"
+
+#: frame_main.cpp:174
+msgid "Automation"
+msgstr "자동일"
+
+#: frame_main.cpp:174
+msgid "Open Automation manager"
+msgstr "자동일 매네저 열기"
+
+#: frame_main.cpp:178
+msgid "Styling Assistant"
+msgstr "스타일 도움"
+
+#: frame_main.cpp:178
+msgid "Open Styling Assistant"
+msgstr ""
+
+#: frame_main.cpp:179
+msgid "Open Translation Assistant"
+msgstr ""
+
+#: frame_main.cpp:180
+msgid "Open Fonts Collector"
+msgstr ""
+
+#: frame_main.cpp:181
+msgid "Resample script resolution"
+msgstr ""
+
+#: frame_main.cpp:182
+msgid "Open Timing Post-processor dialog"
+msgstr ""
+
+#: frame_main.cpp:184
+msgid "Spellchecker"
+msgstr ""
+
+#: frame_main.cpp:184
+msgid "Open Spell checker"
+msgstr ""
+
+#: frame_main.cpp:189
+msgid "Cycle Tag Hidding Mode"
+msgstr ""
+
+#: frame_main.cpp:189
+msgid "Cycle through tag-hiding modes"
+msgstr ""
+
+#: frame_main.cpp:214
+msgid "&New Subtitles\t"
+msgstr ""
+
+#: frame_main.cpp:215
+msgid "&Open Subtitles...\t"
+msgstr ""
+
+#: frame_main.cpp:215
+msgid "Opens a subtitles file"
+msgstr ""
+
+#: frame_main.cpp:216
+msgid "&Open Subtitles with Charset..."
+msgstr ""
+
+#: frame_main.cpp:216
+msgid "Opens a subtitles file with a specific charset"
+msgstr ""
+
+#: frame_main.cpp:217
+msgid "&Save Subtitles\t"
+msgstr ""
+
+#: frame_main.cpp:217
+msgid "Saves subtitles"
+msgstr ""
+
+#: frame_main.cpp:218
+msgid "Save Subtitles as..."
+msgstr ""
+
+#: frame_main.cpp:218
+msgid "Saves subtitles with another name"
+msgstr ""
+
+#: frame_main.cpp:219
+msgid "Export Subtitles..."
+msgstr ""
+
+#: frame_main.cpp:219
+msgid "Saves a copy of subtitles with processing applied to it."
+msgstr ""
+
+#: frame_main.cpp:221
+#: frame_main.cpp:247
+#: frame_main.cpp:276
+msgid "Recent"
+msgstr ""
+
+#: frame_main.cpp:224
+msgid "E&xit\t"
+msgstr ""
+
+#: frame_main.cpp:224
+msgid "Exit the application"
+msgstr ""
+
+#: frame_main.cpp:225
+msgid "&File"
+msgstr "파일"
+
+#: frame_main.cpp:229
+msgid "&Undo\t"
+msgstr ""
+
+#: frame_main.cpp:229
+msgid "Undoes last action"
+msgstr ""
+
+#: frame_main.cpp:231
+msgid "&Select lines...\t"
+msgstr ""
+
+#: frame_main.cpp:231
+msgid "Selects lines based on defined criterea"
+msgstr ""
+
+#: frame_main.cpp:232
+msgid "S&hift times...\t"
+msgstr ""
+
+#: frame_main.cpp:232
+msgid "Shift subtitles by time or frames"
+msgstr ""
+
+#: frame_main.cpp:234
+msgid "&Find...\t"
+msgstr ""
+
+#: frame_main.cpp:234
+msgid "Find words in subtitles"
+msgstr ""
+
+#: frame_main.cpp:235
+msgid "Find next\t"
+msgstr ""
+
+#: frame_main.cpp:235
+msgid "Find next match of last word"
+msgstr ""
+
+#: frame_main.cpp:236
+msgid "&Replace...\t"
+msgstr ""
+
+#: frame_main.cpp:236
+msgid "Find and replace words in subtitles"
+msgstr ""
+
+#: frame_main.cpp:238
+msgid "Cut...\t"
+msgstr "커트... \t"
+
+#: frame_main.cpp:238
+msgid "Cut subtitles"
+msgstr "자막 커트"
+
+#: frame_main.cpp:239
+msgid "Copy...\t"
+msgstr "복사...\t"
+
+#: frame_main.cpp:239
+msgid "Copy subtitles"
+msgstr "자막 붙이기"
+
+#: frame_main.cpp:240
+msgid "Paste...\t"
+msgstr "붙이기... \t"
+
+#: frame_main.cpp:240
+msgid "Paste subtitles"
+msgstr "자막 붙이기"
+
+#: frame_main.cpp:241
+msgid "&Edit"
+msgstr "편집"
+
+#: frame_main.cpp:245
+msgid "&Open Video..."
+msgstr "비디오 열기"
+
+#: frame_main.cpp:245
+msgid "Opens a video file"
+msgstr "비디오 파일을 연다"
+
+#: frame_main.cpp:246
+msgid "&Close Video"
+msgstr "비디오 닫기 "
+
+#: frame_main.cpp:246
+msgid "Closes the currently open video file"
+msgstr "현제 비딩 닫기"
+
+#: frame_main.cpp:250
+msgid "Open timecodes file..."
+msgstr ""
+
+#: frame_main.cpp:250
+msgid "Opens a VFR timecodes v1 or v2 file"
+msgstr ""
+
+#: frame_main.cpp:251
+msgid "Close timecodes file"
+msgstr ""
+
+#: frame_main.cpp:251
+msgid "Closes the currently open timecodes file"
+msgstr ""
+
+#: frame_main.cpp:253
+msgid "&Jump To...\t"
+msgstr "가기... \t (&J)"
+
+#: frame_main.cpp:253
+msgid "Jump to frame or time"
+msgstr "시간/프래임으로 가기"
+
+#: frame_main.cpp:255
+msgid "Zoom &50%\t"
+msgstr "줌인  &50%\t"
+
+#: frame_main.cpp:255
+msgid "Set zoom to 50%"
+msgstr ""
+
+#: frame_main.cpp:256
+msgid "Zoom &100%\t"
+msgstr ""
+
+#: frame_main.cpp:256
+msgid "Set zoom to 100%"
+msgstr ""
+
+#: frame_main.cpp:257
+msgid "Zoom &200%\t"
+msgstr "줌인 &200%\t"
+
+#: frame_main.cpp:257
+msgid "Set zoom to 200%"
+msgstr ""
+
+#: frame_main.cpp:259
+msgid "Jump video to start\t"
+msgstr ""
+
+#: frame_main.cpp:260
+msgid "Jump video to end\t"
+msgstr ""
+
+#: frame_main.cpp:261
+msgid "Snap start to video\t"
+msgstr ""
+
+#: frame_main.cpp:262
+msgid "Snap end to video\t"
+msgstr ""
+
+#: frame_main.cpp:263
+msgid "Snap to scene\t"
+msgstr ""
+
+#: frame_main.cpp:263
+msgid "Set start and end of subtitles to the keyframes around current video frame"
+msgstr ""
+
+#: frame_main.cpp:264
+msgid "Shift to Current Frame\t"
+msgstr ""
+
+#: frame_main.cpp:264
+msgid "Shift selection so first selected line starts at current frame"
+msgstr ""
+
+#: frame_main.cpp:266
+msgid "&Default Aspect Ratio"
+msgstr ""
+
+#: frame_main.cpp:266
+msgid "Leave video on original aspect ratio"
+msgstr ""
+
+#: frame_main.cpp:267
+msgid "&Fullscreen Aspect Ratio (4:3)"
+msgstr ""
+
+#: frame_main.cpp:267
+msgid "Forces video to fullscreen aspect ratio"
+msgstr ""
+
+#: frame_main.cpp:268
+msgid "&Widescreen Aspect Ratio (16:9)"
+msgstr ""
+
+#: frame_main.cpp:268
+msgid "Forces video to widescreen aspect ratio"
+msgstr ""
+
+#: frame_main.cpp:269
+msgid "&Video"
+msgstr "비디오"
+
+#: frame_main.cpp:273
+msgid "&Open Audio file..."
+msgstr ""
+
+#: frame_main.cpp:273
+msgid "Opens an audio file"
+msgstr ""
+
+#: frame_main.cpp:274
+msgid "Open Audio from &Video"
+msgstr ""
+
+#: frame_main.cpp:274
+msgid "Opens the audio from the current video file"
+msgstr ""
+
+#: frame_main.cpp:275
+msgid "&Close Audio"
+msgstr ""
+
+#: frame_main.cpp:275
+msgid "Closes the currently open audio file"
+msgstr ""
+
+#: frame_main.cpp:278
+msgid "&Audio"
+msgstr ""
+
+#: frame_main.cpp:282
+msgid "&Properties..."
+msgstr ""
+
+#: frame_main.cpp:282
+msgid "Open script properties window"
+msgstr ""
+
+#: frame_main.cpp:283
+msgid "&Styles Manager..."
+msgstr ""
+
+#: frame_main.cpp:283
+msgid "Open styles manager"
+msgstr ""
+
+#: frame_main.cpp:285
+msgid "&Automation..."
+msgstr ""
+
+#: frame_main.cpp:285
+msgid "Open automation manager"
+msgstr ""
+
+#: frame_main.cpp:287
+msgid "St&yling Assistant..."
+msgstr ""
+
+#: frame_main.cpp:287
+msgid "Open styling assistant"
+msgstr ""
+
+#: frame_main.cpp:288
+msgid "&Translation Assistant..."
+msgstr ""
+
+#: frame_main.cpp:288
+msgid "Open translation assistant"
+msgstr ""
+
+#: frame_main.cpp:289
+msgid "&Fonts Collector..."
+msgstr ""
+
+#: frame_main.cpp:289
+msgid "Open fonts collector"
+msgstr ""
+
+#: frame_main.cpp:290
+msgid "Resample resolution..."
+msgstr ""
+
+#: frame_main.cpp:290
+msgid "Changes resolution and modifies subtitles to conform to change"
+msgstr ""
+
+#: frame_main.cpp:291
+msgid "Timing Post-Processor..."
+msgstr ""
+
+#: frame_main.cpp:291
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgstr ""
+
+#: frame_main.cpp:293
+msgid "Spe&ll checker..."
+msgstr ""
+
+#: frame_main.cpp:293
+msgid "Open spell checker"
+msgstr ""
+
+#: frame_main.cpp:296
+msgid "&Hotkeys..."
+msgstr ""
+
+#: frame_main.cpp:296
+msgid "Remap hotkeys"
+msgstr ""
+
+#: frame_main.cpp:297
+msgid "&Tools"
+msgstr "도구"
+
+#: frame_main.cpp:301
+msgid "&Contents...\t"
+msgstr ""
+
+#: frame_main.cpp:301
+msgid "Help topics"
+msgstr "도움 "
+
+#: frame_main.cpp:303
+msgid "&Website..."
+msgstr "홈패이지..."
+
+#: frame_main.cpp:303
+msgid "Visit Aegisub's official website"
+msgstr ""
+
+#: frame_main.cpp:304
+msgid "&IRC channel..."
+msgstr "IRC 방"
+
+#: frame_main.cpp:304
+msgid "Visit Aegisub's official IRC channel"
+msgstr "에이지썹 IRC 방에 놀러오세요"
+
+#: frame_main.cpp:305
+msgid "&About..."
+msgstr "대하여..."
+
+#: frame_main.cpp:306
+msgid "&Help"
+msgstr "도움"
+
+#: frame_main.cpp:526
+msgid "Save subtitles file"
+msgstr "자막 파일 저장"
+
+#: frame_main.cpp:535
+#: frame_main_events.cpp:450
+msgid "Choose charset code:"
+msgstr ""
+
+#: frame_main.cpp:566
+msgid "Save before continuing?"
+msgstr "지금 저장할까요?"
+
+#: frame_main.cpp:566
+msgid "Unsaved changes"
+msgstr ""
+
+#: frame_main.cpp:742
+msgid "Do you want to load/unload the associated files?"
+msgstr ""
+
+#: frame_main.cpp:742
+msgid "(Un)Load files?"
+msgstr ""
+
+#: frame_main.cpp:825
+msgid "You have timecodes loaded currently. Would you like to unload them?"
+msgstr ""
+
+#: frame_main.cpp:825
+msgid "Unload timecodes?"
+msgstr ""
+
+#: frame_main.cpp:849
+#, possible-c-format
+msgid ""
+"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
+"\n"
+"Video resolution:\t%d x %d\n"
+"Script resolution:\t%d x %d\n"
+"\n"
+"Change subtitles resolution to match video?"
+msgstr ""
+
+#: frame_main.cpp:849
+msgid "Resolution mismatch"
+msgstr ""
+
+#: frame_main_events.cpp:390
+msgid "Save file"
+msgstr "파일 저장"
+
+#: frame_main_events.cpp:397
+msgid "Open video file"
+msgstr "비디오 파일 열기"
+
+#: frame_main_events.cpp:414
+msgid "Open audio file"
+msgstr "오디오 파일 열기"
+
+#: frame_main_events.cpp:434
+#: frame_main_events.cpp:448
+msgid "Open subtitles file"
+msgstr "자막 파일 열기"
+
+#: frame_main_events.cpp:450
+msgid "Charset"
+msgstr ""
+
+#: frame_main_events.cpp:501
+msgid "Open timecodes file"
+msgstr ""
+
+#: frame_main_events.cpp:976
+msgid "File backup saved as \""
+msgstr ""
+
+#: hotkeys.cpp:314
+msgid "Exit"
+msgstr "끝내기"
+
+#: hotkeys.cpp:315
+msgid "Help"
+msgstr "도움"
+
+#: hotkeys.cpp:317
+msgid "Undo"
+msgstr "실행 취소"
+
+#: hotkeys.cpp:318
+msgid "Redo"
+msgstr "되살리기"
+
+#: hotkeys.cpp:321
+msgid "Find Next"
+msgstr "다음 찾기"
+
+#: hotkeys.cpp:323
+msgid "Select Lines"
+msgstr "줄들 선택"
+
+#: hotkeys.cpp:325
+msgid "Cut"
+msgstr "커트"
+
+#: hotkeys.cpp:326
+msgid "Paste"
+msgstr "붙여넣기"
+
+#: hotkeys.cpp:328
+msgid "Video Jump"
+msgstr "비디오가기"
+
+#: hotkeys.cpp:329
+msgid "Jump Video to Start"
+msgstr "비디오 시작으로가기"
+
+#: hotkeys.cpp:330
+msgid "Jump Video to End"
+msgstr "비디오 끝으로가기"
+
+#: hotkeys.cpp:331
+msgid "Set Start to Video"
+msgstr "세트 비디오 시작하기"
+
+#: hotkeys.cpp:332
+msgid "Set End to Video"
+msgstr "세트 비디오 끝나기"
+
+#: hotkeys.cpp:333
+msgid "Snap to Scene"
+msgstr "장면으로 스넵"
+
+#: hotkeys.cpp:334
+msgid "Shift by Current Time"
+msgstr ""
+
+#: hotkeys.cpp:335
+msgid "Zoom 50%"
+msgstr "줌인 50%"
+
+#: hotkeys.cpp:336
+msgid "Zoom 100%"
+msgstr "줌인 100%"
+
+#: hotkeys.cpp:337
+msgid "Zoom 200%"
+msgstr "줌인 200%"
+
+#: hotkeys.cpp:339
+msgid "Video global prev frame"
+msgstr ""
+
+#: hotkeys.cpp:340
+msgid "Video global next frame"
+msgstr ""
+
+#: hotkeys.cpp:341
+msgid "Video global focus seek"
+msgstr ""
+
+#: hotkeys.cpp:342
+msgid "Grid global prev line"
+msgstr ""
+
+#: hotkeys.cpp:343
+msgid "Grid global next line"
+msgstr ""
+
+#: hotkeys.cpp:344
+msgid "Save Subtitles Alt"
+msgstr ""
+
+#: hotkeys.cpp:345
+msgid "Video global zoom in"
+msgstr ""
+
+#: hotkeys.cpp:346
+msgid "Video global zoom out"
+msgstr ""
+
+#: hotkeys.cpp:348
+msgid "Grid move row down"
+msgstr ""
+
+#: hotkeys.cpp:349
+msgid "Grid move row up"
+msgstr ""
+
+#: hotkeys.cpp:350
+msgid "Grid delete rows"
+msgstr ""
+
+#: hotkeys.cpp:351
+msgid "Grid duplicate rows"
+msgstr ""
+
+#: hotkeys.cpp:352
+msgid "Grid duplicate and shift one frame"
+msgstr ""
+
+#: hotkeys.cpp:354
+msgid "Audio Commit Alt"
+msgstr "오디오 Alt 적용 "
+
+#: hotkeys.cpp:355
+msgid "Audio Commit"
+msgstr "오디오 적용 "
+
+#: hotkeys.cpp:356
+msgid "Audio Commit (Stay)"
+msgstr "오디오 적용 (같은)"
+
+#: hotkeys.cpp:357
+msgid "Audio Prev Line"
+msgstr "전 오디오 줄"
+
+#: hotkeys.cpp:358
+msgid "Audio Prev Line Alt"
+msgstr "전 오디오 줄 (alt)"
+
+#: hotkeys.cpp:359
+msgid "Audio Next Line"
+msgstr "다음 오디오 줄"
+
+#: hotkeys.cpp:360
+msgid "Audio Next Line Alt"
+msgstr "다음 오디오 줄 (alt)"
+
+#: hotkeys.cpp:361
+msgid "Audio Play"
+msgstr "오디오 듯기"
+
+#: hotkeys.cpp:362
+msgid "Audio Play Alt"
+msgstr "오디오 듯기 (alt)"
+
+#: hotkeys.cpp:363
+msgid "Audio Karaoke Increase Len"
+msgstr "오디오 가라오케 Len 올리기"
+
+#: hotkeys.cpp:364
+msgid "Audio Karaoke Decrease Len"
+msgstr "오디오 가라오케 Len 내리기"
+
+#: hotkeys.cpp:365
+msgid "Audio Karaoke Increase Len Shift"
+msgstr "오디오 가라오케 Len 움지기기 (올리기)"
+
+#: hotkeys.cpp:366
+msgid "Audio Karaoke Decrease Len Shift"
+msgstr "오디오 가라오케 Len 움지기기 (내리기)"
+
+#: hotkeys.cpp:367
+msgid "Audio Scroll Left"
+msgstr "오디오 왼쪽으로 스크롤"
+
+#: hotkeys.cpp:368
+msgid "Audio Scroll Right"
+msgstr "오디오 오른쪽으로 스크롤"
+
+#: hotkeys.cpp:369
+msgid "Audio Play First 500ms"
+msgstr "시작에서 오디오 500 ms 까지 재생"
+
+#: hotkeys.cpp:370
+msgid "Audio Play Last 500ms"
+msgstr "끝에서 오디오 500 ms 뒤까지 재생"
+
+#: hotkeys.cpp:371
+msgid "Audio Play 500ms Before"
+msgstr "오디오 500 ms 전  재생"
+
+#: hotkeys.cpp:372
+msgid "Audio Play 500ms After"
+msgstr "오디오 500 ms 첫  재생"
+
+#: hotkeys.cpp:373
+msgid "Audio Play Original Line"
+msgstr "오리지날 오디오 재생"
+
+#: hotkeys.cpp:374
+msgid "Audio Add Lead In"
+msgstr ""
+
+#: hotkeys.cpp:375
+msgid "Audio Add Lead Out"
+msgstr ""
+
+#: hotkeys.cpp:377
+msgid "Translation Assistant Play"
+msgstr "번역 도움 재생"
+
+#: subs_edit_box.cpp:73
+msgid "Comment"
+msgstr "코멘트"
+
+#: subs_edit_box.cpp:74
+msgid "Comment this line out. Commented lines don't show up on screen."
+msgstr ""
+
+#: subs_edit_box.cpp:76
+msgid "Style for this line."
+msgstr "이 줄 스타일."
+
+#: subs_edit_box.cpp:78
+msgid "Actor name for this speech. This is only for reference, and is mainly useless."
+msgstr "이 대화 말한 엑터이름 "
+
+#: subs_edit_box.cpp:80
+msgid "Left Margin (0000 = default)"
+msgstr "왼쪽 줄 (0000 = 보통)"
+
+#: subs_edit_box.cpp:82
+msgid "Right Margin (0000 = default)"
+msgstr "오른쪽 줄 (0000 = 보통)"
+
+#: subs_edit_box.cpp:84
+msgid "Vertical Margin (0000 = default)"
+msgstr "수직 줄 (0000 = 보통)"
+
+#: subs_edit_box.cpp:88
+msgid "Layer number"
+msgstr "레이어 숫"
+
+#: subs_edit_box.cpp:90
+msgid "Start time"
+msgstr "시작 시간"
+
+#: subs_edit_box.cpp:93
+msgid "End time"
+msgstr "끝 시간"
+
+#: subs_edit_box.cpp:97
+msgid "Line duration"
+msgstr "줄 길이"
+
+#: subs_edit_box.cpp:99
+msgid "Time"
+msgstr "시간"
+
+#: subs_edit_box.cpp:100
+msgid "Time by h:mm:ss.cs"
+msgstr "h:mm:ss.cs 으로 시간"
+
+#: subs_edit_box.cpp:101
+msgid "Frame"
+msgstr "프래임"
+
+#: subs_edit_box.cpp:102
+msgid "Time by frame number"
+msgstr "프래임으로 시간 "
+
+#: subs_edit_box.cpp:103
+msgid "Syntax"
+msgstr "통어론"
+
+#: subs_edit_box.cpp:104
+msgid "Enable syntax highlighting"
+msgstr "통어론 하이라트 쓰기"
+
+#: subs_edit_box.cpp:130
+msgid "Italics"
+msgstr "기울임"
+
+#: subs_edit_box.cpp:136
+msgid "Font Face Name"
+msgstr "글꼴 패이쓰 이름"
+
+#: subs_edit_box.cpp:138
+msgid "Primary color"
+msgstr "프라이머리 컬러"
+
+#: subs_edit_box.cpp:140
+msgid "Secondary color"
+msgstr "세컨더리 컬러"
+
+#: subs_edit_box.cpp:142
+msgid "Outline color"
+msgstr "아웃트라인 컬러"
+
+#: subs_edit_box.cpp:144
+msgid "Shadow color"
+msgstr "그림자 컬러"
+
+#: subs_edit_box.cpp:950
+msgid "&Undo"
+msgstr "실행 취소"
+
+#: subs_edit_box.cpp:952
+msgid "Cu&t"
+msgstr "커트 (&t)"
+
+#: subs_edit_box.cpp:953
+#: subs_grid.cpp:273
+msgid "&Copy"
+msgstr "복사 (&C)"
+
+#: subs_edit_box.cpp:954
+#: subs_grid.cpp:275
+msgid "&Paste"
+msgstr "붙이기 (&P)"
+
+#: subs_edit_box.cpp:956
+msgid "Select &All"
+msgstr "전체 선택 (&A)"
+
+#: subs_edit_box.cpp:958
+msgid "Split at cursor (preserve times)"
+msgstr "커서 위치 스프릿 (시간보존)"
+
+#: subs_edit_box.cpp:959
+msgid "Split at cursor (estimate times)"
+msgstr "커서 위치 스프릿 (시간견적)"
+
+#: subs_grid.cpp:130
+msgid "L"
+msgstr "L"
+
+#: subs_grid.cpp:131
+msgid "Start"
+msgstr "시작"
+
+#: subs_grid.cpp:132
+msgid "End"
+msgstr "끝"
+
+#: subs_grid.cpp:134
+msgid "Act"
+msgstr "Act"
+
+#: subs_grid.cpp:135
+msgid "Eff"
+msgstr "Eff"
+
+#: subs_grid.cpp:136
+msgid "Lef"
+msgstr "Lef"
+
+#: subs_grid.cpp:137
+msgid "Rig"
+msgstr "Rig"
+
+#: subs_grid.cpp:138
+msgid "Ver"
+msgstr "Ver"
+
+#: subs_grid.cpp:139
+msgid "Dialogue"
+msgstr "대화"
+
+#: subs_grid.cpp:230
+msgid "&Insert (before)"
+msgstr "인서트 (전)  (&I)"
+
+#: subs_grid.cpp:231
+msgid "Insert (after)"
+msgstr "인서트 (압) "
+
+#: subs_grid.cpp:233
+msgid "Insert at video time (before)"
+msgstr "비디오 시간에  인서트하기 (전)"
+
+#: subs_grid.cpp:234
+msgid "Insert at video time (after)"
+msgstr "비디오 시간에  인서트하기 (압)"
+
+#: subs_grid.cpp:241
+msgid "Set start to video"
+msgstr "비디오로 시작하기"
+
+#: subs_grid.cpp:242
+msgid "Set end to video"
+msgstr "비디오로 끝내기"
+
+#: subs_grid.cpp:246
+msgid "&Duplicate"
+msgstr "복사  (&D)"
+
+#: subs_grid.cpp:247
+msgid "&Duplicate and shift by 1 frame"
+msgstr "한 프래임 복사/움지기기 "
+
+#: subs_grid.cpp:251
+msgid "&Swap"
+msgstr "스왑 (&S)"
+
+#: subs_grid.cpp:255
+msgid "&Join (concatenate)"
+msgstr "붙이기 (연결) (&J)"
+
+#: subs_grid.cpp:256
+msgid "Join (keep first)"
+msgstr "붙이기 (시작 변화하지안슴)"
+
+#: subs_grid.cpp:257
+msgid "Join (as Karaoke)"
+msgstr "붙이기 (가라오케)"
+
+#: subs_grid.cpp:260
+msgid "&Make times continuous (change start)"
+msgstr "시간 돌아가게 (처음) (&m)"
+
+#: subs_grid.cpp:261
+msgid "&Make times continuous (change end)"
+msgstr "시간 돌아가게 (끝) (&m)"
+
+#: subs_grid.cpp:266
+msgid "Recombine (1, 1+2) into (1, 2)"
+msgstr "(1, 1+2)을 (1, 2)으로 부치기 "
+
+#: subs_grid.cpp:267
+msgid "Recombine (1+2, 2) into (1, 2)"
+msgstr "(1+2, 2)을 (1, 2)으로 부치기 "
+
+#: subs_grid.cpp:269
+msgid "Recombine (1, 1+2, 2) into (1, 2)"
+msgstr "(1, 1+2, 2)을 (1, 2)으로 부치기 "
+
+#: subs_grid.cpp:274
+msgid "C&ut"
+msgstr "복사 (&u)"
+
+#: tip.cpp:47
+msgid "Aegisub can export subtitles to other formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
+msgstr ""
+
+#: tip.cpp:48
+msgid "You can easily translate subtitle files using the translation assistant."
+msgstr ""
+
+#: tip.cpp:49
+msgid "Styles can be stored in different storages, so that you can keep your projects organized."
+msgstr ""
+
+#: tip.cpp:50
+msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
+msgstr ""
+
+#: tip.cpp:51
+msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub are merciful."
+msgstr ""
+
+#: tip.cpp:52
+msgid "DON'T PANIC!"
+msgstr ""
+
+#: tip.cpp:53
+msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
+msgstr ""
+
+#: tip.cpp:54
+msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
+msgstr ""
+
+#: tip.cpp:55
+msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
+msgstr ""
+
+#: tip.cpp:56
+msgid "When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr ""
+
+#: tip.cpp:57
+msgid "Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."
+msgstr ""
+
+#: video_box.cpp:54
+msgid "Play video starting on this position"
+msgstr "여기서 재생"
+
+#: video_box.cpp:56
+msgid "Play current line"
+msgstr "현재줄 재생"
+
+#: video_box.cpp:58
+msgid "Stop video playback"
+msgstr "정지"
+
+#: video_box.cpp:60
+msgid "Toggle autoscroll of video"
+msgstr "오토 스크롤 토글"
+
+#: video_box.cpp:65
+msgid "Seek video."
+msgstr "시간으로 가기"
+
+#: video_box.cpp:69
+msgid "Current frame time and number."
+msgstr "현제 프레임 시간  & 숫자"
+
+#: video_box.cpp:73
+msgid "Time of this frame relative to start and end of current subs."
+msgstr ""
+
+#: video_display.cpp:259
+msgid "This file is being loaded using DirectShow, which has UNRELIABLE seeking. Frame numbers MIGHT NOT match display, so precise timing CANNOT be trusted."
+msgstr ""
+
+#: video_display.cpp:259
+msgid "Warning!"
+msgstr "경고!"
+
+#: video_display.cpp:599
+msgid "Save PNG snapshot"
+msgstr "스냅샷 PNG로 저장"
+
+#: video_display.cpp:600
+msgid "Copy image to Clipboard"
+msgstr "이미지 복사"
+
+#: video_display.cpp:601
+msgid "Copy coordinates to Clipboard"
+msgstr "위치 복사하기"
+
