@@ -58,9 +58,12 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	// Initialize to null
 	VideoProvider *provider = NULL;
 
+	// Preffered provider
+	wxString preffered = Options.AsText(_T("Video provider")).Lower();
+
 	// See if it's OK to use LAVC
 	#ifdef USE_LAVC
-	if (Options.AsBool(_T("Use ffmpeg"))) {
+	if (preffered == _T("ffmpeg")) {
 		try {
 			provider = new LAVCVideoProvider(video,subtitles);
 		}

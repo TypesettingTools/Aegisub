@@ -153,7 +153,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Threaded Video"),false);
 	SetInt(_T("Avisynth MemoryMax"),64);
 	SetBool(_T("Allow Ancient Avisynth"),false);
-	SetBool(_T("Use ffmpeg"),false);
+	SetText(_T("Video Provider"),_T("Avisynth"));
 
 	SetText(_T("Video resizer"),_T("BilinearResize"));
 	SetInt(_T("Video Check Script Res"), 0);
