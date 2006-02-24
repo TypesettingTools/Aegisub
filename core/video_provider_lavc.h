@@ -40,8 +40,8 @@
 // Headers
 #ifdef USE_LAVC
 #define EMULATE_INTTYPES
-#include <lavc/avcodec.h>
-#include <lavc/avformat.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
 #include "video_provider.h"
 
 
@@ -55,6 +55,9 @@ private:
 	AVCodec *codec;
 	AVFrame *frame;
 	int vidStream;
+
+	int frameNumber;
+	wxBitmap curFrame;
 
 	uint8_t *buffer;
 	int bufferSize;

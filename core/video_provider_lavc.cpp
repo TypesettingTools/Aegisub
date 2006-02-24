@@ -39,6 +39,8 @@
 #ifdef USE_LAVC
 #include <wx/wxprec.h>
 #include "video_provider_lavc.h"
+#include "utils.h"
+#include "vfr.h"
 
 
 ///////////////
@@ -111,7 +113,7 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 		if (!codec) throw _T("Could not find suitable video decoder");
 
 		// Enable truncation
-		if (codec->capabilities & CODEC_CAP_TRUNCATED) codecContext->flags |= CODEC_FLAG_TRUNCATED;
+		//if (codec->capabilities & CODEC_CAP_TRUNCATED) codecContext->flags |= CODEC_FLAG_TRUNCATED;
 
 		// Open codec
 		result = avcodec_open(codecContext,codec);
@@ -119,6 +121,9 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 
 		// Allocate frame
 		frame = avcodec_alloc_frame();
+
+		// Set frame
+		frameNumber = -1;
 	}
 
 	// Catch errors
@@ -155,64 +160,24 @@ void LAVCVideoProvider::Close() {
 //////////////////
 // Get next frame
 void LAVCVideoProvider::GetNextFrame() {
-	static AVPacket packet;
-	static bool firstTime = true;
-	static int bytesRemaining = 0;
-	static uint8_t *rawdata;
-	int decoded;
-	int frameFinished;
+	// Read packet
+	AVPacket packet;
+	while (av_read_frame(formatContext, &packet)>=0) {
+		// Check if packet is part of video stream
+		if(packet.stream_index == vidStream) {
+			// Decode frame
+			int frameFinished;
+			avcodec_decode_video(codecContext, frame, &frameFinished, packet.data, packet.size);
 
-	// First call
-	if (firstTime) {
-		firstTime = false;
-		packet.data = NULL;
-	}
-
-	// Start processing packets
-	bool run = true;
-	while (run) {
-		// Current packet has more bytes
-		while (bytesRemaining > 0) {
-			// Decode
-			decoded = avcodec_decode_video(codecContext,frame,&frameFinished,rawdata,bytesRemaining);
-
-			// Error?
-			if (decoded < 0) throw _T("Error reading frame");
-
-			// Update counts
-			bytesRemaining -= decoded;
-			rawdata += decoded;
-
-			// Finished?
-			if (frameFinished) return;
-		}
-
-		// Get a packet
-		do {
-			// Free packet
-			if (packet.data != NULL) av_free_packet(&packet);
-			
-			// Get new
-			int result = av_read_packet(formatContext,&packet);
-			if (result < 0) {
-				run = false;
-				break;
+			// Success?
+			if(frameFinished) {
+				// Free packet
+				av_free_packet(&packet);
+				return;
 			}
-		} while (packet.stream_index != vidStream);
-
-		// Get packet data
-		if (run) {
-			bytesRemaining = packet.size;
-			rawdata = packet.data;
 		}
-	}
-
-	// End of last pack
-	decoded = avcodec_decode_video(codecContext,frame,&frameFinished,rawdata,bytesRemaining);
-	if (packet.data != NULL) av_free_packet(&packet);
-
-	// Frame finished?
-	if (!frameFinished) throw _T("Unable to finish decoding frame");
+    }
+	av_free_packet(&packet);
 }
 
 
@@ -254,14 +219,29 @@ void LAVCVideoProvider::RefreshSubtitles() {
 /////////////
 // Get frame
 wxBitmap LAVCVideoProvider::GetFrame(int n) {
+	// Return stored frame
+	n = MID(0,n,GetFrameCount()-1);
+	if (n == frameNumber) return curFrame;
+
+	// Seek if needed
+	if (n != frameNumber+1) {
+		av_seek_frame(formatContext,vidStream,n,0);
+	}
+
 	// Get frame
 	GetNextFrame();
 
 	// Bitmap
-	wxBitmap bmp = AVFrameToWX(frame);
+	wxBitmap bmp;
+	if (frame) bmp = AVFrameToWX(frame);
+	else bmp = wxBitmap(GetWidth(),GetHeight());
+
+	// Set current frame
+	curFrame = bmp;
+	frameNumber = n;
 
 	// Return
-	return bmp;
+	return curFrame;
 }
 
 
@@ -274,7 +254,7 @@ void LAVCVideoProvider::GetFloatFrame(float* Buffer, int n) {
 ////////////////
 // Get position
 int LAVCVideoProvider::GetPosition() {
-	return 0;
+	return frameNumber;
 }
 
 
