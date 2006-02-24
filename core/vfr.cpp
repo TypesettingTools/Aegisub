@@ -127,8 +127,7 @@ int FrameRate::PTimeAtFrame(int frame) {
 	//wxASSERT(loaded);
 
 	if (!loaded) return -1;
-
-	wxASSERT(frame >= 0);
+	if (frame <= 0) return 0;
 
 	if (FrameRateType == CFR) {
 		return floor(double(frame) / AverageFrameRate * 1000.0);
@@ -346,10 +345,12 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 // returns the adjusted time for end frames when start=false
 // otherwise for start frames
 int FrameRate::GetFrameAtTime(int ms,bool start) {
-	if (start)
-		return PFrameAtTime(ms+10);
-	else
+	if (start) {
 		return PFrameAtTime(ms);
+	}
+	else {
+		return PFrameAtTime(ms);
+	}
 }
 
 
@@ -357,10 +358,16 @@ int FrameRate::GetFrameAtTime(int ms,bool start) {
 // Get correct time at frame
 // compensates and returns an end time when start=false
 int FrameRate::GetTimeAtFrame(int frame,bool start) {
-	if (start)
-		return PTimeAtFrame(frame);
-	else
-		return PTimeAtFrame(frame+1);
+	int finalTime;
+	if (start) {
+		finalTime = (PTimeAtFrame(frame-1) + PTimeAtFrame(frame))/2;
+	}
+	else {
+		if (FrameRateType == VFR) finalTime = PTimeAtFrame(frame);
+		else finalTime = (PTimeAtFrame(frame) + PTimeAtFrame(frame+1))/2;
+	}
+
+	return finalTime;
 }
 
 
