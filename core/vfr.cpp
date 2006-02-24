@@ -131,12 +131,12 @@ int FrameRate::PTimeAtFrame(int frame) {
 	wxASSERT(frame >= 0);
 
 	if (FrameRateType == CFR) {
-		return floor(double(frame) / AverageFrameRate * 1000);
+		return floor(double(frame) / AverageFrameRate * 1000.0);
 	} else if (FrameRateType == VFR) {
 		if (frame < last_frame)
 			return Frame.at(frame);
 		else 
-			return floor(last_time + double(frame-last_frame) / AverageFrameRate * 1000);
+			return floor(last_time + double(frame-last_frame) / AverageFrameRate * 1000.0);
 	}
 	return -1;
 }
@@ -347,7 +347,7 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 // otherwise for start frames
 int FrameRate::GetFrameAtTime(int ms,bool start) {
 	if (start)
-		return PFrameAtTime(ms) + 1;
+		return PFrameAtTime(ms+10);
 	else
 		return PFrameAtTime(ms);
 }
