@@ -39,12 +39,25 @@
 ///////////
 // Headers
 #ifdef USE_LAVC
+#define EMULATE_INTTYPES
+#include <lavc/avcodec.h>
+#include <lavc/avformat.h>
 #include "video_provider.h"
 
 
 ///////////////////////
 // LibAVCodec provider
 class LAVCVideoProvider : public VideoProvider {
+private:
+	AVFormatContext *formatContext;
+	AVCodecContext *codecContext;
+	AVStream *stream;
+	AVCodec *codec;
+	int vidStream;
+
+	void LoadVideo(wxString filename);
+	void Close();
+
 public:
 	LAVCVideoProvider(wxString filename, wxString subfilename, double zoom);
 	~LAVCVideoProvider();
