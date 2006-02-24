@@ -171,6 +171,9 @@ void LAVCVideoProvider::GetNextFrame() {
 
 			// Success?
 			if(frameFinished) {
+				// Set time
+				lastDecodeTime = packet.dts;
+
 				// Free packet
 				av_free_packet(&packet);
 				return;
@@ -223,13 +226,29 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 	n = MID(0,n,GetFrameCount()-1);
 	if (n == frameNumber) return curFrame;
 
-	// Seek if needed
-	if (n != frameNumber+1) {
-		av_seek_frame(formatContext,vidStream,n,0);
+	// Following frame, just get it
+	if (n == frameNumber+1) {
+		GetNextFrame();
 	}
 
-	// Get frame
-	GetNextFrame();
+	// Needs to seek
+	else {
+		// Get seek position
+		__int64 half = __int64(AV_TIME_BASE) * stream->r_frame_rate.den / stream->r_frame_rate.num / 2;
+		__int64 seekTo =  __int64(n) * AV_TIME_BASE * stream->r_frame_rate.den / stream->r_frame_rate.num + stream->start_time;
+		if (seekTo > half) seekTo -= half;
+		else seekTo = 0;
+		__int64 finalPos = av_rescale(seekTo,stream->time_base.den,AV_TIME_BASE * __int64(stream->time_base.num));
+
+		// Seek to keyframe
+		int result = av_seek_frame(formatContext,vidStream,finalPos,0);
+
+		// Seek until final frame
+		GetNextFrame();
+		while (lastDecodeTime < n) {
+			GetNextFrame();
+		}
+	}
 
 	// Bitmap
 	wxBitmap bmp;

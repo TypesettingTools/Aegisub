@@ -56,6 +56,7 @@ private:
 	AVFrame *frame;
 	int vidStream;
 
+	__int64 lastDecodeTime;
 	int frameNumber;
 	wxBitmap curFrame;
 
