@@ -346,7 +346,7 @@ int FrameRate::PTimeAtFrame(int frame) {
 // returns the adjusted time for end frames when start=false
 // otherwise for start frames
 int FrameRate::GetFrameAtTime(int ms,bool start) {
-	PFrameAtTime(ms,start);
+	return PFrameAtTime(ms,start);
 }
 
 
