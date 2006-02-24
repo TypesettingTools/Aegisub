@@ -288,8 +288,8 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 
 			// Jump to next sub boundary
 			if (direction != 0) {
-				int target1 = VFR_Output.CorrectFrameAtTime(curDiag->Start.GetMS(),true);
-				int target2 = VFR_Output.CorrectFrameAtTime(curDiag->End.GetMS(),false);
+				int target1 = VFR_Output.GetFrameAtTime(curDiag->Start.GetMS(),true);
+				int target2 = VFR_Output.GetFrameAtTime(curDiag->End.GetMS(),false);
 				bool drawn = false;
 
 				// Forward

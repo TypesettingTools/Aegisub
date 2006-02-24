@@ -417,8 +417,8 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			strings.Add(wxString::Format(_T("%i"),curRow+1));
 			strings.Add(wxString::Format(_T("%i"),curDiag->Layer));
 			if (byFrame) {
-				strings.Add(wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(curDiag->Start.GetMS(),true)));
-				strings.Add(wxString::Format(_T("%i"),VFR_Output.CorrectFrameAtTime(curDiag->End.GetMS(),true)));
+				strings.Add(wxString::Format(_T("%i"),VFR_Output.GetFrameAtTime(curDiag->Start.GetMS(),true)));
+				strings.Add(wxString::Format(_T("%i"),VFR_Output.GetFrameAtTime(curDiag->End.GetMS(),true)));
 			}
 			else {
 				strings.Add(curDiag->Start.GetASSFormated());
@@ -776,9 +776,9 @@ void BaseGrid::SetColumnWidths() {
 
 			// Times
 			if (byFrame) {
-				int tmp = VFR_Output.CorrectFrameAtTime(curDiag->Start.GetMS(),true);
+				int tmp = VFR_Output.GetFrameAtTime(curDiag->Start.GetMS(),true);
 				if (tmp > maxStart) maxStart = tmp;
-				tmp = VFR_Output.CorrectFrameAtTime(curDiag->End.GetMS(),true);
+				tmp = VFR_Output.GetFrameAtTime(curDiag->End.GetMS(),true);
 				if (tmp > maxEnd) maxEnd = tmp;
 			}
 		}
@@ -849,8 +849,8 @@ AssDialogue *BaseGrid::GetDialogue(int n) {
 // Check if line is being displayed
 bool BaseGrid::IsDisplayed(AssDialogue *line) {
 	if (!video->loaded) return false;
-	int f1 = VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true);
-	int f2 = VFR_Output.CorrectFrameAtTime(line->End.GetMS(),false);
+	int f1 = VFR_Output.GetFrameAtTime(line->Start.GetMS(),true);
+	int f2 = VFR_Output.GetFrameAtTime(line->End.GetMS(),false);
 	if (f1 <= video->frame_n && f2 >= video->frame_n) return true;
 	return false;
 }

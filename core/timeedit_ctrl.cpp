@@ -104,7 +104,7 @@ void TimeEdit::SetByFrame(bool enable) {
 
 	// By frames
 	if (enable) {
-		if (VFR_Output.loaded) {
+		if (VFR_Output.IsLoaded()) {
 			byFrame = true;
 			UpdateText();
 		}
@@ -123,7 +123,7 @@ void TimeEdit::SetByFrame(bool enable) {
 void TimeEdit::UpdateText() {
 	ready = false;
 	if (byFrame) {
-		int frame_n = VFR_Output.CorrectFrameAtTime(time.GetMS(),!isEnd);
+		int frame_n = VFR_Output.GetFrameAtTime(time.GetMS(),!isEnd);
 		SetValue(wxString::Format(_T("%i"),frame_n));
 	}
 	else SetValue(time.GetASSFormated());
@@ -150,7 +150,7 @@ void TimeEdit::Update() {
 	if (byFrame) {
 		long temp;
 		GetValue().ToLong(&temp);
-		time.SetMS(VFR_Output.CorrectTimeAtFrame(temp,!isEnd));
+		time.SetMS(VFR_Output.GetTimeAtFrame(temp,!isEnd));
 	}
 
 	// Update modified status

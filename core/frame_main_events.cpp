@@ -263,7 +263,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_Default,state);
 		MenuBar->Enable(Menu_Video_AR_Full,state);
 		MenuBar->Enable(Menu_Video_AR_Wide,state);
-		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.loaded && VFR_Output.FrameRateType == VFR); //fix me, wrong?
+		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR); //fix me, wrong?
 
 		// Set AR radio
 		if (videoBox->videoDisplay->arType == 0) MenuBar->Check(Menu_Video_AR_Default,true);
@@ -834,8 +834,8 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 		}
 
 		// Get times
-		int start_ms = VFR_Output.CorrectTimeAtFrame(prev,true);
-		int end_ms = VFR_Output.CorrectTimeAtFrame(next-1,false);
+		int start_ms = VFR_Output.GetTimeAtFrame(prev,true);
+		int end_ms = VFR_Output.GetTimeAtFrame(next-1,false);
 		AssDialogue *cur;
 
 		// Update rows
@@ -865,7 +865,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 		// Get shifting in ms
 		AssDialogue *cur = SubsBox->GetDialogue(sels[0]);
 		if (!cur) return;
-		int shiftBy = VFR_Output.CorrectTimeAtFrame(videoBox->videoDisplay->frame_n,true) - cur->Start.GetMS();
+		int shiftBy = VFR_Output.GetTimeAtFrame(videoBox->videoDisplay->frame_n,true) - cur->Start.GetMS();
 
 		// Update
 		for (int i=0;i<n;i++) {

@@ -278,7 +278,7 @@ void SubsEditBox::SetToLine(int n) {
 		if (Options.AsBool(_T("Sync video with subs")) == true) {
 			video->Stop();
 			AssDialogue *cur = grid->GetDialogue(n);
-			if (cur) video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->Start.GetMS(),true));
+			if (cur) video->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
 		}
 	}
 }
@@ -554,7 +554,7 @@ void SubsEditBox::SetControlsState (bool state) {
 ////////////////////////////////////
 // Disables or enables frame timing
 void SubsEditBox::UpdateFrameTiming () {
-	if (VFR_Output.loaded) ByFrame->Enable(enabled);
+	if (VFR_Output.IsLoaded()) ByFrame->Enable(enabled);
 	else {
 		ByFrame->Enable(false);
 		ByTime->SetValue(true);

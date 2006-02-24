@@ -67,8 +67,8 @@ void AssTransformFramerateFilter::Init() {
 // Process
 void AssTransformFramerateFilter::ProcessSubs(AssFile *subs) {
 	// Transform frame rate
-	if (Input->loaded && Output->loaded) {
-		if (Output->FrameRateType == VFR || Output->GetAverage() != Input->GetAverage()) {
+	if (Input->IsLoaded() && Output->IsLoaded()) {
+		if (Output->GetFrameRateType() == VFR || Output->GetAverage() != Input->GetAverage()) {
 			TransformFrameRate(subs);
 		}
 	}
@@ -84,7 +84,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxString initialInput;
 	wxButton *FromVideo = new wxButton(base,Get_Input_From_Video,_("From Video"));
-	if (VFR_Input.loaded) initialInput = wxString::Format(_T("%2.3f"),VFR_Input.GetAverage());
+	if (VFR_Input.IsLoaded()) initialInput = wxString::Format(_T("%2.3f"),VFR_Input.GetAverage());
 	else {
 		initialInput = _T("23.976");
 		FromVideo->Enable(false);
@@ -106,7 +106,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	// Output bottom line
 	RadioOutputCFR = new wxRadioButton(base,-1,_("Constant: "));
 	wxString initialOutput = initialInput;
-	if (VFR_Output.FrameRateType != VFR) {
+	if (VFR_Output.GetFrameRateType() != VFR) {
 		RadioOutputVFR->Enable(false);
 		RadioOutputCFR->SetValue(true);
 	}
@@ -243,7 +243,7 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	AssDialogue *curDialogue;
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 		curEntry = *cur;
-		curEntry->StartMS = Input->CorrectTimeAtFrame(Output->CorrectFrameAtTime(curEntry->StartMS,true),true);
+		curEntry->StartMS = Input->GetTimeAtFrame(Output->GetFrameAtTime(curEntry->StartMS,true),true);
 		curDialogue = AssEntry::GetAsDialogue(curEntry);
 
 		// Update dialogue entries
@@ -258,8 +258,8 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 			// Process stuff
 			curDialogue->ParseASSTags();
 			curDialogue->ProcessParameters(TransformTimeTags,&data);
-			curDialogue->Start.SetMS(Input->CorrectTimeAtFrame(Output->CorrectFrameAtTime(curDialogue->Start.GetMS(),true),true));
-			curDialogue->End.SetMS(Input->CorrectTimeAtFrame(Output->CorrectFrameAtTime(curDialogue->End.GetMS(),false),false));
+			curDialogue->Start.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->Start.GetMS(),true),true));
+			curDialogue->End.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->End.GetMS(),false),false));
 			curDialogue->UpdateText();
 			curDialogue->UpdateData();
 			curDialogue->ClearBlocks();

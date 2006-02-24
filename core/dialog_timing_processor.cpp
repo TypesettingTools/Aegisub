@@ -173,7 +173,7 @@ void DialogTimingProcessor::UpdateControls() {
 	adjascentThres->Enable(adjsEnable->IsChecked());
 
 	// Keyframes are only available if timecodes are loaded
-	bool keysAvailable = VFR_Output.loaded;
+	bool keysAvailable = VFR_Output.IsLoaded();
 	bool enableKeys = keysEnable->IsChecked() && keysAvailable;
 	keysThresOver->Enable(enableKeys);
 	keysThresUnder->Enable(enableKeys);
@@ -485,21 +485,21 @@ void DialogTimingProcessor::Process() {
 			cur = GetSortedDialogue(i);
 
 			// Get start/end frames
-			startF = VFR_Output.CorrectFrameAtTime(cur->Start.GetMS(),true);
-			endF = VFR_Output.CorrectFrameAtTime(cur->End.GetMS(),false);
+			startF = VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true);
+			endF = VFR_Output.GetFrameAtTime(cur->End.GetMS(),false);
 			changed = false;
 
 			// Get closest for start
 			closest = GetClosestKeyFrame(startF);
 			if ((closest > startF && closest-startF <= overThres) || (closest < startF && startF-closest <= underThres)) {
-				cur->Start.SetMS(VFR_Output.CorrectTimeAtFrame(closest,true));
+				cur->Start.SetMS(VFR_Output.GetTimeAtFrame(closest,true));
 				changed = true;
 			}
 
 			// Get closest for end
 			closest = GetClosestKeyFrame(endF)-1;
 			if ((closest > endF && closest-endF <= overThres) || (closest < endF && endF-closest <= underThres)) {
-				cur->End.SetMS(VFR_Output.CorrectTimeAtFrame(closest,false));
+				cur->End.SetMS(VFR_Output.GetTimeAtFrame(closest,false));
 				changed = true;
 			}
 

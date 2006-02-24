@@ -143,7 +143,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 	if (filename.IsEmpty()) {
 		delete provider;
 		provider = NULL;
-		if (VFR_Output.FrameRateType == VFR) VFR_Output.Unload();
+		if (VFR_Output.GetFrameRateType() == VFR) VFR_Output.Unload();
 		VFR_Input.Unload();
 
 		videoName = _T("");
@@ -179,7 +179,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 
 				// Ask to override timecodes
 				int override = wxYES;
-				if (VFR_Output.FrameRateType == VFR) override = wxMessageBox(_T("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_T("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
+				if (VFR_Output.GetFrameRateType() == VFR) override = wxMessageBox(_T("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_T("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
 				if (override == wxYES) mkvwrap.SetToTimecodes(VFR_Output);
 
 				// Close mkv
@@ -193,7 +193,9 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			length = provider->GetFrameCount();
 			fps = provider->GetFPS();
 			VFR_Input.SetCFR(fps);
-			if (!VFR_Output.loaded) VFR_Output.SetCFR(fps,true);
+
+			if (!VFR_Output.IsLoaded()) 
+				VFR_Output.SetCFR(fps);
 
 			// Set range of slider
 			ControlSlider->SetRange(0,length-1);
@@ -286,8 +288,8 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
 		int StartFrame, EndFrame, localframe;
 		if( curline 
-			&& (StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true)) <= frame_n
-			&& (EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false)) >= frame_n 
+			&& (StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true)) <= frame_n
+			&& (EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false)) >= frame_n 
 		) 
 		{
 			localframe = frame_n - StartFrame;
@@ -459,7 +461,7 @@ void VideoDisplay::JumpToFrame(int n) {
 ////////////////////////////
 // Jumps to a specific time
 void VideoDisplay::JumpToTime(int ms) {
-	JumpToFrame(VFR_Output.CorrectFrameAtTime(ms,true));
+	JumpToFrame(VFR_Output.GetFrameAtTime(ms));
 }
 
 
@@ -637,8 +639,8 @@ void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 	AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
 	if( !curline ) return;
 
-	int StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
-	int EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
+	int StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true);
+	int EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false);
 	
 	if( frame_n<StartFrame || frame_n>EndFrame ) return;
 
@@ -819,8 +821,8 @@ void VideoDisplay::PlayLine() {
 
 	// Set variables
 	IsPlaying = true;
-	StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
-	EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
+	StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true);
+	EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false);
 
 	// Jump to start
 	PlayNextFrame = StartFrame;

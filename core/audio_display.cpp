@@ -221,14 +221,14 @@ void AudioDisplay::UpdateImage(bool weak) {
 		dc.SetPen(wxPen(wxColour(255,0,255),1));
 
 		// Get min and max frames to care about
-		int minFrame = VFR_Output.CorrectFrameAtTime(GetMSAtX(0),true);
-		int maxFrame = VFR_Output.CorrectFrameAtTime(GetMSAtX(w),true);
+		int minFrame = VFR_Output.GetFrameAtTime(GetMSAtX(0),true);
+		int maxFrame = VFR_Output.GetFrameAtTime(GetMSAtX(w),true);
 
 		// Scan list
 		for (int i=0;i<nKeys;i++) {
 			int cur = video->KeyFrames[i];
 			if (cur >= minFrame && cur <= maxFrame) {
-				int x = GetXAtMS(VFR_Output.CorrectTimeAtFrame(cur,true));
+				int x = GetXAtMS(VFR_Output.GetTimeAtFrame(cur,true));
 				dc.DrawLine(x,0,x,h);
 			}
 			else if (cur > maxFrame) break;

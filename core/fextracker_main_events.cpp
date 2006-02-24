@@ -91,8 +91,8 @@ void FrameMain::OnVideoTrackPoints(wxCommandEvent &event) {
 	// Allocate temp image
 	float* FloatImg = new float[ movie->GetWidth()*movie->GetHeight() ];
 
-	int StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
-	int EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
+	int StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true);
+	int EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false);
 
 	for( int Frame = StartFrame; Frame <= EndFrame; Frame ++ )
 	{
@@ -152,8 +152,8 @@ void FrameMain::OnVideoTrackSplitLine(wxCommandEvent &event) {
 	if( !curline->Movement ) return;
 
 	// Create split lines
-	int StartFrame = VFR_Output.CorrectFrameAtTime(curline->Start.GetMS(),true);
-	int EndFrame = VFR_Output.CorrectFrameAtTime(curline->End.GetMS(),false);
+	int StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true);
+	int EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false);
 
 	AssFile *subs = AssFile::top;
 	int ResXValue,ResYValue;
@@ -174,8 +174,8 @@ void FrameMain::OnVideoTrackSplitLine(wxCommandEvent &event) {
 //		f.Pos.x /= videoBox->videoDisplay->GetW
 
 		AssDialogue *cur = new AssDialogue( curline->data );
-		cur->Start.SetMS(VFR_Output.CorrectTimeAtFrame(Frame,true));
-		cur->End.SetMS(VFR_Output.CorrectTimeAtFrame(Frame,false));
+		cur->Start.SetMS(VFR_Output.GetTimeAtFrame(Frame,true));
+		cur->End.SetMS(VFR_Output.GetTimeAtFrame(Frame,false));
 		cur->Text = wxString::Format( _T("{\\pos(%.0f,%.0f)\\fscx%.2f\\fscy%.2f}"), f.Pos.x*sx, f.Pos.y*sy, f.Scale.x*100, f.Scale.y*100 ) + cur->Text;
 		cur->UpdateData();
 

@@ -769,7 +769,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		// Check if there is anything to change
 		int autoLoadMode = Options.AsInt(_T("Autoload linked files"));
 		bool hasToLoad = false;
-		if (curSubsAudio != audioBox->audioName || curSubsVFR != VFR_Output.vfrFile || curSubsVideo != videoBox->videoDisplay->videoName) {
+		if (curSubsAudio != audioBox->audioName || curSubsVFR != VFR_Output.GetFilename() || curSubsVideo != videoBox->videoDisplay->videoName) {
 			hasToLoad = true;
 		}
 
@@ -830,7 +830,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		subs->SetScriptInfo(_T("Video Aspect Ratio"),ar);
 		subs->SetScriptInfo(_T("Video Zoom"),zoom);
 		subs->SetScriptInfo(_T("Video Position"),seekpos);
-		subs->SetScriptInfo(_T("VFR File"),MakeRelativePath(VFR_Output.vfrFile,AssFile::top->filename));
+		subs->SetScriptInfo(_T("VFR File"),MakeRelativePath(VFR_Output.GetFilename(),AssFile::top->filename));
 
 		// Create list of Automation scripts
 		wxString scripts;
@@ -857,7 +857,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	if (blockVideoLoad) return;
 	videoBox->videoDisplay->Stop();
 	try {
-		if (videoBox->videoDisplay->loaded && VFR_Output.FrameRateType == VFR && !autoload) {
+		if (videoBox->videoDisplay->loaded && VFR_Output.GetFrameRateType() == VFR && !autoload) {
 			int result = wxMessageBox(_("You have timecodes loaded currently. Would you like to unload them?"), _("Unload timecodes?"), wxYES_NO, this);
 			if (result == wxYES) {
 				VFR_Output.Unload();
@@ -950,8 +950,8 @@ void FrameMain::LoadVFR(wxString filename) {
 
 	else {
 		VFR_Output.Unload();
-		if (videoBox->videoDisplay->loaded) {
-			VFR_Output.SetCFR(videoBox->videoDisplay->fps,true);
+		if (videoBox->videoDisplay->loaded && !VFR_Output.IsLoaded()) {
+			VFR_Output.SetCFR(videoBox->videoDisplay->fps);
 		}
 	}
 

@@ -200,7 +200,7 @@ void DialogStyling::JumpToLine(int n) {
 	grid->MakeCellVisible(linen,0);
 
 	// Update display
-	if (PreviewCheck->IsChecked()) grid->video->JumpToFrame(VFR_Output.CorrectFrameAtTime(line->Start.GetMS(),true));
+	if (PreviewCheck->IsChecked()) grid->video->JumpToFrame(VFR_Output.GetFrameAtTime(line->Start.GetMS(),true));
 }
 
 

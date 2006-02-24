@@ -78,19 +78,21 @@ FrameRate::FrameRate() {
 //////////////
 // Destructor
 FrameRate::~FrameRate() {
-	Clear();
+	Unload();
 }
 
 
 /////////////////////////////
 // Gets frame number at time
-int FrameRate::GetFrameAtTime(int ms) {
+int FrameRate::PFrameAtTime(int ms) {
+	//wxASSERT(loaded);
+
 	if (!loaded) return -1;
 
-	ms = MAX(ms,0); //fix me, unsafe for CorrectFrame... for frame 0?
+	ms = MAX(ms,0); //fix me, unsafe for GetFrame... for frame 0?
 
 	if (FrameRateType == CFR) {
-		return floor((double(ms)/1000.0) * AverageFrameRate);
+		return floor(double(ms)/1000.0 * AverageFrameRate);
 	}
 	else if (FrameRateType == VFR) {
 		if (ms < floor(last_time)) {
@@ -111,8 +113,8 @@ int FrameRate::GetFrameAtTime(int ms) {
 				if (largerEqual) end = cur-1;
 				else start = cur+1;
 			}
-		} else if (assumefps != 0) {
-			return last_frame + floor((ms-last_time) * assumefps / 1000);
+		} else {
+			return last_frame + floor((ms-last_time) * AverageFrameRate / 1000);
 		}
 	}
 	return -1;
@@ -121,7 +123,9 @@ int FrameRate::GetFrameAtTime(int ms) {
 
 //////////////////////
 // Gets time at frame
-int FrameRate::GetTimeAtFrame(int frame) {
+int FrameRate::PTimeAtFrame(int frame) {
+	//wxASSERT(loaded);
+
 	if (!loaded) return -1;
 
 	wxASSERT(frame >= 0);
@@ -131,8 +135,8 @@ int FrameRate::GetTimeAtFrame(int frame) {
 	} else if (FrameRateType == VFR) {
 		if (frame < last_frame)
 			return Frame.at(frame);
-		else if (assumefps != 0)
-			return floor(last_time + (frame-last_frame+1) / assumefps * 1000);
+		else 
+			return floor(last_time + double(frame-last_frame) / AverageFrameRate * 1000);
 	}
 	return -1;
 }
@@ -143,6 +147,8 @@ int FrameRate::GetTimeAtFrame(int frame) {
 void FrameRate::Load(wxString filename) {
 	using namespace std;
 	
+	Unload();
+
 	// Check if file exists
 	wxFileName filetest(filename);
 	if (!filetest.FileExists()) throw _T("File not found.");
@@ -152,136 +158,139 @@ void FrameRate::Load(wxString filename) {
 	file.open(filename.mb_str(wxConvLocal));
 	if (!file.is_open()) throw _T("Could not open file.");
 
-	//fix me, will b0rk if loading the file fails
-	Unload();
+	try {
 
-	// Read header
-	char buffer[65536];
-	file.getline(buffer,65536);
-	wxString header(buffer,wxConvUTF8);
+		// Read header
+		char buffer[65536];
+		file.getline(buffer,65536);
+		wxString header(buffer,wxConvUTF8);
 
-	// V1, code converted from avcvfr9
-	if (header == _T("# timecode format v1")) {
-		//locate the default fps line
-		
-		while (!file.eof()) {
-			file.getline(buffer,65536);
-			wxString curLine(buffer,wxConvUTF8);
-
-			//skip empty lines and comments
-			if (curLine == _T("") || curLine.Left(1) == _T("#"))
-				continue;
-			//fix me? should be case insensitive comparison
-			else if (curLine.Left(7) != _T("Assume "))
-				throw _T("Encountered data before 'Assume <fps>' line");
-			else {
-				curLine.Mid(6).ToDouble(&assumefps);
-				break;
-			}
-		}
-
-		//read and expand all timecodes to v2
-		wxString curline;
-
-		double currenttime = 0;
-		int lposition = -1;
-
-		long lstart;
-		long lend;
-		double lfps;
-
-		while (!file.eof()) {
-			file.getline(buffer,65536);
-			wxString curLine(buffer,wxConvUTF8);
-
-			//skip empty lines and comments
-			if (curLine == _T("") || curLine.Left(1) == _T("#"))
-				continue;
+		// V1, code converted from avcvfr9
+		if (header == _T("# timecode format v1")) {
+			//locate the default fps line
 			
-			wxString tmp = curLine.AfterFirst(_T(','));
-			wxString temp = curLine.BeforeFirst(_T(','));
-			temp.ToLong(&lstart);
-			temp = tmp.BeforeLast(_T(','));
-			temp.ToLong(&lend);
-			temp = tmp.AfterLast(_T(','));
-			temp.ToDouble(&lfps);
+			while (!file.eof()) {
+				file.getline(buffer,65536);
+				wxString curLine(buffer,wxConvUTF8);
 
-			for (int i = 0; i <= lstart - lposition - 2; i++)
-				AddFrame(floor(currenttime+(i*1000) / assumefps));
-
-			currenttime += ((lstart - lposition - 1)*1000) / assumefps;
-
-			for (int i = 0; i <= lend - lstart; i++)
-				AddFrame(floor(currenttime+(i*1000) / lfps));
-
-			currenttime += ((lend - lstart + 1)*1000) / lfps;
-
-			lposition = lend;
-		}
-
-		last_time = currenttime;
-		last_frame = Frame.size();
-	}
-
-	// V2
-	else if (header == _T("# timecode format v2")) {
-		// Assigns new VFR file
-		FrameRateType = VFR;
-
-		long lftime = -1;
-		long cftime = 0;
-		last_frame = 0;
-
-		// Reads body
-		while (!file.eof()) {
-			file.getline (buffer,65536);
-			wxString curLine(buffer,wxConvUTF8);
-
-			//skip empty lines and comments
-			if (curLine == _T("") || curLine.Left(1) == _T("#"))
-				continue;
-
-			wxString tmp = curLine.BeforeFirst(_T('.'));
-			tmp.ToLong(&cftime);
-
-			if (lftime < cftime) {
-				file.close();
-				Unload();
-				throw _T("Out of order timecodes found");
+				//skip empty lines and comments
+				if (curLine == _T("") || curLine.Left(1) == _T("#"))
+					continue;
+				//fix me? should be case insensitive comparison
+				else if (curLine.Left(7) != _T("Assume "))
+					throw _T("Encountered data before 'Assume <fps>' line");
+				else {
+					if (!curLine.Mid(6).ToDouble(&AverageFrameRate) || AverageFrameRate <= 0)
+						throw _T("Invalid 'Assume <fps>' line");
+					break;
+				}
 			}
 
-			AddFrame(cftime);
-			lftime = cftime;
+			//read and expand all timecodes to v2
+			wxString curline;
+
+			double currenttime = 0;
+			int lposition = -1;
+
+			long lstart;
+			long lend;
+			double lfps;
+
+			while (!file.eof()) {
+				file.getline(buffer,65536);
+				wxString curLine(buffer,wxConvUTF8);
+
+				//skip empty lines and comments
+				if (curLine == _T("") || curLine.Left(1) == _T("#"))
+					continue;
+				
+				wxString tmp = curLine.AfterFirst(_T(','));
+				wxString temp = curLine.BeforeFirst(_T(','));
+				if (!temp.ToLong(&lstart) || lstart < 0)
+					throw _T("Timecode parsing error, invalid start format found");
+				temp = tmp.BeforeLast(_T(','));
+				if (!temp.ToLong(&lend) || lend < 0)
+					throw _T("Timecode parsing error, invalid end format found");
+				temp = tmp.AfterLast(_T(','));
+				if (!temp.ToDouble(&lfps) || lfps <= 0)
+					throw _T("Timecode parsing error, invalid fps format found");
+
+
+				for (int i = 0; i <= lstart - lposition - 2; i++)
+					AddFrame(floor(currenttime+(i*1000) / AverageFrameRate));
+
+				currenttime += ((lstart - lposition - 1)*1000) / AverageFrameRate;
+
+				for (int i = 0; i <= lend - lstart; i++)
+					AddFrame(floor(currenttime+(i*1000) / lfps));
+
+				currenttime += ((lend - lstart + 1)*1000) / lfps;
+
+				lposition = lend;
+			}
+
+			last_time = currenttime;
+			last_frame = Frame.size();
 		}
 
-		last_time = cftime;
-		last_frame = Frame.size();
+		// V2
+		else if (header == _T("# timecode format v2")) {
+			// Assigns new VFR file
+			FrameRateType = VFR;
 
-		CalcAverage();
+			long lftime = -1;
+			long cftime = 0;
+			last_frame = 0;
 
-	}
+			// Reads body
+			while (!file.eof()) {
+				file.getline (buffer,65536);
+				wxString curLine(buffer,wxConvUTF8);
 
-	// Unknown
-	else {
+				//skip empty lines and comments
+				if (curLine == _T("") || curLine.Left(1) == _T("#"))
+					continue;
+
+				wxString tmp = curLine.BeforeFirst(_T('.'));
+				tmp.ToLong(&cftime);
+
+				if (lftime >= cftime)
+					throw _T("Out of order/too close timecodes found");
+
+				AddFrame(cftime);
+				lftime = cftime;
+			}
+
+			last_time = cftime;
+			last_frame = Frame.size();
+
+			CalcAverage();
+
+		}
+
+		// Unknown
+		else 
+			throw _T("Unknown file format.");
+
+		// Run test
+		/*bool doTest = false;
+		if (doTest) {
+			int fail = 0;
+			int res;
+			for (int i=0;i<1000;i++) {
+				res = GetFrameAtTime(GetTimeAtFrame(i));
+				if (res != i) {
+					wxLogMessage(wxString::Format(_T("Expected %i but got %i (%i)"),i,res,GetTimeAtFrame(i)));
+					fail++;
+				}
+			}
+			if (fail) wxLogMessage(wxString::Format(_T("Failed %i times"),fail));
+			else wxLogMessage(_T("VFR passes test"));
+		}*/
+	} catch (wchar_t *) {
 		file.close();
 		Unload();
-		throw _T("Unknown file format.");
-	}
-
-	// Run test
-	bool doTest = false;
-	if (doTest) {
-		int fail = 0;
-		int res;
-		for (int i=0;i<1000;i++) {
-			res = GetFrameAtTime(GetTimeAtFrame(i));
-			if (res != i) {
-				wxLogMessage(wxString::Format(_T("Expected %i but got %i (%i)"),i,res,GetTimeAtFrame(i)));
-				fail++;
-			}
-		}
-		if (fail) wxLogMessage(wxString::Format(_T("Failed %i times"),fail));
-		else wxLogMessage(_T("VFR passes test"));
+		throw;
 	}
 
 	// Close file
@@ -297,7 +306,6 @@ void FrameRate::Load(wxString filename) {
 void FrameRate::Unload () {
 	FrameRateType = NONE;
 	AverageFrameRate = 0;
-	assumefps = 0;
 	last_time = 0;
 	last_frame = 0;
 	Clear();
@@ -308,9 +316,7 @@ void FrameRate::Unload () {
 
 ///////////////
 // Sets to CFR
-void FrameRate::SetCFR(double fps,bool ifunset) {
-	if (loaded && ifunset) return;
-
+void FrameRate::SetCFR(double fps) {
 	Unload();
 	loaded = true;
 	FrameRateType = CFR;
@@ -339,37 +345,22 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 // Get correct frame at time
 // returns the adjusted time for end frames when start=false
 // otherwise for start frames
-int FrameRate::CorrectFrameAtTime(int ms,bool start) {
-	int frame;
-
-	// CFR
-	if (FrameRateType == CFR) {
-		int delta = 0;
-		if (start) delta = 1;
-		frame = GetFrameAtTime(ms-delta)+delta;
-		int time = GetTimeAtFrame(frame);
-		if (start && time < ms) frame++;
-		if (!start && time > ms) frame--;
-	}
-
-	// VFR
-	else {
-		frame = GetFrameAtTime(ms);
-		if (!start) frame--;
-	}
-
-	return frame;
+int FrameRate::GetFrameAtTime(int ms,bool start) {
+	if (start)
+		return PFrameAtTime(ms) + 1;
+	else
+		return PFrameAtTime(ms);
 }
 
 
 /////////////////////////////
 // Get correct time at frame
 // compensates and returns an end time when start=false
-int FrameRate::CorrectTimeAtFrame(int frame,bool start) {
+int FrameRate::GetTimeAtFrame(int frame,bool start) {
 	if (start)
-		return GetTimeAtFrame(frame);
+		return PTimeAtFrame(frame);
 	else
-		return GetTimeAtFrame(frame+1);
+		return PTimeAtFrame(frame+1);
 }
 
 

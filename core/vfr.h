@@ -63,33 +63,37 @@ private:
 	double last_time;
 	int last_frame;
 	std::vector<int> Frame;
-	double assumefps;
-	double AverageFrameRate;
+
+	// contains the assumed fps for v1 timecodes, average for v2 and actual fps for cfr
+	double AverageFrameRate; 
 
 	void AddFrame(int ms);
 	void Clear();
 
 	void CalcAverage();
+	int PFrameAtTime(int ms);
+	int PTimeAtFrame(int frame);
 
+	ASS_FrameRateType FrameRateType;
+	bool loaded;
+	wxString vfrFile;
 public:
 	FrameRate();
 	~FrameRate();
 
-	wxString vfrFile;
-	bool loaded;
-	ASS_FrameRateType FrameRateType;
-
-	void SetCFR(double fps,bool ifunset=false);
+	void SetCFR(double fps);
 	void SetVFR(std::vector<int> times);
 
+	// Loading always unloads even on failure
 	void Load(wxString file);
 	void Unload();
-	int GetFrameAtTime(int ms);
-	int GetTimeAtFrame(int frame);
-	int CorrectFrameAtTime(int ms,bool start);
-	int CorrectTimeAtFrame(int frame,bool start);
+	int GetFrameAtTime(int ms,bool start=true);
+	int GetTimeAtFrame(int frame,bool start=true);
 
 	double GetAverage() { return AverageFrameRate; };
+	bool IsLoaded() { return loaded; };
+	ASS_FrameRateType GetFrameRateType() { return FrameRateType; };
+	wxString GetFilename() { return vfrFile; };
 };
 
 

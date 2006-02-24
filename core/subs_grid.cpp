@@ -134,7 +134,7 @@ void SubtitlesGrid::OnPopupMenu() {
 
 		// Duplicate selection
 		menu.Append(MENU_DUPLICATE,_("&Duplicate"),_T("Duplicate the selected lines"))->Enable(continuous);
-		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_T("Duplicate lines and shift by one frame"))->Enable(continuous && VFR_Output.loaded);
+		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_T("Duplicate lines and shift by one frame"))->Enable(continuous && VFR_Output.IsLoaded());
 
 		// Swaps selection
 		state = (sels == 2);
@@ -243,7 +243,7 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 			}
 
 			// Duplicate and shift
-			if (VFR_Output.loaded) {
+			if (VFR_Output.IsLoaded()) {
 				if (Hotkeys.IsPressed(_T("Grid duplicate and shift one frame"))) {
 					DuplicateLines(n,n2,true);
 					return;
@@ -379,7 +379,7 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = VFR_Output.CorrectTimeAtFrame(video->frame_n,true);
+	int video_ms = VFR_Output.GetTimeAtFrame(video->frame_n,true);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms+5000);
 	def->Style = GetDialogue(n)->Style;
@@ -399,7 +399,7 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = VFR_Output.CorrectTimeAtFrame(video->frame_n,true);
+	int video_ms = VFR_Output.GetTimeAtFrame(video->frame_n,true);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms+5000);
 	def->Style = GetDialogue(n)->Style;
@@ -950,9 +950,9 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 
 		// Shift to next frame
 		if (nextFrame) {
-			int posFrame = VFR_Output.CorrectFrameAtTime(cur->End.GetMS(),false) + 1;
-			cur->Start.SetMS(VFR_Output.CorrectTimeAtFrame(posFrame,true));
-			cur->End.SetMS(VFR_Output.CorrectTimeAtFrame(posFrame,false));
+			int posFrame = VFR_Output.GetFrameAtTime(cur->End.GetMS(),false) + 1;
+			cur->Start.SetMS(VFR_Output.GetFrameAtTime(posFrame,true));
+			cur->End.SetMS(VFR_Output.GetFrameAtTime(posFrame,false));
 			cur->UpdateData();
 		}
 
@@ -1004,9 +1004,9 @@ void SubtitlesGrid::ShiftLineByFrames(int n,int len,int type) {
 	AssDialogue *cur = GetDialogue(n);
 
 	// Start
-	if (type != 2) cur->Start.SetMS(VFR_Output.CorrectTimeAtFrame(len + VFR_Output.CorrectFrameAtTime(cur->Start.GetMS(),true),true));
+	if (type != 2) cur->Start.SetMS(VFR_Output.GetTimeAtFrame(len + VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true),true));
 	// End
-	if (type != 1) cur->End.SetMS(VFR_Output.CorrectTimeAtFrame(len + VFR_Output.CorrectFrameAtTime(cur->End.GetMS(),false),false));
+	if (type != 1) cur->End.SetMS(VFR_Output.GetTimeAtFrame(len + VFR_Output.GetFrameAtTime(cur->End.GetMS(),false),false));
 
 	// Update data
 	cur->UpdateData();
@@ -1081,10 +1081,10 @@ void SubtitlesGrid::CommitChanges(bool force) {
 // Set start to video pos
 void SubtitlesGrid::SetSubsToVideo(bool start) {
 	// Check if it's OK to do it
-	if (!VFR_Output.loaded) return;
+	if (!VFR_Output.IsLoaded()) return;
 
 	// Get new time
-	int ms = VFR_Output.CorrectTimeAtFrame(video->frame_n,start);
+	int ms = VFR_Output.GetTimeAtFrame(video->frame_n,start);
 
 	// Update selection
 	wxArrayInt sel = GetSelection();
@@ -1116,7 +1116,9 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 	if (sel.Count() == 0) return;
 	AssDialogue *cur = GetDialogue(sel[0]);
 	if (cur) {
-		if (start) video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->Start.GetMS(),start));
-		else video->JumpToFrame(VFR_Output.CorrectFrameAtTime(cur->End.GetMS(),false));
+		if (start) 
+			video->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
+		else 
+			video->JumpToFrame(VFR_Output.GetFrameAtTime(cur->End.GetMS(),false));
 	}
 }
