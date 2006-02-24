@@ -284,36 +284,49 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 /////////////////////////////
 // Gets frame number at time
 int FrameRate::PFrameAtTime(int ms,bool useceil) {
-	//wxASSERT(loaded);
-
+	// Check if it's loaded
 	if (!loaded) return -1;
 
-	ms = MAX(ms,0); //fix me, unsafe for GetFrame... for frame 0?
+	// Normalize miliseconds
+	ms = MAX(ms,0);
 
+	// Get for constant frame rate
 	if (FrameRateType == CFR) {
-		if (useceil) return ceil(double(ms)/1000.0 * AverageFrameRate);
-		else return floor(double(ms)/1000.0 * AverageFrameRate);
+		double value = double(ms)/1000.0 * AverageFrameRate;
+		if (useceil) return ceil(value);
+		else return floor(value);
 	}
+
+	// Get for variable frame rate
 	else if (FrameRateType == VFR) {
+		// Inside VFR range
 		if (ms < floor(last_time)) {
-			// Binary search
+			// Prepare binary search
 			size_t start = 0;
 			size_t end = last_frame;
 			size_t cur;
 			bool largerEqual;
+
+			// Do binary search
 			while (start <= end) {
+				// Current frame being checked
 				cur = (start+end)>>1;
+
+				// Is it larger or equal to searched time?
 				largerEqual = Frame[cur] >= ms;
 
-				// Found
-				if (largerEqual && (cur == 0 || Frame[cur-1] < ms))
-					return cur;
+				// If it is, is the previous smaller?
+				// If so, this is the frame we're looking for
+				if (largerEqual && (cur == 0 || Frame[cur-1] < ms))	return cur;
 				
-				// Not found
+				// Not found, continue search
 				if (largerEqual) end = cur-1;
 				else start = cur+1;
 			}
-		} else {
+		}
+		
+		// After VFR range
+		else {
 			return last_frame + floor((ms-last_time) * AverageFrameRate / 1000);
 		}
 	}
@@ -324,19 +337,27 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 //////////////////////
 // Gets time at frame
 int FrameRate::PTimeAtFrame(int frame) {
-	//wxASSERT(loaded);
-
+	// Not loaded
 	if (!loaded) return -1;
+
+	// For negative/zero times, fallback to zero
 	if (frame <= 0) return 0;
 
+	// Constant frame rate
 	if (FrameRateType == CFR) {
 		return floor(double(frame) / AverageFrameRate * 1000.0);
-	} else if (FrameRateType == VFR) {
-		if (frame < last_frame)
-			return Frame.at(frame);
-		else 
-			return floor(last_time + double(frame-last_frame) / AverageFrameRate * 1000.0);
 	}
+	
+	// Variable frame rate
+	else if (FrameRateType == VFR) {
+		// Is it inside frame rate range? If so, just get the value from timecodes table
+		if (frame < last_frame) return Frame.at(frame);
+
+		// Otherwise, calculate it
+		else return floor(last_time + double(frame-last_frame) / AverageFrameRate * 1000.0);
+	}
+
+	// Unknown frame rate type
 	return -1;
 }
 
