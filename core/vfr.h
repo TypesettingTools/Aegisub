@@ -88,7 +88,7 @@ public:
 	void Load(wxString file);
 	void Unload();
 	int GetFrameAtTime(int ms,bool start=true);
-	int GetTimeAtFrame(int frame,bool start=true);
+	int GetTimeAtFrame(int frame,bool start=true,bool exact=false);
 
 	double GetAverage() { return AverageFrameRate; };
 	bool IsLoaded() { return loaded; };

@@ -207,6 +207,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			Options.AddToRecentList(filename,_T("Recent vid"));
 
 			RefreshVideo();
+			UpdatePositionDisplay();
 		} catch (wxString &e) {
 			wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
 		}
@@ -520,8 +521,7 @@ void VideoDisplay::UpdatePositionDisplay() {
 	}
 
 	// Get time
-	int time = VFR_Output.GetTimeAtFrame(frame_n);
-	//int time = VFR_Output.CorrectTimeAtFrame(frame_n,false);
+	int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
 	int temp = time;
 	int h=0, m=0, s=0, ms=0;
 	while (temp >= 3600000) {
@@ -564,7 +564,7 @@ void VideoDisplay::UpdateSubsRelativeTime() {
 
 	// Set start/end
 	if (curLine) {
-		int time = VFR_Output.GetTimeAtFrame(frame_n);
+		int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
 		startOff = time - curLine->Start.GetMS();
 		endOff = time - curLine->End.GetMS();
 	}

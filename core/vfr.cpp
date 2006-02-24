@@ -353,14 +353,23 @@ int FrameRate::GetFrameAtTime(int ms,bool start) {
 /////////////////////////////
 // Get correct time at frame
 // compensates and returns an end time when start=false
-int FrameRate::GetTimeAtFrame(int frame,bool start) {
+int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) {
 	int finalTime;
-	if (start) {
-		finalTime = (PTimeAtFrame(frame-1) + PTimeAtFrame(frame))/2;
+
+	// Exact, for display
+	if (exact) {
+		finalTime = PTimeAtFrame(frame);
 	}
+
+	// Adjusted, for subs sync
 	else {
-		if (FrameRateType == VFR) finalTime = PTimeAtFrame(frame);
-		else finalTime = (PTimeAtFrame(frame) + PTimeAtFrame(frame+1))/2;
+		if (start) {
+			finalTime = (PTimeAtFrame(frame-1) + PTimeAtFrame(frame))/2;
+		}
+		else {
+			if (FrameRateType == VFR) finalTime = PTimeAtFrame(frame);
+			else finalTime = (PTimeAtFrame(frame) + PTimeAtFrame(frame+1))/2;
+		}
 	}
 
 	return finalTime;
