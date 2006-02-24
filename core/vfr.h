@@ -71,7 +71,7 @@ private:
 	void Clear();
 
 	void CalcAverage();
-	int PFrameAtTime(int ms);
+	int PFrameAtTime(int ms,bool useCeil=false);
 	int PTimeAtFrame(int frame);
 
 	ASS_FrameRateType FrameRateType;

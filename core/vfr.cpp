@@ -82,65 +82,6 @@ FrameRate::~FrameRate() {
 }
 
 
-/////////////////////////////
-// Gets frame number at time
-int FrameRate::PFrameAtTime(int ms) {
-	//wxASSERT(loaded);
-
-	if (!loaded) return -1;
-
-	ms = MAX(ms,0); //fix me, unsafe for GetFrame... for frame 0?
-
-	if (FrameRateType == CFR) {
-		return floor(double(ms)/1000.0 * AverageFrameRate);
-	}
-	else if (FrameRateType == VFR) {
-		if (ms < floor(last_time)) {
-			// Binary search
-			size_t start = 0;
-			size_t end = last_frame;
-			size_t cur;
-			bool largerEqual;
-			while (start <= end) {
-				cur = (start+end)>>1;
-				largerEqual = Frame[cur] >= ms;
-
-				// Found
-				if (largerEqual && (cur == 0 || Frame[cur-1] < ms))
-					return cur;
-				
-				// Not found
-				if (largerEqual) end = cur-1;
-				else start = cur+1;
-			}
-		} else {
-			return last_frame + floor((ms-last_time) * AverageFrameRate / 1000);
-		}
-	}
-	return -1;
-}
-
-
-//////////////////////
-// Gets time at frame
-int FrameRate::PTimeAtFrame(int frame) {
-	//wxASSERT(loaded);
-
-	if (!loaded) return -1;
-	if (frame <= 0) return 0;
-
-	if (FrameRateType == CFR) {
-		return floor(double(frame) / AverageFrameRate * 1000.0);
-	} else if (FrameRateType == VFR) {
-		if (frame < last_frame)
-			return Frame.at(frame);
-		else 
-			return floor(last_time + double(frame-last_frame) / AverageFrameRate * 1000.0);
-	}
-	return -1;
-}
-
-
 //////////////////
 // Loads VFR file
 void FrameRate::Load(wxString filename) {
@@ -341,12 +282,73 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 
 
 /////////////////////////////
+// Gets frame number at time
+int FrameRate::PFrameAtTime(int ms,bool useceil) {
+	//wxASSERT(loaded);
+
+	if (!loaded) return -1;
+
+	ms = MAX(ms,0); //fix me, unsafe for GetFrame... for frame 0?
+
+	if (FrameRateType == CFR) {
+		if (useceil) return ceil(double(ms)/1000.0 * AverageFrameRate);
+		else return floor(double(ms)/1000.0 * AverageFrameRate);
+	}
+	else if (FrameRateType == VFR) {
+		if (ms < floor(last_time)) {
+			// Binary search
+			size_t start = 0;
+			size_t end = last_frame;
+			size_t cur;
+			bool largerEqual;
+			while (start <= end) {
+				cur = (start+end)>>1;
+				largerEqual = Frame[cur] >= ms;
+
+				// Found
+				if (largerEqual && (cur == 0 || Frame[cur-1] < ms))
+					return cur;
+				
+				// Not found
+				if (largerEqual) end = cur-1;
+				else start = cur+1;
+			}
+		} else {
+			return last_frame + floor((ms-last_time) * AverageFrameRate / 1000);
+		}
+	}
+	return -1;
+}
+
+
+//////////////////////
+// Gets time at frame
+int FrameRate::PTimeAtFrame(int frame) {
+	//wxASSERT(loaded);
+
+	if (!loaded) return -1;
+	if (frame <= 0) return 0;
+
+	if (FrameRateType == CFR) {
+		return floor(double(frame) / AverageFrameRate * 1000.0);
+	} else if (FrameRateType == VFR) {
+		if (frame < last_frame)
+			return Frame.at(frame);
+		else 
+			return floor(last_time + double(frame-last_frame) / AverageFrameRate * 1000.0);
+	}
+	return -1;
+}
+
+
+/////////////////////////////
 // Get correct frame at time
 // returns the adjusted time for end frames when start=false
 // otherwise for start frames
 int FrameRate::GetFrameAtTime(int ms,bool start) {
 	if (start) {
-		return PFrameAtTime(ms);
+		if (FrameRateType == VFR) return PFrameAtTime(ms);
+		else return PFrameAtTime(ms,start);
 	}
 	else {
 		return PFrameAtTime(ms);
