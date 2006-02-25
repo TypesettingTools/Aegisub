@@ -302,9 +302,6 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 		bool ok = true;
 		do {
 			ok = GetNextFrame();
-			//if (!ok) {
-			//	return wxBitmap(GetWidth(),GetHeight());
-			//}
 		} while (lastDecodeTime <= n && ok);
 	}
 

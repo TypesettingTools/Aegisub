@@ -74,13 +74,18 @@ bool Copy(wxString src,wxString dst) {
 ////////////////
 // Backup a file
 bool Backup(wxString src,wxString dst) {
-#if defined(__WIN32__)
+	// Windows
+	#if defined(__WIN32__)
 	return Copy(src,dst);
-#elif defined(__UNIX__)
+
+	// Linux
+	#elif defined(__UNIX__)
 	return link(src.mb_str(),dst.mb_str()) != 0;
-#else
-#error don't know how to backup files
-#endif
+
+	// Error
+	#else
+	#error "don't know how to backup files"
+	#endif
 }
 
 /////////////////////////////////////

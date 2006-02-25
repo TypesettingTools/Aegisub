@@ -590,9 +590,13 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 		}
 	}
 
-	// Clear grid and choose subtitles file
+	// Clear grid
 	BeginBatch();
+	int oldPos = yPos;
 	Clear();
+	if (keepSelection) yPos = oldPos;
+
+	// Get subtitles
 	if (_ass) ass = _ass;
 	else {
 		if (!ass) throw _T("Trying to set subs grid to current ass file, but there is none");
@@ -625,10 +629,6 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 		SelectRow(0);
 	}
 
-	// Finish setting layout
-	AdjustScrollbar();
-	EndBatch();
-
 	// Commit
 	if (!AssFile::Popping) {
 		if (dontModify) AssFile::StackPush();
@@ -649,6 +649,10 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 		editBox->UpdateGlobals();
 		if (_ass) editBox->SetToLine(firstsel);
 	}
+
+	// Finish setting layout
+	AdjustScrollbar();
+	EndBatch();
 }
 
 

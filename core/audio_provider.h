@@ -104,7 +104,6 @@ public:
 	volatile bool stopping;
 	bool softStop;
 	bool playing;
-	bool spectrum;
 	float volume;
 
 	volatile __int64 playPos;

@@ -291,6 +291,8 @@ void FontsCollectorThread::Collect() {
 	LogBox->SetDefaultStyle(wxTextAttr(wxColour(0,0,180)));
 	LogBox->AppendText(_("Searching for fonts in file...\n"));
 	LogBox->SetDefaultStyle(wxTextAttr(wxColour(0,0,0)));
+	LogBox->Refresh();
+	LogBox->Update();
 	wxSafeYield();
 	wxMutexGuiLeave();
 
@@ -305,6 +307,8 @@ void FontsCollectorThread::Collect() {
 			AddFont(curStyle->font,true);
 			wxMutexGuiEnter();
 			LogBox->AppendText(wxString(_T("\"")) + curStyle->font + _("\" found on style \"") + curStyle->name + _T("\".\n"));
+			LogBox->Refresh();
+			LogBox->Update();
 			wxSafeYield();
 			wxMutexGuiLeave();
 		}
@@ -365,6 +369,8 @@ void FontsCollectorThread::Collect() {
 						wxMutexGuiEnter();
 						LogBox->SetDefaultStyle(wxTextAttr(wxColour(255,128,0)));
 						LogBox->AppendText(wxString(_T("\"")) + work[j] + _("\" already exists on destination.\n"));
+						LogBox->Refresh();
+						LogBox->Update();
 						wxSafeYield();
 						wxMutexGuiLeave();
 					}
@@ -379,11 +385,14 @@ void FontsCollectorThread::Collect() {
 						if (success) {
 							LogBox->SetDefaultStyle(wxTextAttr(wxColour(0,180,0)));
 							LogBox->AppendText(wxString(_T("\"")) + work[j] + _("\" copied.\n"));
+
 						}
 						else {
 							LogBox->SetDefaultStyle(wxTextAttr(wxColour(220,0,0)));
 							LogBox->AppendText(wxString(_("Failed copying \"")) + srcFile + _T("\".\n"));
 						}
+						LogBox->Refresh();
+						LogBox->Update();
 						wxSafeYield();
 						wxMutexGuiLeave();
 					}

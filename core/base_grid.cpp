@@ -638,7 +638,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		}
 
 		// Block select
-		if ((click && shift && !ctrl && !alt) || (holding)) {
+		if ((click && shift && !ctrl && !alt) || (holding && !ctrl && !alt && !shift)) {
 			if (lastRow != -1) {
 				// Set boundaries
 				int i1 = row;

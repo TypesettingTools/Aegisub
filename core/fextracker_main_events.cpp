@@ -34,12 +34,12 @@
 // Tracker Menu
 void FrameMain::OnVideoTrackerMenu(wxCommandEvent &event) {
 	wxMenu menu( _("FexTracker") );
-	AppendBitmapMenuItem(&menu, Video_Track_Points, _("Track points"), _(""), wxBITMAP(button_track_points));
+	AppendBitmapMenuItem(&menu, Video_Track_Points, _("Track points"), _T(""), wxBITMAP(button_track_points));
 	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Point_Add, _("Add points to movement"), _(""), wxBITMAP(button_track_point_add));
-	AppendBitmapMenuItem(&menu, Video_Track_Point_Del, _("Remove points from movement"), _(""), wxBITMAP(button_track_point_del));
+	AppendBitmapMenuItem(&menu, Video_Track_Point_Add, _("Add points to movement"), _T(""), wxBITMAP(button_track_point_add));
+	AppendBitmapMenuItem(&menu, Video_Track_Point_Del, _("Remove points from movement"), _T(""), wxBITMAP(button_track_point_del));
 	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Movement, _("Generate movement from points"), _(""), wxBITMAP(button_track_movement));
+	AppendBitmapMenuItem(&menu, Video_Track_Movement, _("Generate movement from points"), _T(""), wxBITMAP(button_track_movement));
 	PopupMenu(&menu);
 }
 
@@ -48,13 +48,13 @@ void FrameMain::OnVideoTrackerMenu(wxCommandEvent &event) {
 // Movement Menu
 void FrameMain::OnVideoTrackerMenu2(wxCommandEvent &event) {
 	wxMenu menu( _("FexMovement") );
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAll, _("Move subtitle"), _(""), wxBITMAP(button_track_move));
+	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAll, _("Move subtitle"), _T(""), wxBITMAP(button_track_move));
 	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveBefore, _("Move subtitle (this frame and preceeding frames)"), _(""), wxBITMAP(button_track_move));
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveOne, _("Move subtitle (this frame)"), _(""), wxBITMAP(button_track_move));
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAfter, _("Move subtitle (this frame and following frames)"), _(""), wxBITMAP(button_track_move));
+	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveBefore, _("Move subtitle (this frame and preceeding frames)"), _T(""), wxBITMAP(button_track_move));
+	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveOne, _("Move subtitle (this frame)"), _T(""), wxBITMAP(button_track_move));
+	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAfter, _("Move subtitle (this frame and following frames)"), _T(""), wxBITMAP(button_track_move));
 	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Split_Line, _("Split line for movement"), _(""), wxBITMAP(button_track_split_line));
+	AppendBitmapMenuItem(&menu, Video_Track_Split_Line, _("Split line for movement"), _T(""), wxBITMAP(button_track_split_line));
 	PopupMenu(&menu);
 }
 
