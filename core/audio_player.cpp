@@ -37,7 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "audio_player.h"
+#include "audio_player_portaudio.h"
 #include "audio_provider.h"
 
 
@@ -55,6 +55,7 @@ AudioPlayer::~AudioPlayer() {
 	if (displayTimer) {
 		displayTimer->Stop();
 	}
+	CloseStream();
 }
 
 
@@ -107,4 +108,21 @@ END_EVENT_TABLE()
 
 void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 	Stop(false);
+}
+
+
+//////////////
+// Get player
+AudioPlayer* AudioPlayer::GetAudioPlayer() {
+	// Prepare
+	AudioPlayer *player;
+
+	// Get player
+	player = new PortAudioPlayer;
+
+	// Got player?
+	if (!player) throw _T("Unable to create audio player.");
+
+	// Return
+	return player;
 }

@@ -887,8 +887,8 @@ void VideoDisplay::OnPlayTimer(wxTimerEvent &event) {
 	// Sync audio
 	if (nextFrame % 10 == 0) {
 		__int64 audPos = audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame));
-		__int64 curPos = audio->provider->GetCurrentPosition();
-		if (abs(int(audPos-curPos)) > audio->provider->GetSampleRate() / 10) audio->provider->SetCurrentPosition(audPos);
+		__int64 curPos = audio->player->GetCurrentPosition();
+		if (abs(int(audPos-curPos)) > audio->provider->GetSampleRate() / 10) audio->player->SetCurrentPosition(audPos);
 	}
 }
 

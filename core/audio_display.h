@@ -42,6 +42,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include "audio_provider.h"
+#include "audio_player.h"
 
 
 //////////////
@@ -51,6 +52,7 @@ class SubtitlesGrid;
 class AudioBox;
 class AudioKaraoke;
 class VideoDisplay;
+
 
 /////////////////
 // Display class
@@ -109,10 +111,12 @@ private:
 	void UpdatePosition(int pos,bool IsSample=false);
 
 public:
+	AudioProvider *provider;
+	AudioPlayer *player;
+
 	bool NeedCommit;
 	bool loaded;
 	int w,h;
-	AudioProvider *provider;
 	AudioBox *box;
 	AudioKaraoke *karaoke;
 	wxScrollBar *ScrollBar;

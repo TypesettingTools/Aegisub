@@ -63,6 +63,9 @@ public:
 	AudioPlayer();
 	virtual ~AudioPlayer();
 
+	virtual void OpenStream() {}
+	virtual void CloseStream() {}
+
 	virtual void Play(__int64 start,__int64 count)=0;	// Play sample range
 	virtual void Stop(bool timerToo=true)=0;			// Stop playing
 	virtual void RequestStop();							// Request it to stop playing in a thread-safe way
@@ -82,6 +85,8 @@ public:
 
 	void SetDisplayTimer(wxTimer *timer);
 	virtual wxMutex *GetMutex();
+
+	static AudioPlayer* GetAudioPlayer();
 
 	DECLARE_EVENT_TABLE()
 };

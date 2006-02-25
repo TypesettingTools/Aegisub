@@ -79,6 +79,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 	oldCurPos = 0;
 	scale = 1.0f;
 	provider = NULL;
+	player = NULL;
 	video = display;
 	hold = 0;
 	hasFocus = (wxWindow::FindFocus() == this);
@@ -99,11 +100,13 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 //////////////
 // Destructor
 AudioDisplay::~AudioDisplay() {
-	if (provider) delete provider;
-	if (origImage) delete origImage;
-	if (spectrumDisplay) delete spectrumDisplay;
-	if (peak) delete peak;
-	if (min) delete min;
+	if (player) player->CloseStream();
+	delete provider;
+	delete player;
+	delete origImage;
+	delete spectrumDisplay;
+	delete peak;
+	delete min;
 }
 
 
@@ -740,20 +743,30 @@ void AudioDisplay::SetScale(float _scale) {
 //////////////////
 // Load from file
 void AudioDisplay::SetFile(wxString file) {
+	// Unload
 	if (file.IsEmpty()) {
-		if (provider)
-			delete provider;
+		if (player) player->CloseStream();
+		delete provider;
+		delete player;
 		provider = NULL;
+		player = NULL;
 		Reset();
 
 		loaded = false;
 	}
+
+	// Load
 	else {
 		SetFile(_T(""));
 		try {
-			//provider = new AudioProvider(file, this);
+			// Get provider
 			provider = AudioProvider::GetAudioProvider(file, this);
 
+			// Get player
+			player = AudioPlayer::GetAudioPlayer();
+			player->SetDisplayTimer(&UpdateTimer);
+			player->SetProvider(provider);
+			player->OpenStream();
 			loaded = true;
 
 			// Add to recent
@@ -860,16 +873,16 @@ void AudioDisplay::Play(int start,int end) {
 	if (end < start) end = start;
 
 	// Call play
-	provider->Play(start,end-start);
+	player->Play(start,end-start);
 }
 
 
 ////////
 // Stop
 void AudioDisplay::Stop() {
-	if (!provider) return;
+	if (!player) return;
 
-	provider->Stop();
+	player->Stop();
 }
 
 
@@ -1122,7 +1135,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Cursor drawing
-	if (!provider->IsPlaying()) {
+	if (!player->IsPlaying()) {
 		// Draw bg
 		wxClientDC dc(this);
 		dc.BeginDrawing();
@@ -1186,7 +1199,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			if (syl != -1) {
 				int start = karaoke->syllables.at(syl).position * 10 + dialogue->Start.GetMS();
 				int count = karaoke->syllables.at(syl).length * 10;
-				provider->Play(GetSampleAtMS(start),GetSampleAtMS(count));
+				player->Play(GetSampleAtMS(start),GetSampleAtMS(count));
 			}
 		}
 	}
@@ -1207,7 +1220,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
 			curEndMS = GetMSAtX(x);
 			mod = true;
-			provider->SetEndPosition(GetSampleAtX(x));
+			player->SetEndPosition(GetSampleAtX(x));
 		}
 
 		// Modified, commit changes
@@ -1382,7 +1395,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 					// Update stuff
 					if (updated) {
-						provider->SetEndPosition(GetSampleAtX(selEnd));
+						player->SetEndPosition(GetSampleAtX(selEnd));
 						wxCursor cursor(wxCURSOR_SIZEWE);
 						SetCursor(cursor);
 						UpdateImage(true);
@@ -1450,12 +1463,12 @@ void AudioDisplay::OnSize(wxSizeEvent &event) {
 // Timer event
 void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 	// Get lock and check if it's OK
-	if (provider->GetMutex()) {
-		wxMutexLocker locker(*provider->GetMutex());
+	if (player->GetMutex()) {
+		wxMutexLocker locker(*player->GetMutex());
 		if (!locker.IsOk()) return;
 	}
 		
-	if (!provider->IsPlaying()) return;
+	if (!player->IsPlaying()) return;
 
 	// Get DCs
 	//wxMutexGuiEnter();
@@ -1469,14 +1482,14 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 
 	// Draw cursor
 	int curpos = -1;
-	if (provider->IsPlaying()) {
-		if (provider->GetCurrentPosition() > provider->GetStartPosition() && provider->GetCurrentPosition() < provider->GetEndPosition()) {
+	if (player->IsPlaying()) {
+		if (player->GetCurrentPosition() > player->GetStartPosition() && player->GetCurrentPosition() < player->GetEndPosition()) {
 			dc.SetPen(wxPen(Options.AsColour(_T("Audio Play cursor"))));
-			curpos = GetXAtSample(provider->GetCurrentPosition());
+			curpos = GetXAtSample(player->GetCurrentPosition());
 			dc.DrawLine(curpos,0,curpos,h);
 		}
-		else if (provider->GetCurrentPosition() > provider->GetEndPosition() + 8192) {
-			provider->Stop();
+		else if (player->GetCurrentPosition() > player->GetEndPosition() + 8192) {
+			player->Stop();
 		}
 	}
 	oldCurPos = curpos;
@@ -1521,7 +1534,7 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 
 	// Play
 	if (Hotkeys.IsPressed(_T("Audio Play")) || Hotkeys.IsPressed(_T("Audio Play Alt"))) {
-		if (provider->IsPlaying()) Stop();
+		if (player->IsPlaying()) Stop();
 		else {
 			int start=0,end=0;
 			GetTimesSelection(start,end);

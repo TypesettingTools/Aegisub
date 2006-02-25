@@ -65,13 +65,12 @@ private:
 
 	static int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
 
-protected:
-	void OpenStream();
-	void CloseStream();
-
 public:
 	PortAudioPlayer();
 	~PortAudioPlayer();
+
+	void OpenStream();
+	void CloseStream();
 
 	void Play(__int64 start,__int64 count);
 	void Stop(bool timerToo=true);

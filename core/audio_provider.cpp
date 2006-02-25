@@ -177,8 +177,19 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 		throw _T("Could not initialize any audio provider.");
 	}
 
-	// Set up provider
-	provider->SetDisplayTimer(&display->UpdateTimer);
+	// Change provider to RAM/HD cache if needed
+	if (false) {
+		AudioProvider *final = NULL;
+		
+		//final = new RAMAudioProvider(provider);
+		//final = new HDAudioProvider(provider);
+		
+		// Reassign
+		if (final) {
+			delete provider;
+			provider = final;
+		}
+	}
 
 	// Return
 	return provider;

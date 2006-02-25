@@ -54,7 +54,6 @@
 //////////////
 // Constructor
 AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
-	SetProvider(this);
 	type = AUDIO_PROVIDER_NONE;
 	blockcache = NULL;
 	blockcount = 0;
@@ -64,7 +63,6 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
 
 	try {
 		OpenAVSAudio();
-		OpenStream();
 	}
 	catch (...) {
 		Unload();
@@ -76,7 +74,6 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
 //////////////
 // Destructor
 AvisynthAudioProvider::~AvisynthAudioProvider() {
-	CloseStream();
 	Unload();
 }
 

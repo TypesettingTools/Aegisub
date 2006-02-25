@@ -43,7 +43,7 @@
 #include <fstream>
 #include <time.h>
 #include "avisynth_wrap.h"
-#include "audio_player_portaudio.h"
+#include "audio_player.h"
 
 
 //////////////
@@ -53,7 +53,7 @@ class AudioDisplay;
 
 ////////////////////////
 // Audio provider class
-class AudioProvider : public PortAudioPlayer {
+class AudioProvider {
 private:
 	void *raw;
 	int raw_len;
