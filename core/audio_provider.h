@@ -34,16 +34,16 @@
 //
 
 
-#ifndef AUDIO_PROVIDER_H
-#define AUDIO_PROVIDER_H
+#pragma once
 
 
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "avisynth_wrap.h"
 #include <fstream>
 #include <time.h>
+#include "avisynth_wrap.h"
+#include "audio_player.h"
 
 
 //////////////
@@ -63,7 +63,7 @@ enum AudioProviderType {
 
 ////////////////////////
 // Audio provider class
-class AudioProvider : public wxEvtHandler, public AviSynthWrapper {
+class AudioProvider : public AviSynthWrapper, public AudioPlayer {
 private:
 	static int pa_refcount;
 
@@ -94,11 +94,11 @@ private:
 	void ConvertToDiskCache(PClip &tempclip);
 	void LoadFromClip(AVSValue clip);
 	void OpenAVSAudio();
-	void OnStopAudio(wxCommandEvent &event);
 	static wxString DiskCachePath();
 	static wxString DiskCacheName();
 	void SetFile();
 	void Unload();
+
 public:
 	wxMutex PAMutex;
 	volatile bool stopping;
@@ -112,7 +112,6 @@ public:
 	volatile __int64 realPlayPos;
 	volatile __int64 startMS;
 	void *stream;
-	clock_t span;
 
 	AudioProvider(wxString _filename, AudioDisplay *_display);
 	~AudioProvider();
@@ -122,21 +121,18 @@ public:
 	void GetAudio(void *buf, __int64 start, __int64 count);
 	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
 
-	void Play(__int64 start,__int64 count);
-	void Stop(bool timerToo=true);
-	void RequestStop();
-
 	int GetChannels();
 	__int64 GetNumSamples();
 	int GetSampleRate();
 
-	DECLARE_EVENT_TABLE()
+	void Play(__int64 start,__int64 count);
+	void Stop(bool timerToo=true);
+
+	__int64 GetEndPosition() { return endPos; }
+	__int64 GetCurrentPosition() { return realPlayPos; }
+	void SetEndPosition(__int64 pos) { endPos = pos; }
+	void SetCurrentPosition(__int64 pos) { playPos = pos; realPlayPos = pos; }
+
+	void SetVolume(double vol) { volume = vol; }
+	double GetVolume() { return volume; }
 };
-
-
-/////////
-// Event
-DECLARE_EVENT_TYPE(wxEVT_STOP_AUDIO, -1)
-
-
-#endif

@@ -109,9 +109,6 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 		}
 		if (vidStream == -1) throw _T("Could not find a video stream");
 
-		// Check length
-		if (stream->duration <= 0) throw _T("Returned invalid stream length");
-
 		// Find codec
 		codec = avcodec_find_decoder(codecContext->codec_id);
 		if (!codec) throw _T("Could not find suitable video decoder");
@@ -122,6 +119,9 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 		// Open codec
 		result = avcodec_open(codecContext,codec);
 		if (result < 0) throw _T("Failed to open video decoder");
+
+		// Check length
+		if (stream->duration <= 0) throw _T("Returned invalid stream length");
 
 		// Set size
 		dar = double(GetSourceWidth()) / GetSourceHeight();

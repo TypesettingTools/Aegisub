@@ -581,26 +581,3 @@ void AudioProvider::CloseStream() {
 		Pa_CloseStream(stream);
 	} catch (...) {}
 }
-
-/////////////////////
-// Ask to stop later
-void AudioProvider::RequestStop() {
-	wxCommandEvent event(wxEVT_STOP_AUDIO, 1000);
-    event.SetEventObject(this);
-	wxMutexGuiEnter();
-	AddPendingEvent(event);
-	wxMutexGuiLeave();
-}
-
-
-/////////
-// Event
-DEFINE_EVENT_TYPE(wxEVT_STOP_AUDIO)
-
-BEGIN_EVENT_TABLE(AudioProvider, wxEvtHandler)
-	EVT_COMMAND (1000, wxEVT_STOP_AUDIO, AudioProvider::OnStopAudio)
-END_EVENT_TABLE()
-
-void AudioProvider::OnStopAudio(wxCommandEvent &event) {
-	Stop(false);
-}
