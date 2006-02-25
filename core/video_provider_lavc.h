@@ -70,8 +70,12 @@ private:
 	int display_w;
 	int display_h;
 
+	wxArrayInt bytePos;
+
+	bool isVFR;
 	__int64 lastDecodeTime;
 	int frameNumber;
+	int length;
 	wxBitmap curFrame;
 	bool validFrame;
 

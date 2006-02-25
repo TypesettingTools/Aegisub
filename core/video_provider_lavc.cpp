@@ -41,6 +41,7 @@
 #include "video_provider_lavc.h"
 #include "utils.h"
 #include "vfr.h"
+#include "mkv_wrap.h"
 
 
 ///////////////
@@ -121,7 +122,18 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 		if (result < 0) throw _T("Failed to open video decoder");
 
 		// Check length
-		if (stream->duration <= 0) throw _T("Returned invalid stream length");
+		isVFR = false;
+		length = stream->duration;
+		if (length <= 0) {
+			if (strcmp(formatContext->iformat->name,"matroska") == 0) {
+				throw _T("FFmpeg fails at seeking Matroska. If you have any idea on how to fix it, Aegisub is open source.");
+				MatroskaWrapper::wrapper.Open(filename);
+				length = MatroskaWrapper::wrapper.GetFrameCount();
+				bytePos = MatroskaWrapper::wrapper.GetBytePositions();
+				isVFR = true;
+			}
+			if (length <= 0) throw _T("Returned invalid stream length");
+		}
 
 		// Set size
 		dar = double(GetSourceWidth()) / GetSourceHeight();
@@ -283,26 +295,47 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 	// Following frame, just get it
 	if (n == frameNumber+1) {
 		GetNextFrame();
+		//wxLogMessage(wxString::Format(_T("%i"),lastDecodeTime));
 	}
 
 	// Needs to seek
 	else {
-		// Get seek position
-		//__int64 half = __int64(AV_TIME_BASE) * stream->r_frame_rate.den / stream->r_frame_rate.num / 2;
-		//__int64 seekTo =  __int64(n) * AV_TIME_BASE * stream->r_frame_rate.den / stream->r_frame_rate.num + stream->start_time;
-		//if (seekTo > half) seekTo -= half;
-		//else seekTo = 0;
-		//__int64 finalPos = av_rescale(seekTo,stream->time_base.den,AV_TIME_BASE * __int64(stream->time_base.num));
+		// Prepare seek
+		__int64 seekTo;
+		int result;
+
+		// Get time to seek to
+		if (isVFR) {
+			//__int64 base = AV_TIME_BASE;
+			//__int64 time = VFR_Output.GetTimeAtFrame(n,true) * base / 1000000;
+			//seekTo = av_rescale(time,stream->time_base.den,AV_TIME_BASE * __int64(stream->time_base.num));
+			//seekTo = __int64(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
+			seekTo = bytePos[n];
+
+			result = av_seek_frame(formatContext,vidStream,seekTo,AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_BYTE);
+		}
+
+		// Constant frame rate
+		else {
+			seekTo = n;
+			result = av_seek_frame(formatContext,vidStream,seekTo,AVSEEK_FLAG_BACKWARD);
+		}
 
 		// Seek to keyframe
-		int result = av_seek_frame(formatContext,vidStream,n,AVSEEK_FLAG_BACKWARD);
-		avcodec_flush_buffers(codecContext);
+		if (result == 0) {
+			avcodec_flush_buffers(codecContext);
 
-		// Seek until final frame
-		bool ok = true;
-		do {
-			ok = GetNextFrame();
-		} while (lastDecodeTime <= n && ok);
+			// Seek until final frame
+			bool ok = true;
+			do {
+				ok = GetNextFrame();
+			} while (lastDecodeTime <= n && ok);
+		}
+
+		// Failed seeking
+		else {
+			GetNextFrame();
+		}
 	}
 
 	// Bitmap
@@ -336,7 +369,7 @@ int LAVCVideoProvider::GetPosition() {
 ////////////////////////
 // Get number of frames
 int LAVCVideoProvider::GetFrameCount() {
-	return stream->duration;
+	return length;
 }
 
 

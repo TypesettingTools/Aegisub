@@ -41,6 +41,11 @@
 #include "dialog_progress.h"
 
 
+////////////
+// Instance
+MatroskaWrapper MatroskaWrapper::wrapper;
+
+
 ///////////
 // Defines
 #define	CACHESIZE     65536
@@ -120,6 +125,7 @@ bool operator < (MkvFrame &t1, MkvFrame &t2) {
 void MatroskaWrapper::Parse() {
 	// Clear keyframes and timecodes
 	keyFrames.Clear();
+	bytePos.Clear();
 	timecodes.clear();
 	std::list<MkvFrame> frames;
 
@@ -157,7 +163,7 @@ void MatroskaWrapper::Parse() {
 			while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
 				// Read value
 				double curTime = double(startTime) / 1000000.0;
-				frames.push_back(MkvFrame((frameFlags & FRAME_KF) != 0,curTime));
+				frames.push_back(MkvFrame((frameFlags & FRAME_KF) != 0,curTime,filePos));
 				frameN++;
 
 				// Cancelled?
@@ -179,11 +185,12 @@ void MatroskaWrapper::Parse() {
 
 	// Process timecodes and keyframes
 	frames.sort();
-	MkvFrame curFrame(false,0);
+	MkvFrame curFrame(false,0,0);
 	int i = 0;
 	for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
 		curFrame = *cur;
 		if (curFrame.isKey) keyFrames.Add(i);
+		bytePos.Add(curFrame.filePos);
 		timecodes.push_back(curFrame.time);
 		i++;
 	}

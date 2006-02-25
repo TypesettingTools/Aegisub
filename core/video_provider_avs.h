@@ -76,14 +76,14 @@ private:
 	PClip SubtitledVideo;
 	PClip ResizedVideo;
 
-	PClip OpenVideo(wxString _filename, bool &usedDirectshow, bool mpeg2dec3_priority = true);
+	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
 	PClip ApplySubtitles(wxString _filename, PClip videosource);
 	PClip ApplyDARZoom(double _zoom, double _dar, PClip videosource);
 	wxBitmap GetFrame(int n, bool force);
 	void LoadVSFilter();
 
 public:
-	AvisynthVideoProvider(wxString _filename, wxString _subfilename, bool &usedDirectshow);
+	AvisynthVideoProvider(wxString _filename, wxString _subfilename);
 	~AvisynthVideoProvider();
 
 	void RefreshSubtitles();

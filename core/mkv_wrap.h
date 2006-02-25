@@ -62,10 +62,12 @@ class MkvFrame {
 public:
 	double time;
 	bool isKey;
+	__int64 filePos;
 
-	MkvFrame(bool keyframe,double timecode) {
+	MkvFrame(bool keyframe,double timecode,__int64 _filePos) {
 		isKey = keyframe;
 		time = timecode;
+		filePos = _filePos;
 	}
 };
 
@@ -80,6 +82,7 @@ private:
 	MkvStdIO *input;
 	wxArrayInt keyFrames;
 	std::vector<double> timecodes;
+	wxArrayInt bytePos;
 
 	void Parse();
 
@@ -87,8 +90,14 @@ public:
 	MatroskaWrapper();
 	~MatroskaWrapper();
 
+	bool IsOpen() { return file != NULL; }
 	void Open(wxString filename);
 	void Close();
+
 	void SetToTimecodes(FrameRate &target);
+	wxArrayInt GetBytePositions() { return bytePos; }
+	unsigned int GetFrameCount() { return timecodes.size(); }
 	wxArrayInt GetKeyFrames();
+
+	static MatroskaWrapper wrapper;
 };

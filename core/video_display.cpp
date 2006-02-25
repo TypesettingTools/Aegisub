@@ -140,53 +140,47 @@ void  VideoDisplay::UpdateSize() {
 // Sets video filename
 void VideoDisplay::SetVideo(const wxString &filename) {
 	// Unload video
-	if (filename.IsEmpty()) {
-		delete provider;
-		provider = NULL;
-		if (VFR_Output.GetFrameRateType() == VFR) VFR_Output.Unload();
-		VFR_Input.Unload();
-
-		videoName = _T("");
-
-		frame_n = 0;
-
-		Reset();
-	}
+	delete provider;
+	provider = NULL;
+	if (VFR_Output.GetFrameRateType() == VFR) VFR_Output.Unload();
+	VFR_Input.Unload();
+	videoName = _T("");
+	loaded = false;
+	frame_n = 0;
+	Reset();
 	
 	// Load video
-	else {
-		SetVideo(_T(""));
-
+	if (!filename.IsEmpty()) {
 		try {
 			grid->CommitChanges(true);
 
 			// Choose a provider
-			bool usedDirectshow = false;
 			provider = VideoProvider::GetProvider(filename,GetTempWorkFile());
 			provider->SetZoom(zoomValue);
 			provider->SetDAR(GetARFromType(arType));
-			
-			// Set keyframes
+
+			// Read extra data from file
+			bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
 			wxString ext = filename.Right(4).Lower();
-			if (ext == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
-			else if (ext == _T(".mkv")) {
+			KeyFrames.Clear();
+			if (ext == _T(".mkv") || mkvOpen) {
 				// Parse mkv
-				MatroskaWrapper mkvwrap;
-				mkvwrap.Open(filename);
+				if (!mkvOpen) MatroskaWrapper::wrapper.Open(filename);
 
 				// Get keyframes
-				KeyFrames = mkvwrap.GetKeyFrames();
+				KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
 
 				// Ask to override timecodes
 				int override = wxYES;
 				if (VFR_Output.GetFrameRateType() == VFR) override = wxMessageBox(_T("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_T("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
-				if (override == wxYES) mkvwrap.SetToTimecodes(VFR_Output);
+				if (override == wxYES) MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
 
 				// Close mkv
-				mkvwrap.Close();
+				MatroskaWrapper::wrapper.Close();
 			}
-			else KeyFrames.Clear();
+			else if (ext == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
 
+			// Update size
 			UpdateSize();
 
 			//Gather video parameters
@@ -214,7 +208,6 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 	}
 
 	loaded = provider != NULL;
-	
 }
 
 //////////

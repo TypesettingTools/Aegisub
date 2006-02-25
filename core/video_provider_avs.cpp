@@ -43,7 +43,7 @@
 #ifdef __WINDOWS__
 
 
-AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, bool &usedDirectshow) {
+AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename) {
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
@@ -57,7 +57,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfi
 
 	LoadVSFilter();
 
-	RGB32Video = OpenVideo(_filename,usedDirectshow,mpeg2dec3_priority);
+	RGB32Video = OpenVideo(_filename,mpeg2dec3_priority);
 
 	dar = GetSourceWidth()/(double)GetSourceHeight();
 
@@ -110,11 +110,11 @@ void AvisynthVideoProvider::SetZoom(double _zoom) {
 	GetFrame(last_fnum,true);
 }
 
-PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool &usedDirectshow, bool mpeg2dec3_priority) {
+PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priority) {
 	wxMutexLocker lock(AviSynthMutex);
 	AVSValue script;
 
-	usedDirectshow = false;
+	bool usedDirectshow = false;
 
 	wxString extension = _filename.Right(4);
 	extension.LowerCase();
@@ -160,6 +160,9 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool &usedDirectshow,
 
 	// Convert to RGB32
 	script = env->Invoke("ConvertToRGB32", script);
+
+	// Directshow
+	if (usedDirectshow) wxMessageBox(_T("Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!"),_T("DirectShowSource warning"),wxICON_EXCLAMATION);
 
 	// Cache
 	return (env->Invoke("Cache", script)).AsClip();

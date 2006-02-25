@@ -64,31 +64,43 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	// See if it's OK to use LAVC
 	#ifdef USE_LAVC
 	if (preffered == _T("ffmpeg")) {
+		// Load
+		bool success = false;
+		wxString error;
 		try {
 			provider = new LAVCVideoProvider(video,subtitles);
+			success = true;
+		}
+
+		// Catch error
+		catch (wchar_t *err) {
+			error = err;
 		}
 		catch (...) {
+			error = _T("Unhandled exception.");
+		}
+
+		if (!success) {
 			// Delete old provider
 			delete provider;
 
 			// Try to fallback to avisynth
 			if (avisynthAvailable) {
-				wxMessageBox(_T("Failed loading FFmpeg decoder for video, falling back to Avisynth."),_T("FFmpeg error."));
+				wxMessageBox(_T("Failed loading FFmpeg decoder for video, falling back to Avisynth.\nError message: ") + error,_T("FFmpeg error."));
 				provider = NULL;
 			}
 
 			// Out of options, rethrow
-			else throw;
+			else throw error.c_str();
 		}
 	}
 	#endif
 
 	// Use avisynth provider
 	#ifdef __WINDOWS__
-	bool usedDirectshow = false;
 	if (!provider) {
 		try {
-			provider = new AvisynthVideoProvider(video,subtitles,usedDirectshow);
+			provider = new AvisynthVideoProvider(video,subtitles);
 		}
 		catch (...) {
 			delete provider;
