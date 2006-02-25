@@ -294,12 +294,12 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 
 		// Seek to keyframe
 		int result = av_seek_frame(formatContext,vidStream,finalPos,0);
+		avcodec_flush_buffers(codecContext);
 
 		// Seek until final frame
-		GetNextFrame();
-		while (lastDecodeTime < n) {
+		do {
 			GetNextFrame();
-		}
+		} while (lastDecodeTime < n);
 	}
 
 	// Bitmap
