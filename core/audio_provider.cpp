@@ -168,6 +168,10 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 	provider = new AvisynthAudioProvider(filename);
 	#endif
 
+	#ifdef USE_LAVC
+	//if (!provider) provider = new LAVCAudioProvider(filename);
+	#endif
+
 	// No provider found
 	if (!provider) {
 		throw _T("Could not initialize any audio provider.");
