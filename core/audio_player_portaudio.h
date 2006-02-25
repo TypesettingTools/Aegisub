@@ -34,77 +34,57 @@
 //
 
 
+#pragma once
+
+
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include "audio_player.h"
-#include "audio_provider.h"
-
-
-///////////////
-// Constructor
-AudioPlayer::AudioPlayer() {
-	provider = NULL;
-	displayTimer = NULL;
+extern "C" {
+#include <portaudio.h>
 }
 
 
-//////////////
-// Destructor
-AudioPlayer::~AudioPlayer() {
-	if (displayTimer) {
-		displayTimer->Stop();
-	}
-}
+////////////////////
+// Portaudio player
+class PortAudioPlayer : public AudioPlayer {
+private:
+	static int pa_refcount;
+	wxMutex PAMutex;
+	volatile bool stopping;
+	//bool softStop;
+	bool playing;
+	float volume;
 
+	volatile __int64 playPos;
+	volatile __int64 startPos;
+	volatile __int64 endPos;
+	volatile __int64 realPlayPos;
+	volatile __int64 startMS;
+	void *stream;
 
-////////////////
-// Set provider
-void AudioPlayer::SetProvider(AudioProvider *_provider) {
-	provider = _provider;
-}
+	static int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
 
+protected:
+	void OpenStream();
+	void CloseStream();
 
-////////////////
-// Get provider
-AudioProvider *AudioPlayer::GetProvider() {
-	return provider;
-}
+public:
+	PortAudioPlayer();
+	~PortAudioPlayer();
 
+	void Play(__int64 start,__int64 count);
+	void Stop(bool timerToo=true);
+	bool IsPlaying() { return playing; }
 
-/////////////
-// Get mutex
-wxMutex *AudioPlayer::GetMutex() {
-	return NULL;
-}
+	__int64 GetStartPosition() { return startPos; }
+	__int64 GetEndPosition() { return endPos; }
+	__int64 GetCurrentPosition() { return realPlayPos; }
+	void SetEndPosition(__int64 pos) { endPos = pos; }
+	void SetCurrentPosition(__int64 pos) { playPos = pos; realPlayPos = pos; }
 
+	void SetVolume(double vol) { volume = vol; }
+	double GetVolume() { return volume; }
 
-/////////////
-// Set timer
-void AudioPlayer::SetDisplayTimer(wxTimer *timer) {
-	displayTimer = timer;
-}
-
-
-/////////////////////
-// Ask to stop later
-void AudioPlayer::RequestStop() {
-	wxCommandEvent event(wxEVT_STOP_AUDIO, 1000);
-    event.SetEventObject(this);
-	wxMutexGuiEnter();
-	AddPendingEvent(event);
-	wxMutexGuiLeave();
-}
-
-
-/////////
-// Event
-DEFINE_EVENT_TYPE(wxEVT_STOP_AUDIO)
-
-BEGIN_EVENT_TABLE(AudioPlayer, wxEvtHandler)
-	EVT_COMMAND (1000, wxEVT_STOP_AUDIO, AudioPlayer::OnStopAudio)
-END_EVENT_TABLE()
-
-void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
-	Stop(false);
-}
+	wxMutex *GetMutex() { return &PAMutex; }
+};

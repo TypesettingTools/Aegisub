@@ -283,7 +283,7 @@ void AudioBox::OnVerticalZoom(wxScrollEvent &event) {
 	float value = pow(float(pos)/50.0f,3);
 	audioDisplay->SetScale(value);
 	if (VerticalLink->GetValue()) {
-		audioDisplay->provider->volume = value;
+		audioDisplay->provider->SetVolume(value);
 		VolumeBar->SetValue(pos);
 	}
 }
@@ -296,7 +296,7 @@ void AudioBox::OnVolume(wxScrollEvent &event) {
 		int pos = event.GetPosition();
 		if (pos < 1) pos = 1;
 		if (pos > 100) pos = 100;
-		audioDisplay->provider->volume = pow(float(pos)/50.0f,3);
+		audioDisplay->provider->SetVolume(pow(float(pos)/50.0f,3));
 	}
 }
 
@@ -309,7 +309,7 @@ void AudioBox::OnVerticalLink(wxCommandEvent &event) {
 	if (pos > 100) pos = 100;
 	float value = pow(float(pos)/50.0f,3);
 	if (VerticalLink->GetValue()) {
-		audioDisplay->provider->volume = value;
+		audioDisplay->provider->SetVolume(value);
 		VolumeBar->SetValue(pos);
 	}
 	VolumeBar->Enable(!VerticalLink->GetValue());

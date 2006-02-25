@@ -43,7 +43,7 @@
 #include <fstream>
 #include <time.h>
 #include "avisynth_wrap.h"
-#include "audio_player.h"
+#include "audio_player_portaudio.h"
 
 
 //////////////
@@ -63,10 +63,8 @@ enum AudioProviderType {
 
 ////////////////////////
 // Audio provider class
-class AudioProvider : public AviSynthWrapper, public AudioPlayer {
+class AudioProvider : public AviSynthWrapper, public PortAudioPlayer {
 private:
-	static int pa_refcount;
-
 	wxMutex diskmutex;
 
 	AudioProviderType type;
@@ -88,8 +86,6 @@ private:
 	int sample_rate;
 	int bytes_per_sample;
 
-	void OpenStream();
-	void CloseStream();
 	void ConvertToRAMCache(PClip &tempclip);
 	void ConvertToDiskCache(PClip &tempclip);
 	void LoadFromClip(AVSValue clip);
@@ -100,19 +96,6 @@ private:
 	void Unload();
 
 public:
-	wxMutex PAMutex;
-	volatile bool stopping;
-	bool softStop;
-	bool playing;
-	float volume;
-
-	volatile __int64 playPos;
-	volatile __int64 startPos;
-	volatile __int64 endPos;
-	volatile __int64 realPlayPos;
-	volatile __int64 startMS;
-	void *stream;
-
 	AudioProvider(wxString _filename, AudioDisplay *_display);
 	~AudioProvider();
 
@@ -124,15 +107,4 @@ public:
 	int GetChannels();
 	__int64 GetNumSamples();
 	int GetSampleRate();
-
-	void Play(__int64 start,__int64 count);
-	void Stop(bool timerToo=true);
-
-	__int64 GetEndPosition() { return endPos; }
-	__int64 GetCurrentPosition() { return realPlayPos; }
-	void SetEndPosition(__int64 pos) { endPos = pos; }
-	void SetCurrentPosition(__int64 pos) { playPos = pos; realPlayPos = pos; }
-
-	void SetVolume(double vol) { volume = vol; }
-	double GetVolume() { return volume; }
 };

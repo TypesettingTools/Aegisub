@@ -45,6 +45,8 @@
 //////////////
 // Prototypes
 class AudioProvider;
+class wxTimer;
+class wxMutex;
 
 
 ///////////////////////////
@@ -55,6 +57,7 @@ private:
 
 protected:
 	AudioProvider *provider;
+	wxTimer *displayTimer;
 
 public:
 	AudioPlayer();
@@ -63,16 +66,22 @@ public:
 	virtual void Play(__int64 start,__int64 count)=0;	// Play sample range
 	virtual void Stop(bool timerToo=true)=0;			// Stop playing
 	virtual void RequestStop();							// Request it to stop playing in a thread-safe way
+	virtual bool IsPlaying()=0;
 
 	virtual void SetVolume(double volume)=0;
 	virtual double GetVolume()=0;
 
 	void SetProvider(AudioProvider *provider);
+	AudioProvider *GetProvider();
 
+	virtual __int64 GetStartPosition()=0;
 	virtual __int64 GetEndPosition()=0;
 	virtual __int64 GetCurrentPosition()=0;
 	virtual void SetEndPosition(__int64 pos)=0;
 	virtual void SetCurrentPosition(__int64 pos)=0;
+
+	void SetDisplayTimer(wxTimer *timer);
+	virtual wxMutex *GetMutex();
 
 	DECLARE_EVENT_TABLE()
 };

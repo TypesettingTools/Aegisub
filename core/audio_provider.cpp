@@ -48,42 +48,28 @@
 #include "main.h"
 #include "dialog_progress.h"
 
-extern "C" {
-#include <portaudio.h>
-}
-
-int AudioProvider::pa_refcount = 0;
-
 #define CacheBits ((22))
 #define CacheBlockSize ((1 << CacheBits))
 
 //////////////
 // Constructor
 AudioProvider::AudioProvider(wxString _filename, AudioDisplay *_display) {
+	SetProvider(this);
+	SetDisplayTimer(&_display->UpdateTimer);
 	type = AUDIO_PROVIDER_NONE;
-	playing = false;
-	stopping = false;
 	blockcache = NULL;
 	blockcount = 0;
 	raw = NULL;
 	display = _display;
 	blockcount = 0;
-	volume = 1.0f;
 
 	filename = _filename;
-
-	// Initialize portaudio
-	if (!pa_refcount) {
-		PaError err = Pa_Initialize();
-		if (err != paNoError)
-			throw wxString::Format(_T("Failed opening PortAudio with error: %s"), wxString(Pa_GetErrorText(err),wxConvLocal));
-		pa_refcount++;
-	}
 
 	try {
 		OpenAVSAudio();
 		OpenStream();
-	} catch (...) {
+	}
+	catch (...) {
 		Unload();
 		throw;
 	}
@@ -120,9 +106,6 @@ void AudioProvider::Unload() {
 
 	// Clear buffers
 	delete raw;
-
-	if (!--pa_refcount)
-		Pa_Terminate();
 }
 
 
@@ -469,115 +452,3 @@ wxString AudioProvider::DiskCacheName() {
 	return DiskCachePath() + _T("audio.tmp");
 }
 
-
-//////////////////////
-// PortAudio callback
-int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData) {
-	// Get provider
-	AudioProvider *provider = (AudioProvider *) userData;
-	int end = 0;
-
-	// Calculate how much left
-	__int64 lenAvailable = provider->endPos - provider->playPos;
-	unsigned __int64 avail = 0;
-	if (lenAvailable > 0) {
-		avail = lenAvailable;
-		if (avail > framesPerBuffer) {
-			lenAvailable = framesPerBuffer;
-			avail = lenAvailable;
-		}
-	}
-	else {
-		lenAvailable = 0;
-		avail = 0;
-	}
-
-	// Play something
-	if (lenAvailable > 0) {
-		provider->GetAudio(outputBuffer,provider->playPos,lenAvailable);
-	}
-
-	// Pad end with blank
-	if (avail < (unsigned __int64) framesPerBuffer) {
-		provider->softStop = true;
-	}
-
-	// Set volume
-	short *output = (short*) outputBuffer;
-	for (unsigned int i=0;i<avail;i++) output[i] = MID(-(1<<15),int(output[i] * provider->volume),(1<<15)-1);
-
-	// Fill rest with blank
-	for (unsigned int i=avail;i<framesPerBuffer;i++) output[i]=0;
-
-	// Set play position (and real one)
-	provider->playPos += framesPerBuffer;
-	provider->realPlayPos = provider->playPos - (outTime - Pa_StreamTime(provider->stream));
-
-	// Cap to start if lower
-	return end;
-}
-
-
-////////
-// Play
-void AudioProvider::Play(__int64 start,__int64 count) {
-	// Stop if it's already playing
-	wxMutexLocker locker(PAMutex);
-
-	// Set values
-	endPos = start + count;
-	realPlayPos = start;
-	playPos = start;
-	startPos = start;
-	startMS = startPos * 1000 / GetSampleRate();
-
-	// Start playing
-	if (!playing) {
-		PaError err = Pa_StartStream(stream);
-		if (err != paNoError) {
-			return;
-		}
-	}
-
-	playing = true;
-
-	if (!display->UpdateTimer.IsRunning())	display->UpdateTimer.Start(15);
-}
-
-
-////////
-// Stop
-void AudioProvider::Stop(bool timerToo) {
-	//wxMutexLocker locker(PAMutex);
-	softStop = false;
-
-	// Stop stream
-	playing = false;
-	Pa_StopStream (stream);
-	realPlayPos = 0;
-
-	// Stop timer
-	if (timerToo) {
-		display->UpdateTimer.Stop();
-	}
-}
-
-
-///////////////
-// Open stream
-void AudioProvider::OpenStream() {
-	// Open stream
-	PaError err = Pa_OpenDefaultStream(&stream,0,GetChannels(),paInt16,GetSampleRate(),256,16,paCallback,this);
-	if (err != paNoError)
-		throw wxString(_T("Failed initializing PortAudio stream with error: ") + wxString(Pa_GetErrorText(err),wxConvLocal));
-}
-
-
-///////////////
-// Close stream
-void AudioProvider::CloseStream() {
-	try {
-		Stop(false);
-		Pa_CloseStream(stream);
-	} catch (...) {}
-}
