@@ -56,6 +56,8 @@ private:
 	SubtitlesGrid *grid;
 	wxTextCtrl *Match;
 	wxCheckBox *MatchCase;
+	wxCheckBox *MatchDialogues;
+	wxCheckBox *MatchComments;
 	wxRadioButton *Matches;
 	wxRadioButton *DoesntMatch;
 	wxRadioBox *Action;
@@ -70,6 +72,8 @@ private:
 
 	void OnOK (wxCommandEvent &event);
 	void OnCancel (wxCommandEvent &event);
+	void OnDialogueCheckbox(wxCommandEvent &event);
+	void OnCommentCheckbox(wxCommandEvent &event);
 
 public:
 	DialogSelection(wxWindow *parent, SubtitlesGrid *grid);
@@ -77,5 +81,12 @@ public:
 	DECLARE_EVENT_TABLE()
 };
 
+
+///////
+// IDs
+enum {
+	MATCH_DIALOGUES_CHECKBOX = 3000,
+	MATCH_COMMENTS_CHECKBOX
+};
 
 #endif

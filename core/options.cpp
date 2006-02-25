@@ -216,6 +216,8 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Select Action"),0);
 	SetInt(_T("Select Mode"),1);
 	SetBool(_T("Select Match case"),false);
+	SetBool(_T("Select Match dialogues"),true);
+	SetBool(_T("Select Match comments"),false);
 
 	SetBool(_T("Auto backup"),true);
 	SetInt(_T("Auto save every seconds"),60);

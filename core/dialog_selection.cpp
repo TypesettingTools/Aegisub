@@ -60,6 +60,8 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	Matches = new wxRadioButton(this,-1,_("Matches"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	DoesntMatch = new wxRadioButton(this,-1,_("Doesn't Match"),wxDefaultPosition,wxDefaultSize,0);
 	MatchCase = new wxCheckBox(this,-1,_("Match case"));
+	MatchDialogues = new wxCheckBox(this,MATCH_DIALOGUES_CHECKBOX,_("Dialogues"));
+	MatchComments = new wxCheckBox(this,MATCH_COMMENTS_CHECKBOX,_("Comments"));
 
 	// Matches box sizer
 	wxSizer *MatchSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Match"));
@@ -82,6 +84,12 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	actions.Add(_("Intersect with selection"));
 	Action = new wxRadioBox(this,-1,_("Action"),wxDefaultPosition,wxDefaultSize,actions,1);
 
+	// Dialogues / Comments box
+	wxSizer *DialogueSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Match dialogues/comments"));
+	DialogueSizer->Add(MatchDialogues,0, wxRIGHT|wxEXPAND,5);
+	DialogueSizer->Add(MatchComments,0, wxEXPAND);
+	
+	
 	// Fields box
 	wxArrayString field;
 	field.Add(_("Text"));
@@ -99,6 +107,7 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(MatchSizer,0,wxEXPAND|wxLEFT|wxTOP|wxRIGHT,5);
 	MainSizer->Add(Field,0,wxEXPAND|wxLEFT|wxRIGHT|wxTOP,5);
+	MainSizer->Add(DialogueSizer,0,wxEXPAND|wxLEFT|wxRIGHT|wxTOP,5);
 	MainSizer->Add(Action,0,wxEXPAND|wxLEFT|wxRIGHT|wxTOP,5);
 	MainSizer->Add(ButtonSizer,0,wxEXPAND|wxALL,5);
 	MainSizer->SetSizeHints(this);
@@ -109,6 +118,8 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	Field->SetSelection(Options.AsInt(_T("Select Field")));
 	Action->SetSelection(Options.AsInt(_T("Select Action")));
 	MatchCase->SetValue(Options.AsBool(_T("Select Match case")));
+	MatchDialogues->SetValue(Options.AsBool(_T("Select Match dialogues")));
+	MatchComments->SetValue(Options.AsBool(_T("Select Match comments")));
 	int condition = Options.AsInt(_T("Select Condition"));
 	int mode = Options.AsInt(_T("Select Mode"));
 	if (condition == 1) DoesntMatch->SetValue(true);
@@ -146,9 +157,16 @@ bool DialogSelection::StringMatches(AssDialogue *diag) {
 			matching.LowerCase();
 		}
 	}
+	
+	// Dialogue/Comment
+	bool dial = MatchDialogues->GetValue();
+	bool comm = MatchComments->GetValue();	
+	if ((diag->Comment && !comm) || (!diag->Comment && !dial)) {
+		result = false;
+	}
 
 	// Exact
-	if (Exact->GetValue()) {
+	else if (Exact->GetValue()) {
 		if (text == matching) result = true;
 	}
 	
@@ -263,6 +281,8 @@ void DialogSelection::SaveSettings() {
 	Options.SetInt(_T("Select Action"),action);
 	Options.SetInt(_T("Select Mode"),mode);
 	Options.SetBool(_T("Select Match case"),MatchCase->IsChecked());
+	Options.SetBool(_T("Select Match dialogues"),MatchDialogues->IsChecked());
+	Options.SetBool(_T("Select Match comments"),MatchComments->IsChecked());
 }
 
 
@@ -271,9 +291,24 @@ void DialogSelection::SaveSettings() {
 BEGIN_EVENT_TABLE(DialogSelection,wxDialog)
 	EVT_BUTTON(wxID_OK,DialogSelection::OnOK)
 	EVT_BUTTON(wxID_CANCEL,DialogSelection::OnCancel)
+	EVT_CHECKBOX(MATCH_DIALOGUES_CHECKBOX, DialogSelection::OnDialogueCheckbox)	
+	EVT_CHECKBOX(MATCH_COMMENTS_CHECKBOX, DialogSelection::OnCommentCheckbox)	
 END_EVENT_TABLE()
 
 
+
+//////////////////////////////
+// Dialogue/Comment checkboxes
+void DialogSelection::OnDialogueCheckbox(wxCommandEvent &event) {
+	if(!event.IsChecked() && !MatchComments->GetValue())
+		MatchComments->SetValue(true);
+}
+
+void DialogSelection::OnCommentCheckbox(wxCommandEvent &event) {
+	if(!event.IsChecked() && !MatchDialogues->GetValue())
+		MatchDialogues->SetValue(true);
+}	
+	
 //////////////
 // OK pressed
 void DialogSelection::OnOK(wxCommandEvent &event) {
