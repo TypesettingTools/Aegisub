@@ -53,7 +53,6 @@
 enum AudioProviderType {
 	AUDIO_PROVIDER_NONE,
 	AUDIO_PROVIDER_AVS,
-	AUDIO_PROVIDER_CACHE,
 	AUDIO_PROVIDER_DISK_CACHE
 };
 
@@ -64,19 +63,12 @@ class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
 private:
 	wxMutex diskmutex;
 
-	AudioProviderType type;
-
-	char** blockcache;
-	int blockcount;
-
-	AudioDisplay *display;
-
 	std::ifstream file_cache;
 
+	AudioProviderType type;
 	wxString filename;
 	PClip clip;
 
-	void ConvertToRAMCache(PClip &tempclip);
 	void ConvertToDiskCache(PClip &tempclip);
 	void LoadFromClip(AVSValue clip);
 	void OpenAVSAudio();

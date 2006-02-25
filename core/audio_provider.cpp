@@ -38,6 +38,8 @@
 // Headers
 #include <wx/wxprec.h>
 #include "audio_provider_avs.h"
+#include "audio_provider_ram.h"
+#include "audio_provider_hd.h"
 #include "options.h"
 #include "audio_display.h"
 
@@ -178,11 +180,15 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 	}
 
 	// Change provider to RAM/HD cache if needed
-	if (false) {
+	int cacheMode = Options.AsInt(_T("Audio Cache"));
+	if (cacheMode) {
 		AudioProvider *final = NULL;
 		
-		//final = new RAMAudioProvider(provider);
-		//final = new HDAudioProvider(provider);
+		// Convert to RAM
+		if (cacheMode == 1) final = new RAMAudioProvider(provider);
+		
+		// Convert to HD
+		//if (cacheMode == 2) final = new HDAudioProvider(provider);
 		
 		// Reassign
 		if (final) {

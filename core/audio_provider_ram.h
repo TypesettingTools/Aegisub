@@ -39,41 +39,21 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-
-
-//////////////
-// Prototypes
-class AudioDisplay;
+#include "audio_provider.h"
 
 
 ////////////////////////
 // Audio provider class
-class AudioProvider {
+class RAMAudioProvider : public AudioProvider {
 private:
-	void *raw;
-	int raw_len;
+	char** blockcache;
+	int blockcount;
 
-protected:
-	int channels;
-	__int64 num_samples;
-	int sample_rate;
-	int bytes_per_sample;
-
-	wxString filename;
+	void Clear();
 
 public:
-	AudioProvider();
-	virtual ~AudioProvider();
+	RAMAudioProvider(AudioProvider *source);
+	~RAMAudioProvider();
 
-	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, __int64 start, __int64 count)=0;
-
-	int GetChannels();
-	__int64 GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-
-	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
-	static AudioProvider *GetAudioProvider(wxString filename, AudioDisplay *display);
+	void GetAudio(void *buf, __int64 start, __int64 count);
 };

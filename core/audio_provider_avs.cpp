@@ -48,16 +48,11 @@
 #include "main.h"
 #include "dialog_progress.h"
 
-#define CacheBits ((22))
-#define CacheBlockSize ((1 << CacheBits))
 
 //////////////
 // Constructor
 AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
 	type = AUDIO_PROVIDER_NONE;
-	blockcache = NULL;
-	blockcount = 0;
-	blockcount = 0;
 
 	filename = _filename;
 
@@ -88,14 +83,6 @@ void AvisynthAudioProvider::Unload() {
 	if (type == AUDIO_PROVIDER_DISK_CACHE) {
 		file_cache.close();
 		wxRemoveFile(DiskCacheName());
-	}
-
-	// Free ram cache
-	if (blockcache) {
-		for (int i = 0; i < blockcount; i++)
-			if (blockcache[i])
-				delete blockcache[i];
-		delete blockcache;
 	}
 }
 
@@ -158,76 +145,8 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 	sample_rate = vi.SamplesPerSecond();
 	bytes_per_sample = vi.BytesPerAudioSample();
 
-	// Read whole thing into ram cache
-	if (Options.AsInt(_T("Audio Cache")) == 1) {
-		ConvertToRAMCache(tempclip);
-		clip = NULL;
-	}
-
-	// Disk cache
-	else if (Options.AsInt(_T("Audio Cache")) == 2) {
-		ConvertToDiskCache(tempclip);
-		clip = NULL;
-	}
-
-	// Assign to avisynth
-	else {
-		clip = tempclip;
-	}
-}
-
-
-/////////////
-// RAM Cache
-void AvisynthAudioProvider::ConvertToRAMCache(PClip &tempclip) {
-
-	// Allocate cache
-	__int64 ssize = num_samples * bytes_per_sample;
-	blockcount = (ssize + CacheBlockSize - 1) >> CacheBits;
-
-	blockcache = new char*[blockcount];
-	for (int i = 0; i < blockcount; i++)
-		blockcache[i] = NULL;
-
-	try {
-		for (int i = 0; i < blockcount; i++)
-			blockcache[i] = new char[MIN(CacheBlockSize,ssize-i*CacheBlockSize)];
-	} catch (...) { 
-		for (int i = 0; i < blockcount; i++)
-			delete blockcache[i];
-		delete blockcache;
-			
-		blockcache = NULL;
-		blockcount = 0;
-
-		if (wxMessageBox(_("Not enough ram available. Use disk cache instead?"),_("Audio Information"),wxICON_INFORMATION | wxYES_NO) == wxYES) {
-			ConvertToDiskCache(tempclip);
-			return;
-		} else
-			throw wxString(_T("Couldn't open audio, not enough ram available."));
-	}
-
-	// Start progress
-	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(NULL,_("Load audio"),&canceled,_("Reading into RAM"),0,num_samples);
-	progress->Show();
-	progress->SetProgress(0,1);
-
-	// Read cache
-	int readsize = CacheBlockSize / bytes_per_sample;
-
-	for (int i=0;i<blockcount && !canceled; i++) {
-		tempclip->GetAudio((char*)blockcache[i],i*readsize, i == blockcount-1 ? (num_samples - i*readsize) : readsize,env);
-		progress->SetProgress(i,blockcount-1);
-	}
-
-	type = AUDIO_PROVIDER_CACHE;
-
-	// Clean up progress
-	if (!canceled) 
-		progress->Destroy();
-	else
-		throw wxString(_T("Audio loading cancelled by user"));
+	// Set
+	clip = tempclip;
 }
 
 
@@ -283,7 +202,6 @@ int aaa = 0;
 /////////////
 // Get audio
 void AvisynthAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
-
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
 		__int64 oldcount = count;
@@ -306,30 +224,8 @@ void AvisynthAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 	}
 
 	if (count) {
-		char *charbuf = (char *)buf;
-
-		// RAM Cache
-		if (type == AUDIO_PROVIDER_CACHE) {
-			int i = (start*bytes_per_sample) >> CacheBits;
-			int start_offset = (start*bytes_per_sample) & (CacheBlockSize-1);
-
-			__int64 bytesremaining = count*bytes_per_sample;
-			
-			while (bytesremaining) {
-				int readsize=MIN(bytesremaining,CacheBlockSize); 
-				readsize = MIN(readsize,CacheBlockSize - start_offset);
-
-				memcpy(charbuf,(char *)(blockcache[i++]+start_offset),readsize);
-
-				charbuf+=readsize;
-
-				start_offset=0;
-				bytesremaining-=readsize;
-			}
-		}
-
 		// Disk cache
-		else if (type == AUDIO_PROVIDER_DISK_CACHE) {
+		if (type == AUDIO_PROVIDER_DISK_CACHE) {
 			wxMutexLocker disklock(diskmutex);
 			file_cache.seekg(start*bytes_per_sample);
 			file_cache.read((char*)buf,count*bytes_per_sample*channels);

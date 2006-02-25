@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,46 +34,5 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
-#include <wx/wxprec.h>
-
-
-//////////////
-// Prototypes
-class AudioDisplay;
-
-
-////////////////////////
-// Audio provider class
-class AudioProvider {
-private:
-	void *raw;
-	int raw_len;
-
-protected:
-	int channels;
-	__int64 num_samples;
-	int sample_rate;
-	int bytes_per_sample;
-
-	wxString filename;
-
-public:
-	AudioProvider();
-	virtual ~AudioProvider();
-
-	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, __int64 start, __int64 count)=0;
-
-	int GetChannels();
-	__int64 GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-
-	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
-	static AudioProvider *GetAudioProvider(wxString filename, AudioDisplay *display);
-};

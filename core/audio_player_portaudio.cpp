@@ -171,8 +171,9 @@ void PortAudioPlayer::Stop(bool timerToo) {
 void PortAudioPlayer::OpenStream() {
 	// Open stream
 	PaError err = Pa_OpenDefaultStream(&stream,0,provider->GetChannels(),paInt16,provider->GetSampleRate(),256,16,paCallback,this);
-	if (err != paNoError)
+	if (err != paNoError) {
 		throw wxString(_T("Failed initializing PortAudio stream with error: ") + wxString(Pa_GetErrorText(err),wxConvLocal));
+	}
 }
 
 
