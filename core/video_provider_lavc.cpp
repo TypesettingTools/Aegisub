@@ -293,7 +293,8 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 		__int64 finalPos = av_rescale(seekTo,stream->time_base.den,AV_TIME_BASE * __int64(stream->time_base.num));
 
 		// Seek to keyframe
-		int result = av_seek_frame(formatContext,vidStream,finalPos,0);
+		//int result = av_seek_frame(formatContext,vidStream,finalPos,0);
+		int result = av_seek_frame(formatContext,vidStream,finalPos,AVSEEK_FLAG_BACKWARD);
 		avcodec_flush_buffers(codecContext);
 
 		// Seek until final frame
