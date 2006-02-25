@@ -692,12 +692,15 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 	if (update) {
 		// Center scroll
 		int oldSamples = samples;
+		UpdateSamples();
 		PositionSample += (oldSamples-samples)*w*pivot;
 		if (PositionSample < 0) PositionSample = 0;
 
 		// Update
+		UpdateSamples();
 		UpdateScrollbar();
 		UpdateImage();
+		Refresh(false);
 	}
 }
 
