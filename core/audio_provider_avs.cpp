@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2006, Rodrigo Braz Monteiro, Fredrik Mellbin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,15 +45,11 @@
 #include "utils.h"
 #include "audio_provider_avs.h"
 #include "options.h"
-#include "main.h"
-#include "dialog_progress.h"
 
 
 //////////////
 // Constructor
 AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
-	type = AUDIO_PROVIDER_NONE;
-
 	filename = _filename;
 
 	try {
@@ -78,12 +74,6 @@ AvisynthAudioProvider::~AvisynthAudioProvider() {
 void AvisynthAudioProvider::Unload() {
 	// Clean up avisynth
 	clip = NULL;
-
-	// Close file
-	if (type == AUDIO_PROVIDER_DISK_CACHE) {
-		file_cache.close();
-		wxRemoveFile(DiskCacheName());
-	}
 }
 
 
@@ -91,7 +81,6 @@ void AvisynthAudioProvider::Unload() {
 // Load audio from avisynth
 void AvisynthAudioProvider::OpenAVSAudio() {
 	// Set variables
-	type = AUDIO_PROVIDER_AVS;
 	AVSValue script;
 
 	// Prepare avisynth
@@ -104,7 +93,9 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 
 		LoadFromClip(script);
 
-	} catch (AvisynthError &err) {
+	}
+	
+	catch (AvisynthError &err) {
 		throw wxString::Format(_T("AviSynth error: %s"), wxString(err.msg,wxConvLocal));
 	}
 }
@@ -150,47 +141,6 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 }
 
 
-//////////////
-// Disk Cache
-void AvisynthAudioProvider::ConvertToDiskCache(PClip &tempclip) {
-	// Check free space
-	wxLongLong freespace;
-	if (wxGetDiskSpace(DiskCachePath(), NULL, &freespace))
-		if (num_samples * channels * bytes_per_sample > freespace)
-			throw wxString(_T("Not enough free diskspace in "))+DiskCachePath()+wxString(_T(" to cache the audio"));
-
-	// Open output file
-	std::ofstream file;
-	char filename[512];
-	strcpy(filename,DiskCacheName().mb_str(wxConvLocal));
-	file.open(filename,std::ios::binary | std::ios::out | std::ios::trunc);
-
-	// Start progress
-	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(NULL,_T("Load audio"),&canceled,_T("Reading to Hard Disk cache"),0,num_samples);
-	progress->Show();
-
-	// Write to disk
-	int block = 4096;
-	char *temp = new char[block * channels * bytes_per_sample];
-	for (__int64 i=0;i<num_samples && !canceled; i+=block) {
-		if (block+i > num_samples) block = num_samples - i;
-		tempclip->GetAudio(temp,i,block,env);
-		file.write(temp,block * channels * bytes_per_sample);
-		progress->SetProgress(i,num_samples);
-	}
-	file.close();
-	type = AUDIO_PROVIDER_DISK_CACHE;
-
-	// Finish
-	if (!canceled) {
-		progress->Destroy();
-		file_cache.open(filename,std::ios::binary | std::ios::in);
-	}
-	else 
-		throw wxString(_T("Audio loading cancelled by user"));
-}
-
 ////////////////
 // Get filename
 wxString AvisynthAudioProvider::GetFilename() {
@@ -224,33 +174,8 @@ void AvisynthAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 	}
 
 	if (count) {
-		// Disk cache
-		if (type == AUDIO_PROVIDER_DISK_CACHE) {
-			wxMutexLocker disklock(diskmutex);
-			file_cache.seekg(start*bytes_per_sample);
-			file_cache.read((char*)buf,count*bytes_per_sample*channels);
-		}
-
-		// Avisynth
-		else {
-			wxMutexLocker disklock(diskmutex);
-			clip->GetAudio(buf,start,count,env);
-		}
+		clip->GetAudio(buf,start,count,env);
 	}
-}
-
-
-///////////////////////////
-// Get disk cache path
-wxString AvisynthAudioProvider::DiskCachePath() {
-	return AegisubApp::folderName;
-}
-
-
-///////////////////////////
-// Get disk cache filename
-wxString AvisynthAudioProvider::DiskCacheName() {
-	return DiskCachePath() + _T("audio.tmp");
 }
 
 #endif

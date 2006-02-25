@@ -188,7 +188,7 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 		if (cacheMode == 1) final = new RAMAudioProvider(provider);
 		
 		// Convert to HD
-		//if (cacheMode == 2) final = new HDAudioProvider(provider);
+		if (cacheMode == 2) final = new HDAudioProvider(provider);
 		
 		// Reassign
 		if (final) {

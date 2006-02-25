@@ -73,7 +73,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *source) {
 		throw wxString(_T("Couldn't open audio, not enough ram available."));
 	}
 
-	// Copy data
+	// Copy parameters
 	bytes_per_sample = source->GetBytesPerSample();
 	num_samples = source->GetNumSamples();
 	channels = source->GetChannels();

@@ -42,38 +42,20 @@
 #include <wx/wxprec.h>
 #ifdef __WINDOWS__
 
-#include <fstream>
 #include <time.h>
 #include "avisynth_wrap.h"
 #include "audio_provider.h"
-
-
-//////////////
-// Types enum
-enum AudioProviderType {
-	AUDIO_PROVIDER_NONE,
-	AUDIO_PROVIDER_AVS,
-	AUDIO_PROVIDER_DISK_CACHE
-};
 
 
 ////////////////////////
 // Audio provider class
 class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
 private:
-	wxMutex diskmutex;
-
-	std::ifstream file_cache;
-
-	AudioProviderType type;
 	wxString filename;
 	PClip clip;
 
-	void ConvertToDiskCache(PClip &tempclip);
 	void LoadFromClip(AVSValue clip);
 	void OpenAVSAudio();
-	static wxString DiskCachePath();
-	static wxString DiskCacheName();
 	void SetFile();
 	void Unload();
 
