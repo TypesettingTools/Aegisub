@@ -751,7 +751,8 @@ void AudioDisplay::SetFile(wxString file) {
 	else {
 		SetFile(_T(""));
 		try {
-			provider = new AudioProvider(file, this);
+			//provider = new AudioProvider(file, this);
+			provider = AudioProvider::GetAudioProvider(file, this);
 
 			loaded = true;
 

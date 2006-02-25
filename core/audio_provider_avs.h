@@ -40,44 +40,59 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#ifdef __WINDOWS__
+
 #include <fstream>
 #include <time.h>
 #include "avisynth_wrap.h"
-#include "audio_player_portaudio.h"
+#include "audio_provider.h"
 
 
 //////////////
-// Prototypes
-class AudioDisplay;
+// Types enum
+enum AudioProviderType {
+	AUDIO_PROVIDER_NONE,
+	AUDIO_PROVIDER_AVS,
+	AUDIO_PROVIDER_CACHE,
+	AUDIO_PROVIDER_DISK_CACHE
+};
 
 
 ////////////////////////
 // Audio provider class
-class AudioProvider : public PortAudioPlayer {
+class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
 private:
-	void *raw;
-	int raw_len;
+	wxMutex diskmutex;
 
-protected:
-	int channels;
-	__int64 num_samples;
-	int sample_rate;
-	int bytes_per_sample;
+	AudioProviderType type;
+
+	char** blockcache;
+	int blockcount;
+
+	AudioDisplay *display;
+
+	std::ifstream file_cache;
 
 	wxString filename;
+	PClip clip;
+
+	void ConvertToRAMCache(PClip &tempclip);
+	void ConvertToDiskCache(PClip &tempclip);
+	void LoadFromClip(AVSValue clip);
+	void OpenAVSAudio();
+	static wxString DiskCachePath();
+	static wxString DiskCacheName();
+	void SetFile();
+	void Unload();
 
 public:
-	AudioProvider();
-	virtual ~AudioProvider();
+	AvisynthAudioProvider(wxString _filename);
+	~AvisynthAudioProvider();
 
-	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, __int64 start, __int64 count)=0;
+	wxString GetFilename();
 
-	int GetChannels();
-	__int64 GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-
+	void GetAudio(void *buf, __int64 start, __int64 count);
 	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
-	static AudioProvider *GetAudioProvider(wxString filename, AudioDisplay *display);
 };
+
+#endif

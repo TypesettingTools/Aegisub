@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,319 +37,23 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include <wx/filename.h>
-#include <Mmreg.h>
-#include "avisynth_wrap.h"
-#include "utils.h"
-#include "audio_provider.h"
-#include "video_display.h"
+#include "audio_provider_avs.h"
 #include "options.h"
 #include "audio_display.h"
-#include "main.h"
-#include "dialog_progress.h"
 
-#define CacheBits ((22))
-#define CacheBlockSize ((1 << CacheBits))
 
-//////////////
+///////////////
 // Constructor
-AudioProvider::AudioProvider(wxString _filename, AudioDisplay *_display) {
-	SetProvider(this);
-	SetDisplayTimer(&_display->UpdateTimer);
-	type = AUDIO_PROVIDER_NONE;
-	blockcache = NULL;
-	blockcount = 0;
+AudioProvider::AudioProvider() {
 	raw = NULL;
-	display = _display;
-	blockcount = 0;
-
-	filename = _filename;
-
-	try {
-		OpenAVSAudio();
-		OpenStream();
-	}
-	catch (...) {
-		Unload();
-		throw;
-	}
 }
 
 
 //////////////
 // Destructor
 AudioProvider::~AudioProvider() {
-	CloseStream();
-	Unload();
-}
-
-
-////////////////
-// Unload audio
-void AudioProvider::Unload() {
-	// Clean up avisynth
-	clip = NULL;
-
-	// Close file
-	if (type == AUDIO_PROVIDER_DISK_CACHE) {
-		file_cache.close();
-		wxRemoveFile(DiskCacheName());
-	}
-
-	// Free ram cache
-	if (blockcache) {
-		for (int i = 0; i < blockcount; i++)
-			if (blockcache[i])
-				delete blockcache[i];
-		delete blockcache;
-	}
-
 	// Clear buffers
 	delete raw;
-}
-
-
-////////////////////////////
-// Load audio from avisynth
-void AudioProvider::OpenAVSAudio() {
-	// Set variables
-	type = AUDIO_PROVIDER_AVS;
-	AVSValue script;
-
-	// Prepare avisynth
-	wxMutexLocker lock(AviSynthMutex);
-
-	try {
-		const char * argnames[3] = { 0, "video", "audio" };
-		AVSValue args[3] = { env->SaveString(filename.mb_str(wxConvLocal)), false, true };
-		script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
-
-		LoadFromClip(script);
-
-	} catch (AvisynthError &err) {
-		throw wxString::Format(_T("AviSynth error: %s"), wxString(err.msg,wxConvLocal));
-	}
-}
-
-
-/////////////////////////
-// Read from environment
-void AudioProvider::LoadFromClip(AVSValue _clip) {	
-	// Prepare avisynth
-	AVSValue script;
-
-	// Check if it has audio
-	VideoInfo vi = _clip.AsClip()->GetVideoInfo();
-	if (!vi.HasAudio()) throw wxString(_T("No audio found."));
-
-	// Convert to one channel
-	char buffer[1024];
-	strcpy(buffer,Options.AsText(_T("Audio Downmixer")).mb_str(wxConvLocal));
-	script = env->Invoke(buffer, _clip);
-
-	// Convert to 16 bits per sample
-	script = env->Invoke("ConvertAudioTo16bit", script);
-
-	// Convert sample rate
-	int setsample = Options.AsInt(_T("Audio Sample Rate"));
-	if (setsample != 0) {
-		AVSValue args[2] = { script, setsample };
-		script = env->Invoke("ResampleAudio", AVSValue(args,2));
-	}
-
-	// Set clip
-	PClip tempclip = script.AsClip();
-	vi = tempclip->GetVideoInfo();
-
-	// Read properties
-	channels = vi.AudioChannels();
-	num_samples = vi.num_audio_samples;
-	sample_rate = vi.SamplesPerSecond();
-	bytes_per_sample = vi.BytesPerAudioSample();
-
-	// Read whole thing into ram cache
-	if (Options.AsInt(_T("Audio Cache")) == 1) {
-		ConvertToRAMCache(tempclip);
-		clip = NULL;
-	}
-
-	// Disk cache
-	else if (Options.AsInt(_T("Audio Cache")) == 2) {
-		ConvertToDiskCache(tempclip);
-		clip = NULL;
-	}
-
-	// Assign to avisynth
-	else {
-		clip = tempclip;
-	}
-}
-
-
-/////////////
-// RAM Cache
-void AudioProvider::ConvertToRAMCache(PClip &tempclip) {
-
-	// Allocate cache
-	__int64 ssize = num_samples * bytes_per_sample;
-	blockcount = (ssize + CacheBlockSize - 1) >> CacheBits;
-
-	blockcache = new char*[blockcount];
-	for (int i = 0; i < blockcount; i++)
-		blockcache[i] = NULL;
-
-	try {
-		for (int i = 0; i < blockcount; i++)
-			blockcache[i] = new char[MIN(CacheBlockSize,ssize-i*CacheBlockSize)];
-	} catch (...) { 
-		for (int i = 0; i < blockcount; i++)
-			delete blockcache[i];
-		delete blockcache;
-			
-		blockcache = NULL;
-		blockcount = 0;
-
-		if (wxMessageBox(_("Not enough ram available. Use disk cache instead?"),_("Audio Information"),wxICON_INFORMATION | wxYES_NO) == wxYES) {
-			ConvertToDiskCache(tempclip);
-			return;
-		} else
-			throw wxString(_T("Couldn't open audio, not enough ram available."));
-	}
-
-	// Start progress
-	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(NULL,_("Load audio"),&canceled,_("Reading into RAM"),0,num_samples);
-	progress->Show();
-	progress->SetProgress(0,1);
-
-	// Read cache
-	int readsize = CacheBlockSize / bytes_per_sample;
-
-	for (int i=0;i<blockcount && !canceled; i++) {
-		tempclip->GetAudio((char*)blockcache[i],i*readsize, i == blockcount-1 ? (num_samples - i*readsize) : readsize,env);
-		progress->SetProgress(i,blockcount-1);
-	}
-
-	type = AUDIO_PROVIDER_CACHE;
-
-	// Clean up progress
-	if (!canceled) 
-		progress->Destroy();
-	else
-		throw wxString(_T("Audio loading cancelled by user"));
-}
-
-
-//////////////
-// Disk Cache
-void AudioProvider::ConvertToDiskCache(PClip &tempclip) {
-	// Check free space
-	wxLongLong freespace;
-	if (wxGetDiskSpace(DiskCachePath(), NULL, &freespace))
-		if (num_samples * channels * bytes_per_sample > freespace)
-			throw wxString(_T("Not enough free diskspace in "))+DiskCachePath()+wxString(_T(" to cache the audio"));
-
-	// Open output file
-	std::ofstream file;
-	char filename[512];
-	strcpy(filename,DiskCacheName().mb_str(wxConvLocal));
-	file.open(filename,std::ios::binary | std::ios::out | std::ios::trunc);
-
-	// Start progress
-	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(NULL,_T("Load audio"),&canceled,_T("Reading to Hard Disk cache"),0,num_samples);
-	progress->Show();
-
-	// Write to disk
-	int block = 4096;
-	char *temp = new char[block * channels * bytes_per_sample];
-	for (__int64 i=0;i<num_samples && !canceled; i+=block) {
-		if (block+i > num_samples) block = num_samples - i;
-		tempclip->GetAudio(temp,i,block,env);
-		file.write(temp,block * channels * bytes_per_sample);
-		progress->SetProgress(i,num_samples);
-	}
-	file.close();
-	type = AUDIO_PROVIDER_DISK_CACHE;
-
-	// Finish
-	if (!canceled) {
-		progress->Destroy();
-		file_cache.open(filename,std::ios::binary | std::ios::in);
-	}
-	else 
-		throw wxString(_T("Audio loading cancelled by user"));
-}
-
-////////////////
-// Get filename
-wxString AudioProvider::GetFilename() {
-	return filename;
-}
-
-int aaa = 0;
-
-/////////////
-// Get audio
-void AudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
-
-	// Requested beyond the length of audio
-	if (start+count > num_samples) {
-		__int64 oldcount = count;
-		count = num_samples-start;
-		if (count < 0) count = 0;
-
-		// Fill beyond with zero
-		if (bytes_per_sample == 1) {
-			char *temp = (char *) buf;
-			for (int i=count;i<oldcount;i++) {
-				temp[i] = 0;
-			}
-		}
-		if (bytes_per_sample == 2) {
-			short *temp = (short *) buf;
-			for (int i=count;i<oldcount;i++) {
-				temp[i] = 0;
-			}
-		}
-	}
-
-	if (count) {
-		char *charbuf = (char *)buf;
-
-		// RAM Cache
-		if (type == AUDIO_PROVIDER_CACHE) {
-			int i = (start*bytes_per_sample) >> CacheBits;
-			int start_offset = (start*bytes_per_sample) & (CacheBlockSize-1);
-
-			__int64 bytesremaining = count*bytes_per_sample;
-			
-			while (bytesremaining) {
-				int readsize=MIN(bytesremaining,CacheBlockSize); 
-				readsize = MIN(readsize,CacheBlockSize - start_offset);
-
-				memcpy(charbuf,(char *)(blockcache[i++]+start_offset),readsize);
-
-				charbuf+=readsize;
-
-				start_offset=0;
-				bytesremaining-=readsize;
-			}
-		}
-
-		// Disk cache
-		else if (type == AUDIO_PROVIDER_DISK_CACHE) {
-			wxMutexLocker disklock(diskmutex);
-			file_cache.seekg(start*bytes_per_sample);
-			file_cache.read((char*)buf,count*bytes_per_sample*channels);
-		}
-
-		// Avisynth
-		else {
-			wxMutexLocker disklock(diskmutex);
-			clip->GetAudio(buf,start,count,env);
-		}
-	}
 }
 
 
@@ -371,6 +75,20 @@ __int64 AudioProvider::GetNumSamples() {
 // Get sample rate
 int AudioProvider::GetSampleRate() {
 	return sample_rate;
+}
+
+
+////////////////////////
+// Get bytes per sample
+int AudioProvider::GetBytesPerSample() {
+	return bytes_per_sample;
+}
+
+
+////////////////
+// Get filename
+wxString AudioProvider::GetFilename() {
+	return filename;
 }
 
 
@@ -439,16 +157,25 @@ void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int
 }
 
 
-///////////////////////////
-// Get disk cache path
-wxString AudioProvider::DiskCachePath() {
-	return AegisubApp::folderName;
+////////////////
+// Get provider
+AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *display) {
+	// Prepare provider
+	AudioProvider *provider = NULL;
+
+	// Select provider
+	#ifdef __WINDOWS__
+	provider = new AvisynthAudioProvider(filename);
+	#endif
+
+	// No provider found
+	if (!provider) {
+		throw _T("Could not initialize any audio provider.");
+	}
+
+	// Set up provider
+	provider->SetDisplayTimer(&display->UpdateTimer);
+
+	// Return
+	return provider;
 }
-
-
-///////////////////////////
-// Get disk cache filename
-wxString AudioProvider::DiskCacheName() {
-	return DiskCachePath() + _T("audio.tmp");
-}
-
