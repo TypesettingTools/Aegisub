@@ -179,7 +179,7 @@ void LAVCVideoProvider::UpdateDisplaySize() {
 
 //////////////////
 // Get next frame
-void LAVCVideoProvider::GetNextFrame() {
+bool LAVCVideoProvider::GetNextFrame() {
 	// Read packet
 	AVPacket packet;
 	while (av_read_frame(formatContext, &packet)>=0) {
@@ -196,11 +196,13 @@ void LAVCVideoProvider::GetNextFrame() {
 
 				// Free packet
 				av_free_packet(&packet);
-				return;
+				return true;
 			}
 		}
     }
-	av_free_packet(&packet);
+
+	// No more packets
+	return false;
 }
 
 
@@ -286,21 +288,24 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 	// Needs to seek
 	else {
 		// Get seek position
-		__int64 half = __int64(AV_TIME_BASE) * stream->r_frame_rate.den / stream->r_frame_rate.num / 2;
-		__int64 seekTo =  __int64(n) * AV_TIME_BASE * stream->r_frame_rate.den / stream->r_frame_rate.num + stream->start_time;
-		if (seekTo > half) seekTo -= half;
-		else seekTo = 0;
-		__int64 finalPos = av_rescale(seekTo,stream->time_base.den,AV_TIME_BASE * __int64(stream->time_base.num));
+		//__int64 half = __int64(AV_TIME_BASE) * stream->r_frame_rate.den / stream->r_frame_rate.num / 2;
+		//__int64 seekTo =  __int64(n) * AV_TIME_BASE * stream->r_frame_rate.den / stream->r_frame_rate.num + stream->start_time;
+		//if (seekTo > half) seekTo -= half;
+		//else seekTo = 0;
+		//__int64 finalPos = av_rescale(seekTo,stream->time_base.den,AV_TIME_BASE * __int64(stream->time_base.num));
 
 		// Seek to keyframe
-		//int result = av_seek_frame(formatContext,vidStream,finalPos,0);
-		int result = av_seek_frame(formatContext,vidStream,finalPos,AVSEEK_FLAG_BACKWARD);
+		int result = av_seek_frame(formatContext,vidStream,n,AVSEEK_FLAG_BACKWARD);
 		avcodec_flush_buffers(codecContext);
 
 		// Seek until final frame
+		bool ok = true;
 		do {
-			GetNextFrame();
-		} while (lastDecodeTime < n);
+			ok = GetNextFrame();
+			//if (!ok) {
+			//	return wxBitmap(GetWidth(),GetHeight());
+			//}
+		} while (lastDecodeTime <= n && ok);
 	}
 
 	// Bitmap

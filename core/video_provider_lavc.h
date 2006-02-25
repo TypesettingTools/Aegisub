@@ -81,7 +81,7 @@ private:
 	int buffer2Size;
 
 	void UpdateDisplaySize();
-	void GetNextFrame();
+	bool GetNextFrame();
 	void LoadVideo(wxString filename);
 	void Close();
 	wxBitmap AVFrameToWX(AVFrame *frame);
