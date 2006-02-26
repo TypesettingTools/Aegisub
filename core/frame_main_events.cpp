@@ -72,11 +72,13 @@
 #include "toggle_bitmap.h"
 #include "dialog_hotkeys.h"
 #include "dialog_timing_processor.h"
+#ifndef NO_FEX
 #include "FexTracker.h"
 #include "FexTrackingFeature.h"
 #include "FexMovement.h"
-#include "dialog_progress.h"
 #include "dialog_fextracker.h"
+#endif
+#include "dialog_progress.h"
 
 
 ////////////////////
@@ -90,6 +92,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_BUTTON(Video_Stop, FrameMain::OnVideoStop)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, FrameMain::OnVideoToggleScroll)
 
+#ifndef NO_FEX
 	EVT_BUTTON(Video_Tracker_Menu, FrameMain::OnVideoTrackerMenu)
 	EVT_MENU(Video_Track_Points, FrameMain::OnVideoTrackPoints)
 	EVT_MENU(Video_Track_Point_Add, FrameMain::OnVideoTrackPointAdd)
@@ -101,6 +104,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Video_Track_Movement_MoveBefore, FrameMain::OnVideoTrackMovementMoveBefore)
 	EVT_MENU(Video_Track_Movement_MoveAfter, FrameMain::OnVideoTrackMovementMoveAfter)
 	EVT_MENU(Video_Track_Split_Line, FrameMain::OnVideoTrackSplitLine)
+#endif
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 
