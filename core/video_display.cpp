@@ -180,7 +180,9 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 				// Close mkv
 				MatroskaWrapper::wrapper.Close();
 			}
+#ifdef __WIN32__
 			else if (ext == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
+#endif
 
 			// Update size
 			UpdateSize();

@@ -36,7 +36,9 @@
 
 ///////////////////////
 // Function prototypes
+#ifdef __WIN32__
 __int64 abs64(__int64 input);
+#endif
 int CountMatches(wxString parent,wxString child);
 bool Copy(wxString src,wxString dst);
 bool Backup(wxString src,wxString dst);

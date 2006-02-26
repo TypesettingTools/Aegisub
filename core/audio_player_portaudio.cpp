@@ -71,6 +71,9 @@ PortAudioPlayer::~PortAudioPlayer() {
 	if (!--pa_refcount) Pa_Terminate();
 }
 
+#ifdef __WIN32__
+typedef unsigned __int64 uint64_t;
+#endif
 
 //////////////////////
 // PortAudio callback
@@ -82,7 +85,7 @@ int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned 
 
 	// Calculate how much left
 	__int64 lenAvailable = player->endPos - player->playPos;
-	unsigned __int64 avail = 0;
+	uint64_t avail = 0;
 	if (lenAvailable > 0) {
 		avail = lenAvailable;
 		if (avail > framesPerBuffer) {
@@ -101,7 +104,7 @@ int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned 
 	}
 
 	// Pad end with blank
-	if (avail < (unsigned __int64) framesPerBuffer) {
+	if (avail < (uint64_t) framesPerBuffer) {
 		//provider->softStop = true;
 	}
 

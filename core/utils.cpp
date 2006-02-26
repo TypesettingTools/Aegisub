@@ -44,12 +44,14 @@
 #endif
 
 
+#ifdef __WIN32__
 //////////////////////////
 // Absolute of 64 bit int
 __int64 abs64(__int64 input) {
 	if (input < 0) return -input;
 	return input;
 }
+#endif
 
 
 ///////////////////////////////////////
