@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,66 +34,94 @@
 //
 
 
-#ifndef MAIN_H
-#define MAIN_H
+///////////
+// Headers
+#include "subtitle_format_reader.h"
+#include "ass_file.h"
 
 
-///////////////////
-// Include headers
-#include <wx/wxprec.h>
-#include <wx/stackwalk.h>
-#include <fstream>
-#include "aegisublocale.h"
+///////////////
+// Constructor
+SubtitleFormatReader::SubtitleFormatReader() {
+	Line = NULL;
+	Register();
+}
 
 
 //////////////
-// Prototypes
-class FrameMain;
+// Destructor
+SubtitleFormatReader::~SubtitleFormatReader() {
+	Remove();
+}
 
 
-////////////////////////////////
-// Application class definition
-class AegisubApp: public wxApp {
-private:
-	void OnMouseWheel(wxMouseEvent &event);
-	void OnKey(wxKeyEvent &key);
+//////////////
+// Set target
+void SubtitleFormatReader::SetTarget(AssFile *file) {
+	if (!file) Line = NULL;
+	else Line = &file->Line;
+	assFile = file;
+}
 
-public:
-	AegisubLocale locale;
-	FrameMain *frame;
 
-	static wxString fullPath;
-	static wxString folderName;
-	
-	void GetFullPath(wxString arg);
-	void GetFolderName();
-	void RegistryAssociate();
-	void AssociateType(wxString type);
+////////
+// List
+std::list<SubtitleFormatReader*> SubtitleFormatReader::readers;
 
-	bool OnInit();
-	int OnRun();
 
-#ifndef _DEBUG
-	void OnUnhandledException();
-	void OnFatalException();
-#endif
+/////////////////////////////
+// Get an appropriate reader
+SubtitleFormatReader *SubtitleFormatReader::GetReader(wxString filename) {
+	std::list<SubtitleFormatReader*>::iterator cur;
+	SubtitleFormatReader *reader;
+	for (cur=readers.begin();cur!=readers.end();cur++) {
+		reader = *cur;
+		if (reader->CanReadFile(filename)) return reader;
+	}
+	return NULL;
+}
 
-	//int OnRun();
-	DECLARE_EVENT_TABLE()
-};
+
+////////////
+// Register
+void SubtitleFormatReader::Register() {
+	std::list<SubtitleFormatReader*>::iterator cur;
+	for (cur=readers.begin();cur!=readers.end();cur++) {
+		if (*cur == this) return;
+	}
+	readers.push_back(this);
+}
+
+
+//////////
+// Remove
+void SubtitleFormatReader::Remove() {
+	std::list<SubtitleFormatReader*>::iterator cur;
+	for (cur=readers.begin();cur!=readers.end();cur++) {
+		if (*cur == this) {
+			readers.erase(cur);
+			return;
+		}
+	}
+}
+
+
+///////////////////
+// Clear subtitles
+void SubtitleFormatReader::Clear() {
+	assFile->Clear();
+}
 
 
 ////////////////
-// Stack walker
-class StackWalker: public wxStackWalker {
-private:
-	std::ofstream file;
-
-public:
-	StackWalker();
-	~StackWalker();
-	void OnStackFrame(const wxStackFrame& frame);
-};
+// Load default
+void SubtitleFormatReader::LoadDefault() {
+	assFile->LoadDefault();
+}
 
 
-#endif
+///////////////////
+// Set if it's ASS
+void SubtitleFormatReader::SetIsASS(bool isASS) {
+	assFile->IsASS = isASS;
+}

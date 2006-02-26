@@ -69,7 +69,6 @@ private:
 
 	// I/O operations
 	void LoadASS(const wxString file,const wxString encoding,bool IsSSA=false);
-	void LoadSRT(const wxString file,const wxString encoding);
 	void LoadTXT(const wxString file,const wxString encoding);
 	void SaveASS(const wxString file,bool setfilename,const wxString encoding=_T(""));
 	void SaveSSA(const wxString file,const wxString encoding=_T(""));
@@ -77,10 +76,10 @@ private:
 
 	// Manipulation operations
 	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA);
+	void ConvertToSRT();
 	void DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator prev);
 
 	// Format conversion operations
-	void ConvertToSRT();
 	void ConvertToSSA();
 
 public:

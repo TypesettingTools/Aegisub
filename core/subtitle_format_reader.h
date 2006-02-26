@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,66 +34,44 @@
 //
 
 
-#ifndef MAIN_H
-#define MAIN_H
+#pragma once
 
 
-///////////////////
-// Include headers
+///////////
+// Headers
 #include <wx/wxprec.h>
-#include <wx/stackwalk.h>
-#include <fstream>
-#include "aegisublocale.h"
+#include <list>
 
 
 //////////////
 // Prototypes
-class FrameMain;
+class AssFile;
+class AssEntry;
 
 
-////////////////////////////////
-// Application class definition
-class AegisubApp: public wxApp {
+///////////////////
+// Subtitle reader
+class SubtitleFormatReader {
 private:
-	void OnMouseWheel(wxMouseEvent &event);
-	void OnKey(wxKeyEvent &key);
+	void Register();
+	void Remove();
+	static std::list<SubtitleFormatReader*> readers;
+	AssFile *assFile;
+
+protected:
+	std::list<AssEntry*> *Line;
 
 public:
-	AegisubLocale locale;
-	FrameMain *frame;
+	SubtitleFormatReader();
+	virtual ~SubtitleFormatReader();
 
-	static wxString fullPath;
-	static wxString folderName;
-	
-	void GetFullPath(wxString arg);
-	void GetFolderName();
-	void RegistryAssociate();
-	void AssociateType(wxString type);
+	virtual bool CanReadFile(wxString filename)=0;
+	virtual void ReadFile(wxString filename,wxString forceEncoding=_T(""))=0;
 
-	bool OnInit();
-	int OnRun();
+	void SetTarget(AssFile *file);
+	void Clear();
+	void LoadDefault();
+	void SetIsASS(bool isASS);
 
-#ifndef _DEBUG
-	void OnUnhandledException();
-	void OnFatalException();
-#endif
-
-	//int OnRun();
-	DECLARE_EVENT_TABLE()
+	static SubtitleFormatReader *GetReader(wxString filename);
 };
-
-
-////////////////
-// Stack walker
-class StackWalker: public wxStackWalker {
-private:
-	std::ofstream file;
-
-public:
-	StackWalker();
-	~StackWalker();
-	void OnStackFrame(const wxStackFrame& frame);
-};
-
-
-#endif

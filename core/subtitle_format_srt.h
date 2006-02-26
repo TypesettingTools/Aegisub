@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,66 +34,25 @@
 //
 
 
-#ifndef MAIN_H
-#define MAIN_H
+#pragma once
 
 
-///////////////////
-// Include headers
-#include <wx/wxprec.h>
-#include <wx/stackwalk.h>
-#include <fstream>
-#include "aegisublocale.h"
+///////////
+// Headers
+#include "subtitle_format_reader.h"
 
 
 //////////////
 // Prototypes
-class FrameMain;
+class AssDialogue;
 
 
-////////////////////////////////
-// Application class definition
-class AegisubApp: public wxApp {
+//////////////
+// SRT reader
+class SRTSubtitleFormatReader : public SubtitleFormatReader {
 private:
-	void OnMouseWheel(wxMouseEvent &event);
-	void OnKey(wxKeyEvent &key);
 
 public:
-	AegisubLocale locale;
-	FrameMain *frame;
-
-	static wxString fullPath;
-	static wxString folderName;
-	
-	void GetFullPath(wxString arg);
-	void GetFolderName();
-	void RegistryAssociate();
-	void AssociateType(wxString type);
-
-	bool OnInit();
-	int OnRun();
-
-#ifndef _DEBUG
-	void OnUnhandledException();
-	void OnFatalException();
-#endif
-
-	//int OnRun();
-	DECLARE_EVENT_TABLE()
+	bool CanReadFile(wxString filename);
+	void ReadFile(wxString filename,wxString forceEncoding);
 };
-
-
-////////////////
-// Stack walker
-class StackWalker: public wxStackWalker {
-private:
-	std::ofstream file;
-
-public:
-	StackWalker();
-	~StackWalker();
-	void OnStackFrame(const wxStackFrame& frame);
-};
-
-
-#endif

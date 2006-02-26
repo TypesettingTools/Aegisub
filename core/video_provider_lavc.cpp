@@ -47,6 +47,9 @@
 ///////////////
 // Constructor
 LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
+	char temp[1024];
+	strcpy(temp,subfilename.mb_str(wxConvUTF8));
+
 	// Init variables
 	codecContext = NULL;
 	formatContext = NULL;

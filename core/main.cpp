@@ -70,9 +70,9 @@ bool AegisubApp::OnInit() {
 
 		// App name
 		SetAppName(_T("Aegisub"));
-		//#ifndef _DEBUG
+		#ifndef _DEBUG
 		wxHandleFatalExceptions(true);
-		//#endif
+		#endif
 
 		// Set config file
 		GetFullPath(argv[0]);
@@ -126,7 +126,7 @@ bool AegisubApp::OnInit() {
 }
 
 
-//#ifndef _DEBUG
+#ifndef _DEBUG
 ///////////////////////
 // Unhandled exception
 void AegisubApp::OnUnhandledException() {
@@ -155,7 +155,7 @@ void AegisubApp::OnFatalException() {
 	// Inform user of crash
 	wxMessageBox(_T("Aegisub has encountered a fatal error and will terminate now. The subtitles you were working on were saved to \"") + filename + _T("\", but they might be corrupt."), _T("Fatal error"), wxOK | wxICON_ERROR, NULL);
 }
-//#endif
+#endif
 
 
 ////////////////

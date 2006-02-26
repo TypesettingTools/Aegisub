@@ -42,6 +42,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include <wx/dynarray.h>
+#include <fstream>
 
 
 /////////

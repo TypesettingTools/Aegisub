@@ -48,6 +48,7 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
+#include "subtitle_format_srt.h"
 
 
 ////////////////////// AssFile //////////////////////
@@ -105,7 +106,10 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 		
 		// SRT
 		else if (extension == _T("srt")) {
-			LoadSRT(_filename,enc);
+			//LoadSRT(_filename,enc);
+			SRTSubtitleFormatReader srt;
+			srt.SetTarget(this);
+			srt.ReadFile(_filename,enc);
 		}
 
 		// SSA
@@ -199,83 +203,6 @@ void AssFile::LoadASS (const wxString _filename,const wxString encoding,bool IsS
 
 	// Set ASS
 	IsASS = !IsSSA;
-}
-
-
-////////////////////////////
-// Loads SRT subs from disk
-void AssFile::LoadSRT (wxString _filename,wxString encoding) {
-	using namespace std;
-
-	// Reader
-	TextFileReader file(_filename,encoding);
-
-	// Default
-	LoadDefault(false);
-	IsASS = false;
-
-	// Parse file
-	int linen = 1;
-	int fileLine = 0;
-	int mode = 0;
-	long templ;
-	AssDialogue *line = NULL;
-	while (file.HasMoreLines()) {
-		// Reads line
-		wxString curline = file.ReadLineFromFile();
-		fileLine++;
-
-		switch (mode) {
-			case 0:
-				// Checks if there is anything to read
-				if (curline.IsEmpty()) continue;
-
-				// Check if it's a line number
-				if (!curline.IsNumber()) {
-					Clear();
-					throw wxString::Format(_T("Parse error on entry %i at line %i (expecting line number). Possible malformed file."),linen,fileLine);
-				}
-
-				// Read line number
-				curline.ToLong(&templ);
-				if (templ != linen) {
-					linen = templ;
-				}
-				line = new AssDialogue();
-				mode = 1;
-				break;
-
-			case 1:
-				// Read timestamps
-				if (curline.substr(13,3) != _T("-->")) {
-					Clear();
-					throw wxString::Format(_T("Parse error on entry %i at line %i (expecting timestamps). Possible malformed file."),linen,fileLine);
-				}
-				line->Start.ParseSRT(curline.substr(0,12));
-				line->End.ParseSRT(curline.substr(17,12));
-				mode = 2;
-				break;
-
-			case 2:
-				// Checks if it's done
-				if (curline.IsEmpty()) {
-					mode = 0;
-					linen++;
-					line->group = _T("[Events]");
-					line->Style = _T("Default");
-					line->Comment = false;
-					line->UpdateData();
-					line->ParseSRTTags();
-					line->StartMS = line->Start.GetMS();
-					Line.push_back(line);
-					break;
-				}
-				// Append text
-				if (line->Text != _T("")) line->Text += _T("\\N");
-				line->Text += curline;
-				break;
-		}
-	}
 }
 
 
