@@ -151,7 +151,7 @@ void AudioKaraoke::Commit() {
 		workDiag->ClearBlocks();
 		for (size_t i=0;i<n;i++) {
 			syl = &syllables.at(i);
-			finalText += wxString::Format(_T("{%s%i}"), syl->tag, syl->length) + syl->contents;
+			finalText += wxString::Format(_T("{%s%i}"), syl->tag.c_str(), syl->length) + syl->contents;
 		}
 		workDiag->Text = finalText;
 		workDiag->ParseASSTags();

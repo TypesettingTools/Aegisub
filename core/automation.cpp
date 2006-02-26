@@ -295,7 +295,7 @@ namespace AutomationHelper {
 		int spacing = (int)L_gettableN(L, "spacing");
 		int charset = (int)L_gettableN(L, "encoding");
 
-		wxLogDebug(_T("text_extents for: %s:%f:%d%d%d%d:%f:%f:%d:%d"), fontname, fontsize, bold, italic, underline, strikeout, scale_x, scale_y, spacing, charset);
+		wxLogDebug(_T("text_extents for: %s:%f:%d%d%d%d:%f:%f:%d:%d"), fontname.c_str(), fontsize, bold, italic, underline, strikeout, scale_x, scale_y, spacing, charset);
 
 #ifdef WIN32
 		HDC thedc = CreateCompatibleDC(0);

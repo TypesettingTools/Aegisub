@@ -501,7 +501,7 @@ void AssOverrideTag::SetText (wxString text) {
 
 	// Set tag name
 	if (!Name.empty()) {
-		wxLogDebug(_T("Parsing tag: %s"), Name);
+		wxLogDebug(_T("Parsing tag: %s"), Name.c_str());
 		ParseParameters(text.Mid(Name.length()));
 		valid = true;
 	}
@@ -554,7 +554,7 @@ void AssOverrideTag::ParseParameters(wxString text) {
 				// parDepth 1 is where we start, and the tag-level we're interested in parsing on
 				if (text[i] == _T(',') && parDepth == 1) break;
 				if (parDepth < 0) {
-					wxLogWarning(_T("Unmatched parenthesis near '%s'!\nTag-parsing incomplete."), text.SubString(i, 10));
+					wxLogWarning(_T("Unmatched parenthesis near '%s'!\nTag-parsing incomplete."), text.SubString(i, 10).c_str());
 					goto end_tokenizing;
 				}
 				if (parDepth == 0) {
@@ -568,7 +568,7 @@ void AssOverrideTag::ParseParameters(wxString text) {
 			work = text.SubString(start, i-1);
 			work.Trim(true).Trim(false);
 			paramList.Add(work);
-			wxLogDebug(_T("Got parameter: %s"), work);
+			wxLogDebug(_T("Got parameter: %s"), work.c_str());
 		}
 
 		if (i+1 < textlen) {
