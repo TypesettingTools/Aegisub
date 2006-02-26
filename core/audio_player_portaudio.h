@@ -63,7 +63,7 @@ private:
 	volatile __int64 startMS;
 	void *stream;
 
-	static int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
+	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
 
 public:
 	PortAudioPlayer();

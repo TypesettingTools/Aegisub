@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <algorithm>
+#include <errno.h>
 #include "mkv_wrap.h"
 #include "dialog_progress.h"
 
