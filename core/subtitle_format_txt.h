@@ -39,43 +39,20 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <list>
+#include "subtitle_format_reader.h"
 
 
 //////////////
 // Prototypes
-class AssFile;
-class AssEntry;
+class AssDialogue;
 
 
-///////////////////
-// Subtitle reader
-class SubtitleFormatReader {
+//////////////
+// TXT reader
+class TXTSubtitleFormatReader : public SubtitleFormatReader {
 private:
-	void Register();
-	void Remove();
-	static std::list<SubtitleFormatReader*> readers;
-	static bool loaded;
-	AssFile *assFile;
-
-protected:
-	std::list<AssEntry*> *Line;
 
 public:
-	SubtitleFormatReader();
-	virtual ~SubtitleFormatReader();
-
-	virtual bool CanReadFile(wxString filename)=0;
-	virtual void ReadFile(wxString filename,wxString forceEncoding=_T(""))=0;
-
-	void SetTarget(AssFile *file);
-	void Clear();
-	void LoadDefault();
-	void SetIsASS(bool isASS);
-	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA);
-
-	static SubtitleFormatReader *GetReader(wxString filename);
-	static void LoadReaders();
-	static void DestroyReaders();
+	bool CanReadFile(wxString filename);
+	void ReadFile(wxString filename,wxString forceEncoding);
 };

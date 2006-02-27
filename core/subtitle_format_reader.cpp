@@ -37,6 +37,9 @@
 ///////////
 // Headers
 #include "subtitle_format_reader.h"
+#include "subtitle_format_ass.h"
+#include "subtitle_format_srt.h"
+#include "subtitle_format_txt.h"
 #include "ass_file.h"
 
 
@@ -67,11 +70,13 @@ void SubtitleFormatReader::SetTarget(AssFile *file) {
 ////////
 // List
 std::list<SubtitleFormatReader*> SubtitleFormatReader::readers;
+bool SubtitleFormatReader::loaded = false;
 
 
 /////////////////////////////
 // Get an appropriate reader
 SubtitleFormatReader *SubtitleFormatReader::GetReader(wxString filename) {
+	LoadReaders();
 	std::list<SubtitleFormatReader*>::iterator cur;
 	SubtitleFormatReader *reader;
 	for (cur=readers.begin();cur!=readers.end();cur++) {
@@ -124,4 +129,39 @@ void SubtitleFormatReader::LoadDefault() {
 // Set if it's ASS
 void SubtitleFormatReader::SetIsASS(bool isASS) {
 	assFile->IsASS = isASS;
+}
+
+
+////////////
+// Add line
+int SubtitleFormatReader::AddLine(wxString data,wxString group,int lasttime,bool &IsSSA) {
+	return assFile->AddLine(data,group,lasttime,IsSSA);
+}
+
+
+///////////////
+// Add loaders
+void SubtitleFormatReader::LoadReaders () {
+	if (!loaded) {
+		new ASSSubtitleFormatReader();
+		new SRTSubtitleFormatReader();
+		new TXTSubtitleFormatReader();
+	}
+	loaded = true;
+}
+
+
+///////////////////
+// Destroy loaders
+void SubtitleFormatReader::DestroyReaders () {
+	SubtitleFormatReader *reader;
+	std::list<SubtitleFormatReader*>::iterator cur,next;
+	for (cur=readers.begin();cur!=readers.end();cur = next) {
+		next = cur;
+		next++;
+		reader = *cur;
+		readers.erase(cur);
+		delete reader;
+	}
+	readers.clear();
 }

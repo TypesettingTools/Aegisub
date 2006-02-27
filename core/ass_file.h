@@ -68,14 +68,11 @@ private:
 	static void StackClear();
 
 	// I/O operations
-	void LoadASS(const wxString file,const wxString encoding,bool IsSSA=false);
-	void LoadTXT(const wxString file,const wxString encoding);
 	void SaveASS(const wxString file,bool setfilename,const wxString encoding=_T(""));
 	void SaveSSA(const wxString file,const wxString encoding=_T(""));
 	void SaveSRT(const wxString file,const wxString encoding=_T(""));
 
 	// Manipulation operations
-	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA);
 	void ConvertToSRT();
 	void DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator prev);
 
@@ -111,6 +108,7 @@ public:
 	wxString GetScriptInfo(const wxString key);						// Returns the value in a [Script Info] key.
 	void SetScriptInfo(const wxString key,const wxString value);	// Sets the value of a [Script Info] key. Adds it if it doesn't exist.
 	void AddComment(const wxString comment);						// Adds a ";" comment under [Script Info].
+	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA);
 
 	static void StackPop();		// Pop subs from stack and sets 'top' to it
 	static void StackRedo();	// Redoes action on stack

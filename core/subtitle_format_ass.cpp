@@ -34,48 +34,60 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <list>
+#include "subtitle_format_ass.h"
+#include "text_file_reader.h"
+#include "ass_dialogue.h"
 
 
-//////////////
-// Prototypes
-class AssFile;
-class AssEntry;
+/////////////
+// Can read?
+bool ASSSubtitleFormatReader::CanReadFile(wxString filename) {
+	return (filename.Right(4).Lower() == _T(".ass") || filename.Right(4).Lower() == _T(".ssa"));
+}
 
 
-///////////////////
-// Subtitle reader
-class SubtitleFormatReader {
-private:
-	void Register();
-	void Remove();
-	static std::list<SubtitleFormatReader*> readers;
-	static bool loaded;
-	AssFile *assFile;
+/////////////
+// Read file
+void ASSSubtitleFormatReader::ReadFile(wxString filename,wxString encoding) {
+	using namespace std;
 
-protected:
-	std::list<AssEntry*> *Line;
+	// Reader
+	TextFileReader file(filename,encoding);
+	bool IsSSA = filename.Right(4).Lower() == _T(".ssa");
 
-public:
-	SubtitleFormatReader();
-	virtual ~SubtitleFormatReader();
+	// Parse file
+	wxString curgroup;
+	int lasttime = -1;
+	while (file.HasMoreLines()) {
+		// Reads line
+		wxString wxbuffer = file.ReadLineFromFile();
 
-	virtual bool CanReadFile(wxString filename)=0;
-	virtual void ReadFile(wxString filename,wxString forceEncoding=_T(""))=0;
+		// Convert v4 styles to v4+ styles
+		if (wxbuffer.Lower() == _T("[v4 styles]")) {
+			wxbuffer = _T("[V4+ Styles]");
+		}
 
-	void SetTarget(AssFile *file);
-	void Clear();
-	void LoadDefault();
-	void SetIsASS(bool isASS);
-	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA);
+		// Set group
+		if (wxbuffer[0] == _T('[')) {
+			curgroup = wxbuffer;
+		}
 
-	static SubtitleFormatReader *GetReader(wxString filename);
-	static void LoadReaders();
-	static void DestroyReaders();
-};
+		// Add line
+		try {
+			lasttime = AddLine(wxbuffer,curgroup,lasttime,IsSSA);
+		}
+		catch (wchar_t *err) {
+			Clear();
+			throw wxString(_T("Error processing line: ")) + wxbuffer + _T(": ") + wxString(err);
+		}
+		catch (...) {
+			Clear();
+			throw wxString(_T("Error processing line: ")) + wxbuffer;
+		}
+	}
+
+	// Set ASS
+	SetIsASS(!IsSSA);
+}

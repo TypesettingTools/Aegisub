@@ -48,7 +48,7 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
-#include "subtitle_format_srt.h"
+#include "subtitle_format_reader.h"
 
 
 ////////////////////// AssFile //////////////////////
@@ -87,47 +87,21 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 		else enc = charset;
 		TextFileReader::EnsureValid(enc);
 
-		// Get extension
-		int i = 0;
-		for (i=(int)_filename.size();--i>=0;) {
-			if (_filename[i] == _T('.')) break;
-		}
-		wxString extension = _filename.substr(i+1);
-		extension.Lower();
-
 		// Generic preparation
 		Clear();
 		IsASS = false;
 
-		// ASS
-		if (extension == _T("ass")) {
-			LoadASS(_filename,enc,false);
-		}
-		
-		// SRT
-		else if (extension == _T("srt")) {
-			//LoadSRT(_filename,enc);
-			SRTSubtitleFormatReader srt;
-			srt.SetTarget(this);
-			srt.ReadFile(_filename,enc);
-		}
+		// Get proper format reader
+		SubtitleFormatReader *reader = SubtitleFormatReader::GetReader(_filename);
 
-		// SSA
-		else if (extension == _T("ssa")) {
-			LoadASS(_filename,enc,true);
-		}
-
-		// TXT
-		else if (extension == _T("txt")) {
-			LoadTXT(_filename,enc);
+		// Read file
+		if (reader) {
+			reader->SetTarget(this);
+			reader->ReadFile(_filename,enc);
 		}
 
 		// Couldn't find a type
-		else {
-			wxString error = _T("Unknown file type: ");
-			error += extension;
-			throw error;
-		}
+		else throw _T("Unknown file type.");
 	}
 
 	// String error
@@ -159,127 +133,6 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 	AddComment(_T("http://www.aegisub.net"));
 	SetScriptInfo(_T("ScriptType"),_T("v4.00+"));
 	AddToRecent(_filename);
-}
-
-
-///////////////////////////
-// Load Ass file from disk
-void AssFile::LoadASS (const wxString _filename,const wxString encoding,bool IsSSA) {
-	using namespace std;
-
-	// Reader
-	TextFileReader file(_filename,encoding);
-
-	// Parse file
-	wxString curgroup;
-	int lasttime = -1;
-	while (file.HasMoreLines()) {
-		// Reads line
-		wxString wxbuffer = file.ReadLineFromFile();
-
-		// Convert v4 styles to v4+ styles
-		if (wxbuffer.Lower() == _T("[v4 styles]")) {
-			wxbuffer = _T("[V4+ Styles]");
-		}
-
-		// Set group
-		if (wxbuffer[0] == _T('[')) {
-			curgroup = wxbuffer;
-		}
-
-		// Add line
-		try {
-			lasttime = AddLine(wxbuffer,curgroup,lasttime,IsSSA);
-		}
-		catch (wchar_t *err) {
-			Clear();
-			throw wxString(_T("Error processing line: ")) + wxbuffer + _T(": ") + wxString(err);
-		}
-		catch (...) {
-			Clear();
-			throw wxString(_T("Error processing line: ")) + wxbuffer;
-		}
-	}
-
-	// Set ASS
-	IsASS = !IsSSA;
-}
-
-
-////////////////////////////
-// Loads TXT subs from disk
-void AssFile::LoadTXT (wxString _filename,wxString encoding) {
-	using namespace std;
-
-	// Reader
-	TextFileReader file(_filename,encoding,false);
-
-	// Default
-	LoadDefault(false);
-	IsASS = false;
-
-	// Data
-	wxString actor;
-	wxString separator = Options.AsText(_T("Text actor separator"));
-	wxString comment = Options.AsText(_T("Text comment starter"));
-	bool isComment = false;
-
-	// Parse file
-	AssDialogue *line = NULL;
-	while (file.HasMoreLines()) {
-		// Reads line
-		wxString value = file.ReadLineFromFile();
-
-		// Check if this isn't a timecodes file
-		if (value.Left(10) == _T("# timecode")) {
-			throw _T("File is a timecode file, cannot load as subtitles.");
-		}
-
-		// Read comment data
-		isComment = false;
-		if (comment != _T("") && value.Left(comment.Length()) == comment) {
-			isComment = true;
-			value = value.Mid(comment.Length());
-		}
-
-		// Read actor data
-		if (!isComment && separator != _T("")) {
-			if (value[0] != _T(' ') && value[0] != _T('\t')) {
-				size_t pos = value.Find(separator);
-				if (pos != -1) {
-					actor = value.Left(pos);
-					actor.Trim(false);
-					actor.Trim(true);
-					value = value.Mid(pos+1);
-					value.Trim(false);
-				}
-			}
-		}
-
-		// Trim spaces at start
-		value.Trim(false);
-
-		// Sets line up
-		line = new AssDialogue();
-		line->group = _T("[Events]");
-		line->Style = _T("Default");
-		if (isComment) line->Actor = _T("");
-		else line->Actor = actor;
-		if (value.IsEmpty()) {
-			line->Actor = _T("");
-			isComment = true;
-		}
-		line->Comment = isComment;
-		line->Text = value;
-		line->StartMS = 0;
-		line->Start.SetMS(0);
-		line->End.SetMS(0);
-		line->UpdateData();
-		//line->ParseASSTags();
-
-		// Adds line
-		Line.push_back(line);
-	}
 }
 
 
