@@ -717,7 +717,7 @@ void SubtitlesGrid::CopyLines(wxArrayInt target) {
 		if (!first) data += _T("\r\n");
 		first = false;
 		cur = GetDialogue(target[i]);
-		data += cur->data;
+		data += cur->GetEntryData();
 	}
 
 	// Send to clipboard
@@ -950,7 +950,7 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 		// Create
 		if (i == n2) update = true;
 		//cur = new AssDialogue(GetDialogue(i+step)->data);
-		cur = new AssDialogue(GetDialogue(i)->data);
+		cur = new AssDialogue(GetDialogue(i)->GetEntryData());
 
 		// Shift to next frame
 		if (nextFrame) {
@@ -1023,7 +1023,7 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 	// Split
 	AssDialogue *n1,*n2;
 	n1 = GetDialogue(n);
-	n2 = new AssDialogue(n1->data);
+	n2 = new AssDialogue(n1->GetEntryData());
 	InsertLine(n2,n,true,false);
 
 	// Modify text

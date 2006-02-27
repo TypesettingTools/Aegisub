@@ -511,7 +511,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 	wxArrayInt selections;
 
 	int n = CurrentList->GetSelections(selections);
-	AssStyle *temp = new AssStyle(styleMap.at(selections[0])->data);
+	AssStyle *temp = new AssStyle(styleMap.at(selections[0])->GetEntryData());
 	wxString newName = _("Copy of ");
 	newName += temp->name;
 	temp->name = newName;

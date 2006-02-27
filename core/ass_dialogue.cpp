@@ -55,7 +55,6 @@ AssDialogue::AssDialogue() {
 	Movement = 0;
 #endif
 
-	Type = ENTRY_DIALOGUE;
 	group = _T("[Events]");
 
 	Valid = true;
@@ -80,10 +79,8 @@ AssDialogue::AssDialogue(wxString _data,bool IsSSA) {
 	Movement = 0;
 #endif
 
-	Type = ENTRY_DIALOGUE;
 	group = _T("[Events]");
-	data = _data;
-	Valid = Parse(IsSSA);
+	Valid = Parse(_data,IsSSA);
 	if (!Valid) {
 		throw _T("Failed parsing line.");
 	}
@@ -130,21 +127,21 @@ void AssDialogue::ClearBlocks() {
 
 //////////////////
 // Parse ASS Data
-bool AssDialogue::Parse(bool IsSSA) {
+bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 	size_t pos = 0;
 	wxString temp;
 
 	// Get type
-	if (data.substr(pos,9) == _T("Dialogue:")) {
+	if (rawData.substr(pos,9) == _T("Dialogue:")) {
 		Comment = false;
 		pos = 10;
 	}
-	else if (data.substr(pos,8) == _T("Comment:")) {
+	else if (rawData.substr(pos,8) == _T("Comment:")) {
 		Comment = true;
 		pos = 9;
 	}
 	else return false;
-	wxStringTokenizer tkn(data.Mid(pos),_T(","),wxTOKEN_RET_EMPTY_ALL);
+	wxStringTokenizer tkn(rawData.Mid(pos),_T(","),wxTOKEN_RET_EMPTY_ALL);
 
 	// Get layer number
 	if (!tkn.HasMoreTokens()) return false;
@@ -209,33 +206,34 @@ bool AssDialogue::Parse(bool IsSSA) {
 // Update AssDialogue's data line
 void AssDialogue::UpdateData () {
 	// Prepare
-	data = _T("");
+	wxString final = _T("");
 
-	// Write all data
-	if (Comment) data += _T("Comment: ");
-	else data += _T("Dialogue: ");
+	// Write all final
+	if (Comment) final += _T("Comment: ");
+	else final += _T("Dialogue: ");
 
-	data += wxString::Format(_T("%01i"),Layer);
-	data += _T(",");
+	final += wxString::Format(_T("%01i"),Layer);
+	final += _T(",");
 
-	data += Start.GetASSFormated() + _T(",");
-	data += End.GetASSFormated() + _T(",");
+	final += Start.GetASSFormated() + _T(",");
+	final += End.GetASSFormated() + _T(",");
 
 	Style.Replace(_T(","),_T(";"));
 	Actor.Replace(_T(","),_T(";"));
-	data += Style + _T(",");
-	data += Actor + _T(",");
+	final += Style + _T(",");
+	final += Actor + _T(",");
 
-	data += GetMarginString(1);
-	data += _T(",");
-	data += GetMarginString(2);
-	data += _T(",");
-	data += GetMarginString(3);
-	data += _T(",");
+	final += GetMarginString(1);
+	final += _T(",");
+	final += GetMarginString(2);
+	final += _T(",");
+	final += GetMarginString(3);
+	final += _T(",");
 
 	Effect.Replace(_T(","),_T(";"));
-	data += Effect + _T(",");
-	data += Text;
+	final += Effect + _T(",");
+	final += Text;
+	SetEntryData(final);
 }
 
 

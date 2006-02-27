@@ -174,7 +174,9 @@ public:
 	FexMovement *Movement;			// Point tracker generated movement
 #endif
 
-	bool Parse(bool IsSSA=false);	// Parses raw ASS data into everything else
+	ASS_EntryType GetType() { return ENTRY_DIALOGUE; }
+
+	bool Parse(wxString data,bool IsSSA=false);	// Parses raw ASS data into everything else
 	void ParseASSTags();			// Parses text to generate block information (doesn't update data)
 	void ParseSRTTags();			// Converts tags to ass format and calls ParseASSTags+UpdateData
 	void UpdateData();				// Updates raw data from current values + text

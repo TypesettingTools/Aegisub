@@ -193,7 +193,7 @@ void AssFile::SaveASS (wxString _filename,bool setfilename,const wxString encodi
 	// Write lines
 	using std::list;
 	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();cur++) {
-		file.WriteLineToFile((*cur)->data);
+		file.WriteLineToFile((*cur)->GetEntryData());
 	}
 
 	// Done
@@ -443,14 +443,14 @@ void AssFile::LoadDefault (bool defline) {
 	AddLine(_T(""),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("[V4+ Styles]"),_T("[V4+ Styles]"),-1,IsSSA);
 	AddLine(_T("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"),_T("[V4+ Styles]"),-1,IsSSA);
-	AddLine(defstyle.data,_T("[V4+ Styles]"),-1,IsSSA);
+	AddLine(defstyle.GetEntryData(),_T("[V4+ Styles]"),-1,IsSSA);
 	AddLine(_T(""),_T("[V4+ Styles]"),-1,IsSSA);
 	AddLine(_T("[Events]"),_T("[Events]"),-1,IsSSA);
 	AddLine(_T("Format:  Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"),_T("[Events]"),-1,IsSSA);
 
 	if (defline) {
 		AssDialogue def;
-		AddLine(def.data,_T("[Events]"),0,IsSSA);
+		AddLine(def.GetEntryData(),_T("[Events]"),0,IsSSA);
 	}
 
 	loaded = true;
@@ -473,7 +473,7 @@ AssFile::AssFile (AssFile &from) {
 	// Copy lines
 	int lasttime = -1;
 	for (list<AssEntry*>::iterator cur=from.Line.begin();cur!=from.Line.end();cur++) {
-		lasttime = AddLine((*cur)->data,(*cur)->group,lasttime,IsSSA);
+		lasttime = AddLine((*cur)->GetEntryData(),(*cur)->group,lasttime,IsSSA);
 	}
 
 	// Add comments
@@ -496,7 +496,7 @@ void AssFile::InsertStyle (AssStyle *style) {
 	// Look for insert position
 	for (cur=Line.begin();cur!=Line.end();cur++) {
 		curEntry = *cur;
-		if (curEntry->Type == ENTRY_STYLE || (lastGroup == _T("[V4+ Styles]") && curEntry->data.substr(0,7) == _T("Format:"))) {
+		if (curEntry->GetType() == ENTRY_STYLE || (lastGroup == _T("[V4+ Styles]") && curEntry->GetEntryData().substr(0,7) == _T("Format:"))) {
 			lastStyle = cur;
 		}
 		lasttime = curEntry->StartMS;
@@ -553,7 +553,7 @@ wxString AssFile::GetScriptInfo(const wxString _key) {
 	for (cur=Line.begin();cur!=Line.end();cur++) {
 		if ((*cur)->group == _T("[Script Info]")) {
 			GotIn = true;
-			wxString curText = (*cur)->data;
+			wxString curText = (*cur)->GetEntryData();
 			curText.Lower();
 
 			// Found
@@ -601,7 +601,7 @@ void AssFile::SetScriptInfo(const wxString _key,const wxString value) {
 	for (cur=Line.begin();cur!=Line.end();cur++) {
 		if ((*cur)->group == _T("[Script Info]")) {
 			GotIn = true;
-			wxString curText = (*cur)->data;
+			wxString curText = (*cur)->GetEntryData();
 			curText.Lower();
 
 			// Found
@@ -611,7 +611,7 @@ void AssFile::SetScriptInfo(const wxString _key,const wxString value) {
 					wxString result = _key;
 					result += _T(": ");
 					result += value;
-					(*cur)->data = result;
+					(*cur)->SetEntryData(result);
 				}
 
 				// Remove key
@@ -622,7 +622,7 @@ void AssFile::SetScriptInfo(const wxString _key,const wxString value) {
 				return;
 			}
 
-			if (!(*cur)->data.empty()) prev = cur;
+			if (!(*cur)->GetEntryData().empty()) prev = cur;
 		}
 
 		// Add
@@ -656,7 +656,7 @@ void AssFile::AddComment(const wxString _comment) {
 		if (step == 0 && (*cur)->group == _T("[Script Info]")) step = 1;
 
 		// First line after a ;
-		else if (step == 1 && (*cur)->data.Left(1) != _T(";")) {
+		else if (step == 1 && (*cur)->GetEntryData().Left(1) != _T(";")) {
 			AssEntry *prev = *cur;
 			AssEntry *comm = new AssEntry(comment);
 			comm->group = prev->group;
@@ -678,8 +678,8 @@ wxArrayString AssFile::GetStyles() {
 		if (curstyle) {
 			styles.Add(curstyle->name);
 		}
-		if (!curstyle && (*cur)->data.Left(5) == _T("Style")) {
-			wxLogMessage(_T("Style ignored: ") + (*cur)->data);
+		if (!curstyle && (*cur)->GetEntryData().Left(5) == _T("Style")) {
+			wxLogMessage(_T("Style ignored: ") + (*cur)->GetEntryData());
 			curstyle = AssEntry::GetAsStyle(*cur);
 		}
 	}
@@ -717,7 +717,7 @@ void AssFile::CompressForStack(bool compress) {
 		diag = AssEntry::GetAsDialogue(*cur);
 		if (diag) {
 			if (compress) {
-				diag->data.Clear();
+				diag->SetEntryData(_T(""));
 				diag->ClearBlocks();
 			}
 			else diag->UpdateData();

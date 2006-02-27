@@ -97,7 +97,7 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	}
 
 	// Split
-	workDiag = new AssDialogue(diag->data, false);
+	workDiag = new AssDialogue(diag->GetEntryData(), false);
 	workDiag->ParseASSTags();
 	must_rebuild = false;
 	bool hasKar = ParseDialogue(workDiag);
@@ -199,7 +199,7 @@ void AudioKaraoke::AutoSplit() {
 
 	// Load
 	must_rebuild = true;
-	AssDialogue newDiag(diag->data);
+	AssDialogue newDiag(diag->GetEntryData());
 	newDiag.Text = newText;
 	//newDiag.ParseASSTags();
 	ParseDialogue(&newDiag);

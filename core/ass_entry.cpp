@@ -45,13 +45,11 @@
 ///////////////////////
 // Constructs AssEntry
 AssEntry::AssEntry() {
-	Type = ENTRY_BASE;
 	Valid = true;
 }
 
 AssEntry::AssEntry(wxString _data) {
 	data = _data;
-	Type = ENTRY_BASE;
 	Valid = true;
 }
 
@@ -73,7 +71,7 @@ bool operator < (const AssEntry &t1, const AssEntry &t2) {
 // Returns an entry as dialogue if possible, else, returns NULL
 AssDialogue *AssEntry::GetAsDialogue(AssEntry *base) {
 	if (!base) return NULL;
-	if (base->Type == ENTRY_DIALOGUE) {
+	if (base->GetType() == ENTRY_DIALOGUE) {
 		return static_cast<AssDialogue*> (base);
 	}
 	return NULL;
@@ -84,7 +82,7 @@ AssDialogue *AssEntry::GetAsDialogue(AssEntry *base) {
 // Returns an entry as style if possible, else, returns NULL
 AssStyle *AssEntry::GetAsStyle(AssEntry *base) {
 	if (!base) return NULL;
-	if (base->Type == ENTRY_STYLE) {
+	if (base->GetType() == ENTRY_STYLE) {
 		return static_cast<AssStyle*> (base);
 	}
 	return NULL;

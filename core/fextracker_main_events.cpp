@@ -169,7 +169,7 @@ void FrameMain::OnVideoTrackSplitLine(wxCommandEvent &event) {
 		FexMovementFrame f = curline->Movement->Frames[localframe];
 //		f.Pos.x /= videoBox->videoDisplay->GetW
 
-		AssDialogue *cur = new AssDialogue( curline->data );
+		AssDialogue *cur = new AssDialogue( curline->GetEntryData() );
 		cur->Start.SetMS(VFR_Output.GetTimeAtFrame(Frame,true));
 		cur->End.SetMS(VFR_Output.GetTimeAtFrame(Frame,false));
 		cur->Text = wxString::Format( _T("{\\pos(%.0f,%.0f)\\fscx%.2f\\fscy%.2f}"), f.Pos.x*sx, f.Pos.y*sy, f.Scale.x*100, f.Scale.y*100 ) + cur->Text;

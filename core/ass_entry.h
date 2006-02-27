@@ -60,16 +60,21 @@ enum ASS_EntryType {
 ////////////////////////////////////
 // Base class for each line in file
 class AssEntry {
+private:
+	wxString data;		// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
+
 public:
 	int StartMS;		// This is only stored for sorting issues, in order to keep non-dialogue lines aligned
 	bool Valid;			// Flags as valid or not
-	wxString data;		// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
 	wxString group;		// Group it belongs to, e.g. "[Events]"
-	ASS_EntryType Type;	// Defines if this is a dialogue, style, or unknown line
 
 	AssEntry();
 	AssEntry(wxString data);
 	virtual ~AssEntry();
+
+	virtual ASS_EntryType GetType() { return ENTRY_BASE; }
+	virtual const wxString GetEntryData() { return data; }
+	virtual void SetEntryData(wxString newData) { if (newData.IsEmpty()) data.Clear(); else data = newData; }
 
 	virtual wxString GetSSAText();
 	static AssDialogue *GetAsDialogue(AssEntry *base);	// Returns an entry base as a dialogue if it is valid, null otherwise

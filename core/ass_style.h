@@ -94,7 +94,9 @@ public:
 	int MarginV;
 	int encoding;
 
-	bool Parse(bool IsSSA=false);	// Parses raw ASS/SSA data into everything else
+	ASS_EntryType GetType() { return ENTRY_STYLE; }
+
+	bool Parse(wxString data,bool IsSSA=false);	// Parses raw ASS/SSA data into everything else
 	void UpdateData();				// Updates raw data
 	wxString GetSSAText();			// Retrieves SSA-formatted style
 	wxString GetMarginString(int which);					// Returns the margin value as a string (1 = left, 2 = right, 3 = vertical)

@@ -147,7 +147,6 @@ wxString AssColor::GetSSAFormatted () {
 ///////////////////////
 // Default Constructor
 AssStyle::AssStyle() {
-	Type = ENTRY_STYLE;
 	group = _T("[V4+ Styles]");
 	
 	name = _T("Default");
@@ -196,9 +195,7 @@ AssStyle::AssStyle() {
 ///////////////
 // Constructor
 AssStyle::AssStyle(wxString _data,bool IsSSA) {
-	Type = ENTRY_STYLE;
-	data = _data;
-	Valid = Parse(IsSSA);
+	Valid = Parse(_data,IsSSA);
 	if (!Valid) {
 		throw _T("[Error] Failed parsing line.");
 	}
@@ -214,10 +211,10 @@ AssStyle::~AssStyle() {
 
 //////////////////////////////
 // Parses value from ASS data
-bool AssStyle::Parse(bool IsSSA) {
+bool AssStyle::Parse(wxString rawData,bool IsSSA) {
 	wxString temp;
 	long templ;
-	wxStringTokenizer tkn(data.Mid(6),_T(","),wxTOKEN_RET_EMPTY_ALL);
+	wxStringTokenizer tkn(rawData.Mid(6),_T(","),wxTOKEN_RET_EMPTY_ALL);
 
 	// Read name
 	if (!tkn.HasMoreTokens()) return false;
@@ -408,39 +405,40 @@ bool AssStyle::Parse(bool IsSSA) {
 // Writes data back to ASS format
 void AssStyle::UpdateData() {
 	// Prepare
-	data = _T("Style: ");
+	wxString final = _T("Style: ");
 
-	// Write all data
+	// Write all final
 	name.Replace(_T(","),_T(";"));
 	font.Replace(_T(","),_T(";"));
-	data += name + _T(",");
-	data += font + _T(",");
-	data += wxString::Format(_T("%i"),fontsize) + _T(",");
+	final += name + _T(",");
+	final += font + _T(",");
+	final += wxString::Format(_T("%i"),fontsize) + _T(",");
 
-	data += primary.GetASSFormatted(true,false,true) + _T(",");
-	data += secondary.GetASSFormatted(true,false,true) + _T(",");
-	data += outline.GetASSFormatted(true,false,true) + _T(",");
-	data += shadow.GetASSFormatted(true,false,true) + _T(",");
+	final += primary.GetASSFormatted(true,false,true) + _T(",");
+	final += secondary.GetASSFormatted(true,false,true) + _T(",");
+	final += outline.GetASSFormatted(true,false,true) + _T(",");
+	final += shadow.GetASSFormatted(true,false,true) + _T(",");
 
-	data += wxString::Format(_T("%i"),bold?-1:0) + _T(",");
-	data += wxString::Format(_T("%i"),italic?-1:0) + _T(",");
-	data += wxString::Format(_T("%i"),underline?-1:0) + _T(",");
-	data += wxString::Format(_T("%i"),strikeout?-1:0) + _T(",");
+	final += wxString::Format(_T("%i"),bold?-1:0) + _T(",");
+	final += wxString::Format(_T("%i"),italic?-1:0) + _T(",");
+	final += wxString::Format(_T("%i"),underline?-1:0) + _T(",");
+	final += wxString::Format(_T("%i"),strikeout?-1:0) + _T(",");
 
-	data += wxString::Format(_T("%i"),scalex) + _T(",");
-	data += wxString::Format(_T("%i"),scaley) + _T(",");
-	data += wxString::Format(_T("%.2f"),spacing) + _T(",");
+	final += wxString::Format(_T("%i"),scalex) + _T(",");
+	final += wxString::Format(_T("%i"),scaley) + _T(",");
+	final += wxString::Format(_T("%.2f"),spacing) + _T(",");
 
-	data += wxString::Format(_T("%.2f"),angle) + _T(",");
-	data += wxString::Format(_T("%i"),borderstyle) + _T(",");
-	data += wxString::Format(_T("%.2f"),outline_w) + _T(",");
-	data += wxString::Format(_T("%.2f"),shadow_w) + _T(",");
+	final += wxString::Format(_T("%.2f"),angle) + _T(",");
+	final += wxString::Format(_T("%i"),borderstyle) + _T(",");
+	final += wxString::Format(_T("%.2f"),outline_w) + _T(",");
+	final += wxString::Format(_T("%.2f"),shadow_w) + _T(",");
 
-	data += wxString::Format(_T("%i"),alignment) + _T(",");
-	data += wxString::Format(_T("%i"),MarginL) + _T(",");
-	data += wxString::Format(_T("%i"),MarginR) + _T(",");
-	data += wxString::Format(_T("%i"),MarginV) + _T(",");
-	data += wxString::Format(_T("%i"),encoding);
+	final += wxString::Format(_T("%i"),alignment) + _T(",");
+	final += wxString::Format(_T("%i"),MarginL) + _T(",");
+	final += wxString::Format(_T("%i"),MarginR) + _T(",");
+	final += wxString::Format(_T("%i"),MarginV) + _T(",");
+	final += wxString::Format(_T("%i"),encoding);
+	SetEntryData(final);
 }
 
 

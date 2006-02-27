@@ -58,7 +58,7 @@ void AssStyleStorage::Save(wxString name) {
 
 	file.open(filename.mb_str(wxConvLocal));
 	for (list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
-		file << (*cur)->data.mb_str(wxConvUTF8) << endl;
+		file << (*cur)->GetEntryData().mb_str(wxConvUTF8) << endl;
 	}
 
 	file.close();

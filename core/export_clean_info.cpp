@@ -73,17 +73,17 @@ void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs) {
 		if (curEntry->group != _T("[Script Info]")) {
 			continue;
 		}
-		if (curEntry->data.IsEmpty()) {
+		if (curEntry->GetEntryData().IsEmpty()) {
 			continue;
 		}
-		if (curEntry->data == _T("[Script Info]")) {
+		if (curEntry->GetEntryData() == _T("[Script Info]")) {
 			continue;
 		}
-		if (curEntry->data.Left(1) == _T(";")) {
+		if (curEntry->GetEntryData().Left(1) == _T(";")) {
 			continue;
 		}
 
-		wxString field = curEntry->data.Left(curEntry->data.Find(_T(':')));
+		wxString field = curEntry->GetEntryData().Left(curEntry->GetEntryData().Find(_T(':')));
 		if (field != _T("ScriptType") &&
 			field != _T("Collisions") &&
 			field != _T("PlayResX") &&
