@@ -189,19 +189,9 @@ void SRTSubtitleFormat::DialogueToSRT(AssDialogue *current,std::list<AssEntry*>:
 	}
 
 	// Fix line breaks
-	size_t cur = 0;
-	while ((cur = current->Text.find(_T("\\n"),cur)) != wxString::npos) {
-		current->Text.replace(cur,2,_T("\r\n"));
-	}
-	cur = 0;
-	while ((cur = current->Text.find(_T("\\N"),cur)) != wxString::npos) {
-		current->Text.replace(cur,2,_T("\r\n"));
-	}
-	cur = 0;
-	while ((cur = current->Text.find(_T("\r\n\r\n"),cur)) != wxString::npos) {
-		current->Text.replace(cur,2,_T("\r\n"));
-		cur = 0;
-	}
+	current->Text.Replace(_T("\\n"),_T("\r\n"),true);
+	current->Text.Replace(_T("\\N"),_T("\r\n"),true);
+	current->Text.Replace(_T("\r\n\r\n"),_T("\r\n"),true);
 }
 
 
