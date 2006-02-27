@@ -68,7 +68,7 @@ private:
 	static void StackClear();
 
 	// I/O operations
-	void SaveASS(const wxString file,bool setfilename,const wxString encoding=_T(""));
+	void SaveASS(const wxString file,const wxString encoding=_T(""));
 	void SaveSSA(const wxString file,const wxString encoding=_T(""));
 	void SaveSRT(const wxString file,const wxString encoding=_T(""));
 

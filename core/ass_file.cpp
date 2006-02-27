@@ -146,12 +146,13 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 	}
 	wxString extension = _filename.substr(i+1);
 	extension.Lower();
+	bool success = false;
 
 	// ASS
 	if (extension == _T("ass")) {
-		SaveASS(_filename,setfilename,encoding);
+		SaveASS(_filename,encoding);
 		if (addToRecent) AddToRecent(_filename);
-		return;
+		success = true;
 	}
 
 	// SSA
@@ -159,7 +160,7 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 		AssFile SSA(*this);
 		SSA.SaveSSA(_filename,encoding);
 		if (addToRecent) AddToRecent(_filename);
-		return;
+		success = true;
 	}
 
 	// SRT
@@ -167,11 +168,18 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 		AssFile SRT(*this);
 		SRT.SaveSRT(_filename,encoding);
 		if (addToRecent) AddToRecent(_filename);
-		return;
+		success = true;
+	}
+
+	// Done
+	if (setfilename) {
+		Modified = false;
+		filename = _filename;
+		IsASS = true;
 	}
 
 	// Unknown
-	throw _T("Unknown file type");
+	if (!success) throw _T("Unknown file type");
 }
 
 
@@ -186,7 +194,7 @@ void AssFile::Export(wxString _filename) {
 
 /////////////////////
 // Saves ASS to disk
-void AssFile::SaveASS (wxString _filename,bool setfilename,const wxString encoding) {
+void AssFile::SaveASS (wxString _filename,const wxString encoding) {
 	// Open file
 	TextFileWriter file(_filename,encoding);
 
@@ -194,13 +202,6 @@ void AssFile::SaveASS (wxString _filename,bool setfilename,const wxString encodi
 	using std::list;
 	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();cur++) {
 		file.WriteLineToFile((*cur)->GetEntryData());
-	}
-
-	// Done
-	if (setfilename) {
-		Modified = false;
-		filename = _filename;
-		IsASS = true;
 	}
 }
 
