@@ -473,7 +473,7 @@ AssFile::AssFile (AssFile &from) {
 	// Copy lines
 	int lasttime = -1;
 	for (list<AssEntry*>::iterator cur=from.Line.begin();cur!=from.Line.end();cur++) {
-		lasttime = AddLine((*cur)->GetEntryData(),(*cur)->group,lasttime,IsSSA);
+		Line.push_back((*cur)->Clone());
 	}
 
 	// Add comments

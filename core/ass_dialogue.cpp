@@ -727,6 +727,35 @@ bool AssDialogue::CollidesWith(AssDialogue *target) {
 }
 
 
+/////////
+// Clone
+AssEntry *AssDialogue::Clone() {
+	// Create clone
+	AssDialogue *final = new AssDialogue();
+
+	// Copy data
+	final->group = group;
+	final->StartMS = StartMS;
+	final->Valid = Valid;
+	final->Actor = Actor;
+	final->Comment = Comment;
+	final->Effect = Effect;
+	final->End = End;
+	final->Layer = Layer;
+	final->MarginL = MarginL;
+	final->MarginR = MarginR;
+	final->MarginV = MarginV;
+	final->Start = Start;
+	final->StartMS = final->StartMS;
+	final->Style = Style;
+	final->Text = Text;
+	final->SetEntryData(GetEntryData());
+
+	// Return
+	return final;
+}
+
+
 ////////////////////// AssDialogueBlock //////////////////////
 ///////////////
 // Constructor

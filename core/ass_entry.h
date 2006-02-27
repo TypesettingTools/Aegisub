@@ -72,6 +72,8 @@ public:
 	AssEntry(wxString data);
 	virtual ~AssEntry();
 
+	virtual AssEntry *Clone();
+
 	virtual ASS_EntryType GetType() { return ENTRY_BASE; }
 	virtual const wxString GetEntryData() { return data; }
 	virtual void SetEntryData(wxString newData) { if (newData.IsEmpty()) data.Clear(); else data = newData; }

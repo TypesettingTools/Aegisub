@@ -200,6 +200,8 @@ public:
 	bool CollidesWith(AssDialogue *target);					// Checks if two lines collide
 	void ClearBlocks();
 
+	AssEntry *Clone();
+
 	AssDialogue();
 	AssDialogue(wxString data,bool IsSSA=false);
 	~AssDialogue();

@@ -100,3 +100,20 @@ wxString AssEntry::GetSSAText() {
 	}
 	return data;
 }
+
+
+/////////
+// Clone
+AssEntry *AssEntry::Clone() {
+	// Create clone
+	AssEntry *final = new AssEntry();
+
+	// Copy data
+	final->data = data;
+	final->group = group;
+	final->StartMS = StartMS;
+	final->Valid = Valid;
+
+	// Return
+	return final;
+}

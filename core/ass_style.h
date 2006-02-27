@@ -102,6 +102,8 @@ public:
 	wxString GetMarginString(int which);					// Returns the margin value as a string (1 = left, 2 = right, 3 = vertical)
 	void SetMarginString(const wxString value,int which);	// Sets margin value from a string (1 = left, 2 = right, 3 = vertical)
 
+	AssEntry *Clone();
+
 	AssStyle();
 	AssStyle(wxString data,bool IsSSA=false);
 	~AssStyle();

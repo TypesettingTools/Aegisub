@@ -524,3 +524,42 @@ wxString AssStyle::GetSSAText() {
 
 	return output;
 }
+
+
+/////////
+// Clone
+AssEntry *AssStyle::Clone() {
+	// Create clone
+	AssStyle *final = new AssStyle();
+
+	// Copy data
+	final->group = group;
+	final->StartMS = StartMS;
+	final->Valid = Valid;
+	final->alignment = alignment;
+	final->angle = angle;
+	final->bold = bold;
+	final->borderstyle = borderstyle;
+	final->encoding = encoding;
+	final->font = font;
+	final->fontsize = fontsize;
+	final->italic = italic;
+	final->MarginL = MarginL;
+	final->MarginR = MarginR;
+	final->MarginV = MarginV;
+	final->name = name;
+	final->outline = outline;
+	final->outline_w = outline_w;
+	final->primary = primary;
+	final->scalex = scalex;
+	final->scaley = scaley;
+	final->secondary = secondary;
+	final->shadow = shadow;
+	final->spacing = spacing;
+	final->strikeout = strikeout;
+	final->underline = underline;
+	final->SetEntryData(GetEntryData());
+
+	// Return
+	return final;
+}
