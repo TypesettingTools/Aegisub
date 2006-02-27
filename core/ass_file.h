@@ -67,18 +67,6 @@ private:
 	static bool StackModified;
 	static void StackClear();
 
-	// I/O operations
-	void SaveASS(const wxString file,const wxString encoding=_T(""));
-	void SaveSSA(const wxString file,const wxString encoding=_T(""));
-	void SaveSRT(const wxString file,const wxString encoding=_T(""));
-
-	// Manipulation operations
-	void ConvertToSRT();
-	void DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator prev);
-
-	// Format conversion operations
-	void ConvertToSSA();
-
 public:
 	std::list<AssEntry*> Line;
 

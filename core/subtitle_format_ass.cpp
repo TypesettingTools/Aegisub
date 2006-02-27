@@ -38,19 +38,20 @@
 // Headers
 #include "subtitle_format_ass.h"
 #include "text_file_reader.h"
+#include "text_file_writer.h"
 #include "ass_dialogue.h"
 
 
 /////////////
 // Can read?
-bool ASSSubtitleFormatReader::CanReadFile(wxString filename) {
+bool ASSSubtitleFormat::CanReadFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".ass") || filename.Right(4).Lower() == _T(".ssa"));
 }
 
 
 /////////////
 // Read file
-void ASSSubtitleFormatReader::ReadFile(wxString filename,wxString encoding) {
+void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	using namespace std;
 
 	// Reader
@@ -90,4 +91,27 @@ void ASSSubtitleFormatReader::ReadFile(wxString filename,wxString encoding) {
 
 	// Set ASS
 	SetIsASS(!IsSSA);
+}
+
+
+//////////////////////
+// Can write to file?
+bool ASSSubtitleFormat::CanWriteFile(wxString filename) {
+	return (filename.Right(4).Lower() == _T(".ass") || filename.Right(4).Lower() == _T(".ssa"));
+}
+
+
+//////////////
+// Write file
+void ASSSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
+	// Open file
+	TextFileWriter file(_filename,encoding);
+	bool ssa = _filename.Right(4).Lower() == _T(".ssa");
+
+	// Write lines
+	using std::list;
+	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+		if (ssa) file.WriteLineToFile((*cur)->GetSSAText());
+		else file.WriteLineToFile((*cur)->GetEntryData());
+	}
 }

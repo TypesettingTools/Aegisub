@@ -39,7 +39,7 @@
 
 ///////////
 // Headers
-#include "subtitle_format_reader.h"
+#include "subtitle_format.h"
 
 
 //////////////
@@ -49,7 +49,7 @@ class AssDialogue;
 
 //////////////
 // TXT reader
-class TXTSubtitleFormatReader : public SubtitleFormatReader {
+class TXTSubtitleFormat : public SubtitleFormat {
 private:
 
 public:

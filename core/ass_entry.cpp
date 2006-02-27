@@ -92,6 +92,7 @@ AssStyle *AssEntry::GetAsStyle(AssEntry *base) {
 //////////////////////
 // Get SSA conversion
 wxString AssEntry::GetSSAText() {
+	// Special cases
 	if (data.Lower() == _T("[v4+ styles]")) return wxString(_T("[V4 Styles]"));
 	if (data.Lower() == _T("scripttype: v4.00+")) return wxString(_T("ScriptType: v4.00"));
 	if (data.Lower().Left(7) == _T("format:")) {

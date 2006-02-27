@@ -39,7 +39,7 @@
 
 ///////////
 // Headers
-#include "subtitle_format_reader.h"
+#include "subtitle_format.h"
 
 
 //////////////
@@ -47,12 +47,13 @@
 class AssDialogue;
 
 
-//////////////
-// SRT reader
-class ASSSubtitleFormatReader : public SubtitleFormatReader {
-private:
-
+/////////////////////
+// ASS reader/writer
+class ASSSubtitleFormat : public SubtitleFormat {
 public:
 	bool CanReadFile(wxString filename);
 	void ReadFile(wxString filename,wxString forceEncoding);
+
+	bool CanWriteFile(wxString filename);
+	void WriteFile(wxString filename,wxString encoding);
 };

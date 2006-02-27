@@ -44,14 +44,14 @@
 
 /////////////
 // Can read?
-bool TXTSubtitleFormatReader::CanReadFile(wxString filename) {
+bool TXTSubtitleFormat::CanReadFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".txt"));
 }
 
 
 /////////////
 // Read file
-void TXTSubtitleFormatReader::ReadFile(wxString filename,wxString encoding) {	using namespace std;
+void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using namespace std;
 
 	// Reader
 	TextFileReader file(filename,encoding,false);

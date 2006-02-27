@@ -36,7 +36,7 @@
 
 ///////////
 // Headers
-#include "subtitle_format_reader.h"
+#include "subtitle_format.h"
 #include "subtitle_format_ass.h"
 #include "subtitle_format_srt.h"
 #include "subtitle_format_txt.h"
@@ -45,41 +45,113 @@
 
 ///////////////
 // Constructor
-SubtitleFormatReader::SubtitleFormatReader() {
+SubtitleFormat::SubtitleFormat() {
 	Line = NULL;
 	Register();
+	isCopy = false;
 }
 
 
 //////////////
 // Destructor
-SubtitleFormatReader::~SubtitleFormatReader() {
+SubtitleFormat::~SubtitleFormat () {
 	Remove();
 }
 
 
+////////
+// List
+std::list<SubtitleFormat*> SubtitleFormat::formats;
+bool SubtitleFormat::loaded = false;
+
+
 //////////////
 // Set target
-void SubtitleFormatReader::SetTarget(AssFile *file) {
+void SubtitleFormat::SetTarget(AssFile *file) {
+	ClearCopy();
 	if (!file) Line = NULL;
 	else Line = &file->Line;
 	assFile = file;
 }
 
 
-////////
-// List
-std::list<SubtitleFormatReader*> SubtitleFormatReader::readers;
-bool SubtitleFormatReader::loaded = false;
+///////////////
+// Create copy
+void SubtitleFormat::CreateCopy() {
+	SetTarget(new AssFile(*assFile));
+	isCopy = true;
+}
+
+
+//////////////
+// Clear copy
+void SubtitleFormat::ClearCopy() {
+	if (isCopy) {
+		delete assFile;
+		assFile = NULL;
+		isCopy = false;
+	}
+}
+
+
+///////////////////
+// Clear subtitles
+void SubtitleFormat::Clear() {
+	assFile->Clear();
+}
+
+
+////////////////
+// Load default
+void SubtitleFormat::LoadDefault() {
+	assFile->LoadDefault();
+}
+
+
+///////////////////
+// Set if it's ASS
+void SubtitleFormat::SetIsASS(bool isASS) {
+	assFile->IsASS = isASS;
+}
+
+
+////////////
+// Add line
+int SubtitleFormat::AddLine(wxString data,wxString group,int lasttime,bool &IsSSA) {
+	return assFile->AddLine(data,group,lasttime,IsSSA);
+}
+
+
+///////////////
+// Add formats
+void SubtitleFormat::LoadFormats () {
+	if (!loaded) {
+		new ASSSubtitleFormat();
+		new SRTSubtitleFormat();
+		new TXTSubtitleFormat();
+	}
+	loaded = true;
+}
+
+
+///////////////////
+// Destroy formats
+void SubtitleFormat::DestroyFormats () {
+	std::list<SubtitleFormat*>::iterator cur;
+	for (cur=formats.begin();cur!=formats.end();cur = formats.begin()) {
+		delete *cur;
+	}
+	formats.clear();
+}
 
 
 /////////////////////////////
 // Get an appropriate reader
-SubtitleFormatReader *SubtitleFormatReader::GetReader(wxString filename) {
-	LoadReaders();
-	std::list<SubtitleFormatReader*>::iterator cur;
-	SubtitleFormatReader *reader;
-	for (cur=readers.begin();cur!=readers.end();cur++) {
+SubtitleFormat *SubtitleFormat::GetReader(wxString filename) {
+	LoadFormats();
+	std::list<SubtitleFormat*>::iterator cur;
+	SubtitleFormat *reader;
+	for (cur=formats.begin();cur!=formats.end();cur++) {
 		reader = *cur;
 		if (reader->CanReadFile(filename)) return reader;
 	}
@@ -87,81 +159,39 @@ SubtitleFormatReader *SubtitleFormatReader::GetReader(wxString filename) {
 }
 
 
+/////////////////////////////
+// Get an appropriate writer
+SubtitleFormat *SubtitleFormat::GetWriter(wxString filename) {
+	LoadFormats();
+	std::list<SubtitleFormat*>::iterator cur;
+	SubtitleFormat *writer;
+	for (cur=formats.begin();cur!=formats.end();cur++) {
+		writer = *cur;
+		if (writer->CanWriteFile(filename)) return writer;
+	}
+	return NULL;
+}
+
+
 ////////////
 // Register
-void SubtitleFormatReader::Register() {
-	std::list<SubtitleFormatReader*>::iterator cur;
-	for (cur=readers.begin();cur!=readers.end();cur++) {
+void SubtitleFormat::Register() {
+	std::list<SubtitleFormat*>::iterator cur;
+	for (cur=formats.begin();cur!=formats.end();cur++) {
 		if (*cur == this) return;
 	}
-	readers.push_back(this);
+	formats.push_back(this);
 }
 
 
 //////////
 // Remove
-void SubtitleFormatReader::Remove() {
-	std::list<SubtitleFormatReader*>::iterator cur;
-	for (cur=readers.begin();cur!=readers.end();cur++) {
+void SubtitleFormat::Remove() {
+	std::list<SubtitleFormat*>::iterator cur;
+	for (cur=formats.begin();cur!=formats.end();cur++) {
 		if (*cur == this) {
-			readers.erase(cur);
+			formats.erase(cur);
 			return;
 		}
 	}
-}
-
-
-///////////////////
-// Clear subtitles
-void SubtitleFormatReader::Clear() {
-	assFile->Clear();
-}
-
-
-////////////////
-// Load default
-void SubtitleFormatReader::LoadDefault() {
-	assFile->LoadDefault();
-}
-
-
-///////////////////
-// Set if it's ASS
-void SubtitleFormatReader::SetIsASS(bool isASS) {
-	assFile->IsASS = isASS;
-}
-
-
-////////////
-// Add line
-int SubtitleFormatReader::AddLine(wxString data,wxString group,int lasttime,bool &IsSSA) {
-	return assFile->AddLine(data,group,lasttime,IsSSA);
-}
-
-
-///////////////
-// Add loaders
-void SubtitleFormatReader::LoadReaders () {
-	if (!loaded) {
-		new ASSSubtitleFormatReader();
-		new SRTSubtitleFormatReader();
-		new TXTSubtitleFormatReader();
-	}
-	loaded = true;
-}
-
-
-///////////////////
-// Destroy loaders
-void SubtitleFormatReader::DestroyReaders () {
-	SubtitleFormatReader *reader;
-	std::list<SubtitleFormatReader*>::iterator cur,next;
-	for (cur=readers.begin();cur!=readers.end();cur = next) {
-		next = cur;
-		next++;
-		reader = *cur;
-		readers.erase(cur);
-		delete reader;
-	}
-	readers.clear();
 }

@@ -48,7 +48,7 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
-#include "subtitle_format_reader.h"
+#include "subtitle_format.h"
 
 
 ////////////////////// AssFile //////////////////////
@@ -92,7 +92,7 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 		IsASS = false;
 
 		// Get proper format reader
-		SubtitleFormatReader *reader = SubtitleFormatReader::GetReader(_filename);
+		SubtitleFormat *reader = SubtitleFormat::GetReader(_filename);
 
 		// Read file
 		if (reader) {
@@ -148,28 +148,20 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 	extension.Lower();
 	bool success = false;
 
-	// ASS
-	if (extension == _T("ass")) {
-		SaveASS(_filename,encoding);
-		if (addToRecent) AddToRecent(_filename);
-		success = true;
+	// Get writer
+	SubtitleFormat *writer = SubtitleFormat::GetWriter(_filename);
+
+	// Write file
+	if (writer) {
+		writer->SetTarget(this);
+		writer->WriteFile(_filename,encoding);
 	}
 
-	// SSA
-	if (extension == _T("ssa")) {
-		AssFile SSA(*this);
-		SSA.SaveSSA(_filename,encoding);
-		if (addToRecent) AddToRecent(_filename);
-		success = true;
-	}
+	// Couldn't find a type
+	else throw _T("Unknown file type.");
 
-	// SRT
-	if (extension == _T("srt")) {
-		AssFile SRT(*this);
-		SRT.SaveSRT(_filename,encoding);
-		if (addToRecent) AddToRecent(_filename);
-		success = true;
-	}
+	// Add to recent
+	if (addToRecent) AddToRecent(_filename);
 
 	// Done
 	if (setfilename) {
@@ -177,9 +169,6 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 		filename = _filename;
 		IsASS = true;
 	}
-
-	// Unknown
-	if (!success) throw _T("Unknown file type");
 }
 
 
@@ -189,151 +178,6 @@ void AssFile::Export(wxString _filename) {
 	AssExporter exporter(this);
 	exporter.AddAutoFilters();
 	exporter.Export(_filename,_T("UTF-8"));
-}
-
-
-/////////////////////
-// Saves ASS to disk
-void AssFile::SaveASS (wxString _filename,const wxString encoding) {
-	// Open file
-	TextFileWriter file(_filename,encoding);
-
-	// Write lines
-	using std::list;
-	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();cur++) {
-		file.WriteLineToFile((*cur)->GetEntryData());
-	}
-}
-
-
-/////////////////////
-// Saves SSA to disk
-void AssFile::SaveSSA (wxString _filename,const wxString encoding) {
-	// Open file
-	TextFileWriter file(_filename,encoding);
-
-	// Convert to SSA
-	ConvertToSSA();
-
-	// Write lines
-	using std::list;
-	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();cur++) {
-		file.WriteLineToFile((*cur)->GetSSAText());
-	}
-}
-
-
-//////////////////
-// Convert to SSA
-void AssFile::ConvertToSSA () {
-
-}
-
-
-////////////////////
-// Save SRT to disk
-// ----------------
-// Note that this function will convert the whole AssFile to SRT
-//
-void AssFile::SaveSRT (wxString _filename,const wxString encoding) {
-	// Open file
-	TextFileWriter file(_filename,encoding);
-
-	// Convert to SRT
-	ConvertToSRT();
-
-	// Write lines
-	int i=1;
-	using std::list;
-	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();cur++) {
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
-		if (current) {
-			// Get line
-			if (current->Comment) throw _T("Unexpected line type (comment)");
-
-			// Write line
-			file.WriteLineToFile(wxString::Format(_T("%i"),i));
-			file.WriteLineToFile(current->Start.GetSRTFormated() + _T(" --> ") + current->End.GetSRTFormated());
-			file.WriteLineToFile(current->Text);
-			file.WriteLineToFile(_T(""));
-
-			i++;
-		}
-		else throw _T("Unexpected line type");
-	}
-}
-
-
-///////////////////////
-// Convert line to SRT
-void AssFile::DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator prev) {
-	using std::list;
-	AssDialogue *previous;
-	if (prev != Line.end()) previous = AssEntry::GetAsDialogue(*prev);
-	else previous = NULL;
-
-	// Strip ASS tags
-	current->ConvertTagsToSRT();
-
-	// Join equal lines
-	if (previous != NULL) {
-		if (previous->Text == current->Text) {
-			if (abs(current->Start.GetMS() - previous->End.GetMS()) < 20) {
-				current->Start = (current->Start < previous->Start ? current->Start : previous->Start);
-				current->End = (current->End > previous->End ? current->End : previous->End);
-				delete *prev;
-				Line.erase(prev);
-			}
-		}
-	}
-
-	// Fix line breaks
-	size_t cur = 0;
-	while ((cur = current->Text.find(_T("\\n"),cur)) != wxString::npos) {
-		current->Text.replace(cur,2,_T("\r\n"));
-	}
-	cur = 0;
-	while ((cur = current->Text.find(_T("\\N"),cur)) != wxString::npos) {
-		current->Text.replace(cur,2,_T("\r\n"));
-	}
-	cur = 0;
-	while ((cur = current->Text.find(_T("\r\n\r\n"),cur)) != wxString::npos) {
-		current->Text.replace(cur,2,_T("\r\n"));
-		cur = 0;
-	}
-}
-
-
-//////////////////////////////
-// Converts whole file to SRT
-void AssFile::ConvertToSRT () {
-	using std::list;
-	list<AssEntry*>::iterator next;
-	list<AssEntry*>::iterator prev = Line.end();
-
-	// Sort lines
-	Line.sort(LessByPointedToValue<AssEntry>());
-
-	// Process lines
-	bool notfirst = false;
-	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();cur=next) {
-		next = cur;
-		next++;
-
-		// Dialogue line (not comment)
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
-		if (current && !current->Comment) {
-			DialogueToSRT(current,prev);
-			notfirst = true;
-			prev = cur;
-		}
-
-		// Other line, delete it
-		else {
-			delete *cur;
-			Line.erase(cur);
-		}
-	}
 }
 
 

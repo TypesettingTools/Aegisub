@@ -51,31 +51,39 @@ class AssEntry;
 
 ///////////////////
 // Subtitle reader
-class SubtitleFormatReader {
+class SubtitleFormat {
 private:
+	bool isCopy;
+	AssFile *assFile;
+
 	void Register();
 	void Remove();
-	static std::list<SubtitleFormatReader*> readers;
+
+	static std::list<SubtitleFormat*> formats;
 	static bool loaded;
-	AssFile *assFile;
 
 protected:
 	std::list<AssEntry*> *Line;
+	void CreateCopy();
+	void ClearCopy();
 
-public:
-	SubtitleFormatReader();
-	virtual ~SubtitleFormatReader();
-
-	virtual bool CanReadFile(wxString filename)=0;
-	virtual void ReadFile(wxString filename,wxString forceEncoding=_T(""))=0;
-
-	void SetTarget(AssFile *file);
 	void Clear();
 	void LoadDefault();
 	void SetIsASS(bool isASS);
 	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA);
 
-	static SubtitleFormatReader *GetReader(wxString filename);
-	static void LoadReaders();
-	static void DestroyReaders();
+public:
+	SubtitleFormat();
+	virtual ~SubtitleFormat();
+	void SetTarget(AssFile *file);
+
+	virtual bool CanReadFile(wxString filename) { return false; };
+	virtual bool CanWriteFile(wxString filename) { return false; };
+	virtual void ReadFile(wxString filename,wxString forceEncoding=_T("")) { };
+	virtual void WriteFile(wxString filename,wxString encoding=_T("")) { };
+
+	static SubtitleFormat *GetReader(wxString filename);
+	static SubtitleFormat *GetWriter(wxString filename);
+	static void LoadFormats();
+	static void DestroyFormats();
 };
