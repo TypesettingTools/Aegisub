@@ -47,6 +47,7 @@
 #include "FexMovement.h"
 #endif
 
+
 ////////////////////// AssDialogue //////////////////////
 // Constructs AssDialogue
 AssDialogue::AssDialogue() {
@@ -202,9 +203,14 @@ bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 }
 
 
-//////////////////////////////////
-// Update AssDialogue's data line
-void AssDialogue::UpdateData () {
+//////////////////
+// Keep data flag
+bool AssDialogue::keepData = true;
+
+
+/////////////
+// Make data
+wxString AssDialogue::MakeData() {
 	// Prepare
 	wxString final = _T("");
 
@@ -233,7 +239,29 @@ void AssDialogue::UpdateData () {
 	Effect.Replace(_T(","),_T(";"));
 	final += Effect + _T(",");
 	final += Text;
-	SetEntryData(final);
+	return final;
+}
+
+
+//////////////////////////////////
+// Update AssDialogue's data line
+void AssDialogue::UpdateData () {
+	if (keepData) SetEntryData(MakeData());
+}
+
+
+//////////////////
+// Get entry data
+const wxString AssDialogue::GetEntryData() {
+	if (keepData) return AssEntry::GetEntryData();
+	return MakeData();
+}
+
+
+//////////////////
+// Set entry data
+void AssDialogue::SetEntryData(wxString newData) {
+	if (keepData) AssEntry::SetEntryData(newData);
 }
 
 

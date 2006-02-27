@@ -52,6 +52,7 @@ Please visit http://aegisub.net to download latest version
 - Better error reporting when loading Automation scripts (jfs)
 - Attempting to load a file which does not exist no longer unloads previous subtitles. (AMZ)
 - Dragging timecode files into the Aegisub window will now work as expected (instead of attempting to load it as subtitles). (AMZ)
+- Added option ("keep raw dialogue data", default false) that makes Aegisub use less RAM at a small performance cost when set to false. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

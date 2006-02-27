@@ -155,7 +155,12 @@ public:
 ////////////////////////////////////////
 // Class for Dialogue and Comment lines
 class AssDialogue : public AssEntry {
+private:
+	wxString MakeData();
+
 public:
+	static bool keepData;
+
 	std::vector<AssDialogueBlock*> Blocks;	// Contains information about each block of text
 
 	bool Comment;					// Is this a comment line?
@@ -179,8 +184,12 @@ public:
 	bool Parse(wxString data,bool IsSSA=false);	// Parses raw ASS data into everything else
 	void ParseASSTags();			// Parses text to generate block information (doesn't update data)
 	void ParseSRTTags();			// Converts tags to ass format and calls ParseASSTags+UpdateData
+
 	void UpdateData();				// Updates raw data from current values + text
 	void UpdateText();				// Generates text from the override tags
+	const wxString GetEntryData();
+	void SetEntryData(wxString newData);
+
 	void ConvertTagsToSRT();		// Converts tags to SRT format
 	void StripTags();				// Strips all tags from the text
 	void Clear();					// Wipes all data

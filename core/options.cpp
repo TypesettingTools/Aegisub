@@ -69,6 +69,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Locale Code"),-1);
 	SetText(_T("Save Charset"),_T("UTF-8"));
 	SetBool(_T("Use nonstandard Milisecond Times"),false);
+	SetBool(_T("Keep raw dialogue data"),false);
 
 	SetInt(_T("Undo Levels"),8);
 	SetInt(_T("Recent sub max"),16);

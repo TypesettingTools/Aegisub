@@ -678,10 +678,6 @@ wxArrayString AssFile::GetStyles() {
 		if (curstyle) {
 			styles.Add(curstyle->name);
 		}
-		if (!curstyle && (*cur)->GetEntryData().Left(5) == _T("Style")) {
-			wxLogMessage(_T("Style ignored: ") + (*cur)->GetEntryData());
-			curstyle = AssEntry::GetAsStyle(*cur);
-		}
 	}
 	if (styles.GetCount() == 0) styles.Add(_T("Default"));
 	return styles;

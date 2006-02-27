@@ -1252,14 +1252,15 @@ void AutomationScript::process_lines(AssFile *input)
 				// not a dialogue/comment event
 
 				// start checking for a blank line
-				if (e->GetEntryData().IsEmpty()) {
+				wxString entryData = e->GetEntryData();
+				if (entryData.IsEmpty()) {
 					lua_newtable(L);
 					L_settable(L, -1, "kind", wxString(_T("blank")));
-				} else if (e->GetEntryData()[0] == _T(';')) {
+				} else if (entryData[0] == _T(';')) {
 					// semicolon comment
 					lua_newtable(L);
 					L_settable(L, -1, "kind", wxString(_T("scomment")));
-					L_settable(L, -1, "text", e->GetEntryData().Mid(1));
+					L_settable(L, -1, "text", entryData.Mid(1));
 				} else {
 					// not a blank line and not a semicolon comment
 					// just skip...
@@ -1435,11 +1436,11 @@ void AutomationScript::process_lines(AssFile *input)
 		while (next != input->Line.end()) {
 			cur = next++;
 			if ((*cur)->group == _T("[Events]")) {
-				if ((*cur)->GetEntryData() == _T("[Events]")) {
+				wxString temp = (*cur)->GetEntryData();
+				if (temp == _T("[Events]")) {
 					// skip the section header
 					continue;
 				}
-				wxString temp = (*cur)->GetEntryData();
 				if ((*cur)->GetType() != ENTRY_DIALOGUE && temp.Mid(0,1) != _T(";") && temp.Trim() != _T("")) {
 					// skip non-dialogue non-semicolon comment lines (such as Format)
 					continue;
