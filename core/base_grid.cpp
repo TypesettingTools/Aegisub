@@ -573,6 +573,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Row that mouse is over
 	bool click = event.ButtonDown(wxMOUSE_BTN_LEFT);
+	bool dclick = event.LeftDClick();
 	int row = event.GetY()/lineHeight + yPos - 1;
 	if (holding && !click) {
 		row = MID(0,row,GetRows()-1);
@@ -611,7 +612,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	// Click
-	if ((click || holding) && validRow) {
+	if ((click || holding || dclick) && validRow) {
 		// Disable extending
 		extendRow = -1;
 
@@ -623,8 +624,9 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		}
 
 		// Normal click
-		if (click && !shift && !ctrl && !alt) {
-			editBox->SetToLine(row);
+		if ((click || dclick) && !shift && !ctrl && !alt) {
+			if (editBox->linen != row) editBox->SetToLine(row);
+			if (dclick) video->JumpToFrame(VFR_Output.GetFrameAtTime(GetDialogue(row)->Start.GetMS(),true));
 			SelectRow(row,false);
 			parentFrame->UpdateToolbar();
 			lastRow = row;
