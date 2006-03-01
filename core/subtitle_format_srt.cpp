@@ -162,6 +162,7 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 		}
 		else throw _T("Unexpected line type");
 	}
+	ClearCopy();
 }
 
 

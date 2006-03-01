@@ -52,12 +52,15 @@
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 #include "video_provider.h"
+#include "mkv_wrap.h"
 
 
 ///////////////////////
 // LibAVCodec provider
 class LAVCVideoProvider : public VideoProvider {
 private:
+	MatroskaWrapper mkv;
+
 	AVFormatContext *formatContext;
 	AVCodecContext *codecContext;
 	AVStream *stream;
@@ -72,7 +75,7 @@ private:
 
 	wxArrayInt bytePos;
 
-	bool isVFR;
+	bool isMkv;
 	__int64 lastDecodeTime;
 	int frameNumber;
 	int length;

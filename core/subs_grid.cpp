@@ -36,6 +36,10 @@
 
 ////////////
 // Includes
+#include <algorithm>
+#include <wx/clipbrd.h>
+#include <wx/tokenzr.h>
+#include <wx/filename.h>
 #include "subs_grid.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
@@ -46,10 +50,7 @@
 #include "options.h"
 #include "frame_main.h"
 #include "hotkeys.h"
-#include <algorithm>
-#include <wx/clipbrd.h>
-#include <wx/tokenzr.h>
-#include <wx/filename.h>
+#include "utils.h"
 
 
 ///////////////
@@ -812,6 +813,9 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target) {
 	AdjustScrollbar();
 	ass->FlagAsModified();
 	CommitChanges();
+
+	// Update editbox
+	editBox->SetToLine(MID(0,editBox->linen,GetRows()-1));
 }
 
 

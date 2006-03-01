@@ -38,6 +38,7 @@
 // Headers
 #ifdef USE_LAVC
 #include <wx/wxprec.h>
+#include <algorithm>
 #include "video_provider_lavc.h"
 #include "utils.h"
 #include "vfr.h"
@@ -125,15 +126,15 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 		if (result < 0) throw _T("Failed to open video decoder");
 
 		// Check length
-		isVFR = false;
+		isMkv = false;
 		length = stream->duration;
 		if (length <= 0) {
 			if (strcmp(formatContext->iformat->name,"matroska") == 0) {
-				throw _T("FFmpeg fails at seeking Matroska. If you have any idea on how to fix it, Aegisub is open source.");
-				MatroskaWrapper::wrapper.Open(filename);
-				length = MatroskaWrapper::wrapper.GetFrameCount();
-				bytePos = MatroskaWrapper::wrapper.GetBytePositions();
-				isVFR = true;
+				//throw _T("FFmpeg fails at seeking Matroska. If you have any idea on how to fix it, Aegisub is open source.");
+				mkv.Open(filename);
+				length = mkv.GetFrameCount();
+				bytePos = mkv.GetBytePositions();
+				isMkv = true;
 			}
 			if (length <= 0) throw _T("Returned invalid stream length");
 		}
@@ -160,6 +161,9 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 ///////////////
 // Close video
 void LAVCVideoProvider::Close() {
+	// Close mkv
+	if (isMkv) mkv.Close();
+
 	// Clean buffers
 	if (buffer1) delete buffer1;
 	if (buffer2) delete buffer2;
@@ -305,39 +309,60 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 	else {
 		// Prepare seek
 		__int64 seekTo;
-		int result;
+		int result = 0;
 
 		// Get time to seek to
-		if (isVFR) {
+		if (isMkv) {
 			//__int64 base = AV_TIME_BASE;
 			//__int64 time = VFR_Output.GetTimeAtFrame(n,true) * base / 1000000;
 			//seekTo = av_rescale(time,stream->time_base.den,AV_TIME_BASE * __int64(stream->time_base.num));
 			//seekTo = __int64(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
-			seekTo = bytePos[n];
+			//seekTo = bytePos[n];
 
-			result = av_seek_frame(formatContext,vidStream,seekTo,AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_BYTE);
+			//result = av_seek_frame(formatContext,vidStream,seekTo,AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_BYTE);
+
+			// Prepare mkv seek
+			ulonglong startTime, endTime, filePos;
+			unsigned int rt, frameSize, frameFlags;
+			ulonglong targetTime = __int64(VFR_Output.GetTimeAtFrame(n,true,true))*1000000;
+			//ulonglong targetTime = __int64(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
+			//ulonglong targetTime = mkv.rawFrames[n].time * 1000000;
+			mkv_Seek(mkv.file,targetTime,MKVF_SEEK_TO_PREV_KEYFRAME);
+
+			// Seek
+			if (mkv_ReadFrame(mkv.file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
+				result = av_seek_frame(formatContext,vidStream,filePos,AVSEEK_FLAG_BYTE | AVSEEK_FLAG_BACKWARD);
+				int curpos = 0;
+				for (int i=0;i<mkv.rawFrames.size();i++) {
+					if (mkv.rawFrames[i].time == startTime / 1000000.0) curpos = i;
+				}
+				int seek = n - curpos;
+				for (int i=0;i<seek;i++) {
+					GetNextFrame();
+				}
+			}
 		}
 
 		// Constant frame rate
 		else {
 			seekTo = n;
 			result = av_seek_frame(formatContext,vidStream,seekTo,AVSEEK_FLAG_BACKWARD);
-		}
 
-		// Seek to keyframe
-		if (result == 0) {
-			avcodec_flush_buffers(codecContext);
+			// Seek to keyframe
+			if (result == 0) {
+				avcodec_flush_buffers(codecContext);
 
-			// Seek until final frame
-			bool ok = true;
-			do {
-				ok = GetNextFrame();
-			} while (lastDecodeTime <= n && ok);
-		}
+				// Seek until final frame
+				bool ok = true;
+				do {
+					ok = GetNextFrame();
+				} while (lastDecodeTime <= n && ok);
+			}
 
-		// Failed seeking
-		else {
-			GetNextFrame();
+			// Failed seeking
+			else {
+				GetNextFrame();
+			}
 		}
 	}
 

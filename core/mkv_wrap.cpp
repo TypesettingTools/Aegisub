@@ -128,7 +128,6 @@ void MatroskaWrapper::Parse() {
 	keyFrames.Clear();
 	bytePos.Clear();
 	timecodes.clear();
-	std::list<MkvFrame> frames;
 
 	// Get info
 	int tracks = mkv_GetNumTracks(file);
@@ -182,6 +181,11 @@ void MatroskaWrapper::Parse() {
 
 			break;
 		}
+	}
+
+	// Copy raw
+	for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
+		rawFrames.push_back(*cur);
 	}
 
 	// Process timecodes and keyframes

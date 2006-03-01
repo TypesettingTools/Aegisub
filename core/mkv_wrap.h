@@ -42,6 +42,7 @@
 #include <wx/wxprec.h>
 #include <stdio.h>
 #include <vector>
+#include <list>
 #include "MatroskaParser.h"
 #include "vfr.h"
 
@@ -78,8 +79,6 @@ bool operator < (MkvFrame &t1, MkvFrame &t2);
 // Matroska wrapper class
 class MatroskaWrapper {
 private:
-	MatroskaFile *file;
-	MkvStdIO *input;
 	wxArrayInt keyFrames;
 	std::vector<double> timecodes;
 	wxArrayInt bytePos;
@@ -87,6 +86,11 @@ private:
 	void Parse();
 
 public:
+	MkvStdIO *input;
+	MatroskaFile *file;
+	std::list<MkvFrame> frames;
+	std::vector<MkvFrame> rawFrames;
+
 	MatroskaWrapper();
 	~MatroskaWrapper();
 

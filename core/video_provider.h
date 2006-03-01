@@ -37,6 +37,11 @@
 #pragma once
 
 
+//////////////
+// Prototypes
+class SubtitleRasterizer;
+
+
 ////////////////////////////
 // Video Provider interface
 class VideoProvider {
@@ -60,6 +65,8 @@ public:
 
 	virtual int GetSourceWidth()=0;			// Returns the original source width in pixels
 	virtual int GetSourceHeight()=0;		// Returns the original source height in pixels
+
+	SubtitleRasterizer *subsRaster;
 
 	static VideoProvider *GetProvider(wxString video,wxString subtitles);
 };
