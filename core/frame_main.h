@@ -118,6 +118,8 @@ private:
 	void OnVideoTrackMovementMoveBefore(wxCommandEvent &event);
 	void OnVideoTrackMovementMoveAfter(wxCommandEvent &event);
 	void OnVideoTrackSplitLine(wxCommandEvent &event);
+	void OnVideoTrackLinkFile(wxCommandEvent &event);
+	void OnVideoTrackMovementEmpty(wxCommandEvent &event);
 
 	void OnKeyDown(wxKeyEvent &event);
 
@@ -352,6 +354,8 @@ enum {
 	Video_Track_Movement_MoveBefore,
 	Video_Track_Movement_MoveAfter,
 	Video_Track_Split_Line,
+	Video_Track_Link_File,
+	Video_Track_Movement_Empty,
 
 	Menu_File_Recent = 2000,
 	Menu_Video_Recent = 2200,

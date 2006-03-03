@@ -193,6 +193,15 @@ bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 	Effect.Trim(true);
 	Effect.Trim(false);
 
+#ifndef NO_FEX
+	if( Effect.BeforeFirst(':')==_T("FexMovement") )
+	{
+		if( Movement ) DeleteMovement( Movement );
+		Movement = CreateMovement();
+		LoadMovement( Movement, (unsigned short*) Effect.AfterFirst(':').c_str() );
+	}
+#endif
+
 	// Get text
 	Text = tkn.GetNextToken();
 	while (tkn.HasMoreTokens()) {

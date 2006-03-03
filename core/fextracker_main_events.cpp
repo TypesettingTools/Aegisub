@@ -48,6 +48,8 @@ void FrameMain::OnVideoTrackerMenu(wxCommandEvent &event) {
 // Movement Menu
 void FrameMain::OnVideoTrackerMenu2(wxCommandEvent &event) {
 	wxMenu menu( _("FexMovement") );
+	AppendBitmapMenuItem(&menu, Video_Track_Movement_Empty, _("Generate empty movement"), _T(""), wxBITMAP(button_track_move));
+	menu.AppendSeparator();
 	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAll, _("Move subtitle"), _T(""), wxBITMAP(button_track_move));
 	menu.AppendSeparator();
 	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveBefore, _("Move subtitle (this frame and preceeding frames)"), _T(""), wxBITMAP(button_track_move));
@@ -55,6 +57,8 @@ void FrameMain::OnVideoTrackerMenu2(wxCommandEvent &event) {
 	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAfter, _("Move subtitle (this frame and following frames)"), _T(""), wxBITMAP(button_track_move));
 	menu.AppendSeparator();
 	AppendBitmapMenuItem(&menu, Video_Track_Split_Line, _("Split line for movement"), _T(""), wxBITMAP(button_track_split_line));
+	menu.AppendSeparator();
+	AppendBitmapMenuItem(&menu, Video_Track_Link_File, _("Link movement file"), _T(""), wxBITMAP(button_track_move));
 	PopupMenu(&menu);
 }
 
@@ -190,6 +194,49 @@ void FrameMain::OnVideoTrackSplitLine(wxCommandEvent &event) {
 	SubsBox->DeleteLines(SubsBox->GetRangeArray(EditBox->linen, EditBox->linen));
 
 	videoBox->videoDisplay->RefreshVideo();
+}
+
+
+
+///////////////////
+// generate empty movement
+void FrameMain::OnVideoTrackMovementEmpty(wxCommandEvent &event) {
+	// Get line
+	AssDialogue *curline = SubsBox->GetDialogue(EditBox->linen);
+	if (!curline) return;
+	if( curline->Movement ) DeleteMovement( curline->Movement );
+	curline->Movement = CreateMovement();
+
+	// Create split lines
+	int StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true);
+	int EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false);
+
+	FexMovementFrame f;
+	memset( &f, 0x00, sizeof(f) );
+	f.Scale.x = f.Scale.y = 1;
+
+	for( int i=StartFrame;i<EndFrame;i++ )
+		curline->Movement->Frames.Add( f );
+}
+
+
+///////////////////
+// link line to move file
+void FrameMain::OnVideoTrackLinkFile(wxCommandEvent &event) {
+	videoBox->videoDisplay->Stop();
+
+	// Get line
+	AssDialogue *curline = SubsBox->GetDialogue(EditBox->linen);
+	if (!curline) return;
+
+	wxString link = wxGetTextFromUser(_("Link name:"), _("Link line to movement file"), curline->Movement?curline->Movement->FileName:_T(""), this);
+	if( link.empty() ) curline->Effect = _T("");
+	else curline->Effect = _T("FexMovement:")+link;
+	
+	curline->UpdateData();
+
+	if( !curline->Effect.empty() && curline->Movement )
+		SaveMovement( curline->Movement, (unsigned short*) curline->Effect.AfterFirst(':').c_str() );
 }
 
 

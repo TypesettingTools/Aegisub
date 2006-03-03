@@ -104,6 +104,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Video_Track_Movement_MoveBefore, FrameMain::OnVideoTrackMovementMoveBefore)
 	EVT_MENU(Video_Track_Movement_MoveAfter, FrameMain::OnVideoTrackMovementMoveAfter)
 	EVT_MENU(Video_Track_Split_Line, FrameMain::OnVideoTrackSplitLine)
+	EVT_MENU(Video_Track_Link_File, FrameMain::OnVideoTrackLinkFile)
+	EVT_MENU(Video_Track_Movement_Empty, FrameMain::OnVideoTrackMovementEmpty)
 #endif
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
