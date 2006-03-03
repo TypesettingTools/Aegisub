@@ -17,20 +17,21 @@ typedef struct
 }FexMovementFrame;
 
 #include "tenlist.h"
+
 class FexMovement  
 {
 public:
 	FexMovement();
 	~FexMovement();
-
-	void Load( const char* Filename );
-	void Save( const char* Filename );
-
-	const char* GetUniqueName();
+	WCHAR* FileName;
 
 	tenlist<FexMovementFrame>	Frames;
 };
 
-void FEXTRACKER_API DeleteMovement( FexMovement* delme );
+FEXTRACKER_API FexMovement* CreateMovement();
+FEXTRACKER_API void LoadMovement( FexMovement* me, const unsigned short* Filename );
+FEXTRACKER_API void SaveMovement( FexMovement* me, const unsigned short* Filename );
+FEXTRACKER_API void DeleteMovement( FexMovement* delme );
+//WCHAR* FEXTRACKER_API GetUniqueName();
 
 #endif // !defined(AFX_FEXMOVEMENT_H__63D8ADD8_4EA1_4C56_8D6F_7B587A1A61A4__INCLUDED_)
