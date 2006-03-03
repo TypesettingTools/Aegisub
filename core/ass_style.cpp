@@ -555,6 +555,7 @@ AssEntry *AssStyle::Clone() {
 	final->scaley = scaley;
 	final->secondary = secondary;
 	final->shadow = shadow;
+	final->shadow_w = shadow_w;
 	final->spacing = spacing;
 	final->strikeout = strikeout;
 	final->underline = underline;
