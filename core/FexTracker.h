@@ -90,6 +90,8 @@ public:
 	FexTrackingFeature* operator [] ( int i );
 	inline int GetCount(){ return nFeatures; };
 	inline int GetFrame(){ return CurFrame; };
+	inline int GetSizeX(){ return SizX; };
+	inline int GetSizeY(){ return SizY; };
 
 	bool bDebug;
 	int minFeatures;
