@@ -1,9 +1,11 @@
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 // FexTracker.cpp : Defines the entry point for the DLL application.
 //
 
 #include "StdAfx.h"
 #include "stdio.h"
-//#include "mmsystem.h"
 
 FexTracker::FexTracker( int sx, int sy, int inFeatures )
 {
@@ -45,10 +47,6 @@ FexTracker::FexTracker( int sx, int sy, int inFeatures )
 		PyramidMaxLevels = (int) (val + 0.99);
 		PyramidSubsampling = 8;
 	}
-/*
-	PyramidMaxLevels = 2;
-	PyramidSubsampling = 2;
-*/
 }
 FexTracker::~FexTracker()
 {
@@ -58,7 +56,6 @@ FexTracker::~FexTracker()
 
 void FexTracker::ProcessImage( float *Img, bool bFirst )
 {
-//DWORD t = timeGetTime();
 	if( bFirst || !CurImg ) 
 	{
 		CurFrame = 0;
@@ -80,8 +77,6 @@ void FexTracker::ProcessImage( float *Img, bool bFirst )
 		NextImg = 0;
 	}
 	CurFrame++; 
-//DWORD t2 = timeGetTime();
-//printf( "ProcessImage: %d ms\n", (t2-t) );
 }
 
 void FexTracker::ProcessingDone()

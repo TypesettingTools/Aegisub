@@ -1,3 +1,6 @@
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 #pragma once
 
 template< class type >

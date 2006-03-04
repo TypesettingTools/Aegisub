@@ -1,3 +1,6 @@
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 // FexImgPyramid.cpp: implementation of the FexImgPyramid class.
 //
 //////////////////////////////////////////////////////////////////////
@@ -14,6 +17,11 @@ void BaseFloatImage_LanczosRescale( float* in, int inSx, int inSy, float* out, i
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+
+//turn off image debugging
+#ifndef imdebug
+#define imdebug // 
+#endif
 
 
 FexImgPyramidLevel::FexImgPyramidLevel( int isx, int isy )
@@ -34,12 +42,6 @@ FexImgPyramidLevel::~FexImgPyramidLevel()
 
 void FexImgPyramidLevel::Fill( float* iImg, float DetectSmoothSigma )
 {
-/*
-	for( int y=0;y<sy;y++ )
-		for( int x=0;x<sx;x++ )
-			Img[ sx*y + x ] = iImg[ sx*y + x ];
-*/
-
 	imdebug("lum b=32f w=%d h=%d %p /255", sx, sy, iImg);
 	BaseFloatImage_GaussSmooth( iImg, sx, sy, DetectSmoothSigma, Img );
 	imdebug("lum b=32f w=%d h=%d %p /255", sx, sy, Img);

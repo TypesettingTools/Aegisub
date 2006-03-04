@@ -1,3 +1,6 @@
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 // stdafx.h : include file for standard system include files,
 //  or project specific include files that are used frequently, but
 //      are changed infrequently
@@ -24,7 +27,11 @@
 #include "FexTrackingFeature.h"
 #include "FexMovement.h"
 
+#ifdef IMAGE_DEBUGGER
 #include "ext/imdebug.h"
+#else
+#define imdebug // 
+#endif
 
 // TODO: reference additional headers your program requires here
 

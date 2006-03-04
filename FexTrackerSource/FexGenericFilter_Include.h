@@ -1,3 +1,6 @@
+// This file is part of FexGenericFilter and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 class FexFilter {
 public:
 	FexFilter();

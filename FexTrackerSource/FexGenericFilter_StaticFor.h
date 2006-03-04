@@ -1,3 +1,6 @@
+// This file is part of FexGenericFilter and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 #if ImagePlanes==1	
 #define STATIC_FOR	{DOFOR(0)}
 #elif ImagePlanes==3

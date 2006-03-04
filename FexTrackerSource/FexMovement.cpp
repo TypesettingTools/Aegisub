@@ -1,3 +1,6 @@
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 // FexMovement.cpp: implementation of the FexMovement class.
 //
 //////////////////////////////////////////////////////////////////////
@@ -69,25 +72,7 @@ FEXTRACKER_API void SaveMovement( FexMovement* me, const unsigned short* Filenam
 	}
 	fclose( fi );
 }
-/*
-const WCHAR* FEXTRACKER_API GetUniqueName()
-{
-	static WCHAR Name[512];
-    time_t long_time;
-    time( &long_time );
 
-    swprintf( Name, L"%x%x\n", timeGetTime(), long_time );
-
-	for( DWORD i=0;i<wcslen(Name);i++ )
-	{
-		Name[i] = towlower( Name[i] );
-		if( Name[i]<'a' || Name[i]>'z' )
-			Name[i] = '_';
-	}
-	wcscat( Name, L".fexmove" );
-	return Name;
-}
-*/
 FEXTRACKER_API void DeleteMovement( FexMovement* delme )
 {
 	delete delme;
