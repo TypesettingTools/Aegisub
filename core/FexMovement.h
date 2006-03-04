@@ -1,3 +1,6 @@
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 // FexMovement.h: interface for the FexMovement class.
 //
 //////////////////////////////////////////////////////////////////////
@@ -32,6 +35,5 @@ FEXTRACKER_API FexMovement* CreateMovement();
 FEXTRACKER_API void LoadMovement( FexMovement* me, const unsigned short* Filename );
 FEXTRACKER_API void SaveMovement( FexMovement* me, const unsigned short* Filename );
 FEXTRACKER_API void DeleteMovement( FexMovement* delme );
-//WCHAR* FEXTRACKER_API GetUniqueName();
 
 #endif // !defined(AFX_FEXMOVEMENT_H__63D8ADD8_4EA1_4C56_8D6F_7B587A1A61A4__INCLUDED_)

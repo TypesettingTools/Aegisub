@@ -1,3 +1,6 @@
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// All rights reserved but the aegisub project is allowed to use it.
+
 
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the FEXTRACKER_EXPORTS
