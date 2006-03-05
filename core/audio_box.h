@@ -127,6 +127,14 @@ public:
 };
 
 
+class FocusEvent : public wxEvtHandler {
+	
+private:
+	void OnSetFocus(wxFocusEvent &event);
+	DECLARE_EVENT_TABLE()
+};
+
+
 ///////
 // IDs
 enum {

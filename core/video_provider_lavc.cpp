@@ -333,7 +333,7 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 			if (mkv_ReadFrame(mkv.file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
 				result = av_seek_frame(formatContext,vidStream,filePos,AVSEEK_FLAG_BYTE | AVSEEK_FLAG_BACKWARD);
 				int curpos = 0;
-				for (int i=0;i<mkv.rawFrames.size();i++) {
+				for (unsigned int i=0;i<mkv.rawFrames.size();i++) {
 					if (mkv.rawFrames[i].time == startTime / 1000000.0) curpos = i;
 				}
 				int seek = n - curpos;
