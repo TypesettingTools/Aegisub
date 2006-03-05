@@ -236,7 +236,7 @@ void FrameMain::OnVideoTrackLinkFile(wxCommandEvent &event) {
 	curline->UpdateData();
 
 	if( !curline->Effect.empty() && curline->Movement )
-		SaveMovement( curline->Movement, (unsigned short*) curline->Effect.AfterFirst(':').c_str() );
+		SaveMovement( curline->Movement, curline->Effect.AfterFirst(':').c_str() );
 }
 
 

@@ -32,8 +32,8 @@ public:
 };
 
 FEXTRACKER_API FexMovement* CreateMovement();
-FEXTRACKER_API void LoadMovement( FexMovement* me, const unsigned short* Filename );
-FEXTRACKER_API void SaveMovement( FexMovement* me, const unsigned short* Filename );
+FEXTRACKER_API void LoadMovement( FexMovement* me, const wchar_t* Filename );
+FEXTRACKER_API void SaveMovement( FexMovement* me, const wchar_t* Filename );
 FEXTRACKER_API void DeleteMovement( FexMovement* delme );
 
 #endif // !defined(AFX_FEXMOVEMENT_H__63D8ADD8_4EA1_4C56_8D6F_7B587A1A61A4__INCLUDED_)

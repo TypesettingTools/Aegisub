@@ -221,7 +221,8 @@ void FexTracker::FindFeatures( int minFeatures )
 
 	for( int i=0;i<nli && nActiveFeatures<minFeatures;i++ )
 	{
-		for( int j=0;j<nFeatures;j++ )
+		int j;
+		for( j=0;j<nFeatures;j++ )
 		{
 			if( lFeatures[j].StartTime + lFeatures[j].Pos.size() < CurFrame  ) continue; //feature was lost
 
@@ -284,7 +285,8 @@ void FexTracker::TrackFeatures()
 		vec2 np;
 		np = op;
 
-		for( int l=CurImg->nLevels-1;l>=0;l-- )
+		int l;
+		for( l=CurImg->nLevels-1;l>=0;l-- )
 		{
 			op.x *= CurImg->Subsampling;
 			op.y *= CurImg->Subsampling;

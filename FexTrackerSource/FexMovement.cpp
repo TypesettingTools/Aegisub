@@ -32,7 +32,7 @@ FEXTRACKER_API FexMovement* CreateMovement()
 	return new FexMovement();
 }
 
-FEXTRACKER_API void LoadMovement( FexMovement* me, const unsigned short* Filename )
+FEXTRACKER_API void LoadMovement( FexMovement* me, const wchar_t* Filename )
 {
 	me->Frames.nVal = 0;
 
@@ -58,7 +58,7 @@ FEXTRACKER_API void LoadMovement( FexMovement* me, const unsigned short* Filenam
 	}
 	fclose( fi );
 }
-FEXTRACKER_API void SaveMovement( FexMovement* me, const unsigned short* Filename )
+FEXTRACKER_API void SaveMovement( FexMovement* me, const wchar_t* Filename )
 {
 	FILE *fi = _wfopen( Filename, L"wt" );
 	if( !fi ) return;

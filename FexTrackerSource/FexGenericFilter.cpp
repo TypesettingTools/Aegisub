@@ -72,7 +72,7 @@ FexFilter_GaussDerivation::FexFilter_GaussDerivation( double sigma )
 {
 	Sigma = sigma;
 	TwoSigmaSq = 2*sigma*sigma;
-	Width = sqrt( TwoSigmaSq*log(10) );
+	Width = 2.145966026 * sigma;
 	Normalize = 1.0 / (0.7062351183 * pow( TwoSigmaSq, 1.5 ));
 }
 

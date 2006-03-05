@@ -198,7 +198,7 @@ bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 	{
 		if( Movement ) DeleteMovement( Movement );
 		Movement = CreateMovement();
-		LoadMovement( Movement, (unsigned short*) Effect.AfterFirst(':').c_str() );
+		LoadMovement( Movement, Effect.AfterFirst(':').c_str() );
 	}
 #endif
 

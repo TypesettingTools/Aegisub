@@ -7,7 +7,7 @@
 
 #include "StdAfx.h"
 #include "FexImgPyramid.h"
-#include "../FexGenericFilter/FexGenericFilter_Include.h"
+#include "FexGenericFilter_Include.h"
 
 void BaseFloatImage_GaussEdgeDetect( float* Img, int sizx, int sizy, float sigma, float* GradX, float* GradY );
 void BaseFloatImage_GaussSmooth( float* Img, int sizx, int sizy, float sigma, float* Out );
