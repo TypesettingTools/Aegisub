@@ -22,9 +22,9 @@
 #include "vfr.h"
 #include "subs_edit_box.h"
 #include "options.h"
-#include "FexTracker.h"
-#include "FexTrackingFeature.h"
-#include "FexMovement.h"
+#include "../FexTrackerSource/FexTracker.h"
+#include "../FexTrackerSource/FexTrackingFeature.h"
+#include "../FexTrackerSource/FexMovement.h"
 #include "dialog_progress.h"
 #include "dialog_fextracker.h"
 

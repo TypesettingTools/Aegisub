@@ -73,9 +73,9 @@
 #include "dialog_hotkeys.h"
 #include "dialog_timing_processor.h"
 #ifndef NO_FEX
-#include "FexTracker.h"
-#include "FexTrackingFeature.h"
-#include "FexMovement.h"
+#include "../FexTrackerSource/FexTracker.h"
+#include "../FexTrackerSource/FexTrackingFeature.h"
+#include "../FexTrackerSource/FexMovement.h"
 #include "dialog_fextracker.h"
 #endif
 #include "dialog_progress.h"

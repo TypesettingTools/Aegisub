@@ -56,9 +56,9 @@
 #include <wx/filename.h>
 #include <wx/config.h>
 #ifndef NO_FEX
-#include "FexTracker.h"
-#include "FexTrackingFeature.h"
-#include "FexMovement.h"
+#include "../FexTrackerSource/FexTracker.h"
+#include "../FexTrackerSource/FexTrackingFeature.h"
+#include "../FexTrackerSource/FexMovement.h"
 #endif
 
 

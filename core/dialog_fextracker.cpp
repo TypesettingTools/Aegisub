@@ -9,7 +9,7 @@
 // Headers
 #include <wx/notebook.h>
 #include "dialog_fextracker.h"
-#include "FexTracker.h"
+#include "../FexTrackerSource/FexTracker.h"
 
 
 ///////////////

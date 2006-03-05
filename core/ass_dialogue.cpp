@@ -43,8 +43,8 @@
 #include <fstream>
 #include <wx/tokenzr.h>
 #ifndef NO_FEX
-#include "FexTracker.h"
-#include "FexMovement.h"
+#include "../FexTrackerSource/FexTracker.h"
+#include "../FexTrackerSource/FexMovement.h"
 #endif
 
 
