@@ -1470,24 +1470,44 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 	// Get DCs
 	//wxMutexGuiEnter();
 	wxClientDC dc(this);
-	wxMemoryDC src;
-	src.SelectObject(*origImage);
 	dc.BeginDrawing();
-
-	// Restore background
-	dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
 
 	// Draw cursor
 	int curpos = -1;
 	if (player->IsPlaying()) {
-		if (player->GetCurrentPosition() > player->GetStartPosition() && player->GetCurrentPosition() < player->GetEndPosition()) {
+		__int64 curPos = player->GetCurrentPosition();
+		if (curPos > player->GetStartPosition() && curPos < player->GetEndPosition()) {
+			// Scroll if needed
+			int posX = GetXAtSample(curPos);
+			if (posX > w-80) {
+				UpdatePosition(curPos - samples/2 - 80,true);
+				UpdateImage();
+				Refresh(true);
+			}
+
+			// Draw cursor
+			wxMemoryDC src;
+			src.SelectObject(*origImage);
+			dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
 			dc.SetPen(wxPen(Options.AsColour(_T("Audio Play cursor"))));
-			curpos = GetXAtSample(player->GetCurrentPosition());
+			curpos = GetXAtSample(curPos);
 			dc.DrawLine(curpos,0,curpos,h);
 		}
-		else if (player->GetCurrentPosition() > player->GetEndPosition() + 8192) {
-			player->Stop();
+		else {
+			if (curPos > player->GetEndPosition() + 8192) {
+				player->Stop();
+			}
+			wxMemoryDC src;
+			src.SelectObject(*origImage);
+			dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
 		}
+	}
+
+	// Restore background
+	else {
+		wxMemoryDC src;
+		src.SelectObject(*origImage);
+		dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
 	}
 	oldCurPos = curpos;
 

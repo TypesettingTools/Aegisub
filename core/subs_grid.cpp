@@ -126,12 +126,12 @@ void SubtitlesGrid::OnPopupMenu() {
 		menu.AppendSeparator();
 
 		// Video/time sync
-		state = (video && video->loaded);
-		menu.Append(MENU_SET_VIDEO_TO_START,_("Jump video to start"),_T("Sets current video time to start time"))->Enable(state);
-		menu.Append(MENU_SET_VIDEO_TO_END,_("Jump video to end"),_T("Sets current video time to end time"))->Enable(state);
-		menu.Append(MENU_SET_START_TO_VIDEO,_("Set start to video"),_T("Sets start times to current video time"))->Enable(state);
-		menu.Append(MENU_SET_END_TO_VIDEO,_("Set end to video"),_T("Sets end times to current video time"))->Enable(state);
-		menu.AppendSeparator();
+		//state = (video && video->loaded);
+		//menu.Append(MENU_SET_VIDEO_TO_START,_("Jump video to start"),_T("Sets current video time to start time"))->Enable(state);
+		//menu.Append(MENU_SET_VIDEO_TO_END,_("Jump video to end"),_T("Sets current video time to end time"))->Enable(state);
+		//menu.Append(MENU_SET_START_TO_VIDEO,_("Set start to video"),_T("Sets start times to current video time"))->Enable(state);
+		//menu.Append(MENU_SET_END_TO_VIDEO,_("Set end to video"),_T("Sets end times to current video time"))->Enable(state);
+		//menu.AppendSeparator();
 
 		// Duplicate selection
 		menu.Append(MENU_DUPLICATE,_("&Duplicate"),_T("Duplicate the selected lines"))->Enable(continuous);
