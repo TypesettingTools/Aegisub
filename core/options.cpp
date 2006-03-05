@@ -232,6 +232,12 @@ void OptionsManager::LoadDefaults() {
 
 	SetText(_T("Color Picker Recent"), _T("&H000000& &H0000FF& &H00FFFF& &H00FF00& &HFFFF00& &HFF0000& &HFF00FF& &HFFFFFF&"));
 	SetInt(_T("Color Picker Mode"), 4);
+
+	SetText(_T("Last open subtitles path"),_T(""));
+	SetText(_T("Last open video path"),_T(""));
+	SetText(_T("Last open audio path"),_T(""));
+	SetText(_T("Last open timecodes path"),_T(""));
+	SetText(_T("Last open automation path"),_T(""));
 }
 
 

@@ -116,8 +116,11 @@ END_EVENT_TABLE()
 
 void DialogAutomationManager::OnCreate(wxCommandEvent &event)
 {
-	wxString sfnames = wxFileSelector(_("Create Automation script"), _T(""), _T("*.lua"), _T("lua"), _T("Automation Lua scripts (*.lua)|*.lua|All files (*.*)|*.*"), wxSAVE|wxOVERWRITE_PROMPT, this);
+	wxString path = Options.AsText(_T("Last open automation path"));	
+	wxString sfnames = wxFileSelector(_("Create Automation script"), path, _T("*.lua"), _T("lua"), _T("Automation Lua scripts (*.lua)|*.lua|All files (*.*)|*.*"), wxSAVE|wxOVERWRITE_PROMPT, this);
 	if (sfnames.empty()) return;
+	Options.SetText(_T("Last open automation path"), sfnames);
+	
 	wxFileName sfname(sfnames);
 
 	if (sfname.FileExists()) {
@@ -162,8 +165,10 @@ void DialogAutomationManager::OnCreate(wxCommandEvent &event)
 
 void DialogAutomationManager::OnAdd(wxCommandEvent &event)
 {
-	wxString sfnames = wxFileSelector(_("Load Automation script"), _T(""), _T("*.lua"), _T("lua"), _T("Automation Lua scripts (*.lua)|*.lua|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST, this);
+	wxString path = Options.AsText(_T("Last open automation path"));	
+	wxString sfnames = wxFileSelector(_("Load Automation script"), path, _T("*.lua"), _T("lua"), _T("Automation Lua scripts (*.lua)|*.lua|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST, this);
 	if (sfnames.empty()) return;
+	Options.SetText(_T("Last open automation path"), sfnames);
 
 	try {
 		AutomationScriptFile *sfile = AutomationScriptFile::CreateFromFile(sfnames);

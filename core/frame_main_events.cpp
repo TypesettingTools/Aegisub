@@ -467,9 +467,11 @@ void FrameMain::OnSaveProjectAs(wxCommandEvent& WXUNUSED(event)) {
 //////////////
 // Open video
 void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
-	wxString filename = wxFileSelector(_("Open video file"),_T(""),_T(""),_T(""),_T("Recommended Formats (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|Other supported formats (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|All Files (*.*)|*.*"),wxOPEN | wxFILE_MUST_EXIST);
+	wxString path = Options.AsText(_T("Last open video path"));
+	wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),_T("Recommended Formats (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|Other supported formats (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|All Files (*.*)|*.*"),wxOPEN | wxFILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVideo(filename);
+		Options.SetText(_T("Last open video path"), filename);
 	}
 }
 
@@ -484,9 +486,11 @@ void FrameMain::OnCloseVideo(wxCommandEvent& WXUNUSED(event)) {
 //////////////
 // Open Audio
 void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
-	wxString filename = wxFileSelector(_("Open audio file"),_T(""),_T(""),_T(""),_T("Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka|All files (*.*)|*.*"),wxOPEN | wxFILE_MUST_EXIST);
+	wxString path = Options.AsText(_T("Last open audio path"));
+	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),_T("Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka|All files (*.*)|*.*"),wxOPEN | wxFILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadAudio(filename);
+		Options.SetText(_T("Last open audio path"), filename);
 	}
 }
 
@@ -504,9 +508,11 @@ void FrameMain::OnCloseAudio (wxCommandEvent& WXUNUSED(event)) {
 //////////////////
 // Open subtitles
 void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
-	wxString filename = wxFileSelector(_("Open subtitles file"),_T(""),_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.txt)|*.ass;*.ssa;*.srt;*.txt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt"),wxOPEN | wxFILE_MUST_EXIST);
+	wxString path = Options.AsText(_T("Last open subtitles path"));	
+	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.txt)|*.ass;*.ssa;*.srt;*.txt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt"),wxOPEN | wxFILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadSubtitles(filename);
+		Options.SetText(_T("Last open subtitles path"), filename);
 	}
 }
 
@@ -516,14 +522,16 @@ void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
 void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 	// Initialize charsets
 	wxArrayString choices = GetEncodings();
+	wxString path = Options.AsText(_T("Last open subtitles path"));
 
 	// Get options and load
-	wxString filename = wxFileSelector(_("Open subtitles file"),_T(""),_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.txt)|*.ass;*.ssa;*.srt;*.txt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt"),wxOPEN | wxFILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.txt)|*.ass;*.ssa;*.srt;*.txt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt"),wxOPEN | wxFILE_MUST_EXIST);
 	if (!filename.empty()) {
 		wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"),choices,this,-1, -1,true,250,200);
 		if (!charset.empty()) {
 			LoadSubtitles(filename,charset);
 		}
+		Options.SetText(_T("Last open subtitles path"), filename);
 	}
 }
 
@@ -571,9 +579,11 @@ void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 /////////////////
 // Open VFR tags
 void FrameMain::OnOpenVFR(wxCommandEvent &event) {
-	wxString filename = wxFileSelector(_("Open timecodes file"),_T(""),_T(""),_T(""),_T("All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"),wxOPEN | wxFILE_MUST_EXIST);
+	wxString path = Options.AsText(_T("Last open timecodes path"));
+	wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),_T("All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"),wxOPEN | wxFILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVFR(filename);
+		Options.SetText(_T("Last open timecodes path"), filename);
 	}
 }
 

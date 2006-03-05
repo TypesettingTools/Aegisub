@@ -57,15 +57,17 @@ private:
 	size_t replaceLen;
 	bool Modified;
 	bool LastWasFind;
+	bool hasReplace;
 
 	wxString *GetText(int n,int field);
-
+	
 public:
 	SubtitlesGrid *grid;
 	bool isReg;
 	bool matchCase;
 	bool updateVideo;
 	bool CanContinue;
+	bool hasFocus;
 	int field;
 	int affect;
 	wxString LookFor;
@@ -79,6 +81,7 @@ public:
 	void OnDialogClose();
 
 	SearchReplaceEngine();
+	friend class DialogSearchReplace;
 };
 
 // Instance
@@ -103,11 +106,13 @@ private:
 	void OnFindNext (wxCommandEvent &event);
 	void OnReplaceNext (wxCommandEvent &event);
 	void OnReplaceAll (wxCommandEvent &event);
+	void OnSetFocus (wxFocusEvent &event);
+	void OnKillFocus (wxFocusEvent &event);
 	void UpdateDropDowns();
-
 public:
 	DialogSearchReplace(wxWindow *parent,bool hasReplace,wxString name);
 	~DialogSearchReplace();
+	void UpdateSettings();
 
 	DECLARE_EVENT_TABLE()
 };

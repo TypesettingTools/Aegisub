@@ -55,6 +55,8 @@
 #include "main.h"
 #include "frame_main.h"
 #include "utils.h"
+#include "dialog_search_replace.h"
+
 
 
 ///////////////
@@ -275,7 +277,11 @@ void SubsEditBox::SetToLine(int n) {
 
 	// Set video
 	if (video->loaded) {
-		if (Options.AsBool(_T("Sync video with subs")) == true) {
+		wxString sync;
+		if (Search.hasFocus) sync = _T("Find update video");
+		else sync = _T("Sync video with subs");
+		
+		if (Options.AsBool(sync) == true) {
 			video->Stop();
 			AssDialogue *cur = grid->GetDialogue(n);
 			if (cur) video->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));

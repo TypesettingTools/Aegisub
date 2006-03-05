@@ -45,7 +45,8 @@
 #include "options.h"
 #include "subs_edit_box.h"
 #include "video_display.h"
-
+#include "frame_main.h"
+#include "main.h"
 
 ///////////////
 // Constructor
@@ -79,7 +80,7 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 	CheckRegExp->SetValue(Options.AsBool(_T("Find RegExp")));
 	//CheckRegExp->Enable(false);
 	CheckUpdateVideo->SetValue(Options.AsBool(_T("Find Update Video")));
-	CheckUpdateVideo->Enable(Search.grid->video->loaded);
+//	CheckUpdateVideo->Enable(Search.grid->video->loaded);
 	OptionsSizer->Add(CheckMatchCase,0,wxBOTTOM,5);
 	OptionsSizer->Add(CheckRegExp,0,wxBOTTOM,5);
 	OptionsSizer->Add(CheckUpdateVideo,0,wxBOTTOM,0);
@@ -133,14 +134,23 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 // Destructor
 DialogSearchReplace::~DialogSearchReplace() {
 	// Save options
+	UpdateSettings();
+}
+
+
+/////////////////
+// Update search
+void DialogSearchReplace::UpdateSettings() {
+	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
+	Search.matchCase = CheckMatchCase->IsChecked();
+	Search.updateVideo = CheckUpdateVideo->IsChecked() && CheckUpdateVideo->IsEnabled();
 	Options.SetBool(_T("Find Match Case"),CheckMatchCase->IsChecked());
 	Options.SetBool(_T("Find RegExp"),CheckRegExp->IsChecked());
 	Options.SetBool(_T("Find Update Video"),CheckUpdateVideo->IsChecked());
 	Options.SetInt(_T("Find Field"),Field->GetSelection());
 	Options.SetInt(_T("Find Affect"),Affect->GetSelection());
 	Options.Save();
-}
-
+}	
 
 ///////////////
 // Event table
@@ -149,21 +159,17 @@ BEGIN_EVENT_TABLE(DialogSearchReplace,wxDialog)
 	EVT_BUTTON(BUTTON_FIND_NEXT,DialogSearchReplace::OnFindNext)
 	EVT_BUTTON(BUTTON_REPLACE_NEXT,DialogSearchReplace::OnReplaceNext)
 	EVT_BUTTON(BUTTON_REPLACE_ALL,DialogSearchReplace::OnReplaceAll)
+	EVT_SET_FOCUS(DialogSearchReplace::OnSetFocus)
+	EVT_KILL_FOCUS(DialogSearchReplace::OnKillFocus)
 END_EVENT_TABLE()
 
-
+	
 /////////
 // Close
 void DialogSearchReplace::OnClose (wxCommandEvent &event) {
-	// Update search
-	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
-	Search.matchCase = CheckMatchCase->IsChecked();
-	Search.updateVideo = CheckUpdateVideo->IsChecked() && CheckUpdateVideo->IsEnabled();
 	Search.OnDialogClose();
-
-	// Close
-	if (IsModal()) EndModal(0);
-	else Destroy();
+	// Just hide
+	Show(false);
 }
 
 
@@ -183,6 +189,12 @@ void DialogSearchReplace::OnFindNext (wxCommandEvent &event) {
 	Search.affect = Affect->GetSelection();
 	Search.field = Field->GetSelection();
 	Search.FindNext();
+	
+	if (hasReplace) {
+		wxString ReplaceWith = ReplaceEdit->GetValue();
+		Search.ReplaceWith = ReplaceWith;
+		Options.AddToRecentList(ReplaceWith,_T("Recent replace"));
+	}	
 
 	// Add to history
 	Options.AddToRecentList(LookFor,_T("Recent find"));
@@ -258,6 +270,15 @@ void DialogSearchReplace::UpdateDropDowns() {
 		ReplaceEdit->SetSelection(0);
 		ReplaceEdit->Thaw();
 	}
+}
+
+
+void DialogSearchReplace::OnSetFocus (wxFocusEvent &event) {
+	Search.hasFocus = true;
+}
+
+void DialogSearchReplace::OnKillFocus (wxFocusEvent &event) {
+	Search.hasFocus = false;
 }
 
 
@@ -500,11 +521,24 @@ void SearchReplaceEngine::OnDialogClose() {
 ///////////////
 // Open dialog
 void SearchReplaceEngine::OpenDialog (bool replace) {
-	DialogSearchReplace *diag;
-	if (replace) diag = new DialogSearchReplace(NULL,true,_("Replace"));
-	else diag = new DialogSearchReplace(NULL,false,_("Find"));
-	diag->ShowModal();
-	delete diag;
+	static DialogSearchReplace *diag = NULL;
+	wxString title = replace? _("Replace") : _("Find");
+
+	// already opened
+	if (diag) {
+		// it's the right type so give focus
+		if(replace == hasReplace) {
+			diag->Show();
+			diag->SetFocus(); // is needed?
+			return;
+		}
+		// wrong type - destroy and create the right one
+		diag->Destroy();
+	}
+	// create new one
+	diag = new DialogSearchReplace(((AegisubApp*)wxTheApp)->frame,replace,title);
+	diag->Show();
+	hasReplace = replace;
 }
 
 
