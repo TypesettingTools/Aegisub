@@ -174,6 +174,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Audio Display Height"),100);
 	SetInt(_T("Timing Default Duration"), 2000);
 	SetBool(_T("Audio Wheel Default To Zoom"),false);
+	SetBool(_T("Audio lock scroll on cursor"),false);
 	
 	SetBool(_T("Audio Spectrum"),false);
 	SetInt(_T("Audio Spectrum Cutoff"),32);

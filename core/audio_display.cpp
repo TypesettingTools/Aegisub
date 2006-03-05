@@ -1479,19 +1479,42 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 		if (curPos > player->GetStartPosition() && curPos < player->GetEndPosition()) {
 			// Scroll if needed
 			int posX = GetXAtSample(curPos);
-			if (posX > w-80) {
-				UpdatePosition(curPos - samples/2 - 80,true);
-				UpdateImage();
-				Refresh(true);
+			bool fullDraw = false;
+			bool centerLock = Options.AsBool(_T("Audio lock scroll on cursor"));
+			if (centerLock) {
+				int goTo = MAX(0,curPos - w*samples/2);
+				if (goTo >= 0) {
+					UpdatePosition(goTo,true);
+					UpdateImage();
+					fullDraw = true;
+				}
+			}
+			else {
+				if (posX < 80 || posX > w-80) {
+					int goTo = MAX(0,curPos - 80*samples);
+					if (goTo >= 0) {
+						UpdatePosition(goTo,true);
+						UpdateImage();
+						fullDraw = true;
+					}
+				}
 			}
 
 			// Draw cursor
 			wxMemoryDC src;
-			src.SelectObject(*origImage);
-			dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
-			dc.SetPen(wxPen(Options.AsColour(_T("Audio Play cursor"))));
 			curpos = GetXAtSample(curPos);
-			dc.DrawLine(curpos,0,curpos,h);
+			dc.SetPen(wxPen(Options.AsColour(_T("Audio Play cursor"))));
+			src.SelectObject(*origImage);
+			if (fullDraw) {
+				//dc.Blit(0,0,w,h,&src,0,0);
+				dc.DrawLine(curpos,0,curpos,h);
+				//dc.Blit(0,0,curpos-10,h,&src,0,0);
+				//dc.Blit(curpos+10,0,w-curpos-10,h,&src,curpos+10,0);
+			}
+			else {
+				dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
+				dc.DrawLine(curpos,0,curpos,h);
+			}
 		}
 		else {
 			if (curPos > player->GetEndPosition() + 8192) {
