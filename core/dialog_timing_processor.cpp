@@ -429,7 +429,12 @@ void DialogTimingProcessor::Process() {
 		int curStart,prevEnd;
 		long adjsThres = 0;
 		int dist;
+
+		// Get threshold
 		adjascentThres->GetValue().ToLong(&adjsThres);
+
+		// Get bias
+		float bias = Options.AsFloat(_T("Timing processor adjascent bias"));
 
 		// For each row
 		for (int i=0;i<rows;i++) {
@@ -450,9 +455,10 @@ void DialogTimingProcessor::Process() {
 			prevEnd = prev->End.GetMS();
 			dist = curStart-prevEnd;
 			if (dist > 0 && dist < adjsThres) {
-				cur->Start.SetMS(curStart-dist/2);
+				int setPos = prevEnd+int(dist*bias);
+				cur->Start.SetMS(setPos);
 				cur->UpdateData();
-				prev->End.SetMS(curStart-dist/2);
+				prev->End.SetMS(setPos);
 				prev->UpdateData();
 			}
 

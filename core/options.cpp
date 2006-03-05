@@ -190,6 +190,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Timing processor Enable lead-out"),true);
 	SetBool(_T("Timing processor Enable keyframe"),true);
 	SetBool(_T("Timing processor Enable adjascent"),true);
+	SetFloat(_T("Timing processor adjascent bias"),1.0);
 
 	SetColour(_T("Audio Selection Background Modified"),wxColour(92,0,0));
 	SetColour(_T("Audio Selection Background"),wxColour(64,64,64));

@@ -1,7 +1,7 @@
 Aegisub changelog
 Please visit http://aegisub.net to download latest version
 
-= 1.10 beta - 2006.02.xx ===========================
+= 1.10 beta - 2006.03.xx ===========================
 
 - Always defaults to Audio Cache=1 (ram) now (Myrsloik)
 - Automation: Added xor(a,b) boolean logical function to utils.lua (jfs)
@@ -54,6 +54,7 @@ Please visit http://aegisub.net to download latest version
 - Attempting to load a file which does not exist no longer unloads previous subtitles. (AMZ)
 - Dragging timecode files into the Aegisub window will now work as expected (instead of attempting to load it as subtitles). (AMZ)
 - Added option ("keep raw dialogue data", default false) that makes Aegisub use less RAM at a small performance cost when set to false. (AMZ)
+- The line timing extending in timing post-processor is now governed by the "timing processor adjascent bias" option (1.0 [default] = move end, 0.0 = move start, 0.5 = move to halfway point, etc) (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
