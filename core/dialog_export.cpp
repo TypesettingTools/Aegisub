@@ -232,7 +232,7 @@ void DialogExport::OnChange(wxCommandEvent &event) {
 // Move up
 void DialogExport::OnMoveUp(wxCommandEvent &event) {
 	int pos = FilterList->GetSelection();
-	if (pos == 0) return;
+	if (pos <= 0) return;
 	FilterList->Freeze();
 	wxString tempname = FilterList->GetString(pos);
 	bool tempval = FilterList->IsChecked(pos);
@@ -250,7 +250,7 @@ void DialogExport::OnMoveUp(wxCommandEvent &event) {
 void DialogExport::OnMoveDown(wxCommandEvent &event) {
 	int pos = FilterList->GetSelection();
 	int n = FilterList->GetCount();
-	if (pos == n-1) return;
+	if (pos == n-1 || pos == -1) return;
 	FilterList->Freeze();
 	wxString tempname = FilterList->GetString(pos);
 	bool tempval = FilterList->IsChecked(pos);

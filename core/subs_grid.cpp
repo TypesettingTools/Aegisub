@@ -959,8 +959,8 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 		// Shift to next frame
 		if (nextFrame) {
 			int posFrame = VFR_Output.GetFrameAtTime(cur->End.GetMS(),false) + 1;
-			cur->Start.SetMS(VFR_Output.GetFrameAtTime(posFrame,true));
-			cur->End.SetMS(VFR_Output.GetFrameAtTime(posFrame,false));
+			cur->Start.SetMS(VFR_Output.GetTimeAtFrame(posFrame,true));
+			cur->End.SetMS(VFR_Output.GetTimeAtFrame(posFrame,false));
 			cur->UpdateData();
 		}
 
