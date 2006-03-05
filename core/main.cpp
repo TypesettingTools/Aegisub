@@ -339,6 +339,7 @@ void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
 ///////////////
 // Key pressed
 void AegisubApp::OnKey(wxKeyEvent &event) {
+	//frame->audioBox->audioDisplay->AddPendingEvent(event);
 	if (!event.GetSkipped()) {
 		event.Skip();
 	}

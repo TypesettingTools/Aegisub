@@ -50,6 +50,7 @@
 #include "frame_main.h"
 #include "video_display.h"
 #include "video_slider.h"
+#include "audio_display.h"
 
 
 ///////////////
@@ -1006,10 +1007,15 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 			}
 
 			MakeCellVisible(extendRow,0,false);
+			return;
 		}
 	}
 
-	event.Skip();
+	// Other events, send to audio display
+	if (video->audio->loaded) {
+		video->audio->AddPendingEvent(event);
+	}
+	else event.Skip();
 }
 
 
