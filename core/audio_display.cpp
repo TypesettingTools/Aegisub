@@ -1183,12 +1183,9 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		dc.EndDrawing();
 	}
 
-	// Left click
-	if (event.ButtonDown(wxMOUSE_BTN_LEFT)) {
-		//if (wxWindow::FindFocus() != this) {
-			SetFocus();
-			//return;
-		//}
+	// Left/middle click
+	if (event.ButtonDown(wxMOUSE_BTN_LEFT) || event.Button(wxMOUSE_BTN_MIDDLE)) {
+		SetFocus();
 	}
 
 	// Right click

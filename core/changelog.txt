@@ -56,6 +56,7 @@ Please visit http://aegisub.net to download latest version
 - Dragging timecode files into the Aegisub window will now work as expected (instead of attempting to load it as subtitles). (AMZ)
 - Added option ("keep raw dialogue data", default false) that makes Aegisub use less RAM at a small performance cost when set to false. (AMZ)
 - The line timing extending in timing post-processor is now governed by the "timing processor adjascent bias" option (1.0 [default] = move end, 0.0 = move start, 0.5 = move to halfway point, etc) (AMZ)
+- Middle clicking the video seek bar and audio display will now focus them. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

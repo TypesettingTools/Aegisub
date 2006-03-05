@@ -228,10 +228,9 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		SetFocus();
 	}
 
-	// Right click
-	if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
-		if (wxWindow::FindFocus() != this) SetFocus();
-		else event.Skip();
+	// Right/middle click
+	if (event.ButtonDown(wxMOUSE_BTN_RIGHT) || event.ButtonDown(wxMOUSE_BTN_MIDDLE)) {
+		SetFocus();
 	}
 
 	// Something else
