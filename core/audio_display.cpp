@@ -86,7 +86,8 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 
 	// Init
 	UpdateTimer.SetOwner(this,Audio_Update_Timer);
-	GetVirtualSize(&w,&h);
+	GetClientSize(&w,&h);
+	h -= 20;
 	SetSamplesPercent(50,false);
 
 	// Set cursor
@@ -128,8 +129,9 @@ void AudioDisplay::Reset() {
 // Update image
 void AudioDisplay::UpdateImage(bool weak) {
 	// Prepare bitmap
+	int displayH = h+20;
 	if (origImage) {
-		if (origImage->GetWidth() != w || origImage->GetHeight() != h) {
+		if (origImage->GetWidth() != w || origImage->GetHeight() != displayH) {
 			delete origImage;
 			origImage = NULL;
 		}
@@ -139,10 +141,10 @@ void AudioDisplay::UpdateImage(bool weak) {
 	bool draw_selection_background = Options.AsBool(_T("Audio Draw Selection Background"));
 
 	// Invalid dimensions
-	if (w == 0 || h == 0) return;
+	if (w == 0 || displayH == 0) return;
 
 	// New bitmap
-	if (!origImage) origImage = new wxBitmap(w,h,-1);
+	if (!origImage) origImage = new wxBitmap(w,displayH,-1);
 
 	// Is spectrum?
 	bool spectrum = false;
@@ -363,6 +365,63 @@ void AudioDisplay::UpdateImage(bool weak) {
 		dc.SetPen(*wxGREEN_PEN);
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
 		dc.DrawRectangle(0,0,w,h);
+	}
+
+	// Draw timescale
+	dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+	dc.SetPen(*wxTRANSPARENT_PEN);
+	dc.DrawRectangle(0,h,w,20);
+	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT));
+	dc.DrawLine(0,h,w,h);
+	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
+	dc.DrawLine(0,h+1,w,h+1);
+	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+	dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+	wxFont scaleFont;
+	scaleFont.SetFaceName(_T("Tahoma"));
+	scaleFont.SetPointSize(8);
+	dc.SetFont(scaleFont);
+
+	// Timescale ticks
+	__int64 start = Position*samples;
+	int rate = provider->GetSampleRate();
+	for (int i=1;i<32;i*=2) {
+		int pixBounds = rate / (samples * 4 / i);
+		if (pixBounds >= 8) {
+			for (int x=0;x<w;x++) {
+				__int64 pos = (x*samples)+start;
+				// Second boundary
+				if (pos % rate < samples) {
+					dc.DrawLine(x,h+2,x,h+8);
+
+					// Draw text
+					wxCoord textW,textH;
+					int hr = 0;
+					int m = 0;
+					int s = pos/rate;
+					while (s >= 3600) {
+						s -= 3600;
+						hr++;
+					}
+					while (s >= 60) {
+						s -= 60;
+						m++;
+					}
+					wxString text;
+					if (hr) text = wxString::Format(_T("%i:%02i:%02i"),hr,m,s);
+					else if (m) text = wxString::Format(_T("%i:%02i"),m,s);
+					else text = wxString::Format(_T("%i"),s);
+					dc.GetTextExtent(text,&textW,&textH,NULL,NULL,&scaleFont);
+					dc.DrawText(text,MAX(0,x-textW/2)+1,h+8);
+				}
+
+				// Other
+				else if (pos % (rate / 4 * i) < samples) {
+					dc.DrawLine(x,h+2,x,h+5);
+				}
+			}
+			break;
+		}
 	}
 
 	// Done
@@ -1183,6 +1242,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		dc.EndDrawing();
 	}
 
+	if (!inside) return;
+
 	// Left/middle click
 	if (event.ButtonDown(wxMOUSE_BTN_LEFT) || event.Button(wxMOUSE_BTN_MIDDLE)) {
 		SetFocus();
@@ -1443,10 +1504,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 // Size event
 void AudioDisplay::OnSize(wxSizeEvent &event) {
 	// Set size
-	//GetVirtualSize(&w,&h);
 	GetClientSize(&w,&h);
-	//w = event.GetSize().GetWidth();
-	//h = event.GetSize().GetHeight();
+	h -= 20;
 
 	// Update image
 	UpdateImage();
