@@ -259,6 +259,8 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	Options.Save();
 
 	// End dialog
+	grid->ass->FlagAsModified();
+	grid->CommitChanges();
 	grid->UpdateMaps();
 	EndModal(0);
 }
