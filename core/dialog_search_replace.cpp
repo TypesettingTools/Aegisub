@@ -305,6 +305,17 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		OpenDialog(DoReplace);
 		return;
 	}
+	
+	wxArrayInt sels = grid->GetSelection();
+	// if selection has changed reset values
+	if (sels[0] < curLine) {
+		curLine = sels[0];
+		Modified = false;
+		LastWasFind = true;
+		pos = 0;
+		matchLen = 0;
+		replaceLen = 0;
+	}
 
 	// Setup
 	int start = curLine;
@@ -480,8 +491,7 @@ void SearchReplaceEngine::ReplaceAll() {
 	// Commit
 	if (count > 0) {
 		grid->ass->FlagAsModified();
-		if (updateVideo) grid->CommitChanges();
-		else Modified = true;
+		grid->CommitChanges();
 		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
 	}
 
@@ -529,7 +539,8 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 		// it's the right type so give focus
 		if(replace == hasReplace) {
 			diag->Show();
-			diag->SetFocus(); // is needed?
+			diag->SetFocus();
+			OnDialogOpen();
 			return;
 		}
 		// wrong type - destroy and create the right one
