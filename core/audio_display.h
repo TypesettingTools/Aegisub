@@ -79,6 +79,7 @@ private:
 	bool hasKaraoke;
 	bool diagUpdated;
 	bool holding;
+	bool draggingScale;
 	__int64 selStart;
 	__int64 selEnd;
 	__int64 lineStart;
@@ -87,6 +88,7 @@ private:
 	__int64 selEndCap;
 	int hold;
 	int lastX;
+	int lastDragX;
 	int curStartMS;
 	int curEndMS;
 	int holdSyl;

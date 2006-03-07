@@ -74,6 +74,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 	blockUpdate = false;
 	dontReadTimes = false;
 	holding = false;
+	draggingScale = false;
 	Position = 0;
 	PositionSample = 0;
 	oldCurPos = 0;
@@ -1154,11 +1155,15 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 	// Is inside?
 	bool inside = false;
-	if (x >= 0 && y >= 0 && x < w && y < h) {
-		inside = true;
+	bool onScale = false;
+	if (x >= 0 && y >= 0 && x < w) {
+		if (y < h) {
+			inside = true;
 
-		// Get focus
-		if (wxWindow::FindFocus() != this && Options.AsBool(_T("Audio Autofocus"))) SetFocus();
+			// Get focus
+			if (wxWindow::FindFocus() != this && Options.AsBool(_T("Audio Autofocus"))) SetFocus();
+		}
+		else if (y < h+20) onScale = true;
 	}
 
 	// Click type
@@ -1242,6 +1247,23 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		dc.EndDrawing();
 	}
 
+	// Scale dragging
+	if (onScale || draggingScale) {
+		if (event.ButtonDown(wxMOUSE_BTN_LEFT)) {
+			lastDragX = x;
+			draggingScale = true;
+		}
+		else if (holding) {
+			int delta = lastDragX - x;
+			lastDragX = x;
+			UpdatePosition(Position + delta);
+			UpdateImage();
+			Refresh(false);
+		}
+		else draggingScale = false;
+	}
+
+	// Outside
 	if (!inside) return;
 
 	// Left/middle click
