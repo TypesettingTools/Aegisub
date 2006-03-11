@@ -91,6 +91,7 @@ private:
 	void OnSetVideoToStart(wxCommandEvent &event);
 	void OnSetVideoToEnd(wxCommandEvent &event);
 	void OnJoinAsKaraoke(wxCommandEvent &event);
+	void OnSplitByKaraoke(wxCommandEvent &event);
 	void On1122Recombine(wxCommandEvent &event);
 	void On122Recombine(wxCommandEvent &event);
 	void On112Recombine(wxCommandEvent &event);
@@ -112,6 +113,7 @@ public:
 	void JoinAsKaraoke(int first,int last);
 	void AdjoinLines(int first,int last,bool setStart);
 	void SplitLine(int lineNumber,int splitPosition,int mode);
+	void SplitLineByKaraoke(int lineNumber);
 	void DuplicateLines(int first,int last,bool nextFrame=false);
 
 	void SwapLines(int line1,int line2);
@@ -139,6 +141,7 @@ enum {
 	MENU_SWAP,
 	MENU_DUPLICATE,
 	MENU_DUPLICATE_NEXT_FRAME,
+	MENU_SPLIT_BY_KARAOKE,
 	MENU_COPY,
 	MENU_PASTE,
 	MENU_CUT,

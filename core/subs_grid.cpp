@@ -51,6 +51,7 @@
 #include "frame_main.h"
 #include "hotkeys.h"
 #include "utils.h"
+#include "ass_override.h"
 
 
 ///////////////
@@ -77,6 +78,7 @@ BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_MENU(MENU_SET_VIDEO_TO_START,SubtitlesGrid::OnSetVideoToStart)
 	EVT_MENU(MENU_SET_VIDEO_TO_END,SubtitlesGrid::OnSetVideoToEnd)
 	EVT_MENU(MENU_JOIN_AS_KARAOKE,SubtitlesGrid::OnJoinAsKaraoke)
+	EVT_MENU(MENU_SPLIT_BY_KARAOKE,SubtitlesGrid::OnSplitByKaraoke)
 	EVT_MENU(MENU_1_12_2_RECOMBINE,SubtitlesGrid::On1122Recombine)
 	EVT_MENU(MENU_12_2_RECOMBINE,SubtitlesGrid::On122Recombine)
 	EVT_MENU(MENU_1_12_RECOMBINE,SubtitlesGrid::On112Recombine)
@@ -136,6 +138,7 @@ void SubtitlesGrid::OnPopupMenu() {
 		// Duplicate selection
 		menu.Append(MENU_DUPLICATE,_("&Duplicate"),_T("Duplicate the selected lines"))->Enable(continuous);
 		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_T("Duplicate lines and shift by one frame"))->Enable(continuous && VFR_Output.IsLoaded());
+		menu.Append(MENU_SPLIT_BY_KARAOKE,_("Split (by karaoke)"),_T("Uses karaoke timing to split line into multiple smaller lines"))->Enable(sels > 0);
 
 		// Swaps selection
 		state = (sels == 2);
@@ -315,6 +318,18 @@ void SubtitlesGrid::OnAdjoin2 (wxCommandEvent &event) {
 void SubtitlesGrid::OnJoinAsKaraoke (wxCommandEvent &event) {
 	wxArrayInt sels = GetSelection();
 	JoinAsKaraoke(sels.front(),sels.back());
+}
+
+
+/////////////////////////
+// Call split by karaoke
+void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &event) {
+	wxArrayInt sels = GetSelection();
+	for (int i = sels.size()-1; i >= 0; i--) {
+		SplitLineByKaraoke(sels[i]);
+	}
+	ass->FlagAsModified();
+	CommitChanges();
 }
 
 
@@ -1053,6 +1068,99 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 	// Commit
 	ass->FlagAsModified();
 	CommitChanges();
+}
+
+
+//////////////////
+// Split line by karaoke
+// ---------------------
+// Splits the line into as many new lines as there are karaoke syllables,
+// timed as the syllables.
+// DOES NOT FLAG AS MODIFIED OR COMMIT CHANGES
+void SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
+	AssDialogue *line = GetDialogue(lineNumber);
+	line->ParseASSTags();
+
+	AssDialogue *nl = new AssDialogue(line->GetEntryData());
+	nl->Text = _T("");
+	nl->End = nl->Start;
+	nl->UpdateData();
+	int kcount = 0;
+	int start_time = line->Start.GetMS();
+
+	// copying lost of code from automation.cpp here
+	// maybe it should be refactored, since a similar proc is also needed in audio_karaoke ?
+	for (std::vector<AssDialogueBlock*>::iterator block = line->Blocks.begin(); block != line->Blocks.end(); block++) {
+		switch ((*block)->type) {
+			case BLOCK_BASE:
+				throw wxString(_T("BLOCK_BASE found processing dialogue blocks. This should never happen."));
+
+			case BLOCK_PLAIN:
+				nl->Text += (*block)->text;
+				break;
+
+			case BLOCK_DRAWING:
+				nl->Text += (*block)->text;
+				break;
+
+			case BLOCK_OVERRIDE: {
+				bool brackets_open = false;
+				std::vector<AssOverrideTag*> &tags = (*block)->GetAsOverride(*block)->Tags;
+
+				for (std::vector<AssOverrideTag*>::iterator tag = tags.begin(); tag != tags.end(); tag++) {
+					if (!(*tag)->Name.Mid(0,2).CmpNoCase(_T("\\k")) && (*tag)->IsValid()) {
+						// it's a karaoke tag
+						if (brackets_open) {
+							nl->Text += _T("}");
+							brackets_open = false;
+						}
+						if (nl->Text == _T("")) {
+							// don't create blank lines
+							delete nl;
+						} else {
+							InsertLine(nl, lineNumber+kcount, true, false);
+							kcount++;
+						}
+						nl = new AssDialogue(line->GetEntryData());
+						nl->Text = _T("");
+						nl->Start.SetMS(start_time);
+						nl->End.SetMS(start_time + (*tag)->Params[0]->AsInt()*10);
+						nl->UpdateData();
+						start_time = nl->End.GetMS();;
+					} else {
+						if (!brackets_open) {
+							nl->Text += _T("{");
+							brackets_open = true;
+						}
+						nl->Text += (*tag)->ToString();
+					}
+				}
+
+				if (brackets_open) {
+					nl->Text += _T("}");
+				}
+
+				break;}
+
+		}
+	}
+
+	if (nl->Text == _T("")) {
+		// don't create blank lines
+		delete nl;
+	} else {
+		InsertLine(nl, lineNumber+kcount, true, false);
+		kcount++;
+	}
+
+	// POSSIBLE BUG! If the above code throws an exception, the blocks are never cleared!!
+	line->ClearBlocks();
+
+	{
+		wxArrayInt oia;
+		oia.Add(lineNumber);
+		DeleteLines(oia);
+	}
 }
 
 
