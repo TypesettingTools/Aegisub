@@ -49,6 +49,8 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfi
 	SubtitledVideo = NULL;
 	ResizedVideo = NULL;
 	data = NULL;
+
+	depth = 0;
 	
 	last_fnum = -1;
 
@@ -63,10 +65,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfi
 
 	if( _subfilename.IsEmpty() ) SubtitledVideo = RGB32Video;
 	else SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
-/*
-	if( _zoom == 1.0 ) ResizedVideo = SubtitledVideo;
-	else ResizedVideo = ApplyDARZoom(zoom, dar, SubtitledVideo);
-*/
+
 	ResizedVideo = ApplyDARZoom(zoom, dar, SubtitledVideo);
 
 	vi = ResizedVideo->GetVideoInfo();
@@ -219,22 +218,55 @@ wxBitmap AvisynthVideoProvider::GetFrame(int n, bool force) {
 
 		PVideoFrame frame = ResizedVideo->GetFrame(n,env);
 
-		//will fail if not rgb32
-		if (!data)
-			data = new unsigned char[vi.width*vi.height*vi.BitsPerPixel()/8];
+		int ndepth = wxDisplayDepth();
 
-		unsigned char* dst = data+(vi.width*(vi.height-1)*vi.BitsPerPixel()/8);
-		int rs = vi.RowSize();
-		const unsigned char* src = frame->GetReadPtr();
-		int srcpitch = frame->GetPitch();
-
-		for (int i = 0; i < vi.height; i++) {
-			memcpy(dst,src,rs);
-			src+=srcpitch;
-			dst-=rs;
+		if (depth != ndepth) {
+			depth = ndepth;
+			delete data;
+			data = NULL;
 		}
 
-		last_frame = wxBitmap((const char*)data, vi.width, vi.height, vi.BitsPerPixel());
+		if (!data)
+			data = new unsigned char[vi.width*vi.height*depth/8];
+
+		unsigned char* dst = data+(vi.width*(vi.height-1)*depth/8);
+
+		if (depth == 32) {
+			int rs = vi.RowSize();
+			const unsigned char* src = frame->GetReadPtr();
+			int srcpitch = frame->GetPitch();
+
+			for (int y = 0; y < vi.height; y++) {
+				memcpy(dst,src,rs);
+				src+=srcpitch;
+				dst-=rs;
+			}
+		} else if (depth == 24) {
+			//fail
+		} else if (depth == 16) {
+			const unsigned char *read_ptr = frame->GetReadPtr();
+			unsigned short *write_ptr = (unsigned short*) dst;
+			unsigned char r,g,b;
+			int srcpitch = frame->GetPitch();
+			int rs = vi.RowSize();
+
+			for (int y = 0; y < vi.height; y++) {
+
+				for (int x=0,dx=0;x<rs;x+=4,dx++) {
+					r = read_ptr[x+2];
+					g = read_ptr[x+1];
+					b = read_ptr[x];
+					write_ptr[dx] = ((r>>3)<<11) | ((g>>2)<<5) | b>>3;
+				}
+
+				write_ptr -= vi.width;
+				read_ptr += srcpitch;
+			}
+		} else {
+			//fail
+		}
+
+		last_frame = wxBitmap((const char*)data, vi.width, vi.height, depth);
 		last_fnum = n;
 	}
 

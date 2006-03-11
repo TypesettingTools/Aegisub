@@ -66,6 +66,8 @@ private:
 
 	int last_fnum;
 
+	int depth;
+
 	unsigned char* data;
 	wxBitmap last_frame;
 
