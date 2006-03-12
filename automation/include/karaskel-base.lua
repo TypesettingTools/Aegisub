@@ -80,7 +80,7 @@ function karaskel.precalc_syllable_data(meta, styles, lines)
 		meta.res_y = 288
 	elseif meta.res_x == 0 then
 		-- This is braindead, but it's how TextSub does things...
-		if meta.res_x == 1024 then
+		if meta.res_y == 1024 then
 			meta.res_x = 1280
 		else
 			meta.res_x = meta.res_y / 3 * 4
@@ -154,21 +154,27 @@ function karaskel.precalc_syllable_data(meta, styles, lines)
 				syl.inline_fx = inline_fx
 				-- Do positioning calculations, if applicable
 				sumtext = sumtext .. syl.text_stripped
+				karaskel.trace("new sumtext = " .. sumtext)
 				if karaskel.engage_positioning then
 					-- Summed text dimensions
 					local sumwidth = aegisub.text_extents(style, sumtext)
+					karaskel.trace("sumwidth = " .. sumwidth)
 					-- Strip some spaces
-					local tmp1, tmp2, prespc, syltxt, postspc = string.find(syl.text_stripped, "^(%s*)(.-)(%s*)$")
+					local tmp1, tmp2, prespc, syltxt, postspc = string.find(syl.text_stripped, "^([ \t]*)(.-)([ \t]*)$")
 					-- Pre/post space dimensions
 					local prespc_width = aegisub.text_extents(style, prespc)
 					local postspc_width = aegisub.text_extents(style, postspc)
+					karaskel.trace("space capture lengths = " .. string.len(prespc) .. ", " .. string.len(syltxt) .. ", " .. string.len(postspc))
+					karaskel.trace("space widths = " .. prespc_width .. ", " .. postspc_width)
 					-- Syllable dimensions
 					syl.width, syl.height, syl.ascent, syl.extlead = aegisub.text_extents(style, syltxt)
+					karaskel.trace("syllable text, width = " .. syltxt .. ", " .. syl.width)
 					karaskel.trace("precalc_syllable_data:8::")
 					-- Syllable positioning
 					syl.right = sumwidth - postspc_width
 					syl.left = sumwidth - syl.width + prespc_width
 					syl.center = math.floor(syl.left + (syl.right - syl.left) / 2)
+					karaskel.trace("syllable left, center, right = " .. syl.left .. ", " .. syl.center .. ", " .. syl.right)
 					if syl.furigana then
 						karaskel.calc_furigana_sizes(line, syl)
 					end

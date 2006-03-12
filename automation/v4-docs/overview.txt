@@ -1,0 +1,176 @@
+Aegisub Automation documentation
+Version 4
+Copyright 2005-2006 Niels Martin Hansen
+THIS IS A DRAFT. SUBJECT TO CHANGE.
+Last updated: 2006-02-01 04:17 UTC+1
+
+---
+
+This document describes version 4 of the automation system used in Aegisub.
+The automation system uses the Lua language for scripting engine.
+See <http://www.lua.org/> for more information.
+
+---
+
+Overview
+
+Aegisub Automation is a scripting environment that allows you to automate
+almost any task working with subtitles in Aegisub, ie. a macro environment.
+
+Automation allows you to:
+ - Create macros (adding extra menu items to the main menu)
+    o Those macros can optionally also display dialog boxes to the user
+    o Allows adding new features to Aegisub without recompiling the entire
+      program!
+ - Write export filters
+    o This is what Automation 3 did, but with more options
+    o Useful for adding complicated special effects to a script
+ - Write file-format importers and exporters
+    o Load every strange subtitle format you come by
+    o Save in those formats as well
+    o Exporters write directly to a file stream, allowing you to generate
+      those huge karaoke effects much faster!
+
+---
+
+Scripts, files functions
+
+An automation script is a Lua script following certain conventions described
+in this document. A script consists of one or more files, with one of them
+being the master script, and the others being include files.
+
+Every script runs in a separate Lua interpreter, so separate scripts cannot
+communicate directly with each other. Scripts can share code by having common
+include files.
+
+Files containing Automation scripts must in UTF-8 encoding, with or without
+BOM (Byte Order Mark). Compiled Lua scripts should also work, as long as all
+strings are UTF-8 encoded, but this is untested and unsupported.
+
+Automation scripts implement one or more of four possible features. A feature
+is implemented by filling a specially named global table with certain values.
+See below for a discussion about the various features and how they differ.
+
+---
+
+Scriptable features
+
+The following four features can be implemented by an Automation script:
+
+ - Macro
+   A macro is presented as a new menu item in the Automation menu on the menu
+   bar in Aegisub. When the user select the menu item, a function in the
+   Automation script is called to do processing. Features are present to allow
+   direct interaction with the subtitle data.
+
+   The macro can create and display dialog windows to the user.
+
+   For preformance-reasons, there is currently no provision for the script to
+   enable/disable its menu item based on eg. the selection in the Aegisub
+   subtitles grid.
+
+ - Export filter
+   An export filter is presented as a filter in the Export dialog accessed
+   from the File menu. The export filter is called when the user uses the
+   Export feature. The export filter is given access every line (including
+   Styles and Script Info lines) in the subtitle file, and can add/modify/
+   remove lines in those.
+
+   The export filter can specify a static configuration dialog presented to
+   the user in the Export UI.
+
+   The export filter can specify a function that's run after the user selects
+   the Export item on the File menu, but before the Export dialog is actually
+   displayed. This function will be given access to the subtitles currently
+   loaded. This is to feature customising the configuration dialog based on
+   the contents of the subtitles.
+   It is strongly discouraged to change anything but a single, private Script
+   Info header line in the subtitles handed to this initialisation function.
+
+ - File format reader
+   It is not yet decided how the file format reader is accessed.
+
+   Current ideas:
+    o It provides two functions, one to test whether it can handle a given
+      file and one to actually convert that file to ASS. Which import filter
+      to use is decided by Aegisub, based on the result of the first function.
+    o The user selects an import filter and a file. The import filter is
+      applied to the selected file.
+
+   The file format reader can present dialog windows to the user.
+
+   The file format reader is given access to the raw file stream.
+
+ - File format writer
+   The file format writer is selected in the Export dialog access from the
+   File menu. The file format writer is handed all the lines of the subtitles
+   file and a file stream to write to.
+
+   The file format writer can report itself as writing a binary format or a
+   text format. In the case of a text format, all output is passed through the
+   character set conversion routines in Aegisub.
+
+   The file format writer can present dialog windows to the user.
+
+Every feature is given access to the following in addition to what's described
+above:
+
+ - Displaying/hiding/updating a progress bar.
+ - Outputting messages to the user.
+ - Accessing framerate data
+ - (Not fully decided yet) Raw video frame data (RGB and/or YUV)
+ - (Not fully decided yet) Raw and FFT transformed wave data
+ - (Not fully decided yet) Utilising FexTracker functions
+ - Calculating the rendered size of a text string, given a style definition
+
+---
+
+Script registration
+
+Scripts can be loaded in two ways, through autoload or by assigning them to
+a subtitle file.
+
+Autoloading of scripts happens by placing the master script file into the
+"automation/autoload" directory under the Aegisub installation directory.
+
+Assining scripts to a subtitle file is done through the Automation Manager
+GUI. Scripts assigned to a subtitle file are stored in the ASS Script Info
+line "Automation Scripts", using a pipe character as separator between the
+master script filenames.
+
+The automatic loading/storing of configuration options from Automation 3 has
+been removed, but can still be implemented in an Export Filter feature using
+the initialisation function.
+
+---
+
+Actual documentation for functions, data structures and other interfaces is
+yet to be written.
+
+---
+
+
+Versions of the scripting interface
+
+Here's a quick history of the scripting interface:
+
+Version 1
+  Using Lua as engine.
+  The scripts used in the Karaoke Effector application, avaible at:
+  <http://www.jiifurusu.dk/files/programming/effector/> (currently down)
+
+Version 2
+  Using Python as engine.
+  The first draft for an Aegisub automation engine.
+  Never implemented.
+
+Version 3
+  Using Lua as engine.
+  Aegisub 1.10 was the last version to use Automation 3.
+  (Tentative release date only!)
+
+Version 4
+  Using Lua as engine
+  Present in Aegisub 1.11 and later (tentative!)
+  Heavily expanded feature set, allowing a much wider range of modifications,
+  and more direct integration into the Aegisub user interface.
