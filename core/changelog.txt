@@ -67,6 +67,7 @@ Please visit http://aegisub.net to download latest version
 - Timeline is now drawn below audio display. (AMZ)
 - Dragging the timeline will now scroll audio display. (AMZ)
 - Fixed bug which caused extra newlines to be added at the end of file. (AMZ)
+- Added a horizontal scrollbar to shift times history. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

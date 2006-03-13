@@ -104,7 +104,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid,VideoD
 
 	// History
 	wxSizer *HistorySizer = new wxStaticBoxSizer(wxVERTICAL,this,_("History"));
-	History = new wxListBox(this,-1,wxDefaultPosition,wxSize(350,100), 0, NULL, 0);
+	History = new wxListBox(this,-1,wxDefaultPosition,wxSize(350,100), 0, NULL, wxLB_HSCROLL);
 	HistorySizer->Add(History,1,wxEXPAND,0);
 
 	// Buttons
