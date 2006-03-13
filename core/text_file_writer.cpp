@@ -101,13 +101,13 @@ void TextFileWriter::Close() {
 
 /////////////////
 // Write to file
-void TextFileWriter::WriteLineToFile(wxString line) {
+void TextFileWriter::WriteLineToFile(wxString line,bool addLineBreak) {
 	// Make sure it's loaded
 	if (!open) Open();
 
 	// Add line break
 	wxString temp = line;
-	temp += _T("\r\n");
+	if (addLineBreak) temp += _T("\r\n");
 
 	// Add BOM if it's the first line and the target format is Unicode
 	if (IsFirst && IsUnicode) {

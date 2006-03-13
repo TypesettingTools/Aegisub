@@ -65,7 +65,7 @@ public:
 	TextFileWriter(wxString filename,wxString encoding=_T(""));
 	~TextFileWriter();
 
-	void WriteLineToFile(wxString line);
+	void WriteLineToFile(wxString line,bool addLineBreak=true);
 };
 
 

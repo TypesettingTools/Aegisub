@@ -66,6 +66,7 @@ Please visit http://aegisub.net to download latest version
 - Removed video frame/subtitles time sync controls from the grid context menu. (AMZ)
 - Timeline is now drawn below audio display. (AMZ)
 - Dragging the timeline will now scroll audio display. (AMZ)
+- Fixed bug which caused extra newlines to be added at the end of file. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

@@ -110,8 +110,17 @@ void ASSSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 
 	// Write lines
 	using std::list;
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		if (ssa) file.WriteLineToFile((*cur)->GetSSAText());
-		else file.WriteLineToFile((*cur)->GetEntryData());
+	AssEntry *entry;
+	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();) {
+		// Get entry
+		entry = *cur;
+
+		// Only add a line break if there is a next line
+		cur++;
+		bool lineBreak = cur != Line->end();
+
+		// Write line
+		if (ssa) file.WriteLineToFile(entry->GetSSAText(),lineBreak);
+		else file.WriteLineToFile(entry->GetEntryData(),lineBreak);
 	}
 }
