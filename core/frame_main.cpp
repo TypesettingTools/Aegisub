@@ -563,15 +563,23 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	// Failed, ask user
 	if (filename.IsEmpty()) {
 		videoBox->videoDisplay->Stop();
-		filename = 	wxFileSelector(_("Save subtitles file"),_T(""),_T(""),_T(""),_T("Advanced Substation Alpha (*.ass)|*.ass"),wxSAVE | wxOVERWRITE_PROMPT,this);
-		AssFile::top->filename = filename; //fix me, ghetto hack for correct relative path generation in SynchronizeProject()
+		wxString path = Options.AsText(_T("Last open subtitles path"));
+		wxFileName origPath(AssFile::top->filename);
+		filename = 	wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),_T("Advanced Substation Alpha (*.ass)|*.ass"),wxSAVE | wxOVERWRITE_PROMPT,this);
 	}
-
-	// Synchronize
-	SynchronizeProject();
 
 	// Actually save
 	if (!filename.empty()) {
+		// Store path
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
+
+		// Fix me, ghetto hack for correct relative path generation in SynchronizeProject()
+		AssFile::top->filename = filename;
+
+		// Synchronize
+		SynchronizeProject();
+
 		// Get charset
 		wxString charset = _T("");
 		if (withCharset) {

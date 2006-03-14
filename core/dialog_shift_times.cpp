@@ -36,6 +36,10 @@
 
 ///////////
 // Headers
+#include <fstream>
+#include <algorithm>
+#include <string>
+#include <wx/filename.h>
 #include "dialog_shift_times.h"
 #include "video_display.h"
 #include "vfr.h"
@@ -45,10 +49,7 @@
 #include "ass_file.h"
 #include "ass_time.h"
 #include "ass_dialogue.h"
-#include <fstream>
-#include <algorithm>
-#include <string>
-#include <wx/filename.h>
+#include "subs_edit_box.h"
 
 
 ///////////////
@@ -262,6 +263,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->UpdateMaps();
+	grid->editBox->Update();
 	EndModal(0);
 }
 

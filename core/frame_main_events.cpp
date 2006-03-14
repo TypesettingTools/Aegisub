@@ -512,7 +512,8 @@ void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
 	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.txt)|*.ass;*.ssa;*.srt;*.txt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt"),wxOPEN | wxFILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadSubtitles(filename);
-		Options.SetText(_T("Last open subtitles path"), filename);
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
 	}
 }
 
