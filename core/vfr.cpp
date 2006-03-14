@@ -36,11 +36,11 @@
 
 ///////////
 // Headers
+#include <wx/filename.h>
 #include "vfr.h"
 #include "utils.h"
-#include <wx/filename.h>
-#include <fstream>
-#include <algorithm>
+#include "text_file_reader.h"
+
 
 /////////////////////
 // V2 Clear function
@@ -94,39 +94,32 @@ void FrameRate::Load(wxString filename) {
 	if (!filetest.FileExists()) throw _T("File not found.");
 
 	// Open file
-	ifstream file;
-	file.open(filename.mb_str(wxConvLocal));
-	if (!file.is_open()) throw _T("Could not open file.");
+	TextFileReader file(filename);
 
 	try {
-
 		// Read header
-		char buffer[65536];
-		file.getline(buffer,65536);
-		wxString header(buffer,wxConvUTF8);
+		wxString curLine;
+		curLine = file.ReadLineFromFile();
+		wxString header = curLine;
 
 		// V1, code converted from avcvfr9
-		if (header == _T("# timecode format v1")) {
-			//locate the default fps line
-			
-			while (!file.eof()) {
-				file.getline(buffer,65536);
-				wxString curLine(buffer,wxConvUTF8);
+		if (header == _T("# timecode format v1") || header.Left(7).Lower() == _T("assume ")) {
+			// Locate the default fps line
+			do {
+				// Skip empty lines and comments
+				if (curLine == _T("") || curLine.Left(1) == _T("#")) continue;
 
-				//skip empty lines and comments
-				if (curLine == _T("") || curLine.Left(1) == _T("#"))
-					continue;
-				//fix me? should be case insensitive comparison
-				else if (curLine.Left(7) != _T("Assume "))
-					throw _T("Encountered data before 'Assume <fps>' line");
+				else if (curLine.Left(7).Lower() != _T("assume ")) throw _T("Encountered data before 'Assume <fps>' line");
 				else {
-					if (!curLine.Mid(6).ToDouble(&AverageFrameRate) || AverageFrameRate <= 0)
-						throw _T("Invalid 'Assume <fps>' line");
+					if (!curLine.Mid(6).ToDouble(&AverageFrameRate) || AverageFrameRate <= 0) throw _T("Invalid 'Assume <fps>' line");
 					break;
 				}
-			}
 
-			//read and expand all timecodes to v2
+				// Get next line
+				curLine = file.ReadLineFromFile();
+			} while (file.HasMoreLines());
+
+			// Read and expand all timecodes to v2
 			wxString curline;
 
 			double currenttime = 0;
@@ -136,11 +129,10 @@ void FrameRate::Load(wxString filename) {
 			long lend;
 			double lfps;
 
-			while (!file.eof()) {
-				file.getline(buffer,65536);
-				wxString curLine(buffer,wxConvUTF8);
+			while (file.HasMoreLines()) {
+				curLine = file.ReadLineFromFile();
 
-				//skip empty lines and comments
+				// Skip empty lines and comments
 				if (curLine == _T("") || curLine.Left(1) == _T("#"))
 					continue;
 				
@@ -183,9 +175,8 @@ void FrameRate::Load(wxString filename) {
 			last_frame = 0;
 
 			// Reads body
-			while (!file.eof()) {
-				file.getline (buffer,65536);
-				wxString curLine(buffer,wxConvUTF8);
+			while (file.HasMoreLines()) {
+				curLine = file.ReadLineFromFile();
 
 				//skip empty lines and comments
 				if (curLine == _T("") || curLine.Left(1) == _T("#"))
@@ -209,32 +200,17 @@ void FrameRate::Load(wxString filename) {
 		}
 
 		// Unknown
-		else 
+		else {
 			throw _T("Unknown file format.");
+		}
 
-		// Run test
-		/*bool doTest = false;
-		if (doTest) {
-			int fail = 0;
-			int res;
-			for (int i=0;i<1000;i++) {
-				res = GetFrameAtTime(GetTimeAtFrame(i));
-				if (res != i) {
-					wxLogMessage(wxString::Format(_T("Expected %i but got %i (%i)"),i,res,GetTimeAtFrame(i)));
-					fail++;
-				}
-			}
-			if (fail) wxLogMessage(wxString::Format(_T("Failed %i times"),fail));
-			else wxLogMessage(_T("VFR passes test"));
-		}*/
-	} catch (wchar_t *) {
-		file.close();
+	}
+	catch (...) {
 		Unload();
 		throw;
 	}
 
 	// Close file
-	file.close();
 	loaded = true;
 	vfrFile = filename;
 	FrameRateType = VFR;
