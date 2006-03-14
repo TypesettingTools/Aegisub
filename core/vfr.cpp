@@ -101,11 +101,16 @@ void FrameRate::Load(wxString filename) {
 		wxString curLine;
 		curLine = file.ReadLineFromFile();
 		wxString header = curLine;
+		bool first = (header.Left(7).Lower() == _T("assume "));
 
 		// V1, code converted from avcvfr9
-		if (header == _T("# timecode format v1") || header.Left(7).Lower() == _T("assume ")) {
+		if (header == _T("# timecode format v1") || first) {
 			// Locate the default fps line
 			do {
+				// Get next line
+				if (!first) curLine = file.ReadLineFromFile();
+				first = false;
+
 				// Skip empty lines and comments
 				if (curLine == _T("") || curLine.Left(1) == _T("#")) continue;
 
@@ -114,9 +119,6 @@ void FrameRate::Load(wxString filename) {
 					if (!curLine.Mid(6).ToDouble(&AverageFrameRate) || AverageFrameRate <= 0) throw _T("Invalid 'Assume <fps>' line");
 					break;
 				}
-
-				// Get next line
-				curLine = file.ReadLineFromFile();
 			} while (file.HasMoreLines());
 
 			// Read and expand all timecodes to v2
@@ -330,10 +332,10 @@ int FrameRate::PTimeAtFrame(int frame) {
 	// Variable frame rate
 	else if (FrameRateType == VFR) {
 		// Is it inside frame rate range? If so, just get the value from timecodes table
-		if (frame < last_frame) return Frame.at(frame);
+		if (frame < (signed) Frame.size()) return Frame.at(frame);
 
 		// Otherwise, calculate it
-		else return floor(last_time + double(frame-last_frame) / AverageFrameRate * 1000.0);
+		else return floor(Frame.back() + double(frame-Frame.size()+1) / AverageFrameRate * 1000.0);
 	}
 
 	// Unknown frame rate type
