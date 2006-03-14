@@ -48,6 +48,7 @@
 #include "frame_main.h"
 #include "main.h"
 
+
 ///////////////
 // Constructor
 DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxString name)
@@ -117,7 +118,7 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace all")),0,wxEXPAND | wxBOTTOM,3);
 	}
 	ButtonSizer->Add(new wxButton(this,wxID_CLOSE),0,wxEXPAND | wxBOTTOM,20);
-	ButtonSizer->Add(new wxButton(this,wxID_HELP),0,wxEXPAND | wxBOTTOM,0);
+	//ButtonSizer->Add(new wxButton(this,wxID_HELP),0,wxEXPAND | wxBOTTOM,0);
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxHORIZONTAL);
