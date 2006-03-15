@@ -1910,7 +1910,7 @@ void AudioDisplay::OnGetFocus(wxFocusEvent &event) {
 }
 
 void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
-	if (hasFocus) {
+	if (hasFocus && loaded) {
 		hasFocus = false;
 		UpdateImage(true);
 		Refresh(false);
