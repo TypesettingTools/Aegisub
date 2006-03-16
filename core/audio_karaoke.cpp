@@ -85,7 +85,9 @@ AudioKaraoke::~AudioKaraoke() {
 bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	// Make sure we're not in splitting-mode
 	if (splitting) {
-		EndSplit(false);
+		// Commit by default, discarding the splits requires explicitly cancelling
+		// This doesn't seem to work when changing line in the grid, WHY?
+		EndSplit(true);
 	}
 
 	// Set dialogue

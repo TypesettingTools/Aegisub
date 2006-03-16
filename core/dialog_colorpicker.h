@@ -134,9 +134,9 @@ private:
 	wxBitmap *rgb_slider[3];	// z spectrum for color "i"
 
 	// 0 = Y, 1 = U, 2 = V  (what does, Y, U and V mean?!? just metasyntactical coordinate axis names?)
-	wxSpinCtrl *yuv_input[3];
-	wxBitmap *yuv_spectrum;		// u/v spectrum
-	wxBitmap *yuv_slider;		// y spectrum
+	//wxSpinCtrl *yuv_input[3];
+	//wxBitmap *yuv_spectrum;		// u/v spectrum
+	//wxBitmap *yuv_slider;		// y spectrum
 
 	// 0 = hue, 1 = saturation, 2 = luminance
 	wxSpinCtrl *hsl_input[3];
@@ -161,7 +161,7 @@ private:
 	wxButton *cancel_button;
 
 	void UpdateFromRGB();			// Update all other controls as a result of modifying an RGB control
-	void UpdateFromYUV();			// Update all other controls as a result of modifying a YUV control
+	//void UpdateFromYUV();			// Update all other controls as a result of modifying a YUV control
 	void UpdateFromHSL();			// Update all other controls as a result of modifying an HSL control
 	void UpdateFromHSV();			// Update all other controls as a result of modifying an HSV control
 	void UpdateFromASS();			// Update all other controls as a result of modifying the ASS format control
@@ -171,16 +171,16 @@ private:
 	wxBitmap *MakeGBSpectrum();
 	wxBitmap *MakeRBSpectrum();
 	wxBitmap *MakeRGSpectrum();
-	wxBitmap *MakeUVSpectrum();
+	//wxBitmap *MakeUVSpectrum();
 	wxBitmap *MakeHSSpectrum();
 	wxBitmap *MakeSVSpectrum();
 
 	void OnSpinRGB(wxSpinEvent &evt);
-	void OnSpinYUV(wxSpinEvent &evt);
+	//void OnSpinYUV(wxSpinEvent &evt);
 	void OnSpinHSL(wxSpinEvent &evt);
 	void OnSpinHSV(wxSpinEvent &evt);
 	void OnChangeRGB(wxCommandEvent &evt);
-	void OnChangeYUV(wxCommandEvent &evt);
+	//void OnChangeYUV(wxCommandEvent &evt);
 	void OnChangeHSL(wxCommandEvent &evt);
 	void OnChangeHSV(wxCommandEvent &evt);
 	void OnChangeASS(wxCommandEvent &evt);
@@ -209,9 +209,9 @@ enum {
 	SELECTOR_RGB_R,
 	SELECTOR_RGB_G,
 	SELECTOR_RGB_B,
-	SELECTOR_YUV_Y,
-	SELECTOR_YUV_U,
-	SELECTOR_YUV_V,
+	//SELECTOR_YUV_Y,
+	//SELECTOR_YUV_U,
+	//SELECTOR_YUV_V,
 	SELECTOR_HSL_H,
 	SELECTOR_HSL_S,
 	SELECTOR_HSL_L,

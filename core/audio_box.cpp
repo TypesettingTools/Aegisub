@@ -481,7 +481,7 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	if (karaokeMode) {
 		if (audioKaraoke->splitting) {
-			audioKaraoke->EndSplit(false);
+			audioKaraoke->EndSplit(true);
 		}
 		karaokeMode = false;
 		audioKaraoke->enabled = false;
