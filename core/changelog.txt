@@ -69,7 +69,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed bug which caused extra newlines to be added at the end of file. (AMZ)
 - Added a horizontal scrollbar to shift times history. (AMZ)
 - Removed the "Help" button from Find/Replace dialog. (AMZ)
-- Added a bias slider to make continuous function in timing post-processor. (AMZ)
+- Added a bias slider to the "make times continuous" function in timing post-processor, to set the point between the subs where they will meet. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
