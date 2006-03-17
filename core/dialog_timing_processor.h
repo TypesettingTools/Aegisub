@@ -67,6 +67,7 @@ private:
 
 	wxCheckBox *adjsEnable;
 	wxTextCtrl *adjascentThres;
+	wxSlider *adjascentBias;
 
 	wxCheckListBox *StyleList;
 	wxButton *ApplyButton;

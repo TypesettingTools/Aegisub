@@ -79,6 +79,30 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	LeadSizer->Add(leadOut,0,wxRIGHT|wxEXPAND,0);
 	LeadSizer->AddStretchSpacer(1);
 
+	// Adjascent subs sizer
+	wxSizer *AdjascentSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Make adjascent subtitles continuous"));
+	wxSizer *AdjascentSizerRight = new wxBoxSizer(wxVERTICAL);
+	wxSizer *AdjascentSizerTop = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *AdjascentSizerBottom = new wxBoxSizer(wxHORIZONTAL);
+	adjascentBias = new wxSlider(this,-1,MID(0,int(Options.AsFloat(_T("Timing processor adjascent bias"))*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
+	adjascentBias->SetToolTip(_T("Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."));
+	adjsEnable = new wxCheckBox(this,CHECK_ENABLE_ADJASCENT,_("Enable"));
+	adjsEnable->SetToolTip(_("Enable snapping of subtitles together if they are within a certain distance of each other."));
+	adjsEnable->SetValue(Options.AsBool(_T("Timing processor Enable adjascent")));
+	wxStaticText *adjsThresText = new wxStaticText(this,-1,_("Threshold:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
+	adjascentThres = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&adjsThresTime));
+	adjascentThres->SetToolTip(_("Maximum difference between start and end time for two subtitles to be made continuous, in miliseconds."));
+	AdjascentSizerTop->Add(adjsThresText,0,wxRIGHT|wxALIGN_CENTER,5);
+	AdjascentSizerTop->Add(adjascentThres,0,wxRIGHT|wxEXPAND,5);
+	AdjascentSizerTop->AddStretchSpacer(1);
+	AdjascentSizerBottom->Add(new wxStaticText(this,-1,_("Bias: Start <- "),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE),0,wxEXPAND|wxALIGN_CENTRE,0);
+	AdjascentSizerBottom->Add(adjascentBias,1,wxEXPAND,0);
+	AdjascentSizerBottom->Add(new wxStaticText(this,-1,_(" -> End"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE),0,wxEXPAND|wxALIGN_CENTRE,0);
+	AdjascentSizerRight->Add(AdjascentSizerTop,0,wxEXPAND,0);
+	AdjascentSizerRight->Add(AdjascentSizerBottom,1,wxEXPAND,0);
+	AdjascentSizer->Add(adjsEnable,0,wxRIGHT|wxEXPAND,10);
+	AdjascentSizer->Add(AdjascentSizerRight,1,wxEXPAND,0);
+
 	// Keyframes sizer
 	KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Keyframe snapping"));
 	keysEnable = new wxCheckBox(this,CHECK_ENABLE_KEYFRAME,_("Enable"));
@@ -97,19 +121,6 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	KeyframesSizer->Add(keysThresUnder,0,wxRIGHT|wxEXPAND,0);
 	KeyframesSizer->AddStretchSpacer(1);
 
-	// Adjascent subs sizer
-	wxSizer *AdjascentSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Make adjascent subtitles continuous"));
-	adjsEnable = new wxCheckBox(this,CHECK_ENABLE_ADJASCENT,_("Enable"));
-	adjsEnable->SetToolTip(_("Enable snapping of subtitles together if they are within a certain distance of each other."));
-	adjsEnable->SetValue(Options.AsBool(_T("Timing processor Enable adjascent")));
-	wxStaticText *adjsThresText = new wxStaticText(this,-1,_("Threshold:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	adjascentThres = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&adjsThresTime));
-	adjascentThres->SetToolTip(_("Maximum difference between start and end time for two subtitles to be made continuous, in miliseconds."));
-	AdjascentSizer->Add(adjsEnable,0,wxRIGHT|wxEXPAND,10);
-	AdjascentSizer->Add(adjsThresText,0,wxRIGHT|wxALIGN_CENTER,5);
-	AdjascentSizer->Add(adjascentThres,0,wxRIGHT|wxEXPAND,5);
-	AdjascentSizer->AddStretchSpacer(1);
-
 	// Button sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
@@ -120,8 +131,8 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	// Right Sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
 	RightSizer->Add(LeadSizer,0,wxBOTTOM|wxEXPAND,5);
-	RightSizer->Add(KeyframesSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->Add(AdjascentSizer,0,wxBOTTOM|wxEXPAND,5);
+	RightSizer->Add(KeyframesSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->AddStretchSpacer(1);
 	RightSizer->Add(ButtonSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,0);
 
@@ -250,6 +261,7 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
 	Options.SetInt(_T("Timing processor key underlen thres"),temp);
 	adjascentThres->GetValue().ToLong(&temp);
 	Options.SetInt(_T("Timing processor adjascent thres"),temp);
+	Options.SetFloat(_T("Timing processor adjascent bias"),adjascentBias->GetValue() / 100.0);
 	Options.SetBool(_T("Timing processor Enable lead-in"),hasLeadIn->IsChecked());
 	Options.SetBool(_T("Timing processor Enable lead-out"),hasLeadOut->IsChecked());
 	if (keysEnable->IsEnabled()) Options.SetBool(_T("Timing processor Enable keyframe"),keysEnable->IsChecked());
@@ -434,7 +446,7 @@ void DialogTimingProcessor::Process() {
 		adjascentThres->GetValue().ToLong(&adjsThres);
 
 		// Get bias
-		float bias = Options.AsFloat(_T("Timing processor adjascent bias"));
+		float bias = adjascentBias->GetValue() / 100.0;
 
 		// For each row
 		for (int i=0;i<rows;i++) {
