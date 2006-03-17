@@ -67,6 +67,10 @@ void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 // Convert an RGB color to HSV; all values are expected to be in range 0..255
 void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *V);
 
+void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, unsigned char *oL);
+
+void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, unsigned char *oV);
+
 
 // Convert a wxColour to a HTML hex string
 wxString color_to_html(wxColour color);

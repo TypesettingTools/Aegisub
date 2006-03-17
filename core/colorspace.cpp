@@ -59,56 +59,151 @@ void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigne
 		return;
 	}
 
+	if (L == 128 && S == 255) {
+		switch (H) {
+			case 0:
+			case 255: // actually this is wrong, since this is more like 359 degrees... but it's what you'd expect (sadly :)
+				*R = 255;
+				*G = 0;
+				*B = 0;
+				return;
+			case 43:
+				*R = 255;
+				*G = 255;
+				*B = 0;
+				return;
+			case 85:
+				*R = 0;
+				*G = 255;
+				*B = 0;
+				return;
+			case 128:
+				*R = 0;
+				*G = 255;
+				*B = 255;
+				return;
+			case 171:
+				*R = 0;
+				*G = 0;
+				*B = 255;
+				return;
+			case 213:
+				*R = 255;
+				*G = 0;
+				*B = 255;
+				return;
+		}
+	}
+
+	/*const int scale = 64;
+
 	int r, g, b;
 
+	H *= scale;
+	S *= scale;
+	L *= scale;
+
 	int temp2;
-	if (L < 128) {
-		temp2 = L * (256 + S) / 256;
+	if (L < 128*scale) {
+		temp2 = L * (256*scale + S) / (256*scale);
 	} else {
-		temp2 = L + S - L * S / 256;
+		temp2 = L + S - L * S / (256*scale);
 	}
 
 	int temp1 = 2*L - temp2;
 
 	int temp3[3];
-	temp3[0] = H + 256/3;
-	if (temp3[0] < 0) temp3[0] += 256;
-	if (temp3[0] > 256) temp3[0] -= 256;
+	temp3[0] = H + (256*scale)/3;
+	if (temp3[0] < 0) temp3[0] += (256*scale);
+	if (temp3[0] > (256*scale)) temp3[0] -= (256*scale);
 	temp3[1] = H;
-	temp3[2] = H - 256/3;
-	if (temp3[2] < 0) temp3[2] += 256;
-	if (temp3[2] > 256) temp3[2] -= 256;
+	temp3[2] = H - (256*scale)/3;
+	if (temp3[2] < 0) temp3[2] += (256*scale);
+	if (temp3[2] > (256*scale)) temp3[2] -= (256*scale);
 
-	if (6 * temp3[0] < 255)
-		r = temp1 + (temp2 - temp1) * 6 * temp3[0] / 256;
-	else if (2 * temp3[0] < 255)
+	if (6 * temp3[0] < (256*scale))
+		r = temp1 + (temp2 - temp1) * 6 * temp3[0] / (256*scale);
+	else if (2 * temp3[0] < (256*scale))
 		r = temp2;
-	else if (3 * temp3[0] < 511)
-		r = temp1 + (temp2 - temp1) * ((512/3) - temp3[0]) * 6 / 256;
+	else if (3 * temp3[0] < (2*256*scale))
+		r = temp1 + (temp2 - temp1) * ((512*scale/3) - temp3[0]) * 6 / (256*scale);
 	else
 		r = temp1;
 
-	if (6 * temp3[1] < 255)
-		g = temp1 + (temp2 - temp1) * 6 * temp3[1] / 256;
-	else if (2 * temp3[1] < 255)
+	if (6 * temp3[1] < (256*scale))
+		g = temp1 + (temp2 - temp1) * 6 * temp3[1] / (256*scale);
+	else if (2 * temp3[1] < (256*scale))
 		g = temp2;
-	else if (3 * temp3[1] < 511)
-		g = temp1 + (temp2 - temp1) * ((512/3) - temp3[1]) * 6 / 256;
+	else if (3 * temp3[1] < (2*256*scale))
+		g = temp1 + (temp2 - temp1) * ((512*scale/3) - temp3[1]) * 6 / (256*scale);
 	else
 		g = temp1;
 
-	if (6 * temp3[2] < 255)
-		b = temp1 + (temp2 - temp1) * 6 * temp3[2] / 256;
-	else if (2 * temp3[2] < 255)
+	if (6 * temp3[2] < (256*scale))
+		b = temp1 + (temp2 - temp1) * 6 * temp3[2] / (256*scale);
+	else if (2 * temp3[2] < (256*scale))
 		b = temp2;
-	else if (3 * temp3[2] < 511)
-		b = temp1 + (temp2 - temp1) * ((512/3) - temp3[2]) * 6 / 256;
+	else if (3 * temp3[2] < (2*256*scale))
+		b = temp1 + (temp2 - temp1) * ((512*scale/3) - temp3[2]) * 6 / (256*scale);
 	else
 		b = temp1;
 
-	*R = clip_colorval(r);
-	*G = clip_colorval(g);
-	*B = clip_colorval(b);
+	*R = clip_colorval(r/scale);
+	*G = clip_colorval(g/scale);
+	*B = clip_colorval(b/scale);*/
+
+	float h, s, l, r, g, b;
+	h = H / 255.f;
+	s = S / 255.f;
+	l = L / 255.f;
+
+	float temp2;
+	if (l < .5) {
+		temp2 = l * (1. + s);
+	} else {
+		temp2 = l + s - l*s;
+	}
+
+	float temp1 = 2.f * l - temp2;
+
+	// assume h is in range [0;1]
+	float temp3[3];
+	temp3[0] = h + 1.f/3.f;
+	if (temp3[0] > 1.f) temp3[0] -= 1.f;
+	temp3[1] = h;
+	temp3[2] = h - 1.f/3.f;
+	if (temp3[2] < 0.f) temp3[2] += 1.f;
+
+	if (6.f * temp3[0] < 1.f)
+		r = temp1 + (temp2 - temp1) * 6.f * temp3[0];
+	else if (2.f * temp3[0] < 1.f)
+		r = temp2;
+	else if (3.f * temp3[0] < 2.f)
+		r = temp1 + (temp2 - temp1) * ((2.f/3.f) - temp3[0]) * 6.f;
+	else
+		r = temp1;
+
+	if (6.f * temp3[1] < 1.f)
+		g = temp1 + (temp2 - temp1) * 6.f * temp3[1];
+	else if (2.f * temp3[1] < 1.f)
+		g = temp2;
+	else if (3.f * temp3[1] < 2.f)
+		g = temp1 + (temp2 - temp1) * ((2.f/3.f) - temp3[1]) * 6.f;
+	else
+		g = temp1;
+
+	if (6.f * temp3[2] < 1.f)
+		b = temp1 + (temp2 - temp1) * 6.f * temp3[2];
+	else if (2.f * temp3[2] < 1.f)
+		b = temp2;
+	else if (3.f * temp3[2] < 2.f)
+		b = temp1 + (temp2 - temp1) * ((2.f/3.f) - temp3[2]) * 6.f;
+	else
+		b = temp1;
+
+	*R = clip_colorval((int)(r*255));
+	*G = clip_colorval((int)(g*255));
+	*B = clip_colorval((int)(b*255));
 }
 
 
@@ -117,6 +212,43 @@ void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigne
 void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigned char *B)
 {
 	*R = *G = *B = 0;
+
+	// some special cases... oh yeah baby!
+	if (S == 255) {
+		switch (H) {
+			case 0:
+			case 255: // actually this is wrong, since this is more like 359 degrees... but it's what you'd expect (sadly :)
+				*R = V;
+				*G = 0;
+				*B = 0;
+				return;
+			case 43:
+				*R = V;
+				*G = V;
+				*B = 0;
+				return;
+			case 85:
+				*R = 0;
+				*G = V;
+				*B = 0;
+				return;
+			case 128:
+				*R = 0;
+				*G = V;
+				*B = V;
+				return;
+			case 171:
+				*R = 0;
+				*G = 0;
+				*B = V;
+				return;
+			case 213:
+				*R = V;
+				*G = 0;
+				*B = V;
+				return;
+		}
+	}
 
 	// Cap values
 	unsigned int h = H * 360;
@@ -317,6 +449,54 @@ void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 	*V = clip_colorval(int(v*255));
 }
 
+
+void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, unsigned char *oL)
+{
+	int p = iV * (255 - iS);
+	*oH = iH;
+	*oL = clip_colorval((p + iV*255)/255/2);
+	if (*oL == 0) {
+		*oS = iS; // oS is actually undefined, so any value should work ;)
+	} else if (*oL <= 128) {
+		*oS = clip_colorval((iV*255 - p) / (2 * *oL));
+	} else {
+		*oS = clip_colorval((iV*255 - p) / (511 - 2 * *oL));
+	}
+}
+
+
+void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, unsigned char *oV)
+{
+	// temporary solution...
+	hsl_to_rgb(iH, iS, iL, oH, oS, oV);
+	rgb_to_hsv(*oH, *oS, *oV, oH, oS, oV);
+
+	// can this really be so hard? it seems way harder to deduce a formula for this than for the other direction
+
+/*	*oH = iH;
+
+	if (iS == 0) {
+		*oS = 0;
+		*oV = iL;
+		return;
+	}
+
+	int temp2;
+	if (iL < 128) {
+		temp2 = iL * (255 + iS);
+	} else {
+		temp2 = iL*255 + iS*255 - iL*iS;
+	}
+
+	int temp1 = 2 * iL*255 - temp2;
+
+	int temp3[3];
+	temp3[0] = iH + 255/3;
+	if (temp3[0] > 255) temp3[0] -= 255;
+	temp3[1] = iH;
+	temp3[2] = iH - 255/3;
+	if (temp3[2] < 0) temp3[2] += 255;*/
+}
 
 
 wxString color_to_html(wxColour color)

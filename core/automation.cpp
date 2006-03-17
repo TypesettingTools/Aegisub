@@ -302,7 +302,9 @@ namespace AutomationHelper {
 		if (!thedc) return 0;
 		SetMapMode(thedc, MM_TEXT);
 
-		fontsize = -MulDiv((int)(fontsize+0.5), GetDeviceCaps(thedc, LOGPIXELSY), 72);
+		HDC dczero = GetDC(0);
+		fontsize = -MulDiv((int)(fontsize+0.5), GetDeviceCaps(dczero, LOGPIXELSY), 72);
+		ReleaseDC(0, dczero);
 
 		LOGFONT lf;
 		ZeroMemory(&lf, sizeof(lf));
@@ -323,16 +325,17 @@ namespace AutomationHelper {
 		SelectObject(thedc, thefont);
 		
 		SIZE sz;
+		size_t thetextlen = intext.length();
+		const wchar_t *thetext = intext.wc_str();
 		if (spacing) {
 			resx = 0;
-			for (unsigned int i = 0; i < intext.length(); i++) {
-				wchar_t c = intext[i];
-				GetTextExtentPoint32(thedc, &c, 1, &sz);
+			for (unsigned int i = 0; i < thetextlen; i++) {
+				GetTextExtentPoint32(thedc, &thetext[i], 1, &sz);
 				resx += sz.cx + spacing;
 				resy = sz.cy;
 			}
 		} else {
-			GetTextExtentPoint32(thedc, intext.wc_str(), intext.Length(), &sz);
+			GetTextExtentPoint32(thedc, thetext, thetextlen, &sz);
 			resx = sz.cx;
 			resy = sz.cy;
 		}

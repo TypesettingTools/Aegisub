@@ -689,7 +689,7 @@ void DialogColorPicker::UpdateFromHSL()
 	l = hsl_input[2]->GetValue();
 	hsl_to_rgb(h, s, l, &r, &g, &b);
 	//rgb_to_yuv(r, g, b, &y, &u, &v);
-	rgb_to_hsv(r, g, b, &h2, &s2, &v2);
+	hsl_to_hsv(h, s, l, &h2, &s2, &v2);
 	rgb_input[0]->SetValue(r);
 	rgb_input[1]->SetValue(g);
 	rgb_input[2]->SetValue(b);
@@ -720,7 +720,7 @@ void DialogColorPicker::UpdateFromHSV()
 	v2 = hsv_input[2]->GetValue();
 	hsv_to_rgb(h2, s2, v2, &r, &g, &b);
 	//rgb_to_yuv(r, g, b, &y, &u, &v);
-	rgb_to_hsl(r, g, b, &h, &s, &l);
+	hsv_to_hsl(h2, s2, v2, &h, &s, &l);
 	rgb_input[0]->SetValue(r);
 	rgb_input[1]->SetValue(g);
 	rgb_input[2]->SetValue(b);
