@@ -95,63 +95,6 @@ void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigne
 		}
 	}
 
-	/*const int scale = 64;
-
-	int r, g, b;
-
-	H *= scale;
-	S *= scale;
-	L *= scale;
-
-	int temp2;
-	if (L < 128*scale) {
-		temp2 = L * (256*scale + S) / (256*scale);
-	} else {
-		temp2 = L + S - L * S / (256*scale);
-	}
-
-	int temp1 = 2*L - temp2;
-
-	int temp3[3];
-	temp3[0] = H + (256*scale)/3;
-	if (temp3[0] < 0) temp3[0] += (256*scale);
-	if (temp3[0] > (256*scale)) temp3[0] -= (256*scale);
-	temp3[1] = H;
-	temp3[2] = H - (256*scale)/3;
-	if (temp3[2] < 0) temp3[2] += (256*scale);
-	if (temp3[2] > (256*scale)) temp3[2] -= (256*scale);
-
-	if (6 * temp3[0] < (256*scale))
-		r = temp1 + (temp2 - temp1) * 6 * temp3[0] / (256*scale);
-	else if (2 * temp3[0] < (256*scale))
-		r = temp2;
-	else if (3 * temp3[0] < (2*256*scale))
-		r = temp1 + (temp2 - temp1) * ((512*scale/3) - temp3[0]) * 6 / (256*scale);
-	else
-		r = temp1;
-
-	if (6 * temp3[1] < (256*scale))
-		g = temp1 + (temp2 - temp1) * 6 * temp3[1] / (256*scale);
-	else if (2 * temp3[1] < (256*scale))
-		g = temp2;
-	else if (3 * temp3[1] < (2*256*scale))
-		g = temp1 + (temp2 - temp1) * ((512*scale/3) - temp3[1]) * 6 / (256*scale);
-	else
-		g = temp1;
-
-	if (6 * temp3[2] < (256*scale))
-		b = temp1 + (temp2 - temp1) * 6 * temp3[2] / (256*scale);
-	else if (2 * temp3[2] < (256*scale))
-		b = temp2;
-	else if (3 * temp3[2] < (2*256*scale))
-		b = temp1 + (temp2 - temp1) * ((512*scale/3) - temp3[2]) * 6 / (256*scale);
-	else
-		b = temp1;
-
-	*R = clip_colorval(r/scale);
-	*G = clip_colorval(g/scale);
-	*B = clip_colorval(b/scale);*/
-
 	float h, s, l, r, g, b;
 	h = H / 255.f;
 	s = S / 255.f;
@@ -323,37 +266,6 @@ void rgb_to_yuv(int R, int G, int B, unsigned char *Y, unsigned char *U, unsigne
 // still keeping everything integer
 void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *L)
 {
-	/*
-	int maxcolor = MAX(R, MAX(G, B));
-	int mincolor = MIN(R, MIN(G, B));
-
-	*L = (maxcolor + mincolor) / 2;
-
-	if (mincolor == maxcolor) {
-		*S = 0;
-		*H = 0;
-		return;
-	}
-
-	if (*L < 128)
-		*S = (maxcolor - mincolor) * 256 / (maxcolor + mincolor);
-	else
-		*S = (maxcolor - mincolor) * 256 / (512 - maxcolor - mincolor);
-
-	int h;
-	if (R == maxcolor)
-		h = (G - B) * 256 / (maxcolor - mincolor);
-	else if (G == maxcolor)
-		h = 512 + (B - R) / (maxcolor - mincolor);
-	else // if (B == maxcolor)
-		h = 1024 + (R - G) / (maxcolor - mincolor);
-
-	h /= 6;
-	if (h < 0)
-		h += 256;
-	*H = h;
-	*/
-
 	float r = R/255.f, g = G/255.f, b = B/255.f;
 	float h, s, l;
 
@@ -391,33 +303,6 @@ void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 // formulas from http://en.wikipedia.org/wiki/HSV_color_space
 void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *V)
 {
-	/*
-	int maxrgb = MAX(R, MAX(R, B)), minrgb = MIN(R, MIN(G, B));
-
-	*V = clip_colorval(maxrgb);
-
-	if (maxrgb == 0) {
-		*S = 0;
-	} else {
-		*S = clip_colorval((maxrgb - minrgb) * 256 / maxrgb);
-	}
-
-	int h;
-	if (minrgb == maxrgb) {
-		h = 0;
-	} else if (R == maxrgb) {
-		h = (G - B) * 256 / (maxrgb - minrgb) * 256 / 6;
-	} else if (G == maxrgb) {
-		h = (B - R) * 256 / (maxrgb - minrgb) * 256 / 6 + 256/3;
-	} else { // if B == maxrgb
-		h = (R - G) * 256 / (maxrgb - minrgb) * 256 / 6 + 256*2/3;
-	}
-
-	if (h < 0) h += 256;
-	if (h > 255) h -= 256;
-	*H = clip_colorval(h);
-	*/
-
 	float r = R/255.f, g = G/255.f, b = B/255.f;
 	float h, s, v;
 
@@ -467,13 +352,7 @@ void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, un
 
 void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, unsigned char *oV)
 {
-	// temporary solution...
-	hsl_to_rgb(iH, iS, iL, oH, oS, oV);
-	rgb_to_hsv(*oH, *oS, *oV, oH, oS, oV);
-
-	// can this really be so hard? it seems way harder to deduce a formula for this than for the other direction
-
-/*	*oH = iH;
+	*oH = iH;
 
 	if (iS == 0) {
 		*oS = 0;
@@ -481,21 +360,13 @@ void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, un
 		return;
 	}
 
-	int temp2;
 	if (iL < 128) {
-		temp2 = iL * (255 + iS);
+		*oV = iL * (255 + iS) / 255;
+		*oS = 2 * 255 * iS / (255 + iS);
 	} else {
-		temp2 = iL*255 + iS*255 - iL*iS;
+		*oV = (iL*255 + iS*255 - iL*iS)/255;
+		*oS = 2 * 255 * iS * (255 - iL) / (iL*255 + iS*255 - iL*iS);
 	}
-
-	int temp1 = 2 * iL*255 - temp2;
-
-	int temp3[3];
-	temp3[0] = iH + 255/3;
-	if (temp3[0] > 255) temp3[0] -= 255;
-	temp3[1] = iH;
-	temp3[2] = iH - 255/3;
-	if (temp3[2] < 0) temp3[2] += 255;*/
 }
 
 
