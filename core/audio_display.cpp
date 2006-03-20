@@ -1561,7 +1561,8 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 			// Scroll if needed
 			int posX = GetXAtSample(curPos);
 			bool fullDraw = false;
-			bool centerLock = Options.AsBool(_T("Audio lock scroll on cursor"));
+			bool centerLock = false;
+			bool scrollToCursor = Options.AsBool(_T("Audio lock scroll on cursor"));
 			if (centerLock) {
 				int goTo = MAX(0,curPos - w*samples/2);
 				if (goTo >= 0) {
@@ -1571,12 +1572,14 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 				}
 			}
 			else {
-				if (posX < 80 || posX > w-80) {
-					int goTo = MAX(0,curPos - 80*samples);
-					if (goTo >= 0) {
-						UpdatePosition(goTo,true);
-						UpdateImage();
-						fullDraw = true;
+				if (scrollToCursor) {
+					if (posX < 80 || posX > w-80) {
+						int goTo = MAX(0,curPos - 80*samples);
+						if (goTo >= 0) {
+							UpdatePosition(goTo,true);
+							UpdateImage();
+							fullDraw = true;
+						}
 					}
 				}
 			}

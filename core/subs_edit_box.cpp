@@ -77,37 +77,37 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	styles.Add(_T(""));
 	CommentBox = new wxCheckBox(this,COMMENT_CHECKBOX,_("Comment"));
 	CommentBox->SetToolTip(_("Comment this line out. Commented lines don't show up on screen."));
-	StyleBox = new wxComboBox(this,STYLE_COMBOBOX,_T(""),wxDefaultPosition,wxSize(90,25),styles,wxCB_READONLY);
+	StyleBox = new wxComboBox(this,STYLE_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,25),styles,wxCB_READONLY);
 	StyleBox->SetToolTip(_("Style for this line."));
-	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T(""),wxDefaultPosition,wxSize(90,25),styles,wxCB_DROPDOWN);
+	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,25),styles,wxCB_DROPDOWN);
 	ActorBox->SetToolTip(_("Actor name for this speech. This is only for reference, and is mainly useless."));
-	MarginL = new HiliModTextCtrl(this,MARGINL_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_PROCESS_ENTER,NumValidator());
+	MarginL = new HiliModTextCtrl(this,MARGINL_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
 	MarginL->SetToolTip(_("Left Margin (0000 = default)"));
-	MarginR = new HiliModTextCtrl(this,MARGINR_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_PROCESS_ENTER,NumValidator());
+	MarginR = new HiliModTextCtrl(this,MARGINR_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
 	MarginR->SetToolTip(_("Right Margin (0000 = default)"));
-	MarginV = new HiliModTextCtrl(this,MARGINV_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_PROCESS_ENTER,NumValidator());
+	MarginV = new HiliModTextCtrl(this,MARGINV_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
 	MarginV->SetToolTip(_("Vertical Margin (0000 = default)"));
 
 	// Middle controls
-	Layer = new HiliModTextCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(30,20),0,NumValidator());
+	Layer = new HiliModTextCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator());
 	Layer->SetToolTip(_("Layer number"));
-	StartTime = new TimeEdit(this,STARTTIME_BOX,_T(""),wxDefaultPosition,wxSize(70,20));
+	StartTime = new TimeEdit(this,STARTTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20));
 	StartTime->SetToolTip(_("Start time"));
 	StartTime->showModified = true;
-	EndTime = new TimeEdit(this,ENDTIME_BOX,_T(""),wxDefaultPosition,wxSize(70,20),0,NumValidator());
+	EndTime = new TimeEdit(this,ENDTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20),0,NumValidator());
 	EndTime->SetToolTip(_("End time"));
 	EndTime->isEnd = true;
 	EndTime->showModified = true;
-	Duration = new TimeEdit(this,DURATION_BOX,_T(""),wxDefaultPosition,wxSize(70,20),0,NumValidator());
+	Duration = new TimeEdit(this,DURATION_BOX,_T(""),wxDefaultPosition,wxSize(75,20),0,NumValidator());
 	Duration->SetToolTip(_("Line duration"));
 	Duration->showModified = true;
 	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));
 	ByFrame = new wxRadioButton(this,RADIO_TIME_BY_FRAME,_("Frame"));
 	ByFrame->SetToolTip(_("Time by frame number"));
-	SyntaxHighlight = new wxCheckBox(this,SYNTAX_BOX,_("Syntax"));
-	SyntaxHighlight->SetToolTip(_("Enable syntax highlighting"));
-	SyntaxHighlight->SetValue(Options.AsBool(_T("Syntax Highlight Enabled")));
+	//SyntaxHighlight = new wxCheckBox(this,SYNTAX_BOX,_("Syntax"));
+	//SyntaxHighlight->SetToolTip(_("Enable syntax highlighting"));
+	//SyntaxHighlight->SetValue(Options.AsBool(_T("Syntax Highlight Enabled")));
 
 	// Top sizer
 	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -122,11 +122,11 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	wxSizer *MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
 	MiddleSizer->Add(Layer,0,wxRIGHT,5);
 	MiddleSizer->Add(StartTime,0,wxRIGHT,0);
-	MiddleSizer->Add(EndTime,0,wxRIGHT,0);
+	MiddleSizer->Add(EndTime,0,wxRIGHT,5);
 	MiddleSizer->Add(Duration,0,wxRIGHT,5);
 	MiddleSizer->Add(ByTime,0,wxRIGHT | wxALIGN_CENTER,5);
 	MiddleSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER,5);
-	MiddleSizer->Add(SyntaxHighlight,0,wxRIGHT | wxALIGN_CENTER,5);
+	//MiddleSizer->Add(SyntaxHighlight,0,wxRIGHT | wxALIGN_CENTER,5);
 
 	// Middle-bottom controls
 	Bold = new wxBitmapButton(this,BUTTON_BOLD,wxBITMAP(button_bold),wxDefaultPosition,wxSize(20,20));
@@ -304,7 +304,7 @@ void SubsEditBox::SetText(const wxString _text) {
 
 	// Mode
 	int mode = 0;
-	if (SyntaxHighlight->IsChecked()) mode = 1;
+	if (Options.AsBool(_T("Syntax Highlight Enabled"))) mode = 1;
 
 	// Syntax highlighted
 	if (mode == 1) {
@@ -530,7 +530,7 @@ void SubsEditBox::SetControlsState (bool state) {
 	StyleBox->Enable(state);
 	ActorBox->Enable(state);
 	ByTime->Enable(state);
-	SyntaxHighlight->Enable(state);
+	//SyntaxHighlight->Enable(state);
 	Bold->Enable(state);
 	Italics->Enable(state);
 	Underline->Enable(state);
