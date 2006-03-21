@@ -57,18 +57,20 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	grid = _grid;
 	leadInTime = Options.AsText(_T("Audio lead in"));
 	leadOutTime = Options.AsText(_T("Audio lead out"));
-	thresOverLen = Options.AsText(_T("Timing processor key overlen thres"));
-	thresUnderLen = Options.AsText(_T("Timing processor key underlen thres"));
+	thresStartBefore = Options.AsText(_T("Timing processor key start before thres"));
+	thresStartAfter = Options.AsText(_T("Timing processor key start after thres"));
+	thresEndBefore = Options.AsText(_T("Timing processor key end before thres"));
+	thresEndAfter = Options.AsText(_T("Timing processor key end after thres"));
 	adjsThresTime = Options.AsText(_T("Timing processor adjascent thres"));
 
 	// Lead-in/out box
 	wxSizer *LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Lead-in/Lead-out"));
-	hasLeadIn = new wxCheckBox(this,CHECK_ENABLE_LEADIN,_("Lead in:"));
+	hasLeadIn = new wxCheckBox(this,CHECK_ENABLE_LEADIN,_("Add lead in:"));
 	hasLeadIn->SetToolTip(_("Enable adding of lead-ins to lines."));
 	hasLeadIn->SetValue(Options.AsBool(_T("Timing processor Enable lead-in")));
 	leadIn = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(80,-1),0,NumValidator(&leadInTime));
 	leadIn->SetToolTip(_("Lead in to be added, in miliseconds."));
-	hasLeadOut = new wxCheckBox(this,CHECK_ENABLE_LEADOUT,_("Lead out:"));
+	hasLeadOut = new wxCheckBox(this,CHECK_ENABLE_LEADOUT,_("Add lead out:"));
 	hasLeadOut->SetToolTip(_("Enable adding of lead-outs to lines."));
 	hasLeadOut->SetValue(Options.AsBool(_T("Timing processor Enable lead-out")));
 	leadOut = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(80,-1),0,NumValidator(&leadOutTime));
@@ -81,44 +83,50 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 
 	// Adjascent subs sizer
 	wxSizer *AdjascentSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Make adjascent subtitles continuous"));
-	wxSizer *AdjascentSizerRight = new wxBoxSizer(wxVERTICAL);
-	wxSizer *AdjascentSizerTop = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *AdjascentSizerBottom = new wxBoxSizer(wxHORIZONTAL);
-	adjascentBias = new wxSlider(this,-1,MID(0,int(Options.AsFloat(_T("Timing processor adjascent bias"))*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
-	adjascentBias->SetToolTip(_T("Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."));
 	adjsEnable = new wxCheckBox(this,CHECK_ENABLE_ADJASCENT,_("Enable"));
 	adjsEnable->SetToolTip(_("Enable snapping of subtitles together if they are within a certain distance of each other."));
 	adjsEnable->SetValue(Options.AsBool(_T("Timing processor Enable adjascent")));
 	wxStaticText *adjsThresText = new wxStaticText(this,-1,_("Threshold:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
 	adjascentThres = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&adjsThresTime));
 	adjascentThres->SetToolTip(_("Maximum difference between start and end time for two subtitles to be made continuous, in miliseconds."));
-	AdjascentSizerTop->Add(adjsThresText,0,wxRIGHT|wxALIGN_CENTER,5);
-	AdjascentSizerTop->Add(adjascentThres,0,wxRIGHT|wxEXPAND,5);
-	AdjascentSizerTop->AddStretchSpacer(1);
-	AdjascentSizerBottom->Add(new wxStaticText(this,-1,_("Bias: Start <- "),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE),0,wxEXPAND|wxALIGN_CENTRE,0);
-	AdjascentSizerBottom->Add(adjascentBias,1,wxEXPAND,0);
-	AdjascentSizerBottom->Add(new wxStaticText(this,-1,_(" -> End"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE),0,wxEXPAND|wxALIGN_CENTRE,0);
-	AdjascentSizerRight->Add(AdjascentSizerTop,0,wxEXPAND,0);
-	AdjascentSizerRight->Add(AdjascentSizerBottom,1,wxEXPAND,0);
+	adjascentBias = new wxSlider(this,-1,MID(0,int(Options.AsFloat(_T("Timing processor adjascent bias"))*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
+	adjascentBias->SetToolTip(_T("Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."));
 	AdjascentSizer->Add(adjsEnable,0,wxRIGHT|wxEXPAND,10);
-	AdjascentSizer->Add(AdjascentSizerRight,1,wxEXPAND,0);
+	AdjascentSizer->Add(adjsThresText,0,wxRIGHT|wxALIGN_CENTER,5);
+	AdjascentSizer->Add(adjascentThres,0,wxRIGHT|wxEXPAND,5);
+	AdjascentSizer->Add(new wxStaticText(this,-1,_("Bias: Start <- "),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE),0,wxALIGN_CENTER,0);
+	AdjascentSizer->Add(adjascentBias,1,wxEXPAND,0);
+	AdjascentSizer->Add(new wxStaticText(this,-1,_(" -> End"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE),0,wxALIGN_CENTER,0);
 
 	// Keyframes sizer
 	KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Keyframe snapping"));
+	wxSizer *KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
 	keysEnable = new wxCheckBox(this,CHECK_ENABLE_KEYFRAME,_("Enable"));
 	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold."));
 	keysEnable->SetValue(Options.AsBool(_T("Timing processor Enable keyframe")));
-	wxStaticText *thresOver = new wxStaticText(this,-1,_("Overlength thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	keysThresOver = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&thresOverLen));
-	keysThresOver->SetToolTip(_("Threshold for 'overlength' distance, that is, starting before keyframe or ending after. In frames (inclusive)."));
-	wxStaticText *thresUnder = new wxStaticText(this,-1,_("Underlength thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	keysThresUnder = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&thresUnderLen));
-	keysThresUnder->SetToolTip(_("Threshold for 'underlength' distance, that is, starting after keyframe or ending before. In frames (inclusive)."));
-	KeyframesSizer->Add(keysEnable,0,wxRIGHT|wxEXPAND,10);
-	KeyframesSizer->Add(thresOver,0,wxRIGHT|wxALIGN_CENTER,5);
-	KeyframesSizer->Add(keysThresOver,0,wxRIGHT|wxEXPAND,5);
-	KeyframesSizer->Add(thresUnder,0,wxRIGHT|wxALIGN_CENTER,5);
-	KeyframesSizer->Add(keysThresUnder,0,wxRIGHT|wxEXPAND,0);
+	wxStaticText *textStartBefore = new wxStaticText(this,-1,_("Starts before thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
+	keysStartBefore = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&thresStartBefore));
+	keysStartBefore->SetToolTip(_("Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."));
+	wxStaticText *textStartAfter = new wxStaticText(this,-1,_("Starts after thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
+	keysStartAfter = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&thresStartAfter));
+	keysStartAfter->SetToolTip(_("Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."));
+	wxStaticText *textEndBefore = new wxStaticText(this,-1,_("Ends before thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
+	keysEndBefore = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&thresEndBefore));
+	keysEndBefore->SetToolTip(_("Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."));
+	wxStaticText *textEndAfter = new wxStaticText(this,-1,_("Ends after thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
+	keysEndAfter = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&thresEndAfter));
+	keysEndAfter->SetToolTip(_("Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."));
+	KeyframesFlexSizer->Add(keysEnable,0,wxRIGHT|wxEXPAND,10);
+	KeyframesFlexSizer->Add(textStartBefore,0,wxRIGHT|wxALIGN_CENTER,5);
+	KeyframesFlexSizer->Add(keysStartBefore,0,wxRIGHT|wxEXPAND,5);
+	KeyframesFlexSizer->Add(textStartAfter,0,wxRIGHT|wxALIGN_CENTER,5);
+	KeyframesFlexSizer->Add(keysStartAfter,0,wxRIGHT|wxEXPAND,0);
+	KeyframesFlexSizer->AddStretchSpacer(1);
+	KeyframesFlexSizer->Add(textEndBefore,0,wxRIGHT|wxALIGN_CENTER,5);
+	KeyframesFlexSizer->Add(keysEndBefore,0,wxRIGHT|wxEXPAND,5);
+	KeyframesFlexSizer->Add(textEndAfter,0,wxRIGHT|wxALIGN_CENTER,5);
+	KeyframesFlexSizer->Add(keysEndAfter,0,wxRIGHT|wxEXPAND,0);
+	KeyframesSizer->Add(KeyframesFlexSizer,0,wxEXPAND);
 	KeyframesSizer->AddStretchSpacer(1);
 
 	// Button sizer
@@ -186,8 +194,10 @@ void DialogTimingProcessor::UpdateControls() {
 	// Keyframes are only available if timecodes are loaded
 	bool keysAvailable = VFR_Output.IsLoaded();
 	bool enableKeys = keysEnable->IsChecked() && keysAvailable;
-	keysThresOver->Enable(enableKeys);
-	keysThresUnder->Enable(enableKeys);
+	keysStartBefore->Enable(enableKeys);
+	keysStartAfter->Enable(enableKeys);
+	keysEndBefore->Enable(enableKeys);
+	keysEndAfter->Enable(enableKeys);
 	if (!keysAvailable) {
 		keysEnable->SetValue(false);
 		keysEnable->Enable(false);
@@ -255,10 +265,14 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
 	Options.SetInt(_T("Audio lead in"),temp);
 	leadOut->GetValue().ToLong(&temp);
 	Options.SetInt(_T("Audio lead out"),temp);
-	keysThresOver->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Timing processor key overlen thres"),temp);
-	keysThresUnder->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Timing processor key underlen thres"),temp);
+	keysStartBefore->GetValue().ToLong(&temp);
+	Options.SetInt(_T("Timing processor key start before thres"),temp);
+	keysStartAfter->GetValue().ToLong(&temp);
+	Options.SetInt(_T("Timing processor key start after thres"),temp);
+	keysEndBefore->GetValue().ToLong(&temp);
+	Options.SetInt(_T("Timing processor key end before thres"),temp);
+	keysEndAfter->GetValue().ToLong(&temp);
+	Options.SetInt(_T("Timing processor key end after thres"),temp);
 	adjascentThres->GetValue().ToLong(&temp);
 	Options.SetInt(_T("Timing processor adjascent thres"),temp);
 	Options.SetFloat(_T("Timing processor adjascent bias"),adjascentBias->GetValue() / 100.0);
@@ -492,10 +506,14 @@ void DialogTimingProcessor::Process() {
 		AssDialogue *cur;
 
 		// Get variables
-		long underThres = 0;
-		long overThres = 0;
-		keysThresOver->GetValue().ToLong(&overThres);
-		keysThresUnder->GetValue().ToLong(&underThres);
+		long beforeStart = 0;
+		long afterStart = 0;
+		long beforeEnd = 0;
+		long afterEnd = 0;
+		keysStartBefore->GetValue().ToLong(&beforeStart);
+		keysStartAfter->GetValue().ToLong(&afterStart);
+		keysEndBefore->GetValue().ToLong(&beforeEnd);
+		keysEndAfter->GetValue().ToLong(&afterEnd);
 		
 		// For each row
 		for (int i=0;i<rows;i++) {
@@ -509,14 +527,14 @@ void DialogTimingProcessor::Process() {
 
 			// Get closest for start
 			closest = GetClosestKeyFrame(startF);
-			if ((closest > startF && closest-startF <= overThres) || (closest < startF && startF-closest <= underThres)) {
+			if ((closest > startF && closest-startF <= beforeStart) || (closest < startF && startF-closest <= afterStart)) {
 				cur->Start.SetMS(VFR_Output.GetTimeAtFrame(closest,true));
 				changed = true;
 			}
 
 			// Get closest for end
 			closest = GetClosestKeyFrame(endF)-1;
-			if ((closest > endF && closest-endF <= overThres) || (closest < endF && endF-closest <= underThres)) {
+			if ((closest > endF && closest-endF <= beforeEnd) || (closest < endF && endF-closest <= afterEnd)) {
 				cur->End.SetMS(VFR_Output.GetTimeAtFrame(closest,false));
 				changed = true;
 			}

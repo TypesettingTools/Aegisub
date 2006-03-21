@@ -184,8 +184,10 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Audio lead out"),300);
 	SetInt(_T("Audio Inactive Lines Display Mode"),1);
 
-	SetInt(_T("Timing processor key overlen thres"),5);
-	SetInt(_T("Timing processor key underlen thres"),4);
+	SetInt(_T("Timing processor key start before thres"),5);
+	SetInt(_T("Timing processor key start after thres"),4);
+	SetInt(_T("Timing processor key end before thres"),5);
+	SetInt(_T("Timing processor key end after thres"),6);
 	SetInt(_T("Timing processor adjascent thres"),300);
 	SetBool(_T("Timing processor Enable lead-in"),true);
 	SetBool(_T("Timing processor Enable lead-out"),true);

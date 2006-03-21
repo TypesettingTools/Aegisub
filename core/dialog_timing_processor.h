@@ -62,8 +62,10 @@ private:
 	wxCheckBox *hasLeadOut;
 
 	wxCheckBox *keysEnable;
-	wxTextCtrl *keysThresOver;
-	wxTextCtrl *keysThresUnder;
+	wxTextCtrl *keysStartBefore;
+	wxTextCtrl *keysStartAfter;
+	wxTextCtrl *keysEndBefore;
+	wxTextCtrl *keysEndAfter;
 
 	wxCheckBox *adjsEnable;
 	wxTextCtrl *adjascentThres;
@@ -71,7 +73,7 @@ private:
 
 	wxCheckListBox *StyleList;
 	wxButton *ApplyButton;
-	wxString leadInTime,leadOutTime,thresOverLen,thresUnderLen,adjsThresTime;
+	wxString leadInTime,leadOutTime,thresStartBefore,thresStartAfter,thresEndBefore,thresEndAfter,adjsThresTime;
 
 	wxArrayInt KeyFrames;
 
