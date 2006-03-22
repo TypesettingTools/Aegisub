@@ -26,7 +26,7 @@ function aegisub.register_macro(
   on the status bar when hovering over the menu item.
 
 @menu (string)
-  The menu this macro will appear in. Can be one of:
+  The menu this macro will appear in. Must be one of:
    o "edit"
    o "video"
    o "audio"
