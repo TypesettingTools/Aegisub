@@ -101,6 +101,7 @@ a new File Format Reader Feature.
 function aegisub.register_reader(
     name,
     extension,
+    is_text_format,
     processing_function)
 
 @name (string)
@@ -110,6 +111,13 @@ function aegisub.register_reader(
   The file extension usually given to this file format. This must not
   include any wildcards. (Ie. extension could be "srt", "sub", "ssa" and
   so on.)
+
+@is_text_format (boolean)
+  Determines whether the user can select a default encoding for reading text
+  from the file. This only affects whether a default encoding is chosen or not,
+  even with this argument set to false, you can still read text. You should set
+  this to true, if the format allows storing in different encodings, and doesn't
+  explicitly store the used encoding anywhere.
 
 @processing_function (function)
   The function called to do the actual file import.
@@ -128,6 +136,7 @@ a new File Format Writer Feature.
 function aegisub.register_writer(
     name,
     extension,
+    is_text_format,
     processing_function)
 
 @name (string)
@@ -137,6 +146,13 @@ function aegisub.register_writer(
   The usual file extension given to this file format. This is automatically
   be attached to the file name on export, unless the user chooses to
   override it.
+
+@is_text_format (boolean)
+  Determines whether the user can select a target encoding or not. This
+  option should be true if the format written allows choosing between
+  different encodings, and the user should be able to select which one to
+  use. This option doesn't affect whether you can write text to the file or
+  not, but only whether the user can select an encoding or not.
 
 @processing_function (function)
   The function doing the actual file export.
