@@ -318,7 +318,9 @@ void FontsCollectorThread::Collect() {
 			curDiag = AssEntry::GetAsDialogue(*cur);
 			if (curDiag) {
 				curLine++;
+				curDiag->ParseASSTags();
 				curDiag->ProcessParameters(GetFonts);
+				curDiag->ClearBlocks();
 			}
 		}
 	}

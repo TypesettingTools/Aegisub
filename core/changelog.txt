@@ -71,6 +71,7 @@ Please visit http://aegisub.net to download latest version
 - Added a bias slider to the "make times continuous" function in timing post-processor, which sets the point between the subs where the two lines will meet. (AMZ)
 - Separated keyframe thresholds on the timing post-processor in start and end. (AMZ)
 
+
 = 1.09 beta - 2006.01.16 ===========================
 
 - Implemented Timing Post-Processor dialog to automatically add lead-in/lead-out, scene timing and adjascence adjustment for sharp-timed subs (AMZ)
