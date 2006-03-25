@@ -276,6 +276,10 @@ wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source) {
 
 	// Convert to wxBitmap
 	wxBitmap bmp((const char*) frameRGB->data[0],w,h,32);
+
+	av_free(frameRGB);
+	if (resized != source)
+		av_free(resized);
 	return bmp;
 }
 
