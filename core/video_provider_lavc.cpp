@@ -231,7 +231,11 @@ wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source) {
 	// Get sizes
 	int w = codecContext->width;
 	int h = codecContext->height;
+#ifdef __WINDOWS__
 	PixelFormat format = PIX_FMT_RGBA32;
+#else
+	PixelFormat format = PIX_FMT_RGB24;
+#endif
 	unsigned int size1 = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
 	unsigned int size2 = avpicture_get_size(format,display_w,display_h);
 
@@ -275,7 +279,15 @@ wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source) {
 	img_convert((AVPicture*) frameRGB, format, (AVPicture*) resized, codecContext->pix_fmt, w, h);
 
 	// Convert to wxBitmap
+#ifdef __WINDOWS__
 	wxBitmap bmp((const char*) frameRGB->data[0],w,h,32);
+#else
+	wxImage img(w, h, false);
+	unsigned char *data = (unsigned char *)malloc(w * h * 3);
+	memcpy(data, frameRGB->data[0], w * h * 3);
+	img.SetData(data);
+	wxBitmap bmp(img);
+#endif
 
 	av_free(frameRGB);
 	if (resized != source)
