@@ -450,14 +450,14 @@ int LAVCVideoProvider::GetHeight() {
 //////////////////////
 // Get original width
 int LAVCVideoProvider::GetSourceWidth() {
-	return codecContext->coded_width;
+	return codecContext->width;
 }
 
 
 ///////////////////////
 // Get original height
 int LAVCVideoProvider::GetSourceHeight() {
-	return codecContext->coded_height;
+	return codecContext->height;
 }
 
 
