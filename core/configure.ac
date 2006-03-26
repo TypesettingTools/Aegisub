@@ -47,7 +47,7 @@ AC_C_FLAG([-pthread])
 AC_CXX_FLAG([-pthread])
 AC_CHECK_LIB([pthread], [pthread_join])
 
-AC_CHECK_HEADERS([wchar.h],,[
+AC_CHECK_HEADER([wchar.h],,[
 	AC_MSG_FAILURE([aegisub needs wide character support, find a wchar.h])
 ])
 PKG_CHECK_MODULES([FREETYPE], freetype2 >= 9.8.3,, [
@@ -70,8 +70,8 @@ else
     AC_MSG_ERROR([wxWidgets is required. Try --with-wx-config.])
 fi
 
-CXXFLAGS="$CXXFLAGS `$WXCONFIG --cxxflags | sed -e 's/-fno-exceptions//'`"
-LIBS="$LIBS `$WXCONFIG --libs`"
+CPPFLAGS="$CPPFLAGS `$WXCONFIG --cppflags | sed -e 's/-fno-exceptions//'` $FREETYPE_CFLAGS"
+LIBS="$LIBS `$WXCONFIG --libs` $FREETYPE_LIBS"
 
 AC_CHECK_LIB([m], [main])
 AC_CHECK_LIB([dl], [dlopen])
@@ -79,8 +79,25 @@ AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([lua], [lua_call],, [AC_MSG_ERROR([lua not found.])])
 AC_CHECK_LIB([lualib], [lua_tostring],, [AC_MSG_ERROR([lualib not found.])])
 AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
-AC_CHECK_LIB([avcodec], [avcodec_init],, [AC_MSG_ERROR([libavcodec (ffmpeg) not found.])])
-AC_CHECK_LIB([avformat], [av_frac_init],, [AC_MSG_ERROR([libavformat (ffmpeg) not found or too old.])])
+AC_CHECK_LIB([avcodec], [avcodec_init])
+AC_CHECK_LIB([avformat], [av_frac_init])
+
+PKG_CHECK_MODULES([ASA], asa = 0.0.1, [
+	CPPFLAGS="$CPPFLAGS $ASA_CFLAGS"
+	LIBS="$LIBS $ASA_LIBS"
+	AC_DEFINE(HAVE_ASA, 1, [found asa via pkg-config])
+])
+AC_CHECK_HEADERS([asa.h])
+
+PKG_CHECK_MODULES([GLIB], glib-2.0, [
+	CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
+	LIBS="$LIBS $GLIB_LIBS"
+
+	AC_CHECK_LIB([ssa], [SSA_Init])
+	AC_CHECK_HEADERS([libssa/libssa.h])
+], [
+	AC_MSG_WARN([not testing for libssa as it depends on glib-2.0, which was not found])
+])
 
 AC_C_CONST
 AC_C_INLINE
