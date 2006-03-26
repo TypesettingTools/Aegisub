@@ -111,7 +111,13 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	wxImage::AddHandler(png);
 
 	// Set cursor
+	// Bleeeh! Hate this 'solution':
+#if __WXGTK__
+	static char cursor_image[] = {0};
+	wxCursor cursor(cursor_image, 8, 1, -1, -1, cursor_image);
+#else
 	wxCursor cursor(wxCURSOR_BLANK);
+#endif // __WXGTK__
 	SetCursor(cursor);
 }
 
