@@ -50,8 +50,8 @@ AC_CHECK_LIB([pthread], [pthread_join])
 AC_CHECK_HEADER([wchar.h],,[
 	AC_MSG_FAILURE([aegisub needs wide character support, find a wchar.h])
 ])
-PKG_CHECK_MODULES([FREETYPE], freetype2 >= 9.8.3,, [
-	AC_MSG_FAILURE([aegisub needs FreeType2, go install it])
+PKG_CHECK_MODULES([FREETYPE], freetype2 >= 9.7.0,, [
+	AC_MSG_FAILURE([aegisub needs FreeType2 2.1.9, go install it])
 ])
 
 WXCONFIG=wx-config
@@ -86,7 +86,7 @@ PKG_CHECK_MODULES([ASA], asa = 0.0.1, [
 	CPPFLAGS="$CPPFLAGS $ASA_CFLAGS"
 	LIBS="$LIBS $ASA_LIBS"
 	AC_DEFINE(HAVE_ASA, 1, [found asa via pkg-config])
-])
+], [true])
 AC_CHECK_HEADERS([asa.h])
 
 PKG_CHECK_MODULES([GLIB], glib-2.0, [
