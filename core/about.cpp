@@ -65,7 +65,7 @@ AboutScreen::AboutScreen(wxWindow *parent,bool easter)
 	wxString aboutString;
 	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
 	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
-	aboutString += wxString(_T("Aegisub ")) + VERSION_STRING + _(" by ArchMage ZeratuL.\n");
+	aboutString += wxString(_T("Aegisub ")) + GetAegisubVersionString() + _(" by ArchMage ZeratuL.\n");
 	aboutString += _("Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n\n");
 	aboutString += _("Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\n");
 	aboutString += _("Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n");

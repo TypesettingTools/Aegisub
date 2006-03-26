@@ -33,6 +33,21 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-class wxString;
+// A note about this file:
+// You can exclude version.cpp from your build (but still include version.h),
+// and instead provide your own, custom version.cpp file, call it eg.
+// my_version.cpp. This way you can easily provide a custom build notice.
+//
+// If you often distribute SVN builds you are encouraged to label your builds
+// in this manner.
 
-wxString GetAegisubVersionString();
+#include <wx/string.h>
+#include "version.h"
+
+wxString GetAegisubVersionString() {
+#ifdef _DEBUG
+	return T("v1.10 Beta (debug)");
+#else
+	return _T("v1.10 Beta PRE-RELEASE");
+#endif
+}

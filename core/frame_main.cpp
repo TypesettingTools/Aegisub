@@ -705,7 +705,7 @@ void FrameMain::UpdateTitle() {
 		newTitle << file.GetFullName();
 	}
 	else newTitle << _T("Untitled");
-	newTitle << _T(" - Aegisub ") << VERSION_STRING;
+	newTitle << _T(" - Aegisub ") << GetAegisubVersionString();
 
 	// Get current title
 	wxString curTitle = GetTitle();
