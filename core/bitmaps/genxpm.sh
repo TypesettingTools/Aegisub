@@ -23,7 +23,7 @@ for I in *.bmp
 do
 	DNAME="`grep "bitmaps/$I" $RESFILE | cut -d ' ' -f 1`"
 	echo -e "${DNAME}_xpm.xpm: \$(srcdir)/$I
-\tconvert \$(srcdir)/$I ${DNAME}_xpm.xpm
+\tconvert -transparent \\#c0c0c0 \$(srcdir)/$I ${DNAME}_xpm.xpm
 "
 	XPMNAMES="${XPMNAMES} ${DNAME}_xpm.xpm"
 done
