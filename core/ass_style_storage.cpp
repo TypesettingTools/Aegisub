@@ -91,8 +91,12 @@ void AssStyleStorage::Load(wxString name) {
 		wxString data(buffer,wxConvUTF8);
 		data.Trim();
 		if (data.substr(0,6) == _T("Style:")) {
-			curStyle = new AssStyle(data);
-			style.push_back(curStyle);
+			try {
+				curStyle = new AssStyle(data);
+				style.push_back(curStyle);
+			} catch(...) {
+				/* just ignore invalid lines for now */
+			}
 		}
 	}
 
