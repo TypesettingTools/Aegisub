@@ -1,8 +1,8 @@
 Aegisub Automation documentation
 Version 4
 Copyright 2005-2006 Niels Martin Hansen
-THIS IS A DRAFT. SUBJECT TO CHANGE.
-Last updated: 2006-02-01 04:17 UTC+1
+
+THIS IS OUT OF DATE COMPARED TO THE REST OF THE DOCS!
 
 ---
 
@@ -31,6 +31,11 @@ Automation allows you to:
     o Exporters write directly to a file stream, allowing you to generate
       those huge karaoke effects much faster!
 
+Automation runs in a true Unicode environment, meaning strings are internally
+represented as UTF-32, so you, as programmer, don't have to worry about text
+encodings, prefix encodings etc. to write scripts that can handle text in
+mostly any language of the world.
+
 ---
 
 Scripts, files functions
@@ -41,7 +46,8 @@ being the master script, and the others being include files.
 
 Every script runs in a separate Lua interpreter, so separate scripts cannot
 communicate directly with each other. Scripts can share code by having common
-include files.
+include files. Scripts can share data by storing data in the subtitle files,
+either in the dialogue lines or in the Script Info headers.
 
 Files containing Automation scripts must in UTF-8 encoding, with or without
 BOM (Byte Order Mark). Compiled Lua scripts should also work, as long as all
@@ -65,9 +71,9 @@ The following four features can be implemented by an Automation script:
 
    The macro can create and display dialog windows to the user.
 
-   For preformance-reasons, there is currently no provision for the script to
-   enable/disable its menu item based on eg. the selection in the Aegisub
-   subtitles grid.
+   A macro can provide a function, that determines whether the macro cen be
+   run, based on the current selection in the program, and the contents of
+   the subtitles.
 
  - Export filter
    An export filter is presented as a filter in the Export dialog accessed
@@ -76,16 +82,10 @@ The following four features can be implemented by an Automation script:
    Styles and Script Info lines) in the subtitle file, and can add/modify/
    remove lines in those.
 
-   The export filter can specify a static configuration dialog presented to
-   the user in the Export UI.
-
-   The export filter can specify a function that's run after the user selects
-   the Export item on the File menu, but before the Export dialog is actually
-   displayed. This function will be given access to the subtitles currently
-   loaded. This is to feature customising the configuration dialog based on
-   the contents of the subtitles.
-   It is strongly discouraged to change anything but a single, private Script
-   Info header line in the subtitles handed to this initialisation function.
+   The export filter can provide a function, that returns a configuration
+   dialog, which is presented to the user before the export is run. This
+   function can access the subtitle data in order to customise the
+   configuration dialog, before it's presented to the user.
 
  - File format reader
    It is not yet decided how the file format reader is accessed.
@@ -166,11 +166,11 @@ Version 2
 
 Version 3
   Using Lua as engine.
-  Aegisub 1.10 was the last version to use Automation 3.
+  Aegisub 1.09 was the last release-version to use Automation 3.
   (Tentative release date only!)
 
 Version 4
   Using Lua as engine
-  Present in Aegisub 1.11 and later (tentative!)
+  Present in Aegisub 1.10 and later (tentative!)
   Heavily expanded feature set, allowing a much wider range of modifications,
   and more direct integration into the Aegisub user interface.

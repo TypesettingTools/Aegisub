@@ -134,7 +134,7 @@ encoding (number)
   constants.
 
 relative_to (number)
-  ???
+  From STS.h: "0: window, 1: video, 2: undefined (~window)"
 
 vertical (boolean)
   Whether vertical text semantics is used or not.
@@ -164,7 +164,7 @@ layer (number)
 
 start_time (number)
 end_time (number)
-  Start/end time of the line in miliseconds.
+  Start/end time of the line in milliseconds.
 
 style (string)
   Name of the style assigned to this line.
@@ -197,11 +197,12 @@ The Subtitle File object is a user data object with some of the metatable
 methods overridden to provide table-like access to the subtitle lines, as
 well as some functions to modify the subtitles.
 
-The following operations are supported:
+The following operations are supported.
 
-n = subs[0]
-n = subs.length
+n = #subs
+n = subs.n
   Retrieve the number of lines in total.
+  The first syntax is preferred.
 
 line = subs[i]
   Retrieve line i, assuming 1 <= i <= n.
@@ -222,16 +223,176 @@ subs.deleterange(a, b)
   nothing is done.
 
 subs[0] = line
-subs.append(line)
-  Append a line to the file.
+subs.append(line[, line2, ...])
+  Append one or more lines to a file.
 
 subs[-i] = line
 subs.insert(i, line[, line2, ...])
-  Insert a line before index i.
-  The function syntax can also insert multiple lines.
+  Insert one or more lines before index i.
 
-(Note that the function-syntax ways of doing these operations is slower than
-the array-syntax way of doing them.)
+Note that the array-style accessors are most likely faster for any case only
+involving one line at a time, while the function syntax versions are probably
+faster if operating on multiple lines at a time.
 
 ---
 
+Parsing tag data
+
+This function uses the Aegisub SSA parser to split a string into override
+blocks and text, and give separate access to each tag in override blocks.
+
+function aegisub.parse_tag_data(text)
+
+@text (string)
+  The SSA format string to parse.
+
+Returns: A Parsed Tag Data table.
+
+---
+
+Recreating a line from tag data
+
+This function takes a Parsed Tag Data table and creates an SSA string from it.
+
+function aegisub.unparse_tag_data(tagdata)
+
+@tagdata (table)
+  The Parsed Tag Data table to "unparse".
+
+Returns: A string, being the "unparsed" data.
+
+---
+
+Parsing karaoke data
+
+Tihs function uses the Aegisub SSA parser to split a string into karaoke
+syllables with additional calculated information added.
+
+function aegisub.parse_karaoke_data(text)
+
+@text (string)
+  The SSA format string to parse.
+
+Returns: A Parsed Karaoke Data table.
+
+---
+
+Parsed Tag Data table
+
+The Parsed Tag Data table is an Array Table containing a number of Parsed Line
+Block tables.
+
+
+Parsed Line Block table
+
+A Parsed Line Block describes part of a line. (See ass_dialogue.cpp:70 for a
+more complete description of this.
+There are several classes of Parsed Line Block tables, which have slightly
+varying fields.
+
+
+Base Parsed Line Block table class
+
+class (string)
+  One of:
+    "plain",
+    "override",
+    "drawing"
+
+
+"plain" and "drawing" Parsed Line Block table classes
+
+text (string)
+  The text contained in this block.
+
+
+"override" Parsed Line Block table class
+
+This class doesn't have any new, specifically named fields. It does, however,
+have multiple integer indexed fields, ie. acts as an Array Table.
+Each of these indexes refer to a table of type Parsed Override Tag.
+
+
+Parsed Override Tag table
+
+This table describes a single override-tag in an SSA line.
+
+valid (boolean)
+  Whether this tag was parsed as a valid tag, or is just used for representing
+  junk in the middle of the line.
+
+name (string)
+  Name of the tag, including leading backslash character. (In the case of
+  invalid tags, the leading backslash might not be present.)
+
+paran (boolean)
+  Whether this tag has parantheses in its textual representation.
+
+params (table)
+  This is an Array Table containing the parameters for this tag. It will
+  always have the maximum number of entries that can be supported by the tag,
+  but in case of omitted parameters, the parameters omitted will have 'false'
+  for value in this table.
+
+---
+
+Parsed Karaoke Data table
+
+The Parsed Karaoke Data table is simply an Array Table of Karaoke Syllable
+Data tables. However, the Parsed Karaoke Data table will always have one more
+item than its count shows, which is numbered 0 (zero). This item contains
+everything before the first syllable.
+
+
+Karaoke Syllable Data table
+
+This table contains information about a single karaoke syllable.
+
+duration (number)
+  Duration of the syllable in milliseconds.
+  (In case of syllable zero, this is always zero.)
+
+start_time (number)
+end_time (number)
+  Start and end times of the syllable, relative to the start of the line,
+  given in milliseconds.
+  (While these can technically easily be calculated from the duration data,
+  they are too convenient to leave out from the standard interface.)
+
+tag (string)
+  The tag used for marking up this syllable. Usually one of:
+    "k", "K", "kf", "ko"
+  (In case of syllable zero, this is always the empty string.)
+
+text (string)
+  The text of the syllable, including all additional override tags.
+
+text_stripped (string)
+  The text of the syllable, stripped of any override tags.
+
+---
+
+Setting undo points
+
+This function can only be used in macro features, it will have no effect when
+used in any other feature.
+It sets an undo point.
+
+You should always call this function after every operation that must be
+undoable as a separate step. It is considered very bad practice to modify
+the subtitles in a macro without setting at least one undo-point, which must
+be at the end.
+
+Furthermore, this function also marks the subtitles as "modified". No other
+function does this.
+
+function aegisub.set_undo_point(description)
+
+@description (string)
+  A short description of the operation that will be undone, if this undo-point
+  is used. Note that this is currently unused in Aegisub, and this parameter
+  is simply ignored.
+
+Returns: nothing.
+
+---
