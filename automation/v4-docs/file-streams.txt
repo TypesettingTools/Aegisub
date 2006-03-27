@@ -1,0 +1,216 @@
+Automation 4 File Stream interface
+
+This file describes the interface used for reading and writing files in
+Automation 4. This includes text encoding conversion routines.
+
+---
+
+About encodings
+
+All file streams always have a text encoding. By default, this is 'utf-8',
+unless the file format reader/writer was registered as a text format. In
+that case, the default encoding will be the one set by the user before the
+reader or writer is invoked.
+
+All string operations on a stream follow the current encoding. You can
+change the encoding during reading/writing, and the change will only take
+effect from that point on.
+
+You can perform binary IO by setting the encoding to 'binary' and using
+strings consisting only of codepoints 0 to 255.
+
+---
+
+Output File Stream user data object
+
+This object is passed to functions operating on an Output File Stream.
+
+---
+
+Input File Stream user data object
+
+This object is passed to functions operating on an Input File Stream.
+
+---
+
+Getting text encoding
+
+This function returns a string describing the current text encoding used for
+a file stream.
+
+function aegisub.fstream.get_encoding(stream)
+
+@stream (user data)
+  The Input File Stream or Output File Stream to get the encoding for.
+
+Returns: String describing the encoding. This string can be used for setting
+  the encoding later.
+
+---
+
+Setting text encoding
+
+This function changes the current text encoding used for a file stream.
+
+function aegisub.fstream.set_encoding(stream, encoding)
+
+@stream (user data)
+  The Input File Stream or Output File Stream to change the encoding for.
+
+@encoding (string)
+  The new encoding to use.
+
+Returns: String describing the old encoding.
+
+---
+
+File Pointer operations
+
+function aegisub.fstream.tell(stream)
+
+@stream (user data)
+  The Input File Stream or Output File Stream get position of.
+
+Returns: Number, the number of bytes since the beginning of the file.
+
+
+function aegisub.fstream.seek(stream, length)
+
+@stream (user data)
+  The Input File Stream or Output File Stream to seek in.
+
+@length (number)
+  Number of bytes to skip. This can be negative.
+  You can only seek backwards in an Output File Stream, and doing so truncates
+  the file.
+
+Returns: nothing.
+
+
+function aegisub.fstream.reset(stream)
+
+Resets the file pointer to the start of the file. Truncates an Output File
+Stream to zero bytes.
+
+@stream (user data)
+  The Input File Stream or Output File Stream to seek in.
+
+Returns: nothing.
+
+---
+
+Reading text
+
+All these functions assume the file is in the current encoding specified.
+
+
+function aegisub.fstream.skip_utf_bom(stream, change_encoding)
+
+This function has undefined behaviour unless called as the first
+read-operation on the stream.
+
+It detects whether the file stream starts with an UTF Byte Order Mark, skips
+the number of bytes used by that BOM, and optionally changes the current file
+encoding to match the detected BOM.
+
+@stream (user data)
+  The Input File Stream to read from.
+
+@change_encoding (boolean)
+  If true, change encoding to match the detected BOM.
+
+Returns: Boolean, whether a BOM was detected or not.
+
+
+function aegisub.fstream.read(stream, length)
+
+Read a number of characters from a file.
+
+@stream (user data)
+  The Input File Stream to read from.
+
+@length (number)
+  Number of characters to read. If this is zero, no data are read. If this
+  is larger than the number of characters available, data are read until the
+  end of file.
+
+Returns: String, the string read from the file.
+
+
+function aegisub.fstream.read_bytes(stream, length)
+
+Read a number of bytes from a file and convert to a string.
+
+@stream (user data)
+  The Input File Stream to read from.
+
+@length (number)
+  The number of bytes to read.
+
+Returns: String, best-effort converted from the bytes read.
+
+
+function aegisub.fstream.read_line(stream, include_newline)
+
+Read until next newline in the file. A newline is defined asone of these
+sequences of Unicode codepoints in the decoded text:
+  0x0A ("\n")
+  0x0D ("\r")
+  0x0D 0x0A ("\r\n")
+The sequence "\n\r" is interpreted as two newlines, ie. a newline, a blank
+line and yet another newline.
+
+@stream (user data)
+  The Input File Stream to read from.
+
+@include_newline (boolean)
+  If true, include the newline character(s) in the returned string.
+
+Returns: String.
+
+---
+
+Writing text
+
+All these functions assume the file is in the current encoding specified.
+
+
+function aegisub.fstream.write_utf_bom(stream)
+
+This function will corrupt your file if used anywhere else than on position 0.
+
+Write the correct UTF BOM character to the file, or nothing if not currently
+in an UTF encoding.
+
+@stream (user data)
+  The Output File Stream to write the BOM to.
+
+Returns: nothing.
+
+
+function aegisub.fstream.write(stream, text)
+
+Write a string to a file.
+
+@stream (user data)
+  The Output File Stream to write to.
+
+@text (string)
+  The text to write.
+
+Returns: nothing.
+
+
+function aegisub.fstream.write_line(stream, text)
+
+Write a string to a file, followed by an "\r\n" newline.
+
+@stream (user data)
+  The Output File Stream to write to.
+
+@text (string)
+  The text to write.
+
+Returns: nothing.
+
+---
