@@ -45,6 +45,9 @@
 //////////////
 // PRS writer
 class PRSSubtitleFormat : public SubtitleFormat {
+private:
+	wxImage CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch);
+
 public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);

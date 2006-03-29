@@ -36,6 +36,7 @@
 
 ///////////
 // Headers
+#include <wx/image.h>
 #include "subtitle_format_prs.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
@@ -49,7 +50,6 @@
 #include "../prs/prs_file.h"
 #include "../prs/prs_image.h"
 #include "../prs/prs_display.h"
-#include "../prs/prs_vsfilter_reader.h"
 
 
 //////////////////////
@@ -79,7 +79,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	IScriptEnvironment *env2 = avs2.GetEnv();
 
 	// Prepare environments
-	wxString val = wxString::Format(_T("BlankClip(pixel_type=\"RGB32\",length=%i,width=%i,height=%i,fps=%f"),display->provider->GetFrameCount(),display->provider->GetWidth(),display->provider->GetHeight(),display->provider->GetFPS());
+	wxString val = wxString::Format(_T("BlankClip(pixel_type=\"RGB32\",length=%i,width=%i,height=%i,fps=%f"),display->provider->GetFrameCount(),display->provider->GetSourceWidth(),display->provider->GetSourceHeight(),display->provider->GetFPS());
 	AVSValue script1 = env1->Invoke("Eval",AVSValue(wxString(val + _T(",color=$000000)")).mb_str(wxConvUTF8)));
 	AVSValue script2 = env2->Invoke("Eval",AVSValue(wxString(val + _T(",color=$FFFFFF)")).mb_str(wxConvUTF8)));
 	char temp[512];
@@ -110,6 +110,10 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			PVideoFrame frame1 = clip1->GetFrame(framen,env1);
 			PVideoFrame frame2 = clip2->GetFrame(framen,env2);
 
+			// Convert to PNG
+			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch());
+			bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
+
 			// Create PRSImage
 			PRSImage *img = new PRSImage;
 			img->id = id;
@@ -136,4 +140,67 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Save file
 	file.Save(filename.mb_str(wxConvLocal));
 #endif
+}
+
+
+//////////////////////////////////////////////
+// Generates a 32-bit wxImage from two frames
+// ------------------------------------------
+// Frame 1 should have the image on a BLACK background
+// Frame 2 should have the same image on a WHITE background
+wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch) {
+	// Allocate image data
+	unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*4);
+
+	// Pointers
+	const unsigned char *src1 = frame1;
+	const unsigned char *src2 = frame2;
+	unsigned char *dst = data + ((h-1)*w);
+
+	// Process
+	int r1,g1,b1,r2,g2,b2;
+	int r,g,b,a;
+	for (int y=0;y<h;y++) {
+		for (int x=0;x<w;x+=4) {
+			// Read pixels
+			b1 = *(src1++);
+			b2 = *(src2++);
+			g1 = *(src1++);
+			g2 = *(src2++);
+			r1 = *(src1++);
+			r2 = *(src2++);
+			src1++;
+			src2++;
+
+			// Calculate new values
+			a = 255 + r1 - r2;
+			if (a == 0) {
+				r = 0;
+				g = 0;
+				b = 0;
+			}
+			else {
+				r = r1*255 / a;
+				g = g1*255 / a;
+				b = b1*255 / a;
+			}
+
+			// Write to destination
+			*(dst++) = b;
+			*(dst++) = g;
+			*(dst++) = r;
+			*(dst++) = a;
+		}
+
+		// Roll back dst
+		dst -= 2*w;
+	}
+
+	// Create the actual image and return it
+	//return wxImage(w/4,h,data,false);
+	wxBitmap bmp ((const char*)data,w/4,h,32);
+	wxImage img = bmp.ConvertToImage();
+	if (img.HasAlpha()) wxLogMessage(_T("Has alpha"));
+	else wxLogMessage(_T("oshit."));
+	return img;
 }
