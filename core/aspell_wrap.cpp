@@ -35,31 +35,28 @@
 
 #ifndef NO_SPELLCHECKER
 
-//
+
+///////////
 //Includes
-//
 #include ".\aspell_wrap.h"
 
 
-//
+//////////////////////
 // Aspell Constructor
-//
-AspellWrapper::AspellWrapper(void)
-{
+AspellWrapper::AspellWrapper(void) {
 	loaded = false;
 }
 
-//
-// AviSynth destructor
-//
-AspellWrapper::~AspellWrapper(void)
-{
+
+/////////////////////
+// Aspell destructor
+AspellWrapper::~AspellWrapper(void) {
 	Unload();
 }
 
-//
+
+//////////////////////
 // Load Aspell-15.dll
-//
 void AspellWrapper::Load() {
 	if (!loaded) {
 		hLib=LoadLibrary(L"aspell-15.dll");
@@ -71,11 +68,8 @@ void AspellWrapper::Load() {
 }
 
 
-
-
-//
+/////////////////////////
 // Unloads Aspell-15.dll
-//
 void AspellWrapper::Unload() {
 	if (loaded) {
 		//delete_aspell_config();
@@ -86,9 +80,8 @@ void AspellWrapper::Unload() {
 
 
 
-//
+//////////////////
 // Declare global
-//
 AspellWrapper Aspell;
 
 #endif

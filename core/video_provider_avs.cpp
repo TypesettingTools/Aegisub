@@ -213,7 +213,6 @@ PClip AvisynthVideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip video
 
 wxBitmap AvisynthVideoProvider::GetFrame(int n, bool force) {
 	if (n != last_fnum || force) {
-
 		wxMutexLocker lock(AviSynthMutex);
 
 		PVideoFrame frame = ResizedVideo->GetFrame(n,env);
@@ -241,9 +240,13 @@ wxBitmap AvisynthVideoProvider::GetFrame(int n, bool force) {
 				src+=srcpitch;
 				dst-=rs;
 			}
-		} else if (depth == 24) {
+		}
+
+		else if (depth == 24) {
 			//fail
-		} else if (depth == 16) {
+		}
+
+		else if (depth == 16) {
 			const unsigned char *read_ptr = frame->GetReadPtr();
 			unsigned short *write_ptr = (unsigned short*) dst;
 			unsigned char r,g,b;
@@ -262,7 +265,9 @@ wxBitmap AvisynthVideoProvider::GetFrame(int n, bool force) {
 				write_ptr -= vi.width;
 				read_ptr += srcpitch;
 			}
-		} else {
+		}
+		
+		else {
 			//fail
 		}
 

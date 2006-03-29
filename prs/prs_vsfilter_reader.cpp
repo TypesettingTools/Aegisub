@@ -34,68 +34,13 @@
 //
 
 
-////////////
-// Includes
-#include "avisynth_wrap.h"
-
-#ifdef __WINDOWS__
-#include "options.h"
+///////////
+// Headers
+#include "prs_vsfilter_reader.h"
 
 
-///////////////////////////////
-// Static field initialization
-int AviSynthWrapper::avs_refcount = 0;
-HINSTANCE AviSynthWrapper::hLib = NULL;
-IScriptEnvironment *AviSynthWrapper::env = NULL;
-wxMutex AviSynthWrapper::AviSynthMutex;
-
-
-////////////////////////
-// AviSynth constructor
-AviSynthWrapper::AviSynthWrapper() {
-	if (!avs_refcount) {
-		hLib=LoadLibrary(_T("avisynth.dll"));
-
-		if (hLib == NULL) 
-			throw wxString(_T("Could not load avisynth.dll"));
-		
-		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
-
-		if (CreateScriptEnv == NULL)
-			throw wxString(_T("Failed to get function from avisynth.dll"));
-
-		// Require Avisynth 2.5.6+?
-		if (Options.AsBool(_T("Allow Ancient Avisynth")))
-			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION-1);
-		else
-			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
-
-		if (env == NULL)
-			throw wxString(_T("Failed to create a new avisynth script environment. Avisynth is too old?"));
-		// Set memory limit
-		int memoryMax = Options.AsInt(_T("Avisynth MemoryMax"));
-		if (memoryMax != 0)
-			env->SetMemoryMax(memoryMax);
-	}
-
-	avs_refcount++;
+///////////////////////////////////////////
+// Adds content of an ASSFile to a PRSFile
+void PRSVSFilterReader::ConvertFile(AssFile *subs,PRSFile *prs) {
+	// Open two AviSynth clips
 }
-
-
-///////////////////////
-// AviSynth destructor
-AviSynthWrapper::~AviSynthWrapper() {
-	if (!--avs_refcount) {
-		delete env;
-		FreeLibrary(hLib);
-	}
-}
-
-
-///////////////////
-// Get environment
-IScriptEnvironment *AviSynthWrapper::GetEnv() {
-	return env;
-}
-
-#endif

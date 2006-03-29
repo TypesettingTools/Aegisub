@@ -63,6 +63,7 @@ protected:
 public:
 	static wxMutex AviSynthMutex;
 
+	IScriptEnvironment *GetEnv();
 	AviSynthWrapper();
 	~AviSynthWrapper();
 };

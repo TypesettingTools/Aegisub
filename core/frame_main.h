@@ -72,10 +72,6 @@ private:
 	bool blockVideoLoad;
 
 	wxPanel *Panel;
-	SubtitlesGrid *SubsBox;
-	SubsEditBox *EditBox;
-	AudioBox *audioBox;
-	VideoBox *videoBox;
 
 	wxMenuBar *MenuBar;
 	wxMenu *fileMenu;
@@ -222,6 +218,11 @@ private:
 	void SynchronizeProject(bool FromSubs=false);
 
 public:
+	SubtitlesGrid *SubsBox;
+	SubsEditBox *EditBox;
+	AudioBox *audioBox;
+	VideoBox *videoBox;
+
 	wxBoxSizer *MainSizer;
 	wxBoxSizer *TopSizer;
 	wxBoxSizer *BottomSizer;
