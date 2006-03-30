@@ -114,7 +114,8 @@ void PRSDisplay::WriteData(std::vector<char> &vec) {
 // Read data
 void PRSDisplay::ReadData(std::vector<char> &vec) {
 	// Set length
-	unsigned __int32 size = vec.size();
+	unsigned __int32 size = 4 + 4 + 4 + 4 + 2 + 2 + 1 + 1;
+	if (size != vec.size()) return;
 	size_t pos = 0;
 
 	// Write start time
