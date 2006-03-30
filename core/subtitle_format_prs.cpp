@@ -47,6 +47,7 @@
 #include "main.h"
 #include "frame_main.h"
 #include "vfr.h"
+#include "utils.h"
 #include "../prs/prs_file.h"
 #include "../prs/prs_image.h"
 #include "../prs/prs_display.h"
@@ -143,68 +144,21 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 }
 
 
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO!! MOVE THE TWO FUNCTIONS BELOW INTO A CLASS OF THEIR OWN, THEY MIGHT FIND USE ELSEWHERE. //
+// Obvious choice would be the subtitles_rasterizer.h derivation for vsfilter, when that exists. //
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 //////////////////////////////////////////////
 // Generates a 32-bit wxImage from two frames
 // ------------------------------------------
 // Frame 1 should have the image on a BLACK background
 // Frame 2 should have the same image on a WHITE background
 wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch) {
-	//// Allocate image data
-	//unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*4);
-
-	//// Pointers
-	//const unsigned char *src1 = frame1;
-	//const unsigned char *src2 = frame2;
-	//unsigned char *dst = data + ((h-1)*w);
-
-	//// Process
-	//int r1,g1,b1,r2,g2,b2;
-	//int r,g,b,a;
-	//for (int y=0;y<h;y++) {
-	//	for (int x=0;x<w;x+=4) {
-	//		// Read pixels
-	//		b1 = *(src1++);
-	//		b2 = *(src2++);
-	//		g1 = *(src1++);
-	//		g2 = *(src2++);
-	//		r1 = *(src1++);
-	//		r2 = *(src2++);
-	//		src1++;
-	//		src2++;
-
-	//		// Calculate new values
-	//		a = 255 + r1 - r2;
-	//		if (a == 0) {
-	//			r = 0;
-	//			g = 0;
-	//			b = 0;
-	//		}
-	//		else {
-	//			r = r1*255 / a;
-	//			g = g1*255 / a;
-	//			b = b1*255 / a;
-	//		}
-
-	//		// Write to destination
-	//		*(dst++) = b;
-	//		*(dst++) = g;
-	//		*(dst++) = r;
-	//		*(dst++) = a;
-	//	}
-
-	//	// Roll back dst
-	//	dst -= 2*w;
-	//}
-
-	//// Create the actual image and return it
-	////return wxImage(w/4,h,data,false);
-	//wxBitmap bmp ((const char*)data,w/4,h,32);
-	//wxImage img = bmp.ConvertToImage();
-	//if (img.HasAlpha()) wxLogMessage(_T("Has alpha"));
-	//else wxLogMessage(_T("oshit."));
-	//return img;
-
-
 	// Allocate image data
 	unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*3);
 	unsigned char *alpha = (unsigned char*) malloc(sizeof(unsigned char)*w*h);
@@ -214,13 +168,17 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 	const unsigned char *src2 = frame2;
 	unsigned char *dst = data + ((h-1)*w*3/4);
 	unsigned char *dsta = alpha + ((h-1)*w/4);
-	int mina = 255;
-	int maxa = 0;
+
+	// Boundaries
+	int minx = w;
+	int miny = h;
+	int maxx = 0;
+	int maxy = 0;
 
 	// Process
 	int r1,g1,b1,r2,g2,b2;
 	int r,g,b,a;
-	for (int y=0;y<h;y++) {
+	for (int y=h;--y>=0;) {
 		for (int x=0;x<w;x+=4) {
 			// Read pixels
 			b1 = *(src1++);
@@ -240,9 +198,19 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 				b = 0;
 			}
 			else {
-				r = r1*255 / a;
-				g = g1*255 / a;
-				b = b1*255 / a;
+				// Update range
+				if (x < minx) minx = x;
+				else if (x > maxx) maxx = x;
+				if (y < miny) miny = y;
+				else if (y > maxy) maxy = y;
+
+				// Calculate colour components
+				int mod;
+				if (a > 8) mod = 0;
+				else mod = 256 >> a;
+				r = MAX(0,r1-mod)*255 / a;
+				g = MAX(0,g1-mod)*255 / a;
+				b = MAX(0,b1-mod)*255 / a;
 			}
 
 			// Write to destination
@@ -250,9 +218,6 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 			*(dst++) = g;
 			*(dst++) = b;
 			*(dsta++) = a;
-
-			if (a > maxa) maxa = a;
-			if (a < mina) mina = a;
 		}
 
 		// Roll back dst
@@ -260,10 +225,56 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 		dsta -= w/2;
 	}
 
-	wxLogMessage(wxString::Format(_T("Min: %i, Max: %i"),mina,maxa));
-
-	// Create the actual image and return it
+	// Create the actual image
 	wxImage img(w/4,h,data,false);
 	img.SetAlpha(alpha,false);
-	return img;
+
+	// Return subimage
+	minx /= 4;
+	maxx /= 4;
+	wxImage subimg = SubImageWithAlpha(img,wxRect(minx,miny,maxx-minx+1,maxy-miny+1));
+	return subimg;
+}
+
+
+////////////////////////////////////////////////
+// Creates a sub image preserving alpha channel
+// Modified from wx's source
+wxImage PRSSubtitleFormat::SubImageWithAlpha (wxImage source,const wxRect &rect) {
+    wxImage image;
+    wxCHECK_MSG(source.Ok(), image, wxT("invalid image") );
+    wxCHECK_MSG((rect.GetLeft()>=0) && (rect.GetTop()>=0) && (rect.GetRight()<=source.GetWidth()) && (rect.GetBottom()<=source.GetHeight()), image, wxT("invalid subimage size") );
+
+    int subwidth=rect.GetWidth();
+    const int subheight=rect.GetHeight();
+
+    image.Create(subwidth, subheight, false);
+
+	image.SetAlpha();
+    unsigned char *subdata = image.GetData();
+	unsigned char *data = source.GetData();
+    unsigned char *subalpha = image.GetAlpha();
+	unsigned char *alpha = source.GetAlpha();
+
+    wxCHECK_MSG(subdata, image, wxT("unable to create image"));
+
+    const int subleft=3*rect.GetLeft();
+    const int width=3*source.GetWidth();
+	const int afullwidth=source.GetWidth();
+	int awidth = subwidth;
+    subwidth*=3;
+
+    data+=rect.GetTop()*width+subleft;
+	alpha+=rect.GetTop()*afullwidth+rect.GetLeft();
+
+    for (long j = 0; j < subheight; ++j) {
+        memcpy(subdata, data, subwidth);
+		memcpy(subalpha, alpha, awidth);
+        subdata+=subwidth;
+		subalpha+=awidth;
+        data+=width;
+		alpha+=afullwidth;
+    }
+
+    return image;
 }

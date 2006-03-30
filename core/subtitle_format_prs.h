@@ -46,6 +46,7 @@
 // PRS writer
 class PRSSubtitleFormat : public SubtitleFormat {
 private:
+	wxImage SubImageWithAlpha(wxImage src,const wxRect &area);
 	wxImage CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch);
 
 public:
