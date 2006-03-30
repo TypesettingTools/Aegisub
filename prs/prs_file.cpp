@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <stdio.h>
+#include <vector>
 #include "prs_file.h"
 #include "prs_entry.h"
 #include "prs_image.h"
@@ -85,7 +86,7 @@ void PRSFile::Save(std::string path) {
 		fwrite("PRS",1,4,fp);
 
 		// Write version number (4 bytes)
-		__int32 temp = 1;
+		unsigned __int32 temp = 1;
 		fwrite(&temp,4,1,fp);
 
 		// Write stream name (for future scalability, there is only one for now)
@@ -95,15 +96,23 @@ void PRSFile::Save(std::string path) {
 		fwrite(&temp,4,1,fp);
 
 		// Write data blocks
+		std::vector<char> vec;
 		std::list<PRSEntry*>::iterator cur;
 		for (cur=entryList.begin();cur!=entryList.end();cur++) {
 			// Data blocks take care of writing themselves
 			// All of them start with a 4-byte string identifier, and a 4-byte length identifier
 			// A decoder can (and should!) ignore any block that it doesn't recognize
-			(*cur)->WriteData(fp);
+			vec.resize(0);
+			(*cur)->WriteData(vec);
+			fwrite(&vec[0],1,vec.size(),fp);
 		}
 	}
-	catch (...) {}
+
+	// Rethrow exceptions
+	catch (...) {
+		fclose(fp);
+		throw;
+	}
 
 	// Close file
 	fclose(fp);
@@ -113,6 +122,85 @@ void PRSFile::Save(std::string path) {
 ////////
 // Load
 void PRSFile::Load(std::string path, bool reset) {
+	// Reset first, if requested
+	if (reset) Reset();
+
+	// Open file
+	FILE *fp = fopen(path.c_str(),"rb");
+	if (!fp) throw "Failed to open file";
+
+	try {
+		// Read first four bytes
+		char buf[5];
+		buf[4] = 0;
+		fread(buf,1,4,fp);
+		if (strcmp(buf,"PRS") != 0) throw "Invalid file type.";
+
+		// Read version number
+		unsigned __int32 temp = 0;
+		fread(&temp,4,1,fp);
+		if (temp != 1) throw "Invalid version.";
+
+		// Read stream name length
+		fread(&temp,4,1,fp);
+
+		// Read stream name
+		if (temp > 0) {
+			char *streamName = new char[temp+1];
+			fread(streamName,1,temp,fp);
+
+			// We don't need it, so delete afterwards
+			delete streamName;
+		}
+
+		// Temporary vector
+		std::vector<char> vec;
+
+		// Read data blocks
+		while (!feof(fp)) {
+			// Read identifier and size
+			fread(buf,1,4,fp);
+			fread(&temp,4,1,fp);
+
+			// Image block
+			if (strcmp(buf,"IMG") == 0) {
+				// Read data
+				vec.resize(temp);
+				fread(&vec[0],1,temp,fp);
+
+				// Create object
+				PRSImage *img = new PRSImage;
+				img->ReadData(vec);
+				AddEntry(img);
+			}
+
+			// Display block
+			else if (strcmp(buf,"DSP") == 0) {
+				// Read data
+				vec.resize(temp);
+				fread(&vec[0],1,temp,fp);
+
+				// Create object
+				PRSDisplay *disp = new PRSDisplay;
+				disp->ReadData(vec);
+				AddEntry(disp);
+			}
+
+			// Unknown block, ignore it
+			else {
+				fseek(fp,temp,SEEK_CUR);
+			}
+		}
+	}
+
+	// Rethrow exceptions
+	catch (...) {
+		fclose(fp);
+		throw;
+	}
+
+	// Close file
+	fclose(fp);
 }
 
 

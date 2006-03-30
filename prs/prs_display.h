@@ -51,6 +51,7 @@ enum PRSBlendMode {
 ///////////
 // Headers
 #include "prs_entry.h"
+#include <vector>
 
 
 /////////////////
@@ -69,5 +70,6 @@ public:
 	~PRSDisplay();
 
 	PRSEntryType GetType() { return DISPLAY_ENTRY; }
-	void WriteData(FILE *fp);
+	void WriteData(std::vector<char> &vec);
+	void ReadData(std::vector<char> &vec);
 };

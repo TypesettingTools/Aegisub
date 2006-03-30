@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include <stdio.h>
+#include <vector>
 
 
 //////////////
@@ -65,7 +66,7 @@ public:
 	virtual ~PRSEntry() {}
 
 	virtual PRSEntryType GetType() { return BASE_ENTRY; }
-	virtual void WriteData(FILE *fp) { }
+	virtual void WriteData(std::vector<char> &vec) { }
 
 	static PRSImage* GetImage(PRSEntry* entry);
 	static PRSDisplay* GetDisplay(PRSDisplay* entry);

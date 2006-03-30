@@ -61,43 +61,64 @@ PRSDisplay::~PRSDisplay() {
 
 //////////////
 // Write data
-void PRSDisplay::WriteData(FILE *fp) {
+void PRSDisplay::WriteData(std::vector<char> &vec) {
+	// Set length
+	unsigned __int32 utemp = 4 + 4 + 4 + 2 + 2 + 2 + 1 + 1;
+	vec.resize(utemp+8);
+	size_t pos = 0;
+
 	// Write block identifier
-	fwrite("DSP",1,4,fp);
+	char str[] = "DSP";
+	memcpy(&vec[pos],str,4);
+	pos += 4;
 
 	// Write block length
-	unsigned __int32 utemp = 4 + 4 + 4 + 2 + 2 + 2 + 1 + 1;
-	fwrite(&utemp,4,1,fp);
+	memcpy(&vec[pos],&utemp,4);
+	pos += 4;
 
 	// Write start time
 	utemp = start;
-	fwrite(&utemp,4,1,fp);
+	memcpy(&vec[pos],&utemp,4);
+	pos += 4;
 
 	// Write end time
 	utemp = end;
-	fwrite(&utemp,4,1,fp);
+	memcpy(&vec[pos],&utemp,4);
+	pos += 4;
 
 	// Write image identifier
 	utemp = id;
-	fwrite(&utemp,4,1,fp);
+	memcpy(&vec[pos],&utemp,4);
+	pos += 4;
 
 	// Write layer
 	__int16 shorttemp = layer;
-	fwrite(&shorttemp,2,1,fp);
+	memcpy(&vec[pos],&shorttemp,2);
+	pos += 2;
 
 	// Write x
 	shorttemp = x;
-	fwrite(&shorttemp,2,1,fp);
+	memcpy(&vec[pos],&shorttemp,2);
+	pos += 2;
 
 	// Write y
 	shorttemp = y;
-	fwrite(&shorttemp,2,1,fp);
+	memcpy(&vec[pos],&shorttemp,2);
+	pos += 2;
 
 	// Write alpha multiplier
 	unsigned __int8 chartemp = alpha;
-	fwrite(&chartemp,1,1,fp);
+	memcpy(&vec[pos],&chartemp,1);
+	pos += 1;
 
 	// Write blend mode
 	chartemp = blend;
-	fwrite(&chartemp,1,1,fp);
+	memcpy(&vec[pos],&chartemp,1);
+	pos += 1;
+}
+
+
+/////////////
+// Read data
+void PRSDisplay::ReadData(std::vector<char> &vec) {
 }

@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include "prs_entry.h"
+#include <vector>
 
 
 ///////////////
@@ -65,5 +66,6 @@ public:
 	~PRSImage();
 
 	PRSEntryType GetType() { return IMAGE_ENTRY; }
-	void WriteData(FILE *fp);
+	void WriteData(std::vector<char> &vec);
+	void ReadData(std::vector<char> &vec);
 };

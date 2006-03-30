@@ -115,16 +115,17 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			// Convert to PNG
 			int x=0,y=0;
 			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y);
-			//RAMOutputStream stream;
+			if (!bmp.Ok()) continue;
 			wxMemoryOutputStream stream;
 			bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
-			//bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
+			bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
 
 			// Create PRSImage
 			PRSImage *img = new PRSImage;
 			img->id = id;
 			img->dataLen = stream.GetSize();
 			img->data = new char[img->dataLen];
+			img->imageType = PNG_IMG;
 			stream.CopyTo(img->data,img->dataLen);
 
 			// Create PRSDisplay
@@ -182,8 +183,8 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 	int maxy = 0;
 
 	// Process
-	int r1,g1,b1,r2,g2,b2;
-	int r,g,b,a;
+	unsigned char r1,g1,b1,r2,g2,b2;
+	unsigned char r,g,b,a;
 	for (int y=h;--y>=0;) {
 		for (int x=0;x<w;x+=4) {
 			// Read pixels
@@ -231,16 +232,21 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 		dsta -= w/2;
 	}
 
+	// Calculate sizes
+	minx /= 4;
+	maxx /= 4;
+	if (dstx) *dstx = minx;
+	if (dsty) *dsty = miny;
+	int width = maxx-minx+1;
+	int height = maxy-miny+1;
+	if (width <= 0 || height <= 0) return wxImage();
+
 	// Create the actual image
 	wxImage img(w/4,h,data,false);
 	img.SetAlpha(alpha,false);
 
 	// Return subimage
-	minx /= 4;
-	maxx /= 4;
-	if (dstx) *dstx = minx;
-	if (dsty) *dsty = miny;
-	wxImage subimg = SubImageWithAlpha(img,wxRect(minx,miny,maxx-minx+1,maxy-miny+1));
+	wxImage subimg = SubImageWithAlpha(img,wxRect(minx,miny,width,height));
 	return subimg;
 }
 
