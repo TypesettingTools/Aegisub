@@ -34,19 +34,54 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
-#include <wx/stream.h>
-#include <vector>
+#include "prs_image.h"
 
 
-///////////////////////////
-// RAM output stream class
-class RAMOutputStream : public wxOutputStream {
-public:
-	std::vector<char*> data;
-	wxOutputStream& Write(const void *buffer, size_t size);
-};
+///////////////
+// Constructor
+PRSImage::PRSImage() {
+	id = -1;
+	imageType = NULL_IMG;
+	dataLen = 0;
+	data = 0;
+}
+
+
+//////////////
+// Destructor
+PRSImage::~PRSImage() {
+	if (data) {
+		delete [] data;
+		data = 0;
+		dataLen = 0;
+	}
+}
+
+
+//////////////
+// Write data
+void PRSImage::WriteData(FILE *fp) {
+	// Write block identifier
+	fwrite("IMG",1,4,fp);
+
+	// Write block length
+	unsigned __int32 utemp = 4 + 4 + 4 + dataLen;
+	fwrite(&utemp,4,1,fp);
+
+	// Write image identifier
+	utemp = id;
+	fwrite(&utemp,4,1,fp);
+
+	// Write image format
+	utemp = imageType;
+	fwrite(&utemp,4,1,fp);
+
+	// Write data length
+	utemp = dataLen;
+	fwrite(&utemp,4,1,fp);
+
+	// Write data
+	fwrite(data,1,dataLen,fp);
+}

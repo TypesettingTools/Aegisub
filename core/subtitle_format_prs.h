@@ -40,7 +40,6 @@
 ///////////
 // Headers
 #include "subtitle_format.h"
-#include "ram_output_stream.h"
 
 
 //////////////

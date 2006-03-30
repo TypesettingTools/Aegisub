@@ -36,14 +36,68 @@
 
 ///////////
 // Headers
-#include "ram_output_stream.h"
+#include "prs_display.h"
 
 
-/////////
-// Write
-wxOutputStream& RAMOutputStream::Write(const void *buffer, size_t size) {
-	size_t start = data.size();
-	data.resize(start+size);
-	memcpy(&data[start],buffer,size);
-	return *this;
+///////////////
+// Constructor
+PRSDisplay::PRSDisplay() {
+	start = -1;
+	end = -1;
+	id = -1;
+	layer = 0;
+	x = 0;
+	y = 0;
+	alpha = 255;
+	blend = BLEND_NORMAL;
+}
+
+
+//////////////
+// Destructor
+PRSDisplay::~PRSDisplay() {
+}
+
+
+//////////////
+// Write data
+void PRSDisplay::WriteData(FILE *fp) {
+	// Write block identifier
+	fwrite("DSP",1,4,fp);
+
+	// Write block length
+	unsigned __int32 utemp = 4 + 4 + 4 + 2 + 2 + 2 + 1 + 1;
+	fwrite(&utemp,4,1,fp);
+
+	// Write start time
+	utemp = start;
+	fwrite(&utemp,4,1,fp);
+
+	// Write end time
+	utemp = end;
+	fwrite(&utemp,4,1,fp);
+
+	// Write image identifier
+	utemp = id;
+	fwrite(&utemp,4,1,fp);
+
+	// Write layer
+	__int16 shorttemp = layer;
+	fwrite(&shorttemp,2,1,fp);
+
+	// Write x
+	shorttemp = x;
+	fwrite(&shorttemp,2,1,fp);
+
+	// Write y
+	shorttemp = y;
+	fwrite(&shorttemp,2,1,fp);
+
+	// Write alpha multiplier
+	unsigned __int8 chartemp = alpha;
+	fwrite(&chartemp,1,1,fp);
+
+	// Write blend mode
+	chartemp = blend;
+	fwrite(&chartemp,1,1,fp);
 }

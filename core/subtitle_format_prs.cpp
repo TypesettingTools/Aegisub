@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/image.h>
+#include <wx/mstream.h>
 #include "subtitle_format_prs.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
@@ -114,16 +115,17 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			// Convert to PNG
 			int x=0,y=0;
 			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y);
-			//bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
-			RAMOutputStream stream;
+			//RAMOutputStream stream;
+			wxMemoryOutputStream stream;
 			bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
+			//bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
 
 			// Create PRSImage
 			PRSImage *img = new PRSImage;
 			img->id = id;
-			img->dataLen = stream.data.size();
+			img->dataLen = stream.GetSize();
 			img->data = new char[img->dataLen];
-			memcpy(img->data,&stream.data[0],img->dataLen);
+			stream.CopyTo(img->data,img->dataLen);
 
 			// Create PRSDisplay
 			PRSDisplay *display = new PRSDisplay;
@@ -143,7 +145,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	}
 
 	// Save file
-	file.Save(filename.mb_str(wxConvLocal));
+	file.Save((const char*)filename.mb_str(wxConvLocal));
 #endif
 }
 

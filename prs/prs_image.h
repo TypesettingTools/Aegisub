@@ -43,10 +43,27 @@
 
 
 ///////////////
+// Image types
+enum PRSImageType {
+	WXIMAGE = -1,
+	NULL_IMG,
+	PNG_IMG,
+	BMP_RGB24_IMG
+};
+
+
+///////////////
 // Image class
 class PRSImage : public PRSEntry {
 public:
-	int id;
-	int dataLen;
+	PRSImageType imageType;
+	unsigned int id;
+	unsigned int dataLen;
 	void *data;
+
+	PRSImage();
+	~PRSImage();
+
+	PRSEntryType GetType() { return IMAGE_ENTRY; }
+	void WriteData(FILE *fp);
 };

@@ -37,10 +37,24 @@
 #pragma once
 
 
+///////////
+// Headers
+#include <stdio.h>
+
+
 //////////////
 // Prototypes
 class PRSDisplay;
 class PRSImage;
+
+
+///////////////
+// Entry types
+enum PRSEntryType {
+	BASE_ENTRY = 0,
+	IMAGE_ENTRY,
+	DISPLAY_ENTRY
+};
 
 
 ////////////////////////
@@ -48,7 +62,10 @@ class PRSImage;
 class PRSEntry {
 public:
 	PRSEntry() {}
-	~PRSEntry() {}
+	virtual ~PRSEntry() {}
+
+	virtual PRSEntryType GetType() { return BASE_ENTRY; }
+	virtual void WriteData(FILE *fp) { }
 
 	static PRSImage* GetImage(PRSEntry* entry);
 	static PRSDisplay* GetDisplay(PRSDisplay* entry);

@@ -36,7 +36,11 @@
 
 ///////////
 // Headers
+#include <stdio.h>
 #include "prs_file.h"
+#include "prs_entry.h"
+#include "prs_image.h"
+#include "prs_display.h"
 
 
 ///////////////
@@ -48,18 +52,67 @@ PRSFile::PRSFile () {
 //////////////
 // Destructor
 PRSFile::~PRSFile() {
+	Reset();
+}
+
+
+//////////////
+// Reset file
+void PRSFile::Reset() {
+	// Clear list of entries
+	std::list<PRSEntry*>::iterator cur;
+	for (cur=entryList.begin();cur!=entryList.end();cur++) {
+		delete *cur;
+	}
+	entryList.clear();
 }
 
 
 ////////
 // Save
-void PRSFile::Save(const char *path) {
+void PRSFile::Save(std::string path) {
+	// I'm using C's stdio instead of C++'s fstream because I feel that fstream is
+	// pretty lame for binary data, so I need to make sure that no exceptions are thrown from here.
+
+	// TODO: Make this endianness-independent
+
+	// Open file
+	FILE *fp = fopen(path.c_str(),"wb");
+	if (!fp) throw "Failed to open file";
+
+	try {
+		// Write the "PRS" (zero-terminated) string ID (4 bytes)
+		fwrite("PRS",1,4,fp);
+
+		// Write version number (4 bytes)
+		__int32 temp = 1;
+		fwrite(&temp,4,1,fp);
+
+		// Write stream name (for future scalability, there is only one for now)
+		// This is writen as 4 bytes for length, and then length bytes for actual name.
+		// Since we set length to zero, the actual name string is never writen.
+		temp = 0;
+		fwrite(&temp,4,1,fp);
+
+		// Write data blocks
+		std::list<PRSEntry*>::iterator cur;
+		for (cur=entryList.begin();cur!=entryList.end();cur++) {
+			// Data blocks take care of writing themselves
+			// All of them start with a 4-byte string identifier, and a 4-byte length identifier
+			// A decoder can (and should!) ignore any block that it doesn't recognize
+			(*cur)->WriteData(fp);
+		}
+	}
+	catch (...) {}
+
+	// Close file
+	fclose(fp);
 }
 
 
 ////////
 // Load
-void PRSFile::Load(const char *path, bool reset) {
+void PRSFile::Load(std::string path, bool reset) {
 }
 
 

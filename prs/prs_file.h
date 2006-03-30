@@ -60,6 +60,6 @@ public:
 
 	void AddEntry(PRSEntry *entry);
 
-	void Save(const char *path);
-	void Load(const char *path,bool reset=true);
+	void Save(std::string path);
+	void Load(std::string path,bool reset=true);
 };

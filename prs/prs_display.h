@@ -40,11 +40,11 @@
 ///////////////
 // Blend modes
 enum PRSBlendMode {
-	NORMAL = 0,
-	ADD,
-	SUBTRACT,
-	INVERSE_SUBTRACT,
-	MULTIPLY
+	BLEND_NORMAL = 0,
+	BLEND_ADD,
+	BLEND_SUBTRACT,
+	BLEND_INVERSE_SUBTRACT,
+	BLEND_MULTIPLY
 };
 
 
@@ -57,11 +57,17 @@ enum PRSBlendMode {
 // Display class
 class PRSDisplay : public PRSEntry {
 public:
-	int start;				// First time to show this on (INCLUSIVE) (possible first frame?)
-	int end;				// Last time to show this on (EXCLUSIVE) (possible last frame?)
-	int id;					// ID of picture to be shown
-	int layer;				// Number of layer to draw this on
+	unsigned int start;		// First time to show this on (INCLUSIVE) (possible first frame?)
+	unsigned int end;		// Last time to show this on (EXCLUSIVE) (possible last frame?)
+	unsigned int id;		// ID of picture to be shown
+	unsigned int layer;		// Number of layer to draw this on
 	short x,y;				// X and Y coordinates to draw picture on
 	unsigned char alpha;	// Alpha blend of picture
 	unsigned char blend;	// Blend mode to use
+
+	PRSDisplay();
+	~PRSDisplay();
+
+	PRSEntryType GetType() { return DISPLAY_ENTRY; }
+	void WriteData(FILE *fp);
 };
