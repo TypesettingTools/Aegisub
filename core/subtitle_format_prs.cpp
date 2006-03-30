@@ -98,7 +98,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	AssFile *ass = AssFile::top;
 	AssDialogue *diag = NULL;
 	PClip clip1 = script1.AsClip();
-	PClip clip2 = script1.AsClip();
+	PClip clip2 = script2.AsClip();
 	int id = 0;
 	for (entryIter cur=ass->Line.begin();cur!=ass->Line.end();cur++) {
 		diag = AssEntry::GetAsDialogue(*cur);
@@ -149,13 +149,73 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 // Frame 1 should have the image on a BLACK background
 // Frame 2 should have the same image on a WHITE background
 wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch) {
+	//// Allocate image data
+	//unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*4);
+
+	//// Pointers
+	//const unsigned char *src1 = frame1;
+	//const unsigned char *src2 = frame2;
+	//unsigned char *dst = data + ((h-1)*w);
+
+	//// Process
+	//int r1,g1,b1,r2,g2,b2;
+	//int r,g,b,a;
+	//for (int y=0;y<h;y++) {
+	//	for (int x=0;x<w;x+=4) {
+	//		// Read pixels
+	//		b1 = *(src1++);
+	//		b2 = *(src2++);
+	//		g1 = *(src1++);
+	//		g2 = *(src2++);
+	//		r1 = *(src1++);
+	//		r2 = *(src2++);
+	//		src1++;
+	//		src2++;
+
+	//		// Calculate new values
+	//		a = 255 + r1 - r2;
+	//		if (a == 0) {
+	//			r = 0;
+	//			g = 0;
+	//			b = 0;
+	//		}
+	//		else {
+	//			r = r1*255 / a;
+	//			g = g1*255 / a;
+	//			b = b1*255 / a;
+	//		}
+
+	//		// Write to destination
+	//		*(dst++) = b;
+	//		*(dst++) = g;
+	//		*(dst++) = r;
+	//		*(dst++) = a;
+	//	}
+
+	//	// Roll back dst
+	//	dst -= 2*w;
+	//}
+
+	//// Create the actual image and return it
+	////return wxImage(w/4,h,data,false);
+	//wxBitmap bmp ((const char*)data,w/4,h,32);
+	//wxImage img = bmp.ConvertToImage();
+	//if (img.HasAlpha()) wxLogMessage(_T("Has alpha"));
+	//else wxLogMessage(_T("oshit."));
+	//return img;
+
+
 	// Allocate image data
-	unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*4);
+	unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*3);
+	unsigned char *alpha = (unsigned char*) malloc(sizeof(unsigned char)*w*h);
 
 	// Pointers
 	const unsigned char *src1 = frame1;
 	const unsigned char *src2 = frame2;
-	unsigned char *dst = data + ((h-1)*w);
+	unsigned char *dst = data + ((h-1)*w*3/4);
+	unsigned char *dsta = alpha + ((h-1)*w/4);
+	int mina = 255;
+	int maxa = 0;
 
 	// Process
 	int r1,g1,b1,r2,g2,b2;
@@ -186,21 +246,24 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 			}
 
 			// Write to destination
-			*(dst++) = b;
-			*(dst++) = g;
 			*(dst++) = r;
-			*(dst++) = a;
+			*(dst++) = g;
+			*(dst++) = b;
+			*(dsta++) = a;
+
+			if (a > maxa) maxa = a;
+			if (a < mina) mina = a;
 		}
 
 		// Roll back dst
-		dst -= 2*w;
+		dst -= w*3/2;
+		dsta -= w/2;
 	}
 
+	wxLogMessage(wxString::Format(_T("Min: %i, Max: %i"),mina,maxa));
+
 	// Create the actual image and return it
-	//return wxImage(w/4,h,data,false);
-	wxBitmap bmp ((const char*)data,w/4,h,32);
-	wxImage img = bmp.ConvertToImage();
-	if (img.HasAlpha()) wxLogMessage(_T("Has alpha"));
-	else wxLogMessage(_T("oshit."));
+	wxImage img(w/4,h,data,false);
+	img.SetAlpha(alpha,false);
 	return img;
 }
