@@ -64,8 +64,8 @@ PRSImage::~PRSImage() {
 // Write data
 void PRSImage::WriteData(std::vector<char> &vec) {
 	// Set length
-	unsigned __int32 utemp = 4 + 4 + 4 + dataLen;
-	vec.resize(utemp+8);
+	unsigned __int32 size = 4 + 4 + 4 + dataLen;
+	vec.resize(size+8);
 	size_t pos = 0;
 
 	// Write block identifier
@@ -74,22 +74,19 @@ void PRSImage::WriteData(std::vector<char> &vec) {
 	pos += 4;
 
 	// Write block length
-	memcpy(&vec[pos],&utemp,4);
+	memcpy(&vec[pos],&size,4);
 	pos += 4;
 
 	// Write image identifier
-	utemp = id;
-	memcpy(&vec[pos],&utemp,4);
+	memcpy(&vec[pos],&id,4);
 	pos += 4;
 
 	// Write image format
-	utemp = imageType;
-	memcpy(&vec[pos],&utemp,4);
+	memcpy(&vec[pos],&imageType,4);
 	pos += 4;
 
 	// Write data length
-	utemp = dataLen;
-	memcpy(&vec[pos],&utemp,4);
+	memcpy(&vec[pos],&dataLen,4);
 	pos += 4;
 
 	// Write data
@@ -101,4 +98,23 @@ void PRSImage::WriteData(std::vector<char> &vec) {
 /////////////
 // Read data
 void PRSImage::ReadData(std::vector<char> &vec) {
+	// Set length
+	unsigned __int32 size = vec.size();
+	size_t pos = 0;
+
+	// Read image identifier
+	memcpy(&id,&vec[pos],4);
+	pos += 4;
+
+	// Write image format
+	memcpy(&imageType,&vec[pos],4);
+	pos += 4;
+
+	// Write data length
+	memcpy(&dataLen,&vec[pos],4);
+	pos += 4;
+
+	// Write data
+	memcpy(data,&vec[pos],dataLen);
+	pos += dataLen;
 }

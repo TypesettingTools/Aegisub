@@ -63,8 +63,8 @@ PRSDisplay::~PRSDisplay() {
 // Write data
 void PRSDisplay::WriteData(std::vector<char> &vec) {
 	// Set length
-	unsigned __int32 utemp = 4 + 4 + 4 + 2 + 2 + 2 + 1 + 1;
-	vec.resize(utemp+8);
+	unsigned __int32 size = 4 + 4 + 4 + 4 + 2 + 2 + 1 + 1;
+	vec.resize(size+8);
 	size_t pos = 0;
 
 	// Write block identifier
@@ -73,47 +73,39 @@ void PRSDisplay::WriteData(std::vector<char> &vec) {
 	pos += 4;
 
 	// Write block length
-	memcpy(&vec[pos],&utemp,4);
+	memcpy(&vec[pos],&size,4);
 	pos += 4;
 
 	// Write start time
-	utemp = start;
-	memcpy(&vec[pos],&utemp,4);
+	memcpy(&vec[pos],&start,4);
 	pos += 4;
 
 	// Write end time
-	utemp = end;
-	memcpy(&vec[pos],&utemp,4);
+	memcpy(&vec[pos],&end,4);
 	pos += 4;
 
 	// Write image identifier
-	utemp = id;
-	memcpy(&vec[pos],&utemp,4);
+	memcpy(&vec[pos],&id,4);
 	pos += 4;
 
 	// Write layer
-	__int16 shorttemp = layer;
-	memcpy(&vec[pos],&shorttemp,2);
-	pos += 2;
+	memcpy(&vec[pos],&layer,4);
+	pos += 4;
 
 	// Write x
-	shorttemp = x;
-	memcpy(&vec[pos],&shorttemp,2);
+	memcpy(&vec[pos],&x,2);
 	pos += 2;
 
 	// Write y
-	shorttemp = y;
-	memcpy(&vec[pos],&shorttemp,2);
+	memcpy(&vec[pos],&y,2);
 	pos += 2;
 
 	// Write alpha multiplier
-	unsigned __int8 chartemp = alpha;
-	memcpy(&vec[pos],&chartemp,1);
+	memcpy(&vec[pos],&alpha,1);
 	pos += 1;
 
 	// Write blend mode
-	chartemp = blend;
-	memcpy(&vec[pos],&chartemp,1);
+	memcpy(&vec[pos],&blend,1);
 	pos += 1;
 }
 
@@ -121,4 +113,39 @@ void PRSDisplay::WriteData(std::vector<char> &vec) {
 /////////////
 // Read data
 void PRSDisplay::ReadData(std::vector<char> &vec) {
+	// Set length
+	unsigned __int32 size = vec.size();
+	size_t pos = 0;
+
+	// Write start time
+	memcpy(&start,&vec[pos],4);
+	pos += 4;
+
+	// Write end time
+	memcpy(&end,&vec[pos],4);
+	pos += 4;
+
+	// Write image identifier
+	memcpy(&id,&vec[pos],4);
+	pos += 4;
+
+	// Write layer
+	memcpy(&layer,&vec[pos],4);
+	pos += 4;
+
+	// Write x
+	memcpy(&x,&vec[pos],2);
+	pos += 2;
+
+	// Write y
+	memcpy(&y,&vec[pos],2);
+	pos += 2;
+
+	// Write alpha multiplier
+	memcpy(&alpha,&vec[pos],1);
+	pos += 1;
+
+	// Write blend mode
+	memcpy(&blend,&vec[pos],1);
+	pos += 1;
 }
