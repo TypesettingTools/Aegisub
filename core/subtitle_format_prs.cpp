@@ -112,22 +112,26 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			PVideoFrame frame2 = clip2->GetFrame(framen,env2);
 
 			// Convert to PNG
-			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch());
-			bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
+			int x=0,y=0;
+			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y);
+			//bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
+			RAMOutputStream stream;
+			bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
 
 			// Create PRSImage
 			PRSImage *img = new PRSImage;
 			img->id = id;
-			img->dataLen = 0;
-			img->data = NULL;
+			img->dataLen = stream.data.size();
+			img->data = new char[img->dataLen];
+			memcpy(img->data,&stream.data[0],img->dataLen);
 
 			// Create PRSDisplay
 			PRSDisplay *display = new PRSDisplay;
 			display->start = diag->Start.GetMS();
 			display->end = diag->End.GetMS();
 			display->id = id;
-			display->x = 0;
-			display->y = 0;
+			display->x = x;
+			display->y = y;
 			display->alpha = 255;
 			display->blend = 0;
 
@@ -158,7 +162,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 // ------------------------------------------
 // Frame 1 should have the image on a BLACK background
 // Frame 2 should have the same image on a WHITE background
-wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch) {
+wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch, int *dstx, int *dsty) {
 	// Allocate image data
 	unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*3);
 	unsigned char *alpha = (unsigned char*) malloc(sizeof(unsigned char)*w*h);
@@ -232,6 +236,8 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 	// Return subimage
 	minx /= 4;
 	maxx /= 4;
+	if (dstx) *dstx = minx;
+	if (dsty) *dsty = miny;
 	wxImage subimg = SubImageWithAlpha(img,wxRect(minx,miny,maxx-minx+1,maxy-miny+1));
 	return subimg;
 }

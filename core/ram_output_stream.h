@@ -39,18 +39,14 @@
 
 ///////////
 // Headers
-#include "subtitle_format.h"
-#include "ram_output_stream.h"
+#include <wx/stream.h>
+#include <vector>
 
 
-//////////////
-// PRS writer
-class PRSSubtitleFormat : public SubtitleFormat {
-private:
-	wxImage SubImageWithAlpha(wxImage src,const wxRect &area);
-	wxImage CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch, int *x=NULL, int *y=NULL);
-
+///////////////////////////
+// RAM output stream class
+class RAMOutputStream : public wxOutputStream {
 public:
-	bool CanWriteFile(wxString filename);
-	void WriteFile(wxString filename,wxString encoding);
+	std::vector<char*> data;
+	wxOutputStream& Write(const void *buffer, size_t size);
 };
