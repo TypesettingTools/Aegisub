@@ -41,6 +41,7 @@
 #include "subtitle_format_prs.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
+#include "ass_override.h"
 #include "avisynth_wrap.h"
 #include "video_box.h"
 #include "video_display.h"
@@ -49,6 +50,7 @@
 #include "frame_main.h"
 #include "vfr.h"
 #include "utils.h"
+#include "md5.h"
 #include "../prs/prs_file.h"
 #include "../prs/prs_image.h"
 #include "../prs/prs_display.h"
@@ -98,37 +100,70 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 	// Loop through subtitles in file
 	AssFile *ass = AssFile::top;
-	AssDialogue *diag = NULL;
-	PClip clip1 = script1.AsClip();
-	PClip clip2 = script2.AsClip();
-	wxArrayInt frames;
-	int id = 0;
+	std::vector<int> frames;
 	for (entryIter cur=ass->Line.begin();cur!=ass->Line.end();cur++) {
-		diag = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *diag = AssEntry::GetAsDialogue(*cur);
 
 		// Dialogue found
 		if (diag) {
 			// Parse tags
 			diag->ParseASSTags();
 
-			// Check if there is any animation tag
+			// Check if there is any animation tag, to flag the line as animated, forcing storage of every frame
+			// THIS NEEDS OPTIMIZATION!
+			// Currently it will redraw whole line, even if only some time of it is animated.
+			// This is later hopefully removed by duplicate checker, but it would be faster if done here
 			bool hasAnimation = false;
 			int blocks = diag->Blocks.size();
 			AssDialogueBlockOverride *block;
 			for (int i=0;i<blocks;i++) {
 				block = AssDialogueBlock::GetAsOverride(diag->Blocks[i]);
 				if (block) {
-					hasAnimation = true;
+					// Found an override block, see if it contains any animation tags
+					int tags = block->Tags.size();
+					for (int j=0;j<tags;j++) {
+						wxString tagName = block->Tags[j]->Name;
+						if (tagName == _T("\\t") || tagName == _T("\\move") || tagName == _T("\\k") || tagName == _T("\\K") ||
+							tagName == _T("\\kf") || tagName == _T("\\ko") || tagName == _T("\\fad") || tagName == _T("\\fade")) {
+							hasAnimation = true;
+						}
+					}
 				}
 			}
 
-			// If it has animation, include all frames, otherwise, just the first
-			if (hasAnimation) {
-				int start = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
-				int end = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
-				for (int i=start;i<=end;i++) frames.Add(i);
+			// Calculate start and end times
+			size_t start = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
+			size_t end = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
+
+			// Ensure that the vector is long enough
+			if (frames.size() <= end) frames.resize(end+1);
+
+			// Fill data
+			// 2 = Store this frame
+			// 1 = Repeat last frame
+			// 0 = Don't store this frame
+			bool lastOn = false;
+			for (size_t i=start;i<=end;i++) {
+				// Put a keyframe at the very start, or everywhere if it's animated
+				if (i == start || hasAnimation) frames[i] = 2;
+
+				else {
+					// Already set to 1 or 2, meaning that another subtitle is here already
+					if (frames[i] != 0) lastOn = true;
+
+					// Set to 0, so nothing is here
+					else {
+						// Just came out of a subtitle end, put a keyframe here
+						if (lastOn) {
+							frames[i] = 2;
+							lastOn = false;
+						}
+
+						// Otherwise, just repeat
+						frames[i] = 1;
+					}
+				}
 			}
-			else frames.Add(VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true));
 
 			// Clean up
 			diag->ClearBlocks();
@@ -136,10 +171,15 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	}
 
 	// Render all frames that were detected to contain subtitles
-	int totalFrames = frames.Count();
-	for (int i=0;i<totalFrames;i++) {
+	PClip clip1 = script1.AsClip();
+	PClip clip2 = script2.AsClip();
+	int totalFrames = frames.size();
+	int id = 0;
+	for (int framen=0;framen<totalFrames;framen++) {
+		// Render it?
+		if (frames[framen] == 0) continue;
+
 		// Read its image
-		int framen = frames[i];
 		PVideoFrame frame1 = clip1->GetFrame(framen,env1);
 		PVideoFrame frame2 = clip2->GetFrame(framen,env2);
 
@@ -158,11 +198,22 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		img->data = new char[img->dataLen];
 		img->imageType = PNG_IMG;
 		stream.CopyTo(img->data,img->dataLen);
+		
+		// Hash the PRSImage data
+		md5_state_t state;
+		md5_init(&state);
+		md5_append(&state,(md5_byte_t*)img->data,img->dataLen);
+		md5_finish(&state,(md5_byte_t*)img->md5);
+
+		// Find start and end times
+		int start = framen;
+		while (++framen<totalFrames && frames[framen] == 1);
+		int end = framen-1;
 
 		// Create PRSDisplay
 		PRSDisplay *display = new PRSDisplay;
-		display->start = diag->Start.GetMS();
-		display->end = diag->End.GetMS();
+		display->start = VFR_Output.GetTimeAtFrame(start,true);
+		display->end = VFR_Output.GetTimeAtFrame(end,false);
 		display->id = id;
 		display->x = x;
 		display->y = y;
