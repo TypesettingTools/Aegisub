@@ -57,11 +57,15 @@ enum PRSImageType {
 // Image class
 class PRSImage : public PRSEntry {
 public:
-	PRSImageType imageType;
-	unsigned __int32 id;
-	unsigned __int32 dataLen;
-	void *data;
-	char md5[16];
+	PRSImageType imageType;		// Image type (PNG, BMP, etc)
+	unsigned __int32 id;		// ID of this image
+	unsigned __int32 dataLen;	// Length (in bytes) of the data stored in the "data" field
+	void *data;					// Image data (e.g. raw PNG file)
+
+	// The following block of data is internal only, used for encoder optimizations
+	char md5[16];				// MD5 hash of "data"
+	int w,h;					// Width and height of image
+	int maxAlpha;				// Maximum alpha
 
 	PRSImage();
 	~PRSImage();

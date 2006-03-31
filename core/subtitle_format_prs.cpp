@@ -73,8 +73,9 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 #ifdef __WINDOWS__
 	// Video loaded?
 	VideoDisplay *display = ((AegisubApp*)wxTheApp)->frame->videoBox->videoDisplay;
+	if (!display->loaded) throw _T("Video not loaded!");
 
-	// Create file
+	// Create the PRS file
 	PRSFile file;
 
 	// Open two Avisynth environments
@@ -82,7 +83,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	IScriptEnvironment *env1 = avs1.GetEnv();
 	IScriptEnvironment *env2 = avs2.GetEnv();
 
-	// Prepare environments
+	// Prepare the Avisynth environments, that is, generate blank clips and hardsub into them
 	wxString val = wxString::Format(_T("BlankClip(pixel_type=\"RGB32\",length=%i,width=%i,height=%i,fps=%f"),display->provider->GetFrameCount(),display->provider->GetSourceWidth(),display->provider->GetSourceHeight(),display->provider->GetFPS());
 	AVSValue script1 = env1->Invoke("Eval",AVSValue(wxString(val + _T(",color=$000000)")).mb_str(wxConvUTF8)));
 	AVSValue script2 = env2->Invoke("Eval",AVSValue(wxString(val + _T(",color=$FFFFFF)")).mb_str(wxConvUTF8)));
@@ -117,22 +118,32 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 		// Convert to PNG (the block is there to force it to dealloc bmp earlier)
 		int x=0,y=0;
+		int maxalpha=0;
+		int imgw,imgh;
 		wxMemoryOutputStream stream;
 		{
-			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y);
+			// Get wxImage and convert to PNG
+			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y,&maxalpha);
 			if (!bmp.Ok()) continue;
 			bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
 			//bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
+
+			// Get size
+			imgw = bmp.GetWidth();
+			imgh = bmp.GetHeight();
 		}
 
 		// Create PRSImage
 		PRSImage *img = new PRSImage;
 		img->id = id;
+		img->imageType = PNG_IMG;
+		img->w = imgw;
+		img->h = imgh;
+		img->maxAlpha = maxalpha;
 		img->dataLen = stream.GetSize();
 		img->data = new char[img->dataLen];
-		img->imageType = PNG_IMG;
 		stream.CopyTo(img->data,img->dataLen);
-		
+
 		// Hash the PRSImage data
 		md5_state_t state;
 		md5_init(&state);
@@ -295,7 +306,7 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 // ------------------------------------------
 // Frame 1 should have the image on a BLACK background
 // Frame 2 should have the same image on a WHITE background
-wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch, int *dstx, int *dsty) {
+wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch, int *dstx, int *dsty, int *maxalpha) {
 	// Allocate image data
 	unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*3);
 	unsigned char *alpha = (unsigned char*) malloc(sizeof(unsigned char)*w*h);
@@ -313,6 +324,7 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 	int maxy = 0;
 
 	// Process
+	int maxA = 0;
 	unsigned char r1,g1,b1,r2,g2,b2;
 	unsigned char r,g,b,a;
 	for (int y=h;--y>=0;) {
@@ -353,12 +365,18 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 			*(dst++) = g;
 			*(dst++) = b;
 			*(dsta++) = a;
+
+			// Store maximum alpha
+			if (a > maxA) maxA = a;
 		}
 
 		// Roll back dst
 		dst -= w*3/2;
 		dsta -= w/2;
 	}
+
+	// Store maximum alpha
+	if (maxalpha) *maxalpha = maxA;
 
 	// Calculate sizes
 	minx /= 4;
