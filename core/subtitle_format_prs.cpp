@@ -156,7 +156,9 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 		bmp.SaveFile(tempFile,wxBITMAP_TYPE_PNG);
 
 		// Run PNGcrush on it
-		wxExecute(_T("pngout.exe ") + tempFile + _T(" ") + tempOut + _T(" /f0 /y /v"),wxEXEC_SYNC);
+		wxArrayString output;
+		wxArrayString errors;
+		wxExecute(_T("pngout.exe ") + tempFile + _T(" ") + tempOut + _T(" /f0 /y /v"),output,errors);
 
 		// Read file back
 		FILE *fp = fopen(tempOut.mb_str(wxConvLocal),"rb");
