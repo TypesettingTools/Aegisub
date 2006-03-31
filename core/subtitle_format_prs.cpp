@@ -106,26 +106,32 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 	// Get range
 	std::vector<int> frames = GetFrameRanges();
+	int totalFrames = frames.size();
+	int toDraw = 0;
+	for (int i=0;i<totalFrames;i++) {
+		if (frames[i] == 2) toDraw++;
+	}
 
 	// Set variables
-	int totalFrames = frames.size();
 	id = 0;
 	lastDisplay = NULL;
 	optimizer = 0;			// 0 = none, 1 = optipng, 2 = pngout
 
 	// Progress
-	DialogProgress *progress = new DialogProgress(NULL,_("Exporting PRS"),NULL,_("Writing file"),0,totalFrames);
+	DialogProgress *progress = new DialogProgress(NULL,_("Exporting PRS"),NULL,_("Writing file"),0,toDraw);
 	progress->Show();
-	progress->SetProgress(0,totalFrames);
+	progress->SetProgress(0,toDraw);
 
 	// Render all frames that were detected to contain subtitles
+	int drawn = 0;
 	for (int framen=0;framen<totalFrames;framen++) {
 		// Is this frame supposed to be rendered?
 		if (frames[framen] == 0) continue;
 
 		// Update progress
-		progress->SetProgress(framen,totalFrames);
+		progress->SetProgress(drawn,toDraw);
 		progress->SetText(wxString::Format(_T("Writing PRS file. Line: %i/%i"),framen,totalFrames));
+		drawn++;
 
 		// Read the frame image
 		PVideoFrame frame1 = clip1->GetFrame(framen,env1);
@@ -139,8 +145,21 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y,&maxalpha);
 		if (!bmp.Ok()) continue;
 
-		// Add image to file
-		InsertFrame(file,framen,frames,bmp,x,y,maxalpha);
+		// Get the list of rectangles
+		std::vector<wxRect> rects;
+		GetSubPictureRectangles(bmp,rects);
+
+		// Add each sub-image to file
+		int nrects = rects.size();
+		for (int i=0;i<nrects;i++) {
+			// Pick either full image or subimage, as appropriate
+			wxImage curImage;
+			if (rects[i].x == 0 && rects[i].y == 0 && rects[i].width == bmp.GetWidth() && rects[i].height == bmp.GetHeight()) curImage = bmp;
+			else curImage = SubImageWithAlpha(bmp,rects[i]);
+
+			// Insert the image
+			InsertFrame(file,framen,frames,curImage,x,y,maxalpha);
+		}
 	}
 
 	// Destroy progress bar
@@ -279,6 +298,13 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 		// Insert into list
 		file.AddEntry(display);
 	}
+}
+
+
+///////////////////////////////////
+// Get rectangles of useful glyphs
+void PRSSubtitleFormat::GetSubPictureRectangles(wxImage image,std::vector<wxRect> &rects) {
+	rects.push_back(wxRect(0,0,image.GetWidth(),image.GetHeight()));
 }
 
 
