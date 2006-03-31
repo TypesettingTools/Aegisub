@@ -70,6 +70,7 @@ Please visit http://aegisub.net to download latest version
 - Removed the "Help" button from Find/Replace dialog. (AMZ)
 - Added a bias slider to the "make times continuous" function in timing post-processor, which sets the point between the subs where the two lines will meet. (AMZ)
 - Separated keyframe thresholds on the timing post-processor in start and end. (AMZ)
+- Aegisub no longer enjoys littering your temporary files folder with 0 kB files. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

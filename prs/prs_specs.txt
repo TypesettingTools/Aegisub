@@ -6,6 +6,45 @@ WARNING: THIS FILE IS HEAVILY OUTDATED!!!!!
 Pre-Rendered Subtitles
 ----------------------
 
+Specifications by Neils Martin Hansen
+Modified and commented by Rodrigo Braz Monteiro
+
+
+Introduction
+------------
+
+Pre-Rendered Subtitles (PRS) is a compact raster data format for subtitles
+to be displayed into video files. It is designed to be simple, fast and small.
+
+Compared to hardsubs, PRS has the following advantages:
+- Most of the time, it is smaller (hardsubs often require 15 MB in a 24 minutes
+  video clip, whereas PRS often requires as little as 3 MB).
+- Can be disabled, for the viewers who preffer to watch the original content.
+- You can have multiple tracks, for multi-language files.
+- PRS subtitles are easier to replace, making the Quality Control process much
+  faster.
+
+Compared to softsubs, it has the following advantages:
+- Decoding is much faster, which allows you to create every sort of advanced
+  effects that can still be displayed in realtime.
+- Decoding is much simpler, making it possible to port to a wide range of
+  platforms.
+- It is harder to "steal" the subtitles.
+- Does not require the shipment of font files, which might be illegal.
+
+Other advantages of the PRS format are:
+- It allows effects that are not possible with any current subtitle format,
+  such as different blending modes.
+- It makes the task of hardsubbing a complex karaoke several times much faster.
+- It ensures that the encoder will encode the subtitles exactly as the
+  typesetter envisioned them.
+- It allows conversion of video into subtitles, e.g. effects done in programs
+  such as Adobe After Effects.
+
+
+Overview
+--------
+
 PRS stores either full PNG images, partial PNG images (through a number of
 blocks) or instructions to do simple modifications (translation, clearing)
 to the current output.

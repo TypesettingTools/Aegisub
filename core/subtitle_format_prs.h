@@ -44,9 +44,20 @@
 
 
 //////////////
+// Prototypes
+class PRSImage;
+class PRSDisplay;
+class PRSFile;
+
+
+//////////////
 // PRS writer
 class PRSSubtitleFormat : public SubtitleFormat {
 private:
+	PRSDisplay *lastDisplay;
+	int id;
+
+	void InsertFrame(PRSFile &file,int &framen,std::vector<int> &frames,wxImage &bmp,int x,int y,int maxalpha);
 	wxImage SubImageWithAlpha(wxImage src,const wxRect &area);
 	wxImage CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch, int *x=NULL, int *y=NULL, int *maxalpha=NULL);
 	std::vector<int> GetFrameRanges();

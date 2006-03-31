@@ -38,6 +38,8 @@
 // Headers
 #include <wx/image.h>
 #include <wx/mstream.h>
+#include <wx/filename.h>
+#include <wx/docview.h>
 #include "subtitle_format_prs.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
@@ -98,117 +100,162 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	catch (AvisynthError &err) {
 		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
 	}
+	PClip clip1 = script1.AsClip();
+	PClip clip2 = script2.AsClip();
 
 	// Get range
 	std::vector<int> frames = GetFrameRanges();
 
-	// Render all frames that were detected to contain subtitles
-	PClip clip1 = script1.AsClip();
-	PClip clip2 = script2.AsClip();
+	// Set variables
 	int totalFrames = frames.size();
-	int id = 0;
-	PRSDisplay *lastDisplay = NULL;
+	id = 0;
+	lastDisplay = NULL;
+
+	// Render all frames that were detected to contain subtitles
 	for (int framen=0;framen<totalFrames;framen++) {
-		// Render it?
+		// Is this frame supposed to be rendered?
 		if (frames[framen] == 0) continue;
 
-		// Read its image
+		// Read the frame image
 		PVideoFrame frame1 = clip1->GetFrame(framen,env1);
 		PVideoFrame frame2 = clip2->GetFrame(framen,env2);
 
-		// Convert to PNG (the block is there to force it to dealloc bmp earlier)
+		// Prepare to get wxImage
 		int x=0,y=0;
 		int maxalpha=0;
-		int imgw,imgh;
-		wxMemoryOutputStream stream;
-		{
-			// Get wxImage and convert to PNG
-			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y,&maxalpha);
-			if (!bmp.Ok()) continue;
-			bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
-			//bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
 
-			// Get size
-			imgw = bmp.GetWidth();
-			imgh = bmp.GetHeight();
-		}
+		// Get wxImage
+		wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y,&maxalpha);
+		if (!bmp.Ok()) continue;
 
-		// Create PRSImage
-		PRSImage *img = new PRSImage;
-		img->id = id;
-		img->imageType = PNG_IMG;
-		img->w = imgw;
-		img->h = imgh;
-		img->maxAlpha = maxalpha;
-		img->dataLen = stream.GetSize();
-		img->data = new char[img->dataLen];
-		stream.CopyTo(img->data,img->dataLen);
-
-		// Hash the PRSImage data
-		md5_state_t state;
-		md5_init(&state);
-		md5_append(&state,(md5_byte_t*)img->data,img->dataLen);
-		md5_finish(&state,(md5_byte_t*)img->md5);
-
-		// Check for duplicates
-		PRSImage *dupe = file.FindDuplicateImage(img);
-		int useID = id;
-
-		// Dupe found, use that instead
-		if (dupe) {
-			useID = dupe->id;
-			delete img;
-			img = NULL;
-		}
-
-		// Frame is all OK, add it to file
-		else {
-			file.AddEntry(img);
-			id++;
-		}
-
-		// Find start and end times
-		int startf = framen;
-		while (++framen<totalFrames && frames[framen] == 1);
-		int endf = --framen;
-		int start = VFR_Output.GetTimeAtFrame(startf,true);
-		int end = VFR_Output.GetTimeAtFrame(endf,false);
-
-		// Set blend data
-		unsigned char alpha = 255;
-		unsigned char blend = 0;
-
-		// Check if it's just an extension of last display
-		if (lastDisplay && lastDisplay->id == useID && lastDisplay->endFrame == startf-1 &&
-			lastDisplay->x == x && lastDisplay->y == y && lastDisplay->alpha == alpha && lastDisplay->blend == blend)
-		{
-			lastDisplay->end = start;
-			lastDisplay->endFrame = startf;
-		}
-
-		// It isn't; needs a new display command
-		else {
-			// Create PRSDisplay
-			PRSDisplay *display = new PRSDisplay;
-			display->start = start;
-			display->end = end;
-			display->startFrame = startf;
-			display->endFrame = endf;
-			display->id = useID;
-			display->x = x;
-			display->y = y;
-			display->alpha = alpha;
-			display->blend = blend;
-			lastDisplay = display;
-
-			// Insert into list
-			file.AddEntry(display);
-		}
+		// Add image to file
+		InsertFrame(file,framen,frames,bmp,x,y,maxalpha);
 	}
 
 	// Save file
 	file.Save((const char*)filename.mb_str(wxConvLocal));
 #endif
+}
+
+
+//////////////////////////
+// Insert frame into file
+void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &frames,wxImage &bmp,int x,int y,int maxalpha) {
+	// Generic data holder
+	//bmp.SaveFile(wxString::Format(_T("test_%i.png"),id),wxBITMAP_TYPE_PNG);
+	bool pngout = true;
+	size_t datasize = 0;
+	char *rawData = NULL;
+	std::vector<char> data;
+
+	// PNGout optimize
+	if (pngout) {
+		// Save temporary PNG
+		wxString tempFile = wxFileName::CreateTempFileName(_T("aegiprs"));
+		wxString tempOut = tempFile + _T("out.png");
+		bmp.SaveFile(tempFile,wxBITMAP_TYPE_PNG);
+
+		// Run PNGcrush on it
+		wxExecute(_T("pngout.exe ") + tempFile + _T(" ") + tempOut + _T(" /f0 /y /v"),wxEXEC_SYNC);
+
+		// Read file back
+		FILE *fp = fopen(tempOut.mb_str(wxConvLocal),"rb");
+		fseek(fp,0,SEEK_END);
+		datasize = ftell(fp);
+		data.resize(datasize);
+		rawData = &data[0];
+		rewind(fp);
+		fread(rawData,1,datasize,fp);
+		fclose(fp);
+
+		// Destroy temporary files
+		wxRemoveFile(tempFile);
+		wxRemoveFile(tempOut);
+	}
+
+	// No optimization (much faster)
+	else {
+		// Convert wxImage to PNG directly
+		wxMemoryOutputStream stream;
+		bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
+		datasize = stream.GetSize();
+		data.resize(datasize);
+		rawData = &data[0];
+		stream.CopyTo(rawData,datasize);
+	}
+
+	// Find start and end times
+	int startf = framen;
+	int totalFrames = frames.size();
+	while (++framen<totalFrames && frames[framen] == 1);
+	int endf = --framen;
+	int start = VFR_Output.GetTimeAtFrame(startf,true);
+	int end = VFR_Output.GetTimeAtFrame(endf,false);
+
+	// Create PRSImage
+	PRSImage *img = new PRSImage;
+	img->id = id;
+	img->imageType = PNG_IMG;
+	img->w = bmp.GetWidth();
+	img->h = bmp.GetHeight();
+	img->maxAlpha = maxalpha;
+	img->dataLen = datasize;
+	img->data = new char[img->dataLen];
+	memcpy(img->data,rawData,img->dataLen);
+
+	// Hash the PRSImage data
+	md5_state_t state;
+	md5_init(&state);
+	md5_append(&state,(md5_byte_t*)img->data,img->dataLen);
+	md5_finish(&state,(md5_byte_t*)img->md5);
+
+	// Check for duplicates
+	PRSImage *dupe = file.FindDuplicateImage(img);
+	int useID = id;
+
+	// Dupe found, use that instead
+	if (dupe) {
+		useID = dupe->id;
+		delete img;
+		img = NULL;
+	}
+
+	// Frame is all OK, add it to file
+	else {
+		file.AddEntry(img);
+		id++;
+	}
+
+	// Set blend data
+	unsigned char alpha = 255;
+	unsigned char blend = 0;
+
+	// Check if it's just an extension of last display
+	if (lastDisplay && lastDisplay->id == useID && lastDisplay->endFrame == startf-1 &&
+		lastDisplay->x == x && lastDisplay->y == y && lastDisplay->alpha == alpha && lastDisplay->blend == blend)
+	{
+		lastDisplay->end = start;
+		lastDisplay->endFrame = startf;
+	}
+
+	// It isn't; needs a new display command
+	else {
+		// Create PRSDisplay
+		PRSDisplay *display = new PRSDisplay;
+		display->start = start;
+		display->end = end;
+		display->startFrame = startf;
+		display->endFrame = endf;
+		display->id = useID;
+		display->x = x;
+		display->y = y;
+		display->alpha = alpha;
+		display->blend = blend;
+		lastDisplay = display;
+
+		// Insert into list
+		file.AddEntry(display);
+	}
 }
 
 

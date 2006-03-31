@@ -905,6 +905,7 @@ void VideoDisplay::OnPlayTimer(wxTimerEvent &event) {
 wxString VideoDisplay::GetTempWorkFile () {
 	if (tempfile.IsEmpty()) {
 		tempfile = wxFileName::CreateTempFileName(_T("aegisub"));
+		wxRemoveFile(tempfile);
 		tempfile += _T(".ass");
 	}
 	return tempfile;
