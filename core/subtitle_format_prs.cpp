@@ -101,48 +101,78 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	AssDialogue *diag = NULL;
 	PClip clip1 = script1.AsClip();
 	PClip clip2 = script2.AsClip();
+	wxArrayInt frames;
 	int id = 0;
 	for (entryIter cur=ass->Line.begin();cur!=ass->Line.end();cur++) {
 		diag = AssEntry::GetAsDialogue(*cur);
 
 		// Dialogue found
 		if (diag) {
-			// Read its image
-			int framen = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
-			PVideoFrame frame1 = clip1->GetFrame(framen,env1);
-			PVideoFrame frame2 = clip2->GetFrame(framen,env2);
+			// Parse tags
+			diag->ParseASSTags();
 
-			// Convert to PNG
-			int x=0,y=0;
-			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y);
-			if (!bmp.Ok()) continue;
-			wxMemoryOutputStream stream;
-			bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
-			bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
+			// Check if there is any animation tag
+			bool hasAnimation = false;
+			int blocks = diag->Blocks.size();
+			AssDialogueBlockOverride *block;
+			for (int i=0;i<blocks;i++) {
+				block = AssDialogueBlock::GetAsOverride(diag->Blocks[i]);
+				if (block) {
+					hasAnimation = true;
+				}
+			}
 
-			// Create PRSImage
-			PRSImage *img = new PRSImage;
-			img->id = id;
-			img->dataLen = stream.GetSize();
-			img->data = new char[img->dataLen];
-			img->imageType = PNG_IMG;
-			stream.CopyTo(img->data,img->dataLen);
+			// If it has animation, include all frames, otherwise, just the first
+			if (hasAnimation) {
+				int start = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
+				int end = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
+				for (int i=start;i<=end;i++) frames.Add(i);
+			}
+			else frames.Add(VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true));
 
-			// Create PRSDisplay
-			PRSDisplay *display = new PRSDisplay;
-			display->start = diag->Start.GetMS();
-			display->end = diag->End.GetMS();
-			display->id = id;
-			display->x = x;
-			display->y = y;
-			display->alpha = 255;
-			display->blend = 0;
-
-			// Insert into list
-			file.AddEntry(img);
-			file.AddEntry(display);
-			id++;
+			// Clean up
+			diag->ClearBlocks();
 		}
+	}
+
+	// Render all frames that were detected to contain subtitles
+	int totalFrames = frames.Count();
+	for (int i=0;i<totalFrames;i++) {
+		// Read its image
+		int framen = frames[i];
+		PVideoFrame frame1 = clip1->GetFrame(framen,env1);
+		PVideoFrame frame2 = clip2->GetFrame(framen,env2);
+
+		// Convert to PNG
+		int x=0,y=0;
+		wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y);
+		if (!bmp.Ok()) continue;
+		wxMemoryOutputStream stream;
+		bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
+		bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
+
+		// Create PRSImage
+		PRSImage *img = new PRSImage;
+		img->id = id;
+		img->dataLen = stream.GetSize();
+		img->data = new char[img->dataLen];
+		img->imageType = PNG_IMG;
+		stream.CopyTo(img->data,img->dataLen);
+
+		// Create PRSDisplay
+		PRSDisplay *display = new PRSDisplay;
+		display->start = diag->Start.GetMS();
+		display->end = diag->End.GetMS();
+		display->id = id;
+		display->x = x;
+		display->y = y;
+		display->alpha = 255;
+		display->blend = 0;
+
+		// Insert into list
+		file.AddEntry(img);
+		file.AddEntry(display);
+		id++;
 	}
 
 	// Save file

@@ -56,6 +56,7 @@ TipOfTheDay::TipOfTheDay (size_t currentTip): wxTipProvider(currentTip) {
 	tips.push_back(_("The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."));
 	tips.push_back(_("When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."));
 	tips.push_back(_("Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."));
+	tips.push_back(_("If anything goes wrong, blame movax."));
 	//tips.push_back(_(""));
 }
 
