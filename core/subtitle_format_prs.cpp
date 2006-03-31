@@ -53,6 +53,7 @@
 #include "vfr.h"
 #include "utils.h"
 #include "md5.h"
+#include "dialog_progress.h"
 #include "../prs/prs_file.h"
 #include "../prs/prs_image.h"
 #include "../prs/prs_display.h"
@@ -110,11 +111,21 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	int totalFrames = frames.size();
 	id = 0;
 	lastDisplay = NULL;
+	optimizer = 0;			// 0 = none, 1 = optipng, 2 = pngout
+
+	// Progress
+	DialogProgress *progress = new DialogProgress(NULL,_("Exporting PRS"),NULL,_("Writing file"),0,totalFrames);
+	progress->Show();
+	progress->SetProgress(0,totalFrames);
 
 	// Render all frames that were detected to contain subtitles
 	for (int framen=0;framen<totalFrames;framen++) {
 		// Is this frame supposed to be rendered?
 		if (frames[framen] == 0) continue;
+
+		// Update progress
+		progress->SetProgress(framen,totalFrames);
+		progress->SetText(wxString::Format(_T("Writing PRS file. Line: %i/%i"),framen,totalFrames));
 
 		// Read the frame image
 		PVideoFrame frame1 = clip1->GetFrame(framen,env1);
@@ -132,6 +143,9 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		InsertFrame(file,framen,frames,bmp,x,y,maxalpha);
 	}
 
+	// Destroy progress bar
+	progress->Destroy();
+
 	// Save file
 	file.Save((const char*)filename.mb_str(wxConvLocal));
 #endif
@@ -142,23 +156,30 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 // Insert frame into file
 void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &frames,wxImage &bmp,int x,int y,int maxalpha) {
 	// Generic data holder
-	//bmp.SaveFile(wxString::Format(_T("test_%i.png"),id),wxBITMAP_TYPE_PNG);
-	bool pngout = true;
 	size_t datasize = 0;
 	char *rawData = NULL;
 	std::vector<char> data;
+	//bmp.SaveFile(wxString::Format(_T("test_%i.png"),id),wxBITMAP_TYPE_PNG);
 
-	// PNGout optimize
-	if (pngout) {
-		// Save temporary PNG
+	// pngout/optipng optimize
+	if (optimizer) {
+		// Get temporary filename
 		wxString tempFile = wxFileName::CreateTempFileName(_T("aegiprs"));
 		wxString tempOut = tempFile + _T("out.png");
-		bmp.SaveFile(tempFile,wxBITMAP_TYPE_PNG);
 
-		// Run PNGcrush on it
+		// Prepare arrays to capture output
 		wxArrayString output;
 		wxArrayString errors;
-		wxExecute(_T("pngout.exe ") + tempFile + _T(" ") + tempOut + _T(" /f0 /y /v"),output,errors);
+
+		// Generate the temporary PNG and run the optimizer program on it
+		if (optimizer == 1) {
+			bmp.SaveFile(tempOut,wxBITMAP_TYPE_PNG);
+			wxExecute(AegisubApp::folderName + _T("optipng.exe -zc9 -zm8 -zs0-3 -f0 ") + tempOut,output,errors);
+		}
+		if (optimizer == 2) {
+			bmp.SaveFile(tempFile,wxBITMAP_TYPE_PNG);
+			wxExecute(AegisubApp::folderName + _T("pngout.exe ") + tempFile + _T(" ") + tempOut + _T(" /f0 /y /q"),output,errors);
+		}
 
 		// Read file back
 		FILE *fp = fopen(tempOut.mb_str(wxConvLocal),"rb");
@@ -434,7 +455,13 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 	if (dsty) *dsty = miny;
 	int width = maxx-minx+1;
 	int height = maxy-miny+1;
-	if (width <= 0 || height <= 0) return wxImage();
+
+	// 100% transparent image; clean up and return an empty one
+	if (width <= 0 || height <= 0) {
+		delete [] data;
+		delete [] alpha;
+		return wxImage();
+	}
 
 	// Create the actual image
 	wxImage img(w/4,h,data,false);

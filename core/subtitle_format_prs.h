@@ -56,6 +56,7 @@ class PRSSubtitleFormat : public SubtitleFormat {
 private:
 	PRSDisplay *lastDisplay;
 	int id;
+	int optimizer;
 
 	void InsertFrame(PRSFile &file,int &framen,std::vector<int> &frames,wxImage &bmp,int x,int y,int maxalpha);
 	wxImage SubImageWithAlpha(wxImage src,const wxRect &area);
