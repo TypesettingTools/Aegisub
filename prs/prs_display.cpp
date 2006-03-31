@@ -44,6 +44,8 @@
 PRSDisplay::PRSDisplay() {
 	start = -1;
 	end = -1;
+	startFrame = -1;
+	endFrame = -1;
 	id = -1;
 	layer = 0;
 	x = 0;

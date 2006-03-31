@@ -69,5 +69,5 @@ public:
 	virtual void WriteData(std::vector<char> &vec) { }
 
 	static PRSImage* GetImage(PRSEntry* entry);
-	static PRSDisplay* GetDisplay(PRSDisplay* entry);
+	static PRSDisplay* GetDisplay(PRSEntry* entry);
 };

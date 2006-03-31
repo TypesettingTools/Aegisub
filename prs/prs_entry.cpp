@@ -34,35 +34,24 @@
 //
 
 
-#pragma once
-
-
-//////////////
-// Prototypes
-class PRSEntry;
-class PRSImage;
-
-
 ///////////
 // Headers
-#include <list>
+#include "prs_entry.h"
+#include "prs_display.h"
+#include "prs_image.h"
 
 
-///////////////////////////////
-// Pre-Rendered Subtitles file
-class PRSFile {
-private:
-	std::list<PRSEntry*> entryList;
-	void Reset();
+///////////////////
+// Return as image
+PRSImage* PRSEntry::GetImage(PRSEntry* entry) {
+	if (entry->GetType() == IMAGE_ENTRY) return ((PRSImage*) entry);
+	return NULL;
+}
 
-public:
-	PRSFile();
-	~PRSFile();
 
-	void AddEntry(PRSEntry *entry);
-
-	void Save(std::string path);
-	void Load(std::string path,bool reset=true);
-
-	PRSImage *FindDuplicateImage(PRSImage *img);
-};
+/////////////////////
+// Return as display
+PRSDisplay* PRSEntry::GetDisplay(PRSEntry* entry) {
+	if (entry->GetType() == DISPLAY_ENTRY) return ((PRSDisplay*) entry);
+	return NULL;
+}

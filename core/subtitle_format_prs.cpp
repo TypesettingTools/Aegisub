@@ -98,6 +98,112 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
 	}
 
+	// Get range
+	std::vector<int> frames = GetFrameRanges();
+
+	// Render all frames that were detected to contain subtitles
+	PClip clip1 = script1.AsClip();
+	PClip clip2 = script2.AsClip();
+	int totalFrames = frames.size();
+	int id = 0;
+	PRSDisplay *lastDisplay = NULL;
+	for (int framen=0;framen<totalFrames;framen++) {
+		// Render it?
+		if (frames[framen] == 0) continue;
+
+		// Read its image
+		PVideoFrame frame1 = clip1->GetFrame(framen,env1);
+		PVideoFrame frame2 = clip2->GetFrame(framen,env2);
+
+		// Convert to PNG (the block is there to force it to dealloc bmp earlier)
+		int x=0,y=0;
+		wxMemoryOutputStream stream;
+		{
+			wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y);
+			if (!bmp.Ok()) continue;
+			bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
+			//bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
+		}
+
+		// Create PRSImage
+		PRSImage *img = new PRSImage;
+		img->id = id;
+		img->dataLen = stream.GetSize();
+		img->data = new char[img->dataLen];
+		img->imageType = PNG_IMG;
+		stream.CopyTo(img->data,img->dataLen);
+		
+		// Hash the PRSImage data
+		md5_state_t state;
+		md5_init(&state);
+		md5_append(&state,(md5_byte_t*)img->data,img->dataLen);
+		md5_finish(&state,(md5_byte_t*)img->md5);
+
+		// Check for duplicates
+		PRSImage *dupe = file.FindDuplicateImage(img);
+		int useID = id;
+
+		// Dupe found, use that instead
+		if (dupe) {
+			useID = dupe->id;
+			delete img;
+			img = NULL;
+		}
+
+		// Frame is all OK, add it to file
+		else {
+			file.AddEntry(img);
+			id++;
+		}
+
+		// Find start and end times
+		int startf = framen;
+		while (++framen<totalFrames && frames[framen] == 1);
+		int endf = --framen;
+		int start = VFR_Output.GetTimeAtFrame(startf,true);
+		int end = VFR_Output.GetTimeAtFrame(endf,false);
+
+		// Set blend data
+		unsigned char alpha = 255;
+		unsigned char blend = 0;
+
+		// Check if it's just an extension of last display
+		if (lastDisplay && lastDisplay->id == useID && lastDisplay->endFrame == startf-1 &&
+			lastDisplay->x == x && lastDisplay->y == y && lastDisplay->alpha == alpha && lastDisplay->blend == blend)
+		{
+			lastDisplay->end = start;
+			lastDisplay->endFrame = startf;
+		}
+
+		// It isn't; needs a new display command
+		else {
+			// Create PRSDisplay
+			PRSDisplay *display = new PRSDisplay;
+			display->start = start;
+			display->end = end;
+			display->startFrame = startf;
+			display->endFrame = endf;
+			display->id = useID;
+			display->x = x;
+			display->y = y;
+			display->alpha = alpha;
+			display->blend = blend;
+			lastDisplay = display;
+
+			// Insert into list
+			file.AddEntry(display);
+		}
+	}
+
+	// Save file
+	file.Save((const char*)filename.mb_str(wxConvLocal));
+#endif
+}
+
+
+////////////////////
+// Get frame ranges
+std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 	// Loop through subtitles in file
 	AssFile *ass = AssFile::top;
 	std::vector<int> frames;
@@ -170,65 +276,8 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		}
 	}
 
-	// Render all frames that were detected to contain subtitles
-	PClip clip1 = script1.AsClip();
-	PClip clip2 = script2.AsClip();
-	int totalFrames = frames.size();
-	int id = 0;
-	for (int framen=0;framen<totalFrames;framen++) {
-		// Render it?
-		if (frames[framen] == 0) continue;
-
-		// Read its image
-		PVideoFrame frame1 = clip1->GetFrame(framen,env1);
-		PVideoFrame frame2 = clip2->GetFrame(framen,env2);
-
-		// Convert to PNG
-		int x=0,y=0;
-		wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y);
-		if (!bmp.Ok()) continue;
-		wxMemoryOutputStream stream;
-		bmp.SaveFile(stream,wxBITMAP_TYPE_PNG);
-		bmp.SaveFile(filename + wxString::Format(_T("%i.png"),id),wxBITMAP_TYPE_PNG);
-
-		// Create PRSImage
-		PRSImage *img = new PRSImage;
-		img->id = id;
-		img->dataLen = stream.GetSize();
-		img->data = new char[img->dataLen];
-		img->imageType = PNG_IMG;
-		stream.CopyTo(img->data,img->dataLen);
-		
-		// Hash the PRSImage data
-		md5_state_t state;
-		md5_init(&state);
-		md5_append(&state,(md5_byte_t*)img->data,img->dataLen);
-		md5_finish(&state,(md5_byte_t*)img->md5);
-
-		// Find start and end times
-		int start = framen;
-		while (++framen<totalFrames && frames[framen] == 1);
-		int end = framen-1;
-
-		// Create PRSDisplay
-		PRSDisplay *display = new PRSDisplay;
-		display->start = VFR_Output.GetTimeAtFrame(start,true);
-		display->end = VFR_Output.GetTimeAtFrame(end,false);
-		display->id = id;
-		display->x = x;
-		display->y = y;
-		display->alpha = 255;
-		display->blend = 0;
-
-		// Insert into list
-		file.AddEntry(img);
-		file.AddEntry(display);
-		id++;
-	}
-
-	// Save file
-	file.Save((const char*)filename.mb_str(wxConvLocal));
-#endif
+	// Done
+	return frames;
 }
 
 
@@ -293,9 +342,7 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 				else if (y > maxy) maxy = y;
 
 				// Calculate colour components
-				int mod;
-				if (a > 8) mod = 0;
-				else mod = 256 >> a;
+				int mod = MAX(0,128/a-1);
 				r = MAX(0,r1-mod)*255 / a;
 				g = MAX(0,g1-mod)*255 / a;
 				b = MAX(0,b1-mod)*255 / a;

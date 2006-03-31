@@ -58,13 +58,15 @@ enum PRSBlendMode {
 // Display class
 class PRSDisplay : public PRSEntry {
 public:
-	unsigned int start;		// First time to show this on (INCLUSIVE) (possible first frame?)
-	unsigned int end;		// Last time to show this on (EXCLUSIVE) (possible last frame?)
-	unsigned int id;		// ID of picture to be shown
-	unsigned int layer;		// Number of layer to draw this on
-	short x,y;				// X and Y coordinates to draw picture on
-	unsigned char alpha;	// Alpha blend of picture
-	unsigned char blend;	// Blend mode to use
+	unsigned __int32 start;		// First time to show this on (INCLUSIVE)
+	unsigned __int32 end;		// Last time to show this on (EXCLUSIVE)
+	unsigned __int32 startFrame;// First frame to show this on (INCLUSIVE)
+	unsigned __int32 endFrame;	// Last frame to show this on (INCLUSIVE)
+	unsigned __int32 id;		// ID of picture to be shown
+	unsigned __int32 layer;		// Number of layer to draw this on
+	signed __int16 x,y;			// X and Y coordinates to draw picture on
+	unsigned __int8 alpha;		// Alpha blend of picture
+	unsigned __int8 blend;		// Blend mode to use
 
 	PRSDisplay();
 	~PRSDisplay();

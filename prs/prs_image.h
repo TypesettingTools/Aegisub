@@ -58,9 +58,10 @@ enum PRSImageType {
 class PRSImage : public PRSEntry {
 public:
 	PRSImageType imageType;
-	unsigned int id;
-	unsigned int dataLen;
+	unsigned __int32 id;
+	unsigned __int32 dataLen;
 	void *data;
+	char md5[16];
 
 	PRSImage();
 	~PRSImage();

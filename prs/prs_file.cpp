@@ -209,3 +209,31 @@ void PRSFile::Load(std::string path, bool reset) {
 void PRSFile::AddEntry(PRSEntry *entry) {
 	entryList.push_back(entry);
 }
+
+
+//////////////////////////////////////////////////
+// Checks if there is any duplicate of this image
+PRSImage *PRSFile::FindDuplicateImage(PRSImage *img) {
+	// Scan looking for duplicate hashes
+	PRSImage *orig;
+	std::list<PRSEntry*>::iterator cur;
+	for (cur=entryList.begin();cur!=entryList.end();cur++) {
+		orig = PRSEntry::GetImage(*cur);
+		if (orig) {
+			// Compare data lengths
+			if (orig->dataLen == img->dataLen) {
+				// Identical data lengths, compare hashes
+				if (memcmp(orig->md5,img->md5,16) == 0) {
+					// Identical hashes, compare image data to be sure
+					if (memcmp(orig->data,img->data,orig->dataLen) == 0) {
+						// Identical data, return
+						return orig;
+					}
+				}
+			}
+		}
+	}
+
+	// No duplicate found
+	return NULL;
+}
