@@ -6,7 +6,7 @@ WARNING: THIS FILE IS HEAVILY OUTDATED!!!!!
 Pre-Rendered Subtitles
 ----------------------
 
-Specifications by Neils Martin Hansen
+Specifications by Niels Martin Hansen
 Modified and commented by Rodrigo Braz Monteiro
 
 
@@ -35,7 +35,7 @@ Compared to softsubs, it has the following advantages:
 Other advantages of the PRS format are:
 - It allows effects that are not possible with any current subtitle format,
   such as different blending modes.
-- It makes the task of hardsubbing a complex karaoke several times much faster.
+- It makes the task of hardsubbing a complex karaoke much faster.
 - It ensures that the encoder will encode the subtitles exactly as the
   typesetter envisioned them.
 - It allows conversion of video into subtitles, e.g. effects done in programs
