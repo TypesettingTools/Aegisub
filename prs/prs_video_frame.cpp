@@ -39,6 +39,21 @@
 #include "prs_video_frame.h"
 
 
+//////////
+// Macros
+#ifndef MIN
+#define MIN(a,b) ((a)<(b))?(a):(b)
+#endif
+
+#ifndef MAX
+#define MAX(a,b) ((a)>(b))?(a):(b)
+#endif
+
+#ifndef MID
+#define MID(a,b,c) MAX(a,MIN(b,c))
+#endif
+
+
 ///////////////
 // Constructor
 PRSVideoFrame::PRSVideoFrame () {
@@ -60,5 +75,52 @@ PRSVideoFrame::~PRSVideoFrame () {
 
 ///////////////////////////////////
 // Overlay frame on top of another
-void PRSVideoFrame::Overlay(PRSVideoFrame *dst,int x,int y,unsigned char alpha) {
+void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char alpha,unsigned char blend) {
+	// TODO: Colorspace conversion, for now, the function assumes RGB32 on RGB32!
+
+	// Get pointers
+	const unsigned char *src;
+	unsigned char *dst;
+
+	// Get boundaries
+	int srcBpp = 4;
+	int dstBpp = 4;
+	int srcRowLen = w * srcBpp;
+	int dstRowLen = dstFrame->w * dstBpp;
+	int dstStarty = MAX(0,y);
+	int dstEndy = MIN(y+h,dstFrame->h);
+	int height = dstEndy - dstStarty;
+	int rowLen = MID(0,w,dstFrame->w - x);
+
+	// Values
+	char sc1,sc2,sc3,a,ia;
+	char dc1,dc2,dc3,da;
+
+	// Draw each row
+	for (int j=0;j<height;j++) {
+		src = (const unsigned char *) data[0] + j*srcRowLen;
+		dst = (unsigned char *) dstFrame->data[0] + (j+dstStarty)*dstRowLen + x*dstBpp;
+
+		// Draw the row
+		for (int i=0;i<rowLen;i++) {
+			// Read alpha
+			a = *src++;
+			da = *dst;
+			ia = 255-a;
+
+			// Read colors
+			sc1 = *src++;
+			dc1 = *(dst+1);
+			sc2 = *src++;
+			dc2 = *(dst+2);
+			sc3 = *src++;
+			dc3 = *(dst+3);
+
+			// Write colors
+			*dst++ = da;
+			*dst++ = (sc1*a + dc1*ia)/255;
+			*dst++ = (sc2*a + dc2*ia)/255;
+			*dst++ = (sc3*a + dc3*ia)/255;
+		}
+	}
 }

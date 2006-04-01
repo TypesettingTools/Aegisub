@@ -258,7 +258,7 @@ void PRSFile::DrawFrame(int n,PRSVideoFrame *frame) {
 		PRSVideoFrame *overFrame = image->GetDecodedFrame();
 
 		// Draw image on frame
-		// TODO
+		if (overFrame) overFrame->Overlay(frame,display->x,display->y,display->alpha,display->blend);
 
 		// Clean up
 		delete overFrame;

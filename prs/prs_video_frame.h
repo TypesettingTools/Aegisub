@@ -60,5 +60,5 @@ public:
 	PRSVideoFrame();
 	~PRSVideoFrame();
 
-	void Overlay(PRSVideoFrame *dst,int x,int y,unsigned char alpha=255);
+	void Overlay(PRSVideoFrame *dst,int x,int y,unsigned char alpha=255,unsigned char blend=0);
 };
