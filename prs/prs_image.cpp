@@ -139,7 +139,7 @@ PRSVideoFrame *PRSImage::GetDecodedFrame() {
 	try {
 		PNGWrapper png;
 		png.SetData(data);
-		png.Read(frame->data[0]);
+		png.Read(frame);
 	}
 	
 	// Handle errors

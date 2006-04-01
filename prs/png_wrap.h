@@ -34,6 +34,16 @@
 //
 
 
+///////////
+// Headers
+#include <png.h>
+
+
+//////////////
+// Prototypes
+class PRSVideoFrame;
+
+
 /////////////////////
 // PNG Wrapper class
 class PNGWrapper {
@@ -45,6 +55,9 @@ private:
 	void Begin();
 	void End();
 
+	static void memory_read_data(png_structp png_ptr, png_bytep data, png_size_t length);
+	void ReadData(png_bytep data, png_size_t length);
+
 public:
 	PNGWrapper();
 	~PNGWrapper();
@@ -52,5 +65,5 @@ public:
 	void SetData(void *ptr) { data = ptr; pos = 0; }
 	void *GetData() { return data; }
 
-	void Read(void *dst);
+	void Read(PRSVideoFrame *dst);
 };

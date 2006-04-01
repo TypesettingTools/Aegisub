@@ -38,6 +38,7 @@
 // Headers
 #include <png.h>
 #include "png_wrap.h"
+#include "prs_video_frame.h"
 
 
 ///////////////
@@ -57,18 +58,9 @@ PNGWrapper::~PNGWrapper() {
 
 //////////////
 // Read image
-void PNGWrapper::Read(void *dst) {
-	// Check initialization
-	if (!initialized) Begin();
-}
-
-
-//////////////
-// Initialize
-void PNGWrapper::Begin() {
-	// Check initialization
-	if (initialized) End();
-	initialized = true;
+void PNGWrapper::Read(PRSVideoFrame *frame) {
+	// Begin
+	Begin();
 
 	// Initialize libpng structures
 	png_structp png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -90,6 +82,29 @@ void PNGWrapper::Begin() {
 		throw 1;
 	}
 
+	// Set data reading
+	png_set_read_fn(png_ptr,this,memory_read_data);
+
+	// Set row pointers
+	png_bytepp row_pointers = (png_bytep *) png_malloc(png_ptr, frame->h*sizeof(png_bytep));
+	for (int i=0; i<frame->h; i++) row_pointers[i] = (png_bytep) (frame->data[0] + frame->w*i);
+	png_set_rows(png_ptr, info_ptr, row_pointers);
+
+	// Read data
+	png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
+
+	// Clean up
+	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+	End();
+}
+
+
+//////////////
+// Initialize
+void PNGWrapper::Begin() {
+	// Check initialization
+	if (initialized) End();
+	initialized = true;
 }
 
 
@@ -99,4 +114,17 @@ void PNGWrapper::End() {
 	// Check initialization
 	if (!initialized) return;
 	initialized = false;
+}
+
+
+/////////////
+// Read data
+void PNGWrapper::memory_read_data(png_structp png_ptr, png_bytep dstData, png_size_t length) {
+	PNGWrapper *wrapper = (PNGWrapper*) png_get_io_ptr(png_ptr);
+	wrapper->ReadData(dstData,length);
+}
+
+void PNGWrapper::ReadData(png_bytep dstData, png_size_t length) {
+	memcpy(dstData,((char*)data)+pos,length);
+	pos++;
 }
