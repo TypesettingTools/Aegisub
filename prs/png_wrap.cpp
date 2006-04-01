@@ -99,7 +99,7 @@ void PNGWrapper::Read(PRSVideoFrame *frame) {
 	frame->data[0] = new char[w*h*bpp];
 	frame->w = w;
 	frame->h = h;
-	frame->pitch = w;
+	frame->pitch = w*bpp;
 	frame->colorSpace = ColorSpace_RGB32;
 
 	// Copy data to frame

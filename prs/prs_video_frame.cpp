@@ -93,8 +93,8 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 	int rowLen = MID(0,w,dstFrame->w - x);
 
 	// Values
-	char sc1,sc2,sc3,a,ia;
-	char dc1,dc2,dc3,da;
+	unsigned char sc1,sc2,sc3,a,ia;
+	unsigned char dc1,dc2,dc3,da;
 
 	// Draw each row
 	for (int j=0;j<height;j++) {
@@ -103,24 +103,25 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 
 		// Draw the row
 		for (int i=0;i<rowLen;i++) {
-			// Read colors
-			sc1 = *src++;
-			dc1 = *(dst);
-			sc2 = *src++;
-			dc2 = *(dst+1);
+			// Read source
 			sc3 = *src++;
-			dc3 = *(dst+2);
-
-			// Read alpha
+			sc2 = *src++;
+			sc1 = *src++;
 			a = *src++;
-			da = *(dst+3);
 			ia = 255-a;
+
+			// Read destination
+			dc1 = *(dst);
+			dc2 = *(dst+1);
+			dc3 = *(dst+2);
+			da = *(dst+3);
 
 			// Write colors
 			*dst++ = (sc1*a + dc1*ia)/255;
 			*dst++ = (sc2*a + dc2*ia)/255;
 			*dst++ = (sc3*a + dc3*ia)/255;
-			*dst++ = 255-(ia*(255-da)/255);
+			//*dst++ = 255-(ia*(255-da)/255);
+			*dst++ = da;
 		}
 	}
 }
