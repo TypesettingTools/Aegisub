@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,38 +37,23 @@
 #pragma once
 
 
-//////////////
-// Prototypes
-class PRSEntry;
-class PRSImage;
-class PRSDisplay;
-
-
 ///////////
 // Headers
-#include <list>
-#include <vector>
-#include "prs_video_frame.h"
+#include <windows.h>
+#include "avisynth.h"
+#include "../prs/prs_file.h"
 
 
-///////////////////////////////
-// Pre-Rendered Subtitles file
-class PRSFile {
+/////////
+// Class
+class DrawPRS : public GenericVideoFilter {
 private:
-	std::list<PRSEntry*> entryList;
-	void Reset();
+	IScriptEnvironment* env;
+	PRSFile file;
 
 public:
-	PRSFile();
-	~PRSFile();
+	DrawPRS (IScriptEnvironment* _env, PClip _child, const char *file);
+	~DrawPRS ();
 
-	void AddEntry(PRSEntry *entry);
-
-	void Save(std::string path);
-	void Load(std::string path,bool reset=true);
-
-	void GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks);
-	void DrawFrame(int n,PRSVideoFrame *frame);
-
-	PRSImage *FindDuplicateImage(PRSImage *img);
+	PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* env);
 };

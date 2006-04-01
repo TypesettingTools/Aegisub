@@ -79,7 +79,7 @@ void PRSFile::Save(std::string path) {
 
 	// Open file
 	FILE *fp = fopen(path.c_str(),"wb");
-	if (!fp) throw "Failed to open file";
+	if (!fp) throw new std::exception("Failed to open file");
 
 	try {
 		// Write the "PRS" (zero-terminated) string ID (4 bytes)
@@ -127,19 +127,19 @@ void PRSFile::Load(std::string path, bool reset) {
 
 	// Open file
 	FILE *fp = fopen(path.c_str(),"rb");
-	if (!fp) throw "Failed to open file";
+	if (!fp) throw new std::exception("Failed to open file");
 
 	try {
 		// Read first four bytes
 		char buf[5];
 		buf[4] = 0;
 		fread(buf,1,4,fp);
-		if (strcmp(buf,"PRS") != 0) throw "Invalid file type.";
+		if (strcmp(buf,"PRS") != 0) throw new std::exception("Invalid file type.");
 
 		// Read version number
 		unsigned __int32 temp = 0;
 		fread(&temp,4,1,fp);
-		if (temp != 1) throw "Invalid version.";
+		if (temp != 1) throw new std::exception("Invalid version.");
 
 		// Read stream name length
 		fread(&temp,4,1,fp);
@@ -236,4 +236,25 @@ PRSImage *PRSFile::FindDuplicateImage(PRSImage *img) {
 
 	// No duplicate found
 	return NULL;
+}
+
+
+////////////////
+// Draw a frame
+void PRSFile::DrawFrame(int n,PRSVideoFrame *frame) {
+	// Get list of display blocks
+	std::vector<PRSDisplay*> blocks;
+	GetDisplayBlocksAtFrame(n,blocks);
+
+	// Draw the blocks
+	int nblocks = blocks.size();
+	for (int i=0;i<nblocks;i++) {
+		PRSDisplay *display = blocks[i];
+	}
+}
+
+
+////////////////////////////////////////////////
+// Finds which display blocks are at a position
+void PRSFile::GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks) {
 }

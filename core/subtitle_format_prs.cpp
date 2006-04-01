@@ -115,7 +115,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Set variables
 	id = 0;
 	lastDisplay = NULL;
-	optimizer = 0;			// 0 = none, 1 = optipng, 2 = pngout
+	optimizer = 1;			// 0 = none, 1 = optipng, 2 = pngout
 
 	// Progress
 	bool canceled = false;

@@ -99,7 +99,7 @@ void PRSImage::WriteData(std::vector<char> &vec) {
 // Read data
 void PRSImage::ReadData(std::vector<char> &vec) {
 	// Set length
-	unsigned __int32 size = vec.size();
+	size_t size = vec.size();
 	size_t pos = 0;
 
 	// Read image identifier

@@ -33,42 +33,26 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-
 #pragma once
 
 
-//////////////
-// Prototypes
-class PRSEntry;
-class PRSImage;
-class PRSDisplay;
+///////////////
+// Color space
+enum ColorSpaceType {
+	ColorSpace_RGB32,
+	ColorSpace_RGB24,
+	ColorSpace_YUY2,
+	ColorSpace_YV12
+};
 
 
-///////////
-// Headers
-#include <list>
-#include <vector>
-#include "prs_video_frame.h"
-
-
-///////////////////////////////
-// Pre-Rendered Subtitles file
-class PRSFile {
-private:
-	std::list<PRSEntry*> entryList;
-	void Reset();
-
+/////////////////////
+// Video frame class
+class PRSVideoFrame {
 public:
-	PRSFile();
-	~PRSFile();
-
-	void AddEntry(PRSEntry *entry);
-
-	void Save(std::string path);
-	void Load(std::string path,bool reset=true);
-
-	void GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks);
-	void DrawFrame(int n,PRSVideoFrame *frame);
-
-	PRSImage *FindDuplicateImage(PRSImage *img);
+	char *data[4];
+	int w;
+	int h;
+	int pitch;
+	ColorSpaceType colorSpace;
 };

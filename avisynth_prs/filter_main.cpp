@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,41 +34,22 @@
 //
 
 
-#pragma once
-
-
-//////////////
-// Prototypes
-class PRSEntry;
-class PRSImage;
-class PRSDisplay;
-
-
 ///////////
 // Headers
-#include <list>
-#include <vector>
-#include "prs_video_frame.h"
+#include <windows.h>
+#include "avisynth.h"
+#include "draw_prs.h"
 
 
-///////////////////////////////
-// Pre-Rendered Subtitles file
-class PRSFile {
-private:
-	std::list<PRSEntry*> entryList;
-	void Reset();
+// This is the function that created the filter, when the filter has been called.
+AVSValue __cdecl CreateDrawPRS(AVSValue args, void* user_data, IScriptEnvironment* env) {
+	return new DrawPRS(env, args[0].AsClip(), args[1].AsString());  
+}
 
-public:
-	PRSFile();
-	~PRSFile();
 
-	void AddEntry(PRSEntry *entry);
-
-	void Save(std::string path);
-	void Load(std::string path,bool reset=true);
-
-	void GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks);
-	void DrawFrame(int n,PRSVideoFrame *frame);
-
-	PRSImage *FindDuplicateImage(PRSImage *img);
-};
+// The following function is the function that actually registers the filter in AviSynth
+// It is called automatically, when the plugin is loaded to see which functions this filter contains.
+extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* env) {
+    env->AddFunction("DrawPRS", "c[file]s", CreateDrawPRS, 0);
+    return "`Pre-Rendered Subtitles' by Rodrigo Braz Monteiro (ArchMage ZeratuL)";
+}

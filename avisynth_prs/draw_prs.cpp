@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,41 +34,63 @@
 //
 
 
-#pragma once
+///////////
+// Headers
+#include "draw_prs.h"
+#include "../prs/prs_file.h"
+#include "../prs/prs_video_frame.h"
+
+
+///////////////
+// Constructor
+DrawPRS::DrawPRS (IScriptEnvironment* _env, PClip _child, const char *filename)
+: GenericVideoFilter(_child)
+{
+	// Set environment
+	env = _env;
+
+	// Load file
+	try {
+		file.Load(filename);
+	}
+
+	// Catch exception
+	catch (std::exception e) {
+		env->ThrowError(e.what());
+	}
+}
 
 
 //////////////
-// Prototypes
-class PRSEntry;
-class PRSImage;
-class PRSDisplay;
+// Destructor
+DrawPRS::~DrawPRS() {
+}
 
 
-///////////
-// Headers
-#include <list>
-#include <vector>
-#include "prs_video_frame.h"
+/////////////
+// Get frame
+PVideoFrame __stdcall DrawPRS::GetFrame(int n, IScriptEnvironment* env) {
+	// Get frame
+	PVideoFrame avsFrame = child->GetFrame(n,env);
 
+	try {
+		// Create the PRSFrame structure
+		PRSVideoFrame frame;
+		frame.data[0] = (char*) avsFrame->GetWritePtr();
+		frame.w = avsFrame->GetRowSize();
+		frame.h = avsFrame->GetHeight();
+		frame.pitch = avsFrame->GetPitch();
+		frame.colorSpace = ColorSpace_RGB32;
 
-///////////////////////////////
-// Pre-Rendered Subtitles file
-class PRSFile {
-private:
-	std::list<PRSEntry*> entryList;
-	void Reset();
+		// Draw into the frame
+		file.DrawFrame(n,&frame);
+	}
 
-public:
-	PRSFile();
-	~PRSFile();
+	// Catch exception
+	catch (std::exception e) {
+		env->ThrowError(e.what());
+	}
 
-	void AddEntry(PRSEntry *entry);
-
-	void Save(std::string path);
-	void Load(std::string path,bool reset=true);
-
-	void GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks);
-	void DrawFrame(int n,PRSVideoFrame *frame);
-
-	PRSImage *FindDuplicateImage(PRSImage *img);
-};
+	// Return frame
+	return avsFrame;
+}

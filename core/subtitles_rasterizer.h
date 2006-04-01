@@ -39,7 +39,7 @@
 
 //////////////
 // Prototypes
-class VideoFrame;
+class AegisubVideoFrame;
 class AssFile;
 
 
@@ -53,5 +53,5 @@ public:
 
 	virtual void Load(AssFile *subs)=0;
 	virtual void Close() {}
-	virtual void RenderFrame(VideoFrame *frame,int ms)=0;
+	virtual void RenderFrame(AegisubVideoFrame *frame,int ms)=0;
 };
