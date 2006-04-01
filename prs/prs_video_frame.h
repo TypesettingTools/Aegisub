@@ -57,6 +57,9 @@ public:
 	int pitch;					// Pitch (that is, width plus invisible area for optimization)
 	ColorSpaceType colorSpace;	// Color space
 
+	bool flipVertical;			// Frame is flipped vertically
+	bool flipColors;			// Colors are flipped
+
 	PRSVideoFrame();
 	~PRSVideoFrame();
 

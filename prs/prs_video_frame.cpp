@@ -61,6 +61,8 @@ PRSVideoFrame::PRSVideoFrame () {
 	w = 0;
 	h = 0;
 	ownData = false;
+	flipColors = false;
+	flipVertical = false;
 }
 
 
@@ -82,6 +84,11 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 	const unsigned char *src;
 	unsigned char *dst;
 
+	// Flip?
+	bool flipVer = flipVertical != dstFrame->flipVertical;
+	bool flipCol = flipColors != dstFrame->flipColors;
+	if (flipCol) y = dstFrame->h - h - y;
+
 	// Get boundaries
 	int srcBpp = 4;
 	int dstBpp = 4;
@@ -93,22 +100,31 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 	int rowLen = MID(0,w,dstFrame->w - x);
 
 	// Values
-	unsigned char sc1,sc2,sc3,a,ia;
+	unsigned char sc1,sc2,sc3,a,ia,aux;
 	unsigned char dc1,dc2,dc3,da;
 
 	// Draw each row
 	for (int j=0;j<height;j++) {
 		src = (const unsigned char *) data[0] + j*srcRowLen;
-		dst = (unsigned char *) dstFrame->data[0] + (j+dstStarty)*dstRowLen + x*dstBpp;
+		dst = (unsigned char *) dstFrame->data[0] + x*dstBpp;
+		if (flipCol) dst += (h-j-1+dstStarty)*dstRowLen;
+		else dst += (j+dstStarty)*dstRowLen;
 
 		// Draw the row
 		for (int i=0;i<rowLen;i++) {
 			// Read source
-			sc3 = *src++;
-			sc2 = *src++;
 			sc1 = *src++;
+			sc2 = *src++;
+			sc3 = *src++;
 			a = *src++;
 			ia = 255-a;
+
+			// Swap colors
+			if (flipCol) {
+				aux = sc1;
+				sc1 = sc3;
+				sc3 = aux;
+			}
 
 			// Read destination
 			dc1 = *(dst);
@@ -120,8 +136,8 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 			*dst++ = (sc1*a + dc1*ia)/255;
 			*dst++ = (sc2*a + dc2*ia)/255;
 			*dst++ = (sc3*a + dc3*ia)/255;
-			//*dst++ = 255-(ia*(255-da)/255);
-			*dst++ = da;
+			*dst++ = 255-(ia*(255-da)/255);
+			//*dst++ = da;
 		}
 	}
 }
