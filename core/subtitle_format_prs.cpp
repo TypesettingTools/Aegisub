@@ -412,7 +412,8 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 			size_t end = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
 
 			// Ensure that the vector is long enough
-			if (frames.size() <= end) frames.resize(end+1);
+			// Yes, +2, this is an optimization for something below
+			if (frames.size() <= end) frames.resize(end+2);
 
 			// Fill data
 			// 2 = Store this frame
@@ -439,6 +440,9 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 						frames[i] = 1;
 					}
 				}
+
+				// Ends right before another "1" block, so make this a "2"
+				if (i == end && frames[i+1] == 1) frames[i] = 2;
 			}
 
 			// Clean up
