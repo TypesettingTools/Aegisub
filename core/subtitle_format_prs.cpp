@@ -118,13 +118,17 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	optimizer = 0;			// 0 = none, 1 = optipng, 2 = pngout
 
 	// Progress
-	DialogProgress *progress = new DialogProgress(NULL,_("Exporting PRS"),NULL,_("Writing file"),0,toDraw);
+	bool canceled = false;
+	DialogProgress *progress = new DialogProgress(NULL,_("Exporting PRS"),&canceled,_("Writing file"),0,toDraw);
 	progress->Show();
 	progress->SetProgress(0,toDraw);
 
 	// Render all frames that were detected to contain subtitles
 	int drawn = 0;
 	for (int framen=0;framen<totalFrames;framen++) {
+		// Canceled?
+		if (canceled) break;
+
 		// Is this frame supposed to be rendered?
 		if (frames[framen] == 0) continue;
 
@@ -163,7 +167,8 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	}
 
 	// Destroy progress bar
-	progress->Destroy();
+	if (!canceled) progress->Destroy();
+	else return;
 
 	// Save file
 	file.Save((const char*)filename.mb_str(wxConvLocal));
@@ -304,7 +309,56 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 ///////////////////////////////////
 // Get rectangles of useful glyphs
 void PRSSubtitleFormat::GetSubPictureRectangles(wxImage image,std::vector<wxRect> &rects) {
-	rects.push_back(wxRect(0,0,image.GetWidth(),image.GetHeight()));
+	// Boundaries
+	int w = image.GetWidth();
+	int h = image.GetHeight();
+	int startx = 0;
+	int starty = 0;
+	int endx = w-1;
+	int endy = h-1;
+
+	// Variables
+	bool hasSubImage = false;
+	bool isBlankRow = true;
+	const unsigned char *data = image.GetAlpha();
+	const unsigned char *src = data;
+	unsigned char a;
+
+	// For each row
+	for (int y=0;y<=h;y++) {
+		if (y < h) {
+			// Reset row data
+			isBlankRow = true;
+			if (!hasSubImage) {
+				startx = w;
+				endx = -1;
+			}
+
+			// Check row
+			for (int x=0;x<w;x++) {
+				a = *src++;
+				if (a) {
+					isBlankRow = false;
+					if (x < startx) startx = x;
+					if (x > endx) endx = x;
+				}
+			}
+
+			// Set sub image status
+			if (!isBlankRow && !hasSubImage) {
+				starty = y;
+				hasSubImage = true;
+			}
+		}
+
+		// If the processed row is totally blank and there is a subimage, separate them
+		if ((isBlankRow && hasSubImage) || y == h) {
+			// Insert rectangle
+			endy = y-1;
+			rects.push_back(wxRect(startx,starty,endx-startx+1,endy-starty+1));
+			hasSubImage = false;
+		}
+	}
 }
 
 
