@@ -36,7 +36,9 @@
 
 ///////////
 // Headers
+#include "png_wrap.h"
 #include "prs_image.h"
+#include "prs_video_frame.h"
 
 
 ///////////////
@@ -117,4 +119,35 @@ void PRSImage::ReadData(std::vector<char> &vec) {
 	// Write data
 	memcpy(data,&vec[pos],dataLen);
 	pos += dataLen;
+}
+
+
+////////////////
+// Decode frame
+PRSVideoFrame *PRSImage::GetDecodedFrame() {
+	// Create frame
+	PRSVideoFrame *frame = new PRSVideoFrame;
+
+	// Allocate frame data
+	frame->ownData = true;
+	frame->data[0] = new char[w*h];
+	frame->w = w;
+	frame->h = h;
+	frame->pitch = w;
+	frame->colorSpace = ColorSpace_RGB32;
+
+	try {
+		PNGWrapper png;
+		png.SetData(data);
+		png.Read(frame->data[0]);
+	}
+	
+	// Handle errors
+	catch (...) {
+		delete frame;
+		return NULL;
+	}
+
+	// Return frame
+	return frame;
 }

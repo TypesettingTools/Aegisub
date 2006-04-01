@@ -50,9 +50,15 @@ enum ColorSpaceType {
 // Video frame class
 class PRSVideoFrame {
 public:
-	char *data[4];
-	int w;
-	int h;
-	int pitch;
-	ColorSpaceType colorSpace;
+	bool ownData;				// If set to true, data will be deleted on destructor (defaults to false)
+	char *data[4];				// Data for each of the planes (interleaved formats only use data[0])
+	int w;						// Width
+	int h;						// Height
+	int pitch;					// Pitch (that is, width plus invisible area for optimization)
+	ColorSpaceType colorSpace;	// Color space
+
+	PRSVideoFrame();
+	~PRSVideoFrame();
+
+	void Overlay(PRSVideoFrame *dst,int x,int y,unsigned char alpha=255);
 };

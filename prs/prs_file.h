@@ -69,6 +69,7 @@ public:
 
 	void GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks);
 	void DrawFrame(int n,PRSVideoFrame *frame);
+	PRSImage *GetImageByID(int id);
 
 	PRSImage *FindDuplicateImage(PRSImage *img);
 };

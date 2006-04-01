@@ -53,6 +53,11 @@ enum PRSImageType {
 };
 
 
+//////////////
+// Prototypes
+class PRSVideoFrame;
+
+
 ///////////////
 // Image class
 class PRSImage : public PRSEntry {
@@ -69,6 +74,8 @@ public:
 
 	PRSImage();
 	~PRSImage();
+
+	PRSVideoFrame *GetDecodedFrame();
 
 	PRSEntryType GetType() { return IMAGE_ENTRY; }
 	void WriteData(std::vector<char> &vec);

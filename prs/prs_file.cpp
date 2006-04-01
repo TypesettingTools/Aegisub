@@ -38,6 +38,7 @@
 // Headers
 #include <stdio.h>
 #include <vector>
+#include <algorithm>
 #include "prs_file.h"
 #include "prs_entry.h"
 #include "prs_image.h"
@@ -247,9 +248,20 @@ void PRSFile::DrawFrame(int n,PRSVideoFrame *frame) {
 	GetDisplayBlocksAtFrame(n,blocks);
 
 	// Draw the blocks
-	int nblocks = blocks.size();
+	int nblocks = (int) blocks.size();
 	for (int i=0;i<nblocks;i++) {
+		// Get display and image pair
 		PRSDisplay *display = blocks[i];
+		PRSImage *image = GetImageByID(display->id);
+
+		// Decode PNG
+		PRSVideoFrame *overFrame = image->GetDecodedFrame();
+
+		// Draw image on frame
+		// TODO
+
+		// Clean up
+		delete overFrame;
 	}
 }
 
@@ -257,4 +269,31 @@ void PRSFile::DrawFrame(int n,PRSVideoFrame *frame) {
 ////////////////////////////////////////////////
 // Finds which display blocks are at a position
 void PRSFile::GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks) {
+	// Find all blocks that match
+	std::list<PRSEntry*>::iterator cur;
+	PRSDisplay *display;
+	for (cur=entryList.begin();cur!=entryList.end();cur++) {
+		display = PRSEntry::GetDisplay(*cur);
+		if (display) blocks.push_back(display);
+	}
+
+	// Sort them by layer
+	// TODO
 }
+
+
+///////////////////////////////////////////////////////////////
+// Gets a PRSImage by its ID, returns NULL if it doesn't exist
+PRSImage *PRSFile::GetImageByID(int id) {
+	// Search for image
+	std::list<PRSEntry*>::iterator cur;
+	PRSImage *img;
+	for (cur=entryList.begin();cur!=entryList.end();cur++) {
+		img = PRSEntry::GetImage(*cur);
+		if (img && img->id == id) return img;
+	}
+
+	// Not found
+	return NULL;
+}
+

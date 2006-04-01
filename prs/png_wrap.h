@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,31 +34,23 @@
 //
 
 
-///////////
-// Headers
-#include "prs_video_frame.h"
+/////////////////////
+// PNG Wrapper class
+class PNGWrapper {
+private:
+	bool initialized;
+	int pos;
+	void *data;
 
+	void Begin();
+	void End();
 
-///////////////
-// Constructor
-PRSVideoFrame::PRSVideoFrame () {
-	for (int i=0;i<4;i++) data[i] = 0;
-	w = 0;
-	h = 0;
-	ownData = false;
-}
+public:
+	PNGWrapper();
+	~PNGWrapper();
 
+	void SetData(void *ptr) { data = ptr; pos = 0; }
+	void *GetData() { return data; }
 
-//////////////
-// Destructor
-PRSVideoFrame::~PRSVideoFrame () {
-	if (ownData) {
-		for (int i=0;i<4;i++) delete [] data[i];
-	}
-}
-
-
-///////////////////////////////////
-// Overlay frame on top of another
-void PRSVideoFrame::Overlay(PRSVideoFrame *dst,int x,int y,unsigned char alpha) {
-}
+	void Read(void *dst);
+};

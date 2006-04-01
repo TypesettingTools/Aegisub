@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,29 +36,67 @@
 
 ///////////
 // Headers
-#include "prs_video_frame.h"
+#include <png.h>
+#include "png_wrap.h"
 
 
 ///////////////
 // Constructor
-PRSVideoFrame::PRSVideoFrame () {
-	for (int i=0;i<4;i++) data[i] = 0;
-	w = 0;
-	h = 0;
-	ownData = false;
+PNGWrapper::PNGWrapper() {
+	initialized = false;
+	pos = 0;
 }
 
 
 //////////////
 // Destructor
-PRSVideoFrame::~PRSVideoFrame () {
-	if (ownData) {
-		for (int i=0;i<4;i++) delete [] data[i];
-	}
+PNGWrapper::~PNGWrapper() {
+	if (initialized) End();
 }
 
 
-///////////////////////////////////
-// Overlay frame on top of another
-void PRSVideoFrame::Overlay(PRSVideoFrame *dst,int x,int y,unsigned char alpha) {
+//////////////
+// Read image
+void PNGWrapper::Read(void *dst) {
+	// Check initialization
+	if (!initialized) Begin();
+}
+
+
+//////////////
+// Initialize
+void PNGWrapper::Begin() {
+	// Check initialization
+	if (initialized) End();
+	initialized = true;
+
+	// Initialize libpng structures
+	png_structp png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if (!png_ptr) throw 1;
+	png_infop info_ptr = png_create_info_struct(png_ptr);
+	if (!info_ptr) {
+		png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+		throw 1;
+	}
+	png_infop end_info = png_create_info_struct(png_ptr);
+	if (!end_info) {
+		png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+		throw 1;
+	}
+
+	// Set jump for error handling (man, I hate this lib)
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+		throw 1;
+	}
+
+}
+
+
+////////////
+// Clean up
+void PNGWrapper::End() {
+	// Check initialization
+	if (!initialized) return;
+	initialized = false;
 }
