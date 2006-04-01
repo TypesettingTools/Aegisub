@@ -70,21 +70,24 @@ DrawPRS::~DrawPRS() {
 /////////////
 // Get frame
 PVideoFrame __stdcall DrawPRS::GetFrame(int n, IScriptEnvironment* env) {
-	// Get frame
-	//PVideoFrame avsFrame = child->GetFrame(n,env);
-	PVideoFrame avsFrame = env->NewVideoFrame(vi);
+	// Avisynth frame
+	PVideoFrame avsFrame = child->GetFrame(n,env);
 
 	try {
-		// Create the PRSFrame structure
-		PRSVideoFrame frame;
-		frame.data[0] = (char*) avsFrame->GetWritePtr();
-		frame.w = avsFrame->GetRowSize()/4;
-		frame.h = avsFrame->GetHeight();
-		frame.pitch = avsFrame->GetPitch();
-		frame.colorSpace = ColorSpace_RGB32;
+		// Check if there is anything to be drawn
+		if (file.HasDataAtFrame(n)) {
+			// Create the PRSFrame structure
+			env->MakeWritable(&avsFrame);
+			PRSVideoFrame frame;
+			frame.data[0] = (char*) avsFrame->GetWritePtr();
+			frame.w = avsFrame->GetRowSize()/4;
+			frame.h = avsFrame->GetHeight();
+			frame.pitch = avsFrame->GetPitch();
+			frame.colorSpace = ColorSpace_RGB32;
 
-		// Draw into the frame
-		file.DrawFrame(n,&frame);
+			// Draw into the frame
+			file.DrawFrame(n,&frame);
+		}
 	}
 
 	// Catch exception

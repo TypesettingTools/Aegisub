@@ -287,6 +287,25 @@ void PRSFile::GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks) {
 }
 
 
+////////////////////////////////////////////
+// Checks if there is anything at the frame
+bool PRSFile::HasDataAtFrame(int n) {
+	// Find all blocks that match
+	unsigned int fn = n;
+	std::list<PRSEntry*>::iterator cur;
+	PRSDisplay *display;
+	for (cur=entryList.begin();cur!=entryList.end();cur++) {
+		display = PRSEntry::GetDisplay(*cur);
+		if (display) {
+			if (display->startFrame <= fn && display->endFrame >= fn) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
 ///////////////////////////////////////////////////////////////
 // Gets a PRSImage by its ID, returns NULL if it doesn't exist
 PRSImage *PRSFile::GetImageByID(int id) {

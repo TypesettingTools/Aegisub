@@ -68,6 +68,7 @@ public:
 	void Load(std::string path,bool reset=true);
 
 	void GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks);
+	bool HasDataAtFrame(int n);
 	void DrawFrame(int n,PRSVideoFrame *frame);
 	PRSImage *GetImageByID(int id);
 
