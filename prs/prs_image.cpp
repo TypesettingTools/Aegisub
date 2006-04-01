@@ -108,15 +108,16 @@ void PRSImage::ReadData(std::vector<char> &vec) {
 	memcpy(&id,&vec[pos],4);
 	pos += 4;
 
-	// Write image format
+	// Read image format
 	memcpy(&imageType,&vec[pos],4);
 	pos += 4;
 
-	// Write data length
+	// Read data length
 	memcpy(&dataLen,&vec[pos],4);
 	pos += 4;
 
-	// Write data
+	// Read data
+	data = new char[dataLen];
 	memcpy(data,&vec[pos],dataLen);
 	pos += dataLen;
 }

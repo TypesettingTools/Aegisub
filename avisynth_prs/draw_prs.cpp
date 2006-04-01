@@ -71,13 +71,14 @@ DrawPRS::~DrawPRS() {
 // Get frame
 PVideoFrame __stdcall DrawPRS::GetFrame(int n, IScriptEnvironment* env) {
 	// Get frame
-	PVideoFrame avsFrame = child->GetFrame(n,env);
+	//PVideoFrame avsFrame = child->GetFrame(n,env);
+	PVideoFrame avsFrame = env->NewVideoFrame(vi);
 
 	try {
 		// Create the PRSFrame structure
 		PRSVideoFrame frame;
 		frame.data[0] = (char*) avsFrame->GetWritePtr();
-		frame.w = avsFrame->GetRowSize();
+		frame.w = avsFrame->GetRowSize()/4;
 		frame.h = avsFrame->GetHeight();
 		frame.pitch = avsFrame->GetPitch();
 		frame.colorSpace = ColorSpace_RGB32;

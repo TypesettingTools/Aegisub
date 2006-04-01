@@ -65,7 +65,7 @@ PRSDisplay::~PRSDisplay() {
 // Write data
 void PRSDisplay::WriteData(std::vector<char> &vec) {
 	// Set length
-	unsigned __int32 size = 4 + 4 + 4 + 4 + 2 + 2 + 1 + 1;
+	unsigned __int32 size = 4 + 4 + 4 + 4 + 4 + 4 + 2 + 2 + 1 + 1;
 	vec.resize(size+8);
 	size_t pos = 0;
 
@@ -76,6 +76,14 @@ void PRSDisplay::WriteData(std::vector<char> &vec) {
 
 	// Write block length
 	memcpy(&vec[pos],&size,4);
+	pos += 4;
+
+	// Write start frame
+	memcpy(&vec[pos],&startFrame,4);
+	pos += 4;
+
+	// Write end frame
+	memcpy(&vec[pos],&endFrame,4);
 	pos += 4;
 
 	// Write start time
@@ -116,39 +124,47 @@ void PRSDisplay::WriteData(std::vector<char> &vec) {
 // Read data
 void PRSDisplay::ReadData(std::vector<char> &vec) {
 	// Set length
-	unsigned __int32 size = 4 + 4 + 4 + 4 + 2 + 2 + 1 + 1;
+	unsigned __int32 size = 4 + 4 + 4 + 4 + 4 + 4 + 2 + 2 + 1 + 1;
 	if (size != vec.size()) return;
 	size_t pos = 0;
 
-	// Write start time
+	// Read start frame
+	memcpy(&startFrame,&vec[pos],4);
+	pos += 4;
+
+	// Read end frame
+	memcpy(&endFrame,&vec[pos],4);
+	pos += 4;
+
+	// Read start time
 	memcpy(&start,&vec[pos],4);
 	pos += 4;
 
-	// Write end time
+	// Read end time
 	memcpy(&end,&vec[pos],4);
 	pos += 4;
 
-	// Write image identifier
+	// Read image identifier
 	memcpy(&id,&vec[pos],4);
 	pos += 4;
 
-	// Write layer
+	// Read layer
 	memcpy(&layer,&vec[pos],4);
 	pos += 4;
 
-	// Write x
+	// Read x
 	memcpy(&x,&vec[pos],2);
 	pos += 2;
 
-	// Write y
+	// Read y
 	memcpy(&y,&vec[pos],2);
 	pos += 2;
 
-	// Write alpha multiplier
+	// Read alpha multiplier
 	memcpy(&alpha,&vec[pos],1);
 	pos += 1;
 
-	// Write blend mode
+	// Read blend mode
 	memcpy(&blend,&vec[pos],1);
 	pos += 1;
 }

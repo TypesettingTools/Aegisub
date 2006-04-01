@@ -85,8 +85,8 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 	// Get boundaries
 	int srcBpp = 4;
 	int dstBpp = 4;
-	int srcRowLen = w * srcBpp;
-	int dstRowLen = dstFrame->w * dstBpp;
+	int srcRowLen = pitch;
+	int dstRowLen = dstFrame->pitch;
 	int dstStarty = MAX(0,y);
 	int dstEndy = MIN(y+h,dstFrame->h);
 	int height = dstEndy - dstStarty;
@@ -117,7 +117,7 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 			dc3 = *(dst+3);
 
 			// Write colors
-			*dst++ = da;
+			*dst++ = 255-(ia*(255-da)/255);
 			*dst++ = (sc1*a + dc1*ia)/255;
 			*dst++ = (sc2*a + dc2*ia)/255;
 			*dst++ = (sc3*a + dc3*ia)/255;
