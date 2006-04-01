@@ -157,6 +157,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 		// Add each sub-image to file
 		int nrects = rects.size();
+		int useFrameN;
 		for (int i=0;i<nrects;i++) {
 			// Pick either full image or subimage, as appropriate
 			wxImage curImage;
@@ -164,8 +165,10 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			else curImage = SubImageWithAlpha(bmp,rects[i]);
 
 			// Insert the image
-			InsertFrame(file,framen,frames,curImage,x,y,maxalpha);
+			useFrameN = framen;
+			InsertFrame(file,useFrameN,frames,curImage,x+rects[i].x,y+rects[i].y,maxalpha);
 		}
+		framen = useFrameN;
 	}
 
 	// Destroy progress bar
