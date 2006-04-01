@@ -124,6 +124,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	progress->SetProgress(0,toDraw);
 
 	// Render all frames that were detected to contain subtitles
+	int lastFrameDrawn = 0;
 	int drawn = 0;
 	for (int framen=0;framen<totalFrames;framen++) {
 		// Canceled?
@@ -148,6 +149,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		// Get wxImage
 		wxImage bmp = CalculateAlpha(frame1->GetReadPtr(),frame2->GetReadPtr(),frame1->GetRowSize(),frame1->GetHeight(),frame1->GetPitch(),&x,&y,&maxalpha);
 		if (!bmp.Ok()) continue;
+		lastFrameDrawn = framen;
 
 		// Get the list of rectangles
 		std::vector<wxRect> rects;
@@ -172,6 +174,10 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 	// Save file
 	file.Save((const char*)filename.mb_str(wxConvLocal));
+
+	// Test file
+	PRSVideoFrame testFrame;
+	file.DrawFrame(lastFrameDrawn,&testFrame);
 #endif
 }
 

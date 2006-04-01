@@ -85,13 +85,26 @@ void PNGWrapper::Read(PRSVideoFrame *frame) {
 	// Set data reading
 	png_set_read_fn(png_ptr,this,memory_read_data);
 
-	// Set row pointers
-	png_bytepp row_pointers = (png_bytep *) png_malloc(png_ptr, frame->h*sizeof(png_bytep));
-	for (int i=0; i<frame->h; i++) row_pointers[i] = (png_bytep) (frame->data[0] + frame->w*i);
-	png_set_rows(png_ptr, info_ptr, row_pointers);
-
 	// Read data
 	png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
+	png_bytepp row_pointers = png_get_rows(png_ptr, info_ptr);
+
+	// Get image size
+	int w = png_get_image_width(png_ptr,info_ptr);
+	int h = png_get_image_height(png_ptr,info_ptr);
+
+	// Allocate frame data
+	int bpp = 4;
+	frame->ownData = true;
+	frame->data[0] = new char[w*h*bpp];
+	frame->w = w;
+	frame->h = h;
+	frame->pitch = w;
+	frame->colorSpace = ColorSpace_RGB32;
+
+	// Copy data to frame
+	char *dst = frame->data[0];
+	for (int i=0;i<h;i++) memcpy(dst+i*w*bpp,row_pointers[i],w*bpp);
 
 	// Clean up
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
@@ -126,5 +139,5 @@ void PNGWrapper::memory_read_data(png_structp png_ptr, png_bytep dstData, png_si
 
 void PNGWrapper::ReadData(png_bytep dstData, png_size_t length) {
 	memcpy(dstData,((char*)data)+pos,length);
-	pos++;
+	pos += (int) length;
 }

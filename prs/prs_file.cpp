@@ -270,11 +270,16 @@ void PRSFile::DrawFrame(int n,PRSVideoFrame *frame) {
 // Finds which display blocks are at a position
 void PRSFile::GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks) {
 	// Find all blocks that match
+	unsigned int fn = n;
 	std::list<PRSEntry*>::iterator cur;
 	PRSDisplay *display;
 	for (cur=entryList.begin();cur!=entryList.end();cur++) {
 		display = PRSEntry::GetDisplay(*cur);
-		if (display) blocks.push_back(display);
+		if (display) {
+			if (display->startFrame <= fn && display->endFrame >= fn) {
+				blocks.push_back(display);
+			}
+		}
 	}
 
 	// Sort them by layer

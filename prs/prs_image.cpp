@@ -128,14 +128,6 @@ PRSVideoFrame *PRSImage::GetDecodedFrame() {
 	// Create frame
 	PRSVideoFrame *frame = new PRSVideoFrame;
 
-	// Allocate frame data
-	frame->ownData = true;
-	frame->data[0] = new char[w*h];
-	frame->w = w;
-	frame->h = h;
-	frame->pitch = w;
-	frame->colorSpace = ColorSpace_RGB32;
-
 	try {
 		PNGWrapper png;
 		png.SetData(data);
