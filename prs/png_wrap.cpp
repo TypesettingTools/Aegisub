@@ -86,25 +86,42 @@ void PNGWrapper::Read(PRSVideoFrame *frame) {
 	png_set_read_fn(png_ptr,this,memory_read_data);
 
 	// Read data
-	png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
-	png_bytepp row_pointers = png_get_rows(png_ptr, info_ptr);
+	//png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_EXPAND | PNG_TRANSFORM_PACKING | PNG_TRANSFORM_STRIP_16, NULL);
 
 	// Get image size
-	int w = png_get_image_width(png_ptr,info_ptr);
-	int h = png_get_image_height(png_ptr,info_ptr);
+	//int w = png_get_image_width(png_ptr,info_ptr);
+	//int h = png_get_image_height(png_ptr,info_ptr);
+
+	// Read info
+	png_uint_32 w, h;
+	int bit_depth, color_type, interlace_type, compression_type, filter_method;
+	png_read_info(png_ptr, info_ptr);
+	png_get_IHDR(png_ptr, info_ptr, &w, &h, &bit_depth, &color_type, &interlace_type, &compression_type, &filter_method);
+
+	// Transformations
+	color_type = png_get_color_type(png_ptr, info_ptr);
+	if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
+	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
+	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
+    if (bit_depth > 8) png_set_strip_16(png_ptr);
+	png_read_update_info(png_ptr, info_ptr);
+	int rowLen = png_get_rowbytes(png_ptr,info_ptr);
 
 	// Allocate frame data
 	int bpp = 4;
 	frame->ownData = true;
-	frame->data[0] = new char[w*h*bpp];
-	frame->w = w;
+	frame->data[0] = new char[h*rowLen];
+	frame->w = rowLen/4;
 	frame->h = h;
-	frame->pitch = w*bpp;
+	frame->pitch = rowLen;
 	frame->colorSpace = ColorSpace_RGB32;
 
-	// Copy data to frame
+	// Get rows
+	png_bytepp row_pointers = (png_bytepp) png_malloc (png_ptr,sizeof(png_bytep) * h);
 	char *dst = frame->data[0];
-	for (int i=0;i<h;i++) memcpy(dst+i*w*bpp,row_pointers[i],w*bpp);
+	for (size_t i=0;i<h;i++) row_pointers[i] = (png_bytep) (dst+rowLen*i);
+	png_read_image(png_ptr, row_pointers);
+	png_read_end(png_ptr, end_info);
 
 	// Clean up
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);

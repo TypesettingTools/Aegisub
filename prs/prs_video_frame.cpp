@@ -116,7 +116,7 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 			sc1 = *src++;
 			sc2 = *src++;
 			sc3 = *src++;
-			a = *src++;
+			a = ((*src++) * alpha) / 255;
 			ia = 255-a;
 
 			// Swap colors

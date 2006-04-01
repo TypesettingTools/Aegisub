@@ -253,6 +253,7 @@ void PRSFile::DrawFrame(int n,PRSVideoFrame *frame) {
 		// Get display and image pair
 		PRSDisplay *display = blocks[i];
 		PRSImage *image = GetImageByID(display->id);
+		if (!image) continue;
 
 		// Decode PNG
 		PRSVideoFrame *overFrame = image->GetDecodedFrame();
