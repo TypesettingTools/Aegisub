@@ -367,8 +367,8 @@ void PRSFile::SaveText(std::string path) {
 		display = PRSEntry::GetDisplay(*cur);
 		if (display) {
 			// Write text
-			file << "DSP: " << display->startFrame << "," << display->endFrame << "," << display->start << "," << display->end;
-			file << display->id << "," << display->x << "," << display->y << "," << display->alpha << "," << display->blend;
+			file << "DSP: " << display->startFrame << "," << display->endFrame << "," << display->start << "," << display->end << ",";
+			file << display->id << "," << display->x << "," << display->y << "," << (int)(display->alpha) << "," << (int)(display->blend);
 			file << std::endl;
 			continue;
 		}

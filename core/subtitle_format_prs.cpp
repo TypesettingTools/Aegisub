@@ -177,10 +177,8 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 	// Save file
 	file.Save((const char*)filename.mb_str(wxConvLocal));
-
-	// Test file
-	PRSVideoFrame testFrame;
-	file.DrawFrame(lastFrameDrawn,&testFrame);
+	wxString filename2 = filename + _T(".prsa");
+	file.SaveText((const char*)filename2.mb_str(wxConvLocal));
 #endif
 }
 
@@ -244,7 +242,7 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 	int startf = framen;
 	int totalFrames = frames.size();
 	while (++framen<totalFrames && frames[framen] == 1);
-	int endf = --framen;
+	int endf = framen;
 	int start = VFR_Output.GetTimeAtFrame(startf,true);
 	int end = VFR_Output.GetTimeAtFrame(endf,false);
 
