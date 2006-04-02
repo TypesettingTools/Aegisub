@@ -74,11 +74,11 @@ DialogFexTracker::DialogFexTracker(wxWindow *parent, FexTrackerConfig *_cfg)
 
 	StdWnd->SetSizer( Sizer );
 	StdWnd->SetAutoLayout( 1 );
-	MainNB->AddPage( StdWnd, _T("Standard Settings") );
+	MainNB->AddPage( StdWnd, _("Standard Settings") );
 
 	AdvWnd->SetSizer( SizerAdd );
 	AdvWnd->SetAutoLayout( 1 );
-	MainNB->AddPage( AdvWnd, _T("Advanced Settings") );
+	MainNB->AddPage( AdvWnd, _("Advanced Settings") );
 
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(MainNB,1,wxEXPAND|wxALL,5);

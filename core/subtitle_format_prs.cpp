@@ -135,8 +135,8 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 		// Update progress
 		progress->SetProgress(drawn,toDraw);
-		progress->SetText(wxString::Format(_T("Writing PRS file. Line: %i/%i"),framen,totalFrames));
-		drawn++;
+		progress->SetText(wxString::Format(_T("Writing PRS file. Line: %i/%i (%.2f%%)"),framen,totalFrames,MIN(float(drawn)*100/toDraw,100.0)));
+		if (frames[framen] == 2) drawn++;
 
 		// Read the frame image
 		PVideoFrame frame1 = clip1->GetFrame(framen,env1);
@@ -381,7 +381,7 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 		AssDialogue *diag = AssEntry::GetAsDialogue(*cur);
 
 		// Dialogue found
-		if (diag) {
+		if (diag && !diag->Comment) {
 			// Parse tags
 			diag->ParseASSTags();
 
@@ -412,8 +412,8 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 			size_t end = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
 
 			// Ensure that the vector is long enough
-			// Yes, +2, this is an optimization for something below
-			if (frames.size() <= end) frames.resize(end+2);
+			// Yes, +1, this is an optimization for something below
+			if (frames.size() <= end+1) frames.resize(end+2);
 
 			// Fill data
 			// 2 = Store this frame
