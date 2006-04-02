@@ -20,7 +20,7 @@ function do_syllable(meta, styles, config, line, syl)
 	end
 	-- Place the main text
 	local l = result.add()
-	l.text = string.format("{\\an8\\pos(%d,%d)\\k%d\\kf%d}%s", line.centerleft+syl.center, line.height*1.5, syl.start_time/10, syl.duration, syl.text)
+	l.text = string.format("{\\an8\\pos(%d,%d)\\k%d\\kf%d}%s", line.centerleft+syl.center, line.height*1.5, syl.start_time/10, syl.duration, syl.text_stripped)
 	l.layer = 5
 	-- Perform the highlights
 	for i = 0, syl.highlights.n-1 do

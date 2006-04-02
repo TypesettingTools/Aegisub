@@ -288,8 +288,11 @@ function karaskel.process_lines(meta, styles, lines, config)
 		karaskel.trace("skel_process_lines:3:"..i)
 		aegisub.report_progress(50+i/lines.n*50)
 		if (lines[i].kind == "dialogue" or lines[i].kind == "comment") and lines[i].style == karaskel.ool_fx_style then
+			karaskel.trace("skel_process_lines: parsing ool fx: " .. lines[i].text)
 			local fx = {}
-			fx.head, fx.tail = string.headtail(lines[i])
+			fx.head, fx.tail = string.headtail(lines[i].text)
+			karaskel.trace("--- head: '" .. fx.head .. "'")
+			karaskel.trace("--- tail: '" .. fx.tail .. "'")
 			fx.line = lines[i]
 			fx.start_time, fx.end_time = fx.line.start_time, fx.line.end_time
 			ool_fx[fx.head] = fx
@@ -302,7 +305,6 @@ function karaskel.process_lines(meta, styles, lines, config)
 			for j = 1, repl.n do
 				table.insert(result, repl[j])
 			end
-			ool_fx = {}
 		end
 	end
 	-- Done, return the stuff
