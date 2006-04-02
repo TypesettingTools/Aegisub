@@ -163,6 +163,10 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			wxImage curImage;
 			if (rects[i].x == 0 && rects[i].y == 0 && rects[i].width == bmp.GetWidth() && rects[i].height == bmp.GetHeight()) curImage = bmp;
 			else curImage = SubImageWithAlpha(bmp,rects[i]);
+			if (!curImage.Ok()) continue;
+
+			// Optimize image
+			//OptimizeImage(curImage);
 
 			// Insert the image
 			useFrameN = framen;
@@ -178,7 +182,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Save file
 	file.Save((const char*)filename.mb_str(wxConvLocal));
 	wxString filename2 = filename + _T(".prsa");
-	file.SaveText((const char*)filename2.mb_str(wxConvLocal));
+	//file.SaveText((const char*)filename2.mb_str(wxConvLocal));
 #endif
 }
 
@@ -315,7 +319,7 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 
 ///////////////////////////////////
 // Get rectangles of useful glyphs
-void PRSSubtitleFormat::GetSubPictureRectangles(wxImage image,std::vector<wxRect> &rects) {
+void PRSSubtitleFormat::GetSubPictureRectangles(wxImage &image,std::vector<wxRect> &rects) {
 	// Boundaries
 	int w = image.GetWidth();
 	int h = image.GetHeight();
@@ -453,6 +457,160 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 }
 
 
+/////////////////////////////////////////////
+// Optimize the image by tweaking the colors
+#define ERROR_OF_ALPHA(a) ((a) == 0 ? 255 : 512/((int)(a)))
+#define IN_ERROR_MARGIN(col1,col2,error) ((col1 > col2 ? ((int)(col1-col2)) : ((int)(col2-col1))) <= (error))
+
+void PRSSubtitleFormat::OptimizeImage(wxImage &image) {
+	// Get the raw data
+	unsigned char *data = (unsigned char*) image.GetData();
+	unsigned char *alpha = (unsigned char*) image.GetAlpha();
+	int w = image.GetWidth();
+	int h = image.GetHeight();
+	int len = w*h;
+
+	// Create mask for status and fill with zeroes
+	char *status = new char[len];
+	for (int i=0;i<len;i++) status[i] = 0;
+
+	// Find highest alpha
+	unsigned char highAlpha = 0;
+	for (int i=0;i<len;i++) {
+		if (status[i] != 2 && alpha[i] > highAlpha) highAlpha = alpha[i];
+	}
+
+	// Fill mask of "correct" pixels with 2 on highAlpha pixels
+	for (int i=0;i<len;i++) {
+		if (alpha[i] == highAlpha) status[i] = 2;
+	}
+
+	// Alpha finding loop
+	bool outerLoop = true;
+	while (outerLoop) {
+		// Loop through
+		int totalModified = 0;
+		bool doRepeat = true;
+		while (doRepeat) {
+			int modified = 0;
+			unsigned char *cur = data;
+			unsigned char c1,c2,c3;
+			unsigned char d1,d2,d3;
+			int error;
+			for (int i=0;i<len;i++) {
+				// Get colors
+				c1 = *(cur++);
+				c2 = *(cur++);
+				c3 = *(cur++);
+
+				// Check status
+				if (status[i] != 0) continue;
+
+				// Get error
+				error = ERROR_OF_ALPHA(alpha[i]);
+				c1 = MIN(255,c1 + MIN(128,error/2));
+				c2 = MIN(255,c2 + MIN(128,error/2));
+				c3 = MIN(255,c3 + MIN(128,error/2));
+
+				// Right pixel
+				if (i != len-1 && status[i+1] == 2) {
+					// Get colors
+					d1 = *(cur);
+					d2 = *(cur+1);
+					d3 = *(cur+2);
+
+					// Compare error
+					if (IN_ERROR_MARGIN(d1,c1,error) && IN_ERROR_MARGIN(d2,c2,error) && IN_ERROR_MARGIN(d3,c3,error)) {
+						*(cur-3) = d1;
+						*(cur-2) = d2;
+						*(cur-1) = d3;
+						status[i] = 2;
+						modified++;
+						continue;
+					}
+				}
+
+				// Left pixel
+				if (i != 0 && status[i-1] == 2) {
+					// Get colors
+					d1 = *(cur-6);
+					d2 = *(cur-5);
+					d3 = *(cur-4);
+
+					// Compare error
+					if (IN_ERROR_MARGIN(d1,c1,error) && IN_ERROR_MARGIN(d2,c2,error) && IN_ERROR_MARGIN(d3,c3,error)) {
+						*(cur-3) = d1;
+						*(cur-2) = d2;
+						*(cur-1) = d3;
+						status[i] = 2;
+						modified++;
+						continue;
+					}
+				}
+
+				// Top pixel
+				if (i >= w && status[i-w] == 2) {
+					// Get colors
+					d1 = *(cur-w*3-3);
+					d2 = *(cur-w*3-2);
+					d3 = *(cur-w*3-1);
+
+					// Compare error
+					if (IN_ERROR_MARGIN(d1,c1,error) && IN_ERROR_MARGIN(d2,c2,error) && IN_ERROR_MARGIN(d3,c3,error)) {
+						*(cur-3) = d1;
+						*(cur-2) = d2;
+						*(cur-1) = d3;
+						status[i] = 2;
+						modified++;
+						continue;
+					}
+				}
+
+				// Bottom pixel
+				if (i < len-w && status[i+w] == 2) {
+					// Get colors
+					d1 = *(cur+w*3-3);
+					d2 = *(cur+w*3-2);
+					d3 = *(cur+w*3-1);
+
+					// Compare error
+					if (IN_ERROR_MARGIN(d1,c1,error) && IN_ERROR_MARGIN(d2,c2,error) && IN_ERROR_MARGIN(d3,c3,error)) {
+						*(cur-3) = d1;
+						*(cur-2) = d2;
+						*(cur-1) = d3;
+						status[i] = 2;
+						modified++;
+						continue;
+					}
+				}
+			}
+
+			// End repetion
+			totalModified += modified;
+			if (!modified) doRepeat = false;
+		}
+
+		// End outer loop
+		if (!totalModified) outerLoop = false;
+
+		// Copy values 1 to 2
+		int changes = 0;
+		for (int i=0;i<len;i++) {
+			if (status[i] == 1) {
+				status[i] = 2;
+				changes++;
+			}
+		}
+		if (!changes) outerLoop = false;
+	}
+
+	// Just for tests, fill alpha with 0xFF
+	//for (int i=0;i<len;i++) alpha[i] = 0xFF;
+
+	// Delete mask
+	delete [] status;
+}
+
 
 
 
@@ -567,7 +725,7 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 ////////////////////////////////////////////////
 // Creates a sub image preserving alpha channel
 // Modified from wx's source
-wxImage PRSSubtitleFormat::SubImageWithAlpha (wxImage source,const wxRect &rect) {
+wxImage PRSSubtitleFormat::SubImageWithAlpha (wxImage &source,const wxRect &rect) {
     wxImage image;
     wxCHECK_MSG(source.Ok(), image, wxT("invalid image") );
     wxCHECK_MSG((rect.GetLeft()>=0) && (rect.GetTop()>=0) && (rect.GetRight()<=source.GetWidth()) && (rect.GetBottom()<=source.GetHeight()), image, wxT("invalid subimage size") );

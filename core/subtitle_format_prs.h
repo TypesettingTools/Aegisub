@@ -59,10 +59,11 @@ private:
 	int optimizer;
 
 	void InsertFrame(PRSFile &file,int &framen,std::vector<int> &frames,wxImage &bmp,int x,int y,int maxalpha);
-	wxImage SubImageWithAlpha(wxImage src,const wxRect &area);
+	wxImage SubImageWithAlpha(wxImage &src,const wxRect &area);
 	wxImage CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch, int *x=NULL, int *y=NULL, int *maxalpha=NULL);
-	void GetSubPictureRectangles(wxImage image,std::vector<wxRect> &rects);
+	void GetSubPictureRectangles(wxImage &image,std::vector<wxRect> &rects);
 	std::vector<int> GetFrameRanges();
+	void OptimizeImage(wxImage &image);
 
 public:
 	bool CanWriteFile(wxString filename);
