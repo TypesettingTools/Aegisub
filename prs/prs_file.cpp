@@ -39,6 +39,7 @@
 #include <stdio.h>
 #include <vector>
 #include <algorithm>
+#include <fstream>
 #include "prs_file.h"
 #include "prs_entry.h"
 #include "prs_image.h"
@@ -322,3 +323,57 @@ PRSImage *PRSFile::GetImageByID(int id) {
 	return NULL;
 }
 
+
+//////////////////////
+// Save as plain-text
+void PRSFile::SaveText(std::string path) {
+	// Open file
+	std::ofstream file;
+	file.open(path.c_str(),std::fstream::out);
+
+	// Write version string
+	file << "PRS-ASCII v1" << std::endl;
+
+	// Write events
+	std::list<PRSEntry*>::iterator cur;
+	for (cur=entryList.begin();cur!=entryList.end();cur++) {
+		PRSImage *img;
+		PRSDisplay *display;
+
+		// Is image?
+		img = PRSEntry::GetImage(*cur);
+		if (img) {
+			// Get image filename
+			char idStr[64];
+			itoa(img->id,idStr,10);
+			std::string imgfile = path;
+			imgfile += ".id.";
+			imgfile += idStr;
+			imgfile += ".png";
+
+			// Copy to disk
+			FILE *fp = fopen(imgfile.c_str(),"wb");
+			if (fp) {
+				fwrite(img->data,1,img->dataLen,fp);
+				fclose(fp);
+			}
+
+			// Write text
+			file << "IMG: " << img->id << "," << img->imageType << "," << imgfile.c_str() << std::endl;
+			continue;
+		}
+
+		// Is display?
+		display = PRSEntry::GetDisplay(*cur);
+		if (display) {
+			// Write text
+			file << "DSP: " << display->startFrame << "," << display->endFrame << "," << display->start << "," << display->end;
+			file << display->id << "," << display->x << "," << display->y << "," << display->alpha << "," << display->blend;
+			file << std::endl;
+			continue;
+		}
+	}
+
+	// Close file
+	file.close();
+}

@@ -67,6 +67,9 @@ public:
 	void Save(std::string path);
 	void Load(std::string path,bool reset=true);
 
+	void SaveText(std::string path);
+	void LoadText(std::string path,bool reset=true);
+
 	void GetDisplayBlocksAtFrame(int n,std::vector<PRSDisplay*> &blocks);
 	bool HasDataAtFrame(int n);
 	void DrawFrame(int n,PRSVideoFrame *frame);
