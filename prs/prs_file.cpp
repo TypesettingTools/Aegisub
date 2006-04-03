@@ -49,6 +49,9 @@
 ///////////////
 // Constructor
 PRSFile::PRSFile () {
+	// Cache data
+	cacheMemSize = 0;
+	maxCache = 8 << 20;
 }
 
 
@@ -56,6 +59,7 @@ PRSFile::PRSFile () {
 // Destructor
 PRSFile::~PRSFile() {
 	Reset();
+	ClearCache();
 }
 
 
@@ -68,6 +72,17 @@ void PRSFile::Reset() {
 		delete *cur;
 	}
 	entryList.clear();
+}
+
+
+///////////////////
+// Clear the cache
+void PRSFile::ClearCache() {
+	// Clear list of cached frames
+	frameCache.clear();
+
+	// Zero size
+	cacheMemSize = 0;
 }
 
 
@@ -251,20 +266,58 @@ void PRSFile::DrawFrame(int n,PRSVideoFrame *frame) {
 	// Draw the blocks
 	int nblocks = (int) blocks.size();
 	for (int i=0;i<nblocks;i++) {
-		// Get display and image pair
+		// Get display block and frame
 		PRSDisplay *display = blocks[i];
-		PRSImage *image = GetImageByID(display->id);
-		if (!image) continue;
-
-		// Decode PNG
-		PRSVideoFrame *overFrame = image->GetDecodedFrame();
+		PRSVideoFrame *overFrame = CachedGetFrameByID(display->id);
 
 		// Draw image on frame
 		if (overFrame) overFrame->Overlay(frame,display->x,display->y,display->alpha,display->blend);
 
-		// Clean up
-		delete overFrame;
+		// DON'T delete the frame!
+		// The cache takes care of doing so.
 	}
+}
+
+
+///////////////////////////////////////////////////////////////////
+// Gets a frame from cache, or load it there if it's not available
+PRSVideoFrame* PRSFile::CachedGetFrameByID(int id) {
+	// Check if the image is already decoded on cache, fetch it if it is
+	PRSVideoFrame *frame = NULL;
+	std::list<PRSCachedFrame>::iterator cur;
+	for (cur=frameCache.begin();cur!=frameCache.end();cur++) {
+		if ((*cur).id == id) {
+			return (*cur).frame;
+		}
+	}
+
+	// It isn't; decode and add it to cache
+	// Get image
+	PRSImage *image = GetImageByID(id);
+	if (!image) return NULL;
+
+	// Get frame
+	frame = image->GetDecodedFrame();
+
+	// Add to cache
+	if (frame) {
+		// Add and raise size
+		PRSCachedFrame cached;
+		cached.frame = frame;
+		cached.id = id;
+		frameCache.push_front(cached);
+		cached.frame = NULL;
+		cacheMemSize += frame->GetSize();
+
+		// If memory has been exceeded, remove stuff from the back until it isn't anymore
+		while (cacheMemSize > maxCache && frameCache.size() > 1) {
+			cacheMemSize -= frameCache.back().frame->GetSize();
+			frameCache.pop_back();
+		}
+	}
+
+	// Return it
+	return frame;
 }
 
 

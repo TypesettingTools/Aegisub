@@ -56,6 +56,9 @@ class PRSDisplay;
 class PRSFile {
 private:
 	std::list<PRSEntry*> entryList;
+	std::list<PRSCachedFrame> frameCache;
+	int cacheMemSize;
+	int maxCache;
 	void Reset();
 
 public:
@@ -74,6 +77,8 @@ public:
 	bool HasDataAtFrame(int n);
 	void DrawFrame(int n,PRSVideoFrame *frame);
 	PRSImage *GetImageByID(int id);
+	PRSVideoFrame *CachedGetFrameByID(int id);
+	void ClearCache();
 
 	PRSImage *FindDuplicateImage(PRSImage *img);
 };

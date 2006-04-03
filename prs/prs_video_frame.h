@@ -64,4 +64,17 @@ public:
 	~PRSVideoFrame();
 
 	void Overlay(PRSVideoFrame *dst,int x,int y,unsigned char alpha=255,unsigned char blend=0);
+	int GetSize();
+};
+
+
+///////////////////////////
+// Video frame cache class
+class PRSCachedFrame {
+public:
+	PRSCachedFrame();
+	~PRSCachedFrame();
+
+	PRSVideoFrame *frame;
+	int id;
 };

@@ -141,3 +141,26 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 		}
 	}
 }
+
+
+//////////////////
+// Get frame size
+int PRSVideoFrame::GetSize() {
+	return sizeof(PRSVideoFrame) + pitch * h;
+}
+
+
+//////////////////////
+// Cached constructor
+PRSCachedFrame::PRSCachedFrame () {
+	frame = 0;
+	id = -1;
+}
+
+
+/////////////////////
+// Cached destructor
+PRSCachedFrame::~PRSCachedFrame() {
+	delete frame;
+	frame = 0;
+}
