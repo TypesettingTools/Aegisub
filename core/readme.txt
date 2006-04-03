@@ -73,12 +73,15 @@ Libraries:
 
 Building instructions (aegisub):
 
-1. Create a new blank Win32 c++ project in msvc. Add all h, cpp and rc files to the project. Open the settings and add
-UNICODE to the preprocessor defines. Set the code generation to multi threaded (debug) dll.
+1. Create a new blank Win32 c++ project in msvc.
 
-2. OPTIONAL - Define NO_SPELLCHECKER if you want to compile without aspell support.
+2. Add all h, cpp and rc files in the "core", "PRS" and "FexTrackerSource" folders to the project.
 
-3. Add the libraries to the linker input. If you compiled portaudio with wmme you have to remove dsound.lib and srmiids.lib
+3. Open the project settings. Add UNICODE to the preprocessor defines, and set the code generation to multi threaded (debug) dll.
+
+3.1. OPTIONAL - Define NO_SPELLCHECKER if you want to compile without aspell support.
+
+4. Add the libraries to the linker input. If you compiled portaudio with wmme you have to remove dsound.lib and srmiids.lib
 and replace PAStaticDS*.lib with the wmme version. Remove libaspell-15-dll.lib if you defined NO_SPELLCHECKER.
 
 Link to these libraries for release:
@@ -87,4 +90,4 @@ freetype2110MT.lib libaspell-15-dll.lib wxzlib.lib wxpng.lib wxregexu.lib wxmsw2
 Link to these libraries for debug:
 freetype2110MT_D.lib libaspell-15-dll.lib dsound.lib PAStaticDSMTd.lib Vfw32.lib lua50MTd.lib wxzlibd.lib wxpngd.lib wxregexud.lib wxbase26ud.lib wxmsw26ud_media.lib wxmsw26ud_core.lib wxmsw26ud_adv.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib strmiids.lib
 
-3. Compile and wait.
+5. Compile and wait.
