@@ -96,11 +96,11 @@ void PRSFile::Save(std::string path) {
 
 	// Open file
 	FILE *fp = fopen(path.c_str(),"wb");
-	if (!fp) throw new std::exception("Failed to open file");
+	if (!fp) throw std::exception("Failed to open file");
 
 	try {
 		// Write the "PRS" (zero-terminated) string ID (4 bytes)
-		fwrite("PRS",1,4,fp);
+		fwrite("PRS-BIN",1,8,fp);
 
 		// Write version number (4 bytes)
 		unsigned __int32 temp = 1;
@@ -144,19 +144,27 @@ void PRSFile::Load(std::string path, bool reset) {
 
 	// Open file
 	FILE *fp = fopen(path.c_str(),"rb");
-	if (!fp) throw new std::exception("Failed to open file");
+	if (!fp) throw std::exception("Failed to open file");
 
 	try {
-		// Read first four bytes
-		char buf[5];
-		buf[4] = 0;
-		fread(buf,1,4,fp);
-		if (strcmp(buf,"PRS") != 0) throw new std::exception("Invalid file type.");
+		// Read first eight bytes
+		char buf[16];
+		fread(buf,1,8,fp);
+		if (memcmp(buf,"PRS-BIN",8) != 0) {
+			// Is actually ASCII, read as that
+			if (memcmp(buf,"PRS-ASC",7) == 0) {
+				LoadText(path,false);
+				return;
+			}
+
+			// Invalid
+			throw std::exception("Invalid file type.");
+		}
 
 		// Read version number
 		unsigned __int32 temp = 0;
 		fread(&temp,4,1,fp);
-		if (temp != 1) throw new std::exception("Invalid version.");
+		if (temp != 1) throw std::exception("Invalid version.");
 
 		// Read stream name length
 		fread(&temp,4,1,fp);
@@ -309,15 +317,31 @@ PRSVideoFrame* PRSFile::CachedGetFrameByID(int id) {
 		cached.frame = NULL;
 		cacheMemSize += frame->GetSize();
 
-		// If memory has been exceeded, remove stuff from the back until it isn't anymore
-		while (cacheMemSize > maxCache && frameCache.size() > 1) {
-			cacheMemSize -= frameCache.back().frame->GetSize();
-			frameCache.pop_back();
-		}
+		// Update cache
+		EnforceCacheLimit();
 	}
 
 	// Return it
 	return frame;
+}
+
+
+/////////////////////////////////////////////////////////////
+// Enforce the cache limit, that is, delete anything over it
+// This function will always leave at least one image on cache
+void PRSFile::EnforceCacheLimit() {
+	while (cacheMemSize > maxCache && frameCache.size() > 1) {
+		cacheMemSize -= frameCache.back().frame->GetSize();
+		frameCache.pop_back();
+	}
+}
+
+
+////////////////////////////
+// Set maximum cache memory
+void PRSFile::SetCacheLimit(int bytes) {
+	maxCache = bytes;
+	EnforceCacheLimit();
 }
 
 
@@ -429,4 +453,10 @@ void PRSFile::SaveText(std::string path) {
 
 	// Close file
 	file.close();
+}
+
+
+///////////////////
+// Load plain-text
+void PRSFile::LoadText(std::string path, bool reset) {
 }

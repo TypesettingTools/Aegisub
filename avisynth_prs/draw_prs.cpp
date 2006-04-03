@@ -54,8 +54,11 @@ DrawPRS::DrawPRS (IScriptEnvironment* _env, PClip _child, const char *filename)
 	}
 
 	// Catch exception
-	catch (std::exception e) {
-		env->ThrowError(e.what());
+	catch (const std::exception &e) {
+		env->ThrowError("Error in PRS loading: %s",e.what());
+	}
+	catch (...) {
+		env->ThrowError("Unhandled exception in PRS loading.");
 	}
 }
 

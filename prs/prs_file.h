@@ -60,6 +60,7 @@ private:
 	int cacheMemSize;
 	int maxCache;
 	void Reset();
+	void EnforceCacheLimit();
 
 public:
 	PRSFile();
@@ -77,8 +78,10 @@ public:
 	bool HasDataAtFrame(int n);
 	void DrawFrame(int n,PRSVideoFrame *frame);
 	PRSImage *GetImageByID(int id);
+
 	PRSVideoFrame *CachedGetFrameByID(int id);
 	void ClearCache();
+	void SetCacheLimit(int bytes);
 
 	PRSImage *FindDuplicateImage(PRSImage *img);
 };
