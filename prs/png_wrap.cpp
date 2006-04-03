@@ -83,7 +83,7 @@ void PNGWrapper::Read(PRSVideoFrame *frame) {
 	}
 
 	// Set data reading
-	png_set_read_fn(png_ptr,this,memory_read_data);
+	png_set_read_fn(png_ptr,this,(png_rw_ptr) memory_read_data);
 
 	// Read data
 	//png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_EXPAND | PNG_TRANSFORM_PACKING | PNG_TRANSFORM_STRIP_16, NULL);

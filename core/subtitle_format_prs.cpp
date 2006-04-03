@@ -166,7 +166,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			if (!curImage.Ok()) continue;
 
 			// Optimize image
-			//OptimizeImage(curImage);
+			OptimizeImage(curImage);
 
 			// Insert the image
 			useFrameN = framen;
@@ -182,7 +182,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Save file
 	file.Save((const char*)filename.mb_str(wxConvLocal));
 	wxString filename2 = filename + _T(".prsa");
-	//file.SaveText((const char*)filename2.mb_str(wxConvLocal));
+	file.SaveText((const char*)filename2.mb_str(wxConvLocal));
 #endif
 }
 
@@ -459,7 +459,6 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 
 /////////////////////////////////////////////
 // Optimize the image by tweaking the colors
-#define ERROR_OF_ALPHA(a) ((a) == 0 ? 255 : 512/((int)(a)))
 #define IN_ERROR_MARGIN(col1,col2,error) ((col1 > col2 ? ((int)(col1-col2)) : ((int)(col2-col1))) <= (error))
 
 void PRSSubtitleFormat::OptimizeImage(wxImage &image) {
@@ -507,10 +506,9 @@ void PRSSubtitleFormat::OptimizeImage(wxImage &image) {
 				if (status[i] != 0) continue;
 
 				// Get error
-				error = ERROR_OF_ALPHA(alpha[i]);
-				c1 = MIN(255,c1 + MIN(128,error/2));
-				c2 = MIN(255,c2 + MIN(128,error/2));
-				c3 = MIN(255,c3 + MIN(128,error/2));
+				int a = alpha[i];
+				if (a == 0) error = 255;
+				else error = 1024/a;
 
 				// Right pixel
 				if (i != len-1 && status[i+1] == 2) {
@@ -673,10 +671,13 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 				else if (y > maxy) maxy = y;
 
 				// Calculate colour components
-				int mod = MAX(0,128/a-1);
-				r = MAX(0,r1-mod)*255 / a;
-				g = MAX(0,g1-mod)*255 / a;
-				b = MAX(0,b1-mod)*255 / a;
+				//int mod = MAX(0,128/a-1);
+				//r = MAX(0,r1-mod)*255 / a;
+				//g = MAX(0,g1-mod)*255 / a;
+				//b = MAX(0,b1-mod)*255 / a;
+				r = r1*255/a;
+				g = g1*255/a;
+				b = b1*255/a;
 			}
 
 			// Write to destination
