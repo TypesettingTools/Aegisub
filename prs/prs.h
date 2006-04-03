@@ -33,69 +33,10 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#pragma once
 
 ///////////
 // Headers
-#include "draw_prs.h"
-#include "../prs/prs.h"
-
-
-///////////////
-// Constructor
-DrawPRS::DrawPRS (IScriptEnvironment* _env, PClip _child, const char *filename)
-: GenericVideoFilter(_child)
-{
-	// Set environment
-	env = _env;
-
-	// Load file
-	try {
-		file.Load(filename);
-	}
-
-	// Catch exception
-	catch (std::exception e) {
-		env->ThrowError(e.what());
-	}
-}
-
-
-//////////////
-// Destructor
-DrawPRS::~DrawPRS() {
-}
-
-
-/////////////
-// Get frame
-PVideoFrame __stdcall DrawPRS::GetFrame(int n, IScriptEnvironment* env) {
-	// Avisynth frame
-	PVideoFrame avsFrame = child->GetFrame(n,env);
-
-	try {
-		// Check if there is anything to be drawn
-		if (file.HasDataAtFrame(n)) {
-			// Create the PRSFrame structure
-			env->MakeWritable(&avsFrame);
-			PRSVideoFrame frame;
-			frame.data[0] = (char*) avsFrame->GetWritePtr();
-			frame.w = avsFrame->GetRowSize()/4;
-			frame.h = avsFrame->GetHeight();
-			frame.pitch = avsFrame->GetPitch();
-			frame.colorSpace = ColorSpace_RGB32;
-			frame.flipColors = true;
-			frame.flipVertical = true;
-
-			// Draw into the frame
-			file.DrawFrame(n,&frame);
-		}
-	}
-
-	// Catch exception
-	catch (std::exception e) {
-		env->ThrowError(e.what());
-	}
-
-	// Return frame
-	return avsFrame;
-}
+#include "prs_file.h"
+#include "prs_display.h"
+#include "prs_image.h"
