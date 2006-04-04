@@ -457,8 +457,12 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 
 /////////////////////////////////////////////
 // Optimize the image by tweaking the colors
+// First, a little macro to help the comparisons down there
 #define IN_ERROR_MARGIN(col1,col2,error) ((col1 > col2 ? ((int)(col1-col2)) : ((int)(col2-col1))) <= (error))
 
+// Now, since I don't expect anyone to be able to decypher this...
+// This "flood fills" the image based on alpha, to make it easier to compress, without affecting visual quality
+// e.g. if you have a pixel with 25% opacity, then a difference of as much as 3 in the color channels won't have a visual impact
 void PRSSubtitleFormat::OptimizeImage(wxImage &image) {
 	// Get the raw data
 	unsigned char *data = (unsigned char*) image.GetData();

@@ -279,8 +279,9 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 	else if (FrameRateType == VFR) {
 		// Get last
 		double trueLast;
-		if (useceil) trueLast = ceil(last_time);
-		else trueLast = floor(last_time);
+		//if (useceil) trueLast = ceil(last_time);
+		//else trueLast = floor(last_time);
+		trueLast = Frame[Frame.size()-1];
 
 		// Inside VFR range
 		if (ms < trueLast) {
