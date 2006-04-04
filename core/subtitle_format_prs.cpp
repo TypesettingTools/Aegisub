@@ -79,6 +79,12 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Create the PRS file
 	PRSFile file;
 
+	// Create the temporary .ass file
+	wxString tempFile1 = wxFileName::CreateTempFileName(_T("aegisub"));
+	wxRemoveFile(tempFile1);
+	wxString tempFile = tempFile1 + _T(".ass");
+	GetAssFile()->Save(tempFile,false,false);
+
 	// Open two Avisynth environments
 	AviSynthWrapper avs1,avs2;
 	IScriptEnvironment *env1 = avs1.GetEnv();
@@ -89,7 +95,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	AVSValue script1 = env1->Invoke("Eval",AVSValue(wxString(val + _T(",color=$000000)")).mb_str(wxConvUTF8)));
 	AVSValue script2 = env2->Invoke("Eval",AVSValue(wxString(val + _T(",color=$FFFFFF)")).mb_str(wxConvUTF8)));
 	char temp[512];
-	strcpy(temp,display->GetTempWorkFile().mb_str(wxConvLocal));
+	strcpy(temp,tempFile.mb_str(wxConvLocal));
 	AVSValue args1[2] = { script1.AsClip(), temp };
 	AVSValue args2[2] = { script2.AsClip(), temp };
 	try {
@@ -181,6 +187,9 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	file.Save((const char*)filename.mb_str(wxConvLocal));
 	wxString filename2 = filename + _T(".prsa");
 	file.SaveText((const char*)filename2.mb_str(wxConvLocal));
+
+	// Delete temp file
+	wxRemoveFile(tempFile);
 #endif
 }
 
@@ -375,9 +384,8 @@ void PRSSubtitleFormat::GetSubPictureRectangles(wxImage &image,std::vector<wxRec
 // Get frame ranges
 std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 	// Loop through subtitles in file
-	AssFile *ass = AssFile::top;
 	std::vector<int> frames;
-	for (entryIter cur=ass->Line.begin();cur!=ass->Line.end();cur++) {
+	for (entryIter cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *diag = AssEntry::GetAsDialogue(*cur);
 
 		// Dialogue found
