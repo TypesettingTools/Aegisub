@@ -101,7 +101,7 @@ PVideoFrame __stdcall DrawPRS::GetFrame(int n, IScriptEnvironment* env) {
 	}
 
 	// Catch exception
-	catch (std::exception e) {
+	catch (const std::exception &e) {
 		env->ThrowError(e.what());
 	}
 
