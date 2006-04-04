@@ -73,6 +73,10 @@ Please visit http://aegisub.net to download latest version
 - Aegisub no longer enjoys littering your temporary files folder with 0 kB files. (AMZ)
 - Pre-Rendered Subtitles (PRS) export added. (AMZ)
 - Not directly related, but PRS Avisynth filter added to Aegisub SVN tree. (AMZ)
+- New languages available:
+   o Spanish (thanks to NeSuKuN)
+   o Italian (thanks to EmBoLo)
+   o Korean (thanks to oblisk)
 
 
 = 1.09 beta - 2006.01.16 ===========================
