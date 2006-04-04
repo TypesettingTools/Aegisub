@@ -119,16 +119,16 @@ Start and end frame numbers are both inclusive.
 0x1B	blend mode (8 bit unsigned)
 
 Alpha multiplier:
-0x00 is "invisible",0xFF is "fully visible". This value is multiplied onto
+0x00 is "invisible", 0xFF is "fully visible". This value is multiplied onto
 the alpha value of each pixel in the image to get the actual alpha value for
-that pixel.
+that pixel, that is: finalAlpha = pixelAlpha * globalAlpha / 255;
 
 Blend modes:
-  0	none (dest*(1-alpha) + src*alpha)
-  1	add (dest*(1-alpha) + (src+dest)*alpha)
-  2	subtract (dest*(1-alpha) + (src-dest)*alpha)
-  3	inverse subtract (dest*(1-alpha) + (dest-src)*alpha)
-  4	multiply (dest*(1-alpha) + src*dest*alpha)
+  0	none (src*alpha + dest*(1-alpha))
+  1	add (src*alpha + dest)
+  2	subtract (dest - src*alpha);
+  3	inverse subtract (src*alpha - dest) (is this it?)
+  4	multiply (src*alpha * dst / 255)
 Values are clipped before they are multiplied with alpha.
 
 Layers:

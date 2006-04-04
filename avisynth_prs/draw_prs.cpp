@@ -85,9 +85,15 @@ PVideoFrame __stdcall DrawPRS::GetFrame(int n, IScriptEnvironment* env) {
 			frame.w = avsFrame->GetRowSize()/4;
 			frame.h = avsFrame->GetHeight();
 			frame.pitch = avsFrame->GetPitch();
-			frame.colorSpace = ColorSpace_RGB32;
 			frame.flipColors = true;
 			frame.flipVertical = true;
+
+			// Set colorspace
+			VideoInfo vi = child->GetVideoInfo();
+			if (vi.IsYV12()) frame.colorSpace = ColorSpace_YV12;
+			else if (vi.IsYUY2()) frame.colorSpace = ColorSpace_YUY2;
+			else if (vi.IsRGB32()) frame.colorSpace = ColorSpace_RGB32;
+			else if (vi.IsRGB24()) frame.colorSpace = ColorSpace_RGB24;
 
 			// Draw into the frame
 			file.DrawFrame(n,&frame);

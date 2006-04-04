@@ -77,6 +77,8 @@ PRSVideoFrame::~PRSVideoFrame () {
 
 ///////////////////////////////////
 // Overlay frame on top of another
+// This function could get some optimization/assembly love
+// Also, perhaps using "(x+1) >> 8" instead of "x / 255" should be considered.
 void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char alpha,unsigned char blend) {
 	// TODO: Colorspace conversion, for now, the function assumes RGB32 on RGB32!
 
@@ -153,6 +155,22 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 				*dst++ = MAX(0,(int(dc1) - sc1*a)/255);
 				*dst++ = MAX(0,(int(dc2) - sc2*a)/255);
 				*dst++ = MAX(0,(int(dc3) - sc3*a)/255);
+				*dst++ = 255-(ia*(255-da)/255);			// Is this correct?
+			}
+
+			// Inverse subtract blend
+			else if (blend == 3) {
+				*dst++ = MAX(0,(sc1*a - int(dc1))/255);
+				*dst++ = MAX(0,(sc2*a - int(dc2))/255);
+				*dst++ = MAX(0,(sc3*a - int(dc3))/255);
+				*dst++ = 255-(ia*(255-da)/255);			// Is this correct?
+			}
+
+			// Multiply blend
+			else if (blend == 4) {
+				*dst++ = MIN(255,(int(sc1)*a * int(dc1) / 255)/255);
+				*dst++ = MIN(255,(int(sc2)*a * int(dc2) / 255)/255);
+				*dst++ = MIN(255,(int(sc3)*a * int(dc3) / 255)/255);
 				*dst++ = 255-(ia*(255-da)/255);			// Is this correct?
 			}
 		}
