@@ -132,12 +132,29 @@ void PRSVideoFrame::Overlay(PRSVideoFrame *dstFrame,int x,int y,unsigned char al
 			dc3 = *(dst+2);
 			da = *(dst+3);
 
-			// Write colors
-			*dst++ = (sc1*a + dc1*ia)/255;
-			*dst++ = (sc2*a + dc2*ia)/255;
-			*dst++ = (sc3*a + dc3*ia)/255;
-			*dst++ = 255-(ia*(255-da)/255);
-			//*dst++ = da;
+			// Normal blend
+			if (blend == 0) {
+				*dst++ = (sc1*a + dc1*ia)/255;			// Why does this work without cast to int? It should overflow...
+				*dst++ = (sc2*a + dc2*ia)/255;
+				*dst++ = (sc3*a + dc3*ia)/255;
+				*dst++ = 255-(ia*(255-da)/255);
+			}
+
+			// Add blend
+			else if (blend == 1) {
+				*dst++ = MIN(255,(int(sc1)*a + int(dc1))/255);
+				*dst++ = MIN(255,(int(sc2)*a + int(dc2))/255);
+				*dst++ = MIN(255,(int(sc3)*a + int(dc3))/255);
+				*dst++ = 255-(ia*(255-da)/255);			// Is this correct?
+			}
+
+			// Subtract blend
+			else if (blend == 2) {
+				*dst++ = MAX(0,(int(dc1) - sc1*a)/255);
+				*dst++ = MAX(0,(int(dc2) - sc2*a)/255);
+				*dst++ = MAX(0,(int(dc3) - sc3*a)/255);
+				*dst++ = 255-(ia*(255-da)/255);			// Is this correct?
+			}
 		}
 	}
 }
