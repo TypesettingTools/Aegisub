@@ -277,8 +277,13 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 
 	// Get for variable frame rate
 	else if (FrameRateType == VFR) {
+		// Get last
+		double trueLast;
+		if (useceil) trueLast = ceil(last_time);
+		else trueLast = floor(last_time);
+
 		// Inside VFR range
-		if (ms < floor(last_time)) {
+		if (ms < trueLast) {
 			// Prepare binary search
 			size_t start = 0;
 			size_t end = last_frame;
@@ -308,7 +313,8 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 		
 		// After VFR range
 		else {
-			return last_frame + floor((ms-last_time) * AverageFrameRate / 1000);
+			if (useceil) return last_frame + ceil((ms-last_time) * AverageFrameRate / 1000);
+			else return last_frame + floor((ms-last_time) * AverageFrameRate / 1000);
 		}
 	}
 	return -1;
