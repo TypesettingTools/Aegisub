@@ -108,3 +108,21 @@ PVideoFrame __stdcall DrawPRS::GetFrame(int n, IScriptEnvironment* env) {
 	// Return frame
 	return avsFrame;
 }
+
+
+//////////////////////////////
+// Actually create the filter
+// This is the function that created the filter, when the filter has been called.
+AVSValue __cdecl CreateDrawPRS(AVSValue args, void* user_data, IScriptEnvironment* env) {
+	return new DrawPRS(env, args[0].AsClip(), args[1].AsString());  
+}
+
+
+/////////////////////////
+// Avisynth registration
+// The following function is the function that actually registers the filter in AviSynth
+// It is called automatically, when the plugin is loaded to see which functions this filter contains.
+extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* env) {
+    env->AddFunction("DrawPRS", "c[file]s", CreateDrawPRS, 0);
+    return "`Pre-Rendered Subtitles' by Rodrigo Braz Monteiro (ArchMage ZeratuL)";
+}
