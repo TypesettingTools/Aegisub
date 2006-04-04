@@ -36,13 +36,14 @@
 
 ////////////
 // Includes
+#include <wx/fontdlg.h>
+#include <wx/colordlg.h>
 #include "dialog_style_editor.h"
 #include "ass_style.h"
 #include "ass_file.h"
 #include "validators.h"
 #include "subs_grid.h"
-#include <wx/fontdlg.h>
-#include <wx/colordlg.h>
+#include "utils.h"
 #include "dialog_colorpicker.h"
 
 
@@ -64,8 +65,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Font
 	FontName = new wxTextCtrl(this,-1,style->font,wxDefaultPosition,wxSize(150,20));
-	FontSizeValue = wxString::Format(_T("%i"),style->fontsize);
-	FontSize = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(30,20),0,NumValidator(&FontSizeValue));
+	FontSizeValue = FloatToString(style->fontsize);
+	FontSize = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(30,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
 	FontName->SetToolTip(_("Font face"));
 	FontSize->SetToolTip(_("Font size"));
 	wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
@@ -187,8 +188,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Outline
 	wxSizer *OutlineBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Outline"));
 	OutlineType = new wxCheckBox(this,-1,_("Opaque box"));
-	OutlineValue = wxString::Format(_T("%.1f"),style->outline_w);
-	ShadowValue = wxString::Format(_T("%.1f"),style->shadow_w);
+	OutlineValue = FloatToString(style->outline_w);
+	ShadowValue = FloatToString(style->shadow_w);
 	Outline = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&OutlineValue));
 	Shadow = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&ShadowValue));
 	OutlineType->SetToolTip(_("Checking this will display an opaque box instead of outline"));
@@ -207,13 +208,13 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Miscelaneous"));
 	wxSizer *MiscBoxTop = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *MiscBoxBottom = new wxBoxSizer(wxHORIZONTAL);
-	ScaleXValue = wxString::Format(_T("%i"),style->scalex);
-	ScaleYValue = wxString::Format(_T("%i"),style->scaley);
-	AngleValue = wxString::Format(_T("%.1f"),style->angle);
-	EncodingValue = wxString::Format(_T("%i"),style->encoding);
-	SpacingValue = wxString::Format(_T("%.1f"),style->spacing);
-	ScaleX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(40,20),0,NumValidator(&ScaleXValue));
-	ScaleY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(40,20),0,NumValidator(&ScaleYValue));
+	ScaleXValue = FloatToString(style->scalex);
+	ScaleYValue = FloatToString(style->scaley);
+	AngleValue = FloatToString(style->angle);
+	EncodingValue = IntToString(style->encoding);
+	SpacingValue = FloatToString(style->spacing);
+	ScaleX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleXValue));
+	ScaleY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleYValue));
 	Angle = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&AngleValue));
 	Encoding = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(40,20),0,NumValidator(&EncodingValue));
 	Spacing = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&SpacingValue));
@@ -324,10 +325,8 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 	if (apply) {
 		// Update
 		long templ;
-		ScaleX->GetValue().ToLong(&templ);
-		work->scalex = templ;
-		ScaleY->GetValue().ToLong(&templ);
-		work->scaley = templ;
+		ScaleX->GetValue().ToDouble(&(work->scalex));
+		ScaleY->GetValue().ToDouble(&(work->scaley));
 		Encoding->GetValue().ToLong(&templ);
 		work->encoding = templ;
 		Angle->GetValue().ToDouble(&(work->angle));
@@ -353,7 +352,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		work->underline = BoxUnderline->IsChecked();
 		work->strikeout = BoxStrikeout->IsChecked();
 		work->font = FontName->GetValue();
-		FontSize->GetValue().ToLong(&templ);
+		FontSize->GetValue().ToDouble(&(work->fontsize));
 		work->fontsize = templ;
 		work->name = StyleName->GetValue();
 

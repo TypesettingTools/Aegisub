@@ -69,7 +69,7 @@ class AssStyle : public AssEntry {
 public:
 	wxString name;
 	wxString font;
-	int fontsize;
+	double fontsize;
 
 	AssColor primary;
 	AssColor secondary;
@@ -81,8 +81,8 @@ public:
 	bool underline;
 	bool strikeout;
 
-	int scalex;
-	int scaley;
+	double scalex;
+	double scaley;
 	double spacing;
 	double angle;
 	int borderstyle;

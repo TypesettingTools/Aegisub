@@ -390,7 +390,7 @@ void AssOverrideTagProto::LoadProtos () {
 	// \fs<size>
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\fs");
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
 
 	// \an<alignment>
 	proto.push_back(AssOverrideTagProto());

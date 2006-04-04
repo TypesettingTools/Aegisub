@@ -130,3 +130,17 @@ wxString PrettyFloat(wxString src) {
 	}
 	return src;
 }
+
+
+///////////////////
+// Float to string
+wxString FloatToString(double value) {
+	return PrettyFloat(wxString::Format(_T("%f"),value));
+}
+
+
+/////////////////
+// Int to string
+wxString IntToString(int value) {
+	return wxString::Format(_T("%i"),value);
+}

@@ -36,8 +36,9 @@
 
 ////////////
 // Includes
-#include "ass_style.h"
 #include <wx/tokenzr.h>
+#include "ass_style.h"
+#include "utils.h"
 
 
 ///////////////////////// AssColor //////////////////////////
@@ -302,14 +303,14 @@ bool AssStyle::Parse(wxString rawData,bool IsSSA) {
 		// Read scale x
 		if (!tkn.HasMoreTokens()) return false;
 		temp = tkn.GetNextToken();
-		temp.ToLong(&templ);
-		scalex = templ;
+		temp.ToDouble(&scalex);
+		//scalex = templ;
 
 		// Read scale y
 		if (!tkn.HasMoreTokens()) return false;
 		temp = tkn.GetNextToken();
-		temp.ToLong(&templ);
-		scaley = templ;
+		temp.ToDouble(&scaley);
+		//scaley = templ;
 
 		// Read spacing
 		if (!tkn.HasMoreTokens()) return false;
@@ -412,32 +413,32 @@ void AssStyle::UpdateData() {
 	font.Replace(_T(","),_T(";"));
 	final += name + _T(",");
 	final += font + _T(",");
-	final += wxString::Format(_T("%i"),fontsize) + _T(",");
+	final += FloatToString(fontsize) + _T(",");
 
 	final += primary.GetASSFormatted(true,false,true) + _T(",");
 	final += secondary.GetASSFormatted(true,false,true) + _T(",");
 	final += outline.GetASSFormatted(true,false,true) + _T(",");
 	final += shadow.GetASSFormatted(true,false,true) + _T(",");
 
-	final += wxString::Format(_T("%i"),bold?-1:0) + _T(",");
-	final += wxString::Format(_T("%i"),italic?-1:0) + _T(",");
-	final += wxString::Format(_T("%i"),underline?-1:0) + _T(",");
-	final += wxString::Format(_T("%i"),strikeout?-1:0) + _T(",");
+	final += IntToString(bold?-1:0) + _T(",");
+	final += IntToString(italic?-1:0) + _T(",");
+	final += IntToString(underline?-1:0) + _T(",");
+	final += IntToString(strikeout?-1:0) + _T(",");
 
-	final += wxString::Format(_T("%i"),scalex) + _T(",");
-	final += wxString::Format(_T("%i"),scaley) + _T(",");
-	final += wxString::Format(_T("%.2f"),spacing) + _T(",");
+	final += FloatToString(scalex) + _T(",");
+	final += FloatToString(scaley) + _T(",");
+	final += FloatToString(spacing) + _T(",");
 
-	final += wxString::Format(_T("%.2f"),angle) + _T(",");
-	final += wxString::Format(_T("%i"),borderstyle) + _T(",");
-	final += wxString::Format(_T("%.2f"),outline_w) + _T(",");
-	final += wxString::Format(_T("%.2f"),shadow_w) + _T(",");
+	final += FloatToString(angle) + _T(",");
+	final += IntToString(borderstyle) + _T(",");
+	final += FloatToString(outline_w) + _T(",");
+	final += FloatToString(shadow_w) + _T(",");
 
-	final += wxString::Format(_T("%i"),alignment) + _T(",");
-	final += wxString::Format(_T("%i"),MarginL) + _T(",");
-	final += wxString::Format(_T("%i"),MarginR) + _T(",");
-	final += wxString::Format(_T("%i"),MarginV) + _T(",");
-	final += wxString::Format(_T("%i"),encoding);
+	final += IntToString(alignment) + _T(",");
+	final += IntToString(MarginL) + _T(",");
+	final += IntToString(MarginR) + _T(",");
+	final += IntToString(MarginV) + _T(",");
+	final += IntToString(encoding);
 	SetEntryData(final);
 }
 
@@ -488,19 +489,19 @@ wxString AssStyle::GetSSAText() {
 	font.Replace(_T(","),_T(";"));
 	output += name + _T(",");
 	output += font + _T(",");
-	output += wxString::Format(_T("%i"),fontsize) + _T(",");
+	output += FloatToString(fontsize) + _T(",");
 
 	output += primary.GetSSAFormatted() + _T(",");
 	output += secondary.GetSSAFormatted() + _T(",");
 	output += _T("0,");
 	output += shadow.GetSSAFormatted() + _T(",");
 
-	output += wxString::Format(_T("%i"),bold?-1:0) + _T(",");
-	output += wxString::Format(_T("%i"),italic?-1:0) + _T(",");
+	output += IntToString(bold?-1:0) + _T(",");
+	output += IntToString(italic?-1:0) + _T(",");
 
-	output += wxString::Format(_T("%i"),borderstyle) + _T(",");
-	output += wxString::Format(_T("%.2f"),outline_w) + _T(",");
-	output += wxString::Format(_T("%.2f"),shadow_w) + _T(",");
+	output += IntToString(borderstyle) + _T(",");
+	output += FloatToString(outline_w) + _T(",");
+	output += FloatToString(shadow_w) + _T(",");
 
 	int align = 0;
 	switch (alignment) {
@@ -514,13 +515,13 @@ wxString AssStyle::GetSSAText() {
 		case 8: align = 6; break;
 		case 9: align = 7; break;
 	}
-	output += wxString::Format(_T("%i"),align) + _T(",");
+	output += IntToString(align) + _T(",");
 
-	output += wxString::Format(_T("%i"),MarginL) + _T(",");
-	output += wxString::Format(_T("%i"),MarginR) + _T(",");
-	output += wxString::Format(_T("%i"),MarginV) + _T(",");
+	output += IntToString(MarginL) + _T(",");
+	output += IntToString(MarginR) + _T(",");
+	output += IntToString(MarginV) + _T(",");
 	output += _T("0,");
-	output += wxString::Format(_T("%i"),encoding);
+	output += IntToString(encoding);
 
 	return output;
 }
