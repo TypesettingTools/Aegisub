@@ -253,6 +253,7 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 	int startf = framen;
 	int totalFrames = frames.size();
 	while (++framen<totalFrames && frames[framen] == 1);
+	framen--; // need -1, otherwise all sub-images are extended by one frame
 	int endf = framen;
 	int start = VFR_Output.GetTimeAtFrame(startf,true);
 	int end = VFR_Output.GetTimeAtFrame(endf,false);
