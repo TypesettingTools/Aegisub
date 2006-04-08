@@ -21,6 +21,7 @@ typedef uint64_t __uint64;
 
 #define NO_SPELLCHECKER
 #define NO_FEX
+#define NO_PRS
 
 #if defined(HAVE_LIBAVCODEC) && defined(HAVE_LIBAVFORMAT)
 #define USE_LAVC

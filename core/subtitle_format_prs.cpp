@@ -34,6 +34,8 @@
 //
 
 
+#ifndef NO_PRS
+
 ///////////
 // Headers
 #include <wx/image.h>
@@ -775,3 +777,5 @@ wxImage PRSSubtitleFormat::SubImageWithAlpha (wxImage &source,const wxRect &rect
 
     return image;
 }
+
+#endif /* NO_PRS */

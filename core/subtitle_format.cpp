@@ -130,7 +130,9 @@ void SubtitleFormat::LoadFormats () {
 		new ASSSubtitleFormat();
 		new SRTSubtitleFormat();
 		new TXTSubtitleFormat();
+#ifndef NO_PRS
 		new PRSSubtitleFormat();
+#endif
 	}
 	loaded = true;
 }
