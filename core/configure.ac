@@ -77,7 +77,7 @@ AC_CHECK_LIB([m], [main])
 AC_CHECK_LIB([dl], [dlopen])
 
 AC_CHECK_LIB([lua], [lua_call],, [AC_MSG_ERROR([lua not found.])])
-AC_CHECK_LIB([lualib], [lua_tostring],, [AC_MSG_ERROR([lualib not found.])])
+AC_CHECK_LIB([lualib], [lua_tostring],, [AC_MSG_WARN([lualib not found, assuming lua 5.2])])
 AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
 AC_CHECK_LIB([avcodec], [avcodec_init])
 AC_CHECK_LIB([avformat], [av_frac_init])
