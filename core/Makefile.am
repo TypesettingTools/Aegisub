@@ -60,6 +60,7 @@ aegisub_SOURCES = about.cpp \
 	hilimod_textctrl.cpp \
 	hotkeys.cpp \
 	main.cpp \
+	md5.c \
 	mkv_wrap.cpp \
 	options.cpp \
 	splash.cpp \
@@ -69,6 +70,7 @@ aegisub_SOURCES = about.cpp \
 	subs_grid.cpp \
 	subtitle_format.cpp \
 	subtitle_format_ass.cpp \
+	subtitle_format_prs.cpp \
 	subtitle_format_srt.cpp \
 	subtitle_format_txt.cpp \
 	text_file_reader.cpp \
@@ -79,6 +81,7 @@ aegisub_SOURCES = about.cpp \
 	utils.cpp \
 	validators.cpp \
 	variable_data.cpp \
+	version.cpp \
 	vfr.cpp \
 	video_box.cpp \
 	video_display.cpp \
