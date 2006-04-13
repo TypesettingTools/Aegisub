@@ -36,7 +36,7 @@
 
 ///////////////////////
 // Function prototypes
-#ifdef __WIN32__
+#ifndef __LINUX__
 __int64 abs64(__int64 input);
 #endif
 int CountMatches(wxString parent,wxString child);
