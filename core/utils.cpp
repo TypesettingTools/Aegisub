@@ -44,7 +44,7 @@
 #endif
 
 
-#ifdef __WIN32__
+#ifndef __LINUX__
 //////////////////////////
 // Absolute of 64 bit int
 __int64 abs64(__int64 input) {
