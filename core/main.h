@@ -64,7 +64,7 @@ public:
 
 	static wxString fullPath;
 	static wxString folderName;
-	
+
 	void GetFullPath(wxString arg);
 	void GetFolderName();
 	void RegistryAssociate();
@@ -85,6 +85,7 @@ public:
 
 ////////////////
 // Stack walker
+#if wxUSE_STACKWALKER == 1
 class StackWalker: public wxStackWalker {
 private:
 	std::ofstream file;
@@ -94,6 +95,7 @@ public:
 	~StackWalker();
 	void OnStackFrame(const wxStackFrame& frame);
 };
+#endif
 
 
 #endif

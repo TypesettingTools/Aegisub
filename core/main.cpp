@@ -151,8 +151,10 @@ void AegisubApp::OnFatalException() {
 	AssFile::top->Save(filename,false,false);
 
 	// Stack walk
+#if wxUSE_STACKWALKER == 1
 	StackWalker walker;
 	walker.WalkFromException();
+#endif
 
 	// Inform user of crash
 	wxMessageBox(_T("Aegisub has encountered a fatal error and will terminate now. The subtitles you were working on were saved to \"") + filename + _T("\", but they might be corrupt."), _T("Fatal error"), wxOK | wxICON_ERROR, NULL);
@@ -162,6 +164,7 @@ void AegisubApp::OnFatalException() {
 
 ////////////////
 // Stack walker
+#if wxUSE_STACKWALKER == 1
 void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 	wxString dst = wxString::Format(_T("%03i - 0x%08X: "),frame.GetLevel(),frame.GetAddress()) + frame.GetName() + _T(" on ") + frame.GetFileName() + wxString::Format(_T(":%i"),frame.GetLine());
 	char temp[2048];
@@ -185,6 +188,8 @@ StackWalker::~StackWalker() {
 		file.close();
 	}
 }
+#endif
+
 
 
 //////////////////
