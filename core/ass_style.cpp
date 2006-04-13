@@ -420,25 +420,25 @@ void AssStyle::UpdateData() {
 	final += outline.GetASSFormatted(true,false,true) + _T(",");
 	final += shadow.GetASSFormatted(true,false,true) + _T(",");
 
-	final += IntToString(bold?-1:0) + _T(",");
-	final += IntToString(italic?-1:0) + _T(",");
-	final += IntToString(underline?-1:0) + _T(",");
-	final += IntToString(strikeout?-1:0) + _T(",");
+	final += IntegerToString(bold?-1:0) + _T(",");
+	final += IntegerToString(italic?-1:0) + _T(",");
+	final += IntegerToString(underline?-1:0) + _T(",");
+	final += IntegerToString(strikeout?-1:0) + _T(",");
 
 	final += FloatToString(scalex) + _T(",");
 	final += FloatToString(scaley) + _T(",");
 	final += FloatToString(spacing) + _T(",");
 
 	final += FloatToString(angle) + _T(",");
-	final += IntToString(borderstyle) + _T(",");
+	final += IntegerToString(borderstyle) + _T(",");
 	final += FloatToString(outline_w) + _T(",");
 	final += FloatToString(shadow_w) + _T(",");
 
-	final += IntToString(alignment) + _T(",");
-	final += IntToString(MarginL) + _T(",");
-	final += IntToString(MarginR) + _T(",");
-	final += IntToString(MarginV) + _T(",");
-	final += IntToString(encoding);
+	final += IntegerToString(alignment) + _T(",");
+	final += IntegerToString(MarginL) + _T(",");
+	final += IntegerToString(MarginR) + _T(",");
+	final += IntegerToString(MarginV) + _T(",");
+	final += IntegerToString(encoding);
 	SetEntryData(final);
 }
 
@@ -496,10 +496,10 @@ wxString AssStyle::GetSSAText() {
 	output += _T("0,");
 	output += shadow.GetSSAFormatted() + _T(",");
 
-	output += IntToString(bold?-1:0) + _T(",");
-	output += IntToString(italic?-1:0) + _T(",");
+	output += IntegerToString(bold?-1:0) + _T(",");
+	output += IntegerToString(italic?-1:0) + _T(",");
 
-	output += IntToString(borderstyle) + _T(",");
+	output += IntegerToString(borderstyle) + _T(",");
 	output += FloatToString(outline_w) + _T(",");
 	output += FloatToString(shadow_w) + _T(",");
 
@@ -515,13 +515,13 @@ wxString AssStyle::GetSSAText() {
 		case 8: align = 6; break;
 		case 9: align = 7; break;
 	}
-	output += IntToString(align) + _T(",");
+	output += IntegerToString(align) + _T(",");
 
-	output += IntToString(MarginL) + _T(",");
-	output += IntToString(MarginR) + _T(",");
-	output += IntToString(MarginV) + _T(",");
+	output += IntegerToString(MarginL) + _T(",");
+	output += IntegerToString(MarginR) + _T(",");
+	output += IntegerToString(MarginV) + _T(",");
 	output += _T("0,");
-	output += IntToString(encoding);
+	output += IntegerToString(encoding);
 
 	return output;
 }

@@ -141,6 +141,6 @@ wxString FloatToString(double value) {
 
 /////////////////
 // Int to string
-wxString IntToString(int value) {
+wxString IntegerToString(int value) {
 	return wxString::Format(_T("%i"),value);
 }

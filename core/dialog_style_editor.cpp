@@ -211,7 +211,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	ScaleXValue = FloatToString(style->scalex);
 	ScaleYValue = FloatToString(style->scaley);
 	AngleValue = FloatToString(style->angle);
-	EncodingValue = IntToString(style->encoding);
+	EncodingValue = IntegerToString(style->encoding);
 	SpacingValue = FloatToString(style->spacing);
 	ScaleX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleXValue));
 	ScaleY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleYValue));
