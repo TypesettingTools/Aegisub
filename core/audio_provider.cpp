@@ -167,12 +167,12 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 	AudioProvider *provider = NULL;
 
 	// Select provider
-	#ifdef __WINDOWS__
-	//provider = new AvisynthAudioProvider(filename);
-	#endif
-
 	#ifdef USE_LAVC
 	if (!provider) provider = new LAVCAudioProvider(filename);
+	#endif
+
+	#ifdef __WINDOWS__
+	if (!provider) provider = new AvisynthAudioProvider(filename);
 	#endif
 
 	// No provider found
