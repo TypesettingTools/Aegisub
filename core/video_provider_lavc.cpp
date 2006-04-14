@@ -62,13 +62,6 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
 	zoom = 1.0;
 	validFrame = false;
 
-	// Register types
-	static bool avRegistered = false;
-	if (!avRegistered) {
-		av_register_all();
-		avRegistered = true;
-	}
-
 	// Load
 	LoadVideo(filename);
 }

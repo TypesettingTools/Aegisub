@@ -48,6 +48,13 @@ private:
 
 	LAVCFile(wxString filename);
 	~LAVCFile();
+
+	class Initializer {
+	public:
+		Initializer();
+	};
+	static Initializer init;
+
 public:
 	AVFormatContext *fctx;
 	

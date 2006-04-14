@@ -38,6 +38,13 @@
 
 #ifdef USE_LAVC
 
+LAVCFile::Initializer LAVCFile::init;
+
+LAVCFile::Initializer::Initializer()
+{
+	av_register_all();
+}
+
 LAVCFile::LAVCFile(wxString filename)
 {
 	int result = 0;
