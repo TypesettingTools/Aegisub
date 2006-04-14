@@ -42,7 +42,9 @@
 #include "video_provider_lavc.h"
 #include "utils.h"
 #include "vfr.h"
+#if 0
 #include "mkv_wrap.h"
+#endif
 
 
 ///////////////
@@ -110,6 +112,8 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 		if (result < 0) throw _T("Failed to open video decoder");
 
 		// Check length
+		length = stream->duration;
+#if 0
 		isMkv = false;
 		length = stream->duration;
 		if (length <= 0) {
@@ -122,6 +126,7 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 			}
 			if (length <= 0) throw _T("Returned invalid stream length");
 		}
+#endif
 
 		// Set size
 		dar = double(GetSourceWidth()) / GetSourceHeight();
@@ -146,7 +151,9 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 // Close video
 void LAVCVideoProvider::Close() {
 	// Close mkv
+#if 0
 	if (isMkv) mkv.Close();
+#endif
 
 	// Clean buffers
 	if (buffer1) delete buffer1;
@@ -312,6 +319,7 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 		__int64 seekTo;
 		int result = 0;
 
+#if 0
 		// Get time to seek to
 		if (isMkv) {
 			//__int64 base = AV_TIME_BASE;
@@ -346,6 +354,7 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 
 		// Constant frame rate
 		else {
+#endif
 			seekTo = n;
 			result = av_seek_frame(lavcfile->fctx,vidStream,seekTo,AVSEEK_FLAG_BACKWARD);
 
@@ -364,7 +373,9 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 			else {
 				GetNextFrame();
 			}
+#if 0
 		}
+#endif
 	}
 
 	// Bitmap

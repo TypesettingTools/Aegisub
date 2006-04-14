@@ -44,7 +44,9 @@
 #include "ass_dialogue.h"
 #include "subs_grid.h"
 #include "vfw_wrap.h"
+#if 0
 #include "mkv_wrap.h"
+#endif
 #include "options.h"
 #include "subs_edit_box.h"
 #include "audio_display.h"
@@ -167,6 +169,8 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			provider->SetZoom(zoomValue);
 			provider->SetDAR(GetARFromType(arType));
 
+			KeyFrames.Clear();
+#if 0
 			// Read extra data from file
 			bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
 			wxString ext = filename.Right(4).Lower();
@@ -188,6 +192,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			}
 #ifdef __WIN32__
 			else if (ext == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
+#endif
 #endif
 
 			// Update size
