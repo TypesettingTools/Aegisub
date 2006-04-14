@@ -40,6 +40,7 @@
 #define LAVC_FILE_H
 
 #define EMULATE_INTTYPES
+#include <wx/filename.h>
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 
