@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2006, Rodrigo Braz Monteiro, Fredrik Mellbin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,79 +36,37 @@
 
 ///////////
 // Headers
-#include "video_provider_avs.h"
-#include "video_provider_lavc.h"
+#include <wx/wxprec.h>
+#include <wx/filename.h>
+#include "audio_provider_lavc.h"
 #include "options.h"
 
 
+//////////////
+// Constructor
+LAVCAudioProvider::LAVCAudioProvider(wxString _filename) {
+	filename = _filename;
+
+	// TODO
+}
+
+
+//////////////
+// Destructor
+LAVCAudioProvider::~LAVCAudioProvider() {
+	// TODO
+}
+
+
 ////////////////
-// Get provider
-VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
-	// Check if avisynth is available
-	bool avisynthAvailable = false;
-	#ifdef __WINDOWS__
-	try {
-		// If avisynth.dll cannot be loaded, an exception will be thrown and avisynthAvailable will never be set to true
-		AviSynthWrapper avs;
-		avisynthAvailable = true;
-	}
-	catch (...) {}
-	#endif
+// Get filename
+wxString LAVCAudioProvider::GetFilename() {
+	return filename;
+}
 
-	// Initialize to null
-	VideoProvider *provider = NULL;
 
-	// Preffered provider
-	wxString preffered = Options.AsText(_T("Video provider")).Lower();
-
-	// See if it's OK to use LAVC
-	#ifdef USE_LAVC
-	if (preffered == _T("ffmpeg") || !avisynthAvailable) {
-		// Load
-		bool success = false;
-		wxString error;
-		try {
-			provider = new LAVCVideoProvider(video,subtitles);
-			success = true;
-		}
-
-		// Catch error
-		catch (wchar_t *err) {
-			error = err;
-		}
-		catch (...) {
-			error = _T("Unhandled exception.");
-		}
-
-		if (!success) {
-			// Delete old provider
-			delete provider;
-
-			// Try to fallback to avisynth
-			if (avisynthAvailable) {
-				wxMessageBox(_T("Failed loading FFmpeg decoder for video, falling back to Avisynth.\nError message: ") + error,_T("FFmpeg error."));
-				provider = NULL;
-			}
-
-			// Out of options, rethrow
-			else throw error.c_str();
-		}
-	}
-	#endif
-
-	// Use avisynth provider
-	#ifdef __WINDOWS__
-	if (!provider) {
-		try {
-			provider = new AvisynthVideoProvider(video,subtitles);
-		}
-		catch (...) {
-			delete provider;
-			throw;
-		}
-	}
-	#endif
-
-	// Return provider
-	return provider;
+/////////////
+// Get audio
+void LAVCAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
+	// TODO
 }

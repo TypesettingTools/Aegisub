@@ -38,6 +38,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include "audio_provider_avs.h"
+#include "audio_provider_lavc.h"
 #include "audio_provider_ram.h"
 #include "audio_provider_hd.h"
 #include "options.h"
@@ -171,7 +172,7 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 	#endif
 
 	#ifdef USE_LAVC
-	//if (!provider) provider = new LAVCAudioProvider(filename);
+	if (!provider) provider = new LAVCAudioProvider(filename);
 	#endif
 
 	// No provider found

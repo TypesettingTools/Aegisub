@@ -96,6 +96,7 @@ static char  *mystrdup(struct InputStream *is,const char *src) {
   return dst;
 }
 
+#ifndef __FreeBSD__
 static void  strlcpy(char *dst,const char *src,unsigned size) {
   unsigned  i;
 
@@ -104,6 +105,7 @@ static void  strlcpy(char *dst,const char *src,unsigned size) {
   if (i<size)
     dst[i] = 0;
 }
+#endif
 
 struct Cue {
   ulonglong	Time;

@@ -34,81 +34,27 @@
 //
 
 
+#pragma once
+
+
 ///////////
 // Headers
-#include "video_provider_avs.h"
-#include "video_provider_lavc.h"
-#include "options.h"
+#include <wx/wxprec.h>
+#include "audio_provider.h"
 
 
-////////////////
-// Get provider
-VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
-	// Check if avisynth is available
-	bool avisynthAvailable = false;
-	#ifdef __WINDOWS__
-	try {
-		// If avisynth.dll cannot be loaded, an exception will be thrown and avisynthAvailable will never be set to true
-		AviSynthWrapper avs;
-		avisynthAvailable = true;
-	}
-	catch (...) {}
-	#endif
+////////////////////////
+// Audio provider class
+class LAVCAudioProvider : public AudioProvider {
+private:
+	wxString filename;
 
-	// Initialize to null
-	VideoProvider *provider = NULL;
+public:
+	LAVCAudioProvider(wxString _filename);
+	~LAVCAudioProvider();
 
-	// Preffered provider
-	wxString preffered = Options.AsText(_T("Video provider")).Lower();
+	wxString GetFilename();
 
-	// See if it's OK to use LAVC
-	#ifdef USE_LAVC
-	if (preffered == _T("ffmpeg") || !avisynthAvailable) {
-		// Load
-		bool success = false;
-		wxString error;
-		try {
-			provider = new LAVCVideoProvider(video,subtitles);
-			success = true;
-		}
-
-		// Catch error
-		catch (wchar_t *err) {
-			error = err;
-		}
-		catch (...) {
-			error = _T("Unhandled exception.");
-		}
-
-		if (!success) {
-			// Delete old provider
-			delete provider;
-
-			// Try to fallback to avisynth
-			if (avisynthAvailable) {
-				wxMessageBox(_T("Failed loading FFmpeg decoder for video, falling back to Avisynth.\nError message: ") + error,_T("FFmpeg error."));
-				provider = NULL;
-			}
-
-			// Out of options, rethrow
-			else throw error.c_str();
-		}
-	}
-	#endif
-
-	// Use avisynth provider
-	#ifdef __WINDOWS__
-	if (!provider) {
-		try {
-			provider = new AvisynthVideoProvider(video,subtitles);
-		}
-		catch (...) {
-			delete provider;
-			throw;
-		}
-	}
-	#endif
-
-	// Return provider
-	return provider;
-}
+	void GetAudio(void *buf, __int64 start, __int64 count);
+	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
+};
