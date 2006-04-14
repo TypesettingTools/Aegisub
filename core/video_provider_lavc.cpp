@@ -50,7 +50,7 @@
 LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
 	// Init variables
 	codecContext = NULL;
-	formatContext = NULL;
+	lavcfile = NULL;
 	codec = NULL;
 	stream = NULL;
 	frame = NULL;
@@ -87,24 +87,18 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 	// Close first
 	Close();
 
+	lavcfile = LAVCFile::Create(filename);
 	// Load
 	try {
-		// Open file
 		int result = 0;
-		result = av_open_input_file(&formatContext,filename.mb_str(wxConvLocal),NULL,0,NULL);
-		if (result != 0) throw _T("Failed opening file.");
-
-		// Get stream info
-		result = av_find_stream_info(formatContext);
-		if (result < 0) throw _T("Unable to read stream info");
 
 		// Find video stream
 		vidStream = -1;
 		codecContext = NULL;
-		for (int i=0;i<formatContext->nb_streams;i++) {
-			codecContext = formatContext->streams[i]->codec;
+		for (int i=0;i<lavcfile->fctx->nb_streams;i++) {
+			codecContext = lavcfile->fctx->streams[i]->codec;
 			if (codecContext->codec_type == CODEC_TYPE_VIDEO) {
-				stream = formatContext->streams[i];
+				stream = lavcfile->fctx->streams[i];
 				vidStream = i;
 				break;
 			}
@@ -179,8 +173,9 @@ void LAVCVideoProvider::Close() {
 	codec = NULL;
 
 	// Close format context
-	if (formatContext) av_close_input_file(formatContext);
-	formatContext = NULL;
+	if (lavcfile)
+		lavcfile->Release();
+	lavcfile = NULL;
 }
 
 
@@ -198,7 +193,7 @@ void LAVCVideoProvider::UpdateDisplaySize() {
 bool LAVCVideoProvider::GetNextFrame() {
 	// Read packet
 	AVPacket packet;
-	while (av_read_frame(formatContext, &packet)>=0) {
+	while (av_read_frame(lavcfile->fctx, &packet)>=0) {
 		// Check if packet is part of video stream
 		if(packet.stream_index == vidStream) {
 			// Decode frame
@@ -359,7 +354,7 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 		// Constant frame rate
 		else {
 			seekTo = n;
-			result = av_seek_frame(formatContext,vidStream,seekTo,AVSEEK_FLAG_BACKWARD);
+			result = av_seek_frame(lavcfile->fctx,vidStream,seekTo,AVSEEK_FLAG_BACKWARD);
 
 			// Seek to keyframe
 			if (result == 0) {

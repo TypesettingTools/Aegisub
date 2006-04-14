@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,88 +33,33 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#pragma once
 
-
-///////////////////////////////////
-// Auto-enable LAVC on non-windows
-#ifndef __WINDOWS__
-#ifndef USE_LAVC
-#define USE_LAVC
-#endif
-#endif
-
-
-///////////
-// Headers
-#ifdef USE_LAVC
-#define EMULATE_INTTYPES
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-#include "video_provider.h"
-#include "mkv_wrap.h"
 #include "lavc_file.h"
 
+#ifdef USE_LAVC
 
-///////////////////////
-// LibAVCodec provider
-class LAVCVideoProvider : public VideoProvider {
-private:
-	MatroskaWrapper mkv;
+LAVCFile::LAVCFile(wxString filename)
+{
+	int result = 0;
+	fctx = NULL;
 
-	LAVCFile *lavcfile;
-	AVCodecContext *codecContext;
-	AVStream *stream;
-	AVCodec *codec;
-	AVFrame *frame;
-	int vidStream;
+	result = av_open_input_file(&fctx,filename.mb_str(wxConvLocal),NULL,0,NULL);
+	if (result != 0) throw _T("Failed opening file.");
 
-	double zoom;
-	double dar;
-	int display_w;
-	int display_h;
+	// Get stream info
+	result = av_find_stream_info(fctx);
+	if (result < 0) {
+		av_close_input_file(fctx);
+		fctx = NULL;
+		throw _T("Unable to read stream info");
+	}
+	refs = 1;
+}
 
-	wxArrayInt bytePos;
-
-	bool isMkv;
-	__int64 lastDecodeTime;
-	int frameNumber;
-	int length;
-	wxBitmap curFrame;
-	bool validFrame;
-
-	uint8_t *buffer1;
-	uint8_t *buffer2;
-	int buffer1Size;
-	int buffer2Size;
-
-	void UpdateDisplaySize();
-	bool GetNextFrame();
-	void LoadVideo(wxString filename);
-	void Close();
-	wxBitmap AVFrameToWX(AVFrame *frame);
-
-public:
-	LAVCVideoProvider(wxString filename, wxString subfilename);
-	~LAVCVideoProvider();
-
-	void RefreshSubtitles();
-
-	wxBitmap GetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
-
-	int GetPosition();
-	int GetFrameCount();
-	double GetFPS();
-
-	void SetDAR(double dar);
-	void SetZoom(double zoom);
-	int GetWidth();
-	int GetHeight();
-	double GetZoom();
-
-	int GetSourceWidth();
-	int GetSourceHeight();
-};
+LAVCFile::~LAVCFile()
+{
+	if (fctx)
+		av_close_input_file(fctx);
+}
 
 #endif

@@ -59,6 +59,7 @@ aegisub_SOURCES = about.cpp \
 	frame_main_events.cpp \
 	hilimod_textctrl.cpp \
 	hotkeys.cpp \
+	lavc_file.cpp \
 	main.cpp \
 	md5.c \
 	mkv_wrap.cpp \
