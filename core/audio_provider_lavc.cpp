@@ -81,6 +81,7 @@ LAVCAudioProvider::LAVCAudioProvider(wxString _filename, VideoProvider *vpro)
 
 	int setsample = Options.AsInt(_T("Audio Sample Rate"));
 	num_samples = stream->duration / bytes_per_sample;
+	bytes_per_sample = 2;
 	if (setsample) {
 		rsct = audio_resample_init(1, codecContext->channels, setsample, codecContext->sample_rate);
 		sample_rate = setsample;
@@ -91,7 +92,6 @@ LAVCAudioProvider::LAVCAudioProvider(wxString _filename, VideoProvider *vpro)
 		sample_rate = codecContext->sample_rate;
 		channels = codecContext->channels;
 	}
-	bytes_per_sample = 2;
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
