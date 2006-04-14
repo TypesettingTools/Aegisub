@@ -88,7 +88,40 @@ void LAVCAudioProvider::LoadAudio(wxString file) {
 	Close();
 
 	try {
-		// TODO
+		// Open file
+		int result = 0;
+		result = av_open_input_file(&formatContext,filename.mb_str(wxConvLocal),NULL,0,NULL);
+		if (result != 0) throw _T("Failed opening file.");
+
+		// Get stream info
+		result = av_find_stream_info(formatContext);
+		if (result < 0) throw _T("Unable to read stream info");
+
+		// Find audio stream
+		audStream = -1;
+		codecContext = NULL;
+		for (int i=0;i<formatContext->nb_streams;i++) {
+			codecContext = formatContext->streams[i]->codec;
+			if (codecContext->codec_type == CODEC_TYPE_AUDIO) {
+				stream = formatContext->streams[i];
+				audStream = i;
+				break;
+			}
+		}
+		if (audStream == -1) throw _T("Could not find an audio stream");
+
+		// Find codec
+		codec = avcodec_find_decoder(codecContext->codec_id);
+		if (!codec) throw _T("Could not find suitable audio decoder");
+
+		// Enable truncation
+		//if (codec->capabilities & CODEC_CAP_TRUNCATED) codecContext->flags |= CODEC_FLAG_TRUNCATED;
+
+		// Open codec
+		result = avcodec_open(codecContext,codec);
+		if (result < 0) throw _T("Failed to open audio decoder");
+
+		// TODO: rest of opening
 	}
 
 	// Catch errors
