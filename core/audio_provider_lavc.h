@@ -39,6 +39,8 @@
 #ifndef AUDIO_PROVIDER_LAVC_H
 #define AUDIO_PROVIDER_LAVC_H
 
+#ifdef USE_LAVC
+
 #include "audio_provider.h"
 #include "lavc_file.h"
 
@@ -62,6 +64,7 @@ public:
 	virtual void GetAudio(void *buf, __int64 start, __int64 count);
 };
 
+#endif /* USE_LAVC */
 
 #endif /* AUDIO_PROVIDER_LAVC_H */
 
