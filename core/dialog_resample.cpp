@@ -198,7 +198,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 				curDiag->ClearBlocks();
 				continue;
 			}
-			catch (wchar_t *err) {
+			catch (const wchar_t *err) {
 				wxLogMessage(err);
 			}
 			catch (wxString err) {

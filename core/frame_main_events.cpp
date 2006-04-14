@@ -1064,7 +1064,7 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 	catch (wxString err) {
 		StatusTimeout(_T("Exception when attempting to autosave file: ") + err);
 	}
-	catch (wchar_t *err) {
+	catch (const wchar_t *err) {
 		StatusTimeout(_T("Exception when attempting to autosave file: ") + wxString(err));
 	}
 	catch (...) {

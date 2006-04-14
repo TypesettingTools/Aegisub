@@ -105,7 +105,7 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 	}
 
 	// String error
-	catch (wchar_t *except) {
+	catch (const wchar_t *except) {
 		wxMessageBox(except,_T("Error loading file"),wxICON_ERROR | wxOK);
 		ok = false;
 	}

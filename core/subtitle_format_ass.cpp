@@ -79,7 +79,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 		try {
 			lasttime = AddLine(wxbuffer,curgroup,lasttime,IsSSA);
 		}
-		catch (wchar_t *err) {
+		catch (const wchar_t *err) {
 			Clear();
 			throw wxString(_T("Error processing line: ")) + wxbuffer + _T(": ") + wxString(err);
 		}

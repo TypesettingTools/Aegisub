@@ -185,7 +185,7 @@ void DialogAutomationManager::OnAdd(wxCommandEvent &event)
 	catch (wxString &err) {
 		wxMessageBox(wxString::Format(_T("Error loading Automation script %s:\r\n\r\n%s"), sfnames.c_str(), err.c_str()), _T("Error loading Automation script"), wxOK|wxICON_ERROR, this);
 	}
-	catch (wchar_t *err) {
+	catch (const wchar_t *err) {
 		wxMessageBox(wxString::Format(_T("Error loading Automation script %s:\r\n\r\n%s"), sfnames.c_str(), err), _T("Error loading Automation script"), wxOK|wxICON_ERROR, this);
 	}
 	catch (...) {

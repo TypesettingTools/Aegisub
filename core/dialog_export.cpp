@@ -192,7 +192,7 @@ void DialogExport::OnProcess(wxCommandEvent &event) {
 		Export->GetOriginalSubs()->SetScriptInfo(_T("Export Encoding"), CharsetList->GetStringSelection());
 		Export->Export(filename, CharsetList->GetStringSelection());
 	}
-	catch (wchar_t *error) {
+	catch (const wchar_t *error) {
 		wxString err(error);
 		wxMessageBox(err, _T("Error exporting subtitles"), wxOK | wxICON_ERROR, this);
 	}

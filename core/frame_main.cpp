@@ -515,7 +515,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			SubsBox->LoadDefault(AssFile::top);
 		}
 	}
-	catch (wchar_t *err) {
+	catch (const wchar_t *err) {
 		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
 		return;
 	}
@@ -593,7 +593,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 			AssFile::top->Save(filename,true,true,charset);
 			UpdateTitle();
 		}
-		catch (wchar_t *err) {
+		catch (const wchar_t *err) {
 			wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
 			return false;
 		}
@@ -873,7 +873,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		}
 		videoBox->videoDisplay->SetVideo(file);
 	}
-	catch (wchar_t *error) {
+	catch (const wchar_t *error) {
 		wxString err(error);
 		wxMessageBox(err, _T("Error opening video file"), wxOK | wxICON_ERROR, this);
 	}
@@ -921,7 +921,7 @@ void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 		audioBox->SetFile(filename,FromVideo);
 		SetDisplayMode(-1);
 	}
-	catch (wchar_t *error) {
+	catch (const wchar_t *error) {
 		wxString err(error);
 		wxMessageBox(err, _T("Error opening audio file"), wxOK | wxICON_ERROR, this);
 	}
@@ -947,7 +947,7 @@ void FrameMain::LoadVFR(wxString filename) {
 			SubsBox->Refresh(false);
 		}
 		// Fail
-		catch (wchar_t *error) {
+		catch (const wchar_t *error) {
 			wxString err(error);
 			wxMessageBox(err, _T("Error opening timecodes file"), wxOK | wxICON_ERROR, this);
 		}

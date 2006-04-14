@@ -73,7 +73,7 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 		}
 
 		// Catch error
-		catch (wchar_t *err) {
+		catch (const wchar_t *err) {
 			error = err;
 		}
 		catch (...) {

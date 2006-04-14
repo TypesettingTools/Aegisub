@@ -114,7 +114,7 @@ bool AegisubApp::OnInit() {
 		SetTopWindow(frame);
 	}
 
-	catch (wchar_t *err) {
+	catch (const wchar_t *err) {
 		wxMessageBox(err,_T("Fatal error while initializing"));
 		return false;
 	}
