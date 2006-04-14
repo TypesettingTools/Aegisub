@@ -79,19 +79,21 @@ LAVCAudioProvider::LAVCAudioProvider(wxString _filename, VideoProvider *vpro)
 	if (avcodec_open(codecContext, codec) < 0)
 		throw _T("Failed to open audio decoder");
 
-	int setsample = Options.AsInt(_T("Audio Sample Rate"));
-	bytes_per_sample = 2;
-	num_samples = stream->duration / bytes_per_sample;
-	if (setsample) {
-		rsct = audio_resample_init(1, codecContext->channels, setsample, codecContext->sample_rate);
-		sample_rate = setsample;
-		channels = 1;
-		resample_ratio = (float)setsample / (float)codecContext->sample_rate;
-		num_samples = (__int64)(num_samples * resample_ratio);
-	} else {
+	/* aegisub currently supports mono only, so always resample */
+
+	sample_rate = Options.AsInt(_T("Audio Sample Rate"));
+	if (!sample_rate)
 		sample_rate = codecContext->sample_rate;
-		channels = codecContext->channels;
-	}
+
+	channels = 1;
+	bytes_per_sample = 2;
+
+	rsct = audio_resample_init(1, codecContext->channels, sample_rate, codecContext->sample_rate);
+	if (!rsct)
+		throw _T("Failed to initialize resampling");
+
+	resample_ratio = (float)sample_rate / (float)codecContext->sample_rate;
+	num_samples = (__int64)(stream->duration / bytes_per_sample * resample_ratio);
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
@@ -146,6 +148,7 @@ void LAVCAudioProvider::GetAudio(void *buf, __int64 start, __int64 count)
 
 				assert(samples <= _count);
 			} else {
+				/* currently dead code, rsct != NULL because we're resampling for mono */
 				if (samples > _count)
 					samples = _count;
 				memcpy(_buf, buffer, samples << 1);
