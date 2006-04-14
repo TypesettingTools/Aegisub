@@ -44,9 +44,9 @@
 #include "options.h"
 
 LAVCAudioProvider::LAVCAudioProvider(wxString _filename, VideoProvider *vpro)
-try
 	: lavcfile(NULL), codecContext(NULL), rsct(NULL), buffer(NULL)
 {
+	try {
 #if 0
 	/* since seeking currently is likely to be horribly broken with two
 	 * providers accessing the same stream, this is disabled for now.
@@ -96,9 +96,11 @@ try
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
 		throw _T("Out of memory");
-} catch (...) {
-	Destroy();
-	throw;
+
+	} catch (...) {
+		Destroy();
+		throw;
+	}
 }
 
 

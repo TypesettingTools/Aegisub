@@ -41,6 +41,7 @@
 
 #ifdef USE_LAVC
 
+#define EMULATE_INTTYPES
 #include "audio_provider.h"
 #include "lavc_file.h"
 
