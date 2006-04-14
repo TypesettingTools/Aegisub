@@ -1,0 +1,157 @@
+// Copyright (c) 2005-2006, Rodrigo Braz Monteiro, Fredrik Mellbin
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//   * Redistributions of source code must retain the above copyright notice,
+//     this list of conditions and the following disclaimer.
+//   * Redistributions in binary form must reproduce the above copyright notice,
+//     this list of conditions and the following disclaimer in the documentation
+//     and/or other materials provided with the distribution.
+//   * Neither the name of the Aegisub Group nor the names of its contributors
+//     may be used to endorse or promote products derived from this software
+//     without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// -----------------------------------------------------------------------------
+//
+// AEGISUB
+//
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
+//
+
+
+///////////
+// Headers
+#include <wx/wxprec.h>
+#ifdef USE_LAVC
+#include "utils.h"
+#include "audio_provider_lavc.h"
+#include "video_provider_lavc.h"
+#include "options.h"
+
+LAVCAudioProvider::LAVCAudioProvider(wxString _filename, VideoProvider *vpro)
+try
+	: lavcfile(NULL), codecContext(NULL), rsct(NULL), buffer(NULL)
+{
+#if 0
+	/* since seeking currently is likely to be horribly broken with two
+	 * providers accessing the same stream, this is disabled for now.
+	 */
+	LAVCVideoProvider *vpro_lavc = dynamic_cast<LAVCVideoProvider *>(vpro);
+	if (vpro_lavc) {
+		lavcfile = vpro->lavcfile->AddRef();
+		filename = vpro_lavc->GetFilename();
+	} else {
+#endif
+		lavcfile = LAVCFile::Create(_filename);
+		filename = _filename;
+#if 0
+	}
+#endif
+	audStream = -1;
+	for (int i = 0; i < lavcfile->fctx->nb_streams; i++) {
+		codecContext = lavcfile->fctx->streams[i]->codec;
+		if (codecContext->codec_type == CODEC_TYPE_AUDIO) {
+			stream = lavcfile->fctx->streams[i];
+			audStream = i;
+			break;
+		}
+	}
+	if (audStream == -1)
+		throw _T("Could not find an audio stream");
+	AVCodec *codec = avcodec_find_decoder(codecContext->codec_id);
+	if (!codec)
+		throw _T("Could not find a suitable audio decoder");
+	if (avcodec_open(codecContext, codec) < 0)
+		throw _T("Failed to open audio decoder");
+
+	int setsample = Options.AsInt(_T("Audio Sample Rate"));
+	num_samples = stream->duration / bytes_per_sample;
+	if (setsample) {
+		rsct = audio_resample_init(1, codecContext->channels, setsample, codecContext->sample_rate);
+		sample_rate = setsample;
+		channels = 1;
+		resample_ratio = (float)setsample / (float)codecContext->sample_rate;
+		num_samples = (__int64)(num_samples * resample_ratio);
+	} else {
+		sample_rate = codecContext->sample_rate;
+		channels = codecContext->channels;
+	}
+	bytes_per_sample = 2;
+
+	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
+	if (!buffer)
+		throw _T("Out of memory");
+} catch (...) {
+	Destroy();
+	throw;
+}
+
+
+LAVCAudioProvider::~LAVCAudioProvider()
+{
+	Destroy();
+}
+
+void LAVCAudioProvider::Destroy()
+{
+	if (buffer)
+		free(buffer);
+	if (rsct)
+		audio_resample_close(rsct);
+	if (codecContext)
+		avcodec_close(codecContext);
+	if (lavcfile)
+		lavcfile->Release();
+}
+
+void LAVCAudioProvider::GetAudio(void *buf, __int64 start, __int64 count)
+{
+	int16_t *_buf = (int16_t *)buf;
+	__int64 _count = num_samples - start;
+	if (count < _count)
+		_count = count;
+	if (_count < 0)
+		_count = 0;
+
+	memset(_buf + _count, 0, (count - _count) << 1);
+
+	AVPacket packet;
+	while (_count > 0 && av_read_frame(lavcfile->fctx, &packet) >= 0) {
+		if(packet.stream_index == audStream) {
+			int bytesout = 0, samples;
+			if (avcodec_decode_audio(codecContext, buffer, &bytesout, packet.data, packet.size) < 0)
+				throw _T("Failed to decode audio");
+			samples = bytesout >> 1;
+			if (rsct) {
+				if ((__int64)(samples * resample_ratio) > _count)
+					samples = (__int64)(_count * resample_ratio);
+				samples = audio_resample(rsct, _buf, buffer, samples);
+
+				assert(samples <= _count);
+			} else
+				memcpy(_buf, buffer, samples << 1);
+
+			_buf += samples;
+			_count -= samples;
+		}
+
+		av_free_packet(&packet);
+	}
+}
+
+#endif

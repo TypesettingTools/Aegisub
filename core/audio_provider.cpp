@@ -168,7 +168,7 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 
 	// Select provider
 	#ifdef USE_LAVC
-	if (!provider) provider = new LAVCAudioProvider(filename);
+	if (!provider) provider = new LAVCAudioProvider(filename, vprovider);
 	#endif
 
 	#ifdef __WINDOWS__

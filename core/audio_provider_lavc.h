@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,89 +33,35 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+
 #pragma once
 
+#ifndef AUDIO_PROVIDER_LAVC_H
+#define AUDIO_PROVIDER_LAVC_H
 
-///////////////////////////////////
-// Auto-enable LAVC on non-windows
-#ifndef __WINDOWS__
-#ifndef USE_LAVC
-#define USE_LAVC
-#endif
-#endif
-
-
-///////////
-// Headers
-#ifdef USE_LAVC
-#define EMULATE_INTTYPES
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-#include "video_provider.h"
-#include "mkv_wrap.h"
+#include "audio_provider.h"
 #include "lavc_file.h"
 
-
-///////////////////////
-// LibAVCodec provider
-class LAVCVideoProvider : public VideoProvider {
-	friend class LAVCAudioProvider;
+class LAVCAudioProvider : public AudioProvider {
 private:
-	MatroskaWrapper mkv;
-
 	LAVCFile *lavcfile;
+
 	AVCodecContext *codecContext;
+	ReSampleContext *rsct;
+	float resample_ratio;
 	AVStream *stream;
-	AVCodec *codec;
-	AVFrame *frame;
-	int vidStream;
+	int audStream;
 
-	double zoom;
-	double dar;
-	int display_w;
-	int display_h;
+	int16_t *buffer;
 
-	wxArrayInt bytePos;
-
-	bool isMkv;
-	__int64 lastDecodeTime;
-	int frameNumber;
-	int length;
-	wxBitmap curFrame;
-	bool validFrame;
-
-	uint8_t *buffer1;
-	uint8_t *buffer2;
-	int buffer1Size;
-	int buffer2Size;
-
-	void UpdateDisplaySize();
-	bool GetNextFrame();
-	void LoadVideo(wxString filename);
-	void Close();
-	wxBitmap AVFrameToWX(AVFrame *frame);
+	void Destroy();
 
 public:
-	LAVCVideoProvider(wxString filename, wxString subfilename);
-	~LAVCVideoProvider();
-
-	void RefreshSubtitles();
-
-	wxBitmap GetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
-
-	int GetPosition();
-	int GetFrameCount();
-	double GetFPS();
-
-	void SetDAR(double dar);
-	void SetZoom(double zoom);
-	int GetWidth();
-	int GetHeight();
-	double GetZoom();
-
-	int GetSourceWidth();
-	int GetSourceHeight();
+	LAVCAudioProvider(wxString _filename, VideoProvider *vpro);
+	virtual ~LAVCAudioProvider();
+	virtual void GetAudio(void *buf, __int64 start, __int64 count);
 };
 
-#endif
+
+#endif /* AUDIO_PROVIDER_LAVC_H */
+

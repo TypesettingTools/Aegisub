@@ -26,6 +26,7 @@ aegisub_SOURCES = about.cpp \
 	audio_player_portaudio.cpp \
 	audio_provider.cpp \
 	audio_provider_hd.cpp \
+	audio_provider_lavc.cpp \
 	audio_provider_ram.cpp \
 	automation.cpp \
 	automation_filter.cpp \
