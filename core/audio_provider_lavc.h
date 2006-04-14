@@ -37,8 +37,21 @@
 #pragma once
 
 
+///////////////////////////////////
+// Auto-enable LAVC on non-windows
+#ifndef __WINDOWS__
+#ifndef USE_LAVC
+#define USE_LAVC
+#endif
+#endif
+
+
 ///////////
 // Headers
+#ifdef USE_LAVC
+#define EMULATE_INTTYPES
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
 #include <wx/wxprec.h>
 #include "audio_provider.h"
 
@@ -49,6 +62,16 @@ class LAVCAudioProvider : public AudioProvider {
 private:
 	wxString filename;
 
+	AVFormatContext *formatContext;
+	AVCodecContext *codecContext;
+	AVStream *stream;
+	AVCodec *codec;
+	AVFrame *frame;
+	int audStream;
+
+	void LoadAudio(wxString file);
+	void Close();
+
 public:
 	LAVCAudioProvider(wxString _filename);
 	~LAVCAudioProvider();
@@ -58,3 +81,5 @@ public:
 	void GetAudio(void *buf, __int64 start, __int64 count);
 	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
 };
+
+#endif

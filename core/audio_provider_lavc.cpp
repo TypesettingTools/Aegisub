@@ -45,16 +45,32 @@
 //////////////
 // Constructor
 LAVCAudioProvider::LAVCAudioProvider(wxString _filename) {
+	// Set filename
 	filename = _filename;
 
-	// TODO
+	// Init lavc variables
+	codecContext = NULL;
+	formatContext = NULL;
+	codec = NULL;
+	stream = NULL;
+	frame = NULL;
+
+	// Register types
+	static bool avRegistered = false;
+	if (!avRegistered) {
+		av_register_all();
+		avRegistered = true;
+	}
+
+	// Load audio
+	LoadAudio(filename);
 }
 
 
 //////////////
 // Destructor
 LAVCAudioProvider::~LAVCAudioProvider() {
-	// TODO
+	Close();
 }
 
 
@@ -62,6 +78,42 @@ LAVCAudioProvider::~LAVCAudioProvider() {
 // Get filename
 wxString LAVCAudioProvider::GetFilename() {
 	return filename;
+}
+
+
+//////////////
+// Load audio
+void LAVCAudioProvider::LoadAudio(wxString file) {
+	// Close first
+	Close();
+
+	try {
+		// TODO
+	}
+
+	// Catch errors
+	catch (...) {
+		Close();
+		throw;
+	}
+}
+
+
+//////////
+// Unload
+void LAVCAudioProvider::Close() {
+	// Clean frame
+	if (frame) av_free(frame);
+	frame = NULL;
+	
+	// Close codec context
+	if (codec && codecContext) avcodec_close(codecContext);
+	codecContext = NULL;
+	codec = NULL;
+
+	// Close format context
+	if (formatContext) av_close_input_file(formatContext);
+	formatContext = NULL;
 }
 
 
