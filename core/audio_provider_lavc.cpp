@@ -144,7 +144,7 @@ void LAVCAudioProvider::GetAudio(void *buf, __int64 start, __int64 count)
 			if (rsct) {
 				if ((__int64)(samples * resample_ratio) > _count)
 					samples = (__int64)(_count * resample_ratio);
-				samples = audio_resample(rsct, _buf, buffer, samples);
+				samples = audio_resample(rsct, _buf, buffer, samples / codecContext->channels);
 
 				assert(samples <= _count);
 			} else {
