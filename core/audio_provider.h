@@ -45,6 +45,7 @@
 //////////////
 // Prototypes
 class AudioDisplay;
+class VideoProvider;
 
 
 ////////////////////////
@@ -75,5 +76,5 @@ public:
 	int GetBytesPerSample();
 
 	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
-	static AudioProvider *GetAudioProvider(wxString filename, AudioDisplay *display);
+	static AudioProvider *GetAudioProvider(wxString filename, AudioDisplay *display, VideoProvider *vprovider);
 };

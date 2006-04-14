@@ -162,7 +162,7 @@ void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int
 
 ////////////////
 // Get provider
-AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *display) {
+AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *display, VideoProvider *vprovider) {
 	// Prepare provider
 	AudioProvider *provider = NULL;
 

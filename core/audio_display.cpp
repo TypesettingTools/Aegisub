@@ -802,7 +802,7 @@ void AudioDisplay::SetScale(float _scale) {
 
 //////////////////
 // Load from file
-void AudioDisplay::SetFile(wxString file) {
+void AudioDisplay::SetFile(wxString file, VideoProvider *vprovider) {
 	// Unload
 	if (file.IsEmpty()) {
 		if (player) player->CloseStream();
@@ -820,7 +820,7 @@ void AudioDisplay::SetFile(wxString file) {
 		SetFile(_T(""));
 		try {
 			// Get provider
-			provider = AudioProvider::GetAudioProvider(file, this);
+			provider = AudioProvider::GetAudioProvider(file, this, vprovider);
 
 			// Get player
 			player = AudioPlayer::GetAudioPlayer();
@@ -856,7 +856,7 @@ void AudioDisplay::SetFromVideo() {
 		extension.LowerCase();
 
 		if (extension != _T(".d2v"))
-			SetFile(video->videoName);
+			SetFile(video->videoName, video->provider);
 	}
 }
 

@@ -52,6 +52,7 @@ class SubtitlesGrid;
 class AudioBox;
 class AudioKaraoke;
 class VideoDisplay;
+class VideoProvider;
 
 
 /////////////////
@@ -133,7 +134,7 @@ public:
 	void SetPosition(int pos);
 	void SetSamplesPercent(int percent,bool update=true,float pivot=0.5);
 	void SetScale(float scale);
-	void SetFile(wxString file);
+	void SetFile(wxString file,VideoProvider *vprovider=NULL);
 	void SetFromVideo();
 	void UpdateScrollbar();
 	void SetDialogue(SubtitlesGrid *_grid=NULL,AssDialogue *diag=NULL,int n=-1);
