@@ -80,8 +80,8 @@ LAVCAudioProvider::LAVCAudioProvider(wxString _filename, VideoProvider *vpro)
 		throw _T("Failed to open audio decoder");
 
 	int setsample = Options.AsInt(_T("Audio Sample Rate"));
-	num_samples = stream->duration / bytes_per_sample;
 	bytes_per_sample = 2;
+	num_samples = stream->duration / bytes_per_sample;
 	if (setsample) {
 		rsct = audio_resample_init(1, codecContext->channels, setsample, codecContext->sample_rate);
 		sample_rate = setsample;
