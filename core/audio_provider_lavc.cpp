@@ -121,7 +121,11 @@ void LAVCAudioProvider::LoadAudio(wxString file) {
 		result = avcodec_open(codecContext,codec);
 		if (result < 0) throw _T("Failed to open audio decoder");
 
-		// TODO: rest of opening
+		// Set variables
+		sample_rate = codecContext->sample_rate;
+		channels = codecContext->channels;
+		bytes_per_sample = 2; //codecContext->sample_fmt;
+		num_samples = stream->duration / bytes_per_sample;
 	}
 
 	// Catch errors
@@ -154,4 +158,5 @@ void LAVCAudioProvider::Close() {
 // Get audio
 void LAVCAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 	// TODO
+	for (__int64 i=0;i<count;i++) ((short*)buf)[i] = 0;
 }
