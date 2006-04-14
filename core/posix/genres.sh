@@ -2,7 +2,7 @@
 
 RESFILE="$1"
 
-egrep -v "^(#|/|.$)" $RESFILE | cut -d ' ' -f 1 | (
+egrep -v "^(#|/|$)" $RESFILE | cut -d ' ' -f 1 | (
 	echo "#define static" >&4
 	
 	echo "#ifndef _RES_H" >&5
