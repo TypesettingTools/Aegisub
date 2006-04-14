@@ -39,6 +39,7 @@
 #ifndef LAVC_FILE_H
 #define LAVC_FILE_H
 
+#define EMULATE_INTTYPES
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 
