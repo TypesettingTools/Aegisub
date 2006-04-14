@@ -52,8 +52,11 @@ PortAudioPlayer::PortAudioPlayer() {
 	// Initialize portaudio
 	if (!pa_refcount) {
 		PaError err = Pa_Initialize();
-		if (err != paNoError)
-			throw wxString::Format(_T("Failed opening PortAudio with error: %s"), Pa_GetErrorText(err));
+		if (err != paNoError) {
+			static wchar_t errormsg[2048];
+			swprintf(errormsg, 2048, L"Failed opening PortAudio: %s", Pa_GetErrorText(err));
+			throw (const wchar_t *)errormsg;
+		}
 		pa_refcount++;
 	}
 
