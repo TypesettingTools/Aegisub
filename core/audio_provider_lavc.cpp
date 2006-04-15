@@ -93,7 +93,9 @@ LAVCAudioProvider::LAVCAudioProvider(wxString _filename, VideoProvider *vpro)
 		throw _T("Failed to initialize resampling");
 
 	resample_ratio = (float)sample_rate / (float)codecContext->sample_rate;
-	num_samples = (__int64)(stream->duration / bytes_per_sample * resample_ratio);
+
+	double length = (double)stream->duration * av_q2d(stream->time_base);
+	num_samples = (__int64)(length * sample_rate);
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
