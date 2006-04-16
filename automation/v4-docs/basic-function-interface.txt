@@ -328,3 +328,24 @@ Returns: Boolean.
 
 ---
 
+Script information globals
+
+These are a series of global variables, the script author can set. They are
+purely informational, and won't have any actual influence on how the script
+is treated.
+
+script_name (string)
+  A short, descriptive name for the script, used for presenting it to the
+  user in the UI.
+
+script_description (string)
+  A longer description of the purpose of the script, presented to the user
+  in the UI.
+
+script_author (string)
+  Name(s) of the author(s) of the script.
+
+script_version (string)
+  Version number of the script.
+
+---
