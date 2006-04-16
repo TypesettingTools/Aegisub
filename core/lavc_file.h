@@ -38,6 +38,7 @@
 
 #ifndef LAVC_FILE_H
 #define LAVC_FILE_H
+#ifdef USE_LAVC
 
 #define EMULATE_INTTYPES
 #include <wx/filename.h>
@@ -65,5 +66,6 @@ public:
 	void Release() { if (!--refs) delete this; };
 };
 
+#endif /* USE_LAVC */
 #endif /* LAVC_FILE_H */
 

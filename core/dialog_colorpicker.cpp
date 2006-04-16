@@ -592,7 +592,7 @@ void DialogColorPicker::UpdateFromRGB()
 	if (updating_controls) return;
 	updating_controls = true;
 
-	unsigned char r, g, b, y, u, v, h, s, l, h2, s2, v2;
+	unsigned char r, g, b, h, s, l, h2, s2, v2;
 	r = rgb_input[0]->GetValue();
 	g = rgb_input[1]->GetValue();
 	b = rgb_input[2]->GetValue();
@@ -619,7 +619,7 @@ void DialogColorPicker::UpdateFromHSL()
 	if (updating_controls) return;
 	updating_controls = true;
 
-	unsigned char r, g, b, y, u, v, h, s, l, h2, s2, v2;
+	unsigned char r, g, b, h, s, l, h2, s2, v2;
 	h = hsl_input[0]->GetValue();
 	s = hsl_input[1]->GetValue();
 	l = hsl_input[2]->GetValue();
@@ -645,7 +645,7 @@ void DialogColorPicker::UpdateFromHSV()
 	if (updating_controls) return;
 	updating_controls = true;
 
-	unsigned char r, g, b, y, u, v, h, s, l, h2, s2, v2;
+	unsigned char r, g, b, h, s, l, h2, s2, v2;
 	//int r, g, b, h2, s2, v2;
 	h2 = hsv_input[0]->GetValue();
 	s2 = hsv_input[1]->GetValue();
@@ -673,7 +673,7 @@ void DialogColorPicker::UpdateFromASS()
 	if (updating_controls) return;
 	updating_controls = true;
 
-	unsigned char r, g, b, y, u, v, h, s, l, h2, s2, v2;
+	unsigned char r, g, b, h, s, l, h2, s2, v2;
 	AssColor ass;
 	ass.ParseASS(ass_input->GetValue());
 	r = ass.r;
@@ -703,7 +703,7 @@ void DialogColorPicker::UpdateFromHTML()
 	if (updating_controls) return;
 	updating_controls = true;
 
-	unsigned char r, g, b, y, u, v, h, s, l, h2, s2, v2;
+	unsigned char r, g, b, h, s, l, h2, s2, v2;
 	cur_color = html_to_color(html_input->GetValue());
 	r = cur_color.Red();
 	g = cur_color.Green();
