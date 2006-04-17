@@ -120,7 +120,6 @@ int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned 
 
 	// Set play position (and real one)
 	player->playPos += framesPerBuffer;
-	player->realPlayPos = player->playPos - (outTime - Pa_StreamTime(player->stream));
 
 	// Cap to start if lower
 	return end;
@@ -135,7 +134,6 @@ void PortAudioPlayer::Play(__int64 start,__int64 count) {
 
 	// Set values
 	endPos = start + count;
-	realPlayPos = start;
 	playPos = start;
 	startPos = start;
 
@@ -162,7 +160,6 @@ void PortAudioPlayer::Stop(bool timerToo) {
 	// Stop stream
 	playing = false;
 	Pa_StopStream (stream);
-	realPlayPos = 0;
 
 	// Stop timer
 	if (timerToo && displayTimer) {
