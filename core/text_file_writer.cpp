@@ -119,6 +119,8 @@ void TextFileWriter::WriteLineToFile(wxString line,bool addLineBreak) {
 	// 16-bit
 	if (Is16) {
 		wxWCharBuffer buf = temp.wc_str(*conv);
+		if (!buf.data())
+			return;
 		size_t len = wcslen(buf.data())*2;
 		file.write((const char*)buf.data(),len);
 	}
@@ -126,6 +128,8 @@ void TextFileWriter::WriteLineToFile(wxString line,bool addLineBreak) {
 	// 8-bit
 	else {
 		wxCharBuffer buf = temp.mb_str(*conv);
+		if (!buf.data())
+			return;
 		size_t len = strlen(buf.data());
 		file.write(buf.data(),len);
 	}
