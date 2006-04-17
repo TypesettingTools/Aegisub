@@ -138,7 +138,6 @@ void PortAudioPlayer::Play(__int64 start,__int64 count) {
 	realPlayPos = start;
 	playPos = start;
 	startPos = start;
-	startMS = startPos * 1000 / provider->GetSampleRate();
 
 	// Start playing
 	if (!playing) {

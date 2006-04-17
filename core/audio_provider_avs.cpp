@@ -147,8 +147,6 @@ wxString AvisynthAudioProvider::GetFilename() {
 	return filename;
 }
 
-int aaa = 0;
-
 /////////////
 // Get audio
 void AvisynthAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {

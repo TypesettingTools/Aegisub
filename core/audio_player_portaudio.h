@@ -60,7 +60,6 @@ private:
 	volatile __int64 startPos;
 	volatile __int64 endPos;
 	volatile __int64 realPlayPos;
-	volatile __int64 startMS;
 	void *stream;
 
 	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
