@@ -44,9 +44,7 @@
 #include "ass_dialogue.h"
 #include "subs_grid.h"
 #include "vfw_wrap.h"
-#if 0
 #include "mkv_wrap.h"
-#endif
 #include "options.h"
 #include "subs_edit_box.h"
 #include "audio_display.h"
@@ -146,6 +144,7 @@ void  VideoDisplay::UpdateSize() {
 	}
 }
 
+
 ///////////////////////
 // Sets video filename
 void VideoDisplay::SetVideo(const wxString &filename) {
@@ -170,7 +169,8 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			provider->SetDAR(GetARFromType(arType));
 
 			KeyFrames.Clear();
-#if 0
+
+			// Why the hell was this disabled?
 			// Read extra data from file
 			bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
 			wxString ext = filename.Right(4).Lower();
@@ -192,7 +192,6 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			}
 #ifdef __WIN32__
 			else if (ext == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
-#endif
 #endif
 
 			// Update size
@@ -217,7 +216,9 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 
 			RefreshVideo();
 			UpdatePositionDisplay();
-		} catch (wxString &e) {
+		}
+		
+		catch (wxString &e) {
 			wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
 		}
 	}

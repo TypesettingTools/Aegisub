@@ -40,16 +40,17 @@
 ///////////
 // Headers
 #include "vfw_wrap.h"
+#ifdef __WINDOWS__
 #include <vfw.h>
+#endif
 
 
 /////////////////////
 // Get keyframe list
 wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	wxArrayInt frames;
-	char buffer[512];
-	strcpy(buffer,filename.mb_str(wxConvLocal));
 
+#ifdef __WINDOWS__
 	// Init vfw
 	AVIFileInit();
 
@@ -85,6 +86,7 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	// Clean up
 	AVIFileRelease(pfile);
 	AVIFileExit();
+#endif
 
 	return frames;
 }

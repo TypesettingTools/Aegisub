@@ -46,7 +46,7 @@
 
 wxString GetAegisubVersionString() {
 #ifdef _DEBUG
-	return T("v1.10 Beta (debug)");
+	return _T("v1.10 Beta (debug)");
 #else
 	return _T("v1.10 Beta PRE-RELEASE");
 #endif
