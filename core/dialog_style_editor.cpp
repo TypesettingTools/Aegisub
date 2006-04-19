@@ -204,9 +204,31 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	OutlineType->SetValue(style->borderstyle == 3);
 	OutlineBox->AddStretchSpacer(1);
 
+	// Encoding options
+	wxArrayString encodingStrings;
+	encodingStrings.Add(wxString(_T("0 - ")) + _("ANSI"));
+	encodingStrings.Add(wxString(_T("1 - ")) + _("Default"));
+	encodingStrings.Add(wxString(_T("2 - ")) + _("Symbol"));
+	encodingStrings.Add(wxString(_T("77 - ")) + _("Mac"));
+	encodingStrings.Add(wxString(_T("128 - ")) + _("Shift_JIS"));
+	encodingStrings.Add(wxString(_T("129 - ")) + _("Hangeul"));
+	encodingStrings.Add(wxString(_T("130 - ")) + _("Johab"));
+	encodingStrings.Add(wxString(_T("134 - ")) + _("GB2312"));
+	encodingStrings.Add(wxString(_T("136 - ")) + _("Chinese BIG5"));
+	encodingStrings.Add(wxString(_T("161 - ")) + _("Greek"));
+	encodingStrings.Add(wxString(_T("162 - ")) + _("Turkish"));
+	encodingStrings.Add(wxString(_T("163 - ")) + _("Vietnamese"));
+	encodingStrings.Add(wxString(_T("177 - ")) + _("Hebrew"));
+	encodingStrings.Add(wxString(_T("178 - ")) + _("Arabic"));
+	encodingStrings.Add(wxString(_T("186 - ")) + _("Baltic"));
+	encodingStrings.Add(wxString(_T("204 - ")) + _("Russian"));
+	encodingStrings.Add(wxString(_T("222 - ")) + _("Thai"));
+	encodingStrings.Add(wxString(_T("238 - ")) + _("East European"));
+	encodingStrings.Add(wxString(_T("255 - ")) + _("OEM"));
+
 	// Misc
 	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Miscelaneous"));
-	wxSizer *MiscBoxTop = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *MiscBoxTop = new wxFlexGridSizer(2,4,5,5);
 	wxSizer *MiscBoxBottom = new wxBoxSizer(wxHORIZONTAL);
 	ScaleXValue = FloatToString(style->scalex);
 	ScaleYValue = FloatToString(style->scaley);
@@ -216,29 +238,37 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	ScaleX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleXValue));
 	ScaleY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleYValue));
 	Angle = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&AngleValue));
-	Encoding = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(40,20),0,NumValidator(&EncodingValue));
+	Encoding = new wxComboBox(this,-1,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
 	Spacing = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&SpacingValue));
 	ScaleX->SetToolTip(_("Scale X, in percentage"));
 	ScaleY->SetToolTip(_("Scale Y, in percentage"));
 	Angle->SetToolTip(_("Angle to rotate in Z axis, in degrees"));
-	Encoding->SetToolTip(_("Encoding, useless for unicode. 0=ASCII, 128=Japanese"));
+	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."));
 	Spacing->SetToolTip(_("Character spacing, in pixels"));
-	MiscBoxTop->AddStretchSpacer(1);
-	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale X%:")),0,wxALIGN_CENTER,0);
-	MiscBoxTop->Add(ScaleX,0,wxLEFT | wxALIGN_CENTER,5);
-	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale Y%:")),0,wxLEFT | wxALIGN_CENTER,5);
-	MiscBoxTop->Add(ScaleY,0,wxLEFT | wxALIGN_CENTER,5);
-	MiscBoxTop->AddStretchSpacer(1);
-	MiscBoxBottom->AddStretchSpacer(1);
-	MiscBoxBottom->Add(new wxStaticText(this,-1,_("Angle:")),0,wxALIGN_CENTER,0);
-	MiscBoxBottom->Add(Angle,0,wxLEFT | wxALIGN_CENTER,5);
+	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale X%:")),1,wxALIGN_CENTER,0);
+	MiscBoxTop->Add(ScaleX,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
+	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale Y%:")),1,wxLEFT | wxALIGN_CENTER,5);
+	MiscBoxTop->Add(ScaleY,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
+	MiscBoxTop->Add(new wxStaticText(this,-1,_("Angle:")),1,wxALIGN_CENTER,0);
+	MiscBoxTop->Add(Angle,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
+	MiscBoxTop->Add(new wxStaticText(this,-1,_("Spacing:")),1,wxLEFT | wxALIGN_CENTER,5);
+	MiscBoxTop->Add(Spacing,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
 	MiscBoxBottom->Add(new wxStaticText(this,-1,_("Encoding:")),0,wxLEFT | wxALIGN_CENTER,5);
-	MiscBoxBottom->Add(Encoding,0,wxLEFT | wxALIGN_CENTER,5);
-	MiscBoxBottom->Add(new wxStaticText(this,-1,_("Spacing:")),0,wxLEFT | wxALIGN_CENTER,5);
-	MiscBoxBottom->Add(Spacing,0,wxLEFT | wxALIGN_CENTER,5);
-	MiscBoxBottom->AddStretchSpacer(1);
-	MiscBox->Add(MiscBoxTop,0,wxEXPAND | wxALIGN_CENTER,0);
+	MiscBoxBottom->Add(Encoding,1,wxLEFT | wxALIGN_CENTER,5);
+	MiscBox->Add(MiscBoxTop,1,wxEXPAND | wxALIGN_CENTER,0);
 	MiscBox->Add(MiscBoxBottom,0,wxEXPAND | wxTOP | wxALIGN_CENTER,5);
+
+	// Set encoding value
+	int encLen = EncodingValue.Length();
+	bool found = false;
+	for (size_t i=0;i<encodingStrings.Count();i++) {
+		if (encodingStrings[i].Left(encLen) == EncodingValue) {
+			Encoding->Select(i);
+			found = true;
+			break;
+		}
+	}
+	if (!found) Encoding->Select(0);
 
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -323,22 +353,37 @@ void DialogStyleEditor::OnSetColor4 (wxCommandEvent &event) { OnSetColor(4); }
 void DialogStyleEditor::Apply (bool apply,bool close) {
 	// Apply
 	if (apply) {
-		// Update
-		long templ;
+		// Update scale
 		ScaleX->GetValue().ToDouble(&(work->scalex));
 		ScaleY->GetValue().ToDouble(&(work->scaley));
-		Encoding->GetValue().ToLong(&templ);
+
+		// Update encoding
+		long templ = 0;
+		wxString enc = Encoding->GetValue();
+		enc.Left(enc.Find(_T("-"))-1).ToLong(&templ);
 		work->encoding = templ;
+
+		// Angle and spacing
 		Angle->GetValue().ToDouble(&(work->angle));
 		Spacing->GetValue().ToDouble(&(work->spacing));
+
+		// Outline type
 		if(OutlineType->IsChecked()) work->borderstyle = 3;
 		else work->borderstyle = 1;
+
+		// Shadow and outline
 		Shadow->GetValue().ToDouble(&(work->shadow_w));
 		Outline->GetValue().ToDouble(&(work->outline_w));
+
+		// Alignment
 		work->alignment = ControlToAlign(Alignment->GetSelection());
+
+		// Margins
 		work->SetMarginString(MarginL->GetValue(),1);
 		work->SetMarginString(MarginR->GetValue(),2);
 		work->SetMarginString(MarginV->GetValue(),3);
+
+		// Color alphas
 		ColorAlpha1->GetValue().ToLong(&templ);
 		work->primary.a = templ;
 		ColorAlpha2->GetValue().ToLong(&templ);
@@ -347,13 +392,19 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		work->outline.a = templ;
 		ColorAlpha4->GetValue().ToLong(&templ);
 		work->shadow.a = templ;
+
+		// Bold/italic/underline/strikeout
 		work->bold = BoxBold->IsChecked();
 		work->italic = BoxItalic->IsChecked();
 		work->underline = BoxUnderline->IsChecked();
 		work->strikeout = BoxStrikeout->IsChecked();
+
+		// Font and its size
 		work->font = FontName->GetValue();
 		FontSize->GetValue().ToDouble(&(work->fontsize));
 		work->fontsize = templ;
+
+		// Style name
 		work->name = StyleName->GetValue();
 
 		// Copy

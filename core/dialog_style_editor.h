@@ -99,7 +99,7 @@ private:
 	wxTextCtrl *ScaleX;
 	wxTextCtrl *ScaleY;
 	wxTextCtrl *Angle;
-	wxTextCtrl *Encoding;
+	wxComboBox *Encoding;
 	wxTextCtrl *Spacing;
 	wxSizer *MainSizer;
 
