@@ -60,6 +60,8 @@ private:
 	volatile __int64 startPos;
 	volatile __int64 endPos;
 	void *stream;
+	PaTimestamp paStart;
+	volatile __int64 realPlayPos;
 
 	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
 
@@ -76,9 +78,9 @@ public:
 
 	__int64 GetStartPosition() { return startPos; }
 	__int64 GetEndPosition() { return endPos; }
-	__int64 GetCurrentPosition() { return playPos; }
+	__int64 GetCurrentPosition() { return realPlayPos; }
 	void SetEndPosition(__int64 pos) { endPos = pos; }
-	void SetCurrentPosition(__int64 pos) { playPos = pos; }
+	void SetCurrentPosition(__int64 pos) { playPos = pos; realPlayPos = pos; }
 
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
