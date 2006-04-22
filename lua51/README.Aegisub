@@ -1,0 +1,20 @@
+This directory contains a version of Lua 5.1 patched specifically for use
+with Aegisub. You *MUST* use this version of Lua when building Aegisub.
+
+Patches include, currently:
+- loadlib.c: The Win32 DLL loading code now assumes all strings are UTF-8
+  encoded, and uses the wide-char versions of the API functions.
+- lmathlib.c: Removed the value math.huge, due to linker problems. (This
+  value will probably be re-introduced if anyone can provide a good
+  solution to the problem ;)
+
+Planned patches:
+- lstrlib.c: Make all functions assume input is UTF-8, and make string
+  handling seem as if strings were UTF-32.
+- lzio.c: Ignore any UTF-8 BOM that happens to be at the beginning of
+  a file. Idea: Maybe also make it read UTF-16 files, if BOM is present?
+- lbaselib.c: Maybe remove dofile and loadfile functions entirely; not
+  entirely sure about this.
+
+Note that Lua no longer compiles as ANSI C, but must be compiled as C++.
+This should probably be fixed.
