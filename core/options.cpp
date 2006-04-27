@@ -102,7 +102,6 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Tips current"),0);
 
 	SetBool(_T("Show splash"),true);
-	SetInt(_T("Splash number"),5);
 	SetBool(_T("Show associations"),true);
 
 	SetBool(_T("Find Match Case"),false);

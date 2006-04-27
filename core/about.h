@@ -47,6 +47,6 @@
 // Splash screen class
 class AboutScreen: public wxDialog {
 public:
-	AboutScreen(wxWindow *parent,bool easter=false);
+	AboutScreen(wxWindow *parent);
 	~AboutScreen();
 };

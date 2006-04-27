@@ -381,11 +381,7 @@ void FrameMain::OnExit(wxCommandEvent& WXUNUSED(event)) {
 //////////////////
 // Open about box
 void FrameMain::OnAbout(wxCommandEvent &event) {
-	bool easter = false;
-	if (Options.IsDefined(_T("Alternate splash"))) {
-		easter = true;
-	}
-	AboutScreen About(this,easter);
+	AboutScreen About(this);
 	About.ShowModal();
 }
 

@@ -50,13 +50,7 @@ SplashScreen::SplashScreen(wxWindow *parent)
 	par = parent;
 
 	// Get splash
-	int splash_n = Options.AsInt(_T("Splash number"));
-	if (splash_n < 1 || splash_n > 5) splash_n = (rand()%5)+1;
-	if (splash_n == 1) splash = wxBITMAP(splash_01);
-	if (splash_n == 2) splash = wxBITMAP(splash_02);
-	if (splash_n == 3) splash = wxBITMAP(splash_03);
-	if (splash_n == 4) splash = wxBITMAP(splash_04);
-	if (splash_n == 5) splash = wxBITMAP(splash_05);
+	splash = wxBITMAP(splash);
 
 	// Prepare
 	Center();

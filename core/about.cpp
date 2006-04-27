@@ -44,18 +44,11 @@
 
 ///////////////
 // Constructor
-AboutScreen::AboutScreen(wxWindow *parent,bool easter)
+AboutScreen::AboutScreen(wxWindow *parent)
 : wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxSize(300,240), wxSTAY_ON_TOP | wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
 {
 	// Get splash
-	wxBitmap splash;
-	int splash_n = Options.AsInt(_T("Splash number"));
-	if (splash_n < 1 || splash_n > 5) splash_n = (rand()%5)+1;
-	if (splash_n == 1) splash = wxBITMAP(splash_01);
-	if (splash_n == 2) splash = wxBITMAP(splash_02);
-	if (splash_n == 3) splash = wxBITMAP(splash_03);
-	if (splash_n == 4) splash = wxBITMAP(splash_04);
-	if (splash_n == 5) splash = wxBITMAP(splash_05);
+	wxBitmap splash = wxBITMAP(splash);
 
 	// Picture
 	wxSizer *PicSizer = new wxBoxSizer(wxHORIZONTAL);
