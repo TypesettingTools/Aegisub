@@ -56,7 +56,7 @@ void AssTransformCleanInfoFilter::Init() {
 	initialized = true;
 	autoExporter = false;
 	Register(_("Clean Script Info"),0);
-	Description = _("Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form.");
+	description = _("Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form.");
 }
 
 

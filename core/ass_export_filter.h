@@ -88,7 +88,7 @@ private:
 protected:
 	bool autoExporter;
 	bool initialized;
-	wxString Description;
+	wxString description;
 
 	void Register(wxString name,int priority=0);				// Register the filter with specific name. Higher priority filters get the file to process first.
 	void Unregister();											// Unregister the filter instance
@@ -98,6 +98,8 @@ protected:
 public:
 	AssExportFilter();
 	virtual ~AssExportFilter();
+
+	const wxString& GetDescription() const;
 
 	virtual void ProcessSubs(AssFile *subs)=0;					// Process subtitles - this function must be overriden.
 	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent);	// Draw setup controls - this function may optionally be overridden.

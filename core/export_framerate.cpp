@@ -57,7 +57,7 @@ void AssTransformFramerateFilter::Init() {
 	initialized = true;
 	autoExporter = true;
 	Register(_("Transform Framerate"),1000);
-	Description = _("Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing.");
+	description = _("Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing.");
 	Input = NULL;
 	Output = NULL;
 }

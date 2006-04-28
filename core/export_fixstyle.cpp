@@ -56,7 +56,7 @@ void AssFixStylesFilter::Init() {
 	initialized = true;
 	autoExporter = true;
 	Register(_("Fix Styles"),-5000);
-	Description = _("Fixes styles by replacing any style that isn't available on file with Default.");
+	description = _("Fixes styles by replacing any style that isn't available on file with Default.");
 }
 
 

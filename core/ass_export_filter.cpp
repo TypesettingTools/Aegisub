@@ -146,6 +146,13 @@ void AssExportFilter::LoadSettings(bool IsDefault) {
 }
 
 
+//////////////////////
+// Description reader
+const wxString& AssExportFilter::GetDescription() const {
+	return description;
+}
+
+
 ///////////////
 // Static list
 AssExportFilterChain *AssExportFilterChain::instance=NULL;

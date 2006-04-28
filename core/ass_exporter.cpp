@@ -173,7 +173,7 @@ wxString AssExporter::GetDescription(wxString name) {
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
 		if ((*cur)->RegisterName == name) {
-			return (*cur)->Description;
+			return (*cur)->GetDescription();
 		}
 	}
 	throw wxString::Format(_T("Filter not found: %s"), name.c_str());
