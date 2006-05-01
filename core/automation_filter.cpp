@@ -149,9 +149,9 @@ AssAutomationFilter::AssAutomationFilter(AutomationScript *a_script)
 {
 	Register(wxString::Format(_T("Automation: %s"), script->name.c_str()), 2000);
 	if (script->description.IsEmpty()) {
-		Description = wxString::Format(_T("%s\r\n(This Automation script has not provided a description.)"), script->name.c_str());
+		description = wxString::Format(_T("%s\r\n(This Automation script has not provided a description.)"), script->name.c_str());
 	} else {
-		Description = script->description;
+		description = script->description;
 	}
 	automation_filter_list.push_back(this);
 }
