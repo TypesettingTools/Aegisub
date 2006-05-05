@@ -197,6 +197,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Grid_Next_Line,FrameMain::OnNextLine)
 	EVT_MENU(Grid_Prev_Line,FrameMain::OnPrevLine)
 	EVT_MENU(Grid_Toggle_Tags,FrameMain::OnToggleTags)
+
+	EVT_MENU(Kana_Game, FrameMain::OnKanaGame)
 END_EVENT_TABLE()
 
 
@@ -1249,3 +1251,9 @@ void FrameMain::OnViewSubs (wxCommandEvent &event) {
 	SetDisplayMode(0);
 }
 
+
+/////////////
+// Kana game
+void FrameMain::OnKanaGame(wxCommandEvent &event) {
+	wxMessageBox(_T("TODO"));
+}

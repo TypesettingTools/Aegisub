@@ -684,6 +684,7 @@ void FrameMain::SetDisplayMode(int mode) {
 	UpdateToolbar();
 	videoBox->VideoSizer->Layout();
 	MainSizer->Layout();
+	Layout();
 	//int cw,ch;
 	//GetSize(&cw,&ch);
 	//SetSize(cw-1,ch-1);
@@ -1039,7 +1040,7 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 ///////////////////////////
 // Setup accelerator table
 void FrameMain::SetAccelerators() {
-	wxAcceleratorEntry entry[8];
+	wxAcceleratorEntry entry[9];
 	entry[0] = Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame);
 	entry[1] = Hotkeys.GetAccelerator(_T("Video global next frame"),Video_Next_Frame);
 	entry[2] = Hotkeys.GetAccelerator(_T("Video global focus seek"),Video_Focus_Seek);
@@ -1048,7 +1049,10 @@ void FrameMain::SetAccelerators() {
 	entry[5] = Hotkeys.GetAccelerator(_T("Save Subtitles Alt"),Menu_File_Save_Subtitles);
 	entry[6] = Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In);
 	entry[7] = Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out);
-	wxAcceleratorTable table(8,entry);
+	wxAcceleratorEntry temp;
+	temp.Set(wxACCEL_CTRL | wxACCEL_ALT,WXK_F12,Kana_Game);
+	entry[8] = temp;
+	wxAcceleratorTable table(9,entry);
 	SetAcceleratorTable(table);
 }
 

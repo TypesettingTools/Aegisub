@@ -204,6 +204,8 @@ private:
 	void OnPrevLine(wxCommandEvent &event);
 	void OnToggleTags(wxCommandEvent &event);
 
+	void OnKanaGame(wxCommandEvent &event);
+
 	void LoadVideo(wxString filename,bool autoload=false);
 	void LoadAudio(wxString filename,bool FromVideo=false);
 	void LoadVFR(wxString filename);
@@ -357,6 +359,8 @@ enum {
 	Video_Track_Split_Line,
 	Video_Track_Link_File,
 	Video_Track_Movement_Empty,
+
+	Kana_Game,
 
 	Menu_File_Recent = 2000,
 	Menu_Video_Recent = 2200,
