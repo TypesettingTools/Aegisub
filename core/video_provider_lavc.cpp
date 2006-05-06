@@ -43,6 +43,8 @@
 #include "video_provider_lavc.h"
 #include "utils.h"
 #include "vfr.h"
+#include "subtitle_provider.h"
+#include "ass_file.h"
 #if 0
 #include "mkv_wrap.h"
 #endif
@@ -68,6 +70,9 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
 
 	// Load
 	LoadVideo(filename);
+
+	// Attach subtitles
+	SubtitleProvider::Class::GetProvider(_T("asa"), AssFile::top)->Bind(this);
 }
 
 
