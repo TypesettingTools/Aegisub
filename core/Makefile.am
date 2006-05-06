@@ -75,6 +75,7 @@ aegisub_SOURCES = about.cpp \
 	subtitle_format_prs.cpp \
 	subtitle_format_srt.cpp \
 	subtitle_format_txt.cpp \
+	subtitle_provider.cpp \
 	text_file_reader.cpp \
 	text_file_writer.cpp \
 	timeedit_ctrl.cpp \

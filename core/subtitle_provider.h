@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro, Fredrik Mellbin
+// Copyright (c) 2006, David Lamparter
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,21 +37,50 @@
 #pragma once
 
 
-//////////////
-// Prototypes
-class AegisubVideoFrame;
+#include <map>
+
+
+class VideoProvider;
 class AssFile;
 
-
-////////////////////////////
-// Video Provider interface
-class SubtitleRasterizer {
+/////////////////////////////////////////
+// Subtitle provider (renderer) interface
+class SubtitleProvider {
 public:
-	virtual ~SubtitleRasterizer() {}
+	// Video overlay interface. Renderers MAY implement it,
+	// but do not need to. VideoProvider::SetOverlay takes it.
+	class Overlay {
+	public:
+		virtual void SetParams(int width, int height) = 0;
+		virtual void Render(wxImage &frame, int ms) = 0;
+		virtual void Unbind() = 0;	// Called when VideoProvider is destroyed
+		virtual ~Overlay() { };
+	};
 
-	wxString GetFromDisk(AssFile *subs);
+	// Renderer Class. Manages the different types of renderers.
+	// Derivate a class off it, override its Get method and its constructor,
+	// and create one single instance of it for your renderer,
+	// as a static element in your SubtitleProvider derivated class. Example:
+	//	class MyFancyRenderer : public SubtitleProvider {
+	//		class MyClass : public Class { public:
+	//			MyClass() : Class("FancyRenderer") { };
+	//			virtual SubtitleProvider *Get(AssFile *subs) { return new MyFancyRenderer(subs); };
+	//		};
+	//		static MyClass me;
+	//	};
+	class Class {
+	private:
+		static std::map<wxString, SubtitleProvider::Class *> classes;
 
-	virtual void Load(AssFile *subs)=0;
-	virtual void Close() {}
-	virtual void RenderFrame(AegisubVideoFrame *frame,int ms)=0;
+	public:
+		Class(wxString name);
+		virtual SubtitleProvider *Get(AssFile *subs) = 0;
+		virtual ~Class() {};
+
+		static SubtitleProvider *GetProvider(wxString provider_name, AssFile *subs);
+	};
+
+
+	virtual ~SubtitleProvider() { };
+	virtual void Bind(VideoProvider *vpro) = 0;
 };
