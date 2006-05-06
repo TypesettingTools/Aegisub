@@ -46,6 +46,8 @@
 # endif
 #endif
 
+#include <wx/wxprec.h>
+#include <wx/image.h>
 #include "subtitle_provider.h"
 #include "video_provider.h"
 #include "ass_file.h"

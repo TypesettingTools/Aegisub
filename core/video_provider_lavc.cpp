@@ -38,6 +38,7 @@
 // Headers
 #ifdef USE_LAVC
 #include <wx/wxprec.h>
+#include <wx/image.h>
 #include <algorithm>
 #include "video_provider_lavc.h"
 #include "utils.h"
