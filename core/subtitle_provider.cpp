@@ -50,6 +50,12 @@ SubtitleProvider::Class::Class(wxString name)
 
 SubtitleProvider *SubtitleProvider::Class::GetProvider(wxString provider_name, AssFile *subs)
 {
-	return (*classes)[provider_name]->Get(subs);
+	SubtitleProvider::Class *sp;
+	if (!classes)
+		throw _T("Subtitle provider not found");
+	sp = (*classes)[provider_name];
+	if (!sp)
+		throw _T("Subtitle provider not found");
+	return sp->Get(subs);
 }
 
