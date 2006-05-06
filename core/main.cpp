@@ -87,6 +87,7 @@ bool AegisubApp::OnInit() {
 		Hotkeys.SetFile(folderName + _T("/hotkeys.dat"));
 		Hotkeys.Load();
 
+#ifdef WIN32
 		// Set locale
 		int lang = Options.AsInt(_T("Locale Code"));
 		if (lang == -1) {
@@ -95,6 +96,9 @@ bool AegisubApp::OnInit() {
 			Options.Save();
 		}
 		locale.Init(lang);
+#else
+		locale.Init(wxLocale::GetSystemLanguage());
+#endif
 
 		// Load export filters
 		AssExportFilterChain::PrepareFilters();
