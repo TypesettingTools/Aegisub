@@ -79,11 +79,10 @@ SubtitleProviderASA::MyClass SubtitleProviderASA::me;
 
 SubtitleProviderASA::SubtitleProviderASA(AssFile *_subs)
 {
-	const wxChar *cstr;
-
 	subs = _subs;
-	cstr = subs->GetString().c_str();
-	inst = asa_open_mem((const char *)cstr, wcslen(cstr), (enum asa_oflags)0);
+	wxString text = subs->GetString();
+
+	inst = asa_open_mem((const char *)text.GetData(), sizeof(wchar_t) * text.Length(), (enum asa_oflags)0);
 	if (!inst)
 		throw L"failed to load script with asa.";
 };
@@ -111,7 +110,7 @@ void SubtitleProviderASA::Render(wxImage &frame, int ms)
 	aframe.csp = ASACSP_RGB;
 	aframe.bmp.rgb.fmt = ASACSPR_RGB;
 	aframe.bmp.rgb.d.d = frame.GetData();
-	aframe.bmp.rgb.d.stride = frame.GetWidth();
+	aframe.bmp.rgb.d.stride = 3 * frame.GetWidth();
 	asa_render(inst, ms * 0.001, &aframe);
 }
 
