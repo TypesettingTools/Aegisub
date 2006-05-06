@@ -82,12 +82,12 @@ AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.]
 AC_CHECK_LIB([avcodec], [avcodec_init])
 AC_CHECK_LIB([avformat], [av_frac_init])
 
-PKG_CHECK_MODULES([ASA], asa = 0.0.1, [
+PKG_CHECK_MODULES([ASA], asa >= 0.3.2, [
 	CPPFLAGS="$CPPFLAGS $ASA_CFLAGS"
 	LIBS="$LIBS $ASA_LIBS"
 	AC_DEFINE(HAVE_ASA, 1, [found asa via pkg-config])
 ], [true])
-AC_CHECK_HEADERS([asa.h])
+AC_CHECK_HEADERS([asa/asa.h])
 
 PKG_CHECK_MODULES([GLIB], glib-2.0, [
 	CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
