@@ -1,8 +1,7 @@
-AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = res.rc $(srcdir)/*.h
 SUFFIXES = .c .cpp .rc
 
-SUBDIRS = ac bitmaps posix
+SUBDIRS = bitmaps posix
 
 bin_PROGRAMS = aegisub
 

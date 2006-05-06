@@ -2,7 +2,7 @@ AC_PREREQ(2.57)
 AC_INIT(aegisub, 1.10)
 AC_CONFIG_AUX_DIR(ac)
 AM_INIT_AUTOMAKE
-AC_CONFIG_HEADER([posix/acconf.h])
+AC_CONFIG_HEADER([core/posix/acconf.h])
 
 AC_CANONICAL_HOST
 
@@ -134,7 +134,8 @@ AC_HEADER_STDBOOL
 AC_OUTPUT([
 	Makefile
 	ac/Makefile
-	posix/Makefile
-	bitmaps/Makefile
+	core/Makefile
+	core/posix/Makefile
+	core/bitmaps/Makefile
 ])
 

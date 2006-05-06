@@ -3,7 +3,7 @@ CLEANFILES = Makefile.bitmaps *.xpm
 
 .PHONY: all-bitmaps
 
-Makefile.bitmaps: $(srcdir)/genxpm.sh $(top_srcdir)/res.rc
+Makefile.bitmaps: $(srcdir)/genxpm.sh $(srcdir)/../res.rc
 	/bin/sh $^ $(srcdir) >$@
 
 all: all-bitmaps
