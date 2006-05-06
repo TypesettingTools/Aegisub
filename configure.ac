@@ -43,6 +43,11 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_RANLIB
 
+AC_PATH_PROGS(CONVERT, [convert], [])
+if test -z "$CONVERT"
+then	AC_MSG_FAILURE([aegisub needs convert (from ImageMagick) to produce xpms from the supplied bitmaps/icons])
+fi
+
 AC_C_FLAG([-pthread])
 AC_CXX_FLAG([-pthread])
 AC_CHECK_LIB([pthread], [pthread_join])

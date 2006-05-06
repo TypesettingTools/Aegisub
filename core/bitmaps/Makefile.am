@@ -9,6 +9,6 @@ Makefile.bitmaps: $(srcdir)/genxpm.sh $(srcdir)/../res.rc
 all: all-bitmaps
 
 all-bitmaps: Makefile.bitmaps
-	make -f Makefile.bitmaps all
+	make -f Makefile.bitmaps CONVERT=$(CONVERT) all
 
 
