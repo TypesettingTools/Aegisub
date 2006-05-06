@@ -71,7 +71,7 @@ public:
 	//	};
 	class Class {
 	private:
-		static std::map<wxString, SubtitleProvider::Class *> classes;
+		static std::map<wxString, SubtitleProvider::Class *> *classes;
 
 	public:
 		Class(wxString name);

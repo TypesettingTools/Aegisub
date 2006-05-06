@@ -39,15 +39,17 @@
 #include "subtitle_provider.h"
 
 
-std::map<wxString, SubtitleProvider::Class *> SubtitleProvider::Class::classes;
+std::map<wxString, SubtitleProvider::Class *> *SubtitleProvider::Class::classes = NULL;
 
 SubtitleProvider::Class::Class(wxString name)
 {
-	classes.insert(std::make_pair(name, this));
+	if (!classes)
+		classes = new std::map<wxString, SubtitleProvider::Class *>();
+	(*classes)[name] = this;
 }
 
 SubtitleProvider *SubtitleProvider::Class::GetProvider(wxString provider_name, AssFile *subs)
 {
-	return classes[provider_name]->Get(subs);
+	return (*classes)[provider_name]->Get(subs);
 }
 
