@@ -63,6 +63,7 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
 	vidStream = -1;
 	zoom = 1.0;
 	validFrame = false;
+	overlay = NULL;
 
 	// Load
 	LoadVideo(filename);
@@ -73,6 +74,16 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
 // Destructor
 LAVCVideoProvider::~LAVCVideoProvider() {
 	Close();
+}
+
+
+/////////////////
+// Attach overlay
+void LAVCVideoProvider::AttachOverlay(SubtitleProvider::Overlay *_overlay)
+{
+	overlay = _overlay;
+	if (overlay)
+		overlay->SetParams(display_w, display_h);
 }
 
 
@@ -219,7 +230,7 @@ bool LAVCVideoProvider::GetNextFrame() {
 
 ///////////////////////////////
 // Convert AVFrame to wxBitmap
-wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source) {
+wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
 	// Get sizes
 	int w = codecContext->width;
 	int h = codecContext->height;
@@ -271,15 +282,14 @@ wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source) {
 	img_convert((AVPicture*) frameRGB, format, (AVPicture*) resized, codecContext->pix_fmt, w, h);
 
 	// Convert to wxBitmap
-#ifdef __WINDOWS__
-	wxBitmap bmp((const char*) frameRGB->data[0],w,h,32);
-#else
 	wxImage img(w, h, false);
 	unsigned char *data = (unsigned char *)malloc(w * h * 3);
 	memcpy(data, frameRGB->data[0], w * h * 3);
 	img.SetData(data);
+	if (overlay)
+		overlay->Render(img, n);
+
 	wxBitmap bmp(img);
-#endif
 
 	av_free(frameRGB);
 	if (resized != source)
@@ -301,7 +311,7 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 	n = MID(0,n,GetFrameCount()-1);
 	if (n == frameNumber) {
 		if (!validFrame) {
-			curFrame = AVFrameToWX(frame);
+			curFrame = AVFrameToWX(frame, n);
 			validFrame = true;
 		}
 		return curFrame;
@@ -380,7 +390,7 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 
 	// Bitmap
 	wxBitmap bmp;
-	if (frame) bmp = AVFrameToWX(frame);
+	if (frame) bmp = AVFrameToWX(frame, n);
 	else bmp = wxBitmap(GetWidth(),GetHeight());
 
 	// Set current frame

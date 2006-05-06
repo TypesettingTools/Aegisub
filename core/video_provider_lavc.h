@@ -93,7 +93,11 @@ private:
 	bool GetNextFrame();
 	void LoadVideo(wxString filename);
 	void Close();
-	wxBitmap AVFrameToWX(AVFrame *frame);
+	wxBitmap AVFrameToWX(AVFrame *frame, int n);
+
+	SubtitleProvider::Overlay *overlay;
+protected:
+	virtual void AttachOverlay(SubtitleProvider::Overlay *_overlay);
 
 public:
 	LAVCVideoProvider(wxString filename, wxString subfilename);
