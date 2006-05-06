@@ -38,6 +38,7 @@
 
 
 #include <map>
+#include <wx/wxprec.h>
 
 
 class VideoProvider;

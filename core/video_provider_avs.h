@@ -83,6 +83,7 @@ private:
 	PClip ApplyDARZoom(double _zoom, double _dar, PClip videosource);
 	wxBitmap GetFrame(int n, bool force);
 	void LoadVSFilter();
+	void AttachOverlay(SubtitleProvider::Overlay *_overlay) {}
 
 public:
 	AvisynthVideoProvider(wxString _filename, wxString _subfilename);
