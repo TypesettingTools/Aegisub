@@ -181,6 +181,20 @@ void AssFile::Export(wxString _filename) {
 }
 
 
+////////////////////////////////////
+// Returns script as a single string
+wxString AssFile::GetString() {
+	using std::list;
+	wxString ret;
+	AssEntry *entry;
+	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();) {
+		entry = *cur;
+		ret += entry->GetEntryData();
+		ret += L"\n";
+	}
+	return ret;
+}
+
 ///////////////////////
 // Appends line to Ass
 int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {

@@ -87,6 +87,7 @@ public:
 	wxArrayString GetStyles();							// Gets a list of all styles available
 	AssStyle *GetStyle(wxString name);					// Gets style by its name
 
+	wxString GetString();
 	void Load(wxString file,wxString charset=_T(""));	// Load from a file
 	void Save(wxString file,bool setfilename=false,bool addToRecent=true,const wxString encoding=_T(""));	// Save to a file. Pass true to second argument if this isn't a copy
 	void Export(wxString file);							// Saves exported copy, with effects applied
