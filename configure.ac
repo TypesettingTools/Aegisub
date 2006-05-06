@@ -6,6 +6,8 @@ AC_CONFIG_HEADER([core/posix/acconf.h])
 
 AC_CANONICAL_HOST
 
+AM_GNU_GETTEXT
+
 AC_DEFUN([AC_C_FLAG], [{
 	AC_LANG_PUSH(C)
 	ac_c_flag_save="$CFLAGS"
@@ -139,6 +141,7 @@ AC_HEADER_STDBOOL
 AC_OUTPUT([
 	Makefile
 	ac/Makefile
+	locale/Makefile
 	core/Makefile
 	core/posix/Makefile
 	core/bitmaps/Makefile
