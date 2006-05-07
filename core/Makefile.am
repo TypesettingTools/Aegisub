@@ -5,7 +5,12 @@ SUBDIRS = bitmaps posix
 
 bin_PROGRAMS = aegisub
 
-AM_CPPFLAGS = -Iposix -include posix/defines.h
+SVNREV := $(strip $(shell grep revision= .svn/entries 2>/dev/null | cut -d \" -f 2))
+DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
+REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
+BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
+
+AM_CPPFLAGS = -Iposix -include posix/defines.h $(BUILDINFO)
 LDADD = posix/libposix.a
 aegisub_SOURCES = about.cpp \
 	aegisublocale.cpp \
