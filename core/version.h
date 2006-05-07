@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,16 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Contact: mailto:jiifurusu@gmail.com
 //
 
 class wxString;
 
-wxString GetAegisubVersionString();
+// Version string appended in title bar of main window (quick identification of all elements of a build)
+wxString GetAegisubLongVersionString();
+// Version string used in About box, looks nicer
+wxString GetAegisubShortVersionString();
+// Timestamp of build, only shown in About box
+wxString GetAegisubBuildTime();
+// Name of who built the binary
+wxString GetAegisubBuildCredit();

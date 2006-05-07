@@ -70,6 +70,10 @@ Include:
   include
 Libraries:
   lib
+  
+6. Install a Python interpreter if you don't have one already, you will NEED it to run a script during the
+build process.
+http://www.python.org/download
 
 Building instructions (aegisub):
 
@@ -81,7 +85,19 @@ Building instructions (aegisub):
 
 3.1. OPTIONAL - Define NO_SPELLCHECKER if you want to compile without aspell support.
 
-4. Add the libraries to the linker input. If you compiled portaudio with wmme you have to remove dsound.lib and srmiids.lib
+4. Set up the build-versioning stuff.
+
+4.1. Open projects settings and select All Configurations. Go to Build Events, Pre-build Event.
+Change the Command Line to the following two lines (click "..."):
+  cd $(InputDir)\core\build
+  c:\python24\python.exe make-svn-rev-header.py
+You'll obviously want to change the path to the Python interpreter.
+
+4.2 Create the file core/build/build-credit.h and add this line to it:
+  #define BUILD_CREDIT "yournick"
+Of course without indendation and replacing the yournick part.
+
+5. Add the libraries to the linker input. If you compiled portaudio with wmme you have to remove dsound.lib and srmiids.lib
 and replace PAStaticDS*.lib with the wmme version. Remove libaspell-15-dll.lib if you defined NO_SPELLCHECKER.
 
 Link to these libraries for release:
@@ -90,4 +106,4 @@ freetype2110MT.lib libaspell-15-dll.lib wxzlib.lib wxpng.lib wxregexu.lib wxmsw2
 Link to these libraries for debug:
 freetype2110MT_D.lib libaspell-15-dll.lib dsound.lib PAStaticDSMTd.lib Vfw32.lib lua50MTd.lib wxzlibd.lib wxpngd.lib wxregexud.lib wxbase26ud.lib wxmsw26ud_media.lib wxmsw26ud_core.lib wxmsw26ud_adv.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib strmiids.lib
 
-5. Compile and wait.
+6. Compile and wait.
