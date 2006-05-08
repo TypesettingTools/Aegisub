@@ -244,11 +244,11 @@ wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
 	// Get sizes
 	int w = codecContext->width;
 	int h = codecContext->height;
-#ifdef __WINDOWS__
-	PixelFormat format = PIX_FMT_RGBA32;
-#else
+//#ifdef __WINDOWS__
+//	PixelFormat format = PIX_FMT_RGBA32;
+//#else
 	PixelFormat format = PIX_FMT_RGB24;
-#endif
+//#endif
 	unsigned int size1 = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
 	unsigned int size2 = avpicture_get_size(format,display_w,display_h);
 
