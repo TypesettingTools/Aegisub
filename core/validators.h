@@ -47,7 +47,7 @@
 // Numeric validator
 class NumValidator : public wxTextValidator {
 public:
-	NumValidator(wxString* valPtr = NULL);
+	NumValidator(wxString* valPtr = NULL,bool isfloat=false,bool issigned=false);
 };
 
 

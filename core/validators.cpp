@@ -41,7 +41,7 @@
 
 ///////////////
 // Constructor
-NumValidator::NumValidator(wxString* valPtr)
+NumValidator::NumValidator(wxString* valPtr,bool isfloat,bool issigned)
 : wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST,valPtr)
 {
 	wxArrayString list;
@@ -55,5 +55,7 @@ NumValidator::NumValidator(wxString* valPtr)
 	list.Add(_T("7"));
 	list.Add(_T("8"));
 	list.Add(_T("9"));
+	if (isfloat) list.Add(_T("."));
+	if (issigned) list.Add(_T("-"));
 	SetIncludes(list);
 }

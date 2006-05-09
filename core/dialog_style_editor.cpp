@@ -402,7 +402,6 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Font and its size
 		work->font = FontName->GetValue();
 		FontSize->GetValue().ToDouble(&(work->fontsize));
-		work->fontsize = templ;
 
 		// Style name
 		work->name = StyleName->GetValue();
