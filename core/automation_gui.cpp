@@ -355,7 +355,7 @@ void DialogAutomationManager::EditScript(AutomationScript *script)
 	wxString editor;
 	if (!Options.IsDefined(_T("automation script editor")) || wxGetKeyState(WXK_SHIFT)) {
 		wxMessageBox(_T("You have not selected a script editor yet. Please select your script editor in the next window. It's recommended to use an editor with syntax highlighting for Lua scripts."), _T("Aegisub"), wxOK|wxICON_INFORMATION);
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 		editor = wxFileSelector(_T("Select script editor"), _T(""), _T("C:\\Windows\\Notepad.exe"), _T("exe"), _T("Execatuables (*.exe)|*.exe|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST);
 #else
 		char *env_editor = getenv("EDITOR");

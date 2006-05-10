@@ -64,7 +64,7 @@ void AegisubLocale::Init(int language) {
 	if (locale) delete locale;
 	curCode = language;
 	locale = new wxLocale(language);
-#ifdef WIN32
+#ifdef __WINDOWS__
 	locale->AddCatalogLookupPathPrefix(AegisubApp::folderName + _T("locale/"));
 #endif
 	locale->AddCatalog(_T("aegisub"));

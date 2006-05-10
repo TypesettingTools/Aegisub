@@ -87,7 +87,7 @@ bool AegisubApp::OnInit() {
 		Hotkeys.SetFile(folderName + _T("/hotkeys.dat"));
 		Hotkeys.Load();
 
-#ifdef WIN32
+#ifdef __WINDOWS__
 		// Set locale
 		int lang = Options.AsInt(_T("Locale Code"));
 		if (lang == -1) {
@@ -228,7 +228,7 @@ int AegisubApp::OnRun() {
 /////////////////////////////////
 // Registry program to filetypes
 void AegisubApp::RegistryAssociate () {
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 	// Command to open with this
 	wxString command;
 	command << _T("\"") << fullPath << _T("\" \"%1\"");
@@ -304,7 +304,7 @@ void AegisubApp::GetFullPath(wxString arg) {
 ///////////////////////////////////
 // Gets folder name from full path
 void AegisubApp::GetFolderName () {
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 	folderName = _T("");
 	wxFileName path(fullPath);
 #else

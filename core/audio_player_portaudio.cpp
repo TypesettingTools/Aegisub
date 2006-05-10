@@ -75,7 +75,7 @@ PortAudioPlayer::~PortAudioPlayer() {
 	if (!--pa_refcount) Pa_Terminate();
 }
 
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 typedef unsigned __int64 uint64_t;
 #endif
 

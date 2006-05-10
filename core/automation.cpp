@@ -48,7 +48,7 @@
 #include "string_codec.h"
 #include "vfr.h"
 
-#ifdef WIN32
+#ifdef __WINDOWS__
 #include <windows.h>
 #include <wchar.h>
 #else
@@ -297,7 +297,7 @@ namespace AutomationHelper {
 
 		wxLogDebug(_T("text_extents for: %s:%f:%d%d%d%d:%f:%f:%d:%d"), fontname.c_str(), fontsize, bold, italic, underline, strikeout, scale_x, scale_y, spacing, charset);
 
-#ifdef WIN32
+#ifdef __WINDOWS__
 		HDC thedc = CreateCompatibleDC(0);
 		if (!thedc) return 0;
 		SetMapMode(thedc, MM_TEXT);
@@ -353,7 +353,7 @@ namespace AutomationHelper {
 		DeleteObject(thedc);
 		DeleteObject(thefont);
 
-#else // not WIN32
+#else // not __WINDOWS__
 		wxMemoryDC thedc;
 
 		// fix fontsize to be 72 DPI

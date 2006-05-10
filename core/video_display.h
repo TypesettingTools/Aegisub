@@ -41,7 +41,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 #include <windows.h>
 #endif
 #include <time.h>

@@ -41,7 +41,7 @@
 #ifdef HAVE_ASA_ASA_H
 # include <asa/asa.h>
 #else
-# ifdef WIN32
+# ifdef __WINDOWS__
 #  include <asa.h>
 # endif
 #endif

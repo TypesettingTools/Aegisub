@@ -66,7 +66,7 @@ int CountMatches(wxString parent,wxString child) {
 
 ///////////////
 // Copy a file
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 bool Copy(wxString src,wxString dst) {
 	BOOL result = CopyFile(src.wc_str(),dst.wc_str(),false);
 	return (result != 0);
@@ -77,7 +77,7 @@ bool Copy(wxString src,wxString dst) {
 // Backup a file
 bool Backup(wxString src,wxString dst) {
 	// Windows
-	#if defined(__WIN32__)
+	#if defined(__WINDOWS__)
 	return Copy(src,dst);
 
 	// Linux

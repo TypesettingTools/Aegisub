@@ -38,7 +38,7 @@
 // Includes
 #include <wx/config.h>
 #include <wx/filename.h>
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 #include <shlobj.h>
 #endif
 #include "ass_override.h"
@@ -220,7 +220,7 @@ wxArrayString FontsCollectorThread::GetFontFiles (wxString face) {
 ///////////////////////
 // Collect font files
 void FontsCollectorThread::CollectFontData () {
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 	// Prepare key
 	wxRegKey *reg = new wxRegKey(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts"));
 	// Try win9x
@@ -325,7 +325,7 @@ void FontsCollectorThread::Collect() {
 		}
 	}
 
-#ifdef __WIN32__
+#ifdef __WINDOWS__
 	// Collect font data
 	wxMutexGuiEnter();
 	LogBox->SetDefaultStyle(wxTextAttr(wxColour(0,0,180)));
