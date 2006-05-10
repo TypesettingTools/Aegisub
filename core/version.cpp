@@ -88,7 +88,7 @@ struct VersionInfoStruct {
 		BuildCredit = _T(BUILD_CREDIT);
 
 		if (SvnRev > 0)
-			SCMStr = wxString::Format(_T("svn %d"), SvnRev);
+			SCMStr = wxString::Format(_T("SVN r%d"), SvnRev);
 #ifdef BUILD_DARCS
 		else
 			SCMStr = _T("darcs");
