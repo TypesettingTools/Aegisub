@@ -38,6 +38,12 @@
 // Headers
 #ifdef HAVE_ASA
 
+#include <wx/wxprec.h>
+#include <wx/image.h>
+#include "subtitle_provider.h"
+#include "video_provider.h"
+#include "ass_file.h"
+
 #ifdef HAVE_ASA_ASA_H
 # include <asa/asa.h>
 #else
@@ -45,12 +51,6 @@
 #  include <asa.h>
 # endif
 #endif
-
-#include <wx/wxprec.h>
-#include <wx/image.h>
-#include "subtitle_provider.h"
-#include "video_provider.h"
-#include "ass_file.h"
 
 
 class SubtitleProviderASA : public SubtitleProvider, SubtitleProvider::Overlay {

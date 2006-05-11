@@ -297,7 +297,7 @@ wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
 	memcpy(data, frameRGB->data[0], w * h * 3);
 	img.SetData(data);
 	if (overlay)
-		overlay->Render(img, n);
+		overlay->Render(img, VFR_Input.GetTimeAtFrame(n));
 
 	wxBitmap bmp(img);
 
