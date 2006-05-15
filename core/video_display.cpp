@@ -506,16 +506,24 @@ double VideoDisplay::GetARFromType(int type) {
 	if (type == 0) return (double)provider->GetSourceWidth()/(double)provider->GetSourceHeight();
 	if (type == 1) return 4.0/3.0;
 	if (type == 2) return 16.0/9.0;
-	return 1;  //error
+	if (type == 3) return 2.35;
+	return 1.0;  //error
 }
 
 
 /////////////////////
 // Sets aspect ratio
-void VideoDisplay::SetAspectRatio(int value) {
+void VideoDisplay::SetAspectRatio(int _type, double value) {
 	if (provider) {
-		provider->SetDAR(GetARFromType(value));
-		arType = value;
+		// Get value
+		if (_type != 4) value = GetARFromType(_type);
+		if (value < 0.5) value = 0.5;
+		if (value > 5.0) value = 5.0;
+
+		// Set
+		provider->SetDAR(value);
+		arType = _type;
+		arValue = value;
 		UpdateSize();
 		RefreshVideo();
 		GetParent()->Layout();

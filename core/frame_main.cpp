@@ -279,9 +279,11 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(videoMenu,Menu_Video_Snap_To_Scene, _("Snap to scene\t") + Hotkeys.GetText(_T("Snap to Scene")), _("Set start and end of subtitles to the keyframes around current video frame"), wxBITMAP(snap_subs_to_scene));
 	AppendBitmapMenuItem(videoMenu,Menu_Video_Shift_To_Frame, _("Shift to Current Frame\t") + Hotkeys.GetText(_T("Shift by Current Time")), _("Shift selection so first selected line starts at current frame"), wxBITMAP(shift_to_frame));
 	videoMenu->AppendSeparator();
-	videoMenu->AppendRadioItem(Menu_Video_AR_Default, _("&Default Aspect Ratio"), _("Leave video on original aspect ratio"));
-	videoMenu->AppendRadioItem(Menu_Video_AR_Full, _("&Fullscreen Aspect Ratio (4:3)"), _("Forces video to fullscreen aspect ratio"));
-	videoMenu->AppendRadioItem(Menu_Video_AR_Wide, _("&Widescreen Aspect Ratio (16:9)"), _("Forces video to widescreen aspect ratio"));
+	videoMenu->AppendCheckItem(Menu_Video_AR_Default, _("&Default Aspect Ratio"), _("Leave video on original aspect ratio"));
+	videoMenu->AppendCheckItem(Menu_Video_AR_Full, _("&Fullscreen Aspect Ratio (4:3)"), _("Forces video to fullscreen aspect ratio"));
+	videoMenu->AppendCheckItem(Menu_Video_AR_Wide, _("&Widescreen Aspect Ratio (16:9)"), _("Forces video to widescreen aspect ratio"));
+	videoMenu->AppendCheckItem(Menu_Video_AR_235, _("&2.35 Aspect Ratio"), _("Forces video to 2.35 aspect ratio"));
+	videoMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom Aspect Ratio..."), _("Forces video to a custom aspect ratio"));
 	MenuBar->Append(videoMenu, _("&Video"));
 
 	// Create audio menu
@@ -725,6 +727,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		// Reset the state
 		long videoPos = 0;
 		long videoAr = 0;
+		double videoArValue = 0.0;
 		long videoZoom = 0;
 		{
 			std::list<AssAutomationFilter*>::const_iterator next = AssAutomationFilter::GetFilterList().begin(), f;
@@ -736,9 +739,17 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			}
 		}
 
+		// Get AR
+		wxString arString = subs->GetScriptInfo(_T("Video Aspect Ratio"));
+		if (arString.Left(1) == _T("c")) {
+			videoAr = 4;
+			arString = arString.Mid(1);
+			arString.ToDouble(&videoArValue);
+		}
+		else if (arString.IsNumber()) arString.ToLong(&videoAr);
+
 		// Get new state info
 		subs->GetScriptInfo(_T("Video Position")).ToLong(&videoPos);
-		subs->GetScriptInfo(_T("Video Aspect Ratio")).ToLong(&videoAr);
 		subs->GetScriptInfo(_T("Video Zoom")).ToLong(&videoZoom);
 		wxString curSubsVideo = DecodeRelativePath(subs->GetScriptInfo(_T("Video File")),AssFile::top->filename);
 		wxString curSubsVFR = DecodeRelativePath(subs->GetScriptInfo(_T("VFR File")),AssFile::top->filename);
@@ -802,7 +813,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 					LoadVideo(curSubsVideo);
 					if (videoBox->videoDisplay->loaded) {
 						videoBox->videoDisplay->JumpToFrame(videoPos);
-						videoBox->videoDisplay->SetAspectRatio(videoAr);
+						videoBox->videoDisplay->SetAspectRatio(videoAr,videoArValue);
 						videoBox->videoDisplay->SetZoomPos(videoZoom-1);
 					}
 				}
@@ -827,8 +838,11 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString zoom = _T("6");
 		if (videoBox->videoDisplay->loaded) {
 			seekpos = wxString::Format(_T("%i"),videoBox->videoDisplay->ControlSlider->GetValue());
-			ar = wxString::Format(_T("%i"),videoBox->videoDisplay->GetAspectRatio());
 			zoom = wxString::Format(_T("%i"),videoBox->videoDisplay->zoomBox->GetSelection()+1);
+
+			int arType = videoBox->videoDisplay->GetAspectRatioType();
+			if (arType == 4) ar = wxString(_T("c")) + FloatToString(videoBox->videoDisplay->GetAspectRatioValue());
+			else ar = wxString::Format(_T("%i"),arType);
 		}
 		
 		// Store audio data

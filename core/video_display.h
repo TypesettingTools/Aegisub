@@ -77,6 +77,8 @@ private:
 	int StartFrame;
 	int EndFrame;
 	int PlayNextFrame;
+	double arValue;
+	int arType;
 
 	wxBitmap GetFrame(int n);
 	wxBitmap GetFrame() { return GetFrame(frame_n); };
@@ -100,7 +102,6 @@ public:
 	wxArrayInt KeyFrames;
 	SubtitlesGrid *grid;
 	wxString videoName;
-	int arType;
 	int w,h;
 	int frame_n;
 	int length;
@@ -133,14 +134,16 @@ public:
 	void RefreshVideo();
 	void DrawText( wxPoint Pos, wxString Text );
 	void UpdatePositionDisplay();
-	double GetARFromType(int type);
-	void SetAspectRatio(int type);
 	void SetZoom(double value);
-	int GetAspectRatio() { return arType; }
 	void SetZoomPos(int pos);
 	void UpdateSubsRelativeTime();
 	void GetScriptSize(int &w,int &h);
 	wxString GetTempWorkFile ();
+
+	double GetARFromType(int type);
+	void SetAspectRatio(int type,double value=1.0);
+	int GetAspectRatioType() { return arType; }
+	double GetAspectRatioValue() { return arValue; }
 
 	void Play();
 	void PlayLine();

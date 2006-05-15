@@ -79,6 +79,7 @@
 #include "dialog_fextracker.h"
 #endif
 #include "dialog_progress.h"
+#include "utils.h"
 
 
 ////////////////////
@@ -142,6 +143,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Video_AR_Default, FrameMain::OnSetARDefault)
 	EVT_MENU(Menu_Video_AR_Full, FrameMain::OnSetARFull)
 	EVT_MENU(Menu_Video_AR_Wide, FrameMain::OnSetARWide)
+	EVT_MENU(Menu_Video_AR_235, FrameMain::OnSetAR235)
+	EVT_MENU(Menu_Video_AR_Custom, FrameMain::OnSetARCustom)
 	EVT_MENU(Menu_Video_JumpTo, FrameMain::OnJumpTo)
 	EVT_MENU(Menu_Video_Select_Visible, FrameMain::OnSelectVisible)
 
@@ -271,12 +274,24 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_Default,state);
 		MenuBar->Enable(Menu_Video_AR_Full,state);
 		MenuBar->Enable(Menu_Video_AR_Wide,state);
+		MenuBar->Enable(Menu_Video_AR_235,state);
+		MenuBar->Enable(Menu_Video_AR_Custom,state);
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR); //fix me, wrong?
 
 		// Set AR radio
-		if (videoBox->videoDisplay->arType == 0) MenuBar->Check(Menu_Video_AR_Default,true);
-		if (videoBox->videoDisplay->arType == 1) MenuBar->Check(Menu_Video_AR_Full,true);
-		if (videoBox->videoDisplay->arType == 2) MenuBar->Check(Menu_Video_AR_Wide,true);
+		int arType = videoBox->videoDisplay->GetAspectRatioType();
+		MenuBar->Check(Menu_Video_AR_Default,false);
+		MenuBar->Check(Menu_Video_AR_Full,false);
+		MenuBar->Check(Menu_Video_AR_Wide,false);
+		MenuBar->Check(Menu_Video_AR_235,false);
+		MenuBar->Check(Menu_Video_AR_Custom,false);
+		switch (arType) {
+			case 0: MenuBar->Check(Menu_Video_AR_Default,true); break;
+			case 1: MenuBar->Check(Menu_Video_AR_Full,true); break;
+			case 2: MenuBar->Check(Menu_Video_AR_Wide,true); break;
+			case 3: MenuBar->Check(Menu_Video_AR_235,true); break;
+			case 4: MenuBar->Check(Menu_Video_AR_Custom,true); break;
+		}
 
 		// Wipe recent
 		int count = RecentVids->GetMenuItemCount();
@@ -971,6 +986,51 @@ void FrameMain::OnSetARWide (wxCommandEvent &event) {
 	videoBox->videoDisplay->Stop();
 	videoBox->videoDisplay->SetAspectRatio(2);
 	SetDisplayMode(-1);
+}
+
+
+///////////////////////////////
+// Change aspect ratio to 2:35
+void FrameMain::OnSetAR235 (wxCommandEvent &event) {
+	videoBox->videoDisplay->Stop();
+	videoBox->videoDisplay->SetAspectRatio(3);
+	SetDisplayMode(-1);
+}
+
+
+/////////////////////////////////////////
+// Change aspect ratio to a custom value
+void FrameMain::OnSetARCustom (wxCommandEvent &event) {
+	// Get text
+	videoBox->videoDisplay->Stop();
+	wxString value = wxGetTextFromUser(_T("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form:"),_T("Enter aspect ratio"),FloatToString(videoBox->videoDisplay->GetAspectRatioValue()));
+
+	// Process text
+	double numval = 0.0;
+	value.Replace(_T(","),_T("."));
+	if (value.Freq(_T('.')) == 1) {
+		value.ToDouble(&numval);
+	}
+	else if (value.Freq(_T(':')) == 1) {
+		int pos = value.Find(_T(':'));
+		wxString num = value.Left(pos);
+		wxString denum = value.Mid(pos+1);
+		if (num.IsNumber() && denum.IsNumber()) {
+			double a,b;
+			num.ToDouble(&a);
+			denum.ToDouble(&b);
+			if (b != 0) numval = a/b;
+		}
+	}
+
+	// Sanity check
+	if (numval < 0.5 || numval > 5.0) wxMessageBox(_T("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_T("Invalid Aspect Ratio"),wxICON_ERROR);
+
+	// Set value
+	else {
+		videoBox->videoDisplay->SetAspectRatio(4,numval);
+		SetDisplayMode(-1);
+	}
 }
 
 

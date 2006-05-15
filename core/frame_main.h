@@ -157,6 +157,8 @@ private:
 	void OnSetARDefault (wxCommandEvent &event);
 	void OnSetARWide (wxCommandEvent &event);
 	void OnSetARFull (wxCommandEvent &event);
+	void OnSetAR235 (wxCommandEvent &event);
+	void OnSetARCustom (wxCommandEvent &event);
 
 	void OnOpenAudio (wxCommandEvent &event);
 	void OnOpenAudioFromVideo (wxCommandEvent &event);
@@ -282,6 +284,8 @@ enum {
 	Menu_Video_AR_Default,
 	Menu_Video_AR_Full,
 	Menu_Video_AR_Wide,
+	Menu_Video_AR_235,
+	Menu_Video_AR_Custom,
 	Menu_Video_Select_Visible,
 
 	Menu_Audio_Open_File,

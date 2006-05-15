@@ -78,6 +78,7 @@ Please visit http://aegisub.net to download latest version
    o Italian (thanks to EmBoLo)
    o Korean (thanks to oblisk)
 - Style editor now uses a dropdown for the encoding field. (AMZ)
+- Added 2.35 and custom aspect ratio support for video display. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
