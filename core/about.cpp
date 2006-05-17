@@ -62,9 +62,10 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _("Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n\n");
 	aboutString += _("Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\n");
 	aboutString += _("Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n");
-	aboutString += _("Coding by ArchMageZeratuL, jfs, Myrsloik, Tentacle and nmap.\n");
+	aboutString += _("Coding by ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n");
 	aboutString += _("Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n");
 	aboutString += _("Forum and bug tracker hosting by Bot1.\n");
+	aboutString += _("SVN hosting by BerliOS and Mentar.\n");
 	aboutString += translatorCredit;
 	aboutString += _("\nSee the help file for full credits.\n");
 	aboutString += wxString::Format(_("Built by %s on %s."), GetAegisubBuildCredit().c_str(), GetAegisubBuildTime().c_str());
