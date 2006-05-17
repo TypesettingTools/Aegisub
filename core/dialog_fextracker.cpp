@@ -42,7 +42,7 @@ DialogFexTracker::DialogFexTracker(wxWindow *parent, FexTrackerConfig *_cfg)
 	Static = new wxStaticText(StdWnd,-1,_("Number of points to track:"));
 	Sizer->Add(Static,0,wxALIGN_LEFT,5);
 	Sizer->Add(FeatureNumber,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(StdWnd,-1,_("Minimal (sqared) distance between two points:  "));
+	Static = new wxStaticText(StdWnd,-1,_("Minimal (squared) distance between two points:  "));
 	Sizer->Add(Static,0,wxALIGN_LEFT,5);
 	Sizer->Add(MinDistanceSquare,0,wxALIGN_LEFT,5);
 	Static = new wxStaticText(StdWnd,-1,_("Maximum feature movement:"));
