@@ -151,7 +151,7 @@ end
 
 function do_line(meta, styles, config, line)
 	if config.workstyle == "" or config.workstyle == line.style then
-		return adv_do_line(meta, styles, config, line)
+		return karaskel.do_line(meta, styles, config, line)
 	else
 		return { n=1, [1]=line }
 	end
