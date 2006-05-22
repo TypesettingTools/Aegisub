@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-14 03:51-0200\n"
-"PO-Revision-Date: 2006-05-17 06:11-0800\n"
+"PO-Revision-Date: 2006-05-17 17:54-0800\n"
 "Last-Translator: Oblisk <lol>\n"
 "Language-Team: KAA <oblisk@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "대하여"
 
 #: about.cpp:59
 msgid "Translated into LANGUAGE by PERSON\n"
-msgstr "Translated into 조선말 by oblisk\n"
+msgstr "한국어로 번역 oblisk 씀\n"
 
 #: about.cpp:61
 msgid " by ArchMage ZeratuL.\n"
