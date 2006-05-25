@@ -108,7 +108,7 @@ void SubtitleProviderASA::Render(wxImage &frame, int ms)
 {
 	struct asa_frame aframe;
 	aframe.csp = ASACSP_RGB;
-	aframe.bmp.rgb.fmt = ASACSPR_RGB;
+	aframe.bmp.rgb.fmt = ASACSPR_BGR;
 	aframe.bmp.rgb.d.d = frame.GetData();
 	aframe.bmp.rgb.d.stride = 3 * frame.GetWidth();
 	asa_render(inst, ms * 0.001, &aframe);
