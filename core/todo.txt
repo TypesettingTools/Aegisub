@@ -23,7 +23,6 @@ Shift start/end by one, pushing adjascent line so they don't overlap (req by Men
 Sort subs by initial time and style (req by Jcubed)
 Check for updates
 Use page up/page down to switch video to prev/next selected subtitle (req by Mentar)
-Custom Aspect Ratio (req by TheFluff)
 Bleeding Checker (window that shows start/end frames and one before/after each)
 Make margins boxes "replace when type" style
 Styles preview (assigned to jfs)
