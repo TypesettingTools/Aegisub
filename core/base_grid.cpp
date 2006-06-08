@@ -380,7 +380,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	for (int i=0;i<nDraw+1;i++) {
 		// Prepare
 		int curRow = i+yPos-1;
-		curDiag = GetDialogue(curRow);
+		curDiag = (curRow>=0) ? GetDialogue(curRow) : NULL;
 		dx = 0;
 		dy = i*lineHeight;
 

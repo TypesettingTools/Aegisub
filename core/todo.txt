@@ -4,7 +4,6 @@
 High priority:
 
 Insert subtitles from another file, with possible shifting
-Snap subs to keyframes (req by Mentar)
 Open audio range
 
 
@@ -17,7 +16,6 @@ Advanced visual typesetting
 Audio timing assistant
 Shift times by current time
 SSA "Effects" dialog (as in, the "Effects" field in SSA standard)
-Split by karaoke (req by jfs)
 Jump to with negative values (req by jfs)
 Shift start/end by one, pushing adjascent line so they don't overlap (req by Mentar)
 Sort subs by initial time and style (req by Jcubed)
@@ -36,5 +34,4 @@ Support character set encoding by style (req by jfs)
 Semi-realtime preview of subs; refresh video if user hasn't entered text in a while (req by jfs)
 Filter list for displaying of subs by critereas (req by Jcubed)
 Multiple files support
-Motion estimation to automatically move signs
 Detachable video window (req by maxx-)

@@ -297,7 +297,7 @@ namespace AutomationHelper {
 
 		wxLogDebug(_T("text_extents for: %s:%f:%d%d%d%d:%f:%f:%d:%d"), fontname.c_str(), fontsize, bold, italic, underline, strikeout, scale_x, scale_y, spacing, charset);
 
-#ifdef __WINDOWS__
+#ifdef WIN32
 		HDC thedc = CreateCompatibleDC(0);
 		if (!thedc) return 0;
 		SetMapMode(thedc, MM_TEXT);
@@ -353,7 +353,7 @@ namespace AutomationHelper {
 		DeleteObject(thedc);
 		DeleteObject(thefont);
 
-#else // not __WINDOWS__
+#else // not WIN32
 		wxMemoryDC thedc;
 
 		// fix fontsize to be 72 DPI
@@ -387,7 +387,7 @@ namespace AutomationHelper {
 			// If the inter-character spacing should be zero, kerning info can (and must) be used, so calculate everything in one go
 			thedc.GetTextExtent(intext, &resx, &resy, &resd, &resl);
 		}
-#endif
+#endif // WIN32
 
 		// Compensate for scaling
 		resx = (int)(scale_x / 100 * resx + 0.5);
