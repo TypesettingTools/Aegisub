@@ -119,6 +119,7 @@ DialogProperties::DialogProperties (wxWindow *parent, VideoDisplay *_vid)
 
 	// Button sizer
 	wxButton *ButtonOK = new wxButton(this,wxID_OK);
+	ButtonOK->SetDefault();
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
 	ButtonSizer->Add(ButtonOK,0,0,0);

@@ -82,8 +82,13 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	CloseButton = new wxButton(this,wxID_CLOSE);
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
+#ifndef __WXMAC__
 	ButtonSizer->Add(StartButton,0,wxRIGHT,5);
 	ButtonSizer->Add(CloseButton);
+#else
+	ButtonSizer->Add(CloseButton,0,wxRIGHT,5);
+	ButtonSizer->Add(StartButton);
+#endif
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

@@ -100,8 +100,15 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	// Buttons sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
+#ifndef __WXMAC__
 	ButtonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT,5);
 	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,0);
+#else
+	wxButton *okButton = new wxButton(this,wxID_OK);
+	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
+	ButtonSizer->Add(okButton,0,wxRIGHT,0);
+	okButton->SetDefault();
+#endif
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

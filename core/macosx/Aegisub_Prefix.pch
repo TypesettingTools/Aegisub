@@ -1,0 +1,6 @@
+//
+// Prefix header for all source files of the 'macosx' target in the 'macosx' project.
+//
+
+#include <Carbon/Carbon.h>
+#include "defines.h"

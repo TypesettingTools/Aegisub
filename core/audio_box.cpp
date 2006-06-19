@@ -49,6 +49,9 @@
 #include "toggle_bitmap.h"
 #include "hotkeys.h"
 
+#ifdef __WXMAC__
+#include "bevelButton.h"
+#endif
 
 ///////////////
 // Constructor
@@ -182,7 +185,12 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	KaraokeButton = new wxToggleButton(this,Audio_Button_Karaoke,_("Karaoke"),wxDefaultPosition,wxSize(-1,-1));
 	KaraokeButton->SetToolTip(_("Toggle karaoke mode"));
 	karaokeSizer->Add(KaraokeButton,0,wxRIGHT,0);
+#ifndef __WXMAC__
 	JoinButton = new wxButton(this,Audio_Button_Join,_("Join"),wxDefaultPosition,wxSize(-1,-1));
+#else
+	// we use this custom class to match the button style of toggle buttons in wxMac
+	JoinButton = new wxBevelButton(this,Audio_Button_Join,_("Join"),wxDefaultPosition,wxSize(-1,-1));
+#endif
 	JoinButton->SetToolTip(_("Join selected syllables"));
 	JoinButton->Enable(false);
 	karaokeSizer->Add(JoinButton,0,wxRIGHT,0);

@@ -121,8 +121,13 @@ int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned 
 
 	// Set play position (and real one)
 	player->playPos += framesPerBuffer;
+#ifndef __APPLE__
 	player->realPlayPos = (__int64)(Pa_StreamTime(player->stream) - player->paStart) + player->startPos;
-
+#else
+	// AudioDeviceGetCurrentTime(), used by Pa_StreamTime() on OS X, is buggered, so use playPos for now
+	player->realPlayPos = player->playPos;
+#endif
+	
 	// Cap to start if lower
 	return end;
 }

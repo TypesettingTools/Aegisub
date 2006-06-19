@@ -96,7 +96,7 @@ static char  *mystrdup(struct InputStream *is,const char *src) {
   return dst;
 }
 
-#ifndef __FreeBSD__
+#if !defined(__FreeBSD__) && !defined(__APPLE__)
 static void  strlcpy(char *dst,const char *src,unsigned size) {
   unsigned  i;
 

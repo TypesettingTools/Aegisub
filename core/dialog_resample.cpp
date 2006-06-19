@@ -80,8 +80,15 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	// Button sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
+#ifndef __WXMAC__
 	ButtonSizer->Add(new wxButton(this,BUTTON_RESAMPLE,_("Resample")),0,wxRIGHT,5);
 	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,0);
+#else
+	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
+	wxButton *resampleButton = new wxButton(this,BUTTON_RESAMPLE,_("Resample"));
+	ButtonSizer->Add(resampleButton,0,wxRight,0);
+	resampleButton->SetDefault();
+#endif
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

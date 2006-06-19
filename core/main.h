@@ -72,6 +72,11 @@ public:
 
 	bool OnInit();
 	int OnRun();
+	
+#ifdef __WXMAC__
+	// Apple events
+	virtual void MacOpenFile(const wxString &filename);
+#endif
 
 #ifndef _DEBUG
 	void OnUnhandledException();

@@ -133,8 +133,13 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
 	ApplyButton = new wxButton(this,wxID_APPLY);
+#ifndef __WXMAC__
 	ButtonSizer->Add(ApplyButton,0,wxRIGHT,5);
 	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,0,0);
+#else
+	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
+	ButtonSizer->Add(ApplyButton,0,0,0);
+#endif
 
 	// Right Sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);

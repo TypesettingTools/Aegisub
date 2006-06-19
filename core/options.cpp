@@ -89,7 +89,11 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Syntax Highlight Tags"),wxColour(90,90,90));
 	SetColour(_T("Syntax Highlight Error"),wxColour(200,0,0));
 	SetColour(_T("Edit Box Need Enter Background"),wxColour(192,192,255));
+#if defined(__WINDOWS__)
 	SetInt(_T("Font Size"),9);
+#else
+	SetInt(_T("Font Size"),11);
+#endif
 	SetText(_T("Font Face"),_T(""));
 
 	SetBool(_T("Shift Times ByTime"),true);
@@ -143,7 +147,11 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Grid hide overrides"),1);
 	wchar_t temp = 0x2600;
 	SetText(_T("Grid hide overrides char"),temp);
+#if defined(__WINDOWS__)
 	SetInt(_T("Grid font size"),8);
+#else
+	SetInt(_T("Grid font size"),10);
+#endif
 	SetBool(_T("Grid allow focus"),true);
 
 	SetBool(_T("Highlight subs in frame"),true);

@@ -74,8 +74,13 @@ DialogHotkeys::DialogHotkeys(FrameMain *_parent)
 	// Button sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
+#ifndef __APPLE__
 	ButtonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT|wxEXPAND,5);
 	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT|wxEXPAND,0);
+#else
+	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT|wxEXPAND,5);
+	ButtonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT|wxEXPAND,0);
+#endif
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

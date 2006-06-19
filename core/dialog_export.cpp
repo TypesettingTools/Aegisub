@@ -105,8 +105,13 @@ DialogExport::DialogExport (wxWindow *parent)
 	// Button sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
+#ifndef __WXMAC__
 	ButtonSizer->Add(new wxButton(this,Button_Process,_("Export...")),0,wxRIGHT,5);
 	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,0);
+#else
+	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
+	ButtonSizer->Add(new wxButton(this,Button_Process,_("Export...")),0,wxRIGHT,0);
+#endif
 
 	// Draw stuff sizer
 	HorizSizer = new wxBoxSizer(wxHORIZONTAL);

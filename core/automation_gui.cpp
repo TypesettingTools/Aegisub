@@ -355,8 +355,10 @@ void DialogAutomationManager::EditScript(AutomationScript *script)
 	wxString editor;
 	if (!Options.IsDefined(_T("automation script editor")) || wxGetKeyState(WXK_SHIFT)) {
 		wxMessageBox(_T("You have not selected a script editor yet. Please select your script editor in the next window. It's recommended to use an editor with syntax highlighting for Lua scripts."), _T("Aegisub"), wxOK|wxICON_INFORMATION);
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__)
 		editor = wxFileSelector(_T("Select script editor"), _T(""), _T("C:\\Windows\\Notepad.exe"), _T("exe"), _T("Execatuables (*.exe)|*.exe|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST);
+#elif defined(__APPLE__)
+		editor = wxFileSelector(_T("Select script editor"), _T(""), _T("/Applications/TextEdit.app"), _T("app"), _T("Applications (*.app)|*.app|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST);
 #else
 		char *env_editor = getenv("EDITOR");
 		wxString editor(env_editor ? env_editor : "/usr/bin/gvim", wxConvLocal);
@@ -370,10 +372,18 @@ void DialogAutomationManager::EditScript(AutomationScript *script)
 	}
 
 	wxWCharBuffer editorbuf = editor.c_str(), sfnamebuf = sfname.GetFullPath().c_str();
-	wchar_t **cmdline = new wchar_t*[3];
+	wchar_t **cmdline = new wchar_t*[5];
+#ifndef __APPLE__
 	cmdline[0] = editorbuf.data();
 	cmdline[1] = sfnamebuf.data();
 	cmdline[2] = 0;
+#else
+	cmdline[0] = _T("/usr/bin/open");
+	cmdline[1] = _T("-a");
+	cmdline[2] = editorbuf.data();
+	cmdline[3] = sfnamebuf.data();
+	cmdline[4] = 0;
+#endif
 	long res = wxExecute(cmdline);
 	delete cmdline;
 

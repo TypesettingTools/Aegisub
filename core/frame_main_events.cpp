@@ -204,6 +204,11 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Grid_Toggle_Tags,FrameMain::OnToggleTags)
 
 	EVT_MENU(Kana_Game, FrameMain::OnKanaGame)
+
+#ifdef __WXMAC__
+   EVT_MENU(wxID_ABOUT, FrameMain::OnAbout)
+   EVT_MENU(wxID_EXIT, FrameMain::OnExit)
+#endif
 END_EVENT_TABLE()
 
 

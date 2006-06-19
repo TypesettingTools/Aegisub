@@ -304,9 +304,19 @@ void AegisubApp::GetFullPath(wxString arg) {
 ///////////////////////////////////
 // Gets folder name from full path
 void AegisubApp::GetFolderName () {
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__)
 	folderName = _T("");
 	wxFileName path(fullPath);
+#elif defined(__APPLE__)
+	wxFileName path;
+	path.AssignHomeDir();
+	path.AppendDir(_T("Library"));
+	path.AppendDir(_T("Application Support"));
+	if (!path.DirExists())
+		path.Mkdir();
+	path.AppendDir(_T("Aegisub"));
+	if (!path.DirExists())
+		path.Mkdir();
 #else
 	wxFileName path;
 	path.AssignHomeDir();
@@ -317,6 +327,18 @@ void AegisubApp::GetFolderName () {
 	folderName += path.GetPath(wxPATH_GET_VOLUME);
 	folderName += _T("/");
 }
+
+////////////////
+// Apple events
+#ifdef __WXMAC__
+void AegisubApp::MacOpenFile(const wxString &filename) {
+	if (frame != NULL && !filename.empty()) {
+		frame->LoadSubtitles(filename);
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
+	}
+}
+#endif
 
 
 ///////////
@@ -353,3 +375,4 @@ void AegisubApp::OnKey(wxKeyEvent &event) {
 		event.Skip();
 	}
 }
+

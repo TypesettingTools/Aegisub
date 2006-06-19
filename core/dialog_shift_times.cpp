@@ -114,8 +114,13 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid,VideoD
 	OKButton->SetDefault();
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
+#ifndef __WXMAC__
 	ButtonSizer->Add(OKButton,0,wxRIGHT,5);
 	ButtonSizer->Add(CancelButton,0,wxRIGHT,0);
+#else
+	ButtonSizer->Add(CancelButton,0,wxRIGHT,5);
+	ButtonSizer->Add(OKButton,0,wxRIGHT,0);
+#endif
 	ButtonSizer->AddStretchSpacer(1);
 
 	// General layout

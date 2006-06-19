@@ -77,7 +77,13 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	// Button sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
+#ifndef __WXMAC__
 	ButtonSizer->Add(new wxButton(this,wxID_OK),0,0,0);
+#else
+	wxButton *okButton = new wxButton(this,wxID_OK);
+	ButtonSizer->Add(okButton,0,0,0);
+	okButton->SetDefault();
+#endif
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
