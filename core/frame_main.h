@@ -198,6 +198,7 @@ private:
 	void OnOpenResample (wxCommandEvent &event);
 	void OnOpenTimingProcessor (wxCommandEvent &event);
 	void OnOpenHotkeys (wxCommandEvent &event);
+	void OnOpenOptions (wxCommandEvent &event);
 
 	void OnNextFrame(wxCommandEvent &event);
 	void OnPrevFrame(wxCommandEvent &event);
@@ -319,6 +320,7 @@ enum {
 	Menu_Tools_Resample,
 	Menu_Tools_Timing_Processor,
 	Menu_Tools_Hotkeys,
+	Menu_Tools_Options,
 
 	Menu_Help_Contents,
 	Menu_Help_IRCChannel,

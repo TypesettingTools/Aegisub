@@ -79,6 +79,7 @@
 #include "dialog_fextracker.h"
 #endif
 #include "dialog_progress.h"
+#include "dialog_options.h"
 #include "utils.h"
 
 
@@ -173,6 +174,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Tools_Resample, FrameMain::OnOpenResample)
 	EVT_MENU(Menu_Tools_Timing_Processor, FrameMain::OnOpenTimingProcessor)
 	EVT_MENU(Menu_Tools_Hotkeys, FrameMain::OnOpenHotkeys)
+	EVT_MENU(Menu_Tools_Options, FrameMain::OnOpenOptions)
 	
 	EVT_MENU(Menu_Subs_Snap_Start_To_Video, FrameMain::OnSnapSubsStartToVid)
 	EVT_MENU(Menu_Subs_Snap_End_To_Video, FrameMain::OnSnapSubsEndToVid)
@@ -765,6 +767,14 @@ void FrameMain::OnOpenTimingProcessor (wxCommandEvent &event) {
 void FrameMain::OnOpenHotkeys (wxCommandEvent &event) {
 	DialogHotkeys keys(this);
 	keys.ShowModal();
+}
+
+
+///////////////////////
+// Open Options dialog
+void FrameMain::OnOpenOptions (wxCommandEvent &event) {
+	DialogOptions options(this);
+	options.ShowModal();
 }
 
 
