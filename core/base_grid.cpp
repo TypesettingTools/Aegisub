@@ -590,8 +590,10 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	// Click type
+	bool startedHolding = false;
 	if (click && !holding && validRow) {
 		holding = true;
+		startedHolding = true;
 		CaptureMouse();
 	}
 	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT) && holding) {
@@ -609,7 +611,13 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		if (row > maxVis) delta = +1;
 
 		// Scroll
-		ScrollTo(yPos+delta*3);
+		if (delta) {
+			ScrollTo(yPos+delta*3);
+			if (startedHolding) {
+				holding = false;
+				ReleaseMouse();
+			}
+		}
 	}
 
 	// Click
