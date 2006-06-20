@@ -215,7 +215,15 @@ void FrameRate::Load(wxString filename) {
 	// Close file
 	loaded = true;
 	vfrFile = filename;
-	FrameRateType = VFR;
+	if (Frame.size() > 0) {
+		// At least some frames were loaded
+		FrameRateType = VFR;
+	}
+	else {
+		// No frames were loaded, this might be a timecode file without any sections/frames defined
+		// Assume CFR then
+		FrameRateType = CFR;
+	}
 }
 
 
@@ -236,7 +244,7 @@ void FrameRate::Unload () {
 // Sets to CFR
 void FrameRate::SetCFR(double fps) {
 	Unload();
-	loaded = true;
+	//loaded = true;
 	FrameRateType = CFR;
 	AverageFrameRate = fps;
 }
@@ -248,7 +256,7 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 	// Prepare
 	Unload();
 
-	loaded = true;
+	//loaded = true;
 	FrameRateType = VFR;
 
 	// Set new VFR;
@@ -263,7 +271,7 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 // Gets frame number at time
 int FrameRate::PFrameAtTime(int ms,bool useceil) {
 	// Check if it's loaded
-	if (!loaded) return -1;
+	if (FrameRateType == NONE) return -1;
 
 	// Normalize miliseconds
 	ms = MAX(ms,0);
@@ -326,7 +334,7 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 // Gets time at frame
 int FrameRate::PTimeAtFrame(int frame) {
 	// Not loaded
-	if (!loaded) return -1;
+	if (FrameRateType == NONE) return -1;
 
 	// For negative/zero times, fallback to zero
 	if (frame <= 0) return 0;

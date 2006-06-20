@@ -974,7 +974,7 @@ void FrameMain::LoadVFR(wxString filename) {
 
 	else {
 		VFR_Output.Unload();
-		if (videoBox->videoDisplay->loaded && !VFR_Output.IsLoaded()) {
+		if (videoBox->videoDisplay->loaded && VFR_Output.GetFrameRateType() == NONE) {
 			VFR_Output.SetCFR(videoBox->videoDisplay->fps);
 		}
 	}

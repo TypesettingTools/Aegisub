@@ -560,7 +560,7 @@ void SubsEditBox::SetControlsState (bool state) {
 ////////////////////////////////////
 // Disables or enables frame timing
 void SubsEditBox::UpdateFrameTiming () {
-	if (VFR_Output.IsLoaded()) ByFrame->Enable(enabled);
+	if (VFR_Output.GetFrameRateType() != NONE) ByFrame->Enable(enabled);
 	else {
 		ByFrame->Enable(false);
 		ByTime->SetValue(true);

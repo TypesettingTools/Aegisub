@@ -418,7 +418,7 @@ namespace AutomationHelper {
 	{
 		int ms = (int)lua_tonumber(L, -1);
 		lua_pop(L, 1);
-		if (VFR_Output.IsLoaded()) {
+		if (VFR_Output.GetFrameRateType() != NONE) {
 			lua_pushnumber(L, VFR_Output.GetFrameAtTime(ms, true));
 			return 1;
 		} else {
@@ -443,7 +443,7 @@ namespace AutomationHelper {
 	{
 		int frame = (int)lua_tonumber(L, -1);
 		lua_pop(L, 1);
-		if (VFR_Output.IsLoaded()) {
+		if (VFR_Output.GetFrameRateType() != NONE) {
 			lua_pushnumber(L, VFR_Output.GetTimeAtFrame(frame, true));
 			return 1;
 		} else {

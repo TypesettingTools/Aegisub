@@ -197,7 +197,7 @@ void DialogTimingProcessor::UpdateControls() {
 	adjascentThres->Enable(adjsEnable->IsChecked());
 
 	// Keyframes are only available if timecodes are loaded
-	bool keysAvailable = VFR_Output.IsLoaded();
+	bool keysAvailable = VFR_Output.GetFrameRateType() != NONE;
 	bool enableKeys = keysEnable->IsChecked() && keysAvailable;
 	keysStartBefore->Enable(enableKeys);
 	keysStartAfter->Enable(enableKeys);

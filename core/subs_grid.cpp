@@ -137,7 +137,7 @@ void SubtitlesGrid::OnPopupMenu() {
 
 		// Duplicate selection
 		menu.Append(MENU_DUPLICATE,_("&Duplicate"),_T("Duplicate the selected lines"))->Enable(continuous);
-		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_T("Duplicate lines and shift by one frame"))->Enable(continuous && VFR_Output.IsLoaded());
+		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_T("Duplicate lines and shift by one frame"))->Enable(continuous && VFR_Output.GetFrameRateType()!=NONE);
 		menu.Append(MENU_SPLIT_BY_KARAOKE,_("Split (by karaoke)"),_T("Uses karaoke timing to split line into multiple smaller lines"))->Enable(sels > 0);
 
 		// Swaps selection
@@ -247,7 +247,7 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 			}
 
 			// Duplicate and shift
-			if (VFR_Output.IsLoaded()) {
+			if (VFR_Output.GetFrameRateType() != NONE) {
 				if (Hotkeys.IsPressed(_T("Grid duplicate and shift one frame"))) {
 					DuplicateLines(n,n2,true);
 					return;
@@ -1197,7 +1197,7 @@ void SubtitlesGrid::CommitChanges(bool force) {
 // Set start to video pos
 void SubtitlesGrid::SetSubsToVideo(bool start) {
 	// Check if it's OK to do it
-	if (!VFR_Output.IsLoaded()) return;
+	if (VFR_Output.GetFrameRateType() == NONE) return;
 
 	// Get new time
 	int ms = VFR_Output.GetTimeAtFrame(video->frame_n,start);

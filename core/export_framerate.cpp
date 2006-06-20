@@ -84,7 +84,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxString initialInput;
 	wxButton *FromVideo = new wxButton(base,Get_Input_From_Video,_("From Video"));
-	if (VFR_Input.IsLoaded()) initialInput = wxString::Format(_T("%2.3f"),VFR_Input.GetAverage());
+	if (VFR_Input.GetFrameRateType() != NONE) initialInput = wxString::Format(_T("%2.3f"),VFR_Input.GetAverage());
 	else {
 		initialInput = _T("23.976");
 		FromVideo->Enable(false);
