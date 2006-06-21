@@ -166,7 +166,8 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			// Choose a provider
 			provider = VideoProvider::GetProvider(filename,GetTempWorkFile());
 			provider->SetZoom(zoomValue);
-			provider->SetDAR(GetARFromType(arType));
+			if (arType != 4) arValue = GetARFromType(arType); // 4 = custom
+			provider->SetDAR(arValue);
 
 			KeyFrames.Clear();
 
@@ -184,7 +185,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 
 				// Ask to override timecodes
 				int override = wxYES;
-				if (VFR_Output.GetFrameRateType() == VFR) override = wxMessageBox(_T("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_T("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
+				if (VFR_Output.IsLoaded()) override = wxMessageBox(_("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
 				if (override == wxYES) MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
 
 				// Close mkv

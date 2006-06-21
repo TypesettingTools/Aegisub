@@ -1018,15 +1018,15 @@ void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Get text
 	videoBox->videoDisplay->Stop();
-	wxString value = wxGetTextFromUser(_T("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form:"),_T("Enter aspect ratio"),FloatToString(videoBox->videoDisplay->GetAspectRatioValue()));
+	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),FloatToString(videoBox->videoDisplay->GetAspectRatioValue()));
+	
+	if (value.IsEmpty()) return;
+	value.MakeLower();
 
 	// Process text
 	double numval = 0.0;
-	value.Replace(_T(","),_T("."));
-	if (value.Freq(_T('.')) == 1) {
-		value.ToDouble(&numval);
-	}
-	else if (value.Freq(_T(':')) == 1) {
+	if (value.Freq(_T(':')) == 1) {
+doNormalAR:
 		int pos = value.Find(_T(':'));
 		wxString num = value.Left(pos);
 		wxString denum = value.Mid(pos+1);
@@ -1037,9 +1037,27 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 			if (b != 0) numval = a/b;
 		}
 	}
+	else if (value.Freq(_T('x')) == 1) {
+		int pos = value.Find(_T('x'));
+		wxString width = value.Left(pos);
+		wxString height = value.Mid(pos+1);
+		if (width.IsNumber() && height.IsNumber()) {
+			double w,h;
+			width.ToDouble(&w);
+			height.ToDouble(&h);
+			if (h != 0) {
+				numval = w/h;
+				videoBox->videoDisplay->SetZoom(h / videoBox->videoDisplay->h);
+			}
+		}
+	}
+	else if (value.Freq(_T(':')) < 1) {
+		value.Append(_T(":1"));
+		goto doNormalAR;
+	}
 
 	// Sanity check
-	if (numval < 0.5 || numval > 5.0) wxMessageBox(_T("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_T("Invalid Aspect Ratio"),wxICON_ERROR);
+	if (numval < 0.5 || numval > 5.0) wxMessageBox(_("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_("Invalid Aspect Ratio"),wxICON_ERROR);
 
 	// Set value
 	else {
