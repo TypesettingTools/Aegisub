@@ -200,11 +200,12 @@ void SRTSubtitleFormat::DialogueToSRT(AssDialogue *current,std::list<AssEntry*>:
 // Converts whole file to SRT
 void SRTSubtitleFormat::ConvertToSRT () {
 	using std::list;
-	list<AssEntry*>::iterator next;
-	list<AssEntry*>::iterator prev = Line->end();
 
 	// Sort lines
 	Line->sort(LessByPointedToValue<AssEntry>());
+
+	list<AssEntry*>::iterator next;
+	list<AssEntry*>::iterator prev = Line->end();
 
 	// Process lines
 	bool notfirst = false;

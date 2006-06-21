@@ -278,7 +278,7 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 
 	// Get for constant frame rate
 	if (FrameRateType == CFR) {
-		double value = double(ms)/1000.0 * AverageFrameRate;
+		double value = double(ms) * AverageFrameRate / 1000.0;
 		if (useceil) return ceil(value);
 		else return floor(value);
 	}
