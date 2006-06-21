@@ -311,7 +311,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_SpellCheck, _("Spe&ll checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
 	#endif
 	toolMenu->AppendSeparator();
-	AppendBitmapMenuItem (toolMenu,Menu_Tools_Options, _("&Options..."), _("Configure Aegisub"), wxBITMAP(hotkeys_button));
+	//AppendBitmapMenuItem (toolMenu,Menu_Tools_Options, _("&Options..."), _("Configure Aegisub"), wxBITMAP(hotkeys_button));
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_Hotkeys, _("&Hotkeys..."), _("Remap hotkeys"), wxBITMAP(hotkeys_button));
 	MenuBar->Append(toolMenu, _("&Tools"));
 
