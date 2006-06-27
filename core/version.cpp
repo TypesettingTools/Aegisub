@@ -49,12 +49,13 @@
 #endif
 
 #else
-#define BUILD_TIMESTAMP __DATE__ " " __TIME__
 
 #ifndef BUILD_SVN_REVISION
 #define BUILD_SVN_REVISION 0
 #endif
 #endif
+
+#define BUILD_TIMESTAMP _T(__DATE__) _T(" ") _T(__TIME__)
 
 // If the BUILD_SVN_REVISION happens to be negative, the build is assumed to be a public-release build (ie. not prerel)
 // So manually edit build/svn-revision.h to match that, when doing such a build, or add some other magic to do that.
@@ -84,7 +85,7 @@ struct VersionInfoStruct {
 		IsDebug = false;
 #endif
 		SvnRev = BUILD_SVN_REVISION;
-		BuildTime = _T(BUILD_TIMESTAMP);
+		BuildTime = BUILD_TIMESTAMP;
 		BuildCredit = _T(BUILD_CREDIT);
 
 		if (SvnRev > 0)
