@@ -80,6 +80,9 @@ Please visit http://aegisub.net to download latest version
 - Style editor now uses a dropdown for the encoding field. (AMZ)
 - Added 2.35 and custom aspect ratio support for video display. (AMZ)
 - The manual has been extensively re-written and extended to include documentation about a lot of new (and some not so new) features. It's reasonably complete... for the moment. (TheFluff, Motoko-chan, AMZ, others)
+- Text edit boxes in the subtitle editing area will now revert to unmodified if you restore the original text. (AMZ)
+- Re-arranged the controls in the subtitle editing area. (AMZ)
+
 
 = 1.09 beta - 2006.01.16 ===========================
 

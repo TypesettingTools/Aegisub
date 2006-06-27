@@ -50,6 +50,8 @@ private:
 	bool UpdateLocked;
 	bool isModified;
 
+	wxString orig;
+
 	void OnModified(wxCommandEvent &event);
 	void OnKey(wxKeyEvent &event);
 

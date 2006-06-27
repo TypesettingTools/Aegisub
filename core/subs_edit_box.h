@@ -87,6 +87,7 @@ private:
 	HiliModTextCtrl *MarginL;
 	HiliModTextCtrl *MarginR;
 	HiliModTextCtrl *MarginV;
+	HiliModTextCtrl *Effect;
 	wxRadioButton *ByTime;
 	wxRadioButton *ByFrame;
 	wxCheckBox *SyntaxHighlight;
@@ -131,6 +132,7 @@ private:
 	void OnMarginRChange(wxCommandEvent &event);
 	void OnMarginVChange(wxCommandEvent &event);
 	void OnCommentChange(wxCommandEvent &event);
+	void OnEffectChange(wxCommandEvent &event);
 
 	void OnSplitLinePreserve(wxCommandEvent &event);
 	void OnSplitLineEstimate(wxCommandEvent &event);
@@ -192,6 +194,7 @@ enum {
 	MARGINL_BOX,
 	MARGINR_BOX,
 	MARGINV_BOX,
+	EFFECT_BOX,
 	COMMENT_CHECKBOX,
 	EDIT_MENU_SPLIT_PRESERVE,
 	EDIT_MENU_SPLIT_ESTIMATE,

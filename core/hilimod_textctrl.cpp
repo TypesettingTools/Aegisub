@@ -47,6 +47,7 @@ wxTextCtrl(parent,id,value,pos,size,style,validator,name)
 {
 	UpdateLocked = false;
 	isModified = false;
+	orig = GetValue();
 
 	Connect(wxEVT_COMMAND_TEXT_UPDATED,wxCommandEventHandler(HiliModTextCtrl::OnModified));
 }
@@ -65,6 +66,7 @@ void HiliModTextCtrl::OnModified(wxCommandEvent &event) {
 // Commited event
 void HiliModTextCtrl::Commited() {
 	if (isModified) {
+		orig = GetValue();
 		SetBackgroundColour(wxNullColour);
 		Refresh(false);
 		isModified = false;
@@ -76,6 +78,7 @@ void HiliModTextCtrl::Commited() {
 // Set value
 void HiliModTextCtrl::SetValue(const wxString& value) {
 	UpdateLocked = true;
+	orig = value;
 	wxTextCtrl::SetValue(value);
 	Commited();
 	UpdateLocked = false;
@@ -85,9 +88,19 @@ void HiliModTextCtrl::SetValue(const wxString& value) {
 ////////////////
 // Was modified
 void HiliModTextCtrl::Modified() {
-	if (!isModified) {
+	bool match = GetValue() == orig;
+
+	// Different from original
+	if (!isModified && !match) {
 		isModified = true;
 		SetBackgroundColour(Options.AsColour(_T("Edit Box Need Enter Background")));
 		Refresh(false);
+	}
+
+	// Same as original
+	if (isModified && match) {
+		SetBackgroundColour(wxNullColour);
+		Refresh(false);
+		isModified = false;
 	}
 }

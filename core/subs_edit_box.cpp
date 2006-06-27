@@ -109,25 +109,6 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	//SyntaxHighlight->SetToolTip(_("Enable syntax highlighting"));
 	//SyntaxHighlight->SetValue(Options.AsBool(_T("Syntax Highlight Enabled")));
 
-	// Top sizer
-	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
-	TopSizer->Add(CommentBox,0,wxRIGHT | wxALIGN_CENTER,5);
-	TopSizer->Add(StyleBox,0,wxRIGHT,5);
-	TopSizer->Add(ActorBox,0,wxRIGHT,5);
-	TopSizer->Add(MarginL,0,0,0);
-	TopSizer->Add(MarginR,0,0,0);
-	TopSizer->Add(MarginV,0,0,0);
-
-	// Middle sizer
-	wxSizer *MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
-	MiddleSizer->Add(Layer,0,wxRIGHT,5);
-	MiddleSizer->Add(StartTime,0,wxRIGHT,0);
-	MiddleSizer->Add(EndTime,0,wxRIGHT,5);
-	MiddleSizer->Add(Duration,0,wxRIGHT,5);
-	MiddleSizer->Add(ByTime,0,wxRIGHT | wxALIGN_CENTER,5);
-	MiddleSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER,5);
-	//MiddleSizer->Add(SyntaxHighlight,0,wxRIGHT | wxALIGN_CENTER,5);
-
 	// Middle-bottom controls
 	Bold = new wxBitmapButton(this,BUTTON_BOLD,wxBITMAP(button_bold),wxDefaultPosition,wxSize(20,20));
 	Bold->SetToolTip(_("Bold"));
@@ -147,6 +128,26 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Color3->SetToolTip(_("Outline color"));
 	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBITMAP(button_color4),wxDefaultPosition,wxSize(30,20));
 	Color4->SetToolTip(_("Shadow color"));
+	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(120,20),0);
+	Effect->SetToolTip(_("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+
+	// Top sizer
+	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
+	TopSizer->Add(CommentBox,0,wxRIGHT | wxALIGN_CENTER,5);
+	TopSizer->Add(StyleBox,0,wxRIGHT,5);
+	TopSizer->Add(ActorBox,0,wxRIGHT,5);
+	TopSizer->Add(Effect,0,0,0);
+
+	// Middle sizer
+	wxSizer *MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
+	MiddleSizer->Add(Layer,0,wxRIGHT,5);
+	MiddleSizer->Add(StartTime,0,wxRIGHT,0);
+	MiddleSizer->Add(EndTime,0,wxRIGHT,5);
+	MiddleSizer->Add(Duration,0,wxRIGHT,5);
+	MiddleSizer->Add(MarginL,0,0,0);
+	MiddleSizer->Add(MarginR,0,0,0);
+	MiddleSizer->Add(MarginV,0,0,0);
+	//MiddleSizer->Add(SyntaxHighlight,0,wxRIGHT | wxALIGN_CENTER,5);
 
 	// Middle-bottom sizer
 	wxSizer *MiddleBotSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -159,7 +160,9 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	MiddleBotSizer->Add(Color1);
 	MiddleBotSizer->Add(Color2);
 	MiddleBotSizer->Add(Color3);
-	MiddleBotSizer->Add(Color4);
+	MiddleBotSizer->Add(Color4,0,wxRIGHT,10);
+	MiddleBotSizer->Add(ByTime,0,wxRIGHT | wxALIGN_CENTER,5);
+	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER,5);
 
 	// Text editor
 	TextEdit = new SubsTextEditCtrl(this,EDIT_BOX,_T(""),wxDefaultPosition,wxSize(300,50),wxTE_MULTILINE | wxTE_RICH2 | wxTE_NOHIDESEL);
@@ -205,6 +208,7 @@ void SubsEditBox::Update (bool timeOnly) {
 				MarginL->SetValue(curdiag->GetMarginString(1));
 				MarginR->SetValue(curdiag->GetMarginString(2));
 				MarginV->SetValue(curdiag->GetMarginString(3));
+				Effect->SetValue(curdiag->Effect);
 				CommentBox->SetValue(curdiag->Comment);
 				StyleBox->Select(StyleBox->FindString(curdiag->Style));
 				ActorBox->SetValue(curdiag->Actor);
@@ -434,6 +438,7 @@ BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 	EVT_TEXT_ENTER(MARGINL_BOX, SubsEditBox::OnMarginLChange)
 	EVT_TEXT_ENTER(MARGINR_BOX, SubsEditBox::OnMarginRChange)
 	EVT_TEXT_ENTER(MARGINV_BOX, SubsEditBox::OnMarginVChange)
+	EVT_TEXT_ENTER(EFFECT_BOX, SubsEditBox::OnEffectChange)
 	EVT_CHECKBOX(COMMENT_CHECKBOX, SubsEditBox::OnCommentChange)
 
 	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsEditBox::OnSplitLinePreserve)
@@ -526,6 +531,7 @@ void SubsEditBox::SetControlsState (bool state) {
 	MarginL->Enable(state);
 	MarginR->Enable(state);
 	MarginV->Enable(state);
+	Effect->Enable(state);
 	CommentBox->Enable(state);
 	StyleBox->Enable(state);
 	ActorBox->Enable(state);
@@ -552,6 +558,7 @@ void SubsEditBox::SetControlsState (bool state) {
 		MarginL->SetValue(_T(""));
 		MarginR->SetValue(_T(""));
 		MarginV->SetValue(_T(""));
+		Effect->SetValue(_T(""));
 		CommentBox->SetValue(false);
 	}
 }
@@ -776,6 +783,27 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 		}
 	}
 	MarginV->SetValue(cur->GetMarginString(3));
+	grid->ass->FlagAsModified();
+	grid->CommitChanges();
+	grid->EndBatch();
+}
+
+
+//////////////////
+// Effect changed
+void SubsEditBox::OnEffectChange(wxCommandEvent &event) {
+	Effect->Commited();
+	grid->BeginBatch();
+	wxArrayInt sel = grid->GetSelection();
+	int n = sel.Count();
+	AssDialogue *cur;
+	for (int i=0;i<n;i++) {
+		cur = grid->GetDialogue(sel[i]);
+		if (cur) {
+			cur->Effect = Effect->GetValue();
+			cur->UpdateData();
+		}
+	}
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
