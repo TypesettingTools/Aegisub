@@ -104,7 +104,7 @@ void TimeEdit::SetByFrame(bool enable) {
 
 	// By frames
 	if (enable) {
-		if (VFR_Output.GetFrameRateType() != NONE) {
+		if (VFR_Output.IsLoaded()) {
 			byFrame = true;
 			UpdateText();
 		}
