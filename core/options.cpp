@@ -147,12 +147,14 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Grid hide overrides"),1);
 	wchar_t temp = 0x2600;
 	SetText(_T("Grid hide overrides char"),temp);
+	SetBool(_T("Grid allow focus"),true);
+	for (int i=0;i<10;i++) SetBool(_T("Grid show column ") + IntegerToString(i),true);
+
 #if defined(__WINDOWS__)
 	SetInt(_T("Grid font size"),8);
 #else
 	SetInt(_T("Grid font size"),10);
 #endif
-	SetBool(_T("Grid allow focus"),true);
 
 	SetBool(_T("Highlight subs in frame"),true);
 

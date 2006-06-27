@@ -86,6 +86,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	scrollBar->SetScrollbar(0,10,100,10);
 	
 	// Set column widths
+	for (int i=0;i<10;i++) showCol[i] = Options.AsBool(_T("Grid show column ") + IntegerToString(i));
 	SetColumnWidths();
 }
 
@@ -492,6 +493,9 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		wxRect cur;
 		bool isCenter;
 		for (int j=0;j<11;j++) {
+			// Check width
+			if (colWidth[j] == 0) continue;
+
 			// Is center?
 			isCenter = !(j == 4 || j == 5 || j == 6 || j == 10);
 
@@ -576,6 +580,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	bool click = event.ButtonDown(wxMOUSE_BTN_LEFT);
 	bool dclick = event.LeftDClick();
 	int row = event.GetY()/lineHeight + yPos - 1;
+	bool headerClick = row < yPos;
 	if (holding && !click) {
 		row = MID(0,row,GetRows()-1);
 	}
@@ -676,7 +681,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Popup
 	if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
-		OnPopupMenu();
+		OnPopupMenu(headerClick);
 	}
 
 	// Mouse wheel
@@ -836,6 +841,11 @@ void BaseGrid::SetColumnWidths() {
 	colWidth[7] = marginLen;
 	colWidth[8] = marginLen;
 	colWidth[9] = marginLen;
+
+	// Hide columns
+	for (int i=0;i<10;i++) {
+		if (showCol[i] == false) colWidth[i] = 0;
+	}
 
 	// Set size of last
 	int total = 0;

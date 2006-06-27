@@ -82,6 +82,7 @@ BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_MENU(MENU_1_12_2_RECOMBINE,SubtitlesGrid::On1122Recombine)
 	EVT_MENU(MENU_12_2_RECOMBINE,SubtitlesGrid::On122Recombine)
 	EVT_MENU(MENU_1_12_RECOMBINE,SubtitlesGrid::On112Recombine)
+	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,SubtitlesGrid::OnShowColMenu)
 END_EVENT_TABLE()
 
 
@@ -107,7 +108,32 @@ SubtitlesGrid::~SubtitlesGrid() {
 
 //////////////
 // Popup menu
-void SubtitlesGrid::OnPopupMenu() {
+void SubtitlesGrid::OnPopupMenu(bool alternate) {
+	// Alternate
+	if (alternate) {
+		// Prepare strings
+		wxArrayString strings;
+		strings.Add(_("Line Number"));
+		strings.Add(_("Layer"));
+		strings.Add(_("Start"));
+		strings.Add(_("End"));
+		strings.Add(_("Style"));
+		strings.Add(_("Actor"));
+		strings.Add(_("Effect"));
+		strings.Add(_("Left"));
+		strings.Add(_("Right"));
+		strings.Add(_("Vert"));
+
+		// Create Menu
+		wxMenu menu;
+		for (size_t i=0;i<strings.Count();i++) {
+			menu.Append(MENU_SHOW_COL + i,strings[i],_T(""),wxITEM_CHECK)->Check(showCol[i]);
+		}
+		PopupMenu(&menu);
+
+		return;
+	}
+
 	// Get selections
 	bool continuous;
 	wxArrayInt selections = GetSelection(&continuous);
@@ -174,6 +200,23 @@ void SubtitlesGrid::OnPopupMenu() {
 
 		PopupMenu(&menu);
 	}
+}
+
+
+////////////////////////////////////
+// Process a show/hide column event
+void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
+	// Set width
+	int item = event.GetId()-MENU_SHOW_COL;
+	showCol[item] = !showCol[item];
+
+	// Save options
+	Options.SetBool(_T("Grid show column ") + IntegerToString(item),showCol[item]);
+	Options.Save();
+
+	// Update
+	SetColumnWidths();
+	Refresh(false);
 }
 
 

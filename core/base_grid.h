@@ -78,7 +78,9 @@ private:
 
 protected:
 	FrameMain *parentFrame;
-	virtual void OnPopupMenu() {}
+	bool showCol[16];
+
+	virtual void OnPopupMenu(bool alternate=false) {}
 	void AdjustScrollbar();
 	void ScrollTo(int y);
 	int yPos;

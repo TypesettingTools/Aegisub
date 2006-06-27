@@ -68,7 +68,7 @@ class SubtitlesGrid: public BaseGrid {
 private:
 	bool ready;
 
-	void OnPopupMenu();
+	void OnPopupMenu(bool alternate=false);
 	void OnKeyDown(wxKeyEvent &event);
 
 	void OnSwap(wxCommandEvent &event);
@@ -95,6 +95,7 @@ private:
 	void On1122Recombine(wxCommandEvent &event);
 	void On122Recombine(wxCommandEvent &event);
 	void On112Recombine(wxCommandEvent &event);
+	void OnShowColMenu(wxCommandEvent &event);
 
 public:
 	AssFile *ass;
@@ -157,5 +158,6 @@ enum {
 	MENU_SET_START_TO_VIDEO,
 	MENU_SET_END_TO_VIDEO,
 	MENU_SET_VIDEO_TO_START,
-	MENU_SET_VIDEO_TO_END
+	MENU_SET_VIDEO_TO_END,
+	MENU_SHOW_COL = 1250
 };
