@@ -357,14 +357,21 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 				if (dc.GetPartialTextExtents(temptext, widths)) {
 					for (unsigned int i = 0; i < syl.pending_splits.size(); i++) {
 						dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
-						dc.DrawLine(dx+4+widths[syl.pending_splits[i]], 0, dx+4+widths[syl.pending_splits[i]], h);
+						int splitxpos = dx + 4;
+						// Handle splitters placed before first char in syllable; these are represented as -1
+						if (syl.pending_splits[i] >= 0) {
+							splitxpos += widths[syl.pending_splits[i]];
+						} else {
+							splitxpos += 0;
+						}
+						dc.DrawLine(splitxpos, 0, splitxpos, h);
 					}
 				} else {
 					wxLogError(_T("WTF? Failed to GetPartialTextExtents"));
 				}
 			}
 
-			if (splitting && split_cursor_syl == i && split_cursor_x > 0) {
+			if (splitting && split_cursor_syl == i /*&& split_cursor_x > 0*/) {
 				dc.SetPen(*wxRED);
 				dc.DrawLine(dx+4+split_cursor_x, 0, dx+4+split_cursor_x, h);
 				dc.SetPen(wxPen(wxColour(0,0,0)));
@@ -440,14 +447,14 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 			// Find the character closest to the mouse
 			int rx = x - syl.display_x - 4;
-			int split_cursor_char = -1;
+			int split_cursor_char = -2;
 			split_cursor_syl = -1;
 			split_cursor_x = -1;
-			if (syl.contents.Len() >= 2) {
-				int lastx = widths[0];
+			if (syl.contents.Len() > 0) {
+				int lastx = 0;
 				split_cursor_syl = syli;
-				for (unsigned int i = 1; i < widths.size()-1; i++) {
-					//wxLogDebug(_T("rx=%d, lastx=%d, widths[i]=%d, i=%d, widths.size()=%d, syli=%d"), rx, lastx, widths[i], i, widths.size(), syli);
+				for (unsigned int i = 0; i < widths.size(); i++) {
+					wxLogDebug(_T("rx=%d, lastx=%d, widths[i]=%d, i=%d, widths.size()=%d, syli=%d"), rx, lastx, widths[i], i, widths.size(), syli);
 					if (lastx - rx < widths[i] - rx) {
 						if (rx - lastx < widths[i] - rx) {
 							//wxLogDebug(_T("Found at PREV!"));
@@ -467,13 +474,13 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 				// ie. split at next-to-last position
 				if (split_cursor_x < 0) {
 					//wxLogDebug(_T("Emergency picking LAST!"));
-					split_cursor_x = widths[widths.size()-2];
-					split_cursor_char = widths.size() - 2;
+					split_cursor_x = widths[widths.size()-1];
+					split_cursor_char = widths.size() - 1;
 				}
 			}
 
 			// Do something if there was a click and we're at a valid position
-			if (event.LeftDown() && split_cursor_char >= 0) {
+			if (event.LeftDown() && split_cursor_char >= -1) {
 				//wxLogDebug(_T("A click!"));
 				int num_removed = 0;
 				std::vector<int>::iterator i = syl.pending_splits.begin();
