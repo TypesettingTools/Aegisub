@@ -15,6 +15,8 @@ Please visit http://aegisub.net to download latest version
    o New syllable-splitter: Click "split" to enable splitting-mode, click in syllable view to set split-markers, then click commit to do the splitting
    o The correct \k tag (\k, \kf, \ko, \K) is now kept when splitting/joining
    o When editing karaoke-timing for a line and not splitting/joining, all tags are kept intact, so only the \k tag timings are changed
+   o Right-click in karaoke area to change the tag (\k, \kf, \ko)
+   o Click and drag to select multiple syllables
 - Fixed bug where \t tags (among others?) would lose their parameters when being rebuilt (happens with Framerate Transport export filter, Automation and during the karaoke timing improvements listed above, among other places) (jfs)
 - Implemented FexTracker, for automatically tracking positions on the video and placing text accordingly (Tentacle)
 - Drag-and-drop files onto the program no longer causes the subs to be unloaded every time, even if no subs were dropped (jfs)
