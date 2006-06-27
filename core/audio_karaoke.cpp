@@ -409,10 +409,10 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 	// Syllable selection mode
 	if (!splitting) {
-		// Left button down
-		if (event.LeftDown()) {
-			int syl = GetSylAtX(x);
+		int syl = GetSylAtX(x);
 
+		// Button pressed
+		if (event.LeftDown() || event.RightDown()) {
 			if (syl != -1) {
 				if (shift) {
 					SetSelection(syl,startClickSyl);
@@ -425,8 +425,26 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 					curSyllable = syl;
 					Refresh(false);
 					display->Update();
+					CaptureMouse();
 				}
 			}
+		}
+		// Dragging to make a selection
+		else if (event.Dragging() && (event.LeftIsDown() || event.RightIsDown())) {
+			if (syl < 0) syl = 0;
+			SetSelection(syl, startClickSyl);
+			Refresh(false);
+		}
+		// Released left button
+		else if (event.LeftUp()) {
+			ReleaseCapture();
+		}
+		// Released right button; make a menu for selecting \k type
+		else if (event.RightUp()) {
+			ReleaseCapture();
+
+			AudioKaraokeTagMenu menu(this);
+			PopupMenu(&menu);
 		}
 	}
 	
@@ -736,3 +754,77 @@ bool AudioKaraoke::SyllableDelta(int n,int delta,int mode) {
 	}
 	return false;
 }
+
+
+////////////////////////////////
+// Karaoke tag menu constructor
+AudioKaraokeTagMenu::AudioKaraokeTagMenu(AudioKaraoke *_kara)
+: wxMenu(_("Karaoke tag"))
+, kara(_kara)
+{
+	// Create menu items
+	AppendCheckItem(10001, _T("\\k"), _("Change karaoke tag to \\k"));
+	AppendCheckItem(10002, _T("\\kf / \\K"), _("Change karaoke tag to \\kf"));
+	AppendCheckItem(10003, _T("\\ko"), _("Change karaoke tag to \\ko"));
+
+	// Find out what kinds of tags are in use atm
+	for (int i = 0; i < kara->syllables.size(); i++) {
+		KaraokeSyllable &syl = kara->syllables[i];
+		if (syl.selected) {
+			if (syl.tag == _T("\\k")) {
+				Check(10001, true);
+			} else if (syl.tag == _T("\\kf") || syl.tag == _T("\\K")) {
+				Check(10002, true);
+			} else if (syl.tag == _T("\\ko")) {
+				Check(10003, true);
+			}
+		}
+	}
+}
+
+
+///////////////////////////////
+// Karaoke tag menu destructor
+AudioKaraokeTagMenu::~AudioKaraokeTagMenu() {
+}
+
+
+///////////////
+// Event table
+BEGIN_EVENT_TABLE(AudioKaraokeTagMenu,wxMenu)
+	EVT_MENU_RANGE(10001, 10003, AudioKaraokeTagMenu::OnSelectItem)
+END_EVENT_TABLE()
+
+
+//////////////////////////////////
+// Karaoke tag menu event handler
+void AudioKaraokeTagMenu::OnSelectItem(wxCommandEvent &event) {
+	// Select the new tag for the syllables
+	wxString newtag;
+	switch (event.GetId()) {
+		case 10001: newtag = _T("\\k"); break;
+		case 10002: newtag = _T("\\kf"); break;
+		case 10003: newtag = _T("\\ko"); break;
+		default: return;
+	}
+
+	// Apply it
+	int firstsel = kara->syllables.size(), lastsel = -1;
+	for (int i = 0; i < kara->syllables.size(); i++) {
+		KaraokeSyllable &syl = kara->syllables[i];
+		if (syl.selected) {
+			if (firstsel > i) firstsel = i;
+			lastsel = i;
+			syl.tag = newtag;
+		}
+	}
+
+	// Update display
+	kara->must_rebuild = true;
+	//kara->Commit();
+	kara->display->NeedCommit = true;
+	kara->display->CommitChanges();
+	//kara->display->Update();
+	kara->SetSelection(firstsel, lastsel);
+}
+

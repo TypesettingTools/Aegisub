@@ -52,6 +52,7 @@ class AssOverrideTag;
 class AssOverrideParameter;
 class AudioDisplay;
 class AudioBox;
+class AudioKaraokeTagMenu;
 
 
 //////////////////
@@ -82,6 +83,7 @@ typedef std::vector<KaraokeSyllable> SylVector;
 /////////
 // Class
 class AudioKaraoke : public wxWindow {
+	friend class AudioKaraokeTagMenu;
 private:
 	AssDialogue *diag;
 	AssDialogue *workDiag;
@@ -124,6 +126,21 @@ public:
 	void Join();
 	void BeginSplit();
 	void EndSplit(bool commit=true);
+
+	DECLARE_EVENT_TABLE()
+};
+
+
+///////////////
+// Helper menu
+class AudioKaraokeTagMenu : public wxMenu {
+private:
+	AudioKaraoke *kara;
+
+	void OnSelectItem(wxCommandEvent &event);
+public:
+	AudioKaraokeTagMenu(AudioKaraoke *_kara);
+	virtual ~AudioKaraokeTagMenu();
 
 	DECLARE_EVENT_TABLE()
 };
