@@ -58,7 +58,6 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 
 	// Default
 	LoadDefault();
-	SetIsASS(false);
 
 	// Data
 	wxString actor;

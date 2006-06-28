@@ -89,7 +89,6 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 
 		// Generic preparation
 		Clear();
-		IsASS = false;
 
 		// Get proper format reader
 		SubtitleFormat *reader = SubtitleFormat::GetReader(_filename);
@@ -167,7 +166,6 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 	if (setfilename) {
 		Modified = false;
 		filename = _filename;
-		IsASS = true;
 	}
 }
 
@@ -178,6 +176,43 @@ void AssFile::Export(wxString _filename) {
 	AssExporter exporter(this);
 	exporter.AddAutoFilters();
 	exporter.Export(_filename,_T("UTF-8"));
+}
+
+
+//////////////////
+// Can save file?
+bool AssFile::CanSave() {
+	// ASS format?
+	if (filename.Lower().Right(4) == _T(".ass")) return true;
+
+	// Check if it's a known extension
+	SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
+	if (!writer) return false;
+
+	// Scan through the lines
+	AssStyle defstyle;
+	AssStyle *curstyle;
+	AssDialogue *curdiag;
+	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
+		// Check style, if anything non-default is found, return false
+		curstyle = AssEntry::GetAsStyle(*cur);
+		if (curstyle) {
+			if (curstyle->GetEntryData() != defstyle.GetEntryData()) return false;
+		}
+
+		// Check dialog
+		curdiag = AssEntry::GetAsDialogue(*cur);
+		if (curdiag) {
+			curdiag->ParseASSTags();
+			for (size_t i=0;i<curdiag->Blocks.size();i++) {
+				if (curdiag->Blocks[i]->type != BLOCK_PLAIN) return false;
+			}
+			curdiag->ClearBlocks();
+		}
+	}
+
+	// Success
+	return true;
 }
 
 
@@ -280,7 +315,6 @@ void AssFile::Clear () {
 	}
 	Line.clear();
 
-	IsASS = false;
 	loaded = false;
 	filename = _T("");
 	Modified = false;
@@ -315,7 +349,6 @@ void AssFile::LoadDefault (bool defline) {
 	}
 
 	loaded = true;
-	IsASS = true;
 }
 
 
@@ -326,7 +359,6 @@ AssFile::AssFile (AssFile &from) {
 
 	// Copy standard variables
 	filename = from.filename;
-	IsASS = from.IsASS;
 	loaded = from.loaded;
 	Modified = from.Modified;
 	bool IsSSA = false;

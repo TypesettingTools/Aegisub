@@ -85,6 +85,7 @@ Please visit http://aegisub.net to download latest version
 - Text edit boxes in the subtitle editing area will now revert to unmodified if you restore the original text. (AMZ)
 - Re-arranged the controls in the subtitle editing area. (AMZ)
 - Right-clicking on the header of the subtitles grid will now bring up a popup menu that allows you to disable columns. (AMZ)
+- Saving back to SRT directly (that is, via "save", not "export" or "save as") is now allowed, as long as no data will be lost. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

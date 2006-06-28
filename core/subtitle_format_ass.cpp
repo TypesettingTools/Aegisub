@@ -88,9 +88,6 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 			throw wxString(_T("Error processing line: ")) + wxbuffer;
 		}
 	}
-
-	// Set ASS
-	SetIsASS(!IsSSA);
 }
 
 

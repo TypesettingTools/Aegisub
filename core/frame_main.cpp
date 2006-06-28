@@ -561,7 +561,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	// Try to get filename from file
 	wxString filename;
-	if (saveas == false && AssFile::top->IsASS) filename = AssFile::top->filename;
+	if (saveas == false && AssFile::top->CanSave()) filename = AssFile::top->filename;
 
 	// Failed, ask user
 	if (filename.IsEmpty()) {

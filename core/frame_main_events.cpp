@@ -1133,7 +1133,7 @@ void FrameMain::OnOpenStylingAssistant (wxCommandEvent &event) {
 void FrameMain::OnAutoSave(wxTimerEvent &event) {
 	// Auto Save
 	try {
-		if (AssFile::top->loaded && AssFile::top->IsASS) {
+		if (AssFile::top->loaded && AssFile::top->CanSave()) {
 			// Set path
 			wxFileName origfile(AssFile::top->filename);
 			wxString path = Options.AsText(_T("Auto save path"));

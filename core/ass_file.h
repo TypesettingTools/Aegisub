@@ -72,7 +72,6 @@ public:
 
 	wxString filename;
 	bool loaded;
-	bool IsASS;
 
 	AssFile();
 	AssFile(AssFile &from);
@@ -92,6 +91,7 @@ public:
 	void Save(wxString file,bool setfilename=false,bool addToRecent=true,const wxString encoding=_T(""));	// Save to a file. Pass true to second argument if this isn't a copy
 	void Export(wxString file);							// Saves exported copy, with effects applied
 	void AddToRecent(wxString file);					// Adds file name to list of recently opened files
+	bool CanSave();										// Return true if the file can be saved in its current format
 
 	int GetScriptInfoAsInt(const wxString key);
 	wxString GetScriptInfo(const wxString key);						// Returns the value in a [Script Info] key.

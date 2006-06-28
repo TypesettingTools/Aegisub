@@ -109,13 +109,6 @@ void SubtitleFormat::LoadDefault() {
 }
 
 
-///////////////////
-// Set if it's ASS
-void SubtitleFormat::SetIsASS(bool isASS) {
-	assFile->IsASS = isASS;
-}
-
-
 ////////////
 // Add line
 int SubtitleFormat::AddLine(wxString data,wxString group,int lasttime,bool &IsSSA) {

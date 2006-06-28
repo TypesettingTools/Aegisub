@@ -69,7 +69,6 @@ protected:
 
 	void Clear();
 	void LoadDefault();
-	void SetIsASS(bool isASS);
 	AssFile *GetAssFile() { return assFile; }
 	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA);
 
