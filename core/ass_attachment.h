@@ -40,12 +40,20 @@
 ///////////
 // Headers
 #include "ass_entry.h"
+#include "boost/shared_ptr.hpp"
 
 
 //////////////////////////////
 // Class to store attachments
 class AssAttachment : public AssEntry {
+private:
+	int refCount;
+	boost::shared_ptr<void> data;
+
 public:
+	wxString filename;
+	const void *GetData();
+
 	ASS_EntryType GetType() { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone();
 

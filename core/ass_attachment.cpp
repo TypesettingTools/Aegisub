@@ -57,3 +57,10 @@ AssEntry *AssAttachment::Clone() {
 	AssAttachment *clone = new AssAttachment;
 	return clone;
 }
+
+
+////////////
+// Get data
+const void *AssAttachment::GetData() {
+	return data.get();
+}
