@@ -271,9 +271,9 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 	}
 
 	// Attachment
-	else if (group == _T("[Fonts]")) {
+	else if (group == _T("[Fonts]") || group == _T("[Graphics]")) {
 		// Check if it's valid data
-		bool validData = true;
+		bool validData = data.Length() > 0;
 		for (size_t i=0;i<data.Length();i++) {
 			if (data[i] < 33 || data[i] >= 97) validData = false;
 		}
@@ -295,7 +295,11 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 		// Valid data
 		if (validData) {
 			// Create attachment if needed
-			if (!attach) attach = new AssAttachment;
+			if (!attach) {
+				attach = new AssAttachment(data.Mid(10));
+				attach->StartMS = lasttime;
+				attach->group = group;
+			}
 
 			// Insert data
 			attach->AddData(data);

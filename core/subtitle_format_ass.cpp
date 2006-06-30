@@ -61,9 +61,10 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	// Parse file
 	wxString curgroup;
 	int lasttime = -1;
+	wxString wxbuffer;
 	while (file.HasMoreLines()) {
 		// Reads line
-		wxString wxbuffer = file.ReadLineFromFile();
+		wxbuffer = file.ReadLineFromFile();
 
 		// Convert v4 styles to v4+ styles
 		if (wxbuffer.Lower() == _T("[v4 styles]")) {
@@ -88,6 +89,9 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 			throw wxString(_T("Error processing line: ")) + wxbuffer;
 		}
 	}
+
+	// Add one last empty line in case it didn't end with one
+	if (!wxbuffer.IsEmpty()) AddLine(_T(""),curgroup,lasttime,IsSSA);
 }
 
 

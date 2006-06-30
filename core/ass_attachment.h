@@ -41,13 +41,15 @@
 // Headers
 #include "ass_entry.h"
 #include "boost/shared_ptr.hpp"
+#include <vector>
 
 
 ///////////////////
 // Attachment data
 class AttachData {
 private:
-	char *data;
+	std::vector<unsigned char> data;
+	wxString buffer;
 
 public:
 	AttachData();
@@ -75,6 +77,6 @@ public:
 	ASS_EntryType GetType() { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone();
 
-	AssAttachment();
+	AssAttachment(wxString name);
 	~AssAttachment();
 };

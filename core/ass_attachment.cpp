@@ -41,7 +41,8 @@
 
 ///////////////
 // Constructor
-AssAttachment::AssAttachment() {
+AssAttachment::AssAttachment(wxString name) {
+	filename = name;
 	data = boost::shared_ptr<AttachData> (new AttachData);
 }
 
@@ -56,10 +57,9 @@ AssAttachment::~AssAttachment() {
 // Clone
 AssEntry *AssAttachment::Clone() {
 	// New object
-	AssAttachment *clone = new AssAttachment;
+	AssAttachment *clone = new AssAttachment(filename);
 
 	// Copy fields
-	clone->filename = filename;
 	clone->data = data;
 
 	// Return
@@ -93,31 +93,73 @@ void AssAttachment::Finish() {
 ///////////////
 // Constructor
 AttachData::AttachData() {
-	data = NULL;
 }
 
 
 //////////////
 // Destructor
 AttachData::~AttachData() {
-	delete data;
 }
 
 
 ////////////
 // Get data
 const void *AttachData::GetData() {
-	return (void*) data;
+	return (void*) &data[0];
 }
 
 
 ////////////
 // Add data
 void AttachData::AddData(wxString data) {
+	buffer += data;
 }
 
 
 //////////
 // Finish
 void AttachData::Finish() {
+	// Source and dest buffers
+	unsigned char src[4];
+	unsigned char dst[3];
+	int bufPos = 0;
+	bool ok = true;
+
+	// Read buffer
+	while (ok) {
+		// Find characters left
+		int left = buffer.Length() - bufPos;
+		int nbytes;
+
+		// At least four, proceed normally
+		if (left >= 4) {
+			// Move 4 bytes from buffer to src
+			for (int i=0;i<4;i++) {
+				src[i] = (unsigned char) buffer[bufPos] - 33;
+				bufPos++;
+			}
+			ok = true;
+			nbytes = 3;
+		}
+
+		// Zero, end
+		else if (left == 0) {
+			ok = false;
+			break;
+		}
+
+		// Convert the 4 bytes from source to 3 in dst
+		dst[0] = (src[0] << 2) | (src[1] >> 4);
+		dst[1] = ((src[1] & 0xF) << 4) | (src[2] >> 2);
+		dst[2] = ((src[2] & 0x3) << 6) | (src[3]);
+
+		// Push into vector
+		size_t size = data.size(); 
+		data.resize(size+nbytes);
+		for (int i=0;i<nbytes;i++) data[size+i] = dst[i];
+	}
+
+	// Clear buffer
+	buffer.Clear();
+	buffer.Shrink();
 }
