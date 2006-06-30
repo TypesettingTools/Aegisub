@@ -111,7 +111,7 @@ wxString AssEntry::GetSSAText() {
 		if (group.Lower() == _T("[events]")) return wxString(_T("Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"));
 		if (group.Lower() == _T("[v4+ styles]")) return wxString(_T("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding"));
 	}
-	return data;
+	return GetEntryData();
 }
 
 

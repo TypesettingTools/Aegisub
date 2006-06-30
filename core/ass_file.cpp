@@ -273,13 +273,14 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 	// Attachment
 	else if (group == _T("[Fonts]") || group == _T("[Graphics]")) {
 		// Check if it's valid data
-		bool validData = data.Length() > 0;
-		for (size_t i=0;i<data.Length();i++) {
+		size_t dataLen = data.Length();
+		bool validData = (dataLen > 0) && (dataLen <= 80);
+		for (size_t i=0;i<dataLen;i++) {
 			if (data[i] < 33 || data[i] >= 97) validData = false;
 		}
 
 		// Is the filename line?
-		bool isFilename = data.Left(10) == _T("filename: ");
+		bool isFilename = (data.Left(10) == _T("fontname: ") && group == _T("[Fonts]")) || (data.Left(10) == _T("filename: ") && group == _T("[Graphics]"));
 
 		// The attachment file is static, since it is built through several calls to this
 		// After it's done building, it's reset to NULL
@@ -292,15 +293,16 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 			attach = NULL;
 		}
 
-		// Valid data
-		if (validData) {
-			// Create attachment if needed
-			if (!attach) {
-				attach = new AssAttachment(data.Mid(10));
-				attach->StartMS = lasttime;
-				attach->group = group;
-			}
+		// Create attachment if needed
+		if (isFilename) {
+			attach = new AssAttachment(data.Mid(10));
+			attach->StartMS = lasttime;
+			attach->group = group;
+			return lasttime;
+		}
 
+		// Valid data?
+		if (validData) {
 			// Insert data
 			attach->AddData(data);
 
@@ -310,6 +312,9 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 				entry = attach;
 				attach = NULL;
 			}
+
+			// Not done
+			else return lasttime;
 		}
 	}
 

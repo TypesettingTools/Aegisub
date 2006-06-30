@@ -44,18 +44,23 @@
 #include <vector>
 
 
+///////////
+// Typedef
+typedef std::vector<unsigned char> DataVec;
+
+
 ///////////////////
 // Attachment data
 class AttachData {
 private:
-	std::vector<unsigned char> data;
+	DataVec data;
 	wxString buffer;
 
 public:
 	AttachData();
 	~AttachData();
 
-	const void *GetData();
+	const DataVec &GetData();
 	void AddData(wxString data);
 	void Finish();
 };
@@ -69,11 +74,12 @@ private:
 
 public:
 	wxString filename;
-	const void *GetData();
+	const DataVec &GetData();
 
 	void AddData(wxString data);
 	void Finish();
 
+	const wxString GetEntryData();
 	ASS_EntryType GetType() { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone();
 

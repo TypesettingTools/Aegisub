@@ -69,7 +69,7 @@ AssEntry *AssAttachment::Clone() {
 
 ////////////
 // Get data
-const void *AssAttachment::GetData() {
+const DataVec &AssAttachment::GetData() {
 	return data->GetData();
 }
 
@@ -85,6 +85,55 @@ void AssAttachment::AddData(wxString _data) {
 // Finish adding data
 void AssAttachment::Finish() {
 	data->Finish();
+}
+
+
+/////////////////////////////////////
+// Get encoded data to write on file
+const wxString AssAttachment::GetEntryData() {
+	// Get data
+	const DataVec &dat = data->GetData();
+	int pos = 0;
+	int size = dat.size();
+	int written = 0;
+	unsigned char src[3];
+	unsigned char dst[4];
+
+	// Write header
+	wxString entryData;
+	if (group == _T("[Fonts]")) entryData = _T("fontname: ");
+	else entryData = _T("filename: ");
+	entryData += filename + _T("\r\n");
+
+	// Read three bytes
+	while (pos+3 <= size) {
+		// Read source
+		src[0] = dat[pos];
+		src[1] = dat[pos+1];
+		src[2] = dat[pos+2];
+		pos += 3;
+
+		// Codify
+		dst[0] = src[0] >> 2;
+		dst[1] = ((src[0] & 0x3) << 4) | ((src[1] & 0xF0) >> 4);
+		dst[2] = ((src[1] & 0xF) << 2) | ((src[2] & 0xC0) >> 6);
+		dst[3] = src[2] & 0x3F;
+
+		// Convert to text
+		for (int i=0;i<4;i++) {
+			entryData += wxChar(dst[i]+33);
+			written++;
+
+			// Line break
+			if (written == 80) {
+				written = 0;
+				entryData += _T("\r\n");
+			}
+		}
+	}
+
+	// Return
+	return entryData;
 }
 
 
@@ -104,8 +153,8 @@ AttachData::~AttachData() {
 
 ////////////
 // Get data
-const void *AttachData::GetData() {
-	return (void*) &data[0];
+const DataVec &AttachData::GetData() {
+	return data;
 }
 
 
