@@ -42,6 +42,7 @@
 ///////////////
 // Constructor
 AssAttachment::AssAttachment() {
+	data = boost::shared_ptr<AttachData> (new AttachData);
 }
 
 
@@ -54,7 +55,14 @@ AssAttachment::~AssAttachment() {
 /////////
 // Clone
 AssEntry *AssAttachment::Clone() {
+	// New object
 	AssAttachment *clone = new AssAttachment;
+
+	// Copy fields
+	clone->filename = filename;
+	clone->data = data;
+
+	// Return
 	return clone;
 }
 
@@ -62,5 +70,54 @@ AssEntry *AssAttachment::Clone() {
 ////////////
 // Get data
 const void *AssAttachment::GetData() {
-	return data.get();
+	return data->GetData();
+}
+
+
+/////////////////
+// Add more data
+void AssAttachment::AddData(wxString _data) {
+	data->AddData(_data);
+}
+
+
+//////////////////////
+// Finish adding data
+void AssAttachment::Finish() {
+	data->Finish();
+}
+
+
+
+/////////////////// Attachment //////////////////
+///////////////
+// Constructor
+AttachData::AttachData() {
+	data = NULL;
+}
+
+
+//////////////
+// Destructor
+AttachData::~AttachData() {
+	delete data;
+}
+
+
+////////////
+// Get data
+const void *AttachData::GetData() {
+	return (void*) data;
+}
+
+
+////////////
+// Add data
+void AttachData::AddData(wxString data) {
+}
+
+
+//////////
+// Finish
+void AttachData::Finish() {
 }

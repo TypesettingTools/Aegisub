@@ -38,6 +38,7 @@
 // Headers
 #include "ass_dialogue.h"
 #include "ass_style.h"
+#include "ass_attachment.h"
 #include "ass_entry.h"
 
 
@@ -84,6 +85,17 @@ AssStyle *AssEntry::GetAsStyle(AssEntry *base) {
 	if (!base) return NULL;
 	if (base->GetType() == ENTRY_STYLE) {
 		return static_cast<AssStyle*> (base);
+	}
+	return NULL;
+}
+
+
+///////////////////////////////////////////////////////////////////
+// Returns an entry as attachment if possible, else, returns NULL
+AssAttachment *AssEntry::GetAsAttachment(AssEntry *base) {
+	if (!base) return NULL;
+	if (base->GetType() == ENTRY_ATTACHMENT) {
+		return static_cast<AssAttachment*> (base);
 	}
 	return NULL;
 }

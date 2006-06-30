@@ -41,6 +41,7 @@
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
+#include "ass_attachment.h"
 #include "ass_override.h"
 #include "ass_exporter.h"
 #include "vfr.h"
@@ -269,13 +270,55 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 		}
 	}
 
-	// Comment in script info
+	// Attachment
+	else if (group == _T("[Fonts]")) {
+		// Check if it's valid data
+		bool validData = true;
+		for (size_t i=0;i<data.Length();i++) {
+			if (data[i] < 33 || data[i] >= 97) validData = false;
+		}
+
+		// Is the filename line?
+		bool isFilename = data.Left(10) == _T("filename: ");
+
+		// The attachment file is static, since it is built through several calls to this
+		// After it's done building, it's reset to NULL
+		static AssAttachment *attach = NULL;
+
+		// Attachment exists, and data is over
+		if (attach && (!validData || isFilename)) {
+			attach->Finish();
+			Line.push_back(attach);
+			attach = NULL;
+		}
+
+		// Valid data
+		if (validData) {
+			// Create attachment if needed
+			if (!attach) attach = new AssAttachment;
+
+			// Insert data
+			attach->AddData(data);
+
+			// Done building
+			if (data.Length() < 80) {
+				attach->Finish();
+				entry = attach;
+				attach = NULL;
+			}
+		}
+	}
+
+	// Script info
 	else if (group == _T("[Script Info]")) {
+		// Comment
 		if (data.Left(1) == _T(";")) {
 			// Skip stupid comments added by other programs
-			// Of course, we add our own in place...
+			// Of course, we'll add our own in place later... ;)
 			return lasttime;
 		}
+
+		// Version
 		if (data.Left(11) == _T("ScriptType:")) {
 			wxString version = data.Mid(11);
 			version.Trim(true);
@@ -290,6 +333,8 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 				IsSSA = trueSSA;
 			}
 		}
+
+		// Everything
 		entry = new AssEntry(data);
 		entry->StartMS = lasttime;
 		entry->group = group;
@@ -302,6 +347,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
 		entry->group = group;
 	}
 
+	// Insert the line
 	Line.push_back(entry);
 	return lasttime;
 }
