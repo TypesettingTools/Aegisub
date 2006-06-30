@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,52 +39,16 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
+#include "ass_entry.h"
 
 
-//////////////
-// Prototypes
-class AssDialogue;
-class AssStyle;
-class AssAttachment;
-
-
-///////////////////
-// Entry type enum
-enum ASS_EntryType {
-	ENTRY_BASE,
-	ENTRY_DIALOGUE,
-	ENTRY_STYLE,
-	ENTRY_ATTACHMENT
-};
-
-
-////////////////////////////////////
-// Base class for each line in file
-class AssEntry {
-private:
-	wxString data;		// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
-
+//////////////////////////////
+// Class to store attachments
+class AssAttachment : public AssEntry {
 public:
-	int StartMS;		// This is only stored for sorting issues, in order to keep non-dialogue lines aligned
-	bool Valid;			// Flags as valid or not
-	wxString group;		// Group it belongs to, e.g. "[Events]"
+	ASS_EntryType GetType() { return ENTRY_ATTACHMENT; }
+	AssEntry *Clone();
 
-	AssEntry();
-	AssEntry(wxString data);
-	virtual ~AssEntry();
-
-	virtual AssEntry *Clone();
-
-	virtual ASS_EntryType GetType() { return ENTRY_BASE; }
-	virtual const wxString GetEntryData() { return data; }
-	virtual void SetEntryData(wxString newData) { if (newData.IsEmpty()) data.Clear(); else data = newData; }
-
-	virtual wxString GetSSAText();
-	static AssDialogue *GetAsDialogue(AssEntry *base);	// Returns an entry base as a dialogue if it is valid, null otherwise
-	static AssStyle *GetAsStyle(AssEntry *base);		// Returns an entry base as a style if it is valid, null otherwise
-	static AssAttachment *GetAsAttachment(AssEntry *base);// Returns an entry base as an attachment if it is valid, null otherwise
+	AssAttachment();
+	~AssAttachment();
 };
-
-// This operator is for sorting
-bool operator < (const AssEntry &t1, const AssEntry &t2);

@@ -768,7 +768,7 @@ AudioKaraokeTagMenu::AudioKaraokeTagMenu(AudioKaraoke *_kara)
 	AppendCheckItem(10003, _T("\\ko"), _("Change karaoke tag to \\ko"));
 
 	// Find out what kinds of tags are in use atm
-	for (int i = 0; i < kara->syllables.size(); i++) {
+	for (size_t i = 0; i < kara->syllables.size(); i++) {
 		KaraokeSyllable &syl = kara->syllables[i];
 		if (syl.selected) {
 			if (syl.tag == _T("\\k")) {
@@ -809,8 +809,9 @@ void AudioKaraokeTagMenu::OnSelectItem(wxCommandEvent &event) {
 	}
 
 	// Apply it
-	int firstsel = kara->syllables.size(), lastsel = -1;
-	for (int i = 0; i < kara->syllables.size(); i++) {
+	size_t firstsel = kara->syllables.size();
+	int lastsel = -1;
+	for (size_t i = 0; i < kara->syllables.size(); i++) {
 		KaraokeSyllable &syl = kara->syllables[i];
 		if (syl.selected) {
 			if (firstsel > i) firstsel = i;
