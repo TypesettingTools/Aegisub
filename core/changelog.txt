@@ -91,6 +91,7 @@ Please visit http://aegisub.net to download latest version
 - The Font Collector can now collect fonts as script attachments. (AMZ)
 - Added recent menu to Video Timecodes. (AMZ)
 - Playing in video mode will now play the audio as well even if it hasn't been previously loaded into audio mode (experimental). (AMZ)
+- Added hotkey to Audio's "play to end of file" (defaulting to "T"). (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

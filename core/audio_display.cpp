@@ -1762,6 +1762,13 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 		Play(end,end+500);
 	}
 
+	// Play to end of file
+	if (Hotkeys.IsPressed(_T("Audio Play To End"))) {
+		int start=0,end=0;
+		GetTimesSelection(start,end);
+		Play(start,-1);
+	}
+
 	// Play original line
 	if (Hotkeys.IsPressed(_T("Audio Play Original Line"))) {
 		int start=0,end=0;

@@ -141,7 +141,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	temp->SetToolTip(_("Play last 500ms of selection (") + Hotkeys.GetText(_T("Audio Play Last 500ms")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Play_To_End,wxBITMAP(button_playtoend),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Play from selection start to end of file"));
+	temp->SetToolTip(_("Play from selection start to end of file (") + Hotkeys.GetText(_T("Audio Play To End")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
 	temp = new wxBitmapButton(this,Audio_Button_Leadin,wxBITMAP(button_leadin),wxDefaultPosition,wxSize(30,-1));

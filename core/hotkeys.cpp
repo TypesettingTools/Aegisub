@@ -370,6 +370,7 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Audio Play Last 500ms"),_T("D"));
 	SetHotkey(_("Audio Play 500ms Before"),_T("Q"));
 	SetHotkey(_("Audio Play 500ms After"),_T("W"));
+	SetHotkey(_("Audio Play To End"),_T("T"));
 	SetHotkey(_("Audio Play Original Line"),_T("R"));
 	SetHotkey(_("Audio Add Lead In"),_T("C"));
 	SetHotkey(_("Audio Add Lead Out"),_T("V"));
