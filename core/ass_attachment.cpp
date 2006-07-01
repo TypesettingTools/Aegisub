@@ -106,12 +106,18 @@ const wxString AssAttachment::GetEntryData() {
 	entryData += filename + _T("\r\n");
 
 	// Read three bytes
-	while (pos+3 <= size) {
+	while (pos < size) {
+		// Number to read
+		int read = size - pos;
+		if (read > 3) read = 3;
+
 		// Read source
 		src[0] = dat[pos];
-		src[1] = dat[pos+1];
-		src[2] = dat[pos+2];
-		pos += 3;
+		if (read >= 2) src[1] = dat[pos+1];
+		else src[1] = 0;
+		if (read == 3) src[2] = dat[pos+2];
+		else src[2] = 0;
+		pos += read;
 
 		// Codify
 		dst[0] = src[0] >> 2;
@@ -119,13 +125,16 @@ const wxString AssAttachment::GetEntryData() {
 		dst[2] = ((src[1] & 0xF) << 2) | ((src[2] & 0xC0) >> 6);
 		dst[3] = src[2] & 0x3F;
 
+		// Number to write
+		int toWrite = read+1;
+
 		// Convert to text
-		for (int i=0;i<4;i++) {
+		for (int i=0;i<toWrite;i++) {
 			entryData += wxChar(dst[i]+33);
 			written++;
 
 			// Line break
-			if (written == 80) {
+			if (written == 80 && pos < size) {
 				written = 0;
 				entryData += _T("\r\n");
 			}
@@ -177,22 +186,24 @@ void AttachData::Finish() {
 	// Read buffer
 	while (ok) {
 		// Find characters left
-		int left = buffer.Length() - bufPos;
+		int read = buffer.Length() - bufPos;
+		if (read > 4) read = 4;
 		int nbytes;
 
 		// At least four, proceed normally
-		if (left >= 4) {
+		if (read >= 2) {
 			// Move 4 bytes from buffer to src
-			for (int i=0;i<4;i++) {
+			for (int i=0;i<read;i++) {
 				src[i] = (unsigned char) buffer[bufPos] - 33;
 				bufPos++;
 			}
+			for (int i=read;i<4;i++) src[i] = 0;
 			ok = true;
-			nbytes = 3;
+			nbytes = read-1;
 		}
 
 		// Zero, end
-		else if (left == 0) {
+		else {
 			ok = false;
 			break;
 		}
