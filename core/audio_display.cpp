@@ -71,6 +71,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 	diagUpdated = false;
 	NeedCommit = false;
 	loaded = false;
+	temporary = false;
 	blockUpdate = false;
 	dontReadTimes = false;
 	holding = false;
@@ -917,7 +918,26 @@ __int64 AudioDisplay::GetSampleAtMS(__int64 ms) {
 // Play
 void AudioDisplay::Play(int start,int end) {
 	// Check provider
-	if (!provider) return;
+	if (!provider) {
+		// Load temporary provider from video
+		if (video->loaded) {
+			try {
+				// Get provider
+				provider = AudioProvider::GetAudioProvider(video->videoName, this, video->provider,0);
+
+				// Get player
+				player = AudioPlayer::GetAudioPlayer();
+				player->SetDisplayTimer(&UpdateTimer);
+				player->SetProvider(provider);
+				player->OpenStream();
+				temporary = true;
+			}
+			catch (...) {
+				return;
+			}
+		}
+		if (!provider) return;
+	}
 
 	// Set defaults
 	__int64 num_samples = provider->GetNumSamples();

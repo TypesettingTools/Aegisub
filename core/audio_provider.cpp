@@ -162,7 +162,7 @@ void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int
 
 ////////////////
 // Get provider
-AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *display, VideoProvider *vprovider) {
+AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *display, VideoProvider *vprovider,int cache) {
 	// Prepare provider
 	AudioProvider *provider = NULL;
 
@@ -181,15 +181,15 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 	}
 
 	// Change provider to RAM/HD cache if needed
-	int cacheMode = Options.AsInt(_T("Audio Cache"));
-	if (cacheMode) {
+	if (cache == -1) cache = Options.AsInt(_T("Audio Cache"));
+	if (cache) {
 		AudioProvider *final = NULL;
-		
+
 		// Convert to RAM
-		if (cacheMode == 1) final = new RAMAudioProvider(provider);
+		if (cache == 1) final = new RAMAudioProvider(provider);
 		
 		// Convert to HD
-		if (cacheMode == 2) final = new HDAudioProvider(provider);
+		if (cache == 2) final = new HDAudioProvider(provider);
 		
 		// Reassign
 		if (final) {

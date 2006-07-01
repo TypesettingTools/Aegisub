@@ -90,6 +90,7 @@ Please visit http://aegisub.net to download latest version
 - Implemented an Attached files list, where you can attach new fonts and graphics, extract them, or remove them from the script file. (AMZ)
 - The Font Collector can now collect fonts as script attachments. (AMZ)
 - Added recent menu to Video Timecodes. (AMZ)
+- Playing in video mode will now play the audio as well even if it hasn't been previously loaded into audio mode (experimental). (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

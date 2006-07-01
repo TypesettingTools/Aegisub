@@ -92,6 +92,7 @@ END_EVENT_TABLE()
 VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
              : wxWindow (parent, id, pos, size, style, name)
 {
+	audio = NULL;
 	provider = NULL;
 	curLine = NULL;
 	backbuffer = NULL;
@@ -202,9 +203,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			length = provider->GetFrameCount();
 			fps = provider->GetFPS();
 			VFR_Input.SetCFR(fps);
-
-			if (!VFR_Output.IsLoaded()) 
-				VFR_Output.SetCFR(fps);
+			if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
 
 			// Set range of slider
 			ControlSlider->SetRange(0,length-1);
@@ -236,6 +235,15 @@ void VideoDisplay::Reset() {
 	int _w,_h;
 	GetSize(&_w,&_h);
 	SetSizeHints(_w,_h,_w,_h);
+
+	// Remove temporary audio provider
+	if (audio && audio->temporary) {
+		delete audio->provider;
+		audio->provider = NULL;
+		delete audio->player;
+		audio->player = NULL;
+		audio->temporary = false;
+	}
 }
 
 void VideoDisplay::RefreshSubtitles() {
@@ -821,8 +829,6 @@ void VideoDisplay::Play() {
 
 	// Set variables
 	IsPlaying = true;
-	StartTime = clock();
-	PlayTime = StartTime;
 	StartFrame = frame_n;
 	EndFrame = -1;
 
@@ -830,6 +836,8 @@ void VideoDisplay::Play() {
 	audio->Play(VFR_Output.GetTimeAtFrame(StartFrame),-1);
 
 	// Start timer
+	StartTime = clock();
+	PlayTime = StartTime;
 	Playback.SetOwner(this,VIDEO_PLAY_TIMER);
 	Playback.Start(1);
 }
@@ -841,6 +849,9 @@ void VideoDisplay::PlayLine() {
 	// Get line
 	AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
 	if (!curline) return;
+
+	// Start playing audio
+	audio->Play(curline->Start.GetMS(),curline->End.GetMS());
 
 	// Set variables
 	IsPlaying = true;
@@ -854,9 +865,6 @@ void VideoDisplay::PlayLine() {
 	// Set other variables
 	StartTime = clock();
 	PlayTime = StartTime;
-
-	// Start playing audio
-	audio->Play(curline->Start.GetMS(),curline->End.GetMS());
 
 	// Start timer
 	Playback.SetOwner(this,VIDEO_PLAY_TIMER);
@@ -902,6 +910,9 @@ void VideoDisplay::OnPlayTimer(wxTimerEvent &event) {
 		return;
 	}
 
+	// Next frame is before or over 2 frames ahead, so force audio resync
+	if (nextFrame < frame_n || nextFrame > frame_n + 2) audio->player->SetCurrentPosition(audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame)));
+
 	// Jump to next frame
 	PlayNextFrame = nextFrame;
 	JumpToFrame(nextFrame);
@@ -910,7 +921,10 @@ void VideoDisplay::OnPlayTimer(wxTimerEvent &event) {
 	if (nextFrame % 10 == 0) {
 		__int64 audPos = audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame));
 		__int64 curPos = audio->player->GetCurrentPosition();
-		if (abs(int(audPos-curPos)) > audio->provider->GetSampleRate() / 10) audio->player->SetCurrentPosition(audPos);
+		int delta = int(audPos-curPos);
+		if (delta < 0) delta = -delta;
+		int maxDelta = audio->provider->GetSampleRate();
+		if (delta > maxDelta) audio->player->SetCurrentPosition(audPos);
 	}
 }
 

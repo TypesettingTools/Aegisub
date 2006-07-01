@@ -119,6 +119,7 @@ public:
 
 	bool NeedCommit;
 	bool loaded;
+	bool temporary;
 	int w,h;
 	AudioBox *box;
 	AudioKaraoke *karaoke;
