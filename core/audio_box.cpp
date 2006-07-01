@@ -382,6 +382,7 @@ void AudioBox::OnPlaySelection(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
 	audioDisplay->GetTimesSelection(start,end);
+	audioDisplay->Stop();
 	audioDisplay->Play(start,end);
 }
 
@@ -393,6 +394,7 @@ void AudioBox::OnPlayDialogue(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	audioDisplay->GetTimesDialogue(start,end);
 	audioDisplay->SetSelection(start, end);
+	audioDisplay->Stop();
 	audioDisplay->Play(start,end);
 }
 
@@ -409,6 +411,7 @@ void AudioBox::OnStop(wxCommandEvent &event) {
 // Next
 void AudioBox::OnNext(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
+	audioDisplay->Stop();
 	audioDisplay->Next();
 }
 
@@ -417,6 +420,7 @@ void AudioBox::OnNext(wxCommandEvent &event) {
 // Previous
 void AudioBox::OnPrev(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
+	audioDisplay->Stop();
 	audioDisplay->Prev();
 }
 
@@ -427,6 +431,7 @@ void AudioBox::OnPlay500Before(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
 	audioDisplay->GetTimesSelection(start,end);
+	audioDisplay->Stop();
 	audioDisplay->Play(start-500,start);
 }
 
@@ -437,6 +442,7 @@ void AudioBox::OnPlay500After(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
 	audioDisplay->GetTimesSelection(start,end);
+	audioDisplay->Stop();
 	audioDisplay->Play(end,end+500);
 }
 
@@ -449,6 +455,7 @@ void AudioBox::OnPlay500First(wxCommandEvent &event) {
 	audioDisplay->GetTimesSelection(start,end);
 	int endp = start+500;
 	if (endp > end) endp = end;
+	audioDisplay->Stop();
 	audioDisplay->Play(start,endp);
 }
 
@@ -461,6 +468,7 @@ void AudioBox::OnPlay500Last(wxCommandEvent &event) {
 	audioDisplay->GetTimesSelection(start,end);
 	int startp = end-500;
 	if (startp < start) startp = start;
+	audioDisplay->Stop();
 	audioDisplay->Play(startp,end);
 }
 
@@ -471,6 +479,7 @@ void AudioBox::OnPlayToEnd(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
 	audioDisplay->GetTimesSelection(start,end);
+	audioDisplay->Stop();
 	audioDisplay->Play(start,-1);
 }
 

@@ -854,9 +854,11 @@ void VideoDisplay::PlayLine() {
 ////////
 // Stop
 void VideoDisplay::Stop() {
-	Playback.Stop();
-	audio->Stop();
-	IsPlaying = false;
+	if (IsPlaying) {
+		Playback.Stop();
+		IsPlaying = false;
+		audio->Stop();
+	}
 }
 
 

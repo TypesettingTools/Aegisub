@@ -60,6 +60,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 : wxWindow (parent, -1, wxDefaultPosition, wxSize(200,Options.AsInt(_T("Audio Display Height"))), wxSUNKEN_BORDER | wxWANTS_CHARS , _T("Audio Display"))
 {
 	// Set variables
+	video = NULL;
 	origImage = NULL;
 	spectrumDisplay = NULL;
 	ScrollBar = NULL;
@@ -963,6 +964,7 @@ void AudioDisplay::Stop() {
 	if (!player) return;
 
 	player->Stop();
+	if (video && video->IsPlaying) video->Stop();
 }
 
 
