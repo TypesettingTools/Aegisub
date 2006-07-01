@@ -58,10 +58,11 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 
 	// Buttons sizer
 	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_FONT,_("&Attach Font")),3,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_EXTRACT,_("E&xtract")),2,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_DELETE,_("&Delete")),2,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_CLOSE,_("&Close")),2,wxLEFT,5);
+	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_FONT,_("Attach &Font")),1,0,0);
+	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_GRAPHICS,_("Attach &Graphics")),1,0,0);
+	buttonSizer->Add(new wxButton(this,BUTTON_EXTRACT,_("E&xtract")),1,0,0);
+	buttonSizer->Add(new wxButton(this,BUTTON_DELETE,_("&Delete")),1,0,0);
+	buttonSizer->Add(new wxButton(this,BUTTON_CLOSE,_("&Close")),1,wxLEFT,5);
 
 	// Main sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -109,6 +110,7 @@ DialogAttachments::~DialogAttachments() {
 // Event table
 BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 	EVT_BUTTON(BUTTON_ATTACH_FONT,DialogAttachments::OnAttachFont)
+	EVT_BUTTON(BUTTON_ATTACH_GRAPHICS,DialogAttachments::OnAttachGraphics)
 	EVT_BUTTON(BUTTON_EXTRACT,DialogAttachments::OnExtract)
 	EVT_BUTTON(BUTTON_DELETE,DialogAttachments::OnDelete)
 	EVT_BUTTON(BUTTON_CLOSE,DialogAttachments::OnClose)
@@ -118,12 +120,12 @@ END_EVENT_TABLE()
 ///////////////
 // Attach font
 void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
-	// Pick file
+	// Pick files
 	wxArrayString filenames;
 	wxArrayString paths;
 	{
 		wxFileDialog diag (this,_("Choose file to be attached"), Options.AsText(_T("Fonts Collector Destination")), _T(""), _T("Font Files (*.ttf)|*.ttf"), wxOPEN | wxFILE_MUST_EXIST | wxMULTIPLE);
-		diag.ShowModal();
+		if (diag.ShowModal() == wxID_CANCEL) return;
 		diag.GetFilenames(filenames);
 		diag.GetPaths(paths);
 	}
@@ -140,6 +142,39 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 			return;
 		}
 		newAttach->group = _T("[Fonts]");
+		AssFile::top->InsertAttachment(newAttach);
+	}
+
+	// Update
+	UpdateList();
+}
+
+
+///////////////////
+// Attach graphics
+void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
+	// Pick files
+	wxArrayString filenames;
+	wxArrayString paths;
+	{
+		wxFileDialog diag (this,_("Choose file to be attached"), _T(""), _T(""), _T("Graphic Files (*.bmp,*.gif,*.jpg,*.ico,*.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf"), wxOPEN | wxFILE_MUST_EXIST | wxMULTIPLE);
+		if (diag.ShowModal() == wxID_CANCEL) return;
+		diag.GetFilenames(filenames);
+		diag.GetPaths(paths);
+	}
+
+	// Create attachments
+	for (size_t i=0;i<filenames.Count();i++) {
+		//wxFileName file(filenames[i]);
+		AssAttachment *newAttach = new AssAttachment(filenames[i]);
+		try {
+			newAttach->Import(paths[i]);
+		}
+		catch (...) {
+			delete newAttach;
+			return;
+		}
+		newAttach->group = _T("[Graphics]");
 		AssFile::top->InsertAttachment(newAttach);
 	}
 

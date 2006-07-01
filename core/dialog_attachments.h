@@ -54,6 +54,7 @@ private:
 	wxListView *listView;
 
 	void OnAttachFont(wxCommandEvent &event);
+	void OnAttachGraphics(wxCommandEvent &event);
 	void OnExtract(wxCommandEvent &event);
 	void OnDelete(wxCommandEvent &event);
 	void OnClose(wxCommandEvent &event);
@@ -72,6 +73,7 @@ public:
 // IDs
 enum {
 	BUTTON_ATTACH_FONT = 1300,
+	BUTTON_ATTACH_GRAPHICS,
 	BUTTON_EXTRACT,
 	BUTTON_DELETE,
 	BUTTON_CLOSE
