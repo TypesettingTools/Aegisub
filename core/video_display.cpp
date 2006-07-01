@@ -793,28 +793,7 @@ wxBitmap VideoDisplay::GetFrame(int n) {
 ////////////////////////////
 // Get dimensions of script
 void VideoDisplay::GetScriptSize(int &sw,int &sh) {
-	// Height
-	wxString temp = grid->ass->GetScriptInfo(_T("PlayResY"));
-	if (temp.IsEmpty() || !temp.IsNumber()) {
-		//sh = orig_h;
-		sh = 384;
-	}
-	else {
-		long templ;
-		temp.ToLong(&templ);
-		sh = templ;
-	}
-
-	// Width
-	temp = grid->ass->GetScriptInfo(_T("PlayResX"));
-	if (temp.IsEmpty() || !temp.IsNumber()) {
-		sw = 288;
-	}
-	else {
-		long templ;
-		temp.ToLong(&templ);
-		sw = templ;
-	}
+	grid->ass->GetResolution(sw,sh);
 }
 
 

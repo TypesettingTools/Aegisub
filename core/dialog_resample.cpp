@@ -60,8 +60,10 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	// Resolution line
 	wxSizer *ResBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Resolution"));
 	wxSizer *ResSizer = new wxBoxSizer(wxHORIZONTAL);
-	ResXValue = subs->GetScriptInfo(_T("PlayResX"));
-	ResYValue = subs->GetScriptInfo(_T("PlayResY"));
+	int sw,sh;
+	subs->GetResolution(sw,sh);
+	ResXValue = wxString::Format(_T("%i"),sw);
+	ResYValue = wxString::Format(_T("%i"),sh);
 	ResX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&ResXValue));
 	ResY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&ResYValue));
 	wxStaticText *ResText = new wxStaticText(this,-1,_("x"));
@@ -152,8 +154,8 @@ void DialogResample::ResampleTags (wxString name,int n,AssOverrideParameter *cur
 void DialogResample::OnResample (wxCommandEvent &event) {
 	// Resolutions
 	AssFile *subs = AssFile::top;
-	long x1 = subs->GetScriptInfoAsInt(_T("PlayResX"));
-	long y1 = subs->GetScriptInfoAsInt(_T("PlayResY"));
+	int x1,y1;
+	subs->GetResolution(x1,y1);
 	long x2 = 0;
 	long y2 = 0;
 	ResX->GetValue().ToLong(&x2);

@@ -673,6 +673,33 @@ void AssFile::SetScriptInfo(const wxString _key,const wxString value) {
 }
 
 
+//////////////////
+// Get resolution
+void AssFile::GetResolution(int &sw,int &sh) {
+	// Height
+	wxString temp = GetScriptInfo(_T("PlayResY"));
+	if (temp.IsEmpty() || !temp.IsNumber()) {
+		sh = 288;
+	}
+	else {
+		long templ;
+		temp.ToLong(&templ);
+		sh = templ;
+	}
+
+	// Width
+	temp = GetScriptInfo(_T("PlayResX"));
+	if (temp.IsEmpty() || !temp.IsNumber()) {
+		sw = 384;
+	}
+	else {
+		long templ;
+		temp.ToLong(&templ);
+		sw = templ;
+	}
+}
+
+
 ///////////////////////////////////
 // Adds a comment to [Script Info]
 void AssFile::AddComment(const wxString _comment) {
