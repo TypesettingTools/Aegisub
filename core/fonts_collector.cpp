@@ -61,6 +61,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 		wxFileName filename(AssFile::top->filename);
 		dest = filename.GetPath();
 	}
+	AttachmentCheck = new wxCheckBox(this,ATTACHMENT_CHECK,_T("As attachments"),wxDefaultPosition);
 	DestBox = new wxTextCtrl(this,-1,dest,wxDefaultPosition,wxSize(250,20),0);
 	BrowseButton = new wxButton(this,BROWSE_BUTTON,_("&Browse..."));
 	wxSizer *DestBottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -70,6 +71,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	wxSizer *DestSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Destination"));
 	DestSizer->Add(DestLabel,0,wxEXPAND | wxBOTTOM,5);
 	DestSizer->Add(DestBottomSizer,0,wxEXPAND,0);
+	DestSizer->Add(AttachmentCheck,0,wxTOP,5);
 
 	// Log box
 	LogBox = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(300,210),wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH);
@@ -142,6 +144,7 @@ BEGIN_EVENT_TABLE(DialogFontsCollector, wxDialog)
 	EVT_BUTTON(START_BUTTON,DialogFontsCollector::OnStart)
 	EVT_BUTTON(BROWSE_BUTTON,DialogFontsCollector::OnBrowse)
 	EVT_BUTTON(wxID_CLOSE,DialogFontsCollector::OnClose)
+	EVT_CHECKBOX(ATTACHMENT_CHECK,DialogFontsCollector::OnCheck)
 END_EVENT_TABLE()
 
 
@@ -176,6 +179,7 @@ void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 		BrowseButton->Enable(false);
 		DestBox->Enable(false);
 		CloseButton->Enable(false);
+		AttachmentCheck->Enable(false);
 		if (!worker->IsDetached()) worker->Wait();
 	}
 
@@ -200,6 +204,14 @@ void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
 	if (!dest.empty()) {
 		DestBox->SetValue(dest);
 	}
+}
+
+
+////////////
+// Checkbox
+void DialogFontsCollector::OnCheck(wxCommandEvent &event) {
+	BrowseButton->Enable(!AttachmentCheck->IsChecked());
+	DestBox->Enable(!AttachmentCheck->IsChecked());
 }
 
 
@@ -352,6 +364,7 @@ void FontsCollectorThread::Collect() {
 	// Get font file names
 	wxArrayString work;
 	wxArrayString copied;
+	bool attaching = collector->AttachmentCheck->IsChecked();
 	for (size_t i=0;i<fonts.GetCount();i++) {
 		try {
 			work = GetFontFiles(fonts[i]);
@@ -372,7 +385,7 @@ void FontsCollectorThread::Collect() {
 					copied.Add(work[j]);
 
 					// Check if it exists
-					if (wxFileName::FileExists(dstFile)) {
+					if (!attaching && wxFileName::FileExists(dstFile)) {
 						wxMutexGuiEnter();
 						LogBox->SetDefaultStyle(wxTextAttr(wxColour(255,128,0)));
 						LogBox->AppendText(wxString(_T("\"")) + work[j] + _("\" already exists on destination.\n"));
@@ -385,7 +398,13 @@ void FontsCollectorThread::Collect() {
 					// Copy
 					else {
 						// Copy font
-						bool success = Copy(srcFile,dstFile);
+						bool success;
+						if (attaching) {
+							success = true;
+							try { subs->InsertAttachment(srcFile); }
+							catch (...) { success = false; }
+						}
+						else success = Copy(srcFile,dstFile);
 
 						// Report
 						wxMutexGuiEnter();

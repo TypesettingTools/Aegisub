@@ -38,6 +38,7 @@
 // Includes
 #include <list>
 #include <fstream>
+#include <wx/filename.h>
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
@@ -536,6 +537,30 @@ void AssFile::InsertAttachment (AssAttachment *attach) {
 		Line.push_back(attach);
 		AddLine(_T(""),attach->group,StartMS,IsSSA);
 	}
+}
+
+
+///////////////////////////////
+// Insert attachment from file
+void AssFile::InsertAttachment (wxString filename) {
+	// Get name
+	wxFileName fname(filename);
+
+	// Create
+	AssAttachment *newAttach = new AssAttachment(fname.GetFullName());
+
+	// Load
+	try {
+		newAttach->Import(filename);
+	}
+	catch (...) {
+		delete newAttach;
+		throw;
+	}
+
+	// Insert
+	newAttach->group = _T("[Fonts]");
+	InsertAttachment(newAttach);
 }
 
 

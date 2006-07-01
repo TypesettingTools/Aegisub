@@ -85,6 +85,7 @@ public:
 	void LoadDefault(bool noline=true);					// Loads default file. Pass true to prevent it from adding a default line too
 	void InsertStyle(AssStyle *style);					// Inserts a style to file
 	void InsertAttachment(AssAttachment *attach);		// Inserts an attachment
+	void InsertAttachment(wxString filename);			// Inserts a file as an attachment
 	wxArrayString GetStyles();							// Gets a list of all styles available
 	AssStyle *GetStyle(wxString name);					// Gets style by its name
 
