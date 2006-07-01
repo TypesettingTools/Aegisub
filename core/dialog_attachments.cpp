@@ -53,7 +53,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 : wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize)
 {
 	// List view
-	listView = new wxListView(this,-1,wxDefaultPosition,wxSize(400,200));
+	listView = new wxListView(this,-1,wxDefaultPosition,wxSize(500,200));
 	UpdateList();
 
 	// Buttons sizer
@@ -80,9 +80,9 @@ void DialogAttachments::UpdateList() {
 	listView->ClearAll();
 
 	// Insert list columns
-	listView->InsertColumn(0, _("Attachment name"), wxLIST_FORMAT_LEFT, 200);
-	listView->InsertColumn(1, _("Size"), wxLIST_FORMAT_LEFT, 90);
-	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 90);
+	listView->InsertColumn(0, _("Attachment name"), wxLIST_FORMAT_LEFT, 280);
+	listView->InsertColumn(1, _("Size"), wxLIST_FORMAT_LEFT, 100);
+	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 100);
 
 	// Fill list
 	AssAttachment *attach;
