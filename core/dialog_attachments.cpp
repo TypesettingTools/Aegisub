@@ -37,10 +37,13 @@
 ///////////
 // Headers
 #include <wx/listctrl.h>
+#include <wx/dirdlg.h>
+#include <wx/filedlg.h>
 #include "dialog_attachments.h"
 #include "ass_file.h"
 #include "ass_attachment.h"
 #include "utils.h"
+#include "options.h"
 
 
 ///////////////
@@ -120,6 +123,31 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 ///////////
 // Extract
 void DialogAttachments::OnExtract(wxCommandEvent &event) {
+	// Check if there's a selection
+	int i = listView->GetFirstSelected();
+
+	// Get path
+	if (i != -1) {
+		wxString path;
+		bool fullPath = false;
+
+		// Multiple or single?
+		if (listView->GetNextSelected(i) != -1) path = wxDirSelector(_("Select the path to save the files to:"),Options.AsText(_T("Fonts Collector Destination"))) + _T("/");
+		else {
+			path = wxFileSelector(_("Select the path to save the file to:"),Options.AsText(_T("Fonts Collector Destination")));
+			fullPath = true;
+		}
+		if (path.IsEmpty()) return;
+
+		// Loop through items in list
+		while (i != -1) {
+			AssAttachment *attach = (AssAttachment*) listView->GetItemData(i);
+			wxString filename = path;
+			if (!fullPath) filename += attach->filename;
+			attach->Extract(filename);
+			i = listView->GetNextSelected(i);
+		}
+	}
 }
 
 

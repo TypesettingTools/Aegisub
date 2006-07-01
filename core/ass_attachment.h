@@ -79,6 +79,9 @@ public:
 	void AddData(wxString data);
 	void Finish();
 
+	void Extract(wxString filename);
+	void Import(wxString filename);
+
 	const wxString GetEntryData();
 	ASS_EntryType GetType() { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone();

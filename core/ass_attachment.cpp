@@ -36,6 +36,7 @@
 
 ////////////
 // Includes
+#include <wx/wfstream.h>
 #include "ass_attachment.h"
 
 
@@ -144,6 +145,22 @@ const wxString AssAttachment::GetEntryData() {
 	// Return
 	return entryData;
 }
+
+
+/////////////////////
+// Extract as a file
+void AssAttachment::Extract(wxString filename) {
+	// Open file
+	wxFileOutputStream fp(filename);
+	fp.Write(&data->GetData()[0],data->GetData().size());
+}
+
+
+/////////////////////////////
+// Read a file as attachment
+void AssAttachment::Import(wxString filename) {
+}
+
 
 
 
