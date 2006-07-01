@@ -182,6 +182,7 @@ private:
 	void OnShift (wxCommandEvent &event);
 	void OnOpenProperties (wxCommandEvent &event);
 	void OnOpenStylesManager (wxCommandEvent &event);
+	void OnOpenAttachments (wxCommandEvent &event);
 	void OnOpenTranslation (wxCommandEvent &event);
 	void OnOpenSpellCheck (wxCommandEvent &event);
 	void OnOpenFontsCollector (wxCommandEvent &event);
@@ -312,6 +313,7 @@ enum {
 
 	Menu_Tools_Properties,
 	Menu_Tools_Styles_Manager,
+	Menu_Tools_Attachments,
 	Menu_Tools_Translation,
 	Menu_Tools_SpellCheck,
 	Menu_Tools_Fonts_Collector,

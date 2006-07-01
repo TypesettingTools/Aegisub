@@ -57,6 +57,7 @@
 #include "subs_edit_box.h"
 #include "options.h"
 #include "dialog_properties.h"
+#include "dialog_attachments.h"
 #include "main.h"
 #include "fonts_collector.h"
 #include "about.h"
@@ -166,6 +167,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 
 	EVT_MENU(Menu_Tools_Properties, FrameMain::OnOpenProperties)
 	EVT_MENU(Menu_Tools_Styles_Manager, FrameMain::OnOpenStylesManager)
+	EVT_MENU(Menu_Tools_Attachments, FrameMain::OnOpenAttachments)
 	EVT_MENU(Menu_Tools_Translation, FrameMain::OnOpenTranslation)
 	EVT_MENU(Menu_Tools_SpellCheck, FrameMain::OnOpenSpellCheck)
 	EVT_MENU(Menu_Tools_Fonts_Collector, FrameMain::OnOpenFontsCollector)
@@ -697,6 +699,15 @@ void FrameMain::OnOpenStylesManager(wxCommandEvent& WXUNUSED(event)) {
 	StyleManager.ShowModal();
 	EditBox->UpdateGlobals();
 	SubsBox->CommitChanges();
+}
+
+
+////////////////////
+// Open attachments
+void FrameMain::OnOpenAttachments(wxCommandEvent& WXUNUSED(event)) {
+	videoBox->videoDisplay->Stop();
+	DialogAttachments attachments(this);
+	attachments.ShowModal();
 }
 
 

@@ -173,6 +173,7 @@ void FrameMain::InitToolbar () {
 	// Property stuff
 	Toolbar->AddTool(Menu_Tools_Properties,_("Properties"),wxBITMAP(properties_toolbutton),_("Open Properties"));
 	Toolbar->AddTool(Menu_Tools_Styles_Manager,_("Styles Manager"),wxBITMAP(style_toolbutton),_("Open Styles Manager"));
+	Toolbar->AddTool(Menu_Tools_Attachments,_("Attachments"),wxBITMAP(attach_button),_("Open Attachment List"));
 	Toolbar->AddSeparator();
 
 	// Automation
@@ -299,6 +300,7 @@ void FrameMain::InitMenu() {
 	toolMenu = new wxMenu();
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_Properties, _("&Properties..."), _("Open script properties window"),wxBITMAP(properties_toolbutton));
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
+	AppendBitmapMenuItem (toolMenu,Menu_Tools_Attachments, _("&Attachments..."), _("Open the attachment list"), wxBITMAP(attach_button));
 	toolMenu->AppendSeparator();
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_Automation, _("&Automation..."),_("Open automation manager"), wxBITMAP(automation_toolbutton));
 	toolMenu->AppendSeparator();

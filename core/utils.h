@@ -47,6 +47,7 @@ wxString DecodeRelativePath(wxString path,wxString reference);
 wxString PrettyFloat(wxString src);
 wxString FloatToString(double value);
 wxString IntegerToString(int value);
+wxString PrettySize(int bytes);
 
 
 //////////

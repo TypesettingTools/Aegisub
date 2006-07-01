@@ -240,12 +240,13 @@ wxString AssFile::GetString() {
 // I strongly advice you against touching this function unless you know what you're doing;
 // even moving things out of order might break ASS parsing - AMZ.
 //
-int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA) {
+int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxString *outGroup) {
 	// Group
 	AssEntry *entry = NULL;
 	wxString origGroup = group;
 	static wxString keepGroup;
 	if (!keepGroup.IsEmpty()) group = keepGroup;
+	if (outGroup) *outGroup = group;
 
 	// Attachment
 	if (group == _T("[Fonts]") || group == _T("[Graphics]")) {

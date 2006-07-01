@@ -40,50 +40,37 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include <list>
 
 
 //////////////
 // Prototypes
-class AssFile;
-class AssEntry;
+class wxListView;
 
 
-///////////////////
-// Subtitle reader
-class SubtitleFormat {
+//////////////////////
+// Attachments window
+class DialogAttachments : public wxDialog {
 private:
-	bool isCopy;
-	AssFile *assFile;
+	wxListView *listView;
 
-	void Register();
-	void Remove();
-
-	static std::list<SubtitleFormat*> formats;
-	static bool loaded;
-
-protected:
-	std::list<AssEntry*> *Line;
-	void CreateCopy();
-	void ClearCopy();
-
-	void Clear();
-	void LoadDefault();
-	AssFile *GetAssFile() { return assFile; }
-	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA,wxString *outgroup=NULL);
+	void OnAttachFont(wxCommandEvent &event);
+	void OnExtract(wxCommandEvent &event);
+	void OnDelete(wxCommandEvent &event);
+	void OnClose(wxCommandEvent &event);
 
 public:
-	SubtitleFormat();
-	virtual ~SubtitleFormat();
-	void SetTarget(AssFile *file);
+	DialogAttachments(wxWindow *parent);
+	~DialogAttachments();
 
-	virtual bool CanReadFile(wxString filename) { return false; };
-	virtual bool CanWriteFile(wxString filename) { return false; };
-	virtual void ReadFile(wxString filename,wxString forceEncoding=_T("")) { };
-	virtual void WriteFile(wxString filename,wxString encoding=_T("")) { };
+	DECLARE_EVENT_TABLE()
+};
 
-	static SubtitleFormat *GetReader(wxString filename);
-	static SubtitleFormat *GetWriter(wxString filename);
-	static void LoadFormats();
-	static void DestroyFormats();
+
+///////
+// IDs
+enum {
+	BUTTON_ATTACH_FONT = 1300,
+	BUTTON_EXTRACT,
+	BUTTON_DELETE,
+	BUTTON_CLOSE
 };

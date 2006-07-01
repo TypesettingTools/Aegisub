@@ -144,3 +144,37 @@ wxString FloatToString(double value) {
 wxString IntegerToString(int value) {
 	return wxString::Format(_T("%i"),value);
 }
+
+
+//////////////////////////
+// Pretty reading of size
+// There shall be no kiB, MiB stuff here
+wxString PrettySize(int bytes) {
+	// Suffixes
+	wxArrayString suffix;
+	suffix.Add(_T(""));
+	suffix.Add(_T(" kB"));
+	suffix.Add(_T(" MB"));
+	suffix.Add(_T(" GB"));
+	suffix.Add(_T(" TB"));
+	suffix.Add(_T(" PB"));
+
+	// Set size
+	int i = 0;
+	double size = bytes;
+	while (size > 1024) {
+		size = size / 1024.0;
+		i++;
+		if (i == 6) {
+			i--;
+			break;
+		}
+	}
+	
+	// Set number of decimal places
+	wxString final;
+	if (size < 10) final = wxString::Format(_T("%.2f"),size);
+	else if (size < 100) final = wxString::Format(_T("%.1f"),size);
+	else final = wxString::Format(_T("%.0f"),size);
+	return final + suffix[i];
+}

@@ -97,7 +97,7 @@ public:
 	wxString GetScriptInfo(const wxString key);						// Returns the value in a [Script Info] key.
 	void SetScriptInfo(const wxString key,const wxString value);	// Sets the value of a [Script Info] key. Adds it if it doesn't exist.
 	void AddComment(const wxString comment);						// Adds a ";" comment under [Script Info].
-	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA);
+	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA,wxString *outGroup=NULL);
 
 	static void StackPop();		// Pop subs from stack and sets 'top' to it
 	static void StackRedo();	// Redoes action on stack

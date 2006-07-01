@@ -78,7 +78,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 		// Add line
 		try {
-			lasttime = AddLine(wxbuffer,curgroup,lasttime,IsSSA);
+			lasttime = AddLine(wxbuffer,curgroup,lasttime,IsSSA,&curgroup);
 		}
 		catch (const wchar_t *err) {
 			Clear();
