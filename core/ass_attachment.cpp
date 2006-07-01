@@ -152,6 +152,7 @@ const wxString AssAttachment::GetEntryData() {
 void AssAttachment::Extract(wxString filename) {
 	// Open file
 	wxFileOutputStream fp(filename);
+	if (!fp.Ok()) return;
 	fp.Write(&data->GetData()[0],data->GetData().size());
 }
 
@@ -159,6 +160,18 @@ void AssAttachment::Extract(wxString filename) {
 /////////////////////////////
 // Read a file as attachment
 void AssAttachment::Import(wxString filename) {
+	// Data
+	DataVec &datavec = data->GetData();
+
+	// Open file and get size
+	wxFileInputStream fp(filename);
+	if (!fp.Ok()) throw _T("Failed opening file");
+	int size = fp.SeekI(0,wxFromEnd);
+	fp.SeekI(0,wxFromStart);
+
+	// Set size and read
+	datavec.resize(size);
+	fp.Read(&datavec[0],size);
 }
 
 
@@ -179,7 +192,7 @@ AttachData::~AttachData() {
 
 ////////////
 // Get data
-const DataVec &AttachData::GetData() {
+DataVec &AttachData::GetData() {
 	return data;
 }
 

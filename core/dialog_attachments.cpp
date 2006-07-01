@@ -39,6 +39,7 @@
 #include <wx/listctrl.h>
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
+#include <wx/filename.h>
 #include "dialog_attachments.h"
 #include "ass_file.h"
 #include "ass_attachment.h"
@@ -117,6 +118,33 @@ END_EVENT_TABLE()
 ///////////////
 // Attach font
 void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
+	// Pick file
+	wxArrayString filenames;
+	wxArrayString paths;
+	{
+		wxFileDialog diag (this,_("Choose file to be attached"), Options.AsText(_T("Fonts Collector Destination")), _T(""), _T("Font Files (*.ttf)|*.ttf"), wxOPEN | wxFILE_MUST_EXIST | wxMULTIPLE);
+		diag.ShowModal();
+		diag.GetFilenames(filenames);
+		diag.GetPaths(paths);
+	}
+
+	// Create attachments
+	for (size_t i=0;i<filenames.Count();i++) {
+		//wxFileName file(filenames[i]);
+		AssAttachment *newAttach = new AssAttachment(filenames[i]);
+		try {
+			newAttach->Import(paths[i]);
+		}
+		catch (...) {
+			delete newAttach;
+			return;
+		}
+		newAttach->group = _T("[Fonts]");
+		AssFile::top->InsertAttachment(newAttach);
+	}
+
+	// Update
+	UpdateList();
 }
 
 
@@ -134,7 +162,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &event) {
 		// Multiple or single?
 		if (listView->GetNextSelected(i) != -1) path = wxDirSelector(_("Select the path to save the files to:"),Options.AsText(_T("Fonts Collector Destination"))) + _T("/");
 		else {
-			path = wxFileSelector(_("Select the path to save the file to:"),Options.AsText(_T("Fonts Collector Destination")));
+			path = wxFileSelector(_("Select the path to save the file to:"),Options.AsText(_T("Fonts Collector Destination")),((AssAttachment*) listView->GetItemData(i))->filename);
 			fullPath = true;
 		}
 		if (path.IsEmpty()) return;

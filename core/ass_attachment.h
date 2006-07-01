@@ -60,7 +60,7 @@ public:
 	AttachData();
 	~AttachData();
 
-	const DataVec &GetData();
+	DataVec &GetData();
 	void AddData(wxString data);
 	void Finish();
 };

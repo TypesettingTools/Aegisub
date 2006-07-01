@@ -501,6 +501,45 @@ void AssFile::InsertStyle (AssStyle *style) {
 
 
 ////////////////////
+// Insert attachment
+void AssFile::InsertAttachment (AssAttachment *attach) {
+	// Search for insertion point
+	std::list<AssEntry*>::iterator insPoint=Line.end(),cur;
+	for (cur=Line.begin();cur!=Line.end();cur++) {
+		// Check if it's another attachment
+		AssAttachment *att = AssEntry::GetAsAttachment(*cur);
+		if (att) {
+			if (attach->group == att->group) insPoint = cur;
+		}
+
+		// See if it's the start of group
+		else if ((*cur)->GetType() == ENTRY_BASE) {
+			AssEntry *entry = (AssEntry*) (*cur);
+			if (entry->GetEntryData() == attach->group) insPoint = cur;
+		}
+	}
+
+	// Found point, insert there
+	if (insPoint != Line.end()) {
+		insPoint++;
+		attach->StartMS = (*insPoint)->StartMS;
+		Line.insert(insPoint,attach);
+	}
+
+	// Otherwise, create the [Fonts] group and insert
+	else {
+		bool IsSSA=false;
+		int StartMS = Line.back()->StartMS;
+		AddLine(_T(""),Line.back()->group,StartMS,IsSSA);
+		AddLine(attach->group,attach->group,StartMS,IsSSA);
+		attach->StartMS = StartMS;
+		Line.push_back(attach);
+		AddLine(_T(""),attach->group,StartMS,IsSSA);
+	}
+}
+
+
+////////////////////
 // Gets script info
 wxString AssFile::GetScriptInfo(const wxString _key) {
 	// Prepare

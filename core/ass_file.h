@@ -49,6 +49,7 @@
 class FrameRate;
 class AssDialogue;
 class AssStyle;
+class AssAttachment;
 class AssDialogueBlock;
 class AssDialogueBlockOverride;
 class AssDialogueBlockPlain;
@@ -83,6 +84,7 @@ public:
 	void CompressForStack(bool compress);				// Compress/decompress for storage on stack
 	void LoadDefault(bool noline=true);					// Loads default file. Pass true to prevent it from adding a default line too
 	void InsertStyle(AssStyle *style);					// Inserts a style to file
+	void InsertAttachment(AssAttachment *attach);		// Inserts an attachment
 	wxArrayString GetStyles();							// Gets a list of all styles available
 	AssStyle *GetStyle(wxString name);					// Gets style by its name
 
