@@ -1268,7 +1268,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Scale dragging
-	if (onScale || draggingScale) {
+	if ((hold == 0 && onScale) || draggingScale) {
 		if (event.ButtonDown(wxMOUSE_BTN_LEFT)) {
 			lastDragX = x;
 			draggingScale = true;
@@ -1279,12 +1279,14 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			UpdatePosition(Position + delta);
 			UpdateImage();
 			Refresh(false);
+			SetCursor(wxNullCursor);
+			return;
 		}
 		else draggingScale = false;
 	}
 
 	// Outside
-	if (!inside) return;
+	if (!inside && hold == 0) return;
 
 	// Left/middle click
 	if (event.ButtonDown(wxMOUSE_BTN_LEFT) || event.Button(wxMOUSE_BTN_MIDDLE)) {
