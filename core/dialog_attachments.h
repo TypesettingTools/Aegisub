@@ -58,6 +58,8 @@ private:
 	void OnDelete(wxCommandEvent &event);
 	void OnClose(wxCommandEvent &event);
 
+	void UpdateList();
+
 public:
 	DialogAttachments(wxWindow *parent);
 	~DialogAttachments();

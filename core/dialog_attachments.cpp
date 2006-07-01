@@ -50,6 +50,31 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 {
 	// List view
 	listView = new wxListView(this,-1,wxDefaultPosition,wxSize(400,200));
+	UpdateList();
+
+	// Buttons sizer
+	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_FONT,_("&Attach Font")),3,0,0);
+	buttonSizer->Add(new wxButton(this,BUTTON_EXTRACT,_("E&xtract")),2,0,0);
+	buttonSizer->Add(new wxButton(this,BUTTON_DELETE,_("&Delete")),2,0,0);
+	buttonSizer->Add(new wxButton(this,BUTTON_CLOSE,_("&Close")),2,wxLEFT,5);
+
+	// Main sizer
+	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(listView,1,wxTOP | wxLEFT | wxRIGHT | wxEXPAND,5);
+	mainSizer->Add(buttonSizer,0,wxALL | wxEXPAND,5);
+	mainSizer->SetSizeHints(this);
+	SetSizer(mainSizer);
+}
+
+
+///////////////
+// Update list
+void DialogAttachments::UpdateList() {
+	// Clear list
+	listView->ClearAll();
+
+	// Insert list columns
 	listView->InsertColumn(0, _("Attachment name"), wxLIST_FORMAT_LEFT, 200);
 	listView->InsertColumn(1, _("Size"), wxLIST_FORMAT_LEFT, 90);
 	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 90);
@@ -67,20 +92,6 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 			listView->SetItemData(row,(long)attach);
 		}
 	}
-
-	// Buttons sizer
-	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_FONT,_("&Attach Font")),3,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_EXTRACT,_("E&xtract")),2,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_DELETE,_("&Delete")),2,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_CLOSE,_("&Close")),2,wxLEFT,5);
-
-	// Main sizer
-	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(listView,1,wxTOP | wxLEFT | wxRIGHT | wxEXPAND,5);
-	mainSizer->Add(buttonSizer,0,wxALL | wxEXPAND,5);
-	mainSizer->SetSizeHints(this);
-	SetSizer(mainSizer);
 }
 
 
@@ -115,6 +126,15 @@ void DialogAttachments::OnExtract(wxCommandEvent &event) {
 //////////
 // Delete
 void DialogAttachments::OnDelete(wxCommandEvent &event) {
+	// Loop through items in list
+	int i = listView->GetFirstSelected();
+	while (i != -1) {
+		AssFile::top->Line.remove((AssEntry*)listView->GetItemData(i));
+		i = listView->GetNextSelected(i);
+	}
+
+	// Update list
+	UpdateList();
 }
 
 
