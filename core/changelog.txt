@@ -93,6 +93,7 @@ Please visit http://aegisub.net to download latest version
 - Playing in video mode will now play the audio as well even if it hasn't been previously loaded into audio mode (experimental). (AMZ)
 - Added hotkey to Audio's "play to end of file" (defaulting to "T"). (AMZ)
 - Fixed the default resolution for video display and resolution resampler when the script's field is blank. (AMZ)
+- Stopping audio playback will now stop video playback as well. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================
