@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/filename.h>
+#include "options.h"
 #include "vfr.h"
 #include "utils.h"
 #include "text_file_reader.h"
@@ -216,6 +217,9 @@ void FrameRate::Load(wxString filename) {
 	loaded = true;
 	vfrFile = filename;
 	FrameRateType = VFR;
+
+	// Add to recent
+	Options.AddToRecentList(filename,_T("Recent timecodes"));
 }
 
 

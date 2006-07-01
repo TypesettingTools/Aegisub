@@ -89,6 +89,7 @@ Please visit http://aegisub.net to download latest version
 - Aegisub now supports file attachments, which are stored decoded (to save memory) and are not part of the undo stack (for the same reason). Previously, they were simply left ignored in the file as unknown lines. (AMZ)
 - Implemented an Attached files list, where you can attach new fonts and graphics, extract them, or remove them from the script file. (AMZ)
 - The Font Collector can now collect fonts as script attachments. (AMZ)
+- Added recent menu to Video Timecodes. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

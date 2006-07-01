@@ -116,9 +116,10 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_KEY_DOWN(FrameMain::OnKeyDown)
 
 	EVT_MENU_OPEN(FrameMain::OnMenuOpen)
-	EVT_MENU_RANGE(Menu_File_Recent,Menu_File_Recent+100, FrameMain::OnOpenRecentSubs)
-	EVT_MENU_RANGE(Menu_Video_Recent,Menu_Video_Recent+100, FrameMain::OnOpenRecentVideo)
-	EVT_MENU_RANGE(Menu_Audio_Recent,Menu_Audio_Recent+100, FrameMain::OnOpenRecentAudio)
+	EVT_MENU_RANGE(Menu_File_Recent,Menu_File_Recent+99, FrameMain::OnOpenRecentSubs)
+	EVT_MENU_RANGE(Menu_Video_Recent,Menu_Video_Recent+99, FrameMain::OnOpenRecentVideo)
+	EVT_MENU_RANGE(Menu_Audio_Recent,Menu_Audio_Recent+99, FrameMain::OnOpenRecentAudio)
+	EVT_MENU_RANGE(Menu_Timecodes_Recent,Menu_Timecodes_Recent+99, FrameMain::OnOpenRecentTimecodes)
 
 	EVT_MENU(Menu_File_Open, FrameMain::OnOpenProject)
 	EVT_MENU(Menu_File_Save, FrameMain::OnSaveProject)
@@ -307,8 +308,12 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		for (int i=count;--i>=0;) {
 			RecentVids->Destroy(RecentVids->FindItemByPosition(i));
 		}
+		count = RecentTimecodes->GetMenuItemCount();
+		for (int i=count;--i>=0;) {
+			RecentTimecodes->Destroy(RecentTimecodes->FindItemByPosition(i));
+		}
 
-		// Rebuild recent
+		// Rebuild recent videos
 		int added = 0;
 		wxString n;
 		wxArrayString entries = Options.GetRecentList(_T("Recent vid"));
@@ -321,6 +326,19 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 			added++;
 		}
 		if (added == 0) RecentVids->Append(Menu_Video_Recent,_T("Empty"))->Enable(false);
+
+		// Rebuild recent timecodes
+		added = 0;
+		entries = Options.GetRecentList(_T("Recent timecodes"));
+		for (size_t i=0;i<entries.Count();i++) {
+			n = wxString::Format(_T("%i"),i+1);
+			if (i < 9) n = _T("&") + n;
+			wxFileName shortname(entries[i]);
+			wxString filename = shortname.GetFullName();
+			RecentTimecodes->Append(Menu_Timecodes_Recent+i,n + _T(" ") + filename);
+			added++;
+		}
+		if (added == 0) RecentTimecodes->Append(Menu_Timecodes_Recent,_T("Empty"))->Enable(false);
 	}
 
 	// Audio menu
@@ -385,6 +403,15 @@ void FrameMain::OnOpenRecentVideo(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Video_Recent;
 	wxString key = _T("Recent vid #") + wxString::Format(_T("%i"),number+1);
 	LoadVideo(Options.AsText(key));
+}
+
+
+////////////////////////////////
+// Open recent timecodes entry
+void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
+	int number = event.GetId()-Menu_Timecodes_Recent;
+	wxString key = _T("Recent timecodes #") + wxString::Format(_T("%i"),number+1);
+	LoadVFR(Options.AsText(key));
 }
 
 

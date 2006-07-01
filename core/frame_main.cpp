@@ -214,6 +214,7 @@ void FrameMain::InitMenu() {
 	RecentSubs = new wxMenu();
 	RecentVids = new wxMenu();
 	RecentAuds = new wxMenu();
+	RecentTimecodes = new wxMenu();
 
 	// Create file menu
 	fileMenu = new wxMenu();
@@ -266,6 +267,8 @@ void FrameMain::InitMenu() {
 	videoMenu->AppendSeparator();
 	videoMenu->Append(Menu_File_Open_VFR, _("Open timecodes file..."), _("Opens a VFR timecodes v1 or v2 file"));
 	videoMenu->Append(Menu_File_Close_VFR, _("Close timecodes file"), _("Closes the currently open timecodes file"))->Enable(false);
+	wxMenuItem *RecentTimesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Timecodes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentTimecodes);
+	videoMenu->Append(RecentTimesParent);
 	videoMenu->AppendSeparator();
 	AppendBitmapMenuItem (videoMenu,Menu_Video_JumpTo, _("&Jump To...\t") + Hotkeys.GetText(_T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
 	videoMenu->AppendSeparator();

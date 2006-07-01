@@ -85,6 +85,7 @@ private:
 	wxMenu *RecentSubs;
 	wxMenu *RecentVids;
 	wxMenu *RecentAuds;
+	wxMenu *RecentTimecodes;
 
 	wxToolBar *Toolbar;
 	wxComboBox *ZoomBox;
@@ -122,6 +123,7 @@ private:
 	void OnOpenRecentSubs (wxCommandEvent &event);
 	void OnOpenRecentVideo (wxCommandEvent &event);
 	void OnOpenRecentAudio (wxCommandEvent &event);
+	void OnOpenRecentTimecodes (wxCommandEvent &event);
 
 	void OnCloseWindow (wxCloseEvent &event);
 	void OnMenuOpen (wxMenuEvent &event);
@@ -275,6 +277,7 @@ enum {
 	Menu_File_Recent_Subs_Parent,
 	Menu_File_Recent_Vids_Parent,
 	Menu_File_Recent_Auds_Parent,
+	Menu_File_Recent_Timecodes_Parent,
 
 	Menu_Video_JumpTo,
 	Menu_View_Zoom_50,
@@ -372,7 +375,8 @@ enum {
 
 	Menu_File_Recent = 2000,
 	Menu_Video_Recent = 2200,
-	Menu_Audio_Recent = 2400
+	Menu_Audio_Recent = 2400,
+	Menu_Timecodes_Recent = 2500
 };
 
 

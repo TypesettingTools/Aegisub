@@ -72,6 +72,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Keep raw dialogue data"),false);
 
 	SetInt(_T("Undo Levels"),8);
+	SetInt(_T("Recent timecodes max"),16);
 	SetInt(_T("Recent sub max"),16);
 	SetInt(_T("Recent vid max"),16);
 	SetInt(_T("Recent aud max"),16);
