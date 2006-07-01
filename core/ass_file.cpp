@@ -195,12 +195,17 @@ bool AssFile::CanSave() {
 	AssStyle defstyle;
 	AssStyle *curstyle;
 	AssDialogue *curdiag;
+	AssAttachment *attach;
 	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
 		// Check style, if anything non-default is found, return false
 		curstyle = AssEntry::GetAsStyle(*cur);
 		if (curstyle) {
 			if (curstyle->GetEntryData() != defstyle.GetEntryData()) return false;
 		}
+
+		// Check for attachments, if any is found, return false
+		attach = AssEntry::GetAsAttachment(*cur);
+		if (attach) return false;
 
 		// Check dialog
 		curdiag = AssEntry::GetAsDialogue(*cur);
