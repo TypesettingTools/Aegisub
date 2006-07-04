@@ -1201,7 +1201,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Stop scrubbing
-	bool scrubButton = false && event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
+	bool scrubButton = event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
 	if (scrubbing && !scrubButton) {
 		// Release mouse
 		scrubbing = false;
@@ -1214,7 +1214,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Start scrubbing
-	if (!scrubbing && scrubButton) {
+	if (!scrubbing && scrubButton && provider->GetChannels() == 1) {
 		// Get mouse
 		CaptureMouse();
 		scrubbing = true;
@@ -1233,8 +1233,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Scrub
 	if (scrubbing && scrubButton) {
 		// Get current data
-		__int64 curScrubPos = GetSampleAtX(x);
-		__int64 scrubDelta = scrubLastPos - curScrubPos;
+		__int64 curScrubPos = MAX(0,GetSampleAtX(x));
+		__int64 scrubDelta = curScrubPos - scrubLastPos;
 		int curScrubTime = clock();
 		int scrubDeltaTime = curScrubTime - scrubTime;
 
@@ -1242,7 +1242,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (scrubDelta != 0 && scrubDeltaTime > 0) {
 			// Create buffer
 			int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLK_TCK;
-			scrubDelta = bufSize;
 			short *buf = new short[bufSize];
 
 			// Flag as inverted, if necessary
@@ -1254,25 +1253,25 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			provider->GetAudio(temp,MIN(curScrubPos,scrubLastPos),scrubDelta);
 
 			// Scale
-			//float scale = float(scrubDelta) / float(bufSize);
-			//float start,end;
-			//int istart,iend;
-			//float tempfinal;
-			//for (int i=0;i<bufSize;i++) {
-			//	start = i*scale;
-			//	end = (i+1)*scale;
-			//	istart = (int) start;
-			//	iend = (int) end;
-			//	if (istart == iend) tempfinal = temp[istart] * (end - start);
-			//	else {
-			//		tempfinal = temp[istart] * (1 + istart - start) + temp[iend] * (end - iend);
-			//		for (int j=istart+1;j<iend;j++) tempfinal += temp[i];
-			//	}
-			//	buf[i] = tempfinal / scale;
-			//}
-			int len = MIN(bufSize,scrubDelta);
-			for (int i=0;i<len;i++) buf[i] = temp[i];
-			for (int i=len;i<bufSize;i++) buf[i] = 0;
+			float scale = float(double(scrubDelta) / double(bufSize));
+			float start,end;
+			int istart,iend;
+			float tempfinal;
+			for (int i=0;i<bufSize;i++) {
+				start = i*scale;
+				end = (i+1)*scale;
+				istart = (int) start;
+				iend = MIN((int) end,scrubDelta-1);
+				if (istart == iend) tempfinal = temp[istart] * (end - start);
+				else {
+					tempfinal = temp[istart] * (1 + istart - start) + temp[iend] * (end - iend);
+					for (int j=istart+1;j<iend;j++) tempfinal += temp[i];
+				}
+				buf[i] = tempfinal / scale;
+			}
+			//int len = MIN(bufSize,scrubDelta);
+			//for (int i=0;i<len;i++) buf[i] = temp[i];
+			//for (int i=len;i<bufSize;i++) buf[i] = 0;
 			delete temp;
 
 			// Invert

@@ -40,7 +40,7 @@
 #include "utils.h"
 
 
-#define BUFSIZE 8192
+#define BUFSIZE 65536
 
 
 ///////////////
@@ -70,11 +70,13 @@ StreamAudioProvider::~StreamAudioProvider() {
 void StreamAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 	// Write
 	__int64 left = count;
-	__int64 written = 0;
+	int written = 0;
 	int toWrite;
+	short *dst = (short*) buf;
 	while (hasBuf && left > 0) {
 		// Discard done
 		if (startPos == BUFSIZE) {
+			delete buffer.front();
 			buffer.pop_front();
 			startPos = 0;
 		}
@@ -85,8 +87,8 @@ void StreamAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 		if (isLast) size = endPos;
 
 		// Write
-		toWrite = MIN(int(size-startPos),int(left));
-		memcpy(((short*)buf)+written,&(buffer.front()->buf[startPos]),toWrite);
+		toWrite = MIN(size-startPos,int(left));
+		memcpy(dst+written,&(buffer.front()->buf[startPos]),toWrite*2);
 		startPos += toWrite;
 		written += toWrite;
 		left -= toWrite;
@@ -99,7 +101,6 @@ void StreamAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 	// Still left, fill with zero
 	if (left > 0) {
 		hasBuf = false;
-		short *dst = (short*) buf;
 		for (__int64 i=written;i<count;i++) {
 			dst[i] = 0;
 		}
@@ -109,11 +110,12 @@ void StreamAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 
 //////////////////////////
 // Append audio to stream
-void StreamAudioProvider::Append(void *src, __int64 count) {
+void StreamAudioProvider::Append(void *voidptr, __int64 count) {
 	// Read
 	__int64 left = count;
-	__int64 read = 0;
+	int read = 0;
 	int toRead;
+	short *src = (short*) voidptr;
 	while (left > 0) {
 		// Check space
 		if (endPos == BUFSIZE) {
@@ -123,7 +125,7 @@ void StreamAudioProvider::Append(void *src, __int64 count) {
 
 		// Read
 		toRead = MIN(int(BUFSIZE-endPos),int(left));
-		memcpy(&(buffer.back()->buf[endPos]),((short*)src)+read,toRead);
+		memcpy(&(buffer.back()->buf[endPos]),src+read,toRead*2);
 		endPos += toRead;
 		read += toRead;
 		buffered += toRead;
