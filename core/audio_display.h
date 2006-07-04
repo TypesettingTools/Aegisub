@@ -48,6 +48,7 @@
 //////////////
 // Prototypes
 class AssDialogue;
+class StreamAudioProvider;
 class SubtitlesGrid;
 class AudioBox;
 class AudioKaraoke;
@@ -98,7 +99,7 @@ private:
 	int *min;
 
 	int scrubTime;
-	int scrubLastPos;
+	__int64 scrubLastPos;
 	bool scrubbing;
 
 	void OnPaint(wxPaintEvent &event);
@@ -119,7 +120,7 @@ private:
 
 public:
 	AudioProvider *provider;
-	AudioProvider *scrubProvider;
+	StreamAudioProvider *scrubProvider;
 	AudioPlayer *player;
 
 	bool NeedCommit;

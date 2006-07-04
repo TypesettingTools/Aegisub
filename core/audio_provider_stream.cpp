@@ -46,6 +46,7 @@ StreamAudioProvider::StreamAudioProvider() {
 	bufLen = 8192;
 	startPos = 0;
 	endPos = 8192;
+	num_samples = 0xFFFFFFFFFFFFFF;
 }
 
 
@@ -123,9 +124,18 @@ void StreamAudioProvider::Append(void *src, __int64 count) {
 }
 
 
+//////////////////
+// Set parameters
+void StreamAudioProvider::SetParams(int chan,int rate,int bps) {
+	channels = chan;
+	sample_rate = rate;
+	bytes_per_sample = bps;
+}
+
+
 ////////////////////////////
 // Buffer chunk constructor
 StreamAudioProvider::BufferChunk::BufferChunk() {
-	buf.resize(4096);
+	buf.resize(8192);
 	isFree = true;
 }

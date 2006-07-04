@@ -38,6 +38,7 @@
 // Headers
 #include <wx/tglbtn.h>
 #include "audio_display.h"
+#include "audio_provider_stream.h"
 #include "main.h"
 #include "ass_dialogue.h"
 #include "subs_grid.h"
@@ -77,6 +78,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 	dontReadTimes = false;
 	holding = false;
 	draggingScale = false;
+	scrubbing = false;
 	Position = 0;
 	PositionSample = 0;
 	oldCurPos = 0;
@@ -1195,7 +1197,86 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT) && holding) {
 		holding = false;
-		ReleaseMouse();
+		if (HasCapture()) ReleaseMouse();
+	}
+
+	// Stop scrubbing
+	bool scrubButton = event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
+	if (scrubbing && !scrubButton) {
+		// Release mouse
+		scrubbing = false;
+		if (HasCapture()) ReleaseMouse();
+
+		// Stop player
+		player->Stop();
+		player->SetProvider(provider);
+		delete scrubProvider;
+	}
+
+	// Start scrubbing
+	if (!scrubbing && scrubButton) {
+		// Get mouse
+		CaptureMouse();
+		scrubbing = true;
+
+		// Initialize provider
+		player->Stop();
+		scrubProvider = new StreamAudioProvider();
+		scrubProvider->SetParams(provider->GetChannels(),provider->GetSampleRate(),provider->GetBytesPerSample());
+		player->SetProvider(scrubProvider);
+
+		// Set variables
+		scrubLastPos = GetSampleAtX(x);
+		scrubTime = clock();
+	}
+
+	// Scrub
+	if (scrubbing && scrubButton) {
+		// Get current data
+		__int64 curScrubPos = GetSampleAtX(x);
+		__int64 scrubDelta = scrubLastPos - curScrubPos;
+		int curScrubTime = clock();
+		int scrubDeltaTime = curScrubTime - scrubTime;
+
+		// Copy data to buffer
+		if (scrubDelta != 0 && scrubDeltaTime > 0) {
+			// Create buffer
+			int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLK_TCK;
+			short *buf = new short[bufSize];
+
+			// Flag as inverted, if necessary
+			bool invert = scrubDelta < 0;
+			if (invert) scrubDelta = -scrubDelta;
+
+			// Copy data from original provider to buffer and normalize it
+			short *temp = new short[scrubDelta];
+			provider->GetAudio(temp,MIN(curScrubPos,scrubLastPos),scrubDelta);
+			float scale = float(scrubDelta) / float(bufSize);
+			for (int i=0;i<bufSize;i++) buf[i] = temp[int(i*scale)];
+			delete temp;
+
+			// Invert
+			if (invert) {
+				short aux;
+				for (int i=0;i<bufSize/2;i++) {
+					aux = buf[i];
+					buf[i] = buf[bufSize-i-1];
+					buf[bufSize-i-1] = aux;
+				}
+			}
+
+			// Send data to provider
+			scrubProvider->Append(buf,bufSize);
+			if (!player->IsPlaying()) player->Play(0,0xFFFFFFFFFFFF);
+			delete buf;
+		}
+
+		// Update last pos and time
+		scrubLastPos = curScrubPos;
+		scrubTime = curScrubTime;
+
+		// Return
+		return;
 	}
 
 	// Mouse wheel

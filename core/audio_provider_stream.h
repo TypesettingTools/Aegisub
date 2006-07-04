@@ -67,4 +67,5 @@ public:
 
 	void GetAudio(void *buf, __int64 start, __int64 count);
 	void Append(void *buf, __int64 count);
+	void SetParams(int channels,int rate,int bps);
 };
