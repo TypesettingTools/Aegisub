@@ -97,6 +97,10 @@ private:
 	int *peak;
 	int *min;
 
+	int scrubTime;
+	int scrubLastPos;
+	bool scrubbing;
+
 	void OnPaint(wxPaintEvent &event);
     void OnMouseEvent(wxMouseEvent &event);
 	void OnSize(wxSizeEvent &event);
@@ -115,6 +119,7 @@ private:
 
 public:
 	AudioProvider *provider;
+	AudioProvider *scrubProvider;
 	AudioPlayer *player;
 
 	bool NeedCommit;

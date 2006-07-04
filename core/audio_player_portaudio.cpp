@@ -107,11 +107,6 @@ int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned 
 		provider->GetAudio(outputBuffer,player->playPos,lenAvailable);
 	}
 
-	// Pad end with blank
-	if (avail < (uint64_t) framesPerBuffer) {
-		//provider->softStop = true;
-	}
-
 	// Set volume
 	short *output = (short*) outputBuffer;
 	for (unsigned int i=0;i<avail;i++) output[i] = MID(-(1<<15),int(output[i] * player->GetVolume()),(1<<15)-1);
