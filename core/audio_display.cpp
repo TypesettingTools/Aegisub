@@ -1201,7 +1201,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Stop scrubbing
-	bool scrubButton = event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
+	bool scrubButton = false && event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
 	if (scrubbing && !scrubButton) {
 		// Release mouse
 		scrubbing = false;
@@ -1242,17 +1242,37 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (scrubDelta != 0 && scrubDeltaTime > 0) {
 			// Create buffer
 			int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLK_TCK;
+			scrubDelta = bufSize;
 			short *buf = new short[bufSize];
 
 			// Flag as inverted, if necessary
 			bool invert = scrubDelta < 0;
 			if (invert) scrubDelta = -scrubDelta;
 
-			// Copy data from original provider to buffer and normalize it
+			// Copy data from original provider to temp buffer
 			short *temp = new short[scrubDelta];
 			provider->GetAudio(temp,MIN(curScrubPos,scrubLastPos),scrubDelta);
-			float scale = float(scrubDelta) / float(bufSize);
-			for (int i=0;i<bufSize;i++) buf[i] = temp[int(i*scale)];
+
+			// Scale
+			//float scale = float(scrubDelta) / float(bufSize);
+			//float start,end;
+			//int istart,iend;
+			//float tempfinal;
+			//for (int i=0;i<bufSize;i++) {
+			//	start = i*scale;
+			//	end = (i+1)*scale;
+			//	istart = (int) start;
+			//	iend = (int) end;
+			//	if (istart == iend) tempfinal = temp[istart] * (end - start);
+			//	else {
+			//		tempfinal = temp[istart] * (1 + istart - start) + temp[iend] * (end - iend);
+			//		for (int j=istart+1;j<iend;j++) tempfinal += temp[i];
+			//	}
+			//	buf[i] = tempfinal / scale;
+			//}
+			int len = MIN(bufSize,scrubDelta);
+			for (int i=0;i<len;i++) buf[i] = temp[i];
+			for (int i=len;i<bufSize;i++) buf[i] = 0;
 			delete temp;
 
 			// Invert

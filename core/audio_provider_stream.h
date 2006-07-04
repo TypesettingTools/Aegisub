@@ -61,6 +61,9 @@ private:
 	int endPos;
 	int bufLen;
 
+	int buffered;
+	bool hasBuf;
+
 public:
 	StreamAudioProvider();
 	~StreamAudioProvider();

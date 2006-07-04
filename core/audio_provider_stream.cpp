@@ -40,12 +40,17 @@
 #include "utils.h"
 
 
+#define BUFSIZE 8192
+
+
 ///////////////
 // Constructor
 StreamAudioProvider::StreamAudioProvider() {
 	bufLen = 8192;
 	startPos = 0;
-	endPos = 8192;
+	endPos = BUFSIZE;
+	buffered = 0;
+	hasBuf = false;
 	num_samples = 0xFFFFFFFFFFFFFF;
 }
 
@@ -67,16 +72,16 @@ void StreamAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 	__int64 left = count;
 	__int64 written = 0;
 	int toWrite;
-	while (left > 0) {
+	while (hasBuf && left > 0) {
 		// Discard done
-		if (startPos == 8192) {
+		if (startPos == BUFSIZE) {
 			buffer.pop_front();
 			startPos = 0;
 		}
 
 		// Is last?
 		bool isLast = buffer.size() == 1;
-		int size = 8192;
+		int size = BUFSIZE;
 		if (isLast) size = endPos;
 
 		// Write
@@ -85,6 +90,7 @@ void StreamAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 		startPos += toWrite;
 		written += toWrite;
 		left -= toWrite;
+		buffered -= toWrite;
 
 		// Last
 		if (isLast) break;
@@ -92,6 +98,7 @@ void StreamAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 
 	// Still left, fill with zero
 	if (left > 0) {
+		hasBuf = false;
 		short *dst = (short*) buf;
 		for (__int64 i=written;i<count;i++) {
 			dst[i] = 0;
@@ -109,18 +116,22 @@ void StreamAudioProvider::Append(void *src, __int64 count) {
 	int toRead;
 	while (left > 0) {
 		// Check space
-		if (endPos == 8192) {
+		if (endPos == BUFSIZE) {
 			buffer.push_back(new BufferChunk);
 			endPos = 0;
 		}
 
 		// Read
-		toRead = MIN(int(8192-endPos),int(left));
+		toRead = MIN(int(BUFSIZE-endPos),int(left));
 		memcpy(&(buffer.back()->buf[endPos]),((short*)src)+read,toRead);
 		endPos += toRead;
 		read += toRead;
+		buffered += toRead;
 		left -= toRead;
 	}
+
+	// Set buffered status
+	if (buffered > bufLen) hasBuf = true;
 }
 
 
@@ -136,6 +147,6 @@ void StreamAudioProvider::SetParams(int chan,int rate,int bps) {
 ////////////////////////////
 // Buffer chunk constructor
 StreamAudioProvider::BufferChunk::BufferChunk() {
-	buf.resize(8192);
+	buf.resize(BUFSIZE);
 	isFree = true;
 }
