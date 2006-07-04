@@ -133,6 +133,9 @@ void AudioDisplay::Reset() {
 ////////////////
 // Update image
 void AudioDisplay::UpdateImage(bool weak) {
+	// Loaded?
+	if (!loaded || !provider) return;
+
 	// Prepare bitmap
 	int displayH = h+20;
 	if (origImage) {
@@ -776,6 +779,7 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 // Update samples
 void AudioDisplay::UpdateSamples() {
 	// Set samples
+	if (!provider) return;
 	__int64 totalSamples = provider->GetNumSamples();
 	int total = totalSamples / w;
 	int max = 5760000 / w;	// 2 minutes at 48 kHz maximum
@@ -817,6 +821,7 @@ void AudioDisplay::SetFile(wxString file, VideoProvider *vprovider) {
 		Reset();
 
 		loaded = false;
+		temporary = false;
 	}
 
 	// Load
@@ -868,6 +873,7 @@ void AudioDisplay::SetFromVideo() {
 ////////////////////
 // Update scrollbar
 void AudioDisplay::UpdateScrollbar() {
+	if (!provider) return;
 	int page = w/12;
 	int len = provider->GetNumSamples() / samples / 12;
 	Position = PositionSample / samples;
@@ -1054,6 +1060,9 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 //////////////////
 // Commit changes
 void AudioDisplay::CommitChanges () {
+	// Loaded?
+	if (!loaded) return;
+
 	if (!Options.AsBool(_T("Audio SSA Mode")) && !box->audioKaraoke->splitting) {
 		// Check if there's any need to commit
 		if (!NeedCommit) return;
