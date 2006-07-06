@@ -1161,7 +1161,22 @@ void FrameMain::OnSelect (wxCommandEvent &event) {
 //////////////////
 // Sort subtitles
 void FrameMain::OnSort (wxCommandEvent &event) {
-	// TODO
+	// Ensure that StartMS is set properly
+	AssEntry *curEntry;
+	AssDialogue *curDiag;
+	int startMS = -1;
+	for (std::list<AssEntry*>::iterator cur = AssFile::top->Line.begin(); cur != AssFile::top->Line.end(); cur++) {
+		curEntry = *cur;
+		curDiag = AssEntry::GetAsDialogue(curEntry);
+		if (curDiag) startMS = curDiag->Start.GetMS();
+		curEntry->StartMS = startMS;
+	}
+
+	// Sort
+	AssFile::top->Line.sort(LessByPointedToValue<AssEntry>());
+	AssFile::top->FlagAsModified();
+	SubsBox->UpdateMaps();
+	SubsBox->CommitChanges();
 }
 
 
