@@ -101,6 +101,7 @@ private:
 	int scrubTime;
 	__int64 scrubLastPos;
 	bool scrubbing;
+	int scrubLastRate;
 
 	void OnPaint(wxPaintEvent &event);
     void OnMouseEvent(wxMouseEvent &event);

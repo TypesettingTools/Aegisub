@@ -182,6 +182,7 @@ private:
 	void OnReplace (wxCommandEvent &event);
 	void OnJumpTo (wxCommandEvent &event);
 	void OnShift (wxCommandEvent &event);
+	void OnSort (wxCommandEvent &event);
 	void OnOpenProperties (wxCommandEvent &event);
 	void OnOpenStylesManager (wxCommandEvent &event);
 	void OnOpenAttachments (wxCommandEvent &event);
@@ -300,6 +301,7 @@ enum {
 	Menu_Edit_Select,
 	Menu_Edit_Undo,
 	Menu_Edit_Redo,
+	Menu_Edit_Sort,
 	Menu_Edit_Find,
 	Menu_Edit_Find_Next,
 	Menu_Edit_Replace,

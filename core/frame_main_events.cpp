@@ -165,6 +165,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Edit_Replace, FrameMain::OnReplace)
 	EVT_MENU(Menu_Edit_Shift, FrameMain::OnShift)
 	EVT_MENU(Menu_Edit_Select, FrameMain::OnSelect)
+	EVT_MENU(Menu_Edit_Sort, FrameMain::OnSort)
 
 	EVT_MENU(Menu_Tools_Properties, FrameMain::OnOpenProperties)
 	EVT_MENU(Menu_Tools_Styles_Manager, FrameMain::OnOpenStylesManager)
@@ -1154,6 +1155,13 @@ void FrameMain::OnSelect (wxCommandEvent &event) {
 	videoBox->videoDisplay->Stop();
 	DialogSelection select(this, SubsBox);
 	select.ShowModal();
+}
+
+
+//////////////////
+// Sort subtitles
+void FrameMain::OnSort (wxCommandEvent &event) {
+	// TODO
 }
 
 

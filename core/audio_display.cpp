@@ -1210,7 +1210,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Stop scrubbing
-	bool scrubButton = event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
+	bool scrubButton = false && event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
 	if (scrubbing && !scrubButton) {
 		// Release mouse
 		scrubbing = false;
@@ -1237,66 +1237,77 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		// Set variables
 		scrubLastPos = GetSampleAtX(x);
 		scrubTime = clock();
+		scrubLastRate = provider->GetSampleRate();
 	}
 
 	// Scrub
 	if (scrubbing && scrubButton) {
 		// Get current data
-		__int64 curScrubPos = MAX(0,GetSampleAtX(x));
-		__int64 scrubDelta = curScrubPos - scrubLastPos;
+		__int64 exactPos = MAX(0,GetSampleAtX(x));
 		int curScrubTime = clock();
 		int scrubDeltaTime = curScrubTime - scrubTime;
+		bool invert = exactPos < scrubLastPos;
+		__int64 curScrubPos = exactPos;
 
-		// Copy data to buffer
-		if (scrubDelta != 0 && scrubDeltaTime > 0) {
-			// Create buffer
-			int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLK_TCK;
-			short *buf = new short[bufSize];
+		if (scrubDeltaTime > 0) {
+			// Get derived data
+			int rateChange = provider->GetSampleRate()/20;
+			int curRate = MID(int(scrubLastRate-rateChange),abs(int(exactPos - scrubLastPos)) * CLK_TCK / scrubDeltaTime,int(scrubLastRate+rateChange));
+			if (abs(curRate-scrubLastRate) < rateChange) curRate = scrubLastRate;
+			curScrubPos = scrubLastPos + (curRate * scrubDeltaTime / CLK_TCK * (invert ? -1 : 1));
+			__int64 scrubDelta = curScrubPos - scrubLastPos;
+			scrubLastRate = curRate;
 
-			// Flag as inverted, if necessary
-			bool invert = scrubDelta < 0;
-			if (invert) scrubDelta = -scrubDelta;
+			// Copy data to buffer
+			if (scrubDelta != 0) {
+				// Create buffer
+				int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLK_TCK;
+				short *buf = new short[bufSize];
 
-			// Copy data from original provider to temp buffer
-			short *temp = new short[scrubDelta];
-			provider->GetAudio(temp,MIN(curScrubPos,scrubLastPos),scrubDelta);
+				// Flag as inverted, if necessary
+				if (invert) scrubDelta = -scrubDelta;
 
-			// Scale
-			float scale = float(double(scrubDelta) / double(bufSize));
-			float start,end;
-			int istart,iend;
-			float tempfinal;
-			for (int i=0;i<bufSize;i++) {
-				start = i*scale;
-				end = (i+1)*scale;
-				istart = (int) start;
-				iend = MIN((int) end,scrubDelta-1);
-				if (istart == iend) tempfinal = temp[istart] * (end - start);
-				else {
-					tempfinal = temp[istart] * (1 + istart - start) + temp[iend] * (end - iend);
-					for (int j=istart+1;j<iend;j++) tempfinal += temp[i];
+				// Copy data from original provider to temp buffer
+				short *temp = new short[scrubDelta];
+				provider->GetAudio(temp,MIN(curScrubPos,scrubLastPos),scrubDelta);
+
+				// Scale
+				float scale = float(double(scrubDelta) / double(bufSize));
+				float start,end;
+				int istart,iend;
+				float tempfinal;
+				for (int i=0;i<bufSize;i++) {
+					start = i*scale;
+					end = (i+1)*scale;
+					istart = (int) start;
+					iend = MIN((int) end,scrubDelta-1);
+					if (istart == iend) tempfinal = temp[istart] * (end - start);
+					else {
+						tempfinal = temp[istart] * (1 + istart - start) + temp[iend] * (end - iend);
+						for (int j=istart+1;j<iend;j++) tempfinal += temp[i];
+					}
+					buf[i] = tempfinal / scale;
 				}
-				buf[i] = tempfinal / scale;
-			}
-			//int len = MIN(bufSize,scrubDelta);
-			//for (int i=0;i<len;i++) buf[i] = temp[i];
-			//for (int i=len;i<bufSize;i++) buf[i] = 0;
-			delete temp;
+				//int len = MIN(bufSize,scrubDelta);
+				//for (int i=0;i<len;i++) buf[i] = temp[i];
+				//for (int i=len;i<bufSize;i++) buf[i] = 0;
+				delete temp;
 
-			// Invert
-			if (invert) {
-				short aux;
-				for (int i=0;i<bufSize/2;i++) {
-					aux = buf[i];
-					buf[i] = buf[bufSize-i-1];
-					buf[bufSize-i-1] = aux;
+				// Invert
+				if (invert) {
+					short aux;
+					for (int i=0;i<bufSize/2;i++) {
+						aux = buf[i];
+						buf[i] = buf[bufSize-i-1];
+						buf[bufSize-i-1] = aux;
+					}
 				}
-			}
 
-			// Send data to provider
-			scrubProvider->Append(buf,bufSize);
-			if (!player->IsPlaying()) player->Play(0,0xFFFFFFFFFFFF);
-			delete buf;
+				// Send data to provider
+				scrubProvider->Append(buf,bufSize);
+				if (!player->IsPlaying()) player->Play(0,0xFFFFFFFFFFFF);
+				delete buf;
+			}
 		}
 
 		// Update last pos and time

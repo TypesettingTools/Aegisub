@@ -238,6 +238,7 @@ void FrameMain::InitMenu() {
 	editMenu->AppendSeparator();
 	editMenu->Append(Menu_Edit_Select, _("&Select lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"));
 	editMenu->Append(Menu_Edit_Shift, _("S&hift times...\t") + Hotkeys.GetText(_T("Shift times")), _("Shift subtitles by time or frames"));
+	editMenu->Append(Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"));
 	editMenu->AppendSeparator();
 	AppendBitmapMenuItem (editMenu,Menu_Edit_Find, _("&Find...\t") + Hotkeys.GetText(_T("Find")), _("Find words in subtitles"),wxBITMAP(find_button));
 	editMenu->Append(Menu_Edit_Find_Next, _("Find next\t") + Hotkeys.GetText(_T("Find Next")), _("Find next match of last word"));
