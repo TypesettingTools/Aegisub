@@ -95,6 +95,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed the default resolution for video display and resolution resampler when the script's field is blank. (AMZ)
 - Stopping audio playback will now stop video playback as well. (AMZ)
 - Implemented sorting of subtitles by start time. (AMZ)
+- Recovered subtitle files are now saved in their own subfolder. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

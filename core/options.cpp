@@ -238,6 +238,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Auto save every seconds"),60);
 	SetText(_T("Auto backup path"),_T("autoback"));
 	SetText(_T("Auto save path"),_T("autosave"));
+	SetText(_T("Auto recovery path"),_T("recovered"));
 	SetInt(_T("Autoload linked files"),2);
 
 	SetText(_T("Text actor separator"),_T(":"));
