@@ -149,10 +149,17 @@ void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt)
 
 
 
-ColorPickerRecent::ColorPickerRecent(wxWindow *parent, wxWindowID id, wxSize size, int _cols, int _rows)
-: wxControl(parent, id, wxDefaultPosition, size, wxSTATIC_BORDER), rows(_rows), cols(_cols)
+ColorPickerRecent::ColorPickerRecent(wxWindow *parent, wxWindowID id, int _cols, int _rows, int _cellsize)
+: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER)
+, rows(_rows)
+, cols(_cols)
+, cellsize(_cellsize)
+, internal_control_offset(0,0)
 {
 	LoadFromString(wxEmptyString);
+	SetClientSize(cols*cellsize, rows*cellsize);
+	SetMinSize(GetSize());
+	SetMaxSize(GetSize());
 }
 
 void ColorPickerRecent::LoadFromString(const wxString &recent_string)
@@ -195,6 +202,7 @@ void ColorPickerRecent::AddColor(wxColour color)
 BEGIN_EVENT_TABLE(ColorPickerRecent, wxControl)
 	EVT_PAINT(ColorPickerRecent::OnPaint)
 	EVT_LEFT_DOWN(ColorPickerRecent::OnClick)
+	EVT_SIZE(ColorPickerRecent::OnSize)
 END_EVENT_TABLE()
 
 DEFINE_EVENT_TYPE(wxRECENT_SELECT)
@@ -203,8 +211,9 @@ void ColorPickerRecent::OnClick(wxMouseEvent &evt)
 {
 	int cx, cy, i;
 	wxSize cs = GetClientSize();
-	cx = evt.GetX() * cols / cs.x;
-	cy = evt.GetY() * rows / cs.y;
+	cx = (evt.GetX() - internal_control_offset.x) * cols / cs.x;
+	cy = (evt.GetY() - internal_control_offset.y) * rows / cs.y;
+	if (cx < 0 || cx > cols || cy < 0 || cy > rows) return;
 	i = cols*cy + cx;
 	if (i >= 0 && i < (int)colors.size()) {
 		AssColor color(colors[i]);
@@ -226,20 +235,26 @@ void ColorPickerRecent::OnPaint(wxPaintEvent &evt)
 
 	for (int cy = 0; cy < rows; cy++) {
 		for (int cx = 0; cx < cols; cx++) {
-			int x1, x2, y1, y2;
-			x1 = cs.x * cx / cols;
-			x2 = cs.x * (cx+1) / cols;
-			y1 = cs.y * cy / rows;
-			y2 = cs.y * (cy+1) / rows;
+			int x, y;
+			x = cx * cellsize + internal_control_offset.x;
+			y = cy * cellsize + internal_control_offset.y;
 
 			dc.SetBrush(wxBrush(colors[i]));
-			dc.DrawRectangle(x1, y1, x2-x1, y2-y1);
+			dc.DrawRectangle(x, y, x+cellsize, y+cellsize);
 
 			i++;
 		}
 	}
 
 	dc.EndDrawing();
+}
+
+void ColorPickerRecent::OnSize(wxSizeEvent &evt)
+{
+	wxSize size = GetClientSize();
+	//internal_control_offset.x = (size.GetWidth() - cellsize * cols) / 2;
+	//internal_control_offset.y = (size.GetHeight() - cellsize * rows) / 2;
+	Refresh();
 }
 
 
@@ -440,7 +455,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	wxSize colorinput_size(70, -1);
 	wxSize colorinput_labelsize(40, -1);
 
-	wxSizer *rgb_box = new wxStaticBoxSizer(wxVERTICAL, this, _("RGB color"));
+	wxSizer *rgb_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("RGB color"));
 	rgb_input[0] = new wxSpinCtrl(this, SELECTOR_RGB_R, _T(""), wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 	rgb_input[1] = new wxSpinCtrl(this, SELECTOR_RGB_G, _T(""), wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 	rgb_input[2] = new wxSpinCtrl(this, SELECTOR_RGB_B, _T(""), wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
@@ -461,10 +476,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	preview_bitmap = wxBitmap(40, 40, 24);
 	preview_box = new wxStaticBitmap(this, -1, preview_bitmap, wxDefaultPosition, wxSize(40, 40), wxSTATIC_BORDER);
 
-	recent_box = new ColorPickerRecent(this, SELECTOR_RECENT, wxDefaultSize, 12, 2);
-	recent_box->SetClientSize(12*16, 2*16);
-	recent_box->SetMinSize(recent_box->GetSize());
-	recent_box->SetMaxSize(recent_box->GetSize());
+	recent_box = new ColorPickerRecent(this, SELECTOR_RECENT, 12, 2, 16);
 
 	screen_dropper = new ColorPickerScreenDropper(this, SELECTOR_DROPPER, 7, 7, 8);
 
@@ -493,6 +505,14 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	rgb_sizer->Add(rgb_input[2], 0);
 	rgb_box->Add(rgb_sizer, 0, wxALL, 3);
 
+	wxSizer *ass_input_sizer = new wxFlexGridSizer(2, 2, 5, 5);
+	ass_input_sizer->Add(new wxStaticText(this, -1, _T("ASS:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	ass_input_sizer->Add(ass_input, 0);
+	ass_input_sizer->Add(new wxStaticText(this, -1, _T("HTML:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	ass_input_sizer->Add(html_input, 0);
+	rgb_box->AddStretchSpacer();
+	rgb_box->Add(ass_input_sizer, 0, wxALL|wxCENTER, 3);
+
 	wxSizer *hsl_sizer = new wxFlexGridSizer(3, 2, 5, 5);
 	hsl_sizer->Add(new wxStaticText(this, -1, _("Hue:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
 	hsl_sizer->Add(hsl_input[0], 0);
@@ -511,33 +531,46 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	hsv_sizer->Add(hsv_input[2], 0);
 	hsv_box->Add(hsv_sizer, 0, wxALL, 3);
 
-	wxSizer *ass_input_sizer = new wxBoxSizer(wxHORIZONTAL);
-	ass_input_sizer->Add(new wxStaticText(this, -1, _T("ASS:")), 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	ass_input_sizer->Add(ass_input, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 10);
-	ass_input_sizer->Add(new wxStaticText(this, -1, _T("HTML:")), 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	ass_input_sizer->Add(html_input, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 10);
+	wxSizer *hsx_sizer = new wxBoxSizer(wxHORIZONTAL);
+	hsx_sizer->Add(hsl_box);
+	hsx_sizer->AddSpacer(5);
+	hsx_sizer->Add(hsv_box);
+
+	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
+	picker_sizer->AddStretchSpacer();
+	picker_sizer->Add(screen_dropper, 0, wxALIGN_CENTER);
+	picker_sizer->AddStretchSpacer();
+	picker_sizer->Add(recent_box, 0, wxALIGN_CENTER);
+	picker_sizer->AddStretchSpacer();
 
 	wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer();
 	button_sizer->AddButton(ok_button);
 	button_sizer->AddButton(cancel_button);
 	button_sizer->Realize();
 
-	wxGridBagSizer *input_sizer = new wxGridBagSizer(5, 5);
-	input_sizer->Add(rgb_box, wxGBPosition(0, 0), wxGBSpan(1, 2), wxALIGN_CENTER);
-	input_sizer->Add(hsl_box, wxGBPosition(0, 2), wxGBSpan(1, 2), wxALIGN_CENTER);
+	/*wxGridBagSizer *input_sizer = new wxGridBagSizer(5, 5);
+	input_sizer->Add(rgb_box, wxGBPosition(0, 0), wxGBSpan(1, 4), wxALIGN_CENTER|wxEXPAND);
+	input_sizer->Add(hsl_box, wxGBPosition(1, 0), wxGBSpan(1, 2), wxALIGN_CENTER);
 	input_sizer->Add(hsv_box, wxGBPosition(1, 2), wxGBSpan(1, 2), wxALIGN_CENTER);
-	input_sizer->Add(ass_input_sizer, wxGBPosition(2, 0), wxGBSpan(1, 4), wxALIGN_CENTER);
-	input_sizer->Add(screen_dropper, wxGBPosition(3, 0), wxGBSpan(2, 1), wxALIGN_CENTER);
-	input_sizer->Add(recent_box, wxGBPosition(3, 1), wxGBSpan(1, 3), wxALIGN_CENTER);
-	input_sizer->Add(button_sizer, wxGBPosition(4, 1), wxGBSpan(1, 3), wxALIGN_RIGHT|wxALIGN_BOTTOM);
+	input_sizer->Add(screen_dropper, wxGBPosition(2, 0), wxGBSpan(1, 1), wxALIGN_CENTER);
+	input_sizer->Add(recent_box, wxGBPosition(2, 1), wxGBSpan(1, 3), wxALIGN_CENTER);
+	input_sizer->Add(button_sizer, wxGBPosition(3, 0), wxGBSpan(1, 4), wxALIGN_RIGHT|wxALIGN_BOTTOM);*/
+	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
+	input_sizer->Add(rgb_box, 0, wxALIGN_CENTER|wxEXPAND);
+	input_sizer->AddSpacer(5);
+	input_sizer->Add(hsx_sizer, 0, wxALIGN_CENTER|wxEXPAND);
+	input_sizer->AddStretchSpacer(1);
+	input_sizer->Add(picker_sizer, 0, wxALIGN_CENTER|wxEXPAND);
+	input_sizer->AddStretchSpacer(2);
+	input_sizer->Add(button_sizer, 0, wxALIGN_RIGHT|wxALIGN_BOTTOM);
 
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
 	main_sizer->Add(spectrum_box, 0, wxALL, 5);
-	main_sizer->Add(input_sizer, 0, wxALL&~wxLEFT, 5);
+	main_sizer->Add(input_sizer, 0, (wxALL&~wxLEFT)|wxEXPAND, 5);
 
 	SetSizer(main_sizer);
 	main_sizer->SetSizeHints(this);
-	CentreOnParent();
+	CenterOnParent();
 
 	// Fill the controls
 	updating_controls = false;

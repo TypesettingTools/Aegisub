@@ -79,13 +79,16 @@ DECLARE_EVENT_TYPE(wxSPECTRUM_CHANGE, -1)
 class ColorPickerRecent : public wxControl {
 private:
 	int rows, cols;
+	int cellsize;
+	wxPoint internal_control_offset;
 	std::vector<wxColour> colors;
 
 	void OnClick(wxMouseEvent &evt);
 	void OnPaint(wxPaintEvent &evt);
+	void OnSize(wxSizeEvent &evt);
 
 public:
-	ColorPickerRecent(wxWindow *parent, wxWindowID id, wxSize size, int _cols, int _rows);
+	ColorPickerRecent(wxWindow *parent, wxWindowID id, int _cols, int _rows, int _cellsize);
 
 	void LoadFromString(const wxString &recent_string);
 	wxString StoreToString();
