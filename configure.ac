@@ -129,6 +129,7 @@ AC_CXX_FLAG([-Wall])
 AC_CXX_FLAG([-Wextra],[AC_CXX_FLAG([-W])])
 AC_CXX_FLAG([-Wno-unused-parameter])
 AC_CXX_FLAG([-Wno-long-long])
+AC_CXX_FLAG([-fpermissive])
 AC_CXX_FLAG([-std=c++98])
 
 

@@ -51,7 +51,7 @@ StreamAudioProvider::StreamAudioProvider() {
 	endPos = BUFSIZE;
 	buffered = 0;
 	hasBuf = false;
-	num_samples = 0xFFFFFFFFFFFFFF;
+	num_samples = ~0ULL;
 }
 
 

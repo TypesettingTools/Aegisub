@@ -1305,7 +1305,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 				// Send data to provider
 				scrubProvider->Append(buf,bufSize);
-				if (!player->IsPlaying()) player->Play(0,0xFFFFFFFFFFFF);
+				if (!player->IsPlaying()) player->Play(0,~0ULL);
 				delete buf;
 			}
 		}
