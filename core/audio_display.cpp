@@ -1252,16 +1252,16 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (scrubDeltaTime > 0) {
 			// Get derived data
 			int rateChange = provider->GetSampleRate()/20;
-			int curRate = MID(int(scrubLastRate-rateChange),abs(int(exactPos - scrubLastPos)) * CLK_TCK / scrubDeltaTime,int(scrubLastRate+rateChange));
+			int curRate = MID(int(scrubLastRate-rateChange),abs(int(exactPos - scrubLastPos)) * CLOCKS_PER_SEC / scrubDeltaTime,int(scrubLastRate+rateChange));
 			if (abs(curRate-scrubLastRate) < rateChange) curRate = scrubLastRate;
-			curScrubPos = scrubLastPos + (curRate * scrubDeltaTime / CLK_TCK * (invert ? -1 : 1));
+			curScrubPos = scrubLastPos + (curRate * scrubDeltaTime / CLOCKS_PER_SEC * (invert ? -1 : 1));
 			__int64 scrubDelta = curScrubPos - scrubLastPos;
 			scrubLastRate = curRate;
 
 			// Copy data to buffer
 			if (scrubDelta != 0) {
 				// Create buffer
-				int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLK_TCK;
+				int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLOCKS_PER_SEC;
 				short *buf = new short[bufSize];
 
 				// Flag as inverted, if necessary
