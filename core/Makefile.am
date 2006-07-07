@@ -14,6 +14,7 @@ AM_CPPFLAGS = -Iposix -include posix/defines.h $(BUILDINFO)
 LDADD = posix/libposix.a
 aegisub_SOURCES = about.cpp \
 	aegisublocale.cpp \
+	ass_attachment.cpp \
 	ass_dialogue.cpp \
 	ass_entry.cpp \
 	ass_export_filter.cpp \
@@ -32,16 +33,20 @@ aegisub_SOURCES = about.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_lavc.cpp \
 	audio_provider_ram.cpp \
+	audio_provider_stream.cpp \
+	auto4_base.cpp \
 	automation.cpp \
 	automation_filter.cpp \
 	automation_gui.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
 	colorspace.cpp \
+	dialog_attachments.cpp \
 	dialog_colorpicker.cpp \
 	dialog_export.cpp \
 	dialog_hotkeys.cpp \
 	dialog_jumpto.cpp \
+	dialog_options.cpp \
 	dialog_progress.cpp \
 	dialog_properties.cpp \
 	dialog_resample.cpp \
