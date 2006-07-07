@@ -437,11 +437,11 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 		}
 		// Released left button
 		else if (event.LeftUp()) {
-			ReleaseCapture();
+			ReleaseMouse();
 		}
 		// Released right button; make a menu for selecting \k type
 		else if (event.RightUp()) {
-			ReleaseCapture();
+			ReleaseMouse();
 
 			AudioKaraokeTagMenu menu(this);
 			PopupMenu(&menu);
