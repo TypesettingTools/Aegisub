@@ -48,6 +48,7 @@
 class AssFile;
 class AssOverrideParameter;
 class DialogFontsCollector;
+class FrameMain;
 
 
 ////////////
@@ -94,6 +95,7 @@ private:
 	wxButton *StartButton;
 	wxButton *CloseButton;
 	wxCheckBox *AttachmentCheck;
+	FrameMain *main;
 
 	void OnStart(wxCommandEvent &event);
 	void OnClose(wxCommandEvent &event);

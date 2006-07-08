@@ -48,6 +48,8 @@
 #include "fonts_collector.h"
 #include "utils.h"
 #include "options.h"
+#include "frame_main.h"
+#include "subs_grid.h"
 
 
 ///////////////
@@ -55,6 +57,9 @@
 DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 : wxDialog(parent,-1,_("Fonts Collector"),wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
+	// Parent
+	main = (FrameMain*) parent;
+
 	// Destination box
 	wxString dest = Options.AsText(_T("Fonts Collector Destination"));
 	if (dest == _T("?script")) {
@@ -314,6 +319,7 @@ void FontsCollectorThread::Collect() {
 	wxMutexGuiLeave();
 
 	// Scans file
+	bool fileModified = false;
 	AssStyle *curStyle;
 	AssDialogue *curDiag;
 	curLine = 0;
@@ -400,8 +406,11 @@ void FontsCollectorThread::Collect() {
 						// Copy font
 						bool success;
 						if (attaching) {
-							success = true;
-							try { subs->InsertAttachment(srcFile); }
+							try {
+								subs->InsertAttachment(srcFile);
+								fileModified = true;
+								success = true;
+							}
 							catch (...) { success = false; }
 						}
 						else success = Copy(srcFile,dstFile);
@@ -434,4 +443,10 @@ void FontsCollectorThread::Collect() {
 		}
 	}
 #endif
+
+	// Flag file as modified
+	if (fileModified) {
+		subs->FlagAsModified();
+		collector->main->SubsBox->CommitChanges();
+	}
 }
