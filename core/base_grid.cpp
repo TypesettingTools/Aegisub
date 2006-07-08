@@ -440,21 +440,19 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			// Hidden overrides
 			if (mode == 1 || mode == 2) {
 				wxString replaceWith = Options.AsText(_T("Grid hide overrides char"));
-				curDiag->ParseASSTags();
-				size_t n = curDiag->Blocks.size();
-				for (size_t i=0;i<n;i++) {
-					AssDialogueBlock *block = curDiag->Blocks.at(i);
-					AssDialogueBlockPlain *plain = AssDialogueBlock::GetAsPlain(block);
-					if (plain) {
-						value += plain->GetText();
+				int textlen = curDiag->Text.Length();
+				int depth = 0;
+				wxChar curChar;
+				for (int i=0;i<textlen;i++) {
+					curChar = curDiag->Text[i];
+					if (curChar == _T('{')) depth = 1;
+					else if (curChar == _T('}')) {
+						depth--;
+						if (depth == 0 && mode == 1) value += replaceWith;
+						if (depth < 0) depth = 0;
 					}
-					else {
-						if (mode == 1) {
-							value += replaceWith;
-						}
-					}
+					else if (depth != 1) value += curChar;
 				}
-				curDiag->ClearBlocks();
 			}
 
 			// Show overrides
