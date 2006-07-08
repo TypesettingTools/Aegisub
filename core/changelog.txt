@@ -96,6 +96,7 @@ Please visit http://aegisub.net to download latest version
 - Stopping audio playback will now stop video playback as well. (AMZ)
 - Implemented sorting of subtitles by start time. (AMZ)
 - Recovered subtitle files are now saved in their own subfolder. (AMZ)
+- Fixed crash with changing font properties via the subtitle edit box when there was a \fs override tag earlier in the line. (AMZ)
 
 
 = 1.09 beta - 2006.01.16 ===========================

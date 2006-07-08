@@ -168,8 +168,9 @@ void VariableData::ResetWith(wxString value) {
 // Reads as an int
 int VariableData::AsInt() const {
 	if (!value) throw _T("Null parameter");
-	if (type != VARDATA_INT) throw _T("Wrong parameter type, should be int");
-	return *value_int;
+	if (type == VARDATA_INT) return *value_int;
+	if (type == VARDATA_FLOAT) return (int)(*value_float);
+	throw _T("Wrong parameter type, should be int");
 }
 
 
@@ -177,8 +178,9 @@ int VariableData::AsInt() const {
 // Reads as a float
 double VariableData::AsFloat() const {
 	if (!value) throw _T("Null parameter");
-	if (type != VARDATA_FLOAT) throw _T("Wrong parameter type, should be float");
-	return *value_float;
+	if (type == VARDATA_FLOAT) return *value_float;
+	if (type == VARDATA_INT) return (float)(*value_int);
+	throw _T("Wrong parameter type, should be float");
 }
 
 
@@ -187,8 +189,9 @@ double VariableData::AsFloat() const {
 bool VariableData::AsBool() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_BOOL) return *value_bool;
-	else if (type == VARDATA_INT) return ((*value_int)!=0);
-	else throw _T("Wrong parameter type, should be bool");
+	if (type == VARDATA_INT) return ((*value_int)!=0);
+	if (type == VARDATA_FLOAT) return ((*value_float)!=0);
+	throw _T("Wrong parameter type, should be bool");
 }
 
 
