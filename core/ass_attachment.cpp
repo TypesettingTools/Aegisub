@@ -37,12 +37,23 @@
 ////////////
 // Includes
 #include <wx/wfstream.h>
+#include <wx/filename.h>
 #include "ass_attachment.h"
 
 
 ///////////////
 // Constructor
-AssAttachment::AssAttachment(wxString name) {
+AssAttachment::AssAttachment(wxString _name) {
+	// Parse name
+	wxFileName fname(_name);
+	wxString ext = fname.GetExt().Lower();
+	wxString name;
+	if (ext == _T("ttf")) {
+		name = fname.GetName() + _T("_0.") + ext;
+	}
+	else name = _name;
+
+	// Set data
 	filename = name;
 	data = boost::shared_ptr<AttachData> (new AttachData);
 }
