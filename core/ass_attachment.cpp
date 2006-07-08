@@ -45,7 +45,8 @@
 // Constructor
 AssAttachment::AssAttachment(wxString _name) {
 	// Parse name
-	wxFileName fname(_name);
+	filename = _name;
+	wxFileName fname(GetFileName());
 	wxString ext = fname.GetExt().Lower();
 	wxString name;
 	if (ext == _T("ttf")) {
@@ -185,6 +186,26 @@ void AssAttachment::Import(wxString filename) {
 	fp.Read(&datavec[0],size);
 }
 
+
+////////////////
+// Get filename
+wxString AssAttachment::GetFileName(bool raw) {
+	// Raw
+	if (raw || filename.Right(4).Lower() != _T(".ttf")) return filename;
+
+	// Remove stuff after last underscore if it's a font
+	int lastUnder = -1;
+	for (size_t i=0;i<filename.Length();i++) {
+		if (filename[i] == _T('_')) lastUnder = i;
+	}
+
+	// Underline found
+	wxString final = filename;
+	if (lastUnder != -1) {
+		final = filename.Left(lastUnder) + _T(".ttf");
+	}
+	return final;
+}
 
 
 

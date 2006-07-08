@@ -71,9 +71,9 @@ public:
 class AssAttachment : public AssEntry {
 private:
 	boost::shared_ptr<AttachData> data;
+	wxString filename;
 
 public:
-	wxString filename;
 	const DataVec &GetData();
 
 	void AddData(wxString data);
@@ -81,6 +81,7 @@ public:
 
 	void Extract(wxString filename);
 	void Import(wxString filename);
+	wxString GetFileName(bool raw=false);
 
 	const wxString GetEntryData();
 	ASS_EntryType GetType() { return ENTRY_ATTACHMENT; }
