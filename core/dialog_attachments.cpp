@@ -53,15 +53,21 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 : wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize)
 {
 	// List view
-	listView = new wxListView(this,-1,wxDefaultPosition,wxSize(500,200));
+	listView = new wxListView(this,ATTACHMENT_LIST,wxDefaultPosition,wxSize(500,200));
 	UpdateList();
+
+	// Buttons
+	extractButton = new wxButton(this,BUTTON_EXTRACT,_("E&xtract"));
+	deleteButton = new wxButton(this,BUTTON_DELETE,_("&Delete"));
+	extractButton->Enable(false);
+	deleteButton->Enable(false);
 
 	// Buttons sizer
 	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_FONT,_("Attach &Font")),1,0,0);
 	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_GRAPHICS,_("Attach &Graphics")),1,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_EXTRACT,_("E&xtract")),1,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_DELETE,_("&Delete")),1,0,0);
+	buttonSizer->Add(extractButton,1,0,0);
+	buttonSizer->Add(deleteButton,1,0,0);
 	buttonSizer->Add(new wxButton(this,BUTTON_CLOSE,_("&Close")),1,wxLEFT,5);
 
 	// Main sizer
@@ -114,6 +120,9 @@ BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 	EVT_BUTTON(BUTTON_EXTRACT,DialogAttachments::OnExtract)
 	EVT_BUTTON(BUTTON_DELETE,DialogAttachments::OnDelete)
 	EVT_BUTTON(BUTTON_CLOSE,DialogAttachments::OnClose)
+	EVT_LIST_ITEM_SELECTED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
+	EVT_LIST_ITEM_DESELECTED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
+	EVT_LIST_ITEM_FOCUSED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
 END_EVENT_TABLE()
 
 
@@ -235,4 +244,16 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 // Close
 void DialogAttachments::OnClose(wxCommandEvent &event) {
 	EndModal(0);
+}
+
+
+//////////////////////////
+// List selection changed
+void DialogAttachments::OnListClick(wxListEvent &event) {
+	// Check if any is selected
+	bool hasSel = listView->GetFirstSelected() != -1;
+
+	// Set status
+	extractButton->Enable(hasSel);
+	deleteButton->Enable(hasSel);
 }

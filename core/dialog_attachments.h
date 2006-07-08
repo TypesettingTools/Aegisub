@@ -45,6 +45,7 @@
 //////////////
 // Prototypes
 class wxListView;
+class wxListEvent;
 
 
 //////////////////////
@@ -52,12 +53,15 @@ class wxListView;
 class DialogAttachments : public wxDialog {
 private:
 	wxListView *listView;
+	wxButton *extractButton;
+	wxButton *deleteButton;
 
 	void OnAttachFont(wxCommandEvent &event);
 	void OnAttachGraphics(wxCommandEvent &event);
 	void OnExtract(wxCommandEvent &event);
 	void OnDelete(wxCommandEvent &event);
 	void OnClose(wxCommandEvent &event);
+	void OnListClick(wxListEvent &event);
 
 	void UpdateList();
 
@@ -76,5 +80,6 @@ enum {
 	BUTTON_ATTACH_GRAPHICS,
 	BUTTON_EXTRACT,
 	BUTTON_DELETE,
-	BUTTON_CLOSE
+	BUTTON_CLOSE,
+	ATTACHMENT_LIST
 };
