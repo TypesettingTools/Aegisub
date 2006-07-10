@@ -541,7 +541,7 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 
 		// Prepare variables
 		int halfwindow = window/2;
-		int posThres = int(double(halfwindow-cutOff)/double(h)*0.5/scale + 0.5);
+		int posThres = MAX(1,int(double(halfwindow-cutOff)/double(h)*0.5/scale + 0.5));
 		float mult = float(h)/float(halfwindow-cutOff)/255.0f;
 
 		// Calculation loop
