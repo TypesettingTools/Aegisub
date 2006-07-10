@@ -548,13 +548,6 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	button_sizer->AddButton(cancel_button);
 	button_sizer->Realize();
 
-	/*wxGridBagSizer *input_sizer = new wxGridBagSizer(5, 5);
-	input_sizer->Add(rgb_box, wxGBPosition(0, 0), wxGBSpan(1, 4), wxALIGN_CENTER|wxEXPAND);
-	input_sizer->Add(hsl_box, wxGBPosition(1, 0), wxGBSpan(1, 2), wxALIGN_CENTER);
-	input_sizer->Add(hsv_box, wxGBPosition(1, 2), wxGBSpan(1, 2), wxALIGN_CENTER);
-	input_sizer->Add(screen_dropper, wxGBPosition(2, 0), wxGBSpan(1, 1), wxALIGN_CENTER);
-	input_sizer->Add(recent_box, wxGBPosition(2, 1), wxGBSpan(1, 3), wxALIGN_CENTER);
-	input_sizer->Add(button_sizer, wxGBPosition(3, 0), wxGBSpan(1, 4), wxALIGN_RIGHT|wxALIGN_BOTTOM);*/
 	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
 	input_sizer->Add(rgb_box, 0, wxALIGN_CENTER|wxEXPAND);
 	input_sizer->AddSpacer(5);

@@ -6,7 +6,6 @@ include("utils.lua")
 
 name = "Text placement demo"
 description = "Demonstration of the text_extents function, to do per-syllable placement of text."
-
 version, kind, configuration = 3, 'basic_ass', {}
 
 function process_lines(meta, styles, lines, config)

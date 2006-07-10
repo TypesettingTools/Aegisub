@@ -1,5 +1,5 @@
 This directory contains flexible, configurable Automation scripts to do common jobs,
-without having to do programming.
+without having to do (much) programming.
 
 You can load these scripts into an ASS file in Aegisub, and apply an effect without
 doing more than writing ASS override tags.
