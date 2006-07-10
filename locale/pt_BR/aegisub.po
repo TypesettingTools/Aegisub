@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-07-10 18:05-0300\n"
+"PO-Revision-Date: 2006-07-10 18:10-0300\n"
 "Last-Translator: Rodrigo Braz Monteiro <zeratul@cellosoft.com>\n"
 "Language-Team: Rodrigo Braz Monteiro\n"
 "MIME-Version: 1.0\n"
@@ -1441,19 +1441,19 @@ msgstr "Ativa o ajuste de legendas para coincidir com o keyframe mais próximo, 
 
 #: dialog_timing_processor.cpp:107
 msgid "Starts before thres.:"
-msgstr "Começa antes até:"
+msgstr "Limite começar antes:"
 
 #: dialog_timing_processor.cpp:109
 msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
-msgstr "Limite para a distância 'antes do início', ou seja, quantos frames a legenda precisa estar antes de um keyframe para grudar nele."
+msgstr "Limite para a distância 'antes do início', ou seja, quantos frames a legenda precisa iniciar antes de um keyframe para ser movida a ele."
 
 #: dialog_timing_processor.cpp:110
 msgid "Starts after thres.:"
-msgstr "Começa após até:"
+msgstr "Limite começar depois:"
 
 #: dialog_timing_processor.cpp:112
 msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
-msgstr "Margem para a distância após o início, isto é, quantos frames a legenda precisa iniciar após um keyframe para ser movida a ele."
+msgstr "Limite para a distância 'após o início', ou seja, quantos frames a legenda precisa iniciar após um keyframe para ser movida a ele."
 
 #: dialog_timing_processor.cpp:113
 msgid "Ends before thres.:"
@@ -1461,7 +1461,7 @@ msgstr "Limite terminar antes:"
 
 #: dialog_timing_processor.cpp:115
 msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
-msgstr "Limite para a distância 'antes do fim', ou seja, quantos frames o fim da legenda precisa estar antes de um keyframe para grudar nele."
+msgstr "Limite para a distância 'antes do fim', ou seja, quantos frames a legenda precisa terminar antes de um keyframe para ser movida a ele."
 
 #: dialog_timing_processor.cpp:116
 msgid "Ends after thres.:"
@@ -1469,7 +1469,7 @@ msgstr "Limite terminar depois:"
 
 #: dialog_timing_processor.cpp:118
 msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
-msgstr "Limite para a distância 'após o fim', ou seja, quantos frames a legenda precisa terminar após de um keyframe para grudar nele."
+msgstr "Limite para a distância 'após o fim', ou seja, quantos frames a legenda precisa terminar após de um keyframe para ser movida a ele."
 
 #: dialog_timing_processor.cpp:154
 msgid "All"
@@ -2159,23 +2159,23 @@ msgstr "Define zoom para 200%"
 
 #: frame_main.cpp:280
 msgid "Jump video to start\t"
-msgstr "Pula vídeo para o início"
+msgstr "Pula vídeo para o início\t"
 
 #: frame_main.cpp:281
 msgid "Jump video to end\t"
-msgstr "Pula vídeo para o fim"
+msgstr "Pula vídeo para o fim\t"
 
 #: frame_main.cpp:282
 msgid "Snap start to video\t"
-msgstr "Define início para vídeo"
+msgstr "Define início para vídeo\t"
 
 #: frame_main.cpp:283
 msgid "Snap end to video\t"
-msgstr "Define fim para vídeo"
+msgstr "Define fim para vídeo\t"
 
 #: frame_main.cpp:284
 msgid "Snap to scene\t"
-msgstr "Ajustar à cena"
+msgstr "Ajustar à cena\t"
 
 #: frame_main.cpp:284
 msgid "Set start and end of subtitles to the keyframes around current video frame"
