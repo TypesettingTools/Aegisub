@@ -691,6 +691,8 @@ void FrameMain::SetDisplayMode(int mode) {
 	// Update
 	curMode = mode;
 	UpdateToolbar();
+	MainSizer->CalcMin();
+	MainSizer->RecalcSizes();
 	videoBox->VideoSizer->Layout();
 	MainSizer->Layout();
 	Layout();
