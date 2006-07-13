@@ -696,6 +696,7 @@ void FrameMain::SetDisplayMode(int mode) {
 	videoBox->VideoSizer->Layout();
 	MainSizer->Layout();
 	Layout();
+	Show(true);
 	//int cw,ch;
 	//GetSize(&cw,&ch);
 	//SetSize(cw-1,ch-1);

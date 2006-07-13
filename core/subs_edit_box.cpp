@@ -1047,6 +1047,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	wxString insert;
 	wxString insert2;
 	int shift;
+	int nInserted = 1;
 
 	// Default value
 	wxColour startcolor;
@@ -1159,11 +1160,27 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		if (!font.Ok()) return;
 
 		// Generate insert string
-		if (font.GetFaceName() != startfont.GetFaceName()) insert = _T("\\fn") + font.GetFaceName();
-		if (font.GetPointSize() != startfont.GetPointSize()) insert += _T("\\fs") + wxString::Format(_T("%i"),font.GetPointSize());
-		if (font.GetWeight() != startfont.GetWeight()) insert += _T("\\b") + wxString::Format(_T("%i"),font.GetWeight() == wxFONTWEIGHT_BOLD ? 1 : 0);
-		if (font.GetStyle() != startfont.GetStyle()) insert += _T("\\i") + wxString::Format(_T("%i"),font.GetStyle() == wxFONTSTYLE_ITALIC ? 1 : 0);
-		if (font.GetUnderlined() != startfont.GetUnderlined()) insert += _T("\\u") + wxString::Format(_T("%i"),font.GetUnderlined() ? 1 : 0);
+		nInserted = 0;
+		if (font.GetFaceName() != startfont.GetFaceName()) {
+			insert = _T("\\fn") + font.GetFaceName();
+			nInserted++;
+		}
+		if (font.GetPointSize() != startfont.GetPointSize()) {
+			insert += _T("\\fs") + wxString::Format(_T("%i"),font.GetPointSize());
+			nInserted++;
+		}
+		if (font.GetWeight() != startfont.GetWeight()) {
+			insert += _T("\\b") + wxString::Format(_T("%i"),font.GetWeight() == wxFONTWEIGHT_BOLD ? 1 : 0);
+			nInserted++;
+		}
+		if (font.GetStyle() != startfont.GetStyle()) {
+			insert += _T("\\i") + wxString::Format(_T("%i"),font.GetStyle() == wxFONTSTYLE_ITALIC ? 1 : 0);
+			nInserted++;
+		}
+		if (font.GetUnderlined() != startfont.GetUnderlined()) {
+			insert += _T("\\u") + wxString::Format(_T("%i"),font.GetUnderlined() ? 1 : 0);
+			nInserted++;
+		}
 		if (insert.IsEmpty()) return;
 	}
 
@@ -1192,8 +1209,8 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		shift = insert.Length();
 
 		// Remove old of same
-		for (size_t i=0;i<override->Tags.size()-1;i++) {
-			if (override->Tags.at(i)->Name == tagname) {
+		for (size_t i=0;i<override->Tags.size()-nInserted;i++) {
+			if (insert.Contains(override->Tags.at(i)->Name)) {
 				shift -= override->Tags.at(i)->ToString().Length();
 				override->Tags.erase(override->Tags.begin() + i);
 				i--;
@@ -1229,8 +1246,8 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 			override->ParseTags();
 
 			// Remove old of same
-			for (size_t i=0;i<override->Tags.size()-1;i++) {
-				if (override->Tags.at(i)->Name == tagname) {
+			for (size_t i=0;i<override->Tags.size()-nInserted;i++) {
+				if (insert.Contains(override->Tags.at(i)->Name)) {
 					shift -= override->Tags.at(i)->ToString().Length();
 					override->Tags.erase(override->Tags.begin() + i);
 					i--;
