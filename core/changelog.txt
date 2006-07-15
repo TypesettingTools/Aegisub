@@ -79,6 +79,7 @@ Please visit http://aegisub.net to download latest version
    o Italian (thanks to EmBoLo)
    o Korean (thanks to oblisk)
    o Danish (thanks to mulrich and jfs)
+   o Hungarian (thanks to Yuri)
 - Style editor now uses a dropdown for the encoding field. (AMZ)
 - Added 2.35 and custom aspect ratio support for video display. (AMZ)
 - The manual has been extensively re-written and extended to include documentation about a lot of new (and some not so new) features. It's reasonably complete... for the moment. (TheFluff, Motoko-chan, AMZ, others)
