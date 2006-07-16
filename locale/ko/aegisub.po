@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-14 03:51-0200\n"
-"PO-Revision-Date: 2006-07-16 18:34-0300\n"
+"PO-Revision-Date: 2006-07-16 19:09-0300\n"
 "Last-Translator: Rodrigo Braz Monteiro <zeratul@cellosoft.com>\n"
 "Language-Team: KAA <oblisk@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr "매뉴얼 ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed 씀.\n
 
 #: about.cpp:67
 msgid "Forum and bug tracker hosting by Bot1.\n"
-msgstr "BBC, Bug Tracker 호스팅 Bot1 함.\n"
+msgstr "BBC, 버그 트레커 호스팅 Bot1 함.\n"
 
 #: about.cpp:68
 msgid "SVN hosting by BerliOS and Mentar.\n"
@@ -126,7 +126,7 @@ msgstr "선택 500 ms 후에 재생 ("
 
 #: audio_box.cpp:138
 msgid "Play first 500ms of selection ("
-msgstr "시작에서 500 ms 까지 재생 ("
+msgstr "시작에서 500 ms 까지 재생  ("
 
 #: audio_box.cpp:141
 msgid "Play last 500ms of selection ("
@@ -134,7 +134,7 @@ msgstr "마지막 500 ms  재생 ("
 
 #: audio_box.cpp:144
 msgid "Play from selection start to end of file ("
-msgstr "선택부터 끝가지 재생 ("
+msgstr "선택부터 끝가지 재생"
 
 #: audio_box.cpp:148
 msgid "Add lead in ("
@@ -472,11 +472,11 @@ msgstr "색상:"
 #: dialog_colorpicker.cpp:519
 #: dialog_colorpicker.cpp:528
 msgid "Sat.:"
-msgstr "Sat.:"
+msgstr "채도:"
 
 #: dialog_colorpicker.cpp:521
 msgid "Lum.:"
-msgstr "Lum.:"
+msgstr "휘도:"
 
 #: dialog_colorpicker.cpp:530
 msgid "Value:"
@@ -521,7 +521,7 @@ msgstr "자막 밖으로 저장"
 
 #: dialog_fextracker.cpp:18
 msgid "Tracker configuration"
-msgstr "Tracker 편집"
+msgstr "트레커 편집"
 
 #: dialog_fextracker.cpp:42
 msgid "Number of points to track:"
@@ -1383,7 +1383,7 @@ msgstr "르드-인/르드-아웃"
 
 #: dialog_timing_processor.cpp:68
 msgid "Add lead in:"
-msgstr "르드 인 추가 ("
+msgstr "르드 인 추가:"
 
 #: dialog_timing_processor.cpp:69
 msgid "Enable adding of lead-ins to lines."
@@ -1428,7 +1428,7 @@ msgstr "두 자막들의 시작/끝  최대한 차이점들이 게속돼는 (밀
 
 #: dialog_timing_processor.cpp:97
 msgid "Bias: Start <- "
-msgstr "Bias: 시작 <-"
+msgstr "바이어스: 시작 <-"
 
 #: dialog_timing_processor.cpp:99
 msgid " -> End"
@@ -1535,7 +1535,7 @@ msgstr "전채보기"
 #: dialog_translation.cpp:171
 #, c-format
 msgid "Current line: %i/%i"
-msgstr "현제 줄: %i/%i"
+msgstr "현제 줄:  %i/%i"
 
 #: export_clean_info.cpp:58
 msgid "Clean Script Info"
@@ -2382,7 +2382,7 @@ msgstr "에이지썹  BBC 가기"
 
 #: frame_main.cpp:330
 msgid "&Bug tracker..."
-msgstr "&Bug tracker..."
+msgstr "&버그 트레커..."
 
 #: frame_main.cpp:330
 msgid "Visit Aegisub's bug tracker"
@@ -2665,19 +2665,19 @@ msgstr "오디오 듯기 (alt)"
 
 #: hotkeys.cpp:363
 msgid "Audio Karaoke Increase Len"
-msgstr "오디오 가라오케 Len 올리기"
+msgstr "오디오 가라오케 거리 올리기"
 
 #: hotkeys.cpp:364
 msgid "Audio Karaoke Decrease Len"
-msgstr "오디오 가라오케 Len 내리기"
+msgstr "오디오 가라오케 거리 내리기"
 
 #: hotkeys.cpp:365
 msgid "Audio Karaoke Increase Len Shift"
-msgstr "오디오 가라오케 Len 움지기기 (올리기)"
+msgstr "오디오 가라오케 거리 움지기기 (올리기)"
 
 #: hotkeys.cpp:366
 msgid "Audio Karaoke Decrease Len Shift"
-msgstr "오디오 가라오케 Len 움지기기 (내리기)"
+msgstr "오디오 가라오케 거리 움지기기 (내리기)"
 
 #: hotkeys.cpp:367
 msgid "Audio Scroll Left"
