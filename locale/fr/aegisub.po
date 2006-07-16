@@ -1,17 +1,10 @@
-# Aegisub FRENCH/Français
-# Copyright (C) 2005
-# This file is distributed under the same license as the Aegisub package.
-# TechNiko <http://manhole-fansubs.com>, 2006.
-# Crysral, 2006.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.09 Beta\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-13 22:10-0200\n"
-"PO-Revision-Date: 2006-07-10 17:50-0300\n"
-"Last-Translator: Techniko & Crysral\n"
-"Language-Team: N/A\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-07-16 22:25+0100\n"
+"Last-Translator: Kurasu <kurassu@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,34 +16,35 @@ msgstr "À propos d'Aegisub"
 
 #: about.cpp:59
 msgid "Translated into LANGUAGE by PERSON\n"
-msgstr "Traduit en français par"
+msgstr "Traduit en français par Techniko et Crysral\n"
 
 #: about.cpp:61
 msgid " by ArchMage ZeratuL.\n"
-msgstr "par Techniko & Crysral
-"
+msgstr " par ArchMage ZeratuL.\n"
 
 #: about.cpp:62
 msgid ""
 "Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
 "\n"
 msgstr ""
+"Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
+"\n"
 
 #: about.cpp:63
 msgid "Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\n"
-msgstr ""
+msgstr "Automation module est sous Copyright (c) 2005-2006 Niels Martin Hansen (alias jfs).\n"
 
 #: about.cpp:64
 msgid "Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n"
-msgstr ""
+msgstr "Motion tracker module est sous Copyright (c) 2006 Hajo Krabbenhoeft (alias Tentacle).\n"
 
 #: about.cpp:65
 msgid "Coding by ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n"
-msgstr ""
+msgstr "Coding par ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle et nmap.\n"
 
 #: about.cpp:66
 msgid "Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n"
-msgstr ""
+msgstr "Manuel par ArchMage ZeratuL, jfs, movax, Kobi, TheFluff et Jcubed.\n"
 
 #: about.cpp:67
 msgid "Forum and bug tracker hosting by Bot1.\n"
@@ -64,7 +58,9 @@ msgstr "SVN hébergé par BerliOS et Mentar.\n"
 msgid ""
 "\n"
 "See the help file for full credits.\n"
-msgstr "Voir le fichier d'aide pour tous les crédits.\n"
+msgstr ""
+"\n"
+"Voir le fichier d'aide pour tous les crédits.\n"
 
 #: about.cpp:71
 #, c-format
@@ -84,7 +80,6 @@ msgid "Vertical zoom"
 msgstr "Zoom vertical"
 
 #: audio_box.cpp:87
-#, fuzzy
 msgid "Audio Volume"
 msgstr "Volume audio"
 
@@ -129,7 +124,6 @@ msgid "Play last 500ms of selection ("
 msgstr "Jouer les dernières 500 ms de la sélection ("
 
 #: audio_box.cpp:144
-#, fuzzy
 msgid "Play from selection start to end of file ("
 msgstr "Jouer du début de la sélection jusqu'à la fin de la piste"
 
@@ -206,12 +200,10 @@ msgid "Commit?"
 msgstr "Appliquer les changements ?"
 
 #: audio_karaoke.cpp:762
-#, fuzzy
 msgid "Karaoke tag"
 msgstr "Karaoké"
 
 #: audio_karaoke.cpp:766
-#, fuzzy
 msgid "Change karaoke tag to \\k"
 msgstr "Changer la commande de karaoké en \\k"
 
@@ -317,7 +309,6 @@ msgstr "Acteur"
 
 #: base_grid.cpp:408
 #: subs_grid.cpp:122
-#, fuzzy
 msgid "Effect"
 msgstr "Effet"
 
@@ -370,7 +361,6 @@ msgid "E&xtract"
 msgstr "Extraire"
 
 #: dialog_attachments.cpp:61
-#, fuzzy
 msgid "&Delete"
 msgstr "Supprimer"
 
@@ -383,7 +373,6 @@ msgid "Attach &Graphics"
 msgstr "Attacher une &image"
 
 #: dialog_attachments.cpp:71
-#, fuzzy
 msgid "&Close"
 msgstr "&Fermer"
 
@@ -405,12 +394,10 @@ msgid "Choose file to be attached"
 msgstr "Choisir le fichier à attacher"
 
 #: dialog_attachments.cpp:207
-#, fuzzy
 msgid "Select the path to save the files to:"
 msgstr "Choisissez le dossier où enregistrer les fichiers:"
 
 #: dialog_attachments.cpp:211
-#, fuzzy
 msgid "Select the path to save the file to:"
 msgstr "Choisissez le dossier où enregistrer le fichier:"
 
@@ -812,12 +799,10 @@ msgid "Doesn't Match"
 msgstr "Ne contenant pas..."
 
 #: dialog_selection.cpp:63
-#, fuzzy
 msgid "Dialogues"
 msgstr "Dialogues"
 
 #: dialog_selection.cpp:64
-#, fuzzy
 msgid "Comments"
 msgstr "Commentaire"
 
@@ -847,7 +832,7 @@ msgstr "Action"
 
 #: dialog_selection.cpp:88
 msgid "Match dialogues/comments"
-msgstr ""
+msgstr "Match dialogues/comments"
 
 #: dialog_selection.cpp:264
 #, c-format
@@ -1103,44 +1088,41 @@ msgstr "Ombrage:"
 
 #: dialog_style_editor.cpp:209
 msgid "ANSI"
-msgstr ""
+msgstr "ANSI"
 
 #: dialog_style_editor.cpp:210
-#, fuzzy
 msgid "Default"
 msgstr "Défaut"
 
 #: dialog_style_editor.cpp:211
 msgid "Symbol"
-msgstr ""
+msgstr "Symbol"
 
 #: dialog_style_editor.cpp:212
-#, fuzzy
 msgid "Mac"
-msgstr ""
+msgstr "Mac"
 
 #: dialog_style_editor.cpp:213
 msgid "Shift_JIS"
-msgstr ""
+msgstr "Shift_JIS"
 
 #: dialog_style_editor.cpp:214
 msgid "Hangeul"
-msgstr ""
+msgstr "Hangeul"
 
 #: dialog_style_editor.cpp:215
 msgid "Johab"
-msgstr ""
+msgstr "Johab"
 
 #: dialog_style_editor.cpp:216
 msgid "GB2312"
-msgstr ""
+msgstr "GB2312"
 
 #: dialog_style_editor.cpp:217
 msgid "Chinese BIG5"
-msgstr ""
+msgstr "Chinese BIG5"
 
 #: dialog_style_editor.cpp:218
-#, fuzzy
 msgid "Greek"
 msgstr "Grecque"
 
@@ -1161,7 +1143,6 @@ msgid "Arabic"
 msgstr "Arabe"
 
 #: dialog_style_editor.cpp:223
-#, fuzzy
 msgid "Baltic"
 msgstr "Baltique"
 
@@ -1179,7 +1160,7 @@ msgstr "Europe de l'est"
 
 #: dialog_style_editor.cpp:227
 msgid "OEM"
-msgstr ""
+msgstr "OEM"
 
 #: dialog_style_editor.cpp:230
 msgid "Miscelaneous"
@@ -1397,7 +1378,6 @@ msgid "Lead-in/Lead-out"
 msgstr "Prolonger avant/après"
 
 #: dialog_timing_processor.cpp:68
-#, fuzzy
 msgid "Add lead in:"
 msgstr "Prolonger avant:"
 
@@ -1410,7 +1390,6 @@ msgid "Lead in to be added, in miliseconds."
 msgstr "Temps ajouté, en millisecondes."
 
 #: dialog_timing_processor.cpp:73
-#, fuzzy
 msgid "Add lead out:"
 msgstr "Prolonger après:"
 
@@ -1445,11 +1424,11 @@ msgstr "Difference maximale en millisecondes entre le debut et la fin de deux so
 
 #: dialog_timing_processor.cpp:97
 msgid "Bias: Start <- "
-msgstr ""
+msgstr "Réglage: Début <- "
 
 #: dialog_timing_processor.cpp:99
 msgid " -> End"
-msgstr ""
+msgstr " -> Fin"
 
 #: dialog_timing_processor.cpp:102
 msgid "Keyframe snapping"
@@ -1464,7 +1443,6 @@ msgid "Starts before thres.:"
 msgstr "Débuts avant le seuil:"
 
 #: dialog_timing_processor.cpp:109
-#, fuzzy
 msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
 msgstr "Seuil pour la distance 'avant le début', c'est à dire combien de frames avant une keyframe un sous-titre doit commencer pour s'aligner dessus."
 
@@ -1477,22 +1455,18 @@ msgid "Threshold for 'after start' distance, that is, how many frames a subtitle
 msgstr "Seuil pour la distance 'après le début', c'est à dire combien de frames après une keyframe un sous-titre doit commencer pour s'alligner dessus."
 
 #: dialog_timing_processor.cpp:113
-#, fuzzy
 msgid "Ends before thres.:"
 msgstr "Fins avant le seuil:"
 
 #: dialog_timing_processor.cpp:115
-#, fuzzy
 msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
 msgstr "Seuil pour la distance 'avant la fin', c'est à dire combien de frames avant une keyframe un sous-titre doit terminer pour s'aligner dessus."
 
 #: dialog_timing_processor.cpp:116
-#, fuzzy
 msgid "Ends after thres.:"
 msgstr "Seuil après le seuil:"
 
 #: dialog_timing_processor.cpp:118
-#, fuzzy
 msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
 msgstr "Seuil pour la distance 'après la fin', c'est à dire combien de frames après une keyframe un sous-titre doit terminer pour s'aligner dessus."
 
@@ -1635,22 +1609,20 @@ msgid "Generate empty movement"
 msgstr "Générer un mouvement vide"
 
 #: fextracker_main_events.cpp:53
-#, fuzzy
 msgid "Move subtitle"
-msgstr "Bouger le sous-titre"
+msgstr "Déplacer le sous-titre"
 
 #: fextracker_main_events.cpp:55
 msgid "Move subtitle (this frame and preceeding frames)"
-msgstr "Bouger le sous-titre (dans cette frame et les précédentes)"
+msgstr "Déplacer le sous-titre (dans cette frame et les précédentes)"
 
 #: fextracker_main_events.cpp:56
-#, fuzzy
 msgid "Move subtitle (this frame)"
-msgstr "Bouger le sous-titre (dans cette frame)"
+msgstr "Déplacer le sous-titre (dans cette frame)"
 
 #: fextracker_main_events.cpp:57
 msgid "Move subtitle (this frame and following frames)"
-msgstr "Bouger le sous-titre (dans cette frame et les suivantes)"
+msgstr "Déplacer le sous-titre (dans cette frame et les suivantes)"
 
 #: fextracker_main_events.cpp:59
 msgid "Split line for movement"
@@ -1997,12 +1969,10 @@ msgid "Undoes last action"
 msgstr "Annulation de la dernière action"
 
 #: frame_main.cpp:237
-#, fuzzy
 msgid "&Redo\t"
 msgstr "&Rétablir\t"
 
 #: frame_main.cpp:237
-#, fuzzy
 msgid "Redoes last action"
 msgstr "Re-effectuer la dernière action"
 
@@ -2023,12 +1993,10 @@ msgid "Shift subtitles by time or frames"
 msgstr "Décalage des sous-titres par temps ou par frames"
 
 #: frame_main.cpp:241
-#, fuzzy
 msgid "Sort by Time"
 msgstr "Décalage par temps"
 
 #: frame_main.cpp:241
-#, fuzzy
 msgid "Sort all subtitles by their start times"
 msgstr "Trier tous les sous-titres par temps ou par frames"
 
@@ -2146,7 +2114,7 @@ msgstr "Ouvrir fichier timecodes..."
 
 #: frame_main.cpp:269
 msgid "Opens a VFR timecodes v1 or v2 file"
-msgstr "Ouverture d'un fichier VFR timecodes v1 ou v2"
+msgstr "Ouvre un fichier VFR timecodes v1 ou v2"
 
 #: frame_main.cpp:270
 msgid "Close timecodes file"
@@ -2154,7 +2122,7 @@ msgstr "Fermer fichier timecodes"
 
 #: frame_main.cpp:270
 msgid "Closes the currently open timecodes file"
-msgstr "Fermeture du fichier timecodes en cours"
+msgstr "Ferme le fichier timecodes en cours"
 
 #: frame_main.cpp:274
 msgid "&Jump To...\t"
@@ -2245,22 +2213,18 @@ msgid "Forces video to widescreen aspect ratio"
 msgstr "Réglage du rapport d'aspect à Panoramique"
 
 #: frame_main.cpp:290
-#, fuzzy
 msgid "&2.35 Aspect Ratio"
 msgstr "&Aspect de rapport 2.35"
 
 #: frame_main.cpp:290
-#, fuzzy
 msgid "Forces video to 2.35 aspect ratio"
 msgstr "Réglage du rapport d'aspect à Plein écran"
 
 #: frame_main.cpp:291
-#, fuzzy
 msgid "Custom Aspect Ratio..."
 msgstr "Choisir le rapport d'aspect..."
 
 #: frame_main.cpp:291
-#, fuzzy
 msgid "Forces video to a custom aspect ratio"
 msgstr "Réglage du rapport d'aspect à Plein écran"
 
@@ -2313,7 +2277,6 @@ msgid "Open styles manager"
 msgstr "Ouvrir le Gestionnaire de Styles"
 
 #: frame_main.cpp:307
-#, fuzzy
 msgid "&Attachments..."
 msgstr "&Attaches"
 
@@ -2406,12 +2369,10 @@ msgid "Visit Aegisub's official website"
 msgstr "Visitez le site web officiel d'Aegisub (en anglais)"
 
 #: frame_main.cpp:329
-#, fuzzy
 msgid "&Forums..."
 msgstr "&Forum..."
 
 #: frame_main.cpp:329
-#, fuzzy
 msgid "Visit Aegisub's forums"
 msgstr "Visitez le forum d'Aegisub"
 
@@ -2420,7 +2381,6 @@ msgid "&Bug tracker..."
 msgstr "&Bug tracker... (en anglais)"
 
 #: frame_main.cpp:330
-#, fuzzy
 msgid "Visit Aegisub's bug tracker"
 msgstr "Visitez le bug tracker d'Aegisub"
 
@@ -2521,11 +2481,11 @@ msgstr "Ouverture d'un fichier timecodes"
 
 #: frame_main_events.cpp:1060
 msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
-msgstr "Entrez le rapport d'aspect soit en sous forme décimale (ex: 2.35), ou en fractionelle (ex: 16:9).\n"
+msgstr ""
+"Entrez le rapport d'aspect soit en sous forme décimale (ex: 2.35), ou en fractionelle (ex: 16:9).\n"
 "Entrez une valeur comme 853x480 pour fixer une résolution spécifique"
 
 #: frame_main_events.cpp:1060
-#, fuzzy
 msgid "Enter aspect ratio"
 msgstr "Modifier le ratio"
 
@@ -2534,7 +2494,6 @@ msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr "Valeur incorrecte ! Le rapport d'aspect doit être entre 0.5 et 5.0."
 
 #: frame_main_events.cpp:1099
-#, fuzzy
 msgid "Invalid Aspect Ratio"
 msgstr "Rapport d'aspect invalide"
 
@@ -2743,7 +2702,6 @@ msgid "Audio Play 500ms After"
 msgstr "Audio jouer les 500 ms après"
 
 #: hotkeys.cpp:373
-#, fuzzy
 msgid "Audio Play To End"
 msgstr "Jouer le son"
 
@@ -2930,7 +2888,6 @@ msgid "Split at cursor (estimate times)"
 msgstr "Rompre au curseur (estimer temps)"
 
 #: subs_grid.cpp:116
-#, fuzzy
 msgid "Line Number"
 msgstr "Numéro de la ligne"
 
@@ -2963,7 +2920,6 @@ msgid "&Duplicate and shift by 1 frame"
 msgstr "&Cloner et décaler d'une frame"
 
 #: subs_grid.cpp:167
-#, fuzzy
 msgid "Split (by karaoke)"
 msgstr "Fusionner (pour Karaoké)"
 
@@ -3008,7 +2964,6 @@ msgid "C&ut"
 msgstr "&Couper"
 
 #: subtitle_format_prs.cpp:128
-#, fuzzy
 msgid "Exporting PRS"
 msgstr "PRS en cours d'exportation"
 
@@ -3065,7 +3020,6 @@ msgid "If anything goes wrong, blame movax."
 msgstr "Si n'importe quoi va de travers, reprocher-le à movax"
 
 #: vfr.cpp:65
-#, fuzzy
 msgid "No timecodes to average"
 msgstr "Fermer fichier timecodes"
 
@@ -3102,7 +3056,6 @@ msgid "You already have timecodes loaded. Replace them with the timecodes from t
 msgstr "Vous avez déjà chargé un fichier timecodes. Le remplacer avec le timecode du ficher Mastroska ?"
 
 #: video_display.cpp:189
-#, fuzzy
 msgid "Replace timecodes?"
 msgstr "Remplacer les timecodes ?"
 
