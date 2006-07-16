@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub DANISH v1.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-07-13 21:03+0100\n"
-"Last-Translator: Morten Ulrich <mulrich15@yahoo.dk>\n"
+"PO-Revision-Date: 2006-07-16 23:11+0100\n"
+"Last-Translator: Niels Martin Hansen <jiifurusu@gmail.com>\n"
 "Language-Team: mulrich (Morten Ulrich) <mulrich15@yahoo.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -38,11 +38,11 @@ msgstr "Automatitionsmodul er copyright (c) 2005-2006 Niels Martin Hansen (aka. 
 
 #: about.cpp:64
 msgid "Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n"
-msgstr "Bevægelsessensormodul er copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n"
+msgstr "Bevægelsessporingsmodul er copyright (c) 2006 Hajo Krabbenhöft (aka Tentacle).\n"
 
 #: about.cpp:65
 msgid "Coding by ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n"
-msgstr "Kodning af ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n"
+msgstr "Programmeret af ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n"
 
 #: about.cpp:66
 msgid "Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n"
@@ -50,11 +50,11 @@ msgstr "Manual af ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n"
 
 #: about.cpp:67
 msgid "Forum and bug tracker hosting by Bot1.\n"
-msgstr "Forum og bug tracker-hosting af Bot1.\n"
+msgstr "Forum og bug-tracker hosting af Bot1.\n"
 
 #: about.cpp:68
 msgid "SVN hosting by BerliOS and Mentar.\n"
-msgstr "SVN-hosting af BerliOS og Mentar.\n"
+msgstr "SVN hosting af BerliOS og Mentar.\n"
 
 #: about.cpp:70
 msgid ""
@@ -62,12 +62,12 @@ msgid ""
 "See the help file for full credits.\n"
 msgstr ""
 "\n"
-"Se hjælp-filen for komplette krediteringer.\n"
+"Se hjælpefilen for fuldstændige krediteringer.\n"
 
 #: about.cpp:71
 #, c-format
 msgid "Built by %s on %s."
-msgstr "Bygget af %s på d. %s."
+msgstr "Bygget af %s d. %s."
 
 #: audio_box.cpp:68
 msgid "Seek bar"
@@ -87,15 +87,15 @@ msgstr "Lydstyrke"
 
 #: audio_box.cpp:89
 msgid "Link vertical zoom and volume sliders"
-msgstr "Forbind lodret zoom og volumeskyderne"
+msgstr "Sammenbind lodret zoom og volumeskyderne"
 
 #: audio_box.cpp:116
 msgid "Previous line/syllable ("
-msgstr "Forrige linie/stavelse ("
+msgstr "Forrige linje/stavelse ("
 
 #: audio_box.cpp:119
 msgid "Next line/syllable ("
-msgstr "Næste linie/stavelse ("
+msgstr "Næste linje/stavelse ("
 
 #: audio_box.cpp:122
 msgid "Play selection ("
@@ -103,7 +103,7 @@ msgstr "Afspil markering ("
 
 #: audio_box.cpp:125
 msgid "Play current line ("
-msgstr "Afspil aktuelle linie ("
+msgstr "Afspil aktuelle linje ("
 
 #: audio_box.cpp:128
 msgid "Stop"
@@ -119,15 +119,15 @@ msgstr "Afspil 500 ms efter markering ("
 
 #: audio_box.cpp:138
 msgid "Play first 500ms of selection ("
-msgstr "Afspil de første 500 ms af markering ("
+msgstr "Afspil første 500 ms af markering ("
 
 #: audio_box.cpp:141
 msgid "Play last 500ms of selection ("
-msgstr "Afspil de sidste 500 ms af markering ("
+msgstr "Afspil sidste 500 ms af markering ("
 
 #: audio_box.cpp:144
 msgid "Play from selection start to end of file ("
-msgstr "Afspil fra beyndelsen af markering og til slut ("
+msgstr "Afspil fra start af markering til sidst i filen ("
 
 #: audio_box.cpp:148
 msgid "Add lead in ("
@@ -139,7 +139,7 @@ msgstr "Tilføj lead-out ("
 
 #: audio_box.cpp:155
 msgid "Commit changes ("
-msgstr "Foretag ændringer ("
+msgstr "Gennemfør ændringer ("
 
 #: audio_box.cpp:158
 msgid "Go to selection"
@@ -147,19 +147,19 @@ msgstr "Gå til markering"
 
 #: audio_box.cpp:162
 msgid "Automatically commit all changes"
-msgstr "Foretag automatisk alle ændringer"
+msgstr "Gennemfør automatisk alle ændringer"
 
 #: audio_box.cpp:166
 msgid "Auto scrolls audio display to selected line"
-msgstr "Aotu-scroller lyddisplay til markerede linie"
+msgstr "Scroller automatisk lyddisplay til markeret linje"
 
 #: audio_box.cpp:170
 msgid "Substation Alpha Mode - Left click sets start and right click sets end"
-msgstr "Substation Alpha-modus -Venstreklik markerer start og højreklik markerer slut"
+msgstr "Substation Alpha-tilstand - Venstreklik markerer start og højreklik markerer slut"
 
 #: audio_box.cpp:174
 msgid "Spectrum analyzer mode"
-msgstr "Spektrumanalyse-modus"
+msgstr "Spektrumanalysevisning"
 
 #: audio_box.cpp:185
 msgid "Karaoke"
@@ -167,7 +167,7 @@ msgstr "Karaoke"
 
 #: audio_box.cpp:186
 msgid "Toggle karaoke mode"
-msgstr "Slå karaoke-modus til/fra"
+msgstr "Slå karaoke-tilstand til/fra"
 
 #: audio_box.cpp:189
 #: audio_box.cpp:192
@@ -181,25 +181,25 @@ msgstr "Sammenslut valgte stavelser"
 #: audio_box.cpp:197
 #: audio_box.cpp:529
 msgid "Split"
-msgstr "Split"
+msgstr "Opdel"
 
 #: audio_box.cpp:198
 msgid "Toggle splitting-mode"
-msgstr "Skift delingsmetode"
+msgstr "Stavelses-deling til/fra"
 
 #: audio_box.cpp:527
 msgid "Cancel Split"
-msgstr "Annullér deling"
+msgstr "Afbryd deling"
 
 #: audio_display.cpp:1963
 #: audio_display.cpp:2008
 msgid "Do you want to commit your changes? If you choose No, they will be discarded."
-msgstr "Vil du foretage dine ændringer? Hvis du vælger Nej, vil de blive kasseret."
+msgstr "Vil du gennemfør dine ændringer? Hvis du vælger Nej, vil de blive kasseret."
 
 #: audio_display.cpp:1963
 #: audio_display.cpp:2008
 msgid "Commit?"
-msgstr "Ændr?"
+msgstr "Foretag ændringer?"
 
 #: audio_karaoke.cpp:762
 msgid "Karaoke tag"
@@ -207,15 +207,15 @@ msgstr "Karaoke-tag"
 
 #: audio_karaoke.cpp:766
 msgid "Change karaoke tag to \\k"
-msgstr "Ændr karaoke-tag til \\k"
+msgstr "Skift karaoke-tag til \\k"
 
 #: audio_karaoke.cpp:767
 msgid "Change karaoke tag to \\kf"
-msgstr "Ændr karaoke-tag til \\kf"
+msgstr "Skift karaoke-tag til \\kf"
 
 #: audio_karaoke.cpp:768
 msgid "Change karaoke tag to \\ko"
-msgstr "Ændr karaoke-tag til \\ko"
+msgstr "Skift karaoke-tag til \\ko"
 
 #: audio_provider_ram.cpp:85
 msgid "Load audio"
@@ -227,7 +227,7 @@ msgstr "Indlæser i RAM"
 
 #: automation_gui.cpp:46
 msgid "Automation Manager"
-msgstr "Automationsmanager"
+msgstr "Automationsstyring"
 
 #: automation_gui.cpp:52
 msgid "&Create..."
@@ -340,14 +340,14 @@ msgstr "Tekst"
 
 #: dialog_associations.cpp:46
 msgid "Associate extensions"
-msgstr "Associér filendelser"
+msgstr "Associér filtyper"
 
 #: dialog_associations.cpp:59
 msgid ""
 "Please select the formats you want to\n"
 "associate with Aegisub:"
 msgstr ""
-"Vælg venligst de formater du vil\n"
+"Vælg de formater du vil\n"
 "associere med Aegisub:"
 
 #: dialog_associations.cpp:60
@@ -397,15 +397,15 @@ msgstr "Vælg fil som skal vedhæftes"
 
 #: dialog_attachments.cpp:207
 msgid "Select the path to save the files to:"
-msgstr "Vælg stien som filerne skal gemmes til:"
+msgstr "Vælg stien filerne skal gemmes til:"
 
 #: dialog_attachments.cpp:211
 msgid "Select the path to save the file to:"
-msgstr "Vælg stien som filen skal gemmes til:"
+msgstr "Vælg stien filen skal gemmes til:"
 
 #: dialog_colorpicker.cpp:371
 msgid "Select Color"
-msgstr "Vælg Farve"
+msgstr "Vælg farve"
 
 #: dialog_colorpicker.cpp:445
 msgid "Color spectrum"
@@ -433,19 +433,19 @@ msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:458
 msgid "RGB color"
-msgstr "RGB color"
+msgstr "RGB farve"
 
 #: dialog_colorpicker.cpp:463
 msgid "HSL color"
-msgstr "HSL color"
+msgstr "HSL farve"
 
 #: dialog_colorpicker.cpp:468
 msgid "HSV color"
-msgstr "HSV color"
+msgstr "HSV farve"
 
 #: dialog_colorpicker.cpp:488
 msgid "Spectrum mode:"
-msgstr "Spektrum-modus:"
+msgstr "Spektrum type:"
 
 #: dialog_colorpicker.cpp:500
 msgid "Red:"
@@ -462,7 +462,7 @@ msgstr "Blå:"
 #: dialog_colorpicker.cpp:517
 #: dialog_colorpicker.cpp:526
 msgid "Hue:"
-msgstr "Skær:"
+msgstr "Nuance:"
 
 #: dialog_colorpicker.cpp:519
 #: dialog_colorpicker.cpp:528
@@ -479,7 +479,7 @@ msgstr "Værdi:"
 
 #: dialog_export.cpp:49
 msgid "Export"
-msgstr "Exportér"
+msgstr "Eksporter"
 
 #: dialog_export.cpp:82
 msgid "Move up"
@@ -508,23 +508,23 @@ msgstr "Filtre"
 #: dialog_export.cpp:109
 #: dialog_export.cpp:113
 msgid "Export..."
-msgstr "Exportér..."
+msgstr "Eksporter..."
 
 #: dialog_export.cpp:185
 msgid "Export subtitles file"
-msgstr "Exportér undertekstfil"
+msgstr "Eksporter undertekstfil"
 
 #: dialog_fextracker.cpp:18
 msgid "Tracker configuration"
-msgstr "Sensorkonfiguration"
+msgstr "Sporingskonfiguration"
 
 #: dialog_fextracker.cpp:42
 msgid "Number of points to track:"
-msgstr "Antal af punkter som skal følges:"
+msgstr "Antal punkter der skal spores:"
 
 #: dialog_fextracker.cpp:45
 msgid "Minimal (squared) distance between two points:  "
-msgstr "Minimal (kvadratisk) afstand mellem to punkter:"
+msgstr "Minimal (kvadreret) afstand mellem to punkter:"
 
 #: dialog_fextracker.cpp:48
 msgid "Maximum feature movement:"
@@ -532,7 +532,7 @@ msgstr "Max. featurebevægelse:"
 
 #: dialog_fextracker.cpp:51
 msgid "Maximum feature appearance change:"
-msgstr "Max. featureudseendeændring:"
+msgstr "Max. ændring i featurefremtoning:"
 
 #: dialog_fextracker.cpp:54
 msgid "How much CPU per feature?"
@@ -560,7 +560,7 @@ msgstr "Mindste forskydning pr. gentagelse:"
 
 #: dialog_fextracker.cpp:77
 msgid "Standard Settings"
-msgstr "Standardindstillinger"
+msgstr "Almindelige indstillinger"
 
 #: dialog_fextracker.cpp:81
 msgid "Advanced Settings"
@@ -568,15 +568,15 @@ msgstr "Avancerede indstillinger"
 
 #: dialog_fextracker.cpp:86
 msgid "Go!"
-msgstr "Kør!"
+msgstr "Start!"
 
 #: dialog_hotkeys.cpp:47
 msgid "Hotkeys"
-msgstr "Hotkeys"
+msgstr "Genvejstaster"
 
 #: dialog_hotkeys.cpp:57
 msgid "List of all hotkeys (shortcuts) available in Aegisub. Double click on any item to reassign it."
-msgstr "Liste over alle hotkeys (genveje) som er tilgængelige i Aegisub. Dobbeltklik for at (gen)tildele en hotkey."
+msgstr "Liste over alle genvejstaster tilgængelige i Aegisub. Dobbeltklik for at tildele/ændre en tast."
 
 #: dialog_hotkeys.cpp:61
 msgid "Function"
@@ -588,7 +588,7 @@ msgstr "Tast"
 
 #: dialog_hotkeys.cpp:159
 msgid "Press Key"
-msgstr "Tryk på en tast"
+msgstr "Tryk Tast"
 
 #: dialog_hotkeys.cpp:165
 msgid "Press key to bind to \""
@@ -613,7 +613,7 @@ msgstr "Frame:"
 
 #: dialog_properties.cpp:50
 msgid "Script Properties"
-msgstr "Manuskriptegenskaber"
+msgstr "Manuskript egenskaber"
 
 #: dialog_properties.cpp:57
 msgid "Title:"
@@ -663,31 +663,31 @@ msgstr "Fra video"
 
 #: dialog_properties.cpp:108
 msgid "Wrap style"
-msgstr "Foldningstype"
+msgstr "Brydningstype"
 
 #: dialog_properties.cpp:110
 msgid "0: Smart wrapping, top line is wider"
-msgstr "0: Autofoldning, øverste linie bredest"
+msgstr "0: Automatisk brydning, øverste linje bredere"
 
 #: dialog_properties.cpp:111
 msgid "1: End-of-line word wrapping, only \\N breaks"
-msgstr "1: Slut-på-linie-foldning, kun \\N bryder"
+msgstr "1: Bryd ved slutningen af linje, kun \\N bryder"
 
 #: dialog_properties.cpp:112
 msgid ""
 "2: No word wrapping, both \\n"
 " and \\N break"
 msgstr ""
-"2: Ingen foldning, både \\n"
+"2: Ingen brydning, både \\n"
 " og \\N bryder"
 
 #: dialog_properties.cpp:113
 msgid "3: Smart wrapping, bottom line is wider"
-msgstr "3: Autofoldning, nederste linie bredest"
+msgstr "3: Automatisk brydning, nederste linje bredere"
 
 #: dialog_resample.cpp:53
 msgid "Resample resolution"
-msgstr "Resampleopløsning"
+msgstr "Resample opløsning"
 
 #: dialog_resample.cpp:69
 msgid "x"
@@ -695,7 +695,7 @@ msgstr "x"
 
 #: dialog_resample.cpp:78
 msgid "Change aspect ratio"
-msgstr "Ændr visningsstørrelse"
+msgstr "Skift format-forhold"
 
 #: dialog_resample.cpp:86
 #: dialog_resample.cpp:90
@@ -705,7 +705,7 @@ msgstr "Resample"
 
 #: dialog_search_replace.cpp:64
 msgid "Find what:"
-msgstr "Find hvad:"
+msgstr "Søg efter:"
 
 #: dialog_search_replace.cpp:70
 msgid "Replace with:"
@@ -718,7 +718,7 @@ msgstr "Forskel på store og små bogstaver"
 
 #: dialog_search_replace.cpp:78
 msgid "Use regular expressions"
-msgstr "Brug normale udtryk"
+msgstr "Brug regulære udtryk"
 
 #: dialog_search_replace.cpp:79
 msgid "Update Video (slow)"
@@ -727,17 +727,17 @@ msgstr "Opdater video (langsomt)"
 #: dialog_search_replace.cpp:95
 #: dialog_shift_times.cpp:99
 msgid "All rows"
-msgstr "Alle linier"
+msgstr "Alle linjer"
 
 #: dialog_search_replace.cpp:96
 #: dialog_shift_times.cpp:99
 msgid "Selected rows"
-msgstr "Valgte linier"
+msgstr "Valgte linjer"
 
 #: dialog_search_replace.cpp:97
 #: dialog_selection.cpp:98
 msgid "In Field"
-msgstr "I Området"
+msgstr "I feltet"
 
 #: dialog_search_replace.cpp:98
 msgid "Limit to"
@@ -762,7 +762,7 @@ msgstr "%i erstatninger blev foretaget."
 
 #: dialog_search_replace.cpp:501
 msgid "No matches found."
-msgstr "Intet at erstatte."
+msgstr "Ingen resultater fundet."
 
 #: dialog_search_replace.cpp:536
 #: hotkeys.cpp:322
@@ -772,7 +772,7 @@ msgstr "Erstat"
 #: dialog_search_replace.cpp:536
 #: hotkeys.cpp:320
 msgid "Find"
-msgstr "Find"
+msgstr "Søg"
 
 #: dialog_selection.cpp:50
 msgid "Select"
@@ -792,23 +792,23 @@ msgstr "Brug regulære udtryk"
 
 #: dialog_selection.cpp:60
 msgid "Matches"
-msgstr "Matches"
+msgstr "Passer med"
 
 #: dialog_selection.cpp:61
 msgid "Doesn't Match"
-msgstr "Matcher ikke"
+msgstr "Passer ikke med"
 
 #: dialog_selection.cpp:63
 msgid "Dialogues"
-msgstr "Dialoger"
+msgstr "Dialoglinjer"
 
 #: dialog_selection.cpp:64
 msgid "Comments"
-msgstr "Kommentarer"
+msgstr "Kommentarlinjer"
 
 #: dialog_selection.cpp:67
 msgid "Match"
-msgstr "Match"
+msgstr "Pas op mod"
 
 #: dialog_selection.cpp:81
 msgid "Set selection"
@@ -832,12 +832,12 @@ msgstr "Handling"
 
 #: dialog_selection.cpp:88
 msgid "Match dialogues/comments"
-msgstr "Vælg dialoger/kommentarer"
+msgstr "Pas med dialoger/kommentarer"
 
 #: dialog_selection.cpp:264
 #, c-format
 msgid "Selection was set to %i lines"
-msgstr "%i linier blev markeret"
+msgstr "Markering blev sat til %i linjer"
 
 #: dialog_selection.cpp:264
 #: dialog_selection.cpp:265
@@ -848,17 +848,17 @@ msgstr "Markering"
 #: dialog_selection.cpp:265
 #, c-format
 msgid "%i lines were added to selection"
-msgstr "%i linier blev tilføjet til markeringen"
+msgstr "%i linjer blev tilføjet til markeringen"
 
 #: dialog_selection.cpp:266
 #, c-format
 msgid "%i lines were removed from selection"
-msgstr "%i linier blev fjernet fra markeringen"
+msgstr "%i linjer blev fjernet fra markeringen"
 
 #: dialog_shift_times.cpp:58
 #: hotkeys.cpp:319
 msgid "Shift Times"
-msgstr "Flyt Tider"
+msgstr "Forskyd tider"
 
 #: dialog_shift_times.cpp:67
 msgid "Frames: "
@@ -866,39 +866,39 @@ msgstr "Frames:"
 
 #: dialog_shift_times.cpp:70
 msgid "Enter time in h:mm:ss.cs notation"
-msgstr "Indtast tid i formatet t:mm:ss.ms"
+msgstr "Indtast tid t:mm:ss.ms format"
 
 #: dialog_shift_times.cpp:71
 msgid "Shift by time"
-msgstr "Flyt med tid"
+msgstr "Forskyd efter tid"
 
 #: dialog_shift_times.cpp:75
 msgid "Enter number of frames to shift by"
-msgstr "Indtast antal frames der skal flyttes med"
+msgstr "Indtast antal frames der skal forskydes med"
 
 #: dialog_shift_times.cpp:76
 msgid "Shift by frames"
-msgstr "Flyt med frames"
+msgstr "Forskyd efter frames"
 
 #: dialog_shift_times.cpp:86
 msgid "Forward"
-msgstr "Fremad"
+msgstr "Forlæns"
 
 #: dialog_shift_times.cpp:87
 msgid "Backward"
-msgstr "Tilbage"
+msgstr "Baglæns"
 
 #: dialog_shift_times.cpp:88
 msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
-msgstr "Flyt undertekster fremad, for at vise dem senere. Brug denne funktion hvis de dukker op for tidligt."
+msgstr "Forskyd undertekster forlæns, for at vise dem senere. Brug denne funktion hvis de dukker op for tidligt."
 
 #: dialog_shift_times.cpp:89
 msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
-msgstr "Flyt undertekster baglæns, for at vise dem tidligere. Brug denne funktion hvis de dukker op for sent."
+msgstr "Forskyd undertekster baglæns, for at vise dem tidligere. Brug denne funktion hvis de dukker op for sent."
 
 #: dialog_shift_times.cpp:93
 msgid "Shift by"
-msgstr "Flyt med"
+msgstr "Forskyd med"
 
 #: dialog_shift_times.cpp:100
 msgid "Affect"
@@ -906,7 +906,7 @@ msgstr "Berør"
 
 #: dialog_shift_times.cpp:103
 msgid "Start and End times"
-msgstr "Start- og Sluttider"
+msgstr "Start- og sluttider"
 
 #: dialog_shift_times.cpp:103
 msgid "Start times only"
@@ -934,23 +934,23 @@ msgstr "frames,"
 
 #: dialog_shift_times.cpp:234
 msgid "backward, "
-msgstr "tilbage,"
+msgstr "baglæns,"
 
 #: dialog_shift_times.cpp:235
 msgid "forward, "
-msgstr "fremad,"
+msgstr "forlæns,"
 
 #: dialog_shift_times.cpp:236
 msgid "s+e, "
-msgstr "s+e, "
+msgstr "st+sl, "
 
 #: dialog_shift_times.cpp:237
 msgid "s, "
-msgstr "s, "
+msgstr "st, "
 
 #: dialog_shift_times.cpp:238
 msgid "e, "
-msgstr "e, "
+msgstr "sl, "
 
 #: dialog_shift_times.cpp:239
 msgid "all"
@@ -958,15 +958,15 @@ msgstr "alle"
 
 #: dialog_shift_times.cpp:241
 msgid "sel "
-msgstr "Markering"
+msgstr "mark"
 
 #: dialog_style_editor.cpp:53
 msgid "Style Editor"
-msgstr "Typografiredigering"
+msgstr "Regider Typografier"
 
 #: dialog_style_editor.cpp:63
 msgid "Style name"
-msgstr "Typografiens navn"
+msgstr "Typografinavn"
 
 #: dialog_style_editor.cpp:70
 msgid "Font face"
@@ -1040,7 +1040,7 @@ msgstr "Skygge"
 
 #: dialog_style_editor.cpp:146
 msgid "Margins"
-msgstr "Margener"
+msgstr "Marginer"
 
 #: dialog_style_editor.cpp:156
 msgid "Distance from left edge, in pixels"
@@ -1064,11 +1064,11 @@ msgstr "Justering på skærmen, i numerisk keyboard-format"
 
 #: dialog_style_editor.cpp:190
 msgid "Opaque box"
-msgstr "Ugennemsigtig boks"
+msgstr "Udfyldt kasse"
 
 #: dialog_style_editor.cpp:195
 msgid "Checking this will display an opaque box instead of outline"
-msgstr "Ved at aktivere denne, vil en ugennemsigtig boks vises i stedet for et omrids"
+msgstr "Viser en fyldt kasse i stedet for at opmarkere tekstens omrids"
 
 #: dialog_style_editor.cpp:196
 msgid "Outline width, in pixels"
@@ -1120,43 +1120,43 @@ msgstr "GB2312"
 
 #: dialog_style_editor.cpp:217
 msgid "Chinese BIG5"
-msgstr "Chinese BIG5"
+msgstr "Kinesisk BIG5"
 
 #: dialog_style_editor.cpp:218
 msgid "Greek"
-msgstr "Greek"
+msgstr "Græsk"
 
 #: dialog_style_editor.cpp:219
 msgid "Turkish"
-msgstr "Turkish"
+msgstr "Tyrkisk"
 
 #: dialog_style_editor.cpp:220
 msgid "Vietnamese"
-msgstr "Vietnamese"
+msgstr "Vietnamesisk"
 
 #: dialog_style_editor.cpp:221
 msgid "Hebrew"
-msgstr "Hebrew"
+msgstr "Hebræisk"
 
 #: dialog_style_editor.cpp:222
 msgid "Arabic"
-msgstr "Arabic"
+msgstr "Arabisk"
 
 #: dialog_style_editor.cpp:223
 msgid "Baltic"
-msgstr "Baltic"
+msgstr "Baltisk"
 
 #: dialog_style_editor.cpp:224
 msgid "Russian"
-msgstr "Russian"
+msgstr "Russisk"
 
 #: dialog_style_editor.cpp:225
 msgid "Thai"
-msgstr "Thai"
+msgstr "Tai"
 
 #: dialog_style_editor.cpp:226
 msgid "East European"
-msgstr "East European"
+msgstr "Østeuropæisk"
 
 #: dialog_style_editor.cpp:227
 msgid "OEM"
@@ -1168,19 +1168,19 @@ msgstr "Diverse"
 
 #: dialog_style_editor.cpp:243
 msgid "Scale X, in percentage"
-msgstr "X-skala, i procent"
+msgstr "X-skalering, i procent"
 
 #: dialog_style_editor.cpp:244
 msgid "Scale Y, in percentage"
-msgstr "Y-skala, i procent"
+msgstr "Y-skalering, i procent"
 
 #: dialog_style_editor.cpp:245
 msgid "Angle to rotate in Z axis, in degrees"
-msgstr "Rotationsvinklen på Z-aksen, i grader"
+msgstr "Rotationsvinkel om Z-aksen, i grader"
 
 #: dialog_style_editor.cpp:246
 msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "Kodning, kun nyttigt i unicode hvis skrifttypen ikke har den rigtige kortlægning."
+msgstr "Enkodning, kun meningsfyldt i Unicode hvis skrifttypen ikke har en korrekt Unicode tegntabel"
 
 #: dialog_style_editor.cpp:247
 msgid "Character spacing, in pixels"
@@ -1188,11 +1188,11 @@ msgstr "Bogstavafstand, i pixels"
 
 #: dialog_style_editor.cpp:248
 msgid "Scale X%:"
-msgstr "X-skala%:"
+msgstr "X-skalering %:"
 
 #: dialog_style_editor.cpp:250
 msgid "Scale Y%:"
-msgstr "Y-skala%:"
+msgstr "Y-skalering %:"
 
 #: dialog_style_editor.cpp:252
 msgid "Angle:"
@@ -1204,7 +1204,7 @@ msgstr "Afstand:"
 
 #: dialog_style_editor.cpp:256
 msgid "Encoding:"
-msgstr "Kodning:"
+msgstr "Enkodning:"
 
 #: dialog_style_editor.cpp:453
 msgid ""
@@ -1212,10 +1212,10 @@ msgid ""
 "I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
 "of computing, so please avoid using it unless it's REALLY suitable. Thanks."
 msgstr ""
-"Du har valgt at bruge skrifttypen \"Comic Sans\". Som programmør og typesetter,\n"
-"vil jeg råde dig til at overveje at bruge en anden skrifttype. Comic Sans er den mest\n"
-"misbrugte skrifttype i databehandlingens historie, så undgå venligst at bruge den\n"
-"med mindre den passer VIRKELIG godt. Tak."
+"Du har valgt at bryge skrifttypen \"Comic Sans\". Som programmer og typograf\n"
+"vil jeg kraftigt råde dig til gennemtænke dette. Comic Sans er en af de mest misbrygte\n"
+"typer i computernes historie, so undgå venligst at benytte den med mindre den\n"
+"VIRKELIG passer. Tak."
 
 #: dialog_style_editor.cpp:453
 msgid "Warning"
@@ -1224,11 +1224,11 @@ msgstr "Advarsel"
 #: dialog_style_manager.cpp:52
 #: frame_main.cpp:175
 msgid "Styles Manager"
-msgstr "Typografimanager"
+msgstr "TYpografistyring"
 
 #: dialog_style_manager.cpp:58
 msgid "Catalog of available storages"
-msgstr "Katalig over tilgængelige lagre"
+msgstr "Katalog over tilgængelige lagre"
 
 #: dialog_style_manager.cpp:60
 #: dialog_style_manager.cpp:71
@@ -1250,13 +1250,13 @@ msgstr "Lager"
 
 #: dialog_style_manager.cpp:70
 msgid "Copy to current script ->"
-msgstr "Kopiér til aktuelle manuskript ->"
+msgstr "Kopier til aktuelle manuskript ->"
 
 #: dialog_style_manager.cpp:72
 #: dialog_style_manager.cpp:90
 #: hotkeys.cpp:324
 msgid "Copy"
-msgstr "Kopiér"
+msgstr "Kopier"
 
 #: dialog_style_manager.cpp:86
 msgid "Current script"
@@ -1264,7 +1264,7 @@ msgstr "Aktuelle manuskript"
 
 #: dialog_style_manager.cpp:88
 msgid "<- Copy to storage"
-msgstr "<- Kopiér til lager"
+msgstr "<- Kopier til lager"
 
 #: dialog_style_manager.cpp:304
 msgid "New storage name:"
@@ -1276,7 +1276,7 @@ msgstr "Nyt katalogopslag"
 
 #: dialog_style_manager.cpp:330
 msgid "Are you sure you want to delete the storage \""
-msgstr "Er du sikker på at du vil slette dette lager \""
+msgstr "Er du sikker på at du vil slette lageret \""
 
 #: dialog_style_manager.cpp:332
 msgid "\" from the catalog?"
@@ -1310,12 +1310,12 @@ msgstr "Er du sikker på du vil slette denne typografi?"
 
 #: dialog_styling_assistant.cpp:56
 msgid "Styling assistant"
-msgstr "Stylingassistent"
+msgstr "Typografiassistent"
 
 #: dialog_styling_assistant.cpp:65
 #: dialog_styling_assistant.cpp:66
 msgid "Current line"
-msgstr "Aktuelle linie"
+msgstr "Aktuel linje"
 
 #: dialog_styling_assistant.cpp:71
 msgid "Styles available"
@@ -1328,7 +1328,7 @@ msgstr "Angiv typografi"
 #: dialog_styling_assistant.cpp:77
 #: dialog_translation.cpp:82
 msgid "Keys"
-msgstr "Keys"
+msgstr "Taster"
 
 #: dialog_styling_assistant.cpp:85
 #: dialog_translation.cpp:85
@@ -1338,7 +1338,7 @@ msgstr "Godkend ændringer"
 #: dialog_styling_assistant.cpp:87
 #: dialog_translation.cpp:87
 msgid "Preview changes"
-msgstr "Ændringspreview"
+msgstr "Prøvevis ændringer"
 
 #: dialog_styling_assistant.cpp:89
 #: dialog_translation.cpp:89
@@ -1359,7 +1359,7 @@ msgstr "Afspil Lyd"
 
 #: dialog_styling_assistant.cpp:94
 msgid "Click on list:"
-msgstr "Klik på liste:"
+msgstr "Klik i listen:"
 
 #: dialog_styling_assistant.cpp:95
 msgid "Select style"
@@ -1367,12 +1367,12 @@ msgstr "Vælg typografi"
 
 #: dialog_styling_assistant.cpp:98
 msgid "Enable preview (slow)"
-msgstr "Slå preview til (langsomt)"
+msgstr "Slå prøvevisning til (langsomt)"
 
 #: dialog_timing_processor.cpp:54
 #: frame_main.cpp:188
 msgid "Timing Post-Processor"
-msgstr "Timing post-processor"
+msgstr "Timing efterbehandling"
 
 #: dialog_timing_processor.cpp:67
 msgid "Lead-in/Lead-out"
@@ -1404,7 +1404,7 @@ msgstr "Lead-out som skal tilføjes, i millisekunder"
 
 #: dialog_timing_processor.cpp:85
 msgid "Make adjascent subtitles continuous"
-msgstr "Gør tilstødende undertekster fortsatte"
+msgstr "Gør opstødende undertekster fortsatte"
 
 #: dialog_timing_processor.cpp:86
 #: dialog_timing_processor.cpp:104
@@ -1421,7 +1421,7 @@ msgstr "Tærskel:"
 
 #: dialog_timing_processor.cpp:91
 msgid "Maximum difference between start and end time for two subtitles to be made continuous, in miliseconds."
-msgstr "Maximal forskel mellem start og slut på to undertekster for at de bliver fortsatte, i millisekunder."
+msgstr "Maksimal forskel mellem start og slut på to undertekster for at de bliver fortsatte, i millisekunder."
 
 #: dialog_timing_processor.cpp:97
 msgid "Bias: Start <- "
@@ -1498,11 +1498,11 @@ msgstr "Vælg typografier som skal bearbejdes. Ikke valgte vil blive ignoreret."
 #: dialog_timing_processor.cpp:309
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
-msgstr "En af linierne i filen (%i) har negativ varighed. Afbryder."
+msgstr "En af linjerne i filen (%i) har negativ varighed. Afbryder."
 
 #: dialog_timing_processor.cpp:309
 msgid "Invalid script"
-msgstr "Ugyldigt script"
+msgstr "Ugyldigt manuskript"
 
 #: dialog_translation.cpp:56
 #: frame_main.cpp:185
@@ -1527,12 +1527,12 @@ msgstr "Indsæt original"
 
 #: dialog_translation.cpp:96
 msgid "Enable preview"
-msgstr "Slå preview til"
+msgstr "Slå prøvevisning til"
 
 #: dialog_translation.cpp:171
 #, c-format
 msgid "Current line: %i/%i"
-msgstr "Aktuelle linie: %i/%i"
+msgstr "Aktuelle linje: %i/%i"
 
 #: export_clean_info.cpp:58
 msgid "Clean Script Info"
@@ -1540,7 +1540,7 @@ msgstr "Rens manuskriptinfo"
 
 #: export_clean_info.cpp:59
 msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
-msgstr "Fjerner alle felter fra manuskriptinfosektionen, undtagen de absolut nødvendige. Du vil nok køre det her på filer som du planlægger at distribuere i deres originale form."
+msgstr "Fjerner alle felter fra manuskriptinfosektionen, undtagen de absolut nødvendige. Overvej at køre dette på filer som du planlægger at distribuere i deres originale form."
 
 #: export_fixstyle.cpp:58
 msgid "Fix Styles"
@@ -1548,15 +1548,15 @@ msgstr "Fix typografier"
 
 #: export_fixstyle.cpp:59
 msgid "Fixes styles by replacing any style that isn't available on file with Default."
-msgstr "Fixer typografier ved at erstatte alle typografier der ikke er \"på lager\" med Standard."
+msgstr "Korrigerer typografier ved at erstatte alle typografier der ikke er tilgængelige med Default."
 
 #: export_framerate.cpp:59
 msgid "Transform Framerate"
-msgstr "Transformér framerate"
+msgstr "Transformer framerate"
 
 #: export_framerate.cpp:60
 msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
-msgstr "Transformér underteksttider, inklusive dem med override tags, fra fra input til output. Dette er meget belejligt til at konvertere fra CFR til VFR til hårdkodning af undertekster. Du vil normalt IKKE slå dette til ved blødkodning."
+msgstr "Transformér underteksttider, inklusive dem i override tags, fra fra input til output. Dette er primært anvendeligt til at konvertere fra CFR til VFR til hårdkodning af undertekster. Dette er normalt IKKE en god ide for softsubbing."
 
 #: export_framerate.cpp:86
 msgid "From Video"
@@ -1572,7 +1572,7 @@ msgstr "Constant:"
 
 #: export_framerate.cpp:124
 msgid "Input framerate: "
-msgstr "Indstast framerate:"
+msgstr "Input framerate:"
 
 #: export_framerate.cpp:126
 msgid "Output: "
@@ -1586,7 +1586,7 @@ msgstr "FexTracker"
 
 #: fextracker_main_events.cpp:37
 msgid "Track points"
-msgstr "Trackpunkter"
+msgstr "Spor punkter"
 
 #: fextracker_main_events.cpp:39
 msgid "Add points to movement"
@@ -1598,7 +1598,7 @@ msgstr "Fjern punkter fra bevægelse"
 
 #: fextracker_main_events.cpp:42
 msgid "Generate movement from points"
-msgstr "Generér bevægelse fra punkter"
+msgstr "Generer bevægelse fra punkter"
 
 #: fextracker_main_events.cpp:50
 #: video_box.cpp:66
@@ -1607,27 +1607,27 @@ msgstr "FexMovement"
 
 #: fextracker_main_events.cpp:51
 msgid "Generate empty movement"
-msgstr "Generér tom bevægelse"
+msgstr "Generer tom bevægelse"
 
 #: fextracker_main_events.cpp:53
 msgid "Move subtitle"
-msgstr "Flyt undertekst"
+msgstr "Bevæg undertekst"
 
 #: fextracker_main_events.cpp:55
 msgid "Move subtitle (this frame and preceeding frames)"
-msgstr "Flyt undertekst (denne frame og foregående frames)"
+msgstr "Bevæg undertekst (denne frame og foregående frames)"
 
 #: fextracker_main_events.cpp:56
 msgid "Move subtitle (this frame)"
-msgstr "Flyt undertekst (denne frame)"
+msgstr "Bevæg undertekst (denne frame)"
 
 #: fextracker_main_events.cpp:57
 msgid "Move subtitle (this frame and following frames)"
-msgstr "Flyt undertekst (denne frame og efterfølgende frames)"
+msgstr "Bevæg undertekst (denne frame og efterfølgende frames)"
 
 #: fextracker_main_events.cpp:59
 msgid "Split line for movement"
-msgstr "Del linie for bevægelse"
+msgstr "Opdel linie for bevægelse"
 
 #: fextracker_main_events.cpp:61
 msgid "Link movement file"
@@ -1635,7 +1635,7 @@ msgstr "Forbind bevægelsesfil"
 
 #: fextracker_main_events.cpp:92
 msgid "Tracking points"
-msgstr "Trackingpunkter"
+msgstr "Sporingspunkter"
 
 #: fextracker_main_events.cpp:232
 msgid "Link name:"
@@ -1643,7 +1643,7 @@ msgstr "Forbind navn:"
 
 #: fextracker_main_events.cpp:232
 msgid "Link line to movement file"
-msgstr "Sammenkæd linie med bevægelsesfil"
+msgstr "Sammenkæd linje med bevægelsesfil"
 
 #: fonts_collector.cpp:58
 #: frame_main.cpp:186
@@ -1652,7 +1652,7 @@ msgstr "Skrifttypeindsamler"
 
 #: fonts_collector.cpp:71
 msgid "&Browse..."
-msgstr "&Gennemse"
+msgstr "&Gennemse..."
 
 #: fonts_collector.cpp:73
 msgid ""
@@ -1688,7 +1688,7 @@ msgstr "Fejl"
 
 #: fonts_collector.cpp:208
 msgid "Select folder to save fonts on"
-msgstr "Vælg mappe som skrifttyper skal gemmes i"
+msgstr "Vælg mappe skrifttyper skal gemmes i"
 
 #: fonts_collector.cpp:314
 msgid "Searching for fonts in file...\n"
@@ -1708,7 +1708,7 @@ msgstr ""
 
 #: fonts_collector.cpp:397
 msgid "\" already exists on destination.\n"
-msgstr "\" eksisterer allerede på destinationen.\n"
+msgstr "\" eksisterer allerede i destinationen.\n"
 
 #: fonts_collector.cpp:422
 msgid "\" copied.\n"
@@ -1752,7 +1752,7 @@ msgstr "Spring til..."
 
 #: frame_main.cpp:149
 msgid "Jump video to time/frame"
-msgstr "Spring i video til tid/frame"
+msgstr "Spring video til tid/frame"
 
 #: frame_main.cpp:150
 msgid "Zoom in"
@@ -1764,7 +1764,7 @@ msgstr "Zoom ind på video"
 
 #: frame_main.cpp:151
 msgid "Zoom out"
-msgstr "oom ud"
+msgstr "Zoom ud"
 
 #: frame_main.cpp:151
 msgid "Zoom video out"
@@ -1772,7 +1772,7 @@ msgstr "Zoom ud på video"
 
 #: frame_main.cpp:164
 msgid "Jump video to start"
-msgstr "Spring til begyndelsen af video"
+msgstr "Spring video til start"
 
 #: frame_main.cpp:164
 #: frame_main.cpp:280
@@ -1781,7 +1781,7 @@ msgstr "Springer i videoen til første frame i den aktuelle undertekst"
 
 #: frame_main.cpp:165
 msgid "Jump video to end"
-msgstr "Spring til slutningen af video"
+msgstr "Spring video til slut"
 
 #: frame_main.cpp:165
 #: frame_main.cpp:281
@@ -1812,7 +1812,7 @@ msgstr "Vælg synlige"
 
 #: frame_main.cpp:168
 msgid "Selects all lines that are currently visible on video frame"
-msgstr "Vælger alle linier der i øjeblikket er synlige på videoframen"
+msgstr "Vælger alle linier der i øjeblikket er synlige på videobilledet"
 
 #: frame_main.cpp:169
 msgid "Snap subtitles to scene"
@@ -1820,15 +1820,15 @@ msgstr "Snap undertekster til scene"
 
 #: frame_main.cpp:169
 msgid "Snap selected subtitles so they match current scene start/end"
-msgstr "Snap valgte undertekster til at matche den aktuelle scenes start/sluttidspunkt"
+msgstr "Snap valgte undertekster til at passe med den aktuelle scenes start-/sluttidspunkt"
 
 #: frame_main.cpp:170
 msgid "Shift subtitles to frame"
-msgstr "Flyt undertekster til frame"
+msgstr "Forskyd undertekster til frame"
 
 #: frame_main.cpp:170
 msgid "Shift selected subtitles so first selected starts at this frame"
-msgstr "Flyt valgte undertekster så den først valgte starter på denne frame"
+msgstr "Forskyd valgte undertekster så den først valgte starter på denne frame"
 
 #: frame_main.cpp:174
 msgid "Properties"
@@ -1856,31 +1856,31 @@ msgstr "Automatisering"
 
 #: frame_main.cpp:180
 msgid "Open Automation manager"
-msgstr "Åbn automatiseringsmanager"
+msgstr "Åbn automatiseringsstyring"
 
 #: frame_main.cpp:184
 msgid "Styling Assistant"
-msgstr "Stylingassistent"
+msgstr "Typografiassistent"
 
 #: frame_main.cpp:184
 msgid "Open Styling Assistant"
-msgstr "Åbn stylingassistent"
+msgstr "Åbn typografiassistenten"
 
 #: frame_main.cpp:185
 msgid "Open Translation Assistant"
-msgstr "Åbn oversættelsesassistent"
+msgstr "Åbn oversættelsesassistenten"
 
 #: frame_main.cpp:186
 msgid "Open Fonts Collector"
-msgstr "Åbn skrifttypeindsamler"
+msgstr "Åbn skrifttypeindsamleren"
 
 #: frame_main.cpp:187
 msgid "Resample script resolution"
-msgstr "Resamplemanuskriptopløsning"
+msgstr "Resample manuskriptopløsning"
 
 #: frame_main.cpp:188
 msgid "Open Timing Post-processor dialog"
-msgstr "Åbn timing post-processoren"
+msgstr "Åbn timing efterbehandleren"
 
 #: frame_main.cpp:190
 msgid "Spellchecker"
@@ -1892,11 +1892,11 @@ msgstr "Åbn stavekontrol"
 
 #: frame_main.cpp:195
 msgid "Cycle Tag Hidding Mode"
-msgstr "Skift tag-skjulningstype"
+msgstr "Skift tag-skjulningstilstand"
 
 #: frame_main.cpp:195
 msgid "Cycle through tag-hiding modes"
-msgstr "Bladrer igennem tag-skjulningstyper"
+msgstr "Bladrer igennem tag-skjulningstilstande"
 
 #: frame_main.cpp:221
 msgid "&New Subtitles\t"
@@ -1912,11 +1912,11 @@ msgstr "Åbner en undertekstfil"
 
 #: frame_main.cpp:223
 msgid "&Open Subtitles with Charset..."
-msgstr "&Åbn undertekster med charset..."
+msgstr "&Åbn undertekster med tegnsæt..."
 
 #: frame_main.cpp:223
 msgid "Opens a subtitles file with a specific charset"
-msgstr "Åbner en undertekstfil med et bestemt charset"
+msgstr "Åbner en undertekstfil med et bestemt tegnsæt"
 
 #: frame_main.cpp:224
 msgid "&Save Subtitles\t"
@@ -1924,7 +1924,7 @@ msgstr "&Gem undertekster\t"
 
 #: frame_main.cpp:224
 msgid "Saves subtitles"
-msgstr "Gemmer undertekster"
+msgstr "Gemmer underteksterne"
 
 #: frame_main.cpp:225
 msgid "Save Subtitles as..."
@@ -1932,7 +1932,7 @@ msgstr "Gem undertekster som..."
 
 #: frame_main.cpp:225
 msgid "Saves subtitles with another name"
-msgstr "Gemmer undertekster med et andet navn"
+msgstr "Gemmer underteksterne med et andet navn"
 
 #: frame_main.cpp:226
 msgid "Export Subtitles..."
@@ -1940,14 +1940,14 @@ msgstr "Eksporter undertekster..."
 
 #: frame_main.cpp:226
 msgid "Saves a copy of subtitles with processing applied to it."
-msgstr "Gemmer en kopi a underteksterne med efterbehandling tilføjet."
+msgstr "Gemmer en behandler kopi a underteksterne."
 
 #: frame_main.cpp:228
 #: frame_main.cpp:266
 #: frame_main.cpp:271
 #: frame_main.cpp:299
 msgid "Recent"
-msgstr "Seneste"
+msgstr "Nyligt brugte"
 
 #: frame_main.cpp:231
 msgid "E&xit\t"
@@ -1971,11 +1971,11 @@ msgstr "Fortryder sidste handling"
 
 #: frame_main.cpp:237
 msgid "&Redo\t"
-msgstr "A&nnulér fortryd"
+msgstr "A&nnuller fortryd"
 
 #: frame_main.cpp:237
 msgid "Redoes last action"
-msgstr "Fortryder sidste handling"
+msgstr "Fortryder sidste fortrydning"
 
 #: frame_main.cpp:239
 msgid "&Select lines...\t"
@@ -1983,31 +1983,31 @@ msgstr "&Vælg linier...\t"
 
 #: frame_main.cpp:239
 msgid "Selects lines based on defined criterea"
-msgstr "Vælger linier baseret på definerede kriterier"
+msgstr "Vælger linier baseret på vanglte kriterier"
 
 #: frame_main.cpp:240
 msgid "S&hift times...\t"
-msgstr "Fl&yt tider...\t"
+msgstr "Forsk&yd tider...\t"
 
 #: frame_main.cpp:240
 msgid "Shift subtitles by time or frames"
-msgstr "Flytter undertekster med tid eller frames"
+msgstr "Forskyder undertekster efter tid eller frames"
 
 #: frame_main.cpp:241
 msgid "Sort by Time"
-msgstr "Sortér efter tid"
+msgstr "Sorter efter tid"
 
 #: frame_main.cpp:241
 msgid "Sort all subtitles by their start times"
-msgstr "Sortérer alle undertekster efter deres starttider"
+msgstr "Sorterer alle undertekster efter deres starttider"
 
 #: frame_main.cpp:243
 msgid "&Find...\t"
-msgstr "&Find...\t"
+msgstr "&Søg...\t"
 
 #: frame_main.cpp:243
 msgid "Find words in subtitles"
-msgstr "Find ord i undertekster"
+msgstr "Søg efter ord i undertekster"
 
 #: frame_main.cpp:244
 msgid "Find next\t"
@@ -2023,7 +2023,7 @@ msgstr "&Erstat...\t"
 
 #: frame_main.cpp:245
 msgid "Find and replace words in subtitles"
-msgstr "Find og erstat ord i undertekster"
+msgstr "Søg og erstat efter ord i undertekster"
 
 #: frame_main.cpp:247
 msgid "Cut...\t"
@@ -2035,7 +2035,7 @@ msgstr "Klip undertekster"
 
 #: frame_main.cpp:248
 msgid "Copy...\t"
-msgstr "Kopiér...\t"
+msgstr "Kopier...\t"
 
 #: frame_main.cpp:248
 msgid "Copy subtitles"
@@ -2043,11 +2043,11 @@ msgstr "Kopierer undertekster"
 
 #: frame_main.cpp:249
 msgid "Paste...\t"
-msgstr "Indsæt...\t"
+msgstr "Sæt ind...\t"
 
 #: frame_main.cpp:249
 msgid "Paste subtitles"
-msgstr "Indsæt undertekster"
+msgstr "Sæt undertekster ind"
 
 #: frame_main.cpp:250
 msgid "&Edit"
@@ -2059,7 +2059,7 @@ msgstr "Vælg Aegisub brugerfladesprog"
 
 #: frame_main.cpp:256
 msgid "Subs only view"
-msgstr "Kun undertekstvisning"
+msgstr "Vis kun undertekster"
 
 #: frame_main.cpp:256
 msgid "Display subtitles only"
@@ -2067,7 +2067,7 @@ msgstr "Viser kun undertekster"
 
 #: frame_main.cpp:257
 msgid "Video+Subs view"
-msgstr "Video+undertekstervisning"
+msgstr "Vis video+undertekster"
 
 #: frame_main.cpp:257
 msgid "Display video and subtitles only"
@@ -2075,7 +2075,7 @@ msgstr "Viser kun video og undertekster"
 
 #: frame_main.cpp:258
 msgid "Audio+Subs view"
-msgstr "Lyd+undertekstervisning"
+msgstr "Vis lyd+undertekster"
 
 #: frame_main.cpp:258
 msgid "Display audio and subtitles only"
@@ -2091,7 +2091,7 @@ msgstr "Viser lyd, video og undertekster"
 
 #: frame_main.cpp:260
 msgid "Vie&w"
-msgstr "Vis&ning"
+msgstr "&Vis"
 
 #: frame_main.cpp:264
 msgid "&Open Video..."
@@ -2135,27 +2135,27 @@ msgstr "Springer til frame eller tid"
 
 #: frame_main.cpp:276
 msgid "Zoom &50%\t"
-msgstr "Zoom &50 %\t"
+msgstr "Zoom &50%\t"
 
 #: frame_main.cpp:276
 msgid "Set zoom to 50%"
-msgstr "Indstil zoom til 50 %"
+msgstr "Indstil zoom til 50%"
 
 #: frame_main.cpp:277
 msgid "Zoom &100%\t"
-msgstr "Zoom &100 %\t"
+msgstr "Zoom &100%\t"
 
 #: frame_main.cpp:277
 msgid "Set zoom to 100%"
-msgstr "Indstil zoom til 100 %"
+msgstr "Indstil zoom til 100%"
 
 #: frame_main.cpp:278
 msgid "Zoom &200%\t"
-msgstr "Zoom &200 %\t"
+msgstr "Zoom &200%\t"
 
 #: frame_main.cpp:278
 msgid "Set zoom to 200%"
-msgstr "Indstil zoom til 200 %"
+msgstr "Indstil zoom til 200%"
 
 #: frame_main.cpp:280
 msgid "Jump video to start\t"
@@ -2179,59 +2179,59 @@ msgstr "Snap til scene\t"
 
 #: frame_main.cpp:284
 msgid "Set start and end of subtitles to the keyframes around current video frame"
-msgstr "Indstiller start og slut for underteksten til keyframesene omkring den aktuelle videoframe"
+msgstr "Indstiller start og slut for underteksten til keyframene omkring den aktuelle videoframe"
 
 #: frame_main.cpp:285
 msgid "Shift to Current Frame\t"
-msgstr "Flyt til aktuelle frame\t"
+msgstr "Forskyd til aktuelle frame\t"
 
 #: frame_main.cpp:285
 msgid "Shift selection so first selected line starts at current frame"
-msgstr "Flyt udvalg så første valgte linie starter på den aktuelle frame"
+msgstr "Forskyd de markerede linjer så første valgte linie starter på den aktuelle frame"
 
 #: frame_main.cpp:287
 msgid "&Default Aspect Ratio"
-msgstr "&Standard aspektratio"
+msgstr "&Standard formatforhold"
 
 #: frame_main.cpp:287
 msgid "Leave video on original aspect ratio"
-msgstr "Efterlad video på oprindelig aspektratio"
+msgstr "Efterlad video på oprindelig formatforhold"
 
 #: frame_main.cpp:288
 msgid "&Fullscreen Aspect Ratio (4:3)"
-msgstr "&Fuldskærms aspektratio (4:3)"
+msgstr "&Fuldskærmsformat (4:3)"
 
 #: frame_main.cpp:288
 msgid "Forces video to fullscreen aspect ratio"
-msgstr "Tvinger video til fuldskærms aspektratio"
+msgstr "Tvinger video til fuldskærmsformat"
 
 #: frame_main.cpp:289
 msgid "&Widescreen Aspect Ratio (16:9)"
-msgstr "&Widescreen aspektratio (16:9)"
+msgstr "&Widescreenformat (16:9)"
 
 #: frame_main.cpp:289
 msgid "Forces video to widescreen aspect ratio"
-msgstr "Tvinger video til widescreen aspektratio"
+msgstr "Tvinger video til widescreenformat"
 
 #: frame_main.cpp:290
 msgid "&2.35 Aspect Ratio"
-msgstr "&2,35 aspektratio"
+msgstr "&2,35 formatforhold"
 
 #: frame_main.cpp:290
 msgid "Forces video to 2.35 aspect ratio"
-msgstr "Tvinger video til 2,35 aspektratio"
+msgstr "Tvinger video til 2,35 formatforhold"
 
 #: frame_main.cpp:291
 msgid "Custom Aspect Ratio..."
-msgstr "Brugerdefineret aspektratio"
+msgstr "Brugerdefineret formatforhold"
 
 #: frame_main.cpp:291
 msgid "Forces video to a custom aspect ratio"
-msgstr "Tvinger video til en brugerdefineret aspektratio"
+msgstr "Tvinger video til et brugerdefineret formatforhold"
 
 #: frame_main.cpp:292
 msgid "&Video"
-msgstr "&Video"
+msgstr "Vi&deo"
 
 #: frame_main.cpp:296
 msgid "&Open Audio file..."
@@ -2263,7 +2263,7 @@ msgstr "L&yd"
 
 #: frame_main.cpp:305
 msgid "&Properties..."
-msgstr "&Egenskaber"
+msgstr "&Egenskaber..."
 
 #: frame_main.cpp:305
 msgid "Open script properties window"
@@ -2271,15 +2271,15 @@ msgstr "Åbner manuskriptegenskabsvinduet"
 
 #: frame_main.cpp:306
 msgid "&Styles Manager..."
-msgstr "&Typografimanager"
+msgstr "&Typografistyring"
 
 #: frame_main.cpp:306
 msgid "Open styles manager"
-msgstr "Åbn typografimanageren"
+msgstr "Åbn typografistyringen"
 
 #: frame_main.cpp:307
 msgid "&Attachments..."
-msgstr "&Vedhæftninger"
+msgstr "&Vedhæftninger..."
 
 #: frame_main.cpp:307
 msgid "Open the attachment list"
@@ -2291,19 +2291,19 @@ msgstr "&Automatisering..."
 
 #: frame_main.cpp:309
 msgid "Open automation manager"
-msgstr "Åbner automatiseringsmanageren"
+msgstr "Åbner automatiseringsstyringen"
 
 #: frame_main.cpp:311
 msgid "St&yling Assistant..."
-msgstr "St&ylingassistent..."
+msgstr "T&ypografiassistent..."
 
 #: frame_main.cpp:311
 msgid "Open styling assistant"
-msgstr "Åbner stylingassistenten"
+msgstr "Åbner typografiassistenten"
 
 #: frame_main.cpp:312
 msgid "&Translation Assistant..."
-msgstr "&Oversættelsesassistent"
+msgstr "&Oversættelsesassistent..."
 
 #: frame_main.cpp:312
 msgid "Open translation assistant"
@@ -2319,7 +2319,7 @@ msgstr "Åbner skrifttypeindsamleren"
 
 #: frame_main.cpp:314
 msgid "Resample resolution..."
-msgstr "Resampleopløsning..."
+msgstr "Resample opløsning..."
 
 #: frame_main.cpp:314
 msgid "Changes resolution and modifies subtitles to conform to change"
@@ -2327,11 +2327,11 @@ msgstr "Ændrer opløsning og tilpasser undertekster til ændringen"
 
 #: frame_main.cpp:315
 msgid "Timing Post-Processor..."
-msgstr "Timing post-processor"
+msgstr "Timing efterbehandling..."
 
 #: frame_main.cpp:315
 msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "Kører en post-processor for timingen for at behandle lead-ins, lead-outs, scenetiming osv."
+msgstr "Kører en efterbehandlingen timingen for at behandle lead-ins, lead-outs, scenetiming osv."
 
 #: frame_main.cpp:317
 msgid "Spe&ll checker..."
@@ -2343,15 +2343,15 @@ msgstr "Åbner stavekontrollen"
 
 #: frame_main.cpp:321
 msgid "&Hotkeys..."
-msgstr "&Hotkeys..."
+msgstr "&Genvejstaster..."
 
 #: frame_main.cpp:321
 msgid "Remap hotkeys"
-msgstr "Tildel hotkeys"
+msgstr "Tildel genvejstaster"
 
 #: frame_main.cpp:322
 msgid "&Tools"
-msgstr "&Værktøjer"
+msgstr "Værk&tøjer"
 
 #: frame_main.cpp:326
 msgid "&Contents...\t"
@@ -2371,15 +2371,15 @@ msgstr "Besøg Aegisubs officielle hjemmeside"
 
 #: frame_main.cpp:329
 msgid "&Forums..."
-msgstr "&Fora..."
+msgstr "&Forum..."
 
 #: frame_main.cpp:329
 msgid "Visit Aegisub's forums"
-msgstr "Besøg Aegisubs fora"
+msgstr "Besøg Aegisubs forum"
 
 #: frame_main.cpp:330
 msgid "&Bug tracker..."
-msgstr "&Bug tracker"
+msgstr "&Bug tracker..."
 
 #: frame_main.cpp:330
 msgid "Visit Aegisub's bug tracker"
@@ -2387,7 +2387,7 @@ msgstr "Besøg Aegisubs bug tracker"
 
 #: frame_main.cpp:331
 msgid "&IRC channel..."
-msgstr "&IRC-kanal"
+msgstr "&IRC-kanal..."
 
 #: frame_main.cpp:331
 msgid "Visit Aegisub's official IRC channel"
@@ -2408,7 +2408,7 @@ msgstr "Gem undertekstfil"
 #: frame_main.cpp:596
 #: frame_main_events.cpp:581
 msgid "Choose charset code:"
-msgstr "Vælg charsetkode:"
+msgstr "Vælg tegnsætkode:"
 
 #: frame_main.cpp:626
 msgid "Save before continuing?"
@@ -2420,11 +2420,11 @@ msgstr "Ikke gemte ændringer"
 
 #: frame_main.cpp:808
 msgid "Do you want to load/unload the associated files?"
-msgstr "Vil du hente/lukke de asoicierede filer?"
+msgstr "Vil du åbne/lukke de tilhørende filer?"
 
 #: frame_main.cpp:808
 msgid "(Un)Load files?"
-msgstr "Hent/Luk filer?"
+msgstr "Åbn/Luk filer?"
 
 #: frame_main.cpp:891
 msgid "You have timecodes loaded currently. Would you like to unload them?"
@@ -2446,7 +2446,7 @@ msgid ""
 msgstr ""
 "Opløsningen på den hentede video og underteksternes specificerede opløsning er ikke ens.\n"
 "\n"
-"Videoopløsning         :\t%d x %d\n"
+"Videoopløsning:\t%d x %d\n"
 "Manuskriptopløsning:\t%d x %d\n"
 "\n"
 "Skal underteksternes opløsning ændres så den matcher videoen?"
@@ -2482,23 +2482,23 @@ msgstr "Åbn timecodefil"
 
 #: frame_main_events.cpp:1060
 msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
-msgstr "Indtast aspektratioen i enten decimal (fx. 2,35) eller brøk (fx. 16:9). Indtast en værdi som 853x480 for at indstille en specifik opløsningen."
+msgstr "Indtast formatforholdet i enten decimal (fx. 2,35) eller brøk (fx. 16:9). Indtast en værdi som 853x480 for at indstille en specifik opløsning."
 
 #: frame_main_events.cpp:1060
 msgid "Enter aspect ratio"
-msgstr "Indtast aspektratio"
+msgstr "Indtast formatforhold"
 
 #: frame_main_events.cpp:1099
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
-msgstr "Ugyldig værdi! Aspektratioen skal være mellem 0,5 og 5,0."
+msgstr "Ugyldig værdi! Formatforholdet skal være mellem 0,5 og 5,0."
 
 #: frame_main_events.cpp:1099
 msgid "Invalid Aspect Ratio"
-msgstr "Ugyldig aspektratio"
+msgstr "Ugyldigt formatforhold"
 
 #: frame_main_events.cpp:1213
 msgid "File backup saved as \""
-msgstr "Fil-back-up gemt som \""
+msgstr "Sikkerhedskopi gemt som \""
 
 #: hotkeys.cpp:314
 msgid "Exit"
@@ -2514,7 +2514,7 @@ msgstr "Fortryd"
 
 #: hotkeys.cpp:318
 msgid "Redo"
-msgstr "Annulér fortryd"
+msgstr "Annuller fortryd"
 
 #: hotkeys.cpp:321
 msgid "Find Next"
@@ -2522,7 +2522,7 @@ msgstr "Find næste"
 
 #: hotkeys.cpp:323
 msgid "Select Lines"
-msgstr "Vælg linier"
+msgstr "Vælg linjer"
 
 #: hotkeys.cpp:325
 msgid "Cut"
@@ -2530,7 +2530,7 @@ msgstr "Klip"
 
 #: hotkeys.cpp:326
 msgid "Paste"
-msgstr "Indsæt"
+msgstr "Sæt ind"
 
 #: hotkeys.cpp:328
 msgid "Video Jump"
@@ -2538,19 +2538,19 @@ msgstr "Spring i video"
 
 #: hotkeys.cpp:329
 msgid "Jump Video to Start"
-msgstr "Spring til starten af videoen"
+msgstr "Spring video til start"
 
 #: hotkeys.cpp:330
 msgid "Jump Video to End"
-msgstr "Spring til slutningen af videoen"
+msgstr "Spring video til slut"
 
 #: hotkeys.cpp:331
 msgid "Set Start to Video"
-msgstr "Sæt videostart"
+msgstr "Sæt start til video"
 
 #: hotkeys.cpp:332
 msgid "Set End to Video"
-msgstr "Sæt videoslut"
+msgstr "Sæt slut til video"
 
 #: hotkeys.cpp:333
 msgid "Snap to Scene"
@@ -2558,19 +2558,19 @@ msgstr "Snap til scene"
 
 #: hotkeys.cpp:334
 msgid "Shift by Current Time"
-msgstr "Flyt med aktuelle tid"
+msgstr "Forskyd med aktuelle tid"
 
 #: hotkeys.cpp:335
 msgid "Zoom 50%"
-msgstr "Zoom 50 %"
+msgstr "Zoom 50%"
 
 #: hotkeys.cpp:336
 msgid "Zoom 100%"
-msgstr "Zoom 100 %"
+msgstr "Zoom 100%"
 
 #: hotkeys.cpp:337
 msgid "Zoom 200%"
-msgstr "Zoom 200 %"
+msgstr "Zoom 200%"
 
 #: hotkeys.cpp:339
 msgid "Video global prev frame"
@@ -2582,15 +2582,15 @@ msgstr "Video global næste frame"
 
 #: hotkeys.cpp:341
 msgid "Video global focus seek"
-msgstr "Video global focus seek"
+msgstr "Video global fokuser søg"
 
 #: hotkeys.cpp:342
 msgid "Grid global prev line"
-msgstr "Grid global forrige linie"
+msgstr "Grid global forrige linje"
 
 #: hotkeys.cpp:343
 msgid "Grid global next line"
-msgstr "Grid global næste linie"
+msgstr "Grid global næste linje"
 
 #: hotkeys.cpp:344
 msgid "Save Subtitles Alt"
@@ -2618,43 +2618,43 @@ msgstr "Grid slet rækker"
 
 #: hotkeys.cpp:351
 msgid "Grid duplicate rows"
-msgstr "Grid duplikér rækker"
+msgstr "Grid dupliker rækker"
 
 #: hotkeys.cpp:352
 msgid "Grid duplicate and shift one frame"
-msgstr "Grid duplikér og flyt med én frame"
+msgstr "Grid dupliker og forskyd én frame"
 
 #: hotkeys.cpp:354
 msgid "Audio Commit Alt"
-msgstr "Lyd Foretag ændring alternativ"
+msgstr "Lyd Gennemfør ændr. alternativ"
 
 #: hotkeys.cpp:355
 msgid "Audio Commit"
-msgstr "Lyd Foretag ændring"
+msgstr "Lyd Gennemfør ændr."
 
 #: hotkeys.cpp:356
 msgid "Audio Commit (Stay)"
-msgstr "Lyd Foretage ændring (Bliv)"
+msgstr "Lyd Gennemfør ændr. (Bliv)"
 
 #: hotkeys.cpp:357
 msgid "Audio Prev Line"
-msgstr "Lyd Forrige linie"
+msgstr "Lyd Forrige linje"
 
 #: hotkeys.cpp:358
 msgid "Audio Prev Line Alt"
-msgstr "Lyd Forrige linie alternativ"
+msgstr "Lyd Forrige linje alternativ"
 
 #: hotkeys.cpp:359
 msgid "Audio Next Line"
-msgstr "Lyd Næste linie"
+msgstr "Lyd Næste linje"
 
 #: hotkeys.cpp:360
 msgid "Audio Next Line Alt"
-msgstr "Lyd Næste linie alternativ"
+msgstr "Lyd Næste linje alternativ"
 
 #: hotkeys.cpp:361
 msgid "Audio Play"
-msgstr "Afspil Lyd"
+msgstr "Lyd Afspil"
 
 #: hotkeys.cpp:362
 msgid "Audio Play Alt"
@@ -2666,7 +2666,7 @@ msgstr "Lyd Karaoke Forøg længde"
 
 #: hotkeys.cpp:364
 msgid "Audio Karaoke Decrease Len"
-msgstr "Lyd Karaoke Formindsk længde"
+msgstr "Lyd Karaoke Forkort længde"
 
 #: hotkeys.cpp:365
 msgid "Audio Karaoke Increase Len Shift"
@@ -2674,15 +2674,15 @@ msgstr "Lyd Karaoke Forøg længde skift"
 
 #: hotkeys.cpp:366
 msgid "Audio Karaoke Decrease Len Shift"
-msgstr "Lyd Karaoke Formindsk længde skift"
+msgstr "Lyd Karaoke Forkort længde skift"
 
 #: hotkeys.cpp:367
 msgid "Audio Scroll Left"
-msgstr "Lyd Rul mod venstre"
+msgstr "Lyd Rul venstre"
 
 #: hotkeys.cpp:368
 msgid "Audio Scroll Right"
-msgstr "Lyd Rul mod højre"
+msgstr "Lyd Rul højre"
 
 #: hotkeys.cpp:369
 msgid "Audio Play First 500ms"
@@ -2702,11 +2702,11 @@ msgstr "Lyd Afspil 500ms efter"
 
 #: hotkeys.cpp:373
 msgid "Audio Play To End"
-msgstr "Afspil lyd til slut"
+msgstr "Lyd Aspil til Slut"
 
 #: hotkeys.cpp:374
 msgid "Audio Play Original Line"
-msgstr "Lyd Afspil oprindelige linie"
+msgstr "Lyd Afspil oprindelig linje"
 
 #: hotkeys.cpp:375
 msgid "Audio Add Lead In"
@@ -2718,7 +2718,7 @@ msgstr "Lyd Tilføj lead-out"
 
 #: hotkeys.cpp:378
 msgid "Translation Assistant Play"
-msgstr "Oversættelsesassisten Afspil"
+msgstr "Oversættelsesassistent Afspil"
 
 #: hotkeys.cpp:379
 msgid "Translation Assistant Next"
@@ -2742,23 +2742,23 @@ msgstr "Oversættelsesassistent Indsæt oprindelige"
 
 #: hotkeys.cpp:385
 msgid "Styling Assistant Play"
-msgstr "Stylingassistent Afspil"
+msgstr "Typografiassistent Afspil"
 
 #: hotkeys.cpp:386
 msgid "Styling Assistant Next"
-msgstr "Stylingassistent Næste"
+msgstr "Typografiassistent Næste"
 
 #: hotkeys.cpp:387
 msgid "Styling Assistant Prev"
-msgstr "Stylingassistent Forrige"
+msgstr "Typografiassistent Forrige"
 
 #: hotkeys.cpp:388
 msgid "Styling Assistant Accept"
-msgstr "Stylingassistent Anvend"
+msgstr "Typografiassistent Anvend"
 
 #: hotkeys.cpp:389
 msgid "Styling Assistant Preview"
-msgstr "Stylingassistent Preview"
+msgstr "Typografiassistent Prøvevis"
 
 #: mkv_wrap.cpp:157
 msgid "Parsing Matroska"
@@ -2766,7 +2766,7 @@ msgstr "Analyserer Matroska"
 
 #: mkv_wrap.cpp:157
 msgid "Reading keyframe and timecode data from Matroska file."
-msgstr "Læser keyframe og tidskodedata fra Matroska-fil."
+msgstr "Læser keyframe- og tidskodedata fra Matroska-fil."
 
 #: subs_edit_box.cpp:78
 msgid "Comment"
@@ -2774,27 +2774,27 @@ msgstr "Kommentar"
 
 #: subs_edit_box.cpp:79
 msgid "Comment this line out. Commented lines don't show up on screen."
-msgstr "Kommentér denne linie. Kommentarer vises ikke på billedet."
+msgstr "Udkommenter denne linje. Kommentarer vises ikke på billedet."
 
 #: subs_edit_box.cpp:81
 msgid "Style for this line."
-msgstr "Typografi for denne linie."
+msgstr "Typografi for denne linje."
 
 #: subs_edit_box.cpp:83
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
-msgstr "Skuespillernavn for denne replik. Dette er kun til reference og er hovedsageligt ubrugelig."
+msgstr "Aktør for denne replik. Dette er kun til reference og er hovedsageligt ubrugelig."
 
 #: subs_edit_box.cpp:85
 msgid "Left Margin (0000 = default)"
-msgstr "Venstre margen (0000 = standard)"
+msgstr "Venstre margin (0000 = standard)"
 
 #: subs_edit_box.cpp:87
 msgid "Right Margin (0000 = default)"
-msgstr "Højre margen (0000 = standard)"
+msgstr "Højre margin (0000 = standard)"
 
 #: subs_edit_box.cpp:89
 msgid "Vertical Margin (0000 = default)"
-msgstr "Lodret margen (0000 = standard)"
+msgstr "Lodret margin (0000 = standard)"
 
 #: subs_edit_box.cpp:93
 msgid "Layer number"
@@ -2810,7 +2810,7 @@ msgstr "Sluttid"
 
 #: subs_edit_box.cpp:102
 msgid "Line duration"
-msgstr "Linievarighed"
+msgstr "Linjevarighed"
 
 #: subs_edit_box.cpp:104
 msgid "Time"
@@ -2818,7 +2818,7 @@ msgstr "Tid"
 
 #: subs_edit_box.cpp:105
 msgid "Time by h:mm:ss.cs"
-msgstr "Tid ved t:mm:ss.cs"
+msgstr "Tid i t:mm:ss.cs"
 
 #: subs_edit_box.cpp:106
 msgid "Frame"
@@ -2854,7 +2854,7 @@ msgstr "Skyggefarve"
 
 #: subs_edit_box.cpp:132
 msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
-msgstr "Effekt for denne linie. Dette kan bruges til at gemme ekstra information til karaokemanuskripter eller til de effekter der understøttes af rendereren."
+msgstr "Effekt for denne linjje. Dette kan benyttes til at gemme ekstra information til karaokemanuskripter, eller til de effekter der understøttes af rendereren."
 
 #: subs_edit_box.cpp:984
 msgid "&Undo"
@@ -2888,7 +2888,7 @@ msgstr "Del ved markør (beregn tider)"
 
 #: subs_grid.cpp:116
 msgid "Line Number"
-msgstr "Linienummer"
+msgstr "Linjenummer"
 
 #: subs_grid.cpp:117
 msgid "Layer"
@@ -2904,27 +2904,27 @@ msgstr "Sæt ind (efter)"
 
 #: subs_grid.cpp:152
 msgid "Insert at video time (before)"
-msgstr "Indsæt ved videotid (før)"
+msgstr "Sæt ind ved videotid (før)"
 
 #: subs_grid.cpp:153
 msgid "Insert at video time (after)"
-msgstr "Indsæt ved videotid (efter)"
+msgstr "Sæt ind ved videotid (efter)"
 
 #: subs_grid.cpp:165
 msgid "&Duplicate"
-msgstr "&Duplikér"
+msgstr "&Dupliker"
 
 #: subs_grid.cpp:166
 msgid "&Duplicate and shift by 1 frame"
-msgstr "&Duplikér og flyt med 1 frame"
+msgstr "&Dupliker og flyt med 1 frame"
 
 #: subs_grid.cpp:167
 msgid "Split (by karaoke)"
-msgstr "Del (efter karaoke)"
+msgstr "Del (via karaoke)"
 
 #: subs_grid.cpp:171
 msgid "&Swap"
-msgstr "&Byt"
+msgstr "Om&byt"
 
 #: subs_grid.cpp:175
 msgid "&Join (concatenate)"
@@ -2932,11 +2932,11 @@ msgstr "Sa&mmenkæd"
 
 #: subs_grid.cpp:176
 msgid "Join (keep first)"
-msgstr "Læg sammen (behold første)"
+msgstr "Sammenlæg (behold første)"
 
 #: subs_grid.cpp:177
 msgid "Join (as Karaoke)"
-msgstr "Læg sammen (som karaoke)"
+msgstr "Sammenlæg (som karaoke)"
 
 #: subs_grid.cpp:180
 msgid "&Make times continuous (change start)"
@@ -2948,15 +2948,15 @@ msgstr "Sæt &tider i forlængelse (ændr slut)"
 
 #: subs_grid.cpp:186
 msgid "Recombine (1, 1+2) into (1, 2)"
-msgstr "Rekombinér (1, 1+2) til (1, 2)"
+msgstr "Rekombiner (1, 1+2) til (1, 2)"
 
 #: subs_grid.cpp:187
 msgid "Recombine (1+2, 2) into (1, 2)"
-msgstr "Rekombinér (1+2, 2) til (1, 2)"
+msgstr "Rekombiner (1+2, 2) til (1, 2)"
 
 #: subs_grid.cpp:189
 msgid "Recombine (1, 1+2, 2) into (1, 2)"
-msgstr "Rekombinér (1, 1+2, 2) til (1, 2)"
+msgstr "Rekombiner (1, 1+2, 2) til (1, 2)"
 
 #: subs_grid.cpp:194
 msgid "C&ut"
@@ -2972,7 +2972,7 @@ msgstr "Skriver fil"
 
 #: tip.cpp:48
 msgid "Aegisub can export subtitles to other formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
-msgstr "Aegisub kan eksportere undertekster til andre formater, charsets og endda kompensere for variabel framerate så du kan hårdkode dem - det hele er i Eksportfunktionen i Filer-menuen."
+msgstr "Aegisub kan eksportere undertekster til andre formater, tegnsæt og endda kompensere for variabel framerate så du kan hårdkode dem - det hele er i Eksportfunktionen i Filer-menuen."
 
 #: tip.cpp:49
 msgid "You can easily translate subtitle files using the translation assistant."
@@ -2984,11 +2984,11 @@ msgstr "Typografier kan opbevares i forskellige lagre, så du kan holde orden p�
 
 #: tip.cpp:51
 msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
-msgstr "Brug tastaturgenveje! De gør livet nemmere for dig, f.eks., Ctrl+Enter opdaterer ændringer i den aktuelle linie uden at gå til næste. Tjek manualen for en komplet liste."
+msgstr "Brug tastaturgenvejene! De gør livet nemmere for dig, f.eks., Ctrl+Enter opdaterer ændringer i den aktuelle linje uden at gå til næste. Tjek manualen for en komplet liste."
 
 #: tip.cpp:52
 msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub are merciful."
-msgstr "Der er ingen grund til at bruge SSA-formatet (når modstillet mod ASS). ASS er stort set det samme, men tilføjer vigtig funktionalitet. Mest vigtigt er dog, at kun ASS understøtter visse override tags (såsom \\pos og \\t). Disse virker kun i SSA-filer fordi VSFiler/Textsub viser nåde."
+msgstr "Der er ingen grund til at bruge SSA-formatet (i modsætning til ASS). ASS er stort set det samme, men tilføjer vigtig funktionalitet. Vigtigst er dog, at kun ASS understøtter visse override tags (såsom \\pos og \\t). Disse virker kun i SSA-filer fordi VSFiler/Textsub viser nåde."
 
 #: tip.cpp:53
 msgid "DON'T PANIC!"
@@ -2996,11 +2996,11 @@ msgstr "GÅ IKKE I PANIK!"
 
 #: tip.cpp:54
 msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
-msgstr "Aegisub har mange features som sikrer at du aldrig mister dit projekt. Det vil gemme dine undertekster til en autosave-mappe med jævne mellemrum og vil skabe en kopi af underteksterne i autoback-mappen så snart du åbner dem. Crasher programmet, vil det forsøge at gemme en genskabelsesfil."
+msgstr "Aegisub har mange features som sikrer at du aldrig mister dit arbejde. Det vil gemme dine undertekster til en autosave-mappe med jævne mellemrum og vil skabe en kopi af underteksterne i autoback-mappen så snart du åbner dem. Crasher programmet, vil det forsøge at gemme en redningsfil."
 
 #: tip.cpp:55
 msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
-msgstr "Stylingassistenten er en praktisk måde at tilføje typografier til hver linie, når en skuespiller har fået tildelt en anden typografi til linien."
+msgstr "Typografiassistenten er en praktisk måde at tilføje typografier til hver linie, når hver skuespiller har fået tildelt sig egen typografi."
 
 #: tip.cpp:56
 msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
@@ -3020,7 +3020,7 @@ msgstr "Hvis noget går galt: 'Blame movax'"
 
 #: vfr.cpp:65
 msgid "No timecodes to average"
-msgstr "Ingen tidskoder at estimere"
+msgstr "Ingen tidskoder at tage gennemsnit af"
 
 #: video_box.cpp:54
 msgid "Play video starting on this position"
@@ -3052,11 +3052,11 @@ msgstr "Tid på denne frame relativt til starten og slutningen på den aktuelle 
 
 #: video_display.cpp:189
 msgid "You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"
-msgstr "Du har allerede hentet tidskoderne. Skal de skiftes ud med tidskoderne fra Matroska-filen?"
+msgstr "Du har allerede hentet tidskoderne. Skal de erstattes med tidskoderne fra Matroska-filen?"
 
 #: video_display.cpp:189
 msgid "Replace timecodes?"
-msgstr "Udskift tidskoder"
+msgstr "Erstat tidskoder"
 
 #: video_display.cpp:284
 msgid "Save PNG snapshot"
