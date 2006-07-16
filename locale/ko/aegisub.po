@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-14 03:51-0200\n"
-"PO-Revision-Date: 2006-07-16 18:32-0300\n"
+"PO-Revision-Date: 2006-07-16 18:34-0300\n"
 "Last-Translator: Rodrigo Braz Monteiro <zeratul@cellosoft.com>\n"
 "Language-Team: KAA <oblisk@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -118,23 +118,23 @@ msgstr "정지"
 
 #: audio_box.cpp:132
 msgid "Play 500 ms before selection ("
-msgstr "선택 500 ms 전 재생"
+msgstr "선택 500 ms 전 재생 ("
 
 #: audio_box.cpp:135
 msgid "Play 500 ms after selection ("
-msgstr "선택 500 ms 후에 재생"
+msgstr "선택 500 ms 후에 재생 ("
 
 #: audio_box.cpp:138
 msgid "Play first 500ms of selection ("
-msgstr "시작에서 500 ms 까지 재생"
+msgstr "시작에서 500 ms 까지 재생 ("
 
 #: audio_box.cpp:141
 msgid "Play last 500ms of selection ("
-msgstr "마지막 500 ms  재생"
+msgstr "마지막 500 ms  재생 ("
 
 #: audio_box.cpp:144
 msgid "Play from selection start to end of file ("
-msgstr "선택부터 끝가지 재생"
+msgstr "선택부터 끝가지 재생 ("
 
 #: audio_box.cpp:148
 msgid "Add lead in ("
@@ -214,7 +214,7 @@ msgstr "가라오케 테그"
 
 #: audio_karaoke.cpp:766
 msgid "Change karaoke tag to \\k"
-msgstr "가라오케 테그 바꾸기"
+msgstr "가라오케 테그 바꾸기 \\k"
 
 #: audio_karaoke.cpp:767
 msgid "Change karaoke tag to \\kf"
