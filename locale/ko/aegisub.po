@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-14 03:51-0200\n"
-"PO-Revision-Date: 2006-07-14 01:54-0300\n"
+"PO-Revision-Date: 2006-07-16 18:32-0300\n"
 "Last-Translator: Rodrigo Braz Monteiro <zeratul@cellosoft.com>\n"
 "Language-Team: KAA <oblisk@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -133,7 +133,6 @@ msgid "Play last 500ms of selection ("
 msgstr "마지막 500 ms  재생"
 
 #: audio_box.cpp:144
-#, fuzzy
 msgid "Play from selection start to end of file ("
 msgstr "선택부터 끝가지 재생"
 
@@ -319,7 +318,6 @@ msgstr "엑터"
 
 #: base_grid.cpp:408
 #: subs_grid.cpp:122
-#, fuzzy
 msgid "Effect"
 msgstr "영향"
 
@@ -370,7 +368,6 @@ msgid "E&xtract"
 msgstr "끌어내다"
 
 #: dialog_attachments.cpp:61
-#, fuzzy
 msgid "&Delete"
 msgstr "지우기"
 
@@ -383,7 +380,6 @@ msgid "Attach &Graphics"
 msgstr "그래픽 붙이기 "
 
 #: dialog_attachments.cpp:71
-#, fuzzy
 msgid "&Close"
 msgstr "닫기"
 
@@ -532,7 +528,6 @@ msgid "Number of points to track:"
 msgstr "진로 쫓기 숫자"
 
 #: dialog_fextracker.cpp:45
-#, fuzzy
 msgid "Minimal (squared) distance between two points:  "
 msgstr "두 장소 최소량 거리"
 
@@ -811,12 +806,10 @@ msgid "Doesn't Match"
 msgstr "메치 못함"
 
 #: dialog_selection.cpp:63
-#, fuzzy
 msgid "Dialogues"
 msgstr "대화"
 
 #: dialog_selection.cpp:64
-#, fuzzy
 msgid "Comments"
 msgstr "코멘트"
 
@@ -1372,7 +1365,6 @@ msgid "Click on list:"
 msgstr "표 마우스 클릭"
 
 #: dialog_styling_assistant.cpp:95
-#, fuzzy
 msgid "Select style"
 msgstr "전채 스타일을 선택"
 
@@ -1390,7 +1382,6 @@ msgid "Lead-in/Lead-out"
 msgstr "르드-인/르드-아웃"
 
 #: dialog_timing_processor.cpp:68
-#, fuzzy
 msgid "Add lead in:"
 msgstr "르드 인 추가 ("
 
@@ -1403,7 +1394,6 @@ msgid "Lead in to be added, in miliseconds."
 msgstr "리드-인 넣기 (밀리세컨드)"
 
 #: dialog_timing_processor.cpp:73
-#, fuzzy
 msgid "Add lead out:"
 msgstr "르드 아웃 추가 ("
 
@@ -1535,7 +1525,6 @@ msgid "Current line: ?"
 msgstr "현재 줄: ?"
 
 #: dialog_translation.cpp:93
-#, fuzzy
 msgid "Insert original"
 msgstr "오리지날"
 
@@ -1544,9 +1533,9 @@ msgid "Enable preview"
 msgstr "전채보기"
 
 #: dialog_translation.cpp:171
-#, fuzzy, c-format
+#, c-format
 msgid "Current line: %i/%i"
-msgstr "현제 줄:"
+msgstr "현제 줄: %i/%i"
 
 #: export_clean_info.cpp:58
 msgid "Clean Script Info"
@@ -1984,7 +1973,6 @@ msgid "Undoes last action"
 msgstr "취소"
 
 #: frame_main.cpp:237
-#, fuzzy
 msgid "&Redo\t"
 msgstr "되살리기"
 
@@ -2293,7 +2281,6 @@ msgid "Open styles manager"
 msgstr "스타일 매내저 열기"
 
 #: frame_main.cpp:307
-#, fuzzy
 msgid "&Attachments..."
 msgstr "내용물... \t"
 
@@ -2501,7 +2488,6 @@ msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9
 msgstr "가로세로 비 바꾸기, 소수  (e.g. 2.35), 분수 (e.g. 16:9) 일종들. 853x480 포멧 해상도를 임녁 하시요."
 
 #: frame_main_events.cpp:1060
-#, fuzzy
 msgid "Enter aspect ratio"
 msgstr "종횡비 바꾸기"
 
@@ -2718,7 +2704,6 @@ msgid "Audio Play 500ms After"
 msgstr "오디오 500 ms 첫  재생"
 
 #: hotkeys.cpp:373
-#, fuzzy
 msgid "Audio Play To End"
 msgstr "오디오 듯기"
 
