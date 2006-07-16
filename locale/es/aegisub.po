@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-04-02 04:17-0000\n"
-"Last-Translator: <<NeSuKuN>> <nesukun@gmail.com>\n"
+"PO-Revision-Date: 2006-07-16 16:45+0100\n"
+"Last-Translator: Niels Martin Hansen <jiifurusu@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -1856,7 +1856,7 @@ msgstr "Copiar subtítulos"
 
 #: frame_main.cpp:246
 msgid "Paste...\t"
-msgstr "Pegar...\tt"
+msgstr "Pegar...\t"
 
 #: frame_main.cpp:246
 msgid "Paste subtitles"

@@ -89,6 +89,7 @@ DialogHotkeys::DialogHotkeys(FrameMain *_parent)
 	MainSizer->Add(ButtonSizer,0,wxALL|wxEXPAND,5);
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
+	CenterOnParent();
 }
 
 
