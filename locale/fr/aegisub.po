@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-07-16 22:25+0100\n"
-"Last-Translator: Kurasu <kurassu@gmail.com>\n"
+"PO-Revision-Date: 2006-07-18 17:03-0300\n"
+"Last-Translator: Rodrigo Braz Monteiro <zeratul@cellosoft.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -1448,7 +1448,7 @@ msgstr "Seuil pour la distance 'avant le début', c'est à dire combien de frame
 
 #: dialog_timing_processor.cpp:110
 msgid "Starts after thres.:"
-msgstr "Débutse après le seuil:"
+msgstr "Débuts après le seuil:"
 
 #: dialog_timing_processor.cpp:112
 msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
@@ -1464,7 +1464,7 @@ msgstr "Seuil pour la distance 'avant la fin', c'est à dire combien de frames a
 
 #: dialog_timing_processor.cpp:116
 msgid "Ends after thres.:"
-msgstr "Seuil après le seuil:"
+msgstr "Fins après le seuil:"
 
 #: dialog_timing_processor.cpp:118
 msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
@@ -1994,7 +1994,7 @@ msgstr "Décalage des sous-titres par temps ou par frames"
 
 #: frame_main.cpp:241
 msgid "Sort by Time"
-msgstr "Décalage par temps"
+msgstr "Trier par temps"
 
 #: frame_main.cpp:241
 msgid "Sort all subtitles by their start times"
