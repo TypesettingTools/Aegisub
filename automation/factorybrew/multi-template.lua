@@ -74,7 +74,7 @@ function do_syllable(meta, styles, config, line, syl)
 	local result = { n=0 }
 	
 	-- Don't bother with empty syllables
-	if syl.text == "" then
+	if syl.text == "" or syl.n == 0 then
 		return result
 	end
 	

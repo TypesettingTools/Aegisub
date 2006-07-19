@@ -97,6 +97,10 @@ function do_syllable(meta, styles, config, line, syl)
 		text = syl.text
 	end
 	
+	if syl.n == 0 then
+		return text
+	end
+	
 	-- Add the variable names to the syllable data
 	syl["dur"] = syl.duration
 	syl["start"] = syl.start_time
