@@ -169,5 +169,11 @@ end
 
 -- Exclusive or of two boolean values
 function xor(a, b)
-	return (a or b) and not (a and b)
+	if a and not b then
+		return a
+	elseif b and not a then
+		return b
+	else
+		return false
+	end
 end
