@@ -63,7 +63,8 @@
 // Can write to file?
 bool PRSSubtitleFormat::CanWriteFile(wxString filename) {
 #ifdef __WINDOWS__
-	return (filename.Right(4).Lower() == _T(".prs"));
+	return false;
+	//return (filename.Right(4).Lower() == _T(".prs"));
 #else
 	return false;
 #endif
