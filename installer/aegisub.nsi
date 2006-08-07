@@ -264,11 +264,11 @@ SetoutPath $INSTDIR
    WriteRegDWORD HKLM "Software\Aegisub" "aegisub_vsfilter" "1"
 SectionEnd
 
-Section /o "Aegisub Source" AEGISUB_SOURCE_SECTION
-SetoutPath $INSTDIR
-   File /r "source"
-   WriteRegDWORD HKLM "Software\Aegisub" "aegisub_source" "1"
-SectionEnd
+;Section /o "Aegisub Source" AEGISUB_SOURCE_SECTION
+;SetoutPath $INSTDIR
+;   File /r "source"
+;   WriteRegDWORD HKLM "Software\Aegisub" "aegisub_source" "1"
+;SectionEnd
 SectionGroupEnd
 
 SectionGroup /e "Avisynth" AVISYNTH_GROUP
