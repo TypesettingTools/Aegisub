@@ -39,7 +39,7 @@ crccheck force
 ;Macros
 
 ;--------------------------------
-!define AEGISUB_VERSION "1.09"
+!define AEGISUB_VERSION "1.10"
 !define NAME "Aegisub ${AEGISUB_VERSION}"
 !define FNAME "Aegisub-${AEGISUB_VERSION}"
 !define DISPLAYNAME "Aegisub ${AEGISUB_VERSION}"
@@ -50,7 +50,7 @@ crccheck force
 !define AVISYNTH_SOURCE_SERVER "http://files.cellosoft.com/zeratul"
 ;--------------------------------
 ;Version Information
-  VIProductVersion "1.0.9.0"
+  VIProductVersion "1.1.0.0"
   VIAddVersionKey  "ProductName" "Aegisub"
   VIAddVersionKey  "Comments" "Saving the world from bad typesetting."
   VIAddVersionKey  "CompanyName" "#aegisub"
@@ -319,35 +319,35 @@ SetOutPath $INSTDIR
 
 SectionEnd
 
-Section /o "Avisynth 2.5.6a Source" AVISYNTH_SOURCE_SECTION
-SetOutPath $INSTDIR
-
-   IfFileExists "$DESKTOP\${AVISYNTH_SOURCE}" lbl_avisynth_source_end
-
-   GetTempFilename $R1 $TEMP
-
-   lbl_avisynth_source_dl:
-    Delete $R1
-    NSISdl::download /TRANSLATE "Downloading ${AVISYNTH_SOURCE}" "Connecting..." "second" "minute" "hour" "s" "%dkB (%d%%) of %dkB @ %d.%01dkB/s" "(%d %s%s remaining)" "${AVISYNTH_SOURCE_SERVER}/avisynth_src.rar" "$R1"
-    Pop $R0 ;Get the return value
-    StrCmp $R0 "success" lbl_avisynth_source_success lbl_avisynth_source_fail
-   lbl_avisynth_source_fail:
-    MessageBox MB_ABORTRETRYIGNORE "Download failed: $R0" IDIGNORE lbl_avisynth_source_ignore IDRETRY lbl_avisynth_source_dl 
-    goto lbl_avisynth_source_abort
-   lbl_avisynth_source_success:
-    Rename $R1 "$DESKTOP\${AVISYNTH_SOURCE}"
-    goto lbl_avisynth_source_end
-
-   lbl_avisynth_source_ignore:
-    Delete $R1
-    goto lbl_avisynth_source_end
-
-   lbl_avisynth_source_abort:
-    Delete $R1
-    quit
-
-   lbl_avisynth_source_end:
-SectionEnd
+;Section /o "Avisynth 2.5.6a Source" AVISYNTH_SOURCE_SECTION
+;SetOutPath $INSTDIR
+;
+;   IfFileExists "$DESKTOP\${AVISYNTH_SOURCE}" lbl_avisynth_source_end
+;
+;   GetTempFilename $R1 $TEMP
+;
+;   lbl_avisynth_source_dl:
+;    Delete $R1
+;    NSISdl::download /TRANSLATE "Downloading ${AVISYNTH_SOURCE}" "Connecting..." "second" "minute" "hour" "s" "%dkB (%d%%) of %dkB @ %d.%01dkB/s" "(%d %s%s remaining)" "${AVISYNTH_SOURCE_SERVER}/avisynth_src.rar" "$R1"
+;    Pop $R0 ;Get the return value
+;    StrCmp $R0 "success" lbl_avisynth_source_success lbl_avisynth_source_fail
+;   lbl_avisynth_source_fail:
+;    MessageBox MB_ABORTRETRYIGNORE "Download failed: $R0" IDIGNORE lbl_avisynth_source_ignore IDRETRY lbl_avisynth_source_dl 
+;    goto lbl_avisynth_source_abort
+;   lbl_avisynth_source_success:
+;    Rename $R1 "$DESKTOP\${AVISYNTH_SOURCE}"
+;    goto lbl_avisynth_source_end
+;
+;   lbl_avisynth_source_ignore:
+;    Delete $R1
+;    goto lbl_avisynth_source_end
+;
+;   lbl_avisynth_source_abort:
+;    Delete $R1
+;    quit
+;
+;   lbl_avisynth_source_end:
+;SectionEnd
 
 SectionGroupEnd
 ;************************************************************************************
@@ -377,11 +377,11 @@ RMDir "$INSTDIR\autoback"
   Delete "$INSTDIR\automation\automation-lua.txt"
 
 ;include
-  Delete "$INSTDIR\automation\include\readme.txt"
-  Delete "$INSTDIR\automation\include\utils.lua"
-  Delete "$INSTDIR\automation\include\karaskel.lua"
-  Delete "$INSTDIR\automation\include\karaskel-adv.lua"
-  RMDir "$INSTDIR\automation\include"
+  ;Delete "$INSTDIR\automation\include\readme.txt"
+  ;Delete "$INSTDIR\automation\include\utils.lua"
+  ;Delete "$INSTDIR\automation\include\karaskel.lua"
+  ;Delete "$INSTDIR\automation\include\karaskel-adv.lua"
+  RMDir /r "$INSTDIR\automation\include"
 
 ;factorybrew
   RMDir /r "$INSTDIR\automation\factorybrew"
