@@ -35,18 +35,19 @@
 #include <wx/string.h>
 
 enum AssDrawingSegmentType {
-	SEGMENT_MOVE,          // m <x> <y>
-	SEGMENT_MOVE_NOCLOSE,  // n <x> <y>
-	SEGMENT_LINE,          // l <x> <y>
-	SEGMENT_BEZIER,        // b <x1> <y1> <x2> <y2> <x3> <y3>
-	SEGMENT_SPLINE,        // s <x1> <y2> <x2> <y2> <x3> <y3> [... <xN> <yN>]
-	SEGMENT_SPLINE_EXTEND, // p <x> <y>
-	SEGMENT_SPLINE_CLOSE,  // c
-	                       // thought: maybe join the three last into one?
+	SEGMENT_MOVE,           // m <x> <y>
+	SEGMENT_MOVE_NOCLOSE,   // n <x> <y>
+	SEGMENT_LINE,           // l <x> <y>
+	SEGMENT_BEZIER,         // b <x1> <y1> <x2> <y2> <x3> <y3>
+	SEGMENT_BSPLINE,        // s <x1> <y2> <x2> <y2> <x3> <y3> [... <xN> <yN>]
+	SEGMENT_BSPLINE_EXTEND, // p <x> <y>
+	SEGMENT_BSPLINE_CLOSE,  // c
+	                        // thought: maybe join the three last into one? (gabest doesn't)
 };
 
 struct AssDrawingPoint {
 	int x, y;
+	AssDrawingPoint(int _x, int _y) { x = _x; y = _y; }
 };
 
 struct AssDrawingSegment {
@@ -59,13 +60,18 @@ struct AssDrawing {
 	std::vector<AssDrawingSegment> data;
 
 	wxString ToString(); // stupid conversion to string, doesn't try to shorten things out
-	int FromString(wxString &src); // returns 0 on success, index+1 of offending character on fail
+	int FromString(wxString src); // returns 0 on success, index+1 of offending character on fail
 
 	void Collapse(); // try to join as many segments together as possible, without affecting the actual shape (eg. join "l 1 2 l 3 4" into "l 1 2 3 4")
 	void Expand(); // split into as many segments as possible, without creating any meaningless ones, such as null-moves (ie. expand "l 1 2 3 4" into "l 1 2 l 3 4")
 
 	void Rescale(int new_scale); // change the scale value, stretching the drawing to match the new one
 	void Stretch(float factor); // up/down scale the drawing by a factor
+
+	AssDrawingPoint GetMinXY(); // get the lowest x and y coordinates present
+	AssDrawingPoint GetMaxXY(); // get the highest x and y coordinates present
+	AssDrawingPoint GetExtents(); // get the extents of the drawing as seen by VSFilter
+	AssDrawingPoint GetCenterXY(); // get the "center" of the drawing (as seen by VSFilter)
 };
 
 #endif

@@ -24,6 +24,7 @@ Other stuff / wishlist:
 * Maybe import outlines of one or more characters from a font to modify?
   (At least is possible with Win32 and Freetype2.)
 * Convert segments between different types
+* Binary operations with other shapes
 
 Things to check:
 * What happens when a drawing doesn't start with an 'm' command?
