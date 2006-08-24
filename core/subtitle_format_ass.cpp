@@ -67,13 +67,21 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 		wxbuffer = file.ReadLineFromFile();
 
 		// Convert v4 styles to v4+ styles
+		// Ugly hacks to allow intermixed v4 and v4+ style sections
 		if (wxbuffer.Lower() == _T("[v4 styles]")) {
 			wxbuffer = _T("[V4+ Styles]");
-		}
-
-		// Set group
-		if (wxbuffer[0] == _T('[')) {
 			curgroup = wxbuffer;
+			IsSSA = true;
+		}
+		else if (wxbuffer.Lower() == _T("[v4+ styles]")) {
+			curgroup = wxbuffer;
+			IsSSA = false;
+		}
+		// Not-so-special case for other groups, just set it
+		else if (wxbuffer[0] == _T('[')) {
+			curgroup = wxbuffer;
+			// default from extension in all other sections
+			IsSSA = filename.Right(4).Lower() == _T(".ssa");
 		}
 
 		// Add line
