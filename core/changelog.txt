@@ -1,7 +1,12 @@
 Aegisub changelog
 Please visit http://aegisub.net to download latest version
 
-= 1.10 beta - 2006.03.xx ===========================
+= 1.11 beta - 2006.xx.xx ===========================
+
+- Fixed loading of sections with unexpected cases.
+
+
+= 1.10 beta - 2006.08.07 ===========================
 
 - Always defaults to Audio Cache=1 (ram) now (Myrsloik)
 - Automation: Added xor(a,b) boolean logical function to utils.lua (jfs)

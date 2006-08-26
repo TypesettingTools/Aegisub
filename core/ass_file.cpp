@@ -255,7 +255,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxSt
 	if (outGroup) *outGroup = group;
 
 	// Attachment
-	if (group == _T("[Fonts]") || group == _T("[Graphics]")) {
+	if (group.Lower() == _T("[fonts]") || group.Lower() == _T("[graphics]")) {
 		// Check if it's valid data
 		size_t dataLen = data.Length();
 		bool validData = (dataLen > 0) && (dataLen <= 80);
@@ -310,7 +310,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxSt
 	}
 
 	// Dialogue
-	if (group == _T("[Events]")) {
+	if (group.Lower() == _T("[events]")) {
 		if ((data.Left(9) == _T("Dialogue:") || data.Left(8) == _T("Comment:"))) {
 			AssDialogue *diag = new AssDialogue(data,IsSSA);
 			lasttime = diag->Start.GetMS();
@@ -327,7 +327,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxSt
 	}
 
 	// Style
-	else if (group == _T("[V4+ Styles]")) {
+	else if (group.Lower() == _T("[v4+ styles]")) {
 		if (data.Left(6) == _T("Style:")) {
 			AssStyle *style = new AssStyle(data,IsSSA);
 			entry = style;
@@ -342,7 +342,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxSt
 	}
 
 	// Script info
-	else if (group == _T("[Script Info]")) {
+	else if (group.Lower() == _T("[script info]")) {
 		// Comment
 		if (data.Left(1) == _T(";")) {
 			// Skip stupid comments added by other programs
