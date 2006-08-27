@@ -3,7 +3,10 @@ Please visit http://aegisub.net to download latest version
 
 = 1.11 beta - 2006.xx.xx ===========================
 
-- Fixed loading of sections with unexpected cases.
+- Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections (jfs)
+- Fixed loading of sections with unexpected cases. (AMZ)
+- Made Audio Spectrum calculation/drawing code use multithreading, resulting in a significant speedup on SMP (eg. dual-core) systems (jfs)
+- Changed palette for audio spectrum (jfs)
 
 
 = 1.10 beta - 2006.08.07 ===========================

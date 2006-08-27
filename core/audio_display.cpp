@@ -37,6 +37,8 @@
 ///////////
 // Headers
 #include <wx/tglbtn.h>
+#include <math.h>
+#include <vector>
 #include "audio_display.h"
 #include "audio_provider_stream.h"
 #include "main.h"
@@ -486,6 +488,106 @@ static unsigned short spectrumColorMap16[256];
 static bool colorMapsGenerated = false;
 
 
+//////////////////////////////////////
+// Spectrum analyser rendering thread
+class SpectrumRendererThread : public wxThread {
+public:
+	SpectrumRendererThread() : wxThread(wxTHREAD_JOINABLE) {
+		if (Create() != wxTHREAD_NO_ERROR)
+			throw _T("Error creating Spectrum rendering thread.");
+	}
+
+	int *data; // image data to write to (shared)
+	int window; // 1 << Options.AsInt(_T("Audio Spectrum Window"))
+	int firstbar, lastbar; // first and last vertical bar to draw
+	int w, h; // width and height of canvas
+	int cutoff; // cutoff frequency
+	float *base_in; // audio sample data (shared)
+	int samples; // number of samples per column
+	int depth; // display bit depth
+	float scale; // vertical scale of display
+	
+protected:
+	wxThread::ExitCode Entry() {
+		// Pointers to image data
+		int *write_ptr = data;
+		unsigned short *write_ptr16 = (unsigned short *)data;
+
+		// FFT output data
+		float *out_r = new float[window];
+		float *out_i = new float[window];
+
+		// Prepare constants
+		const int halfwindow = window/2;
+		const int posThres = MAX(1,int(double(halfwindow-cutoff)/double(h)*0.5/scale + 0.5));
+		const float mult = float(h)/float(halfwindow-cutoff)/255.f;
+
+		// Calculation loop
+		for (int i = firstbar; i < lastbar; i++) {
+			__int64 curStart = i*samples-(window/2);
+			if (curStart < 0) curStart = 0;
+
+			// Position input
+			float *in = base_in + curStart;
+
+			// Perform the FFT
+			FFT fft;
+			fft.Transform(window,in,out_r,out_i);
+
+			// Draw bar
+			float accum = 0;
+			int accumPos = posThres;
+			int y = h;
+			int intensity;
+			float t1,t2;
+
+			// Position pointer
+			write_ptr = data+i+h*w;
+			write_ptr16 = ((unsigned short*)data)+(i+h*w);
+
+			// Draw loop
+			for (int j=cutoff;j<halfwindow;j++) {
+				// Calculate magnitude and add to accumulator
+				t1 = out_r[j];
+				t1 *= t1;
+				t2 = out_i[j];
+				t2 *= t2;
+				t2 += t1;
+				accum += sqrt(t2);
+
+				// When accumulator goes over, plot point
+				accumPos--;
+				if (accumPos == 0) {
+					intensity = int(accum*mult);
+					if (intensity > 255) intensity = 255;
+					if (intensity < 0) intensity = 0;
+
+					// Write and go to next row
+					if (depth == 32) {
+						write_ptr -= w;
+						*write_ptr = spectrumColorMap[intensity];
+					}
+					else if (depth == 16) {
+						write_ptr16 -= w;
+						*write_ptr16 = spectrumColorMap16[intensity];
+					}
+
+					y--;
+					if (y == 0) break;
+					accumPos = posThres;
+					accum = 0;
+				}
+			}
+		}
+
+		delete out_r;
+		delete out_i;
+
+		return 0;
+	}
+};
+
+
 //////////////////////////
 // Draw spectrum analyzer
 void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
@@ -498,14 +600,11 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 
 	if (!weak) {
 		// Generate colors
-		//int colorMap[256];
-		//unsigned short colorMap16[256];
 		if (!colorMapsGenerated) {
 			unsigned char r,g,b;
 			for (int i=0;i<256;i++) {
-				//HSVtoRGB(255-i,1.0f - 0.3f*(i/255.0f),0.3f + 0.7f*(i/255.0f),r,g,b);
-				//hsv_to_rgb(255-i, 1.0f - 0.3f * (i/255.0f), 0.3f + 0.7f * (i/255.0f), &r, &g, &b);
-				hsv_to_rgb(255 - i, 255 - i * 3/10, 255*3/10 + i * 7/10, &r, &g, &b);
+				//hsv_to_rgb(255 - i, 255 - i * 3/10, 255*3/10 + i * 7/10, &r, &g, &b);
+				hsl_to_rgb(170 + i * 2/3, 128 + i/2, i, &r, &g, &b);
 				spectrumColorMap[i] = b | (g<<8) | (r<<16);
 				spectrumColorMap16[i] = ((r>>3)<<11) | ((g>>2)<<5) | b>>3;
 			}
@@ -529,20 +628,52 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 		}
 		delete raw_int;
 
-		// More arrays
+		// For image data
+		int *data = new int[w*h*depth/32];
+
+		////// START OF PARALLELISED CODE //////
+		const int cpu_count = wxThread::GetCPUCount();
+		std::vector<SpectrumRendererThread*> threads(cpu_count);
+		for (int i = 0; i < cpu_count; i++) {
+			// Ugh, way too many data to copy in
+			threads[i] = new SpectrumRendererThread();
+			threads[i]->data = data;
+			threads[i]->window = window;
+			threads[i]->firstbar = i * w/cpu_count;
+			threads[i]->lastbar = (i+1) * w/cpu_count;
+			threads[i]->w = w;
+			threads[i]->h = h;
+			threads[i]->cutoff = cutOff;
+			threads[i]->base_in = raw_float;
+			threads[i]->samples = samples;
+			threads[i]->depth = depth;
+			threads[i]->scale = scale;
+			threads[i]->Run();
+		}
+		// Threads started, wait for them to end
+		for (int i = 0; i < cpu_count; i++) {
+			threads[i]->Wait();
+			delete threads[i];
+		}
+
+		// Additional constants
+		const int halfwindow = window/2;
+		const int posThres = MAX(1,int(double(halfwindow-cutOff)/double(h)*0.5/scale + 0.5));
+		const float mult = float(h)/float(halfwindow-cutOff)/255.f;
+		// And more
+		int *write_ptr = data;
+		unsigned short *write_ptr16 = (unsigned short *)data;
+
+		/*// More arrays
 		float *out_r = new float[window];
 		float *out_i = new float[window];
-		int *data = new int[w*h*depth/32];
 		int *write_ptr = data;
 		unsigned short *write_ptr16 = (unsigned short *)data;
 	
-		// Copy to spectrum bitmap
-		//dc.BeginDrawing();
-
 		// Prepare variables
 		int halfwindow = window/2;
 		int posThres = MAX(1,int(double(halfwindow-cutOff)/double(h)*0.5/scale + 0.5));
-		float mult = float(h)/float(halfwindow-cutOff)/255.0f;
+		float mult = float(h)/float(halfwindow-cutOff)/255.f;
 
 		// Calculation loop
 		for (int i=0;i<w;i++) {
@@ -603,7 +734,8 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 					accum = 0;
 				}
 			}
-		}
+		}*/
+		////// END OF PARALLELISED CODE //////
 
 		// Clear top of image
 		int filly = h - (halfwindow-cutOff)/posThres;
@@ -630,8 +762,6 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 		}
 
 		// Clear memory
-		delete out_r;
-		delete out_i;
 		delete raw_float;
 
 		// Create image
