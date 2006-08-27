@@ -520,7 +520,8 @@ protected:
 
 		// Prepare constants
 		const int halfwindow = window/2;
-		const int posThres = MAX(1,int(double(halfwindow-cutoff)/double(h)*0.5/scale + 0.5));
+		//const int posThres = MAX(1,int(double(halfwindow-cutoff)/double(h)*0.5/scale + 0.5));
+		const int maxband = (halfwindow-cutoff) * 2/3;
 		const float mult = float(h)/float(halfwindow-cutoff)/255.f;
 
 		// Calculation loop
@@ -539,11 +540,6 @@ protected:
 			write_ptr = data+i+h*w;
 			write_ptr16 = ((unsigned short*)data)+(i+h*w);
 
-			// Calculate the signal power over frequency
-			for (int j = 0; j < window; j++) {
-				power[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
-			}
-
 			// According to the formula at http://en.wikipedia.org/wiki/Fast_Fourier_transform:
 			//   X_k = SUM ( n=0, N-1, x_n * e^(-2*pi*i / N * n * k) )
 			// The maximum output value for our case (real-valued-only input, range -16384 to +16383, N=1024)
@@ -558,6 +554,22 @@ protected:
 			// Currently 16 bit audio is assumed, meaning samples*16384
 			// But scale this by a user amount (vertical zoom0 -- scale is from 0 to 8
 			int maxpower = window*16384 / (16*256*scale);
+
+			// Calculate the signal power over frequency
+#ifdef SPECTRUM_LOGAGITHMIC
+			for (int j = 0; j < window; j++) {
+				float t = out_r[j]*out_r[j] + out_i[j]*out_i[j];
+				if (t < 1)
+					power[j] = 0;
+				else
+					power[j] = 10. * log10(t) * 64; // try changing the constant 64 if playing with this
+			}
+			maxpower = 10 * log10((float)maxpower);
+#else
+			for (int j = 0; j < window; j++) {
+				power[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
+			}
+#endif
 
 #define WRITE_PIXEL                                        \
         if (intensity > 255) intensity = 255;              \
@@ -578,8 +590,8 @@ protected:
 
 				// Iterate over pixels, picking a range of samples for each
 				for (int j = 0; j < h; j++) {
-					int sample1 = (halfwindow-cutoff) * j/h + cutoff;
-					int sample2 = (halfwindow-cutoff) * (j+1)/h + cutoff;
+					int sample1 = maxband * j/h + cutoff;
+					int sample2 = maxband * (j+1)/h + cutoff;
 					float maxval = 0;
 					for (int samp = sample1; samp <= sample2; samp++) {
 						if (power[samp] > maxval) maxval = power[samp];
@@ -595,11 +607,11 @@ protected:
 
 				// Iterate over pixels, picking the nearest power values
 				for (int j = 0; j < h; j++) {
-					float ideal = (float)(j+1.)/h * (halfwindow-cutoff);
+					float ideal = (float)(j+1.)/h * maxband;
 					float sample1 = power[(int)floor(ideal)+cutoff];
 					float sample2 = power[(int)ceil(ideal)+cutoff];
 					float frac = ideal - floor(ideal);
-					int intensity = int(((1-frac)*sample1 + frac*sample2) / maxpower * 255);
+					int intensity = int(((1-frac)*sample1 + frac*sample2) / maxpower);
 					WRITE_PIXEL
 				}
 			}
@@ -806,6 +818,8 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 		////// END OF PARALLELISED CODE //////
 
 		// Clear top of image
+		/*
+		// not needed with new algo, it always fill the entire image
 		int filly = h - (halfwindow-cutOff)/posThres;
 		if (filly < 0) filly = 0;
 		if (depth == 32) {
@@ -828,6 +842,7 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 				}
 			}
 		}
+		*/
 
 		// Clear memory
 		delete raw_float;
