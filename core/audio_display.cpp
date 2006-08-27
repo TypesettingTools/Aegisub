@@ -232,7 +232,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 	// Draw keyframes
 	if (video->loaded && draw_boundary_lines) {
-		int nKeys = video->KeyFrames.Count();
+		int nKeys = (int)video->KeyFrames.Count();
 		dc.SetPen(wxPen(wxColour(255,0,255),1));
 
 		// Get min and max frames to care about
@@ -514,8 +514,9 @@ protected:
 		unsigned short *write_ptr16 = (unsigned short *)data;
 
 		// FFT output data
-		float *out_r = new float[window];
-		float *out_i = new float[window];
+		float *out_r = new float[window]; // real part
+		float *out_i = new float[window]; // imaginary part
+		float *power = new float[window]; // calculated signal power
 
 		// Prepare constants
 		const int halfwindow = window/2;
@@ -534,18 +535,84 @@ protected:
 			FFT fft;
 			fft.Transform(window,in,out_r,out_i);
 
+			// Position pointer
+			write_ptr = data+i+h*w;
+			write_ptr16 = ((unsigned short*)data)+(i+h*w);
+
+			// Calculate the signal power over frequency
+			for (int j = 0; j < window; j++) {
+				power[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
+			}
+
+			// According to the formula at http://en.wikipedia.org/wiki/Fast_Fourier_transform:
+			//   X_k = SUM ( n=0, N-1, x_n * e^(-2*pi*i / N * n * k) )
+			// The maximum output value for our case (real-valued-only input, range -16384 to +16383, N=1024)
+			// must be:
+			//   O(X_k) = O( SUM ( n=0, 1023, 16383 * exp(-2*pi*i / 1024 * 1023 * 1023) ) )
+			//          = 1024 * 16383 * exp(-pi*i / 512 * 1023 * 1023)
+			//         ~= 16777216 * exp(-2*pi * i * 1024)
+			// Since exp(ix) = cos(x) + i * sin(x), |a * exp(i*b)| = a for all real a and b, max
+			// power will be 16777216.
+			// More generally, in this context, it will be:
+			//   samples * 2^(audio_bit_depth-1)
+			// Currently 16 bit audio is assumed, meaning samples*16384
+			// But scale this by a user amount (vertical zoom0 -- scale is from 0 to 8
+			int maxpower = window*16384 / (16*256*scale);
+
+#define WRITE_PIXEL                                        \
+        if (intensity > 255) intensity = 255;              \
+        if (intensity < 0) intensity = 0;                  \
+        if (depth == 32) {                                 \
+            write_ptr -= w;                                \
+            *write_ptr = spectrumColorMap[intensity];      \
+        }                                                  \
+        else if (depth == 16) {                            \
+            write_ptr16 -= w;                              \
+            *write_ptr16 = spectrumColorMap16[intensity];  \
+        }
+
+			// Decide which rendering algo to use
+			if (halfwindow-cutoff > h) {
+				// more than one frequency sample per pixel (vertically compress data)
+				// pick the largest value per pixel for display
+
+				// Iterate over pixels, picking a range of samples for each
+				for (int j = 0; j < h; j++) {
+					int sample1 = (halfwindow-cutoff) * j/h + cutoff;
+					int sample2 = (halfwindow-cutoff) * (j+1)/h + cutoff;
+					float maxval = 0;
+					for (int samp = sample1; samp <= sample2; samp++) {
+						if (power[samp] > maxval) maxval = power[samp];
+					}
+					int intensity = int(maxval / maxpower);
+					WRITE_PIXEL
+				}
+			}
+			else {
+				// less than one frequency sample per pixel (vertically expand data)
+				// interpolate between pixels
+				// can also happen with exactly one sample per pixel, but how often is that?
+
+				// Iterate over pixels, picking the nearest power values
+				for (int j = 0; j < h; j++) {
+					float ideal = (float)(j+1.)/h * (halfwindow-cutoff);
+					float sample1 = power[(int)floor(ideal)+cutoff];
+					float sample2 = power[(int)ceil(ideal)+cutoff];
+					float frac = ideal - floor(ideal);
+					int intensity = int(((1-frac)*sample1 + frac*sample2) / maxpower * 255);
+					WRITE_PIXEL
+				}
+			}
+
+#undef WRITE_PIXEL
+
 			// Draw bar
-			float accum = 0;
+			/*float accum = 0;
 			int accumPos = posThres;
 			int y = h;
 			int intensity;
 			float t1,t2;
 
-			// Position pointer
-			write_ptr = data+i+h*w;
-			write_ptr16 = ((unsigned short*)data)+(i+h*w);
-
-			// Draw loop
 			for (int j=cutoff;j<halfwindow;j++) {
 				// Calculate magnitude and add to accumulator
 				t1 = out_r[j];
@@ -577,11 +644,12 @@ protected:
 					accumPos = posThres;
 					accum = 0;
 				}
-			}
+			}*/
 		}
 
 		delete out_r;
 		delete out_i;
+		delete power;
 
 		return 0;
 	}
@@ -795,7 +863,7 @@ void AudioDisplay::GetDialoguePos(__int64 &selStart,__int64 &selEnd, bool cap) {
 void AudioDisplay::GetKaraokePos(__int64 &karStart,__int64 &karEnd, bool cap) {
 	try {
 		// Wrap around
-		int nsyls = karaoke->syllables.size();
+		int nsyls = (int)karaoke->syllables.size();
 		if (karaoke->curSyllable == -1) {
 			karaoke->SetSyllable(nsyls-1);
 		}
@@ -1178,7 +1246,7 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 		NeedCommit = karaoke->LoadFromDialogue(dialogue);
 
 		// Reset karaoke pos
-		if (karaoke->curSyllable == -1) karaoke->SetSyllable(karaoke->syllables.size()-1);
+		if (karaoke->curSyllable == -1) karaoke->SetSyllable((int)karaoke->syllables.size()-1);
 		else karaoke->SetSyllable(0);
 	}
 
@@ -1220,7 +1288,7 @@ void AudioDisplay::CommitChanges () {
 	// Update dialogues
 	blockUpdate = true;
 	wxArrayInt sel = grid->GetSelection();
-	int sels = sel.Count();
+	int sels = (int)sel.Count();
 	AssDialogue *curDiag;
 	for (int i=-1;i<sels;i++) {
 		if (i == -1) curDiag = dialogue;
@@ -1644,7 +1712,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 								defCursor = false;
 								if (event.LeftIsDown()) {
 									hold = 4;
-									holdSyl = i;
+									holdSyl = (int)i;
 									gotGrab = true;
 								}
 								break;
@@ -1724,7 +1792,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						int curpos,len,pos,nkar;
 						KaraokeSyllable *curSyl=NULL,*nextSyl=NULL;
 						curSyl = &karaoke->syllables.at(holdSyl);
-						nkar = karaoke->syllables.size();
+						nkar = (int)karaoke->syllables.size();
 						if (holdSyl < nkar-1) {
 							nextSyl = &karaoke->syllables.at(holdSyl+1);
 						}
@@ -2096,7 +2164,7 @@ void AudioDisplay::Next() {
 					CommitChanges();
 				}
 				else if (result == wxCANCEL) {
-					karaoke->curSyllable = karaoke->syllables.size()-1;
+					karaoke->curSyllable = (int)karaoke->syllables.size()-1;
 					return;
 				}
 			}
@@ -2177,7 +2245,7 @@ int AudioDisplay::GetSyllableAtX(int x) {
 		sylstart = karaoke->syllables.at(i).position*10 + curStartMS;
 		sylend = karaoke->syllables.at(i).length*10 + sylstart;
 		if (ms >= sylstart && ms < sylend) {
-			return i;
+			return (int)i;
 		}
 	}
 	return -1;
