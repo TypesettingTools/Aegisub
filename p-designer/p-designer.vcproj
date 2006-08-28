@@ -115,6 +115,9 @@
 			<File
 				RelativePath=".\ass_drawing.cpp">
 			</File>
+			<File
+				RelativePath=".\p-designer.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -122,6 +125,9 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath=".\ass_drawing.h">
+			</File>
+			<File
+				RelativePath=".\ass_drawing_control.h">
 			</File>
 		</Filter>
 		<Filter
