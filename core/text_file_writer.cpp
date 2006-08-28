@@ -78,10 +78,17 @@ TextFileWriter::~TextFileWriter() {
 void TextFileWriter::Open() {
 	// Open file
 	if (open) return;
+#ifdef WIN32
+	file = _tfopen(filename.c_str(), _T("wb"));
+	if (!file) {
+		throw _T("Failed opening file for writing.");
+	}
+#else
 	file.open(filename.mb_str(wxConvLocal),std::ios::out | std::ios::binary | std::ios::trunc);
 	if (!file.is_open()) {
-		throw _T("Failed opening file.");
+		throw _T("Failed opening file for writing.");
 	}
+#endif
 	open = true;
 
 	// Set encoding
@@ -93,7 +100,11 @@ void TextFileWriter::Open() {
 // Close file
 void TextFileWriter::Close() {
 	if (!open) return;
+#ifdef WIN32
+	fclose(file);
+#else
 	file.close();
+#endif
 	open = false;
 	if (customConv) delete conv;
 }
@@ -121,8 +132,12 @@ void TextFileWriter::WriteLineToFile(wxString line,bool addLineBreak) {
 		wxWCharBuffer buf = temp.wc_str(*conv);
 		if (!buf.data())
 			return;
-		size_t len = wcslen(buf.data())*2;
-		file.write((const char*)buf.data(),len);
+		size_t len = wcslen(buf.data());
+#ifdef WIN32
+		fwrite(buf.data(), sizeof(wchar_t), len, file);
+#else
+		file.write((const char*)buf.data(),len*sizeof(wchar_t));
+#endif
 	}
 
 	// 8-bit
@@ -131,7 +146,11 @@ void TextFileWriter::WriteLineToFile(wxString line,bool addLineBreak) {
 		if (!buf.data())
 			return;
 		size_t len = strlen(buf.data());
+#ifdef WIN32
+		fwrite(buf.data(), 1, len, file);
+#else
 		file.write(buf.data(),len);
+#endif
 	}
 }
 

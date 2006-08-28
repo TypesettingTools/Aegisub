@@ -80,6 +80,30 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	for (int i=0;i<4;i++) b[i] = 0;
 
 	// Read four bytes from file
+#ifdef WIN32
+	// TODO: maybe make this use posix-style fopen() api's instead as well?
+	HANDLE ifile = CreateFile(
+		_filename.c_str(),			// filename
+		FILE_READ_DATA,				// access mode
+		FILE_SHARE_READ,			// share mode
+		0,							// security descriptor
+		OPEN_EXISTING,				// creation disposition
+		FILE_FLAG_SEQUENTIAL_SCAN,	// flags
+		0);							// template file
+	if (ifile == INVALID_HANDLE_VALUE) {
+		return _T("unknown");
+	}
+	DWORD numread;
+	if (!ReadFile(ifile, (char*)b, 4, &numread, 0)) {
+		// Unable to open
+		return _T("unknown");
+	}
+	if (numread < 4) {
+		// File too short to decide, assume local
+		return _T("Local");
+	}
+	CloseHandle(ifile);
+#else
 	ifstream ifile;
 	ifile.open(_filename.mb_str(wxConvLocal));
 	if (!ifile.is_open()) {
@@ -87,6 +111,7 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	}
 	ifile.read((char*)b,4);
 	ifile.close();
+#endif
 
 	// Try to get the byte order mark from them
 	if (b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) return _T("UTF-8");
@@ -151,9 +176,15 @@ wxString TextFileReader::ReadLineFromFile() {
 		char aux;
 		wchar_t ch = 0;
 		int n = 0;
+#ifdef WIN32
+		while (ch != L'\n' && !feof(file)) {
+			// Read two chars from file
+			fread(charbuffer, 2, 1, file);
+#else
 		while (ch != L'\n' && !file.eof()) {
 			// Read two chars from file
 			file.read(charbuffer,2);
+#endif
 
 			// Swap bytes for big endian
 			if (swap) {
@@ -171,10 +202,31 @@ wxString TextFileReader::ReadLineFromFile() {
 
 	// Read ASCII/UTF-8 line from file
 	else {
+#ifdef WIN32
+		char *buffer = new char[512];
+		while (1) {
+			buffer[511] = '\1';
+			if (fgets(buffer, 512, file)) {
+				// read succeeded
+				wxString linepart(buffer, *conv);
+				wxbuffer += linepart;
+				if (buffer[511] == '\1') {
+					// our sentinel \1 wasn't overwritten, meaning an EOL was found
+					break;
+				}
+				// otherwise the sentinel \1 was overwritten (presumably with \0), so just loop on
+			}
+			else {
+				// hit EOF
+				break;
+			}
+		}
+#else
 		std::string buffer;
 		getline(file,buffer);
 		wxString lineresult(buffer.c_str(),*conv);
 		wxbuffer = lineresult;
+#endif
 	}
 
 	// Remove line breaks
@@ -202,10 +254,18 @@ wxString TextFileReader::ReadLineFromFile() {
 // Open file
 void TextFileReader::Open() {
 	if (open) return;
+#ifdef WIN32
+	// binary mode, because ascii mode is never to be trusted
+	file = _tfopen(filename.c_str(), _T("rb"));
+	if (file == 0) {
+		throw _T("Failed opening file for reading.");
+	}
+#else
 	file.open(filename.mb_str(wxConvLocal),std::ios::in | std::ios::binary);
 	if (!file.is_open()) {
-		throw _T("Failed opening file.");
+		throw _T("Failed opening file for reading.");
 	}
+#endif
 	open = true;
 }
 
@@ -214,7 +274,11 @@ void TextFileReader::Open() {
 // Close file
 void TextFileReader::Close() {
 	if (!open) return;
+#ifdef WIN32
+	fclose(file);
+#else
 	file.close();
+#endif
 	open = false;
 }
 
@@ -222,7 +286,11 @@ void TextFileReader::Close() {
 //////////////////////////////////
 // Checks if there's more to read
 bool TextFileReader::HasMoreLines() {
+#ifdef WIN32
+	return !feof(file);
+#else
 	return (!file.eof());
+#endif
 }
 
 

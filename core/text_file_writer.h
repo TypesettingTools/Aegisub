@@ -41,6 +41,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#ifdef WIN32
+#include <stdio.h>
+#endif
 
 
 /////////
@@ -49,7 +52,11 @@ class TextFileWriter {
 private:
 	wxString filename;
 	wxString encoding;
+#ifdef WIN32
+	FILE *file;
+#else
 	std::ofstream file;
+#endif
 	wxMBConv *conv;
 	bool customConv;
 	bool open;

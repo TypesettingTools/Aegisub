@@ -43,6 +43,9 @@
 #include <wx/wxprec.h>
 #include <wx/dynarray.h>
 #include <fstream>
+#ifdef WIN32
+#include <stdio.h>
+#endif
 
 
 /////////
@@ -51,7 +54,11 @@ class TextFileReader {
 private:
 	wxString filename;
 	wxString encoding;
+#ifdef WIN32
+	FILE *file;
+#else
 	std::ifstream file;
+#endif
 	wxMBConv *conv;
 	bool Is16;
 	bool swap;
