@@ -41,6 +41,7 @@
 #include "dialog_style_editor.h"
 #include "ass_style.h"
 #include "ass_file.h"
+#include "ass_dialogue.h"
 #include "main.h"
 #include "options.h"
 #include "subs_grid.h"
@@ -64,38 +65,44 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	CatalogBox->Add(CatalogDelete,0,0,0);
 
 	// Storage styles list
-	StorageList = new wxListBox(this, LIST_STORAGE, wxDefaultPosition, wxSize(185,250), 0, NULL, wxLB_EXTENDED);
+	StorageList = new wxListBox(this, LIST_STORAGE, wxDefaultPosition, wxSize(205,250), 0, NULL, wxLB_EXTENDED);
 	wxSizer *StorageBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Storage"));
 	wxSizer *StorageButtons = new wxBoxSizer(wxHORIZONTAL);
-	MoveToLocal = new wxButton(this, BUTTON_STORAGE_COPYTO, _("Copy to current script ->"), wxDefaultPosition, wxSize(185,25));
+	MoveToLocal = new wxButton(this, BUTTON_STORAGE_COPYTO, _("Copy to current script ->"), wxDefaultPosition, wxSize(205,25));
 	StorageNew = new wxButton(this, BUTTON_STORAGE_NEW, _("New"), wxDefaultPosition, wxSize(40,25));
+	StorageEdit = new wxButton(this, BUTTON_STORAGE_EDIT, _("Edit"), wxDefaultPosition, wxSize(40,25));
 	StorageCopy = new wxButton(this, BUTTON_STORAGE_COPY, _("Copy"), wxDefaultPosition, wxSize(40,25));
 	StorageDelete = new wxButton(this, BUTTON_STORAGE_DELETE, _("Delete"), wxDefaultPosition, wxSize(40,25));
 	StorageButtons->Add(StorageNew,1,wxEXPAND | wxALL,0);
+	StorageButtons->Add(StorageEdit,1,wxEXPAND | wxALL,0);
 	StorageButtons->Add(StorageCopy,1,wxEXPAND | wxALL,0);
 	StorageButtons->Add(StorageDelete,1,wxEXPAND | wxALL,0);
 	StorageBox->Add(StorageList,0,wxEXPAND | wxALL,0);
 	StorageBox->Add(MoveToLocal,0,wxEXPAND | wxALL,0);
 	StorageBox->Add(StorageButtons,0,wxEXPAND | wxALL,0);
 	MoveToLocal->Disable();
+	StorageEdit->Disable();
 	StorageCopy->Disable();
 	StorageDelete->Disable();
 
 	// Local styles list
-	CurrentList = new wxListBox(this, LIST_CURRENT, wxDefaultPosition, wxSize(185,250), 0, NULL, wxLB_EXTENDED);
+	CurrentList = new wxListBox(this, LIST_CURRENT, wxDefaultPosition, wxSize(205,250), 0, NULL, wxLB_EXTENDED);
 	wxSizer *CurrentBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Current script"));
 	wxSizer *CurrentButtons = new wxBoxSizer(wxHORIZONTAL);
-	MoveToStorage = new wxButton(this, BUTTON_CURRENT_COPYTO, _("<- Copy to storage"), wxDefaultPosition, wxSize(185,25));
+	MoveToStorage = new wxButton(this, BUTTON_CURRENT_COPYTO, _("<- Copy to storage"), wxDefaultPosition, wxSize(205,25));
 	CurrentNew = new wxButton(this, BUTTON_CURRENT_NEW, _("New"), wxDefaultPosition, wxSize(40,25));
+	CurrentEdit = new wxButton(this, BUTTON_CURRENT_EDIT, _("Edit"), wxDefaultPosition, wxSize(40,25));
 	CurrentCopy = new wxButton(this, BUTTON_CURRENT_COPY, _("Copy"), wxDefaultPosition, wxSize(40,25));
 	CurrentDelete = new wxButton(this, BUTTON_CURRENT_DELETE, _("Delete"), wxDefaultPosition, wxSize(40,25));
 	CurrentButtons->Add(CurrentNew,1,wxEXPAND | wxALL,0);
+	CurrentButtons->Add(CurrentEdit,1,wxEXPAND | wxALL,0);
 	CurrentButtons->Add(CurrentCopy,1,wxEXPAND | wxALL,0);
 	CurrentButtons->Add(CurrentDelete,1,wxEXPAND | wxALL,0);
 	CurrentBox->Add(CurrentList,0,wxEXPAND | wxALL,0);
 	CurrentBox->Add(MoveToStorage,0,wxEXPAND | wxALL,0);
 	CurrentBox->Add(CurrentButtons,0,wxEXPAND | wxALL,0);
 	MoveToStorage->Disable();
+	CurrentEdit->Disable();
 	CurrentCopy->Disable();
 	CurrentDelete->Disable();
 
@@ -123,6 +130,26 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	// Populate lists
 	LoadCatalog();
 	LoadCurrentStyles(AssFile::top);
+
+	// Select default item
+	wxString selected_style;
+	if (_grid) {
+		AssDialogue *dia = _grid->GetDialogue(_grid->GetFirstSelRow());
+		selected_style = dia->Style;
+	}
+
+	if (StorageList->SetStringSelection(selected_style)) {
+		StorageEdit->Enable();
+		StorageCopy->Enable();
+		StorageDelete->Enable();
+		MoveToLocal->Enable();
+	}
+	if (CurrentList->SetStringSelection(selected_style)) {
+		CurrentEdit->Enable();
+		CurrentCopy->Enable();
+		CurrentDelete->Enable();
+		MoveToStorage->Enable();
+	}
 }
 
 
@@ -261,6 +288,8 @@ BEGIN_EVENT_TABLE(DialogStyleManager, wxDialog)
 	EVT_LISTBOX_DCLICK(LIST_CURRENT, DialogStyleManager::OnCurrentEdit)
 	EVT_BUTTON(BUTTON_CURRENT_COPYTO, DialogStyleManager::OnCopyToStorage)
 	EVT_BUTTON(BUTTON_STORAGE_COPYTO, DialogStyleManager::OnCopyToCurrent)
+	EVT_BUTTON(BUTTON_CURRENT_EDIT, DialogStyleManager::OnCurrentEdit)
+	EVT_BUTTON(BUTTON_STORAGE_EDIT, DialogStyleManager::OnStorageEdit)
 	EVT_BUTTON(BUTTON_CURRENT_COPY, DialogStyleManager::OnCurrentCopy)
 	EVT_BUTTON(BUTTON_STORAGE_COPY, DialogStyleManager::OnStorageCopy)
 	EVT_BUTTON(BUTTON_CURRENT_NEW, DialogStyleManager::OnCurrentNew)
@@ -390,21 +419,11 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &event) {
 void DialogStyleManager::OnCurrentChange (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
-	if (n == 0) {
-		CurrentCopy->Disable();
-		CurrentDelete->Disable();
-		MoveToStorage->Disable();
-	}
-	else if (n == 1) {
-		CurrentCopy->Enable();
-		CurrentDelete->Enable();
-		MoveToStorage->Enable();
-	}
-	else {
-		CurrentDelete->Enable();
-		MoveToStorage->Enable();
-		CurrentCopy->Disable();
-	}
+
+	CurrentEdit->Enable(n == 1);
+	CurrentCopy->Enable(n == 1);
+	CurrentDelete->Enable(n > 0);
+	MoveToStorage->Enable(n > 0);
 }
 
 
@@ -413,21 +432,11 @@ void DialogStyleManager::OnCurrentChange (wxCommandEvent &event) {
 void DialogStyleManager::OnStorageChange (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
-	if (n == 0) {
-		StorageCopy->Disable();
-		StorageDelete->Disable();
-		MoveToLocal->Disable();
-	}
-	else if (n == 1) {
-		StorageCopy->Enable();
-		StorageDelete->Enable();
-		MoveToLocal->Enable();
-	}
-	else {
-		StorageDelete->Enable();
-		MoveToLocal->Enable();
-		StorageCopy->Disable();
-	}
+
+	StorageEdit->Enable(n == 1);
+	StorageCopy->Enable(n == 1);
+	StorageDelete->Enable(n > 0);
+	MoveToLocal->Enable(n > 0);
 }
 
 

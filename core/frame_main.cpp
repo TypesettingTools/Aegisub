@@ -457,11 +457,11 @@ void FrameMain::MenuItemEnable (int id, bool state,wxBitmap &bmp1,wxBitmap &bmp2
 // Helper to rebuild menu items
 wxMenuItem *FrameMain::RebuildMenuItem(wxMenu *menu,int findId,wxBitmap bmp1,wxBitmap bmp2,bool state) {
 	// Find pos
-	wxMenuItemList items = menu->GetMenuItems();
+	wxMenuItemList &items = menu->GetMenuItems();
 	int pos = -1;
 	for (size_t i=0;i<items.GetCount();i++) {
 		if (items[i]->GetId() == findId) {
-			pos = i;
+			pos = (int)i;
 			break;
 		}
 	}

@@ -182,8 +182,8 @@ END_EVENT_TABLE()
 // Process start
 void DialogExport::OnProcess(wxCommandEvent &event) {
 	// Get destination
-	//wxString filename = wxFileSelector(_("Export subtitles file"),_T(""),_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.prs)|*.ass;*.ssa;*.srt;*.prs|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Pre-Rendered Subtitles (*.prs)|*.prs"),wxSAVE | wxOVERWRITE_PROMPT,this);
-	wxString filename = wxFileSelector(_("Export subtitles file"),_T(""),_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt)|*.ass;*.ssa;*.srt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt"),wxSAVE | wxOVERWRITE_PROMPT,this);
+	//wxString filename = wxFileSelector(_("Export subtitles file"),_T(""),_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.prs)|*.ass;*.ssa;*.srt;*.prs|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt|Pre-Rendered Subtitles (*.prs)|*.prs"),wxSAVE | wxOVERWRITE_PROMPT,this);
+	wxString filename = wxFileSelector(_("Export subtitles file"),_T(""),_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.txt)|*.ass;*.ssa;*.srt;*.txt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt"),wxSAVE | wxOVERWRITE_PROMPT,this);
 	if (filename.empty()) return;
 
 	// Add filters

@@ -165,7 +165,7 @@ void FrameRate::Load(wxString filename) {
 			}
 
 			last_time = currenttime;
-			last_frame = Frame.size();
+			last_frame = (int)Frame.size();
 		}
 
 		// V2
@@ -196,7 +196,7 @@ void FrameRate::Load(wxString filename) {
 			}
 
 			last_time = cftime;
-			last_frame = Frame.size();
+			last_frame = (int)Frame.size();
 
 			CalcAverage();
 
@@ -259,7 +259,7 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 	Frame = newTimes;
 	CalcAverage();
 	last_time = newTimes.back();
-	last_frame = newTimes.size();
+	last_frame = (int)newTimes.size();
 }
 
 
@@ -306,8 +306,8 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 				// If it is, is the previous smaller?
 				// If so, this is the frame we're looking for
 				if (largerEqual && (cur == 0 || Frame[cur-1] < ms))	{
-					if (useceil) return cur;
-					return cur-1;
+					if (useceil) return (int)cur;
+					return (int)(cur)-1;
 				}
 				
 				// Not found, continue search

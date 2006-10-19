@@ -38,13 +38,22 @@
 // Headers
 #include "subtitle_format_txt.h"
 #include "text_file_reader.h"
+#include "text_file_writer.h"
 #include "ass_dialogue.h"
 #include "options.h"
+#include "version.h"
 
 
 /////////////
 // Can read?
 bool TXTSubtitleFormat::CanReadFile(wxString filename) {
+	return (filename.Right(4).Lower() == _T(".txt"));
+}
+
+
+//////////////
+// Can write?
+bool TXTSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".txt"));
 }
 
@@ -120,5 +129,70 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 
 		// Adds line
 		Line->push_back(line);
+	}
+}
+
+
+/////////////
+// Write file
+void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using namespace std;
+	size_t num_actor_names = 0, num_dialogue_lines = 0;
+
+	// Detect number of lines with Actor field filled out
+	for (list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
+		AssDialogue *dia = AssEntry::GetAsDialogue(*l);
+		if (dia && !dia->Comment) {
+			num_dialogue_lines++;
+			if (!dia->Actor.IsEmpty())
+				num_actor_names++;
+		}
+	}
+
+	// If too few lines have Actor filled out, don't write it
+	bool write_actors = num_actor_names > num_dialogue_lines/2;
+	bool strip_formatting = true;
+
+	TextFileWriter file(filename, encoding);
+	file.WriteLineToFile(_T("# Exported by Aegisub ") + GetAegisubShortVersionString());
+
+	// Write the file
+	for (list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
+		AssDialogue *dia = AssEntry::GetAsDialogue(*l);
+
+		if (dia) {
+			wxString out_line;
+
+			if (dia->Comment) {
+				out_line = _T("# ");
+			}
+
+			if (write_actors) {
+				out_line += dia->Actor + _T(": ");
+			}
+
+			wxString out_text;
+			if (strip_formatting) {
+				dia->ParseASSTags();
+				for (std::vector<AssDialogueBlock*>::iterator block = dia->Blocks.begin(); block != dia->Blocks.end(); ++block) {
+					if ((*block)->type == BLOCK_PLAIN) {
+						out_text += (*block)->GetText();
+					}
+				}
+				dia->ClearBlocks();
+			}
+			else {
+				out_text = dia->Text;
+			}
+			out_line += out_text;
+
+			if (!out_text.IsEmpty()) {
+				file.WriteLineToFile(out_line);
+			}
+		}
+		else {
+			// Not a dialogue line
+			// TODO: should any non-dia lines cause blank lines in output?
+			//file.WriteLineToFile(_T(""));
+		}
 	}
 }

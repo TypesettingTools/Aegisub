@@ -539,6 +539,7 @@ void AssDialogue::StripTags () {
 	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur=next) {
 		next = cur;
 		next++;
+		// FIXME: doesn't this crash when there's too many override blocks in one line?
 		if ((*cur)->type == BLOCK_OVERRIDE) {
 			delete *cur;
 			Blocks.erase(cur);

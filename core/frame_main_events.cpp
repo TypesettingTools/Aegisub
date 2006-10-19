@@ -121,9 +121,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU_RANGE(Menu_Audio_Recent,Menu_Audio_Recent+99, FrameMain::OnOpenRecentAudio)
 	EVT_MENU_RANGE(Menu_Timecodes_Recent,Menu_Timecodes_Recent+99, FrameMain::OnOpenRecentTimecodes)
 
-	EVT_MENU(Menu_File_Open, FrameMain::OnOpenProject)
-	EVT_MENU(Menu_File_Save, FrameMain::OnSaveProject)
-	EVT_MENU(Menu_File_SaveAs, FrameMain::OnSaveProjectAs)
 	EVT_MENU(Menu_File_Exit, FrameMain::OnExit)
 	EVT_MENU(Menu_File_Open_Video, FrameMain::OnOpenVideo)
 	EVT_MENU(Menu_File_Close_Video, FrameMain::OnCloseVideo)
@@ -226,7 +223,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// File menu
 	if (curMenu == fileMenu) {
 		// Wipe recent
-		int count = RecentSubs->GetMenuItemCount();
+		int count = (int)RecentSubs->GetMenuItemCount();
 		for (int i=count;--i>=0;) {
 			RecentSubs->Destroy(RecentSubs->FindItemByPosition(i));
 		}
@@ -305,11 +302,11 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		}
 
 		// Wipe recent
-		int count = RecentVids->GetMenuItemCount();
+		int count = (int)RecentVids->GetMenuItemCount();
 		for (int i=count;--i>=0;) {
 			RecentVids->Destroy(RecentVids->FindItemByPosition(i));
 		}
-		count = RecentTimecodes->GetMenuItemCount();
+		count = (int)RecentTimecodes->GetMenuItemCount();
 		for (int i=count;--i>=0;) {
 			RecentTimecodes->Destroy(RecentTimecodes->FindItemByPosition(i));
 		}
@@ -351,7 +348,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Audio_Close,state);
 
 		// Wipe recent
-		int count = RecentAuds->GetMenuItemCount();
+		int count = (int)RecentAuds->GetMenuItemCount();
 		for (int i=count;--i>=0;) {
 			RecentAuds->Destroy(RecentAuds->FindItemByPosition(i));
 		}
@@ -488,29 +485,6 @@ void FrameMain::OnIRCChannel(wxCommandEvent& WXUNUSED(event)) {
 		wxString command = type->GetOpenCommand(_T("irc://irc.chatsociety.net/aegisub"));
 		if (!command.empty()) wxExecute(command);
 	}
-}
-
-
-////////////////
-// Open project
-void FrameMain::OnOpenProject(wxCommandEvent& WXUNUSED(event)) {
-	// TODO
-	//wxString filename = wxFileSelector(_T("Open file"),_T(""),_T(""),_T(""),_T("Aegisub Project (*.vsa)|*.vsa|All Files (*.*)|*.*"),wxOPEN | wxFILE_MUST_EXIST);
-}
-
-
-////////////////
-// Save project
-void FrameMain::OnSaveProject(wxCommandEvent& WXUNUSED(event)) {
-	// TODO: Maybe? Perhaps autosave is better
-}
-
-
-///////////////////
-// Save project as
-void FrameMain::OnSaveProjectAs(wxCommandEvent& WXUNUSED(event)) {
-	// TODO: Read above note
-	wxString filename = wxFileSelector(_("Save file"),_T(""),_T(""),_T(""),_T("Aegisub Project (*.vsa)|*.vsa|All Files (*.*)|*.*"),wxSAVE | wxOVERWRITE_PROMPT);
 }
 
 
@@ -943,7 +917,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 	if (videoBox->videoDisplay->loaded) {
 		// Get selection
 		wxArrayInt sels = SubsBox->GetSelection();
-		int n=sels.Count();
+		size_t n=sels.Count();
 		if (n == 0) return;
 
 		// Get shifting in ms
@@ -952,7 +926,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 		int shiftBy = VFR_Output.GetTimeAtFrame(videoBox->videoDisplay->frame_n,true) - cur->Start.GetMS();
 
 		// Update
-		for (int i=0;i<n;i++) {
+		for (size_t i=0;i<n;i++) {
 			cur = SubsBox->GetDialogue(sels[i]);
 			if (cur) {
 				cur->Start.SetMS(cur->Start.GetMS()+shiftBy);

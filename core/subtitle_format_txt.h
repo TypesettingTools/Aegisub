@@ -54,5 +54,7 @@ private:
 
 public:
 	bool CanReadFile(wxString filename);
+	bool CanWriteFile(wxString filename);
 	void ReadFile(wxString filename,wxString forceEncoding);
+	void WriteFile(wxString filename, wxString encoding = _T(""));
 };

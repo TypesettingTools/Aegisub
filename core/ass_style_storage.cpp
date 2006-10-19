@@ -40,6 +40,8 @@
 #include "ass_style.h"
 #include "ass_file.h"
 #include "main.h"
+#include "text_file_reader.h"
+#include "text_file_writer.h"
 #include <fstream>
 
 
@@ -48,20 +50,16 @@
 void AssStyleStorage::Save(wxString name) {
 	if (name.IsEmpty()) return;
 
-	using namespace std;
-	ofstream file;
-
 	wxString filename = AegisubApp::folderName;
 	filename += _T("/catalog/");
 	filename += name;
 	filename += _T(".sty");
 
-	file.open(filename.mb_str(wxConvLocal));
-	for (list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
-		file << (*cur)->GetEntryData().mb_str(wxConvUTF8) << endl;
-	}
+	TextFileWriter file(filename, _T("UTF-8"));
 
-	file.close();
+	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
+		file.WriteLineToFile((*cur)->GetEntryData());
+	}
 }
 
 
@@ -70,26 +68,18 @@ void AssStyleStorage::Save(wxString name) {
 void AssStyleStorage::Load(wxString name) {
 	if (name.IsEmpty()) return;
 
-	using namespace std;
-	char buffer[65536];
-	ifstream file;
-
 	wxString filename = AegisubApp::folderName;
 	filename += _T("/catalog/");
 	filename += name;
 	filename += _T(".sty");
 
 	Clear();
-	file.open(filename.mb_str(wxConvLocal));
-	if (!file.is_open()) {
-		throw _T("Failed opening file.");
-	}
+
+	TextFileReader file(filename, _T("UTF-8"));
 
 	AssStyle *curStyle;
-	while (!file.eof()) {
-		file.getline(buffer,65536);
-		wxString data(buffer,wxConvUTF8);
-		data.Trim();
+	while (file.HasMoreLines()) {
+		wxString data = file.ReadLineFromFile();
 		if (data.substr(0,6) == _T("Style:")) {
 			try {
 				curStyle = new AssStyle(data);
@@ -99,8 +89,6 @@ void AssStyleStorage::Load(wxString name) {
 			}
 		}
 	}
-
-	file.close();
 }
 
 

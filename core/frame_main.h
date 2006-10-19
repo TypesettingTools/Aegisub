@@ -135,9 +135,6 @@ private:
 	void OnBugTracker (wxCommandEvent &event);
 	void OnIRCChannel (wxCommandEvent &event);
 
-	void OnOpenProject (wxCommandEvent &event);
-	void OnSaveProject (wxCommandEvent &event);
-	void OnSaveProjectAs (wxCommandEvent &event);
 	void OnNewSubtitles (wxCommandEvent &event);
 	void OnOpenSubtitles (wxCommandEvent &event);
 	void OnOpenSubtitlesCharset (wxCommandEvent &event);

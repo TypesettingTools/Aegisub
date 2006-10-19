@@ -76,12 +76,16 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 
 	try {
 		// Try to open file
-		std::ifstream file;
-		file.open(_filename.mb_str(wxConvLocal));
-		if (!file.is_open()) {
+		FILE *file;
+#ifdef WIN32
+		file = _tfopen(_filename.c_str(), _T("r"));
+#else
+		file = fopen(_filrname.mb_str(wxConvFileName), "r");
+#endif
+		if (!file) {
 			throw _T("Unable to open file \"") + _filename + _T("\". Check if it exists and if you have permissions to read it.");
 		}
-		file.close();
+		fclose(file);
 
 		// Find file encoding
 		wxString enc;
@@ -411,6 +415,7 @@ void AssFile::LoadDefault (bool defline) {
 	AddLine(_T("[Script Info]"),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("Title: Default Aegisub file"),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("ScriptType: v4.00+"),_T("[Script Info]"),-1,IsSSA);
+	AddLine(_T("WrapStyle: 1"), _T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("PlayResX: 640"),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("PlayResY: 480"),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T(""),_T("[Script Info]"),-1,IsSSA);

@@ -978,7 +978,7 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 			firststart = start;
 		}
 		len1 = (start - lastend) / 10;
-		len2 = (end - lastend) / 10;
+		len2 = (end - start) / 10;
 
 		// Create text
 		if (len1 != 0) finalText += _T("{\\k") + wxString::Format(_T("%i"),len1) + _T("}");

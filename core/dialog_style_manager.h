@@ -66,10 +66,12 @@ private:
 	wxListBox *CurrentList;
 	wxButton *MoveToLocal;
 	wxButton *StorageNew;
+	wxButton *StorageEdit;
 	wxButton *StorageCopy;
 	wxButton *StorageDelete;
 	wxButton *MoveToStorage;
 	wxButton *CurrentNew;
+	wxButton *CurrentEdit;
 	wxButton *CurrentCopy;
 	wxButton *CurrentDelete;
 
@@ -116,10 +118,12 @@ enum {
 	BUTTON_CATALOG_DELETE,
 	BUTTON_STORAGE_COPYTO,
 	BUTTON_STORAGE_NEW,
+	BUTTON_STORAGE_EDIT,
 	BUTTON_STORAGE_COPY,
 	BUTTON_STORAGE_DELETE,
 	BUTTON_CURRENT_COPYTO,
 	BUTTON_CURRENT_NEW,
+	BUTTON_CURRENT_EDIT,
 	BUTTON_CURRENT_COPY,
 	BUTTON_CURRENT_DELETE,
 	LIST_CATALOG,
