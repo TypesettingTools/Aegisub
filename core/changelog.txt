@@ -10,6 +10,11 @@ Please visit http://aegisub.net to download latest version
   o The palette is changed
   o Rendering now more accurately represents actual signal power
   o Use vertical zoom slider to amplify/dampen displayed signal strength (useful for better visualisation of quiet sections, or easier picking out the dominating frequencies in noisy sections)
+- Plain-text export (jfs)
+- The style of the current line is automatically selected when opening the Style Manager (jfs)
+- Added long-missing Edit buttons in Style Manager (jfs)
+- Various fixes to better handle paths/file names with non-ANSI characters on Windows (jfs)
+  o Note that this (unfortunately) doesn't affect video/audio loading, since those still depend on Avisynth, which doesn't support Unicode at all
 
 
 = 1.10 beta - 2006.08.07 ===========================
