@@ -34,7 +34,6 @@ aegisub_SOURCES = about.cpp \
 	audio_provider_lavc.cpp \
 	audio_provider_ram.cpp \
 	audio_provider_stream.cpp \
-	auto4_base.cpp \
 	automation.cpp \
 	automation_filter.cpp \
 	automation_gui.cpp \

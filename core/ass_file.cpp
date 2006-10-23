@@ -80,7 +80,7 @@ void AssFile::Load (const wxString _filename,const wxString charset) {
 #ifdef WIN32
 		file = _tfopen(_filename.c_str(), _T("r"));
 #else
-		file = fopen(_filrname.mb_str(wxConvFileName), "r");
+		file = fopen(_filename.mb_str(*wxConvFileName), "r");
 #endif
 		if (!file) {
 			throw _T("Unable to open file \"") + _filename + _T("\". Check if it exists and if you have permissions to read it.");

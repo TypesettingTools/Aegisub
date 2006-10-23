@@ -138,6 +138,7 @@ void  VideoDisplay::UpdateSize() {
 		h = provider->GetHeight();
 
 		// Set the size for this control
+		SetSizeHints(w,h,w,h);
 		SetClientSize(w,h);
 		int _w,_h;
 		GetSize(&_w,&_h);
