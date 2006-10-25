@@ -34,7 +34,11 @@
 //
 
 extern "C" {
+#if HAVE_LUA50_LUA_H
+#include <lua50/lua.h>
+#else
 #include <lua.h>
+#endif
 }
 
 #include <wx/wxprec.h>

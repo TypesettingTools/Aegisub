@@ -57,8 +57,13 @@
 #endif
 
 extern "C" {
+#ifdef HAVE_LUA50_LUA_H
+#include <lua50/lualib.h>
+#include <lua50/lauxlib.h>
+#else
 #include <lualib.h>
 #include <lauxlib.h>
+#endif
 }
 
 int L_callfunc(lua_State *L, int nargs, int nresults);

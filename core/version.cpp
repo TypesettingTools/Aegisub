@@ -55,7 +55,9 @@
 #endif
 #endif
 
-#define BUILD_TIMESTAMP _T(__DATE__) _T(" ") _T(__TIME__)
+#define _T_rec(X) _T(X)
+
+#define BUILD_TIMESTAMP _T_rec(__DATE__) _T(" ") _T_rec(__TIME__)
 
 // If the BUILD_SVN_REVISION happens to be negative, the build is assumed to be a public-release build (ie. not prerel)
 // So manually edit build/svn-revision.h to match that, when doing such a build, or add some other magic to do that.
@@ -86,7 +88,7 @@ struct VersionInfoStruct {
 #endif
 		SvnRev = BUILD_SVN_REVISION;
 		BuildTime = BUILD_TIMESTAMP;
-		BuildCredit = _T(BUILD_CREDIT);
+		BuildCredit = _T_rec(BUILD_CREDIT);
 
 		if (SvnRev > 0)
 			SCMStr = wxString::Format(_T("SVN r%d"), SvnRev);
