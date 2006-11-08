@@ -3,6 +3,7 @@ AC_INIT(aegisub, 1.10)
 AC_CONFIG_AUX_DIR(ac)
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADER([core/posix/acconf.h])
+AC_GNU_SOURCE
 
 AC_CANONICAL_HOST
 
@@ -88,7 +89,7 @@ AC_SEARCH_LIBS([lua_call], [lua lua50],, [AC_MSG_ERROR([lua not found.])])
 AC_SEARCH_LIBS([luaopen_base], [lualib lualib50],, [AC_MSG_WARN([lualib not found, assuming lua 5.1])])
 AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
 AC_CHECK_LIB([avcodec], [avcodec_init])
-AC_CHECK_LIB([avformat], [av_frac_init])
+AC_CHECK_LIB([avformat], [av_read_frame])
 
 PKG_CHECK_MODULES([ASA], asa >= 0.3.2, [
 	CPPFLAGS="$CPPFLAGS $ASA_CFLAGS"
