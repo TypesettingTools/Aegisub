@@ -8,6 +8,8 @@
 ///////////
 // Headers
 #include <wx/notebook.h>
+#include <wx/statbox.h>
+#include <wx/sizer.h>
 #include "dialog_fextracker.h"
 #include "../FexTrackerSource/FexTracker.h"
 
@@ -20,71 +22,58 @@ DialogFexTracker::DialogFexTracker(wxWindow *parent, FexTrackerConfig *_cfg)
 	cfg = _cfg;
 	cfg->FeatureNumber = 0;
 
-	wxNotebook *MainNB = new wxNotebook(this,-1, wxDefaultPosition, wxSize(300,500), wxNO_BORDER );
+	FeatureNumber = new wxTextCtrl(this,-1,_T("250"));
+	MinDistanceSquare = new wxTextCtrl(this,-1,_T("100"));
+	SearchRange = new wxTextCtrl(this,-1,_T("15"));
+	MaxResidue = new wxTextCtrl(this,-1,_T("10"));
+	MaxIterations = new wxTextCtrl(this,-1,_T("10"));
 
-	wxWindow *StdWnd = new wxPanel(MainNB,-1);
-	wxWindow *AdvWnd = new wxPanel(MainNB,-1);
+	EdgeDetectSigma = new wxTextCtrl(this,-1,_T("1.0"));
+	WindowX = new wxTextCtrl(this,-1,_T("3"));
+	WindowY = new wxTextCtrl(this,-1,_T("3"));
+	MinDeterminant = new wxTextCtrl(this,-1,_T("0.01"));
+	MinDisplacement = new wxTextCtrl(this,-1,_T("0.1"));
 
-	FeatureNumber = new wxTextCtrl(StdWnd,-1,_T("250"));
-	MinDistanceSquare = new wxTextCtrl(StdWnd,-1,_T("100"));
-	SearchRange = new wxTextCtrl(StdWnd,-1,_T("15"));
-	MaxResidue = new wxTextCtrl(StdWnd,-1,_T("10"));
-	MaxIterations = new wxTextCtrl(StdWnd,-1,_T("10"));
+	wxSizer *std_grid = new wxFlexGridSizer(2, 5, 10);
+	wxSizer *adv_grid = new wxFlexGridSizer(2, 5, 10);
 
-	EdgeDetectSigma = new wxTextCtrl(AdvWnd,-1,_T("1.0"));
-	WindowX = new wxTextCtrl(AdvWnd,-1,_T("3"));
-	WindowY = new wxTextCtrl(AdvWnd,-1,_T("3"));
-	MinDeterminant = new wxTextCtrl(AdvWnd,-1,_T("0.01"));
-	MinDisplacement = new wxTextCtrl(AdvWnd,-1,_T("0.1"));
+	std_grid->Add(new wxStaticText(this, -1, _("Number of points to track:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	std_grid->Add(FeatureNumber, 1, wxALIGN_LEFT);
+	std_grid->Add(new wxStaticText(this, -1, _("Minimal (squared) distance between two points:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	std_grid->Add(MinDistanceSquare, 1, wxALIGN_LEFT);
+	std_grid->Add(new wxStaticText(this,-1,_("Maximum feature movement:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	std_grid->Add(SearchRange, 1, wxALIGN_LEFT);
+	std_grid->Add(new wxStaticText(this,-1,_("Maximum feature appearance change:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	std_grid->Add(MaxResidue, 1, wxALIGN_LEFT);
+	std_grid->Add(new wxStaticText(this,-1,_("How much CPU per feature?")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	std_grid->Add(MaxIterations, 1, wxALIGN_LEFT);
 
-	wxSizer *Sizer = new wxBoxSizer(wxVERTICAL);
-	wxStaticText *Static;
-	Static = new wxStaticText(StdWnd,-1,_("Number of points to track:"));
-	Sizer->Add(Static,0,wxALIGN_LEFT,5);
-	Sizer->Add(FeatureNumber,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(StdWnd,-1,_("Minimal (squared) distance between two points:  "));
-	Sizer->Add(Static,0,wxALIGN_LEFT,5);
-	Sizer->Add(MinDistanceSquare,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(StdWnd,-1,_("Maximum feature movement:"));
-	Sizer->Add(Static,0,wxALIGN_LEFT,5);
-	Sizer->Add(SearchRange,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(StdWnd,-1,_("Maximum feature appearance change:"));
-	Sizer->Add(Static,0,wxALIGN_LEFT,5);
-	Sizer->Add(MaxResidue,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(StdWnd,-1,_("How much CPU per feature?"));
-	Sizer->Add(Static,0,wxALIGN_LEFT,5);
-	Sizer->Add(MaxIterations,0,wxALIGN_LEFT,5);
+	adv_grid->Add(new wxStaticText(this,-1,_("Edge detect filter size:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	adv_grid->Add(EdgeDetectSigma, 1, wxALIGN_LEFT);
+	adv_grid->Add(new wxStaticText(this,-1,_("Feature comparison width:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	adv_grid->Add(WindowX, 1, wxALIGN_LEFT);
+	adv_grid->Add(new wxStaticText(this,-1,_("Feature comparison height:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	adv_grid->Add(WindowY, 1, wxALIGN_LEFT);
+	adv_grid->Add(new wxStaticText(this,-1,_("Minimal determinant:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	adv_grid->Add(MinDeterminant, 1, wxALIGN_LEFT);
+	adv_grid->Add(new wxStaticText(this,-1,_("Minimal displacement per iteration:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	adv_grid->Add(MinDisplacement, 1, wxALIGN_LEFT);
 
-	wxSizer *SizerAdd = new wxBoxSizer(wxVERTICAL);
-	Static = new wxStaticText(AdvWnd,-1,_("Edge detect filter size:"));
-	SizerAdd->Add(Static,0,wxALIGN_LEFT,5);
-	SizerAdd->Add(EdgeDetectSigma,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(AdvWnd,-1,_("Feature comparison width:"));
-	SizerAdd->Add(Static,0,wxALIGN_LEFT,5);
-	SizerAdd->Add(WindowX,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(AdvWnd,-1,_("Feature comparison height:"));
-	SizerAdd->Add(Static,0,wxALIGN_LEFT,5);
-	SizerAdd->Add(WindowY,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(AdvWnd,-1,_("Minimal determinant:"));
-	SizerAdd->Add(Static,0,wxALIGN_LEFT,5);
-	SizerAdd->Add(MinDeterminant,0,wxALIGN_LEFT,5);
-	Static = new wxStaticText(AdvWnd,-1,_("Minimal displacement per iteration:"));
-	SizerAdd->Add(Static,0,wxALIGN_LEFT,5);
-	SizerAdd->Add(MinDisplacement,0,wxALIGN_LEFT,5);
+	wxSizer *std_box = new wxStaticBoxSizer(new wxStaticBox(this, -1, _("Basic settings")), wxVERTICAL);
+	std_box->Add(std_grid, 0, wxALL, 5);
+	wxSizer *adv_box = new wxStaticBoxSizer(new wxStaticBox(this, -1, _("Additional settings")), wxVERTICAL);
+	adv_box->Add(adv_grid, 0, wxALL, 5);
 
-	StdWnd->SetSizer( Sizer );
-	StdWnd->SetAutoLayout( 1 );
-	MainNB->AddPage( StdWnd, _("Standard Settings") );
-
-	AdvWnd->SetSizer( SizerAdd );
-	AdvWnd->SetAutoLayout( 1 );
-	MainNB->AddPage( AdvWnd, _("Advanced Settings") );
+	wxStdDialogButtonSizer *buttons = new wxStdDialogButtonSizer();
+	buttons->AddButton(new wxButton(this,wxID_OK,_("Start")));
+	buttons->AddButton(new wxButton(this, wxID_CANCEL));
+	buttons->Realize();
 
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(MainNB,1,wxEXPAND|wxALL,5);
-	MainSizer->AddSpacer(2);
-	wxButton *but = new wxButton(this,BUTTON_START,_("Go!"));
-	MainSizer->Add(but,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER,5);
+
+	MainSizer->Add(std_box, 0, wxALL|wxEXPAND, 5);
+	MainSizer->Add(adv_box, 0, wxALL&~wxTOP|wxEXPAND, 5);
+	MainSizer->Add(buttons, 0, wxALL&~wxTOP|wxEXPAND, 5);
 
 	MainSizer->SetSizeHints( this );
 	SetSizer(MainSizer);
@@ -96,7 +85,7 @@ DialogFexTracker::DialogFexTracker(wxWindow *parent, FexTrackerConfig *_cfg)
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogFexTracker,wxDialog)
-	EVT_BUTTON(BUTTON_START,DialogFexTracker::OnStart)
+	EVT_BUTTON(wxID_OK,DialogFexTracker::OnStart)
 END_EVENT_TABLE()
 
 

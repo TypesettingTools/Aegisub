@@ -712,8 +712,7 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 		int *data = new int[w*h*depth/32];
 
 		////// START OF PARALLELISED CODE //////
-		const int cpu_count = wxThread::GetCPUCount();
-		if (cpu_count < 1) cpu_count = 1;
+		const int cpu_count = MAX(wxThread::GetCPUCount(), 1);
 		std::vector<SpectrumRendererThread*> threads(cpu_count);
 		for (int i = 0; i < cpu_count; i++) {
 			// Ugh, way too many data to copy in
