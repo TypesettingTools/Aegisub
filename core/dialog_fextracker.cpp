@@ -34,8 +34,10 @@ DialogFexTracker::DialogFexTracker(wxWindow *parent, FexTrackerConfig *_cfg)
 	MinDeterminant = new wxTextCtrl(this,-1,_T("0.01"));
 	MinDisplacement = new wxTextCtrl(this,-1,_T("0.1"));
 
-	wxSizer *std_grid = new wxFlexGridSizer(2, 5, 10);
-	wxSizer *adv_grid = new wxFlexGridSizer(2, 5, 10);
+	wxFlexGridSizer *std_grid = new wxFlexGridSizer(2, 5, 10);
+	std_grid->AddGrowableCol(0, 1);
+	wxFlexGridSizer *adv_grid = new wxFlexGridSizer(2, 5, 10);
+	adv_grid->AddGrowableCol(0, 1);
 
 	std_grid->Add(new wxStaticText(this, -1, _("Number of points to track:")), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
 	std_grid->Add(FeatureNumber, 1, wxALIGN_LEFT);
@@ -60,9 +62,9 @@ DialogFexTracker::DialogFexTracker(wxWindow *parent, FexTrackerConfig *_cfg)
 	adv_grid->Add(MinDisplacement, 1, wxALIGN_LEFT);
 
 	wxSizer *std_box = new wxStaticBoxSizer(new wxStaticBox(this, -1, _("Basic settings")), wxVERTICAL);
-	std_box->Add(std_grid, 0, wxALL, 5);
+	std_box->Add(std_grid, 0, wxALL|wxEXPAND, 5);
 	wxSizer *adv_box = new wxStaticBoxSizer(new wxStaticBox(this, -1, _("Additional settings")), wxVERTICAL);
-	adv_box->Add(adv_grid, 0, wxALL, 5);
+	adv_box->Add(adv_grid, 0, wxALL|wxEXPAND, 5);
 
 	wxStdDialogButtonSizer *buttons = new wxStdDialogButtonSizer();
 	buttons->AddButton(new wxButton(this,wxID_OK,_("Start")));
