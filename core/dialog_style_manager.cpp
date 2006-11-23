@@ -332,6 +332,21 @@ void DialogStyleManager::OnChangeCatalog (wxCommandEvent &event) {
 void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 	wxString name = wxGetTextFromUser(_("New storage name:"), _("New catalog entry"), _T(""), this);
 	if (!name.empty()) {
+		// Remove bad characters from the name
+		wxString badchars = wxFileName::GetForbiddenChars();
+		int badchars_removed = 0;
+		for (size_t i = 0; i < name.Length(); ++i) {
+			for (size_t j = 0; j < badchars.Length(); ++j) {
+				if (name[i] == badchars[j]) {
+					name[i] = _T('_');
+					++badchars_removed;
+				}
+			}
+		}
+		if (badchars_removed > 0) {
+			wxLogWarning(_("The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\nThe catalog has been renamed to \"%s\"."), name.c_str());
+		}
+
 		Store.Clear();
 		StorageList->Clear();
 		CatalogList->Append(name);

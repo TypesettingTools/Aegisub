@@ -306,79 +306,98 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 ///////////////////////
 // Duplicate selection
 void SubtitlesGrid::OnDuplicate (wxCommandEvent &WXUNUSED(&event)) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	DuplicateLines(sels.front(),sels.back());
+	EndBatch();
 }
 
 
 //////////////////////////////////////////////
 // Duplicate selection and shift by one frame
 void SubtitlesGrid::OnDuplicateNextFrame (wxCommandEvent &WXUNUSED(&event)) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	DuplicateLines(sels.front(),sels.back(),true);
+	EndBatch();
 }
 
 
 /////////////
 // Call swap
 void SubtitlesGrid::OnSwap (wxCommandEvent &event) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	SwapLines(sels.front(),sels.back());
+	EndBatch();
 }
 
 
 ///////////////////////////
 // Call join (concatenate)
 void SubtitlesGrid::OnJoinConcat (wxCommandEvent &event) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	JoinLines(sels.front(),sels.back(),true);
+	EndBatch();
 }
 
 
 ///////////////////////
 // Call join (replace)
 void SubtitlesGrid::OnJoinReplace (wxCommandEvent &event) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	JoinLines(sels.front(),sels.back(),false);
+	EndBatch();
 }
 
 
 ////////////////
 // Adjoin lines
 void SubtitlesGrid::OnAdjoin (wxCommandEvent &event) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	AdjoinLines(sels.front(),sels.back(),true);
+	EndBatch();
 }
 
 void SubtitlesGrid::OnAdjoin2 (wxCommandEvent &event) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	AdjoinLines(sels.front(),sels.back(),false);
+	EndBatch();
 }
 
 
 ////////////////////////
 // Call join as karaoke
 void SubtitlesGrid::OnJoinAsKaraoke (wxCommandEvent &event) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	JoinAsKaraoke(sels.front(),sels.back());
+	EndBatch();
 }
 
 
 /////////////////////////
 // Call split by karaoke
 void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &event) {
+	BeginBatch();
 	wxArrayInt sels = GetSelection();
 	for (int i = sels.size()-1; i >= 0; i--) {
 		SplitLineByKaraoke(sels[i]);
 	}
 	ass->FlagAsModified();
 	CommitChanges();
+	EndBatch();
 }
 
 
 //////////////////////
 // Call insert before
 void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
+	BeginBatch();
 	// Find line
 	int n = GetFirstSelRow();
 
@@ -399,12 +418,14 @@ void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 	InsertLine(def,n,false);
 	SelectRow(n);
 	editBox->SetToLine(n);
+	EndBatch();
 }
 
 
 /////////////////////
 // Call insert after
 void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
+	BeginBatch();
 	// Find line
 	int n = GetFirstSelRow();
 	int nrows = GetRows();
@@ -427,12 +448,14 @@ void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 	InsertLine(def,n,true);
 	SelectRow(n+1);
 	editBox->SetToLine(n+1);
+	EndBatch();
 }
 
 
 /////////////////////////////////
 // Call insert before with video
 void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
+	BeginBatch();
 	// Find line
 	int n = GetFirstSelRow();
 
@@ -447,12 +470,14 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 	InsertLine(def,n,false);
 	SelectRow(n);
 	editBox->SetToLine(n);
+	EndBatch();
 }
 
 
 ////////////////////////////////
 // Call insert after with video
 void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
+	BeginBatch();
 	// Find line
 	int n = GetFirstSelRow();
 
@@ -467,6 +492,7 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 	InsertLine(def,n,true);
 	SelectRow(n+1);
 	editBox->SetToLine(n+1);
+	EndBatch();
 }
 
 
@@ -494,41 +520,52 @@ void SubtitlesGrid::OnPasteLines (wxCommandEvent &WXUNUSED(&event)) {
 ///////////////////////////////
 // Copy selection to clipboard
 void SubtitlesGrid::OnDeleteLines (wxCommandEvent &WXUNUSED(&event)) {
+	BeginBatch();
 	DeleteLines(GetSelection());
+	EndBatch();
 }
 
 
 //////////////////////////
 // Set start to video pos
 void SubtitlesGrid::OnSetStartToVideo(wxCommandEvent &event) {
+	BeginBatch();
 	SetSubsToVideo(true);
+	EndBatch();
 }
 
 
 ////////////////////////
 // Set end to video pos
 void SubtitlesGrid::OnSetEndToVideo(wxCommandEvent &event) {
+	BeginBatch();
 	SetSubsToVideo(false);
+	EndBatch();
 }
 
 
 //////////////////////////
 // Set video pos to start
 void SubtitlesGrid::OnSetVideoToStart(wxCommandEvent &event) {
+	BeginBatch();
 	SetVideoToSubs(true);
+	EndBatch();
 }
 
 
 ////////////////////////
 // Set video pos to end
 void SubtitlesGrid::OnSetVideoToEnd(wxCommandEvent &event) {
+	BeginBatch();
 	SetVideoToSubs(false);
+	EndBatch();
 }
 
 
 /////////////////////
 // 1,1+2,2 Recombine
 void SubtitlesGrid::On1122Recombine(wxCommandEvent &event) {
+	BeginBatch();
 	// Get selection
 	bool cont;
 	wxArrayInt sel = GetSelection(&cont);
@@ -547,12 +584,16 @@ void SubtitlesGrid::On1122Recombine(wxCommandEvent &event) {
 
 	// Delete middle
 	DeleteLines(GetRangeArray(n+1,n+1));
+
+	EndBatch();
 }
 
 
 ///////////////////
 // 1+2,2 Recombine
 void SubtitlesGrid::On122Recombine(wxCommandEvent &event) {
+	BeginBatch();
+
 	// Get selection
 	bool cont;
 	wxArrayInt sel = GetSelection(&cont);
@@ -584,12 +625,16 @@ void SubtitlesGrid::On122Recombine(wxCommandEvent &event) {
 	} else {
 		parentFrame->StatusTimeout(_T("Unable to recombine: Second line is not a suffix of first one."));
 	}
+
+	EndBatch();
 }
 
 
 ///////////////////
 // 1,1+2 Recombine
 void SubtitlesGrid::On112Recombine(wxCommandEvent &event) {
+	BeginBatch();
+
 	// Get selection
 	bool cont;
 	wxArrayInt sel = GetSelection(&cont);
@@ -621,6 +666,8 @@ void SubtitlesGrid::On112Recombine(wxCommandEvent &event) {
 	} else {
 		parentFrame->StatusTimeout(_T("Unable to recombine: First line is not a prefix of second one."));
 	}
+
+	EndBatch();
 }
 
 
@@ -790,14 +837,18 @@ void SubtitlesGrid::CopyLines(wxArrayInt target) {
 ////////////////////
 // Cut to clipboard
 void SubtitlesGrid::CutLines(wxArrayInt target) {
+	BeginBatch();
 	CopyLines(target);
 	DeleteLines(target);
+	EndBatch();
 }
 
 
 //////////////////////////////
 // Paste lines from clipboard
 void SubtitlesGrid::PasteLines(int n) {
+	BeginBatch();
+
 	// Prepare text
 	wxString data = _T("");
 
@@ -843,6 +894,8 @@ void SubtitlesGrid::PasteLines(int n) {
 			editBox->SetToLine(n+1);
 		}
 	}
+
+	EndBatch();
 }
 
 
@@ -1196,7 +1249,7 @@ void SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 		kcount++;
 	}
 
-	// POSSIBLE BUG! If the above code throws an exception, the blocks are never cleared!!
+	// POSSIBLE BUG/LEAK! If the above code throws an exception, the blocks are never cleared!!
 	line->ClearBlocks();
 
 	{

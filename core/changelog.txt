@@ -19,6 +19,9 @@ Please visit http://aegisub.net to download latest version
 - Misc. fixes for building on Linux (Azzy)
 - Redesigned the FexTracker configuration window (jfs)
 - Framegrabs from the video now also includes framenumber in the filename (jfs)
+- Scrollbar in main subs grid didn't always allow scrolling through all the subs (jfs)
+- You can now no longer create a style storage whose name is invalid as a filename, instead the illegal characters are replaced with a safe character and a warning is displayed (jfs)
+  o Previously those storages seemed to be created correctly, but were never written to disk and thus lost
 
 
 = 1.10 beta - 2006.08.07 ===========================
