@@ -505,7 +505,7 @@ public:
 	float *base_in; // audio sample data (shared)
 	int samples; // number of samples per column
 	int depth; // display bit depth
-	float scale; // vertical scale of display
+	float scale; // vertical scale of display, exponential, min=0, mid=1, max=8
 	
 protected:
 	wxThread::ExitCode Entry() {
@@ -540,23 +540,33 @@ protected:
 			write_ptr = data+i+h*w;
 			write_ptr16 = ((unsigned short*)data)+(i+h*w);
 
-			// According to the formula at http://en.wikipedia.org/wiki/Fast_Fourier_transform:
-			//   X_k = SUM ( n=0, N-1, x_n * e^(-2*pi*i / N * n * k) )
-			// The maximum output value for our case (real-valued-only input, range -16384 to +16383, N=1024)
-			// must be:
-			//   O(X_k) = O( SUM ( n=0, 1023, 16383 * exp(-2*pi*i / 1024 * 1023 * 1023) ) )
-			//          = 1024 * 16383 * exp(-pi*i / 512 * 1023 * 1023)
-			//         ~= 16777216 * exp(-2*pi * i * 1024)
-			// Since exp(ix) = cos(x) + i * sin(x), |a * exp(i*b)| = a for all real a and b, max
-			// power will be 16777216.
-			// More generally, in this context, it will be:
-			//   samples * 2^(audio_bit_depth-1)
-			// Currently 16 bit audio is assumed, meaning samples*16384
-			// But scale this by a user amount (vertical zoom0 -- scale is from 0 to 8
-			int maxpower = window*16384 / (16*256*scale);
+			// The maximum power output from the FFT
+			// Derived by maximising the result from the DFT function:
+			//   f[u] = sum(x=0,N-1)[ f(x) * exp(-2 * pi * i * u * x) ]
+			// Where N is the number of samples transformed.
+			//        = N * 2^(B-1) * exp(-2 * pi * i * u * x)
+			// Maximising by f(x) constant at maximum sample value.
+			// B is bit-depth of the samples, so 2^(B-1) is the maximum sample value.
+			//        = N * 2^(B-1) * [ cos(-2*pi*u*x) + i sin(-2*pi*u*x) ]
+			// Expanding using Euler's formula.
+			//        = N * 2^(B-1) * [ cos(2*pi*u*x) - i sin(2*pi*u*x) ]
+			// cos(-x) = cos(x)  and  sin(-x) = -sin(x)
+			//        = N * 2^(B-1) * cos(2*pi*u*x) - N * 2^(B-1) * i sin(2*pi*u*x)    [A]
+			// Expand the bracket.
+			// Now determine the maximum magnitude of [A], letting u be constant and x variable.
+			//     | N * 2^(B-1) * cos(2*pi*u*x) - N * 2^(B-1) * i sin(2*pi*u*x) |
+			//   = sqrt( [N * 2^(B-1) * cos(2*pi*u*x)]^2 + [N * 2^(B-1) * sin(2*pi*u*x)]^2 )
+			//   = sqrt( N^2 * 4^(B-1) * cos^2(2*pi*u*x) + N^2 * 4^(B-1) * sin^2(2*pi*u*x) )
+			//   = sqrt( N^2 * 4^(B-1) * [ cos^2(2*pi*u*x) + sin^2(2*pi*u*x) ] )
+			//   = sqrt( N^2 * 4^(B-1) )
+			// It's known that sin^2(x) + cos^2(x) = 1.
+			//   = N * 2^(B-1)
+
+			int maxpower = (1 << (16 - 1))*256;
 
 			// Calculate the signal power over frequency
-#ifdef SPECTRUM_LOGAGITHMIC
+#if 0
+			// Logarithmic scale
 			for (int j = 0; j < window; j++) {
 				float t = out_r[j]*out_r[j] + out_i[j]*out_i[j];
 				if (t < 1)
@@ -565,7 +575,21 @@ protected:
 					power[j] = 10. * log10(t) * 64; // try changing the constant 64 if playing with this
 			}
 			maxpower = 10 * log10((float)maxpower);
+#elif 1
+			// "Compressed" scale
+			double onethirdmaxpower = maxpower / 3, twothirdmaxpower = maxpower * 2/3;
+			double overscale = maxpower*8*scale - twothirdmaxpower;
+			for (int j = 0; j < window; j++) {
+				// First do a simple linear scale power calculation -- 8 gives a reasonable default scaling
+				power[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]) * 8 * scale;
+				if (power[j] > maxpower * 2/3) {
+					double p = power[j] - twothirdmaxpower;
+					p = log(p) * onethirdmaxpower / log(overscale);
+					power[j] = p + twothirdmaxpower;
+				}
+			}
 #else
+			// Linear scale
 			for (int j = 0; j < window; j++) {
 				power[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
 			}
@@ -596,7 +620,7 @@ protected:
 					for (int samp = sample1; samp <= sample2; samp++) {
 						if (power[samp] > maxval) maxval = power[samp];
 					}
-					int intensity = int(maxval / maxpower);
+					int intensity = int(256 * maxval / maxpower);
 					WRITE_PIXEL
 				}
 			}
@@ -611,52 +635,12 @@ protected:
 					float sample1 = power[(int)floor(ideal)+cutoff];
 					float sample2 = power[(int)ceil(ideal)+cutoff];
 					float frac = ideal - floor(ideal);
-					int intensity = int(((1-frac)*sample1 + frac*sample2) / maxpower);
+					int intensity = int(((1-frac)*sample1 + frac*sample2) / maxpower * 256);
 					WRITE_PIXEL
 				}
 			}
 
 #undef WRITE_PIXEL
-
-			// Draw bar
-			/*float accum = 0;
-			int accumPos = posThres;
-			int y = h;
-			int intensity;
-			float t1,t2;
-
-			for (int j=cutoff;j<halfwindow;j++) {
-				// Calculate magnitude and add to accumulator
-				t1 = out_r[j];
-				t1 *= t1;
-				t2 = out_i[j];
-				t2 *= t2;
-				t2 += t1;
-				accum += sqrt(t2);
-
-				// When accumulator goes over, plot point
-				accumPos--;
-				if (accumPos == 0) {
-					intensity = int(accum*mult);
-					if (intensity > 255) intensity = 255;
-					if (intensity < 0) intensity = 0;
-
-					// Write and go to next row
-					if (depth == 32) {
-						write_ptr -= w;
-						*write_ptr = spectrumColorMap[intensity];
-					}
-					else if (depth == 16) {
-						write_ptr16 -= w;
-						*write_ptr16 = spectrumColorMap16[intensity];
-					}
-
-					y--;
-					if (y == 0) break;
-					accumPos = posThres;
-					accum = 0;
-				}
-			}*/
 		}
 
 		delete out_r;
@@ -715,7 +699,7 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 		const int cpu_count = MAX(wxThread::GetCPUCount(), 1);
 		std::vector<SpectrumRendererThread*> threads(cpu_count);
 		for (int i = 0; i < cpu_count; i++) {
-			// Ugh, way too many data to copy in
+			// Ugh, way too much data to copy in
 			threads[i] = new SpectrumRendererThread();
 			threads[i]->data = data;
 			threads[i]->window = window;
@@ -736,118 +720,10 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 			delete threads[i];
 		}
 
-		// Additional constants
-		const int halfwindow = window/2;
-		const int posThres = MAX(1,int(double(halfwindow-cutOff)/double(h)*0.5/scale + 0.5));
-		const float mult = float(h)/float(halfwindow-cutOff)/255.f;
-		// And more
-		int *write_ptr = data;
-		unsigned short *write_ptr16 = (unsigned short *)data;
-
-		/*// More arrays
-		float *out_r = new float[window];
-		float *out_i = new float[window];
-		int *write_ptr = data;
-		unsigned short *write_ptr16 = (unsigned short *)data;
-	
-		// Prepare variables
-		int halfwindow = window/2;
-		int posThres = MAX(1,int(double(halfwindow-cutOff)/double(h)*0.5/scale + 0.5));
-		float mult = float(h)/float(halfwindow-cutOff)/255.f;
-
-		// Calculation loop
-		for (int i=0;i<w;i++) {
-			// Calculate start for current bar
-			__int64 curStart = i*samples-(window/2);
-			if (curStart < 0) curStart = 0;
-
-			// Position input
-			in = raw_float + curStart;
-
-			// Perform the FFT
-			FFT fft;
-			fft.Transform(window,in,out_r,out_i);
-
-			// Draw bar
-			float accum = 0;
-			int accumPos = posThres;
-			int y = h;
-			int intensity;
-			float t1,t2;
-
-			// Position pointer
-			write_ptr = data+i+h*w;
-			write_ptr16 = ((unsigned short*)data)+(i+h*w);
-
-			// Draw loop
-			for (int j=cutOff;j<halfwindow;j++) {
-				// Calculate magnitude and add to accumulator
-				t1 = out_r[j];
-				t1 *= t1;
-				t2 = out_i[j];
-				t2 *= t2;
-				t2 += t1;
-				accum += sqrt(t2);
-
-				// When accumulator goes over, plot point
-				accumPos--;
-				if (accumPos == 0) {
-					intensity = int(accum*mult);
-					if (intensity > 255) intensity = 255;
-					if (intensity < 0) intensity = 0;
-
-					// Write and go to next row
-					if (depth == 32) {
-						write_ptr -= w;
-						*write_ptr = spectrumColorMap[intensity];
-					}
-					else if (depth == 16) {
-						write_ptr16 -= w;
-						*write_ptr16 = spectrumColorMap16[intensity];
-					}
-
-					//dc.SetPen(pen[intensity]);
-					//dc.DrawPoint(i,y);
-					y--;
-					if (y == 0) break;
-					accumPos = posThres;
-					accum = 0;
-				}
-			}
-		}*/
-		////// END OF PARALLELISED CODE //////
-
-		// Clear top of image
-		/*
-		// not needed with new algo, it always fill the entire image
-		int filly = h - (halfwindow-cutOff)/posThres;
-		if (filly < 0) filly = 0;
-		if (depth == 32) {
-			int color = spectrumColorMap[0];
-			for (int y=0;y<filly;y++) {
-				write_ptr = data+y*w;
-				for (int x=0;x<w;x++) {
-					*write_ptr = color;
-					write_ptr++;
-				}
-			}
-		}
-		else {
-			unsigned short color = spectrumColorMap16[0];
-			for (int y=0;y<filly;y++) {
-				write_ptr16 = ((unsigned short*)data)+y*w;
-				for (int x=0;x<w;x++) {
-					*write_ptr16 = color;
-					write_ptr16++;
-				}
-			}
-		}
-		*/
-
 		// Clear memory
 		delete raw_float;
 
-		// Create image
+		// Create image FIXME *BREAKS ON NON-WIN32* (see wx docs)
 		spectrumDisplay = new wxBitmap((const char*)data,w,h,depth);
 	}
 
