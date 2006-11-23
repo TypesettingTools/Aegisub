@@ -630,12 +630,14 @@ void VideoDisplay::OnSaveSnapshot(wxCommandEvent &event) {
 }
 
 void VideoDisplay::SaveSnapshot() {
+	static int session_shot_count = 1;
 	// Get path
 	wxFileName file = videoName;
 	wxString basepath = file.GetPath() + _T("/") + file.GetName();
 	wxString path;
-	for (int i=0;;i++) {
-		path = basepath + wxString::Format(_T("_%03i.png"),i);
+	while (1) {
+		path = basepath + wxString::Format(_T("_%03i_%i.png"),session_shot_count,frame_n);
+		++session_shot_count;
 		wxFileName tryPath(path);
 		if (!tryPath.FileExists()) break;
 	}

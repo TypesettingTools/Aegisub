@@ -287,7 +287,7 @@ void FrameMain::InitMenu() {
 	videoMenu->AppendCheckItem(Menu_Video_AR_Default, _("&Default Aspect Ratio"), _("Leave video on original aspect ratio"));
 	videoMenu->AppendCheckItem(Menu_Video_AR_Full, _("&Fullscreen Aspect Ratio (4:3)"), _("Forces video to fullscreen aspect ratio"));
 	videoMenu->AppendCheckItem(Menu_Video_AR_Wide, _("&Widescreen Aspect Ratio (16:9)"), _("Forces video to widescreen aspect ratio"));
-	videoMenu->AppendCheckItem(Menu_Video_AR_235, _("&2.35 Aspect Ratio"), _("Forces video to 2.35 aspect ratio"));
+	videoMenu->AppendCheckItem(Menu_Video_AR_235, _("2.&35 Aspect Ratio"), _("Forces video to 2.35 aspect ratio"));
 	videoMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom Aspect Ratio..."), _("Forces video to a custom aspect ratio"));
 	MenuBar->Append(videoMenu, _("&Video"));
 
