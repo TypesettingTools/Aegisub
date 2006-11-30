@@ -1283,6 +1283,13 @@ void SubtitlesGrid::CommitChanges(bool force) {
 		// Resume play
 		if (playing) video->Play();
 	}
+
+	// Autosave if option is enabled
+	if (Options.AsBool(_T("Auto Save on Every Change"))) {
+		if (ass->IsModified() && !ass->filename.IsEmpty()) parentFrame->SaveSubtitles(false);
+	}
+
+	// Update parent frame
 	parentFrame->UpdateTitle();
 	SetColumnWidths();
 	Refresh(false);

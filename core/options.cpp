@@ -236,6 +236,7 @@ void OptionsManager::LoadDefaults() {
 
 	SetBool(_T("Auto backup"),true);
 	SetInt(_T("Auto save every seconds"),60);
+	SetBool(_T("Auto save on every change"),false);
 	SetText(_T("Auto backup path"),_T("autoback"));
 	SetText(_T("Auto save path"),_T("autosave"));
 	SetText(_T("Auto recovery path"),_T("recovered"));

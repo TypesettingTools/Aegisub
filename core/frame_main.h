@@ -60,6 +60,7 @@ class AegisubFileDropTarget;
 class FrameMain: public wxFrame {
 	friend class AegisubFileDropTarget;
 	friend class AegisubApp;
+	friend class SubtitlesGrid;
 
 private:
 	int curMode;
