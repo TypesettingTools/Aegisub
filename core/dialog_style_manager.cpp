@@ -138,13 +138,13 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 		selected_style = dia->Style;
 	}
 
-	if (StorageList->SetStringSelection(selected_style)) {
+	if (StorageList->GetCount() && StorageList->SetStringSelection(selected_style)) {
 		StorageEdit->Enable();
 		StorageCopy->Enable();
 		StorageDelete->Enable();
 		MoveToLocal->Enable();
 	}
-	if (CurrentList->SetStringSelection(selected_style)) {
+	if (CurrentList->GetCount() && CurrentList->SetStringSelection(selected_style)) {
 		CurrentEdit->Enable();
 		CurrentCopy->Enable();
 		CurrentDelete->Enable();
