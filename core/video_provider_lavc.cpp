@@ -73,7 +73,7 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
 
 	// Attach subtitles
 	try {
-		SubtitleProvider::Class::GetProvider(_T("asa"), AssFile::top)->Bind(this);
+		SubtitleProvider::Class::GetProvider(_T("libass"), AssFile::top)->Bind(this);
 	} catch (...) {
 		/* warn user? */
 	}

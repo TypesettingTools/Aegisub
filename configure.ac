@@ -98,6 +98,13 @@ PKG_CHECK_MODULES([ASA], asa >= 0.3.2, [
 ], [true])
 AC_CHECK_HEADERS([asa/asa.h])
 
+PKG_CHECK_MODULES([LIBASS], libass >= 0.9.1, [
+	CPPFLAGS="$CPPFLAGS $LIBASS_CFLAGS"
+	LIBS="$LIBS $LIBASS_LIBS"
+	AC_DEFINE(HAVE_LIBASS, 1, [found libass via pkg-config])
+], [true])
+AC_CHECK_HEADERS([ass/ass.h])
+
 PKG_CHECK_MODULES([GLIB], glib-2.0, [
 	CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
 	LIBS="$LIBS $GLIB_LIBS"
@@ -149,4 +156,5 @@ AC_OUTPUT([
 	core/posix/Makefile
 	core/bitmaps/Makefile
 ])
+
 

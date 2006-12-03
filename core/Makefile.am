@@ -85,6 +85,7 @@ aegisub_SOURCES = about.cpp \
 	subtitle_format_txt.cpp \
 	subtitle_provider.cpp \
 	subtitle_provider_asa.cpp \
+	subtitle_provider_libass.cpp \
 	text_file_reader.cpp \
 	text_file_writer.cpp \
 	timeedit_ctrl.cpp \
@@ -103,4 +104,5 @@ aegisub_SOURCES = about.cpp \
 	video_zoom.cpp \
 	yatta_wrap.cpp \
 	MatroskaParser.c
+
 
