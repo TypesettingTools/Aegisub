@@ -17,6 +17,7 @@ Please visit http://aegisub.net to download latest version
   o Note that this (unfortunately) doesn't affect video/audio loading, since those still depend on Avisynth, which doesn't support Unicode at all
 - Video display fixed on Linux and maybe also Mac (Azzy)
 - Misc. fixes for building on Linux (Azzy)
+- libass support for subtitles on UNIX (Azzy)
 - Redesigned the FexTracker configuration window (jfs)
 - Framegrabs from the video now also includes framenumber in the filename (jfs)
 - Scrollbar in main subs grid didn't always allow scrolling through all the subs (jfs)
