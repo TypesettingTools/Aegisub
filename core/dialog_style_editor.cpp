@@ -39,8 +39,10 @@
 #include <wx/fontdlg.h>
 #include <wx/colordlg.h>
 #include "dialog_style_editor.h"
+#include "ass_dialogue.h"
 #include "ass_style.h"
 #include "ass_file.h"
+#include "ass_override.h"
 #include "validators.h"
 #include "subs_grid.h"
 #include "utils.h"
@@ -356,11 +358,55 @@ void DialogStyleEditor::OnSetColor3 (wxCommandEvent &event) { OnSetColor(3); }
 void DialogStyleEditor::OnSetColor4 (wxCommandEvent &event) { OnSetColor(4); }
 
 
+/////////////////
+// Replace Style
+void ReplaceStyle(wxString tag,int n,AssOverrideParameter* param,void *userData) {
+	wxArrayString strings = *((wxArrayString*)userData);
+	if (tag == _T("\\r")) {
+		if (param->GetType() == VARDATA_TEXT) {
+			if (param->AsText() == strings[0]) {
+				param->SetText(strings[1]);
+			}
+		}
+	}
+}
+
+
 //////////
 // Events
 void DialogStyleEditor::Apply (bool apply,bool close) {
 	// Apply
 	if (apply) {
+		// Style name
+		wxString newStyleName = StyleName->GetValue();
+		if (work->name != newStyleName) {
+			// See if user wants to update style name through script
+			int answer = wxMessageBox(_T("Do you want to change all instances of this style in the script to this new name?"),_T("Update script?"),wxYES_NO | wxCANCEL);
+
+			// Cancel
+			if (answer == wxCANCEL) return;
+
+			// Update
+			if (answer == wxYES) {
+				int n = grid->GetRows();
+				wxArrayString strings;
+				strings.Add(work->name);
+				strings.Add(newStyleName);
+				for (int i=0;i<n;i++) {
+					AssDialogue *curDiag = grid->GetDialogue(i);
+					if (curDiag->Style == work->name) curDiag->Style = newStyleName;
+					curDiag->ParseASSTags();
+					curDiag->ProcessParameters(ReplaceStyle,&strings);
+					curDiag->UpdateText();
+					curDiag->UpdateData();
+					curDiag->ClearBlocks();
+				}
+			}
+
+			// Change name
+			work->name = newStyleName;
+		}
+
 		// Update scale
 		ScaleX->GetValue().ToDouble(&(work->scalex));
 		ScaleY->GetValue().ToDouble(&(work->scaley));
@@ -410,9 +456,6 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Font and its size
 		work->font = FontName->GetValue();
 		FontSize->GetValue().ToDouble(&(work->fontsize));
-
-		// Style name
-		work->name = StyleName->GetValue();
 
 		// Copy
 		*style = *work;
