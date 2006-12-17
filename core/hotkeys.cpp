@@ -324,6 +324,7 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Copy"),_T("Ctrl-C"));
 	SetHotkey(_("Cut"),_T("Ctrl-X"));
 	SetHotkey(_("Paste"),_T("Ctrl-V"));
+	SetHotkey(_("Paste Over"),_T("Ctrl-Shift-V"));
 
 	SetHotkey(_("Video Jump"),_T("Ctrl-G"));
 	SetHotkey(_("Jump Video to Start"),_T("Ctrl-1"));

@@ -846,7 +846,7 @@ void SubtitlesGrid::CutLines(wxArrayInt target) {
 
 //////////////////////////////
 // Paste lines from clipboard
-void SubtitlesGrid::PasteLines(int n) {
+void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 	BeginBatch();
 
 	// Prepare text
@@ -864,21 +864,60 @@ void SubtitlesGrid::PasteLines(int n) {
 
 	// Check if it actually got anything
 	if (!data.empty()) {
+		// Insert data
 		int inserted = 0;
+		bool asked = false;
+		wxArrayInt pasteOverOptions;
 		wxStringTokenizer token (data,_T("\r\n"),wxTOKEN_STRTOK);
 		while (token.HasMoreTokens()) {
+			// Convert data into an AssDialogue
 			wxString curdata = token.GetNextToken();
 			curdata.Trim(true);
 			curdata.Trim(false);
+			AssDialogue *curdiag;
 			try { 
-				AssDialogue *curdiag = new AssDialogue(curdata);
-				InsertLine(curdiag,n+inserted,false,false);
-				inserted++;
+				curdiag = new AssDialogue(curdata);
 			}
 			catch (...) {
+				curdiag = new AssDialogue();
+				curdiag->Text = curdata;
 			}
+
+			// Paste over
+			if (pasteOver) {
+				if (n+inserted < GetRows()) {
+					// Get list of options to paste over, if not asked yet
+					if (asked == false) {
+						asked = true;
+						// TODO: Replace this with dialog
+						for (int i=0;i<10;i++) pasteOverOptions.Add(0);
+						pasteOverOptions[9] = 1;
+					}
+
+					// Paste over
+					AssDialogue *target = GetDialogue(n+inserted);
+					if (pasteOverOptions[0]) target->Layer = curdiag->Layer;
+					if (pasteOverOptions[1]) target->Start = curdiag->Start;
+					if (pasteOverOptions[2]) target->End = curdiag->End;
+					if (pasteOverOptions[3]) target->Style = curdiag->Style;
+					if (pasteOverOptions[4]) target->Actor = curdiag->Actor;
+					if (pasteOverOptions[5]) target->MarginL = curdiag->MarginL;
+					if (pasteOverOptions[6]) target->MarginR = curdiag->MarginR;
+					if (pasteOverOptions[7]) target->MarginV = curdiag->MarginV;
+					if (pasteOverOptions[8]) target->Effect = curdiag->Effect;
+					if (pasteOverOptions[9]) target->Text = curdiag->Text;
+				}
+				delete curdiag;
+			}
+
+			// Paste normally
+			else InsertLine(curdiag,n+inserted,false,false);
+
+			// Increment insertion
+			inserted++;
 		}
 
+		// Update data post-insertion
 		if (inserted > 0) {
 			// Commit
 			UpdateMaps();
@@ -887,14 +926,17 @@ void SubtitlesGrid::PasteLines(int n) {
 			CommitChanges();
 
 			// Set selection
-			SelectRow(n);
-			for (int i=n+1;i<n+inserted;i++) {
-				SelectRow(i,true);
+			if (!pasteOver) {
+				SelectRow(n);
+				for (int i=n+1;i<n+inserted;i++) {
+					SelectRow(i,true);
+				}
+				editBox->SetToLine(n);
 			}
-			editBox->SetToLine(n);
 		}
 	}
 
+	// Done
 	EndBatch();
 }
 

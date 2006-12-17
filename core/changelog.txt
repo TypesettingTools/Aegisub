@@ -27,6 +27,7 @@ Please visit http://aegisub.net to download latest version
 - Added support for reading ASS, SSA and SRT softsubs directly from Matroska files. (AMZ)
 - Fixed line selection after pasting. (AMZ)
 - Times can now be copy and pasted with ctrl+c and ctrl+v, as well as from context menu, in the time edit boxes. (AMZ)
+- Plain-text lines can now be pasted into the grid. They will be inserted as default lines with the text as their content. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

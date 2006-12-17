@@ -157,6 +157,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Edit_Cut, FrameMain::OnCut)
 	EVT_MENU(Menu_Edit_Copy, FrameMain::OnCopy)
 	EVT_MENU(Menu_Edit_Paste, FrameMain::OnPaste)
+	EVT_MENU(Menu_Edit_Paste_Over, FrameMain::OnPasteOver)
 	EVT_MENU(Menu_Edit_Find, FrameMain::OnFind)
 	EVT_MENU(Menu_Edit_Find_Next, FrameMain::OnFindNext)
 	EVT_MENU(Menu_Edit_Replace, FrameMain::OnReplace)
@@ -380,6 +381,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		RebuildMenuItem(editMenu,Menu_Edit_Cut,wxBITMAP(cut_button),wxBITMAP(cut_disable_button),state);
 		RebuildMenuItem(editMenu,Menu_Edit_Copy,wxBITMAP(copy_button),wxBITMAP(copy_disable_button),state);
 		RebuildMenuItem(editMenu,Menu_Edit_Paste,wxBITMAP(paste_button),wxBITMAP(paste_disable_button),state);
+		MenuBar->Enable(Menu_Edit_Paste_Over,state);
 	}
 
 	//Thaw();
@@ -1112,6 +1114,13 @@ void FrameMain::OnCopy (wxCommandEvent &event) {
 
 void FrameMain::OnPaste (wxCommandEvent &event) {
 	SubsBox->PasteLines(SubsBox->GetFirstSelRow());
+}
+
+
+//////////////
+// Paste over
+void FrameMain::OnPasteOver (wxCommandEvent &event) {
+	SubsBox->PasteLines(SubsBox->GetFirstSelRow(),true);
 }
 
 

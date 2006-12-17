@@ -247,6 +247,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (editMenu,Menu_Edit_Cut, _("Cut...\t") + Hotkeys.GetText(_T("Cut")), _("Cut subtitles"), wxBITMAP(cut_button));
 	AppendBitmapMenuItem (editMenu,Menu_Edit_Copy, _("Copy...\t") + Hotkeys.GetText(_T("Copy")), _("Copy subtitles"), wxBITMAP(copy_button));
 	AppendBitmapMenuItem (editMenu,Menu_Edit_Paste, _("Paste...\t") + Hotkeys.GetText(_T("Paste")), _("Paste subtitles"), wxBITMAP(paste_button));
+	editMenu->Append(Menu_Edit_Paste_Over, _("Paste Over...\t") + Hotkeys.GetText(_T("Paste Over")) , _("Paste subtitles over others"));
 	MenuBar->Append(editMenu, _("&Edit"));
 
 	// Create view menu

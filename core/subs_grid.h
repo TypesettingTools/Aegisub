@@ -126,7 +126,7 @@ public:
 
 	void CopyLines(wxArrayInt lines);
 	void CutLines(wxArrayInt lines);
-	void PasteLines(int pos);
+	void PasteLines(int pos,bool over=false);
 
 	DECLARE_EVENT_TABLE()
 };
