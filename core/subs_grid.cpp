@@ -891,7 +891,7 @@ void SubtitlesGrid::PasteLines(int n) {
 			for (int i=n+1;i<n+inserted;i++) {
 				SelectRow(i,true);
 			}
-			editBox->SetToLine(n+1);
+			editBox->SetToLine(n);
 		}
 	}
 

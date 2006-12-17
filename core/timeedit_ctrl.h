@@ -51,10 +51,16 @@ private:
 	bool ready;
 	bool modified;
 
+	void Modified();
+	void UpdateText();
+	void CopyTime();
+	void PasteTime();
+
 	void OnModified(wxCommandEvent &event);
 	void OnMouseEvent(wxMouseEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
-	void UpdateText();
+	void OnCopy(wxCommandEvent &event);
+	void OnPaste(wxCommandEvent &event);
 
 public:
 	AssTime time;
@@ -68,4 +74,12 @@ public:
 	bool HasBeenModified() { return modified; }
 
 	DECLARE_EVENT_TABLE()
+};
+
+
+///////
+// IDs
+enum {
+	Time_Edit_Copy = 1320,
+	Time_Edit_Paste
 };

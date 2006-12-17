@@ -36,6 +36,7 @@
 
 ////////////
 // Includes
+#include <wx/clipbrd.h>
 #include "timeedit_ctrl.h"
 #include "ass_time.h"
 #include "vfr.h"
@@ -63,12 +64,23 @@ wxTextCtrl(parent,id,value,pos,size,wxTE_CENTRE | style,validator,name)
 BEGIN_EVENT_TABLE(TimeEdit, wxTextCtrl)
 	EVT_MOUSE_EVENTS(TimeEdit::OnMouseEvent)
 	EVT_KEY_DOWN(TimeEdit::OnKeyDown)
+	EVT_MENU(Time_Edit_Copy,TimeEdit::OnCopy)
+	EVT_MENU(Time_Edit_Paste,TimeEdit::OnPaste)
 END_EVENT_TABLE()
 
 
 //////////////////
 // Modified event
 void TimeEdit::OnModified(wxCommandEvent &event) {
+	if (!ready) return;
+	Modified();
+	event.Skip();
+}
+
+
+/////////////////////
+// Modified function
+void TimeEdit::Modified() {
 	// Lock
 	if (!ready) return;
 	ready = false;
@@ -85,7 +97,6 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 
 	// Done
 	ready = true;
-	event.Skip();
 }
 
 
@@ -134,12 +145,36 @@ void TimeEdit::UpdateText() {
 ///////////////
 // Mouse event
 void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
-	if (!byFrame) {
-		long from=0,to=0;
-		GetSelection(&from,&to);
-		if (to != from) SetSelection(to,to);
+	// Right click context menu
+	if (event.RightUp()) {
+		wxMenu menu;
+		menu.Append(Time_Edit_Copy,_T("&Copy"));
+		menu.Append(Time_Edit_Paste,_T("&Paste"));
+		PopupMenu(&menu);
+		return;
 	}
+
+	// Allow other events through
 	event.Skip();
+}
+
+
+/////////////
+// Menu Copy
+void TimeEdit::OnCopy(wxCommandEvent &event) {
+	SetFocus();
+	SetSelection(0,GetValue().Length());
+	CopyTime();
+	Refresh();
+}
+
+
+//////////////
+// Menu Paste
+void TimeEdit::OnPaste(wxCommandEvent &event) {
+	SetFocus();
+	PasteTime();
+	Refresh();
 }
 
 
@@ -165,6 +200,85 @@ void TimeEdit::Update() {
 ///////////////
 // Key pressed
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
+	// Get key ID
 	int key = event.GetKeyCode();
-	if (byFrame || (key != WXK_BACK && key != WXK_DELETE)) event.Skip();
+
+	// Check if it's an acceptable key
+	if (!event.ControlDown()) {
+		if (byFrame || (key != WXK_BACK && key != WXK_DELETE)) {
+			// Reset selection first, if necessary
+			if (!byFrame) {
+				long from=0,to=0;
+				GetSelection(&from,&to);
+				if (to != from) SetSelection(from,from);
+			}
+
+			// Allow it through
+			event.Skip();
+		}
+	}
+
+	else {
+		// Copy
+		if (key == 'C' || key == 'X') {
+			CopyTime();
+		}
+
+		// Paste
+		if (key == 'V') {
+			PasteTime();
+		}
+	}
+}
+
+
+/////////////////////
+// Copy to clipboard
+void TimeEdit::CopyTime() {
+	// Frame
+	if (byFrame) {
+		Copy();
+		return;
+	}
+
+	// Time
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(GetStringSelection()));
+		wxTheClipboard->Close();
+	}
+}
+
+
+////////////////////////
+// Paste from clipboard
+void TimeEdit::PasteTime() {
+	// Frame
+	if (byFrame) {
+		Paste();
+		return;
+	}
+
+	// Time
+	if (wxTheClipboard->Open()) {
+		// Read text
+		wxString text;
+		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
+			wxTextDataObject data;
+			wxTheClipboard->GetData(data);
+			text = data.GetText();
+			text.Trim(false).Trim(true);
+		}
+		wxTheClipboard->Close();
+
+		// Paste time
+		AssTime tempTime;
+		tempTime.ParseASS(text);
+		if (tempTime.GetASSFormated() == text) {
+			ready = false;
+			SetValue(text);
+			SetSelection(0,GetValue().Length());
+			ready = true;
+			Modified();
+		}
+	}
 }
