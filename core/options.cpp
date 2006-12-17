@@ -159,6 +159,9 @@ void OptionsManager::LoadDefaults() {
 
 	SetBool(_T("Highlight subs in frame"),true);
 
+	for (int i=0;i<9;i++) SetBool(wxString::Format(_T("Paste Over #%i"),i),false);
+	SetBool(_T("Paste Over #9"),true);
+
 	SetText(_T("Fonts Collector Destination"),_T("?script"));
 
 	SetBool(_T("Threaded Video"),false);

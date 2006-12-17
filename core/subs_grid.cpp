@@ -52,6 +52,7 @@
 #include "hotkeys.h"
 #include "utils.h"
 #include "ass_override.h"
+#include "dialog_paste_over.h"
 
 
 ///////////////
@@ -889,9 +890,12 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 					// Get list of options to paste over, if not asked yet
 					if (asked == false) {
 						asked = true;
-						// TODO: Replace this with dialog
-						for (int i=0;i<10;i++) pasteOverOptions.Add(0);
-						pasteOverOptions[9] = 1;
+						DialogPasteOver diag(NULL);
+						if (!diag.ShowModal()) {
+							delete curdiag;
+							return;
+						}
+						pasteOverOptions = diag.GetOptions();
 					}
 
 					// Paste over
