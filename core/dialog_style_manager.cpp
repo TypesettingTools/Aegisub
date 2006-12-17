@@ -489,15 +489,23 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 	int n = StorageList->GetSelections(selections);
 	AssStyle *temp;
 	for (int i=0;i<n;i++) {
+		// Check if there is already a style with that name
 		int test = CurrentList->FindString(StorageList->GetString(selections[i]));
-		if (test == wxNOT_FOUND) {
+		bool proceed = test==-1;
+		if (!proceed) {
+			int answer = wxMessageBox(_T("There is already a style with that name on the current script. Proceed anyway?"),_T("Style name collision."),wxYES_NO);
+			if (answer == wxYES) proceed = true;
+		}
+
+		// Copy
+		if (proceed) {
 			temp = new AssStyle;
 			*temp = *styleStorageMap.at(selections[i]);
 			AssFile::top->InsertStyle(temp);
 		}
-		else {
-			// Bug user?
-		}
+
+		// Return
+		else return;
 	}
 	LoadCurrentStyles(AssFile::top);
 	grid->ass->FlagAsModified();

@@ -379,6 +379,19 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 	if (apply) {
 		// Style name
 		wxString newStyleName = StyleName->GetValue();
+
+		// Check if style name is unique
+		wxArrayString styles = grid->ass->GetStyles();
+		for (unsigned int i=0;i<styles.Count();i++) {
+			if (styles[i] == newStyleName) {
+				if (grid->ass->GetStyle(styles[i]) != style) {
+					int answer = wxMessageBox(_T("There is already a style with this name. Proceed anyway?"),_T("Style name conflict."),wxYES_NO);
+					if (answer == wxNO) return;
+				}
+			}
+		}
+
+		// Style name change
 		if (work->name != newStyleName) {
 			// See if user wants to update style name through script
 			int answer = wxMessageBox(_T("Do you want to change all instances of this style in the script to this new name?"),_T("Update script?"),wxYES_NO | wxCANCEL);
