@@ -82,7 +82,7 @@ public:
 	void FlagAsModified();								// Flag file as being modified, will automatically put a copy on stack
 	void Clear();										// Wipes file
 	void CompressForStack(bool compress);				// Compress/decompress for storage on stack
-	void LoadDefault(bool noline=true);					// Loads default file. Pass true to prevent it from adding a default line too
+	void LoadDefault(bool defline=true);				// Loads default file. Pass false to prevent it from adding a default line too
 	void InsertStyle(AssStyle *style);					// Inserts a style to file
 	void InsertAttachment(AssAttachment *attach);		// Inserts an attachment
 	void InsertAttachment(wxString filename);			// Inserts a file as an attachment

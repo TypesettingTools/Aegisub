@@ -34,79 +34,44 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <stdio.h>
-#include <vector>
-#include <list>
-#include "MatroskaParser.h"
-#include "vfr.h"
+#include "subtitle_format_mkv.h"
+#include "ass_dialogue.h"
+#include "mkv_wrap.h"
+#include "ass_file.h"
+
+
+/////////////
+// Can read?
+bool MKVSubtitleFormat::CanReadFile(wxString filename) {
+	return (filename.Right(4).Lower() == _T(".mkv"));
+}
+
+
+/////////////
+// Read file
+void MKVSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
+	// Open matroska
+	MatroskaWrapper wrap;
+	wrap.Open(filename,false);
+
+	// Read subtitles in a temporary object
+	wrap.GetSubtitles(GetAssFile());
+
+	// Close matroska
+	wrap.Close();
+}
+
+
+//////////////////////
+// Can write to file?
+bool MKVSubtitleFormat::CanWriteFile(wxString filename) {
+	return false;
+}
 
 
 //////////////
-// Prototypes
-class AssFile;
-
-
-/////////////////////////////
-// STD IO for MatroskaParser
-class MkvStdIO : public InputStream {
-public:
-	MkvStdIO(wxString filename);
-	FILE *fp;
-	int error;
-};
-
-
-//////////////////
-// MkvFrame class
-class MkvFrame {
-public:
-	double time;
-	bool isKey;
-	__int64 filePos;
-
-	MkvFrame(bool keyframe,double timecode,__int64 _filePos) {
-		isKey = keyframe;
-		time = timecode;
-		filePos = _filePos;
-	}
-};
-
-bool operator < (MkvFrame &t1, MkvFrame &t2);
-
-
-//////////////////////////
-// Matroska wrapper class
-class MatroskaWrapper {
-private:
-	wxArrayInt keyFrames;
-	std::vector<double> timecodes;
-	wxArrayInt bytePos;
-
-public:
-	MkvStdIO *input;
-	MatroskaFile *file;
-	std::list<MkvFrame> frames;
-	std::vector<MkvFrame> rawFrames;
-
-	MatroskaWrapper();
-	~MatroskaWrapper();
-
-	bool IsOpen() { return file != NULL; }
-	void Open(wxString filename,bool parse=true);
-	void Close();
-	void Parse();
-
-	void SetToTimecodes(FrameRate &target);
-	wxArrayInt GetBytePositions() { return bytePos; }
-	unsigned int GetFrameCount() { return timecodes.size(); }
-	wxArrayInt GetKeyFrames();
-	void GetSubtitles(AssFile *target);
-
-	static MatroskaWrapper wrapper;
-};
+// Write file
+void MKVSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
+}

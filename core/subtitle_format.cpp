@@ -41,6 +41,7 @@
 #include "subtitle_format_srt.h"
 #include "subtitle_format_txt.h"
 #include "subtitle_format_prs.h"
+#include "subtitle_format_mkv.h"
 #include "ass_file.h"
 
 
@@ -123,6 +124,7 @@ void SubtitleFormat::LoadFormats () {
 		new ASSSubtitleFormat();
 		new SRTSubtitleFormat();
 		new TXTSubtitleFormat();
+		new MKVSubtitleFormat();
 #ifndef NO_PRS
 		new PRSSubtitleFormat();
 #endif

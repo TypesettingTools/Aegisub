@@ -38,8 +38,12 @@
 // Headers
 #include <algorithm>
 #include <errno.h>
+#include <wx/tokenzr.h>
+#include <wx/choicdlg.h>
 #include "mkv_wrap.h"
 #include "dialog_progress.h"
+#include "ass_file.h"
+#include "ass_time.h"
 
 
 ////////////
@@ -68,7 +72,7 @@ MatroskaWrapper::~MatroskaWrapper() {
 
 /////////////
 // Open file
-void MatroskaWrapper::Open(wxString filename) {
+void MatroskaWrapper::Open(wxString filename,bool parse) {
 	// Make sure it's closed first
 	Close();
 
@@ -84,7 +88,8 @@ void MatroskaWrapper::Open(wxString filename) {
 			throw wxString(_T("MatroskaParser error: ") + wxString(err,wxConvUTF8)).c_str();
 		}
 
-		Parse();
+		// Parse
+		if (parse) Parse();
 	}
 
 	// Failed opening
@@ -237,6 +242,204 @@ void MatroskaWrapper::SetToTimecodes(FrameRate &target) {
 		std::vector<int> times;
 		for (int i=0;i<frames;i++) times.push_back(int(timecodes[i]+0.5));
 		target.SetVFR(times);
+	}
+}
+
+
+/////////////////
+// Get subtitles
+void MatroskaWrapper::GetSubtitles(AssFile *target) {
+	// Get info
+	int tracks = mkv_GetNumTracks(file);
+	TrackInfo *trackInfo;
+	SegmentInfo *segInfo = mkv_GetFileInfo(file);
+	wxArrayInt tracksFound;
+	wxArrayString tracksNames;
+	int trackToRead = -1;
+
+	// Haali's library variables
+	ulonglong startTime, endTime, filePos;
+	unsigned int rt, frameSize, frameFlags;
+	CompressedStream *cs = NULL;
+
+	// Find tracks
+	for (int track=0;track<tracks;track++) {
+		trackInfo = mkv_GetTrackInfo(file,track);
+
+		// Subtitle track
+		if (trackInfo->Type == 0x11) {
+			wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
+			wxString TrackName = wxString(trackInfo->Name,*wxConvCurrent);
+			wxString TrackLanguage = wxString(trackInfo->Language,*wxConvCurrent);
+			
+			// Known subtitle format
+			if (CodecID == _T("S_TEXT/SSA") || CodecID == _T("S_TEXT/ASS") || CodecID == _T("S_TEXT/UTF8")) {
+				tracksFound.Add(track);
+				tracksNames.Add(wxString::Format(_T("%i ("),track) + CodecID + _T(" ") + TrackLanguage + _T("): ") + TrackName);
+			}
+		}
+	}
+
+	// No tracks found
+	if (tracksFound.Count() == 0) {
+		target->LoadDefault(true);
+		Close();
+		throw _T("File has no known subtitle tracks.");
+	}
+
+	// Only one track found
+	else if (tracksFound.Count() == 1) {
+		trackToRead = tracksFound[0];
+	}
+
+	// Pick a track
+	else {
+		int choice = wxGetSingleChoiceIndex(_T("Choose which track to read:"),_T("Multiple subtitle tracks found"),tracksNames);
+		if (choice == -1) {
+			target->LoadDefault(true);
+			Close();
+			throw _T("Canceled.");
+		}
+		trackToRead = tracksFound[choice];
+	}
+
+	// Picked track
+	if (trackToRead != -1) {
+		// Get codec type (0 = ASS/SSA, 1 = SRT)
+		trackInfo = mkv_GetTrackInfo(file,trackToRead);
+		wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
+		int codecType = 0;
+		if (CodecID == _T("S_TEXT/UTF8")) codecType = 1;
+
+		// Read private data if it's ASS/SSA
+		if (codecType == 0) {
+			// Read raw data
+			trackInfo = mkv_GetTrackInfo(file,trackToRead);
+			unsigned int privSize = trackInfo->CodecPrivateSize;
+			char *privData = new char[privSize+1];
+			memcpy(privData,trackInfo->CodecPrivate,privSize);
+			privData[privSize] = 0;
+			wxString privString(privData,wxConvUTF8);
+			delete privData;
+
+			// Load into file
+			wxString group = _T("[Script Info]");
+			int lasttime = 0;
+			bool IsSSA = (CodecID == _T("S_TEXT/SSA"));
+			wxStringTokenizer token(privString,_T("\r\n"),wxTOKEN_STRTOK);
+			while (token.HasMoreTokens()) {
+				wxString next = token.GetNextToken();
+				if (next[0] == _T('[')) group = next;
+				lasttime = target->AddLine(next,group,lasttime,IsSSA,&group);
+			}
+
+			// Insert "[Events]"
+			//target->AddLine(_T(""),group,lasttime,IsSSA,&group);
+			//target->AddLine(_T("[Events]"),group,lasttime,IsSSA,&group);
+			//target->AddLine(_T("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"),group,lasttime,IsSSA,&group);
+		}
+
+		// Load default if it's SRT
+		else {
+			target->LoadDefault(false);
+		}
+
+		// Read timecode scale
+		SegmentInfo *segInfo = mkv_GetFileInfo(file);
+		__int64 timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
+
+		// Prepare STD vector to get lines inserted
+		std::vector<wxString> subList;
+		long int order = -1;
+
+		// Progress bar
+		int totalTime = double(segInfo->Duration) / timecodeScale;
+		volatile bool canceled = false;
+		DialogProgress *progress = new DialogProgress(NULL,_("Parsing Matroska"),&canceled,_("Reading subtitles from Matroska file."),0,totalTime);
+		progress->Show();
+		progress->SetProgress(0,1);
+
+		// Load blocks
+		mkv_SetTrackMask(file, ~(1 << trackToRead));
+		while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
+			// Canceled			
+			if (canceled) {
+				target->LoadDefault(true);
+				Close();
+				throw _T("Canceled");
+			}
+
+			// Read to temp
+			char *tmp = new char[frameSize+1];
+			fseek(input->fp, filePos, SEEK_SET);
+			fread(tmp,1,frameSize,input->fp);
+			tmp[frameSize] = 0;
+			wxString blockString(tmp,wxConvUTF8);
+
+			// Get start and end times
+			//__int64 timecodeScaleLow = timecodeScale / 100;
+			__int64 timecodeScaleLow = 1000000;
+			AssTime subStart,subEnd;
+			subStart.SetMS(startTime / timecodeScaleLow);
+			subEnd.SetMS(endTime / timecodeScaleLow);
+			//wxLogMessage(subStart.GetASSFormated() + _T("-") + subEnd.GetASSFormated() + _T(": ") + blockString);
+
+			// Process SSA/ASS
+			if (codecType == 0) {
+				// Get order number
+				int pos = blockString.Find(_T(","));
+				wxString orderString = blockString.Left(pos);
+				orderString.ToLong(&order);
+				blockString = blockString.Mid(pos+1);
+
+				// Get layer number
+				pos = blockString.Find(_T(","));
+				long int layer = 0;
+				if (pos) {
+					wxString layerString = blockString.Left(pos);
+					layerString.ToLong(&layer);
+					blockString = blockString.Mid(pos+1);
+				}
+
+				// Assemble final
+				blockString = wxString::Format(_T("Dialogue: %i,"),layer) + subStart.GetASSFormated() + _T(",") + subEnd.GetASSFormated() + _T(",") + blockString;
+			}
+
+			// Process SRT
+			else {
+				blockString = wxString(_T("Dialogue: 0,")) + subStart.GetASSFormated() + _T(",") + subEnd.GetASSFormated() + _T(",Default,,0000,0000,0000,,") + blockString;
+				blockString.Replace(_T("\r\n"),_T("\\N"));
+				blockString.Replace(_T("\r"),_T("\\N"));
+				blockString.Replace(_T("\n"),_T("\\N"));
+				order++;
+			}
+
+			// Insert into vector
+			if (subList.size() == order) subList.push_back(blockString);
+			else {
+				if ((signed)(subList.size()) < order+1) subList.resize(order+1);
+				subList[order] = blockString;
+			}
+
+			// Update progress bar
+			progress->SetProgress(double(startTime) / 1000000.0,totalTime);
+		}
+
+		// Insert into file
+		wxString group = _T("[Events]");
+		int lasttime = 0;
+		bool IsSSA = (CodecID == _T("S_TEXT/SSA"));
+		for (unsigned int i=0;i<subList.size();i++) {
+			lasttime = target->AddLine(subList[i],group,lasttime,IsSSA,&group);
+		}
+
+		// Close progress bar
+		if (!canceled) progress->Destroy();
+	}
+
+	// No track to load
+	else {
+		target->LoadDefault(true);
 	}
 }
 

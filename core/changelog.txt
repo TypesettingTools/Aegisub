@@ -23,6 +23,7 @@ Please visit http://aegisub.net to download latest version
 - You can now no longer create a style storage whose name is invalid as a filename, instead the illegal characters are replaced with a safe character and a warning is displayed (jfs)
   o Previously those storages seemed to be created correctly, but were never written to disk and thus lost
 - Added a "Auto Save on Every Change" option to config.dat (default false), that automatically saves the files whenever you change anything. (AMZ)
+- Added support for reading ASS, SSA and SRT softsubs directly from Matroska files. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

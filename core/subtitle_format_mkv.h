@@ -39,74 +39,21 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <stdio.h>
-#include <vector>
-#include <list>
-#include "MatroskaParser.h"
-#include "vfr.h"
+#include "subtitle_format.h"
 
 
 //////////////
 // Prototypes
-class AssFile;
+class AssDialogue;
 
 
-/////////////////////////////
-// STD IO for MatroskaParser
-class MkvStdIO : public InputStream {
+/////////////////////
+// ASS reader/writer
+class MKVSubtitleFormat : public SubtitleFormat {
 public:
-	MkvStdIO(wxString filename);
-	FILE *fp;
-	int error;
-};
+	bool CanReadFile(wxString filename);
+	void ReadFile(wxString filename,wxString forceEncoding);
 
-
-//////////////////
-// MkvFrame class
-class MkvFrame {
-public:
-	double time;
-	bool isKey;
-	__int64 filePos;
-
-	MkvFrame(bool keyframe,double timecode,__int64 _filePos) {
-		isKey = keyframe;
-		time = timecode;
-		filePos = _filePos;
-	}
-};
-
-bool operator < (MkvFrame &t1, MkvFrame &t2);
-
-
-//////////////////////////
-// Matroska wrapper class
-class MatroskaWrapper {
-private:
-	wxArrayInt keyFrames;
-	std::vector<double> timecodes;
-	wxArrayInt bytePos;
-
-public:
-	MkvStdIO *input;
-	MatroskaFile *file;
-	std::list<MkvFrame> frames;
-	std::vector<MkvFrame> rawFrames;
-
-	MatroskaWrapper();
-	~MatroskaWrapper();
-
-	bool IsOpen() { return file != NULL; }
-	void Open(wxString filename,bool parse=true);
-	void Close();
-	void Parse();
-
-	void SetToTimecodes(FrameRate &target);
-	wxArrayInt GetBytePositions() { return bytePos; }
-	unsigned int GetFrameCount() { return timecodes.size(); }
-	wxArrayInt GetKeyFrames();
-	void GetSubtitles(AssFile *target);
-
-	static MatroskaWrapper wrapper;
+	bool CanWriteFile(wxString filename);
+	void WriteFile(wxString filename,wxString encoding);
 };
