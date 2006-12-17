@@ -52,6 +52,16 @@
 typedef IScriptEnvironment* __stdcall FUNC(int);
 
 
+////////////////////////////
+// Avisynth debugging stuff
+#ifdef DEBUG_AVISYNTH_CODE
+void DoAvsTrace(const wxString &s);
+#define AVSTRACE(s) DoAvsTrace(s)
+#else
+#define AVSTRACE(s)
+#endif
+
+
 ///////////////////////////
 // AviSynth wrapping class
 class AviSynthWrapper {

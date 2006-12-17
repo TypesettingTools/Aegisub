@@ -44,6 +44,7 @@
 
 
 AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename) {
+	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
@@ -57,37 +58,51 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfi
 	subfilename = _subfilename;
 	zoom = 1.0;
 
+	AVSTRACE(_T("AvisynthVideoProvider: Loading VSFilter"));
 	LoadVSFilter();
+	AVSTRACE(_T("AvisynthVideoProvider: VSFilter loaded"));
 
+	AVSTRACE(_T("AvisynthVideoProvider: Opening video"));
 	RGB32Video = OpenVideo(_filename,mpeg2dec3_priority);
+	AVSTRACE(_T("AvisynthVideoProvider: Video opened"));
 
 	dar = GetSourceWidth()/(double)GetSourceHeight();
+	AVSTRACE(_T("AvisynthVideoProvider: Calculated aspect ratio"));
 
 	if( _subfilename.IsEmpty() ) SubtitledVideo = RGB32Video;
 	else SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
+	AVSTRACE(_T("AvisynthVideoProvider: Applied subtitles"));
 
 	ResizedVideo = ApplyDARZoom(zoom, dar, SubtitledVideo);
+	AVSTRACE(_T("AvisynthVideoProvider: Applied zoom"));
 
 	vi = ResizedVideo->GetVideoInfo();
+	AVSTRACE(_T("AvisynthVideoProvider: Got video info"));
+	AVSTRACE(_T("AvisynthVideoProvider: Done creating AvisynthVideoProvider"));
 }
 
 AvisynthVideoProvider::~AvisynthVideoProvider() {
+	AVSTRACE(_T("AvisynthVideoProvider: Destroying AvisynthVideoProvider"));
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
 	ResizedVideo = NULL;
 	if( data ) delete data;
+	AVSTRACE(_T("AvisynthVideoProvider: AvisynthVideoProvider destroyed"));
 }
 
 void AvisynthVideoProvider::RefreshSubtitles() {
+	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Refreshing subtitles"));
 	ResizedVideo = NULL;
 	SubtitledVideo = NULL;
 
 	SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
 	ResizedVideo = ApplyDARZoom(zoom,dar,SubtitledVideo);
 	GetFrame(last_fnum,true);
+	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Subtitles refreshed"));
 }
 
 void AvisynthVideoProvider::SetDAR(double _dar) {
+	AVSTRACE(_T("AvisynthVideoProvider::SetDAR: Setting DAR"));
 	dar = _dar;
 	ResizedVideo = NULL;
 	
@@ -96,9 +111,11 @@ void AvisynthVideoProvider::SetDAR(double _dar) {
 
 	ResizedVideo = ApplyDARZoom(zoom,dar,SubtitledVideo);
 	GetFrame(last_fnum,true);
+	AVSTRACE(_T("AvisynthVideoProvider::SetDAR: DAR set"));
 }
 
 void AvisynthVideoProvider::SetZoom(double _zoom) {
+	AVSTRACE(_T("AvisynthVideoProvider::SetZoom: Setting zoom"));
 	zoom = _zoom;
 	ResizedVideo = NULL;
 
@@ -107,10 +124,13 @@ void AvisynthVideoProvider::SetZoom(double _zoom) {
 
 	ResizedVideo = ApplyDARZoom(zoom,dar,SubtitledVideo);
 	GetFrame(last_fnum,true);
+	AVSTRACE(_T("AvisynthVideoProvider::SetZoom: Zoom set"));
 }
 
 PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priority) {
+	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening video"));
 	wxMutexLocker lock(AviSynthMutex);
+	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Got AVS mutex"));
 	AVSValue script;
 
 	bool usedDirectshow = false;
@@ -124,51 +144,73 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 		// Load depending on extension
 		if (extension == _T(".avs")) { 
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .avs file with Import"));
 			script = env->Invoke("Import", videoFilename);
-		} else if (extension == _T(".avi")) {
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Finished"));
+		}
+		else if (extension == _T(".avi")) {
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .avi file with AviSource"));
 			try {
 				const char *argnames[2] = { 0, "audio" };
 				AVSValue args[2] = { videoFilename, false };
 				script = env->Invoke("AviSource", AVSValue(args,2), argnames);
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened .avi file without audio"));
 			} catch (AvisynthError &) {
+				AVSTRACE(_T("Failed to open .avi file with AviSource, switching to DirectShowSource"));
 				goto directshowOpen;
 			}
 		}
-		else if (extension == _T(".d2v") && env->FunctionExists("mpeg2dec3_Mpeg2Source") && mpeg2dec3_priority) //prefer mpeg2dec3 
+		else if (extension == _T(".d2v") && env->FunctionExists("mpeg2dec3_Mpeg2Source") && mpeg2dec3_priority) { //prefer mpeg2dec3 
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with mpeg2dec3_Mpeg2Source"));
 			script = env->Invoke("mpeg2dec3_Mpeg2Source", videoFilename);
-		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Source")) //try other mpeg2source
+		}
+		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Source")) { //try other mpeg2source
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with other Mpeg2Source"));
 			script = env->Invoke("Mpeg2Source", videoFilename);
+		}
 		else {
 			directshowOpen:
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening file with DirectShowSource"));
 
 			if (env->FunctionExists("DirectShowSource")) {
 				const char *argnames[3] = { 0, "video", "audio" };
 				AVSValue args[3] = { videoFilename, true, false };
 				script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS without audio"));
 				usedDirectshow = true;
-			} else 
+			}
+			else {
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: DSS function not found"));
 				throw AvisynthError("No function suitable for opening the video found");
+			}
 		} 
 	} catch (AvisynthError &err) {
+		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Avisynth error: ") + wxString(err.msg,wxConvLocal));
 		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
 	}
 
 	
-	if (!script.AsClip()->GetVideoInfo().HasVideo())
+	if (!script.AsClip()->GetVideoInfo().HasVideo()) {
+		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: No suitable video found"));
 		throw _T("No usable video found in ") + _filename;
+	}
 
 	// Convert to RGB32
 	script = env->Invoke("ConvertToRGB32", script);
+	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
 
 	// Directshow
 	if (usedDirectshow) wxMessageBox(_T("Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!"),_T("DirectShowSource warning"),wxICON_EXCLAMATION);
 
 	// Cache
+	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Finished opening video, AVS mutex will be released now"));
 	return (env->Invoke("Cache", script)).AsClip();
 }
 
 PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosource) {
+	AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Applying subtitles"));
 	wxMutexLocker lock(AviSynthMutex);
+	AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Got AVS mutex"));
 
 	// Insert subs
 	AVSValue script;
@@ -177,17 +219,23 @@ PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosourc
 	AVSValue args[2] = { videosource, temp };
 
 	try {
+		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Now invoking TextSub"));
 		script = env->Invoke("TextSub", AVSValue(args,2));
+		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: TextSub invoked successfully"));
 	} catch (AvisynthError &err) {
+		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Avisynth error: ") + wxString(err.msg,wxConvLocal));
 		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
 	}
 
 	// Cache
+	AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Subtitles applied, AVS mutex will be released now"));
 	return (env->Invoke("Cache", script)).AsClip();
 }
 
 PClip AvisynthVideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip videosource) {
+	AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Applying DAR zoom"));
 	wxMutexLocker lock(AviSynthMutex);
+	AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Got AVS mutex"));
 
 	AVSValue script;
 	VideoInfo vil = videosource->GetVideoInfo();
@@ -201,17 +249,22 @@ PClip AvisynthVideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip video
 			throw AvisynthError("Selected resizer doesn't exist");
 
 		AVSValue args[3] = { videosource, w, h };
+		AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Invoking resizing function"));
 		script = env->Invoke(Options.AsText(_T("Video resizer")).mb_str(wxConvLocal), AVSValue(args,3));
+		AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Resizer invoked successfully"));
 	} catch (AvisynthError &err) {
+		AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Avisynth error: ") + wxString(err.msg,wxConvLocal));
 		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
 	}
 
 	vi = script.AsClip()->GetVideoInfo();
 
+	AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: DAR zoom applied successfully, AVS mutex will be released now"));
 	return (env->Invoke("Cache",script)).AsClip();
 }
 
 wxBitmap AvisynthVideoProvider::GetFrame(int n, bool force) {
+	AVSTRACE(_T("AvisynthVideoProvider::GetFrame"));
 	if (n != last_fnum || force) {
 		wxMutexLocker lock(AviSynthMutex);
 
@@ -279,6 +332,7 @@ wxBitmap AvisynthVideoProvider::GetFrame(int n, bool force) {
 }
 
 void AvisynthVideoProvider::GetFloatFrame(float* Buffer, int n) {
+	AVSTRACE(_T("AvisynthVideoProvider::GetFloatFrame"));
 	wxMutexLocker lock(AviSynthMutex);
 
 	PVideoFrame frame = ResizedVideo->GetFrame(n,env);
@@ -298,13 +352,17 @@ void AvisynthVideoProvider::GetFloatFrame(float* Buffer, int n) {
 }
 
 void AvisynthVideoProvider::LoadVSFilter() {
+	AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loading VSFilter"));
 	// Loading an avisynth plugin multiple times does almost nothing
 
 	wxFileName vsfilterPath(AegisubApp::folderName + _T("vsfilter.dll"));
 
-	if (vsfilterPath.FileExists())
+	if (vsfilterPath.FileExists()) {
+		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Invoking LoadPlugin"));
 		env->Invoke("LoadPlugin",env->SaveString(vsfilterPath.GetFullPath().mb_str(wxConvLocal)));
-	else {
+		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loaded"));
+	} else {
+		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: VSFilter.dll not found in Aegisub dir, trying to locate registered DShow filter"));
 		wxRegKey reg(_T("HKEY_CLASSES_ROOT\\CLSID\\{9852A670-F845-491B-9BE6-EBD841B8A613}\\InprocServer32"));
 		if (reg.Exists()) {
 			wxString fn;
@@ -313,15 +371,19 @@ void AvisynthVideoProvider::LoadVSFilter() {
 			vsfilterPath = fn;
 
 			if (vsfilterPath.FileExists()) {
+				AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Found as DShow filter, loading"));
 				env->Invoke("LoadPlugin",env->SaveString(vsfilterPath.GetFullPath().mb_str(wxConvLocal)));
+				AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loaded"));
 				return;
 			}
 			
 			vsfilterPath = _T("vsfilter.dll");
 		} else if (vsfilterPath.FileExists()) 
 			env->Invoke("LoadPlugin",env->SaveString(vsfilterPath.GetFullPath().mb_str(wxConvLocal)));
-		else if (!env->FunctionExists("TextSub"))
+		else if (!env->FunctionExists("TextSub")) {
+			AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Couldn't locate VSFilter"));
 			throw _T("Couldn't locate VSFilter");
+		}
 	}
 }
 

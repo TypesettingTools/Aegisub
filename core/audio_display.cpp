@@ -578,13 +578,13 @@ protected:
 #elif 1
 			// "Compressed" scale
 			double onethirdmaxpower = maxpower / 3, twothirdmaxpower = maxpower * 2/3;
-			double overscale = maxpower*8*scale - twothirdmaxpower;
+			double logoverscale = log(maxpower*8*scale - twothirdmaxpower);
 			for (int j = 0; j < window; j++) {
 				// First do a simple linear scale power calculation -- 8 gives a reasonable default scaling
 				power[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]) * 8 * scale;
 				if (power[j] > maxpower * 2/3) {
 					double p = power[j] - twothirdmaxpower;
-					p = log(p) * onethirdmaxpower / log(overscale);
+					p = log(p) * onethirdmaxpower / logoverscale;
 					power[j] = p + twothirdmaxpower;
 				}
 			}
