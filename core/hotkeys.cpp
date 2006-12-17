@@ -340,6 +340,7 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Video global prev frame"),_T("Ctrl-KP_4"));
 	SetHotkey(_("Video global next frame"),_T("Ctrl-KP_6"));
 	SetHotkey(_("Video global focus seek"),_T("Ctrl-Space"));
+	SetHotkey(_("Video global play"),_T("Ctrl-P"));
 	SetHotkey(_("Grid global prev line"),_T("Ctrl-KP_8"));
 	SetHotkey(_("Grid global next line"),_T("Ctrl-KP_2"));
 	SetHotkey(_("Save Subtitles Alt"),_T("F2"));

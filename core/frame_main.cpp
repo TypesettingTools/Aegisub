@@ -1065,19 +1065,21 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 ///////////////////////////
 // Setup accelerator table
 void FrameMain::SetAccelerators() {
-	wxAcceleratorEntry entry[9];
-	entry[0] = Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame);
-	entry[1] = Hotkeys.GetAccelerator(_T("Video global next frame"),Video_Next_Frame);
-	entry[2] = Hotkeys.GetAccelerator(_T("Video global focus seek"),Video_Focus_Seek);
-	entry[3] = Hotkeys.GetAccelerator(_T("Grid global prev line"),Grid_Prev_Line);
-	entry[4] = Hotkeys.GetAccelerator(_T("Grid global next line"),Grid_Next_Line);
-	entry[5] = Hotkeys.GetAccelerator(_T("Save Subtitles Alt"),Menu_File_Save_Subtitles);
-	entry[6] = Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In);
-	entry[7] = Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out);
+	wxAcceleratorEntry entry[10];
+	int i = 0;
+	entry[i++] = Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Video global next frame"),Video_Next_Frame);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Video global focus seek"),Video_Focus_Seek);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Grid global prev line"),Grid_Prev_Line);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Grid global next line"),Grid_Next_Line);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Save Subtitles Alt"),Menu_File_Save_Subtitles);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Video global play"),Video_Play);
 	wxAcceleratorEntry temp;
 	temp.Set(wxACCEL_CTRL | wxACCEL_ALT,WXK_F12,Kana_Game);
-	entry[8] = temp;
-	wxAcceleratorTable table(9,entry);
+	entry[i++] = temp;
+	wxAcceleratorTable table(i,entry);
 	SetAcceleratorTable(table);
 }
 

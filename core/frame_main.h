@@ -292,6 +292,7 @@ enum {
 	Menu_Video_AR_235,
 	Menu_Video_AR_Custom,
 	Menu_Video_Select_Visible,
+	Menu_Video_Play,
 
 	Menu_Audio_Open_File,
 	Menu_Audio_Open_From_Video,

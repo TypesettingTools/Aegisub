@@ -31,6 +31,7 @@ Please visit http://aegisub.net to download latest version
 - Added Paste Over function, which allows you to paste subtitle lines over others, overwriting the fields of your choice. (AMZ)
 - Renaming a style will now ask you if you want to rename all instances of it on the script. (AMZ)
 - Style name collisions (when moving from storage, creating or renaming) will now prompt the user before performing the action. (AMZ)
+- Added global hotkey for Video Play (default Ctrl+P). (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
