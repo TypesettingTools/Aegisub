@@ -25,6 +25,7 @@ Please visit http://aegisub.net to download latest version
 - Added a "Auto Save on Every Change" option to config.dat (default false), that automatically saves the files whenever you change anything. (AMZ)
 - Added support for reading ASS, SSA and SRT softsubs directly from Matroska files. (AMZ)
 - Fixed line selection after pasting. (AMZ)
+- Times can now be copy and pasted with ctrl+c and ctrl+v, as well as from context menu, in the time edit boxes. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
