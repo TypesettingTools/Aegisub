@@ -95,12 +95,15 @@ private:
 	wxButton *StartButton;
 	wxButton *CloseButton;
 	wxCheckBox *AttachmentCheck;
+	wxCheckBox *ArchiveCheck;
+	wxStaticText *DestLabel;
 	FrameMain *main;
 
 	void OnStart(wxCommandEvent &event);
 	void OnClose(wxCommandEvent &event);
 	void OnBrowse(wxCommandEvent &event);
-	void OnCheck(wxCommandEvent &event);
+	void OnCheckAttach(wxCommandEvent &event);
+	void OnCheckArchive(wxCommandEvent &event);
 
 public:
 	DialogFontsCollector(wxWindow *parent);
@@ -115,5 +118,6 @@ public:
 enum {
 	BROWSE_BUTTON = 1100,
 	START_BUTTON,
-	ATTACHMENT_CHECK
+	ATTACHMENT_CHECK,
+	ARCHIVE_CHECK
 };

@@ -38,6 +38,8 @@
 // Includes
 #include <wx/config.h>
 #include <wx/filename.h>
+#include <wx/wfstream.h>
+#include <wx/zipstrm.h>
 #ifdef __WINDOWS__
 #include <shlobj.h>
 #endif
@@ -67,16 +69,18 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 		dest = filename.GetPath();
 	}
 	AttachmentCheck = new wxCheckBox(this,ATTACHMENT_CHECK,_T("As attachments"),wxDefaultPosition);
+	ArchiveCheck = new wxCheckBox(this,ARCHIVE_CHECK,_T("As a zipped archive"),wxDefaultPosition);
 	DestBox = new wxTextCtrl(this,-1,dest,wxDefaultPosition,wxSize(250,20),0);
 	BrowseButton = new wxButton(this,BROWSE_BUTTON,_("&Browse..."));
 	wxSizer *DestBottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxStaticText *DestLabel = new wxStaticText(this,-1,_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
+	DestLabel = new wxStaticText(this,-1,_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
 	DestBottomSizer->Add(DestBox,1,wxEXPAND | wxRIGHT,5);
 	DestBottomSizer->Add(BrowseButton,0,0,0);
 	wxSizer *DestSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Destination"));
 	DestSizer->Add(DestLabel,0,wxEXPAND | wxBOTTOM,5);
 	DestSizer->Add(DestBottomSizer,0,wxEXPAND,0);
 	DestSizer->Add(AttachmentCheck,0,wxTOP,5);
+	DestSizer->Add(ArchiveCheck,0,wxTOP,5);
 
 	// Log box
 	LogBox = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(300,210),wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH);
@@ -149,7 +153,8 @@ BEGIN_EVENT_TABLE(DialogFontsCollector, wxDialog)
 	EVT_BUTTON(START_BUTTON,DialogFontsCollector::OnStart)
 	EVT_BUTTON(BROWSE_BUTTON,DialogFontsCollector::OnBrowse)
 	EVT_BUTTON(wxID_CLOSE,DialogFontsCollector::OnClose)
-	EVT_CHECKBOX(ATTACHMENT_CHECK,DialogFontsCollector::OnCheck)
+	EVT_CHECKBOX(ATTACHMENT_CHECK,DialogFontsCollector::OnCheckAttach)
+	EVT_CHECKBOX(ARCHIVE_CHECK,DialogFontsCollector::OnCheckArchive)
 END_EVENT_TABLE()
 
 
@@ -159,12 +164,13 @@ void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 	// Check if it's OK to do it
 	wxString foldername = DestBox->GetValue();
 	wxFileName folder(foldername);
+	bool zipOut = ArchiveCheck->IsChecked();
 
 	// Make folder if it doesn't exist
-	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+	if (!zipOut && !folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
 
 	// Start
-	if (folder.DirExists()) {
+	if (zipOut || folder.DirExists()) {
 		// Start thread
 		wxThread *worker = new FontsCollectorThread(AssFile::top,foldername,this);
 		worker->Create();
@@ -190,7 +196,7 @@ void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 
 	// Folder not available
 	else {
-		wxMessageBox(_("Invalid folder"),_("Error"),wxICON_EXCLAMATION | wxOK);
+		wxMessageBox(_("Invalid destination"),_("Error"),wxICON_EXCLAMATION | wxOK);
 	}
 }
 
@@ -205,18 +211,44 @@ void DialogFontsCollector::OnClose(wxCommandEvent &event) {
 ///////////////////
 // Browse location
 void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
-	wxString dest = wxDirSelector(_("Select folder to save fonts on"),DestBox->GetValue(),0);
-	if (!dest.empty()) {
-		DestBox->SetValue(dest);
+	// Chose file name
+	if (ArchiveCheck->IsChecked()) {
+		wxFileName fname(DestBox->GetValue());
+		wxString dest = wxFileSelector(_("Select archive file name"),DestBox->GetValue(),fname.GetFullName(),_T(".zip"),_T("Zip Archives (*.zip)|*.zip"),wxSAVE|wxOVERWRITE_PROMPT);
+		if (!dest.empty()) {
+			DestBox->SetValue(dest);
+		}
+	}
+
+	// Choose folder
+	else {
+		wxString dest = wxDirSelector(_("Select folder to save fonts on"),DestBox->GetValue(),0);
+		if (!dest.empty()) {
+			DestBox->SetValue(dest);
+		}
 	}
 }
 
 
-////////////
-// Checkbox
-void DialogFontsCollector::OnCheck(wxCommandEvent &event) {
-	BrowseButton->Enable(!AttachmentCheck->IsChecked());
-	DestBox->Enable(!AttachmentCheck->IsChecked());
+////////////////////
+// Check Attachment
+void DialogFontsCollector::OnCheckAttach(wxCommandEvent &event) {
+	bool check = AttachmentCheck->IsChecked();
+	BrowseButton->Enable(!check);
+	DestBox->Enable(!check);
+	if (check) ArchiveCheck->SetValue(false);
+}
+
+
+/////////////////
+// Check Archive
+void DialogFontsCollector::OnCheckArchive(wxCommandEvent &event) {
+	bool check = ArchiveCheck->IsChecked();
+	if (check) {
+		AttachmentCheck->SetValue(false);
+		DestLabel->SetLabel(_("Enter the name of the destination zip file to collect the fonts to.\nIf a folder is entered, a default name will be used."));
+	}
+	else DestLabel->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
 }
 
 
@@ -303,8 +335,25 @@ wxThread::ExitCode FontsCollectorThread::Entry() {
 ///////////
 // Collect
 void FontsCollectorThread::Collect() {
+	// Prepare
+	bool attaching = collector->AttachmentCheck->IsChecked();
+	bool zipOut = collector->ArchiveCheck->IsChecked();
+
 	// Make sure there is a separator at the end
-	destination += _T("\\");
+	if (!zipOut) destination += _T("\\");
+
+	// For zipped files, enter a default name if none was given
+	else {
+		wxFileName dest(destination);
+		if (!dest.IsFileWritable()) {
+			wxFileName subsname(subs->filename);
+			if (!dest.IsDir()) {
+				destination = subsname.GetPath();
+			}
+			destination += _T("\\");
+			destination += subsname.GetName() + _T(".zip");
+		}
+	}
 
 	// Reset log box
 	wxTextCtrl *LogBox = collector->LogBox;
@@ -367,10 +416,17 @@ void FontsCollectorThread::Collect() {
 	else source = wxGetOSDirectory() + _T("\\fonts");
 	source += _T("\\");
 
+	// Open zip stream if saving to compressed archive
+	wxFFileOutputStream *out = NULL;
+	wxZipOutputStream *zip = NULL;
+	if (zipOut) {
+		out = new wxFFileOutputStream(destination);
+		zip = new wxZipOutputStream(*out);
+	}
+
 	// Get font file names
 	wxArrayString work;
 	wxArrayString copied;
-	bool attaching = collector->AttachmentCheck->IsChecked();
 	for (size_t i=0;i<fonts.GetCount();i++) {
 		try {
 			work = GetFontFiles(fonts[i]);
@@ -391,7 +447,7 @@ void FontsCollectorThread::Collect() {
 					copied.Add(work[j]);
 
 					// Check if it exists
-					if (!attaching && wxFileName::FileExists(dstFile)) {
+					if (!attaching && !zipOut && wxFileName::FileExists(dstFile)) {
 						wxMutexGuiEnter();
 						LogBox->SetDefaultStyle(wxTextAttr(wxColour(255,128,0)));
 						LogBox->AppendText(wxString(_T("\"")) + work[j] + _("\" already exists on destination.\n"));
@@ -403,7 +459,7 @@ void FontsCollectorThread::Collect() {
 
 					// Copy
 					else {
-						// Copy font
+						// Attach to file
 						bool success;
 						if (attaching) {
 							try {
@@ -413,7 +469,21 @@ void FontsCollectorThread::Collect() {
 							}
 							catch (...) { success = false; }
 						}
-						else success = Copy(srcFile,dstFile);
+
+						// Copy to zip destination
+						else if (zipOut) {
+							// Open file
+							wxFFileInputStream in(srcFile);
+
+							// Write to archive
+							zip->PutNextEntry(work[j]);
+							zip->Write(in);
+						}
+
+						// Copy to destination
+						else {
+							success = Copy(srcFile,dstFile);
+						}
 
 						// Report
 						wxMutexGuiEnter();
@@ -441,6 +511,13 @@ void FontsCollectorThread::Collect() {
 			LogBox->AppendText(wxString(_("Could not find font ")) + fonts[i] + _T("\n"));
 			wxMutexGuiLeave();
 		}
+	}
+
+	// Close ZIP archive
+	if (zipOut) {
+		zip->Close();
+		delete zip;
+		delete out;
 	}
 #endif
 
