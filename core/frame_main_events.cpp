@@ -290,8 +290,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_235,state);
 		MenuBar->Enable(Menu_Video_AR_Custom,state);
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
-		MenuBar->Enable(Menu_Video_Close_Keyframes,videoBox->videoDisplay->keyFramesLoaded);
-		MenuBar->Enable(Menu_Video_Save_Keyframes,videoBox->videoDisplay->keyFramesLoaded);
+		MenuBar->Enable(Menu_Video_Close_Keyframes,videoBox->videoDisplay->OverKeyFramesLoaded());
+		MenuBar->Enable(Menu_Video_Save_Keyframes,videoBox->videoDisplay->OverKeyFramesLoaded());
 
 		// Set AR radio
 		int arType = videoBox->videoDisplay->GetAspectRatioType();
@@ -888,21 +888,22 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 		int prev = 0;
 		int next = 0;
 		int frame = 0;
-		size_t n = videoBox->videoDisplay->KeyFrames.Count();
+		wxArrayInt keyframes = videoBox->videoDisplay->GetKeyFrames();
+		size_t n = keyframes.Count();
 		bool found = false;
 		for (size_t i=0;i<n;i++) {
-			frame = videoBox->videoDisplay->KeyFrames[i];
+			frame = keyframes[i];
 
 			if (frame == curFrame) {
 				prev = frame;
-				if (i < n-1) next = videoBox->videoDisplay->KeyFrames[i+1];
+				if (i < n-1) next = keyframes[i+1];
 				else next = videoBox->videoDisplay->length;
 				found = true;
 				break;
 			}
 
 			if (frame > curFrame) {
-				if (i != 0) prev = videoBox->videoDisplay->KeyFrames[i-1];
+				if (i != 0) prev = keyframes[i-1];
 				else prev = 0;
 				next = frame;
 				found = true;
@@ -912,7 +913,7 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 
 		// Last section?
 		if (!found) {
-			if (n > 0) prev = videoBox->videoDisplay->KeyFrames[n-1];
+			if (n > 0) prev = keyframes[n-1];
 			else prev = 0;
 			next = videoBox->videoDisplay->length;
 		}

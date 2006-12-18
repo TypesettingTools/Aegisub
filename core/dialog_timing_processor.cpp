@@ -501,7 +501,7 @@ void DialogTimingProcessor::Process() {
 	// Keyframe snapping
 	if (keysEnable->IsChecked()) {
 		// Get keyframes
-		KeyFrames = grid->video->KeyFrames;
+		KeyFrames = grid->video->GetKeyFrames();
 		KeyFrames.Add(grid->video->length-1);
 
 		// Variables

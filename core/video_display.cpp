@@ -100,6 +100,7 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	PositionDisplay = NULL;
 	loaded = false;
 	keyFramesLoaded = false;
+	overKeyFramesLoaded = false;
 	frame_n = 0;
 	origSize = size;
 	arType = 0;
@@ -171,9 +172,6 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			provider->SetZoom(zoomValue);
 			if (arType != 4) arValue = GetARFromType(arType); // 4 = custom
 			provider->SetDAR(arValue);
-
-			KeyFrames.Clear();
-			keyFramesLoaded = false;
 
 			// Why the hell was this disabled?
 			// Read extra data from file
@@ -578,7 +576,7 @@ void VideoDisplay::UpdatePositionDisplay() {
 
 	// Position display update
 	PositionDisplay->SetValue(wxString::Format(_T("%01i:%02i:%02i.%03i - %i"),h,m,s,ms,frame_n));
-	if (KeyFrames.Index(frame_n) != wxNOT_FOUND) {
+	if (GetKeyFrames().Index(frame_n) != wxNOT_FOUND) {
 		PositionDisplay->SetBackgroundColour(Options.AsColour(_T("Grid selection background")));
 		PositionDisplay->SetForegroundColour(Options.AsColour(_T("Grid selection foreground")));
 	}
@@ -931,4 +929,41 @@ wxString VideoDisplay::GetTempWorkFile () {
 		tempfile += _T(".ass");
 	}
 	return tempfile;
+}
+
+
+/////////////////
+// Get keyframes
+wxArrayInt VideoDisplay::GetKeyFrames() {
+	if (OverKeyFramesLoaded()) return overKeyFrames;
+	return KeyFrames;
+}
+
+
+/////////////////
+// Set keyframes
+void VideoDisplay::SetKeyFrames(wxArrayInt frames) {
+	KeyFrames = frames;
+}
+
+
+/////////////////////////
+// Set keyframe override
+void VideoDisplay::SetOverKeyFrames(wxArrayInt frames) {
+	overKeyFrames = frames;
+}
+
+
+///////////////////
+// Close keyframes
+void VideoDisplay::CloseOverKeyFrames() {
+	overKeyFrames.Clear();
+	overKeyFramesLoaded = false;
+}
+
+
+//////////////////////////////////////////
+// Check if override keyframes are loaded
+bool VideoDisplay::OverKeyFramesLoaded() {
+	return overKeyFramesLoaded;
 }

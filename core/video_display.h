@@ -71,6 +71,11 @@ private:
 	bool threaded;
 	int nextFrame;
 
+	bool keyFramesLoaded;
+	bool overKeyFramesLoaded;
+	wxArrayInt KeyFrames;
+	wxArrayInt overKeyFrames;
+
 	clock_t PlayTime;
 	clock_t StartTime;
 	wxTimer Playback;
@@ -97,10 +102,13 @@ private:
 	void DrawTrackingOverlay( wxDC &dc );
 
 public:
-	VideoProvider *provider;
+	wxArrayInt GetKeyFrames();
+	void SetKeyFrames(wxArrayInt frames);
+	void SetOverKeyFrames(wxArrayInt frames);
+	void CloseOverKeyFrames();
+	bool OverKeyFramesLoaded();
 
-	bool keyFramesLoaded;
-	wxArrayInt KeyFrames;
+	VideoProvider *provider;
 
 	SubtitlesGrid *grid;
 	wxString videoName;

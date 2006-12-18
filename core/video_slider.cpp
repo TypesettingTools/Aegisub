@@ -189,14 +189,15 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		if (canDrag) {
 			// Shift click to snap to keyframe
 			if (shift && Display) {
-				int keys = Display->KeyFrames.Count();
+				wxArrayInt KeyFrames = Display->GetKeyFrames();
+				int keys = KeyFrames.Count();
 				int clickedFrame = GetValueAtX(x);
 				int closest = 0;
 				int cur;
 
 				// Find closest
 				for (int i=0;i<keys;i++) {
-					cur = Display->KeyFrames[i];
+					cur = KeyFrames[i];
 					if (abs(cur-clickedFrame) < abs(closest-clickedFrame)) {
 						closest = cur;
 					}
@@ -331,7 +332,8 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 				// Prepare
 				int prevKey = 0;
 				int nextKey = Display->length-1;
-				int keys = Display->KeyFrames.Count();
+				wxArrayInt KeyFrames = Display->GetKeyFrames();
+				int keys = KeyFrames.Count();
 				int cur = Display->frame_n;
 				int i;
 				int temp;
@@ -339,14 +341,14 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 				// Find previous keyframe
 				// This algorithm does unnecessary loops, but it ensures it works even if keyframes are out of order.
 				for (i=0;i<keys;i++) {
-					temp = Display->KeyFrames[i];
+					temp = KeyFrames[i];
 					if (temp < cur && temp > prevKey) prevKey = temp;
 				}
 
 				// Find next keyframe
 				for (i=0;i<keys;i++) {
-					temp = Display->KeyFrames[i];
-					if (temp > cur && temp < nextKey) nextKey = Display->KeyFrames[i];
+					temp = KeyFrames[i];
+					if (temp > cur && temp < nextKey) nextKey = KeyFrames[i];
 				}
 
 				if (direction == -1) Display->JumpToFrame(prevKey);
@@ -421,9 +423,10 @@ void VideoSlider::DrawImage(wxDC &dc) {
 	int curX;
 	if (Display && Options.AsBool(_T("Show keyframes on video slider"))) {
 		dc.SetPen(wxPen(shad));
-		int keys = Display->KeyFrames.Count();
+		wxArrayInt KeyFrames = Display->GetKeyFrames();
+		int keys = KeyFrames.Count();
 		for (int i=0;i<keys;i++) {
-			curX = GetXAtValue(Display->KeyFrames[i]);
+			curX = GetXAtValue(KeyFrames[i]);
 			dc.DrawLine(curX,2,curX,8);
 		}
 	}

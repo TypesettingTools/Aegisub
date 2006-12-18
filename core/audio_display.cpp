@@ -232,7 +232,8 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 	// Draw keyframes
 	if (video->loaded && draw_boundary_lines) {
-		int nKeys = (int)video->KeyFrames.Count();
+		wxArrayInt KeyFrames = video->GetKeyFrames();
+		int nKeys = (int)KeyFrames.Count();
 		dc.SetPen(wxPen(wxColour(255,0,255),1));
 
 		// Get min and max frames to care about
@@ -241,7 +242,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 		// Scan list
 		for (int i=0;i<nKeys;i++) {
-			int cur = video->KeyFrames[i];
+			int cur = KeyFrames[i];
 			if (cur >= minFrame && cur <= maxFrame) {
 				int x = GetXAtMS(VFR_Output.GetTimeAtFrame(cur,true));
 				dc.DrawLine(x,0,x,h);
