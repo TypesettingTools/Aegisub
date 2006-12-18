@@ -107,6 +107,7 @@ public:
 	void SetOverKeyFrames(wxArrayInt frames);
 	void CloseOverKeyFrames();
 	bool OverKeyFramesLoaded();
+	bool KeyFramesLoaded();
 
 	VideoProvider *provider;
 

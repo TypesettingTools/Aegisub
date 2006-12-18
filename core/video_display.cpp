@@ -951,6 +951,7 @@ void VideoDisplay::SetKeyFrames(wxArrayInt frames) {
 // Set keyframe override
 void VideoDisplay::SetOverKeyFrames(wxArrayInt frames) {
 	overKeyFrames = frames;
+	overKeyFramesLoaded = true;
 }
 
 
@@ -966,4 +967,11 @@ void VideoDisplay::CloseOverKeyFrames() {
 // Check if override keyframes are loaded
 bool VideoDisplay::OverKeyFramesLoaded() {
 	return overKeyFramesLoaded;
+}
+
+
+/////////////////////////////////
+// Check if keyframes are loaded
+bool VideoDisplay::KeyFramesLoaded() {
+	return overKeyFramesLoaded || keyFramesLoaded;
 }

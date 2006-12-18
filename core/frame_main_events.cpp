@@ -82,6 +82,8 @@
 #include "dialog_progress.h"
 #include "dialog_options.h"
 #include "utils.h"
+#include "text_file_writer.h"
+#include "text_file_reader.h"
 
 
 ////////////////////
@@ -291,7 +293,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_Custom,state);
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
 		MenuBar->Enable(Menu_Video_Close_Keyframes,videoBox->videoDisplay->OverKeyFramesLoaded());
-		MenuBar->Enable(Menu_Video_Save_Keyframes,videoBox->videoDisplay->OverKeyFramesLoaded());
+		MenuBar->Enable(Menu_Video_Save_Keyframes,videoBox->videoDisplay->KeyFramesLoaded());
 
 		// Set AR radio
 		int arType = videoBox->videoDisplay->GetAspectRatioType();
@@ -631,18 +633,66 @@ void FrameMain::OnCloseVFR(wxCommandEvent &event) {
 //////////////////
 // Open keyframes
 void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
+	// Pick file
+	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),_T(""),_T(""),_T(".txt"),_T("Text files (*.txt)|*.txt"),wxFILE_MUST_EXIST | wxOPEN);
+
+	// Open file
+	wxArrayInt keyFrames;
+	TextFileReader file(filename,_T("ASCII"));
+
+	// Read header
+	wxString cur = file.ReadLineFromFile();
+	if (cur != _T("# keyframe format v1")) return;
+	cur = file.ReadLineFromFile();
+	if (cur.Left(4) != _T("fps ")) return;
+	cur = cur.Mid(4);
+	double fps;
+	cur.ToDouble(&fps);
+
+	// Read lines
+	while (file.HasMoreLines()) {
+		cur = file.ReadLineFromFile();
+		long temp;
+		cur.ToLong(&temp);
+		keyFrames.Add(temp);
+	}
+
+	// Set keyframes
+	videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
+
+	// Set FPS
+	if (!videoBox->videoDisplay->loaded) {
+		videoBox->videoDisplay->fps = fps;
+		VFR_Input.SetCFR(fps);
+	}
 }
 
 
 ///////////////////
 // Close keyframes
 void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
+	videoBox->videoDisplay->CloseOverKeyFrames();
 }
 
 
 //////////////////
 // Save keyframes
 void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
+	// Pick file
+	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),_T(""),_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxOVERWRITE_PROMPT | wxSAVE);
+
+	// Get keyframes
+	wxArrayInt keyFrames = videoBox->videoDisplay->GetKeyFrames();
+
+	// Write header
+	TextFileWriter file(_T("test.txt"),_T("ASCII"));
+	file.WriteLineToFile(_T("# keyframe format v1"));
+	file.WriteLineToFile(wxString::Format(_T("fps %f"),videoBox->videoDisplay->fps));
+
+	// Write keyframes
+	for (unsigned int i=0;i<keyFrames.Count();i++) {
+		file.WriteLineToFile(wxString::Format(_T("%i"),keyFrames[i]));
+	}
 }
 
 
