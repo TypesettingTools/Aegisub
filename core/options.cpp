@@ -75,6 +75,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Link Time Boxes Commit"),true);
 	SetInt(_T("Undo Levels"),8);
 	SetInt(_T("Recent timecodes max"),16);
+	SetInt(_T("Recent keyframes max"),16);
 	SetInt(_T("Recent sub max"),16);
 	SetInt(_T("Recent vid max"),16);
 	SetInt(_T("Recent aud max"),16);
@@ -271,6 +272,7 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Last open video path"),_T(""));
 	SetText(_T("Last open audio path"),_T(""));
 	SetText(_T("Last open timecodes path"),_T(""));
+	SetText(_T("Last open keyframes path"),_T(""));
 	SetText(_T("Last open automation path"),_T(""));
 }
 

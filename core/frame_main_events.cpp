@@ -82,8 +82,6 @@
 #include "dialog_progress.h"
 #include "dialog_options.h"
 #include "utils.h"
-#include "text_file_writer.h"
-#include "text_file_reader.h"
 
 
 ////////////////////
@@ -122,6 +120,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU_RANGE(Menu_Video_Recent,Menu_Video_Recent+99, FrameMain::OnOpenRecentVideo)
 	EVT_MENU_RANGE(Menu_Audio_Recent,Menu_Audio_Recent+99, FrameMain::OnOpenRecentAudio)
 	EVT_MENU_RANGE(Menu_Timecodes_Recent,Menu_Timecodes_Recent+99, FrameMain::OnOpenRecentTimecodes)
+	EVT_MENU_RANGE(Menu_Keyframes_Recent,Menu_Keyframes_Recent+99, FrameMain::OnOpenRecentKeyframes)
 
 	EVT_MENU(Menu_File_Exit, FrameMain::OnExit)
 	EVT_MENU(Menu_File_Open_Video, FrameMain::OnOpenVideo)
@@ -319,6 +318,10 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		for (int i=count;--i>=0;) {
 			RecentTimecodes->Destroy(RecentTimecodes->FindItemByPosition(i));
 		}
+		count = (int)RecentKeyframes->GetMenuItemCount();
+		for (int i=count;--i>=0;) {
+			RecentKeyframes->Destroy(RecentKeyframes->FindItemByPosition(i));
+		}
 
 		// Rebuild recent videos
 		int added = 0;
@@ -346,6 +349,19 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 			added++;
 		}
 		if (added == 0) RecentTimecodes->Append(Menu_Timecodes_Recent,_T("Empty"))->Enable(false);
+
+		// Rebuild recent Keyframes
+		added = 0;
+		entries = Options.GetRecentList(_T("Recent Keyframes"));
+		for (size_t i=0;i<entries.Count();i++) {
+			n = wxString::Format(_T("%i"),i+1);
+			if (i < 9) n = _T("&") + n;
+			wxFileName shortname(entries[i]);
+			wxString filename = shortname.GetFullName();
+			RecentKeyframes->Append(Menu_Keyframes_Recent+i,n + _T(" ") + filename);
+			added++;
+		}
+		if (added == 0) RecentKeyframes->Append(Menu_Keyframes_Recent,_T("Empty"))->Enable(false);
 	}
 
 	// Audio menu
@@ -420,6 +436,15 @@ void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Timecodes_Recent;
 	wxString key = _T("Recent timecodes #") + wxString::Format(_T("%i"),number+1);
 	LoadVFR(Options.AsText(key));
+}
+
+
+////////////////////////////////
+// Open recent Keyframes entry
+void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
+	int number = event.GetId()-Menu_Keyframes_Recent;
+	wxString key = _T("Recent Keyframes #") + wxString::Format(_T("%i"),number+1);
+	LoadKeyframes(Options.AsText(key));
 }
 
 
@@ -506,6 +531,7 @@ void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
 	if (!filename.empty()) {
 		LoadVideo(filename);
 		Options.SetText(_T("Last open video path"), filename);
+		Options.Save();
 	}
 }
 
@@ -525,6 +551,7 @@ void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
 	if (!filename.empty()) {
 		LoadAudio(filename);
 		Options.SetText(_T("Last open audio path"), filename);
+		Options.Save();
 	}
 }
 
@@ -548,6 +575,7 @@ void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
 		LoadSubtitles(filename);
 		wxFileName filepath(filename);
 		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
+		Options.Save();
 	}
 }
 
@@ -567,6 +595,7 @@ void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 			LoadSubtitles(filename,charset);
 		}
 		Options.SetText(_T("Last open subtitles path"), filename);
+		Options.Save();
 	}
 }
 
@@ -619,6 +648,7 @@ void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 	if (!filename.empty()) {
 		LoadVFR(filename);
 		Options.SetText(_T("Last open timecodes path"), filename);
+		Options.Save();
 	}
 }
 
@@ -634,42 +664,14 @@ void FrameMain::OnCloseVFR(wxCommandEvent &event) {
 // Open keyframes
 void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 	// Pick file
-	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),_T(""),_T(""),_T(".txt"),_T("Text files (*.txt)|*.txt"),wxFILE_MUST_EXIST | wxOPEN);
+	wxString path = Options.AsText(_T("Last open keyframes path"));
+	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),path,_T(""),_T(".txt"),_T("Text files (*.txt)|*.txt"),wxFILE_MUST_EXIST | wxOPEN);
 	if (filename.IsEmpty()) return;
+	Options.SetText(_T("Last open keyframes path"),filename);
+	Options.Save();
 
-	// Open file
-	wxArrayInt keyFrames;
-	TextFileReader file(filename,_T("ASCII"));
-
-	// Read header
-	wxString cur = file.ReadLineFromFile();
-	if (cur != _T("# keyframe format v1")) return;
-	cur = file.ReadLineFromFile();
-	if (cur.Left(4) != _T("fps ")) return;
-	cur = cur.Mid(4);
-	double fps;
-	cur.ToDouble(&fps);
-
-	// Read lines
-	while (file.HasMoreLines()) {
-		cur = file.ReadLineFromFile();
-		long temp;
-		cur.ToLong(&temp);
-		keyFrames.Add(temp);
-	}
-
-	// Set keyframes
-	videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
-
-	// Set FPS
-	if (!videoBox->videoDisplay->loaded) {
-		videoBox->videoDisplay->fps = fps;
-		VFR_Input.SetCFR(fps);
-		if (!VFR_Output.IsLoaded()) VFR_Output.SetCFR(fps);
-	}
-
-	// Refresh display
-	Refresh();
+	// Load
+	LoadKeyframes(filename);
 }
 
 
@@ -684,21 +686,14 @@ void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
 // Save keyframes
 void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 	// Pick file
-	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),_T(""),_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxOVERWRITE_PROMPT | wxSAVE);
+	wxString path = Options.AsText(_T("Last open keyframes path"));
+	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),path,_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxOVERWRITE_PROMPT | wxSAVE);
 	if (filename.IsEmpty()) return;
+	Options.SetText(_T("Last open keyframes path"),filename);
+	Options.Save();
 
-	// Get keyframes
-	wxArrayInt keyFrames = videoBox->videoDisplay->GetKeyFrames();
-
-	// Write header
-	TextFileWriter file(_T("test.txt"),_T("ASCII"));
-	file.WriteLineToFile(_T("# keyframe format v1"));
-	file.WriteLineToFile(wxString::Format(_T("fps %f"),videoBox->videoDisplay->fps));
-
-	// Write keyframes
-	for (unsigned int i=0;i<keyFrames.Count();i++) {
-		file.WriteLineToFile(wxString::Format(_T("%i"),keyFrames[i]));
-	}
+	// Save
+	SaveKeyframes(filename);
 }
 
 

@@ -65,6 +65,7 @@
 #include "hotkeys.h"
 #include "utils.h"
 #include "text_file_reader.h"
+#include "text_file_writer.h"
 
 
 /////////////////////////
@@ -215,6 +216,7 @@ void FrameMain::InitMenu() {
 	RecentVids = new wxMenu();
 	RecentAuds = new wxMenu();
 	RecentTimecodes = new wxMenu();
+	RecentKeyframes = new wxMenu();
 
 	// Create file menu
 	fileMenu = new wxMenu();
@@ -275,6 +277,8 @@ void FrameMain::InitMenu() {
 	videoMenu->Append(Menu_Video_Load_Keyframes, _("Open keyframes..."), _("Opens a keyframe list file"));
 	videoMenu->Append(Menu_Video_Save_Keyframes, _("Save keyframes..."), _("Saves the current keyframe list"))->Enable(false);
 	videoMenu->Append(Menu_Video_Close_Keyframes, _("Close keyframes"), _("Closes the currently open keyframes list"))->Enable(false);
+	wxMenuItem *RecentKeyframesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Keyframes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentKeyframes);
+	videoMenu->Append(RecentKeyframesParent);
 	videoMenu->AppendSeparator();
 	AppendBitmapMenuItem (videoMenu,Menu_Video_JumpTo, _("&Jump To...\t") + Hotkeys.GetText(_T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
 	videoMenu->AppendSeparator();
@@ -995,6 +999,72 @@ void FrameMain::LoadVFR(wxString filename) {
 
 	SubsBox->CommitChanges();
 	EditBox->UpdateFrameTiming();
+}
+
+
+//////////////////
+// Load Keyframes
+void FrameMain::LoadKeyframes(wxString filename) {
+	// Open file
+	wxArrayInt keyFrames;
+	keyFrames.Empty();
+	TextFileReader file(filename,_T("ASCII"));
+
+	// Read header
+	wxString cur = file.ReadLineFromFile();
+	if (cur != _T("# keyframe format v1")) return;
+	cur = file.ReadLineFromFile();
+	if (cur.Left(4) != _T("fps ")) return;
+	cur = cur.Mid(4);
+	double fps;
+	cur.ToDouble(&fps);
+
+	// Read lines
+	while (file.HasMoreLines()) {
+		cur = file.ReadLineFromFile();
+		if (!cur.IsEmpty() && cur.IsNumber()) {
+			long temp;
+			cur.ToLong(&temp);
+			keyFrames.Add(temp);
+		}
+	}
+
+	// Set keyframes
+	videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
+
+	// Set FPS
+	if (!videoBox->videoDisplay->loaded) {
+		videoBox->videoDisplay->fps = fps;
+		VFR_Input.SetCFR(fps);
+		if (!VFR_Output.IsLoaded()) VFR_Output.SetCFR(fps);
+	}
+
+	// Add to recent
+	Options.AddToRecentList(filename,_T("Recent keyframes"));
+
+	// Refresh display
+	Refresh();
+}
+
+
+//////////////////
+// Save Keyframes
+void FrameMain::SaveKeyframes(wxString filename) {
+	// Get keyframes
+	wxArrayInt keyFrames = videoBox->videoDisplay->GetKeyFrames();
+
+	// Write header
+	TextFileWriter file(filename,_T("ASCII"));
+	file.WriteLineToFile(_T("# keyframe format v1"));
+	file.WriteLineToFile(wxString::Format(_T("fps %f"),videoBox->videoDisplay->fps));
+
+	// Write keyframes
+	for (unsigned int i=0;i<keyFrames.Count();i++) {
+		file.WriteLineToFile(wxString::Format(_T("%i"),keyFrames[i]));
+	}
+
+	// Add to recent
+	Options.AddToRecentList(filename,_T("Recent keyframes"));
 }
 
 

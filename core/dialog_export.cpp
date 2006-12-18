@@ -61,7 +61,7 @@ DialogExport::DialogExport (wxWindow *parent)
 		wxString cur = token.GetNextToken();
 		if (!cur.IsEmpty()) {
 			n++;
-			for (int i=0;i<FilterList->GetCount();i++) {
+			for (unsigned int i=0;i<FilterList->GetCount();i++) {
 				if (FilterList->GetString(i) == cur) {
 					FilterList->Check(i);
 					break;
@@ -72,7 +72,7 @@ DialogExport::DialogExport (wxWindow *parent)
 
 	// No filters listed on header, select all
 	if (n == 0) {
-		for (int i=0;i<FilterList->GetCount();i++) {
+		for (unsigned int i=0;i<FilterList->GetCount();i++) {
 			FilterList->Check(i);
 		}
 	}
@@ -137,7 +137,7 @@ DialogExport::~DialogExport() {
 	// Set script info data
 	int n = 0;
 	wxString infoList;
-	for (int i=0;i<FilterList->GetCount();i++) {
+	for (unsigned int i=0;i<FilterList->GetCount();i++) {
 		if (FilterList->IsChecked(i)) {
 			infoList += FilterList->GetString(i) + _T("|");
 			n++;
@@ -187,7 +187,7 @@ void DialogExport::OnProcess(wxCommandEvent &event) {
 	if (filename.empty()) return;
 
 	// Add filters
-	for (int i=0;i<FilterList->GetCount();i++) {
+	for (unsigned int i=0;i<FilterList->GetCount();i++) {
 		if (FilterList->IsChecked(i)) {
 			Export->AddFilter(FilterList->GetString(i));
 		}
@@ -274,7 +274,7 @@ void DialogExport::OnMoveDown(wxCommandEvent &event) {
 void DialogExport::OnSelectAll(wxCommandEvent &event) {
 	Freeze();
 	FilterList->Freeze();
-	for (int i=0;i<FilterList->GetCount();i++) {
+	for (unsigned int i=0;i<FilterList->GetCount();i++) {
 		FilterList->Check(i,true);
 		wxSizer *sizer = Export->GetSettingsSizer(FilterList->GetString(i));
 		if (sizer) MainSizer->Show(sizer,true,true);
@@ -293,7 +293,7 @@ void DialogExport::OnSelectAll(wxCommandEvent &event) {
 void DialogExport::OnSelectNone(wxCommandEvent &event) {
 	Freeze();
 	FilterList->Freeze();
-	for (int i=0;i<FilterList->GetCount();i++) {
+	for (unsigned int i=0;i<FilterList->GetCount();i++) {
 		FilterList->Check(i,false);
 		wxSizer *sizer = Export->GetSettingsSizer(FilterList->GetString(i));
 		if (sizer) MainSizer->Show(sizer,false,true);
