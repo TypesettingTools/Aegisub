@@ -231,7 +231,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 	}
 
 	// Draw keyframes
-	if (video->loaded && draw_boundary_lines) {
+	if (video->KeyFramesLoaded() && draw_boundary_lines) {
 		wxArrayInt KeyFrames = video->GetKeyFrames();
 		int nKeys = (int)KeyFrames.Count();
 		dc.SetPen(wxPen(wxColour(255,0,255),1));

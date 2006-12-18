@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -197,7 +197,7 @@ void DialogTimingProcessor::UpdateControls() {
 	adjascentThres->Enable(adjsEnable->IsChecked());
 
 	// Keyframes are only available if timecodes are loaded
-	bool keysAvailable = VFR_Output.IsLoaded();
+	bool keysAvailable = grid->video->KeyFramesLoaded();
 	bool enableKeys = keysEnable->IsChecked() && keysAvailable;
 	keysStartBefore->Enable(enableKeys);
 	keysStartAfter->Enable(enableKeys);

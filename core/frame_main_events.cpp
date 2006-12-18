@@ -635,6 +635,7 @@ void FrameMain::OnCloseVFR(wxCommandEvent &event) {
 void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 	// Pick file
 	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),_T(""),_T(""),_T(".txt"),_T("Text files (*.txt)|*.txt"),wxFILE_MUST_EXIST | wxOPEN);
+	if (filename.IsEmpty()) return;
 
 	// Open file
 	wxArrayInt keyFrames;
@@ -664,7 +665,11 @@ void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 	if (!videoBox->videoDisplay->loaded) {
 		videoBox->videoDisplay->fps = fps;
 		VFR_Input.SetCFR(fps);
+		if (!VFR_Output.IsLoaded()) VFR_Output.SetCFR(fps);
 	}
+
+	// Refresh display
+	Refresh();
 }
 
 
@@ -680,6 +685,7 @@ void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
 void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 	// Pick file
 	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),_T(""),_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxOVERWRITE_PROMPT | wxSAVE);
+	if (filename.IsEmpty()) return;
 
 	// Get keyframes
 	wxArrayInt keyFrames = videoBox->videoDisplay->GetKeyFrames();
