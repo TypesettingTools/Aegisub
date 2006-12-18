@@ -34,6 +34,8 @@ Please visit http://aegisub.net to download latest version
 - Style name collisions (when moving from storage, creating or renaming) will now prompt the user before performing the action. (AMZ)
 - Added global hotkey for Video Play (default Ctrl+P). (AMZ)
 - Added support to save and load keyframe list files. (AMZ)
+- Switching to a new line in audio mode now centers the line on the grid. (AMZ)
+- Commiting changes in audio to the last line will insert a new line after it. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

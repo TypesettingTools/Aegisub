@@ -1203,6 +1203,18 @@ void AudioDisplay::CommitChanges () {
 
 	// If in SSA mode, select next line and "move timing forward" (unless the user was splitting karaoke)
 	if (Options.AsBool(_T("Audio SSA Mode")) && Options.AsBool(_T("Audio SSA Next Line on Commit")) && !wasKaraSplitting) {
+		// Insert a line if it doesn't exist
+		int nrows = grid->GetRows();
+		if (nrows == line_n + 1) {
+			AssDialogue *def = new AssDialogue;
+			def->Start = grid->GetDialogue(line_n)->End;
+			def->End = grid->GetDialogue(line_n)->End;
+			def->End.SetMS(def->End.GetMS()+5000);
+			def->Style = grid->GetDialogue(line_n)->Style;
+			grid->InsertLine(def,line_n,true);
+		}
+
+		// Go to next
 		dontReadTimes = true;
 		Next();
 		dontReadTimes = false;
@@ -2029,6 +2041,7 @@ void AudioDisplay::ChangeLine(int delta) {
 		dialogue = NULL;
 		grid->editBox->SetToLine(next);
 		grid->SelectRow(next);
+		grid->MakeCellVisible(next,0,true);
 		if (!dialogue) UpdateImage(true);
 		else UpdateImage(false);
 		line_n = next;
