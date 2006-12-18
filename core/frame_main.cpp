@@ -772,6 +772,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		subs->GetScriptInfo(_T("Video Zoom")).ToLong(&videoZoom);
 		wxString curSubsVideo = DecodeRelativePath(subs->GetScriptInfo(_T("Video File")),AssFile::top->filename);
 		wxString curSubsVFR = DecodeRelativePath(subs->GetScriptInfo(_T("VFR File")),AssFile::top->filename);
+		wxString curSubsKeyframes = DecodeRelativePath(subs->GetScriptInfo(_T("Keyframes File")),AssFile::top->filename);
 		wxString curSubsAudio = DecodeRelativePath(subs->GetScriptInfo(_T("Audio File")),AssFile::top->filename);
 		wxString AutoScriptString = subs->GetScriptInfo(_T("Automation Scripts"));
 
@@ -808,7 +809,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		// Check if there is anything to change
 		int autoLoadMode = Options.AsInt(_T("Autoload linked files"));
 		bool hasToLoad = false;
-		if (curSubsAudio != audioBox->audioName || curSubsVFR != VFR_Output.GetFilename() || curSubsVideo != videoBox->videoDisplay->videoName) {
+		if (curSubsAudio != audioBox->audioName || curSubsVFR != VFR_Output.GetFilename() || curSubsVideo != videoBox->videoDisplay->videoName || curSubsKeyframes != videoBox->videoDisplay->GetKeyFramesName()) {
 			hasToLoad = true;
 		}
 
@@ -837,6 +838,9 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 					}
 				}
 			}
+
+			// Keyframes
+			LoadKeyframes(curSubsKeyframes);
 
 			// Audio
 			if (curSubsAudio != audioBox->audioName) {
@@ -873,6 +877,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		subs->SetScriptInfo(_T("Video Zoom"),zoom);
 		subs->SetScriptInfo(_T("Video Position"),seekpos);
 		subs->SetScriptInfo(_T("VFR File"),MakeRelativePath(VFR_Output.GetFilename(),AssFile::top->filename));
+		subs->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(videoBox->videoDisplay->GetKeyFramesName(),AssFile::top->filename));
 
 		// Create list of Automation scripts
 		wxString scripts;
@@ -1031,6 +1036,7 @@ void FrameMain::LoadKeyframes(wxString filename) {
 
 	// Set keyframes
 	videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
+	videoBox->videoDisplay->SetKeyFramesName(filename);
 
 	// Set FPS
 	if (!videoBox->videoDisplay->loaded) {

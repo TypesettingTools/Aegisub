@@ -75,6 +75,7 @@ private:
 	bool overKeyFramesLoaded;
 	wxArrayInt KeyFrames;
 	wxArrayInt overKeyFrames;
+	wxString keyFramesFilename;
 
 	clock_t PlayTime;
 	clock_t StartTime;
@@ -108,6 +109,8 @@ public:
 	void CloseOverKeyFrames();
 	bool OverKeyFramesLoaded();
 	bool KeyFramesLoaded();
+	wxString GetKeyFramesName() { return keyFramesFilename; }
+	void SetKeyFramesName(wxString name) { keyFramesFilename = name; }
 
 	VideoProvider *provider;
 
