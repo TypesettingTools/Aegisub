@@ -66,11 +66,13 @@ OptionsManager::~OptionsManager() {
 ///////////////////////
 // Load default values
 void OptionsManager::LoadDefaults() {
-	SetInt(_T("Locale Code"),-1);
-	SetText(_T("Save Charset"),_T("UTF-8"));
-	SetBool(_T("Use nonstandard Milisecond Times"),false);
-	SetBool(_T("Keep raw dialogue data"),false);
-
+	///// PUBLIC //////
+	// Here go the options that can be edited by the options menu
+	
+	// General
+	SetBool(_T("Tips enabled"),true);
+	SetBool(_T("Show splash"),true);
+	SetBool(_T("Link Time Boxes Commit"),true);
 	SetInt(_T("Undo Levels"),8);
 	SetInt(_T("Recent timecodes max"),16);
 	SetInt(_T("Recent sub max"),16);
@@ -79,10 +81,54 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Recent find max"),16);
 	SetInt(_T("Recent replace max"),16);
 
-	SetBool(_T("Sync video with subs"),true);
-	SetBool(_T("Show keyframes on video slider"),true);
-	SetBool(_T("Link Time Boxes Commit"),true);
+	// File Save/Load
+	SetText(_T("Save Charset"),_T("UTF-8"));
+	SetBool(_T("Use nonstandard Milisecond Times"),false);
+	SetBool(_T("Auto backup"),true);
+	SetInt(_T("Auto save every seconds"),60);
+	SetBool(_T("Auto save on every change"),false);
+	SetText(_T("Auto backup path"),_T("autoback"));
+	SetText(_T("Auto save path"),_T("autosave"));
+	SetText(_T("Auto recovery path"),_T("recovered"));
+	SetInt(_T("Autoload linked files"),2);
 
+	// Video Options
+	SetInt(_T("Video Check Script Res"), 0);
+	SetInt(_T("Video Default Zoom"), 7);
+	SetInt(_T("Video Fast Jump Step"), 10);
+	SetBool(_T("Show keyframes on video slider"),true);
+
+	// Video Provider (Advanced)
+	SetBool(_T("Threaded Video"),false);
+	SetInt(_T("Avisynth MemoryMax"),64);
+	SetBool(_T("Allow Ancient Avisynth"),false);
+	SetText(_T("Video Provider"),_T("Avisynth"));
+	SetText(_T("Video resizer"),_T("BilinearResize"));
+
+	// Audio Options
+	SetBool(_T("Audio Link"),true);
+	SetBool(_T("Audio Autocommit"),false);
+	SetBool(_T("Audio Autoscroll"),true);
+	SetBool(_T("Audio SSA Mode"),false);
+	SetBool(_T("Audio SSA Next Line on Commit"),true);
+	SetBool(_T("Audio SSA Allow Autocommit"),false);
+	SetBool(_T("Audio Autofocus"),false);
+	SetBool(_T("Audio Wheel Default To Zoom"),false);
+	SetBool(_T("Audio lock scroll on cursor"),false);
+	SetInt(_T("Timing Default Duration"), 2000);
+	SetInt(_T("Audio lead in"),200);
+	SetInt(_T("Audio lead out"),300);
+	SetInt(_T("Audio Inactive Lines Display Mode"),1);
+
+	// Audio Provider (Advanced)
+	SetInt(_T("Audio Cache"),1);
+	SetInt(_T("Audio Sample Rate"),0);
+	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
+
+	// Automation
+	SetText(_T("Automation Include Path"), AegisubApp::folderName + _T("automation/include"));
+	
+	// Edit box cosmetic
 	SetBool(_T("Syntax Highlight Enabled"),true);
 	SetColour(_T("Syntax Highlight Normal"),wxColour(0,0,0));
 	SetColour(_T("Syntax Highlight Brackets"),wxColour(20,50,255));
@@ -96,24 +142,6 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Font Size"),11);
 #endif
 	SetText(_T("Font Face"),_T(""));
-
-	SetBool(_T("Shift Times ByTime"),true);
-	SetInt(_T("Shift Times Type"),0);
-	SetInt(_T("Shift Times Length"),0);
-	SetBool(_T("Shift Times All Rows"),true);
-	SetBool(_T("Shift Times Direction"),true);
-
-	SetBool(_T("Tips enabled"),true);
-	SetInt(_T("Tips current"),0);
-
-	SetBool(_T("Show splash"),true);
-	SetBool(_T("Show associations"),true);
-
-	SetBool(_T("Find Match Case"),false);
-	SetBool(_T("Find RegExp"),false);
-	SetBool(_T("Find Update Video"),false);
-	SetInt(_T("Find Affect"),0);
-	SetInt(_T("Find Field"),0);
 
 	// Generate colors
 	wxColour tempCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
@@ -132,6 +160,7 @@ void OptionsManager::LoadDefaults() {
 	wxColour grid = wxColour(128,128,128);
 	wxColour collision = wxColour(255,0,0);
 
+	// Grid cosmetic
 	SetColour(_T("Grid standard foreground"),textCol);
 	SetColour(_T("Grid selection background"),selection);
 	SetColour(_T("Grid selection foreground"),textCol);
@@ -144,70 +173,15 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Grid left column"),labels);
 	SetColour(_T("Grid active border"),active);
 	SetColour(_T("Grid lines"),grid);
-
-	SetInt(_T("Grid hide overrides"),1);
 	wchar_t temp = 0x2600;
 	SetText(_T("Grid hide overrides char"),temp);
 	SetBool(_T("Grid allow focus"),true);
-	for (int i=0;i<10;i++) SetBool(_T("Grid show column ") + IntegerToString(i),true);
-
-#if defined(__WINDOWS__)
-	SetInt(_T("Grid font size"),8);
-#else
-	SetInt(_T("Grid font size"),10);
-#endif
-
 	SetBool(_T("Highlight subs in frame"),true);
 
-	for (int i=0;i<9;i++) SetBool(wxString::Format(_T("Paste Over #%i"),i),false);
-	SetBool(_T("Paste Over #9"),true);
-
-	SetText(_T("Fonts Collector Destination"),_T("?script"));
-
-	SetBool(_T("Threaded Video"),false);
-	SetInt(_T("Avisynth MemoryMax"),64);
-	SetBool(_T("Allow Ancient Avisynth"),false);
-	SetText(_T("Video Provider"),_T("Avisynth"));
-
-	SetText(_T("Video resizer"),_T("BilinearResize"));
-	SetInt(_T("Video Check Script Res"), 0);
-	SetInt(_T("Video Default Zoom"), 7);
-	SetInt(_T("Video Fast Jump Step"), 10);
-
-	SetInt(_T("Audio Cache"),1);
-	SetInt(_T("Audio Sample Rate"),0);
-	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
-	SetBool(_T("Audio Link"),true);
-	SetBool(_T("Audio Autocommit"),false);
-	SetBool(_T("Audio Autoscroll"),true);
-	SetBool(_T("Audio SSA Mode"),false);
-	SetBool(_T("Audio SSA Next Line on Commit"),true);
-	SetBool(_T("Audio SSA Allow Autocommit"),false);
-	SetBool(_T("Audio Autofocus"),false);
-	SetInt(_T("Audio Display Height"),100);
-	SetInt(_T("Timing Default Duration"), 2000);
-	SetBool(_T("Audio Wheel Default To Zoom"),false);
-	SetBool(_T("Audio lock scroll on cursor"),false);
-	
-	SetBool(_T("Audio Spectrum"),false);
+	// Audio Cosmetic
 	SetInt(_T("Audio Spectrum Cutoff"),32);
 	SetInt(_T("Audio Spectrum Window"),11);
 	SetBool(_T("Audio Spectrum invert selection"), true);
-	SetInt(_T("Audio lead in"),200);
-	SetInt(_T("Audio lead out"),300);
-	SetInt(_T("Audio Inactive Lines Display Mode"),1);
-
-	SetInt(_T("Timing processor key start before thres"),5);
-	SetInt(_T("Timing processor key start after thres"),4);
-	SetInt(_T("Timing processor key end before thres"),5);
-	SetInt(_T("Timing processor key end after thres"),6);
-	SetInt(_T("Timing processor adjascent thres"),300);
-	SetBool(_T("Timing processor Enable lead-in"),true);
-	SetBool(_T("Timing processor Enable lead-out"),true);
-	SetBool(_T("Timing processor Enable keyframe"),true);
-	SetBool(_T("Timing processor Enable adjascent"),true);
-	SetFloat(_T("Timing processor adjascent bias"),1.0);
-
 	SetColour(_T("Audio Selection Background Modified"),wxColour(92,0,0));
 	SetColour(_T("Audio Selection Background"),wxColour(64,64,64));
 	SetColour(_T("Audio Seconds Boundaries"),wxColour(0,100,255));
@@ -226,7 +200,57 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Audio Draw Secondary Lines"), true);
 	SetBool(_T("Audio Draw Selection Background"), true);
 
-	SetText(_T("Automation Include Path"), AegisubApp::folderName + _T("automation/include"));
+
+
+	///// INTERNAL //////
+	// Options that are set by the program itself
+	SetInt(_T("Locale Code"),-1);
+	SetBool(_T("Keep raw dialogue data"),false);
+
+	SetBool(_T("Sync video with subs"),true);
+
+	SetBool(_T("Shift Times ByTime"),true);
+	SetInt(_T("Shift Times Type"),0);
+	SetInt(_T("Shift Times Length"),0);
+	SetBool(_T("Shift Times All Rows"),true);
+	SetBool(_T("Shift Times Direction"),true);
+
+	SetInt(_T("Tips current"),0);
+	SetBool(_T("Show associations"),true);
+
+	SetBool(_T("Find Match Case"),false);
+	SetBool(_T("Find RegExp"),false);
+	SetBool(_T("Find Update Video"),false);
+	SetInt(_T("Find Affect"),0);
+	SetInt(_T("Find Field"),0);
+
+	SetInt(_T("Grid hide overrides"),1);
+	for (int i=0;i<10;i++) SetBool(_T("Grid show column ") + IntegerToString(i),true);
+
+#if defined(__WINDOWS__)
+	SetInt(_T("Grid font size"),8);
+#else
+	SetInt(_T("Grid font size"),10);
+#endif
+
+	for (int i=0;i<9;i++) SetBool(wxString::Format(_T("Paste Over #%i"),i),false);
+	SetBool(_T("Paste Over #9"),true);
+
+	SetText(_T("Fonts Collector Destination"),_T("?script"));
+
+	SetInt(_T("Audio Display Height"),100);
+	SetBool(_T("Audio Spectrum"),false);
+
+	SetInt(_T("Timing processor key start before thres"),5);
+	SetInt(_T("Timing processor key start after thres"),4);
+	SetInt(_T("Timing processor key end before thres"),5);
+	SetInt(_T("Timing processor key end after thres"),6);
+	SetInt(_T("Timing processor adjascent thres"),300);
+	SetBool(_T("Timing processor Enable lead-in"),true);
+	SetBool(_T("Timing processor Enable lead-out"),true);
+	SetBool(_T("Timing processor Enable keyframe"),true);
+	SetBool(_T("Timing processor Enable adjascent"),true);
+	SetFloat(_T("Timing processor adjascent bias"),1.0);
 
 	SetText(_T("Select Text"),_T(""));
 	SetInt(_T("Select Condition"),0);
@@ -236,14 +260,6 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Select Match case"),false);
 	SetBool(_T("Select Match dialogues"),true);
 	SetBool(_T("Select Match comments"),false);
-
-	SetBool(_T("Auto backup"),true);
-	SetInt(_T("Auto save every seconds"),60);
-	SetBool(_T("Auto save on every change"),false);
-	SetText(_T("Auto backup path"),_T("autoback"));
-	SetText(_T("Auto save path"),_T("autosave"));
-	SetText(_T("Auto recovery path"),_T("recovered"));
-	SetInt(_T("Autoload linked files"),2);
 
 	SetText(_T("Text actor separator"),_T(":"));
 	SetText(_T("Text comment starter"),_T("#"));

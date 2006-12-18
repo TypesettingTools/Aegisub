@@ -44,14 +44,16 @@
 
 //////////////
 // Prototypes
-class wxNotebook;
+class wxTreebook;
 
 
 ////////////////////////
 // Options screen class
 class DialogOptions: public wxDialog {
 private:
-	wxNotebook *book;
+#ifdef wxUSE_TREEBOOK
+	wxTreebook *book;
+#endif
 
 public:
 	DialogOptions(wxWindow *parent);

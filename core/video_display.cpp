@@ -99,6 +99,7 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	ControlSlider = NULL;
 	PositionDisplay = NULL;
 	loaded = false;
+	keyFramesLoaded = false;
 	frame_n = 0;
 	origSize = size;
 	arType = 0;
@@ -172,6 +173,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 			provider->SetDAR(arValue);
 
 			KeyFrames.Clear();
+			keyFramesLoaded = false;
 
 			// Why the hell was this disabled?
 			// Read extra data from file
@@ -184,6 +186,7 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 
 				// Get keyframes
 				KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
+				keyFramesLoaded = true;
 
 				// Ask to override timecodes
 				int override = wxYES;
@@ -194,7 +197,10 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 				MatroskaWrapper::wrapper.Close();
 			}
 #ifdef __WINDOWS__
-			else if (ext == _T(".avi")) KeyFrames = VFWWrapper::GetKeyFrames(filename);
+			else if (ext == _T(".avi")) {
+				KeyFrames = VFWWrapper::GetKeyFrames(filename);
+				keyFramesLoaded = true;
+			}
 #endif
 
 			// Update size
@@ -236,6 +242,9 @@ void VideoDisplay::Reset() {
 	int _w,_h;
 	GetSize(&_w,&_h);
 	SetSizeHints(_w,_h,_w,_h);
+
+	KeyFrames.Clear();
+	keyFramesLoaded = false;
 
 	// Remove temporary audio provider
 	if (audio && audio->temporary) {

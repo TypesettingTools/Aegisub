@@ -147,6 +147,9 @@ private:
 	void OnCloseVideo (wxCommandEvent &event);
 	void OnOpenVFR (wxCommandEvent &event);
 	void OnCloseVFR (wxCommandEvent &event);
+	void OnOpenKeyframes (wxCommandEvent &event);
+	void OnCloseKeyframes (wxCommandEvent &event);
+	void OnSaveKeyframes (wxCommandEvent &event);
 
 	void OnZoomIn (wxCommandEvent &event);
 	void OnZoomOut (wxCommandEvent &event);
@@ -215,6 +218,8 @@ private:
 	void LoadVideo(wxString filename,bool autoload=false);
 	void LoadAudio(wxString filename,bool FromVideo=false);
 	void LoadVFR(wxString filename);
+	void LoadKeyframes(wxString filename);
+	void SaveKeyframes(wxString filename);
 	void LoadSubtitles(wxString filename,wxString charset=_T(""));
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
 	int TryToCloseSubs(bool enableCancel=true);
@@ -285,6 +290,9 @@ enum {
 	Menu_View_Zoom_200,
 	Menu_Video_Zoom_In,
 	Menu_Video_Zoom_Out,
+	Menu_Video_Load_Keyframes,
+	Menu_Video_Save_Keyframes,
+	Menu_Video_Close_Keyframes,
 	Toolbar_Zoom_Dropdown,
 	Menu_Video_AR_Default,
 	Menu_Video_AR_Full,

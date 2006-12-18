@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include <wx/wxprec.h>
+#include <wx/display.h>
 #include "splash.h"
 #include "options.h"
 #include "tip.h"
@@ -52,8 +54,12 @@ SplashScreen::SplashScreen(wxWindow *parent)
 	// Get splash
 	splash = wxBITMAP(splash);
 
-	// Prepare
+	// Set position
 	Center();
+	//wxDisplay display(wxDisplay::GetFromPoint(parent->GetPosition()));
+	//wxRect rect = display.GetGeometry();
+
+	// Prepare
 	wxClientDC dc(this);
 	dc.BeginDrawing();
 	dc.DrawBitmap(splash,0,0);

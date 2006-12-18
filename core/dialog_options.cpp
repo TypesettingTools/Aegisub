@@ -36,34 +36,43 @@
 
 ///////////
 // Headers
-#include <wx/notebook.h>
 #include "dialog_options.h"
+#ifdef wxUSE_TREEBOOK
+#include <wx/treebook.h>
+#endif
 
 
 ///////////////
 // Constructor
 DialogOptions::DialogOptions(wxWindow *parent)
-: wxDialog(parent, -1, _T("Options"), wxDefaultPosition, wxSize(400,300))
+: wxDialog(parent, -1, _T("Options"), wxDefaultPosition, wxDefaultSize)
 {
-	// List book
-	book = new wxNotebook(this,-1,wxDefaultPosition,wxSize(300,200));
-	wxWindow *page1 = new wxTextCtrl(book,-1,_T(""),wxDefaultPosition,wxSize(100,50));
-	wxWindow *page2 = new wxPanel(book,-1,wxDefaultPosition,wxSize(100,50));
-	wxSizer *testSizer = new wxBoxSizer(wxVERTICAL);
-	wxWindow *testWindow = new wxPanel(book,-1);
-	testSizer->Add(new wxTextCtrl(testWindow,-1,_T(""),wxDefaultPosition,wxSize(100,50)),1,wxEXPAND | wxALL,5);
-	testSizer->Add(new wxButton(testWindow,wxID_OK),0,wxTOP,5);
-	testWindow->SetSizer(testSizer);
-	wxWindow *page3 = testWindow;
-	book->AddPage(page1,_T("Test"),true);
-	book->AddPage(page2,_T("Test2"),true);
-	book->AddPage(page3,_T("Why, hello there"),true);
+#ifdef wxUSE_TREEBOOK
+	// Create book
+	book = new wxTreebook(this,-1,wxDefaultPosition,wxSize(500,300));
 
-	// Sizer
+	// List book
+	book->AddPage(new wxPanel(book,-1),_T("General"),true);
+	book->AddSubPage(new wxPanel(book,-1),_T("File Save/Load"),true);
+	book->AddSubPage(new wxPanel(book,-1),_T("Subtitles Grid"),true);
+	book->AddSubPage(new wxPanel(book,-1),_T("Subtitles Edit Box"),true);
+	book->AddPage(new wxPanel(book,-1),_T("Video"),true);
+	book->AddPage(new wxPanel(book,-1),_T("Audio"),true);
+	book->AddSubPage(new wxPanel(book,-1),_T("Display"),true);
+	book->AddPage(new wxPanel(book,-1),_T("Automation"),true);
+
+	// Buttons Sizer
+	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	buttonSizer->AddStretchSpacer(1);
+	buttonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT,5);
+	buttonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
+
+	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(book,1,wxEXPAND | wxALL,5);
-	//mainSizer->SetSizeHints(this);
+	mainSizer->Add(buttonSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 	SetSizer(mainSizer);
+#endif
 }
 
 

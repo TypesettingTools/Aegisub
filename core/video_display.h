@@ -99,7 +99,9 @@ private:
 public:
 	VideoProvider *provider;
 
+	bool keyFramesLoaded;
 	wxArrayInt KeyFrames;
+
 	SubtitlesGrid *grid;
 	wxString videoName;
 	int w,h;
@@ -132,7 +134,7 @@ public:
 	void JumpToTime(int ms);
 	void RefreshSubtitles();
 	void RefreshVideo();
-	void DrawText( wxPoint Pos, wxString Text );
+	void DrawText(wxPoint Pos, wxString Text);
 	void UpdatePositionDisplay();
 	void SetZoom(double value);
 	void SetZoomPos(int pos);

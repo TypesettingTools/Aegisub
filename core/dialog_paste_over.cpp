@@ -79,7 +79,7 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
-	ButtonSizer->Add(new wxButton(this, wxID_OK),0,0,0);
+	ButtonSizer->Add(new wxButton(this, wxID_OK),0,wxRIGHT,5);
 	ButtonSizer->Add(new wxButton(this, wxID_CANCEL),0,0,0);
 
 	// Main sizer

@@ -3,6 +3,7 @@ Please visit http://aegisub.net to download latest version
 
 = 1.11 beta - 2006.xx.xx ===========================
 
+- New Aegisub logo. (AMZ)
 - Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections (jfs)
 - Fixed loading of sections with unexpected cases. (AMZ)
 - Changes to Audio Spectrum: (jfs)

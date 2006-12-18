@@ -272,6 +272,10 @@ void FrameMain::InitMenu() {
 	wxMenuItem *RecentTimesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Timecodes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentTimecodes);
 	videoMenu->Append(RecentTimesParent);
 	videoMenu->AppendSeparator();
+	videoMenu->Append(Menu_Video_Load_Keyframes, _("Open keyframes..."), _("Opens a keyframe list file"));
+	videoMenu->Append(Menu_Video_Save_Keyframes, _("Save keyframes..."), _("Saves the current keyframe list"))->Enable(false);
+	videoMenu->Append(Menu_Video_Close_Keyframes, _("Close keyframes"), _("Closes the currently open keyframes list"))->Enable(false);
+	videoMenu->AppendSeparator();
 	AppendBitmapMenuItem (videoMenu,Menu_Video_JumpTo, _("&Jump To...\t") + Hotkeys.GetText(_T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
 	videoMenu->AppendSeparator();
 	videoMenu->Append(Menu_View_Zoom_50, _("Zoom &50%\t") + Hotkeys.GetText(_T("Zoom 50%")), _("Set zoom to 50%"));
@@ -318,7 +322,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_SpellCheck, _("Spe&ll checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
 	#endif
 	toolMenu->AppendSeparator();
-	//AppendBitmapMenuItem (toolMenu,Menu_Tools_Options, _("&Options..."), _("Configure Aegisub"), wxBITMAP(hotkeys_button));
+	AppendBitmapMenuItem (toolMenu,Menu_Tools_Options, _("&Options..."), _("Configure Aegisub"), wxBITMAP(options_button));
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_Hotkeys, _("&Hotkeys..."), _("Remap hotkeys"), wxBITMAP(hotkeys_button));
 	MenuBar->Append(toolMenu, _("&Tools"));
 

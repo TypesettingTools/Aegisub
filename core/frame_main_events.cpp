@@ -133,6 +133,9 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_File_Export_Subtitles, FrameMain::OnExportSubtitles)
 	EVT_MENU(Menu_File_Open_VFR, FrameMain::OnOpenVFR)
 	EVT_MENU(Menu_File_Close_VFR, FrameMain::OnCloseVFR)
+	EVT_MENU(Menu_Video_Load_Keyframes, FrameMain::OnOpenKeyframes)
+	EVT_MENU(Menu_Video_Save_Keyframes, FrameMain::OnSaveKeyframes)
+	EVT_MENU(Menu_Video_Close_Keyframes, FrameMain::OnCloseKeyframes)
 
 	EVT_MENU(Menu_View_Zoom_50, FrameMain::OnSetZoom50)
 	EVT_MENU(Menu_View_Zoom_100, FrameMain::OnSetZoom100)
@@ -286,7 +289,9 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_Wide,state);
 		MenuBar->Enable(Menu_Video_AR_235,state);
 		MenuBar->Enable(Menu_Video_AR_Custom,state);
-		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR); //fix me, wrong?
+		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
+		MenuBar->Enable(Menu_Video_Close_Keyframes,videoBox->videoDisplay->keyFramesLoaded);
+		MenuBar->Enable(Menu_Video_Save_Keyframes,videoBox->videoDisplay->keyFramesLoaded);
 
 		// Set AR radio
 		int arType = videoBox->videoDisplay->GetAspectRatioType();
@@ -620,6 +625,24 @@ void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 // Close VFR tags
 void FrameMain::OnCloseVFR(wxCommandEvent &event) {
 	LoadVFR(_T(""));
+}
+
+
+//////////////////
+// Open keyframes
+void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
+}
+
+
+///////////////////
+// Close keyframes
+void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
+}
+
+
+//////////////////
+// Save keyframes
+void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 }
 
 
