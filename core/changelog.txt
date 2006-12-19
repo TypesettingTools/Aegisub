@@ -37,6 +37,7 @@ Please visit http://aegisub.net to download latest version
 - Switching to a new line in audio mode now centers the line on the grid. (AMZ)
 - Commiting changes in audio to the last line will insert a new line after it. (AMZ)
 - Fonts collector can now collect fonts directly to a zip archive. (AMZ)
+- Added support for DirectShowSource2 if avss.dll is on Aegisub's folder. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
