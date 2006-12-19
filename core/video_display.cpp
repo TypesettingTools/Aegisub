@@ -267,7 +267,7 @@ void VideoDisplay::OnPaint(wxPaintEvent& event) {
 
 	// Draw frame
 	dc.BeginDrawing();
-	dc.DrawBitmap(GetFrame(frame_n),0,0);
+	if (provider) dc.DrawBitmap(GetFrame(frame_n),0,0);
 	dc.EndDrawing();
 }
 
@@ -794,7 +794,6 @@ void VideoDisplay::DrawText( wxPoint Pos, wxString text ) {
 // Requests a new frame
 wxBitmap VideoDisplay::GetFrame(int n) {
 	frame_n = n;
-	
 	return provider->GetFrame(n);
 	RefreshVideo();
 }
