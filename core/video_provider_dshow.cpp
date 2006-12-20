@@ -281,15 +281,15 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	//m_avgframe = defd;
 
 	// Store filters
-	//m_pR = sink;
-	//m_pGC = mc;
-	//m_pGS = ms;
+	m_pR = sink;
+	m_pGC = mc;
+	m_pGS = ms;
 
 	// Flag frame as ready?
 	SetEvent(m_hFrameReady);
 
 	// No idea
-	//RegROT();
+	RegROT();
 
 	// Set frame count
 	//m_f.SetCount(m_vi.num_frames);
