@@ -193,16 +193,38 @@ void MatroskaWrapper::Parse() {
 		rawFrames.push_back(*cur);
 	}
 
-	// Process timecodes and keyframes
-	frames.sort();
-	MkvFrame curFrame(false,0,0);
-	int i = 0;
-	for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
-		curFrame = *cur;
-		if (curFrame.isKey) keyFrames.Add(i);
-		bytePos.Add(curFrame.filePos);
-		timecodes.push_back(curFrame.time);
-		i++;
+	bool sortFirst = true;
+	if (sortFirst) {
+		// Process timecodes and keyframes
+		frames.sort();
+		MkvFrame curFrame(false,0,0);
+		int i = 0;
+		for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
+			curFrame = *cur;
+			if (curFrame.isKey) keyFrames.Add(i);
+			bytePos.Add(curFrame.filePos);
+			timecodes.push_back(curFrame.time);
+			i++;
+		}
+	}
+
+	else {
+		// Process keyframes
+		MkvFrame curFrame(false,0,0);
+		int i = 0;
+		for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
+			curFrame = *cur;
+			if (curFrame.isKey) keyFrames.Add(i);
+			bytePos.Add(curFrame.filePos);
+			i++;
+		}
+
+		// Process timecodes
+		frames.sort();
+		for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
+			curFrame = *cur;
+			timecodes.push_back(curFrame.time);
+		}
 	}
 }
 

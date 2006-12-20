@@ -38,6 +38,7 @@
 // Headers
 #include "video_provider_avs.h"
 #include "video_provider_lavc.h"
+#include "video_provider_dshow.h"
 #include "options.h"
 
 
@@ -46,7 +47,9 @@
 VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	// Check if avisynth is available
 	bool avisynthAvailable = false;
+	bool dshowAvailable = false;
 	#ifdef __WINDOWS__
+	dshowAvailable = true;
 	try {
 		// If avisynth.dll cannot be loaded, an exception will be thrown and avisynthAvailable will never be set to true
 		AviSynthWrapper avs;
@@ -63,7 +66,7 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 
 	// See if it's OK to use LAVC
 	#ifdef USE_LAVC
-	if (preffered == _T("ffmpeg") || !avisynthAvailable) {
+	if (preffered == _T("ffmpeg") || (!avisynthAvailable && !dshowAvailable)) {
 		// Load
 		bool success = false;
 		wxString error;
@@ -83,6 +86,7 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 		if (!success) {
 			// Delete old provider
 			delete provider;
+			provider = NULL;
 
 			// Try to fallback to avisynth
 			if (avisynthAvailable) {
@@ -96,14 +100,29 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	}
 	#endif
 
-	// Use avisynth provider
 	#ifdef __WINDOWS__
+	#ifdef USE_DIRECTSHOW
+	// Use DirectShow provider
+	if (!provider && (preffered == _T("dshow") || !avisynthAvailable)) {
+		try {
+			provider = new DirectShowVideoProvider(video,subtitles);
+		}
+		catch (...) {
+			delete provider;
+			provider = NULL;
+			throw;
+		}
+	}
+	#endif
+
+	// Use Avisynth provider
 	if (!provider) {
 		try {
 			provider = new AvisynthVideoProvider(video,subtitles);
 		}
 		catch (...) {
 			delete provider;
+			provider = NULL;
 			throw;
 		}
 	}
