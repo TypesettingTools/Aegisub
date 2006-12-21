@@ -56,21 +56,29 @@ FexTracker::~FexTracker()
 
 void FexTracker::ProcessImage( float *Img, bool bFirst )
 {
+	// Receive new image to track
+	// This assumes it chronologically directly follows the previously processed image
 	if( bFirst || !CurImg ) 
 	{
+		// First image in series
+		// Initialise a few things
 		CurFrame = 0;
 		CurImg = new FexImgPyramid( Img, SizX, SizY, Cfg.EdgeDetectSigma, Cfg.DetectSmoothSigma, PyramidSubsampling, PyramidMaxLevels );
 		nActiveFeatures = 0;
 		int tmp = nFeatures;
 		nFeatures = 0;
+		// Find initial features
 		FindFeatures( tmp );
 	}
 	else
 	{
+		// Check if we've lost too many features, and find some more if that's the case
 		CountActiveFeatures();
 		if( nActiveFeatures<minFeatures ) 
 			FindFeatures( minFeatures );
+		// Build image pyramid
  		NextImg = new FexImgPyramid( Img, SizX, SizY, Cfg.EdgeDetectSigma, Cfg.DetectSmoothSigma, PyramidSubsampling, PyramidMaxLevels );
+		// Now correlate the features to the new image
 		TrackFeatures();
 		delete CurImg;
 		CurImg = NextImg;
@@ -90,6 +98,7 @@ void FexTracker::CountActiveFeatures()
 	nActiveFeatures = 0;
 	for( int i=0;i<nFeatures;i++ )
 	{
+		// If the feature has a known position for the active frame, it's active
 		if( lFeatures[i].StartTime + lFeatures[i].Pos.size() >= CurFrame )
 			nActiveFeatures++;
 	}
@@ -103,44 +112,58 @@ FexTrackingFeature* FexTracker::operator [] ( int i )
 
 int FexTracker::GetEigenvalueForPoint( int px, int py )
 {
+	// Determine window in the image to process
 	int sx = px - Cfg.WindowX;
 	int ex = px + Cfg.WindowX;
 	int sy = py - Cfg.WindowY;
 	int ey = py + Cfg.WindowY;
+	// Clip against the edges of the image
 	if( sx<0 )sx=0;
 	if( sy<0 )sy=0;
 	if( ex>SizX-1 )ex=SizX-1;
 	if( ey>SizY-1 )ey=SizY-1;
 
+	// Stride for the image
 	int imgSX = CurImg->lLevels[0]->sx;
+	// Pointers to X and Y gradient vectors
 	float* gradx = CurImg->lLevels[0]->GradX;
 	float* grady = CurImg->lLevels[0]->GradY;
 
+	// Accumulated entries into the correlation matrix [gxx gxy; gxy gyy]
 	register float gxx = 0, gyy = 0, gxy = 0;
+	// Loop over points inside the window
 	for( int y=sy;y<ey;y++ )
 	{
 		for( int x=sx;x<ex;x++ )
 		{
+			// Get X and Y gradient values of this point
 			float gx = gradx[ imgSX*y + x ];
 			float gy = grady[ imgSX*y + x ];
+			// Add to the matrix entries
 			gxx += gx*gx;
 			gyy += gy*gy;
 			gxy += gx*gy;
 		}
 	}
 
+	// Calculate the eigenvalue L for the correlation matrix
+	// 0 = det([gxx-L gxy; gxy gyy-L]) = (gxx-L)(gyy-L) - gxy*gxy = L*L + L*(-gxx-gyy) + gxx*gyy - gxy*gxy
+	// Only the smaller of the two eigenvalues has interest, and a factor 1/4 isn't relevant for comparison,
+	// so this is the smallest solution to the second-order polynomial.
 	float val = gxx + gyy - sqrtf((gxx - gyy)*(gxx - gyy) + 4*gxy*gxy);
+	// Limit the value
 	if( val>(1<<30) ) val=(1<<30);
 	return (int) val;
 }
 
 
+// An int triple (?!) denoting a coordinate pair and an eigenvalue for that position
 typedef struct{
 	int val, x, y;
 }littleFeature;
 
 
-
+// Swap two triples of ints (in reality two littleFeature)
 #define SWAP3(list, i, j)               \
 {register int *pi, *pj, tmp;            \
      pi=list+3*(i); pj=list+3*(j);      \
@@ -158,6 +181,7 @@ typedef struct{
      *pj=tmp;    \
 }
 
+// Sort a list of int-triples (littleFeature structs)
 void _quicksort(int *pointlist, int n)
 {
   unsigned int i, j, ln, rn;
@@ -198,13 +222,17 @@ void _quicksort(int *pointlist, int n)
 
 void FexTracker::FindFeatures( int minFeatures )
 {
-	int nli=0;
+	// Detect new features, so there's at least minFeatures available
+
+	// First calculate eigenvalues for each pixel in the image...
+	int nli=0; // Number of LIttle features
 	littleFeature *list = new littleFeature[SizX*SizY];
 	for( int y=0;y<SizY;y++ )
 	{
 		for( int x=0;x<SizX;x++ )
 		{
 			int v = GetEigenvalueForPoint( x, y );
+			// ... if the eigenvalue for a pixel is larger than zero, include it in the list...
 			if( v>0 )
 			{
 				list[nli].val = v;
@@ -215,26 +243,36 @@ void FexTracker::FindFeatures( int minFeatures )
 		}
 	}
 
+	// ... and sort the list
 	_quicksort( (int*)list, nli );
+	// I'll call these "interest points", since they're just candidates for features...
 
 	int oldN = nFeatures;
 
+	// Look through all newly found interest-points and add the most interesting to our
+	// list of features, until we have at least minFeatures
 	for( int i=0;i<nli && nActiveFeatures<minFeatures;i++ )
 	{
+		// Check if this interest point is too close to an existing feature, to avoid excessive clustering
 		int j;
 		for( j=0;j<nFeatures;j++ )
 		{
-			if( lFeatures[j].StartTime + lFeatures[j].Pos.size() < CurFrame  ) continue; //feature was lost
+			// Check that we didn't lose this feature
+			if( lFeatures[j].StartTime + lFeatures[j].Pos.size() < CurFrame  ) continue;
 
+			// Calculate distance between the interest point of the outer loop and this feature
 			float dx = list[i].x - lFeatures[j].Pos[ CurFrame - lFeatures[j].StartTime ].x;
 			float dy = list[i].y - lFeatures[j].Pos[ CurFrame - lFeatures[j].StartTime ].y;
 			float sqr = dx*dx+dy*dy;
+			// And see if it's close enough
 			if( sqr < Cfg.MinDistanceSquare ) break;
 		}
-		if( j!=nFeatures ) continue;
+		if( j!=nFeatures ) continue; // Found an existing feature too close, so skip this interest point
 
+		// Check if we need to allocate more space for features
 		if( nFeatures >= mFeatures )
 		{
+			// Allocate new, larger feature list and copy old features into new list
 			mFeatures = nFeatures+9;
 			mFeatures -= mFeatures%8;
 			FexTrackingFeature * nlFeatures = (FexTrackingFeature*) new FexTrackingFeature[mFeatures];
@@ -246,10 +284,12 @@ void FexTracker::FindFeatures( int minFeatures )
 				for( int cpy2=0;cpy2<lFeatures[ cpy ].Pos.size();cpy2++ )
 					nlFeatures[ cpy ].Pos.Add( lFeatures[ cpy ].Pos[cpy2] );
 			}
+			// ... finally replacing the old list
 			delete [] lFeatures;
 			lFeatures = nlFeatures;
 		}
 
+		// Add this interest point to the end of the feature list
 		lFeatures[nFeatures].Eigenvalue = list[i].val;
 		vec2 pt;
 		pt.x = (float)list[i].x;
@@ -261,6 +301,7 @@ void FexTracker::FindFeatures( int minFeatures )
 		nActiveFeatures++;
 	}
 
+	// Subtract 1 from the start time of all newly found features
 	for( int j=oldN;j<nFeatures;j++ )
 		lFeatures[j].StartTime = max(0,lFeatures[j].StartTime-1);
 

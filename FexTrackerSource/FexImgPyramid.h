@@ -18,12 +18,12 @@ public:
 	FexImgPyramidLevel( int sx, int sy );
 	~FexImgPyramidLevel();
 
-	int sx, sy;
+	int sx, sy; // dimensions of this level
 	float CoordMul;
 
-	float*	Img;
-	float*	GradX;
-	float*	GradY;
+	float*	Img; // actual image data
+	float*	GradX; // X gradients
+	float*	GradY; // Y gradients
 
 	void Fill( float* Img, float DetectSmoothSigma );
 	void Scale( FexImgPyramidLevel* old );

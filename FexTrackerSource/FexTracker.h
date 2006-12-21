@@ -120,10 +120,10 @@ private:
 	void CountActiveFeatures();
 
 //result
-	FexTrackingFeature*		lFeatures;
-	int						nFeatures;
-	int						nActiveFeatures;
-	int						mFeatures;
+	FexTrackingFeature*		lFeatures; // list of allocated features
+	int						nFeatures; // current number of used feature slots
+	int						nActiveFeatures; // number of features with motion data on current image
+	int						mFeatures; // number of features allocated space for
 
 	int CurFrame;
 };

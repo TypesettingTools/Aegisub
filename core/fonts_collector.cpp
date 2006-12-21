@@ -345,7 +345,7 @@ void FontsCollectorThread::Collect() {
 	// For zipped files, enter a default name if none was given
 	else {
 		wxFileName dest(destination);
-		if (!dest.IsFileWritable()) {
+		if (!dest.FileExists()) {
 			wxFileName subsname(subs->filename);
 			if (!dest.IsDir()) {
 				destination = subsname.GetPath();
