@@ -313,53 +313,73 @@ void FexTracker::TrackFeatures()
 {
 	for( int i=0;i<nFeatures;i++ )
 	{
-		if( lFeatures[i].StartTime + lFeatures[i].Pos.size() < CurFrame  ) continue; //feature was lost
+		// Check if this feature was already lost in an earlier frame
+		if( lFeatures[i].StartTime + lFeatures[i].Pos.size() < CurFrame  ) continue;
 
 		int FeatureFrame = CurFrame - lFeatures[i].StartTime;
 
 		float orig_px = lFeatures[i].Pos[FeatureFrame-1].x;
 		float orig_py = lFeatures[i].Pos[FeatureFrame-1].y;
 
-		vec2 op;
+		vec2 op; // Original point
+		// Calculate position of original point on top level of the pyramid
 		op.x = orig_px * CurImg->lLevels[ CurImg->nLevels-1 ]->CoordMul / CurImg->Subsampling;
 		op.y = orig_py * CurImg->lLevels[ CurImg->nLevels-1 ]->CoordMul / CurImg->Subsampling;
-		vec2 np;
-		np = op;
+		vec2 np; // New point
+		np = op; // Assume no motion initially
 
 		int l;
 		for( l=CurImg->nLevels-1;l>=0;l-- )
 		{
+			// Move coordinates one level down in the pyramid
 			op.x *= CurImg->Subsampling;
 			op.y *= CurImg->Subsampling;
 			np.x *= CurImg->Subsampling;
 			np.y *= CurImg->Subsampling;
+			// And try to track the feature
 			if( !TrackOneFeature( l, op, np ) ) break;
 		}
-		if( l!=-1 ) continue; //we aborted
+		// Did the loop finish? If not, tracking failed and the feature was lost
+		if( l!=-1 ) continue;
 
+		// Tracked outside the frame? Feature lost.
 		if( np.x<0 || np.y<0 || np.x>SizX || np.y>SizY ) continue;
 
+		// Otherwise add the new position to the feature's point list
 		lFeatures[i].Pos.Add( np );
 	}
 }
 
 bool FexTracker::TrackOneFeature( int lvl, vec2 op, vec2& np )
 {
+	// Motion estimate one feature on one level in the image pyramid
+	// @op (in) is the coordinate for the point on the previous frame
+	// @np (out) is the coordinate for the new location of the point, based on the information in this level of the pyramid
+
+	// Border epsilon, defines what is "too close" to the edge of the image
 	static float bordereps = 1.1f;
+	// Check that the point isn't already "almost outside" the image, and let tracking fail if it is
 	if( op.x - Cfg.WindowX < bordereps || op.x + Cfg.WindowX > CurImg->lLevels[lvl]->sx - bordereps ) return 0;
 	if( op.y - Cfg.WindowY < bordereps || op.y + Cfg.WindowY > CurImg->lLevels[lvl]->sy - bordereps ) return 0;
 	if( np.x - Cfg.WindowX < bordereps || np.x + Cfg.WindowX > CurImg->lLevels[lvl]->sx - bordereps ) return 0;
 	if( np.y - Cfg.WindowY < bordereps || np.y + Cfg.WindowY > CurImg->lLevels[lvl]->sy - bordereps ) return 0;
 
+	// Temporary images for holding data in the window around the feature
+	// Desired width of the window
 	int isx = (Cfg.WindowX*2+1);
+	// Desired number of pixels in the window
 	int imsiz = isx*(Cfg.WindowY*2+1);
+	// Simple difference between image data in window around current frame/position and next frame/position
 	float *diff = new float[imsiz];
+	// Something with gradients around old/new position
 	float *gradx = new float[imsiz];
 	float *grady = new float[imsiz];
 
 	bool bOk = 1;
+	// Iteratively obtain better precision motion estimation (FIXME)
 	for( int iteration=0;iteration<Cfg.MaxIterations;iteration++ )
 	{
+		// Calculate diffs and gradients ((FIXME)
 		GetDiffForPointset( lvl, op, np, diff );
 		GetGradForPointset( lvl, op, np, gradx, grady );
 /*
@@ -367,6 +387,8 @@ bool FexTracker::TrackOneFeature( int lvl, vec2 op, vec2& np )
 		imdebug("lum b=32f w=%d h=%d %p /255", isx, imsiz/isx, gradx);
 		imdebug("lum b=32f w=%d h=%d %p /255", isx, imsiz/isx, grady);
 */
+
+		// Calculate gradient correlation matrix and some other matrix related to gradients and differences
 		register float gx, gy, di;
 
 		float gxx = 0, gyy = 0, gxy = 0, ex = 0, ey = 0;
@@ -383,6 +405,7 @@ bool FexTracker::TrackOneFeature( int lvl, vec2 op, vec2& np )
 			ey += di*gy;
 		}
 
+		// Too small determinant in the gradient corr. matrix? (what does that mean?)
 		float det = gxx*gyy - gxy*gxy;
 		if( det < Cfg.MinDeterminant )
 		{
@@ -390,11 +413,13 @@ bool FexTracker::TrackOneFeature( int lvl, vec2 op, vec2& np )
 			break;
 		}
 
+		// So apparently those two matrices together tell something about the movement
 		float dx = (gyy*ex - gxy*ey)/det;
 		float dy = (gxx*ey - gxy*ex)/det;
 		np.x += dx;
 		np.y += dy;
 
+		// Check if the feature moved too close to a border, in which case it's lost
 		if( ( np.x - Cfg.WindowX < bordereps || np.x + Cfg.WindowX > CurImg->lLevels[lvl]->sx - bordereps )
 		||  ( np.y - Cfg.WindowY < bordereps || np.y + Cfg.WindowY > CurImg->lLevels[lvl]->sy - bordereps ) )
 		{
@@ -402,11 +427,14 @@ bool FexTracker::TrackOneFeature( int lvl, vec2 op, vec2& np )
 			break;
 		}
 
+		// If the feature didn't move enough in this iteration, assume its motion is properly estimated
 		if( fabs(dx) < Cfg.MinDisplacement && fabs(dy) < Cfg.MinDisplacement )break;
 	}
 	delete [] gradx;
 	delete [] grady;
 
+	// I think this checks if there's too large a difference between the image at the current and the next frame
+	// around the motion estimated feature
 	if( bOk )
 	{
 		GetDiffForPointset( lvl, op, np, diff );
@@ -424,20 +452,24 @@ bool FexTracker::TrackOneFeature( int lvl, vec2 op, vec2& np )
 
 inline float Interpolate( float *img, int ImgSX, float x, float y )
 {
-  int xt = (int) x;  /* coordinates of top-left corner */
-  int yt = (int) y;
-  float ax = x - xt;
-  float ay = y - yt;
-  float *ptr = img + (ImgSX*yt) + xt;
+	// Bilinear interpolation between (x,y) and ((int)x,(int)y)
+	int xt = (int) x;  /* coordinates of top-left corner */
+	int yt = (int) y;
+	float ax = x - xt;
+	float ay = y - yt;
+	float *ptr = img + (ImgSX*yt) + xt;
 
-  return ( (1-ax) * (1-ay) * *ptr +
-           ax   * (1-ay) * *(ptr+1) +
-           (1-ax) *   ay   * *(ptr+(ImgSX)) +
-           ax   *   ay   * *(ptr+(ImgSX)+1) );
+	return ( (1-ax) * (1-ay) * *ptr +
+		ax   * (1-ay) * *(ptr+1) +
+		(1-ax) *   ay   * *(ptr+(ImgSX)) +
+		ax   *   ay   * *(ptr+(ImgSX)+1) );
 }
 
 void FexTracker::GetDiffForPointset( int lvl, vec2 op, vec2 np, float* diff )
 {
+	// Calculate the difference between the current frame and the next frame
+	// locally around the feature point
+	// (using the currently motion estimated coordinates for the new position)
 	float* img1 = CurImg->lLevels[lvl]->Img;
 	int isx1 = CurImg->lLevels[lvl]->sx;
 	float* img2 = NextImg->lLevels[lvl]->Img;
@@ -452,6 +484,7 @@ void FexTracker::GetDiffForPointset( int lvl, vec2 op, vec2 np, float* diff )
 }
 void FexTracker::GetGradForPointset( int lvl, vec2 op, vec2 np, float* gradx, float* grady )
 {
+	// Dark magic
 	int isx = CurImg->lLevels[lvl]->sx;
 
 	float* gx1 = CurImg->lLevels[lvl]->GradX;
