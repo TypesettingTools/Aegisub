@@ -4,6 +4,14 @@
 // FexTracker.cpp : Defines the entry point for the DLL application.
 //
 
+#ifndef MIN
+#define MIN(a,b) ((a)<(b))?(a):(b)
+#endif
+
+#ifndef MAX
+#define MAX(a,b) ((a)>(b))?(a):(b)
+#endif
+
 #include "StdAfx.h"
 #include "stdio.h"
 
@@ -22,7 +30,7 @@ FexTracker::FexTracker( int sx, int sy, int inFeatures )
 
 	bDebug = 0;
 
-	float subsampling = float(Cfg.SearchRange) / min(Cfg.WindowX,Cfg.WindowY);
+	float subsampling = float(Cfg.SearchRange) / float(MIN(Cfg.WindowX,Cfg.WindowY));
 
 	if (subsampling < 1.0)  {		/* 1.0 = 0+1 */
 		PyramidMaxLevels = 1;
@@ -303,7 +311,7 @@ void FexTracker::FindFeatures( int minFeatures )
 
 	// Subtract 1 from the start time of all newly found features
 	for( int j=oldN;j<nFeatures;j++ )
-		lFeatures[j].StartTime = max(0,lFeatures[j].StartTime-1);
+		lFeatures[j].StartTime = MAX(0,lFeatures[j].StartTime-1);
 
 
 	delete []list;

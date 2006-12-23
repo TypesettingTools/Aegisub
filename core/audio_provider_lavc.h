@@ -36,10 +36,8 @@
 
 #pragma once
 
-#ifndef AUDIO_PROVIDER_LAVC_H
-#define AUDIO_PROVIDER_LAVC_H
-
-#ifdef USE_LAVC
+#include "setup.h"
+#if USE_LAVC == 1
 
 #define EMULATE_INTTYPES
 #include "audio_provider.h"
@@ -66,6 +64,4 @@ public:
 };
 
 #endif /* USE_LAVC */
-
-#endif /* AUDIO_PROVIDER_LAVC_H */
 

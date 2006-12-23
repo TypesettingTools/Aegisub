@@ -34,7 +34,8 @@
 //
 
 
-#ifndef NO_SPELLCHECKER
+#include "setup.h"
+#if USE_ASPELL == 1
 
 #pragma once
 #include <wx/wxprec.h>

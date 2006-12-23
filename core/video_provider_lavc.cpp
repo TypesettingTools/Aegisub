@@ -36,7 +36,8 @@
 
 ///////////
 // Headers
-#ifdef USE_LAVC
+#include "setup.h"
+#if USE_LAVC == 1
 #include <wx/wxprec.h>
 #include <wx/image.h>
 #include <algorithm>

@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,35 +34,16 @@
 //
 
 
-#pragma once
+//
+// Precompiled Header Source File
+//
+// In order to use it, set the project to use stdwx.h as precompiled header and
+// insert it in every source file (under C/C++ -> Advanced -> Force Includes),
+// then set this file to generate the precompiled header
+//
+// Note: make sure that you disable use of precompiled headers on md5.c and
+// MatroskaParser.c, as well as any possible future .c files.
+//
 
-#include "setup.h"
-#if USE_LAVC == 1
 
-#define EMULATE_INTTYPES
-#include <wx/filename.h>
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-
-class LAVCFile {
-private:
-	unsigned refs;
-
-	LAVCFile(wxString filename);
-	~LAVCFile();
-
-	class Initializer {
-	public:
-		Initializer();
-	};
-	static Initializer init;
-
-public:
-	AVFormatContext *fctx;
-	
-	static LAVCFile *Create(wxString filename) { return new LAVCFile(filename); }
-	LAVCFile *AddRef() { refs++; return this; };
-	void Release() { if (!--refs) delete this; };
-};
-
-#endif /* USE_LAVC */
+#include "stdwx.h"

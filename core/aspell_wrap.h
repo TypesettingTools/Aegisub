@@ -33,10 +33,10 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#ifndef NO_SPELLCHECKER
+#include "setup.h"
+#if USE_ASPELL == 1
 
-#ifndef ASPELL_WRAP_H_RKEY9023809128309182
-#define ASPELL_WRAP_H_RKEY9023809128309182
+#pragma once
 
 //////////
 // Headers
@@ -65,4 +65,3 @@ extern AspellWrapper Aspell;
 
 #endif
 
-#endif

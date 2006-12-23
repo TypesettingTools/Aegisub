@@ -36,8 +36,9 @@
 
 ///////////
 // Headers
+#include "setup.h"
+#if USE_LAVC == 1
 #include <wx/wxprec.h>
-#ifdef USE_LAVC
 #include "utils.h"
 #include "audio_provider_lavc.h"
 #include "video_provider_lavc.h"

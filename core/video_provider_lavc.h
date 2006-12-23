@@ -36,18 +36,10 @@
 #pragma once
 
 
-///////////////////////////////////
-// Auto-enable LAVC on non-windows
-#ifndef __WINDOWS__
-#ifndef USE_LAVC
-#define USE_LAVC
-#endif
-#endif
-
-
 ///////////
 // Headers
-#ifdef USE_LAVC
+#include "setup.h"
+#if USE_LAVC == 1
 #define EMULATE_INTTYPES
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>

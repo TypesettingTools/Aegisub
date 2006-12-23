@@ -13,6 +13,10 @@ void BaseFloatImage_GaussEdgeDetect( float* Img, int sizx, int sizy, float sigma
 void BaseFloatImage_GaussSmooth( float* Img, int sizx, int sizy, float sigma, float* Out );
 void BaseFloatImage_LanczosRescale( float* in, int inSx, int inSy, float* out, int outSx, int outSy );
 
+#ifndef MIN
+#define MIN(a,b) ((a)<(b))?(a):(b)
+#endif
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -72,7 +76,7 @@ FexImgPyramid::FexImgPyramid( float* Img, int SizX, int SizY, float EdgeDetectSi
 
 	if( Levels == -1 ) Levels = 999;
 	int mLvl = 0;
-	int tsm = min(SizX,SizY);
+	int tsm = MIN(SizX,SizY);
 	while( tsm>1 && tsm%2==0 )
 	{
 		tsm/=Subsampling;

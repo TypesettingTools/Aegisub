@@ -806,7 +806,7 @@ void FrameMain::OnOpenTranslation(wxCommandEvent& WXUNUSED(event)) {
 // Open Spell Checker
 void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 	videoBox->videoDisplay->Stop();
-	#ifndef NO_SPELLCHECKER
+	#if USE_ASPELL == 1
 	wxArrayInt selList = SubsBox->GetSelection();
 	if (selList.GetCount() == 1){
 		AssDialogue * a = SubsBox->GetDialogue(selList.Item(0));
