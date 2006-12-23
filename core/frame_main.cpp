@@ -187,7 +187,7 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
 	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample script resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBITMAP(timing_processor_toolbutton),_("Open Timing Post-processor dialog"));
-	#ifndef NO_SPELLCHECKER
+	#if USE_ASPELL == 1
 	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spellchecker"),wxBITMAP(spellcheck_toolbutton),_("Open Spell checker"));
 	#endif
 	Toolbar->AddSeparator();
@@ -322,7 +322,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_Resample,_("Resample resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), wxBITMAP(timing_processor_toolbutton));
-	#ifndef NO_SPELLCHECKER
+	#if USE_ASPELL == 1
 	AppendBitmapMenuItem (toolMenu,Menu_Tools_SpellCheck, _("Spe&ll checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
 	#endif
 	toolMenu->AppendSeparator();
