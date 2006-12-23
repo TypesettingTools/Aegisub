@@ -13,18 +13,17 @@ Third, this is all available under the BSD license. According to GNU itself, BSD
 
 Some notes about the procedure:
 All paths should be added to the global msvc settings or you might encounter some problems.
-This guide assumes Visual Studio 2003 is used, it might work in other versions but it is guaranteed
-to fail with other compilers due to the avisynth dependency.
+This guide assumes Visual Studio 2003 or 2005 is used, it might work in other versions but it
+is guaranteed to fail with other compilers due to the avisynth dependency.
 While you can compile most libraries yourself these instructions will assume you want to
 download precompiled versions whenever possible. Also note that in  most other cases where
 precompiled libraries are available they're unsuitable for use in aegisub.
 
 Building instructions (dependencies):
 
-1. Download and install wxWidgets 2.6.x (www.wxwidgets.org, 2.6.2 used when this guide was written).
-Open include\wx\msw\setup.h and set WXWIN_COMPATIBILITY_2_4 to 0 and wxUSE_UNICODE to 1. To compile the libraries
-first open the visual studio command prompt and go to build\msw. Run "nmake makefile.vc UNICODE=1 BUILD=debug"
-and then "nmake makefile.vc UNICODE=1 BUILD=release" to generate the libraries required for aegisub.
+1. Download and install wxWidgets 2.8.x (www.wxwidgets.org, 2.8.0 used when this guide was written).
+Open build\msw\wx.sln, and set the active configuration to "Unicode Debug". Compile that. After that, set it to
+"Unicode Release", and also compile that.
 
 Include:
   include
@@ -79,31 +78,32 @@ Building instructions (aegisub):
 
 1. Create a new blank Win32 c++ project in msvc.
 
-2. Add all h, cpp and rc files in the "core", "PRS" and "FexTrackerSource" folders to the project.
+2. Copy setup0.h as setup.h, and edit any possible configurations you might want there. Make sure that you SVN ignore that
+file (setup.h), as you are NOT supposed to commit it to the repository.
 
-3. Open the project settings. Add UNICODE to the preprocessor defines, and set the code generation to multi threaded (debug) dll.
+3. Add all h, cpp and rc files in the "core", "PRS" and "FexTrackerSource" folders to the project.
 
-3.1. OPTIONAL - Define NO_SPELLCHECKER if you want to compile without aspell support.
+4. Open the project settings. Add UNICODE to the preprocessor defines, and set the code generation to multi threaded (debug) dll.
 
-4. Set up the build-versioning stuff.
+5. Set up the build-versioning stuff.
 
-4.1. Open projects settings and select All Configurations. Go to Build Events, Pre-build Event.
+5.1. Open projects settings and select All Configurations. Go to Build Events, Pre-build Event.
 Change the Command Line to the following two lines (click "..."):
   cd $(InputDir)\core\build
   c:\python24\python.exe make-svn-rev-header.py
 You'll obviously want to change the path to the Python interpreter.
 
-4.2 Create the file core/build/build-credit.h and add this line to it:
+5.2 Create the file core/build/build-credit.h and add this line to it:
   #define BUILD_CREDIT "yournick"
 Of course without indendation and replacing the yournick part.
 
-5. Add the libraries to the linker input. If you compiled portaudio with wmme you have to remove dsound.lib and srmiids.lib
+6. Add the libraries to the linker input. If you compiled portaudio with wmme you have to remove dsound.lib and srmiids.lib
 and replace PAStaticDS*.lib with the wmme version. Remove libaspell-15-dll.lib if you defined NO_SPELLCHECKER.
 
 Link to these libraries for release:
-freetype2110MT.lib libaspell-15-dll.lib wxzlib.lib wxpng.lib wxregexu.lib wxmsw26u_adv.lib wxmsw26u_core.lib wxbase26u.lib wxmsw26u_media.lib dsound.lib PAStaticDSMT.lib Vfw32.lib winmm.lib lua50MT.lib comctl32.lib rpcrt4.lib advapi32.lib wsock32.lib strmiids.lib
+freetype2110MT.lib libaspell-15-dll.lib wxzlib.lib wxpng.lib wxregexu.lib wxmsw28u_adv.lib wxmsw28u_core.lib wxbase28u.lib wxmsw28u_media.lib dsound.lib PAStaticDSMT.lib Vfw32.lib winmm.lib lua50MT.lib comctl32.lib rpcrt4.lib advapi32.lib wsock32.lib strmiids.lib
 
 Link to these libraries for debug:
-freetype2110MT_D.lib libaspell-15-dll.lib dsound.lib PAStaticDSMTd.lib Vfw32.lib lua50MTd.lib wxzlibd.lib wxpngd.lib wxregexud.lib wxbase26ud.lib wxmsw26ud_media.lib wxmsw26ud_core.lib wxmsw26ud_adv.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib strmiids.lib
+freetype2110MT_D.lib libaspell-15-dll.lib dsound.lib PAStaticDSMTd.lib Vfw32.lib lua50MTd.lib wxzlibd.lib wxpngd.lib wxregexud.lib wxbase28ud.lib wxmsw28ud_media.lib wxmsw28ud_core.lib wxmsw28ud_adv.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib strmiids.lib
 
 6. Compile and wait.

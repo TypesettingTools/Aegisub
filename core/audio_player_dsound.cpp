@@ -97,7 +97,7 @@ void DirectSoundPlayer::OpenStream() {
 	waveFormat.cbSize = 0;
 
 	// Create the buffer initializer
-	int aim = 0x10000;
+	int aim = 0x20000;
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
 	bufSize = MIN(MAX(min,aim),max);
