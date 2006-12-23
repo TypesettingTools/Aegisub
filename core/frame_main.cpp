@@ -1018,6 +1018,7 @@ void FrameMain::LoadKeyframes(wxString filename) {
 		videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
 		videoBox->videoDisplay->SetKeyFramesName(filename);
 		Refresh();
+		return;
 	}
 
 	// Load
