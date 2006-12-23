@@ -74,18 +74,18 @@ public:
 	virtual void SetVolume(double volume)=0;
 	virtual double GetVolume()=0;
 
-	void SetProvider(AudioProvider *provider);
-	AudioProvider *GetProvider();
-
 	virtual __int64 GetStartPosition()=0;
 	virtual __int64 GetEndPosition()=0;
 	virtual __int64 GetCurrentPosition()=0;
 	virtual void SetEndPosition(__int64 pos)=0;
 	virtual void SetCurrentPosition(__int64 pos)=0;
 
-	void SetDisplayTimer(wxTimer *timer);
 	virtual wxMutex *GetMutex();
 
+	void SetProvider(AudioProvider *provider);
+	AudioProvider *GetProvider();
+
+	void SetDisplayTimer(wxTimer *timer);
 	static AudioPlayer* GetAudioPlayer();
 
 	DECLARE_EVENT_TABLE()

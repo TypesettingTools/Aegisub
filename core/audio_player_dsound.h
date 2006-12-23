@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,110 +34,78 @@
 //
 
 
+#pragma once
+
+
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include "audio_player_portaudio.h"
-#ifdef USE_DSOUND
-#include "audio_player_dsound.h"
-#endif
-#include "audio_provider.h"
-
-
-///////////////
-// Constructor
-AudioPlayer::AudioPlayer() {
-	provider = NULL;
-	displayTimer = NULL;
-}
+#include "audio_player.h"
+#include <dsound.h>
 
 
 //////////////
-// Destructor
-AudioPlayer::~AudioPlayer() {
-	if (displayTimer) {
-		displayTimer->Stop();
-	}
-	CloseStream();
-}
+// Prototypes
+class DirectSoundPlayer;
 
 
-////////////////
-// Set provider
-void AudioPlayer::SetProvider(AudioProvider *_provider) {
-	provider = _provider;
-}
+//////////
+// Thread
+class DirectSoundPlayerThread : public wxThread {
+private:
+	DirectSoundPlayer *parent;
+
+public:
+	DirectSoundPlayerThread(DirectSoundPlayer *parent);
+	~DirectSoundPlayerThread();
+
+	wxThread::ExitCode Entry();
+};
 
 
-////////////////
-// Get provider
-AudioProvider *AudioPlayer::GetProvider() {
-	return provider;
-}
+////////////////////
+// Portaudio player
+class DirectSoundPlayer : public AudioPlayer {
+	friend class DirectSoundPlayerThread;
 
+private:
+	wxMutex DSMutex;
 
-/////////////
-// Get mutex
-wxMutex *AudioPlayer::GetMutex() {
-	return NULL;
-}
+	bool playing;
+	float volume;
+	int offset;
+	int bufSize;
 
+	volatile __int64 playPos;
+	volatile __int64 startPos;
+	volatile __int64 endPos;
 
-/////////////
-// Set timer
-void AudioPlayer::SetDisplayTimer(wxTimer *timer) {
-	displayTimer = timer;
-}
+	IDirectSound8 *directSound;
+	IDirectSoundBuffer8 *buffer;
+	HANDLE notificationEvent;
 
+	void FillBuffer(bool fill);
 
-/////////////////////
-// Ask to stop later
-void AudioPlayer::RequestStop() {
-	wxCommandEvent event(wxEVT_STOP_AUDIO, 1000);
-    event.SetEventObject(this);
-	wxMutexGuiEnter();
-	AddPendingEvent(event);
-	wxMutexGuiLeave();
-}
+	DirectSoundPlayerThread *thread;
 
+public:
+	DirectSoundPlayer();
+	~DirectSoundPlayer();
 
-/////////
-// Event
-DEFINE_EVENT_TYPE(wxEVT_STOP_AUDIO)
+	void OpenStream();
+	void CloseStream();
 
-BEGIN_EVENT_TABLE(AudioPlayer, wxEvtHandler)
-	EVT_COMMAND (1000, wxEVT_STOP_AUDIO, AudioPlayer::OnStopAudio)
-END_EVENT_TABLE()
+	void Play(__int64 start,__int64 count);
+	void Stop(bool timerToo=true);
+	bool IsPlaying() { return playing; }
 
-void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
-	Stop(false);
-}
+	__int64 GetStartPosition() { return startPos; }
+	__int64 GetEndPosition() { return endPos; }
+	__int64 GetCurrentPosition();
+	void SetEndPosition(__int64 pos);
+	void SetCurrentPosition(__int64 pos);
 
+	void SetVolume(double vol) { volume = vol; }
+	double GetVolume() { return volume; }
 
-//////////////
-// Get player
-AudioPlayer* AudioPlayer::GetAudioPlayer() {
-	// Prepare
-	AudioPlayer *player = NULL;
-
-	try {
-		// Get DirectSound player
-		#ifdef USE_DSOUND
-		player = new DirectSoundPlayer;
-		#endif
-
-		// Get PortAudio player
-		if (!player) player = new PortAudioPlayer;
-	}
-	catch (...) {
-		delete player;
-		player = NULL;
-		throw;
-	}
-
-	// Got player?
-	if (!player) throw _T("Unable to create audio player.");
-
-	// Return
-	return player;
-}
+	wxMutex *GetMutex() { return &DSMutex; }
+};
