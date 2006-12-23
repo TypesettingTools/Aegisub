@@ -985,13 +985,14 @@ void FrameMain::LoadVFR(wxString filename) {
 			VFR_Output.Load(filename);
 			SubsBox->Refresh(false);
 		}
+
 		// Fail
 		catch (const wchar_t *error) {
 			wxString err(error);
 			wxMessageBox(err, _T("Error opening timecodes file"), wxOK | wxICON_ERROR, this);
 		}
 		catch (...) {
-			wxMessageBox(_T("Unknown error"), _T("Error opening video file"), wxOK | wxICON_ERROR, this);
+			wxMessageBox(_T("Unknown error"), _T("Error opening timecodes file"), wxOK | wxICON_ERROR, this);
 		}
 	}
 
@@ -1010,46 +1011,68 @@ void FrameMain::LoadVFR(wxString filename) {
 //////////////////
 // Load Keyframes
 void FrameMain::LoadKeyframes(wxString filename) {
-	// Open file
-	wxArrayInt keyFrames;
-	keyFrames.Empty();
-	TextFileReader file(filename,_T("ASCII"));
+	// Unload
+	if (filename.IsEmpty()) {
+		wxArrayInt keyFrames;
+		keyFrames.Empty();
+		videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
+		videoBox->videoDisplay->SetKeyFramesName(filename);
+		Refresh();
+	}
 
-	// Read header
-	wxString cur = file.ReadLineFromFile();
-	if (cur != _T("# keyframe format v1")) return;
-	cur = file.ReadLineFromFile();
-	if (cur.Left(4) != _T("fps ")) return;
-	cur = cur.Mid(4);
-	double fps;
-	cur.ToDouble(&fps);
+	// Load
+	try {
+		// Open file
+		wxArrayInt keyFrames;
+		keyFrames.Empty();
+		TextFileReader file(filename,_T("ASCII"));
 
-	// Read lines
-	while (file.HasMoreLines()) {
+		// Read header
+		wxString cur = file.ReadLineFromFile();
+		if (cur != _T("# keyframe format v1")) _T("Invalid keyframes file.");
 		cur = file.ReadLineFromFile();
-		if (!cur.IsEmpty() && cur.IsNumber()) {
-			long temp;
-			cur.ToLong(&temp);
-			keyFrames.Add(temp);
+		if (cur.Left(4) != _T("fps ")) throw _T("Invalid keyframes file.");
+		cur = cur.Mid(4);
+		double fps;
+		cur.ToDouble(&fps);
+		if (fps == 0.0) throw _T("Invalid FPS.");
+
+		// Read lines
+		while (file.HasMoreLines()) {
+			cur = file.ReadLineFromFile();
+			if (!cur.IsEmpty() && cur.IsNumber()) {
+				long temp;
+				cur.ToLong(&temp);
+				keyFrames.Add(temp);
+			}
 		}
+
+		// Set keyframes
+		videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
+		videoBox->videoDisplay->SetKeyFramesName(filename);
+
+		// Set FPS
+		if (!videoBox->videoDisplay->loaded) {
+			videoBox->videoDisplay->fps = fps;
+			VFR_Input.SetCFR(fps);
+			if (!VFR_Output.IsLoaded()) VFR_Output.SetCFR(fps);
+		}
+
+		// Add to recent
+		Options.AddToRecentList(filename,_T("Recent keyframes"));
+
+		// Refresh display
+		Refresh();
 	}
 
-	// Set keyframes
-	videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
-	videoBox->videoDisplay->SetKeyFramesName(filename);
-
-	// Set FPS
-	if (!videoBox->videoDisplay->loaded) {
-		videoBox->videoDisplay->fps = fps;
-		VFR_Input.SetCFR(fps);
-		if (!VFR_Output.IsLoaded()) VFR_Output.SetCFR(fps);
+	// Fail
+	catch (const wchar_t *error) {
+		wxString err(error);
+		wxMessageBox(err, _T("Error opening keyframes file"), wxOK | wxICON_ERROR, this);
 	}
-
-	// Add to recent
-	Options.AddToRecentList(filename,_T("Recent keyframes"));
-
-	// Refresh display
-	Refresh();
+	catch (...) {
+		wxMessageBox(_T("Unknown error"), _T("Error opening keyframes file"), wxOK | wxICON_ERROR, this);
+	}
 }
 
 
