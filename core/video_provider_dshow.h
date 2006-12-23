@@ -40,9 +40,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-
 #ifdef __WINDOWS__
-#ifdef USE_DIRECTSHOW
+#include "setup.h"
+#if USE_DIRECTSHOW == 1
 #include "video_provider.h"
 #pragma warning(disable: 4995)
 #include <dshow.h>

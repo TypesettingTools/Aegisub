@@ -37,8 +37,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "setup.h"
 #include "audio_player_portaudio.h"
-#ifdef USE_DSOUND
+#if USE_DIRECTSOUND == 1
 #include "audio_player_dsound.h"
 #endif
 #include "audio_provider.h"
@@ -122,7 +123,7 @@ AudioPlayer* AudioPlayer::GetAudioPlayer() {
 
 	try {
 		// Get DirectSound player
-		#ifdef USE_DSOUND
+		#if USE_DIRECTSOUND == 1
 		player = new DirectSoundPlayer;
 		#endif
 

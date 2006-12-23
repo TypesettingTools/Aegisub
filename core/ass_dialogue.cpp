@@ -36,13 +36,14 @@
 
 ////////////
 // Includes
+#include "setup.h"
 #include "ass_dialogue.h"
 #include "ass_override.h"
 #include "vfr.h"
 #include "utils.h"
 #include <fstream>
 #include <wx/tokenzr.h>
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
 #include "../FexTrackerSource/FexMovement.h"
 #endif
@@ -51,7 +52,7 @@
 ////////////////////// AssDialogue //////////////////////
 // Constructs AssDialogue
 AssDialogue::AssDialogue() {
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 	Tracker = 0;
 	Movement = 0;
 #endif
@@ -75,7 +76,7 @@ AssDialogue::AssDialogue() {
 
 
 AssDialogue::AssDialogue(wxString _data,bool IsSSA) {
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 	Tracker = 0;
 	Movement = 0;
 #endif
@@ -100,7 +101,7 @@ AssDialogue::~AssDialogue () {
 // Clear
 void AssDialogue::Clear () {
 	ClearBlocks();
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 	if( Tracker )
 	{
 		delete Tracker;
@@ -193,7 +194,7 @@ bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 	Effect.Trim(true);
 	Effect.Trim(false);
 
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 	if( Effect.BeforeFirst(':')==_T("FexMovement") )
 	{
 		if( Movement ) DeleteMovement( Movement );

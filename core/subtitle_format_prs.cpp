@@ -34,10 +34,10 @@
 //
 
 
-#ifndef NO_PRS
-
 ///////////
 // Headers
+#include "setup.h"
+#if USE_PRS == 1
 #include <wx/image.h>
 #include <wx/mstream.h>
 #include <wx/filename.h>
@@ -779,4 +779,4 @@ wxImage PRSSubtitleFormat::SubImageWithAlpha (wxImage &source,const wxRect &rect
     return image;
 }
 
-#endif /* NO_PRS */
+#endif

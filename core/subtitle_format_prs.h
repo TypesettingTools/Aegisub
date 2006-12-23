@@ -39,6 +39,8 @@
 
 ///////////
 // Headers
+#include "setup.h"
+#if USE_PRS == 1
 #include "subtitle_format.h"
 #include <vector>
 
@@ -69,3 +71,5 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
+
+#endif

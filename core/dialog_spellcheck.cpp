@@ -34,8 +34,8 @@
 //
 
 
-#ifndef NO_SPELLCHECKER
-
+#include "setup.h"
+#if USE_ASPELL == 1
 #include "aspell_wrap.h"
 #include "main.h"
 #include "dialog_spellcheck.h"

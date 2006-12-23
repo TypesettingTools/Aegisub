@@ -39,6 +39,8 @@
 
 ///////////
 // Headers
+#include "setup.h"
+#if USE_DIRECTSOUND == 1
 #include <wx/wxprec.h>
 #include "audio_provider.h"
 #include "audio_player_dsound.h"
@@ -372,3 +374,5 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	Delete();
 	return 0;
 }
+
+#endif

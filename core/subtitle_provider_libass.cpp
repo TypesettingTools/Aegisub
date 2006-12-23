@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// Copyright (c) 2006, David Lamparter
+// Copyright (c) 2006, Evgeniy Stepanov
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without

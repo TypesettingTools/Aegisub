@@ -40,6 +40,7 @@
 #include "video_provider_lavc.h"
 #include "video_provider_dshow.h"
 #include "options.h"
+#include "setup.h"
 
 
 ////////////////
@@ -65,7 +66,7 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	wxString preffered = Options.AsText(_T("Video provider")).Lower();
 
 	// See if it's OK to use LAVC
-	#ifdef USE_LAVC
+	#if USE_LAVC == 1
 	if (preffered == _T("ffmpeg") || (!avisynthAvailable && !dshowAvailable)) {
 		// Load
 		bool success = false;
@@ -101,7 +102,7 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	#endif
 
 	#ifdef __WINDOWS__
-	#ifdef USE_DIRECTSHOW
+	#if USE_DIRECTSHOW == 1
 	// Use DirectShow provider
 	if (!provider && (preffered == _T("dshow") || !avisynthAvailable)) {
 		try {

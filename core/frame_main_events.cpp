@@ -36,6 +36,7 @@
 
 ///////////////////
 // Include headers
+#include "setup.h"
 #include <wx/wxprec.h>
 #include <wx/mimetype.h>
 #include <wx/filename.h>
@@ -73,7 +74,7 @@
 #include "toggle_bitmap.h"
 #include "dialog_hotkeys.h"
 #include "dialog_timing_processor.h"
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
 #include "../FexTrackerSource/FexTrackingFeature.h"
 #include "../FexTrackerSource/FexMovement.h"
@@ -95,7 +96,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_BUTTON(Video_Stop, FrameMain::OnVideoStop)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, FrameMain::OnVideoToggleScroll)
 
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 	EVT_BUTTON(Video_Tracker_Menu, FrameMain::OnVideoTrackerMenu)
 	EVT_MENU(Video_Track_Points, FrameMain::OnVideoTrackPoints)
 	EVT_MENU(Video_Track_Point_Add, FrameMain::OnVideoTrackPointAdd)

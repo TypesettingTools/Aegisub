@@ -33,12 +33,12 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#ifndef NO_SPELLCHECKER
-
 
 ///////////
 //Includes
-#include ".\aspell_wrap.h"
+#include "setup.h"
+#if USE_ASPELL == 1
+#include "aspell_wrap.h"
 
 
 //////////////////////

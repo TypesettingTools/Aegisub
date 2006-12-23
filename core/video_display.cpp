@@ -36,6 +36,7 @@
 
 ////////////
 // Includes
+#include "setup.h"
 #include "video_display.h"
 #include "video_provider.h"
 #include "vfr.h"
@@ -55,7 +56,7 @@
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
 #include <wx/config.h>
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
 #include "../FexTrackerSource/FexTrackingFeature.h"
 #include "../FexTrackerSource/FexMovement.h"
@@ -300,7 +301,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	int x = event.GetX();
 	int y = event.GetY();
 
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 	if( event.ButtonDown(wxMOUSE_BTN_LEFT) )
 	{
 		MouseDownX = x;
@@ -672,7 +673,7 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 // Draw Tracking Overlay
 void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 {
-#ifndef NO_FEX
+#if USE_FEXTRACKER == 1
 	if( IsPlaying ) return;
 
 	// Get line

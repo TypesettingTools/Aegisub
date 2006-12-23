@@ -37,8 +37,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "setup.h"
 #ifdef __WINDOWS__
-#ifdef USE_DIRECTSHOW
+#if USE_DIRECTSHOW == 1
 #pragma warning(disable: 4995)
 #include <wx/image.h>
 #include <windows.h>

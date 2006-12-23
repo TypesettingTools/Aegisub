@@ -7,6 +7,8 @@
 
 ///////////////////
 // Include headers
+#include "setup.h"
+#if USE_FEXTRACKER == 1
 #include <wx/wxprec.h>
 #include <wx/mimetype.h>
 #include <wx/filename.h>
@@ -287,4 +289,4 @@ void FrameMain::OnVideoTrackMovementMoveAfter(wxCommandEvent &event) {
 	videoBox->videoDisplay->bTrackerEditing = 0;
 }
 
-
+#endif
