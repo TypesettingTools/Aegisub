@@ -39,7 +39,6 @@
 
 ///////////
 // Headers
-#ifdef USE_DSOUND
 #include <wx/wxprec.h>
 #include "audio_provider.h"
 #include "audio_player_dsound.h"
@@ -179,7 +178,6 @@ void DirectSoundPlayer::FillBuffer(bool fill) {
 	if (endPos > playPos) left = endPos - playPos;
 	unsigned long int delta = 0;
 	if (totalCount > left) delta = totalCount - left;
-	int extra = 0;
 
 	// If so, don't allow it
 	if (delta) {
@@ -191,17 +189,15 @@ void DirectSoundPlayer::FillBuffer(bool fill) {
 		int temp = MIN(delta,count2);
 		count2 -= temp;
 		delta -= temp;
-		extra += temp;
 		temp = MIN(delta,count1);
 		count1 -= temp;
 		delta -= temp;
-		extra += temp;
 	}
 
 	// Get source wave
 	if (count1) provider->GetAudio(ptr1,playPos,count1);
 	if (count2) provider->GetAudio(ptr2,playPos+count1,count2);
-	playPos += count1 + count2 + extra;
+	playPos += totalCount;
 
 	// Unlock
 	buffer->Unlock(ptr1,size1,ptr2,size2);
@@ -288,6 +284,7 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	if (timerToo && displayTimer) {
 		displayTimer->Stop();
 	}
+	playing = false;
 }
 
 
@@ -309,7 +306,7 @@ void DirectSoundPlayer::SetCurrentPosition(__int64 pos) {
 // Get current position
 __int64 DirectSoundPlayer::GetCurrentPosition() {
 	// Check if buffer is loaded
-	if (!buffer) return 0;
+	if (!buffer || !playing) return 0;
 
 	// Read position
 	unsigned long int play,write;
@@ -349,7 +346,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	while (parent->playing) {
 		// Get variables
 		parent->DSMutex.Lock();
-		playPos = parent->playPos;
+		playPos = parent->GetCurrentPosition();
 		endPos = parent->endPos;
 		bufSize = parent->bufSize;
 		parent->DSMutex.Unlock();
@@ -357,19 +354,17 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 		// Still playing?
 		if (playPos < endPos + bufSize/8) {
 			// Wait for signal
-			WaitForSingleObject(parent->notificationEvent,5000);
+			WaitForSingleObject(parent->notificationEvent,1000);
 
 			// Fill buffer
-			parent->DSMutex.Lock();
+			//parent->DSMutex.Lock();
 			parent->FillBuffer(false);
-			parent->DSMutex.Unlock();
+			//parent->DSMutex.Unlock();
 		}
 
 		// Over, stop it
 		else {
-			parent->DSMutex.Lock();
 			parent->buffer->Stop();
-			parent->DSMutex.Unlock();
 			break;
 		}
 	}
@@ -377,4 +372,3 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	Delete();
 	return 0;
 }
-#endif
