@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "setup.h"
+#if USE_PORTAUDIO == 1
 #include "audio_player_portaudio.h"
 #include "audio_provider.h"
 #include "utils.h"
@@ -191,3 +193,5 @@ void PortAudioPlayer::CloseStream() {
 		Pa_CloseStream(stream);
 	} catch (...) {}
 }
+
+#endif

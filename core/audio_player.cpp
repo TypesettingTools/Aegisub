@@ -38,7 +38,9 @@
 // Headers
 #include <wx/wxprec.h>
 #include "setup.h"
+#if USE_PORTAUDIO == 1
 #include "audio_player_portaudio.h"
+#endif
 #if USE_DIRECTSOUND == 1
 #include "audio_player_dsound.h"
 #endif
@@ -128,7 +130,9 @@ AudioPlayer* AudioPlayer::GetAudioPlayer() {
 		#endif
 
 		// Get PortAudio player
+		#if USE_PORTAUDIO == 1
 		if (!player) player = new PortAudioPlayer;
+		#endif
 	}
 	catch (...) {
 		delete player;

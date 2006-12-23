@@ -39,6 +39,8 @@
 
 ///////////
 // Headers
+#include "setup.h"
+#if USE_PORTAUDIO == 1
 #include "audio_player.h"
 extern "C" {
 #include <portaudio.h>
@@ -87,3 +89,5 @@ public:
 
 	wxMutex *GetMutex() { return &PAMutex; }
 };
+
+#endif
