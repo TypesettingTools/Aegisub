@@ -34,73 +34,26 @@
 //
 
 
-//
-// This is a configuration file for the Aegisub project
-//
-// In order to use it, copy it as setup.h and edit anything you might want there
-// DO NOT commit your personal setup.h to the repository
-//
+#pragma once
 
 
-
-////////////////////////////////////
-// Enable DirectShow Video Provider
-// Requires: Win32, DirectX SDK
-#define USE_DIRECTSHOW 0
+///////////
+// Headers
+#include <wx/wxprec.h>
 
 
-///////////////////////////////////
-// Enable DirectSound Audio Player
-// Requires: Win32, DirectX SDK
-#define USE_DIRECTSOUND 1
+///////////////////////////
+// Spellchecking interface
+class SpellChecker {
+public:
+	static SpellChecker *GetSpellChecker();
 
+	SpellChecker() {}
+	virtual ~SpellChecker() {}
 
-/////////////////////////////////
-// Enable PortAudio Audio Player
-// Requires: PortAudio library
-#define USE_PORTAUDIO 0
+	virtual bool CheckWord(wxString word)=0;
+	virtual wxArrayString GetSuggestions(wxString word)=0;
 
-
-//////////////////////////////
-// Enable ASpell spellchecker
-// Requires: aspell ibrary
-#define USE_ASPELL 0
-
-
-////////////////////////////////
-// Enable Hunspell spellchecker
-#define USE_HUNSPELL 0
-
-
-//////////////////////////////
-// Enable LAVC video provider
-// Requires: FFMPEG library
-#define USE_LAVC 0
-
-
-////////////////////////
-// Enable PRS Exporting
-// Requires: wxPNG library
-#define USE_PRS 1
-
-
-/////////////////////
-// Enable FexTracker
-// Requires: Win32, FexTracker library
-#define USE_FEXTRACKER 1
-
-
-// The following two are Linux-specific, so it would involve changing the makefiles
-// Therefore, I haven't changed the code to make them work, yet
-
-
-/////////////////
-// Enable LibASS
-// Requires: libass library, GNU?
-#define USE_LIBASS 0
-
-
-//////////////
-// Enable ASA
-// Requires: asa library
-#define USE_ASA 0
+	virtual wxArrayString GetLanguageList()=0;
+	virtual void SetLanguage(wxString language)=0;
+};

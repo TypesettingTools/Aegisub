@@ -47,7 +47,7 @@
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
-#include "fonts_collector.h"
+#include "dialog_fonts_collector.h"
 #include "utils.h"
 #include "options.h"
 #include "frame_main.h"

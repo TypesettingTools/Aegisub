@@ -87,10 +87,17 @@
 #include <map>
 
 
-///////////////////////
-// Optional components
+///////////////
+// DirectSound
 #if USE_DIRECTSOUND == 1
 #include <dsound.h>
+#endif
+
+
+////////////
+// Hunspell
+#if USE_HUNSPELL == 1
+#include <hunspell/hunspell.hxx>
 #endif
 
 

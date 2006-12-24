@@ -57,16 +57,12 @@
 
 #if wxCHECK_VERSION(2, 8, 0)
 #ifdef __WXDEBUG__
-//#pragma comment(lib, "wxmsw28ud_richtext.lib")
-//#pragma comment(lib, "wxmsw28ud_html.lib")
 #pragma comment(lib, "wxregexud.lib")
 #pragma comment(lib, "wxbase28ud.lib")
 #pragma comment(lib, "wxmsw28ud_media.lib")
 #pragma comment(lib, "wxmsw28ud_core.lib")
 #pragma comment(lib, "wxmsw28ud_adv.lib")
 #else
-//#pragma comment(lib, "wxmsw28u_richtext.lib")
-//#pragma comment(lib, "wxmsw28u_html.lib")
 #pragma comment(lib, "wxregexu.lib")
 #pragma comment(lib, "wxbase28u.lib")
 #pragma comment(lib, "wxmsw28u_media.lib")
@@ -159,6 +155,17 @@
 #pragma comment(lib,"freetype2110MT_D.lib")
 #else
 #pragma comment(lib,"freetype2110MT.lib")
+#endif
+
+
+////////////
+// Hunspell
+#if USE_HUNSPELL == 1
+#ifdef __WXDEBUG__
+#pragma comment(lib,"hunspelld.lib")
+#else
+#pragma comment(lib,"hunspell.lib")
+#endif
 #endif
 
 

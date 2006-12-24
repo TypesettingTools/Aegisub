@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,73 +34,84 @@
 //
 
 
-//
-// This is a configuration file for the Aegisub project
-//
-// In order to use it, copy it as setup.h and edit anything you might want there
-// DO NOT commit your personal setup.h to the repository
-//
+////////////
+// Includes
+#include <wx/wxprec.h>
+#include <wx/display.h>
+#include "dialog_splash.h"
+#include "options.h"
+#include "dialog_tip.h"
 
 
+///////////////
+// Constructor
+SplashScreen::SplashScreen(wxWindow *parent)
+: wxFrame (NULL, -1, _T(""), wxDefaultPosition, wxSize(400,240), wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR , _T("Splash"))
+{
+	// Set parent
+	par = parent;
 
-////////////////////////////////////
-// Enable DirectShow Video Provider
-// Requires: Win32, DirectX SDK
-#define USE_DIRECTSHOW 0
+	// Get splash
+	splash = wxBITMAP(splash);
 
+	// Set position
+	Center();
+	//wxDisplay display(wxDisplay::GetFromPoint(parent->GetPosition()));
+	//wxRect rect = display.GetGeometry();
 
-///////////////////////////////////
-// Enable DirectSound Audio Player
-// Requires: Win32, DirectX SDK
-#define USE_DIRECTSOUND 1
+	// Prepare
+	wxClientDC dc(this);
+	dc.BeginDrawing();
+	dc.DrawBitmap(splash,0,0);
+	dc.EndDrawing();
 
-
-/////////////////////////////////
-// Enable PortAudio Audio Player
-// Requires: PortAudio library
-#define USE_PORTAUDIO 0
-
-
-//////////////////////////////
-// Enable ASpell spellchecker
-// Requires: aspell ibrary
-#define USE_ASPELL 0
-
-
-////////////////////////////////
-// Enable Hunspell spellchecker
-#define USE_HUNSPELL 0
-
-
-//////////////////////////////
-// Enable LAVC video provider
-// Requires: FFMPEG library
-#define USE_LAVC 0
-
-
-////////////////////////
-// Enable PRS Exporting
-// Requires: wxPNG library
-#define USE_PRS 1
-
-
-/////////////////////
-// Enable FexTracker
-// Requires: Win32, FexTracker library
-#define USE_FEXTRACKER 1
-
-
-// The following two are Linux-specific, so it would involve changing the makefiles
-// Therefore, I haven't changed the code to make them work, yet
-
-
-/////////////////
-// Enable LibASS
-// Requires: libass library, GNU?
-#define USE_LIBASS 0
+	autoClose = new wxTimer(this,5000);
+	autoClose->Start(5000,true);
+}
 
 
 //////////////
-// Enable ASA
-// Requires: asa library
-#define USE_ASA 0
+// Destructor
+SplashScreen::~SplashScreen () {
+	// Kill timer
+	delete autoClose;
+}
+
+
+///////////////
+// Event table
+BEGIN_EVENT_TABLE(SplashScreen, wxFrame)
+    EVT_MOUSE_EVENTS(SplashScreen::OnMouseEvent)
+    EVT_PAINT(SplashScreen::OnPaint)
+	EVT_TIMER(5000,SplashScreen::OnTimer)
+END_EVENT_TABLE()
+
+
+///////////
+// OnPaint
+void SplashScreen::OnPaint(wxPaintEvent& event) {
+	wxPaintDC dc(this);
+	dc.BeginDrawing();
+	dc.DrawBitmap(splash,0,0);
+	dc.EndDrawing();
+}
+
+
+////////////////
+// Mouse events
+void SplashScreen::OnMouseEvent(wxMouseEvent& event) {
+	if (event.ButtonDown()) {
+		// Show tip of the day
+		Destroy();
+		TipOfTheDay::Show(par);
+	}
+}
+
+
+/////////
+// Timer
+void SplashScreen::OnTimer(wxTimerEvent &event) {
+	// Show tip of the day
+	Destroy();
+	TipOfTheDay::Show(par);
+}

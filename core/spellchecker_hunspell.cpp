@@ -34,73 +34,59 @@
 //
 
 
-//
-// This is a configuration file for the Aegisub project
-//
-// In order to use it, copy it as setup.h and edit anything you might want there
-// DO NOT commit your personal setup.h to the repository
-//
+///////////
+// Headers
+#include "setup.h"
+#if USE_HUNSPELL == 1
+#include <hunspell/hunspell.hxx>
+#include "spellchecker_hunspell.h"
+#include "main.h"
 
 
-
-////////////////////////////////////
-// Enable DirectShow Video Provider
-// Requires: Win32, DirectX SDK
-#define USE_DIRECTSHOW 0
-
-
-///////////////////////////////////
-// Enable DirectSound Audio Player
-// Requires: Win32, DirectX SDK
-#define USE_DIRECTSOUND 1
-
-
-/////////////////////////////////
-// Enable PortAudio Audio Player
-// Requires: PortAudio library
-#define USE_PORTAUDIO 0
-
-
-//////////////////////////////
-// Enable ASpell spellchecker
-// Requires: aspell ibrary
-#define USE_ASPELL 0
-
-
-////////////////////////////////
-// Enable Hunspell spellchecker
-#define USE_HUNSPELL 0
-
-
-//////////////////////////////
-// Enable LAVC video provider
-// Requires: FFMPEG library
-#define USE_LAVC 0
-
-
-////////////////////////
-// Enable PRS Exporting
-// Requires: wxPNG library
-#define USE_PRS 1
-
-
-/////////////////////
-// Enable FexTracker
-// Requires: Win32, FexTracker library
-#define USE_FEXTRACKER 1
-
-
-// The following two are Linux-specific, so it would involve changing the makefiles
-// Therefore, I haven't changed the code to make them work, yet
-
-
-/////////////////
-// Enable LibASS
-// Requires: libass library, GNU?
-#define USE_LIBASS 0
+///////////////
+// Constructor
+HunspellSpellChecker::HunspellSpellChecker() {
+	wxString affpath = AegisubApp::folderName + _T("dictionaries/en_US.aff");
+	wxString dpath = AegisubApp::folderName + _T("dictionaries/en_US.dic");
+	hunspell = new Hunspell(affpath.mb_str(wxConvLocal),dpath.mb_str(wxConvLocal));
+}
 
 
 //////////////
-// Enable ASA
-// Requires: asa library
-#define USE_ASA 0
+// Destructor
+HunspellSpellChecker::~HunspellSpellChecker() {
+	delete hunspell;
+	hunspell = NULL;
+}
+
+
+//////////////////////////////
+// Check if the word is valid
+bool HunspellSpellChecker::CheckWord(wxString word) {
+	if (!hunspell) return true;
+	return (hunspell->spell(word.mb_str(wxConvUTF8)) == 1);
+}
+
+
+////////////////////////////
+// Get suggestions for word
+wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
+	wxArrayString suggestions;
+	return suggestions;
+}
+
+
+//////////////////////////////////////
+// Get list of available dictionaries
+wxArrayString HunspellSpellChecker::GetLanguageList() {
+	wxArrayString list;
+	return list;
+}
+
+
+////////////////
+// Set language
+void HunspellSpellChecker::SetLanguage(wxString language) {
+}
+
+#endif

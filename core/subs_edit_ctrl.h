@@ -34,84 +34,36 @@
 //
 
 
+#pragma once
+
+
 ////////////
 // Includes
 #include <wx/wxprec.h>
-#include <wx/display.h>
-#include "splash.h"
-#include "options.h"
-#include "tip.h"
-
-
-///////////////
-// Constructor
-SplashScreen::SplashScreen(wxWindow *parent)
-: wxFrame (NULL, -1, _T(""), wxDefaultPosition, wxSize(400,240), wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR , _T("Splash"))
-{
-	// Set parent
-	par = parent;
-
-	// Get splash
-	splash = wxBITMAP(splash);
-
-	// Set position
-	Center();
-	//wxDisplay display(wxDisplay::GetFromPoint(parent->GetPosition()));
-	//wxRect rect = display.GetGeometry();
-
-	// Prepare
-	wxClientDC dc(this);
-	dc.BeginDrawing();
-	dc.DrawBitmap(splash,0,0);
-	dc.EndDrawing();
-
-	autoClose = new wxTimer(this,5000);
-	autoClose->Start(5000,true);
-}
+#include <wx/wxscintilla.h>
+#include "spellchecker.h"
 
 
 //////////////
-// Destructor
-SplashScreen::~SplashScreen () {
-	// Kill timer
-	delete autoClose;
-}
+// Prototypes
+class SubsEditBox;
 
 
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(SplashScreen, wxFrame)
-    EVT_MOUSE_EVENTS(SplashScreen::OnMouseEvent)
-    EVT_PAINT(SplashScreen::OnPaint)
-	EVT_TIMER(5000,SplashScreen::OnTimer)
-END_EVENT_TABLE()
+////////////////////
+// SubsTextEditCtrl
+class SubsTextEditCtrl : public wxScintilla {
+private:
+	SpellChecker *spellchecker;
+	void OnMouseEvent(wxMouseEvent &event);
 
+public:
+	SubsEditBox *control;
 
-///////////
-// OnPaint
-void SplashScreen::OnPaint(wxPaintEvent& event) {
-	wxPaintDC dc(this);
-	dc.BeginDrawing();
-	dc.DrawBitmap(splash,0,0);
-	dc.EndDrawing();
-}
+	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
+	~SubsTextEditCtrl();
 
+	void SetTextTo(const wxString text);
+	void UpdateStyle(int start=0,int length=-1);
 
-////////////////
-// Mouse events
-void SplashScreen::OnMouseEvent(wxMouseEvent& event) {
-	if (event.ButtonDown()) {
-		// Show tip of the day
-		Destroy();
-		TipOfTheDay::Show(par);
-	}
-}
-
-
-/////////
-// Timer
-void SplashScreen::OnTimer(wxTimerEvent &event) {
-	// Show tip of the day
-	Destroy();
-	TipOfTheDay::Show(par);
-}
+	DECLARE_EVENT_TABLE()
+};

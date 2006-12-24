@@ -37,7 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "tip.h"
+#include "dialog_tip.h"
 #include "options.h"
 
 
