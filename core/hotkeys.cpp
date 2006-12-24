@@ -356,7 +356,7 @@ void HotkeyManager::LoadDefaults() {
 
 	SetHotkey(_("Audio Commit Alt"),_T("G"));
 	SetHotkey(_("Audio Commit"),_T("Enter"));
-	SetHotkey(_("Audio Commit (Stay)"),_T("Ctrl-Enter"));
+	SetHotkey(_("Audio Commit (Stay)"),_T("F8"));
 	SetHotkey(_("Audio Prev Line"),_T("Left"));
 	SetHotkey(_("Audio Prev Line Alt"),_T("Z"));
 	SetHotkey(_("Audio Next Line"),_T("Right"));
@@ -382,14 +382,14 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Translation Assistant Next"),_T("PgDn"));
 	SetHotkey(_("Translation Assistant Prev"),_T("PgUp"));
 	SetHotkey(_("Translation Assistant Accept"),_T("Enter"));
-	SetHotkey(_("Translation Assistant Preview"),_T("Ctrl-Enter"));
+	SetHotkey(_("Translation Assistant Preview"),_T("F8"));
 	SetHotkey(_("Translation Assistant Insert Original"),_T("Insert"));
 
 	SetHotkey(_("Styling Assistant Play"),_T("End"));
 	SetHotkey(_("Styling Assistant Next"),_T("PgDn"));
 	SetHotkey(_("Styling Assistant Prev"),_T("PgUp"));
 	SetHotkey(_("Styling Assistant Accept"),_T("Enter"));
-	SetHotkey(_("Styling Assistant Preview"),_T("Ctrl-Enter"));
+	SetHotkey(_("Styling Assistant Preview"),_T("F8"));
 }
 
 
