@@ -75,6 +75,9 @@
 #include <wx/spinctrl.h>
 #include <wx/wfstream.h>
 #include <wx/tipdlg.h>
+#include <wx/event.h>
+#include <wx/wxscintilla.h>
+#include <wx/string.h>
 
 
 ///////////////

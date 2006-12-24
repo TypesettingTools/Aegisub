@@ -110,6 +110,15 @@
 #endif // wxWidgets
 
 
+/////////////
+// Scintilla
+#ifdef __WXDEBUG__
+#pragma comment(lib, "wxscintillaud.lib")
+#else
+#pragma comment(lib, "wxscintillau.lib")
+#endif
+
+
 ////////////////////////////
 // Standard Win32 Libraries
 #pragma comment(lib, "Vfw32.lib")

@@ -1182,14 +1182,26 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 //////////////////
 // Cut/copy/paste
 void FrameMain::OnCut (wxCommandEvent &event) {
+	if (FindFocus() == EditBox->TextEdit) {
+		EditBox->TextEdit->Cut();
+		return;
+	}
 	SubsBox->CutLines(SubsBox->GetSelection());
 }
 
 void FrameMain::OnCopy (wxCommandEvent &event) {
+	if (FindFocus() == EditBox->TextEdit) {
+		EditBox->TextEdit->Copy();
+		return;
+	}
 	SubsBox->CopyLines(SubsBox->GetSelection());
 }
 
 void FrameMain::OnPaste (wxCommandEvent &event) {
+	if (FindFocus() == EditBox->TextEdit) {
+		EditBox->TextEdit->Paste();
+		return;
+	}
 	SubsBox->PasteLines(SubsBox->GetFirstSelRow());
 }
 

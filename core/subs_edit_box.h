@@ -40,6 +40,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/wxscintilla.h>
 
 
 //////////////
@@ -50,11 +51,26 @@ class SubsEditBox;
 class AudioDisplay;
 class HiliModTextCtrl;
 class VideoDisplay;
+class wxScintilla;
+
+
+/////////////////
+// Event handler
+class SubsTextEditHandler : public wxEvtHandler {
+private:
+	wxScintilla *parent;
+	SubsEditBox *box;
+	void OnKeyDown(wxKeyEvent &event);
+
+public:
+	SubsTextEditHandler(wxScintilla *scint,SubsEditBox *editbox);
+	DECLARE_EVENT_TABLE()
+};
 
 
 ////////////////////
 // SubsTextEditCtrl
-class SubsTextEditCtrl : public wxTextCtrl {
+class SubsTextEditCtrl : public wxScintilla {
 private:
 	void OnMouseEvent(wxMouseEvent &event);
 
@@ -69,6 +85,8 @@ public:
 //////////////////
 // Edit box class
 class SubsEditBox : public wxPanel {
+	friend class SubsTextEditHandler;
+
 private:
 	bool enabled;
 	bool textEditReady;
@@ -107,6 +125,9 @@ private:
 
 	int BlockAtPos(int pos);
 
+	void OnEditText(wxScintillaEvent &event);
+	void OnNeedStyle(wxScintillaEvent &event);
+
 	void OnButtonColor1(wxCommandEvent &event);
 	void OnButtonColor2(wxCommandEvent &event);
 	void OnButtonColor3(wxCommandEvent &event);
@@ -117,7 +138,6 @@ private:
 	void OnButtonUnderline(wxCommandEvent &event);
 	void OnButtonStrikeout(wxCommandEvent &event);
 
-	void OnEditText(wxCommandEvent &event);
 	void OnSyntaxBox(wxCommandEvent &event);
 	void OnFrameRadio(wxCommandEvent &event);
 	void OnTimeRadio(wxCommandEvent &event);
@@ -155,6 +175,7 @@ public:
 
 	void CommitText();
 	void SetText(const wxString text);
+	void UpdateStyle(int start=0,int length=-1);
 	void Update(bool timeOnly=false);
 	void UpdateGlobals();
 	void SetToLine(int n);

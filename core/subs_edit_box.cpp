@@ -36,6 +36,9 @@
 
 ////////////
 // Includes
+#include "setup.h"
+#include <wx/colordlg.h>
+#include <wx/fontdlg.h>
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "ass_file.h"
@@ -49,8 +52,6 @@
 #include "hilimod_textctrl.h"
 #include "video_display.h"
 #include "validators.h"
-#include <wx/colordlg.h>
-#include <wx/fontdlg.h>
 #include "dialog_colorpicker.h"
 #include "main.h"
 #include "frame_main.h"
@@ -294,6 +295,98 @@ void SubsEditBox::SetToLine(int n) {
 }
 
 
+/////////////////
+// Style a range
+void SubsEditBox::UpdateStyle(int start, int _length) {
+	// Styling enabled?
+	if (Options.AsBool(_T("Syntax Highlight Enabled")) == 0) return;
+
+	// Set variables
+	wxString text = TextEdit->GetText();
+	int len = _length;
+	if (len < 0) len = text.Length();
+
+	// Begin styling
+	TextEdit->StartStyling(0,31);
+	int ran = 0;
+	int depth = 0;
+	int curStyle = 0;
+	wxChar curChar = 0;
+	wxChar prevChar = 0;
+
+	// Loop through
+	for (int i=start;i<len;i++) {
+		// Current/previous characters
+		prevChar = curChar;
+		curChar = text[i];
+
+		// Erroneous
+		if (depth < 0 || depth > 1) {
+			TextEdit->SetStyling(ran,curStyle);
+			ran = 0;
+			curStyle = 4;
+		}
+
+		// Start override block
+		if (curChar == _T('{')) {
+			TextEdit->SetStyling(ran,curStyle);
+			ran = 0;
+			depth++;
+			if (depth == 1) curStyle = 1;
+			else curStyle = 4;
+		}
+
+		// End override block
+		else if (curChar == _T('}')) {
+			TextEdit->SetStyling(ran,curStyle);
+			ran = 0;
+			depth--;
+			if (depth == 0) curStyle = 1;
+			else curStyle = 4;
+		}
+
+		// Outside
+		else if (depth == 0 && curStyle != 0) {
+			TextEdit->SetStyling(ran,curStyle);
+			ran = 0;
+			curStyle = 0;
+		}
+
+		// Inside
+		else if (depth == 1) {
+			// Special character
+			if (curChar == _T('\\') || curChar == _T('(') || curChar == _T(')') || curChar == _T(',')) {
+				if (curStyle != 2) {
+					TextEdit->SetStyling(ran,curStyle);
+					ran = 0;
+					curStyle = 2;
+				}
+			}
+
+			// Number
+			else if ((curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&')) {
+				if (curStyle != 5) {
+					TextEdit->SetStyling(ran,curStyle);
+					ran = 0;
+					curStyle = 5;
+				}
+			}
+
+			// Tag name
+			else if (curStyle != 3) {
+				TextEdit->SetStyling(ran,curStyle);
+				ran = 0;
+				curStyle = 3;
+			}
+		}
+
+		// Increase ran length
+		ran++;
+	}
+	TextEdit->SetStyling(ran,curStyle);
+}
+
+
 ///////////////////////////
 // Set text to a new value
 void SubsEditBox::SetText(const wxString _text) {
@@ -306,115 +399,21 @@ void SubsEditBox::SetText(const wxString _text) {
 	text.Replace(_T("\r"),_T("\\N"));
 	text.Replace(_T("\n"),_T("\\N"));
 
-	// Mode
-	int mode = 0;
-	if (Options.AsBool(_T("Syntax Highlight Enabled"))) mode = 1;
+	// Prepare
+	int from=0,to=0;
+	TextEdit->GetSelection(&from,&to);
+	TextEdit->Clear();
 
-	// Syntax highlighted
-	if (mode == 1) {
-		// Define attributes
-		wxTextAttr Normal(Options.AsColour(_T("Syntax Highlight Normal")));
-		wxTextAttr Brackets(Options.AsColour(_T("Syntax Highlight Brackets")));
-		wxTextAttr Slashes(Options.AsColour(_T("Syntax Highlight Slashes")));
-		wxTextAttr Tags(Options.AsColour(_T("Syntax Highlight Tags")));
-		wxTextAttr Error(Options.AsColour(_T("Syntax Highlight Error")));
-		wxTextAttr *cur;
+	// Set text
+	TextEdit->SetText(text);
 
-		// Define font size
-		wxFont font = Normal.GetFont();
-		wxString fontname = Options.AsText(_T("Font Face"));
-		if (fontname != _T("")) font.SetFaceName(fontname);
-		font.SetPointSize(Options.AsInt(_T("Font Size")));
-		Normal.SetFont(font);
-		Brackets.SetFont(font);
-		Slashes.SetFont(font);
-		Tags.SetFont(font);
-		Error.SetFont(font);
+	// Style
+	UpdateStyle();
 
-		// Prepare
-		cur = &Normal;
-		long from=0,to=0;
-		TextEdit->GetSelection(&from,&to);
-		TextEdit->Clear();
-		TextEdit->SetValue(text);
-		TextEdit->SetStyle(0,TextEdit->GetLastPosition()+1,Tags);
+	// Restore selection
+	TextEdit->SetSelection(from,to);
 
-		// Scan
-		size_t len = text.Len();
-		size_t start = 0;
-		int depth = 0;
-		wchar_t curchar;
-		for (unsigned int i=0;i<len;i++) {
-			curchar = text[i];
-			if (curchar == _T('{')) {
-				depth++;
-				if (cur) TextEdit->SetStyle(start,i,*cur);
-				start = i+1;
-				cur = &Brackets;
-				TextEdit->SetStyle(start-1,start,*cur);
-				if (depth == 0) cur = &Normal;
-				//else if (depth == 1) cur = &Tags;
-				else if (depth == 1) cur = NULL;
-				else {
-					cur = &Error;
-					break;
-				}
-				continue;
-			}
-			if (curchar == _T('}')) {
-				depth--;
-				if (cur) TextEdit->SetStyle(start,i,*cur);
-				start = i+1;
-				cur = &Brackets;
-				TextEdit->SetStyle(start-1,start,*cur);
-				if (depth == 0) cur = &Normal;
-				//else if (depth == 1) cur = &Tags;
-				else if (depth == 1) cur = NULL;
-				else {
-					cur = &Error;
-					break;
-				}
-				continue;
-			}
-			if (depth > 0 && curchar == _T('\\')) {
-				if (cur) TextEdit->SetStyle(start,i,*cur);
-				start = i+1;
-				TextEdit->SetStyle(start-1,start,Slashes);
-				//cur = &Tags;
-				cur = NULL;
-				continue;
-			}
-		}
-		if (cur) TextEdit->SetStyle(start,TextEdit->GetLastPosition()+1,*cur);
-		TextEdit->SetSelection(from,to);
-	}
-
-	// 0x2600
-	else if (mode == 2) {
-
-	}
-
-	// Plain
-	else {
-		// Prepare
-		long from=0,to=0;
-		TextEdit->GetSelection(&from,&to);
-		TextEdit->Clear();
-
-		// Make style
-		wxTextAttr Normal(Options.AsColour(_T("Syntax Highlight Normal")));
-		wxFont font = Normal.GetFont();
-		wxString fontname = Options.AsText(_T("Font Face"));
-		if (fontname != _T("")) font.SetFaceName(fontname);
-		font.SetPointSize(Options.AsInt(_T("Font Size")));
-		Normal.SetFont(font);
-
-		// Set
-		TextEdit->SetValue(text);
-		TextEdit->SetStyle(0,text.Length(),Normal);
-		TextEdit->SetSelection(from,to);
-	}
-
+	// Finish
 	TextEdit->Thaw();
 	textEditReady = true;
 }
@@ -423,7 +422,8 @@ void SubsEditBox::SetText(const wxString _text) {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
-	EVT_TEXT(EDIT_BOX, SubsEditBox::OnEditText)
+	//EVT_SCI_MODIFIED(EDIT_BOX,SubsEditBox::OnEditText)
+	EVT_SCI_STYLENEEDED(EDIT_BOX,SubsEditBox::OnNeedStyle)
 	EVT_CHECKBOX(SYNTAX_BOX, SubsEditBox::OnSyntaxBox)
 	EVT_RADIOBUTTON(RADIO_TIME_BY_FRAME, SubsEditBox::OnFrameRadio)
 	EVT_RADIOBUTTON(RADIO_TIME_BY_TIME, SubsEditBox::OnTimeRadio)
@@ -463,18 +463,33 @@ END_EVENT_TABLE()
 
 /////////////////////
 // Text edited event
-void SubsEditBox::OnEditText(wxCommandEvent &event) {
-	if (textEditReady) {
-		SetText(TextEdit->GetValue());
-		event.Skip();
+void SubsEditBox::OnEditText(wxScintillaEvent &event) {
+	//int type = event.GetModificationType();
+	//if (!(type | wxSCI_MOD_BEFOREINSERT) && textEditReady) {
+	//	SetText(TextEdit->GetText());
+	//	event.Skip();
+	//}
+}
+
+
+//////////////
+// Need style
+void SubsEditBox::OnNeedStyle(wxScintillaEvent &event) {
+	// Check if it needs to fix text
+	wxString text = TextEdit->GetText();
+	if (text.Contains(_T("\n")) || text.Contains(_T("\r"))) {
+		SetText(TextEdit->GetText());
 	}
+
+	// Just update style
+	else UpdateStyle();
 }
 
 
 /////////////////////////////
 // Syntax highlight checkbox
 void SubsEditBox::OnSyntaxBox(wxCommandEvent &event) {
-	SetText(TextEdit->GetValue());
+	SetText(TextEdit->GetText());
 	Options.SetBool(_T("Syntax Highlight Enabled"),SyntaxHighlight->GetValue());
 	Options.Save();
 	event.Skip();
@@ -519,7 +534,7 @@ void SubsEditBox::SetControlsState (bool state) {
 	controlState = state;
 
 	// HACK: TextEdit workaround the stupid colour lock bug
-	TextEdit->SetEditable(state);
+	TextEdit->SetReadOnly(!state);
 	if (state) TextEdit->SetBackgroundColour(origBgColour);
 	else TextEdit->SetBackgroundColour(disabledBgColour);
 
@@ -551,7 +566,7 @@ void SubsEditBox::SetControlsState (bool state) {
 
 	// Clear values if it's false
 	if (state==false) {
-		TextEdit->SetValue(_T(""));
+		TextEdit->SetText(_T(""));
 		StartTime->SetTime(0);
 		EndTime->SetTime(0);
 		Layer->SetValue(_T(""));
@@ -896,7 +911,7 @@ void SubsEditBox::CommitText() {
 
 	// Update line
 	if (cur) {
-		cur->Text = TextEdit->GetValue();
+		cur->Text = TextEdit->GetText();
 		//cur->ParseASSTags();
 		cur->UpdateData();
 		grid->Refresh(false);
@@ -907,23 +922,71 @@ void SubsEditBox::CommitText() {
 
 ////////////////////////
 // Edit box constructor
-SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name)
-: wxTextCtrl(parent, id, value, pos, size, style, validator, name)
+SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& wsize, long style, const wxValidator& validator, const wxString& name)
+: wxScintilla(parent, id, pos, wsize, 0, value)
 {
+	// Set properties
+	SetWrapMode(wxSCI_WRAP_WORD);
+	SetMarginWidth(1,0);
+	PushEventHandler(new SubsTextEditHandler(this,(SubsEditBox*)parent));
+
+	// Styles
+	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	wxString fontname = Options.AsText(_T("Font Face"));
+	if (fontname != _T("")) font.SetFaceName(fontname);
+	int size = Options.AsInt(_T("Font Size"));
+
+	// Normal style
+	StyleSetFont(0,font);
+	StyleSetSize(0,size);
+	StyleSetForeground(0,Options.AsColour(_T("Syntax Highlight Normal")));
+
+	// Brackets style
+	StyleSetFont(1,font);
+	StyleSetSize(1,size);
+	StyleSetForeground(1,Options.AsColour(_T("Syntax Highlight Brackets")));
+
+	// Slashes/Parenthesis/Comma style
+	StyleSetFont(2,font);
+	StyleSetSize(2,size);
+	StyleSetForeground(2,Options.AsColour(_T("Syntax Highlight Slashes")));
+
+	// Tags style
+	StyleSetFont(3,font);
+	StyleSetSize(3,size);
+	StyleSetBold(3,true);
+	StyleSetForeground(3,Options.AsColour(_T("Syntax Highlight Tags")));
+
+	// Error style
+	StyleSetFont(4,font);
+	StyleSetSize(4,size);
+	StyleSetForeground(4,Options.AsColour(_T("Syntax Highlight Error")));
+
+	// Tag Number Parameters style
+	StyleSetFont(5,font);
+	StyleSetSize(5,size);
+	StyleSetForeground(5,Options.AsColour(_T("Syntax Highlight Numbers")));
 }
 
 
 ////////////////////////
 // Edit box event table
-BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxTextCtrl)
+BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
 	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
+END_EVENT_TABLE()
+
+
+//////////////////////////
+// Edit box event handler
+BEGIN_EVENT_TABLE(SubsTextEditHandler,wxEvtHandler)
+	EVT_KEY_DOWN(SubsTextEditHandler::OnKeyDown)
 END_EVENT_TABLE()
 
 
 ///////////////////////////////
 // Split line preserving times
 void SubsEditBox::OnSplitLinePreserve (wxCommandEvent &event) {
-	long from,to;
+	int from,to;
 	TextEdit->GetSelection(&from, &to);
 	grid->SplitLine(linen,from,0);
 }
@@ -932,7 +995,7 @@ void SubsEditBox::OnSplitLinePreserve (wxCommandEvent &event) {
 ///////////////////////////////
 // Split line estimating times
 void SubsEditBox::OnSplitLineEstimate (wxCommandEvent &event) {
-	long from,to;
+	int from,to;
 	TextEdit->GetSelection(&from, &to);
 	grid->SplitLine(linen,from,1);
 }
@@ -983,8 +1046,8 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 			wxMenu menu;
 			menu.Append(EDIT_MENU_UNDO,_("&Undo"))->Enable(CanUndo());
 			menu.AppendSeparator();
-			menu.Append(EDIT_MENU_CUT,_("Cu&t"))->Enable(CanCut());
-			menu.Append(EDIT_MENU_COPY,_("&Copy"))->Enable(CanCopy());
+			menu.Append(EDIT_MENU_CUT,_("Cu&t"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
+			menu.Append(EDIT_MENU_COPY,_("&Copy"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
 			menu.Append(EDIT_MENU_PASTE,_("&Paste"))->Enable(CanPaste());
 			menu.AppendSeparator();
 			menu.Append(EDIT_MENU_SELECT_ALL,_("Select &All"));
@@ -1000,12 +1063,46 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 }
 
 
+/////////////
+// Key Event
+SubsTextEditHandler::SubsTextEditHandler(wxScintilla *scint,SubsEditBox *edit) {
+	box = edit;
+	parent = scint;
+	//Connect(wxEVT_SCI_MODIFIED,wxCommandEventHandler(SubsTextEditHandler::OnChange));
+}
+
+void SubsTextEditHandler::OnKeyDown(wxKeyEvent &event) {
+	// Ctrl held?
+	int key = event.GetKeyCode();
+
+	if (event.GetModifiers() == wxMOD_CONTROL) {
+		if (key == 'C') {
+			parent->Copy();
+			event.StopPropagation();
+			return;
+		}
+		if (key == 'X') {
+			parent->Cut();
+			event.StopPropagation();
+			return;
+		}
+		if (key == 'V') {
+			parent->Paste();
+			event.StopPropagation();
+			return;
+		}
+	}
+
+	event.Skip();
+}
+
+
 //////////////////////////////////////
 // Gets block number at text position
 int SubsEditBox::BlockAtPos(int pos) {
 	// Prepare
 	int n=0;
-	wxString text = TextEdit->GetValue();;
+	wxString text = TextEdit->GetText();;
 	int max = text.Length()-1;
 
 	// Find block number at pos
@@ -1022,13 +1119,13 @@ int SubsEditBox::BlockAtPos(int pos) {
 // Set override
 void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) {
 	// Selection
-	long selstart, selend;
+	int selstart, selend;
 	if (forcePos != -1) {
 		selstart = forcePos;
 		selend = forcePos;
 	}
 	else TextEdit->GetSelection(&selstart,&selend);
-	int len = TextEdit->GetValue().Length();
+	int len = TextEdit->GetText().Length();
 	selstart = MID(0,selstart,len);
 	selend = MID(0,selend,len);
 
@@ -1039,7 +1136,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	// Get block at start
 	size_t blockn = BlockAtPos(selstart);
 	AssDialogue *line = new AssDialogue();
-	line->Text = TextEdit->GetValue();
+	line->Text = TextEdit->GetText();
 	line->ParseASSTags();
 	AssDialogueBlock *block = line->Blocks.at(blockn);
 

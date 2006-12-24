@@ -265,16 +265,19 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 		// Copy
 		if (Hotkeys.IsPressed(_T("Copy"))) {
 			CopyLines(GetSelection());
+			return;
 		}
 
 		// Cut
 		if (Hotkeys.IsPressed(_T("Cut"))) {
 			CutLines(GetSelection());
+			return;
 		}
 
 		// Paste
 		if (Hotkeys.IsPressed(_T("Paste"))) {
 			PasteLines(GetFirstSelRow());
+			return;
 		}
 
 		// Delete
