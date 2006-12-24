@@ -64,6 +64,7 @@ public:
 
 	void SetTextTo(const wxString text);
 	void UpdateStyle(int start=0,int length=-1);
+	void StyleSpellCheck(int start=0,int length=-1);
 
 	DECLARE_EVENT_TABLE()
 };

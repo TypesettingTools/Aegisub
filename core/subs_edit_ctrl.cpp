@@ -97,6 +97,10 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	StyleSetSize(5,size);
 	StyleSetForeground(5,Options.AsColour(_T("Syntax Highlight Numbers")));
 
+	// Misspelling indicator
+	IndicatorSetStyle(0,wxSCI_INDIC_SQUIGGLE);
+	IndicatorSetForeground(0,wxColour(200,0,0));
+
 	// Set spellchecker
 	spellchecker = SpellChecker::GetSpellChecker();
 }
@@ -118,8 +122,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 	// Set variables
 	wxString text = GetText();
-	int len = _length;
-	if (len < 0) len = text.Length();
+	int end = start + _length;
+	if (_length < 0) end = text.Length();
 
 	// Begin styling
 	StartStyling(0,31);
@@ -130,7 +134,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	wxChar prevChar = 0;
 
 	// Loop through
-	for (int i=start;i<len;i++) {
+	for (int i=start;i<end;i++) {
 		// Current/previous characters
 		prevChar = curChar;
 		curChar = text[i];
@@ -199,6 +203,99 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		ran++;
 	}
 	SetStyling(ran,curStyle);
+
+	// Spell check
+	StyleSpellCheck(start,_length);
+}
+
+
+///////////////
+// Spell check
+void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
+	// See if it has a spellchecker
+	if (!spellchecker) return;
+
+	// Delimiters
+	wxString delim = _T(" .,;:!?¿¡(){}[]\"/\\");
+
+	// Variables
+	wxChar cur;
+	wxString text = GetText();
+	int curPos;
+	int lastpos = -1;
+	int end = start+len;
+	int depth = 0;
+	if (len < 0) end = text.Length();
+	wxArrayInt startPos;
+	wxArrayInt endPos;
+	bool isDelim;
+
+	// Scan
+	for (int i=start;i<end;i++) {
+		// Current character
+		curPos = i;
+		cur = text[i];
+		isDelim = false;
+
+		// Increase depth
+		if (cur == '{') {
+			depth++;
+			if (depth == 1) {
+				if (lastpos+1 != curPos) {
+					startPos.Add(lastpos+1);
+					endPos.Add(curPos);
+				}
+				continue;
+			}
+		}
+
+		// Decrease depth
+		if (cur == '}') {
+			depth--;
+			if (depth == 0) {
+				lastpos = i;
+				continue;
+			}
+		}
+
+		// Wrong depth
+		if (depth != 0) continue;
+
+		// Check if it is \n or \N
+		if (cur == '\\' && i != end-2 && (text[i+1] == 'N' || text[i+1] == 'n')) {
+			isDelim = true;
+			i++;
+		}
+
+		// Check for standard delimiters
+		if (delim.Find(cur) != wxNOT_FOUND) {
+			//if (lastpos != i-1) {
+			isDelim = true;
+			//}
+		}
+
+		// Is delimiter?
+		if (isDelim) {
+			if (lastpos+1 != curPos) {
+				startPos.Add(lastpos+1);
+				endPos.Add(curPos);
+			}
+			lastpos = i;
+		}
+	}
+
+	// Style
+	int count = startPos.Count();
+	for (int i=0;i<count;i++) {
+		// Get current word
+		wxString curWord = text.Mid(startPos[i],endPos[i]-startPos[i]);
+
+		// Check if it's valid
+		if (!spellchecker->CheckWord(curWord)) {
+			StartStyling(startPos[i],32);
+			SetStyling(endPos[i]-startPos[i],32);
+		}
+	}
 }
 
 
