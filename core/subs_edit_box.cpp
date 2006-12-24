@@ -82,12 +82,8 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	StyleBox->SetToolTip(_("Style for this line."));
 	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,25),styles,wxCB_DROPDOWN);
 	ActorBox->SetToolTip(_("Actor name for this speech. This is only for reference, and is mainly useless."));
-	MarginL = new HiliModTextCtrl(this,MARGINL_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
-	MarginL->SetToolTip(_("Left Margin (0000 = default)"));
-	MarginR = new HiliModTextCtrl(this,MARGINR_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
-	MarginR->SetToolTip(_("Right Margin (0000 = default)"));
-	MarginV = new HiliModTextCtrl(this,MARGINV_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
-	MarginV->SetToolTip(_("Vertical Margin (0000 = default)"));
+	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(120,20),0);
+	Effect->SetToolTip(_("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
 
 	// Middle controls
 	Layer = new HiliModTextCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator());
@@ -102,13 +98,12 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Duration = new TimeEdit(this,DURATION_BOX,_T(""),wxDefaultPosition,wxSize(75,20),0,NumValidator());
 	Duration->SetToolTip(_("Line duration"));
 	Duration->showModified = true;
-	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
-	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));
-	ByFrame = new wxRadioButton(this,RADIO_TIME_BY_FRAME,_("Frame"));
-	ByFrame->SetToolTip(_("Time by frame number"));
-	//SyntaxHighlight = new wxCheckBox(this,SYNTAX_BOX,_("Syntax"));
-	//SyntaxHighlight->SetToolTip(_("Enable syntax highlighting"));
-	//SyntaxHighlight->SetValue(Options.AsBool(_T("Syntax Highlight Enabled")));
+	MarginL = new HiliModTextCtrl(this,MARGINL_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
+	MarginL->SetToolTip(_("Left Margin (0000 = default)"));
+	MarginR = new HiliModTextCtrl(this,MARGINR_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
+	MarginR->SetToolTip(_("Right Margin (0000 = default)"));
+	MarginV = new HiliModTextCtrl(this,MARGINV_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
+	MarginV->SetToolTip(_("Vertical Margin (0000 = default)"));
 
 	// Middle-bottom controls
 	Bold = new wxBitmapButton(this,BUTTON_BOLD,wxBITMAP(button_bold),wxDefaultPosition,wxSize(20,20));
@@ -129,8 +124,10 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Color3->SetToolTip(_("Outline color"));
 	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBITMAP(button_color4),wxDefaultPosition,wxSize(30,20));
 	Color4->SetToolTip(_("Shadow color"));
-	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(120,20),0);
-	Effect->SetToolTip(_("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
+	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));
+	ByFrame = new wxRadioButton(this,RADIO_TIME_BY_FRAME,_("Frame"));
+	ByFrame->SetToolTip(_("Time by frame number"));
 
 	// Top sizer
 	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -328,7 +325,7 @@ void SubsEditBox::UpdateStyle(int start, int _length) {
 		}
 
 		// Start override block
-		if (curChar == _T('{')) {
+		if (curChar == _T('{') && depth >= 0) {
 			TextEdit->SetStyling(ran,curStyle);
 			ran = 0;
 			depth++;
@@ -337,7 +334,7 @@ void SubsEditBox::UpdateStyle(int start, int _length) {
 		}
 
 		// End override block
-		else if (curChar == _T('}')) {
+		else if (curChar == _T('}') && depth <= 1) {
 			TextEdit->SetStyling(ran,curStyle);
 			ran = 0;
 			depth--;
@@ -424,10 +421,10 @@ void SubsEditBox::SetText(const wxString _text) {
 BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 	//EVT_SCI_MODIFIED(EDIT_BOX,SubsEditBox::OnEditText)
 	EVT_SCI_STYLENEEDED(EDIT_BOX,SubsEditBox::OnNeedStyle)
+	EVT_SCI_KEY(EDIT_BOX,SubsEditBox::OnKeyDown)
 	EVT_CHECKBOX(SYNTAX_BOX, SubsEditBox::OnSyntaxBox)
 	EVT_RADIOBUTTON(RADIO_TIME_BY_FRAME, SubsEditBox::OnFrameRadio)
 	EVT_RADIOBUTTON(RADIO_TIME_BY_TIME, SubsEditBox::OnTimeRadio)
-	EVT_KEY_DOWN(SubsEditBox::OnKeyDown)
 	EVT_COMBOBOX(STYLE_COMBOBOX, SubsEditBox::OnStyleChange)
 	EVT_COMBOBOX(ACTOR_COMBOBOX, SubsEditBox::OnActorChange)
 	EVT_TEXT_ENTER(ACTOR_COMBOBOX, SubsEditBox::OnActorChange)
@@ -464,11 +461,6 @@ END_EVENT_TABLE()
 /////////////////////
 // Text edited event
 void SubsEditBox::OnEditText(wxScintillaEvent &event) {
-	//int type = event.GetModificationType();
-	//if (!(type | wxSCI_MOD_BEFOREINSERT) && textEditReady) {
-	//	SetText(TextEdit->GetText());
-	//	event.Skip();
-	//}
 }
 
 
@@ -522,7 +514,7 @@ void SubsEditBox::OnTimeRadio(wxCommandEvent &event) {
 
 ////////////
 // Key down
-void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
+void SubsEditBox::OnKeyDown(wxScintillaEvent &event) {
 	event.Skip();
 }
 
@@ -929,6 +921,17 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	SetWrapMode(wxSCI_WRAP_WORD);
 	SetMarginWidth(1,0);
 	PushEventHandler(new SubsTextEditHandler(this,(SubsEditBox*)parent));
+	//CmdKeyAssign(wxSCI_KEY_RETURN,wxSCI_SCMOD_CTRL,wxSCI_CMD_NEWLINE);
+	CmdKeyClear(wxSCI_KEY_RETURN,wxSCI_SCMOD_CTRL);
+	CmdKeyClear(wxSCI_KEY_RETURN,wxSCI_SCMOD_NULL);
+	CmdKeyClear(wxSCI_KEY_TAB,wxSCI_SCMOD_NULL);
+	CmdKeyClear(wxSCI_KEY_TAB,wxSCI_SCMOD_SHIFT);
+	CmdKeyClear('D',wxSCI_SCMOD_CTRL);
+	CmdKeyClear('L',wxSCI_SCMOD_CTRL);
+	CmdKeyClear('L',wxSCI_SCMOD_CTRL | wxSCI_SCMOD_SHIFT);
+	CmdKeyClear('T',wxSCI_SCMOD_CTRL);
+	CmdKeyClear('T',wxSCI_SCMOD_CTRL | wxSCI_SCMOD_SHIFT);
+	CmdKeyClear('U',wxSCI_SCMOD_CTRL);
 
 	// Styles
 	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
@@ -1089,6 +1092,9 @@ void SubsTextEditHandler::OnKeyDown(wxKeyEvent &event) {
 		if (key == 'V') {
 			parent->Paste();
 			event.StopPropagation();
+			return;
+		}
+		if (key == WXK_RETURN || key == WXK_NUMPAD_ENTER) {
 			return;
 		}
 	}

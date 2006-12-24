@@ -141,7 +141,7 @@ private:
 	void OnSyntaxBox(wxCommandEvent &event);
 	void OnFrameRadio(wxCommandEvent &event);
 	void OnTimeRadio(wxCommandEvent &event);
-	void OnKeyDown(wxKeyEvent &event);
+	void OnKeyDown(wxScintillaEvent &event);
 	void OnStyleChange(wxCommandEvent &event);
 	void OnActorChange(wxCommandEvent &event);
 	void OnLayerChange(wxCommandEvent &event);
