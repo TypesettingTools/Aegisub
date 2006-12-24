@@ -187,6 +187,7 @@ private:
 	void OnJumpTo (wxCommandEvent &event);
 	void OnShift (wxCommandEvent &event);
 	void OnSort (wxCommandEvent &event);
+	void OnEditBoxCommit (wxCommandEvent &event);
 	void OnOpenProperties (wxCommandEvent &event);
 	void OnOpenStylesManager (wxCommandEvent &event);
 	void OnOpenAttachments (wxCommandEvent &event);
@@ -365,6 +366,7 @@ enum {
 	Grid_Next_Line,
 	Grid_Prev_Line,
 	Grid_Toggle_Tags,
+	Edit_Box_Commit,
 
 	Video_Play,
 	Video_Play_Line,

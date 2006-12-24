@@ -1169,7 +1169,7 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 ///////////////////////////
 // Setup accelerator table
 void FrameMain::SetAccelerators() {
-	wxAcceleratorEntry entry[10];
+	wxAcceleratorEntry entry[11];
 	int i = 0;
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global next frame"),Video_Next_Frame);
@@ -1180,6 +1180,7 @@ void FrameMain::SetAccelerators() {
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global play"),Video_Play);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Edit box commit"),Edit_Box_Commit);
 	wxAcceleratorEntry temp;
 	temp.Set(wxACCEL_CTRL | wxACCEL_ALT,WXK_F12,Kana_Game);
 	entry[i++] = temp;

@@ -40,7 +40,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
-#include <wx/wxscintilla.h>
+#include "subs_edit_ctrl.h"
 
 
 //////////////
@@ -54,38 +54,11 @@ class VideoDisplay;
 class wxScintilla;
 
 
-/////////////////
-// Event handler
-class SubsTextEditHandler : public wxEvtHandler {
-private:
-	wxScintilla *parent;
-	SubsEditBox *box;
-	void OnKeyDown(wxKeyEvent &event);
-
-public:
-	SubsTextEditHandler(wxScintilla *scint,SubsEditBox *editbox);
-	DECLARE_EVENT_TABLE()
-};
-
-
-////////////////////
-// SubsTextEditCtrl
-class SubsTextEditCtrl : public wxScintilla {
-private:
-	void OnMouseEvent(wxMouseEvent &event);
-
-public:
-	SubsEditBox *control;
-	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
-
-	DECLARE_EVENT_TABLE()
-};
-
-
 //////////////////
 // Edit box class
 class SubsEditBox : public wxPanel {
 	friend class SubsTextEditHandler;
+	friend class SubsTextEditCtrl;
 
 private:
 	bool enabled;
@@ -174,8 +147,6 @@ public:
 	void SetStyleFlag (wxString tag,wxString preValue=_T(""),int pos=-1);
 
 	void CommitText();
-	void SetText(const wxString text);
-	void UpdateStyle(int start=0,int length=-1);
 	void Update(bool timeOnly=false);
 	void UpdateGlobals();
 	void SetToLine(int n);

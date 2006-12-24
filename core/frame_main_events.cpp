@@ -210,6 +210,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Grid_Next_Line,FrameMain::OnNextLine)
 	EVT_MENU(Grid_Prev_Line,FrameMain::OnPrevLine)
 	EVT_MENU(Grid_Toggle_Tags,FrameMain::OnToggleTags)
+	EVT_MENU(Edit_Box_Commit,FrameMain::OnEditBoxCommit)
 
 	EVT_MENU(Kana_Game, FrameMain::OnKanaGame)
 
@@ -1388,6 +1389,30 @@ void FrameMain::OnToggleTags(wxCommandEvent &event) {
 
 	// Refresh grid
 	SubsBox->Refresh(false);
+}
+
+
+/////////////////////////////
+// Commit Edit Box's changes
+void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
+	// Find focus
+	wxWindow *focus = FindFocus();
+
+	// Is the text edit
+	if (focus == EditBox->TextEdit) {
+		EditBox->CommitText();
+		SubsBox->ass->FlagAsModified();
+		SubsBox->CommitChanges();
+	}
+
+	// Other window
+	else {
+		wxKeyEvent keyevent;
+		keyevent.m_keyCode = WXK_RETURN;
+		keyevent.m_controlDown = true;
+		keyevent.SetEventType(wxEVT_KEY_DOWN);
+		focus->AddPendingEvent(keyevent);
+	}
 }
 
 

@@ -314,6 +314,7 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Exit"),_T("Alt-F4"));
 	SetHotkey(_("Help"),_T("F1"));
 
+	SetHotkey(_("Edit Box Commit"),_T("Ctrl-Enter"));
 	SetHotkey(_("Undo"),_T("Ctrl-Z"));
 	SetHotkey(_("Redo"),_T("Ctrl-Y"));
 	SetHotkey(_("Shift Times"),_T("Ctrl-I"));
