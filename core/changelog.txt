@@ -39,6 +39,7 @@ Please visit http://aegisub.net to download latest version
 - Fonts collector can now collect fonts directly to a zip archive. (AMZ)
 - Added support for DirectShowSource2 if avss.dll is on Aegisub's folder. (AMZ)
 - Added DirectSound audio output, to avoid using PortAudio under Win32. (AMZ)
+- Replaced wxTextCtrl with wxScintilla, to solve many issues related to Rich Text edit and improve the syntax highlighter. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
