@@ -51,6 +51,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	// Set properties
 	SetWrapMode(wxSCI_WRAP_WORD);
 	SetMarginWidth(1,0);
+	UsePopUp(false);
 
 	// Set hotkeys
 	CmdKeyClear(wxSCI_KEY_RETURN,wxSCI_SCMOD_CTRL);
@@ -113,6 +114,9 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 
 	// Set spellchecker
 	spellchecker = SpellChecker::GetSpellChecker();
+
+	// Set thesaurus
+	thesaurus = Thesaurus::GetThesaurus();
 	
 	// Delimiters
 	delim = _T(" .,;:!?¿¡(){}[]\"/\\");
@@ -124,6 +128,8 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 SubsTextEditCtrl::~SubsTextEditCtrl() {
 	delete spellchecker;
 	spellchecker = NULL;
+	delete thesaurus;
+	thesaurus = NULL;
 }
 
 
@@ -426,34 +432,48 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	// Position
 	if (activePos == -1) activePos = GetCurrentPos();
 
+	// Get current word under cursor
+	currentWord = GetWordAtPosition(activePos);
+	currentWordPos = activePos;
+
 	// Spell check
 	int style = GetStyleAt(activePos);
-	if (style & 32 && spellchecker) {
-		// Get word
-		currentWord = GetWordAtPosition(activePos);
-		currentWordPos = activePos;
-		sugs.Clear();
-
+	if (spellchecker && !spellchecker->CheckWord(currentWord)) {
 		// Set font
 		wxFont font;
 		font.SetWeight(wxFONTWEIGHT_BOLD);
 
-		// Word is really a typo
-		if (!spellchecker->CheckWord(currentWord)) {
-			// Get suggestions
-			sugs = spellchecker->GetSuggestions(currentWord);
+		// Get suggestions
+		sugs.Clear();
+		sugs = spellchecker->GetSuggestions(currentWord);
 
-			// Build menu
-			int nSugs = sugs.Count();
-			for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i])->SetFont(font);
+		// Build menu
+		int nSugs = sugs.Count();
+		for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i])->SetFont(font);
 
-			// No suggestions
-			if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
+		// No suggestions
+		if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
 
-			// Append "add word"
-			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()));
-			menu.AppendSeparator();
-		}
+		// Append "add word"
+		menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()));
+		menu.AppendSeparator();
+	}
+
+	// Thesaurus
+	if (thesaurus) {
+		// Get suggestions
+		thesSugs.Clear();
+		thesSugs = thesaurus->GetSuggestions(currentWord);
+
+		// Build menu
+		int nSugs = thesSugs.Count();
+		for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_THESAURUS_SUGS+i,thesSugs[i]);
+
+		// No suggestions
+		if (!nSugs) menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);
+
+		// Separator
+		menu.AppendSeparator();
 	}
 
 	// Standard actions

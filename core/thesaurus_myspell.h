@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,76 +37,27 @@
 #pragma once
 
 
-////////////
-// Includes
-#include <wx/wxprec.h>
-#include <wx/wxscintilla.h>
-#include "spellchecker.h"
+///////////
+// Headers
 #include "thesaurus.h"
 
 
 //////////////
 // Prototypes
-class SubsEditBox;
+class MyThes;
 
 
-////////////////////
-// SubsTextEditCtrl
-class SubsTextEditCtrl : public wxScintilla {
+///////////////////////
+// Thesaurus interface
+class MySpellThesaurus: public Thesaurus {
 private:
-	SpellChecker *spellchecker;
-	Thesaurus *thesaurus;
-
-	wxString delim;
-	wxString currentWord;
-	wxArrayString sugs;
-	wxArrayString thesSugs;
-	int currentWordPos;
-
-	void OnMouseEvent(wxMouseEvent &event);
-
-	wxString GetWordAtPosition(int pos);
-	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);
-	void SetUnicodeStyling(int start,int length,int style);
-	void ShowPopupMenu(int activePos=-1);
-
-	void OnSplitLinePreserve(wxCommandEvent &event);
-	void OnSplitLineEstimate(wxCommandEvent &event);
-	void OnCut(wxCommandEvent &event);
-	void OnCopy(wxCommandEvent &event);
-	void OnPaste(wxCommandEvent &event);
-	void OnUndo(wxCommandEvent &event);
-	void OnSelectAll(wxCommandEvent &event);
-	void OnAddToDictionary(wxCommandEvent &event);
-	void OnUseSuggestion(wxCommandEvent &event);
+	MyThes *mythes;
 
 public:
-	SubsEditBox *control;
+	MySpellThesaurus();
+	~MySpellThesaurus();
 
-	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
-	~SubsTextEditCtrl();
-
-	void SetTextTo(const wxString text);
-	void UpdateStyle(int start=0,int length=-1);
-	void StyleSpellCheck(int start=0,int length=-1);
-
-	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-	EDIT_MENU_SPLIT_PRESERVE = 1400,
-	EDIT_MENU_SPLIT_ESTIMATE,
-	EDIT_MENU_CUT,
-	EDIT_MENU_COPY,
-	EDIT_MENU_PASTE,
-	EDIT_MENU_UNDO,
-	EDIT_MENU_SELECT_ALL,
-	EDIT_MENU_ADD_TO_DICT,
-	EDIT_MENU_SUGGESTION,
-	EDIT_MENU_SUGGESTIONS,
-	EDIT_MENU_THESAURUS = 1450,
-	EDIT_MENU_THESAURUS_SUGS
+	wxArrayString GetSuggestions(wxString word);
+	wxArrayString GetLanguageList();
+	void SetLanguage(wxString language);
 };
