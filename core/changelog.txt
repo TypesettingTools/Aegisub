@@ -41,7 +41,8 @@ Please visit http://aegisub.net to download latest version
 - Added DirectSound audio output, to avoid using PortAudio under Win32. (AMZ)
 - Replaced wxTextCtrl with wxScintilla, to solve many issues related to the Rich Text edit control. (AMZ)
 - Improved Syntax Highlighter to include more features of ASS. (AMZ)
-- Added an in-line Hunspell-based Spell Checker. (AMZ)
+- Added an inline Hunspell-based Spell Checker. (AMZ)
+- Added an inline MyThes-based Thesaurus. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
