@@ -426,6 +426,36 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	// Position
 	if (activePos == -1) activePos = GetCurrentPos();
 
+	// Spell check
+	int style = GetStyleAt(activePos);
+	if (style & 32 && spellchecker) {
+		// Get word
+		currentWord = GetWordAtPosition(activePos);
+		currentWordPos = activePos;
+		sugs.Clear();
+
+		// Set font
+		wxFont font;
+		font.SetWeight(wxFONTWEIGHT_BOLD);
+
+		// Word is really a typo
+		if (!spellchecker->CheckWord(currentWord)) {
+			// Get suggestions
+			sugs = spellchecker->GetSuggestions(currentWord);
+
+			// Build menu
+			int nSugs = sugs.Count();
+			for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i])->SetFont(font);
+
+			// No suggestions
+			if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
+
+			// Append "add word"
+			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()));
+			menu.AppendSeparator();
+		}
+	}
+
 	// Standard actions
 	menu.Append(EDIT_MENU_UNDO,_("&Undo"))->Enable(CanUndo());
 	menu.AppendSeparator();
@@ -439,36 +469,6 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	menu.AppendSeparator();
 	menu.Append(EDIT_MENU_SPLIT_PRESERVE,_("Split at cursor (preserve times)"));
 	menu.Append(EDIT_MENU_SPLIT_ESTIMATE,_("Split at cursor (estimate times)"));
-
-	// Spell check
-	int style = GetStyleAt(activePos);
-	if (style & 32 && spellchecker) {
-		// Get word
-		currentWord = GetWordAtPosition(activePos);
-		currentWordPos = activePos;
-		sugs.Clear();
-
-		// Word is really a typo
-		if (!spellchecker->CheckWord(currentWord)) {
-			// Append "add word"
-			menu.AppendSeparator();
-			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()));
-
-			// Get suggestions
-			sugs = spellchecker->GetSuggestions(currentWord);
-
-			// Build menu
-			int nSugs = sugs.Count();
-			if (nSugs > 0) {
-				wxMenu *suggestions = new wxMenu();
-				for (int i=0;i<nSugs;i++) suggestions->Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
-				menu.AppendSubMenu(suggestions,_("Corrections"));
-			}
-
-			// No suggestions
-			else menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
-		}
-	}
 
 	// Pop the menu
 	PopupMenu(&menu);
