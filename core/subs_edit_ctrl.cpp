@@ -474,6 +474,13 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 			}
 		}
 
+		// Has suggestions
+		if (result.size()) {
+			wxFont font;
+			font.SetStyle(wxFONTSTYLE_ITALIC);
+			menu.Append(EDIT_MENU_THESAURUS,wxString::Format(_("Thesaurus suggestions for \"%s\":"),currentWord.c_str()))->SetFont(font);
+		}
+
 		// Build menu
 		int curThesEntry = 0;
 		for (unsigned int i=0;i<result.size();i++) {
@@ -542,9 +549,28 @@ void SubsTextEditCtrl::GetBoundsOfWordAtPosition(int pos,int &_start,int &_end) 
 		else next = 0;
 
 		// Depth
-		if (cur == '{') depth++;
-		if (cur == '}') depth--;
-		if (depth != 0) continue;
+		if (cur == '{') {
+			if (i >= pos) {
+				firstDelimAfter = i;
+				break;
+			}
+			depth++;
+		}
+		if (cur == '}') {
+			if (i < pos) {
+				lastDelimBefore = i;
+			}
+			depth--;
+		}
+		if (depth != 0) {
+			// Picked a location in invalid depth
+			if (pos == i) {
+				lastDelimBefore = -1;
+				firstDelimAfter = 0;
+				break;
+			}
+			continue;
+		}
 
 		// Line breaks
 		if (cur == '\\' && (next == 'N' || next == 'n' || next == 'h')) {
