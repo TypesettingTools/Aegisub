@@ -51,6 +51,7 @@ public:
 	SpellChecker() {}
 	virtual ~SpellChecker() {}
 
+	virtual void AddWord(wxString word)=0;
 	virtual bool CheckWord(wxString word)=0;
 	virtual wxArrayString GetSuggestions(wxString word)=0;
 

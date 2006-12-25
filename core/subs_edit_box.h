@@ -127,14 +127,6 @@ private:
 	void OnCommentChange(wxCommandEvent &event);
 	void OnEffectChange(wxCommandEvent &event);
 
-	void OnSplitLinePreserve(wxCommandEvent &event);
-	void OnSplitLineEstimate(wxCommandEvent &event);
-	void OnCut(wxCommandEvent &event);
-	void OnCopy(wxCommandEvent &event);
-	void OnPaste(wxCommandEvent &event);
-	void OnUndo(wxCommandEvent &event);
-	void OnSelectAll(wxCommandEvent &event);
-
 public:
 	int linen;
 	AudioDisplay *audio;
@@ -188,13 +180,6 @@ enum {
 	MARGINV_BOX,
 	EFFECT_BOX,
 	COMMENT_CHECKBOX,
-	EDIT_MENU_SPLIT_PRESERVE,
-	EDIT_MENU_SPLIT_ESTIMATE,
-	EDIT_MENU_CUT,
-	EDIT_MENU_COPY,
-	EDIT_MENU_PASTE,
-	EDIT_MENU_UNDO,
-	EDIT_MENU_SELECT_ALL,
 
 	BUTTON_BOLD,
 	BUTTON_ITALICS,

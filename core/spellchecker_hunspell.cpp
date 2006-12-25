@@ -60,6 +60,13 @@ HunspellSpellChecker::~HunspellSpellChecker() {
 }
 
 
+//////////////////////////
+// Add word to dictionary
+void HunspellSpellChecker::AddWord(wxString word) {
+	if (hunspell) hunspell->put_word(word.mb_str(wxConvUTF8));
+}
+
+
 //////////////////////////////
 // Check if the word is valid
 bool HunspellSpellChecker::CheckWord(wxString word) {
@@ -71,7 +78,27 @@ bool HunspellSpellChecker::CheckWord(wxString word) {
 ////////////////////////////
 // Get suggestions for word
 wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
+	// Array
 	wxArrayString suggestions;
+
+	// Get suggestions
+	if (hunspell) {
+		// Grab raw from Hunspell
+		char **results;
+		int n = hunspell->suggest(&results,word.mb_str(wxConvUTF8));
+
+		// Convert each
+		for (int i=0;i<n;i++) {
+			wxString current(results[i],wxConvUTF8);
+			suggestions.Add(current);
+			delete results[i];
+		}
+
+		// Delete
+		delete results;
+	}
+
+	// Return them
 	return suggestions;
 }
 

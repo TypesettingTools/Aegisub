@@ -54,9 +54,27 @@ class SubsEditBox;
 class SubsTextEditCtrl : public wxScintilla {
 private:
 	SpellChecker *spellchecker;
+	wxString delim;
+	wxString currentWord;
+	wxArrayString sugs;
+	int currentWordPos;
+
 	void OnMouseEvent(wxMouseEvent &event);
 
+	wxString GetWordAtPosition(int pos);
+	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);
 	void SetUnicodeStyling(int start,int length,int style);
+	void ShowPopupMenu(int activePos=-1);
+
+	void OnSplitLinePreserve(wxCommandEvent &event);
+	void OnSplitLineEstimate(wxCommandEvent &event);
+	void OnCut(wxCommandEvent &event);
+	void OnCopy(wxCommandEvent &event);
+	void OnPaste(wxCommandEvent &event);
+	void OnUndo(wxCommandEvent &event);
+	void OnSelectAll(wxCommandEvent &event);
+	void OnAddToDictionary(wxCommandEvent &event);
+	void OnUseSuggestion(wxCommandEvent &event);
 
 public:
 	SubsEditBox *control;
@@ -69,4 +87,20 @@ public:
 	void StyleSpellCheck(int start=0,int length=-1);
 
 	DECLARE_EVENT_TABLE()
+};
+
+
+///////
+// IDs
+enum {
+	EDIT_MENU_SPLIT_PRESERVE = 1400,
+	EDIT_MENU_SPLIT_ESTIMATE,
+	EDIT_MENU_CUT,
+	EDIT_MENU_COPY,
+	EDIT_MENU_PASTE,
+	EDIT_MENU_UNDO,
+	EDIT_MENU_SELECT_ALL,
+	EDIT_MENU_ADD_TO_DICT,
+	EDIT_MENU_SUGGESTION,
+	EDIT_MENU_SUGGESTIONS
 };

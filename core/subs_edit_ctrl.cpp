@@ -39,6 +39,8 @@
 #include "subs_edit_ctrl.h"
 #include "subs_edit_box.h"
 #include "options.h"
+#include "subs_grid.h"
+#include "utils.h"
 
 
 ////////////////////////
@@ -99,12 +101,21 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	StyleSetSize(5,size);
 	StyleSetForeground(5,Options.AsColour(_T("Syntax Highlight Numbers")));
 
+	// Line breaks style
+	StyleSetFont(6,font);
+	StyleSetSize(6,size);
+	StyleSetBold(6,true);
+	StyleSetForeground(6,Options.AsColour(_T("Syntax Highlight Line Break")));
+
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSCI_INDIC_SQUIGGLE);
 	IndicatorSetForeground(0,wxColour(255,0,0));
 
 	// Set spellchecker
 	spellchecker = SpellChecker::GetSpellChecker();
+	
+	// Delimiters
+	delim = _T(" .,;:!?¿¡(){}[]\"/\\");
 }
 
 
@@ -135,12 +146,15 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	int curPos = 0;
 	wxChar curChar = 0;
 	wxChar prevChar = 0;
+	wxChar nextChar = 0;
 
 	// Loop through
 	for (int i=start;i<end;i++) {
 		// Current/previous characters
 		prevChar = curChar;
 		curChar = text[i];
+		if (i<end-1) nextChar = text[i+1];
+		else nextChar = 0;
 
 		// Erroneous
 		if (depth < 0 || depth > 1) {
@@ -171,11 +185,23 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		}
 
 		// Outside
-		else if (depth == 0 && curStyle != 0) {
-			SetUnicodeStyling(curPos,ran,curStyle);
-			curPos += ran;
-			ran = 0;
-			curStyle = 0;
+		else if (depth == 0) {
+			// Is \n, \N or \h?
+			if (curChar == _T('\\') && (nextChar == 'n' || nextChar == 'N' || nextChar == 'h')) {
+				SetUnicodeStyling(curPos,ran,curStyle);
+				curPos += ran + 1;
+				ran = 1;
+				curStyle = 6;
+				i++;
+			}
+
+			// Normal text
+			else if (curStyle != 0) {
+				SetUnicodeStyling(curPos,ran,curStyle);
+				curPos += ran;
+				ran = 0;
+				curStyle = 0;
+			}
 		}
 
 		// Inside
@@ -239,9 +265,6 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 	// See if it has a spellchecker
 	if (!spellchecker) return;
 
-	// Delimiters
-	wxString delim = _T(" .,;:!?¿¡(){}[]\"/\\");
-
 	// Variables
 	wxChar cur;
 	wxString text = GetText();
@@ -287,7 +310,7 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 		if (depth != 0) continue;
 
 		// Check if it is \n or \N
-		if (cur == '\\' && i < end-1 && (text[i+1] == 'N' || text[i+1] == 'n')) {
+		if (cur == '\\' && i < end-1 && (text[i+1] == 'N' || text[i+1] == 'n' || text[i+1] == 'h')) {
 			isDelim = true;
 			i++;
 		}
@@ -365,6 +388,16 @@ void SubsTextEditCtrl::SetTextTo(const wxString _text) {
 // Control event table
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
 	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
+
+	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsTextEditCtrl::OnSplitLinePreserve)
+	EVT_MENU(EDIT_MENU_SPLIT_ESTIMATE,SubsTextEditCtrl::OnSplitLineEstimate)
+	EVT_MENU(EDIT_MENU_CUT,SubsTextEditCtrl::OnCut)
+	EVT_MENU(EDIT_MENU_COPY,SubsTextEditCtrl::OnCopy)
+	EVT_MENU(EDIT_MENU_PASTE,SubsTextEditCtrl::OnPaste)
+	EVT_MENU(EDIT_MENU_UNDO,SubsTextEditCtrl::OnUndo)
+	EVT_MENU(EDIT_MENU_SELECT_ALL,SubsTextEditCtrl::OnSelectAll)
+	EVT_MENU(EDIT_MENU_ADD_TO_DICT,SubsTextEditCtrl::OnAddToDictionary)
+	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_SUGGESTIONS+16,SubsTextEditCtrl::OnUseSuggestion)
 END_EVENT_TABLE()
 
 
@@ -374,22 +407,211 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 	// Right click
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
 		if (control->linen >= 0) {
-			// Popup
-			wxMenu menu;
-			menu.Append(EDIT_MENU_UNDO,_("&Undo"))->Enable(CanUndo());
-			menu.AppendSeparator();
-			menu.Append(EDIT_MENU_CUT,_("Cu&t"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
-			menu.Append(EDIT_MENU_COPY,_("&Copy"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
-			menu.Append(EDIT_MENU_PASTE,_("&Paste"))->Enable(CanPaste());
-			menu.AppendSeparator();
-			menu.Append(EDIT_MENU_SELECT_ALL,_("Select &All"));
-			menu.AppendSeparator();
-			menu.Append(EDIT_MENU_SPLIT_PRESERVE,_("Split at cursor (preserve times)"));
-			menu.Append(EDIT_MENU_SPLIT_ESTIMATE,_("Split at cursor (estimate times)"));
-			PopupMenu(&menu);
+			int pos = PositionFromPoint(event.GetPosition());
+			ShowPopupMenu(pos);
 			return;
 		}
 	}
 
 	event.Skip();
+}
+
+
+///////////////////
+// Show popup menu
+void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
+	// Menu
+	wxMenu menu;
+
+	// Position
+	if (activePos == -1) activePos = GetCurrentPos();
+
+	// Standard actions
+	menu.Append(EDIT_MENU_UNDO,_("&Undo"))->Enable(CanUndo());
+	menu.AppendSeparator();
+	menu.Append(EDIT_MENU_CUT,_("Cu&t"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
+	menu.Append(EDIT_MENU_COPY,_("&Copy"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
+	menu.Append(EDIT_MENU_PASTE,_("&Paste"))->Enable(CanPaste());
+	menu.AppendSeparator();
+	menu.Append(EDIT_MENU_SELECT_ALL,_("Select &All"));
+
+	// Split
+	menu.AppendSeparator();
+	menu.Append(EDIT_MENU_SPLIT_PRESERVE,_("Split at cursor (preserve times)"));
+	menu.Append(EDIT_MENU_SPLIT_ESTIMATE,_("Split at cursor (estimate times)"));
+
+	// Spell check
+	int style = GetStyleAt(activePos);
+	if (style & 32 && spellchecker) {
+		// Get word
+		currentWord = GetWordAtPosition(activePos);
+		currentWordPos = activePos;
+		sugs.Clear();
+
+		// Word is really a typo
+		if (!spellchecker->CheckWord(currentWord)) {
+			// Append "add word"
+			menu.AppendSeparator();
+			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()));
+
+			// Get suggestions
+			sugs = spellchecker->GetSuggestions(currentWord);
+
+			// Build menu
+			int nSugs = sugs.Count();
+			if (nSugs > 0) {
+				wxMenu *suggestions = new wxMenu();
+				for (int i=0;i<nSugs;i++) suggestions->Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
+				menu.AppendSubMenu(suggestions,_("Corrections"));
+			}
+
+			// No suggestions
+			else menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
+		}
+	}
+
+	// Pop the menu
+	PopupMenu(&menu);
+}
+
+
+//////////////////////////////////////
+// Get boundaries of word at position
+void SubsTextEditCtrl::GetBoundsOfWordAtPosition(int pos,int &_start,int &_end) {
+	// Variables
+	wxString text = GetText();
+	int len = text.Length();
+	int lastDelimBefore = -1;
+	int firstDelimAfter = len;
+	wxChar cur,next;
+	int depth=0;
+
+	// Scan for delimiters
+	for (int i=0;i<len;i++) {
+		// Current char
+		cur = text[i];
+		if (i<len-1) next = text[i+1];
+		else next = 0;
+
+		// Depth
+		if (cur == '{') depth++;
+		if (cur == '}') depth--;
+		if (depth != 0) continue;
+
+		// Line breaks
+		if (cur == '\\' && (next == 'N' || next == 'n' || next == 'h')) {
+			// Before
+			if (i < pos) {
+				i++;
+				lastDelimBefore = i;
+				continue;
+			}
+		}
+
+		// Check for delimiters
+		if (delim.Find(cur) != wxNOT_FOUND) {
+			// Before
+			if (i < pos) lastDelimBefore = i;
+			
+			// After
+			else {
+				firstDelimAfter = i;
+				break;
+			}
+		}
+	}
+
+	// Set start and end
+	_start = lastDelimBefore+1;
+	_end = firstDelimAfter-1;
+}
+
+
+//////////////////////////////////
+// Get word at specified position
+wxString SubsTextEditCtrl::GetWordAtPosition(int pos) {
+	int start,end;
+	GetBoundsOfWordAtPosition(pos,start,end);
+	return GetText().Mid(start,end-start+1);
+}
+
+
+///////////////////////////////
+// Split line preserving times
+void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
+	int from,to;
+	GetSelection(&from, &to);
+	control->grid->SplitLine(control->linen,from,0);
+}
+
+
+///////////////////////////////
+// Split line estimating times
+void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &event) {
+	int from,to;
+	GetSelection(&from, &to);
+	control->grid->SplitLine(control->linen,from,1);
+}
+
+
+///////
+// Cut
+void SubsTextEditCtrl::OnCut(wxCommandEvent &event) {
+	Cut();
+}
+
+
+////////
+// Copy
+void SubsTextEditCtrl::OnCopy(wxCommandEvent &event) {
+	Copy();
+}
+
+
+/////////
+// Paste
+void SubsTextEditCtrl::OnPaste(wxCommandEvent &event) {
+	Paste();
+}
+
+
+////////
+// Undo
+void SubsTextEditCtrl::OnUndo(wxCommandEvent &event) {
+	Undo();
+}
+
+
+//////////////
+// Select All
+void SubsTextEditCtrl::OnSelectAll(wxCommandEvent &event) {
+	SelectAll();
+}
+
+
+//////////////////////////
+// Add word to dictionary
+void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &event) {
+	if (spellchecker) spellchecker->AddWord(currentWord);
+	SetFocus();
+}
+
+
+//////////////////
+// Use suggestion
+void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
+	// Get suggestion
+	wxString suggestion = sugs[event.GetId()-EDIT_MENU_SUGGESTIONS];
+	
+	// Get boundaries of text being replaced
+	int start,end;
+	GetBoundsOfWordAtPosition(currentWordPos,start,end);
+
+	// Replace
+	wxString text = GetText();
+	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
+
+	// Set selection
+	SetSelection(start,start+suggestion.Length());
+	SetFocus();
 }

@@ -137,6 +137,7 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Syntax Highlight Tags"),wxColour(90,90,90));
 	SetColour(_T("Syntax Highlight Numbers"),wxColour(0,90,0));
 	SetColour(_T("Syntax Highlight Error"),wxColour(200,0,0));
+	SetColour(_T("Syntax Highlight Line Break"),wxColour(160,160,160));
 	SetColour(_T("Edit Box Need Enter Background"),wxColour(192,192,255));
 #if defined(__WINDOWS__)
 	SetInt(_T("Font Size"),9);

@@ -315,14 +315,6 @@ BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 	EVT_TEXT_ENTER(EFFECT_BOX, SubsEditBox::OnEffectChange)
 	EVT_CHECKBOX(COMMENT_CHECKBOX, SubsEditBox::OnCommentChange)
 
-	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsEditBox::OnSplitLinePreserve)
-	EVT_MENU(EDIT_MENU_SPLIT_ESTIMATE,SubsEditBox::OnSplitLineEstimate)
-	EVT_MENU(EDIT_MENU_CUT,SubsEditBox::OnCut)
-	EVT_MENU(EDIT_MENU_COPY,SubsEditBox::OnCopy)
-	EVT_MENU(EDIT_MENU_PASTE,SubsEditBox::OnPaste)
-	EVT_MENU(EDIT_MENU_UNDO,SubsEditBox::OnUndo)
-	EVT_MENU(EDIT_MENU_SELECT_ALL,SubsEditBox::OnSelectAll)
-
 	EVT_BUTTON(BUTTON_COLOR1,SubsEditBox::OnButtonColor1)
 	EVT_BUTTON(BUTTON_COLOR2,SubsEditBox::OnButtonColor2)
 	EVT_BUTTON(BUTTON_COLOR3,SubsEditBox::OnButtonColor3)
@@ -786,59 +778,6 @@ void SubsEditBox::CommitText() {
 		grid->Refresh(false);
 		audio->SetDialogue(grid,cur,linen);
 	}
-}
-
-
-///////////////////////////////
-// Split line preserving times
-void SubsEditBox::OnSplitLinePreserve (wxCommandEvent &event) {
-	int from,to;
-	TextEdit->GetSelection(&from, &to);
-	grid->SplitLine(linen,from,0);
-}
-
-
-///////////////////////////////
-// Split line estimating times
-void SubsEditBox::OnSplitLineEstimate (wxCommandEvent &event) {
-	int from,to;
-	TextEdit->GetSelection(&from, &to);
-	grid->SplitLine(linen,from,1);
-}
-
-
-///////
-// Cut
-void SubsEditBox::OnCut(wxCommandEvent &event) {
-	TextEdit->Cut();
-}
-
-
-////////
-// Copy
-void SubsEditBox::OnCopy(wxCommandEvent &event) {
-	TextEdit->Copy();
-}
-
-
-/////////
-// Paste
-void SubsEditBox::OnPaste(wxCommandEvent &event) {
-	TextEdit->Paste();
-}
-
-
-////////
-// Undo
-void SubsEditBox::OnUndo(wxCommandEvent &event) {
-	TextEdit->Undo();
-}
-
-
-//////////////
-// Select All
-void SubsEditBox::OnSelectAll(wxCommandEvent &event) {
-	TextEdit->SetSelection(-1,-1);
 }
 
 
