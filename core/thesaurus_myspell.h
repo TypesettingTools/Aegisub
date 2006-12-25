@@ -57,7 +57,7 @@ public:
 	MySpellThesaurus();
 	~MySpellThesaurus();
 
-	wxArrayString GetSuggestions(wxString word);
+	void Lookup(wxString word,ThesaurusEntryArray &result);
 	wxArrayString GetLanguageList();
 	void SetLanguage(wxString language);
 };

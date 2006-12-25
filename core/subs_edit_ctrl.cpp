@@ -404,6 +404,7 @@ BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
 	EVT_MENU(EDIT_MENU_SELECT_ALL,SubsTextEditCtrl::OnSelectAll)
 	EVT_MENU(EDIT_MENU_ADD_TO_DICT,SubsTextEditCtrl::OnAddToDictionary)
 	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_SUGGESTIONS+16,SubsTextEditCtrl::OnUseSuggestion)
+	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_THESAURUS_SUGS+2000,SubsTextEditCtrl::OnUseThesaurusSuggestion)
 END_EVENT_TABLE()
 
 
@@ -461,16 +462,43 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 	// Thesaurus
 	if (thesaurus) {
-		// Get suggestions
+		// Get results
+		ThesaurusEntryArray result;
+		thesaurus->Lookup(currentWord,result);
+
+		// Compile list
 		thesSugs.Clear();
-		thesSugs = thesaurus->GetSuggestions(currentWord);
+		for (unsigned int i=0;i<result.size();i++) {
+			for (unsigned int j=0;j<result[i].words.Count();j++) {
+				thesSugs.Add(result[i].words[j]);
+			}
+		}
 
 		// Build menu
-		int nSugs = thesSugs.Count();
-		for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_THESAURUS_SUGS+i,thesSugs[i]);
+		int curThesEntry = 0;
+		for (unsigned int i=0;i<result.size();i++) {
+			// Single word, insert directly
+			if (result[i].words.Count() == 1) {
+				menu.Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,result[i].name);
+				curThesEntry++;
+			}
+
+			// Multiple, create submenu
+			else {
+				// Insert entries
+				wxMenu *subMenu = new wxMenu();
+				for (unsigned int j=0;j<result[i].words.Count();j++) {
+					subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,result[i].words[j]);
+					curThesEntry++;
+				}
+
+				// Insert submenu
+				menu.AppendSubMenu(subMenu,result[i].name);
+			}
+		}
 
 		// No suggestions
-		if (!nSugs) menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);
+		if (!result.size()) menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);
 
 		// Separator
 		menu.AppendSeparator();
@@ -622,6 +650,27 @@ void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &event) {
 void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	// Get suggestion
 	wxString suggestion = sugs[event.GetId()-EDIT_MENU_SUGGESTIONS];
+	
+	// Get boundaries of text being replaced
+	int start,end;
+	GetBoundsOfWordAtPosition(currentWordPos,start,end);
+
+	// Replace
+	wxString text = GetText();
+	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
+
+	// Set selection
+	SetSelection(start,start+suggestion.Length());
+	SetFocus();
+}
+
+
+
+////////////////////////////
+// Use thesaurus suggestion
+void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
+	// Get suggestion
+	wxString suggestion = thesSugs[event.GetId()-EDIT_MENU_THESAURUS_SUGS];
 	
 	// Get boundaries of text being replaced
 	int start,end;

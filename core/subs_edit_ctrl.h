@@ -79,6 +79,7 @@ private:
 	void OnSelectAll(wxCommandEvent &event);
 	void OnAddToDictionary(wxCommandEvent &event);
 	void OnUseSuggestion(wxCommandEvent &event);
+	void OnUseThesaurusSuggestion(wxCommandEvent &event);
 
 public:
 	SubsEditBox *control;

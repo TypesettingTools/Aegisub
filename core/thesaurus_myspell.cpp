@@ -60,29 +60,25 @@ MySpellThesaurus::~MySpellThesaurus() {
 
 ///////////////////
 // Get suggestions
-wxArrayString MySpellThesaurus::GetSuggestions(wxString word) {
-	// Array
-	wxArrayString suggestions;
+void MySpellThesaurus::Lookup(wxString word,ThesaurusEntryArray &result) {
+	// Loaded?
+	if (!mythes) return;
 
-	// Get suggestions
-	if (mythes) {
-		// Grab raw from MyThes
-		mentry *me;
-		wxCharBuffer buf = word.mb_str(wxConvUTF8);
-		int n = mythes->Lookup(buf,strlen(buf),&me);
+	// Grab raw from MyThes
+	mentry *me;
+	wxCharBuffer buf = word.Lower().mb_str(wxConvUTF8);
+	int n = mythes->Lookup(buf,strlen(buf),&me);
 
-		// Each entry
-		for (int i=0;i<n;i++) {
-			suggestions.Add(wxString(me[i].defn,wxConvUTF8));
-			for (int j=0;j<me[i].count;j++) suggestions.Add(wxString(_T("+")) + wxString(me[i].psyns[j],wxConvUTF8));
-		}
-
-		// Delete
-		mythes->CleanUpAfterLookup(&me,n);
+	// Each entry
+	for (int i=0;i<n;i++) {
+		ThesaurusEntry entry;
+		entry.name = wxString(me[i].defn,wxConvUTF8);
+		for (int j=0;j<me[i].count;j++) entry.words.Add(wxString(me[i].psyns[j],wxConvUTF8));
+		result.push_back(entry);
 	}
 
-	// Return them
-	return suggestions;
+	// Clean up
+	mythes->CleanUpAfterLookup(&me,n);
 }
 
 

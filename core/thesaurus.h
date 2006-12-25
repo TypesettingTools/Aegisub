@@ -40,6 +40,21 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <vector>
+
+
+/////////////////////////
+// Thesaurus entry class
+class ThesaurusEntry {
+public:
+	wxString name;
+	wxArrayString words;
+};
+
+
+/////////////////////////
+// Thesaurus entry array
+typedef std::vector<ThesaurusEntry> ThesaurusEntryArray;
 
 
 ///////////////////////
@@ -51,7 +66,7 @@ public:
 	Thesaurus() {}
 	virtual ~Thesaurus() {}
 
-	virtual wxArrayString GetSuggestions(wxString word)=0;
+	virtual void Lookup(wxString word,ThesaurusEntryArray &result)=0;
 	virtual wxArrayString GetLanguageList()=0;
 	virtual void SetLanguage(wxString language)=0;
 };
