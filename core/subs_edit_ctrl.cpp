@@ -49,6 +49,8 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	// Set properties
 	SetWrapMode(wxSCI_WRAP_WORD);
 	SetMarginWidth(1,0);
+
+	// Set hotkeys
 	CmdKeyClear(wxSCI_KEY_RETURN,wxSCI_SCMOD_CTRL);
 	CmdKeyClear(wxSCI_KEY_RETURN,wxSCI_SCMOD_NULL);
 	CmdKeyClear(wxSCI_KEY_TAB,wxSCI_SCMOD_NULL);
@@ -99,7 +101,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSCI_INDIC_SQUIGGLE);
-	IndicatorSetForeground(0,wxColour(200,0,0));
+	IndicatorSetForeground(0,wxColour(255,0,0));
 
 	// Set spellchecker
 	spellchecker = SpellChecker::GetSpellChecker();
@@ -126,10 +128,11 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	if (_length < 0) end = text.Length();
 
 	// Begin styling
-	StartStyling(0,31);
+	StartStyling(0,255);
 	int ran = 0;
 	int depth = 0;
 	int curStyle = 0;
+	int curPos = 0;
 	wxChar curChar = 0;
 	wxChar prevChar = 0;
 
@@ -141,14 +144,16 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 		// Erroneous
 		if (depth < 0 || depth > 1) {
-			SetStyling(ran,curStyle);
+			SetUnicodeStyling(curPos,ran,curStyle);
+			curPos += ran;
 			ran = 0;
 			curStyle = 4;
 		}
 
 		// Start override block
 		if (curChar == _T('{') && depth >= 0) {
-			SetStyling(ran,curStyle);
+			SetUnicodeStyling(curPos,ran,curStyle);
+			curPos += ran;
 			ran = 0;
 			depth++;
 			if (depth == 1) curStyle = 1;
@@ -157,7 +162,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 		// End override block
 		else if (curChar == _T('}') && depth <= 1) {
-			SetStyling(ran,curStyle);
+			SetUnicodeStyling(curPos,ran,curStyle);
+			curPos += ran;
 			ran = 0;
 			depth--;
 			if (depth == 0) curStyle = 1;
@@ -166,7 +172,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 		// Outside
 		else if (depth == 0 && curStyle != 0) {
-			SetStyling(ran,curStyle);
+			SetUnicodeStyling(curPos,ran,curStyle);
+			curPos += ran;
 			ran = 0;
 			curStyle = 0;
 		}
@@ -176,7 +183,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			// Special character
 			if (curChar == _T('\\') || curChar == _T('(') || curChar == _T(')') || curChar == _T(',')) {
 				if (curStyle != 2) {
-					SetStyling(ran,curStyle);
+					SetUnicodeStyling(curPos,ran,curStyle);
+					curPos += ran;
 					ran = 0;
 					curStyle = 2;
 				}
@@ -185,7 +193,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			// Number
 			else if ((curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&')) {
 				if (curStyle != 5) {
-					SetStyling(ran,curStyle);
+					SetUnicodeStyling(curPos,ran,curStyle);
+					curPos += ran;
 					ran = 0;
 					curStyle = 5;
 				}
@@ -193,7 +202,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 			// Tag name
 			else if (curStyle != 3) {
-				SetStyling(ran,curStyle);
+				SetUnicodeStyling(curPos,ran,curStyle);
+				curPos += ran;
 				ran = 0;
 				curStyle = 3;
 			}
@@ -202,10 +212,24 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		// Increase ran length
 		ran++;
 	}
-	SetStyling(ran,curStyle);
+	SetUnicodeStyling(curPos,ran,curStyle);
 
 	// Spell check
 	StyleSpellCheck(start,_length);
+}
+
+
+////////////////////////
+// Unicode-safe styling
+void SubsTextEditCtrl::SetUnicodeStyling(int start,int length,int style) {
+	// Get the real length
+	wxString string = GetText().Mid(start,length);
+	wxCharBuffer buffer = string.mb_str(wxConvUTF8);
+	const char* utf8str = buffer;
+	int len = strlen(utf8str);
+
+	// Set styling
+	SetStyling(len,style);
 }
 
 
@@ -231,10 +255,11 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 	bool isDelim;
 
 	// Scan
-	for (int i=start;i<end;i++) {
+	for (int i=start;i<end+1;i++) {
 		// Current character
 		curPos = i;
-		cur = text[i];
+		if (i < end) cur = text[i];
+		else cur = '.';
 		isDelim = false;
 
 		// Increase depth
@@ -262,16 +287,14 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 		if (depth != 0) continue;
 
 		// Check if it is \n or \N
-		if (cur == '\\' && i != end-2 && (text[i+1] == 'N' || text[i+1] == 'n')) {
+		if (cur == '\\' && i < end-1 && (text[i+1] == 'N' || text[i+1] == 'n')) {
 			isDelim = true;
 			i++;
 		}
 
 		// Check for standard delimiters
 		if (delim.Find(cur) != wxNOT_FOUND) {
-			//if (lastpos != i-1) {
 			isDelim = true;
-			//}
 		}
 
 		// Is delimiter?
@@ -292,8 +315,15 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 
 		// Check if it's valid
 		if (!spellchecker->CheckWord(curWord)) {
-			StartStyling(startPos[i],32);
-			SetStyling(endPos[i]-startPos[i],32);
+			// Get length before it
+			wxString string = GetText().Left(startPos[i]);
+			wxCharBuffer buffer = string.mb_str(wxConvUTF8);
+			const char* utf8str = buffer;
+			int utf8len = strlen(utf8str);
+
+			// Set styling
+			StartStyling(utf8len,32);
+			SetUnicodeStyling(startPos[i],endPos[i]-startPos[i],32);
 		}
 	}
 }

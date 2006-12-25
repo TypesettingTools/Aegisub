@@ -56,6 +56,8 @@ private:
 	SpellChecker *spellchecker;
 	void OnMouseEvent(wxMouseEvent &event);
 
+	void SetUnicodeStyling(int start,int length,int style);
+
 public:
 	SubsEditBox *control;
 
