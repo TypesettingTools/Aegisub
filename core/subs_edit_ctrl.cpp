@@ -671,6 +671,12 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
 	// Get suggestion
 	wxString suggestion = thesSugs[event.GetId()-EDIT_MENU_THESAURUS_SUGS];
+
+	// Stripe suggestion of parenthesis
+	int pos = suggestion.Find(_T("("));
+	if (pos != wxNOT_FOUND) {
+		suggestion = suggestion.Left(pos-1);
+	}
 	
 	// Get boundaries of text being replaced
 	int start,end;
