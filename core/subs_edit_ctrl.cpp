@@ -439,7 +439,10 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 	// Spell check
 	int style = GetStyleAt(activePos);
-	if (spellchecker && !spellchecker->CheckWord(currentWord)) {
+	if (spellchecker && currentWord.Length()) {
+		// Spelled right?
+		bool rightSpelling = spellchecker->CheckWord(currentWord);
+
 		// Set font
 		wxFont font;
 		font.SetWeight(wxFONTWEIGHT_BOLD);
@@ -447,21 +450,41 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 		// Get suggestions
 		sugs.Clear();
 		sugs = spellchecker->GetSuggestions(currentWord);
-
-		// Build menu
 		int nSugs = sugs.Count();
-		for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i])->SetFont(font);
 
-		// No suggestions
-		if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
+		// Spelled wrong
+		if (!rightSpelling) {
+			// No suggestions
+			if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
 
-		// Append "add word"
-		menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()));
-		menu.AppendSeparator();
+			// Build menu
+			for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i])->SetFont(font);
+
+			// Append "add word"
+			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()));
+			menu.AppendSeparator();
+		}
+
+		// Spelled right
+		else {
+			// No suggestions
+			if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No spell checker suggestions"))->Enable(false);
+
+			// Has suggestions
+			else {
+				// Build list
+				wxMenu *subMenu = new wxMenu();
+				for (int i=0;i<nSugs;i++) subMenu->Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
+				menu.AppendSubMenu(subMenu,wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord.c_str()));
+			}
+
+			// Separator
+			if (!thesaurus) menu.AppendSeparator();
+		}
 	}
 
 	// Thesaurus
-	if (thesaurus) {
+	if (thesaurus && currentWord.Length()) {
 		// Get results
 		ThesaurusEntryArray result;
 		thesaurus->Lookup(currentWord,result);
@@ -476,32 +499,38 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 		// Has suggestions
 		if (result.size()) {
+			// Set font
 			wxFont font;
 			font.SetStyle(wxFONTSTYLE_ITALIC);
-			menu.Append(EDIT_MENU_THESAURUS,wxString::Format(_("Thesaurus suggestions for \"%s\":"),currentWord.c_str()))->SetFont(font);
-		}
 
-		// Build menu
-		int curThesEntry = 0;
-		for (unsigned int i=0;i<result.size();i++) {
-			// Single word, insert directly
-			if (result[i].words.Count() == 1) {
-				menu.Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,result[i].name);
-				curThesEntry++;
-			}
+			// Create thesaurus menu
+			wxMenu *thesMenu = new wxMenu();
 
-			// Multiple, create submenu
-			else {
-				// Insert entries
-				wxMenu *subMenu = new wxMenu();
-				for (unsigned int j=0;j<result[i].words.Count();j++) {
-					subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,result[i].words[j]);
+			// Build menu
+			int curThesEntry = 0;
+			for (unsigned int i=0;i<result.size();i++) {
+				// Single word, insert directly
+				if (result[i].words.Count() == 1) {
+					thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,result[i].name);
 					curThesEntry++;
 				}
 
-				// Insert submenu
-				menu.AppendSubMenu(subMenu,result[i].name);
+				// Multiple, create submenu
+				else {
+					// Insert entries
+					wxMenu *subMenu = new wxMenu();
+					for (unsigned int j=0;j<result[i].words.Count();j++) {
+						subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,result[i].words[j]);
+						curThesEntry++;
+					}
+
+					// Insert submenu
+					thesMenu->AppendSubMenu(subMenu,result[i].name);
+				}
 			}
+
+			// Thesaurus menu
+			menu.AppendSubMenu(thesMenu,wxString::Format(_("Thesaurus suggestions for \"%s\""),currentWord.c_str()));
 		}
 
 		// No suggestions
