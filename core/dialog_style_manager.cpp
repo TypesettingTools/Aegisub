@@ -70,6 +70,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	StorageList = new wxListBox(this, LIST_STORAGE, wxDefaultPosition, wxSize(205,250), 0, NULL, wxLB_EXTENDED);
 	wxSizer *StorageBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Storage"));
 	wxSizer *StorageButtons = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *StorageButtonsLow = new wxBoxSizer(wxHORIZONTAL);
 	MoveToLocal = new wxButton(this, BUTTON_STORAGE_COPYTO, _("Copy to current script ->"), wxDefaultPosition, wxSize(205,25));
 	StorageNew = new wxButton(this, BUTTON_STORAGE_NEW, _("New"), wxDefaultPosition, wxSize(40,25));
 	StorageEdit = new wxButton(this, BUTTON_STORAGE_EDIT, _("Edit"), wxDefaultPosition, wxSize(40,25));
@@ -79,9 +80,18 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	StorageButtons->Add(StorageEdit,1,wxEXPAND | wxALL,0);
 	StorageButtons->Add(StorageCopy,1,wxEXPAND | wxALL,0);
 	StorageButtons->Add(StorageDelete,1,wxEXPAND | wxALL,0);
+	StorageMoveUp = new wxButton(this, BUTTON_STORAGE_UP, _("Up"), wxDefaultPosition, wxSize(40,25));
+	StorageMoveDown = new wxButton(this, BUTTON_STORAGE_DOWN, _("Down"), wxDefaultPosition, wxSize(40,25));
+	StorageMoveTop = new wxButton(this, BUTTON_STORAGE_TOP, _("Top"), wxDefaultPosition, wxSize(40,25));
+	StorageMoveBottom = new wxButton(this, BUTTON_STORAGE_BOTTOM, _("Bottom"), wxDefaultPosition, wxSize(40,25));
+	StorageButtonsLow->Add(StorageMoveTop,1,wxEXPAND | wxALL,0);
+	StorageButtonsLow->Add(StorageMoveUp,1,wxEXPAND | wxALL,0);
+	StorageButtonsLow->Add(StorageMoveDown,1,wxEXPAND | wxALL,0);
+	StorageButtonsLow->Add(StorageMoveBottom,1,wxEXPAND | wxALL,0);
 	StorageBox->Add(StorageList,0,wxEXPAND | wxALL,0);
 	StorageBox->Add(MoveToLocal,0,wxEXPAND | wxALL,0);
 	StorageBox->Add(StorageButtons,0,wxEXPAND | wxALL,0);
+	StorageBox->Add(StorageButtonsLow,0,wxEXPAND | wxALL,0);
 	MoveToLocal->Disable();
 	StorageEdit->Disable();
 	StorageCopy->Disable();
@@ -91,6 +101,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	CurrentList = new wxListBox(this, LIST_CURRENT, wxDefaultPosition, wxSize(205,250), 0, NULL, wxLB_EXTENDED);
 	wxSizer *CurrentBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Current script"));
 	wxSizer *CurrentButtons = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *CurrentButtonsLow = new wxBoxSizer(wxHORIZONTAL);
 	MoveToStorage = new wxButton(this, BUTTON_CURRENT_COPYTO, _("<- Copy to storage"), wxDefaultPosition, wxSize(205,25));
 	CurrentNew = new wxButton(this, BUTTON_CURRENT_NEW, _("New"), wxDefaultPosition, wxSize(40,25));
 	CurrentEdit = new wxButton(this, BUTTON_CURRENT_EDIT, _("Edit"), wxDefaultPosition, wxSize(40,25));
@@ -100,9 +111,18 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	CurrentButtons->Add(CurrentEdit,1,wxEXPAND | wxALL,0);
 	CurrentButtons->Add(CurrentCopy,1,wxEXPAND | wxALL,0);
 	CurrentButtons->Add(CurrentDelete,1,wxEXPAND | wxALL,0);
+	CurrentMoveUp = new wxButton(this, BUTTON_CURRENT_UP, _("Up"), wxDefaultPosition, wxSize(40,25));
+	CurrentMoveDown = new wxButton(this, BUTTON_CURRENT_DOWN, _("Down"), wxDefaultPosition, wxSize(40,25));
+	CurrentMoveTop = new wxButton(this, BUTTON_CURRENT_TOP, _("Top"), wxDefaultPosition, wxSize(40,25));
+	CurrentMoveBottom = new wxButton(this, BUTTON_CURRENT_BOTTOM, _("Bottom"), wxDefaultPosition, wxSize(40,25));
+	CurrentButtonsLow->Add(CurrentMoveTop,1,wxEXPAND | wxALL,0);
+	CurrentButtonsLow->Add(CurrentMoveUp,1,wxEXPAND | wxALL,0);
+	CurrentButtonsLow->Add(CurrentMoveDown,1,wxEXPAND | wxALL,0);
+	CurrentButtonsLow->Add(CurrentMoveBottom,1,wxEXPAND | wxALL,0);
 	CurrentBox->Add(CurrentList,0,wxEXPAND | wxALL,0);
 	CurrentBox->Add(MoveToStorage,0,wxEXPAND | wxALL,0);
 	CurrentBox->Add(CurrentButtons,0,wxEXPAND | wxALL,0);
+	CurrentBox->Add(CurrentButtonsLow,0,wxEXPAND | wxALL,0);
 	CurrentBox->Add(new wxButton(this, BUTTON_CURRENT_IMPORT, _("Import from script...")),0,wxEXPAND);
 	MoveToStorage->Disable();
 	CurrentEdit->Disable();
@@ -153,6 +173,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 		CurrentDelete->Enable();
 		MoveToStorage->Enable();
 	}
+	UpdateMoveButtons();
 }
 
 
@@ -234,6 +255,7 @@ void DialogStyleManager::LoadCurrentStyles (AssFile *subs) {
 			}
 		}
 	}
+	UpdateMoveButtons();
 }
 
 void DialogStyleManager::LoadStorageStyles () {
@@ -258,6 +280,7 @@ void DialogStyleManager::LoadStorageStyles () {
 	// Flag change
 	wxCommandEvent dummy;
 	OnStorageChange(dummy);
+	UpdateMoveButtons();
 }
 
 
@@ -275,6 +298,7 @@ void DialogStyleManager::StorageActions (bool state) {
 	
 	wxArrayInt selections;
 	if (CurrentList->GetSelections(selections) != 0) MoveToStorage->Enable(state);
+	UpdateMoveButtons();
 }
 
 
@@ -300,6 +324,14 @@ BEGIN_EVENT_TABLE(DialogStyleManager, wxDialog)
 	EVT_BUTTON(BUTTON_CURRENT_DELETE, DialogStyleManager::OnCurrentDelete)
 	EVT_BUTTON(BUTTON_STORAGE_DELETE, DialogStyleManager::OnStorageDelete)
 	EVT_BUTTON(BUTTON_CURRENT_IMPORT, DialogStyleManager::OnCurrentImport)
+	EVT_BUTTON(BUTTON_CURRENT_UP, DialogStyleManager::OnCurrentMoveUp)
+	EVT_BUTTON(BUTTON_CURRENT_TOP, DialogStyleManager::OnCurrentMoveTop)
+	EVT_BUTTON(BUTTON_CURRENT_DOWN, DialogStyleManager::OnCurrentMoveDown)
+	EVT_BUTTON(BUTTON_CURRENT_BOTTOM, DialogStyleManager::OnCurrentMoveBottom)
+	EVT_BUTTON(BUTTON_STORAGE_UP, DialogStyleManager::OnStorageMoveUp)
+	EVT_BUTTON(BUTTON_STORAGE_TOP, DialogStyleManager::OnStorageMoveTop)
+	EVT_BUTTON(BUTTON_STORAGE_DOWN, DialogStyleManager::OnStorageMoveDown)
+	EVT_BUTTON(BUTTON_STORAGE_BOTTOM, DialogStyleManager::OnStorageMoveBottom)
 END_EVENT_TABLE()
 
 
@@ -328,6 +360,7 @@ void DialogStyleManager::OnChangeCatalog (wxCommandEvent &event) {
 		Store.Clear();
 		LoadStorageStyles();
 	}
+	UpdateMoveButtons();
 }
 
 
@@ -366,6 +399,7 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 		}
 		Store.Save(name);
 	}
+	UpdateMoveButtons();
 }
 
 
@@ -390,6 +424,7 @@ void DialogStyleManager::OnCatalogDelete (wxCommandEvent &event) {
 			StorageActions(false);
 		}
 	}
+	UpdateMoveButtons();
 }
 
 
@@ -410,7 +445,8 @@ void DialogStyleManager::OnStorageEdit (wxCommandEvent &event) {
 		}
 	}
 	else if (n > 1) {
-	}	
+	}
+	UpdateMoveButtons();
 }
 
 
@@ -430,6 +466,7 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &event) {
 	}
 	else if (n > 1) {
 	}
+	UpdateMoveButtons();
 }
 
 
@@ -443,6 +480,7 @@ void DialogStyleManager::OnCurrentChange (wxCommandEvent &event) {
 	CurrentCopy->Enable(n == 1);
 	CurrentDelete->Enable(n > 0);
 	MoveToStorage->Enable(n > 0);
+	UpdateMoveButtons();
 }
 
 
@@ -456,6 +494,7 @@ void DialogStyleManager::OnStorageChange (wxCommandEvent &event) {
 	StorageCopy->Enable(n == 1);
 	StorageDelete->Enable(n > 0);
 	MoveToLocal->Enable(n > 0);
+	UpdateMoveButtons();
 }
 
 
@@ -483,6 +522,7 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &event) {
 	}
 	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	LoadStorageStyles();
+	UpdateMoveButtons();
 }
 
 
@@ -514,6 +554,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 	LoadCurrentStyles(AssFile::top);
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
+	UpdateMoveButtons();
 }
 
 
@@ -538,6 +579,7 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &event) {
 		StorageList->SetStringSelection(temp->name); // the copy/delete/copy-to-local buttons stay disabled after this?
 	}
 	else delete temp;
+	UpdateMoveButtons();
 }
 
 
@@ -563,6 +605,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
+	UpdateMoveButtons();
 }
 
 
@@ -580,6 +623,7 @@ void DialogStyleManager::OnStorageNew (wxCommandEvent &event) {
 		LoadStorageStyles();
 	}
 	else delete temp;
+	UpdateMoveButtons();
 }
 
 
@@ -596,6 +640,7 @@ void DialogStyleManager::OnCurrentNew (wxCommandEvent &event) {
 		LoadCurrentStyles(AssFile::top);
 	}
 	else delete temp;
+	UpdateMoveButtons();
 }
 
 
@@ -629,6 +674,7 @@ void DialogStyleManager::OnStorageDelete (wxCommandEvent &event) {
 		StorageCopy->Enable(false);
 		StorageDelete->Enable(false);
 	}
+	UpdateMoveButtons();
 }
 
 
@@ -664,6 +710,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &event) {
 		grid->ass->FlagAsModified();
 		grid->CommitChanges();
 	}
+	UpdateMoveButtons();
 }
 
 
@@ -724,6 +771,162 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
 		catch (...) {
 		}
 	}
+}
+
+
+///////////////////////
+// Update move buttons
+void DialogStyleManager::UpdateMoveButtons() {
+	// Get storage selection
+	wxArrayInt sels;
+	int n = StorageList->GetSelections(sels);
+	int firstStor = -1;
+	int lastStor = -1;
+	if (n) {
+		firstStor = sels[0];
+		lastStor = sels[n-1];
+	}
+	int itemsStor = StorageList->GetCount();
+
+	// Get current selection
+	n = CurrentList->GetSelections(sels);
+	int firstCurr = -1;
+	int lastCurr = -1;
+	if (n) {
+		firstCurr = sels[0];
+		lastCurr = sels[n-1];
+	}
+	int itemsCurr = CurrentList->GetCount();
+
+	// Set values
+	StorageMoveUp->Enable(firstStor > 0);
+	StorageMoveTop->Enable(firstStor > 0);
+	StorageMoveDown->Enable(lastStor != -1 && lastStor < itemsStor-1);
+	StorageMoveBottom->Enable(lastStor != -1 && lastStor < itemsStor-1);
+	CurrentMoveUp->Enable(firstCurr > 0);
+	CurrentMoveTop->Enable(firstCurr > 0);
+	CurrentMoveDown->Enable(lastCurr != -1 && lastCurr < itemsCurr-1);
+	CurrentMoveBottom->Enable(lastCurr != -1 && lastCurr < itemsCurr-1);
+}
+
+
+///////////////
+// Move events
+void DialogStyleManager::OnStorageMoveUp (wxCommandEvent &event) { MoveStyles(true,0); }
+void DialogStyleManager::OnStorageMoveTop (wxCommandEvent &event) { MoveStyles(true,1); }
+void DialogStyleManager::OnStorageMoveDown (wxCommandEvent &event) { MoveStyles(true,2); }
+void DialogStyleManager::OnStorageMoveBottom (wxCommandEvent &event) { MoveStyles(true,3); }
+void DialogStyleManager::OnCurrentMoveUp (wxCommandEvent &event) { MoveStyles(false,0); }
+void DialogStyleManager::OnCurrentMoveTop (wxCommandEvent &event) { MoveStyles(false,1); }
+void DialogStyleManager::OnCurrentMoveDown (wxCommandEvent &event) { MoveStyles(false,2); }
+void DialogStyleManager::OnCurrentMoveBottom (wxCommandEvent &event) { MoveStyles(false,3); }
+
+
+/////////////////
+// Move function
+void DialogStyleManager::MoveStyles(bool storage, int type) {
+	// Variables
+	AssFile *subs = AssFile::top;
+	wxListBox *list;
+	if (storage) list = StorageList;
+	else list = CurrentList;
+
+	// Get selection
+	wxArrayInt sels;
+	int n = list->GetSelections(sels);
+	int first = sels[0];
+	int last = sels[n-1];
+
+	// Get total style count
+	int nStyles = list->GetCount();
+
+	// Get styles
+	std::vector<AssStyle*> styls;
+	std::vector<AssStyle*> *srcStyls;
+	if (storage) srcStyls = &styleStorageMap;
+	else srcStyls = &styleMap;
+
+	// Move up
+	if (type == 0) {
+		for (int i=0;i<first-1;i++) styls.push_back(srcStyls->at(i));
+		for (int i=first;i<=last;i++) styls.push_back(srcStyls->at(i));
+		styls.push_back(srcStyls->at(first-1));
+		for (int i=last+1;i<nStyles;i++) styls.push_back(srcStyls->at(i));
+		first--;
+		last--;
+	}
+
+	// Move to top
+	if (type == 1) {
+		for (int i=first;i<=last;i++) styls.push_back(srcStyls->at(i));
+		for (int i=0;i<first;i++) styls.push_back(srcStyls->at(i));
+		for (int i=last+1;i<nStyles;i++) styls.push_back(srcStyls->at(i));
+		last = last-first;
+		first = 0;
+	}
+
+	// Move down
+	if (type == 2) {
+		for (int i=0;i<first;i++) styls.push_back(srcStyls->at(i));
+		styls.push_back(srcStyls->at(last+1));
+		for (int i=first;i<=last;i++) styls.push_back(srcStyls->at(i));
+		for (int i=last+2;i<nStyles;i++) styls.push_back(srcStyls->at(i));
+		first++;
+		last++;
+	}
+
+	// Move to bottom
+	if (type == 3) {
+		for (int i=0;i<first;i++) styls.push_back(srcStyls->at(i));
+		for (int i=last+1;i<nStyles;i++) styls.push_back(srcStyls->at(i));
+		for (int i=first;i<=last;i++) styls.push_back(srcStyls->at(i));
+		first = nStyles-(last-first+1);
+		last = nStyles-1;
+	}
+
+	// Storage
+	if (storage) {
+		// Rewrite storage
+		Store.style.clear();
+		for (unsigned int i=0;i<styls.size();i++) Store.style.push_back(styls[i]);
+		
+		// Save storage
+		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+	}
+
+	// Current
+	else {
+		// Replace styles
+		entryIter next;
+		int curn = 0;
+		for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur = next) {
+			next = cur;
+			next++;
+			AssStyle *style = AssEntry::GetAsStyle(*cur);
+			if (style) {
+				subs->Line.insert(cur,styls[curn]);
+				subs->Line.erase(cur);
+				curn++;
+			}
+		}
+
+		// Flag as modified
+		grid->ass->FlagAsModified();
+		grid->CommitChanges();
+	}
+
+	// Update
+	for (int i=0;i<nStyles;i++) {
+		list->SetString(i,styls[i]->name);
+		if (i < first || i > last) list->Deselect(i);
+		else list->Select(i);
+	}
+
+	// Set map
+	*srcStyls = styls;
+
+	// Update buttons
+	UpdateMoveButtons();
 }
 
 

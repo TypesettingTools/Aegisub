@@ -69,11 +69,19 @@ private:
 	wxButton *StorageEdit;
 	wxButton *StorageCopy;
 	wxButton *StorageDelete;
+	wxButton *StorageMoveUp;
+	wxButton *StorageMoveDown;
+	wxButton *StorageMoveTop;
+	wxButton *StorageMoveBottom;
 	wxButton *MoveToStorage;
 	wxButton *CurrentNew;
 	wxButton *CurrentEdit;
 	wxButton *CurrentCopy;
 	wxButton *CurrentDelete;
+	wxButton *CurrentMoveUp;
+	wxButton *CurrentMoveDown;
+	wxButton *CurrentMoveTop;
+	wxButton *CurrentMoveBottom;
 
 	AssStyleStorage Store;
 
@@ -81,6 +89,8 @@ private:
 	void LoadCatalog ();
 	void LoadCurrentStyles (AssFile *subs);
 	void LoadStorageStyles ();
+	void UpdateMoveButtons();
+	void MoveStyles(bool storage,int type);
 
 	static int lastx, lasty;
 
@@ -96,6 +106,10 @@ public:
 	void OnCatalogDelete (wxCommandEvent &event);
 	void OnStorageEdit (wxCommandEvent &event);
 	void OnCurrentEdit (wxCommandEvent &event);
+	void OnCurrentMoveUp (wxCommandEvent &event);
+	void OnCurrentMoveDown (wxCommandEvent &event);
+	void OnCurrentMoveTop (wxCommandEvent &event);
+	void OnCurrentMoveBottom (wxCommandEvent &event);
 	void OnStorageChange (wxCommandEvent &event);
 	void OnCurrentChange (wxCommandEvent &event);
 	void OnCopyToStorage (wxCommandEvent &event);
@@ -104,6 +118,10 @@ public:
 	void OnCurrentCopy (wxCommandEvent &event);
 	void OnStorageNew (wxCommandEvent &event);
 	void OnCurrentNew (wxCommandEvent &event);
+	void OnStorageMoveUp (wxCommandEvent &event);
+	void OnStorageMoveDown (wxCommandEvent &event);
+	void OnStorageMoveTop (wxCommandEvent &event);
+	void OnStorageMoveBottom (wxCommandEvent &event);
 	void OnStorageDelete (wxCommandEvent &event);
 	void OnCurrentDelete (wxCommandEvent &event);
 	void OnCurrentImport (wxCommandEvent &event);
@@ -122,12 +140,20 @@ enum {
 	BUTTON_STORAGE_EDIT,
 	BUTTON_STORAGE_COPY,
 	BUTTON_STORAGE_DELETE,
+	BUTTON_STORAGE_UP,
+	BUTTON_STORAGE_DOWN,
+	BUTTON_STORAGE_TOP,
+	BUTTON_STORAGE_BOTTOM,
 	BUTTON_CURRENT_COPYTO,
 	BUTTON_CURRENT_NEW,
 	BUTTON_CURRENT_EDIT,
 	BUTTON_CURRENT_COPY,
 	BUTTON_CURRENT_DELETE,
 	BUTTON_CURRENT_IMPORT,
+	BUTTON_CURRENT_UP,
+	BUTTON_CURRENT_DOWN,
+	BUTTON_CURRENT_TOP,
+	BUTTON_CURRENT_BOTTOM,
 	LIST_CATALOG,
 	LIST_STORAGE,
 	LIST_CURRENT
