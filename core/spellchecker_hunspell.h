@@ -39,6 +39,7 @@
 #include "setup.h"
 #if USE_HUNSPELL == 1
 #include "spellchecker.h"
+#include <wx/wxprec.h>
 
 
 //////////////
@@ -51,6 +52,7 @@ class Hunspell;
 class HunspellSpellChecker : public SpellChecker {
 private:
 	Hunspell *hunspell;
+	wxCSConv *conv;
 
 public:
 	HunspellSpellChecker();

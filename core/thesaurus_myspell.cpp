@@ -47,6 +47,8 @@ MySpellThesaurus::MySpellThesaurus() {
 	wxString idxpath = AegisubApp::folderName + _T("dictionaries/th_en_US.idx");
 	wxString datpath = AegisubApp::folderName + _T("dictionaries/th_en_US.dat");
 	mythes = new MyThes(idxpath.mb_str(wxConvLocal),datpath.mb_str(wxConvLocal));
+	conv = NULL;
+	if (mythes) conv = new wxCSConv(wxString(mythes->get_th_encoding(),wxConvUTF8));
 }
 
 
@@ -55,6 +57,8 @@ MySpellThesaurus::MySpellThesaurus() {
 MySpellThesaurus::~MySpellThesaurus() {
 	delete mythes;
 	mythes = NULL;
+	delete conv;
+	conv = NULL;
 }
 
 
@@ -66,14 +70,14 @@ void MySpellThesaurus::Lookup(wxString word,ThesaurusEntryArray &result) {
 
 	// Grab raw from MyThes
 	mentry *me;
-	wxCharBuffer buf = word.Lower().mb_str(wxConvUTF8);
+	wxCharBuffer buf = word.Lower().mb_str(*conv);
 	int n = mythes->Lookup(buf,strlen(buf),&me);
 
 	// Each entry
 	for (int i=0;i<n;i++) {
 		ThesaurusEntry entry;
-		entry.name = wxString(me[i].defn,wxConvUTF8);
-		for (int j=0;j<me[i].count;j++) entry.words.Add(wxString(me[i].psyns[j],wxConvUTF8));
+		entry.name = wxString(me[i].defn,*conv);
+		for (int j=0;j<me[i].count;j++) entry.words.Add(wxString(me[i].psyns[j],*conv));
 		result.push_back(entry);
 	}
 

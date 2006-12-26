@@ -52,6 +52,7 @@ class MyThes;
 class MySpellThesaurus: public Thesaurus {
 private:
 	MyThes *mythes;
+	wxCSConv *conv;
 
 public:
 	MySpellThesaurus();
