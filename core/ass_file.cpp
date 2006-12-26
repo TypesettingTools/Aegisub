@@ -773,9 +773,14 @@ void AssFile::AddToRecent(wxString file) {
 ///////////////////////////////
 // List of supported wildcards
 wxString AssFile::GetWildcardList(int mode) {
-	if (mode == 0) return _T("All Supported Types (*.ass,*.ssa,*.srt,*.txt,*.mkv,*.mks,*.mka)|*.ass;*.ssa;*.srt;*.txt;*.mkv;*.mks;*.mka|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt|Matroska (*.mkv,*.mks,*.mka)|*.mkv;*.mks;*.mka");
+	//if (mode == 0) return _T("All Supported Types (*.ass,*.ssa,*.srt,*.txt,*.mkv,*.mks,*.mka)|*.ass;*.ssa;*.srt;*.txt;*.mkv;*.mks;*.mka|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt|Matroska (*.mkv,*.mks,*.mka)|*.mkv;*.mks;*.mka");
+	//else if (mode == 1) return _T("Advanced Substation Alpha (*.ass)|*.ass");
+	//else if (mode == 2) return _T("All Supported Types (*.ass,*.ssa,*.srt,*.txt,*.mkv,*.mks,*.mka)|*.ass;*.ssa;*.srt;*.txt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt");
+	//else return _T("");
+
+	if (mode == 0) return SubtitleFormat::GetWildcards(0);
 	else if (mode == 1) return _T("Advanced Substation Alpha (*.ass)|*.ass");
-	else if (mode == 2) return _T("All Supported Types (*.ass,*.ssa,*.srt,*.txt,*.mkv,*.mks,*.mka)|*.ass;*.ssa;*.srt;*.txt|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt");
+	else if (mode == 2) return SubtitleFormat::GetWildcards(1);
 	else return _T("");
 }
 

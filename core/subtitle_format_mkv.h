@@ -51,6 +51,9 @@ class AssDialogue;
 // ASS reader/writer
 class MKVSubtitleFormat : public SubtitleFormat {
 public:
+	wxString GetName();
+	wxArrayString GetReadWildcards();
+
 	bool CanReadFile(wxString filename);
 	void ReadFile(wxString filename,wxString forceEncoding);
 

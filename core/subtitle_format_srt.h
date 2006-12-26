@@ -55,6 +55,10 @@ private:
 	void DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator prev);
 
 public:
+	wxString GetName();
+	wxArrayString GetReadWildcards();
+	wxArrayString GetWriteWildcards();
+
 	bool CanReadFile(wxString filename);
 	void ReadFile(wxString filename,wxString forceEncoding);
 

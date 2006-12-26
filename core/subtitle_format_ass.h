@@ -51,6 +51,10 @@ class AssDialogue;
 // ASS reader/writer
 class ASSSubtitleFormat : public SubtitleFormat {
 public:
+	wxString GetName();
+	wxArrayString GetReadWildcards();
+	wxArrayString GetWriteWildcards();
+
 	bool CanReadFile(wxString filename);
 	void ReadFile(wxString filename,wxString forceEncoding);
 

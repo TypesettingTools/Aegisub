@@ -49,6 +49,33 @@ bool ASSSubtitleFormat::CanReadFile(wxString filename) {
 }
 
 
+////////////
+// Get name
+wxString ASSSubtitleFormat::GetName() {
+	return _T("Advanced Substation Alpha");
+}
+
+
+//////////////////////
+// Get read wildcards
+wxArrayString ASSSubtitleFormat::GetReadWildcards() {
+	wxArrayString formats;
+	formats.Add(_T("ass"));
+	formats.Add(_T("ssa"));
+	return formats;
+}
+
+
+///////////////////////
+// Get write wildcards
+wxArrayString ASSSubtitleFormat::GetWriteWildcards() {
+	wxArrayString formats;
+	formats.Add(_T("ass"));
+	formats.Add(_T("ssa"));
+	return formats;
+}
+
+
 /////////////
 // Read file
 void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {

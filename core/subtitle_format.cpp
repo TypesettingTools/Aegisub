@@ -197,3 +197,60 @@ void SubtitleFormat::Remove() {
 		}
 	}
 }
+
+
+//////////////////////
+// Get read wildcards
+wxArrayString SubtitleFormat::GetReadWildcards() {
+	return wxArrayString();
+}
+
+
+///////////////////////
+// Get write wildcards
+wxArrayString SubtitleFormat::GetWriteWildcards() {
+	return wxArrayString();
+}
+
+
+/////////////////////
+// Get wildcard list
+wxString SubtitleFormat::GetWildcards(int mode) {
+	// Ensure it's loaded
+	LoadFormats();
+
+	// Variables
+	wxArrayString all;
+	wxArrayString cur;
+	wxString wild;
+	wxString final;
+
+	// For each format
+	std::list<SubtitleFormat*>::iterator curIter;
+	SubtitleFormat *format;
+	for (curIter=formats.begin();curIter!=formats.end();curIter++) {
+		// Get list
+		format = *curIter;
+		if (mode == 0) cur = format->GetReadWildcards();
+		else if (mode == 1) cur = format->GetWriteWildcards();
+		wxString temp1;
+		wxString temp2;
+
+		// Has wildcards
+		if (cur.Count()) {
+			// Process entries
+			for (unsigned int i=0;i<cur.Count();i++) {
+				wild = _T("*.") + cur[i];
+				all.Add(wild);
+				temp1 += wild + _T(",");
+				temp2 += wild + _T(";");
+			}
+
+			// Assemble final name
+			final += format->GetName() + _T(" (") + temp1.Left(temp1.Length()-1) + _T(")|") + temp2.Left(temp2.Length()-1) + _T("|");
+		}
+	}
+
+	// Return final list
+	return final.Left(final.Length()-1);
+}

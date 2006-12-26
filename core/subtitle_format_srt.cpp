@@ -50,6 +50,36 @@ bool SRTSubtitleFormat::CanReadFile(wxString filename) {
 }
 
 
+//////////////
+// Can write?
+bool SRTSubtitleFormat::CanWriteFile(wxString filename) {
+	return (filename.Right(4).Lower() == _T(".srt"));
+}
+
+
+////////////
+// Get name
+wxString SRTSubtitleFormat::GetName() {
+	return _T("SubRip");
+}
+
+
+//////////////////////
+// Get read wildcards
+wxArrayString SRTSubtitleFormat::GetReadWildcards() {
+	wxArrayString formats;
+	formats.Add(_T("srt"));
+	return formats;
+}
+
+
+///////////////////////
+// Get write wildcards
+wxArrayString SRTSubtitleFormat::GetWriteWildcards() {
+	return GetReadWildcards();
+}
+
+
 /////////////
 // Read file
 void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
@@ -123,13 +153,6 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 				break;
 		}
 	}
-}
-
-
-//////////////
-// Can write?
-bool SRTSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".srt"));
 }
 
 

@@ -68,6 +68,9 @@ private:
 	void OptimizeImage(wxImage &image);
 
 public:
+	wxString GetName();
+	wxArrayString GetWriteWildcards();
+
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };

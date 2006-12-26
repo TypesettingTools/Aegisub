@@ -53,6 +53,10 @@ class TXTSubtitleFormat : public SubtitleFormat {
 private:
 
 public:
+	wxString GetName();
+	wxArrayString GetReadWildcards();
+	wxArrayString GetWriteWildcards();
+
 	bool CanReadFile(wxString filename);
 	bool CanWriteFile(wxString filename);
 	void ReadFile(wxString filename,wxString forceEncoding);

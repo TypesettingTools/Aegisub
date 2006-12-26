@@ -58,6 +58,29 @@ bool TXTSubtitleFormat::CanWriteFile(wxString filename) {
 }
 
 
+////////////
+// Get name
+wxString TXTSubtitleFormat::GetName() {
+	return _T("Plain-Text");
+}
+
+
+//////////////////////
+// Get read wildcards
+wxArrayString TXTSubtitleFormat::GetReadWildcards() {
+	wxArrayString formats;
+	formats.Add(_T("txt"));
+	return formats;
+}
+
+
+///////////////////////
+// Get write wildcards
+wxArrayString TXTSubtitleFormat::GetWriteWildcards() {
+	return GetReadWildcards();
+}
+
+
 /////////////
 // Read file
 void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using namespace std;

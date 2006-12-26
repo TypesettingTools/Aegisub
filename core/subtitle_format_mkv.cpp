@@ -49,6 +49,24 @@ bool MKVSubtitleFormat::CanReadFile(wxString filename) {
 }
 
 
+////////////
+// Get name
+wxString MKVSubtitleFormat::GetName() {
+	return _T("Matroska");
+}
+
+
+//////////////////////
+// Get read wildcards
+wxArrayString MKVSubtitleFormat::GetReadWildcards() {
+	wxArrayString formats;
+	formats.Add(_T("mkv"));
+	formats.Add(_T("mka"));
+	formats.Add(_T("mks"));
+	return formats;
+}
+
+
 /////////////
 // Read file
 void MKVSubtitleFormat::ReadFile(wxString filename,wxString encoding) {

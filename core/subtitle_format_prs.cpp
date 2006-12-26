@@ -71,6 +71,22 @@ bool PRSSubtitleFormat::CanWriteFile(wxString filename) {
 }
 
 
+////////////
+// Get name
+wxString PRSSubtitleFormat::GetName() {
+	return _T("Pre-Rendered Subtitles");
+}
+
+
+///////////////////////
+// Get write wildcards
+wxArrayString PRSSubtitleFormat::GetWriteWildcards() {
+	wxArrayString formats;
+	formats.Add(_T("prs"));
+	return formats;
+}
+
+
 //////////////
 // Write file
 void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {

@@ -72,10 +72,16 @@ protected:
 	AssFile *GetAssFile() { return assFile; }
 	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA,wxString *outgroup=NULL);
 
+	virtual wxString GetName()=0;
+	virtual wxArrayString GetReadWildcards();
+	virtual wxArrayString GetWriteWildcards();
+
 public:
 	SubtitleFormat();
 	virtual ~SubtitleFormat();
 	void SetTarget(AssFile *file);
+
+	static wxString GetWildcards(int mode);
 
 	virtual bool CanReadFile(wxString filename) { return false; };
 	virtual bool CanWriteFile(wxString filename) { return false; };
