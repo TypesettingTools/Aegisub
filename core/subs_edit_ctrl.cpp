@@ -195,7 +195,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			// Is \n, \N or \h?
 			if (curChar == _T('\\') && (nextChar == 'n' || nextChar == 'N' || nextChar == 'h')) {
 				SetUnicodeStyling(curPos,ran,curStyle);
-				curPos += ran + 1;
+				curPos += ran;
 				ran = 1;
 				curStyle = 6;
 				i++;
@@ -670,6 +670,8 @@ wxString SubsTextEditCtrl::GetWordAtPosition(int pos) {
 void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
 	int from,to;
 	GetSelection(&from, &to);
+	from = GetReverseUnicodePosition(from);
+	to = GetReverseUnicodePosition(to);
 	control->grid->SplitLine(control->linen,from,0);
 }
 
@@ -679,6 +681,8 @@ void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
 void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &event) {
 	int from,to;
 	GetSelection(&from, &to);
+	from = GetReverseUnicodePosition(from);
+	to = GetReverseUnicodePosition(to);
 	control->grid->SplitLine(control->linen,from,1);
 }
 
