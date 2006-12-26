@@ -74,18 +74,6 @@
 FrameMain::FrameMain (wxArrayString args)
 					: wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(800,600),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
-	// Splash screen
-	#ifndef _DEBUG
-	if (Options.AsBool(_T("Show Splash"))) {
-		SplashScreen *splash = new SplashScreen(NULL);
-		splash->Show(true);
-	}
-	else {
-		// Show tip of the day
-		TipOfTheDay::Show(this);
-	}
-	#endif
-
 	// Initialize flags
 	HasSelection = false;
 	menuCreated = false;
@@ -105,10 +93,21 @@ FrameMain::FrameMain (wxArrayString args)
 	// Contents
 	curMode = -1;
 	InitContents();
+	Show();
 
-	// Parse arguments
-	LoadSubtitles(_T(""));
-	LoadList(args);
+	// Splash screen
+	//#ifndef _DEBUG
+	if (Options.AsBool(_T("Show Splash"))) {
+		SplashScreen *splash = new SplashScreen(this);
+		splash->Show(true);
+		splash->Update();
+	}
+	else {
+		// Show tip of the day
+		TipOfTheDay::Show(this);
+	}
+	//#endif
+	wxSafeYield();
 
 	// Set autosave timer
 	AutoSave.SetOwner(this,AutoSave_Timer);
@@ -123,6 +122,10 @@ FrameMain::FrameMain (wxArrayString args)
 
 	// Set drop target
 	SetDropTarget(new AegisubFileDropTarget(this));
+
+	// Parse arguments
+	LoadSubtitles(_T(""));
+	LoadList(args);
 }
 
 

@@ -114,7 +114,6 @@ bool AegisubApp::OnInit() {
 
 		// Open main frame
 		frame = new FrameMain(subs);
-		frame->Show(true);
 		SetTopWindow(frame);
 	}
 

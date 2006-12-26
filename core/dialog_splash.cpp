@@ -46,7 +46,7 @@
 ///////////////
 // Constructor
 SplashScreen::SplashScreen(wxWindow *parent)
-: wxFrame (NULL, -1, _T(""), wxDefaultPosition, wxSize(400,240), wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR , _T("Splash"))
+: wxFrame (parent, -1, _T(""), wxDefaultPosition, wxSize(400,240), wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR , _T("Splash"))
 {
 	// Set parent
 	par = parent;
@@ -54,10 +54,17 @@ SplashScreen::SplashScreen(wxWindow *parent)
 	// Get splash
 	splash = wxBITMAP(splash);
 
-	// Set position
-	Center();
-	//wxDisplay display(wxDisplay::GetFromPoint(parent->GetPosition()));
-	//wxRect rect = display.GetGeometry();
+	#if wxUSE_DISPLAY == 1
+	// Center on current display
+	wxDisplay display(wxDisplay::GetFromPoint(parent->GetScreenPosition()));
+	wxRect dr = display.GetGeometry();
+	wxRect window = GetScreenRect();
+	window = window.CenterIn(dr);
+	Move(window.GetLeft(),window.GetTop());
+	#else
+	// Center on window
+	CentreOnParent();
+	#endif
 
 	// Prepare
 	wxClientDC dc(this);
