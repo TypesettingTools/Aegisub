@@ -40,7 +40,7 @@
 ///////////
 // Headers
 #include "audio_provider.h"
-#include <fstream>
+#include <wx/file.h>
 
 
 ////////////////////////
@@ -48,7 +48,8 @@
 class HDAudioProvider : public AudioProvider {
 private:
 	wxMutex diskmutex;
-	std::ifstream file_cache;
+	wxFile file_cache;
+	wxString diskCacheFilename;
 
 	static wxString DiskCachePath();
 	static wxString DiskCacheName();

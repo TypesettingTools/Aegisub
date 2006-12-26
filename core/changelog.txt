@@ -43,7 +43,8 @@ Please visit http://aegisub.net to download latest version
 - Improved Syntax Highlighter to include more features of ASS. (AMZ)
 - Added an inline Hunspell-based Spell Checker. (AMZ)
 - Added an inline MyThes-based Thesaurus. (AMZ)
-- Added an option ("Audio HD Cache Location") that allows you to specify where to keep the audio cache. (AMZ)
+- Added two options ("Audio HD Cache Location" and "Audio HD Cache Name") that allows you to specify where to keep the audio cache. (AMZ)
+- Flexibible audio cache names now allow you to have more than one copy of Aegisub open with audio loaded to HD cache. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

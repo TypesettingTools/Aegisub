@@ -37,6 +37,8 @@
 ///////////
 // Headers
 #include <wx/filename.h>
+#include <wx/file.h>
+#include <wx/filefn.h>
 #include "dialog_progress.h"
 #include "audio_provider_hd.h"
 #include "main.h"
@@ -63,10 +65,10 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	}
 
 	// Open output file
-	std::ofstream file;
-	char filename[512];
-	strcpy(filename,DiskCacheName().mb_str(wxConvLocal));
-	file.open(filename,std::ios::binary | std::ios::out | std::ios::trunc);
+	diskCacheFilename = DiskCacheName();
+	file_cache.Create(diskCacheFilename,true,wxS_DEFAULT);
+	file_cache.Open(diskCacheFilename,wxFile::read_write);
+	if (!file_cache.IsOpened()) throw _T("Unable to write to disk cache.");
 
 	// Start progress
 	volatile bool canceled = false;
@@ -79,17 +81,17 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	for (__int64 i=0;i<num_samples && !canceled; i+=block) {
 		if (block+i > num_samples) block = num_samples - i;
 		source->GetAudio(temp,i,block);
-		file.write(temp,block * channels * bytes_per_sample);
+		file_cache.Write(temp,block * channels * bytes_per_sample);
 		progress->SetProgress(i,num_samples);
 	}
-	file.close();
+	file_cache.Seek(0);
 
 	// Finish
 	if (!canceled) {
 		progress->Destroy();
-		file_cache.open(filename,std::ios::binary | std::ios::in);
 	}
 	else {
+		file_cache.Close();
 		throw wxString(_T("Audio loading cancelled by user"));
 	}
 }
@@ -98,8 +100,8 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 //////////////
 // Destructor
 HDAudioProvider::~HDAudioProvider() {
-	file_cache.close();
-	wxRemoveFile(DiskCacheName());
+	file_cache.Close();
+	wxRemoveFile(diskCacheFilename);
 }
 
 
@@ -129,8 +131,8 @@ void HDAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 
 	if (count) {
 		wxMutexLocker disklock(diskmutex);
-		file_cache.seekg(start*bytes_per_sample);
-		file_cache.read((char*)buf,count*bytes_per_sample*channels);
+		file_cache.Seek(start*bytes_per_sample);
+		file_cache.Read((char*)buf,count*bytes_per_sample*channels);
 	}
 }
 
@@ -150,5 +152,24 @@ wxString HDAudioProvider::DiskCachePath() {
 ///////////////////////////
 // Get disk cache filename
 wxString HDAudioProvider::DiskCacheName() {
-	return DiskCachePath() + _T("audio.tmp");
+	// Get pattern
+	wxString pattern = Options.AsText(_T("Audio HD Cache Name"));
+	if (pattern.Find(_T("%02i")) == wxNOT_FOUND) pattern = _T("audio%02i.tmp");
+	
+	// Try from 00 to 99
+	for (int i=0;i<100;i++) {
+		// File exists?
+		wxString curStringTry = DiskCachePath() + wxString::Format(pattern.c_str(),i);
+		if (!wxFile::Exists(curStringTry)) return curStringTry;
+
+		// Exists, see if it can be opened (disabled because wx doesn't seem to lock the files...)
+		if (false) {
+			wxFile test(curStringTry,wxFile::write);
+			if (test.IsOpened()) {
+				test.Close();
+				return curStringTry;
+			}
+		}
+	}
+	return _T("");
 }
