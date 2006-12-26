@@ -67,6 +67,8 @@ private:
 
 	wxString GetWordAtPosition(int pos);
 	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);
+	int GetUnicodePosition(int pos);
+	int GetReverseUnicodePosition(int pos);
 	void SetUnicodeStyling(int start,int length,int style);
 	void ShowPopupMenu(int activePos=-1);
 

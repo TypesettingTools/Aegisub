@@ -59,6 +59,8 @@ public:
 	~HunspellSpellChecker();
 
 	void AddWord(wxString word);
+	bool CanAddWord(wxString word);
+
 	bool CheckWord(wxString word);
 	wxArrayString GetSuggestions(wxString word);
 

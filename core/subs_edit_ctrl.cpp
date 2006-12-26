@@ -251,14 +251,34 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 }
 
 
+///////////////////////////////////
+// Get unicode-compatible position
+int SubsTextEditCtrl::GetUnicodePosition(int pos) {
+	wxString string = GetText().Left(pos);
+	wxCharBuffer buffer = string.mb_str(wxConvUTF8);
+	return strlen(buffer);
+}
+
+
+///////////////////////////////////////
+// Reverse unicode-compatible position
+int SubsTextEditCtrl::GetReverseUnicodePosition(int pos) {
+	wxCharBuffer buffer = GetText().mb_str(wxConvUTF8);
+	char *buf2 = new char[pos+1];
+	memcpy(buf2,buffer,pos);
+	buf2[pos] = 0;
+	wxString buf3(buf2,wxConvUTF8);
+	return buf3.Length();
+}
+
+
 ////////////////////////
 // Unicode-safe styling
 void SubsTextEditCtrl::SetUnicodeStyling(int start,int length,int style) {
 	// Get the real length
 	wxString string = GetText().Mid(start,length);
 	wxCharBuffer buffer = string.mb_str(wxConvUTF8);
-	const char* utf8str = buffer;
-	int len = strlen(utf8str);
+	int len = strlen(buffer);
 
 	// Set styling
 	SetStyling(len,style);
@@ -345,10 +365,7 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 		// Check if it's valid
 		if (!spellchecker->CheckWord(curWord)) {
 			// Get length before it
-			wxString string = GetText().Left(startPos[i]);
-			wxCharBuffer buffer = string.mb_str(wxConvUTF8);
-			const char* utf8str = buffer;
-			int utf8len = strlen(utf8str);
+			int utf8len = GetUnicodePosition(startPos[i]);
 
 			// Set styling
 			StartStyling(utf8len,32);
@@ -432,6 +449,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 	// Position
 	if (activePos == -1) activePos = GetCurrentPos();
+	activePos = GetReverseUnicodePosition(activePos);
 
 	// Get current word under cursor
 	currentWord = GetWordAtPosition(activePos);
@@ -461,7 +479,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 			for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i])->SetFont(font);
 
 			// Append "add word"
-			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()));
+			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()))->Enable(spellchecker->CanAddWord(currentWord));
 			menu.AppendSeparator();
 		}
 
@@ -715,7 +733,7 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
 
 	// Set selection
-	SetSelection(start,start+suggestion.Length());
+	SetSelection(GetUnicodePosition(start),GetUnicodePosition(start+suggestion.Length()));
 	SetFocus();
 }
 
@@ -742,6 +760,6 @@ void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
 	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
 
 	// Set selection
-	SetSelection(start,start+suggestion.Length());
+	SetSelection(GetUnicodePosition(start),GetUnicodePosition(start+suggestion.Length()));
 	SetFocus();
 }

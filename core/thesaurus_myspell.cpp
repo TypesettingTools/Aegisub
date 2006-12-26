@@ -71,6 +71,7 @@ void MySpellThesaurus::Lookup(wxString word,ThesaurusEntryArray &result) {
 	// Grab raw from MyThes
 	mentry *me;
 	wxCharBuffer buf = word.Lower().mb_str(*conv);
+	if (!buf) return;
 	int n = mythes->Lookup(buf,strlen(buf),&me);
 
 	// Each entry

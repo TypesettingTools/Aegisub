@@ -65,6 +65,14 @@ HunspellSpellChecker::~HunspellSpellChecker() {
 
 
 //////////////////////////
+// Can add to dictionary?
+bool HunspellSpellChecker::CanAddWord(wxString word) {
+	if (!hunspell) return false;
+	return (word.mb_str(*conv) != NULL);
+}
+
+
+//////////////////////////
 // Add word to dictionary
 void HunspellSpellChecker::AddWord(wxString word) {
 	if (hunspell) hunspell->put_word(word.mb_str(*conv));
@@ -75,7 +83,9 @@ void HunspellSpellChecker::AddWord(wxString word) {
 // Check if the word is valid
 bool HunspellSpellChecker::CheckWord(wxString word) {
 	if (!hunspell) return true;
-	return (hunspell->spell(word.mb_str(*conv)) == 1);
+	wxCharBuffer buf = word.mb_str(*conv);
+	if (buf) return (hunspell->spell(buf) == 1);
+	return false;
 }
 
 
@@ -85,11 +95,15 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 	// Array
 	wxArrayString suggestions;
 
+	// Word
+	wxCharBuffer buf = word.mb_str(*conv);
+	if (!buf) return suggestions;
+
 	// Get suggestions
 	if (hunspell) {
 		// Grab raw from Hunspell
 		char **results;
-		int n = hunspell->suggest(&results,word.mb_str(*conv));
+		int n = hunspell->suggest(&results,buf);
 
 		// Convert each
 		for (int i=0;i<n;i++) {

@@ -35,6 +35,7 @@
 
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
+#include <wx/filename.h>
 #include "video_provider_avs.h"
 #include "options.h"
 #include "main.h"
@@ -157,7 +158,9 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 	try {
 		// Prepare filename
-		char *videoFilename = env->SaveString(_filename.mb_str(wxConvLocal));
+		//char *videoFilename = env->SaveString(_filename.mb_str(wxConvLocal));
+		wxFileName fname(_filename);
+		char *videoFilename = env->SaveString(fname.GetShortPath().mb_str(wxConvLocal));
 
 		// Avisynth file, just import it
 		if (extension == _T(".avs")) { 
@@ -275,7 +278,8 @@ PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosourc
 	// Insert subs
 	AVSValue script;
 	char temp[512];
-	strcpy(temp,_filename.mb_str(wxConvLocal));
+	wxFileName fname(_filename);
+	strcpy(temp,fname.GetShortPath().mb_str(wxConvLocal));
 	AVSValue args[2] = { videosource, temp };
 
 	try {

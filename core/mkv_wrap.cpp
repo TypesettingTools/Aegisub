@@ -40,6 +40,7 @@
 #include <errno.h>
 #include <wx/tokenzr.h>
 #include <wx/choicdlg.h>
+#include <wx/filename.h>
 #include "mkv_wrap.h"
 #include "dialog_progress.h"
 #include "ass_file.h"
@@ -548,7 +549,8 @@ MkvStdIO::MkvStdIO(wxString filename) {
 	memrealloc = StdIoRealloc;
 	memfree = StdIoFree;
 	progress = StdIoProgress;
-	fp = fopen(filename.mb_str(),"rb");
+	wxFileName fname(filename);
+	fp = fopen(fname.GetShortPath().mb_str(wxConvUTF8),"rb");
 	if (fp) {
 		setvbuf(fp, NULL, _IOFBF, CACHESIZE);
 	}
