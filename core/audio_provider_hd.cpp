@@ -36,9 +36,12 @@
 
 ///////////
 // Headers
+#include <wx/filename.h>
 #include "dialog_progress.h"
 #include "audio_provider_hd.h"
 #include "main.h"
+#include "options.h"
+#include "utils.h"
 
 
 ///////////////
@@ -135,7 +138,12 @@ void HDAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 ///////////////////////////
 // Get disk cache path
 wxString HDAudioProvider::DiskCachePath() {
-	return AegisubApp::folderName;
+	// Default
+	wxString path = Options.AsText(_T("Audio HD Cache Location"));
+	if (path == _T("default")) return AegisubApp::folderName;
+
+	// Specified
+	return DecodeRelativePath(path,AegisubApp::folderName);
 }
 
 

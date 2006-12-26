@@ -243,6 +243,7 @@ void OptionsManager::LoadDefaults() {
 
 	SetInt(_T("Audio Display Height"),100);
 	SetBool(_T("Audio Spectrum"),false);
+	SetText(_T("Audio HD Cache Location"),_T("default"));
 
 	SetInt(_T("Timing processor key start before thres"),5);
 	SetInt(_T("Timing processor key start after thres"),4);
