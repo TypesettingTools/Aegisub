@@ -73,6 +73,7 @@ private:
 	wxButton *StorageMoveDown;
 	wxButton *StorageMoveTop;
 	wxButton *StorageMoveBottom;
+	wxButton *StorageSort;
 	wxButton *MoveToStorage;
 	wxButton *CurrentNew;
 	wxButton *CurrentEdit;
@@ -82,6 +83,7 @@ private:
 	wxButton *CurrentMoveDown;
 	wxButton *CurrentMoveTop;
 	wxButton *CurrentMoveBottom;
+	wxButton *CurrentSort;
 
 	AssStyleStorage Store;
 
@@ -110,6 +112,7 @@ public:
 	void OnCurrentMoveDown (wxCommandEvent &event);
 	void OnCurrentMoveTop (wxCommandEvent &event);
 	void OnCurrentMoveBottom (wxCommandEvent &event);
+	void OnCurrentSort (wxCommandEvent &event);
 	void OnStorageChange (wxCommandEvent &event);
 	void OnCurrentChange (wxCommandEvent &event);
 	void OnCopyToStorage (wxCommandEvent &event);
@@ -122,6 +125,7 @@ public:
 	void OnStorageMoveDown (wxCommandEvent &event);
 	void OnStorageMoveTop (wxCommandEvent &event);
 	void OnStorageMoveBottom (wxCommandEvent &event);
+	void OnStorageSort (wxCommandEvent &event);
 	void OnStorageDelete (wxCommandEvent &event);
 	void OnCurrentDelete (wxCommandEvent &event);
 	void OnCurrentImport (wxCommandEvent &event);
@@ -144,6 +148,7 @@ enum {
 	BUTTON_STORAGE_DOWN,
 	BUTTON_STORAGE_TOP,
 	BUTTON_STORAGE_BOTTOM,
+	BUTTON_STORAGE_SORT,
 	BUTTON_CURRENT_COPYTO,
 	BUTTON_CURRENT_NEW,
 	BUTTON_CURRENT_EDIT,
@@ -154,6 +159,7 @@ enum {
 	BUTTON_CURRENT_DOWN,
 	BUTTON_CURRENT_TOP,
 	BUTTON_CURRENT_BOTTOM,
+	BUTTON_CURRENT_SORT,
 	LIST_CATALOG,
 	LIST_STORAGE,
 	LIST_CURRENT

@@ -48,6 +48,7 @@ Please visit http://aegisub.net to download latest version
 - Improved Splash Screen behavior to show up even if the program is frozen loading subtitles, and to center on the current display. (AMZ)
 - Added an "Import from script..." button to Styles Manager, to import styles directly from other subtitle files. (AMZ)
 - Added buttons to Styles Manager to move styles up, down, to top or to bottom, on both storage and current script. (AMZ)
+- Added sorting functionality to Styles Manager, for both storage and current script. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
