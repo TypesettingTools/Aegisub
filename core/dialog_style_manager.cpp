@@ -788,6 +788,19 @@ void DialogStyleManager::UpdateMoveButtons() {
 	}
 	int itemsStor = StorageList->GetCount();
 
+	// Check if selection is continuous
+	bool contStor = true;
+	if (n) {
+		int last = sels[0];
+		for (int i=1;i<n;i++) {
+			if (sels[i] != last+1) {
+				contStor = false;
+				break;
+			}
+			last = sels[i];
+		}
+	}
+
 	// Get current selection
 	n = CurrentList->GetSelections(sels);
 	int firstCurr = -1;
@@ -798,15 +811,28 @@ void DialogStyleManager::UpdateMoveButtons() {
 	}
 	int itemsCurr = CurrentList->GetCount();
 
+	// Check if selection is continuous
+	bool contCurr = true;
+	if (n) {
+		int last = sels[0];
+		for (int i=1;i<n;i++) {
+			if (sels[i] != last+1) {
+				contCurr = false;
+				break;
+			}
+			last = sels[i];
+		}
+	}
+
 	// Set values
-	StorageMoveUp->Enable(firstStor > 0);
-	StorageMoveTop->Enable(firstStor > 0);
-	StorageMoveDown->Enable(lastStor != -1 && lastStor < itemsStor-1);
-	StorageMoveBottom->Enable(lastStor != -1 && lastStor < itemsStor-1);
-	CurrentMoveUp->Enable(firstCurr > 0);
-	CurrentMoveTop->Enable(firstCurr > 0);
-	CurrentMoveDown->Enable(lastCurr != -1 && lastCurr < itemsCurr-1);
-	CurrentMoveBottom->Enable(lastCurr != -1 && lastCurr < itemsCurr-1);
+	StorageMoveUp->Enable(contStor && firstStor > 0);
+	StorageMoveTop->Enable(contStor && firstStor > 0);
+	StorageMoveDown->Enable(contStor && lastStor != -1 && lastStor < itemsStor-1);
+	StorageMoveBottom->Enable(contStor && lastStor != -1 && lastStor < itemsStor-1);
+	CurrentMoveUp->Enable(contCurr && firstCurr > 0);
+	CurrentMoveTop->Enable(contCurr && firstCurr > 0);
+	CurrentMoveDown->Enable(contCurr && lastCurr != -1 && lastCurr < itemsCurr-1);
+	CurrentMoveBottom->Enable(contCurr && lastCurr != -1 && lastCurr < itemsCurr-1);
 }
 
 
