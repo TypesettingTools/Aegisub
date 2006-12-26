@@ -572,7 +572,7 @@ void FrameMain::OnCloseAudio (wxCommandEvent& WXUNUSED(event)) {
 // Open subtitles
 void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open subtitles path"));	
-	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.txt,*.mkv,*.mks,*.mka)|*.ass;*.ssa;*.srt;*.txt;*.mkv;*.mks;*.mka|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt|Matroska (*.mkv,*.mks,*.mka)|*.mkv;*.mks;*.mka"),wxOPEN | wxFILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxOPEN | wxFILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadSubtitles(filename);
 		wxFileName filepath(filename);
@@ -590,7 +590,7 @@ void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open subtitles path"));
 
 	// Get options and load
-	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),_T("All Supported Types (*.ass,*.ssa,*.srt,*.txt,*.mkv,*.mks,*.mka)|*.ass;*.ssa;*.srt;*.txt;*.mkv;*.mks;*.mka|Advanced Substation Alpha (*.ass)|*.ass|Substation Alpha (*.ssa)|*.ssa|SubRip (*.srt)|*.srt|Plain-text (*.txt)|*.txt|Matroska (*.mkv,*.mks,*.mka)|*.mkv;*.mks;*.mka"),wxOPEN | wxFILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxOPEN | wxFILE_MUST_EXIST);
 	if (!filename.empty()) {
 		wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"),choices,this,-1, -1,true,250,200);
 		if (!charset.empty()) {

@@ -37,6 +37,8 @@
 ////////////
 // Includes
 #include <wx/filename.h>
+#include <wx/filedlg.h>
+#include <wx/choicdlg.h>
 #include "dialog_style_manager.h"
 #include "dialog_style_editor.h"
 #include "ass_style.h"
@@ -101,6 +103,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	CurrentBox->Add(CurrentList,0,wxEXPAND | wxALL,0);
 	CurrentBox->Add(MoveToStorage,0,wxEXPAND | wxALL,0);
 	CurrentBox->Add(CurrentButtons,0,wxEXPAND | wxALL,0);
+	CurrentBox->Add(new wxButton(this, BUTTON_CURRENT_IMPORT, _("Import from script...")),0,wxEXPAND);
 	MoveToStorage->Disable();
 	CurrentEdit->Disable();
 	CurrentCopy->Disable();
@@ -108,8 +111,8 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 
 	// General layout
 	wxSizer *StylesSizer = new wxBoxSizer(wxHORIZONTAL);
-	StylesSizer->Add(StorageBox,0,wxRIGHT,5);
-	StylesSizer->Add(CurrentBox,0,wxLEFT,0);
+	StylesSizer->Add(StorageBox,0,wxRIGHT | wxEXPAND,5);
+	StylesSizer->Add(CurrentBox,0,wxLEFT | wxEXPAND,0);
 	wxButton *CloseButton = new wxButton(this, wxID_CLOSE, _T(""), wxDefaultPosition, wxSize(100,25));
 	MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(CatalogBox,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,5);
@@ -296,6 +299,7 @@ BEGIN_EVENT_TABLE(DialogStyleManager, wxDialog)
 	EVT_BUTTON(BUTTON_STORAGE_NEW, DialogStyleManager::OnStorageNew)
 	EVT_BUTTON(BUTTON_CURRENT_DELETE, DialogStyleManager::OnCurrentDelete)
 	EVT_BUTTON(BUTTON_STORAGE_DELETE, DialogStyleManager::OnStorageDelete)
+	EVT_BUTTON(BUTTON_CURRENT_IMPORT, DialogStyleManager::OnCurrentImport)
 END_EVENT_TABLE()
 
 
@@ -493,7 +497,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 		int test = CurrentList->FindString(StorageList->GetString(selections[i]));
 		bool proceed = test==-1;
 		if (!proceed) {
-			int answer = wxMessageBox(_T("There is already a style with that name on the current script. Proceed anyway?"),_T("Style name collision."),wxYES_NO);
+			int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed anyway?"),StorageList->GetString(selections[i]).c_str()),_T("Style name collision."),wxYES_NO);
 			if (answer == wxYES) proceed = true;
 		}
 
@@ -647,10 +651,10 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &event) {
 		AssStyle *temp;
 		for (int i=0;i<n;i++) {
 			temp = styleMap.at(selections[i]);
-			AssFile::top->Line.remove(temp);
+			grid->ass->Line.remove(temp);
 			delete temp;
 		}
-		LoadCurrentStyles(AssFile::top);
+		LoadCurrentStyles(grid->ass);
 
 		// Set buttons
 		MoveToStorage->Enable(false);
@@ -663,5 +667,67 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &event) {
 }
 
 
+/////////////////////////////////////
+// Import styles from another script
+void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
+	// Get file name
+	wxString path = Options.AsText(_T("Last open subtitles path"));	
+	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxOPEN | wxFILE_MUST_EXIST);
+
+	if (!filename.IsEmpty()) {
+		// Save path
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
+		Options.Save();
+
+		try {
+			// Load file
+			AssFile temp;
+			temp.Load(filename,_T(""),false);
+
+			// Get styles
+			wxArrayString styles = temp.GetStyles();
+			if (styles.Count() == 0 || (styles.Count() == 1 && styles[0] == _T("Default"))) {
+				wxMessageBox(_("There selected file has no available styles."),_("Error Importing Styles"),wxOK);
+				return;
+			}
+
+			// Get selection
+			wxArrayInt selections;
+			int res = wxGetMultipleChoices(selections,_("Choose styles to import:"),_("Import Styles"),styles);
+			if (res == -1 || selections.Count() == 0) return;
+			bool modified = false;
+
+			// Loop through selection
+			for (unsigned int i=0;i<selections.Count();i++) {
+				// Check if there is already a style with that name
+				int test = CurrentList->FindString(styles[selections[i]]);
+				if (test != wxNOT_FOUND) {
+					int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed anyway?"),styles[selections[i]].c_str()),_T("Style name collision."),wxYES_NO);
+					if (answer != wxYES) continue;
+				}
+
+				// Copy
+				modified = true;
+				AssStyle *tempStyle = new AssStyle;
+				*tempStyle = *temp.GetStyle(styles[selections[i]]);
+				AssFile::top->InsertStyle(tempStyle);
+			}
+
+			// Update
+			if (modified) {
+				LoadCurrentStyles(grid->ass);
+				grid->ass->FlagAsModified();
+				grid->CommitChanges();
+			}
+		}
+		catch (...) {
+		}
+	}
+}
+
+
+//////////////////
+// I have no clue
 int DialogStyleManager::lastx = -1;
 int DialogStyleManager::lasty = -1;

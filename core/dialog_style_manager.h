@@ -106,6 +106,7 @@ public:
 	void OnCurrentNew (wxCommandEvent &event);
 	void OnStorageDelete (wxCommandEvent &event);
 	void OnCurrentDelete (wxCommandEvent &event);
+	void OnCurrentImport (wxCommandEvent &event);
 
 	DECLARE_EVENT_TABLE()
 };
@@ -126,6 +127,7 @@ enum {
 	BUTTON_CURRENT_EDIT,
 	BUTTON_CURRENT_COPY,
 	BUTTON_CURRENT_DELETE,
+	BUTTON_CURRENT_IMPORT,
 	LIST_CATALOG,
 	LIST_STORAGE,
 	LIST_CURRENT
