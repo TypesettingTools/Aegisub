@@ -96,7 +96,7 @@ FrameMain::FrameMain (wxArrayString args)
 	Show();
 
 	// Splash screen
-	//#ifndef _DEBUG
+	#ifndef _DEBUG
 	if (Options.AsBool(_T("Show Splash"))) {
 		SplashScreen *splash = new SplashScreen(this);
 		splash->Show(true);
@@ -106,7 +106,7 @@ FrameMain::FrameMain (wxArrayString args)
 		// Show tip of the day
 		TipOfTheDay::Show(this);
 	}
-	//#endif
+	#endif
 	wxSafeYield();
 
 	// Set autosave timer
