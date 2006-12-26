@@ -1041,13 +1041,13 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 
 		// Shift selection
 		selstart = origStart;
-		TextEdit->SetSelection(origStart+shift,selend+shift);
+		TextEdit->SetSelectionU(origStart+shift,selend+shift);
 	}
 
 	// Commit changes and shift selection
 	TextEdit->SetTextTo(line->Text);
 	line->ClearBlocks();
-	TextEdit->SetSelection(selstart+shift,selend+shift);
+	TextEdit->SetSelectionU(selstart+shift,selend+shift);
 	TextEdit->SetFocus();
 }
 

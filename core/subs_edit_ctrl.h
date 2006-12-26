@@ -89,6 +89,7 @@ public:
 	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
 	~SubsTextEditCtrl();
 
+	void SetSelectionU(int start,int end);
 	void SetTextTo(const wxString text);
 	void UpdateStyle(int start=0,int length=-1);
 	void StyleSpellCheck(int start=0,int length=-1);

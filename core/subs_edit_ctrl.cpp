@@ -263,10 +263,18 @@ int SubsTextEditCtrl::GetUnicodePosition(int pos) {
 ///////////////////////////////////////
 // Reverse unicode-compatible position
 int SubsTextEditCtrl::GetReverseUnicodePosition(int pos) {
+	// Get UTF8
 	wxCharBuffer buffer = GetText().mb_str(wxConvUTF8);
+
+	// Limit position to it
+	if (pos > (signed)strlen(buffer)) pos = strlen(buffer);
+
+	// Get UTF8 substring
 	char *buf2 = new char[pos+1];
 	memcpy(buf2,buffer,pos);
 	buf2[pos] = 0;
+
+	// Convert back and return its length
 	wxString buf3(buf2,wxConvUTF8);
 	return buf3.Length();
 }
@@ -399,7 +407,7 @@ void SubsTextEditCtrl::SetTextTo(const wxString _text) {
 	UpdateStyle();
 
 	// Restore selection
-	SetSelection(from,to);
+	SetSelectionU(GetReverseUnicodePosition(from),GetReverseUnicodePosition(to));
 
 	// Finish
 	Thaw();
@@ -733,7 +741,7 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
 
 	// Set selection
-	SetSelection(GetUnicodePosition(start),GetUnicodePosition(start+suggestion.Length()));
+	SetSelectionU(start,start+suggestion.Length());
 	SetFocus();
 }
 
@@ -760,6 +768,12 @@ void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
 	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
 
 	// Set selection
-	SetSelection(GetUnicodePosition(start),GetUnicodePosition(start+suggestion.Length()));
+	SetSelectionU(start,start+suggestion.Length());
 	SetFocus();
+}
+
+
+// Set selection, unicode-aware
+void SubsTextEditCtrl::SetSelectionU(int start, int end) {
+	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));
 }
