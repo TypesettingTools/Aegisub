@@ -224,6 +224,8 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 	wxArrayString cur;
 	wxString wild;
 	wxString final;
+	wxString temp1;
+	wxString temp2;
 
 	// For each format
 	std::list<SubtitleFormat*>::iterator curIter;
@@ -233,8 +235,8 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 		format = *curIter;
 		if (mode == 0) cur = format->GetReadWildcards();
 		else if (mode == 1) cur = format->GetWriteWildcards();
-		wxString temp1;
-		wxString temp2;
+		temp1.Clear();
+		temp2.Clear();
 
 		// Has wildcards
 		if (cur.Count()) {
@@ -251,6 +253,15 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 		}
 	}
 
+	// Add "all formats" list
+	temp1.Clear();
+	temp2.Clear();
+	for (unsigned int i=0;i<all.Count();i++) {
+		temp1 += all[i] + _T(",");
+		temp2 += all[i] + _T(";");
+	}
+	final = _("All Supported Formats (") + temp1.Left(temp1.Length()-1) + _T(")|") + temp2.Left(temp2.Length()-1) + _T("|") + final.Left(final.Length()-1);
+
 	// Return final list
-	return final.Left(final.Length()-1);
+	return final;
 }
