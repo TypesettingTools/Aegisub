@@ -397,13 +397,60 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		if (added == 0) RecentAuds->Append(Menu_Audio_Recent,_T("Empty"))->Enable(false);
 	}
 
+	// Subtitles menu
+	else if (curMenu == subtitlesMenu) {
+		// Variables
+		bool continuous;
+		wxArrayInt sels = SubsBox->GetSelection(&continuous);
+		int count = sels.Count();
+		bool state,state2;
+
+		// Entries
+		state = count > 0;
+		MenuBar->Enable(MENU_INSERT_BEFORE,state);
+		MenuBar->Enable(MENU_INSERT_AFTER,state);
+		MenuBar->Enable(MENU_SPLIT_BY_KARAOKE,state);
+		state2 = count > 0 && videoBox->videoDisplay->loaded;
+		MenuBar->Enable(MENU_INSERT_BEFORE_VIDEO,state2);
+		MenuBar->Enable(MENU_INSERT_AFTER_VIDEO,state2);
+		MenuBar->Enable(Menu_Subtitles_Insert,state);
+		state = count > 0 && continuous;
+		MenuBar->Enable(MENU_DUPLICATE,state);
+		state = count > 0 && continuous && VFR_Output.IsLoaded();
+		MenuBar->Enable(MENU_DUPLICATE_NEXT_FRAME,state);
+		state = count == 2;
+		MenuBar->Enable(MENU_SWAP,state);
+		state = count >= 2 && continuous;
+		MenuBar->Enable(MENU_JOIN_CONCAT,state);
+		MenuBar->Enable(MENU_JOIN_REPLACE,state);
+		MenuBar->Enable(MENU_JOIN_AS_KARAOKE,state);
+		MenuBar->Enable(Menu_Subtitles_Join,state);
+		state = count == 2 && continuous;
+		MenuBar->Enable(MENU_1_12_RECOMBINE,state);
+		MenuBar->Enable(MENU_12_2_RECOMBINE,state);
+		state2 = count == 3 && continuous;
+		MenuBar->Enable(MENU_1_12_2_RECOMBINE,state2);
+		MenuBar->Enable(Menu_Subtitles_Recombine,state || state2);
+	}
+
 	// Timing menu
 	else if (curMenu == timingMenu) {
+		// Variables
+		bool continuous;
+		wxArrayInt sels = SubsBox->GetSelection(&continuous);
+		int count = sels.Count();
+
+		// Video related
 		bool state = videoBox->videoDisplay->loaded;
 		RebuildMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video,wxBITMAP(substart_to_video),wxBITMAP(substart_to_video_disable),state);
 		RebuildMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video,wxBITMAP(subend_to_video),wxBITMAP(subend_to_video_disable),state);
 		RebuildMenuItem(timingMenu,Menu_Video_Snap_To_Scene,wxBITMAP(snap_subs_to_scene),wxBITMAP(snap_subs_to_scene_disable),state);
 		RebuildMenuItem(timingMenu,Menu_Video_Shift_To_Frame,wxBITMAP(shift_to_frame),wxBITMAP(shift_to_frame_disable),state);
+
+		// Other
+		state = count >= 2 && continuous;
+		MenuBar->Enable(MENU_ADJOIN,state);
+		MenuBar->Enable(MENU_ADJOIN2,state);
 	}
 
 	// Edit menu

@@ -334,6 +334,10 @@ enum {
 	Menu_View_Video,
 	Menu_View_Subs,
 
+	Menu_Subtitles_Join,
+	Menu_Subtitles_Recombine,
+	Menu_Subtitles_Insert,
+
 	Menu_Tools_Properties,
 	Menu_Tools_Styles_Manager,
 	Menu_Tools_Attachments,
