@@ -110,10 +110,6 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	nextFrame = -1;
 	zoomValue = 0.5;
 
-	// Create PNG handler
-	wxPNGHandler *png = new wxPNGHandler;
-	wxImage::AddHandler(png);
-
 	// Set cursor
 	// Bleeeh! Hate this 'solution':
 #if __WXGTK__

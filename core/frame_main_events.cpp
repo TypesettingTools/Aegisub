@@ -65,8 +65,6 @@
 #include "automation_gui.h"
 #include "dialog_export.h"
 #include "audio_box.h"
-#include "aspell_wrap.h"
-#include "dialog_spellcheck.h"
 #include "dialog_selection.h"
 #include "dialog_styling_assistant.h"
 #include "dialog_resample.h"
@@ -123,6 +121,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU_RANGE(Menu_Timecodes_Recent,Menu_Timecodes_Recent+99, FrameMain::OnOpenRecentTimecodes)
 	EVT_MENU_RANGE(Menu_Keyframes_Recent,Menu_Keyframes_Recent+99, FrameMain::OnOpenRecentKeyframes)
 
+	EVT_MENU_RANGE(MENU_GRID_START+1,MENU_GRID_END-1,FrameMain::OnGridEvent)
 	EVT_MENU(Menu_File_Exit, FrameMain::OnExit)
 	EVT_MENU(Menu_File_Open_Video, FrameMain::OnOpenVideo)
 	EVT_MENU(Menu_File_Close_Video, FrameMain::OnCloseVideo)
@@ -219,6 +218,13 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
    EVT_MENU(wxID_EXIT, FrameMain::OnExit)
 #endif
 END_EVENT_TABLE()
+
+
+////////////////////////////////
+// Redirect grid events to grid
+void FrameMain::OnGridEvent (wxCommandEvent &event) {
+	SubsBox->AddPendingEvent(event);
+}
 
 
 ////////////////////////
@@ -812,29 +818,7 @@ void FrameMain::OnOpenTranslation(wxCommandEvent& WXUNUSED(event)) {
 // Open Spell Checker
 void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 	videoBox->videoDisplay->Stop();
-	#if USE_ASPELL == 1
-	wxArrayInt selList = SubsBox->GetSelection();
-	if (selList.GetCount() == 1){
-		AssDialogue * a = SubsBox->GetDialogue(selList.Item(0));
-		if (a->Text.IsEmpty()){
-			wxMessageDialog Question(this, _T(
-				"You've selected a single row with no text. Instead would you like to check the entire document?"),
-				_T("Single Row Selection"),
-				wxICON_QUESTION | wxSTAY_ON_TOP | wxYES_NO | wxYES_DEFAULT,
-				wxDefaultPosition);
-
-			int a = Question.ShowModal();
-			if (a == wxID_YES){
-				selList.Clear();
-				selList.Add(-1);
-				}
-		}
-	}
-	DialogSpellCheck SpellCheck(this,AssFile::top, &selList, SubsBox);
-	SpellCheck.ShowModal();
-
-	SubsBox->CommitChanges();    
-	#endif
+	wxMessageBox(_T("TODO!"),_T("Spellchecker"));
 }
 
 

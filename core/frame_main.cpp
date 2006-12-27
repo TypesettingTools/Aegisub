@@ -41,6 +41,7 @@
 #include <wx/mimetype.h>
 #include <wx/filename.h>
 #include <wx/tokenzr.h>
+#include <wx/image.h>
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "avisynth_wrap.h"
@@ -59,7 +60,6 @@
 #include "dialog_tip.h"
 #include "automation_filter.h"
 #include "audio_box.h"
-#include "dialog_spellcheck.h"
 #include "video_box.h"
 #include "drop.h"
 #include "hotkeys.h"
@@ -79,6 +79,10 @@ FrameMain::FrameMain (wxArrayString args)
 	menuCreated = false;
 	blockAudioLoad = false;
 	blockAudioLoad = false;
+
+	// Create PNG handler
+	wxPNGHandler *png = new wxPNGHandler;
+	wxImage::AddHandler(png);
 
 	// Create menu and tool bars
 	InitToolbar();
@@ -190,9 +194,7 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
 	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample script resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBITMAP(timing_processor_toolbutton),_("Open Timing Post-processor dialog"));
-	#if USE_ASPELL == 1
-	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spellchecker"),wxBITMAP(spellcheck_toolbutton),_("Open Spell checker"));
-	#endif
+	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),wxBITMAP(spellcheck_toolbutton),_("Open Spell checker"));
 	Toolbar->AddSeparator();
 
 	// Misc
@@ -258,7 +260,35 @@ void FrameMain::InitMenu() {
 
 	// Create subtitles menu
 	subtitlesMenu = new wxMenu();
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, _("&Select lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"),wxBITMAP(blank_button));
+	wxMenu *InsertMenu = new wxMenu;
+	wxMenuItem *InsertParent = new wxMenuItem(subtitlesMenu,-1,_("&Insert Lines"),_T(""),wxITEM_NORMAL,InsertMenu);
+	InsertParent->SetBitmap(wxBITMAP(blank_button));
+	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE,_("&Before Current"),_T("Inserts a line before current"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER,_("&After Current"),_T("Inserts a line after current"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE_VIDEO,_("Before Current, at Video Time"),_T("Inserts a line before current, starting at video time"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER_VIDEO,_("After Current, at Video Time"),_T("Inserts a line after current, starting at video time"),wxBITMAP(blank_button));
+	subtitlesMenu->Append(InsertParent);
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE,_("&Duplicate Lines"),_T("Duplicate the selected lines"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_T("Duplicate lines and shift by one frame"),wxBITMAP(blank_button));
+	subtitlesMenu->AppendSeparator();
+	wxMenu *JoinMenu = new wxMenu;
+	wxMenuItem *JoinParent = new wxMenuItem(subtitlesMenu,-1,_("Join Lines"),_T(""),wxITEM_NORMAL,JoinMenu);
+	JoinParent->SetBitmap(wxBITMAP(blank_button));
+	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_CONCAT,_("&Concatenate"),_T("Joins selected lines in a single one, concatenating text together"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_REPLACE,_("Keep &First"),_T("Joins selected lines in a single one, keeping text of first and discarding remaining"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_AS_KARAOKE,_("As &Karaoke"),_T("Joins selected lines in a single one, as karaoke"),wxBITMAP(blank_button));
+	subtitlesMenu->Append(JoinParent);
+	AppendBitmapMenuItem(subtitlesMenu,MENU_SPLIT_BY_KARAOKE,_("Split Lines (by karaoke)"),_T("Uses karaoke timing to split line into multiple smaller lines"),wxBITMAP(blank_button));
+	wxMenu *RecombineMenu = new wxMenu;
+	wxMenuItem *RecombineParent = new wxMenuItem(subtitlesMenu,-1,_("Recombine"),_T(""),wxITEM_NORMAL,RecombineMenu);
+	RecombineParent->SetBitmap(wxBITMAP(blank_button));
+	AppendBitmapMenuItem(RecombineMenu,MENU_1_12_RECOMBINE,_("Lines (1, 1+2) into (1, 2)"),_T("Recombine subtitles when first one is actually first plus second"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(RecombineMenu,MENU_12_2_RECOMBINE,_("Lines (1+2, 2) into (1, 2)"),_T("Recombine subtitles when second one is actually first plus second"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(RecombineMenu,MENU_1_12_2_RECOMBINE,_("Lines (1, 1+2, 2) into (1, 2)"),_T("Recombine subtitles when middle one is actually first plus second"),wxBITMAP(blank_button));
+	subtitlesMenu->Append(RecombineParent);
+	subtitlesMenu->AppendSeparator();
+	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("&Swap Lines"),_T("Swaps the two selected lines"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, _("&Select Lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"),wxBITMAP(blank_button));
 	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBITMAP(styling_toolbutton));
@@ -278,6 +308,9 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, _("Snap end to video\t") + Hotkeys.GetText(_T("Set End to Video")), _("Set end of selected subtitles to current video frame"), wxBITMAP(subend_to_video));
 	AppendBitmapMenuItem(timingMenu,Menu_Video_Snap_To_Scene, _("Snap to scene\t") + Hotkeys.GetText(_T("Snap to Scene")), _("Set start and end of subtitles to the keyframes around current video frame"), wxBITMAP(snap_subs_to_scene));
 	AppendBitmapMenuItem(timingMenu,Menu_Video_Shift_To_Frame, _("Shift to Current Frame\t") + Hotkeys.GetText(_T("Shift by Current Time")), _("Shift selection so first selected line starts at current frame"), wxBITMAP(shift_to_frame));
+	subtitlesMenu->AppendSeparator();
+	AppendBitmapMenuItem(subtitlesMenu,MENU_ADJOIN,_("&Make times continuous (change start)"),_T("Changes times of subs so start times begin on previous's end time"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_ADJOIN2,_("&Make times continuous (change end)"),_T("Changes times of subs so end times begin on next's start time"),wxBITMAP(blank_button));
 	MenuBar->Append(timingMenu, _("&Timing"));
 
 	// Create video menu

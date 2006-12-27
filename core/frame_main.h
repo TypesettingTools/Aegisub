@@ -211,6 +211,7 @@ private:
 	void OnOpenTimingProcessor (wxCommandEvent &event);
 	void OnOpenHotkeys (wxCommandEvent &event);
 	void OnOpenOptions (wxCommandEvent &event);
+	void OnGridEvent (wxCommandEvent &event);
 
 	void OnNextFrame(wxCommandEvent &event);
 	void OnPrevFrame(wxCommandEvent &event);

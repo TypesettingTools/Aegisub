@@ -61,12 +61,6 @@
 #define USE_PORTAUDIO 0
 
 
-//////////////////////////////
-// Enable ASpell spellchecker
-// Requires: aspell ibrary
-#define USE_ASPELL 0
-
-
 ////////////////////////////////
 // Enable Hunspell spellchecker
 #define USE_HUNSPELL 0
