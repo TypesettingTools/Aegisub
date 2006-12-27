@@ -72,6 +72,7 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	enabled = false;
 	textEditReady = true;
 	controlState = true;
+	setupDone = false;
 	linen = -2;
 
 	// Top controls
@@ -131,14 +132,15 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	ByFrame->SetToolTip(_("Time by frame number"));
 
 	// Top sizer
-	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
+	TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	TopSizer->Add(CommentBox,0,wxRIGHT | wxALIGN_CENTER,5);
-	TopSizer->Add(StyleBox,0,wxRIGHT,5);
-	TopSizer->Add(ActorBox,0,wxRIGHT,5);
-	TopSizer->Add(Effect,0,0,0);
+	TopSizer->Add(StyleBox,1,wxRIGHT,5);
+	TopSizer->Add(ActorBox,1,wxRIGHT,5);
+	TopSizer->Add(Effect,1,0,0);
 
 	// Middle sizer
-	wxSizer *MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
+	splitLineMode = true;
+	MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
 	MiddleSizer->Add(Layer,0,wxRIGHT,5);
 	MiddleSizer->Add(StartTime,0,wxRIGHT,0);
 	MiddleSizer->Add(EndTime,0,wxRIGHT,5);
@@ -146,10 +148,10 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	MiddleSizer->Add(MarginL,0,0,0);
 	MiddleSizer->Add(MarginR,0,0,0);
 	MiddleSizer->Add(MarginV,0,0,0);
-	//MiddleSizer->Add(SyntaxHighlight,0,wxRIGHT | wxALIGN_CENTER,5);
+	MiddleSizer->AddSpacer(5);
 
 	// Middle-bottom sizer
-	wxSizer *MiddleBotSizer = new wxBoxSizer(wxHORIZONTAL);
+	MiddleBotSizer = new wxBoxSizer(wxHORIZONTAL);
 	MiddleBotSizer->Add(Bold);
 	MiddleBotSizer->Add(Italics);
 	MiddleBotSizer->Add(Underline);
@@ -164,14 +166,14 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER,5);
 
 	// Text editor
-	TextEdit = new SubsTextEditCtrl(this,EDIT_BOX,_T(""),wxDefaultPosition,wxSize(300,50),wxTE_MULTILINE | wxTE_RICH2 | wxTE_NOHIDESEL);
+	TextEdit = new SubsTextEditCtrl(this,EDIT_BOX,_T(""),wxDefaultPosition,wxSize(300,50));
 	TextEdit->PushEventHandler(new SubsEditBoxEvent(this));
 	TextEdit->control = this;
-	wxSizer *BottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	BottomSizer->Add(TextEdit,1,wxEXPAND,0);
 
 	// Main sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
+	MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,3);
 	MainSizer->Add(MiddleSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 	MainSizer->Add(MiddleBotSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
@@ -184,7 +186,44 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	// HACK: Fix colour of bg of editbox
 	origBgColour = TextEdit->GetBackgroundColour();
 	disabledBgColour = GetBackgroundColour();
+
+	// Set split mode
+	setupDone = true;
+	SetSplitLineMode();
 	Update();
+}
+
+
+/////////////////////////////////
+// Set split or single line mode
+void SubsEditBox::SetSplitLineMode(wxSize newSize) {
+	// Widths
+	int topWidth;
+	if (newSize.GetWidth() == -1) topWidth = TopSizer->GetSize().GetWidth();
+	else topWidth = newSize.GetWidth()-GetSize().GetWidth()+GetClientSize().GetWidth();
+	int midMin = MiddleSizer->GetMinSize().GetWidth();
+	int botMin = MiddleBotSizer->GetMinSize().GetWidth();
+
+	// Currently split
+	if (splitLineMode) {
+
+		if (topWidth >= midMin + botMin) {
+			MainSizer->Detach(MiddleBotSizer);
+			MiddleSizer->Add(MiddleBotSizer);
+			Layout();
+			splitLineMode = false;
+		}
+	}
+
+	// Currently joined
+	else {
+		if (topWidth < midMin) {
+			MiddleSizer->Detach(MiddleBotSizer);
+			MainSizer->Insert(2,MiddleBotSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+			Layout();
+			splitLineMode = true;
+		}
+	}
 }
 
 
@@ -324,7 +363,17 @@ BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 	EVT_BUTTON(BUTTON_ITALICS,SubsEditBox::OnButtonItalics)
 	EVT_BUTTON(BUTTON_UNDERLINE,SubsEditBox::OnButtonUnderline)
 	EVT_BUTTON(BUTTON_STRIKEOUT,SubsEditBox::OnButtonStrikeout)
+
+	EVT_SIZE(SubsEditBox::OnSize)
 END_EVENT_TABLE()
+
+
+///////////
+// On size
+void SubsEditBox::OnSize(wxSizeEvent &event) {
+	if (setupDone) SetSplitLineMode(event.GetSize());
+	event.Skip();
+}
 
 
 /////////////////////

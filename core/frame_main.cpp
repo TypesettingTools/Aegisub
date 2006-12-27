@@ -703,6 +703,7 @@ void FrameMain::SetDisplayMode(int mode) {
 	// Update
 	curMode = mode;
 	UpdateToolbar();
+	EditBox->SetSplitLineMode();
 	MainSizer->CalcMin();
 	MainSizer->RecalcSizes();
 	videoBox->VideoSizer->Layout();

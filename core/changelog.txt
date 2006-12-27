@@ -49,6 +49,7 @@ Please visit http://aegisub.net to download latest version
 - Added an "Import from script..." button to Styles Manager, to import styles directly from other subtitle files. (AMZ)
 - Added buttons to Styles Manager to move styles up, down, to top or to bottom, on both storage and current script. (AMZ)
 - Added sorting functionality to Styles Manager, for both storage and current script. (AMZ)
+- Tweaked the layout of Subtitles Edit area. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

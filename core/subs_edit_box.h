@@ -61,6 +61,8 @@ class SubsEditBox : public wxPanel {
 	friend class SubsTextEditCtrl;
 
 private:
+	bool splitLineMode;
+	bool setupDone;
 	bool enabled;
 	bool textEditReady;
 	bool controlState;
@@ -92,6 +94,13 @@ private:
 	wxButton *Color2;
 	wxButton *Color3;
 	wxButton *Color4;
+
+	wxSizer *TopSizer;
+	wxSizer *MiddleBotSizer;
+	wxSizer *MiddleSizer;
+	wxSizer *MainSizer;
+	wxSizer *DummySizer;
+	wxSizer *BottomSizer;
 
 	void SetControlsState(bool state);
 	void CommitTimes(bool start,bool end,bool fromStart);
@@ -126,6 +135,7 @@ private:
 	void OnMarginVChange(wxCommandEvent &event);
 	void OnCommentChange(wxCommandEvent &event);
 	void OnEffectChange(wxCommandEvent &event);
+	void OnSize(wxSizeEvent &event);
 
 public:
 	int linen;
@@ -138,6 +148,7 @@ public:
 	void SetOverride (wxString tag,wxString preValue=_T(""),int pos=-1);
 	void SetStyleFlag (wxString tag,wxString preValue=_T(""),int pos=-1);
 
+	void SetSplitLineMode(wxSize size=wxSize(-1,-1));
 	void CommitText();
 	void Update(bool timeOnly=false);
 	void UpdateGlobals();
