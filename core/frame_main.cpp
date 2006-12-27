@@ -268,8 +268,9 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE_VIDEO,_("Before Current, at Video Time"),_T("Inserts a line before current, starting at video time"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER_VIDEO,_("After Current, at Video Time"),_T("Inserts a line after current, starting at video time"),wxBITMAP(blank_button));
 	subtitlesMenu->Append(InsertParent);
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE,_("&Duplicate Lines"),_T("Duplicate the selected lines"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_T("Duplicate lines and shift by one frame"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE,wxString(_("&Duplicate Lines")) + _T("\t") + Hotkeys.GetText(_T("Grid duplicate rows")),_T("Duplicate the selected lines"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE_NEXT_FRAME,wxString(_("&Duplicate and shift by 1 frame")) + _T("\t") + Hotkeys.GetText(_T("Grid duplicate and shift one frame")),_T("Duplicate lines and shift by one frame"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DELETE,wxString(_("Delete Lines")) + _T("\t") + Hotkeys.GetText(_T("Grid delete rows")),_T("Delete currently selected lines"),wxBITMAP(blank_button));
 	subtitlesMenu->AppendSeparator();
 	wxMenu *JoinMenu = new wxMenu;
 	wxMenuItem *JoinParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Join,_("Join Lines"),_T(""),wxITEM_NORMAL,JoinMenu);

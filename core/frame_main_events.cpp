@@ -410,6 +410,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(MENU_INSERT_BEFORE,state);
 		MenuBar->Enable(MENU_INSERT_AFTER,state);
 		MenuBar->Enable(MENU_SPLIT_BY_KARAOKE,state);
+		MenuBar->Enable(MENU_DELETE,state);
 		state2 = count > 0 && videoBox->videoDisplay->loaded;
 		MenuBar->Enable(MENU_INSERT_BEFORE_VIDEO,state2);
 		MenuBar->Enable(MENU_INSERT_AFTER_VIDEO,state2);
