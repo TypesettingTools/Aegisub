@@ -242,22 +242,23 @@ void FrameMain::InitMenu() {
 
 	// Create Edit menu
 	editMenu = new wxMenu();
-	AppendBitmapMenuItem (editMenu,Menu_Edit_Undo, _("&Undo\t") + Hotkeys.GetText(_T("Undo")), _("Undoes last action"),wxBITMAP(undo_button));
-	AppendBitmapMenuItem (editMenu,Menu_Edit_Redo, _("&Redo\t") + Hotkeys.GetText(_T("Redo")), _("Redoes last action"),wxBITMAP(redo_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, _("&Undo\t") + Hotkeys.GetText(_T("Undo")), _("Undoes last action"),wxBITMAP(undo_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, _("&Redo\t") + Hotkeys.GetText(_T("Redo")), _("Redoes last action"),wxBITMAP(redo_button));
 	editMenu->AppendSeparator();
-	AppendBitmapMenuItem (editMenu,Menu_Edit_Cut, _("Cut Lines\t") + Hotkeys.GetText(_T("Cut")), _("Cut subtitles"), wxBITMAP(cut_button));
-	AppendBitmapMenuItem (editMenu,Menu_Edit_Copy, _("Copy Lines\t") + Hotkeys.GetText(_T("Copy")), _("Copy subtitles"), wxBITMAP(copy_button));
-	AppendBitmapMenuItem (editMenu,Menu_Edit_Paste, _("Paste Lines\t") + Hotkeys.GetText(_T("Paste")), _("Paste subtitles"), wxBITMAP(paste_button));
-	editMenu->Append(Menu_Edit_Paste_Over, _("Paste Lines Over...\t") + Hotkeys.GetText(_T("Paste Over")) , _("Paste subtitles over others"));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Cut, _("Cut Lines\t") + Hotkeys.GetText(_T("Cut")), _("Cut subtitles"), wxBITMAP(cut_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Copy, _("Copy Lines\t") + Hotkeys.GetText(_T("Copy")), _("Copy subtitles"), wxBITMAP(copy_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste, _("Paste Lines\t") + Hotkeys.GetText(_T("Paste")), _("Paste subtitles"), wxBITMAP(paste_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste_Over, _("Paste Lines Over...\t") + Hotkeys.GetText(_T("Paste Over")) , _("Paste subtitles over others"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Delete, _("Delete Lines\t") + Hotkeys.GetText(_T("Grid Delete Rows")), _("Delete selected lines"), wxBITMAP(blank_button));
 	editMenu->AppendSeparator();
-	AppendBitmapMenuItem (editMenu,Menu_Edit_Find, _("&Find...\t") + Hotkeys.GetText(_T("Find")), _("Find words in subtitles"),wxBITMAP(find_button));
-	editMenu->Append(Menu_Edit_Find_Next, _("Find Next\t") + Hotkeys.GetText(_T("Find Next")), _("Find next match of last word"));
-	editMenu->Append(Menu_Edit_Replace, _("Search and &Replace...\t") + Hotkeys.GetText(_T("Replace")) , _("Find and replace words in subtitles"));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Find, _("&Find...\t") + Hotkeys.GetText(_T("Find")), _("Find words in subtitles"),wxBITMAP(find_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, _("Find Next\t") + Hotkeys.GetText(_T("Find Next")), _("Find next match of last word"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Replace, _("Search and &Replace...\t") + Hotkeys.GetText(_T("Replace")) , _("Find and replace words in subtitles"),wxBITMAP(blank_button));
 	MenuBar->Append(editMenu, _("&Edit"));
 
 	// Create subtitles menu
 	subtitlesMenu = new wxMenu();
-	subtitlesMenu->Append(Menu_Edit_Select, _("&Select lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, _("&Select lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"),wxBITMAP(blank_button));
 	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBITMAP(styling_toolbutton));
@@ -269,9 +270,9 @@ void FrameMain::InitMenu() {
 
 	// Create timing menu
 	timingMenu = new wxMenu();
-	timingMenu->Append(Menu_Edit_Shift, _("S&hift times...\t") + Hotkeys.GetText(_T("Shift times")), _("Shift subtitles by time or frames"));
-	AppendBitmapMenuItem (timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), wxBITMAP(timing_processor_toolbutton));
-	timingMenu->Append(Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"));
+	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, _("S&hift times...\t") + Hotkeys.GetText(_T("Shift times")), _("Shift subtitles by time or frames"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(timingMenu,Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), wxBITMAP(timing_processor_toolbutton));
 	timingMenu->AppendSeparator();
 	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video, _("Snap start to video\t") + Hotkeys.GetText(_T("Set Start To Video")), _("Set start of selected subtitles to current video frame"), wxBITMAP(substart_to_video));
 	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, _("Snap end to video\t") + Hotkeys.GetText(_T("Set End to Video")), _("Set end of selected subtitles to current video frame"), wxBITMAP(subend_to_video));
@@ -323,9 +324,9 @@ void FrameMain::InitMenu() {
 
 	// Create view menu
 	viewMenu = new wxMenu();
-	viewMenu->Append(Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"));
-	AppendBitmapMenuItem (viewMenu,Menu_Tools_Options, _("&Options..."), _("Configure Aegisub"), wxBITMAP(options_button));
-	AppendBitmapMenuItem (viewMenu,Menu_Tools_Hotkeys, _("&Hotkeys..."), _("Remap hotkeys"), wxBITMAP(hotkeys_button));
+	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
+	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, _("&Options..."), _("Configure Aegisub"), wxBITMAP(options_button));
+	AppendBitmapMenuItem(viewMenu,Menu_Tools_Hotkeys, _("&Hotkeys..."), _("Remap hotkeys"), wxBITMAP(hotkeys_button));
 	viewMenu->AppendSeparator();
 	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs only view"), _("Display subtitles only"));
 	viewMenu->AppendRadioItem(Menu_View_Video, _("Video+Subs view"), _("Display video and subtitles only"));

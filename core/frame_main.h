@@ -183,6 +183,7 @@ private:
 	void OnCopy (wxCommandEvent &event);
 	void OnPaste (wxCommandEvent &event);
 	void OnPasteOver (wxCommandEvent &event);
+	void OnDelete (wxCommandEvent &event);
 	void OnFind (wxCommandEvent &event);
 	void OnFindNext (wxCommandEvent &event);
 	void OnReplace (wxCommandEvent &event);
@@ -324,6 +325,7 @@ enum {
 	Menu_Edit_Copy,
 	Menu_Edit_Paste,
 	Menu_Edit_Paste_Over,
+	Menu_Edit_Delete,
 
 	Menu_View_Language,
 	Menu_View_Standard,
