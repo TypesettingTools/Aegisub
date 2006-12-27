@@ -78,10 +78,12 @@ private:
 	wxMenu *fileMenu;
 	wxMenu *editMenu;
 	wxMenu *videoMenu;
-	wxMenu *toolMenu;
+	wxMenu *timingMenu;
+	wxMenu *subtitlesMenu;
 	wxMenu *helpMenu;
 	wxMenu *audioMenu;
 	wxMenu *viewMenu;
+	wxMenu *automationMenu;
 
 	wxMenu *RecentSubs;
 	wxMenu *RecentVids;

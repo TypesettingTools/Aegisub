@@ -277,10 +277,6 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		RebuildMenuItem(videoMenu,Menu_Video_JumpTo,wxBITMAP(jumpto_button),wxBITMAP(jumpto_disable_button),state);
 		RebuildMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start,wxBITMAP(video_to_substart),wxBITMAP(video_to_substart_disable),state);
 		RebuildMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End,wxBITMAP(video_to_subend),wxBITMAP(video_to_subend_disable),state);
-		RebuildMenuItem(videoMenu,Menu_Subs_Snap_Start_To_Video,wxBITMAP(substart_to_video),wxBITMAP(substart_to_video_disable),state);
-		RebuildMenuItem(videoMenu,Menu_Subs_Snap_End_To_Video,wxBITMAP(subend_to_video),wxBITMAP(subend_to_video_disable),state);
-		RebuildMenuItem(videoMenu,Menu_Video_Snap_To_Scene,wxBITMAP(snap_subs_to_scene),wxBITMAP(snap_subs_to_scene_disable),state);
-		RebuildMenuItem(videoMenu,Menu_Video_Shift_To_Frame,wxBITMAP(shift_to_frame),wxBITMAP(shift_to_frame_disable),state);
 
 		// Set states
 		MenuBar->Enable(Menu_View_Zoom_50,state);
@@ -393,6 +389,15 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 			added++;
 		}
 		if (added == 0) RecentAuds->Append(Menu_Audio_Recent,_T("Empty"))->Enable(false);
+	}
+
+	// Timing menu
+	else if (curMenu == timingMenu) {
+		bool state = videoBox->videoDisplay->loaded;
+		RebuildMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video,wxBITMAP(substart_to_video),wxBITMAP(substart_to_video_disable),state);
+		RebuildMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video,wxBITMAP(subend_to_video),wxBITMAP(subend_to_video_disable),state);
+		RebuildMenuItem(timingMenu,Menu_Video_Snap_To_Scene,wxBITMAP(snap_subs_to_scene),wxBITMAP(snap_subs_to_scene_disable),state);
+		RebuildMenuItem(timingMenu,Menu_Video_Shift_To_Frame,wxBITMAP(shift_to_frame),wxBITMAP(shift_to_frame_disable),state);
 	}
 
 	// Edit menu
