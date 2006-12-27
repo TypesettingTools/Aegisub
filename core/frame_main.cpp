@@ -225,17 +225,19 @@ void FrameMain::InitMenu() {
 	fileMenu = new wxMenu();
 	AppendBitmapMenuItem(fileMenu,Menu_File_New_Subtitles, _("&New Subtitles\t") + Hotkeys.GetText(_T("New Subtitles")), _("New subtitles"),wxBITMAP(new_toolbutton));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles, _("&Open Subtitles...\t") + Hotkeys.GetText(_T("Open Subtitles")), _("Opens a subtitles file"),wxBITMAP(open_toolbutton));
-	fileMenu->Append(Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"));
+	//fileMenu->Append(Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"),wxBITMAP(open_with_toolbutton));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles, _("&Save Subtitles\t") + Hotkeys.GetText(_T("Save Subtitles")), _("Saves subtitles"),wxBITMAP(save_toolbutton));
-	fileMenu->Append(Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"));
-	fileMenu->Append(Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"), wxBITMAP(save_as_toolbutton));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."), wxBITMAP(blank_button));
 	wxMenuItem *RecentParent = new wxMenuItem(fileMenu, Menu_File_Recent_Subs_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentSubs);
+	RecentParent->SetBitmap(wxBITMAP(blank_button));
 	fileMenu->Append(RecentParent);
 	fileMenu->AppendSeparator();
 	AppendBitmapMenuItem (fileMenu,Menu_Tools_Properties, _("&Properties..."), _("Open script properties window"),wxBITMAP(properties_toolbutton));
 	AppendBitmapMenuItem (fileMenu,Menu_Tools_Attachments, _("&Attachments..."), _("Open the attachment list"), wxBITMAP(attach_button));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(Menu_File_Exit, _("E&xit\t") + Hotkeys.GetText(_T("Exit")), _("Exit the application"));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Exit, _("E&xit\t") + Hotkeys.GetText(_T("Exit")), _("Exit the application"),wxBITMAP(exit_button));
 	MenuBar->Append(fileMenu, _("&File"));
 
 	// Create Edit menu
@@ -256,11 +258,13 @@ void FrameMain::InitMenu() {
 	// Create subtitles menu
 	subtitlesMenu = new wxMenu();
 	subtitlesMenu->Append(Menu_Edit_Select, _("&Select lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"));
+	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBITMAP(styling_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBITMAP(translation_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
 	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
 
 	// Create timing menu
@@ -338,12 +342,12 @@ void FrameMain::InitMenu() {
 	helpMenu = new wxMenu();
 	AppendBitmapMenuItem (helpMenu,Menu_Help_Contents, _("&Contents...\t") + Hotkeys.GetText(_T("Help")), _("Help topics"), wxBITMAP(contents_button));
 	helpMenu->AppendSeparator();
-	helpMenu->Append(Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"));
-	helpMenu->Append(Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"));
-	helpMenu->Append(Menu_Help_BugTracker, _("&Bug tracker..."), _("Visit Aegisub's bug tracker"));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"),wxBITMAP(website_button));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"),wxBITMAP(forums_button));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug tracker..."), _("Visit Aegisub's bug tracker"),wxBITMAP(bugtracker_button));
 	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC channel..."), _("Visit Aegisub's official IRC channel"), wxBITMAP(irc_button));
 	helpMenu->AppendSeparator();
-	helpMenu->Append(Menu_Help_About, _("&About..."), _("About Aegisub"));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),wxBITMAP(about_button));
 	MenuBar->Append(helpMenu, _("&Help"));
 
 	// Set the bar as this frame's

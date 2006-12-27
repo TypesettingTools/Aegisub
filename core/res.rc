@@ -33,9 +33,13 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+blank_button BITMAP "bitmaps/blank.bmp"
+
 new_toolbutton BITMAP "bitmaps/new.bmp"
 open_toolbutton BITMAP "bitmaps/open.bmp"
+open_with_toolbutton BITMAP "bitmaps/open_with.bmp"
 save_toolbutton BITMAP "bitmaps/save.bmp"
+save_as_toolbutton BITMAP "bitmaps/save_as.bmp"
 style_toolbutton BITMAP "bitmaps/style_manager.bmp"
 styling_toolbutton BITMAP "bitmaps/styling_assistant.bmp"
 translation_toolbutton BITMAP "bitmaps/translation.bmp"
@@ -80,6 +84,11 @@ select_visible_button BITMAP "bitmaps/select_visible.bmp"
 toggle_tag_hiding BITMAP "bitmaps/toggle_tag_hiding.bmp"
 shift_to_frame BITMAP "bitmaps/shift_to_frame.bmp"
 shift_to_frame_disable BITMAP "bitmaps/shift_to_frame_disable.bmp"
+bugtracker_button BITMAP "bitmaps/bugtracker.bmp"
+website_button BITMAP "bitmaps/website.bmp"
+forums_button BITMAP "bitmaps/forums.bmp"
+about_button BITMAP "bitmaps/about.bmp"
+exit_button BITMAP "bitmaps/exit.bmp"
 
 button_play BITMAP "bitmaps/button_play.bmp"
 button_stop BITMAP "bitmaps/button_stop.bmp"
