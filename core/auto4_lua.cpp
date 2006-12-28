@@ -180,6 +180,13 @@ namespace Automation4 {
 				}
 			}
 			_stackcheck.check(0);
+			lua_getglobal(L, "version");
+			if (lua_isnumber(L, -1)) {
+				if (lua_tointeger(L, -1) == 3) {
+					lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
+					throw _T("This script looks like an Automation 3 Lua script. Automation 3 is not supported in this version of Aegisub, please use Aegisub 1.10 or earlier to use this script.");
+				}
+			}
 			lua_getglobal(L, "script_name");
 			if (lua_isstring(L, -1)) {
 				name = wxString(lua_tostring(L, -1), wxConvUTF8);
@@ -198,7 +205,7 @@ namespace Automation4 {
 			if (lua_isstring(L, -1)) {
 				version = wxString(lua_tostring(L, -1), wxConvUTF8);
 			}
-			lua_pop(L, 4);
+			lua_pop(L, 5);
 			// if we got this far, the script should be ready
 			_stackcheck.check(0);
 
