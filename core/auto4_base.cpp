@@ -643,7 +643,7 @@ namespace Automation4 {
 
 	// ScriptFactory
 
-	std::vector<ScriptFactory*> ScriptFactory::factories;
+	std::vector<ScriptFactory*> *ScriptFactory::factories = 0;
 
 	const wxString& ScriptFactory::GetEngineName() const
 	{
@@ -657,19 +657,25 @@ namespace Automation4 {
 
 	void ScriptFactory::Register(ScriptFactory *factory)
 	{
-		for (std::vector<ScriptFactory*>::iterator i = factories.begin(); i != factories.end(); ++i) {
+		if (!factories)
+			factories = new std::vector<ScriptFactory*>();
+
+		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
 			if (*i == factory) {
 				throw _T("Automation 4: Attempt to register the same script factory multiple times.");
 			}
 		}
-		factories.push_back(factory);
+		factories->push_back(factory);
 	}
 
 	void ScriptFactory::Unregister(ScriptFactory *factory)
 	{
-		for (std::vector<ScriptFactory*>::iterator i = factories.begin(); i != factories.end(); ++i) {
+		if (!factories)
+			factories = new std::vector<ScriptFactory*>();
+
+		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
 			if (*i == factory) {
-				factories.erase(i);
+				factories->erase(i);
 				return;
 			}
 		}
@@ -677,7 +683,10 @@ namespace Automation4 {
 
 	Script* ScriptFactory::CreateFromFile(const wxString &filename)
 	{
-		for (std::vector<ScriptFactory*>::iterator i = factories.begin(); i != factories.end(); ++i) {
+		if (!factories)
+			factories = new std::vector<ScriptFactory*>();
+
+		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
 			Script *s = (*i)->Produce(filename);
 			if (s) return s;
 		}
@@ -686,7 +695,10 @@ namespace Automation4 {
 
 	const std::vector<ScriptFactory*>& ScriptFactory::GetFactories()
 	{
-		return factories;
+		if (!factories)
+			factories = new std::vector<ScriptFactory*>();
+
+		return *factories;
 	}
 
 

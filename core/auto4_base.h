@@ -335,7 +335,7 @@ namespace Automation4 {
 	// This is used to create Script objects from a file.
 	class ScriptFactory {
 	private:
-		static std::vector<ScriptFactory*> factories;
+		static std::vector<ScriptFactory*> *factories;
 	protected:
 		ScriptFactory() { }
 		wxString engine_name;
