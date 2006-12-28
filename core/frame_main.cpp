@@ -189,10 +189,11 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddSeparator();
 
 	// Tools
+	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),wxBITMAP(shift_times_toolbutton),_("Open Shift Times Dialogue"));
 	Toolbar->AddTool(Menu_Tools_Styling,_("Styling Assistant"),wxBITMAP(styling_toolbutton),_("Open Styling Assistant"));
 	Toolbar->AddTool(Menu_Tools_Translation,_("Translation Assistant"),wxBITMAP(translation_toolbutton),_("Open Translation Assistant"));
 	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
-	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample script resolution"));
+	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample Script Resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBITMAP(timing_processor_toolbutton),_("Open Timing Post-processor dialog"));
 #if USE_HUNSPELL == 1
 	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),wxBITMAP(spellcheck_toolbutton),_("Open Spell checker"));
@@ -281,7 +282,6 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_REPLACE,_("Keep &First"),_T("Joins selected lines in a single one, keeping text of first and discarding remaining"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_AS_KARAOKE,_("As &Karaoke"),_T("Joins selected lines in a single one, as karaoke"),wxBITMAP(blank_button));
 	subtitlesMenu->Append(JoinParent);
-	AppendBitmapMenuItem(subtitlesMenu,MENU_SPLIT_BY_KARAOKE,_("Split Lines (by karaoke)"),_T("Uses karaoke timing to split line into multiple smaller lines"),wxBITMAP(blank_button));
 	wxMenu *RecombineMenu = new wxMenu;
 	wxMenuItem *RecombineParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Recombine,_("Recombine"),_T(""),wxITEM_NORMAL,RecombineMenu);
 	RecombineParent->SetBitmap(wxBITMAP(blank_button));
@@ -289,6 +289,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(RecombineMenu,MENU_12_2_RECOMBINE,_("Lines (1+2, 2) into (1, 2)"),_T("Recombine subtitles when second one is actually first plus second"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(RecombineMenu,MENU_1_12_2_RECOMBINE,_("Lines (1, 1+2, 2) into (1, 2)"),_T("Recombine subtitles when middle one is actually first plus second"),wxBITMAP(blank_button));
 	subtitlesMenu->Append(RecombineParent);
+	AppendBitmapMenuItem(subtitlesMenu,MENU_SPLIT_BY_KARAOKE,_("Split Lines (by karaoke)"),_T("Uses karaoke timing to split line into multiple smaller lines"),wxBITMAP(blank_button));
 	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("&Swap Lines"),_T("Swaps the two selected lines"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, _("&Select Lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"),wxBITMAP(blank_button));
@@ -305,17 +306,21 @@ void FrameMain::InitMenu() {
 
 	// Create timing menu
 	timingMenu = new wxMenu();
-	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, _("S&hift times...\t") + Hotkeys.GetText(_T("Shift times")), _("Shift subtitles by time or frames"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(timingMenu,Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, _("S&hift Times...") + wxString(_T("\t")) + Hotkeys.GetText(_T("Shift times")), _("Shift subtitles by time or frames"),wxBITMAP(shift_times_toolbutton));
+	AppendBitmapMenuItem(timingMenu,Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"),wxBITMAP(sort_times_button));
 	AppendBitmapMenuItem(timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), wxBITMAP(timing_processor_toolbutton));
 	timingMenu->AppendSeparator();
-	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video, _("Snap start to video\t") + Hotkeys.GetText(_T("Set Start To Video")), _("Set start of selected subtitles to current video frame"), wxBITMAP(substart_to_video));
-	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, _("Snap end to video\t") + Hotkeys.GetText(_T("Set End to Video")), _("Set end of selected subtitles to current video frame"), wxBITMAP(subend_to_video));
-	AppendBitmapMenuItem(timingMenu,Menu_Video_Snap_To_Scene, _("Snap to scene\t") + Hotkeys.GetText(_T("Snap to Scene")), _("Set start and end of subtitles to the keyframes around current video frame"), wxBITMAP(snap_subs_to_scene));
-	AppendBitmapMenuItem(timingMenu,Menu_Video_Shift_To_Frame, _("Shift to Current Frame\t") + Hotkeys.GetText(_T("Shift by Current Time")), _("Shift selection so first selected line starts at current frame"), wxBITMAP(shift_to_frame));
+	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video, _("Snap Start to Video") + wxString(_T("\t")) + Hotkeys.GetText(_T("Set Start To Video")), _("Set start of selected subtitles to current video frame"), wxBITMAP(substart_to_video));
+	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, _("Snap End to Video") + wxString(_T("\t")) + Hotkeys.GetText(_T("Set End to Video")), _("Set end of selected subtitles to current video frame"), wxBITMAP(subend_to_video));
+	AppendBitmapMenuItem(timingMenu,Menu_Video_Snap_To_Scene, _("Snap to Scene") + wxString(_T("\t")) + Hotkeys.GetText(_T("Snap to Scene")), _("Set start and end of subtitles to the keyframes around current video frame"), wxBITMAP(snap_subs_to_scene));
+	AppendBitmapMenuItem(timingMenu,Menu_Video_Shift_To_Frame, _("Shift to Current Frame") + wxString(_T("\t")) + Hotkeys.GetText(_T("Shift by Current Time")), _("Shift selection so first selected line starts at current frame"), wxBITMAP(shift_to_frame));
 	timingMenu->AppendSeparator();
-	AppendBitmapMenuItem(timingMenu,MENU_ADJOIN,_("&Make times continuous (change start)"),_T("Changes times of subs so start times begin on previous's end time"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(timingMenu,MENU_ADJOIN2,_("&Make times continuous (change end)"),_T("Changes times of subs so end times begin on next's start time"),wxBITMAP(blank_button));
+	wxMenu *ContinuousMenu = new wxMenu;
+	wxMenuItem *ContinuousParent = new wxMenuItem(subtitlesMenu,-1,_("Make Times Continuous"),_T(""),wxITEM_NORMAL,ContinuousMenu);
+	ContinuousParent->SetBitmap(wxBITMAP(blank_button));
+	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN,_("Change &Start"),_T("Changes times of subs so start times begin on previous's end time"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN2,_("Change &End"),_T("Changes times of subs so end times begin on next's start time"),wxBITMAP(blank_button));
+	timingMenu->Append(ContinuousParent);
 	MenuBar->Append(timingMenu, _("&Timing"));
 
 	// Create video menu
@@ -340,15 +345,22 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, _("Jump video to start\t") + Hotkeys.GetText(_T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), wxBITMAP(video_to_substart));
 	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End, _("Jump video to end\t") + Hotkeys.GetText(_T("Jump Video To End")), _("Jumps the video to the end frame of current subtitle"), wxBITMAP(video_to_subend));
 	videoMenu->AppendSeparator();
-	videoMenu->Append(Menu_View_Zoom_50, _("Zoom &50%\t") + Hotkeys.GetText(_T("Zoom 50%")), _("Set zoom to 50%"));
-	videoMenu->Append(Menu_View_Zoom_100, _("Zoom &100%\t") + Hotkeys.GetText(_T("Zoom 100%")), _("Set zoom to 100%"));
-	videoMenu->Append(Menu_View_Zoom_200, _("Zoom &200%\t") + Hotkeys.GetText(_T("Zoom 200%")), _("Set zoom to 200%"));
-	videoMenu->AppendSeparator();
-	videoMenu->AppendCheckItem(Menu_Video_AR_Default, _("&Default Aspect Ratio"), _("Leave video on original aspect ratio"));
-	videoMenu->AppendCheckItem(Menu_Video_AR_Full, _("&Fullscreen Aspect Ratio (4:3)"), _("Forces video to fullscreen aspect ratio"));
-	videoMenu->AppendCheckItem(Menu_Video_AR_Wide, _("&Widescreen Aspect Ratio (16:9)"), _("Forces video to widescreen aspect ratio"));
-	videoMenu->AppendCheckItem(Menu_Video_AR_235, _("2.&35 Aspect Ratio"), _("Forces video to 2.35 aspect ratio"));
-	videoMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom Aspect Ratio..."), _("Forces video to a custom aspect ratio"));
+	wxMenu *ZoomMenu = new wxMenu;
+	wxMenuItem *ZoomParent = new wxMenuItem(subtitlesMenu,Menu_View_Zoom,_("Set Zoom"),_T(""),wxITEM_NORMAL,ZoomMenu);
+	ZoomParent->SetBitmap(wxBITMAP(blank_button));
+	ZoomMenu->Append(Menu_View_Zoom_50, _T("&50%\t") + Hotkeys.GetText(_T("Zoom 50%")), _("Set zoom to 50%"));
+	ZoomMenu->Append(Menu_View_Zoom_100, _T("&100%\t") + Hotkeys.GetText(_T("Zoom 100%")), _("Set zoom to 100%"));
+	ZoomMenu->Append(Menu_View_Zoom_200, _T("&200%\t") + Hotkeys.GetText(_T("Zoom 200%")), _("Set zoom to 200%"));
+	videoMenu->Append(ZoomParent);
+	wxMenu *AspectMenu = new wxMenu;
+	wxMenuItem *AspectParent = new wxMenuItem(subtitlesMenu,Menu_Video_AR,_("Override Aspect Ratio"),_T(""),wxITEM_NORMAL,AspectMenu);
+	AspectParent->SetBitmap(wxBITMAP(blank_button));
+	AspectMenu->AppendCheckItem(Menu_Video_AR_Default, _("&Default"), _("Leave video on original aspect ratio"));
+	AspectMenu->AppendCheckItem(Menu_Video_AR_Full, _("&Fullscreen (4:3)"), _("Forces video to 4:3 aspect ratio"));
+	AspectMenu->AppendCheckItem(Menu_Video_AR_Wide, _("&Widescreen (16:9)"), _("Forces video to 16:9 aspect ratio"));
+	AspectMenu->AppendCheckItem(Menu_Video_AR_235, _("&Cinematic (2.35)"), _("Forces video to 2.35 aspect ratio"));
+	AspectMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom..."), _("Forces video to a custom aspect ratio"));
+	videoMenu->Append(AspectParent);
 	MenuBar->Append(videoMenu, _("&Video"));
 
 	// Create audio menu

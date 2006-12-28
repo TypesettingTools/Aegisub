@@ -293,6 +293,7 @@ enum {
 	Menu_File_Recent_Keyframes_Parent,
 
 	Menu_Video_JumpTo,
+	Menu_View_Zoom,
 	Menu_View_Zoom_50,
 	Menu_View_Zoom_100,
 	Menu_View_Zoom_200,
@@ -302,6 +303,7 @@ enum {
 	Menu_Video_Save_Keyframes,
 	Menu_Video_Close_Keyframes,
 	Toolbar_Zoom_Dropdown,
+	Menu_Video_AR,
 	Menu_Video_AR_Default,
 	Menu_Video_AR_Full,
 	Menu_Video_AR_Wide,

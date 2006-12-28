@@ -286,10 +286,12 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		RebuildMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End,wxBITMAP(video_to_subend),wxBITMAP(video_to_subend_disable),state);
 
 		// Set states
+		MenuBar->Enable(Menu_View_Zoom,state);
 		MenuBar->Enable(Menu_View_Zoom_50,state);
 		MenuBar->Enable(Menu_View_Zoom_100,state);
 		MenuBar->Enable(Menu_View_Zoom_200,state);
 		MenuBar->Enable(Menu_File_Close_Video,state);
+		MenuBar->Enable(Menu_Video_AR,state);
 		MenuBar->Enable(Menu_Video_AR_Default,state);
 		MenuBar->Enable(Menu_Video_AR_Full,state);
 		MenuBar->Enable(Menu_Video_AR_Wide,state);
