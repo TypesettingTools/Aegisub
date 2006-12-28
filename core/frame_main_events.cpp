@@ -49,6 +49,7 @@
 #include "video_zoom.h"
 #include "video_box.h"
 #include "ass_file.h"
+#include "ass_dialogue.h"
 #include "dialog_style_manager.h"
 #include "dialog_translation.h"
 #include "dialog_jumpto.h"
@@ -62,7 +63,7 @@
 #include "main.h"
 #include "dialog_fonts_collector.h"
 #include "dialog_about.h"
-#include "automation_gui.h"
+//#include "automation_gui.h"
 #include "dialog_export.h"
 #include "audio_box.h"
 #include "dialog_selection.h"
@@ -916,9 +917,9 @@ void FrameMain::OnOpenOptions (wxCommandEvent &event) {
 // Open Automation
 void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
 	videoBox->videoDisplay->Stop();
-	DialogAutomationManager *automan = new DialogAutomationManager(this, SubsBox);
-	automan->ShowModal();
-	delete automan;
+//	DialogAutomationManager *automan = new DialogAutomationManager(this, SubsBox);
+//	automan->ShowModal();
+//	delete automan;
 }
 
 

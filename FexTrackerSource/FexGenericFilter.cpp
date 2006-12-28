@@ -2,6 +2,7 @@
 // All rights reserved but the aegisub project is allowed to use it.
 
 #include <math.h>
+#include "StdAfx.h"
 #include "FexGenericFilter_Include.h"
 
 FexFilter::FexFilter()

@@ -142,20 +142,11 @@
 
 ///////
 // Lua
-#ifdef __WXDEBUG__
-#pragma comment(lib,"lua503d.lib")
-#else
-#pragma comment(lib,"lua503.lib")
-#endif
-
-
-//////////////
-// FreeType 2
-#ifdef __WXDEBUG__
-#pragma comment(lib,"freetype2110MT_D.lib")
-#else
-#pragma comment(lib,"freetype2110MT.lib")
-#endif
+//#ifdef __WXDEBUG__
+//#pragma comment(lib,"lua503d.lib")
+//#else
+//#pragma comment(lib,"lua503.lib")
+//#endif
 
 
 ////////////

@@ -293,9 +293,7 @@ void BaseGrid::OnPaint (wxPaintEvent &event) {
 	bool direct = false;
 
 	if (direct) {
-		dc.BeginDrawing();
 		DrawImage(dc);
-		dc.EndDrawing();
 	}
 
 	else {
@@ -325,8 +323,6 @@ void BaseGrid::OnPaint (wxPaintEvent &event) {
 //////////////
 // Draw image
 void BaseGrid::DrawImage(wxDC &dc) {
-	dc.BeginDrawing();
-
 	// Get size and pos
 	int w = 0;
 	int h = 0;
@@ -536,9 +532,6 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
 	dy = (editBox->linen+1-yPos) * lineHeight;
 	dc.DrawRectangle(0,dy,w,lineHeight+1);
-
-	// Done
-	dc.EndDrawing();
 }
 
 

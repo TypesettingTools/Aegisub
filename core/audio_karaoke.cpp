@@ -298,7 +298,6 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 
 	// Start Paint
 	wxPaintDC dc(this);
-	dc.BeginDrawing();
 
 	// Draw background
 	dc.SetBrush(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE)));
@@ -386,8 +385,6 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 		}
 	}
 
-	// End paint
-	dc.EndDrawing();
 	event.Skip();
 }
 

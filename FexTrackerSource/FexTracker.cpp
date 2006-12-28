@@ -4,6 +4,9 @@
 // FexTracker.cpp : Defines the entry point for the DLL application.
 //
 
+#include "StdAfx.h"
+#include "stdio.h"
+
 #ifndef MIN
 #define MIN(a,b) ((a)<(b))?(a):(b)
 #endif
@@ -11,9 +14,6 @@
 #ifndef MAX
 #define MAX(a,b) ((a)>(b))?(a):(b)
 #endif
-
-#include "StdAfx.h"
-#include "stdio.h"
 
 FexTracker::FexTracker( int sx, int sy, int inFeatures )
 {

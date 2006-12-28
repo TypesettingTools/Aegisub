@@ -85,7 +85,6 @@ void ColorPickerSpectrum::OnPaint(wxPaintEvent &evt)
 	if (!background) return;
 
 	wxPaintDC dc(this);
-	dc.BeginDrawing();
 
 	wxMemoryDC memdc;
 	memdc.SelectObject(*background);
@@ -113,8 +112,6 @@ void ColorPickerSpectrum::OnPaint(wxPaintEvent &evt)
 			dc.DrawLine(0, y, GetClientSize().x, y);
 			break;
 	}
-
-	dc.EndDrawing();
 }
 
 void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt)
@@ -231,7 +228,6 @@ void ColorPickerRecent::OnPaint(wxPaintEvent &evt)
 
 	int i = 0;
 	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.BeginDrawing();
 
 	for (int cy = 0; cy < rows; cy++) {
 		for (int cx = 0; cx < cols; cx++) {
@@ -245,8 +241,6 @@ void ColorPickerRecent::OnPaint(wxPaintEvent &evt)
 			i++;
 		}
 	}
-
-	dc.EndDrawing();
 }
 
 void ColorPickerRecent::OnSize(wxSizeEvent &evt)

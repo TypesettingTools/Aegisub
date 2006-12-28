@@ -168,7 +168,6 @@ void AudioDisplay::UpdateImage(bool weak) {
 	// Draw image to be displayed
 	wxMemoryDC dc;
 	dc.SelectObject(*origImage);
-	dc.BeginDrawing();
 
 	// Black background
 	dc.SetPen(*wxTRANSPARENT_PEN);
@@ -436,8 +435,6 @@ void AudioDisplay::UpdateImage(bool weak) {
 	}
 
 	// Done
-	dc.EndDrawing();
-
 	Refresh(false);
 }
 
@@ -1266,9 +1263,7 @@ void AudioDisplay::OnPaint(wxPaintEvent& event) {
 	if (w == 0 || h == 0) return;
 
 	wxPaintDC dc(this);
-	dc.BeginDrawing();
 	dc.DrawBitmap(*origImage,0,0);
-	dc.EndDrawing();
 }
 
 
@@ -1446,7 +1441,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (!player->IsPlaying()) {
 		// Draw bg
 		wxClientDC dc(this);
-		dc.BeginDrawing();
 		dc.DrawBitmap(*origImage,0,0);
 
 		if (inside) {
@@ -1486,9 +1480,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			dc.SetTextForeground(wxColour(255,255,255));
 			dc.DrawText(text,dx,dy);
 		}
-
-		// End drawing
-		dc.EndDrawing();
 	}
 
 	// Scale dragging
@@ -1797,7 +1788,6 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 	// Get DCs
 	//wxMutexGuiEnter();
 	wxClientDC dc(this);
-	dc.BeginDrawing();
 
 	// Draw cursor
 	int curpos = -1;
@@ -1863,10 +1853,6 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 		dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
 	}
 	oldCurPos = curpos;
-
-	// Done
-	dc.EndDrawing();
-	//wxMutexGuiLeave();
 }
 
 

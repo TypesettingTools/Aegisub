@@ -68,9 +68,7 @@ SplashScreen::SplashScreen(wxWindow *parent)
 
 	// Prepare
 	wxClientDC dc(this);
-	dc.BeginDrawing();
 	dc.DrawBitmap(splash,0,0);
-	dc.EndDrawing();
 
 	autoClose = new wxTimer(this,5000);
 	autoClose->Start(5000,true);
@@ -98,9 +96,7 @@ END_EVENT_TABLE()
 // OnPaint
 void SplashScreen::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
-	dc.BeginDrawing();
 	dc.DrawBitmap(splash,0,0);
-	dc.EndDrawing();
 }
 
 

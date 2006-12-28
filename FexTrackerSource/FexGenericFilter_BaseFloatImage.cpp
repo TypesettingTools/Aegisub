@@ -1,9 +1,7 @@
 // This file is part of FexGenericFilter and (C) 2006 by Hajo Krabbenhöft  (tentacle)
 // All rights reserved but the aegisub project is allowed to use it.
 
-#include "stdio.h"
-#include "math.h"
-#include "memory.h"
+#include "StdAfx.h"
 #include "FexGenericFilter_Include.h"
 
 

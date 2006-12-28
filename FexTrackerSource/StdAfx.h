@@ -20,6 +20,7 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <math.h>
+#include <memory.h>
 #include <assert.h>
 
 #include "FexTracker.h"

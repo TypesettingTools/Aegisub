@@ -58,7 +58,7 @@
 #include "version.h"
 #include "dialog_splash.h"
 #include "dialog_tip.h"
-#include "automation_filter.h"
+//#include "automation_filter.h"
 #include "audio_box.h"
 #include "video_box.h"
 #include "drop.h"
@@ -584,10 +584,10 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
 		return;
 	}
-	catch (AutomationError &err) {
-		wxMessageBox(wxString(_T("Automation exception: ")) + err.message, _T("Error"), wxOK | wxICON_ERROR, NULL);
-		return;
-	}
+//	catch (AutomationError &err) {
+//		wxMessageBox(wxString(_T("Automation exception: ")) + err.message, _T("Error"), wxOK | wxICON_ERROR, NULL);
+//		return;
+//	}
 	catch (...) {
 		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
 		return;
@@ -796,15 +796,15 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		long videoAr = 0;
 		double videoArValue = 0.0;
 		long videoZoom = 0;
-		{
-			std::list<AssAutomationFilter*>::const_iterator next = AssAutomationFilter::GetFilterList().begin(), f;
-			while (next != AssAutomationFilter::GetFilterList().end()) {
-				f = next++;
-				AutomationScript *s = (*f)->GetScript();
-				delete (*f);
-				delete s;
-			}
-		}
+//		{
+//			std::list<AssAutomationFilter*>::const_iterator next = AssAutomationFilter::GetFilterList().begin(), f;
+//			while (next != AssAutomationFilter::GetFilterList().end()) {
+//				f = next++;
+//				AutomationScript *s = (*f)->GetScript();
+//				delete (*f);
+//				delete s;
+//			}
+//		}
 
 		// Get AR
 		wxString arString = subs->GetScriptInfo(_T("Video Aspect Ratio"));
@@ -825,7 +825,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString AutoScriptString = subs->GetScriptInfo(_T("Automation Scripts"));
 
 		// Automation script
-		if (AutoScriptString != _T("")) {
+/*		if (AutoScriptString != _T("")) {
 			wxStringTokenizer toker(AutoScriptString, _T("|"), wxTOKEN_STRTOK);
 			wxFileName AssFileName(subs->filename);
 			while (toker.HasMoreTokens()) {
@@ -852,7 +852,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 					continue;
 				}
 			}
-		}
+		}*/
 
 		// Check if there is anything to change
 		int autoLoadMode = Options.AsInt(_T("Autoload linked files"));
@@ -928,7 +928,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		subs->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(videoBox->videoDisplay->GetKeyFramesName(),AssFile::top->filename));
 
 		// Create list of Automation scripts
-		wxString scripts;
+/*		wxString scripts;
 		std::list<AssAutomationFilter*>::const_iterator f = AssAutomationFilter::GetFilterList().begin();
 		wxFileName AssFileName(subs->filename);
 		for (;f != AssAutomationFilter::GetFilterList().end(); ++f) {
@@ -941,7 +941,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		if (!scripts.empty()) {
 			scripts.RemoveLast();
 			subs->SetScriptInfo(_T("Automation Scripts"), scripts);
-		}
+		}*/
 	}
 }
 

@@ -60,7 +60,5 @@ END_EVENT_TABLE()
 // OnPaint
 void BitmapControl::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
-	dc.BeginDrawing();
 	dc.DrawBitmap(bmp,0,0);
-	dc.EndDrawing();
 }
