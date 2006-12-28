@@ -4,6 +4,10 @@ Please visit http://aegisub.net to download latest version
 = 1.11 beta - 2006.xx.xx ===========================
 
 - New Aegisub logo. (AMZ)
+- Automation 4 has replaced Automation 3, see the help file for more details (jfs)
+  o Automation 4 Lua uses Lua 5.1 instead of 5.0, meaning some new language features
+  o It is now possible to write macros that manipulates subtitles directly
+  o Scripts have full access to the entire subtitle file, not just the "Events" section
 - Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections (jfs)
 - Fixed loading of sections with unexpected cases. (AMZ)
 - Changes to Audio Spectrum: (jfs)
