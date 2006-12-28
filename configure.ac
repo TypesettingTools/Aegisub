@@ -2,7 +2,7 @@ AC_PREREQ(2.57)
 AC_INIT(aegisub, 1.10)
 AC_CONFIG_AUX_DIR(ac)
 AM_INIT_AUTOMAKE
-AC_CONFIG_HEADER([core/posix/acconf.h])
+AC_CONFIG_HEADER([aegisub/posix/acconf.h])
 AC_GNU_SOURCE
 
 AC_CANONICAL_HOST
@@ -152,9 +152,9 @@ AC_OUTPUT([
 	Makefile
 	ac/Makefile
 	locale/Makefile
-	core/Makefile
-	core/posix/Makefile
-	core/bitmaps/Makefile
+	aegisub/Makefile
+	aegisub/posix/Makefile
+	aegisub/bitmaps/Makefile
 ])
 
 

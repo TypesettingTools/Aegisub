@@ -1,3 +1,3 @@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = ac core locale
+SUBDIRS = ac aegisub locale
 

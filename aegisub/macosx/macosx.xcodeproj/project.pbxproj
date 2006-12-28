@@ -708,8 +708,8 @@
 				61AE8F2F0A40E9D200C278D1 /* yatta_wrap.cpp */,
 				61AE8F300A40E9D200C278D1 /* yatta_wrap.h */,
 			);
-			name = core;
-			path = ../core;
+			name = aegisub;
+			path = ../aegisub;
 			sourceTree = SOURCE_ROOT;
 		};
 		61AE8EED0A40E9D200C278D1 /* posix */ = {
