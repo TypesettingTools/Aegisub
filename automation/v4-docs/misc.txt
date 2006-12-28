@@ -1,0 +1,32 @@
+Miscellaneous functions in Automation 4
+
+This document describes various functions that couldn't be placed in any of
+the other Automation 4 documents.
+
+---
+
+Getting the rendered size of a string
+
+This function might later on be part of a full rendering-interface for
+creating actual bitmaps of text.
+
+This function does NOT attempt to handle line breaks, automatic line breaking,
+fomatting override tags, vector drawings or anything else to that effect.
+If you need such functionality, you need to implement it yourself. (For now,
+at least.)
+
+function aegisub.text_extents(style, text)
+
+@style (table)
+  A "style" class Subtitle Line table.
+
+@text (string)
+  The text to calculate the rendered size of.
+
+Returns: 4 values, all numbers.
+  1. Width of text in pixels.
+  2. Height of text in pixels.
+  3. Descent of text in pixels.
+  4. External leading of text in pixels.
+
+---

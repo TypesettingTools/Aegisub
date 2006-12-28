@@ -1,0 +1,97 @@
+Automation 4 Progress Reporting and Debugging interface
+
+This document describes the functions used for reporting progress and
+outputting debug information during the running of a script.
+
+---
+
+Showing/hiding the progress dialog
+
+This function has been removed. A progress dialog is always shown.
+
+---
+
+Setting the progress bar position
+
+function aegisub.progress.set(precent)
+
+@percent (number)
+  The percentage completed.
+
+Returns: nothing.
+
+---
+
+Showing the current task
+
+Used to set a message describing the current task being done.
+
+function aegisub.progress.task(msg, ...)
+
+@msg (string)
+  A format string used for the message.
+
+@...
+  Parameters to the format string.
+
+Returns: nothing.
+
+---
+
+Setting the progress dialog title
+
+function aegisub.progress.title(title, ...)
+
+The default title for the progress dialog is the name of the current Feature
+being executed.
+
+@title (string)
+  A format string used for the title.
+
+@...
+  Parameters to the format string.
+
+Returns: nothing.
+
+---
+
+Getting the "cancelled" status
+
+Call this function to determine whether the Cancel button in the progress
+dialog has been clicked.
+
+function aegisub.progress.is_cancelled()
+
+Returns: Boolean. True is the user has clicked the Cancel button, false if it
+  has not been clicked.
+
+---
+
+Outputting text to the debug log
+
+function aegisub.debug.out(level, msg, ...)
+
+@level (number)
+  Integer describing the verbosity of this message. Here are some suggested
+  values you can use:
+    0: Fatal, this is really an error that can't be ignored. (Note that the
+       script execution is NOT automatically stopped because of this.)
+    1: Error, this kind of error can be recovered from, but might result in a
+       fatal error later on.
+    2: Warning, something might be going wrong.
+    3: Hint, something isn't entirely sane, but nothing wrong.
+    4: Debug, some additional data only needed for development.
+    5: Trace, extremely verbose data showing every tiny step during execution.
+  The level can be used to let the user limit how severe messages will be
+  shown, so you eg. can leave trace messages in, yet the casual user of the
+  script won't see them unless he explicitly enables it.
+
+@msg (string)
+  A format string used for the message.
+
+@...
+  Parameters for the format string.
+
+Returns: nothing.
+
+---

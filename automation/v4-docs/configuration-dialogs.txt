@@ -1,0 +1,180 @@
+Automation 4 Configuration Dialog interface
+
+This file describes the functions and data structures used for the
+Configuration Dialog functionality in Automation 4.
+
+---
+
+Dialog Control table format
+
+A Dialog Control table describes a single control in a configuration dialog,
+which can display information to the user and allow them to change it.
+
+There are a number of different classes of controls, and the keys a Dialog
+Control table must contain depends on the control class.
+
+
+Common keys for all control classes:
+
+class (string)
+  Defines which class this control has. Must be one of:
+    "label",
+    "edit", "intedit", "floatedit", "textbox",
+    "dropdown",
+    "checkbox",
+    "color", "coloralpha", "alpha"
+
+x (number)
+y (number)
+width (number)
+height (number)
+  Determines the position and size of the control in the dialog. These values
+  are used to create a grid containing the controls. They should all be
+  integer. The top left corner is x,y=0,0.
+  If any of width and height are set to zero or less, it will be set to one
+  instead.
+
+
+Keys defined for all classes except "label":
+
+hint (string)
+  A string displayed to the user as tooltip, when hovering over the control.
+
+name (string)
+  A name that uniquely identifies the control. This is recommended to be a
+  string easily used as an identifier in Lua, since it will be used to access
+  the value input into the control.
+
+
+Keys defined only for "label" and "checkbox" classes:
+
+label (string)
+  The text displayed to the user on the control.
+
+
+Key defined only for the "edit" and "textbox" classes:
+
+text (string)
+  The contents of the control when the dialog is first displayed.
+  This can contain newlines if the control is of the "textbox" class.
+
+
+Keys defined only for the "intedit" and "floatedit" classes:
+
+value (number)
+  The value in the control when the dialog is first displayed. For the
+  "intedit" class, if this is a non-integer number it will be truncated.
+
+min (number or nil)
+max (number or nil)
+  If one of these are nil, the other must also be nil. (Ie. undefined.)
+  If both are present, the control gets a spin button, the user can click to
+  update the value of the control. The user won't be able to close the
+  dialog if the value is outside the range between "min" and "max".
+
+
+Keys defined only for the "dropdown" class:
+
+items (table)
+  This is an Array Table containing only strings. They are used for the
+  options displayed to the user in the dropdown box.
+  All strings in the array table should be unique. (There is not way to
+  distinguish non-unique strings from each other.)
+
+value (string)
+  Determines which item is selected when the dialog id first displayed. If
+  this is not one of the items specified, no item is selected. This is case-
+  sensitive.
+
+
+Key defined only for the "checkbox" class:
+
+value (boolean)
+  Determines whether the checkbox is checked or not when the dialog is first
+  displayed.
+
+
+Keys defined only for the "color", "coloralpha" and "alpha" classes:
+
+value (string)
+  A color value in VB or HTML hexadecimal format.
+  For the "color" class, this should be a 3 byte value, ie. "#RRGGBB".
+  For the "coloralpha" class, this should be a 4 byte value, ie. "#RRGGBBAA".
+  For the "alpha" class, this should be a one-byte value, ie. "#AA".
+
+---
+
+Dialog Definition table format
+
+The Dialog Definition table is simply an Array Table of Dialog Control tables.
+
+Note, however, that while the visual ordering of the controls are decided
+entirely by the "x", "y", "width" and "height" of the controls, the
+"tab order" of the controls is decided by their ordering in the Dialog
+Definition table.
+
+---
+
+Dialog Result table format
+
+A Dialog Result table contains the user input from a configuration dialog.
+
+The control "name" properties are used as keys in this table.
+
+The type of the value for each entry in the table depends on the class of the
+control. The control classes map to types in the following manner:
+
+"label"
+  None. Since the user cannot change a label, they do not produce any value.
+
+"edit", "textbox"
+  String. The text input in the box. This can contain newlines in the case of
+  a "textbox" class control.
+
+"intedit", "floatedit"
+  Number. The number input into the control, guaranteed to be within the
+  constraints set by the class (integer or float) and the min/max properties.
+
+"dropdown"
+  String. The case-exact text of the selected item.
+
+"checkbox",
+  Boolean. The checked-state of the checkbox.
+
+"color", "coloralpha", "alpha"
+  String. A VB colorstring following the same scheme as for setting the
+  "value" property.
+
+---
+
+Display Configuration Dialog function
+
+This function displays a configuration dialog to the user and waits for it to
+close. It then returns whether the user accepted or cancelled the dialog, and
+what values were input.
+
+function aegisub.dialog.display(dialog, buttons)
+
+@dialog (table)
+  A Dialog Definition table containing the controls to be in the dialog.
+
+@buttons (table)
+  Optional. This is an Array Table of strings defining the buttons that appear
+  in the dialog. If this is left out, empty or is otherwise not a table, the
+  standard Ok and Cancel buttons appear.
+  The strings in this Array Table are used as labels on the buttons, and for
+  identifying them in the return values of the function.
+
+Returns: Two values.
+  1. Boolean or string.
+     If no custom buttons were specified, this is a boolean telling whether Ok
+     (true) or Cancel (false) were clicked in the dialog.
+     If custom buttons were specified, this is the text on the button clicked
+     by the user.
+	 Even if custom buttons were specified, this can still be boolean false if
+	 the user closes the dialog without pressing any button.
+  2. Table.
+     The Dialog Result table corresponding to the values the user input in the
+     dialog.
+
+---

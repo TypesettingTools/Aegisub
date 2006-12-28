@@ -1,0 +1,367 @@
+Automation 4 Basic Interface
+
+This document described the basic functions needed to define an Automation 4
+script. This covers Feature registration and the prototypes of functions used
+to implement the various features.
+
+---
+
+Macro Registation Function
+
+This is a function called from top-level of an Automation script to register
+a new Macro Feature.
+
+function aegisub.register_macro(
+    name,
+    description,
+    menu,
+    processing_function,
+    validation_function)
+
+@name (string)
+  The displayed name of the menu item this macro will generate.
+
+@description (string)
+  A longer description of the function of this macro. This will appear
+  on the status bar when hovering over the menu item.
+
+@menu (string)
+  The menu this macro will appear in. Must be one of:
+   o "edit"
+   o "video"
+   o "audio"
+   o "tools"
+   o "right" (the subtitles grid right-click menu)
+  The menu chosen should be relevant to the function of the macro.
+
+@processing_function (function)
+  The actual function called for the macro execution.
+  This function must be an instance of the Macro Processing Function
+  described below.
+
+@validation_function (function)
+  Optional. A function called when it is to be determined whether the
+  macro can act on the current subtitles.
+  This function, if provided, must execute very quickly to avoid lag
+  in the GUI.
+  This function must be an instance of the Macro Validation Function
+  described below.
+
+Returns: nothing.
+
+---
+
+Filter Registration Function
+
+This is a function called from top level of an Automation script to register
+a new Export Filter Feature.
+
+function aegisub.register_filter(
+    name,
+    description,
+    priority,
+    processing_function,
+    options_window_provider)
+
+@name (string)
+  The name of the filter, as presented to the user.
+
+@description (string)
+  A longer description of the filter presented to the user.
+
+@priority (number)
+  A number determining the default order the enabled filters will be
+  processed. The order can be overridden by the user.
+  Priorities of some built-in filters:
+   o Clean Script Info = 0
+   o Fix Styles = -5000
+   o Transform Framerate = 1000
+  Filters with higher priority will be executed earlier by default.
+
+@processing_function (function)
+  The function called to do the actual filter processing.
+  This function must be an instance of the Filter Processing Function
+  described below.
+
+@options_window_provider (function)
+  Optional. A function providing a dialog template for setting options
+  prior to filter processing.
+  This function must be an instance of the Filter Options Window Provider
+  function described below.
+
+Returns: nothing.
+
+---
+
+Format Reader Registration
+
+This is a function called from top level in an Automation script to register
+a new File Format Reader Feature.
+
+function aegisub.register_reader(
+    name,
+    extension,
+    processing_function)
+
+@name (string)
+  The name of the file format.
+
+@extension (string)
+  The file extension usually given to this file format. This must not
+  include any wildcards. (Ie. extension could be "srt", "sub", "ssa" and
+  so on.)
+
+@processing_function (function)
+  The function called to do the actual file import.
+  This function must be an instance of the Format Reader Function described
+  below.
+
+Returns: nothing.
+
+---
+
+Format Writer Registration
+
+This is a function called from top level in an Automation script to register
+a new File Format Writer Feature.
+
+function aegisub.register_writer(
+    name,
+    extension,
+    processing_function)
+
+@name (string)
+  Name of the file format, as presented to the user.
+
+@extension (string)
+  The usual file extension given to this file format. This is automatically
+  be attached to the file name on export, unless the user chooses to
+  override it.
+
+@processing_function (function)
+  The function doing the actual file export.
+  This function must be an instance of the Format Writer Function described
+  below.
+
+Returns: nothing.
+
+---
+
+Macro Processing Function
+
+This function is called by Aegisub to execute a macro.
+
+function process_macro(
+    subtitles,
+    selected_lines,
+    active_line)
+
+The name of the function is script-defined. (It doesn't have to be
+process_macro.)
+
+@subtitles (user data)
+  A Subtitles Object, that can be used to retrieve information about the
+  subtitle file the macro is being applied on.
+
+@selected_lines (table)
+  An Array Table of numbers, each entry being an index into the file
+  represented by @subtitles. Each of the entries in this table describe that
+  a line is marked as selected by the user.
+
+@active_line (number)
+  Index of the currently active line in the subtitle file.
+
+Returns: nothing.
+
+---
+
+Macro Validation Function
+
+This function is called by Aegisub to determine whether a macro can be applied
+to the current state of the subtitles and selection.
+
+This function needs to execute very fast, since it may be called for several
+macros whenever a menu is opened. It is suggested not to use @subtitles at all
+in this function.
+
+This function does not have to be defined. If it's undefined, it's taken as if
+it always returned true.
+
+function validate_macro(
+    subtitles,
+    selected_lines,
+    active_line)
+
+The name of the function is script-defined. (It doesn't have to be
+validate_macro.)
+
+@subtitles (user data)
+  A Subtitles Object, that can be used to retrieve information about the
+  subtitle file the macro is to be be applied on.
+
+@selected_lines (table)
+  An Array Table of numbers, each entry being an index into the file
+  represented by @subtitles. Each of the entries in this table describe that
+  a line is marked as selected by the user.
+
+@active_line (number)
+  Index of the currently active line in the subtitle file.
+
+Returns: Boolean.
+  true is the macro can be applied to the current state of the subtitles,
+  false if not.
+
+---
+
+Filter Processing Function
+
+This function is called by Aegisub to filter the subtitles during an export
+operation.
+
+function process_filter(
+    subtitles,
+    config)
+
+The name of the function is script-defined. (It doesn't have to be
+process_filter.)
+
+@subtitles (user data)
+  A Subtitles Object, that can be used to retrieve information about the
+  subtitle file the filter is being applied on.
+
+@config (table)
+  A Dialog Result table representing the options the user selected for the
+  filter before starting the export operation. The fields present in this
+  table are defined by the dialog provided by the Filter Options Window
+  Provider function.
+
+Returns: nothing.
+
+---
+
+Filter Options Window Provider function
+
+This function is called by Aegisub to get a Dialog Window definition to prompt
+the user for input before an export operation.
+The data input into the dialog returned by this function are automatically
+stored into the original subtitle file when an export operation is started.
+
+function filter_options_dialog(
+    subtitles,
+    stored_options)
+
+The name of the function is script-defined. (It doesn't have to be
+filter_options_dialog.)
+
+@subtitles (user data)
+  A Subtitles Object, that can be used to retrieve information about the
+  subtitle file the filter is to be applied on.
+
+@stored_options (table)
+  The currently stored options for this export filter. The keys in this table
+  are the option names, and the values are the values stored for those options.
+
+Returns: A Dialog Window table.
+
+---
+
+Format Reader Function
+
+This function is called by Aegisub to import a file from a foreign file
+format.
+
+function read_format(
+    input_file,
+    output_subs)
+
+The name of the function is script-defined. (It doesn't have to be
+read_format.)
+
+@input_file (user data)
+  An Input File Stream, representing the file selected for import.
+
+@output_subs (user data)
+  An empty Subtitles Object the imported data should be added to.
+
+Returns: Boolean.
+  True if the import succeeded, false if it failed.
+
+---
+
+Format Writer Function
+
+This function is called by Aegisub to export a file to a foreign file format.
+
+function write_format(
+    input_subs,
+    output_file)
+
+The name of the function is script-defined. (It doesn't have to be
+write_format.)
+
+@input_subs (user data)
+  A Subtitles Object representing the subtitles to be exported.
+
+@output_file (user data)
+  An Ouput File Stream, representing the file the exported data should be
+  written to.
+
+Returns: Boolean.
+  True if the export succeeded, false if it failed.
+  If this function returns false, the output file is deleted from disk.
+
+---
+
+Script information globals
+
+These are a series of global variables, the script author can set. They are
+purely informational, and won't have any actual influence on how the script
+is treated.
+
+None of these are required, but it is recommended to provide them.
+
+These should never be present in include files.
+
+script_name (string)
+  A short, descriptive name for the script, used for presenting it to the
+  user in the UI.
+
+script_description (string)
+  A longer description of the purpose of the script, presented to the user
+  in the UI.
+
+script_author (string)
+  Name(s) of the author(s) of the script.
+
+script_version (string)
+  Version number of the script.
+
+---
+
+Including other scripts
+
+For implementation reasons (and partially compatibility reasons), the Lua
+built-in dofile() and loadfile() functions are removed, and a custom include()
+function is provided instead.
+
+This function behaves almost the same as dofile(), except that it doesn't
+support reading from stdin (no such thing exists/is supposed to exist for
+Aegisub) and it follows some special search rules along a path.
+
+function include(filename)
+
+@filename (string)
+  The relative path to the script to include.
+
+Returns: Any return-values of the included script.
+
+File search rules:
+1. If there are no path-components in the filename (ie. just a filename),
+   the directory of the original script is searched first. Afterwards, the
+   search path specified in the Aegisub configuration file is searched.
+2. If the filename contains path components, it is only searched relative
+   to the location of the original script file.
+3. Absolute paths are not mangled in any way. Using absolute paths is
+   discouraged. (Absolute paths were disallowed in Automation 3.)
+
+---
