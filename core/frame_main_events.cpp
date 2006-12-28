@@ -238,7 +238,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	wxMenu *curMenu = event.GetMenu();
 
 	// Start by cleaning up in macro menu items
-	for (int i = 0; i < activeMacroItems.size(); i++) {
+	for (unsigned int i = 0; i < activeMacroItems.size(); i++) {
 		wxMenu *p = 0;
 		wxMenuItem *it = MenuBar->FindItem(Menu_Automation_Macro + i, &p);
 		if (it)

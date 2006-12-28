@@ -948,7 +948,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString autobasefn(Options.AsText(_T("Automation Base Path")));
 
 		const std::vector<Automation4::Script*> &scripts = local_scripts->GetScripts();
-		for (int i = 0; i < scripts.size(); i++) {
+		for (unsigned int i = 0; i < scripts.size(); i++) {
 			Automation4::Script *script = scripts[i];
 
 			if (i != 0)
