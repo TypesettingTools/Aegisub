@@ -62,7 +62,7 @@ void AssTransformCleanInfoFilter::Init() {
 
 ///////////
 // Process
-void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs) {
+void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	using std::list;
 	AssEntry *curEntry;
 	entryIter cur, next = subs->Line.begin();

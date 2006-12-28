@@ -63,7 +63,6 @@
 #include "main.h"
 #include "dialog_fonts_collector.h"
 #include "dialog_about.h"
-//#include "automation_gui.h"
 #include "dialog_export.h"
 #include "audio_box.h"
 #include "dialog_selection.h"
@@ -82,6 +81,8 @@
 #include "dialog_progress.h"
 #include "dialog_options.h"
 #include "utils.h"
+#include "auto4_base.h"
+#include "dialog_automation.h"
 
 
 ////////////////////
@@ -121,6 +122,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU_RANGE(Menu_Audio_Recent,Menu_Audio_Recent+99, FrameMain::OnOpenRecentAudio)
 	EVT_MENU_RANGE(Menu_Timecodes_Recent,Menu_Timecodes_Recent+99, FrameMain::OnOpenRecentTimecodes)
 	EVT_MENU_RANGE(Menu_Keyframes_Recent,Menu_Keyframes_Recent+99, FrameMain::OnOpenRecentKeyframes)
+	EVT_MENU_RANGE(Menu_Automation_Macro,Menu_Automation_Macro+99, FrameMain::OnAutomationMacro)
 
 	EVT_MENU_RANGE(MENU_GRID_START+1,MENU_GRID_END-1,FrameMain::OnGridEvent)
 	EVT_MENU(Menu_File_Exit, FrameMain::OnExit)
@@ -234,6 +236,15 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Get menu
 	//Freeze();
 	wxMenu *curMenu = event.GetMenu();
+
+	// Start by cleaning up in macro menu items
+	for (int i = 0; i < activeMacroItems.size(); i++) {
+		wxMenu *p = 0;
+		wxMenuItem *it = MenuBar->FindItem(Menu_Automation_Macro + i, &p);
+		if (it)
+			p->Delete(it);
+	}
+	activeMacroItems.clear();
 
 	// File menu
 	if (curMenu == fileMenu) {
@@ -472,7 +483,30 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Edit_Paste_Over,state);
 	}
 
+	// Automation menu
+	else if (curMenu == automationMenu) {
+		AddMacroMenuItems(automationMenu, wxGetApp().global_scripts->GetMacros(Automation4::MACROMENU_ALL));
+		AddMacroMenuItems(automationMenu, local_scripts->GetMacros(Automation4::MACROMENU_ALL));
+	}
+
 	//Thaw();
+}
+
+
+//////////////////////////////
+// Macro menu creation helper
+void FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros) {
+	if (macros.empty()) {
+		return;
+	}
+
+	int id = activeMacroItems.size();;
+	for (std::vector<Automation4::FeatureMacro*>::const_iterator i = macros.begin(); i != macros.end(); ++i) {
+		wxMenuItem * m = menu->Append(Menu_Automation_Macro + id, (*i)->GetName(), (*i)->GetDescription());
+		m->Enable((*i)->Validate(SubsBox->ass, SubsBox->GetAbsoluteSelection(), SubsBox->GetFirstSelRow()));
+		activeMacroItems.push_back(*i);
+		id++;
+	}
 }
 
 
@@ -919,9 +953,18 @@ void FrameMain::OnOpenOptions (wxCommandEvent &event) {
 // Open Automation
 void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
 	videoBox->videoDisplay->Stop();
-//	DialogAutomationManager *automan = new DialogAutomationManager(this, SubsBox);
-//	automan->ShowModal();
-//	delete automan;
+	DialogAutomation dlg(this, local_scripts);
+	dlg.ShowModal();
+}
+
+
+///////////////////////////////////////////////////////////
+// General handler for all Automation-generated menu items
+void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
+	AssFile *oldtop = AssFile::top;
+	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsBox->ass, SubsBox->GetAbsoluteSelection(), SubsBox->GetFirstSelRow(), this);
+	// check if modifications were made and put on undo stack
+	SubsBox->LoadFromAss(AssFile::top, true, true);
 }
 
 

@@ -53,6 +53,7 @@
 #include "ass_time.h"
 #include "ass_dialogue.h"
 #include "subs_grid.h"
+#include "auto4_base.h"
 
 
 ///////////////////
@@ -99,6 +100,9 @@ bool AegisubApp::OnInit() {
 #else
 		locale.Init(wxLocale::GetSystemLanguage());
 #endif
+
+		// Load Automation scripts
+		global_scripts = new Automation4::AutoloadScriptManager(Options.AsText(_T("Automation Autoload Path")));
 
 		// Load export filters
 		AssExportFilterChain::PrepareFilters();

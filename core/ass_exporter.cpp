@@ -126,14 +126,14 @@ wxArrayString AssExporter::GetAllFilterNames() {
 
 //////////
 // Export
-void AssExporter::Export(wxString filename, wxString charset) {
+void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_dialog) {
 	// Copy
 	AssFile *Subs = new AssFile(*OriginalSubs);
 
 	// Run filters
 	for (FilterList::iterator cur=Filters.begin();cur!=Filters.end();cur++) {
 		(*cur)->LoadSettings(IsDefault);
-		(*cur)->ProcessSubs(Subs);
+		(*cur)->ProcessSubs(Subs, export_dialog);
 	}
 
 	/*

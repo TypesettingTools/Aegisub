@@ -238,7 +238,4 @@ namespace Automation4 {
 
 };
 
-// More or less dummy-function to make sure auto4_lua.cpp is linked in
-void Initialise_Auto4Lua();
-
 #endif

@@ -501,7 +501,6 @@ void AssOverrideTag::SetText (wxString text) {
 
 	// Set tag name
 	if (!Name.empty()) {
-		wxLogDebug(_T("Parsing tag: %s"), Name.c_str());
 		ParseParameters(text.Mid(Name.length()));
 		valid = true;
 	}

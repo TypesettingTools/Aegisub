@@ -68,7 +68,7 @@ private:
 	void Init();
 
 public:
-	void ProcessSubs(AssFile *subs);
+	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	wxWindow *GetConfigDialogWindow(wxWindow *parent);
 	void LoadSettings(bool IsDefault);
 };

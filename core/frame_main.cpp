@@ -58,7 +58,6 @@
 #include "version.h"
 #include "dialog_splash.h"
 #include "dialog_tip.h"
-//#include "automation_filter.h"
 #include "audio_box.h"
 #include "video_box.h"
 #include "drop.h"
@@ -66,6 +65,7 @@
 #include "utils.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
+#include "auto4_base.h"
 
 
 /////////////////////////
@@ -84,12 +84,15 @@ FrameMain::FrameMain (wxArrayString args)
 	wxPNGHandler *png = new wxPNGHandler;
 	wxImage::AddHandler(png);
 
+	// Storage for subs-file-local scripts
+	local_scripts = new Automation4::ScriptManager();
+
 	// Create menu and tool bars
 	InitToolbar();
 	InitMenu();
 	
 	// Create status bar
-    CreateStatusBar(2);
+	CreateStatusBar(2);
 
 	// Set icon
 	SetIcon(wxICON(wxicon));
@@ -137,6 +140,7 @@ FrameMain::FrameMain (wxArrayString args)
 // FrameMain destructor
 FrameMain::~FrameMain () {
 	DeInitContents();
+	delete local_scripts;
 }
 
 
@@ -387,6 +391,7 @@ void FrameMain::InitMenu() {
 	// Create Automation menu
 	automationMenu = new wxMenu();
 	AppendBitmapMenuItem (automationMenu,Menu_Tools_Automation, _("&Automation..."),_("Open automation manager"), wxBITMAP(automation_toolbutton));
+	automationMenu->AppendSeparator();
 	MenuBar->Append(automationMenu, _("&Automation"));
 
 	// Create help menu
@@ -596,10 +601,6 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
 		return;
 	}
-//	catch (AutomationError &err) {
-//		wxMessageBox(wxString(_T("Automation exception: ")) + err.message, _T("Error"), wxOK | wxICON_ERROR, NULL);
-//		return;
-//	}
 	catch (...) {
 		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
 		return;
@@ -808,15 +809,6 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		long videoAr = 0;
 		double videoArValue = 0.0;
 		long videoZoom = 0;
-//		{
-//			std::list<AssAutomationFilter*>::const_iterator next = AssAutomationFilter::GetFilterList().begin(), f;
-//			while (next != AssAutomationFilter::GetFilterList().end()) {
-//				f = next++;
-//				AutomationScript *s = (*f)->GetScript();
-//				delete (*f);
-//				delete s;
-//			}
-//		}
 
 		// Get AR
 		wxString arString = subs->GetScriptInfo(_T("Video Aspect Ratio"));
@@ -836,40 +828,15 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString curSubsAudio = DecodeRelativePath(subs->GetScriptInfo(_T("Audio File")),AssFile::top->filename);
 		wxString AutoScriptString = subs->GetScriptInfo(_T("Automation Scripts"));
 
-		// Automation script
-/*		if (AutoScriptString != _T("")) {
-			wxStringTokenizer toker(AutoScriptString, _T("|"), wxTOKEN_STRTOK);
-			wxFileName AssFileName(subs->filename);
-			while (toker.HasMoreTokens()) {
-				wxString sfnames;
-				try {
-					sfnames = toker.GetNextToken().Trim(false).Trim(true);
-					wxFileName sfname(sfnames);
-					sfname.Normalize(wxPATH_NORM_ALL, AssFileName.GetPath());
-					sfnames = sfname.GetFullPath();
-					AutomationScriptFile *sfile = AutomationScriptFile::CreateFromFile(sfnames);
-					if (!sfile) {
-						wxLogWarning(_T("Automation script referenced in subtitle file not found: %s"), sfname.GetName().c_str());
-						continue;
-					}
-					
-					//AssAutomationFilters are added to a global list when constructed, this is not a leak
-					new AssAutomationFilter(new AutomationScript(sfile));
-				}
-				catch (AutomationError &err) {
-					wxMessageBox(wxString::Format(_T("Error loading Automation script '%s':\r\n\r\n%s"), sfnames.c_str(), err.message.c_str()), _T("Error loading Automation script"), wxOK | wxICON_ERROR, this);
-				}
-				catch (...) {
-					wxMessageBox(_T("An unknown error occurred loading an Automation script referenced in the subtitle file."), _T("Error loading Automation script"), wxOK | wxICON_ERROR, this);
-					continue;
-				}
-			}
-		}*/
-
 		// Check if there is anything to change
 		int autoLoadMode = Options.AsInt(_T("Autoload linked files"));
 		bool hasToLoad = false;
-		if (curSubsAudio != audioBox->audioName || curSubsVFR != VFR_Output.GetFilename() || curSubsVideo != videoBox->videoDisplay->videoName || curSubsKeyframes != videoBox->videoDisplay->GetKeyFramesName()) {
+		if (curSubsAudio != audioBox->audioName ||
+			curSubsVFR != VFR_Output.GetFilename() ||
+			curSubsVideo != videoBox->videoDisplay->videoName ||
+			curSubsKeyframes != videoBox->videoDisplay->GetKeyFramesName() ||
+			!AutoScriptString.IsEmpty() ||
+			local_scripts->GetScripts().size() > 0) {
 			hasToLoad = true;
 		}
 
@@ -907,6 +874,38 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 				if (curSubsAudio == _T("?video")) LoadAudio(_T(""),true);
 				else LoadAudio(curSubsAudio);
 			}
+
+			// Automation scripts
+			local_scripts->RemoveAll();
+			wxStringTokenizer tok(AutoScriptString, _T("|"), wxTOKEN_STRTOK);
+			wxFileName subsfn(subs->filename);
+			wxString autobasefn(Options.AsText(_T("Automation Base Path")));
+			while (tok.HasMoreTokens()) {
+				wxString sfnames = tok.GetNextToken().Trim(true).Trim(false);
+				wxString sfnamel = sfnames.Left(1);
+				sfnames.Remove(0, 1);
+				wxString basepath;
+				if (sfnamel == _T("~")) {
+					basepath = subsfn.GetPath();
+				} else if (sfnamel == _T("$")) {
+					basepath = autobasefn;
+				} else if (sfnamel == _T("/")) {
+					basepath = _T("");
+				} else {
+					wxLogWarning(_T("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %s\nFilename specified: %s"),
+						sfnamel.c_str(), sfnames.c_str());
+					continue;
+				}
+				wxFileName sfname(sfnames);
+				sfname.MakeAbsolute(basepath);
+				if (sfname.FileExists()) {
+					sfnames = sfname.GetFullPath();
+					local_scripts->Add(Automation4::ScriptFactory::CreateFromFile(sfnames));
+				} else {
+					wxLogWarning(_T("Automation Script referenced could not be found.\nFilename specified: %s%s\nSearched relative to: %s\nResolved filename: %s"),
+						sfnamel.c_str(), sfnames.c_str(), basepath.c_str(), sfname.GetFullPath().c_str());
+				}
+			}
 		}
 
 		// Display
@@ -939,21 +938,38 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		subs->SetScriptInfo(_T("VFR File"),MakeRelativePath(VFR_Output.GetFilename(),AssFile::top->filename));
 		subs->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(videoBox->videoDisplay->GetKeyFramesName(),AssFile::top->filename));
 
-		// Create list of Automation scripts
-/*		wxString scripts;
-		std::list<AssAutomationFilter*>::const_iterator f = AssAutomationFilter::GetFilterList().begin();
-		wxFileName AssFileName(subs->filename);
-		for (;f != AssAutomationFilter::GetFilterList().end(); ++f) {
-			if (!(*f)->GetScript()->filename.empty()) {
-				wxFileName fn((*f)->GetScript()->filename);
-				fn.MakeRelativeTo(AssFileName.GetPath());
-				scripts += wxString::Format(_T("%s|"), fn.GetFullPath().c_str());
+		// Store Automation script data
+		// Algorithm:
+		// 1. If script filename has Automation Base Path as a prefix, the path is relative to that (ie. "$")
+		// 2. Otherwise try making it relative to the subs filename
+		// 3. If step 2 failed, or absolut path is shorter than path relative to subs, use absolute path ("/")
+		// 4. Otherwise, use path relative to subs ("~")
+		wxString scripts_string;
+		wxString autobasefn(Options.AsText(_T("Automation Base Path")));
+
+		const std::vector<Automation4::Script*> &scripts = local_scripts->GetScripts();
+		for (int i = 0; i < scripts.size(); i++) {
+			Automation4::Script *script = scripts[i];
+
+			if (i != 0)
+				scripts_string += _T("|");
+
+			wxString autobase_rel, subsfile_rel;
+			wxString scriptfn(script->GetFilename());
+			autobase_rel = MakeRelativePath(scriptfn, autobasefn);
+			subsfile_rel = MakeRelativePath(scriptfn, AssFile::top->filename);
+
+			if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= subsfile_rel.size()) {
+				scriptfn = _T("$") + autobase_rel;
+			} else if (subsfile_rel.size() <= scriptfn.size() && subsfile_rel.size() <= autobase_rel.size()) {
+				scriptfn = _T("~") + subsfile_rel;
+			} else {
+				scriptfn = _T("/") + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
 			}
+
+			scripts_string += scriptfn;
 		}
-		if (!scripts.empty()) {
-			scripts.RemoveLast();
-			subs->SetScriptInfo(_T("Automation Scripts"), scripts);
-		}*/
+		subs->SetScriptInfo(_T("Automation 4 Scripts"), scripts_string);
 	}
 }
 

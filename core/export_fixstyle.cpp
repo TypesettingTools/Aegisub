@@ -62,7 +62,7 @@ void AssFixStylesFilter::Init() {
 
 ///////////
 // Process
-void AssFixStylesFilter::ProcessSubs(AssFile *subs) {
+void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	// Build styles list
 	wxArrayString styles = subs->GetStyles();
 	size_t n = styles.Count();

@@ -74,7 +74,7 @@ public:
 	void AddAutoFilters();
 	void DrawSettings(wxWindow *parent,wxSizer *AddTo);
 	wxSizer *GetSettingsSizer(wxString name);
-	void Export(wxString file, wxString charset = _T(""));
+	void Export(wxString file, wxString charset, wxWindow *export_dialog);
 	AssFile *GetOriginalSubs() { return OriginalSubs; }
 	wxString GetDescription(wxString name);
 };

@@ -768,11 +768,6 @@ namespace Automation4 {
 			}
 		}
 	};
-	LuaScriptFactory *_script_factory;
+	LuaScriptFactory _script_factory;
 
 };
-
-void Initialise_Auto4Lua()
-{
-	Automation4::_script_factory = new Automation4::LuaScriptFactory;
-}

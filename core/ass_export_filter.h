@@ -101,7 +101,7 @@ public:
 
 	const wxString& GetDescription() const;
 
-	virtual void ProcessSubs(AssFile *subs)=0;					// Process subtitles - this function must be overriden.
+	virtual void ProcessSubs(AssFile *subs, wxWindow *export_dialog=0)=0;					// Process subtitles - this function must be overriden.
 	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent);	// Draw setup controls - this function may optionally be overridden.
 	virtual void LoadSettings(bool IsDefault);					// Config dialog is done - extract data now.
 };

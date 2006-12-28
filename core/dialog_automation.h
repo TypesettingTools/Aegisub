@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,78 +33,62 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#pragma once
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef DIALOG_AUTOMATION_H
+#define DIALOG_AUTOMATION_H
 
+#include <wx/dialog.h>
+#include <wx/listctrl.h>
+#include <wx/button.h>
+#include <vector>
 
-///////////////////
-// Include headers
-#include <wx/wxprec.h>
-#include <wx/stackwalk.h>
-#include <fstream>
-#include "aegisublocale.h"
+namespace Automation4 { class ScriptManager; class Script; };
 
-
-//////////////
-// Prototypes
-class FrameMain;
-namespace Automation4 { class AutoloadScriptManager; }
-
-
-////////////////////////////////
-// Application class definition
-class AegisubApp: public wxApp {
+class DialogAutomation : public wxDialog {
 private:
-	void OnMouseWheel(wxMouseEvent &event);
-	void OnKey(wxKeyEvent &key);
+	struct ExtraScriptInfo {
+		Automation4::Script *script;
+		bool is_global;
+	};
+	std::vector<ExtraScriptInfo> script_info;
+
+	Automation4::ScriptManager *local_manager;
+	Automation4::AutoloadScriptManager *global_manager;
+
+	wxListView *list;
+	wxButton *add_button;
+	wxButton *remove_button;
+	wxButton *reload_button;
+	wxButton *info_button;
+	wxButton *reload_autoload_button;
+	wxButton *close_button;
+
+	void RebuildList();
+	void AddScript(ExtraScriptInfo &ei);
+	void UpdateDisplay();
+
+	void OnAdd(wxCommandEvent &evt);
+	void OnRemove(wxCommandEvent &evt);
+	void OnReload(wxCommandEvent &evt);
+	void OnInfo(wxCommandEvent &evt);
+	void OnClose(wxCommandEvent &evt);
+	void OnReloadAutoload(wxCommandEvent &evt);
+	void OnSelectionChange(wxListEvent &evt);
 
 public:
-	AegisubLocale locale;
-	FrameMain *frame;
-	Automation4::AutoloadScriptManager *global_scripts;
+	DialogAutomation(wxWindow *parent, Automation4::ScriptManager *_local_manager);
 
-	static wxString fullPath;
-	static wxString folderName;
-
-	void GetFullPath(wxString arg);
-	void GetFolderName();
-	void RegistryAssociate();
-	void AssociateType(wxString type);
-
-	bool OnInit();
-	int OnRun();
-	
-#ifdef __WXMAC__
-	// Apple events
-	virtual void MacOpenFile(const wxString &filename);
-#endif
-
-#ifndef _DEBUG
-	void OnUnhandledException();
-	void OnFatalException();
-#endif
-
-	//int OnRun();
 	DECLARE_EVENT_TABLE()
 };
 
-DECLARE_APP(AegisubApp)
-
-
-////////////////
-// Stack walker
-#if wxUSE_STACKWALKER == 1
-class StackWalker: public wxStackWalker {
-private:
-	std::ofstream file;
-
-public:
-	StackWalker();
-	~StackWalker();
-	void OnStackFrame(const wxStackFrame& frame);
+enum {
+	Automation_List_Box = 1000,
+	Automation_Add_Script,
+	Automation_Remove_Script,
+	Automation_Reload_Script,
+	Automation_Show_Info,
+	Automation_Reload_Autoload
 };
-#endif
-
 
 #endif

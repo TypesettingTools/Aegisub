@@ -65,7 +65,7 @@ void AssTransformFramerateFilter::Init() {
 
 ///////////
 // Process
-void AssTransformFramerateFilter::ProcessSubs(AssFile *subs) {
+void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	// Transform frame rate
 	if (Input->IsLoaded() && Output->IsLoaded()) {
 		if (Output->GetFrameRateType() == VFR || Output->GetAverage() != Input->GetAverage()) {

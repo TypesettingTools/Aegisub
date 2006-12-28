@@ -183,7 +183,7 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 void AssFile::Export(wxString _filename) {
 	AssExporter exporter(this);
 	exporter.AddAutoFilters();
-	exporter.Export(_filename,_T("UTF-8"));
+	exporter.Export(_filename,_T("UTF-8"), 0);
 }
 
 

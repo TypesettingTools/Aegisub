@@ -110,7 +110,7 @@ wxString DecodeRelativePath(wxString _path,wxString reference) {
 	wxFileName path(_path);
 	wxFileName refPath(reference);
 	if (!path.IsAbsolute()) path.MakeAbsolute(refPath.GetPath());
-	return path.GetFullPath();
+	return path.GetFullPath(wxPATH_UNIX); // also works on windows
 }
 
 

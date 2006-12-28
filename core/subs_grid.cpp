@@ -1390,3 +1390,28 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 			video->JumpToFrame(VFR_Output.GetFrameAtTime(cur->End.GetMS(),false));
 	}
 }
+
+
+/////////////////////////////////////////////////////////////////////
+// Retrieve a list of selected lines in the actual ASS file
+// (ie. not as displayed in the grid but as represented in the file)
+std::vector<int> SubtitlesGrid::GetAbsoluteSelection() {
+	std::vector<int> result;
+	result.reserve(GetNumberSelection());
+
+	int nrows = GetRows();
+	for (int i = 0; i != nrows; ++i) {
+		if (selMap.at(i)) {
+			entryIter l = diagMap.at(i);
+			int n = 0;
+			for (std::list<AssEntry*>::iterator j = ass->Line.begin(); j != ass->Line.end(); ++j, ++n) {
+				if (j == l) {
+					result.push_back(n);
+					break;
+				}
+			}
+		}
+	}
+
+	return result;
+}
