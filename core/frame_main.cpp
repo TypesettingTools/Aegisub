@@ -194,7 +194,9 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
 	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample script resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBITMAP(timing_processor_toolbutton),_("Open Timing Post-processor dialog"));
+#if USE_HUNSPELL == 1
 	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),wxBITMAP(spellcheck_toolbutton),_("Open Spell checker"));
+#endif
 	Toolbar->AddSeparator();
 
 	// Misc
@@ -250,12 +252,12 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Cut, _("Cut Lines\t") + Hotkeys.GetText(_T("Cut")), _("Cut subtitles"), wxBITMAP(cut_button));
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Copy, _("Copy Lines\t") + Hotkeys.GetText(_T("Copy")), _("Copy subtitles"), wxBITMAP(copy_button));
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste, _("Paste Lines\t") + Hotkeys.GetText(_T("Paste")), _("Paste subtitles"), wxBITMAP(paste_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste_Over, _("Paste Lines Over...\t") + Hotkeys.GetText(_T("Paste Over")) , _("Paste subtitles over others"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Delete, _("Delete Lines\t") + Hotkeys.GetText(_T("Grid Delete Rows")), _("Delete selected lines"), wxBITMAP(blank_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste_Over, _("Paste Lines Over...\t") + Hotkeys.GetText(_T("Paste Over")) , _("Paste subtitles over others"),wxBITMAP(paste_over_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Delete, _("Delete Lines\t") + Hotkeys.GetText(_T("Grid Delete Rows")), _("Delete selected lines"), wxBITMAP(delete_button));
 	editMenu->AppendSeparator();
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Find, _("&Find...\t") + Hotkeys.GetText(_T("Find")), _("Find words in subtitles"),wxBITMAP(find_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, _("Find Next\t") + Hotkeys.GetText(_T("Find Next")), _("Find next match of last word"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Replace, _("Search and &Replace...\t") + Hotkeys.GetText(_T("Replace")) , _("Find and replace words in subtitles"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, _("Find Next\t") + Hotkeys.GetText(_T("Find Next")), _("Find next match of last word"),wxBITMAP(find_next_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Replace, _("Search and &Replace...\t") + Hotkeys.GetText(_T("Replace")) , _("Find and replace words in subtitles"),wxBITMAP(replace_button));
 	MenuBar->Append(editMenu, _("&Edit"));
 
 	// Create subtitles menu
@@ -296,7 +298,9 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBITMAP(translation_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
+#if USE_HUNSPELL == 1
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
+#endif
 	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
 
 	// Create timing menu
