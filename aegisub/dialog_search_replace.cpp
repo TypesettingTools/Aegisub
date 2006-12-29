@@ -52,7 +52,7 @@
 ///////////////
 // Constructor
 DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxString name)
-: wxDialog(parent, -1, name, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX, _T("SearchReplace"))
+: wxDialog(parent, -1, name, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("SearchReplace"))
 {
 	// Setup
 	hasReplace = _hasReplace;
@@ -61,9 +61,10 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 	wxSizer *FindSizer = new wxFlexGridSizer(2,2,5,15);
 	wxArrayString FindHistory = Options.GetRecentList(_T("Recent find"));
 	FindEdit = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(300,20),FindHistory,wxCB_DROPDOWN);
+	//if (FindHistory.Count()) FindEdit->SetStringSelection(FindHistory[0]);
+	FindEdit->SetSelection(0);
 	FindSizer->Add(new wxStaticText(this,-1,_("Find what:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 	FindSizer->Add(FindEdit,0,wxRIGHT,0);
-	FindEdit->SetSelection(0);
 	if (hasReplace) {
 		wxArrayString ReplaceHistory = Options.GetRecentList(_T("Recent replace"));
 		ReplaceEdit = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(300,20),ReplaceHistory,wxCB_DROPDOWN);
@@ -153,6 +154,7 @@ void DialogSearchReplace::UpdateSettings() {
 	Options.Save();
 }	
 
+
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogSearchReplace,wxDialog)
@@ -171,6 +173,18 @@ void DialogSearchReplace::OnClose (wxCommandEvent &event) {
 	Search.OnDialogClose();
 	// Just hide
 	Show(false);
+}
+
+
+///////
+// Key
+void DialogSearchReplace::OnKeyDown (wxKeyEvent &event) {
+	//if (event.GetKeyCode() == WXK_ESCAPE) {
+	//	Search.OnDialogClose();
+	//	// Just hide
+	//	Show(false);
+	//}
+	event.Skip();
 }
 
 
@@ -539,8 +553,8 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 	if (diag) {
 		// it's the right type so give focus
 		if(replace == hasReplace) {
+			diag->FindEdit->SetFocus();
 			diag->Show();
-			diag->SetFocus();
 			OnDialogOpen();
 			return;
 		}
@@ -549,6 +563,7 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 	}
 	// create new one
 	diag = new DialogSearchReplace(((AegisubApp*)wxTheApp)->frame,replace,title);
+	diag->FindEdit->SetFocus();
 	diag->Show();
 	hasReplace = replace;
 }

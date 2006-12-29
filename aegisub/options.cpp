@@ -223,6 +223,7 @@ void OptionsManager::LoadDefaults() {
 
 	SetInt(_T("Tips current"),0);
 	SetBool(_T("Show associations"),true);
+	SetBool(_T("Maximized"),false);
 
 	SetBool(_T("Find Match Case"),false);
 	SetBool(_T("Find RegExp"),false);

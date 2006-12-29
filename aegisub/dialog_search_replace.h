@@ -91,6 +91,8 @@ extern SearchReplaceEngine Search;
 //////////////////////////
 // Search & Replace class
 class DialogSearchReplace : public wxDialog {
+	friend class SearchReplaceEngine;
+
 private:
 	bool hasReplace;
 
@@ -102,13 +104,16 @@ private:
 	wxRadioBox *Affect;
 	wxRadioBox *Field;
 
+	void UpdateDropDowns();
+
 	void OnClose (wxCommandEvent &event);
 	void OnFindNext (wxCommandEvent &event);
 	void OnReplaceNext (wxCommandEvent &event);
 	void OnReplaceAll (wxCommandEvent &event);
 	void OnSetFocus (wxFocusEvent &event);
 	void OnKillFocus (wxFocusEvent &event);
-	void UpdateDropDowns();
+	void OnKeyDown (wxKeyEvent &event);
+
 public:
 	DialogSearchReplace(wxWindow *parent,bool hasReplace,wxString name);
 	~DialogSearchReplace();

@@ -72,7 +72,7 @@
 // FrameMain constructor
 
 FrameMain::FrameMain (wxArrayString args)
-					: wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(800,600),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
+: wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(800,600),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
 	// Initialize flags
 	HasSelection = false;
@@ -100,6 +100,7 @@ FrameMain::FrameMain (wxArrayString args)
 	// Contents
 	curMode = -1;
 	InitContents();
+	if (Options.AsBool(_T("Maximized"))) Maximize(true);
 	Show();
 
 	// Splash screen

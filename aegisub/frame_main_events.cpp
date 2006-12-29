@@ -1254,6 +1254,10 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	bool canVeto = event.CanVeto();
 	int result = TryToCloseSubs(canVeto);
 
+	// Store maximization state
+	Options.SetBool(_T("Maximized"),IsMaximized());
+	Options.Save();
+
 	// Abort/destroy
 	if (canVeto) {
 		if (result == wxCANCEL) event.Veto();
