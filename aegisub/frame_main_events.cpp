@@ -1480,6 +1480,7 @@ void FrameMain::OnToggleTags(wxCommandEvent &event) {
 void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
 	// Find focus
 	wxWindow *focus = FindFocus();
+	if (!focus) return;
 
 	// Is the text edit
 	if (focus == EditBox->TextEdit) {
@@ -1490,11 +1491,12 @@ void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
 
 	// Other window
 	else {
-		wxKeyEvent keyevent;
-		keyevent.m_keyCode = WXK_RETURN;
-		keyevent.m_controlDown = true;
-		keyevent.SetEventType(wxEVT_KEY_DOWN);
-		focus->AddPendingEvent(keyevent);
+		//wxKeyEvent keyevent;
+		//keyevent.m_keyCode = WXK_RETURN;
+		//keyevent.m_controlDown = true;
+		//keyevent.SetEventType(wxEVT_KEY_DOWN);
+		wxCommandEvent keyevent(wxEVT_COMMAND_TEXT_ENTER,focus->GetId());
+		focus->GetEventHandler()->AddPendingEvent(keyevent);
 	}
 }
 
