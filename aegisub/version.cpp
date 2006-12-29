@@ -79,8 +79,8 @@ struct VersionInfoStruct {
 	VersionInfoStruct() {
 		wxString SCMStr, VersionStr;
 
-		// Update this whenever a new version is release
-		VersionNumber = _T("v1.11");
+		// Update this whenever a new version is released
+		VersionNumber = _T("v2.00");
 #ifdef _DEBUG
 		IsDebug = true;
 #else
@@ -98,7 +98,7 @@ struct VersionInfoStruct {
 #endif
 
 		IsRelease = SvnRev < 0;
-		VersionStr = wxString::Format(_T("%s %s"), VersionNumber, IsRelease ? _T("beta") : _T("PRE-RELEASE"));
+		VersionStr = wxString::Format(_T("%s%s"), VersionNumber, IsRelease ? _T("") : _T(" PRE-RELEASE"));
 
 		LongVersionString = wxString::Format(_T("%s (%s%s, %s)"), VersionStr.c_str(), IsDebug ? _T("debug, ") : _T(""), SCMStr.c_str(), BuildCredit);
 		ShortVersionString = wxString::Format(_T("%s %s%s"), VersionStr.c_str(), SCMStr.c_str(), IsDebug ? _T(" debug") : _T(""));
