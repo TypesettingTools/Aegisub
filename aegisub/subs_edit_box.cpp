@@ -58,6 +58,7 @@
 #include "frame_main.h"
 #include "utils.h"
 #include "dialog_search_replace.h"
+#include "idle_field_event.h"
 
 
 
@@ -84,8 +85,10 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	StyleBox->SetToolTip(_("Style for this line."));
 	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,25),styles,wxCB_DROPDOWN);
 	ActorBox->SetToolTip(_("Actor name for this speech. This is only for reference, and is mainly useless."));
+	ActorBox->PushEventHandler(new IdleFieldHandler(ActorBox,_("Actor")));
 	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(120,20),0);
 	Effect->SetToolTip(_("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	Effect->PushEventHandler(new IdleFieldHandler(Effect,_("Effect")));
 
 	// Middle controls
 	Layer = new HiliModTextCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator());
@@ -251,6 +254,10 @@ void SubsEditBox::Update (bool timeOnly) {
 				StyleBox->Select(StyleBox->FindString(curdiag->Style));
 				ActorBox->SetValue(curdiag->Actor);
 				ActorBox->SetStringSelection(curdiag->Actor);
+
+				// Force actor box to update its idle status
+				wxCommandEvent changeEvent(wxEVT_COMMAND_TEXT_UPDATED,ActorBox->GetId());
+				ActorBox->GetEventHandler()->AddPendingEvent(changeEvent);
 			}
 
 			// Audio

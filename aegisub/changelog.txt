@@ -54,6 +54,7 @@ Please visit http://aegisub.net to download latest version
 - Added buttons to Styles Manager to move styles up, down, to top or to bottom, on both storage and current script. (AMZ)
 - Added sorting functionality to Styles Manager, for both storage and current script. (AMZ)
 - Tweaked the layout of Subtitles Edit area. (AMZ)
+- Actor and Effect fields now show a "ghosted" caption saying their name when they are not focused on and blank. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
