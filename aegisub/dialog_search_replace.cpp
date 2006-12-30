@@ -118,7 +118,7 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_NEXT,_("Replace next")),0,wxEXPAND | wxBOTTOM,3);
 		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace all")),0,wxEXPAND | wxBOTTOM,3);
 	}
-	ButtonSizer->Add(new wxButton(this,wxID_CLOSE),0,wxEXPAND | wxBOTTOM,20);
+	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxEXPAND | wxBOTTOM,20);
 	//ButtonSizer->Add(new wxButton(this,wxID_HELP),0,wxEXPAND | wxBOTTOM,0);
 
 	// Main sizer
@@ -128,6 +128,8 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 	CenterOnParent();
+
+	// Open
 	Search.OnDialogOpen();
 }
 
@@ -158,7 +160,7 @@ void DialogSearchReplace::UpdateSettings() {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogSearchReplace,wxDialog)
-	EVT_BUTTON(wxID_CLOSE,DialogSearchReplace::OnClose)
+	EVT_BUTTON(wxID_CANCEL,DialogSearchReplace::OnClose)
 	EVT_BUTTON(BUTTON_FIND_NEXT,DialogSearchReplace::OnFindNext)
 	EVT_BUTTON(BUTTON_REPLACE_NEXT,DialogSearchReplace::OnReplaceNext)
 	EVT_BUTTON(BUTTON_REPLACE_ALL,DialogSearchReplace::OnReplaceAll)

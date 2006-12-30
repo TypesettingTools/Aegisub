@@ -111,6 +111,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Audio Autocommit"),false);
 	SetBool(_T("Audio Autoscroll"),true);
 	SetBool(_T("Audio SSA Mode"),false);
+	SetBool(_T("Audio Medusa Timing Hotkeys"),false);
 	SetBool(_T("Audio SSA Next Line on Commit"),true);
 	SetBool(_T("Audio SSA Allow Autocommit"),false);
 	SetBool(_T("Audio Autofocus"),false);
@@ -244,6 +245,8 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Paste Over #9"),true);
 
 	SetText(_T("Fonts Collector Destination"),_T("?script"));
+	SetBool(_T("Fonts Collector Attachment"),0);
+	SetBool(_T("Fonts Collector Archive"),1);
 
 	SetInt(_T("Audio Display Height"),100);
 	SetBool(_T("Audio Spectrum"),false);

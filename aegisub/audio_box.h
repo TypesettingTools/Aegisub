@@ -75,6 +75,7 @@ private:
 	wxButton *JoinButton;
 	ToggleBitmap *AutoScroll;
 	ToggleBitmap *SSAMode;
+	ToggleBitmap *MedusaMode;
 	ToggleBitmap *AutoCommit;
 	ToggleBitmap *SpectrumMode;
 
@@ -166,6 +167,7 @@ enum {
 	Audio_Check_AutoCommit,
 	Audio_Check_AutoGoto,
 	Audio_Check_SSA,
+	Audio_Check_Medusa,
 	Audio_Check_Spectrum
 };
 

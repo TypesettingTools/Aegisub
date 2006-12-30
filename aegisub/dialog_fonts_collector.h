@@ -104,6 +104,7 @@ private:
 	void OnBrowse(wxCommandEvent &event);
 	void OnCheckAttach(wxCommandEvent &event);
 	void OnCheckArchive(wxCommandEvent &event);
+	void Update();
 
 public:
 	DialogFontsCollector(wxWindow *parent);

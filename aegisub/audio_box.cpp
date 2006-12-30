@@ -170,6 +170,10 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	SSAMode->SetToolTip(_("Substation Alpha Mode - Left click sets start and right click sets end"));
 	SSAMode->SetValue(Options.AsBool(_T("Audio SSA Mode")));
 	ButtonSizer->Add(SSAMode,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
+	MedusaMode = new ToggleBitmap(this,Audio_Check_Medusa,wxBITMAP(toggle_audio_medusa),wxSize(30,-1));
+	MedusaMode->SetToolTip(_("Enable Medusa-Style Timing Shortcuts"));
+	MedusaMode->SetValue(Options.AsBool(_T("Audio Medusa Timing Hotkeys")));
+	ButtonSizer->Add(MedusaMode,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
 	SpectrumMode = new ToggleBitmap(this,Audio_Check_Spectrum,wxBITMAP(toggle_audio_spectrum),wxSize(30,-1));
 	SpectrumMode->SetToolTip(_("Spectrum analyzer mode"));
 	SpectrumMode->SetValue(Options.AsBool(_T("Audio Spectrum")));

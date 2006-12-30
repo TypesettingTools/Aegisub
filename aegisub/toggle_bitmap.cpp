@@ -70,7 +70,10 @@ bool ToggleBitmap::GetValue() {
 /////////////
 // Set state
 void ToggleBitmap::SetValue(bool _state) {
+	// Set flag
 	state = _state;
+
+	// Refresh
 	Refresh(false);
 }
 

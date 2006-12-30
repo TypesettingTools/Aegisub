@@ -52,6 +52,7 @@
 #include "options.h"
 #include "frame_main.h"
 #include "subs_grid.h"
+#include "main.h"
 
 
 ///////////////
@@ -68,10 +69,13 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 		wxFileName filename(AssFile::top->filename);
 		dest = filename.GetPath();
 	}
-	AttachmentCheck = new wxCheckBox(this,ATTACHMENT_CHECK,_T("As attachments"),wxDefaultPosition);
-	ArchiveCheck = new wxCheckBox(this,ARCHIVE_CHECK,_T("As a zipped archive"),wxDefaultPosition);
 	DestBox = new wxTextCtrl(this,-1,dest,wxDefaultPosition,wxSize(250,20),0);
 	BrowseButton = new wxButton(this,BROWSE_BUTTON,_("&Browse..."));
+	AttachmentCheck = new wxCheckBox(this,ATTACHMENT_CHECK,_T("As attachments"),wxDefaultPosition);
+	AttachmentCheck->SetValue(Options.AsBool(_T("Fonts Collector Attachment")));
+	ArchiveCheck = new wxCheckBox(this,ARCHIVE_CHECK,_T("As a zipped archive"),wxDefaultPosition);
+	ArchiveCheck->SetValue(Options.AsBool(_T("Fonts Collector Archive")));
+	if (ArchiveCheck->GetValue()) AttachmentCheck->SetValue(false);
 	wxSizer *DestBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	DestLabel = new wxStaticText(this,-1,_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
 	DestBottomSizer->Add(DestBox,1,wxEXPAND | wxRIGHT,5);
@@ -90,15 +94,15 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	// Buttons sizer
 	StartButton = new wxButton(this,START_BUTTON,_("&Start!"));
 	StartButton->SetDefault();
-	CloseButton = new wxButton(this,wxID_CLOSE);
+	CloseButton = new wxButton(this,wxID_CANCEL,_T("Close"));
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
-#ifndef __WXMAC__
-	ButtonSizer->Add(StartButton,0,wxRIGHT,5);
-	ButtonSizer->Add(CloseButton);
-#else
+#ifdef __WXMAC__ 
 	ButtonSizer->Add(CloseButton,0,wxRIGHT,5);
 	ButtonSizer->Add(StartButton);
+#else
+	ButtonSizer->Add(StartButton,0,wxRIGHT,5);
+	ButtonSizer->Add(CloseButton);
 #endif
 
 	// Main sizer
@@ -110,6 +114,9 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	// Set sizer
 	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
+
+	// Run dummy event to update label
+	Update();
 }
 
 
@@ -236,7 +243,10 @@ void DialogFontsCollector::OnCheckAttach(wxCommandEvent &event) {
 	bool check = AttachmentCheck->IsChecked();
 	BrowseButton->Enable(!check);
 	DestBox->Enable(!check);
-	if (check) ArchiveCheck->SetValue(false);
+	if (check) {
+		ArchiveCheck->SetValue(false);
+		Update();
+	}
 }
 
 
@@ -244,11 +254,31 @@ void DialogFontsCollector::OnCheckAttach(wxCommandEvent &event) {
 // Check Archive
 void DialogFontsCollector::OnCheckArchive(wxCommandEvent &event) {
 	bool check = ArchiveCheck->IsChecked();
+	BrowseButton->Enable(check);
+	DestBox->Enable(check);
+	Update();
+}
+
+
+///////////////////
+// Update controls
+void DialogFontsCollector::Update() {
+	bool check = ArchiveCheck->IsChecked();
 	if (check) {
 		AttachmentCheck->SetValue(false);
 		DestLabel->SetLabel(_("Enter the name of the destination zip file to collect the fonts to.\nIf a folder is entered, a default name will be used."));
 	}
-	else DestLabel->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
+	else {
+		// Set label
+		DestLabel->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
+
+		// Remove filename from browser box
+		wxFileName fname(DestBox->GetValue());
+		if (fname.DirExists()) {
+			DestBox->SetValue(fname.GetPath());
+		}
+		else DestBox->SetValue(((AegisubApp*)wxTheApp)->folderName);
+	}
 }
 
 

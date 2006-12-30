@@ -186,6 +186,10 @@ void HotkeyType::FillMap() {
 		keyName[WXK_NUMPAD9] = _T("KP_9");
 		keyName[WXK_NUMPAD_ADD] = _T("KP_Add");
 		keyName[WXK_NUMPAD_SUBTRACT] = _T("KP_Subtract");
+		keyName[WXK_NUMPAD_SUBTRACT] = _T("KP_Subtract");
+		keyName[WXK_NUMPAD_MULTIPLY] = _T("KP_Multiply");
+		keyName[WXK_NUMPAD_DIVIDE] = _T("KP_Divide");
+		keyName[WXK_NUMPAD_DECIMAL] = _T("KP_Decimal");
 
 		keyName[WXK_F1] = _T("F1");
 		keyName[WXK_F2] = _T("F2");
@@ -377,6 +381,18 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Audio Play Original Line"),_T("R"));
 	SetHotkey(_("Audio Add Lead In"),_T("C"));
 	SetHotkey(_("Audio Add Lead Out"),_T("V"));
+
+	SetHotkey(_("Audio Medusa Toggle"),_T("Ctrl-KP_Multiply"));
+	SetHotkey(_("Audio Medusa Play"),_T("KP_5"));
+	SetHotkey(_("Audio Medusa Stop"),_T("KP_8"));
+	SetHotkey(_("Audio Medusa Shift Start Back"),_T("KP_4"));
+	SetHotkey(_("Audio Medusa Shift Start Forward"),_T("KP_6"));
+	SetHotkey(_("Audio Medusa Shift End Back"),_T("KP_7"));
+	SetHotkey(_("Audio Medusa Shift End Forward"),_T("KP_9"));
+	SetHotkey(_("Audio Medusa Play Before"),_T("KP_1"));
+	SetHotkey(_("Audio Medusa Play After"),_T("KP_3"));
+	SetHotkey(_("Audio Medusa Next"),_T("KP_2"));
+	SetHotkey(_("Audio Medusa Previous"),_T("KP_0"));
 
 	SetHotkey(_("Translation Assistant Play"),_T("End"));
 	SetHotkey(_("Translation Assistant Next"),_T("PgDn"));
