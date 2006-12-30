@@ -61,6 +61,7 @@ Please visit http://aegisub.net to download latest version
 - Minor fix to the calculation of the grid's "Style" column width. (AMZ)
 - Added a "Selection Onward" option to the Shift Times dialogue. (AMZ)
 - Main menu was completely re-designed, including several new options. (AMZ)
+- Added Medusa-style (numpad) global timing shortcuts, that can be enabled with the button under the audio display. This is disabled by default. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

@@ -54,11 +54,13 @@ class AudioBox;
 class AudioKaraoke;
 class VideoDisplay;
 class VideoProvider;
+class FrameMain;
 
 
 /////////////////
 // Display class
 class AudioDisplay: public wxWindow {
+	friend class FrameMain;
 private:
 	SubtitlesGrid *grid;
 	int line_n;

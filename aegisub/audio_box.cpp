@@ -238,6 +238,8 @@ void AudioBox::SetFile(wxString file,bool FromVideo) {
 		if (file != _T("")) loaded = audioDisplay->loaded;
 		audioName = file;
 	}
+
+	frameMain->SetAccelerators();
 }
 
 
@@ -271,6 +273,7 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoGoto,AudioBox::OnAutoGoto)
 	EVT_TOGGLEBUTTON(Audio_Button_Split,AudioBox::OnSplit)
 	EVT_TOGGLEBUTTON(Audio_Check_SSA,AudioBox::OnSSAMode)
+	EVT_TOGGLEBUTTON(Audio_Check_Medusa,AudioBox::OnMedusaMode)
 	EVT_TOGGLEBUTTON(Audio_Check_Spectrum,AudioBox::OnSpectrumMode)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoCommit,AudioBox::OnAutoCommit)
 END_EVENT_TABLE()
@@ -587,6 +590,16 @@ void AudioBox::OnSSAMode(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	Options.SetBool(_T("Audio SSA Mode"),SSAMode->GetValue());
 	Options.Save();
+}
+
+
+///////////////
+// Medusa Mode
+void AudioBox::OnMedusaMode(wxCommandEvent &event) {
+	audioDisplay->SetFocus();
+	Options.SetBool(_T("Audio Medusa Timing Hotkeys"),MedusaMode->GetValue());
+	Options.Save();
+	frameMain->SetAccelerators();
 }
 
 

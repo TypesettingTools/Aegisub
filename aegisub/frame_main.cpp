@@ -59,6 +59,7 @@
 #include "dialog_splash.h"
 #include "dialog_tip.h"
 #include "audio_box.h"
+#include "audio_display.h"
 #include "video_box.h"
 #include "drop.h"
 #include "hotkeys.h"
@@ -1246,8 +1247,10 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 ///////////////////////////
 // Setup accelerator table
 void FrameMain::SetAccelerators() {
-	wxAcceleratorEntry entry[11];
+	wxAcceleratorEntry entry[20];
 	int i = 0;
+
+	// Standard
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global next frame"),Video_Next_Frame);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global focus seek"),Video_Focus_Seek);
@@ -1258,9 +1261,23 @@ void FrameMain::SetAccelerators() {
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global play"),Video_Play);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Edit box commit"),Edit_Box_Commit);
-	wxAcceleratorEntry temp;
-	temp.Set(wxACCEL_CTRL | wxACCEL_ALT,WXK_F12,Kana_Game);
-	entry[i++] = temp;
+
+	// Medusa
+	bool medusaPlay = Options.AsBool(_T("Audio Medusa Timing Hotkeys"));
+	if (medusaPlay && audioBox->audioDisplay->loaded) {
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Play"),Medusa_Play);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Stop"),Medusa_Stop);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Play Before"),Medusa_Play_Before);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Play After"),Medusa_Play_After);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Next"),Medusa_Next);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Previous"),Medusa_Prev);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Forward"),Medusa_Shift_Start_Forward);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Back"),Medusa_Shift_Start_Back);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Forward"),Medusa_Shift_End_Forward);
+		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Back"),Medusa_Shift_End_Back);
+	}
+
+	// Set table
 	wxAcceleratorTable table(i,entry);
 	SetAcceleratorTable(table);
 }

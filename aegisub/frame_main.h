@@ -229,7 +229,14 @@ private:
 	void OnPrevLine(wxCommandEvent &event);
 	void OnToggleTags(wxCommandEvent &event);
 
-	void OnKanaGame(wxCommandEvent &event);
+	void OnMedusaPlay(wxCommandEvent &event);
+	void OnMedusaStop(wxCommandEvent &event);
+	void OnMedusaShiftStartForward(wxCommandEvent &event);
+	void OnMedusaShiftStartBack(wxCommandEvent &event);
+	void OnMedusaShiftEndForward(wxCommandEvent &event);
+	void OnMedusaShiftEndBack(wxCommandEvent &event);
+	void OnMedusaPlayBefore(wxCommandEvent &event);
+	void OnMedusaPlayAfter(wxCommandEvent &event);
 
 	void LoadVideo(wxString filename,bool autoload=false);
 	void LoadAudio(wxString filename,bool FromVideo=false);
@@ -407,7 +414,16 @@ enum {
 	Video_Track_Link_File,
 	Video_Track_Movement_Empty,
 
-	Kana_Game,
+	Medusa_Play,
+	Medusa_Stop,
+	Medusa_Shift_Start_Forward,
+	Medusa_Shift_Start_Back,
+	Medusa_Shift_End_Forward,
+	Medusa_Shift_End_Back,
+	Medusa_Play_Before,
+	Medusa_Play_After,
+	Medusa_Next,
+	Medusa_Prev,
 
 	Menu_File_Recent = 2000,
 	Menu_Video_Recent = 2200,

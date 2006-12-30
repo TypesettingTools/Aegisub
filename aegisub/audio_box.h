@@ -107,6 +107,7 @@ private:
 	void OnAutoGoto(wxCommandEvent &event);
 	void OnAutoCommit(wxCommandEvent &event);
 	void OnSSAMode(wxCommandEvent &event);
+	void OnMedusaMode(wxCommandEvent &event);
 	void OnSpectrumMode(wxCommandEvent &event);
 
 public:

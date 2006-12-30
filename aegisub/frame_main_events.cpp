@@ -214,7 +214,16 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Grid_Toggle_Tags,FrameMain::OnToggleTags)
 	EVT_MENU(Edit_Box_Commit,FrameMain::OnEditBoxCommit)
 
-	EVT_MENU(Kana_Game, FrameMain::OnKanaGame)
+	EVT_MENU(Medusa_Play, FrameMain::OnMedusaPlay)
+	EVT_MENU(Medusa_Stop, FrameMain::OnMedusaStop)
+	EVT_MENU(Medusa_Play_After, FrameMain::OnMedusaPlayAfter)
+	EVT_MENU(Medusa_Play_Before, FrameMain::OnMedusaPlayBefore)
+	EVT_MENU(Medusa_Next, FrameMain::OnNextLine)
+	EVT_MENU(Medusa_Prev, FrameMain::OnPrevLine)
+	EVT_MENU(Medusa_Shift_Start_Forward, FrameMain::OnMedusaShiftStartForward)
+	EVT_MENU(Medusa_Shift_Start_Back, FrameMain::OnMedusaShiftStartBack)
+	EVT_MENU(Medusa_Shift_End_Forward, FrameMain::OnMedusaShiftEndForward)
+	EVT_MENU(Medusa_Shift_End_Back, FrameMain::OnMedusaShiftEndBack)
 
 #ifdef __WXMAC__
    EVT_MENU(wxID_ABOUT, FrameMain::OnAbout)
@@ -1592,8 +1601,44 @@ void FrameMain::OnViewSubs (wxCommandEvent &event) {
 }
 
 
-/////////////
-// Kana game
-void FrameMain::OnKanaGame(wxCommandEvent &event) {
-	wxMessageBox(_T("TODO"));
+////////////////////
+// Medusa shortcuts
+void FrameMain::OnMedusaPlay(wxCommandEvent &event) {
+	int start=0,end=0;
+	audioBox->audioDisplay->GetTimesSelection(start,end);
+	audioBox->audioDisplay->Play(start,end);
+}
+void FrameMain::OnMedusaStop(wxCommandEvent &event) {
+	audioBox->audioDisplay->Stop();
+	audioBox->audioDisplay->Refresh();
+}
+void FrameMain::OnMedusaShiftStartForward(wxCommandEvent &event) {
+	audioBox->audioDisplay->curStartMS += 10;
+	audioBox->audioDisplay->Update();
+	audioBox->audioDisplay->wxWindow::Update();
+}
+void FrameMain::OnMedusaShiftStartBack(wxCommandEvent &event) {
+	audioBox->audioDisplay->curStartMS -= 10;
+	audioBox->audioDisplay->Update();
+	audioBox->audioDisplay->wxWindow::Update();
+}
+void FrameMain::OnMedusaShiftEndForward(wxCommandEvent &event) {
+	audioBox->audioDisplay->curEndMS += 10;
+	audioBox->audioDisplay->Update();
+	audioBox->audioDisplay->wxWindow::Update();
+}
+void FrameMain::OnMedusaShiftEndBack(wxCommandEvent &event) {
+	audioBox->audioDisplay->curEndMS -= 10;
+	audioBox->audioDisplay->Update();
+	audioBox->audioDisplay->wxWindow::Update();
+}
+void FrameMain::OnMedusaPlayBefore(wxCommandEvent &event) {
+	int start=0,end=0;
+	audioBox->audioDisplay->GetTimesSelection(start,end);
+	audioBox->audioDisplay->Play(start-500,start);
+}
+void FrameMain::OnMedusaPlayAfter(wxCommandEvent &event) {
+	int start=0,end=0;
+	audioBox->audioDisplay->GetTimesSelection(start,end);
+	audioBox->audioDisplay->Play(end,end+500);
 }
