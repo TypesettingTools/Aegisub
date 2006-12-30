@@ -296,8 +296,8 @@ void FrameMain::InitMenu() {
 	subtitlesMenu->Append(RecombineParent);
 	AppendBitmapMenuItem(subtitlesMenu,MENU_SPLIT_BY_KARAOKE,_("Split Lines (by karaoke)"),_T("Uses karaoke timing to split line into multiple smaller lines"),wxBITMAP(blank_button));
 	subtitlesMenu->AppendSeparator();
-	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("&Swap Lines"),_T("Swaps the two selected lines"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, _("&Select Lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("Swap Lines"),_T("Swaps the two selected lines"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, _("Select Lines...\t") + Hotkeys.GetText(_T("Select lines")), _("Selects lines based on defined criterea"),wxBITMAP(blank_button));
 	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBITMAP(styling_toolbutton));
@@ -305,7 +305,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
 #if USE_HUNSPELL == 1
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
 #endif
 	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
 

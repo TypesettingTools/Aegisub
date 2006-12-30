@@ -757,6 +757,7 @@ void BaseGrid::SetColumnWidths() {
 	}
 
 	// O(n) widths
+	int styleLen = 0;
 	int actorLen = 0;
 	int effectLen = 0;
 	int maxLayer = 0;
@@ -773,6 +774,12 @@ void BaseGrid::SetColumnWidths() {
 			if (!curDiag->Actor.IsEmpty()) {
 				dc.GetTextExtent(curDiag->Actor, &fw, &fh, NULL, NULL, &font);
 				if (fw > actorLen) actorLen = fw;
+			}
+
+			// Style
+			if (!curDiag->Style.IsEmpty()) {
+				dc.GetTextExtent(curDiag->Style, &fw, &fh, NULL, NULL, &font);
+				if (fw > styleLen) styleLen = fw;
 			}
 
 			// Effect
@@ -803,14 +810,9 @@ void BaseGrid::SetColumnWidths() {
 		endLen = fw + 10;
 	}
 
-	// Finish actor/effect
-	if (actorLen) actorLen += 10;
-	if (effectLen) effectLen += 10;
-
 	// Style length
-	int styleLen = 0;
-	AssStyle *curStyle;
-	if (AssFile::top) {
+	if (false && AssFile::top) {
+		AssStyle *curStyle;
 		for (entryIter curIter=AssFile::top->Line.begin();curIter!=AssFile::top->Line.end();curIter++) {
 			curStyle = AssEntry::GetAsStyle(*curIter);
 			if (curStyle) {
@@ -819,7 +821,11 @@ void BaseGrid::SetColumnWidths() {
 			}
 		}
 	}
-	styleLen += 10;
+
+	// Finish actor/effect/style
+	if (actorLen) actorLen += 10;
+	if (effectLen) effectLen += 10;
+	if (styleLen) styleLen += 10;
 
 	// Set column widths
 	colWidth[0] = labelLen;

@@ -1,7 +1,7 @@
 Aegisub changelog
 Please visit http://aegisub.net to download latest version
 
-= 1.11 beta - 2006.xx.xx ===========================
+= 2.00 - 2007.xx.xx ===========================
 
 - New Aegisub logo. (AMZ)
 - Automation 4 has replaced Automation 3, see the help file for more details (jfs)
@@ -57,7 +57,8 @@ Please visit http://aegisub.net to download latest version
 - Actor and Effect fields now show a "ghosted" caption saying their name when they are not focused on and blank. (AMZ)
 - Aegisub now remembers if it was maximized when it was last quit, and restores its state when opening again. (AMZ)
 - A few minor tweaks to the Find dialogue. (AMZ)
-- Tweaked the behavior of the margin boxes, now they no longer show padding zeroes. (AMZ)
+- Tweaked the behavior of the margin boxes, now they no longer show padding zeros. (AMZ)
+- Minor fix to the calculation of the grid's "Style" column width. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
