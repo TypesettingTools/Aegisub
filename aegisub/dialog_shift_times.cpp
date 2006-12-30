@@ -96,8 +96,8 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid,VideoD
 	TimesSizer->Add(DirectionSizer,0,wxEXPAND | wxTOP,5);
 
 	// Selection
-	wxString SelChoices[2] = { _("All rows"), _("Selected rows") };
-	SelChoice = new wxRadioBox(this,-1,_("Affect"), wxDefaultPosition, wxDefaultSize, 2, SelChoices, 2, wxRA_SPECIFY_ROWS);
+	wxString SelChoices[3] = { _("All rows"), _("Selected rows"), _("Selection onward") };
+	SelChoice = new wxRadioBox(this,-1,_("Affect"), wxDefaultPosition, wxDefaultSize, 3, SelChoices, 3, wxRA_SPECIFY_ROWS);
 
 	// Times
 	wxString TimesChoices[3] = { _("Start and End times"), _("Start times only"), _("End times only") };
@@ -155,9 +155,16 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid,VideoD
 		ShiftTime->SetTime(Options.AsInt(_T("Shift Times Length")));
 	}
 	TimesChoice->SetSelection(Options.AsInt(_T("Shift Times Type")));
-	if (Options.AsBool(_T("Shift Times All Rows"))) SelChoice->SetSelection(0);
-	else SelChoice->SetSelection(1);
+	SelChoice->SetSelection(Options.AsInt(_T("Shift Times Affect")));
 	if (Options.AsBool(_T("Shift Times Direction"))) DirectionBackward->SetValue(true);
+
+	// Has selection?
+	wxArrayInt sel = grid->GetSelection();
+	if (sel.Count() == 0) {
+		SelChoice->Enable(1,false);
+		SelChoice->Enable(2,false);
+		SelChoice->SetSelection(0);
+	}
 
 	// Load history
 	LoadHistory(AegisubApp::folderName + _T("shift_history.txt"));
@@ -186,38 +193,33 @@ void DialogShiftTimes::OnClose(wxCommandEvent &event) {
 void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	// General values
 	int type = TimesChoice->GetSelection();
-	bool allrows = (SelChoice->GetSelection() == 0);
+	int affect = SelChoice->GetSelection();
+	bool allrows = affect == 0;
+	bool selOnward = affect == 2;
 	long len;
 	bool byTime = RadioTime->GetValue();
 	bool backward = DirectionBackward->GetValue();
 	bool didSomething = false;
 
-	// Shift by time
-	if (byTime) {
-		len = ShiftTime->time.GetMS();
-		if (backward) len = -len;
+	// Selection
+	int nrows = grid->GetRows();
+	wxArrayInt sel = grid->GetSelection();
+	int firstSel = 0;
+	if (sel.Count()) firstSel = sel[0];
 
-		// Shift
-		int nrows = grid->GetRows();
-		for (int i=0;i<nrows;i++) {
-			if (allrows || grid->IsInSelection(i,0)) {
-				grid->ShiftLineByTime(i,len,type);
-				didSomething = true;
-			}
-		}
-	}
+	// Get length
+	if (byTime) len = ShiftTime->time.GetMS();
+	else ShiftFrame->GetValue().ToLong(&len);
 
-	// Shift by frame
-	else {
-		ShiftFrame->GetValue().ToLong(&len);
-		if (backward) len = -len;
+	// If backwards, invert
+	if (backward) len = -len;
 
-		// Shift
-		for (int i=0;i<grid->GetRows();i++) {
-			if (allrows || grid->IsInSelection(i,0)) {
-				grid->ShiftLineByFrames(i,len,type);
-				didSomething = true;
-			}
+	// Shift
+	for (int i=0;i<nrows;i++) {
+		if (allrows || (i >= firstSel && selOnward) || grid->IsInSelection(i,0)) {
+			if (byTime) grid->ShiftLineByTime(i,len,type);
+			else grid->ShiftLineByFrames(i,len,type);
+			didSomething = true;
 		}
 	}
 
@@ -227,19 +229,29 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 		wxString message = _T("");
 		wxFileName assfile(AssFile::top->filename);
 		wxString filename = assfile.GetFullName();
+
+		// File
 		if (filename.IsEmpty()) message << _("unsaved, ");
 		else message << filename << _T(", ");
+
+		// Time/frames
 		if (byTime) message << ShiftTime->GetValue() << _T(" ");
 		else message << len << _(" frames ");
+
+		// Forward/backwards
 		if (backward) message << _("backward, ");
 		else message << _("forward, ");
+
+		// Start/end
 		if (type == 0) message << _("s+e, ");
 		if (type == 1) message << _("s, ");
 		if (type == 2) message << _("e, ");
-		if (allrows) message << _("all");
+
+		// Selection range
+		if (affect == 0) message << _("all");
+		else if (affect == 2) message << wxString::Format(_("from %i onward"),sel[0]);
 		else {	// This huge block of code prints the selected ranges of subs
 			message << _("sel ");
-			wxArrayInt sel = grid->GetSelection();
 			int last = sel[0]-1;
 			int first = sel[0];
 			for (unsigned int i=0;i<sel.Count();i++) {
@@ -253,6 +265,8 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 			if (first != last) message << wxString::Format(_T("%i"),first+1) << _T("-") << wxString::Format(_T("%i"),last+1);
 			else message << wxString::Format(_T("%i"),first+1);
 		}
+
+		// Done, append
 		AppendToHistory(message);
 	}
 
@@ -260,7 +274,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	Options.SetBool(_T("Shift Times ByTime"),byTime);
 	Options.SetInt(_T("Shift Times Type"),type);
 	Options.SetInt(_T("Shift Times Length"),len);
-	Options.SetBool(_T("Shift Times All Rows"),allrows);
+	Options.SetInt(_T("Shift Times Affect"),affect);
 	Options.SetBool(_T("Shift Times Direction"),backward);
 	Options.Save();
 

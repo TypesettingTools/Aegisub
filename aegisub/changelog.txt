@@ -59,6 +59,8 @@ Please visit http://aegisub.net to download latest version
 - A few minor tweaks to the Find dialogue. (AMZ)
 - Tweaked the behavior of the margin boxes, now they no longer show padding zeros. (AMZ)
 - Minor fix to the calculation of the grid's "Style" column width. (AMZ)
+- Added a "Selection Onward" option to the Shift Times dialogue. (AMZ)
+- Main menu was completely re-designed, including several new options. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

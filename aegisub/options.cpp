@@ -218,7 +218,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Shift Times ByTime"),true);
 	SetInt(_T("Shift Times Type"),0);
 	SetInt(_T("Shift Times Length"),0);
-	SetBool(_T("Shift Times All Rows"),true);
+	SetInt(_T("Shift Times Affect"),0);
 	SetBool(_T("Shift Times Direction"),true);
 
 	SetInt(_T("Tips current"),0);
