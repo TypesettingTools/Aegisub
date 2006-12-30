@@ -92,9 +92,7 @@ private:
 	void OnSetVideoToEnd(wxCommandEvent &event);
 	void OnJoinAsKaraoke(wxCommandEvent &event);
 	void OnSplitByKaraoke(wxCommandEvent &event);
-	void On1122Recombine(wxCommandEvent &event);
-	void On122Recombine(wxCommandEvent &event);
-	void On112Recombine(wxCommandEvent &event);
+	void OnRecombine(wxCommandEvent &event);
 	void OnShowColMenu(wxCommandEvent &event);
 
 public:
@@ -155,9 +153,7 @@ enum {
 	MENU_ADJOIN,
 	MENU_ADJOIN2,
 	MENU_JOIN_AS_KARAOKE,
-	MENU_1_12_2_RECOMBINE,
-	MENU_1_12_RECOMBINE,
-	MENU_12_2_RECOMBINE,
+	MENU_RECOMBINE,
 	MENU_SET_START_TO_VIDEO,
 	MENU_SET_END_TO_VIDEO,
 	MENU_SET_VIDEO_TO_START,

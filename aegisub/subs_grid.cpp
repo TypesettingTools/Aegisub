@@ -80,9 +80,7 @@ BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_MENU(MENU_SET_VIDEO_TO_END,SubtitlesGrid::OnSetVideoToEnd)
 	EVT_MENU(MENU_JOIN_AS_KARAOKE,SubtitlesGrid::OnJoinAsKaraoke)
 	EVT_MENU(MENU_SPLIT_BY_KARAOKE,SubtitlesGrid::OnSplitByKaraoke)
-	EVT_MENU(MENU_1_12_2_RECOMBINE,SubtitlesGrid::On1122Recombine)
-	EVT_MENU(MENU_12_2_RECOMBINE,SubtitlesGrid::On122Recombine)
-	EVT_MENU(MENU_1_12_RECOMBINE,SubtitlesGrid::On112Recombine)
+	EVT_MENU(MENU_RECOMBINE,SubtitlesGrid::OnRecombine)
 	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,SubtitlesGrid::OnShowColMenu)
 END_EVENT_TABLE()
 
@@ -176,18 +174,15 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		menu.Append(MENU_JOIN_CONCAT,_("&Join (concatenate)"),_T("Joins selected lines in a single one, concatenating text together"))->Enable(state);
 		menu.Append(MENU_JOIN_REPLACE,_("Join (keep first)"),_T("Joins selected lines in a single one, keeping text of first and discarding remaining"))->Enable(state);
 		menu.Append(MENU_JOIN_AS_KARAOKE,_("Join (as Karaoke)"),_T(""))->Enable(state);
+		menu.AppendSeparator();
 
 		// Adjoin selection
 		menu.Append(MENU_ADJOIN,_("&Make times continuous (change start)"),_T("Changes times of subs so start times begin on previous's end time"))->Enable(state);
 		menu.Append(MENU_ADJOIN2,_("&Make times continuous (change end)"),_T("Changes times of subs so end times begin on next's start time"))->Enable(state);
-		menu.AppendSeparator();
 
 		// Recombine selection
-		state = (sels == 2 && continuous);
-		menu.Append(MENU_1_12_RECOMBINE,_("Recombine (1, 1+2) into (1, 2)"),_T("Recombine subtitles when first one is actually first plus second"))->Enable(state);
-		menu.Append(MENU_12_2_RECOMBINE,_("Recombine (1+2, 2) into (1, 2)"),_T("Recombine subtitles when second one is actually first plus second"))->Enable(state);
-		state = (sels == 3 && continuous);
-		menu.Append(MENU_1_12_2_RECOMBINE,_("Recombine (1, 1+2, 2) into (1, 2)"),_T("Recombine subtitles when middle one is actually first plus second"))->Enable(state);
+		state = (sels == 2 || sels == 3) && continuous;
+		menu.Append(MENU_RECOMBINE,_("Recombine Lines"),_T("Recombine subtitles when they have been split and merged"))->Enable(state);
 		menu.AppendSeparator();
 
 		// Copy/cut/paste
@@ -566,112 +561,72 @@ void SubtitlesGrid::OnSetVideoToEnd(wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// 1,1+2,2 Recombine
-void SubtitlesGrid::On1122Recombine(wxCommandEvent &event) {
-	BeginBatch();
+//////////////
+// Recombine
+void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 	// Get selection
 	bool cont;
 	wxArrayInt sel = GetSelection(&cont);
-	if (sel.Count() != 3 || !cont) throw _T("Invalid number of selections");
+	int nSel = sel.Count();
+	if ((nSel != 2 && nSel != 3) || !cont) throw _T("Invalid selection");
 	int n = sel[0];
 
-	// Update
+	// Get dialogues
 	AssDialogue *n1,*n2,*n3;
 	n1 = GetDialogue(n);
 	n2 = GetDialogue(n+1);
-	n3 = GetDialogue(n+2);
-	n1->End = n2->End;
-	n3->Start = n2->Start;
-	n1->UpdateData();
-	n3->UpdateData();
 
-	// Delete middle
-	DeleteLines(GetRangeArray(n+1,n+1));
-
-	EndBatch();
-}
-
-
-///////////////////
-// 1+2,2 Recombine
-void SubtitlesGrid::On122Recombine(wxCommandEvent &event) {
-	BeginBatch();
-
-	// Get selection
-	bool cont;
-	wxArrayInt sel = GetSelection(&cont);
-	if (sel.Count() != 2 || !cont) throw _T("Invalid number of selections");
-	int n = sel[0];
-
-	// Update
-	AssDialogue *n1,*n2;
-	n1 = GetDialogue(n);
-	n2 = GetDialogue(n+1);
-	n1->Text.Trim(true).Trim(false);
-	n2->Text.Trim(true).Trim(false);
-
-	// Check if n2 is a suffix of n1
-	if (n1->Text.Right(n2->Text.Length()) == n2->Text) {
-		n1->Text = n1->Text.SubString(0, n1->Text.Length() - n2->Text.Length() - 1).Trim(true).Trim(false);
-		while (n1->Text.Left(2) == _T("\\N") || n1->Text.Left(2) == _T("\\n"))
-			n1->Text = n1->Text.Mid(2);
-		while (n1->Text.Right(2) == _T("\\N") || n1->Text.Right(2) == _T("\\n"))
-			n1->Text = n1->Text.Mid(0,n1->Text.Length()-2);
-		n2->Start = n1->Start;
-		//n1->ParseASSTags();
-		n1->UpdateData();
-		n2->UpdateData();
-
-		// Commit
-		ass->FlagAsModified();
-		CommitChanges();
-	} else {
-		parentFrame->StatusTimeout(_T("Unable to recombine: Second line is not a suffix of first one."));
-	}
-
-	EndBatch();
-}
-
-
-///////////////////
-// 1,1+2 Recombine
-void SubtitlesGrid::On112Recombine(wxCommandEvent &event) {
-	BeginBatch();
-
-	// Get selection
-	bool cont;
-	wxArrayInt sel = GetSelection(&cont);
-	if (sel.Count() != 2 || !cont) throw _T("Invalid number of selections");
-	int n = sel[0];
-
-	// Update
-	AssDialogue *n1,*n2;
-	n1 = GetDialogue(n);
-	n2 = GetDialogue(n+1);
-	n1->Text.Trim(true).Trim(false);
-	n2->Text.Trim(true).Trim(false);
-
-	// Check if n1 is a prefix of n2 and recombine
-	if (n2->Text.Left(n1->Text.Length()) == n1->Text) {
-		n2->Text = n2->Text.Mid(n1->Text.Length()).Trim(true).Trim(false);
-		while (n2->Text.Left(2) == _T("\\N") || n2->Text.Left(2) == _T("\\n"))
-			n2->Text = n2->Text.Mid(2);
-		while (n2->Text.Right(2) == _T("\\N") || n2->Text.Right(2) == _T("\\n"))
-			n2->Text = n2->Text.Mid(0,n2->Text.Length()-2);
+	// 1,1+2,2 -> 1,2
+	if (nSel == 3) {
+		n3 = GetDialogue(n+2);
 		n1->End = n2->End;
-		//n2->ParseASSTags();
+		n3->Start = n2->Start;
 		n1->UpdateData();
-		n2->UpdateData();
-
-		// Commit
-		ass->FlagAsModified();
-		CommitChanges();
-	} else {
-		parentFrame->StatusTimeout(_T("Unable to recombine: First line is not a prefix of second one."));
+		n3->UpdateData();
+		DeleteLines(GetRangeArray(n+1,n+1));
 	}
 
-	EndBatch();
+	// 2 Line recombine
+	else {
+		// Trim dialogues
+		n1->Text.Trim(true).Trim(false);
+		n2->Text.Trim(true).Trim(false);
+
+		// Detect type
+		int type = -1;
+		if (n1->Text.Right(n2->Text.Length()) == n2->Text) type = 0;
+		else if (n2->Text.Left(n1->Text.Length()) == n1->Text) type = 1;
+		else {
+			// Unknown type
+			parentFrame->StatusTimeout(_T("Unable to recombine: Neither line is a suffix of the other one."));
+			return;
+		}
+
+		// 1+2,2 -> 1,2
+		if (type == 0) {
+			n1->Text = n1->Text.SubString(0, n1->Text.Length() - n2->Text.Length() - 1).Trim(true).Trim(false);
+			while (n1->Text.Left(2) == _T("\\N") || n1->Text.Left(2) == _T("\\n")) n1->Text = n1->Text.Mid(2);
+			while (n1->Text.Right(2) == _T("\\N") || n1->Text.Right(2) == _T("\\n")) n1->Text = n1->Text.Mid(0,n1->Text.Length()-2);
+			n2->Start = n1->Start;
+		}
+
+		// 1,1+2, -> 1,2
+		else {
+			n2->Text = n2->Text.Mid(n1->Text.Length()).Trim(true).Trim(false);
+			while (n2->Text.Left(2) == _T("\\N") || n2->Text.Left(2) == _T("\\n")) n2->Text = n2->Text.Mid(2);
+			while (n2->Text.Right(2) == _T("\\N") || n2->Text.Right(2) == _T("\\n")) n2->Text = n2->Text.Mid(0,n2->Text.Length()-2);
+			n1->End = n2->End;
+		}
+
+		// Commit
+		n1->UpdateData();
+		n2->UpdateData();
+		ass->FlagAsModified();
+		CommitChanges();
+	}
+
+	// Adjus scrollbar
+	AdjustScrollbar();
 }
 
 

@@ -449,12 +449,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(MENU_JOIN_REPLACE,state);
 		MenuBar->Enable(MENU_JOIN_AS_KARAOKE,state);
 		MenuBar->Enable(Menu_Subtitles_Join,state);
-		state = count == 2 && continuous;
-		MenuBar->Enable(MENU_1_12_RECOMBINE,state);
-		MenuBar->Enable(MENU_12_2_RECOMBINE,state);
-		state2 = count == 3 && continuous;
-		MenuBar->Enable(MENU_1_12_2_RECOMBINE,state2);
-		MenuBar->Enable(Menu_Subtitles_Recombine,state || state2);
+		state = (count == 2 || count == 3) && continuous;
+		MenuBar->Enable(MENU_RECOMBINE,state);
 	}
 
 	// Timing menu
