@@ -697,7 +697,7 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 
 //////////////////////////
 // Gets string for margin
-wxString AssDialogue::GetMarginString(int which) {
+wxString AssDialogue::GetMarginString(int which,bool pad) {
 	int value;
 	switch (which) {
 		case 1: value = MarginL; break;
@@ -705,8 +705,8 @@ wxString AssDialogue::GetMarginString(int which) {
 		case 3: value = MarginV; break;
 		default: throw _T("Invalid margin");
 	}
-	wxString result = wxString::Format(_T("%04i"),value);
-	return result;
+	if (pad) return wxString::Format(_T("%04i"),value);
+	else return wxString::Format(_T("%i"),value);
 }
 
 

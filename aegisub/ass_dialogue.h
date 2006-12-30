@@ -195,7 +195,7 @@ public:
 	void StripTags();				// Strips all tags from the text
 	void Clear();					// Wipes all data
 	void SetMarginString(const wxString value,int which);	// Set string to a margin value (1 = left, 2 = right, 3 = vertical)
-	wxString GetMarginString(int which);					// Returns the string of a margin value (1 = left, 2 = right, 3 = vertical)
+	wxString GetMarginString(int which,bool pad=true);		// Returns the string of a margin value (1 = left, 2 = right, 3 = vertical)
 	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *userData),void *userData=NULL);	// Callback to process parameters
 	wxString GetSSAText();
 	bool CollidesWith(AssDialogue *target);					// Checks if two lines collide

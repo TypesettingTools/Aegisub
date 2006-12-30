@@ -104,11 +104,14 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Duration->SetToolTip(_("Line duration"));
 	Duration->showModified = true;
 	MarginL = new HiliModTextCtrl(this,MARGINL_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
-	MarginL->SetToolTip(_("Left Margin (0000 = default)"));
+	MarginL->SetToolTip(_("Left Margin (0 = default)"));
+	MarginL->SetMaxLength(4);
 	MarginR = new HiliModTextCtrl(this,MARGINR_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
-	MarginR->SetToolTip(_("Right Margin (0000 = default)"));
+	MarginR->SetToolTip(_("Right Margin (0 = default)"));
+	MarginR->SetMaxLength(4);
 	MarginV = new HiliModTextCtrl(this,MARGINV_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
-	MarginV->SetToolTip(_("Vertical Margin (0000 = default)"));
+	MarginV->SetToolTip(_("Vertical Margin (0 = default)"));
+	MarginV->SetMaxLength(4);
 
 	// Middle-bottom controls
 	Bold = new wxBitmapButton(this,BUTTON_BOLD,wxBITMAP(button_bold),wxDefaultPosition,wxSize(20,20));
@@ -246,9 +249,9 @@ void SubsEditBox::Update (bool timeOnly) {
 			if (!timeOnly) {
 				TextEdit->SetTextTo(curdiag->Text);
 				Layer->SetValue(wxString::Format(_T("%i"),curdiag->Layer));
-				MarginL->SetValue(curdiag->GetMarginString(1));
-				MarginR->SetValue(curdiag->GetMarginString(2));
-				MarginV->SetValue(curdiag->GetMarginString(3));
+				MarginL->SetValue(curdiag->GetMarginString(1,false));
+				MarginR->SetValue(curdiag->GetMarginString(2,false));
+				MarginV->SetValue(curdiag->GetMarginString(3,false));
 				Effect->SetValue(curdiag->Effect);
 				CommentBox->SetValue(curdiag->Comment);
 				StyleBox->Select(StyleBox->FindString(curdiag->Style));
@@ -564,20 +567,30 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 /////////////////
 // Layer changed
 void SubsEditBox::OnLayerChange(wxCommandEvent &event) {
+	// Value
+	long temp;
+	Layer->GetValue().ToLong(&temp);
+
+	// Update
 	Layer->Commited();
 	grid->BeginBatch();
+
+	// Get selection
 	wxArrayInt sel = grid->GetSelection();
+
+	// Update
 	int n = sel.Count();
 	AssDialogue *cur;
 	for (int i=0;i<n;i++) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
-			long temp;
-			Layer->GetValue().ToLong(&temp);
 			cur->Layer = temp;
 			cur->UpdateData();
 		}
 	}
+
+	// Done
+	Layer->SetValue(wxString::Format(_("%i"),temp));
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
@@ -670,7 +683,7 @@ void SubsEditBox::OnMarginLChange(wxCommandEvent &event) {
 			cur->UpdateData();
 		}
 	}
-	MarginL->SetValue(cur->GetMarginString(1));
+	MarginL->SetValue(cur->GetMarginString(1,false));
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
@@ -692,7 +705,7 @@ void SubsEditBox::OnMarginRChange(wxCommandEvent &event) {
 			cur->UpdateData();
 		}
 	}
-	MarginR->SetValue(cur->GetMarginString(2));
+	MarginR->SetValue(cur->GetMarginString(2,false));
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
@@ -714,7 +727,7 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 			cur->UpdateData();
 		}
 	}
-	MarginV->SetValue(cur->GetMarginString(3));
+	MarginV->SetValue(cur->GetMarginString(3,false));
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
