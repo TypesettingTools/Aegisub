@@ -94,6 +94,7 @@ private:
 	void RegROT();
 	void UnregROT();
 
+	REFERENCE_TIME duration;
 	DF rdf;
 	CComPtr<IVideoSink>     m_pR;
 	CComPtr<IMediaControl>  m_pGC;

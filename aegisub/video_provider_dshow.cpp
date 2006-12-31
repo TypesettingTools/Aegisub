@@ -256,7 +256,6 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	if (FAILED(hr = sink2->GetFrameFormat(&type, &width, &height, &arx, &ary, &defd))) return hr;
 
 	// Get video duration
-	REFERENCE_TIME  duration;
 	if (FAILED(hr = ms->GetDuration(&duration))) return hr;
 
 	// Length of each frame? (??)
@@ -410,7 +409,7 @@ bool DirectShowVideoProvider::NextFrame(DF &_df,int &_fn) {
 			int frameno = (int)((double)df.timestamp / defd + 0.5);
 
 			// Got a good one
-			if (frameno >= 0 && frameno < (signed) num_frames) {
+			if (frameno >= 0 && frameno <= (signed) num_frames) {
 				_fn = frameno;
 				_df = df;
 				return true;
@@ -423,34 +422,35 @@ bool DirectShowVideoProvider::NextFrame(DF &_df,int &_fn) {
 /////////////
 // Get frame
 wxBitmap DirectShowVideoProvider::GetFrame(int n) {
+	// Normalize frame number
+	if (n >= (signed) num_frames) n = num_frames-1;
+
 	// Current
 	if (n == last_fnum) return rdf.frame;
 
 	// Variables
 	DF df;
 	int fn;
-
-	// Not the next, seek first
-	if (n != last_fnum + 1) {
-		// Reset and seek
-		ResetEvent(m_hFrameReady);
-		REFERENCE_TIME cur = defd * (n-1) - 10001; // -1ms, account for typical timestamps rounding
-		if (cur < 0) cur = 0;
-
-		// Failed
-		if (FAILED(m_pGS->SetPositions(&cur, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning))) return wxBitmap(width,height);
-
-		// Set time
-		rdf.timestamp = -1;
-	}
+	REFERENCE_TIME cur = defd * n + 10001;
+	if (cur < 0) cur = 0;
 
 	// Is next
-	else {
+	if (n == last_fnum + 1) {
 		NextFrame(df,fn);
 		last_fnum = n;
 		rdf.frame = df.frame;
 		return rdf.frame;
 	}
+
+	// Not the next, reset and seek first
+seek:
+	ResetEvent(m_hFrameReady);
+
+	// Seek
+	if (FAILED(m_pGS->SetPositions(&cur, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning))) return wxBitmap(width,height);
+
+	// Set time
+	rdf.timestamp = -1;
 
 	// Actually get data
 	while (true) {
@@ -476,8 +476,11 @@ wxBitmap DirectShowVideoProvider::GetFrame(int n) {
 			break;
 		}
 
+		// Passed, seek back and try again
 		else {
-			return wxBitmap(width,height);
+			cur -= defd;
+			goto seek;
+			//return wxBitmap(width,height);
 		}
 	}
 
