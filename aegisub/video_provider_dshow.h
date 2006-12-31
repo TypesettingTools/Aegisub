@@ -39,12 +39,11 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#ifdef __WINDOWS__
 #include "setup.h"
 #if USE_DIRECTSHOW == 1
 #include "video_provider.h"
 #pragma warning(disable: 4995)
+#include <wx/wxprec.h>
 #include <dshow.h>
 #include <atlbase.h>
 #include <atlcom.h>
@@ -56,6 +55,17 @@
 ///////////////////////////////////
 // DirectShow Video Provider class
 class DirectShowVideoProvider: public VideoProvider {
+	struct DF {
+	public:
+	    REFERENCE_TIME  timestamp;  // DS timestamp that we used for this frame
+		wxBitmap frame;
+
+		DF() : timestamp(-1) { }
+		DF(wxBitmap f) : timestamp(-1), frame(f) { }
+		DF(const DF& f) { operator=(f); }
+		DF& operator=(const DF& f) { timestamp = f.timestamp; frame = f.frame; return *this; }
+	};
+
 private:
 	wxString subfilename;
 
@@ -64,6 +74,7 @@ private:
 	unsigned int height;
 	unsigned int num_frames;
 	double fps;
+	long long defd;
 
 	int depth;
 	double dar;
@@ -72,13 +83,18 @@ private:
 	unsigned char* data;
 	wxBitmap last_frame;
 
-	wxBitmap GetFrame(int n, bool force);
-	void AttachOverlay(SubtitleProvider::Overlay *_overlay) {}
+	void AttachOverlay(SubtitleProvider::Overlay *overlay) {}
+
 	HRESULT OpenVideo(wxString _filename);
+	void CloseVideo();
+
+	static void ReadFrame(long long timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, unsigned stride, unsigned arx, unsigned ary,	void *arg);
+	bool NextFrame(DF &df,int &fn);
 
 	void RegROT();
 	void UnregROT();
 
+	DF rdf;
 	CComPtr<IVideoSink>     m_pR;
 	CComPtr<IMediaControl>  m_pGC;
 	CComPtr<IMediaSeeking>  m_pGS;
@@ -94,7 +110,7 @@ public:
 	void SetDAR(double _dar);
 	void SetZoom(double _zoom);
 
-	wxBitmap GetFrame(int n) { return wxBitmap(64,64); };
+	wxBitmap GetFrame(int n);
 	void GetFloatFrame(float* Buffer, int n);
 
 	int GetPosition() { return last_fnum; };
@@ -109,5 +125,4 @@ public:
 	int GetSourceHeight() { return height; };
 };
 
-#endif
 #endif

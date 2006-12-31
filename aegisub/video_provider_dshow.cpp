@@ -36,11 +36,10 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include "setup.h"
-#ifdef __WINDOWS__
 #if USE_DIRECTSHOW == 1
 #pragma warning(disable: 4995)
+#include <wx/wxprec.h>
 #include <wx/image.h>
 #include <windows.h>
 #include <tchar.h>
@@ -65,6 +64,7 @@ DirectShowVideoProvider::DirectShowVideoProvider(wxString _filename, wxString _s
 //////////////
 // Destructor
 DirectShowVideoProvider::~DirectShowVideoProvider() {
+	CloseVideo();
 }
 
 
@@ -204,9 +204,10 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	if (!sink2) return E_NOINTERFACE;
 
 	// Set allowed types for sink
-	sink->SetAllowedTypes(IVS_RGB32|IVS_YV12|IVS_YUY2);
+	//sink->SetAllowedTypes(IVS_RGB32|IVS_YV12|IVS_YUY2);
+	sink->SetAllowedTypes(IVS_RGB32);
 
-	// I have no clue
+	// Pass the event to sink, so it gets set when a frame is available
 	ResetEvent(m_hFrameReady);
 	sink2->NotifyFrame(m_hFrameReady);
 
@@ -233,7 +234,7 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	// Connect pins
 	if (FAILED(hr = pG->Connect(pO, pI))) return hr;
 
-	// Add control stuff to graph
+	// Query the control interfaces from the graph
 	CComQIPtr<IMediaControl>  mc(pG);
 	CComQIPtr<IMediaSeeking>  ms(pG);
 
@@ -251,7 +252,6 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	if (WaitForSingleObject(m_hFrameReady, 5000) != WAIT_OBJECT_0) return E_FAIL;
 
 	// Get frame format
-	long long defd;
 	unsigned type, arx, ary;
 	if (FAILED(hr = sink2->GetFrameFormat(&type, &width, &height, &arx, &ary, &defd))) return hr;
 
@@ -260,7 +260,7 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	if (FAILED(hr = ms->GetDuration(&duration))) return hr;
 
 	// Length of each frame? (??)
-	if (defd == 0) defd = 400000;
+	if (defd == 0) defd = 417083;
 
 	// No clue, either
 	int avgf = 0;
@@ -275,8 +275,9 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	//}
 
 	// Set number of frames and fps
+	last_fnum = -1;
 	num_frames = duration / defd;
-	fps = double(10000000) / double(defd);
+	fps = 10000000.0 / double(defd);
 
 	// Set frame length
 	//m_avgframe = defd;
@@ -289,12 +290,200 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	// Flag frame as ready?
 	SetEvent(m_hFrameReady);
 
-	// No idea
+	// Register graph with Running Objects Table for remote graphedit connection
 	RegROT();
+
+	//NextFrame();
 
 	// Set frame count
 	//m_f.SetCount(m_vi.num_frames);
 	return hr;
+}
+
+
+///////////////
+// Close video
+void DirectShowVideoProvider::CloseVideo() {
+	CComQIPtr<IVideoSink2>  pVS2(m_pR);
+	if (pVS2) pVS2->NotifyFrame(NULL);
+
+	UnregROT();
+
+	m_pR.Release();
+	m_pGC.Release();
+	m_pGS.Release();
+}
+
+
+/////////////////////////
+// Read DirectShow frame
+void DirectShowVideoProvider::ReadFrame(long long timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, unsigned stride, unsigned arx, unsigned ary, void *arg) {
+	// Set frame
+	DF *df = (DF*) arg;
+	df->timestamp = timestamp;
+	int w_cp = width;
+	int h_cp = height;
+
+	// Create data
+	unsigned char *data;
+	data = new unsigned char[width*height*bpp];
+	int dstride = width*bpp;
+
+	// Read RGB32 data
+	if (format == IVS_RGB32) {
+		unsigned char *dst = data + h_cp*dstride;
+		w_cp *= bpp;
+		for (int y = 0; y < h_cp; ++y) {
+			dst -= dstride;
+			memcpy(dst, frame, w_cp);
+			frame += stride;
+		}
+	}
+
+	// Create bitmap out of data
+	df->frame = wxBitmap((const char*) data, width, height, bpp*8);
+	delete data;
+	
+	//else if (format == IVS_YV12 && vi->pixel_type == VideoInfo::CS_YV12) {
+	//  // plane Y
+	//  BYTE                *dp = df->frame->GetWritePtr(PLANAR_Y);
+	//  const unsigned char *sp = frame;
+	//  int                 dstride = df->frame->GetPitch(PLANAR_Y);
+
+	//  for (int y = 0; y < h_cp; ++y) {
+	//	memcpy(dp, sp, w_cp);
+	//	sp += stride;
+	//	dp += dstride;
+	//  }
+
+	//  // UV
+	//  dstride >>= 1;
+	//  stride >>= 1;
+	//  w_cp >>= 1;
+	//  h_cp >>= 1;
+
+	//  // plane V
+	//  dp = df->frame->GetWritePtr(PLANAR_V);
+	//  sp = frame + height * stride * 2;
+	//  dstride = df->frame->GetPitch(PLANAR_V);
+
+	//  for (int y = 0; y < h_cp; ++y) {
+	//	memcpy(dp, sp, w_cp);
+	//	sp += stride;
+	//	dp += dstride;
+	//  }
+
+	//  // plane U
+	//  dp = df->frame->GetWritePtr(PLANAR_U);
+	//  sp = frame + height * stride * 2 + (height >> 1) * stride;
+	//  dstride = df->frame->GetPitch(PLANAR_U);
+
+	//  for (int y = 0; y < h_cp; ++y) {
+	//	memcpy(dp, sp, w_cp);
+	//	sp += stride;
+	//	dp += dstride;
+	//  }
+	//}
+}
+
+
+/////////////////////
+// Get Next DS Frame
+bool DirectShowVideoProvider::NextFrame(DF &_df,int &_fn) {
+	// Keep reading until it gets a good frame
+	while (true) {
+		if (WaitForSingleObject(m_hFrameReady, INFINITE) != WAIT_OBJECT_0) return false;
+
+		// Set object to receive data
+		DF df;
+
+		// Read frame
+		HRESULT hr = m_pR->ReadFrame(ReadFrame, &df);
+		if (FAILED(hr)) return false;
+
+		// End of file
+		if (hr == S_FALSE) return false;
+
+		// Valid timestamp
+		if (df.timestamp >= 0) {
+			// Frame number
+			int frameno = (int)((double)df.timestamp / defd + 0.5);
+
+			// Got a good one
+			if (frameno >= 0 && frameno < (signed) num_frames) {
+				_fn = frameno;
+				_df = df;
+				return true;
+			}
+		}
+	}
+}
+
+
+/////////////
+// Get frame
+wxBitmap DirectShowVideoProvider::GetFrame(int n) {
+	// Current
+	if (n == last_fnum) return rdf.frame;
+
+	// Variables
+	DF df;
+	int fn;
+
+	// Not the next, seek first
+	if (n != last_fnum + 1) {
+		// Reset and seek
+		ResetEvent(m_hFrameReady);
+		REFERENCE_TIME cur = defd * (n-1) - 10001; // -1ms, account for typical timestamps rounding
+		if (cur < 0) cur = 0;
+
+		// Failed
+		if (FAILED(m_pGS->SetPositions(&cur, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning))) return wxBitmap(width,height);
+
+		// Set time
+		rdf.timestamp = -1;
+	}
+
+	// Is next
+	else {
+		NextFrame(df,fn);
+		last_fnum = n;
+		rdf.frame = df.frame;
+		return rdf.frame;
+	}
+
+	// Actually get data
+	while (true) {
+		// Get frame
+		DF df;
+		int fn;
+		NextFrame(df,fn);
+
+		// Preroll
+		if (fn < n) continue;
+
+		// Right frame
+		if (fn == n) {
+			// we want this frame, compare timestamps to account for decimation
+			// we see this for the first time
+			if (rdf.timestamp < 0) rdf.timestamp = df.timestamp;
+
+			// early, ignore
+			if (df.timestamp < rdf.timestamp) continue;
+
+			// this is the frame we want
+			rdf.frame = df.frame;
+			break;
+		}
+
+		else {
+			return wxBitmap(width,height);
+		}
+	}
+
+	// Return frame
+	last_fnum = n;
+	return rdf.frame;
 }
 
 
@@ -322,5 +511,4 @@ void DirectShowVideoProvider::GetFloatFrame(float* Buffer, int n) {
 }
 
 
-#endif
 #endif
