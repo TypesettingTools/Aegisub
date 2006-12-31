@@ -58,10 +58,10 @@ class DirectShowVideoProvider: public VideoProvider {
 	struct DF {
 	public:
 	    REFERENCE_TIME  timestamp;  // DS timestamp that we used for this frame
-		wxBitmap frame;
+		wxImage frame;
 
 		DF() : timestamp(-1) { }
-		DF(wxBitmap f) : timestamp(-1), frame(f) { }
+		DF(wxImage f) : timestamp(-1), frame(f) { }
 		DF(const DF& f) { operator=(f); }
 		DF& operator=(const DF& f) { timestamp = f.timestamp; frame = f.frame; return *this; }
 	};
@@ -118,8 +118,8 @@ public:
 	int GetFrameCount() { return num_frames; };
 	double GetFPS() { return fps; };
 
-	int GetWidth() { return width; };
-	int GetHeight() { return height; };
+	int GetWidth() { return height*zoom*dar; };
+	int GetHeight() { return height*zoom; };
 	double GetZoom() { return zoom; };
 
 	int GetSourceWidth() { return width; };

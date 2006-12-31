@@ -56,6 +56,8 @@ DEFINE_GUID(CLSID_VideoSink, 0xf13d3732, 0x96bd, 0x4108, 0xaf, 0xeb, 0xe8, 0x5f,
 // Constructor
 // Based on Haali's code for DirectShowSource2
 DirectShowVideoProvider::DirectShowVideoProvider(wxString _filename, wxString _subfilename) {
+	zoom = 1.0;
+	dar = 4.0/3.0;
 	m_hFrameReady = CreateEvent(NULL, FALSE, FALSE, NULL);
 	OpenVideo(_filename);
 }
@@ -205,7 +207,7 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 
 	// Set allowed types for sink
 	//sink->SetAllowedTypes(IVS_RGB32|IVS_YV12|IVS_YUY2);
-	sink->SetAllowedTypes(IVS_RGB32);
+	sink->SetAllowedTypes(IVS_RGB24);
 
 	// Pass the event to sink, so it gets set when a frame is available
 	ResetEvent(m_hFrameReady);
@@ -320,28 +322,39 @@ void DirectShowVideoProvider::ReadFrame(long long timestamp, unsigned format, un
 	// Set frame
 	DF *df = (DF*) arg;
 	df->timestamp = timestamp;
-	int w_cp = width;
-	int h_cp = height;
+	unsigned int w_cp = width;
+	unsigned int h_cp = height;
 
 	// Create data
 	unsigned char *data;
-	data = new unsigned char[width*height*bpp];
-	int dstride = width*bpp;
+	//data = new unsigned char[width*height*bpp];
+	data = (unsigned char *) malloc(width*height*bpp);
+	unsigned int dstride = width*bpp;
 
-	// Read RGB32 data
-	if (format == IVS_RGB32) {
+	// Read RGB24 data
+	if (format == IVS_RGB24) {
 		unsigned char *dst = data + h_cp*dstride;
+		const unsigned char *src = frame;
+		//unsigned char t1,t2;
 		w_cp *= bpp;
-		for (int y = 0; y < h_cp; ++y) {
+		for (int y=h_cp; --y>=0;) {
 			dst -= dstride;
-			memcpy(dst, frame, w_cp);
-			frame += stride;
+			for (int x=width; --x>=0;) {
+				//t1 = *src++;
+				//t2 = *src++;
+				*dst++ = *(src+2);
+				*dst++ = *(src+1);
+				*dst++ = *src;
+				src += 3;
+			}
+			dst -= dstride;
 		}
 	}
 
 	// Create bitmap out of data
-	df->frame = wxBitmap((const char*) data, width, height, bpp*8);
-	delete data;
+	//df->frame = wxBitmap((const char*) data, width, height, bpp*8);
+	//delete data;
+	df->frame = wxImage(width,height,data,false);
 	
 	//else if (format == IVS_YV12 && vi->pixel_type == VideoInfo::CS_YV12) {
 	//  // plane Y
@@ -412,6 +425,9 @@ bool DirectShowVideoProvider::NextFrame(DF &_df,int &_fn) {
 			if (frameno >= 0 && frameno <= (signed) num_frames) {
 				_fn = frameno;
 				_df = df;
+				if (zoom != 1.0 || dar != 1.0) {
+					_df.frame.Rescale(height*zoom*dar,height*zoom,wxIMAGE_QUALITY_NORMAL);
+				}
 				return true;
 			}
 		}
@@ -426,7 +442,7 @@ wxBitmap DirectShowVideoProvider::GetFrame(int n) {
 	if (n >= (signed) num_frames) n = num_frames-1;
 
 	// Current
-	if (n == last_fnum) return rdf.frame;
+	if (n == last_fnum) return wxBitmap(rdf.frame);
 
 	// Variables
 	DF df;
@@ -439,7 +455,7 @@ wxBitmap DirectShowVideoProvider::GetFrame(int n) {
 		NextFrame(df,fn);
 		last_fnum = n;
 		rdf.frame = df.frame;
-		return rdf.frame;
+		return wxBitmap(rdf.frame);
 	}
 
 	// Not the next, reset and seek first
@@ -486,7 +502,7 @@ seek:
 
 	// Return frame
 	last_fnum = n;
-	return rdf.frame;
+	return wxBitmap(rdf.frame);
 }
 
 
@@ -499,12 +515,16 @@ void DirectShowVideoProvider::RefreshSubtitles() {
 ///////////
 // Set DAR
 void DirectShowVideoProvider::SetDAR(double _dar) {
+	dar = _dar;
+	last_fnum = -2;
 }
 
 
 ////////////
 // Set Zoom
 void DirectShowVideoProvider::SetZoom(double _zoom) {
+	zoom = _zoom;
+	last_fnum = -2;
 }
 
 

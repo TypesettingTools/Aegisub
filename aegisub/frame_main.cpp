@@ -341,10 +341,6 @@ void FrameMain::InitMenu() {
 	wxMenuItem *RecentKeyframesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Keyframes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentKeyframes);
 	videoMenu->Append(RecentKeyframesParent);
 	videoMenu->AppendSeparator();
-	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, _("&Jump To...\t") + Hotkeys.GetText(_T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
-	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, _("Jump video to start\t") + Hotkeys.GetText(_T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), wxBITMAP(video_to_substart));
-	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End, _("Jump video to end\t") + Hotkeys.GetText(_T("Jump Video To End")), _("Jumps the video to the end frame of current subtitle"), wxBITMAP(video_to_subend));
-	videoMenu->AppendSeparator();
 	wxMenu *ZoomMenu = new wxMenu;
 	wxMenuItem *ZoomParent = new wxMenuItem(subtitlesMenu,Menu_View_Zoom,_("Set Zoom"),_T(""),wxITEM_NORMAL,ZoomMenu);
 	ZoomParent->SetBitmap(wxBITMAP(blank_button));
@@ -361,6 +357,10 @@ void FrameMain::InitMenu() {
 	AspectMenu->AppendCheckItem(Menu_Video_AR_235, _("&Cinematic (2.35)"), _("Forces video to 2.35 aspect ratio"));
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom..."), _("Forces video to a custom aspect ratio"));
 	videoMenu->Append(AspectParent);
+	videoMenu->AppendSeparator();
+	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, _("&Jump To...\t") + Hotkeys.GetText(_T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
+	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, _("Jump video to start\t") + Hotkeys.GetText(_T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), wxBITMAP(video_to_substart));
+	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End, _("Jump video to end\t") + Hotkeys.GetText(_T("Jump Video To End")), _("Jumps the video to the end frame of current subtitle"), wxBITMAP(video_to_subend));
 	MenuBar->Append(videoMenu, _("&Video"));
 
 	// Create audio menu
