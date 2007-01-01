@@ -45,7 +45,7 @@
 
 ////////////////
 // Get provider
-VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
+VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles,double fps) {
 	// Check if avisynth is available
 	bool avisynthAvailable = false;
 	bool dshowAvailable = false;
@@ -106,7 +106,7 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	// Use DirectShow provider
 	if (!provider && (preffered == _T("dshow") || !avisynthAvailable)) {
 		try {
-			provider = new DirectShowVideoProvider(video,subtitles);
+			provider = new DirectShowVideoProvider(video,subtitles,fps);
 		}
 		catch (...) {
 			delete provider;
@@ -119,7 +119,7 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles) {
 	// Use Avisynth provider
 	if (!provider) {
 		try {
-			provider = new AvisynthVideoProvider(video,subtitles);
+			provider = new AvisynthVideoProvider(video,subtitles,fps);
 		}
 		catch (...) {
 			delete provider;

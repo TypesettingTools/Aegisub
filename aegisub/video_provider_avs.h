@@ -65,6 +65,7 @@ private:
 	wxString subfilename;
 
 	int last_fnum;
+	int num_frames;
 
 	int depth;
 
@@ -73,6 +74,8 @@ private:
 
 	double dar;
 	double zoom;
+	double fps;
+	wxArrayInt frameTime;
 
 	PClip RGB32Video;
 	PClip SubtitledVideo;
@@ -86,7 +89,7 @@ private:
 	void AttachOverlay(SubtitleProvider::Overlay *_overlay) {}
 
 public:
-	AvisynthVideoProvider(wxString _filename, wxString _subfilename);
+	AvisynthVideoProvider(wxString _filename, wxString _subfilename, double fps=0.0);
 	~AvisynthVideoProvider();
 
 	void RefreshSubtitles();
@@ -98,7 +101,7 @@ public:
 
 	// properties
 	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return vi.num_frames; };
+	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
 	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
 
 	int GetWidth() { return vi.width; };
@@ -107,6 +110,8 @@ public:
 
 	int GetSourceWidth() { return RGB32Video->GetVideoInfo().width; };
 	int GetSourceHeight() { return RGB32Video->GetVideoInfo().height; };
+
+	void OverrideFrameTimeList(wxArrayInt list);
 };
 
 #endif

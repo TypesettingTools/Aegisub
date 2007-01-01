@@ -65,5 +65,7 @@ public:
 	virtual int GetSourceWidth()=0;			// Returns the original source width in pixels
 	virtual int GetSourceHeight()=0;		// Returns the original source height in pixels
 
-	static VideoProvider *GetProvider(wxString video,wxString subtitles);
+	virtual void OverrideFrameTimeList(wxArrayInt list) {}	// Override the list with the provided one, for VFR handling
+
+	static VideoProvider *GetProvider(wxString video,wxString subtitles,double fps=0.0);
 };

@@ -77,6 +77,7 @@ private:
 	ASS_FrameRateType FrameRateType;
 	bool loaded;
 	wxString vfrFile;
+
 public:
 	FrameRate();
 	~FrameRate();
@@ -94,6 +95,9 @@ public:
 	bool IsLoaded() { return loaded; };
 	ASS_FrameRateType GetFrameRateType() { return FrameRateType; };
 	wxString GetFilename() { return vfrFile; };
+
+	wxArrayInt GetFrameTimeList();
+	double GetCommonFPS();
 };
 
 

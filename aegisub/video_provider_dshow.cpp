@@ -55,9 +55,10 @@ DEFINE_GUID(CLSID_VideoSink, 0xf13d3732, 0x96bd, 0x4108, 0xaf, 0xeb, 0xe8, 0x5f,
 ///////////////
 // Constructor
 // Based on Haali's code for DirectShowSource2
-DirectShowVideoProvider::DirectShowVideoProvider(wxString _filename, wxString _subfilename) {
+DirectShowVideoProvider::DirectShowVideoProvider(wxString _filename, wxString _subfilename,double _fps) {
 	zoom = 1.0;
 	dar = 4.0/3.0;
+	fps = _fps;
 	m_hFrameReady = CreateEvent(NULL, FALSE, FALSE, NULL);
 	OpenVideo(_filename);
 }
@@ -260,13 +261,6 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	// Get video duration
 	if (FAILED(hr = ms->GetDuration(&duration))) return hr;
 
-	// Length of each frame? (??)
-	if (defd == 0) defd = 417083;
-
-	// No clue, either
-	int avgf = 0;
-	if (avgf > 0) defd = avgf;
-
 	// Set pixel type
 	//switch (type) {
 	//	case IVS_RGB32: m_vi.pixel_type = VideoInfo::CS_BGR32; break;
@@ -275,13 +269,14 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	//	default: return E_FAIL;
 	//}
 
-	// Set number of frames and fps
+	// Set FPS and frame duration
+	if (defd == 0) defd = 417083;
+	if (fps != 0.0) defd = long long (10000000.0 / fps);
+	else fps = 10000000.0 / double(defd);
+
+	// Set number of frames
 	last_fnum = -1;
 	num_frames = duration / defd;
-	fps = 10000000.0 / double(defd);
-
-	// Set frame length
-	//m_avgframe = defd;
 
 	// Store filters
 	m_pR = sink;
@@ -401,34 +396,45 @@ void DirectShowVideoProvider::ReadFrame(long long timestamp, unsigned format, un
 
 /////////////////////
 // Get Next DS Frame
-bool DirectShowVideoProvider::NextFrame(DF &_df,int &_fn) {
+int DirectShowVideoProvider::NextFrame(DF &_df,int &_fn) {
 	// Keep reading until it gets a good frame
 	while (true) {
-		if (WaitForSingleObject(m_hFrameReady, INFINITE) != WAIT_OBJECT_0) return false;
-
-		// Set object to receive data
+		// Set object and receive data
 		DF df;
+		if (WaitForSingleObject(m_hFrameReady, INFINITE) != WAIT_OBJECT_0) return 1;
 
 		// Read frame
 		HRESULT hr = m_pR->ReadFrame(ReadFrame, &df);
-		if (FAILED(hr)) return false;
+		if (FAILED(hr)) return 2;
 
 		// End of file
-		if (hr == S_FALSE) return false;
+		if (hr == S_FALSE) return 3;
 
 		// Valid timestamp
 		if (df.timestamp >= 0) {
-			// Frame number
-			int frameno = (int)((double)df.timestamp / defd + 0.5);
+			// CFR frame number
+			int frameno = -1;
+			if (frameTime.Count() == 0) frameno = (int)((double)df.timestamp / defd + 0.5);
+
+			// VFR
+			else {
+				for (unsigned int i=0;i<frameTime.Count();i++) {
+					if (df.timestamp < (long long) frameTime[i] * 10000) {
+						frameno = i-1;
+						break;
+					}
+				}
+				if (frameno == -1) frameno = frameTime.Count()-1;
+			}
 
 			// Got a good one
-			if (frameno >= 0 && frameno <= (signed) num_frames) {
+			if (frameno >= 0) {
 				_fn = frameno;
 				_df = df;
 				if (zoom != 1.0 || dar != 1.0) {
 					_df.frame.Rescale(height*zoom*dar,height*zoom,wxIMAGE_QUALITY_NORMAL);
 				}
-				return true;
+				return 0;
 			}
 		}
 	}
@@ -440,6 +446,7 @@ bool DirectShowVideoProvider::NextFrame(DF &_df,int &_fn) {
 wxBitmap DirectShowVideoProvider::GetFrame(int n) {
 	// Normalize frame number
 	if (n >= (signed) num_frames) n = num_frames-1;
+	if (n < 0) n = 0;
 
 	// Current
 	if (n == last_fnum) return wxBitmap(rdf.frame);
@@ -447,7 +454,11 @@ wxBitmap DirectShowVideoProvider::GetFrame(int n) {
 	// Variables
 	DF df;
 	int fn;
-	REFERENCE_TIME cur = defd * n + 10001;
+
+	// Time to seek to
+	REFERENCE_TIME cur;
+	cur = defd * n + 10001;
+	if (frameTime.Count() > (unsigned) n) cur = frameTime[n] * 10000 + 10001;
 	if (cur < 0) cur = 0;
 
 	// Is next
@@ -472,14 +483,14 @@ seek:
 	while (true) {
 		// Get frame
 		DF df;
-		int fn;
-		NextFrame(df,fn);
+		int fn = -1;
+		int result = NextFrame(df,fn);
 
 		// Preroll
-		if (fn < n) continue;
+		if (result == 0 && fn < n) continue;
 
 		// Right frame
-		if (fn == n) {
+		else if (fn == n) {
 			// we want this frame, compare timestamps to account for decimation
 			// we see this for the first time
 			if (rdf.timestamp < 0) rdf.timestamp = df.timestamp;
@@ -492,11 +503,15 @@ seek:
 			break;
 		}
 
-		// Passed, seek back and try again
-		else {
+		// Passed or end of file, seek back and try again
+		else if (result == 0 || result == 3) {
 			cur -= defd;
 			goto seek;
-			//return wxBitmap(width,height);
+		}
+
+		// Failed
+		else {
+			return wxBitmap(height*zoom*dar,height*zoom);
 		}
 	}
 
@@ -531,6 +546,14 @@ void DirectShowVideoProvider::SetZoom(double _zoom) {
 ///////////////////
 // Get float frame
 void DirectShowVideoProvider::GetFloatFrame(float* Buffer, int n) {
+}
+
+
+////////////////////////
+// Override frame times
+void DirectShowVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
+	frameTime = list;
+	num_frames = frameTime.Count();
 }
 
 

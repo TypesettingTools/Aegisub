@@ -39,6 +39,7 @@
 #include "video_provider_avs.h"
 #include "options.h"
 #include "main.h"
+#include "vfr.h"
 
 
 #ifdef __WINDOWS__
@@ -46,17 +47,19 @@
 
 ///////////////
 // Constructor
-AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename) {
+AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _fps) {
 	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
 	ResizedVideo = NULL;
 	data = NULL;
+	fps = _fps;
 
 	depth = 0;
 	
 	last_fnum = -1;
+	num_frames = 0;
 
 	subfilename = _subfilename;
 	zoom = 1.0;
@@ -219,7 +222,12 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			dss2 = false;
 			if (env->FunctionExists("dss2")) {
 				AVSTRACE(_T("visynthVideoProvider::OpenVideo: Invoking DSS2"));
-				script = env->Invoke("DSS2", videoFilename);
+				if (fps == 0.0) script = env->Invoke("DSS2", videoFilename);
+				else {
+					const char *argnames[2] = { 0, "fps" };
+					AVSValue args[2] = { videoFilename, fps };
+					script = env->Invoke("DSS2", AVSValue(args,2), argnames);
+				}
 				AVSTRACE(_T("visynthVideoProvider::OpenVideo: Successfully opened file with DSS2"));
 				dss2 = true;
 			}
@@ -333,7 +341,18 @@ PClip AvisynthVideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip video
 
 ////////////////////////
 // Actually get a frame
-wxBitmap AvisynthVideoProvider::GetFrame(int n, bool force) {
+wxBitmap AvisynthVideoProvider::GetFrame(int _n, bool force) {
+	// Transform n if overriden
+	int n = _n;
+	if (frameTime.Count()) {
+		if (n < 0) n = 0;
+		if (n >= (signed) frameTime.Count()) n = frameTime.Count()-1;
+		int time = frameTime[n];
+		double curFps = (double)vi.fps_numerator/(double)vi.fps_denominator;
+		n = time * curFps / 1000.0;
+	}
+
+	// Get frame
 	AVSTRACE(_T("AvisynthVideoProvider::GetFrame"));
 	if (n != last_fnum || force) {
 		wxMutexLocker lock(AviSynthMutex);
@@ -461,6 +480,14 @@ void AvisynthVideoProvider::LoadVSFilter() {
 			throw _T("Couldn't locate VSFilter");
 		}
 	}
+}
+
+
+////////////////////////
+// Override frame times
+void AvisynthVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
+	frameTime = list;
+	num_frames = frameTime.Count();
 }
 
 

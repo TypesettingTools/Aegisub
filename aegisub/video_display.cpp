@@ -163,14 +163,9 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 	if (!filename.IsEmpty()) {
 		try {
 			grid->CommitChanges(true);
+			bool isVfr = false;
+			double overFps = 0;
 
-			// Choose a provider
-			provider = VideoProvider::GetProvider(filename,GetTempWorkFile());
-			provider->SetZoom(zoomValue);
-			if (arType != 4) arValue = GetARFromType(arType); // 4 = custom
-			provider->SetDAR(arValue);
-
-			// Why the hell was this disabled?
 			// Read extra data from file
 			bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
 			wxString ext = filename.Right(4).Lower();
@@ -186,7 +181,11 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 				// Ask to override timecodes
 				int override = wxYES;
 				if (VFR_Output.IsLoaded()) override = wxMessageBox(_("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
-				if (override == wxYES) MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
+				if (override == wxYES) {
+ 					MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
+					isVfr = VFR_Output.GetFrameRateType() == VFR;
+					if (isVfr) overFps = VFR_Output.GetCommonFPS();
+				}
 
 				// Close mkv
 				MatroskaWrapper::wrapper.Close();
@@ -197,6 +196,13 @@ void VideoDisplay::SetVideo(const wxString &filename) {
 				keyFramesLoaded = true;
 			}
 #endif
+
+			// Choose a provider
+			provider = VideoProvider::GetProvider(filename,GetTempWorkFile(),overFps);
+			if (isVfr) provider->OverrideFrameTimeList(VFR_Output.GetFrameTimeList());
+			provider->SetZoom(zoomValue);
+			if (arType != 4) arValue = GetARFromType(arType); // 4 = custom
+			provider->SetDAR(arValue);
 
 			// Update size
 			UpdateSize();

@@ -68,6 +68,7 @@ class DirectShowVideoProvider: public VideoProvider {
 
 private:
 	wxString subfilename;
+	wxArrayInt frameTime;
 
 	unsigned int last_fnum;
 	unsigned int width;
@@ -89,7 +90,7 @@ private:
 	void CloseVideo();
 
 	static void ReadFrame(long long timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, unsigned stride, unsigned arx, unsigned ary,	void *arg);
-	bool NextFrame(DF &df,int &fn);
+	int NextFrame(DF &df,int &fn);
 
 	void RegROT();
 	void UnregROT();
@@ -104,7 +105,7 @@ private:
 	DWORD                   m_rot_cookie;
 
 public:
-	DirectShowVideoProvider(wxString _filename, wxString _subfilename);
+	DirectShowVideoProvider(wxString _filename, wxString _subfilename,double _fps=0.0);
 	~DirectShowVideoProvider();
 
 	void RefreshSubtitles();
@@ -124,6 +125,8 @@ public:
 
 	int GetSourceWidth() { return width; };
 	int GetSourceHeight() { return height; };
+
+	void OverrideFrameTimeList(wxArrayInt list);
 };
 
 #endif
