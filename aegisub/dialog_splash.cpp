@@ -56,11 +56,16 @@ SplashScreen::SplashScreen(wxWindow *parent)
 
 	#if wxUSE_DISPLAY == 1
 	// Center on current display
-	wxDisplay display(wxDisplay::GetFromPoint(parent->GetScreenPosition()));
-	wxRect dr = display.GetGeometry();
-	wxRect window = GetScreenRect();
-	window = window.CenterIn(dr);
-	Move(window.GetLeft(),window.GetTop());
+	if (wxDisplay::GetCount() < 1) CentreOnParent();
+	else {
+		int point = wxDisplay::GetFromPoint(parent->GetScreenPosition());
+		if (point == wxNOT_FOUND) point = 0;
+		wxDisplay display(point);
+		wxRect dr = display.GetGeometry();
+		wxRect window = GetScreenRect();
+		window = window.CenterIn(dr);
+		Move(window.GetLeft(),window.GetTop());
+	}
 	#else
 	// Center on window
 	CentreOnParent();
