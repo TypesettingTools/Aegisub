@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include <wx/wxprec.h>
+#include <wx/intl.h>
 #include "subs_edit_ctrl.h"
 #include "subs_edit_box.h"
 #include "options.h"
@@ -428,8 +430,10 @@ BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
 	EVT_MENU(EDIT_MENU_UNDO,SubsTextEditCtrl::OnUndo)
 	EVT_MENU(EDIT_MENU_SELECT_ALL,SubsTextEditCtrl::OnSelectAll)
 	EVT_MENU(EDIT_MENU_ADD_TO_DICT,SubsTextEditCtrl::OnAddToDictionary)
-	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_SUGGESTIONS+16,SubsTextEditCtrl::OnUseSuggestion)
-	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_THESAURUS_SUGS+2000,SubsTextEditCtrl::OnUseThesaurusSuggestion)
+	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_THESAURUS-1,SubsTextEditCtrl::OnUseSuggestion)
+	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_DIC_LANGUAGE-1,SubsTextEditCtrl::OnUseThesaurusSuggestion)
+	EVT_MENU_RANGE(EDIT_MENU_DIC_LANGS,EDIT_MENU_THES_LANGUAGE-1,SubsTextEditCtrl::OnSetDicLanguage)
+	EVT_MENU_RANGE(EDIT_MENU_THES_LANGS,EDIT_MENU_THES_LANGS+100,SubsTextEditCtrl::OnSetThesLanguage)
 END_EVENT_TABLE()
 
 
@@ -488,7 +492,6 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 			// Append "add word"
 			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()))->Enable(spellchecker->CanAddWord(currentWord));
-			menu.AppendSeparator();
 		}
 
 		// Spelled right
@@ -505,8 +508,31 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 			}
 
 			// Separator
-			if (!thesaurus) menu.AppendSeparator();
+			//if (!thesaurus) menu.AppendSeparator();
 		}
+		
+		// Language list
+		wxArrayString langs = spellchecker->GetLanguageList();	// This probably should be cached...
+		if (langs.Count()) {
+			// Current language
+			wxString curLang = Options.AsText(_T("Dictionary Language"));
+
+			// Languages
+			wxMenu *languageMenu = new wxMenu();
+			wxMenuItem *cur;
+			wxString name;
+			const wxLanguageInfo *info;
+			for (unsigned int i=0;i<langs.Count();i++) {
+				info = wxLocale::FindLanguageInfo(langs[i]);
+				if (info) name = info->Description;
+				else name = langs[i];
+				cur = languageMenu->AppendRadioItem(EDIT_MENU_DIC_LANGS+i,name);
+				if (langs[i] == curLang) cur->Check();
+			}
+			menu.AppendSubMenu(languageMenu,_("Language"));
+		}
+		else menu.Append(EDIT_MENU_DIC_LANGUAGE,_("No Dictionaries Available"))->Enable(false);
+		menu.AppendSeparator();
 	}
 
 	// Thesaurus
@@ -777,6 +803,41 @@ void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
 }
 
 
+///////////////////////////
+// Set dictionary language
+void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
+	// Get language list
+	wxArrayString langs = spellchecker->GetLanguageList();
+
+	// Set dictionary
+	int index = event.GetId() - EDIT_MENU_DIC_LANGS;
+	spellchecker->SetLanguage(langs[index]);
+	Options.SetText(_T("Dictionary language"),langs[index]);
+	Options.Save();
+
+	// Update styling
+	UpdateStyle();
+}
+
+
+//////////////////////////
+// Set thesaurus language
+void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
+	// Get language list
+	wxArrayString langs = thesaurus->GetLanguageList();
+
+	// Set language
+	int index = event.GetId() - EDIT_MENU_THES_LANGS;
+	thesaurus->SetLanguage(langs[index]);
+	Options.SetText(_T("Thesaurus language"),langs[index]);
+	Options.Save();
+
+	// Update styling
+	UpdateStyle();
+}
+
+
+////////////////////////////////
 // Set selection, unicode-aware
 void SubsTextEditCtrl::SetSelectionU(int start, int end) {
 	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));

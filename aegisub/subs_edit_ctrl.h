@@ -82,6 +82,8 @@ private:
 	void OnAddToDictionary(wxCommandEvent &event);
 	void OnUseSuggestion(wxCommandEvent &event);
 	void OnUseThesaurusSuggestion(wxCommandEvent &event);
+	void OnSetDicLanguage(wxCommandEvent &event);
+	void OnSetThesLanguage(wxCommandEvent &event);
 
 public:
 	SubsEditBox *control;
@@ -112,5 +114,9 @@ enum {
 	EDIT_MENU_SUGGESTION,
 	EDIT_MENU_SUGGESTIONS,
 	EDIT_MENU_THESAURUS = 1450,
-	EDIT_MENU_THESAURUS_SUGS
+	EDIT_MENU_THESAURUS_SUGS,
+	EDIT_MENU_DIC_LANGUAGE = 1600,
+	EDIT_MENU_DIC_LANGS,
+	EDIT_MENU_THES_LANGUAGE = 1700,
+	EDIT_MENU_THES_LANGS
 };
