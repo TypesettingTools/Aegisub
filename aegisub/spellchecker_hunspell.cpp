@@ -41,6 +41,7 @@
 #include <hunspell/hunspell.hxx>
 #include <wx/wxprec.h>
 #include <wx/dir.h>
+#include <wx/filename.h>
 #include "spellchecker_hunspell.h"
 #include "main.h"
 #include "utils.h"
@@ -52,7 +53,7 @@
 HunspellSpellChecker::HunspellSpellChecker() {
 	hunspell = NULL;
 	conv = NULL;
-	SetLanguage(Options.AsText(_T("Dictionary Language")));
+	SetLanguage(Options.AsText(_T("Spell checker Language")));
 }
 
 

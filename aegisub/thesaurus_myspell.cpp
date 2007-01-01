@@ -36,19 +36,22 @@
 
 ///////////
 // Headers
+#include <wx/wxprec.h>
+#include <wx/dir.h>
+#include <wx/filename.h>
 #include "thesaurus_myspell.h"
 #include "mythes.hxx"
 #include "main.h"
+#include "options.h"
+#include "utils.h"
 
 
 ///////////////
 // Constructor
 MySpellThesaurus::MySpellThesaurus() {
-	wxString idxpath = AegisubApp::folderName + _T("dictionaries/th_en_US.idx");
-	wxString datpath = AegisubApp::folderName + _T("dictionaries/th_en_US.dat");
-	mythes = new MyThes(idxpath.mb_str(wxConvLocal),datpath.mb_str(wxConvLocal));
 	conv = NULL;
-	if (mythes) conv = new wxCSConv(wxString(mythes->get_th_encoding(),wxConvUTF8));
+	mythes = NULL;
+	SetLanguage(Options.AsText(_T("Thesaurus Language")));
 }
 
 
@@ -90,7 +93,30 @@ void MySpellThesaurus::Lookup(wxString word,ThesaurusEntryArray &result) {
 /////////////////////
 // Get language list
 wxArrayString MySpellThesaurus::GetLanguageList() {
+	// Get dir name
+	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
 	wxArrayString list;
+
+	// Get file lists
+	wxArrayString idx;
+	wxDir::GetAllFiles(path,&idx,_T("*.idx"),wxDIR_FILES);
+	wxArrayString dat;
+	wxDir::GetAllFiles(path,&dat,_T("*.dat"),wxDIR_FILES);
+
+	// For each idxtionary match, see if it can find the corresponding .dat
+	for (unsigned int i=0;i<idx.Count();i++) {
+		wxString curdat = idx[i].Left(MAX(0,idx[i].Length()-4)) + _T(".dat");
+		for (unsigned int j=0;j<dat.Count();j++) {
+			// Found match
+			if (curdat == dat[j]) {
+				wxFileName fname(curdat);
+				list.Add(fname.GetName());
+				break;
+			}
+		}
+	}
+
+	// Return list
 	return list;
 }
 
@@ -98,4 +124,24 @@ wxArrayString MySpellThesaurus::GetLanguageList() {
 ////////////////
 // Set language
 void MySpellThesaurus::SetLanguage(wxString language) {
+	// Get dir name
+	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
+
+	// Get affix and dictionary paths
+	wxString idxpath = path + _T("th_") + language + _T(".idx");
+	wxString datpath = path + _T("th_") + language + _T(".dat");
+
+	// Check if language is available
+	if (!wxFileExists(idxpath) || !wxFileExists(datpath)) return;
+
+	// Unload
+	delete mythes;
+	mythes = NULL;
+	delete conv;
+	conv = NULL;
+
+	// Load
+	mythes = new MyThes(idxpath.mb_str(wxConvLocal),datpath.mb_str(wxConvLocal));
+	conv = NULL;
+	if (mythes) conv = new wxCSConv(wxString(mythes->get_th_encoding(),wxConvUTF8));
 }

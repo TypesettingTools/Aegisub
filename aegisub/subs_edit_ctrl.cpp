@@ -515,7 +515,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 		wxArrayString langs = spellchecker->GetLanguageList();	// This probably should be cached...
 		if (langs.Count()) {
 			// Current language
-			wxString curLang = Options.AsText(_T("Dictionary Language"));
+			wxString curLang = Options.AsText(_T("Spell checker language"));
 
 			// Languages
 			wxMenu *languageMenu = new wxMenu();
@@ -526,12 +526,12 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 				info = wxLocale::FindLanguageInfo(langs[i]);
 				if (info) name = info->Description;
 				else name = langs[i];
-				cur = languageMenu->AppendRadioItem(EDIT_MENU_DIC_LANGS+i,name);
+				cur = languageMenu->AppendCheckItem(EDIT_MENU_DIC_LANGS+i,name);
 				if (langs[i] == curLang) cur->Check();
 			}
-			menu.AppendSubMenu(languageMenu,_("Language"));
+			menu.AppendSubMenu(languageMenu,_("Spell checker language"));
 		}
-		else menu.Append(EDIT_MENU_DIC_LANGUAGE,_("No Dictionaries Available"))->Enable(false);
+		else menu.Append(EDIT_MENU_DIC_LANGUAGE,_("No dictionaries available"))->Enable(false);
 		menu.AppendSeparator();
 	}
 
@@ -587,6 +587,28 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 		// No suggestions
 		if (!result.size()) menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);
+
+		// Language list
+		wxArrayString langs = thesaurus->GetLanguageList();	// This probably should be cached...
+		if (langs.Count()) {
+			// Current language
+			wxString curLang = Options.AsText(_T("Thesaurus language"));
+
+			// Languages
+			wxMenu *languageMenu = new wxMenu();
+			wxMenuItem *cur;
+			wxString name;
+			const wxLanguageInfo *info;
+			for (unsigned int i=0;i<langs.Count();i++) {
+				info = wxLocale::FindLanguageInfo(langs[i].Mid(3));
+				if (info) name = info->Description;
+				else name = langs[i];
+				cur = languageMenu->AppendCheckItem(EDIT_MENU_THES_LANGS+i,name);
+				if (langs[i].Mid(3) == curLang) cur->Check();
+			}
+			menu.AppendSubMenu(languageMenu,_("Thesaurus language"));
+		}
+		else menu.Append(EDIT_MENU_THES_LANGUAGE,_("No thesauruses available"))->Enable(false);
 
 		// Separator
 		menu.AppendSeparator();
@@ -812,7 +834,7 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 	// Set dictionary
 	int index = event.GetId() - EDIT_MENU_DIC_LANGS;
 	spellchecker->SetLanguage(langs[index]);
-	Options.SetText(_T("Dictionary language"),langs[index]);
+	Options.SetText(_T("Spell checker language"),langs[index]);
 	Options.Save();
 
 	// Update styling

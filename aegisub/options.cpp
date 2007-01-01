@@ -95,7 +95,7 @@ void OptionsManager::LoadDefaults() {
 
 	// Dictionary
 	SetText(_T("Dictionaries path"),_T("dictionaries"));
-	SetText(_T("Dictionary language"),_T("en_US"));
+	SetText(_T("Spell checker language"),_T("en_US"));
 	SetText(_T("Thesaurus language"),_T("en_US"));
 
 	// Video Options
