@@ -39,18 +39,20 @@
 #include "setup.h"
 #if USE_HUNSPELL == 1
 #include <hunspell/hunspell.hxx>
+#include <wx/wxprec.h>
+#include <wx/dir.h>
 #include "spellchecker_hunspell.h"
 #include "main.h"
+#include "utils.h"
+#include "options.h"
 
 
 ///////////////
 // Constructor
 HunspellSpellChecker::HunspellSpellChecker() {
-	wxString affpath = AegisubApp::folderName + _T("dictionaries/en_US.aff");
-	wxString dpath = AegisubApp::folderName + _T("dictionaries/en_US.dic");
-	hunspell = new Hunspell(affpath.mb_str(wxConvLocal),dpath.mb_str(wxConvLocal));
+	hunspell = NULL;
 	conv = NULL;
-	if (hunspell) conv = new wxCSConv(wxString(hunspell->get_dic_encoding(),wxConvUTF8));
+	SetLanguage(Options.AsText(_T("Dictionary Language")));
 }
 
 
@@ -95,12 +97,12 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 	// Array
 	wxArrayString suggestions;
 
-	// Word
-	wxCharBuffer buf = word.mb_str(*conv);
-	if (!buf) return suggestions;
-
 	// Get suggestions
 	if (hunspell) {
+		// Word
+		wxCharBuffer buf = word.mb_str(*conv);
+		if (!buf) return suggestions;
+
 		// Grab raw from Hunspell
 		char **results;
 		int n = hunspell->suggest(&results,buf);
@@ -124,7 +126,30 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 //////////////////////////////////////
 // Get list of available dictionaries
 wxArrayString HunspellSpellChecker::GetLanguageList() {
+	// Get dir name
+	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
 	wxArrayString list;
+
+	// Get file lists
+	wxArrayString dic;
+	wxDir::GetAllFiles(path,&dic,_T("*.dic"),wxDIR_FILES);
+	wxArrayString aff;
+	wxDir::GetAllFiles(path,&aff,_T("*.aff"),wxDIR_FILES);
+
+	// For each dictionary match, see if it can find the corresponding .aff
+	for (unsigned int i=0;i<dic.Count();i++) {
+		wxString curAff = dic[i].Left(MAX(0,dic[i].Length()-4)) + _T(".aff");
+		for (unsigned int j=0;j<aff.Count();j++) {
+			// Found match
+			if (curAff == aff[j]) {
+				wxFileName fname(curAff);
+				list.Add(fname.GetName());
+				break;
+			}
+		}
+	}
+
+	// Return list
 	return list;
 }
 
@@ -132,6 +157,26 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 ////////////////
 // Set language
 void HunspellSpellChecker::SetLanguage(wxString language) {
+	// Get dir name
+	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
+
+	// Get affix and dictionary paths
+	wxString affpath = path + language + _T(".aff");
+	wxString dicpath = path + language + _T(".dic");
+
+	// Check if language is available
+	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;
+
+	// Unload
+	delete hunspell;
+	hunspell = NULL;
+	delete conv;
+	conv = NULL;
+
+	// Load
+	hunspell = new Hunspell(affpath.mb_str(wxConvLocal),dicpath.mb_str(wxConvLocal));
+	conv = NULL;
+	if (hunspell) conv = new wxCSConv(wxString(hunspell->get_dic_encoding(),wxConvUTF8));
 }
 
 #endif

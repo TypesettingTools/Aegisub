@@ -110,7 +110,12 @@ wxString DecodeRelativePath(wxString _path,wxString reference) {
 	wxFileName path(_path);
 	wxFileName refPath(reference);
 	if (!path.IsAbsolute()) path.MakeAbsolute(refPath.GetPath());
+#ifdef __UNIX__
 	return path.GetFullPath(wxPATH_UNIX); // also works on windows
+										  // No, it doesn't, this ommits drive letter in Windows. ~ amz
+#else
+	return path.GetFullPath();
+#endif
 }
 
 

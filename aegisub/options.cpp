@@ -93,6 +93,10 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Auto recovery path"),_T("recovered"));
 	SetInt(_T("Autoload linked files"),2);
 
+	// Dictionary
+	SetText(_T("Dictionaries path"),_T("dictionaries"));
+	SetText(_T("Dictionary language"),_T("en_US"));
+
 	// Video Options
 	SetInt(_T("Video Check Script Res"), 0);
 	SetInt(_T("Video Default Zoom"), 7);
