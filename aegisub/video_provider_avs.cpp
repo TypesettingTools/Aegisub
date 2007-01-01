@@ -235,9 +235,16 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			// Try DirectShowSource
 			if (!dss2) {
 				if (env->FunctionExists("DirectShowSource")) {
-					const char *argnames[3] = { 0, "video", "audio" };
-					AVSValue args[3] = { videoFilename, true, false };
-					script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
+					if (fps == 0.0) {
+						const char *argnames[3] = { 0, "video", "audio" };
+						AVSValue args[3] = { videoFilename, true, false };
+						script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
+					}
+					else {
+						const char *argnames[4] = { 0, "video", "audio" , "fps" };
+						AVSValue args[4] = { videoFilename, true, false , fps };
+						script = env->Invoke("DirectShowSource", AVSValue(args,4), argnames);
+					}
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS without audio"));
 					usedDirectshow = true;
 				}
