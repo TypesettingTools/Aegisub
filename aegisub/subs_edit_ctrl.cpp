@@ -121,7 +121,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	thesaurus = Thesaurus::GetThesaurus();
 	
 	// Delimiters
-	delim = _T(" .,;:!?¿¡(){}[]\"/\\");
+	delim = _T(" .,;:!?¿¡-(){}[]\"/\\");
 }
 
 

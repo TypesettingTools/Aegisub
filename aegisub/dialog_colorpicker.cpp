@@ -789,14 +789,15 @@ void DialogColorPicker::UpdateSpectrumDisplay()
 	}
 	spectrum_dirty = false;
 
-	wxMemoryDC previewdc;
-	previewdc.SelectObject(preview_bitmap);
-	previewdc.SetPen(*wxTRANSPARENT_PEN);
-	wxBrush brush(previewdc.GetBrush());
-	brush.SetColour(cur_color);
-	previewdc.SetBrush(brush);
-	previewdc.DrawRectangle(0, 0, 40, 40);
-	preview_box->Refresh(false);
+	wxBitmap tempBmp = preview_box->GetBitmap();
+	{
+		wxMemoryDC previewdc;
+		previewdc.SelectObject(tempBmp);
+		previewdc.SetPen(*wxTRANSPARENT_PEN);
+		previewdc.SetBrush(wxBrush(cur_color));
+		previewdc.DrawRectangle(0, 0, 40, 40);
+	}
+	preview_box->SetBitmap(tempBmp);
 }
 
 
