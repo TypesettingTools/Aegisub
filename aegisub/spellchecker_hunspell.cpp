@@ -158,6 +158,15 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 ////////////////
 // Set language
 void HunspellSpellChecker::SetLanguage(wxString language) {
+	// Unload
+	delete hunspell;
+	hunspell = NULL;
+	delete conv;
+	conv = NULL;
+
+	// Unloading
+	if (language.IsEmpty()) return;
+
 	// Get dir name
 	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
 
@@ -167,12 +176,6 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 
 	// Check if language is available
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;
-
-	// Unload
-	delete hunspell;
-	hunspell = NULL;
-	delete conv;
-	conv = NULL;
 
 	// Load
 	hunspell = new Hunspell(affpath.mb_str(wxConvLocal),dicpath.mb_str(wxConvLocal));

@@ -110,7 +110,9 @@ wxArrayString MySpellThesaurus::GetLanguageList() {
 			// Found match
 			if (curdat == dat[j]) {
 				wxFileName fname(curdat);
-				list.Add(fname.GetName());
+				wxString name = fname.GetName();
+				if (name.Left(3) == _T("th_")) name = name.Mid(3);
+				list.Add(name);
 				break;
 			}
 		}
@@ -124,6 +126,15 @@ wxArrayString MySpellThesaurus::GetLanguageList() {
 ////////////////
 // Set language
 void MySpellThesaurus::SetLanguage(wxString language) {
+	// Unload
+	delete mythes;
+	mythes = NULL;
+	delete conv;
+	conv = NULL;
+
+	// Unloading
+	if (language.IsEmpty()) return;
+
 	// Get dir name
 	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
 
@@ -133,12 +144,6 @@ void MySpellThesaurus::SetLanguage(wxString language) {
 
 	// Check if language is available
 	if (!wxFileExists(idxpath) || !wxFileExists(datpath)) return;
-
-	// Unload
-	delete mythes;
-	mythes = NULL;
-	delete conv;
-	conv = NULL;
 
 	// Load
 	mythes = new MyThes(idxpath.mb_str(wxConvLocal),datpath.mb_str(wxConvLocal));
