@@ -136,6 +136,26 @@ SubsTextEditCtrl::~SubsTextEditCtrl() {
 }
 
 
+///////////////////////
+// Control event table
+BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
+	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
+
+	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsTextEditCtrl::OnSplitLinePreserve)
+	EVT_MENU(EDIT_MENU_SPLIT_ESTIMATE,SubsTextEditCtrl::OnSplitLineEstimate)
+	EVT_MENU(EDIT_MENU_CUT,SubsTextEditCtrl::OnCut)
+	EVT_MENU(EDIT_MENU_COPY,SubsTextEditCtrl::OnCopy)
+	EVT_MENU(EDIT_MENU_PASTE,SubsTextEditCtrl::OnPaste)
+	EVT_MENU(EDIT_MENU_UNDO,SubsTextEditCtrl::OnUndo)
+	EVT_MENU(EDIT_MENU_SELECT_ALL,SubsTextEditCtrl::OnSelectAll)
+	EVT_MENU(EDIT_MENU_ADD_TO_DICT,SubsTextEditCtrl::OnAddToDictionary)
+	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_THESAURUS-1,SubsTextEditCtrl::OnUseSuggestion)
+	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_DIC_LANGUAGE-1,SubsTextEditCtrl::OnUseThesaurusSuggestion)
+	EVT_MENU_RANGE(EDIT_MENU_DIC_LANGS,EDIT_MENU_THES_LANGUAGE-1,SubsTextEditCtrl::OnSetDicLanguage)
+	EVT_MENU_RANGE(EDIT_MENU_THES_LANGS,EDIT_MENU_THES_LANGS+100,SubsTextEditCtrl::OnSetThesLanguage)
+END_EVENT_TABLE()
+
+
 /////////////////
 // Style a range
 void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
@@ -269,10 +289,20 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 					// Set drawing mode if it's \p
 					if (text.Mid(curPos,1) == _T("p")) {
 						if (curPos+2 < (signed) text.Length()) {
+							// Disable
 							wxChar nextNext = text[curPos+2];
-							if (nextNext == _T('\\') || nextNext == _T('}')) {
-								if (nextChar == _T('0')) drawingMode = false;
-								if (nextChar == _T('1')) drawingMode = true;
+							if ((nextNext == _T('\\') || nextNext == _T('}')) && nextChar == _T('0')) drawingMode = false;
+
+							// Enable
+							if (nextChar >= _T('1') && nextChar <= _T('9')) {
+								for(int testPos = curPos+2;testPos < (signed) text.Length();testPos++) {
+									nextNext = text[testPos];
+									if (nextNext == _T('\\') || nextNext == _T('}')) {
+										drawingMode = true;
+										break;
+									}
+									if (nextNext < _T('0') || nextNext > _T('9')) break;
+								}
 							}
 						}
 					}
@@ -287,6 +317,175 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 	// Spell check
 	StyleSpellCheck(start,_length);
+
+	// Call tip
+	//UpdateCallTip();
+}
+
+
+///////////////////
+// Update call tip
+void SubsTextEditCtrl::UpdateCallTip() {
+	// Get position and text
+	const unsigned int pos = GetReverseUnicodePosition(GetCurrentPos());
+	wxString text = GetText();
+
+	// Find the start of current tag
+	wxChar curChar = 0;
+	int depth = 0;
+	int inDepth = 0;
+	int tagStart = -1;
+	int tagEnd = -1;
+	for (unsigned int i=0;i<text.Length();i++) {
+		// Get character
+		curChar = text[i];
+
+		// Change depth
+		if (curChar == _T('{')) {
+			depth++;
+			continue;
+		}
+		if (curChar == _T('}')) {
+			depth--;
+			if (i > pos && depth == 0) {
+				tagEnd = i=1;
+				break;
+			}
+			continue;
+		}
+
+		// Outside
+		if (depth == 0) {
+			tagStart = -1;
+			if (i == pos) break;
+			continue;
+		}
+		
+		// Inside overrides
+		if (depth == 1) {
+			// Inner depth
+			if (tagStart != -1) {
+				if (curChar == _T('(')) inDepth++;
+				else if (curChar == _T(')')) inDepth--;
+			}
+
+			// Not inside parenthesis
+			if (inDepth == 0) {
+				if (curChar == _T('\\')) {
+					// Found start
+					if (i <= pos) tagStart = i;
+
+					// Found end
+					else {
+						tagEnd = i-1;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	// Calculate length
+	int len;
+	if (tagEnd != -1) len = tagEnd - tagStart + 1;
+	else len = text.Length() - tagStart;
+
+	// No tag available
+	if (tagStart == -1 || len == 0) {
+		CallTipCancel();
+		return;
+	}
+
+	// Current tag
+	wxString tag = text.Mid(tagStart,len);
+	unsigned int posInTag = pos - tagStart;
+
+	// Metrics in tag
+	int tagCommas = 0;
+	int tagParenthesis = 0;
+	int parN = 0;
+	int parPos = -1;
+	bool gotName = false;
+	wxString tagName = tag;
+	for (unsigned int i=0;i<tag.Length();i++) {
+		wxChar curChar = tag[i];
+
+		// Commas
+		if (curChar == _T(',')) {
+			tagCommas++;
+			parN++;
+		}
+
+		// Parenthesis
+		else if (curChar == _T('(') || curChar == _T(')')) {
+			tagParenthesis++;
+			parN++;
+		}
+
+		// Tag name
+		if (parN == 1 && !gotName) {
+			tagName = tag.Left(i); 
+			gotName = true;
+		}
+
+		// Parameter it's on
+		if (i == posInTag) parPos = parN;
+	}
+	if (parPos == -1) parPos = parN;
+
+	// Tag name
+	tagName = tagName.Mid(1);
+	if (tagName.IsEmpty()) {
+		CallTipCancel();
+		return;
+	}
+
+	// Prototypes
+	wxArrayString proto;
+	proto.Add(_T("move(x1,y1,x2,y2)"));
+	proto.Add(_T("move(x1,y1,x2,y2,t1,t2)"));
+
+	// Find matching prototype
+	wxString useProto;
+	for (unsigned int i=0;i<proto.Count();i++) {
+		if (proto[i].Left(tagName.Length()) == tagName) {
+			if (proto[i].Freq(_T(',')) >= tagCommas) {
+				useProto = proto[i];
+				break;
+			}
+		}
+	}
+
+	// No matching prototype
+	if (useProto.IsEmpty()) {
+		CallTipCancel();
+		return;
+	}
+
+	// Highlight start/end
+	int highStart = useProto.Length();
+	int highEnd = -1;
+	parN = 0;
+	for (unsigned int i=0;i<useProto.Length();i++) {
+		wxChar curChar = useProto[i];
+		if (i == 0 || curChar == _T(',') || curChar == _T('(') || curChar == _T(')')) {
+			if (parN == parPos) highStart = i+1;
+			else if (parN == parPos+1) highEnd = i;
+			parN++;
+		}
+	}
+	if (highStart == 1) highStart = 0;
+	if (highEnd == -1) highEnd = useProto.Length();
+
+	// Calltip is over
+	if (highStart == useProto.Length()) {
+		CallTipCancel();
+		return;
+	}
+
+	// Show calltip
+	CallTipShow(pos,useProto);
+	CallTipSetHighlight(highStart,highEnd);
 }
 
 
@@ -452,26 +651,6 @@ void SubsTextEditCtrl::SetTextTo(const wxString _text) {
 	Thaw();
 	control->textEditReady = true;
 }
-
-
-///////////////////////
-// Control event table
-BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
-	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
-
-	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsTextEditCtrl::OnSplitLinePreserve)
-	EVT_MENU(EDIT_MENU_SPLIT_ESTIMATE,SubsTextEditCtrl::OnSplitLineEstimate)
-	EVT_MENU(EDIT_MENU_CUT,SubsTextEditCtrl::OnCut)
-	EVT_MENU(EDIT_MENU_COPY,SubsTextEditCtrl::OnCopy)
-	EVT_MENU(EDIT_MENU_PASTE,SubsTextEditCtrl::OnPaste)
-	EVT_MENU(EDIT_MENU_UNDO,SubsTextEditCtrl::OnUndo)
-	EVT_MENU(EDIT_MENU_SELECT_ALL,SubsTextEditCtrl::OnSelectAll)
-	EVT_MENU(EDIT_MENU_ADD_TO_DICT,SubsTextEditCtrl::OnAddToDictionary)
-	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_THESAURUS-1,SubsTextEditCtrl::OnUseSuggestion)
-	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_DIC_LANGUAGE-1,SubsTextEditCtrl::OnUseThesaurusSuggestion)
-	EVT_MENU_RANGE(EDIT_MENU_DIC_LANGS,EDIT_MENU_THES_LANGUAGE-1,SubsTextEditCtrl::OnSetDicLanguage)
-	EVT_MENU_RANGE(EDIT_MENU_THES_LANGS,EDIT_MENU_THES_LANGS+100,SubsTextEditCtrl::OnSetThesLanguage)
-END_EVENT_TABLE()
 
 
 ///////////////

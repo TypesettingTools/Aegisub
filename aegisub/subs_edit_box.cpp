@@ -345,9 +345,11 @@ void SubsEditBox::SetToLine(int n) {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
-	//EVT_SCI_MODIFIED(EDIT_BOX,SubsEditBox::OnEditText)
+	EVT_SCI_MODIFIED(EDIT_BOX,SubsEditBox::OnEditText)
 	EVT_SCI_STYLENEEDED(EDIT_BOX,SubsEditBox::OnNeedStyle)
 	EVT_SCI_KEY(EDIT_BOX,SubsEditBox::OnKeyDown)
+	EVT_SCI_CHARADDED(EDIT_BOX,SubsEditBox::OnCharAdded)
+
 	EVT_CHECKBOX(SYNTAX_BOX, SubsEditBox::OnSyntaxBox)
 	EVT_RADIOBUTTON(RADIO_TIME_BY_FRAME, SubsEditBox::OnFrameRadio)
 	EVT_RADIOBUTTON(RADIO_TIME_BY_TIME, SubsEditBox::OnTimeRadio)
@@ -389,6 +391,10 @@ void SubsEditBox::OnSize(wxSizeEvent &event) {
 /////////////////////
 // Text edited event
 void SubsEditBox::OnEditText(wxScintillaEvent &event) {
+	int modType = event.GetModificationType();
+	if (modType == (wxSCI_MOD_INSERTTEXT | wxSCI_PERFORMED_USER) || modType == (wxSCI_MOD_DELETETEXT | wxSCI_PERFORMED_USER)) {
+		//TextEdit->UpdateCallTip();
+	}
 }
 
 
@@ -403,6 +409,13 @@ void SubsEditBox::OnNeedStyle(wxScintillaEvent &event) {
 
 	// Just update style
 	else TextEdit->UpdateStyle();
+}
+
+
+///////////////////
+// Character added
+void SubsEditBox::OnCharAdded(wxScintillaEvent &event) {
+	int character = event.GetKey();
 }
 
 

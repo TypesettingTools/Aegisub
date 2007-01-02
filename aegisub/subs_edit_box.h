@@ -109,6 +109,7 @@ private:
 
 	void OnEditText(wxScintillaEvent &event);
 	void OnNeedStyle(wxScintillaEvent &event);
+	void OnCharAdded(wxScintillaEvent &event);
 
 	void OnButtonColor1(wxCommandEvent &event);
 	void OnButtonColor2(wxCommandEvent &event);
