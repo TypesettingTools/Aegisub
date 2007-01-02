@@ -82,7 +82,6 @@ bool AegisubApp::OnInit() {
 		Options.SetFile(folderName + _T("/config.dat"));
 		Options.Load();
 		AssTime::UseMSPrecision = Options.AsBool(_T("Use nonstandard Milisecond Times"));
-		AssDialogue::keepData = Options.AsBool(_T("Keep raw dialogue data"));
 
 		// Set hotkeys file
 		Hotkeys.SetFile(folderName + _T("/hotkeys.dat"));

@@ -213,11 +213,6 @@ bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 }
 
 
-//////////////////
-// Keep data flag
-bool AssDialogue::keepData = true;
-
-
 /////////////
 // Make data
 wxString AssDialogue::MakeData() {
@@ -256,14 +251,12 @@ wxString AssDialogue::MakeData() {
 //////////////////////////////////
 // Update AssDialogue's data line
 void AssDialogue::UpdateData () {
-	if (keepData) SetEntryData(MakeData());
 }
 
 
 //////////////////
 // Get entry data
 const wxString AssDialogue::GetEntryData() {
-	if (keepData) return AssEntry::GetEntryData();
 	return MakeData();
 }
 
@@ -271,7 +264,6 @@ const wxString AssDialogue::GetEntryData() {
 //////////////////
 // Set entry data
 void AssDialogue::SetEntryData(wxString newData) {
-	if (keepData) AssEntry::SetEntryData(newData);
 }
 
 

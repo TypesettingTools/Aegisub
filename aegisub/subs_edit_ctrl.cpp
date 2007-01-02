@@ -378,6 +378,9 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 ///////////////////
 // Update call tip
 void SubsTextEditCtrl::UpdateCallTip() {
+	// Enabled?
+	if (!Options.AsBool(_T("Call tips enabled"))) return;
+
 	// Get position and text
 	const unsigned int pos = GetReverseUnicodePosition(GetCurrentPos());
 	wxString text = GetText();

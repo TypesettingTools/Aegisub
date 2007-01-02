@@ -39,7 +39,7 @@
 
 ////////////
 // Includes
-#include <wx/wx.h>
+#include <wx/wxprec.h>
 #include <wx/grid.h>
 #include <list>
 #include <vector>

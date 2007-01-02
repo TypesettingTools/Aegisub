@@ -92,6 +92,8 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Auto save path"),_T("autosave"));
 	SetText(_T("Auto recovery path"),_T("recovered"));
 	SetInt(_T("Autoload linked files"),2);
+	SetText(_T("Text actor separator"),_T(":"));
+	SetText(_T("Text comment starter"),_T("#"));
 
 	// Dictionary
 	SetText(_T("Dictionaries path"),_T("dictionaries"));
@@ -112,11 +114,6 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Video resizer"),_T("BilinearResize"));
 
 	// Audio Options
-	SetBool(_T("Audio Link"),true);
-	SetBool(_T("Audio Autocommit"),false);
-	SetBool(_T("Audio Autoscroll"),true);
-	SetBool(_T("Audio SSA Mode"),false);
-	SetBool(_T("Audio Medusa Timing Hotkeys"),false);
 	SetBool(_T("Audio SSA Next Line on Commit"),true);
 	SetBool(_T("Audio SSA Allow Autocommit"),false);
 	SetBool(_T("Audio Autofocus"),false);
@@ -131,6 +128,8 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Audio Cache"),1);
 	SetInt(_T("Audio Sample Rate"),0);
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
+	SetText(_T("Audio HD Cache Location"),_T("default"));
+	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
 
 	// Automation
 	SetText(_T("Automation Base Path"), AegisubApp::folderName + _T("automation/"));
@@ -139,6 +138,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Automation Trace Level"), 3);
 	
 	// Edit box cosmetic
+	SetBool(_T("Call Tips Enabled"),true);
 	SetBool(_T("Syntax Highlight Enabled"),true);
 	SetColour(_T("Syntax Highlight Normal"),wxColour(0,0,0));
 	SetColour(_T("Syntax Highlight Brackets"),wxColour(20,50,255));
@@ -190,6 +190,11 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Grid hide overrides char"),temp);
 	SetBool(_T("Grid allow focus"),true);
 	SetBool(_T("Highlight subs in frame"),true);
+#if defined(__WINDOWS__)
+	SetInt(_T("Grid font size"),8);
+#else
+	SetInt(_T("Grid font size"),10);
+#endif
 
 	// Audio Cosmetic
 	SetInt(_T("Audio Spectrum Cutoff"),32);
@@ -218,9 +223,13 @@ void OptionsManager::LoadDefaults() {
 	///// INTERNAL //////
 	// Options that are set by the program itself
 	SetInt(_T("Locale Code"),-1);
-	SetBool(_T("Keep raw dialogue data"),false);
-
 	SetBool(_T("Sync video with subs"),true);
+
+	SetBool(_T("Audio Link"),true);
+	SetBool(_T("Audio Autocommit"),false);
+	SetBool(_T("Audio Autoscroll"),true);
+	SetBool(_T("Audio SSA Mode"),false);
+	SetBool(_T("Audio Medusa Timing Hotkeys"),false);
 
 	SetBool(_T("Shift Times ByTime"),true);
 	SetInt(_T("Shift Times Type"),0);
@@ -241,12 +250,6 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Grid hide overrides"),1);
 	for (int i=0;i<10;i++) SetBool(_T("Grid show column ") + IntegerToString(i),true);
 
-#if defined(__WINDOWS__)
-	SetInt(_T("Grid font size"),8);
-#else
-	SetInt(_T("Grid font size"),10);
-#endif
-
 	for (int i=0;i<9;i++) SetBool(wxString::Format(_T("Paste Over #%i"),i),false);
 	SetBool(_T("Paste Over #9"),true);
 
@@ -256,8 +259,6 @@ void OptionsManager::LoadDefaults() {
 
 	SetInt(_T("Audio Display Height"),100);
 	SetBool(_T("Audio Spectrum"),false);
-	SetText(_T("Audio HD Cache Location"),_T("default"));
-	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
 
 	SetInt(_T("Timing processor key start before thres"),5);
 	SetInt(_T("Timing processor key start after thres"),4);
@@ -278,9 +279,6 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Select Match case"),false);
 	SetBool(_T("Select Match dialogues"),true);
 	SetBool(_T("Select Match comments"),false);
-
-	SetText(_T("Text actor separator"),_T(":"));
-	SetText(_T("Text comment starter"),_T("#"));
 
 	SetText(_T("Color Picker Recent"), _T("&H000000& &H0000FF& &H00FFFF& &H00FF00& &HFFFF00& &HFF0000& &HFF00FF& &HFFFFFF&"));
 	SetInt(_T("Color Picker Mode"), 4);

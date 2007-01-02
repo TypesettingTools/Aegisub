@@ -47,6 +47,7 @@
 #include "subs_grid.h"
 #include "utils.h"
 #include "dialog_colorpicker.h"
+#include "colour_button.h"
 
 
 ///////////////
@@ -107,18 +108,14 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	ColorsSizer->Add(ColorSizer3,0,wxLEFT,5);
 	ColorsSizer->Add(ColorSizer4,0,wxLEFT,5);
 	ColorsSizer->AddStretchSpacer(1);
-	ColorButton1 = new wxBitmapButton(this,BUTTON_COLOR_1,wxBitmap(45,16),wxDefaultPosition,wxDefaultSize);
-	ColorButton2 = new wxBitmapButton(this,BUTTON_COLOR_2,wxBitmap(45,16),wxDefaultPosition,wxDefaultSize);
-	ColorButton3 = new wxBitmapButton(this,BUTTON_COLOR_3,wxBitmap(45,16),wxDefaultPosition,wxDefaultSize);
-	ColorButton4 = new wxBitmapButton(this,BUTTON_COLOR_4,wxBitmap(45,16),wxDefaultPosition,wxDefaultSize);
-	SetBitmapColor(1,style->primary.GetWXColor());
-	SetBitmapColor(2,style->secondary.GetWXColor());
-	SetBitmapColor(3,style->outline.GetWXColor());
-	SetBitmapColor(4,style->shadow.GetWXColor());
-	ColorButton1->SetToolTip(_("Click to choose color"));
-	ColorButton2->SetToolTip(_("Click to choose color"));
-	ColorButton3->SetToolTip(_("Click to choose color"));
-	ColorButton4->SetToolTip(_("Click to choose color"));
+	colorButton[0] = new ColourButton(this,BUTTON_COLOR_1,wxSize(45,16),style->primary.GetWXColor());
+	colorButton[1] = new ColourButton(this,BUTTON_COLOR_2,wxSize(45,16),style->secondary.GetWXColor());
+	colorButton[2] = new ColourButton(this,BUTTON_COLOR_3,wxSize(45,16),style->outline.GetWXColor());
+	colorButton[3] = new ColourButton(this,BUTTON_COLOR_4,wxSize(45,16),style->shadow.GetWXColor());
+	colorButton[0]->SetToolTip(_("Click to choose primary color"));
+	colorButton[1]->SetToolTip(_("Click to choose secondary color"));
+	colorButton[2]->SetToolTip(_("Click to choose outline color"));
+	colorButton[3]->SetToolTip(_("Click to choose shadow color"));
 	ColorAlpha1Value = wxString::Format(_T("%i"),style->primary.a);
 	ColorAlpha1 = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha1Value));
 	ColorAlpha2Value = wxString::Format(_T("%i"),style->secondary.a);
@@ -135,10 +132,10 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	ColorSizer2->Add(new wxStaticText(this,-1,_("Secondary")),0,wxBOTTOM | wxALIGN_CENTER,5);
 	ColorSizer3->Add(new wxStaticText(this,-1,_("Outline")),0,wxBOTTOM | wxALIGN_CENTER,5);
 	ColorSizer4->Add(new wxStaticText(this,-1,_("Shadow")),0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer1->Add(ColorButton1,0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer2->Add(ColorButton2,0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer3->Add(ColorButton3,0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer4->Add(ColorButton4,0,wxBOTTOM | wxALIGN_CENTER,5);
+	ColorSizer1->Add(colorButton[0],0,wxBOTTOM | wxALIGN_CENTER,5);
+	ColorSizer2->Add(colorButton[1],0,wxBOTTOM | wxALIGN_CENTER,5);
+	ColorSizer3->Add(colorButton[2],0,wxBOTTOM | wxALIGN_CENTER,5);
+	ColorSizer4->Add(colorButton[3],0,wxBOTTOM | wxALIGN_CENTER,5);
 	ColorSizer1->Add(ColorAlpha1,0,wxALIGN_CENTER,0);
 	ColorSizer2->Add(ColorAlpha2,0,wxALIGN_CENTER,0);
 	ColorSizer3->Add(ColorAlpha3,0,wxALIGN_CENTER,0);
@@ -308,28 +305,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 // Destructor
 DialogStyleEditor::~DialogStyleEditor () {
 	delete work;
-}
-
-
-////////////////////////////////////////////
-// Sets the color of the bitmap of a button
-void DialogStyleEditor::SetBitmapColor (int n,wxColour color) {
-	wxBitmapButton *but;
-	switch (n) {
-		case 1: but = ColorButton1; break;
-		case 2: but = ColorButton2; break;
-		case 3: but = ColorButton3; break;
-		case 4: but = ColorButton4; break;
-		default: return;
-	}
-	wxBitmap bmp (but->GetBitmapLabel());
-	wxMemoryDC dc;
-	dc.SelectObject(bmp);
-	dc.SetPen(*wxBLACK_PEN);
-	wxBrush brush(color);
-	dc.SetBrush(brush);
-	dc.DrawRectangle(0,0,bmp.GetWidth(),bmp.GetHeight());
-	but->SetBitmapLabel(bmp);
 }
 
 
@@ -524,19 +499,7 @@ void DialogStyleEditor::OnSetColor (int n) {
 		case 4: modify = &work->shadow; break;
 		default: throw _T("Never gets here");
 	}
-	DialogColorPicker dlg(this, modify->GetWXColor());
-	if (dlg.ShowModal() == wxID_OK) {
-		wxColour color = dlg.GetColor();
-		modify->SetWXColor(color);
-		SetBitmapColor(n, color);
-	}
-	/*
-	wxColour newColor = wxGetColourFromUser(this,modify->GetWXColor());
-	if (newColor.Ok()) {
-		modify->SetWXColor(newColor);
-		SetBitmapColor(n,newColor);
-	}
-	*/
+	modify->SetWXColor(colorButton[n-1]->GetColour());
 }
 
 

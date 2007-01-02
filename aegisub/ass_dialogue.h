@@ -160,8 +160,6 @@ private:
 	wxString MakeData();
 
 public:
-	static bool keepData;
-
 	std::vector<AssDialogueBlock*> Blocks;	// Contains information about each block of text
 
 	bool Comment;					// Is this a comment line?

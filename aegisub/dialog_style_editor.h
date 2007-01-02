@@ -41,6 +41,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include "colour_button.h"
 
 
 //////////////
@@ -81,10 +82,7 @@ private:
 	wxCheckBox *BoxItalic;
 	wxCheckBox *BoxUnderline;
 	wxCheckBox *BoxStrikeout;
-	wxBitmapButton *ColorButton1;
-	wxBitmapButton *ColorButton2;
-	wxBitmapButton *ColorButton3;
-	wxBitmapButton *ColorButton4;
+	ColourButton *colorButton[4];
 	wxTextCtrl *ColorAlpha1;
 	wxTextCtrl *ColorAlpha2;
 	wxTextCtrl *ColorAlpha3;
