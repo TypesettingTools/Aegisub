@@ -147,13 +147,16 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	int end = start + _length;
 	if (_length < 0) end = text.Length();
 
+	// Flags
+	bool numMode = false;			// everything is considered a number/parameter until this is unset
+	bool drawingMode = false;		// for \p1 -> \p0 stuff
+
 	// Begin styling
 	StartStyling(0,255);
 	int ran = 0;
 	int depth = 0;
 	int curStyle = 0;
 	int curPos = 0;
-	bool numMode = false;
 	wxChar curChar = 0;
 	wxChar prevChar = 0;
 	wxChar nextChar = 0;
@@ -216,7 +219,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 				SetUnicodeStyling(curPos,ran,curStyle);
 				curPos += ran;
 				ran = 0;
-				curStyle = 0;
+				if (drawingMode) curStyle = 6;
+				else curStyle = 0;
 			}
 		}
 
@@ -260,6 +264,17 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 						numMode = true;
 						ran = tagLen-1;
 						i+=ran;
+					}
+
+					// Set drawing mode if it's \p
+					if (text.Mid(curPos,1) == _T("p")) {
+						if (curPos+2 < (signed) text.Length()) {
+							wxChar nextNext = text[curPos+2];
+							if (nextNext == _T('\\') || nextNext == _T('}')) {
+								if (nextChar == _T('0')) drawingMode = false;
+								if (nextChar == _T('1')) drawingMode = true;
+							}
+						}
 					}
 				}
 			}
