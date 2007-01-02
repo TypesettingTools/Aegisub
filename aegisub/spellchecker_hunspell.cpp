@@ -42,6 +42,8 @@
 #include <wx/wxprec.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
+#include <wx/wfstream.h>
+#include <wx/txtstrm.h>
 #include "spellchecker_hunspell.h"
 #include "main.h"
 #include "utils.h"
@@ -60,10 +62,19 @@ HunspellSpellChecker::HunspellSpellChecker() {
 //////////////
 // Destructor
 HunspellSpellChecker::~HunspellSpellChecker() {
+	Reset();
+}
+
+
+/////////
+// Reset
+void HunspellSpellChecker::Reset() {
 	delete hunspell;
 	hunspell = NULL;
 	delete conv;
 	conv = NULL;
+	affpath.Clear();
+	dicpath.Clear();
 }
 
 
@@ -78,7 +89,51 @@ bool HunspellSpellChecker::CanAddWord(wxString word) {
 //////////////////////////
 // Add word to dictionary
 void HunspellSpellChecker::AddWord(wxString word) {
-	if (hunspell) hunspell->put_word(word.mb_str(*conv));
+	// Dictionary OK?
+	if (!hunspell) return;
+
+	// Add to currently loaded file
+	hunspell->put_word(word.mb_str(*conv));
+
+	// Load dictionary
+	wxArrayString dic;
+	wxString curLine;
+	if (!dicpath.IsEmpty()) {			// Even if you ever want to remove this "if", keep the braces, so the stream closes at the end
+		bool first = true;
+		bool added = false;
+		wxFileInputStream in(dicpath);
+		if (!in.IsOk()) return;
+		wxTextInputStream textIn(in,_T(" \t"),*conv);
+
+		// Read it
+		while (in.CanRead() && !in.Eof()) {
+			// Read line
+			curLine = textIn.ReadLine();
+			curLine.Trim();
+
+			// First
+			if (first) {
+				first = false;
+				if (curLine.IsNumber()) continue;
+			}
+
+			// See if word to be added goes here
+			if (!added && curLine.Lower() > word.Lower()) {
+				dic.Add(word);
+				added = true;
+			}
+
+			// Add to memory dictionary
+			dic.Add(curLine);
+		}
+	}
+	
+	// Write back to disk
+	wxFileOutputStream out(dicpath);
+	if (!out.IsOk()) return;
+	wxTextOutputStream textOut(out,wxEOL_UNIX,*conv);
+	textOut.WriteString(wxString::Format(_T("%i"),dic.Count())+_T("\n"));
+	for (unsigned int i=0;i<dic.Count();i++) textOut.WriteString(dic[i]+_T("\n"));
 }
 
 
@@ -159,20 +214,15 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 // Set language
 void HunspellSpellChecker::SetLanguage(wxString language) {
 	// Unload
-	delete hunspell;
-	hunspell = NULL;
-	delete conv;
-	conv = NULL;
-
-	// Unloading
+	Reset();
 	if (language.IsEmpty()) return;
 
 	// Get dir name
 	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
 
 	// Get affix and dictionary paths
-	wxString affpath = path + language + _T(".aff");
-	wxString dicpath = path + language + _T(".dic");
+	affpath = path + language + _T(".aff");
+	dicpath = path + language + _T(".dic");
 
 	// Check if language is available
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;

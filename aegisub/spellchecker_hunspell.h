@@ -53,6 +53,10 @@ class HunspellSpellChecker : public SpellChecker {
 private:
 	Hunspell *hunspell;
 	wxCSConv *conv;
+	wxString affpath;
+	wxString dicpath;
+
+	void Reset();
 
 public:
 	HunspellSpellChecker();
