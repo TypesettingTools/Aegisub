@@ -64,6 +64,7 @@ private:
 	int currentWordPos;
 
 	wxArrayString proto;
+	int tipProtoN;
 
 	void OnMouseEvent(wxMouseEvent &event);
 

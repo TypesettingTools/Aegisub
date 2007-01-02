@@ -125,6 +125,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	delim = _T(" .,;:!?¿¡-(){}[]\"/\\");
 
 	// Prototypes for call tips
+	tipProtoN = -1;
 	proto.Add(_T("move(x1,y1,x2,y2)"));
 	proto.Add(_T("move(x1,y1,x2,y2,startTime,endTime)"));
 	proto.Add(_T("fn;FontName"));
@@ -515,6 +516,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	wxString useProto;
 	wxString cleanProto;
 	wxString protoName;
+	int protoN;
 	bool semiProto = false;
 	for (unsigned int i=0;i<proto.Count();i++) {
 		// Get prototype name
@@ -542,6 +544,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 			if (proto[i].Freq(_T(',')) >= tagCommas) {
 				// Found
 				useProto = proto[i];
+				protoN = i;
 				break;
 			}
 		}
@@ -580,7 +583,8 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	}
 
 	// Show calltip
-	CallTipShow(pos,cleanProto);
+	if (!CallTipActive() || tipProtoN != protoN) CallTipShow(GetUnicodePosition(tagStart),cleanProto);
+	tipProtoN = protoN;
 	CallTipSetHighlight(highStart,highEnd);
 }
 
