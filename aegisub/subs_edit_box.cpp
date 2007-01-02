@@ -427,6 +427,12 @@ void SubsEditBox::OnCharAdded(wxScintillaEvent &event) {
 }
 
 
+////////////
+// Key down
+void SubsEditBox::OnKeyDown(wxScintillaEvent &event) {
+}
+
+
 /////////////////////////////
 // Syntax highlight checkbox
 void SubsEditBox::OnSyntaxBox(wxCommandEvent &event) {
@@ -457,13 +463,6 @@ void SubsEditBox::OnTimeRadio(wxCommandEvent &event) {
 		EndTime->SetByFrame(false);
 		grid->SetByFrame(false);
 	}
-	event.Skip();
-}
-
-
-////////////
-// Key down
-void SubsEditBox::OnKeyDown(wxScintillaEvent &event) {
 	event.Skip();
 }
 
