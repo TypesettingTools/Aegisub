@@ -110,6 +110,8 @@ void MatroskaWrapper::Close() {
 		fclose(input->fp);
 		delete input;
 	}
+	keyFrames.Clear();
+	timecodes.clear();
 }
 
 
@@ -134,6 +136,9 @@ void MatroskaWrapper::Parse() {
 	keyFrames.Clear();
 	bytePos.Clear();
 	timecodes.clear();
+	frames.clear();
+	rawFrames.clear();
+	bytePos.Clear();
 
 	// Get info
 	int tracks = mkv_GetNumTracks(file);

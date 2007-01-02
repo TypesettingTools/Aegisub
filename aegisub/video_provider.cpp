@@ -41,6 +41,7 @@
 #include "video_provider_dshow.h"
 #include "options.h"
 #include "setup.h"
+#include "vfr.h"
 
 
 ////////////////
@@ -106,7 +107,8 @@ VideoProvider *VideoProvider::GetProvider(wxString video,wxString subtitles,doub
 	// Use DirectShow provider
 	if (!provider && (preffered == _T("dshow") || !avisynthAvailable)) {
 		try {
-			provider = new DirectShowVideoProvider(video,subtitles,fps);
+			if (VFR_Input.GetFrameRateType() == VFR) provider = new DirectShowVideoProvider(video,subtitles);
+			else provider = new DirectShowVideoProvider(video,subtitles,fps);
 		}
 		catch (...) {
 			delete provider;

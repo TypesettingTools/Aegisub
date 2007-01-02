@@ -146,94 +146,6 @@ void  VideoDisplay::UpdateSize() {
 }
 
 
-///////////////////////
-// Sets video filename
-void VideoDisplay::SetVideo(const wxString &filename) {
-	// Unload video
-	delete provider;
-	provider = NULL;
-	//if (VFR_Output.GetFrameRateType() == VFR) VFR_Output.Unload();
-	//VFR_Input.Unload();
-	videoName = _T("");
-	loaded = false;
-	frame_n = 0;
-	Reset();
-	
-	// Load video
-	if (!filename.IsEmpty()) {
-		try {
-			grid->CommitChanges(true);
-			bool isVfr = false;
-			double overFps = 0;
-
-			// Read extra data from file
-			bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
-			wxString ext = filename.Right(4).Lower();
-			KeyFrames.Clear();
-			if (ext == _T(".mkv") || mkvOpen) {
-				// Parse mkv
-				if (!mkvOpen) MatroskaWrapper::wrapper.Open(filename);
-
-				// Get keyframes
-				KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
-				keyFramesLoaded = true;
-
-				// Ask to override timecodes
-				int override = wxYES;
-				if (VFR_Output.IsLoaded()) override = wxMessageBox(_("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
-				if (override == wxYES) {
- 					MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
-					isVfr = VFR_Output.GetFrameRateType() == VFR;
-					if (isVfr) overFps = VFR_Output.GetCommonFPS();
-				}
-
-				// Close mkv
-				MatroskaWrapper::wrapper.Close();
-			}
-#ifdef __WINDOWS__
-			else if (ext == _T(".avi")) {
-				KeyFrames = VFWWrapper::GetKeyFrames(filename);
-				keyFramesLoaded = true;
-			}
-#endif
-
-			// Choose a provider
-			provider = VideoProvider::GetProvider(filename,GetTempWorkFile(),overFps);
-			if (isVfr) provider->OverrideFrameTimeList(VFR_Output.GetFrameTimeList());
-			provider->SetZoom(zoomValue);
-			if (arType != 4) arValue = GetARFromType(arType); // 4 = custom
-			provider->SetDAR(arValue);
-
-			// Update size
-			UpdateSize();
-
-			//Gather video parameters
-			length = provider->GetFrameCount();
-			fps = provider->GetFPS();
-			VFR_Input.SetCFR(fps);
-			if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
-
-			// Set range of slider
-			ControlSlider->SetRange(0,length-1);
-			ControlSlider->SetValue(0);
-
-			videoName = filename;
-
-			// Add to recent
-			Options.AddToRecentList(filename,_T("Recent vid"));
-
-			RefreshVideo();
-			UpdatePositionDisplay();
-		}
-		
-		catch (wxString &e) {
-			wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
-		}
-	}
-
-	loaded = provider != NULL;
-}
-
 //////////
 // Resets
 void VideoDisplay::Reset() {
@@ -257,6 +169,110 @@ void VideoDisplay::Reset() {
 	}
 }
 
+
+///////////////////////
+// Sets video filename
+void VideoDisplay::SetVideo(const wxString &filename) {
+	// Unload video
+	delete provider;
+	provider = NULL;
+	//if (VFR_Output.GetFrameRateType() == VFR) VFR_Output.Unload();
+	//VFR_Input.Unload();
+	videoName = _T("");
+	loaded = false;
+	frame_n = 0;
+	Reset();
+	
+	// Load video
+	if (!filename.IsEmpty()) {
+		try {
+			grid->CommitChanges(true);
+			bool isVfr = false;
+			double overFps = 0;
+			FrameRate temp;
+
+			// Unload timecodes
+			//int unload = wxYES;
+			//if (VFR_Output.IsLoaded()) unload = wxMessageBox(_("Do you want to unload timecodes, too?"),_("Unload timecodes?"),wxYES_NO | wxICON_QUESTION);
+			//if (unload == wxYES) VFR_Output.Unload();
+
+			// Read extra data from file
+			bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
+			wxString ext = filename.Right(4).Lower();
+			KeyFrames.Clear();
+			if (ext == _T(".mkv") || mkvOpen) {
+				// Parse mkv
+				if (!mkvOpen) MatroskaWrapper::wrapper.Open(filename);
+
+				// Get keyframes
+				KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
+				keyFramesLoaded = true;
+
+				// Ask to override timecodes
+				int override = wxYES;
+				if (VFR_Output.IsLoaded()) override = wxMessageBox(_("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
+				if (override == wxYES) {
+					MatroskaWrapper::wrapper.SetToTimecodes(temp);
+					isVfr = temp.GetFrameRateType() == VFR;
+					if (isVfr) {
+						overFps = temp.GetCommonFPS();
+						MatroskaWrapper::wrapper.SetToTimecodes(VFR_Input);
+	 					MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
+					}
+				}
+
+				// Close mkv
+				MatroskaWrapper::wrapper.Close();
+			}
+#ifdef __WINDOWS__
+			else if (ext == _T(".avi")) {
+				KeyFrames = VFWWrapper::GetKeyFrames(filename);
+				keyFramesLoaded = true;
+			}
+#endif
+
+			// Choose a provider
+			provider = VideoProvider::GetProvider(filename,GetTempWorkFile(),overFps);
+			if (isVfr) provider->OverrideFrameTimeList(temp.GetFrameTimeList());
+			provider->SetZoom(zoomValue);
+			if (arType != 4) arValue = GetARFromType(arType); // 4 = custom
+			provider->SetDAR(arValue);
+
+			// Update size
+			UpdateSize();
+
+			//Gather video parameters
+			length = provider->GetFrameCount();
+			fps = provider->GetFPS();
+			if (!isVfr) {
+				VFR_Input.SetCFR(fps);
+				if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
+			}
+
+			// Set range of slider
+			ControlSlider->SetRange(0,length-1);
+			ControlSlider->SetValue(0);
+
+			videoName = filename;
+
+			// Add to recent
+			Options.AddToRecentList(filename,_T("Recent vid"));
+
+			RefreshVideo();
+			UpdatePositionDisplay();
+		}
+		
+		catch (wxString &e) {
+			wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
+		}
+	}
+
+	loaded = provider != NULL;
+}
+
+
+/////////////////////
+// Refresh subtitles
 void VideoDisplay::RefreshSubtitles() {
 	provider->RefreshSubtitles();
 	RefreshVideo();
