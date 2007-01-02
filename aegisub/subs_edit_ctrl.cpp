@@ -98,11 +98,12 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	StyleSetFont(4,font);
 	StyleSetSize(4,size);
 	StyleSetForeground(4,Options.AsColour(_T("Syntax Highlight Error")));
+	StyleSetBackground(4,Options.AsColour(_T("Syntax Highlight Error Background")));
 
-	// Tag Number Parameters style
+	// Tag Parameters style
 	StyleSetFont(5,font);
 	StyleSetSize(5,size);
-	StyleSetForeground(5,Options.AsColour(_T("Syntax Highlight Numbers")));
+	StyleSetForeground(5,Options.AsColour(_T("Syntax Highlight Parameters")));
 
 	// Line breaks style
 	StyleSetFont(6,font);
@@ -152,6 +153,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	int depth = 0;
 	int curStyle = 0;
 	int curPos = 0;
+	bool numMode = false;
 	wxChar curChar = 0;
 	wxChar prevChar = 0;
 	wxChar nextChar = 0;
@@ -170,6 +172,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			curPos += ran;
 			ran = 0;
 			curStyle = 4;
+			numMode = false;
 		}
 
 		// Start override block
@@ -180,6 +183,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			depth++;
 			if (depth == 1) curStyle = 1;
 			else curStyle = 4;
+			numMode = false;
 		}
 
 		// End override block
@@ -190,10 +194,14 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			depth--;
 			if (depth == 0) curStyle = 1;
 			else curStyle = 4;
+			numMode = false;
 		}
 
 		// Outside
 		else if (depth == 0) {
+			// Reset number mode
+			numMode = false;
+
 			// Is \n, \N or \h?
 			if (curChar == _T('\\') && (nextChar == 'n' || nextChar == 'N' || nextChar == 'h')) {
 				SetUnicodeStyling(curPos,ran,curStyle);
@@ -221,25 +229,39 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 					curPos += ran;
 					ran = 0;
 					curStyle = 2;
+					numMode = false;
 				}
 			}
 
-			// Number
-			else if ((curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&')) {
-				if (curStyle != 5) {
+			else {
+				// Number
+				if (prevChar != _T('\\') && (numMode || (curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&'))) {
+					if (curStyle != 5) {
+						SetUnicodeStyling(curPos,ran,curStyle);
+						curPos += ran;
+						ran = 0;
+						curStyle = 5;
+						numMode = true;
+					}
+				}
+
+				// Tag name
+				else if (curStyle != 3) {
 					SetUnicodeStyling(curPos,ran,curStyle);
 					curPos += ran;
 					ran = 0;
-					curStyle = 5;
-				}
-			}
+					curStyle = 3;
 
-			// Tag name
-			else if (curStyle != 3) {
-				SetUnicodeStyling(curPos,ran,curStyle);
-				curPos += ran;
-				ran = 0;
-				curStyle = 3;
+					// Set parameter if it's \fn or \r
+					int tagLen = 0;
+					if (text.Mid(curPos,2) == _T("fn")) tagLen = 2;
+					else if (text.Mid(curPos,1) == _T("r")) tagLen = 1;
+					if (tagLen) {
+						numMode = true;
+						ran = tagLen-1;
+						i+=ran;
+					}
+				}
 			}
 		}
 
