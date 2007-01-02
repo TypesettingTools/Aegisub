@@ -123,6 +123,57 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	
 	// Delimiters
 	delim = _T(" .,;:!?¿¡-(){}[]\"/\\");
+
+	// Prototypes for call tips
+	proto.Add(_T("move(x1,y1,x2,y2)"));
+	proto.Add(_T("move(x1,y1,x2,y2,startTime,endTime)"));
+	proto.Add(_T("fn;FontName"));
+	proto.Add(_T("bord;Width"));
+	proto.Add(_T("shad;Depth"));
+	proto.Add(_T("be;1/0"));
+	proto.Add(_T("fscx;Scale"));
+	proto.Add(_T("fscy;Scale"));
+	proto.Add(_T("fsp;Spacing"));
+	proto.Add(_T("fs;FontSize"));
+	proto.Add(_T("fe;Encoding"));
+	proto.Add(_T("frx;Angle"));
+	proto.Add(_T("fry;Angle"));
+	proto.Add(_T("frz;Angle"));
+	proto.Add(_T("fr;Angle"));
+	proto.Add(_T("pbo;Offset"));
+	proto.Add(_T("clip(command)"));
+	proto.Add(_T("clip(scale,command)"));
+	proto.Add(_T("clip(x1,y1,x2,y2)"));
+	proto.Add(_T("t(acceleration,tags)"));
+	proto.Add(_T("t(startTime,endTime,tags)"));
+	proto.Add(_T("t(startTime,endTime,acceleration,tags)"));
+	proto.Add(_T("pos(x,y)"));
+	proto.Add(_T("p;Exponent"));
+	proto.Add(_T("org(x,y)"));
+	proto.Add(_T("fade(startAlpha,middleAlpha,endAlpha,startIn,endIn,startOut,endOut)"));
+	proto.Add(_T("fad(startTime,endTime)"));
+	proto.Add(_T("c;Colour"));
+	proto.Add(_T("1c;Colour"));
+	proto.Add(_T("2c;Colour"));
+	proto.Add(_T("3c;Colour"));
+	proto.Add(_T("4c;Colour"));
+	proto.Add(_T("alpha;Alpha"));
+	proto.Add(_T("1a;Alpha"));
+	proto.Add(_T("2a;Alpha"));
+	proto.Add(_T("3a;Alpha"));
+	proto.Add(_T("4a;Alpha"));
+	proto.Add(_T("an;Alignment"));
+	proto.Add(_T("a;Alignment"));
+	proto.Add(_T("b;Weight"));
+	proto.Add(_T("i;1/0"));
+	proto.Add(_T("u;1/0"));
+	proto.Add(_T("s;1/0"));
+	proto.Add(_T("kf;Duration"));
+	proto.Add(_T("ko;Duration"));
+	proto.Add(_T("k;Duration"));
+	proto.Add(_T("K;Duration"));
+	proto.Add(_T("q;WarpStyle"));
+	proto.Add(_T("r;Style"));
 }
 
 
@@ -319,7 +370,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	StyleSpellCheck(start,_length);
 
 	// Call tip
-	//UpdateCallTip();
+	UpdateCallTip();
 }
 
 
@@ -330,15 +381,17 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	const unsigned int pos = GetReverseUnicodePosition(GetCurrentPos());
 	wxString text = GetText();
 
-	// Find the start of current tag
+	// Find the start and end of current tag
 	wxChar curChar = 0;
+	wxChar prevChar = 0;
 	int depth = 0;
 	int inDepth = 0;
 	int tagStart = -1;
 	int tagEnd = -1;
-	for (unsigned int i=0;i<text.Length();i++) {
+	for (unsigned int i=0;i<text.Length()+1;i++) {
 		// Get character
-		curChar = text[i];
+		if (i<text.Length()) curChar = text[i];
+		else curChar = 0;
 
 		// Change depth
 		if (curChar == _T('{')) {
@@ -347,8 +400,8 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		}
 		if (curChar == _T('}')) {
 			depth--;
-			if (i > pos && depth == 0) {
-				tagEnd = i=1;
+			if (i >= pos && depth == 0) {
+				tagEnd = i-1;
 				break;
 			}
 			continue;
@@ -371,18 +424,21 @@ void SubsTextEditCtrl::UpdateCallTip() {
 
 			// Not inside parenthesis
 			if (inDepth == 0) {
-				if (curChar == _T('\\')) {
+				if (prevChar == _T('\\')) {
 					// Found start
 					if (i <= pos) tagStart = i;
 
 					// Found end
 					else {
-						tagEnd = i-1;
+						tagEnd = i-2;
 						break;
 					}
 				}
 			}
 		}
+
+		// Previous character
+		prevChar = curChar;
 	}
 
 	// Calculate length
@@ -391,14 +447,15 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	else len = text.Length() - tagStart;
 
 	// No tag available
-	if (tagStart == -1 || len == 0) {
+	int textLen = text.Length();
+	unsigned int posInTag = pos - tagStart;
+	if (tagStart+len > textLen || len <= 0 || tagStart < 0 || posInTag < 0) {
 		CallTipCancel();
 		return;
 	}
 
 	// Current tag
 	wxString tag = text.Mid(tagStart,len);
-	unsigned int posInTag = pos - tagStart;
 
 	// Metrics in tag
 	int tagCommas = 0;
@@ -409,6 +466,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	wxString tagName = tag;
 	for (unsigned int i=0;i<tag.Length();i++) {
 		wxChar curChar = tag[i];
+		bool isEnd = false;
 
 		// Commas
 		if (curChar == _T(',')) {
@@ -417,9 +475,14 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		}
 
 		// Parenthesis
-		else if (curChar == _T('(') || curChar == _T(')')) {
+		else if (curChar == _T('(')) {
 			tagParenthesis++;
 			parN++;
+		}
+		else if (curChar == _T(')')) {
+			tagParenthesis++;
+			parN++;
+			isEnd = true;
 		}
 
 		// Tag name
@@ -429,27 +492,55 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		}
 
 		// Parameter it's on
-		if (i == posInTag) parPos = parN;
+		if (i == posInTag) {
+			parPos = parN;
+			if (curChar == _T(',') || curChar == _T('(') || curChar == _T(')')) {
+				parPos--;
+			}
+		}
+		else if (isEnd) {
+			parN = 1000;
+			break;
+		}
 	}
 	if (parPos == -1) parPos = parN;
 
 	// Tag name
-	tagName = tagName.Mid(1);
 	if (tagName.IsEmpty()) {
 		CallTipCancel();
 		return;
 	}
 
-	// Prototypes
-	wxArrayString proto;
-	proto.Add(_T("move(x1,y1,x2,y2)"));
-	proto.Add(_T("move(x1,y1,x2,y2,t1,t2)"));
-
 	// Find matching prototype
 	wxString useProto;
+	wxString cleanProto;
+	wxString protoName;
+	bool semiProto = false;
 	for (unsigned int i=0;i<proto.Count();i++) {
-		if (proto[i].Left(tagName.Length()) == tagName) {
+		// Get prototype name
+		int div = proto[i].Find(_T(';'));
+		if (div != wxNOT_FOUND) protoName = proto[i].Left(div);
+		else {
+			div = proto[i].Find(_T('('));
+			protoName = proto[i].Left(div);
+		}
+		
+		// Fix name
+		semiProto = false;
+		cleanProto = proto[i];
+		if (cleanProto.Freq(_T(';')) > 0) {
+			cleanProto.Replace(_T(";"),_T(""));
+			semiProto = true;
+		}
+
+		// Prototype match
+		wxString temp;
+		if (semiProto) temp = tagName.Left(protoName.Length());
+		else temp = tagName;
+		if (protoName == temp) {
+			// Parameter count match
 			if (proto[i].Freq(_T(',')) >= tagCommas) {
+				// Found
 				useProto = proto[i];
 				break;
 			}
@@ -462,19 +553,24 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		return;
 	}
 
+	// Parameter number for tags without "(),"
+	if (semiProto && parPos == 0 && posInTag >= protoName.Length()) parPos = 1;
+
 	// Highlight start/end
 	int highStart = useProto.Length();
 	int highEnd = -1;
 	parN = 0;
+	int delta = 0;
 	for (unsigned int i=0;i<useProto.Length();i++) {
 		wxChar curChar = useProto[i];
-		if (i == 0 || curChar == _T(',') || curChar == _T('(') || curChar == _T(')')) {
-			if (parN == parPos) highStart = i+1;
+		if (i == 0 || curChar == _T(',') || curChar == _T(';') || curChar == _T('(') || curChar == _T(')')) {
+			if (curChar == _T(';')) delta++;
+			if (parN == parPos) highStart = i+1-delta;
 			else if (parN == parPos+1) highEnd = i;
 			parN++;
 		}
 	}
-	if (highStart == 1) highStart = 0;
+	if (highStart <= 1) highStart = 0;
 	if (highEnd == -1) highEnd = useProto.Length();
 
 	// Calltip is over
@@ -484,7 +580,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	}
 
 	// Show calltip
-	CallTipShow(pos,useProto);
+	CallTipShow(pos,cleanProto);
 	CallTipSetHighlight(highStart,highEnd);
 }
 

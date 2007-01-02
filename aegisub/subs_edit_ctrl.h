@@ -63,6 +63,8 @@ private:
 	wxArrayString thesSugs;
 	int currentWordPos;
 
+	wxArrayString proto;
+
 	void OnMouseEvent(wxMouseEvent &event);
 
 	wxString GetWordAtPosition(int pos);

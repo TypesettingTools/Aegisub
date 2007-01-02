@@ -349,6 +349,7 @@ BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 	EVT_SCI_STYLENEEDED(EDIT_BOX,SubsEditBox::OnNeedStyle)
 	EVT_SCI_KEY(EDIT_BOX,SubsEditBox::OnKeyDown)
 	EVT_SCI_CHARADDED(EDIT_BOX,SubsEditBox::OnCharAdded)
+	EVT_SCI_UPDATEUI(EDIT_BOX,SubsEditBox::OnUpdateUI)
 
 	EVT_CHECKBOX(SYNTAX_BOX, SubsEditBox::OnSyntaxBox)
 	EVT_RADIOBUTTON(RADIO_TIME_BY_FRAME, SubsEditBox::OnFrameRadio)
@@ -395,6 +396,13 @@ void SubsEditBox::OnEditText(wxScintillaEvent &event) {
 	if (modType == (wxSCI_MOD_INSERTTEXT | wxSCI_PERFORMED_USER) || modType == (wxSCI_MOD_DELETETEXT | wxSCI_PERFORMED_USER)) {
 		//TextEdit->UpdateCallTip();
 	}
+}
+
+
+//////////////////////////
+// User Interface updated
+void SubsEditBox::OnUpdateUI(wxScintillaEvent &event) {
+	TextEdit->UpdateCallTip();
 }
 
 
