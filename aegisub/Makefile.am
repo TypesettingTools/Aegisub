@@ -46,6 +46,7 @@ aegisub_SOURCES = \
 	dialog_automation.cpp \
 	dialog_colorpicker.cpp \
 	dialog_export.cpp \
+	dialog_fonts_collector.cpp \
 	dialog_hotkeys.cpp \
 	dialog_jumpto.cpp \
 	dialog_options.cpp \
@@ -68,7 +69,6 @@ aegisub_SOURCES = \
 	export_fixstyle.cpp \
 	export_framerate.cpp \
 	fft.cpp \
-	fonts_collector.cpp \
 	frame_main.cpp \
 	frame_main_events.cpp \
 	hilimod_textctrl.cpp \
@@ -78,6 +78,7 @@ aegisub_SOURCES = \
 	main.cpp \
 	md5.c \
 	mkv_wrap.cpp \
+	mythes.cxx \
 	options.cpp \
 	spellchecker.cpp \
 	spellchecker_hunspell.cpp \

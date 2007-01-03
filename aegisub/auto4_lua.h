@@ -162,7 +162,7 @@ namespace Automation4 {
 		void RegisterFeature();
 
 		void GetFeatureFunction(int functionid);
-		void CreateIntegerArray(std::vector<int> &ints);
+		void CreateIntegerArray(const std::vector<int> &ints);
 		void ThrowError();
 	};
 
@@ -213,8 +213,8 @@ namespace Automation4 {
 		static int LuaRegister(lua_State *L);
 		virtual ~LuaFeatureMacro() { }
 
-		virtual bool Validate(AssFile *subs, std::vector<int> &selected, int active);
-		virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow *progress_parent);
+		virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active);
+		virtual void Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent);
 	};
 
 

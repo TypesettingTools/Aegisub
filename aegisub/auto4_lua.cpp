@@ -478,7 +478,7 @@ namespace Automation4 {
 		lua_remove(L, -2);
 	}
 
-	void LuaFeature::CreateIntegerArray(std::vector<int> &ints)
+	void LuaFeature::CreateIntegerArray(const std::vector<int> &ints)
 	{
 		// create an array-style table with an integer vector in it
 		// leave the new table on top of the stack
@@ -533,7 +533,7 @@ namespace Automation4 {
 		lua_pop(L, 1);
 	}
 
-	bool LuaFeatureMacro::Validate(AssFile *subs, std::vector<int> &selected, int active)
+	bool LuaFeatureMacro::Validate(AssFile *subs, const std::vector<int> &selected, int active)
 	{
 		if (no_validate)
 			return true;
@@ -557,7 +557,7 @@ namespace Automation4 {
 		return result;
 	}
 
-	void LuaFeatureMacro::Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow *progress_parent)
+	void LuaFeatureMacro::Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
 		GetFeatureFunction(1); // 1 = processing function
 

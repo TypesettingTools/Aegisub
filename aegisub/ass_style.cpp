@@ -118,7 +118,7 @@ wxColour AssColor::GetWXColor() {
 
 //////////////////////
 // Sets color from wx
-void AssColor::SetWXColor(wxColor &color) {
+void AssColor::SetWXColor(const wxColor &color) {
 	r = color.Red();
 	g = color.Green();
 	b = color.Blue();

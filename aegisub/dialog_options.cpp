@@ -41,6 +41,7 @@
 #include <wx/treebook.h>
 #endif
 #include "options.h"
+#include <wx/spinctrl.h>
 #include "frame_main.h"
 #include "main.h"
 #include "validators.h"

@@ -236,7 +236,7 @@ nospin:
 				if (hasspin) {
 					return cw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, min, max, value);
 				} else {
-					return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0, IntTextValidator());
+					return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0); //, IntTextValidator());
 				}
 			}
 
@@ -281,7 +281,7 @@ nospin:
 			typedef wxValidator FloatTextValidator;
 			wxControl *Create(wxWindow *parent)
 			{
-				return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0, FloatTextValidator());
+				return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0); //, FloatTextValidator());
 			}
 
 			void ControlReadBack()

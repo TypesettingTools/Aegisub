@@ -55,7 +55,7 @@ public:
 	AssColor(wxColour &color);
 
 	wxColor GetWXColor();					// Return as a wxColor
-	void SetWXColor(wxColor &color);		// Sets from a wxColor
+	void SetWXColor(const wxColor &color);	// Sets from a wxColor
 	void ParseASS(const wxString value);	// Parse ASS-style color
 	void ParseSSA(const wxString value);	// Parse SSA-style color
 	wxString GetASSFormatted(bool alpha,bool stripped=false,bool isStyle=false);	// Gets color formated in ASS format

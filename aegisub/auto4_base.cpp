@@ -146,7 +146,7 @@ namespace Automation4 {
 			for (unsigned int i = 0; i < text.length(); i++) {
 				int a, b, c, d;
 				thedc.GetTextExtent(text[i], &a, &b, &c, &d);
-				width += a + spacing;
+				width += a + style->spacing;
 				height = b > height ? b : height;
 				descent = c > descent ? c : descent;
 				extlead= d > extlead ? d : extlead;
