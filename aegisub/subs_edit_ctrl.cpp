@@ -75,7 +75,11 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	thesaurus = Thesaurus::GetThesaurus();
 	
 	// Delimiters
-	delim = _T(" .,;:!?¿¡-(){}[]\"/\\");
+	delim = _T(" .,;:!?-(){}[]\"/\\");
+	wxChar temp = 0xBF;
+	delim += temp;
+	temp = 0xA1;
+	delim += temp;
 
 	// Prototypes for call tips
 	tipProtoN = -1;
