@@ -12,4 +12,4 @@ function macro_test1(subtitles, selected_lines, active_line)
 	aegisub.debug.out("Hello Automation 4 World!")
 end
 
-aegisub.register_macro("Hello", "Shows a message", "tools", macro_test1)
+aegisub.register_macro("Hello", "Shows a message", macro_test1)

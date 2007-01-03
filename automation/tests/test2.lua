@@ -43,8 +43,8 @@ function inserttest(subtitles, selected_lines, active_line)
 end
 
 
-aegisub.register_macro("File line count", "Count the number of lines in the ASS file", "tools", macro_test2, nil)
+aegisub.register_macro("File line count", "Count the number of lines in the ASS file", macro_test2, nil)
 
-aegisub.register_macro("Dump", "Dumps info on every line in the file", "tools", dumper, nil)
+aegisub.register_macro("Dump", "Dumps info on every line in the file", dumper, nil)
 
-aegisub.register_macro("Insert stuff", "Inserts some lines near the active line", "edit", inserttest, nil)
+aegisub.register_macro("Insert stuff", "Inserts some lines near the active line", inserttest, nil)

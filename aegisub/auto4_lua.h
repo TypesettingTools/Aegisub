@@ -208,7 +208,7 @@ namespace Automation4 {
 	private:
 		bool no_validate;
 	protected:
-		LuaFeatureMacro(const wxString &_name, const wxString &_description, MacroMenu _menu, lua_State *_L);
+		LuaFeatureMacro(const wxString &_name, const wxString &_description, lua_State *_L);
 	public:
 		static int LuaRegister(lua_State *L);
 		virtual ~LuaFeatureMacro() { }

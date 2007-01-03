@@ -211,10 +211,9 @@ namespace Automation4 {
 
 	// FeatureMacro
 
-	FeatureMacro::FeatureMacro(const wxString &_name, const wxString &_description, MacroMenu _menu)
+	FeatureMacro::FeatureMacro(const wxString &_name, const wxString &_description)
 		: Feature(SCRIPTFEATURE_MACRO, _name)
 		, description(_description)
-		, menu(_menu)
 	{
 		// nothing to do
 	}
@@ -222,11 +221,6 @@ namespace Automation4 {
 	const wxString& FeatureMacro::GetDescription() const
 	{
 		return description;
-	}
-
-	MacroMenu FeatureMacro::GetMenu() const
-	{
-		return menu;
 	}
 
 
@@ -580,19 +574,18 @@ namespace Automation4 {
 		return scripts;
 	}
 
-	const std::vector<FeatureMacro*>& ScriptManager::GetMacros(MacroMenu menu)
+	const std::vector<FeatureMacro*>& ScriptManager::GetMacros()
 	{
-		macros[menu].clear();
+		macros.clear();
 		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
 			std::vector<Feature*> &sfs = (*i)->GetFeatures();
 			for (std::vector<Feature*>::iterator j = sfs.begin(); j != sfs.end(); ++j) {
 				FeatureMacro *m = dynamic_cast<FeatureMacro*>(*j);
 				if (!m) continue;
-				if (menu == MACROMENU_ALL || m->GetMenu() == menu)
-					macros[menu].push_back(m);
+				macros.push_back(m);
 			}
 		}
-		return macros[menu];
+		return macros;
 	}
 
 

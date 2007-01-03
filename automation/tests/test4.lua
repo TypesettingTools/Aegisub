@@ -37,4 +37,4 @@ function progression(subtitles, selected_lines, active_line)
 end
 
 
-aegisub.register_macro("Progress fun", "Does absolutely nothing", "video", progression, nil)
+aegisub.register_macro("Progress fun", "Does absolutely nothing", progression, nil)

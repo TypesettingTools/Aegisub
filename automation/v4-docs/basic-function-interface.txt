@@ -14,7 +14,6 @@ a new Macro Feature.
 function aegisub.register_macro(
     name,
     description,
-    menu,
     processing_function,
     validation_function)
 
@@ -24,15 +23,6 @@ function aegisub.register_macro(
 @description (string)
   A longer description of the function of this macro. This will appear
   on the status bar when hovering over the menu item.
-
-@menu (string)
-  The menu this macro will appear in. Must be one of:
-   o "edit"
-   o "video"
-   o "audio"
-   o "tools"
-   o "right" (the subtitles grid right-click menu)
-  The menu chosen should be relevant to the function of the macro.
 
 @processing_function (function)
   The actual function called for the macro execution.

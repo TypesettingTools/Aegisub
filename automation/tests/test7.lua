@@ -88,5 +88,5 @@ function export_config_dialog(subs, store)
 end
 
 
-aegisub.register_macro("Config Dialog 1", "Show a stupid config dialog", "video", test7, nil)
+aegisub.register_macro("Config Dialog 1", "Show a stupid config dialog", test7, nil)
 aegisub.register_filter("Export Config", "Test export filter config dialog stuff", 500, exporter, export_config_dialog)

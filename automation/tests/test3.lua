@@ -30,4 +30,4 @@ function karatest(subtitles, selected_lines, active_line)
 end
 
 
-aegisub.register_macro("Karaoke fun", "Makes karaoke-like stuff", "edit", karatest, nil)
+aegisub.register_macro("Karaoke fun", "Makes karaoke-like stuff", karatest, nil)

@@ -490,8 +490,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// Automation menu
 	else if (curMenu == automationMenu) {
-		AddMacroMenuItems(automationMenu, wxGetApp().global_scripts->GetMacros(Automation4::MACROMENU_ALL));
-		AddMacroMenuItems(automationMenu, local_scripts->GetMacros(Automation4::MACROMENU_ALL));
+		AddMacroMenuItems(automationMenu, wxGetApp().global_scripts->GetMacros());
+		AddMacroMenuItems(automationMenu, local_scripts->GetMacros());
 	}
 
 	//Thaw();

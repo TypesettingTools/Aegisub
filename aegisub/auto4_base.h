@@ -61,18 +61,6 @@ namespace Automation4 {
 	bool CalculateTextExtents(AssStyle *style, wxString &text, int &width, int &height, int &descent, int &extlead);
 
 
-	// The top-level menus a macro can appear in
-	enum MacroMenu {
-		MACROMENU_NONE = 0, // pseudo-index, dunno if this has any real meaning
-		MACROMENU_ALL = 0, // pseudo-index, used to retrieve information about all macros loaded
-		MACROMENU_EDIT,
-		MACROMENU_VIDEO,
-		MACROMENU_AUDIO,
-		MACROMENU_TOOLS,
-		MACROMENU_RIGHT, // right-click menu
-
-		MACROMENU_MAX // must be last, one higher than the last, used for array sizing
-	};
 	// The class of a Feature...
 	enum ScriptFeatureClass {
 		SCRIPTFEATURE_MACRO = 0,
@@ -112,16 +100,14 @@ namespace Automation4 {
 	class FeatureMacro : public virtual Feature {
 	private:
 		wxString description;
-		MacroMenu menu;
 
 	protected:
-		FeatureMacro(const wxString &_name, const wxString &_description, MacroMenu _menu);
+		FeatureMacro(const wxString &_name, const wxString &_description);
 
 	public:
 		virtual ~FeatureMacro() { }
 
 		const wxString& GetDescription() const;
-		MacroMenu GetMenu() const;
 
 		virtual bool Validate(AssFile *subs, std::vector<int> &selected, int active) = 0;
 		virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow *progress_parent) = 0;
@@ -304,7 +290,7 @@ namespace Automation4 {
 	private:
 		std::vector<Script*> scripts;
 
-		std::vector<FeatureMacro*> macros[MACROMENU_MAX]; // array of vectors...
+		std::vector<FeatureMacro*> macros;
 
 	public:
 		ScriptManager();
@@ -315,7 +301,7 @@ namespace Automation4 {
 
 		const std::vector<Script*>& GetScripts() const;
 
-		const std::vector<FeatureMacro*>& GetMacros(MacroMenu menu);
+		const std::vector<FeatureMacro*>& GetMacros();
 		// No need to have getters for the other kinds of features, I think.
 		// They automatically register themselves in the relevant places.
 	};

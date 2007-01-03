@@ -503,41 +503,28 @@ namespace Automation4 {
 	{
 		wxString _name(lua_tostring(L, 1), wxConvUTF8);
 		wxString _description(lua_tostring(L, 2), wxConvUTF8);
-		const char *_menustring = lua_tostring(L, 3);
-		MacroMenu _menu = MACROMENU_NONE;
 
-		     if (strcmp(_menustring, "edit")  == 0) _menu = MACROMENU_EDIT;
-		else if (strcmp(_menustring, "video") == 0) _menu = MACROMENU_VIDEO;
-		else if (strcmp(_menustring, "audio") == 0) _menu = MACROMENU_AUDIO;
-		else if (strcmp(_menustring, "tools") == 0) _menu = MACROMENU_TOOLS;
-		else if (strcmp(_menustring, "right") == 0) _menu = MACROMENU_RIGHT;
-
-		if (_menu == MACROMENU_NONE) {
-			lua_pushstring(L, "Error registering macro: Invalid menu name.");
-			lua_error(L);
-		}
-
-		LuaFeatureMacro *macro = new LuaFeatureMacro(_name, _description, _menu, L);
+		LuaFeatureMacro *macro = new LuaFeatureMacro(_name, _description, L);
 
 		return 0;
 	}
 
-	LuaFeatureMacro::LuaFeatureMacro(const wxString &_name, const wxString &_description, MacroMenu _menu, lua_State *_L)
+	LuaFeatureMacro::LuaFeatureMacro(const wxString &_name, const wxString &_description, lua_State *_L)
 		: LuaFeature(_L, SCRIPTFEATURE_MACRO, _name)
-		, FeatureMacro(_name, _description, _menu)
+		, FeatureMacro(_name, _description)
 		, Feature(SCRIPTFEATURE_MACRO, _name)
 	{
 		// new table for containing the functions for this feature
 		lua_newtable(L);
 		// store processing function
-		if (!lua_isfunction(L, 4)) {
+		if (!lua_isfunction(L, 3)) {
 			lua_pushstring(L, "The macro processing function must be a function");
 			lua_error(L);
 		}
-		lua_pushvalue(L, 4);
+		lua_pushvalue(L, 3);
 		lua_rawseti(L, -2, 1);
 		// and validation function
-		lua_pushvalue(L, 5);
+		lua_pushvalue(L, 4);
 		no_validate = !lua_isfunction(L, -1);
 		lua_rawseti(L, -2, 2);
 		// make the feature known
