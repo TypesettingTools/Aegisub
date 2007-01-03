@@ -208,6 +208,7 @@ wxString TextFileReader::ReadLineFromFile() {
 			buffer[511] = '\1';
 			if (fgets(buffer, 512, file)) {
 				// read succeeded
+				// FIXME, this might break on incomplete multibyte characters
 				wxString linepart(buffer, *conv);
 				wxbuffer += linepart;
 				if (buffer[511] == '\1') {

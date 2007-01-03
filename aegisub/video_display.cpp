@@ -285,9 +285,7 @@ void VideoDisplay::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 
 	// Draw frame
-	dc.BeginDrawing();
 	if (provider) dc.DrawBitmap(GetFrame(frame_n),0,0);
-	dc.EndDrawing();
 }
 
 
@@ -415,7 +413,6 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		// Prepare drawing
 		wxMemoryDC dc;
 		dc.SelectObject(*backbuffer);
-		dc.BeginDrawing();
 
 		// Draw frame
 		dc.DrawBitmap(GetFrame(frame_n),0,0);
@@ -458,15 +455,10 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 			dc.DrawText(text,dx,dy);
 		}
 
-		// End
-		dc.EndDrawing();
-
 		// Blit to screen
 		wxClientDC dcScreen(this);
-		dcScreen.BeginDrawing();
 		//dcScreen.DrawBitmap(backbuffer,0,0);
 		dcScreen.Blit(0,0,w,h,&dc,0,0);
-		dcScreen.EndDrawing();
 	}
 }
 
@@ -780,13 +772,10 @@ void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
 void VideoDisplay::RefreshVideo() {
 	// Draw frame
 	wxClientDC dc(this);
-	dc.BeginDrawing();
 	dc.DrawBitmap(GetFrame(),0,0);
 
 	// Draw the control points for FexTracker
 	DrawTrackingOverlay( dc );
-
-	dc.EndDrawing();
 }
 
 
@@ -795,7 +784,6 @@ void VideoDisplay::RefreshVideo() {
 void VideoDisplay::DrawText( wxPoint Pos, wxString text ) {
 	// Draw frame
 	wxClientDC dc(this);
-	dc.BeginDrawing();
 	dc.SetBrush(wxBrush(wxColour(128,128,128),wxSOLID));
 	dc.DrawRectangle( 0,0, provider->GetWidth(), provider->GetHeight() );
 	dc.SetTextForeground(wxColour(64,64,64));
@@ -805,7 +793,6 @@ void VideoDisplay::DrawText( wxPoint Pos, wxString text ) {
 	dc.DrawText(text,Pos.x-1,Pos.y+1);
 	dc.SetTextForeground(wxColour(255,255,255));
 	dc.DrawText(text,Pos.x,Pos.y);
-	dc.EndDrawing();
 }
 
 

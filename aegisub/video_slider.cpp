@@ -373,9 +373,7 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 // Paint event
 void VideoSlider::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
-	dc.BeginDrawing();
 	DrawImage(dc);
-	dc.EndDrawing();
 }
 
 
@@ -472,9 +470,7 @@ void VideoSlider::DrawImage(wxDC &dc) {
 // Update image
 void VideoSlider::UpdateImage () {
 	wxClientDC dc(this);
-	dc.BeginDrawing();
 	DrawImage(dc);
-	dc.EndDrawing();
 }
 
 
