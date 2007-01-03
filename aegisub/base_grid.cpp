@@ -65,6 +65,25 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	bmp = NULL;
 	holding = false;
 
+	// Set scrollbar
+	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
+	scrollBar->SetScrollbar(0,10,100,10);
+
+	// Set style
+	UpdateStyle();
+}
+
+
+//////////////
+// Destructor
+BaseGrid::~BaseGrid() {
+	delete bmp;
+}
+
+
+////////////////
+// Update style
+void BaseGrid::UpdateStyle() {
 	// Set font
 	wxString fontname = Options.AsText(_T("Grid Font Face"));
 	if (fontname.IsEmpty()) fontname = _T("Tahoma");
@@ -81,20 +100,13 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 		lineHeight = fh+4;
 	}
 
-	// Set scrollbar
-	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
-	scrollBar->SetScrollbar(0,10,100,10);
-	
 	// Set column widths
 	for (int i=0;i<10;i++) showCol[i] = Options.AsBool(_T("Grid show column ") + IntegerToString(i));
 	SetColumnWidths();
-}
 
-
-//////////////
-// Destructor
-BaseGrid::~BaseGrid() {
-	delete bmp;
+	// Update
+	AdjustScrollbar();
+	Refresh();
 }
 
 

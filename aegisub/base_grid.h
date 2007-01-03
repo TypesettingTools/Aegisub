@@ -110,6 +110,7 @@ public:
 
 	void Clear();
 	void UpdateMaps();
+	void UpdateStyle();
 
 	int GetRows() const;
 	wxArrayInt GetRangeArray(int n1,int n2);

@@ -50,6 +50,7 @@
 #include "colour_button.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
+#include "subs_grid.h"
 
 
 ///////////////
@@ -197,8 +198,10 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Second static box
 		wxControl *control;
-		wxString labels2[9] = { _("Normal"), _("Brackets"), _("Slashes and Parentheses"), _("Tags"), _("Parameters") , _("Error"), _("Error Background"), _("Line Break"), _("Modified Background") };
-		wxString options2[11] = { _T("Normal"), _T("Brackets"), _T("Slashes"), _T("Tags"), _T("Parameters") , _T("Error"), _T("Error Background"), _T("Line Break"), _T("Edit box need enter background"), _T("Edit Font Face"), _T("Edit Font Size") };
+		wxString labels2[9] = { _("Normal"), _("Brackets"), _("Slashes and Parentheses"), _("Tags"), _("Parameters") ,
+			                    _("Error"), _("Error Background"), _("Line Break"), _("Modified Background") };
+		wxString options2[11] = { _T("Normal"), _T("Brackets"), _T("Slashes"), _T("Tags"), _T("Parameters") ,
+			                      _T("Error"), _T("Error Background"), _T("Line Break"), _T("Edit box need enter background"), _T("Edit Font Face"), _T("Edit Font Size") };
 		for (int i=0;i<9;i++) {
 			wxString caption = labels2[i]+_T(": ");
 			wxString option = options2[i];
@@ -212,6 +215,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 			editSizer4->Add(control,1,wxALIGN_CENTER,0);
 		}
 		editSizer4->AddGrowableCol(1,1);
+
+		// Third sizer
 		editSizer5->Add(new wxStaticText(editPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		control = new wxTextCtrl(editPage,-1);
 		Bind(control,options2[9]);
@@ -230,6 +235,83 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		editMainSizer->Fit(editPage);
 		editPage->SetSizer(editMainSizer);
 	}
+
+	// Grid page
+	{
+		// Sizers
+		wxSizer *gridMainSizer = new wxBoxSizer(wxVERTICAL);
+		wxSizer *gridSizer1 = new wxStaticBoxSizer(wxVERTICAL,gridPage,_("Options"));
+		wxSizer *gridSizer2 = new wxStaticBoxSizer(wxVERTICAL,gridPage,_("Style"));
+		wxFlexGridSizer *gridSizer3 = new wxFlexGridSizer(11,2,2,2);
+		wxSizer *gridSizer4 = new wxBoxSizer(wxHORIZONTAL);
+		wxSizer *gridSizer5 = new wxBoxSizer(wxHORIZONTAL);
+
+		// First sizer
+		wxString labels1[2] = { _("Allow grid to take focus"), _("Highlight subtitles that are currently visible in video") };
+		wxString options1[2] = { _T("Grid allow focus"), _T("Highlight subs in frame") };
+		for (int i=0;i<2;i++) {
+			wxCheckBox *control = new wxCheckBox(gridPage,-1,labels1[i]);
+			Bind(control,options1[i]);
+			gridSizer1->Add(control,1,wxEXPAND | wxALL,5);
+		}
+
+		// Second sizer
+		wxControl *control;
+		wxString labels2[12] = { _("Standard Foreground"), _("Standard Background"), _("Selection Foreground"), 
+			                     _("Selection Background"), _("Comment Background"), _("Selected Comment Background"),
+								 _("Collision Foreground"), _("Line In Frame Background"), _("Header"),
+		                         _("Left Column"), _("Active Line Border"), _("Lines") };
+		wxString options2[12] = { _T("standard foreground"), _T("background"), _T("selection foreground"),
+		                         _("selection background"), _T("comment background"), _T("selected comment background"),
+		                        _T("collision foreground") , _T("inframe background"), _T("header"),
+		                         _T("left column"), _T("active border"), _T("lines") };
+		for (int i=0;i<12;i++) {
+			wxString caption = labels2[i] + _T(": ");
+			wxString option = _T("Grid ") + options2[i];
+			control = new ColourButton(gridPage,-1,wxSize(40,10));
+			Bind(control,option);
+			gridSizer3->Add(new wxStaticText(gridPage,-1,caption),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+			gridSizer3->Add(control,1,wxALIGN_CENTER,0);
+		}
+		gridSizer3->AddGrowableCol(0,1);
+
+		// Third sizer
+		gridSizer4->Add(new wxStaticText(gridPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(gridPage,-1);
+		Bind(control,_T("Grid font face"));
+		gridSizer4->Add(control,1,wxEXPAND | wxRIGHT,5);
+		control = new wxTextCtrl(gridPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
+		Bind(control,_T("Grid font size"));
+		gridSizer4->Add(control,0,wxEXPAND | wxRIGHT,0);
+
+		// Fourth sizer
+		gridSizer5->Add(new wxStaticText(gridPage,-1,_("Replace override tags with: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(gridPage,-1);
+		Bind(control,_T("Grid hide overrides char"));
+		gridSizer5->Add(control,1,wxEXPAND | wxRIGHT,5);
+
+		// Sizers
+		gridSizer2->Add(gridSizer3,1,wxEXPAND | wxALL,5);
+		gridSizer2->Add(gridSizer4,0,wxEXPAND | wxALL,5);
+		gridSizer2->Add(gridSizer5,0,wxEXPAND | wxALL,5);
+		gridMainSizer->Add(gridSizer1,0,wxEXPAND | wxALL,0);
+		gridMainSizer->Add(gridSizer2,0,wxEXPAND | wxALL,0);
+		gridMainSizer->AddStretchSpacer(1);
+		gridMainSizer->Fit(gridPage);
+		gridPage->SetSizer(gridMainSizer);
+	}
+
+	// Video page
+	// TODO
+
+	// Audio page
+	// TODO
+
+	// Audio display page
+	// TODO
+
+	// Automation page
+	// TODO
 
 	// List book
 	book->AddPage(generalPage,_("General"),true);
@@ -337,6 +419,7 @@ void DialogOptions::WriteToOptions(bool justApply) {
 	// Flags
 	bool mustRestart = false;
 	bool editBox = false;
+	bool grid = false;
 
 	// For each bound item
 	for (unsigned int i=0;i<binds.size();i++) {
@@ -393,6 +476,7 @@ void DialogOptions::WriteToOptions(bool justApply) {
 			ModType type = Options.GetModType(binds[i].option);
 			if (type == MOD_RESTART) mustRestart = true;
 			if (type == MOD_EDIT_BOX) editBox = true;
+			if (type == MOD_GRID) grid = true;
 		}
 	}
 
@@ -413,10 +497,17 @@ void DialogOptions::WriteToOptions(bool justApply) {
 
 	// Other modifications
 	if (!mustRestart || justApply) {
+		// Edit box
 		if (editBox) {
 			FrameMain *frame = (FrameMain*) GetParent();
 			frame->EditBox->TextEdit->SetStyles();
 			frame->EditBox->TextEdit->UpdateStyle();
+		}
+		
+		// Grid
+		if (grid) {
+			FrameMain *frame = (FrameMain*) GetParent();
+			frame->SubsBox->UpdateStyle();
 		}
 	}
 }

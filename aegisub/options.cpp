@@ -176,6 +176,11 @@ void OptionsManager::LoadDefaults() {
 	wxColour grid = wxColour(128,128,128);
 	wxColour collision = wxColour(255,0,0);
 
+	// Grid
+	SetModificationType(MOD_GRID);
+	SetBool(_T("Grid allow focus"),true);
+	SetBool(_T("Highlight subs in frame"),true);
+
 	// Grid cosmetic
 	SetColour(_T("Grid standard foreground"),textCol);
 	SetColour(_T("Grid selection background"),selection);
@@ -189,16 +194,15 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Grid left column"),labels);
 	SetColour(_T("Grid active border"),active);
 	SetColour(_T("Grid lines"),grid);
-	wchar_t temp = 0x2600;
-	SetText(_T("Grid hide overrides char"),temp);
-	SetBool(_T("Grid allow focus"),true);
-	SetBool(_T("Highlight subs in frame"),true);
 #if defined(__WINDOWS__)
 	SetInt(_T("Grid font size"),8);
 #else
 	SetInt(_T("Grid font size"),10);
 #endif
 	SetText(_T("Grid Font Face"),_T(""));
+	wchar_t temp = 0x2600;
+	SetText(_T("Grid hide overrides char"),temp);
+	SetModificationType(MOD_AUTOMATIC);
 
 	// Audio Cosmetic
 	SetInt(_T("Audio Spectrum Cutoff"),32);
