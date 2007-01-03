@@ -46,6 +46,8 @@
 #include "main.h"
 #include "validators.h"
 #include "colour_button.h"
+#include "subs_edit_box.h"
+#include "subs_edit_ctrl.h"
 
 
 ///////////////
@@ -56,6 +58,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 #ifdef wxUSE_TREEBOOK
 	// Create book
 	book = new wxTreebook(this,-1,wxDefaultPosition,wxSize(100,100));
+	needsRestart = false;
 
 	// Image list
 	//wxImageList *imgList = new wxImageList(16,15);
@@ -193,7 +196,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Second static box
 		wxControl *control;
-		wxString labels2[9] = { _("Normal"), _("Brackets"), _("Slashes"), _("Tags"), _("Parameters") , _("Error"), _("Error Background"), _("Line Break"), _("Modified Background") };
+		wxString labels2[9] = { _("Normal"), _("Brackets"), _("Slashes and Parentheses"), _("Tags"), _("Parameters") , _("Error"), _("Error Background"), _("Line Break"), _("Modified Background") };
 		wxString options2[11] = { _T("Normal"), _T("Brackets"), _T("Slashes"), _T("Tags"), _T("Parameters") , _T("Error"), _T("Error Background"), _T("Line Break"), _T("Edit box need enter background"), _T("Font Face"), _T("Font Size") };
 		for (int i=0;i<9;i++) {
 			wxString caption = labels2[i]+_T(": ");
@@ -243,6 +246,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	buttonSizer->AddStretchSpacer(1);
 	buttonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT,5);
 	buttonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
+	buttonSizer->Add(new wxButton(this,wxID_APPLY),0,wxRIGHT,5);
 
 	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -278,16 +282,33 @@ void DialogOptions::Bind(wxControl *ctrl, wxString option) {
 BEGIN_EVENT_TABLE(DialogOptions,wxDialog)
 	EVT_BUTTON(wxID_OK,DialogOptions::OnOK)
 	EVT_BUTTON(wxID_CANCEL,DialogOptions::OnCancel)
+	EVT_BUTTON(wxID_APPLY,DialogOptions::OnApply)
 END_EVENT_TABLE()
 
 
 //////
 // OK
 void DialogOptions::OnOK(wxCommandEvent &event) {
-	WriteToOptions();
 	Options.SetInt(_T("Options page"),book->GetSelection());
-	Options.Save();
+	WriteToOptions();
 	EndModal(0);
+
+	// Restart
+	if (needsRestart) {
+		int answer = wxMessageBox(_("Aegisub must restart for the changes to take effect. Restart now?"),_("Restart Aegisub"),wxYES_NO);
+		if (answer == wxYES) {
+			FrameMain *frame = (FrameMain*) GetParent();
+			if (frame->Close()) wxExecute(AegisubApp::fullPath);
+		}
+	}
+}
+
+
+/////////
+// Apply
+void DialogOptions::OnApply(wxCommandEvent &event) {
+	Options.SetInt(_T("Options page"),book->GetSelection());
+	WriteToOptions(true);
 }
 
 
@@ -297,15 +318,25 @@ void DialogOptions::OnCancel(wxCommandEvent &event) {
 	Options.SetInt(_T("Options page"),book->GetSelection());
 	Options.Save();
 	EndModal(0);
+
+	// Restart
+	if (needsRestart) {
+		int answer = wxMessageBox(_("Aegisub must restart for the changes to take effect. Restart now?"),_("Restart Aegisub"),wxYES_NO);
+		if (answer == wxYES) {
+			FrameMain *frame = (FrameMain*) GetParent();
+			if (frame->Close()) wxExecute(AegisubApp::fullPath);
+		}
+	}
 }
 
 
 
 ////////////////////
 // Write to options
-void DialogOptions::WriteToOptions() {
+void DialogOptions::WriteToOptions(bool justApply) {
 	// Flags
 	bool mustRestart = false;
+	bool editBox = false;
 
 	// For each bound item
 	for (unsigned int i=0;i<binds.size();i++) {
@@ -361,6 +392,7 @@ void DialogOptions::WriteToOptions() {
 		if (modified) {
 			ModType type = Options.GetModType(binds[i].option);
 			if (type == MOD_RESTART) mustRestart = true;
+			if (type == MOD_EDIT_BOX) editBox = true;
 		}
 	}
 
@@ -369,10 +401,22 @@ void DialogOptions::WriteToOptions() {
 
 	// Need restart?
 	if (mustRestart) {
-		int answer = wxMessageBox(_("Aegisub must restart for the changes to take effect. Restart now?"),_("Restart Aegisub"),wxYES_NO);
-		if (answer == wxYES) {
+		if (justApply) needsRestart = true;
+		else {
+			int answer = wxMessageBox(_("Aegisub must restart for the changes to take effect. Restart now?"),_("Restart Aegisub"),wxYES_NO);
+			if (answer == wxYES) {
+				FrameMain *frame = (FrameMain*) GetParent();
+				if (frame->Close()) wxExecute(AegisubApp::fullPath);
+			}
+		}
+	}
+
+	// Other modifications
+	if (!mustRestart || justApply) {
+		if (editBox) {
 			FrameMain *frame = (FrameMain*) GetParent();
-			if (frame->Close()) wxExecute(AegisubApp::fullPath);
+			frame->EditBox->TextEdit->SetStyles();
+			frame->EditBox->TextEdit->UpdateStyle();
 		}
 	}
 }

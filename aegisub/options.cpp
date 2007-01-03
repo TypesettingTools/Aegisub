@@ -100,6 +100,7 @@ void OptionsManager::LoadDefaults() {
 	// Edit Box
 	SetText(_T("Dictionaries path"),_T("dictionaries"));
 	SetBool(_T("Link Time Boxes Commit"),true);
+	SetModificationType(MOD_EDIT_BOX);
 	SetBool(_T("Call Tips Enabled"),true);
 	SetBool(_T("Syntax Highlight Enabled"),true);
 
@@ -121,6 +122,7 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Font Face"),_T(""));
 
 	// Video Options
+	SetModificationType(MOD_AUTOMATIC);
 	SetInt(_T("Video Check Script Res"), 0);
 	SetInt(_T("Video Default Zoom"), 7);
 	SetInt(_T("Video Fast Jump Step"), 10);

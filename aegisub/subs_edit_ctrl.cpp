@@ -54,6 +54,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	SetWrapMode(wxSCI_WRAP_WORD);
 	SetMarginWidth(1,0);
 	UsePopUp(false);
+	SetStyles();
 
 	// Set hotkeys
 	CmdKeyClear(wxSCI_KEY_RETURN,wxSCI_SCMOD_CTRL);
@@ -66,54 +67,6 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	CmdKeyClear('T',wxSCI_SCMOD_CTRL);
 	CmdKeyClear('T',wxSCI_SCMOD_CTRL | wxSCI_SCMOD_SHIFT);
 	CmdKeyClear('U',wxSCI_SCMOD_CTRL);
-
-	// Styles
-	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-	wxString fontname = Options.AsText(_T("Font Face"));
-	if (fontname != _T("")) font.SetFaceName(fontname);
-	int size = Options.AsInt(_T("Font Size"));
-
-	// Normal style
-	StyleSetFont(0,font);
-	StyleSetSize(0,size);
-	StyleSetForeground(0,Options.AsColour(_T("Syntax Highlight Normal")));
-
-	// Brackets style
-	StyleSetFont(1,font);
-	StyleSetSize(1,size);
-	StyleSetForeground(1,Options.AsColour(_T("Syntax Highlight Brackets")));
-
-	// Slashes/Parenthesis/Comma style
-	StyleSetFont(2,font);
-	StyleSetSize(2,size);
-	StyleSetForeground(2,Options.AsColour(_T("Syntax Highlight Slashes")));
-
-	// Tags style
-	StyleSetFont(3,font);
-	StyleSetSize(3,size);
-	StyleSetBold(3,true);
-	StyleSetForeground(3,Options.AsColour(_T("Syntax Highlight Tags")));
-
-	// Error style
-	StyleSetFont(4,font);
-	StyleSetSize(4,size);
-	StyleSetForeground(4,Options.AsColour(_T("Syntax Highlight Error")));
-	StyleSetBackground(4,Options.AsColour(_T("Syntax Highlight Error Background")));
-
-	// Tag Parameters style
-	StyleSetFont(5,font);
-	StyleSetSize(5,size);
-	StyleSetForeground(5,Options.AsColour(_T("Syntax Highlight Parameters")));
-
-	// Line breaks style
-	StyleSetFont(6,font);
-	StyleSetSize(6,size);
-	StyleSetBold(6,true);
-	StyleSetForeground(6,Options.AsColour(_T("Syntax Highlight Line Break")));
-
-	// Misspelling indicator
-	IndicatorSetStyle(0,wxSCI_INDIC_SQUIGGLE);
-	IndicatorSetForeground(0,wxColour(255,0,0));
 
 	// Set spellchecker
 	spellchecker = SpellChecker::GetSpellChecker();
@@ -206,6 +159,59 @@ BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
 	EVT_MENU_RANGE(EDIT_MENU_DIC_LANGS,EDIT_MENU_THES_LANGUAGE-1,SubsTextEditCtrl::OnSetDicLanguage)
 	EVT_MENU_RANGE(EDIT_MENU_THES_LANGS,EDIT_MENU_THES_LANGS+100,SubsTextEditCtrl::OnSetThesLanguage)
 END_EVENT_TABLE()
+
+
+//////////////
+// Set styles
+void SubsTextEditCtrl::SetStyles() {
+	// Styles
+	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	wxString fontname = Options.AsText(_T("Font Face"));
+	if (fontname != _T("")) font.SetFaceName(fontname);
+	int size = Options.AsInt(_T("Font Size"));
+
+	// Normal style
+	StyleSetFont(0,font);
+	StyleSetSize(0,size);
+	StyleSetForeground(0,Options.AsColour(_T("Syntax Highlight Normal")));
+
+	// Brackets style
+	StyleSetFont(1,font);
+	StyleSetSize(1,size);
+	StyleSetForeground(1,Options.AsColour(_T("Syntax Highlight Brackets")));
+
+	// Slashes/Parenthesis/Comma style
+	StyleSetFont(2,font);
+	StyleSetSize(2,size);
+	StyleSetForeground(2,Options.AsColour(_T("Syntax Highlight Slashes")));
+
+	// Tags style
+	StyleSetFont(3,font);
+	StyleSetSize(3,size);
+	StyleSetBold(3,true);
+	StyleSetForeground(3,Options.AsColour(_T("Syntax Highlight Tags")));
+
+	// Error style
+	StyleSetFont(4,font);
+	StyleSetSize(4,size);
+	StyleSetForeground(4,Options.AsColour(_T("Syntax Highlight Error")));
+	StyleSetBackground(4,Options.AsColour(_T("Syntax Highlight Error Background")));
+
+	// Tag Parameters style
+	StyleSetFont(5,font);
+	StyleSetSize(5,size);
+	StyleSetForeground(5,Options.AsColour(_T("Syntax Highlight Parameters")));
+
+	// Line breaks style
+	StyleSetFont(6,font);
+	StyleSetSize(6,size);
+	StyleSetBold(6,true);
+	StyleSetForeground(6,Options.AsColour(_T("Syntax Highlight Line Break")));
+
+	// Misspelling indicator
+	IndicatorSetStyle(0,wxSCI_INDIC_SQUIGGLE);
+	IndicatorSetForeground(0,wxColour(255,0,0));
+}
 
 
 /////////////////

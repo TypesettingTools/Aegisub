@@ -49,7 +49,8 @@
 enum ModType {
 	MOD_OFF = -1,
 	MOD_AUTOMATIC,
-	MOD_RESTART
+	MOD_RESTART,
+	MOD_EDIT_BOX
 };
 
 

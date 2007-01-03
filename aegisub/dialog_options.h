@@ -66,15 +66,18 @@ public:
 // Options screen class
 class DialogOptions: public wxDialog {
 private:
+	bool needsRestart;
+
 	wxTreebook *book;
 	std::vector<OptionsBind> binds;
 
 	void Bind(wxControl *ctrl,wxString option);
-	void WriteToOptions();
+	void WriteToOptions(bool justApply=false);
 	void ReadFromOptions();
 
 	void OnOK(wxCommandEvent &event);
 	void OnCancel(wxCommandEvent &event);
+	void OnApply(wxCommandEvent &event);
 
 public:
 	DialogOptions(wxWindow *parent);
