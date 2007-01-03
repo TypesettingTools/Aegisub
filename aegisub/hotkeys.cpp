@@ -317,6 +317,7 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Save subtitles"),_T("Ctrl-S"));
 	SetHotkey(_("Exit"),_T("Alt-F4"));
 	SetHotkey(_("Help"),_T("F1"));
+	SetHotkey(_("Options"),_T("Alt-O"));
 
 	SetHotkey(_("Edit Box Commit"),_T("Ctrl-Enter"));
 	SetHotkey(_("Undo"),_T("Ctrl-Z"));

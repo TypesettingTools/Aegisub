@@ -70,9 +70,10 @@ void OptionsManager::LoadDefaults() {
 	// Here go the options that can be edited by the options menu
 	
 	// General
+	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Tips enabled"),true);
 	SetBool(_T("Show splash"),true);
-	SetBool(_T("Link Time Boxes Commit"),true);
+	SetModificationType(MOD_RESTART);
 	SetInt(_T("Undo Levels"),8);
 	SetInt(_T("Recent timecodes max"),16);
 	SetInt(_T("Recent keyframes max"),16);
@@ -83,22 +84,43 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Recent replace max"),16);
 
 	// File Save/Load
-	SetText(_T("Save Charset"),_T("UTF-8"));
-	SetBool(_T("Use nonstandard Milisecond Times"),false);
 	SetBool(_T("Auto backup"),true);
 	SetInt(_T("Auto save every seconds"),60);
-	SetBool(_T("Auto save on every change"),false);
+	SetModificationType(MOD_AUTOMATIC);
 	SetText(_T("Auto backup path"),_T("autoback"));
 	SetText(_T("Auto save path"),_T("autosave"));
 	SetText(_T("Auto recovery path"),_T("recovered"));
 	SetInt(_T("Autoload linked files"),2);
 	SetText(_T("Text actor separator"),_T(":"));
 	SetText(_T("Text comment starter"),_T("#"));
+	SetBool(_T("Auto save on every change"),false);
+	SetText(_T("Save Charset"),_T("UTF-8"));
+	SetBool(_T("Use nonstandard Milisecond Times"),false);
 
-	// Dictionary
+	// Edit Box
 	SetText(_T("Dictionaries path"),_T("dictionaries"));
 	SetText(_T("Spell checker language"),_T("en_US"));
 	SetText(_T("Thesaurus language"),_T("en_US"));
+	SetBool(_T("Link Time Boxes Commit"),true);
+
+	// Edit box cosmetic
+	SetBool(_T("Call Tips Enabled"),true);
+	SetBool(_T("Syntax Highlight Enabled"),true);
+	SetColour(_T("Syntax Highlight Normal"),wxColour(0,0,0));
+	SetColour(_T("Syntax Highlight Brackets"),wxColour(20,50,255));
+	SetColour(_T("Syntax Highlight Slashes"),wxColour(255,0,200));
+	SetColour(_T("Syntax Highlight Tags"),wxColour(90,90,90));
+	SetColour(_T("Syntax Highlight Parameters"),wxColour(40,90,40));
+	SetColour(_T("Syntax Highlight Error"),wxColour(200,0,0));
+	SetColour(_T("Syntax Highlight Error Background"),wxColour(255,200,200));
+	SetColour(_T("Syntax Highlight Line Break"),wxColour(160,160,160));
+	SetColour(_T("Edit Box Need Enter Background"),wxColour(192,192,255));
+#if defined(__WINDOWS__)
+	SetInt(_T("Font Size"),9);
+#else
+	SetInt(_T("Font Size"),11);
+#endif
+	SetText(_T("Font Face"),_T(""));
 
 	// Video Options
 	SetInt(_T("Video Check Script Res"), 0);
@@ -137,25 +159,6 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Automation Autoload Path"), AegisubApp::folderName + _T("automation/autoload/"));
 	SetInt(_T("Automation Trace Level"), 3);
 	
-	// Edit box cosmetic
-	SetBool(_T("Call Tips Enabled"),true);
-	SetBool(_T("Syntax Highlight Enabled"),true);
-	SetColour(_T("Syntax Highlight Normal"),wxColour(0,0,0));
-	SetColour(_T("Syntax Highlight Brackets"),wxColour(20,50,255));
-	SetColour(_T("Syntax Highlight Slashes"),wxColour(255,0,200));
-	SetColour(_T("Syntax Highlight Tags"),wxColour(90,90,90));
-	SetColour(_T("Syntax Highlight Parameters"),wxColour(40,90,40));
-	SetColour(_T("Syntax Highlight Error"),wxColour(200,0,0));
-	SetColour(_T("Syntax Highlight Error Background"),wxColour(255,200,200));
-	SetColour(_T("Syntax Highlight Line Break"),wxColour(160,160,160));
-	SetColour(_T("Edit Box Need Enter Background"),wxColour(192,192,255));
-#if defined(__WINDOWS__)
-	SetInt(_T("Font Size"),9);
-#else
-	SetInt(_T("Font Size"),11);
-#endif
-	SetText(_T("Font Face"),_T(""));
-
 	// Generate colors
 	wxColour tempCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
 	float r = tempCol.Red() / 255.0;
@@ -217,6 +220,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Audio Line boundaries Thickness"), 2);
 	SetBool(_T("Audio Draw Secondary Lines"), true);
 	SetBool(_T("Audio Draw Selection Background"), true);
+	SetModificationType(MOD_OFF);
 
 
 
@@ -367,6 +371,7 @@ void OptionsManager::Load() {
 // Write int
 void OptionsManager::SetInt(wxString key,int param) {
 	opt[key.Lower()].SetInt(param);
+	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
 }
 
@@ -375,6 +380,7 @@ void OptionsManager::SetInt(wxString key,int param) {
 // Write float
 void OptionsManager::SetFloat(wxString key,double param) {
 	opt[key.Lower()].SetFloat(param);
+	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
 }
 
@@ -383,6 +389,7 @@ void OptionsManager::SetFloat(wxString key,double param) {
 // Write string
 void OptionsManager::SetText(wxString key,wxString param) {
 	opt[key.Lower()].SetText(param);
+	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
 }
 
@@ -391,6 +398,7 @@ void OptionsManager::SetText(wxString key,wxString param) {
 // Write boolean
 void OptionsManager::SetBool(wxString key,bool param) {
 	opt[key.Lower()].SetBool(param);
+	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
 }
 
@@ -399,6 +407,7 @@ void OptionsManager::SetBool(wxString key,bool param) {
 // Write colour
 void OptionsManager::SetColour(wxString key,wxColour param) {
 	opt[key.Lower()].SetColour(param);
+	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
 }
 
@@ -463,6 +472,18 @@ wxColour OptionsManager::AsColour(wxString key) {
 }
 
 
+/////////////////////
+// Modification type
+ModType OptionsManager::GetModType(wxString key) {
+	std::map<wxString,ModType>::iterator cur;
+	cur = (optType.find(key.Lower()));
+	if (cur != optType.end()) {
+		return (*cur).second;
+	}
+	else return MOD_AUTOMATIC;
+}
+
+
 ///////////////
 // Is defined?
 bool OptionsManager::IsDefined(wxString key) {
@@ -519,6 +540,13 @@ wxArrayString OptionsManager::GetRecentList (wxString list) {
 		else break;
 	}
 	return work;
+}
+
+
+/////////////////////////
+// Set modification type
+void OptionsManager::SetModificationType(ModType type) {
+	curModType = type;
 }
 
 

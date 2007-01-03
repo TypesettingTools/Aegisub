@@ -40,22 +40,44 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <vector>
+#include "options.h"
 
 
 //////////////
 // Prototypes
+#ifdef wxUSE_TREEBOOK
 class wxTreebook;
+#else
+typedef wxNotebook wxTreebook;
+#endif
+
+
+/////////////
+// Bind pair
+class OptionsBind {
+public:
+	wxControl *ctrl;
+	wxString option;
+};
 
 
 ////////////////////////
 // Options screen class
 class DialogOptions: public wxDialog {
 private:
-#ifdef wxUSE_TREEBOOK
 	wxTreebook *book;
-#endif
+	std::vector<OptionsBind> binds;
+
+	void Bind(wxControl *ctrl,wxString option);
+	void WriteToOptions();
+	void ReadFromOptions();
+
+	void OnOK(wxCommandEvent &event);
 
 public:
 	DialogOptions(wxWindow *parent);
 	~DialogOptions();
+
+	DECLARE_EVENT_TABLE()
 };

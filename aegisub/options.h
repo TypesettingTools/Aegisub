@@ -44,13 +44,26 @@
 #include "variable_data.h"
 
 
+//////////////////////
+// Modification types
+enum ModType {
+	MOD_OFF = -1,
+	MOD_AUTOMATIC,
+	MOD_RESTART
+};
+
+
 /////////////////////////////
 // Class that stores options
 class OptionsManager {
 private:
+	ModType curModType;
 	bool modified;
 	wxString filename;
 	std::map<wxString,VariableData> opt;
+	std::map<wxString,ModType> optType;
+
+	void SetModificationType(ModType type);
 
 public:
 	OptionsManager();
@@ -75,6 +88,7 @@ public:
 	bool AsBool(wxString key);
 	wxString AsText(wxString key);
 	wxColour AsColour(wxString key);
+	ModType GetModType(wxString key);
 };
 
 

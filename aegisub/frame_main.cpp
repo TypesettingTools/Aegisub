@@ -89,6 +89,7 @@ FrameMain::FrameMain (wxArrayString args)
 	local_scripts = new Automation4::ScriptManager();
 
 	// Create menu and tool bars
+	if (Options.AsBool(_T("Maximized"))) Maximize(true);
 	InitToolbar();
 	InitMenu();
 	
@@ -101,7 +102,6 @@ FrameMain::FrameMain (wxArrayString args)
 	// Contents
 	curMode = -1;
 	InitContents();
-	if (Options.AsBool(_T("Maximized"))) Maximize(true);
 	Show();
 
 	// Splash screen
@@ -375,7 +375,7 @@ void FrameMain::InitMenu() {
 	// Create view menu
 	viewMenu = new wxMenu();
 	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
-	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, _("&Options..."), _("Configure Aegisub"), wxBITMAP(options_button));
+	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, _("&Options...") + wxString(_T("\t")) + Hotkeys.GetText(_T("Options")), _("Configure Aegisub"), wxBITMAP(options_button));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Hotkeys, _("&Hotkeys..."), _("Remap hotkeys"), wxBITMAP(hotkeys_button));
 	viewMenu->AppendSeparator();
 	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs only view"), _("Display subtitles only"));
