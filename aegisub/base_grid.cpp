@@ -66,7 +66,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	holding = false;
 
 	// Set font
-	wxString fontname = Options.AsText(_T("Font Face"));
+	wxString fontname = Options.AsText(_T("Grid Font Face"));
 	if (fontname.IsEmpty()) fontname = _T("Tahoma");
 	font.SetFaceName(fontname);
 	font.SetPointSize(Options.AsInt(_T("Grid font size")));

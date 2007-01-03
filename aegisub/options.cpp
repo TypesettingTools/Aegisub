@@ -115,11 +115,11 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Syntax Highlight Line Break"),wxColour(160,160,160));
 	SetColour(_T("Edit Box Need Enter Background"),wxColour(192,192,255));
 #if defined(__WINDOWS__)
-	SetInt(_T("Font Size"),9);
+	SetInt(_T("Edit Font Size"),9);
 #else
-	SetInt(_T("Font Size"),11);
+	SetInt(_T("Edit Font Size"),11);
 #endif
-	SetText(_T("Font Face"),_T(""));
+	SetText(_T("Edit Font Face"),_T(""));
 
 	// Video Options
 	SetModificationType(MOD_AUTOMATIC);
@@ -198,6 +198,7 @@ void OptionsManager::LoadDefaults() {
 #else
 	SetInt(_T("Grid font size"),10);
 #endif
+	SetText(_T("Grid Font Face"),_T(""));
 
 	// Audio Cosmetic
 	SetInt(_T("Audio Spectrum Cutoff"),32);

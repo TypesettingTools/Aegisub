@@ -170,9 +170,9 @@ END_EVENT_TABLE()
 void SubsTextEditCtrl::SetStyles() {
 	// Styles
 	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-	wxString fontname = Options.AsText(_T("Font Face"));
+	wxString fontname = Options.AsText(_T("Edit Font Face"));
 	if (fontname != _T("")) font.SetFaceName(fontname);
-	int size = Options.AsInt(_T("Font Size"));
+	int size = Options.AsInt(_T("Edit Font Size"));
 
 	// Normal style
 	StyleSetFont(0,font);

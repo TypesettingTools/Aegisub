@@ -49,7 +49,8 @@
 #ifdef wxUSE_TREEBOOK
 class wxTreebook;
 #else
-typedef wxNotebook wxTreebook;
+#include <wx/choicebk.h>
+typedef wxChoicebook wxTreebook;
 #endif
 
 

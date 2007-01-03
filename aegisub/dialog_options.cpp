@@ -39,6 +39,8 @@
 #include "dialog_options.h"
 #ifdef wxUSE_TREEBOOK
 #include <wx/treebook.h>
+#else
+#define AddSubPage(a,b,c) AddPage(a,b,c)
 #endif
 #include "options.h"
 #include <wx/spinctrl.h>
@@ -55,9 +57,8 @@
 DialogOptions::DialogOptions(wxWindow *parent)
 : wxDialog(parent, -1, _T("Options"), wxDefaultPosition, wxDefaultSize)
 {
-#ifdef wxUSE_TREEBOOK
 	// Create book
-	book = new wxTreebook(this,-1,wxDefaultPosition,wxSize(100,100));
+	book = new wxTreebook(this,-1,wxDefaultPosition,wxSize(400,300));
 	needsRestart = false;
 
 	// Image list
@@ -197,7 +198,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Second static box
 		wxControl *control;
 		wxString labels2[9] = { _("Normal"), _("Brackets"), _("Slashes and Parentheses"), _("Tags"), _("Parameters") , _("Error"), _("Error Background"), _("Line Break"), _("Modified Background") };
-		wxString options2[11] = { _T("Normal"), _T("Brackets"), _T("Slashes"), _T("Tags"), _T("Parameters") , _T("Error"), _T("Error Background"), _T("Line Break"), _T("Edit box need enter background"), _T("Font Face"), _T("Font Size") };
+		wxString options2[11] = { _T("Normal"), _T("Brackets"), _T("Slashes"), _T("Tags"), _T("Parameters") , _T("Error"), _T("Error Background"), _T("Line Break"), _T("Edit box need enter background"), _T("Edit Font Face"), _T("Edit Font Size") };
 		for (int i=0;i<9;i++) {
 			wxString caption = labels2[i]+_T(": ");
 			wxString option = options2[i];
@@ -257,7 +258,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 	// Read
 	ReadFromOptions();
-#endif
 }
 
 
