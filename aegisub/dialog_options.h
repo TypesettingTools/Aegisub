@@ -74,6 +74,7 @@ private:
 	void ReadFromOptions();
 
 	void OnOK(wxCommandEvent &event);
+	void OnCancel(wxCommandEvent &event);
 
 public:
 	DialogOptions(wxWindow *parent);

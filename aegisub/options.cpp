@@ -73,7 +73,6 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Tips enabled"),true);
 	SetBool(_T("Show splash"),true);
-	SetModificationType(MOD_RESTART);
 	SetInt(_T("Undo Levels"),8);
 	SetInt(_T("Recent timecodes max"),16);
 	SetInt(_T("Recent keyframes max"),16);
@@ -84,28 +83,27 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Recent replace max"),16);
 
 	// File Save/Load
-	SetBool(_T("Auto backup"),true);
+	SetModificationType(MOD_RESTART);
 	SetInt(_T("Auto save every seconds"),60);
 	SetModificationType(MOD_AUTOMATIC);
-	SetText(_T("Auto backup path"),_T("autoback"));
 	SetText(_T("Auto save path"),_T("autosave"));
+	SetBool(_T("Auto backup"),true);
+	SetText(_T("Auto backup path"),_T("autoback"));
 	SetText(_T("Auto recovery path"),_T("recovered"));
 	SetInt(_T("Autoload linked files"),2);
 	SetText(_T("Text actor separator"),_T(":"));
 	SetText(_T("Text comment starter"),_T("#"));
-	SetBool(_T("Auto save on every change"),false);
 	SetText(_T("Save Charset"),_T("UTF-8"));
 	SetBool(_T("Use nonstandard Milisecond Times"),false);
+	SetBool(_T("Auto save on every change"),false);
 
 	// Edit Box
 	SetText(_T("Dictionaries path"),_T("dictionaries"));
-	SetText(_T("Spell checker language"),_T("en_US"));
-	SetText(_T("Thesaurus language"),_T("en_US"));
 	SetBool(_T("Link Time Boxes Commit"),true);
-
-	// Edit box cosmetic
 	SetBool(_T("Call Tips Enabled"),true);
 	SetBool(_T("Syntax Highlight Enabled"),true);
+
+	// Edit box cosmetic
 	SetColour(_T("Syntax Highlight Normal"),wxColour(0,0,0));
 	SetColour(_T("Syntax Highlight Brackets"),wxColour(20,50,255));
 	SetColour(_T("Syntax Highlight Slashes"),wxColour(255,0,200));
@@ -228,6 +226,9 @@ void OptionsManager::LoadDefaults() {
 	// Options that are set by the program itself
 	SetInt(_T("Locale Code"),-1);
 	SetBool(_T("Sync video with subs"),true);
+	SetText(_T("Spell checker language"),_T("en_US"));
+	SetText(_T("Thesaurus language"),_T("en_US"));
+	SetInt(_T("Options Page"),0);
 
 	SetBool(_T("Audio Link"),true);
 	SetBool(_T("Audio Autocommit"),false);
@@ -408,6 +409,14 @@ void OptionsManager::SetBool(wxString key,bool param) {
 void OptionsManager::SetColour(wxString key,wxColour param) {
 	opt[key.Lower()].SetColour(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
+	modified = true;
+}
+
+
+//////////////
+// Reset with
+void OptionsManager::ResetWith(wxString key,wxString param) {
+	opt[key.Lower()].ResetWith(param);
 	modified = true;
 }
 

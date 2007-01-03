@@ -43,6 +43,7 @@
 #include "options.h"
 #include "frame_main.h"
 #include "main.h"
+#include "validators.h"
 
 
 ///////////////
@@ -98,18 +99,81 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		generalPage->SetSizer(genMainSizer);
 	}
 
-	//
+	// File save/load page
+	{
+		// Sizers
+		wxSizer *fileMainSizer = new wxBoxSizer(wxVERTICAL);
+		wxSizer *fileSizer1 = new wxStaticBoxSizer(wxVERTICAL,filePage,_("Auto-save"));
+		wxSizer *fileSizer2 = new wxBoxSizer(wxHORIZONTAL);
+		wxSizer *fileSizer3 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("File Paths"));
+		wxFlexGridSizer *fileSizer4 = new wxFlexGridSizer(3,2,5,5);
+		wxSizer *fileSizer5 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("Miscelanea"));
+		wxFlexGridSizer *fileSizer6 = new wxFlexGridSizer(3,2,5,5);
+
+		// First static box
+		wxCheckBox *check = new wxCheckBox(filePage,-1,_("Auto-backup"));
+		Bind(check,_T("Auto backup"));
+		wxTextCtrl *edit = new wxTextCtrl(filePage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));
+		Bind(edit,_T("Auto save every seconds"));
+		fileSizer2->Add(check,0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,10);
+		fileSizer2->AddStretchSpacer(1);
+		fileSizer2->Add(new wxStaticText(filePage,-1,_("Auto-save every")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
+		fileSizer2->Add(edit,0,wxRIGHT,5);
+		fileSizer2->Add(new wxStaticText(filePage,-1,_("seconds.")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,0);
+
+		// Second static box
+		fileSizer4->Add(new wxStaticText(filePage,-1,_("Auto-save path:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
+		edit = new wxTextCtrl(filePage,-1);
+		Bind(edit,_T("Auto save path"));
+		fileSizer4->Add(edit,1,wxEXPAND);
+		fileSizer4->Add(new wxStaticText(filePage,-1,_("Auto-backup path:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
+		edit = new wxTextCtrl(filePage,-1);
+		Bind(edit,_T("Auto backup path"));
+		fileSizer4->Add(edit,1,wxEXPAND);
+		fileSizer4->Add(new wxStaticText(filePage,-1,_("Crash recovery path:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
+		edit = new wxTextCtrl(filePage,-1);
+		Bind(edit,_T("Auto recovery path"));
+		fileSizer4->Add(edit,1,wxEXPAND);
+		fileSizer4->AddGrowableCol(1,1);
+
+		// Third static box
+		fileSizer6->Add(new wxStaticText(filePage,-1,_("Auto-load linked files:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
+		wxString choices[3] = { _("Never"), _("Always"), _("Ask") };
+		wxComboBox *combo = new wxComboBox(filePage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices,wxCB_DROPDOWN | wxCB_READONLY);
+		Bind(combo,_T("Autoload linked files"));
+		fileSizer6->Add(combo,1,wxEXPAND);
+		fileSizer6->Add(new wxStaticText(filePage,-1,_("Text import actor separator:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
+		edit = new wxTextCtrl(filePage,-1);
+		Bind(edit,_T("Text actor separator"));
+		fileSizer6->Add(edit,1,wxEXPAND);
+		fileSizer6->Add(new wxStaticText(filePage,-1,_("Text import comment starter:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
+		edit = new wxTextCtrl(filePage,-1);
+		Bind(edit,_T("Text comment starter"));
+		fileSizer6->Add(edit,1,wxEXPAND);
+		fileSizer6->AddGrowableCol(1,1);
+
+		// Sizers
+		fileSizer1->Add(fileSizer2,0,wxEXPAND | wxALL,5);
+		fileSizer3->Add(fileSizer4,1,wxEXPAND | wxALL,5);
+		fileSizer5->Add(fileSizer6,1,wxEXPAND | wxALL,5);
+		fileMainSizer->Add(fileSizer1,0,wxEXPAND | wxALL,0);
+		fileMainSizer->Add(fileSizer3,0,wxEXPAND | wxALL,0);
+		fileMainSizer->Add(fileSizer5,0,wxEXPAND | wxALL,0);
+		fileMainSizer->AddStretchSpacer(1);
+		fileMainSizer->Fit(filePage);
+		filePage->SetSizer(fileMainSizer);
+	}
 
 	// List book
-	book->AddPage(generalPage,_T("General"),true);
-	book->AddSubPage(filePage,_T("File Save/Load"),true);
-	book->AddSubPage(gridPage,_T("Subtitles Grid"),true);
-	book->AddSubPage(editPage,_T("Subtitles Edit Box"),true);
-	book->AddPage(videoPage,_T("Video"),true);
-	book->AddPage(audioPage,_T("Audio"),true);
-	book->AddSubPage(displayPage,_T("Display"),true);
-	book->AddPage(autoPage,_T("Automation"),true);
-	book->ChangeSelection(0);
+	book->AddPage(generalPage,_("General"),true);
+	book->AddSubPage(filePage,_("File Save/Load"),true);
+	book->AddSubPage(editPage,_("Subtitles Edit Box"),true);
+	book->AddSubPage(gridPage,_("Subtitles Grid"),true);
+	book->AddPage(videoPage,_("Video"),true);
+	book->AddPage(audioPage,_("Audio"),true);
+	book->AddSubPage(displayPage,_("Display"),true);
+	book->AddPage(autoPage,_("Automation"),true);
+	book->ChangeSelection(Options.AsInt(_T("Options Page")));
 
 	// Buttons Sizer
 	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -150,6 +214,7 @@ void DialogOptions::Bind(wxControl *ctrl, wxString option) {
 // Event table
 BEGIN_EVENT_TABLE(DialogOptions,wxDialog)
 	EVT_BUTTON(wxID_OK,DialogOptions::OnOK)
+	EVT_BUTTON(wxID_CANCEL,DialogOptions::OnCancel)
 END_EVENT_TABLE()
 
 
@@ -157,8 +222,20 @@ END_EVENT_TABLE()
 // OK
 void DialogOptions::OnOK(wxCommandEvent &event) {
 	WriteToOptions();
+	Options.SetInt(_T("Options page"),book->GetSelection());
+	Options.Save();
 	EndModal(0);
 }
+
+
+//////////
+// Cancel
+void DialogOptions::OnCancel(wxCommandEvent &event) {
+	Options.SetInt(_T("Options page"),book->GetSelection());
+	Options.Save();
+	EndModal(0);
+}
+
 
 
 ////////////////////
@@ -190,12 +267,33 @@ void DialogOptions::WriteToOptions() {
 			}
 		}
 
+		// Text control
+		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxTextCtrl))) {
+			wxTextCtrl *text = (wxTextCtrl*) binds[i].ctrl;
+			if (text->GetValue() != Options.AsText(binds[i].option)) {
+				Options.ResetWith(binds[i].option,text->GetValue());
+				modified = true;
+			}
+		}
+
+		// Combo box
+		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxComboBox))) {
+			wxComboBox *combo = (wxComboBox*) binds[i].ctrl;
+			if (combo->GetSelection != Options.AsInt(binds[i].option)) {
+				Options.SetInt(binds[i].option,combo->GetSelection());
+				modified = true;
+			}
+		}
+
 		// Set modification type
 		if (modified) {
 			ModType type = Options.GetModType(binds[i].option);
 			if (type == MOD_RESTART) mustRestart = true;
 		}
 	}
+
+	// Save options
+	Options.Save();
 
 	// Need restart?
 	if (mustRestart) {
@@ -222,6 +320,18 @@ void DialogOptions::ReadFromOptions() {
 		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxSpinCtrl))) {
 			wxSpinCtrl *spin = (wxSpinCtrl*) binds[i].ctrl;
 			spin->SetValue(Options.AsInt(binds[i].option));
+		}
+
+		// Text control
+		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxTextCtrl))) {
+			wxTextCtrl *text = (wxTextCtrl*) binds[i].ctrl;
+			text->SetValue(Options.AsText(binds[i].option));
+		}
+
+		// Combo box
+		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxComboBox))) {
+			wxComboBox *combo = (wxComboBox*) binds[i].ctrl;
+			combo->SetSelection(Options.AsInt(binds[i].option));
 		}
 	}
 }

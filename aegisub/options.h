@@ -81,6 +81,7 @@ public:
 	void SetBool(wxString key,bool param);
 	void SetText(wxString key,wxString param);
 	void SetColour(wxString key,wxColour param);
+	void ResetWith(wxString key,wxString param);
 
 	bool IsDefined(wxString key);
 	int AsInt(wxString key);
