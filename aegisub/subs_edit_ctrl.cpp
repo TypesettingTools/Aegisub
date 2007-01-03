@@ -813,7 +813,12 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 			if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
 
 			// Build menu
-			for (int i=0;i<nSugs;i++) menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i])->SetFont(font);
+			for (int i=0;i<nSugs;i++) {
+				wxMenuItem *itm = menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
+#if wxCHECK_VERSION(2, 8, 0)
+				itm->SetFont(font);
+#endif
+			}
 
 			// Append "add word"
 			menu.Append(EDIT_MENU_ADD_TO_DICT,wxString::Format(_("Add \"%s\" to dictionary"),currentWord.c_str()))->Enable(spellchecker->CanAddWord(currentWord));
