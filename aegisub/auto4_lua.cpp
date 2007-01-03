@@ -39,8 +39,8 @@
 #include "ass_file.h"
 #include "ass_override.h"
 #include "text_file_reader.h"
-#include <lualib.h>
-#include <lauxlib.h>
+#include "../lua51/src/lualib.h"
+#include "../lua51/src/lauxlib.h"
 #include <wx/msgdlg.h>
 #include <wx/filename.h>
 #include <wx/filefn.h>
@@ -105,7 +105,7 @@ namespace Automation4 {
 #ifdef WIN32
 			f = _tfopen(filename.c_str(), _T("rb"));
 #else
-			f = fopen(filename.c_str(), _T("rb"));
+			f = fopen(filename.fn_str(), "rb");
 #endif
 			first = true;
 			databuf = new char[bufsize];
