@@ -7,8 +7,12 @@ THIS IS OUT OF DATE COMPARED TO THE REST OF THE DOCS!
 ---
 
 This document describes version 4 of the automation system used in Aegisub.
-The automation system uses the Lua language for scripting engine.
+The automation system primarily uses the Lua language for scripting engine.
 See <http://www.lua.org/> for more information.
+
+Automation 4 can be extended to use other scripting engines/languages, but
+this hasn't been tried yet, and this document will mostly describe the Lua
+implementation.
 
 ---
 
@@ -31,10 +35,10 @@ Automation allows you to:
     o Exporters write directly to a file stream, allowing you to generate
       those huge karaoke effects much faster!
 
-Automation runs in a true Unicode environment, meaning strings are internally
-represented as UTF-32, so you, as programmer, don't have to worry about text
-encodings, prefix encodings etc. to write scripts that can handle text in
-mostly any language of the world.
+Like Automation 3, Automation 4 Lua uses UTF-8 for storing text. There is
+currently no actual support libraries for handling this, but it's expected
+that some will be added later on. Especially important will be a Unicode-
+aware regex engine.
 
 ---
 
@@ -51,11 +55,12 @@ either in the dialogue lines or in the Script Info headers.
 
 Files containing Automation scripts must in UTF-8 encoding, with or without
 BOM (Byte Order Mark). Compiled Lua scripts should also work, as long as all
-strings are UTF-8 encoded, but this is untested and unsupported.
+strings are UTF-8 encoded, but this is untested and not supported.
 
-Automation scripts implement one or more of four possible features. A feature
-is implemented by filling a specially named global table with certain values.
-See below for a discussion about the various features and how they differ.
+Automation scripts implement one or more features, of which there are four
+classes. A feature is implemented by writing one or more functions required
+for the feature, and registering the feature by calling an API function in
+the global script environment.
 
 ---
 
@@ -157,7 +162,7 @@ Here's a quick history of the scripting interface:
 Version 1
   Using Lua as engine.
   The scripts used in the Karaoke Effector application, avaible at:
-  <http://www.jiifurusu.dk/files/programming/effector/> (currently down)
+  <http://www.animereactor.dk/aegisub/>
 
 Version 2
   Using Python as engine.
@@ -166,11 +171,16 @@ Version 2
 
 Version 3
   Using Lua as engine.
-  Aegisub 1.09 was the last release-version to use Automation 3.
-  (Tentative release date only!)
+  Aegisub 1.10 was the last release-version to use Automation 3.
+  Allowed creating export filters only, but also using them as pseudo-macros.
+  Only access to the Events section of a file, no real access to the rest of
+  the file.
 
 Version 4
-  Using Lua as engine
-  Present in Aegisub 1.10 and later (tentative!)
+  Using Lua as engine, but framework supports adding further engines later.
+  Present in Aegisub 2.00 and later
   Heavily expanded feature set, allowing a much wider range of modifications,
   and more direct integration into the Aegisub user interface.
+  Scripts can either be autoloaded along with Aegisub, or be bound (local) to
+  a subtitle file.
+  What version 2 was intended to have been.

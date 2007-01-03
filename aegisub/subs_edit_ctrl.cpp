@@ -829,7 +829,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 				// Build list
 				wxMenu *subMenu = new wxMenu();
 				for (int i=0;i<nSugs;i++) subMenu->Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
-				menu.AppendSubMenu(subMenu,wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord.c_str()));
+				menu.Append(-1,wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord.c_str()), subMenu);
 			}
 
 			// Separator
@@ -862,7 +862,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 		}
 
 		// Append language list
-		menu.AppendSubMenu(languageMenu,_("Spell checker language"));
+		menu.Append(-1,_("Spell checker language"), languageMenu);
 		menu.AppendSeparator();
 	}
 
@@ -908,12 +908,12 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 					}
 
 					// Insert submenu
-					thesMenu->AppendSubMenu(subMenu,result[i].name);
+					thesMenu->Append(-1, result[i].name, subMenu);
 				}
 			}
 
 			// Thesaurus menu
-			menu.AppendSubMenu(thesMenu,wxString::Format(_("Thesaurus suggestions for \"%s\""),currentWord.c_str()));
+			menu.Append(-1,wxString::Format(_("Thesaurus suggestions for \"%s\""),currentWord.c_str()), thesMenu);
 		}
 
 		// No suggestions
@@ -945,7 +945,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 		}
 
 		// Append language list
-		menu.AppendSubMenu(languageMenu,_("Thesaurus language"));
+		menu.Append(-1, _("Thesaurus language"), languageMenu);
 		menu.AppendSeparator();
 	}
 

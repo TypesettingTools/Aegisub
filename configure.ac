@@ -1,6 +1,7 @@
 AC_PREREQ(2.57)
-AC_INIT(aegisub, 1.10)
+AC_INIT([aegisub], [2.00-alpha])
 AC_CONFIG_AUX_DIR(ac)
+AC_CONFIG_SRCDIR([aegisub/main.cpp])
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADER([aegisub/posix/acconf.h])
 AC_GNU_SOURCE
