@@ -34,8 +34,8 @@
 //
 
 #include "auto4_lua.h"
-#include <lualib.h>
-#include <lauxlib.h>
+#include "../lua51/src/lualib.h"
+#include "../lua51/src/lauxlib.h"
 #include <wx/window.h>
 #include <wx/spinctrl.h>
 #include <wx/gbsizer.h>

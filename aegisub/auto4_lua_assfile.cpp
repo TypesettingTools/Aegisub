@@ -38,8 +38,8 @@
 #include "ass_style.h"
 #include "ass_file.h"
 #include "ass_override.h"
-#include <lualib.h>
-#include <lauxlib.h>
+#include "../lua51/src/lualib.h"
+#include "../lua51/src/lauxlib.h"
 #include <assert.h>
 #include <algorithm>
 

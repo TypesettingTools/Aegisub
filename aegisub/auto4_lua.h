@@ -41,8 +41,8 @@
 #include "auto4_base.h"
 #include <wx/thread.h>
 #include <wx/event.h>
-#include <lua.h>
-#include <lauxlib.h>
+#include "../lua51/src/lua.h"
+#include "../lua51/src/lauxlib.h"
 
 class wxWindow;
 
