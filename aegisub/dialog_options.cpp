@@ -279,7 +279,7 @@ void DialogOptions::WriteToOptions() {
 		// Combo box
 		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxComboBox))) {
 			wxComboBox *combo = (wxComboBox*) binds[i].ctrl;
-			if (combo->GetSelection != Options.AsInt(binds[i].option)) {
+			if (combo->GetSelection() != Options.AsInt(binds[i].option)) {
 				Options.SetInt(binds[i].option,combo->GetSelection());
 				modified = true;
 			}
