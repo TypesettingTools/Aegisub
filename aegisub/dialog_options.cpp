@@ -45,6 +45,7 @@
 #include "frame_main.h"
 #include "main.h"
 #include "validators.h"
+#include "colour_button.h"
 
 
 ///////////////
@@ -84,7 +85,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *genSizer2 = new wxStaticBoxSizer(wxVERTICAL,generalPage,_("Limits for Levels and Recent Files"));
 		wxFlexGridSizer *genSizer3 = new wxFlexGridSizer(8,2,5,5);
 		wxString options[8] = { _T("Undo levels"), _T("Recent timecodes max"), _T("Recent keyframes max"), _T("Recent sub max"), _T("Recent vid max"), _T("Recent aud max"), _T("Recent find max"), _T("Recent replace max") };
-		wxString labels[8] = { _T("Maximum undo levels"), _T("Maximum recent timecode files"), _T("Maximum recent keyframe files"), _T("Maximum recent subtitle files"), _T("Maximum recent video files"), _T("Maximum recent audio files"), _T("Maximum recent find strings"), _T("Maximum recent replace strings") };
+		wxString labels[8] = { _("Maximum undo levels"), _("Maximum recent timecode files"), _("Maximum recent keyframe files"), _("Maximum recent subtitle files"), _("Maximum recent video files"), _("Maximum recent audio files"), _("Maximum recent find strings"), _("Maximum recent replace strings") };
 		for (int i=0;i<8;i++) {
 			wxSpinCtrl *spin = new wxSpinCtrl(generalPage,-1,_T(""),wxDefaultPosition,wxSize(70,-1),wxSP_ARROW_KEYS,0,32,0);
 			Bind(spin,options[i]);
@@ -163,6 +164,67 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		fileMainSizer->AddStretchSpacer(1);
 		fileMainSizer->Fit(filePage);
 		filePage->SetSizer(fileMainSizer);
+	}
+
+	// Edit box page
+	{
+		// Sizers
+		wxSizer *editMainSizer = new wxBoxSizer(wxVERTICAL);
+		wxSizer *editSizer1 = new wxStaticBoxSizer(wxVERTICAL,editPage,_("Options"));
+		wxFlexGridSizer *editSizer2 = new wxFlexGridSizer(4,2,5,5);
+		wxSizer *editSizer3 = new wxStaticBoxSizer(wxVERTICAL,editPage,_("Style"));
+		wxFlexGridSizer *editSizer4 = new wxFlexGridSizer(9,2,2,2);
+		wxSizer *editSizer5 = new wxBoxSizer(wxHORIZONTAL);
+
+		// First static box
+		wxString labels1[4] = { _("Path to dictionaries"), _("Enable call tips"), _("Link commiting of times"), _("Enable syntax highlighting") };
+		wxString options1[4] = { _T("Dictionaries path"), _T("Call Tips Enabled"), _T("Link Time Boxes Commit"), _T("Syntax Highlight Enabled") };
+		editSizer2->Add(new wxStaticText(editPage,-1,labels1[0]+_T(": ")),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+		wxTextCtrl *edit = new wxTextCtrl(editPage,-1,_T(""));
+		Bind(edit,options1[0]);
+		editSizer2->Add(edit,0,wxEXPAND|wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+		for (int i=1;i<4;i++) {
+			wxCheckBox *control = new wxCheckBox(editPage,-1,labels1[i]);
+			Bind(control,options1[i]);
+			editSizer2->Add(control,1,wxEXPAND,0);
+		}
+		editSizer2->AddGrowableCol(0,1);
+		editSizer2->AddGrowableCol(1,1);
+
+		// Second static box
+		wxControl *control;
+		wxString labels2[9] = { _("Normal"), _("Brackets"), _("Slashes"), _("Tags"), _("Parameters") , _("Error"), _("Error Background"), _("Line Break"), _("Modified Background") };
+		wxString options2[11] = { _T("Normal"), _T("Brackets"), _T("Slashes"), _T("Tags"), _T("Parameters") , _T("Error"), _T("Error Background"), _T("Line Break"), _T("Edit box need enter background"), _T("Font Face"), _T("Font Size") };
+		for (int i=0;i<9;i++) {
+			wxString caption = labels2[i]+_T(": ");
+			wxString option = options2[i];
+			if (i < 8) {
+				caption = _("Syntax Highlighter - ") + caption;
+				option = _T("Syntax highlight ") + option;
+			}
+			control = new ColourButton(editPage,-1,wxSize(40,10));
+			Bind(control,option);
+			editSizer4->Add(new wxStaticText(editPage,-1,caption),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+			editSizer4->Add(control,1,wxALIGN_CENTER,0);
+		}
+		editSizer4->AddGrowableCol(1,1);
+		editSizer5->Add(new wxStaticText(editPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(editPage,-1);
+		Bind(control,options2[9]);
+		editSizer5->Add(control,1,wxEXPAND | wxRIGHT,5);
+		control = new wxTextCtrl(editPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
+		Bind(control,options2[10]);
+		editSizer5->Add(control,0,wxEXPAND | wxRIGHT,0);
+
+		// Sizers
+		editSizer1->Add(editSizer2,1,wxEXPAND | wxALL,5);
+		editSizer3->Add(editSizer4,1,wxEXPAND | wxALL,5);
+		editSizer3->Add(editSizer5,0,wxEXPAND | wxALL,5);
+		editMainSizer->Add(editSizer1,0,wxEXPAND | wxALL,0);
+		editMainSizer->Add(editSizer3,0,wxEXPAND | wxALL,0);
+		editMainSizer->AddStretchSpacer(1);
+		editMainSizer->Fit(editPage);
+		editPage->SetSizer(editMainSizer);
 	}
 
 	// List book
@@ -286,6 +348,15 @@ void DialogOptions::WriteToOptions() {
 			}
 		}
 
+		// Colour button
+		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxBitmapButton))) {
+			ColourButton *button = (ColourButton*) binds[i].ctrl;
+			if (button->GetColour() != Options.AsColour(binds[i].option)) {
+				Options.SetColour(binds[i].option,button->GetColour());
+				modified = true;
+			}
+		}
+
 		// Set modification type
 		if (modified) {
 			ModType type = Options.GetModType(binds[i].option);
@@ -333,6 +404,12 @@ void DialogOptions::ReadFromOptions() {
 		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxComboBox))) {
 			wxComboBox *combo = (wxComboBox*) binds[i].ctrl;
 			combo->SetSelection(Options.AsInt(binds[i].option));
+		}
+
+		// Colour button
+		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxBitmapButton))) {
+			ColourButton *button = (ColourButton*) binds[i].ctrl;
+			button->SetColour(Options.AsColour(binds[i].option));
 		}
 	}
 }
