@@ -53,6 +53,8 @@
 #include "subs_grid.h"
 #include "video_box.h"
 #include "video_slider.h"
+#include "audio_box.h"
+#include "audio_display.h"
 
 
 ///////////////
@@ -331,7 +333,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		Bind(control,_T("Video Default Zoom"));
 		videoSizer3->Add(control,1,wxEXPAND);
 		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Fast Jump step in frames: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		control = new wxTextCtrl(videoPage,-1);
+		control = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
 		Bind(control,_T("Video fast jump step"));
 		videoSizer3->Add(control,1,wxEXPAND);
 		control = new wxCheckBox(videoPage,-1,_("Show keyframes in slider"));
@@ -376,7 +378,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Sizers
 		wxSizer *audioMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *audioSizer1 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Options"));
-		wxSizer *audioSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Provider/Cache (Advanced)"));
+		wxSizer *audioSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Advanced - EXPERT USERS ONLY"));
 		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(2,2,5,5);
 		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(4,2,5,5);
 		wxFlexGridSizer *audioSizer5 = new wxFlexGridSizer(4,2,5,5);
@@ -398,17 +400,17 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		audioSizer3->AddGrowableCol(0,1);
 
 		// Second sizer
-		control = new wxTextCtrl(audioPage,-1);
+		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
 		Bind(control,_T("Timing Default Duration"));
-		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default timing length: ")),0,wxRIGHT,5);
+		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default timing length: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer4->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1);
+		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
 		Bind(control,_T("Audio lead in"));
-		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default lead-in length: ")),0,wxRIGHT,5);
+		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default lead-in length: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer4->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1);
+		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
 		Bind(control,_T("Audio lead out"));
-		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default lead-out length: ")),0,wxRIGHT,5);
+		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default lead-out length: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer4->Add(control,1,wxEXPAND,0);
 		wxString choices1[3] = { _("Don't show"), _("Show previous"), _("Show all") };
 		control = new wxComboBox(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices1,wxCB_READONLY | wxCB_DROPDOWN);
@@ -421,25 +423,34 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxString choices2[3] = { _("None (NOT RECOMMENDED)"), _("RAM"), _("Hard Disk") };
 		control = new wxComboBox(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices2,wxCB_READONLY | wxCB_DROPDOWN);
 		Bind(control,_T("Audio Cache"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Cache type: ")),0,wxRIGHT,5);
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Cache type: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		control = new wxTextCtrl(audioPage,-1);
 		Bind(control,_T("Audio Downmixer"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Avisynth down-mixer: ")),0,wxRIGHT,5);
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Avisynth down-mixer: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		control = new wxTextCtrl(audioPage,-1);
 		Bind(control,_T("Audio HD Cache Location"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD Cache Path")),0,wxRIGHT,5);
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD Cache Path: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		control = new wxTextCtrl(audioPage,-1);
 		Bind(control,_T("Audio HD Cache Name"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD Cache Name")),0,wxRIGHT,5);
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD Cache Name: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioSizer5->Add(control,1,wxEXPAND,0);
+		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
+		Bind(control,_T("Audio Spectrum Cutoff"));
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Spectrum Cutoff: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioSizer5->Add(control,1,wxEXPAND,0);
+		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
+		Bind(control,_T("Audio Spectrum Window"));
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Spectrum FFT Window Exponent: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		audioSizer5->AddGrowableCol(0,1);
 
 		// Sizers
 		audioSizer1->Add(audioSizer3,0,wxEXPAND | wxALL,5);
 		audioSizer1->Add(audioSizer4,1,wxEXPAND | wxALL,5);
+		audioSizer2->Add(new wxStaticText(audioPage,-1,_("WARNING: Changing these settings might result in bugs,\ncrashes, glitches and/or movax.\nDon't touch these unless you know what you're doing.")),0,wxEXPAND | wxALL,5);
 		audioSizer2->Add(audioSizer5,1,wxEXPAND | wxALL,5);
 		audioMainSizer->Add(audioSizer1,0,wxEXPAND | wxALL,0);
 		audioMainSizer->Add(audioSizer2,0,wxEXPAND | wxTOP,5);
@@ -449,7 +460,54 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	}
 
 	// Audio display page
-	// TODO
+	{
+		// Sizers
+		wxSizer *displayMainSizer = new wxBoxSizer(wxVERTICAL);
+		wxSizer *displaySizer1 = new wxStaticBoxSizer(wxVERTICAL,displayPage,_("Options"));
+		wxSizer *displaySizer2 = new wxStaticBoxSizer(wxVERTICAL,displayPage,_("Style"));
+		wxFlexGridSizer *displaySizer3 = new wxFlexGridSizer(2,2,2,2);
+		wxFlexGridSizer *displaySizer4 = new wxFlexGridSizer(14,2,2,2);
+
+		// First sizer
+		wxString labels1[3] = { _("Spectrum Invert Selection"), _("Draw Secondary Lines"), _("Draw Selection Background") };
+		wxString options1[3] = { _T("Audio Spectrum invert selection"), _T("Audio Draw Secondary Lines"), _T("Audio Draw Selection Background") };
+		for (int i=0;i<3;i++) {
+			wxCheckBox *control = new wxCheckBox(displayPage,-1,labels1[i]);
+			Bind(control,options1[i]);
+			displaySizer3->Add(control,1,wxEXPAND | wxALL,5);
+		}
+
+		// Second sizer
+		wxControl *control;
+		wxString labels2[14] = { _("Play cursor"), _("Background"), _("Selection Background"), 
+		                         _("Selection Background - Modified"), _("Seconds Boundary"), _("Waveform"), 
+		                         _("Waveform - Selection"), _("Waveform - Modified"), _("Waveform - Inactive"), 
+		                         _("Boundary - Start"), _("Boundary - End"), _("Boundary - Inactive"), 
+		                         _("Syllable Text"), _("Syllable Boundary") };
+		wxString options2[14] = { _T("Play cursor"), _T("Background"), _T("Selection Background"), 
+		                          _T("Selection Background Modified"), _T("Seconds Boundaries"), _T("Waveform"), 
+		                          _T("Waveform Selected"), _T("Waveform Modified"), _T("Waveform Inactive"), 
+		                          _T("Line boundary start"), _T("Line boundary end"), _T("Line boundary inactive line"), 
+		                          _T("Syllable text"), _T("Syllable boundaries") };
+		for (int i=0;i<14;i++) {
+			wxString caption = labels2[i] + _T(": ");
+			wxString option = _T("Audio ") + options2[i];
+			control = new ColourButton(displayPage,-1,wxSize(40,10));
+			Bind(control,option);
+			displaySizer4->Add(new wxStaticText(displayPage,-1,caption),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+			displaySizer4->Add(control,1,wxALIGN_CENTER,0);
+		}
+		displaySizer4->AddGrowableCol(0,1);
+
+		// Sizers
+		displaySizer1->Add(displaySizer3,1,wxEXPAND | wxALL,5);
+		displaySizer2->Add(displaySizer4,1,wxEXPAND | wxALL,5);
+		displayMainSizer->Add(displaySizer1,0,wxEXPAND | wxALL,0);
+		displayMainSizer->Add(displaySizer2,0,wxEXPAND | wxTOP,5);
+		displayMainSizer->AddStretchSpacer(1);
+		displayMainSizer->Fit(displayPage);
+		displayPage->SetSizer(displayMainSizer);
+	}
 
 	// Automation page
 	{
@@ -692,6 +750,13 @@ void DialogOptions::WriteToOptions(bool justApply) {
 		if (video) {
 			FrameMain *frame = (FrameMain*) GetParent();
 			frame->videoBox->videoSlider->Refresh();
+		}
+
+		// Audio
+		if (audio) {
+			FrameMain *frame = (FrameMain*) GetParent();
+			frame->audioBox->audioDisplay->UpdateImage();
+			frame->audioBox->audioDisplay->Refresh();
 		}
 	}
 }

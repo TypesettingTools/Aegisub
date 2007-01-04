@@ -150,12 +150,14 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_AUDIO);
 	SetInt(_T("Audio Inactive Lines Display Mode"),1);
 
-	// Audio Provider (Advanced)
+	// Audio Advanced
 	SetModificationType(MOD_AUTOMATIC);
 	SetInt(_T("Audio Cache"),1);
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
 	SetText(_T("Audio HD Cache Location"),_T("default"));
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
+	SetInt(_T("Audio Spectrum Cutoff"),32);
+	SetInt(_T("Audio Spectrum Window"),11);
 
 	// Automation
 	SetModificationType(MOD_RESTART);
@@ -211,9 +213,10 @@ void OptionsManager::LoadDefaults() {
 
 	// Audio Cosmetic
 	SetModificationType(MOD_AUDIO);
-	SetInt(_T("Audio Spectrum Cutoff"),32);
-	SetInt(_T("Audio Spectrum Window"),11);
+	SetInt(_T("Audio Line boundaries Thickness"), 2);
 	SetBool(_T("Audio Spectrum invert selection"), true);
+	SetBool(_T("Audio Draw Secondary Lines"), true);
+	SetBool(_T("Audio Draw Selection Background"), true);
 	SetColour(_T("Audio Selection Background Modified"),wxColour(92,0,0));
 	SetColour(_T("Audio Selection Background"),wxColour(64,64,64));
 	SetColour(_T("Audio Seconds Boundaries"),wxColour(0,100,255));
@@ -228,9 +231,6 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Audio Syllable text"),wxColour(255,0,0));
 	SetColour(_T("Audio Play cursor"),wxColour(255,255,255));
 	SetColour(_T("Audio Background"),wxColour(0,0,0));
-	SetInt(_T("Audio Line boundaries Thickness"), 2);
-	SetBool(_T("Audio Draw Secondary Lines"), true);
-	SetBool(_T("Audio Draw Selection Background"), true);
 	SetModificationType(MOD_OFF);
 
 
