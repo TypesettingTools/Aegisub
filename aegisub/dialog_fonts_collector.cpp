@@ -198,6 +198,7 @@ void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 		DestBox->Enable(false);
 		CloseButton->Enable(false);
 		AttachmentCheck->Enable(false);
+		ArchiveCheck->Enable(false);
 		if (!worker->IsDetached()) worker->Wait();
 	}
 
@@ -254,8 +255,10 @@ void DialogFontsCollector::OnCheckAttach(wxCommandEvent &event) {
 // Check Archive
 void DialogFontsCollector::OnCheckArchive(wxCommandEvent &event) {
 	bool check = ArchiveCheck->IsChecked();
-	BrowseButton->Enable(check);
-	DestBox->Enable(check);
+	if (check) {
+		BrowseButton->Enable(check);
+		DestBox->Enable(check);
+	}
 	Update();
 }
 
@@ -273,11 +276,17 @@ void DialogFontsCollector::Update() {
 		DestLabel->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
 
 		// Remove filename from browser box
-		wxFileName fname(DestBox->GetValue());
-		if (fname.DirExists()) {
-			DestBox->SetValue(fname.GetPath());
+		wxFileName fname1(DestBox->GetValue()+_T("/"));
+		if (fname1.DirExists()) {
+			DestBox->SetValue(fname1.GetPath());
 		}
-		else DestBox->SetValue(((AegisubApp*)wxTheApp)->folderName);
+		else {
+			wxFileName fname2(DestBox->GetValue());
+			if (fname2.DirExists()) {
+				DestBox->SetValue(fname2.GetPath());
+			}
+			else DestBox->SetValue(((AegisubApp*)wxTheApp)->folderName);
+		}
 	}
 }
 
@@ -375,14 +384,26 @@ void FontsCollectorThread::Collect() {
 	// For zipped files, enter a default name if none was given
 	else {
 		wxFileName dest(destination);
-		if (!dest.FileExists()) {
-			wxFileName subsname(subs->filename);
-			if (!dest.IsDir()) {
-				destination = subsname.GetPath();
-			}
-			destination += _T("\\");
-			destination += subsname.GetName() + _T(".zip");
+		wxString subsPath = subs->filename;
+		if (subsPath.IsEmpty()) subsPath = AegisubApp::folderName + _T("/unnamed.ass");
+		wxFileName subsname(subsPath);
+
+		// Folder picked
+		if (dest.IsDir()) {
+			if (!dest.DirExists()) destination = subsname.GetPath() + _T("/");
+			destination += _T("/") + subsname.GetName() + _T(".zip");
 		}
+
+		// File picked
+		else {
+			if (!dest.DirExists()) destination = subsname.GetPath();
+			else destination = dest.GetPath();
+			destination += _T("/") + dest.GetName() + _T(".zip");
+		}
+
+		// Clean up name
+		wxFileName finalDest(destination);
+		destination = finalDest.GetFullPath();
 	}
 
 	// Reset log box
@@ -520,7 +541,6 @@ void FontsCollectorThread::Collect() {
 						if (success) {
 							LogBox->SetDefaultStyle(wxTextAttr(wxColour(0,180,0)));
 							LogBox->AppendText(wxString(_T("\"")) + work[j] + _("\" copied.\n"));
-
 						}
 						else {
 							LogBox->SetDefaultStyle(wxTextAttr(wxColour(220,0,0)));
@@ -548,6 +568,11 @@ void FontsCollectorThread::Collect() {
 		zip->Close();
 		delete zip;
 		delete out;
+
+		wxMutexGuiEnter();
+		LogBox->SetDefaultStyle(wxTextAttr(wxColour(0,180,0)));
+		LogBox->AppendText(wxString::Format(_("Finished writing to %s.\n"),destination.c_str()));
+		wxMutexGuiLeave();
 	}
 #endif
 
