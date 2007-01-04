@@ -378,7 +378,40 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	// TODO
 
 	// Automation page
-	// TODO
+	{
+		// Sizers
+		wxSizer *autoMainSizer = new wxBoxSizer(wxVERTICAL);
+		wxSizer *autoSizer1 = new wxStaticBoxSizer(wxVERTICAL,autoPage,_("Options"));
+		wxFlexGridSizer *autoSizer2 = new wxFlexGridSizer(4,2,5,5);
+		wxControl *control;
+
+		// First sizer
+		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Base path: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(autoPage,-1);
+		Bind(control,_T("Automation Base Path"));
+		autoSizer2->Add(control,1,wxEXPAND);
+		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Include path: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(autoPage,-1);
+		Bind(control,_T("Automation Include Path"));
+		autoSizer2->Add(control,1,wxEXPAND);
+		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Auto-load path: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(autoPage,-1);
+		Bind(control,_T("Automation Autoload Path"));
+		autoSizer2->Add(control,1,wxEXPAND);
+		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Trace level: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		wxString choices[6] = { _("0: Fatal"), _("1: Error"), _("2: Warning"), _("3: Hint"), _("4: Debug"), _("5: Trace") };
+		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,6,choices,wxCB_READONLY | wxCB_DROPDOWN);
+		Bind(control,_T("Automation Trace Level"));
+		autoSizer2->Add(control,1,wxEXPAND);
+		autoSizer2->AddGrowableCol(1,1);
+
+		// Sizers
+		autoSizer1->Add(autoSizer2,1,wxEXPAND | wxALL,5);
+		autoMainSizer->Add(autoSizer1,0,wxEXPAND | wxALL,0);
+		autoMainSizer->AddStretchSpacer(1);
+		autoMainSizer->Fit(autoPage);
+		autoPage->SetSizer(autoMainSizer);
+	}
 
 	// List book
 	book->AddPage(generalPage,_("General"),true);
