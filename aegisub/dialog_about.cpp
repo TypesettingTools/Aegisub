@@ -36,10 +36,11 @@
 
 ////////////
 // Includes
+#include <wx/statline.h>
 #include "dialog_about.h"
 #include "version.h"
 #include "options.h"
-#include <wx/statline.h>
+#include "setup.h"
 
 
 ///////////////
@@ -54,17 +55,22 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	wxSizer *PicSizer = new wxBoxSizer(wxHORIZONTAL);
 	PicSizer->Add(new BitmapControl(this,splash));
 
+	// Generate library string
+
 	// Generate about string
 	wxString aboutString;
 	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
 	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
 	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _(" by ArchMage ZeratuL.\n");
-	aboutString += _("Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n\n");
-	aboutString += _("Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\n");
-	aboutString += _("Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n");
-	aboutString += _("Coding by ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n");
-	aboutString += _("Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n");
-	aboutString += _("Forum and bug tracker hosting by Bot1.\n");
+	aboutString += _T("Copyright (c) 2005-2007 - Rodrigo Braz Monteiro.\n\n");
+	aboutString += _T("Automation - Copyright (c) 2005-2007 Niels Martin Hansen (aka jfs).\n");
+	aboutString += _T("Motion Tracker - Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n");
+	aboutString += _("Programmers: ");
+	aboutString += _T(" ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle, Yuvi,\n     Azzy, Pomyk, Motoko-chan.\n");
+	aboutString += _("Manual by: ");
+	aboutString += _T("ArchMage ZeratuL, jfs, movax, Kobi, TheFluff, Jcubed.\n");
+	aboutString += _("Forum, wiki and bug tracker hosting by: ");
+	aboutString += _T("Bot1.\n");
 	aboutString += _("SVN hosting by BerliOS and Mentar.\n");
 	aboutString += translatorCredit;
 	aboutString += _("\nSee the help file for full credits.\n");

@@ -126,6 +126,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Video Check Script Res"), 0);
 	SetInt(_T("Video Default Zoom"), 7);
 	SetInt(_T("Video Fast Jump Step"), 10);
+	SetText(_T("Video Screenshot Path"),_T("?video"));
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
 
