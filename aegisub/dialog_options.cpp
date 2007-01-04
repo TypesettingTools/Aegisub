@@ -372,7 +372,81 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	}
 
 	// Audio page
-	// TODO
+	{
+		// Sizers
+		wxSizer *audioMainSizer = new wxBoxSizer(wxVERTICAL);
+		wxSizer *audioSizer1 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Options"));
+		wxSizer *audioSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Provider/Cache (Advanced)"));
+		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(2,2,5,5);
+		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *audioSizer5 = new wxFlexGridSizer(4,2,5,5);
+		wxControl *control;
+
+		// First sizer
+		control = new wxCheckBox(audioPage,-1,_("Next line on commit"));
+		Bind(control,_T("Audio SSA Next Line on Commit"));
+		audioSizer3->Add(control,1,wxEXPAND,0);
+		control = new wxCheckBox(audioPage,-1,_("Auto-focus on mouse over"));
+		Bind(control,_T("Audio Autofocus"));
+		audioSizer3->Add(control,1,wxEXPAND,0);
+		control = new wxCheckBox(audioPage,-1,_("Default mouse wheel to zoom"));
+		Bind(control,_T("Audio Wheel Default To Zoom"));
+		audioSizer3->Add(control,1,wxEXPAND,0);
+		control = new wxCheckBox(audioPage,-1,_("Lock scroll on Cursor"));
+		Bind(control,_T("Audio lock scroll on cursor"));
+		audioSizer3->Add(control,1,wxEXPAND,0);
+		audioSizer3->AddGrowableCol(0,1);
+
+		// Second sizer
+		control = new wxTextCtrl(audioPage,-1);
+		Bind(control,_T("Timing Default Duration"));
+		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default timing length: ")),0,wxRIGHT,5);
+		audioSizer4->Add(control,1,wxEXPAND,0);
+		control = new wxTextCtrl(audioPage,-1);
+		Bind(control,_T("Audio lead in"));
+		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default lead-in length: ")),0,wxRIGHT,5);
+		audioSizer4->Add(control,1,wxEXPAND,0);
+		control = new wxTextCtrl(audioPage,-1);
+		Bind(control,_T("Audio lead out"));
+		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default lead-out length: ")),0,wxRIGHT,5);
+		audioSizer4->Add(control,1,wxEXPAND,0);
+		wxString choices1[3] = { _("Don't show"), _("Show previous"), _("Show all") };
+		control = new wxComboBox(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices1,wxCB_READONLY | wxCB_DROPDOWN);
+		Bind(control,_T("Audio Inactive Lines Display Mode"));
+		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Show inactive lines: ")),0,wxRIGHT,5);
+		audioSizer4->Add(control,1,wxEXPAND,0);
+		audioSizer4->AddGrowableCol(0,1);
+
+		// Third sizer
+		wxString choices2[3] = { _("None (NOT RECOMMENDED)"), _("RAM"), _("Hard Disk") };
+		control = new wxComboBox(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices2,wxCB_READONLY | wxCB_DROPDOWN);
+		Bind(control,_T("Audio Cache"));
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Cache type: ")),0,wxRIGHT,5);
+		audioSizer5->Add(control,1,wxEXPAND,0);
+		control = new wxTextCtrl(audioPage,-1);
+		Bind(control,_T("Audio Downmixer"));
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Avisynth down-mixer: ")),0,wxRIGHT,5);
+		audioSizer5->Add(control,1,wxEXPAND,0);
+		control = new wxTextCtrl(audioPage,-1);
+		Bind(control,_T("Audio HD Cache Location"));
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD Cache Path")),0,wxRIGHT,5);
+		audioSizer5->Add(control,1,wxEXPAND,0);
+		control = new wxTextCtrl(audioPage,-1);
+		Bind(control,_T("Audio HD Cache Name"));
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD Cache Name")),0,wxRIGHT,5);
+		audioSizer5->Add(control,1,wxEXPAND,0);
+		audioSizer5->AddGrowableCol(0,1);
+
+		// Sizers
+		audioSizer1->Add(audioSizer3,0,wxEXPAND | wxALL,5);
+		audioSizer1->Add(audioSizer4,1,wxEXPAND | wxALL,5);
+		audioSizer2->Add(audioSizer5,1,wxEXPAND | wxALL,5);
+		audioMainSizer->Add(audioSizer1,0,wxEXPAND | wxALL,0);
+		audioMainSizer->Add(audioSizer2,0,wxEXPAND | wxTOP,5);
+		audioMainSizer->AddStretchSpacer(1);
+		audioMainSizer->Fit(audioPage);
+		audioPage->SetSizer(audioMainSizer);
+	}
 
 	// Audio display page
 	// TODO

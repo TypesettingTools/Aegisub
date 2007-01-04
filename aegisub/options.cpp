@@ -153,7 +153,6 @@ void OptionsManager::LoadDefaults() {
 	// Audio Provider (Advanced)
 	SetModificationType(MOD_AUTOMATIC);
 	SetInt(_T("Audio Cache"),1);
-	SetInt(_T("Audio Sample Rate"),0);
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
 	SetText(_T("Audio HD Cache Location"),_T("default"));
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
@@ -278,6 +277,7 @@ void OptionsManager::LoadDefaults() {
 
 	SetInt(_T("Audio Display Height"),100);
 	SetBool(_T("Audio Spectrum"),false);
+	SetInt(_T("Audio Sample Rate"),0);
 
 	SetInt(_T("Timing processor key start before thres"),5);
 	SetInt(_T("Timing processor key start after thres"),4);
