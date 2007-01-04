@@ -75,7 +75,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += _T("libass - Copyright (c) 2006, Evgeniy Stepanov;\n");
 #endif
 #if USE_ASA == 1
-	libString += _T("asa - Copyright (c) 2006, David Lamparter;\n");
+	libString += _T("asa - Copyright (c) 2004-2007, David Lamparter;\n");
 #endif
 	libString += _T("MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada\n");
 
@@ -98,6 +98,10 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("\n") + libString;
 	aboutString += _("\nSee the help file for full credits.\n");
 	aboutString += wxString::Format(_("Built by %s on %s."), GetAegisubBuildCredit().c_str(), GetAegisubBuildTime().c_str());
+
+	// Replace copyright symbol
+	wxChar copySymbol = 0xA9;
+	aboutString.Replace(_T("(c)"),wxString(copySymbol));
 
 	// Text sizer
 	wxSizer *TextSizer = new wxBoxSizer(wxVERTICAL);
