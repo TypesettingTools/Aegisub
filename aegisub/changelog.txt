@@ -65,6 +65,7 @@ Please visit http://aegisub.net to download latest version
 - Merged the three "Recombine" functions into a single one that autodetects the correct type. (AMZ)
 - Added a Call Tip feature to the edit box, so it shows the function prototype as you type it. (AMZ)
 - Added a much-needed options dialog with all the relevant config.dat options in it. (AMZ)
+- Added a Normal/Reverse dropdown to collisions on Script Properties. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

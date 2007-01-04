@@ -62,6 +62,7 @@ private:
 	wxTextCtrl *UpdateDetailsEdit;
 
 	wxComboBox *WrapStyle;
+	wxComboBox *collision;
 	wxTextCtrl *ResX;
 	wxTextCtrl *ResY;
 

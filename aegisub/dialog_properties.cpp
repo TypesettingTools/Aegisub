@@ -71,24 +71,25 @@ DialogProperties::DialogProperties (wxWindow *parent, VideoDisplay *_vid)
 	wxStaticText *UpdateDetailsLabel = new wxStaticText(this,-1,_("Update details:"));
 	UpdateDetailsEdit = new wxTextCtrl(this,-1,subs->GetScriptInfo(_T("Update Details")),wxDefaultPosition,wxSize(200,20));
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Script"));
-	wxSizer *TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
+	wxFlexGridSizer *TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
 	TopSizerGrid->Add(TitleLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(TitleEdit,1,0,0);
+	TopSizerGrid->Add(TitleEdit,1,wxEXPAND,0);
 	TopSizerGrid->Add(OrigScriptLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(OrigScriptEdit,1,0,0);
+	TopSizerGrid->Add(OrigScriptEdit,1,wxEXPAND,0);
 	TopSizerGrid->Add(TranslationLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(TranslationEdit,1,0,0);
+	TopSizerGrid->Add(TranslationEdit,1,wxEXPAND,0);
 	TopSizerGrid->Add(EditingLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(EditingEdit,1,0,0);
+	TopSizerGrid->Add(EditingEdit,1,wxEXPAND,0);
 	TopSizerGrid->Add(TimingLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(TimingEdit,1,0,0);
+	TopSizerGrid->Add(TimingEdit,1,wxEXPAND,0);
 	TopSizerGrid->Add(SyncLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(SyncEdit,1,0,0);
+	TopSizerGrid->Add(SyncEdit,1,wxEXPAND,0);
 	TopSizerGrid->Add(UpdatedLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(UpdatedEdit,1,0,0);
+	TopSizerGrid->Add(UpdatedEdit,1,wxEXPAND,0);
 	TopSizerGrid->Add(UpdateDetailsLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(UpdateDetailsEdit,1,0,0);
-	TopSizer->Add(TopSizerGrid,0,wxALL,0);
+	TopSizerGrid->Add(UpdateDetailsEdit,1,wxEXPAND,0);
+	TopSizerGrid->AddGrowableCol(1,1);
+	TopSizer->Add(TopSizerGrid,1,wxALL | wxEXPAND,0);
 
 	// Resolution box
 	wxSizer *ResSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Resolution"));
@@ -104,8 +105,9 @@ DialogProperties::DialogProperties (wxWindow *parent, VideoDisplay *_vid)
 	ResSizer->Add(ResY,1,wxRIGHT,5);
 	ResSizer->Add(FromVideo,1,0,0);
 
-	// Wrap box
-	wxSizer *WrapBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Wrap style"));
+	// Options
+	wxSizer *optionsBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
+	wxFlexGridSizer *optionsGrid = new wxFlexGridSizer(2,2,5,5);
 	wxArrayString options;
 	options.Add(_("0: Smart wrapping, top line is wider"));
 	options.Add(_("1: End-of-line word wrapping, only \\N breaks"));
@@ -115,7 +117,19 @@ DialogProperties::DialogProperties (wxWindow *parent, VideoDisplay *_vid)
 	long n;
 	subs->GetScriptInfo(_T("WrapStyle")).ToLong(&n);
 	WrapStyle->SetSelection(n);
-	WrapBox->Add(WrapStyle,1,0,0);
+	optionsGrid->Add(new wxStaticText(this,-1,_("Warp Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
+	optionsGrid->Add(WrapStyle,1,wxEXPAND,0);
+	options.Clear();
+	options.Add(_("Normal"));
+	options.Add(_("Reverse"));
+	collision = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxDefaultSize,options,wxCB_READONLY);
+	wxString col = subs->GetScriptInfo(_T("Collisions"));
+	if (col.Lower() == _T("reverse")) collision->SetSelection(1);
+	else collision->SetSelection(0);
+	optionsGrid->Add(new wxStaticText(this,-1,_("Collision: ")),0,wxALIGN_CENTER_VERTICAL,0);
+	optionsGrid->Add(collision,1,wxEXPAND,0);
+	optionsGrid->AddGrowableCol(1,1);
+	optionsBox->Add(optionsGrid,1,wxEXPAND,0);
 
 	// Button sizer
 	wxButton *ButtonOK = new wxButton(this,wxID_OK);
@@ -128,7 +142,7 @@ DialogProperties::DialogProperties (wxWindow *parent, VideoDisplay *_vid)
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 	MainSizer->Add(ResSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(WrapBox,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
+	MainSizer->Add(optionsBox,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 	MainSizer->Add(ButtonSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 
 	// Set sizer
@@ -168,7 +182,9 @@ void DialogProperties::OnOK(wxCommandEvent &event) {
 	count += SetInfoIfDifferent(_T("PlayResX"),ResX->GetValue());
 	count += SetInfoIfDifferent(_T("PlayResY"),ResY->GetValue());
 	count += SetInfoIfDifferent(_T("WrapStyle"),wxString::Format(_T("%i"),WrapStyle->GetSelection()));
-	
+	wxString col[2] = { _T("Normal"), _T("Reverse")};
+	count += SetInfoIfDifferent(_T("Collisions"),col[collision->GetSelection()]);
+
 	if (count) AssFile::top->FlagAsModified();
 
 	EndModal(count?1:0);

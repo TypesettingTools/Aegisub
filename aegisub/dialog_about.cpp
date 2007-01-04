@@ -50,7 +50,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 {
 	// Get splash
 	wxBitmap splash = wxBITMAP(splash);
-	SetBackgroundColour(wxColour(255,255,255));
+	SetOwnBackgroundColour(wxColour(255,255,255));
 	SetForegroundColour(wxColour(0,0,0));
 
 	// Picture
@@ -93,7 +93,8 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("ArchMage ZeratuL, jfs, movax, Kobi, TheFluff, Jcubed.\n");
 	aboutString += _("Forum, wiki and bug tracker hosting by: ");
 	aboutString += _T("Bot1.\n");
-	aboutString += _("SVN hosting by BerliOS and Mentar.\n");
+	aboutString += _("SVN hosting by: ");
+	aboutString += _T("BerliOS, Mentar.\n");
 	aboutString += translatorCredit;
 	aboutString += _T("\n") + libString;
 	aboutString += _("\nSee the help file for full credits.\n");
@@ -107,23 +108,26 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	wxSizer *TextSizer = new wxBoxSizer(wxVERTICAL);
 	TextSizer->Add(new wxStaticText(this,-1,aboutString),1);
 
-	// Button sizer
+	// Buttons panel
+	wxPanel *buttonPanel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
 #ifndef __WXMAC__
-	ButtonSizer->Add(new wxButton(this,wxID_OK),0,0,0);
+	ButtonSizer->Add(new wxButton(buttonPanel,wxID_OK),0,wxALIGN_RIGHT | wxALL,7);
 #else
-	wxButton *okButton = new wxButton(this,wxID_OK);
-	ButtonSizer->Add(okButton,0,0,0);
+	wxButton *okButton = new wxButton(buttonPanel,wxID_OK);
+	ButtonSizer->Add(okButton,0,wxALIGN_RIGHT | wxALL,7);
 	okButton->SetDefault();
 #endif
+	ButtonSizer->SetSizeHints(buttonPanel);
+	buttonPanel->SetSizer(ButtonSizer);
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(PicSizer,0,wxBOTTOM,5);
-	MainSizer->Add(TextSizer,0,wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT,5);
-	MainSizer->Add(new wxStaticLine(this,wxID_ANY),0,wxEXPAND | wxALL,5);
-	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT,5);
+	MainSizer->Add(PicSizer,0,0,0);
+	MainSizer->Add(TextSizer,0,wxEXPAND | wxALL,10);
+	MainSizer->Add(new wxStaticLine(this,wxID_ANY),0,wxEXPAND | wxALL,0);
+	MainSizer->Add(buttonPanel,0,wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT,0);
 
 	// Set sizer
 	MainSizer->SetSizeHints(this);
