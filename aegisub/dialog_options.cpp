@@ -51,6 +51,8 @@
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
+#include "video_box.h"
+#include "video_slider.h"
 
 
 ///////////////
@@ -164,8 +166,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		fileSizer3->Add(fileSizer4,1,wxEXPAND | wxALL,5);
 		fileSizer5->Add(fileSizer6,1,wxEXPAND | wxALL,5);
 		fileMainSizer->Add(fileSizer1,0,wxEXPAND | wxALL,0);
-		fileMainSizer->Add(fileSizer3,0,wxEXPAND | wxALL,0);
-		fileMainSizer->Add(fileSizer5,0,wxEXPAND | wxALL,0);
+		fileMainSizer->Add(fileSizer3,0,wxEXPAND | wxTOP,5);
+		fileMainSizer->Add(fileSizer5,0,wxEXPAND | wxTOP,5);
 		fileMainSizer->AddStretchSpacer(1);
 		fileMainSizer->Fit(filePage);
 		filePage->SetSizer(fileMainSizer);
@@ -230,7 +232,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		editSizer3->Add(editSizer4,1,wxEXPAND | wxALL,5);
 		editSizer3->Add(editSizer5,0,wxEXPAND | wxALL,5);
 		editMainSizer->Add(editSizer1,0,wxEXPAND | wxALL,0);
-		editMainSizer->Add(editSizer3,0,wxEXPAND | wxALL,0);
+		editMainSizer->Add(editSizer3,0,wxEXPAND | wxTOP,5);
 		editMainSizer->AddStretchSpacer(1);
 		editMainSizer->Fit(editPage);
 		editPage->SetSizer(editMainSizer);
@@ -295,14 +297,79 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		gridSizer2->Add(gridSizer4,0,wxEXPAND | wxALL,5);
 		gridSizer2->Add(gridSizer5,0,wxEXPAND | wxALL,5);
 		gridMainSizer->Add(gridSizer1,0,wxEXPAND | wxALL,0);
-		gridMainSizer->Add(gridSizer2,0,wxEXPAND | wxALL,0);
+		gridMainSizer->Add(gridSizer2,0,wxEXPAND | wxTOP,5);
 		gridMainSizer->AddStretchSpacer(1);
 		gridMainSizer->Fit(gridPage);
 		gridPage->SetSizer(gridMainSizer);
 	}
 
 	// Video page
-	// TODO
+	{
+		// Sizers
+		wxSizer *videoMainSizer = new wxBoxSizer(wxVERTICAL);
+		wxSizer *videoSizer1 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Options"));
+		wxSizer *videoSizer2 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Advanced - EXPERT USERS ONLY"));
+		wxFlexGridSizer *videoSizer3 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(4,2,5,5);
+		wxControl *control;
+
+		// First sizer
+		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Check video resolution on open: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		wxString choices1[3] = { _("Never"), _("Ask"), _("Always") };
+		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices1,wxCB_READONLY | wxCB_DROPDOWN);
+		Bind(control,_T("Video check script res"));
+		videoSizer3->Add(control,1,wxEXPAND);
+		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Default Zoom: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		wxArrayString choices2;
+		for (int i=1;i<=16;i++) {
+			wxString toAdd = wxString::Format(_T("%i"),int(i*12.5));
+			if (i%2) toAdd += _T(".5");
+			toAdd += _T("%");
+			choices2.Add(toAdd);
+		}
+		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices2,wxCB_READONLY | wxCB_DROPDOWN);
+		Bind(control,_T("Video Default Zoom"));
+		videoSizer3->Add(control,1,wxEXPAND);
+		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Fast Jump step in frames: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(videoPage,-1);
+		Bind(control,_T("Video fast jump step"));
+		videoSizer3->Add(control,1,wxEXPAND);
+		control = new wxCheckBox(videoPage,-1,_("Show keyframes in slider"));
+		Bind(control,_T("Show keyframes on video slider"));
+		videoSizer3->Add(control,0,wxEXPAND);
+		videoSizer3->AddGrowableCol(1,1);
+
+		// Second sizer
+		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Video Provider: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(videoPage,-1);
+		Bind(control,_T("Video provider"));
+		videoSizer4->Add(control,1,wxEXPAND);
+		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth Video Resizer: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(videoPage,-1);
+		Bind(control,_T("Video resizer"));
+		videoSizer4->Add(control,1,wxEXPAND);
+		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth Memory Limit: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator(NULL,false));
+		Bind(control,_T("Avisynth memorymax"));
+		videoSizer4->Add(control,1,wxEXPAND);
+		control = new wxCheckBox(videoPage,-1,_("Threaded Video"));
+		Bind(control,_T("Threaded video"));
+		videoSizer4->Add(control,1,wxEXPAND);
+		control = new wxCheckBox(videoPage,-1,_("Allow pre-2.56a Avisynth"));
+		Bind(control,_T("Allow Ancient Avisynth"));
+		videoSizer4->Add(control,1,wxEXPAND);
+		videoSizer4->AddGrowableCol(1,1);
+
+		// Sizers
+		videoSizer1->Add(videoSizer3,1,wxEXPAND | wxALL,5);
+		videoSizer2->Add(new wxStaticText(videoPage,-1,_("WARNING: Changing these settings might result in bugs,\ncrashes, glitches and/or movax.\nDon't touch these unless you know what you're doing.")),0,wxEXPAND | wxALL,5);
+		videoSizer2->Add(videoSizer4,1,wxEXPAND | wxALL,5);
+		videoMainSizer->Add(videoSizer1,0,wxEXPAND | wxALL,0);
+		videoMainSizer->Add(videoSizer2,0,wxEXPAND | wxTOP,5);
+		videoMainSizer->AddStretchSpacer(1);
+		videoMainSizer->Fit(videoPage);
+		videoPage->SetSizer(videoMainSizer);
+	}
 
 	// Audio page
 	// TODO
@@ -420,6 +487,8 @@ void DialogOptions::WriteToOptions(bool justApply) {
 	bool mustRestart = false;
 	bool editBox = false;
 	bool grid = false;
+	bool video = false;
+	bool audio = false;
 
 	// For each bound item
 	for (unsigned int i=0;i<binds.size();i++) {
@@ -477,6 +546,8 @@ void DialogOptions::WriteToOptions(bool justApply) {
 			if (type == MOD_RESTART) mustRestart = true;
 			if (type == MOD_EDIT_BOX) editBox = true;
 			if (type == MOD_GRID) grid = true;
+			if (type == MOD_VIDEO) video = true;
+			if (type == MOD_AUDIO) audio = true;
 		}
 	}
 
@@ -508,6 +579,12 @@ void DialogOptions::WriteToOptions(bool justApply) {
 		if (grid) {
 			FrameMain *frame = (FrameMain*) GetParent();
 			frame->SubsBox->UpdateStyle();
+		}
+
+		// Video
+		if (video) {
+			FrameMain *frame = (FrameMain*) GetParent();
+			frame->videoBox->videoSlider->Refresh();
 		}
 	}
 }

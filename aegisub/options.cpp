@@ -126,11 +126,14 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Video Check Script Res"), 0);
 	SetInt(_T("Video Default Zoom"), 7);
 	SetInt(_T("Video Fast Jump Step"), 10);
+	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
 
 	// Video Provider (Advanced)
+	SetModificationType(MOD_RESTART);
 	SetBool(_T("Threaded Video"),false);
 	SetInt(_T("Avisynth MemoryMax"),64);
+	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Allow Ancient Avisynth"),false);
 	SetText(_T("Video Provider"),_T("Avisynth"));
 	SetText(_T("Video resizer"),_T("BilinearResize"));
@@ -144,9 +147,11 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Timing Default Duration"), 2000);
 	SetInt(_T("Audio lead in"),200);
 	SetInt(_T("Audio lead out"),300);
+	SetModificationType(MOD_AUDIO);
 	SetInt(_T("Audio Inactive Lines Display Mode"),1);
 
 	// Audio Provider (Advanced)
+	SetModificationType(MOD_AUTOMATIC);
 	SetInt(_T("Audio Cache"),1);
 	SetInt(_T("Audio Sample Rate"),0);
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
@@ -154,11 +159,12 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
 
 	// Automation
+	SetModificationType(MOD_RESTART);
 	SetText(_T("Automation Base Path"), AegisubApp::folderName + _T("automation/"));
 	SetText(_T("Automation Include Path"), AegisubApp::folderName + _T("automation/include/"));
 	SetText(_T("Automation Autoload Path"), AegisubApp::folderName + _T("automation/autoload/"));
 	SetInt(_T("Automation Trace Level"), 3);
-	
+
 	// Generate colors
 	wxColour tempCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
 	float r = tempCol.Red() / 255.0;
@@ -205,6 +211,7 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_AUTOMATIC);
 
 	// Audio Cosmetic
+	SetModificationType(MOD_AUDIO);
 	SetInt(_T("Audio Spectrum Cutoff"),32);
 	SetInt(_T("Audio Spectrum Window"),11);
 	SetBool(_T("Audio Spectrum invert selection"), true);
