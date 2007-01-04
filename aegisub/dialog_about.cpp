@@ -50,12 +50,34 @@ AboutScreen::AboutScreen(wxWindow *parent)
 {
 	// Get splash
 	wxBitmap splash = wxBITMAP(splash);
+	SetBackgroundColour(wxColour(255,255,255));
+	SetForegroundColour(wxColour(0,0,0));
 
 	// Picture
 	wxSizer *PicSizer = new wxBoxSizer(wxHORIZONTAL);
 	PicSizer->Add(new BitmapControl(this,splash));
 
 	// Generate library string
+	wxString libString = _("This build of Aegisub uses the following C/C++ libraries:\n");
+	libString += _T("wxWidgets - Copyright (c) 1998-2006 Julian Smart, Robert Roebling et al;\n");
+	libString += _T("wxScintilla - Copyright (c) 2004 wxCode;\n");
+	libString += _T("Lua - Copyright (c) 1994-2006 Lua.org, PUC-Rio;\n");
+#if USE_HUNSPELL == 1
+	libString += _T("Hunspell - Copyright (c) Kevin Hendricks;\n");
+#endif
+#if USE_PORTAUDIO == 1
+	libString += _T("PortAudio - Copyright (c) 1999-2000 Ross Bencina, Phil Burk;\n");
+#endif
+#if USE_LAVC == 1
+	libString += _T("FFmpeg - Copyright (c) ??;\n");
+#endif
+#if USE_LIBASS == 1
+	libString += _T("libass - Copyright (c) 2006, Evgeniy Stepanov;\n");
+#endif
+#if USE_ASA == 1
+	libString += _T("asa - Copyright (c) 2006, David Lamparter;\n");
+#endif
+	libString += _T("MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada\n");
 
 	// Generate about string
 	wxString aboutString;
@@ -73,6 +95,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("Bot1.\n");
 	aboutString += _("SVN hosting by BerliOS and Mentar.\n");
 	aboutString += translatorCredit;
+	aboutString += _T("\n") + libString;
 	aboutString += _("\nSee the help file for full credits.\n");
 	aboutString += wxString::Format(_("Built by %s on %s."), GetAegisubBuildCredit().c_str(), GetAegisubBuildTime().c_str());
 
