@@ -164,9 +164,7 @@ public:
 
 	bool Comment;					// Is this a comment line?
 	int Layer;						// Layer number
-	int MarginR;					// Right margin
-	int MarginL;					// Left margin
-	int MarginV;					// Vertical margin
+	int Margin[4];					// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical), 3 = Bottom
 	AssTime Start;					// Starting time
 	AssTime End;					// Ending time
 	wxString Style;					// Style name
@@ -192,8 +190,8 @@ public:
 	void ConvertTagsToSRT();		// Converts tags to SRT format
 	void StripTags();				// Strips all tags from the text
 	void Clear();					// Wipes all data
-	void SetMarginString(const wxString value,int which);	// Set string to a margin value (1 = left, 2 = right, 3 = vertical)
-	wxString GetMarginString(int which,bool pad=true);		// Returns the string of a margin value (1 = left, 2 = right, 3 = vertical)
+	void SetMarginString(const wxString value,int which);	// Set string to a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
+	wxString GetMarginString(int which,bool pad=true);		// Returns the string of a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *userData),void *userData=NULL);	// Callback to process parameters
 	wxString GetSSAText();
 	bool CollidesWith(AssDialogue *target);					// Checks if two lines collide

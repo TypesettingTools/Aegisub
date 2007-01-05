@@ -85,9 +85,14 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	VolumeBar = new wxSlider(this,Audio_Volume,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_INVERSE);
 	VolumeBar->PushEventHandler(new FocusEvent());
 	VolumeBar->SetToolTip(_("Audio Volume"));
+	bool link = Options.AsBool(_T("Audio Link"));
+	if (link) {
+		VolumeBar->SetValue(VerticalZoom->GetValue());
+		VolumeBar->Enable(false);
+	}
 	VerticalLink = new ToggleBitmap(this,Audio_Vertical_Link,wxBITMAP(toggle_audio_link));
 	VerticalLink->SetToolTip(_("Link vertical zoom and volume sliders"));
-	VerticalLink->SetValue(Options.AsBool(_T("Audio Link")));
+	VerticalLink->SetValue(link);
 
 	// Display sizer
 	DisplaySizer = new wxBoxSizer(wxVERTICAL);

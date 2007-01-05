@@ -121,13 +121,13 @@ namespace Automation4 {
 			lua_pushstring(L, dia->Actor.mb_str(wxConvUTF8));
 			lua_setfield(L, -2, "actor");
 
-			lua_pushnumber(L, dia->MarginL);
+			lua_pushnumber(L, dia->Margin[0]);
 			lua_setfield(L, -2, "margin_l");
-			lua_pushnumber(L, dia->MarginR);
+			lua_pushnumber(L, dia->Margin[1]);
 			lua_setfield(L, -2, "margin_r");
-			lua_pushnumber(L, dia->MarginV); // duplicating MarginV to margin_t and margin_b here
+			lua_pushnumber(L, dia->Margin[2]);
 			lua_setfield(L, -2, "margin_t");
-			lua_pushnumber(L, dia->MarginV);
+			lua_pushnumber(L, dia->Margin[3]);
 			lua_setfield(L, -2, "margin_b");
 
 			lua_pushstring(L, dia->Effect.mb_str(wxConvUTF8));
@@ -329,7 +329,7 @@ namespace Automation4 {
 			GETINT(margin_l, "margin_l", "style")
 			GETINT(margin_r, "margin_r", "style")
 			GETINT(margin_t, "margin_t", "style")
-			//GETINT(margin_b, "margin_b", "style") // skipping for now, since it's not used anyway
+			GETINT(margin_b, "margin_b", "style")
 			GETINT(encoding, "encoding", "style")
 			// leaving out relative_to and vertical
 
@@ -376,7 +376,7 @@ namespace Automation4 {
 			GETINT(margin_l, "margin_l", "dialogue")
 			GETINT(margin_r, "margin_r", "dialogue")
 			GETINT(margin_t, "margin_t", "dialogue")
-			//GETINT(margin_b, "margin_b", "dialogue") // skipping for now, since it's not used anyway
+			GETINT(margin_b, "margin_b", "dialogue")
 			GETSTRING(effect, "effect", "dialogue")
 			//GETSTRING(userdata, "userdata", "dialogue")
 			GETSTRING(text, "text", "dialogue")
@@ -388,9 +388,10 @@ namespace Automation4 {
 			dia->End.SetMS(end_time);
 			dia->Style = style;
 			dia->Actor = actor;
-			dia->MarginL = margin_l;
-			dia->MarginR = margin_r;
-			dia->MarginV = margin_t;
+			dia->Margin[0] = margin_l;
+			dia->Margin[1] = margin_r;
+			dia->Margin[2] = margin_t;
+			dia->Margin[3] = margin_b;
 			dia->Effect = effect;
 			dia->Text = text;
 			dia->UpdateData();

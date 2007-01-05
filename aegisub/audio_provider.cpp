@@ -201,3 +201,25 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 	// Return
 	return provider;
 }
+
+
+/////////////////////////
+// Get audio with volume
+void AudioProvider::GetAudioWithVolume(void *buf, __int64 start, __int64 count, double volume) {
+	GetAudio(buf,start,count);
+	if (volume == 1.0) return;
+
+	if (bytes_per_sample == 2) {
+		// Read raw samples
+		short *buffer = (short*) buf;
+		int value;
+
+		// Modify
+		for (__int64 i=0;i<count;i++) {
+			value = (int)(buffer[i]*volume+0.5);
+			if (value < -0x8000) value = -0x8000;
+			if (value > 0x7FFF) value = 0x7FFF;
+			buffer[i] = value;
+		}
+	}
+}

@@ -437,9 +437,9 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			strings.Add(curDiag->Style);
 			strings.Add(curDiag->Actor);
 			strings.Add(curDiag->Effect);
+			strings.Add(curDiag->GetMarginString(0));
 			strings.Add(curDiag->GetMarginString(1));
 			strings.Add(curDiag->GetMarginString(2));
-			strings.Add(curDiag->GetMarginString(3));
 
 			// Set text
 			int mode = Options.AsInt(_T("Grid Hide Overrides"));

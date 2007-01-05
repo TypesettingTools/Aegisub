@@ -374,15 +374,15 @@ bool AssStyle::Parse(wxString rawData,bool IsSSA) {
 
 	// Read left margin
 	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken(),1);
+	SetMarginString(tkn.GetNextToken(),0);
 
 	// Read right margin
 	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken(),2);
+	SetMarginString(tkn.GetNextToken(),1);
 
 	// Read vertical margin
 	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken(),3);
+	SetMarginString(tkn.GetNextToken(),2);
 
 	if (IsSSA) {
 		// Read alpha level
@@ -455,9 +455,9 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 	if (value < 0) value = 0;
 	if (value > 9999) value = 9999;
 	switch (which) {
-		case 1: MarginL = value; break;
-		case 2: MarginR = value; break;
-		case 3: MarginV = value; break;
+		case 0: MarginL = value; break;
+		case 1: MarginR = value; break;
+		case 2: MarginV = value; break;
 		default: throw _T("Invalid margin");
 	}
 }

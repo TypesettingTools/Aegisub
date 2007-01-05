@@ -61,6 +61,8 @@ DirectSoundPlayer::DirectSoundPlayer() {
 
 	buffer = NULL;
 	directSound = NULL;
+	thread = NULL;
+	threadRunning = false;
 }
 
 
@@ -197,8 +199,8 @@ void DirectSoundPlayer::FillBuffer(bool fill) {
 	}
 
 	// Get source wave
-	if (count1) provider->GetAudio(ptr1,playPos,count1);
-	if (count2) provider->GetAudio(ptr2,playPos+count1,count2);
+	if (count1) provider->GetAudioWithVolume(ptr1,playPos,count1,volume);
+	if (count2) provider->GetAudioWithVolume(ptr2,playPos+count1,count2,volume);
 	playPos += totalCount;
 
 	// Unlock
@@ -215,21 +217,17 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	// Lock
 	wxMutexLocker locker(DSMutex);
 
-	// Set variables
-	HRESULT res;
-	startPos = start;
-	endPos = start+count;
-	playPos = start;
-	offset = 0;
-
 	// Check if buffer is loaded
 	if (!buffer) return;
+	buffer->Stop();
 
 	// Create notification event
+	CloseHandle(notificationEvent);
 	notificationEvent = CreateEvent(NULL,false,false,NULL);
 
 	// Create notification interface
 	IDirectSoundNotify8 *notify;
+	HRESULT res;
 	res = buffer->QueryInterface(IID_IDirectSoundNotify8,(LPVOID*)&notify);
 	if (!SUCCEEDED(res)) return;
 
@@ -246,6 +244,12 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	res = notify->SetNotificationPositions(4,positionNotify);
 	notify->Release();
 
+	// Set variables
+	startPos = start;
+	endPos = start+count;
+	playPos = start;
+	offset = 0;
+
 	// Fill buffer
 	FillBuffer(false);
 
@@ -255,9 +259,11 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	if (SUCCEEDED(res)) playing = true;
 
 	// Start thread
-	thread = new DirectSoundPlayerThread(this);
-	thread->Create();
-	thread->Run();
+	if (!thread) {
+		thread = new DirectSoundPlayerThread(this);
+		thread->Create();
+		thread->Run();
+	}
 
 	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
@@ -270,23 +276,29 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	// Lock
 	wxMutexLocker locker(DSMutex);
 
-	// Check if buffer is loaded and playing
-	if (!buffer || !playing) return;
+	// Stop the thread
+	if (thread) {
+		thread->alive = false;
+		thread = NULL;
+	}
 
 	// Stop
-	buffer->Stop();
+	if (buffer) buffer->Stop();
 
-	// Stop the thread
-	thread = NULL;
+	// Reset variables
+	playing = false;
+	playPos = 0;
+	startPos = 0;
+	endPos = 0;
+	offset = 0;
 
 	// Close event handle
 	CloseHandle(notificationEvent);
-	
+
 	// Stop timer
 	if (timerToo && displayTimer) {
 		displayTimer->Stop();
 	}
-	playing = false;
 }
 
 
@@ -327,8 +339,10 @@ __int64 DirectSoundPlayer::GetCurrentPosition() {
 
 //////////////////////
 // Thread constructor
-DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_DETACHED) {
+DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
 	parent = par;
+	alive = true;
+	parent->threadRunning = true;
 }
 
 
@@ -343,34 +357,54 @@ DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	// Variables
 	unsigned long int playPos,endPos,bufSize;
+	bool playing;
 
 	// Wait for notification
-	while (parent->playing) {
+	while (alive) {
 		// Get variables
-		parent->DSMutex.Lock();
-		playPos = parent->GetCurrentPosition();
-		endPos = parent->endPos;
-		bufSize = parent->bufSize;
-		parent->DSMutex.Unlock();
+		bool booga = true;
+		if (booga) {
+			if (!alive) break;
+			wxMutexLocker locker(parent->DSMutex);
+			if (!alive) break;
+			playPos = parent->GetCurrentPosition();
+			endPos = parent->endPos;
+			bufSize = parent->bufSize;
+			playing = parent->playing;
+			if (!alive) break;
+		}
+
+		// Flag as stopped playing, but don't actually stop yet
+		if (playPos > endPos) {
+			if (!alive) break;
+			wxMutexLocker locker(parent->DSMutex);
+			if (!alive) break;
+			parent->playing = false;
+		}
 
 		// Still playing?
 		if (playPos < endPos + bufSize/8) {
 			// Wait for signal
+			if (!alive) break;
 			WaitForSingleObject(parent->notificationEvent,1000);
+			if (!alive) break;
 
 			// Fill buffer
-			//parent->DSMutex.Lock();
+			wxMutexLocker locker(parent->DSMutex);
+			if (!alive) break;
 			parent->FillBuffer(false);
-			//parent->DSMutex.Unlock();
+			if (!alive) break;
 		}
 
 		// Over, stop it
 		else {
-			parent->buffer->Stop();
+			if (alive) parent->Stop();
 			break;
 		}
 	}
 
+	//wxMutexLocker locker(parent->DSMutex);
+	parent->threadRunning = false;
 	Delete();
 	return 0;
 }

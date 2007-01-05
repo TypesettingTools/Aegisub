@@ -46,6 +46,9 @@
 DialogPasteOver::DialogPasteOver (wxWindow *parent)
 : wxDialog (parent,-1,_("Select Fields to Paste Over"),wxDefaultPosition,wxDefaultSize)
 {
+	// Script mode
+	int mode = 1; // ASS
+
 	// List box
 	wxArrayString choices;
 	choices.Add(_T("Layer"));
@@ -55,13 +58,19 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 	choices.Add(_T("Actor"));
 	choices.Add(_T("Margin Left"));
 	choices.Add(_T("Margin Right"));
-	choices.Add(_T("Margin Vertical"));
+	if (mode == 1) {
+		choices.Add(_T("Margin Vertical"));
+	}
+	else {
+		choices.Add(_T("Margin Top"));
+		choices.Add(_T("Margin Bottom"));
+	}
 	choices.Add(_T("Effect"));
 	choices.Add(_T("Text"));
 	ListBox = new wxCheckListBox(this,-1,wxDefaultPosition,wxSize(250,170), choices);
 
 	// Load checked items
-	for (int i=0;i<10;i++) ListBox->Check(i,Options.AsBool(wxString::Format(_T("Paste Over #%i"),i)));
+	for (unsigned int i=0;i<choices.Count();i++) ListBox->Check(i,Options.AsBool(wxString::Format(_T("Paste Over #%i"),i)));
 
 	// Label and list sizer
 	wxStaticText *label = new wxStaticText(this,-1,_("Please select the fields that you want to paste over::"),wxDefaultPosition,wxDefaultSize);
@@ -115,8 +124,8 @@ END_EVENT_TABLE()
 // OK pressed
 void DialogPasteOver::OnOK(wxCommandEvent &event) {
 	// Set options
-	options.SetCount(10);
-	for (int i=0;i<10;i++) {
+	options.SetCount(11);
+	for (int i=0;i<11;i++) {
 		options[i] = ListBox->IsChecked(i) ? 1 : 0;
 		Options.SetBool(wxString::Format(_T("Paste Over #%i"),i),options[i]==1);
 	}
@@ -137,15 +146,15 @@ void DialogPasteOver::OnCancel(wxCommandEvent &event) {
 ///////////////
 // Select Text
 void DialogPasteOver::OnText(wxCommandEvent &event) {
-	for (int i=0;i<9;i++) ListBox->Check(i,false);
-	ListBox->Check(9,true);
+	for (int i=0;i<10;i++) ListBox->Check(i,false);
+	ListBox->Check(10,true);
 }
 
 
 ////////////////
 // Select Times
 void DialogPasteOver::OnTimes(wxCommandEvent &event) {
-	for (int i=0;i<10;i++) ListBox->Check(i,false);
+	for (int i=0;i<11;i++) ListBox->Check(i,false);
 	ListBox->Check(1,true);
 	ListBox->Check(2,true);
 }
@@ -154,14 +163,14 @@ void DialogPasteOver::OnTimes(wxCommandEvent &event) {
 //////////////
 // Select All
 void DialogPasteOver::OnAll(wxCommandEvent &event) {
-	for (int i=0;i<10;i++) ListBox->Check(i,true);
+	for (int i=0;i<11;i++) ListBox->Check(i,true);
 }
 
 
 ///////////////
 // Select None
 void DialogPasteOver::OnNone(wxCommandEvent &event) {
-	for (int i=0;i<10;i++) ListBox->Check(i,false);
+	for (int i=0;i<11;i++) ListBox->Check(i,false);
 }
 
 

@@ -69,6 +69,7 @@ public:
 
 	virtual wxString GetFilename();
 	virtual void GetAudio(void *buf, __int64 start, __int64 count)=0;
+	void GetAudioWithVolume(void *buf, __int64 start, __int64 count, double volume);
 
 	int GetChannels();
 	__int64 GetNumSamples();

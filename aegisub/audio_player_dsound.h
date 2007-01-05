@@ -57,6 +57,7 @@ private:
 	DirectSoundPlayer *parent;
 
 public:
+	bool alive;
 	DirectSoundPlayerThread(DirectSoundPlayer *parent);
 	~DirectSoundPlayerThread();
 
@@ -88,6 +89,7 @@ private:
 	void FillBuffer(bool fill);
 
 	DirectSoundPlayerThread *thread;
+	bool threadRunning;
 
 public:
 	DirectSoundPlayer();

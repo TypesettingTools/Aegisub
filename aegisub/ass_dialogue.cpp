@@ -64,7 +64,7 @@ AssDialogue::AssDialogue() {
 	End.SetMS(5000);
 	StartMS = 0;
 	Layer = 0;
-	MarginR = MarginL = MarginV = 0;
+	for (int i=0;i<4;i++) Margin[i] = 0;
 	Text = _T("");
 	Style = _T("Default");
 	Actor = _T("");
@@ -178,15 +178,15 @@ bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 
 	// Get left margin
 	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),1);
+	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),0);
 
 	// Get right margin
 	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),2);
+	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),1);
 
 	// Get vertical margin
 	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),3);
+	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),2);
 
 	// Get effect
 	if (!tkn.HasMoreTokens()) return false;
@@ -234,11 +234,11 @@ wxString AssDialogue::MakeData() {
 	final += Style + _T(",");
 	final += Actor + _T(",");
 
+	final += GetMarginString(0);
+	final += _T(",");
 	final += GetMarginString(1);
 	final += _T(",");
 	final += GetMarginString(2);
-	final += _T(",");
-	final += GetMarginString(3);
 	final += _T(",");
 
 	Effect.Replace(_T(","),_T(";"));
@@ -287,11 +287,11 @@ wxString AssDialogue::GetSSAText () {
 	work += Style + _T(",");
 	work += Actor + _T(",");
 
+	work += GetMarginString(0);
+	work += _T(",");
 	work += GetMarginString(1);
 	work += _T(",");
 	work += GetMarginString(2);
-	work += _T(",");
-	work += GetMarginString(3);
 	work += _T(",");
 
 	Effect.Replace(_T(","),_T(";"));
@@ -678,25 +678,16 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 	if (value > 9999) value = 9999;
 
 	// Assign
-	switch (which) {
-		case 1: MarginL = value; break;
-		case 2: MarginR = value; break;
-		case 3: MarginV = value; break;
-		default: throw _T("Invalid margin");
-	}
+	if (which < 0 || which >= 4) throw _T("Invalid Margin");
+	Margin[which] = value;
 }
 
 
 //////////////////////////
 // Gets string for margin
 wxString AssDialogue::GetMarginString(int which,bool pad) {
-	int value;
-	switch (which) {
-		case 1: value = MarginL; break;
-		case 2: value = MarginR; break;
-		case 3: value = MarginV; break;
-		default: throw _T("Invalid margin");
-	}
+	if (which < 0 || which >= 4) throw _T("Invalid margin");
+	int value = Margin[which];
 	if (pad) return wxString::Format(_T("%04i"),value);
 	else return wxString::Format(_T("%i"),value);
 }
@@ -745,9 +736,7 @@ AssEntry *AssDialogue::Clone() {
 	final->Effect = Effect;
 	final->End = End;
 	final->Layer = Layer;
-	final->MarginL = MarginL;
-	final->MarginR = MarginR;
-	final->MarginV = MarginV;
+	for (int i=0;i<4;i++) final->Margin[i] = Margin[i];
 	final->Start = Start;
 	final->StartMS = final->StartMS;
 	final->Style = Style;

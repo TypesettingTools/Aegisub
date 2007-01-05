@@ -249,9 +249,9 @@ void SubsEditBox::Update (bool timeOnly) {
 			if (!timeOnly) {
 				TextEdit->SetTextTo(curdiag->Text);
 				Layer->SetValue(wxString::Format(_T("%i"),curdiag->Layer));
-				MarginL->SetValue(curdiag->GetMarginString(1,false));
-				MarginR->SetValue(curdiag->GetMarginString(2,false));
-				MarginV->SetValue(curdiag->GetMarginString(3,false));
+				MarginL->SetValue(curdiag->GetMarginString(0,false));
+				MarginR->SetValue(curdiag->GetMarginString(1,false));
+				MarginV->SetValue(curdiag->GetMarginString(2,false));
 				Effect->SetValue(curdiag->Effect);
 				CommentBox->SetValue(curdiag->Comment);
 				StyleBox->Select(StyleBox->FindString(curdiag->Style));
@@ -699,11 +699,11 @@ void SubsEditBox::OnMarginLChange(wxCommandEvent &event) {
 	for (int i=0;i<n;i++) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
-			cur->SetMarginString(MarginL->GetValue(),1);
+			cur->SetMarginString(MarginL->GetValue(),0);
 			cur->UpdateData();
 		}
 	}
-	MarginL->SetValue(cur->GetMarginString(1,false));
+	MarginL->SetValue(cur->GetMarginString(0,false));
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
@@ -721,11 +721,11 @@ void SubsEditBox::OnMarginRChange(wxCommandEvent &event) {
 	for (int i=0;i<n;i++) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
-			cur->SetMarginString(MarginR->GetValue(),2);
+			cur->SetMarginString(MarginR->GetValue(),1);
 			cur->UpdateData();
 		}
 	}
-	MarginR->SetValue(cur->GetMarginString(2,false));
+	MarginR->SetValue(cur->GetMarginString(1,false));
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();
@@ -743,11 +743,11 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 	for (int i=0;i<n;i++) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
-			cur->SetMarginString(MarginV->GetValue(),3);
+			cur->SetMarginString(MarginV->GetValue(),2);
 			cur->UpdateData();
 		}
 	}
-	MarginV->SetValue(cur->GetMarginString(3,false));
+	MarginV->SetValue(cur->GetMarginString(2,false));
 	grid->ass->FlagAsModified();
 	grid->CommitChanges();
 	grid->EndBatch();

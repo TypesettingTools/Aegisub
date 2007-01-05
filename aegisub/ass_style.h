@@ -99,8 +99,8 @@ public:
 	bool Parse(wxString data,bool IsSSA=false);	// Parses raw ASS/SSA data into everything else
 	void UpdateData();				// Updates raw data
 	wxString GetSSAText();			// Retrieves SSA-formatted style
-	wxString GetMarginString(int which);					// Returns the margin value as a string (1 = left, 2 = right, 3 = vertical)
-	void SetMarginString(const wxString value,int which);	// Sets margin value from a string (1 = left, 2 = right, 3 = vertical)
+	wxString GetMarginString(int which);					// Returns the margin value as a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
+	void SetMarginString(const wxString value,int which);	// Sets margin value from a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 
 	AssEntry *Clone();
 

@@ -146,11 +146,11 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	wxSizer *MarginSizerL = new wxBoxSizer(wxVERTICAL);
 	wxSizer *MarginSizerR = new wxBoxSizer(wxVERTICAL);
 	wxSizer *MarginSizerV = new wxBoxSizer(wxVERTICAL);
-	MarginLValue = style->GetMarginString(1);
+	MarginLValue = style->GetMarginString(0);
 	MarginL = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginLValue));
-	MarginRValue = style->GetMarginString(2);
+	MarginRValue = style->GetMarginString(1);
 	MarginR = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginRValue));
-	MarginVValue = style->GetMarginString(3);
+	MarginVValue = style->GetMarginString(2);
 	MarginV = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginVValue));
 	MarginL->SetToolTip(_("Distance from left edge, in pixels"));
 	MarginR->SetToolTip(_("Distance from right edge, in pixels"));
@@ -422,9 +422,9 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		work->alignment = ControlToAlign(Alignment->GetSelection());
 
 		// Margins
-		work->SetMarginString(MarginL->GetValue(),1);
-		work->SetMarginString(MarginR->GetValue(),2);
-		work->SetMarginString(MarginV->GetValue(),3);
+		work->SetMarginString(MarginL->GetValue(),0);
+		work->SetMarginString(MarginR->GetValue(),1);
+		work->SetMarginString(MarginV->GetValue(),2);
 
 		// Color alphas
 		ColorAlpha1->GetValue().ToLong(&templ);

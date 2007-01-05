@@ -197,9 +197,10 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 				}
 
 				// Margins
-				curDiag->MarginL = int(curDiag->MarginL * rx + 0.5);
-				curDiag->MarginR = int(curDiag->MarginR * rx + 0.5);
-				curDiag->MarginV = int(curDiag->MarginV * ry + 0.5);
+				for (int i=0;i<2;i++) {
+					curDiag->Margin[i] = int(curDiag->Margin[i] * rx + 0.5);
+					curDiag->Margin[i+2] = int(curDiag->Margin[i+2] * ry + 0.5);
+				}
 
 				// Update
 				curDiag->UpdateText();
