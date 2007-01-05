@@ -1146,19 +1146,16 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 
 //////////////////
 // Commit changes
-void AudioDisplay::CommitChanges () {
+void AudioDisplay::CommitChanges (bool nextLine) {
 	// Loaded?
 	if (!loaded) return;
 
-	if (!Options.AsBool(_T("Audio SSA Mode")) && !box->audioKaraoke->splitting) {
+	if (!box->audioKaraoke->splitting) {
 		// Check if there's any need to commit
 		if (!NeedCommit) return;
 
 		// Check if selection is valid
-		if (curEndMS < curStartMS) {
-			wxMessageBox(_T("Start time must be before end time!"),_T("Error commiting"),wxICON_ERROR);
-			return;
-		}
+		if (curEndMS < curStartMS) return;
 	}
 
 	// Reset flags
@@ -1198,8 +1195,8 @@ void AudioDisplay::CommitChanges () {
 	karaoke->curSyllable = karSyl;
 	blockUpdate = false;
 
-	// If in SSA mode, select next line and "move timing forward" (unless the user was splitting karaoke)
-	if (Options.AsBool(_T("Audio SSA Mode")) && Options.AsBool(_T("Audio SSA Next Line on Commit")) && !wasKaraSplitting) {
+	// Next line
+	if (nextLine && Options.AsBool(_T("Audio Next Line on Commit")) && !wasKaraSplitting) {
 		// Insert a line if it doesn't exist
 		int nrows = grid->GetRows();
 		if (nrows == line_n + 1) {
@@ -1521,237 +1518,210 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		}
 	}
 
+	// Buttons
+	bool leftIsDown = event.ButtonIsDown(wxMOUSE_BTN_LEFT);
+	bool rightIsDown = event.ButtonIsDown(wxMOUSE_BTN_RIGHT);
+	bool buttonIsDown = leftIsDown || rightIsDown;
+	bool leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
+	bool rightClick = event.ButtonDown(wxMOUSE_BTN_RIGHT);
+	bool buttonClick = leftClick || rightClick;
 	bool defCursor = true;
 
-	// Substation alpha mode
-	if (Options.AsBool(_T("Audio SSA Mode")) && !karaoke->enabled && dialogue) {
-		bool mod = false;
+	// Timing
+	if (hasSel) {
+		bool updated = false;
+							
+		// Grab start/end
+		if (hold == 0) {
+			bool gotGrab = false;
 
-		// Set start
-		if (event.ButtonDown(wxMOUSE_BTN_LEFT)) {
-			curStartMS = GetMSAtX(x);
-			mod = true;
-		}
-
-		// Set end
-		if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
-			curEndMS = GetMSAtX(x);
-			mod = true;
-			player->SetEndPosition(GetSampleAtX(x));
-		}
-
-		// Modified, commit changes
-		if (mod) {
-			// Swap if needed
-			if (false && curStartMS > curEndMS) {
-				int aux = curStartMS;
-				curStartMS = curEndMS;
-				curEndMS = aux;
-			}
-
-			// Commit
-			NeedCommit = true;
-			if (Options.AsBool(_T("Audio SSA Allow Autocommit")) && Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS)
-				CommitChanges();
-			else 
-				UpdateImage(true);
-		}
-	}
-
-	// Standard mode
-	else {
-		// Moving around
-		if (hasSel) {
-			// Grab start/end
-			if (hold == 0) {
-				bool gotGrab = false;
-
-				// Grab start
-				if (!karMode) {
-					if (abs64 (x - selStart) < 6) {
-						wxCursor cursor(wxCURSOR_SIZEWE);
-						SetCursor(cursor);
-						defCursor = false;
-						if (event.LeftIsDown()) {
-							hold = 1;
-							gotGrab = true;
-						}
-					}
-
-					// Grab end
-					else if (abs64 (x - selEnd) < 6) {
-						wxCursor cursor(wxCURSOR_SIZEWE);
-						SetCursor(cursor);
-						defCursor = false;
-						if (event.LeftIsDown()) {
-							hold = 2;
-							gotGrab = true;
-						}
+			// Grab start
+			if (!karMode) {
+				if (abs64 (x - selStart) < 6) {
+					wxCursor cursor(wxCURSOR_SIZEWE);
+					SetCursor(cursor);
+					defCursor = false;
+					if (buttonIsDown) {
+						hold = 1;
+						gotGrab = true;
 					}
 				}
 
-				// Grabbing a syllable
-				if (!gotGrab && karMode) {
-					__int64 pos,len,curpos;
-					KaraokeSyllable *curSyl;
-					size_t karn = karaoke->syllables.size();
-					for (size_t i=0;i<karn;i++) {
-						curSyl = &karaoke->syllables.at(i);
-						len = curSyl->length*10;
-						curpos = curSyl->position*10;
-						if (len != -1) {
-							pos = GetXAtMS(curStartMS+len+curpos);
-							if (abs64 (x - pos) < 4) {
-								wxCursor cursor(wxCURSOR_SIZEWE);
-								SetCursor(cursor);
-								defCursor = false;
-								if (event.LeftIsDown()) {
-									hold = 4;
-									holdSyl = (int)i;
-									gotGrab = true;
-								}
-								break;
-							}
-						}
-					}
-				}
-
-				// Dragging nothing, time from scratch
-				if (!gotGrab) {
-					if (event.ButtonIsDown(wxMOUSE_BTN_LEFT)) {
-						hold = 3;
-						lastX = x;
+				// Grab end
+				else if (abs64 (x - selEnd) < 6) {
+					wxCursor cursor(wxCURSOR_SIZEWE);
+					SetCursor(cursor);
+					defCursor = false;
+					if (buttonIsDown) {
+						hold = 2;
 						gotGrab = true;
 					}
 				}
 			}
 
-			// Drag start/end
-			if (hold != 0) {
-				// Dragging
-				if (event.ButtonIsDown(wxMOUSE_BTN_LEFT)) {
-					bool updated = false;
-
-					// Drag from nothing
-					if (hold == 3) {
-						if (!karMode) {
-							if (x != lastX) {
-								selStart = x;
-								selEnd = x;
-								curEndMS = GetMSAtX(selEnd);
-								curStartMS = GetMSAtX(selStart);
-								hold = 2;
+			// Grabbing a syllable
+			if (!gotGrab && karMode) {
+				__int64 pos,len,curpos;
+				KaraokeSyllable *curSyl;
+				size_t karn = karaoke->syllables.size();
+				for (size_t i=0;i<karn;i++) {
+					curSyl = &karaoke->syllables.at(i);
+					len = curSyl->length*10;
+					curpos = curSyl->position*10;
+					if (len != -1) {
+						pos = GetXAtMS(curStartMS+len+curpos);
+						if (abs64 (x - pos) < 4) {
+							wxCursor cursor(wxCURSOR_SIZEWE);
+							SetCursor(cursor);
+							defCursor = false;
+							if (event.LeftIsDown()) {
+								hold = 4;
+								holdSyl = (int)i;
+								gotGrab = true;
 							}
+							break;
 						}
-					}
-
-					// Drag start
-					if (hold == 1) {
-						// Set new value
-						if (x != selStart) {
-							selStart = x;
-							if (selStart > selEnd) {
-								int temp = selStart;
-								selStart = selEnd;
-								selEnd = temp;
-								hold = 2;
-								curEndMS = GetMSAtX(selEnd);
-							}
-							curStartMS = GetMSAtX(selStart);
-							updated = true;
-							diagUpdated = true;
-						}
-					}
-
-					// Drag end
-					if (hold == 2) {
-						// Set new value
-						if (x != selEnd) {
-							selEnd = x;
-							if (selStart > selEnd) {
-								int temp = selStart;
-								selStart = selEnd;
-								selEnd = temp;
-								hold = 1;
-								curStartMS = GetMSAtX(selStart);
-							}
-							curEndMS = GetMSAtX(selEnd);
-							updated = true;
-							diagUpdated = true;
-						}
-					}
-
-					// Drag karaoke
-					if (hold == 4) {
-						// Set new value
-						int curpos,len,pos,nkar;
-						KaraokeSyllable *curSyl=NULL,*nextSyl=NULL;
-						curSyl = &karaoke->syllables.at(holdSyl);
-						nkar = (int)karaoke->syllables.size();
-						if (holdSyl < nkar-1) {
-							nextSyl = &karaoke->syllables.at(holdSyl+1);
-						}
-						curpos = curSyl->position;
-						len = curSyl->length;
-						pos = GetXAtMS(curStartMS+(len+curpos)*10);
-						if (x != pos) {
-							// Calculate delta in centiseconds
-							int delta = ((__int64)(x-pos)*samples*100)/provider->GetSampleRate();
-
-							// Apply delta
-							int deltaMode = 0;
-							if (shiftDown) deltaMode = 1;
-							// else if (ctrlDown) deltaMode = 2;
-							bool result = karaoke->SyllableDelta(holdSyl,delta,deltaMode);
-							if (result) {
-								updated = true;
-								diagUpdated = true;
-							}
-						}
-					}
-
-					// Update stuff
-					if (updated) {
-						player->SetEndPosition(GetSampleAtX(selEnd));
-						wxCursor cursor(wxCURSOR_SIZEWE);
-						SetCursor(cursor);
-						UpdateImage(true);
 					}
 				}
+			}
 
-				// Release
-				else {
-					// Commit changes
-					if (diagUpdated) {
-						diagUpdated = false;
-						NeedCommit = true;
-						if (Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS) 
-							CommitChanges();
-						else 
-							UpdateImage(true);
-					}
-
-					// Single click on nothing
-					else if (hold == 3) {
-						// Select syllable
-						if (karaoke->enabled) {
-							int syl = GetSyllableAtX(x);
-							if (syl != -1) {
-								karaoke->SetSyllable(syl);
-								UpdateImage(true);
-							}
-						}
-					}
-
-					// Update stuff
-					SetCursor(wxNullCursor);
-					hold = 0;
+			// Dragging nothing, time from scratch
+			if (!gotGrab) {
+				if (buttonIsDown) {
+					hold = 3;
+					lastX = x;
+					gotGrab = true;
 				}
 			}
 		}
-		else {
-			hold = 0;
+
+		// Drag start/end
+		if (hold != 0) {
+			// Dragging
+			if (buttonIsDown) {
+				// Drag from nothing
+				if (hold == 3 && buttonIsDown) {
+					if (!karMode) {
+						if (leftIsDown) curStartMS = GetMSAtX(x);
+						else curEndMS = GetMSAtX(x);
+						updated = true;
+
+						if (x != lastX) {
+							selStart = x;
+							selEnd = x;
+							curStartMS = GetMSAtX(x);
+							curEndMS = GetMSAtX(x);
+							hold = 2;
+						}
+					}
+				}
+
+				// Drag start
+				if (hold == 1 && buttonIsDown) {
+					// Set new value
+					if (x != selStart) {
+						selStart = x;
+						if (selStart > selEnd) {
+							int temp = selStart;
+							selStart = selEnd;
+							selEnd = temp;
+							hold = 2;
+							curEndMS = GetMSAtX(selEnd);
+						}
+						curStartMS = GetMSAtX(selStart);
+						updated = true;
+						diagUpdated = true;
+					}
+				}
+
+				// Drag end
+				if (hold == 2 && buttonIsDown) {
+					// Set new value
+					if (x != selEnd) {
+						selEnd = x;
+						if (selStart > selEnd) {
+							int temp = selStart;
+							selStart = selEnd;
+							selEnd = temp;
+							hold = 1;
+							curStartMS = GetMSAtX(selStart);
+						}
+						curEndMS = GetMSAtX(selEnd);
+						updated = true;
+						diagUpdated = true;
+					}
+				}
+
+				// Drag karaoke
+				if (hold == 4 && leftIsDown) {
+					// Set new value
+					int curpos,len,pos,nkar;
+					KaraokeSyllable *curSyl=NULL,*nextSyl=NULL;
+					curSyl = &karaoke->syllables.at(holdSyl);
+					nkar = (int)karaoke->syllables.size();
+					if (holdSyl < nkar-1) {
+						nextSyl = &karaoke->syllables.at(holdSyl+1);
+					}
+					curpos = curSyl->position;
+					len = curSyl->length;
+					pos = GetXAtMS(curStartMS+(len+curpos)*10);
+					if (x != pos) {
+						// Calculate delta in centiseconds
+						int delta = ((__int64)(x-pos)*samples*100)/provider->GetSampleRate();
+
+						// Apply delta
+						int deltaMode = 0;
+						if (shiftDown) deltaMode = 1;
+						// else if (ctrlDown) deltaMode = 2;
+						bool result = karaoke->SyllableDelta(holdSyl,delta,deltaMode);
+						if (result) {
+							updated = true;
+							diagUpdated = true;
+						}
+					}
+				}
+			}
+
+			// Release
+			else {
+				// Commit changes
+				if (diagUpdated) {
+					diagUpdated = false;
+					NeedCommit = true;
+					if (Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS) CommitChanges();
+					else UpdateImage(true);
+				}
+
+				// Single click on nothing
+				else if (hold == 3) {
+					// Select syllable
+					if (karaoke->enabled) {
+						int syl = GetSyllableAtX(x);
+						if (syl != -1) {
+							karaoke->SetSyllable(syl);
+							UpdateImage(true);
+						}
+					}
+				}
+
+				// Update stuff
+				SetCursor(wxNullCursor);
+				hold = 0;
+			}
 		}
+
+		// Update stuff
+		if (updated) {
+			player->SetEndPosition(GetSampleAtX(selEnd));
+			wxCursor cursor(wxCURSOR_SIZEWE);
+			SetCursor(cursor);
+			UpdateImage(true);
+		}
+	}
+
+	// Not holding
+	else {
+		hold = 0;
 	}
 
 	// Restore cursor
@@ -1890,12 +1860,9 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 
 	// Play
 	if (Hotkeys.IsPressed(_T("Audio Play")) || Hotkeys.IsPressed(_T("Audio Play Alt"))) {
-		if (player->IsPlaying()) Stop();
-		else {
-			int start=0,end=0;
-			GetTimesSelection(start,end);
-			Play(start,end);
-		}
+		int start=0,end=0;
+		GetTimesSelection(start,end);
+		Play(start,end);
 	}
 
 	// Increase length
@@ -1985,9 +1952,7 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 	if (Hotkeys.IsPressed(_T("Audio Play Original Line"))) {
 		int start=0,end=0;
 		GetTimesDialogue(start,end);
-		if (Options.AsBool(_T("Audio SSA Mode"))) {
-			SetSelection(start, end);
-		}
+		SetSelection(start, end);
 		Play(start,end);
 	}
 
@@ -2005,10 +1970,8 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 	if (diagUpdated) {
 		diagUpdated = false;
 		NeedCommit = true;
-		if ((Options.AsBool(_T("Audio SSA Allow Autocommit")) || Options.AsBool(_T("Audio SSA Mode")) == false) && Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS)
-			CommitChanges();
-		else
-			UpdateImage(true);
+		if (Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS) CommitChanges();
+		else UpdateImage(true);
 	}
 }
 

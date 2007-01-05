@@ -171,10 +171,6 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	AutoScroll->SetToolTip(_("Auto scrolls audio display to selected line"));
 	AutoScroll->SetValue(Options.AsBool(_T("Audio Autoscroll")));
 	ButtonSizer->Add(AutoScroll,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
-	SSAMode = new ToggleBitmap(this,Audio_Check_SSA,wxBITMAP(toggle_audio_ssa),wxSize(30,-1));
-	SSAMode->SetToolTip(_("Substation Alpha Mode - Left click sets start and right click sets end"));
-	SSAMode->SetValue(Options.AsBool(_T("Audio SSA Mode")));
-	ButtonSizer->Add(SSAMode,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
 	MedusaMode = new ToggleBitmap(this,Audio_Check_Medusa,wxBITMAP(toggle_audio_medusa),wxSize(30,-1));
 	MedusaMode->SetToolTip(_("Enable Medusa-Style Timing Shortcuts"));
 	MedusaMode->SetValue(Options.AsBool(_T("Audio Medusa Timing Hotkeys")));
@@ -277,7 +273,6 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_TOGGLEBUTTON(Audio_Button_Karaoke, AudioBox::OnKaraoke)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoGoto,AudioBox::OnAutoGoto)
 	EVT_TOGGLEBUTTON(Audio_Button_Split,AudioBox::OnSplit)
-	EVT_TOGGLEBUTTON(Audio_Check_SSA,AudioBox::OnSSAMode)
 	EVT_TOGGLEBUTTON(Audio_Check_Medusa,AudioBox::OnMedusaMode)
 	EVT_TOGGLEBUTTON(Audio_Check_Spectrum,AudioBox::OnSpectrumMode)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoCommit,AudioBox::OnAutoCommit)
@@ -585,15 +580,6 @@ void AudioBox::OnAutoGoto(wxCommandEvent &event) {
 void AudioBox::OnAutoCommit(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	Options.SetBool(_T("Audio Autocommit"),AutoCommit->GetValue());
-	Options.Save();
-}
-
-
-////////////
-// SSA Mode
-void AudioBox::OnSSAMode(wxCommandEvent &event) {
-	audioDisplay->SetFocus();
-	Options.SetBool(_T("Audio SSA Mode"),SSAMode->GetValue());
 	Options.Save();
 }
 

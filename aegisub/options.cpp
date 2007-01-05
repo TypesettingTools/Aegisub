@@ -140,8 +140,7 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Video resizer"),_T("BilinearResize"));
 
 	// Audio Options
-	SetBool(_T("Audio SSA Next Line on Commit"),true);
-	SetBool(_T("Audio SSA Allow Autocommit"),false);
+	SetBool(_T("Audio Next Line on Commit"),true);
 	SetBool(_T("Audio Autofocus"),false);
 	SetBool(_T("Audio Wheel Default To Zoom"),false);
 	SetBool(_T("Audio lock scroll on cursor"),false);
@@ -247,7 +246,6 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Audio Link"),true);
 	SetBool(_T("Audio Autocommit"),false);
 	SetBool(_T("Audio Autoscroll"),true);
-	SetBool(_T("Audio SSA Mode"),false);
 	SetBool(_T("Audio Medusa Timing Hotkeys"),false);
 
 	SetBool(_T("Shift Times ByTime"),true);

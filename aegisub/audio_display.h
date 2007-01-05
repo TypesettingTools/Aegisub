@@ -158,7 +158,7 @@ public:
 	int GetSyllableAtX(int x);
 
 	void MakeDialogueVisible(bool force=false);
-	void CommitChanges();
+	void CommitChanges(bool nextLine=false);
 	void ChangeLine(int delta);
 	void Next();
 	void Prev();

@@ -386,7 +386,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// First sizer
 		control = new wxCheckBox(audioPage,-1,_("Next line on commit"));
-		Bind(control,_T("Audio SSA Next Line on Commit"));
+		Bind(control,_T("Audio Next Line on Commit"));
 		audioSizer3->Add(control,1,wxEXPAND,0);
 		control = new wxCheckBox(audioPage,-1,_("Auto-focus on mouse over"));
 		Bind(control,_T("Audio Autofocus"));
