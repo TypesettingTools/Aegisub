@@ -246,15 +246,6 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	//Freeze();
 	wxMenu *curMenu = event.GetMenu();
 
-	// Start by cleaning up in macro menu items
-	for (unsigned int i = 0; i < activeMacroItems.size(); i++) {
-		wxMenu *p = 0;
-		wxMenuItem *it = MenuBar->FindItem(Menu_Automation_Macro + i, &p);
-		if (it)
-			p->Delete(it);
-	}
-	activeMacroItems.clear();
-
 	// File menu
 	if (curMenu == fileMenu) {
 		// Wipe recent
@@ -490,8 +481,25 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// Automation menu
 	else if (curMenu == automationMenu) {
-		AddMacroMenuItems(automationMenu, wxGetApp().global_scripts->GetMacros());
-		AddMacroMenuItems(automationMenu, local_scripts->GetMacros());
+		// Remove old macro items
+		for (unsigned int i = 0; i < activeMacroItems.size(); i++) {
+			wxMenu *p = 0;
+			wxMenuItem *it = MenuBar->FindItem(Menu_Automation_Macro + i, &p);
+			if (it)
+				p->Delete(it);
+		}
+		activeMacroItems.clear();
+
+		// Add new ones
+		int added = 0;
+		added += AddMacroMenuItems(automationMenu, wxGetApp().global_scripts->GetMacros());
+		added += AddMacroMenuItems(automationMenu, local_scripts->GetMacros());
+
+		// If none were added, show a ghosted notice
+		if (added == 0) {
+			automationMenu->Append(Menu_Automation_Macro, _("No Automation macros loaded"))->Enable(false);
+			activeMacroItems.push_back(0);
+		}
 	}
 
 	//Thaw();
@@ -500,9 +508,9 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 //////////////////////////////
 // Macro menu creation helper
-void FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros) {
+int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros) {
 	if (macros.empty()) {
-		return;
+		return 0;
 	}
 
 	int id = activeMacroItems.size();;
@@ -512,6 +520,8 @@ void FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::F
 		activeMacroItems.push_back(*i);
 		id++;
 	}
+
+	return macros.size();
 }
 
 

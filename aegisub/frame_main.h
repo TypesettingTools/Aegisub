@@ -101,7 +101,7 @@ private:
 	Automation4::ScriptManager *local_scripts;
 
 	std::vector<Automation4::FeatureMacro*> activeMacroItems;
-	void AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros);
+	int AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros);
 
 	void InitToolbar();
 	void InitContents();

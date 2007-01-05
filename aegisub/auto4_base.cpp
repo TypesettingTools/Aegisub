@@ -599,9 +599,11 @@ namespace Automation4 {
 
 	void AutoloadScriptManager::Reload()
 	{
-		wxDir dir(path);
-		if (!dir.IsOpened()) {
-			// crap
+		wxDir dir;
+		if (!dir.Exists(path)) {
+			return;
+		}
+		if (!dir.Open(path)) {
 			return;
 		}
 
