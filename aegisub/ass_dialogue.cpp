@@ -186,7 +186,9 @@ bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 
 	// Get vertical margin
 	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),2);
+	temp = tkn.GetNextToken().Trim(false).Trim(true);
+	SetMarginString(temp,2);
+	SetMarginString(temp,3);
 
 	// Get effect
 	if (!tkn.HasMoreTokens()) return false;
