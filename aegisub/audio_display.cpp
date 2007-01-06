@@ -677,7 +677,10 @@ protected:
 void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 	// Spectrum bitmap
 	if (!weak || !spectrumDisplay || spectrumDisplay->GetWidth() != w || spectrumDisplay->GetHeight() != h) {
-		if (spectrumDisplay) delete spectrumDisplay;
+		if (spectrumDisplay) {
+			delete spectrumDisplay;
+			spectrumDisplay = 0;
+		}
 		//spectrumDisplay = new wxBitmap(w,h);
 		weak = false;
 	}
