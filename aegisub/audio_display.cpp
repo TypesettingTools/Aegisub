@@ -184,25 +184,31 @@ void AudioDisplay::UpdateImage(bool weak) {
 	lineEnd = 0;
 	selStartCap = 0;
 	selEndCap = 0;
+	__int64 drawSelStart = 0;
+	__int64 drawSelEnd = 0;
 	if (dialogue) {
 		GetDialoguePos(lineStart,lineEnd,false);
 		hasSel = true;
 		if (hasKaraoke) {
 			GetKaraokePos(selStartCap,selEndCap,true);
-			GetKaraokePos(selStart,selEnd,false);
+			GetKaraokePos(drawSelStart,drawSelEnd,false);
+			selStart = lineStart;
+			selEnd = lineEnd;
 		}
 		else {
 			GetDialoguePos(selStartCap,selEndCap,true);
 			selStart = lineStart;
 			selEnd = lineEnd;
+			drawSelStart = lineStart;
+			drawSelEnd = lineEnd;
 		}
 	}
 
 	// Draw selection bg
-	if (hasSel && selStart < selEnd && draw_selection_background) {
+	if (hasSel && drawSelStart < drawSelEnd && draw_selection_background) {
 		if (NeedCommit && !karaoke->enabled) dc.SetBrush(wxBrush(Options.AsColour(_T("Audio Selection Background Modified"))));
 		else dc.SetBrush(wxBrush(Options.AsColour(_T("Audio Selection Background"))));
-		dc.DrawRectangle(selStart,0,selEnd-selStart,h);
+		dc.DrawRectangle(drawSelStart,0,drawSelEnd-drawSelStart,h);
 	}
 
 	// Draw spectrum
@@ -1457,9 +1463,10 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		// Grab start/end
 		if (hold == 0) {
 			bool gotGrab = false;
+			bool karTime = karMode && !event.ControlDown();
 
 			// Grab start
-			if (!karMode) {
+			if (!karTime) {
 				if (abs64 (x - selStart) < 6) {
 					wxCursor cursor(wxCURSOR_SIZEWE);
 					SetCursor(cursor);
@@ -1483,7 +1490,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			}
 
 			// Grabbing a syllable
-			if (!gotGrab && karMode) {
+			else {
 				__int64 pos,len,curpos;
 				KaraokeSyllable *curSyl;
 				size_t karn = karaoke->syllables.size();
@@ -1533,7 +1540,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						if (leftIsDown && x != lastX) {
 							selStart = lastX;
 							selEnd = x;
-							curStartMS = GetMSAtX(lastX);
+							curStartMS = GetMSAtX(GetBoundarySnap(lastX,event.ShiftDown()?0:10));
 							curEndMS = GetMSAtX(x);
 							hold = 2;
 						}
@@ -1656,6 +1663,9 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 ////////////////////////
 // Get snap to boundary
 int AudioDisplay::GetBoundarySnap(int x,int range) {
+	// Range?
+	if (range <= 0) return x;
+
 	// Find the snap boundaries
 	wxArrayInt boundaries;
 	if (video->KeyFramesLoaded() && Options.AsBool(_T("Audio Draw Secondary Lines"))) {

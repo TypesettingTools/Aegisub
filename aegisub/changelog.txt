@@ -73,6 +73,7 @@ Please visit http://aegisub.net to download latest version
   o When dragging line start/end markers, they will snap to keyframes or nearby subtitle start/end markers, hold down "Shift" to override this behaviour.
   o The "Play" shortcut will always play, regardless of whether it was already playing or not. There is a new shortcut for "Stop".
   o Styles for line start/end markers have changed.
+  o Holding down ctrl lets you retime the original line while in Karaoke mode.
 - Fixed loading of SRT and TXT files, which were causing an empty line to appear at the start of the file. (AMZ)
 - Added options to toggle the display of the audio timeline and of the time over the mouse cursor. (AMZ)
 
