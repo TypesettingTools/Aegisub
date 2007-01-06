@@ -224,8 +224,8 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Audio Waveform Selected"),wxColour(255,255,255));
 	SetColour(_T("Audio Waveform Inactive"),wxColour(0,80,0));
 	SetColour(_T("Audio Waveform"),wxColour(0,200,0));
-	SetColour(_T("Audio Line boundary start"),wxColour(255,0,0));
-	SetColour(_T("Audio Line boundary end"),wxColour(255,0,0));
+	SetColour(_T("Audio Line boundary start"),wxColour(216,0,0));
+	SetColour(_T("Audio Line boundary end"),wxColour(230,125,0));
 	SetColour(_T("Audio Line boundary inactive line"),wxColour(128,128,128));
 	SetColour(_T("Audio Syllable boundaries"),wxColour(255,255,0));
 	SetColour(_T("Audio Syllable text"),wxColour(255,0,0));

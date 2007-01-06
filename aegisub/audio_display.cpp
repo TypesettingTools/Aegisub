@@ -311,13 +311,26 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 	if (hasSel) {
 		// Draw boundaries
-		int selWidth = Options.AsInt(_T("Audio Line boundaries Thickness"));
-		dc.SetPen(wxPen(Options.AsColour(_T("Audio Line boundary start"))));
-		dc.SetBrush(wxBrush(Options.AsColour(_T("Audio Line boundary start"))));
-		dc.DrawRectangle(lineStart-selWidth/2+1,0,selWidth,h);
-		dc.SetPen(wxPen(Options.AsColour(_T("Audio Line boundary end"))));
-		dc.SetBrush(wxBrush(Options.AsColour(_T("Audio Line boundary end"))));
-		dc.DrawRectangle(lineEnd-selWidth/2+1,0,selWidth,h);
+		if (true) {
+			// Draw start boundary
+			int selWidth = Options.AsInt(_T("Audio Line boundaries Thickness"));
+			dc.SetPen(wxPen(Options.AsColour(_T("Audio Line boundary start"))));
+			dc.SetBrush(wxBrush(Options.AsColour(_T("Audio Line boundary start"))));
+			dc.DrawRectangle(lineStart-selWidth/2+1,0,selWidth,h);
+			wxPoint points1[3] = { wxPoint(lineStart,0), wxPoint(lineStart+10,0), wxPoint(lineStart,10) };
+			wxPoint points2[3] = { wxPoint(lineStart,h-1), wxPoint(lineStart+10,h-1), wxPoint(lineStart,h-11) };
+			dc.DrawPolygon(3,points1);
+			dc.DrawPolygon(3,points2);
+
+			// Draw end boundary
+			dc.SetPen(wxPen(Options.AsColour(_T("Audio Line boundary end"))));
+			dc.SetBrush(wxBrush(Options.AsColour(_T("Audio Line boundary end"))));
+			dc.DrawRectangle(lineEnd-selWidth/2+1,0,selWidth,h);
+			wxPoint points3[3] = { wxPoint(lineEnd,0), wxPoint(lineEnd-10,0), wxPoint(lineEnd,10) };
+			wxPoint points4[3] = { wxPoint(lineEnd,h-1), wxPoint(lineEnd-10,h-1), wxPoint(lineEnd,h-11) };
+			dc.DrawPolygon(3,points3);
+			dc.DrawPolygon(3,points4);
+		}
 
 		// Draw karaoke
 		if (hasKaraoke) {
@@ -1197,7 +1210,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 	}
 
 	// Next line
-	if (nextLine && Options.AsBool(_T("Audio Next Line on Commit")) && !wasKaraSplitting) {
+	if (nextLine && !karaoke->enabled && Options.AsBool(_T("Audio Next Line on Commit")) && !wasKaraSplitting) {
 		// Insert a line if it doesn't exist
 		int nrows = grid->GetRows();
 		if (nrows == line_n + 1) {
@@ -1302,115 +1315,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT) && holding) {
 		holding = false;
 		if (HasCapture()) ReleaseMouse();
-	}
-
-	// Stop scrubbing
-	bool scrubButton = false && event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
-	if (scrubbing && !scrubButton) {
-		// Release mouse
-		scrubbing = false;
-		if (HasCapture()) ReleaseMouse();
-
-		// Stop player
-		player->Stop();
-		player->SetProvider(provider);
-		delete scrubProvider;
-	}
-
-	// Start scrubbing
-	if (!scrubbing && scrubButton && provider->GetChannels() == 1) {
-		// Get mouse
-		CaptureMouse();
-		scrubbing = true;
-
-		// Initialize provider
-		player->Stop();
-		scrubProvider = new StreamAudioProvider();
-		scrubProvider->SetParams(provider->GetChannels(),provider->GetSampleRate(),provider->GetBytesPerSample());
-		player->SetProvider(scrubProvider);
-
-		// Set variables
-		scrubLastPos = GetSampleAtX(x);
-		scrubTime = clock();
-		scrubLastRate = provider->GetSampleRate();
-	}
-
-	// Scrub
-	if (scrubbing && scrubButton) {
-		// Get current data
-		__int64 exactPos = MAX(0,GetSampleAtX(x));
-		int curScrubTime = clock();
-		int scrubDeltaTime = curScrubTime - scrubTime;
-		bool invert = exactPos < scrubLastPos;
-		__int64 curScrubPos = exactPos;
-
-		if (scrubDeltaTime > 0) {
-			// Get derived data
-			int rateChange = provider->GetSampleRate()/20;
-			int curRate = MID(int(scrubLastRate-rateChange),abs(int(exactPos - scrubLastPos)) * CLOCKS_PER_SEC / scrubDeltaTime,int(scrubLastRate+rateChange));
-			if (abs(curRate-scrubLastRate) < rateChange) curRate = scrubLastRate;
-			curScrubPos = scrubLastPos + (curRate * scrubDeltaTime / CLOCKS_PER_SEC * (invert ? -1 : 1));
-			__int64 scrubDelta = curScrubPos - scrubLastPos;
-			scrubLastRate = curRate;
-
-			// Copy data to buffer
-			if (scrubDelta != 0) {
-				// Create buffer
-				int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLOCKS_PER_SEC;
-				short *buf = new short[bufSize];
-
-				// Flag as inverted, if necessary
-				if (invert) scrubDelta = -scrubDelta;
-
-				// Copy data from original provider to temp buffer
-				short *temp = new short[scrubDelta];
-				provider->GetAudio(temp,MIN(curScrubPos,scrubLastPos),scrubDelta);
-
-				// Scale
-				float scale = float(double(scrubDelta) / double(bufSize));
-				float start,end;
-				int istart,iend;
-				float tempfinal;
-				for (int i=0;i<bufSize;i++) {
-					start = i*scale;
-					end = (i+1)*scale;
-					istart = (int) start;
-					iend = MIN((int) end,scrubDelta-1);
-					if (istart == iend) tempfinal = temp[istart] * (end - start);
-					else {
-						tempfinal = temp[istart] * (1 + istart - start) + temp[iend] * (end - iend);
-						for (int j=istart+1;j<iend;j++) tempfinal += temp[i];
-					}
-					buf[i] = tempfinal / scale;
-				}
-				//int len = MIN(bufSize,scrubDelta);
-				//for (int i=0;i<len;i++) buf[i] = temp[i];
-				//for (int i=len;i<bufSize;i++) buf[i] = 0;
-				delete temp;
-
-				// Invert
-				if (invert) {
-					short aux;
-					for (int i=0;i<bufSize/2;i++) {
-						aux = buf[i];
-						buf[i] = buf[bufSize-i-1];
-						buf[bufSize-i-1] = aux;
-					}
-				}
-
-				// Send data to provider
-				scrubProvider->Append(buf,bufSize);
-				if (!player->IsPlaying()) player->Play(0,~0ULL);
-				delete buf;
-			}
-		}
-
-		// Update last pos and time
-		scrubLastPos = curScrubPos;
-		scrubTime = curScrubTime;
-
-		// Return
-		return;
 	}
 
 	// Mouse wheel
@@ -1608,10 +1512,10 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						updated = true;
 						diagUpdated = true;
 
-						if (x != lastX) {
-							selStart = x;
+						if (leftIsDown && x != lastX) {
+							selStart = lastX;
 							selEnd = x;
-							curStartMS = GetMSAtX(x);
+							curStartMS = GetMSAtX(lastX);
 							curEndMS = GetMSAtX(x);
 							hold = 2;
 						}
@@ -1622,7 +1526,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 1 && buttonIsDown) {
 					// Set new value
 					if (x != selStart) {
-						selStart = x;
+						selStart = GetBoundarySnap(x,10);
 						if (selStart > selEnd) {
 							int temp = selStart;
 							selStart = selEnd;
@@ -1640,7 +1544,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 2 && buttonIsDown) {
 					// Set new value
 					if (x != selEnd) {
-						selEnd = x;
+						selEnd = GetBoundarySnap(x,10);
 						if (selStart > selEnd) {
 							int temp = selStart;
 							selStart = selEnd;
@@ -1729,6 +1633,181 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Restore cursor
 	if (defCursor) SetCursor(wxNullCursor);
 }
+
+
+////////////////////////
+// Get snap to boundary
+int AudioDisplay::GetBoundarySnap(int x,int range) {
+	// Find the snap boundaries
+	wxArrayInt boundaries;
+	if (video->KeyFramesLoaded() && Options.AsBool(_T("Audio Draw Secondary Lines"))) {
+		__int64 keyX;
+		wxArrayInt keyFrames = video->GetKeyFrames();
+		for (unsigned int i=0;i<keyFrames.Count();i++) {
+			keyX = GetXAtMS(VFR_Output.GetTimeAtFrame(keyFrames[i],true));
+			if (keyX >= 0 && keyX < w) boundaries.Add(keyX);
+		}
+	}
+
+	// Other subtitles' boundaries
+	int inactiveType = Options.AsInt(_T("Audio Inactive Lines Display Mode"));
+	if (inactiveType == 1 || inactiveType == 2) {
+		AssDialogue *shade;
+		int shadeX1,shadeX2;
+		int shadeFrom,shadeTo;
+
+		// Get range
+		if (inactiveType == 1) {
+			shadeFrom = this->line_n-1;
+			shadeTo = shadeFrom+1;
+		}
+		else {
+			shadeFrom = 0;
+			shadeTo = grid->GetRows();
+		}
+
+		for (int j=shadeFrom;j<shadeTo;j++) {
+			if (j == line_n) continue;
+			shade = grid->GetDialogue(j);
+
+			if (shade) {
+				// Get coordinates
+				shadeX1 = GetXAtMS(shade->Start.GetMS());
+				shadeX2 = GetXAtMS(shade->End.GetMS());
+				if (shadeX1 >= 0 && shadeX1 < w) boundaries.Add(shadeX1);
+				if (shadeX2 >= 0 && shadeX2 < w) boundaries.Add(shadeX2);
+			}
+		}
+	}
+
+	// See if x falls within range of any of them
+	int minDist = range+1;
+	int bestX = x;
+	for (unsigned int i=0;i<boundaries.Count();i++) {
+		if (abs(x-boundaries[i]) < minDist) {
+			bestX = boundaries[i];
+			minDist = abs(x-boundaries[i]);
+		}
+	}
+
+	// Return best match
+	return bestX;
+}
+
+
+//
+// SCRUBBING CODE, REMOVED FROM THE FUNCTION ABOVE
+/*
+	// Stop scrubbing
+	bool scrubButton = false && event.ButtonIsDown(wxMOUSE_BTN_MIDDLE);
+	if (scrubbing && !scrubButton) {
+		// Release mouse
+		scrubbing = false;
+		if (HasCapture()) ReleaseMouse();
+
+		// Stop player
+		player->Stop();
+		player->SetProvider(provider);
+		delete scrubProvider;
+	}
+
+	// Start scrubbing
+	if (!scrubbing && scrubButton && provider->GetChannels() == 1) {
+		// Get mouse
+		CaptureMouse();
+		scrubbing = true;
+
+		// Initialize provider
+		player->Stop();
+		scrubProvider = new StreamAudioProvider();
+		scrubProvider->SetParams(provider->GetChannels(),provider->GetSampleRate(),provider->GetBytesPerSample());
+		player->SetProvider(scrubProvider);
+
+		// Set variables
+		scrubLastPos = GetSampleAtX(x);
+		scrubTime = clock();
+		scrubLastRate = provider->GetSampleRate();
+	}
+
+	// Scrub
+	if (scrubbing && scrubButton) {
+		// Get current data
+		__int64 exactPos = MAX(0,GetSampleAtX(x));
+		int curScrubTime = clock();
+		int scrubDeltaTime = curScrubTime - scrubTime;
+		bool invert = exactPos < scrubLastPos;
+		__int64 curScrubPos = exactPos;
+
+		if (scrubDeltaTime > 0) {
+			// Get derived data
+			int rateChange = provider->GetSampleRate()/20;
+			int curRate = MID(int(scrubLastRate-rateChange),abs(int(exactPos - scrubLastPos)) * CLOCKS_PER_SEC / scrubDeltaTime,int(scrubLastRate+rateChange));
+			if (abs(curRate-scrubLastRate) < rateChange) curRate = scrubLastRate;
+			curScrubPos = scrubLastPos + (curRate * scrubDeltaTime / CLOCKS_PER_SEC * (invert ? -1 : 1));
+			__int64 scrubDelta = curScrubPos - scrubLastPos;
+			scrubLastRate = curRate;
+
+			// Copy data to buffer
+			if (scrubDelta != 0) {
+				// Create buffer
+				int bufSize = scrubDeltaTime * scrubProvider->GetSampleRate() / CLOCKS_PER_SEC;
+				short *buf = new short[bufSize];
+
+				// Flag as inverted, if necessary
+				if (invert) scrubDelta = -scrubDelta;
+
+				// Copy data from original provider to temp buffer
+				short *temp = new short[scrubDelta];
+				provider->GetAudio(temp,MIN(curScrubPos,scrubLastPos),scrubDelta);
+
+				// Scale
+				float scale = float(double(scrubDelta) / double(bufSize));
+				float start,end;
+				int istart,iend;
+				float tempfinal;
+				for (int i=0;i<bufSize;i++) {
+					start = i*scale;
+					end = (i+1)*scale;
+					istart = (int) start;
+					iend = MIN((int) end,scrubDelta-1);
+					if (istart == iend) tempfinal = temp[istart] * (end - start);
+					else {
+						tempfinal = temp[istart] * (1 + istart - start) + temp[iend] * (end - iend);
+						for (int j=istart+1;j<iend;j++) tempfinal += temp[i];
+					}
+					buf[i] = tempfinal / scale;
+				}
+				//int len = MIN(bufSize,scrubDelta);
+				//for (int i=0;i<len;i++) buf[i] = temp[i];
+				//for (int i=len;i<bufSize;i++) buf[i] = 0;
+				delete temp;
+
+				// Invert
+				if (invert) {
+					short aux;
+					for (int i=0;i<bufSize/2;i++) {
+						aux = buf[i];
+						buf[i] = buf[bufSize-i-1];
+						buf[bufSize-i-1] = aux;
+					}
+				}
+
+				// Send data to provider
+				scrubProvider->Append(buf,bufSize);
+				if (!player->IsPlaying()) player->Play(0,~0ULL);
+				delete buf;
+			}
+		}
+
+		// Update last pos and time
+		scrubLastPos = curScrubPos;
+		scrubTime = curScrubTime;
+
+		// Return
+		return;
+	}
+
+*/
 
 
 //////////////
