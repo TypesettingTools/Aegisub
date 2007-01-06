@@ -417,7 +417,7 @@ void AssFile::LoadDefault (bool defline) {
 	AddLine(_T("[Script Info]"),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("Title: Default Aegisub file"),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("ScriptType: v4.00+"),_T("[Script Info]"),-1,IsSSA);
-	AddLine(_T("WrapStyle: 1"), _T("[Script Info]"),-1,IsSSA);
+	AddLine(_T("WrapStyle: 0"), _T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("PlayResX: 640"),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T("PlayResY: 480"),_T("[Script Info]"),-1,IsSSA);
 	AddLine(_T(""),_T("[Script Info]"),-1,IsSSA);

@@ -1526,7 +1526,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 1 && buttonIsDown) {
 					// Set new value
 					if (x != selStart) {
-						selStart = GetBoundarySnap(x,10);
+						selStart = GetBoundarySnap(x,event.ShiftDown()?0:10);
 						if (selStart > selEnd) {
 							int temp = selStart;
 							selStart = selEnd;
@@ -1544,7 +1544,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 2 && buttonIsDown) {
 					// Set new value
 					if (x != selEnd) {
-						selEnd = GetBoundarySnap(x,10);
+						selEnd = GetBoundarySnap(x,event.ShiftDown()?0:10);
 						if (selStart > selEnd) {
 							int temp = selStart;
 							selStart = selEnd;

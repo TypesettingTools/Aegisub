@@ -108,8 +108,8 @@ void SubtitleFormat::Clear() {
 
 ////////////////
 // Load default
-void SubtitleFormat::LoadDefault() {
-	assFile->LoadDefault();
+void SubtitleFormat::LoadDefault(bool defline) {
+	assFile->LoadDefault(defline);
 }
 
 

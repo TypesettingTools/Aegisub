@@ -89,13 +89,14 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 	TextFileReader file(filename,encoding,false);
 
 	// Default
-	LoadDefault();
+	LoadDefault(false);
 
 	// Data
 	wxString actor;
 	wxString separator = Options.AsText(_T("Text actor separator"));
 	wxString comment = Options.AsText(_T("Text comment starter"));
 	bool isComment = false;
+	int lines = 0;
 
 	// Parse file
 	AssDialogue *line = NULL;
@@ -151,6 +152,18 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		//line->ParseASSTags();
 
 		// Adds line
+		Line->push_back(line);
+		lines++;
+	}
+
+	// No lines?
+	if (lines == 0) {
+		AssDialogue *line = new AssDialogue();
+		line->group = _T("[Events]");
+		line->Style = _T("Default");
+		line->StartMS = 0;
+		line->Start.SetMS(0);
+		line->End.SetMS(5000);
 		Line->push_back(line);
 	}
 }

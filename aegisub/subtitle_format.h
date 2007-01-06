@@ -68,7 +68,7 @@ protected:
 	void ClearCopy();
 
 	void Clear();
-	void LoadDefault();
+	void LoadDefault(bool defline=true);
 	AssFile *GetAssFile() { return assFile; }
 	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA,wxString *outgroup=NULL);
 

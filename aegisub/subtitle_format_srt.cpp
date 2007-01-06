@@ -89,12 +89,13 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	TextFileReader file(filename,encoding);
 
 	// Default
-	LoadDefault();
+	LoadDefault(false);
 
 	// Parse file
 	int linen = 1;
 	int fileLine = 0;
 	int mode = 0;
+	int lines = 0;
 	long templ;
 	AssDialogue *line = NULL;
 	while (file.HasMoreLines()) {
@@ -145,6 +146,7 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 					line->ParseSRTTags();
 					line->StartMS = line->Start.GetMS();
 					Line->push_back(line);
+					lines++;
 					break;
 				}
 				// Append text
@@ -152,6 +154,17 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 				line->Text += curLine;
 				break;
 		}
+	}
+
+	// No lines?
+	if (lines == 0) {
+		AssDialogue *line = new AssDialogue();
+		line->group = _T("[Events]");
+		line->Style = _T("Default");
+		line->StartMS = 0;
+		line->Start.SetMS(0);
+		line->End.SetMS(5000);
+		Line->push_back(line);
 	}
 }
 
