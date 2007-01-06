@@ -1946,6 +1946,21 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 		Play(start,end);
 	}
 
+	// Play/Stop
+	if (Hotkeys.IsPressed(_T("Audio Play or Stop"))) {
+		if (player->IsPlaying()) Stop();
+		else {
+			int start=0,end=0;
+			GetTimesSelection(start,end);
+			Play(start,end);
+		}
+	}
+
+	// Stop
+	if (Hotkeys.IsPressed(_T("Audio Stop"))) {
+		Stop();
+	}
+
 	// Increase length
 	if (Hotkeys.IsPressed(_T("Audio Karaoke Increase Len"))) {
 		if (karaoke->enabled) {

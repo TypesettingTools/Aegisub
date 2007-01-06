@@ -368,6 +368,8 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Audio Next Line Alt"),_T("X"));
 	SetHotkey(_("Audio Play"),_T("Space"));
 	SetHotkey(_("Audio Play Alt"),_T("S"));
+	SetHotkey(_("Audio Play or Stop"),_T("B"));
+	SetHotkey(_("Audio Stop"),_T("H"));
 	SetHotkey(_("Audio Karaoke Increase Len"),_T("KP_Add"));
 	SetHotkey(_("Audio Karaoke Decrease Len"),_T("KP_Subtract"));
 	SetHotkey(_("Audio Karaoke Increase Len Shift"),_T("Shift-KP_Add"));

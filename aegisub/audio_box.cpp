@@ -130,7 +130,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	temp->SetToolTip(_("Play current line (") + Hotkeys.GetText(_T("Audio Play Original Line")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Stop,wxBITMAP(button_stop),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Stop"));
+	temp->SetToolTip(_("Stop (") + Hotkeys.GetText(_T("Audio Stop")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
 	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Before,wxBITMAP(button_play500before),wxDefaultPosition,wxSize(30,-1));

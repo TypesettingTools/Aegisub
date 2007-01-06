@@ -66,6 +66,13 @@ Please visit http://aegisub.net to download latest version
 - Added a Call Tip feature to the edit box, so it shows the function prototype as you type it. (AMZ)
 - Added a much-needed options dialog with all the relevant config.dat options in it. (AMZ)
 - Added a Normal/Reverse dropdown to collisions on Script Properties. (AMZ)
+- Several changes to audio mode (AMZ):
+  o Normal and SSA mode have been merged into one, all functionality available to both is now used at once. This is the same behavior as Sabbu has. (AMZ)
+  o Next line on commit is now on by default.
+  o Auto-commit will never change to the next line.
+  o When dragging line start/end markers, they will snap to keyframes or nearby subtitle start/end markers.
+  o The "Play" shortcut will always play, regardless of whether it was already playing or not. There is a new shortcut for "Stop".
+  o Styles for line start/end markers have changed.
 
 
 = 1.10 beta - 2006.08.07 ===========================
