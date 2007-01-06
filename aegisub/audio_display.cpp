@@ -1543,7 +1543,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						if (leftIsDown && x != lastX) {
 							selStart = lastX;
 							selEnd = x;
-							curStartMS = GetMSAtX(GetBoundarySnap(lastX,event.ShiftDown()?0:10));
+							curStartMS = GetBoundarySnap(GetMSAtX(lastX),event.ShiftDown()?0:10,true);
 							curEndMS = GetMSAtX(x);
 							hold = 2;
 						}
@@ -1554,7 +1554,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 1 && buttonIsDown) {
 					// Set new value
 					if (x != selStart) {
-						selStart = GetBoundarySnap(x,event.ShiftDown()?0:10);
+						int snapped = GetBoundarySnap(GetMSAtX(x),event.ShiftDown()?0:10,true);
+						selStart = GetXAtMS(snapped);
 						if (selStart > selEnd) {
 							int temp = selStart;
 							selStart = selEnd;
@@ -1572,7 +1573,9 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 2 && buttonIsDown) {
 					// Set new value
 					if (x != selEnd) {
-						selEnd = GetBoundarySnap(x,event.ShiftDown()?0:10);
+						int snapped = GetBoundarySnap(GetMSAtX(x),event.ShiftDown()?0:10,false);
+						selEnd = GetXAtMS(snapped);
+						//selEnd = GetBoundarySnap(x,event.ShiftDown()?0:10,false);
 						if (selStart > selEnd) {
 							int temp = selStart;
 							selStart = selEnd;
@@ -1665,18 +1668,26 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 ////////////////////////
 // Get snap to boundary
-int AudioDisplay::GetBoundarySnap(int x,int range) {
+int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool start) {
 	// Range?
-	if (range <= 0) return x;
+	if (rangeX <= 0) return ms;
+
+	// Convert range into miliseconds
+	int rangeMS = rangeX*samples*1000 / provider->GetSampleRate();
 
 	// Find the snap boundaries
 	wxArrayInt boundaries;
 	if (video->KeyFramesLoaded() && Options.AsBool(_T("Audio Draw Secondary Lines"))) {
-		__int64 keyX;
+		__int64 keyMS;
 		wxArrayInt keyFrames = video->GetKeyFrames();
+		int frame;
 		for (unsigned int i=0;i<keyFrames.Count();i++) {
-			keyX = GetXAtMS(VFR_Output.GetTimeAtFrame(keyFrames[i],true));
-			if (keyX >= 0 && keyX < w) boundaries.Add(keyX);
+			frame = keyFrames[i];
+			if (!start) frame--;
+			if (frame < 0) frame = 0;
+			keyMS = VFR_Output.GetTimeAtFrame(frame,start);
+			//if (start) keyX++;
+			if (GetXAtMS(keyMS) >= 0 && GetXAtMS(keyMS) < w) boundaries.Add(keyMS);
 		}
 	}
 
@@ -1705,24 +1716,24 @@ int AudioDisplay::GetBoundarySnap(int x,int range) {
 				// Get coordinates
 				shadeX1 = GetXAtMS(shade->Start.GetMS());
 				shadeX2 = GetXAtMS(shade->End.GetMS());
-				if (shadeX1 >= 0 && shadeX1 < w) boundaries.Add(shadeX1);
-				if (shadeX2 >= 0 && shadeX2 < w) boundaries.Add(shadeX2);
+				if (shadeX1 >= 0 && shadeX1 < w) boundaries.Add(shade->Start.GetMS());
+				if (shadeX2 >= 0 && shadeX2 < w) boundaries.Add(shade->End.GetMS());
 			}
 		}
 	}
 
-	// See if x falls within range of any of them
-	int minDist = range+1;
-	int bestX = x;
+	// See if ms falls within range of any of them
+	int minDist = rangeMS+1;
+	int bestMS = ms;
 	for (unsigned int i=0;i<boundaries.Count();i++) {
-		if (abs(x-boundaries[i]) < minDist) {
-			bestX = boundaries[i];
-			minDist = abs(x-boundaries[i]);
+		if (abs(ms-boundaries[i]) < minDist) {
+			bestMS = boundaries[i];
+			minDist = abs(ms-boundaries[i]);
 		}
 	}
 
 	// Return best match
-	return bestX;
+	return bestMS;
 }
 
 

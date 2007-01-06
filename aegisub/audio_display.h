@@ -121,7 +121,7 @@ private:
 	void GetKaraokePos(__int64 &start,__int64 &end,bool cap);
 	void UpdatePosition(int pos,bool IsSample=false);
 
-	int GetBoundarySnap(int x,int range);
+	int GetBoundarySnap(int x,int range,bool start=true);
 
 public:
 	AudioProvider *provider;
