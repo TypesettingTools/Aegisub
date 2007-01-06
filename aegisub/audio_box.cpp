@@ -495,7 +495,7 @@ void AudioBox::OnPlayToEnd(wxCommandEvent &event) {
 // Commit changes
 void AudioBox::OnCommit(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
-	audioDisplay->CommitChanges();
+	audioDisplay->CommitChanges(true);
 }
 
 

@@ -1150,50 +1150,51 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 	// Loaded?
 	if (!loaded) return;
 
+	// Check validity
+	bool wasKaraSplitting = false;
+	bool validCommit = true;
 	if (!box->audioKaraoke->splitting) {
-		// Check if there's any need to commit
-		if (!NeedCommit) return;
-
-		// Check if selection is valid
-		if (curEndMS < curStartMS) return;
+		if (!NeedCommit || curEndMS < curStartMS) validCommit = false;
 	}
-
-	// Reset flags
-	diagUpdated = false;
-	NeedCommit = false;
 
 	// Update karaoke
 	int karSyl = 0;
-	bool wasKaraSplitting = false;
 	if (karaoke->enabled) {
 		wasKaraSplitting = box->audioKaraoke->splitting;
 		karaoke->Commit();
 		karSyl = karaoke->curSyllable;
 	}
+	
+	// Commit ok?
+	if (validCommit) {
+		// Reset flags
+		diagUpdated = false;
+		NeedCommit = false;
 
-	// Update dialogues
-	blockUpdate = true;
-	wxArrayInt sel = grid->GetSelection();
-	int sels = (int)sel.Count();
-	AssDialogue *curDiag;
-	for (int i=-1;i<sels;i++) {
-		if (i == -1) curDiag = dialogue;
-		else {
-			curDiag = grid->GetDialogue(sel[i]);
-			if (curDiag == dialogue) continue;
+		// Update dialogues
+		blockUpdate = true;
+		wxArrayInt sel = grid->GetSelection();
+		int sels = (int)sel.Count();
+		AssDialogue *curDiag;
+		for (int i=-1;i<sels;i++) {
+			if (i == -1) curDiag = dialogue;
+			else {
+				curDiag = grid->GetDialogue(sel[i]);
+				if (curDiag == dialogue) continue;
+			}
+
+			curDiag->Start.SetMS(curStartMS);
+			curDiag->End.SetMS(curEndMS);
+			curDiag->UpdateData();
 		}
 
-		curDiag->Start.SetMS(curStartMS);
-		curDiag->End.SetMS(curEndMS);
-		curDiag->UpdateData();
+		// Update grid
+		grid->editBox->Update(!karaoke->enabled);
+		grid->ass->FlagAsModified();
+		grid->CommitChanges();
+		karaoke->curSyllable = karSyl;
+		blockUpdate = false;
 	}
-
-	// Update grid
-	grid->editBox->Update(!karaoke->enabled);
-	grid->ass->FlagAsModified();
-	grid->CommitChanges();
-	karaoke->curSyllable = karSyl;
-	blockUpdate = false;
 
 	// Next line
 	if (nextLine && Options.AsBool(_T("Audio Next Line on Commit")) && !wasKaraSplitting) {
@@ -1599,12 +1600,13 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (hold != 0) {
 			// Dragging
 			if (buttonIsDown) {
-				// Drag from nothing
+				// Drag from nothing or straight timing
 				if (hold == 3 && buttonIsDown) {
 					if (!karMode) {
 						if (leftIsDown) curStartMS = GetMSAtX(x);
 						else curEndMS = GetMSAtX(x);
 						updated = true;
+						diagUpdated = true;
 
 						if (x != lastX) {
 							selStart = x;
@@ -1834,13 +1836,13 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 
 	// Accept
 	if (Hotkeys.IsPressed(_T("Audio Commit"))) {
-		CommitChanges();
-		ChangeLine(1);
+		CommitChanges(true);
+		//ChangeLine(1);
 	}
 
 	// Accept (SSA's "Grab times")
 	if (Hotkeys.IsPressed(_T("Audio Commit Alt"))) {
-		CommitChanges();
+		CommitChanges(true);
 	}
 
 	// Accept (stay)
