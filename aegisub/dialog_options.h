@@ -60,6 +60,7 @@ class OptionsBind {
 public:
 	wxControl *ctrl;
 	wxString option;
+	int param;
 };
 
 
@@ -72,7 +73,7 @@ private:
 	wxTreebook *book;
 	std::vector<OptionsBind> binds;
 
-	void Bind(wxControl *ctrl,wxString option);
+	void Bind(wxControl *ctrl,wxString option,int param=0);
 	void WriteToOptions(bool justApply=false);
 	void ReadFromOptions();
 

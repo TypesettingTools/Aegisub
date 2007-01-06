@@ -37,6 +37,12 @@
 ////////////
 // Includes
 #include "setup.h"
+#include <wx/image.h>
+#include <string.h>
+#include <wx/clipbrd.h>
+#include <wx/filename.h>
+#include <wx/config.h>
+#include "utils.h"
 #include "video_display.h"
 #include "video_provider.h"
 #include "vfr.h"
@@ -51,11 +57,6 @@
 #include "audio_display.h"
 #include "main.h"
 #include "video_slider.h"
-#include <wx/image.h>
-#include <string.h>
-#include <wx/clipbrd.h>
-#include <wx/filename.h>
-#include <wx/config.h>
 #if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
 #include "../FexTrackerSource/FexTrackingFeature.h"
@@ -648,10 +649,25 @@ void VideoDisplay::OnSaveSnapshot(wxCommandEvent &event) {
 }
 
 void VideoDisplay::SaveSnapshot() {
-	static int session_shot_count = 1;
-	// Get path
-	wxFileName file = videoName;
-	wxString basepath = file.GetPath() + _T("/") + file.GetName();
+	// Get folder
+	wxString option = Options.AsText(_("Video Screenshot Path"));
+	wxFileName videoFile(videoName);
+	wxString basepath;
+	if (option == _T("?video")) {
+		basepath = videoFile.GetPath();
+	}
+	else if (option == _T("?script")) {
+		if (grid->ass->filename.IsEmpty()) basepath = videoFile.GetPath();
+		else {
+			wxFileName file2(grid->ass->filename);
+			basepath = file2.GetPath();
+		}
+	}
+	else basepath = DecodeRelativePath(option,((AegisubApp*)wxTheApp)->folderName);
+	basepath += _T("/") + videoFile.GetName();
+
+	// Get full path
+	int session_shot_count = 1;
 	wxString path;
 	while (1) {
 		path = basepath + wxString::Format(_T("_%03i_%i.png"),session_shot_count,frame_n);

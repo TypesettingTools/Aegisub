@@ -216,7 +216,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 			control = new ColourButton(editPage,-1,wxSize(40,10));
 			Bind(control,option);
 			editSizer4->Add(new wxStaticText(editPage,-1,caption),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
-			editSizer4->Add(control,1,wxALIGN_CENTER,0);
+			editSizer4->Add(control,1,wxALIGN_RIGHT,0);
 		}
 		editSizer4->AddGrowableCol(1,1);
 
@@ -311,7 +311,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *videoMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *videoSizer1 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Options"));
 		wxSizer *videoSizer2 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Advanced - EXPERT USERS ONLY"));
-		wxFlexGridSizer *videoSizer3 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *videoSizer3 = new wxFlexGridSizer(5,2,5,5);
 		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(4,2,5,5);
 		wxControl *control;
 
@@ -336,6 +336,12 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
 		Bind(control,_T("Video fast jump step"));
 		videoSizer3->Add(control,1,wxEXPAND);
+		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Screenshot save path: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		wxString choices3[3] = { _T("?video"), _T("?script"), _T(".") };
+		//control = new wxTextCtrl(videoPage,-1);
+		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices3,wxCB_DROPDOWN);
+		Bind(control,_T("Video screenshot path"));
+		videoSizer3->Add(control,1,wxEXPAND);
 		control = new wxCheckBox(videoPage,-1,_("Show keyframes in slider"));
 		Bind(control,_T("Show keyframes on video slider"));
 		videoSizer3->Add(control,0,wxEXPAND);
@@ -343,11 +349,22 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Second sizer
 		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Video Provider: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		control = new wxTextCtrl(videoPage,-1);
-		Bind(control,_T("Video provider"));
+		wxArrayString choices4;
+#ifdef __WINDOWS__
+		choices4.Add(_T("Avisynth"));
+#endif
+#if USE_LAVC == 1
+		choices4.Add(_T("ffmpeg"));
+#endif
+#if USE_DIRECTSHOW == 1
+		choices4.Add(_T("dshow"));
+#endif
+		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices4,wxCB_DROPDOWN | wxCB_READONLY);
+		Bind(control,_T("Video provider"),1);
 		videoSizer4->Add(control,1,wxEXPAND);
 		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth Video Resizer: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		control = new wxTextCtrl(videoPage,-1);
+		wxString choices5[3] = { _T("BilinearResize"), _T("BicubicResize"), _T("LanczosResize") };
+		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices5,wxCB_DROPDOWN);
 		Bind(control,_T("Video resizer"));
 		videoSizer4->Add(control,1,wxEXPAND);
 		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth Memory Limit: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
@@ -425,7 +442,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		Bind(control,_T("Audio Cache"));
 		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Cache type: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1);
+		wxString choices3[3] = { _T("ConvertToMono"), _T("GetLeftChannel"), _T("GetRightChannel") };
+		control = new wxComboBox(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices3,wxCB_DROPDOWN);
 		Bind(control,_T("Audio Downmixer"));
 		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Avisynth down-mixer: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
@@ -583,10 +601,11 @@ DialogOptions::~DialogOptions() {
 
 //////////////////////////
 // Bind control to option
-void DialogOptions::Bind(wxControl *ctrl, wxString option) {
+void DialogOptions::Bind(wxControl *ctrl, wxString option,int param) {
 	OptionsBind bind;
 	bind.ctrl = ctrl;
 	bind.option = option;
+	bind.param = param;
 	binds.push_back(bind);
 }
 
@@ -690,9 +709,22 @@ void DialogOptions::WriteToOptions(bool justApply) {
 		// Combo box
 		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxComboBox))) {
 			wxComboBox *combo = (wxComboBox*) binds[i].ctrl;
-			if (combo->GetSelection() != Options.AsInt(binds[i].option)) {
-				Options.SetInt(binds[i].option,combo->GetSelection());
-				modified = true;
+			int style = combo->GetWindowStyleFlag();
+
+			// Read-only, use as value
+			if (style & wxCB_READONLY && binds[i].param == 0) {
+				if (combo->GetSelection() != Options.AsInt(binds[i].option)) {
+					Options.SetInt(binds[i].option,combo->GetSelection());
+					modified = true;
+				}
+			}
+
+			// Editable, use as text
+			else {
+				if (!combo->GetValue().IsEmpty() && combo->GetValue() != Options.AsText(binds[i].option)) {
+					Options.SetText(binds[i].option,combo->GetValue());
+					modified = true;
+				}
 			}
 		}
 
@@ -787,7 +819,19 @@ void DialogOptions::ReadFromOptions() {
 		// Combo box
 		if (binds[i].ctrl->IsKindOf(CLASSINFO(wxComboBox))) {
 			wxComboBox *combo = (wxComboBox*) binds[i].ctrl;
-			combo->SetSelection(Options.AsInt(binds[i].option));
+			int style = combo->GetWindowStyleFlag();
+
+			// Read-only, use as value
+			if (style & wxCB_READONLY && binds[i].param == 0) {
+				combo->SetSelection(Options.AsInt(binds[i].option));
+			}
+
+			// Editable, set text
+			else {
+				wxString value = Options.AsText(binds[i].option);
+				if (!(style & wxCB_READONLY) && combo->FindString(value) == wxNOT_FOUND) combo->Append(value);
+				combo->SetValue(value);
+			}
 		}
 
 		// Colour button
