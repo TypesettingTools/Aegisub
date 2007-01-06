@@ -469,11 +469,11 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxFlexGridSizer *displaySizer4 = new wxFlexGridSizer(14,2,2,2);
 
 		// First sizer
-		wxString labels1[3] = { _("Spectrum Invert Selection"), _("Draw Secondary Lines"), _("Draw Selection Background") };
-		wxString options1[3] = { _T("Audio Spectrum invert selection"), _T("Audio Draw Secondary Lines"), _T("Audio Draw Selection Background") };
-		for (int i=0;i<3;i++) {
+		wxString labels1[5] = { _("Spectrum Invert Selection"), _("Draw Secondary Lines"), _("Draw Selection Background"), _("Draw Timeline"), _("Draw Cursor Time") };
+		wxString options1[5] = { _T("Spectrum invert selection"), _T("Draw Secondary Lines"), _T("Draw Selection Background") , _T("Draw Timeline"), _T("Draw Cursor Time")};
+		for (int i=0;i<5;i++) {
 			wxCheckBox *control = new wxCheckBox(displayPage,-1,labels1[i]);
-			Bind(control,options1[i]);
+			Bind(control,_T("Audio ") + options1[i]);
 			displaySizer3->Add(control,1,wxEXPAND | wxALL,5);
 		}
 
@@ -755,7 +755,7 @@ void DialogOptions::WriteToOptions(bool justApply) {
 		// Audio
 		if (audio) {
 			FrameMain *frame = (FrameMain*) GetParent();
-			frame->audioBox->audioDisplay->UpdateImage();
+			frame->audioBox->audioDisplay->RecreateImage();
 			frame->audioBox->audioDisplay->Refresh();
 		}
 	}

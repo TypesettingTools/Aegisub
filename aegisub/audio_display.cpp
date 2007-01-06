@@ -94,7 +94,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 	// Init
 	UpdateTimer.SetOwner(this,Audio_Update_Timer);
 	GetClientSize(&w,&h);
-	h -= 20;
+	h -= Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
 	SetSamplesPercent(50,false);
 
 	// Set cursor
@@ -139,7 +139,8 @@ void AudioDisplay::UpdateImage(bool weak) {
 	if (!loaded || !provider) return;
 
 	// Prepare bitmap
-	int displayH = h+20;
+	int timelineHeight = Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
+	int displayH = h+timelineHeight;
 	if (origImage) {
 		if (origImage->GetWidth() != w || origImage->GetHeight() != displayH) {
 			delete origImage;
@@ -391,59 +392,61 @@ void AudioDisplay::UpdateImage(bool weak) {
 	}
 
 	// Draw timescale
-	dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.DrawRectangle(0,h,w,20);
-	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT));
-	dc.DrawLine(0,h,w,h);
-	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
-	dc.DrawLine(0,h+1,w,h+1);
-	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
-	dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
-	wxFont scaleFont;
-	scaleFont.SetFaceName(_T("Tahoma"));
-	scaleFont.SetPointSize(8);
-	dc.SetFont(scaleFont);
+	if (timelineHeight) {
+		dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+		dc.SetPen(*wxTRANSPARENT_PEN);
+		dc.DrawRectangle(0,h,w,timelineHeight);
+		dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT));
+		dc.DrawLine(0,h,w,h);
+		dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
+		dc.DrawLine(0,h+1,w,h+1);
+		dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+		dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+		wxFont scaleFont;
+		scaleFont.SetFaceName(_T("Tahoma"));
+		scaleFont.SetPointSize(8);
+		dc.SetFont(scaleFont);
 
-	// Timescale ticks
-	__int64 start = Position*samples;
-	int rate = provider->GetSampleRate();
-	for (int i=1;i<32;i*=2) {
-		int pixBounds = rate / (samples * 4 / i);
-		if (pixBounds >= 8) {
-			for (int x=0;x<w;x++) {
-				__int64 pos = (x*samples)+start;
-				// Second boundary
-				if (pos % rate < samples) {
-					dc.DrawLine(x,h+2,x,h+8);
+		// Timescale ticks
+		__int64 start = Position*samples;
+		int rate = provider->GetSampleRate();
+		for (int i=1;i<32;i*=2) {
+			int pixBounds = rate / (samples * 4 / i);
+			if (pixBounds >= 8) {
+				for (int x=0;x<w;x++) {
+					__int64 pos = (x*samples)+start;
+					// Second boundary
+					if (pos % rate < samples) {
+						dc.DrawLine(x,h+2,x,h+8);
 
-					// Draw text
-					wxCoord textW,textH;
-					int hr = 0;
-					int m = 0;
-					int s = pos/rate;
-					while (s >= 3600) {
-						s -= 3600;
-						hr++;
+						// Draw text
+						wxCoord textW,textH;
+						int hr = 0;
+						int m = 0;
+						int s = pos/rate;
+						while (s >= 3600) {
+							s -= 3600;
+							hr++;
+						}
+						while (s >= 60) {
+							s -= 60;
+							m++;
+						}
+						wxString text;
+						if (hr) text = wxString::Format(_T("%i:%02i:%02i"),hr,m,s);
+						else if (m) text = wxString::Format(_T("%i:%02i"),m,s);
+						else text = wxString::Format(_T("%i"),s);
+						dc.GetTextExtent(text,&textW,&textH,NULL,NULL,&scaleFont);
+						dc.DrawText(text,MAX(0,x-textW/2)+1,h+8);
 					}
-					while (s >= 60) {
-						s -= 60;
-						m++;
-					}
-					wxString text;
-					if (hr) text = wxString::Format(_T("%i:%02i:%02i"),hr,m,s);
-					else if (m) text = wxString::Format(_T("%i:%02i"),m,s);
-					else text = wxString::Format(_T("%i"),s);
-					dc.GetTextExtent(text,&textW,&textH,NULL,NULL,&scaleFont);
-					dc.DrawText(text,MAX(0,x-textW/2)+1,h+8);
-				}
 
-				// Other
-				else if (pos % (rate / 4 * i) < samples) {
-					dc.DrawLine(x,h+2,x,h+5);
+					// Other
+					else if (pos % (rate / 4 * i) < samples) {
+						dc.DrawLine(x,h+2,x,h+5);
+					}
 				}
+				break;
 			}
-			break;
 		}
 	}
 
@@ -800,6 +803,17 @@ void AudioDisplay::Update() {
 		else
 			UpdateImage(true);
 	}
+}
+
+
+//////////////////////
+// Recreate the image
+void AudioDisplay::RecreateImage() {
+	GetClientSize(&w,&h);
+	h -= Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
+	delete origImage;
+	origImage = NULL;
+	UpdateImage(false);
 }
 
 
@@ -1287,6 +1301,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	bool karMode = karaoke->enabled;
 	bool shiftDown = event.m_shiftDown;
 	bool ctrlDown = event.m_controlDown;
+	int timelineHeight = Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
 
 	// Leaving event
 	if (event.Leaving()) {
@@ -1304,7 +1319,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			// Get focus
 			if (wxWindow::FindFocus() != this && Options.AsBool(_T("Audio Autofocus"))) SetFocus();
 		}
-		else if (y < h+20) onScale = true;
+		else if (y < h+timelineHeight) onScale = true;
 	}
 
 	// Click type
@@ -1350,37 +1365,40 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			dc.SetLogicalFunction(wxINVERT);
 			dc.DrawLine(x,0,x,h);
 
-			// Time string
-			AssTime time;
-			time.SetMS(GetMSAtX(x));
-			wxString text = time.GetASSFormated();
+			// Time
+			if (Options.AsBool(_T("Audio Draw Cursor Time"))) {
+				// Time string
+				AssTime time;
+				time.SetMS(GetMSAtX(x));
+				wxString text = time.GetASSFormated();
 
-			// Calculate metrics
-			wxFont font(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"));
-			dc.SetFont(font);
-			int tw,th;
-			GetTextExtent(text,&tw,&th,NULL,NULL,&font);
+				// Calculate metrics
+				wxFont font(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"));
+				dc.SetFont(font);
+				int tw,th;
+				GetTextExtent(text,&tw,&th,NULL,NULL,&font);
 
-			// Set inversion
-			bool left = true;
-			if (x > w/2) left = false;
+				// Set inversion
+				bool left = true;
+				if (x > w/2) left = false;
 
-			// Text coordinates
-			int dx;
-			dx = x - tw/2;
-			if (dx < 4) dx = 4;
-			int max = w - tw - 4;
-			if (dx > max) dx = max;
-			int dy = 4;
+				// Text coordinates
+				int dx;
+				dx = x - tw/2;
+				if (dx < 4) dx = 4;
+				int max = w - tw - 4;
+				if (dx > max) dx = max;
+				int dy = 4;
 
-			// Draw text
-			dc.SetTextForeground(wxColour(64,64,64));
-			dc.DrawText(text,dx+1,dy-1);
-			dc.DrawText(text,dx+1,dy+1);
-			dc.DrawText(text,dx-1,dy-1);
-			dc.DrawText(text,dx-1,dy+1);
-			dc.SetTextForeground(wxColour(255,255,255));
-			dc.DrawText(text,dx,dy);
+				// Draw text
+				dc.SetTextForeground(wxColour(64,64,64));
+				dc.DrawText(text,dx+1,dy-1);
+				dc.DrawText(text,dx+1,dy+1);
+				dc.DrawText(text,dx-1,dy-1);
+				dc.DrawText(text,dx-1,dy+1);
+				dc.SetTextForeground(wxColour(255,255,255));
+				dc.DrawText(text,dx,dy);
+			}
 		}
 	}
 
@@ -1815,7 +1833,7 @@ int AudioDisplay::GetBoundarySnap(int x,int range) {
 void AudioDisplay::OnSize(wxSizeEvent &event) {
 	// Set size
 	GetClientSize(&w,&h);
-	h -= 20;
+	h -= Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
 
 	// Update image
 	UpdateImage();

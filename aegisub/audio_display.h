@@ -143,6 +143,7 @@ public:
 	void AddLead(bool in,bool out);
 	void UpdateImage(bool weak=false);
 	void Update();
+	void RecreateImage();
 	void SetPosition(int pos);
 	void SetSamplesPercent(int percent,bool update=true,float pivot=0.5);
 	void SetScale(float scale);

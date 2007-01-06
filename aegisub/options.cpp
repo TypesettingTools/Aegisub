@@ -217,6 +217,8 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Audio Spectrum invert selection"), true);
 	SetBool(_T("Audio Draw Secondary Lines"), true);
 	SetBool(_T("Audio Draw Selection Background"), true);
+	SetBool(_T("Audio Draw Timeline"),true);
+	SetBool(_T("Audio Draw Cursor Time"),true);
 	SetColour(_T("Audio Selection Background Modified"),wxColour(92,0,0));
 	SetColour(_T("Audio Selection Background"),wxColour(64,64,64));
 	SetColour(_T("Audio Seconds Boundaries"),wxColour(0,100,255));
