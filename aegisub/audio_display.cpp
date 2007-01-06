@@ -1561,9 +1561,10 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 							selStart = selEnd;
 							selEnd = temp;
 							hold = 2;
-							curEndMS = GetMSAtX(selEnd);
+							curEndMS = snapped;
+							snapped = GetMSAtX(selStart);
 						}
-						curStartMS = GetMSAtX(selStart);
+						curStartMS = snapped;
 						updated = true;
 						diagUpdated = true;
 					}
@@ -1581,9 +1582,10 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 							selStart = selEnd;
 							selEnd = temp;
 							hold = 1;
-							curStartMS = GetMSAtX(selStart);
+							curStartMS = snapped;
+							snapped = GetMSAtX(selEnd);
 						}
-						curEndMS = GetMSAtX(selEnd);
+						curEndMS = snapped;
 						updated = true;
 						diagUpdated = true;
 					}
