@@ -368,7 +368,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 						temptext.Trim(true);
 						temptext.Trim(false);
 						GetTextExtent(temptext,&tw,&th,NULL,NULL,&curFont);
-						dc.DrawText(temptext,(pos1+pos2-tw)/2,h-th-4);
+						dc.DrawText(temptext,(pos1+pos2-tw)/2,4);
 					}
 				}
 			}
@@ -551,7 +551,7 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 
 	if (hasSel && spectrumDisplaySelected && selStartCap < selEndCap) {
 		dc.SelectObject(*spectrumDisplaySelected);
-		finaldc.Blit(selStart, 0, selEnd-selStart, h, &dc, selStart, 0);
+		finaldc.Blit(selStartCap, 0, selEndCap-selStartCap, h, &dc, selStartCap, 0);
 	}
 }
 

@@ -94,7 +94,7 @@ public:
 		float *out_r = new float[line_length*2];
 		float *out_i = new float[line_length*2];
 
-		FFT fft; // TODO: use FFTW instead?
+		FFT fft; // TODO: use FFTW instead? A wavelet?
 
 		for (unsigned long i = 0; i < length; ++i) {
 			provider->GetAudio(raw_sample_data, sample, line_length*2);
@@ -141,7 +141,7 @@ public:
 	{
 		if (i >= start && i-start <= length) {
 			// Determine which sub-cache this line resides in
-			int subcache = (i-start) / subcache_length;
+			size_t subcache = (i-start) / subcache_length;
 			assert(subcache >= 0 && subcache < sub_caches.size());
 
 			if (!sub_caches[subcache]) {
@@ -243,6 +243,13 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 	else
 		palette = colours_normal;
 
+	// Some scaling constants
+	const int maxpower = (1 << (16 - 1))*256;
+
+	const double upscale = power_scale * 16384 / line_length;
+	const double onethirdmaxpower = maxpower / 3, twothirdmaxpower = maxpower * 2/3;
+	const double logoverscale = log(maxpower*upscale - twothirdmaxpower);
+
 	for (unsigned long i = first_line; i <= last_line; ++i) {
 		// Handle horizontal compression and don't unneededly re-render columns
 		int imgcol = imgleft + imgwidth * (i - first_line) / (last_line - first_line + 1);
@@ -251,15 +258,11 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 
 		AudioSpectrumCache::CacheLine &line = cache->GetLine(i);
 
-		int maxpower = (1 << (16 - 1))*256;
-		
 		// Calculate the signal power over frequency
 		// "Compressed" scale
-		double onethirdmaxpower = maxpower / 3, twothirdmaxpower = maxpower * 2/3;
-		double logoverscale = log(maxpower*8*power_scale - twothirdmaxpower);
-		for (int j = 0; j < line_length; j++) {
+		for (unsigned int j = 0; j < line_length; j++) {
 			// First do a simple linear scale power calculation -- 8 gives a reasonable default scaling
-			power[j] = line[j] * 8 * power_scale;
+			power[j] = line[j] * upscale;
 			if (power[j] > maxpower * 2/3) {
 				double p = power[j] - twothirdmaxpower;
 				p = log(p) * onethirdmaxpower / logoverscale;
@@ -272,6 +275,7 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 	img[((imgheight-y-1)*imgpitch+x)*3 + 1] = palette[intensity*3+1]; \
 	img[((imgheight-y-1)*imgpitch+x)*3 + 2] = palette[intensity*3+2];
 
+		// Handle horizontal expansion
 		int next_line_imgcol = imgleft + imgwidth * (i - first_line + 1) / (last_line - first_line + 1);
 		if (next_line_imgcol >= imgpitch)
 			next_line_imgcol = imgpitch-1;

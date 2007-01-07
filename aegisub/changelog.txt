@@ -78,6 +78,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed loading of SRT and TXT files, which were causing an empty line to appear at the start of the file. (AMZ)
 - Added options to toggle the display of the audio timeline and of the time over the mouse cursor. (AMZ)
 - Destination of screenshots can now be set in the options dialog. (AMZ)
+- Moved karaoke syllable text in audio display to the top instead of bottom, since it often covers important information in spectrum mode (jfs)
 
 
 = 1.10 beta - 2006.08.07 ===========================

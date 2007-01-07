@@ -81,8 +81,6 @@ void ToggleBitmap::SetValue(bool _state) {
 //////////////
 // Draw image
 void ToggleBitmap::DrawImage(wxDC &dc) {
-	dc.BeginDrawing();
-
 	// Get size
 	int w,h;
 	GetClientSize(&w,&h);
@@ -105,8 +103,6 @@ void ToggleBitmap::DrawImage(wxDC &dc) {
 	
 	// Draw bitmap
 	dc.DrawBitmap(img,(w-img.GetWidth())/2,(h-img.GetHeight())/2,true);
-
-	dc.EndDrawing();
 }
 
 

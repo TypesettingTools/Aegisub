@@ -214,7 +214,6 @@ void OptionsManager::LoadDefaults() {
 	// Audio Cosmetic
 	SetModificationType(MOD_AUDIO);
 	SetInt(_T("Audio Line boundaries Thickness"), 2);
-	SetBool(_T("Audio Spectrum invert selection"), true);
 	SetBool(_T("Audio Draw Secondary Lines"), true);
 	SetBool(_T("Audio Draw Selection Background"), true);
 	SetBool(_T("Audio Draw Timeline"),true);
