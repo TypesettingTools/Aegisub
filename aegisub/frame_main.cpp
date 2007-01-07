@@ -386,6 +386,12 @@ void FrameMain::InitMenu() {
 	audioMenu->Append(RecentAudParent);
 	MenuBar->Append(audioMenu, _("&Audio"));
 
+	// Create Automation menu
+	automationMenu = new wxMenu();
+	AppendBitmapMenuItem (automationMenu,Menu_Tools_Automation, _("&Automation..."),_("Open automation manager"), wxBITMAP(automation_toolbutton));
+	automationMenu->AppendSeparator();
+	MenuBar->Append(automationMenu, _("&Automation"));
+
 	// Create view menu
 	viewMenu = new wxMenu();
 	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
@@ -397,12 +403,6 @@ void FrameMain::InitMenu() {
 	viewMenu->AppendRadioItem(Menu_View_Audio, _("Audio+Subs view"), _("Display audio and subtitles only"));
 	viewMenu->AppendRadioItem(Menu_View_Standard, _("Full view"), _("Display audio, video and subtitles"));
 	MenuBar->Append(viewMenu, _("Vie&w"));
-
-	// Create Automation menu
-	automationMenu = new wxMenu();
-	AppendBitmapMenuItem (automationMenu,Menu_Tools_Automation, _("&Automation..."),_("Open automation manager"), wxBITMAP(automation_toolbutton));
-	automationMenu->AppendSeparator();
-	MenuBar->Append(automationMenu, _("&Automation"));
 
 	// Create help menu
 	helpMenu = new wxMenu();

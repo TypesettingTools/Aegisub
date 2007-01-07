@@ -85,12 +85,17 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	{
 		wxSizer *genMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *genSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,generalPage,_("Startup"));
-		wxCheckBox *box1 = new wxCheckBox(generalPage,-1,_("Show Splash Screen"));
-		Bind(box1,_T("Show splash"));
-		wxCheckBox *box2 = new wxCheckBox(generalPage,-1,_("Show Tip of the Day"));
-		Bind(box2,_T("Tips enabled"));
-		genSizer1->Add(box1,1,wxALL,5);
-		genSizer1->Add(box2,1,wxALL,5);
+		wxSizer *genSizer4 = new wxFlexGridSizer(2,2,5,5);
+		wxCheckBox *box = new wxCheckBox(generalPage,-1,_("Show Splash Screen"));
+		Bind(box,_T("Show splash"));
+		genSizer4->Add(box,1,wxALL,0);
+		box = new wxCheckBox(generalPage,-1,_("Show Tip of the Day"));
+		Bind(box,_T("Tips enabled"));
+		genSizer4->Add(box,1,wxALL,0);
+		box = new wxCheckBox(generalPage,-1,_("Auto Check for Updates"));
+		Bind(box,_T("Auto check for updates"));
+		genSizer4->Add(box,1,wxALL,0);
+		genSizer1->Add(genSizer4,1,wxEXPAND|wxALL,5);
 		wxSizer *genSizer2 = new wxStaticBoxSizer(wxVERTICAL,generalPage,_("Limits for Levels and Recent Files"));
 		wxFlexGridSizer *genSizer3 = new wxFlexGridSizer(8,2,5,5);
 		wxString options[8] = { _T("Undo levels"), _T("Recent timecodes max"), _T("Recent keyframes max"), _T("Recent sub max"), _T("Recent vid max"), _T("Recent aud max"), _T("Recent find max"), _T("Recent replace max") };
