@@ -127,3 +127,15 @@ wxString GetAegisubBuildTime() {
 wxString GetAegisubBuildCredit() {
 	return versioninfo.BuildCredit;
 }
+
+bool GetIsOfficialRelease() {
+	return versioninfo.IsRelease;
+}
+
+wxString GetVersionNumber() {
+	return versioninfo.VersionNumber;
+}
+
+int GetSVNRevision() {
+	return versioninfo.SvnRev;
+}

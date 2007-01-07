@@ -81,6 +81,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Recent aud max"),16);
 	SetInt(_T("Recent find max"),16);
 	SetInt(_T("Recent replace max"),16);
+	SetInt(_T("Auto Check for Updates"),-1);
 
 	// File Save/Load
 	SetModificationType(MOD_RESTART);

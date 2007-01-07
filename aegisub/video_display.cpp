@@ -397,12 +397,17 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Hover
+	bool hasOverlay = false;
 	if (x != mouse_x || y != mouse_y) {
 		// Set coords
 		mouse_x = x;
 		mouse_y = y;
+		hasOverlay = true;
+	}
 
-		// Create backbuffer
+	// Has something to draw
+	if (hasOverlay) {
+		// Create backbuffer if needed
 		bool needCreate = false;
 		if (!backbuffer) needCreate = true;
 		else if (backbuffer->GetWidth() != w || backbuffer->GetHeight() != h) {
@@ -417,9 +422,11 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 		// Draw frame
 		dc.DrawBitmap(GetFrame(frame_n),0,0);
+
 		// Draw the control points for FexTracker
 		DrawTrackingOverlay( dc );
 
+		// Prepare grid
 		dc.SetPen(wxPen(wxColour(255,255,255),1));
 		dc.SetLogicalFunction(wxINVERT);
 

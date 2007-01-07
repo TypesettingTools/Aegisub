@@ -64,6 +64,7 @@ aegisub_SOURCES = \
 	dialog_timing_processor.cpp \
 	dialog_tip.cpp \
 	dialog_translation.cpp \
+	dialog_version_check.cpp
 	drop.cpp \
 	export_clean_info.cpp \
 	export_fixstyle.cpp \

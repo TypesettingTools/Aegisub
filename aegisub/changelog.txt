@@ -79,6 +79,7 @@ Please visit http://aegisub.net to download latest version
 - Added options to toggle the display of the audio timeline and of the time over the mouse cursor. (AMZ)
 - Destination of screenshots can now be set in the options dialog. (AMZ)
 - Moved karaoke syllable text in audio display to the top instead of bottom, since it often covers important information in spectrum mode (jfs)
+- Implemented a version checker that can automatically or manually check if there are any updates to Aegisub. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

@@ -83,6 +83,7 @@
 #include "utils.h"
 #include "auto4_base.h"
 #include "dialog_automation.h"
+#include "dialog_version_check.h"
 
 
 ////////////////////
@@ -198,6 +199,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Help_Forums, FrameMain::OnForums)
 	EVT_MENU(Menu_Help_BugTracker, FrameMain::OnBugTracker)
 	EVT_MENU(Menu_Help_IRCChannel, FrameMain::OnIRCChannel)
+	EVT_MENU(Menu_Help_Check_Updates, FrameMain::OnCheckUpdates)
 	EVT_MENU(Menu_Help_About, FrameMain::OnAbout)
 
 	EVT_MENU(Menu_View_Language, FrameMain::OnChooseLanguage)
@@ -585,6 +587,13 @@ void FrameMain::OnAbout(wxCommandEvent &event) {
 }
 
 
+//////////////////////
+// Open check updates
+void FrameMain::OnCheckUpdates(wxCommandEvent &event) {
+	DialogVersionCheck *check = new DialogVersionCheck(this,false);
+}
+
+
 ////////////////////
 // Open help topics
 void FrameMain::OnContents(wxCommandEvent& WXUNUSED(event)) {
@@ -606,33 +615,21 @@ void FrameMain::OnWebsite(wxCommandEvent& WXUNUSED(event)) {
 ///////////////
 // Open forums
 void FrameMain::OnForums(wxCommandEvent& WXUNUSED(event)) {
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
-	if (type) {
-		wxString command = type->GetOpenCommand(_T("http://www.malakith.net/aegisub/"));
-		if (!command.empty()) wxExecute(command);
-	}
+	AegisubApp::OpenURL(_T("http://www.malakith.net/aegisub/"));
 }
 
 
 ///////////////////
 // Open bugtracker
 void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
-	if (type) {
-		wxString command = type->GetOpenCommand(_T("http://www.malakith.net/aegibug/"));
-		if (!command.empty()) wxExecute(command);
-	}
+	AegisubApp::OpenURL(_T("http://www.malakith.net/aegibug/"));
 }
 
 
 ////////////////////
 // Open IRC channel
 void FrameMain::OnIRCChannel(wxCommandEvent& WXUNUSED(event)) {
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
-	if (type) {
-		wxString command = type->GetOpenCommand(_T("irc://irc.chatsociety.net/aegisub"));
-		if (!command.empty()) wxExecute(command);
-	}
+	AegisubApp::OpenURL(_T("irc://irc.chatsociety.net/aegisub"));
 }
 
 

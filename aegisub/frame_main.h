@@ -141,6 +141,7 @@ private:
 	void OnMenuOpen (wxMenuEvent &event);
 	void OnExit(wxCommandEvent &WXUNUSED(event));
 	void OnAbout (wxCommandEvent &event);
+	void OnCheckUpdates (wxCommandEvent &event);
 	void OnContents (wxCommandEvent &event);
 	void OnWebsite (wxCommandEvent &event);
 	void OnForums (wxCommandEvent &event);

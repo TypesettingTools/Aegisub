@@ -67,6 +67,7 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "auto4_base.h"
+#include "dialog_version_check.h"
 
 
 /////////////////////////
@@ -135,6 +136,17 @@ FrameMain::FrameMain (wxArrayString args)
 	// Parse arguments
 	LoadSubtitles(_T(""));
 	LoadList(args);
+
+	// Version checker
+	int option = Options.AsInt(_T("Auto check for updates"));
+	if (option == -1) {
+		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"),wxYES_NO);
+		option = 0;
+		if (result == wxYES) option = 1;
+		Options.SetInt(_T("Auto check for updates"),option);
+		Options.Save();
+	}
+	if (option == 1) DialogVersionCheck *checker = new DialogVersionCheck (this,true);
 }
 
 
@@ -206,7 +218,9 @@ void FrameMain::InitToolbar () {
 #endif
 	Toolbar->AddSeparator();
 
-	// Misc
+	// Options
+	Toolbar->AddTool(Menu_Tools_Options,_("Options"),wxBITMAP(options_button),_("Configure Aegisub"));
+	Toolbar->AddTool(Menu_Tools_Hotkeys,_("Hotkeys"),wxBITMAP(hotkeys_button),_("Remap hotkeys"));
 	Toolbar->AddTool(Grid_Toggle_Tags,_("Cycle Tag Hidding Mode"),wxBITMAP(toggle_tag_hiding),_("Cycle through tag-hiding modes"));
 
 	// Update
@@ -399,6 +413,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug tracker..."), _("Visit Aegisub's bug tracker"),wxBITMAP(bugtracker_button));
 	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC channel..."), _("Visit Aegisub's official IRC channel"), wxBITMAP(irc_button));
 	helpMenu->AppendSeparator();
+	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),wxBITMAP(about_button));
 	MenuBar->Append(helpMenu, _("&Help"));
 

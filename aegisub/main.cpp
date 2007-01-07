@@ -40,6 +40,7 @@
 #include <wx/config.h>
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
+#include <wx/mimetype.h>
 #include "main.h"
 #include "frame_main.h"
 #include "options.h"
@@ -344,6 +345,18 @@ void AegisubApp::GetFolderName () {
 	folderName += _T("/");
 }
 
+
+////////////
+// Open URL
+void AegisubApp::OpenURL(wxString url) {
+	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
+	if (type) {
+		wxString command = type->GetOpenCommand(url);
+		if (!command.empty()) wxExecute(command);
+	}
+}
+
+
 ////////////////
 // Apple events
 #ifdef __WXMAC__
@@ -391,4 +404,3 @@ void AegisubApp::OnKey(wxKeyEvent &event) {
 		event.Skip();
 	}
 }
-

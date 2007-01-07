@@ -66,6 +66,8 @@ public:
 
 	static wxString fullPath;
 	static wxString folderName;
+	static AegisubApp* Get() { return (AegisubApp*) wxTheApp; }
+	static void OpenURL(wxString url);
 
 	void GetFullPath(wxString arg);
 	void GetFolderName();

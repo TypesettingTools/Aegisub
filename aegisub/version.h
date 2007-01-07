@@ -43,3 +43,9 @@ wxString GetAegisubShortVersionString();
 wxString GetAegisubBuildTime();
 // Name of who built the binary
 wxString GetAegisubBuildCredit();
+// Is release?
+bool GetIsOfficialRelease();
+// Version number
+wxString GetVersionNumber();
+// Get SVN revision
+int GetSVNRevision();
