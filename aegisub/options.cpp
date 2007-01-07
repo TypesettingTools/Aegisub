@@ -156,8 +156,8 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
 	SetText(_T("Audio HD Cache Location"),_T("default"));
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
-	SetInt(_T("Audio Spectrum Cutoff"),32);
-	SetInt(_T("Audio Spectrum Window"),11);
+	SetInt(_T("Audio Spectrum Cutoff"),0);
+	SetInt(_T("Audio Spectrum Window"),8);
 
 	// Automation
 	SetModificationType(MOD_RESTART);

@@ -271,6 +271,8 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 		}
 
 #define WRITE_PIXEL \
+	if (intensity < 0) intensity = 0; \
+	if (intensity > 255) intensity = 255; \
 	img[((imgheight-y-1)*imgpitch+x)*3 + 0] = palette[intensity*3+0]; \
 	img[((imgheight-y-1)*imgpitch+x)*3 + 1] = palette[intensity*3+1]; \
 	img[((imgheight-y-1)*imgpitch+x)*3 + 2] = palette[intensity*3+2];
