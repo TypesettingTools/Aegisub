@@ -43,6 +43,7 @@
 #include <wx/wxprec.h>
 #include "audio_provider.h"
 #include "audio_player.h"
+#include "audio_spectrum.h"
 
 
 //////////////
@@ -67,8 +68,11 @@ private:
 	AssDialogue *dialogue;
 	VideoDisplay *video;
 
+	AudioSpectrum *spectrumRenderer;
+
 	wxBitmap *origImage;
 	wxBitmap *spectrumDisplay;
+	wxBitmap *spectrumDisplaySelected;
 	__int64 PositionSample;
 	float scale;
 	int samples;
@@ -106,7 +110,7 @@ private:
 	int scrubLastRate;
 
 	void OnPaint(wxPaintEvent &event);
-    void OnMouseEvent(wxMouseEvent &event);
+	void OnMouseEvent(wxMouseEvent &event);
 	void OnSize(wxSizeEvent &event);
 	void OnUpdateTimer(wxTimerEvent &event);
 	void OnKeyDown(wxKeyEvent &event);

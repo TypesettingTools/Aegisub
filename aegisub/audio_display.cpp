@@ -66,6 +66,8 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 	video = NULL;
 	origImage = NULL;
 	spectrumDisplay = NULL;
+	spectrumDisplaySelected = NULL;
+	spectrumRenderer = NULL;
 	ScrollBar = NULL;
 	dialogue = NULL;
 	karaoke = NULL;
@@ -112,7 +114,9 @@ AudioDisplay::~AudioDisplay() {
 	delete provider;
 	delete player;
 	delete origImage;
+	delete spectrumRenderer;
 	delete spectrumDisplay;
+	delete spectrumDisplaySelected;
 	delete peak;
 	delete min;
 }
@@ -214,11 +218,6 @@ void AudioDisplay::UpdateImage(bool weak) {
 	// Draw spectrum
 	if (spectrum) {
 		DrawSpectrum(dc,weak);
-
-		// Invert the selection, if any
-		if (hasSel && selStart < selEnd && Options.AsBool(_T("Audio Spectrum invert selection"))) {
-			dc.Blit(selStart, 0, selEnd-selStart, h, &dc, selStart, 0, wxSRC_INVERT);
-		}
 	}
 
 	// Draw seconds boundaries
@@ -374,13 +373,14 @@ void AudioDisplay::UpdateImage(bool weak) {
 				}
 			}
 			catch (...) {
+				// FIXME?
 			}
 		}
 	}
 
 	// Modified text
 	if (NeedCommit) {
-		dc.SetFont(wxFont(9,wxDEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana")));
+		dc.SetFont(wxFont(9,wxDEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"))); // FIXME: hardcoded font name
 		dc.SetTextForeground(wxColour(255,0,0));
 		if (selStart <= selEnd) {
 			dc.DrawText(_T("Modified"),4,4);
@@ -409,7 +409,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 		dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 		dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 		wxFont scaleFont;
-		scaleFont.SetFaceName(_T("Tahoma"));
+		scaleFont.SetFaceName(_T("Tahoma")); // FIXME: hardcoded font name
 		scaleFont.SetPointSize(8);
 		dc.SetFont(scaleFont);
 
@@ -503,259 +503,61 @@ void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 }
 
 
-static int spectrumColorMap[256];
-static unsigned short spectrumColorMap16[256];
-static bool colorMapsGenerated = false;
-
-
-//////////////////////////////////////
-// Spectrum analyser rendering thread
-class SpectrumRendererThread : public wxThread {
-public:
-	SpectrumRendererThread() : wxThread(wxTHREAD_JOINABLE) {
-		if (Create() != wxTHREAD_NO_ERROR)
-			throw _T("Error creating Spectrum rendering thread.");
-	}
-
-	int *data; // image data to write to (shared)
-	int window; // 1 << Options.AsInt(_T("Audio Spectrum Window"))
-	int firstbar, lastbar; // first and last vertical bar to draw
-	int w, h; // width and height of canvas
-	int cutoff; // cutoff frequency
-	float *base_in; // audio sample data (shared)
-	int samples; // number of samples per column
-	int depth; // display bit depth
-	float scale; // vertical scale of display, exponential, min=0, mid=1, max=8
-	
-protected:
-	wxThread::ExitCode Entry() {
-		// Pointers to image data
-		int *write_ptr = data;
-		unsigned short *write_ptr16 = (unsigned short *)data;
-
-		// FFT output data
-		float *out_r = new float[window]; // real part
-		float *out_i = new float[window]; // imaginary part
-		float *power = new float[window]; // calculated signal power
-
-		// Prepare constants
-		const int halfwindow = window/2;
-		//const int posThres = MAX(1,int(double(halfwindow-cutoff)/double(h)*0.5/scale + 0.5));
-		const int maxband = (halfwindow-cutoff) * 2/3;
-		const float mult = float(h)/float(halfwindow-cutoff)/255.f;
-
-		// Calculation loop
-		for (int i = firstbar; i < lastbar; i++) {
-			__int64 curStart = i*samples-(window/2);
-			if (curStart < 0) curStart = 0;
-
-			// Position input
-			float *in = base_in + curStart;
-
-			// Perform the FFT
-			FFT fft;
-			fft.Transform(window,in,out_r,out_i);
-
-			// Position pointer
-			write_ptr = data+i+h*w;
-			write_ptr16 = ((unsigned short*)data)+(i+h*w);
-
-			// The maximum power output from the FFT
-			// Derived by maximising the result from the DFT function:
-			//   f[u] = sum(x=0,N-1)[ f(x) * exp(-2 * pi * i * u * x) ]
-			// Where N is the number of samples transformed.
-			//        = N * 2^(B-1) * exp(-2 * pi * i * u * x)
-			// Maximising by f(x) constant at maximum sample value.
-			// B is bit-depth of the samples, so 2^(B-1) is the maximum sample value.
-			//        = N * 2^(B-1) * [ cos(-2*pi*u*x) + i sin(-2*pi*u*x) ]
-			// Expanding using Euler's formula.
-			//        = N * 2^(B-1) * [ cos(2*pi*u*x) - i sin(2*pi*u*x) ]
-			// cos(-x) = cos(x)  and  sin(-x) = -sin(x)
-			//        = N * 2^(B-1) * cos(2*pi*u*x) - N * 2^(B-1) * i sin(2*pi*u*x)    [A]
-			// Expand the bracket.
-			// Now determine the maximum magnitude of [A], letting u be constant and x variable.
-			//     | N * 2^(B-1) * cos(2*pi*u*x) - N * 2^(B-1) * i sin(2*pi*u*x) |
-			//   = sqrt( [N * 2^(B-1) * cos(2*pi*u*x)]^2 + [N * 2^(B-1) * sin(2*pi*u*x)]^2 )
-			//   = sqrt( N^2 * 4^(B-1) * cos^2(2*pi*u*x) + N^2 * 4^(B-1) * sin^2(2*pi*u*x) )
-			//   = sqrt( N^2 * 4^(B-1) * [ cos^2(2*pi*u*x) + sin^2(2*pi*u*x) ] )
-			//   = sqrt( N^2 * 4^(B-1) )
-			// It's known that sin^2(x) + cos^2(x) = 1.
-			//   = N * 2^(B-1)
-
-			int maxpower = (1 << (16 - 1))*256;
-
-			// Calculate the signal power over frequency
-#if 0
-			// Logarithmic scale
-			for (int j = 0; j < window; j++) {
-				float t = out_r[j]*out_r[j] + out_i[j]*out_i[j];
-				if (t < 1)
-					power[j] = 0;
-				else
-					power[j] = 10. * log10(t) * 64; // try changing the constant 64 if playing with this
-			}
-			maxpower = 10 * log10((float)maxpower);
-#elif 1
-			// "Compressed" scale
-			double onethirdmaxpower = maxpower / 3, twothirdmaxpower = maxpower * 2/3;
-			double logoverscale = log(maxpower*8*scale - twothirdmaxpower);
-			for (int j = 0; j < window; j++) {
-				// First do a simple linear scale power calculation -- 8 gives a reasonable default scaling
-				power[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]) * 8 * scale;
-				if (power[j] > maxpower * 2/3) {
-					double p = power[j] - twothirdmaxpower;
-					p = log(p) * onethirdmaxpower / logoverscale;
-					power[j] = p + twothirdmaxpower;
-				}
-			}
-#else
-			// Linear scale
-			for (int j = 0; j < window; j++) {
-				power[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
-			}
-#endif
-
-#define WRITE_PIXEL                                        \
-        if (intensity > 255) intensity = 255;              \
-        if (intensity < 0) intensity = 0;                  \
-        if (depth == 32) {                                 \
-            write_ptr -= w;                                \
-            *write_ptr = spectrumColorMap[intensity];      \
-        }                                                  \
-        else if (depth == 16) {                            \
-            write_ptr16 -= w;                              \
-            *write_ptr16 = spectrumColorMap16[intensity];  \
-        }
-
-			// Decide which rendering algo to use
-			if (halfwindow-cutoff > h) {
-				// more than one frequency sample per pixel (vertically compress data)
-				// pick the largest value per pixel for display
-
-				// Iterate over pixels, picking a range of samples for each
-				for (int j = 0; j < h; j++) {
-					int sample1 = maxband * j/h + cutoff;
-					int sample2 = maxband * (j+1)/h + cutoff;
-					float maxval = 0;
-					for (int samp = sample1; samp <= sample2; samp++) {
-						if (power[samp] > maxval) maxval = power[samp];
-					}
-					int intensity = int(256 * maxval / maxpower);
-					WRITE_PIXEL
-				}
-			}
-			else {
-				// less than one frequency sample per pixel (vertically expand data)
-				// interpolate between pixels
-				// can also happen with exactly one sample per pixel, but how often is that?
-
-				// Iterate over pixels, picking the nearest power values
-				for (int j = 0; j < h; j++) {
-					float ideal = (float)(j+1.)/h * maxband;
-					float sample1 = power[(int)floor(ideal)+cutoff];
-					float sample2 = power[(int)ceil(ideal)+cutoff];
-					float frac = ideal - floor(ideal);
-					int intensity = int(((1-frac)*sample1 + frac*sample2) / maxpower * 256);
-					WRITE_PIXEL
-				}
-			}
-
-#undef WRITE_PIXEL
-		}
-
-		delete out_r;
-		delete out_i;
-		delete power;
-
-		return 0;
-	}
-};
-
-
 //////////////////////////
 // Draw spectrum analyzer
 void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
-	// Spectrum bitmap
 	if (!weak || !spectrumDisplay || spectrumDisplay->GetWidth() != w || spectrumDisplay->GetHeight() != h) {
 		if (spectrumDisplay) {
 			delete spectrumDisplay;
+			delete spectrumDisplaySelected;
 			spectrumDisplay = 0;
+			spectrumDisplaySelected = 0;
 		}
-		//spectrumDisplay = new wxBitmap(w,h);
 		weak = false;
 	}
 
 	if (!weak) {
-		// Generate colors
-		if (!colorMapsGenerated) {
-			unsigned char r,g,b;
-			for (int i=0;i<256;i++) {
-				//hsv_to_rgb(255 - i, 255 - i * 3/10, 255*3/10 + i * 7/10, &r, &g, &b);
-				hsl_to_rgb(170 + i * 2/3, 128 + i/2, i, &r, &g, &b);
-				spectrumColorMap[i] = b | (g<<8) | (r<<16);
-				spectrumColorMap16[i] = ((r>>3)<<11) | ((g>>2)<<5) | b>>3;
-			}
-			colorMapsGenerated = true;
-		}
-		int depth = wxDisplayDepth();
+		unsigned char *img = (unsigned char *)malloc(h*w*3); // wxImage requires using malloc
 
-		// Prepare arrays
-		int cutOff = Options.AsInt(_T("Audio Spectrum Cutoff"));
-		int window = 1 << Options.AsInt(_T("Audio Spectrum Window"));
-		int totalLen = w*samples+window;
-		float *raw_float = new float[totalLen];
-		short *raw_int = new short[totalLen];
-		float *in = raw_float;
+		if (!spectrumRenderer)
+			spectrumRenderer = new AudioSpectrum(provider, 1<<Options.AsInt(_T("Audio Spectrum Window")));
 
-		// Fill input
-		__int64 start = Position*samples;
-		provider->GetAudio(raw_int,start,totalLen);
-		for (int j=0;j<totalLen;j++) {
-			raw_float[j] = (float)raw_int[j];
-		}
-		delete raw_int;
+		spectrumRenderer->SetScaling(scale);
 
-		// For image data
-		int *data = new int[w*h*depth/32];
+		// Use a slightly slower, but simple way
+		// Always draw the spectrum for the entire width
+		// Hack: without those divs by 2 the display is horizontally compressed
+		spectrumRenderer->RenderRange(Position*samples, (Position+w)*samples, false, img, 0, w, w, h);
 
-		////// START OF PARALLELISED CODE //////
-		const int cpu_count = MAX(wxThread::GetCPUCount(), 1);
-		std::vector<SpectrumRendererThread*> threads(cpu_count);
-		for (int i = 0; i < cpu_count; i++) {
-			// Ugh, way too much data to copy in
-			threads[i] = new SpectrumRendererThread();
-			threads[i]->data = data;
-			threads[i]->window = window;
-			threads[i]->firstbar = i * w/cpu_count;
-			threads[i]->lastbar = (i+1) * w/cpu_count;
-			threads[i]->w = w;
-			threads[i]->h = h;
-			threads[i]->cutoff = cutOff;
-			threads[i]->base_in = raw_float;
-			threads[i]->samples = samples;
-			threads[i]->depth = depth;
-			threads[i]->scale = scale;
-			threads[i]->Run();
-		}
-		// Threads started, wait for them to end
-		for (int i = 0; i < cpu_count; i++) {
-			threads[i]->Wait();
-			delete threads[i];
-		}
+		// The spectrum bitmap will have been deleted above already, so just make a new one
+		wxImage imgobj(w, h, img, false);
+		spectrumDisplay = new wxBitmap(imgobj);
+	}
 
-		// Clear memory
-		delete raw_float;
-
-		// Create image FIXME *BREAKS ON NON-WIN32* (see wx docs)
-		spectrumDisplay = new wxBitmap((const char*)data,w,h,depth);
+	if (hasSel && selStartCap < selEndCap &&
+		((selStartCap > Position && selStartCap < Position+w) ||
+		(selEndCap > Position && selEndCap < Position+w) ||
+		(selStartCap < Position && selEndCap > Position+w)) &&
+		!spectrumDisplaySelected) {
+			// There is a visible selection and we don't have a rendered one
+			// This should be done regardless whether we're "weak" or not
+			// Assume a few things were already set up when things were first rendered though
+			unsigned char *img = (unsigned char *)malloc(h*w*3);
+			spectrumRenderer->RenderRange(Position*samples, (Position+w)*samples, true, img, 0, w, w, h);
+			wxImage imgobj(w, h, img, false);
+			spectrumDisplaySelected = new wxBitmap(imgobj);
 	}
 
 	// Draw
 	wxMemoryDC dc;
 	dc.SelectObject(*spectrumDisplay);
 	finaldc.Blit(0,0,w,h,&dc,0,0);
-}
 
+	if (hasSel && spectrumDisplaySelected && selStartCap < selEndCap) {
+		dc.SelectObject(*spectrumDisplaySelected);
+		finaldc.Blit(selStart, 0, selEnd-selStart, h, &dc, selStart, 0);
+	}
+}
 
 //////////////////////////
 // Get selection position
@@ -939,8 +741,10 @@ void AudioDisplay::SetFile(wxString file, VideoProvider *vprovider) {
 		if (player) player->CloseStream();
 		delete provider;
 		delete player;
+		delete spectrumRenderer;
 		provider = NULL;
 		player = NULL;
+		spectrumRenderer = NULL;
 		Reset();
 
 		loaded = false;

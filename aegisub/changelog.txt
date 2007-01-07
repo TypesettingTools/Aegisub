@@ -6,14 +6,15 @@ Please visit http://aegisub.net to download latest version
 - New Aegisub logo. (AMZ)
 - Automation 4 has replaced Automation 3, see the help file for more details (jfs)
   o Automation 4 Lua uses Lua 5.1 instead of 5.0, meaning some new language features
-  o It is now possible to write macros that manipulates subtitles directly
+  o It is now possible to write macros that manipulate subtitles directly
   o Scripts have full access to the entire subtitle file, not just the "Events" section
 - Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections (jfs)
 - Fixed loading of sections with unexpected cases. (AMZ)
 - Changes to Audio Spectrum: (jfs)
-  o Calculation/drawing code is now multithreaded, meaning it runs faster on SMP (eg. dual-core) systems
+  o The calculated FFT data are now cached, so things should be faster
+  o Actual signal power is now more accurately represented
   o The palette is changed
-  o Rendering now more accurately represents actual signal power
+  o The selection is no longer shown by ugly reverse colour but with a different palette instead
   o Use vertical zoom slider to amplify/dampen displayed signal strength (useful for better visualisation of quiet sections, or easier picking out the dominating frequencies in noisy sections)
 - Plain-text export (jfs)
 - The style of the current line is automatically selected when opening the Style Manager (jfs)
