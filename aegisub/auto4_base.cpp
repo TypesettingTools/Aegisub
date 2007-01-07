@@ -312,6 +312,7 @@ namespace Automation4 {
 		, has_inited(false)
 		, script_finished(false)
 		, debug_visible(false)
+		, data_updated(false)
 	{
 		// make the controls
 		progress_display = new wxGauge(this, -1, 1000, wxDefaultPosition, wxSize(300, 20));
@@ -336,6 +337,12 @@ namespace Automation4 {
 		title_font.SetWeight(wxFONTWEIGHT_BOLD);
 		title_display->SetFont(title_font);
 
+		// Set up a timer to regularly update the status
+		// It doesn't need an event handler attached, as just a the timer in itself
+		// will ensure that the idle event is fired
+		update_timer = new wxTimer();
+		update_timer->Start(50, false);
+
 		sizer->SetSizeHints(this);
 		SetSizer(sizer);
 		Center();
@@ -343,6 +350,7 @@ namespace Automation4 {
 
 	ProgressSink::~ProgressSink()
 	{
+		delete update_timer;
 	}
 
 	void ProgressSink::OnIdle(wxIdleEvent &evt)
@@ -368,6 +376,7 @@ namespace Automation4 {
 		// there might actually be some debug output but the debug_visible flag won't
 		// be set before the dialog closes itself.
 		wxMutexLocker lock(data_mutex);
+		if (!data_updated) return;
 		if (!pending_debug_output.IsEmpty()) {
 			if (!debug_visible) {
 				sizer->Show(debug_output, true);
@@ -386,30 +395,35 @@ namespace Automation4 {
 		progress_display->SetValue((int)(progress*10));
 		task_display->SetLabel(task);
 		title_display->SetLabel(title);
+		data_updated = false;
 	}
 
 	void ProgressSink::SetProgress(float _progress)
 	{
 		wxMutexLocker lock(data_mutex);
 		progress = _progress;
+		data_updated = true;
 	}
 
 	void ProgressSink::SetTask(const wxString &_task)
 	{
 		wxMutexLocker lock(data_mutex);
 		task = _task;
+		data_updated = true;
 	}
 
 	void ProgressSink::SetTitle(const wxString &_title)
 	{
 		wxMutexLocker lock(data_mutex);
 		title = _title;
+		data_updated = true;
 	}
 
 	void ProgressSink::AddDebugOutput(const wxString &msg)
 	{
 		wxMutexLocker lock(data_mutex);
 		pending_debug_output << msg;
+		data_updated = true;
 	}
 
 	BEGIN_EVENT_TABLE(ProgressSink, wxWindow)

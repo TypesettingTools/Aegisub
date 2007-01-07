@@ -216,12 +216,15 @@ namespace Automation4 {
 		wxTextCtrl *debug_output;
 
 		bool debug_visible;
+		bool data_updated;
 
 		float progress;
 		wxString task;
 		wxString title;
 		wxString pending_debug_output;
 		wxMutex data_mutex;
+
+		wxTimer *update_timer;
 
 		void OnCancel(wxCommandEvent &evt);
 		void OnInit(wxInitDialogEvent &evt);
