@@ -63,6 +63,7 @@ DirectSoundPlayer::DirectSoundPlayer() {
 	directSound = NULL;
 	thread = NULL;
 	threadRunning = false;
+	notificationEvent = NULL;
 }
 
 
@@ -222,7 +223,8 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	buffer->Stop();
 
 	// Create notification event
-	CloseHandle(notificationEvent);
+	if (notificationEvent)
+		CloseHandle(notificationEvent);
 	notificationEvent = CreateEvent(NULL,false,false,NULL);
 
 	// Create notification interface
@@ -293,7 +295,8 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	offset = 0;
 
 	// Close event handle
-	CloseHandle(notificationEvent);
+	if (notificationEvent)
+		CloseHandle(notificationEvent);
 
 	// Stop timer
 	if (timerToo && displayTimer) {
