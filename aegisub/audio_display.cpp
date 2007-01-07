@@ -534,18 +534,14 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 		spectrumDisplay = new wxBitmap(imgobj);
 	}
 
-	if (hasSel && selStartCap < selEndCap &&
-		((selStartCap > Position && selStartCap < Position+w) ||
-		(selEndCap > Position && selEndCap < Position+w) ||
-		(selStartCap < Position && selEndCap > Position+w)) &&
-		!spectrumDisplaySelected) {
-			// There is a visible selection and we don't have a rendered one
-			// This should be done regardless whether we're "weak" or not
-			// Assume a few things were already set up when things were first rendered though
-			unsigned char *img = (unsigned char *)malloc(h*w*3);
-			spectrumRenderer->RenderRange(Position*samples, (Position+w)*samples, true, img, 0, w, w, h);
-			wxImage imgobj(w, h, img, false);
-			spectrumDisplaySelected = new wxBitmap(imgobj);
+	if (hasSel && selStartCap < selEndCap && !spectrumDisplaySelected) {
+		// There is a visible selection and we don't have a rendered one
+		// This should be done regardless whether we're "weak" or not
+		// Assume a few things were already set up when things were first rendered though
+		unsigned char *img = (unsigned char *)malloc(h*w*3);
+		spectrumRenderer->RenderRange(Position*samples, (Position+w)*samples, true, img, 0, w, w, h);
+		wxImage imgobj(w, h, img, false);
+		spectrumDisplaySelected = new wxBitmap(imgobj);
 	}
 
 	// Draw

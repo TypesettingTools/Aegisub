@@ -295,8 +295,10 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	offset = 0;
 
 	// Close event handle
-	if (notificationEvent)
+	if (notificationEvent) {
 		CloseHandle(notificationEvent);
+		notificationEvent = 0;
+	}
 
 	// Stop timer
 	if (timerToo && displayTimer) {
