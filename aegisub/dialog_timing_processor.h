@@ -56,6 +56,8 @@ private:
 	SubtitlesGrid *grid;
 	wxStaticBoxSizer *KeyframesSizer;
 
+	wxCheckBox *onlySelection;
+
 	wxTextCtrl *leadIn;
 	wxTextCtrl *leadOut;
 	wxCheckBox *hasLeadIn;

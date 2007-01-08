@@ -289,6 +289,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Timing processor Enable lead-out"),true);
 	SetBool(_T("Timing processor Enable keyframe"),true);
 	SetBool(_T("Timing processor Enable adjascent"),true);
+	SetBool(_T("Timing processor Only Selection"),false);
 	SetFloat(_T("Timing processor adjascent bias"),1.0);
 
 	SetText(_T("Select Text"),_T(""));

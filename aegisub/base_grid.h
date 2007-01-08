@@ -101,7 +101,7 @@ public:
 
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
 	void ClearSelection();
-	bool IsInSelection(int row, int col) const;
+	bool IsInSelection(int row, int col=0) const;
 	bool IsDisplayed(AssDialogue *line);
 	int GetNumberSelection();
 	int GetFirstSelRow();

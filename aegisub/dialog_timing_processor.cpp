@@ -63,6 +63,12 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	thresEndAfter = Options.AsText(_T("Timing processor key end after thres"));
 	adjsThresTime = Options.AsText(_T("Timing processor adjascent thres"));
 
+	// Options box
+	wxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
+	onlySelection = new wxCheckBox(this,-1,_("Affect selection only"));
+	onlySelection->SetValue(Options.AsBool(_T("Timing processor Only Selection")));
+	optionsSizer->Add(onlySelection,1,wxALL,0);
+
 	// Lead-in/out box
 	wxSizer *LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Lead-in/Lead-out"));
 	hasLeadIn = new wxCheckBox(this,CHECK_ENABLE_LEADIN,_("Add lead in:"));
@@ -143,6 +149,7 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 
 	// Right Sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
+	RightSizer->Add(optionsSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->Add(LeadSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->Add(AdjascentSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->Add(KeyframesSizer,0,wxBOTTOM|wxEXPAND,5);
@@ -195,6 +202,7 @@ void DialogTimingProcessor::UpdateControls() {
 	leadIn->Enable(hasLeadIn->IsChecked());
 	leadOut->Enable(hasLeadOut->IsChecked());
 	adjascentThres->Enable(adjsEnable->IsChecked());
+	adjascentBias->Enable(adjsEnable->IsChecked());
 
 	// Keyframes are only available if timecodes are loaded
 	bool keysAvailable = grid->video->KeyFramesLoaded();
@@ -285,6 +293,7 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
 	Options.SetBool(_T("Timing processor Enable lead-out"),hasLeadOut->IsChecked());
 	if (keysEnable->IsEnabled()) Options.SetBool(_T("Timing processor Enable keyframe"),keysEnable->IsChecked());
 	Options.SetBool(_T("Timing processor Enable adjascent"),adjsEnable->IsChecked());
+	Options.SetBool(_T("Timing processor Only Selection"),onlySelection->IsChecked());
 	Options.Save();
 
 	// Check if rows are valid
@@ -345,12 +354,14 @@ void DialogTimingProcessor::SortDialogues() {
 	// Copy from original to temporary list
 	std::list<AssDialogue*> temp;
 	AssDialogue *tempDiag;
-	for (std::list<AssEntry*>::iterator cur=grid->ass->Line.begin();cur!=grid->ass->Line.end();cur++) {
-		tempDiag = AssEntry::GetAsDialogue(*cur);
-		// Only add valid lines
+	int count = grid->GetRows();
+	for (int i=0;i<count;i++) {
+		tempDiag = grid->GetDialogue(i);
 		if (tempDiag && StyleOK(tempDiag->Style) && !tempDiag->Comment) {
-			tempDiag->StartMS = tempDiag->Start.GetMS();
-			temp.push_back(tempDiag);
+			if (!onlySelection->IsChecked() || grid->IsInSelection(i)) {
+				tempDiag->StartMS = tempDiag->Start.GetMS();
+				temp.push_back(tempDiag);
+			}
 		}
 	}
 
@@ -358,6 +369,7 @@ void DialogTimingProcessor::SortDialogues() {
 	temp.sort(LessByPointedToValue<AssDialogue>());
 
 	// Copy temporary list to final vector
+	Sorted.clear();
 	for (std::list<AssDialogue*>::iterator cur=temp.begin();cur!=temp.end();cur++) {
 		Sorted.push_back(*cur);
 	}

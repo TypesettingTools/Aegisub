@@ -83,6 +83,7 @@ Please visit http://aegisub.net to download latest version
 - Added support for reading v4.00++ (ASS2) files. (AMZ)
 - Changes to text will no longer be discarded when you commit timing in the audio display and vice-versa. (AMZ)
 - Fixed glitches related to the Duration time edit box. (AMZ)
+- Timing Post-Processor can now be restricted to selection. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
