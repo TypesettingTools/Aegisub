@@ -324,6 +324,10 @@ PClip AvisynthVideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip video
 
 	int w = vil.height * _zoom * _dar;
 	int h = vil.height * _zoom;
+	if (w == vil.width && h == vil.height) {
+		vi = vil;
+		return (env->Invoke("Cache",videosource)).AsClip();
+	}
 
 	try {
 		// Resize

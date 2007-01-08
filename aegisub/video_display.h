@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -55,17 +55,17 @@ class AudioProvider;
 class AudioDisplay;
 class AssDialogue;
 class VideoProvider;
+class VideoDisplayVisual;
+
 
 //////////////
 // Main class
 class VideoDisplay: public wxWindow {
 	friend class AudioProvider;
+	friend class VideoDisplayVisual;
 
 private:
 	wxString tempfile;
-
-	int mouse_x,mouse_y;
-	wxBitmap *backbuffer;
 
 	wxSize origSize;
 	bool threaded;
@@ -86,6 +86,8 @@ private:
 	double arValue;
 	int arType;
 
+	VideoDisplayVisual *visual;
+
 	wxBitmap GetFrame(int n);
 	wxBitmap GetFrame() { return GetFrame(frame_n); };
 
@@ -99,8 +101,6 @@ private:
 	void OnSaveSnapshot(wxCommandEvent &event);
 	void OnCopyCoords(wxCommandEvent &event);
 	void OnPlayTimer(wxTimerEvent &event);
-
-	void DrawTrackingOverlay( wxDC &dc );
 
 public:
 	wxArrayInt GetKeyFrames();

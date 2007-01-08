@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,11 +44,13 @@
 #include <wx/config.h>
 #include "utils.h"
 #include "video_display.h"
+#include "video_display_visual.h"
 #include "video_provider.h"
 #include "vfr.h"
 #include "ass_file.h"
 #include "ass_time.h"
 #include "ass_dialogue.h"
+#include "ass_style.h"
 #include "subs_grid.h"
 #include "vfw_wrap.h"
 #include "mkv_wrap.h"
@@ -97,7 +99,6 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	audio = NULL;
 	provider = NULL;
 	curLine = NULL;
-	backbuffer = NULL;
 	ControlSlider = NULL;
 	PositionDisplay = NULL;
 	loaded = false;
@@ -110,6 +111,7 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	threaded = Options.AsBool(_T("Threaded Video"));
 	nextFrame = -1;
 	zoomValue = 0.5;
+	visual = new VideoDisplayVisual(this);
 
 	// Set cursor
 	// Bleeeh! Hate this 'solution':
@@ -129,7 +131,7 @@ VideoDisplay::~VideoDisplay () {
 	wxRemoveFile(tempfile);
 	tempfile = _T("");
 	SetVideo(_T(""));
-	delete backbuffer;
+	delete visual;
 }
 
 void  VideoDisplay::UpdateSize() {
@@ -314,168 +316,8 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		return;
 	}
 
-	// Coords
-	int x = event.GetX();
-	int y = event.GetY();
-
-#if USE_FEXTRACKER == 1
-	if( event.ButtonDown(wxMOUSE_BTN_LEFT) )
-	{
-		MouseDownX = x;
-		MouseDownY = y;
-		bTrackerEditing = 1;
-	}
-	if( event.ButtonUp(wxMOUSE_BTN_LEFT) )
-		bTrackerEditing = 0;
-
-	// Do tracker influence if needed
-	if( bTrackerEditing )
-	{
-		AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
-		int StartFrame, EndFrame, localframe;
-		if( curline 
-			&& (StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true)) <= frame_n
-			&& (EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false)) >= frame_n 
-		) 
-		{
-			localframe = frame_n - StartFrame;
-			if( TrackerEdit!=0 && curline->Tracker && localframe < curline->Tracker->GetFrame() )
-				curline->Tracker->InfluenceFeatures( localframe, float(x)/provider->GetZoom(), float(y)/provider->GetZoom(), TrackerEdit );
-			if( MovementEdit!=0 && curline->Movement && localframe < curline->Movement->Frames.size() )
-			{// no /provider->GetZoom() to improve precision
-				if( MovementEdit==1 )
-				{
-					for( int i=0;i<curline->Movement->Frames.size();i++ )
-					{
-						curline->Movement->Frames[i].Pos.x += float(x-MouseDownX);
-						curline->Movement->Frames[i].Pos.y += float(y-MouseDownY);
-					}
-				}
-				else if( MovementEdit==2 )
-				{
-					curline->Movement->Frames[localframe].Pos.x += float(x-MouseDownX);
-					curline->Movement->Frames[localframe].Pos.y += float(y-MouseDownY);
-				}
-				else if( MovementEdit==3 )
-				{
-					for( int i=0;i<=localframe;i++ )
-					{
-						curline->Movement->Frames[i].Pos.x += float(x-MouseDownX);
-						curline->Movement->Frames[i].Pos.y += float(y-MouseDownY);
-					}
-				}
-				else if( MovementEdit==4 )
-				{
-					for( int i=localframe;i<curline->Movement->Frames.size();i++ )
-					{
-						curline->Movement->Frames[i].Pos.x += float(x-MouseDownX);
-						curline->Movement->Frames[i].Pos.y += float(y-MouseDownY);
-					}
-				}
-			}
-			MouseDownX = x;
-			MouseDownY = y;
-		}
-	}
-#endif
-
-	// Text of current coords
-	int sw,sh;
-	GetScriptSize(sw,sh);
-	int vx = (sw * x + w/2) / w;
-	int vy = (sh * y + h/2) / h;
-	wxString text;
-	if (!event.ShiftDown()) text = wxString::Format(_T("%i,%i"),vx,vy);
-	else text = wxString::Format(_T("%i,%i"),vx - sw,vy - sh);
-
-	// Double click
-	if (event.LeftDClick()) {
-		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0);
-		grid->editBox->CommitText();
-		grid->ass->FlagAsModified();
-		grid->CommitChanges(false,true);
-	}
-
-	// Drag
-	if (event.LeftIsDown() && false) {
-		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0);
-		grid->editBox->CommitText(true);
-		//grid->ass->FlagAsModified();
-		grid->CommitChanges(false,true);
-	}
-
-	// Hover
-	bool hasOverlay = false;
-	if (x != mouse_x || y != mouse_y) {
-		// Set coords
-		mouse_x = x;
-		mouse_y = y;
-		hasOverlay = true;
-	}
-
-	// Has something to draw
-	if (hasOverlay) {
-		// Create backbuffer if needed
-		bool needCreate = false;
-		if (!backbuffer) needCreate = true;
-		else if (backbuffer->GetWidth() != w || backbuffer->GetHeight() != h) {
-			needCreate = true;
-			delete backbuffer;
-		}
-		if (needCreate) backbuffer = new wxBitmap(w,h);
-
-		// Prepare drawing
-		wxMemoryDC dc;
-		dc.SelectObject(*backbuffer);
-
-		// Draw frame
-		dc.DrawBitmap(GetFrame(frame_n),0,0);
-
-		// Draw the control points for FexTracker
-		DrawTrackingOverlay( dc );
-
-		// Prepare grid
-		dc.SetPen(wxPen(wxColour(255,255,255),1));
-		dc.SetLogicalFunction(wxINVERT);
-
-		// Current position info
-		if (x >= 0 && x < w && y >= 0 && y < h) {
-			// Draw cross
-			dc.DrawLine(0,y,w-1,y);
-			dc.DrawLine(x,0,x,h-1);
-
-			// Setup text
-			wxFont font(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"));
-			dc.SetFont(font);
-			int tw,th;
-			GetTextExtent(text,&tw,&th,NULL,NULL,&font);
-
-			// Inversion
-			bool left = x > w/2;
-			bool bottom = y < h/2;
-
-			// Text draw coords
-			int dx = x,dy = y;
-			if (left) dx -= tw + 4;
-			else dx += 4;
-			if (bottom) dy += 3;
-			else dy -= th + 3;
-
-			// Draw text
-			dc.SetTextForeground(wxColour(64,64,64));
-			dc.DrawText(text,dx+1,dy-1);
-			dc.DrawText(text,dx+1,dy+1);
-			dc.DrawText(text,dx-1,dy-1);
-			dc.DrawText(text,dx-1,dy+1);
-			dc.SetTextForeground(wxColour(255,255,255));
-			dc.DrawText(text,dx,dy);
-		}
-
-		// Blit to screen
-		wxClientDC dcScreen(this);
-		//dcScreen.DrawBitmap(backbuffer,0,0);
-		dcScreen.Blit(0,0,w,h,&dc,0,0);
-	}
+	// Send to visual
+	visual->OnMouseEvent(event);
 }
 
 
@@ -702,99 +544,11 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
 		GetScriptSize(sw,sh);
-		int vx = (sw * mouse_x + w/2) / w;
-		int vy = (sh * mouse_y + h/2) / h;
+		int vx = (sw * visual->mouse_x + w/2) / w;
+		int vy = (sh * visual->mouse_y + h/2) / h;
 		wxTheClipboard->SetData(new wxTextDataObject(wxString::Format(_T("%i,%i"),vx,vy)));
 		wxTheClipboard->Close();
 	}
-}
-
-
-//////////////////
-// Draw Tracking Overlay
-void VideoDisplay::DrawTrackingOverlay( wxDC &dc )
-{
-#if USE_FEXTRACKER == 1
-	if( IsPlaying ) return;
-
-	// Get line
-	AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
-	if( !curline ) return;
-
-	int StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true);
-	int EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false);
-	
-	if( frame_n<StartFrame || frame_n>EndFrame ) return;
-
-	int localframe = frame_n - StartFrame;
-
-	if( curline->Tracker )
-	{
-		if( curline->Tracker->GetFrame() <= localframe ) return;
-
-		dc.SetLogicalFunction(wxCOPY);
-
-		for( int i=0;i<curline->Tracker->GetCount();i++ )
-		{
-			FexTrackingFeature* f = (*curline->Tracker)[i];
-			if( f->StartTime > localframe ) continue;
-			int llf = localframe - f->StartTime;
-			if( f->Pos.size() <= llf ) continue;
-			vec2 pt = f->Pos[llf];
-			pt.x *= provider->GetZoom();
-			pt.y *= provider->GetZoom();
-			pt.x = int(pt.x);
-			pt.y = int(pt.y);
-
-			dc.SetPen(wxPen(wxColour(255*(1-f->Influence),255*f->Influence,0),1));
-
-			dc.DrawLine( pt.x-2, pt.y, pt.x, pt.y );
-			dc.DrawLine( pt.x, pt.y-2, pt.x, pt.y );
-			dc.DrawLine( pt.x+1, pt.y, pt.x+3, pt.y );
-			dc.DrawLine( pt.x, pt.y+1, pt.x, pt.y+3 );
-		}
-	}
-	if( curline->Movement )
-	{
-		if( curline->Movement->Frames.size() <= localframe ) return;
-
-		dc.SetPen(wxPen(wxColour(255,0,0),2));
-		FexMovementFrame f = curline->Movement->Frames.lVal[localframe];
-		f.Pos.x *= provider->GetZoom();
-		f.Pos.y *= provider->GetZoom();
-		f.Scale.x *= 30* provider->GetZoom();
-		f.Scale.y *= 30* provider->GetZoom();
-
-		FexMovementFrame f3 = f;
-		dc.SetPen(wxPen(wxColour(0,0,255),1));
-		int nBack = 8;
-		while( --localframe>0 && nBack-- >0 )
-		{
-			FexMovementFrame f2 = curline->Movement->Frames.lVal[localframe];
-			f2.Pos.x *= provider->GetZoom();
-			f2.Pos.y *= provider->GetZoom();
-			dc.DrawLine( f2.Pos.x, f2.Pos.y, f3.Pos.x, f3.Pos.y );
-			f3 = f2;
-		}
-
-		dc.SetPen(wxPen(wxColour(255,0,0),2));
-		dc.DrawLine( f.Pos.x-f.Scale.x, f.Pos.y, f.Pos.x+f.Scale.x+1, f.Pos.y );
-		dc.DrawLine( f.Pos.x, f.Pos.y-f.Scale.y, f.Pos.x, f.Pos.y+f.Scale.y+1 );
-
-		f3 = f;
-		dc.SetPen(wxPen(wxColour(0,255,0),1));
-		int nFront = 8;
-		localframe = frame_n - StartFrame;
-		while( ++localframe<curline->Movement->Frames.size() && nFront-- >0 )
-		{
-			FexMovementFrame f2 = curline->Movement->Frames.lVal[localframe];
-			f2.Pos.x *= provider->GetZoom();
-			f2.Pos.y *= provider->GetZoom();
-			dc.DrawLine( f2.Pos.x, f2.Pos.y, f3.Pos.x, f3.Pos.y );
-			f3 = f2;
-		}
-	}
-#endif
 }
 
 
@@ -806,7 +560,7 @@ void VideoDisplay::RefreshVideo() {
 	dc.DrawBitmap(GetFrame(),0,0);
 
 	// Draw the control points for FexTracker
-	DrawTrackingOverlay( dc );
+	visual->DrawTrackingOverlay(dc);
 }
 
 

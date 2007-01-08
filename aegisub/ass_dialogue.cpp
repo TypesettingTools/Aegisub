@@ -36,17 +36,17 @@
 
 ////////////
 // Includes
-#include "setup.h"
-#include "ass_dialogue.h"
-#include "ass_override.h"
-#include "vfr.h"
-#include "utils.h"
 #include <fstream>
 #include <wx/tokenzr.h>
 #if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
 #include "../FexTrackerSource/FexMovement.h"
 #endif
+#include "setup.h"
+#include "ass_dialogue.h"
+#include "ass_override.h"
+#include "vfr.h"
+#include "utils.h"
 
 
 ////////////////////// AssDialogue //////////////////////

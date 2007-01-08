@@ -64,7 +64,7 @@ aegisub_SOURCES = \
 	dialog_timing_processor.cpp \
 	dialog_tip.cpp \
 	dialog_translation.cpp \
-	dialog_version_check.cpp
+	dialog_version_check.cpp \
 	drop.cpp \
 	export_clean_info.cpp \
 	export_fixstyle.cpp \
@@ -110,6 +110,7 @@ aegisub_SOURCES = \
 	vfr.cpp \
 	video_box.cpp \
 	video_display.cpp \
+	video_display_visual.cpp \
 	video_provider.cpp \
 	video_provider_lavc.cpp \
 	video_slider.cpp \
