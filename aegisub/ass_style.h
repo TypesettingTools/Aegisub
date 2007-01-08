@@ -91,6 +91,7 @@ public:
 	int alignment;
 	int Margin[4];
 	int encoding;
+	int relativeTo;
 
 	ASS_EntryType GetType() { return ENTRY_STYLE; }
 

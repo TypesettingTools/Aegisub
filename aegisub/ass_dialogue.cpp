@@ -81,11 +81,25 @@ AssDialogue::AssDialogue(wxString _data,int version) {
 	Movement = 0;
 #endif
 
+	// Set group
 	group = _T("[Events]");
-	Valid = Parse(_data,version);
+
+	// Try parsing in different ways
+	int count = 0;
+	Valid = false;
+	while (!Valid && count < 3) {
+		Valid = Parse(_data,version);
+		count++;
+		version++;
+		if (version > 2) version = 0;
+	}
+
+	// Not valid
 	if (!Valid) {
 		throw _T("Failed parsing line.");
 	}
+
+	// update
 	UpdateData();
 }
 
@@ -145,9 +159,13 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	else return false;
 	wxStringTokenizer tkn(rawData.Mid(pos),_T(","),wxTOKEN_RET_EMPTY_ALL);
 
-	// Get layer number
+	// Get first token and see if it has "Marked=" in it
 	if (!tkn.HasMoreTokens()) return false;
 	temp = tkn.GetNextToken().Trim(false).Trim(true);
+	if (temp.Lower().Left(7) == _T("marked=")) version = 0;
+	else if (version == 0) version = 1;
+
+	// Get layer number
 	if (version == 0) Layer = 0;
 	else {
 		long templ;
@@ -184,15 +202,30 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	if (!tkn.HasMoreTokens()) return false;
 	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),1);
 
-	// Get vertical margin
+	// Get top margin
 	if (!tkn.HasMoreTokens()) return false;
 	temp = tkn.GetNextToken().Trim(false).Trim(true);
 	SetMarginString(temp,2);
-	SetMarginString(temp,3);
+	if (version == 1) SetMarginString(temp,3);
+
+	// Get bottom margin
+	bool rollBack = false;
+	if (version == 2) {
+		if (!tkn.HasMoreTokens()) return false;
+		wxString oldTemp = temp;
+		temp = tkn.GetNextToken().Trim(false).Trim(true);
+		if (!temp.IsNumber()) {
+			version = 1;
+			rollBack = true;
+		}
+	}
 
 	// Get effect
-	if (!tkn.HasMoreTokens()) return false;
-	Effect = tkn.GetNextToken();
+	if (!rollBack) {
+		if (!tkn.HasMoreTokens()) return false;
+		temp = tkn.GetNextToken();
+	}
+	Effect = temp;
 	Effect.Trim(true);
 	Effect.Trim(false);
 

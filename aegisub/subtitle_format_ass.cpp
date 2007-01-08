@@ -83,7 +83,8 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 	// Reader
 	TextFileReader file(filename,encoding);
-	int version = filename.Right(4).Lower() == _T(".ssa");
+	int version = 1;
+	if (filename.Right(4).Lower() == _T(".ssa")) version = 0;
 
 	// Parse file
 	wxString curgroup;
@@ -104,12 +105,17 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 			curgroup = wxbuffer;
 			version = 1;
 		}
+		else if (wxbuffer.Lower() == _T("[v4++ styles]")) {
+			wxbuffer = _T("[V4+ Styles]");
+			curgroup = wxbuffer;
+			version = 2;
+		}
 		// Not-so-special case for other groups, just set it
 		else if (wxbuffer[0] == _T('[')) {
 			curgroup = wxbuffer;
 			// default from extension in all other sections
-			version = 1;
-			if (filename.Right(4).Lower() == _T(".ssa")) version = 0;
+			//version = 1;
+			//if (filename.Right(4).Lower() == _T(".ssa")) version = 0;
 		}
 
 		// Add line

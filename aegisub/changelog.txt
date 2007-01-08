@@ -80,6 +80,7 @@ Please visit http://aegisub.net to download latest version
 - Destination of screenshots can now be set in the options dialog. (AMZ)
 - Moved karaoke syllable text in audio display to the top instead of bottom, since it often covers important information in spectrum mode (jfs)
 - Implemented a version checker that can automatically or manually check if there are any updates to Aegisub. (AMZ)
+- Added support for reading v4.00++ (ASS2) files. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

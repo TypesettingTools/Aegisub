@@ -189,6 +189,7 @@ AssStyle::AssStyle() {
 	Margin[2] = 10;
 	Margin[3] = 10;
 	encoding = 0;
+	relativeTo = 1;
 
 	UpdateData();
 }
@@ -214,6 +215,7 @@ AssStyle::~AssStyle() {
 //////////////////////////////
 // Parses value from ASS data
 bool AssStyle::Parse(wxString rawData,int version) {
+	// Tokenize
 	wxString temp;
 	long templ;
 	wxStringTokenizer tkn(rawData.Mid(6),_T(","),wxTOKEN_RET_EMPTY_ALL);
@@ -381,12 +383,20 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	if (!tkn.HasMoreTokens()) return false;
 	SetMarginString(tkn.GetNextToken(),1);
 
-	// Read vertical margin
+	// Read top margin
 	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken(),2);
+	temp = tkn.GetNextToken();
+	SetMarginString(temp,2);
 
+	// Read bottom margin
+	if (version == 2) {
+		if (!tkn.HasMoreTokens()) return false;
+		SetMarginString(tkn.GetNextToken(),3);
+	}
+	else SetMarginString(temp,3);
+
+	// Read alpha level
 	if (version == 0) {
-		// Read alpha level
 		if (!tkn.HasMoreTokens()) return false;
 		temp = tkn.GetNextToken();
 	}
@@ -396,6 +406,14 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	temp = tkn.GetNextToken();
 	temp.ToLong(&templ);
 	encoding = templ;
+
+	// Read relative to
+	if (version == 2) {
+		if (!tkn.HasMoreTokens()) return false;
+		temp = tkn.GetNextToken();
+		temp.ToLong(&templ);
+		relativeTo = templ;
+	}
 
 	// End
 	if (tkn.HasMoreTokens()) return false;
@@ -551,6 +569,7 @@ AssEntry *AssStyle::Clone() {
 	final->spacing = spacing;
 	final->strikeout = strikeout;
 	final->underline = underline;
+	final->relativeTo = relativeTo;
 	final->SetEntryData(GetEntryData());
 
 	// Return

@@ -368,7 +368,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 			else if (versionString == _T("v4.00++")) trueVersion = 2;
 			else throw _T("Unknown file version");
 			if (trueVersion != version) {
-				wxLogMessage(_T("Warning: File has the wrong extension."));
+				if (!(trueVersion == 2 && version == 1)) wxLogMessage(_T("Warning: File has the wrong extension."));
 				version = trueVersion;
 			}
 		}
