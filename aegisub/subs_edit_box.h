@@ -152,7 +152,7 @@ public:
 	void SetStyleFlag (wxString tag,wxString preValue=_T(""),int pos=-1);
 
 	void SetSplitLineMode(wxSize size=wxSize(-1,-1));
-	void CommitText();
+	void CommitText(bool weak=false);
 	void Update(bool timeOnly=false);
 	void UpdateGlobals();
 	void SetToLine(int n);

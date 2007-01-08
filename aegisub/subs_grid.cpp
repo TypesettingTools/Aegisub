@@ -1269,7 +1269,7 @@ void SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 // Commit changes
 // --------------
 // This will save the work .ass and refresh it
-void SubtitlesGrid::CommitChanges(bool force) {
+void SubtitlesGrid::CommitChanges(bool force,bool videoOnly) {
 	if (video->loaded || force) {
 		// Check if it's playing
 		bool playing = false;
@@ -1289,15 +1289,17 @@ void SubtitlesGrid::CommitChanges(bool force) {
 		if (playing) video->Play();
 	}
 
-	// Autosave if option is enabled
-	if (Options.AsBool(_T("Auto Save on Every Change"))) {
-		if (ass->IsModified() && !ass->filename.IsEmpty()) parentFrame->SaveSubtitles(false);
-	}
+	if (!videoOnly) {
+		// Autosave if option is enabled
+		if (Options.AsBool(_T("Auto Save on Every Change"))) {
+			if (ass->IsModified() && !ass->filename.IsEmpty()) parentFrame->SaveSubtitles(false);
+		}
 
-	// Update parent frame
-	parentFrame->UpdateTitle();
-	SetColumnWidths();
-	Refresh(false);
+		// Update parent frame
+		parentFrame->UpdateTitle();
+		SetColumnWidths();
+		Refresh(false);
+	}
 }
 
 

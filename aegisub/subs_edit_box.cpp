@@ -860,16 +860,17 @@ void SubsEditBox::KeyPress(wxKeyEvent &event) {
 
 ///////////////
 // Commit text
-void SubsEditBox::CommitText() {
+void SubsEditBox::CommitText(bool weak) {
 	AssDialogue *cur = grid->GetDialogue(linen);
 
 	// Update line
 	if (cur) {
 		cur->Text = TextEdit->GetText();
-		//cur->ParseASSTags();
 		cur->UpdateData();
-		grid->Refresh(false);
-		audio->SetDialogue(grid,cur,linen);
+		if (!weak) {
+			grid->Refresh(false);
+			audio->SetDialogue(grid,cur,linen);
+		}
 	}
 }
 

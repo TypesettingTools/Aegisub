@@ -393,7 +393,15 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0);
 		grid->editBox->CommitText();
 		grid->ass->FlagAsModified();
-		grid->CommitChanges();
+		grid->CommitChanges(false,true);
+	}
+
+	// Drag
+	if (event.LeftIsDown() && false) {
+		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0);
+		grid->editBox->CommitText(true);
+		//grid->ass->FlagAsModified();
+		grid->CommitChanges(false,true);
 	}
 
 	// Hover

@@ -103,7 +103,7 @@ public:
 
 	void LoadDefault(AssFile *ass=NULL);
 	void LoadFromAss(AssFile *ass=NULL,bool keepSelection=false,bool dontModify=false);
-	void CommitChanges(bool force=false);
+	void CommitChanges(bool force=false,bool videoOnly=false);
 
 	void SetVideoToSubs(bool start);
 	void SetSubsToVideo(bool start);
