@@ -55,6 +55,7 @@
 #include "colorspace.h"
 #include "hotkeys.h"
 #include "utils.h"
+#include "timeedit_ctrl.h"
 
 
 ///////////////
@@ -1021,8 +1022,14 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 
 			curDiag->Start.SetMS(curStartMS);
 			curDiag->End.SetMS(curEndMS);
+			curDiag->Text = grid->editBox->TextEdit->GetText();
 			curDiag->UpdateData();
 		}
+
+		// Update edit box
+		grid->editBox->StartTime->Update();
+		grid->editBox->EndTime->Update();
+		grid->editBox->Duration->Update();
 
 		// Update grid
 		grid->editBox->Update(!karaoke->enabled);
@@ -1321,7 +1328,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			// Dragging nothing, time from scratch
 			if (!gotGrab) {
 				if (buttonIsDown) {
-					hold = 3;
+					if (leftIsDown) hold = 3;
+					else hold = 2;
 					lastX = x;
 					gotGrab = true;
 				}
@@ -1427,7 +1435,13 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (diagUpdated) {
 					diagUpdated = false;
 					NeedCommit = true;
-					if (Options.AsBool(_T("Audio Autocommit")) && curStartMS <= curEndMS) CommitChanges();
+					if (curStartMS <= curEndMS) {
+						grid->editBox->StartTime->SetTime(curStartMS,true);
+						grid->editBox->EndTime->SetTime(curEndMS,true);
+						grid->editBox->Duration->SetTime(curEndMS-curStartMS,true);
+						if (Options.AsBool(_T("Audio Autocommit"))) CommitChanges();
+					}
+
 					else UpdateImage(true);
 				}
 
@@ -1451,6 +1465,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 		// Update stuff
 		if (updated) {
+			if (diagUpdated) NeedCommit = true;
 			player->SetEndPosition(GetSampleAtX(selEnd));
 			wxCursor cursor(wxCURSOR_SIZEWE);
 			SetCursor(cursor);

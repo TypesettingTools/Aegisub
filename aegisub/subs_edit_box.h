@@ -59,6 +59,7 @@ class wxScintilla;
 class SubsEditBox : public wxPanel {
 	friend class SubsTextEditHandler;
 	friend class SubsTextEditCtrl;
+	friend class AudioDisplay;
 
 private:
 	bool splitLineMode;

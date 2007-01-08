@@ -321,6 +321,7 @@ void SubsEditBox::SetToLine(int n) {
 			linen = n;
 			StartTime->Update();
 			EndTime->Update();
+			Duration->Update();
 		}
 	}
 
@@ -449,6 +450,7 @@ void SubsEditBox::OnFrameRadio(wxCommandEvent &event) {
 	if (ByFrame->GetValue()) {
 		StartTime->SetByFrame(true);
 		EndTime->SetByFrame(true);
+		Duration->SetByFrame(true);
 		grid->SetByFrame(true);
 	}
 	event.Skip();
@@ -461,6 +463,7 @@ void SubsEditBox::OnTimeRadio(wxCommandEvent &event) {
 	if (ByTime->GetValue()) {
 		StartTime->SetByFrame(false);
 		EndTime->SetByFrame(false);
+		Duration->SetByFrame(false);
 		grid->SetByFrame(false);
 	}
 	event.Skip();
@@ -509,6 +512,7 @@ void SubsEditBox::SetControlsState (bool state) {
 		TextEdit->SetTextTo(_T(""));
 		StartTime->SetTime(0);
 		EndTime->SetTime(0);
+		Duration->SetTime(0);
 		Layer->SetValue(_T(""));
 		MarginL->SetValue(_T(""));
 		MarginR->SetValue(_T(""));

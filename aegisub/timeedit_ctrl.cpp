@@ -102,9 +102,11 @@ void TimeEdit::Modified() {
 
 /////////////////////////////
 // Set time and update stuff
-void TimeEdit::SetTime(int ms) {
+void TimeEdit::SetTime(int ms,bool setModified) {
+	int oldMs = time.GetMS();
 	time.SetMS(ms);
 	UpdateText();
+	if (setModified && oldMs != ms) Modified();
 }
 
 

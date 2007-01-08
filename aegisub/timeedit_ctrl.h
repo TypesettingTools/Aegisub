@@ -69,7 +69,7 @@ public:
 	TimeEdit(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
 
 	void SetByFrame(bool enable);
-	void SetTime(int ms);
+	void SetTime(int ms,bool setModified=false);
 	void Update();
 	bool HasBeenModified() { return modified; }
 
