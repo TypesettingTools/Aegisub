@@ -178,7 +178,7 @@ public:
 
 	ASS_EntryType GetType() { return ENTRY_DIALOGUE; }
 
-	bool Parse(wxString data,bool IsSSA=false);	// Parses raw ASS data into everything else
+	bool Parse(wxString data,int version=1);	// Parses raw ASS data into everything else
 	void ParseASSTags();			// Parses text to generate block information (doesn't update data)
 	void ParseSRTTags();			// Converts tags to ass format and calls ParseASSTags+UpdateData
 
@@ -200,6 +200,6 @@ public:
 	AssEntry *Clone();
 
 	AssDialogue();
-	AssDialogue(wxString data,bool IsSSA=false);
+	AssDialogue(wxString data,int version=1);
 	~AssDialogue();
 };

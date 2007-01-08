@@ -96,7 +96,7 @@ public:
 
 	ASS_EntryType GetType() { return ENTRY_STYLE; }
 
-	bool Parse(wxString data,bool IsSSA=false);	// Parses raw ASS/SSA data into everything else
+	bool Parse(wxString data,int version=1);	// Parses raw ASS/SSA data into everything else
 	void UpdateData();				// Updates raw data
 	wxString GetSSAText();			// Retrieves SSA-formatted style
 	wxString GetMarginString(int which);					// Returns the margin value as a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
@@ -105,6 +105,6 @@ public:
 	AssEntry *Clone();
 
 	AssStyle();
-	AssStyle(wxString data,bool IsSSA=false);
+	AssStyle(wxString data,int version=1);
 	~AssStyle();
 };

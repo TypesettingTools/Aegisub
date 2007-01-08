@@ -70,7 +70,7 @@ protected:
 	void Clear();
 	void LoadDefault(bool defline=true);
 	AssFile *GetAssFile() { return assFile; }
-	int AddLine(wxString data,wxString group,int lasttime,bool &IsSSA,wxString *outgroup=NULL);
+	int AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outgroup=NULL);
 
 	virtual wxString GetName()=0;
 	virtual wxArrayString GetReadWildcards();

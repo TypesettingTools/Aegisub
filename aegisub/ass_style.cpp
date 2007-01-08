@@ -195,8 +195,8 @@ AssStyle::AssStyle() {
 
 ///////////////
 // Constructor
-AssStyle::AssStyle(wxString _data,bool IsSSA) {
-	Valid = Parse(_data,IsSSA);
+AssStyle::AssStyle(wxString _data,int version) {
+	Valid = Parse(_data,version);
 	if (!Valid) {
 		throw _T("[Error] Failed parsing line.");
 	}
@@ -212,7 +212,7 @@ AssStyle::~AssStyle() {
 
 //////////////////////////////
 // Parses value from ASS data
-bool AssStyle::Parse(wxString rawData,bool IsSSA) {
+bool AssStyle::Parse(wxString rawData,int version) {
 	wxString temp;
 	long templ;
 	wxStringTokenizer tkn(rawData.Mid(6),_T(","),wxTOKEN_RET_EMPTY_ALL);
@@ -235,7 +235,7 @@ bool AssStyle::Parse(wxString rawData,bool IsSSA) {
 	temp.ToLong(&templ);
 	fontsize = templ;
 
-	if (!IsSSA) {
+	if (version != 0) {
 		// Read primary color
 		if (!tkn.HasMoreTokens()) return false;
 		primary.ParseASS(tkn.GetNextToken());
@@ -285,7 +285,7 @@ bool AssStyle::Parse(wxString rawData,bool IsSSA) {
 	italic = true;
 	if (templ == 0) italic = false;
 
-	if (!IsSSA) {
+	if (version != 0) {
 		// Read underline
 		if (!tkn.HasMoreTokens()) return false;
 		temp = tkn.GetNextToken();
@@ -356,7 +356,7 @@ bool AssStyle::Parse(wxString rawData,bool IsSSA) {
 	if (!tkn.HasMoreTokens()) return false;
 	temp = tkn.GetNextToken();
 	temp.ToLong(&templ);
-	if (IsSSA) {
+	if (version == 0) {
 		switch(templ) {
 			case 1: alignment = 1; break;
 			case 2: alignment = 2; break;
@@ -384,7 +384,7 @@ bool AssStyle::Parse(wxString rawData,bool IsSSA) {
 	if (!tkn.HasMoreTokens()) return false;
 	SetMarginString(tkn.GetNextToken(),2);
 
-	if (IsSSA) {
+	if (version == 0) {
 		// Read alpha level
 		if (!tkn.HasMoreTokens()) return false;
 		temp = tkn.GetNextToken();
@@ -458,6 +458,7 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 		case 0: MarginL = value; break;
 		case 1: MarginR = value; break;
 		case 2: MarginV = value; break;
+		case 3: MarginV = value; break;
 		default: throw _T("Invalid margin");
 	}
 }
@@ -468,8 +469,9 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 wxString AssStyle::GetMarginString(int which) {
 	int value;
 	switch (which) {
-		case 1: value = MarginL; break;
-		case 2: value = MarginR; break;
+		case 0: value = MarginL; break;
+		case 1: value = MarginR; break;
+		case 2: value = MarginV; break;
 		case 3: value = MarginV; break;
 		default: throw _T("Invalid margin");
 	}

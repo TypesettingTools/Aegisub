@@ -252,7 +252,7 @@ wxString AssFile::GetString() {
 // I strongly advice you against touching this function unless you know what you're doing;
 // even moving things out of order might break ASS parsing - AMZ.
 //
-int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxString *outGroup) {
+int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxString *outGroup) {
 	// Group
 	AssEntry *entry = NULL;
 	wxString origGroup = group;
@@ -318,7 +318,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxSt
 	// Dialogue
 	if (group.Lower() == _T("[events]")) {
 		if ((data.Left(9) == _T("Dialogue:") || data.Left(8) == _T("Comment:"))) {
-			AssDialogue *diag = new AssDialogue(data,IsSSA);
+			AssDialogue *diag = new AssDialogue(data,version);
 			lasttime = diag->Start.GetMS();
 			//diag->ParseASSTags();
 			entry = diag;
@@ -335,7 +335,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxSt
 	// Style
 	else if (group.Lower() == _T("[v4+ styles]")) {
 		if (data.Left(6) == _T("Style:")) {
-			AssStyle *style = new AssStyle(data,IsSSA);
+			AssStyle *style = new AssStyle(data,version);
 			entry = style;
 			entry->StartMS = lasttime;
 			entry->group = group;
@@ -358,17 +358,18 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,bool &IsSSA,wxSt
 
 		// Version
 		if (data.Left(11) == _T("ScriptType:")) {
-			wxString version = data.Mid(11);
-			version.Trim(true);
-			version.Trim(false);
-			version.MakeLower();
-			bool trueSSA;
-			if (version == _T("v4.00")) trueSSA = true;
-			else if (version == _T("v4.00+")) trueSSA = false;
+			wxString versionString = data.Mid(11);
+			versionString.Trim(true);
+			versionString.Trim(false);
+			versionString.MakeLower();
+			int trueVersion;
+			if (versionString == _T("v4.00")) trueVersion = 0;
+			else if (versionString == _T("v4.00+")) trueVersion = 1;
+			else if (versionString == _T("v4.00++")) trueVersion = 2;
 			else throw _T("Unknown file version");
-			if (trueSSA != IsSSA) {
+			if (trueVersion != version) {
 				wxLogMessage(_T("Warning: File has the wrong extension."));
-				IsSSA = trueSSA;
+				version = trueVersion;
 			}
 		}
 
@@ -413,24 +414,24 @@ void AssFile::LoadDefault (bool defline) {
 
 	// Write headers
 	AssStyle defstyle;
-	bool IsSSA = false;
-	AddLine(_T("[Script Info]"),_T("[Script Info]"),-1,IsSSA);
-	AddLine(_T("Title: Default Aegisub file"),_T("[Script Info]"),-1,IsSSA);
-	AddLine(_T("ScriptType: v4.00+"),_T("[Script Info]"),-1,IsSSA);
-	AddLine(_T("WrapStyle: 0"), _T("[Script Info]"),-1,IsSSA);
-	AddLine(_T("PlayResX: 640"),_T("[Script Info]"),-1,IsSSA);
-	AddLine(_T("PlayResY: 480"),_T("[Script Info]"),-1,IsSSA);
-	AddLine(_T(""),_T("[Script Info]"),-1,IsSSA);
-	AddLine(_T("[V4+ Styles]"),_T("[V4+ Styles]"),-1,IsSSA);
-	AddLine(_T("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"),_T("[V4+ Styles]"),-1,IsSSA);
-	AddLine(defstyle.GetEntryData(),_T("[V4+ Styles]"),-1,IsSSA);
-	AddLine(_T(""),_T("[V4+ Styles]"),-1,IsSSA);
-	AddLine(_T("[Events]"),_T("[Events]"),-1,IsSSA);
-	AddLine(_T("Format:  Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"),_T("[Events]"),-1,IsSSA);
+	int version = 1;
+	AddLine(_T("[Script Info]"),_T("[Script Info]"),-1,version);
+	AddLine(_T("Title: Default Aegisub file"),_T("[Script Info]"),-1,version);
+	AddLine(_T("ScriptType: v4.00+"),_T("[Script Info]"),-1,version);
+	AddLine(_T("WrapStyle: 0"), _T("[Script Info]"),-1,version);
+	AddLine(_T("PlayResX: 640"),_T("[Script Info]"),-1,version);
+	AddLine(_T("PlayResY: 480"),_T("[Script Info]"),-1,version);
+	AddLine(_T(""),_T("[Script Info]"),-1,version);
+	AddLine(_T("[V4+ Styles]"),_T("[V4+ Styles]"),-1,version);
+	AddLine(_T("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"),_T("[V4+ Styles]"),-1,version);
+	AddLine(defstyle.GetEntryData(),_T("[V4+ Styles]"),-1,version);
+	AddLine(_T(""),_T("[V4+ Styles]"),-1,version);
+	AddLine(_T("[Events]"),_T("[Events]"),-1,version);
+	AddLine(_T("Format:  Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"),_T("[Events]"),-1,version);
 
 	if (defline) {
 		AssDialogue def;
-		AddLine(def.GetEntryData(),_T("[Events]"),0,IsSSA);
+		AddLine(def.GetEntryData(),_T("[Events]"),0,version);
 	}
 
 	loaded = true;
@@ -446,7 +447,7 @@ AssFile::AssFile (AssFile &from) {
 	filename = from.filename;
 	loaded = from.loaded;
 	Modified = from.Modified;
-	bool IsSSA = false;
+	int version = 1;
 
 	// Copy lines
 	int lasttime = -1;
@@ -541,13 +542,13 @@ void AssFile::InsertAttachment (AssAttachment *attach) {
 
 	// Otherwise, create the [Fonts] group and insert
 	else {
-		bool IsSSA=false;
+		int version=1;
 		int StartMS = Line.back()->StartMS;
-		AddLine(_T(""),Line.back()->group,StartMS,IsSSA);
-		AddLine(attach->group,attach->group,StartMS,IsSSA);
+		AddLine(_T(""),Line.back()->group,StartMS,version);
+		AddLine(attach->group,attach->group,StartMS,version);
 		attach->StartMS = StartMS;
 		Line.push_back(attach);
-		AddLine(_T(""),attach->group,StartMS,IsSSA);
+		AddLine(_T(""),attach->group,StartMS,version);
 	}
 }
 

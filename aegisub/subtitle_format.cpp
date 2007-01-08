@@ -115,8 +115,8 @@ void SubtitleFormat::LoadDefault(bool defline) {
 
 ////////////
 // Add line
-int SubtitleFormat::AddLine(wxString data,wxString group,int lasttime,bool &IsSSA,wxString *outgroup) {
-	return assFile->AddLine(data,group,lasttime,IsSSA,outgroup);
+int SubtitleFormat::AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outgroup) {
+	return assFile->AddLine(data,group,lasttime,version,outgroup);
 }
 
 

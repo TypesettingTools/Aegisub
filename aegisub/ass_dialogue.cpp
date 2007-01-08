@@ -75,14 +75,14 @@ AssDialogue::AssDialogue() {
 }
 
 
-AssDialogue::AssDialogue(wxString _data,bool IsSSA) {
+AssDialogue::AssDialogue(wxString _data,int version) {
 #if USE_FEXTRACKER == 1
 	Tracker = 0;
 	Movement = 0;
 #endif
 
 	group = _T("[Events]");
-	Valid = Parse(_data,IsSSA);
+	Valid = Parse(_data,version);
 	if (!Valid) {
 		throw _T("Failed parsing line.");
 	}
@@ -129,7 +129,7 @@ void AssDialogue::ClearBlocks() {
 
 //////////////////
 // Parse ASS Data
-bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
+bool AssDialogue::Parse(wxString rawData, int version) {
 	size_t pos = 0;
 	wxString temp;
 
@@ -148,7 +148,7 @@ bool AssDialogue::Parse(wxString rawData, bool IsSSA) {
 	// Get layer number
 	if (!tkn.HasMoreTokens()) return false;
 	temp = tkn.GetNextToken().Trim(false).Trim(true);
-	if (IsSSA) Layer = 0;
+	if (version == 0) Layer = 0;
 	else {
 		long templ;
 		temp.ToLong(&templ);

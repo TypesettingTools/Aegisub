@@ -354,18 +354,18 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			// Load into file
 			wxString group = _T("[Script Info]");
 			int lasttime = 0;
-			bool IsSSA = (CodecID == _T("S_TEXT/SSA"));
+			int version = (CodecID == _T("S_TEXT/SSA"));
 			wxStringTokenizer token(privString,_T("\r\n"),wxTOKEN_STRTOK);
 			while (token.HasMoreTokens()) {
 				wxString next = token.GetNextToken();
 				if (next[0] == _T('[')) group = next;
-				lasttime = target->AddLine(next,group,lasttime,IsSSA,&group);
+				lasttime = target->AddLine(next,group,lasttime,version,&group);
 			}
 
 			// Insert "[Events]"
-			//target->AddLine(_T(""),group,lasttime,IsSSA,&group);
-			//target->AddLine(_T("[Events]"),group,lasttime,IsSSA,&group);
-			//target->AddLine(_T("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"),group,lasttime,IsSSA,&group);
+			//target->AddLine(_T(""),group,lasttime,version,&group);
+			//target->AddLine(_T("[Events]"),group,lasttime,version,&group);
+			//target->AddLine(_T("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"),group,lasttime,version,&group);
 		}
 
 		// Load default if it's SRT
@@ -457,9 +457,9 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 		// Insert into file
 		wxString group = _T("[Events]");
 		int lasttime = 0;
-		bool IsSSA = (CodecID == _T("S_TEXT/SSA"));
+		int version = (CodecID == _T("S_TEXT/SSA"));
 		for (unsigned int i=0;i<subList.size();i++) {
-			lasttime = target->AddLine(subList[i],group,lasttime,IsSSA,&group);
+			lasttime = target->AddLine(subList[i],group,lasttime,version,&group);
 		}
 
 		// Close progress bar

@@ -83,7 +83,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 	// Reader
 	TextFileReader file(filename,encoding);
-	bool IsSSA = filename.Right(4).Lower() == _T(".ssa");
+	int version = filename.Right(4).Lower() == _T(".ssa");
 
 	// Parse file
 	wxString curgroup;
@@ -98,22 +98,23 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 		if (wxbuffer.Lower() == _T("[v4 styles]")) {
 			wxbuffer = _T("[V4+ Styles]");
 			curgroup = wxbuffer;
-			IsSSA = true;
+			version = 0;
 		}
 		else if (wxbuffer.Lower() == _T("[v4+ styles]")) {
 			curgroup = wxbuffer;
-			IsSSA = false;
+			version = 1;
 		}
 		// Not-so-special case for other groups, just set it
 		else if (wxbuffer[0] == _T('[')) {
 			curgroup = wxbuffer;
 			// default from extension in all other sections
-			IsSSA = filename.Right(4).Lower() == _T(".ssa");
+			version = 1;
+			if (filename.Right(4).Lower() == _T(".ssa")) version = 0;
 		}
 
 		// Add line
 		try {
-			lasttime = AddLine(wxbuffer,curgroup,lasttime,IsSSA,&curgroup);
+			lasttime = AddLine(wxbuffer,curgroup,lasttime,version,&curgroup);
 		}
 		catch (const wchar_t *err) {
 			Clear();
@@ -126,7 +127,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	}
 
 	// Add one last empty line in case it didn't end with one
-	if (!wxbuffer.IsEmpty()) AddLine(_T(""),curgroup,lasttime,IsSSA);
+	if (!wxbuffer.IsEmpty()) AddLine(_T(""),curgroup,lasttime,version);
 }
 
 
