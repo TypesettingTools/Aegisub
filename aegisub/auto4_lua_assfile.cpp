@@ -191,13 +191,13 @@ namespace Automation4 {
 			lua_pushnumber(L, sty->alignment);
 			lua_setfield(L, -2, "align");
 
-			lua_pushnumber(L, sty->MarginL);
+			lua_pushnumber(L, sty->Margin[0]);
 			lua_setfield(L, -2, "margin_l");
-			lua_pushnumber(L, sty->MarginR);
+			lua_pushnumber(L, sty->Margin[1]);
 			lua_setfield(L, -2, "margin_r");
-			lua_pushnumber(L, sty->MarginV); // duplicating MarginV to margin_t and margin_b here
+			lua_pushnumber(L, sty->Margin[2]);
 			lua_setfield(L, -2, "margin_t");
-			lua_pushnumber(L, sty->MarginV);
+			lua_pushnumber(L, sty->Margin[3]);
 			lua_setfield(L, -2, "margin_b");
 
 			lua_pushnumber(L, sty->encoding);
@@ -353,9 +353,10 @@ namespace Automation4 {
 			sty->outline_w = outline;
 			sty->shadow_w = shadow;
 			sty->alignment = align;
-			sty->MarginL = margin_l;
-			sty->MarginR = margin_r;
-			sty->MarginV = margin_t;
+			sty->Margin[0] = margin_l;
+			sty->Margin[1] = margin_r;
+			sty->Margin[2] = margin_t;
+			sty->Margin[3] = margin_b;
 			sty->encoding = encoding;
 			sty->UpdateData();
 

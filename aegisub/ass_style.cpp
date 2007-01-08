@@ -184,9 +184,10 @@ AssStyle::AssStyle() {
 	outline_w = 2.0;
 	shadow_w = 2.0;
 	alignment = 2;
-	MarginL = 10;
-	MarginR = 10;
-	MarginV = 10;
+	Margin[0] = 10;
+	Margin[1] = 10;
+	Margin[2] = 10;
+	Margin[3] = 10;
 	encoding = 0;
 
 	UpdateData();
@@ -435,9 +436,9 @@ void AssStyle::UpdateData() {
 	final += FloatToString(shadow_w) + _T(",");
 
 	final += IntegerToString(alignment) + _T(",");
-	final += IntegerToString(MarginL) + _T(",");
-	final += IntegerToString(MarginR) + _T(",");
-	final += IntegerToString(MarginV) + _T(",");
+	final += IntegerToString(Margin[0]) + _T(",");
+	final += IntegerToString(Margin[1]) + _T(",");
+	final += IntegerToString(Margin[2]) + _T(",");
 	final += IntegerToString(encoding);
 	SetEntryData(final);
 }
@@ -454,13 +455,8 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 	work.ToLong(&value);
 	if (value < 0) value = 0;
 	if (value > 9999) value = 9999;
-	switch (which) {
-		case 0: MarginL = value; break;
-		case 1: MarginR = value; break;
-		case 2: MarginV = value; break;
-		case 3: MarginV = value; break;
-		default: throw _T("Invalid margin");
-	}
+	if (which < 0 || which >= 4) throw _T("Invalid margin");
+	Margin[which] = value;
 }
 
 
@@ -468,13 +464,8 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 // Gets string for margin
 wxString AssStyle::GetMarginString(int which) {
 	int value;
-	switch (which) {
-		case 0: value = MarginL; break;
-		case 1: value = MarginR; break;
-		case 2: value = MarginV; break;
-		case 3: value = MarginV; break;
-		default: throw _T("Invalid margin");
-	}
+	if (which < 0 || which >= 4) throw _T("Invalid margin");
+	value = Margin[which];
 	wxString result = wxString::Format(_T("%04i"),value);
 	return result;
 }
@@ -519,9 +510,9 @@ wxString AssStyle::GetSSAText() {
 	}
 	output += IntegerToString(align) + _T(",");
 
-	output += IntegerToString(MarginL) + _T(",");
-	output += IntegerToString(MarginR) + _T(",");
-	output += IntegerToString(MarginV) + _T(",");
+	output += IntegerToString(Margin[0]) + _T(",");
+	output += IntegerToString(Margin[1]) + _T(",");
+	output += IntegerToString(Margin[2]) + _T(",");
 	output += _T("0,");
 	output += IntegerToString(encoding);
 
@@ -547,9 +538,7 @@ AssEntry *AssStyle::Clone() {
 	final->font = font;
 	final->fontsize = fontsize;
 	final->italic = italic;
-	final->MarginL = MarginL;
-	final->MarginR = MarginR;
-	final->MarginV = MarginV;
+	for (int i=0;i<4;i++) final->Margin[i] = Margin[i];
 	final->name = name;
 	final->outline = outline;
 	final->outline_w = outline_w;

@@ -89,9 +89,7 @@ public:
 	double outline_w;
 	double shadow_w;
 	int alignment;
-	int MarginL;
-	int MarginR;
-	int MarginV;
+	int Margin[4];
 	int encoding;
 
 	ASS_EntryType GetType() { return ENTRY_STYLE; }

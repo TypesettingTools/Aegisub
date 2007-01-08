@@ -224,9 +224,8 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 			//curStyle->shadow_w *= r;
 			curStyle->spacing *= rx;
 			curStyle->scalex *= ar;
-			curStyle->MarginL = int(curStyle->MarginL * rx + 0.5);
-			curStyle->MarginR = int(curStyle->MarginR * rx + 0.5);
-			curStyle->MarginV = int(curStyle->MarginV * ry + 0.5);
+			for (int i=0;i<2;i++) curStyle->Margin[i] = int(curStyle->Margin[i] * rx + 0.5);
+			for (int i=2;i<4;i++) curStyle->Margin[i] = int(curStyle->Margin[i] * ry + 0.5);
 			curStyle->UpdateData();
 		}
 	}
