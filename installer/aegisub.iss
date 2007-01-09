@@ -49,7 +49,7 @@ Compression=lzma/ultra
 SolidCompression=yes
 MinVersion=0,5
 WizardImageFile=welcome.bmp
-WizardSmallImageFile=aegisub2.bmp
+WizardSmallImageFile=aegisub.bmp
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -107,6 +107,7 @@ var
   InstalledVersion: string;
   ReturnCode: Integer;
   VersionMS, VersionLS: Cardinal;
+  OverwriteInstall: Integer;
 begin
   Result := GetVersionNumbers(AddBackslash(ExpandConstant('{sys}')) + 'avisynth.dll', VersionMS , VersionLS);
   if Result then
@@ -122,14 +123,20 @@ begin
 
   if RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'InstallDir', InstallDir) and RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'InstVer', InstalledVersion) and FileExists(AddBackslash(InstallDir) + 'uninstall.exe') then
   begin
-    if not MsgBox('A previous Aegisub install has been detected (Version ' + InstalledVersion + ').'#13#10'Due to changes from the old installer you are strongly encouraged to uninstall it first?', mbConfirmation, MB_YESNO) = IDYES then
-      Exit;
-
-    if FileCopy(AddBackslash(InstallDir) + 'uninstall.exe', AddBackslash(ExpandConstant('{tmp}')) + 'aegisub-uninstall.exe', False) then
+    OverwriteInstall := MsgBox('A previous Aegisub install has been detected (Version ' + InstalledVersion + ').'#13#10'Due to changes from the old installer you are strongly encouraged to uninstall it first.'#13#10'Uninstall it before proceeding?', mbConfirmation, MB_YESNOCANCEL);
+    if OverwriteInstall = IDCANCEL then
     begin
-      Exec(AddBackslash(ExpandConstant('{tmp}')) + 'aegisub-uninstall.exe', '_?=' + InstallDir, InstallDir, SW_SHOW, ewWaitUntilTerminated, ReturnCode);
-      DeleteFile(AddBackslash(ExpandConstant('{tmp}')) + 'aegisub-uninstall.exe');
-    end;
+      Result := False;
+      Exit;
+    end
+    else if OverwriteInstall = IDNO then
+      Exit
+    else if OverwriteInstall = IDYES then
+      if FileCopy(AddBackslash(InstallDir) + 'uninstall.exe', AddBackslash(ExpandConstant('{tmp}')) + 'aegisub-uninstall.exe', False) then
+      begin
+        Exec(AddBackslash(ExpandConstant('{tmp}')) + 'aegisub-uninstall.exe', '_?=' + InstallDir, InstallDir, SW_SHOW, ewWaitUntilTerminated, ReturnCode);
+        DeleteFile(AddBackslash(ExpandConstant('{tmp}')) + 'aegisub-uninstall.exe');
+      end;
   end;
 end;
 
@@ -141,7 +148,7 @@ begin
   case CurStep of
     ssInstall:
       begin
-        //uninstall previous version for upgrades if sdame dir was selected
+        //uninstall previous version for upgrades if same dir was selected
         if RegQueryStringValue(HKLM, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\Aegisub_is1', 'UninstallString', UninstallString) then
           if AddBackslash(ExtractFilePath(RemoveQuotes(UninstallString))) = AddBackslash(ExpandConstant('{app}')) then
             Exec(RemoveQuotes(UninstallString), '/VERYSILENT /NORESTART', '', SW_SHOW, ewWaitUntilTerminated, ReturnCode);
