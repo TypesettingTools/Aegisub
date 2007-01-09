@@ -481,6 +481,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 					// Mouse over?
 					if (x >= lineX-5 && x <= lineX+5 && y >= lineY-5 && y <= lineY+5) {
+						parent->grid->editBox->SetToLine(i,true);
 						gotDiag = diag;
 						orig_x = lineX;
 						orig_y = lineY;

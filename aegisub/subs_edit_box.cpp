@@ -235,7 +235,7 @@ void SubsEditBox::SetSplitLineMode(wxSize newSize) {
 
 ///////////////////
 // Update function
-void SubsEditBox::Update (bool timeOnly) {
+void SubsEditBox::Update (bool timeOnly,bool weak) {
 	if (enabled) {
 		AssDialogue *curdiag = grid->GetDialogue(linen);
 		if (curdiag) {
@@ -264,7 +264,7 @@ void SubsEditBox::Update (bool timeOnly) {
 			}
 
 			// Audio
-			audio->SetDialogue(grid,curdiag,linen);
+			if (!weak) audio->SetDialogue(grid,curdiag,linen);
 
 			// Video
 			video->curLine = curdiag;
@@ -308,7 +308,7 @@ void SubsEditBox::UpdateGlobals () {
 
 //////////////////
 // Jump to a line
-void SubsEditBox::SetToLine(int n) {
+void SubsEditBox::SetToLine(int n,bool weak) {
 	// Set to nothing
 	if (n == -1) {
 		enabled = false;
@@ -329,7 +329,7 @@ void SubsEditBox::SetToLine(int n) {
 	Update();
 
 	// Set video
-	if (video->loaded) {
+	if (video->loaded && !weak) {
 		wxString sync;
 		if (Search.hasFocus) sync = _T("Find update video");
 		else sync = _T("Sync video with subs");

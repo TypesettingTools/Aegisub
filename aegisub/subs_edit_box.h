@@ -153,9 +153,9 @@ public:
 
 	void SetSplitLineMode(wxSize size=wxSize(-1,-1));
 	void CommitText(bool weak=false);
-	void Update(bool timeOnly=false);
+	void Update(bool timeOnly=false,bool weak=false);
 	void UpdateGlobals();
-	void SetToLine(int n);
+	void SetToLine(int n,bool weak=false);
 	void UpdateFrameTiming();
 	void KeyPress(wxKeyEvent &event);
 
