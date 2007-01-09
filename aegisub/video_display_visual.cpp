@@ -69,6 +69,10 @@ VideoDisplayVisual::VideoDisplayVisual(VideoDisplay *par) {
 	holding = false;
 	mode = -1;
 	SetMode(0);
+	colour[0] = wxColour(27,60,114);
+	colour[1] = wxColour(175,219,254);
+	colour[2] = wxColour(255,255,255);
+	colour[3] = wxColour(187,0,0);
 }
 
 
@@ -136,12 +140,11 @@ void VideoDisplayVisual::DrawOverlay() {
 	DrawTrackingOverlay(dc);
 
 	// Draw pivot points of visible lines
-	if (mode == 1) {
+	if (mode != 0) {
 		int numRows = parent->grid->GetRows();
 		int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
 		int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
 		AssDialogue *diag;
-		dc.SetPen(wxPen(wxColour(255,0,0),1));
 
 		// For each line
 		for (int i=0;i<numRows;i++) {
@@ -149,35 +152,96 @@ void VideoDisplayVisual::DrawOverlay() {
 			if (diag) {
 				// Draw?
 				bool draw = false;
+				bool high = false;
+				bool isCur = diag == curSelection;
 				int dx = -1;
 				int dy = -1;
-
-				// Selected line
-				if (diag == curSelection) {
-					draw = true;
-					dx = cur_x * w / sw;
-					dy = cur_y * h / sh;
-					dc.SetBrush(wxBrush(wxColour(255,255,255)));
-				}
+				int orgx = -1;
+				int orgy = -1;
+				float rx = 0.0f;
+				float ry = 0.0f;
+				float rz = 0.0f;
+				int deltax = 0;
+				int deltay = 0;
 
 				// Line visible?
-				else if (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs) {
+				if (isCur || (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs)) {
 					// Get position
-					GetLinePosition(diag,dx,dy);
+					if (isCur && mode == 1) {
+						dx = cur_x;
+						dy = cur_y;
+						high = true;
+					}
+					else GetLinePosition(diag,dx,dy,orgx,orgy);
+
+					// Mouse over?
+					if (mode == 1 && (x >= dx-8 && x <= dx+8 && y >= dy-8 && y <= dy+8)) {
+						high = true;
+					}
+
+					// Highlight
+					int brushCol = 1;
+					if (high) brushCol = 2;
+					dc.SetBrush(wxBrush(colour[brushCol]));
+					dc.SetPen(wxPen(colour[0],1));
+
+					// Set drawing coordinates
 					dx = dx * w / sw;
 					dy = dy * h / sh;
 
-					// Mouse over?
-					if (x >= dx-5 && x <= dx+5 && y >= dy-5 && y <= dy+5) dc.SetBrush(wxBrush(wxColour(255,255,255)));
-					else dc.SetBrush(wxBrush(wxColour(255,255,0)));
-					draw = true;
-				}
+					// Drag
+					if (mode == 1) {
+						dc.DrawRectangle(dx-8,dy-8,17,17);
+						dc.DrawLine(dx,dy-16,dx,dy+16);
+						dc.DrawLine(dx-16,dy,dx+16,dy);
+					}
 
-				// Draw
-				if (draw) {
-					dc.DrawRectangle(dx-5,dy-5,11,11);
-					dc.DrawLine(dx,dy-10,dx,dy+10);
-					dc.DrawLine(dx-10,dy,dx+10,dy);
+					// Rotate Z
+					if (mode == 2) {
+						// Calculate radius
+						int radius = (int) sqrt(double((dx-orgx)*(dx-orgx)+(dy-orgy)*(dy-orgy)));
+						if (radius < 50) radius = 50;
+
+						// Get deltas
+						GetLineRotation(diag,rx,ry,rz);
+						deltax = int(cos(rz*3.1415926536/180.0)*radius);
+						deltay = int(-sin(rz*3.1415926536/180.0)*radius);
+						int odx = dx;
+						int ody = dy;
+						dx = orgx;
+						dy = orgy;
+
+						// Draw pivot
+						dc.DrawCircle(dx,dy,7);
+						dc.DrawLine(dx,dy-16,dx,dy+16);
+						dc.DrawLine(dx-16,dy,dx+16,dy);
+
+						// Draw the circle
+						dc.SetBrush(*wxTRANSPARENT_BRUSH);
+						dc.DrawCircle(dx,dy,radius+2);
+						dc.DrawCircle(dx,dy,radius-2);
+						dc.SetBrush(wxBrush(colour[brushCol]));
+
+						// Draw the baseline
+						dc.SetPen(wxPen(colour[3],2));
+						dc.DrawLine(dx+deltax,dy+deltay,dx-deltax,dy-deltay);
+
+						// Draw the connection line
+						if (orgx != odx && orgy != ody) {
+							double angle = atan2(double(dy-ody),double(odx-dx)) + rz*3.1415926536/180.0;
+							int fx = dx+int(cos(angle)*radius);
+							int fy = dy-int(sin(angle)*radius);
+							dc.DrawLine(dx,dy,fx,fy);
+							//dc.SetPen(wxPen(colour[0],1));
+							int mdx = cos(rz*3.1415926536/180.0)*10;
+							int mdy = -sin(rz*3.1415926536/180.0)*10;
+							dc.DrawLine(fx-mdx,fy-mdy,fx+mdx,fy+mdy);
+						}
+
+						// Draw the rotation line
+						dc.SetPen(wxPen(colour[0],1));
+						dc.DrawCircle(dx+deltax,dy+deltay,4);
+					}
 				}
 			}
 		}
@@ -186,7 +250,7 @@ void VideoDisplayVisual::DrawOverlay() {
 	// Current position info
 	if (mode == 0 && x >= 0 && x < w && y >= 0 && y < h) {
 		// Draw cross
-		dc.SetPen(wxPen(wxColour(255,255,255),1));
+		dc.SetPen(wxPen(colour[2],1));
 		dc.SetLogicalFunction(wxINVERT);
 		dc.DrawLine(0,y,w-1,y);
 		dc.DrawLine(x,0,x,h-1);
@@ -214,7 +278,7 @@ void VideoDisplayVisual::DrawOverlay() {
 		dc.DrawText(mouseText,dx+1,dy+1);
 		dc.DrawText(mouseText,dx-1,dy-1);
 		dc.DrawText(mouseText,dx-1,dy+1);
-		dc.SetTextForeground(wxColour(255,255,255));
+		dc.SetTextForeground(colour[2]);
 		dc.DrawText(mouseText,dx,dy);
 	}
 
@@ -228,6 +292,10 @@ void VideoDisplayVisual::DrawOverlay() {
 ////////////////////////
 // Get position of line
 void VideoDisplayVisual::GetLinePosition(AssDialogue *diag,int &x, int &y) {
+	int orgx=0,orgy=0;
+	GetLinePosition(diag,x,y,orgx,orgy);
+}
+void VideoDisplayVisual::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
 	// No dialogue
 	if (!diag) {
 		x = -1;
@@ -259,6 +327,8 @@ void VideoDisplayVisual::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 	margin[3] = sh - margin[3];
 
 	// Position
+	bool posSet = false;
+	bool orgSet = false;
 	int posx = -1;
 	int posy = -1;
 
@@ -272,9 +342,40 @@ void VideoDisplayVisual::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 		if (override) {
 			for (size_t j=0;j<override->Tags.size();j++) {
 				tag = override->Tags.at(j);
+
+				// Position
 				if ((tag->Name == _T("\\pos") || tag->Name == _("\\move")) && tag->Params.size() >= 2) {
-					posx = tag->Params[0]->AsInt();
-					posy = tag->Params[1]->AsInt();
+					if (!posSet) {
+						posx = tag->Params[0]->AsInt();
+						posy = tag->Params[1]->AsInt();
+						posSet = true;
+					}
+				}
+
+				// Alignment
+				else if ((tag->Name == _T("\\an") || tag->Name == _T("\\a")) && tag->Params.size() >= 1) {
+					align = tag->Params[0]->AsInt();
+					if (tag->Name == _T("\\a")) {
+						switch(align) {
+							case 1: align = 1; break;
+							case 2: align = 2; break;
+							case 3: align = 3; break;
+							case 5: align = 7; break;
+							case 6: align = 8; break;
+							case 7: align = 9; break;
+							case 9: align = 4; break;
+							case 10: align = 5; break;
+							case 11: align = 6; break;
+							default: align = 2; break;
+						}
+					}
+				}
+
+				// Origin
+				else if (!orgSet && tag->Name == _T("\\org") && tag->Params.size() >= 2) {
+					orgx = tag->Params[0]->AsInt();
+					orgy = tag->Params[1]->AsInt();
+					orgSet = true;
 				}
 			}
 		}
@@ -282,9 +383,13 @@ void VideoDisplayVisual::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 	diag->ClearBlocks();
 
 	// Got position
-	if (posx != -1) {
+	if (posSet) {
 		x = posx;
 		y = posy;
+		if (!orgSet) {
+			orgx = x;
+			orgy = y;
+		}
 		return;
 	}
 
@@ -299,7 +404,50 @@ void VideoDisplayVisual::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 	if (vert == 0) y = margin[3];
 	else if (vert == 1) y = (margin[2] + margin[3])/2;
 	else if (vert == 2) y = margin[2];
+
+	// No origin?
+	if (!orgSet) {
+		orgx = x;
+		orgy = y;
+	}
 }
+
+
+///////////////////////
+// Get line's rotation
+void VideoDisplayVisual::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
+	// Default values
+	rx = ry = rz = 0.0f;
+
+	// Prepare overrides
+	diag->ParseASSTags();
+	AssDialogueBlockOverride *override;
+	AssOverrideTag *tag;
+	size_t blockn = diag->Blocks.size();
+	if (blockn == 0) {
+		diag->ClearBlocks();
+		return;
+	}
+
+	// Process override
+	override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(0));
+	if (override) {
+		for (size_t j=0;j<override->Tags.size();j++) {
+			tag = override->Tags.at(j);
+			if (tag->Name == _T("\\frx") && tag->Params.size() == 1) {
+				rx = tag->Params[0]->AsFloat();
+			}
+			if (tag->Name == _T("\\fry") && tag->Params.size() == 1) {
+				ry = tag->Params[0]->AsFloat();
+			}
+			if ((tag->Name == _T("\\frz") || tag->Name == _T("\fr")) && tag->Params.size() == 1) {
+				rz = tag->Params[0]->AsFloat();
+			}
+		}
+	}
+	diag->ClearBlocks();
+}
+
 
 
 //////////////////
@@ -352,7 +500,7 @@ void VideoDisplayVisual::DrawTrackingOverlay( wxDC &dc )
 	{
 		if( curline->Movement->Frames.size() <= localframe ) return;
 
-		dc.SetPen(wxPen(wxColour(255,0,0),2));
+		dc.SetPen(wxPen(colour[0],2));
 		FexMovementFrame f = curline->Movement->Frames.lVal[localframe];
 		f.Pos.x *= provider->GetZoom();
 		f.Pos.y *= provider->GetZoom();
@@ -371,7 +519,7 @@ void VideoDisplayVisual::DrawTrackingOverlay( wxDC &dc )
 			f3 = f2;
 		}
 
-		dc.SetPen(wxPen(wxColour(255,0,0),2));
+		dc.SetPen(wxPen(colour[0],2));
 		dc.DrawLine( f.Pos.x-f.Scale.x, f.Pos.y, f.Pos.x+f.Scale.x+1, f.Pos.y );
 		dc.DrawLine( f.Pos.x, f.Pos.y-f.Scale.y, f.Pos.x, f.Pos.y+f.Scale.y+1 );
 
@@ -461,7 +609,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	else mouseText = wxString::Format(_T("%i,%i"),vx - sw,vy - sh);
 
 	// Start dragging
-	if (mode == 1 && event.LeftIsDown() && !holding) {
+	if (mode != 0 && event.LeftIsDown() && !holding) {
 		// For each line
 		int numRows = parent->grid->GetRows();
 		int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
@@ -480,7 +628,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 					lineY = lineY * h / sh;
 
 					// Mouse over?
-					if (x >= lineX-5 && x <= lineX+5 && y >= lineY-5 && y <= lineY+5) {
+					if (x >= lineX-8 && x <= lineX+8 && y >= lineY-8 && y <= lineY+8) {
 						parent->grid->editBox->SetToLine(i,true);
 						gotDiag = diag;
 						orig_x = lineX;
@@ -495,12 +643,16 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		if (gotDiag) {
 			// Set dialogue
 			curSelection = gotDiag;
-			start_x = x;
-			start_y = y;
+
+			// Set coordinates
+			if (mode == 1) {
+				start_x = x;
+				start_y = y;
+			}
 
 			// Hold it
 			holding = true;
-			hold = 1;
+			hold = mode;
 			parent->CaptureMouse();
 			hasOverlay = true;
 		}
@@ -569,4 +721,5 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 void VideoDisplayVisual::OnKeyEvent(wxKeyEvent &event) {
 	if (event.GetKeyCode() == 'A') SetMode(0);
 	if (event.GetKeyCode() == 'S') SetMode(1);
+	if (event.GetKeyCode() == 'D') SetMode(2);
 }

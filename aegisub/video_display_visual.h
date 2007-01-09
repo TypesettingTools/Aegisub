@@ -49,6 +49,8 @@ class VideoDisplayVisual {
 	friend class VideoDisplay;
 
 private:
+	wxColour colour[4];
+
 	int mouse_x,mouse_y;
 	int start_x,start_y;
 	int cur_x,cur_y;
@@ -65,6 +67,8 @@ private:
 	VideoDisplay *parent;
 
 	void GetLinePosition(AssDialogue *diag,int &x,int &y);
+	void GetLinePosition(AssDialogue *diag,int &x,int &y,int &orgx,int &orgy);
+	void GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz);
 	void DrawTrackingOverlay(wxDC &dc);
 	void DrawOverlay();
 	void SetMode(int mode);
