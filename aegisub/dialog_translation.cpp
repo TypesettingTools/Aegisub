@@ -181,7 +181,7 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 	wxTextAttr Normal(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
 	wxTextAttr Highlight(wxColour(0,0,255));
 	wxFont font = Normal.GetFont();
-	font.SetPointSize(Options.AsInt(_T("Font Size")));
+	font.SetPointSize(Options.AsInt(_T("Edit Font Size")));
 	Normal.SetFont(font);
 	Highlight.SetFont(font);
 
