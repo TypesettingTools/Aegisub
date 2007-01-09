@@ -87,6 +87,7 @@ private:
 
 protected:
 	bool autoExporter;
+	bool hidden;
 	bool initialized;
 	wxString description;
 

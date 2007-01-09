@@ -95,6 +95,7 @@ private:
 	void SaveSnapshot();
 
 	void OnPaint(wxPaintEvent& event);
+	void OnKey(wxKeyEvent &event);
     void OnMouseEvent(wxMouseEvent& event);
 	void OnMouseLeave(wxMouseEvent& event);
 	void OnCopyToClipboard(wxCommandEvent &event);

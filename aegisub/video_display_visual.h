@@ -50,17 +50,26 @@ class VideoDisplayVisual {
 
 private:
 	int mouse_x,mouse_y;
-	wxBitmap *backbuffer;
-	wxString mouseText;
+	int start_x,start_y;
+	int cur_x,cur_y;
+	int orig_x,orig_y;
+
+	int mode;
 	bool holding;
 	int hold;
+
+	wxBitmap *backbuffer;
+	wxString mouseText;
+	AssDialogue *curSelection;
 
 	VideoDisplay *parent;
 
 	void GetLinePosition(AssDialogue *diag,int &x,int &y);
 	void DrawTrackingOverlay(wxDC &dc);
 	void DrawOverlay();
+	void SetMode(int mode);
 	void OnMouseEvent(wxMouseEvent &event);
+	void OnKeyEvent(wxKeyEvent &event);
 
 public:
 	VideoDisplayVisual(VideoDisplay *parent);

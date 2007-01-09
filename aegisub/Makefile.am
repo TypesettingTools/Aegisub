@@ -69,6 +69,7 @@ aegisub_SOURCES = \
 	export_clean_info.cpp \
 	export_fixstyle.cpp \
 	export_framerate.cpp \
+	export_visible_lines.cpp \
 	fft.cpp \
 	frame_main.cpp \
 	frame_main_events.cpp \

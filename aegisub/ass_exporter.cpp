@@ -118,7 +118,7 @@ wxArrayString AssExporter::GetAllFilterNames() {
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		names.Add((*cur)->RegisterName);
+		if (!(*cur)->hidden) names.Add((*cur)->RegisterName);
 	}
 	return names;
 }

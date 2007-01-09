@@ -96,6 +96,8 @@ wxArrayString MySpellThesaurus::GetLanguageList() {
 	// Get dir name
 	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
 	wxArrayString list;
+	wxFileName folder(path);
+	if (!folder.DirExists()) return list;
 
 	// Get file lists
 	wxArrayString idx;

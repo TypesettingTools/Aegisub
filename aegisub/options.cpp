@@ -128,6 +128,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Video Default Zoom"), 7);
 	SetInt(_T("Video Fast Jump Step"), 10);
 	SetText(_T("Video Screenshot Path"),_T("?video"));
+	SetBool(_T("Video Visual Realtime"),false);
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
 

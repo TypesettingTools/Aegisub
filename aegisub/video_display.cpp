@@ -80,6 +80,7 @@ enum {
 // Event table
 BEGIN_EVENT_TABLE(VideoDisplay, wxWindow)
     EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
+	EVT_KEY_DOWN(VideoDisplay::OnKey)
 	EVT_LEAVE_WINDOW(VideoDisplay::OnMouseLeave)
     EVT_PAINT(VideoDisplay::OnPaint)
 
@@ -112,16 +113,6 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	nextFrame = -1;
 	zoomValue = 0.5;
 	visual = new VideoDisplayVisual(this);
-
-	// Set cursor
-	// Bleeeh! Hate this 'solution':
-#if __WXGTK__
-	static char cursor_image[] = {0};
-	wxCursor cursor(cursor_image, 8, 1, -1, -1, cursor_image);
-#else
-	wxCursor cursor(wxCURSOR_BLANK);
-#endif // __WXGTK__
-	SetCursor(cursor);
 }
 
 
@@ -316,9 +307,22 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		return;
 	}
 
+	// Click?
+	if (event.ButtonDown(wxMOUSE_BTN_ANY)) {
+		SetFocus();
+	}
+
 	// Send to visual
 	visual->OnMouseEvent(event);
 }
+
+
+/////////////
+// Key event
+void VideoDisplay::OnKey(wxKeyEvent &event) {
+	visual->OnKeyEvent(event);
+}
+
 
 
 //////////////////////

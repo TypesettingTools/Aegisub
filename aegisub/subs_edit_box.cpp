@@ -932,7 +932,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	bool isPos = false;
 	bool isFlag = false;
 	bool state = false;
-	AssStyle *style = AssFile::top->GetStyle(grid->GetDialogue(linen)->Style);
+	AssStyle *style = grid->ass->GetStyle(grid->GetDialogue(linen)->Style);
 	AssStyle defStyle;
 	if (style == NULL) style = &defStyle; 
 	if (tagname == _T("\\b")) {

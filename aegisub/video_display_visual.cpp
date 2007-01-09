@@ -47,10 +47,12 @@
 #include "ass_file.h"
 #include "ass_time.h"
 #include "ass_dialogue.h"
+#include "ass_override.h"
 #include "ass_style.h"
 #include "subs_grid.h"
 #include "options.h"
 #include "subs_edit_box.h"
+#include "export_visible_lines.h"
 #if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
 #include "../FexTrackerSource/FexTrackingFeature.h"
@@ -63,7 +65,10 @@
 VideoDisplayVisual::VideoDisplayVisual(VideoDisplay *par) {
 	parent = par;
 	backbuffer = NULL;
+	curSelection = NULL;
 	holding = false;
+	mode = -1;
+	SetMode(0);
 }
 
 
@@ -71,6 +76,31 @@ VideoDisplayVisual::VideoDisplayVisual(VideoDisplay *par) {
 // Destructor
 VideoDisplayVisual::~VideoDisplayVisual() {
 	delete backbuffer;
+}
+
+
+////////////
+// Set mode
+void VideoDisplayVisual::SetMode(int _mode) {
+	// Set mode
+	mode = _mode;
+
+	// Hide cursor
+	if (mode == 0) {
+		// Bleeeh! Hate this 'solution':
+		#if __WXGTK__
+		static char cursor_image[] = {0};
+		wxCursor cursor(cursor_image, 8, 1, -1, -1, cursor_image);
+		#else
+		wxCursor cursor(wxCURSOR_BLANK);
+		#endif // __WXGTK__
+		parent->SetCursor(cursor);
+	}
+
+	// Show cursor
+	else {
+		parent->SetCursor(wxNullCursor);
+	}
 }
 
 
@@ -83,6 +113,8 @@ void VideoDisplayVisual::DrawOverlay() {
 	int w = parent->w;
 	int h = parent->h;
 	int frame_n = parent->frame_n;
+	int sw,sh;
+	parent->GetScriptSize(sw,sh);
 
 	// Create backbuffer if needed
 	bool needCreate = false;
@@ -101,27 +133,58 @@ void VideoDisplayVisual::DrawOverlay() {
 	dc.DrawBitmap(parent->GetFrame(frame_n),0,0);
 
 	// Draw the control points for FexTracker
-	DrawTrackingOverlay( dc );
+	DrawTrackingOverlay(dc);
 
 	// Draw pivot points of visible lines
-	int numRows = parent->grid->GetRows();
-	int curMs = VFR_Output.GetTimeAtFrame(frame_n);
-	AssDialogue *diag;
-	dc.SetPen(wxPen(wxColour(255,0,0),1));
-	for (int i=0;i<numRows;i++) {
-		diag = parent->grid->GetDialogue(i);
-		if (diag) {
-			if (diag->Start.GetMS() <= curMs && diag->End.GetMS() >= curMs) {
-				int lineX,lineY;
-				GetLinePosition(diag,lineX,lineY);
-				dc.DrawLine(lineX,lineY-5,lineX,lineY+5);
-				dc.DrawLine(lineX-5,lineY,lineX+5,lineY);
+	if (mode == 1) {
+		int numRows = parent->grid->GetRows();
+		int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
+		int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
+		AssDialogue *diag;
+		dc.SetPen(wxPen(wxColour(255,0,0),1));
+
+		// For each line
+		for (int i=0;i<numRows;i++) {
+			diag = parent->grid->GetDialogue(i);
+			if (diag) {
+				// Draw?
+				bool draw = false;
+				int dx = -1;
+				int dy = -1;
+
+				// Selected line
+				if (diag == curSelection) {
+					draw = true;
+					dx = cur_x * w / sw;
+					dy = cur_y * h / sh;
+					dc.SetBrush(wxBrush(wxColour(255,255,255)));
+				}
+
+				// Line visible?
+				else if (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs) {
+					// Get position
+					GetLinePosition(diag,dx,dy);
+					dx = dx * w / sw;
+					dy = dy * h / sh;
+
+					// Mouse over?
+					if (x >= dx-5 && x <= dx+5 && y >= dy-5 && y <= dy+5) dc.SetBrush(wxBrush(wxColour(255,255,255)));
+					else dc.SetBrush(wxBrush(wxColour(255,255,0)));
+					draw = true;
+				}
+
+				// Draw
+				if (draw) {
+					dc.DrawRectangle(dx-5,dy-5,11,11);
+					dc.DrawLine(dx,dy-10,dx,dy+10);
+					dc.DrawLine(dx-10,dy,dx+10,dy);
+				}
 			}
 		}
 	}
 
 	// Current position info
-	if (x >= 0 && x < w && y >= 0 && y < h) {
+	if (mode == 0 && x >= 0 && x < w && y >= 0 && y < h) {
 		// Draw cross
 		dc.SetPen(wxPen(wxColour(255,255,255),1));
 		dc.SetLogicalFunction(wxINVERT);
@@ -165,6 +228,13 @@ void VideoDisplayVisual::DrawOverlay() {
 ////////////////////////
 // Get position of line
 void VideoDisplayVisual::GetLinePosition(AssDialogue *diag,int &x, int &y) {
+	// No dialogue
+	if (!diag) {
+		x = -1;
+		y = -1;
+		return;
+	}
+
 	// Default values
 	int margin[4];
 	for (int i=0;i<4;i++) margin[i] = diag->Margin[i];
@@ -188,8 +258,35 @@ void VideoDisplayVisual::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 	margin[1] = sw - margin[1];
 	margin[3] = sh - margin[3];
 
+	// Position
+	int posx = -1;
+	int posy = -1;
+
 	// Overrides processing
-	// TODO
+	diag->ParseASSTags();
+	AssDialogueBlockOverride *override;
+	AssOverrideTag *tag;
+	size_t blockn = diag->Blocks.size();
+	for (size_t i=0;i<blockn;i++) {
+		override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(i));
+		if (override) {
+			for (size_t j=0;j<override->Tags.size();j++) {
+				tag = override->Tags.at(j);
+				if ((tag->Name == _T("\\pos") || tag->Name == _("\\move")) && tag->Params.size() >= 2) {
+					posx = tag->Params[0]->AsInt();
+					posy = tag->Params[1]->AsInt();
+				}
+			}
+		}
+	}
+	diag->ClearBlocks();
+
+	// Got position
+	if (posx != -1) {
+		x = posx;
+		y = posy;
+		return;
+	}
 
 	// Alignment type
 	int hor = (align - 1) % 3;
@@ -303,11 +400,16 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	int y = event.GetY();
 	int w = parent->w;
 	int h = parent->h;
+	int sw,sh;
+	parent->GetScriptSize(sw,sh);
 	int frame_n = parent->frame_n;
 	VideoProvider *provider = parent->provider;
 	SubtitlesGrid *grid = parent->grid;
+	bool hasOverlay = false;
+	bool realTime = Options.AsBool(_T("Video Visual Realtime"));
 
-#if USE_FEXTRACKER == 1
+	// FexTracker
+	#if USE_FEXTRACKER == 1
 	if( event.ButtonDown(wxMOUSE_BTN_LEFT) ) {
 		parent->MouseDownX = x;
 		parent->MouseDownY = y;
@@ -350,55 +452,103 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 			parent->MouseDownY = y;
 		}
 	}
-#endif
+	#endif
 
 	// Text of current coords
-	int sw,sh;
-	parent->GetScriptSize(sw,sh);
 	int vx = (sw * x + w/2) / w;
 	int vy = (sh * y + h/2) / h;
 	if (!event.ShiftDown()) mouseText = wxString::Format(_T("%i,%i"),vx,vy);
 	else mouseText = wxString::Format(_T("%i,%i"),vx - sw,vy - sh);
 
 	// Start dragging
-	if (event.LeftIsDown() && !holding) {
-		holding = true;
-		hold = 0;
-		parent->CaptureMouse();
+	if (mode == 1 && event.LeftIsDown() && !holding) {
+		// For each line
+		int numRows = parent->grid->GetRows();
+		int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
+		int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
+		AssDialogue *diag;
+		AssDialogue *gotDiag = NULL;
+		for (int i=0;i<numRows;i++) {
+			diag = parent->grid->GetDialogue(i);
+			if (diag) {
+				// Line visible?
+				if (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs) {
+					// Get position
+					int lineX,lineY;
+					GetLinePosition(diag,lineX,lineY);
+					lineX = lineX * w / sw;
+					lineY = lineY * h / sh;
+
+					// Mouse over?
+					if (x >= lineX-5 && x <= lineX+5 && y >= lineY-5 && y <= lineY+5) {
+						gotDiag = diag;
+						orig_x = lineX;
+						orig_y = lineY;
+						break;
+					}
+				}
+			}
+		}
+
+		// Got a line?
+		if (gotDiag) {
+			// Set dialogue
+			curSelection = gotDiag;
+			start_x = x;
+			start_y = y;
+
+			// Hold it
+			holding = true;
+			hold = 1;
+			parent->CaptureMouse();
+			hasOverlay = true;
+		}
 	}
 
 	// Drag
 	if (hold == 1) {
-		//grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0);
-		//grid->editBox->CommitText(true);
-		//grid->CommitChanges(false,true);
+		cur_x = (x - start_x + orig_x) * sw / w;
+		cur_y = (y - start_y + orig_y) * sh / h;
+		if (realTime) {
+			AssLimitToVisibleFilter::SetFrame(frame_n);
+			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),cur_x,cur_y),0);
+			grid->editBox->CommitText(true);
+			grid->CommitChanges(false,true);
+		}
 	}
 
 	// End dragging
 	if (holding && !event.LeftIsDown()) {
+		// Disable limiting
+		if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
+
 		// Finished dragging subtitles
 		if (hold == 1) {
+			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),cur_x,cur_y),0);
 			grid->editBox->CommitText();
 			grid->ass->FlagAsModified();
 			grid->CommitChanges(false,true);
+			curSelection = NULL;
 		}
 
 		// Set flags
-		holding = false;
 		hold = 0;
+		holding = false;
+		hasOverlay = true;
 		parent->ReleaseMouse();
+		parent->SetFocus();
 	}
 
 	// Double click
-	if (event.LeftDClick()) {
+	if (mode == 0 && event.LeftDClick()) {
 		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0);
 		grid->editBox->CommitText();
 		grid->ass->FlagAsModified();
 		grid->CommitChanges(false,true);
+		parent->SetFocus();
 	}
 
 	// Hover
-	bool hasOverlay = false;
 	if (x != mouse_x || y != mouse_y) {
 		// Set coords
 		mouse_x = x;
@@ -410,4 +560,12 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	if (hasOverlay) {
 		DrawOverlay();
 	}
+}
+
+
+/////////////
+// Key event
+void VideoDisplayVisual::OnKeyEvent(wxKeyEvent &event) {
+	if (event.GetKeyCode() == 'A') SetMode(0);
+	if (event.GetKeyCode() == 'S') SetMode(1);
 }

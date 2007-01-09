@@ -43,6 +43,7 @@
 ///////////////
 // Constructor
 AssExportFilter::AssExportFilter() {
+	hidden = false;
 	autoExporter = false;
 	initialized = false;
 	FilterList *fil = AssExportFilterChain::GetUnpreparedFilterList();
