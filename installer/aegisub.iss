@@ -107,7 +107,7 @@ var
   InstalledVersion: string;
   ReturnCode: Integer;
   VersionMS, VersionLS: Cardinal;
-  OverwriteInstall: Integer;
+  UninstallOld: Integer;
 begin
   Result := GetVersionNumbers(AddBackslash(ExpandConstant('{sys}')) + 'avisynth.dll', VersionMS , VersionLS);
   if Result then
@@ -123,15 +123,10 @@ begin
 
   if RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'InstallDir', InstallDir) and RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'InstVer', InstalledVersion) and FileExists(AddBackslash(InstallDir) + 'uninstall.exe') then
   begin
-    OverwriteInstall := MsgBox('A previous Aegisub install has been detected (Version ' + InstalledVersion + ').'#13#10'Due to changes from the old installer you are strongly encouraged to uninstall it first.'#13#10'Uninstall it before proceeding?', mbConfirmation, MB_YESNOCANCEL);
-    if OverwriteInstall = IDCANCEL then
-    begin
-      Result := False;
-      Exit;
-    end
-    else if OverwriteInstall = IDNO then
-      Exit
-    else if OverwriteInstall = IDYES then
+    UninstallOld := MsgBox('A previous Aegisub install has been detected (Version ' + InstalledVersion + ').'#13#10'Due to changes from the old installer you are strongly encouraged to uninstall it first.'#13#10'Uninstall it before proceeding?', mbConfirmation, MB_YESNOCANCEL);
+    if UninstallOld = IDCANCEL then
+      Result := False
+    else if UninstallOld = IDYES then
       if FileCopy(AddBackslash(InstallDir) + 'uninstall.exe', AddBackslash(ExpandConstant('{tmp}')) + 'aegisub-uninstall.exe', False) then
       begin
         Exec(AddBackslash(ExpandConstant('{tmp}')) + 'aegisub-uninstall.exe', '_?=' + InstallDir, InstallDir, SW_SHOW, ewWaitUntilTerminated, ReturnCode);
