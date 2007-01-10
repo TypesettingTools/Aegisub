@@ -167,6 +167,7 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Automation Include Path"), AegisubApp::folderName + _T("automation/include/"));
 	SetText(_T("Automation Autoload Path"), AegisubApp::folderName + _T("automation/autoload/"));
 	SetInt(_T("Automation Trace Level"), 3);
+	SetInt(_T("Automation Thread Priority"), 1); // "below normal"
 
 	// Generate colors
 	wxColour tempCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);

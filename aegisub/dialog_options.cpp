@@ -554,11 +554,16 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		Bind(control,_T("Automation Autoload Path"));
 		autoSizer2->Add(control,1,wxEXPAND);
 		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Trace level: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		wxString choices[6] = { _("0: Fatal"), _("1: Error"), _("2: Warning"), _("3: Hint"), _("4: Debug"), _("5: Trace") };
-		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,6,choices,wxCB_READONLY | wxCB_DROPDOWN);
+		wxString trace_choices[6] = { _("0: Fatal"), _("1: Error"), _("2: Warning"), _("3: Hint"), _("4: Debug"), _("5: Trace") };
+		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,6,trace_choices,wxCB_READONLY | wxCB_DROPDOWN);
 		Bind(control,_T("Automation Trace Level"));
 		autoSizer2->Add(control,1,wxEXPAND);
 		autoSizer2->AddGrowableCol(1,1);
+		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Thread priority: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		wxString prio_choices[3] = { _("Normal"), _("Below Normal (recommended)"), _("Lowest") };
+		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,prio_choices,wxCB_READONLY|wxCB_DROPDOWN);
+		Bind(control, _T("Automation Thread Priority"));
+		autoSizer2->Add(control, 1, wxEXPAND);
 
 		// Sizers
 		autoSizer1->Add(autoSizer2,1,wxEXPAND | wxALL,5);

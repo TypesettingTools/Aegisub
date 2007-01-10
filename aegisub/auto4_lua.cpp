@@ -39,6 +39,7 @@
 #include "ass_file.h"
 #include "ass_override.h"
 #include "text_file_reader.h"
+#include "options.h"
 #include "../lua51/src/lualib.h"
 #include "../lua51/src/lauxlib.h"
 #include <wx/msgdlg.h>
@@ -413,7 +414,13 @@ namespace Automation4 {
 		, nargs(_nargs)
 		, nresults(_nresults)
 	{
+		int prio = Options.AsInt(_T("Automation Thread Priority"));
+		if (prio == 0) prio = 50; // normal
+		else if (prio == 1) prio = 30; // below normal
+		else if (prio == 2) prio = 10; // lowest
+		else prio = 50; // fallback normal
 		Create();
+		SetPriority(prio);
 		Run();
 	}
 
