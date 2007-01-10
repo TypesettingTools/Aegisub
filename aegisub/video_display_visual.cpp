@@ -344,6 +344,33 @@ void VideoDisplayVisual::DrawOverlay() {
 						dc.DrawLine(drawX+5,dy-len/2+1,drawX+15,dy-len/2+1);
 						dc.DrawLine(drawX+5,dy+len/2,drawX+15,dy+len/2);
 					}
+
+					// Clip
+					if (mode == 5) {
+						int dx1,dx2,dy1,dy2;
+
+						// Get position
+						if (isCur) {
+							dx1 = startX;
+							dy1 = startY;
+							dx2 = x;
+							dy2 = y;
+						}
+						else GetLineClip(diag,dx1,dy1,dx2,dy2);
+
+						// Draw rectangle
+						dc.SetPen(wxPen(colour[3],1));
+						dc.SetBrush(*wxTRANSPARENT_BRUSH);
+						dc.DrawRectangle(dx1,dy1,dx2-dx1+1,dy2-dy1+1);
+
+						// Draw circles
+						dc.SetPen(wxPen(colour[0],1));
+						dc.SetBrush(wxBrush(colour[brushCol]));
+						dc.DrawCircle(dx1,dy1,4);
+						dc.DrawCircle(dx1,dy2,4);
+						dc.DrawCircle(dx2,dy1,4);
+						dc.DrawCircle(dx2,dy2,4);
+					}
 				}
 			}
 		}
@@ -577,6 +604,41 @@ void VideoDisplayVisual::GetLineScale(AssDialogue *diag,float &scalX,float &scal
 			}
 			if (tag->Name == _T("\\fscy") && tag->Params.size() == 1) {
 				scalY = tag->Params[0]->AsFloat();
+			}
+		}
+	}
+	diag->ClearBlocks();
+}
+
+
+///////////////////
+// Get line's clip
+void VideoDisplayVisual::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) {
+	// Default values
+	x1 = y1 = 0;
+	x2 = parent->w-1;
+	y2 = parent->h-1;
+
+	// Prepare overrides
+	diag->ParseASSTags();
+	AssDialogueBlockOverride *override;
+	AssOverrideTag *tag;
+	size_t blockn = diag->Blocks.size();
+	if (blockn == 0) {
+		diag->ClearBlocks();
+		return;
+	}
+
+	// Process override
+	override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(0));
+	if (override) {
+		for (size_t j=0;j<override->Tags.size();j++) {
+			tag = override->Tags.at(j);
+			if (tag->Name == _T("\\clip") && tag->Params.size() == 4) {
+				x1 = tag->Params[0]->AsInt();
+				y1 = tag->Params[1]->AsInt();
+				x2 = tag->Params[2]->AsInt();
+				y2 = tag->Params[3]->AsInt();
 			}
 		}
 	}
@@ -852,6 +914,12 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 				curScaleY = scalY;
 			}
 
+			// Clip
+			if (mode == 5) {
+				startX = x;
+				startY = y;
+			}
+
 			// Hold it
 			holding = true;
 			hold = mode;
@@ -928,6 +996,34 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		}
 	}
 
+	// Clip
+	else if (hold == 5) {
+		// Coordinates
+		curX = startX * sw / w;
+		curY = startY * sh / h;
+		curX2 = x * sw / w;
+		curY2 = y * sh / h;
+		int temp;
+		if (curX > curX2) {
+			temp = curX;
+			curX = curX2;
+			curX2 = temp;
+		}
+		if (curY > curY2) {
+			temp = curY;
+			curY = curY2;
+			curY2 = temp;
+		}
+
+		// Update
+		if (realTime) {
+			AssLimitToVisibleFilter::SetFrame(frame_n);
+			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("%i,%i,%i,%i"),curX,curY,curX2,curY2),0);
+			grid->editBox->CommitText(true);
+			grid->CommitChanges(false,true);
+		}
+	}
+
 	// End dragging
 	if (holding && !event.LeftIsDown()) {
 		// Disable limiting
@@ -947,6 +1043,17 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		else if (hold == 3) {
 			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
 			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0);
+		}
+
+		// Finished scaling
+		else if (hold == 4) {
+			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0);
+			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0);
+		}
+
+		// Finished clipping
+		else if (hold == 5) {
+			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("%i,%i,%i,%i"),curX,curY,curX2,curY2),0);
 		}
 
 		// Commit
@@ -997,4 +1104,5 @@ void VideoDisplayVisual::OnKeyEvent(wxKeyEvent &event) {
 	if (event.GetKeyCode() == 'D') SetMode(2);
 	if (event.GetKeyCode() == 'F') SetMode(3);
 	if (event.GetKeyCode() == 'G') SetMode(4);
+	if (event.GetKeyCode() == 'H') SetMode(5);
 }

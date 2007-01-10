@@ -53,7 +53,7 @@ private:
 
 	int mouseX,mouseY;
 	int startX,startY;
-	int curX,curY;
+	int curX,curY,curX2,curY2;
 	int origX,origY;
 	float curAngle,startAngle,origAngle;
 	float curAngle2,startAngle2,origAngle2;
@@ -74,6 +74,7 @@ private:
 	void GetLinePosition(AssDialogue *diag,int &x,int &y,int &orgx,int &orgy);
 	void GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz);
 	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
+	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2);
 
 	void DrawTrackingOverlay(wxDC &dc);
 	void DrawOverlay();

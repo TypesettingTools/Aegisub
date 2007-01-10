@@ -932,7 +932,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	float startScale;
 	bool isColor = false;
 	bool isFont = false;
-	bool isPos = false;
+	bool isGeneric = false;
 	bool isFlag = false;
 	bool isAngle = false;
 	bool isScale = false;
@@ -981,7 +981,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		isColor = true;
 	}
 	else if (tagname == _T("\\pos")) {
-		isPos = true;
+		isGeneric = true;
 	}
 	else if (tagname == _T("\\frz")) {
 		startangle = style->angle;
@@ -998,6 +998,9 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	else if (tagname == _T("\\fscy")) {
 		startScale = style->scaley;
 		isScale = true;
+	}
+	else if (tagname == _T("\\clip")) {
+		isGeneric = true;
 	}
 	bool hasEnd = isFlag;
 
@@ -1082,8 +1085,8 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		if (insert.IsEmpty()) return;
 	}
 
-	// Pos
-	if (isPos) {
+	// Generic tag
+	if (isGeneric) {
 		insert = tagname + preValue;
 	}
 
