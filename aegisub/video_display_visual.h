@@ -55,10 +55,12 @@ private:
 	int start_x,start_y;
 	int cur_x,cur_y;
 	int orig_x,orig_y;
+	float curAngle,startAngle,origAngle;
+	int lineOrgX,lineOrgY;
 
 	int mode;
-	bool holding;
 	int hold;
+	bool holding;
 
 	wxBitmap *backbuffer;
 	wxString mouseText;

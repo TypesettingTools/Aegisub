@@ -53,6 +53,7 @@
 #include "options.h"
 #include "subs_edit_box.h"
 #include "export_visible_lines.h"
+#include "utils.h"
 #if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
 #include "../FexTrackerSource/FexTrackingFeature.h"
@@ -186,8 +187,11 @@ void VideoDisplayVisual::DrawOverlay() {
 					dc.SetPen(wxPen(colour[0],1));
 
 					// Set drawing coordinates
+					int radius = (int) sqrt(double((dx-orgx)*(dx-orgx)+(dy-orgy)*(dy-orgy)));
 					dx = dx * w / sw;
 					dy = dy * h / sh;
+					orgx = orgx * w / sw;
+					orgy = orgy * h / sh;
 
 					// Drag
 					if (mode == 1) {
@@ -199,13 +203,22 @@ void VideoDisplayVisual::DrawOverlay() {
 					// Rotate Z
 					if (mode == 2) {
 						// Calculate radius
-						int radius = (int) sqrt(double((dx-orgx)*(dx-orgx)+(dy-orgy)*(dy-orgy)));
+						float arDistort = float(w) * float(sh) / float(h) / float(sw);
+						int oRadiusX = radius * w / sw;
+						int oRadiusY = radius * h / sh;
 						if (radius < 50) radius = 50;
+						int radiusX = radius * w / sw;
+						int radiusY = radius * h / sh;
+
+						// Get angle
+						if (isCur && mode == 2) {
+							rz = curAngle;
+						}
+						else GetLineRotation(diag,rx,ry,rz);
 
 						// Get deltas
-						GetLineRotation(diag,rx,ry,rz);
-						deltax = int(cos(rz*3.1415926536/180.0)*radius);
-						deltay = int(-sin(rz*3.1415926536/180.0)*radius);
+						deltax = int(cos(rz*3.1415926536/180.0)*radiusX);
+						deltay = int(-sin(rz*3.1415926536/180.0)*radiusY);
 						int odx = dx;
 						int ody = dy;
 						dx = orgx;
@@ -218,9 +231,11 @@ void VideoDisplayVisual::DrawOverlay() {
 
 						// Draw the circle
 						dc.SetBrush(*wxTRANSPARENT_BRUSH);
-						dc.DrawCircle(dx,dy,radius+2);
-						dc.DrawCircle(dx,dy,radius-2);
-						dc.SetBrush(wxBrush(colour[brushCol]));
+						dc.DrawEllipse(dx-radiusX-2,dy-radiusY-2,2*radiusX+4,2*radiusY+4);
+						dc.DrawEllipse(dx-radiusX+2,dy-radiusY+2,2*radiusX-4,2*radiusY-4);
+
+						// Draw line to mouse
+						dc.DrawLine(dx,dy,mouse_x,mouse_y);
 
 						// Draw the baseline
 						dc.SetPen(wxPen(colour[3],2));
@@ -228,18 +243,19 @@ void VideoDisplayVisual::DrawOverlay() {
 
 						// Draw the connection line
 						if (orgx != odx && orgy != ody) {
-							double angle = atan2(double(dy-ody),double(odx-dx)) + rz*3.1415926536/180.0;
-							int fx = dx+int(cos(angle)*radius);
-							int fy = dy-int(sin(angle)*radius);
+							double angle = atan2(double(dy*sh/h-ody*sh/h),double(odx*sw/w-dx*sw/w)) + rz*3.1415926536/180.0;
+							int fx = dx+int(cos(angle)*oRadiusX);
+							int fy = dy-int(sin(angle)*oRadiusY);
 							dc.DrawLine(dx,dy,fx,fy);
 							//dc.SetPen(wxPen(colour[0],1));
-							int mdx = cos(rz*3.1415926536/180.0)*10;
-							int mdy = -sin(rz*3.1415926536/180.0)*10;
+							int mdx = cos(rz*3.1415926536/180.0)*20;
+							int mdy = -sin(rz*3.1415926536/180.0)*20;
 							dc.DrawLine(fx-mdx,fy-mdy,fx+mdx,fy+mdy);
 						}
 
 						// Draw the rotation line
 						dc.SetPen(wxPen(colour[0],1));
+						dc.SetBrush(wxBrush(colour[brushCol]));
 						dc.DrawCircle(dx+deltax,dy+deltay,4);
 					}
 				}
@@ -548,6 +564,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	int y = event.GetY();
 	int w = parent->w;
 	int h = parent->h;
+	int orgx = -1;
+	int orgy = -1;
 	int sw,sh;
 	parent->GetScriptSize(sw,sh);
 	int frame_n = parent->frame_n;
@@ -610,32 +628,60 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 	// Start dragging
 	if (mode != 0 && event.LeftIsDown() && !holding) {
-		// For each line
-		int numRows = parent->grid->GetRows();
-		int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
-		int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
-		AssDialogue *diag;
+		float rx,ry,rz;
 		AssDialogue *gotDiag = NULL;
-		for (int i=0;i<numRows;i++) {
-			diag = parent->grid->GetDialogue(i);
-			if (diag) {
-				// Line visible?
-				if (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs) {
-					// Get position
-					int lineX,lineY;
-					GetLinePosition(diag,lineX,lineY);
-					lineX = lineX * w / sw;
-					lineY = lineY * h / sh;
 
-					// Mouse over?
-					if (x >= lineX-8 && x <= lineX+8 && y >= lineY-8 && y <= lineY+8) {
-						parent->grid->editBox->SetToLine(i,true);
-						gotDiag = diag;
-						orig_x = lineX;
-						orig_y = lineY;
-						break;
+		// Drag
+		if (mode == 1) {
+			// For each line
+			int numRows = parent->grid->GetRows();
+			int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
+			int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
+			AssDialogue *diag;
+			for (int i=0;i<numRows;i++) {
+				diag = parent->grid->GetDialogue(i);
+				if (diag) {
+					// Line visible?
+					if (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs) {
+						// Get position
+						int lineX,lineY;
+						int torgx,torgy;
+						GetLinePosition(diag,lineX,lineY,torgx,torgy);
+						lineX = lineX * w / sw;
+						lineY = lineY * h / sh;
+						orgx = orgx * w / sw;
+						orgy = orgy * h / sh;
+
+						// Mouse over?
+						if (x >= lineX-8 && x <= lineX+8 && y >= lineY-8 && y <= lineY+8) {
+							parent->grid->editBox->SetToLine(i,true);
+							gotDiag = diag;
+							orig_x = lineX;
+							orig_y = lineY;
+							orgx = torgx;
+							orgy = torgy;
+							break;
+						}
 					}
 				}
+			}
+		}
+
+		// Rotate
+		else {
+			// Check if it's within range
+			gotDiag = parent->grid->GetDialogue(parent->grid->editBox->linen);
+			int f1 = VFR_Output.GetFrameAtTime(gotDiag->Start.GetMS(),true);
+			int f2 = VFR_Output.GetFrameAtTime(gotDiag->End.GetMS(),false);
+
+			// Invisible
+			if (f1 > frame_n || f2 < frame_n) {
+				gotDiag = NULL;
+			}
+
+			// OK
+			else {
+				GetLinePosition(gotDiag,orig_x,orig_y,orgx,orgy);
 			}
 		}
 
@@ -648,6 +694,15 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 			if (mode == 1) {
 				start_x = x;
 				start_y = y;
+			}
+
+			// Rotate Z
+			if (mode == 2) {
+				lineOrgX = orgx;
+				lineOrgY = orgy;
+				startAngle = atan2(double(lineOrgY-y*sh/h),double(x*sw/w-lineOrgX)) * 180.0 / 3.1415926535897932;
+				GetLineRotation(curSelection,rx,ry,rz);
+				origAngle = rz;
 			}
 
 			// Hold it
@@ -670,6 +725,22 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		}
 	}
 
+	// Rotate
+	if (hold == 2) {
+		// Find screen angle
+		float screenAngle = atan2(double(lineOrgY-y*sh/h),double(x*sw/w-lineOrgX)) * 180.0 / 3.1415926535897932;
+
+		// Update
+		curAngle = screenAngle - startAngle + origAngle;
+		if (curAngle < 0.0) curAngle += 360.0;
+		if (realTime) {
+			AssLimitToVisibleFilter::SetFrame(frame_n);
+			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
+			grid->editBox->CommitText(true);
+			grid->CommitChanges(false,true);
+		}
+	}
+
 	// End dragging
 	if (holding && !event.LeftIsDown()) {
 		// Disable limiting
@@ -681,13 +752,23 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 			grid->editBox->CommitText();
 			grid->ass->FlagAsModified();
 			grid->CommitChanges(false,true);
-			curSelection = NULL;
+		}
+
+		// Finished rotating subtitles
+		if (hold == 2) {
+			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
+			grid->editBox->CommitText();
+			grid->ass->FlagAsModified();
+			grid->CommitChanges(false,true);
 		}
 
 		// Set flags
 		hold = 0;
 		holding = false;
 		hasOverlay = true;
+
+		// Clean up
+		curSelection = NULL;
 		parent->ReleaseMouse();
 		parent->SetFocus();
 	}

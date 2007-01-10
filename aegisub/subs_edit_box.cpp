@@ -910,6 +910,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	// Current tag name
 	wxString alttagname = tagname;
 	if (tagname == _T("\\1c")) tagname = _T("\\c");
+	if (tagname == _T("\\fr")) tagname = _T("\\frz");
 
 	// Get block at start
 	size_t blockn = BlockAtPos(selstart);
@@ -927,10 +928,12 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	// Default value
 	wxColour startcolor;
 	wxFont startfont;
+	float startangle;
 	bool isColor = false;
 	bool isFont = false;
 	bool isPos = false;
 	bool isFlag = false;
+	bool isAngle = false;
 	bool state = false;
 	AssStyle *style = grid->ass->GetStyle(grid->GetDialogue(linen)->Style);
 	AssStyle defStyle;
@@ -978,12 +981,16 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	else if (tagname == _T("\\pos")) {
 		isPos = true;
 	}
+	else if (tagname == _T("\\frz")) {
+		startangle = style->angle;
+		isAngle = true;
+	}
 	bool hasEnd = isFlag;
 
 	// Find current value of style
 	AssDialogueBlockOverride *override;
 	AssOverrideTag *tag;
-	if (isFont || isColor || isFlag) {
+	if (isFont || isColor || isFlag || isAngle) {
 		for (size_t i=0;i<=blockn;i++) {
 			override = AssDialogueBlock::GetAsOverride(line->Blocks.at(i));
 			if (override) {
@@ -999,6 +1006,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 							if (tag->Name == _T("\\i")) startfont.SetStyle(tag->Params.at(0)->AsBool() ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
 							if (tag->Name == _T("\\u")) startfont.SetUnderlined(tag->Params.at(0)->AsBool());
 						}
+						if (isAngle) startangle = tag->Params.at(0)->AsFloat();
 					}
 				}
 			}
@@ -1061,6 +1069,11 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 
 	// Pos
 	if (isPos) {
+		insert = tagname + preValue;
+	}
+
+	// Angle
+	if (isAngle) {
 		insert = tagname + preValue;
 	}
 
