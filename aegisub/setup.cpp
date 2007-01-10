@@ -59,12 +59,14 @@
 #ifdef __WXDEBUG__
 #pragma comment(lib, "wxregexud.lib")
 #pragma comment(lib, "wxbase28ud.lib")
+#pragma comment(lib, "wxbase28ud_net.lib")
 #pragma comment(lib, "wxmsw28ud_media.lib")
 #pragma comment(lib, "wxmsw28ud_core.lib")
 #pragma comment(lib, "wxmsw28ud_adv.lib")
 #else
 #pragma comment(lib, "wxregexu.lib")
 #pragma comment(lib, "wxbase28u.lib")
+#pragma comment(lib, "wxbase28u_net.lib")
 #pragma comment(lib, "wxmsw28u_media.lib")
 #pragma comment(lib, "wxmsw28u_core.lib")
 #pragma comment(lib, "wxmsw28u_adv.lib")
