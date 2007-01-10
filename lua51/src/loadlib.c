@@ -106,14 +106,14 @@ static void setprogdir (lua_State *L) {
   if (n == 0 || n == nsize || (lb = wcsrchr(buff, L'\\')) == NULL)
     luaL_error(L, "unable to get ModuleFileName");
   else {
-	char *lbuff;
-	size_t lbuffn;
+    char *lbuff;
+    size_t lbuffn;
     *lb = '\0';
-	lbuffn = WideCharToMultiByte(CP_UTF8, 0, buff, n, 0, 0, 0, 0);
-	lbuff = (char*)malloc(lbuffn+1);
-	WideCharToMultiByte(CP_UTF8, 0, buff, n, lbuff, (int)lbuffn+1, 0, 0);
+    lbuffn = WideCharToMultiByte(CP_UTF8, 0, buff, n, 0, 0, 0, 0);
+    lbuff = (char*)malloc(lbuffn+1);
+    WideCharToMultiByte(CP_UTF8, 0, buff, n, lbuff, (int)lbuffn+1, 0, 0);
     luaL_gsub(L, lua_tostring(L, -1), LUA_EXECDIR, lbuff);
-	free(lbuff);
+    free(lbuff);
     lua_remove(L, -2);  /* remove original string */
   }
 }
@@ -123,13 +123,13 @@ static void pusherror (lua_State *L) {
   int error = GetLastError();
   wchar_t buffer[128];
   if (FormatMessageW(FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_SYSTEM,
-	  NULL, error, 0, buffer, sizeof(buffer), NULL)) {
-	char *lbuff;
-	size_t lbuffn = WideCharToMultiByte(CP_UTF8, 0, buffer, -1, 0, 0, 0, 0);
-	lbuff = (char*)malloc(lbuffn+1);
-	WideCharToMultiByte(CP_UTF8, 0, buffer, -1, lbuff, (int)lbuffn+1, 0, 0);
+    NULL, error, 0, buffer, sizeof(buffer), NULL)) {
+    char *lbuff;
+    size_t lbuffn = WideCharToMultiByte(CP_UTF8, 0, buffer, -1, 0, 0, 0, 0);
+    lbuff = (char*)malloc(lbuffn+1);
+    WideCharToMultiByte(CP_UTF8, 0, buffer, -1, lbuff, (int)lbuffn+1, 0, 0);
     lua_pushstring(L, lbuff);
-	free(lbuff);
+    free(lbuff);
   } else
     lua_pushfstring(L, "system error %d\n", error);
 }

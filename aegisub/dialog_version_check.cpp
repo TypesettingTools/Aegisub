@@ -84,6 +84,7 @@ DialogVersionCheck::DialogVersionCheck(wxWindow *parent,bool hidden)
 	visible = false;
 	if (!hidden) {
 		Show();
+		CenterOnParent();
 		visible = true;
 	}
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro, Niels Martin Hansen
+// Copyright (c) 2005, 2006, 2007, Rodrigo Braz Monteiro, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -305,7 +305,7 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 	dc.DrawRectangle(0,0,w,h);
 
 	// Set syllable font
-	wxFont curFont(9,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Verdana"),wxFONTENCODING_SYSTEM);
+	wxFont curFont(9,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Verdana"),wxFONTENCODING_SYSTEM); // FIXME, hardcoded font
 	dc.SetFont(curFont);
 
 	// Draw syllables
@@ -331,7 +331,8 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 			dlen = tw + 8 + delta;
 
 			// Draw border
-			dc.SetPen(wxPen(wxColour(0,0,0)));
+			//dc.SetPen(wxPen(wxColour(0,0,0)));
+			dc.SetPen(*wxTRANSPARENT_PEN);
 			if (syl.selected && !splitting) {
 				dc.SetBrush(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT)));
 				dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT));
@@ -341,6 +342,15 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 				dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 			}
 			dc.DrawRectangle(dx,0,dlen,h);
+
+			// Put syllable-end-marker after text
+			dc.SetPen(*wxBLACK_PEN);
+			//dc.DrawLine(dx, 0, dx, h);
+			dc.DrawLine(dx, 0, dx+1, 0);
+			dc.DrawLine(dx, h-1, dx+1, h-1);
+			dc.DrawLine(dx+dlen-1, 0, dx+dlen-1, h);
+			dc.DrawLine(dx+dlen-2, 0, dx+dlen-1, 0);
+			dc.DrawLine(dx+dlen-2, h-1, dx+dlen-1, h-1);
 
 			// Draw text
 			if (splitting) {

@@ -49,7 +49,7 @@
 
 #ifdef WIN32
 #include <windows.h>
-#include <wchar.h>
+#include <tchar.h>
 #else
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -73,7 +73,7 @@ namespace Automation4 {
 		fontsize = -MulDiv((int)(fontsize+0.5), GetDeviceCaps(dczero, LOGPIXELSY), 72);
 		ReleaseDC(0, dczero);
 
-		LOGFONT lf;
+		LOGFONTW lf;
 		ZeroMemory(&lf, sizeof(lf));
 		lf.lfHeight = fontsize;
 		lf.lfWeight = style->bold ? FW_BOLD : FW_NORMAL;
@@ -85,7 +85,7 @@ namespace Automation4 {
 		lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
 		lf.lfQuality = ANTIALIASED_QUALITY;
 		lf.lfPitchAndFamily = DEFAULT_PITCH|FF_DONTCARE;
-		wcsncpy(lf.lfFaceName, style->font.wc_str(), 32);
+		_tcsncpy(lf.lfFaceName, style->font.c_str(), 32);
 
 		HFONT thefont = CreateFontIndirect(&lf);
 		if (!thefont) return false;
@@ -93,7 +93,7 @@ namespace Automation4 {
 		
 		SIZE sz;
 		size_t thetextlen = text.length();
-		const wchar_t *thetext = text.wc_str();
+		const TCHAR *thetext = text.wc_str();
 		if (style->spacing) {
 			width = 0;
 			for (unsigned int i = 0; i < thetextlen; i++) {

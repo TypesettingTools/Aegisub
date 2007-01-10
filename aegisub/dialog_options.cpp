@@ -592,6 +592,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	mainSizer->Add(buttonSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 	mainSizer->SetSizeHints(this);
 	SetSizer(mainSizer);
+	CenterOnParent();
 
 	// Read
 	ReadFromOptions();

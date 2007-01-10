@@ -1022,7 +1022,10 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 
 			curDiag->Start.SetMS(curStartMS);
 			curDiag->End.SetMS(curEndMS);
-			curDiag->Text = grid->editBox->TextEdit->GetText();
+			if (!karaoke->enabled)
+				// If user was editing karaoke stuff, that should take precedence of manual changes in the editbox,
+				// so only updated from editbox when not in kara mode
+				curDiag->Text = grid->editBox->TextEdit->GetText();
 			curDiag->UpdateData();
 		}
 
