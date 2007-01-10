@@ -929,11 +929,13 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	wxColour startcolor;
 	wxFont startfont;
 	float startangle;
+	float startScale;
 	bool isColor = false;
 	bool isFont = false;
 	bool isPos = false;
 	bool isFlag = false;
 	bool isAngle = false;
+	bool isScale = false;
 	bool state = false;
 	AssStyle *style = grid->ass->GetStyle(grid->GetDialogue(linen)->Style);
 	AssStyle defStyle;
@@ -985,6 +987,18 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		startangle = style->angle;
 		isAngle = true;
 	}
+	else if (tagname == _T("\\frx") || tagname == _T("\\fry")) {
+		startangle = 0.0;
+		isAngle = true;
+	}
+	else if (tagname == _T("\\fscx")) {
+		startScale = style->scalex;
+		isScale = true;
+	}
+	else if (tagname == _T("\\fscy")) {
+		startScale = style->scaley;
+		isScale = true;
+	}
 	bool hasEnd = isFlag;
 
 	// Find current value of style
@@ -1007,6 +1021,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 							if (tag->Name == _T("\\u")) startfont.SetUnderlined(tag->Params.at(0)->AsBool());
 						}
 						if (isAngle) startangle = tag->Params.at(0)->AsFloat();
+						if (isScale) startScale = tag->Params.at(0)->AsFloat();
 					}
 				}
 			}
@@ -1074,6 +1089,11 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 
 	// Angle
 	if (isAngle) {
+		insert = tagname + preValue;
+	}
+
+	// Scale
+	if (isScale) {
 		insert = tagname + preValue;
 	}
 

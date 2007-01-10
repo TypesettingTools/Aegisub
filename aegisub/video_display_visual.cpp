@@ -113,8 +113,8 @@ void VideoDisplayVisual::SetMode(int _mode) {
 // Draw overlay
 void VideoDisplayVisual::DrawOverlay() {
 	// Variables
-	int x = mouse_x;
-	int y = mouse_y;
+	int x = mouseX;
+	int y = mouseY;
 	int w = parent->w;
 	int h = parent->h;
 	int frame_n = parent->frame_n;
@@ -162,6 +162,8 @@ void VideoDisplayVisual::DrawOverlay() {
 				float rx = 0.0f;
 				float ry = 0.0f;
 				float rz = 0.0f;
+				float scalX = 100.0f;
+				float scalY = 100.0f;
 				int deltax = 0;
 				int deltay = 0;
 
@@ -169,8 +171,8 @@ void VideoDisplayVisual::DrawOverlay() {
 				if (isCur || (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs)) {
 					// Get position
 					if (isCur && mode == 1) {
-						dx = cur_x;
-						dy = cur_y;
+						dx = curX;
+						dy = curY;
 						high = true;
 					}
 					else GetLinePosition(diag,dx,dy,orgx,orgy);
@@ -200,25 +202,9 @@ void VideoDisplayVisual::DrawOverlay() {
 						dc.DrawLine(dx-16,dy,dx+16,dy);
 					}
 
-					// Rotate Z
-					if (mode == 2) {
-						// Calculate radius
-						float arDistort = float(w) * float(sh) / float(h) / float(sw);
-						int oRadiusX = radius * w / sw;
-						int oRadiusY = radius * h / sh;
-						if (radius < 50) radius = 50;
-						int radiusX = radius * w / sw;
-						int radiusY = radius * h / sh;
-
-						// Get angle
-						if (isCur && mode == 2) {
-							rz = curAngle;
-						}
-						else GetLineRotation(diag,rx,ry,rz);
-
-						// Get deltas
-						deltax = int(cos(rz*3.1415926536/180.0)*radiusX);
-						deltay = int(-sin(rz*3.1415926536/180.0)*radiusY);
+					// Rotation
+					if (mode == 2 || mode == 3) {
+						// Pivot coordinates
 						int odx = dx;
 						int ody = dy;
 						dx = orgx;
@@ -228,35 +214,135 @@ void VideoDisplayVisual::DrawOverlay() {
 						dc.DrawCircle(dx,dy,7);
 						dc.DrawLine(dx,dy-16,dx,dy+16);
 						dc.DrawLine(dx-16,dy,dx+16,dy);
+							
+						// Get angle
+						if (isCur) {
+							if (mode == 2) rz = curAngle;
+							else {
+								rx = curAngle;
+								ry = curAngle2;
+							}
+						}
+						else GetLineRotation(diag,rx,ry,rz);
 
-						// Draw the circle
-						dc.SetBrush(*wxTRANSPARENT_BRUSH);
-						dc.DrawEllipse(dx-radiusX-2,dy-radiusY-2,2*radiusX+4,2*radiusY+4);
-						dc.DrawEllipse(dx-radiusX+2,dy-radiusY+2,2*radiusX-4,2*radiusY-4);
+						// Rotate Z
+						if (mode == 2) {
+							// Calculate radii
+							int oRadiusX = radius * w / sw;
+							int oRadiusY = radius * h / sh;
+							if (radius < 50) radius = 50;
+							int radiusX = radius * w / sw;
+							int radiusY = radius * h / sh;
 
-						// Draw line to mouse
-						dc.DrawLine(dx,dy,mouse_x,mouse_y);
+							// Draw the circle
+							dc.SetBrush(*wxTRANSPARENT_BRUSH);
+							dc.DrawEllipse(dx-radiusX-2,dy-radiusY-2,2*radiusX+4,2*radiusY+4);
+							dc.DrawEllipse(dx-radiusX+2,dy-radiusY+2,2*radiusX-4,2*radiusY-4);
 
-						// Draw the baseline
-						dc.SetPen(wxPen(colour[3],2));
-						dc.DrawLine(dx+deltax,dy+deltay,dx-deltax,dy-deltay);
+							// Draw line to mouse
+							dc.DrawLine(dx,dy,mouseX,mouseY);
 
-						// Draw the connection line
-						if (orgx != odx && orgy != ody) {
-							double angle = atan2(double(dy*sh/h-ody*sh/h),double(odx*sw/w-dx*sw/w)) + rz*3.1415926536/180.0;
-							int fx = dx+int(cos(angle)*oRadiusX);
-							int fy = dy-int(sin(angle)*oRadiusY);
-							dc.DrawLine(dx,dy,fx,fy);
-							//dc.SetPen(wxPen(colour[0],1));
-							int mdx = cos(rz*3.1415926536/180.0)*20;
-							int mdy = -sin(rz*3.1415926536/180.0)*20;
-							dc.DrawLine(fx-mdx,fy-mdy,fx+mdx,fy+mdy);
+							// Get deltas
+							deltax = int(cos(rz*3.1415926536/180.0)*radiusX);
+							deltay = int(-sin(rz*3.1415926536/180.0)*radiusY);
+
+							// Draw the baseline
+							dc.SetPen(wxPen(colour[3],2));
+							dc.DrawLine(dx+deltax,dy+deltay,dx-deltax,dy-deltay);
+
+							// Draw the connection line
+							if (orgx != odx && orgy != ody) {
+								double angle = atan2(double(dy*sh/h-ody*sh/h),double(odx*sw/w-dx*sw/w)) + rz*3.1415926536/180.0;
+								int fx = dx+int(cos(angle)*oRadiusX);
+								int fy = dy-int(sin(angle)*oRadiusY);
+								dc.DrawLine(dx,dy,fx,fy);
+								int mdx = cos(rz*3.1415926536/180.0)*20;
+								int mdy = -sin(rz*3.1415926536/180.0)*20;
+								dc.DrawLine(fx-mdx,fy-mdy,fx+mdx,fy+mdy);
+							}
+
+							// Draw the rotation line
+							dc.SetPen(wxPen(colour[0],1));
+							dc.SetBrush(wxBrush(colour[brushCol]));
+							dc.DrawCircle(dx+deltax,dy+deltay,4);
 						}
 
-						// Draw the rotation line
+						// Rotate XY
+						if (mode == 3) {
+							// Calculate radii
+							if (radius < 80) radius = 80;
+							int radius1X = radius * w / sw / 3;
+							int radius1Y = radius * h / sh;
+							int radius2X = radius * w / sw;
+							int radius2Y = radius * h / sh / 3;
+
+							// Draw the ellipses
+							dc.SetBrush(*wxTRANSPARENT_BRUSH);
+							dc.DrawEllipse(dx-radius1X-2,dy-radius1Y-2,2*radius1X+4,2*radius1Y+4);
+							dc.DrawEllipse(dx-radius1X+2,dy-radius1Y+2,2*radius1X-4,2*radius1Y-4);
+							dc.DrawEllipse(dx-radius2X-2,dy-radius2Y-2,2*radius2X+4,2*radius2Y+4);
+							dc.DrawEllipse(dx-radius2X+2,dy-radius2Y+2,2*radius2X-4,2*radius2Y-4);
+
+							// Draw line to mouse
+							dc.DrawLine(dx,dy,mouseX,mouseY);
+							dc.SetBrush(wxBrush(colour[brushCol]));
+
+							// Draw Y baseline
+							deltax = int(cos(ry*3.1415926536/180.0)*radius2X);
+							deltay = int(-sin(ry*3.1415926536/180.0)*radius2Y);
+							dc.SetPen(wxPen(colour[3],2));
+							dc.DrawLine(dx+deltax,dy+deltay,dx-deltax,dy-deltay);
+							dc.SetPen(wxPen(colour[0],1));
+							dc.DrawCircle(dx+deltax,dy+deltay,4);
+
+							// Draw X baseline
+							deltax = int(cos(rx*3.1415926536/180.0)*radius1X);
+							deltay = int(-sin(rx*3.1415926536/180.0)*radius1Y);
+							dc.SetPen(wxPen(colour[3],2));
+							dc.DrawLine(dx+deltax,dy+deltay,dx-deltax,dy-deltay);
+							dc.SetPen(wxPen(colour[0],1));
+							dc.DrawCircle(dx+deltax,dy+deltay,4);
+						}
+					}
+
+					// Scale
+					if (mode == 4) {
+						// Get scale
+						if (isCur) {
+							scalX = curScaleX;
+							scalY = curScaleY;
+						}
+						else GetLineScale(diag,scalX,scalY);
+
+						// Scale parameters
+						int len = 160;
+						int lenx = int(1.6 * scalX);
+						int leny = int(1.6 * scalY);
+						int drawX = dx + len/2 + 10;
+						int drawY = dy + len/2 + 10;
+
+						// Draw length markers
+						dc.SetPen(wxPen(colour[3],2));
+						dc.DrawLine(dx-lenx/2,drawY+10,dx+lenx/2,drawY+10);
+						dc.DrawLine(drawX+10,dy-leny/2,drawX+10,dy+leny/2);
 						dc.SetPen(wxPen(colour[0],1));
 						dc.SetBrush(wxBrush(colour[brushCol]));
-						dc.DrawCircle(dx+deltax,dy+deltay,4);
+						dc.DrawCircle(dx+lenx/2,drawY+10,4);
+						dc.DrawCircle(drawX+10,dy-leny/2,4);
+
+						// Draw horizontal scale
+						dc.SetPen(wxPen(colour[0],1));
+						dc.DrawRectangle(dx-len/2,drawY,len+1,5);
+						dc.SetPen(wxPen(colour[0],2));
+						dc.DrawLine(dx-len/2+1,drawY+5,dx-len/2+1,drawY+15);
+						dc.DrawLine(dx+len/2,drawY+5,dx+len/2,drawY+15);
+
+						// Draw vertical scale
+						dc.SetPen(wxPen(colour[0],1));
+						dc.DrawRectangle(drawX,dy-len/2,5,len+1);
+						dc.SetPen(wxPen(colour[0],2));
+						dc.DrawLine(drawX+5,dy-len/2+1,drawX+15,dy-len/2+1);
+						dc.DrawLine(drawX+5,dy+len/2,drawX+15,dy+len/2);
 					}
 				}
 			}
@@ -465,6 +551,38 @@ void VideoDisplayVisual::GetLineRotation(AssDialogue *diag,float &rx,float &ry,f
 }
 
 
+////////////////////
+// Get line's scale
+void VideoDisplayVisual::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
+	// Default values
+	scalX = scalY = 100.0f;
+
+	// Prepare overrides
+	diag->ParseASSTags();
+	AssDialogueBlockOverride *override;
+	AssOverrideTag *tag;
+	size_t blockn = diag->Blocks.size();
+	if (blockn == 0) {
+		diag->ClearBlocks();
+		return;
+	}
+
+	// Process override
+	override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(0));
+	if (override) {
+		for (size_t j=0;j<override->Tags.size();j++) {
+			tag = override->Tags.at(j);
+			if (tag->Name == _T("\\fscx") && tag->Params.size() == 1) {
+				scalX = tag->Params[0]->AsFloat();
+			}
+			if (tag->Name == _T("\\fscy") && tag->Params.size() == 1) {
+				scalY = tag->Params[0]->AsFloat();
+			}
+		}
+	}
+	diag->ClearBlocks();
+}
+
 
 //////////////////
 // Draw Tracking Overlay
@@ -628,7 +746,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 	// Start dragging
 	if (mode != 0 && event.LeftIsDown() && !holding) {
-		float rx,ry,rz;
+		float rx,ry,rz,scalX,scalY;
 		AssDialogue *gotDiag = NULL;
 
 		// Drag
@@ -656,8 +774,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 						if (x >= lineX-8 && x <= lineX+8 && y >= lineY-8 && y <= lineY+8) {
 							parent->grid->editBox->SetToLine(i,true);
 							gotDiag = diag;
-							orig_x = lineX;
-							orig_y = lineY;
+							origX = lineX;
+							origY = lineY;
 							orgx = torgx;
 							orgy = torgy;
 							break;
@@ -667,21 +785,25 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 			}
 		}
 
-		// Rotate
+		// Pick active line
 		else {
-			// Check if it's within range
+			// Get active
 			gotDiag = parent->grid->GetDialogue(parent->grid->editBox->linen);
-			int f1 = VFR_Output.GetFrameAtTime(gotDiag->Start.GetMS(),true);
-			int f2 = VFR_Output.GetFrameAtTime(gotDiag->End.GetMS(),false);
 
-			// Invisible
-			if (f1 > frame_n || f2 < frame_n) {
-				gotDiag = NULL;
-			}
+			// Check if it's within range
+			if (gotDiag) {
+				int f1 = VFR_Output.GetFrameAtTime(gotDiag->Start.GetMS(),true);
+				int f2 = VFR_Output.GetFrameAtTime(gotDiag->End.GetMS(),false);
 
-			// OK
-			else {
-				GetLinePosition(gotDiag,orig_x,orig_y,orgx,orgy);
+				// Invisible
+				if (f1 > frame_n || f2 < frame_n) {
+					gotDiag = NULL;
+				}
+
+				// OK
+				else {
+					GetLinePosition(gotDiag,origX,origY,orgx,orgy);
+				}
 			}
 		}
 
@@ -689,20 +811,45 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		if (gotDiag) {
 			// Set dialogue
 			curSelection = gotDiag;
+			lineOrgX = orgx;
+			lineOrgY = orgy;
 
 			// Set coordinates
 			if (mode == 1) {
-				start_x = x;
-				start_y = y;
+				startX = x;
+				startY = y;
 			}
 
 			// Rotate Z
 			if (mode == 2) {
-				lineOrgX = orgx;
-				lineOrgY = orgy;
 				startAngle = atan2(double(lineOrgY-y*sh/h),double(x*sw/w-lineOrgX)) * 180.0 / 3.1415926535897932;
 				GetLineRotation(curSelection,rx,ry,rz);
 				origAngle = rz;
+				curAngle = rz;
+			}
+
+			// Rotate XY
+			if (mode == 3) {
+				startAngle = (lineOrgY-y*sh/h)*2.0;
+				startAngle2 = (x*sw/w-lineOrgX)*2.0;
+				GetLineRotation(curSelection,rx,ry,rz);
+				origAngle = rx;
+				origAngle2 = ry;
+				curAngle = rx;
+				curAngle2 = ry;
+			}
+
+			// Scale
+			if (mode == 4) {
+				//startScaleX = x;
+				//startScaleY = y;
+				startX = x;
+				startY = y;
+				GetLineScale(curSelection,scalX,scalY);
+				origScaleX = scalX;
+				origScaleY = scalY;
+				curScaleX = scalX;
+				curScaleY = scalY;
 			}
 
 			// Hold it
@@ -715,18 +862,18 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 	// Drag
 	if (hold == 1) {
-		cur_x = (x - start_x + orig_x) * sw / w;
-		cur_y = (y - start_y + orig_y) * sh / h;
+		curX = (x - startX + origX) * sw / w;
+		curY = (y - startY + origY) * sh / h;
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),cur_x,cur_y),0);
+			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),curX,curY),0);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
 	}
 
-	// Rotate
-	if (hold == 2) {
+	// Rotate Z
+	else if (hold == 2) {
 		// Find screen angle
 		float screenAngle = atan2(double(lineOrgY-y*sh/h),double(x*sw/w-lineOrgX)) * 180.0 / 3.1415926535897932;
 
@@ -741,6 +888,46 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		}
 	}
 
+	// Rotate XY
+	else if (hold == 3) {
+		// Find screen angles
+		float screenAngle = (lineOrgY-y*sh/h)*2.0;
+		float screenAngle2 = (x*sw/w-lineOrgX)*2.0;
+
+		// Calculate
+		curAngle = screenAngle - startAngle + origAngle;
+		curAngle2 = screenAngle2 - startAngle2 + origAngle2;
+		if (curAngle < 0.0) curAngle += 360.0;
+		if (curAngle2 < 0.0) curAngle += 360.0;
+
+		// Update
+		if (realTime) {
+			AssLimitToVisibleFilter::SetFrame(frame_n);
+			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
+			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0);
+			grid->editBox->CommitText(true);
+			grid->CommitChanges(false,true);
+		}
+	}
+
+	// Scale
+	else if (hold == 4) {
+		// Calculate
+		curScaleX = (float(x - startX)/0.8f) + origScaleX;
+		curScaleY = (float(startY - y)/0.8f) + origScaleY;
+		if (curScaleX < 0.0f) curScaleX = 0.0f;
+		if (curScaleY < 0.0f) curScaleY = 0.0f;
+
+		// Update
+		if (realTime) {
+			AssLimitToVisibleFilter::SetFrame(frame_n);
+			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0);
+			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0);
+			grid->editBox->CommitText(true);
+			grid->CommitChanges(false,true);
+		}
+	}
+
 	// End dragging
 	if (holding && !event.LeftIsDown()) {
 		// Disable limiting
@@ -748,19 +935,24 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 		// Finished dragging subtitles
 		if (hold == 1) {
-			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),cur_x,cur_y),0);
-			grid->editBox->CommitText();
-			grid->ass->FlagAsModified();
-			grid->CommitChanges(false,true);
+			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),curX,curY),0);
 		}
 
-		// Finished rotating subtitles
-		if (hold == 2) {
+		// Finished rotating Z
+		else if (hold == 2) {
 			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
-			grid->editBox->CommitText();
-			grid->ass->FlagAsModified();
-			grid->CommitChanges(false,true);
 		}
+
+		// Finished rotating XY
+		else if (hold == 3) {
+			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
+			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0);
+		}
+
+		// Commit
+		grid->editBox->CommitText();
+		grid->ass->FlagAsModified();
+		grid->CommitChanges(false,true);
 
 		// Set flags
 		hold = 0;
@@ -783,10 +975,10 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	}
 
 	// Hover
-	if (x != mouse_x || y != mouse_y) {
+	if (x != mouseX || y != mouseY) {
 		// Set coords
-		mouse_x = x;
-		mouse_y = y;
+		mouseX = x;
+		mouseY = y;
 		hasOverlay = true;
 	}
 
@@ -803,4 +995,6 @@ void VideoDisplayVisual::OnKeyEvent(wxKeyEvent &event) {
 	if (event.GetKeyCode() == 'A') SetMode(0);
 	if (event.GetKeyCode() == 'S') SetMode(1);
 	if (event.GetKeyCode() == 'D') SetMode(2);
+	if (event.GetKeyCode() == 'F') SetMode(3);
+	if (event.GetKeyCode() == 'G') SetMode(4);
 }

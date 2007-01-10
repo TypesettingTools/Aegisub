@@ -548,8 +548,8 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
 		GetScriptSize(sw,sh);
-		int vx = (sw * visual->mouse_x + w/2) / w;
-		int vy = (sh * visual->mouse_y + h/2) / h;
+		int vx = (sw * visual->mouseX + w/2) / w;
+		int vy = (sh * visual->mouseY + h/2) / h;
 		wxTheClipboard->SetData(new wxTextDataObject(wxString::Format(_T("%i,%i"),vx,vy)));
 		wxTheClipboard->Close();
 	}

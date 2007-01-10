@@ -51,11 +51,13 @@ class VideoDisplayVisual {
 private:
 	wxColour colour[4];
 
-	int mouse_x,mouse_y;
-	int start_x,start_y;
-	int cur_x,cur_y;
-	int orig_x,orig_y;
+	int mouseX,mouseY;
+	int startX,startY;
+	int curX,curY;
+	int origX,origY;
 	float curAngle,startAngle,origAngle;
+	float curAngle2,startAngle2,origAngle2;
+	float curScaleX,curScaleY,origScaleX,origScaleY;
 	int lineOrgX,lineOrgY;
 
 	int mode;
@@ -71,6 +73,8 @@ private:
 	void GetLinePosition(AssDialogue *diag,int &x,int &y);
 	void GetLinePosition(AssDialogue *diag,int &x,int &y,int &orgx,int &orgy);
 	void GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz);
+	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
+
 	void DrawTrackingOverlay(wxDC &dc);
 	void DrawOverlay();
 	void SetMode(int mode);
