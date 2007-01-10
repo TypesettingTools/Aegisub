@@ -582,7 +582,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	book->AddPage(audioPage,_("Audio"),true);
 	book->AddSubPage(displayPage,_("Display"),true);
 	book->AddPage(autoPage,_("Automation"),true);
+	#ifdef wxUSE_TREEBOOK
 	book->ChangeSelection(Options.AsInt(_T("Options Page")));
+	#endif
 
 	// Buttons Sizer
 	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
