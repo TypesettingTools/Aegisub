@@ -45,6 +45,7 @@ AC_DEFUN([AC_CXX_FLAG], [{
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
+AC_LANG(C++)
 AC_PROG_RANLIB
 
 AC_PATH_PROGS(CONVERT, [convert], [])
@@ -82,11 +83,27 @@ fi
 CPPFLAGS="$CPPFLAGS `$WXCONFIG --cppflags | sed -e 's/-fno-exceptions//'` $FREETYPE_CFLAGS"
 LIBS="$LIBS `$WXCONFIG --libs` $FREETYPE_LIBS"
 
+AC_ARG_WITH(wxscintilla,
+	AC_HELP_STRING([--with-wxscintilla=DIR], [Use wxScintilla includes from DIR/include and libraries from DIR/lib.]),
+[
+    if test "$withval" != "yes" -a "$withval" != ""; then
+        WXSCINTDIR=$withval
+	if test "${WXSCINTDIR#/}" == "$WXSCINTDIR";
+	then	WXSCINTDIR="`pwd`/$WXSCINTDIR"
+	fi
+	CPPFLAGS="$CPPFLAGS -I$WXSCINTDIR/include"
+	LDFLAGS="$LDFLAGS -L$WXSCINTDIR/lib -Wl,-rpath,$WXSCINTDIR/lib"
+    fi
+],, [
+#include <wx/buffer.h>
+])
+
+AC_CHECK_HEADER([wx/wxscintilla.h],, [AC_MSG_ERROR([wxScintilla includes not found.])])
+LIBS="$LIBS -lwxscintilla"
+
 AC_CHECK_LIB([m], [main])
 AC_CHECK_LIB([dl], [dlopen])
 
-AC_CHECK_HEADERS([lua.h lua51/lua.h lua5.1/lua.h])
-AC_SEARCH_LIBS([lua_newstate], [lua lua51 lua5.1],, [AC_MSG_ERROR([lua 5.1 not found.])])
 AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
 AC_CHECK_LIB([avcodec], [avcodec_init])
 AC_CHECK_LIB([avformat], [av_read_frame])

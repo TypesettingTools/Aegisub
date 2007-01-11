@@ -5,13 +5,13 @@ SUBDIRS = bitmaps posix
 
 bin_PROGRAMS = aegisub
 
-SVNREV := $(strip $(shell grep revision= .svn/entries 2>/dev/null | cut -d \" -f 2))
+SVNREV := $(strip $(shell grep -m 1 revision= .svn/entries 2>/dev/null | cut -d \" -f 2))
 DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGS = -Iposix -include posix/defines.h $(BUILDINFO)
-LDADD = posix/libposix.a
+LDADD = posix/libposix.a ../lua51/src/liblua.a
 aegisub_SOURCES = \
 	aegisublocale.cpp \
 	ass_attachment.cpp \
@@ -42,6 +42,7 @@ aegisub_SOURCES = \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
 	colorspace.cpp \
+	colour_button.cpp \
 	dialog_about.cpp \
 	dialog_attachments.cpp \
 	dialog_automation.cpp \

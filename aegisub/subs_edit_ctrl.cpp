@@ -819,7 +819,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 			// Build menu
 			for (int i=0;i<nSugs;i++) {
 				wxMenuItem *itm = menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
-#if wxCHECK_VERSION(2, 8, 0)
+#if wxCHECK_VERSION(2, 8, 0) && defined(__WINDOWS__)
 				itm->SetFont(font);
 #endif
 			}
