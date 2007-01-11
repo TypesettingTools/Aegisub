@@ -183,3 +183,12 @@ wxString PrettySize(int bytes) {
 	else final = wxString::Format(_T("%.0f"),size);
 	return final + suffix[i];
 }
+
+
+//////////////////////////////////
+// Append a menu item with bitmap
+void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp) {
+	wxMenuItem *cur = new wxMenuItem(parentMenu,id,text,help);
+	cur->SetBitmap(bmp);
+	parentMenu->Append(cur);
+}

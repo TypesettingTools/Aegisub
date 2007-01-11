@@ -76,6 +76,9 @@
 FrameMain::FrameMain (wxArrayString args)
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(800,600),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
+	// Set application's frame
+	AegisubApp::Get()->frame = this;
+
 	// Initialize flags
 	HasSelection = false;
 	menuCreated = false;
@@ -507,15 +510,6 @@ void FrameMain::UpdateToolbar() {
 	toolbar->FindById(Menu_Video_Snap_To_Scene)->Enable(isVideo && selRows > 0);
 	toolbar->FindById(Menu_Video_Shift_To_Frame)->Enable(isVideo && selRows > 0);
 	toolbar->Realize();
-}
-
-
-//////////////////////////////////
-// Append a menu item with bitmap
-void FrameMain::AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp) {
-	wxMenuItem *cur = new wxMenuItem(parentMenu,id,text,help);
-	cur->SetBitmap(bmp);
-	parentMenu->Append(cur);
 }
 
 
@@ -1265,7 +1259,7 @@ void FrameMain::SetAccelerators() {
 	entry[i++] = Hotkeys.GetAccelerator(_T("Save Subtitles Alt"),Menu_File_Save_Subtitles);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Video global play"),Video_Play);
+	entry[i++] = Hotkeys.GetAccelerator(_T("Video global play"),Video_Frame_Play);
 	entry[i++] = Hotkeys.GetAccelerator(_T("Edit box commit"),Edit_Box_Commit);
 
 	// Medusa

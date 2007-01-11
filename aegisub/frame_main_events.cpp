@@ -92,27 +92,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_TIMER(AutoSave_Timer, FrameMain::OnAutoSave)
 	EVT_TIMER(StatusClear_Timer, FrameMain::OnStatusClear)
 
-	EVT_BUTTON(Video_Play, FrameMain::OnVideoPlay)
-	EVT_BUTTON(Video_Play_Line, FrameMain::OnVideoPlayLine)
-	EVT_BUTTON(Video_Stop, FrameMain::OnVideoStop)
-	EVT_TOGGLEBUTTON(Video_Auto_Scroll, FrameMain::OnVideoToggleScroll)
-
-#if USE_FEXTRACKER == 1
-	EVT_BUTTON(Video_Tracker_Menu, FrameMain::OnVideoTrackerMenu)
-	EVT_MENU(Video_Track_Points, FrameMain::OnVideoTrackPoints)
-	EVT_MENU(Video_Track_Point_Add, FrameMain::OnVideoTrackPointAdd)
-	EVT_MENU(Video_Track_Point_Del, FrameMain::OnVideoTrackPointDel)
-	EVT_MENU(Video_Track_Movement, FrameMain::OnVideoTrackMovement)
-	EVT_BUTTON(Video_Tracker_Menu2, FrameMain::OnVideoTrackerMenu2)
-	EVT_MENU(Video_Track_Movement_MoveAll, FrameMain::OnVideoTrackMovementMoveAll)
-	EVT_MENU(Video_Track_Movement_MoveOne, FrameMain::OnVideoTrackMovementMoveOne)
-	EVT_MENU(Video_Track_Movement_MoveBefore, FrameMain::OnVideoTrackMovementMoveBefore)
-	EVT_MENU(Video_Track_Movement_MoveAfter, FrameMain::OnVideoTrackMovementMoveAfter)
-	EVT_MENU(Video_Track_Split_Line, FrameMain::OnVideoTrackSplitLine)
-	EVT_MENU(Video_Track_Link_File, FrameMain::OnVideoTrackLinkFile)
-	EVT_MENU(Video_Track_Movement_Empty, FrameMain::OnVideoTrackMovementEmpty)
-#endif
-
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 
 	EVT_KEY_DOWN(FrameMain::OnKeyDown)
@@ -146,7 +125,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_View_Zoom_100, FrameMain::OnSetZoom100)
 	EVT_MENU(Menu_View_Zoom_200, FrameMain::OnSetZoom200)
 	EVT_COMBOBOX(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
-	EVT_MENU(Video_Play, FrameMain::OnVideoPlay)
+	EVT_MENU(Video_Frame_Play, FrameMain::OnVideoPlay)
 	EVT_MENU(Menu_Video_Zoom_In, FrameMain::OnZoomIn)
 	EVT_MENU(Menu_Video_Zoom_Out, FrameMain::OnZoomOut)
 	EVT_MENU(Menu_Video_AR_Default, FrameMain::OnSetARDefault)
@@ -631,6 +610,14 @@ void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
 void FrameMain::OnIRCChannel(wxCommandEvent& WXUNUSED(event)) {
 	AegisubApp::OpenURL(_T("irc://irc.chatsociety.net/aegisub"));
 }
+
+
+//////////////
+// Play video
+void FrameMain::OnVideoPlay(wxCommandEvent &event) {
+	videoBox->videoDisplay->Play();
+}
+
 
 
 //////////////
@@ -1514,35 +1501,6 @@ void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
 		wxCommandEvent keyevent(wxEVT_COMMAND_TEXT_ENTER,focus->GetId());
 		focus->GetEventHandler()->AddPendingEvent(keyevent);
 	}
-}
-
-
-//////////////
-// Play video
-void FrameMain::OnVideoPlay(wxCommandEvent &event) {
-	videoBox->videoDisplay->Play();
-}
-
-
-///////////////////
-// Play video line
-void FrameMain::OnVideoPlayLine(wxCommandEvent &event) {
-	videoBox->videoDisplay->PlayLine();
-}
-
-
-//////////////
-// Stop video
-void FrameMain::OnVideoStop(wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
-}
-
-
-/////////////////////
-// Toggle autoscroll
-void FrameMain::OnVideoToggleScroll(wxCommandEvent &event) {
-	Options.SetBool(_T("Sync video with subs"),videoBox->AutoScroll->GetValue());
-	Options.Save();
 }
 
 

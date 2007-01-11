@@ -111,24 +111,6 @@ private:
 	void OnStatusClear(wxTimerEvent &event);
 
 	void OnVideoPlay(wxCommandEvent &event);
-	void OnVideoPlayLine(wxCommandEvent &event);
-	void OnVideoStop(wxCommandEvent &event);
-	void OnVideoToggleScroll(wxCommandEvent &event);
-
-	void OnVideoTrackerMenu(wxCommandEvent &event);
-	void OnVideoTrackPoints(wxCommandEvent &event);
-	void OnVideoTrackPointAdd(wxCommandEvent &event);
-	void OnVideoTrackPointDel(wxCommandEvent &event);
-	void OnVideoTrackerMenu2(wxCommandEvent &event);
-	void OnVideoTrackMovement(wxCommandEvent &event);
-	void OnVideoTrackMovementMoveAll(wxCommandEvent &event);
-	void OnVideoTrackMovementMoveOne(wxCommandEvent &event);
-	void OnVideoTrackMovementMoveBefore(wxCommandEvent &event);
-	void OnVideoTrackMovementMoveAfter(wxCommandEvent &event);
-	void OnVideoTrackSplitLine(wxCommandEvent &event);
-	void OnVideoTrackLinkFile(wxCommandEvent &event);
-	void OnVideoTrackMovementEmpty(wxCommandEvent &event);
-
 	void OnKeyDown(wxKeyEvent &event);
 
 	void OnOpenRecentSubs (wxCommandEvent &event);
@@ -249,7 +231,6 @@ private:
 	int TryToCloseSubs(bool enableCancel=true);
 	void SetDisplayMode(int mode);
 
-	void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp);
 	wxMenuItem *RebuildMenuItem(wxMenu *menu,int id,wxBitmap bmp1,wxBitmap bmp2,bool state);
 	void MenuItemEnable(int id,bool state,wxBitmap &bmp1,wxBitmap &bmp2);
 	void SynchronizeProject(bool FromSubs=false);
@@ -396,24 +377,7 @@ enum {
 	Grid_Toggle_Tags,
 	Edit_Box_Commit,
 
-	Video_Play,
-	Video_Play_Line,
-	Video_Stop,
-	Video_Auto_Scroll,
-
-	Video_Tracker_Menu,
-	Video_Track_Points,
-	Video_Track_Point_Add,
-	Video_Track_Point_Del,
-	Video_Tracker_Menu2,
-	Video_Track_Movement,
-	Video_Track_Movement_MoveAll,
-	Video_Track_Movement_MoveOne,
-	Video_Track_Movement_MoveBefore,
-	Video_Track_Movement_MoveAfter,
-	Video_Track_Split_Line,
-	Video_Track_Link_File,
-	Video_Track_Movement_Empty,
+	Video_Frame_Play,
 
 	Medusa_Play,
 	Medusa_Stop,
@@ -431,7 +395,7 @@ enum {
 	Menu_Audio_Recent = 2400,
 	Menu_Timecodes_Recent = 2500,
 	Menu_Keyframes_Recent = 2600,
-	Menu_Automation_Macro = 2700,
+	Menu_Automation_Macro = 2700
 };
 
 

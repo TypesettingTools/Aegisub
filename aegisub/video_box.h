@@ -47,13 +47,33 @@
 // Prototypes
 class VideoDisplay;
 class VideoSlider;
-//class VideoZoomSlider;
 class ToggleBitmap;
+class FrameMain;
 
 
 ///////////////////
 // Video box class
 class VideoBox : public wxPanel {
+private:
+	void OnVideoPlay(wxCommandEvent &event);
+	void OnVideoPlayLine(wxCommandEvent &event);
+	void OnVideoStop(wxCommandEvent &event);
+	void OnVideoToggleScroll(wxCommandEvent &event);
+
+	void OnVideoTrackerMenu(wxCommandEvent &event);
+	void OnVideoTrackPoints(wxCommandEvent &event);
+	void OnVideoTrackPointAdd(wxCommandEvent &event);
+	void OnVideoTrackPointDel(wxCommandEvent &event);
+	void OnVideoTrackerMenu2(wxCommandEvent &event);
+	void OnVideoTrackMovement(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveAll(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveOne(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveBefore(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveAfter(wxCommandEvent &event);
+	void OnVideoTrackSplitLine(wxCommandEvent &event);
+	void OnVideoTrackLinkFile(wxCommandEvent &event);
+	void OnVideoTrackMovementEmpty(wxCommandEvent &event);
+
 public:
 	ToggleBitmap *AutoScroll;
 	wxBoxSizer *VideoSizer;
@@ -63,10 +83,35 @@ public:
 	wxTextCtrl *VideoSubsPos;
 	VideoDisplay *videoDisplay;
 	VideoSlider *videoSlider;
-	//VideoZoomSlider *zoomSlider;
+	FrameMain *frame;
 
 	VideoBox (wxWindow *parent);
+
+	DECLARE_EVENT_TABLE()
 };
 
+
+///////
+// IDs
+enum {
+	Video_Play = 500,
+	Video_Play_Line,
+	Video_Stop,
+	Video_Auto_Scroll,
+
+	Video_Tracker_Menu,
+	Video_Track_Points,
+	Video_Track_Point_Add,
+	Video_Track_Point_Del,
+	Video_Tracker_Menu2,
+	Video_Track_Movement,
+	Video_Track_Movement_MoveAll,
+	Video_Track_Movement_MoveOne,
+	Video_Track_Movement_MoveBefore,
+	Video_Track_Movement_MoveAfter,
+	Video_Track_Split_Line,
+	Video_Track_Link_File,
+	Video_Track_Movement_Empty
+};
 
 #endif
