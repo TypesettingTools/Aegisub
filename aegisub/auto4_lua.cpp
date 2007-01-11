@@ -391,12 +391,12 @@ namespace Automation4 {
 			// absolute path, do nothing
 		}
 		if (!fname.IsOk() || !fname.FileExists()) {
-			lua_pushfstring(L, "Could not find Lua script for inclusion: %s", fnames.mb_str(wxConvUTF8));
+			lua_pushfstring(L, "Could not find Lua script for inclusion: %s", fnames.mb_str(wxConvUTF8).data());
 			lua_error(L);
 		}
 
 		if (luaL_loadfile(L, fname.GetFullPath().mb_str(wxConvUTF8))) {
-			lua_pushfstring(L, "An error occurred loading the Lua script file \"%s\":\n\n%s", fname.GetFullPath().mb_str(wxConvUTF8), lua_tostring(L, -1));
+			lua_pushfstring(L, "An error occurred loading the Lua script file \"%s\":\n\n%s", fname.GetFullPath().mb_str(wxConvUTF8).data(), lua_tostring(L, -1));
 			lua_error(L);
 			return 0;
 		}

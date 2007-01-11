@@ -400,7 +400,7 @@ namespace Automation4 {
 			result = dia;
 
 		} else {
-			lua_pushfstring(L, "Found line with unknown class: %s", lclass.mb_str(wxConvUTF8));
+			lua_pushfstring(L, "Found line with unknown class: %s", lclass.mb_str(wxConvUTF8).data());
 			lua_error(L);
 			return 0;
 		}
