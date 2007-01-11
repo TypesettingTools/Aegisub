@@ -884,8 +884,8 @@ void AssDialogueBlockDrawing::MultiplyCoords(double x,double y) {
 		if (cur.IsNumber()) {
 			// Multiply it
 			cur.ToLong(&temp);
-			if (isX) temp = long int(temp*x + 0.5);
-			else temp = long int(temp*y + 0.5);
+			if (isX) temp = (long int)(temp*x + 0.5);
+			else temp = (long int)(temp*y + 0.5);
 
 			// Write back to list
 			final += wxString::Format(_T("%i "),temp);
