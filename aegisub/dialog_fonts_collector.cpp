@@ -71,9 +71,9 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	}
 	DestBox = new wxTextCtrl(this,-1,dest,wxDefaultPosition,wxSize(250,20),0);
 	BrowseButton = new wxButton(this,BROWSE_BUTTON,_("&Browse..."));
-	AttachmentCheck = new wxCheckBox(this,ATTACHMENT_CHECK,_T("As attachments"),wxDefaultPosition);
+	AttachmentCheck = new wxCheckBox(this,ATTACHMENT_CHECK,_("As attachments"),wxDefaultPosition);
 	AttachmentCheck->SetValue(Options.AsBool(_T("Fonts Collector Attachment")));
-	ArchiveCheck = new wxCheckBox(this,ARCHIVE_CHECK,_T("As a zipped archive"),wxDefaultPosition);
+	ArchiveCheck = new wxCheckBox(this,ARCHIVE_CHECK,_("As a zipped archive"),wxDefaultPosition);
 	ArchiveCheck->SetValue(Options.AsBool(_T("Fonts Collector Archive")));
 	if (ArchiveCheck->GetValue()) AttachmentCheck->SetValue(false);
 	wxSizer *DestBottomSizer = new wxBoxSizer(wxHORIZONTAL);

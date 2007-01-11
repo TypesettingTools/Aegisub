@@ -1048,7 +1048,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		// Update
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("%i,%i,%i,%i"),curX,curY,curX2,curY2),0);
+			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX,curY,curX2,curY2),0);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -1083,7 +1083,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 		// Finished clipping
 		else if (hold == 5) {
-			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("%i,%i,%i,%i"),curX,curY,curX2,curY2),0);
+			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX,curY,curX2,curY2),0);
 		}
 
 		// Commit
