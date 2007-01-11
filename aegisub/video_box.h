@@ -62,7 +62,7 @@ private:
 	wxButton *rotatexy;
 	wxButton *scale;
 	wxButton *clip;
-	wxToggleButton *realtime;
+	ToggleBitmap *realtime;
 
 	void OnVideoPlay(wxCommandEvent &event);
 	void OnVideoPlayLine(wxCommandEvent &event);

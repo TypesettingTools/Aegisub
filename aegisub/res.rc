@@ -140,6 +140,14 @@ toggle_audio_spectrum BITMAP "bitmaps/toggle_audio_spectrum.bmp"
 toggle_audio_link BITMAP "bitmaps/toggle_audio_link.bmp"
 toggle_video_autoscroll BITMAP "bitmaps/toggle_video_autoscroll.bmp"
 
+visual_standard BITMAP "bitmaps/visual_standard.bmp"
+visual_move BITMAP "bitmaps/visual_move.bmp"
+visual_rotatez BITMAP "bitmaps/visual_rotatez.bmp"
+visual_rotatexy BITMAP "bitmaps/visual_rotatexy.bmp"
+visual_scale BITMAP "bitmaps/visual_scale.bmp"
+visual_clip BITMAP "bitmaps/visual_clip.bmp"
+visual_realtime BITMAP "bitmaps/visual_realtime.bmp"
+
 arrow_up BITMAP "bitmaps/arrow_up.bmp"
 arrow_down BITMAP "bitmaps/arrow_down.bmp"
 

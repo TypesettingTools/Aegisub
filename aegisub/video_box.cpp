@@ -63,6 +63,7 @@
 #include "dialog_fextracker.h"
 #include "utils.h"
 #include "main.h"
+#include "toggle_bitmap.h"
 
 
 ///////////////
@@ -117,30 +118,30 @@ VideoBox::VideoBox(wxWindow *parent)
 	videoSlider->Display = videoDisplay;
 	
 	// Typesetting buttons
-	standard = new wxButton(videoPage,Video_Mode_Standard,_T("n"),wxDefaultPosition,wxSize(20,20));
+	standard = new wxBitmapButton(videoPage,Video_Mode_Standard,wxBITMAP(visual_standard));
 	standard->SetToolTip(_("Standard mode, double click sets position."));
-	drag = new wxButton(videoPage,Video_Mode_Drag,_T("d"),wxDefaultPosition,wxSize(20,20));
+	drag = new wxBitmapButton(videoPage,Video_Mode_Drag,wxBITMAP(visual_move));
 	drag->SetToolTip(_("Drag subtitles."));
-	rotatez = new wxButton(videoPage,Video_Mode_Rotate_Z,_T("z"),wxDefaultPosition,wxSize(20,20));
+	rotatez = new wxBitmapButton(videoPage,Video_Mode_Rotate_Z,wxBITMAP(visual_rotatez));
 	rotatez->SetToolTip(_("Rotate subtitles on their Z axis."));
-	rotatexy = new wxButton(videoPage,Video_Mode_Rotate_XY,_T("x"),wxDefaultPosition,wxSize(20,20));
+	rotatexy = new wxBitmapButton(videoPage,Video_Mode_Rotate_XY,wxBITMAP(visual_rotatexy));
 	rotatexy->SetToolTip(_("Rotate subtitles on their X and Y axes."));
-	scale = new wxButton(videoPage,Video_Mode_Scale,_T("s"),wxDefaultPosition,wxSize(20,20));
+	scale = new wxBitmapButton(videoPage,Video_Mode_Scale,wxBITMAP(visual_scale));
 	scale->SetToolTip(_("Scale subtitles on X and Y axes."));
-	clip = new wxButton(videoPage,Video_Mode_Clip,_T("c"),wxDefaultPosition,wxSize(20,20));
+	clip = new wxBitmapButton(videoPage,Video_Mode_Clip,wxBITMAP(visual_clip));
 	clip->SetToolTip(_("Clip subtitles to a rectangle."));
-	realtime = new wxToggleButton(videoPage,Video_Mode_Realtime,_T("r"),wxDefaultPosition,wxSize(20,20));
+	realtime = new ToggleBitmap(videoPage,Video_Mode_Realtime,wxBITMAP(visual_realtime),wxSize(20,20));
 	realtime->SetToolTip(_("Toggle realtime display of changes."));
 	bool isRealtime = Options.AsBool(_T("Video Visual Realtime"));
 	realtime->SetValue(isRealtime);
 	wxSizer *typeSizer = new wxBoxSizer(wxVERTICAL);
-	typeSizer->Add(standard,0,0,0);
-	typeSizer->Add(drag,0,0,0);
-	typeSizer->Add(rotatez,0,0,0);
-	typeSizer->Add(rotatexy,0,0,0);
-	typeSizer->Add(scale,0,0,0);
-	typeSizer->Add(clip,0,wxBOTTOM,5);
-	typeSizer->Add(realtime,0,0,0);
+	typeSizer->Add(standard,0,wxEXPAND,0);
+	typeSizer->Add(drag,0,wxEXPAND,0);
+	typeSizer->Add(rotatez,0,wxEXPAND,0);
+	typeSizer->Add(rotatexy,0,wxEXPAND,0);
+	typeSizer->Add(scale,0,wxEXPAND,0);
+	typeSizer->Add(clip,0,wxEXPAND | wxBOTTOM,5);
+	typeSizer->Add(realtime,0,wxEXPAND,0);
 	typeSizer->AddStretchSpacer(1);
 
 	// Top sizer
