@@ -87,8 +87,6 @@ private:
 	double arValue;
 	int arType;
 
-	VideoDisplayVisual *visual;
-
 	wxBitmap GetFrame(int n);
 	wxBitmap GetFrame() { return GetFrame(frame_n); };
 
@@ -114,6 +112,7 @@ public:
 	wxString GetKeyFramesName() { return keyFramesFilename; }
 	void SetKeyFramesName(wxString name) { keyFramesFilename = name; }
 
+	VideoDisplayVisual *visual;
 	VideoProvider *provider;
 	VideoBox *box;
 

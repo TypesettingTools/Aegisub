@@ -43,6 +43,7 @@
 #include <wx/rawbmp.h>
 #include "video_box.h"
 #include "video_display.h"
+#include "video_display_visual.h"
 #include "video_zoom.h"
 #include "video_slider.h"
 #include "frame_main.h"
@@ -116,12 +117,30 @@ VideoBox::VideoBox(wxWindow *parent)
 	videoSlider->Display = videoDisplay;
 	
 	// Typesetting buttons
+	standard = new wxButton(videoPage,Video_Mode_Standard,_T("n"),wxDefaultPosition,wxSize(20,20));
+	standard->SetToolTip(_("Standard mode, double click sets position."));
+	drag = new wxButton(videoPage,Video_Mode_Drag,_T("d"),wxDefaultPosition,wxSize(20,20));
+	drag->SetToolTip(_("Drag subtitles."));
+	rotatez = new wxButton(videoPage,Video_Mode_Rotate_Z,_T("z"),wxDefaultPosition,wxSize(20,20));
+	rotatez->SetToolTip(_("Rotate subtitles on their Z axis."));
+	rotatexy = new wxButton(videoPage,Video_Mode_Rotate_XY,_T("x"),wxDefaultPosition,wxSize(20,20));
+	rotatexy->SetToolTip(_("Rotate subtitles on their X and Y axes."));
+	scale = new wxButton(videoPage,Video_Mode_Scale,_T("s"),wxDefaultPosition,wxSize(20,20));
+	scale->SetToolTip(_("Scale subtitles on X and Y axes."));
+	clip = new wxButton(videoPage,Video_Mode_Clip,_T("c"),wxDefaultPosition,wxSize(20,20));
+	clip->SetToolTip(_("Clip subtitles to a rectangle."));
+	realtime = new wxToggleButton(videoPage,Video_Mode_Realtime,_T("r"),wxDefaultPosition,wxSize(20,20));
+	realtime->SetToolTip(_("Toggle realtime display of changes."));
+	bool isRealtime = Options.AsBool(_T("Video Visual Realtime"));
+	realtime->SetValue(isRealtime);
 	wxSizer *typeSizer = new wxBoxSizer(wxVERTICAL);
-	//typeSizer->Add(new wxButton(videoPage,-1,_T("a"),wxDefaultPosition,wxSize(20,20)),0,0,0);
-	//typeSizer->Add(new wxButton(videoPage,-1,_T("b"),wxDefaultPosition,wxSize(20,20)),0,0,0);
-	//typeSizer->Add(new wxButton(videoPage,-1,_T("c"),wxDefaultPosition,wxSize(20,20)),0,0,0);
-	//typeSizer->Add(new wxButton(videoPage,-1,_T("d"),wxDefaultPosition,wxSize(20,20)),0,0,0);
-	//typeSizer->Add(new wxButton(videoPage,-1,_T("e"),wxDefaultPosition,wxSize(20,20)),0,0,0);
+	typeSizer->Add(standard,0,0,0);
+	typeSizer->Add(drag,0,0,0);
+	typeSizer->Add(rotatez,0,0,0);
+	typeSizer->Add(rotatexy,0,0,0);
+	typeSizer->Add(scale,0,0,0);
+	typeSizer->Add(clip,0,wxBOTTOM,5);
+	typeSizer->Add(realtime,0,0,0);
 	typeSizer->AddStretchSpacer(1);
 
 	// Top sizer
@@ -159,6 +178,14 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 	EVT_BUTTON(Video_Play_Line, VideoBox::OnVideoPlayLine)
 	EVT_BUTTON(Video_Stop, VideoBox::OnVideoStop)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, VideoBox::OnVideoToggleScroll)
+
+	EVT_BUTTON(Video_Mode_Standard, VideoBox::OnModeStandard)
+	EVT_BUTTON(Video_Mode_Drag, VideoBox::OnModeDrag)
+	EVT_BUTTON(Video_Mode_Rotate_Z, VideoBox::OnModeRotateZ)
+	EVT_BUTTON(Video_Mode_Rotate_XY, VideoBox::OnModeRotateXY)
+	EVT_BUTTON(Video_Mode_Scale, VideoBox::OnModeScale)
+	EVT_BUTTON(Video_Mode_Clip, VideoBox::OnModeClip)
+	EVT_TOGGLEBUTTON(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
 
 #if USE_FEXTRACKER == 1
 	EVT_BUTTON(Video_Tracker_Menu, VideoBox::OnVideoTrackerMenu)
@@ -206,6 +233,55 @@ void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
 	Options.Save();
 }
 
+
+/////////////////
+// Standard mode
+void VideoBox::OnModeStandard(wxCommandEvent &event) {
+	videoDisplay->visual->SetMode(0);
+}
+
+
+/////////////
+// Drag mode
+void VideoBox::OnModeDrag(wxCommandEvent &event) {
+	videoDisplay->visual->SetMode(1);
+}
+
+
+/////////////////
+// Rotate Z mode
+void VideoBox::OnModeRotateZ(wxCommandEvent &event) {
+	videoDisplay->visual->SetMode(2);
+}
+
+
+//////////////////
+// Rotate XY mode
+void VideoBox::OnModeRotateXY(wxCommandEvent &event) {
+	videoDisplay->visual->SetMode(3);
+}
+
+
+//////////////
+// Scale mode
+void VideoBox::OnModeScale(wxCommandEvent &event) {
+	videoDisplay->visual->SetMode(4);
+}
+
+
+/////////////
+// Clip mode
+void VideoBox::OnModeClip(wxCommandEvent &event) {
+	videoDisplay->visual->SetMode(5);
+}
+
+
+///////////////////
+// Realtime toggle
+void VideoBox::OnToggleRealtime(wxCommandEvent &event) {
+	Options.SetBool(_T("Video Visual Realtime"),realtime->GetValue());
+	Options.Save();
+}
 
 
 

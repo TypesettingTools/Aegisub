@@ -78,11 +78,12 @@ private:
 
 	void DrawTrackingOverlay(wxDC &dc);
 	void DrawOverlay();
-	void SetMode(int mode);
 	void OnMouseEvent(wxMouseEvent &event);
 	void OnKeyEvent(wxKeyEvent &event);
 
 public:
+	void SetMode(int mode);
+
 	VideoDisplayVisual(VideoDisplay *parent);
 	~VideoDisplayVisual();
 };

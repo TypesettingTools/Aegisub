@@ -41,6 +41,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/tglbtn.h>
 
 
 //////////////
@@ -55,10 +56,26 @@ class FrameMain;
 // Video box class
 class VideoBox : public wxPanel {
 private:
+	wxButton *standard;
+	wxButton *drag;
+	wxButton *rotatez;
+	wxButton *rotatexy;
+	wxButton *scale;
+	wxButton *clip;
+	wxToggleButton *realtime;
+
 	void OnVideoPlay(wxCommandEvent &event);
 	void OnVideoPlayLine(wxCommandEvent &event);
 	void OnVideoStop(wxCommandEvent &event);
 	void OnVideoToggleScroll(wxCommandEvent &event);
+
+	void OnModeStandard(wxCommandEvent &event);
+	void OnModeDrag(wxCommandEvent &event);
+	void OnModeRotateZ(wxCommandEvent &event);
+	void OnModeRotateXY(wxCommandEvent &event);
+	void OnModeScale(wxCommandEvent &event);
+	void OnModeClip(wxCommandEvent &event);
+	void OnToggleRealtime(wxCommandEvent &event);
 
 	void OnVideoTrackerMenu(wxCommandEvent &event);
 	void OnVideoTrackPoints(wxCommandEvent &event);
@@ -111,7 +128,15 @@ enum {
 	Video_Track_Movement_MoveAfter,
 	Video_Track_Split_Line,
 	Video_Track_Link_File,
-	Video_Track_Movement_Empty
+	Video_Track_Movement_Empty,
+
+	Video_Mode_Standard,
+	Video_Mode_Drag,
+	Video_Mode_Rotate_Z,
+	Video_Mode_Rotate_XY,
+	Video_Mode_Scale,
+	Video_Mode_Clip,
+	Video_Mode_Realtime
 };
 
 #endif

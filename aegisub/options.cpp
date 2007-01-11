@@ -128,7 +128,6 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Video Default Zoom"), 7);
 	SetInt(_T("Video Fast Jump Step"), 10);
 	SetText(_T("Video Screenshot Path"),_T("?video"));
-	SetBool(_T("Video Visual Realtime"),false);
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
 
@@ -281,6 +280,8 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Audio Display Height"),100);
 	SetBool(_T("Audio Spectrum"),false);
 	SetInt(_T("Audio Sample Rate"),0);
+
+	SetBool(_T("Video Visual Realtime"),false);
 
 	SetInt(_T("Timing processor key start before thres"),5);
 	SetInt(_T("Timing processor key start after thres"),4);
