@@ -119,8 +119,8 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		// Read actor data
 		if (!isComment && separator != _T("")) {
 			if (value[0] != _T(' ') && value[0] != _T('\t')) {
-				size_t pos = value.Find(separator);
-				if (pos != -1) {
+				int pos = value.Find(separator);
+				if (pos != wxNOT_FOUND) {
 					actor = value.Left(pos);
 					actor.Trim(false);
 					actor.Trim(true);

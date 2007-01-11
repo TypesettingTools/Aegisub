@@ -69,6 +69,7 @@ void VariableData::DeleteValue () {
 		case VARDATA_BOOL: delete value_bool; break;
 		case VARDATA_COLOUR: delete value_colour; break;
 		case VARDATA_BLOCK: delete value_block; break;
+		default: break;
 	}
 	type = VARDATA_NONE;
 	value = NULL;

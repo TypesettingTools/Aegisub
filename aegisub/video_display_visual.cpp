@@ -34,9 +34,6 @@
 //
 
 
-#pragma once
-
-
 //////////////
 // Headers
 #include <wx/wxprec.h>

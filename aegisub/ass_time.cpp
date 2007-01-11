@@ -84,8 +84,8 @@ void AssTime::ParseASS (const wxString _text) {
 		if (!temp.ToDouble(&ts_raw)) throw 0;
 
 		// Split into seconds and fraction
-		ts = ts_raw;
-		tms = (ts_raw-ts)*1000+0.5;
+		ts = (long int)(ts_raw);
+		tms = (long int)((ts_raw-ts)*1000+0.5);
 	}
 
 	// Something went wrong, don't change anything

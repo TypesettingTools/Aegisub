@@ -672,6 +672,7 @@ end_tokenizing:
 					newparam->SetBlock(temp);
 					break;
 				}
+				default: break;
 			}
 
 			// Get next actual parameter

@@ -1020,7 +1020,7 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 	// Collect data
 	AssDialogue *cur;
 	int start,end;
-	int firststart;
+	int firststart = 0;
 	int lastend = -1;
 	int len1,len2;
 	for (int i=n1;i<=n2;i++) {
@@ -1154,7 +1154,7 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 	// Modify time
 	if (mode == 1) {
 		double splitPos = double(pos)/orig.Length();
-		int splitTime = (n1->End.GetMS() - n1->Start.GetMS())*splitPos + n1->Start.GetMS();
+		int splitTime = (int)((n1->End.GetMS() - n1->Start.GetMS())*splitPos) + n1->Start.GetMS();
 		n1->End.SetMS(splitTime);
 		n2->Start.SetMS(splitTime);
 	}

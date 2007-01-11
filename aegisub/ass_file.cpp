@@ -153,7 +153,6 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 	}
 	wxString extension = _filename.substr(i+1);
 	extension.Lower();
-	bool success = false;
 
 	// Get writer
 	SubtitleFormat *writer = SubtitleFormat::GetWriter(_filename);
@@ -447,10 +446,8 @@ AssFile::AssFile (AssFile &from) {
 	filename = from.filename;
 	loaded = from.loaded;
 	Modified = from.Modified;
-	int version = 1;
 
 	// Copy lines
-	int lasttime = -1;
 	for (list<AssEntry*>::iterator cur=from.Line.begin();cur!=from.Line.end();cur++) {
 		Line.push_back((*cur)->Clone());
 	}
@@ -465,7 +462,7 @@ void AssFile::InsertStyle (AssStyle *style) {
 	AssEntry *curEntry;
 	list<AssEntry*>::iterator lastStyle = Line.end();
 	list<AssEntry*>::iterator cur;
-	int lasttime;
+	int lasttime = -1;
 	wxString lastGroup;
 
 	// Look for insert position

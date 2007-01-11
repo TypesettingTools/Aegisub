@@ -107,7 +107,7 @@ wxArrayString MySpellThesaurus::GetLanguageList() {
 
 	// For each idxtionary match, see if it can find the corresponding .dat
 	for (unsigned int i=0;i<idx.Count();i++) {
-		wxString curdat = idx[i].Left(MAX(0,idx[i].Length()-4)) + _T(".dat");
+		wxString curdat = idx[i].Left(MAX(0,signed(idx[i].Length())-4)) + _T(".dat");
 		for (unsigned int j=0;j<dat.Count();j++) {
 			// Found match
 			if (curdat == dat[j]) {

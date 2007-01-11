@@ -152,12 +152,12 @@ void FrameRate::Load(wxString filename) {
 
 
 				for (int i = 0; i <= lstart - lposition - 2; i++)
-					AddFrame(floor(currenttime+(i*1000) / AverageFrameRate));
+					AddFrame((int)(floor(currenttime+(i*1000) / AverageFrameRate)));
 
 				currenttime += ((lstart - lposition - 1)*1000) / AverageFrameRate;
 
 				for (int i = 0; i <= lend - lstart; i++)
-					AddFrame(floor(currenttime+(i*1000) / lfps));
+					AddFrame((int)(floor(currenttime+(i*1000) / lfps)));
 
 				currenttime += ((lend - lstart + 1)*1000) / lfps;
 
@@ -275,8 +275,8 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 	// Get for constant frame rate
 	if (FrameRateType == CFR || Frame.size() == 0) {
 		double value = double(ms) * AverageFrameRate / 1000.0;
-		if (useceil) return ceil(value);
-		else return floor(value);
+		if (useceil) return (int)ceil(value);
+		else return (int)floor(value);
 	}
 
 	// Get for variable frame rate
@@ -318,8 +318,8 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 		
 		// After VFR range
 		else {
-			if (useceil) return last_frame + ceil((ms-last_time) * AverageFrameRate / 1000);
-			else return last_frame + floor((ms-last_time) * AverageFrameRate / 1000);
+			if (useceil) return (int)(last_frame + ceil((ms-last_time) * AverageFrameRate / 1000));
+			else return (int)(last_frame + floor((ms-last_time) * AverageFrameRate / 1000));
 		}
 	}
 	return -1;
@@ -337,7 +337,7 @@ int FrameRate::PTimeAtFrame(int frame) {
 
 	// Constant frame rate
 	if (FrameRateType == CFR || Frame.size() == 0) {
-		return floor(double(frame) / AverageFrameRate * 1000.0);
+		return (int)floor(double(frame) / AverageFrameRate * 1000.0);
 	}
 	
 	// Variable frame rate
@@ -346,7 +346,7 @@ int FrameRate::PTimeAtFrame(int frame) {
 		if (frame < (signed) Frame.size()) return Frame.at(frame);
 
 		// Otherwise, calculate it
-		else return floor(Frame.back() + double(frame-Frame.size()+1) / AverageFrameRate * 1000.0);
+		else return (int)floor(Frame.back() + double(frame-Frame.size()+1) / AverageFrameRate * 1000.0);
 	}
 
 	// Unknown frame rate type
@@ -429,7 +429,7 @@ double FrameRate::GetCommonFPS() {
 		curDist = Frame[i]-Frame[i-1];
 
 		// See if it's close enough to the last
-		if ((abs(curDist - lastDist) < 2 || i-1 == sectionStart) && i != Frame.size()-1) {
+		if ((abs(curDist - lastDist) < 2 || i-1 == (unsigned) sectionStart) && i != Frame.size()-1) {
 			lastDist = curDist;
 			continue;
 		}
