@@ -53,19 +53,19 @@ class ToggleBitmap;
 
 ///////////////////
 // Video box class
-class VideoBox {
+class VideoBox : public wxPanel {
 public:
 	ToggleBitmap *AutoScroll;
 	wxBoxSizer *VideoSizer;
 	wxBoxSizer *videoSliderSizer;
-	wxPanel *videoPage;
+	wxWindow *videoPage;
 	wxTextCtrl *VideoPosition;
 	wxTextCtrl *VideoSubsPos;
 	VideoDisplay *videoDisplay;
 	VideoSlider *videoSlider;
 	//VideoZoomSlider *zoomSlider;
 
-	VideoBox (wxPanel *parent);
+	VideoBox (wxWindow *parent);
 };
 
 

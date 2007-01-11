@@ -59,6 +59,7 @@
 #include "audio_display.h"
 #include "main.h"
 #include "video_slider.h"
+#include "video_box.h"
 #if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
 #include "../FexTrackerSource/FexTrackingFeature.h"
@@ -136,6 +137,8 @@ void  VideoDisplay::UpdateSize() {
 		int _w,_h;
 		GetSize(&_w,&_h);
 		SetSizeHints(_w,_h,_w,_h);
+
+		box->VideoSizer->Fit(box);
 	}
 }
 
@@ -375,7 +378,7 @@ void VideoDisplay::SetZoom(double value) {
 		provider->SetZoom(value);
 		UpdateSize();
 		RefreshVideo();
-		GetParent()->Layout();
+		box->GetParent()->Layout();
 	}
 }
 

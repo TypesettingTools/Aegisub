@@ -438,7 +438,7 @@ void FrameMain::InitContents() {
 
 	// Video area;
 	videoBox = new VideoBox(Panel);
-	TopSizer->Add(videoBox->VideoSizer,0,wxEXPAND,0);
+	TopSizer->Add(videoBox,0,wxEXPAND,0);
 	videoBox->videoDisplay->zoomBox = ZoomBox;
 
 	// Subtitles area
@@ -764,7 +764,7 @@ void FrameMain::SetDisplayMode(int mode) {
 		}
 
 		// Set display
-		TopSizer->Show(videoBox->VideoSizer,showVid,true);
+		TopSizer->Show(videoBox,showVid,true);
 		ToolSizer->Show(audioBox,showAudio,true);
 	}
 
@@ -774,13 +774,10 @@ void FrameMain::SetDisplayMode(int mode) {
 	EditBox->SetSplitLineMode();
 	MainSizer->CalcMin();
 	MainSizer->RecalcSizes();
-	videoBox->VideoSizer->Layout();
+	//videoBox->VideoSizer->Layout();
 	MainSizer->Layout();
 	Layout();
 	Show(true);
-	//int cw,ch;
-	//GetSize(&cw,&ch);
-	//SetSize(cw-1,ch-1);
 	Thaw();
 }
 

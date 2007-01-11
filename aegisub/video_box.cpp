@@ -47,9 +47,11 @@
 
 ///////////////
 // Constructor
-VideoBox::VideoBox(wxPanel *parent) {
+VideoBox::VideoBox(wxWindow *parent) 
+: wxPanel (parent,-1)
+{
 	// Buttons
-	videoPage = parent;
+	videoPage = this;
 	wxBitmapButton *VideoPlayButton = new wxBitmapButton(videoPage,Video_Play,wxBITMAP(button_play),wxDefaultPosition,wxSize(25,-1));
 	VideoPlayButton->SetToolTip(_("Play video starting on this position"));
 	wxBitmapButton *VideoPlayLineButton = new wxBitmapButton(videoPage,Video_Play_Line,wxBITMAP(button_playline),wxDefaultPosition,wxSize(25,-1));
@@ -82,10 +84,25 @@ VideoBox::VideoBox(wxPanel *parent) {
 	videoDisplay->ControlSlider = videoSlider;
 	videoDisplay->PositionDisplay = VideoPosition;
 	videoDisplay->SubsPosition = VideoSubsPos;
+	videoDisplay->box = this;
 	videoDisplay->Reset();
 
 	// Set display
 	videoSlider->Display = videoDisplay;
+	
+	// Typesetting buttons
+	wxSizer *typeSizer = new wxBoxSizer(wxVERTICAL);
+	typeSizer->Add(new wxButton(videoPage,-1,_T("a"),wxDefaultPosition,wxSize(20,20)),0,0,0);
+	typeSizer->Add(new wxButton(videoPage,-1,_T("b"),wxDefaultPosition,wxSize(20,20)),0,0,0);
+	typeSizer->Add(new wxButton(videoPage,-1,_T("c"),wxDefaultPosition,wxSize(20,20)),0,0,0);
+	typeSizer->Add(new wxButton(videoPage,-1,_T("d"),wxDefaultPosition,wxSize(20,20)),0,0,0);
+	typeSizer->Add(new wxButton(videoPage,-1,_T("e"),wxDefaultPosition,wxSize(20,20)),0,0,0);
+	typeSizer->AddStretchSpacer(1);
+
+	// Top sizer
+	wxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);
+	topSizer->Add(typeSizer,0,wxEXPAND,0);
+	topSizer->Add(videoDisplay,1,wxEXPAND,0);
 
 	// Sizers
 	videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -101,7 +118,8 @@ VideoBox::VideoBox(wxPanel *parent) {
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
-	VideoSizer->Add(videoDisplay,1,wxEXPAND,0);
+	VideoSizer->Add(topSizer,1,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
 	VideoSizer->Add(videoBottomSizer,0,wxEXPAND,0);
+	SetSizer(VideoSizer);
 }

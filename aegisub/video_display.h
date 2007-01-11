@@ -56,6 +56,7 @@ class AudioDisplay;
 class AssDialogue;
 class VideoProvider;
 class VideoDisplayVisual;
+class VideoBox;
 
 
 //////////////
@@ -114,6 +115,7 @@ public:
 	void SetKeyFramesName(wxString name) { keyFramesFilename = name; }
 
 	VideoProvider *provider;
+	VideoBox *box;
 
 	SubtitlesGrid *grid;
 	wxString videoName;
