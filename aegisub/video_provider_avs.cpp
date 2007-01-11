@@ -190,15 +190,31 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		}
 
 		// Open d2v with mpeg2dec3
-		else if (extension == _T(".d2v") && env->FunctionExists("mpeg2dec3_Mpeg2Source") && mpeg2dec3_priority) { 
-			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with mpeg2dec3_Mpeg2Source"));
-			script = env->Invoke("mpeg2dec3_Mpeg2Source", videoFilename);
+		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Dec3_Mpeg2Source") && mpeg2dec3_priority) {
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with Mpeg2Dec3_Mpeg2Source"));
+			script = env->Invoke("Mpeg2Dec3_Mpeg2Source", videoFilename);
+
+            //if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
+        	if (env->FunctionExists("SetPlanarLegacyAlignment"))
+        		script = env->Invoke("SetPlanarLegacyAlignment", script);
 		}
 
-		// If that fails, try opening it with other mpeg2source
+		// If that fails, try opening it with DGDecode
+		else if (extension == _T(".d2v") && env->FunctionExists("DGDecode_Mpeg2Source")) {
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with DGDecode_Mpeg2Source"));
+			script = env->Invoke("Mpeg2Source", videoFilename);
+
+            //note that DGDecode will also have issues like if the version is too ancient but no sane person
+            //would use that anyway
+		}
+
 		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Source")) {
 			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with other Mpeg2Source"));
 			script = env->Invoke("Mpeg2Source", videoFilename);
+
+            //if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
+        	if (env->FunctionExists("SetPlanarLegacyAlignment"))
+        		script = env->Invoke("SetPlanarLegacyAlignment", script);
 		}
 
 		// Some other format, such as mkv, mp4, ogm... try DirectShowSource
