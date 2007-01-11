@@ -775,7 +775,7 @@ void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 ///////////////////
 // Close keyframes
 void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
-	videoBox->videoDisplay->CloseOverKeyFrames();
+	LoadKeyframes(_T(""));
 }
 
 

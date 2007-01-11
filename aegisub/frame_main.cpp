@@ -1093,8 +1093,8 @@ void FrameMain::LoadKeyframes(wxString filename) {
 	if (filename.IsEmpty()) {
 		wxArrayInt keyFrames;
 		keyFrames.Empty();
-		videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
-		videoBox->videoDisplay->SetKeyFramesName(filename);
+		videoBox->videoDisplay->CloseOverKeyFrames();
+		videoBox->videoSlider->Refresh();
 		Refresh();
 		return;
 	}

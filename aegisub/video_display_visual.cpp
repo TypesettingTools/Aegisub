@@ -137,12 +137,27 @@ void VideoDisplayVisual::DrawOverlay() {
 	// Draw the control points for FexTracker
 	DrawTrackingOverlay(dc);
 
-	// Draw pivot points of visible lines
+	// Draw lines
 	if (mode != 0) {
 		int numRows = parent->grid->GetRows();
-		int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
-		int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
 		AssDialogue *diag;
+		AssDialogue *diagHigh = NULL;
+
+		// Find where the highlight is
+		if (mode == 1) {
+			int dx,dy;
+			for (int i=0;i<numRows;i++) {
+				diag = parent->grid->GetDialogue(i);
+				if (diag) {
+					if (VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true) <= frame_n && VFR_Output.GetFrameAtTime(diag->End.GetMS(),false) >= frame_n) {
+						GetLinePosition(diag,dx,dy);
+						if (x >= dx-8 && x <= dx+8 && y >= dy-8 && y <= dy+8) {
+							diagHigh = diag;
+						}
+					}
+				}
+			}
+		}
 
 		// For each line
 		for (int i=0;i<numRows;i++) {
@@ -152,6 +167,13 @@ void VideoDisplayVisual::DrawOverlay() {
 				bool draw = false;
 				bool high = false;
 				bool isCur = diag == curSelection;
+				bool timeVisible = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true) <= frame_n && VFR_Output.GetFrameAtTime(diag->End.GetMS(),false) >= frame_n;
+				bool show = timeVisible;
+				if (mode != 1) {
+					show = diag == parent->grid->GetDialogue(parent->grid->editBox->linen) && timeVisible;
+				}
+
+				// Variables
 				int dx = -1;
 				int dy = -1;
 				int orgx = -1;
@@ -165,7 +187,7 @@ void VideoDisplayVisual::DrawOverlay() {
 				int deltay = 0;
 
 				// Line visible?
-				if (isCur || (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs)) {
+				if (show) {
 					// Get position
 					if (isCur && mode == 1) {
 						dx = curX;
@@ -175,7 +197,7 @@ void VideoDisplayVisual::DrawOverlay() {
 					else GetLinePosition(diag,dx,dy,orgx,orgy);
 
 					// Mouse over?
-					if (mode == 1 && (x >= dx-8 && x <= dx+8 && y >= dy-8 && y <= dy+8)) {
+					if (diag == diagHigh) {
 						high = true;
 					}
 
@@ -353,7 +375,13 @@ void VideoDisplayVisual::DrawOverlay() {
 							dx2 = x;
 							dy2 = y;
 						}
-						else GetLineClip(diag,dx1,dy1,dx2,dy2);
+						else {
+							GetLineClip(diag,dx1,dy1,dx2,dy2);
+							dx1 = dx1 * w / sw;
+							dx2 = dx2 * w / sw;
+							dy1 = dy1 * h / sh;
+							dy2 = dy2 * h / sh;
+						}
 
 						// Draw rectangle
 						dc.SetPen(wxPen(colour[3],1));
@@ -815,7 +843,9 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 			int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
 			int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
 			AssDialogue *diag;
-			for (int i=0;i<numRows;i++) {
+
+			// Don't uninvert this loop or selection will break
+			for (int i=numRows;--i>=0;) {
 				diag = parent->grid->GetDialogue(i);
 				if (diag) {
 					// Line visible?
@@ -944,7 +974,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 		// Update
 		curAngle = screenAngle - startAngle + origAngle;
-		if (curAngle < 0.0) curAngle += 360.0;
+		while (curAngle < 0.0) curAngle += 360.0;
+		while (curAngle >= 360.0) curAngle -= 360.0;
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
 			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
@@ -962,8 +993,10 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		// Calculate
 		curAngle = screenAngle - startAngle + origAngle;
 		curAngle2 = screenAngle2 - startAngle2 + origAngle2;
-		if (curAngle < 0.0) curAngle += 360.0;
-		if (curAngle2 < 0.0) curAngle += 360.0;
+		while (curAngle < 0.0) curAngle += 360.0;
+		while (curAngle >= 360.0) curAngle -= 360.0;
+		while (curAngle2 < 0.0) curAngle2 += 360.0;
+		while (curAngle2 >= 360.0) curAngle2 -= 360.0;
 
 		// Update
 		if (realTime) {
