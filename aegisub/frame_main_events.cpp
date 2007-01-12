@@ -1463,10 +1463,10 @@ void FrameMain::OnToggleTags(wxCommandEvent &event) {
 	}
 
 	// Show on status bar
-	wxString message = _T("ASS Override Tag mode set to ");
-	if (tagMode == 0) message += _T("show full tags.");
-	if (tagMode == 1) message += _T("simplify tags.");
-	if (tagMode == 2) message += _T("hide tags.");
+	wxString message = _("ASS Override Tag mode set to ");
+	if (tagMode == 0) message += _("show full tags.");
+	if (tagMode == 1) message += _("simplify tags.");
+	if (tagMode == 2) message += _("hide tags.");
 	StatusTimeout(message,10000);
 
 	// Set option

@@ -151,6 +151,8 @@ void VideoDisplayVisual::DrawOverlay() {
 				if (diag) {
 					if (VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true) <= frame_n && VFR_Output.GetFrameAtTime(diag->End.GetMS(),false) >= frame_n) {
 						GetLinePosition(diag,dx,dy);
+						dx = dx * w / sw;
+						dy = dy * h / sh;
 						if (x >= dx-8 && x <= dx+8 && y >= dy-8 && y <= dy+8) {
 							diagHigh = diag;
 						}
@@ -641,8 +643,10 @@ void VideoDisplayVisual::GetLineScale(AssDialogue *diag,float &scalX,float &scal
 void VideoDisplayVisual::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) {
 	// Default values
 	x1 = y1 = 0;
-	x2 = parent->w-1;
-	y2 = parent->h-1;
+	int sw,sh;
+	parent->GetScriptSize(sw,sh);
+	x2 = sw-1;
+	y2 = sh-1;
 
 	// Prepare overrides
 	diag->ParseASSTags();
