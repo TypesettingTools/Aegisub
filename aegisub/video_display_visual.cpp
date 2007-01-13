@@ -853,7 +853,9 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 				diag = parent->grid->GetDialogue(i);
 				if (diag) {
 					// Line visible?
-					if (diag->Start.GetMS() <= startMs && diag->End.GetMS() >= endMs) {
+					int f1 = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
+					int f2 = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
+					if (f1 <= frame_n && f2 >= frame_n) {
 						// Get position
 						int lineX,lineY;
 						int torgx,torgy;

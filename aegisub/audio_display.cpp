@@ -1256,6 +1256,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				int start = karaoke->syllables.at(syl).position * 10 + dialogue->Start.GetMS();
 				int count = karaoke->syllables.at(syl).length * 10;
 				player->Play(GetSampleAtMS(start),GetSampleAtMS(count));
+				//return;
 			}
 		}
 	}
@@ -1329,7 +1330,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			}
 
 			// Dragging nothing, time from scratch
-			if (!gotGrab) {
+			if (!gotGrab && !karMode) {
 				if (buttonIsDown) {
 					if (leftIsDown) hold = 3;
 					else hold = 2;
