@@ -56,6 +56,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	AssFile *subs = AssFile::top;
 	grid = _grid;
 	vid = grid->video;
+	RegroupSourceSelected = 0;
 	
 	//Sizers
 	wxSizer *ResBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));

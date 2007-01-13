@@ -1200,42 +1200,38 @@ void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Get text
 	videoBox->videoDisplay->Stop();
-	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),FloatToString(videoBox->videoDisplay->GetAspectRatioValue()));
 	
+	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),FloatToString(videoBox->videoDisplay->GetAspectRatioValue()));
 	if (value.IsEmpty()) return;
+
 	value.MakeLower();
 
 	// Process text
 	double numval = 0.0;
-	if (value.Freq(_T(':')) == 1) {
-doNormalAR:
-		int pos = value.Find(_T(':'));
-		wxString num = value.Left(pos);
-		wxString denum = value.Mid(pos+1);
-		if (num.IsNumber() && denum.IsNumber()) {
-			double a,b;
-			num.ToDouble(&a);
-			denum.ToDouble(&b);
-			if (b != 0) numval = a/b;
-		}
+	if (value.ToDouble(&numval)) {
+		//Nothing to see here, move along
 	}
-	else if (value.Freq(_T('x')) == 1) {
-		int pos = value.Find(_T('x'));
-		wxString width = value.Left(pos);
-		wxString height = value.Mid(pos+1);
-		if (width.IsNumber() && height.IsNumber()) {
-			double w,h;
-			width.ToDouble(&w);
-			height.ToDouble(&h);
-			if (h != 0) {
-				numval = w/h;
-				videoBox->videoDisplay->SetZoom(h / videoBox->videoDisplay->h);
+	else {
+		double a,b;
+		int pos=0;
+		bool scale=false;
+		
+		//Why bloat using Contains when we can just check the output of Find?
+		pos = value.Find(':');
+		if (pos==wxNOT_FOUND) pos = value.Find('/');
+		if (pos==wxNOT_FOUND&&value.Contains(_T('x'))) {
+			pos = value.Find('x');
+			scale=true;
+		}
+
+		if (pos>0) {
+			wxString num = value.Left(pos);
+			wxString denum = value.Mid(pos+1);
+			if (num.ToDouble(&a) && denum.ToDouble(&b) && b!=0) {
+				numval = a/b;
+				if (scale) videoBox->videoDisplay->SetZoom(b / videoBox->videoDisplay->h);
 			}
 		}
-	}
-	else if (value.Freq(_T(':')) < 1) {
-		value.Append(_T(":1"));
-		goto doNormalAR;
 	}
 
 	// Sanity check
