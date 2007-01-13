@@ -196,6 +196,7 @@ public:
 	wxString GetSSAText();
 	bool CollidesWith(AssDialogue *target);					// Checks if two lines collide
 	void ClearBlocks();
+	wxString GetStrippedText();
 
 	AssEntry *Clone();
 

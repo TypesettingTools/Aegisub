@@ -326,6 +326,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, _("S&hift Times...") + wxString(_T("\t")) + Hotkeys.GetText(_T("Shift times")), _("Shift subtitles by time or frames"),wxBITMAP(shift_times_toolbutton));
 	AppendBitmapMenuItem(timingMenu,Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"),wxBITMAP(sort_times_button));
 	AppendBitmapMenuItem(timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), wxBITMAP(timing_processor_toolbutton));
+	AppendBitmapMenuItem (timingMenu,Menu_Tools_Kanji_Timer,_("Kanji Timer..."),_("Open Kanji timer"),wxBITMAP(blank_button));
 	timingMenu->AppendSeparator();
 	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video, _("Snap Start to Video") + wxString(_T("\t")) + Hotkeys.GetText(_T("Set Start To Video")), _("Set start of selected subtitles to current video frame"), wxBITMAP(substart_to_video));
 	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, _("Snap End to Video") + wxString(_T("\t")) + Hotkeys.GetText(_T("Set End to Video")), _("Set end of selected subtitles to current video frame"), wxBITMAP(subend_to_video));

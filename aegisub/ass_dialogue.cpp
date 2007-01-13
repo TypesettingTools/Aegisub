@@ -756,6 +756,19 @@ bool AssDialogue::CollidesWith(AssDialogue *target) {
 }
 
 
+////////////////////////
+// Return just the text without any overrides
+wxString AssDialogue::GetStrippedText() {
+	wxString justtext = wxString(_T(""));
+	bool inCode = false;
+	
+	for (int charindex = 0; charindex != Text.Len(); charindex++) {
+		if (Text[charindex] == '{') inCode = true;
+		else if (Text[charindex] == '}') inCode = false;
+		else if (!inCode) justtext = justtext + Text[charindex];
+	}
+	return justtext;
+}
 /////////
 // Clone
 AssEntry *AssDialogue::Clone() {
@@ -905,3 +918,6 @@ void AssDialogueBlockDrawing::MultiplyCoords(double x,double y) {
 	final = final.Left(final.Length()-1);
 	text = final;
 }
+
+
+

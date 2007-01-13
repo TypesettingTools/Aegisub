@@ -68,6 +68,7 @@
 #include "dialog_selection.h"
 #include "dialog_styling_assistant.h"
 #include "dialog_resample.h"
+#include "dialog_kanji_timer.h"
 #include "audio_display.h"
 #include "toggle_bitmap.h"
 #include "dialog_hotkeys.h"
@@ -163,6 +164,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Tools_Styling, FrameMain::OnOpenStylingAssistant)
 	EVT_MENU(Menu_Tools_Resample, FrameMain::OnOpenResample)
 	EVT_MENU(Menu_Tools_Timing_Processor, FrameMain::OnOpenTimingProcessor)
+	EVT_MENU(Menu_Tools_Kanji_Timer, FrameMain::OnOpenKanjiTimer)
 	EVT_MENU(Menu_Tools_Hotkeys, FrameMain::OnOpenHotkeys)
 	EVT_MENU(Menu_Tools_Options, FrameMain::OnOpenOptions)
 	
@@ -930,7 +932,12 @@ void FrameMain::OnOpenTimingProcessor (wxCommandEvent &event) {
 	DialogTimingProcessor timing(this,SubsBox);
 	timing.ShowModal();
 }
-
+/////////////////////////////////////
+// Open Kanji Timer dialog
+void FrameMain::OnOpenKanjiTimer (wxCommandEvent &event) {
+	DialogKanjiTimer kanjitimer(this,SubsBox);
+	kanjitimer.ShowModal();
+}
 
 ///////////////////////
 // Open Hotkeys dialog
