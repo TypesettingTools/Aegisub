@@ -87,6 +87,7 @@ private:
 	void OnUseThesaurusSuggestion(wxCommandEvent &event);
 	void OnSetDicLanguage(wxCommandEvent &event);
 	void OnSetThesLanguage(wxCommandEvent &event);
+	void OnLoseFocus(wxFocusEvent &event);
 
 public:
 	SubsEditBox *control;

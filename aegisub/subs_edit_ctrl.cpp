@@ -149,6 +149,7 @@ SubsTextEditCtrl::~SubsTextEditCtrl() {
 // Control event table
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
 	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
+	EVT_KILL_FOCUS(SubsTextEditCtrl::OnLoseFocus)
 
 	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsTextEditCtrl::OnSplitLinePreserve)
 	EVT_MENU(EDIT_MENU_SPLIT_ESTIMATE,SubsTextEditCtrl::OnSplitLineEstimate)
@@ -163,6 +164,14 @@ BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
 	EVT_MENU_RANGE(EDIT_MENU_DIC_LANGS,EDIT_MENU_THES_LANGUAGE-1,SubsTextEditCtrl::OnSetDicLanguage)
 	EVT_MENU_RANGE(EDIT_MENU_THES_LANGS,EDIT_MENU_THES_LANGS+100,SubsTextEditCtrl::OnSetThesLanguage)
 END_EVENT_TABLE()
+
+
+//////////////
+// Lose focus
+void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
+	CallTipCancel();
+	event.Skip();
+}
 
 
 //////////////
