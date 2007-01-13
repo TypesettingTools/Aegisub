@@ -1109,7 +1109,7 @@ void FrameMain::LoadKeyframes(wxString filename) {
 
 		// Read header
 		wxString cur = file.ReadLineFromFile();
-		if (cur != _T("# keyframe format v1")) _T("Invalid keyframes file.");
+		if (cur != _T("# keyframe format v1")) throw _T("Invalid keyframes file.");
 		cur = file.ReadLineFromFile();
 		if (cur.Left(4) != _T("fps ")) throw _T("Invalid keyframes file.");
 		cur = cur.Mid(4);
