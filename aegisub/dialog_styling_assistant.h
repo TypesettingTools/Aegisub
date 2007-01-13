@@ -89,7 +89,6 @@ private:
 	void OnPlayButton(wxCommandEvent &event);
 
 	void SetStyle (wxString curName,bool jump=true);
-	void LoadStyles();
 
 	static int lastx, lasty;
 

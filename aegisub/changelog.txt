@@ -28,6 +28,7 @@ Please visit http://aegisub.net to download latest version
   o The "Play" shortcut will always play, regardless of whether it was already playing or not. There is a new shortcut for "Stop".
   o Styles for line start/end markers have changed.
   o Holding down ctrl lets you retime the original line while in Karaoke mode.
+- Added Kanji Timing (AKA Karaoke Timing Copy) functionality. (Dansolo)
 - Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections. (jfs)
 - Fixed loading of sections with unexpected cases. (AMZ)
 - Plain-text export (jfs)

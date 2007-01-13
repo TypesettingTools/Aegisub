@@ -63,6 +63,7 @@ private:
 	wxComboBox		*SourceStyle, *DestStyle;
 	wxListCtrl		*GroupsList;
 
+	wxString TextBeforeKaraoke;
 	wxString *RegroupSourceText, *RegroupGroups;
 	int *RegroupSourceKLengths;
 	int RegroupSourceSelected, RegroupTotalLen;
@@ -76,13 +77,16 @@ private:
 	void OnGoBack(wxCommandEvent &event);
 	void OnAccept(wxCommandEvent &event);
 	int ListIndexFromStyleandIndex(wxString StyleName, int Occurance);
-	int DialogKanjiTimer::GetSourceArrayPos(bool GoingDown);
-	void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event);
+	int GetSourceArrayPos(bool GoingDown);
+	inline void OnKeyEnter(wxCommandEvent &event);
+	inline void SetSourceSelected();
+	inline void SetDestSelected();
 
 
 public:
 	DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *grid);
 	void OnKeyDown(wxKeyEvent &event);
+	inline void OnMouseEvent(wxMouseEvent &event);
 	DECLARE_EVENT_TABLE()
 };
 
@@ -92,8 +96,8 @@ public:
 class DialogKanjiTimerEvent : public wxEvtHandler {
 private:
 	DialogKanjiTimer *control;
-
 	void KeyHandler(wxKeyEvent &event);
+	void MouseHandler(wxMouseEvent &event);
 
 public:
 	DialogKanjiTimerEvent(DialogKanjiTimer *control);

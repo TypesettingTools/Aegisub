@@ -71,7 +71,6 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	SourceText->SetEventHandler(new DialogKanjiTimerEvent(this));
 	DestText->SetEventHandler(new DialogKanjiTimerEvent(this));
 
-
 	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
 	SourceStyle=new wxComboBox(this,-1,_(""),wxDefaultPosition,wxSize(160,-1),
@@ -147,9 +146,15 @@ END_EVENT_TABLE()
 
 void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 	SourceIndex = DestIndex = 0;
-	OnSkipSource((wxCommandEvent)NULL);
-	OnSkipDest((wxCommandEvent)NULL);
-	DestText->SetFocus();
+	if (SourceStyle->GetValue().Len() == 0 || DestStyle->GetValue().Len() == 0)
+		wxMessageBox(_("Select source and destination styles first."),_("Error"),wxICON_EXCLAMATION | wxOK);
+	else if (SourceStyle->GetValue() == DestStyle->GetValue())
+		wxMessageBox(_("The source and destination styles must be different."),_("Error"),wxICON_EXCLAMATION | wxOK);
+	else {
+		OnSkipSource((wxCommandEvent)NULL);
+		OnSkipDest((wxCommandEvent)NULL);
+		DestText->SetFocus();
+	}
 }
 void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
 	int sourceLen = SourceText->GetStringSelection().Len();
@@ -158,18 +163,25 @@ void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
 		wxString sourceText = SourceText->GetValue();
 		wxString destText = DestText->GetValue();
 		
-		wxListItem itm;
-		int i = GroupsList->GetItemCount();
-		GroupsList->InsertItem(i,itm);
-		GroupsList->SetItem(i,0,SourceText->GetStringSelection());
-		GroupsList->SetItem(i,1,DestText->GetStringSelection());
 		RegroupGroups[RegroupSourceSelected<<1] = SourceText->GetStringSelection();
 		RegroupGroups[(RegroupSourceSelected<<1)+1] = DestText->GetStringSelection();
 
-		SourceText->SetValue(sourceText.Right(sourceText.Len()-sourceLen));
-		DestText->SetValue(destText.Right(destText.Len()-destLen));
+		wxListItem itm;
+		int i = GroupsList->GetItemCount();
+		GroupsList->InsertItem(i,itm);
+		GroupsList->SetItem(i,0,RegroupGroups[RegroupSourceSelected<<1]);
+		GroupsList->SetItem(i,1,RegroupGroups[(RegroupSourceSelected<<1)+1]);
+
+		SourceText->ChangeValue(sourceText.Right(sourceText.Len()-sourceLen));
+		DestText->ChangeValue(destText.Right(destText.Len()-destLen));
 		
+		SetSourceSelected();
+		SetDestSelected();
+
 		RegroupSourceSelected++;
+	}
+	else {
+		wxMessageBox(_("Select source text first."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	}
 	DestText->SetFocus();
 }
@@ -184,6 +196,7 @@ void DialogKanjiTimer::OnUnlink(wxCommandEvent &event) {
 }
 void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 	GroupsList->DeleteAllItems();
+	TextBeforeKaraoke = _T("");
 
 	int index = ListIndexFromStyleandIndex(SourceStyle->GetValue(), SourceIndex);
 	if (index != -1) {
@@ -191,12 +204,11 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 		AssDialogueBlockOverride	*override;
 		AssDialogueBlockPlain		*plain;
 		AssOverrideTag				*tag;
-		int							k, kIndex=0, textIndex=0;
+		int							k, kIndex=0, textIndex=0, TextBeforeOffset=0;
 		bool						LastWasOverride = false;
 
 		line = grid->GetDialogue(index);
 		wxString StrippedText = line->GetStrippedText();
-		SourceText->ChangeValue(StrippedText);
 		line->ParseASSTags();
 		size_t blockn = line->Blocks.size();
 		
@@ -229,14 +241,33 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 
 			plain = AssDialogueBlock::GetAsPlain(line->Blocks.at(i));
 			if (plain) {
-				RegroupSourceText[textIndex++] = plain->text;
-				LastWasOverride = false;
+				if (kIndex==0) {
+					/*kIndex hasn't been incremented yet so this is text before a \k
+					 *This will throw off our processing.
+					 *Ask the user to copy it over or ignore it.
+					 */
+					int result = wxMessageBox(_("The source line contains text before the first karaoke block.\nDo you want to carry it over to the destination?\nIt will be ignored otherwise."),
+						         _("Question"),wxICON_QUESTION|wxYES_NO|wxYES_DEFAULT);
+					TextBeforeOffset = plain->text.Len();
+					if (result==wxYES)
+						TextBeforeKaraoke = plain->text;
+				}
+				else {
+					RegroupSourceText[textIndex++] = plain->text;
+					LastWasOverride = false;
+				}
 			}
 		}
-		RegroupTotalLen = kIndex; //should be the same as textIndex, todo: make sure of that?
+
+		RegroupTotalLen = kIndex; //should be the same as textIndex
+		if (kIndex != textIndex) //...or there was likely an error parsing, alert but don't halt
+			wxMessageBox(_("Possible error parsing source line"),_("Error"),wxICON_EXCLAMATION | wxOK);
+
+		SourceText->ChangeValue(StrippedText.Right(StrippedText.Len()-TextBeforeOffset));
+
 		RegroupSourceSelected = 0;
 		SourceIndex++;
-		SourceText->SetSelection(0,RegroupTotalLen==0?0:RegroupSourceText[0].Len());
+		SetSourceSelected();
 	}
 	DestText->SetFocus();
 }
@@ -247,10 +278,7 @@ void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 		AssDialogue *line = grid->GetDialogue(index);
 		DestText->ChangeValue(grid->GetDialogue(index)->GetStrippedText());
 		
-		if (DestText->GetValue().StartsWith(SourceText->GetStringSelection()))
-			DestText->SetSelection(0,SourceText->GetStringSelection().Len());
-		else
-			DestText->SetSelection(0,0);
+		SetDestSelected();
 		
 		DestText->SetFocus();
 		DestIndex++;
@@ -263,39 +291,45 @@ void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
 	OnSkipDest((wxCommandEvent)NULL);
 }
 void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
-	wxString OutputText = _T("");
-	wxString ThisText;
-	AssDialogue *line = grid->GetDialogue(ListIndexFromStyleandIndex(DestStyle->GetValue(), DestIndex-1));
-	int ItemCount = GroupsList->GetItemCount();
-	int SourceLength;
-	int WorkingK = 0;
-	int SourceIndex = 0;
+	if (RegroupTotalLen==0)
+		wxMessageBox(_("Group some text first."),_("Error"),wxICON_EXCLAMATION | wxOK);
+	else if (SourceText->GetValue().Len()!=0)
+		wxMessageBox(_("Group all of the source text."),_("Error"),wxICON_EXCLAMATION | wxOK);
+	else {
+		wxString OutputText = TextBeforeKaraoke;
+		wxString ThisText;
+		AssDialogue *line = grid->GetDialogue(ListIndexFromStyleandIndex(DestStyle->GetValue(), DestIndex-1));
+		int ItemCount = GroupsList->GetItemCount();
+		int SourceLength;
+		int WorkingK = 0;
+		int SourceIndex = 0;
 
-	for(int index=0;index!=ItemCount;index++) {
-		SourceLength = RegroupGroups[index<<1].Len();
+		for(int index=0;index!=ItemCount;index++) {
+			SourceLength = RegroupGroups[index<<1].Len();
 
-		if (RegroupSourceText[SourceIndex].Len() == 0) {
-			//Karaoke block w/o text that is NOT in the middle of a group, just copy it over
-			//  since we can't figure out if it should go to the previous or the next group
-			OutputText = wxString::Format(_("%s{\\k%i}"),OutputText,RegroupSourceKLengths[SourceIndex]);
-			SourceIndex++;
+			if (RegroupSourceText[SourceIndex].Len() == 0) {
+				//Karaoke block w/o text that is NOT in the middle of a group, just copy it over
+				//  since we can't figure out if it should go to the previous or the next group
+				OutputText = wxString::Format(_("%s{\\k%i}"),OutputText,RegroupSourceKLengths[SourceIndex]);
+				SourceIndex++;
+			}
+
+			while(SourceLength>0) {
+				WorkingK += RegroupSourceKLengths[SourceIndex];
+				SourceLength -= (RegroupSourceText[SourceIndex]).Len();
+				SourceIndex++;
+			}
+			OutputText = wxString::Format(_("%s{\\k%i}%s"),OutputText,WorkingK,RegroupGroups[(index<<1)+1]);
+		
+			WorkingK = 0;
 		}
+		line->Text = OutputText;
+		grid->ass->FlagAsModified();
+		grid->CommitChanges();
 
-		while(SourceLength>0) {
-			WorkingK += RegroupSourceKLengths[SourceIndex];
-			SourceLength -= (RegroupSourceText[SourceIndex]).Len();
-			SourceIndex++;
-		}
-		OutputText = wxString::Format(_("%s{\\k%i}%s"),OutputText,WorkingK,RegroupGroups[(index<<1)+1]);
-	
-		WorkingK = 0;
+		OnSkipSource((wxCommandEvent)NULL);
+		OnSkipDest((wxCommandEvent)NULL);
 	}
-	line->Text = OutputText;
-	grid->ass->FlagAsModified();
-	grid->CommitChanges();
-
-	OnSkipSource((wxCommandEvent)NULL);
-	OnSkipDest((wxCommandEvent)NULL);
 }
 void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 	int KeyCode = event.GetKeyCode();
@@ -325,23 +359,31 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 			}
 			break;
 		case WXK_RETURN :
-			if (SourceText->GetValue().Len()==0&&GroupsList->GetItemCount()!=0)
-				this->OnAccept((wxCommandEvent)NULL);
-			else if (SourceText->GetStringSelection().Len()!=0)
-				this->OnLink((wxCommandEvent)NULL);
+			OnKeyEnter((wxCommandEvent)NULL);
 			break;
 		default :
 			event.Skip();
 	}
 }
 void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event) {
-	if (SourceText->GetValue().Len()==0&&GroupsList->GetItemCount()!=0)
+	if (SourceText->GetValue().Len()==0&&RegroupTotalLen!=0)
 		this->OnAccept((wxCommandEvent)NULL);
 	else if (SourceText->GetStringSelection().Len()!=0)
 		this->OnLink((wxCommandEvent)NULL);
-
 }
-
+void DialogKanjiTimer::OnMouseEvent(wxMouseEvent &event) {
+	if (event.LeftDown()) DestText->SetFocus();
+}
+void DialogKanjiTimer::SetSourceSelected() {
+	if (SourceText->GetValue().Len()!=0)
+		SourceText->SetSelection(0,RegroupSourceText[GetSourceArrayPos(false)].Len());
+}
+void DialogKanjiTimer::SetDestSelected() {
+		if (DestText->GetValue().StartsWith(SourceText->GetStringSelection()))
+			DestText->SetSelection(0,SourceText->GetStringSelection().Len());
+		else if (DestText->GetValue().Len() != 0)
+			DestText->SetSelection(0,1);
+}
 ////////////////////////////////////////////////////
 // Gets the current position in RegroupSourceText //
 int DialogKanjiTimer::GetSourceArrayPos(bool GoingDown) {
@@ -395,7 +437,12 @@ DialogKanjiTimerEvent::DialogKanjiTimerEvent(DialogKanjiTimer *ctrl) {
 // Event table
 BEGIN_EVENT_TABLE(DialogKanjiTimerEvent, wxEvtHandler)
 	EVT_KEY_DOWN(DialogKanjiTimerEvent::KeyHandler)
+	EVT_MOUSE_EVENTS(DialogKanjiTimerEvent::MouseHandler)
 END_EVENT_TABLE()
 
 // Redirects
 void DialogKanjiTimerEvent::KeyHandler(wxKeyEvent &event) { control->OnKeyDown(event); }
+
+void DialogKanjiTimerEvent::MouseHandler(wxMouseEvent &event) {
+	control->OnMouseEvent(event);
+}

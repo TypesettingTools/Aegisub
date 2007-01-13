@@ -135,9 +135,6 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 	// h4x
 	origColour = TypeBox->GetBackgroundColour();
 
-	// Load styles
-	LoadStyles();
-
 	// Set selection
 	wxArrayInt sel = grid->GetSelection();
 	if (sel.Count() > 0) JumpToLine(sel[0]);
@@ -152,22 +149,6 @@ DialogStyling::~DialogStyling () {
 	if (needCommit) {
 		grid->ass->FlagAsModified();
 		grid->CommitChanges();
-	}
-}
-
-
-/////////////////////////
-// Load styles into list
-void DialogStyling::LoadStyles() {
-	// Clear
-	Styles->Clear();
-
-	// Add styles from ass
-	for (entryIter cur=AssFile::top->Line.begin();cur!=AssFile::top->Line.end();cur++) {
-		AssStyle *style = AssEntry::GetAsStyle(*cur);
-		if (style) {
-			Styles->Append(style->name);
-		}
 	}
 }
 
