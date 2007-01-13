@@ -913,6 +913,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 			if (mode == 1) {
 				startX = x;
 				startY = y;
+				curSelection->StripTag(_T("\\pos"));
+				curSelection->StripTag(_T("\\move"));
 			}
 
 			// Rotate Z
@@ -921,6 +923,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 				GetLineRotation(curSelection,rx,ry,rz);
 				origAngle = rz;
 				curAngle = rz;
+				curSelection->StripTag(_T("\\frz"));
+				curSelection->StripTag(_T("\\fr"));
 			}
 
 			// Rotate XY
@@ -932,6 +936,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 				origAngle2 = ry;
 				curAngle = rx;
 				curAngle2 = ry;
+				curSelection->StripTag(_T("\\frx"));
+				curSelection->StripTag(_T("\\fry"));
 			}
 
 			// Scale
@@ -945,13 +951,20 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 				origScaleY = scalY;
 				curScaleX = scalX;
 				curScaleY = scalY;
+				curSelection->StripTag(_T("\\fscx"));
+				curSelection->StripTag(_T("\\fscy"));
 			}
 
 			// Clip
 			if (mode == 5) {
 				startX = x;
 				startY = y;
+				curSelection->StripTag(_T("\\clip"));
 			}
+
+			// Commit changes to edit box
+			grid->editBox->TextEdit->SetTextTo(curSelection->Text);
+			grid->editBox->CommitText(true);
 
 			// Hold it
 			holding = true;

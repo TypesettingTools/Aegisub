@@ -579,6 +579,37 @@ void AssDialogue::StripTags () {
 }
 
 
+////////////////////////
+// Strip a specific tag
+void AssDialogue::StripTag (wxString tagName) {
+	// Parse
+	using std::list;
+	using std::vector;
+	ParseASSTags();
+	wxString final;
+
+	// Look for blocks
+	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
+		if ((*cur)->type == BLOCK_OVERRIDE) {
+			AssDialogueBlockOverride *over = AssDialogueBlock::GetAsOverride(*cur);
+			wxString temp;
+			for (size_t i=0;i<over->Tags.size();i++) {
+				if (over->Tags[i]->Name != tagName) temp += over->Tags[i]->ToString();
+			}
+
+			// Insert
+			if (!temp.IsEmpty()) final += _T("{") + temp + _T("}");
+		}
+		else final += (*cur)->GetText();
+	}
+
+	// Update
+	ClearBlocks();
+	Text = final;
+	UpdateData();
+}
+
+
 ///////////////////////
 // Convert tags to SRT
 // -------------------
