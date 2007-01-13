@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Dan Donovan (Dansolo)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -66,60 +66,64 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	wxBoxSizer *ResSizer1 = new wxBoxSizer(wxHORIZONTAL);
 
 
-	SourceText = new wxTextCtrl(this,TEXT_SOURCE,_T(""),wxDefaultPosition,wxSize(560,22),wxTE_READONLY|wxTE_NOHIDESEL|wxSIMPLE_BORDER|wxTE_RIGHT|wxTE_PROCESS_ENTER);
-	DestText = new wxTextCtrl(this,TEXT_DEST,_T(""),wxDefaultPosition,wxSize(560,22),wxTE_NOHIDESEL|wxSIMPLE_BORDER|wxTE_RIGHT|wxTE_PROCESS_ENTER);
+	SourceText = new wxTextCtrl(this,TEXT_SOURCE,_T(""),wxDefaultPosition,wxSize(460,-1),wxTE_READONLY|wxTE_NOHIDESEL|wxSIMPLE_BORDER|wxTE_RIGHT|wxTE_PROCESS_ENTER);
+	DestText = new wxTextCtrl(this,TEXT_DEST,_T(""),wxDefaultPosition,wxSize(460,-1),wxTE_NOHIDESEL|wxSIMPLE_BORDER|wxTE_RIGHT|wxTE_PROCESS_ENTER);
 	SourceText->SetEventHandler(new DialogKanjiTimerEvent(this));
 	DestText->SetEventHandler(new DialogKanjiTimerEvent(this));
 
 
-	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"),wxDefaultPosition,wxSize(380,160));
+	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
-	SourceStyle=new wxComboBox(this,-1,_(""),wxDefaultPosition,wxSize(200,24),
+	SourceStyle=new wxComboBox(this,-1,_(""),wxDefaultPosition,wxSize(160,-1),
 								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Source Style"));
-	DestStyle = new wxComboBox(this,-1,_(""),wxDefaultPosition,wxSize(200,24),
+	DestStyle = new wxComboBox(this,-1,_(""),wxDefaultPosition,wxSize(160,-1),
 								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Dest Style"));
 
-	GroupsList = new wxListCtrl(this,-1,wxDefaultPosition,wxSize(152,160),wxLC_REPORT|wxLC_NO_HEADER|wxLC_HRULES|wxLC_VRULES);
+	GroupsList = new wxListCtrl(this,-1,wxDefaultPosition,wxSize(180,100),wxLC_REPORT|wxLC_NO_HEADER|wxLC_HRULES|wxLC_VRULES);
 	GroupsList->InsertColumn(0, _T(""), wxLIST_FORMAT_CENTER, 72);
 	GroupsList->InsertColumn(1, _T(""), wxLIST_FORMAT_CENTER, 72);
+
 	//Buttons
-	wxButton *Start = new wxButton(this,BUTTON_KTSTART,_("Start"),wxDefaultPosition,wxSize(200,24));
-	wxButton *Link = new wxButton(this,BUTTON_KTLINK,_("Link"),wxDefaultPosition,wxSize(200,24));
-	wxButton *Unlink = new wxButton(this,BUTTON_KTUNLINK,_("Unlink"),wxDefaultPosition,wxSize(200,24));
-	wxButton *SkipSourceLine = new wxButton(this,BUTTON_KTSKIPSOURCE,_("Skip Source Line"),wxDefaultPosition,wxSize(200,24));
-	wxButton *SkipDestLine = new wxButton(this,BUTTON_KTSKIPDEST,_("Skip Dest Line"),wxDefaultPosition,wxSize(200,24));
-	wxButton *GoBackLine = new wxButton(this,BUTTON_KTGOBACK,_("Go Back a Line"),wxDefaultPosition,wxSize(200,24));
-	wxButton *AcceptLine = new wxButton(this,BUTTON_KTACCEPT,_("Accept Line"),wxDefaultPosition,wxSize(200,24));
+	wxButton *Start = new wxButton(this,BUTTON_KTSTART,_("Start"));
+	wxButton *Link = new wxButton(this,BUTTON_KTLINK,_("Link"));
+	wxButton *Unlink = new wxButton(this,BUTTON_KTUNLINK,_("Unlink"));
+	wxButton *SkipSourceLine = new wxButton(this,BUTTON_KTSKIPSOURCE,_("Skip Source Line"));
+	wxButton *SkipDestLine = new wxButton(this,BUTTON_KTSKIPDEST,_("Skip Dest Line"));
+	wxButton *GoBackLine = new wxButton(this,BUTTON_KTGOBACK,_("Go Back a Line"));
+	wxButton *AcceptLine = new wxButton(this,BUTTON_KTACCEPT,_("Accept Line"));
 
 	//Frame: Text
-	ResBoxSizer1->Add(SourceText,1,wxALIGN_CENTER,5);
-	ResBoxSizer1->Add(DestText,1,wxALIGN_CENTER,5);
+	ResBoxSizer1->Add(SourceText,0,wxALIGN_CENTER | wxBOTTOM | wxEXPAND,5);
+	ResBoxSizer1->Add(DestText,0,wxALIGN_CENTER | wxEXPAND,5);
 	//Frame: Shortcut Keys
-	ResBoxSizer2->Add(ShortcutKeys,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	ResBoxSizer2->Add(ShortcutKeys,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL | wxRIGHT,5);
 	//Frame: Groups
 	ResBoxSizer3->Add(GroupsList,1,wxALIGN_CENTER,5);
 	//Frame: Styles
-	ResBoxSizer4->Add(SourceStyle,1,wxALIGN_CENTER,5);
-	ResBoxSizer4->Add(DestStyle,1,wxALIGN_CENTER,5);
+	ResBoxSizer4->Add(SourceStyle,0,wxALIGN_CENTER | wxBOTTOM,5);
+	ResBoxSizer4->Add(DestStyle,0,wxALIGN_CENTER,5);
 	//Frame: Commands
-	ResBoxSizer5->Add(Start,1,wxALIGN_CENTER,10);
-	ResBoxSizer5->Add(Link,1,wxALIGN_CENTER,10);
-	ResBoxSizer5->Add(Unlink,1,wxALIGN_CENTER,10);
-	ResBoxSizer5->Add(SkipSourceLine,1,wxALIGN_CENTER,10);
-	ResBoxSizer5->Add(SkipDestLine,1,wxALIGN_CENTER,10);
-	ResBoxSizer5->Add(GoBackLine,1,wxALIGN_CENTER,10);
-	ResBoxSizer5->Add(AcceptLine,1,wxALIGN_CENTER,10);
+	ResBoxSizer5->AddStretchSpacer(1);
+	ResBoxSizer5->Add(Start,0,wxEXPAND | wxBOTTOM,5);
+	ResBoxSizer5->Add(Link,0,wxEXPAND | wxBOTTOM,5);
+	ResBoxSizer5->Add(Unlink,0,wxEXPAND | wxBOTTOM,5);
+	ResBoxSizer5->Add(SkipSourceLine,0,wxEXPAND | wxBOTTOM,5);
+	ResBoxSizer5->Add(SkipDestLine,0,wxEXPAND | wxBOTTOM,5);
+	ResBoxSizer5->Add(GoBackLine,0,wxEXPAND | wxBOTTOM,5);
+	ResBoxSizer5->Add(AcceptLine,0,wxEXPAND | wxBOTTOM,0);
+	ResBoxSizer5->AddStretchSpacer(1);
 
 	//Combine Shortcut Keys and Groups
-	ResSizer1->Add(ResBoxSizer2,0,wxALIGN_LEFT,5);
-	ResSizer1->Add(ResBoxSizer3,1,wxALIGN_RIGHT,5);
+	ResSizer1->Add(ResBoxSizer2,0,wxEXPAND | wxRIGHT,5);
+	ResSizer1->Add(ResBoxSizer3,1,wxEXPAND,5);
 	
 	// Main sizer
-	wxFlexGridSizer *MainSizer = new wxFlexGridSizer(2,2,10,10);
-	MainSizer->Add(ResBoxSizer1,1,0,5);
-	MainSizer->Add(ResBoxSizer4,1,0,5);
-	MainSizer->Add(ResSizer1,1,0,5);
-	MainSizer->Add(ResBoxSizer5,1,0,5);
+	wxFlexGridSizer *MainSizer = new wxFlexGridSizer(2,2,0,0);
+	MainSizer->Add(ResBoxSizer1,0,wxEXPAND | wxLEFT | wxRIGHT,5);
+	MainSizer->Add(ResBoxSizer4,0,wxEXPAND | wxLEFT | wxRIGHT,5);
+	MainSizer->Add(ResSizer1,0,wxEXPAND | wxALL,5);
+	MainSizer->Add(ResBoxSizer5,0,wxEXPAND | wxALL,5);
+	MainSizer->AddGrowableCol(0,1);
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 	CenterOnParent();
