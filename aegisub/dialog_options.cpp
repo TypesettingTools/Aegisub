@@ -96,7 +96,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		Bind(box,_T("Auto check for updates"));
 		genSizer4->Add(box,1,wxALL,0);
 		genSizer1->Add(genSizer4,1,wxEXPAND|wxALL,5);
-		wxSizer *genSizer2 = new wxStaticBoxSizer(wxVERTICAL,generalPage,_("Limits for Levels and Recent Files"));
+		wxSizer *genSizer2 = new wxStaticBoxSizer(wxVERTICAL,generalPage,_("Limits for levels and recent files"));
 		wxFlexGridSizer *genSizer3 = new wxFlexGridSizer(8,2,5,5);
 		wxString options[8] = { _T("Undo levels"), _T("Recent timecodes max"), _T("Recent keyframes max"), _T("Recent sub max"), _T("Recent vid max"), _T("Recent aud max"), _T("Recent find max"), _T("Recent replace max") };
 		wxString labels[8] = { _("Maximum undo levels"), _("Maximum recent timecode files"), _("Maximum recent keyframe files"), _("Maximum recent subtitle files"), _("Maximum recent video files"), _("Maximum recent audio files"), _("Maximum recent find strings"), _("Maximum recent replace strings") };
@@ -121,7 +121,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *fileMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *fileSizer1 = new wxStaticBoxSizer(wxVERTICAL,filePage,_("Auto-save"));
 		wxSizer *fileSizer2 = new wxBoxSizer(wxHORIZONTAL);
-		wxSizer *fileSizer3 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("File Paths"));
+		wxSizer *fileSizer3 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("File paths"));
 		wxFlexGridSizer *fileSizer4 = new wxFlexGridSizer(3,2,5,5);
 		wxSizer *fileSizer5 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("Miscelanea"));
 		wxFlexGridSizer *fileSizer6 = new wxFlexGridSizer(3,2,5,5);
@@ -215,7 +215,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 			wxString caption = labels2[i]+_T(": ");
 			wxString option = options2[i];
 			if (i < 8) {
-				caption = _("Syntax Highlighter - ") + caption;
+				caption = _("Syntax highlighter - ") + caption;
 				option = _T("Syntax highlight ") + option;
 			}
 			control = new ColourButton(editPage,-1,wxSize(40,10));
@@ -266,9 +266,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Second sizer
 		wxControl *control;
-		wxString labels2[12] = { _("Standard Foreground"), _("Standard Background"), _("Selection Foreground"), 
-			                     _("Selection Background"), _("Comment Background"), _("Selected Comment Background"),
-								 _("Collision Foreground"), _("Line In Frame Background"), _("Header"),
+		wxString labels2[12] = { _("Standard foreground"), _("Standard background"), _("Selection foreground"), 
+			                     _("Selection background"), _("Comment background"), _("Selected comment background"),
+								 _("Collision foreground"), _("Line in frame background"), _("Header"),
 		                         _("Left Column"), _("Active Line Border"), _("Lines") };
 		wxString options2[12] = { _T("standard foreground"), _T("background"), _T("selection foreground"),
 		                         _("selection background"), _T("comment background"), _T("selected comment background"),
@@ -337,7 +337,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices2,wxCB_READONLY | wxCB_DROPDOWN);
 		Bind(control,_T("Video Default Zoom"));
 		videoSizer3->Add(control,1,wxEXPAND);
-		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Fast Jump step in frames: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Fast jump step in frames: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		control = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
 		Bind(control,_T("Video fast jump step"));
 		videoSizer3->Add(control,1,wxEXPAND);
@@ -353,7 +353,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		videoSizer3->AddGrowableCol(1,1);
 
 		// Second sizer
-		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Video Provider: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Video provider: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		wxArrayString choices4;
 #ifdef __WINDOWS__
 		choices4.Add(_T("Avisynth"));
@@ -367,16 +367,16 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices4,wxCB_DROPDOWN | wxCB_READONLY);
 		Bind(control,_T("Video provider"),1);
 		videoSizer4->Add(control,1,wxEXPAND);
-		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth Video Resizer: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth video resizer: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		wxString choices5[3] = { _T("BilinearResize"), _T("BicubicResize"), _T("LanczosResize") };
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices5,wxCB_DROPDOWN);
 		Bind(control,_T("Video resizer"));
 		videoSizer4->Add(control,1,wxEXPAND);
-		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth Memory Limit: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth memory limit: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		control = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator(NULL,false));
 		Bind(control,_T("Avisynth memorymax"));
 		videoSizer4->Add(control,1,wxEXPAND);
-		control = new wxCheckBox(videoPage,-1,_("Threaded Video"));
+		control = new wxCheckBox(videoPage,-1,_("Threaded video"));
 		Bind(control,_T("Threaded video"));
 		videoSizer4->Add(control,1,wxEXPAND);
 		control = new wxCheckBox(videoPage,-1,_("Allow pre-2.56a Avisynth"));
@@ -454,19 +454,19 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		control = new wxTextCtrl(audioPage,-1);
 		Bind(control,_T("Audio HD Cache Location"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD Cache Path: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD cache path: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		control = new wxTextCtrl(audioPage,-1);
 		Bind(control,_T("Audio HD Cache Name"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD Cache Name: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD cache name: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
 		Bind(control,_T("Audio Spectrum Cutoff"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Spectrum Cutoff: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Spectrum cutoff: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
 		Bind(control,_T("Audio Spectrum Window"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Spectrum FFT Window Exponent: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Spectrum FFT window exponent: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 		audioSizer5->Add(control,1,wxEXPAND,0);
 		audioSizer5->AddGrowableCol(0,1);
 
@@ -492,7 +492,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxFlexGridSizer *displaySizer4 = new wxFlexGridSizer(14,2,2,2);
 
 		// First sizer
-		wxString labels1[4] = { _("Draw Secondary Lines"), _("Draw Selection Background"), _("Draw Timeline"), _("Draw Cursor Time") };
+		wxString labels1[4] = { _("Draw secondary lines"), _("Draw selection background"), _("Draw timeline"), _("Draw cursor time") };
 		wxString options1[4] = { _T("Draw Secondary Lines"), _T("Draw Selection Background") , _T("Draw Timeline"), _T("Draw Cursor Time")};
 		for (int i=0;i<4;i++) {
 			wxCheckBox *control = new wxCheckBox(displayPage,-1,labels1[i]);
@@ -502,14 +502,14 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Second sizer
 		wxControl *control;
-		wxString labels2[14] = { _("Play cursor"), _("Background"), _("Selection Background"), 
-		                         _("Selection Background - Modified"), _("Seconds Boundary"), _("Waveform"), 
-		                         _("Waveform - Selection"), _("Waveform - Modified"), _("Waveform - Inactive"), 
-		                         _("Boundary - Start"), _("Boundary - End"), _("Boundary - Inactive"), 
-		                         _("Syllable Text"), _("Syllable Boundary") };
-		wxString options2[14] = { _T("Play cursor"), _T("Background"), _T("Selection Background"), 
-		                          _T("Selection Background Modified"), _T("Seconds Boundaries"), _T("Waveform"), 
-		                          _T("Waveform Selected"), _T("Waveform Modified"), _T("Waveform Inactive"), 
+		wxString labels2[14] = { _("Play cursor"), _("Background"), _("Selection background"), 
+		                         _("Selection background - modified"), _("Seconds boundary"), _("Waveform"), 
+		                         _("Waveform - selection"), _("Waveform - modified"), _("Waveform - inactive"), 
+		                         _("Boundary - start"), _("Boundary - end"), _("Boundary - inactive"), 
+		                         _("Syllable text"), _("Syllable boundary") };
+		wxString options2[14] = { _T("Play cursor"), _T("Background"), _T("Selection background"), 
+		                          _T("Selection background modified"), _T("Seconds boundaries"), _T("Waveform"), 
+		                          _T("Waveform selected"), _T("Waveform Modified"), _T("Waveform Inactive"), 
 		                          _T("Line boundary start"), _T("Line boundary end"), _T("Line boundary inactive line"), 
 		                          _T("Syllable text"), _T("Syllable boundaries") };
 		for (int i=0;i<14;i++) {
@@ -575,15 +575,15 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 	// List book
 	book->AddPage(generalPage,_("General"),true);
-	book->AddSubPage(filePage,_("File Save/Load"),true);
-	book->AddSubPage(editPage,_("Subtitles Edit Box"),true);
-	book->AddSubPage(gridPage,_("Subtitles Grid"),true);
+	book->AddSubPage(filePage,_("File save/load"),true);
+	book->AddSubPage(editPage,_("Subtitles edit box"),true);
+	book->AddSubPage(gridPage,_("Subtitles grid"),true);
 	book->AddPage(videoPage,_("Video"),true);
 	book->AddPage(audioPage,_("Audio"),true);
 	book->AddSubPage(displayPage,_("Display"),true);
 	book->AddPage(autoPage,_("Automation"),true);
 	#ifdef wxUSE_TREEBOOK
-	book->ChangeSelection(Options.AsInt(_T("Options Page")));
+	book->ChangeSelection(Options.AsInt(_T("Options page")));
 	#endif
 
 	// Buttons Sizer

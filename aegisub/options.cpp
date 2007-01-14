@@ -73,7 +73,7 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Tips enabled"),true);
 	SetBool(_T("Show splash"),true);
-	SetInt(_T("Undo Levels"),8);
+	SetInt(_T("Undo levels"),8);
 	SetInt(_T("Recent timecodes max"),16);
 	SetInt(_T("Recent keyframes max"),16);
 	SetInt(_T("Recent sub max"),16);
@@ -81,7 +81,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Recent aud max"),16);
 	SetInt(_T("Recent find max"),16);
 	SetInt(_T("Recent replace max"),16);
-	SetInt(_T("Auto Check for Updates"),-1);
+	SetInt(_T("Auto check for updates"),-1);
 
 	// File Save/Load
 	SetModificationType(MOD_RESTART);
@@ -94,16 +94,16 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Autoload linked files"),2);
 	SetText(_T("Text actor separator"),_T(":"));
 	SetText(_T("Text comment starter"),_T("#"));
-	SetText(_T("Save Charset"),_T("UTF-8"));
-	SetBool(_T("Use nonstandard Milisecond Times"),false);
+	SetText(_T("Save charset"),_T("UTF-8"));
+	SetBool(_T("Use nonstandard milisecond times"),false);
 	SetBool(_T("Auto save on every change"),false);
 
 	// Edit Box
 	SetText(_T("Dictionaries path"),_T("dictionaries"));
-	SetBool(_T("Link Time Boxes Commit"),true);
+	SetBool(_T("Link time boxes commit"),true);
 	SetModificationType(MOD_EDIT_BOX);
-	SetBool(_T("Call Tips Enabled"),true);
-	SetBool(_T("Syntax Highlight Enabled"),true);
+	SetBool(_T("Call tips enabled"),true);
+	SetBool(_T("Syntax highlight enabled"),true);
 
 	// Edit box cosmetic
 	SetColour(_T("Syntax Highlight Normal"),wxColour(0,0,0));
