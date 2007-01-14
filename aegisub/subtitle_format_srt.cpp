@@ -136,7 +136,7 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 			case 2:
 				// Checks if it's done
-				if (curLine.IsEmpty()) {
+				if (curLine.IsEmpty() || !file.HasMoreLines()) {
 					mode = 0;
 					linen++;
 					line->group = _T("[Events]");
