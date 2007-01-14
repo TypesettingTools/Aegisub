@@ -60,10 +60,10 @@ public:
 // Hiragana/Katakana table
 class KanaTable {
 private:
-	std::list<KanaEntry> entries;
 	void Insert(wchar_t *hira,wchar_t *kata,wchar_t *hep);
 
 public:
+	std::list<KanaEntry> entries;
 	KanaTable();
 	~KanaTable();
 };

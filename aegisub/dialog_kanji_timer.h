@@ -43,6 +43,7 @@
 #include <wx/wxprec.h>
 #include <wx/listctrl.h>
 #include <wx/regex.h>
+#include "kana_table.h"
 
 
 //////////////
@@ -62,6 +63,7 @@ private:
 	wxTextCtrl		*SourceText, *DestText;
 	wxComboBox		*SourceStyle, *DestStyle;
 	wxListCtrl		*GroupsList;
+	wxCheckBox			*Interpolate;
 
 	wxString TextBeforeKaraoke;
 	wxString *RegroupSourceText, *RegroupGroups;
@@ -69,6 +71,7 @@ private:
 	int RegroupSourceSelected, RegroupTotalLen;
 	int SourceIndex, DestIndex;
 
+	void OnClose(wxCommandEvent &event);
 	void OnStart(wxCommandEvent &event);
 	void OnLink(wxCommandEvent &event);
 	void OnUnlink(wxCommandEvent &event);
@@ -79,8 +82,7 @@ private:
 	int ListIndexFromStyleandIndex(wxString StyleName, int Occurance);
 	int GetSourceArrayPos(bool GoingDown);
 	inline void OnKeyEnter(wxCommandEvent &event);
-	inline void SetSourceSelected();
-	inline void SetDestSelected();
+	inline void SetSelected();
 
 
 public:

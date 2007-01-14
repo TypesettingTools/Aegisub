@@ -33,6 +33,10 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#define MIN(a,b) ((a<b)?a:b)
+#define KANA_SEARCH_DISTANCE 1 //Kana interpolation, in characters, set <=0 to disable
+#define ROMAJI_SEARCH_DISTANCE 5 //Romaji interpolation, in karaoke groups, set <=0 to disable
+
 
 ///////////
 // Headers
@@ -65,10 +69,11 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	wxSizer *ResBoxSizer4 = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));
 	wxSizer *ResBoxSizer5 = new wxStaticBoxSizer(wxVERTICAL,this,_("Commands"));
 	wxBoxSizer *ResSizer1 = new wxBoxSizer(wxHORIZONTAL);
+	wxFlexGridSizer *ResSizerGrid1 = new wxFlexGridSizer(2,2,3,3);
 
 
-	SourceText = new wxTextCtrl(this,TEXT_SOURCE,_T(""),wxDefaultPosition,wxSize(460,-1),wxTE_READONLY|wxTE_NOHIDESEL|wxSIMPLE_BORDER|wxTE_RIGHT|wxTE_PROCESS_ENTER);
-	DestText = new wxTextCtrl(this,TEXT_DEST,_T(""),wxDefaultPosition,wxSize(460,-1),wxTE_NOHIDESEL|wxSIMPLE_BORDER|wxTE_RIGHT|wxTE_PROCESS_ENTER);
+	SourceText = new wxTextCtrl(this,TEXT_SOURCE,_T(""),wxDefaultPosition,wxSize(450,-1),wxTE_READONLY|wxTE_NOHIDESEL|wxSIMPLE_BORDER|wxTE_RIGHT|wxTE_PROCESS_ENTER);
+	DestText = new wxTextCtrl(this,TEXT_DEST,_T(""),wxDefaultPosition,wxSize(450,-1),wxTE_NOHIDESEL|wxSIMPLE_BORDER|wxTE_RIGHT|wxTE_PROCESS_ENTER);
 	SourceText->SetEventHandler(new DialogKanjiTimerEvent(this));
 	DestText->SetEventHandler(new DialogKanjiTimerEvent(this));
 
@@ -91,10 +96,21 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	wxButton *SkipDestLine = new wxButton(this,BUTTON_KTSKIPDEST,_("Skip Dest Line"));
 	wxButton *GoBackLine = new wxButton(this,BUTTON_KTGOBACK,_("Go Back a Line"));
 	wxButton *AcceptLine = new wxButton(this,BUTTON_KTACCEPT,_("Accept Line"));
+	wxButton *CloseKT = new wxButton(this,wxID_CLOSE,_("Close"),wxDefaultPosition,wxDefaultSize,wxALIGN_RIGHT);
+
+	//Checkbox
+	Interpolate = new wxCheckBox(this,-1,_("Attempt to interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
+
+	//Static Text labels for source/dest
+	wxStaticText *SourceLabel = new wxStaticText(this,-1,_("Source: "));
+	wxStaticText *DestLabel = new wxStaticText(this,-1,_("Dest: "));
 
 	//Frame: Text
-	ResBoxSizer1->Add(SourceText,0,wxALIGN_CENTER | wxBOTTOM | wxEXPAND,5);
-	ResBoxSizer1->Add(DestText,0,wxALIGN_CENTER | wxEXPAND,5);
+	ResSizerGrid1->Add(SourceLabel,1,wxALIGN_CENTER|wxRIGHT,3);
+	ResSizerGrid1->Add(SourceText,0,wxALIGN_CENTER,3);
+	ResSizerGrid1->Add(DestLabel,1,wxALIGN_CENTER|wxRIGHT,3);
+	ResSizerGrid1->Add(DestText,0,wxALIGN_CENTER,3);
+	ResBoxSizer1->Add(ResSizerGrid1,1,wxALIGN_CENTER|wxEXPAND,5);
 	//Frame: Shortcut Keys
 	ResBoxSizer2->Add(ShortcutKeys,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL | wxRIGHT,5);
 	//Frame: Groups
@@ -118,12 +134,15 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	ResSizer1->Add(ResBoxSizer3,1,wxEXPAND,5);
 	
 	// Main sizer
-	wxFlexGridSizer *MainSizer = new wxFlexGridSizer(2,2,0,0);
+	wxFlexGridSizer *MainSizer = new wxFlexGridSizer(3,2,0,0);
 	MainSizer->Add(ResBoxSizer1,0,wxEXPAND | wxLEFT | wxRIGHT,5);
 	MainSizer->Add(ResBoxSizer4,0,wxEXPAND | wxLEFT | wxRIGHT,5);
 	MainSizer->Add(ResSizer1,0,wxEXPAND | wxALL,5);
 	MainSizer->Add(ResBoxSizer5,0,wxEXPAND | wxALL,5);
 	MainSizer->AddGrowableCol(0,1);
+	MainSizer->Add(Interpolate,0,wxEXPAND | wxALL,5);
+	MainSizer->AddGrowableCol(0,1);
+	MainSizer->Add(CloseKT,0,wxEXPAND | wxALL,5);
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 	CenterOnParent();
@@ -133,6 +152,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
+	EVT_BUTTON(wxID_CLOSE,DialogKanjiTimer::OnClose)
 	EVT_BUTTON(BUTTON_KTSTART,DialogKanjiTimer::OnStart)
 	EVT_BUTTON(BUTTON_KTLINK,DialogKanjiTimer::OnLink)
 	EVT_BUTTON(BUTTON_KTUNLINK,DialogKanjiTimer::OnUnlink)
@@ -145,6 +165,10 @@ BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
 	EVT_TEXT_ENTER(TEXT_DEST,DialogKanjiTimer::OnKeyEnter)
 END_EVENT_TABLE()
 
+void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
+	Close();
+}
+
 void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 	SourceIndex = DestIndex = 0;
 	if (SourceStyle->GetValue().Len() == 0 || DestStyle->GetValue().Len() == 0)
@@ -152,8 +176,8 @@ void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 	else if (SourceStyle->GetValue() == DestStyle->GetValue())
 		wxMessageBox(_("The source and destination styles must be different."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else {
-		OnSkipSource((wxCommandEvent)NULL);
 		OnSkipDest((wxCommandEvent)NULL);
+		OnSkipSource((wxCommandEvent)NULL);
 		DestText->SetFocus();
 	}
 }
@@ -176,8 +200,7 @@ void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
 		SourceText->ChangeValue(sourceText.Right(sourceText.Len()-sourceLen));
 		DestText->ChangeValue(destText.Right(destText.Len()-destLen));
 		
-		SetSourceSelected();
-		SetDestSelected();
+		SetSelected();
 
 		RegroupSourceSelected++;
 	}
@@ -192,12 +215,15 @@ void DialogKanjiTimer::OnUnlink(wxCommandEvent &event) {
 		SourceText->ChangeValue(RegroupGroups[RegroupSourceSelected<<1]+SourceText->GetValue());
 		DestText->ChangeValue(RegroupGroups[(RegroupSourceSelected<<1)+1]+DestText->GetValue());
 		GroupsList->DeleteItem(GroupsList->GetItemCount()-1);
+		SetSelected();
 	}
 	DestText->SetFocus();
 }
 void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 	GroupsList->DeleteAllItems();
 	TextBeforeKaraoke = _T("");
+	RegroupSourceSelected = 0;
+	SourceText->SetSelection(0,0);
 
 	int index = ListIndexFromStyleandIndex(SourceStyle->GetValue(), SourceIndex);
 	if (index != -1) {
@@ -264,13 +290,12 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 		if (kIndex != textIndex) //...or there was likely an error parsing, alert but don't halt
 			wxMessageBox(_("Possible error parsing source line"),_("Error"),wxICON_EXCLAMATION | wxOK);
 
-		SourceText->ChangeValue(StrippedText.Right(StrippedText.Len()-TextBeforeOffset));
+		SourceText->ChangeValue(StrippedText.Mid(TextBeforeOffset));
 
-		RegroupSourceSelected = 0;
 		SourceIndex++;
-		SetSourceSelected();
+		SetSelected();
+		DestText->SetFocus();
 	}
-	DestText->SetFocus();
 }
 void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 	GroupsList->DeleteAllItems();
@@ -279,7 +304,7 @@ void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 		AssDialogue *line = grid->GetDialogue(index);
 		DestText->ChangeValue(grid->GetDialogue(index)->GetStrippedText());
 		
-		SetDestSelected();
+		SetSelected();
 		
 		DestText->SetFocus();
 		DestIndex++;
@@ -288,8 +313,8 @@ void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
 	DestIndex-=2;
 	SourceIndex-=2;
-	OnSkipSource((wxCommandEvent)NULL);
 	OnSkipDest((wxCommandEvent)NULL);
+	OnSkipSource((wxCommandEvent)NULL);
 }
 void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 	if (RegroupTotalLen==0)
@@ -328,8 +353,8 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 		grid->ass->FlagAsModified();
 		grid->CommitChanges();
 
-		OnSkipSource((wxCommandEvent)NULL);
 		OnSkipDest((wxCommandEvent)NULL);
+		OnSkipSource((wxCommandEvent)NULL);
 	}
 }
 void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
@@ -375,16 +400,108 @@ void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event) {
 void DialogKanjiTimer::OnMouseEvent(wxMouseEvent &event) {
 	if (event.LeftDown()) DestText->SetFocus();
 }
-void DialogKanjiTimer::SetSourceSelected() {
+void DialogKanjiTimer::SetSelected() {
 	if (SourceText->GetValue().Len()!=0)
 		SourceText->SetSelection(0,RegroupSourceText[GetSourceArrayPos(false)].Len());
-}
-void DialogKanjiTimer::SetDestSelected() {
-		if (DestText->GetValue().StartsWith(SourceText->GetStringSelection()))
-			DestText->SetSelection(0,SourceText->GetStringSelection().Len());
-		else if (DestText->GetValue().Len() != 0)
+
+	if (SourceText->GetValue().Len()!=0&&SourceText->GetStringSelection().Len()==SourceText->GetValue().Len())
+		DestText->SetSelection(0,DestText->GetValue().Len());
+
+	else if (SourceText->GetStringSelection()==_T(" ")&&!DestText->GetValue().StartsWith(_T(" ")))
+		DestText->SetSelection(0,0);
+
+	else if (DestText->GetValue().StartsWith(SourceText->GetStringSelection()))
+		DestText->SetSelection(0,SourceText->GetStringSelection().Len());
+
+	else if (SourceText->GetValue().Len()!=0 && DestText->GetValue().Len()!=0) {
+		bool foundit = false;
+		if (Interpolate->IsChecked()) {
+			KanaTable *kt = new KanaTable();
+			wxString Destext = DestText->GetValue();
+			wxString SrcG = SourceText->GetStringSelection();
+			wxString trimmed = SrcG.Trim(true);
+			SrcG = SourceText->GetStringSelection();
+			int sourceindex=0, destsel=0;
+			
+
+			for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
+				KanaEntry ke = *iter;
+				if ((int)Destext.Len()>=destsel&&(Destext.Mid(destsel).StartsWith(ke.hiragana)||Destext.StartsWith(ke.katakana))) {
+					if (SrcG.Len()==sourceindex||trimmed.Mid(sourceindex)==ke.hepburn) {
+						foundit=true;
+						DestText->SetSelection(0,destsel+1);
+						break;
+					}
+					if (ke.hepburn.Len()!=0 && trimmed.Mid(sourceindex).StartsWith(ke.hepburn)) {
+						destsel++;
+						sourceindex+=ke.hepburn.Len();	
+						iter = kt->entries.begin();
+					}
+				}
+			}
+
+			if (KANA_SEARCH_DISTANCE>0 && !foundit) {
+				//Try some interpolation for kanji. If we find a hiragana we know after this,
+				//  then we may be able to figure this one out.
+				wxString NextSGroup = RegroupSourceText[GetSourceArrayPos(false)];
+				int index;
+
+				for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
+					KanaEntry ke = *iter;
+					if (NextSGroup.StartsWith(ke.hepburn)) {
+						index=0;
+						for(int i=KANA_SEARCH_DISTANCE;i!=0;i--) {
+							wxString Destextmid = Destext.Mid(i);
+							if(Destextmid.StartsWith(ke.hiragana)||Destextmid.StartsWith(ke.katakana)) {
+								DestText->SetSelection(0,i);
+								return;
+							}
+						}
+					}
+				}
+			}
+
+			if (ROMAJI_SEARCH_DISTANCE>0 && !foundit) {
+				wxString Destext = DestText->GetValue();
+				wxString NextSGroup, trimmed;
+				int highlight = SourceText->GetStringSelection().Len();
+				int start = GetSourceArrayPos(false);
+				//GetSourceArrayPos is going to give us the next pos already
+				//  and not our current pos, so subtract 1 from it for end.
+				int end = MIN(RegroupTotalLen,start+ROMAJI_SEARCH_DISTANCE-1);
+
+				for(int i=start;i!=end;i++) {
+					NextSGroup = RegroupSourceText[i];
+					trimmed = NextSGroup.Trim(false).Trim(true);
+					NextSGroup = RegroupSourceText[i];
+
+					for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
+						KanaEntry ke = *iter;
+						if (trimmed==ke.hepburn) {
+							int foundhira = Destext.Find(ke.hiragana);
+							int foundkata =	Destext.Find(ke.katakana);
+							int foundat;
+							if (foundhira>0&&foundkata>0) foundat=MIN(foundhira,foundkata);
+							else if (foundhira>0) foundat=foundhira;
+							else foundat = foundkata; //-1 is fine, the if below checks that
+
+							if (foundat>0 && foundat<=ROMAJI_SEARCH_DISTANCE) {
+								SourceText->SetSelection(0,highlight);
+								DestText->SetSelection(0,foundat);
+								return;
+							}
+						}
+					}//end kana search
+					highlight += NextSGroup.Len();
+				}
+			}//end romaji interpolation
+		}
+		if (!foundit&&DestText->GetValue().Len()!=0&&DestText->GetStringSelection().Len()==0)
 			DestText->SetSelection(0,1);
+	}
+
 }
+
 ////////////////////////////////////////////////////
 // Gets the current position in RegroupSourceText //
 int DialogKanjiTimer::GetSourceArrayPos(bool GoingDown) {

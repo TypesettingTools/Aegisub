@@ -1207,7 +1207,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	value.MakeLower();
 
 	// Process text
-	double numval = 0.0;
+	double numval;
 	if (value.ToDouble(&numval)) {
 		//Nothing to see here, move along
 	}
@@ -1232,6 +1232,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 				if (scale) videoBox->videoDisplay->SetZoom(b / videoBox->videoDisplay->h);
 			}
 		}
+		else numval = 0.0;
 	}
 
 	// Sanity check
