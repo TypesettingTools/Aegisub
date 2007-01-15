@@ -91,6 +91,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed glitches related to the Duration time edit box. (AMZ)
 - Timing Post-Processor can now be restricted to selection. (AMZ)
 - Added support for using asa instead of VSFilter via Avisynth. (AMZ)
+- Fixed subtitles positioning removing \p tags from the line. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
