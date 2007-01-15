@@ -75,7 +75,7 @@ namespace Automation4 {
 
 		LOGFONTW lf;
 		ZeroMemory(&lf, sizeof(lf));
-		lf.lfHeight = fontsize;
+		lf.lfHeight = (LONG)fontsize;
 		lf.lfWeight = style->bold ? FW_BOLD : FW_NORMAL;
 		lf.lfItalic = style->italic;
 		lf.lfUnderline = style->underline;
@@ -131,7 +131,7 @@ namespace Automation4 {
 		// USING wxTheFontList SEEMS TO CAUSE BAD LEAKS!
 		//wxFont *thefont = wxTheFontList->FindOrCreateFont(
 		wxFont thefont(
-			fontsize,
+			(int)fontsize,
 			wxFONTFAMILY_DEFAULT,
 			style->italic ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
 			style->bold ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
@@ -146,7 +146,7 @@ namespace Automation4 {
 			for (unsigned int i = 0; i < text.length(); i++) {
 				int a, b, c, d;
 				thedc.GetTextExtent(text[i], &a, &b, &c, &d);
-				width += a + style->spacing;
+				width += a + (int)style->spacing;
 				height = b > height ? b : height;
 				descent = c > descent ? c : descent;
 				extlead= d > extlead ? d : extlead;

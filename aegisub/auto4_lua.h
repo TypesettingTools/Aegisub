@@ -122,6 +122,7 @@ namespace Automation4 {
 		virtual void LuaReadBack(lua_State *L) = 0;
 
 		LuaConfigDialogControl(lua_State *L);
+		virtual ~LuaConfigDialogControl() { }
 	};
 
 	class LuaConfigDialog : public ScriptConfigDialog {

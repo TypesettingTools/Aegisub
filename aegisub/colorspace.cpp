@@ -241,6 +241,7 @@ void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigne
 			b = v;
 			break;
 		case 5:
+		default:
 			r = v;
 			g = p;
 			b = q;

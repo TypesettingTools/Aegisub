@@ -170,6 +170,7 @@ namespace Automation4 {
 
 	public:
 		ScriptConfigDialog() : win(0) { }
+		virtual ~ScriptConfigDialog() { }
 		wxWindow* GetWindow(wxWindow *parent);
 		void DeleteWindow();
 		virtual void ReadBack() = 0;
@@ -245,8 +246,8 @@ namespace Automation4 {
 		void SetTitle(const wxString &_title);
 		void AddDebugOutput(const wxString &msg);
 
-		volatile bool has_inited;
 		volatile bool script_finished;
+		volatile bool has_inited;
 
 		DECLARE_EVENT_TABLE()
 	};
@@ -327,6 +328,7 @@ namespace Automation4 {
 		static std::vector<ScriptFactory*> *factories;
 	protected:
 		ScriptFactory() { }
+		virtual ~ScriptFactory() { }
 		wxString engine_name;
 		wxString filename_pattern;
 	public:

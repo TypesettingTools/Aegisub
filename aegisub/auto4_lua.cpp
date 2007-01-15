@@ -517,9 +517,9 @@ namespace Automation4 {
 	}
 
 	LuaFeatureMacro::LuaFeatureMacro(const wxString &_name, const wxString &_description, lua_State *_L)
-		: LuaFeature(_L, SCRIPTFEATURE_MACRO, _name)
+		: Feature(SCRIPTFEATURE_MACRO, _name)
 		, FeatureMacro(_name, _description)
-		, Feature(SCRIPTFEATURE_MACRO, _name)
+		, LuaFeature(_L, SCRIPTFEATURE_MACRO, _name)
 	{
 		// new table for containing the functions for this feature
 		lua_newtable(L);
@@ -590,9 +590,9 @@ namespace Automation4 {
 	// LuaFeatureFilter
 
 	LuaFeatureFilter::LuaFeatureFilter(const wxString &_name, const wxString &_description, int merit, lua_State *_L)
-		: LuaFeature(_L, SCRIPTFEATURE_FILTER, _name)
+		: Feature(SCRIPTFEATURE_FILTER, _name)
 		, FeatureFilter(_name, _description, merit)
-		, Feature(SCRIPTFEATURE_FILTER, _name)
+		, LuaFeature(_L, SCRIPTFEATURE_FILTER, _name)
 	{
 		// Works the same as in LuaFeatureMacro
 		lua_newtable(L);
@@ -836,6 +836,8 @@ namespace Automation4 {
 			filename_pattern = _T("*.lua");
 			Register(this);
 		}
+
+		~LuaScriptFactory() { }
 
 		virtual Script* Produce(const wxString &filename) const
 		{

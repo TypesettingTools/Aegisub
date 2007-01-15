@@ -34,9 +34,6 @@
 //
 
 
-#pragma once
-
-
 ////////////
 // Includes
 #include "base_grid.h"

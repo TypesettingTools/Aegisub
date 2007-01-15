@@ -123,6 +123,8 @@ namespace Automation4 {
 				lua_pop(L, 1);
 			}
 
+			virtual ~Label() { }
+
 			wxControl *Create(wxWindow *parent)
 			{
 				return cw = new wxStaticText(parent, -1, label);
@@ -155,6 +157,8 @@ namespace Automation4 {
 				lua_pop(L, 1);
 			}
 
+			virtual ~Edit() { }
+
 			wxControl *Create(wxWindow *parent)
 			{
 				return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0);
@@ -183,6 +187,8 @@ namespace Automation4 {
 			{
 				// Nothing more
 			}
+
+			virtual ~Textbox() { }
 
 			wxControl *Create(wxWindow *parent)
 			{
@@ -229,6 +235,8 @@ nospin:
 					lua_pop(L, 1);
 				}
 			}
+
+			virtual ~IntEdit() { }
 
 			typedef wxValidator IntTextValidator; // TODO
 			wxControl *Create(wxWindow *parent)
@@ -278,6 +286,8 @@ nospin:
 				// TODO: spin button support
 			}
 
+			virtual ~FloatEdit() { }
+
 			typedef wxValidator FloatTextValidator;
 			wxControl *Create(wxWindow *parent)
 			{
@@ -326,6 +336,8 @@ nospin:
 				lua_pop(L, 1);
 			}
 
+			virtual ~Dropdown() { }
+
 			wxControl *Create(wxWindow *parent)
 			{
 				return cw = new wxComboBox(parent, -1, value, wxDefaultPosition, wxDefaultSize, items, wxCB_READONLY);
@@ -362,6 +374,8 @@ nospin:
 				value = lua_toboolean(L, -1) != 0;
 				lua_pop(L, 1);
 			}
+
+			virtual ~Checkbox() { }
 
 			wxControl *Create(wxWindow *parent)
 			{

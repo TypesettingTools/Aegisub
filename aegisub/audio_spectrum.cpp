@@ -231,7 +231,6 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 {
 	unsigned long first_line = (unsigned long)(range_start / line_length / 2);
 	unsigned long last_line = (unsigned long)(range_end / line_length / 2);
-	unsigned long lines_to_render = last_line - first_line + 1;
 
 	float *power = new float[line_length];
 
