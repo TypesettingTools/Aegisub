@@ -195,8 +195,10 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			script = env->Invoke("Mpeg2Dec3_Mpeg2Source", videoFilename);
 
             //if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
-//        	if (env->FunctionExists("SetPlanarLegacyAlignment"))
-//        		script = env->Invoke("SetPlanarLegacyAlignment", script);
+			if (env->FunctionExists("SetPlanarLegacyAlignment")) {
+				AVSValue args[2] = { script, true };
+        		script = env->Invoke("SetPlanarLegacyAlignment", AVSValue(args,2));
+			}
 		}
 
 		// If that fails, try opening it with DGDecode
