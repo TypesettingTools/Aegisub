@@ -203,7 +203,7 @@ wxString TextFileReader::ReadLineFromFile() {
 	// Read ASCII/UTF-8 line from file
 	else {
 #ifdef WIN32
-		char *buffer = new char[512];
+		char buffer[512];
 		while (1) {
 			buffer[511] = '\1';
 			if (fgets(buffer, 512, file)) {

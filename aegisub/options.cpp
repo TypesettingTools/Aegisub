@@ -59,7 +59,15 @@ OptionsManager::OptionsManager() {
 //////////////
 // Destructor
 OptionsManager::~OptionsManager() {
+	Clear();
+}
+
+
+/////////
+// Clear
+void OptionsManager::Clear() {
 	opt.clear();
+	optType.clear();
 }
 
 

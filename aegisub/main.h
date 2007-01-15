@@ -75,6 +75,7 @@ public:
 	void AssociateType(wxString type);
 
 	bool OnInit();
+	int OnExit();
 	int OnRun();
 	
 #ifdef __WXMAC__

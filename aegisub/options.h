@@ -73,6 +73,7 @@ public:
 	OptionsManager();
 	~OptionsManager();
 
+	void Clear();
 	void SetFile(wxString file);
 	void Save();
 	void Load();

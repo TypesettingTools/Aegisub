@@ -988,16 +988,23 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 	// Rotate Z
 	else if (hold == 2) {
-		// Find screen angle
+		// Find angle
 		float screenAngle = atan2(double(lineOrgY-y*sh/h),double(x*sw/w-lineOrgX)) * 180.0 / 3.1415926535897932;
+		curAngle = screenAngle - startAngle + origAngle;
+		while (curAngle < 0.0f) curAngle += 360.0f;
+		while (curAngle >= 360.0f) curAngle -= 360.0f;
+
+		// Snap
+		if (event.ShiftDown()) {
+			curAngle = (float)((int)((curAngle+15.0f)/30.0f))*30.0f;
+			if (curAngle == 360.0f) curAngle = 0.0f;
+		}
 
 		// Update
-		curAngle = screenAngle - startAngle + origAngle;
-		while (curAngle < 0.0) curAngle += 360.0;
-		while (curAngle >= 360.0) curAngle -= 360.0;
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
+			wxString param = PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle));
+			grid->editBox->SetOverride(_T("\\frz"),param,0);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -1017,6 +1024,14 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		while (curAngle2 < 0.0) curAngle2 += 360.0;
 		while (curAngle2 >= 360.0) curAngle2 -= 360.0;
 
+		// Oh Snap
+		if (event.ShiftDown()) {
+			curAngle = (float)((int)((curAngle+15.0f)/30.0f))*30.0f;
+			curAngle2 = (float)((int)((curAngle2+15.0f)/30.0f))*30.0f;
+			if (curAngle == 360.0f) curAngle = 0.0f;
+			if (curAngle2 == 360.0f) curAngle = 0.0f;
+		}
+
 		// Update
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
@@ -1034,6 +1049,12 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		curScaleY = (float(startY - y)/0.8f) + origScaleY;
 		if (curScaleX < 0.0f) curScaleX = 0.0f;
 		if (curScaleY < 0.0f) curScaleY = 0.0f;
+
+		// Snap
+		if (event.ShiftDown()) {
+			curScaleX = (float)((int)((curScaleX+12.5f)/25.0f))*25.0f;
+			curScaleY = (float)((int)((curScaleY+12.5f)/25.0f))*25.0f;
+		}
 
 		// Update
 		if (realTime) {

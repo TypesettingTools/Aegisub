@@ -135,6 +135,14 @@ bool AegisubApp::OnInit() {
 }
 
 
+////////
+// Exit
+int AegisubApp::OnExit() {
+	Options.Clear();
+	return wxApp::OnExit();
+}
+
+
 #ifndef _DEBUG
 ///////////////////////
 // Unhandled exception
