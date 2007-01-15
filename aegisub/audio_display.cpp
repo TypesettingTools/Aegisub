@@ -1279,13 +1279,14 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			bool gotGrab = false;
 			bool karTime = karMode && !event.ControlDown();
 
-			// Grab start
+			// Line timing mode
 			if (!karTime) {
+				// Grab start
 				if (abs64 (x - selStart) < 6) {
 					wxCursor cursor(wxCURSOR_SIZEWE);
 					SetCursor(cursor);
 					defCursor = false;
-					if (buttonIsDown) {
+					if (buttonClick) {
 						hold = 1;
 						gotGrab = true;
 					}
@@ -1296,15 +1297,26 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 					wxCursor cursor(wxCURSOR_SIZEWE);
 					SetCursor(cursor);
 					defCursor = false;
-					if (buttonIsDown) {
+					if (buttonClick) {
 						hold = 2;
+						gotGrab = true;
+					}
+				}
+
+				// Dragging nothing, time from scratch
+				else {
+					if (buttonClick) {
+						if (leftClick) hold = 3;
+						else hold = 2;
+						lastX = x;
 						gotGrab = true;
 					}
 				}
 			}
 
-			// Grabbing a syllable
+			// Karaoke mode
 			else {
+				// Look for a syllable
 				__int64 pos,len,curpos;
 				KaraokeSyllable *curSyl;
 				size_t karn = karaoke->syllables.size();
@@ -1314,6 +1326,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 					curpos = curSyl->position*10;
 					if (len != -1) {
 						pos = GetXAtMS(curStartMS+len+curpos);
+
+						// Grabbing syllable boundary
 						if (abs64 (x - pos) < 4) {
 							wxCursor cursor(wxCURSOR_SIZEWE);
 							SetCursor(cursor);
@@ -1327,15 +1341,14 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						}
 					}
 				}
-			}
 
-			// Dragging nothing, time from scratch
-			if (!gotGrab && !karMode) {
-				if (buttonIsDown) {
-					if (leftIsDown) hold = 3;
-					else hold = 2;
-					lastX = x;
-					gotGrab = true;
+				// No syllable found, select if possible
+				if (hold == 0 && leftClick) {
+					int syl = GetSyllableAtX(x);
+					if (syl != -1) {
+						karaoke->SetSyllable(syl);
+						updated = true;
+					}
 				}
 			}
 		}
@@ -1449,18 +1462,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 					else UpdateImage(true);
 				}
 
-				// Single click on nothing
-				else if (hold == 3) {
-					// Select syllable
-					if (karaoke->enabled) {
-						int syl = GetSyllableAtX(x);
-						if (syl != -1) {
-							karaoke->SetSyllable(syl);
-							UpdateImage(true);
-						}
-					}
-				}
-
 				// Update stuff
 				SetCursor(wxNullCursor);
 				hold = 0;
@@ -1471,8 +1472,10 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (updated) {
 			if (diagUpdated) NeedCommit = true;
 			player->SetEndPosition(GetSampleAtX(selEnd));
-			wxCursor cursor(wxCURSOR_SIZEWE);
-			SetCursor(cursor);
+			if (hold != 0) {
+				wxCursor cursor(wxCURSOR_SIZEWE);
+				SetCursor(cursor);
+			}
 			UpdateImage(true);
 		}
 	}

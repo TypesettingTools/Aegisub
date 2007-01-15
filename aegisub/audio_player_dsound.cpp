@@ -310,7 +310,7 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 ///////////
 // Set end
 void DirectSoundPlayer::SetEndPosition(__int64 pos) {
-	endPos = pos;
+	if (playing) endPos = pos;
 }
 
 
