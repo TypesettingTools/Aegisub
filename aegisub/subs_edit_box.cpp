@@ -1047,7 +1047,10 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		// Pick from dialog
 		//wxColour color = wxGetColourFromUser(this,startcolor);
 		wxColour color = GetColorFromUser(((AegisubApp*)wxTheApp)->frame, startcolor);
-		if (!color.Ok() || color == startcolor) return;
+		if (!color.Ok() || color == startcolor) {
+			delete line;
+			return;
+		}
 
 		// Generate insert string 
 		AssColor asscolor(color);
@@ -1058,7 +1061,10 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	if (isFont) {
 		// Pick from dialog
 		wxFont font = wxGetFontFromUser(this,startfont);
-		if (!font.Ok()) return;
+		if (!font.Ok()) {
+			delete line;
+			return;
+		}
 
 		// Generate insert string
 		nInserted = 0;
@@ -1082,7 +1088,10 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 			insert += _T("\\u") + wxString::Format(_T("%i"),font.GetUnderlined() ? 1 : 0);
 			nInserted++;
 		}
-		if (insert.IsEmpty()) return;
+		if (insert.IsEmpty()) {
+			delete line;
+			return;
+		}
 	}
 
 	// Generic tag
@@ -1176,7 +1185,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 
 	// Commit changes and shift selection
 	TextEdit->SetTextTo(line->Text);
-	line->ClearBlocks();
+	delete line;
 	TextEdit->SetSelectionU(selstart+shift,selend+shift);
 	TextEdit->SetFocus();
 }

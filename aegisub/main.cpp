@@ -55,6 +55,7 @@
 #include "ass_dialogue.h"
 #include "subs_grid.h"
 #include "auto4_base.h"
+#include "subtitle_format.h"
 
 
 ///////////////////
@@ -138,7 +139,9 @@ bool AegisubApp::OnInit() {
 ////////
 // Exit
 int AegisubApp::OnExit() {
+	SubtitleFormat::DestroyFormats();
 	Options.Clear();
+	delete global_scripts;
 	return wxApp::OnExit();
 }
 

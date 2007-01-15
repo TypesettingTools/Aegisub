@@ -636,6 +636,7 @@ int SubsTextEditCtrl::GetReverseUnicodePosition(int pos) {
 
 	// Convert back and return its length
 	wxString buf3(buf2,wxConvUTF8);
+	delete[] buf2;
 	return buf3.Length();
 }
 

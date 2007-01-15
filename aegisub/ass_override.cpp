@@ -88,8 +88,8 @@ AssDialogueBlockOverride::AssDialogueBlockOverride () {
 //////////////
 // Destructor
 AssDialogueBlockOverride::~AssDialogueBlockOverride () {
-	for (std::vector<AssOverrideTag*>::iterator cur=Tags.begin();cur!=Tags.end();cur++) {
-		delete *cur;
+	for (size_t i=0;i<Tags.size();i++) {
+		delete Tags[i];
 	}
 	Tags.clear();
 }
@@ -99,6 +99,9 @@ AssDialogueBlockOverride::~AssDialogueBlockOverride () {
 // Read tags
 void AssDialogueBlockOverride::ParseTags () {
 	// Clear current vector
+	for (size_t i=0;i<Tags.size();i++) {
+		delete Tags[i];
+	}
 	Tags.clear();
 
 	// Fix parenthesis matching
@@ -477,6 +480,13 @@ AssOverrideTag::AssOverrideTag () {
 //////////////
 // Destructor
 AssOverrideTag::~AssOverrideTag () {
+	Clear();
+}
+
+
+/////////
+// Clear
+void AssOverrideTag::Clear() {
 	for (std::vector<AssOverrideParameter*>::iterator cur=Params.begin();cur!=Params.end();cur++) {
 		delete *cur;
 	}
@@ -523,6 +533,9 @@ bool AssOverrideTag::IsValid() {
 /////////////////////
 // Parses parameters
 void AssOverrideTag::ParseParameters(wxString text) {
+	// Clear first
+	Clear();
+
 	// text is all text following the name until the next \ or the end of the override block
 
 	// Tokenize text, attempting to find all parameters
@@ -567,7 +580,7 @@ void AssOverrideTag::ParseParameters(wxString text) {
 			work = text.SubString(start, i-1);
 			work.Trim(true).Trim(false);
 			paramList.Add(work);
-			wxLogDebug(_T("Got parameter: %s"), work.c_str());
+			//wxLogDebug(_T("Got parameter: %s"), work.c_str());
 		}
 
 		if (i+1 < textlen) {

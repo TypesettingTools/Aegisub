@@ -99,6 +99,7 @@ public:
 
 	bool IsValid();
 	void ParseParameters(wxString text);
+	void Clear();
 	void SetText(wxString text);
 	wxString ToString();
 };
