@@ -353,7 +353,7 @@ namespace Automation4 {
 
 		wxString text(lua_tostring(L, 2), wxConvUTF8);
 
-		int width, height, descent, extlead;
+		double width, height, descent, extlead;
 		if (!CalculateTextExtents(st, text, width, height, descent, extlead)) {
 			delete st;
 			lua_pushstring(L, "Some internal error occurred calculating text_extents");

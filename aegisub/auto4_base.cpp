@@ -57,11 +57,12 @@
 
 namespace Automation4 {
 
-	bool CalculateTextExtents(AssStyle *style, wxString &text, int &width, int &height, int &descent, int &extlead)
+	bool CalculateTextExtents(AssStyle *style, wxString &text, double &width, double &height, double &descent, double &extlead)
 	{
 		width = height = descent = extlead = 0;
 
-		double fontsize = style->fontsize;
+		double fontsize = style->fontsize * 64;
+		double spacing = style->spacing * 64;
 
 #ifdef WIN32
 		// This is almost copypasta from TextSub
@@ -70,7 +71,7 @@ namespace Automation4 {
 		SetMapMode(thedc, MM_TEXT);
 
 		HDC dczero = GetDC(0);
-		fontsize = -MulDiv((int)(fontsize+0.5), GetDeviceCaps(dczero, LOGPIXELSY), 72);
+		//fontsize = -MulDiv((int)(fontsize+0.5), GetDeviceCaps(dczero, LOGPIXELSY), 72);
 		ReleaseDC(0, dczero);
 
 		LOGFONTW lf;
@@ -94,11 +95,11 @@ namespace Automation4 {
 		SIZE sz;
 		size_t thetextlen = text.length();
 		const TCHAR *thetext = text.wc_str();
-		if (style->spacing) {
+		if (spacing != 0 ) {
 			width = 0;
 			for (unsigned int i = 0; i < thetextlen; i++) {
 				GetTextExtentPoint32(thedc, &thetext[i], 1, &sz);
-				width += sz.cx + (int)style->spacing;
+				width += sz.cx + spacing;
 				height = sz.cy;
 			}
 		} else {
@@ -108,9 +109,9 @@ namespace Automation4 {
 		}
 
 		// HACKISH FIX! This seems to work, but why? It shouldn't be needed?!?
-		fontsize = style->fontsize;
-		width = (int)(width * fontsize/height + 0.5);
-		height = (int)(fontsize + 0.5);
+		//fontsize = style->fontsize;
+		//width = (int)(width * fontsize/height + 0.5);
+		//height = (int)(fontsize + 0.5);
 
 		TEXTMETRIC tm;
 		GetTextMetrics(thedc, &tm);
@@ -124,7 +125,7 @@ namespace Automation4 {
 		wxMemoryDC thedc;
 
 		// fix fontsize to be 72 DPI
-		fontsize = -FT_MulDiv((int)(fontsize+0.5), 72, thedc.GetPPI().y);
+		//fontsize = -FT_MulDiv((int)(fontsize+0.5), 72, thedc.GetPPI().y);
 
 		// now try to get a font!
 		// use the font list to get some caching... (chance is the script will need the same font very often)
@@ -140,13 +141,13 @@ namespace Automation4 {
 			wxFONTENCODING_SYSTEM); // FIXME! make sure to get the right encoding here, make some translation table between windows and wx encodings
 		thedc.SetFont(thefont);
 
-		if (style->spacing) {
+		if (spacing) {
 			// If there's inter-character spacing, kerning info must not be used, so calculate width per character
 			// NOTE: Is kerning actually done either way?!
 			for (unsigned int i = 0; i < text.length(); i++) {
 				int a, b, c, d;
 				thedc.GetTextExtent(text[i], &a, &b, &c, &d);
-				width += a + (int)style->spacing;
+				width += a + >spacing;
 				height = b > height ? b : height;
 				descent = c > descent ? c : descent;
 				extlead= d > extlead ? d : extlead;
@@ -158,10 +159,10 @@ namespace Automation4 {
 #endif
 
 		// Compensate for scaling
-		width = (int)(style->scalex / 100 * width + 0.5);
-		height = (int)(style->scaley / 100 * height + 0.5);
-		descent = (int)(style->scaley / 100 * descent + 0.5);
-		extlead = (int)(style->scaley / 100 * extlead + 0.5);
+		width = style->scalex / 100 * width / 64;
+		height = style->scaley / 100 * height /64;
+		descent = style->scaley / 100 * descent /64;
+		extlead = style->scaley / 100 * extlead /64;
 
 		return true;
 	}

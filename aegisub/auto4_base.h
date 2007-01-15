@@ -58,7 +58,7 @@ DECLARE_EVENT_TYPE(wxEVT_AUTOMATION_SCRIPT_COMPLETED, -1)
 namespace Automation4 {
 
 	// Calculate the extents of a text string given a style
-	bool CalculateTextExtents(AssStyle *style, wxString &text, int &width, int &height, int &descent, int &extlead);
+	bool CalculateTextExtents(AssStyle *style, wxString &text, double &width, double &height, double &descent, double &extlead);
 
 
 	// The class of a Feature...
