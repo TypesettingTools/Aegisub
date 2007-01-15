@@ -1031,6 +1031,9 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		}
 	}
 
+	// Overrides being inserted
+	wxArrayString insertTags;
+
 	// Toggle value
 	if (isFlag) {
 		state = !state;
@@ -1040,6 +1043,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		// Generate insert string
 		insert = tagname + wxString::Format(_T("%i"),stateval);
 		insert2 = tagname + wxString::Format(_T("%i"),1-stateval);
+		insertTags.Add(tagname);
 	}
 
 	// Choose color
@@ -1055,6 +1059,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		// Generate insert string 
 		AssColor asscolor(color);
 		insert = tagname + asscolor.GetASSFormatted(false);
+		insertTags.Add(tagname);
 	}
 
 	// Choose font
@@ -1071,22 +1076,27 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 		if (font.GetFaceName() != startfont.GetFaceName()) {
 			insert = _T("\\fn") + font.GetFaceName();
 			nInserted++;
+			insertTags.Add(_T("\\fn"));
 		}
 		if (font.GetPointSize() != startfont.GetPointSize()) {
 			insert += _T("\\fs") + wxString::Format(_T("%i"),font.GetPointSize());
 			nInserted++;
+			insertTags.Add(_T("\\fs"));
 		}
 		if (font.GetWeight() != startfont.GetWeight()) {
 			insert += _T("\\b") + wxString::Format(_T("%i"),font.GetWeight() == wxFONTWEIGHT_BOLD ? 1 : 0);
 			nInserted++;
+			insertTags.Add(_T("\\b"));
 		}
 		if (font.GetStyle() != startfont.GetStyle()) {
 			insert += _T("\\i") + wxString::Format(_T("%i"),font.GetStyle() == wxFONTSTYLE_ITALIC ? 1 : 0);
 			nInserted++;
+			insertTags.Add(_T("\\i"));
 		}
 		if (font.GetUnderlined() != startfont.GetUnderlined()) {
 			insert += _T("\\u") + wxString::Format(_T("%i"),font.GetUnderlined() ? 1 : 0);
 			nInserted++;
+			insertTags.Add(_T("\\u"));
 		}
 		if (insert.IsEmpty()) {
 			delete line;
@@ -1097,16 +1107,19 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	// Generic tag
 	if (isGeneric) {
 		insert = tagname + preValue;
+		insertTags.Add(tagname);
 	}
 
 	// Angle
 	if (isAngle) {
 		insert = tagname + preValue;
+		insertTags.Add(tagname);
 	}
 
 	// Scale
 	if (isScale) {
 		insert = tagname + preValue;
+		insertTags.Add(tagname);
 	}
 
 	// Get current block as plain or override
@@ -1130,7 +1143,8 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 
 		// Remove old of same
 		for (size_t i=0;i<override->Tags.size()-nInserted;i++) {
-			if (insert.Contains(override->Tags.at(i)->Name)) {
+			//if (insert.Contains(override->Tags.at(i)->Name)) {
+			if (insertTags.Index(override->Tags.at(i)->Name) != wxNOT_FOUND) {
 				shift -= override->Tags.at(i)->ToString().Length();
 				override->Tags.erase(override->Tags.begin() + i);
 				i--;
