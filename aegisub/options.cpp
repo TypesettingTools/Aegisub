@@ -135,6 +135,7 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_RESTART);
 	SetBool(_T("Threaded Video"),false);
 	SetInt(_T("Avisynth MemoryMax"),64);
+	SetText(_T("Avisynth Subs Renderer"),_T("vsfilter"));
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Allow Ancient Avisynth"),false);
 	SetText(_T("Video Provider"),_T("Avisynth"));

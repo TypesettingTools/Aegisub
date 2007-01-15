@@ -63,6 +63,7 @@ private:
 	VideoInfo vi;
 
 	wxString subfilename;
+	wxString rendererCallString;
 
 	int last_fnum;
 	int num_frames;
@@ -86,6 +87,8 @@ private:
 	PClip ApplyDARZoom(double _zoom, double _dar, PClip videosource);
 	wxBitmap GetFrame(int n, bool force);
 	void LoadVSFilter();
+	void LoadASA();
+	void LoadRenderer();
 	void AttachOverlay(SubtitleProvider::Overlay *_overlay) {}
 
 public:

@@ -64,9 +64,9 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfi
 	subfilename = _subfilename;
 	zoom = 1.0;
 
-	AVSTRACE(_T("AvisynthVideoProvider: Loading VSFilter"));
-	LoadVSFilter();
-	AVSTRACE(_T("AvisynthVideoProvider: VSFilter loaded"));
+	AVSTRACE(_T("AvisynthVideoProvider: Loading Subtitles Renderer"));
+	LoadRenderer();
+	AVSTRACE(_T("AvisynthVideoProvider: Subtitles Renderer loaded"));
 
 	AVSTRACE(_T("AvisynthVideoProvider: Opening video"));
 	RGB32Video = OpenVideo(_filename,mpeg2dec3_priority);
@@ -314,10 +314,11 @@ PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosourc
 	AVSValue args[2] = { videosource, temp };
 
 	try {
-		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Now invoking TextSub"));
-		script = env->Invoke("TextSub", AVSValue(args,2));
-		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: TextSub invoked successfully"));
-	} catch (AvisynthError &err) {
+		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Now invoking ") + rendererCallString);
+		script = env->Invoke(rendererCallString.mb_str(wxConvUTF8), AVSValue(args,2));
+		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Invoked successfully"));
+	}
+	catch (AvisynthError &err) {
 		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Avisynth error: ") + wxString(err.msg,wxConvLocal));
 		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
 	}
@@ -471,6 +472,18 @@ void AvisynthVideoProvider::GetFloatFrame(float* Buffer, int n) {
 }
 
 
+/////////////////////////////
+// Load appropriate renderer
+void AvisynthVideoProvider::LoadRenderer() {
+	// Get prefferred
+	wxString prefferred = Options.AsText(_T("Avisynth subs renderer"));
+
+	// Load
+	if (prefferred.Lower() == _T("asa")) LoadASA();
+	else LoadVSFilter();
+}
+
+
 /////////////////
 // Load VSFilter
 void AvisynthVideoProvider::LoadVSFilter() {
@@ -478,12 +491,14 @@ void AvisynthVideoProvider::LoadVSFilter() {
 	// Loading an avisynth plugin multiple times does almost nothing
 
 	wxFileName vsfilterPath(AegisubApp::folderName + _T("vsfilter.dll"));
+	rendererCallString = _T("TextSub");
 
 	if (vsfilterPath.FileExists()) {
 		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Invoking LoadPlugin"));
 		env->Invoke("LoadPlugin",env->SaveString(vsfilterPath.GetFullPath().mb_str(wxConvLocal)));
 		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loaded"));
-	} else {
+	}
+	else {
 		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: VSFilter.dll not found in Aegisub dir, trying to locate registered DShow filter"));
 		wxRegKey reg(_T("HKEY_CLASSES_ROOT\\CLSID\\{9852A670-F845-491B-9BE6-EBD841B8A613}\\InprocServer32"));
 		if (reg.Exists()) {
@@ -500,11 +515,44 @@ void AvisynthVideoProvider::LoadVSFilter() {
 			}
 			
 			vsfilterPath = _T("vsfilter.dll");
-		} else if (vsfilterPath.FileExists()) 
+		}
+		else if (vsfilterPath.FileExists()) {
+			AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Found on system path, loading"));
 			env->Invoke("LoadPlugin",env->SaveString(vsfilterPath.GetFullPath().mb_str(wxConvLocal)));
+			AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loaded"));
+		}
 		else if (!env->FunctionExists("TextSub")) {
 			AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Couldn't locate VSFilter"));
 			throw _T("Couldn't locate VSFilter");
+		}
+	}
+}
+
+
+////////////
+// Load asa
+void AvisynthVideoProvider::LoadASA() {
+	AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Loading asa"));
+	// Loading an avisynth plugin multiple times does almost nothing
+
+	wxFileName asaPath(AegisubApp::folderName + _T("asa.dll"));
+	rendererCallString = _T("asa");
+
+	if (asaPath.FileExists()) {
+		AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Invoking LoadPlugin"));
+		env->Invoke("LoadPlugin",env->SaveString(asaPath.GetFullPath().mb_str(wxConvLocal)));
+		AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Loaded"));
+	}
+	else {
+		asaPath = _T("asa.dll");
+		if (asaPath.FileExists()) {
+			AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Invoking LoadPlugin"));
+			env->Invoke("LoadPlugin",env->SaveString(asaPath.GetFullPath().mb_str(wxConvLocal)));
+			AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Loaded"));
+		}
+		else if (!env->FunctionExists("asa")) {
+			AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Couldn't locate asa"));
+			throw _T("Couldn't locate asa");
 		}
 	}
 }
