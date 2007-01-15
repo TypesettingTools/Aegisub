@@ -103,56 +103,60 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 		wxString curLine = file.ReadLineFromFile();
 		fileLine++;
 
-		switch (mode) {
-			case 0:
-				// Checks if there is anything to read
-				if (curLine.IsEmpty()) continue;
+		if (mode == 0) {
+			// Checks if there is anything to read
+			if (curLine.IsEmpty()) continue;
 
-				// Check if it's a line number
-				if (!curLine.IsNumber()) {
-					Clear();
-					throw wxString::Format(_T("Parse error on entry %i at line %i (expecting line number). Possible malformed file."),linen,fileLine);
-				}
+			// Check if it's a line number
+			if (!curLine.IsNumber()) {
+				Clear();
+				throw wxString::Format(_T("Parse error on entry %i at line %i (expecting line number). Possible malformed file."),linen,fileLine);
+			}
 
-				// Read line number
-				curLine.ToLong(&templ);
-				if (templ != linen) {
-					linen = templ;
-				}
-				line = new AssDialogue();
-				mode = 1;
-				break;
+			// Read line number
+			curLine.ToLong(&templ);
+			if (templ != linen) {
+				linen = templ;
+			}
+			line = new AssDialogue();
+			mode = 1;
+		}
 
-			case 1:
-				// Read timestamps
-				if (curLine.substr(13,3) != _T("-->")) {
-					Clear();
-					throw wxString::Format(_T("Parse error on entry %i at line %i (expecting timestamps). Possible malformed file."),linen,fileLine);
-				}
-				line->Start.ParseSRT(curLine.substr(0,12));
-				line->End.ParseSRT(curLine.substr(17,12));
-				mode = 2;
-				break;
+		else if (mode == 1) {
+			// Read timestamps
+			if (curLine.substr(13,3) != _T("-->")) {
+				Clear();
+				throw wxString::Format(_T("Parse error on entry %i at line %i (expecting timestamps). Possible malformed file."),linen,fileLine);
+			}
+			line->Start.ParseSRT(curLine.substr(0,12));
+			line->End.ParseSRT(curLine.substr(17,12));
+			mode = 2;
+		}
 
-			case 2:
-				// Checks if it's done
-				if (curLine.IsEmpty() || !file.HasMoreLines()) {
-					mode = 0;
-					linen++;
-					line->group = _T("[Events]");
-					line->Style = _T("Default");
-					line->Comment = false;
-					line->UpdateData();
-					line->ParseSRTTags();
-					line->StartMS = line->Start.GetMS();
-					Line->push_back(line);
-					lines++;
-					break;
-				}
-				// Append text
+		else if (mode == 2) {
+			// Checks if it's done
+			bool eof = !file.HasMoreLines();
+			bool isDone = curLine.IsEmpty();
+
+			// Append text
+			if (!isDone) {
 				if (line->Text != _T("")) line->Text += _T("\\N");
 				line->Text += curLine;
-				break;
+			}
+
+			// Done
+			if (isDone || eof) {
+				mode = 0;
+				linen++;
+				line->group = _T("[Events]");
+				line->Style = _T("Default");
+				line->Comment = false;
+				line->UpdateData();
+				line->ParseSRTTags();
+				line->StartMS = line->Start.GetMS();
+				Line->push_back(line);
+				lines++;
+			}
 		}
 	}
 
