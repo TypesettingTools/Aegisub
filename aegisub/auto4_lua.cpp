@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Niels Martin Hansen
+// Copyright (c) 2006, 2007, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@
 //
 
 #include "auto4_lua.h"
+#include "auto4_auto3.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
 #include "ass_file.h"
@@ -177,6 +178,7 @@ namespace Automation4 {
 		}
 		catch (wxChar *e) {
 			description = e;
+			loaded = false;
 		}
 	}
 
@@ -264,7 +266,9 @@ namespace Automation4 {
 			if (lua_isnumber(L, -1)) {
 				if (lua_tointeger(L, -1) == 3) {
 					lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
-					throw _T("This script looks like an Automation 3 Lua script. Automation 3 is not supported in this version of Aegisub, please use Aegisub 1.10 or earlier to use this script.");
+					// So this is an auto3 script...
+					// Throw it as an exception, the script factory manager will catch this and use the auto3 script instead of this script object
+					throw new Auto3Script(GetFilename());
 				}
 			}
 			lua_getglobal(L, "script_name");
@@ -395,7 +399,9 @@ namespace Automation4 {
 			lua_error(L);
 		}
 
-		if (luaL_loadfile(L, fname.GetFullPath().mb_str(wxConvUTF8))) {
+		LuaScriptReader script_reader(fname.GetFullPath());
+		if (lua_load(L, script_reader.reader_func, &script_reader, s->GetFilename().mb_str(wxConvUTF8))) {
+		//if (luaL_loadfile(L, fname.GetFullPath().mb_str(wxConvUTF8))) {
 			lua_pushfstring(L, "An error occurred loading the Lua script file \"%s\":\n\n%s", fname.GetFullPath().mb_str(wxConvUTF8).data(), lua_tostring(L, -1));
 			lua_error(L);
 			return 0;

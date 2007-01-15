@@ -697,8 +697,15 @@ namespace Automation4 {
 			factories = new std::vector<ScriptFactory*>();
 
 		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
-			Script *s = (*i)->Produce(filename);
-			if (s) return s;
+			try {
+				Script *s = (*i)->Produce(filename);
+				if (s) return s;
+			}
+			catch (Script *e) {
+				// This was the wrong script factory, but it throwing a Script object means it did know what to do about the file
+				// Use this script object
+				return e;
+			}
 		}
 		return new UnknownScript(filename);
 	}

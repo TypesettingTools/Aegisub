@@ -88,8 +88,6 @@ namespace Automation4 {
 	};
 
 
-	class LuaConfigDialog;
-
 	// Provides progress UI and control functions for a Lua script
 	class LuaProgressSink : public ProgressSink {
 	private:
