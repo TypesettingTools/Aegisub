@@ -35,7 +35,7 @@
 
 #define MIN(a,b) ((a<b)?a:b)
 #define KANA_SEARCH_DISTANCE 1 //Kana interpolation, in characters, unset to disable
-#define ROMAJI_SEARCH_DISTANCE 5 //Romaji interpolation, in karaoke groups, unset to disable
+#define ROMAJI_SEARCH_DISTANCE 4 //Romaji interpolation, in karaoke groups, unset to disable
 
 
 ///////////
@@ -432,7 +432,10 @@ void DialogKanjiTimer::SetSelected() {
 				if ((int)Destext.Len()>=destsel&&(Destext.Mid(destsel).StartsWith(ke.hiragana)||Destext.StartsWith(ke.katakana))) {
 					if (SrcG.Len()==sourceindex||trimmed.Mid(sourceindex)==ke.hepburn) {
 						foundit=true;
-						DestText->SetSelection(0,destsel+1);
+						if (Destext.Len()>(destsel+1)&&SrcG.EndsWith(_T(" "))&&Destext.at(destsel+1)==' ')
+							DestText->SetSelection(0,destsel+2);
+						else
+							DestText->SetSelection(0,destsel+1);
 						break;
 					}
 					if (ke.hepburn.Len()!=0 && trimmed.Mid(sourceindex).StartsWith(ke.hepburn)) {
@@ -453,7 +456,7 @@ void DialogKanjiTimer::SetSelected() {
 					KanaEntry ke = *iter;
 					if (NextSGroup.StartsWith(ke.hepburn)) {
 						index=0;
-						for(int i=KANA_SEARCH_DISTANCE;i!=0;i--) {
+						for(int i=0;i!=KANA_SEARCH_DISTANCE;i++) {
 							wxString Destextmid = Destext.Mid(i);
 							if(Destextmid.StartsWith(ke.hiragana)||Destextmid.StartsWith(ke.katakana)) {
 								DestText->SetSelection(0,i);
@@ -472,9 +475,9 @@ void DialogKanjiTimer::SetSelected() {
 				int start = GetSourceArrayPos(false);
 				//GetSourceArrayPos is going to give us the next pos already
 				//  and not our current pos, so subtract 1 from it for end.
-				int end = MIN(RegroupTotalLen,start+ROMAJI_SEARCH_DISTANCE-1);
+				int end = MIN(RegroupTotalLen,start+(ROMAJI_SEARCH_DISTANCE-1));
 
-				for(int i=start;!foundit&&i!=end;i++) {
+				for(int i=start;foundit==false&&i!=end;i++) {
 					NextSGroup = RegroupSourceText[i];
 					trimmed = NextSGroup.Trim(false).Trim(true);
 					NextSGroup = RegroupSourceText[i];
@@ -487,7 +490,7 @@ void DialogKanjiTimer::SetSelected() {
 					else {
 						for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
 							KanaEntry ke = *iter;
-							if (trimmed==ke.hepburn) {
+							if (trimmed.StartsWith(ke.hepburn)) {
 								int foundhira = Destext.Find(ke.hiragana);
 								int foundkata =	Destext.Find(ke.katakana);
 								int foundat;
@@ -495,7 +498,8 @@ void DialogKanjiTimer::SetSelected() {
 								else if (foundhira>0) foundat=foundhira;
 								else foundat = foundkata; //-1 is fine
 
-								if (foundat>0 && foundat<=ROMAJI_SEARCH_DISTANCE) {
+								//if (foundat>0 && foundat<=ROMAJI_SEARCH_DISTANCE) {
+								if (foundat==1) {								
 									SourceText->SetSelection(0,highlight);
 									DestText->SetSelection(0,foundat);
 									foundit=true;
