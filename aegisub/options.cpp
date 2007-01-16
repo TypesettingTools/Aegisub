@@ -322,6 +322,8 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Last open timecodes path"),_T(""));
 	SetText(_T("Last open keyframes path"),_T(""));
 	SetText(_T("Last open automation path"),_T(""));
+
+	SetBool(_T("kanji timer interpolation"),true);
 }
 
 

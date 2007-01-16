@@ -43,6 +43,8 @@
 #include <wx/wxprec.h>
 #include <wx/listctrl.h>
 #include <wx/regex.h>
+#include <wx/checkbox.h>
+#include "options.h"
 #include "kana_table.h"
 
 

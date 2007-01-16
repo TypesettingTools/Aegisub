@@ -34,8 +34,8 @@
 //
 
 #define MIN(a,b) ((a<b)?a:b)
-#define KANA_SEARCH_DISTANCE 1 //Kana interpolation, in characters, set <=0 to disable
-#define ROMAJI_SEARCH_DISTANCE 5 //Romaji interpolation, in karaoke groups, set <=0 to disable
+#define KANA_SEARCH_DISTANCE 1 //Kana interpolation, in characters, unset to disable
+#define ROMAJI_SEARCH_DISTANCE 5 //Romaji interpolation, in karaoke groups, unset to disable
 
 
 ///////////
@@ -100,6 +100,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 
 	//Checkbox
 	Interpolate = new wxCheckBox(this,-1,_("Attempt to interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
+	Interpolate->SetValue(Options.AsBool(_T("kanji timer interpolation")));
 
 	//Static Text labels for source/dest
 	wxStaticText *SourceLabel = new wxStaticText(this,-1,_("Source: "));
@@ -166,6 +167,8 @@ BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
 END_EVENT_TABLE()
 
 void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
+	Options.SetBool(_T("kanji timer interpolation"),Interpolate->IsChecked());
+	Options.Save();
 	Close();
 }
 
@@ -358,13 +361,13 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 	}
 }
 void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
-	int KeyCode = event.GetKeyCode();
-	switch(KeyCode) {
+	switch(event.GetKeyCode()) {
 		case WXK_ESCAPE :
-			this->EndModal(0);
+			//this->EndModal(0);
+			OnClose((wxCommandEvent)NULL);
 			break;
 		case WXK_BACK :
-			this->OnUnlink((wxCommandEvent)NULL);
+			OnUnlink((wxCommandEvent)NULL);
 			break;
 		case WXK_RIGHT : //inc dest selection len
 			if (DestText->GetStringSelection().Len()!=DestText->GetValue().Len())
@@ -439,7 +442,7 @@ void DialogKanjiTimer::SetSelected() {
 					}
 				}
 			}
-
+#ifdef KANA_SEARCH_DISTANCE
 			if (KANA_SEARCH_DISTANCE>0 && !foundit) {
 				//Try some interpolation for kanji. If we find a hiragana we know after this,
 				//  then we may be able to figure this one out.
@@ -460,7 +463,8 @@ void DialogKanjiTimer::SetSelected() {
 					}
 				}
 			}
-
+#endif
+#ifdef ROMAJI_SEARCH_DISTANCE
 			if (ROMAJI_SEARCH_DISTANCE>0 && !foundit) {
 				wxString Destext = DestText->GetValue();
 				wxString NextSGroup, trimmed;
@@ -470,31 +474,40 @@ void DialogKanjiTimer::SetSelected() {
 				//  and not our current pos, so subtract 1 from it for end.
 				int end = MIN(RegroupTotalLen,start+ROMAJI_SEARCH_DISTANCE-1);
 
-				for(int i=start;i!=end;i++) {
+				for(int i=start;!foundit&&i!=end;i++) {
 					NextSGroup = RegroupSourceText[i];
 					trimmed = NextSGroup.Trim(false).Trim(true);
 					NextSGroup = RegroupSourceText[i];
 
-					for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
-						KanaEntry ke = *iter;
-						if (trimmed==ke.hepburn) {
-							int foundhira = Destext.Find(ke.hiragana);
-							int foundkata =	Destext.Find(ke.katakana);
-							int foundat;
-							if (foundhira>0&&foundkata>0) foundat=MIN(foundhira,foundkata);
-							else if (foundhira>0) foundat=foundhira;
-							else foundat = foundkata; //-1 is fine, the if below checks that
+					if ((NextSGroup.Len()>0||i==start) && NextSGroup.EndsWith(_T(" ")) && Destext.at(1)==' ') {
+						SourceText->SetSelection(0,highlight);
+						DestText->SetSelection(0,1);
+						foundit=true;
+					}
+					else {
+						for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
+							KanaEntry ke = *iter;
+							if (trimmed==ke.hepburn) {
+								int foundhira = Destext.Find(ke.hiragana);
+								int foundkata =	Destext.Find(ke.katakana);
+								int foundat;
+								if (foundhira>0&&foundkata>0) foundat=MIN(foundhira,foundkata);
+								else if (foundhira>0) foundat=foundhira;
+								else foundat = foundkata; //-1 is fine
 
-							if (foundat>0 && foundat<=ROMAJI_SEARCH_DISTANCE) {
-								SourceText->SetSelection(0,highlight);
-								DestText->SetSelection(0,foundat);
-								return;
+								if (foundat>0 && foundat<=ROMAJI_SEARCH_DISTANCE) {
+									SourceText->SetSelection(0,highlight);
+									DestText->SetSelection(0,foundat);
+									foundit=true;
+								}
+								break;
 							}
-						}
-					}//end kana search
+						}//end kana search
+					}
 					highlight += NextSGroup.Len();
 				}
 			}//end romaji interpolation
+#endif
 		}
 		if (!foundit&&DestText->GetValue().Len()!=0&&DestText->GetStringSelection().Len()==0)
 			DestText->SetSelection(0,1);
