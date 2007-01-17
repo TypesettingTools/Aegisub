@@ -70,6 +70,7 @@ private:
 
 	void AppendToHistory(wxString text);
 	void LoadHistory(wxString filename);
+	void OnClear(wxCommandEvent &event);
 
 public:
 	DialogShiftTimes (wxWindow *parent,SubtitlesGrid *grid,VideoDisplay *vid);
@@ -94,7 +95,8 @@ enum {
 	RADIO_BACKWARD,
 	RADIO_FORWARD,
 	RADIO_TIME,
-	RADIO_FRAME
+	RADIO_FRAME,
+	SHIFT_CLEAR_HISTORY
 };
 
 

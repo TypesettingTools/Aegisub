@@ -52,6 +52,9 @@
 #include "subs_edit_box.h"
 
 
+#define SHIFT_HISTORY_FILE (AegisubApp::folderName + _T("shift_history.txt"))
+
+
 ///////////////
 // Constructor
 DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid,VideoDisplay *vid)
@@ -111,17 +114,19 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid,VideoD
 	// Buttons
 	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
 	wxButton *OKButton = new wxButton(this,wxID_OK);
+	wxButton *ClearButton = new wxButton(this,SHIFT_CLEAR_HISTORY,_("Clear"));
 	OKButton->SetDefault();
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
+	ButtonSizer->AddStretchSpacer(2);
 #ifndef __WXMAC__
-	ButtonSizer->Add(OKButton,0,wxRIGHT,5);
-	ButtonSizer->Add(CancelButton,0,wxRIGHT,0);
+	ButtonSizer->Add(OKButton,0,wxALIGN_CENTER|wxRIGHT,5);
+	ButtonSizer->Add(CancelButton,0,wxALIGN_CENTER|wxRIGHT,0);
 #else
 	ButtonSizer->Add(CancelButton,0,wxRIGHT,5);
 	ButtonSizer->Add(OKButton,0,wxRIGHT,0);
 #endif
 	ButtonSizer->AddStretchSpacer(1);
+	ButtonSizer->Add(ClearButton,0,wxALIGN_RIGHT|wxRIGHT,5);
 
 	// General layout
 	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);
@@ -167,7 +172,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid,VideoD
 	}
 
 	// Load history
-	LoadHistory(AegisubApp::folderName + _T("shift_history.txt"));
+	LoadHistory(SHIFT_HISTORY_FILE);
 }
 
 
@@ -176,10 +181,18 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid,VideoD
 BEGIN_EVENT_TABLE(DialogShiftTimes, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,DialogShiftTimes::OnClose)
 	EVT_BUTTON(wxID_OK,DialogShiftTimes::OnOK)
+	EVT_BUTTON(SHIFT_CLEAR_HISTORY,DialogShiftTimes::OnClear)
 	EVT_RADIOBUTTON(RADIO_TIME,DialogShiftTimes::OnRadioTime)
 	EVT_RADIOBUTTON(RADIO_FRAME,DialogShiftTimes::OnRadioFrame)
 END_EVENT_TABLE()
 
+
+/////////////////
+// Clear History
+void DialogShiftTimes::OnClear(wxCommandEvent &event) {
+	remove(SHIFT_HISTORY_FILE.mb_str(wxConvLocal));
+	History->Clear();
+}
 
 //////////
 // Cancel
