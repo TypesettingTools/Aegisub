@@ -28,7 +28,6 @@ Please visit http://aegisub.net to download latest version
   o The "Play" shortcut will always play, regardless of whether it was already playing or not. There is a new shortcut for "Stop".
   o Styles for line start/end markers have changed.
   o Holding down ctrl lets you retime the original line while in Karaoke mode.
-- Added Kanji Timing (AKA Karaoke Timing Copy) functionality. (Dansolo)
 - Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections. (jfs)
 - Fixed loading of sections with unexpected cases. (AMZ)
 - Plain-text export (jfs)
@@ -92,6 +91,10 @@ Please visit http://aegisub.net to download latest version
 - Timing Post-Processor can now be restricted to selection. (AMZ)
 - Added support for using asa instead of VSFilter via Avisynth. (AMZ)
 - Fixed subtitles positioning removing \p tags from the line. (AMZ)
+- Added Kanji Timing (AKA Karaoke Timing Copy) functionality. (Dansolo)
+- Added an audio clip export by right clicking on a line. (Dansolo)
+- Added a clear button for shifting history. (Dansolo)
+- Fixed Custom Aspect Ratio input. (Dansolo)
 
 
 = 1.10 beta - 2006.08.07 ===========================

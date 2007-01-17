@@ -689,7 +689,7 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 			}
 			else {
 				wxMessageBox(_("Couldn't allocate memory."),_("Error"),wxICON_ERROR | wxOK);
-				break;
+				break; // don't return, we need to close the file
 			}
 		}
 		
