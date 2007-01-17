@@ -32,6 +32,9 @@
 // Website: http://aegisub.cellosoft.com
 // Contact: mailto:zeratul@cellosoft.com
 //
+//
+// NOTE: A "source group" in this file refers to a group of plain text following a
+//  override block containing \k
 
 #define MIN(a,b) ((a<b)?a:b)
 #define KANA_SEARCH_DISTANCE 1 //Kana interpolation, in characters, unset to disable
@@ -234,6 +237,7 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 		AssDialogueBlockOverride	*override;
 		AssDialogueBlockPlain		*plain;
 		AssOverrideTag				*tag;
+		wxRegEx						reK(_T("\\\\[kK][of]?"),wxRE_NOSUB);
 		int							k, kIndex=0, textIndex=0, TextBeforeOffset=0;
 		bool						LastWasOverride = false;
 
@@ -262,7 +266,7 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 				for (size_t j=0;j<override->Tags.size();j++) {
 					tag = override->Tags.at(j);
 
-					if (tag->Name == _T("\\k") && tag->Params.size() == 1)
+					if (reK.Matches(tag->Name)&&tag->Params.size() == 1)
 						k = tag->Params[0]->AsInt();
 				}
 				RegroupSourceKLengths[kIndex++] = k;
@@ -423,13 +427,18 @@ void DialogKanjiTimer::SetSelected() {
 			wxString Destext = DestText->GetValue();
 			wxString SrcG = SourceText->GetStringSelection();
 			wxString trimmed = SrcG.Trim(true);
+			wxString Destextmid;
 			SrcG = SourceText->GetStringSelection();
-			int sourceindex=0, destsel=0;
+			size_t sourceindex=0, destsel=0;
+			bool h,k;
 			
-
+			//Find hiragana/katakana for the first source group
 			for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
 				KanaEntry ke = *iter;
-				if ((int)Destext.Len()>=destsel&&(Destext.Mid(destsel).StartsWith(ke.hiragana)||Destext.StartsWith(ke.katakana))) {
+				Destextmid=Destext.Mid(destsel);
+				h=Destextmid.StartsWith(ke.hiragana);
+				k=Destext.StartsWith(ke.katakana);
+				if (Destext.Len()>=destsel&&(h||k)) {
 					if (SrcG.Len()==sourceindex||trimmed.Mid(sourceindex)==ke.hepburn) {
 						foundit=true;
 						if (Destext.Len()>(destsel+1)&&SrcG.EndsWith(_T(" "))&&Destext.at(destsel+1)==' ')
@@ -439,9 +448,9 @@ void DialogKanjiTimer::SetSelected() {
 						break;
 					}
 					if (ke.hepburn.Len()!=0 && trimmed.Mid(sourceindex).StartsWith(ke.hepburn)) {
-						destsel++;
+						destsel+=h?ke.hiragana.Len():ke.katakana.Len();
 						sourceindex+=ke.hepburn.Len();	
-						iter = kt->entries.begin();
+						iter = kt->entries.begin(); //start over in list
 					}
 				}
 			}
@@ -450,14 +459,13 @@ void DialogKanjiTimer::SetSelected() {
 				//Try some interpolation for kanji. If we find a hiragana we know after this,
 				//  then we may be able to figure this one out.
 				wxString NextSGroup = RegroupSourceText[GetSourceArrayPos(false)];
-				int index;
+				int highlight=0;
 
 				for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
 					KanaEntry ke = *iter;
 					if (NextSGroup.StartsWith(ke.hepburn)) {
-						index=0;
 						for(int i=0;i!=KANA_SEARCH_DISTANCE;i++) {
-							wxString Destextmid = Destext.Mid(i);
+							Destextmid = Destext.Mid(i);
 							if(Destextmid.StartsWith(ke.hiragana)||Destextmid.StartsWith(ke.katakana)) {
 								DestText->SetSelection(0,i);
 								return;
@@ -544,7 +552,10 @@ int DialogKanjiTimer::GetSourceArrayPos(bool GoingDown) {
 	return index;
 }
 
-
+//////////////////////////////////////////////////////////////////////////
+/// Return dialogue index given a style and the number of the occurance //
+// StyleName: The name of the style you're looking for                  //
+// Occurance: Look for the nth dialogue occurance. Indexed from 0.      //
 int DialogKanjiTimer::ListIndexFromStyleandIndex(wxString StyleName, int Occurance) {
 	AssDialogue *line;
 	int index = 0;
@@ -559,7 +570,6 @@ int DialogKanjiTimer::ListIndexFromStyleandIndex(wxString StyleName, int Occuran
 	}
 	return -1;
 }
-
 
 
 
