@@ -675,11 +675,11 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 		size_t spr = 65536/(provider->GetBytesPerSample()*provider->GetChannels());
 		for(int i=start;i<end;i+=spr) {
 			int len=(i+spr>end)?(end-i):spr;
-			size_t thisbufsize=len*(provider->GetBytesPerSample()*provider->GetChannels());
-			void *buf = malloc(thisbufsize);
+			bufsize=len*(provider->GetBytesPerSample()*provider->GetChannels());
+			void *buf = malloc(bufsize);
 			if (buf) {
 				provider->GetAudio(buf,i,len);
-				outfile.write((char*)buf,thisbufsize);
+				outfile.write((char*)buf,bufsize);
 				free(buf);
 			}
 			else if (spr>128) {
