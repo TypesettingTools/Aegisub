@@ -443,11 +443,11 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 			Refresh(false);
 		}
 		// Released left button
-		else if (event.LeftUp()) {
+		else if (0&&event.LeftUp()) {
 			ReleaseMouse();
 		}
 		// Released right button; make a menu for selecting \k type
-		else if (event.RightUp()) {
+		else if (0&&event.RightUp()) {
 			ReleaseMouse();
 
 			AudioKaraokeTagMenu menu(this);

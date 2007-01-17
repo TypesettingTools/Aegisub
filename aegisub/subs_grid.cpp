@@ -81,6 +81,7 @@ BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_MENU(MENU_JOIN_AS_KARAOKE,SubtitlesGrid::OnJoinAsKaraoke)
 	EVT_MENU(MENU_SPLIT_BY_KARAOKE,SubtitlesGrid::OnSplitByKaraoke)
 	EVT_MENU(MENU_RECOMBINE,SubtitlesGrid::OnRecombine)
+	EVT_MENU(MENU_AUDIOCLIP,SubtitlesGrid::OnAudioClip)
 	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,SubtitlesGrid::OnShowColMenu)
 END_EVENT_TABLE()
 
@@ -184,6 +185,12 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		state = (sels == 2 || sels == 3) && continuous;
 		menu.Append(MENU_RECOMBINE,_("Recombine Lines"),_T("Recombine subtitles when they have been split and merged"))->Enable(state);
 		menu.AppendSeparator();
+
+		//Make audio clip
+		state = sels==1&& parentFrame->audioBox->audioDisplay->loaded==true;
+		menu.Append(MENU_AUDIOCLIP,_("Create audio clip"),_T("Create an audio clip of the selected line"))->Enable(state);
+		menu.AppendSeparator();
+
 
 		// Copy/cut/paste
 		menu.Append(MENU_COPY,_("&Copy"),_T("Copies selected lines to clipboard"));
@@ -630,6 +637,65 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 }
 
 
+
+//////////////
+// Export audio clip of line
+void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
+	AudioDisplay *audioDisplay = parentFrame->audioBox->audioDisplay;
+	AudioProvider *provider = audioDisplay->provider;
+	AssDialogue *cur = GetDialogue(GetFirstSelRow());
+
+	__int64 num_samples = provider->GetNumSamples();
+	__int64 start = audioDisplay->GetSampleAtMS(cur->StartMS);
+	__int64 end = audioDisplay->GetSampleAtMS(cur->End.GetMS());
+	end=(end>=num_samples+1)?num_samples:end;
+	wxString filename = wxFileSelector(_("Save audio clip"),0,0,_T("wav"),0,wxSAVE|wxOVERWRITE_PROMPT,this);
+
+	if (!filename.empty()) {
+		std::ofstream outfile(filename,std::ios::binary);
+		
+		size_t bufsize=(end-start)*provider->GetChannels()*provider->GetBytesPerSample();
+		int intval;
+		short shortval;
+
+		outfile << "RIFF";
+		outfile.write((char*)&(intval=bufsize+36),4);
+		outfile<< "WAVEfmt ";
+		outfile.write((char*)&(intval=16),4);
+		outfile.write((char*)&(shortval=1),2);
+		outfile.write((char*)&(shortval=provider->GetChannels()),2);
+		outfile.write((char*)&(intval=provider->GetSampleRate()),4);
+		outfile.write((char*)&(intval=provider->GetSampleRate()*provider->GetChannels()*provider->GetBytesPerSample()),4);
+		outfile.write((char*)&(intval=provider->GetChannels()*provider->GetBytesPerSample()),2);
+		outfile.write((char*)&(shortval=provider->GetBytesPerSample()<<3),2);
+		outfile << "data";
+		outfile.write((char*)&bufsize,4);
+
+		//samples per read
+		size_t spr = 65536/(provider->GetBytesPerSample()*provider->GetChannels());
+		for(int i=start;i<end;i+=spr) {
+			int len=(i+spr>end)?(end-i):spr;
+			size_t thisbufsize=len*(provider->GetBytesPerSample()*provider->GetChannels());
+			void *buf = malloc(thisbufsize);
+			if (buf) {
+				provider->GetAudio(buf,i,len);
+				outfile.write((char*)buf,thisbufsize);
+				free(buf);
+			}
+			else if (spr>128) {
+				//maybe we can allocate a smaller amount of memory
+				i-=spr; //effectively redo this loop again
+				spr=128;
+			}
+			else {
+				wxMessageBox(_("Couldn't allocate memory."),_("Error"),wxICON_ERROR | wxOK);
+				break;
+			}
+		}
+		
+		outfile.close();
+	}
+}
 //////////////////////////////////////
 // Clears grid and sets it to default
 void SubtitlesGrid::LoadDefault (AssFile *_ass) {

@@ -44,7 +44,11 @@
 #include <vector>
 #include <list>
 #include "base_grid.h"
-
+#include "audio_display.h"
+#include "audio_provider.h"
+#include "audio_box.h"
+#include <iostream>
+#include <fstream>
 
 //////////////
 // Prototypes
@@ -93,6 +97,7 @@ private:
 	void OnJoinAsKaraoke(wxCommandEvent &event);
 	void OnSplitByKaraoke(wxCommandEvent &event);
 	void OnRecombine(wxCommandEvent &event);
+	void OnAudioClip(wxCommandEvent &event);
 	void OnShowColMenu(wxCommandEvent &event);
 
 public:
@@ -159,5 +164,6 @@ enum {
 	MENU_SET_VIDEO_TO_START,
 	MENU_SET_VIDEO_TO_END,
 	MENU_GRID_END,
-	MENU_SHOW_COL = 1250
+	MENU_SHOW_COL = 1250,
+	MENU_AUDIOCLIP
 };
