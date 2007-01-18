@@ -45,6 +45,10 @@
 #include <wx/event.h>
 #include "../lua51/src/lua.h"
 #include "../lua51/src/lauxlib.h"
+#include "ass_file.h"
+#include "ass_entry.h"
+#include "ass_dialogue.h"
+#include "ass_style.h"
 
 namespace Automation4 {
 
@@ -64,40 +68,94 @@ namespace Automation4 {
 	};
 
 
+	enum Auto3ScriptConfigurationOptionKind {
+		COK_INVALID = 0,
+		COK_LABEL,
+		COK_TEXT,
+		COK_INT,
+		COK_FLOAT,
+		COK_BOOL,
+		COK_COLOUR,
+		COK_STYLE
+	};
+
+	struct Auto3ScriptConfigurationOption {
+		wxString name;
+		Auto3ScriptConfigurationOptionKind kind;
+		wxString label;
+		wxString hint;
+		union {
+			bool isset;
+			int intval;
+			double floatval;
+		} min, max;
+		struct {
+			wxString stringval;
+			int intval;
+			double floatval;
+			bool boolval;
+			AssColor colourval;
+		} default_val, value;
+	};
+
 	class Auto3ConfigDialog : public ScriptConfigDialog {
 		// copypasta
+	private:
+		bool present; // is there any configuration option set at all?
+
+		std::vector<Auto3ScriptConfigurationOption> options;
+
+		struct Control {
+			wxStaticText *label;
+			wxControl *control;
+			Auto3ScriptConfigurationOption *option;
+			Control() : label(0), control(0), option(0) {}
+		};
+		std::vector<Control> controls;
+
+		wxString ident;
+
 	protected:
 		wxWindow* CreateWindow(wxWindow *parent);
 
 	public:
-		Auto3ConfigDialog(lua_State *_L, bool include_buttons);
+		Auto3ConfigDialog(lua_State *L, const wxString &_ident);
 		virtual ~Auto3ConfigDialog();
 		int LuaReadBack(lua_State *L); // read back internal structure to lua structures
 
 		void ReadBack(); // from auto4 base
+
+		wxString serialize(); // make a string from the option name+value pairs
+		void unserialize(wxString &settings); // set the option values from a serialized string
 	};
 
 
 	class Auto3Filter : public FeatureFilter {
-	protected:
-		Auto3Filter(const wxString &_name, const wxString &_description, lua_State *_L);
+	private:
+		Auto3ConfigDialog *config;
+		AssFile *_file;
+		lua_State *L;
 
+	protected:
 		ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent);
 
 		void Init();
 	public:
+		Auto3Filter(const wxString &_name, const wxString &_description, lua_State *_L);
+
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	};
 
 
-	class Auto3ThreadedCall : public wxThread {
-		// This is pretty much copy-paste from the non-legacy version
+	class Auto3ThreadedProcessor : public wxThread {
 	private:
 		lua_State *L;
-		int nargs;
-		int nresults;
+		AssFile *file;
+		Auto3ConfigDialog *config;
+		Auto3ProgressSink *sink;
+
 	public:
-		Auto3ThreadedCall(lua_State *_L, int _nargs, int _nresults);
+		Auto3ThreadedProcessor(lua_State *_L, AssFile *_file, Auto3ConfigDialog *_config, Auto3ProgressSink *_sink);
 		virtual ExitCode Entry();
 	};
 
@@ -107,8 +165,16 @@ namespace Automation4 {
 		Auto3Filter *filter;
 		lua_State *L;
 
+		static int LuaTextExtents(lua_State *L);
+		static int LuaInclude(lua_State *L);
+		static int LuaColorstringToRGB(lua_State *L);
+		static int LuaFrameFromMs(lua_State *L);
+		static int LuaMsFromFrame(lua_State *L);
+
 		void Create();
 		void Destroy();
+
+		static Auto3Script* GetScriptObject(lua_State *L);
 
 	public:
 		Auto3Script(const wxString &filename);

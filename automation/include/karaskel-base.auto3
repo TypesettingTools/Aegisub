@@ -31,7 +31,7 @@
 -- This file is meant as a support file for the various karaoke skeleton
 -- scripts, to avoid including unneeded code
 
-include("utils.lua")
+include("utils.auto3")
 
 -- karaskel
 -- This is a gloabl table defining various parameters, controlling what the

@@ -29,20 +29,10 @@
 
 -- Aegisub Automation 4 Lua karaoke skeleton
 
-if version == 3 then
-	-- Attempt to emulate
-	-- This will only work if karaskel is being included after version has been defined
-	include("auto3-karaskel.lua")
-	
-	version = nil
-	if name then
-		script_name = name
-		name = nil
-	end
-	if description then
-		script_description = description
-		description = nil
-	end
+-- Compatibility hatch
+if aegisub.lua_automation_version < 4 then
+	include("karaskel.auto3")
+	return
 end
 
 include("utils.lua")

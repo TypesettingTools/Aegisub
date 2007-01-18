@@ -52,6 +52,7 @@ function process_lines(meta, styles, lines, config)
 			out(string.format("Line %d: %s", i, lines[i].kind))
 		end
 	end
+	out("Finished dumping")
 	
 	-- In the end, no modifications were done, so just return the original subtitle data
 	return lines

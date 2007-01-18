@@ -28,11 +28,12 @@
 ]]
 
 -- Aegisub Automation 4 Lua
--- Wrapper for "advanced" karaskel
+-- Nothing different between "regular" and "advanced" karaskel now, but auto3 will expect it
 
-if not karaskel then
-	karaskel = {}
+-- Compatibility hatch
+if aegisub.lua_automation_version < 4 then
+	include("karaskel-adv.auto3")
+	return
 end
-karaskel.advanced = true
 
 include("karaskel.lua")

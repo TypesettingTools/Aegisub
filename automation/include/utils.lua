@@ -27,6 +27,12 @@
  POSSIBILITY OF SUCH DAMAGE.
 ]]
 
+-- Compatibility hatch
+if aegisub.lua_automation_version < 4 then
+	include "utils.auto3"
+	return
+end
+
 -- Make a shallow copy of a table
 function table.copy(oldtab)
 	local newtab = {}

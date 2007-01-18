@@ -27,6 +27,13 @@
  POSSIBILITY OF SUCH DAMAGE.
 ]]
 
--- Automation 4 Lua compatibility script for Auto3 karaskel based scripts
+-- Aegisub Automation 4 Lua
+-- No "base" karaskel any longer, but auto3 scripts might expect it
 
--- TODO
+-- Compatibility hatch
+if aegisub.lua_automation_version < 4 then
+	include("karaskel-base.auto3")
+	return
+end
+
+include("karaskel.lua")

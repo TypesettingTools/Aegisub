@@ -32,7 +32,7 @@
 -- positioning of karaoke.
 
 -- It automatically includes and re-setups karaskel.lua, so you should not include that yourself!
-include("karaskel-base.lua")
+include("karaskel-base.auto3")
 karaskel.engage_positioning = true
 
 -- The interface here has been greatly simplified, there is only one function to override, do_syllable

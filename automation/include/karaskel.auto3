@@ -65,7 +65,7 @@
 --   start_time - Start time of the syllable, in miliseconds, relative to the start of the line
 --   end_time - End time of the syllable, similar to start_time
 
-include("karaskel-base.lua")
+include("karaskel-base.auto3")
 
 -- Return a replacement text for a syllable
 function karaskel.do_syllable(meta, styles, config, line, syl)

@@ -95,18 +95,18 @@ void DialogAutomation::RebuildList()
 	list->DeleteAllItems();
 
 	// fill the list view
-	const std::vector<Automation4::Script*> &global_scripts = global_manager->GetScripts();
-	for (std::vector<Automation4::Script*>::const_iterator i = global_scripts.begin(); i != global_scripts.end(); ++i) {
-		ExtraScriptInfo ei;
-		ei.script = *i;
-		ei.is_global = true;
-		AddScript(ei);
-	}
 	const std::vector<Automation4::Script*> &local_scripts = local_manager->GetScripts();
 	for (std::vector<Automation4::Script*>::const_iterator i = local_scripts.begin(); i != local_scripts.end(); ++i) {
 		ExtraScriptInfo ei;
 		ei.script = *i;
 		ei.is_global = false;
+		AddScript(ei);
+	}
+	const std::vector<Automation4::Script*> &global_scripts = global_manager->GetScripts();
+	for (std::vector<Automation4::Script*>::const_iterator i = global_scripts.begin(); i != global_scripts.end(); ++i) {
+		ExtraScriptInfo ei;
+		ei.script = *i;
+		ei.is_global = true;
 		AddScript(ei);
 	}
 
@@ -168,19 +168,26 @@ END_EVENT_TABLE()
 void DialogAutomation::OnAdd(wxCommandEvent &evt)
 {
 	// build filename filter list
-	wxString fnfilter;
+	wxString fnfilter, catchall;
 	const std::vector<Automation4::ScriptFactory*> &factories = Automation4::ScriptFactory::GetFactories();
 	for (int i = 0; i < (int)factories.size(); i++) {
 		const Automation4::ScriptFactory *fact = factories[i];
 		if (fact->GetEngineName().IsEmpty() || fact->GetFilenamePattern().IsEmpty())
 			continue;
-		fnfilter = wxString::Format(_T("%s%s scripts|%s|"), fnfilter.c_str(), fact->GetEngineName().c_str(), fact->GetFilenamePattern().c_str());
+		fnfilter = wxString::Format(_T("%s%s scripts (%s)|%s|"), fnfilter.c_str(), fact->GetEngineName().c_str(), fact->GetFilenamePattern().c_str(), fact->GetFilenamePattern().c_str());
+		catchall << fact->GetFilenamePattern() << _T(";");
 	}
 #ifdef __WINDOWS__
 	fnfilter += _T("All files|*.*");
 #else
 	fnfilter += _T("All files|*");
 #endif
+	if (!catchall.IsEmpty()) {
+		catchall.RemoveLast();
+	}
+	if (factories.size() > 1) {
+		fnfilter = _T("All script formats|") + catchall + _T("|") + fnfilter;
+	}
 
 	wxString fname = wxFileSelector(_("Add Automation script"), Options.AsText(_T("Last open automation path")), wxEmptyString, wxEmptyString, fnfilter, wxOPEN|wxFILE_MUST_EXIST, this);
 
