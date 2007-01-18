@@ -96,7 +96,7 @@ void AssColor::SetWXColor(const wxColor &color) {
 	r = color.Red();
 	g = color.Green();
 	b = color.Blue();
-	a = color.Alpha();
+	//a = color.Alpha();
 }
 
 
