@@ -33,7 +33,6 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-
 ////////////
 // Includes
 #include <wx/tokenzr.h>
@@ -54,65 +53,40 @@ AssColor::AssColor (wxColour &color) {
 
 
 //////////////////
-// Parse from ASS
-void AssColor::ParseASS (const wxString _value) {
+// Parse from SSA/ASS
+void AssColor::Parse(const wxString value) {
 	// Prepare
-	wxString value = _value;
-	value.Trim(false);
-	value.Trim(true);
-	value.UpperCase();
+	char c,ostr[12];
+	unsigned long outval;
+	int oindex=11;
+	bool ishex=false,isneg=false;
 
-	// Remove leading and ending crap
-	if (value.Left(1) == _T("&")) value = value.Mid(1);
-	if (value.Left(1) == _T("H")) value = value.Mid(1);
-	if (value.Right(1) == _T("&")) value = value.Left(value.Length()-1);
+	ostr[11]=0;
 
-	// Read colours
-	long temp[4] = { 0, 0, 0, 0 };
-	bool ok;
-	for (int i=0;i<4;i++) {
-		if (value.Length() > 0) {
-			ok = value.Right(2).ToLong(&temp[i],16);
-			if (!ok) temp[i] = 0;
-			value.Truncate(value.Length()-2);
-		}
-		else break;
+	for(int i=value.Len()-1;i>=0&&oindex>=0;i--) {
+		c=value[i];
+		if ((c >= 48 && c <= 57) || (c >= 65 && c <= 70) || (c >= 97 && c <= 102)) {
+			ostr[--oindex] = c;
+            if (c>=65) ishex = true;
+        }
+		else if (c == 'H' || c == 'h') ishex = true;
+		else if (c==45) isneg=true;
 	}
+	
+	outval=strtoul(ostr+oindex,0,ishex?16:10);
+	if (isneg) outval+=2147483648; //2^31 (MSB)
 
-	// Copy
-	r = temp[0];
-	g = temp[1];
-	b = temp[2];
-	a = temp[3];
-}
-
-
-//////////////////
-// Parse from SSA
-void AssColor::ParseSSA (wxString value) {
-	value.Trim(true);
-	value.Trim(false);
-
-	// Check if the moron who wrote it used ASS style in SSA
-	if (value.Left(2) == _T("&H")) {
-		ParseASS(value);
-		return;
-	}
-
-	// Parse SSA
-	long val;
-	value.ToLong(&val);
-	b = (val >> 16) & 0xFF;
-	g = (val >> 8) & 0xFF;
-	r = val & 0xFF;
-	a = 0;
+	r = outval		& 0xFF;
+	g = (outval>>8)	& 0xFF;
+	b = (outval>>16)& 0xFF;
+	a = (outval>>24)& 0xFF;
 }
 
 
 ///////////////////
 // Gets a wxColour
 wxColour AssColor::GetWXColor() {
-	return wxColour(r,g,b);
+	return wxColour(r,g,b,a);
 }
 
 
@@ -122,6 +96,7 @@ void AssColor::SetWXColor(const wxColor &color) {
 	r = color.Red();
 	g = color.Green();
 	b = color.Blue();
+	a = color.Alpha();
 }
 
 
@@ -140,8 +115,12 @@ wxString AssColor::GetASSFormatted (bool alpha,bool stripped,bool isStyle) {
 /////////////////////////
 // Get decimal formatted
 wxString AssColor::GetSSAFormatted () {
-	return wxString::Format(_T("%i"),(b<<16)+(g<<8)+r);
+	long color = ((a&127)<<24)+(b<<16)+(g<<8)+r;
+	if ((a&128)!=0) color = 0-color;
+	wxString output=wxString::Format(_T("%i"),(long)color);
+	return output;
 }
+
 
 
 ///////////////////////// AssStyle /////////////////////////
@@ -241,29 +220,29 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	if (version != 0) {
 		// Read primary color
 		if (!tkn.HasMoreTokens()) return false;
-		primary.ParseASS(tkn.GetNextToken());
+		primary.Parse(tkn.GetNextToken());
 
 		// Read secondary color
 		if (!tkn.HasMoreTokens()) return false;
-		secondary.ParseASS(tkn.GetNextToken());
+		secondary.Parse(tkn.GetNextToken());
 
 		// Read outline color
 		if (!tkn.HasMoreTokens()) return false;
-		outline.ParseASS(tkn.GetNextToken());
+		outline.Parse(tkn.GetNextToken());
 
 		// Read shadow color
 		if (!tkn.HasMoreTokens()) return false;
-		shadow.ParseASS(tkn.GetNextToken());
+		shadow.Parse(tkn.GetNextToken());
 	}
 
 	else {
 		// Read primary color
 		if (!tkn.HasMoreTokens()) return false;
-		primary.ParseSSA(tkn.GetNextToken());
+		primary.Parse(tkn.GetNextToken());
 
 		// Read secondary color
 		if (!tkn.HasMoreTokens()) return false;
-		secondary.ParseSSA(tkn.GetNextToken());
+		secondary.Parse(tkn.GetNextToken());
 
 		// Read and discard tertiary color
 		if (!tkn.HasMoreTokens()) return false;
@@ -271,7 +250,7 @@ bool AssStyle::Parse(wxString rawData,int version) {
 
 		// Read shadow/outline color
 		if (!tkn.HasMoreTokens()) return false;
-		outline.ParseSSA(tkn.GetNextToken());
+		outline.Parse(tkn.GetNextToken());
 		shadow = outline;
 	}
 
@@ -279,30 +258,25 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	if (!tkn.HasMoreTokens()) return false;
 	temp = tkn.GetNextToken();
 	temp.ToLong(&templ);
-	bold = true;
-	if (templ == 0) bold = false;
+	bold = (templ==0)?false:true;
 
 	// Read italics
 	if (!tkn.HasMoreTokens()) return false;
 	temp = tkn.GetNextToken();	temp.ToLong(&templ);
-	italic = true;
-	if (templ == 0) italic = false;
+	italic = (templ==0)?false:true;
 
 	if (version != 0) {
 		// Read underline
 		if (!tkn.HasMoreTokens()) return false;
 		temp = tkn.GetNextToken();
 		temp.ToLong(&templ);
-		underline = true;
-		if (templ == 0) underline = false;
+		underline = (templ==0)?false:true;
 
 		// Read strikeout
 		if (!tkn.HasMoreTokens()) return false;
 		temp = tkn.GetNextToken();
 		temp.ToLong(&templ);
-		strikeout = true;
-		if (templ == 0) strikeout = false;
-
+		strikeout = (templ==0)?false:true;
 		// Read scale x
 		if (!tkn.HasMoreTokens()) return false;
 		temp = tkn.GetNextToken();
@@ -329,7 +303,7 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	
 	else {
 		// SSA defaults
-		shadow.a = 128;
+		//shadow.a = 128; //Parsed
 		underline = false;
 		strikeout = false;
 
@@ -421,43 +395,27 @@ bool AssStyle::Parse(wxString rawData,int version) {
 }
 
 
-//////////////////////////////////
-// Writes data back to ASS format
+///////////////////////////////////////
+// Writes data back to ASS (v4+) format
 void AssStyle::UpdateData() {
-	// Prepare
-	wxString final = _T("Style: ");
+	wxString final;
 
-	// Write all final
 	name.Replace(_T(","),_T(";"));
 	font.Replace(_T(","),_T(";"));
-	final += name + _T(",");
-	final += font + _T(",");
-	final += FloatToString(fontsize) + _T(",");
 
-	final += primary.GetASSFormatted(true,false,true) + _T(",");
-	final += secondary.GetASSFormatted(true,false,true) + _T(",");
-	final += outline.GetASSFormatted(true,false,true) + _T(",");
-	final += shadow.GetASSFormatted(true,false,true) + _T(",");
 
-	final += IntegerToString(bold?-1:0) + _T(",");
-	final += IntegerToString(italic?-1:0) + _T(",");
-	final += IntegerToString(underline?-1:0) + _T(",");
-	final += IntegerToString(strikeout?-1:0) + _T(",");
+	final = wxString::Format(_T("Style: %s,%s,%.0f,%s,%s,%s,%s,%d,%d,%d,%d,%.0f,%.0f,%.0f,%.0f,%d,%.0f,%.0f,%i,%i,%i,%i,%i"),
+					  name, font, fontsize,
+					  primary.GetASSFormatted(true,false,true),
+					  secondary.GetASSFormatted(true,false,true),
+					  outline.GetASSFormatted(true,false,true),
+					  shadow.GetASSFormatted(true,false,true),
+					  (bold? -1 : 0), (italic ? -1 : 0),
+					  (underline?-1:0),(strikeout?-1:0),
+					  scalex,scaley,spacing,angle,
+					  borderstyle,outline_w,shadow_w,alignment,
+					  Margin[0],Margin[1],Margin[2],encoding);
 
-	final += FloatToString(scalex) + _T(",");
-	final += FloatToString(scaley) + _T(",");
-	final += FloatToString(spacing) + _T(",");
-
-	final += FloatToString(angle) + _T(",");
-	final += IntegerToString(borderstyle) + _T(",");
-	final += FloatToString(outline_w) + _T(",");
-	final += FloatToString(shadow_w) + _T(",");
-
-	final += IntegerToString(alignment) + _T(",");
-	final += IntegerToString(Margin[0]) + _T(",");
-	final += IntegerToString(Margin[1]) + _T(",");
-	final += IntegerToString(Margin[2]) + _T(",");
-	final += IntegerToString(encoding);
 	SetEntryData(final);
 }
 
@@ -465,15 +423,13 @@ void AssStyle::UpdateData() {
 /////////////////////////////
 // Sets margin from a string
 void AssStyle::SetMarginString(const wxString str,int which) {
-	wxString work = str;
-	work.Trim(false);
-	work.Trim(true);
-	if (!work.IsNumber()) throw _T("Invalid margin value");
-	long value;
-	work.ToLong(&value);
-	if (value < 0) value = 0;
-	if (value > 9999) value = 9999;
 	if (which < 0 || which >= 4) throw _T("Invalid margin");
+	if (!str.IsNumber()) throw _T("Invalid margin value");
+	long value;
+	str.ToLong(&value);
+	if (value < 0) value = 0;
+	else if (value > 9999) value = 9999;
+	
 	Margin[which] = value;
 }
 
@@ -481,10 +437,8 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 //////////////////////////
 // Gets string for margin
 wxString AssStyle::GetMarginString(int which) {
-	int value;
 	if (which < 0 || which >= 4) throw _T("Invalid margin");
-	value = Margin[which];
-	wxString result = wxString::Format(_T("%04i"),value);
+	wxString result = wxString::Format(_T("%04i"),Margin[which]);
 	return result;
 }
 
@@ -492,28 +446,7 @@ wxString AssStyle::GetMarginString(int which) {
 ///////////////////////////////
 // Convert style to SSA string
 wxString AssStyle::GetSSAText() {
-	// Prepare
-	wxString output = _T("Style: ");
-
-	// Write all data
-	name.Replace(_T(","),_T(";"));
-	font.Replace(_T(","),_T(";"));
-	output += name + _T(",");
-	output += font + _T(",");
-	output += FloatToString(fontsize) + _T(",");
-
-	output += primary.GetSSAFormatted() + _T(",");
-	output += secondary.GetSSAFormatted() + _T(",");
-	output += _T("0,");
-	output += shadow.GetSSAFormatted() + _T(",");
-
-	output += IntegerToString(bold?-1:0) + _T(",");
-	output += IntegerToString(italic?-1:0) + _T(",");
-
-	output += IntegerToString(borderstyle) + _T(",");
-	output += FloatToString(outline_w) + _T(",");
-	output += FloatToString(shadow_w) + _T(",");
-
+	wxString output;
 	int align = 0;
 	switch (alignment) {
 		case 1: align = 1; break;
@@ -526,13 +459,17 @@ wxString AssStyle::GetSSAText() {
 		case 8: align = 6; break;
 		case 9: align = 7; break;
 	}
-	output += IntegerToString(align) + _T(",");
+	name.Replace(_T(","),_T(";"));
+	font.Replace(_T(","),_T(";"));
 
-	output += IntegerToString(Margin[0]) + _T(",");
-	output += IntegerToString(Margin[1]) + _T(",");
-	output += IntegerToString(Margin[2]) + _T(",");
-	output += _T("0,");
-	output += IntegerToString(encoding);
+	output = wxString::Format(_T("Style: %s,%s,%.0f,%s,%s,0,%s,%d,%d,%d,%.0f,%.0f,%d,%d,%d,%d,0,%i"),
+				  name, font, fontsize,
+				  primary.GetSSAFormatted(),
+				  secondary.GetSSAFormatted(),
+				  shadow.GetSSAFormatted(),
+				  (bold? -1 : 0), (italic ? -1 : 0),
+				  borderstyle,outline_w,shadow_w,align,
+				  Margin[0],Margin[1],Margin[2],encoding);
 
 	return output;
 }
@@ -556,7 +493,10 @@ AssEntry *AssStyle::Clone() {
 	final->font = font;
 	final->fontsize = fontsize;
 	final->italic = italic;
-	for (int i=0;i<4;i++) final->Margin[i] = Margin[i];
+	final->Margin[0] = Margin[0];
+	final->Margin[1] = Margin[1];
+	final->Margin[2] = Margin[2];
+	final->Margin[3] = Margin[3];
 	final->name = name;
 	final->outline = outline;
 	final->outline_w = outline_w;

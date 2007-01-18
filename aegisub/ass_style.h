@@ -36,7 +36,6 @@
 
 #pragma once
 
-
 ///////////
 // Headers
 #include "ass_entry.h"
@@ -56,8 +55,7 @@ public:
 
 	wxColor GetWXColor();					// Return as a wxColor
 	void SetWXColor(const wxColor &color);	// Sets from a wxColor
-	void ParseASS(const wxString value);	// Parse ASS-style color
-	void ParseSSA(const wxString value);	// Parse SSA-style color
+	void Parse(const wxString value);		// Parse SSA or ASS-style color
 	wxString GetASSFormatted(bool alpha,bool stripped=false,bool isStyle=false);	// Gets color formated in ASS format
 	wxString GetSSAFormatted();
 };

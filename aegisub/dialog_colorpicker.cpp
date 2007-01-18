@@ -165,7 +165,7 @@ void ColorPickerRecent::LoadFromString(const wxString &recent_string)
 	wxStringTokenizer toker(recent_string, _T(" "), false);
 	while (toker.HasMoreTokens()) {
 		AssColor color;
-		color.ParseASS(toker.NextToken());
+		color.Parse(toker.NextToken());
 		colors.push_back(color.GetWXColor());
 	}
 	while ((int)colors.size() < rows*cols) {
@@ -695,7 +695,7 @@ void DialogColorPicker::UpdateFromASS()
 
 	unsigned char r, g, b, h, s, l, h2, s2, v2;
 	AssColor ass;
-	ass.ParseASS(ass_input->GetValue());
+	ass.Parse(ass_input->GetValue());
 	r = ass.r;
 	g = ass.g;
 	b = ass.b;
@@ -1106,7 +1106,7 @@ void DialogColorPicker::OnSliderChange(wxCommandEvent &evt)
 void DialogColorPicker::OnRecentSelect(wxCommandEvent &evt)
 {
 	AssColor color;
-	color.ParseASS(evt.GetString());
+	color.Parse(evt.GetString());
 	SetColor(color.GetWXColor());
 }
 

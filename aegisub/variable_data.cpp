@@ -204,7 +204,7 @@ wxColour VariableData::AsColour() const {
 	if (type == VARDATA_COLOUR)	return *value_colour;
 	else if (type == VARDATA_TEXT) {
 		AssColor color;
-		color.ParseASS(*value_text);
+		color.Parse(*value_text);
 		return color.GetWXColor();
 	}
 	else throw _T("Wrong parameter type, should be colour");

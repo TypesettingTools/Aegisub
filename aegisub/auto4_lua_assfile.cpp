@@ -337,10 +337,10 @@ namespace Automation4 {
 			sty->name = name;
 			sty->font = fontname;
 			sty->fontsize = fontsize;
-			sty->primary.ParseASS(color1);
-			sty->secondary.ParseASS(color2);
-			sty->outline.ParseASS(color3);
-			sty->shadow.ParseASS(color4);
+			sty->primary.Parse(color1);
+			sty->secondary.Parse(color2);
+			sty->outline.Parse(color3);
+			sty->shadow.Parse(color4);
 			sty->bold = bold;
 			sty->italic = italic;
 			sty->underline = underline;
