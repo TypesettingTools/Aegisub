@@ -718,6 +718,9 @@ namespace Automation4 {
 		lua_pushcclosure(L, LuaDebugOut, 1);
 		lua_setfield(L, -2, "out");
 		lua_setfield(L, -2, "debug");
+		lua_pushvalue(L, -2);
+		lua_pushcclosure(L, LuaDebugOut, 1);
+		lua_setfield(L, -2, "log");
 
 		if (allow_config_dialog) {
 			lua_newtable(L);
