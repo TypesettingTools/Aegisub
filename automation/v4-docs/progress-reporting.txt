@@ -69,7 +69,7 @@ Returns: Boolean. True is the user has clicked the Cancel button, false if it
 
 Outputting text to the debug log
 
-function aegisub.debug.out(level, msg, ...)
+function aegisub.debug.out([level,] msg, ...)
 
 @level (number)
   Integer describing the verbosity of this message. Here are some suggested
@@ -85,6 +85,9 @@ function aegisub.debug.out(level, msg, ...)
   The level can be used to let the user limit how severe messages will be
   shown, so you eg. can leave trace messages in, yet the casual user of the
   script won't see them unless he explicitly enables it.
+  This argument is optional and can be left out, in which case the message
+  will always be displayed, regardless of the current trace level set in
+  Aegisub.
 
 @msg (string)
   A format string used for the message.

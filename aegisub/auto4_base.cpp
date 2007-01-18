@@ -347,6 +347,9 @@ namespace Automation4 {
 		sizer->SetSizeHints(this);
 		SetSizer(sizer);
 		Center();
+
+		// Init trace level
+		trace_level = Options.AsInt(_T("Automation Trace Level"));
 	}
 
 	ProgressSink::~ProgressSink()

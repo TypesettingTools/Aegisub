@@ -788,6 +788,32 @@ namespace Automation4 {
 	int LuaProgressSink::LuaDebugOut(lua_State *L)
 	{
 		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
+
+		// Check trace level
+		if (lua_isnumber(L, 1)) {
+			int level = lua_tointeger(L, 1);
+			if (level > ps->trace_level)
+				return 0;
+			// remove trace level
+			lua_remove(L, 1);
+		}
+
+		// Only do format-string handling if there's more than one argument left
+		// (If there's more than one argument left, assume first is a format string and rest are format arguments)
+		if (lua_gettop(L) > 1) {
+			// Format the string
+			lua_getglobal(L, "string");
+			lua_getfield(L, -1, "format");
+			// Here stack contains format string, format arguments, 'string' table, format function
+			// remove 'string' table
+			lua_remove(L, -2);
+			// put the format function into place
+			lua_insert(L, 1);
+			// call format function
+			lua_call(L, lua_gettop(L)-1, 1);
+		}
+
+		// Top of stack is now a string to output
 		wxString msg(lua_tostring(L, 1), wxConvUTF8);
 		ps->AddDebugOutput(msg);
 		return 0;

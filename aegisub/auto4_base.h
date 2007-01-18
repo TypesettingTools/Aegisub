@@ -236,6 +236,7 @@ namespace Automation4 {
 
 	protected:
 		volatile bool cancelled;
+		int trace_level;
 
 		ProgressSink(wxWindow *parent);
 		virtual ~ProgressSink();
