@@ -186,7 +186,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &evt)
 		catchall.RemoveLast();
 	}
 	if (factories.size() > 1) {
-		fnfilter = _T("All script formats|") + catchall + _T("|") + fnfilter;
+		fnfilter = _T("All supported scripts|") + catchall + _T("|") + fnfilter;
 	}
 
 	wxString fname = wxFileSelector(_("Add Automation script"), Options.AsText(_T("Last open automation path")), wxEmptyString, wxEmptyString, fnfilter, wxOPEN|wxFILE_MUST_EXIST, this);
@@ -272,13 +272,13 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 	}
 
 	if (ei) {
-		info += wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nCorrectly initialised: %s"),
+		info += wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s"),
 			ei->script->GetName().c_str(),
 			ei->script->GetDescription().c_str(),
 			ei->script->GetAuthor().c_str(),
 			ei->script->GetVersion().c_str(),
 			ei->script->GetFilename().c_str(),
-			ei->script->GetLoadedState() ? _("Yes") : _("No"));
+			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load"));
 	}
 
 	wxMessageBox(info, _("Automation Script Info"));

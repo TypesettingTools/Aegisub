@@ -730,10 +730,27 @@ void FrameMain::OnNewSubtitles(wxCommandEvent& WXUNUSED(event)) {
 ////////////////////
 // Export subtitles
 void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
-	//wxString filename = wxFileSelector(_T("Export subtitles file"),_T(""),_T(""),_T(""),_T("Advanced Substation Alpha (*.ass)|*.ass"),wxSAVE | wxOVERWRITE_PROMPT);
-	//if (!filename.empty()) {
-	//	AssFile::top->Export(filename);
-	//}
+	int autoreload = Options.AsInt(_T("Automation Autoreload Mode"));
+	if (autoreload & 1) {
+		// Local scripts
+		const std::vector<Automation4::Script*> scripts = local_scripts->GetScripts();
+		for (size_t i = 0; i < scripts.size(); ++i) {
+			try {
+				scripts[i]->Reload();
+			}
+			catch (const wchar_t *e) {
+				wxLogError(e);
+			}
+			catch (...) {
+				wxLogError(_T("An unknown error occurred reloading Automation script '%s'."), scripts[i]->GetName().c_str());
+			}
+		}
+	}
+	if (autoreload & 1) {
+		// Global scripts
+		wxGetApp().global_scripts->Reload();
+	}
+
 	DialogExport exporter(this);
 	exporter.ShowModal();
 }

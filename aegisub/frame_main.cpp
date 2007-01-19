@@ -972,7 +972,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 
 			scripts_string += scriptfn;
 		}
-		subs->SetScriptInfo(_T("Automation 4 Scripts"), scripts_string);
+		subs->SetScriptInfo(_T("Automation Scripts"), scripts_string);
 	}
 }
 

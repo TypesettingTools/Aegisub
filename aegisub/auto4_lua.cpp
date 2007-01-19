@@ -198,6 +198,8 @@ namespace Automation4 {
 			lua_pushcfunction(L, luaopen_string); lua_call(L, 0, 0);
 			lua_pushcfunction(L, luaopen_table); lua_call(L, 0, 0);
 			lua_pushcfunction(L, luaopen_math); lua_call(L, 0, 0);
+			lua_pushcfunction(L, luaopen_io); lua_call(L, 0, 0);
+			lua_pushcfunction(L, luaopen_os); lua_call(L, 0, 0);
 			_stackcheck.check(0);
 			// dofile and loadfile are replaced with include
 			lua_pushnil(L);

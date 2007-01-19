@@ -564,6 +564,11 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,prio_choices,wxCB_READONLY|wxCB_DROPDOWN);
 		Bind(control, _T("Automation Thread Priority"));
 		autoSizer2->Add(control, 1, wxEXPAND);
+		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Autoreload on Export: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		wxString reload_choices[4] = { _("No scripts"), _("Subtitle-local scripts"), _("Global autoload scripts"), _("All scripts") };
+		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,4,reload_choices,wxCB_READONLY|wxCB_DROPDOWN);
+		Bind(control, _T("Automation Autoreload Mode"));
+		autoSizer2->Add(control, 1, wxEXPAND);
 
 		// Sizers
 		autoSizer1->Add(autoSizer2,1,wxEXPAND | wxALL,5);
