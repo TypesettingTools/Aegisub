@@ -262,26 +262,28 @@ void AegisubApp::RegistryAssociate () {
 	command << _T("\"") << fullPath << _T("\" \"%1\"");
 
 	// Main program association
-	wxRegKey *key = new wxRegKey(_T("HKEY_LOCAL_MACHINE\\Software\\Classes\\Aegisub"));
+#ifndef DEBUG
+	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub"));
 	if (!key->Exists()) key->Create();
 	key->SetValue(_T(""),_T("Aegisub Subtitle Script"));
 	delete key;
-	key = new wxRegKey(_T("HKEY_LOCAL_MACHINE\\Software\\Classes\\Aegisub\\DefaultIcon"));
+	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\DefaultIcon"));
 	if (!key->Exists()) key->Create();
-    key->SetValue(_T(""),fullPath);
+	key->SetValue(_T(""),fullPath);
 	delete key;
-	key = new wxRegKey(_T("HKEY_LOCAL_MACHINE\\Software\\Classes\\Aegisub\\Shell"));
+	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell"));
 	if (!key->Exists()) key->Create();
-    key->SetValue(_T(""),_T("open"));
+	key->SetValue(_T(""),_T("open"));
 	delete key;
-	key = new wxRegKey(_T("HKEY_LOCAL_MACHINE\\Software\\Classes\\Aegisub\\Shell\\Open"));
+	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell\\Open"));
 	if (!key->Exists()) key->Create();
-    key->SetValue(_T(""),_T("&Open with Aegisub"));
+	key->SetValue(_T(""),_T("&Open with Aegisub"));
 	delete key;
-	key = new wxRegKey(_T("HKEY_LOCAL_MACHINE\\Software\\Classes\\Aegisub\\Shell\\Open\\Command"));
+	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell\\Open\\Command"));
 	if (!key->Exists()) key->Create();
-    key->SetValue(_T(""),command);
+	key->SetValue(_T(""),command);
 	delete key;
+#endif
 
 	// Check associations
 	if (Options.AsBool(_T("Show associations"))) {

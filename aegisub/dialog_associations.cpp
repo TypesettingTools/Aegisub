@@ -87,7 +87,7 @@ DialogAssociations::~DialogAssociations() {
 // Associates a type with Aegisub
 void DialogAssociations::AssociateType(wxString type) {
 	type.Lower();
-	wxRegKey *key = new wxRegKey(_T("HKEY_CLASSES_ROOT\\.") + type);
+	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\.") + type);
 	if (!key->Exists()) key->Create();
 	key->SetValue(_T(""),_T("Aegisub"));
 	delete key;
@@ -98,7 +98,7 @@ void DialogAssociations::AssociateType(wxString type) {
 // Checks if a type is associated with Aegisub
 bool DialogAssociations::CheckAssociation(wxString type) {
 	type.Lower();
-	wxRegKey *key = new wxRegKey(_T("HKEY_CLASSES_ROOT\\.") + type);
+	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\.") + type);
 	if (!key->Exists()) {
 		delete key;
 		return false;
