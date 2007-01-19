@@ -71,11 +71,11 @@ DialogExport::DialogExport (wxWindow *parent)
 	}
 
 	// No filters listed on header, select all
-	if (n == 0) {
+	/*if (n == 0) {
 		for (unsigned int i=0;i<FilterList->GetCount();i++) {
 			FilterList->Check(i);
 		}
-	}
+	}*/
 
 	// Top buttons
 	wxSizer *TopButtons = new wxBoxSizer(wxHORIZONTAL);
