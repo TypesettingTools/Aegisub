@@ -116,8 +116,9 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 
 	// Open directory
 	wxString folder = AegisubApp::folderName + _T("/locale/");
-	wxDir dir(folder);
-	if (!dir.IsOpened()) return final;
+	wxDir dir;
+	if (!dir.Exists(folder)) return final;
+	if (!dir.Open(folder)) return final;
 
 	// Enumerate folders
 	for (bool cont = dir.GetFirst(&temp1,_T(""),wxDIR_DIRS);cont;cont = dir.GetNext(&temp1)) {
