@@ -987,7 +987,9 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	AssFile *oldtop = AssFile::top;
 	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsBox->ass, SubsBox->GetAbsoluteSelection(), SubsBox->GetFirstSelRow(), this);
 	// check if modifications were made and put on undo stack
+	AssFile::Popping = true; // HACK to avoid getting an additional undo point on stack
 	SubsBox->LoadFromAss(AssFile::top, true, true);
+	AssFile::Popping = false;
 }
 
 
