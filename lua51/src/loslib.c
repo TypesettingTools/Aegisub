@@ -19,6 +19,11 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#ifdef WIN32
+#include <windows.h>
+#include <wchar.h>
+#endif
+
 
 static int os_pushresult (lua_State *L, int i, const char *filename) {
   int en = errno;  /* calls to Lua API may change this value */
@@ -39,27 +44,56 @@ static int os_pushresult (lua_State *L, int i, const char *filename) {
 
 
 static int os_execute (lua_State *L) {
+#ifdef WIN32
+  const char *cmd = luaL_optstring(L, 1, NULL);
+  if (cmd) {
+    wchar_t wcmd[MAX_PATH+1];
+    MultiByteToWideChar(CP_UTF8, 0, cmd, -1, wcmd, MAX_PATH+1);
+    lua_pushinteger(L, _wsystem(wcmd));
+  } else {
+    lua_pushinteger(L, _wsystem(NULL));
+  }
+#else
+  // FIXME: non-win32 conversion to local filesystem encoding?
   lua_pushinteger(L, system(luaL_optstring(L, 1, NULL)));
+#endif
   return 1;
 }
 
 
 static int os_remove (lua_State *L) {
   const char *filename = luaL_checkstring(L, 1);
+#ifdef WIN32
+  wchar_t wfilename[MAX_PATH+1];
+  MultiByteToWideChar(CP_UTF8, 0, filename, -1, wfilename, MAX_PATH+1);
+  return os_pushresult(L, _wremove(wfilename), filename);
+#else
+  // FIXME: non-win32 conversion to local filesystem encoding?
   return os_pushresult(L, remove(filename) == 0, filename);
+#endif
 }
 
 
 static int os_rename (lua_State *L) {
   const char *fromname = luaL_checkstring(L, 1);
   const char *toname = luaL_checkstring(L, 2);
+#ifdef WIN32
+  wchar_t wfromname[MAX_PATH+1];
+  wchar_t wtoname[MAX_PATH+1];
+  MultiByteToWideChar(CP_UTF8, 0, fromname, -1, wfromname, MAX_PATH+1);
+  MultiByteToWideChar(CP_UTF8, 0, toname, -1, wtoname, MAX_PATH+1);
+  return os_pushresult(L, _wrename(wfromname, wtoname) == 0, fromname);
+#else
+  // FIXME: non-win32 conversion to local filesystem encoding?
   return os_pushresult(L, rename(fromname, toname) == 0, fromname);
+#endif
 }
 
 
 static int os_tmpname (lua_State *L) {
   char buff[LUA_TMPNAMBUFSIZE];
   int err;
+  // FIXME: should this use unicode stuff?
   lua_tmpnam(buff, err);
   if (err)
     return luaL_error(L, "unable to generate a unique filename");
@@ -69,7 +103,23 @@ static int os_tmpname (lua_State *L) {
 
 
 static int os_getenv (lua_State *L) {
+#ifdef WIN32
+  const char *var = luaL_checkstring(L, 1);
+  wchar_t wvar[MAX_PATH+1];
+  char *val;
+  wchar_t *wval;
+  size_t lval;
+  MultiByteToWideChar(CP_UTF8, 0, var, -1, wvar, MAX_PATH+1);
+  wval = _wgetenv(wvar);
+  lval = WideCharToMultiByte(CP_UTF8, 0, wval, -1, 0, 0, 0, 0);
+  val = (char*)malloc(lval+1);
+  WideCharToMultiByte(CP_UTF8, 0, wval, -1, val, lval+1, 0, 0);
+  lua_pushstring(L, val);
+  free(val);
+#else
+  // FIXME: does this need special handling on non-win32 ?
   lua_pushstring(L, getenv(luaL_checkstring(L, 1)));  /* if NULL push nil */
+#endif
   return 1;
 }
 
@@ -151,7 +201,7 @@ static int os_date (lua_State *L) {
   }
   else {
     char b[256];
-    if (strftime(b, sizeof(b), s, stm))
+    if (strftime(b, sizeof(b), s, stm)) // TODO: call widechar version on win32
       lua_pushstring(L, b);
     else
       return luaL_error(L, LUA_QL("date") " format too long");
@@ -195,6 +245,7 @@ static int os_difftime (lua_State *L) {
 
 
 static int os_setlocale (lua_State *L) {
+  // TODO: disable this function?
   static const int cat[] = {LC_ALL, LC_COLLATE, LC_CTYPE, LC_MONETARY,
                       LC_NUMERIC, LC_TIME};
   static const char *const catnames[] = {"all", "collate", "ctype", "monetary",

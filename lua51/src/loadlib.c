@@ -348,6 +348,7 @@ static int ll_loadlib (lua_State *L) {
 
 
 static int readable (const char *filename) {
+  // FIXME: unicode on win32
   FILE *f = fopen(filename, "r");  /* try to open file */
   if (f == NULL) return 0;  /* open failed */
   fclose(f);

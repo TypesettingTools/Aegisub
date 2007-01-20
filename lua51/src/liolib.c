@@ -18,6 +18,10 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 
 
 #define IO_INPUT	1
@@ -25,6 +29,20 @@
 
 
 static const char *const fnames[] = {"input", "output"};
+
+
+static FILE *wrap_fopen(const char *filename, const char *mode) {
+#ifdef WIN32
+  wchar_t wfilename[MAX_PATH+1];
+  wchar_t wmode[10];
+  MultiByteToWideChar(CP_UTF8, 0, filename, -1, wfilename, MAX_PATH+1);
+  MultiByteToWideChar(CP_UTF8, 0, mode, -1, wmode, 10);
+  return _wfopen(wfilename, wmode);
+#else
+  // FIXME: this should probably be patched to translate UTF-8 strings to the local filesystem encoding on other systems
+  return fopen(filename, mode);
+#endif
+}
 
 
 static int pushresult (lua_State *L, int i, const char *filename) {
@@ -150,7 +168,7 @@ static int io_open (lua_State *L) {
   const char *filename = luaL_checkstring(L, 1);
   const char *mode = luaL_optstring(L, 2, "r");
   FILE **pf = newfile(L);
-  *pf = fopen(filename, mode);
+  *pf = wrap_fopen(filename, mode);
   return (*pf == NULL) ? pushresult(L, 0, filename) : 1;
 }
 
@@ -159,7 +177,16 @@ static int io_popen (lua_State *L) {
   const char *filename = luaL_checkstring(L, 1);
   const char *mode = luaL_optstring(L, 2, "r");
   FILE **pf = newfile(L);
+#ifdef WIN32
+  wchar_t wfilename[MAX_PATH+1];
+  wchar_t wmode[10];
+  MultiByteToWideChar(CP_UTF8, 0, filename, -1, wfilename, MAX_PATH+1);
+  MultiByteToWideChar(CP_UTF8, 0, mode, -1, wmode, 10);
+  *pf = _wpopen(wfilename, wmode);
+#else
+  // FIXME: this should probably be patched to translate UTF-8 strings to the local filesystem encoding on other systems
   *pf = lua_popen(L, filename, mode);
+#endif
   return (*pf == NULL) ? pushresult(L, 0, filename) : 1;
 }
 
@@ -186,7 +213,7 @@ static int g_iofile (lua_State *L, int f, const char *mode) {
     const char *filename = lua_tostring(L, 1);
     if (filename) {
       FILE **pf = newfile(L);
-      *pf = fopen(filename, mode);
+      *pf = wrap_fopen(filename, mode);
       if (*pf == NULL)
         fileerror(L, 1, filename);
     }
@@ -238,7 +265,7 @@ static int io_lines (lua_State *L) {
   else {
     const char *filename = luaL_checkstring(L, 1);
     FILE **pf = newfile(L);
-    *pf = fopen(filename, "r");
+    *pf = wrap_fopen(filename, "r");
     if (*pf == NULL)
       fileerror(L, 1, filename);
     aux_lines(L, lua_gettop(L), 1);
