@@ -199,6 +199,9 @@ void VideoDisplay::Render() {
 ///////////////
 // Update size
 void VideoDisplay::UpdateSize() {
+	// Loaded?
+	if (VideoContext::Get()->IsLoaded()) return;
+
 	// Get size
 	if (arType == 0) w = VideoContext::Get()->GetWidth() * zoomValue;
 	else w = VideoContext::Get()->GetHeight() * zoomValue * arValue;

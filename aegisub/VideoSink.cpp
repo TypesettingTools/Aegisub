@@ -5,8 +5,6 @@
  * 
  */
 
-#include "setup.h"
-#if USE_DIRECTSHOW == 1
 #include <windows.h>
 #ifdef __WXDEBUG__
 #undef __WXDEBUG__
@@ -564,6 +562,3 @@ HRESULT CreateVideoSink(IBaseFilter **pVS) {
 	*pVS = vs;
 	return hr;
 }
-
-
-#endif
