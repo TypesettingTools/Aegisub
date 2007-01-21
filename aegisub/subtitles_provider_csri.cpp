@@ -41,7 +41,6 @@
 #include "video_context.h"
 #define CSRIAPI __declspec(dllexport)
 #include "csri/csri.h"
-#include "csri/loader.h"
 
 
 ///////////////////
@@ -139,7 +138,7 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	format.width = dst.w;
 	format.height = dst.h;
 	format.pixfmt = frame.pixfmt;
-	int error = csri_query_fmt(instance,&format);
+	int error = csri_request_fmt(instance,&format);
 	if (error) return;
 
 	// Render
