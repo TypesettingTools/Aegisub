@@ -64,6 +64,7 @@ protected:
 
 public:
 	static wxArrayString GetFactoryList(wxString favourite=_T("")) {
+		if (factories == NULL) factories = new std::map<wxString,T*>;
 		wxArrayString list;
 		favourite = favourite.Lower();
 		for (std::map<wxString,T*>::iterator cur=factories->begin();cur!=factories->end();cur++) {
