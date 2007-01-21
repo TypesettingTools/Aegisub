@@ -137,17 +137,6 @@
 #endif
 
 
-//////////////
-// DirectShow
-#if USE_DIRECTSHOW == 1
-#ifdef __WXDEBUG__
-#pragma comment(lib, "strmbasdu.lib")
-#else
-#pragma comment(lib, "strmbaseu.lib")
-#endif
-#endif
-
-
 /////////////
 // PortAudio
 #if USE_PORTAUDIO == 1

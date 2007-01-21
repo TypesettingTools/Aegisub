@@ -33,11 +33,16 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+
+///////////
+// Headers
 #include <wx/wxprec.h>
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
 #include <wx/filename.h>
-#include "video_provider_avs.h"
+#include "avisynth_wrap.h"
+#include "video_provider.h"
+#include "subtitles_provider.h"
 #include "video_context.h"
 #include "options.h"
 #include "main.h"
@@ -45,7 +50,50 @@
 #include "ass_file.h"
 
 
-#ifdef __WIN32__
+////////////
+// Provider
+class AvisynthVideoProvider: public VideoProvider, SubtitlesProvider, AviSynthWrapper {
+private:
+	VideoInfo vi;
+	AegiVideoFrame iframe;
+
+	wxString rendererCallString;
+
+	int num_frames;
+	int last_fnum;
+
+	double fps;
+	wxArrayInt frameTime;
+
+	PClip RGB32Video;
+	PClip SubtitledVideo;
+
+	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
+	PClip ApplySubtitles(wxString _filename, PClip videosource);
+
+	void LoadVSFilter();
+	void LoadASA();
+	void LoadRenderer();
+
+public:
+	AvisynthVideoProvider(wxString _filename, double fps=0.0);
+	~AvisynthVideoProvider();
+
+	SubtitlesProvider *GetAsSubtitlesProvider();
+	void LoadSubtitles(AssFile *subs);
+
+	const AegiVideoFrame DoGetFrame(int n);
+	void GetFloatFrame(float* Buffer, int n);
+
+	// properties
+	int GetPosition() { return last_fnum; };
+	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
+	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
+	int GetWidth() { return vi.width; };
+	int GetHeight() { return vi.height; };
+
+	void OverrideFrameTimeList(wxArrayInt list);
+};
 
 
 ///////////
@@ -473,6 +521,3 @@ void AvisynthVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 	frameTime = list;
 	num_frames = frameTime.Count();
 }
-
-
-#endif

@@ -130,17 +130,10 @@ void VideoProvider::ClearCache() {
 // Get provider
 VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
 	// List of providers
-	wxArrayString list = GetFactoryList();
+	wxArrayString list = GetFactoryList(Options.AsText(_T("Video provider")));
 
 	// None available
 	if (list.Count() == 0) throw _T("No video providers are available.");
-
-	// Put preffered on top
-	wxString preffered = Options.AsText(_T("Video provider")).Lower();
-	if (list.Index(preffered) != wxNOT_FOUND) {
-		list.Remove(preffered);
-		list.Insert(preffered,0);
-	}
 
 	// Get provider
 	wxString error;

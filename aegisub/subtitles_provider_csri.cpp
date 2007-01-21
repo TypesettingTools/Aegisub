@@ -36,13 +36,36 @@
 
 ///////////
 // Headers
-#include "subtitles_provider_csri.h"
+#include "subtitles_provider.h"
 #include "ass_file.h"
 #include "video_context.h"
+#define CSRIAPI __declspec(dllexport)
+#include "csri/csri.h"
+#include "csri/loader.h"
 
+
+///////////////////
+// Link to library
 #if __VISUALC__ >= 1200
 #pragma comment(lib,"asa.lib")
 #endif
+
+
+/////////////////////////////////////////////////
+// Common Subtitles Rendering Interface provider
+class CSRISubtitlesProvider : public SubtitlesProvider {
+private:
+	csri_inst *instance;
+
+public:
+	CSRISubtitlesProvider();
+	~CSRISubtitlesProvider();
+
+	bool CanRaster() { return true; }
+
+	void LoadSubtitles(AssFile *subs);
+	void DrawSubtitles(AegiVideoFrame &dst,double time);
+};
 
 
 ///////////

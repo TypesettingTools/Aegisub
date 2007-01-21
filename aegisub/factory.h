@@ -63,10 +63,12 @@ protected:
 	}
 
 public:
-	static wxArrayString GetFactoryList() {
+	static wxArrayString GetFactoryList(wxString favourite=_T("")) {
 		wxArrayString list;
+		favourite = favourite.Lower();
 		for (std::map<wxString,T*>::iterator cur=factories->begin();cur!=factories->end();cur++) {
-			list.Add(cur->first);
+			if (cur->first == favourite) list.Insert(cur->first,0);
+			else list.Add(cur->first);
 		}
 		return list;
 	}

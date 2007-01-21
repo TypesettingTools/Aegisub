@@ -310,6 +310,7 @@ void VideoContext::UpdateDisplays(bool full) {
 			display->ControlSlider->SetRange(0,GetLength()-1);
 		}
 		display->ControlSlider->SetValue(GetFrameN());
+		display->ControlSlider->Update();
 		display->UpdatePositionDisplay();
 		display->Refresh();
 		display->Update();

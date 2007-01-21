@@ -36,17 +36,92 @@
 
 ///////////
 // Headers
-#include "setup.h"
-#if USE_DIRECTSHOW == 1
 #pragma warning(disable: 4995)
-#include <wx/wxprec.h>
-#include <wx/image.h>
+#include <dshow.h>
+#include <atlbase.h>
+#include <atlcom.h>
+#include <atlstr.h>
+#include <atlcoll.h>
 #include <windows.h>
 #include <tchar.h>
 #include <initguid.h>
-#include "video_provider_dshow.h"
+#include <wx/wxprec.h>
+#include <wx/image.h>
+#include "video_provider.h"
 #include "utils.h"
 #include "vfr.h"
+#include "videosink.h"
+
+
+///////////////////////
+// DirectShow library
+#ifdef __WXDEBUG__
+#pragma comment(lib, "strmbasdu.lib")
+#else
+#pragma comment(lib, "strmbaseu.lib")
+#endif
+
+
+///////////////////////////////////
+// DirectShow Video Provider class
+class DirectShowVideoProvider: public VideoProvider {
+	struct DF {
+	public:
+	    REFERENCE_TIME  timestamp;  // DS timestamp that we used for this frame
+		AegiVideoFrame frame;
+
+		DF() : timestamp(-1) { }
+		DF(AegiVideoFrame f) : timestamp(-1), frame(f) { }
+		DF(const DF& f) { operator=(f); }
+		DF& operator=(const DF& f) { timestamp = f.timestamp; frame = f.frame; return *this; }
+	};
+
+private:
+	wxArrayInt frameTime;
+
+	unsigned int last_fnum;
+	unsigned int width;
+	unsigned int height;
+	unsigned int num_frames;
+	double fps;
+	long long defd;
+
+	HRESULT OpenVideo(wxString _filename);
+	void CloseVideo();
+
+	static void ReadFrame(long long timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, int stride, unsigned arx, unsigned ary,	void *arg);
+	int NextFrame(DF &df,int &fn);
+
+	void RegROT();
+	void UnregROT();
+
+	REFERENCE_TIME duration;
+	DF rdf;
+	CComPtr<IVideoSink>     m_pR;
+	CComPtr<IMediaControl>  m_pGC;
+	CComPtr<IMediaSeeking>  m_pGS;
+	HANDLE                  m_hFrameReady;
+	bool                    m_registered;
+	DWORD                   m_rot_cookie;
+
+public:
+	DirectShowVideoProvider(wxString _filename, double _fps=0.0);
+	~DirectShowVideoProvider();
+
+	void RefreshSubtitles();
+
+	const AegiVideoFrame DoGetFrame(int n);
+	void GetFloatFrame(float* Buffer, int n);
+
+	int GetPosition() { return last_fnum; };
+	int GetFrameCount() { return num_frames; };
+	double GetFPS() { return fps; };
+	int GetWidth() { return width; };
+	int GetHeight() { return height; };
+
+	void OverrideFrameTimeList(wxArrayInt list);
+};
+
 
 
 ///////////
@@ -511,4 +586,3 @@ void DirectShowVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 }
 
 
-#endif
