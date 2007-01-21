@@ -858,7 +858,7 @@ void FrameMain::OnSetZoom(wxCommandEvent &event) {
 void FrameMain::OnJumpTo(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	if (VideoContext::Get()->IsLoaded()) {
-		DialogJumpTo JumpTo(this,videoBox->videoDisplay);
+		DialogJumpTo JumpTo(this);
 		JumpTo.ShowModal();
 		videoBox->videoSlider->SetFocus();
 	}
@@ -869,7 +869,7 @@ void FrameMain::OnJumpTo(wxCommandEvent& WXUNUSED(event)) {
 // Open shift dialog
 void FrameMain::OnShift(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
-	DialogShiftTimes Shift(this,SubsBox,videoBox->videoDisplay);
+	DialogShiftTimes Shift(this,SubsBox);
 	Shift.ShowModal();
 }
 
@@ -878,7 +878,7 @@ void FrameMain::OnShift(wxCommandEvent& WXUNUSED(event)) {
 // Open properties
 void FrameMain::OnOpenProperties (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	DialogProperties Properties(this, videoBox->videoDisplay);
+	DialogProperties Properties(this);
 	int res = Properties.ShowModal();
 	if (res) {
 		SubsBox->CommitChanges();

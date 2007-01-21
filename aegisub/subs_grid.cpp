@@ -88,13 +88,12 @@ END_EVENT_TABLE()
 
 ///////////////
 // Constructor
-SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID id, VideoDisplay *_video, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
                         : BaseGrid(parent,id,pos,size,style,name)
 {
 	// Vars
 	byFrame = false;
 	ass = NULL;
-	video = _video;
 	editBox = NULL;
 	parentFrame = parentFr;
 }
@@ -148,7 +147,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		state = (sels == 1);
 		menu.Append(MENU_INSERT_BEFORE,_("&Insert (before)"),_T("Inserts a line before current"))->Enable(state);
 		menu.Append(MENU_INSERT_AFTER,_("Insert (after)"),_T("Inserts a line after current"))->Enable(state);
-		state = (sels == 1 && video && VideoContext::Get()->IsLoaded());
+		state = (sels == 1 && VideoContext::Get()->IsLoaded());
 		menu.Append(MENU_INSERT_BEFORE_VIDEO,_("Insert at video time (before)"),_T("Inserts a line after current, starting at video time"))->Enable(state);
 		menu.Append(MENU_INSERT_AFTER_VIDEO,_("Insert at video time (after)"),_T("Inserts a line after current, starting at video time"))->Enable(state);
 		menu.AppendSeparator();

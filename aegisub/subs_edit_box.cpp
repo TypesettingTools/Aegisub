@@ -268,7 +268,7 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 
 			// Video
 			VideoContext::Get()->curLine = curdiag;
-			video->UpdateSubsRelativeTime();
+			VideoContext::Get()->UpdateDisplays(false);
 		}
 		else enabled = false;
 	}
@@ -688,7 +688,7 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart) {
 	grid->CommitChanges();
 	grid->EndBatch();
 	audio->SetDialogue(grid,grid->GetDialogue(sel[0]),sel[0]);
-	video->UpdateSubsRelativeTime();
+	VideoContext::Get()->UpdateDisplays(false);
 }
 
 

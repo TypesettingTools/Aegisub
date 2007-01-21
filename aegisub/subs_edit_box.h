@@ -50,7 +50,6 @@ class TimeEdit;
 class SubsEditBox;
 class AudioDisplay;
 class HiliModTextCtrl;
-class VideoDisplay;
 class wxScintilla;
 
 
@@ -143,7 +142,6 @@ private:
 public:
 	int linen;
 	AudioDisplay *audio;
-	VideoDisplay *video;
 	SubsTextEditCtrl *TextEdit;
 
 	SubsEditBox(wxWindow *parent,SubtitlesGrid *gridp);

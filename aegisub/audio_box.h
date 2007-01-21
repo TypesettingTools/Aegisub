@@ -47,7 +47,6 @@
 //////////////
 // Prototypes
 class AudioDisplay;
-class VideoDisplay;
 class AudioKaraoke;
 class FrameMain;
 class wxToggleButton;
@@ -117,7 +116,7 @@ public:
 	bool loaded;
 	bool karaokeMode;
 
-	AudioBox(wxWindow *parent,VideoDisplay *display);
+	AudioBox(wxWindow *parent);
 	~AudioBox();
 
 	void SetFile(wxString file,bool FromVideo);

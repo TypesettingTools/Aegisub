@@ -43,8 +43,7 @@
 #include "ass_override.h"
 #include "subs_grid.h"
 #include "validators.h"
-#include "video_display.h"
-#include "video_provider.h"
+#include "video_context.h"
 
 
 ///////////////
@@ -55,7 +54,6 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	// Variables
 	AssFile *subs = AssFile::top;
 	grid = _grid;
-	vid = grid->video;
 	
 	// Resolution line
 	wxSizer *ResBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Resolution"));

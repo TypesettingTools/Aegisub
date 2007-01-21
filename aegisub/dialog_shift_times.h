@@ -46,7 +46,6 @@
 //////////////
 // Prototypes
 class SubtitlesGrid;
-class VideoDisplay;
 
 
 /////////
@@ -73,7 +72,7 @@ private:
 	void OnClear(wxCommandEvent &event);
 
 public:
-	DialogShiftTimes (wxWindow *parent,SubtitlesGrid *grid,VideoDisplay *vid);
+	DialogShiftTimes (wxWindow *parent,SubtitlesGrid *grid);
 
 	void OnKey(wxKeyEvent &event);
 	void OnClose(wxCommandEvent &event);

@@ -50,7 +50,7 @@
 #include "audio_karaoke.h"
 #include "audio_box.h"
 #include "fft.h"
-#include "video_display.h"
+#include "video_context.h"
 #include "vfr.h"
 #include "colorspace.h"
 #include "hotkeys.h"
@@ -60,11 +60,10 @@
 
 ///////////////
 // Constructor
-AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
+AudioDisplay::AudioDisplay(wxWindow *parent)
 : wxWindow (parent, -1, wxDefaultPosition, wxSize(200,Options.AsInt(_T("Audio Display Height"))), wxSUNKEN_BORDER | wxWANTS_CHARS , _T("Audio Display"))
 {
 	// Set variables
-	video = NULL;
 	origImage = NULL;
 	spectrumDisplay = NULL;
 	spectrumDisplaySelected = NULL;
@@ -90,7 +89,6 @@ AudioDisplay::AudioDisplay(wxWindow *parent,VideoDisplay *display)
 	scale = 1.0f;
 	provider = NULL;
 	player = NULL;
-	video = display;
 	hold = 0;
 	hasFocus = (wxWindow::FindFocus() == this);
 
@@ -903,7 +901,7 @@ void AudioDisplay::Stop() {
 	if (!player) return;
 
 	player->Stop();
-	if (video && VideoContext::Get()->IsPlaying()) VideoContext::Get()->Stop();
+	if (VideoContext::Get()->IsPlaying()) VideoContext::Get()->Stop();
 }
 
 

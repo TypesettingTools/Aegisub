@@ -42,16 +42,10 @@
 #include <wx/wxprec.h>
 
 
-//////////////
-// Prototypes
-class VideoDisplay;
-
-
 ////////////////////
 // Properties class
 class DialogProperties : public wxDialog {
 private:
-	VideoDisplay *vid;
 	wxTextCtrl *TitleEdit;
 	wxTextCtrl *OrigScriptEdit;
 	wxTextCtrl *TranslationEdit;
@@ -74,7 +68,7 @@ private:
 	int SetInfoIfDifferent(wxString key,wxString value);
 
 public:
-	DialogProperties(wxWindow *parent, VideoDisplay *vid);
+	DialogProperties(wxWindow *parent);
 	~DialogProperties();
 
 	DECLARE_EVENT_TABLE()

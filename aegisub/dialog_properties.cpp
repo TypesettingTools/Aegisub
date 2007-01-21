@@ -46,11 +46,10 @@
 
 ///////////////
 // Constructor
-DialogProperties::DialogProperties (wxWindow *parent, VideoDisplay *_vid)
+DialogProperties::DialogProperties (wxWindow *parent)
 : wxDialog(parent, -1, _("Script Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
 	// Setup
-	vid = _vid;
 	AssFile *subs = AssFile::top;
 
 	// Script details crap

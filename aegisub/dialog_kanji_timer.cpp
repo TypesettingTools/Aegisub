@@ -50,8 +50,7 @@
 #include "ass_override.h"
 #include "subs_grid.h"
 #include "validators.h"
-#include "video_display.h"
-#include "video_provider.h"
+#include "video_context.h"
 
 
 ///////////////
@@ -62,7 +61,6 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	// Variables
 	AssFile *subs = AssFile::top;
 	grid = _grid;
-	vid = grid->video;
 	RegroupSourceSelected = 0;
 	
 	//Sizers

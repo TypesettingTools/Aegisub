@@ -446,7 +446,7 @@ void FrameMain::InitContents() {
 	videoBox->videoDisplay->zoomBox = ZoomBox;
 
 	// Subtitles area
-	SubsBox = new SubtitlesGrid(this,Panel,-1,videoBox->videoDisplay,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
+	SubsBox = new SubtitlesGrid(this,Panel,-1,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
 	BottomSizer->Add(SubsBox,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,0);
 	AssFile::StackReset();
 	videoBox->videoSlider->grid = SubsBox;
@@ -455,14 +455,13 @@ void FrameMain::InitContents() {
 	Search.grid = SubsBox;
 
 	// Audio area
-	audioBox = new AudioBox(Panel,videoBox->videoDisplay);
+	audioBox = new AudioBox(Panel);
 	audioBox->frameMain = this;
 	VideoContext::Get()->audio = audioBox->audioDisplay;
 
 	// Top sizer
 	EditBox = new SubsEditBox(Panel,SubsBox);
 	EditBox->audio = audioBox->audioDisplay;
-	EditBox->video = videoBox->videoDisplay;
 	ToolSizer = new wxBoxSizer(wxVERTICAL);
 	ToolSizer->Add(audioBox,0,wxEXPAND | wxBOTTOM,5);
 	ToolSizer->Add(EditBox,1,wxEXPAND,5);

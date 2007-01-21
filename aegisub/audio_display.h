@@ -53,7 +53,6 @@ class StreamAudioProvider;
 class SubtitlesGrid;
 class AudioBox;
 class AudioKaraoke;
-class VideoDisplay;
 class VideoProvider;
 class FrameMain;
 
@@ -66,7 +65,6 @@ private:
 	SubtitlesGrid *grid;
 	int line_n;
 	AssDialogue *dialogue;
-	VideoDisplay *video;
 
 	AudioSpectrum *spectrumRenderer;
 
@@ -141,7 +139,7 @@ public:
 	wxScrollBar *ScrollBar;
 	wxTimer UpdateTimer;
 
-	AudioDisplay(wxWindow *parent,VideoDisplay *display);
+	AudioDisplay(wxWindow *parent);
 	~AudioDisplay();
 
 	void AddLead(bool in,bool out);

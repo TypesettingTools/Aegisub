@@ -38,17 +38,16 @@
 // Headers
 #include "dialog_jumpto.h"
 #include "vfr.h"
-#include "video_display.h"
+#include "video_context.h"
 
 
 ///////////////
 // Constructor
-DialogJumpTo::DialogJumpTo (wxWindow *parent,VideoDisplay *_vid)
+DialogJumpTo::DialogJumpTo (wxWindow *parent)
 : wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
 {
 	// Set initial values
 	ready = false;
-	vid = _vid;
 	jumpframe = VideoContext::Get()->GetFrameN();
 	jumptime.SetMS(VFR_Output.GetTimeAtFrame(jumpframe));
 

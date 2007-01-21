@@ -55,7 +55,7 @@
 
 ///////////////
 // Constructor
-AudioBox::AudioBox(wxWindow *parent,VideoDisplay *display) :
+AudioBox::AudioBox(wxWindow *parent) :
 wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISED)
 {
 	// Setup
@@ -68,7 +68,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	audioScroll->SetToolTip(_("Seek bar"));
 	Sash = new wxSashWindow(this,Audio_Sash,wxDefaultPosition,wxDefaultSize,wxCLIP_CHILDREN | wxSW_3DBORDER);
 	sashSizer = new wxBoxSizer(wxVERTICAL);
-	audioDisplay = new AudioDisplay(Sash,display);
+	audioDisplay = new AudioDisplay(Sash);
 	sashSizer->Add(audioDisplay,1,wxEXPAND,0);
 	Sash->SetSizer(sashSizer);
 	Sash->SetSashVisible(wxSASH_BOTTOM,true);

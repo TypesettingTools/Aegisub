@@ -44,11 +44,6 @@
 #include "ass_time.h"
 
 
-//////////////
-// Prototypes
-class VideoDisplay;
-
-
 /////////
 // Class
 class DialogJumpTo : public wxDialog {
@@ -57,13 +52,11 @@ private:
 	long jumpframe;
 	AssTime jumptime;
 
-	VideoDisplay *vid;
-
 	wxTextCtrl *JumpTime;
 	wxTextCtrl *JumpFrame;
 
 public:
-	DialogJumpTo (wxWindow *parent,VideoDisplay *vid);
+	DialogJumpTo (wxWindow *parent);
 
 	void OnKey(wxKeyEvent &event);
 	void OnClose(bool ok);

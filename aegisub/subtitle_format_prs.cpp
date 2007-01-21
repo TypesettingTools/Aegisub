@@ -92,7 +92,6 @@ wxArrayString PRSSubtitleFormat::GetWriteWildcards() {
 void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 #ifdef __WINDOWS__
 	// Video loaded?
-	VideoDisplay *display = ((AegisubApp*)wxTheApp)->frame->videoBox->videoDisplay;
 	if (VideoContext::Get()->IsLoaded()) throw _T("Video not loaded!");
 
 	// Create the PRS file

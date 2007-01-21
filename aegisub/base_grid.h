@@ -51,7 +51,6 @@ class AssEntry;
 class AssDialogue;
 class SubsEditBox;
 class FrameMain;
-class VideoDisplay;
 typedef std::list<AssEntry*>::iterator entryIter;
 
 
@@ -87,7 +86,6 @@ protected:
 
 public:
 	SubsEditBox *editBox;
-	VideoDisplay *video;
 
 	bool byFrame;
 	std::vector<entryIter> diagMap;

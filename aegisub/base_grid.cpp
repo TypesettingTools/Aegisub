@@ -45,8 +45,9 @@
 #include "vfr.h"
 #include "subs_edit_box.h"
 #include "frame_main.h"
-#include "video_display.h"
+#include "video_box.h"
 #include "video_slider.h"
+#include "video_context.h"
 #include "audio_display.h"
 
 
@@ -945,8 +946,8 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	// Left/right, forward to seek bar if video is loaded
 	if (key == WXK_LEFT || key == WXK_RIGHT) {
 		if (VideoContext::Get()->IsLoaded()) {
-			video->ControlSlider->SetFocus();
-			video->ControlSlider->AddPendingEvent(event);
+			parentFrame->videoBox->videoSlider->SetFocus();
+			parentFrame->videoBox->videoSlider->AddPendingEvent(event);
 			return;
 		}
 		event.Skip();

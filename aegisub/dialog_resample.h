@@ -46,7 +46,6 @@
 //////////////
 // Prototypes
 class SubtitlesGrid;
-class VideoDisplay;
 class AssOverrideParameter;
 
 
@@ -55,7 +54,6 @@ class AssOverrideParameter;
 class DialogResample : public wxDialog {
 private:
 	SubtitlesGrid *grid;
-	VideoDisplay *vid;
 	wxString ResXValue,ResYValue;
 	wxTextCtrl *ResX;
 	wxTextCtrl *ResY;

@@ -51,7 +51,6 @@
 //////////////
 // Prototypes
 class SubtitlesGrid;
-class VideoDisplay;
 class AssOverrideParameter;
 
 
@@ -60,7 +59,6 @@ class AssOverrideParameter;
 class DialogKanjiTimer : public wxDialog {
 private:
 	SubtitlesGrid *grid;
-	VideoDisplay *vid;
 
 	wxTextCtrl		*SourceText, *DestText;
 	wxComboBox		*SourceStyle, *DestStyle;
