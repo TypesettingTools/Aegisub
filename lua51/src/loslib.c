@@ -108,7 +108,7 @@ static int os_getenv (lua_State *L) {
   wchar_t wvar[MAX_PATH+1];
   char *val;
   wchar_t *wval;
-  size_t lval;
+  int lval;
   MultiByteToWideChar(CP_UTF8, 0, var, -1, wvar, MAX_PATH+1);
   wval = _wgetenv(wvar);
   lval = WideCharToMultiByte(CP_UTF8, 0, wval, -1, 0, 0, 0, 0);

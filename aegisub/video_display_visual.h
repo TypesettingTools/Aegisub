@@ -37,6 +37,11 @@
 #pragma once
 
 
+///////////
+// Headers
+#include "gl_wrap.h"
+
+
 //////////////
 // Prototypes
 class VideoDisplay;
@@ -45,7 +50,7 @@ class AssDialogue;
 
 ////////////////////////
 // Visual handler class
-class VideoDisplayVisual {
+class VideoDisplayVisual : public OpenGLWrapper {
 	friend class VideoDisplay;
 
 private:
@@ -64,10 +69,8 @@ private:
 	int hold;
 	bool holding;
 
-	wxBitmap *backbuffer;
 	wxString mouseText;
 	AssDialogue *curSelection;
-
 	VideoDisplay *parent;
 
 	void GetLinePosition(AssDialogue *diag,int &x,int &y);
@@ -76,7 +79,6 @@ private:
 	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
 	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2);
 
-	void DrawTrackingOverlay(wxDC &dc);
 	void DrawOverlay();
 	void OnMouseEvent(wxMouseEvent &event);
 	void OnKeyEvent(wxKeyEvent &event);

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004-2006 Mike Matsnev.  All Rights Reserved.
  * 
- * $Id: VideoSink.h,v 1.4 2006/11/12 18:00:20 mike Exp $
+ * $Id: VideoSink.h,v 1.5 2007/01/17 23:40:51 mike Exp $
  * 
  */
 
@@ -22,7 +22,7 @@ interface IVideoSinkNotify : public IUnknown {
 #define	IVS_YV12  8
 
 typedef void  (*ReadFrameFunc)(long long timestamp, unsigned format, unsigned bpp,
-			       const unsigned char *frame, unsigned width, unsigned height, unsigned stride,
+			       const unsigned char *frame, unsigned width, unsigned height, int stride,
 			       unsigned arx, unsigned ary,
 			       void *arg);
 
@@ -45,5 +45,8 @@ interface IVideoSink2 : public IUnknown {
   STDMETHOD(NotifyFrame)(HANDLE hEvent) = 0;
   STDMETHOD(GetFrameFormat)(unsigned *type, unsigned *width, unsigned *height, unsigned *arx, unsigned *ary, long long *def_duration) = 0;
 };
+
+HRESULT CreateVideoSink(IBaseFilter **pVS);
+
 
 #endif

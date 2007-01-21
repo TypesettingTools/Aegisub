@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Fredrik Mellbin
+// Copyright (c) 2005-2007, Rodrigo Braz Monteiro, Hajo Krabbenhöft
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,70 +39,41 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
+#include "gl_wrap.h"
 
-#ifdef __WIN32__
-#include "avisynth_wrap.h"
-#include "video_provider.h"
-#include "subtitles_provider.h"
 
-/*class GetFrameVPThread: public wxThread {
-private:
-	int getting_n;
-	int current_n;
+//////////////
+// Prototypes
+class VideoDisplay;
 
-	PClip video;
 
-	wxThread::ExitCode Entry();
+///////////////////////////////
+// Fex tracker video interface
+class VideoDisplayFexTracker : public wxEvtHandler, public OpenGLWrapper {
 public:
-	void GetFrame(int n);
-	GetFrameVPThread(PClip clip);
-};*/
+	bool bTrackerEditing;
+	int MovementEdit;
+	double TrackerEdit;
+	int MouseDownX, MouseDownY;
 
+	VideoDisplay *parent;
 
-////////////
-// Provider
-class AvisynthVideoProvider: public VideoProvider, SubtitlesProvider, AviSynthWrapper {
-private:
-	VideoInfo vi;
-	AegiVideoFrame iframe;
+	VideoDisplayFexTracker(VideoDisplay *parent);
 
-	wxString rendererCallString;
+	void OnMouseEvent(wxMouseEvent &event);
+	void Render();
 
-	int num_frames;
-	int last_fnum;
+	void OnVideoTrackPoints(wxCommandEvent &event);
+	void OnVideoTrackPointAdd(wxCommandEvent &event);
+	void OnVideoTrackPointDel(wxCommandEvent &event);
+	void OnVideoTrackMovement(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveAll(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveOne(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveBefore(wxCommandEvent &event);
+	void OnVideoTrackMovementMoveAfter(wxCommandEvent &event);
+	void OnVideoTrackSplitLine(wxCommandEvent &event);
+	void OnVideoTrackLinkFile(wxCommandEvent &event);
+	void OnVideoTrackMovementEmpty(wxCommandEvent &event);
 
-	double fps;
-	wxArrayInt frameTime;
-
-	PClip RGB32Video;
-	PClip SubtitledVideo;
-
-	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
-
-	void LoadVSFilter();
-	void LoadASA();
-	void LoadRenderer();
-
-public:
-	AvisynthVideoProvider(wxString _filename, double fps=0.0);
-	~AvisynthVideoProvider();
-
-	SubtitlesProvider *GetAsSubtitlesProvider();
-	void LoadSubtitles(AssFile *subs);
-
-	const AegiVideoFrame DoGetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
-
-	// properties
-	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
-	int GetWidth() { return vi.width; };
-	int GetHeight() { return vi.height; };
-
-	void OverrideFrameTimeList(wxArrayInt list);
+	DECLARE_EVENT_TABLE()
 };
-
-#endif

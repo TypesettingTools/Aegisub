@@ -1,4 +1,4 @@
-// Copyright (c) 2006, David Lamparter
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,28 +34,41 @@
 //
 
 
+#pragma once
+
+
 ///////////
 // Headers
-#include "subtitle_provider.h"
+#include <map>
 
 
-std::map<wxString, SubtitleProvider::Class *> *SubtitleProvider::Class::classes = NULL;
+/////////////////
+// Factory class
+template <class T>
+class AegisubFactory {
+protected:
+	static std::map<wxString,T*> *factories;
+	void RegisterFactory(wxString name) {
+		if (factories == NULL) factories = new std::map<wxString,T*>;
+		factories->insert(std::make_pair(name.Lower(),(T*)this));
+	}
+	static T *GetFactory(wxString name) {
+		if (factories == NULL) {
+			factories = new std::map<wxString,T*>;
+			return NULL;
+		}
+		std::map<wxString,T*>::iterator res = factories->find(name.Lower());
+		if (res != factories->end()) return res->second;
+		return NULL;
+	}
 
-SubtitleProvider::Class::Class(wxString name)
-{
-	if (!classes)
-		classes = new std::map<wxString, SubtitleProvider::Class *>();
-	(*classes)[name] = this;
-}
-
-SubtitleProvider *SubtitleProvider::Class::GetProvider(wxString provider_name, AssFile *subs)
-{
-	SubtitleProvider::Class *sp;
-	if (!classes)
-		throw _T("Subtitle provider not found");
-	sp = (*classes)[provider_name];
-	if (!sp)
-		throw _T("Subtitle provider not found");
-	return sp->Get(subs);
-}
-
+public:
+	static wxArrayString GetFactoryList() {
+		wxArrayString list;
+		for (std::map<wxString,T*>::iterator cur=factories->begin();cur!=factories->end();cur++) {
+			list.Add(cur->first);
+		}
+		return list;
+	}
+	virtual ~AegisubFactory() {}
+};

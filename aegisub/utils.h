@@ -34,6 +34,9 @@
 //
 
 
+#pragma once;
+
+
 ///////////////////////
 // Function prototypes
 #ifndef __LINUX__
@@ -49,6 +52,16 @@ wxString FloatToString(double value);
 wxString IntegerToString(int value);
 wxString PrettySize(int bytes);
 void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp);
+int SmallestPowerOf2(int x);
+
+
+///////////
+// Inlines
+inline void IntSwap(int &a,int &b) {
+	int c = a;
+	a = b;
+	b = c;
+}
 
 
 //////////
@@ -62,5 +75,5 @@ void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help
 #endif
 
 #ifndef MID
-#define MID(a,b,c) MAX(a,MIN(b,c))
+#define MID(a,b,c) MAX((a),MIN((b),(c)))
 #endif

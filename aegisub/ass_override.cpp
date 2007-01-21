@@ -53,6 +53,7 @@ AssOverrideParameter::AssOverrideParameter () {
 //////////////
 // Destructor
 AssOverrideParameter::~AssOverrideParameter () {
+	DeleteValue();
 }
 
 

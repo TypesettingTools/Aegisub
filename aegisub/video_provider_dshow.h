@@ -58,16 +58,15 @@ class DirectShowVideoProvider: public VideoProvider {
 	struct DF {
 	public:
 	    REFERENCE_TIME  timestamp;  // DS timestamp that we used for this frame
-		wxImage frame;
+		AegiVideoFrame frame;
 
 		DF() : timestamp(-1) { }
-		DF(wxImage f) : timestamp(-1), frame(f) { }
+		DF(AegiVideoFrame f) : timestamp(-1), frame(f) { }
 		DF(const DF& f) { operator=(f); }
 		DF& operator=(const DF& f) { timestamp = f.timestamp; frame = f.frame; return *this; }
 	};
 
 private:
-	wxString subfilename;
 	wxArrayInt frameTime;
 
 	unsigned int last_fnum;
@@ -77,19 +76,10 @@ private:
 	double fps;
 	long long defd;
 
-	int depth;
-	double dar;
-	double zoom;
-
-	unsigned char* data;
-	wxBitmap last_frame;
-
-	void AttachOverlay(SubtitleProvider::Overlay *overlay) {}
-
 	HRESULT OpenVideo(wxString _filename);
 	void CloseVideo();
 
-	static void ReadFrame(long long timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, unsigned stride, unsigned arx, unsigned ary,	void *arg);
+	static void ReadFrame(long long timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, int stride, unsigned arx, unsigned ary,	void *arg);
 	int NextFrame(DF &df,int &fn);
 
 	void RegROT();
@@ -105,26 +95,19 @@ private:
 	DWORD                   m_rot_cookie;
 
 public:
-	DirectShowVideoProvider(wxString _filename, wxString _subfilename,double _fps=0.0);
+	DirectShowVideoProvider(wxString _filename, double _fps=0.0);
 	~DirectShowVideoProvider();
 
 	void RefreshSubtitles();
-	void SetDAR(double _dar);
-	void SetZoom(double _zoom);
 
-	wxBitmap GetFrame(int n);
+	const AegiVideoFrame DoGetFrame(int n);
 	void GetFloatFrame(float* Buffer, int n);
 
 	int GetPosition() { return last_fnum; };
 	int GetFrameCount() { return num_frames; };
 	double GetFPS() { return fps; };
-
-	int GetWidth() { return height*zoom*dar; };
-	int GetHeight() { return height*zoom; };
-	double GetZoom() { return zoom; };
-
-	int GetSourceWidth() { return width; };
-	int GetSourceHeight() { return height; };
+	int GetWidth() { return width; };
+	int GetHeight() { return height; };
 
 	void OverrideFrameTimeList(wxArrayInt list);
 };

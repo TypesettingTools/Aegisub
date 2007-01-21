@@ -74,7 +74,6 @@ void VideoSlider::SetValue(int value) {
 	val = value;
 	if (val < min) val = min;
 	if (val > max) val = max;
-	//UpdateImage();
 	Refresh(false);
 }
 
@@ -82,13 +81,12 @@ void VideoSlider::SetValue(int value) {
 /////////////
 // Set range
 void VideoSlider::SetRange(int from,int to) {
-	wxASSERT(from <= to);
-
+	if (from > to) from = to;
 	locked = false;
 	min = from;
 	max = to;
-	val = from;
-	UpdateImage();
+	if (val < from) val = from;
+	if (val > to) val = to;
 }
 
 
@@ -125,22 +123,24 @@ int VideoSlider::GetXAtValue(int value) {
 /////////////////////
 // Next frame hotkey
 void VideoSlider::NextFrame() {
-	if (Display->IsPlaying) return;
+	if (VideoContext::Get()->IsPlaying()) return;
 
 	//don't request out of range frames
-	if (GetValue() < max)
-		Display->JumpToFrame(GetValue()+1);
+	if (GetValue() < max) VideoContext::Get()->JumpToFrame(GetValue()+1);
+	Refresh(false);
+	Update();
 }
 
 
 /////////////////////////
 // Previous frame hotkey
 void VideoSlider::PrevFrame() {
-	if (Display->IsPlaying) return;
+	if (VideoContext::Get()->IsPlaying()) return;
 
 	//don't request out of range frames
-	if (GetValue() > min)
-		Display->JumpToFrame(GetValue()-1);
+	if (GetValue() > min) VideoContext::Get()->JumpToFrame(GetValue()-1);
+	Refresh(false);
+	Update();
 }
 
 
@@ -152,6 +152,7 @@ BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 	EVT_PAINT(VideoSlider::OnPaint)
 	EVT_SET_FOCUS(VideoSlider::OnFocus)
 	EVT_KILL_FOCUS(VideoSlider::OnFocus)
+	EVT_ERASE_BACKGROUND(VideoSlider::OnEraseBackground)
 END_EVENT_TABLE()
 
 
@@ -159,9 +160,9 @@ END_EVENT_TABLE()
 // Change position
 void VideoSlider::UpdateVideo() {
 	if (Display) {
-		if (Display->IsPlaying) return;
+		if (VideoContext::Get()->IsPlaying()) return;
 		locked = true;
-		Display->JumpToFrame(GetValue());
+		VideoContext::Get()->JumpToFrame(GetValue());
 		locked = false;
 	}
 }
@@ -189,7 +190,7 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		if (canDrag) {
 			// Shift click to snap to keyframe
 			if (shift && Display) {
-				wxArrayInt KeyFrames = Display->GetKeyFrames();
+				wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
 				int keys = KeyFrames.Count();
 				int clickedFrame = GetValueAtX(x);
 				int closest = 0;
@@ -217,10 +218,10 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 			Refresh(false);
 
 			// Playing?
-			if (Display->IsPlaying) {
-				Display->Stop();
+			if (VideoContext::Get()->IsPlaying()) {
+				VideoContext::Get()->Stop();
 				UpdateVideo();
-				Display->Play();
+				VideoContext::Get()->Play();
 			}
 			else UpdateVideo();
 		}
@@ -235,14 +236,14 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 	}
 
 	// Something else
-	else if (!Display->IsPlaying) event.Skip();
+	else if (!VideoContext::Get()->IsPlaying()) event.Skip();
 }
 
 
 //////////////////
 // Key down event
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {
-	if (Display->IsPlaying) return;
+	if (VideoContext::Get()->IsPlaying()) return;
 
 	// Get flags
 	int key = event.GetKeyCode();
@@ -266,9 +267,9 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 
 		// Fast move
 		if (!ctrl && !shift && alt) {
-			if (Display->IsPlaying) return;
+			if (VideoContext::Get()->IsPlaying()) return;
 			int target = MID(min,GetValue() + direction * Options.AsInt(_T("Video Fast Jump Step")),max);
-			if (target != GetValue()) Display->JumpToFrame(target);
+			if (target != GetValue()) VideoContext::Get()->JumpToFrame(target);
 			return;
 		}
 
@@ -294,8 +295,8 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 
 				// Forward
 				if (direction == 1) {
-					if (Display->frame_n < target1) Display->JumpToFrame(target1);
-					else if (Display->frame_n < target2) Display->JumpToFrame(target2);
+					if (VideoContext::Get()->GetFrameN() < target1) VideoContext::Get()->JumpToFrame(target1);
+					else if (VideoContext::Get()->GetFrameN() < target2) VideoContext::Get()->JumpToFrame(target2);
 					else {
 						if (cur+1 >= grid->GetRows()) return;
 						grid->editBox->SetToLine(cur+1);
@@ -310,8 +311,8 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 
 				// Backward
 				else {
-					if (Display->frame_n > target2) Display->JumpToFrame(target2);
-					else if (Display->frame_n > target1) Display->JumpToFrame(target1);
+					if (VideoContext::Get()->GetFrameN() > target2) VideoContext::Get()->JumpToFrame(target2);
+					else if (VideoContext::Get()->GetFrameN() > target1) VideoContext::Get()->JumpToFrame(target1);
 					else {
 						if (cur-1 < 0) return;
 						grid->editBox->SetToLine(cur-1);
@@ -331,10 +332,10 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 			if (direction != 0) {
 				// Prepare
 				int prevKey = 0;
-				int nextKey = Display->length-1;
-				wxArrayInt KeyFrames = Display->GetKeyFrames();
+				int nextKey = VideoContext::Get()->GetLength()-1;
+				wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
 				int keys = KeyFrames.Count();
-				int cur = Display->frame_n;
+				int cur = VideoContext::Get()->GetFrameN();
 				int i;
 				int temp;
 
@@ -351,8 +352,8 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 					if (temp > cur && temp < nextKey) nextKey = KeyFrames[i];
 				}
 
-				if (direction == -1) Display->JumpToFrame(prevKey);
-				if (direction == 1) Display->JumpToFrame(nextKey);
+				if (direction == -1) VideoContext::Get()->JumpToFrame(prevKey);
+				if (direction == 1) VideoContext::Get()->JumpToFrame(nextKey);
 				return;
 			}
 		}
@@ -379,23 +380,29 @@ void VideoSlider::OnPaint(wxPaintEvent &event) {
 
 //////////////
 // Draw image
-void VideoSlider::DrawImage(wxDC &dc) {
+void VideoSlider::DrawImage(wxDC &destdc) {
 	// Get dimensions
 	int w,h;
 	GetClientSize(&w,&h);
 
-	// Draw background
-	dc.Clear();
+	// Back buffer
+	wxMemoryDC dc;
+	wxBitmap bmp(w,h);
+	dc.SelectObject(bmp);
 
 	// Colors
 	wxColour shad = wxSystemSettings::GetColour(wxSYS_COLOUR_3DDKSHADOW);
 	wxColour high = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
 	wxColour face = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
-	//wxColour sel(244,198,38);
 	wxColour sel(123,251,232);
 	wxColour notSel(sel.Red()*2/5,sel.Green()*2/5,sel.Blue()*2/5);
 	wxColour bord(0,0,0);
 	int x1,x2,y1,y2;
+
+	// Background
+	dc.SetPen(*wxTRANSPARENT_PEN);
+	dc.SetBrush(face);
+	dc.DrawRectangle(0,0,w,h);
 
 	// Selection border
 	bool selected = wxWindow::FindFocus() == this;
@@ -421,7 +428,7 @@ void VideoSlider::DrawImage(wxDC &dc) {
 	int curX;
 	if (Display && Options.AsBool(_T("Show keyframes on video slider"))) {
 		dc.SetPen(wxPen(shad));
-		wxArrayInt KeyFrames = Display->GetKeyFrames();
+		wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
 		int keys = KeyFrames.Count();
 		for (int i=0;i<keys;i++) {
 			curX = GetXAtValue(KeyFrames[i]);
@@ -463,14 +470,18 @@ void VideoSlider::DrawImage(wxDC &dc) {
 	if (selected) dc.SetBrush(wxBrush(sel));
 	else dc.SetBrush(wxBrush(notSel));
 	dc.DrawRectangle(curX-3,y2+1,7,4);
+
+	// Draw final
+	destdc.Blit(0,0,w,h,&dc,0,0);
 }
 
 
 ////////////////
 // Update image
 void VideoSlider::UpdateImage () {
-	wxClientDC dc(this);
-	DrawImage(dc);
+	//wxClientDC dc(this);
+	//DrawImage(dc);
+	Refresh(false);
 }
 
 

@@ -33,36 +33,40 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include <wx/wxprec.h>
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
 #include <wx/filename.h>
 #include "video_provider_avs.h"
+#include "video_context.h"
 #include "options.h"
 #include "main.h"
 #include "vfr.h"
+#include "ass_file.h"
 
 
-#ifdef __WINDOWS__
+#ifdef __WIN32__
+
+
+///////////
+// Factory
+class AvisynthVideoProviderFactory : public VideoProviderFactory {
+public:
+	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new AvisynthVideoProvider(video,fps); }
+	AvisynthVideoProviderFactory() : VideoProviderFactory(_T("avisynth")) {}
+} registerAVS;
 
 
 ///////////////
 // Constructor
-AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfilename, double _fps) {
+AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, double _fps) {
 	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
-	ResizedVideo = NULL;
-	data = NULL;
 	fps = _fps;
-
-	depth = 0;
-	
-	last_fnum = -1;
 	num_frames = 0;
-
-	subfilename = _subfilename;
-	zoom = 1.0;
+	last_fnum = -1;
 
 	AVSTRACE(_T("AvisynthVideoProvider: Loading Subtitles Renderer"));
 	LoadRenderer();
@@ -72,17 +76,10 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, wxString _subfi
 	RGB32Video = OpenVideo(_filename,mpeg2dec3_priority);
 	AVSTRACE(_T("AvisynthVideoProvider: Video opened"));
 
-	dar = GetSourceWidth()/(double)GetSourceHeight();
-	AVSTRACE(_T("AvisynthVideoProvider: Calculated aspect ratio"));
-
-	if( _subfilename.IsEmpty() ) SubtitledVideo = RGB32Video;
-	else SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
+	SubtitledVideo = RGB32Video;
 	AVSTRACE(_T("AvisynthVideoProvider: Applied subtitles"));
 
-	ResizedVideo = ApplyDARZoom(zoom, dar, SubtitledVideo);
-	AVSTRACE(_T("AvisynthVideoProvider: Applied zoom"));
-
-	vi = ResizedVideo->GetVideoInfo();
+	vi = SubtitledVideo->GetVideoInfo();
 	AVSTRACE(_T("AvisynthVideoProvider: Got video info"));
 	AVSTRACE(_T("AvisynthVideoProvider: Done creating AvisynthVideoProvider"));
 }
@@ -94,56 +91,14 @@ AvisynthVideoProvider::~AvisynthVideoProvider() {
 	AVSTRACE(_T("AvisynthVideoProvider: Destroying AvisynthVideoProvider"));
 	RGB32Video = NULL;
 	SubtitledVideo = NULL;
-	ResizedVideo = NULL;
-	if( data ) delete data;
+	AVSTRACE(_T("AvisynthVideoProvider: Destroying frame"));
+	iframe.Clear();
 	AVSTRACE(_T("AvisynthVideoProvider: AvisynthVideoProvider destroyed"));
 }
 
 
-/////////////////////
-// Refresh subtitles
-void AvisynthVideoProvider::RefreshSubtitles() {
-	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Refreshing subtitles"));
-	ResizedVideo = NULL;
-	SubtitledVideo = NULL;
 
-	SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
-	ResizedVideo = ApplyDARZoom(zoom,dar,SubtitledVideo);
-	GetFrame(last_fnum,true);
-	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Subtitles refreshed"));
-}
-
-
-////////////////////////////
-// Set Display Aspect Ratio
-void AvisynthVideoProvider::SetDAR(double _dar) {
-	AVSTRACE(_T("AvisynthVideoProvider::SetDAR: Setting DAR"));
-	dar = _dar;
-	ResizedVideo = NULL;
-	
-	delete data;
-	data = NULL;
-
-	ResizedVideo = ApplyDARZoom(zoom,dar,SubtitledVideo);
-	GetFrame(last_fnum,true);
-	AVSTRACE(_T("AvisynthVideoProvider::SetDAR: DAR set"));
-}
-
-
-////////////
-// Set Zoom
-void AvisynthVideoProvider::SetZoom(double _zoom) {
-	AVSTRACE(_T("AvisynthVideoProvider::SetZoom: Setting zoom"));
-	zoom = _zoom;
-	ResizedVideo = NULL;
-
-	delete data;
-	data = NULL;
-
-	ResizedVideo = ApplyDARZoom(zoom,dar,SubtitledVideo);
-	GetFrame(last_fnum,true);
-	AVSTRACE(_T("AvisynthVideoProvider::SetZoom: Zoom set"));
-}
+////////////////////////////////////// VIDEO PROVIDER //////////////////////////////////////
 
 
 /////////////////////////////////////////
@@ -301,6 +256,70 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 }
 
 
+////////////////////////
+// Actually get a frame
+const AegiVideoFrame AvisynthVideoProvider::DoGetFrame(int _n) {
+	// Transform n if overriden
+	int n = _n;
+	if (frameTime.Count()) {
+		if (n < 0) n = 0;
+		if (n >= (signed) frameTime.Count()) n = frameTime.Count()-1;
+		int time = frameTime[n];
+		double curFps = (double)vi.fps_numerator/(double)vi.fps_denominator;
+		n = time * curFps / 1000.0;
+	}
+
+	// Get avs frame
+	AVSTRACE(_T("AvisynthVideoProvider::GetFrame"));
+	wxMutexLocker lock(AviSynthMutex);
+	PVideoFrame frame = SubtitledVideo->GetFrame(n,env);
+	int Bpp = vi.BitsPerPixel() / 8;
+
+	// Aegisub's video frame
+	AegiVideoFrame &final = iframe;
+	final.flipped = false;
+	final.cppAlloc = true;
+
+	// Format
+	if (vi.IsRGB32()) {
+		final.format = FORMAT_RGB32;
+		final.flipped = true;
+	}
+	else if (vi.IsRGB24()) {
+		final.format = FORMAT_RGB24;
+		final.flipped = true;
+	}
+	else if (vi.IsYV12()) final.format = FORMAT_YV12;
+	else if (vi.IsYUY2()) final.format = FORMAT_YUY2;
+
+	// Set size properties
+	int uvpitch = 0;
+	if (final.format == FORMAT_YV12) uvpitch = frame->GetPitch(PLANAR_U);
+	final.pitch[0] = frame->GetPitch();
+	final.pitch[1] = uvpitch;
+	final.pitch[2] = uvpitch;
+	final.w = frame->GetRowSize() / Bpp;
+	final.h = frame->GetHeight();
+
+	// Allocate
+	final.Allocate();
+
+	// Copy
+	memcpy(final.data[0],frame->GetReadPtr(),final.pitch[0] * final.h);
+
+	// Copy second and third planes for YV12
+	if (final.format == FORMAT_YV12) {
+		int uvh = frame->GetHeight(PLANAR_U);
+		memcpy(final.data[1],frame->GetReadPtr(PLANAR_U),uvpitch * uvh);
+		memcpy(final.data[2],frame->GetReadPtr(PLANAR_V),uvpitch * uvh);
+	}
+
+	// Set last number
+	last_fnum = n;
+	return final;
+}
+
+
 ////////////////////////////////////////////////////////
 // Apply VSFilter subtitles, or whatever is appropriate
 PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosource) {
@@ -331,146 +350,34 @@ PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosourc
 }
 
 
-/////////////////////////////////////
-// Apply Display Aspect Ratio + Zoom
-PClip AvisynthVideoProvider::ApplyDARZoom(double _zoom, double _dar, PClip videosource) {
-	AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Applying DAR zoom"));
-	wxMutexLocker lock(AviSynthMutex);
-	AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Got AVS mutex"));
 
-	AVSValue script;
-	VideoInfo vil = videosource->GetVideoInfo();
+////////////////////////////////////// SUBTITLES PROVIDER //////////////////////////////////////
 
-	int w = vil.height * _zoom * _dar;
-	int h = vil.height * _zoom;
-	if (w == vil.width && h == vil.height) {
-		vi = vil;
-		return (env->Invoke("Cache",videosource)).AsClip();
-	}
 
-	try {
-		// Resize
-		if (!env->FunctionExists(Options.AsText(_T("Video resizer")).mb_str(wxConvLocal)))
-			throw AvisynthError("Selected resizer doesn't exist");
-
-		AVSValue args[3] = { videosource, w, h };
-		AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Invoking resizing function"));
-		script = env->Invoke(Options.AsText(_T("Video resizer")).mb_str(wxConvLocal), AVSValue(args,3));
-		AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Resizer invoked successfully"));
-	} catch (AvisynthError &err) {
-		AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: Avisynth error: ") + wxString(err.msg,wxConvLocal));
-		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
-	}
-
-	vi = script.AsClip()->GetVideoInfo();
-
-	AVSTRACE(_T("AvisynthVideoProvider::ApplyDARZoom: DAR zoom applied successfully, AVS mutex will be released now"));
-	return (env->Invoke("Cache",script)).AsClip();
+/////////////////////////////
+// Get as subtitles provider
+SubtitlesProvider *AvisynthVideoProvider::GetAsSubtitlesProvider() {
+	return this;
 }
 
 
-////////////////////////
-// Actually get a frame
-wxBitmap AvisynthVideoProvider::GetFrame(int _n, bool force) {
-	// Transform n if overriden
-	int n = _n;
-	if (frameTime.Count()) {
-		if (n < 0) n = 0;
-		if (n >= (signed) frameTime.Count()) n = frameTime.Count()-1;
-		int time = frameTime[n];
-		double curFps = (double)vi.fps_numerator/(double)vi.fps_denominator;
-		n = time * curFps / 1000.0;
-	}
+/////////////////////
+// Refresh subtitles
+void AvisynthVideoProvider::LoadSubtitles(AssFile *subs) {
+	// Reset
+	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Refreshing subtitles"));
+	SubtitledVideo = NULL;
 
-	// Get frame
-	AVSTRACE(_T("AvisynthVideoProvider::GetFrame"));
-	if (n != last_fnum || force) {
-		wxMutexLocker lock(AviSynthMutex);
+	// Dump subs to disk
+	wxString subfilename = VideoContext::Get()->GetTempWorkFile();
+	subs->Save(subfilename,false,false,_T("UTF-8"));
+	delete subs;
 
-		PVideoFrame frame = ResizedVideo->GetFrame(n,env);
-
-		int ndepth = wxDisplayDepth();
-
-		if (depth != ndepth) {
-			depth = ndepth;
-			delete data;
-			data = NULL;
-		}
-
-		if (!data)
-			data = new unsigned char[vi.width*vi.height*depth/8];
-
-		unsigned char* dst = data+(vi.width*(vi.height-1)*depth/8);
-
-		if (depth == 32) {
-			int rs = vi.RowSize();
-			const unsigned char* src = frame->GetReadPtr();
-			int srcpitch = frame->GetPitch();
-
-			for (int y = 0; y < vi.height; y++) {
-				memcpy(dst,src,rs);
-				src+=srcpitch;
-				dst-=rs;
-			}
-		}
-
-		else if (depth == 24) {
-			//fail
-		}
-
-		else if (depth == 16) {
-			const unsigned char *read_ptr = frame->GetReadPtr();
-			unsigned short *write_ptr = (unsigned short*) dst;
-			unsigned char r,g,b;
-			int srcpitch = frame->GetPitch();
-			int rs = vi.RowSize();
-
-			for (int y = 0; y < vi.height; y++) {
-
-				for (int x=0,dx=0;x<rs;x+=4,dx++) {
-					r = read_ptr[x+2];
-					g = read_ptr[x+1];
-					b = read_ptr[x];
-					write_ptr[dx] = ((r>>3)<<11) | ((g>>2)<<5) | b>>3;
-				}
-
-				write_ptr -= vi.width;
-				read_ptr += srcpitch;
-			}
-		}
-		
-		else {
-			//fail
-		}
-
-		last_frame = wxBitmap((const char*)data, vi.width, vi.height, depth);
-		last_fnum = n;
-	}
-
-	return wxBitmap(last_frame);
-}
-
-
-///////////////////////////////////
-// Get a frame intensity as floats
-void AvisynthVideoProvider::GetFloatFrame(float* Buffer, int n) {
-	AVSTRACE(_T("AvisynthVideoProvider::GetFloatFrame"));
-	wxMutexLocker lock(AviSynthMutex);
-
-	PVideoFrame frame = ResizedVideo->GetFrame(n,env);
-
-	int rs = vi.RowSize();
-	const unsigned char* src = frame->GetReadPtr();
-	int srcpitch = frame->GetPitch();
-
-	for( int i = 0; i < vi.height; i++ ) 
-	{
-		for( int x=0; x<vi.width;x++ )
-		{
-			Buffer[(vi.height-i-1)*vi.width+x] = src[x*4+0]*0.3 + src[x*4+1]*0.4 + src[x*4+2]*0.3;
-		}
-		src+=srcpitch;
-	}
+	// Load subtitles
+	SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
+	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Subtitles refreshed"));
+	vi = SubtitledVideo->GetVideoInfo();
+	AVSTRACE(_T("AvisynthVideoProvider: Got video info"));
 }
 
 

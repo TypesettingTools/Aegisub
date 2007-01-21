@@ -69,6 +69,10 @@ private:
 	void OnVideoStop(wxCommandEvent &event);
 	void OnVideoToggleScroll(wxCommandEvent &event);
 
+	void OnVideoTrackerMenu(wxCommandEvent &event);
+	void OnVideoTrackerMenu2(wxCommandEvent &event);
+	void OnTrackerOption(wxCommandEvent &event);
+
 	void OnModeStandard(wxCommandEvent &event);
 	void OnModeDrag(wxCommandEvent &event);
 	void OnModeRotateZ(wxCommandEvent &event);
@@ -76,20 +80,6 @@ private:
 	void OnModeScale(wxCommandEvent &event);
 	void OnModeClip(wxCommandEvent &event);
 	void OnToggleRealtime(wxCommandEvent &event);
-
-	void OnVideoTrackerMenu(wxCommandEvent &event);
-	void OnVideoTrackPoints(wxCommandEvent &event);
-	void OnVideoTrackPointAdd(wxCommandEvent &event);
-	void OnVideoTrackPointDel(wxCommandEvent &event);
-	void OnVideoTrackerMenu2(wxCommandEvent &event);
-	void OnVideoTrackMovement(wxCommandEvent &event);
-	void OnVideoTrackMovementMoveAll(wxCommandEvent &event);
-	void OnVideoTrackMovementMoveOne(wxCommandEvent &event);
-	void OnVideoTrackMovementMoveBefore(wxCommandEvent &event);
-	void OnVideoTrackMovementMoveAfter(wxCommandEvent &event);
-	void OnVideoTrackSplitLine(wxCommandEvent &event);
-	void OnVideoTrackLinkFile(wxCommandEvent &event);
-	void OnVideoTrackMovementEmpty(wxCommandEvent &event);
 
 public:
 	ToggleBitmap *AutoScroll;
@@ -116,11 +106,20 @@ enum {
 	Video_Stop,
 	Video_Auto_Scroll,
 
+	Video_Mode_Standard,
+	Video_Mode_Drag,
+	Video_Mode_Rotate_Z,
+	Video_Mode_Rotate_XY,
+	Video_Mode_Scale,
+	Video_Mode_Clip,
+	Video_Mode_Realtime,
+
 	Video_Tracker_Menu,
+	Video_Tracker_Menu2,
+	Video_Tracker_START = 1000,
 	Video_Track_Points,
 	Video_Track_Point_Add,
 	Video_Track_Point_Del,
-	Video_Tracker_Menu2,
 	Video_Track_Movement,
 	Video_Track_Movement_MoveAll,
 	Video_Track_Movement_MoveOne,
@@ -129,14 +128,7 @@ enum {
 	Video_Track_Split_Line,
 	Video_Track_Link_File,
 	Video_Track_Movement_Empty,
-
-	Video_Mode_Standard,
-	Video_Mode_Drag,
-	Video_Mode_Rotate_Z,
-	Video_Mode_Rotate_XY,
-	Video_Mode_Scale,
-	Video_Mode_Clip,
-	Video_Mode_Realtime
+	Video_Tracker_END
 };
 
 #endif

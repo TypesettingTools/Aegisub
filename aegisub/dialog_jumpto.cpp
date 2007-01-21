@@ -49,7 +49,7 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent,VideoDisplay *_vid)
 	// Set initial values
 	ready = false;
 	vid = _vid;
-	jumpframe = vid->frame_n;
+	jumpframe = VideoContext::Get()->GetFrameN();
 	jumptime.SetMS(VFR_Output.GetTimeAtFrame(jumpframe));
 
 	// Times
@@ -122,7 +122,7 @@ void DialogJumpToEvent::OnEditFrame (wxCommandEvent &event) { control->OnEditFra
 void DialogJumpTo::OnKey(wxKeyEvent &event) {
 	int key = event.GetKeyCode();
 	if (key == WXK_RETURN) {
-		vid->JumpToFrame(jumpframe);
+		VideoContext::Get()->JumpToFrame(jumpframe);
 		EndModal(0);
 		return;
 	}
@@ -133,7 +133,7 @@ void DialogJumpTo::OnKey(wxKeyEvent &event) {
 ////////////////////////
 // On OK button pressed
 void DialogJumpTo::OnClose(bool ok) {
-	if (ok)	vid->JumpToFrame(jumpframe);
+	if (ok)	VideoContext::Get()->JumpToFrame(jumpframe);
 	EndModal(0);
 }
 

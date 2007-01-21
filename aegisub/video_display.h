@@ -34,8 +34,7 @@
 //
 
 
-#ifndef VIDEO_DISPLAY_H
-#define VIDEO_DISPLAY_H
+#pragma once
 
 
 ///////////
@@ -45,6 +44,7 @@
 #include <windows.h>
 #endif
 #include <time.h>
+#include "video_context.h"
 
 
 //////////////
@@ -56,42 +56,19 @@ class AudioDisplay;
 class AssDialogue;
 class VideoProvider;
 class VideoDisplayVisual;
+class VideoDisplayFexTracker;
 class VideoBox;
 
 
 //////////////
 // Main class
-class VideoDisplay: public wxWindow {
+class VideoDisplay: public wxGLCanvas {
 	friend class AudioProvider;
 	friend class VideoDisplayVisual;
 
 private:
-	wxString tempfile;
-
 	wxSize origSize;
-	bool threaded;
-	int nextFrame;
-
-	bool keyFramesLoaded;
-	bool overKeyFramesLoaded;
-	wxArrayInt KeyFrames;
-	wxArrayInt overKeyFrames;
-	wxString keyFramesFilename;
-
-	clock_t PlayTime;
-	clock_t StartTime;
-	wxTimer Playback;
-	int StartFrame;
-	int EndFrame;
-	int PlayNextFrame;
-	double arValue;
-	int arType;
-
-	wxBitmap GetFrame(int n);
-	wxBitmap GetFrame() { return GetFrame(frame_n); };
-
-	void UpdateSize();
-	void SaveSnapshot();
+	int w,h;
 
 	void OnPaint(wxPaintEvent& event);
 	void OnKey(wxKeyEvent &event);
@@ -100,73 +77,40 @@ private:
 	void OnCopyToClipboard(wxCommandEvent &event);
 	void OnSaveSnapshot(wxCommandEvent &event);
 	void OnCopyCoords(wxCommandEvent &event);
-	void OnPlayTimer(wxTimerEvent &event);
+	void OnEraseBackground(wxEraseEvent &event) {}
 
 public:
-	wxArrayInt GetKeyFrames();
-	void SetKeyFrames(wxArrayInt frames);
-	void SetOverKeyFrames(wxArrayInt frames);
-	void CloseOverKeyFrames();
-	bool OverKeyFramesLoaded();
-	bool KeyFramesLoaded();
-	wxString GetKeyFramesName() { return keyFramesFilename; }
-	void SetKeyFramesName(wxString name) { keyFramesFilename = name; }
-
 	VideoDisplayVisual *visual;
-	VideoProvider *provider;
+	VideoDisplayFexTracker *tracker;
 	VideoBox *box;
 
-	SubtitlesGrid *grid;
-	wxString videoName;
-	int w,h;
-	int frame_n;
-	int length;
-	bool loaded;
-	bool IsPlaying;
-	double fps;
+	double arValue;
+	int arType;
 	double zoomValue;
-
-	bool bTrackerEditing;
-	int MovementEdit;
-	double TrackerEdit;
-	int MouseDownX, MouseDownY;
 
 	VideoSlider *ControlSlider;
 	wxComboBox *zoomBox;
 	wxTextCtrl *PositionDisplay;
 	wxTextCtrl *SubsPosition;
-	AssDialogue *curLine;
-	AudioDisplay *audio;
 
 	VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
 	~VideoDisplay();
-
-	void SetVideo(const wxString &filename);
 	void Reset();
-	void Unload();
-	void JumpToFrame(int n);
-	void JumpToTime(int ms);
-	void RefreshSubtitles();
-	void RefreshVideo();
+
+	void Render();
+
 	void DrawText(wxPoint Pos, wxString Text);
 	void UpdatePositionDisplay();
+	void UpdateSize();
 	void SetZoom(double value);
 	void SetZoomPos(int pos);
 	void UpdateSubsRelativeTime();
-	void GetScriptSize(int &w,int &h);
-	wxString GetTempWorkFile ();
 
 	double GetARFromType(int type);
 	void SetAspectRatio(int type,double value=1.0);
 	int GetAspectRatioType() { return arType; }
 	double GetAspectRatioValue() { return arValue; }
 
-	void Play();
-	void PlayLine();
-	void Stop();
-
 	DECLARE_EVENT_TABLE()
 };
 
-
-#endif

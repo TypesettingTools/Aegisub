@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Fredrik Mellbin
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,70 +39,24 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-
-#ifdef __WIN32__
-#include "avisynth_wrap.h"
-#include "video_provider.h"
 #include "subtitles_provider.h"
+#define CSRIAPI __declspec(dllexport)
+#include "csri/csri.h"
+#include "csri/loader.h"
 
-/*class GetFrameVPThread: public wxThread {
+
+/////////////////////////////////////////////////
+// Common Subtitles Rendering Interface provider
+class CSRISubtitlesProvider : public SubtitlesProvider {
 private:
-	int getting_n;
-	int current_n;
-
-	PClip video;
-
-	wxThread::ExitCode Entry();
-public:
-	void GetFrame(int n);
-	GetFrameVPThread(PClip clip);
-};*/
-
-
-////////////
-// Provider
-class AvisynthVideoProvider: public VideoProvider, SubtitlesProvider, AviSynthWrapper {
-private:
-	VideoInfo vi;
-	AegiVideoFrame iframe;
-
-	wxString rendererCallString;
-
-	int num_frames;
-	int last_fnum;
-
-	double fps;
-	wxArrayInt frameTime;
-
-	PClip RGB32Video;
-	PClip SubtitledVideo;
-
-	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
-
-	void LoadVSFilter();
-	void LoadASA();
-	void LoadRenderer();
+	csri_inst *instance;
 
 public:
-	AvisynthVideoProvider(wxString _filename, double fps=0.0);
-	~AvisynthVideoProvider();
+	CSRISubtitlesProvider();
+	~CSRISubtitlesProvider();
 
-	SubtitlesProvider *GetAsSubtitlesProvider();
+	bool CanRaster() { return true; }
+
 	void LoadSubtitles(AssFile *subs);
-
-	const AegiVideoFrame DoGetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
-
-	// properties
-	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
-	int GetWidth() { return vi.width; };
-	int GetHeight() { return vi.height; };
-
-	void OverrideFrameTimeList(wxArrayInt list);
+	void DrawSubtitles(AegiVideoFrame &dst,double time);
 };
-
-#endif

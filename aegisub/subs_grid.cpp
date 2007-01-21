@@ -148,13 +148,13 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		state = (sels == 1);
 		menu.Append(MENU_INSERT_BEFORE,_("&Insert (before)"),_T("Inserts a line before current"))->Enable(state);
 		menu.Append(MENU_INSERT_AFTER,_("Insert (after)"),_T("Inserts a line after current"))->Enable(state);
-		state = (sels == 1 && video && video->loaded);
+		state = (sels == 1 && video && VideoContext::Get()->IsLoaded());
 		menu.Append(MENU_INSERT_BEFORE_VIDEO,_("Insert at video time (before)"),_T("Inserts a line after current, starting at video time"))->Enable(state);
 		menu.Append(MENU_INSERT_AFTER_VIDEO,_("Insert at video time (after)"),_T("Inserts a line after current, starting at video time"))->Enable(state);
 		menu.AppendSeparator();
 
 		// Video/time sync
-		//state = (video && video->loaded);
+		//state = (video && VideoContext::Get()->IsLoaded());
 		//menu.Append(MENU_SET_VIDEO_TO_START,_("Jump video to start"),_T("Sets current video time to start time"))->Enable(state);
 		//menu.Append(MENU_SET_VIDEO_TO_END,_("Jump video to end"),_T("Sets current video time to end time"))->Enable(state);
 		//menu.Append(MENU_SET_START_TO_VIDEO,_("Set start to video"),_T("Sets start times to current video time"))->Enable(state);
@@ -467,7 +467,7 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = VFR_Output.GetTimeAtFrame(video->frame_n,true);
+	int video_ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms+5000);
 	def->Style = GetDialogue(n)->Style;
@@ -489,7 +489,7 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = VFR_Output.GetTimeAtFrame(video->frame_n,true);
+	int video_ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms+5000);
 	def->Style = GetDialogue(n)->Style;
@@ -1336,23 +1336,23 @@ void SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 // --------------
 // This will save the work .ass and refresh it
 void SubtitlesGrid::CommitChanges(bool force,bool videoOnly) {
-	if (video->loaded || force) {
+	if (VideoContext::Get()->IsLoaded() || force) {
 		// Check if it's playing
 		bool playing = false;
-		if (video->IsPlaying) {
+		if (VideoContext::Get()->IsPlaying()) {
 			playing = true;
-			video->Stop();
+			VideoContext::Get()->Stop();
 		}
 
 		// Export
-		wxString workfile = video->GetTempWorkFile();
-		ass->Export(workfile);
+		//wxString workfile = VideoContext::Get()->GetTempWorkFile();
+		//ass->Export(workfile);
 
-		if (video->loaded)
-			video->RefreshSubtitles();
+		// Update video
+		if (VideoContext::Get()->IsLoaded()) VideoContext::Get()->Refresh(false,true);
 
 		// Resume play
-		if (playing) video->Play();
+		if (playing) VideoContext::Get()->Play();
 	}
 
 	if (!videoOnly) {
@@ -1376,7 +1376,7 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 	if (!VFR_Output.IsLoaded()) return;
 
 	// Get new time
-	int ms = VFR_Output.GetTimeAtFrame(video->frame_n,start);
+	int ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),start);
 
 	// Update selection
 	wxArrayInt sel = GetSelection();
@@ -1409,9 +1409,9 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 	AssDialogue *cur = GetDialogue(sel[0]);
 	if (cur) {
 		if (start) 
-			video->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
+			VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
 		else 
-			video->JumpToFrame(VFR_Output.GetFrameAtTime(cur->End.GetMS(),false));
+			VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->End.GetMS(),false));
 	}
 }
 

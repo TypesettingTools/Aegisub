@@ -192,3 +192,18 @@ void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help
 	cur->SetBitmap(bmp);
 	parentMenu->Append(cur);
 }
+
+
+///////////////////////////////////////////////////////////////
+// Get the smallest power of two that is greater or equal to x
+// Code from http://bob.allegronetwork.com/prog/tricks.html
+int SmallestPowerOf2(int x) {
+	x--;
+	x |= (x >> 1);
+	x |= (x >> 2);
+	x |= (x >> 4);
+	x |= (x >> 8);
+	x |= (x >> 16);
+	x++;
+	return x;
+}

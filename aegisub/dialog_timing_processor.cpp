@@ -205,7 +205,7 @@ void DialogTimingProcessor::UpdateControls() {
 	adjascentBias->Enable(adjsEnable->IsChecked());
 
 	// Keyframes are only available if timecodes are loaded
-	bool keysAvailable = grid->video->KeyFramesLoaded();
+	bool keysAvailable = VideoContext::Get()->KeyFramesLoaded();
 	bool enableKeys = keysEnable->IsChecked() && keysAvailable;
 	keysStartBefore->Enable(enableKeys);
 	keysStartAfter->Enable(enableKeys);
@@ -513,8 +513,8 @@ void DialogTimingProcessor::Process() {
 	// Keyframe snapping
 	if (keysEnable->IsChecked()) {
 		// Get keyframes
-		KeyFrames = grid->video->GetKeyFrames();
-		KeyFrames.Add(grid->video->length-1);
+		KeyFrames = VideoContext::Get()->GetKeyFrames();
+		KeyFrames.Add(VideoContext::Get()->GetLength()-1);
 
 		// Variables
 		int startF,endF;

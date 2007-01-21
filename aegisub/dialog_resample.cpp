@@ -68,7 +68,7 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	ResY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&ResYValue));
 	wxStaticText *ResText = new wxStaticText(this,-1,_("x"));
 	wxButton *FromVideo = new wxButton(this,BUTTON_DEST_FROM_VIDEO,_("From video"));
-	if (!vid->loaded) FromVideo->Enable(false);
+	if (!VideoContext::Get()->IsLoaded()) FromVideo->Enable(false);
 	ResSizer->Add(ResX,1,wxRIGHT,5);
 	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
 	ResSizer->Add(ResY,1,wxRIGHT,5);
@@ -244,8 +244,8 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 /////////////////////////////////////////
 // Get destination resolution from video
 void DialogResample::OnGetDestRes (wxCommandEvent &event) {
-	ResX->SetValue(wxString::Format(_T("%i"),vid->provider->GetSourceWidth()));
-	ResY->SetValue(wxString::Format(_T("%i"),vid->provider->GetSourceHeight()));
+	ResX->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetWidth()));
+	ResY->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetHeight()));
 }
 
 

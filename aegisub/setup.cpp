@@ -63,6 +63,7 @@
 #pragma comment(lib, "wxmsw28ud_media.lib")
 #pragma comment(lib, "wxmsw28ud_core.lib")
 #pragma comment(lib, "wxmsw28ud_adv.lib")
+#pragma comment(lib, "wxmsw28ud_gl.lib")
 #else
 #pragma comment(lib, "wxregexu.lib")
 #pragma comment(lib, "wxbase28u.lib")
@@ -70,6 +71,7 @@
 #pragma comment(lib, "wxmsw28u_media.lib")
 #pragma comment(lib, "wxmsw28u_core.lib")
 #pragma comment(lib, "wxmsw28u_adv.lib")
+#pragma comment(lib, "wxmsw28u_gl.lib")
 #endif
 
 #else 
@@ -132,6 +134,17 @@
 #if USE_DIRECTSOUND == 1
 #pragma comment(lib, "dsound.lib")
 #pragma comment(lib, "dxguid.lib")
+#endif
+
+
+//////////////
+// DirectShow
+#if USE_DIRECTSHOW == 1
+#ifdef __WXDEBUG__
+#pragma comment(lib, "strmbasdu.lib")
+#else
+#pragma comment(lib, "strmbaseu.lib")
+#endif
 #endif
 
 

@@ -93,7 +93,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 #ifdef __WINDOWS__
 	// Video loaded?
 	VideoDisplay *display = ((AegisubApp*)wxTheApp)->frame->videoBox->videoDisplay;
-	if (!display->loaded) throw _T("Video not loaded!");
+	if (VideoContext::Get()->IsLoaded()) throw _T("Video not loaded!");
 
 	// Create the PRS file
 	PRSFile file;
@@ -110,7 +110,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	IScriptEnvironment *env2 = avs2.GetEnv();
 
 	// Prepare the Avisynth environments, that is, generate blank clips and hardsub into them
-	wxString val = wxString::Format(_T("BlankClip(pixel_type=\"RGB32\",length=%i,width=%i,height=%i,fps=%f"),display->provider->GetFrameCount(),display->provider->GetSourceWidth(),display->provider->GetSourceHeight(),display->provider->GetFPS());
+	wxString val = wxString::Format(_T("BlankClip(pixel_type=\"RGB32\",length=%i,width=%i,height=%i,fps=%f"),VideoContext::Get()->GetLength(),VideoContext::Get()->GetWidth(),VideoContext::Get()->GetHeight(),VideoContext::Get()->GetFPS());
 	AVSValue script1 = env1->Invoke("Eval",AVSValue(wxString(val + _T(",color=$000000)")).mb_str(wxConvUTF8)));
 	AVSValue script2 = env2->Invoke("Eval",AVSValue(wxString(val + _T(",color=$FFFFFF)")).mb_str(wxConvUTF8)));
 	char temp[512];

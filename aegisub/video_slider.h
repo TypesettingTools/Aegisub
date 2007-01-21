@@ -67,6 +67,7 @@ private:
 	void OnKeyDown(wxKeyEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnFocus(wxFocusEvent &event);
+	void OnEraseBackground(wxEraseEvent &event) {}
 
 public:
 	VideoDisplay *Display;

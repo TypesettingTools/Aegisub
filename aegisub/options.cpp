@@ -147,7 +147,7 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Allow Ancient Avisynth"),false);
 	SetText(_T("Video Provider"),_T("Avisynth"));
-	SetText(_T("Video resizer"),_T("BilinearResize"));
+	SetText(_T("Subtitles Provider"),_T("CSRI"));
 
 	// Audio Options
 	SetBool(_T("Audio Next Line on Commit"),true);
@@ -291,7 +291,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Audio Spectrum"),false);
 	SetInt(_T("Audio Sample Rate"),0);
 
-	SetBool(_T("Video Visual Realtime"),false);
+	SetBool(_T("Video Visual Realtime"),true);
 
 	SetInt(_T("Timing processor key start before thres"),5);
 	SetInt(_T("Timing processor key start after thres"),4);

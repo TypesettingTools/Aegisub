@@ -317,7 +317,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *videoSizer1 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Options"));
 		wxSizer *videoSizer2 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Advanced - EXPERT USERS ONLY"));
 		wxFlexGridSizer *videoSizer3 = new wxFlexGridSizer(5,2,5,5);
-		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(3,2,5,5);
 		wxControl *control;
 
 		// First sizer
@@ -366,11 +366,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 #endif
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices4,wxCB_DROPDOWN | wxCB_READONLY);
 		Bind(control,_T("Video provider"),1);
-		videoSizer4->Add(control,1,wxEXPAND);
-		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth video resizer: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		wxString choices5[3] = { _T("BilinearResize"), _T("BicubicResize"), _T("LanczosResize") };
-		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices5,wxCB_DROPDOWN);
-		Bind(control,_T("Video resizer"));
 		videoSizer4->Add(control,1,wxEXPAND);
 		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth memory limit: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		control = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator(NULL,false));

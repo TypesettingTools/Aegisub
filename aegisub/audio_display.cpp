@@ -120,6 +120,14 @@ AudioDisplay::~AudioDisplay() {
 	delete spectrumDisplaySelected;
 	delete peak;
 	delete min;
+	provider = NULL;
+	player = NULL;
+	origImage = NULL;
+	spectrumRenderer = NULL;
+	spectrumDisplay = NULL;
+	spectrumDisplaySelected = NULL;
+	peak = NULL;
+	min = NULL;
 }
 
 
@@ -237,8 +245,8 @@ void AudioDisplay::UpdateImage(bool weak) {
 	}
 
 	// Draw keyframes
-	if (video->KeyFramesLoaded() && draw_boundary_lines) {
-		wxArrayInt KeyFrames = video->GetKeyFrames();
+	if (VideoContext::Get()->KeyFramesLoaded() && draw_boundary_lines) {
+		wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
 		int nKeys = (int)KeyFrames.Count();
 		dc.SetPen(wxPen(wxColour(255,0,255),1));
 
@@ -784,12 +792,11 @@ void AudioDisplay::SetFile(wxString file, VideoProvider *vprovider) {
 ///////////////////
 // Load from video
 void AudioDisplay::SetFromVideo() {
-	if (video->loaded) {
-		wxString extension = video->videoName.Right(4);
+	if (VideoContext::Get()->IsLoaded()) {
+		wxString extension = VideoContext::Get()->videoName.Right(4);
 		extension.LowerCase();
 
-		if (extension != _T(".d2v"))
-			SetFile(video->videoName, video->provider);
+		if (extension != _T(".d2v")) SetFile(VideoContext::Get()->videoName, VideoContext::Get()->GetProvider());
 	}
 }
 
@@ -853,10 +860,10 @@ void AudioDisplay::Play(int start,int end) {
 	// Check provider
 	if (!provider) {
 		// Load temporary provider from video
-		if (video->loaded) {
+		if (VideoContext::Get()->IsLoaded()) {
 			try {
 				// Get provider
-				provider = AudioProvider::GetAudioProvider(video->videoName, this, video->provider,0);
+				provider = AudioProvider::GetAudioProvider(VideoContext::Get()->videoName, this, VideoContext::Get()->GetProvider(),0);
 
 				// Get player
 				player = AudioPlayer::GetAudioPlayer();
@@ -896,7 +903,7 @@ void AudioDisplay::Stop() {
 	if (!player) return;
 
 	player->Stop();
-	if (video && video->IsPlaying) video->Stop();
+	if (video && VideoContext::Get()->IsPlaying()) VideoContext::Get()->Stop();
 }
 
 
@@ -1501,9 +1508,9 @@ int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool start) {
 
 	// Find the snap boundaries
 	wxArrayInt boundaries;
-	if (video->KeyFramesLoaded() && Options.AsBool(_T("Audio Draw Secondary Lines"))) {
+	if (VideoContext::Get()->KeyFramesLoaded() && Options.AsBool(_T("Audio Draw Secondary Lines"))) {
 		__int64 keyMS;
-		wxArrayInt keyFrames = video->GetKeyFrames();
+		wxArrayInt keyFrames = VideoContext::Get()->GetKeyFrames();
 		int frame;
 		for (unsigned int i=0;i<keyFrames.Count();i++) {
 			frame = keyFrames[i];

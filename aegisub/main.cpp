@@ -56,6 +56,7 @@
 #include "subs_grid.h"
 #include "auto4_base.h"
 #include "subtitle_format.h"
+#include "video_context.h"
 
 
 ///////////////////
@@ -140,6 +141,7 @@ bool AegisubApp::OnInit() {
 // Exit
 int AegisubApp::OnExit() {
 	SubtitleFormat::DestroyFormats();
+	VideoContext::Clear();
 	Options.Clear();
 	delete global_scripts;
 	return wxApp::OnExit();

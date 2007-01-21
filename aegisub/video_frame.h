@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Fredrik Mellbin
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,72 +37,41 @@
 #pragma once
 
 
-///////////
-// Headers
-#include <wx/wxprec.h>
-
-#ifdef __WIN32__
-#include "avisynth_wrap.h"
-#include "video_provider.h"
-#include "subtitles_provider.h"
-
-/*class GetFrameVPThread: public wxThread {
-private:
-	int getting_n;
-	int current_n;
-
-	PClip video;
-
-	wxThread::ExitCode Entry();
-public:
-	void GetFrame(int n);
-	GetFrameVPThread(PClip clip);
-};*/
-
-
-////////////
-// Provider
-class AvisynthVideoProvider: public VideoProvider, SubtitlesProvider, AviSynthWrapper {
-private:
-	VideoInfo vi;
-	AegiVideoFrame iframe;
-
-	wxString rendererCallString;
-
-	int num_frames;
-	int last_fnum;
-
-	double fps;
-	wxArrayInt frameTime;
-
-	PClip RGB32Video;
-	PClip SubtitledVideo;
-
-	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
-
-	void LoadVSFilter();
-	void LoadASA();
-	void LoadRenderer();
-
-public:
-	AvisynthVideoProvider(wxString _filename, double fps=0.0);
-	~AvisynthVideoProvider();
-
-	SubtitlesProvider *GetAsSubtitlesProvider();
-	void LoadSubtitles(AssFile *subs);
-
-	const AegiVideoFrame DoGetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
-
-	// properties
-	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
-	int GetWidth() { return vi.width; };
-	int GetHeight() { return vi.height; };
-
-	void OverrideFrameTimeList(wxArrayInt list);
+//////////////////////
+// Video Frame format
+enum VideoFrameFormat {
+	FORMAT_RGB24,
+	FORMAT_RGB32,
+	FORMAT_YUY2,
+	FORMAT_YV12
 };
 
-#endif
+
+/////////////////////
+// Video Frame class
+class AegiVideoFrame {
+private:
+	unsigned int memSize[4];
+
+public:
+	unsigned char *data[4];		// Pointers to the data planes. Interleaved formats only use data[0]
+	VideoFrameFormat format;	// Data format, one of FORMAT_RGB24, FORMAT_RGB32, FORMAT_YUY2 and FORMAT_YV12
+	unsigned int w;				// Width in pixels
+	unsigned int h;				// Height in pixels
+	unsigned int pitch[4];		// Pitch, that is, the number of bytes used by each row.
+
+	bool flipped;				// First row is actually the bottom one
+	bool invertChannels;		// Invert Red and Blue channels
+	bool cppAlloc;				// Allocated with C++'s "new" operator, instead of "malloc"
+
+	AegiVideoFrame();
+	AegiVideoFrame(int width,int height,VideoFrameFormat format=FORMAT_RGB32);
+
+	void Allocate();
+	void Clear();
+	void CopyFrom(const AegiVideoFrame &source);
+
+	wxImage GetImage() const;
+	void GetFloat(float *buffer) const;
+	int GetBpp(int plane=0) const;
+};

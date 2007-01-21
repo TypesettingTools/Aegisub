@@ -57,7 +57,7 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 {
 	// Variables
 	grid = _grid;
-	audio = grid->video->audio->box->audioDisplay;
+	audio = VideoContext::Get()->audio->box->audioDisplay;
 	needCommit = false;
 	linen = -1;
 
@@ -181,7 +181,7 @@ void DialogStyling::JumpToLine(int n) {
 	grid->MakeCellVisible(linen,0);
 
 	// Update display
-	if (PreviewCheck->IsChecked()) grid->video->JumpToFrame(VFR_Output.GetFrameAtTime(line->Start.GetMS(),true));
+	if (PreviewCheck->IsChecked()) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(line->Start.GetMS(),true));
 }
 
 

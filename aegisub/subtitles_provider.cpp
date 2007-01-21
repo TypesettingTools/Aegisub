@@ -1,4 +1,4 @@
-// Copyright (c) 2006, David Lamparter
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,54 +34,51 @@
 //
 
 
-#pragma once
+///////////
+// Headers
+#include "subtitles_provider.h"
+#include "options.h"
 
 
-#include <map>
-#include <wx/wxprec.h>
+//////////////
+// Destructor
+SubtitlesProvider::~SubtitlesProvider() {
+}
 
 
-class VideoProvider;
-class AssFile;
+////////////////
+// Get provider
+SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
+	// List of providers
+	wxArrayString list = GetFactoryList();
 
-/////////////////////////////////////////
-// Subtitle provider (renderer) interface
-class SubtitleProvider {
-public:
-	// Video overlay interface. Renderers MAY implement it,
-	// but do not need to. VideoProvider::SetOverlay takes it.
-	class Overlay {
-	public:
-		virtual void SetParams(int width, int height) = 0;
-		virtual void Render(wxImage &frame, int ms) = 0;
-		virtual void Unbind() = 0;	// Called when VideoProvider is destroyed
-		virtual ~Overlay() { };
-	};
+	// None available
+	if (list.Count() == 0) throw _T("No video providers are available.");
 
-	// Renderer Class. Manages the different types of renderers.
-	// Derivate a class off it, override its Get method and its constructor,
-	// and create one single instance of it for your renderer,
-	// as a static element in your SubtitleProvider derivated class. Example:
-	//	class MyFancyRenderer : public SubtitleProvider {
-	//		class MyClass : public Class { public:
-	//			MyClass() : Class("FancyRenderer") { };
-	//			virtual SubtitleProvider *Get(AssFile *subs) { return new MyFancyRenderer(subs); };
-	//		};
-	//		static MyClass me;
-	//	};
-	class Class {
-	private:
-		static std::map<wxString, SubtitleProvider::Class *> *classes;
+	// Put preffered on top
+	wxString preffered = Options.AsText(_T("Subtitles provider")).Lower();
+	if (list.Index(preffered) != wxNOT_FOUND) {
+		list.Remove(preffered);
+		list.Insert(preffered,0);
+	}
 
-	public:
-		Class(wxString name);
-		virtual SubtitleProvider *Get(AssFile *subs) = 0;
-		virtual ~Class() {};
+	// Get provider
+	wxString error;
+	for (unsigned int i=0;i<list.Count();i++) {
+		try {
+			SubtitlesProvider *provider = GetFactory(list[i])->CreateProvider();
+			if (provider) return provider;
+		}
+		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
+		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
+		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
+	}
 
-		static SubtitleProvider *GetProvider(wxString provider_name, AssFile *subs);
-	};
+	// Failed
+	throw error;
+}
 
 
-	virtual ~SubtitleProvider() { };
-	virtual void Bind(VideoProvider *vpro) = 0;
-};
+//////////
+// Static
+std::map<wxString,SubtitlesProviderFactory*>* AegisubFactory<SubtitlesProviderFactory>::factories=NULL;

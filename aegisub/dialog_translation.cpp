@@ -60,7 +60,7 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	main = parent;
 	subs = _subs;
 	grid = _grid;
-	audio = grid->video->audio;
+	audio = VideoContext::Get()->audio;
 
 	// Translation box
 	wxSizer *TranslationSizer = new wxBoxSizer(wxVERTICAL);
@@ -219,9 +219,9 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 void DialogTranslation::UpdatePreview () {
 	if (enablePreview) {
 		try {
-			if (grid->video->loaded) {
+			if (VideoContext::Get()->IsLoaded()) {
 				AssDialogue *cur = grid->GetDialogue(curline);
-				grid->video->JumpToTime(cur->Start.GetMS());
+				VideoContext::Get()->JumpToTime(cur->Start.GetMS());
 			}
 		}
 		catch (...) {

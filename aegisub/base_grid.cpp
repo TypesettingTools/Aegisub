@@ -640,7 +640,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		// Normal click
 		if ((click || dclick) && !shift && !ctrl && !alt) {
 			if (editBox->linen != row) editBox->SetToLine(row);
-			if (dclick) video->JumpToFrame(VFR_Output.GetFrameAtTime(GetDialogue(row)->Start.GetMS(),true));
+			if (dclick) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(GetDialogue(row)->Start.GetMS(),true));
 			SelectRow(row,false);
 			parentFrame->UpdateToolbar();
 			lastRow = row;
@@ -875,10 +875,10 @@ AssDialogue *BaseGrid::GetDialogue(int n) {
 ////////////////////////////////////
 // Check if line is being displayed
 bool BaseGrid::IsDisplayed(AssDialogue *line) {
-	if (!video->loaded) return false;
+	if (!VideoContext::Get()->IsLoaded()) return false;
 	int f1 = VFR_Output.GetFrameAtTime(line->Start.GetMS(),true);
 	int f2 = VFR_Output.GetFrameAtTime(line->End.GetMS(),false);
-	if (f1 <= video->frame_n && f2 >= video->frame_n) return true;
+	if (f1 <= VideoContext::Get()->GetFrameN() && f2 >= VideoContext::Get()->GetFrameN()) return true;
 	return false;
 }
 
@@ -944,7 +944,7 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	// Left/right, forward to seek bar if video is loaded
 	if (key == WXK_LEFT || key == WXK_RIGHT) {
-		if (video->loaded) {
+		if (VideoContext::Get()->IsLoaded()) {
 			video->ControlSlider->SetFocus();
 			video->ControlSlider->AddPendingEvent(event);
 			return;
@@ -1036,8 +1036,8 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	}
 
 	// Other events, send to audio display
-	if (video->audio->loaded) {
-		video->audio->AddPendingEvent(event);
+	if (VideoContext::Get()->audio->loaded) {
+		VideoContext::Get()->audio->AddPendingEvent(event);
 	}
 	else event.Skip();
 }

@@ -78,6 +78,7 @@
 #include <wx/event.h>
 #include <wx/wxscintilla.h>
 #include <wx/string.h>
+#include <wx/glcanvas.h>
 
 
 ///////////////

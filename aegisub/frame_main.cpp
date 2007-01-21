@@ -450,14 +450,14 @@ void FrameMain::InitContents() {
 	BottomSizer->Add(SubsBox,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,0);
 	AssFile::StackReset();
 	videoBox->videoSlider->grid = SubsBox;
-	videoBox->videoDisplay->grid = SubsBox;
+	VideoContext::Get()->grid = SubsBox;
 	videoBox->videoDisplay->SetZoomPos(Options.AsInt(_T("Video Default Zoom")));
 	Search.grid = SubsBox;
 
 	// Audio area
 	audioBox = new AudioBox(Panel,videoBox->videoDisplay);
 	audioBox->frameMain = this;
-	videoBox->videoDisplay->audio = audioBox->audioDisplay;
+	VideoContext::Get()->audio = audioBox->audioDisplay;
 
 	// Top sizer
 	EditBox = new SubsEditBox(Panel,SubsBox);
@@ -646,7 +646,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 
 	// Failed, ask user
 	if (filename.IsEmpty()) {
-		videoBox->videoDisplay->Stop();
+		VideoContext::Get()->Stop();
 		wxString path = Options.AsText(_T("Last open subtitles path"));
 		wxFileName origPath(AssFile::top->filename);
 		filename = 	wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),AssFile::GetWildcardList(1),wxSAVE | wxOVERWRITE_PROMPT,this);
@@ -718,13 +718,13 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 // 2: audio
 void FrameMain::SetDisplayMode(int mode) {
 	Freeze();
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	if (mode != curMode) {
 		// Automatic mode
 		bool showVid=false, showAudio=false;
 		if (mode == -1) {
 			// See what's loaded
-			if (videoBox->videoDisplay->loaded) showVid = true;
+			if (VideoContext::Get()->IsLoaded()) showVid = true;
 			if (audioBox->loaded) showAudio = true;
 
 			// Set mode
@@ -836,8 +836,8 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		bool hasToLoad = false;
 		if (curSubsAudio != audioBox->audioName ||
 			curSubsVFR != VFR_Output.GetFilename() ||
-			curSubsVideo != videoBox->videoDisplay->videoName ||
-			curSubsKeyframes != videoBox->videoDisplay->GetKeyFramesName() ||
+			curSubsVideo != VideoContext::Get()->videoName ||
+			curSubsKeyframes != VideoContext::Get()->GetKeyFramesName() ||
 			!AutoScriptString.IsEmpty() ||
 			local_scripts->GetScripts().size() > 0) {
 			hasToLoad = true;
@@ -858,13 +858,13 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			LoadVFR(curSubsVFR);
 
 			// Video
-			if (curSubsVideo != videoBox->videoDisplay->videoName) {
+			if (curSubsVideo != VideoContext::Get()->videoName) {
 				if (curSubsVideo != _T("")) {
 					LoadVideo(curSubsVideo);
-					if (videoBox->videoDisplay->loaded) {
-						videoBox->videoDisplay->JumpToFrame(videoPos);
+					if (VideoContext::Get()->IsLoaded()) {
 						videoBox->videoDisplay->SetAspectRatio(videoAr,videoArValue);
 						videoBox->videoDisplay->SetZoomPos(videoZoom-1);
+						VideoContext::Get()->JumpToFrame(videoPos);
 					}
 				}
 			}
@@ -921,7 +921,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString seekpos = _T("0");
 		wxString ar = _T("0");
 		wxString zoom = _T("6");
-		if (videoBox->videoDisplay->loaded) {
+		if (VideoContext::Get()->IsLoaded()) {
 			seekpos = wxString::Format(_T("%i"),videoBox->videoDisplay->ControlSlider->GetValue());
 			zoom = wxString::Format(_T("%i"),videoBox->videoDisplay->zoomBox->GetSelection()+1);
 
@@ -934,12 +934,12 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		subs->SetScriptInfo(_T("Audio File"),MakeRelativePath(audioBox->audioName,AssFile::top->filename));
 
 		// Store video data
-		subs->SetScriptInfo(_T("Video File"),MakeRelativePath(videoBox->videoDisplay->videoName,AssFile::top->filename));
+		subs->SetScriptInfo(_T("Video File"),MakeRelativePath(VideoContext::Get()->videoName,AssFile::top->filename));
 		subs->SetScriptInfo(_T("Video Aspect Ratio"),ar);
 		subs->SetScriptInfo(_T("Video Zoom"),zoom);
 		subs->SetScriptInfo(_T("Video Position"),seekpos);
 		subs->SetScriptInfo(_T("VFR File"),MakeRelativePath(VFR_Output.GetFilename(),AssFile::top->filename));
-		subs->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(videoBox->videoDisplay->GetKeyFramesName(),AssFile::top->filename));
+		subs->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(VideoContext::Get()->GetKeyFramesName(),AssFile::top->filename));
 
 		// Store Automation script data
 		// Algorithm:
@@ -981,15 +981,15 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 // Loads video
 void FrameMain::LoadVideo(wxString file,bool autoload) {
 	if (blockVideoLoad) return;
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	try {
-		if (videoBox->videoDisplay->loaded && VFR_Output.GetFrameRateType() == VFR && !autoload) {
+		if (VideoContext::Get()->IsLoaded() && VFR_Output.GetFrameRateType() == VFR && !autoload) {
 			int result = wxMessageBox(_("You have timecodes loaded currently. Would you like to unload them?"), _("Unload timecodes?"), wxYES_NO, this);
 			if (result == wxYES) {
 				VFR_Output.Unload();
 			}
 		}
-		videoBox->videoDisplay->SetVideo(file);
+		VideoContext::Get()->SetVideo(file);
 	}
 	catch (const wchar_t *error) {
 		wxString err(error);
@@ -1000,10 +1000,10 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	}
 
 	// Check that the video size matches the script video size specified
-	if (videoBox->videoDisplay->loaded) {
+	if (VideoContext::Get()->IsLoaded()) {
 		int scriptx = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResX"));
 		int scripty = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResY"));
-		int vidx = videoBox->videoDisplay->provider->GetSourceWidth(), vidy = videoBox->videoDisplay->provider->GetSourceHeight();
+		int vidx = VideoContext::Get()->GetWidth(), vidy = VideoContext::Get()->GetHeight();
 		if (scriptx != vidx || scripty != vidy) {
 			switch (Options.AsInt(_T("Video Check Script Res"))) {
 				case 1:
@@ -1034,7 +1034,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 // Loads audio
 void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 	if (blockAudioLoad) return;
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	try {
 		audioBox->SetFile(filename,FromVideo);
 		SetDisplayMode(-1);
@@ -1058,7 +1058,7 @@ void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 /////////////
 // Loads VFR
 void FrameMain::LoadVFR(wxString filename) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	if (filename != _T("")) {
 		try {
 			VFR_Output.Load(filename);
@@ -1077,8 +1077,8 @@ void FrameMain::LoadVFR(wxString filename) {
 
 	else {
 		VFR_Output.Unload();
-		if (videoBox->videoDisplay->loaded && !VFR_Output.IsLoaded()) {
-			VFR_Output.SetCFR(videoBox->videoDisplay->fps);
+		if (VideoContext::Get()->IsLoaded() && !VFR_Output.IsLoaded()) {
+			VFR_Output.SetCFR(VideoContext::Get()->GetFPS());
 		}
 	}
 
@@ -1094,7 +1094,7 @@ void FrameMain::LoadKeyframes(wxString filename) {
 	if (filename.IsEmpty()) {
 		wxArrayInt keyFrames;
 		keyFrames.Empty();
-		videoBox->videoDisplay->CloseOverKeyFrames();
+		VideoContext::Get()->CloseOverKeyFrames();
 		videoBox->videoSlider->Refresh();
 		Refresh();
 		return;
@@ -1128,12 +1128,12 @@ void FrameMain::LoadKeyframes(wxString filename) {
 		}
 
 		// Set keyframes
-		videoBox->videoDisplay->SetOverKeyFrames(keyFrames);
-		videoBox->videoDisplay->SetKeyFramesName(filename);
+		VideoContext::Get()->SetOverKeyFrames(keyFrames);
+		VideoContext::Get()->SetKeyFramesName(filename);
 
 		// Set FPS
-		if (!videoBox->videoDisplay->loaded) {
-			videoBox->videoDisplay->fps = fps;
+		if (!VideoContext::Get()->IsLoaded()) {
+			VideoContext::Get()->SetFPS(fps);
 			VFR_Input.SetCFR(fps);
 			if (!VFR_Output.IsLoaded()) VFR_Output.SetCFR(fps);
 		}
@@ -1160,12 +1160,12 @@ void FrameMain::LoadKeyframes(wxString filename) {
 // Save Keyframes
 void FrameMain::SaveKeyframes(wxString filename) {
 	// Get keyframes
-	wxArrayInt keyFrames = videoBox->videoDisplay->GetKeyFrames();
+	wxArrayInt keyFrames = VideoContext::Get()->GetKeyFrames();
 
 	// Write header
 	TextFileWriter file(filename,_T("ASCII"));
 	file.WriteLineToFile(_T("# keyframe format v1"));
-	file.WriteLineToFile(wxString::Format(_T("fps %f"),videoBox->videoDisplay->fps));
+	file.WriteLineToFile(wxString::Format(_T("fps %f"),VideoContext::Get()->GetFPS()));
 
 	// Write keyframes
 	for (unsigned int i=0;i<keyFrames.Count();i++) {

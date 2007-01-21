@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Fredrik Mellbin
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,69 +40,36 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "video_frame.h"
+#include "factory.h"
 
-#ifdef __WIN32__
-#include "avisynth_wrap.h"
-#include "video_provider.h"
-#include "subtitles_provider.h"
 
-/*class GetFrameVPThread: public wxThread {
-private:
-	int getting_n;
-	int current_n;
+//////////////
+// Prototypes
+class AssFile;
 
-	PClip video;
 
-	wxThread::ExitCode Entry();
+////////////////////////////////
+// Subtitles provider interface
+class SubtitlesProvider {
 public:
-	void GetFrame(int n);
-	GetFrameVPThread(PClip clip);
-};*/
+	virtual ~SubtitlesProvider();
 
+	virtual bool CanRaster() { return false; }
 
-////////////
-// Provider
-class AvisynthVideoProvider: public VideoProvider, SubtitlesProvider, AviSynthWrapper {
-private:
-	VideoInfo vi;
-	AegiVideoFrame iframe;
-
-	wxString rendererCallString;
-
-	int num_frames;
-	int last_fnum;
-
-	double fps;
-	wxArrayInt frameTime;
-
-	PClip RGB32Video;
-	PClip SubtitledVideo;
-
-	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
-
-	void LoadVSFilter();
-	void LoadASA();
-	void LoadRenderer();
-
-public:
-	AvisynthVideoProvider(wxString _filename, double fps=0.0);
-	~AvisynthVideoProvider();
-
-	SubtitlesProvider *GetAsSubtitlesProvider();
-	void LoadSubtitles(AssFile *subs);
-
-	const AegiVideoFrame DoGetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
-
-	// properties
-	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
-	int GetWidth() { return vi.width; };
-	int GetHeight() { return vi.height; };
-
-	void OverrideFrameTimeList(wxArrayInt list);
+	virtual void LoadSubtitles(AssFile *subs)=0;
+	virtual void DrawSubtitles(AegiVideoFrame &dst,double time) {}
 };
 
-#endif
+
+///////////
+// Factory
+class SubtitlesProviderFactory : public AegisubFactory<SubtitlesProviderFactory> {
+protected:
+	virtual SubtitlesProvider *CreateProvider()=0;
+	SubtitlesProviderFactory(wxString name) { RegisterFactory(name); }
+
+public:
+	virtual ~SubtitlesProviderFactory() {}
+	static SubtitlesProvider *GetProvider();
+};

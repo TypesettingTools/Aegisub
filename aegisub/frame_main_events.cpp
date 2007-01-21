@@ -256,7 +256,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	else if (curMenu == viewMenu) {
 		// Flags
 		bool aud = audioBox->audioDisplay->loaded;
-		bool vid = videoBox->videoDisplay->loaded;
+		bool vid = VideoContext::Get()->IsLoaded();
 
 		// Set states
 		MenuBar->Enable(Menu_View_Audio,aud);
@@ -272,7 +272,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// Video menu
 	else if (curMenu == videoMenu) {
-		bool state = videoBox->videoDisplay->loaded;
+		bool state = VideoContext::Get()->IsLoaded();
 
 		// Rebuild icons
 		RebuildMenuItem(videoMenu,Menu_Video_JumpTo,wxBITMAP(jumpto_button),wxBITMAP(jumpto_disable_button),state);
@@ -292,8 +292,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_235,state);
 		MenuBar->Enable(Menu_Video_AR_Custom,state);
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
-		MenuBar->Enable(Menu_Video_Close_Keyframes,videoBox->videoDisplay->OverKeyFramesLoaded());
-		MenuBar->Enable(Menu_Video_Save_Keyframes,videoBox->videoDisplay->KeyFramesLoaded());
+		MenuBar->Enable(Menu_Video_Close_Keyframes,VideoContext::Get()->OverKeyFramesLoaded());
+		MenuBar->Enable(Menu_Video_Save_Keyframes,VideoContext::Get()->KeyFramesLoaded());
 
 		// Set AR radio
 		int arType = videoBox->videoDisplay->GetAspectRatioType();
@@ -368,7 +368,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Audio menu
 	else if (curMenu == audioMenu) {
 		bool state = audioBox->loaded;
-		bool vidstate = videoBox->videoDisplay->loaded;
+		bool vidstate = VideoContext::Get()->IsLoaded();
 
 		MenuBar->Enable(Menu_Audio_Open_From_Video,vidstate);
 		MenuBar->Enable(Menu_Audio_Close,state);
@@ -408,7 +408,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(MENU_INSERT_AFTER,state);
 		MenuBar->Enable(MENU_SPLIT_BY_KARAOKE,state);
 		RebuildMenuItem(subtitlesMenu,MENU_DELETE,wxBITMAP(delete_button),wxBITMAP(delete_disable_button),state);
-		state2 = count > 0 && videoBox->videoDisplay->loaded;
+		state2 = count > 0 && VideoContext::Get()->IsLoaded();
 		MenuBar->Enable(MENU_INSERT_BEFORE_VIDEO,state2);
 		MenuBar->Enable(MENU_INSERT_AFTER_VIDEO,state2);
 		MenuBar->Enable(Menu_Subtitles_Insert,state);
@@ -435,7 +435,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		int count = sels.Count();
 
 		// Video related
-		bool state = videoBox->videoDisplay->loaded;
+		bool state = VideoContext::Get()->IsLoaded();
 		RebuildMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video,wxBITMAP(substart_to_video),wxBITMAP(substart_to_video_disable),state);
 		RebuildMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video,wxBITMAP(subend_to_video),wxBITMAP(subend_to_video_disable),state);
 		RebuildMenuItem(timingMenu,Menu_Video_Snap_To_Scene,wxBITMAP(snap_subs_to_scene),wxBITMAP(snap_subs_to_scene_disable),state);
@@ -617,7 +617,7 @@ void FrameMain::OnIRCChannel(wxCommandEvent& WXUNUSED(event)) {
 //////////////
 // Play video
 void FrameMain::OnVideoPlay(wxCommandEvent &event) {
-	videoBox->videoDisplay->Play();
+	VideoContext::Get()->Play();
 }
 
 
@@ -816,31 +816,31 @@ void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 ///////////////
 // Zoom levels
 void FrameMain::OnSetZoom50(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->zoomBox->SetSelection(3);
 	videoBox->videoDisplay->SetZoomPos(3);
 }
 
 void FrameMain::OnSetZoom100(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->zoomBox->SetSelection(7);
 	videoBox->videoDisplay->SetZoomPos(7);
 }
 
 void FrameMain::OnSetZoom200(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->zoomBox->SetSelection(15);
 	videoBox->videoDisplay->SetZoomPos(15);
 }
 
 void FrameMain::OnZoomIn (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->zoomBox->SetSelection(videoBox->videoDisplay->zoomBox->GetSelection()+1);
 	videoBox->videoDisplay->SetZoomPos(videoBox->videoDisplay->zoomBox->GetSelection());
 }
 
 void FrameMain::OnZoomOut (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	int selTo = videoBox->videoDisplay->zoomBox->GetSelection()-1;
 	if (selTo < 0) selTo = 0;
 	videoBox->videoDisplay->zoomBox->SetSelection(selTo);
@@ -856,8 +856,8 @@ void FrameMain::OnSetZoom(wxCommandEvent &event) {
 ///////////////////////
 // Open jump to dialog
 void FrameMain::OnJumpTo(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
-	if (videoBox->videoDisplay->loaded) {
+	VideoContext::Get()->Stop();
+	if (VideoContext::Get()->IsLoaded()) {
 		DialogJumpTo JumpTo(this,videoBox->videoDisplay);
 		JumpTo.ShowModal();
 		videoBox->videoSlider->SetFocus();
@@ -868,7 +868,7 @@ void FrameMain::OnJumpTo(wxCommandEvent& WXUNUSED(event)) {
 /////////////////////
 // Open shift dialog
 void FrameMain::OnShift(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogShiftTimes Shift(this,SubsBox,videoBox->videoDisplay);
 	Shift.ShowModal();
 }
@@ -877,7 +877,7 @@ void FrameMain::OnShift(wxCommandEvent& WXUNUSED(event)) {
 ///////////////////
 // Open properties
 void FrameMain::OnOpenProperties (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogProperties Properties(this, videoBox->videoDisplay);
 	int res = Properties.ShowModal();
 	if (res) {
@@ -889,7 +889,7 @@ void FrameMain::OnOpenProperties (wxCommandEvent &event) {
 ///////////////////////
 // Open styles manager
 void FrameMain::OnOpenStylesManager(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogStyleManager StyleManager(this,SubsBox);
 	StyleManager.ShowModal();
 	EditBox->UpdateGlobals();
@@ -900,7 +900,7 @@ void FrameMain::OnOpenStylesManager(wxCommandEvent& WXUNUSED(event)) {
 ////////////////////
 // Open attachments
 void FrameMain::OnOpenAttachments(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogAttachments attachments(this);
 	attachments.ShowModal();
 }
@@ -909,7 +909,7 @@ void FrameMain::OnOpenAttachments(wxCommandEvent& WXUNUSED(event)) {
 //////////////////////////////
 // Open translation assistant
 void FrameMain::OnOpenTranslation(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	int start = SubsBox->GetFirstSelRow();
 	if (start == -1) start = 0;
 	DialogTranslation Trans(this,AssFile::top,SubsBox,start,true);
@@ -920,7 +920,7 @@ void FrameMain::OnOpenTranslation(wxCommandEvent& WXUNUSED(event)) {
 //////////////////////
 // Open Spell Checker
 void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	wxMessageBox(_T("TODO!"),_T("Spellchecker"));
 }
 
@@ -928,7 +928,7 @@ void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 ////////////////////////
 // Open Fonts Collector
 void FrameMain::OnOpenFontsCollector (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogFontsCollector Collector(this);
 	Collector.ShowModal();
 }
@@ -937,7 +937,7 @@ void FrameMain::OnOpenFontsCollector (wxCommandEvent &event) {
 /////////////////////////////
 // Open Resolution Resampler
 void FrameMain::OnOpenResample (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogResample diag(this, SubsBox);
 	diag.ShowModal();
 }
@@ -975,7 +975,7 @@ void FrameMain::OnOpenOptions (wxCommandEvent &event) {
 ///////////////////
 // Open Automation
 void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogAutomation dlg(this, local_scripts);
 	dlg.ShowModal();
 }
@@ -996,7 +996,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 //////////////////////
 // Snap subs to video
 void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &event) {
-	if (videoBox->videoDisplay->loaded) {
+	if (VideoContext::Get()->IsLoaded()) {
 		wxArrayInt sel = SubsBox->GetSelection();
 		if (sel.Count() > 0) {
 			wxCommandEvent dummy;
@@ -1006,7 +1006,7 @@ void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &event) {
 }
 
 void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &event) {
-	if (videoBox->videoDisplay->loaded) {
+	if (VideoContext::Get()->IsLoaded()) {
 		wxArrayInt sel = SubsBox->GetSelection();
 		if (sel.Count() > 0) {
 			wxCommandEvent dummy;
@@ -1019,7 +1019,7 @@ void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &event) {
 //////////////////////
 // Jump video to subs
 void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &event) {
-	if (videoBox->videoDisplay->loaded) {
+	if (VideoContext::Get()->IsLoaded()) {
 		wxArrayInt sel = SubsBox->GetSelection();
 		if (sel.Count() > 0) {
 			wxCommandEvent dummy;
@@ -1029,7 +1029,7 @@ void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &event) {
 }
 
 void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &event) {
-	if (videoBox->videoDisplay->loaded) {
+	if (VideoContext::Get()->IsLoaded()) {
 		wxArrayInt sel = SubsBox->GetSelection();
 		if (sel.Count() > 0) {
 			wxCommandEvent dummy;
@@ -1042,14 +1042,14 @@ void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &event) {
 /////////////////
 // Snap to scene
 void FrameMain::OnSnapToScene (wxCommandEvent &event) {
-	if (videoBox->videoDisplay->loaded) {
+	if (VideoContext::Get()->IsLoaded()) {
 		// Get frames
 		wxArrayInt sel = SubsBox->GetSelection();
-		int curFrame = videoBox->videoDisplay->frame_n;
+		int curFrame = VideoContext::Get()->GetFrameN();
 		int prev = 0;
 		int next = 0;
 		int frame = 0;
-		wxArrayInt keyframes = videoBox->videoDisplay->GetKeyFrames();
+		wxArrayInt keyframes = VideoContext::Get()->GetKeyFrames();
 		size_t n = keyframes.Count();
 		bool found = false;
 		for (size_t i=0;i<n;i++) {
@@ -1058,7 +1058,7 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 			if (frame == curFrame) {
 				prev = frame;
 				if (i < n-1) next = keyframes[i+1];
-				else next = videoBox->videoDisplay->length;
+				else next = VideoContext::Get()->GetLength();
 				found = true;
 				break;
 			}
@@ -1076,7 +1076,7 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 		if (!found) {
 			if (n > 0) prev = keyframes[n-1];
 			else prev = 0;
-			next = videoBox->videoDisplay->length;
+			next = VideoContext::Get()->GetLength();
 		}
 
 		// Get times
@@ -1102,7 +1102,7 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 //////////////////
 // Shift to frame
 void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
-	if (videoBox->videoDisplay->loaded) {
+	if (VideoContext::Get()->IsLoaded()) {
 		// Get selection
 		wxArrayInt sels = SubsBox->GetSelection();
 		size_t n=sels.Count();
@@ -1111,7 +1111,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 		// Get shifting in ms
 		AssDialogue *cur = SubsBox->GetDialogue(sels[0]);
 		if (!cur) return;
-		int shiftBy = VFR_Output.GetTimeAtFrame(videoBox->videoDisplay->frame_n,true) - cur->Start.GetMS();
+		int shiftBy = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true) - cur->Start.GetMS();
 
 		// Update
 		for (size_t i=0;i<n;i++) {
@@ -1137,7 +1137,7 @@ void FrameMain::OnUndo(wxCommandEvent& WXUNUSED(event)) {
 	//wxWindow *focused = wxWindow::FindFocus();
 	//if (focused && focused->IsKindOf(CLASSINFO(wxTextCtrl))) return;
 
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	AssFile::StackPop();
 	SubsBox->LoadFromAss(AssFile::top,true);
 	AssFile::Popping = false;
@@ -1147,7 +1147,7 @@ void FrameMain::OnUndo(wxCommandEvent& WXUNUSED(event)) {
 ////////
 // Redo
 void FrameMain::OnRedo(wxCommandEvent& WXUNUSED(event)) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	AssFile::StackRedo();
 	SubsBox->LoadFromAss(AssFile::top,true);
 	AssFile::Popping = false;
@@ -1157,7 +1157,7 @@ void FrameMain::OnRedo(wxCommandEvent& WXUNUSED(event)) {
 ////////
 // Find
 void FrameMain::OnFind(wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	Search.OpenDialog(false);
 }
 
@@ -1165,7 +1165,7 @@ void FrameMain::OnFind(wxCommandEvent &event) {
 /////////////
 // Find next
 void FrameMain::OnFindNext(wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	Search.FindNext();
 }
 
@@ -1173,7 +1173,7 @@ void FrameMain::OnFindNext(wxCommandEvent &event) {
 //////////////////
 // Find & replace
 void FrameMain::OnReplace(wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	Search.OpenDialog(true);
 }
 
@@ -1181,7 +1181,7 @@ void FrameMain::OnReplace(wxCommandEvent &event) {
 //////////////////////////////////
 // Change aspect ratio to default
 void FrameMain::OnSetARDefault (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->SetAspectRatio(0);
 	SetDisplayMode(-1);
 }
@@ -1190,7 +1190,7 @@ void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 /////////////////////////////////////
 // Change aspect ratio to fullscreen
 void FrameMain::OnSetARFull (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->SetAspectRatio(1);
 	SetDisplayMode(-1);
 }
@@ -1199,7 +1199,7 @@ void FrameMain::OnSetARFull (wxCommandEvent &event) {
 /////////////////////////////////////
 // Change aspect ratio to widescreen
 void FrameMain::OnSetARWide (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->SetAspectRatio(2);
 	SetDisplayMode(-1);
 }
@@ -1208,7 +1208,7 @@ void FrameMain::OnSetARWide (wxCommandEvent &event) {
 ///////////////////////////////
 // Change aspect ratio to 2:35
 void FrameMain::OnSetAR235 (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->SetAspectRatio(3);
 	SetDisplayMode(-1);
 }
@@ -1218,7 +1218,7 @@ void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 // Change aspect ratio to a custom value
 void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Get text
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	
 	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),FloatToString(videoBox->videoDisplay->GetAspectRatioValue()));
 	if (value.IsEmpty()) return;
@@ -1248,7 +1248,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 			wxString denum = value.Mid(pos+1);
 			if (num.ToDouble(&a) && denum.ToDouble(&b) && b!=0) {
 				numval = a/b;
-				if (scale) videoBox->videoDisplay->SetZoom(b / videoBox->videoDisplay->h);
+				if (scale) videoBox->videoDisplay->SetZoom(b / VideoContext::Get()->GetHeight());
 			}
 		}
 		else numval = 0.0;
@@ -1269,7 +1269,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 // Window is attempted to be closed
 void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	// Stop audio and video
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	audioBox->audioDisplay->Stop();
 
 	// Ask user if he wants to save first
@@ -1326,7 +1326,7 @@ void FrameMain::OnPasteOver (wxCommandEvent &event) {
 ////////////////////////
 // Select visible lines
 void FrameMain::OnSelectVisible (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	SubsBox->SelectVisible();
 }
 
@@ -1334,7 +1334,7 @@ void FrameMain::OnSelectVisible (wxCommandEvent &event) {
 //////////////////////
 // Open select dialog
 void FrameMain::OnSelect (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogSelection select(this, SubsBox);
 	select.ShowModal();
 }
@@ -1365,7 +1365,7 @@ void FrameMain::OnSort (wxCommandEvent &event) {
 //////////////////////////
 // Open styling assistant
 void FrameMain::OnOpenStylingAssistant (wxCommandEvent &event) {
-	videoBox->videoDisplay->Stop();
+	VideoContext::Get()->Stop();
 	DialogStyling styling(this,SubsBox);
 	styling.ShowModal();
 }
@@ -1557,7 +1557,7 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 /////////////////
 // View standard
 void FrameMain::OnViewStandard (wxCommandEvent &event) {
-	if (!audioBox->audioDisplay->loaded || !videoBox->videoDisplay->loaded) return;
+	if (!audioBox->audioDisplay->loaded || !VideoContext::Get()->IsLoaded()) return;
 	SetDisplayMode(2);
 }
 
@@ -1565,7 +1565,7 @@ void FrameMain::OnViewStandard (wxCommandEvent &event) {
 //////////////
 // View video
 void FrameMain::OnViewVideo (wxCommandEvent &event) {
-	if (!videoBox->videoDisplay->loaded) return;
+	if (!VideoContext::Get()->IsLoaded()) return;
 	SetDisplayMode(1);
 }
 

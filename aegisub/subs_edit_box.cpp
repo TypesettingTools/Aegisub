@@ -267,7 +267,7 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 			if (!weak) audio->SetDialogue(grid,curdiag,linen);
 
 			// Video
-			video->curLine = curdiag;
+			VideoContext::Get()->curLine = curdiag;
 			video->UpdateSubsRelativeTime();
 		}
 		else enabled = false;
@@ -329,15 +329,15 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 	Update();
 
 	// Set video
-	if (video->loaded && !weak) {
+	if (VideoContext::Get()->IsLoaded() && !weak) {
 		wxString sync;
 		if (Search.hasFocus) sync = _T("Find update video");
 		else sync = _T("Sync video with subs");
 		
 		if (Options.AsBool(sync) == true) {
-			video->Stop();
+			VideoContext::Get()->Stop();
 			AssDialogue *cur = grid->GetDialogue(n);
-			if (cur) video->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
+			if (cur) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
 		}
 	}
 }

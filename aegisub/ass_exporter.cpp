@@ -124,9 +124,9 @@ wxArrayString AssExporter::GetAllFilterNames() {
 }
 
 
-//////////
-// Export
-void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_dialog) {
+////////////////////////
+// Transform for export
+AssFile *AssExporter::ExportTransform(wxWindow *export_dialog) {
 	// Copy
 	AssFile *Subs = new AssFile(*OriginalSubs);
 
@@ -136,20 +136,16 @@ void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_d
 		(*cur)->ProcessSubs(Subs, export_dialog);
 	}
 
-	/*
-	// Set charset
-	bool withCharset = !IsDefault;
-	wxString charset = _T("");
-	if (withCharset) {
-		wxArrayString choices = FrameMain::GetEncodings();
-		charset = wxGetSingleChoice(_T("Choose charset code:"), _T("Charset"),choices,NULL,-1, -1,true,250,200);
-		if (charset.IsEmpty()) {
-			delete Subs;
-			return;
-		}
-	}
-	*/
-	// *FIXME* (or is it?) We assume charset argument is valid here
+	// Done
+	return Subs;
+}
+
+
+//////////
+// Export
+void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_dialog) {
+	// Get transformation
+	AssFile *Subs = ExportTransform(export_dialog);
 
 	// Save
 	Subs->Save(filename,false,false,charset);

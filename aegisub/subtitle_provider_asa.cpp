@@ -36,8 +36,8 @@
 
 ///////////
 // Headers
+#include "setup.h"
 #ifdef HAVE_ASA
-
 #include <wx/wxprec.h>
 #include <wx/image.h>
 #include "subtitle_provider.h"

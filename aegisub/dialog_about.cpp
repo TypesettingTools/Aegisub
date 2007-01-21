@@ -78,6 +78,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += _T("asa - Copyright (c) 2004-2007, David Lamparter;\n");
 #endif
 	libString += _T("MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada\n");
+	libString += _T("Matroska Parser and VideoSink - Copyright (c) 2004-2007 Mike Matsnev\n");
 
 	// Generate about string
 	wxString aboutString;
@@ -88,13 +89,13 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("Automation - Copyright (c) 2005-2007 Niels Martin Hansen (aka jfs).\n");
 	aboutString += _T("Motion Tracker - Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n");
 	aboutString += _("Programmers: ");
-	aboutString += _T(" ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle, Yuvi,\n     Azzy, Pomyk, Motoko-chan, Dansolo.\n");
+	aboutString += _T(" ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle, Yuvi,\n     Azzy, Pomyk, Motoko-chan, Dansolo, Haali.\n");
 	aboutString += _("Manual by: ");
 	aboutString += _T("ArchMage ZeratuL, jfs, movax, Kobi, TheFluff, Jcubed.\n");
 	aboutString += _("Forum, wiki and bug tracker hosting by: ");
 	aboutString += _T("Bot1.\n");
 	aboutString += _("SVN hosting by: ");
-	aboutString += _T("BerliOS, Mentar.\n");
+	aboutString += _T("equinox, BerliOS, Mentar.\n");
 	aboutString += translatorCredit;
 	aboutString += _T("\n") + libString;
 	aboutString += _("\nSee the help file for full credits.\n");

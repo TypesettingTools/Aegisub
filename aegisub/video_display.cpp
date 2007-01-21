@@ -42,6 +42,7 @@
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
 #include <wx/config.h>
+#include <GL/glu.h>
 #include "utils.h"
 #include "video_display.h"
 #include "video_display_visual.h"
@@ -60,11 +61,7 @@
 #include "main.h"
 #include "video_slider.h"
 #include "video_box.h"
-#if USE_FEXTRACKER == 1
-#include "../FexTrackerSource/FexTracker.h"
-#include "../FexTrackerSource/FexTrackingFeature.h"
-#include "../FexTrackerSource/FexMovement.h"
-#endif
+#include "video_display_fextracker.h"
 
 
 ///////
@@ -73,19 +70,17 @@ enum {
 	VIDEO_MENU_COPY_TO_CLIPBOARD = 1230,
 	VIDEO_MENU_COPY_COORDS,
 	VIDEO_MENU_SAVE_SNAPSHOT,
-	VIDEO_PLAY_TIMER
 };
 
 
 ///////////////
 // Event table
-BEGIN_EVENT_TABLE(VideoDisplay, wxWindow)
-    EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
+BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
+	EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
 	EVT_KEY_DOWN(VideoDisplay::OnKey)
 	EVT_LEAVE_WINDOW(VideoDisplay::OnMouseLeave)
-    EVT_PAINT(VideoDisplay::OnPaint)
-
-	EVT_TIMER(VIDEO_PLAY_TIMER,VideoDisplay::OnPlayTimer)
+	EVT_PAINT(VideoDisplay::OnPaint)
+	EVT_ERASE_BACKGROUND(VideoDisplay::OnEraseBackground)
 
 	EVT_MENU(VIDEO_MENU_COPY_TO_CLIPBOARD,VideoDisplay::OnCopyToClipboard)
 	EVT_MENU(VIDEO_MENU_SAVE_SNAPSHOT,VideoDisplay::OnSaveSnapshot)
@@ -96,183 +91,145 @@ END_EVENT_TABLE()
 ///////////////
 // Constructor
 VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-             : wxWindow (parent, id, pos, size, style, name)
+: wxGLCanvas (parent, id, NULL, pos, size, style, name)
 {
-	audio = NULL;
-	provider = NULL;
-	curLine = NULL;
+	// Set options
 	ControlSlider = NULL;
 	PositionDisplay = NULL;
-	loaded = false;
-	keyFramesLoaded = false;
-	overKeyFramesLoaded = false;
-	frame_n = 0;
 	origSize = size;
 	arType = 0;
-	IsPlaying = false;
-	threaded = Options.AsBool(_T("Threaded Video"));
-	nextFrame = -1;
-	zoomValue = 0.5;
+	arValue = 1.0;
+	zoomValue = 1.0;
 	visual = new VideoDisplayVisual(this);
+	tracker = NULL;
+#if USE_FEXTRACKER == 1
+	tracker = new VideoDisplayFexTracker(this);
+#endif
+	SetCursor(wxNullCursor);
 }
 
 
 //////////////
 // Destructor
 VideoDisplay::~VideoDisplay () {
-	wxRemoveFile(tempfile);
-	tempfile = _T("");
-	SetVideo(_T(""));
 	delete visual;
+#if USE_FEXTRACKER == 1
+	delete tracker;
+#endif
+	VideoContext::Get()->RemoveDisplay(this);
 }
 
-void  VideoDisplay::UpdateSize() {
-	if (provider) {
-		w = provider->GetWidth();
-		h = provider->GetHeight();
 
-		// Set the size for this control
-		SetSizeHints(w,h,w,h);
-		SetClientSize(w,h);
-		int _w,_h;
-		GetSize(&_w,&_h);
-		SetSizeHints(_w,_h,_w,_h);
+//////////
+// Render
+void VideoDisplay::Render() {
+	// Is shown?
+	if (!GetParent()->IsShown()) return;
 
-		box->VideoSizer->Fit(box);
+	// Set GL context
+	VideoContext *context = VideoContext::Get();
+	SetCurrent(*context->GetGLContext(this));
+
+	// Get sizes
+	int w,h,sw,sh,pw,ph;
+	GetClientSize(&w,&h);
+	context->GetScriptSize(sw,sh);
+	pw = context->GetWidth();
+	ph = context->GetHeight();
+
+	// Set viewport
+	glEnable(GL_TEXTURE_2D);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0,0,w,h);
+	glOrtho(0.0f,sw,sh,0.0f,-1000.0f,1000.0f);
+	glMatrixMode(GL_MODELVIEW);
+
+	// Texture mode
+	if (w != pw || h != ph) {
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	}
+	else {
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	}
+
+	// Texture coordinates
+	float top = 0.0f;
+	float bot = context->GetTexH();
+	if (context->IsInverted()) {
+		top = context->GetTexH();
+		bot = 0.0f;
+	}
+	float left = 0.0;
+	float right = context->GetTexW();
+
+	// Draw interleaved frame or luma of YV12
+	glDisable(GL_BLEND);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	glBegin(GL_QUADS);
+		// Top-left
+		glTexCoord2f(left,top);
+		glVertex2f(0,0);
+		// Top-right
+		glTexCoord2f(right,top);
+		glVertex2f(sw,0);
+		// Bottom-right
+		glTexCoord2f(right,bot);
+		glVertex2f(sw,sh);
+		// Bottom-left
+		glTexCoord2f(left,bot);
+		glVertex2f(0,sh);
+	glEnd();
+
+	// Draw UV planes
+	if (context->GetFormat() == FORMAT_YV12) {
+
+	}
+
+	// Draw overlay
+	visual->DrawOverlay();
+
+	// Swap buffers
+	SwapBuffers();
+}
+
+
+///////////////
+// Update size
+void VideoDisplay::UpdateSize() {
+	// Get size
+	if (arType == 0) w = VideoContext::Get()->GetWidth() * zoomValue;
+	else w = VideoContext::Get()->GetHeight() * zoomValue * arValue;
+	h = VideoContext::Get()->GetHeight() * zoomValue;
+	int _w,_h;
+
+	// Set the size for this control
+	SetSizeHints(w,h,w,h);
+	SetClientSize(w,h);
+	GetSize(&_w,&_h);
+	SetSizeHints(_w,_h,_w,_h);
+	box->VideoSizer->Fit(box);
+
+	// Layout
+	box->GetParent()->Layout();
+	SetClientSize(w,h);
+
+	// Refresh
+	Refresh(false);
 }
 
 
 //////////
 // Resets
 void VideoDisplay::Reset() {
-	w = origSize.GetX();
-	h = origSize.GetY();
+	int w = origSize.GetX();
+	int h = origSize.GetY();
 	SetClientSize(w,h);
 	int _w,_h;
 	GetSize(&_w,&_h);
 	SetSizeHints(_w,_h,_w,_h);
-
-	KeyFrames.Clear();
-	keyFramesLoaded = false;
-
-	// Remove temporary audio provider
-	if (audio && audio->temporary) {
-		delete audio->provider;
-		audio->provider = NULL;
-		delete audio->player;
-		audio->player = NULL;
-		audio->temporary = false;
-	}
-}
-
-
-///////////////////////
-// Sets video filename
-void VideoDisplay::SetVideo(const wxString &filename) {
-	// Unload video
-	delete provider;
-	provider = NULL;
-	//if (VFR_Output.GetFrameRateType() == VFR) VFR_Output.Unload();
-	//VFR_Input.Unload();
-	videoName = _T("");
-	loaded = false;
-	frame_n = 0;
-	Reset();
-	
-	// Load video
-	if (!filename.IsEmpty()) {
-		try {
-			grid->CommitChanges(true);
-			bool isVfr = false;
-			double overFps = 0;
-			FrameRate temp;
-
-			// Unload timecodes
-			//int unload = wxYES;
-			//if (VFR_Output.IsLoaded()) unload = wxMessageBox(_("Do you want to unload timecodes, too?"),_("Unload timecodes?"),wxYES_NO | wxICON_QUESTION);
-			//if (unload == wxYES) VFR_Output.Unload();
-
-			// Read extra data from file
-			bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
-			wxString ext = filename.Right(4).Lower();
-			KeyFrames.Clear();
-			if (ext == _T(".mkv") || mkvOpen) {
-				// Parse mkv
-				if (!mkvOpen) MatroskaWrapper::wrapper.Open(filename);
-
-				// Get keyframes
-				KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
-				keyFramesLoaded = true;
-
-				// Ask to override timecodes
-				int override = wxYES;
-				if (VFR_Output.IsLoaded()) override = wxMessageBox(_("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
-				if (override == wxYES) {
-					MatroskaWrapper::wrapper.SetToTimecodes(temp);
-					isVfr = temp.GetFrameRateType() == VFR;
-					if (isVfr) {
-						overFps = temp.GetCommonFPS();
-						MatroskaWrapper::wrapper.SetToTimecodes(VFR_Input);
-	 					MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
-					}
-				}
-
-				// Close mkv
-				MatroskaWrapper::wrapper.Close();
-			}
-#ifdef __WINDOWS__
-			else if (ext == _T(".avi")) {
-				KeyFrames = VFWWrapper::GetKeyFrames(filename);
-				keyFramesLoaded = true;
-			}
-#endif
-
-			// Choose a provider
-			provider = VideoProvider::GetProvider(filename,GetTempWorkFile(),overFps);
-			if (isVfr) provider->OverrideFrameTimeList(temp.GetFrameTimeList());
-			provider->SetZoom(zoomValue);
-			if (arType != 4) arValue = GetARFromType(arType); // 4 = custom
-			provider->SetDAR(arValue);
-
-			// Update size
-			UpdateSize();
-
-			//Gather video parameters
-			length = provider->GetFrameCount();
-			fps = provider->GetFPS();
-			if (!isVfr) {
-				VFR_Input.SetCFR(fps);
-				if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
-			}
-
-			// Set range of slider
-			ControlSlider->SetRange(0,length-1);
-			ControlSlider->SetValue(0);
-
-			videoName = filename;
-
-			// Add to recent
-			Options.AddToRecentList(filename,_T("Recent vid"));
-
-			RefreshVideo();
-			UpdatePositionDisplay();
-		}
-		
-		catch (wxString &e) {
-			wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
-		}
-	}
-
-	loaded = provider != NULL;
-}
-
-
-/////////////////////
-// Refresh subtitles
-void VideoDisplay::RefreshSubtitles() {
-	provider->RefreshSubtitles();
-	RefreshVideo();
 }
 
 
@@ -282,7 +239,7 @@ void VideoDisplay::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 
 	// Draw frame
-	if (provider) dc.DrawBitmap(GetFrame(frame_n),0,0);
+	Render();
 }
 
 
@@ -290,7 +247,7 @@ void VideoDisplay::OnPaint(wxPaintEvent& event) {
 // Mouse stuff
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Disable when playing
-	if (IsPlaying) return;
+	if (VideoContext::Get()->IsPlaying()) return;
 
 	if (event.Leaving()) {
 		// OnMouseLeave isn't called as long as we have an OnMouseEvent
@@ -331,42 +288,9 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 //////////////////////
 // Mouse left display
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
-	if (IsPlaying) return;
-
-	bTrackerEditing = 0;
-
-	RefreshVideo();
-}
-
-
-///////////////////////////////////////
-// Jumps to a frame and update display
-void VideoDisplay::JumpToFrame(int n) {
-	// Loaded?
-	if (!loaded) return;
-
-	// Prevent intervention during playback
-	if (IsPlaying && n != PlayNextFrame) return;
-
-	// Set frame
-	GetFrame(n);
-
-	// Display
-	RefreshVideo();
-	UpdatePositionDisplay();
-
-	// Update slider
-	ControlSlider->SetValue(n);
-
-	// Update grid
-	if (!IsPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
-}
-
-
-////////////////////////////
-// Jumps to a specific time
-void VideoDisplay::JumpToTime(int ms) {
-	JumpToFrame(VFR_Output.GetFrameAtTime(ms));
+	if (VideoContext::Get()->IsPlaying()) return;
+	visual->OnMouseEvent(event);
+	tracker->bTrackerEditing = 0;
 }
 
 
@@ -374,12 +298,7 @@ void VideoDisplay::JumpToTime(int ms) {
 // Sets zoom level
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = value;
-	if (provider) {
-		provider->SetZoom(value);
-		UpdateSize();
-		RefreshVideo();
-		box->GetParent()->Layout();
-	}
+	UpdateSize();
 }
 
 
@@ -396,7 +315,7 @@ void VideoDisplay::SetZoomPos(int value) {
 //////////////////////////
 // Calculate aspect ratio
 double VideoDisplay::GetARFromType(int type) {
-	if (type == 0) return (double)provider->GetSourceWidth()/(double)provider->GetSourceHeight();
+	if (type == 0) return (double)VideoContext::Get()->GetWidth()/(double)VideoContext::Get()->GetHeight();
 	if (type == 1) return 4.0/3.0;
 	if (type == 2) return 16.0/9.0;
 	if (type == 3) return 2.35;
@@ -407,20 +326,15 @@ double VideoDisplay::GetARFromType(int type) {
 /////////////////////
 // Sets aspect ratio
 void VideoDisplay::SetAspectRatio(int _type, double value) {
-	if (provider) {
-		// Get value
-		if (_type != 4) value = GetARFromType(_type);
-		if (value < 0.5) value = 0.5;
-		if (value > 5.0) value = 5.0;
+	// Get value
+	if (_type != 4) value = GetARFromType(_type);
+	if (value < 0.5) value = 0.5;
+	if (value > 5.0) value = 5.0;
 
-		// Set
-		provider->SetDAR(value);
-		arType = _type;
-		arValue = value;
-		UpdateSize();
-		RefreshVideo();
-		GetParent()->Layout();
-	}
+	// Set
+	arType = _type;
+	arValue = value;
+	UpdateSize();
 }
 
 
@@ -433,6 +347,7 @@ void VideoDisplay::UpdatePositionDisplay() {
 	}
 
 	// Get time
+	int frame_n = VideoContext::Get()->GetFrameN();
 	int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
 	int temp = time;
 	int h=0, m=0, s=0, ms=0;
@@ -452,7 +367,7 @@ void VideoDisplay::UpdatePositionDisplay() {
 
 	// Position display update
 	PositionDisplay->SetValue(wxString::Format(_T("%01i:%02i:%02i.%03i - %i"),h,m,s,ms,frame_n));
-	if (GetKeyFrames().Index(frame_n) != wxNOT_FOUND) {
+	if (VideoContext::Get()->GetKeyFrames().Index(frame_n) != wxNOT_FOUND) {
 		PositionDisplay->SetBackgroundColour(Options.AsColour(_T("Grid selection background")));
 		PositionDisplay->SetForegroundColour(Options.AsColour(_T("Grid selection foreground")));
 	}
@@ -473,6 +388,8 @@ void VideoDisplay::UpdateSubsRelativeTime() {
 	wxString startSign;
 	wxString endSign;
 	int startOff,endOff;
+	int frame_n = VideoContext::Get()->GetFrameN();
+	AssDialogue *curLine = VideoContext::Get()->curLine;
 
 	// Set start/end
 	if (curLine) {
@@ -500,7 +417,7 @@ void VideoDisplay::UpdateSubsRelativeTime() {
 // Copy to clipboard
 void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(GetFrame(frame_n)));
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1).GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }
@@ -509,39 +426,7 @@ void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 /////////////////
 // Save snapshot
 void VideoDisplay::OnSaveSnapshot(wxCommandEvent &event) {
-	SaveSnapshot();
-}
-
-void VideoDisplay::SaveSnapshot() {
-	// Get folder
-	wxString option = Options.AsText(_("Video Screenshot Path"));
-	wxFileName videoFile(videoName);
-	wxString basepath;
-	if (option == _T("?video")) {
-		basepath = videoFile.GetPath();
-	}
-	else if (option == _T("?script")) {
-		if (grid->ass->filename.IsEmpty()) basepath = videoFile.GetPath();
-		else {
-			wxFileName file2(grid->ass->filename);
-			basepath = file2.GetPath();
-		}
-	}
-	else basepath = DecodeRelativePath(option,((AegisubApp*)wxTheApp)->folderName);
-	basepath += _T("/") + videoFile.GetName();
-
-	// Get full path
-	int session_shot_count = 1;
-	wxString path;
-	while (1) {
-		path = basepath + wxString::Format(_T("_%03i_%i.png"),session_shot_count,frame_n);
-		++session_shot_count;
-		wxFileName tryPath(path);
-		if (!tryPath.FileExists()) break;
-	}
-
-	// Save
-	GetFrame(frame_n).ConvertToImage().SaveFile(path,wxBITMAP_TYPE_PNG);
+	VideoContext::Get()->SaveSnapshot();
 }
 
 
@@ -550,7 +435,7 @@ void VideoDisplay::SaveSnapshot() {
 void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
-		GetScriptSize(sw,sh);
+		VideoContext::Get()->GetScriptSize(sw,sh);
 		int vx = (sw * visual->mouseX + w/2) / w;
 		int vy = (sh * visual->mouseY + h/2) / h;
 		wxTheClipboard->SetData(new wxTextDataObject(wxString::Format(_T("%i,%i"),vx,vy)));
@@ -560,215 +445,18 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 
 
 //////////////////
-// Refresh screen
-void VideoDisplay::RefreshVideo() {
-	// Draw frame
-	wxClientDC dc(this);
-	dc.DrawBitmap(GetFrame(),0,0);
-
-	// Draw the control points for FexTracker
-	visual->DrawTrackingOverlay(dc);
-}
-
-
-//////////////////
 // DrawVideoWithOverlay
 void VideoDisplay::DrawText( wxPoint Pos, wxString text ) {
-	// Draw frame
-	wxClientDC dc(this);
-	dc.SetBrush(wxBrush(wxColour(128,128,128),wxSOLID));
-	dc.DrawRectangle( 0,0, provider->GetWidth(), provider->GetHeight() );
-	dc.SetTextForeground(wxColour(64,64,64));
-	dc.DrawText(text,Pos.x+1,Pos.y-1);
-	dc.DrawText(text,Pos.x+1,Pos.y+1);
-	dc.DrawText(text,Pos.x-1,Pos.y-1);
-	dc.DrawText(text,Pos.x-1,Pos.y+1);
-	dc.SetTextForeground(wxColour(255,255,255));
-	dc.DrawText(text,Pos.x,Pos.y);
+	//// Draw frame
+	//wxClientDC dc(this);
+	//dc.SetBrush(wxBrush(wxColour(128,128,128),wxSOLID));
+	//dc.DrawRectangle( 0,0, provider->GetWidth(), provider->GetHeight() );
+	//dc.SetTextForeground(wxColour(64,64,64));
+	//dc.DrawText(text,Pos.x+1,Pos.y-1);
+	//dc.DrawText(text,Pos.x+1,Pos.y+1);
+	//dc.DrawText(text,Pos.x-1,Pos.y-1);
+	//dc.DrawText(text,Pos.x-1,Pos.y+1);
+	//dc.SetTextForeground(wxColour(255,255,255));
+	//dc.DrawText(text,Pos.x,Pos.y);
 }
 
-
-////////////////////////
-// Requests a new frame
-wxBitmap VideoDisplay::GetFrame(int n) {
-	frame_n = n;
-	return provider->GetFrame(n);
-	RefreshVideo();
-}
-
-
-////////////////////////////
-// Get dimensions of script
-void VideoDisplay::GetScriptSize(int &sw,int &sh) {
-	grid->ass->GetResolution(sw,sh);
-}
-
-
-////////
-// Play
-void VideoDisplay::Play() {
-	// Stop if already playing
-	if (IsPlaying) {
-		Stop();
-		return;
-	}
-
-	// Set variables
-	IsPlaying = true;
-	StartFrame = frame_n;
-	EndFrame = -1;
-
-	// Start playing audio
-	audio->Play(VFR_Output.GetTimeAtFrame(StartFrame),-1);
-
-	// Start timer
-	StartTime = clock();
-	PlayTime = StartTime;
-	Playback.SetOwner(this,VIDEO_PLAY_TIMER);
-	Playback.Start(1);
-}
-
-
-/////////////
-// Play line
-void VideoDisplay::PlayLine() {
-	// Get line
-	AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
-	if (!curline) return;
-
-	// Start playing audio
-	audio->Play(curline->Start.GetMS(),curline->End.GetMS());
-
-	// Set variables
-	IsPlaying = true;
-	StartFrame = VFR_Output.GetFrameAtTime(curline->Start.GetMS(),true);
-	EndFrame = VFR_Output.GetFrameAtTime(curline->End.GetMS(),false);
-
-	// Jump to start
-	PlayNextFrame = StartFrame;
-	JumpToFrame(StartFrame);
-
-	// Set other variables
-	StartTime = clock();
-	PlayTime = StartTime;
-
-	// Start timer
-	Playback.SetOwner(this,VIDEO_PLAY_TIMER);
-	Playback.Start(1);
-}
-
-
-////////
-// Stop
-void VideoDisplay::Stop() {
-	if (IsPlaying) {
-		Playback.Stop();
-		IsPlaying = false;
-		audio->Stop();
-	}
-}
-
-
-//////////////
-// Play timer
-void VideoDisplay::OnPlayTimer(wxTimerEvent &event) {
-	// Get time difference
-	clock_t cur = clock();
-	int dif = (clock() - StartTime)*1000/CLOCKS_PER_SEC;
-	if (!dif) return;
-	PlayTime = cur;
-
-	// Find next frame
-	int startMs = VFR_Output.GetTimeAtFrame(StartFrame);
-	int nextFrame = frame_n;
-	for (int i=0;i<10;i++) {
-		if (nextFrame >= length) break;
-		if (dif < VFR_Output.GetTimeAtFrame(nextFrame) - startMs) {
-			break;
-		}
-		nextFrame++;
-	}
-
-	// Same frame
-	if (nextFrame == frame_n) return;
-
-	// End
-	if (nextFrame >= length || (EndFrame != -1 && nextFrame > EndFrame)) {
-		Stop();
-		return;
-	}
-
-	// Next frame is before or over 2 frames ahead, so force audio resync
-	if (nextFrame < frame_n || nextFrame > frame_n + 2) audio->player->SetCurrentPosition(audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame)));
-
-	// Jump to next frame
-	PlayNextFrame = nextFrame;
-	JumpToFrame(nextFrame);
-
-	// Sync audio
-	if (nextFrame % 10 == 0) {
-		__int64 audPos = audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame));
-		__int64 curPos = audio->player->GetCurrentPosition();
-		int delta = int(audPos-curPos);
-		if (delta < 0) delta = -delta;
-		int maxDelta = audio->provider->GetSampleRate();
-		if (delta > maxDelta) audio->player->SetCurrentPosition(audPos);
-	}
-}
-
-
-//////////////////////////////
-// Get name of temp work file
-wxString VideoDisplay::GetTempWorkFile () {
-	if (tempfile.IsEmpty()) {
-		tempfile = wxFileName::CreateTempFileName(_T("aegisub"));
-		wxRemoveFile(tempfile);
-		tempfile += _T(".ass");
-	}
-	return tempfile;
-}
-
-
-/////////////////
-// Get keyframes
-wxArrayInt VideoDisplay::GetKeyFrames() {
-	if (OverKeyFramesLoaded()) return overKeyFrames;
-	return KeyFrames;
-}
-
-
-/////////////////
-// Set keyframes
-void VideoDisplay::SetKeyFrames(wxArrayInt frames) {
-	KeyFrames = frames;
-}
-
-
-/////////////////////////
-// Set keyframe override
-void VideoDisplay::SetOverKeyFrames(wxArrayInt frames) {
-	overKeyFrames = frames;
-	overKeyFramesLoaded = true;
-}
-
-
-///////////////////
-// Close keyframes
-void VideoDisplay::CloseOverKeyFrames() {
-	overKeyFrames.Clear();
-	overKeyFramesLoaded = false;
-}
-
-
-//////////////////////////////////////////
-// Check if override keyframes are loaded
-bool VideoDisplay::OverKeyFramesLoaded() {
-	return overKeyFramesLoaded;
-}
-
-
-/////////////////////////////////
-// Check if keyframes are loaded
-bool VideoDisplay::KeyFramesLoaded() {
-	return overKeyFramesLoaded || keyFramesLoaded;
-}
