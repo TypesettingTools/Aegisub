@@ -303,6 +303,7 @@ void VideoDisplayVisual::DrawOverlay() {
 						// Rotate XY
 						if (mode == 3) {
 							// Transform grid
+							glMatrixMode(GL_MODELVIEW);
 							glPushMatrix();
 							glLoadIdentity();
 							glTranslatef(dx,dy,0.0f);
