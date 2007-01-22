@@ -53,7 +53,7 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
 
 	// None available
-	if (list.Count() == 0) throw _T("No video providers are available.");
+	if (list.Count() == 0) throw _T("No subtitle providers are available.");
 
 	// Get provider
 	wxString error;
