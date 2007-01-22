@@ -189,7 +189,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &evt)
 		fnfilter = _T("All supported scripts|") + catchall + _T("|") + fnfilter;
 	}
 
-	wxString fname = wxFileSelector(_("Add Automation script"), Options.AsText(_T("Last open automation path")), wxEmptyString, wxEmptyString, fnfilter, wxOPEN|wxFILE_MUST_EXIST, this);
+	wxString fname = wxFileSelector(_("Add Automation script"), Options.AsText(_T("Last open automation path")), wxEmptyString, wxEmptyString, fnfilter, wxFD_OPEN|wxFD_FILE_MUST_EXIST, this);
 
 	if (!fname.IsEmpty()) {
 

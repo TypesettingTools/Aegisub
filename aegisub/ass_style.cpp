@@ -405,11 +405,11 @@ void AssStyle::UpdateData() {
 
 
 	final = wxString::Format(_T("Style: %s,%s,%.0f,%s,%s,%s,%s,%d,%d,%d,%d,%.0f,%.0f,%.0f,%.0f,%d,%.0f,%.0f,%i,%i,%i,%i,%i"),
-					  name, font, fontsize,
-					  primary.GetASSFormatted(true,false,true),
-					  secondary.GetASSFormatted(true,false,true),
-					  outline.GetASSFormatted(true,false,true),
-					  shadow.GetASSFormatted(true,false,true),
+					  name.c_str(), font.c_str(), fontsize,
+					  primary.GetASSFormatted(true,false,true).c_str(),
+					  secondary.GetASSFormatted(true,false,true).c_str(),
+					  outline.GetASSFormatted(true,false,true).c_str(),
+					  shadow.GetASSFormatted(true,false,true).c_str(),
 					  (bold? -1 : 0), (italic ? -1 : 0),
 					  (underline?-1:0),(strikeout?-1:0),
 					  scalex,scaley,spacing,angle,

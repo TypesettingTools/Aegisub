@@ -648,7 +648,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 		VideoContext::Get()->Stop();
 		wxString path = Options.AsText(_T("Last open subtitles path"));
 		wxFileName origPath(AssFile::top->filename);
-		filename = 	wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),AssFile::GetWildcardList(1),wxSAVE | wxOVERWRITE_PROMPT,this);
+		filename = 	wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),AssFile::GetWildcardList(1),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
 	}
 
 	// Actually save

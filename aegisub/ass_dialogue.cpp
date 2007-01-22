@@ -430,7 +430,9 @@ void AssDialogue::ParseSRTTags () {
 			}
 
 			// Replace whole tag
-			Text = Text.substr(0,start) + replaced + Text.substr(end);
+			//Text = Text.substr(0,start) + replaced + Text.substr(end);
+			Text = Text.substr(0, start);
+			Text << replaced << Text.substr(end);
 			total++;
 		}
 
@@ -453,7 +455,9 @@ void AssDialogue::ParseSRTTags () {
 			replaced += _T("}");
 
 			// Replace
-			Text = Text.substr(0,start) + replaced + Text.substr(end);
+			//Text = Text.substr(0,start) + replaced + Text.substr(end);
+			Text = Text.substr(0, start);
+			Text << replaced << Text.substr(end);
 			total++;
 		}
 

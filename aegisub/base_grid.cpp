@@ -938,7 +938,7 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	GetClientSize(&w,&h);
 
 	// Get scan code
-	int key = event.KeyCode();
+	int key = event.GetKeyCode();
 	bool ctrl = event.m_controlDown;
 	bool alt = event.m_altDown;
 	bool shift = event.m_shiftDown;
@@ -965,11 +965,11 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	int step = 1;
 	if (key == WXK_UP) dir = -1;
 	if (key == WXK_DOWN) dir = 1;
-	if (key == WXK_PRIOR) {
+	if (key == WXK_PAGEUP) {
 		dir = -1;
 		step = h/lineHeight - 2;
 	}
-	if (key == WXK_NEXT) {
+	if (key == WXK_PAGEDOWN) {
 		dir = 1;
 		step = h/lineHeight - 2;
 	}

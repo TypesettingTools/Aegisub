@@ -238,7 +238,7 @@ wxString TextFileReader::ReadLineFromFile() {
 	wxString final = wxString(wxbuffer);
 
 	// Remove BOM
-	if (final[0] == 0xFEFF) {
+	if (final.length() > 0 && final[0] == 0xFEFF) {
 		final = final.Mid(1);
 	}
 

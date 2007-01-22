@@ -500,7 +500,6 @@ namespace Automation4 {
 			if (!path.IsOk()) continue;
 			if (path.IsRelative()) continue;
 			if (!path.DirExists()) continue;
-			if (include_path.Member(path.GetLongPath())) continue;
 			include_path.Add(path.GetLongPath());
 		}
 	}

@@ -222,7 +222,7 @@ void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
 	// Chose file name
 	if (ArchiveCheck->IsChecked()) {
 		wxFileName fname(DestBox->GetValue());
-		wxString dest = wxFileSelector(_("Select archive file name"),DestBox->GetValue(),fname.GetFullName(),_T(".zip"),_T("Zip Archives (*.zip)|*.zip"),wxSAVE|wxOVERWRITE_PROMPT);
+		wxString dest = wxFileSelector(_("Select archive file name"),DestBox->GetValue(),fname.GetFullName(),_T(".zip"),_T("Zip Archives (*.zip)|*.zip"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 		if (!dest.empty()) {
 			DestBox->SetValue(dest);
 		}

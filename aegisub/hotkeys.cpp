@@ -171,8 +171,8 @@ void HotkeyType::FillMap() {
 		keyName[WXK_DELETE] = _T("Delete");
 		keyName[WXK_HOME] = _T("Home");
 		keyName[WXK_END] = _T("End");
-		keyName[WXK_PRIOR] = _T("PgUp");
-		keyName[WXK_NEXT] = _T("PgDn");
+		keyName[WXK_PAGEUP] = _T("PgUp");
+		keyName[WXK_PAGEDOWN] = _T("PgDn");
 		
 		keyName[WXK_NUMPAD0] = _T("KP_0");
 		keyName[WXK_NUMPAD1] = _T("KP_1");

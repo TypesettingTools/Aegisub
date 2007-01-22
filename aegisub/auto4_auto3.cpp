@@ -594,7 +594,7 @@ continue_invalid_option:
 					break;
 			}
 		}
-		if (result.Last() == _T('|'))
+		if (!result.IsEmpty() && result.Last() == _T('|'))
 			result.RemoveLast();
 		return result;
 	}
@@ -660,15 +660,19 @@ continue_invalid_option:
 			throw _T("Script error: No 'process_lines' function provided");
 		}
 
-		// configuration (let the config object do all the loading)
-		lua_getglobal(L, "configuration");
-		config = new Auto3ConfigDialog(L, GetName());
-
 		lua_pop(L, 2);
 	}
 
 	ScriptConfigDialog* Auto3Filter::GenerateConfigDialog(wxWindow *parent)
 	{
+		// configuration (let the config object do all the loading)
+		lua_getglobal(L, "configuration");
+		config = new Auto3ConfigDialog(L, GetName());
+
+		wxString opthname = wxString::Format(_T("Automation Settings %s"), GetName().c_str());
+		wxString serialized = AssFile::top->GetScriptInfo(opthname);
+		config->unserialize(serialized);
+
 		return config;
 	}
 

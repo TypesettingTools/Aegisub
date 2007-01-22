@@ -725,7 +725,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &event) {
 void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
 	// Get file name
 	wxString path = Options.AsText(_T("Last open subtitles path"));	
-	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxOPEN | wxFILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if (!filename.IsEmpty()) {
 		// Save path

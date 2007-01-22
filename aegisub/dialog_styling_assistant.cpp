@@ -226,12 +226,12 @@ void DialogStyling::OnKeyDown(wxKeyEvent &event) {
 	int keycode = event.GetKeyCode();
 
 	// Previous line
-	if (keycode == WXK_PRIOR) {
+	if (keycode == WXK_PAGEUP) {
 		JumpToLine(linen-1);
 	}
 
 	// Next line
-	if (keycode == WXK_NEXT) {
+	if (keycode == WXK_PAGEDOWN) {
 		JumpToLine(linen+1);
 	}
 

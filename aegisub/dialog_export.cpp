@@ -182,7 +182,7 @@ END_EVENT_TABLE()
 // Process start
 void DialogExport::OnProcess(wxCommandEvent &event) {
 	// Get destination
-	wxString filename = wxFileSelector(_("Export subtitles file"),_T(""),_T(""),_T(""),AssFile::GetWildcardList(2),wxSAVE | wxOVERWRITE_PROMPT,this);
+	wxString filename = wxFileSelector(_("Export subtitles file"),_T(""),_T(""),_T(""),AssFile::GetWildcardList(2),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
 	if (filename.empty()) return;
 
 	// Add filters

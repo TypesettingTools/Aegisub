@@ -72,7 +72,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	sashSizer->Add(audioDisplay,1,wxEXPAND,0);
 	Sash->SetSizer(sashSizer);
 	Sash->SetSashVisible(wxSASH_BOTTOM,true);
-	Sash->SetSashBorder(wxSASH_BOTTOM,true);
+	//Sash->SetSashBorder(wxSASH_BOTTOM,true);
 	Sash->SetMinimumSizeY(50);
 	audioDisplay->ScrollBar = audioScroll;
 	audioDisplay->box = this;

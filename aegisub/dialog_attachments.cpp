@@ -133,7 +133,7 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 	wxArrayString filenames;
 	wxArrayString paths;
 	{
-		wxFileDialog diag (this,_("Choose file to be attached"), Options.AsText(_T("Fonts Collector Destination")), _T(""), _T("Font Files (*.ttf)|*.ttf"), wxOPEN | wxFILE_MUST_EXIST | wxMULTIPLE);
+		wxFileDialog diag (this,_("Choose file to be attached"), Options.AsText(_T("Fonts Collector Destination")), _T(""), _T("Font Files (*.ttf)|*.ttf"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 		if (diag.ShowModal() == wxID_CANCEL) return;
 		diag.GetFilenames(filenames);
 		diag.GetPaths(paths);
@@ -166,7 +166,7 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 	wxArrayString filenames;
 	wxArrayString paths;
 	{
-		wxFileDialog diag (this,_("Choose file to be attached"), _T(""), _T(""), _T("Graphic Files (*.bmp,*.gif,*.jpg,*.ico,*.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf"), wxOPEN | wxFILE_MUST_EXIST | wxMULTIPLE);
+		wxFileDialog diag (this,_("Choose file to be attached"), _T(""), _T(""), _T("Graphic Files (*.bmp,*.gif,*.jpg,*.ico,*.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 		if (diag.ShowModal() == wxID_CANCEL) return;
 		diag.GetFilenames(filenames);
 		diag.GetPaths(paths);

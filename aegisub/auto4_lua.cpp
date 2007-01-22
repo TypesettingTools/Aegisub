@@ -107,6 +107,7 @@ namespace Automation4 {
 		first = true;
 		databuf = new char[bufsize];
 	}
+
 	LuaScriptReader::~LuaScriptReader()
 	{
 		if (databuf)
