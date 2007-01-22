@@ -245,11 +245,11 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 			// Choose a provider
 			provider = VideoProviderFactory::GetProvider(filename,overFps);
-			loaded = provider != NULL;
 
 			// Get subtitles provider
 			subsProvider = provider->GetAsSubtitlesProvider();
 			if (!subsProvider) subsProvider = SubtitlesProviderFactory::GetProvider();
+			loaded = provider != NULL;
 
 			// Set frame rate
 			fps = provider->GetFPS();
