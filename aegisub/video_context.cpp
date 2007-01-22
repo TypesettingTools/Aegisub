@@ -402,6 +402,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 	// Set context
 	GetGLContext(displayList.front())->SetCurrent(*displayList.front());
 	glEnable(GL_TEXTURE_2D);
+	if (glGetError() != 0) throw _T("Error enabling texturing.");
 
 	if (lastTex == 0) {
 		// Enable
@@ -409,7 +410,9 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 
 		// Generate texture with GL
 		glGenTextures(1, &lastTex);
+		if (glGetError() != 0) throw _T("Error generating texture.");
 		glBindTexture(GL_TEXTURE_2D, lastTex);
+		if (glGetError() != 0) throw _T("Error binding texture.");
 
 		// Load image data into texture
 		int height = frame.h;
@@ -419,18 +422,23 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		texW = float(frame.w)/float(tw);
 		texH = float(frame.h)/float(th);
 		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
+		if (glGetError() != 0) throw _T("Error allocating texture.");
 
 		// Set texture
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+		if (glGetError() != 0) throw _T("Error setting hinting.");
 	}
 	
 	// Load texture data
 	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,frame.w,frame.h,format,GL_UNSIGNED_BYTE,frame.data[0]);
+	if (glGetError() != 0) throw _T("Error uploading primary plane");
 
 	// UV planes for YV12
 	if (frame.format == FORMAT_YV12) {
 		glTexSubImage2D(GL_TEXTURE_2D,0,0,frame.h,frame.w/2,frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[1]);
+		if (glGetError() != 0) throw _T("Error uploading U plane.");
 		glTexSubImage2D(GL_TEXTURE_2D,0,frame.w/2,frame.h,frame.w/2,frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[2]);
+		if (glGetError() != 0) throw _T("Error uploadinv V plane.");
 	}
 
 	// Return texture number
