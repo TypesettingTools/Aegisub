@@ -53,6 +53,7 @@
 #include "subs_grid.h"
 #include "video_box.h"
 #include "video_slider.h"
+#include "video_provider.h"
 #include "audio_box.h"
 #include "audio_display.h"
 
@@ -354,16 +355,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Second sizer
 		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Video provider: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		wxArrayString choices4;
-#ifdef __WINDOWS__
-		choices4.Add(_T("Avisynth"));
-#endif
-#if USE_LAVC == 1
-		choices4.Add(_T("ffmpeg"));
-#endif
-#if USE_DIRECTSHOW == 1
-		choices4.Add(_T("dshow"));
-#endif
+		wxArrayString choices4 = VideoProviderFactory::GetFactoryList();
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices4,wxCB_DROPDOWN | wxCB_READONLY);
 		Bind(control,_T("Video provider"),1);
 		videoSizer4->Add(control,1,wxEXPAND);

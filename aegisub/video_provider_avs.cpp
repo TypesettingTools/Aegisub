@@ -242,14 +242,14 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			// If DSS2 loaded properly, try using it
 			dss2 = false;
 			if (env->FunctionExists("dss2")) {
-				AVSTRACE(_T("visynthVideoProvider::OpenVideo: Invoking DSS2"));
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking DSS2"));
 				if (fps == 0.0) script = env->Invoke("DSS2", videoFilename);
 				else {
 					const char *argnames[2] = { 0, "fps" };
 					AVSValue args[2] = { videoFilename, fps };
 					script = env->Invoke("DSS2", AVSValue(args,2), argnames);
 				}
-				AVSTRACE(_T("visynthVideoProvider::OpenVideo: Successfully opened file with DSS2"));
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS2"));
 				dss2 = true;
 			}
 

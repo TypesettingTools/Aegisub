@@ -284,11 +284,9 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	// Add VideoSink to graph
 	pG->AddFilter(pR, L"VideoSink");
 
-	// Create instance of sink (??)
+	// Query interface from sink
 	CComQIPtr<IVideoSink> sink(pR);
 	if (!sink) return E_NOINTERFACE;
-
-	// Create another instance of sink (??)
 	CComQIPtr<IVideoSink2> sink2(pR);
 	if (!sink2) return E_NOINTERFACE;
 
@@ -394,6 +392,8 @@ void DirectShowVideoProvider::CloseVideo() {
 	m_pR.Release();
 	m_pGC.Release();
 	m_pGS.Release();
+	ResetEvent(m_hFrameReady);
+	CloseHandle(m_hFrameReady);
 }
 
 
