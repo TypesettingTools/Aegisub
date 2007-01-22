@@ -139,9 +139,11 @@ void VideoDisplay::Render() {
 
 	// Set viewport
 	glEnable(GL_TEXTURE_2D);
-	glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glViewport(0,0,w,h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 	glOrtho(0.0f,sw,sh,0.0f,-1000.0f,1000.0f);
 	glMatrixMode(GL_MODELVIEW);
 
