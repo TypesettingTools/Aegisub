@@ -309,19 +309,9 @@ void VideoDisplayVisual::DrawOverlay() {
 							float matrix[16] = { 2500, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 1, 1, 0, 0, 2500, 2500 };
 							glMultMatrixf(matrix);
 							glScalef(1.0f,1.0f,8.0f);
-							glRotatef(ry,0.0f,-1.0f,0.0f);
-							glRotatef(rx,-1.0f,0.0f,0.0f);
-							glRotatef(rz,0.0f,0.0f,-1.0f);
-
-							//glScalef(0.125f,0.125f,0.125f);
-							//glTranslatef(8*dx,8*dy,0.0f);
-							//float matrix[16] = { 20000, 0, 0, 0, 0, 20000, 0, 0, 0, 0, 1, 1, 0, 0, 20000, 20000 };
-							//glMultMatrixf(matrix);
-							//glScalef(1.0f,1.0f,8.0f);
-							//glRotatef(ry,0.0f,-1.0f,0.0f);
-							//glRotatef(rx,-1.0f,0.0f,0.0f);
-							//glRotatef(rz,0.0f,0.0f,-1.0f);
-							//glScalef(8.0f,8.0f,8.0f);
+							if (ry != 0.0f) glRotatef(ry,0.0f,-1.0f,0.0f);
+							if (rx != 0.0f) glRotatef(rx,-1.0f,0.0f,0.0f);
+							if (rz != 0.0f) glRotatef(rz,0.0f,0.0f,-1.0f);
 
 							// Draw grid
 							glShadeModel(GL_SMOOTH);
@@ -391,40 +381,6 @@ void VideoDisplayVisual::DrawOverlay() {
 							// Restore gl's state
 							glPopMatrix();
 							glShadeModel(GL_FLAT);
-
-							//// Calculate radii
-							//if (radius < 80) radius = 80;
-							//int radius1X = radius * w / sw / 3;
-							//int radius1Y = radius * h / sh;
-							//int radius2X = radius * w / sw;
-							//int radius2Y = radius * h / sh / 3;
-
-							//// Draw the ellipses
-							//dc.SetBrush(*wxTRANSPARENT_BRUSH);
-							//dc.DrawEllipse(dx-radius1X-2,dy-radius1Y-2,2*radius1X+4,2*radius1Y+4);
-							//dc.DrawEllipse(dx-radius1X+2,dy-radius1Y+2,2*radius1X-4,2*radius1Y-4);
-							//dc.DrawEllipse(dx-radius2X-2,dy-radius2Y-2,2*radius2X+4,2*radius2Y+4);
-							//dc.DrawEllipse(dx-radius2X+2,dy-radius2Y+2,2*radius2X-4,2*radius2Y-4);
-
-							//// Draw line to mouse
-							//dc.DrawLine(dx,dy,mouseX,mouseY);
-							//dc.SetBrush(wxBrush(colour[brushCol]));
-
-							//// Draw Y baseline
-							//deltax = int(cos(ry*3.1415926536/180.0)*radius2X);
-							//deltay = int(-sin(ry*3.1415926536/180.0)*radius2Y);
-							//dc.SetPen(wxPen(colour[3],2));
-							//dc.DrawLine(dx+deltax,dy+deltay,dx-deltax,dy-deltay);
-							//dc.SetPen(wxPen(colour[0],1));
-							//dc.DrawCircle(dx+deltax,dy+deltay,4);
-
-							//// Draw X baseline
-							//deltax = int(cos(rx*3.1415926536/180.0)*radius1X);
-							//deltay = int(-sin(rx*3.1415926536/180.0)*radius1Y);
-							//dc.SetPen(wxPen(colour[3],2));
-							//dc.DrawLine(dx+deltax,dy+deltay,dx-deltax,dy-deltay);
-							//dc.SetPen(wxPen(colour[0],1));
-							//dc.DrawCircle(dx+deltax,dy+deltay,4);
 						}
 					}
 
