@@ -37,12 +37,13 @@
 ////////////
 // Includes
 #include "setup.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <wx/image.h>
 #include <string.h>
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
 #include <wx/config.h>
-#include <GL/glu.h>
 #include "utils.h"
 #include "video_display.h"
 #include "video_display_visual.h"
@@ -88,10 +89,14 @@ BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 END_EVENT_TABLE()
 
 
+//////////////
+// Parameters
+int attribList[2] = { WX_GL_RGBA , 0 };
+
 ///////////////
 // Constructor
 VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-: wxGLCanvas (parent, id, NULL, pos, size, style, name)
+: wxGLCanvas (parent, id, attribList, pos, size, style, name)
 {
 	// Set options
 	ControlSlider = NULL;
@@ -169,20 +174,21 @@ void VideoDisplay::Render() {
 
 	// Draw interleaved frame or luma of YV12
 	glDisable(GL_BLEND);
+	glBindTexture(GL_TEXTURE_2D, VideoContext::Get()->GetFrameAsTexture(-1));
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glBegin(GL_QUADS);
 		// Top-left
 		glTexCoord2f(left,top);
 		glVertex2f(0,0);
-		// Top-right
-		glTexCoord2f(right,top);
-		glVertex2f(sw,0);
-		// Bottom-right
-		glTexCoord2f(right,bot);
-		glVertex2f(sw,sh);
 		// Bottom-left
 		glTexCoord2f(left,bot);
 		glVertex2f(0,sh);
+		// Bottom-right
+		glTexCoord2f(right,bot);
+		glVertex2f(sw,sh);
+		// Top-right
+		glTexCoord2f(right,top);
+		glVertex2f(sw,0);
 	glEnd();
 
 	// Draw UV planes
@@ -194,6 +200,7 @@ void VideoDisplay::Render() {
 	visual->DrawOverlay();
 
 	// Swap buffers
+	glFinish();
 	SwapBuffers();
 }
 

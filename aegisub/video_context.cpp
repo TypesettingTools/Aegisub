@@ -37,6 +37,8 @@
 ////////////
 // Includes
 #include "setup.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <wx/image.h>
 #include <string.h>
 #include <wx/clipbrd.h>
@@ -376,7 +378,7 @@ wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
 // Get GL Texture of frame
 GLuint VideoContext::GetFrameAsTexture(int n) {
 	// Already uploaded
-	if (n == lastFrame) return lastTex;
+	if (n == lastFrame || n == -1) return lastTex;
 
 	// Get frame
 	AegiVideoFrame frame = GetFrame(n);
@@ -414,6 +416,12 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		glBindTexture(GL_TEXTURE_2D, lastTex);
 		if (glGetError() != 0) throw _T("Error binding texture.");
 
+		// Texture parameters
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
 		// Load image data into texture
 		int height = frame.h;
 		if (frame.format == FORMAT_YV12) height = frame.h * 3 / 2;
@@ -421,12 +429,16 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		int th = SmallestPowerOf2(frame.h);
 		texW = float(frame.w)/float(tw);
 		texH = float(frame.h)/float(th);
-		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
 		if (glGetError() != 0) throw _T("Error allocating texture.");
 
 		// Set texture
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 		if (glGetError() != 0) throw _T("Error setting hinting.");
+
+		// Set priority
+		float priority = 1.0f;
+		glPrioritizeTextures(1,&lastTex,&priority);
 	}
 	
 	// Load texture data
