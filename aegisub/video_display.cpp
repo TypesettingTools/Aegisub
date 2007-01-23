@@ -81,6 +81,7 @@ BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_KEY_DOWN(VideoDisplay::OnKey)
 	EVT_LEAVE_WINDOW(VideoDisplay::OnMouseLeave)
 	EVT_PAINT(VideoDisplay::OnPaint)
+	EVT_SIZE(VideoDisplay::OnSizeEvent)
 	EVT_ERASE_BACKGROUND(VideoDisplay::OnEraseBackground)
 
 	EVT_MENU(VIDEO_MENU_COPY_TO_CLIPBOARD,VideoDisplay::OnCopyToClipboard)
@@ -91,7 +92,7 @@ END_EVENT_TABLE()
 
 //////////////
 // Parameters
-int attribList[2] = { WX_GL_RGBA , 0 };
+int attribList[3] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, 0 };
 
 ///////////////
 // Constructor
@@ -129,7 +130,7 @@ VideoDisplay::~VideoDisplay () {
 // Render
 void VideoDisplay::Render() {
 	// Is shown?
-	if (!GetParent()->IsShown()) return;
+	if (!IsShownOnScreen()) return;
 
 	// Set GL context
 	VideoContext *context = VideoContext::Get();
@@ -245,13 +246,18 @@ void VideoDisplay::Reset() {
 }
 
 
-/////////////////
-// OnPaint event
+///////////////
+// Paint event
 void VideoDisplay::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
-
-	// Draw frame
 	Render();
+}
+
+
+//////////////
+// Size Event
+void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
+	Refresh(false);
 }
 
 

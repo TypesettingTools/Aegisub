@@ -910,7 +910,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		curY = (y - startY + origY) * sh / h;
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),curX,curY),0);
+			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),curX,curY),0,false);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -934,7 +934,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
 			wxString param = PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle));
-			grid->editBox->SetOverride(_T("\\frz"),param,0);
+			grid->editBox->SetOverride(_T("\\frz"),param,0,false);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -965,8 +965,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		// Update
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
-			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0);
+			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0,false);
+			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0,false);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -989,8 +989,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		// Update
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0);
-			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0);
+			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0,false);
+			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0,false);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -1018,7 +1018,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		// Update
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX,curY,curX2,curY2),0);
+			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX,curY,curX2,curY2),0,false);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -1031,29 +1031,29 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 		// Finished dragging subtitles
 		if (hold == 1) {
-			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),curX,curY),0);
+			grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),curX,curY),0,false);
 		}
 
 		// Finished rotating Z
 		else if (hold == 2) {
-			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
+			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0,false);
 		}
 
 		// Finished rotating XY
 		else if (hold == 3) {
-			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0);
-			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0);
+			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0,false);
+			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0,false);
 		}
 
 		// Finished scaling
 		else if (hold == 4) {
-			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0);
-			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0);
+			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0,false);
+			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0,false);
 		}
 
 		// Finished clipping
 		else if (hold == 5) {
-			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX,curY,curX2,curY2),0);
+			grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX,curY,curX2,curY2),0,false);
 		}
 
 		// Commit
@@ -1074,7 +1074,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 	// Double click
 	if (mode == 0 && event.LeftDClick()) {
-		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0);
+		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0,false);
 		grid->editBox->CommitText();
 		grid->ass->FlagAsModified();
 		grid->CommitChanges(false,true);

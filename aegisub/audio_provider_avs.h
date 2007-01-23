@@ -35,38 +35,3 @@
 
 
 #pragma once
-
-
-///////////
-// Headers
-#include <wx/wxprec.h>
-#ifdef __WINDOWS__
-
-#include <time.h>
-#include "avisynth_wrap.h"
-#include "audio_provider.h"
-
-
-////////////////////////
-// Audio provider class
-class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
-private:
-	wxString filename;
-	PClip clip;
-
-	void LoadFromClip(AVSValue clip);
-	void OpenAVSAudio();
-	void SetFile();
-	void Unload();
-
-public:
-	AvisynthAudioProvider(wxString _filename);
-	~AvisynthAudioProvider();
-
-	wxString GetFilename();
-
-	void GetAudio(void *buf, __int64 start, __int64 count);
-	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
-};
-
-#endif

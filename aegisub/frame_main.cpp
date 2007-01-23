@@ -68,6 +68,7 @@
 #include "text_file_writer.h"
 #include "auto4_base.h"
 #include "dialog_version_check.h"
+#include "dialog_detached_video.h"
 
 
 /////////////////////////
@@ -104,7 +105,9 @@ FrameMain::FrameMain (wxArrayString args)
 	SetIcon(wxICON(wxicon));
 
 	// Contents
-	curMode = -1;
+	showVideo = true;
+	showAudio = true;
+	detachedVideo = NULL;
 	InitContents();
 	Show();
 
@@ -359,6 +362,7 @@ void FrameMain::InitMenu() {
 	wxMenuItem *RecentKeyframesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Keyframes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentKeyframes);
 	videoMenu->Append(RecentKeyframesParent);
 	videoMenu->AppendSeparator();
+	videoMenu->Append(Menu_Video_Detach, _("Detach Video"), _("Detach video, displaying it in a separate Window."));
 	wxMenu *ZoomMenu = new wxMenu;
 	wxMenuItem *ZoomParent = new wxMenuItem(subtitlesMenu,Menu_View_Zoom,_("Set Zoom"),_T(""),wxITEM_NORMAL,ZoomMenu);
 	ZoomParent->SetBitmap(wxBITMAP(blank_button));
@@ -475,24 +479,27 @@ void FrameMain::InitContents() {
 	//SetSizer(MainSizer);
 
 	// Set display
-	SetDisplayMode(0);
+	SetDisplayMode(0,0);
 	Layout();
 }
 
+
+/////////////////////////
+// Deinitialize controls
 void FrameMain::DeInitContents() {
-	//ghetto hack to free all AssFile junk properly, eliminates lots of memory leaks
+	if (detachedVideo) detachedVideo->Destroy();
 	AssFile::StackReset();
 	delete AssFile::top;
-
 	delete EditBox;
 	delete videoBox;
 }
+
 
 //////////////////
 // Update toolbar
 void FrameMain::UpdateToolbar() {
 	// Collect flags
-	bool isVideo = (curMode == 1) || (curMode == 2);
+	bool isVideo = showVideo;
 	HasSelection = true;
 	int selRows = SubsBox->GetNumberSelection();
 
@@ -711,59 +718,28 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 
 ////////////////////
 // Set display mode
-// ----------------
-// 0: subs only
-// 1: video
-// 2: audio
-void FrameMain::SetDisplayMode(int mode) {
+void FrameMain::SetDisplayMode(int _showVid,int _showAudio) {
+	// Stop
 	Freeze();
 	VideoContext::Get()->Stop();
-	if (mode != curMode) {
-		// Automatic mode
-		bool showVid=false, showAudio=false;
-		if (mode == -1) {
-			// See what's loaded
-			if (VideoContext::Get()->IsLoaded()) showVid = true;
-			if (audioBox->loaded) showAudio = true;
 
-			// Set mode
-			if (!showVid && !showAudio) mode = 0;
-			if (showVid && !showAudio) mode = 1;
-			if (showVid && showAudio) mode = 2;
-			if (!showVid && showAudio) mode = 3;
-		}
+	// Automatic
+	if (_showVid == -1) _showVid = VideoContext::Get()->IsLoaded() ? 1 : 0;
+	if (_showAudio == -1) _showAudio = audioBox->loaded ? 1 : 0;
 
-		// Subs only
-		else if (mode == 0) {
-			showVid = false;
-			showAudio = false;
-		}
-
-		// Video only
-		else if (mode == 1) {
-			showVid = true;
-			showAudio = false;
-		}
-
-		// Video+Audio
-		else if (mode == 2) {
-			showVid = true;
-			showAudio = true;
-		}
-
-		// Audio only
-		else if (mode == 3) {
-			showVid = false;
-			showAudio = true;
-		}
-
-		// Set display
-		TopSizer->Show(videoBox,showVid,true);
-		ToolSizer->Show(audioBox,showAudio,true);
+	// See if anything changed
+	if (_showVid == (showVideo?1:0) && _showAudio == (showAudio?1:0)) {
+		Thaw();
+		return;
 	}
+	showAudio = _showAudio == 1;
+	showVideo = _showVid == 1;
+
+	// Set display
+	TopSizer->Show(videoBox,showVideo,true);
+	ToolSizer->Show(audioBox,showAudio,true);
 
 	// Update
-	curMode = mode;
 	UpdateToolbar();
 	EditBox->SetSplitLineMode();
 	MainSizer->CalcMin();
@@ -772,6 +748,7 @@ void FrameMain::SetDisplayMode(int mode) {
 	MainSizer->Layout();
 	Layout();
 	Show(true);
+	VideoContext::Get()->UpdateDisplays(true);
 	Thaw();
 }
 
@@ -911,7 +888,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		}
 
 		// Display
-		SetDisplayMode(-1);
+		SetDisplayMode(-1,-1);
 	}
 
 	// Store data on subs
@@ -1024,7 +1001,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	}
 
 	SubsBox->CommitChanges(true);
-	SetDisplayMode(-1);
+	SetDisplayMode(-1,-1);
 	EditBox->UpdateFrameTiming();
 }
 
@@ -1036,7 +1013,7 @@ void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 	VideoContext::Get()->Stop();
 	try {
 		audioBox->SetFile(filename,FromVideo);
-		SetDisplayMode(-1);
+		SetDisplayMode(-1,-1);
 	}
 	catch (const wchar_t *error) {
 		wxString err(error);

@@ -146,7 +146,7 @@ public:
 
 	SubsEditBox(wxWindow *parent,SubtitlesGrid *gridp);
 
-	void SetOverride (wxString tag,wxString preValue=_T(""),int pos=-1);
+	void SetOverride (wxString tag,wxString preValue=_T(""),int pos=-1,bool getFocus=true);
 	void SetStyleFlag (wxString tag,wxString preValue=_T(""),int pos=-1);
 
 	void SetSplitLineMode(wxSize size=wxSize(-1,-1));

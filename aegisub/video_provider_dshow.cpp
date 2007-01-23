@@ -37,6 +37,9 @@
 ///////////
 // Headers
 #pragma warning(disable: 4995)
+#include <wx/wxprec.h>
+#ifdef __WINDOWS__
+#include <wx/image.h>
 #include <dshow.h>
 #include <atlbase.h>
 #include <atlcom.h>
@@ -45,8 +48,6 @@
 #include <windows.h>
 #include <tchar.h>
 #include <initguid.h>
-#include <wx/wxprec.h>
-#include <wx/image.h>
 #include "video_provider.h"
 #include "utils.h"
 #include "vfr.h"
@@ -585,4 +586,4 @@ void DirectShowVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 	num_frames = frameTime.Count();
 }
 
-
+#endif

@@ -163,6 +163,7 @@ void OptionsManager::LoadDefaults() {
 	// Audio Advanced
 	SetModificationType(MOD_AUTOMATIC);
 	SetInt(_T("Audio Cache"),1);
+	SetText(_T("Audio Provider"),_T("avisynth"));
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
 	SetText(_T("Audio HD Cache Location"),_T("default"));
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));

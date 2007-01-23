@@ -53,6 +53,7 @@ class SubtitlesGrid;
 class SubsEditBox;
 class AudioBox;
 class VideoBox;
+class DialogDetachedVideo;
 class AegisubFileDropTarget;
 namespace Automation4 { class FeatureMacro; class ScriptManager; };
 
@@ -65,7 +66,7 @@ class FrameMain: public wxFrame {
 	friend class SubtitlesGrid;
 
 private:
-	int curMode;
+	bool showVideo,showAudio;
 	bool HasSelection;
 	bool menuCreated;
 	wxTimer AutoSave;
@@ -157,6 +158,7 @@ private:
 	void OnSetARFull (wxCommandEvent &event);
 	void OnSetAR235 (wxCommandEvent &event);
 	void OnSetARCustom (wxCommandEvent &event);
+	void OnDetachVideo (wxCommandEvent &event);
 
 	void OnOpenAudio (wxCommandEvent &event);
 	void OnOpenAudioFromVideo (wxCommandEvent &event);
@@ -231,7 +233,6 @@ private:
 	void LoadSubtitles(wxString filename,wxString charset=_T(""));
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
 	int TryToCloseSubs(bool enableCancel=true);
-	void SetDisplayMode(int mode);
 
 	wxMenuItem *RebuildMenuItem(wxMenu *menu,int id,wxBitmap bmp1,wxBitmap bmp2,bool state);
 	void MenuItemEnable(int id,bool state,wxBitmap &bmp1,wxBitmap &bmp2);
@@ -242,6 +243,7 @@ public:
 	SubsEditBox *EditBox;
 	AudioBox *audioBox;
 	VideoBox *videoBox;
+	DialogDetachedVideo *detachedVideo;
 
 	wxBoxSizer *MainSizer;
 	wxBoxSizer *TopSizer;
@@ -260,6 +262,7 @@ public:
 	void SetAccelerators();
 	void InitMenu();
 	void UpdateToolbar();
+	void SetDisplayMode(int showVid,int showAudio);
 
 	DECLARE_EVENT_TABLE()
 };
@@ -311,6 +314,7 @@ enum {
 	Menu_Video_AR_Custom,
 	Menu_Video_Select_Visible,
 	Menu_Video_Play,
+	Menu_Video_Detach,
 
 	Menu_Audio_Open_File,
 	Menu_Audio_Open_From_Video,

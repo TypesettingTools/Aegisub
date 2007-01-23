@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "factory.h"
 
 
 //////////////
@@ -71,11 +72,23 @@ public:
 	virtual void GetAudio(void *buf, __int64 start, __int64 count)=0;
 	void GetAudioWithVolume(void *buf, __int64 start, __int64 count, double volume);
 
-	int GetChannels();
 	__int64 GetNumSamples();
 	int GetSampleRate();
 	int GetBytesPerSample();
+	int GetChannels();
 
 	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
-	static AudioProvider *GetAudioProvider(wxString filename, AudioDisplay *display, VideoProvider *vprovider,int cache=-1);
+};
+
+
+///////////
+// Factory
+class AudioProviderFactory : public AegisubFactory<AudioProviderFactory> {
+protected:
+	virtual AudioProvider *CreateProvider(wxString filename)=0;
+	AudioProviderFactory(wxString name) { RegisterFactory(name); }
+
+public:
+	virtual ~AudioProviderFactory() {}
+	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
 };

@@ -309,15 +309,22 @@ void VideoContext::RemoveDisplay(VideoDisplay *display) {
 // Update displays
 void VideoContext::UpdateDisplays(bool full) {
 	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
+		// Get display
 		VideoDisplay *display = *cur;
-		
+
+		// Update slider
 		if (full) {
 			display->UpdateSize();
 			display->ControlSlider->SetRange(0,GetLength()-1);
 		}
 		display->ControlSlider->SetValue(GetFrameN());
-		display->ControlSlider->Update();
+		//display->ControlSlider->Update();
 		display->UpdatePositionDisplay();
+
+		// If not shown, don't update the display itself
+		if (!display->IsShownOnScreen()) continue;
+
+		// Update controls
 		display->Refresh();
 		display->Update();
 	}

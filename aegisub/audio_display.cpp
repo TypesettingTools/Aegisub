@@ -759,7 +759,7 @@ void AudioDisplay::SetFile(wxString file, VideoProvider *vprovider) {
 		SetFile(_T(""));
 		try {
 			// Get provider
-			provider = AudioProvider::GetAudioProvider(file, this, vprovider);
+			provider = AudioProviderFactory::GetAudioProvider(file);
 
 			// Get player
 			player = AudioPlayer::GetAudioPlayer();
@@ -861,7 +861,7 @@ void AudioDisplay::Play(int start,int end) {
 		if (VideoContext::Get()->IsLoaded()) {
 			try {
 				// Get provider
-				provider = AudioProvider::GetAudioProvider(VideoContext::Get()->videoName, this, VideoContext::Get()->GetProvider(),0);
+				provider = AudioProviderFactory::GetAudioProvider(VideoContext::Get()->videoName, 0);
 
 				// Get player
 				player = AudioPlayer::GetAudioPlayer();

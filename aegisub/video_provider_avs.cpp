@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#ifdef __WINDOWS__
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
 #include <wx/filename.h>
@@ -521,3 +522,6 @@ void AvisynthVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 	frameTime = list;
 	num_frames = frameTime.Count();
 }
+
+
+#endif

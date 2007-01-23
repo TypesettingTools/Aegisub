@@ -36,15 +36,53 @@
 
 ///////////
 // Headers
-#include "setup.h"
-#if USE_LAVC == 1
+#define EMULATE_INTTYPES
 #include <wx/wxprec.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
+#include "mkv_wrap.h"
+#include "lavc_file.h"
+#include "audio_provider.h"
+#include "lavc_file.h"
 #include "utils.h"
-#include "audio_provider_lavc.h"
-#include "video_provider_lavc.h"
 #include "options.h"
 
-LAVCAudioProvider::LAVCAudioProvider(wxString _filename, VideoProvider *vpro)
+
+///////////////////////
+// LAVC Audio Provider
+class LAVCAudioProvider : public AudioProvider {
+private:
+	LAVCFile *lavcfile;
+
+	AVCodecContext *codecContext;
+	ReSampleContext *rsct;
+	float resample_ratio;
+	AVStream *stream;
+	int audStream;
+
+	int16_t *buffer;
+
+	void Destroy();
+
+public:
+	LAVCAudioProvider(wxString _filename);
+	virtual ~LAVCAudioProvider();
+	virtual void GetAudio(void *buf, __int64 start, __int64 count);
+};
+
+
+///////////
+// Factory
+class LAVCAudioProviderFactory : public AudioProviderFactory {
+public:
+	AudioProvider *CreateProvider(wxString file) { return new LAVCAudioProvider(file); }
+	AvisynthAudioProviderFactory() : AudioProviderFactory(_T("lavc")) {}
+} registerLAVCaudio;
+
+
+///////////////
+// Constructor
+LAVCAudioProvider::LAVCAudioProvider(wxString _filename)
 	: lavcfile(NULL), codecContext(NULL), rsct(NULL), buffer(NULL)
 {
 	try {

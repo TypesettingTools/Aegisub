@@ -85,6 +85,7 @@
 #include "auto4_base.h"
 #include "dialog_automation.h"
 #include "dialog_version_check.h"
+#include "dialog_detached_video.h"
 
 
 ////////////////////
@@ -136,6 +137,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Video_AR_Custom, FrameMain::OnSetARCustom)
 	EVT_MENU(Menu_Video_JumpTo, FrameMain::OnJumpTo)
 	EVT_MENU(Menu_Video_Select_Visible, FrameMain::OnSelectVisible)
+	EVT_MENU(Menu_Video_Detach, FrameMain::OnDetachVideo)
 
 	EVT_MENU(Menu_Audio_Open_File, FrameMain::OnOpenAudio)
 	EVT_MENU(Menu_Audio_Open_From_Video, FrameMain::OnOpenAudioFromVideo)
@@ -264,10 +266,10 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_View_Standard,aud && vid);
 
 		// Select option
-		if (curMode == 0) MenuBar->Check(Menu_View_Subs,true);
-		if (curMode == 1) MenuBar->Check(Menu_View_Video,true);
-		if (curMode == 2) MenuBar->Check(Menu_View_Standard,true);
-		if (curMode == 3) MenuBar->Check(Menu_View_Audio,true);
+		if (!showVideo && !showAudio) MenuBar->Check(Menu_View_Subs,true);
+		else if (showVideo && !showAudio) MenuBar->Check(Menu_View_Video,true);
+		else if (showAudio && !showVideo) MenuBar->Check(Menu_View_Standard,true);
+		else MenuBar->Check(Menu_View_Audio,true);
 	}
 
 	// Video menu
@@ -848,8 +850,15 @@ void FrameMain::OnZoomOut (wxCommandEvent &event) {
 }
 
 void FrameMain::OnSetZoom(wxCommandEvent &event) {
-	//videoBox->videoDisplay->SetZoomPos(event.GetValue());
 	videoBox->videoDisplay->SetZoomPos(videoBox->videoDisplay->zoomBox->GetSelection());
+}
+
+
+////////////////
+// Detach video
+void FrameMain::OnDetachVideo(wxCommandEvent &event) {
+	detachedVideo = new DialogDetachedVideo(this);
+	detachedVideo->Show();
 }
 
 
@@ -1183,7 +1192,7 @@ void FrameMain::OnReplace(wxCommandEvent &event) {
 void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->SetAspectRatio(0);
-	SetDisplayMode(-1);
+	SetDisplayMode(-1,-1);
 }
 
 
@@ -1192,7 +1201,7 @@ void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 void FrameMain::OnSetARFull (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->SetAspectRatio(1);
-	SetDisplayMode(-1);
+	SetDisplayMode(-1,-1);
 }
 
 
@@ -1201,7 +1210,7 @@ void FrameMain::OnSetARFull (wxCommandEvent &event) {
 void FrameMain::OnSetARWide (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->SetAspectRatio(2);
-	SetDisplayMode(-1);
+	SetDisplayMode(-1,-1);
 }
 
 
@@ -1210,7 +1219,7 @@ void FrameMain::OnSetARWide (wxCommandEvent &event) {
 void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->SetAspectRatio(3);
-	SetDisplayMode(-1);
+	SetDisplayMode(-1,-1);
 }
 
 
@@ -1260,7 +1269,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Set value
 	else {
 		videoBox->videoDisplay->SetAspectRatio(4,numval);
-		SetDisplayMode(-1);
+		SetDisplayMode(-1,-1);
 	}
 }
 
@@ -1558,7 +1567,7 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 // View standard
 void FrameMain::OnViewStandard (wxCommandEvent &event) {
 	if (!audioBox->audioDisplay->loaded || !VideoContext::Get()->IsLoaded()) return;
-	SetDisplayMode(2);
+	SetDisplayMode(1,1);
 }
 
 
@@ -1566,7 +1575,7 @@ void FrameMain::OnViewStandard (wxCommandEvent &event) {
 // View video
 void FrameMain::OnViewVideo (wxCommandEvent &event) {
 	if (!VideoContext::Get()->IsLoaded()) return;
-	SetDisplayMode(1);
+	SetDisplayMode(1,0);
 }
 
 
@@ -1574,14 +1583,14 @@ void FrameMain::OnViewVideo (wxCommandEvent &event) {
 // View audio
 void FrameMain::OnViewAudio (wxCommandEvent &event) {
 	if (!audioBox->audioDisplay->loaded) return;
-	SetDisplayMode(3);
+	SetDisplayMode(0,1);
 }
 
 
 /////////////
 // View subs
 void FrameMain::OnViewSubs (wxCommandEvent &event) {
-	SetDisplayMode(0);
+	SetDisplayMode(0,0);
 }
 
 

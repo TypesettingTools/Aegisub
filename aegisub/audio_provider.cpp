@@ -37,8 +37,6 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "audio_provider_avs.h"
-#include "audio_provider_lavc.h"
 #include "audio_provider_ram.h"
 #include "audio_provider_hd.h"
 #include "options.h"
@@ -160,25 +158,57 @@ void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int
 }
 
 
+/////////////////////////
+// Get audio with volume
+void AudioProvider::GetAudioWithVolume(void *buf, __int64 start, __int64 count, double volume) {
+	GetAudio(buf,start,count);
+	if (volume == 1.0) return;
+
+	if (bytes_per_sample == 2) {
+		// Read raw samples
+		short *buffer = (short*) buf;
+		int value;
+
+		// Modify
+		for (__int64 i=0;i<count;i++) {
+			value = (int)(buffer[i]*volume+0.5);
+			if (value < -0x8000) value = -0x8000;
+			if (value > 0x7FFF) value = 0x7FFF;
+			buffer[i] = value;
+		}
+	}
+}
+
+
 ////////////////
 // Get provider
-AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *display, VideoProvider *vprovider,int cache) {
+AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cache) {
 	// Prepare provider
 	AudioProvider *provider = NULL;
 
-	// Select provider
-	#if USE_LAVC == 1
-	if (!provider) provider = new LAVCAudioProvider(filename, vprovider);
-	#endif
+	// List of providers
+	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio provider")));
 
-	#ifdef __WINDOWS__
-	if (!provider) provider = new AvisynthAudioProvider(filename);
-	#endif
+	// None available
+	if (list.Count() == 0) throw _T("No audio providers are available.");
 
-	// No provider found
-	if (!provider) {
-		throw _T("Could not initialize any audio provider.");
+	// Get provider
+	wxString error;
+	for (unsigned int i=0;i<list.Count();i++) {
+		try {
+			AudioProvider *prov = GetFactory(list[i])->CreateProvider(filename);
+			if (prov) {
+				provider = prov;
+				break;
+			}
+		}
+		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
+		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
+		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
 	}
+
+	// Failed
+	if (!provider) throw error;
 
 	// Change provider to RAM/HD cache if needed
 	if (cache == -1) cache = Options.AsInt(_T("Audio Cache"));
@@ -203,23 +233,6 @@ AudioProvider *AudioProvider::GetAudioProvider(wxString filename, AudioDisplay *
 }
 
 
-/////////////////////////
-// Get audio with volume
-void AudioProvider::GetAudioWithVolume(void *buf, __int64 start, __int64 count, double volume) {
-	GetAudio(buf,start,count);
-	if (volume == 1.0) return;
-
-	if (bytes_per_sample == 2) {
-		// Read raw samples
-		short *buffer = (short*) buf;
-		int value;
-
-		// Modify
-		for (__int64 i=0;i<count;i++) {
-			value = (int)(buffer[i]*volume+0.5);
-			if (value < -0x8000) value = -0x8000;
-			if (value > 0x7FFF) value = 0x7FFF;
-			buffer[i] = value;
-		}
-	}
-}
+//////////
+// Static
+std::map<wxString,AudioProviderFactory*>* AegisubFactory<AudioProviderFactory>::factories=NULL;

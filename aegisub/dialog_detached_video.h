@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,81 +37,20 @@
 #pragma once
 
 
-///////////
-// Headers
-#include <wx/wxprec.h>
-#ifdef __WINDOWS__
-#include <windows.h>
-#endif
-#include <time.h>
-#include "video_context.h"
-
-
 //////////////
 // Prototypes
-class SubtitlesGrid;
-class VideoSlider;
-class AudioProvider;
-class AudioDisplay;
-class AssDialogue;
-class VideoProvider;
-class VideoDisplayVisual;
-class VideoDisplayFexTracker;
 class VideoBox;
+class FrameMain;
 
 
-//////////////
-// Main class
-class VideoDisplay: public wxGLCanvas {
-	friend class AudioProvider;
-	friend class VideoDisplayVisual;
-
+//////////////////////////////
+// Detached video frame class
+class DialogDetachedVideo : public wxFrame {
 private:
-	wxSize origSize;
-	int w,h;
-
-	void OnPaint(wxPaintEvent& event);
-	void OnKey(wxKeyEvent &event);
-    void OnMouseEvent(wxMouseEvent& event);
-	void OnMouseLeave(wxMouseEvent& event);
-	void OnCopyToClipboard(wxCommandEvent &event);
-	void OnSaveSnapshot(wxCommandEvent &event);
-	void OnCopyCoords(wxCommandEvent &event);
-	void OnEraseBackground(wxEraseEvent &event) {}
-	void OnSizeEvent(wxSizeEvent &event);
+	VideoBox *videoBox;
+	FrameMain *parent;
 
 public:
-	VideoDisplayVisual *visual;
-	VideoDisplayFexTracker *tracker;
-	VideoBox *box;
-
-	double arValue;
-	int arType;
-	double zoomValue;
-
-	VideoSlider *ControlSlider;
-	wxComboBox *zoomBox;
-	wxTextCtrl *PositionDisplay;
-	wxTextCtrl *SubsPosition;
-
-	VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
-	~VideoDisplay();
-	void Reset();
-
-	void Render();
-
-	void DrawText(wxPoint Pos, wxString Text);
-	void UpdatePositionDisplay();
-	void UpdateSize();
-	void SetZoom(double value);
-	void SetZoomPos(int pos);
-	void UpdateSubsRelativeTime();
-
-	double GetARFromType(int type);
-	void SetAspectRatio(int type,double value=1.0);
-	int GetAspectRatioType() { return arType; }
-	double GetAspectRatioValue() { return arValue; }
-
-	DECLARE_EVENT_TABLE()
+	DialogDetachedVideo(FrameMain *parent);
+	~DialogDetachedVideo();
 };
-

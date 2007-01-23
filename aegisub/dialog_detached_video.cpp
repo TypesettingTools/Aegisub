@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,34 +34,42 @@
 //
 
 
-#pragma once
+///////////
+// Headers
+#include <wx/wxprec.h>
+#include "dialog_detached_video.h"
+#include "video_box.h"
+#include "video_context.h"
+#include "frame_main.h"
 
-#include "setup.h"
-#if USE_LAVC == 1
 
-#define EMULATE_INTTYPES
-#include "audio_provider.h"
-#include "lavc_file.h"
+///////////////
+// Constructor
+DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
+: wxFrame(par,-1,_("Detached Video"))
+{
+	// Set parent
+	parent = par;
 
-class LAVCAudioProvider : public AudioProvider {
-private:
-	LAVCFile *lavcfile;
+	// Set a background panel
+	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
+	
+	// Video area;
+	videoBox = new VideoBox(panel);
 
-	AVCodecContext *codecContext;
-	ReSampleContext *rsct;
-	float resample_ratio;
-	AVStream *stream;
-	int audStream;
+	// Set sizer
+	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(videoBox,1,wxEXPAND | wxALL,5);
+	panel->SetSizer(mainSizer);
 
-	int16_t *buffer;
+	// Update
+	parent->SetDisplayMode(0,-1);
+}
 
-	void Destroy();
 
-public:
-	LAVCAudioProvider(wxString _filename, VideoProvider *vpro);
-	virtual ~LAVCAudioProvider();
-	virtual void GetAudio(void *buf, __int64 start, __int64 count);
-};
-
-#endif /* USE_LAVC */
-
+/////////////
+// Destructor
+DialogDetachedVideo::~DialogDetachedVideo() {
+	parent->detachedVideo = NULL;
+	parent->SetDisplayMode(1,-1);
+}

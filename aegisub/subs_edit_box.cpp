@@ -895,7 +895,7 @@ int SubsEditBox::BlockAtPos(int pos) {
 
 ////////////////
 // Set override
-void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) {
+void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,bool getFocus) {
 	// Selection
 	int selstart, selend;
 	if (forcePos != -1) {
@@ -1201,7 +1201,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos) 
 	TextEdit->SetTextTo(line->Text);
 	delete line;
 	TextEdit->SetSelectionU(selstart+shift,selend+shift);
-	TextEdit->SetFocus();
+	if (getFocus) TextEdit->SetFocus();
 }
 
 
