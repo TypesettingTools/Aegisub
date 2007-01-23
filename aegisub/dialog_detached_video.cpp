@@ -47,7 +47,7 @@
 ///////////////
 // Constructor
 DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
-: wxFrame(par,-1,_("Detached Video"))
+: wxFrame(par,-1,_("Detached Video")/*,wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX*/)
 {
 	// Set parent
 	parent = par;

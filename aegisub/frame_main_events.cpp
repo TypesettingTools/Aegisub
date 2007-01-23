@@ -293,6 +293,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_Wide,state);
 		MenuBar->Enable(Menu_Video_AR_235,state);
 		MenuBar->Enable(Menu_Video_AR_Custom,state);
+		MenuBar->Enable(Menu_Video_Detach,state && !detachedVideo);
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
 		MenuBar->Enable(Menu_Video_Close_Keyframes,VideoContext::Get()->OverKeyFramesLoaded());
 		MenuBar->Enable(Menu_Video_Save_Keyframes,VideoContext::Get()->KeyFramesLoaded());
