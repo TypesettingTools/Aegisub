@@ -719,12 +719,17 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 ////////////////////
 // Set display mode
 void FrameMain::SetDisplayMode(int _showVid,int _showAudio) {
+	// Shown?
+	static bool firstRun = true;
+	if (!IsShownOnScreen() && !firstRun) return;
+	firstRun = false;
+
 	// Stop
 	Freeze();
 	VideoContext::Get()->Stop();
 
 	// Automatic
-	if (_showVid == -1) _showVid = VideoContext::Get()->IsLoaded() ? 1 : 0;
+	if (_showVid == -1) _showVid = (VideoContext::Get()->IsLoaded() && !detachedVideo) ? 1 : 0;
 	if (_showAudio == -1) _showAudio = audioBox->loaded ? 1 : 0;
 
 	// See if anything changed
