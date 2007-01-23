@@ -99,7 +99,7 @@ void VideoProvider::Cache(int n,const AegiVideoFrame frame) {
 	// Cache enabled?
 	if (cacheMax == 0) return;
 
-	// Cache full, remove use frame at front
+	// Cache full, use frame at front
 	if (cache.size() >= cacheMax) {
 		cache.push_back(cache.front());
 		cache.pop_front();
