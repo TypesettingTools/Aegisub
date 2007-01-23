@@ -499,7 +499,7 @@ void FrameMain::DeInitContents() {
 // Update toolbar
 void FrameMain::UpdateToolbar() {
 	// Collect flags
-	bool isVideo = showVideo;
+	bool isVideo = VideoContext::Get()->IsLoaded();
 	HasSelection = true;
 	int selRows = SubsBox->GetNumberSelection();
 
@@ -838,7 +838,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 				if (curSubsVideo != _T("")) {
 					LoadVideo(curSubsVideo);
 					if (VideoContext::Get()->IsLoaded()) {
-						videoBox->videoDisplay->SetAspectRatio(videoAr,videoArValue);
+						VideoContext::Get()->SetAspectRatio(videoAr,videoArValue);
 						videoBox->videoDisplay->SetZoomPos(videoZoom-1);
 						VideoContext::Get()->JumpToFrame(videoPos);
 					}
@@ -901,8 +901,8 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			seekpos = wxString::Format(_T("%i"),videoBox->videoDisplay->ControlSlider->GetValue());
 			zoom = wxString::Format(_T("%i"),videoBox->videoDisplay->zoomBox->GetSelection()+1);
 
-			int arType = videoBox->videoDisplay->GetAspectRatioType();
-			if (arType == 4) ar = wxString(_T("c")) + FloatToString(videoBox->videoDisplay->GetAspectRatioValue());
+			int arType = VideoContext::Get()->GetAspectRatioType();
+			if (arType == 4) ar = wxString(_T("c")) + FloatToString(VideoContext::Get()->GetAspectRatioValue());
 			else ar = wxString::Format(_T("%i"),arType);
 		}
 		

@@ -103,6 +103,8 @@ VideoContext::VideoContext() {
 	keyFramesLoaded = false;
 	overKeyFramesLoaded = false;
 	frame_n = 0;
+	arType = 0;
+	arValue = 1.0;
 	isPlaying = false;
 	threaded = Options.AsBool(_T("Threaded Video"));
 	nextFrame = -1;
@@ -415,7 +417,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 	// Set context
 	GetGLContext(displayList.front())->SetCurrent(*displayList.front());
 	glEnable(GL_TEXTURE_2D);
-	if (glGetError() != 0) throw _T("Error enabling texturing.");
+	if (glGetError() != 0) throw _T("Error enabling texture.");
 
 	if (lastTex == 0) {
 		// Enable
@@ -699,4 +701,30 @@ bool VideoContext::OverKeyFramesLoaded() {
 // Check if keyframes are loaded
 bool VideoContext::KeyFramesLoaded() {
 	return overKeyFramesLoaded || keyFramesLoaded;
+}
+
+
+//////////////////////////
+// Calculate aspect ratio
+double VideoContext::GetARFromType(int type) {
+	if (type == 0) return (double)VideoContext::Get()->GetWidth()/(double)VideoContext::Get()->GetHeight();
+	if (type == 1) return 4.0/3.0;
+	if (type == 2) return 16.0/9.0;
+	if (type == 3) return 2.35;
+	return 1.0;  //error
+}
+
+
+/////////////////////
+// Sets aspect ratio
+void VideoContext::SetAspectRatio(int _type, double value) {
+	// Get value
+	if (_type != 4) value = GetARFromType(_type);
+	if (value < 0.5) value = 0.5;
+	if (value > 5.0) value = 5.0;
+
+	// Set
+	arType = _type;
+	arValue = value;
+	UpdateDisplays(true);
 }

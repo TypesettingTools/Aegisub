@@ -745,14 +745,13 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	// Coords
 	int x = event.GetX();
 	int y = event.GetY();
+	parent->ConvertMouseCoords(x,y);
 	int w,h;
 	parent->GetClientSize(&w,&h);
 	int orgx = -1;
 	int orgy = -1;
 	int sw,sh;
 	VideoContext::Get()->GetScriptSize(sw,sh);
-	int mx = x * VideoContext::Get()->GetWidth() / w;
-	int my = y * VideoContext::Get()->GetHeight() / h;
 	int frame_n = VideoContext::Get()->GetFrameN();
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	bool hasOverlay = false;

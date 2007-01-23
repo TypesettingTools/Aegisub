@@ -40,6 +40,7 @@
 #include "dialog_detached_video.h"
 #include "video_box.h"
 #include "video_context.h"
+#include "video_display.h"
 #include "frame_main.h"
 
 
@@ -56,11 +57,13 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 	
 	// Video area;
 	videoBox = new VideoBox(panel);
+	videoBox->videoDisplay->freeSize = true;
 
 	// Set sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(videoBox,1,wxEXPAND | wxALL,5);
 	panel->SetSizer(mainSizer);
+	mainSizer->SetSizeHints(this);
 
 	// Update
 	parent->SetDisplayMode(0,-1);

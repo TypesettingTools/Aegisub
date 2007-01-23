@@ -102,6 +102,9 @@ private:
 	int length;
 	double fps;
 
+	double arValue;
+	int arType;
+
 	void UnloadTexture();
 	void OnPlayTimer(wxTimerEvent &event);
 
@@ -138,6 +141,11 @@ public:
 	int GetFrameN() { return frame_n; }
 	double GetFPS() { return fps; }
 	void SetFPS(double _fps) { fps = _fps; }
+
+	double GetARFromType(int type);
+	void SetAspectRatio(int type,double value=1.0);
+	int GetAspectRatioType() { return arType; }
+	double GetAspectRatioValue() { return arValue; }
 
 	void SetVideo(const wxString &filename);
 	void Reset();

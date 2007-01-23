@@ -97,6 +97,7 @@ Please visit http://aegisub.net to download latest version
 - Added an audio clip export by right clicking on a line. (Dansolo)
 - Added a clear button for shifting history. (Dansolo)
 - Fixed Custom Aspect Ratio input. (Dansolo)
+- Made the video display detachable. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

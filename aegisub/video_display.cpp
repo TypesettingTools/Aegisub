@@ -103,9 +103,8 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	ControlSlider = NULL;
 	PositionDisplay = NULL;
 	origSize = size;
-	arType = 0;
-	arValue = 1.0;
 	zoomValue = 1.0;
+	freeSize = false;
 	visual = new VideoDisplayVisual(this);
 	tracker = NULL;
 #if USE_FEXTRACKER == 1
@@ -143,11 +142,39 @@ void VideoDisplay::Render() {
 	pw = context->GetWidth();
 	ph = context->GetHeight();
 
+	// Freesized transform
+	dx1 = 0;
+	dy1 = 0;
+	dx2 = w;
+	dy2 = h;
+	if (freeSize) {
+		glClearColor(0,0,0,0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		float thisAr = float(w)/float(h);
+		float vidAr;
+		if (context->GetAspectRatioType() == 0) vidAr = float(pw)/float(ph);
+		else vidAr = context->GetAspectRatioValue();
+
+		// Window is wider than video, blackbox left/right
+		if (thisAr - vidAr > 0.01f) {
+			int delta = (w-vidAr*h);
+			dx1 += delta/2;
+			dx2 -= delta;
+		}
+
+		// Video is wider than window, blackbox top/bottom
+		else if (vidAr - thisAr > 0.01f) {
+			int delta = (h-w/vidAr);
+			dy1 += delta/2;
+			dy2 -= delta;
+		}
+	}
+
 	// Set viewport
 	glEnable(GL_TEXTURE_2D);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glViewport(0,0,w,h);
+	glViewport(dx1,dy1,dx2,dy2);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0.0f,sw,sh,0.0f,-1000.0f,1000.0f);
@@ -209,13 +236,17 @@ void VideoDisplay::Render() {
 ///////////////
 // Update size
 void VideoDisplay::UpdateSize() {
+	// Free size?
+	if (freeSize) return;
+
 	// Loaded?
-	if (!VideoContext::Get()->IsLoaded()) return;
+	VideoContext *con = VideoContext::Get();
+	if (!con->IsLoaded()) return;
 
 	// Get size
-	if (arType == 0) w = VideoContext::Get()->GetWidth() * zoomValue;
-	else w = VideoContext::Get()->GetHeight() * zoomValue * arValue;
-	h = VideoContext::Get()->GetHeight() * zoomValue;
+	if (con->GetAspectRatioType() == 0) w = con->GetWidth() * zoomValue;
+	else w = con->GetHeight() * zoomValue * con->GetAspectRatioValue();
+	h = con->GetHeight() * zoomValue;
 	int _w,_h;
 
 	// Set the size for this control
@@ -327,32 +358,6 @@ void VideoDisplay::SetZoomPos(int value) {
 	if (value > 15) value = 15;
 	SetZoom(double(value+1)/8.0);
 	if (zoomBox->GetSelection() != value) zoomBox->SetSelection(value);
-}
-
-
-//////////////////////////
-// Calculate aspect ratio
-double VideoDisplay::GetARFromType(int type) {
-	if (type == 0) return (double)VideoContext::Get()->GetWidth()/(double)VideoContext::Get()->GetHeight();
-	if (type == 1) return 4.0/3.0;
-	if (type == 2) return 16.0/9.0;
-	if (type == 3) return 2.35;
-	return 1.0;  //error
-}
-
-
-/////////////////////
-// Sets aspect ratio
-void VideoDisplay::SetAspectRatio(int _type, double value) {
-	// Get value
-	if (_type != 4) value = GetARFromType(_type);
-	if (value < 0.5) value = 0.5;
-	if (value > 5.0) value = 5.0;
-
-	// Set
-	arType = _type;
-	arValue = value;
-	UpdateSize();
 }
 
 
@@ -478,3 +483,12 @@ void VideoDisplay::DrawText( wxPoint Pos, wxString text ) {
 	//dc.DrawText(text,Pos.x,Pos.y);
 }
 
+
+/////////////////////////////
+// Convert mouse coordinates
+void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
+	int w,h;
+	GetClientSize(&w,&h);
+	x = (x-dx1)*w/dx2;
+	y = (y-dy1)*h/dy2;
+}

@@ -69,6 +69,7 @@ class VideoDisplay: public wxGLCanvas {
 private:
 	wxSize origSize;
 	int w,h;
+	int dx1,dx2,dy1,dy2;
 
 	void OnPaint(wxPaintEvent& event);
 	void OnKey(wxKeyEvent &event);
@@ -85,9 +86,8 @@ public:
 	VideoDisplayFexTracker *tracker;
 	VideoBox *box;
 
-	double arValue;
-	int arType;
 	double zoomValue;
+	bool freeSize;
 
 	VideoSlider *ControlSlider;
 	wxComboBox *zoomBox;
@@ -100,17 +100,13 @@ public:
 
 	void Render();
 
+	void ConvertMouseCoords(int &x,int &y);
 	void DrawText(wxPoint Pos, wxString Text);
 	void UpdatePositionDisplay();
 	void UpdateSize();
 	void SetZoom(double value);
 	void SetZoomPos(int pos);
 	void UpdateSubsRelativeTime();
-
-	double GetARFromType(int type);
-	void SetAspectRatio(int type,double value=1.0);
-	int GetAspectRatioType() { return arType; }
-	double GetAspectRatioValue() { return arValue; }
 
 	DECLARE_EVENT_TABLE()
 };

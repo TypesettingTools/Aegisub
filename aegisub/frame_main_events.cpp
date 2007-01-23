@@ -298,7 +298,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_Save_Keyframes,VideoContext::Get()->KeyFramesLoaded());
 
 		// Set AR radio
-		int arType = videoBox->videoDisplay->GetAspectRatioType();
+		int arType = VideoContext::Get()->GetAspectRatioType();
 		MenuBar->Check(Menu_Video_AR_Default,false);
 		MenuBar->Check(Menu_Video_AR_Full,false);
 		MenuBar->Check(Menu_Video_AR_Wide,false);
@@ -1191,7 +1191,7 @@ void FrameMain::OnReplace(wxCommandEvent &event) {
 // Change aspect ratio to default
 void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	videoBox->videoDisplay->SetAspectRatio(0);
+	VideoContext::Get()->SetAspectRatio(0);
 	SetDisplayMode(-1,-1);
 }
 
@@ -1200,7 +1200,7 @@ void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 // Change aspect ratio to fullscreen
 void FrameMain::OnSetARFull (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	videoBox->videoDisplay->SetAspectRatio(1);
+	VideoContext::Get()->SetAspectRatio(1);
 	SetDisplayMode(-1,-1);
 }
 
@@ -1209,7 +1209,7 @@ void FrameMain::OnSetARFull (wxCommandEvent &event) {
 // Change aspect ratio to widescreen
 void FrameMain::OnSetARWide (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	videoBox->videoDisplay->SetAspectRatio(2);
+	VideoContext::Get()->SetAspectRatio(2);
 	SetDisplayMode(-1,-1);
 }
 
@@ -1218,7 +1218,7 @@ void FrameMain::OnSetARWide (wxCommandEvent &event) {
 // Change aspect ratio to 2:35
 void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	videoBox->videoDisplay->SetAspectRatio(3);
+	VideoContext::Get()->SetAspectRatio(3);
 	SetDisplayMode(-1,-1);
 }
 
@@ -1229,7 +1229,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Get text
 	VideoContext::Get()->Stop();
 	
-	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),FloatToString(videoBox->videoDisplay->GetAspectRatioValue()));
+	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),FloatToString(VideoContext::Get()->GetAspectRatioValue()));
 	if (value.IsEmpty()) return;
 
 	value.MakeLower();
@@ -1268,7 +1268,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 
 	// Set value
 	else {
-		videoBox->videoDisplay->SetAspectRatio(4,numval);
+		VideoContext::Get()->SetAspectRatio(4,numval);
 		SetDisplayMode(-1,-1);
 	}
 }
