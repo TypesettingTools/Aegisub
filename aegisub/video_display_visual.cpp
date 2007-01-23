@@ -756,7 +756,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	bool hasOverlay = false;
 	bool realTime = Options.AsBool(_T("Video Visual Realtime"));
-	parent->tracker->OnMouseEvent(event);
+	if (parent->tracker) parent->tracker->OnMouseEvent(event);
 
 	// Text of current coords
 	int vx = (sw * x + w/2) / w;

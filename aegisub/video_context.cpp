@@ -123,7 +123,9 @@ VideoContext::~VideoContext () {
 ////////////////
 // Get Instance
 VideoContext *VideoContext::Get() {
-	if (!instance) instance = new VideoContext;
+	if (!instance) {
+		instance = new VideoContext;
+	}
 	return instance;
 }
 
@@ -277,8 +279,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 			Options.AddToRecentList(filename,_T("Recent vid"));
 
 			// Get frame
-			UpdateDisplays(true);
 			frame_n = 0;
+			//UpdateDisplays(true);
 			Refresh(true,true);
 		}
 		

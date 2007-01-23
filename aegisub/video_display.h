@@ -70,6 +70,7 @@ private:
 	wxSize origSize;
 	int w,h;
 	int dx1,dx2,dy1,dy2;
+	bool locked;
 
 	void OnPaint(wxPaintEvent& event);
 	void OnKey(wxKeyEvent &event);

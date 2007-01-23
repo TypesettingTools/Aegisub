@@ -36,7 +36,7 @@
 
 ////////////
 // Includes
-#include "setup.h"
+#include <wx/glcanvas.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <wx/image.h>
@@ -78,8 +78,8 @@ enum {
 // Event table
 BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
-	EVT_KEY_DOWN(VideoDisplay::OnKey)
 	EVT_LEAVE_WINDOW(VideoDisplay::OnMouseLeave)
+	EVT_KEY_DOWN(VideoDisplay::OnKey)
 	EVT_PAINT(VideoDisplay::OnPaint)
 	EVT_SIZE(VideoDisplay::OnSizeEvent)
 	EVT_ERASE_BACKGROUND(VideoDisplay::OnEraseBackground)
@@ -100,8 +100,11 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 : wxGLCanvas (parent, id, attribList, pos, size, style, name)
 {
 	// Set options
+	locked = false;
 	ControlSlider = NULL;
 	PositionDisplay = NULL;
+	w=h=dx2=dy2=8;
+	dx1=dy1=0;
 	origSize = size;
 	zoomValue = 1.0;
 	freeSize = false;
@@ -242,12 +245,15 @@ void VideoDisplay::UpdateSize() {
 	// Loaded?
 	VideoContext *con = VideoContext::Get();
 	if (!con->IsLoaded()) return;
+	if (!IsShownOnScreen()) return;
 
 	// Get size
 	if (con->GetAspectRatioType() == 0) w = con->GetWidth() * zoomValue;
 	else w = con->GetHeight() * zoomValue * con->GetAspectRatioValue();
 	h = con->GetHeight() * zoomValue;
 	int _w,_h;
+	if (w <= 1 || h <= 1) return;
+	locked = true;
 
 	// Set the size for this control
 	SetSizeHints(w,h,w,h);
@@ -261,6 +267,7 @@ void VideoDisplay::UpdateSize() {
 	SetClientSize(w,h);
 
 	// Refresh
+	locked = false;
 	Refresh(false);
 }
 
@@ -288,13 +295,17 @@ void VideoDisplay::OnPaint(wxPaintEvent& event) {
 //////////////
 // Size Event
 void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
-	Refresh(false);
+	//Refresh(false);
+	event.Skip();
 }
 
 
 ///////////////
 // Mouse stuff
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
+	// Locked?
+	if (locked) return;
+
 	// Disable when playing
 	if (VideoContext::Get()->IsPlaying()) return;
 
@@ -339,7 +350,7 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 	if (VideoContext::Get()->IsPlaying()) return;
 	visual->OnMouseEvent(event);
-	tracker->bTrackerEditing = 0;
+	if (tracker) tracker->bTrackerEditing = 0;
 }
 
 
