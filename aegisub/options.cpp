@@ -181,9 +181,6 @@ void OptionsManager::LoadDefaults() {
 
 	// Generate colors
 	wxColour tempCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
-	float r = tempCol.Red() / 255.0;
-	float g = tempCol.Green() / 255.0;
-	float b = tempCol.Blue() / 255.0;
 	wxColour textCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
 	wxColour background = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
 	wxColour comment = wxColour(216,222,245);

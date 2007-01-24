@@ -315,7 +315,7 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 	unsigned char blend = 0;
 
 	// Check if it's just an extension of last display
-	if (lastDisplay && lastDisplay->id == useID && lastDisplay->endFrame == startf-1 &&
+	if (lastDisplay && lastDisplay->id == (unsigned)useID && (signed)lastDisplay->endFrame == startf-1 &&
 		lastDisplay->x == x && lastDisplay->y == y && lastDisplay->alpha == alpha && lastDisplay->blend == blend)
 	{
 		lastDisplay->end = start;

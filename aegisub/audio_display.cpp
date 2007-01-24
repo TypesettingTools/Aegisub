@@ -1124,7 +1124,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	__int64 y = event.GetY();
 	bool karMode = karaoke->enabled;
 	bool shiftDown = event.m_shiftDown;
-	bool ctrlDown = event.m_controlDown;
 	int timelineHeight = Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
 
 	// Leaving event

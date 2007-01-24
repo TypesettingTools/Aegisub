@@ -57,7 +57,7 @@ __int64 abs64(__int64 input) {
 ///////////////////////////////////////
 // Count number of matches of a substr
 int CountMatches(wxString parent,wxString child) {
-	size_t pos = -1;
+	size_t pos = wxString::npos;
 	int n = 0;
 	while ((pos = parent.find(child,pos+1)) != wxString::npos) n++;
 	return n;

@@ -248,7 +248,7 @@ namespace Automation4 {
 			delete config_dialog;
 			config_dialog = 0;
 		}
-		if (config_dialog = GenerateConfigDialog(parent)) {
+		if ((config_dialog = GenerateConfigDialog(parent)) != NULL) {
 			return config_dialog->GetWindow(parent);
 		} else {
 			return 0;

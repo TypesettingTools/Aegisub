@@ -264,7 +264,7 @@ bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 	// Last syllable
 	if (foundBlock) syllables.push_back(temp);
 	return foundBlock;
-	curDiag->ClearBlocks();
+	//curDiag->ClearBlocks();
 }
 
 
@@ -380,7 +380,7 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 				}
 			}
 
-			if (splitting && split_cursor_syl == i /*&& split_cursor_x > 0*/) {
+			if (splitting && split_cursor_syl == (signed)i /*&& split_cursor_x > 0*/) {
 				dc.SetPen(*wxRED);
 				dc.DrawLine(dx+4+split_cursor_x, 0, dx+4+split_cursor_x, h);
 				dc.SetPen(wxPen(wxColour(0,0,0)));
@@ -411,7 +411,7 @@ void AudioKaraoke::OnSize(wxSizeEvent &event) {
 void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	// Get coordinates
 	int x = event.GetX();
-	int y = event.GetY();
+	//int y = event.GetY();
 	bool shift = event.m_shiftDown;
 
 	// Syllable selection mode

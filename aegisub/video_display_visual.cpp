@@ -149,7 +149,7 @@ void VideoDisplayVisual::DrawOverlay() {
 			diag = VideoContext::Get()->grid->GetDialogue(i);
 			if (diag) {
 				// Draw?
-				bool draw = false;
+				//bool draw = false;
 				bool high = false;
 				bool isCur = diag == curSelection;
 				bool timeVisible = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true) <= frame_n && VFR_Output.GetFrameAtTime(diag->End.GetMS(),false) >= frame_n;
@@ -773,8 +773,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		if (mode == 1) {
 			// For each line
 			int numRows = VideoContext::Get()->grid->GetRows();
-			int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
-			int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
+			//int startMs = VFR_Output.GetTimeAtFrame(frame_n,true);
+			//int endMs = VFR_Output.GetTimeAtFrame(frame_n,false);
 			AssDialogue *diag;
 
 			// Don't uninvert this loop or selection will break

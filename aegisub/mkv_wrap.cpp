@@ -154,7 +154,7 @@ void MatroskaWrapper::Parse() {
 			// Variables
 			ulonglong startTime, endTime, filePos;
 			unsigned int rt, frameSize, frameFlags;
-			CompressedStream *cs = NULL;
+			//CompressedStream *cs = NULL;
 
 			// Timecode scale
 			__int64 timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
@@ -281,7 +281,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 	// Get info
 	int tracks = mkv_GetNumTracks(file);
 	TrackInfo *trackInfo;
-	SegmentInfo *segInfo = mkv_GetFileInfo(file);
+	//SegmentInfo *segInfo = mkv_GetFileInfo(file);
 	wxArrayInt tracksFound;
 	wxArrayString tracksNames;
 	int trackToRead = -1;
@@ -289,7 +289,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 	// Haali's library variables
 	ulonglong startTime, endTime, filePos;
 	unsigned int rt, frameSize, frameFlags;
-	CompressedStream *cs = NULL;
+	//CompressedStream *cs = NULL;
 
 	// Find tracks
 	for (int track=0;track<tracks;track++) {
@@ -444,7 +444,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			}
 
 			// Insert into vector
-			if (subList.size() == order) subList.push_back(blockString);
+			if (subList.size() == (unsigned int)order) subList.push_back(blockString);
 			else {
 				if ((signed)(subList.size()) < order+1) subList.resize(order+1);
 				subList[order] = blockString;

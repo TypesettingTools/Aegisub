@@ -494,7 +494,7 @@ namespace Automation4 {
 		// create an array-style table with an integer vector in it
 		// leave the new table on top of the stack
 		lua_newtable(L);
-		for (int i = 0; i != ints.size(); ++i) {
+		for (size_t i = 0; i != ints.size(); ++i) {
 			lua_pushinteger(L, ints[i]+1);
 			lua_rawseti(L, -2, i+1);
 		}
@@ -516,6 +516,7 @@ namespace Automation4 {
 		wxString _description(lua_tostring(L, 2), wxConvUTF8);
 
 		LuaFeatureMacro *macro = new LuaFeatureMacro(_name, _description, L);
+		(void)macro;
 
 		return 0;
 	}
@@ -553,12 +554,14 @@ namespace Automation4 {
 
 		// prepare function call
 		LuaAssFile *subsobj = new LuaAssFile(L, subs, false, false);
+		(void) subsobj;
 		CreateIntegerArray(selected); // selected items
 		lua_pushinteger(L, -1); // active line
 
 		// do call
 		LuaThreadedCall call(L, 3, 1);
 		wxThread::ExitCode code = call.Wait();
+		(void) code;
 		// get result
 		bool result = !!lua_toboolean(L, -1);
 
@@ -574,6 +577,7 @@ namespace Automation4 {
 
 		// prepare function call
 		LuaAssFile *subsobj = new LuaAssFile(L, subs, true, true);
+		(void) subsobj;
 		CreateIntegerArray(selected); // selected items
 		lua_pushinteger(L, -1); // active line
 
@@ -625,6 +629,7 @@ namespace Automation4 {
 		int _merit = lua_tointeger(L, 3);
 
 		LuaFeatureFilter *filter = new LuaFeatureFilter(_name, _description, _merit, L);
+		(void) filter;
 
 		return 0;
 	}
@@ -636,6 +641,7 @@ namespace Automation4 {
 		// prepare function call
 		// subtitles (undo doesn't make sense in exported subs, in fact it'll totally break the undo system)
 		LuaAssFile *subsobj = new LuaAssFile(L, subs, true/*allow modifications*/, false/*disallow undo*/);
+		(void) subsobj;
 		// config
 		if (has_config && config_dialog) {
 			assert(config_dialog->LuaReadBack(L) == 1);
@@ -665,6 +671,7 @@ namespace Automation4 {
 		// prepare function call
 		// subtitles (don't allow any modifications during dialog creation, ideally the subs aren't even accessed)
 		LuaAssFile *subsobj = new LuaAssFile(L, AssFile::top, false/*allow modifications*/, false/*disallow undo*/);
+		(void) subsobj;
 		// stored options
 		lua_newtable(L); // TODO, nothing for now
 

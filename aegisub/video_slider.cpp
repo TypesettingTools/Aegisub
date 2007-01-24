@@ -173,7 +173,7 @@ void VideoSlider::UpdateVideo() {
 void VideoSlider::OnMouse(wxMouseEvent &event) {
 	// Coordinates
 	int x = event.GetX();
-	int y = event.GetY();
+	//int y = event.GetY();
 	bool shift = event.m_shiftDown;
 
 	// Left click

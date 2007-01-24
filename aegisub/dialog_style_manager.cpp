@@ -570,7 +570,6 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &event) {
 	wxArrayInt selections;
 	AssStyle *temp = new AssStyle;
 
-	int n = StorageList->GetSelections(selections);
 	*temp = *(styleStorageMap.at(selections[0]));
 	wxString newName = _("Copy of ");
 	newName += temp->name;
@@ -594,7 +593,6 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &event) {
 void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 	wxArrayInt selections;
 
-	int n = CurrentList->GetSelections(selections);
 	AssStyle *temp = new AssStyle(styleMap.at(selections[0])->GetEntryData());
 	wxString newName = _("Copy of ");
 	newName += temp->name;

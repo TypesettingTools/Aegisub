@@ -82,7 +82,7 @@ void AegiVideoFrame::Allocate() {
 		// Get size
 		int height = h;
 		if (format == FORMAT_YV12 && i > 0) height/=2;
-		int size = pitch[i]*height;
+		unsigned int size = pitch[i]*height;
 
 		// Reallocate, if necessary
 		if (memSize[i] != size) {

@@ -152,7 +152,10 @@ FrameMain::FrameMain (wxArrayString args)
 		Options.SetInt(_T("Auto check for updates"),option);
 		Options.Save();
 	}
-	if (option == 1) DialogVersionCheck *checker = new DialogVersionCheck (this,true);
+	if (option == 1) {
+		DialogVersionCheck *checker = new DialogVersionCheck (this,true);
+		(void)checker;
+	}
 }
 
 

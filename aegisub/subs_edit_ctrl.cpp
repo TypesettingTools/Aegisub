@@ -538,7 +538,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	wxString useProto;
 	wxString cleanProto;
 	wxString protoName;
-	int protoN;
+	int protoN = 0;
 	bool semiProto = false;
 	for (unsigned int i=0;i<proto.Count();i++) {
 		// Get prototype name
@@ -599,7 +599,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	if (highEnd == -1) highEnd = useProto.Length();
 
 	// Calltip is over
-	if (highStart == useProto.Length()) {
+	if (highStart == (signed) useProto.Length()) {
 		CallTipCancel();
 		return;
 	}
@@ -807,7 +807,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	currentWordPos = activePos;
 
 	// Spell check
-	int style = GetStyleAt(activePos);
+	//int style = GetStyleAt(activePos);
 	if (spellchecker && currentWord.Length()) {
 		// Spelled right?
 		bool rightSpelling = spellchecker->CheckWord(currentWord);

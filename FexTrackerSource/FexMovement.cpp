@@ -41,7 +41,7 @@ FEXTRACKER_API void LoadMovement( FexMovement* me, const wchar_t* Filename )
 
 	FILE *fi = _wfopen( Filename, L"rt" );
 	if( !fi ) return;
-	int CurFeat = -1;
+	//int CurFeat = -1;
 	char Line[512];
 	while( !feof(fi) )
 	{

@@ -424,7 +424,7 @@ void SubsEditBox::OnNeedStyle(wxScintillaEvent &event) {
 ///////////////////
 // Character added
 void SubsEditBox::OnCharAdded(wxScintillaEvent &event) {
-	int character = event.GetKey();
+	//int character = event.GetKey();
 }
 
 
@@ -699,7 +699,7 @@ void SubsEditBox::OnMarginLChange(wxCommandEvent &event) {
 	grid->BeginBatch();
 	wxArrayInt sel = grid->GetSelection();
 	int n = sel.Count();
-	AssDialogue *cur;
+	AssDialogue *cur = NULL;
 	for (int i=0;i<n;i++) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
@@ -721,7 +721,7 @@ void SubsEditBox::OnMarginRChange(wxCommandEvent &event) {
 	grid->BeginBatch();
 	wxArrayInt sel = grid->GetSelection();
 	int n = sel.Count();
-	AssDialogue *cur;
+	AssDialogue *cur = NULL;
 	for (int i=0;i<n;i++) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
@@ -743,7 +743,7 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 	grid->BeginBatch();
 	wxArrayInt sel = grid->GetSelection();
 	int n = sel.Count();
-	AssDialogue *cur;
+	AssDialogue *cur = NULL;
 	for (int i=0;i<n;i++) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
@@ -922,7 +922,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 	// Insert variables
 	wxString insert;
 	wxString insert2;
-	int shift;
+	int shift = 0;
 	int nInserted = 1;
 
 	// Default value

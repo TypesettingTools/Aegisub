@@ -321,11 +321,11 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 
 		// Next
 		if (Hotkeys.IsPressed(_T("Translation Assistant Accept"))) {
-			bool ok = JumpToLine(curline,curblock+1);
+			JumpToLine(curline,curblock+1);
 			TransText->Clear();
 			TransText->SetFocus();
 		}
-		else bool ok = JumpToLine(curline,curblock);
+		else JumpToLine(curline,curblock);
 		return;
 	}
 

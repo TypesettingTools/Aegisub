@@ -402,7 +402,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 	lastFrame = n;
 
 	// Image type
-	GLenum format;
+	GLenum format = GL_LUMINANCE;
 	if (frame.format == FORMAT_RGB32) {
 		if (frame.invertChannels) format = GL_BGRA_EXT;
 		else format = GL_RGBA;

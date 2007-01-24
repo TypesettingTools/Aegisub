@@ -575,6 +575,7 @@ void FrameMain::OnAbout(wxCommandEvent &event) {
 // Open check updates
 void FrameMain::OnCheckUpdates(wxCommandEvent &event) {
 	DialogVersionCheck *check = new DialogVersionCheck(this,false);
+	(void)check;
 }
 
 
@@ -994,7 +995,6 @@ void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
 ///////////////////////////////////////////////////////////
 // General handler for all Automation-generated menu items
 void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
-	AssFile *oldtop = AssFile::top;
 	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsBox->ass, SubsBox->GetAbsoluteSelection(), SubsBox->GetFirstSelRow(), this);
 	// check if modifications were made and put on undo stack
 	AssFile::Popping = true; // HACK to avoid getting an additional undo point on stack

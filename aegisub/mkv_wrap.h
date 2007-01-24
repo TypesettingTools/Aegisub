@@ -70,6 +70,11 @@ public:
 	bool isKey;
 	__int64 filePos;
 
+	MkvFrame() {
+		time = 0;
+		isKey = false;
+		filePos = -1;
+	}
 	MkvFrame(bool keyframe,double timecode,__int64 _filePos) {
 		isKey = keyframe;
 		time = timecode;

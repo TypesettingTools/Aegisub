@@ -133,6 +133,7 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	switch (dst.format) {
 		case FORMAT_RGB32: frame.pixfmt = CSRI_F_BGR_; break;
 		case FORMAT_RGB24: frame.pixfmt = CSRI_F_BGR; break;
+		default: frame.pixfmt = CSRI_F_BGR_;
 	}
 
 	// Set format

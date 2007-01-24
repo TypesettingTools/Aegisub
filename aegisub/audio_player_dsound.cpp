@@ -361,7 +361,7 @@ DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 // Thread entry point
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	// Variables
-	unsigned long int playPos,endPos,bufSize;
+	unsigned long int playPos=0,endPos=0,bufSize=0;
 	bool playing;
 
 	// Wait for notification

@@ -106,7 +106,7 @@ void OpenGLWrapper::DrawRing(float x,float y,float r1,float r2,float ar,float ar
 	// Math
 	int steps = int((r1 + r1*ar) * range / (2.0f*pi))*4;
 	if (steps < 12) steps = 12;
-	float end = arcEnd;
+	//float end = arcEnd;
 	float step = range/steps;
 	float curAngle = arcStart;
 

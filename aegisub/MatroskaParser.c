@@ -240,7 +240,7 @@ static void   myvsnprintf_uint_impl(char **pdest,char *de,int width,int zero,
       int	  rem = (int)(val % base);
       val = val / base;
 
-      *--np = rem < 10 ? rem + '0' : rem - 10 + letter;
+      *--np = (char) (rem < 10 ? rem + '0' : rem - 10 + letter);
     }
 
   rw = (int)(tmp - np + sizeof(tmp) - 1);
@@ -290,7 +290,7 @@ static void   myvsnprintf_int(char **pdest,char *de,int width,int zero,
 static void   myvsnprintf(char *dest,unsigned dsize,const char *fmt,va_list ap) {
   // s,d,x,u,ll
   char	    *de = dest + dsize - 1;
-  int	    state = 0, width, zero, neg, ll;
+  int	    state = 0, width=0, zero=0, neg=0, ll=0;
 
   if (dsize <= 1) {
     if (dsize > 0)
@@ -687,7 +687,7 @@ static ulonglong readVLUIntImp(MatroskaFile *mf,int *mask) {
 
   c = readch(mf);
   if (c == EOF)
-    return EOF;
+    return (ulonglong)EOF;
 
   if (c == 0)
     errorjmp(mf,"Invalid first byte of EBML integer: 0");
@@ -762,6 +762,7 @@ static MKFLOAT readFloat(MatroskaFile *mf,unsigned int len) {
 #ifdef MATROSKA_INTEGER_ONLY
   MKFLOAT	  f;
   int		  shift;
+  f.v = 0;
 #else
   union {
     unsigned int  ui;
@@ -769,6 +770,9 @@ static MKFLOAT readFloat(MatroskaFile *mf,unsigned int len) {
     float	  f;
     double	  d;
   } u;
+  ui = 0;
+  d = 0;
+  ull = 0;
 #endif
 
   if (len!=4 && len!=8)
@@ -1246,7 +1250,7 @@ static void parseTrackEntry(MatroskaFile *mf,ulonglong toplen) {
   ulonglong	    v;
   char		    *cp = NULL, *cs = NULL;
   size_t	    cplen = 0, cslen = 0, cpadd = 0;
-  unsigned	    CompScope, num_comp = 0;
+  unsigned	    CompScope=0, num_comp = 0;
 
   if (mf->nTracks >= MAX_TRACKS)
     errorjmp(mf,"Too many tracks.");
@@ -1431,11 +1435,11 @@ static void parseTrackEntry(MatroskaFile *mf,ulonglong toplen) {
     if (inflateInit(&zs) != Z_OK)
       errorjmp(mf, "inflateInit failed");
 
-    zs.next_in = cp;
+    zs.next_in = (Bytef*) cp;
     zs.avail_in = cplen;
 
     do {
-      zs.next_out = tmp;
+      zs.next_out = (Bytef*) tmp;
       zs.avail_out = sizeof(tmp);
 
       code = inflate(&zs, Z_NO_FLUSH);
@@ -1449,9 +1453,9 @@ static void parseTrackEntry(MatroskaFile *mf,ulonglong toplen) {
 
     inflateReset(&zs);
 
-    zs.next_in = cp;
+    zs.next_in = (Bytef*) cp;
     zs.avail_in = cplen;
-    zs.next_out = ncp;
+    zs.next_out = (Bytef*) ncp;
     zs.avail_out = ncplen;
 
     if (inflate(&zs, Z_FINISH) != Z_STREAM_END)
@@ -2059,7 +2063,7 @@ static void parseSegment(MatroskaFile *mf,ulonglong toplen) {
 }
 
 static void parseBlockAdditions(MatroskaFile *mf, ulonglong toplen, ulonglong timecode, unsigned track) {
-  ulonglong	add_id = 1, add_pos, add_len;
+  ulonglong	add_id = 1, add_pos=0, add_len=0;
   unsigned char	have_add;
 
   FOREACH(mf, toplen)
@@ -2091,10 +2095,10 @@ static void parseBlockAdditions(MatroskaFile *mf, ulonglong toplen, ulonglong ti
 }
 
 static void parseBlockGroup(MatroskaFile *mf,ulonglong toplen,ulonglong timecode, int blockex) {
-  ulonglong	v;
+  ulonglong	v=0;
   ulonglong	duration = 0;
-  ulonglong	dpos;
-  unsigned	add_id = 0;
+  ulonglong	dpos=0;
+  //unsigned	add_id = 0;
   struct QueueEntry *qe,*qf = NULL;
   unsigned char	have_duration = 0, have_block = 0;
   unsigned char	gap = 0;
@@ -2151,10 +2155,10 @@ found:
 	errorjmp(mf,"Unexpected EOF while reading Block flags");
 
       if (blockex)
-	ref = !(c & 0x80);
+	ref = (unsigned char)(!(c & 0x80));
 
-      gap = c & 0x1;
-      lacing = (c >> 1) & 3;
+      gap = (unsigned char)(c & 0x1);
+      lacing = (unsigned char)((c >> 1) & 3);
 
       if (lacing) {
 	c = readch(mf);
@@ -3259,7 +3263,7 @@ int		  cs_ReadData(CompressedStream *cs,char *buffer,unsigned bufsize)
       cs->decoded_ptr += todo;
     } else {
       /* setup output buffer */
-      cs->zs.next_out = cs->decoded_buffer;
+      cs->zs.next_out = (Bytef*) cs->decoded_buffer;
       cs->zs.avail_out = sizeof(cs->decoded_buffer);
 
       /* try to read more data */
@@ -3273,7 +3277,7 @@ int		  cs_ReadData(CompressedStream *cs,char *buffer,unsigned bufsize)
 	  return -1;
 	}
 
-	cs->zs.next_in = cs->frame_buffer;
+	cs->zs.next_in = (Bytef*) cs->frame_buffer;
 	cs->zs.avail_in = todo;
 
 	cs->frame_pos += todo;

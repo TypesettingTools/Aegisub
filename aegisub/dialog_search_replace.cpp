@@ -338,7 +338,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	int start = curLine;
 	int nrows = grid->GetRows();
 	bool found = false;
-	wxString *Text;
+	wxString *Text = NULL;
 	size_t tempPos;
 	int regFlags = wxRE_ADVANCED;
 	if (!matchCase) {

@@ -48,6 +48,7 @@ public:
 	wxString katakana;
 	wxString hepburn;
 
+	KanaEntry() {}
 	KanaEntry(wxString hira,wxString kata,wxString hep) {
 		hiragana = hira;
 		katakana = kata;

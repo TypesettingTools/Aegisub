@@ -180,8 +180,9 @@ void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 	else if (SourceStyle->GetValue() == DestStyle->GetValue())
 		wxMessageBox(_("The source and destination styles must be different."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else {
-		OnSkipDest((wxCommandEvent)NULL);
-		OnSkipSource((wxCommandEvent)NULL);
+		wxCommandEvent blank;
+		OnSkipDest(blank);
+		OnSkipSource(blank);
 		DestText->SetFocus();
 	}
 }
@@ -306,11 +307,10 @@ void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 	GroupsList->DeleteAllItems();
 	int index = ListIndexFromStyleandIndex(DestStyle->GetValue(), DestIndex);
 	if (index != -1) {
-		AssDialogue *line = grid->GetDialogue(index);
 		DestText->ChangeValue(grid->GetDialogue(index)->GetStrippedText());
-		
+
 		SetSelected();
-		
+
 		DestText->SetFocus();
 		DestIndex++;
 	}
@@ -318,8 +318,9 @@ void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
 	DestIndex-=2;
 	SourceIndex-=2;
-	OnSkipDest((wxCommandEvent)NULL);
-	OnSkipSource((wxCommandEvent)NULL);
+	wxCommandEvent tmpEvent;
+	OnSkipDest(tmpEvent);
+	OnSkipSource(tmpEvent);
 }
 void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 	if (RegroupTotalLen==0)
@@ -358,18 +359,20 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 		grid->ass->FlagAsModified();
 		grid->CommitChanges();
 
-		OnSkipDest((wxCommandEvent)NULL);
-		OnSkipSource((wxCommandEvent)NULL);
+		wxCommandEvent evt;
+		OnSkipDest(evt);
+		OnSkipSource(evt);
 	}
 }
 void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
+	wxCommandEvent evt;
 	switch(event.GetKeyCode()) {
 		case WXK_ESCAPE :
 			//this->EndModal(0);
-			OnClose((wxCommandEvent)NULL);
+			OnClose(evt);
 			break;
 		case WXK_BACK :
-			OnUnlink((wxCommandEvent)NULL);
+			OnUnlink(evt);
 			break;
 		case WXK_RIGHT : //inc dest selection len
 			if (DestText->GetStringSelection().Len()!=DestText->GetValue().Len())
@@ -390,17 +393,18 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 			}
 			break;
 		case WXK_RETURN :
-			OnKeyEnter((wxCommandEvent)NULL);
+			OnKeyEnter(evt);
 			break;
 		default :
 			event.Skip();
 	}
 }
 void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event) {
+	wxCommandEvent evt;
 	if (SourceText->GetValue().Len()==0&&RegroupTotalLen!=0)
-		this->OnAccept((wxCommandEvent)NULL);
+		this->OnAccept(evt);
 	else if (SourceText->GetStringSelection().Len()!=0)
-		this->OnLink((wxCommandEvent)NULL);
+		this->OnLink(evt);
 }
 void DialogKanjiTimer::OnMouseEvent(wxMouseEvent &event) {
 	if (event.LeftDown()) DestText->SetFocus();
@@ -457,7 +461,6 @@ void DialogKanjiTimer::SetSelected() {
 				//Try some interpolation for kanji. If we find a hiragana we know after this,
 				//  then we may be able to figure this one out.
 				wxString NextSGroup = RegroupSourceText[GetSourceArrayPos(false)];
-				int highlight=0;
 
 				for(std::list<KanaEntry>::iterator iter = kt->entries.begin(); iter != kt->entries.end(); iter++) {
 					KanaEntry ke = *iter;
@@ -558,7 +561,7 @@ int DialogKanjiTimer::ListIndexFromStyleandIndex(wxString StyleName, int Occuran
 	AssDialogue *line;
 	int index = 0;
 	int occindex = 0;
-	while(line=grid->GetDialogue(index)) {
+	while((line=grid->GetDialogue(index)) != NULL) {
 		if (line->Style == StyleName) {
 			if (occindex == Occurance)
 				return index;

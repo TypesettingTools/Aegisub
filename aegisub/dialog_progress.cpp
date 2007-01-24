@@ -50,7 +50,7 @@ DialogProgress::DialogProgress(wxWindow *parent,wxString title,volatile bool *ca
 
 	// Gauge
 	gauge = new wxGauge(this, -1, max, wxDefaultPosition, wxSize(300,20), wxGA_HORIZONTAL);
-	wxButton *cancelButton;
+	wxButton *cancelButton = NULL;
 	if (cancel) cancelButton = new wxButton(this,wxID_CANCEL);
 	text = new wxStaticText(this, -1, message, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE | wxST_NO_AUTORESIZE);
 

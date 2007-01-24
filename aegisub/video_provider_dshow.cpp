@@ -359,7 +359,7 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	else fps = 10000000.0 / double(defd);
 
 	// Set number of frames
-	last_fnum = -1;
+	last_fnum = 0;
 	num_frames = duration / defd;
 
 	// Store filters
@@ -507,7 +507,7 @@ const AegiVideoFrame DirectShowVideoProvider::DoGetFrame(int n) {
 	if (cur < 0) cur = 0;
 
 	// Is next
-	if (n == last_fnum + 1) {
+	if (n == (signed)last_fnum + 1) {
 		//rdf.frame.Clear();
 		NextFrame(rdf,fn);
 		last_fnum = n;
