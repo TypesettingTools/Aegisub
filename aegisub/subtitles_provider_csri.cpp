@@ -39,7 +39,9 @@
 #include "subtitles_provider.h"
 #include "ass_file.h"
 #include "video_context.h"
-#define CSRIAPI __declspec(dllexport)
+#ifdef WIN32
+#define CSRIAPI __declspec(dllimport)
+#endif
 #include "csri/csri.h"
 
 

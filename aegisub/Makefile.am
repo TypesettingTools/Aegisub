@@ -11,7 +11,7 @@ REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBU
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGS = -Iposix -include posix/defines.h $(BUILDINFO)
-LDADD = posix/libposix.a ../lua51/src/liblua.a
+LDADD = posix/libposix.a ../lua51/src/liblua.a -lGL -lGLU
 aegisub_SOURCES = \
 	aegisublocale.cpp \
 	ass_attachment.cpp \
@@ -76,6 +76,7 @@ aegisub_SOURCES = \
 	fft.cpp \
 	frame_main.cpp \
 	frame_main_events.cpp \
+	gl_wrap.cpp \
 	hilimod_textctrl.cpp \
 	hotkeys.cpp \
 	idle_field_event.cpp \
@@ -98,9 +99,8 @@ aegisub_SOURCES = \
 	subtitle_format_prs.cpp \
 	subtitle_format_srt.cpp \
 	subtitle_format_txt.cpp \
-	subtitle_provider.cpp \
-	subtitle_provider_asa.cpp \
-	subtitle_provider_libass.cpp \
+	subtitles_provider.cpp \
+	subtitles_provider_csri.cpp \
 	text_file_reader.cpp \
 	text_file_writer.cpp \
 	thesaurus.cpp \
@@ -113,10 +113,11 @@ aegisub_SOURCES = \
 	version.cpp \
 	vfr.cpp \
 	video_box.cpp \
+	video_context.cpp \
 	video_display.cpp \
 	video_display_visual.cpp \
+	video_frame.cpp \
 	video_provider.cpp \
-	video_provider_lavc.cpp \
 	video_slider.cpp \
 	video_zoom.cpp \
 	MatroskaParser.c
