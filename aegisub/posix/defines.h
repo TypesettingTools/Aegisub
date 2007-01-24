@@ -15,6 +15,8 @@
 #include <inttypes.h>
 #endif
 
+#include <stdwx.h>
+
 typedef int64_t __int64;
 typedef uint64_t __uint64;
 #define abs64 llabs

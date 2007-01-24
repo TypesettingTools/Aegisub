@@ -147,14 +147,16 @@ namespace Automation4 {
 			for (unsigned int i = 0; i < text.length(); i++) {
 				int a, b, c, d;
 				thedc.GetTextExtent(text[i], &a, &b, &c, &d);
-				width += a + >spacing;
+				width += a + spacing;
 				height = b > height ? b : height;
 				descent = c > descent ? c : descent;
 				extlead= d > extlead ? d : extlead;
 			}
 		} else {
 			// If the inter-character spacing should be zero, kerning info can (and must) be used, so calculate everything in one go
-			thedc.GetTextExtent(text, &width, &height, &descent, &extlead);
+			long lwidth, lheight, ldescent, lextlead;
+			thedc.GetTextExtent(text, &lwidth, &lheight, &ldescent, &lextlead);
+			width = lwidth; height = lheight; descent = ldescent; extlead = lextlead;
 		}
 #endif
 
