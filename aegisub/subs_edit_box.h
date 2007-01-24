@@ -155,7 +155,7 @@ public:
 	void UpdateGlobals();
 	void SetToLine(int n,bool weak=false);
 	void UpdateFrameTiming();
-	void KeyPress(wxKeyEvent &event);
+	void DoKeyPress(wxKeyEvent &event);
 
 	DECLARE_EVENT_TABLE()
 };

@@ -463,10 +463,10 @@ wxString AssStyle::GetSSAText() {
 	font.Replace(_T(","),_T(";"));
 
 	output = wxString::Format(_T("Style: %s,%s,%.0f,%s,%s,0,%s,%d,%d,%d,%.0f,%.0f,%d,%d,%d,%d,0,%i"),
-				  name, font, fontsize,
-				  primary.GetSSAFormatted(),
-				  secondary.GetSSAFormatted(),
-				  shadow.GetSSAFormatted(),
+				  name.c_str(), font.c_str(), fontsize,
+				  primary.GetSSAFormatted().c_str(),
+				  secondary.GetSSAFormatted().c_str(),
+				  shadow.GetSSAFormatted().c_str(),
 				  (bold? -1 : 0), (italic ? -1 : 0),
 				  borderstyle,outline_w,shadow_w,align,
 				  Margin[0],Margin[1],Margin[2],encoding);

@@ -810,13 +810,13 @@ BEGIN_EVENT_TABLE(SubsEditBoxEvent, wxEvtHandler)
 END_EVENT_TABLE()
 
 void SubsEditBoxEvent::OnKeyPress(wxKeyEvent &event) {
-	control->KeyPress(event);
+	control->DoKeyPress(event);
 }
 
 
 ///////////////////////
 // Actual text changed
-void SubsEditBox::KeyPress(wxKeyEvent &event) {
+void SubsEditBox::DoKeyPress(wxKeyEvent &event) {
 	int key = event.GetKeyCode();
 
 	if (key == WXK_RETURN || key == WXK_NUMPAD_ENTER) {
