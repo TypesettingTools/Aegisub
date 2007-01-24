@@ -57,7 +57,7 @@ protected:
 			factories = new std::map<wxString,T*>;
 			return NULL;
 		}
-		std::map<wxString,T*>::iterator res = factories->find(name.Lower());
+		typename std::map<wxString,T*>::iterator res = factories->find(name.Lower());
 		if (res != factories->end()) return res->second;
 		return NULL;
 	}
@@ -67,7 +67,7 @@ public:
 		if (factories == NULL) factories = new std::map<wxString,T*>;
 		wxArrayString list;
 		favourite = favourite.Lower();
-		for (std::map<wxString,T*>::iterator cur=factories->begin();cur!=factories->end();cur++) {
+		for (typename std::map<wxString,T*>::iterator cur=factories->begin();cur!=factories->end();cur++) {
 			if (cur->first == favourite) list.Insert(cur->first,0);
 			else list.Add(cur->first);
 		}

@@ -235,4 +235,4 @@ AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cac
 
 //////////
 // Static
-std::map<wxString,AudioProviderFactory*>* AegisubFactory<AudioProviderFactory>::factories=NULL;
+template <class AudioProviderFactory> std::map<wxString,AudioProviderFactory*>* AegisubFactory<AudioProviderFactory>::factories=NULL;

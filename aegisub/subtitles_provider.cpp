@@ -74,4 +74,4 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 
 //////////
 // Static
-std::map<wxString,SubtitlesProviderFactory*>* AegisubFactory<SubtitlesProviderFactory>::factories=NULL;
+template <class SubtitlesProviderFactory> std::map<wxString,SubtitlesProviderFactory*>* AegisubFactory<SubtitlesProviderFactory>::factories=NULL;

@@ -76,7 +76,7 @@ public:
 class LAVCAudioProviderFactory : public AudioProviderFactory {
 public:
 	AudioProvider *CreateProvider(wxString file) { return new LAVCAudioProvider(file); }
-	AvisynthAudioProviderFactory() : AudioProviderFactory(_T("lavc")) {}
+	LAVCAudioProviderFactory() : AudioProviderFactory(_T("lavc")) {}
 } registerLAVCaudio;
 
 
@@ -207,4 +207,3 @@ void LAVCAudioProvider::GetAudio(void *buf, __int64 start, __int64 count)
 	}
 }
 
-#endif

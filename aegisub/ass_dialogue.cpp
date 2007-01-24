@@ -797,7 +797,7 @@ wxString AssDialogue::GetStrippedText() {
 	wxString justtext = wxString(_T(""));
 	bool inCode = false;
 	
-	for (int charindex = 0; charindex != Text.Len(); charindex++) {
+	for (size_t charindex = 0; charindex != Text.Len(); charindex++) {
 		if (Text[charindex] == '{') inCode = true;
 		else if (Text[charindex] == '}') inCode = false;
 		else if (!inCode) justtext = justtext + Text[charindex];

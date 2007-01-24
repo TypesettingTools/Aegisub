@@ -34,7 +34,7 @@
 //
 
 
-#pragma once;
+#pragma once
 
 
 ///////////////////////

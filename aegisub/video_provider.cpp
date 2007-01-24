@@ -154,4 +154,4 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
 
 //////////
 // Static
-std::map<wxString,VideoProviderFactory*>* AegisubFactory<VideoProviderFactory>::factories=NULL;
+template <class VideoProviderFactory> std::map<wxString,VideoProviderFactory*>* AegisubFactory<VideoProviderFactory>::factories=NULL;
