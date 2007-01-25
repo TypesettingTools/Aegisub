@@ -170,6 +170,17 @@ END_EVENT_TABLE()
 void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	Options.SetBool(_T("kanji timer interpolation"),Interpolate->IsChecked());
 	Options.Save();
+	
+	while(LinesToChange.empty()==false) {
+		std::pair<int,wxString> p = LinesToChange.back();
+		LinesToChange.pop_back();
+		AssDialogue *line = grid->GetDialogue(p.first);
+		line->Text = p.second;
+
+	}
+	grid->ass->FlagAsModified();
+	grid->CommitChanges();
+	LinesToChange.clear();
 	Close();
 }
 
@@ -185,6 +196,7 @@ void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 		OnSkipSource(blank);
 		DestText->SetFocus();
 	}
+	LinesToChange.clear();
 }
 void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
 	int sourceLen = SourceText->GetStringSelection().Len();
@@ -318,6 +330,8 @@ void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
 	DestIndex-=2;
 	SourceIndex-=2;
+	if (LinesToChange.empty()==false)
+		LinesToChange.pop_back(); //If we go back, then take out the modified line we saved.
 	wxCommandEvent tmpEvent;
 	OnSkipDest(tmpEvent);
 	OnSkipSource(tmpEvent);
@@ -330,7 +344,8 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 	else {
 		wxString OutputText = TextBeforeKaraoke;
 		wxString ThisText;
-		AssDialogue *line = grid->GetDialogue(ListIndexFromStyleandIndex(DestStyle->GetValue(), DestIndex-1));
+		int diagindex = ListIndexFromStyleandIndex(DestStyle->GetValue(), DestIndex-1);
+		//AssDialogue *line = grid->GetDialogue(diagindex);
 		int ItemCount = GroupsList->GetItemCount();
 		int SourceLength;
 		int WorkingK = 0;
@@ -342,7 +357,7 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 			if (RegroupSourceText[SourceIndex].Len() == 0) {
 				//Karaoke block w/o text that is NOT in the middle of a group, just copy it over
 				//  since we can't figure out if it should go to the previous or the next group
-				OutputText = wxString::Format(_("%s{\\k%i}"),OutputText,RegroupSourceKLengths[SourceIndex]);
+				OutputText = wxString::Format(_("%s{\\k%i}"),OutputText.c_str(),RegroupSourceKLengths[SourceIndex]);
 				SourceIndex++;
 			}
 
@@ -351,13 +366,15 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 				SourceLength -= (RegroupSourceText[SourceIndex]).Len();
 				SourceIndex++;
 			}
-			OutputText = wxString::Format(_("%s{\\k%i}%s"),OutputText,WorkingK,RegroupGroups[(index<<1)+1]);
+			OutputText = wxString::Format(_("%s{\\k%i}%s"),OutputText.c_str(),WorkingK,(RegroupGroups[(index<<1)+1]).c_str());
 		
 			WorkingK = 0;
 		}
-		line->Text = OutputText;
-		grid->ass->FlagAsModified();
-		grid->CommitChanges();
+		std::pair<int,wxString> ins(diagindex,OutputText);
+		LinesToChange.push_back(ins);
+		//line->Text = OutputText;
+		//grid->ass->FlagAsModified();
+		//grid->CommitChanges();
 
 		wxCommandEvent evt;
 		OnSkipDest(evt);
@@ -368,7 +385,6 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 	wxCommandEvent evt;
 	switch(event.GetKeyCode()) {
 		case WXK_ESCAPE :
-			//this->EndModal(0);
 			OnClose(evt);
 			break;
 		case WXK_BACK :
