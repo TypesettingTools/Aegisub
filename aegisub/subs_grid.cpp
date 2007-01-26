@@ -645,7 +645,7 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 	AssDialogue *cur = GetDialogue(GetFirstSelRow());
 
 	__int64 num_samples = provider->GetNumSamples();
-	__int64 start = audioDisplay->GetSampleAtMS(cur->StartMS);
+	__int64 start = audioDisplay->GetSampleAtMS(cur->Start.GetMS());
 	__int64 end = audioDisplay->GetSampleAtMS(cur->End.GetMS());
 	end=(end>=num_samples+1)?num_samples:end;
 	wxString filename = wxFileSelector(_("Save audio clip"),0,0,_T("wav"),0,wxFD_SAVE|wxFD_OVERWRITE_PROMPT,this);
