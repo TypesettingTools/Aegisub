@@ -98,6 +98,7 @@ Please visit http://aegisub.net to download latest version
 - Added a clear button for shifting history. (Dansolo)
 - Fixed Custom Aspect Ratio input. (Dansolo)
 - Made the video display detachable. (AMZ)
+- Undo and redo now have descriptions. (Dansolo)
 
 
 = 1.10 beta - 2006.08.07 ===========================
