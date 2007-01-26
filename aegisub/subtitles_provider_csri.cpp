@@ -97,18 +97,19 @@ CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 // Load subtitles
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Close
-	// HACK: REMOVE THE FOLLOWING LINE
-	if (instance) return;
 	if (instance) csri_close(instance);
 	instance = NULL;
 
 	// Prepare subtitles
-	wxString subsfilename = VideoContext::Get()->GetTempWorkFile();
-	subs->Save(subsfilename,false,false,_T("UTF-8"));
+	//wxString subsfilename = VideoContext::Get()->GetTempWorkFile();
+	//subs->Save(subsfilename,false,false,_T("UTF-8"));
+	std::vector<char> data;
+	subs->SaveMemory(data,_T("UTF-8"));
 	delete subs;
 
 	// Open
-	instance = csri_open_file(csri_renderer_default(),subsfilename.mb_str(wxConvUTF8),NULL);
+	//instance = csri_open_file(csri_renderer_default(),subsfilename.mb_str(wxConvUTF8),NULL);
+	instance = csri_open_mem(csri_renderer_default(),&data[0],data.size(),NULL);
 }
 
 

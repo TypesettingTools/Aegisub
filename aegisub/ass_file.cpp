@@ -143,8 +143,8 @@ void AssFile::Load (const wxString _filename,const wxString charset,bool addToRe
 }
 
 
-/////////////////////////////
-// Chooses format to save in
+////////////////////////////
+// Save a file to Hard Disk
 void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wxString encoding) {
 	// Finds last dot
 	int i = 0;
@@ -173,6 +173,46 @@ void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wx
 	if (setfilename) {
 		Modified = false;
 		filename = _filename;
+	}
+}
+
+
+////////////////////////////////
+// Saves a file to a ram vector
+void AssFile::SaveMemory(std::vector<char> &dst,const wxString encoding) {
+	// Set encoding
+	wxString enc = encoding;
+	if (enc.IsEmpty()) enc = _T("UTF-8");
+	if (enc != _T("UTF-8")) throw _T("Memory writer only supports UTF-8 for now.");
+
+	// Prepare vector
+	dst.clear();
+	dst.reserve(0x4000);
+
+	// Write file
+	entryIter cur;
+	unsigned int lineSize = 0;
+	unsigned int targetSize = 0;
+	unsigned int pos = 0;
+	wxCharBuffer buffer;
+	for (cur=Line.begin();cur!=Line.end();cur++) {
+		// Convert
+		wxString temp = (*cur)->GetEntryData() + _T("\r\n");
+		buffer = temp.mb_str(wxConvUTF8);
+		lineSize = strlen(buffer);
+
+		// Raise capacity if needed
+		targetSize = dst.size() + lineSize;
+		if (dst.capacity() < targetSize) {
+			unsigned int newSize = dst.capacity();
+			while (newSize < targetSize) newSize *= 2;
+			dst.reserve(newSize);
+		}
+
+		// Append line
+		pos = dst.size();
+		dst.resize(targetSize);
+		memcpy(&dst[pos],buffer,lineSize);
 	}
 }
 
