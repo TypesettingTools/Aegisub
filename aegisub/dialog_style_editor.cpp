@@ -367,7 +367,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		}
 
 		// Style name change
-		if (work->name != newStyleName) {
+		if (work->name != newStyleName && !work->name.StartsWith(_("Copy of "))) {
 			// See if user wants to update style name through script
 			int answer = wxNO;
 			if (work->name != _T("Default")) answer = wxMessageBox(_T("Do you want to change all instances of this style in the script to this new name?"),_T("Update script?"),wxYES_NO | wxCANCEL);

@@ -67,7 +67,7 @@ private:
 
 	wxString TextBeforeKaraoke;
 	wxString *RegroupSourceText, *RegroupGroups;
-	std::vector<std::pair<int,wxString>> LinesToChange;
+	std::vector<std::pair<int,wxString> > LinesToChange;
 	int *RegroupSourceKLengths;
 	int RegroupSourceSelected, RegroupTotalLen;
 	int SourceIndex, DestIndex;
