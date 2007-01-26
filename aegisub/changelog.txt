@@ -99,6 +99,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed Custom Aspect Ratio input. (Dansolo)
 - Made the video display detachable. (AMZ)
 - Undo and redo now have descriptions. (Dansolo)
+- The three different "Recombine Lines" were merged into one that autodetects needed changes, and also supports two new cases. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

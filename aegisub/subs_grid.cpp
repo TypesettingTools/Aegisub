@@ -600,12 +600,23 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 
 		// Detect type
 		int type = -1;
+		bool invert = false;
 		if (n1->Text.Right(n2->Text.Length()) == n2->Text) type = 0;
+		else if (n1->Text.Left(n2->Text.Length()) == n2->Text) { type = 1; invert = true; }
 		else if (n2->Text.Left(n1->Text.Length()) == n1->Text) type = 1;
+		else if (n2->Text.Right(n1->Text.Length()) == n1->Text) { type = 0; invert = true; }
 		else {
 			// Unknown type
 			parentFrame->StatusTimeout(_T("Unable to recombine: Neither line is a suffix of the other one."));
 			return;
+		}
+
+		// Invert?
+		if (invert) {
+			n3 = n1;
+			n1 = n2;
+			n2 = n3;
+			n3 = NULL;
 		}
 
 		// 1+2,2 -> 1,2
@@ -616,8 +627,8 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 			n2->Start = n1->Start;
 		}
 
-		// 1,1+2, -> 1,2
-		else {
+		// 1,1+2 -> 1,2
+		else if (type == 1) {
 			n2->Text = n2->Text.Mid(n1->Text.Length()).Trim(true).Trim(false);
 			while (n2->Text.Left(2) == _T("\\N") || n2->Text.Left(2) == _T("\\n")) n2->Text = n2->Text.Mid(2);
 			while (n2->Text.Right(2) == _T("\\N") || n2->Text.Right(2) == _T("\\n")) n2->Text = n2->Text.Mid(0,n2->Text.Length()-2);
