@@ -558,7 +558,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 		else return;
 	}
 	LoadCurrentStyles(AssFile::top);
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("style copy"));
 	grid->CommitChanges();
 	UpdateMoveButtons();
 }
@@ -607,7 +607,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 	}
 	else delete temp;
 
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("style copy"));
 	grid->CommitChanges();
 	UpdateMoveButtons();
 }
@@ -711,7 +711,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &event) {
 		CurrentCopy->Enable(false);
 		CurrentDelete->Enable(false);
 
-		grid->ass->FlagAsModified();
+		grid->ass->FlagAsModified(_("style delete"));
 		grid->CommitChanges();
 	}
 	UpdateMoveButtons();
@@ -768,7 +768,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
 			// Update
 			if (modified) {
 				LoadCurrentStyles(grid->ass);
-				grid->ass->FlagAsModified();
+				grid->ass->FlagAsModified(_("style import"));
 				grid->CommitChanges();
 			}
 		}
@@ -978,7 +978,7 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		}
 
 		// Flag as modified
-		grid->ass->FlagAsModified();
+		grid->ass->FlagAsModified(_("style move"));
 		grid->CommitChanges();
 	}
 

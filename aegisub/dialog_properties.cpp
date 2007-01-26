@@ -184,7 +184,7 @@ void DialogProperties::OnOK(wxCommandEvent &event) {
 	wxString col[2] = { _T("Normal"), _T("Reverse")};
 	count += SetInfoIfDifferent(_T("Collisions"),col[collision->GetSelection()]);
 
-	if (count) AssFile::top->FlagAsModified();
+	if (count) AssFile::top->FlagAsModified(_("property changes"));
 
 	EndModal(count?1:0);
 }

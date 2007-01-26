@@ -72,6 +72,7 @@ public:
 	std::list<AssEntry*> Line;
 
 	wxString filename;
+	wxString undodescription;
 	bool loaded;
 
 	AssFile();
@@ -79,7 +80,7 @@ public:
 	~AssFile();
 
 	bool IsModified();									// Returns if file has unmodified changes
-	void FlagAsModified();								// Flag file as being modified, will automatically put a copy on stack
+	void FlagAsModified(wxString desc);					// Flag file as being modified, will automatically put a copy on stack
 	void Clear();										// Wipes file
 	void CompressForStack(bool compress);				// Compress/decompress for storage on stack
 	void LoadDefault(bool defline=true);				// Loads default file. Pass false to prevent it from adding a default line too
@@ -104,14 +105,16 @@ public:
 	void AddComment(const wxString comment);						// Adds a ";" comment under [Script Info].
 	int AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outGroup=NULL);
 
-	static void StackPop();		// Pop subs from stack and sets 'top' to it
-	static void StackRedo();	// Redoes action on stack
-	static void StackPush();	// Puts a copy of 'top' on the stack
-	static void StackReset();	// Resets stack. Do this before loading new subtitles.
-	static bool IsUndoStackEmpty();	// Checks if undo stack is empty
-	static bool IsRedoStackEmpty();	// Checks if undo stack is empty
-	static bool Popping;		// Flags the stack as popping. You must unset this after popping
-	static AssFile *top;		// Current script file. It is "above" the stack.
+	static void StackPop();					// Pop subs from stack and sets 'top' to it
+	static void StackRedo();				// Redoes action on stack
+	static void StackPush(wxString desc);	// Puts a copy of 'top' on the stack
+	static void StackReset();				// Resets stack. Do this before loading new subtitles.
+	static bool IsUndoStackEmpty();			// Checks if undo stack is empty
+	static bool IsRedoStackEmpty();			// Checks if undo stack is empty
+	static wxString GetUndoDescription();	// Gets field undodescription from back of UndoStack
+	static wxString GetRedoDescription();	// Gets field undodescription from back of RedoStack
+	static bool Popping;					// Flags the stack as popping. You must unset this after popping
+	static AssFile *top;					// Current script file. It is "above" the stack.
 };
 
 

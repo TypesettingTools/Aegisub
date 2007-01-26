@@ -551,7 +551,7 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &event) {
 			cur->UpdateData();
 		}
 	}
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("style change"));
 	grid->CommitChanges();
 	grid->EndBatch();
 }
@@ -582,7 +582,7 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 	}
 
 	// Update grid
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("actor change"));
 	grid->CommitChanges();
 	grid->EndBatch();
 }
@@ -615,7 +615,7 @@ void SubsEditBox::OnLayerChange(wxCommandEvent &event) {
 
 	// Done
 	Layer->SetValue(wxString::Format(_("%i"),temp));
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("layer change"));
 	grid->CommitChanges();
 	grid->EndBatch();
 }
@@ -684,7 +684,7 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart) {
 	}
 
 	// Commit
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("commit times"));
 	grid->CommitChanges();
 	grid->EndBatch();
 	audio->SetDialogue(grid,grid->GetDialogue(sel[0]),sel[0]);
@@ -708,7 +708,7 @@ void SubsEditBox::OnMarginLChange(wxCommandEvent &event) {
 		}
 	}
 	MarginL->SetValue(cur->GetMarginString(0,false));
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("MarginL change"));
 	grid->CommitChanges();
 	grid->EndBatch();
 }
@@ -730,7 +730,7 @@ void SubsEditBox::OnMarginRChange(wxCommandEvent &event) {
 		}
 	}
 	MarginR->SetValue(cur->GetMarginString(1,false));
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("MarginR change"));
 	grid->CommitChanges();
 	grid->EndBatch();
 }
@@ -752,7 +752,7 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 		}
 	}
 	MarginV->SetValue(cur->GetMarginString(2,false));
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("MarginV change"));
 	grid->CommitChanges();
 	grid->EndBatch();
 }
@@ -773,7 +773,7 @@ void SubsEditBox::OnEffectChange(wxCommandEvent &event) {
 			cur->UpdateData();
 		}
 	}
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("effect change"));
 	grid->CommitChanges();
 	grid->EndBatch();
 }
@@ -793,7 +793,7 @@ void SubsEditBox::OnCommentChange(wxCommandEvent &event) {
 			cur->UpdateData();
 		}
 	}
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("comment change"));
 	grid->CommitChanges();
 	grid->EndBatch();
 }
@@ -847,7 +847,7 @@ void SubsEditBox::DoKeyPress(wxKeyEvent &event) {
 
 			// Update file
 			if (!updated) {
-				grid->ass->FlagAsModified();
+				grid->ass->FlagAsModified(_("editing"));
 				grid->CommitChanges();
 			}
 			return;

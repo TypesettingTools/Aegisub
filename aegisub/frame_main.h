@@ -263,6 +263,8 @@ public:
 	void InitMenu();
 	void UpdateToolbar();
 	void SetDisplayMode(int showVid,int showAudio);
+	
+	void SetUndoRedoDesc();
 
 	DECLARE_EVENT_TABLE()
 };

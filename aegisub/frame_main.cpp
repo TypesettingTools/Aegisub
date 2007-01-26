@@ -1348,3 +1348,12 @@ bool FrameMain::LoadList(wxArrayString list) {
 	// Result
 	return ((subs != _T("")) || (audio != _T("")) || (video != _T("")));
 }
+
+
+
+//////////////////////
+// Sets the descriptions for undo/redo
+void FrameMain::SetUndoRedoDesc() {
+	editMenu->SetHelpString(0,_T("Undo ")+AssFile::GetUndoDescription());
+	editMenu->SetHelpString(1,_T("Redo ")+AssFile::GetRedoDescription());
+}

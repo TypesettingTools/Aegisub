@@ -178,7 +178,7 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 		line->Text = p.second;
 
 	}
-	grid->ass->FlagAsModified();
+	grid->ass->FlagAsModified(_("kanji timing"));
 	grid->CommitChanges();
 	LinesToChange.clear();
 	Close();

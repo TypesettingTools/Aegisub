@@ -578,7 +578,7 @@ void FontsCollectorThread::Collect() {
 
 	// Flag file as modified
 	if (fileModified) {
-		subs->FlagAsModified();
+		subs->FlagAsModified(_("font attachment"));
 		collector->main->SubsBox->CommitChanges();
 	}
 }

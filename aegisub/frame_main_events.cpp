@@ -453,8 +453,11 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Edit menu
 	else if (curMenu == editMenu) {
 		// Undo state
+		curMenu->FindItemByPosition(0)->SetText(_("Undo ")+AssFile::GetUndoDescription()+_T("\t")+Hotkeys.GetText(_T("Undo")));
+		curMenu->FindItemByPosition(1)->SetText(_("Redo ")+AssFile::GetRedoDescription()+_T("\t")+Hotkeys.GetText(_T("Redo")));
 		RebuildMenuItem(editMenu,Menu_Edit_Undo,wxBITMAP(undo_button),wxBITMAP(undo_disable_button),!AssFile::IsUndoStackEmpty());
 		RebuildMenuItem(editMenu,Menu_Edit_Redo,wxBITMAP(redo_button),wxBITMAP(redo_disable_button),!AssFile::IsRedoStackEmpty());
+
 
 		// Copy/cut/paste
 		wxArrayInt sels = SubsBox->GetSelection();
@@ -1103,7 +1106,7 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 		}
 
 		// Commit
-		SubsBox->ass->FlagAsModified();
+		SubsBox->ass->FlagAsModified(_("snap to scene"));
 		SubsBox->CommitChanges();
 	}
 }
@@ -1134,7 +1137,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 		}
 
 		// Commit
-		SubsBox->ass->FlagAsModified();
+		SubsBox->ass->FlagAsModified(_("shift to frame"));
 		SubsBox->CommitChanges();
 	}
 }
@@ -1366,7 +1369,7 @@ void FrameMain::OnSort (wxCommandEvent &event) {
 
 	// Sort
 	AssFile::top->Line.sort(LessByPointedToValue<AssEntry>());
-	AssFile::top->FlagAsModified();
+	AssFile::top->FlagAsModified(_("sort"));
 	SubsBox->UpdateMaps();
 	SubsBox->CommitChanges();
 }
@@ -1521,7 +1524,7 @@ void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
 	// Is the text edit
 	if (focus == EditBox->TextEdit) {
 		EditBox->CommitText();
-		SubsBox->ass->FlagAsModified();
+		SubsBox->ass->FlagAsModified(_("editing"));
 		SubsBox->CommitChanges();
 	}
 

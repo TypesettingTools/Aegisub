@@ -888,7 +888,7 @@ namespace Automation4 {
 			description = wxString(lua_tostring(L, 1), wxConvUTF8);
 			lua_pop(L, 1);
 		}
-		AssFile::top->FlagAsModified(); // TODO: make undo system support description of action undone
+		AssFile::top->FlagAsModified(_T(""));
 
 		laf->ass = AssFile::top; // make sure we're still working on the most recent undo point
 		return 0;

@@ -809,7 +809,7 @@ bool AssFile::IsModified() {
 
 /////////////////////////
 // Flag file as modified
-void AssFile::FlagAsModified() {
+void AssFile::FlagAsModified(wxString desc) {
 	// Clear redo
 	if (!RedoStack.empty()) {
 		//StackPush();
@@ -821,16 +821,17 @@ void AssFile::FlagAsModified() {
 	}
 
 	Modified = true;
-	StackPush();
+	StackPush(desc);
 }
 
 
 //////////////
 // Stack push
-void AssFile::StackPush() {
+void AssFile::StackPush(wxString desc) {
 	// Places copy on stack
 	AssFile *curcopy = new AssFile(*top);
 	curcopy->CompressForStack(true);
+	curcopy->undodescription = desc;
 	UndoStack.push_back(curcopy);
 	StackModified = true;
 
@@ -852,7 +853,11 @@ void AssFile::StackPush() {
 // Stack pop
 void AssFile::StackPop() {
 	bool addcopy = false;
+	wxString undodesc=_T("");
+	
+
 	if (StackModified) {
+		undodesc=UndoStack.back()->undodescription;
 		UndoStack.pop_back();
 		StackModified = false;
 		addcopy = true;
@@ -860,16 +865,18 @@ void AssFile::StackPop() {
 
 	if (!UndoStack.empty()) {
 		//delete top;
+		AssFile *undo = UndoStack.back();
 		top->CompressForStack(true);
+		top->undodescription = undodesc;
 		RedoStack.push_back(top);
-		top = UndoStack.back();
+		top = undo;
 		top->CompressForStack(false);
 		UndoStack.pop_back();
 		Popping = true;
 	}
 
 	if (addcopy) {
-		StackPush();
+		StackPush(top->undodescription);
 	}
 }
 
@@ -896,7 +903,7 @@ void AssFile::StackRedo() {
 	}
 
 	if (addcopy) {
-		StackPush();
+		StackPush(top->undodescription);
 	}
 }
 
@@ -944,6 +951,14 @@ bool AssFile::IsRedoStackEmpty() {
 	return RedoStack.empty();
 }
 
+wxString AssFile::GetUndoDescription() {
+	return (IsUndoStackEmpty())?_T(""):(UndoStack.back())->undodescription;
+}
+
+wxString AssFile::GetRedoDescription() {
+	return (IsRedoStackEmpty())?_T(""):(RedoStack.back())->undodescription;
+
+}
 
 //////////
 // Global

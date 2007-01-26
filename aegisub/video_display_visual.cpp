@@ -1057,7 +1057,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 		// Commit
 		grid->editBox->CommitText();
-		grid->ass->FlagAsModified();
+		grid->ass->FlagAsModified(_("visual typesetting"));
 		grid->CommitChanges(false,true);
 
 		// Set flags
@@ -1075,7 +1075,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	if (mode == 0 && event.LeftDClick()) {
 		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0,false);
 		grid->editBox->CommitText();
-		grid->ass->FlagAsModified();
+		grid->ass->FlagAsModified(_("positioning"));
 		grid->CommitChanges(false,true);
 		parent->SetFocus();
 	}

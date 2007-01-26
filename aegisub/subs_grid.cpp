@@ -393,7 +393,7 @@ void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &event) {
 	for (int i = sels.size()-1; i >= 0; i--) {
 		SplitLineByKaraoke(sels[i]);
 	}
-	ass->FlagAsModified();
+	ass->FlagAsModified(_("splitting"));
 	CommitChanges();
 	EndBatch();
 }
@@ -627,7 +627,7 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 		// Commit
 		n1->UpdateData();
 		n2->UpdateData();
-		ass->FlagAsModified();
+		ass->FlagAsModified(_("combining"));
 		CommitChanges();
 	}
 
@@ -761,8 +761,8 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 
 	// Commit
 	if (!AssFile::Popping) {
-		if (dontModify) AssFile::StackPush();
-		else ass->FlagAsModified();
+		if (dontModify) AssFile::StackPush(_("load"));
+		else ass->FlagAsModified(_("load"));
 	}
 	CommitChanges();
 
@@ -803,7 +803,7 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 	diagPtrMap[n1] = (AssDialogue*) *src1;
 	diagMap[n2] = src2;
 	diagPtrMap[n2] = (AssDialogue*) *src2;
-	ass->FlagAsModified();
+	ass->FlagAsModified(_("swap lines"));
 	CommitChanges();
 }
 
@@ -829,7 +829,7 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 
 	// Update
 	if (update) {
-		ass->FlagAsModified();
+		ass->FlagAsModified(_("line insertion"));
 		CommitChanges();
 	}
 }
@@ -950,7 +950,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 			// Commit
 			UpdateMaps();
 			AdjustScrollbar();
-			ass->FlagAsModified();
+			ass->FlagAsModified(_("paste"));
 			CommitChanges();
 
 			// Set selection
@@ -992,7 +992,7 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target) {
 	// Update
 	UpdateMaps();
 	AdjustScrollbar();
-	ass->FlagAsModified();
+	ass->FlagAsModified(_("delete"));
 	CommitChanges();
 
 	// Update editbox
@@ -1071,7 +1071,7 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 	}
 
 	// Commit
-	AssFile::top->FlagAsModified();
+	AssFile::top->FlagAsModified(_("adjoin"));
 	CommitChanges();
 }
 
@@ -1232,7 +1232,7 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 	editBox->SetToLine(n);
 
 	// Commit
-	ass->FlagAsModified();
+	ass->FlagAsModified(_("split"));
 	CommitChanges();
 }
 
@@ -1393,7 +1393,7 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 
 	// Commit
 	if (modified) {
-		ass->FlagAsModified();
+		ass->FlagAsModified(_("timing"));
 		CommitChanges();
 		editBox->Update();
 	}

@@ -416,7 +416,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			cur->UpdateData();
 
 			// Commit
-			grid->ass->FlagAsModified();
+			grid->ass->FlagAsModified(_("replace"));
 		}
 
 		else {
@@ -507,7 +507,7 @@ void SearchReplaceEngine::ReplaceAll() {
 
 	// Commit
 	if (count > 0) {
-		grid->ass->FlagAsModified();
+		grid->ass->FlagAsModified(_("replace"));
 		grid->CommitChanges();
 		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
 	}

@@ -314,7 +314,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		cur->UpdateText();
 		cur->UpdateData();
 		cur->ClearBlocks();
-		subs->FlagAsModified();
+		subs->FlagAsModified(_("translation assistant"));
 		grid->CommitChanges();
 		((FrameMain*)main)->UpdateTitle();
 		UpdatePreview();
