@@ -203,8 +203,9 @@ void VideoDisplay::Render() {
 	float left = 0.0;
 	float right = context->GetTexW();
 
-	// Draw interleaved frame or luma of YV12
+	// Draw frame
 	glDisable(GL_BLEND);
+	context->SetShader(true);
 	glBindTexture(GL_TEXTURE_2D, VideoContext::Get()->GetFrameAsTexture(-1));
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glBegin(GL_QUADS);
@@ -221,11 +222,7 @@ void VideoDisplay::Render() {
 		glTexCoord2f(right,top);
 		glVertex2f(sw,0);
 	glEnd();
-
-	// Draw UV planes
-	if (context->GetFormat() == FORMAT_YV12) {
-
-	}
+	context->SetShader(false);
 
 	// Draw overlay
 	visual->DrawOverlay();

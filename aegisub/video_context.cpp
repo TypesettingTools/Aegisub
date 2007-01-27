@@ -65,6 +65,7 @@
 #include "video_slider.h"
 #include "video_box.h"
 #include "utils.h"
+#include "gl_wrap.h"
 
 
 ///////
@@ -93,6 +94,7 @@ VideoContext::VideoContext() {
 	glContext = NULL;
 	lastTex = 0;
 	lastFrame = -1;
+	yv12shader = 0;
 
 	// Set options
 	audio = NULL;
@@ -142,6 +144,12 @@ void VideoContext::Clear() {
 /////////
 // Reset
 void VideoContext::Reset() {
+	// Reset shader
+	if (yv12shader) {
+		OpenGLWrapper::DestroyShaderProgram(yv12shader);
+		yv12shader = 0;
+	}
+
 	// Clear keyframes
 	KeyFrames.Clear();
 	keyFramesLoaded = false;
@@ -426,6 +434,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		glShadeModel(GL_FLAT);
 
 		// Generate texture with GL
+		//glActiveTexture(GL_TEXTURE0);
 		glGenTextures(1, &lastTex);
 		if (glGetError() != 0) throw _T("Error generating texture.");
 		glBindTexture(GL_TEXTURE_2D, lastTex);
@@ -439,9 +448,9 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 
 		// Load image data into texture
 		int height = frame.h;
-		if (frame.format == FORMAT_YV12) height = frame.h * 3 / 2;
+		if (frame.format == FORMAT_YV12) height = height * 3 / 2;
 		int tw = SmallestPowerOf2(frame.w);
-		int th = SmallestPowerOf2(frame.h);
+		int th = SmallestPowerOf2(height);
 		texW = float(frame.w)/float(tw);
 		texH = float(frame.h)/float(th);
 		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
@@ -454,6 +463,11 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		// Set priority
 		float priority = 1.0f;
 		glPrioritizeTextures(1,&lastTex,&priority);
+
+		// Create shader if necessary
+		if (frame.format == FORMAT_YV12 && yv12shader == 0) {
+			yv12shader = OpenGLWrapper::CreateYV12Shader(texW,texH);
+		}
 	}
 	
 	// Load texture data
@@ -729,4 +743,11 @@ void VideoContext::SetAspectRatio(int _type, double value) {
 	arType = _type;
 	arValue = value;
 	UpdateDisplays(true);
+}
+
+
+////////////////////////////
+// Enable or disable shader
+void VideoContext::SetShader(bool enabled) {
+	OpenGLWrapper::SetShader(enabled ? yv12shader : 0);
 }

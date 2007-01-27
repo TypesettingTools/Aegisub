@@ -45,6 +45,11 @@ private:
 	float r2,g2,b2,a2;
 	int lw;
 
+	static void InitializeGLEW();
+	static GLuint CreateStandardVertexShader();
+	static GLuint CreateYV12PixelShader();
+	static GLuint CreateShaderProgram(GLuint vertex,GLuint pixel);
+
 public:
 	void SetLineColour(wxColour col,float alpha=1.0f,int width=1);
 	void SetFillColour(wxColour col,float alpha=1.0f);
@@ -55,4 +60,9 @@ public:
 	void DrawCircle(float x,float y,float radius) { DrawEllipse(x,y,radius,radius); }
 	void DrawRectangle(float x1,float y1,float x2,float y2);
 	void DrawRing(float x,float y,float r1,float r2,float ar=1.0f,float arcStart=0.0f,float arcEnd=0.0f);
+
+	static bool ShadersAvailable();
+	static void SetShader(GLuint i);
+	static void DestroyShaderProgram(GLuint i);
+	static GLuint CreateYV12Shader(float tw,float th);
 };

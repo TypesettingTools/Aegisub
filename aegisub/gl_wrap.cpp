@@ -36,8 +36,16 @@
 
 ///////////
 // Headers
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include "gl_wrap.h"
+
+
+////////////////
+// GLEW library
+#if __VISUALC__ >= 1200
+#pragma comment(lib,"glew32.lib")
+#endif
 
 
 /////////////
@@ -221,4 +229,154 @@ void OpenGLWrapper::SetModeFill() {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	}
+}
+
+
+//////////////////////////
+// Are shaders available?
+bool OpenGLWrapper::ShadersAvailable() {
+	if (GLEW_VERSION_2_0) return true;
+	return false;
+}
+
+
+///////////////////
+// Initialize GLEW
+void OpenGLWrapper::InitializeGLEW() {
+	static bool initialized = false;
+	if (!initialized) {
+		initialized = true;
+		glewInit();
+	}
+}
+
+
+//////////////////////
+// Set current shader
+void OpenGLWrapper::SetShader(GLuint i) {
+	InitializeGLEW();
+	glUseProgram(i);
+}
+
+
+//////////////////////////
+// Destroy shader program
+void OpenGLWrapper::DestroyShaderProgram(GLuint i) {
+	InitializeGLEW();
+	SetShader(0);
+	glDeleteProgram(i);
+}
+
+
+////////////////////////////////////////////////////////
+// Create shader program from vertex and pixel shaders
+GLuint OpenGLWrapper::CreateShaderProgram(GLuint vertex,GLuint pixel) {
+	// Create instance
+	InitializeGLEW();
+	GLuint program = glCreateProgram();
+
+	// Attach shaders
+	glAttachShader(program,vertex);
+	glAttachShader(program,pixel);
+
+	// Link
+	glLinkProgram(program);
+
+	// Return
+	return program;
+}
+
+
+/////////////////////////////////
+// Create standard Vertex shader
+GLuint OpenGLWrapper::CreateStandardVertexShader() {
+	// Create instance
+	InitializeGLEW();
+	GLuint shader = glCreateShader(GL_VERTEX_SHADER);
+
+	// Read source
+	char source[] =
+		"void main() {\n"
+		"	gl_TexCoord[0] = gl_MultiTexCoord0;\n"
+		"	gl_Position = ftransform();\n"
+		"}";
+	const GLchar *src = source;
+	glShaderSource(shader,1,&src,NULL);
+
+	// Compile
+	glCompileShader(shader);
+
+	// Return
+	return shader;
+}
+
+
+///////////////////////////////////
+// Create YV12->RGB32 Pixel Shader
+GLuint OpenGLWrapper::CreateYV12PixelShader() {
+	// Create instance
+	InitializeGLEW();
+	GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
+
+	// Read source
+	char source[] =
+		"uniform sampler2D tex;\n"
+		"uniform vec2 off1;\n"
+		"uniform vec2 off2;\n"
+		"\n"
+		"void main() {\n"
+		"	vec2 pos = gl_TexCoord[0].st;\n"
+		"	vec4 y_bias = vec4(-0.063,-0.063,-0.063,0.0);\n"
+		"	vec4 y_mult = vec4(1.164,1.164,1.164,1.0);\n"
+		"	vec4 color_y = (texture2D(tex,pos) + y_bias) * y_mult;\n"
+		"	pos *= 0.5;\n"
+		"	vec4 uv_bias = vec4(-0.5,-0.5,-0.5,0.0);\n"
+		"	vec4 uv_mult = vec4(0.0,-0.391,2.018,1.0);\n"
+		//"	vec4 uv_mult = vec4(0.0,-0.344,1.770,1.0);\n"
+		"	vec4 color_u = (texture2D(tex,pos + off1) + uv_bias) * uv_mult;\n"
+		"	uv_mult = vec4(1.596,-0.813,0.0,1.0);\n"
+		//"	uv_mult = vec4(1.403,-0.714,0.0,1.0);\n"
+		"	vec4 color_v = (texture2D(tex,pos + off2) + uv_bias) * uv_mult;\n"
+		"	gl_FragColor = color_y + color_u + color_v;\n"
+		"}";
+	const GLchar *src = source;
+	glShaderSource(shader,1,&src,NULL);
+
+	// Compile
+	glCompileShader(shader);
+
+	// Return
+	return shader;
+}
+
+
+/////////////////////////////////////
+// Create YV12->RGB32 Shader Program
+GLuint OpenGLWrapper::CreateYV12Shader(float tw,float th) {
+	// Create vertex shader
+	GLuint ver = OpenGLWrapper::CreateStandardVertexShader();
+	if (glGetError() != 0) throw _T("Error creating generic vertex shader");
+
+	// Create pixel shader
+	GLuint pix = OpenGLWrapper::CreateYV12PixelShader();
+	if (glGetError() != 0) throw _T("Error creating YV12 pixel shader");
+
+	// Create program
+	GLuint program = OpenGLWrapper::CreateShaderProgram(ver,pix);
+	if (glGetError() != 0) throw _T("Error creating shader program");
+
+	// Set shader
+	OpenGLWrapper::SetShader(program);
+	if (glGetError() != 0) throw _T("Error setting shader");
+
+	// Set uniform variables
+	GLuint address = glGetUniformLocation(program,"tex");
+	glUniform1i(address, 0);
+	address = glGetUniformLocation(program,"off1");
+	glUniform2f(address, 0.0f, th);
+	address = glGetUniformLocation(program,"off2");
+	glUniform2f(address, tw*0.5f, th);
+
+	// Return shader
+	return program;
 }

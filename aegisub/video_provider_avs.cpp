@@ -49,6 +49,7 @@
 #include "main.h"
 #include "vfr.h"
 #include "ass_file.h"
+#include "gl_wrap.h"
 
 
 ////////////
@@ -293,8 +294,10 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	}
 
 	// Convert to RGB32
-	script = env->Invoke("ConvertToRGB32", script);
-	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
+	if (OpenGLWrapper::ShadersAvailable() && !Options.AsBool(_T("Video Use Pixel Shaders"))) {
+		script = env->Invoke("ConvertToRGB32", script);
+		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
+	}
 
 	// Directshow
 	//if (usedDirectshow) wxMessageBox(_T("Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!"),_T("DirectShowSource warning"),wxICON_EXCLAMATION);

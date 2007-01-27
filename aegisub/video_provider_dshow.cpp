@@ -52,6 +52,8 @@
 #include "utils.h"
 #include "vfr.h"
 #include "videosink.h"
+#include "gl_wrap.h"
+#include "options.h"
 
 
 ///////////////////////
@@ -292,8 +294,9 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	if (!sink2) return E_NOINTERFACE;
 
 	// Set allowed types for sink
-	//sink->SetAllowedTypes(IVS_RGB32|IVS_YV12|IVS_YUY2);
-	sink->SetAllowedTypes(IVS_RGB24);
+	unsigned int types = IVS_RGB24 | IVS_RGB32;
+	if (OpenGLWrapper::ShadersAvailable() && !Options.AsBool(_T("Video Use Pixel Shaders"))) types = types | IVS_YV12;
+	sink->SetAllowedTypes(types);
 
 	// Pass the event to sink, so it gets set when a frame is available
 	ResetEvent(m_hFrameReady);

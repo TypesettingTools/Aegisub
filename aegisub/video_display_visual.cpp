@@ -188,6 +188,16 @@ void VideoDisplayVisual::DrawOverlay() {
 					}
 					else GetLineScale(diag,scalX,scalY);
 
+					// Get angle
+					GetLineRotation(diag,rx,ry,rz);
+					if (isCur) {
+						if (mode == 2) rz = curAngle;
+						else if (mode == 3) {
+							rx = curAngle;
+							ry = curAngle2;
+						}
+					}
+
 					// Mouse over?
 					if (diag == diagHigh) {
 						high = true;
@@ -225,16 +235,6 @@ void VideoDisplayVisual::DrawOverlay() {
 						DrawLine(dx,dy-16,dx,dy+16);
 						DrawLine(dx-16,dy,dx+16,dy);
 							
-						// Get angle
-						GetLineRotation(diag,rx,ry,rz);
-						if (isCur) {
-							if (mode == 2) rz = curAngle;
-							else {
-								rx = curAngle;
-								ry = curAngle2;
-							}
-						}
-
 						// Rotate Z
 						if (mode == 2) {
 							// Transform
@@ -387,37 +387,54 @@ void VideoDisplayVisual::DrawOverlay() {
 
 					// Scale
 					if (mode == 4) {
-						// Scale parameters
+						// Set dx/dy
 						int len = 160;
-						int lenx = int(1.6 * scalX);
-						int leny = int(1.6 * scalY);
 						dx = MID(len/2+10,dx,sw-len/2-30);
 						dy = MID(len/2+10,dy,sh-len/2-30);
-						int drawX = dx + len/2 + 10;
-						int drawY = dy + len/2 + 10;
+
+						// Transform grid
+						glMatrixMode(GL_MODELVIEW);
+						glPushMatrix();
+						glLoadIdentity();
+						glTranslatef(dx,dy,0.0f);
+						float matrix[16] = { 2500, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 1, 1, 0, 0, 2500, 2500 };
+						glMultMatrixf(matrix);
+						glScalef(1.0f,1.0f,8.0f);
+						if (ry != 0.0f) glRotatef(ry,0.0f,-1.0f,0.0f);
+						if (rx != 0.0f) glRotatef(rx,-1.0f,0.0f,0.0f);
+						if (rz != 0.0f) glRotatef(rz,0.0f,0.0f,-1.0f);
+						
+						// Scale parameters
+						int lenx = int(1.6 * scalX);
+						int leny = int(1.6 * scalY);
+						int drawX = len/2 + 10;
+						int drawY = len/2 + 10;
 
 						// Draw length markers
 						SetLineColour(colour[3],1.0f,2);
-						DrawLine(dx-lenx/2,drawY+10,dx+lenx/2,drawY+10);
-						DrawLine(drawX+10,dy-leny/2,drawX+10,dy+leny/2);
+						DrawLine(-lenx/2,drawY+10,lenx/2,drawY+10);
+						DrawLine(drawX+10,-leny/2,drawX+10,leny/2);
 						SetLineColour(colour[0],1.0f,1);
 						SetFillColour(colour[brushCol],0.3f);
-						DrawCircle(dx+lenx/2,drawY+10,4);
-						DrawCircle(drawX+10,dy-leny/2,4);
+						DrawCircle(lenx/2,drawY+10,4);
+						DrawCircle(drawX+10,-leny/2,4);
 
 						// Draw horizontal scale
 						SetLineColour(colour[0],1.0f,1);
-						DrawRectangle(dx-len/2,drawY,dx+len/2+1,drawY+5);
+						DrawRectangle(-len/2,drawY,len/2+1,drawY+5);
 						SetLineColour(colour[0],1.0f,2);
-						DrawLine(dx-len/2+1,drawY+5,dx-len/2+1,drawY+15);
-						DrawLine(dx+len/2,drawY+5,dx+len/2,drawY+15);
+						DrawLine(-len/2+1,drawY+5,-len/2+1,drawY+15);
+						DrawLine(len/2,drawY+5,len/2,drawY+15);
 
 						// Draw vertical scale
 						SetLineColour(colour[0],1.0f,1);
-						DrawRectangle(drawX,dy-len/2,drawX+5,dy+len/2+1);
+						DrawRectangle(drawX,-len/2,drawX+5,len/2+1);
 						SetLineColour(colour[0],1.0f,2);
-						DrawLine(drawX+5,dy-len/2+1,drawX+15,dy-len/2+1);
-						DrawLine(drawX+5,dy+len/2,drawX+15,dy+len/2);
+						DrawLine(drawX+5,-len/2+1,drawX+15,-len/2+1);
+						DrawLine(drawX+5,len/2,drawX+15,len/2);
+
+						// Restore gl's state
+						glPopMatrix();
 					}
 
 					// Clip

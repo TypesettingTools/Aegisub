@@ -148,6 +148,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Allow Ancient Avisynth"),false);
 	SetText(_T("Video Provider"),_T("Avisynth"));
 	SetText(_T("Subtitles Provider"),_T("CSRI"));
+	SetBool(_T("Video Use Pixel Shaders"),false);
 
 	// Audio Options
 	SetBool(_T("Audio Next Line on Commit"),true);
