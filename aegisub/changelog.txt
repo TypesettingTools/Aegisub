@@ -10,6 +10,7 @@ Please visit http://aegisub.net to download latest version
   o Scripts have full access to the entire subtitle file, not just the "Events" section
   o Also has a compatibility Automation 3 engine, so old scripts should continue working with little or no changes
 - Video mode has been mostly rewriten and now uses OpenGL instead of software rendering, making it much faster on computers with video cards that don't belong to the stone age. (AMZ)
+  o Optionally, it can use a Pixel Shader to convert YV12 to RGB32 in hardware, which is much faster, with a decent video card.
 - Visual Typesetting functionality implemented, which should make typesetting much easier and faster. It supports: (AMZ)
   o Dragging;
   o Rotation on Z axis;
