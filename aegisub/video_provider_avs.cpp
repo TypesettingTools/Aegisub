@@ -294,7 +294,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	}
 
 	// Convert to RGB32
-	if (OpenGLWrapper::ShadersAvailable() && !Options.AsBool(_T("Video Use Pixel Shaders"))) {
+	if (!OpenGLWrapper::UseShaders()) {
 		script = env->Invoke("ConvertToRGB32", script);
 		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
 	}

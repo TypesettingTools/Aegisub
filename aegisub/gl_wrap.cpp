@@ -36,16 +36,35 @@
 
 ///////////
 // Headers
-#include <GL/glew.h>
+#include <wx/wxprec.h>
 #include <GL/gl.h>
+#include "gl/glext.h"
 #include "gl_wrap.h"
+#include "options.h"
+
+
+//////////////////////////////////////
+// OpenGL extension function pointers
+#ifdef __WIN32__
+PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB = NULL;
+PFNGLDELETEOBJECTARBPROC glDeleteObjectARB = NULL;
+PFNGLCREATEPROGRAMOBJECTARBPROC glCreateProgramObjectARB = NULL;
+PFNGLATTACHOBJECTARBPROC glAttachObjectARB = NULL;
+PFNGLLINKPROGRAMARBPROC glLinkProgramARB = NULL;
+PFNGLCREATESHADEROBJECTARBPROC glCreateShaderObjectARB = NULL;
+PFNGLSHADERSOURCEARBPROC glShaderSourceARB = NULL;
+PFNGLCOMPILESHADERARBPROC glCompileShaderARB = NULL;
+PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB = NULL;
+PFNGLUNIFORM1IARBPROC glUniform1iARB = NULL;
+PFNGLUNIFORM2FARBPROC glUniform2fARB = NULL;
+#endif
 
 
 ////////////////
 // GLEW library
-#if __VISUALC__ >= 1200
-#pragma comment(lib,"glew32.lib")
-#endif
+//#if __VISUALC__ >= 1200
+//#pragma comment(lib,"glew32.lib")
+//#endif
 
 
 /////////////
@@ -235,18 +254,47 @@ void OpenGLWrapper::SetModeFill() {
 //////////////////////////
 // Are shaders available?
 bool OpenGLWrapper::ShadersAvailable() {
-	if (GLEW_VERSION_2_0) return true;
-	return false;
+	return IsExtensionSupported("GL_ARB_vertex_shader") && IsExtensionSupported("GL_ARB_fragment_shader");
+}
+
+
+////////////////
+// Use shaders?
+bool OpenGLWrapper::UseShaders() {
+	return Options.AsBool(_T("Video Use Pixel Shaders")) && ShadersAvailable();
+}
+
+
+///////////////////////////
+// Is extension supported?
+bool OpenGLWrapper::IsExtensionSupported(const char *ext) {
+    char *extList = (char*) glGetString(GL_EXTENSIONS);
+	if (!extList) return false;
+    return strstr(extList, ext) != NULL;
 }
 
 
 ///////////////////
 // Initialize GLEW
-void OpenGLWrapper::InitializeGLEW() {
+void OpenGLWrapper::Initialize() {
 	static bool initialized = false;
 	if (!initialized) {
 		initialized = true;
-		glewInit();
+		//glewInit();
+
+#ifdef __WIN32__
+		glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC) wglGetProcAddress("glUseProgramObjectARB");
+		glDeleteObjectARB = (PFNGLDELETEOBJECTARBPROC) wglGetProcAddress("glDeleteObjectARB");
+		glCreateProgramObjectARB = (PFNGLCREATEPROGRAMOBJECTARBPROC) wglGetProcAddress("glCreateProgramObjectARB");
+		glAttachObjectARB = (PFNGLATTACHOBJECTARBPROC) wglGetProcAddress("glAttachObjectARB");
+		glLinkProgramARB = (PFNGLLINKPROGRAMARBPROC) wglGetProcAddress("glLinkProgramARB");
+		glCreateShaderObjectARB = (PFNGLCREATESHADEROBJECTARBPROC) wglGetProcAddress("glCreateShaderObjectARB");
+		glShaderSourceARB = (PFNGLSHADERSOURCEARBPROC) wglGetProcAddress("glShaderSourceARB");
+		glCompileShaderARB = (PFNGLCOMPILESHADERARBPROC) wglGetProcAddress("glCompileShaderARB");
+		glGetUniformLocationARB = (PFNGLGETUNIFORMLOCATIONARBPROC) wglGetProcAddress("glGetUniformLocationARB");
+		glUniform1iARB = (PFNGLUNIFORM1IARBPROC) wglGetProcAddress("glUniform1iARB");
+		glUniform2fARB = (PFNGLUNIFORM2FARBPROC) wglGetProcAddress("glUniform2fARB");
+#endif
 	}
 }
 
@@ -254,17 +302,17 @@ void OpenGLWrapper::InitializeGLEW() {
 //////////////////////
 // Set current shader
 void OpenGLWrapper::SetShader(GLuint i) {
-	InitializeGLEW();
-	glUseProgram(i);
+	Initialize();
+	glUseProgramObjectARB(i);
 }
 
 
 //////////////////////////
 // Destroy shader program
 void OpenGLWrapper::DestroyShaderProgram(GLuint i) {
-	InitializeGLEW();
+	Initialize();
 	SetShader(0);
-	glDeleteProgram(i);
+	glDeleteObjectARB(i);
 }
 
 
@@ -272,15 +320,15 @@ void OpenGLWrapper::DestroyShaderProgram(GLuint i) {
 // Create shader program from vertex and pixel shaders
 GLuint OpenGLWrapper::CreateShaderProgram(GLuint vertex,GLuint pixel) {
 	// Create instance
-	InitializeGLEW();
-	GLuint program = glCreateProgram();
+	Initialize();
+	GLuint program = glCreateProgramObjectARB();
 
 	// Attach shaders
-	glAttachShader(program,vertex);
-	glAttachShader(program,pixel);
+	glAttachObjectARB(program,vertex);
+	glAttachObjectARB(program,pixel);
 
 	// Link
-	glLinkProgram(program);
+	glLinkProgramARB(program);
 
 	// Return
 	return program;
@@ -291,8 +339,8 @@ GLuint OpenGLWrapper::CreateShaderProgram(GLuint vertex,GLuint pixel) {
 // Create standard Vertex shader
 GLuint OpenGLWrapper::CreateStandardVertexShader() {
 	// Create instance
-	InitializeGLEW();
-	GLuint shader = glCreateShader(GL_VERTEX_SHADER);
+	Initialize();
+	GLuint shader = glCreateShaderObjectARB(GL_VERTEX_SHADER);
 
 	// Read source
 	char source[] =
@@ -300,11 +348,11 @@ GLuint OpenGLWrapper::CreateStandardVertexShader() {
 		"	gl_TexCoord[0] = gl_MultiTexCoord0;\n"
 		"	gl_Position = ftransform();\n"
 		"}";
-	const GLchar *src = source;
-	glShaderSource(shader,1,&src,NULL);
 
 	// Compile
-	glCompileShader(shader);
+	const GLchar *src = source;
+	glShaderSourceARB(shader,1,&src,NULL);
+	glCompileShaderARB(shader);
 
 	// Return
 	return shader;
@@ -315,8 +363,8 @@ GLuint OpenGLWrapper::CreateStandardVertexShader() {
 // Create YV12->RGB32 Pixel Shader
 GLuint OpenGLWrapper::CreateYV12PixelShader() {
 	// Create instance
-	InitializeGLEW();
-	GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
+	Initialize();
+	GLuint shader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER);
 
 	// Read source
 	char source[] =
@@ -339,11 +387,11 @@ GLuint OpenGLWrapper::CreateYV12PixelShader() {
 		"	vec4 color_v = (texture2D(tex,pos + off2) + uv_bias) * uv_mult;\n"
 		"	gl_FragColor = color_y + color_u + color_v;\n"
 		"}";
-	const GLchar *src = source;
-	glShaderSource(shader,1,&src,NULL);
 
 	// Compile
-	glCompileShader(shader);
+	const GLchar *src = source;
+	glShaderSourceARB(shader,1,&src,NULL);
+	glCompileShaderARB(shader);
 
 	// Return
 	return shader;
@@ -370,12 +418,12 @@ GLuint OpenGLWrapper::CreateYV12Shader(float tw,float th) {
 	if (glGetError() != 0) throw _T("Error setting shader");
 
 	// Set uniform variables
-	GLuint address = glGetUniformLocation(program,"tex");
-	glUniform1i(address, 0);
-	address = glGetUniformLocation(program,"off1");
-	glUniform2f(address, 0.0f, th);
-	address = glGetUniformLocation(program,"off2");
-	glUniform2f(address, tw*0.5f, th);
+	GLuint address = glGetUniformLocationARB(program,"tex");
+	glUniform1iARB(address, 0);
+	address = glGetUniformLocationARB(program,"off1");
+	glUniform2fARB(address, 0.0f, th);
+	address = glGetUniformLocationARB(program,"off2");
+	glUniform2fARB(address, tw*0.5f, th);
 
 	// Return shader
 	return program;

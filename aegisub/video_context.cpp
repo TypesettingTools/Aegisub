@@ -257,6 +257,9 @@ void VideoContext::SetVideo(const wxString &filename) {
 			}
 #endif
 
+			// Set GL context
+			GetGLContext(displayList.front())->SetCurrent(*displayList.front());
+
 			// Choose a provider
 			provider = VideoProviderFactory::GetProvider(filename,overFps);
 			loaded = provider != NULL;
