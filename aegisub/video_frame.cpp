@@ -45,8 +45,8 @@ AegiVideoFrame::AegiVideoFrame() {
 	for (int i=0;i<4;i++) {
 		data[i] = NULL;
 		pitch[i] = 0;
-		memSize[i] = 0;
 	}
+	memSize = 0;
 	w = 0;
 	h = 0;
 	format = FORMAT_RGB24;
@@ -78,18 +78,24 @@ AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
 ////////////
 // Allocate
 void AegiVideoFrame::Allocate() {
-	for (int i=0;i<4;i++) {
-		// Get size
-		int height = h;
-		if (format == FORMAT_YV12 && i > 0) height/=2;
-		unsigned int size = pitch[i]*height;
+	// Get size
+	int height = h;
+	unsigned int size = pitch[0]*height;
+	if (format == FORMAT_YV12) size = size * 3 / 2;
+	else size = size * GetBpp();
 
-		// Reallocate, if necessary
-		if (memSize[i] != size) {
-			if (cppAlloc) delete[] data[i];
-			else free(data[i]);
-			data[i] = new unsigned char[size];
-			memSize[i] = size;
+	// Reallocate, if necessary
+	if (memSize != size) {
+		if (cppAlloc) delete[] data[0];
+		else free(data[0]);
+		data[0] = new unsigned char[size];
+		for (int i=1;i<4;i++) data[i] = NULL;
+		memSize = size;
+
+		// Planar
+		if (format == FORMAT_YV12) {
+			data[1] = data[0] + (pitch[0]*height);
+			data[2] = data[0] + (pitch[0]*height*5/4);
 		}
 	}
 
@@ -100,14 +106,13 @@ void AegiVideoFrame::Allocate() {
 /////////
 // Clear
 void AegiVideoFrame::Clear() {
+	if (cppAlloc) delete[] data[0];
+	else free(data[0]);
 	for (int i=0;i<4;i++) {
-		if (data[i]) {
-			if (cppAlloc) delete[] data[i];
-			else free(data[i]);
-			data[i] = NULL;
-		}
+		data[i] = NULL;
 		pitch[i] = 0;
 	}
+	memSize = 0;
 	w = 0;
 	h = 0;
 	format = FORMAT_RGB24;
@@ -125,9 +130,7 @@ void AegiVideoFrame::CopyFrom(const AegiVideoFrame &source) {
 	format = source.format;
 	for (int i=0;i<4;i++) pitch[i] = source.pitch[i];
 	Allocate();
-	for (int i=0;i<4;i++) {
-		memcpy(data[i],source.data[i],memSize[i]);
-	}
+	memcpy(data[0],source.data[0],memSize);
 	flipped = source.flipped;
 	invertChannels = source.invertChannels;
 }

@@ -51,7 +51,7 @@ enum VideoFrameFormat {
 // Video Frame class
 class AegiVideoFrame {
 private:
-	unsigned int memSize[4];
+	unsigned int memSize;
 
 public:
 	unsigned char *data[4];		// Pointers to the data planes. Interleaved formats only use data[0]

@@ -429,14 +429,14 @@ void DirectShowVideoProvider::ReadFrame(long long timestamp, unsigned format, un
 
 	// Interleaved
 	else {
-		unsigned int datalen = stride*height;
-		df->frame.Allocate();
-		memcpy(df->frame.data[0],src,datalen);
-	
 		// Set format
 		if (format == IVS_RGB24) df->frame.format = FORMAT_RGB24;
 		else if (format == IVS_RGB32) df->frame.format = FORMAT_RGB32;
 		else if (format == IVS_YV12) df->frame.format = FORMAT_YV12;
+
+		unsigned int datalen = stride*height;
+		df->frame.Allocate();
+		memcpy(df->frame.data[0],src,datalen);
 	}
 }
 
