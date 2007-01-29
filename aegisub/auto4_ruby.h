@@ -251,8 +251,10 @@ namespace Automation4 {
 	VALUE rbExecWrapper(VALUE arg);
 	VALUE rbLoadWrapper(VALUE arg);
 	VALUE rbFunCall(VALUE recv, ID id, int n, ...);
+	VALUE rbAss2RbWrapper(VALUE arg);
+	VALUE rb2AssWrapper(VALUE arg);
 	typedef VALUE (*RB_HOOK)(...);
-	typedef VALUE (*RB_HOOK2)(void*);
+	typedef VALUE (*RB_HOOK2)(VALUE);
 
 };
 

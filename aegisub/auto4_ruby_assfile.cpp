@@ -94,7 +94,7 @@ namespace Automation4 {
 		} else if (e->GetType() == ENTRY_DIALOGUE) {
 			AssDialogue *dia = e->GetAsDialogue(e);
 
-			rb_hash_aset(ass_entry, rb_str_new2("comment"), rb_int2inum((int)dia->Comment));
+			rb_hash_aset(ass_entry, rb_str_new2("comment"), dia->Comment ? Qtrue : Qfalse);
 			rb_hash_aset(ass_entry, rb_str_new2("layer"), rb_int2inum(dia->Layer));
 			rb_hash_aset(ass_entry, rb_str_new2("start_time"), rb_int2inum(dia->Start.GetMS()));
 			rb_hash_aset(ass_entry, rb_str_new2("end_time"), rb_int2inum(dia->End.GetMS()));
@@ -290,7 +290,7 @@ namespace Automation4 {
 
 		} else if (lclass == _T("dialogue")) {
 			VALUE _comment = rb_hash_aref(ass_entry, rb_str_new2("comment"));
-			bool comment = (bool)rb_num2long(_comment);
+			bool comment = _comment == Qfalse ? false : true;
 			VALUE _layer = rb_hash_aref(ass_entry, rb_str_new2("layer"));
 			int layer = rb_num2long(_layer);
 			VALUE _start_time = rb_hash_aref(ass_entry, rb_str_new2("start_time"));
@@ -348,9 +348,16 @@ namespace Automation4 {
 		int size = rb_num2long(rb_funcall(subtitles, rb_to_id(rb_str_new2("size")), 0));
 
 		if(size <= 0) return; // empty - leave the original
-
-		VALUE rbEntry = rb_ary_shift(subtitles);
-		AssEntry *new_entry = RubyToAssEntry(rbEntry);
+		
+		VALUE rbEntry;
+		AssEntry* new_entry;
+		int status = 0;
+		do {
+			rbEntry = rb_ary_shift(subtitles);
+			new_entry = reinterpret_cast<AssEntry*>(rb_protect(rb2AssWrapper, rbEntry, &status));
+			--size;
+		}while(status != 0);	// broken lines at the beginning?
+		ruby_errinfo = Qnil;	// just in case
 
 		entryIter e = ass->Line.begin();
 		if(new_entry->GetType() == ENTRY_DIALOGUE)	// check if the first line is a dialogue
@@ -363,11 +370,15 @@ namespace Automation4 {
 			e = ass->Line.erase(e);
 		}
 		ass->Line.push_back(new_entry);
-		for(int i = 1; i < size; i++) // insert new lines
+		for(int i = 0; i < size; i++) // insert new lines
 		{
 			rbEntry = rb_ary_shift(subtitles);
-			new_entry = RubyToAssEntry(rbEntry);
-			ass->Line.push_back(new_entry);
+			new_entry = reinterpret_cast<AssEntry*>(rb_protect(rb2AssWrapper, rbEntry, &status));
+			if(status == 0)	ass->Line.push_back(new_entry);
+			else {
+				// TODO: log/display the error
+				ruby_errinfo = Qnil;	// clear the error
+			}
 		}
 		RubyObjects::Get()->Unregister(subtitles);
 	}
@@ -549,9 +560,14 @@ namespace Automation4 {
 		RubyObjects::Get()->Register(rbAssFile);
 
 		std::list<AssEntry*>::iterator entry;
+		int status;
 		for(entry = ass->Line.begin(); entry != ass->Line.end(); ++entry)
 		{
-			rb_ary_push(rbAssFile, AssEntryToRuby(*entry));
+			VALUE res = rb_protect(rbAss2RbWrapper, reinterpret_cast<VALUE>(*entry), &status);
+			if(status == 0) rb_ary_push(rbAssFile, res);
+			else {
+				ruby_errinfo = Qnil;
+			}
 		}
 
 		// TODO

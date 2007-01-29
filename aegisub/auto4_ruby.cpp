@@ -457,8 +457,7 @@ namespace Automation4 {
 	{
 		wxString _m(StringValueCStr(msg), wxConvUTF8);
 		RubyProgressSink::inst->AddDebugOutput(_m);
-		RubyProgressSink::inst->Refresh();
-		RubyProgressSink::inst->Update();
+		RubyProgressSink::inst->DoUpdateDisplay();
 		return Qtrue;
 	}
 
@@ -568,7 +567,9 @@ namespace Automation4 {
 		return rb_funcall2(a.recv, a.id, a.n, a.argv);
 	}
 	VALUE rbExecWrapper(VALUE arg){return  ruby_exec();}
-	VALUE rbLoadWrapper(VALUE arg){rb_load(/*reinterpret_cast<const char*>*/(arg), 0); return Qtrue;}
+	VALUE rbLoadWrapper(VALUE arg){rb_load(arg, 0); return Qtrue;}
+	VALUE rbAss2RbWrapper(VALUE arg){return RubyAssFile::AssEntryToRuby(reinterpret_cast<AssEntry*>(arg));}
+	VALUE rb2AssWrapper(VALUE arg){return reinterpret_cast<VALUE>(RubyAssFile::RubyToAssEntry(arg));}
 
 	VALUE rbFunCall(VALUE recv, ID id, int n, ...) 
 	{
