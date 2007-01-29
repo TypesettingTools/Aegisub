@@ -331,15 +331,18 @@ const AegiVideoFrame AvisynthVideoProvider::DoGetFrame(int _n) {
 	AegiVideoFrame &final = iframe;
 	final.flipped = false;
 	final.cppAlloc = true;
+	final.invertChannels = false;
 
 	// Format
 	if (vi.IsRGB32()) {
 		final.format = FORMAT_RGB32;
 		final.flipped = true;
+		final.invertChannels = true;
 	}
 	else if (vi.IsRGB24()) {
 		final.format = FORMAT_RGB24;
 		final.flipped = true;
+		final.invertChannels = true;
 	}
 	else if (vi.IsYV12()) final.format = FORMAT_YV12;
 	else if (vi.IsYUY2()) final.format = FORMAT_YUY2;

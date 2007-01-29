@@ -884,7 +884,7 @@ int SubsEditBox::BlockAtPos(int pos) {
 	int max = text.Length()-1;
 
 	// Find block number at pos
-	for (int i=0;i<=pos;i++) {
+	for (int i=0;i<=pos && i<=max;i++) {
 		if (i > 0 && text[i] == _T('{')) n++;
 		if (text[i] == _T('}') && i != max && i != pos && i != pos -1 && (i+1 == max || text[i+1] != _T('{'))) n++;
 	}
@@ -1266,4 +1266,5 @@ void SubsEditBox::OnButtonUnderline(wxCommandEvent &event) {
 void SubsEditBox::OnButtonStrikeout(wxCommandEvent &event) {
 	SetOverride(_T("\\s"));
 }
+
 

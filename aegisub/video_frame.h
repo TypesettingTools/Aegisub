@@ -61,7 +61,7 @@ public:
 	unsigned int pitch[4];		// Pitch, that is, the number of bytes used by each row.
 
 	bool flipped;				// First row is actually the bottom one
-	bool invertChannels;		// Invert Red and Blue channels
+	bool invertChannels;		// Invert Red and Blue channels or U and V planes
 	bool cppAlloc;				// Allocated with C++'s "new" operator, instead of "malloc"
 
 	AegiVideoFrame();

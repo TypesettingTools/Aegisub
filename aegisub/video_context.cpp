@@ -479,9 +479,15 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 
 	// UV planes for YV12
 	if (frame.format == FORMAT_YV12) {
-		glTexSubImage2D(GL_TEXTURE_2D,0,0,frame.h,frame.w/2,frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[1]);
+		int u = 1;
+		int v = 2;
+		if (frame.invertChannels) {
+			u = 2;
+			v = 1;
+		}
+		glTexSubImage2D(GL_TEXTURE_2D,0,0,frame.h,frame.w/2,frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[u]);
 		if (glGetError() != 0) throw _T("Error uploading U plane.");
-		glTexSubImage2D(GL_TEXTURE_2D,0,frame.w/2,frame.h,frame.w/2,frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[2]);
+		glTexSubImage2D(GL_TEXTURE_2D,0,frame.w/2,frame.h,frame.w/2,frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[v]);
 		if (glGetError() != 0) throw _T("Error uploadinv V plane.");
 	}
 

@@ -358,8 +358,8 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 
 	// Set FPS and frame duration
 	if (defd == 0) defd = 417083;
-	if (fps != 0.0) defd = long long (10000000.0 / fps);
-	else fps = 10000000.0 / double(defd);
+	if (fps != 0.0) defd = long long (10000000.0 / fps) + 1;
+	else fps = 10000000.0 / double(++defd);
 
 	// Set number of frames
 	last_fnum = 0;
@@ -434,8 +434,17 @@ void DirectShowVideoProvider::ReadFrame(long long timestamp, unsigned format, un
 		else if (format == IVS_RGB32) df->frame.format = FORMAT_RGB32;
 		else if (format == IVS_YV12) df->frame.format = FORMAT_YV12;
 
+		// Allocate
 		unsigned int datalen = stride*height;
 		df->frame.Allocate();
+
+		// Prepare data for YV12
+		if (format == IVS_YV12) {
+			datalen = datalen * 3 / 2;
+			df->frame.invertChannels = true;
+		}
+
+		// Copy
 		memcpy(df->frame.data[0],src,datalen);
 	}
 }
