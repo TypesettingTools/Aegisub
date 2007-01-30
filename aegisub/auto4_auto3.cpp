@@ -1452,6 +1452,6 @@ continue_invalid_option:
 			}
 		}
 	};
-	Auto3ScriptFactory _script_factory;
+	Auto3ScriptFactory _auto3_script_factory;
 
 };

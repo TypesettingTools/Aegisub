@@ -484,7 +484,7 @@ namespace Automation4 {
 			}
 		}
 	};
-	RubyScriptFactory _script_factory;
+	RubyScriptFactory _ruby_script_factory;
 
 	RubyObjects::RubyObjects()
 	{

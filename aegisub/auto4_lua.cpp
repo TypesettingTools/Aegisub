@@ -890,6 +890,6 @@ namespace Automation4 {
 			}
 		}
 	};
-	LuaScriptFactory _script_factory;
+	LuaScriptFactory _lua_script_factory;
 
 };
