@@ -42,85 +42,85 @@
 ///////////////
 // Constructor
 KanaTable::KanaTable() {
-	Insert(L"あ",L"ア",L"a");
-	Insert(L"い",L"イ",L"i");
-	Insert(L"う",L"ウ",L"u");
-	Insert(L"え",L"エ",L"e");
-	Insert(L"お",L"オ",L"o");
+	Insert(L"\u3042",L"\u30a2",L"a");
+	Insert(L"\u3044",L"\u30a4",L"i");
+	Insert(L"\u3046",L"\u30a6",L"u");
+	Insert(L"\u3048",L"\u30a8",L"e");
+	Insert(L"\u304a",L"\u30aa",L"o");
 
-	Insert(L"さ",L"サ",L"sa");
-	Insert(L"し",L"シ",L"shi");
-	Insert(L"す",L"ス",L"su");
-	Insert(L"せ",L"セ",L"se");
-	Insert(L"そ",L"ソ",L"so");
+	Insert(L"\u3055",L"\u30b5",L"sa");
+	Insert(L"\u3057",L"\u30b7",L"shi");
+	Insert(L"\u3059",L"\u30b9",L"su");
+	Insert(L"\u305b",L"\u30bb",L"se");
+	Insert(L"\u305d",L"\u30bd",L"so");
 
-	Insert(L"た",L"タ",L"ta");
-	Insert(L"ち",L"チ",L"chi");
-	Insert(L"つ",L"ツ",L"tsu");
-	Insert(L"て",L"テ",L"te");
-	Insert(L"と",L"ト",L"to");
+	Insert(L"\u305f",L"\u30bf",L"ta");
+	Insert(L"\u3061",L"\u30c1",L"chi");
+	Insert(L"\u3064",L"\u30c4",L"tsu");
+	Insert(L"\u3066",L"\u30c6",L"te");
+	Insert(L"\u3068",L"\u30c8",L"to");
 
-	Insert(L"な",L"ナ",L"na");
-	Insert(L"に",L"ニ",L"ni");
-	Insert(L"ぬ",L"ヌ",L"nu");
-	Insert(L"ね",L"ネ",L"ne");
-	Insert(L"の",L"ノ",L"no");
+	Insert(L"\u306a",L"\u30ca",L"na");
+	Insert(L"\u306b",L"\u30cb",L"ni");
+	Insert(L"\u306c",L"\u30cc",L"nu");
+	Insert(L"\u306d",L"\u30cd",L"ne");
+	Insert(L"\u306e",L"\u30ce",L"no");
 
-	Insert(L"は",L"ハ",L"ha");
-	Insert(L"ひ",L"ヒ",L"hi");
-	Insert(L"ふ",L"フ",L"fu");
-	Insert(L"へ",L"ヘ",L"he");
-	Insert(L"ほ",L"ホ",L"ho");
+	Insert(L"\u306f",L"\u30cf",L"ha");
+	Insert(L"\u3072",L"\u30d2",L"hi");
+	Insert(L"\u3075",L"\u30d5",L"fu");
+	Insert(L"\u3078",L"\u30d8",L"he");
+	Insert(L"\u307b",L"\u30db",L"ho");
 
-	Insert(L"ま",L"マ",L"ma");
-	Insert(L"み",L"ミ",L"mi");
-	Insert(L"む",L"ム",L"mu");
-	Insert(L"め",L"メ",L"me");
-	Insert(L"も",L"モ",L"mo");
+	Insert(L"\u307e",L"\u30de",L"ma");
+	Insert(L"\u307f",L"\u30df",L"mi");
+	Insert(L"\u3080",L"\u30e0",L"mu");
+	Insert(L"\u3081",L"\u30e1",L"me");
+	Insert(L"\u3082",L"\u30e2",L"mo");
 
-	Insert(L"や",L"ヤ",L"ya");
-	Insert(L"ゆ",L"ユ",L"yu");
-	Insert(L"よ",L"ヨ",L"yo");
+	Insert(L"\u3084",L"\u30e4",L"ya");
+	Insert(L"\u3086",L"\u30e6",L"yu");
+	Insert(L"\u3088",L"\u30e8",L"yo");
 
-	Insert(L"ら",L"ラ",L"ra");
-	Insert(L"り",L"リ",L"ri");
-	Insert(L"る",L"ル",L"ru");
-	Insert(L"れ",L"レ",L"re");
-	Insert(L"り",L"ロ",L"ro");
+	Insert(L"\u3089",L"\u30e9",L"ra");
+	Insert(L"\u308a",L"\u30ea",L"ri");
+	Insert(L"\u308b",L"\u30eb",L"ru");
+	Insert(L"\u308c",L"\u30ec",L"re");
+	Insert(L"\u308a",L"\u30ed",L"ro");
 
-	Insert(L"わ",L"ワ",L"wa");
-	Insert(L"を",L"ヲ",L"wo");
-	Insert(L"ん",L"ン",L"n");
+	Insert(L"\u308f",L"\u30ef",L"wa");
+	Insert(L"\u3092",L"\u30f2",L"wo");
+	Insert(L"\u3093",L"\u30f3",L"n");
 
-	Insert(L"が",L"ガ",L"ga");
-	Insert(L"ぎ",L"ギ",L"gi");
-	Insert(L"ぐ",L"グ",L"gu");
-	Insert(L"げ",L"ゲ",L"ge");
-	Insert(L"ご",L"ゴ",L"go");
+	Insert(L"\u304c",L"\u30ac",L"ga");
+	Insert(L"\u304e",L"\u30ae",L"gi");
+	Insert(L"\u3050",L"\u30b0",L"gu");
+	Insert(L"\u3052",L"\u30b2",L"ge");
+	Insert(L"\u3054",L"\u30b4",L"go");
 
-	Insert(L"ざ",L"ザ",L"za");
-	Insert(L"じ",L"ジ",L"ji");
-	Insert(L"ず",L"ズ",L"zu");
-	Insert(L"ぜ",L"ゼ",L"ze");
-	Insert(L"ぞ",L"ゾ",L"zo");
+	Insert(L"\u3056",L"\u30b6",L"za");
+	Insert(L"\u3058",L"\u30b8",L"ji");
+	Insert(L"\u305a",L"\u30ba",L"zu");
+	Insert(L"\u305c",L"\u30bc",L"ze");
+	Insert(L"\u305e",L"\u30be",L"zo");
 
-	Insert(L"だ",L"ダ",L"da");
-	Insert(L"ぢ",L"ヂ",L"di");
-	Insert(L"づ",L"ヅ",L"du");
-	Insert(L"で",L"デ",L"de");
-	Insert(L"ど",L"ド",L"do");
+	Insert(L"\u3060",L"\u30c0",L"da");
+	Insert(L"\u3062",L"\u30c2",L"di");
+	Insert(L"\u3065",L"\u30c5",L"du");
+	Insert(L"\u3067",L"\u30c7",L"de");
+	Insert(L"\u3069",L"\u30c9",L"do");
 
-	Insert(L"ば",L"バ",L"ba");
-	Insert(L"び",L"ビ",L"bi");
-	Insert(L"ぶ",L"ブ",L"bu");
-	Insert(L"べ",L"ベ",L"be");
-	Insert(L"ぼ",L"ボ",L"bo");
+	Insert(L"\u3070",L"\u30d0",L"ba");
+	Insert(L"\u3073",L"\u30d3",L"bi");
+	Insert(L"\u3076",L"\u30d6",L"bu");
+	Insert(L"\u3079",L"\u30d9",L"be");
+	Insert(L"\u307c",L"\u30dc",L"bo");
 
-	Insert(L"ぱ",L"パ",L"pa");
-	Insert(L"ぴ",L"ピ",L"pi");
-	Insert(L"ぷ",L"プ",L"pu");
-	Insert(L"ぺ",L"ペ",L"pe");
-	Insert(L"ぽ",L"ポ",L"po");
+	Insert(L"\u3071",L"\u30d1",L"pa");
+	Insert(L"\u3074",L"\u30d4",L"pi");
+	Insert(L"\u3077",L"\u30d7",L"pu");
+	Insert(L"\u307a",L"\u30da",L"pe");
+	Insert(L"\u307d",L"\u30dd",L"po");
 }
 
 
