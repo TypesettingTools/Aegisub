@@ -232,7 +232,6 @@ namespace Automation4 {
 		void OnIdle(wxIdleEvent &evt);
 		void OnConfigDialog(ShowConfigDialogEvent &evt);
 
-		void DoUpdateDisplay();
 
 	protected:
 		volatile bool cancelled;
@@ -242,6 +241,7 @@ namespace Automation4 {
 		virtual ~ProgressSink();
 
 	public:
+		void DoUpdateDisplay();
 		void SetProgress(float _progress);
 		void SetTask(const wxString &_task);
 		void SetTitle(const wxString &_title);

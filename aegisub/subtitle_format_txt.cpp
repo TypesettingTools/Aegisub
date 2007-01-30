@@ -103,6 +103,7 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 	while (file.HasMoreLines()) {
 		// Reads line
 		wxString value = file.ReadLineFromFile();
+		if(value.IsEmpty()) continue;
 
 		// Check if this isn't a timecodes file
 		if (value.Left(10) == _T("# timecode")) {

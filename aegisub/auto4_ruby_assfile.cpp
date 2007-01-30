@@ -40,7 +40,7 @@
 #include "ass_override.h"
 #include <assert.h>
 #include <algorithm>
-#include "../ruby/include/ruby.h"
+#include <ruby.h>
 
 
 namespace Automation4 {
@@ -376,7 +376,8 @@ namespace Automation4 {
 			new_entry = reinterpret_cast<AssEntry*>(rb_protect(rb2AssWrapper, rbEntry, &status));
 			if(status == 0)	ass->Line.push_back(new_entry);
 			else {
-				// TODO: log/display the error
+				if(RubyProgressSink::inst)
+					RubyProgressSink::inst->RubyDebugOut(Qnil, ruby_errinfo);
 				ruby_errinfo = Qnil;	// clear the error
 			}
 		}
@@ -566,6 +567,8 @@ namespace Automation4 {
 			VALUE res = rb_protect(rbAss2RbWrapper, reinterpret_cast<VALUE>(*entry), &status);
 			if(status == 0) rb_ary_push(rbAssFile, res);
 			else {
+				if(RubyProgressSink::inst)
+					RubyProgressSink::inst->RubyDebugOut(Qnil, ruby_errinfo);
 				ruby_errinfo = Qnil;
 			}
 		}

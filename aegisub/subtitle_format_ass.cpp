@@ -111,7 +111,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 			version = 2;
 		}
 		// Not-so-special case for other groups, just set it
-		else if (wxbuffer[0] == _T('[')) {
+		else if (!wxbuffer.IsEmpty() && wxbuffer[0] == _T('[')) {
 			curgroup = wxbuffer;
 			// default from extension in all other sections
 			//version = 1;

@@ -41,7 +41,7 @@
 #include "auto4_base.h"
 #include <wx/thread.h>
 #include <wx/event.h>
-#include "../ruby/include/ruby.h"
+#include <ruby.h>
 
 class wxWindow;
 

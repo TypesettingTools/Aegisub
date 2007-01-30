@@ -41,7 +41,7 @@
 #include "ass_override.h"
 #include "text_file_reader.h"
 #include "options.h"
-#include "../ruby/include/ruby.h"
+#include <ruby.h>
 #include <wx/msgdlg.h>
 #include <wx/filename.h>
 #include <wx/filefn.h>
@@ -262,6 +262,7 @@ namespace Automation4 {
 		, macro_fun(macro_function)
 		, validation_fun(validate_function)
 	{
+		no_validate = validate_function == Qnil;
 		RegisterFeature();
 	}
 
@@ -273,25 +274,23 @@ namespace Automation4 {
 		try {
 			RubyAssFile *subsobj = new RubyAssFile(subs, true, true);
 			VALUE sel = CreateIntegerArray(selected); // selected items
-			//	RubyObjects::Get()->Register(sel);
+			RubyObjects::Get()->Register(sel);
 			VALUE result = rbFunCall(rb_mKernel, rb_to_id(validation_fun), 3, subsobj->rbAssFile, sel, rb_int2inum(active));
+			RubyObjects::Get()->Unregister(sel);
 			if(result != Qnil && result != Qfalse)
 				return true;
-			//	RubyObjects::Get()->Unregister(sel);
 		}catch (const char* e) {
 			wxString *err = new wxString(e, wxConvUTF8);
-			throw err->c_str();
+			wxMessageBox(*err, _T("Error running validation function"),wxICON_ERROR | wxOK);			
 		}
-	//		wxMessageBox(error, _T("Error running validation function"), wxICON_ERROR | wxOK);			
-	//	}
+
 		return false;
 	}
 
 	void RubyFeatureMacro::Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
-		// prepare function call
 		try {
-
+			delete RubyProgressSink::inst;
 			RubyProgressSink::inst = new RubyProgressSink(progress_parent, false);
 			RubyProgressSink::inst->SetTitle(GetName());
 			RubyProgressSink::inst->Show(true);
@@ -301,19 +300,16 @@ namespace Automation4 {
 			VALUE sel = CreateIntegerArray(selected); // selected items
 			RubyObjects::Get()->Register(sel);
 			VALUE result = rbFunCall(rb_mKernel, rb_to_id(macro_fun), 3, subsobj->rbAssFile, sel, rb_int2inum(active));
+			RubyObjects::Get()->Unregister(sel);
 			if(result != Qnil && result != Qfalse)
 			{
 				subsobj->RubyUpdateAssFile(result);
 				RubyProgressSink::inst->script_finished = true;
 			}
-			else RubyProgressSink::inst->Show(false);
-		//	RubyObjects::Get()->Unregister(sel);
 		} catch (const char* e) {
 			wxString *err = new wxString(e, wxConvUTF8);
 			wxMessageBox(*err, _T("Error running macro"),wxICON_ERROR | wxOK);			
 		}
-		delete RubyProgressSink::inst;
-		RubyProgressSink::inst = NULL;
 }
 
 
@@ -355,7 +351,7 @@ namespace Automation4 {
 				assert(config_dialog->RubyReadBack() == 1);
 				// TODO, write back stored options here
 			}
-		
+			delete RubyProgressSink::inst;
 			RubyProgressSink::inst = new RubyProgressSink(export_dialog, false);
 			RubyProgressSink::inst->SetTitle(GetName());
 			RubyProgressSink::inst->Show(true);
@@ -365,15 +361,12 @@ namespace Automation4 {
 			if(result != Qnil && result != Qfalse)
 			{
 				subsobj->RubyUpdateAssFile(result);
+				RubyProgressSink::inst->script_finished = true;
 			}
-	//		else RubyProgressSink::inst->Show(false);
 		} catch (const char* e) {
 			wxString *err = new wxString(e, wxConvUTF8);
 			wxMessageBox(*err, _T("Error running filter"),wxICON_ERROR | wxOK);			
 		}
-		delete RubyProgressSink::inst;
-		RubyProgressSink::inst = NULL;
-
 	}
 
 	ScriptConfigDialog* RubyFeatureFilter::GenerateConfigDialog(wxWindow *parent)
@@ -412,10 +405,6 @@ namespace Automation4 {
 
 	RubyProgressSink::~RubyProgressSink()
 	{
-		rb_undef_method(RubyScript::RubyAegisub, "progress_set");
-		rb_undef_method(RubyScript::RubyAegisub, "progress_task");
-		rb_undef_method(RubyScript::RubyAegisub, "progress_title");
-		rb_undef_method(RubyScript::RubyAegisub, "debug_out");
 		// remove progress reporting stuff
 		// TODO
 	}
@@ -458,6 +447,7 @@ namespace Automation4 {
 		wxString _m(StringValueCStr(msg), wxConvUTF8);
 		RubyProgressSink::inst->AddDebugOutput(_m);
 		RubyProgressSink::inst->DoUpdateDisplay();
+		wxSafeYield(RubyProgressSink::inst);
 		return Qtrue;
 	}
 
