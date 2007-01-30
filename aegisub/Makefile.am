@@ -12,6 +12,11 @@ BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGS = -Iposix -include posix/defines.h $(BUILDINFO)
 LDADD = posix/libposix.a ../lua51/src/liblua.a -lGL -lGLU
+
+#	auto4_ruby_assfile.cpp
+#	auto4_ruby.cpp
+#	auto4_ruby_dialog.cpp
+
 aegisub_SOURCES = \
 	aegisublocale.cpp \
 	ass_attachment.cpp \
@@ -48,10 +53,12 @@ aegisub_SOURCES = \
 	dialog_attachments.cpp \
 	dialog_automation.cpp \
 	dialog_colorpicker.cpp \
+	dialog_detached_video.cpp \
 	dialog_export.cpp \
 	dialog_fonts_collector.cpp \
 	dialog_hotkeys.cpp \
 	dialog_jumpto.cpp \
+	dialog_kanji_timer.cpp \
 	dialog_options.cpp \
 	dialog_paste_over.cpp \
 	dialog_progress.cpp \
@@ -80,6 +87,7 @@ aegisub_SOURCES = \
 	hilimod_textctrl.cpp \
 	hotkeys.cpp \
 	idle_field_event.cpp \
+	kana_table.cpp \
 	lavc_file.cpp \
 	main.cpp \
 	md5.c \
