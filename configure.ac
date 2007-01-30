@@ -72,6 +72,11 @@ AC_ARG_WITH(wx-config,
         WXCONFIG=$withval
     fi
 ])
+
+AC_CHECK_LIB([GL], [glBegin],,[
+	AC_MSG_FAILURE([system OpenGL support missing])
+])
+
 AC_MSG_CHECKING([wxWidgets version])
 if wxversion=`$WXCONFIG --version`; then
     AC_MSG_RESULT([$wxversion])
@@ -81,7 +86,21 @@ else
 fi
 
 CPPFLAGS="$CPPFLAGS `$WXCONFIG --cppflags | sed -e 's/-fno-exceptions//'` $FREETYPE_CFLAGS"
-LIBS="$LIBS `$WXCONFIG --libs` $FREETYPE_LIBS"
+LIBS="$LIBS `$WXCONFIG --libs` `$WXCONFIG --libs gl` $FREETYPE_LIBS"
+
+AC_MSG_CHECKING([wxWidgets OpenGL support])
+AC_LINK_IFELSE([
+#include <wx/glcanvas.h>
+int main(int argc, char **argv) {
+	wxGLCanvas *canvas;
+	return 0;
+}
+],[
+	AC_MSG_RESULT([yes])
+],[
+	AC_MSG_RESULT([not available])
+	AC_MSG_FAILURE([wxWidgets OpenGL support missing])
+])
 
 AC_ARG_WITH(wxscintilla,
 	AC_HELP_STRING([--with-wxscintilla=DIR], [Use wxScintilla includes from DIR/include and libraries from DIR/lib.]),
