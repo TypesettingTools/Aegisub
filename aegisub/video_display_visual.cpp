@@ -118,7 +118,9 @@ void VideoDisplayVisual::DrawOverlay() {
 
 	// Draw the control points for FexTracker
 	glDisable(GL_TEXTURE_2D);
+#if USE_FEXTRACKER == 1
 	parent->tracker->Render();
+#endif
 
 	// Draw lines
 	if (mode != 0) {
@@ -773,7 +775,11 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	bool hasOverlay = false;
 	bool realTime = Options.AsBool(_T("Video Visual Realtime"));
+
+	// Fextracker
+	#if USE_FEXTRACKER == 1
 	if (parent->tracker) parent->tracker->OnMouseEvent(event);
+	#endif
 
 	// Text of current coords
 	int vx = (sw * x + w/2) / w;
