@@ -43,9 +43,21 @@
 #include "options.h"
 
 
+//////////////////////////
+// Extension get function
+#ifdef __WIN32__
+void* glGetProc(const char *str) { return wglGetProcAddress(str); }
+#else
+#ifdef __WXMAC_OSX__
+void* glGetProc(const char *str) { return aglGetProcAddress(str); }
+#else
+void* glGetProc(const char *str) { return glXGetProcAddress(str); }
+#endif
+#endif
+
+
 //////////////////////////////////////
 // OpenGL extension function pointers
-#ifdef __WIN32__
 PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB = NULL;
 PFNGLDELETEOBJECTARBPROC glDeleteObjectARB = NULL;
 PFNGLCREATEPROGRAMOBJECTARBPROC glCreateProgramObjectARB = NULL;
@@ -57,7 +69,6 @@ PFNGLCOMPILESHADERARBPROC glCompileShaderARB = NULL;
 PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB = NULL;
 PFNGLUNIFORM1IARBPROC glUniform1iARB = NULL;
 PFNGLUNIFORM2FARBPROC glUniform2fARB = NULL;
-#endif
 
 
 ////////////////
@@ -280,21 +291,18 @@ void OpenGLWrapper::Initialize() {
 	static bool initialized = false;
 	if (!initialized) {
 		initialized = true;
-		//glewInit();
 
-#ifdef __WIN32__
-		glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC) wglGetProcAddress("glUseProgramObjectARB");
-		glDeleteObjectARB = (PFNGLDELETEOBJECTARBPROC) wglGetProcAddress("glDeleteObjectARB");
-		glCreateProgramObjectARB = (PFNGLCREATEPROGRAMOBJECTARBPROC) wglGetProcAddress("glCreateProgramObjectARB");
-		glAttachObjectARB = (PFNGLATTACHOBJECTARBPROC) wglGetProcAddress("glAttachObjectARB");
-		glLinkProgramARB = (PFNGLLINKPROGRAMARBPROC) wglGetProcAddress("glLinkProgramARB");
-		glCreateShaderObjectARB = (PFNGLCREATESHADEROBJECTARBPROC) wglGetProcAddress("glCreateShaderObjectARB");
-		glShaderSourceARB = (PFNGLSHADERSOURCEARBPROC) wglGetProcAddress("glShaderSourceARB");
-		glCompileShaderARB = (PFNGLCOMPILESHADERARBPROC) wglGetProcAddress("glCompileShaderARB");
-		glGetUniformLocationARB = (PFNGLGETUNIFORMLOCATIONARBPROC) wglGetProcAddress("glGetUniformLocationARB");
-		glUniform1iARB = (PFNGLUNIFORM1IARBPROC) wglGetProcAddress("glUniform1iARB");
-		glUniform2fARB = (PFNGLUNIFORM2FARBPROC) wglGetProcAddress("glUniform2fARB");
-#endif
+		glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC) glGetProc("glUseProgramObjectARB");
+		glDeleteObjectARB = (PFNGLDELETEOBJECTARBPROC) glGetProc("glDeleteObjectARB");
+		glCreateProgramObjectARB = (PFNGLCREATEPROGRAMOBJECTARBPROC) glGetProc("glCreateProgramObjectARB");
+		glAttachObjectARB = (PFNGLATTACHOBJECTARBPROC) glGetProc("glAttachObjectARB");
+		glLinkProgramARB = (PFNGLLINKPROGRAMARBPROC) glGetProc("glLinkProgramARB");
+		glCreateShaderObjectARB = (PFNGLCREATESHADEROBJECTARBPROC) glGetProc("glCreateShaderObjectARB");
+		glShaderSourceARB = (PFNGLSHADERSOURCEARBPROC) glGetProc("glShaderSourceARB");
+		glCompileShaderARB = (PFNGLCOMPILESHADERARBPROC) glGetProc("glCompileShaderARB");
+		glGetUniformLocationARB = (PFNGLGETUNIFORMLOCATIONARBPROC) glGetProc("glGetUniformLocationARB");
+		glUniform1iARB = (PFNGLUNIFORM1IARBPROC) glGetProc("glUniform1iARB");
+		glUniform2fARB = (PFNGLUNIFORM2FARBPROC) glGetProc("glUniform2fARB");
 	}
 }
 
