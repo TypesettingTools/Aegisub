@@ -51,7 +51,7 @@ void* glGetProc(const char *str) { return wglGetProcAddress(str); }
 #ifdef __WXMAC_OSX__
 void* glGetProc(const char *str) { return aglGetProcAddress(str); }
 #else
-void* glGetProc(const char *str) { return glXGetProcAddress(str); }
+void* glGetProc(const char *str) { return glXGetProcAddress((const GLubyte *)str); }
 #endif
 #endif
 
