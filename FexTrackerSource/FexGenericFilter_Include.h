@@ -39,3 +39,4 @@ struct FexFilterContribution {
 	int xMin, xMax;
 	double* Weight;
 };
+

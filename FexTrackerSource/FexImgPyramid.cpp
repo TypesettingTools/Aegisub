@@ -24,7 +24,7 @@ void BaseFloatImage_LanczosRescale( float* in, int inSx, int inSy, float* out, i
 
 //turn off image debugging
 #ifndef imdebug
-#define imdebug // 
+#define imdebug(a,b,c,d) //
 #endif
 
 

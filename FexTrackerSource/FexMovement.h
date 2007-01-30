@@ -26,7 +26,7 @@ class FexMovement
 public:
 	FexMovement();
 	~FexMovement();
-	WCHAR* FileName;
+	wchar_t* FileName;
 
 	tenlist<FexMovementFrame>	Frames;
 };

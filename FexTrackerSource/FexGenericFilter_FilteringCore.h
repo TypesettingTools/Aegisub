@@ -54,3 +54,4 @@
 		delete []Contrib[x].Weight;
 	delete []Contrib;
 }
+

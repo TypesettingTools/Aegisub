@@ -47,3 +47,4 @@
 #undef PixelMax
 #undef ImagePlanes
 }
+

@@ -188,6 +188,7 @@ AC_OUTPUT([
 	Makefile
 	ac/Makefile
 	locale/Makefile
+	FexTrackerSource/Makefile
 	aegisub/Makefile
 	aegisub/posix/Makefile
 	aegisub/bitmaps/Makefile

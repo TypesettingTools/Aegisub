@@ -10,8 +10,8 @@ DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
-AM_CPPFLAGS = -Iposix -include posix/defines.h $(BUILDINFO)
-LDADD = posix/libposix.a ../lua51/src/liblua.a -lGL -lGLU
+AM_CPPFLAGS = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
+LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a -lGL -lGLU
 
 #	auto4_ruby_assfile.cpp
 #	auto4_ruby.cpp
@@ -55,6 +55,7 @@ aegisub_SOURCES = \
 	dialog_colorpicker.cpp \
 	dialog_detached_video.cpp \
 	dialog_export.cpp \
+	dialog_fextracker.cpp \
 	dialog_fonts_collector.cpp \
 	dialog_hotkeys.cpp \
 	dialog_jumpto.cpp \
@@ -123,6 +124,7 @@ aegisub_SOURCES = \
 	video_box.cpp \
 	video_context.cpp \
 	video_display.cpp \
+	video_display_fextracker.cpp \
 	video_display_visual.cpp \
 	video_frame.cpp \
 	video_provider.cpp \

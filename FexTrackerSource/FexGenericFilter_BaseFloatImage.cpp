@@ -90,3 +90,4 @@ void BaseFloatImage_LanczosRescale( float* in, int inSx, int inSy, float* out, i
 #undef FilterWidth
 #undef FilterWeight
 }
+

@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = ac aegisub locale
+SUBDIRS = ac FexTrackerSource aegisub locale
 
 lua51/src/liblua.a:
 	make -C lua51/src CC=$(CXX) a

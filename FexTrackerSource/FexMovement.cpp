@@ -7,10 +7,13 @@
 
 #include "StdAfx.h"
 #include "stdio.h"
+#ifdef WIN32
 #include <conio.h>
+#endif
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
+#include <wchar.h>
 //#include <mmsystem.h>
 
 //////////////////////////////////////////////////////////////////////
@@ -32,11 +35,26 @@ FEXTRACKER_API FexMovement* CreateMovement()
 	return new FexMovement();
 }
 
+#ifndef WIN32
+FILE *_wfopen(const wchar_t *wname, const wchar_t *wmode)
+{
+	size_t namelen = wcstombs(NULL, wname, 0) + 1;
+	char name[namelen];
+	wcstombs(name, wname, namelen);
+
+	size_t modelen = wcstombs(NULL, wmode, 0) + 1;
+	char mode[modelen];
+	wcstombs(mode, wmode, modelen);
+
+	return fopen(name, mode);
+}
+#endif
+
 FEXTRACKER_API void LoadMovement( FexMovement* me, const wchar_t* Filename )
 {
 	me->Frames.nVal = 0;
 
-	me->FileName = new WCHAR[ wcslen(Filename)+1 ];
+	me->FileName = new wchar_t[ wcslen(Filename)+1 ];
 	wcscpy( me->FileName, Filename );
 
 	FILE *fi = _wfopen( Filename, L"rt" );

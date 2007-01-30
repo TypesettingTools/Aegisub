@@ -43,7 +43,7 @@ typedef uint64_t __uint64;
 #define USE_LAVC 0
 #endif
 #define USE_PRS 0
-#define USE_FEXTRACKER 0
+#define USE_FEXTRACKER 1
 #ifndef USE_LIBSSA
 #define USE_LIBSSA 0
 #endif

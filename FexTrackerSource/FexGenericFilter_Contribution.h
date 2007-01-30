@@ -38,4 +38,5 @@
             cc->Weight[n-cc->xMin] += weight;
         }
     }
-}   
+}
+
