@@ -47,13 +47,6 @@ namespace Automation4 {
 
 	// LuaAssFile
 
-/*	void RubyAssFile::CheckAllowModify()
-	{
-		if (can_modify)
-			return;
-		rb_raise(rb_eRuntimeError, "Attempt to modify subtitles in read-only feature context.");
-	}
-*/
 	VALUE RubyAssFile::AssEntryToRuby(AssEntry *e)
 	{
 		VALUE ass_entry;
@@ -377,7 +370,7 @@ namespace Automation4 {
 			if(status == 0)	ass->Line.push_back(new_entry);
 			else {
 				if(RubyProgressSink::inst)
-					RubyProgressSink::inst->RubyDebugOut(Qnil, ruby_errinfo);
+					RubyProgressSink::inst->RubyDebugOut(1, &ruby_errinfo, Qnil);
 				ruby_errinfo = Qnil;	// clear the error
 			}
 		}
@@ -396,151 +389,10 @@ namespace Automation4 {
 		return 1;
 	}
 
-	int RubyAssFile::RubyParseKaraokeData()
-	{
-/*		AssEntry *e = RubyToAssEntry(L);
-		if (e->GetType() != ENTRY_DIALOGUE) {
-			delete e;
-			lua_pushstring(L, "Attempt to create karaoke table from non-dialogue subtitle line");
-			lua_error(L);
-			return 0;
-		}
-
-		AssDialogue *dia = e->GetAsDialogue(e);
-		dia->ParseASSTags();
-
-		int kcount = 0;
-		int kdur = 0;
-		int ktime = 0;
-		wxString ktag = _T("");
-		wxString ktext = _T("");
-		wxString ktext_stripped = _T("");
-
-		lua_newtable(L);
-
-		for (int i = 0; i < (int)dia->Blocks.size(); i++) {
-			AssDialogueBlock *block = dia->Blocks[i];
-
-			switch (block->type) {
-
-				case BLOCK_BASE:
-					assert(block->type != BLOCK_BASE);
-					break;
-
-				case BLOCK_PLAIN:
-					ktext += block->text;
-					ktext_stripped += block->text;
-					break;
-
-				case BLOCK_DRAWING:
-					// a drawing is regarded as a kind of control code here, so it's just stripped away
-					ktext += block->text;
-					break;
-
-				case BLOCK_OVERRIDE: {
-					bool brackets_open = false;
-					AssDialogueBlockOverride *ovr = block->GetAsOverride(block);
-
-					for (int j = 0; j < (int)ovr->Tags.size(); j++) {
-						AssOverrideTag *tag = ovr->Tags[j];
-
-						if (tag->IsValid() && tag->Name.Mid(0,2).CmpNoCase(_T("\\k")) == 0) {
-							// karaoke tag
-							if (brackets_open) {
-								ktext += _T("}");
-								brackets_open = false;
-							}
-
-							// store to lua
-							lua_newtable(L);
-							lua_pushnumber(L, kdur);
-							lua_setfield(L, -2, "duration");
-							lua_pushnumber(L, ktime);
-							lua_setfield(L, -2, "start_time");
-							lua_pushnumber(L, ktime+kdur);
-							lua_setfield(L, -2, "end_time");
-							lua_pushstring(L, ktag.mb_str(wxConvUTF8));
-							lua_setfield(L, -2, "tag");
-							lua_pushstring(L, ktext.mb_str(wxConvUTF8));
-							lua_setfield(L, -2, "text");
-							lua_pushstring(L, ktext_stripped.mb_str(wxConvUTF8));
-							lua_setfield(L, -2, "text_stripped");
-							lua_rawseti(L, -2, kcount);
-
-							// prepare new syllable
-							kcount++;
-							ktag = tag->Name.Mid(1);
-							// check if it's a "set time" tag, special handling for that (depends on previous syllable duration)
-							if (ktag == _T("kt")) {
-								ktime = tag->Params[0]->AsInt() * 10;
-								kdur = 0;
-							} else {
-								ktime += kdur; // duration of previous syllable
-								kdur = tag->Params[0]->AsInt() * 10;
-							}
-							ktext.clear();
-							ktext_stripped.clear();
-
-						} else {
-							// not karaoke tag
-							if (!brackets_open) {
-								ktext += _T("{");
-								brackets_open = true;
-							}
-							ktext += tag->ToString();
-						}
-
-					}
-
-					if (brackets_open) {
-						ktext += _T("}");
-						brackets_open = false;
-					}
-
-					break;}
-			}
-		}
-
-		dia->ClearBlocks();
-
-		// store final syllable/block to lua
-		lua_newtable(L);
-		lua_pushnumber(L, kdur);
-		lua_setfield(L, -2, "duration");
-		lua_pushnumber(L, ktime);
-		lua_setfield(L, -2, "start_time");
-		lua_pushnumber(L, ktime+kdur);
-		lua_setfield(L, -2, "end_time");
-		lua_pushstring(L, ktag.mb_str(wxConvUTF8));
-		lua_setfield(L, -2, "tag");
-		lua_pushstring(L, ktext.mb_str(wxConvUTF8));
-		lua_setfield(L, -2, "text");
-		lua_pushstring(L, ktext_stripped.mb_str(wxConvUTF8));
-		lua_setfield(L, -2, "text_stripped");
-		lua_rawseti(L, -2, kcount);
-
-		delete dia;*/
-		return 1;
-	}
 
 	int RubyAssFile::RubySetUndoPoint()
 	{
-	/*	RubyAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
-		if (!laf->can_set_undo) {
-			lua_pushstring(L, "Attempt to set an undo point in a context without undo-support.");
-			lua_error(L);
-			return 0;
-		}
-
-		wxString description;
-		if (lua_isstring(L, 1)) {
-			description = wxString(lua_tostring(L, 1), wxConvUTF8);
-			lua_pop(L, 1);
-		}
-		AssFile::top->FlagAsModified(); // TODO: make undo system support description of action undone
-
-		laf->ass = AssFile::top; // make sure we're still working on the most recent undo point
-	*/	return 0;
+		return 0;
 	}
 
 	RubyAssFile::~RubyAssFile()
@@ -568,15 +420,14 @@ namespace Automation4 {
 			if(status == 0) rb_ary_push(rbAssFile, res);
 			else {
 				if(RubyProgressSink::inst)
-					RubyProgressSink::inst->RubyDebugOut(Qnil, ruby_errinfo);
+					RubyProgressSink::inst->RubyDebugOut(1, &ruby_errinfo, Qnil);
 				ruby_errinfo = Qnil;
 			}
 		}
 
 		// TODO
-		rb_define_module_function(RubyScript::RubyAegisub, "parse_tag_data",reinterpret_cast<RB_HOOK>(&RubyParseTagData), 1);
-		rb_define_module_function(RubyScript::RubyAegisub, "unparse_tag_data",reinterpret_cast<RB_HOOK>(&RubyUnparseTagData), 1);
-		rb_define_module_function(RubyScript::RubyAegisub, "parse_karaoke_data",reinterpret_cast<RB_HOOK>(&RubyParseKaraokeData), 1);
+		//rb_define_module_function(RubyScript::RubyAegisub, "parse_tag_data",reinterpret_cast<RB_HOOK>(&RubyParseTagData), 1);
+		//rb_define_module_function(RubyScript::RubyAegisub, "unparse_tag_data",reinterpret_cast<RB_HOOK>(&RubyUnparseTagData), 1);
 		//rb_define_module_function(RubyScript::RubyAegisub, "set_undo_point",reinterpret_cast<RB_HOOK>(&RubySetUndoPoint), 1);
 
 	}

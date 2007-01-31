@@ -66,7 +66,6 @@ namespace Automation4 {
 
 		bool can_modify;
 		bool can_set_undo;
-		//void CheckAllowModify(); // throws an error if modification is disallowed
 
 		// keep a cursor of last accessed item to avoid walking over the entire file on every access
 		std::list<AssEntry*>::iterator last_entry_ptr;
@@ -75,7 +74,6 @@ namespace Automation4 {
 
 		static int RubyParseTagData();
 		static int RubyUnparseTagData();
-		static int RubyParseKaraokeData();
 		static int RubySetUndoPoint();
 
 		~RubyAssFile();
@@ -104,7 +102,7 @@ namespace Automation4 {
 		static VALUE RubySetTask(VALUE self, VALUE task);
 		static VALUE RubySetTitle(VALUE self, VALUE title);
 		static VALUE RubyGetCancelled(VALUE self);
-		static VALUE RubyDebugOut(VALUE self, VALUE msg);
+		static VALUE RubyDebugOut(int argc, VALUE *args, VALUE self);
 	};
 
 

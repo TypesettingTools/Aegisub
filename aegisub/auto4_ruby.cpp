@@ -122,8 +122,13 @@ namespace Automation4 {
 			rb_define_module_function(RubyScript::RubyAegisub, "progress_set",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetProgress), 1);
 			rb_define_module_function(RubyScript::RubyAegisub, "progress_task",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTask), 1);
 			rb_define_module_function(RubyScript::RubyAegisub, "progress_title",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTitle), 1);
-			rb_define_module_function(RubyScript::RubyAegisub, "debug_out",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDebugOut), 1);
+			rb_define_module_function(RubyScript::RubyAegisub, "debug_out",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDebugOut), -1);
 			rb_define_module_function(RubyScript::RubyAegisub, "get_cancelled",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyGetCancelled), 0);
+			VALUE paths = rb_gv_get("$:");
+			for(int i = 0; i < include_path.GetCount(); i++)
+			{
+				rb_ary_push(paths, rb_str_new2(include_path[i].mb_str(wxConvISO8859_1)));
+			}
 
 			int status = 0;
 			wxCharBuffer buf = GetFilename().mb_str(wxConvISO8859_1);
@@ -136,13 +141,17 @@ namespace Automation4 {
 			}
 
 			VALUE global_var = rb_gv_get("$script_name");
-			name = wxString(StringValueCStr(global_var), wxConvUTF8);
+			if(TYPE(global_var) == T_STRING)
+				name = wxString(StringValueCStr(global_var), wxConvUTF8);
 			global_var = rb_gv_get("$script_description");
-			description = wxString(StringValueCStr(global_var), wxConvUTF8);
+			if(TYPE(global_var) == T_STRING)
+				description = wxString(StringValueCStr(global_var), wxConvUTF8);
 			global_var = rb_gv_get("$script_author");
-			author = wxString(StringValueCStr(global_var), wxConvUTF8);
+			if(TYPE(global_var) == T_STRING)
+				author = wxString(StringValueCStr(global_var), wxConvUTF8);
 			global_var = rb_gv_get("$script_version");
-			version = wxString(StringValueCStr(global_var), wxConvUTF8);
+			if(TYPE(global_var) == T_STRING)
+				version = wxString(StringValueCStr(global_var), wxConvUTF8);
 			loaded = true;
 		}
 		catch (const char* e) {
@@ -304,12 +313,12 @@ namespace Automation4 {
 			if(result != Qnil && result != Qfalse)
 			{
 				subsobj->RubyUpdateAssFile(result);
-				RubyProgressSink::inst->script_finished = true;
 			}
 		} catch (const char* e) {
 			wxString *err = new wxString(e, wxConvUTF8);
 			wxMessageBox(*err, _T("Error running macro"),wxICON_ERROR | wxOK);			
 		}
+		RubyProgressSink::inst->script_finished = true;
 }
 
 
@@ -361,12 +370,12 @@ namespace Automation4 {
 			if(result != Qnil && result != Qfalse)
 			{
 				subsobj->RubyUpdateAssFile(result);
-				RubyProgressSink::inst->script_finished = true;
 			}
 		} catch (const char* e) {
 			wxString *err = new wxString(e, wxConvUTF8);
 			wxMessageBox(*err, _T("Error running filter"),wxICON_ERROR | wxOK);			
 		}
+		RubyProgressSink::inst->script_finished = true;
 	}
 
 	ScriptConfigDialog* RubyFeatureFilter::GenerateConfigDialog(wxWindow *parent)
@@ -442,9 +451,15 @@ namespace Automation4 {
 		return Qfalse;
 	}
 
-	VALUE RubyProgressSink::RubyDebugOut(VALUE self, VALUE msg)
+	VALUE RubyProgressSink::RubyDebugOut(int argc, VALUE *args, VALUE self)
 	{
-		wxString _m(StringValueCStr(msg), wxConvUTF8);
+		if(argc > 1 && TYPE(args[0]) == T_FIXNUM) 
+		{
+			if(FIX2INT(args[0]) > RubyProgressSink::inst->trace_level)
+				return Qnil;
+		}
+		else args[1] = args[0];
+		wxString _m(StringValueCStr(args[1]), wxConvUTF8);
 		RubyProgressSink::inst->AddDebugOutput(_m);
 		RubyProgressSink::inst->DoUpdateDisplay();
 		wxSafeYield(RubyProgressSink::inst);
@@ -519,38 +534,7 @@ namespace Automation4 {
 	{
 		recv = _recv;
 	};
-	typedef struct run_safely_arg {
-		VALUE (*func)(void);
-		void *arg;
-	} run_safely_arg_t;
 
-	static VALUE run_safely_0(void *arg)
-	{
-		run_safely_arg_t *rsarg = (run_safely_arg_t *) arg;
-		VALUE result;
-		result = (*rsarg->func)();
-		return result;
-	}
-
-	static int run_safely(VALUE (*func)(void), void *arg, VALUE *retval)
-	{
-		VALUE thread, ret;
-		run_safely_arg_t rsarg;
-		int state;
-		rsarg.func = func;
-		rsarg.arg = arg;
-#if defined(HAVE_SETITIMER)
-		rb_thread_start_timer();
-#endif
-		thread = rb_thread_create(reinterpret_cast<RB_HOOK>(&run_safely_0), &rsarg);
-		rb_thread_kill(thread);
-#if defined(HAVE_SETITIMER)
-		rb_thread_stop_timer();
-#endif
-		if (retval)
-			*retval = ret;
-		return state;
-	}
 	VALUE rbCallWrapper(VALUE arg)
 	{
 		RubyCallArguments &a = *reinterpret_cast<RubyCallArguments*>(arg);
