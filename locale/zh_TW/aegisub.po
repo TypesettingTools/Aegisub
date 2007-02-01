@@ -1,0 +1,3076 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Aegisub 1.10 pre-release\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-02-01 03:26+0800\n"
+"Last-Translator: Karasu <karasu_tw@hotmail.com>\n"
+"Language-Team: Karasu <karasu_tw@hotmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: TAIWAN\n"
+
+#: about.cpp:48
+#: frame_main.cpp:333
+msgid "About Aegisub"
+msgstr "關於 Aegisub"
+
+#: about.cpp:59
+msgid "Translated into LANGUAGE by PERSON\n"
+msgstr "由 Karasu 翻譯為繁體中文\n"
+
+#: about.cpp:61
+msgid " by ArchMage ZeratuL.\n"
+msgstr " 由 ArchMage ZeratuL 製作\n"
+
+#: about.cpp:62
+msgid ""
+"Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
+"\n"
+msgstr ""
+"版權所有 (c) 2005-2006 - Rodrigo Braz Monteiro\n"
+"\n"
+
+#: about.cpp:63
+msgid "Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\n"
+msgstr "自動化模組 版權所有 (c) 2005-2006 Niels Martin Hansen (別名 jfs)\n"
+
+#: about.cpp:64
+msgid "Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n"
+msgstr "動態追蹤模組 版權所有 (c) 2006 Hajo Krabbenhoeft (別名 Tentacle)\n"
+
+#: about.cpp:65
+msgid "Coding by ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n"
+msgstr "程式撰寫 - ArchMageZeratuL、jfs、Myrsloik、equinox、Tentacle、nmap\n"
+
+#: about.cpp:66
+msgid "Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n"
+msgstr "說明手冊 - ArchMage ZeratuL、jfs、movax、Kobi、TheFluff、Jcubed\n"
+
+#: about.cpp:67
+msgid "Forum and bug tracker hosting by Bot1.\n"
+msgstr "論壇及臭蟲追蹤主機提供 - Bot1\n"
+
+#: about.cpp:68
+msgid "SVN hosting by BerliOS and Mentar.\n"
+msgstr "SVN 主機提供 - BerliOS、Mentar\n"
+
+#: about.cpp:70
+msgid ""
+"\n"
+"See the help file for full credits.\n"
+msgstr ""
+"\n"
+"完整製作群列表請見說明手冊\n"
+
+#: about.cpp:71
+#, c-format
+msgid "Built by %s on %s."
+msgstr "由 %s 編譯於 %s"
+
+#: audio_box.cpp:68
+msgid "Seek bar"
+msgstr "搜尋滑桿"
+
+#: audio_box.cpp:81
+msgid "Horizontal zoom"
+msgstr "水平縮放"
+
+#: audio_box.cpp:84
+msgid "Vertical zoom"
+msgstr "垂直縮放"
+
+#: audio_box.cpp:87
+msgid "Audio Volume"
+msgstr "音量"
+
+#: audio_box.cpp:89
+msgid "Link vertical zoom and volume sliders"
+msgstr "連結垂直縮放與音量調節滑桿"
+
+#: audio_box.cpp:116
+msgid "Previous line/syllable ("
+msgstr "上一行／音節 ("
+
+#: audio_box.cpp:119
+msgid "Next line/syllable ("
+msgstr "下一行／音節 ("
+
+#: audio_box.cpp:122
+msgid "Play selection ("
+msgstr "播放所選部分 ("
+
+#: audio_box.cpp:125
+msgid "Play current line ("
+msgstr "播放目前行 ("
+
+#: audio_box.cpp:128
+msgid "Stop"
+msgstr "停止"
+
+#: audio_box.cpp:132
+msgid "Play 500 ms before selection ("
+msgstr "播放所選部分之前 500 毫秒 ("
+
+#: audio_box.cpp:135
+msgid "Play 500 ms after selection ("
+msgstr "播放所選部分之後 500 毫秒 ("
+
+#: audio_box.cpp:138
+msgid "Play first 500ms of selection ("
+msgstr "播放所選部分頭 500 毫秒 ("
+
+#: audio_box.cpp:141
+msgid "Play last 500ms of selection ("
+msgstr "播放所選部分末 500 毫秒 ("
+
+#: audio_box.cpp:144
+msgid "Play from selection start to end of file ("
+msgstr "播放所選部分起點至檔末 ("
+
+#: audio_box.cpp:148
+msgid "Add lead in ("
+msgstr "起點提前 ("
+
+#: audio_box.cpp:151
+msgid "Add lead out ("
+msgstr "終點延後 ("
+
+#: audio_box.cpp:155
+msgid "Commit changes ("
+msgstr "核准修改 ("
+
+#: audio_box.cpp:158
+msgid "Go to selection"
+msgstr "移至所選部分"
+
+#: audio_box.cpp:162
+msgid "Automatically commit all changes"
+msgstr "自動核准所有修改"
+
+#: audio_box.cpp:166
+msgid "Auto scrolls audio display to selected line"
+msgstr "自動捲動音訊顯示至所選行"
+
+#: audio_box.cpp:170
+msgid "Substation Alpha Mode - Left click sets start and right click sets end"
+msgstr "Substation Alpha 模式 - 點左鍵決定起點，點右鍵決定終點"
+
+#: audio_box.cpp:174
+msgid "Spectrum analyzer mode"
+msgstr "聲譜分析模式"
+
+#: audio_box.cpp:185
+msgid "Karaoke"
+msgstr "卡拉OK"
+
+#: audio_box.cpp:186
+msgid "Toggle karaoke mode"
+msgstr "切換卡拉OK模式"
+
+#: audio_box.cpp:189
+#: audio_box.cpp:192
+msgid "Join"
+msgstr "結合"
+
+#: audio_box.cpp:194
+msgid "Join selected syllables"
+msgstr "結合所選音節"
+
+#: audio_box.cpp:197
+#: audio_box.cpp:529
+msgid "Split"
+msgstr "分割"
+
+#: audio_box.cpp:198
+msgid "Toggle splitting-mode"
+msgstr "切換分割模式"
+
+#: audio_box.cpp:527
+msgid "Cancel Split"
+msgstr "取消分割"
+
+#: audio_display.cpp:1963
+#: audio_display.cpp:2008
+msgid "Do you want to commit your changes? If you choose No, they will be discarded."
+msgstr "您是否要核准您所做的修改？如果您選擇否，則所作修改將被捨棄。"
+
+#: audio_display.cpp:1963
+#: audio_display.cpp:2008
+msgid "Commit?"
+msgstr "核准？"
+
+#: audio_karaoke.cpp:762
+msgid "Karaoke tag"
+msgstr "卡拉OK標籤"
+
+#: audio_karaoke.cpp:766
+msgid "Change karaoke tag to \\k"
+msgstr "卡拉OK標籤改為\\k"
+
+#: audio_karaoke.cpp:767
+msgid "Change karaoke tag to \\kf"
+msgstr "卡拉OK標籤改為\\kf"
+
+#: audio_karaoke.cpp:768
+msgid "Change karaoke tag to \\ko"
+msgstr "卡拉OK標籤改為\\ko"
+
+#: audio_provider_ram.cpp:85
+msgid "Load audio"
+msgstr "載入音訊"
+
+#: audio_provider_ram.cpp:85
+msgid "Reading into RAM"
+msgstr "讀取至記憶體"
+
+#: automation_gui.cpp:46
+msgid "Automation Manager"
+msgstr "自動化腳本管理"
+
+#: automation_gui.cpp:52
+msgid "&Create..."
+msgstr "建立新檔(&C)…"
+
+#: automation_gui.cpp:53
+msgid "&Add..."
+msgstr "加入舊檔(&A)…"
+
+#: automation_gui.cpp:54
+msgid "&Remove"
+msgstr "移除(&R)"
+
+#: automation_gui.cpp:55
+msgid "&Apply now"
+msgstr "立即套用(&N)"
+
+#: automation_gui.cpp:56
+msgid "&Edit..."
+msgstr "編輯(&E)…"
+
+#: automation_gui.cpp:57
+msgid "Rel&oad"
+msgstr "重新整理(&O)"
+
+#: automation_gui.cpp:58
+msgid "C&lose"
+msgstr "關閉(&L)"
+
+#: automation_gui.cpp:61
+msgid "Script name"
+msgstr "腳本名稱"
+
+#: automation_gui.cpp:62
+msgid "File"
+msgstr "檔案"
+
+#: automation_gui.cpp:64
+msgid "Description"
+msgstr "描述"
+
+#: automation_gui.cpp:120
+msgid "Create Automation script"
+msgstr "建立自動化腳本"
+
+#: automation_gui.cpp:169
+msgid "Load Automation script"
+msgstr "載入自動化腳本"
+
+#: base_grid.cpp:402
+msgid "#"
+msgstr "#"
+
+#: base_grid.cpp:403
+msgid "L"
+msgstr "層"
+
+#: base_grid.cpp:404
+#: subs_grid.cpp:118
+msgid "Start"
+msgstr "起點"
+
+#: base_grid.cpp:405
+#: subs_grid.cpp:119
+msgid "End"
+msgstr "終點"
+
+#: base_grid.cpp:406
+#: dialog_search_replace.cpp:92
+#: dialog_selection.cpp:96
+#: subs_grid.cpp:120
+msgid "Style"
+msgstr "樣式"
+
+#: base_grid.cpp:407
+#: dialog_search_replace.cpp:93
+#: dialog_selection.cpp:97
+#: subs_grid.cpp:121
+msgid "Actor"
+msgstr "演員"
+
+#: base_grid.cpp:408
+#: subs_grid.cpp:122
+msgid "Effect"
+msgstr "效果"
+
+#: base_grid.cpp:409
+#: dialog_style_editor.cpp:160
+#: subs_grid.cpp:123
+msgid "Left"
+msgstr "左邊"
+
+#: base_grid.cpp:410
+#: dialog_style_editor.cpp:164
+#: subs_grid.cpp:124
+msgid "Right"
+msgstr "右邊"
+
+#: base_grid.cpp:411
+#: dialog_style_editor.cpp:168
+#: subs_grid.cpp:125
+msgid "Vert"
+msgstr "豎邊"
+
+#: base_grid.cpp:412
+#: dialog_search_replace.cpp:91
+#: dialog_selection.cpp:95
+msgid "Text"
+msgstr "內文"
+
+#: dialog_associations.cpp:46
+msgid "Associate extensions"
+msgstr "檔案關聯"
+
+#: dialog_associations.cpp:59
+msgid ""
+"Please select the formats you want to\n"
+"associate with Aegisub:"
+msgstr "請選擇您想要以Aegisub開啟的檔案格式:"
+
+#: dialog_associations.cpp:60
+msgid "Associations"
+msgstr "關聯"
+
+#: dialog_attachments.cpp:53
+msgid "Attachment List"
+msgstr "附加檔案清單"
+
+#: dialog_attachments.cpp:60
+msgid "E&xtract"
+msgstr "另存檔案(&X)"
+
+#: dialog_attachments.cpp:61
+msgid "&Delete"
+msgstr "刪除(&D)"
+
+#: dialog_attachments.cpp:67
+msgid "Attach &Font"
+msgstr "附加字型檔(&F)"
+
+#: dialog_attachments.cpp:68
+msgid "Attach &Graphics"
+msgstr "附加圖片(&G)"
+
+#: dialog_attachments.cpp:71
+msgid "&Close"
+msgstr "關閉(&C)"
+
+#: dialog_attachments.cpp:89
+msgid "Attachment name"
+msgstr "附件名稱"
+
+#: dialog_attachments.cpp:90
+msgid "Size"
+msgstr "大小"
+
+#: dialog_attachments.cpp:91
+msgid "Group"
+msgstr "分類"
+
+#: dialog_attachments.cpp:136
+#: dialog_attachments.cpp:169
+msgid "Choose file to be attached"
+msgstr "選擇要附加的檔案"
+
+#: dialog_attachments.cpp:207
+msgid "Select the path to save the files to:"
+msgstr "選擇檔案儲存位置"
+
+#: dialog_attachments.cpp:211
+msgid "Select the path to save the file to:"
+msgstr "選擇檔案儲存位置"
+
+#: dialog_colorpicker.cpp:371
+msgid "Select Color"
+msgstr "選擇色彩"
+
+#: dialog_colorpicker.cpp:445
+#, fuzzy
+msgid "Color spectrum"
+msgstr "色彩光譜"
+
+#: dialog_colorpicker.cpp:452
+msgid "RGB/R"
+msgstr "RGB/紅"
+
+#: dialog_colorpicker.cpp:452
+msgid "RGB/G"
+msgstr "RGB/綠"
+
+#: dialog_colorpicker.cpp:452
+msgid "RGB/B"
+msgstr "RGB/藍"
+
+#: dialog_colorpicker.cpp:452
+msgid "HSL/L"
+msgstr "HSL/明度"
+
+#: dialog_colorpicker.cpp:452
+msgid "HSV/H"
+msgstr "HSV/彩度"
+
+#: dialog_colorpicker.cpp:458
+msgid "RGB color"
+msgstr "RGB色彩"
+
+#: dialog_colorpicker.cpp:463
+msgid "HSL color"
+msgstr "HSL色彩"
+
+#: dialog_colorpicker.cpp:468
+msgid "HSV color"
+msgstr "HSV色彩"
+
+#: dialog_colorpicker.cpp:488
+#, fuzzy
+msgid "Spectrum mode:"
+msgstr "光譜模式:"
+
+#: dialog_colorpicker.cpp:500
+msgid "Red:"
+msgstr "紅:"
+
+#: dialog_colorpicker.cpp:502
+msgid "Green:"
+msgstr "綠:"
+
+#: dialog_colorpicker.cpp:504
+msgid "Blue:"
+msgstr "藍:"
+
+#: dialog_colorpicker.cpp:517
+#: dialog_colorpicker.cpp:526
+msgid "Hue:"
+msgstr "色調:"
+
+#: dialog_colorpicker.cpp:519
+#: dialog_colorpicker.cpp:528
+msgid "Sat.:"
+msgstr "飽和度:"
+
+#: dialog_colorpicker.cpp:521
+msgid "Lum.:"
+msgstr "明度:"
+
+#: dialog_colorpicker.cpp:530
+msgid "Value:"
+msgstr "濃度:"
+
+#: dialog_export.cpp:49
+msgid "Export"
+msgstr "匯出"
+
+#: dialog_export.cpp:82
+msgid "Move up"
+msgstr "上移"
+
+#: dialog_export.cpp:83
+msgid "Move down"
+msgstr "下移"
+
+#: dialog_export.cpp:84
+msgid "Select all"
+msgstr "全選"
+
+#: dialog_export.cpp:85
+msgid "Select none"
+msgstr "不選"
+
+#: dialog_export.cpp:88
+msgid "Text encoding:"
+msgstr "文字編碼:"
+
+#: dialog_export.cpp:98
+msgid "Filters"
+msgstr "濾鏡"
+
+#: dialog_export.cpp:109
+#: dialog_export.cpp:113
+msgid "Export..."
+msgstr "匯出…"
+
+#: dialog_export.cpp:185
+msgid "Export subtitles file"
+msgstr "匯出字幕檔"
+
+#: dialog_fextracker.cpp:18
+msgid "Tracker configuration"
+msgstr "動態追蹤儀設定"
+
+#: dialog_fextracker.cpp:42
+msgid "Number of points to track:"
+msgstr "追蹤點數量:"
+
+#: dialog_fextracker.cpp:45
+msgid "Minimal (squared) distance between two points:  "
+msgstr "最小兩點距離平方值:  "
+
+#: dialog_fextracker.cpp:48
+msgid "Maximum feature movement:"
+msgstr "特徵最大移動量:"
+
+#: dialog_fextracker.cpp:51
+msgid "Maximum feature appearance change:"
+msgstr "特徵外觀最大變化量:"
+
+#: dialog_fextracker.cpp:54
+#, fuzzy
+msgid "How much CPU per feature?"
+msgstr "每個特徵分配多少CPU？"
+
+#: dialog_fextracker.cpp:59
+msgid "Edge detect filter size:"
+msgstr "邊緣偵測濾鏡大小:"
+
+#: dialog_fextracker.cpp:62
+msgid "Feature comparison width:"
+msgstr "特徵比對範圍寬度:"
+
+#: dialog_fextracker.cpp:65
+msgid "Feature comparison height:"
+msgstr "特徵比對範圍高度:"
+
+#: dialog_fextracker.cpp:68
+msgid "Minimal determinant:"
+msgstr "判斷臨界值:"
+
+#: dialog_fextracker.cpp:71
+msgid "Minimal displacement per iteration:"
+msgstr "每循環最小位移量:"
+
+#: dialog_fextracker.cpp:77
+msgid "Standard Settings"
+msgstr "標準設定"
+
+#: dialog_fextracker.cpp:81
+msgid "Advanced Settings"
+msgstr "進階設定"
+
+#: dialog_fextracker.cpp:86
+msgid "Go!"
+msgstr "開始"
+
+#: dialog_hotkeys.cpp:47
+msgid "Hotkeys"
+msgstr "快速鍵"
+
+#: dialog_hotkeys.cpp:57
+msgid "List of all hotkeys (shortcuts) available in Aegisub. Double click on any item to reassign it."
+msgstr "可用於 Aegisub 的快速鍵 (鍵盤捷徑) 清單。點兩下任一個項目可重新分配快速鍵。"
+
+#: dialog_hotkeys.cpp:61
+msgid "Function"
+msgstr "功能"
+
+#: dialog_hotkeys.cpp:62
+msgid "Key"
+msgstr "快速鍵"
+
+#: dialog_hotkeys.cpp:159
+msgid "Press Key"
+msgstr "請按鍵"
+
+#: dialog_hotkeys.cpp:165
+msgid "Press key to bind to \""
+msgstr "請按下要與 \""
+
+#: dialog_hotkeys.cpp:165
+msgid "\" or esc to cancel."
+msgstr "\" 功能綁定的按鍵或按 esc 取消。"
+
+#: dialog_jumpto.cpp:47
+msgid "Jump to"
+msgstr "跳至"
+
+#: dialog_jumpto.cpp:56
+#: dialog_shift_times.cpp:66
+msgid "Time: "
+msgstr "時間: "
+
+#: dialog_jumpto.cpp:57
+msgid "Frame: "
+msgstr "影格: "
+
+#: dialog_properties.cpp:50
+msgid "Script Properties"
+msgstr "腳本內容"
+
+#: dialog_properties.cpp:57
+msgid "Title:"
+msgstr "標題:"
+
+#: dialog_properties.cpp:59
+#, fuzzy
+msgid "Original script:"
+msgstr "腳本原作:"
+
+#: dialog_properties.cpp:61
+msgid "Translation:"
+msgstr "翻譯:"
+
+#: dialog_properties.cpp:63
+msgid "Editing:"
+msgstr "編輯:"
+
+#: dialog_properties.cpp:65
+msgid "Timing:"
+msgstr "計時:"
+
+#: dialog_properties.cpp:67
+msgid "Synch point:"
+msgstr "同步點:"
+
+#: dialog_properties.cpp:69
+msgid "Updated by:"
+msgstr "編修者:"
+
+#: dialog_properties.cpp:71
+msgid "Update details:"
+msgstr "編修摘要:"
+
+#: dialog_properties.cpp:73
+msgid "Script"
+msgstr "腳本"
+
+#: dialog_properties.cpp:94
+#: dialog_resample.cpp:61
+msgid "Resolution"
+msgstr "解析度"
+
+#: dialog_properties.cpp:100
+#: dialog_resample.cpp:70
+msgid "From video"
+msgstr "由影片取得"
+
+#: dialog_properties.cpp:108
+msgid "Wrap style"
+msgstr "換行樣式"
+
+#: dialog_properties.cpp:110
+msgid "0: Smart wrapping, top line is wider"
+msgstr "0: 智慧型換行，上行較寬"
+
+#: dialog_properties.cpp:111
+msgid "1: End-of-line word wrapping, only \\N breaks"
+msgstr "1: 於行末字元 (EOL) 換行，僅於 \\N 斷行"
+
+#: dialog_properties.cpp:112
+msgid ""
+"2: No word wrapping, both \\n"
+" and \\N break"
+msgstr ""
+"2: 不自動換行，於 \\n"
+" 及 \\N 斷行"
+
+#: dialog_properties.cpp:113
+msgid "3: Smart wrapping, bottom line is wider"
+msgstr "3: 智慧型換行，下行較寬"
+
+#: dialog_resample.cpp:53
+msgid "Resample resolution"
+msgstr "重設解析度"
+
+#: dialog_resample.cpp:69
+msgid "x"
+msgstr "×"
+
+#: dialog_resample.cpp:78
+msgid "Change aspect ratio"
+msgstr "變更縱橫比"
+
+#: dialog_resample.cpp:86
+#: dialog_resample.cpp:90
+#: frame_main.cpp:187
+msgid "Resample"
+msgstr "重設"
+
+#: dialog_search_replace.cpp:64
+msgid "Find what:"
+msgstr "尋找目標:"
+
+#: dialog_search_replace.cpp:70
+msgid "Replace with:"
+msgstr "取代為:"
+
+#: dialog_search_replace.cpp:77
+#: dialog_selection.cpp:62
+msgid "Match case"
+msgstr "大小寫視為相異"
+
+#: dialog_search_replace.cpp:78
+msgid "Use regular expressions"
+msgstr "使用正規表示法"
+
+#: dialog_search_replace.cpp:79
+msgid "Update Video (slow)"
+msgstr "更新影像 (較慢)"
+
+#: dialog_search_replace.cpp:95
+#: dialog_shift_times.cpp:99
+msgid "All rows"
+msgstr "所有行數"
+
+#: dialog_search_replace.cpp:96
+#: dialog_shift_times.cpp:99
+msgid "Selected rows"
+msgstr "已選行數"
+
+#: dialog_search_replace.cpp:97
+#: dialog_selection.cpp:98
+msgid "In Field"
+msgstr "搜尋欄位"
+
+#: dialog_search_replace.cpp:98
+msgid "Limit to"
+msgstr "搜尋範圍"
+
+#: dialog_search_replace.cpp:113
+msgid "Find next"
+msgstr "找下一個"
+
+#: dialog_search_replace.cpp:117
+msgid "Replace next"
+msgstr "取代下一個"
+
+#: dialog_search_replace.cpp:118
+msgid "Replace all"
+msgstr "全部取代"
+
+#: dialog_search_replace.cpp:496
+#, c-format
+msgid "%i matches were replaced."
+msgstr "已取代 %i 個項目。"
+
+#: dialog_search_replace.cpp:501
+msgid "No matches found."
+msgstr "找不到符合項目。"
+
+#: dialog_search_replace.cpp:536
+#: hotkeys.cpp:322
+msgid "Replace"
+msgstr "取代"
+
+#: dialog_search_replace.cpp:536
+#: hotkeys.cpp:320
+msgid "Find"
+msgstr "尋找"
+
+#: dialog_selection.cpp:50
+msgid "Select"
+msgstr "選取"
+
+#: dialog_selection.cpp:57
+msgid "Exact match"
+msgstr "全字拼寫需相符"
+
+#: dialog_selection.cpp:58
+msgid "Contains"
+msgstr "包含指定字串"
+
+#: dialog_selection.cpp:59
+msgid "Regular Expression match"
+msgstr "使用正規表示法"
+
+#: dialog_selection.cpp:60
+msgid "Matches"
+msgstr "符合條件"
+
+#: dialog_selection.cpp:61
+msgid "Doesn't Match"
+msgstr "不符條件"
+
+#: dialog_selection.cpp:63
+msgid "Dialogues"
+msgstr "對白"
+
+#: dialog_selection.cpp:64
+msgid "Comments"
+msgstr "註解"
+
+#: dialog_selection.cpp:67
+msgid "Match"
+msgstr "尋找條件"
+
+#: dialog_selection.cpp:81
+msgid "Set selection"
+msgstr "設為選取範圍"
+
+#: dialog_selection.cpp:82
+msgid "Add to selection"
+msgstr "加入選取範圍"
+
+#: dialog_selection.cpp:83
+msgid "Subtract from selection"
+msgstr "移出選取範圍"
+
+#: dialog_selection.cpp:84
+msgid "Intersect with selection"
+msgstr "選取與既有範圍之交集"
+
+#: dialog_selection.cpp:85
+msgid "Action"
+msgstr "動作"
+
+#: dialog_selection.cpp:88
+msgid "Match dialogues/comments"
+msgstr "尋找範圍"
+
+#: dialog_selection.cpp:264
+#, c-format
+msgid "Selection was set to %i lines"
+msgstr "已將 %i 行設為選取範圍"
+
+#: dialog_selection.cpp:264
+#: dialog_selection.cpp:265
+#: dialog_selection.cpp:266
+msgid "Selection"
+msgstr "選取"
+
+#: dialog_selection.cpp:265
+#, c-format
+msgid "%i lines were added to selection"
+msgstr "已將 %i 行加入選取範圍"
+
+#: dialog_selection.cpp:266
+#, c-format
+msgid "%i lines were removed from selection"
+msgstr "已將 %i 行移出選取範圍"
+
+#: dialog_shift_times.cpp:58
+#: hotkeys.cpp:319
+msgid "Shift Times"
+msgstr "時間平移"
+
+#: dialog_shift_times.cpp:67
+msgid "Frames: "
+msgstr "影格數: "
+
+#: dialog_shift_times.cpp:70
+msgid "Enter time in h:mm:ss.cs notation"
+msgstr "以 時:分:秒.百分秒 的格式輸入時間"
+
+#: dialog_shift_times.cpp:71
+msgid "Shift by time"
+msgstr "平移 (依時間)"
+
+#: dialog_shift_times.cpp:75
+msgid "Enter number of frames to shift by"
+msgstr "輸入平移影格數"
+
+#: dialog_shift_times.cpp:76
+msgid "Shift by frames"
+msgstr "平移 (依影格數)"
+
+#: dialog_shift_times.cpp:86
+msgid "Forward"
+msgstr "延後"
+
+#: dialog_shift_times.cpp:87
+msgid "Backward"
+msgstr "提前"
+
+#: dialog_shift_times.cpp:88
+msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
+msgstr "延後字幕使其較晚顯示。在字幕太早顯示時使用。"
+
+#: dialog_shift_times.cpp:89
+msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
+msgstr "提前字幕使其較早顯示。在字幕太晚顯示時使用。"
+
+#: dialog_shift_times.cpp:93
+msgid "Shift by"
+msgstr "平移量"
+
+#: dialog_shift_times.cpp:100
+msgid "Affect"
+msgstr "調整範圍"
+
+#: dialog_shift_times.cpp:103
+msgid "Start and End times"
+msgstr "起點與終點時刻"
+
+#: dialog_shift_times.cpp:103
+msgid "Start times only"
+msgstr "僅起點時刻"
+
+#: dialog_shift_times.cpp:103
+msgid "End times only"
+msgstr "僅終點時刻"
+
+#: dialog_shift_times.cpp:104
+msgid "Times"
+msgstr "調整項目"
+
+#: dialog_shift_times.cpp:107
+msgid "History"
+msgstr "調整紀錄"
+
+#: dialog_shift_times.cpp:230
+msgid "unsaved, "
+msgstr "未存檔，"
+
+#: dialog_shift_times.cpp:233
+msgid " frames "
+msgstr " 格 "
+
+#: dialog_shift_times.cpp:234
+msgid "backward, "
+msgstr "(提前)，"
+
+#: dialog_shift_times.cpp:235
+msgid "forward, "
+msgstr "(延後)，"
+
+#: dialog_shift_times.cpp:236
+msgid "s+e, "
+msgstr "起+終，"
+
+#: dialog_shift_times.cpp:237
+msgid "s, "
+msgstr "起，"
+
+#: dialog_shift_times.cpp:238
+msgid "e, "
+msgstr "終，"
+
+#: dialog_shift_times.cpp:239
+msgid "all"
+msgstr "全"
+
+#: dialog_shift_times.cpp:241
+msgid "sel "
+msgstr "選 "
+
+#: dialog_style_editor.cpp:53
+msgid "Style Editor"
+msgstr "樣式編輯器"
+
+#: dialog_style_editor.cpp:63
+msgid "Style name"
+msgstr "樣式名稱"
+
+#: dialog_style_editor.cpp:70
+msgid "Font face"
+msgstr "字型"
+
+#: dialog_style_editor.cpp:71
+msgid "Font size"
+msgstr "字型大小"
+
+#: dialog_style_editor.cpp:72
+msgid "Choose"
+msgstr "選擇"
+
+#: dialog_style_editor.cpp:73
+msgid "Font"
+msgstr "字型"
+
+#: dialog_style_editor.cpp:76
+#: subs_edit_box.cpp:114
+msgid "Bold"
+msgstr "粗體"
+
+#: dialog_style_editor.cpp:77
+msgid "Italic"
+msgstr "斜體"
+
+#: dialog_style_editor.cpp:78
+#: subs_edit_box.cpp:118
+msgid "Underline"
+msgstr "底線"
+
+#: dialog_style_editor.cpp:79
+#: subs_edit_box.cpp:120
+msgid "Strikeout"
+msgstr "刪除線"
+
+#: dialog_style_editor.cpp:97
+msgid "Colors"
+msgstr "色彩"
+
+#: dialog_style_editor.cpp:116
+#: dialog_style_editor.cpp:117
+#: dialog_style_editor.cpp:118
+#: dialog_style_editor.cpp:119
+msgid "Click to choose color"
+msgstr "點一下挑選色彩"
+
+#: dialog_style_editor.cpp:128
+#: dialog_style_editor.cpp:129
+#: dialog_style_editor.cpp:130
+#: dialog_style_editor.cpp:131
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr "設定透明度，從 0 (不透明) 到 255 (透明)"
+
+#: dialog_style_editor.cpp:132
+msgid "Primary"
+msgstr "主要色彩"
+
+#: dialog_style_editor.cpp:133
+msgid "Secondary"
+msgstr "次要色彩"
+
+#: dialog_style_editor.cpp:134
+#: dialog_style_editor.cpp:189
+msgid "Outline"
+msgstr "外框色彩"
+
+#: dialog_style_editor.cpp:135
+msgid "Shadow"
+msgstr "陰影色彩"
+
+#: dialog_style_editor.cpp:146
+msgid "Margins"
+msgstr "邊界"
+
+#: dialog_style_editor.cpp:156
+msgid "Distance from left edge, in pixels"
+msgstr "與左邊界之距離 (像素單位)"
+
+#: dialog_style_editor.cpp:157
+msgid "Distance from right edge, in pixels"
+msgstr "與右邊界之距離 (像素單位)"
+
+#: dialog_style_editor.cpp:158
+msgid "Distance from top/bottom edge, in pixels"
+msgstr "與上下邊界之距離 (像素單位)"
+
+#: dialog_style_editor.cpp:179
+msgid "Alignment"
+msgstr "對齊方式"
+
+#: dialog_style_editor.cpp:180
+msgid "Alignment in screen, in numpad style"
+msgstr "對齊畫面位置，依九宮格排列"
+
+#: dialog_style_editor.cpp:190
+msgid "Opaque box"
+msgstr "不透明背景"
+
+#: dialog_style_editor.cpp:195
+msgid "Checking this will display an opaque box instead of outline"
+msgstr "核取此方塊以使用不透明背景取代文字外框"
+
+#: dialog_style_editor.cpp:196
+msgid "Outline width, in pixels"
+msgstr "外框寬度 (像素單位)"
+
+#: dialog_style_editor.cpp:197
+msgid "Shadow distance, in pixels"
+msgstr "陰影距離 (像素單位)"
+
+#: dialog_style_editor.cpp:199
+msgid "Outline:"
+msgstr "外框:"
+
+#: dialog_style_editor.cpp:201
+msgid "Shadow:"
+msgstr "陰影:"
+
+#: dialog_style_editor.cpp:209
+msgid "ANSI"
+msgstr "ANSI編碼"
+
+#: dialog_style_editor.cpp:210
+msgid "Default"
+msgstr "預設編碼"
+
+#: dialog_style_editor.cpp:211
+msgid "Symbol"
+msgstr "符號編碼"
+
+#: dialog_style_editor.cpp:212
+msgid "Mac"
+msgstr "麥金塔編碼"
+
+#: dialog_style_editor.cpp:213
+msgid "Shift_JIS"
+msgstr "日文"
+
+#: dialog_style_editor.cpp:214
+msgid "Hangeul"
+msgstr "韓文"
+
+#: dialog_style_editor.cpp:215
+msgid "Johab"
+msgstr "韓文 (Johab碼)"
+
+#: dialog_style_editor.cpp:216
+msgid "GB2312"
+msgstr "簡體中文"
+
+#: dialog_style_editor.cpp:217
+msgid "Chinese BIG5"
+msgstr "繁體中文"
+
+#: dialog_style_editor.cpp:218
+msgid "Greek"
+msgstr "希臘文"
+
+#: dialog_style_editor.cpp:219
+msgid "Turkish"
+msgstr "土耳其文"
+
+#: dialog_style_editor.cpp:220
+msgid "Vietnamese"
+msgstr "越南文"
+
+#: dialog_style_editor.cpp:221
+msgid "Hebrew"
+msgstr "希伯來文"
+
+#: dialog_style_editor.cpp:222
+msgid "Arabic"
+msgstr "阿拉伯文"
+
+#: dialog_style_editor.cpp:223
+msgid "Baltic"
+msgstr "波羅的海文"
+
+#: dialog_style_editor.cpp:224
+msgid "Russian"
+msgstr "俄文"
+
+#: dialog_style_editor.cpp:225
+msgid "Thai"
+msgstr "泰文"
+
+#: dialog_style_editor.cpp:226
+msgid "East European"
+msgstr "東歐語系"
+
+#: dialog_style_editor.cpp:227
+msgid "OEM"
+msgstr "OEM編碼"
+
+#: dialog_style_editor.cpp:230
+msgid "Miscelaneous"
+msgstr "其他編碼"
+
+#: dialog_style_editor.cpp:243
+msgid "Scale X, in percentage"
+msgstr "水平縮放倍率 (百分比)"
+
+#: dialog_style_editor.cpp:244
+msgid "Scale Y, in percentage"
+msgstr "垂直縮放倍率 (百分比)"
+
+#: dialog_style_editor.cpp:245
+msgid "Angle to rotate in Z axis, in degrees"
+msgstr "沿 Z 軸旋轉角度 (角度單位)"
+
+#: dialog_style_editor.cpp:246
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgstr "文字編碼，只在使用萬國碼編輯且字體沒有正確的萬國碼對照規則時有用。"
+
+#: dialog_style_editor.cpp:247
+msgid "Character spacing, in pixels"
+msgstr "字元間距 (像素單位)"
+
+#: dialog_style_editor.cpp:248
+msgid "Scale X%:"
+msgstr "水平倍率%:"
+
+#: dialog_style_editor.cpp:250
+msgid "Scale Y%:"
+msgstr "垂直倍率%:"
+
+#: dialog_style_editor.cpp:252
+msgid "Angle:"
+msgstr "角度:"
+
+#: dialog_style_editor.cpp:254
+msgid "Spacing:"
+msgstr "間距:"
+
+#: dialog_style_editor.cpp:256
+msgid "Encoding:"
+msgstr "編碼:"
+
+#: dialog_style_editor.cpp:453
+msgid ""
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
+"of computing, so please avoid using it unless it's REALLY suitable. Thanks."
+msgstr ""
+"您已選擇使用 \"Comic Sans\" 字型。身為一個程式設計者兼排版者，\n"
+"我勸您三思而行。Comic Sans 是電腦史上被濫用得最嚴重的字型，\n"
+"除非真的適合，否則請避免使用，謝謝。"
+
+#: dialog_style_editor.cpp:453
+msgid "Warning"
+msgstr "警告"
+
+#: dialog_style_manager.cpp:52
+#: frame_main.cpp:175
+msgid "Styles Manager"
+msgstr "樣式管理"
+
+#: dialog_style_manager.cpp:58
+msgid "Catalog of available storages"
+msgstr "可用樣式庫目錄"
+
+#: dialog_style_manager.cpp:60
+#: dialog_style_manager.cpp:71
+#: dialog_style_manager.cpp:89
+#: frame_main.cpp:143
+msgid "New"
+msgstr "新增"
+
+#: dialog_style_manager.cpp:61
+#: dialog_style_manager.cpp:73
+#: dialog_style_manager.cpp:91
+#: subs_grid.cpp:199
+msgid "Delete"
+msgstr "刪除"
+
+#: dialog_style_manager.cpp:68
+msgid "Storage"
+msgstr "樣式庫"
+
+#: dialog_style_manager.cpp:70
+msgid "Copy to current script ->"
+msgstr "複製到編輯中腳本 →"
+
+#: dialog_style_manager.cpp:72
+#: dialog_style_manager.cpp:90
+#: hotkeys.cpp:324
+msgid "Copy"
+msgstr "複製"
+
+#: dialog_style_manager.cpp:86
+msgid "Current script"
+msgstr "編輯中腳本"
+
+#: dialog_style_manager.cpp:88
+msgid "<- Copy to storage"
+msgstr "← 複製到樣式庫"
+
+#: dialog_style_manager.cpp:304
+msgid "New storage name:"
+msgstr "新樣式庫名稱:"
+
+#: dialog_style_manager.cpp:304
+msgid "New catalog entry"
+msgstr "新增樣式庫"
+
+#: dialog_style_manager.cpp:330
+msgid "Are you sure you want to delete the storage \""
+msgstr "您確定要將樣式庫 \""
+
+#: dialog_style_manager.cpp:332
+msgid "\" from the catalog?"
+msgstr "\" 從目錄中刪除？"
+
+#: dialog_style_manager.cpp:333
+#: dialog_style_manager.cpp:579
+#: dialog_style_manager.cpp:612
+msgid "Confirm delete"
+msgstr "確認刪除"
+
+#: dialog_style_manager.cpp:492
+#: dialog_style_manager.cpp:515
+msgid "Copy of "
+msgstr "副本 - "
+
+#: dialog_style_manager.cpp:574
+#: dialog_style_manager.cpp:607
+msgid "Are you sure you want to delete these "
+msgstr "您確定要刪除這"
+
+#: dialog_style_manager.cpp:576
+#: dialog_style_manager.cpp:609
+msgid " styles?"
+msgstr " 筆樣式？"
+
+#: dialog_style_manager.cpp:578
+#: dialog_style_manager.cpp:611
+msgid "Are you sure you want to delete this style?"
+msgstr "您確定要刪除這筆樣式？"
+
+#: dialog_styling_assistant.cpp:56
+msgid "Styling assistant"
+msgstr "樣式小幫手"
+
+#: dialog_styling_assistant.cpp:65
+#: dialog_styling_assistant.cpp:66
+msgid "Current line"
+msgstr "目前行內文"
+
+#: dialog_styling_assistant.cpp:71
+msgid "Styles available"
+msgstr "可用樣式"
+
+#: dialog_styling_assistant.cpp:76
+msgid "Set style"
+msgstr "套用樣式"
+
+#: dialog_styling_assistant.cpp:77
+#: dialog_translation.cpp:82
+msgid "Keys"
+msgstr "快速鍵"
+
+#: dialog_styling_assistant.cpp:85
+#: dialog_translation.cpp:85
+msgid "Accept changes"
+msgstr "接受變更"
+
+#: dialog_styling_assistant.cpp:87
+#: dialog_translation.cpp:87
+msgid "Preview changes"
+msgstr "預覽變更"
+
+#: dialog_styling_assistant.cpp:89
+#: dialog_translation.cpp:89
+msgid "Previous line"
+msgstr "上一行"
+
+#: dialog_styling_assistant.cpp:91
+#: dialog_translation.cpp:91
+msgid "Next line"
+msgstr "下一行"
+
+#: dialog_styling_assistant.cpp:93
+#: dialog_styling_assistant.cpp:115
+#: dialog_translation.cpp:95
+#: dialog_translation.cpp:105
+msgid "Play Audio"
+msgstr "播放音效"
+
+#: dialog_styling_assistant.cpp:94
+msgid "Click on list:"
+msgstr "點選清單:"
+
+#: dialog_styling_assistant.cpp:95
+msgid "Select style"
+msgstr "選擇樣式"
+
+#: dialog_styling_assistant.cpp:98
+msgid "Enable preview (slow)"
+msgstr "啟用預覽 (較慢)"
+
+#: dialog_timing_processor.cpp:54
+#: frame_main.cpp:188
+msgid "Timing Post-Processor"
+msgstr "計時後處理"
+
+#: dialog_timing_processor.cpp:67
+msgid "Lead-in/Lead-out"
+msgstr "起終點調整"
+
+#: dialog_timing_processor.cpp:68
+msgid "Add lead in:"
+msgstr "起點提前:"
+
+#: dialog_timing_processor.cpp:69
+msgid "Enable adding of lead-ins to lines."
+msgstr "將各行起點時刻提前。"
+
+#: dialog_timing_processor.cpp:72
+msgid "Lead in to be added, in miliseconds."
+msgstr "起點提前時間 (毫秒單位)。"
+
+#: dialog_timing_processor.cpp:73
+msgid "Add lead out:"
+msgstr "終點延後:"
+
+#: dialog_timing_processor.cpp:74
+msgid "Enable adding of lead-outs to lines."
+msgstr "將各行終點時刻延後。"
+
+#: dialog_timing_processor.cpp:77
+msgid "Lead out to be added, in miliseconds."
+msgstr "終點延後時間 (毫秒單位)。"
+
+#: dialog_timing_processor.cpp:85
+msgid "Make adjascent subtitles continuous"
+msgstr "連接相鄰字幕"
+
+#: dialog_timing_processor.cpp:86
+#: dialog_timing_processor.cpp:104
+msgid "Enable"
+msgstr "啟用"
+
+#: dialog_timing_processor.cpp:87
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgstr "啟用貼齊功能，令彼此距離小於指定間隔的字幕相連。"
+
+#: dialog_timing_processor.cpp:89
+msgid "Threshold:"
+msgstr "閾值:"
+
+#: dialog_timing_processor.cpp:91
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in miliseconds."
+msgstr "列為連接對象的兩句字幕相隔距離之最大值 (毫秒單位)。"
+
+#: dialog_timing_processor.cpp:97
+msgid "Bias: Start <- "
+msgstr "偏重: 起點 ← "
+
+#: dialog_timing_processor.cpp:99
+msgid " -> End"
+msgstr " → 終點"
+
+#: dialog_timing_processor.cpp:102
+msgid "Keyframe snapping"
+msgstr "貼齊關鍵影格"
+
+#: dialog_timing_processor.cpp:105
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgstr "啟用貼齊功能，使距離最近關鍵影格小於閾值的字幕貼齊該影格。"
+
+#: dialog_timing_processor.cpp:107
+msgid "Starts before thres.:"
+msgstr "始於前閾:"
+
+#: dialog_timing_processor.cpp:109
+msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
+msgstr "'始於之前' 距離閾值，也就是，於關鍵影格前幾格內開始的字幕要貼齊該影格。"
+
+#: dialog_timing_processor.cpp:110
+msgid "Starts after thres.:"
+msgstr "始於後閾:"
+
+#: dialog_timing_processor.cpp:112
+msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
+msgstr "'始於之後' 距離閾值，也就是，於關鍵影格後幾格內開始的字幕要貼齊該影格。"
+
+#: dialog_timing_processor.cpp:113
+msgid "Ends before thres.:"
+msgstr "終於前閾:"
+
+#: dialog_timing_processor.cpp:115
+msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
+msgstr "'終於之前' 距離閾值，也就是，於關鍵影格前幾格內結束的字幕要貼齊該影格。"
+
+#: dialog_timing_processor.cpp:116
+msgid "Ends after thres.:"
+msgstr "終於後閾:"
+
+#: dialog_timing_processor.cpp:118
+msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
+msgstr "'終於之後' 距離閾值，也就是，於關鍵影格後幾格內結束的字幕要貼齊該影格。"
+
+#: dialog_timing_processor.cpp:154
+msgid "All"
+msgstr "全選"
+
+#: dialog_timing_processor.cpp:155
+msgid "Select all styles."
+msgstr "選取所有樣式。"
+
+#: dialog_timing_processor.cpp:156
+msgid "None"
+msgstr "全不選"
+
+#: dialog_timing_processor.cpp:157
+msgid "Deselect all styles."
+msgstr "取消選取所有樣式。"
+
+#: dialog_timing_processor.cpp:162
+msgid "Apply to styles"
+msgstr "套用到樣式"
+
+#: dialog_timing_processor.cpp:165
+msgid "Select styles to process. Unchecked ones will be ignored."
+msgstr "選擇要處理的樣式。未選的樣式會被忽略。"
+
+#: dialog_timing_processor.cpp:309
+#, c-format
+msgid "One of the lines in the file (%i) has negative duration. Aborting."
+msgstr "檔案中有一行 (%i) 結束於起點之前。中斷處理。"
+
+#: dialog_timing_processor.cpp:309
+msgid "Invalid script"
+msgstr "無效的腳本"
+
+#: dialog_translation.cpp:56
+#: frame_main.cpp:185
+msgid "Translation Assistant"
+msgstr "翻譯小幫手"
+
+#: dialog_translation.cpp:72
+msgid "Original"
+msgstr "原文"
+
+#: dialog_translation.cpp:73
+msgid "Translation"
+msgstr "譯文"
+
+#: dialog_translation.cpp:74
+msgid "Current line: ?"
+msgstr "目前行: ?"
+
+#: dialog_translation.cpp:93
+msgid "Insert original"
+msgstr "插入原文"
+
+#: dialog_translation.cpp:96
+msgid "Enable preview"
+msgstr "啟用預覽"
+
+#: dialog_translation.cpp:171
+#, c-format
+msgid "Current line: %i/%i"
+msgstr "目前行: %i/%i"
+
+#: export_clean_info.cpp:58
+msgid "Clean Script Info"
+msgstr "清理腳本訊息"
+
+#: export_clean_info.cpp:59
+msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
+msgstr "移除腳本訊息區段所有不必要的欄位。您可能會想用在將以原作形式釋出的檔案上。"
+
+#: export_fixstyle.cpp:58
+msgid "Fix Styles"
+msgstr "修正樣式"
+
+#: export_fixstyle.cpp:59
+msgid "Fixes styles by replacing any style that isn't available on file with Default."
+msgstr "修正不存在的樣式並以預設樣式 (Default) 取代。"
+
+#: export_framerate.cpp:59
+msgid "Transform Framerate"
+msgstr "轉換影格率"
+
+#: export_framerate.cpp:60
+msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
+msgstr "配合輸出檔案轉換字幕時間 (包含特效標籤內的時間)。這在內嵌字幕作業上將固定影格率轉換為可變影格率的時候特別有用。您通常不會想要在外掛字幕作業時核取此濾境。"
+
+#: export_framerate.cpp:86
+msgid "From Video"
+msgstr "由影片取得"
+
+#: export_framerate.cpp:103
+msgid "Variable"
+msgstr "可變"
+
+#: export_framerate.cpp:107
+msgid "Constant: "
+msgstr "固定: "
+
+#: export_framerate.cpp:124
+msgid "Input framerate: "
+msgstr "輸入影格率: "
+
+#: export_framerate.cpp:126
+msgid "Output: "
+msgstr "輸出: "
+
+#: fextracker_main_events.cpp:36
+#: fextracker_main_events.cpp:92
+#: video_box.cpp:64
+msgid "FexTracker"
+msgstr ""
+
+#: fextracker_main_events.cpp:37
+msgid "Track points"
+msgstr "追蹤點"
+
+#: fextracker_main_events.cpp:39
+msgid "Add points to movement"
+msgstr "增加追蹤點"
+
+#: fextracker_main_events.cpp:40
+msgid "Remove points from movement"
+msgstr "移除追蹤點"
+
+#: fextracker_main_events.cpp:42
+msgid "Generate movement from points"
+msgstr "由追蹤點計算移動路徑"
+
+#: fextracker_main_events.cpp:50
+#: video_box.cpp:66
+msgid "FexMovement"
+msgstr ""
+
+#: fextracker_main_events.cpp:51
+msgid "Generate empty movement"
+msgstr "產生空白移動路徑"
+
+#: fextracker_main_events.cpp:53
+msgid "Move subtitle"
+msgstr "移動字幕"
+
+#: fextracker_main_events.cpp:55
+msgid "Move subtitle (this frame and preceeding frames)"
+msgstr "移動字幕 (目前影格及之前的影格)"
+
+#: fextracker_main_events.cpp:56
+msgid "Move subtitle (this frame)"
+msgstr "移動字幕 (目前影格)"
+
+#: fextracker_main_events.cpp:57
+msgid "Move subtitle (this frame and following frames)"
+msgstr "移動字幕 (目前影格及之後的影格)"
+
+#: fextracker_main_events.cpp:59
+msgid "Split line for movement"
+msgstr "依移動路徑分割為多行"
+
+#: fextracker_main_events.cpp:61
+msgid "Link movement file"
+msgstr "連結移動路徑檔"
+
+#: fextracker_main_events.cpp:92
+msgid "Tracking points"
+msgstr "追蹤點"
+
+#: fextracker_main_events.cpp:232
+msgid "Link name:"
+msgstr "連結名稱"
+
+#: fextracker_main_events.cpp:232
+msgid "Link line to movement file"
+msgstr "連結目前行到移動路徑檔案"
+
+#: fonts_collector.cpp:58
+#: frame_main.cpp:186
+msgid "Fonts Collector"
+msgstr "字型蒐集"
+
+#: fonts_collector.cpp:71
+msgid "&Browse..."
+msgstr "瀏覽(&B)…"
+
+#: fonts_collector.cpp:73
+msgid ""
+"Choose the folder where the fonts will be collected to.\n"
+"It will be created if it doesn't exist."
+msgstr ""
+"選擇用來放置所蒐集字型的資料夾\n"
+"若資料夾不存在則會創建之。"
+
+#: fonts_collector.cpp:76
+msgid "Destination"
+msgstr "目的地"
+
+#: fonts_collector.cpp:83
+msgid "Log"
+msgstr "紀錄"
+
+#: fonts_collector.cpp:87
+msgid "&Start!"
+msgstr "開始(&S)"
+
+#: fonts_collector.cpp:135
+msgid "\" found on dialogue line "
+msgstr "\" 被發現在對話行 "
+
+#: fonts_collector.cpp:193
+msgid "Invalid folder"
+msgstr "無效的資料夾"
+
+#: fonts_collector.cpp:193
+msgid "Error"
+msgstr "錯誤"
+
+#: fonts_collector.cpp:208
+msgid "Select folder to save fonts on"
+msgstr "選取用以儲存字型的資料夾"
+
+#: fonts_collector.cpp:314
+msgid "Searching for fonts in file...\n"
+msgstr "在檔案中搜尋所需字型…\n"
+
+#: fonts_collector.cpp:332
+msgid "\" found on style \""
+msgstr "\" 被發現在樣式 \""
+
+#: fonts_collector.cpp:355
+msgid ""
+"\n"
+"Reading fonts from registry...\n"
+msgstr ""
+"\n"
+"由登錄檔中讀取字型…\n"
+
+#: fonts_collector.cpp:397
+msgid "\" already exists on destination.\n"
+msgstr "\" 已經存在於目的地。\n"
+
+#: fonts_collector.cpp:422
+msgid "\" copied.\n"
+msgstr "\" 已複製。\n"
+
+#: fonts_collector.cpp:427
+msgid "Failed copying \""
+msgstr "無法複製 \""
+
+#: fonts_collector.cpp:441
+msgid "Could not find font "
+msgstr "找不到字型 "
+
+#: frame_main.cpp:143
+#: frame_main.cpp:221
+#: hotkeys.cpp:311
+msgid "New subtitles"
+msgstr "新建字幕檔"
+
+#: frame_main.cpp:144
+msgid "Open"
+msgstr "開啟"
+
+#: frame_main.cpp:144
+#: hotkeys.cpp:312
+msgid "Open subtitles"
+msgstr "開啟字幕檔"
+
+#: frame_main.cpp:145
+msgid "Save"
+msgstr "儲存"
+
+#: frame_main.cpp:145
+#: hotkeys.cpp:313
+msgid "Save subtitles"
+msgstr "儲存字幕檔"
+
+#: frame_main.cpp:149
+msgid "Jump To..."
+msgstr "跳至…"
+
+#: frame_main.cpp:149
+msgid "Jump video to time/frame"
+msgstr "影片跳至指定時刻/影格"
+
+#: frame_main.cpp:150
+msgid "Zoom in"
+msgstr "擴大"
+
+#: frame_main.cpp:150
+msgid "Zoom video in"
+msgstr "擴大顯示影片"
+
+#: frame_main.cpp:151
+msgid "Zoom out"
+msgstr "縮小"
+
+#: frame_main.cpp:151
+msgid "Zoom video out"
+msgstr "縮小顯示影片"
+
+#: frame_main.cpp:164
+msgid "Jump video to start"
+msgstr "影片跳至起點"
+
+#: frame_main.cpp:164
+#: frame_main.cpp:280
+msgid "Jumps the video to the start frame of current subtitle"
+msgstr "影片跳至目前字幕之起點時刻"
+
+#: frame_main.cpp:165
+msgid "Jump video to end"
+msgstr "影片跳至終點"
+
+#: frame_main.cpp:165
+#: frame_main.cpp:281
+msgid "Jumps the video to the end frame of current subtitle"
+msgstr "影片跳至目前字幕之終點時刻"
+
+#: frame_main.cpp:166
+msgid "Snap start to video"
+msgstr "設為起點"
+
+#: frame_main.cpp:166
+#: frame_main.cpp:282
+msgid "Set start of selected subtitles to current video frame"
+msgstr "將所選字幕之起點設為目前影格"
+
+#: frame_main.cpp:167
+msgid "Snap end to video"
+msgstr "設為終點"
+
+#: frame_main.cpp:167
+#: frame_main.cpp:283
+msgid "Set end of selected subtitles to current video frame"
+msgstr "將所選字幕之終點設為目前影格"
+
+#: frame_main.cpp:168
+msgid "Select visible"
+msgstr "選取可見"
+
+#: frame_main.cpp:168
+msgid "Selects all lines that are currently visible on video frame"
+msgstr "選取目前影格上所有可見字幕"
+
+#: frame_main.cpp:169
+#, fuzzy
+msgid "Snap subtitles to scene"
+msgstr "貼齊場景"
+
+#: frame_main.cpp:169
+msgid "Snap selected subtitles so they match current scene start/end"
+msgstr "將所選字幕之起終點貼齊目前場景之起終點"
+
+#: frame_main.cpp:170
+msgid "Shift subtitles to frame"
+msgstr "平移字幕至此格"
+
+#: frame_main.cpp:170
+msgid "Shift selected subtitles so first selected starts at this frame"
+msgstr "平移所選字幕使第一句始於目前影格"
+
+#: frame_main.cpp:174
+msgid "Properties"
+msgstr "內容"
+
+#: frame_main.cpp:174
+msgid "Open Properties"
+msgstr "開啟內容"
+
+#: frame_main.cpp:175
+msgid "Open Styles Manager"
+msgstr "管理字幕樣式"
+
+#: frame_main.cpp:176
+msgid "Attachments"
+msgstr "附件"
+
+#: frame_main.cpp:176
+msgid "Open Attachment List"
+msgstr "開啟附件清單"
+
+#: frame_main.cpp:180
+msgid "Automation"
+msgstr "自動化處理"
+
+#: frame_main.cpp:180
+msgid "Open Automation manager"
+msgstr "管理自動化腳本"
+
+#: frame_main.cpp:184
+msgid "Styling Assistant"
+msgstr "樣式小幫手"
+
+#: frame_main.cpp:184
+msgid "Open Styling Assistant"
+msgstr "開啟樣式小幫手"
+
+#: frame_main.cpp:185
+msgid "Open Translation Assistant"
+msgstr "開啟翻譯小幫手"
+
+#: frame_main.cpp:186
+msgid "Open Fonts Collector"
+msgstr "蒐集所需字型"
+
+#: frame_main.cpp:187
+msgid "Resample script resolution"
+msgstr "重設腳本解析度"
+
+#: frame_main.cpp:188
+msgid "Open Timing Post-processor dialog"
+msgstr "開啟計時後處理對話視窗"
+
+#: frame_main.cpp:190
+msgid "Spellchecker"
+msgstr "拼字檢查"
+
+#: frame_main.cpp:190
+msgid "Open Spell checker"
+msgstr "檢查拼字正確性"
+
+#: frame_main.cpp:195
+msgid "Cycle Tag Hidding Mode"
+msgstr "切換標籤隱藏模式"
+
+#: frame_main.cpp:195
+msgid "Cycle through tag-hiding modes"
+msgstr "切換標籤隱藏模式"
+
+#: frame_main.cpp:221
+msgid "&New Subtitles\t"
+msgstr "新建字幕(&N)\t"
+
+#: frame_main.cpp:222
+msgid "&Open Subtitles...\t"
+msgstr "開啟字幕(&O)…\t"
+
+#: frame_main.cpp:222
+msgid "Opens a subtitles file"
+msgstr "開啟既有字幕檔"
+
+#: frame_main.cpp:223
+msgid "&Open Subtitles with Charset..."
+msgstr "開啟特定編碼字幕(&P)…"
+
+#: frame_main.cpp:223
+msgid "Opens a subtitles file with a specific charset"
+msgstr "以指定的編碼頁開啟既有字幕檔"
+
+#: frame_main.cpp:224
+msgid "&Save Subtitles\t"
+msgstr "儲存字幕(&S)\t"
+
+#: frame_main.cpp:224
+msgid "Saves subtitles"
+msgstr "儲存字幕檔"
+
+#: frame_main.cpp:225
+msgid "Save Subtitles as..."
+msgstr "另存新字幕…"
+
+#: frame_main.cpp:225
+msgid "Saves subtitles with another name"
+msgstr "以別的檔名儲存字幕檔"
+
+#: frame_main.cpp:226
+msgid "Export Subtitles..."
+msgstr "匯出字幕…"
+
+#: frame_main.cpp:226
+msgid "Saves a copy of subtitles with processing applied to it."
+msgstr "儲存套用過處理的字幕副本。"
+
+#: frame_main.cpp:228
+#: frame_main.cpp:266
+#: frame_main.cpp:271
+#: frame_main.cpp:299
+msgid "Recent"
+msgstr "最近開啟的字幕"
+
+#: frame_main.cpp:231
+msgid "E&xit\t"
+msgstr "結束(&X)\t"
+
+#: frame_main.cpp:231
+msgid "Exit the application"
+msgstr "關閉本程式"
+
+#: frame_main.cpp:232
+msgid "&File"
+msgstr "檔案(&F)"
+
+#: frame_main.cpp:236
+msgid "&Undo\t"
+msgstr "復原(&U)\t"
+
+#: frame_main.cpp:236
+msgid "Undoes last action"
+msgstr "復原上一次編輯"
+
+#: frame_main.cpp:237
+msgid "&Redo\t"
+msgstr "重復(&R)\t"
+
+#: frame_main.cpp:237
+msgid "Redoes last action"
+msgstr "重復上一次編輯"
+
+#: frame_main.cpp:239
+msgid "&Select lines...\t"
+msgstr "選取多行(&S)…\t"
+
+#: frame_main.cpp:239
+msgid "Selects lines based on defined criterea"
+msgstr "依照指定條件選取多行"
+
+#: frame_main.cpp:240
+msgid "S&hift times...\t"
+msgstr "平移時間(&H)…\t"
+
+#: frame_main.cpp:240
+msgid "Shift subtitles by time or frames"
+msgstr "依照指定時間或影格數平移字幕"
+
+#: frame_main.cpp:241
+msgid "Sort by Time"
+msgstr "依時序排列"
+
+#: frame_main.cpp:241
+msgid "Sort all subtitles by their start times"
+msgstr "依照字幕開始時間順序排列所有字幕"
+
+#: frame_main.cpp:243
+msgid "&Find...\t"
+msgstr "尋找(&F)…\t"
+
+#: frame_main.cpp:243
+msgid "Find words in subtitles"
+msgstr "在字幕中尋找字串"
+
+#: frame_main.cpp:244
+msgid "Find next\t"
+msgstr "找下一個\t"
+
+#: frame_main.cpp:244
+msgid "Find next match of last word"
+msgstr "尋找下一個相符的字串"
+
+#: frame_main.cpp:245
+msgid "&Replace...\t"
+msgstr "取代(&E)…\t"
+
+#: frame_main.cpp:245
+msgid "Find and replace words in subtitles"
+msgstr "在字幕中尋找並取代字串"
+
+#: frame_main.cpp:247
+msgid "Cut...\t"
+msgstr "剪下…\t"
+
+#: frame_main.cpp:247
+msgid "Cut subtitles"
+msgstr "剪下字幕"
+
+#: frame_main.cpp:248
+msgid "Copy...\t"
+msgstr "複製…\t"
+
+#: frame_main.cpp:248
+msgid "Copy subtitles"
+msgstr "複製字幕"
+
+#: frame_main.cpp:249
+msgid "Paste...\t"
+msgstr "貼上…\t"
+
+#: frame_main.cpp:249
+msgid "Paste subtitles"
+msgstr "貼上字幕"
+
+#: frame_main.cpp:250
+msgid "&Edit"
+msgstr "編輯(&E)"
+
+#: frame_main.cpp:254
+msgid "Select Aegisub interface language"
+msgstr "選擇 Aegisub 介面語言 / Select Aegisub interface language"
+
+#: frame_main.cpp:256
+msgid "Subs only view"
+msgstr "僅字幕模式"
+
+#: frame_main.cpp:256
+msgid "Display subtitles only"
+msgstr "只顯示字幕"
+
+#: frame_main.cpp:257
+msgid "Video+Subs view"
+msgstr "影片+字幕模式"
+
+#: frame_main.cpp:257
+msgid "Display video and subtitles only"
+msgstr "只顯示影片和字幕"
+
+#: frame_main.cpp:258
+msgid "Audio+Subs view"
+msgstr "音效+字幕模式"
+
+#: frame_main.cpp:258
+msgid "Display audio and subtitles only"
+msgstr "只顯示音效和字幕"
+
+#: frame_main.cpp:259
+msgid "Full view"
+msgstr "總覽模式"
+
+#: frame_main.cpp:259
+msgid "Display audio, video and subtitles"
+msgstr "顯示音效、影片和字幕"
+
+#: frame_main.cpp:260
+msgid "Vie&w"
+msgstr "檢視(&W)"
+
+#: frame_main.cpp:264
+msgid "&Open Video..."
+msgstr "開啟影片(&O)…"
+
+#: frame_main.cpp:264
+msgid "Opens a video file"
+msgstr "開啟影片檔"
+
+#: frame_main.cpp:265
+msgid "&Close Video"
+msgstr "關閉影片(&C)"
+
+#: frame_main.cpp:265
+msgid "Closes the currently open video file"
+msgstr "關閉目前開啟的影片檔"
+
+#: frame_main.cpp:269
+msgid "Open timecodes file..."
+msgstr "開啟時碼檔…"
+
+#: frame_main.cpp:269
+msgid "Opens a VFR timecodes v1 or v2 file"
+msgstr "開啟可變影格率時碼 (VFR timecode) v1 或 v2 格式檔案"
+
+#: frame_main.cpp:270
+msgid "Close timecodes file"
+msgstr "關閉時碼檔"
+
+#: frame_main.cpp:270
+msgid "Closes the currently open timecodes file"
+msgstr "關閉目前開啟的時碼檔"
+
+#: frame_main.cpp:274
+msgid "&Jump To...\t"
+msgstr "跳至(&J)…\t"
+
+#: frame_main.cpp:274
+msgid "Jump to frame or time"
+msgstr "跳至指定影格或時刻"
+
+#: frame_main.cpp:276
+msgid "Zoom &50%\t"
+msgstr "縮放 &50%\t"
+
+#: frame_main.cpp:276
+msgid "Set zoom to 50%"
+msgstr "將縮放率設為 50%"
+
+#: frame_main.cpp:277
+msgid "Zoom &100%\t"
+msgstr "縮放 &100%\t"
+
+#: frame_main.cpp:277
+msgid "Set zoom to 100%"
+msgstr "將縮放率設為 100%"
+
+#: frame_main.cpp:278
+msgid "Zoom &200%\t"
+msgstr "縮放 &200%\t"
+
+#: frame_main.cpp:278
+msgid "Set zoom to 200%"
+msgstr "將縮放率設為 200%"
+
+#: frame_main.cpp:280
+msgid "Jump video to start\t"
+msgstr "影片跳至起點\t"
+
+#: frame_main.cpp:281
+msgid "Jump video to end\t"
+msgstr "影片跳至終點\t"
+
+#: frame_main.cpp:282
+msgid "Snap start to video\t"
+msgstr "設為字幕起點\t"
+
+#: frame_main.cpp:283
+msgid "Snap end to video\t"
+msgstr "設為字幕終點\t"
+
+#: frame_main.cpp:284
+#, fuzzy
+msgid "Snap to scene\t"
+msgstr "貼齊場景\t"
+
+#: frame_main.cpp:284
+msgid "Set start and end of subtitles to the keyframes around current video frame"
+msgstr "將字幕起終點貼齊目前影格前後的關鍵影格"
+
+#: frame_main.cpp:285
+msgid "Shift to Current Frame\t"
+msgstr "平移至目前影格\t"
+
+#: frame_main.cpp:285
+msgid "Shift selection so first selected line starts at current frame"
+msgstr "平移所選字幕使第一行被選字幕始於目前影格"
+
+#: frame_main.cpp:287
+msgid "&Default Aspect Ratio"
+msgstr "預設縱橫比(&D)"
+
+#: frame_main.cpp:287
+msgid "Leave video on original aspect ratio"
+msgstr "不更動影片縱橫比"
+
+#: frame_main.cpp:288
+msgid "&Fullscreen Aspect Ratio (4:3)"
+msgstr "4：3 全螢幕(&F)"
+
+#: frame_main.cpp:288
+msgid "Forces video to fullscreen aspect ratio"
+msgstr "強制以全螢幕比例顯示影片"
+
+#: frame_main.cpp:289
+msgid "&Widescreen Aspect Ratio (16:9)"
+msgstr "16：9 寬螢幕(&W)"
+
+#: frame_main.cpp:289
+msgid "Forces video to widescreen aspect ratio"
+msgstr "強制以寬螢幕比例顯示影片"
+
+#: frame_main.cpp:290
+msgid "&2.35 Aspect Ratio"
+msgstr "縱橫比 2.&35"
+
+#: frame_main.cpp:290
+msgid "Forces video to 2.35 aspect ratio"
+msgstr "強制以縱橫比 2.35 顯示影片"
+
+#: frame_main.cpp:291
+msgid "Custom Aspect Ratio..."
+msgstr "自訂縱橫比…"
+
+#: frame_main.cpp:291
+msgid "Forces video to a custom aspect ratio"
+msgstr "強制以指定縱橫比顯示影片"
+
+#: frame_main.cpp:292
+msgid "&Video"
+msgstr "影片(&V)"
+
+#: frame_main.cpp:296
+msgid "&Open Audio file..."
+msgstr "開啟音效(&O)…"
+
+#: frame_main.cpp:296
+msgid "Opens an audio file"
+msgstr "開啟音效檔"
+
+#: frame_main.cpp:297
+msgid "Open Audio from &Video"
+msgstr "開啟影片音效(&V)"
+
+#: frame_main.cpp:297
+msgid "Opens the audio from the current video file"
+msgstr "開啟目前影片的音效"
+
+#: frame_main.cpp:298
+msgid "&Close Audio"
+msgstr "關閉音效(&C)"
+
+#: frame_main.cpp:298
+msgid "Closes the currently open audio file"
+msgstr "關閉目前開啟的音效檔"
+
+#: frame_main.cpp:301
+msgid "&Audio"
+msgstr "音效(&A)"
+
+#: frame_main.cpp:305
+msgid "&Properties..."
+msgstr "內容(&P)…"
+
+#: frame_main.cpp:305
+msgid "Open script properties window"
+msgstr "開啟腳本內容視窗"
+
+#: frame_main.cpp:306
+msgid "&Styles Manager..."
+msgstr "樣式管理(&S)…"
+
+#: frame_main.cpp:306
+msgid "Open styles manager"
+msgstr "管理字幕樣式"
+
+#: frame_main.cpp:307
+msgid "&Attachments..."
+msgstr "附件(&A)…"
+
+#: frame_main.cpp:307
+msgid "Open the attachment list"
+msgstr "開啟附件清單"
+
+#: frame_main.cpp:309
+msgid "&Automation..."
+msgstr "自動化處理(&U)…"
+
+#: frame_main.cpp:309
+msgid "Open automation manager"
+msgstr "管理自動化腳本"
+
+#: frame_main.cpp:311
+msgid "St&yling Assistant..."
+msgstr "樣式小幫手(&Y)…"
+
+#: frame_main.cpp:311
+msgid "Open styling assistant"
+msgstr "開啟樣式小幫手"
+
+#: frame_main.cpp:312
+msgid "&Translation Assistant..."
+msgstr "翻譯小幫手(&T)…"
+
+#: frame_main.cpp:312
+msgid "Open translation assistant"
+msgstr "開啟翻譯小幫手"
+
+#: frame_main.cpp:313
+msgid "&Fonts Collector..."
+msgstr "字型蒐集(&F)…"
+
+#: frame_main.cpp:313
+msgid "Open fonts collector"
+msgstr "蒐集所需字型"
+
+#: frame_main.cpp:314
+msgid "Resample resolution..."
+msgstr "重設解析度…"
+
+#: frame_main.cpp:314
+msgid "Changes resolution and modifies subtitles to conform to change"
+msgstr "變更解析度並修改字幕以配合之"
+
+#: frame_main.cpp:315
+msgid "Timing Post-Processor..."
+msgstr "計時後處理…"
+
+#: frame_main.cpp:315
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgstr "執行字型後處理器來處理起點提前、終點延後以及場景計時等等。"
+
+#: frame_main.cpp:317
+msgid "Spe&ll checker..."
+msgstr "拼字檢查(&L)…"
+
+#: frame_main.cpp:317
+msgid "Open spell checker"
+msgstr "檢查拼字正確性"
+
+#: frame_main.cpp:321
+msgid "&Hotkeys..."
+msgstr "快速鍵(&H)…"
+
+#: frame_main.cpp:321
+msgid "Remap hotkeys"
+msgstr "重新設定快速鍵"
+
+#: frame_main.cpp:322
+msgid "&Tools"
+msgstr "工具(&T)"
+
+#: frame_main.cpp:326
+msgid "&Contents...\t"
+msgstr "內容(&C)…\t"
+
+#: frame_main.cpp:326
+msgid "Help topics"
+msgstr "說明主題"
+
+#: frame_main.cpp:328
+msgid "&Website..."
+msgstr "網站(&W)…"
+
+#: frame_main.cpp:328
+msgid "Visit Aegisub's official website"
+msgstr "瀏覽 Aegisub 官方網站"
+
+#: frame_main.cpp:329
+msgid "&Forums..."
+msgstr "論壇(&F)…"
+
+#: frame_main.cpp:329
+msgid "Visit Aegisub's forums"
+msgstr "瀏覽 Aegisub 論壇"
+
+#: frame_main.cpp:330
+msgid "&Bug tracker..."
+msgstr "臭蟲追蹤主機(&B)…"
+
+#: frame_main.cpp:330
+msgid "Visit Aegisub's bug tracker"
+msgstr "瀏覽 Aegisub 臭蟲追蹤主機"
+
+#: frame_main.cpp:331
+msgid "&IRC channel..."
+msgstr "IRC 頻道(&I)…"
+
+#: frame_main.cpp:331
+msgid "Visit Aegisub's official IRC channel"
+msgstr "瀏覽 Aegisub 官方 IRC 頻道"
+
+#: frame_main.cpp:333
+msgid "&About..."
+msgstr "關於(&A)…"
+
+#: frame_main.cpp:334
+msgid "&Help"
+msgstr "說明(&H)"
+
+#: frame_main.cpp:577
+msgid "Save subtitles file"
+msgstr "儲存字幕檔"
+
+#: frame_main.cpp:596
+#: frame_main_events.cpp:581
+msgid "Choose charset code:"
+msgstr "選擇文字編碼:"
+
+#: frame_main.cpp:626
+msgid "Save before continuing?"
+msgstr "繼續之前是否先存檔？"
+
+#: frame_main.cpp:626
+msgid "Unsaved changes"
+msgstr "未儲存的變更"
+
+#: frame_main.cpp:808
+msgid "Do you want to load/unload the associated files?"
+msgstr "您是否要載入 / 卸除關聯的檔案？"
+
+#: frame_main.cpp:808
+msgid "(Un)Load files?"
+msgstr "載入 / 卸除檔案？"
+
+#: frame_main.cpp:891
+msgid "You have timecodes loaded currently. Would you like to unload them?"
+msgstr "您目前已經載入了一份時碼，是否要卸除？"
+
+#: frame_main.cpp:891
+msgid "Unload timecodes?"
+msgstr "卸除時碼？"
+
+#: frame_main.cpp:915
+#, c-format
+msgid ""
+"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
+"\n"
+"Video resolution:\t%d x %d\n"
+"Script resolution:\t%d x %d\n"
+"\n"
+"Change subtitles resolution to match video?"
+msgstr ""
+"載入的影片解析度與腳本所指定的解析度並不相符。\n"
+"\n"
+"影片解析度:\t%d × %d\n"
+"腳本解析度:\t%d × %d\n"
+"\n"
+"是否要變更腳本解析度使其符合影片？"
+
+#: frame_main.cpp:915
+msgid "Resolution mismatch"
+msgstr "解析度不符"
+
+#: frame_main_events.cpp:513
+msgid "Save file"
+msgstr "儲存檔案"
+
+#: frame_main_events.cpp:521
+msgid "Open video file"
+msgstr "開啟影片檔"
+
+#: frame_main_events.cpp:540
+msgid "Open audio file"
+msgstr "開啟音效檔"
+
+#: frame_main_events.cpp:562
+#: frame_main_events.cpp:579
+msgid "Open subtitles file"
+msgstr "開啟字幕檔"
+
+#: frame_main_events.cpp:581
+msgid "Charset"
+msgstr "編碼"
+
+#: frame_main_events.cpp:634
+msgid "Open timecodes file"
+msgstr "開啟時碼檔"
+
+#: frame_main_events.cpp:1060
+msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
+msgstr "以十進數 (例如 2.35) 或是比數 (例如16:9) 格式輸入縱橫比。輸入像是 853x480 的數值來設定特定的解析度。"
+
+#: frame_main_events.cpp:1060
+msgid "Enter aspect ratio"
+msgstr "輸入縱橫比"
+
+#: frame_main_events.cpp:1099
+msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
+msgstr "無效的數值！縱橫比必須在 0.5 到 5.0 之間。"
+
+#: frame_main_events.cpp:1099
+msgid "Invalid Aspect Ratio"
+msgstr "無效的縱橫比"
+
+#: frame_main_events.cpp:1213
+msgid "File backup saved as \""
+msgstr "檔案備份為 \""
+
+#: hotkeys.cpp:314
+msgid "Exit"
+msgstr "結束"
+
+#: hotkeys.cpp:315
+msgid "Help"
+msgstr "說明"
+
+#: hotkeys.cpp:317
+msgid "Undo"
+msgstr "復原"
+
+#: hotkeys.cpp:318
+msgid "Redo"
+msgstr "重作"
+
+#: hotkeys.cpp:321
+msgid "Find Next"
+msgstr "找下一個"
+
+#: hotkeys.cpp:323
+msgid "Select Lines"
+msgstr "選擇多行"
+
+#: hotkeys.cpp:325
+msgid "Cut"
+msgstr "剪下"
+
+#: hotkeys.cpp:326
+msgid "Paste"
+msgstr "貼上"
+
+#: hotkeys.cpp:328
+msgid "Video Jump"
+msgstr "影片跳至"
+
+#: hotkeys.cpp:329
+msgid "Jump Video to Start"
+msgstr "影片跳至字幕起點"
+
+#: hotkeys.cpp:330
+msgid "Jump Video to End"
+msgstr "影片跳至字幕終點"
+
+#: hotkeys.cpp:331
+msgid "Set Start to Video"
+msgstr "影格設為字幕起點"
+
+#: hotkeys.cpp:332
+msgid "Set End to Video"
+msgstr "影格設為字幕終點"
+
+#: hotkeys.cpp:333
+#, fuzzy
+msgid "Snap to Scene"
+msgstr "貼齊場景"
+
+#: hotkeys.cpp:334
+msgid "Shift by Current Time"
+msgstr "平移到目前時刻"
+
+#: hotkeys.cpp:335
+msgid "Zoom 50%"
+msgstr "縮放 50%"
+
+#: hotkeys.cpp:336
+msgid "Zoom 100%"
+msgstr "縮放 100%"
+
+#: hotkeys.cpp:337
+msgid "Zoom 200%"
+msgstr "縮放 200%"
+
+#: hotkeys.cpp:339
+msgid "Video global prev frame"
+msgstr "影片通用上一格"
+
+#: hotkeys.cpp:340
+msgid "Video global next frame"
+msgstr "影片通用下一格"
+
+#: hotkeys.cpp:341
+msgid "Video global focus seek"
+msgstr "影片通用選取搜尋"
+
+#: hotkeys.cpp:342
+msgid "Grid global prev line"
+msgstr "格線通用上一行"
+
+#: hotkeys.cpp:343
+msgid "Grid global next line"
+msgstr "格線通用下一行"
+
+#: hotkeys.cpp:344
+msgid "Save Subtitles Alt"
+msgstr "儲存字幕替代"
+
+#: hotkeys.cpp:345
+msgid "Video global zoom in"
+msgstr "影片通用放大"
+
+#: hotkeys.cpp:346
+msgid "Video global zoom out"
+msgstr "影片通用縮小"
+
+#: hotkeys.cpp:348
+msgid "Grid move row down"
+msgstr "格線下移一行"
+
+#: hotkeys.cpp:349
+msgid "Grid move row up"
+msgstr "格線上移一行"
+
+#: hotkeys.cpp:350
+msgid "Grid delete rows"
+msgstr "格線刪除行"
+
+#: hotkeys.cpp:351
+msgid "Grid duplicate rows"
+msgstr "格線複製行"
+
+#: hotkeys.cpp:352
+msgid "Grid duplicate and shift one frame"
+msgstr "格線複製並平移一格"
+
+#: hotkeys.cpp:354
+msgid "Audio Commit Alt"
+msgstr "音效核准替代"
+
+#: hotkeys.cpp:355
+msgid "Audio Commit"
+msgstr "音效核准"
+
+#: hotkeys.cpp:356
+msgid "Audio Commit (Stay)"
+msgstr "音效核准 (不動)"
+
+#: hotkeys.cpp:357
+msgid "Audio Prev Line"
+msgstr "音效上一行"
+
+#: hotkeys.cpp:358
+msgid "Audio Prev Line Alt"
+msgstr "音效上一行替代"
+
+#: hotkeys.cpp:359
+msgid "Audio Next Line"
+msgstr "音效下一行"
+
+#: hotkeys.cpp:360
+msgid "Audio Next Line Alt"
+msgstr "音效下一行替代"
+
+#: hotkeys.cpp:361
+msgid "Audio Play"
+msgstr "音效播放"
+
+#: hotkeys.cpp:362
+msgid "Audio Play Alt"
+msgstr "音效播放替代"
+
+#: hotkeys.cpp:363
+msgid "Audio Karaoke Increase Len"
+msgstr "音效卡拉OK增加音節長度"
+
+#: hotkeys.cpp:364
+msgid "Audio Karaoke Decrease Len"
+msgstr "音效卡拉OK減少音節長度"
+
+#: hotkeys.cpp:365
+msgid "Audio Karaoke Increase Len Shift"
+msgstr "音效卡拉OK平移增加音節長度"
+
+#: hotkeys.cpp:366
+msgid "Audio Karaoke Decrease Len Shift"
+msgstr "音效卡拉OK平移減少音節長度"
+
+#: hotkeys.cpp:367
+msgid "Audio Scroll Left"
+msgstr "音效向左捲動"
+
+#: hotkeys.cpp:368
+msgid "Audio Scroll Right"
+msgstr "音效向右捲動"
+
+#: hotkeys.cpp:369
+msgid "Audio Play First 500ms"
+msgstr "音效播放最初 500ms"
+
+#: hotkeys.cpp:370
+msgid "Audio Play Last 500ms"
+msgstr "音效播放最後 500ms"
+
+#: hotkeys.cpp:371
+msgid "Audio Play 500ms Before"
+msgstr "音效播放之前 500ms"
+
+#: hotkeys.cpp:372
+msgid "Audio Play 500ms After"
+msgstr "音效播放之後500ms"
+
+#: hotkeys.cpp:373
+msgid "Audio Play To End"
+msgstr "音效播放到檔末"
+
+#: hotkeys.cpp:374
+msgid "Audio Play Original Line"
+msgstr "音效播放目前行"
+
+#: hotkeys.cpp:375
+msgid "Audio Add Lead In"
+msgstr "音效增加起點提前"
+
+#: hotkeys.cpp:376
+msgid "Audio Add Lead Out"
+msgstr "音效增加終點延後"
+
+#: hotkeys.cpp:378
+msgid "Translation Assistant Play"
+msgstr "翻譯小幫手播放"
+
+#: hotkeys.cpp:379
+msgid "Translation Assistant Next"
+msgstr "翻譯小幫手下一行"
+
+#: hotkeys.cpp:380
+msgid "Translation Assistant Prev"
+msgstr "翻譯小幫手上一行"
+
+#: hotkeys.cpp:381
+msgid "Translation Assistant Accept"
+msgstr "翻譯小幫手接受"
+
+#: hotkeys.cpp:382
+msgid "Translation Assistant Preview"
+msgstr "翻譯小幫手預覽"
+
+#: hotkeys.cpp:383
+msgid "Translation Assistant Insert Original"
+msgstr "翻譯小幫手插入原文"
+
+#: hotkeys.cpp:385
+msgid "Styling Assistant Play"
+msgstr "樣式小幫手播放"
+
+#: hotkeys.cpp:386
+msgid "Styling Assistant Next"
+msgstr "樣式小幫手下一行"
+
+#: hotkeys.cpp:387
+msgid "Styling Assistant Prev"
+msgstr "樣式小幫手上一行"
+
+#: hotkeys.cpp:388
+msgid "Styling Assistant Accept"
+msgstr "樣式小幫手接受"
+
+#: hotkeys.cpp:389
+msgid "Styling Assistant Preview"
+msgstr "樣式小幫手預覽"
+
+#: mkv_wrap.cpp:157
+msgid "Parsing Matroska"
+msgstr "正在分析 Matroska 檔"
+
+#: mkv_wrap.cpp:157
+msgid "Reading keyframe and timecode data from Matroska file."
+msgstr "自 Matroska 檔讀取關鍵影格和時碼資料。"
+
+#: subs_edit_box.cpp:78
+msgid "Comment"
+msgstr "註解"
+
+#: subs_edit_box.cpp:79
+msgid "Comment this line out. Commented lines don't show up on screen."
+msgstr "將此行設為註解。設為註解的行數不會顯示在螢幕上。"
+
+#: subs_edit_box.cpp:81
+msgid "Style for this line."
+msgstr "本行樣式。"
+
+#: subs_edit_box.cpp:83
+msgid "Actor name for this speech. This is only for reference, and is mainly useless."
+msgstr "本句對白之角色名。這只用來參考，而且通常沒用。"
+
+#: subs_edit_box.cpp:85
+msgid "Left Margin (0000 = default)"
+msgstr "左邊界 (預設 0000)"
+
+#: subs_edit_box.cpp:87
+msgid "Right Margin (0000 = default)"
+msgstr "右邊界 (預設 0000)"
+
+#: subs_edit_box.cpp:89
+msgid "Vertical Margin (0000 = default)"
+msgstr "垂直邊界 (預設 0000)"
+
+#: subs_edit_box.cpp:93
+msgid "Layer number"
+msgstr "層次編號"
+
+#: subs_edit_box.cpp:95
+msgid "Start time"
+msgstr "開始時刻"
+
+#: subs_edit_box.cpp:98
+msgid "End time"
+msgstr "結束時刻"
+
+#: subs_edit_box.cpp:102
+msgid "Line duration"
+msgstr "本行歷時"
+
+#: subs_edit_box.cpp:104
+msgid "Time"
+msgstr "依時間"
+
+#: subs_edit_box.cpp:105
+msgid "Time by h:mm:ss.cs"
+msgstr "依時:分:秒:百分秒格式計時"
+
+#: subs_edit_box.cpp:106
+msgid "Frame"
+msgstr "依影格"
+
+#: subs_edit_box.cpp:107
+msgid "Time by frame number"
+msgstr "依影格數計時"
+
+#: subs_edit_box.cpp:116
+msgid "Italics"
+msgstr "斜體"
+
+#: subs_edit_box.cpp:122
+msgid "Font Face Name"
+msgstr "字型名稱"
+
+#: subs_edit_box.cpp:124
+msgid "Primary color"
+msgstr "主要色彩"
+
+#: subs_edit_box.cpp:126
+msgid "Secondary color"
+msgstr "次要色彩"
+
+#: subs_edit_box.cpp:128
+msgid "Outline color"
+msgstr "外框色彩"
+
+#: subs_edit_box.cpp:130
+msgid "Shadow color"
+msgstr "陰影色彩"
+
+#: subs_edit_box.cpp:132
+msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
+msgstr "本行的特效。這欄可以用來儲存卡拉OK腳本的額外資訊，或是用來指定字幕機能支援的特效。"
+
+#: subs_edit_box.cpp:984
+msgid "&Undo"
+msgstr "復原(&U)"
+
+#: subs_edit_box.cpp:986
+msgid "Cu&t"
+msgstr "剪下(&t)"
+
+#: subs_edit_box.cpp:987
+#: subs_grid.cpp:193
+msgid "&Copy"
+msgstr "複製(&C)"
+
+#: subs_edit_box.cpp:988
+#: subs_grid.cpp:195
+msgid "&Paste"
+msgstr "貼上(&P)"
+
+#: subs_edit_box.cpp:990
+msgid "Select &All"
+msgstr "全選(&A)"
+
+#: subs_edit_box.cpp:992
+msgid "Split at cursor (preserve times)"
+msgstr "在游標處分割 (保留原計時)"
+
+#: subs_edit_box.cpp:993
+msgid "Split at cursor (estimate times)"
+msgstr "在游標處分割 (概略計時)"
+
+#: subs_grid.cpp:116
+msgid "Line Number"
+msgstr "行號"
+
+#: subs_grid.cpp:117
+msgid "Layer"
+msgstr "層次"
+
+#: subs_grid.cpp:149
+msgid "&Insert (before)"
+msgstr "插入 (之前&I)"
+
+#: subs_grid.cpp:150
+msgid "Insert (after)"
+msgstr "插入 (之後)"
+
+#: subs_grid.cpp:152
+msgid "Insert at video time (before)"
+msgstr "在影片時刻插入 (之前)"
+
+#: subs_grid.cpp:153
+msgid "Insert at video time (after)"
+msgstr "在影片時刻插入 (之後)"
+
+#: subs_grid.cpp:165
+msgid "&Duplicate"
+msgstr "複製(&D)"
+
+#: subs_grid.cpp:166
+msgid "&Duplicate and shift by 1 frame"
+msgstr "複製並平移一格(&D)"
+
+#: subs_grid.cpp:167
+msgid "Split (by karaoke)"
+msgstr "分割 (依卡拉OK標籤)"
+
+#: subs_grid.cpp:171
+msgid "&Swap"
+msgstr "互換(&S)"
+
+#: subs_grid.cpp:175
+msgid "&Join (concatenate)"
+msgstr "結合 － 併行(&J)"
+
+#: subs_grid.cpp:176
+msgid "Join (keep first)"
+msgstr "結合 (保留第一句)"
+
+#: subs_grid.cpp:177
+msgid "Join (as Karaoke)"
+msgstr "結合 (視為卡拉OK)"
+
+#: subs_grid.cpp:180
+msgid "&Make times continuous (change start)"
+msgstr "使時間連續 － 修改起點(&M)"
+
+#: subs_grid.cpp:181
+msgid "&Make times continuous (change end)"
+msgstr "使時間連續 － 修改終點(&M)"
+
+#: subs_grid.cpp:186
+msgid "Recombine (1, 1+2) into (1, 2)"
+msgstr "重新結合 (1, 1+2) 為 (1, 2)"
+
+#: subs_grid.cpp:187
+msgid "Recombine (1+2, 2) into (1, 2)"
+msgstr "重新結合 (1+2, 2) 為 (1, 2)"
+
+#: subs_grid.cpp:189
+msgid "Recombine (1, 1+2, 2) into (1, 2)"
+msgstr "重新結合 (1, 1+2, 2) 為 (1, 2)"
+
+#: subs_grid.cpp:194
+msgid "C&ut"
+msgstr "剪下(&u)"
+
+#: subtitle_format_prs.cpp:128
+msgid "Exporting PRS"
+msgstr "匯出 PRS"
+
+#: subtitle_format_prs.cpp:128
+msgid "Writing file"
+msgstr "寫入檔案"
+
+#: tip.cpp:48
+msgid "Aegisub can export subtitles to other formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
+msgstr "Aegisub 可以將字幕匯出為其他格式、編碼，甚至作變動影格率補償以便製作內嵌字幕。這些都可以在檔案選單中的匯出選項中找到。"
+
+#: tip.cpp:49
+msgid "You can easily translate subtitle files using the translation assistant."
+msgstr "您可以使用翻譯小幫手輕鬆地翻譯。"
+
+#: tip.cpp:50
+msgid "Styles can be stored in different storages, so that you can keep your projects organized."
+msgstr "樣式可以存放在不同樣式庫中，如此您可以保持您的專案組織完善。"
+
+#: tip.cpp:51
+msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
+msgstr "善用鍵盤捷徑！這讓您的生活更簡單，舉例來說，Ctrl+Enter 可以更新對目前行的編輯卻不會移到下一行。請看說明書來查閱完整列表。"
+
+#: tip.cpp:52
+msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub are merciful."
+msgstr "您沒有理由要用SSA (相對於 ASS)。ASS 是個十分類似但是多了許多重要功能的格式。不過最重要的是，只有 ASS 支援部份特效標籤 (像是 \\pos 和 \\t)。它們能在 SSA 檔中使用全是靠著 VSFilter/Textsub 的仁慈。"
+
+#: tip.cpp:53
+msgid "DON'T PANIC!"
+msgstr "不要慌！"
+
+#: tip.cpp:54
+msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
+msgstr "Aegisub 有許多功能來確保您永遠不會流失您的作品。它會周期性的儲存您的字幕到自動儲存資料夾，並且會在您每次開啟字幕時在自動備份資料夾製作副本。此外，如果它當掉了，它會嘗試儲存一個恢復檔案。"
+
+#: tip.cpp:55
+msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
+msgstr "在為每行字幕依照角色指定不同樣式時，樣式小幫手相當實用。"
+
+#: tip.cpp:56
+msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
+msgstr "字型蒐集是最有用的功能之一，它將無聊的獵字型作業簡化到點幾下滑鼠就能解決。"
+
+#: tip.cpp:57
+msgid "When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr "當您做好字幕準備要散佈的時候，記著：向 MP4、OGM 及 AVI 說不；Matroska 是您的朋友。"
+
+#: tip.cpp:58
+msgid "Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."
+msgstr "就像任何經由 DirectShow 載入的東西，某些檔案會有怪結構 (例如以 AVI 封裝的 h.264 視訊或者有空影格的 XviD) 能導致不可靠的搜尋 (換句話說，影格可能會偏移一格) 的。這不是 Aegisub 的臭蟲 － 你可以考慮在作業之前先將它們重新編碼一次。"
+
+#: tip.cpp:59
+msgid "If anything goes wrong, blame movax."
+msgstr "如果出了什麼差錯，去怪 movax。"
+
+#: vfr.cpp:65
+msgid "No timecodes to average"
+msgstr "沒有時碼可以平均"
+
+#: video_box.cpp:54
+msgid "Play video starting on this position"
+msgstr "播放始於此位置之影片"
+
+#: video_box.cpp:56
+msgid "Play current line"
+msgstr "播放目前行"
+
+#: video_box.cpp:58
+msgid "Stop video playback"
+msgstr "停止播放影片"
+
+#: video_box.cpp:60
+msgid "Toggle autoscroll of video"
+msgstr "切換影片自動捲動"
+
+#: video_box.cpp:70
+msgid "Seek video."
+msgstr "搜尋影片。"
+
+#: video_box.cpp:74
+msgid "Current frame time and number."
+msgstr "目前影格時刻和編號。"
+
+#: video_box.cpp:78
+msgid "Time of this frame relative to start and end of current subs."
+msgstr "目前影格到目前字幕起終點的時間。"
+
+#: video_display.cpp:189
+msgid "You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"
+msgstr "您已經載入過時碼，是否要以 Matroska 檔中的時碼取代？"
+
+#: video_display.cpp:189
+msgid "Replace timecodes?"
+msgstr "更換時碼？"
+
+#: video_display.cpp:284
+msgid "Save PNG snapshot"
+msgstr "儲存 PNG 截圖"
+
+#: video_display.cpp:285
+msgid "Copy image to Clipboard"
+msgstr "複製影像到剪貼簿"
+
+#: video_display.cpp:286
+msgid "Copy coordinates to Clipboard"
+msgstr "複製座標到剪貼簿"
+
