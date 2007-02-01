@@ -137,7 +137,7 @@ namespace Automation4 {
 			rb_protect(rbLoadWrapper, rb_str_new2(t), &status);
 			if(status > 0)	// something bad happened (probably parsing error)
 			{
-				throw StringValueCStr(ruby_errinfo);
+				//throw StringValueCStr(ruby_errinfo);
 			}
 
 			VALUE global_var = rb_gv_get("$script_name");
@@ -564,7 +564,7 @@ namespace Automation4 {
 		VALUE result;
 		result = rb_protect(rbCallWrapper, reinterpret_cast<VALUE>(&arg), &error);
 		if(error) {
-			throw StringValueCStr(ruby_errinfo);
+			//throw StringValueCStr(ruby_errinfo);
 		}
 		return result;
 	}

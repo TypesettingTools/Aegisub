@@ -34,7 +34,7 @@
 //
 
 #include "auto4_ruby.h"
-#include "../ruby/include/ruby.h"
+#include <ruby.h>
 #include <wx/window.h>
 #include <wx/spinctrl.h>
 #include <wx/gbsizer.h>

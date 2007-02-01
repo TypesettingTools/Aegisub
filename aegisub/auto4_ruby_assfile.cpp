@@ -350,7 +350,7 @@ namespace Automation4 {
 			new_entry = reinterpret_cast<AssEntry*>(rb_protect(rb2AssWrapper, rbEntry, &status));
 			--size;
 		}while(status != 0);	// broken lines at the beginning?
-		ruby_errinfo = Qnil;	// just in case
+		rb_set_errinfo(Qnil);;	// just in case
 
 		entryIter e = ass->Line.begin();
 		if(new_entry->GetType() == ENTRY_DIALOGUE)	// check if the first line is a dialogue
@@ -368,10 +368,14 @@ namespace Automation4 {
 			rbEntry = rb_ary_shift(subtitles);
 			new_entry = reinterpret_cast<AssEntry*>(rb_protect(rb2AssWrapper, rbEntry, &status));
 			if(status == 0)	ass->Line.push_back(new_entry);
-			else {
+			else 
+			{
 				if(RubyProgressSink::inst)
-					RubyProgressSink::inst->RubyDebugOut(1, &ruby_errinfo, Qnil);
-				ruby_errinfo = Qnil;	// clear the error
+				{
+					VALUE err = rb_errinfo();
+					RubyProgressSink::inst->RubyDebugOut(1, &err, Qnil);
+				}
+				rb_set_errinfo(Qnil);
 			}
 		}
 		RubyObjects::Get()->Unregister(subtitles);
@@ -418,10 +422,14 @@ namespace Automation4 {
 		{
 			VALUE res = rb_protect(rbAss2RbWrapper, reinterpret_cast<VALUE>(*entry), &status);
 			if(status == 0) rb_ary_push(rbAssFile, res);
-			else {
+			else 
+			{
 				if(RubyProgressSink::inst)
-					RubyProgressSink::inst->RubyDebugOut(1, &ruby_errinfo, Qnil);
-				ruby_errinfo = Qnil;
+				{
+					VALUE err = rb_errinfo();
+					RubyProgressSink::inst->RubyDebugOut(1, &err, Qnil);
+				}
+				rb_set_errinfo(Qnil);
 			}
 		}
 
