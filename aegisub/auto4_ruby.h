@@ -76,12 +76,12 @@ namespace Automation4 {
 		static int RubyUnparseTagData();
 		static int RubySetUndoPoint();
 
-		~RubyAssFile();
 	public:
 		void RubyUpdateAssFile(VALUE subtitles);
 		static VALUE AssEntryToRuby(AssEntry *e); // makes a Ruby representation of AssEntry
 		static AssEntry *RubyToAssEntry(VALUE ass_entry); // creates an AssEntry object from a Ruby representation
 		RubyAssFile(AssFile *_ass, bool _can_modify, bool _can_set_undo);
+		~RubyAssFile();
 
 		static RubyAssFile *raf;
 		VALUE rbAssFile;
@@ -243,6 +243,17 @@ namespace Automation4 {
 		int n;
 		VALUE *argv;
 		RubyCallArguments(VALUE _recv, ID _id, int _n, VALUE *_argv);
+	};
+
+	// A single call to a Ruby function, run inside a separate thread.
+	// This object should be created on the stack in the function that does the call.
+	class RubyThreadedCall : public wxThread {
+	private:
+		RubyCallArguments *args;
+		VALUE *result;
+	public:
+		RubyThreadedCall(RubyCallArguments *args, VALUE *result);
+		virtual ExitCode Entry();
 	};
 
 	VALUE rbCallWrapper(VALUE arg);

@@ -366,9 +366,7 @@ namespace Automation4 {
 
 		if (script_finished) {
 			if (!debug_visible) {
-				if(IsModal())
-					EndModal(0);
-				else Show(false);
+				EndModal(0);
 			} else {
 				cancel_button->Enable(true);
 				cancel_button->SetLabel(_("Close"));
@@ -452,10 +450,7 @@ namespace Automation4 {
 			cancelled = true;
 			cancel_button->Enable(false);
 		} else {
-			if(this->IsModal())
-				EndModal(0);
-			else
-				Show(false);
+			EndModal(0);
 		}
 	}
 

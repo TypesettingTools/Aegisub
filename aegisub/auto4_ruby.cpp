@@ -56,7 +56,7 @@ namespace Automation4 {
 	RubyScript * RubyScript::inst = NULL; // current Ruby Script
 	RubyProgressSink* RubyProgressSink::inst = NULL;
 	VALUE RubyScript::RubyAegisub;
-	RubyAssFile *RubyAssFile::raf = NULL;
+//	RubyAssFile *RubyAssFile::raf = NULL;
 
 	// RubyScriptReader
 	RubyScriptReader::RubyScriptReader(const wxString &filename)
@@ -137,7 +137,8 @@ namespace Automation4 {
 			rb_protect(rbLoadWrapper, rb_str_new2(t), &status);
 			if(status > 0)	// something bad happened (probably parsing error)
 			{
-				//throw StringValueCStr(ruby_errinfo);
+				VALUE err = rb_errinfo();
+				throw StringValueCStr(err);
 			}
 
 			VALUE global_var = rb_gv_get("$script_name");
@@ -281,11 +282,20 @@ namespace Automation4 {
 			return true;
 
 		try {
+			RubyProgressSink::inst = NULL;
 			RubyAssFile *subsobj = new RubyAssFile(subs, true, true);
-			VALUE sel = CreateIntegerArray(selected); // selected items
-			RubyObjects::Get()->Register(sel);
-			VALUE result = rbFunCall(rb_mKernel, rb_to_id(validation_fun), 3, subsobj->rbAssFile, sel, rb_int2inum(active));
-			RubyObjects::Get()->Unregister(sel);
+			VALUE *argv = ALLOCA_N(VALUE, 3);
+			argv[0] = subsobj->rbAssFile;
+			argv[1] = CreateIntegerArray(selected); // selected items;
+			argv[2] = INT2FIX(active);
+			RubyCallArguments arg(rb_mKernel, rb_to_id(validation_fun), 3, argv);
+			VALUE result;
+			RubyThreadedCall call(&arg, &result);
+			wxThread::ExitCode code = call.Wait();
+			if(code)
+			{
+				return false;
+			}
 			if(result != Qnil && result != Qfalse)
 				return true;
 		}catch (const char* e) {
@@ -302,25 +312,66 @@ namespace Automation4 {
 			delete RubyProgressSink::inst;
 			RubyProgressSink::inst = new RubyProgressSink(progress_parent, false);
 			RubyProgressSink::inst->SetTitle(GetName());
-			RubyProgressSink::inst->Show(true);
 
 			// do call
 			RubyAssFile *subsobj = new RubyAssFile(subs, true, true);
-			VALUE sel = CreateIntegerArray(selected); // selected items
-			RubyObjects::Get()->Register(sel);
-			VALUE result = rbFunCall(rb_mKernel, rb_to_id(macro_fun), 3, subsobj->rbAssFile, sel, rb_int2inum(active));
-			RubyObjects::Get()->Unregister(sel);
-			if(result != Qnil && result != Qfalse)
+			VALUE *argv = ALLOCA_N(VALUE, 3);
+			argv[0] = subsobj->rbAssFile;
+			argv[1] = CreateIntegerArray(selected); // selected items;
+			argv[2] = INT2FIX(active);
+			RubyCallArguments arg(rb_mKernel, rb_to_id(macro_fun), 3, argv);
+			VALUE result;
+			RubyThreadedCall call(&arg, &result);
+			RubyProgressSink::inst->ShowModal();
+			wxThread::ExitCode code = call.Wait();
+			RubyProgressSink::inst = NULL;
+			if(code)
+			{
+				if(TYPE(result) == T_STRING)
+					throw StringValueCStr(result);
+				else throw "Unknown Error";
+			}
+			else if(result != Qnil && result != Qfalse)
 			{
 				subsobj->RubyUpdateAssFile(result);
 			}
+			delete subsobj;
 		} catch (const char* e) {
 			wxString *err = new wxString(e, wxConvUTF8);
 			wxMessageBox(*err, _T("Error running macro"),wxICON_ERROR | wxOK);			
 		}
-		RubyProgressSink::inst->script_finished = true;
 }
 
+
+	RubyThreadedCall::RubyThreadedCall(RubyCallArguments *a, VALUE *res)
+		: wxThread(wxTHREAD_JOINABLE)
+		,args(a), result(res)
+	{
+		int prio = Options.AsInt(_T("Automation Thread Priority"));
+		if (prio == 0) prio = 50; // normal
+		else if (prio == 1) prio = 30; // below normal
+		else if (prio == 2) prio = 10; // lowest
+		else prio = 50; // fallback normal
+		Create();
+		SetPriority(prio);
+		Run();
+	}
+
+	wxThread::ExitCode RubyThreadedCall::Entry()
+	{
+		int error = 0;
+		*result = rb_protect(rbCallWrapper, reinterpret_cast<VALUE>(args), &error);
+		if(RubyProgressSink::inst)
+		{
+			RubyProgressSink::inst->script_finished = true;
+			wxWakeUpIdle();
+		}
+		if(error) {
+			*result = rb_errinfo();
+			return (wxThread::ExitCode)1;
+		}
+		return (wxThread::ExitCode)0;		
+	}
 
 	// RubyFeatureFilter
 	RubyFeatureFilter::RubyFeatureFilter(const wxString &_name, const wxString &_description, 
@@ -363,19 +414,32 @@ namespace Automation4 {
 			delete RubyProgressSink::inst;
 			RubyProgressSink::inst = new RubyProgressSink(export_dialog, false);
 			RubyProgressSink::inst->SetTitle(GetName());
-			RubyProgressSink::inst->Show(true);
 	
 			RubyAssFile *subsobj = new RubyAssFile(subs, true/*modify*/, false/*undo*/);
-			VALUE result = rbFunCall(rb_mKernel, rb_to_id(filter_fun), 2, subsobj->rbAssFile, Qnil /* config */);
-			if(result != Qnil && result != Qfalse)
+			VALUE *argv = ALLOCA_N(VALUE, 2);
+			argv[0] = subsobj->rbAssFile;
+			argv[1] = Qnil; // config
+			RubyCallArguments arg(rb_mKernel, rb_to_id(filter_fun), 2, argv);
+			VALUE result;
+			RubyThreadedCall call(&arg, &result);
+			RubyProgressSink::inst->ShowModal();
+			wxThread::ExitCode code = call.Wait();
+			RubyProgressSink::inst = NULL;
+			if(code)
+			{
+				if(TYPE(result) == T_STRING)
+					throw StringValueCStr(result);
+				else throw "Unknown Error";
+			}
+			else if(result != Qnil && result != Qfalse)
 			{
 				subsobj->RubyUpdateAssFile(result);
 			}
+			delete subsobj;
 		} catch (const char* e) {
 			wxString *err = new wxString(e, wxConvUTF8);
-			wxMessageBox(*err, _T("Error running filter"),wxICON_ERROR | wxOK);			
+			wxMessageBox(*err, _T("Error running filter"),wxICON_ERROR | wxOK);
 		}
-		RubyProgressSink::inst->script_finished = true;
 	}
 
 	ScriptConfigDialog* RubyFeatureFilter::GenerateConfigDialog(wxWindow *parent)
@@ -422,8 +486,6 @@ namespace Automation4 {
 	{
 		float _progr = rb_num2dbl(progress);
 		RubyProgressSink::inst->SetProgress(_progr);
-		RubyProgressSink::inst->DoUpdateDisplay();
-		wxSafeYield(RubyProgressSink::inst);
 		return Qtrue;
 	}
 
@@ -431,7 +493,6 @@ namespace Automation4 {
 	{
 		wxString _t(StringValueCStr(task), wxConvUTF8);
 		RubyProgressSink::inst->SetTask(_t);
-		RubyProgressSink::inst->DoUpdateDisplay();
 		return Qtrue;
 	}
 
@@ -439,8 +500,6 @@ namespace Automation4 {
 	{
 		wxString _t(StringValueCStr(title), wxConvUTF8);
 		RubyProgressSink::inst->SetTitle(_t);
-		//wxSafeYield(RubyProgressSink::inst);
-		RubyProgressSink::inst->DoUpdateDisplay();
 		return Qtrue;
 	}
 
@@ -461,8 +520,6 @@ namespace Automation4 {
 		else args[1] = args[0];
 		wxString _m(StringValueCStr(args[1]), wxConvUTF8);
 		RubyProgressSink::inst->AddDebugOutput(_m);
-		RubyProgressSink::inst->DoUpdateDisplay();
-		wxSafeYield(RubyProgressSink::inst);
 		return Qtrue;
 	}
 
@@ -564,7 +621,8 @@ namespace Automation4 {
 		VALUE result;
 		result = rb_protect(rbCallWrapper, reinterpret_cast<VALUE>(&arg), &error);
 		if(error) {
-			//throw StringValueCStr(ruby_errinfo);
+			VALUE err = rb_errinfo();
+			throw StringValueCStr(err);
 		}
 		return result;
 	}

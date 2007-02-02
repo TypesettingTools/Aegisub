@@ -337,8 +337,8 @@ namespace Automation4 {
 	// If the first line is dialogue we leave header from the original (styles, info, etc)
 	void RubyAssFile::RubyUpdateAssFile(VALUE subtitles)
 	{
-		RubyObjects::Get()->Register(subtitles);
-		int size = rb_num2long(rb_funcall(subtitles, rb_to_id(rb_str_new2("size")), 0));
+		//RubyObjects::Get()->Register(subtitles);
+		int size = RARRAY(subtitles)->len;
 
 		if(size <= 0) return; // empty - leave the original
 		
@@ -378,7 +378,7 @@ namespace Automation4 {
 				rb_set_errinfo(Qnil);
 			}
 		}
-		RubyObjects::Get()->Unregister(subtitles);
+		//RubyObjects::Get()->Unregister(subtitles);
 	}
 	
 	int RubyAssFile::RubyParseTagData()
@@ -401,7 +401,6 @@ namespace Automation4 {
 
 	RubyAssFile::~RubyAssFile()
 	{
-		RubyObjects::Get()->Unregister(rbAssFile);
 	}
 
 	RubyAssFile::RubyAssFile(AssFile *_ass, bool _can_modify, bool _can_set_undo)
@@ -409,12 +408,8 @@ namespace Automation4 {
 		, can_modify(_can_modify)
 		, can_set_undo(_can_set_undo)
 	{
-		if(RubyAssFile::raf)
-			delete RubyAssFile::raf;	// delete previous if there is one
-		RubyAssFile::raf = this; // set pointer to this obj
 
 		rbAssFile = rb_ary_new2(ass->Line.size());
-		RubyObjects::Get()->Register(rbAssFile);
 
 		std::list<AssEntry*>::iterator entry;
 		int status;
