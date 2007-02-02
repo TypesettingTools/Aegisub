@@ -98,7 +98,7 @@ function karaskel.preproc_line(subs, meta, styles, line)
 	if styles[line.style] then
 		line.style = styles[line.style]
 	else
-		aegisub.debug.out("WARNING: Style not found: " .. line.style .. "\n"
+		aegisub.debug.out("WARNING: Style not found: " .. line.style .. "\n")
 		line.style = styles[1]
 	end
 	
@@ -130,16 +130,16 @@ function karaskel.preproc_line(subs, meta, styles, line)
 			
 			local prefix = furitext:sub(1,unicode.charwidth(furitext,1))
 			if prefix == "!" or prefix == "！" then
-				furi.break = true
+				furi.isbreak = true
 				furi.spillback = false
 			elseif prefix == "<" or prefix == "＜" then
-				furi.break = true
+				furi.isbreak = true
 				furi.spillback = true
 			else
-				furi.break = false
+				furi.isbreak = false
 				furi.spillback = false
 			end
-			if furi.break then
+			if furi.isbreak then
 				furitext = furitext:sub(unicode.charwidth(furitext,1)+1)
 			end
 			
