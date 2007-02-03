@@ -55,7 +55,7 @@ namespace Automation4 {
 	RubyObjects *RubyObjects::inst = NULL;
 	RubyScript * RubyScript::inst = NULL; // current Ruby Script
 	RubyProgressSink* RubyProgressSink::inst = NULL;
-	VALUE RubyScript::RubyAegisub;
+	VALUE RubyScript::RubyAegisub = Qfalse;
 //	RubyAssFile *RubyAssFile::raf = NULL;
 
 	// RubyScriptReader
@@ -115,15 +115,18 @@ namespace Automation4 {
 			ruby_init();
 			ruby_init_loadpath();
 			RubyScript::inst = this;
-			RubyAegisub = rb_define_module("Aegisub");
-			rb_define_module_function(RubyAegisub, "register_macro",reinterpret_cast<RB_HOOK>(&RubyFeatureMacro::RubyRegister), 4);
-			rb_define_module_function(RubyAegisub, "register_filter",reinterpret_cast<RB_HOOK>(&RubyFeatureFilter::RubyRegister), 5);
-			rb_define_module_function(RubyAegisub, "text_extents",reinterpret_cast<RB_HOOK>(&RubyTextExtents), 2);
-			rb_define_module_function(RubyScript::RubyAegisub, "progress_set",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetProgress), 1);
-			rb_define_module_function(RubyScript::RubyAegisub, "progress_task",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTask), 1);
-			rb_define_module_function(RubyScript::RubyAegisub, "progress_title",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTitle), 1);
-			rb_define_module_function(RubyScript::RubyAegisub, "debug_out",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDebugOut), -1);
-			rb_define_module_function(RubyScript::RubyAegisub, "get_cancelled",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyGetCancelled), 0);
+			if(!RubyAegisub) {
+				RubyAegisub = rb_define_module("Aegisub");
+				rb_define_module_function(RubyAegisub, "register_macro",reinterpret_cast<RB_HOOK>(&RubyFeatureMacro::RubyRegister), 4);
+				rb_define_module_function(RubyAegisub, "register_filter",reinterpret_cast<RB_HOOK>(&RubyFeatureFilter::RubyRegister), 5);
+				rb_define_module_function(RubyAegisub, "text_extents",reinterpret_cast<RB_HOOK>(&RubyTextExtents), 2);
+				rb_define_module_function(RubyScript::RubyAegisub, "progress_set",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetProgress), 1);
+				rb_define_module_function(RubyScript::RubyAegisub, "progress_task",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTask), 1);
+				rb_define_module_function(RubyScript::RubyAegisub, "progress_title",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTitle), 1);
+				rb_define_module_function(RubyScript::RubyAegisub, "debug_out",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDebugOut), -1);
+				rb_define_module_function(RubyScript::RubyAegisub, "get_cancelled",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyGetCancelled), 0);
+				rb_define_module_function(RubyScript::RubyAegisub, "display_dialog",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDisplayDialog), 2);
+			}
 			VALUE paths = rb_gv_get("$:");
 			for(int i = 0; i < include_path.GetCount(); i++)
 			{
@@ -138,7 +141,9 @@ namespace Automation4 {
 			if(status > 0)	// something bad happened (probably parsing error)
 			{
 				VALUE err = rb_errinfo();
-				throw StringValueCStr(err);
+				if(TYPE(err) == T_STRING)
+					throw StringValueCStr(err);
+				else throw "Error loading script";
 			}
 
 			VALUE global_var = rb_gv_get("$script_name");
@@ -166,11 +171,8 @@ namespace Automation4 {
 	void RubyScript::Destroy()
 	{
 		if(loaded) {
-			ruby_finalize();
-			ruby_cleanup(0);
+		//	ruby_finalize();	// broken in 1.9 ?_?
 		}
-		// TODO: would be nice to implement this
-		// RubyObjects::Get()->UnregisterAll();
 
 		// remove features
 		for (int i = 0; i < (int)features.size(); i++) {
@@ -324,6 +326,7 @@ namespace Automation4 {
 			RubyThreadedCall call(&arg, &result);
 			RubyProgressSink::inst->ShowModal();
 			wxThread::ExitCode code = call.Wait();
+			delete RubyProgressSink::inst;
 			RubyProgressSink::inst = NULL;
 			if(code)
 			{
@@ -331,7 +334,7 @@ namespace Automation4 {
 					throw StringValueCStr(result);
 				else throw "Unknown Error";
 			}
-			else if(result != Qnil && result != Qfalse)
+			else if(TYPE(result) == T_ARRAY)
 			{
 				subsobj->RubyUpdateAssFile(result);
 			}
@@ -404,27 +407,27 @@ namespace Automation4 {
 	void RubyFeatureFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog)
 	{
 
-		// TODO: configuration dialog
-
 		try {
+			VALUE cfg;
 			if (has_config && config_dialog) {
-				assert(config_dialog->RubyReadBack() == 1);
+				cfg = config_dialog->RubyReadBack();
 				// TODO, write back stored options here
 			}
-			delete RubyProgressSink::inst;
-			RubyProgressSink::inst = new RubyProgressSink(export_dialog, false);
-			RubyProgressSink::inst->SetTitle(GetName());
+//			delete RubyProgressSink::inst;
+//			RubyProgressSink::inst = new RubyProgressSink(export_dialog, false);
+//			RubyProgressSink::inst->SetTitle(GetName());
 	
 			RubyAssFile *subsobj = new RubyAssFile(subs, true/*modify*/, false/*undo*/);
 			VALUE *argv = ALLOCA_N(VALUE, 2);
 			argv[0] = subsobj->rbAssFile;
-			argv[1] = Qnil; // config
+			argv[1] = cfg; // config
 			RubyCallArguments arg(rb_mKernel, rb_to_id(filter_fun), 2, argv);
 			VALUE result;
-			RubyThreadedCall call(&arg, &result);
-			RubyProgressSink::inst->ShowModal();
-			wxThread::ExitCode code = call.Wait();
+			delete RubyProgressSink::inst;
 			RubyProgressSink::inst = NULL;
+			RubyThreadedCall call(&arg, &result);
+//			RubyProgressSink::inst->ShowModal();
+			wxThread::ExitCode code = call.Wait();
 			if(code)
 			{
 				if(TYPE(result) == T_STRING)
@@ -447,25 +450,26 @@ namespace Automation4 {
 		if (!has_config)
 			return 0;
 
-		//GetFeatureFunction(2); // 2 = config dialog function
-
-		// prepare function call
-		// subtitles (don't allow any modifications during dialog creation, ideally the subs aren't even accessed)
-//		RubyAssFile *subsobj = new RubyAssFile(AssFile::top, false/*allow modifications*/, false/*disallow undo*/);
-		// stored options
-
-/*		if(RubyProgressSink::inst)
-		{
-			delete RubyProgressSink::inst;
-			RubyProgressSink::inst = NULL;
-		}
+		delete RubyProgressSink::inst;
 		RubyProgressSink::inst = new RubyProgressSink(parent, false);
 		RubyProgressSink::inst->SetTitle(GetName());
 
-		// do call TODO
-		RubyProgressSink::inst->ShowModal();
+		// prepare function call
+		// subtitles (don't allow any modifications during dialog creation, ideally the subs aren't even accessed)
+		RubyAssFile *subsobj = new RubyAssFile(AssFile::top, false/*allow modifications*/, false/*disallow undo*/);
 
-*/		return config_dialog = new RubyConfigDialog(false);
+		VALUE *argv = ALLOCA_N(VALUE, 2);
+		argv[0] = subsobj->rbAssFile;
+		argv[1] = Qnil; // TODO: stored options
+		RubyCallArguments arg(rb_mKernel, rb_to_id(dialog_fun), 2, argv);
+		VALUE dialog_data;
+		RubyThreadedCall call(&arg, &dialog_data);
+		RubyProgressSink::inst->ShowModal();
+		wxThread::ExitCode code = call.Wait();
+		delete RubyProgressSink::inst;
+		RubyProgressSink::inst = NULL;
+
+		return config_dialog = new RubyConfigDialog(dialog_data, Qnil, false);
 	}
 
 
@@ -523,9 +527,19 @@ namespace Automation4 {
 		return Qtrue;
 	}
 
-	int RubyProgressSink::RubyDisplayDialog()
+	VALUE RubyProgressSink::RubyDisplayDialog(VALUE self, VALUE dialog_data, VALUE buttons)
 	{
-		return 0;
+		// Send the "show dialog" event
+		ShowConfigDialogEvent evt;
+
+		RubyConfigDialog dlg(dialog_data, buttons, true); // magically creates the config dialog structure etc
+		evt.config_dialog = &dlg;
+
+		wxSemaphore sema(0, 1);
+		evt.sync_sema = &sema;
+		RubyProgressSink::inst->AddPendingEvent(evt);
+		sema.Wait();
+		return dlg.RubyReadBack();
 	}
 
 

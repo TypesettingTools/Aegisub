@@ -47,62 +47,46 @@ namespace Automation4 {
 
 	// RubyConfigDialogControl
 
-	RubyConfigDialogControl::RubyConfigDialogControl()
+	RubyConfigDialogControl::RubyConfigDialogControl(VALUE opts)
 	{
-		// Assume top of stack is a control table (don't do checking)
+		VALUE val = rb_hash_aref(opts, rb_str_new2("name"));
+		if(TYPE(val) == T_STRING)
+			name = wxString(StringValueCStr(val), wxConvUTF8);
+		else name = _T("");
 
-/*		lua_getfield(L, -1, "name");
-		if (lua_isstring(L, -1)) {
-			name = wxString(lua_tostring(L, -1), wxConvUTF8);
-		} else {
-			name = _T("");
-		}
-		lua_pop(L, 1);
-
-		lua_getfield(L, -1, "x");
-		if (lua_isnumber(L, -1)) {
-			x = lua_tointeger(L, -1);
+		val = rb_hash_aref(opts, rb_str_new2("x"));
+		if(TYPE(val) == T_FIXNUM) {
+			x = FIX2INT(val);
 			if (x < 0) x = 0;
-		} else {
-			x = 0;
 		}
-		lua_pop(L, 1);
+		else x = 0;
 
-		lua_getfield(L, -1, "y");
-		if (lua_isnumber(L, -1)) {
-			y = lua_tointeger(L, -1);
+		val = rb_hash_aref(opts, rb_str_new2("y"));
+		if(TYPE(val) == T_FIXNUM) {
+			y = FIX2INT(val);
 			if (y < 0) y = 0;
-		} else {
-			y = 0;
 		}
-		lua_pop(L, 1);
+		else y = 0;
 
-		lua_getfield(L, -1, "width");
-		if (lua_isnumber(L, -1)) {
-			width = lua_tointeger(L, -1);
+		val = rb_hash_aref(opts, rb_str_new2("width"));
+		if(TYPE(val) == T_FIXNUM) {
+			width = FIX2INT(val);
 			if (width < 1) width = 1;
-		} else {
-			width = 1;
 		}
-		lua_pop(L, 1);
+		else width = 1;
 
-		lua_getfield(L, -1, "height");
-		if (lua_isnumber(L, -1)) {
-			height = lua_tointeger(L, -1);
-			if (height < 1) height = 1;
-		} else {
-			height = 1;
+		val = rb_hash_aref(opts, rb_str_new2("height"));
+		if(TYPE(val) == T_FIXNUM) {
+			height = FIX2INT(val);
+			if (height < 1) width = 1;
 		}
-		lua_pop(L, 1);
+		else height = 1;
 
-		lua_getfield(L, -1, "hint");
-		if (lua_isstring(L, -1)) {
-			hint = wxString(lua_tostring(L, -1), wxConvUTF8);
-		} else {
-			hint = _T("");
-		}
-		lua_pop(L, 1);
-*/
+		val = rb_hash_aref(opts, rb_str_new2("hint"));
+		if(TYPE(val) == T_STRING)
+			hint = wxString(StringValueCStr(val), wxConvUTF8);
+		else hint = _T("");
+
 		wxLogDebug(_T("created control: '%s', (%d,%d)(%d,%d), '%s'"), name.c_str(), x, y, width, height, hint.c_str());
 	}
 
@@ -114,13 +98,15 @@ namespace Automation4 {
 		public:
 			wxString label;
 
-			Label()
-				: RubyConfigDialogControl()
+			Label(){};
+			Label(VALUE opts)
+				: RubyConfigDialogControl(opts)
 			{
-/*				lua_getfield(L, -1, "label");
-				label = wxString(lua_tostring(L, -1), wxConvUTF8);
-				lua_pop(L, 1);
-*/			}
+				VALUE val = rb_hash_aref(opts, rb_str_new2("label"));
+				if(TYPE(val) == T_STRING)
+					label = wxString(StringValueCStr(val), wxConvUTF8);
+				else label = _T("");
+			}
 
 			virtual ~Label() { }
 
@@ -134,10 +120,9 @@ namespace Automation4 {
 				// Nothing here
 			}
 
-			void RubyReadBack()
+			VALUE RubyReadBack()
 			{
-				// Label doesn't produce output, so let it be nil
-//				lua_pushnil(L);
+				return Qnil;
 			}
 		};
 
@@ -148,13 +133,15 @@ namespace Automation4 {
 		public:
 			wxString text;
 
-			Edit()
-				: RubyConfigDialogControl()
+			Edit(){};
+			Edit(VALUE opts)
+				: RubyConfigDialogControl(opts)
 			{
-/*				lua_getfield(L, -1, "text");
-				text = wxString(lua_tostring(L, -1), wxConvUTF8);
-				lua_pop(L, 1);
-*/			}
+				VALUE val = rb_hash_aref(opts, rb_str_new2("text"));
+				if(TYPE(val) == T_STRING)
+					text = wxString(StringValueCStr(val), wxConvUTF8);
+				else text = _T("");
+			}
 
 			virtual ~Edit() { }
 
@@ -168,9 +155,9 @@ namespace Automation4 {
 				text = ((wxTextCtrl*)cw)->GetValue();
 			}
 
-			void RubyReadBack()
+			VALUE RubyReadBack()
 			{
-			//	lua_pushstring(L, text.mb_str(wxConvUTF8));
+				return rb_str_new2(text.mb_str(wxConvUTF8));
 			}
 
 		};
@@ -181,8 +168,9 @@ namespace Automation4 {
 		class Textbox : public Edit {
 		public:
 
-			Textbox()
-				: Edit()
+			Textbox(){};
+			Textbox(VALUE opts)
+				: Edit(opts)
 			{
 				// Nothing more
 			}
@@ -207,33 +195,28 @@ namespace Automation4 {
 			bool hasspin;
 			int min, max;
 
-			IntEdit()
-				: Edit()
+			IntEdit(){};
+			IntEdit(VALUE opts)
+				: Edit(opts)
 			{
-/*				lua_getfield(L, -1, "value");
-				value = lua_tointeger(L, -1);
-				lua_pop(L, 1);
+				VALUE val = rb_hash_aref(opts, rb_str_new2("value"));
+				if(TYPE(val) == T_FIXNUM) {
+					value = FIX2INT(val);
+				}
 
 				hasspin = false;
-
-				lua_getfield(L, -1, "min");
-				if (!lua_isnumber(L, -1))
-					goto nospin;
-				min = lua_tointeger(L, -1);
-				lua_pop(L, 1);
-
-				lua_getfield(L, -1, "max");
-				if (!lua_isnumber(L, -1))
-					goto nospin;
-				max = lua_tointeger(L, -1);
-				lua_pop(L, 1);
-
-				hasspin = true;
-nospin:
-				if (!hasspin) {
-					lua_pop(L, 1);
+				val = rb_hash_aref(opts, rb_str_new2("min"));
+				if(TYPE(val) == T_FIXNUM) {
+					min = FIX2INT(val);
 				}
-*/			}
+				else return;
+
+				val = rb_hash_aref(opts, rb_str_new2("min"));
+				if(TYPE(val) == T_FIXNUM) {
+					min = FIX2INT(val);
+					hasspin = true;
+				}
+			}
 
 			virtual ~IntEdit() { }
 
@@ -260,9 +243,9 @@ nospin:
 				}
 			}
 
-			void RubyReadBack()
+			VALUE RubyReadBack()
 			{
-//				lua_pushinteger(L, value);
+				return INT2FIX(value);
 			}
 
 		};
@@ -275,13 +258,16 @@ nospin:
 			float value;
 			// FIXME: Can't support spin button atm
 
-			FloatEdit()
-				: Edit()
+			FloatEdit(){};
+			FloatEdit(VALUE opts)
+				: Edit(opts)
 			{
-/*				lua_getfield(L, -1, "value");
-				value = lua_tointeger(L, -1);
-				lua_pop(L, 1);
-*/
+				VALUE val = rb_hash_aref(opts, rb_str_new2("value"));
+				if(TYPE(val) == T_FLOAT) {
+					value = NUM2DBL(val);
+				} else if (TYPE(val) == T_FIXNUM) {
+					value = FIX2INT(val);
+				}
 				// TODO: spin button support
 			}
 
@@ -302,9 +288,9 @@ nospin:
 				}
 			}
 
-			void RubyReadBack()
+			VALUE RubyReadBack()
 			{
-//				lua_pushnumber(L, value);
+				return rb_float_new(value);
 			}
 
 		};
@@ -317,23 +303,26 @@ nospin:
 			wxArrayString items;
 			wxString value;
 
-			Dropdown()
-				: RubyConfigDialogControl()
+			Dropdown(){};
+			Dropdown(VALUE opts)
+				: RubyConfigDialogControl(opts)
 			{
-/*				lua_getfield(L, -1, "value");
-				value = wxString(lua_tostring(L, -1), wxConvUTF8);
-				lua_pop(L, 1);
-
-				lua_getfield(L, -1, "items");
-				lua_pushnil(L);
-				while (lua_next(L, -2)) {
-					if (lua_isstring(L, -1)) {
-						items.Add(wxString(lua_tostring(L, -1), wxConvUTF8));
+				VALUE val = rb_hash_aref(opts, rb_str_new2("value"));
+				if(TYPE(val) == T_STRING)
+					value = wxString(StringValueCStr(val), wxConvUTF8);
+				
+				val = rb_hash_aref(opts, rb_str_new2("items"));
+				if(TYPE(val) == T_ARRAY)
+				{
+					long len = RARRAY(val)->len;
+					VALUE *ptr = RARRAY(val)->ptr;
+					for(int i = 0; i < len; i++)
+					{
+						if(TYPE(ptr[i]) == T_STRING)
+							items.Add(wxString(StringValueCStr(ptr[i]), wxConvUTF8));
 					}
-					lua_pop(L, 1);
 				}
-				lua_pop(L, 1);
-*/			}
+			}
 
 			virtual ~Dropdown() { }
 
@@ -347,11 +336,10 @@ nospin:
 				value = ((wxComboBox*)cw)->GetValue();
 			}
 
-			void RubyReadBack()
+			VALUE RubyReadBack()
 			{
-//				lua_pushstring(L, value.mb_str(wxConvUTF8));
+				return rb_str_new2(value.mb_str(wxConvUTF8));
 			}
-			
 		};
 
 
@@ -362,17 +350,18 @@ nospin:
 			wxString label;
 			bool value;
 
-			Checkbox()
-				: RubyConfigDialogControl()
+			Checkbox(){};
+			Checkbox(VALUE opts)
+				: RubyConfigDialogControl(opts)
 			{
-/*				lua_getfield(L, -1, "label");
-				label = wxString(lua_tostring(L, -1), wxConvUTF8);
-				lua_pop(L, 1);
+				VALUE val = rb_hash_aref(opts, rb_str_new2("label"));
+				if(TYPE(val) == T_STRING)
+					label = wxString(StringValueCStr(val), wxConvUTF8);
 
-				lua_getfield(L, -1, "value");
-				value = lua_toboolean(L, -1) != 0;
-				lua_pop(L, 1);
-*/			}
+				val = rb_hash_aref(opts, rb_str_new2("value"));
+				if(val == Qtrue) value = true;
+				else value = false;
+			}
 
 			virtual ~Checkbox() { }
 
@@ -386,9 +375,10 @@ nospin:
 				value = ((wxCheckBox*)cw)->GetValue();
 			}
 
-			void RubyReadBack()
+			VALUE RubyReadBack()
 			{
-//				lua_pushboolean(L, value);
+				if(value) return Qtrue;
+				return Qfalse;
 			}
 
 		};
@@ -398,91 +388,77 @@ nospin:
 
 	// RubyConfigDialog
 
-	RubyConfigDialog::RubyConfigDialog(bool include_buttons)
+	RubyConfigDialog::RubyConfigDialog(VALUE config, VALUE btn_data, bool include_buttons)
 		: use_buttons(include_buttons)
 	{
 		wxLogDebug(_T("creating RubyConfigDialog, this addr is %p"), this);
 		button_pushed = 0;
-/*		if (include_buttons) {
-
-			if (!lua_istable(L, -1))
-				// Just to avoid deeper indentation...
-				goto skipbuttons;
-			// Iterate over items in table
-			lua_pushnil(L); // initial key
-			while (lua_next(L, -2)) {
-				// Simply skip invalid items... FIXME, warn here?
-				if (lua_isstring(L, -1)) {
-					wxString s(lua_tostring(L, -1), wxConvUTF8);
+	
+		if(include_buttons && TYPE(btn_data) == T_ARRAY) 
+		{
+			long len = RARRAY(config)->len;
+			VALUE *ptr = RARRAY(config)->ptr;
+			for(int i = 0; i < len; i++)
+			{			
+				if(TYPE(ptr[i]) == T_STRING) 
+				{
+					wxString s(StringValueCStr(ptr[i]), wxConvUTF8);
 					buttons.push_back(s);
 				}
-				lua_pop(L, 1);
 			}
-skipbuttons:
-			lua_pop(L, 1);
 		}
 
-		// assume top of stack now contains a dialog table
-		if (!lua_istable(L, -1)) {
-			lua_pushstring(L, "Cannot create config dialog from something non-table");
-			lua_error(L);
-			assert(false);
+		if(TYPE(config) != T_ARRAY)	{
+			if(rb_respond_to(config, rb_intern("to_ary")))
+				config = rb_funcall(config, rb_intern("to_ary"), 0);
+			else throw "Cannot create config dialog from something non-table";
 		}
 
-		// Ok, so there is a table with controls
-		lua_pushnil(L); // initial key
-		while (lua_next(L, -2)) {
-			if (lua_istable(L, -1)) {
-				// Get control class
-				lua_getfield(L, -1, "class");
-				if (!lua_isstring(L, -1))
-					goto badcontrol;
-				wxString controlclass(lua_tostring(L, -1), wxConvUTF8);
-				controlclass.LowerCase();
-				lua_pop(L, 1);
+		long len = RARRAY(config)->len;
+		VALUE *ptr = RARRAY(config)->ptr;
+		for(int i = 0; i < len; i++)
+		{			
+			if(TYPE(ptr[i]) != T_HASH)
+				continue;	// skip invalid entry
 
-				RubyConfigDialogControl *ctl;
+			VALUE ctrlclass = rb_hash_aref(ptr[i], rb_str_new2("class"));
 
-				// Check control class and create relevant control
-				if (controlclass == _T("label")) {
-					ctl = new RubyControl::Label(L);
-				} else if (controlclass == _T("edit")) {
-					ctl = new RubyControl::Edit(L);
-				} else if (controlclass == _T("intedit")) {
-					ctl = new RubyControl::IntEdit(L);
-				} else if (controlclass == _T("floatedit")) {
-					ctl = new RubyControl::FloatEdit(L);
-				} else if (controlclass == _T("textbox")) {
-					ctl = new RubyControl::Textbox(L);
-				} else if (controlclass == _T("dropdown")) {
-					ctl = new RubyControl::Dropdown(L);
-				} else if (controlclass == _T("checkbox")) {
-					ctl = new RubyControl::Checkbox(L);
-				} else if (controlclass == _T("color")) {
-					// FIXME
-					ctl = new RubyControl::Edit(L);
-				} else if (controlclass == _T("coloralpha")) {
-					// FIXME
-					ctl = new RubyControl::Edit(L);
-				} else if (controlclass == _T("alpha")) {
-					// FIXME
-					ctl = new RubyControl::Edit(L);
-				} else {
-					goto badcontrol;
-				}
+			if (TYPE(ctrlclass) != T_STRING)
+				continue;	// skip
+			wxString controlclass(StringValueCStr(ctrlclass), wxConvUTF8);
+			controlclass.LowerCase();
 
-				controls.push_back(ctl);
+			RubyConfigDialogControl *ctl;
 
-			} else {
-badcontrol:
-				// not a control...
-				// FIXME, better error reporting?
-				lua_pushstring(L, "bad control table entry");
-				lua_error(L);
-			}
-			lua_pop(L, 1);
+			// Check control class and create relevant control
+			if (controlclass == _T("label")) {
+				ctl = new RubyControl::Label(ptr[i]);
+			} else if (controlclass == _T("edit")) {
+				ctl = new RubyControl::Edit(ptr[i]);
+			} else if (controlclass == _T("intedit")) {
+				ctl = new RubyControl::IntEdit(ptr[i]);
+			} else if (controlclass == _T("floatedit")) {
+				ctl = new RubyControl::FloatEdit(ptr[i]);
+			} else if (controlclass == _T("textbox")) {
+				ctl = new RubyControl::Textbox(ptr[i]);
+			} else if (controlclass == _T("dropdown")) {
+				ctl = new RubyControl::Dropdown(ptr[i]);
+			} else if (controlclass == _T("checkbox")) {
+				ctl = new RubyControl::Checkbox(ptr[i]);
+			} else if (controlclass == _T("color")) {
+				// FIXME
+				ctl = new RubyControl::Edit(ptr[i]);
+			} else if (controlclass == _T("coloralpha")) {
+				// FIXME
+				ctl = new RubyControl::Edit(ptr[i]);
+			} else if (controlclass == _T("alpha")) {
+				// FIXME
+				ctl = new RubyControl::Edit(ptr[i]);
+			} else continue;	// skip
+
+			controls.push_back(ctl);
 		}
-*/	}
+	}
 
 	RubyConfigDialog::~RubyConfigDialog()
 	{
@@ -537,42 +513,39 @@ badcontrol:
 		return w;
 	}
 
-	int RubyConfigDialog::RubyReadBack()
+	VALUE RubyConfigDialog::RubyReadBack()
 	{
-		// First read back which button was pressed, if any
+		VALUE cfg = rb_hash_new();
+
+		for (size_t i = 0; i < controls.size(); ++i) {
+			rb_hash_aset(cfg, rb_str_new2(controls[i]->name.mb_str(wxConvUTF8)), controls[i]->RubyReadBack());	
+		}
 		if (use_buttons) {
+			VALUE res = rb_ary_new();
+
 			wxLogDebug(_T("reading back button_pushed"));
 			int btn = button_pushed;
 			if (btn == 0) {
 				wxLogDebug(_T("was zero, cancelled"));
 				// Always cancel/closed
-			//	lua_pushboolean(L, 0);
+				rb_ary_push(res, Qfalse);
 			} else {
 				wxLogDebug(_T("nonzero, something else: %d"), btn);
 				if (buttons.size() > 0) {
 					wxLogDebug(_T("user button: %s"), buttons[btn-1].c_str());
 					// button_pushed is index+1 to reserve 0 for Cancel
-			//		lua_pushstring(L, buttons[btn-1].mb_str(wxConvUTF8));
+					rb_ary_push(res, rb_str_new2(buttons[btn-1].mb_str(wxConvUTF8)));					
 				} else {
 					wxLogDebug(_T("default button, must be Ok"));
 					// Cancel case already covered, must be Ok then
-			//		lua_pushboolean(L, 1);
+					rb_ary_push(res, Qtrue);					
 				}
 			}
+			rb_ary_push(res, cfg);	// return array [button, hash with config]
+			return res;
 		}
 
-		// Then read controls back
-//		lua_newtable(L);
-		for (size_t i = 0; i < controls.size(); ++i) {
-			controls[i]->RubyReadBack();	// TODO
-//			lua_setfield(L, -2, controls[i]->name.mb_str(wxConvUTF8));
-		}
-
-		if (use_buttons) {
-			return 2;
-		} else {
-			return 1;
-		}
+		return cfg;	// if no buttons return only hash with config
 	}
 
 	void RubyConfigDialog::ReadBack()

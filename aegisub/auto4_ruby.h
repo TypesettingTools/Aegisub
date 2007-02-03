@@ -92,7 +92,6 @@ namespace Automation4 {
 	// Provides progress UI and control functions for a Ruby script
 	class RubyProgressSink : public ProgressSink {
 	private:
-		static int RubyDisplayDialog();
 
 	public:
 		RubyProgressSink(wxWindow *parent, bool allow_config_dialog = true);
@@ -103,6 +102,7 @@ namespace Automation4 {
 		static VALUE RubySetTitle(VALUE self, VALUE title);
 		static VALUE RubyGetCancelled(VALUE self);
 		static VALUE RubyDebugOut(int argc, VALUE *args, VALUE self);
+		static VALUE RubyDisplayDialog(VALUE self, VALUE cfg, VALUE buttons);
 	};
 
 
@@ -115,9 +115,10 @@ namespace Automation4 {
 
 		virtual wxControl *Create(wxWindow *parent) = 0;
 		virtual void ControlReadBack() = 0;
-		virtual void RubyReadBack() = 0;
+		virtual VALUE RubyReadBack() = 0;
 
 		RubyConfigDialogControl();
+		RubyConfigDialogControl(VALUE opts);
 		virtual ~RubyConfigDialogControl() { }
 	};
 
@@ -140,9 +141,9 @@ namespace Automation4 {
 		wxWindow* CreateWindow(wxWindow *parent);
 
 	public:
-		RubyConfigDialog(bool include_buttons);
+		RubyConfigDialog(VALUE cfg, VALUE buttons, bool show_buttons);
 		virtual ~RubyConfigDialog();
-		int RubyReadBack(); // read back internal structure to lua structures
+		VALUE RubyReadBack(); // read back internal structure to Ruby hash
 
 		void ReadBack(); // from auto4 base
 	};
