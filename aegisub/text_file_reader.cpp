@@ -211,7 +211,7 @@ wxString TextFileReader::ReadLineFromFile() {
 				// FIXME, this might break on incomplete multibyte characters
 				wxString linepart(buffer, *conv);
 				wxbuffer += linepart;
-				if (buffer[511] == '\1') {
+				if (buffer[511] == '\1' || buffer[510] == '\n') {
 					// our sentinel \1 wasn't overwritten, meaning an EOL was found
 					break;
 				}
