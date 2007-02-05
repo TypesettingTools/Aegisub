@@ -158,6 +158,10 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	LoadCatalog();
 	LoadCurrentStyles(AssFile::top);
 
+	//Set key handlers for lists
+	StorageList->SetEventHandler(new DialogStyleManagerEvent(this));
+	CurrentList->SetEventHandler(new DialogStyleManagerEvent(this));
+
 	// Select default item
 	wxString selected_style;
 	if (_grid) {
@@ -661,7 +665,7 @@ void DialogStyleManager::OnStorageDelete (wxCommandEvent &event) {
 		message += _(" styles?");
 	}
 	else message = _("Are you sure you want to delete this style?");
-	int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
+	int option = wxMessageBox(message, _("Confirm delete from storage"), wxYES_NO | wxICON_EXCLAMATION , this);
 
 	if (option == wxYES) {
 		AssStyle *temp;
@@ -695,7 +699,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &event) {
 		message += _(" styles?");
 	}
 	else message = _("Are you sure you want to delete this style?");
-	int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
+	int option = wxMessageBox(message, _("Confirm delete from current"), wxYES_NO | wxICON_EXCLAMATION , this);
 
 	if (option == wxYES) {
 		AssStyle *temp;
@@ -855,7 +859,6 @@ void DialogStyleManager::OnCurrentMoveDown (wxCommandEvent &event) { MoveStyles(
 void DialogStyleManager::OnCurrentMoveBottom (wxCommandEvent &event) { MoveStyles(false,3); }
 void DialogStyleManager::OnCurrentSort (wxCommandEvent &event) { MoveStyles(false,4); }
 
-
 /////////////////
 // Move function
 void DialogStyleManager::MoveStyles(bool storage, int type) {
@@ -998,6 +1001,40 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 
 
 //////////////////
+// Keydown event
+void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
+	wxCommandEvent evt;
+	switch(event.GetKeyCode()) {
+		case WXK_ESCAPE :
+			OnClose(evt);
+			break;
+
+		case WXK_DELETE :
+			if (wxWindow::FindFocus()==StorageList) {
+				OnStorageDelete(evt);
+			}
+			else if (wxWindow::FindFocus()==CurrentList) {
+				OnCurrentDelete(evt);
+			}
+			break;
+	}
+}
+//////////////////
 // I have no clue
 int DialogStyleManager::lastx = -1;
 int DialogStyleManager::lasty = -1;
+
+
+/////////////////////////////////
+// DialogStyleManagerEvent stuff
+DialogStyleManagerEvent::DialogStyleManagerEvent(DialogStyleManager *ctrl) {
+	control = ctrl;
+}
+BEGIN_EVENT_TABLE(DialogStyleManagerEvent, wxEvtHandler)
+	EVT_KEY_DOWN(DialogStyleManagerEvent::OnKeyDown)
+END_EVENT_TABLE()
+void DialogStyleManagerEvent::OnKeyDown(wxKeyEvent &event) {
+	control->OnKeyDown(event); //we need to access controls, so rather than make the controls public...
+}
+
+

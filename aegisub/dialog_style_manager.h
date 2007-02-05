@@ -129,6 +129,7 @@ public:
 	void OnStorageDelete (wxCommandEvent &event);
 	void OnCurrentDelete (wxCommandEvent &event);
 	void OnCurrentImport (wxCommandEvent &event);
+	void OnKeyDown (wxKeyEvent &event);
 
 	DECLARE_EVENT_TABLE()
 };
@@ -163,6 +164,19 @@ enum {
 	LIST_CATALOG,
 	LIST_STORAGE,
 	LIST_CURRENT
+};
+
+
+/////////////////
+// Event handler
+class DialogStyleManagerEvent : public wxEvtHandler {
+private:
+	DialogStyleManager *control;
+	void OnKeyDown(wxKeyEvent &event);
+
+public:
+	DialogStyleManagerEvent(DialogStyleManager *control);
+	DECLARE_EVENT_TABLE()
 };
 
 
