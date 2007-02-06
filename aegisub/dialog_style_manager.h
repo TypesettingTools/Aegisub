@@ -130,6 +130,10 @@ public:
 	void OnCurrentDelete (wxCommandEvent &event);
 	void OnCurrentImport (wxCommandEvent &event);
 	void OnKeyDown (wxKeyEvent &event);
+	void CopyToClipboard (wxListBox *list, std::vector<AssStyle*> v);
+	void PasteToCurrent();
+	void PasteToStorage();
+
 
 	DECLARE_EVENT_TABLE()
 };

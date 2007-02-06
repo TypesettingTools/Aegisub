@@ -619,6 +619,74 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 }
 
 
+//////////////////////
+// Copy to clipboard
+void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*> v) {
+	wxString data = _T("");
+	AssStyle *s;
+	wxArrayInt selections;
+	list->GetSelections(selections);
+
+	for(int unsigned i=0;i<selections.size();i++) {
+		if (i!=0) data += _T("\r\n");
+		s = v.at(selections[i]);
+		s->UpdateData();
+		data += s->GetEntryData();
+	}
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(data));
+		wxTheClipboard->Close();
+	}
+}
+////////////////////////
+// Paste from clipboard
+void DialogStyleManager::PasteToCurrent() {
+	wxString data = _T("");
+
+	if (wxTheClipboard->Open()) {
+		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
+			wxTextDataObject rawdata;
+			wxTheClipboard->GetData(rawdata);
+			data = rawdata.GetText();
+		}
+		wxTheClipboard->Close();
+	}
+
+	wxStringTokenizer st(data,_T('\n'));
+	while (st.HasMoreTokens()) {
+		AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+		if (s->Valid) {
+			AssFile::top->InsertStyle(s);
+			LoadCurrentStyles(AssFile::top);
+		}
+		grid->ass->FlagAsModified(_("style paste"));
+		grid->CommitChanges();
+	}
+}
+void DialogStyleManager::PasteToStorage() {
+	wxString data = _T("");
+
+	if (wxTheClipboard->Open()) {
+		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
+			wxTextDataObject rawdata;
+			wxTheClipboard->GetData(rawdata);
+			data = rawdata.GetText();
+		}
+		wxTheClipboard->Close();
+	}
+
+	wxStringTokenizer st(data,_T('\n'));
+	while (st.HasMoreTokens()) {
+		AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+		if (s->Valid) {
+			Store.style.push_back(s);
+			Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+		}
+		LoadStorageStyles();
+		StorageList->SetStringSelection(s->name);
+	}
+}
 ///////////////
 // Storage new
 void DialogStyleManager::OnStorageNew (wxCommandEvent &event) {
@@ -1017,6 +1085,32 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 				OnCurrentDelete(evt);
 			}
 			break;
+
+		case 'C' :
+		case 'c' :
+			if (event.ControlDown()) {
+				if (wxWindow::FindFocus()==CurrentList) {
+					CopyToClipboard(CurrentList,styleMap);
+				}
+				else if (wxWindow::FindFocus()==StorageList) {
+					CopyToClipboard(StorageList,styleStorageMap);
+				}
+			}
+			break;
+
+		case 'V' :
+		case 'v' :
+			if (event.ControlDown()) {
+				if (wxWindow::FindFocus()==CurrentList) {
+					PasteToCurrent();
+				}
+				else if (wxWindow::FindFocus()==StorageList) {
+					PasteToStorage();
+				}
+			}
+
+			break;
+
 	}
 }
 //////////////////

@@ -101,7 +101,7 @@ Please visit http://aegisub.net to download latest version
 - Made the video display detachable. (AMZ)
 - Undo and redo now have descriptions. (Dansolo)
 - The three different "Recombine Lines" were merged into one that autodetects needed changes, and also supports two new cases. (AMZ)
-
+- Added shortcut keys (escape to close and delete to delete a style, plus ctrl+c/v for copy/paste) to style manager. (Dansolo)
 
 = 1.10 beta - 2006.08.07 ===========================
 
@@ -201,7 +201,7 @@ Please visit http://aegisub.net to download latest version
 - Implemented sorting of subtitles by start time. (AMZ)
 - Recovered subtitle files are now saved in their own subfolder (customizeable in config.dat). (AMZ)
 - Fixed crash with changing font properties via the subtitle edit box when there was a \fs override tag earlier in the line. (AMZ)
-- Added shortcut keys (escape to close and delete to delete a style) to style manager. (Dansolo)
+
 
 = 1.09 beta - 2006.01.16 ===========================
 
