@@ -131,6 +131,7 @@ public:
 	void PasteLines(int pos,bool over=false);
 
 	std::vector<int> GetAbsoluteSelection();
+	void SetSelectionFromAbsolute(std::vector<int> &selection);
 
 	DECLARE_EVENT_TABLE()
 };

@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Niels Martin Hansen
+// Copyright (c) 2007, Patryk Pomykalski
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
+// Contact: mailto:pomyk@go2.pl
 //
 
 #pragma once
@@ -48,17 +48,6 @@ class wxWindow;
 namespace Automation4 {
 
 	
-	// Manage reading in a Ruby script file
-	struct RubyScriptReader {
-		FILE *f;
-		bool first;
-		char *databuf;
-		static const size_t bufsize = 512;
-		RubyScriptReader(const wxString &filename);
-		~RubyScriptReader();
-//		static const char* reader_func( void *data, size_t *size);
-	};
-
 	// Provides access to an AssFile object (and all lines contained) for a Ruby script
 	class RubyAssFile {
 	private:
@@ -70,7 +59,6 @@ namespace Automation4 {
 		// keep a cursor of last accessed item to avoid walking over the entire file on every access
 		std::list<AssEntry*>::iterator last_entry_ptr;
 		int last_entry_id;
-		void GetAssEntry(int n); // set last_entry_ptr to point to item n
 
 		static int RubyParseTagData();
 		static int RubyUnparseTagData();
@@ -175,6 +163,8 @@ namespace Automation4 {
 		static RubyScript* GetScriptObject();
 		static RubyScript* inst;
 		static VALUE RubyTextExtents(VALUE self, VALUE style, VALUE text);
+		static VALUE RubyFrameToTime(VALUE self, VALUE frame);
+		static VALUE RubyTimeToFrame(VALUE self, VALUE time);
 		static int RubyInclude();
 
 	public:
@@ -260,9 +250,10 @@ namespace Automation4 {
 	VALUE rbCallWrapper(VALUE arg);
 	VALUE rbExecWrapper(VALUE arg);
 	VALUE rbLoadWrapper(VALUE arg);
-	VALUE rbFunCall(VALUE recv, ID id, int n, ...);
+	VALUE rbGcWrapper(VALUE arg);
 	VALUE rbAss2RbWrapper(VALUE arg);
 	VALUE rb2AssWrapper(VALUE arg);
+	VALUE rbError(VALUE arg);
 	typedef VALUE (*RB_HOOK)(...);
 	typedef VALUE (*RB_HOOK2)(VALUE);
 

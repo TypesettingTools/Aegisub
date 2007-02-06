@@ -1449,3 +1449,21 @@ std::vector<int> SubtitlesGrid::GetAbsoluteSelection() {
 
 	return result;
 }
+
+
+/////////////////////////////////////////////////////////////////////
+// Update list of selected lines from absolute selection
+// selection vector must be sorted
+void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
+
+	int nrows = GetRows();
+	std::list<AssEntry*>::iterator j = ass->Line.begin();
+	int index = 0;
+	for (int i = 0; i != nrows; ++i) {
+		entryIter l = diagMap.at(i);
+		while(j != l && j != ass->Line.end()) ++j, ++index;
+		if(j == l && binary_search(selection.begin(), selection.end(), index)) {
+			selMap[i] = true;
+		} else selMap[i] = false;
+	}
+}

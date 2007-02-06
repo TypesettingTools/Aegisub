@@ -1,4 +1,4 @@
-// Copyright (c) 2006, 2007, Niels Martin Hansen
+// Copyright (c) 2007, Patryk Pomykalski
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
+// Contact: mailto:pomyk@go2.pl
 //
 
 #include "auto4_ruby.h"
@@ -41,6 +41,10 @@
 #include "ass_override.h"
 #include "text_file_reader.h"
 #include "options.h"
+#include "vfr.h"
+#include "main.h"
+#include "frame_main.h"
+#include "subs_grid.h"
 #include <ruby.h>
 #include <wx/msgdlg.h>
 #include <wx/filename.h>
@@ -51,37 +55,10 @@
 
 namespace Automation4 {
 
-	// I'm not sure if this will work ?_?
 	RubyObjects *RubyObjects::inst = NULL;
 	RubyScript * RubyScript::inst = NULL; // current Ruby Script
 	RubyProgressSink* RubyProgressSink::inst = NULL;
 	VALUE RubyScript::RubyAegisub = Qfalse;
-//	RubyAssFile *RubyAssFile::raf = NULL;
-
-	// RubyScriptReader
-	RubyScriptReader::RubyScriptReader(const wxString &filename)
-	{
-#ifdef WIN32
-		f = _tfopen(filename.c_str(), _T("rb"));
-#else
-		f = fopen(filename.fn_str(), "rb");
-#endif
-		first = true;
-		databuf = new char[bufsize];
-	}
-
-	RubyScriptReader::~RubyScriptReader()
-	{
-		if (databuf)
-			delete databuf;
-		fclose(f);
-	}
-
-/*	const char* RubyScriptReader::reader_func( void *data, size_t *size)
-	{
-		return self->databuf;
-	}
-*/
 
 	// RubyScript
 
@@ -112,7 +89,10 @@ namespace Automation4 {
 			char **argv = 0;
 			NtInitialize(&argc, &argv);
 #endif
+			char **opt = new char*[4];
+			opt[0] = "-d";
 			ruby_init();
+			//ruby_options(1, opt);
 			ruby_init_loadpath();
 			RubyScript::inst = this;
 			if(!RubyAegisub) {
@@ -120,6 +100,8 @@ namespace Automation4 {
 				rb_define_module_function(RubyAegisub, "register_macro",reinterpret_cast<RB_HOOK>(&RubyFeatureMacro::RubyRegister), 4);
 				rb_define_module_function(RubyAegisub, "register_filter",reinterpret_cast<RB_HOOK>(&RubyFeatureFilter::RubyRegister), 5);
 				rb_define_module_function(RubyAegisub, "text_extents",reinterpret_cast<RB_HOOK>(&RubyTextExtents), 2);
+				rb_define_module_function(RubyAegisub, "frame_to_time",reinterpret_cast<RB_HOOK>(&RubyFrameToTime), 1);
+				rb_define_module_function(RubyAegisub, "time_to_frame",reinterpret_cast<RB_HOOK>(&RubyTimeToFrame), 1);
 				rb_define_module_function(RubyScript::RubyAegisub, "progress_set",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetProgress), 1);
 				rb_define_module_function(RubyScript::RubyAegisub, "progress_task",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTask), 1);
 				rb_define_module_function(RubyScript::RubyAegisub, "progress_title",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTitle), 1);
@@ -221,6 +203,23 @@ namespace Automation4 {
 		return result;
 	}
 
+	VALUE RubyScript::RubyFrameToTime(VALUE self, VALUE frame)
+	{
+		if(TYPE(frame) == T_FIXNUM && VFR_Output.IsLoaded())
+		{
+			return INT2FIX(VFR_Output.GetTimeAtFrame(FIX2INT(frame), true));
+		}
+		return Qnil;
+	}
+
+	VALUE RubyScript::RubyTimeToFrame(VALUE self, VALUE time)
+	{
+		if(TYPE(time) == T_FIXNUM && VFR_Output.IsLoaded())
+		{
+			return INT2FIX(VFR_Output.GetFrameAtTime(FIX2INT(time), true));
+		}
+		return Qnil;
+	}
 
 	// RubyFeature
 
@@ -328,15 +327,41 @@ namespace Automation4 {
 			wxThread::ExitCode code = call.Wait();
 			delete RubyProgressSink::inst;
 			RubyProgressSink::inst = NULL;
-			if(code)
+			/*if(code)		// error reporting doesn't work in ruby 1.9
 			{
 				if(TYPE(result) == T_STRING)
 					throw StringValueCStr(result);
-				else throw "Unknown Error";
+				else throw "Error running macro";
 			}
-			else if(TYPE(result) == T_ARRAY)
+			else*/ if(TYPE(result) == T_ARRAY)
 			{
-				subsobj->RubyUpdateAssFile(result);
+				bool end = false;
+				for(int i = 0; i < RARRAY(result)->len && !end; ++i)
+				{
+					VALUE p = RARRAY(result)->ptr[i];		// some magic in code below to allow variable output
+					if(TYPE(p) != T_ARRAY) {
+						p = result;
+						end = true;
+					}
+
+					switch(TYPE(RARRAY(p)->ptr[0])) {
+
+					case T_HASH:		// array of hashes = subs
+						subsobj->RubyUpdateAssFile(p);
+						break;
+
+					case T_FIXNUM:		// array of ints = selection
+						int num = RARRAY(p)->len;
+						std::vector<int> sel(num);
+						for(int i = 0; i < num; ++i) {
+							sel[i] = FIX2INT(RARRAY(p)->ptr[i]);
+						}
+						FrameMain *frame = AegisubApp::Get()->frame;
+						frame->SubsBox->LoadFromAss(AssFile::top, true, true);
+						frame->SubsBox->SetSelectionFromAbsolute(sel);
+						break;
+					}				
+				}
 			}
 			delete subsobj;
 		} catch (const char* e) {
@@ -413,9 +438,8 @@ namespace Automation4 {
 				cfg = config_dialog->RubyReadBack();
 				// TODO, write back stored options here
 			}
-//			delete RubyProgressSink::inst;
-//			RubyProgressSink::inst = new RubyProgressSink(export_dialog, false);
-//			RubyProgressSink::inst->SetTitle(GetName());
+			RubyProgressSink::inst = new RubyProgressSink(export_dialog, false);
+			RubyProgressSink::inst->SetTitle(GetName());
 	
 			RubyAssFile *subsobj = new RubyAssFile(subs, true/*modify*/, false/*undo*/);
 			VALUE *argv = ALLOCA_N(VALUE, 2);
@@ -423,18 +447,18 @@ namespace Automation4 {
 			argv[1] = cfg; // config
 			RubyCallArguments arg(rb_mKernel, rb_to_id(filter_fun), 2, argv);
 			VALUE result;
-			delete RubyProgressSink::inst;
-			RubyProgressSink::inst = NULL;
 			RubyThreadedCall call(&arg, &result);
-//			RubyProgressSink::inst->ShowModal();
+			RubyProgressSink::inst->ShowModal();
+			RubyProgressSink::inst = NULL;
 			wxThread::ExitCode code = call.Wait();
-			if(code)
+			delete RubyProgressSink::inst;
+			/*if(code)	// error reporting doesn't work in ruby 1.9
 			{
 				if(TYPE(result) == T_STRING)
 					throw StringValueCStr(result);
 				else throw "Unknown Error";
 			}
-			else if(result != Qnil && result != Qfalse)
+			else*/ if(TYPE(result) == T_ARRAY)
 			{
 				subsobj->RubyUpdateAssFile(result);
 			}
@@ -482,8 +506,6 @@ namespace Automation4 {
 
 	RubyProgressSink::~RubyProgressSink()
 	{
-		// remove progress reporting stuff
-		// TODO
 	}
 
 	VALUE RubyProgressSink::RubySetProgress(VALUE self, VALUE progress)
@@ -578,7 +600,7 @@ namespace Automation4 {
 		rb_gc_register_address(&objects);
 	}
 
-	RubyObjects::~RubyObjects()
+	RubyObjects::~RubyObjects() 
 	{
 		rb_gc_unregister_address(&objects);
 	}
@@ -613,31 +635,8 @@ namespace Automation4 {
 	}
 	VALUE rbExecWrapper(VALUE arg){return  ruby_exec();}
 	VALUE rbLoadWrapper(VALUE arg){rb_load(arg, 0); return Qtrue;}
+	VALUE rbGcWrapper(VALUE arg){rb_gc_start(); return Qtrue;}
 	VALUE rbAss2RbWrapper(VALUE arg){return RubyAssFile::AssEntryToRuby(reinterpret_cast<AssEntry*>(arg));}
 	VALUE rb2AssWrapper(VALUE arg){return reinterpret_cast<VALUE>(RubyAssFile::RubyToAssEntry(arg));}
-
-	VALUE rbFunCall(VALUE recv, ID id, int n, ...) 
-	{
-		VALUE *argv = 0;
-		if (n > 0) {
-			argv = ALLOCA_N(VALUE, n);
-			va_list ar;
-			va_start(ar, n);
-			int i;
-			for(i=0;i<n;i++) {
-				argv[i] = va_arg(ar, VALUE);
-			}
-			va_end(ar);
-		} 
-
-		RubyCallArguments arg(recv, id, n, argv);
-		int error = 0;
-		VALUE result;
-		result = rb_protect(rbCallWrapper, reinterpret_cast<VALUE>(&arg), &error);
-		if(error) {
-			VALUE err = rb_errinfo();
-			throw StringValueCStr(err);
-		}
-		return result;
-	}
+	
 };

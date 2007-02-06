@@ -1,4 +1,4 @@
-// Copyright (c) 2006, 2007, Niels Martin Hansen
+// Copyright (c) 2006, 2007, Niels Martin Hansen, Patryk Pomykalski
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
+// Contact: mailto:pomyk@go2.pl
 //
 
 #include "auto4_ruby.h"
@@ -157,6 +157,7 @@ namespace Automation4 {
 
 			VALUE RubyReadBack()
 			{
+		//		if(text.IsEmpty()) return rb_str_new("", 0);
 				return rb_str_new2(text.mb_str(wxConvUTF8));
 			}
 
@@ -367,7 +368,9 @@ namespace Automation4 {
 
 			wxControl *Create(wxWindow *parent)
 			{
-				return cw = new wxCheckBox(parent, -1, label);
+				cw = new wxCheckBox(parent, -1, label);
+				((wxCheckBox*)cw)->SetValue(value);
+				return cw;
 			}
 
 			void ControlReadBack()
@@ -396,12 +399,13 @@ namespace Automation4 {
 	
 		if(include_buttons && TYPE(btn_data) == T_ARRAY) 
 		{
-			long len = RARRAY(config)->len;
-			VALUE *ptr = RARRAY(config)->ptr;
+			long len = RARRAY(btn_data)->len;
+			VALUE *ptr = RARRAY(btn_data)->ptr;
 			for(int i = 0; i < len; i++)
 			{			
-				if(TYPE(ptr[i]) == T_STRING) 
+				if(rb_respond_to(ptr[i], rb_intern("to_s")))
 				{
+					ptr[i] = rb_funcall(ptr[i], rb_intern("to_s"), 0);
 					wxString s(StringValueCStr(ptr[i]), wxConvUTF8);
 					buttons.push_back(s);
 				}
@@ -417,7 +421,7 @@ namespace Automation4 {
 		long len = RARRAY(config)->len;
 		VALUE *ptr = RARRAY(config)->ptr;
 		for(int i = 0; i < len; i++)
-		{			
+		{
 			if(TYPE(ptr[i]) != T_HASH)
 				continue;	// skip invalid entry
 
