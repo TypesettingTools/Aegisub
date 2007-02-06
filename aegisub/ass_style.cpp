@@ -197,7 +197,7 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	// Tokenize
 	wxString temp;
 	long templ;
-	wxStringTokenizer tkn(rawData.Mid(6),_T(","),wxTOKEN_RET_EMPTY_ALL);
+	wxStringTokenizer tkn(rawData.Trim(false).Mid(6),_T(","),wxTOKEN_RET_EMPTY_ALL);
 
 	// Read name
 	if (!tkn.HasMoreTokens()) return false;
