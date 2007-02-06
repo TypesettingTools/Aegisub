@@ -22,7 +22,8 @@ function do_syllable(meta, styles, config, line, syl)
 	-- The result from this function can just be modified, and the line in the result table changes along (since it's just a reference)
 	function result.add()
 		local l = copy_line(line)
-		table.insert(result, l)
+		result.n = result.n + 1
+		result[result.n] = l
 		return l
 	end
 	-- Place the main text

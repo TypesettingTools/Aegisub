@@ -33,7 +33,8 @@ function process_lines(meta, styles, lines, config)
 			dokanji(lin, output, styles["op kanji"])
 		else
 			-- Unknown lines are copied verbatim
-			table.insert(output, lin)
+			output.n = output.n + 1
+			output[output.n] = lin
 		end
 	end
 	return output
@@ -110,7 +111,8 @@ function doromaji(lin, output, sty, linetop)
 			enterlin.start_time = lin.start_time - 40
 			enterlin.end_time = lin.start_time
 			enterlin.text = string.format("{\\move(%d,%d,%d,%d)\\fr%d\\t(\\fr0)\\an7}%s", startx, starty, shakex, shakey, -math.deg(enterangle), syl.text)
-			table.insert(output, enterlin)
+			output.n = output.n + 1
+			output[output.n] = enterlin
 			-- main highlight effect
 			local newlin = copy_line(lin)
 			local hilistart, hilimid, hiliend = syl.start_time*10, (syl.start_time+syl.duration/2)*10, (syl.start_time+syl.duration)*10
@@ -127,8 +129,9 @@ function doromaji(lin, output, sty, linetop)
 			bord.layer = 0
 			bord.text = "{" .. bord.text
 			newlin.text = "{\\bord0" .. newlin.text
-			table.insert(output, bord)
-			table.insert(output, newlin)
+			output.n = output.n + 2
+			output[output.n-1] = bord
+			output[output.n] = newlin
 			-- leave effect
 			-- cut the line over in two, lower half "drops down", upper just fades away
 			local tophalf = copy_line(lin)
@@ -138,8 +141,9 @@ function doromaji(lin, output, sty, linetop)
 			local bottomhalf = copy_line(tophalf)
 			tophalf.text = string.format("{\\t(0,200,\\1c&H000080&)\\clip(0,0,640,%d)%s", linetop+syl.height/2, tophalf.text)
 			bottomhalf.text = string.format("{\\org(%d,%d)\\clip(0,%d,640,480)\\t(0,200,\\1c&H000080&)\\t(200,1000,1.2,\\frx90\\clip(0,%d,640,480)%s", 320, linetop+syl.height, linetop+syl.height/2, linetop+syl.height, bottomhalf.text)
-			table.insert(output, tophalf)
-			table.insert(output, bottomhalf)
+			output.n = output.n + 2
+			output[output.n-1] = tophalf
+			output[output.n] = bottomhalf
 		end
 	end
 end
@@ -190,7 +194,8 @@ function dokanji(lin, output, sty)
 			end
 			newlin.text = string.format("{\\fn%s\\an7\\fr-90\\move(%d,%d,%d,%d)\\1a&H%2x&\\3a&H%2x&\\t(\\1a&H%2x&\\3a&H%2x&)}%s", fontname, 620, top, 620, top-syl.height, startalpha, startalpha, targetalpha, targetalpha, syls[i+j].text)
 			top = top + syls[i+j].height
-			table.insert(output, newlin)
+			output.n = output.n + 1
+			output[output.n] = newlin
 		end
 	end
 end

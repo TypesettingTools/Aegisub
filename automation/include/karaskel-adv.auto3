@@ -44,7 +44,7 @@ karaskel.engage_positioning = true
 -- The arguments here mean the same as in karaskel.lua, and all tables have the same members
 -- The return value is different now, though.
 -- It is required to be in the same format as the do_line function:
--- A table with an "n" key, and keys 0..n-1 with line structures.
+-- A table with an "n" key, and keys 1..n with line structures.
 function karaskel.do_syllable(meta, styles, config, line, syl)
 	karaskel.trace("default_do_syllable")
 	return {n=0}
@@ -60,11 +60,15 @@ function karaskel.do_line(meta, styles, config, line)
 	for i = 0, line.karaoke.n-1 do
 		karaskel.trace("adv_do_line:2:"..i)
 		local out = do_syllable(meta, styles, config, line, line.karaoke[i])
+		karaskel.trace("adv_do_line:produced " .. out.n)
 		for j = 1, out.n do
-			table.insert(result, out[j])
+			karaskel.trace("adv_do_line:produced:" .. out[j].kind)
+			result.n = result.n + 1
+			result[result.n] = out[j]
 		end
+		karaskel.trace("adv_do_line:3:"..result.n)
 	end
-	karaskel.trace("adv_do_line:3")
+	karaskel.trace("adv_do_line:4")
 	return result
 end
 do_line = karaskel.do_line

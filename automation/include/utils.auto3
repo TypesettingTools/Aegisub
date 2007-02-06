@@ -177,3 +177,12 @@ function xor(a, b)
 		return false
 	end
 end
+
+
+-- Lua 5.1 breaks the table.insert function, here's a "fix"
+table.org_insert = table.insert
+function table.insert(tab, val)
+	aegisub.output_debug("Warning: this script uses the table.insert function which has changed behaviour in Lua 5.1. This might cause problems. Please update the script so it does not use this function, and instead replace it with code equivalent to the intended behaviour.")
+	tab.n = tab.n + 1
+	tab[tab.n] = val
+end

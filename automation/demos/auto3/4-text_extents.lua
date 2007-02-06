@@ -16,7 +16,8 @@ function process_lines(meta, styles, lines, config)
 		aegisub.report_progress(i/lines.n*100)
 		-- Only process dialogue lines
 		if lines[i].kind ~= "dialogue" then
-			table.insert(output, lines[i])
+			output.n = output.n + 1
+			output[output.n] = lines[i]
 		else
 			-- This is just for making the code a bit easier to read
 			local line = lines[i]
@@ -40,7 +41,8 @@ function process_lines(meta, styles, lines, config)
 				-- Replace the text of the copy of the line with this syllable, moving around
 				syllin.text = string.format("{\\an4\\move(%d,%d,%d,%d,%d,%d)\\kf%d\\kf%d}%s", curx, cury, curx, cury-exty, tstart, tend, tstart/10, syl.duration, syl.text)
 				-- Add the line to the output
-				table.insert(output, syllin)
+				output.n = output.n + 1
+				output[output.n] = syllin
 				-- And prepare for next iteration
 				curx = curx + extx
 				tstart = tend

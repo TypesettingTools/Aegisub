@@ -51,7 +51,7 @@ karaskel = {
 	-- Set this to the name of the style used for out-of-line effect specifications, if any (read manual on this!)
 	ool_fx_style = false,
 	-- Show tracing messages?
-	engage_trace = false
+	engage_trace = true
 }
 
 function karaskel.warning(s)
@@ -300,10 +300,11 @@ function karaskel.process_lines(meta, styles, lines, config)
 			-- Get replacement lines
 			lines[i].ool_fx = ool_fx
 			repl = do_line(meta, styles, config, lines[i])
-			karaskel.trace("skel_process_lines:4:"..i)
+			karaskel.trace("skel_process_lines:4:"..i..":"..repl.n)
 			-- Append to result table
 			for j = 1, repl.n do
-				table.insert(result, repl[j])
+				result.n = result.n + 1
+				result[result.n] = repl[j]
 			end
 		end
 	end

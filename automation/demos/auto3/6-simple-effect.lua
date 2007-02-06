@@ -24,7 +24,8 @@ function process_lines(meta, styles, lines, config)
 		aegisub.report_progress(i/lines.n*100)
 		-- First check if the line is even a dialogue line. If it's not, no need to process it.
 		if lines[i].kind ~= "dialogue" then
-			table.insert(output, lines[i])
+			output.n = output.n + 1
+			output[output.n] = lines[i]
 		else
 			-- This is a dialogue line, so process is
 			-- Make a nicer name for the line we're processing
@@ -55,7 +56,8 @@ function process_lines(meta, styles, lines, config)
 			
 			-- The entire line has been calculated
 			-- Add it to the output
-			table.insert(output, newline)
+			output.n = output.n + 1
+			output[output.n] = newline
 		end
 	end
 	

@@ -962,7 +962,14 @@ continue_invalid_option:
 
 			sink->SetTask(_T("Running script for processing"));
 			sink->SetProgress(100.0f/3);
-			lua_call(L, 4, 1);
+			int ret = lua_pcall(L, 4, 1, 0);
+			if (ret) {
+				wxString emsg(lua_tostring(L, -1), wxConvUTF8);
+				emsg.Prepend(_T("The Automation 3 script produced an error:\n"));
+				emsg.Append(_T("\nThe subtitles have not been altered."));
+				lua_pushstring(L, emsg.mb_str(wxConvUTF8));
+				throw ret;
+			}
 			sink->SetProgress(200.0f/3);
 			sink->SetTask(_T("Reading back data from script"));
 
