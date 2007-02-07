@@ -51,121 +51,122 @@ namespace Automation4 {
 	{
 		VALUE ass_entry;
 		ass_entry = rb_hash_new();
-		
+
 		wxString section(e->group);
-		rb_hash_aset(ass_entry, rb_str_new("section", 7), rb_str_new2(e->group.mb_str(wxConvUTF8)));
+		rb_hash_aset(ass_entry, STR2SYM("section"), rb_str_new2(e->group.mb_str(wxConvUTF8)));
 		wxString raw(e->GetEntryData());
 		if(!raw.IsEmpty())
-			rb_hash_aset(ass_entry, rb_str_new("raw", 3), rb_str_new2(e->GetEntryData().mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("raw"), rb_str_new2(e->GetEntryData().mb_str(wxConvUTF8)));
 		VALUE entry_class;
 
 		if (raw.Trim().IsEmpty()) {
-			entry_class = rb_str_new("clear", 5);
+			entry_class = STR2SYM("clear");
 
 		} else if (raw[0] == _T(';')) {
 			// "text" field, same as "raw" but with semicolon stripped
 			wxString text(raw, 1, raw.size()-1);
-			rb_hash_aset(ass_entry, rb_str_new("text", 4), rb_str_new2(text.mb_str(wxConvUTF8)));
-			entry_class = rb_str_new("comment", 7);
+			rb_hash_aset(ass_entry, STR2SYM("text"), rb_str_new2(text.mb_str(wxConvUTF8)));
+			entry_class = STR2SYM("comment");
 		} else if (raw[0] == _T('[')) {
-			entry_class = rb_str_new("head", 4);
+			entry_class = STR2SYM("head");
 
 		} else if (section.Lower() == _T("[script info]")) {
 			// assumed "info" class
 			// first "key"
 			wxString key = raw.BeforeFirst(_T(':'));
-			rb_hash_aset(ass_entry, rb_str_new("key", 3), rb_str_new2(key.mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("key"), rb_str_new2(key.mb_str(wxConvUTF8)));
 
 			// then "value"
 			wxString value = raw.AfterFirst(_T(':'));
-			rb_hash_aset(ass_entry, rb_str_new("value", 5), rb_str_new2(value.mb_str(wxConvUTF8)));
-			entry_class = rb_str_new("info", 4);
+			value.Trim(false);
+			rb_hash_aset(ass_entry, STR2SYM("value"), rb_str_new2(value.mb_str(wxConvUTF8)));
+			entry_class = STR2SYM("info");
 
 		} else if (raw.Left(7).Lower() == _T("format:")) {
 			// TODO: parse the format line; just use a tokenizer
-			entry_class = rb_str_new("format", 6);
+			entry_class = STR2SYM("format");
 
 		} else if (e->GetType() == ENTRY_DIALOGUE) {
 			AssDialogue *dia = e->GetAsDialogue(e);
 
-			rb_hash_aset(ass_entry, rb_str_new("comment", 7), dia->Comment ? Qtrue : Qfalse);
-			rb_hash_aset(ass_entry, rb_str_new("layer", 5), rb_int2inum(dia->Layer));
-			rb_hash_aset(ass_entry, rb_str_new("start_time", 10), rb_int2inum(dia->Start.GetMS()));
-			rb_hash_aset(ass_entry, rb_str_new("end_time", 8), rb_int2inum(dia->End.GetMS()));
+			rb_hash_aset(ass_entry, STR2SYM("comment"), dia->Comment ? Qtrue : Qfalse);
+			rb_hash_aset(ass_entry, STR2SYM("layer"), rb_int2inum(dia->Layer));
+			rb_hash_aset(ass_entry, STR2SYM("start_time"), rb_int2inum(dia->Start.GetMS()));
+			rb_hash_aset(ass_entry, STR2SYM("end_time"), rb_int2inum(dia->End.GetMS()));
 
-			rb_hash_aset(ass_entry, rb_str_new("style", 5), rb_str_new2(dia->Style.mb_str(wxConvUTF8)));
-			rb_hash_aset(ass_entry, rb_str_new("actor", 5), rb_str_new2(dia->Actor.mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("style"), rb_str_new2(dia->Style.mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("actor"), rb_str_new2(dia->Actor.mb_str(wxConvUTF8)));
 
-			rb_hash_aset(ass_entry, rb_str_new("margin_l", 8), rb_int2inum(dia->Margin[0]));
-			rb_hash_aset(ass_entry, rb_str_new("margin_r", 8), rb_int2inum(dia->Margin[1]));
-			rb_hash_aset(ass_entry, rb_str_new("margin_t", 8), rb_int2inum(dia->Margin[2]));
-			rb_hash_aset(ass_entry, rb_str_new("margin_b", 8), rb_int2inum(dia->Margin[3]));
+			rb_hash_aset(ass_entry, STR2SYM("margin_l"), rb_int2inum(dia->Margin[0]));
+			rb_hash_aset(ass_entry, STR2SYM("margin_r"), rb_int2inum(dia->Margin[1]));
+			rb_hash_aset(ass_entry, STR2SYM("margin_t"), rb_int2inum(dia->Margin[2]));
+			rb_hash_aset(ass_entry, STR2SYM("margin_b"), rb_int2inum(dia->Margin[3]));
 
-			rb_hash_aset(ass_entry, rb_str_new("effect", 6), rb_str_new2(dia->Effect.mb_str(wxConvUTF8)));
-//			rb_hash_aset(ass_entry, rb_str_new("userdata", 8), rb_str_new(""));
-			rb_hash_aset(ass_entry, rb_str_new("text", 4), rb_str_new2(dia->Text.mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("effect"), rb_str_new2(dia->Effect.mb_str(wxConvUTF8)));
+//			rb_hash_aset(ass_entry, STR2SYM("userdata"), rb_str_new(""));
+			rb_hash_aset(ass_entry, STR2SYM("text"), rb_str_new2(dia->Text.mb_str(wxConvUTF8)));
 
-			entry_class = rb_str_new("dialogue", 8);
+			entry_class = STR2SYM("dialogue");
 
 		} else if (e->GetType() == ENTRY_STYLE) {
 			AssStyle *sty = e->GetAsStyle(e);
 
-			rb_hash_aset(ass_entry, rb_str_new("name", 4), rb_str_new2(sty->name.mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("name"), rb_str_new2(sty->name.mb_str(wxConvUTF8)));
 
-			rb_hash_aset(ass_entry, rb_str_new("fontname", 8), rb_str_new2(sty->font.mb_str(wxConvUTF8)));
-			rb_hash_aset(ass_entry, rb_str_new("fontsize", 8), rb_int2inum(sty->fontsize));
+			rb_hash_aset(ass_entry, STR2SYM("fontname"), rb_str_new2(sty->font.mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("fontsize"), rb_int2inum(sty->fontsize));
 
-			rb_hash_aset(ass_entry, rb_str_new("color1", 6), rb_str_new2(sty->primary.GetASSFormatted(true).mb_str(wxConvUTF8)));
-			rb_hash_aset(ass_entry, rb_str_new("color2", 6), rb_str_new2(sty->secondary.GetASSFormatted(true).mb_str(wxConvUTF8)));
-			rb_hash_aset(ass_entry, rb_str_new("color3", 6), rb_str_new2(sty->outline.GetASSFormatted(true).mb_str(wxConvUTF8)));
-			rb_hash_aset(ass_entry, rb_str_new("color4", 6), rb_str_new2(sty->shadow.GetASSFormatted(true).mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("color1"), rb_str_new2(sty->primary.GetASSFormatted(true).mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("color2"), rb_str_new2(sty->secondary.GetASSFormatted(true).mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("color3"), rb_str_new2(sty->outline.GetASSFormatted(true).mb_str(wxConvUTF8)));
+			rb_hash_aset(ass_entry, STR2SYM("color4"), rb_str_new2(sty->shadow.GetASSFormatted(true).mb_str(wxConvUTF8)));
 
-			rb_hash_aset(ass_entry, rb_str_new("bold", 4), rb_int2inum(sty->bold));
-			rb_hash_aset(ass_entry, rb_str_new("italic", 6), rb_int2inum(sty->italic));
-			rb_hash_aset(ass_entry, rb_str_new("underline", 9), rb_int2inum(sty->underline));
-			rb_hash_aset(ass_entry, rb_str_new("strikeout", 9), rb_int2inum(sty->strikeout));
+			rb_hash_aset(ass_entry, STR2SYM("bold"), rb_int2inum(sty->bold));
+			rb_hash_aset(ass_entry, STR2SYM("italic"), rb_int2inum(sty->italic));
+			rb_hash_aset(ass_entry, STR2SYM("underline"), rb_int2inum(sty->underline));
+			rb_hash_aset(ass_entry, STR2SYM("strikeout"), rb_int2inum(sty->strikeout));
 
-			rb_hash_aset(ass_entry, rb_str_new("scale_x", 7), rb_int2inum(sty->scalex));
-			rb_hash_aset(ass_entry, rb_str_new("scale_y", 7), rb_int2inum(sty->scaley));
+			rb_hash_aset(ass_entry, STR2SYM("scale_x"), rb_int2inum(sty->scalex));
+			rb_hash_aset(ass_entry, STR2SYM("scale_y"), rb_int2inum(sty->scaley));
 
-			rb_hash_aset(ass_entry, rb_str_new("spacing", 7), rb_int2inum(sty->spacing));
-			rb_hash_aset(ass_entry, rb_str_new("angle", 5), rb_int2inum(sty->angle));
+			rb_hash_aset(ass_entry, STR2SYM("spacing"), rb_int2inum(sty->spacing));
+			rb_hash_aset(ass_entry, STR2SYM("angle"), rb_int2inum(sty->angle));
 
-			rb_hash_aset(ass_entry, rb_str_new("borderstyle", 11), rb_int2inum(sty->borderstyle));
-			rb_hash_aset(ass_entry, rb_str_new("outline", 7), rb_int2inum(sty->outline_w));
-			rb_hash_aset(ass_entry, rb_str_new("shadow", 6), rb_int2inum(sty->shadow_w));
-			rb_hash_aset(ass_entry, rb_str_new("align", 5), rb_int2inum(sty->alignment));
+			rb_hash_aset(ass_entry, STR2SYM("borderstyle"), rb_int2inum(sty->borderstyle));
+			rb_hash_aset(ass_entry, STR2SYM("outline"), rb_int2inum(sty->outline_w));
+			rb_hash_aset(ass_entry, STR2SYM("shadow"), rb_int2inum(sty->shadow_w));
+			rb_hash_aset(ass_entry, STR2SYM("align"), rb_int2inum(sty->alignment));
 
-			rb_hash_aset(ass_entry, rb_str_new("margin_l", 8), rb_int2inum(sty->Margin[0]));
-			rb_hash_aset(ass_entry, rb_str_new("margin_r", 8), rb_int2inum(sty->Margin[1]));
-			rb_hash_aset(ass_entry, rb_str_new("margin_t", 8), rb_int2inum(sty->Margin[2]));
-			rb_hash_aset(ass_entry, rb_str_new("margin_b", 8), rb_int2inum(sty->Margin[3]));
+			rb_hash_aset(ass_entry, STR2SYM("margin_l"), rb_int2inum(sty->Margin[0]));
+			rb_hash_aset(ass_entry, STR2SYM("margin_r"), rb_int2inum(sty->Margin[1]));
+			rb_hash_aset(ass_entry, STR2SYM("margin_t"), rb_int2inum(sty->Margin[2]));
+			rb_hash_aset(ass_entry, STR2SYM("margin_b"), rb_int2inum(sty->Margin[3]));
 
-			rb_hash_aset(ass_entry, rb_str_new("encoding", 8), rb_int2inum(sty->encoding));
+			rb_hash_aset(ass_entry, STR2SYM("encoding"), rb_int2inum(sty->encoding));
 
 			// From STS.h: "0: window, 1: video, 2: undefined (~window)"
-			rb_hash_aset(ass_entry, rb_str_new("relative_to", 11), rb_int2inum(2));
-			rb_hash_aset(ass_entry, rb_str_new("vertical", 8), Qfalse);
+			rb_hash_aset(ass_entry, STR2SYM("relative_to"), rb_int2inum(2));
+			rb_hash_aset(ass_entry, STR2SYM("vertical"), Qfalse);
 
-			entry_class = rb_str_new("style", 5);
+			entry_class = STR2SYM("style");
 
 		} else {
-			entry_class = rb_str_new("unknown", 7);
+			entry_class = STR2SYM("unknown");
 		}
 		// store class of item; last thing done for each class specific code must be pushing the class name
-		rb_hash_aset(ass_entry, rb_str_new("class", 5), entry_class);
+		rb_hash_aset(ass_entry, STR2SYM("class"), entry_class);
 	
 		return ass_entry;
 	}
 
 	AssEntry *RubyAssFile::RubyToAssEntry(VALUE ass_entry)
 	{
-		VALUE entry_class = rb_hash_aref(ass_entry, rb_str_new("class", 5));
+		VALUE entry_class = rb_hash_aref(ass_entry, STR2SYM("class"));
 		
-		wxString lclass(StringValueCStr(entry_class), wxConvUTF8);
+		wxString lclass(rb_id2name(SYM2ID(entry_class)), wxConvUTF8);
 		lclass.MakeLower();
 
-		VALUE _section = rb_hash_aref(ass_entry, rb_str_new("section", 7));
+		VALUE _section = rb_hash_aref(ass_entry, STR2SYM("section"));
 		wxString section(StringValueCStr(_section), wxConvUTF8);
 
 		AssEntry *result;
@@ -175,7 +176,7 @@ namespace Automation4 {
 
 		} else if (lclass == _T("comment")) {
 //			GETSTRING(raw, "text", "comment")
-			VALUE _text = rb_hash_aref(ass_entry, rb_str_new("text", 4));
+			VALUE _text = rb_hash_aref(ass_entry, STR2SYM("text"));
 			wxString raw(StringValueCStr(_text), wxConvUTF8);
 			raw.Prepend(_T(";"));
 			result = new AssEntry(raw);
@@ -186,9 +187,9 @@ namespace Automation4 {
 			result->group = section;
 
 		} else if (lclass == _T("info")) {
-			VALUE _key = rb_hash_aref(ass_entry, rb_str_new("key", 3));
+			VALUE _key = rb_hash_aref(ass_entry, STR2SYM("key"));
 			wxString key(StringValueCStr(_key), wxConvUTF8);
-			VALUE _value = rb_hash_aref(ass_entry, rb_str_new("value", 5));
+			VALUE _value = rb_hash_aref(ass_entry, STR2SYM("value"));
 			wxString value(StringValueCStr(_value), wxConvUTF8);
 			result = new AssEntry(wxString::Format(_T("%s: %s"), key.c_str(), value.c_str()));
 			result->group = _T("[Script Info]"); // just so it can be read correctly back
@@ -200,53 +201,53 @@ namespace Automation4 {
 			result->group = section;
 
 		} else if (lclass == _T("style")) {
-			VALUE _name = rb_hash_aref(ass_entry, rb_str_new("name", 4));
+			VALUE _name = rb_hash_aref(ass_entry, STR2SYM("name"));
 			wxString name(StringValueCStr(_name), wxConvUTF8);
-			VALUE _fontname = rb_hash_aref(ass_entry, rb_str_new("fontname", 8));
+			VALUE _fontname = rb_hash_aref(ass_entry, STR2SYM("fontname"));
 			wxString fontname(StringValueCStr(_fontname), wxConvUTF8);
-			VALUE _fontsize = rb_hash_aref(ass_entry, rb_str_new("fontsize", 8));
+			VALUE _fontsize = rb_hash_aref(ass_entry, STR2SYM("fontsize"));
 			float fontsize = rb_num2dbl(_fontsize);
-			VALUE _color1 = rb_hash_aref(ass_entry, rb_str_new("color1", 6));
+			VALUE _color1 = rb_hash_aref(ass_entry, STR2SYM("color1"));
 			wxString color1(StringValueCStr(_color1), wxConvUTF8);
-			VALUE _color2 = rb_hash_aref(ass_entry, rb_str_new("color2", 6));
+			VALUE _color2 = rb_hash_aref(ass_entry, STR2SYM("color2"));
 			wxString color2(StringValueCStr(_color2), wxConvUTF8);
-			VALUE _color3 = rb_hash_aref(ass_entry, rb_str_new("color3", 6));
+			VALUE _color3 = rb_hash_aref(ass_entry, STR2SYM("color3"));
 			wxString color3(StringValueCStr(_color3), wxConvUTF8);
-			VALUE _color4 = rb_hash_aref(ass_entry, rb_str_new("color4", 6));
+			VALUE _color4 = rb_hash_aref(ass_entry, STR2SYM("color4"));
 			wxString color4(StringValueCStr(_color4), wxConvUTF8);
-			VALUE _bold = rb_hash_aref(ass_entry, rb_str_new("bold", 4));
+			VALUE _bold = rb_hash_aref(ass_entry, STR2SYM("bold"));
 			bool bold = (bool)rb_num2long(_bold);
-			VALUE _italic = rb_hash_aref(ass_entry, rb_str_new("italic", 6));
+			VALUE _italic = rb_hash_aref(ass_entry, STR2SYM("italic"));
 			bool italic = (bool)rb_num2long(_italic);
-			VALUE _underline = rb_hash_aref(ass_entry, rb_str_new("underline", 9));
+			VALUE _underline = rb_hash_aref(ass_entry, STR2SYM("underline"));
 			bool underline = (bool)rb_num2long(_underline);
-			VALUE _strikeout = rb_hash_aref(ass_entry, rb_str_new("strikeout", 9));
+			VALUE _strikeout = rb_hash_aref(ass_entry, STR2SYM("strikeout"));
 			bool strikeout = (bool)rb_num2long(_strikeout);
-			VALUE _scale_x = rb_hash_aref(ass_entry, rb_str_new("scale_x", 7));
+			VALUE _scale_x = rb_hash_aref(ass_entry, STR2SYM("scale_x"));
 			float scale_x = rb_num2dbl(_scale_x);
-			VALUE _scale_y = rb_hash_aref(ass_entry, rb_str_new("scale_y", 7));
+			VALUE _scale_y = rb_hash_aref(ass_entry, STR2SYM("scale_y"));
 			float scale_y = rb_num2dbl(_scale_y);
-			VALUE _spacing = rb_hash_aref(ass_entry, rb_str_new("spacing", 7));
+			VALUE _spacing = rb_hash_aref(ass_entry, STR2SYM("spacing"));
 			int spacing = rb_num2long(_spacing);
-			VALUE _angle = rb_hash_aref(ass_entry, rb_str_new("angle", 5));
+			VALUE _angle = rb_hash_aref(ass_entry, STR2SYM("angle"));
 			float angle = rb_num2dbl(_angle);
-			VALUE _borderstyle = rb_hash_aref(ass_entry, rb_str_new("borderstyle", 11));
+			VALUE _borderstyle = rb_hash_aref(ass_entry, STR2SYM("borderstyle"));
 			int borderstyle = rb_num2long(_borderstyle);
-			VALUE _outline = rb_hash_aref(ass_entry, rb_str_new("outline", 7));
+			VALUE _outline = rb_hash_aref(ass_entry, STR2SYM("outline"));
 			float outline = rb_num2dbl(_outline);
-			VALUE _shadow = rb_hash_aref(ass_entry, rb_str_new("shadow", 6));
+			VALUE _shadow = rb_hash_aref(ass_entry, STR2SYM("shadow"));
 			float shadow = rb_num2dbl(_shadow);
-			VALUE _align = rb_hash_aref(ass_entry, rb_str_new("align", 5));
+			VALUE _align = rb_hash_aref(ass_entry, STR2SYM("align"));
 			int align = rb_num2long(_align);
-			VALUE _margin_l = rb_hash_aref(ass_entry, rb_str_new("margin_l", 8));
+			VALUE _margin_l = rb_hash_aref(ass_entry, STR2SYM("margin_l"));
 			int margin_l = rb_num2long(_margin_l);
-			VALUE _margin_r = rb_hash_aref(ass_entry, rb_str_new("margin_r", 8));
+			VALUE _margin_r = rb_hash_aref(ass_entry, STR2SYM("margin_r"));
 			int margin_r = rb_num2long(_margin_r);
-			VALUE _margin_t = rb_hash_aref(ass_entry, rb_str_new("margin_t", 8));
+			VALUE _margin_t = rb_hash_aref(ass_entry, STR2SYM("margin_t"));
 			int margin_t = rb_num2long(_margin_t);
-			VALUE _margin_b = rb_hash_aref(ass_entry, rb_str_new("margin_b", 8));
+			VALUE _margin_b = rb_hash_aref(ass_entry, STR2SYM("margin_b"));
 			int margin_b = rb_num2long(_margin_b);
-			VALUE _encoding = rb_hash_aref(ass_entry, rb_str_new("encoding", 8));
+			VALUE _encoding = rb_hash_aref(ass_entry, STR2SYM("encoding"));
 			int encoding = rb_num2long(_encoding);
 			// leaving out relative_to and vertical
 
@@ -283,29 +284,29 @@ namespace Automation4 {
 			return 0;
 
 		} else if (lclass == _T("dialogue")) {
-			VALUE _comment = rb_hash_aref(ass_entry, rb_str_new("comment", 7));
+			VALUE _comment = rb_hash_aref(ass_entry, STR2SYM("comment"));
 			bool comment = _comment == Qfalse ? false : true;
-			VALUE _layer = rb_hash_aref(ass_entry, rb_str_new("layer", 5));
+			VALUE _layer = rb_hash_aref(ass_entry, STR2SYM("layer"));
 			int layer = rb_num2long(_layer);
-			VALUE _start_time = rb_hash_aref(ass_entry, rb_str_new("start_time", 10));
+			VALUE _start_time = rb_hash_aref(ass_entry, STR2SYM("start_time"));
 			int start_time = rb_num2long(_start_time);
-			VALUE _end_time = rb_hash_aref(ass_entry, rb_str_new("end_time", 8));
+			VALUE _end_time = rb_hash_aref(ass_entry, STR2SYM("end_time"));
 			int end_time = rb_num2long(_end_time);
-			VALUE _style = rb_hash_aref(ass_entry, rb_str_new("style", 5));
+			VALUE _style = rb_hash_aref(ass_entry, STR2SYM("style"));
 			wxString style(StringValueCStr(_style), wxConvUTF8);
-			VALUE _actor = rb_hash_aref(ass_entry, rb_str_new("actor", 5));
+			VALUE _actor = rb_hash_aref(ass_entry, STR2SYM("actor"));
 			wxString actor(StringValueCStr(_actor), wxConvUTF8);
-			VALUE _margin_l = rb_hash_aref(ass_entry, rb_str_new("margin_l", 8));
+			VALUE _margin_l = rb_hash_aref(ass_entry, STR2SYM("margin_l"));
 			int margin_l = rb_num2long(_margin_l);
-			VALUE _margin_r = rb_hash_aref(ass_entry, rb_str_new("margin_r", 8));
+			VALUE _margin_r = rb_hash_aref(ass_entry, STR2SYM("margin_r"));
 			int margin_r = rb_num2long(_margin_r);
-			VALUE _margin_t = rb_hash_aref(ass_entry, rb_str_new("margin_t", 8));
+			VALUE _margin_t = rb_hash_aref(ass_entry, STR2SYM("margin_t"));
 			int margin_t = rb_num2long(_margin_t);
-			VALUE _margin_b = rb_hash_aref(ass_entry, rb_str_new("margin_b", 8));
+			VALUE _margin_b = rb_hash_aref(ass_entry, STR2SYM("margin_b"));
 			int margin_b = rb_num2long(_margin_b);
-			VALUE _effect = rb_hash_aref(ass_entry, rb_str_new("effect", 6));
+			VALUE _effect = rb_hash_aref(ass_entry, STR2SYM("effect"));
 			wxString effect(StringValueCStr(_effect), wxConvUTF8);
-			VALUE _text = rb_hash_aref(ass_entry, rb_str_new("text", 4));
+			VALUE _text = rb_hash_aref(ass_entry, STR2SYM("text"));
 			wxString text(StringValueCStr(_text), wxConvUTF8);
 			//GETSTRING(userdata, "userdata", "dialogue")
 

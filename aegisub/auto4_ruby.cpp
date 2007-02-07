@@ -319,6 +319,7 @@ namespace Automation4 {
 	void RubyFeatureMacro::Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
 		try {
+			rb_gc_disable();
 			delete RubyProgressSink::inst;
 			RubyProgressSink::inst = new RubyProgressSink(progress_parent, false);
 			RubyProgressSink::inst->SetTitle(GetName());
@@ -377,6 +378,8 @@ namespace Automation4 {
 			wxString *err = new wxString(e, wxConvUTF8);
 			wxMessageBox(*err, _T("Error running macro"),wxICON_ERROR | wxOK);			
 		}
+		rb_gc_enable();
+		rb_gc_start();
 }
 
 
@@ -442,6 +445,7 @@ namespace Automation4 {
 	{
 
 		try {
+			rb_gc_disable();
 			VALUE cfg;
 			if (has_config && config_dialog) {
 				cfg = config_dialog->RubyReadBack();
@@ -476,6 +480,8 @@ namespace Automation4 {
 			wxString *err = new wxString(e, wxConvUTF8);
 			wxMessageBox(*err, _T("Error running filter"),wxICON_ERROR | wxOK);
 		}
+		rb_gc_enable();
+		rb_gc_start();
 	}
 
 	ScriptConfigDialog* RubyFeatureFilter::GenerateConfigDialog(wxWindow *parent)

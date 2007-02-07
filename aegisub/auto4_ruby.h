@@ -100,6 +100,7 @@ namespace Automation4 {
 		wxControl *cw; // control window
 		wxString name, hint;
 		int x, y, width, height;
+		VALUE name_sym;
 
 		virtual wxControl *Create(wxWindow *parent) = 0;
 		virtual void ControlReadBack() = 0;
@@ -257,6 +258,7 @@ namespace Automation4 {
 	typedef VALUE (*RB_HOOK)(...);
 	typedef VALUE (*RB_HOOK2)(VALUE);
 
+#define STR2SYM(x) ID2SYM(rb_intern(x))
 };
 
 #endif

@@ -49,40 +49,43 @@ namespace Automation4 {
 
 	RubyConfigDialogControl::RubyConfigDialogControl(VALUE opts)
 	{
-		VALUE val = rb_hash_aref(opts, rb_str_new2("name"));
-		if(TYPE(val) == T_STRING)
+		VALUE val = rb_hash_aref(opts, STR2SYM("name"));
+		name_sym = val;
+		if(TYPE(val) == T_STRING) {
 			name = wxString(StringValueCStr(val), wxConvUTF8);
-		else name = _T("");
+		} else if(TYPE(val) == T_SYMBOL) {
+			name = wxString(rb_id2name(SYM2ID(val)), wxConvUTF8);
+		} else name = _T("");
 
-		val = rb_hash_aref(opts, rb_str_new2("x"));
+		val = rb_hash_aref(opts, STR2SYM("x"));
 		if(TYPE(val) == T_FIXNUM) {
 			x = FIX2INT(val);
 			if (x < 0) x = 0;
 		}
 		else x = 0;
 
-		val = rb_hash_aref(opts, rb_str_new2("y"));
+		val = rb_hash_aref(opts, STR2SYM("y"));
 		if(TYPE(val) == T_FIXNUM) {
 			y = FIX2INT(val);
 			if (y < 0) y = 0;
 		}
 		else y = 0;
 
-		val = rb_hash_aref(opts, rb_str_new2("width"));
+		val = rb_hash_aref(opts, STR2SYM("width"));
 		if(TYPE(val) == T_FIXNUM) {
 			width = FIX2INT(val);
 			if (width < 1) width = 1;
 		}
 		else width = 1;
 
-		val = rb_hash_aref(opts, rb_str_new2("height"));
+		val = rb_hash_aref(opts, STR2SYM("height"));
 		if(TYPE(val) == T_FIXNUM) {
 			height = FIX2INT(val);
 			if (height < 1) width = 1;
 		}
 		else height = 1;
 
-		val = rb_hash_aref(opts, rb_str_new2("hint"));
+		val = rb_hash_aref(opts, STR2SYM("hint"));
 		if(TYPE(val) == T_STRING)
 			hint = wxString(StringValueCStr(val), wxConvUTF8);
 		else hint = _T("");
@@ -102,7 +105,7 @@ namespace Automation4 {
 			Label(VALUE opts)
 				: RubyConfigDialogControl(opts)
 			{
-				VALUE val = rb_hash_aref(opts, rb_str_new2("label"));
+				VALUE val = rb_hash_aref(opts, STR2SYM("label"));
 				if(TYPE(val) == T_STRING)
 					label = wxString(StringValueCStr(val), wxConvUTF8);
 				else label = _T("");
@@ -137,7 +140,7 @@ namespace Automation4 {
 			Edit(VALUE opts)
 				: RubyConfigDialogControl(opts)
 			{
-				VALUE val = rb_hash_aref(opts, rb_str_new2("text"));
+				VALUE val = rb_hash_aref(opts, STR2SYM("text"));
 				if(TYPE(val) == T_STRING)
 					text = wxString(StringValueCStr(val), wxConvUTF8);
 				else text = _T("");
@@ -200,21 +203,21 @@ namespace Automation4 {
 			IntEdit(VALUE opts)
 				: Edit(opts)
 			{
-				VALUE val = rb_hash_aref(opts, rb_str_new2("value"));
+				VALUE val = rb_hash_aref(opts, STR2SYM("value"));
 				if(TYPE(val) == T_FIXNUM) {
 					value = FIX2INT(val);
 				}
 
 				hasspin = false;
-				val = rb_hash_aref(opts, rb_str_new2("min"));
+				val = rb_hash_aref(opts, STR2SYM("min"));
 				if(TYPE(val) == T_FIXNUM) {
 					min = FIX2INT(val);
 				}
 				else return;
 
-				val = rb_hash_aref(opts, rb_str_new2("min"));
+				val = rb_hash_aref(opts, STR2SYM("max"));
 				if(TYPE(val) == T_FIXNUM) {
-					min = FIX2INT(val);
+					max = FIX2INT(val);
 					hasspin = true;
 				}
 			}
@@ -263,7 +266,7 @@ namespace Automation4 {
 			FloatEdit(VALUE opts)
 				: Edit(opts)
 			{
-				VALUE val = rb_hash_aref(opts, rb_str_new2("value"));
+				VALUE val = rb_hash_aref(opts, STR2SYM("value"));
 				if(TYPE(val) == T_FLOAT) {
 					value = NUM2DBL(val);
 				} else if (TYPE(val) == T_FIXNUM) {
@@ -308,11 +311,11 @@ namespace Automation4 {
 			Dropdown(VALUE opts)
 				: RubyConfigDialogControl(opts)
 			{
-				VALUE val = rb_hash_aref(opts, rb_str_new2("value"));
+				VALUE val = rb_hash_aref(opts, STR2SYM("value"));
 				if(TYPE(val) == T_STRING)
 					value = wxString(StringValueCStr(val), wxConvUTF8);
 				
-				val = rb_hash_aref(opts, rb_str_new2("items"));
+				val = rb_hash_aref(opts, STR2SYM("items"));
 				if(TYPE(val) == T_ARRAY)
 				{
 					long len = RARRAY(val)->len;
@@ -355,11 +358,11 @@ namespace Automation4 {
 			Checkbox(VALUE opts)
 				: RubyConfigDialogControl(opts)
 			{
-				VALUE val = rb_hash_aref(opts, rb_str_new2("label"));
+				VALUE val = rb_hash_aref(opts, STR2SYM("label"));
 				if(TYPE(val) == T_STRING)
 					label = wxString(StringValueCStr(val), wxConvUTF8);
 
-				val = rb_hash_aref(opts, rb_str_new2("value"));
+				val = rb_hash_aref(opts, STR2SYM("value"));
 				if(val == Qtrue) value = true;
 				else value = false;
 			}
@@ -425,12 +428,15 @@ namespace Automation4 {
 			if(TYPE(ptr[i]) != T_HASH)
 				continue;	// skip invalid entry
 
-			VALUE ctrlclass = rb_hash_aref(ptr[i], rb_str_new2("class"));
+			VALUE ctrlclass = rb_hash_aref(ptr[i], STR2SYM("class"));
 
-			if (TYPE(ctrlclass) != T_STRING)
-				continue;	// skip
-			wxString controlclass(StringValueCStr(ctrlclass), wxConvUTF8);
-			controlclass.LowerCase();
+			const char *cls_name;
+			if (TYPE(ctrlclass) == T_SYMBOL) {
+					cls_name = rb_id2name(SYM2ID(ctrlclass));
+			} else if (TYPE(ctrlclass) == T_STRING) {
+				cls_name = StringValueCStr(ctrlclass);
+			} else continue;
+			wxString controlclass(cls_name, wxConvUTF8);
 
 			RubyConfigDialogControl *ctl;
 
@@ -522,7 +528,9 @@ namespace Automation4 {
 		VALUE cfg = rb_hash_new();
 
 		for (size_t i = 0; i < controls.size(); ++i) {
-			rb_hash_aset(cfg, rb_str_new2(controls[i]->name.mb_str(wxConvUTF8)), controls[i]->RubyReadBack());	
+			VALUE v = controls[i]->RubyReadBack();
+			if(v != Qnil)
+				rb_hash_aset(cfg, controls[i]->name_sym, v);	
 		}
 		if (use_buttons) {
 			VALUE res = rb_ary_new();
