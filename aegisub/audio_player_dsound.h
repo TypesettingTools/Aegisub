@@ -42,6 +42,7 @@
 #include "setup.h"
 #if USE_DIRECTSOUND == 1
 #include "audio_player.h"
+#include <mmsystem.h>
 #include <dsound.h>
 
 

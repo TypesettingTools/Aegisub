@@ -53,6 +53,7 @@
 /////////
 // Setup
 #include "setup.h"
+#define WIN32_LEAN_AND_MEAN
 
 
 /////////////////////
@@ -94,7 +95,7 @@
 ///////////////
 // DirectSound
 #if USE_DIRECTSOUND == 1
-#include <dsound.h>
+//#include <dsound.h>
 #endif
 
 

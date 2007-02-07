@@ -53,6 +53,15 @@
 #include <assert.h>
 #include <algorithm>
 
+
+///////////////////
+// Include library
+#if __VISUALC__ >= 1200
+#pragma comment(lib,"ws2_32.lib")
+#pragma comment(lib,"msvcr80-ruby19-static.lib")
+#endif
+
+
 namespace Automation4 {
 
 	RubyObjects *RubyObjects::inst = NULL;
