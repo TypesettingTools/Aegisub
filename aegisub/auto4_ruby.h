@@ -155,24 +155,29 @@ namespace Automation4 {
 	// Class of Ruby scripts
 	class RubyScript : public Script {
 		friend class RubyFeature;
+		friend class RubyProgressSink;
 
 	private:
+		static wxString error;
+		static wxString backtrace;
 
 		void Create(); // load script and create internal structures etc.
 		void Destroy(); // destroy internal structures, unreg features and delete environment
 
 		static RubyScript* GetScriptObject();
-		static RubyScript* inst;
 		static VALUE RubyTextExtents(VALUE self, VALUE style, VALUE text);
 		static VALUE RubyFrameToTime(VALUE self, VALUE frame);
 		static VALUE RubyTimeToFrame(VALUE self, VALUE time);
-		static int RubyInclude();
-
+		static VALUE backtrace_hook(VALUE self, VALUE backtr);
+		
 	public:
 		RubyScript(const wxString &filename);
+		static void RubyError();
+		static wxString GetError();
 		virtual ~RubyScript();
 		virtual void Reload();
 		static VALUE RubyAegisub;
+		static RubyScript* inst;
 	};
 
 
@@ -257,7 +262,7 @@ namespace Automation4 {
 	VALUE rbError(VALUE arg);
 	typedef VALUE (*RB_HOOK)(...);
 	typedef VALUE (*RB_HOOK2)(VALUE);
-
+	
 #define STR2SYM(x) ID2SYM(rb_intern(x))
 };
 

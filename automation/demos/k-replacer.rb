@@ -25,9 +25,6 @@ def k_replace_macro(subs, sel, act)
 			(opt[:style] =="" || l[:style] == opt[:style])			# and has the right style
 	end
 	return subs
-rescue Exception
-	debug_out($!.inspect << "\n" << caller.join("\n"))
-	return nil
 end
 
 def k_replace_filter(subs, opt)
@@ -36,9 +33,6 @@ def k_replace_filter(subs, opt)
 			opt[:style] =="" || l[:style] == opt[:style]			# and has the right style
 	end
 	return subs
-rescue Exception
-	debug_out($!.inspect << "\n" << caller.join("\n"))
-	return nil
 end
 
 def k_replace_cfg(subs, store)

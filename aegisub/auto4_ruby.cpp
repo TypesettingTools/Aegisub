@@ -68,6 +68,8 @@ namespace Automation4 {
 	RubyScript * RubyScript::inst = NULL; // current Ruby Script
 	RubyProgressSink* RubyProgressSink::inst = NULL;
 	VALUE RubyScript::RubyAegisub = Qfalse;
+	wxString RubyScript::backtrace = _T("");
+	wxString RubyScript::error = _T("");
 
 	// RubyScript
 
@@ -104,6 +106,8 @@ namespace Automation4 {
 			//ruby_options(1, opt);
 			ruby_init_loadpath();
 			RubyScript::inst = this;
+			error = _T("");
+			backtrace = _T("");
 			if(!RubyAegisub) {
 				RubyAegisub = rb_define_module("Aegisub");
 				rb_define_module_function(RubyAegisub, "register_macro",reinterpret_cast<RB_HOOK>(&RubyFeatureMacro::RubyRegister), 4);
@@ -111,6 +115,7 @@ namespace Automation4 {
 				rb_define_module_function(RubyAegisub, "text_extents",reinterpret_cast<RB_HOOK>(&RubyTextExtents), 2);
 				rb_define_module_function(RubyAegisub, "frame_to_time",reinterpret_cast<RB_HOOK>(&RubyFrameToTime), 1);
 				rb_define_module_function(RubyAegisub, "time_to_frame",reinterpret_cast<RB_HOOK>(&RubyTimeToFrame), 1);
+				rb_define_module_function(rb_eException, "set_backtrace",reinterpret_cast<RB_HOOK>(&backtrace_hook), 1);
 				rb_define_module_function(RubyScript::RubyAegisub, "progress_set",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetProgress), 1);
 				rb_define_module_function(RubyScript::RubyAegisub, "progress_task",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTask), 1);
 				rb_define_module_function(RubyScript::RubyAegisub, "progress_title",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTitle), 1);
@@ -131,10 +136,8 @@ namespace Automation4 {
 			rb_protect(rbLoadWrapper, rb_str_new2(t), &status);
 			if(status > 0)	// something bad happened (probably parsing error)
 			{
-				VALUE err = rb_errinfo();
-				if(TYPE(err) == T_STRING)
-					throw StringValueCStr(err);
-				else throw "Error loading script";
+				wxString  *err = new wxString(_T("An error occurred initialising the script file \"") + GetFilename() + _T("\":\n\n") + GetError());
+				throw err->c_str();
 			}
 
 			VALUE global_var = rb_gv_get("$script_name");
@@ -151,18 +154,17 @@ namespace Automation4 {
 				version = wxString(StringValueCStr(global_var), wxConvUTF8);
 			loaded = true;
 		}
-		catch (const char* e) {
+		catch (const wchar_t* e) {
 			Destroy();
 			loaded = false;
-			wxString *err = new wxString(e, wxConvUTF8);
-			throw err->c_str();
+			throw;
 		}
 	}
 
 	void RubyScript::Destroy()
 	{
 		if(loaded) {
-		//	ruby_finalize();	// broken in 1.9 ?_?
+			ruby_finalize();	// broken in 1.9 ?_?
 		}
 
 		// remove features
@@ -230,6 +232,17 @@ namespace Automation4 {
 		return Qnil;
 	}
 
+	wxString RubyScript::GetError()
+	{
+		return wxString(error + _T("\n") + backtrace);
+	}
+
+	void RubyScript::RubyError()
+	{
+		wxMessageBox(RubyScript::inst->GetError(), _T("Error"),wxICON_ERROR | wxOK);
+	}
+
+
 	// RubyFeature
 
 	RubyFeature::RubyFeature(ScriptFeatureClass _featureclass, const wxString &_name)
@@ -249,7 +262,6 @@ namespace Automation4 {
 	{
 		VALUE res = rb_ary_new2(ints.size());
 		// create an array-style table with an integer vector in it
-		// leave the new table on top of the stack
 		for (int i = 0; i != ints.size(); ++i) {
 			int k = ints[i];
 			rb_ary_push(res, rb_int2inum(k));
@@ -259,10 +271,9 @@ namespace Automation4 {
 
 	void RubyFeature::ThrowError()
 	{
-/*		wxString err(lua_tostring(L, -1), wxConvUTF8);
-		lua_pop(L, 1);
-		wxLogError(err);
-*/	}
+	//	wxString err(_T("Error running script") + RubyScript::inst->GetError());
+	//	wxLogError(err);
+	}
 
 
 	// RubyFeatureMacro
@@ -291,26 +302,22 @@ namespace Automation4 {
 		if (no_validate)
 			return true;
 
-		try {
-			RubyProgressSink::inst = NULL;
-			RubyAssFile *subsobj = new RubyAssFile(subs, true, true);
-			VALUE *argv = ALLOCA_N(VALUE, 3);
-			argv[0] = subsobj->rbAssFile;
-			argv[1] = CreateIntegerArray(selected); // selected items;
-			argv[2] = INT2FIX(active);
-			RubyCallArguments arg(rb_mKernel, rb_to_id(validation_fun), 3, argv);
-			VALUE result;
-			RubyThreadedCall call(&arg, &result);
-			wxThread::ExitCode code = call.Wait();
-			if(code)
-			{
-				return false;
-			}
-			if(result != Qnil && result != Qfalse)
-				return true;
-		}catch (const char* e) {
-			wxString *err = new wxString(e, wxConvUTF8);
-			wxMessageBox(*err, _T("Error running validation function"),wxICON_ERROR | wxOK);			
+		RubyProgressSink::inst = NULL;
+		RubyAssFile *subsobj = new RubyAssFile(subs, true, true);
+		VALUE *argv = ALLOCA_N(VALUE, 3);
+		argv[0] = subsobj->rbAssFile;
+		argv[1] = CreateIntegerArray(selected); // selected items;
+		argv[2] = INT2FIX(active);
+		RubyCallArguments arg(rb_mKernel, rb_to_id(validation_fun), 3, argv);
+		VALUE result;
+		RubyThreadedCall call(&arg, &result);
+		wxThread::ExitCode code = call.Wait();
+		if(code)
+		{
+			wxMessageBox(RubyScript::GetError(), _T("Error running validation function"),wxICON_ERROR | wxOK);			
+
+		} else if(result != Qnil && result != Qfalse) {
+			return true;
 		}
 
 		return false;
@@ -318,66 +325,55 @@ namespace Automation4 {
 
 	void RubyFeatureMacro::Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
-		try {
-			rb_gc_disable();
-			delete RubyProgressSink::inst;
-			RubyProgressSink::inst = new RubyProgressSink(progress_parent, false);
-			RubyProgressSink::inst->SetTitle(GetName());
+		rb_gc_disable();
+		delete RubyProgressSink::inst;
+		RubyProgressSink::inst = new RubyProgressSink(progress_parent, false);
+		RubyProgressSink::inst->SetTitle(GetName());
 
-			// do call
-			RubyAssFile *subsobj = new RubyAssFile(subs, true, true);
-			VALUE *argv = ALLOCA_N(VALUE, 3);
-			argv[0] = subsobj->rbAssFile;
-			argv[1] = CreateIntegerArray(selected); // selected items;
-			argv[2] = INT2FIX(active);
-			RubyCallArguments arg(rb_mKernel, rb_to_id(macro_fun), 3, argv);
-			VALUE result;
-			RubyThreadedCall call(&arg, &result);
-			RubyProgressSink::inst->ShowModal();
-			wxThread::ExitCode code = call.Wait();
-			delete RubyProgressSink::inst;
-			RubyProgressSink::inst = NULL;
-			/*if(code)		// error reporting doesn't work in ruby 1.9
+		// do call
+		RubyAssFile *subsobj = new RubyAssFile(subs, true, true);
+		VALUE *argv = ALLOCA_N(VALUE, 3);
+		argv[0] = subsobj->rbAssFile;
+		argv[1] = CreateIntegerArray(selected); // selected items;
+		argv[2] = INT2FIX(active);
+		RubyCallArguments arg(rb_mKernel, rb_to_id(macro_fun), 3, argv);
+		VALUE result;
+		RubyThreadedCall call(&arg, &result);
+		RubyProgressSink::inst->ShowModal();
+		wxThread::ExitCode code = call.Wait();
+		delete RubyProgressSink::inst;
+		RubyProgressSink::inst = NULL;
+		if(TYPE(result) == T_ARRAY)
+		{
+			bool end = false;
+			for(int i = 0; i < RARRAY(result)->len && !end; ++i)
 			{
-				if(TYPE(result) == T_STRING)
-					throw StringValueCStr(result);
-				else throw "Error running macro";
-			}
-			else*/ if(TYPE(result) == T_ARRAY)
-			{
-				bool end = false;
-				for(int i = 0; i < RARRAY(result)->len && !end; ++i)
-				{
-					VALUE p = RARRAY(result)->ptr[i];		// some magic in code below to allow variable output
-					if(TYPE(p) != T_ARRAY) {
-						p = result;
-						end = true;
-					}
-
-					switch(TYPE(RARRAY(p)->ptr[0])) {
-
-					case T_HASH:		// array of hashes = subs
-						subsobj->RubyUpdateAssFile(p);
-						break;
-
-					case T_FIXNUM:		// array of ints = selection
-						int num = RARRAY(p)->len;
-						std::vector<int> sel(num);
-						for(int i = 0; i < num; ++i) {
-							sel[i] = FIX2INT(RARRAY(p)->ptr[i]);
-						}
-						FrameMain *frame = AegisubApp::Get()->frame;
-						frame->SubsBox->LoadFromAss(AssFile::top, true, true);
-						frame->SubsBox->SetSelectionFromAbsolute(sel);
-						break;
-					}				
+				VALUE p = RARRAY(result)->ptr[i];		// some magic in code below to allow variable output
+				if(TYPE(p) != T_ARRAY) {
+					p = result;
+					end = true;
 				}
+
+				switch(TYPE(RARRAY(p)->ptr[0])) {
+
+				case T_HASH:		// array of hashes = subs
+					subsobj->RubyUpdateAssFile(p);
+					break;
+
+				case T_FIXNUM:		// array of ints = selection
+					int num = RARRAY(p)->len;
+					std::vector<int> sel(num);
+					for(int i = 0; i < num; ++i) {
+						sel[i] = FIX2INT(RARRAY(p)->ptr[i]);
+					}
+					FrameMain *frame = AegisubApp::Get()->frame;
+					frame->SubsBox->LoadFromAss(AssFile::top, true, true);
+					frame->SubsBox->SetSelectionFromAbsolute(sel);
+					break;
+				}				
 			}
-			delete subsobj;
-		} catch (const char* e) {
-			wxString *err = new wxString(e, wxConvUTF8);
-			wxMessageBox(*err, _T("Error running macro"),wxICON_ERROR | wxOK);			
 		}
+		delete subsobj;
 		rb_gc_enable();
 		rb_gc_start();
 }
@@ -407,7 +403,7 @@ namespace Automation4 {
 			wxWakeUpIdle();
 		}
 		if(error) {
-			*result = rb_errinfo();
+			RubyScript::RubyError();
 			return (wxThread::ExitCode)1;
 		}
 		return (wxThread::ExitCode)0;		
@@ -653,5 +649,18 @@ namespace Automation4 {
 	VALUE rbGcWrapper(VALUE arg){rb_gc_start(); return Qtrue;}
 	VALUE rbAss2RbWrapper(VALUE arg){return RubyAssFile::AssEntryToRuby(reinterpret_cast<AssEntry*>(arg));}
 	VALUE rb2AssWrapper(VALUE arg){return reinterpret_cast<VALUE>(RubyAssFile::RubyToAssEntry(arg));}
-	
+
+	VALUE RubyScript::backtrace_hook(VALUE self, VALUE backtr)
+	{
+		int len = RARRAY_LEN(backtr);
+		VALUE err = rb_funcall(self, rb_intern("to_s"), 0);
+		error = wxString(StringValueCStr(err), wxConvUTF8);
+		for(int i = 0; i < len; ++i)
+		{
+			VALUE str = RARRAY_PTR(backtr)[i];
+			wxString line(StringValueCStr(str), wxConvUTF8);
+			backtrace.Append(line + _T("\n"));
+		}
+		return backtr;
+	}
 };
