@@ -13,14 +13,13 @@ register_filter("Simple k-replacer", "k-replacer filter", 100, :k_replace_filter
 
 
 def k_replace_macro(subs, sel, act)
-
+		
 	cfg = k_replace_cfg(subs, nil)
 	ok, opt = display_dialog(cfg, nil)
 	return if not ok	# cancelled
-#	write_options(subs, $script_name, opt)
-	i = 0
+
+	write_options(subs, {$script_name => opt})
 	subs.each do |l|
-		i += 1
 		k_replace(l, opt[:templ], opt[:strip]) if l[:class] == :dialogue && 	# replace if its dialogue
 			(opt[:style] =="" || l[:style] == opt[:style])			# and has the right style
 	end
@@ -32,6 +31,7 @@ def k_replace_filter(subs, opt)
 		k_replace(l, opt[:templ], opt[:strip]) if l[:class] == :dialogue && 	# replace if its dialogue
 			opt[:style] =="" || l[:style] == opt[:style]			# and has the right style
 	end
+	write_options(subs, {$script_name => opt})
 	return subs
 end
 
@@ -53,11 +53,12 @@ Calculation example:
   \\t(%$start+$dur*2%,$end,\\fscx90)
 head
 	opt = read_options(subs, $script_name)
+	s_name = $script_name.to_sym
 	cfg = ScriptCfg.new		# helper class for building dialogs
 	cfg.header header_text, :x => 1, :width => 1
-	cfg.edit :templ, "template", :text => opt[:templ]
-	cfg.dropdown :style, "Style", :items => styles, :value => opt[:style]
-	cfg.checkbox :strip, "", :label => "Strip tags?", :value => (opt[:strip] == "true" ? true : false)
+	cfg.edit :templ, "template", :text => opt[s_name][:templ]
+	cfg.dropdown :style, "Style", :items => styles, :value => opt[s_name][:style]
+	cfg.checkbox :strip, "", :label => "Strip tags?", :value => (opt[s_name][:strip] == "true" ? true : false)
 	cfg.to_ary # convert to array
 end
 

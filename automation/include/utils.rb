@@ -61,31 +61,43 @@ module Aegisub
 
 	end
 
-	# inserts line with options into the file
-	def write_options(subs, name, opt, sep = "~~")
-		i = 0
-		while subs[i][:class] != :info do
-		       	i += 1
-		end
-		while subs[i][:class] == :info do
-			i += 1
-		end
-		l = {:class => :info, :key => name, :value => opt.to_a.flatten!.join(sep), :section => "[Script Info]"}
-		subs = subs.insert(i, l)
+	# inserts lines with options into [Script Info] section
+	def write_options(subs, opt, sep = "~~")
+		subs.collect! do |l|
+			if l[:class] == :info
+				info = true
+				value = opt.delete(l[:key])
+				l[:value] = value.instance_of?(Hash) ? value.to_a.flatten!.join(sep) : value.to_s if value
+				l
+			else 
+			if info
+				r = [l]
+				opt.each do |key, val|
+					r << {:class => :info, :key => key, 
+					:value => value.instance_of?(Hash) ? value.to_a.flatten!.join(sep) : value.to_s,
+					:section => "[Script Info]"}
+				end
+				info = false				
+				r				
+				else
+					l
+				end
+			end
+		end	
 	end
 
-	# returns hash with options loaded from the subs
-	def read_options(subs, name, sep = "~~")
-		i = 0
-		i += 1 while subs[i][:class] != :info
-		i += 1 while subs[i][:class] == :info && subs[i][:key] != name
-		return {} if subs[i][:class] != :info
-		a = subs[i][:value].split(sep)
-		h = {}
-		(a.size/2).times do |j|			
-			h[a[2*j].to_sym] = a[2*j+1]
+	# returns a hash with options from [Script Info] section	
+	def read_options(subs, name, sep = "~~")		
+		opt = {}
+		subs.each { |l| opt[l[:key].to_sym] = l[:value] if l[:class] == :info }
+		n_sym = name.to_sym
+		if opt[n_sym]	# parsing of script specific options
+			a = opt[n_sym].split(sep)
+			h = {}
+			(a.size/2).times { |j|	h[a[2*j].to_sym] = a[2*j+1] }
+			opt[n_sym] = h
 		end
-		return h
+		return opt
 	end
 	
 end

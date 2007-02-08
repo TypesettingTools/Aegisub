@@ -168,6 +168,7 @@ namespace Automation4 {
 		static VALUE RubyTextExtents(VALUE self, VALUE style, VALUE text);
 		static VALUE RubyFrameToTime(VALUE self, VALUE frame);
 		static VALUE RubyTimeToFrame(VALUE self, VALUE time);
+		static VALUE RubyKeyFrames(VALUE self);
 		static VALUE backtrace_hook(VALUE self, VALUE backtr);
 		
 	public:

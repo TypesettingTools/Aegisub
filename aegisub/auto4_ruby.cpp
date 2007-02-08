@@ -42,6 +42,7 @@
 #include "text_file_reader.h"
 #include "options.h"
 #include "vfr.h"
+#include "video_context.h"
 #include "main.h"
 #include "frame_main.h"
 #include "subs_grid.h"
@@ -115,6 +116,7 @@ namespace Automation4 {
 				rb_define_module_function(RubyAegisub, "text_extents",reinterpret_cast<RB_HOOK>(&RubyTextExtents), 2);
 				rb_define_module_function(RubyAegisub, "frame_to_time",reinterpret_cast<RB_HOOK>(&RubyFrameToTime), 1);
 				rb_define_module_function(RubyAegisub, "time_to_frame",reinterpret_cast<RB_HOOK>(&RubyTimeToFrame), 1);
+				rb_define_module_function(RubyAegisub, "key_frames",reinterpret_cast<RB_HOOK>(&RubyKeyFrames), 0);
 				rb_define_module_function(rb_eException, "set_backtrace",reinterpret_cast<RB_HOOK>(&backtrace_hook), 1);
 				rb_define_module_function(RubyScript::RubyAegisub, "progress_set",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetProgress), 1);
 				rb_define_module_function(RubyScript::RubyAegisub, "progress_task",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTask), 1);
@@ -164,7 +166,7 @@ namespace Automation4 {
 	void RubyScript::Destroy()
 	{
 		if(loaded) {
-			ruby_finalize();	// broken in 1.9 ?_?
+//			ruby_finalize();	// broken in 1.9 ?_?
 		}
 
 		// remove features
@@ -230,6 +232,29 @@ namespace Automation4 {
 			return INT2FIX(VFR_Output.GetFrameAtTime(FIX2INT(time), true));
 		}
 		return Qnil;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// output: [[keyframe indices], [keyframe times in ms]]
+	VALUE RubyScript::RubyKeyFrames(VALUE self)
+	{
+		if(!VideoContext::Get()->KeyFramesLoaded())
+			return Qnil;
+
+		wxArrayInt key_frames = VideoContext::Get()->GetKeyFrames();
+
+		VALUE frames = rb_ary_new();
+		VALUE times = rb_ary_new();
+
+		for(int i = 0; i < key_frames.size(); ++i)
+		{
+			rb_ary_push(frames, INT2FIX(key_frames[i]));
+			rb_ary_push(times, INT2FIX(VFR_Output.GetTimeAtFrame(key_frames[i], true)));
+		}
+		VALUE res = rb_ary_new();
+		rb_ary_push(res, frames);
+		rb_ary_push(res, times);
+		return res;
 	}
 
 	wxString RubyScript::GetError()
