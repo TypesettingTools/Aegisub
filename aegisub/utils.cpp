@@ -136,6 +136,9 @@ wxString PrettyFloat(wxString src) {
 	return src;
 }
 
+wxString PrettyFloatF(float src) { return PrettyFloat(wxString::Format(_T("%f"),src)); }
+wxString PrettyFloatD(double src) { return PrettyFloat(wxString::Format(_T("%f"),src)); }
+
 
 ///////////////////
 // Float to string

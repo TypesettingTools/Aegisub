@@ -48,6 +48,8 @@ bool Backup(wxString src,wxString dst);
 wxString MakeRelativePath(wxString path,wxString reference);
 wxString DecodeRelativePath(wxString path,wxString reference);
 wxString PrettyFloat(wxString src);
+wxString PrettyFloatF(float src);
+wxString PrettyFloatD(double src);
 wxString FloatToString(double value);
 wxString IntegerToString(int value);
 wxString PrettySize(int bytes);
