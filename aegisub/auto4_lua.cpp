@@ -168,13 +168,7 @@ namespace Automation4 {
 		: Script(filename)
 		, L(0)
 	{
-		try {
-			Create();
-		}
-		catch (wxChar *e) {
-			description = e;
-			loaded = false;
-		}
+		Create();
 	}
 
 	LuaScript::~LuaScript()
@@ -243,7 +237,7 @@ namespace Automation4 {
 			LuaScriptReader script_reader(GetFilename());
 			if (lua_load(L, script_reader.reader_func, &script_reader, GetFilename().mb_str(wxConvUTF8))) {
 				wxString *err = new wxString(lua_tostring(L, -1), wxConvUTF8);
-				err->Prepend(_T("An error occurred loading the Lua script file \"") + GetFilename() + _T("\":\n\n"));
+				err->Prepend(_T("Error loading Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
 				throw err->c_str();
 			}
 			_stackcheck.check(1);
@@ -256,7 +250,7 @@ namespace Automation4 {
 				if (call.Wait()) {
 					// error occurred, assumed to be on top of Lua stack
 					wxString *err = new wxString(lua_tostring(L, -1), wxConvUTF8);
-					err->Prepend(_T("An error occurred initialising the Lua script file \"") + GetFilename() + _T("\":\n\n"));
+					err->Prepend(_T("Error initialising Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
 					throw err->c_str();
 				}
 			}
@@ -274,7 +268,7 @@ namespace Automation4 {
 			if (lua_isstring(L, -1)) {
 				name = wxString(lua_tostring(L, -1), wxConvUTF8);
 			} else {
-				name = GetFilename();
+				name = GetPrettyFilename();
 			}
 			lua_getglobal(L, "script_description");
 			if (lua_isstring(L, -1)) {
@@ -293,10 +287,23 @@ namespace Automation4 {
 			_stackcheck.check(0);
 
 		}
+		catch (const char *e) {
+			Destroy();
+			loaded = false;
+			name = GetPrettyFilename();
+			description = wxString(e, wxConvUTF8);
+		}
+		catch (const wchar_t *e) {
+			Destroy();
+			loaded = false;
+			name = GetPrettyFilename();
+			description = e;
+		}
 		catch (...) {
 			Destroy();
 			loaded = false;
-			throw;
+			name = GetPrettyFilename();
+			description = _T("Unknown error initialising Lua script");
 		}
 	}
 
@@ -394,13 +401,13 @@ namespace Automation4 {
 			// absolute path, do nothing
 		}
 		if (!fname.IsOk() || !fname.FileExists()) {
-			lua_pushfstring(L, "Could not find Lua script for inclusion: %s", fnames.mb_str(wxConvUTF8).data());
+			lua_pushfstring(L, "Lua include not found: %s", fnames.mb_str(wxConvUTF8).data());
 			lua_error(L);
 		}
 
 		LuaScriptReader script_reader(fname.GetFullPath());
 		if (lua_load(L, script_reader.reader_func, &script_reader, s->GetFilename().mb_str(wxConvUTF8))) {
-			lua_pushfstring(L, "An error occurred loading the Lua script file \"%s\":\n\n%s", fname.GetFullPath().mb_str(wxConvUTF8).data(), lua_tostring(L, -1));
+			lua_pushfstring(L, "Error loading Lua include \"%s\":\n\n%s", fname.GetFullPath().mb_str(wxConvUTF8).data(), lua_tostring(L, -1));
 			lua_error(L);
 			return 0;
 		}

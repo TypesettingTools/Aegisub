@@ -67,24 +67,35 @@ AssExportFilter::~AssExportFilter() {
 // Register
 void AssExportFilter::Register (wxString name,int priority) {
 	// Check if it's registered
-	if (RegisterName != _T("")) {
-		throw wxString::Format(_T("Register export filter: filter with name \"%s\" is already registered."), name.c_str());
-	}
+	//   Changed this to an assert, since this kind of error should really only happen during dev. -jfs
+	//   (Actually the list of regged filters should rather be looped through and check that this object isn't in.)
+	assert(RegisterName == _T(""));
 
 	// Remove pipes from name
 	name.Replace(_T("|"),_T(""));
+
+	int filter_copy = 0;
+	wxString tmpnam;
+	if (filter_copy == 0) {
+		tmpnam = name;
+	} else {
+try_new_name:
+		tmpnam = wxString::Format(_T("%s (%d)"), name.c_str(), filter_copy);
+	}
 
 	// Check if name exists
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->RegisterName == name) {
-			throw wxString::Format(_T("Register export filter: name \"%s\" already exists."), name.c_str());
+		if ((*cur)->RegisterName == tmpnam) {
+			// Instead of just failing and making a big noise about it, let multiple filters share name, but append something to the later arrivals -jfs
+			filter_copy++;
+			goto try_new_name;
 		}
 	}
 
 	// Set name
-	RegisterName = name;
+	RegisterName = tmpnam;
 	Priority = priority;
 
 	// Look for place to insert

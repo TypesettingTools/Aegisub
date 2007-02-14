@@ -513,6 +513,12 @@ namespace Automation4 {
 		}
 	}
 
+	wxString Script::GetPrettyFilename() const
+	{
+		wxFileName fn(filename);
+		return fn.GetFullName();
+	}
+
 	const wxString& Script::GetFilename() const
 	{
 		return filename;

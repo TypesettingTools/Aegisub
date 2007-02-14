@@ -278,6 +278,7 @@ namespace Automation4 {
 		virtual void Reload() = 0;
 
 		const wxString& GetFilename() const;
+		wxString GetPrettyFilename() const;
 		const wxString& GetName() const;
 		const wxString& GetDescription() const;
 		const wxString& GetAuthor() const;
