@@ -158,26 +158,23 @@ namespace Automation4 {
 		friend class RubyProgressSink;
 
 	private:
-		static wxString error;
-		static wxString backtrace;
 
 		void Create(); // load script and create internal structures etc.
 		void Destroy(); // destroy internal structures, unreg features and delete environment
 
 		static RubyScript* GetScriptObject();
+	public:
 		static VALUE RubyTextExtents(VALUE self, VALUE style, VALUE text);
 		static VALUE RubyFrameToTime(VALUE self, VALUE frame);
 		static VALUE RubyTimeToFrame(VALUE self, VALUE time);
 		static VALUE RubyKeyFrames(VALUE self);
 		static VALUE backtrace_hook(VALUE self, VALUE backtr);
 		
-	public:
 		RubyScript(const wxString &filename);
 		static void RubyError();
 		static wxString GetError();
 		virtual ~RubyScript();
 		virtual void Reload();
-		static VALUE RubyAegisub;
 		static RubyScript* inst;
 	};
 
@@ -243,14 +240,22 @@ namespace Automation4 {
 		RubyCallArguments(VALUE _recv, ID _id, int _n, VALUE *_argv);
 	};
 
-	// A single call to a Ruby function, run inside a separate thread.
-	// This object should be created on the stack in the function that does the call.
-	class RubyThreadedCall : public wxThread {
+	// Separate thread for ruby interpreter
+	class RubyThread : public wxThread {
 	private:
+		enum {NOTHING, CALL_FUNCTION, LOAD_FILE};
+		int action;
+		int status;
 		RubyCallArguments *args;
+		const char* file;
 		VALUE *result;
+		void InitRuby();
+		wxPathList include_path;
 	public:
-		RubyThreadedCall(RubyCallArguments *args, VALUE *result);
+		RubyThread(wxPathList include_path);
+		void CallFunction(RubyCallArguments* arg, VALUE *res);
+		void LoadFile(const char* file);
+		int GetStatus() {return status;};
 		virtual ExitCode Entry();
 	};
 

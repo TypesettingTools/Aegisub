@@ -68,9 +68,12 @@ namespace Automation4 {
 	RubyObjects *RubyObjects::inst = NULL;
 	RubyScript * RubyScript::inst = NULL; // current Ruby Script
 	RubyProgressSink* RubyProgressSink::inst = NULL;
-	VALUE RubyScript::RubyAegisub = Qfalse;
-	wxString RubyScript::backtrace = _T("");
-	wxString RubyScript::error = _T("");
+	RubyThread* ruby_thread = NULL;
+	wxSemaphore* ruby_thread_sem = NULL;
+	wxSemaphore* ruby_script_sem = NULL;
+	VALUE RubyAegisub = Qfalse;
+	wxString backtrace = _T("");
+	wxString error = _T("");
 
 	// RubyScript
 
@@ -87,6 +90,19 @@ namespace Automation4 {
 		}
 	}
 
+	void RubyThread::CallFunction(RubyCallArguments* arg, VALUE *res)
+	{
+		args = arg;
+		result = res;
+		action = CALL_FUNCTION;
+	}
+
+	void RubyThread::LoadFile(const char *f)
+	{
+		file = f;
+		action = LOAD_FILE;
+	}
+
 	RubyScript::~RubyScript()
 	{
 	}
@@ -94,53 +110,25 @@ namespace Automation4 {
 	void RubyScript::Create()
 	{
 		Destroy();
+		RubyScript::inst = this;
 
 		try {
-#if defined(NT)
-			int argc = 0;
-			char **argv = 0;
-			NtInitialize(&argc, &argv);
-#endif
-			char **opt = new char*[4];
-			opt[0] = "-d";
-			ruby_init();
-			//ruby_options(1, opt);
-			ruby_init_loadpath();
-			RubyScript::inst = this;
-			error = _T("");
-			backtrace = _T("");
-			if(!RubyAegisub) {
-				RubyAegisub = rb_define_module("Aegisub");
-				rb_define_module_function(RubyAegisub, "register_macro",reinterpret_cast<RB_HOOK>(&RubyFeatureMacro::RubyRegister), 4);
-				rb_define_module_function(RubyAegisub, "register_filter",reinterpret_cast<RB_HOOK>(&RubyFeatureFilter::RubyRegister), 5);
-				rb_define_module_function(RubyAegisub, "text_extents",reinterpret_cast<RB_HOOK>(&RubyTextExtents), 2);
-				rb_define_module_function(RubyAegisub, "frame_to_time",reinterpret_cast<RB_HOOK>(&RubyFrameToTime), 1);
-				rb_define_module_function(RubyAegisub, "time_to_frame",reinterpret_cast<RB_HOOK>(&RubyTimeToFrame), 1);
-				rb_define_module_function(RubyAegisub, "key_frames",reinterpret_cast<RB_HOOK>(&RubyKeyFrames), 0);
-				rb_define_module_function(rb_eException, "set_backtrace",reinterpret_cast<RB_HOOK>(&backtrace_hook), 1);
-				rb_define_module_function(RubyScript::RubyAegisub, "progress_set",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetProgress), 1);
-				rb_define_module_function(RubyScript::RubyAegisub, "progress_task",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTask), 1);
-				rb_define_module_function(RubyScript::RubyAegisub, "progress_title",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTitle), 1);
-				rb_define_module_function(RubyScript::RubyAegisub, "debug_out",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDebugOut), -1);
-				rb_define_module_function(RubyScript::RubyAegisub, "get_cancelled",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyGetCancelled), 0);
-				rb_define_module_function(RubyScript::RubyAegisub, "display_dialog",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDisplayDialog), 2);
-			}
-			VALUE paths = rb_gv_get("$:");
-			for(int i = 0; i < include_path.GetCount(); i++)
+			if(ruby_thread == NULL)
 			{
-				rb_ary_push(paths, rb_str_new2(include_path[i].mb_str(wxConvISO8859_1)));
+				ruby_thread_sem = new wxSemaphore(0, 1);
+				ruby_script_sem = new wxSemaphore(0, 1);
+				ruby_thread = new RubyThread(include_path);
+				ruby_script_sem->Wait();
 			}
 
 			int status = 0;
 			wxCharBuffer buf = GetFilename().mb_str(wxConvISO8859_1);
 			const char *t = buf.data();
-
-			rb_protect(rbLoadWrapper, rb_str_new2(t), &status);
-			if(status > 0)	// something bad happened (probably parsing error)
-			{
-				wxString  *err = new wxString(_T("An error occurred initialising the script file \"") + GetFilename() + _T("\":\n\n") + GetError());
-				throw err->c_str();
-			}
+			ruby_thread->LoadFile(t);
+			ruby_thread_sem->Post();
+			ruby_script_sem->Wait();
+			if(ruby_thread->GetStatus())
+				RubyScript::RubyError();
 
 			VALUE global_var = rb_gv_get("$script_name");
 			if(TYPE(global_var) == T_STRING)
@@ -165,9 +153,6 @@ namespace Automation4 {
 
 	void RubyScript::Destroy()
 	{
-		if(loaded) {
-//			ruby_finalize();	// broken in 1.9 ?_?
-		}
 
 		// remove features
 		for (int i = 0; i < (int)features.size(); i++) {
@@ -265,6 +250,8 @@ namespace Automation4 {
 	void RubyScript::RubyError()
 	{
 		wxMessageBox(RubyScript::inst->GetError(), _T("Error"),wxICON_ERROR | wxOK);
+		error = _T("");
+		backtrace = _T("");
 	}
 
 
@@ -335,13 +322,12 @@ namespace Automation4 {
 		argv[2] = INT2FIX(active);
 		RubyCallArguments arg(rb_mKernel, rb_to_id(validation_fun), 3, argv);
 		VALUE result;
-		RubyThreadedCall call(&arg, &result);
-		wxThread::ExitCode code = call.Wait();
-		if(code)
-		{
-			wxMessageBox(RubyScript::GetError(), _T("Error running validation function"),wxICON_ERROR | wxOK);			
-
-		} else if(result != Qnil && result != Qfalse) {
+		ruby_thread->CallFunction(&arg, &result);
+		ruby_thread_sem->Post();
+		ruby_script_sem->Wait();
+		if(ruby_thread->GetStatus())
+			RubyScript::RubyError();
+		if(result != Qnil && result != Qfalse) {
 			return true;
 		}
 
@@ -350,7 +336,6 @@ namespace Automation4 {
 
 	void RubyFeatureMacro::Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
-		rb_gc_disable();
 		delete RubyProgressSink::inst;
 		RubyProgressSink::inst = new RubyProgressSink(progress_parent, false);
 		RubyProgressSink::inst->SetTitle(GetName());
@@ -363,13 +348,17 @@ namespace Automation4 {
 		argv[2] = INT2FIX(active);
 		RubyCallArguments arg(rb_mKernel, rb_to_id(macro_fun), 3, argv);
 		VALUE result;
-		RubyThreadedCall call(&arg, &result);
+		ruby_thread->CallFunction(&arg, &result);
+		ruby_thread_sem->Post();
 		RubyProgressSink::inst->ShowModal();
-		wxThread::ExitCode code = call.Wait();
+		ruby_script_sem->Wait();
 		delete RubyProgressSink::inst;
 		RubyProgressSink::inst = NULL;
-		if(TYPE(result) == T_ARRAY)
+		if(ruby_thread->GetStatus())
+			RubyScript::RubyError();
+		else if(TYPE(result) == T_ARRAY)
 		{
+			rb_gc_disable();
 			bool end = false;
 			for(int i = 0; i < RARRAY(result)->len && !end; ++i)
 			{
@@ -397,16 +386,51 @@ namespace Automation4 {
 					break;
 				}				
 			}
+			rb_gc_enable();
 		}
 		delete subsobj;
-		rb_gc_enable();
-		rb_gc_start();
-}
+	}
 
+	// RubyThread
+	void RubyThread::InitRuby()
+	{
+	#if defined(NT)
+		int argc = 0;
+		char **argv = 0;
+		NtInitialize(&argc, &argv);
+	#endif
+		ruby_init();
+		ruby_init_loadpath();
+		error = _T("");
+		backtrace = _T("");
+		if(!RubyAegisub) {
+			RubyAegisub = rb_define_module("Aegisub");
+			rb_define_module_function(RubyAegisub, "register_macro",reinterpret_cast<RB_HOOK>(&RubyFeatureMacro::RubyRegister), 4);
+			rb_define_module_function(RubyAegisub, "register_filter",reinterpret_cast<RB_HOOK>(&RubyFeatureFilter::RubyRegister), 5);
+			rb_define_module_function(RubyAegisub, "text_extents",reinterpret_cast<RB_HOOK>(&RubyScript::RubyTextExtents), 2);
+			rb_define_module_function(RubyAegisub, "frame_to_time",reinterpret_cast<RB_HOOK>(&RubyScript::RubyFrameToTime), 1);
+			rb_define_module_function(RubyAegisub, "time_to_frame",reinterpret_cast<RB_HOOK>(&RubyScript::RubyTimeToFrame), 1);
+			rb_define_module_function(RubyAegisub, "key_frames",reinterpret_cast<RB_HOOK>(&RubyScript::RubyKeyFrames), 0);
+			rb_define_module_function(rb_eException, "set_backtrace",reinterpret_cast<RB_HOOK>(&RubyScript::backtrace_hook), 1);
+			rb_define_module_function(RubyAegisub, "progress_set",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetProgress), 1);
+			rb_define_module_function(RubyAegisub, "progress_task",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTask), 1);
+			rb_define_module_function(RubyAegisub, "progress_title",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubySetTitle), 1);
+			rb_define_module_function(RubyAegisub, "debug_out",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDebugOut), -1);
+			rb_define_module_function(RubyAegisub, "get_cancelled",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyGetCancelled), 0);
+			rb_define_module_function(RubyAegisub, "display_dialog",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDisplayDialog), 2);
+		}
+		VALUE paths = rb_gv_get("$:");
+		for(int i = 0; i < include_path.GetCount(); i++)
+		{
+			rb_ary_push(paths, rb_str_new2(include_path[i].mb_str(wxConvISO8859_1)));
+		}
 
-	RubyThreadedCall::RubyThreadedCall(RubyCallArguments *a, VALUE *res)
+	}
+
+	RubyThread::RubyThread(wxPathList paths)
 		: wxThread(wxTHREAD_JOINABLE)
-		,args(a), result(res)
+		,include_path(paths)
+		,action(NOTHING)
 	{
 		int prio = Options.AsInt(_T("Automation Thread Priority"));
 		if (prio == 0) prio = 50; // normal
@@ -418,20 +442,29 @@ namespace Automation4 {
 		Run();
 	}
 
-	wxThread::ExitCode RubyThreadedCall::Entry()
+	wxThread::ExitCode RubyThread::Entry()
 	{
-		int error = 0;
-		*result = rb_protect(rbCallWrapper, reinterpret_cast<VALUE>(args), &error);
-		if(RubyProgressSink::inst)
-		{
-			RubyProgressSink::inst->script_finished = true;
-			wxWakeUpIdle();
-		}
-		if(error) {
-			RubyScript::RubyError();
-			return (wxThread::ExitCode)1;
-		}
-		return (wxThread::ExitCode)0;		
+		InitRuby();
+		ruby_script_sem->Post();
+		do {
+			ruby_thread_sem->Wait();
+			status = 0;
+			switch(action)
+			{
+			case LOAD_FILE:
+				rb_protect(rbLoadWrapper, rb_str_new2(file), &status);
+				break;
+			case CALL_FUNCTION:
+				*result = rb_protect(rbCallWrapper, reinterpret_cast<VALUE>(args), &status);
+				if(RubyProgressSink::inst)
+				{
+					RubyProgressSink::inst->script_finished = true;
+					wxWakeUpIdle();
+				}
+				break;
+			}
+			ruby_script_sem->Post();
+		}while(1);
 	}
 
 	// RubyFeatureFilter
@@ -466,7 +499,6 @@ namespace Automation4 {
 	{
 
 		try {
-			rb_gc_disable();
 			VALUE cfg;
 			if (has_config && config_dialog) {
 				cfg = config_dialog->RubyReadBack();
@@ -481,28 +513,25 @@ namespace Automation4 {
 			argv[1] = cfg; // config
 			RubyCallArguments arg(rb_mKernel, rb_to_id(filter_fun), 2, argv);
 			VALUE result;
-			RubyThreadedCall call(&arg, &result);
+			ruby_thread->CallFunction(&arg, &result);
+			ruby_thread_sem->Post();
 			RubyProgressSink::inst->ShowModal();
+			ruby_script_sem->Wait();
+			if(ruby_thread->GetStatus())
+				RubyScript::RubyError();
 			RubyProgressSink::inst = NULL;
-			wxThread::ExitCode code = call.Wait();
 			delete RubyProgressSink::inst;
-			/*if(code)	// error reporting doesn't work in ruby 1.9
+			if(TYPE(result) == T_ARRAY)
 			{
-				if(TYPE(result) == T_STRING)
-					throw StringValueCStr(result);
-				else throw "Unknown Error";
-			}
-			else*/ if(TYPE(result) == T_ARRAY)
-			{
+				rb_gc_disable();
 				subsobj->RubyUpdateAssFile(result);
+				rb_gc_enable();
 			}
 			delete subsobj;
 		} catch (const char* e) {
 			wxString *err = new wxString(e, wxConvUTF8);
 			wxMessageBox(*err, _T("Error running filter"),wxICON_ERROR | wxOK);
 		}
-		rb_gc_enable();
-		rb_gc_start();
 	}
 
 	ScriptConfigDialog* RubyFeatureFilter::GenerateConfigDialog(wxWindow *parent)
@@ -523,9 +552,12 @@ namespace Automation4 {
 		argv[1] = Qnil; // TODO: stored options
 		RubyCallArguments arg(rb_mKernel, rb_to_id(dialog_fun), 2, argv);
 		VALUE dialog_data;
-		RubyThreadedCall call(&arg, &dialog_data);
+		ruby_thread->CallFunction(&arg, &dialog_data);
+		ruby_thread_sem->Post();
 		RubyProgressSink::inst->ShowModal();
-		wxThread::ExitCode code = call.Wait();
+		ruby_script_sem->Wait();
+		if(ruby_thread->GetStatus())
+			RubyScript::RubyError();
 		delete RubyProgressSink::inst;
 		RubyProgressSink::inst = NULL;
 
@@ -677,12 +709,12 @@ namespace Automation4 {
 
 	VALUE RubyScript::backtrace_hook(VALUE self, VALUE backtr)
 	{
-		int len = RARRAY_LEN(backtr);
+		int len = RARRAY(backtr)->len;
 		VALUE err = rb_funcall(self, rb_intern("to_s"), 0);
 		error = wxString(StringValueCStr(err), wxConvUTF8);
 		for(int i = 0; i < len; ++i)
 		{
-			VALUE str = RARRAY_PTR(backtr)[i];
+			VALUE str = RARRAY(backtr)->ptr[i];
 			wxString line(StringValueCStr(str), wxConvUTF8);
 			backtrace.Append(line + _T("\n"));
 		}

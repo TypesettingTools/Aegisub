@@ -351,7 +351,6 @@ namespace Automation4 {
 			new_entry = reinterpret_cast<AssEntry*>(rb_protect(rb2AssWrapper, rbEntry, &status));
 			--size;
 		}while(status != 0);	// broken lines at the beginning?
-		rb_set_errinfo(Qnil);;	// just in case
 
 		entryIter e = ass->Line.begin();
 		if(new_entry->GetType() == ENTRY_DIALOGUE)	// check if the first line is a dialogue
@@ -369,15 +368,6 @@ namespace Automation4 {
 			rbEntry = rb_ary_shift(subtitles);
 			new_entry = reinterpret_cast<AssEntry*>(rb_protect(rb2AssWrapper, rbEntry, &status));
 			if(status == 0)	ass->Line.push_back(new_entry);
-			else 
-			{
-				if(RubyProgressSink::inst)
-				{
-					VALUE err = rb_errinfo();
-					RubyProgressSink::inst->RubyDebugOut(1, &err, Qnil);
-				}
-				rb_set_errinfo(Qnil);
-			}
 		}
 
 		if (can_set_undo) {
@@ -411,12 +401,6 @@ namespace Automation4 {
 	RubyAssFile::~RubyAssFile()
 	{
 		RubyObjects::Get()->Unregister(rbAssFile);
-		int status;
-		rb_protect(rbGcWrapper, Qnil, &status);	// run the gc
-		if(status != 0)
-		{
-			wxMessageBox(_T("Error"), _T("Error while running Ruby garbage collection"));
-		}
 	}
 
 	RubyAssFile::RubyAssFile(AssFile *_ass, bool _can_modify, bool _can_set_undo)
@@ -424,7 +408,7 @@ namespace Automation4 {
 		, can_modify(_can_modify)
 		, can_set_undo(_can_set_undo)
 	{
-
+		rb_gc_disable();
 		rbAssFile = rb_ary_new2(ass->Line.size());
 		RubyObjects::Get()->Register(rbAssFile);
 
@@ -434,17 +418,8 @@ namespace Automation4 {
 		{
 			VALUE res = rb_protect(rbAss2RbWrapper, reinterpret_cast<VALUE>(*entry), &status);
 			if(status == 0) rb_ary_push(rbAssFile, res);
-			else 
-			{
-				if(RubyProgressSink::inst)
-				{
-					VALUE err = rb_errinfo();
-					RubyProgressSink::inst->RubyDebugOut(1, &err, Qnil);
-				}
-				rb_set_errinfo(Qnil);
-			}
 		}
-
+		rb_gc_enable();
 		// TODO
 		//rb_define_module_function(RubyScript::RubyAegisub, "parse_tag_data",reinterpret_cast<RB_HOOK>(&RubyParseTagData), 1);
 		//rb_define_module_function(RubyScript::RubyAegisub, "unparse_tag_data",reinterpret_cast<RB_HOOK>(&RubyUnparseTagData), 1);
