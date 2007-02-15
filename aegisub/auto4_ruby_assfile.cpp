@@ -379,7 +379,10 @@ namespace Automation4 {
 				rb_set_errinfo(Qnil);
 			}
 		}
-		AssFile::top->FlagAsModified(_T(""));
+
+		if (can_set_undo) {
+			AssFile::top->FlagAsModified(_T(""));
+		}
 	}
 	
 	int RubyAssFile::RubyParseTagData()
@@ -397,6 +400,11 @@ namespace Automation4 {
 
 	int RubyAssFile::RubySetUndoPoint()
 	{
+		// I can think of two things to do here:
+		// One is to read in all of the subs from Ruby and cobvert back to AssEntry, inserting it into the file, then set undo point
+		// Another is to just scrap it and only support one undo point per macro execution, and simply save the message, using it
+		// to set the description when the actual undo point it set after execution.
+		//  -jfs
 		return 0;
 	}
 

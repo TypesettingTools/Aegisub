@@ -41,6 +41,7 @@
 #include "ass_override.h"
 #include "text_file_reader.h"
 #include "options.h"
+#include "vfr.h"
 #include "../lua51/src/lualib.h"
 #include "../lua51/src/lauxlib.h"
 #include <wx/msgdlg.h>
