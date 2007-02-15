@@ -226,6 +226,11 @@ namespace Automation4 {
 			// aegisub.text_extents
 			lua_pushcfunction(L, LuaTextExtents);
 			lua_setfield(L, -2, "text_extents");
+			// VFR handling
+			lua_pushcfunction(L, LuaFrameFromMs);
+			lua_setfield(L, -2, "frame_from_ms");
+			lua_pushcfunction(L, LuaMsFromFrame);
+			lua_setfield(L, -2, "ms_from_frame");
 			// aegisub.lua_automation_version
 			lua_pushinteger(L, 4);
 			lua_setfield(L, -2, "lua_automation_version");
@@ -414,6 +419,32 @@ namespace Automation4 {
 		int pretop = lua_gettop(L) - 1; // don't count the function value itself
 		lua_call(L, 0, LUA_MULTRET);
 		return lua_gettop(L) - pretop;
+	}
+
+	int LuaScript::LuaFrameFromMs(lua_State *L)
+	{
+		int ms = (int)lua_tonumber(L, -1);
+		lua_pop(L, 1);
+		if (VFR_Output.IsLoaded()) {
+			lua_pushnumber(L, VFR_Output.GetFrameAtTime(ms, true));
+			return 1;
+		} else {
+			lua_pushnil(L);
+			return 1;
+		}
+	}
+
+	int LuaScript::LuaMsFromFrame(lua_State *L)
+	{
+		int frame = (int)lua_tonumber(L, -1);
+		lua_pop(L, 1);
+		if (VFR_Output.IsLoaded()) {
+			lua_pushnumber(L, VFR_Output.GetTimeAtFrame(frame, true));
+			return 1;
+		} else {
+			lua_pushnil(L);
+			return 1;
+		}
 	}
 
 
