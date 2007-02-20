@@ -998,11 +998,13 @@ void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
 ///////////////////////////////////////////////////////////
 // General handler for all Automation-generated menu items
 void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
+	// Clear all maps from the subs grid before running the macro
+	// The stuff done by the macro might invalidate some of the iterators held by the grid, which will cause great crashing
+	SubsBox->Clear();
+	// Run the macro...
 	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsBox->ass, SubsBox->GetAbsoluteSelection(), SubsBox->GetFirstSelRow(), this);
-	// check if modifications were made and put on undo stack
-	AssFile::Popping = true; // HACK to avoid getting an additional undo point on stack
-	SubsBox->LoadFromAss(AssFile::top, true, true);
-	AssFile::Popping = false;
+	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
+	SubsBox->UpdateMaps();
 }
 
 

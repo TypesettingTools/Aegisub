@@ -35,7 +35,12 @@ module("unicode")
 -- Return the number of bytes occupied by the character starting at the i'th byte in s
 function charwidth(s, i)
 	local b = s:byte(i)
-	if b < 128 then
+	if not b then
+		--aegisub.debug.out(3, "unicode.charwidth of '%s' @ %d, nil byte\n", s, i)
+		-- FIXME, something in karaskel results in this case, shouldn't happen
+		-- What would "proper" behaviour be? Zero? Or just explode?
+		return 1
+	elseif b < 128 then
 		return 1
 	elseif b < 224 then
 		return 2

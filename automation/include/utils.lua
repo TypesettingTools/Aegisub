@@ -143,3 +143,14 @@ function string.headtail(s)
 		return s, ""
 	end
 end
+
+-- Clamp a number value to a range
+function clamp(val, min, max)
+	if val < min then
+		return min
+	elseif val > max then
+		return max
+	else
+		return val
+	end
+end

@@ -55,7 +55,8 @@ namespace Automation4 {
 
 	// LuaStackcheck
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
+#if 0
 	struct LuaStackcheck {
 		lua_State *L;
 		int startstack;
@@ -241,7 +242,7 @@ namespace Automation4 {
 
 			// load user script
 			LuaScriptReader script_reader(GetFilename());
-			if (lua_load(L, script_reader.reader_func, &script_reader, GetFilename().mb_str(wxConvUTF8))) {
+			if (lua_load(L, script_reader.reader_func, &script_reader, GetPrettyFilename().mb_str(wxConvUTF8))) {
 				wxString *err = new wxString(lua_tostring(L, -1), wxConvUTF8);
 				err->Prepend(_T("Error loading Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
 				throw err->c_str();
@@ -412,7 +413,7 @@ namespace Automation4 {
 		}
 
 		LuaScriptReader script_reader(fname.GetFullPath());
-		if (lua_load(L, script_reader.reader_func, &script_reader, s->GetFilename().mb_str(wxConvUTF8))) {
+		if (lua_load(L, script_reader.reader_func, &script_reader, fname.GetFullName().mb_str(wxConvUTF8))) {
 			lua_pushfstring(L, "Error loading Lua include \"%s\":\n\n%s", fname.GetFullPath().mb_str(wxConvUTF8).data(), lua_tostring(L, -1));
 			lua_error(L);
 			return 0;
@@ -475,6 +476,15 @@ namespace Automation4 {
 		lua_getfield(L, LUA_REGISTRYINDEX, "progress_sink");
 		if (lua_isuserdata(L, -1)) {
 			LuaProgressSink *ps = LuaProgressSink::GetObjPointer(L, -1);
+
+			if (result) {
+				// if the call failed, log the error here
+				wxString errmsg(lua_tostring(L, -2), wxConvUTF8);
+				ps->AddDebugOutput(_T("\n\nLua reported a runtime error:\n"));
+				ps->AddDebugOutput(errmsg);
+				lua_pop(L, 1);
+			}
+
 			// don't bother protecting this with a mutex, it should be safe enough like this
 			ps->script_finished = true;
 			// tell wx to run its idle-events now, just to make the progress window notice earlier that we're done
@@ -628,7 +638,7 @@ namespace Automation4 {
 
 		ps->ShowModal();
 		wxThread::ExitCode code = call.Wait();
-		if (code) ThrowError();
+		//if (code) ThrowError();
 
 		delete ps;
 	}
@@ -676,6 +686,7 @@ namespace Automation4 {
 	void LuaFeatureFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog)
 	{
 		GetFeatureFunction(1); // 1 = processing function
+		assert(lua_isfunction(L, -1));
 
 		// prepare function call
 		// subtitles (undo doesn't make sense in exported subs, in fact it'll totally break the undo system)
@@ -685,6 +696,9 @@ namespace Automation4 {
 		if (has_config && config_dialog) {
 			assert(config_dialog->LuaReadBack(L) == 1);
 			// TODO, write back stored options here
+		} else {
+			// no config so put an empty table instead
+			lua_newtable(L);
 		}
 
 		LuaProgressSink *ps = new LuaProgressSink(L, export_dialog, false);
@@ -695,7 +709,7 @@ namespace Automation4 {
 
 		ps->ShowModal();
 		wxThread::ExitCode code = call.Wait();
-		if (code) ThrowError();
+		//if (code) ThrowError();
 
 		delete ps;
 	}
@@ -722,12 +736,16 @@ namespace Automation4 {
 
 		ps->ShowModal();
 		wxThread::ExitCode code = call.Wait();
-		if (code) ThrowError();
+		//if (code) ThrowError();
 
 		delete ps;
 
 		// The config dialog table should now be on stack
-		return config_dialog = new LuaConfigDialog(L, false);
+		if (!code) {
+			return config_dialog = new LuaConfigDialog(L, false);
+		} else {
+			return config_dialog = 0;
+		}
 	}
 
 

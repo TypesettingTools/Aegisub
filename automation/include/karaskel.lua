@@ -52,7 +52,7 @@ function karaskel.collect_head(subs)
 		local l = subs[i]
 		if l.class == "style" then
 			styles.n = styles.n + 1
-			styles[n] = l
+			styles[styles.n] = l
 			styles[l.name] = l			
 		elseif l.class == "info" then
 			local k = l.key:lower()
@@ -91,23 +91,23 @@ end
 -- Modifies the line parameter
 function karaskel.preproc_line(subs, meta, styles, line)
 	-- Assume line is class=dialogue
-	local kara = aegisub.parse_karaoke_data(line.text)
+	local kara = aegisub.parse_karaoke_data(line)
 	line.kara = { n = 0 }
 	line.furi = { n = 0 }
 	
 	if styles[line.style] then
-		line.style = styles[line.style]
+		line.styleref = styles[line.style]
 	else
-		aegisub.debug.out("WARNING: Style not found: " .. line.style .. "\n")
-		line.style = styles[1]
+		aegisub.debug.out(2, "WARNING: Style not found: " .. line.style .. "\n")
+		line.styleref = styles[1]
 	end
 	
 	line.text_stripped = ""
 	
 	local curx = 0
 	local worksyl = { }
-	for i = 0, #line.kara do
-		local syl = line.kara[i]
+	for i = 0, #kara do
+		local syl = kara[i]
 		
 		-- Spaces at the start and end of the syllable are best ignored
 		local prespace, syltext, postspace = syl.text_stripped:match("^([ \t]*)(.-)([ \t]*)$")
@@ -155,7 +155,7 @@ function karaskel.preproc_line(subs, meta, styles, line)
 		-- If this is the start of a highlight group, do regular processing
 		if prefix ~= "#" and prefix ~= "＃" then
 			-- Update stripped line-text
-			line.text_stripped = line.text_stripped + syl.text_stripped
+			line.text_stripped = line.text_stripped .. syl.text_stripped
 			
 			-- Copy data from syl to worksyl
 			worksyl.text = syl.text
@@ -165,16 +165,16 @@ function karaskel.preproc_line(subs, meta, styles, line)
 			worksyl.end_time = syl.end_time
 			worksyl.tag = syl.tag
 			worksyl.line = line
-			worksyl.style = line.style
+			worksyl.style = line.styleref
 			
 			-- And add new data to worksyl
 			worksyl.text_stripped = syltext
-			worksyl.width = aegisub.text_extents(line.style, syltext)
-			curx = curx + aegisub.text_extents(line.style, prespace)
+			worksyl.width = aegisub.text_extents(line.styleref, syltext)
+			curx = curx + aegisub.text_extents(line.styleref, prespace)
 			worksyl.left = curx
 			worksyl.center = curx + worksyl.width/2
 			worksyl.right = curx + worksyl.width
-			curx = curx + worksyl.width + aegisub.text_extents(line.style, postspace)
+			curx = curx + worksyl.width + aegisub.text_extents(line.styleref, postspace)
 			
 			-- TODO: inlinefx here
 		end
@@ -192,10 +192,12 @@ function karaskel.preproc_line(subs, meta, styles, line)
 	line.kara[line.kara.n] = worksyl
 	
 	-- Full line sizes
-	line.width, line.height, line.descent, line.extlead = aegisub.text_extents(line.style, line.text_stripped)
+	line.width, line.height, line.descent, line.extlead = aegisub.text_extents(line.styleref, line.text_stripped)
+	-- And positioning (FIXME: assume centering for now)
+	line.left = (meta.res_x - line.styleref.margin_l - line.styleref.margin_r - line.width) / 2 + line.styleref.margin_l
 	
 	-- Generate furigana style
-	local furistyle = table.copy(line.style)
+	local furistyle = table.copy(line.styleref)
 	furistyle.fontsize = furistyle.fontsize / 2
 	furistyle.outline = furistyle.outline / 2
 	

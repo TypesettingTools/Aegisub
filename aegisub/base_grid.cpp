@@ -865,7 +865,9 @@ void BaseGrid::SetColumnWidths() {
 // Gets dialogue from map
 AssDialogue *BaseGrid::GetDialogue(int n) {
 	try {
-		return AssEntry::GetAsDialogue(*(diagMap.at(n)));
+		AssEntry *e = *diagMap.at(n);
+		if (e->GetType() != ENTRY_DIALOGUE) return NULL;
+		return AssEntry::GetAsDialogue(e);
 	}
 	catch (...) {
 		return NULL;
