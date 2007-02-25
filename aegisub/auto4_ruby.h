@@ -38,6 +38,8 @@
 #ifndef _AUTO4_RUBY_H
 #define _AUTO4_RUBY_H
 
+#pragma warning(disable: 4311 4312)
+
 #include "auto4_base.h"
 #include <wx/thread.h>
 #include <wx/event.h>

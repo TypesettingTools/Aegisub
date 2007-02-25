@@ -216,13 +216,13 @@ namespace Automation4 {
 			VALUE _color4 = rb_hash_aref(ass_entry, STR2SYM("color4"));
 			wxString color4(StringValueCStr(_color4), wxConvUTF8);
 			VALUE _bold = rb_hash_aref(ass_entry, STR2SYM("bold"));
-			bool bold = (bool)rb_num2long(_bold);
+			bool bold = rb_num2long(_bold) == 1;
 			VALUE _italic = rb_hash_aref(ass_entry, STR2SYM("italic"));
-			bool italic = (bool)rb_num2long(_italic);
+			bool italic = rb_num2long(_italic) == 1;
 			VALUE _underline = rb_hash_aref(ass_entry, STR2SYM("underline"));
-			bool underline = (bool)rb_num2long(_underline);
+			bool underline = rb_num2long(_underline) == 1;
 			VALUE _strikeout = rb_hash_aref(ass_entry, STR2SYM("strikeout"));
-			bool strikeout = (bool)rb_num2long(_strikeout);
+			bool strikeout = rb_num2long(_strikeout) == 1;
 			VALUE _scale_x = rb_hash_aref(ass_entry, STR2SYM("scale_x"));
 			float scale_x = rb_num2dbl(_scale_x);
 			VALUE _scale_y = rb_hash_aref(ass_entry, STR2SYM("scale_y"));
@@ -281,7 +281,6 @@ namespace Automation4 {
 			result = sty;
 		} else if (lclass == _T("styleex")) {
 			rb_raise(rb_eRuntimeError, "Found line with class 'styleex' which is not supported. Wait until AS5 is a reality.");			
-			return 0;
 
 		} else if (lclass == _T("dialogue")) {
 			VALUE _comment = rb_hash_aref(ass_entry, STR2SYM("comment"));
@@ -329,7 +328,6 @@ namespace Automation4 {
 
 		} else {
 			rb_raise(rb_eRuntimeError, "Found line with unknown class: %s", lclass.mb_str(wxConvUTF8).data());			
-			return 0;
 		}
 
 		return result;

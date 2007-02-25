@@ -121,7 +121,6 @@ namespace Automation4 {
 				ruby_script_sem->Wait();
 			}
 
-			int status = 0;
 			wxCharBuffer buf = GetFilename().mb_str(wxConvISO8859_1);
 			const char *t = buf.data();
 			ruby_thread->LoadFile(t);
@@ -144,7 +143,7 @@ namespace Automation4 {
 				version = wxString(StringValueCStr(global_var), wxConvUTF8);
 			loaded = true;
 		}
-		catch (const wchar_t* e) {
+		catch (...) {
 			Destroy();
 			loaded = false;
 			throw;
@@ -176,7 +175,7 @@ namespace Automation4 {
 	}
 
 
-	VALUE RubyScript::RubyTextExtents(VALUE self, VALUE _style, VALUE _text)
+	VALUE RubyScript::RubyTextExtents(VALUE /*self*/, VALUE _style, VALUE _text)
 	{
 		if(TYPE(_style) != T_HASH)
 			rb_raise(rb_eRuntimeError, "text_extents: Style parameter must be a hash");
@@ -201,7 +200,7 @@ namespace Automation4 {
 		return result;
 	}
 
-	VALUE RubyScript::RubyFrameToTime(VALUE self, VALUE frame)
+	VALUE RubyScript::RubyFrameToTime(VALUE /*self*/, VALUE frame)
 	{
 		if(TYPE(frame) == T_FIXNUM && VFR_Output.IsLoaded())
 		{
@@ -210,7 +209,7 @@ namespace Automation4 {
 		return Qnil;
 	}
 
-	VALUE RubyScript::RubyTimeToFrame(VALUE self, VALUE time)
+	VALUE RubyScript::RubyTimeToFrame(VALUE /*self*/, VALUE time)
 	{
 		if(TYPE(time) == T_FIXNUM && VFR_Output.IsLoaded())
 		{
@@ -221,7 +220,7 @@ namespace Automation4 {
 
 	//////////////////////////////////////////////////////////////////////////
 	// output: [[keyframe indices], [keyframe times in ms]]
-	VALUE RubyScript::RubyKeyFrames(VALUE self)
+	VALUE RubyScript::RubyKeyFrames(VALUE /*self*/)
 	{
 		if(!VideoContext::Get()->KeyFramesLoaded())
 			return Qnil;
@@ -231,7 +230,7 @@ namespace Automation4 {
 		VALUE frames = rb_ary_new();
 		VALUE times = rb_ary_new();
 
-		for(int i = 0; i < key_frames.size(); ++i)
+		for(unsigned int i = 0; i < key_frames.size(); ++i)
 		{
 			rb_ary_push(frames, INT2FIX(key_frames[i]));
 			rb_ary_push(times, INT2FIX(VFR_Output.GetTimeAtFrame(key_frames[i], true)));
@@ -274,7 +273,7 @@ namespace Automation4 {
 	{
 		VALUE res = rb_ary_new2(ints.size());
 		// create an array-style table with an integer vector in it
-		for (int i = 0; i != ints.size(); ++i) {
+		for (unsigned int i = 0; i < ints.size(); ++i) {
 			int k = ints[i];
 			rb_ary_push(res, rb_int2inum(k));
 		}
@@ -290,11 +289,12 @@ namespace Automation4 {
 
 	// RubyFeatureMacro
 
-	VALUE RubyFeatureMacro::RubyRegister(VALUE self, VALUE name, VALUE description, VALUE macro_function, VALUE validate_function)
+	VALUE RubyFeatureMacro::RubyRegister(VALUE /*self*/, VALUE name, VALUE description, VALUE macro_function, VALUE validate_function)
 	{
 		wxString _name(StringValueCStr(name), wxConvUTF8);
 		wxString _description(StringValueCStr(description), wxConvUTF8);
 		RubyFeatureMacro *macro = new RubyFeatureMacro(_name, _description, macro_function, validate_function);
+		(void)macro;
 		return Qtrue;
 	}
 
@@ -420,7 +420,7 @@ namespace Automation4 {
 			rb_define_module_function(RubyAegisub, "display_dialog",reinterpret_cast<RB_HOOK>(&RubyProgressSink::RubyDisplayDialog), 2);
 		}
 		VALUE paths = rb_gv_get("$:");
-		for(int i = 0; i < include_path.GetCount(); i++)
+		for(unsigned int i = 0; i < include_path.GetCount(); i++)
 		{
 			rb_ary_push(paths, rb_str_new2(include_path[i].mb_str(wxConvISO8859_1)));
 		}
@@ -486,12 +486,13 @@ namespace Automation4 {
 		// Don't think there's anything to do here... (empty in auto3)
 	}
 
-	VALUE RubyFeatureFilter::RubyRegister(VALUE self, VALUE name, VALUE description, VALUE merit, VALUE function, VALUE dialog)
+	VALUE RubyFeatureFilter::RubyRegister(VALUE /*self*/, VALUE name, VALUE description, VALUE merit, VALUE function, VALUE dialog)
 	{
 		wxString _name(StringValueCStr(name), wxConvUTF8);
 		wxString _description(StringValueCStr(description), wxConvUTF8);
 		int _merit = rb_num2long(merit);
 		RubyFeatureFilter *filter = new RubyFeatureFilter(_name, _description, _merit, function, dialog);
+		(void)filter;
 		return Qtrue;
 	}
 
@@ -567,7 +568,7 @@ namespace Automation4 {
 
 	// RubyProgressSink
 
-	RubyProgressSink::RubyProgressSink(wxWindow *parent, bool allow_config_dialog)
+	RubyProgressSink::RubyProgressSink(wxWindow *parent, bool /*allow_config_dialog*/)
 		: ProgressSink(parent)
 	{
 	}
@@ -576,35 +577,35 @@ namespace Automation4 {
 	{
 	}
 
-	VALUE RubyProgressSink::RubySetProgress(VALUE self, VALUE progress)
+	VALUE RubyProgressSink::RubySetProgress(VALUE /*self*/, VALUE progress)
 	{
 		float _progr = rb_num2dbl(progress);
 		RubyProgressSink::inst->SetProgress(_progr);
 		return Qtrue;
 	}
 
-	VALUE RubyProgressSink::RubySetTask(VALUE self, VALUE task)
+	VALUE RubyProgressSink::RubySetTask(VALUE /*self*/, VALUE task)
 	{
 		wxString _t(StringValueCStr(task), wxConvUTF8);
 		RubyProgressSink::inst->SetTask(_t);
 		return Qtrue;
 	}
 
-	VALUE RubyProgressSink::RubySetTitle(VALUE self, VALUE title)
+	VALUE RubyProgressSink::RubySetTitle(VALUE /*self*/, VALUE title)
 	{
 		wxString _t(StringValueCStr(title), wxConvUTF8);
 		RubyProgressSink::inst->SetTitle(_t);
 		return Qtrue;
 	}
 
-	VALUE RubyProgressSink::RubyGetCancelled(VALUE self)
+	VALUE RubyProgressSink::RubyGetCancelled(VALUE /*self*/)
 	{
 		if(RubyProgressSink::inst->cancelled)
 			return Qtrue;
 		return Qfalse;
 	}
 
-	VALUE RubyProgressSink::RubyDebugOut(int argc, VALUE *args, VALUE self)
+	VALUE RubyProgressSink::RubyDebugOut(int argc, VALUE *args, VALUE /*self*/)
 	{
 		if(argc > 1 && TYPE(args[0]) == T_FIXNUM) 
 		{
@@ -617,7 +618,7 @@ namespace Automation4 {
 		return Qtrue;
 	}
 
-	VALUE RubyProgressSink::RubyDisplayDialog(VALUE self, VALUE dialog_data, VALUE buttons)
+	VALUE RubyProgressSink::RubyDisplayDialog(VALUE /*self*/, VALUE dialog_data, VALUE buttons)
 	{
 		// Send the "show dialog" event
 		ShowConfigDialogEvent evt;
@@ -701,9 +702,9 @@ namespace Automation4 {
 		RubyCallArguments &a = *reinterpret_cast<RubyCallArguments*>(arg);
 		return rb_funcall2(a.recv, a.id, a.n, a.argv);
 	}
-	VALUE rbExecWrapper(VALUE arg){return  ruby_exec();}
+	VALUE rbExecWrapper(VALUE /*arg*/){return  ruby_exec();}
 	VALUE rbLoadWrapper(VALUE arg){rb_load(arg, 0); return Qtrue;}
-	VALUE rbGcWrapper(VALUE arg){rb_gc_start(); return Qtrue;}
+	VALUE rbGcWrapper(VALUE /*arg*/){rb_gc_start(); return Qtrue;}
 	VALUE rbAss2RbWrapper(VALUE arg){return RubyAssFile::AssEntryToRuby(reinterpret_cast<AssEntry*>(arg));}
 	VALUE rb2AssWrapper(VALUE arg){return reinterpret_cast<VALUE>(RubyAssFile::RubyToAssEntry(arg));}
 
