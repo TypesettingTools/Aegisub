@@ -166,7 +166,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	wxString selected_style;
 	if (_grid) {
 		AssDialogue *dia = _grid->GetDialogue(_grid->GetFirstSelRow());
-		selected_style = dia->Style;
+		if(dia)	selected_style = dia->Style;
 	}
 
 	if (StorageList->GetCount() && StorageList->SetStringSelection(selected_style)) {
