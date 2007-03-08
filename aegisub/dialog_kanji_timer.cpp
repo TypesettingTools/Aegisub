@@ -170,17 +170,19 @@ END_EVENT_TABLE()
 void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	Options.SetBool(_T("kanji timer interpolation"),Interpolate->IsChecked());
 	Options.Save();
+	bool modified = LinesToChange.empty();
 	
 	while(LinesToChange.empty()==false) {
 		std::pair<int,wxString> p = LinesToChange.back();
 		LinesToChange.pop_back();
 		AssDialogue *line = grid->GetDialogue(p.first);
 		line->Text = p.second;
-
 	}
-	grid->ass->FlagAsModified(_("kanji timing"));
-	grid->CommitChanges();
-	LinesToChange.clear();
+	if (modified) {
+		grid->ass->FlagAsModified(_("kanji timing"));
+		grid->CommitChanges();
+		LinesToChange.clear();
+	}
 	Close();
 }
 
