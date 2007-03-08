@@ -144,6 +144,20 @@ function string.headtail(s)
 	end
 end
 
+-- Iterator function for headtail
+function string.words(s)
+	local t = s
+	local function wordloop()
+		if t == "" then
+			return nil
+		end
+		local head, tail = string.headtail(t)
+		t = tail
+		return head
+	end
+	return wordloop, nil, nil
+end
+
 -- Clamp a number value to a range
 function clamp(val, min, max)
 	if val < min then

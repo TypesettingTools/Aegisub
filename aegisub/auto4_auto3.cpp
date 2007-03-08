@@ -1251,13 +1251,13 @@ continue_invalid_option:
 			// absolute path, do nothing
 		}
 		if (!fname.IsOk() || !fname.FileExists()) {
-			lua_pushfstring(L, "Could not find Automation 3 script for inclusion: %s", fnames.mb_str(wxConvUTF8).data());
+			lua_pushfstring(L, "Automation 3 include not found: %s", fnames.mb_str(wxConvUTF8).data());
 			lua_error(L);
 		}
 
 		LuaScriptReader script_reader(fname.GetFullPath());
 		if (lua_load(L, script_reader.reader_func, &script_reader, s->GetFilename().mb_str(wxConvUTF8))) {
-			lua_pushfstring(L, "An error occurred loading the Automation 3 script file \"%s\":\n\n%s", fname.GetFullPath().mb_str(wxConvUTF8).data(), lua_tostring(L, -1));
+			lua_pushfstring(L, "Error loading Automation 3 include \"%s\":\n\n%s", fname.GetFullPath().mb_str(wxConvUTF8).data(), lua_tostring(L, -1));
 			lua_error(L);
 			return 0;
 		}
@@ -1361,7 +1361,7 @@ continue_invalid_option:
 			LuaScriptReader script_reader(GetFilename());
 			if (lua_load(L, script_reader.reader_func, &script_reader, GetFilename().mb_str(wxConvUTF8))) {
 				wxString *err = new wxString(lua_tostring(L, -1), wxConvUTF8);
-				err->Prepend(_T("An error occurred loading the Automation 3 script file \"") + GetFilename() + _T("\":\n\n"));
+				err->Prepend(_T("Error loading Automation 3 script \"") + GetFilename() + _T("\":\n\n"));
 				throw err->c_str();
 			}
 			// and run it
@@ -1370,7 +1370,7 @@ continue_invalid_option:
 				if (err) {
 					// error occurred, assumed to be on top of Lua stack
 					wxString *errs = new wxString(lua_tostring(L, -1), wxConvUTF8);
-					errs->Prepend(_T("An error occurred initialising the Automation 3 script file \"") + GetFilename() + _T("\":\n\n"));
+					errs->Prepend(_T("Error initialising Automation 3 script \"") + GetFilename() + _T("\":\n\n"));
 					throw errs->c_str();
 				}
 			}
@@ -1452,7 +1452,7 @@ continue_invalid_option:
 
 		virtual Script* Produce(const wxString &filename) const
 		{
-			if (filename.Right(4).Lower() == _T(".auto3")) {
+			if (filename.Right(6).Lower() == _T(".auto3")) {
 				return new Auto3Script(filename);
 			} else {
 				return 0;
