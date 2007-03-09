@@ -43,22 +43,29 @@ include("karaskel.lua")
 -- Find and parse/prepare all karaoke template lines
 function parse_templates(meta, styles, subs)
 	local templates = { once = {}, line = {}, syl = {}, char = {}, furi = {} }
-	for l = 1, #subs do
+	for i = 1, #subs do
+		aegisub.progress.set((i-1) / #subs * 100)
 		local l = subs[i]
 		if l.class == "dialogue" and l.comment then
-			local fx, fxtail = string.headtail(l.effect)
+			local fx, mods = string.headtail(l.effect)
 			fx = fx:lower()
 			if fx == "code" then
-				parse_code(meta, styles, l, templates, fxtail)
+				parse_code(meta, styles, l, templates, mods)
 			elseif fx == "template" then
-				parse_template(meta, styles, l, templates, fxtail)
+				parse_template(meta, styles, l, templates, mods)
 			end
 		end
 	end
+	aegisub.progress.set(100)
+	return templates
 end
 
 function parse_code(meta, styles, line, templates, mods)
-	local template = { code = line.text, loops = 1, all = false }
+	local template = {
+		code = line.text,
+		loops = 1,
+		style = line.style
+	}
 	local inserted = false
 
 	local rest = mods
@@ -82,8 +89,8 @@ function parse_code(meta, styles, line, templates, mods)
 			table.insert(templates.furi, template)
 			inserted = true
 		elseif m == "all" then
-			template.all = true
-		elseif m == "repeat" then
+			template.style = nil
+		elseif m == "repeat" or m == "loop" then
 			local times, t = string.headtail(rest)
 			template.loops = tonumber(times)
 			if not template.loops then
@@ -92,6 +99,8 @@ function parse_code(meta, styles, line, templates, mods)
 			else
 				rest = t
 			end
+		else
+			aegisub.out(3, "Unknown modifier in code template: %s\nIn template code line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
 		end
 	end
 	
@@ -100,7 +109,109 @@ function parse_code(meta, styles, line, templates, mods)
 	end
 end
 
+template_modifiers = {
+	"pre-line", "line", "syl", "char", "furi",
+	"all", "repeat", "loop", "notext", "keeptags", "multi", "fx"
+}
+
 function parse_template(meta, styles, line, templates, mods)
+	local template = {
+		t = "",
+		pre = "",
+		style = line.style,
+		loops = 1,
+		addtext = true,
+		keeptags = false,
+		inline_fx = nil,
+		multi = false,
+		isline = false
+	}
+	local inserted = false
+	
+	local rest = mods
+	while rest ~= "" do
+		local m, t = string.headtail(rest)
+		rest = t
+		m = m:lower()
+		if (m == "pre-line" or m == "line") and not inserted then
+			-- should really fail if already inserted
+			local id, t = string.headtail(rest)
+			id = id:lower()
+			-- check that it really is an identifier and not a keyword
+			for _, kw in pairs(template_modifiers) do
+				if id == kw then
+					id = nil
+					break
+				end
+			end
+			if id then
+				rest = t
+			end
+			-- get old template if there is one
+			if id and templates.line[id] then
+				template = templates.line[id]
+			elseif id then
+				template.id = id
+				templates.line[id] = template
+			else
+				table.insert(templates.line, template)
+			end
+			inserted = true
+			template.isline = true
+			-- apply text to correct string
+			if m == "line" then
+				template.t = template.t .. line.text
+			else -- must be pre-line
+				template.pre = template.pre .. line.text
+			end
+		elseif m == "syl" and not template.isline then
+			table.insert(templates.syl, template)
+			inserted = true
+		elseif m == "char" and not template.isline then
+			table.insert(templates.char, template)
+			inserted = true
+		elseif m == "furi" and not template.isline then
+			aegisub.debug.out(3, "Warning, furi template class used but furigana support isn't implemented yet\n\n")
+			table.insert(templates.furi, template)
+			inserted = true
+		elseif (m == "pre-line" or m == "line") and inserted then
+			aegisub.out(2, "Unable to combine %s class templates with other template classes\n\n", m)
+		elseif (m == "syl" or m == "char" or m == "furi") and template.isline then
+			aegisub.out(2, "Unable to combine %s class template lines with line or pre-line classes\n\n", m)
+		elseif m == "all" then
+			template.style = nil
+		elseif m == "repeat" or m == "loop" then
+			local times, t = string.headtail(rest)
+			template.loops = tonumber(times)
+			if not template.loops then
+				aegisub.out(3, "Failed reading this repeat-count to a number: %s\nIn template line: %s\nEffect field: %s\n\n", times, line.text, line.effect)
+				template.loops = 1
+			else
+				rest = t
+			end
+		elseif m == "notext" then
+			template.addtext = false
+		elseif m == "keeptags" then
+			template.keeptags = true
+		elseif m == "multi" then
+			template.multi = true
+		elseif m == "fx" then
+			local fx, t = string.headtail(rest)
+			if fx ~= "" then
+				template.fx = fx
+				rest = t
+			else
+				aegisub.out(3, "No fx name following fx modifier\nIn template line: %s\nEffect field: %s\n\n", line.text, line.effect)
+				template.fx = nil
+			end
+		else
+			aegisub.out(3, "Unknown modifier in template: %s\nIn template line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
+		end
+	end
+	
+	if not inserted then
+		table.insert(templates.syl, template)
+	end
 end
 
 
@@ -114,7 +225,7 @@ function apply_templates(meta, styles, subs, templates)
 	}
 	
 	-- run all run-once code snippets
-	for k, t in pairs(templates.code) do
+	for k, t in pairs(templates.once) do
 		
 	end
 end

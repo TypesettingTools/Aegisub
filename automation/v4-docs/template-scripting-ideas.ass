@@ -37,7 +37,7 @@ Comment: 0,0:00:50.00,0:00:55.00,Default,,0000,0000,0000,template syl repeat 10,
 Comment: 0,0:00:55.00,0:01:00.00,Default,,0000,0000,0000,template syl all,{this template is used for any style, not just the one specified}
 Comment: 0,0:00:55.00,0:01:00.00,Default,,0000,0000,0000,template syl multi,{every highlight of a syllable generates a line from this, timing is changed to match current highlight}
 Comment: 0,0:00:55.00,0:01:00.00,Default,,0000,0000,0000,template syl fx foo,{only applied for syllables with inline-fx "foo"}
-Comment: 0,0:00:55.00,0:01:00.00,Default,,0000,0000,0000,template syl notext repeat 10,{modifiers can be combined}
+Comment: 0,0:00:55.00,0:01:00.00,Default,,0000,0000,0000,template syl notext loop 10,{modifiers can be combined, loop is another name for repeat}
 Comment: 0,0:01:00.00,0:01:05.00,Default,,0000,0000,0000,template char,{each character generates a line like this, with the character appended. positioning variables matches the character and timing matches syllable}
 Comment: 0,0:01:05.00,0:01:10.00,Default,,0000,0000,0000,template char multi,{multi highlight also supported for char, as well as repeat and notext}
 Comment: 0,0:01:10.00,0:01:15.00,Default,,0000,0000,0000,template furi,{each furigana part generates a line like this, a new style with changed font size is automatically generated and applied}
@@ -52,6 +52,12 @@ Dialogue: 0,0:01:50.00,0:01:55.00,Default,,0000,0000,0000,,ie. first all pre-lin
 Dialogue: 0,0:01:55.00,0:02:00.00,Default,,0000,0000,0000,,code and template lines within same class are executed intermixed as they appear
 Dialogue: 0,0:02:00.00,0:02:05.00,Default,,0000,0000,0000,,(code lines are like template lines, they just don't generate any output)
 Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,the 'all' modifier should be used carefully, it will catch *any* line, even those without karaoke tags in them
-Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,
+Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,if 'keeptags' is used, tags in syllable zero are prepended to the line and tags in the current syllable are inserted between the template text and syllable text (this is not compatible with 'notext')
+Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,the optional identifier for 'pre-line'/'line' can be any string, but numbers are recommended as they won't clash with other modifiers (you can also insert some other special character at the start of the identifier though) - ascii identifiers are case insensitive
+Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,'line' templates with identifiers can be used to split long effect lines into several, however they are simply concatenated when parsed, not processed separately
+Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,also, there is no guarantee of execution order of non-anonymous 'line' templates
+Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,anonymous 'line' templates can't have 'pre-line' templates
+Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,while 'syl', 'char' and 'furi' can freely be combined in one line, 'line' and 'pre-line' can't live with any other class, not even each other (ie. you can't have 'line pre-line', 'line syl', 'syl pre-line' etc.)
+Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,'syl' is the default for templates with no other class specified, like 'once' is the default for code
 Comment: 0,0:02:05.00,0:02:10.00,Default,template,0000,0000,0000,,auto3 multi-template style is not supported, it'll need a different script (supporting it all in one will be more work than it's worth, probably, particularily because of differences in variables)
 Dialogue: 0,0:02:10.00,0:02:15.00,Default,,0000,0000,0000,,
