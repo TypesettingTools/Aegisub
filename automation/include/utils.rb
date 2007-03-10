@@ -1,4 +1,4 @@
-include Aegisub
+#include Aegisub
 
 class Object
     def deep_clone
@@ -69,19 +69,17 @@ module Aegisub
 				value = opt.delete(l[:key])
 				l[:value] = value.instance_of?(Hash) ? value.to_a.flatten!.join(sep) : value.to_s if value
 				l
-			else 
-			if info
+			elsif info
 				r = [l]
 				opt.each do |key, val|
 					r << {:class => :info, :key => key, 
 					:value => value.instance_of?(Hash) ? value.to_a.flatten!.join(sep) : value.to_s,
 					:section => "[Script Info]"}
 				end
-				info = false				
-				r				
-				else
-					l
-				end
+				info = false
+				r
+			else
+				l			
 			end
 		end	
 	end
@@ -99,6 +97,18 @@ module Aegisub
 		end
 		return opt
 	end
-	
+
+	def rgb_to_ssa(*c)
+		res = "&H"
+		c.reverse_each {|v| res << "%02X" % v}
+		res << "&"
+		return res
+	end
+
+	def ssa_to_rgb(col)
+		res = []
+		col.scan(/[0-9a-fA-F]{2}/) { res.unshift $1.to_i(16) }
+		res
+	end
 end
 

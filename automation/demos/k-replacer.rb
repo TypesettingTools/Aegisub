@@ -3,7 +3,7 @@ load 'utils.rb'
 
 include Aegisub
 
-$script_name = "k-replacer test"
+$script_name = "simple k-replacer"
 $script_description = "k-replacer test"
 $script_author = "Pomyk"
 $script_version = "1"
@@ -31,11 +31,10 @@ def k_replace_filter(subs, opt)
 		k_replace(l, opt[:templ], opt[:strip]) if l[:class] == :dialogue && 	# replace if its dialogue
 			opt[:style] =="" || l[:style] == opt[:style]			# and has the right style
 	end
-	write_options(subs, {$script_name => opt})
 	return subs
 end
 
-def k_replace_cfg(subs, store)
+def k_replace_cfg(subs, opt)
 	styles = []
 	subs.each { |l|		# read style names
 		styles << l[:name] if l[:class] == :style
@@ -52,13 +51,12 @@ Calculation example:
   \\t($start,%$start+$dur*2%,\\fscx110)
   \\t(%$start+$dur*2%,$end,\\fscx90)
 head
-	opt = read_options(subs, $script_name)
-	s_name = $script_name.to_sym
+	opt ||= {}
 	cfg = ScriptCfg.new		# helper class for building dialogs
 	cfg.header header_text, :x => 1, :width => 1
-	cfg.edit :templ, "template", :text => opt[s_name][:templ]
-	cfg.dropdown :style, "Style", :items => styles, :value => opt[s_name][:style]
-	cfg.checkbox :strip, "", :label => "Strip tags?", :value => (opt[s_name][:strip] == "true" ? true : false)
+	cfg.edit :templ, "template", :text => opt[:templ]
+	cfg.dropdown :style, "Style", :items => styles, :value => opt[:style]
+	cfg.checkbox :strip, "", :label => "Strip tags?", :value => (opt[:strip] == "true" ? true : false)
 	cfg.to_ary # convert to array
 end
 
