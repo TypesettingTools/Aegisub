@@ -1,3 +1,17 @@
+
+
+
+
+
+           THIS FILE IS OUTDATED, IGNORE IT
+           FOR INSTRUCTIONS:
+           http://www.malakith.net/aegiwiki/index.php?title=Instructions
+
+
+
+
+
+
 Aegisub Source Code Documentation
 
 
