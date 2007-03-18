@@ -159,6 +159,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	LoadCurrentStyles(AssFile::top);
 
 	//Set key handlers for lists
+	CatalogList->PushEventHandler(new DialogStyleManagerEvent(this));
 	StorageList->PushEventHandler(new DialogStyleManagerEvent(this));
 	CurrentList->PushEventHandler(new DialogStyleManagerEvent(this));
 
