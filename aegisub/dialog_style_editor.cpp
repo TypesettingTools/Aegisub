@@ -367,28 +367,30 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		}
 
 		// Style name change
-		if (work->name != newStyleName && !work->name.StartsWith(_("Copy of "))) {
-			// See if user wants to update style name through script
-			int answer = wxNO;
-			if (work->name != _T("Default")) answer = wxMessageBox(_T("Do you want to change all instances of this style in the script to this new name?"),_T("Update script?"),wxYES_NO | wxCANCEL);
+		if (work->name != newStyleName) {
+			if (!work->name.StartsWith(_("Copy of "))) {
+				// See if user wants to update style name through script
+				int answer = wxNO;
+				if (work->name != _T("Default")) answer = wxMessageBox(_T("Do you want to change all instances of this style in the script to this new name?"),_T("Update script?"),wxYES_NO | wxCANCEL);
 
-			// Cancel
-			if (answer == wxCANCEL) return;
+				// Cancel
+				if (answer == wxCANCEL) return;
 
-			// Update
-			if (answer == wxYES) {
-				int n = grid->GetRows();
-				wxArrayString strings;
-				strings.Add(work->name);
-				strings.Add(newStyleName);
-				for (int i=0;i<n;i++) {
-					AssDialogue *curDiag = grid->GetDialogue(i);
-					if (curDiag->Style == work->name) curDiag->Style = newStyleName;
-					curDiag->ParseASSTags();
-					curDiag->ProcessParameters(ReplaceStyle,&strings);
-					curDiag->UpdateText();
-					curDiag->UpdateData();
-					curDiag->ClearBlocks();
+				// Update
+				if (answer == wxYES) {
+					int n = grid->GetRows();
+					wxArrayString strings;
+					strings.Add(work->name);
+					strings.Add(newStyleName);
+					for (int i=0;i<n;i++) {
+						AssDialogue *curDiag = grid->GetDialogue(i);
+						if (curDiag->Style == work->name) curDiag->Style = newStyleName;
+						curDiag->ParseASSTags();
+						curDiag->ProcessParameters(ReplaceStyle,&strings);
+						curDiag->UpdateText();
+						curDiag->UpdateData();
+						curDiag->ClearBlocks();
+					}
 				}
 			}
 

@@ -562,12 +562,14 @@ void VideoContext::Play() {
 	}
 
 	// Set variables
-	isPlaying = true;
 	startFrame = frame_n;
 	endFrame = -1;
 
 	// Start playing audio
 	audio->Play(VFR_Output.GetTimeAtFrame(startFrame),-1);
+
+	//audio->Play will override this if we put it before, so put it after.
+	isPlaying = true;
 
 	// Start timer
 	startTime = clock();

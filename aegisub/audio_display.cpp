@@ -855,6 +855,8 @@ __int64 AudioDisplay::GetSampleAtMS(__int64 ms) {
 ////////
 // Play
 void AudioDisplay::Play(int start,int end) {
+	Stop();
+
 	// Check provider
 	if (!provider) {
 		// Load temporary provider from video
@@ -898,10 +900,8 @@ void AudioDisplay::Play(int start,int end) {
 ////////
 // Stop
 void AudioDisplay::Stop() {
-	if (!player) return;
-
-	player->Stop();
 	if (VideoContext::Get()->IsPlaying()) VideoContext::Get()->Stop();
+	if (player) player->Stop();
 }
 
 
