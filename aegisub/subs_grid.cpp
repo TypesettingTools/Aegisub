@@ -186,7 +186,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		menu.AppendSeparator();
 
 		//Make audio clip
-		state = sels==1&& parentFrame->audioBox->audioDisplay->loaded==true;
+		state = parentFrame->audioBox->audioDisplay->loaded==true;
 		menu.Append(MENU_AUDIOCLIP,_("Create audio clip"),_T("Create an audio clip of the selected line"))->Enable(state);
 		menu.AppendSeparator();
 
@@ -651,14 +651,35 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 //////////////
 // Export audio clip of line
 void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
+	__int64 num_samples,start,end,temp;
 	AudioDisplay *audioDisplay = parentFrame->audioBox->audioDisplay;
 	AudioProvider *provider = audioDisplay->provider;
-	AssDialogue *cur = GetDialogue(GetFirstSelRow());
+	AssDialogue *cur;
+	wxArrayInt sel = GetSelection();
 
-	__int64 num_samples = provider->GetNumSamples();
-	__int64 start = audioDisplay->GetSampleAtMS(cur->Start.GetMS());
-	__int64 end = audioDisplay->GetSampleAtMS(cur->End.GetMS());
-	end=(end>=num_samples+1)?num_samples:end;
+	num_samples = provider->GetNumSamples();
+	
+	for(int i=0;i!=sel.GetCount();i++) {
+		cur = GetDialogue(sel[i]);
+		
+		temp = audioDisplay->GetSampleAtMS(cur->Start.GetMS());
+		start = (i==0||temp<start)?temp:start;
+		temp = audioDisplay->GetSampleAtMS(cur->End.GetMS());
+		end = (i==0||temp>end)?temp:end;
+	}
+
+	if (start > num_samples) {
+		wxMessageBox(_("The starting point is beyond the length of the audio loaded."),_("Error"));
+		return;
+	}
+	if (start==end||end==0) {
+		wxMessageBox(_("There is no audio to save."),_("Error"));
+		return;
+	}
+
+	end=(end>num_samples)?num_samples:end;
+
+
 	wxString filename = wxFileSelector(_("Save audio clip"),0,0,_T("wav"),0,wxFD_SAVE|wxFD_OVERWRITE_PROMPT,this);
 
 	if (!filename.empty()) {
