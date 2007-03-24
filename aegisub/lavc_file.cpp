@@ -35,7 +35,6 @@
 
 
 #include "setup.h"
-#if USE_LAVC == 1
 #include <wx/wxprec.h>
 #include "lavc_file.h"
 
@@ -69,5 +68,3 @@ LAVCFile::~LAVCFile()
 	if (fctx)
 		av_close_input_file(fctx);
 }
-
-#endif

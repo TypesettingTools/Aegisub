@@ -39,10 +39,11 @@
 ///////////
 // Headers
 #include "setup.h"
-#if USE_LAVC == 1
 #define EMULATE_INTTYPES
+extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
+}
 #include "video_provider.h"
 #include "mkv_wrap.h"
 #include "lavc_file.h"
@@ -62,8 +63,6 @@ private:
 	AVFrame *frame;
 	int vidStream;
 
-	double zoom;
-	double dar;
 	int display_w;
 	int display_h;
 
@@ -81,37 +80,23 @@ private:
 	int buffer1Size;
 	int buffer2Size;
 
-	void UpdateDisplaySize();
 	bool GetNextFrame();
-	void LoadVideo(wxString filename);
+	void LoadVideo(wxString filename, double fps);
 	void Close();
-	wxBitmap AVFrameToWX(AVFrame *frame, int n);
 
-	SubtitleProvider::Overlay *overlay;
 protected:
-	virtual void AttachOverlay(SubtitleProvider::Overlay *_overlay);
+	const AegiVideoFrame DoGetFrame(int n);
 
 public:
-	LAVCVideoProvider(wxString filename, wxString subfilename);
+	LAVCVideoProvider(wxString filename, double fps);
 	~LAVCVideoProvider();
 
-	void RefreshSubtitles();
-
 	wxBitmap GetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
 
 	int GetPosition();
 	int GetFrameCount();
-	double GetFPS();
 
-	void SetDAR(double dar);
-	void SetZoom(double zoom);
 	int GetWidth();
 	int GetHeight();
-	double GetZoom();
-
-	int GetSourceWidth();
-	int GetSourceHeight();
+	double GetFPS();
 };
-
-#endif

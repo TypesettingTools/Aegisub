@@ -37,12 +37,13 @@
 #pragma once
 
 #include "setup.h"
-#if USE_LAVC == 1
 
 #define EMULATE_INTTYPES
 #include <wx/filename.h>
+extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
+}
 
 class LAVCFile {
 private:
@@ -64,5 +65,3 @@ public:
 	LAVCFile *AddRef() { refs++; return this; };
 	void Release() { if (!--refs) delete this; };
 };
-
-#endif /* USE_LAVC */

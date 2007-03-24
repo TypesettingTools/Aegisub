@@ -37,23 +37,40 @@
 ///////////
 // Headers
 #include "setup.h"
-#if USE_LAVC == 1
 #include <wx/wxprec.h>
 #include <wx/image.h>
 #include <algorithm>
 #include "video_provider_lavc.h"
 #include "utils.h"
 #include "vfr.h"
-#include "subtitle_provider.h"
 #include "ass_file.h"
 #if 0
 #include "mkv_wrap.h"
 #endif
 
 
+/////////////////////
+// Link to libraries
+#if __VISUALC__ >= 1200
+#pragma comment(lib, "avcodec-51.lib")
+#pragma comment(lib, "avformat-51.lib")
+#pragma comment(lib, "avutil-49.lib")
+#endif
+
+
+
+///////////
+// Factory
+class LAVCVideoProviderFactory : public VideoProviderFactory {
+public:
+	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new LAVCVideoProvider(video,fps); }
+	LAVCVideoProviderFactory() : VideoProviderFactory(_T("ffmpeg")) {}
+} registerLAVCVideo;
+
+
 ///////////////
 // Constructor
-LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
+LAVCVideoProvider::LAVCVideoProvider(wxString filename,double fps) {
 	// Init variables
 	codecContext = NULL;
 	lavcfile = NULL;
@@ -65,19 +82,10 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename, wxString subfilename) {
 	buffer1Size = 0;
 	buffer2Size = 0;
 	vidStream = -1;
-	zoom = 1.0;
 	validFrame = false;
-	overlay = NULL;
 
 	// Load
-	LoadVideo(filename);
-
-	// Attach subtitles
-	try {
-		SubtitleProvider::Class::GetProvider(_T("libass"), AssFile::top)->Bind(this);
-	} catch (...) {
-		/* warn user? */
-	}
+	LoadVideo(filename,fps);
 }
 
 
@@ -88,19 +96,9 @@ LAVCVideoProvider::~LAVCVideoProvider() {
 }
 
 
-/////////////////
-// Attach overlay
-void LAVCVideoProvider::AttachOverlay(SubtitleProvider::Overlay *_overlay)
-{
-	overlay = _overlay;
-	if (overlay)
-		overlay->SetParams(display_w, display_h);
-}
-
-
 //////////////
 // Load video
-void LAVCVideoProvider::LoadVideo(wxString filename) {
+void LAVCVideoProvider::LoadVideo(wxString filename, double fps) {
 	// Close first
 	Close();
 
@@ -112,7 +110,7 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 		// Find video stream
 		vidStream = -1;
 		codecContext = NULL;
-		for (int i=0;i<lavcfile->fctx->nb_streams;i++) {
+		for (unsigned int i=0;i<lavcfile->fctx->nb_streams;i++) {
 			codecContext = lavcfile->fctx->streams[i]->codec;
 			if (codecContext->codec_type == CODEC_TYPE_VIDEO) {
 				stream = lavcfile->fctx->streams[i];
@@ -149,10 +147,6 @@ void LAVCVideoProvider::LoadVideo(wxString filename) {
 			if (length <= 0) throw _T("Returned invalid stream length");
 		}
 #endif
-
-		// Set size
-		dar = double(GetSourceWidth()) / GetSourceHeight();
-		UpdateDisplaySize();
 
 		// Allocate frame
 		frame = avcodec_alloc_frame();
@@ -201,15 +195,6 @@ void LAVCVideoProvider::Close() {
 }
 
 
-///////////////////////
-// Update display size
-void LAVCVideoProvider::UpdateDisplaySize() {
-	// Set
-	display_w = MID(16,int((GetSourceHeight() * zoom * dar)+0.5),4096);
-	display_h = MID(16,int((GetSourceHeight() * zoom)+0.5),4096);
-}
-
-
 //////////////////
 // Get next frame
 bool LAVCVideoProvider::GetNextFrame() {
@@ -239,93 +224,89 @@ bool LAVCVideoProvider::GetNextFrame() {
 }
 
 
-///////////////////////////////
-// Convert AVFrame to wxBitmap
-wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
-	// Get sizes
-	int w = codecContext->width;
-	int h = codecContext->height;
-//#ifdef __WINDOWS__
-//	PixelFormat format = PIX_FMT_RGBA32;
-//#else
-	PixelFormat format = PIX_FMT_RGB24;
-//#endif
-	unsigned int size1 = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
-	unsigned int size2 = avpicture_get_size(format,display_w,display_h);
-
-	// Prepare buffers
-	if (!buffer1 || buffer1Size != size1) {
-		if (buffer1) delete buffer1;
-		buffer1 = new uint8_t[size1];
-		buffer1Size = size1;
-	}
-	if (!buffer2 || buffer2Size != size2) {
-		if (buffer2) delete buffer2;
-		buffer2 = new uint8_t[size2];
-		buffer2Size = size2;
-	}
-
-	// Resize
-	AVFrame *resized;
-	bool resize = w != display_w || h != display_h;
-	if (resize) {
-		// Allocate
-		unsigned int resSize = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
-		resized = avcodec_alloc_frame();
-		avpicture_fill((AVPicture*) resized, buffer1, codecContext->pix_fmt, display_w, display_h);
-
-		// Resize
-		ImgReSampleContext *resampleContext = img_resample_init(display_w,display_h,w,h);
-		img_resample(resampleContext,(AVPicture*) resized,(AVPicture*) source);
-		img_resample_close(resampleContext);
-
-		// Set new w/h
-		w = display_w;
-		h = display_h;
-	}
-	else resized = source;
-
-	// Allocate RGB32 buffer
-	AVFrame *frameRGB = avcodec_alloc_frame();
-	avpicture_fill((AVPicture*) frameRGB, buffer2, format, w, h);
-
-	// Convert to RGB32
-	img_convert((AVPicture*) frameRGB, format, (AVPicture*) resized, codecContext->pix_fmt, w, h);
-
-	// Convert to wxBitmap
-	wxImage img(w, h, false);
-	unsigned char *data = (unsigned char *)malloc(w * h * 3);
-	memcpy(data, frameRGB->data[0], w * h * 3);
-	img.SetData(data);
-	if (overlay)
-		overlay->Render(img, VFR_Input.GetTimeAtFrame(n));
-
-	wxBitmap bmp(img);
-
-	av_free(frameRGB);
-	if (resized != source)
-		av_free(resized);
-	return bmp;
-}
-
-
-////////////////
-// Refresh subs
-void LAVCVideoProvider::RefreshSubtitles() {
-}
+/////////////////////////////////
+//// Convert AVFrame to wxBitmap
+//wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
+//	// Get sizes
+//	int w = codecContext->width;
+//	int h = codecContext->height;
+////#ifdef __WINDOWS__
+////	PixelFormat format = PIX_FMT_RGBA32;
+////#else
+//	PixelFormat format = PIX_FMT_RGB24;
+////#endif
+//	unsigned int size1 = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
+//	unsigned int size2 = avpicture_get_size(format,display_w,display_h);
+//
+//	// Prepare buffers
+//	if (!buffer1 || buffer1Size != size1) {
+//		if (buffer1) delete buffer1;
+//		buffer1 = new uint8_t[size1];
+//		buffer1Size = size1;
+//	}
+//	if (!buffer2 || buffer2Size != size2) {
+//		if (buffer2) delete buffer2;
+//		buffer2 = new uint8_t[size2];
+//		buffer2Size = size2;
+//	}
+//
+//	// Resize
+//	AVFrame *resized;
+//	bool resize = w != display_w || h != display_h;
+//	if (resize) {
+//		// Allocate
+//		unsigned int resSize = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
+//		resized = avcodec_alloc_frame();
+//		avpicture_fill((AVPicture*) resized, buffer1, codecContext->pix_fmt, display_w, display_h);
+//
+//		// Resize
+//		ImgReSampleContext *resampleContext = img_resample_init(display_w,display_h,w,h);
+//		img_resample(resampleContext,(AVPicture*) resized,(AVPicture*) source);
+//		img_resample_close(resampleContext);
+//
+//		// Set new w/h
+//		w = display_w;
+//		h = display_h;
+//	}
+//	else resized = source;
+//
+//	// Allocate RGB32 buffer
+//	AVFrame *frameRGB = avcodec_alloc_frame();
+//	avpicture_fill((AVPicture*) frameRGB, buffer2, format, w, h);
+//
+//	// Convert to RGB32
+//	img_convert((AVPicture*) frameRGB, format, (AVPicture*) resized, codecContext->pix_fmt, w, h);
+//
+//	// Convert to wxBitmap
+//	wxImage img(w, h, false);
+//	unsigned char *data = (unsigned char *)malloc(w * h * 3);
+//	memcpy(data, frameRGB->data[0], w * h * 3);
+//	img.SetData(data);
+//	if (overlay)
+//		overlay->Render(img, VFR_Input.GetTimeAtFrame(n));
+//
+//	wxBitmap bmp(img);
+//
+//	av_free(frameRGB);
+//	if (resized != source)
+//		av_free(resized);
+//	return bmp;
+//}
 
 
 /////////////
 // Get frame
-wxBitmap LAVCVideoProvider::GetFrame(int n) {
+const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 	// Return stored frame
 	n = MID(0,n,GetFrameCount()-1);
 	if (n == frameNumber) {
 		if (!validFrame) {
-			curFrame = AVFrameToWX(frame, n);
+			//curFrame = AVFrameToWX(frame, n);
 			validFrame = true;
 		}
-		return curFrame;
+		//return curFrame;
+		AegiVideoFrame dummy;
+		return dummy;
 	}
 
 	// Following frame, just get it
@@ -400,23 +381,20 @@ wxBitmap LAVCVideoProvider::GetFrame(int n) {
 	}
 
 	// Bitmap
-	wxBitmap bmp;
-	if (frame) bmp = AVFrameToWX(frame, n);
-	else bmp = wxBitmap(GetWidth(),GetHeight());
+	//wxBitmap bmp;
+	//if (frame) bmp = AVFrameToWX(frame, n);
+	//else bmp = wxBitmap(GetWidth(),GetHeight());
 
-	// Set current frame
-	validFrame = true;
-	curFrame = bmp;
-	frameNumber = n;
+	//// Set current frame
+	//validFrame = true;
+	//curFrame = bmp;
+	//frameNumber = n;
 
-	// Return
-	return curFrame;
-}
+	//// Return
+	//return curFrame;
 
-
-//////////////////////
-// Get frame as float
-void LAVCVideoProvider::GetFloatFrame(float* Buffer, int n) {
+	AegiVideoFrame dummy;
+	return dummy;
 }
 
 
@@ -441,57 +419,15 @@ double LAVCVideoProvider::GetFPS() {
 }
 
 
-////////////////////
-// Set aspect ratio
-void LAVCVideoProvider::SetDAR(double _dar) {
-	dar = _dar;
-	validFrame = false;
-	UpdateDisplaySize();
-}
-
-
-////////////
-// Set zoom
-void LAVCVideoProvider::SetZoom(double _zoom) {
-	zoom = _zoom;
-	validFrame = false;
-	UpdateDisplaySize();
-}
-
-
-////////////
-// Get zoom
-double LAVCVideoProvider::GetZoom() {
-	return zoom;
-}
-
-
-/////////////
-// Get width
-int LAVCVideoProvider::GetWidth() {
-	return display_w;
-}
-
-
-//////////////
-// Get height
-int LAVCVideoProvider::GetHeight() {
-	return display_h;
-}
-
-
 //////////////////////
 // Get original width
-int LAVCVideoProvider::GetSourceWidth() {
+int LAVCVideoProvider::GetWidth() {
 	return codecContext->width;
 }
 
 
 ///////////////////////
 // Get original height
-int LAVCVideoProvider::GetSourceHeight() {
+int LAVCVideoProvider::GetHeight() {
 	return codecContext->height;
 }
-
-
-#endif
