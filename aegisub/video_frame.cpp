@@ -39,9 +39,9 @@
 #include "video_frame.h"
 
 
-///////////////
-// Constructor
-AegiVideoFrame::AegiVideoFrame() {
+/////////
+// Reset
+void AegiVideoFrame::Reset() {
 	for (int i=0;i<4;i++) {
 		data[i] = NULL;
 		pitch[i] = 0;
@@ -56,14 +56,21 @@ AegiVideoFrame::AegiVideoFrame() {
 }
 
 
+///////////////
+// Constructor
+AegiVideoFrame::AegiVideoFrame() {
+	Reset();
+}
+
+
 //////////////////
 // Create default
 AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
-	AegiVideoFrame();
+	Reset();
 	format = fmt;
 	w = width;
 	h = height;
-	pitch[0] = w;
+	pitch[0] = w * GetBpp();
 
 	Allocate();
 	for (int i=0;i<4;i++) {
@@ -80,14 +87,16 @@ AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
 void AegiVideoFrame::Allocate() {
 	// Get size
 	int height = h;
-	unsigned int size = pitch[0]*height;
-	if (format == FORMAT_YV12) size = size * 3 / 2;
-	else size = size * GetBpp();
+	unsigned int size;
+	if (format == FORMAT_YV12) size = pitch[0] * height * 3 / 2;
+	else size = pitch[0] * height;
 
 	// Reallocate, if necessary
 	if (memSize != size) {
-		if (cppAlloc) delete[] data[0];
-		else free(data[0]);
+		if (data[0]) {
+			if (cppAlloc) delete[] data[0];
+			else free(data[0]);
+		}
 		data[0] = new unsigned char[size];
 		for (int i=1;i<4;i++) data[i] = NULL;
 		memSize = size;

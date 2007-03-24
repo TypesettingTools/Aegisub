@@ -300,19 +300,13 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 	// Return stored frame
 	n = MID(0,n,GetFrameCount()-1);
 	if (n == frameNumber) {
-		if (!validFrame) {
-			//curFrame = AVFrameToWX(frame, n);
-			validFrame = true;
-		}
-		//return curFrame;
-		AegiVideoFrame dummy;
-		return dummy;
+		if (!validFrame) validFrame = true;
+		return curFrame;
 	}
 
 	// Following frame, just get it
 	if (n == frameNumber+1) {
 		GetNextFrame();
-		//wxLogMessage(wxString::Format(_T("%i"),lastDecodeTime));
 	}
 
 	// Needs to seek
@@ -380,21 +374,50 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 #endif
 	}
 
-	// Bitmap
-	//wxBitmap bmp;
-	//if (frame) bmp = AVFrameToWX(frame, n);
-	//else bmp = wxBitmap(GetWidth(),GetHeight());
+	// Get frame
+	AegiVideoFrame final;
+	if (frame) {
+		// Set AegiVideoFrame
+		PixelFormat format = codecContext->pix_fmt;
+		unsigned int size = avpicture_get_size(format,codecContext->width,codecContext->height);
+		final.w = codecContext->width;
+		final.h = codecContext->height;
+		final.flipped = false;
+		final.invertChannels = false;
 
-	//// Set current frame
-	//validFrame = true;
-	//curFrame = bmp;
-	//frameNumber = n;
+		// Set format
+		switch (format) {
+			case PIX_FMT_BGR24: final.invertChannels = true;
+			case PIX_FMT_RGB24: final.format = FORMAT_RGB24; break;
+			case PIX_FMT_BGR32: final.invertChannels = true;
+			case PIX_FMT_RGB32: final.format = FORMAT_RGB32; break;
+			case PIX_FMT_YUYV422: final.format = FORMAT_YUY2; break;
+			case PIX_FMT_YUV420P: final.format = FORMAT_YV12; break;
+		}
 
-	//// Return
-	//return curFrame;
+		// Allocate
+		final.pitch[0] = final.w * final.GetBpp();
+		final.Allocate();
 
-	AegiVideoFrame dummy;
-	return dummy;
+		// Copy data
+		if (final.format == FORMAT_YV12) {
+			memcpy(final.data[0],frame->data[0],final.w * final.h);
+			memcpy(final.data[1],frame->data[1],final.w * final.h / 4);
+			memcpy(final.data[2],frame->data[2],final.w * final.h / 4);
+		}
+		else memcpy(final.data[0],frame->data[0],size);
+	}
+
+	// No frame available
+	else final = AegiVideoFrame(GetWidth(),GetHeight());
+
+	// Set current frame
+	validFrame = true;
+	curFrame = final;
+	frameNumber = n;
+
+	// Return
+	return final;
 }
 
 

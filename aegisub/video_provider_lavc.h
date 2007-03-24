@@ -72,7 +72,7 @@ private:
 	__int64 lastDecodeTime;
 	int frameNumber;
 	int length;
-	wxBitmap curFrame;
+	AegiVideoFrame curFrame;
 	bool validFrame;
 
 	uint8_t *buffer1;
