@@ -376,7 +376,7 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 	}
 
 	// Get frame
-	AegiVideoFrame final;
+	AegiVideoFrame &final = curFrame;
 	if (frame) {
 		// Set AegiVideoFrame
 		PixelFormat format = codecContext->pix_fmt;
@@ -417,11 +417,11 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 
 	// Set current frame
 	validFrame = true;
-	curFrame = final;
+	//curFrame = final;
 	frameNumber = n;
 
 	// Return
-	return final;
+	return curFrame;
 }
 
 
