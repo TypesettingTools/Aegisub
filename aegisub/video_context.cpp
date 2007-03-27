@@ -452,7 +452,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		// Load image data into texture
 		int height = frame.h;
 		if (frame.format == FORMAT_YV12) height = height * 3 / 2;
-		int tw = SmallestPowerOf2(frame.w);
+		int tw = SmallestPowerOf2(MAX(frame.pitch[0],frame.pitch[1]+frame.pitch[2]));
 		int th = SmallestPowerOf2(height);
 		texW = float(frame.w)/float(tw);
 		texH = float(frame.h)/float(th);
@@ -469,12 +469,12 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 
 		// Create shader if necessary
 		if (frame.format == FORMAT_YV12 && yv12shader == 0) {
-			yv12shader = OpenGLWrapper::CreateYV12Shader(texW,texH);
+			yv12shader = OpenGLWrapper::CreateYV12Shader(texW,texH,float(frame.pitch[1])/float(tw));
 		}
 	}
 	
 	// Load texture data
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,frame.w,frame.h,format,GL_UNSIGNED_BYTE,frame.data[0]);
+	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,frame.pitch[0],frame.h,format,GL_UNSIGNED_BYTE,frame.data[0]);
 	if (glGetError() != 0) throw _T("Error uploading primary plane");
 
 	// UV planes for YV12
@@ -485,9 +485,9 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 			u = 2;
 			v = 1;
 		}
-		glTexSubImage2D(GL_TEXTURE_2D,0,0,frame.h,frame.w/2,frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[u]);
+		glTexSubImage2D(GL_TEXTURE_2D,0,0,frame.h,frame.pitch[1],frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[u]);
 		if (glGetError() != 0) throw _T("Error uploading U plane.");
-		glTexSubImage2D(GL_TEXTURE_2D,0,frame.w/2,frame.h,frame.w/2,frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[v]);
+		glTexSubImage2D(GL_TEXTURE_2D,0,frame.pitch[1],frame.h,frame.pitch[2],frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[v]);
 		if (glGetError() != 0) throw _T("Error uploadinv V plane.");
 	}
 

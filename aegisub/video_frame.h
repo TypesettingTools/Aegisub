@@ -40,6 +40,7 @@
 //////////////////////
 // Video Frame format
 enum VideoFrameFormat {
+	FORMAT_NONE,
 	FORMAT_RGB24,
 	FORMAT_RGB32,
 	FORMAT_YUY2,

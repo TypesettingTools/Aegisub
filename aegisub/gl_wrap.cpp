@@ -408,7 +408,7 @@ GLuint OpenGLWrapper::CreateYV12PixelShader() {
 
 /////////////////////////////////////
 // Create YV12->RGB32 Shader Program
-GLuint OpenGLWrapper::CreateYV12Shader(float tw,float th) {
+GLuint OpenGLWrapper::CreateYV12Shader(float tw,float th,float tws) {
 	// Create vertex shader
 	GLuint ver = OpenGLWrapper::CreateStandardVertexShader();
 	if (glGetError() != 0) throw _T("Error creating generic vertex shader");
@@ -431,7 +431,7 @@ GLuint OpenGLWrapper::CreateYV12Shader(float tw,float th) {
 	address = glGetUniformLocationARB(program,"off1");
 	glUniform2fARB(address, 0.0f, th);
 	address = glGetUniformLocationARB(program,"off2");
-	glUniform2fARB(address, tw*0.5f, th);
+	glUniform2fARB(address, tws, th);
 
 	// Return shader
 	return program;

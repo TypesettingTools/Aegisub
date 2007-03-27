@@ -85,6 +85,7 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename,double fps) {
 	validFrame = false;
 
 	// Load
+	SetCacheMax(8);
 	LoadVideo(filename,fps);
 }
 
@@ -389,21 +390,24 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 		switch (format) {
 			case PIX_FMT_BGR24: final.invertChannels = true;
 			case PIX_FMT_RGB24: final.format = FORMAT_RGB24; break;
+			#ifdef __WINDOWS__
 			case PIX_FMT_BGR32: final.invertChannels = true;
+			#endif
 			case PIX_FMT_RGB32: final.format = FORMAT_RGB32; break;
 			case PIX_FMT_YUYV422: final.format = FORMAT_YUY2; break;
 			case PIX_FMT_YUV420P: final.format = FORMAT_YV12; break;
+			default: throw _T("ffmpeg returned an unknown frame format.");
 		}
 
 		// Allocate
-		final.pitch[0] = final.w * final.GetBpp();
+		for (int i=0;i<4;i++) final.pitch[i] = frame->linesize[i];
 		final.Allocate();
 
 		// Copy data
 		if (final.format == FORMAT_YV12) {
-			memcpy(final.data[0],frame->data[0],final.w * final.h);
-			memcpy(final.data[1],frame->data[1],final.w * final.h / 4);
-			memcpy(final.data[2],frame->data[2],final.w * final.h / 4);
+			memcpy(final.data[0],frame->data[0],frame->linesize[0] * final.h);
+			memcpy(final.data[1],frame->data[1],frame->linesize[1] * final.h / 2);
+			memcpy(final.data[2],frame->data[2],frame->linesize[2] * final.h / 2);
 		}
 		else memcpy(final.data[0],frame->data[0],size);
 	}

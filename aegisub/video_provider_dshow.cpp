@@ -419,34 +419,25 @@ void DirectShowVideoProvider::ReadFrame(long long timestamp, unsigned format, un
 	df->frame.w = width;
 	df->frame.h = height;
 	df->frame.pitch[0] = stride;
+	if (format == IVS_YV12) {
+		df->frame.pitch[1] = stride/2;
+		df->frame.pitch[2] = stride/2;
+	}
 	df->frame.cppAlloc = false;
 	df->frame.invertChannels = true;
 
-	// Planar
-	if (format == IVS_YUY2) {
-		df->frame.format = FORMAT_YUY2;
+	// Set format
+	if (format == IVS_RGB24) df->frame.format = FORMAT_RGB24;
+	else if (format == IVS_RGB32) df->frame.format = FORMAT_RGB32;
+	else if (format == IVS_YV12) {
+		df->frame.format = FORMAT_YV12;
+		df->frame.invertChannels = true;
 	}
+	else if (format == IVS_YUY2) df->frame.format = FORMAT_YUY2;
 
-	// Interleaved
-	else {
-		// Set format
-		if (format == IVS_RGB24) df->frame.format = FORMAT_RGB24;
-		else if (format == IVS_RGB32) df->frame.format = FORMAT_RGB32;
-		else if (format == IVS_YV12) df->frame.format = FORMAT_YV12;
-
-		// Allocate
-		unsigned int datalen = stride*height;
-		df->frame.Allocate();
-
-		// Prepare data for YV12
-		if (format == IVS_YV12) {
-			datalen = datalen * 3 / 2;
-			df->frame.invertChannels = true;
-		}
-
-		// Copy
-		memcpy(df->frame.data[0],src,datalen);
-	}
+	// Allocate and copy data
+	df->frame.Allocate();
+	memcpy(df->frame.data[0],src,df->frame.pitch[0]*height + (df->frame.pitch[1]+df->frame.pitch[2])*height/2);
 }
 
 

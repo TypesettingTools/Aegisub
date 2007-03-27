@@ -66,5 +66,5 @@ public:
 	static bool ShadersAvailable();
 	static void SetShader(GLuint i);
 	static void DestroyShaderProgram(GLuint i);
-	static GLuint CreateYV12Shader(float tw,float th);
+	static GLuint CreateYV12Shader(float tw,float th,float tws);
 };

@@ -49,7 +49,7 @@ void AegiVideoFrame::Reset() {
 	memSize = 0;
 	w = 0;
 	h = 0;
-	format = FORMAT_RGB24;
+	format = FORMAT_NONE;
 	flipped = false;
 	cppAlloc = true;
 	invertChannels = true;
@@ -85,10 +85,20 @@ AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
 ////////////
 // Allocate
 void AegiVideoFrame::Allocate() {
+	// Check consistency
+	wxASSERT(pitch[0] > 0 && pitch[0] < 10000);
+	wxASSERT(w > 0 && w < 10000);
+	wxASSERT(h > 0 && h < 10000);
+	wxASSERT(format != FORMAT_NONE);
+
 	// Get size
 	int height = h;
 	unsigned int size;
-	if (format == FORMAT_YV12) size = pitch[0] * height * 3 / 2;
+	if (format == FORMAT_YV12) {
+		wxASSERT(pitch[1] > 0 && pitch[1] < 10000);
+		wxASSERT(pitch[2] > 0 && pitch[2] < 10000);
+		size = pitch[0]*height + (pitch[1]+pitch[2])*height/2;
+	}
 	else size = pitch[0] * height;
 
 	// Reallocate, if necessary
@@ -104,11 +114,12 @@ void AegiVideoFrame::Allocate() {
 		// Planar
 		if (format == FORMAT_YV12) {
 			data[1] = data[0] + (pitch[0]*height);
-			data[2] = data[0] + (pitch[0]*height*5/4);
+			data[2] = data[0] + (pitch[0]*height+pitch[1]*height/2);
 		}
-	}
 
-	cppAlloc = true;
+		// Flag as allocated by C++
+		cppAlloc = true;
+	}
 }
 
 
