@@ -189,21 +189,21 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	audioDisplay->karaoke = audioKaraoke;
 	KaraokeButton = new wxToggleButton(this,Audio_Button_Karaoke,_("Karaoke"),wxDefaultPosition,wxSize(-1,-1));
 	KaraokeButton->SetToolTip(_("Toggle karaoke mode"));
-	karaokeSizer->Add(KaraokeButton,0,wxRIGHT,0);
+	karaokeSizer->Add(KaraokeButton,0,wxRIGHT|wxEXPAND,0);
 #ifndef __WXMAC__
-	JoinButton = new wxButton(this,Audio_Button_Join,_("Join"),wxDefaultPosition,wxSize(-1,-1));
+	JoinButton = new wxButton(this,Audio_Button_Join,_("Join"),wxDefaultPosition,wxSize(-1,10));
 #else
 	// we use this custom class to match the button style of toggle buttons in wxMac
 	JoinButton = new wxBevelButton(this,Audio_Button_Join,_("Join"),wxDefaultPosition,wxSize(-1,-1));
 #endif
 	JoinButton->SetToolTip(_("Join selected syllables"));
 	JoinButton->Enable(false);
-	karaokeSizer->Add(JoinButton,0,wxRIGHT,0);
+	karaokeSizer->Add(JoinButton,0,wxRIGHT|wxEXPAND,0);
 	SplitButton = new wxToggleButton(this,Audio_Button_Split,_("Split"),wxDefaultPosition,wxSize(-1,-1));
 	SplitButton->SetToolTip(_("Toggle splitting-mode"));
 	SplitButton->Enable(false);
 	SplitButton->SetValue(false);
-	karaokeSizer->Add(SplitButton,0,wxRIGHT,5);
+	karaokeSizer->Add(SplitButton,0,wxRIGHT|wxEXPAND,5);
 	karaokeSizer->Add(audioKaraoke,1,wxEXPAND,0);
 
 	// Main sizer
