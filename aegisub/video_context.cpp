@@ -445,19 +445,31 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 
 		// Texture parameters
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		if (glGetError() != 0) throw _T("Error setting min_filter texture parameter.");
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		if (glGetError() != 0) throw _T("Error setting mag_filter texture parameter.");
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		if (glGetError() != 0) throw _T("Error setting wrap_s texture parameter.");
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		if (glGetError() != 0) throw _T("Error setting wrap_t texture parameter.");
 
 		// Load image data into texture
 		int height = frame.h;
 		if (frame.format == FORMAT_YV12) height = height * 3 / 2;
-		int tw = SmallestPowerOf2(MAX(frame.pitch[0],frame.pitch[1]+frame.pitch[2]));
+		int tw = SmallestPowerOf2(MAX(frame.pitch[0]/frame.GetBpp(0),frame.pitch[1]+frame.pitch[2]));
 		int th = SmallestPowerOf2(height);
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
+		if (glGetError() != 0) {
+			tw = MAX(tw,th);
+			th = tw;
+			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
+			if (glGetError() != 0) {
+				glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
+				if (glGetError() != 0) throw _T("Error allocating texture.");
+			}
+		}
 		texW = float(frame.w)/float(tw);
 		texH = float(frame.h)/float(th);
-		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
-		if (glGetError() != 0) throw _T("Error allocating texture.");
 
 		// Set texture
 		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
