@@ -474,7 +474,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 	}
 	
 	// Load texture data
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,frame.pitch[0],frame.h,format,GL_UNSIGNED_BYTE,frame.data[0]);
+	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,frame.pitch[0]/frame.GetBpp(0),frame.h,format,GL_UNSIGNED_BYTE,frame.data[0]);
 	if (glGetError() != 0) throw _T("Error uploading primary plane");
 
 	// UV planes for YV12
