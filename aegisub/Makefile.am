@@ -128,6 +128,7 @@ aegisub_SOURCES = \
 	video_display_visual.cpp \
 	video_frame.cpp \
 	video_provider.cpp \
+	video_provider_lavc.cpp \
 	video_slider.cpp \
 	video_zoom.cpp \
 	MatroskaParser.c
