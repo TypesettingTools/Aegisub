@@ -1080,6 +1080,7 @@ void FrameMain::LoadKeyframes(wxString filename) {
 		keyFrames.Empty();
 		VideoContext::Get()->CloseOverKeyFrames();
 		videoBox->videoSlider->Refresh();
+		audioBox->audioDisplay->Update();
 		Refresh();
 		return;
 	}
@@ -1127,6 +1128,7 @@ void FrameMain::LoadKeyframes(wxString filename) {
 
 		// Refresh display
 		Refresh();
+		audioBox->audioDisplay->Update();
 	}
 
 	// Fail
