@@ -42,6 +42,10 @@
 /////////
 // Reset
 void AegiVideoFrame::Reset() {
+	// Note that this function DOES NOT unallocate memory.
+	// Use Clear() for that
+
+	// Zero variables
 	for (int i=0;i<4;i++) {
 		data[i] = NULL;
 		pitch[i] = 0;
@@ -49,6 +53,8 @@ void AegiVideoFrame::Reset() {
 	memSize = 0;
 	w = 0;
 	h = 0;
+
+	// Set properties
 	format = FORMAT_NONE;
 	flipped = false;
 	cppAlloc = true;
@@ -66,19 +72,25 @@ AegiVideoFrame::AegiVideoFrame() {
 //////////////////
 // Create default
 AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
+	// Clear
 	Reset();
+
+	// Set format
 	format = fmt;
 	w = width;
 	h = height;
 	pitch[0] = w * GetBpp();
-
-	Allocate();
-	for (int i=0;i<4;i++) {
-		int height = h;
-		if (format == FORMAT_YV12 && i > 0) height/=2;
-		int size = pitch[i]*height;
-		memset(data[0],0,size);
+	if (fmt == FORMAT_YV12) {
+		pitch[1] = w/2;
+		pitch[2] = w/2;
 	}
+
+	// Allocate
+	Allocate();
+
+	// Clear data
+	int size = pitch[0]*height + (pitch[1]+pitch[2])*height/2;
+	memset(data[0],0,size);
 }
 
 
@@ -126,8 +138,11 @@ void AegiVideoFrame::Allocate() {
 /////////
 // Clear
 void AegiVideoFrame::Clear() {
+	// Free memory
 	if (cppAlloc) delete[] data[0];
 	else free(data[0]);
+
+	// Zero variables
 	for (int i=0;i<4;i++) {
 		data[i] = NULL;
 		pitch[i] = 0;
@@ -135,7 +150,9 @@ void AegiVideoFrame::Clear() {
 	memSize = 0;
 	w = 0;
 	h = 0;
-	format = FORMAT_RGB24;
+
+	// Reset properties
+	format = FORMAT_NONE;
 	flipped = false;
 	cppAlloc = true;
 	invertChannels = true;
@@ -161,6 +178,7 @@ void AegiVideoFrame::CopyFrom(const AegiVideoFrame &source) {
 // ------
 // This function is only used on screenshots, so it doesn't have to be fast
 wxImage AegiVideoFrame::GetImage() const {
+	// RGB
 	if (format == FORMAT_RGB32 || format == FORMAT_RGB24) {
 		// Create
 		unsigned char *buf = (unsigned char*)malloc(w*h*3);
@@ -188,6 +206,11 @@ wxImage AegiVideoFrame::GetImage() const {
 		img.SetData(buf);
 		return img;
 	}
+
+	// YV12
+	//else if (format == FORMAT_YV12) {
+		// TODO
+	//}
 
 	else {
 		return wxImage(w,h);

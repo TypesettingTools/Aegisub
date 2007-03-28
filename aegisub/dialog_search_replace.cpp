@@ -190,9 +190,12 @@ void DialogSearchReplace::OnKeyDown (wxKeyEvent &event) {
 }
 
 
-/////////////
-// Find next
-void DialogSearchReplace::OnFindNext (wxCommandEvent &event) {
+///////////////////
+// Find or replace
+void DialogSearchReplace::FindReplace(int mode) {
+	// Check mode
+	if (mode < 0 || mode > 2) return;
+
 	// Variables
 	wxString LookFor = FindEdit->GetValue();
 	if (LookFor.IsEmpty()) return;
@@ -205,67 +208,50 @@ void DialogSearchReplace::OnFindNext (wxCommandEvent &event) {
 	Search.CanContinue = true;
 	Search.affect = Affect->GetSelection();
 	Search.field = Field->GetSelection();
-	Search.FindNext();
-	
-	if (hasReplace) {
+
+	// Find
+	if (mode == 0) {
+		Search.FindNext();
+		if (hasReplace) {
+			wxString ReplaceWith = ReplaceEdit->GetValue();
+			Search.ReplaceWith = ReplaceWith;
+			Options.AddToRecentList(ReplaceWith,_T("Recent replace"));
+		}	
+	}
+
+	// Replace
+	else {
 		wxString ReplaceWith = ReplaceEdit->GetValue();
 		Search.ReplaceWith = ReplaceWith;
+		if (mode == 1) Search.ReplaceNext();
+		else Search.ReplaceAll();
 		Options.AddToRecentList(ReplaceWith,_T("Recent replace"));
-	}	
-
+	}
+	
 	// Add to history
 	Options.AddToRecentList(LookFor,_T("Recent find"));
 	UpdateDropDowns();
+}
+
+
+/////////////
+// Find next
+void DialogSearchReplace::OnFindNext (wxCommandEvent &event) {
+	FindReplace(0);
 }
 
 
 ////////////////
 // Replace next
 void DialogSearchReplace::OnReplaceNext (wxCommandEvent &event) {
-	// Variables
-	wxString LookFor = FindEdit->GetValue();
-	wxString ReplaceWith = ReplaceEdit->GetValue();
-	if (LookFor.IsEmpty()) return;
-
-	// Setup
-	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
-	Search.matchCase = CheckMatchCase->IsChecked();
-	Search.LookFor = LookFor;
-	Search.ReplaceWith = ReplaceWith;
-	Search.affect = Affect->GetSelection();
-	Search.field = Field->GetSelection();
-	Search.updateVideo = CheckUpdateVideo->IsChecked() && CheckUpdateVideo->IsEnabled();
-	Search.ReplaceNext();
-
-	// Add to history
-	Options.AddToRecentList(LookFor,_T("Recent find"));
-	Options.AddToRecentList(ReplaceWith,_T("Recent replace"));
-	UpdateDropDowns();
+	FindReplace(1);
 }
 
 
 ///////////////
 // Replace all
 void DialogSearchReplace::OnReplaceAll (wxCommandEvent &event) {
-	// Setup
-	wxString LookFor = FindEdit->GetValue();
-	wxString ReplaceWith = ReplaceEdit->GetValue();
-	if (LookFor.IsEmpty()) return;
-	
-	// Do search
-	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
-	Search.matchCase = CheckMatchCase->IsChecked();
-	Search.LookFor = LookFor;
-	Search.ReplaceWith = ReplaceWith;
-	Search.affect = Affect->GetSelection();
-	Search.field = Field->GetSelection();
-	Search.updateVideo = CheckUpdateVideo->IsChecked() && CheckUpdateVideo->IsEnabled();
-	Search.ReplaceAll();
-
-	// Add to history
-	Options.AddToRecentList(LookFor,_T("Recent find"));
-	Options.AddToRecentList(ReplaceWith,_T("Recent replace"));
-	UpdateDropDowns();
+	FindReplace(2);
 }
 
 
@@ -509,6 +495,7 @@ void SearchReplaceEngine::ReplaceAll() {
 	if (count > 0) {
 		grid->ass->FlagAsModified(_("replace"));
 		grid->CommitChanges();
+		grid->editBox->Update();
 		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
 	}
 

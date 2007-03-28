@@ -105,6 +105,7 @@ private:
 	wxRadioBox *Field;
 
 	void UpdateDropDowns();
+	void FindReplace(int mode);	// 0 = find, 1 = replace next, 2 = replace all
 
 	void OnClose (wxCommandEvent &event);
 	void OnFindNext (wxCommandEvent &event);
