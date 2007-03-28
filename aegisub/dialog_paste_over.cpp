@@ -124,8 +124,8 @@ END_EVENT_TABLE()
 // OK pressed
 void DialogPasteOver::OnOK(wxCommandEvent &event) {
 	// Set options
-	options.SetCount(11);
-	for (int i=0;i<11;i++) {
+	options.SetCount(10);
+	for (int i=0;i<10;i++) {
 		options[i] = ListBox->IsChecked(i) ? 1 : 0;
 		Options.SetBool(wxString::Format(_T("Paste Over #%i"),i),options[i]==1);
 	}

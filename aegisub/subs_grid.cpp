@@ -963,9 +963,9 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 					if (pasteOverOptions[5]) target->Margin[0] = curdiag->Margin[0];
 					if (pasteOverOptions[6]) target->Margin[1] = curdiag->Margin[1];
 					if (pasteOverOptions[7]) target->Margin[2] = curdiag->Margin[2];
-					if (pasteOverOptions[8]) target->Margin[3] = curdiag->Margin[3];
-					if (pasteOverOptions[9]) target->Effect = curdiag->Effect;
-					if (pasteOverOptions[10]) target->Text = curdiag->Text;
+					//if (pasteOverOptions[8]) target->Margin[3] = curdiag->Margin[3];
+					if (pasteOverOptions[8]) target->Effect = curdiag->Effect;
+					if (pasteOverOptions[9]) target->Text = curdiag->Text;
 				}
 				delete curdiag;
 			}
