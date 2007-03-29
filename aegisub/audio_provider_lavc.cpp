@@ -110,11 +110,15 @@ LAVCAudioProvider::LAVCAudioProvider(wxString _filename)
 			break;
 		}
 	}
-	if (audStream == -1)
+	if (audStream == -1) {
+		codecContext = NULL;
 		throw _T("Could not find an audio stream");
+	}
 	AVCodec *codec = avcodec_find_decoder(codecContext->codec_id);
-	if (!codec)
+	if (!codec) {
+		codecContext = NULL;
 		throw _T("Could not find a suitable audio decoder");
+	}
 	if (avcodec_open(codecContext, codec) < 0)
 		throw _T("Failed to open audio decoder");
 

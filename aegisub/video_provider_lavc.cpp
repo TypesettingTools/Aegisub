@@ -227,72 +227,74 @@ bool LAVCVideoProvider::GetNextFrame() {
 
 /////////////////////////////////
 //// Convert AVFrame to wxBitmap
-//wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
-//	// Get sizes
-//	int w = codecContext->width;
-//	int h = codecContext->height;
-////#ifdef __WINDOWS__
-////	PixelFormat format = PIX_FMT_RGBA32;
-////#else
-//	PixelFormat format = PIX_FMT_RGB24;
-////#endif
-//	unsigned int size1 = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
-//	unsigned int size2 = avpicture_get_size(format,display_w,display_h);
-//
-//	// Prepare buffers
-//	if (!buffer1 || buffer1Size != size1) {
-//		if (buffer1) delete buffer1;
-//		buffer1 = new uint8_t[size1];
-//		buffer1Size = size1;
-//	}
-//	if (!buffer2 || buffer2Size != size2) {
-//		if (buffer2) delete buffer2;
-//		buffer2 = new uint8_t[size2];
-//		buffer2Size = size2;
-//	}
-//
-//	// Resize
-//	AVFrame *resized;
-//	bool resize = w != display_w || h != display_h;
-//	if (resize) {
-//		// Allocate
-//		unsigned int resSize = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
-//		resized = avcodec_alloc_frame();
-//		avpicture_fill((AVPicture*) resized, buffer1, codecContext->pix_fmt, display_w, display_h);
-//
-//		// Resize
-//		ImgReSampleContext *resampleContext = img_resample_init(display_w,display_h,w,h);
-//		img_resample(resampleContext,(AVPicture*) resized,(AVPicture*) source);
-//		img_resample_close(resampleContext);
-//
-//		// Set new w/h
-//		w = display_w;
-//		h = display_h;
-//	}
-//	else resized = source;
-//
-//	// Allocate RGB32 buffer
-//	AVFrame *frameRGB = avcodec_alloc_frame();
-//	avpicture_fill((AVPicture*) frameRGB, buffer2, format, w, h);
-//
-//	// Convert to RGB32
-//	img_convert((AVPicture*) frameRGB, format, (AVPicture*) resized, codecContext->pix_fmt, w, h);
-//
-//	// Convert to wxBitmap
-//	wxImage img(w, h, false);
-//	unsigned char *data = (unsigned char *)malloc(w * h * 3);
-//	memcpy(data, frameRGB->data[0], w * h * 3);
-//	img.SetData(data);
-//	if (overlay)
-//		overlay->Render(img, VFR_Input.GetTimeAtFrame(n));
-//
-//	wxBitmap bmp(img);
-//
-//	av_free(frameRGB);
-//	if (resized != source)
-//		av_free(resized);
-//	return bmp;
-//}
+/*
+wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
+	// Get sizes
+	int w = codecContext->width;
+	int h = codecContext->height;
+//#ifdef __WINDOWS__
+//	PixelFormat format = PIX_FMT_RGBA32;
+//#else
+	PixelFormat format = PIX_FMT_RGB24;
+//#endif
+	unsigned int size1 = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
+	unsigned int size2 = avpicture_get_size(format,display_w,display_h);
+
+	// Prepare buffers
+	if (!buffer1 || buffer1Size != size1) {
+		if (buffer1) delete buffer1;
+		buffer1 = new uint8_t[size1];
+		buffer1Size = size1;
+	}
+	if (!buffer2 || buffer2Size != size2) {
+		if (buffer2) delete buffer2;
+		buffer2 = new uint8_t[size2];
+		buffer2Size = size2;
+	}
+
+	// Resize
+	AVFrame *resized;
+	bool resize = w != display_w || h != display_h;
+	if (resize) {
+		// Allocate
+		unsigned int resSize = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
+		resized = avcodec_alloc_frame();
+		avpicture_fill((AVPicture*) resized, buffer1, codecContext->pix_fmt, display_w, display_h);
+
+		// Resize
+		ImgReSampleContext *resampleContext = img_resample_init(display_w,display_h,w,h);
+		img_resample(resampleContext,(AVPicture*) resized,(AVPicture*) source);
+		img_resample_close(resampleContext);
+
+		// Set new w/h
+		w = display_w;
+		h = display_h;
+	}
+	else resized = source;
+
+	// Allocate RGB32 buffer
+	AVFrame *frameRGB = avcodec_alloc_frame();
+	avpicture_fill((AVPicture*) frameRGB, buffer2, format, w, h);
+
+	// Convert to RGB32
+	img_convert((AVPicture*) frameRGB, format, (AVPicture*) resized, codecContext->pix_fmt, w, h);
+
+	// Convert to wxBitmap
+	wxImage img(w, h, false);
+	unsigned char *data = (unsigned char *)malloc(w * h * 3);
+	memcpy(data, frameRGB->data[0], w * h * 3);
+	img.SetData(data);
+	if (overlay)
+		overlay->Render(img, VFR_Input.GetTimeAtFrame(n));
+
+	wxBitmap bmp(img);
+
+	av_free(frameRGB);
+	if (resized != source)
+		av_free(resized);
+	return bmp;
+}
+*/
 
 
 /////////////
