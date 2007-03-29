@@ -249,8 +249,8 @@ void VideoDisplay::Render() {
 	visual->DrawOverlay();
 
 	// Swap buffers
-	glFinish();
-	if (glGetError()) throw _T("Error finishing gl operation.");
+	//glFinish();
+	//if (glGetError()) throw _T("Error finishing gl operation.");
 	SwapBuffers();
 }
 
