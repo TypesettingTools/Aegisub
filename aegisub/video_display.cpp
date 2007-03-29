@@ -136,14 +136,19 @@ void VideoDisplay::Render() {
 
 	// Set GL context
 	VideoContext *context = VideoContext::Get();
+	wxASSERT(context);
 	SetCurrent(*context->GetGLContext(this));
 
 	// Get sizes
 	int w,h,sw,sh,pw,ph;
 	GetClientSize(&w,&h);
+	wxASSERT(w > 0);
+	wxASSERT(h > 0);
 	context->GetScriptSize(sw,sh);
 	pw = context->GetWidth();
 	ph = context->GetHeight();
+	wxASSERT(pw > 0);
+	wxASSERT(ph > 0);
 
 	// Freesized transform
 	dx1 = 0;
@@ -151,8 +156,13 @@ void VideoDisplay::Render() {
 	dx2 = w;
 	dy2 = h;
 	if (freeSize) {
+		// Clear frame buffer
 		glClearColor(0,0,0,0);
+		if (glGetError()) throw _T("Error setting glClearColor().");
 		glClear(GL_COLOR_BUFFER_BIT);
+		if (glGetError()) throw _T("Error calling glClear().");
+
+		// Set aspect ratio
 		float thisAr = float(w)/float(h);
 		float vidAr;
 		if (context->GetAspectRatioType() == 0) vidAr = float(pw)/float(ph);
@@ -175,6 +185,7 @@ void VideoDisplay::Render() {
 
 	// Set viewport
 	glEnable(GL_TEXTURE_2D);
+	if (glGetError()) throw _T("Error enabling texturing.");
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glViewport(dx1,dy1,dx2,dy2);
@@ -182,31 +193,40 @@ void VideoDisplay::Render() {
 	glLoadIdentity();
 	glOrtho(0.0f,sw,sh,0.0f,-1000.0f,1000.0f);
 	glMatrixMode(GL_MODELVIEW);
+	if (glGetError()) throw _T("Error setting up matrices (wtf?).");
 
 	// Texture mode
 	if (w != pw || h != ph) {
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		if (glGetError()) throw _T("Error setting texture parameter min filter.");
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		if (glGetError()) throw _T("Error setting texture parameter mag filter.");
 	}
 	else {
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		if (glGetError()) throw _T("Error setting texture parameter min filter.");
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		if (glGetError()) throw _T("Error setting texture parameter mag filter.");
 	}
 
 	// Texture coordinates
 	float top = 0.0f;
 	float bot = context->GetTexH();
+	wxASSERT(bot != 0.0f);
 	if (context->IsInverted()) {
 		top = context->GetTexH();
 		bot = 0.0f;
 	}
 	float left = 0.0;
 	float right = context->GetTexW();
+	wxASSERT(right != 0.0f);
 
 	// Draw frame
 	glDisable(GL_BLEND);
+	if (glGetError()) throw _T("Error disabling blending.");
 	context->SetShader(true);
 	glBindTexture(GL_TEXTURE_2D, VideoContext::Get()->GetFrameAsTexture(-1));
+	if (glGetError()) throw _T("Error binding texture.");
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glBegin(GL_QUADS);
 		// Top-left
@@ -225,10 +245,12 @@ void VideoDisplay::Render() {
 	context->SetShader(false);
 
 	// Draw overlay
+	wxASSERT(visual);
 	visual->DrawOverlay();
 
 	// Swap buffers
 	glFinish();
+	if (glGetError()) throw _T("Error finishing gl operation.");
 	SwapBuffers();
 }
 
@@ -241,6 +263,7 @@ void VideoDisplay::UpdateSize() {
 
 	// Loaded?
 	VideoContext *con = VideoContext::Get();
+	wxASSERT(con);
 	if (!con->IsLoaded()) return;
 	if (!IsShownOnScreen()) return;
 
@@ -256,6 +279,8 @@ void VideoDisplay::UpdateSize() {
 	SetSizeHints(w,h,w,h);
 	SetClientSize(w,h);
 	GetSize(&_w,&_h);
+	wxASSERT(_w > 0);
+	wxASSERT(_h > 0);
 	SetSizeHints(_w,_h,_w,_h);
 	box->VideoSizer->Fit(box);
 
@@ -272,11 +297,17 @@ void VideoDisplay::UpdateSize() {
 //////////
 // Resets
 void VideoDisplay::Reset() {
+	// Only calculate sizes if it's visible
+	if (!IsShownOnScreen()) return;
 	int w = origSize.GetX();
 	int h = origSize.GetY();
+	wxASSERT(w > 0);
+	wxASSERT(h > 0);
 	SetClientSize(w,h);
 	int _w,_h;
 	GetSize(&_w,&_h);
+	wxASSERT(_w > 0);
+	wxASSERT(_h > 0);
 	SetSizeHints(_w,_h,_w,_h);
 }
 
@@ -330,6 +361,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Send to visual
+	wxASSERT(visual);
 	visual->OnMouseEvent(event);
 }
 
@@ -337,6 +369,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 /////////////
 // Key event
 void VideoDisplay::OnKey(wxKeyEvent &event) {
+	wxASSERT(visual);
 	visual->OnKeyEvent(event);
 }
 
@@ -346,6 +379,7 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 // Mouse left display
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 	if (VideoContext::Get()->IsPlaying()) return;
+	wxASSERT(visual);
 	visual->OnMouseEvent(event);
 	if (tracker) tracker->bTrackerEditing = 0;
 }
@@ -497,6 +531,10 @@ void VideoDisplay::DrawText( wxPoint Pos, wxString text ) {
 void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 	int w,h;
 	GetClientSize(&w,&h);
+	wxASSERT(dx2 > 0);
+	wxASSERT(dy2 > 0);
+	wxASSERT(w > 0);
+	wxASSERT(h > 0);
 	x = (x-dx1)*w/dx2;
 	y = (y-dy1)*h/dy2;
 }
