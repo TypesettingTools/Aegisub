@@ -38,6 +38,15 @@
 // Headers
 #define EMULATE_INTTYPES
 #include <wx/wxprec.h>
+
+/* avcodec.h uses INT64_C in a *single* place. This prolly breaks on Win32,
+ * but, well. Let's at least fix it for Linux.
+ *
+#define __STDC_CONSTANT_MACROS 1
+#include <stdint.h>
+ * - done in posix/defines.h
+ */
+
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 #include "mkv_wrap.h"

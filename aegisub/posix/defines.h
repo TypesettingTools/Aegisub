@@ -9,6 +9,7 @@
 #include "acconf.h"
 
 #ifdef HAVE_STDINT_H
+#define __STDC_CONSTANT_MACROS 1
 #include <stdint.h>
 #endif
 #ifdef HAVE_INTTYPES_H
