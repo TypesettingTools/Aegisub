@@ -268,7 +268,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		// Select option
 		if (!showVideo && !showAudio) MenuBar->Check(Menu_View_Subs,true);
 		else if (showVideo && !showAudio) MenuBar->Check(Menu_View_Video,true);
-		else if (showAudio && !showVideo) MenuBar->Check(Menu_View_Standard,true);
+		else if (showAudio && showVideo) MenuBar->Check(Menu_View_Standard,true);
 		else MenuBar->Check(Menu_View_Audio,true);
 	}
 

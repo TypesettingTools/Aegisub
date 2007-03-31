@@ -52,6 +52,7 @@
 /////////////////////
 // Link to libraries
 #if __VISUALC__ >= 1200
+#pragma comment(lib, "swscale-0.lib")
 #pragma comment(lib, "avcodec-51.lib")
 #pragma comment(lib, "avformat-51.lib")
 #pragma comment(lib, "avutil-49.lib")
@@ -377,7 +378,27 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 #endif
 	}
 
-	// Get frame
+	// Convert to RGB32
+	AVFrame *useFrame = frame;
+	AVFrame *frameRGB = NULL;
+	//if (true) {
+	//	// Set properties
+	//	int w = codecContext->width;
+	//	int h = codecContext->height;
+	//	PixelFormat convFormat = PIX_FMT_RGB24;
+	//	unsigned int dstSize = avpicture_get_size(convFormat,w,h);
+
+	//	// Allocate RGB32 buffer
+	//	frameRGB = avcodec_alloc_frame();
+	//	uint8_t *buffer = new uint8_t[dstSize];
+	//	avpicture_fill((AVPicture*) frameRGB, buffer, convFormat, w, h);
+
+	//	// Convert to RGB32
+	//	img_convert((AVPicture*) frameRGB, convFormat, (AVPicture*) frame, codecContext->pix_fmt, w, h);
+	//	useFrame = frameRGB;
+	//}
+
+	// Get aegisub frame
 	AegiVideoFrame &final = curFrame;
 	if (frame) {
 		// Set AegiVideoFrame
@@ -402,16 +423,16 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 		}
 
 		// Allocate
-		for (int i=0;i<4;i++) final.pitch[i] = frame->linesize[i];
+		for (int i=0;i<4;i++) final.pitch[i] = useFrame->linesize[i];
 		final.Allocate();
 
 		// Copy data
 		if (final.format == FORMAT_YV12) {
-			memcpy(final.data[0],frame->data[0],frame->linesize[0] * final.h);
-			memcpy(final.data[1],frame->data[1],frame->linesize[1] * final.h / 2);
-			memcpy(final.data[2],frame->data[2],frame->linesize[2] * final.h / 2);
+			memcpy(final.data[0],useFrame->data[0],useFrame->linesize[0] * final.h);
+			memcpy(final.data[1],useFrame->data[1],useFrame->linesize[1] * final.h / 2);
+			memcpy(final.data[2],useFrame->data[2],useFrame->linesize[2] * final.h / 2);
 		}
-		else memcpy(final.data[0],frame->data[0],size);
+		else memcpy(final.data[0],useFrame->data[0],size);
 	}
 
 	// No frame available
@@ -421,6 +442,7 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 	validFrame = true;
 	//curFrame = final;
 	frameNumber = n;
+	if (frameRGB) av_free(frameRGB);
 
 	// Return
 	return curFrame;
