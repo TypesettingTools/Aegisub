@@ -127,13 +127,6 @@ AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.]
 AC_CHECK_LIB([avcodec], [avcodec_init])
 AC_CHECK_LIB([avformat], [av_read_frame])
 
-PKG_CHECK_MODULES([ASA], asa >= 0.3.2, [
-	CPPFLAGS="$CPPFLAGS $ASA_CFLAGS"
-	LIBS="$LIBS $ASA_LIBS"
-	AC_DEFINE(HAVE_ASA, 1, [found asa via pkg-config])
-], [true])
-AC_CHECK_HEADERS([asa/asa.h])
-
 PKG_CHECK_MODULES([LIBASS], libass >= 0.9.1, [
 	CPPFLAGS="$CPPFLAGS $LIBASS_CFLAGS"
 	LIBS="$LIBS $LIBASS_LIBS"
@@ -183,6 +176,7 @@ AC_PATH_XTRA
 AC_HEADER_STDC
 AC_HEADER_STDBOOL
 
+AC_CONFIG_SUBDIRS([csri])
 
 AC_OUTPUT([
 	Makefile

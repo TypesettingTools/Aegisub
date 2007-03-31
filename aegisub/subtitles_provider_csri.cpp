@@ -96,6 +96,8 @@ CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 //////////////////
 // Load subtitles
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
+	csri_rend *renderer;
+
 	// Close
 	if (instance) csri_close(instance);
 	instance = NULL;
@@ -109,7 +111,9 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 
 	// Open
 	//instance = csri_open_file(csri_renderer_default(),subsfilename.mb_str(wxConvUTF8),NULL);
-	instance = csri_open_mem(csri_renderer_default(),&data[0],data.size(),NULL);
+	renderer = csri_renderer_default();
+	if (renderer)
+		instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
 }
 
 

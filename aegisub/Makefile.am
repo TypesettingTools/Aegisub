@@ -11,7 +11,7 @@ REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBU
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGS = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
-LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a -lGL -lGLU
+LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a -lGL -lGLU
 
 #	auto4_ruby_assfile.cpp
 #	auto4_ruby.cpp
