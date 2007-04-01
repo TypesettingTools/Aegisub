@@ -168,3 +168,14 @@ function clamp(val, min, max)
 		return val
 	end
 end
+
+-- Interpolate between two numbers
+function interpolate(pct, min, max)
+	if pct <= 0 then
+		return min
+	elseif pct >= 1 then
+		return max
+	else
+		return pct * (max - min) + min
+	end
+end

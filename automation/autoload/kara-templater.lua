@@ -42,10 +42,12 @@ include("karaskel.lua")
 
 -- Find and parse/prepare all karaoke template lines
 function parse_templates(meta, styles, subs)
-	local templates = { once = {}, line = {}, syl = {}, char = {}, furi = {} }
-	for i = 1, #subs do
+	local templates = { once = {}, line = {}, syl = {}, char = {}, furi = {}, styles = {} }
+	local i = 1
+	while i <= #subs do
 		aegisub.progress.set((i-1) / #subs * 100)
 		local l = subs[i]
+		i = i + 1
 		if l.class == "dialogue" and l.comment then
 			local fx, mods = string.headtail(l.effect)
 			fx = fx:lower()
@@ -54,6 +56,11 @@ function parse_templates(meta, styles, subs)
 			elseif fx == "template" then
 				parse_template(meta, styles, l, templates, mods)
 			end
+			templates.styles[l.style] = true
+		elseif l.class == "dialogue" and l.effect == "fx" then
+			-- this is a previously generated effect line, remove it
+			i = i - 1
+			subs.delete(i)
 		end
 	end
 	aegisub.progress.set(100)
@@ -226,7 +233,48 @@ function apply_templates(meta, styles, subs, templates)
 	
 	-- run all run-once code snippets
 	for k, t in pairs(templates.once) do
+		assert(t.code, "WTF, a 'once' template without code?")
+		local f, err = loadstring(t.code, "template code once")
+		if not f then
+			aegisub.debug.out(2, "Failed to parse Lua code: %s\nCode that failed to parse: %s\n\n", err, t.code)
+		else
+			setfenv(f, tenv)
+			local res, err = pcall(f)
+			if not res then
+				aegisub.debug.out(2, "Runtime error in template code: %s\nCode producing error: %s\n\n", err, t.code)
+			end
+		end
+	end
+	
+	-- start processing lines
+	local i, n = 1, #subs
+	while i < n do
+		local l = subs[i]
+		i = i + 1
+		if l.class == "dialogue" and ((l.effect == "" and not l.comment) or (l.effect == "karaoke" and l.comment)) then
+			-- make a karaoke source line off it
+			l.comment = true
+			l.effect = "karaoke"
+			subs[i] = l
+			-- and then run it through the templates
+			apply_line(meta, styles, subs, l, templates, tenv)
+		end
+	end
+end
+
+function apply_line(meta, styles, subs, line, templates, tenv)
+	-- apply all line templates
+	for k, t in pairs(templates.line) do
+	end
+	-- loop over syllables
+	for i = 0, line.karaoke.n do
+		local syl = line.karaoke[i]
+		-- apply syllable templates
 		
+		-- apply character templates
+	end
+	-- loop over furigana
+	for i = 1, line.furi.n do
 	end
 end
 

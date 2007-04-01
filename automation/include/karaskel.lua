@@ -103,6 +103,7 @@ function karaskel.preproc_line(subs, meta, styles, line)
 	end
 	
 	line.text_stripped = ""
+	line.duration = line.end_time - line.start_time
 	
 	local curx = 0
 	local worksyl = { }
@@ -168,6 +169,7 @@ function karaskel.preproc_line(subs, meta, styles, line)
 			worksyl.style = line.styleref
 			
 			-- And add new data to worksyl
+			worksyl.i = line.kara.n
 			worksyl.text_stripped = syltext
 			worksyl.width = aegisub.text_extents(line.styleref, syltext)
 			curx = curx + aegisub.text_extents(line.styleref, prespace)
