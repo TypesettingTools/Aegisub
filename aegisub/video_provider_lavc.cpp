@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2006-2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,17 +36,18 @@
 
 ///////////
 // Headers
-#include "setup.h"
+#define EMULATE_INTTYPES
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
 #include <wx/wxprec.h>
 #include <wx/image.h>
 #include <algorithm>
-#include "video_provider_lavc.h"
+#include "video_provider.h"
+#include "mkv_wrap.h"
+#include "lavc_file.h"
 #include "utils.h"
 #include "vfr.h"
 #include "ass_file.h"
-#if 0
-#include "mkv_wrap.h"
-#endif
 
 
 /////////////////////
@@ -57,6 +58,58 @@
 #pragma comment(lib, "avformat-51.lib")
 #pragma comment(lib, "avutil-49.lib")
 #endif
+
+
+///////////////////////
+// LibAVCodec provider
+class LAVCVideoProvider : public VideoProvider {
+	friend class LAVCAudioProvider;
+private:
+	MatroskaWrapper mkv;
+
+	LAVCFile *lavcfile;
+	AVCodecContext *codecContext;
+	AVStream *stream;
+	AVCodec *codec;
+	AVFrame *frame;
+	int vidStream;
+
+	int display_w;
+	int display_h;
+
+	wxArrayInt bytePos;
+
+	bool isMkv;
+	__int64 lastDecodeTime;
+	int frameNumber;
+	int length;
+	AegiVideoFrame curFrame;
+	bool validFrame;
+
+	uint8_t *buffer1;
+	uint8_t *buffer2;
+	int buffer1Size;
+	int buffer2Size;
+
+	bool GetNextFrame();
+	void LoadVideo(wxString filename, double fps);
+	void Close();
+
+protected:
+	const AegiVideoFrame DoGetFrame(int n);
+
+public:
+	LAVCVideoProvider(wxString filename, double fps);
+	~LAVCVideoProvider();
+
+	int GetPosition();
+	int GetFrameCount();
+
+	int GetWidth();
+	int GetHeight();
+	double GetFPS();
+};
+
 
 
 

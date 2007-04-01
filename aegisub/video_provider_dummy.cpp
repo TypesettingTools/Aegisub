@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,65 +33,24 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#pragma once
-
 
 ///////////
 // Headers
-#include "setup.h"
-#define EMULATE_INTTYPES
-extern "C" {
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-}
 #include "video_provider.h"
-#include "mkv_wrap.h"
-#include "lavc_file.h"
 
 
-///////////////////////
-// LibAVCodec provider
-class LAVCVideoProvider : public VideoProvider {
-	friend class LAVCAudioProvider;
+////////////////////////
+// Dummy video provider
+class DummyVideoProvider : public VideoProvider {
 private:
-	MatroskaWrapper mkv;
-
-	LAVCFile *lavcfile;
-	AVCodecContext *codecContext;
-	AVStream *stream;
-	AVCodec *codec;
-	AVFrame *frame;
-	int vidStream;
-
-	int display_w;
-	int display_h;
-
-	wxArrayInt bytePos;
-
-	bool isMkv;
-	__int64 lastDecodeTime;
-	int frameNumber;
-	int length;
-	AegiVideoFrame curFrame;
-	bool validFrame;
-
-	uint8_t *buffer1;
-	uint8_t *buffer2;
-	int buffer1Size;
-	int buffer2Size;
-
-	bool GetNextFrame();
-	void LoadVideo(wxString filename, double fps);
-	void Close();
+	int lastFrame;
 
 protected:
 	const AegiVideoFrame DoGetFrame(int n);
 
 public:
-	LAVCVideoProvider(wxString filename, double fps);
-	~LAVCVideoProvider();
-
-	wxBitmap GetFrame(int n);
+	DummyVideoProvider(wxString filename, double fps);
+	~DummyVideoProvider();
 
 	int GetPosition();
 	int GetFrameCount();
@@ -100,3 +59,68 @@ public:
 	int GetHeight();
 	double GetFPS();
 };
+
+
+///////////
+// Factory
+class DummyVideoProviderFactory : public VideoProviderFactory {
+public:
+	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new DummyVideoProvider(video,fps); }
+	DummyVideoProviderFactory() : VideoProviderFactory(_T("dummy")) {}
+} registerDummyVideo;
+
+
+///////////////
+// Constructor
+DummyVideoProvider::DummyVideoProvider(wxString filename, double fps) {
+	lastFrame = -1;
+}
+
+
+//////////////
+// Destructor
+DummyVideoProvider::~DummyVideoProvider() {
+}
+
+
+/////////////
+// Get frame
+const AegiVideoFrame DummyVideoProvider::DoGetFrame(int n) {
+	lastFrame = n;
+	return AegiVideoFrame(640,480);
+}
+
+
+////////////////
+// Get position
+int DummyVideoProvider::GetPosition() {
+	return lastFrame;
+}
+
+
+///////////////////
+// Get frame count
+int DummyVideoProvider::GetFrameCount() {
+	return 40000;
+}
+
+
+/////////////
+// Get width
+int DummyVideoProvider::GetWidth() {
+	return 640;
+}
+
+
+//////////////
+// Get height
+int DummyVideoProvider::GetHeight() {
+	return 480;
+}
+
+
+///////////
+// Get FPS
+double DummyVideoProvider::GetFPS() {
+	return 24.0/1.001;
+}
