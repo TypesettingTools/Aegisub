@@ -134,9 +134,12 @@ void VideoDisplay::Render() {
 	// Is shown?
 	if (!IsShownOnScreen()) return;
 
-	// Set GL context
+	// Get video context
 	VideoContext *context = VideoContext::Get();
 	wxASSERT(context);
+	if (!context->IsLoaded()) return;
+
+	// Set GL context
 	SetCurrent(*context->GetGLContext(this));
 
 	// Get sizes

@@ -973,7 +973,9 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 				VFR_Output.Unload();
 			}
 		}
+		SetDisplayMode(1,-1);
 		VideoContext::Get()->SetVideo(file);
+		SetDisplayMode(0,-1);
 	}
 	catch (const wchar_t *error) {
 		wxString err(error);
