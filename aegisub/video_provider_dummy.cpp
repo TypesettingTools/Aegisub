@@ -44,6 +44,7 @@
 class DummyVideoProvider : public VideoProvider {
 private:
 	int lastFrame;
+	AegiVideoFrame frame;
 
 protected:
 	const AegiVideoFrame DoGetFrame(int n);
@@ -74,6 +75,15 @@ public:
 // Constructor
 DummyVideoProvider::DummyVideoProvider(wxString filename, double fps) {
 	lastFrame = -1;
+
+	frame = AegiVideoFrame(640,480,FORMAT_RGB32);
+	unsigned char *dst = frame.data[0];
+	for (int i=frame.pitch[0]*frame.h/frame.GetBpp();--i>=0;) {
+		*dst++ = 254;
+		*dst++ = 163;
+		*dst++ = 47;
+		*dst++ = 0;
+	}
 }
 
 
@@ -87,14 +97,6 @@ DummyVideoProvider::~DummyVideoProvider() {
 // Get frame
 const AegiVideoFrame DummyVideoProvider::DoGetFrame(int n) {
 	lastFrame = n;
-	AegiVideoFrame frame(640,480,FORMAT_RGB32);
-	unsigned char *dst = frame.data[0];
-	for (int i=frame.pitch[0]*frame.h/frame.GetBpp();--i>=0;) {
-		*dst++ = 254;
-		*dst++ = 163;
-		*dst++ = 47;
-		*dst++ = 0;
-	}
 	return frame;
 }
 
