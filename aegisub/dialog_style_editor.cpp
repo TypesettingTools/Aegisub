@@ -426,7 +426,8 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Margins
 		work->SetMarginString(MarginL->GetValue(),0);
 		work->SetMarginString(MarginR->GetValue(),1);
-		work->SetMarginString(MarginV->GetValue(),2);
+		work->SetMarginString(MarginV->GetValue(),2); // make sure both top and bottom margins reflect vertical margin
+		work->SetMarginString(MarginV->GetValue(),3);
 
 		// Color alphas
 		ColorAlpha1->GetValue().ToLong(&templ);

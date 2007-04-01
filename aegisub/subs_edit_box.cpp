@@ -748,6 +748,7 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->SetMarginString(MarginV->GetValue(),2);
+			cur->SetMarginString(MarginV->GetValue(),3); // also bottom margin for now
 			cur->UpdateData();
 		}
 	}
