@@ -293,6 +293,7 @@ void OpenGLWrapper::Initialize() {
 		initialized = true;
 
 		glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC) glGetProc("glUseProgramObjectARB");
+		if (!glUseProgramObjectARB) throw _T("OpenGL shader support not available.");
 		glDeleteObjectARB = (PFNGLDELETEOBJECTARBPROC) glGetProc("glDeleteObjectARB");
 		glCreateProgramObjectARB = (PFNGLCREATEPROGRAMOBJECTARBPROC) glGetProc("glCreateProgramObjectARB");
 		glAttachObjectARB = (PFNGLATTACHOBJECTARBPROC) glGetProc("glAttachObjectARB");
@@ -330,13 +331,17 @@ GLuint OpenGLWrapper::CreateShaderProgram(GLuint vertex,GLuint pixel) {
 	// Create instance
 	Initialize();
 	GLuint program = glCreateProgramObjectARB();
+	if (glGetError()) throw _T("Error creating shader program.");
 
 	// Attach shaders
 	glAttachObjectARB(program,vertex);
+	if (glGetError()) throw _T("Error attaching vertex shader to shader program.");
 	glAttachObjectARB(program,pixel);
+	if (glGetError()) throw _T("Error attaching pixel shader to shader program.");
 
 	// Link
 	glLinkProgramARB(program);
+	if (glGetError()) throw _T("Error attaching linking shader program.");
 
 	// Return
 	return program;
@@ -349,6 +354,7 @@ GLuint OpenGLWrapper::CreateStandardVertexShader() {
 	// Create instance
 	Initialize();
 	GLuint shader = glCreateShaderObjectARB(GL_VERTEX_SHADER);
+	if (glGetError()) throw _T("Error generating vertex shader.");
 
 	// Read source
 	char source[] =
@@ -360,7 +366,9 @@ GLuint OpenGLWrapper::CreateStandardVertexShader() {
 	// Compile
 	const GLchar *src = source;
 	glShaderSourceARB(shader,1,&src,NULL);
+	if (glGetError()) throw _T("Error acquiring source for vertex shader.");
 	glCompileShaderARB(shader);
+	if (glGetError()) throw _T("Error compiling vertex shader.");
 
 	// Return
 	return shader;
@@ -373,6 +381,7 @@ GLuint OpenGLWrapper::CreateYV12PixelShader() {
 	// Create instance
 	Initialize();
 	GLuint shader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER);
+	if (glGetError()) throw _T("Error generating pixel shader.");
 
 	// Read source
 	char source[] =
@@ -399,7 +408,9 @@ GLuint OpenGLWrapper::CreateYV12PixelShader() {
 	// Compile
 	const GLchar *src = source;
 	glShaderSourceARB(shader,1,&src,NULL);
+	if (glGetError()) throw _T("Error acquiring source for vertex shader.");
 	glCompileShaderARB(shader);
+	if (glGetError()) throw _T("Error compiling vertex shader.");
 
 	// Return
 	return shader;

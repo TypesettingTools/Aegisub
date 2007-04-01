@@ -480,7 +480,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		glPrioritizeTextures(1,&lastTex,&priority);
 
 		// Create shader if necessary
-		if (frame.format == FORMAT_YV12 && yv12shader == 0) {
+		if (frame.format == FORMAT_YV12 && yv12shader == 0 && OpenGLWrapper::UseShaders()) {
 			yv12shader = OpenGLWrapper::CreateYV12Shader(texW,texH,float(frame.pitch[1])/float(tw));
 		}
 	}
