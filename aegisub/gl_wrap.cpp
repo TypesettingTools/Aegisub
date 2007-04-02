@@ -265,7 +265,13 @@ void OpenGLWrapper::SetModeFill() {
 //////////////////////////
 // Are shaders available?
 bool OpenGLWrapper::ShadersAvailable() {
-	return IsExtensionSupported("GL_ARB_vertex_shader") && IsExtensionSupported("GL_ARB_fragment_shader");
+	bool available = IsExtensionSupported("GL_ARB_vertex_shader") && IsExtensionSupported("GL_ARB_fragment_shader");
+	static bool first = true;
+	if (first) {
+		first = false;
+		wxMessageBox(_T("Warning, OpenGL shaders are not available on this machine. YV12 video will be on greyscale."),_T("GL Shaders Error"));
+	}
+	return available;
 }
 
 
@@ -311,17 +317,23 @@ void OpenGLWrapper::Initialize() {
 //////////////////////
 // Set current shader
 void OpenGLWrapper::SetShader(GLuint i) {
-	Initialize();
-	glUseProgramObjectARB(i);
+	if (UseShaders()) {
+		Initialize();
+		glUseProgramObjectARB(i);
+		if (glGetError()) throw _T("Could not set shader program.");
+	}
 }
 
 
 //////////////////////////
 // Destroy shader program
 void OpenGLWrapper::DestroyShaderProgram(GLuint i) {
-	Initialize();
-	SetShader(0);
-	glDeleteObjectARB(i);
+	if (UseShaders()) {
+		Initialize();
+		SetShader(0);
+		glDeleteObjectARB(i);
+		if (glGetError()) throw _T("Error removing shader program.");
+	}
 }
 
 
