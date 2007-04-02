@@ -159,6 +159,7 @@ private:
 	void OnSetAR235 (wxCommandEvent &event);
 	void OnSetARCustom (wxCommandEvent &event);
 	void OnDetachVideo (wxCommandEvent &event);
+	void OnDummyVideo (wxCommandEvent &event);
 
 	void OnOpenAudio (wxCommandEvent &event);
 	void OnOpenAudioFromVideo (wxCommandEvent &event);
@@ -317,6 +318,7 @@ enum {
 	Menu_Video_Select_Visible,
 	Menu_Video_Play,
 	Menu_Video_Detach,
+	Menu_Video_Dummy,
 
 	Menu_Audio_Open_File,
 	Menu_Audio_Open_From_Video,

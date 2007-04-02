@@ -139,6 +139,13 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
 
+	// Dummy video defaults
+	SetInt(_T("Video Dummy Last Width"), 640);
+	SetInt(_T("Video Dummy Last Height"), 480);
+	SetColour(_T("Video Dummy Last Colour"), wxColour(47, 163, 254));
+	SetFloat(_T("Video Dummy Last FPS"), 23.976);
+	SetInt(_T("Video Dummy Last Length"), 40000);
+
 	// Video Provider (Advanced)
 	SetModificationType(MOD_RESTART);
 	SetBool(_T("Threaded Video"),false);

@@ -353,6 +353,7 @@ void FrameMain::InitMenu() {
 	videoMenu->Append(Menu_File_Close_Video, _("&Close Video"), _("Closes the currently open video file"));
 	wxMenuItem *RecentVidParent = new wxMenuItem(videoMenu, Menu_File_Recent_Vids_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentVids);
 	videoMenu->Append(RecentVidParent);
+	videoMenu->Append(Menu_Video_Dummy, _("Use dummy video..."), _("Opens a video clip with solid colour"));
 	videoMenu->AppendSeparator();
 	videoMenu->Append(Menu_File_Open_VFR, _("Open timecodes file..."), _("Opens a VFR timecodes v1 or v2 file"));
 	videoMenu->Append(Menu_File_Close_VFR, _("Close timecodes file"), _("Closes the currently open timecodes file"))->Enable(false);

@@ -54,6 +54,7 @@ aegisub_SOURCES = \
 	dialog_automation.cpp \
 	dialog_colorpicker.cpp \
 	dialog_detached_video.cpp \
+	dialog_dummy_video.cpp \
 	dialog_export.cpp \
 	dialog_fextracker.cpp \
 	dialog_fonts_collector.cpp \

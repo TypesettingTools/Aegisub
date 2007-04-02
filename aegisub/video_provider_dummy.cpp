@@ -36,60 +36,116 @@
 
 ///////////
 // Headers
-#include "video_provider.h"
-
-
-////////////////////////
-// Dummy video provider
-class DummyVideoProvider : public VideoProvider {
-private:
-	int lastFrame;
-	AegiVideoFrame frame;
-
-protected:
-	const AegiVideoFrame DoGetFrame(int n);
-
-public:
-	DummyVideoProvider(wxString filename, double fps);
-	~DummyVideoProvider();
-
-	int GetPosition();
-	int GetFrameCount();
-
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-};
+#include "video_provider_dummy.h"
+#include <wx/tokenzr.h>
 
 
 ///////////
 // Factory
-class DummyVideoProviderFactory : public VideoProviderFactory {
+// Shouldn't be needed
+/*class DummyVideoProviderFactory : public VideoProviderFactory {
 public:
 	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new DummyVideoProvider(video,fps); }
 	DummyVideoProviderFactory() : VideoProviderFactory(_T("dummy")) {}
-} registerDummyVideo;
+} registerDummyVideo; */
 
 
 ///////////////
 // Constructor
-DummyVideoProvider::DummyVideoProvider(wxString filename, double fps) {
+void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height, const wxColour &colour) {
 	lastFrame = -1;
+	framecount = frames;
+	fps = _fps;
+	width = _width;
+	height = _height;
 
 	frame = AegiVideoFrame(640,480,FORMAT_RGB32);
 	unsigned char *dst = frame.data[0];
+	unsigned char r = colour.Red(), g = colour.Green(), b = colour.Blue();
 	for (int i=frame.pitch[0]*frame.h/frame.GetBpp();--i>=0;) {
-		*dst++ = 254;
-		*dst++ = 163;
-		*dst++ = 47;
+		*dst++ = b;
+		*dst++ = g;
+		*dst++ = r;
 		*dst++ = 0;
 	}
+}
+
+
+///////////////////////
+// Parsing constructor
+DummyVideoProvider::DummyVideoProvider(wxString filename, double _fps)
+{
+	wxString params;
+	if (!filename.StartsWith(_T("?dummy:"), &params)) {
+		throw _T("Attempted creating dummy video provider with non-dummy filename");
+	}
+
+	wxStringTokenizer t(params, _T(":"));
+	if (t.CountTokens() < 7) {
+		throw _T("Too few fields in dummy video parameter list");
+	}
+
+	double parsedfps;
+	long _frames, _width, _height, red, green, blue;
+
+	wxString field = t.GetNextToken();
+	if (!field.ToDouble(&parsedfps)) {
+		throw _T("Unable to parse fps field in dummy video parameter list");
+	}
+	if (_fps == 0.0)
+		_fps = parsedfps;
+
+	field = t.GetNextToken();
+	if (!field.ToLong(&_frames)) {
+		throw _T("Unable to parse framecount field in dummy video parameter list");
+	}
+
+	field = t.GetNextToken();
+	if (!field.ToLong(&_width)) {
+		throw _T("Unable to parse width field in dummy video parameter list");
+	}
+
+	field = t.GetNextToken();
+	if (!field.ToLong(&_height)) {
+		throw _T("Unable to parse height field in dummy video parameter list");
+	}
+
+	field = t.GetNextToken();
+	if (!field.ToLong(&red)) {
+		throw _T("Unable to parse red colour field in dummy video parameter list");
+	}
+
+	field = t.GetNextToken();
+	if (!field.ToLong(&green)) {
+		throw _T("Unable to parse green colour field in dummy video parameter list");
+	}
+
+	field = t.GetNextToken();
+	if (!field.ToLong(&blue)) {
+		throw _T("Unable to parse bluecolour field in dummy video parameter list");
+	}
+
+	Create(_fps, _frames, _width, _height, wxColour(red, green, blue));
+}
+
+
+//////////////////////
+// Direct constructor
+DummyVideoProvider::DummyVideoProvider(double _fps, int frames, int _width, int _height, const wxColour &colour) {
+	Create(_fps, frames, _width, _height, colour);
 }
 
 
 //////////////
 // Destructor
 DummyVideoProvider::~DummyVideoProvider() {
+}
+
+
+//////////////////////////////////////////////////
+// Construct a fake filename describing the video
+wxString DummyVideoProvider::MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour) {
+	return wxString::Format(_T("?dummy:%f:%d:%d:%d:%d:%d:%d"), fps, frames, _width, _height, colour.Red(), colour.Green(), colour.Blue());
 }
 
 
@@ -111,26 +167,26 @@ int DummyVideoProvider::GetPosition() {
 ///////////////////
 // Get frame count
 int DummyVideoProvider::GetFrameCount() {
-	return 40000;
+	return framecount;
 }
 
 
 /////////////
 // Get width
 int DummyVideoProvider::GetWidth() {
-	return 640;
+	return width;
 }
 
 
 //////////////
 // Get height
 int DummyVideoProvider::GetHeight() {
-	return 480;
+	return height;
 }
 
 
 ///////////
 // Get FPS
 double DummyVideoProvider::GetFPS() {
-	return 24.0/1.001;
+	return fps;
 }

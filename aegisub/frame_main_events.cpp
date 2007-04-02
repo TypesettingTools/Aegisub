@@ -86,6 +86,7 @@
 #include "dialog_automation.h"
 #include "dialog_version_check.h"
 #include "dialog_detached_video.h"
+#include "dialog_dummy_video.h"
 
 
 ////////////////////
@@ -138,6 +139,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Video_JumpTo, FrameMain::OnJumpTo)
 	EVT_MENU(Menu_Video_Select_Visible, FrameMain::OnSelectVisible)
 	EVT_MENU(Menu_Video_Detach, FrameMain::OnDetachVideo)
+	EVT_MENU(Menu_Video_Dummy, FrameMain::OnDummyVideo)
 
 	EVT_MENU(Menu_Audio_Open_File, FrameMain::OnOpenAudio)
 	EVT_MENU(Menu_Audio_Open_From_Video, FrameMain::OnOpenAudioFromVideo)
@@ -864,6 +866,16 @@ void FrameMain::OnSetZoom(wxCommandEvent &event) {
 void FrameMain::OnDetachVideo(wxCommandEvent &event) {
 	detachedVideo = new DialogDetachedVideo(this);
 	detachedVideo->Show();
+}
+
+
+///////////////////
+// Use dummy video
+void FrameMain::OnDummyVideo (wxCommandEvent &event) {
+	wxString fn;
+	if (DialogDummyVideo::CreateDummyVideo(this, fn)) {
+		LoadVideo(fn);
+	}
 }
 
 

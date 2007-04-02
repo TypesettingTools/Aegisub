@@ -579,11 +579,11 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	#endif
 
 	// Buttons Sizer
-	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT,5);
-	buttonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
-	buttonSizer->Add(new wxButton(this,wxID_APPLY),0,wxRIGHT,5);
+	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
+	buttonSizer->Add(new wxButton(this,wxID_OK));
+	buttonSizer->Add(new wxButton(this,wxID_CANCEL));
+	buttonSizer->Add(new wxButton(this,wxID_APPLY));
+	buttonSizer->Realize();
 
 	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);

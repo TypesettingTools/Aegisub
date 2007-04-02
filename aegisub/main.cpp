@@ -110,7 +110,9 @@ bool AegisubApp::OnInit() {
 		AssExportFilterChain::PrepareFilters();
 
 		// Set association
+#ifndef DEBUG
 		RegistryAssociate();
+#endif
 
 		// Get parameter subs
 		wxArrayString subs;

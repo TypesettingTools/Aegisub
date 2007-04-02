@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include "video_provider.h"
+#include "video_provider_dummy.h"
 #include "options.h"
 #include "setup.h"
 #include "vfr.h"
@@ -129,6 +130,11 @@ void VideoProvider::ClearCache() {
 ////////////////
 // Get provider
 VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
+	// First check special case of dummy video
+	if (video.StartsWith(_T("?dummy:"))) {
+		return new DummyVideoProvider(video, fps);
+	}
+
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Video provider")));
 
