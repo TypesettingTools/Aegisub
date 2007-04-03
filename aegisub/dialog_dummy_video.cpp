@@ -112,7 +112,7 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 
 
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
-: wxDialog(parent, -1, _("Dummy video options"))
+: wxDialog(parent, -1, _("Dummy video options"),wxDefaultPosition,wxDefaultSize)
 {
 	// Main controls
 	length_display = 0;
