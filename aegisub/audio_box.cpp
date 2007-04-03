@@ -360,8 +360,14 @@ void AudioBox::OnSash(wxSashEvent& event) {
 	if (oldh == h) return;
 
 	// Resize
-	audioDisplay->SetSize(w,h);
 	audioDisplay->SetSizeHints(w,h,w,h);
+	audioDisplay->SetSize(w,h);
+	int _w,_h;
+	audioDisplay->GetSize(&_w,&_h);
+	audioDisplay->SetSizeHints(_w,_h,_w,_h);
+	//sashSizer->Fit(Sash);
+	sashSizer->Layout();
+	Sash->GetParent()->Layout();
 
 	// Store new size
 	Options.SetInt(_T("Audio Display Height"),h);
