@@ -1,4 +1,4 @@
--- This script is given into the public domain.
+-- This script is given to the public domain.
 -- You can use and modify the effect freely, also without credit, although I would appreciate some.
 
 include("karaskel.lua")
@@ -6,7 +6,7 @@ include("karaskel.lua")
 script_name = "Future Windy Blur"
 script_description = "Highlights blown away by the winds of change."
 script_author = "jfs"
-script_version = "1.1"
+script_version = "1.2"
 
 function new_windy_blur(subs)
 	aegisub.progress.task("Getting header data...")
@@ -52,7 +52,7 @@ function do_fx(subs, meta, line)
 				l.end_time = l.start_time + syl.duration * 1.5
 			end
 			l.layer = 2
-			local temp = string.format("{\\be1\\move(%d,%d,%%d,%%d)\\1a&Hd0\\bord0\\t(0.6,\\1a&HFF&)}%s", line.left+syl.center, line.styleref.margin_t, syl.text_stripped)
+			local temp = string.format("{\\be1\\move(%d,%d,%%d,%%d)\\1a&Hd0\\bord0\\shad0\\t(0.6,\\1a&HFF&)}%s", line.left+syl.center, line.styleref.margin_t, syl.text_stripped)
 			for j = -8, 8 do
 				l.text = string.format(temp, line.left+syl.center+math.cos(math.rad(j*4))*30, line.styleref.margin_t+math.sin(math.rad(j*4))*30)
 				subs.append(l)
