@@ -265,10 +265,11 @@ void OpenGLWrapper::SetModeFill() {
 //////////////////////////
 // Are shaders available?
 bool OpenGLWrapper::ShadersAvailable() {
-	bool available = IsExtensionSupported("GL_ARB_vertex_shader") && IsExtensionSupported("GL_ARB_fragment_shader");
 	static bool first = true;
+	static bool available = false;
 	if (first) {
 		first = false;
+		available = IsExtensionSupported("GL_ARB_vertex_shader") && IsExtensionSupported("GL_ARB_fragment_shader");
 		if (!available) wxMessageBox(_T("Warning, OpenGL shaders are not available on this machine. YV12 video will be on greyscale."),_T("GL Shaders Error"));
 	}
 	return available;
