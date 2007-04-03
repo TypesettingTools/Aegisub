@@ -6,7 +6,7 @@ include("karaskel.lua")
 script_name = "Future Windy Blur"
 script_description = "Highlights blown away by the winds of change."
 script_author = "jfs"
-script_version = "1.2"
+script_version = "1.3"
 
 function new_windy_blur(subs)
 	aegisub.progress.task("Getting header data...")
@@ -35,7 +35,7 @@ end
 
 function do_fx(subs, meta, line)
 	local l = table.copy(line)
-	l.text = string.format("{\pos(%d,%d)\\1c%s\\1a&HFF&\\3a&HFF&\\t(0,200,\\1a&H00&\\3a&H00&)\\t(%d,%d,\\1a&HFF&\\3a&HFF&)}%s", meta.res_x/2, line.styleref.margin_t, line.styleref.color2, line.duration+200, line.duration+400, line.text_stripped)
+	l.text = string.format("{\pos(%d,%d)\\1c%s\\1a&HFF&\\3a&HFF&\\4a&HFF&\\t(0,200,\\1a&H00&\\3a&H00&\\4a&H00&)\\t(%d,%d,\\1a&HFF&\\3a&HFF&\\4a&HFF&)}%s", meta.res_x/2, line.styleref.margin_t, line.styleref.color2, line.duration+200, line.duration+400, line.text_stripped)
 	l.start_time = l.start_time - 200
 	l.end_time = l.end_time + 200
 	l.layer = 1
