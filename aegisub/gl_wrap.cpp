@@ -269,7 +269,7 @@ bool OpenGLWrapper::ShadersAvailable() {
 	static bool first = true;
 	if (first) {
 		first = false;
-		wxMessageBox(_T("Warning, OpenGL shaders are not available on this machine. YV12 video will be on greyscale."),_T("GL Shaders Error"));
+		if (!available) wxMessageBox(_T("Warning, OpenGL shaders are not available on this machine. YV12 video will be on greyscale."),_T("GL Shaders Error"));
 	}
 	return available;
 }

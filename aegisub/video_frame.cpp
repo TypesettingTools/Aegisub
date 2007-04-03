@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include "video_frame.h"
+#include "utils.h"
 
 
 /////////
@@ -208,9 +209,15 @@ wxImage AegiVideoFrame::GetImage() const {
 	}
 
 	// YV12
-	//else if (format == FORMAT_YV12) {
-		// TODO
-	//}
+	else if (format == FORMAT_YV12) {
+		 AegiVideoFrame temp;
+		 temp.w = w;
+		 temp.h = h;
+		 temp.pitch[0] = w*4;
+		 temp.format = FORMAT_RGB32;
+		 temp.ConvertFrom(*this);
+		 return temp.GetImage();
+	}
 
 	else {
 		return wxImage(w,h);
@@ -254,5 +261,69 @@ int AegiVideoFrame::GetBpp(int plane) const {
 			if (plane == 0) return 1;
 			else return 0;
 		default: return 0;
+	}
+}
+
+
+//////////////////////////////
+// Convert from another frame
+void AegiVideoFrame::ConvertFrom(const AegiVideoFrame &source) {
+	// Ensure compatibility
+	if (w != source.w) throw _T("AegiVideoFrame::ConvertFrom: Widths don't match.");
+	if (h != source.h) throw _T("AegiVideoFrame::ConvertFrom: Heights don't match.");
+	if (format != FORMAT_RGB32) throw _T("AegiVideoFrame::ConvertFrom: Unsupported destination format.");
+	if (source.format != FORMAT_YV12) throw _T("AegiVideoFrame::ConvertFrom: Unsupported source format.");
+
+	// Allocate
+	Allocate();
+
+	// Set up pointers
+	const unsigned char *src_y = source.data[0];
+	const unsigned char *src_u = source.data[1];
+	const unsigned char *src_v = source.data[2];
+	unsigned char *dst = data[0];
+
+	// Set up pitches
+	const int src_delta1 = source.pitch[0]-w;
+	const int src_delta2 = source.pitch[1]-w/2;
+	const int src_delta3 = source.pitch[2]-w/2;
+	const int dst_delta = pitch[0]-w*4;
+	int r,g,b,y,u,v,c,d,e;
+
+	// Loop
+	for (unsigned int py=0;py<h;py++) {
+		for (unsigned int px=0;px<w/2;px++) {
+			u = *src_u++;
+			v = *src_v++;
+			for (unsigned int i=0;i<2;i++) {
+				y = *src_y++;
+
+				// Convert
+				c = y - 16;
+				d = u - 128;
+				e = v - 128;
+				r = MID(0,( 298 * c           + 409 * e + 128) >> 8,255);
+				g = MID(0,( 298 * c - 100 * d - 208 * e + 128) >> 8,255);
+				b = MID(0,( 298 * c + 516 * d           + 128) >> 8,255);
+
+				// Assign
+				*dst++ = b;
+				*dst++ = g;
+				*dst++ = r;
+				*dst++ = 0;
+			}
+		}
+
+		// Increase pointers
+		src_y += src_delta1;
+		src_u += src_delta2;
+		src_v += src_delta3;
+		dst += dst_delta;
+
+		// Roll back u/v on even lines
+		if (!(py & 1)) {
+			src_u -= source.pitch[1];
+			src_v -= source.pitch[2];
+		}
 	}
 }

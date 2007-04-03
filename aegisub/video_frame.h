@@ -72,6 +72,7 @@ public:
 	void Allocate();
 	void Clear();
 	void CopyFrom(const AegiVideoFrame &source);
+	void ConvertFrom(const AegiVideoFrame &source);
 
 	wxImage GetImage() const;
 	void GetFloat(float *buffer) const;
