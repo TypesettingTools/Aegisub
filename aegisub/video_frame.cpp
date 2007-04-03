@@ -288,28 +288,20 @@ void AegiVideoFrame::ConvertFrom(const AegiVideoFrame &source) {
 	const int src_delta2 = source.pitch[1]-w/2;
 	const int src_delta3 = source.pitch[2]-w/2;
 	const int dst_delta = pitch[0]-w*4;
-	int r,g,b,y,u,v,c,d,e;
+	register int y,u,v;
 
 	// Loop
 	for (unsigned int py=0;py<h;py++) {
 		for (unsigned int px=0;px<w/2;px++) {
-			u = *src_u++;
-			v = *src_v++;
+			u = *src_u++ - 128;
+			v = *src_v++ - 128;
 			for (unsigned int i=0;i<2;i++) {
-				y = *src_y++;
-
-				// Convert
-				c = y - 16;
-				d = u - 128;
-				e = v - 128;
-				r = MID(0,( 298 * c           + 409 * e + 128) >> 8,255);
-				g = MID(0,( 298 * c - 100 * d - 208 * e + 128) >> 8,255);
-				b = MID(0,( 298 * c + 516 * d           + 128) >> 8,255);
+				y = (*src_y++ - 16) * 298;
 
 				// Assign
-				*dst++ = b;
-				*dst++ = g;
-				*dst++ = r;
+				*dst++ = MID(0,(y + 516 * u           + 128) >> 8,255);	// Blue
+				*dst++ = MID(0,(y - 100 * u - 208 * v + 128) >> 8,255);	// Green
+				*dst++ = MID(0,(y           + 409 * v + 128) >> 8,255);	// Red
 				*dst++ = 0;
 			}
 		}
