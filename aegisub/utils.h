@@ -82,7 +82,7 @@ int SmallestPowerOf2(int x);
 
 ///////////
 // Inlines
-inline void IntSwap(int &a,int &b) {
+static inline void IntSwap(int &a,int &b) {
 	int c = a;
 	a = b;
 	b = c;
@@ -92,7 +92,7 @@ inline void IntSwap(int &a,int &b) {
 //////////////////////////
 // Clamp integer to range
 // Code taken from http://bob.allegronetwork.com/prog/tricks.html#clamp
-FORCEINLINE int ClampSignedInteger32(int x,int min,int max) {
+FORCEINLINE static int ClampSignedInteger32(int x,int min,int max) {
 	x -= min;
 	x &= (~x) >> 31;
 	x += min;
