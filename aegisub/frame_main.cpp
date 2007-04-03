@@ -77,6 +77,17 @@
 FrameMain::FrameMain (wxArrayString args)
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(800,600),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
+#ifdef __WXGTK__
+/* XXX HACK XXX
+ * Gtk just got initialized. And if we're using the SCIM IME,
+ * it just did a setlocale(LC_ALL, ""). so, BOOM. "§!$)(!"§$.
+ */
+ 	setlocale(LC_ALL, "");
+	setlocale(LC_CTYPE, "C");
+	setlocale(LC_NUMERIC, "C");
+/* XXX HACK XXX */
+#endif
+
 	// Set application's frame
 	AegisubApp::Get()->frame = this;
 

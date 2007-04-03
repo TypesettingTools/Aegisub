@@ -73,6 +73,10 @@ bool AegisubApp::OnInit() {
 		// Initialize randomizer
 		srand(time(NULL));
 
+		// locale for loading options
+		setlocale(LC_NUMERIC, "C");
+		setlocale(LC_CTYPE, "C");
+
 		// App name
 		SetAppName(_T("Aegisub"));
 		#ifndef _DEBUG
@@ -100,7 +104,7 @@ bool AegisubApp::OnInit() {
 		}
 		locale.Init(lang);
 #else
-		locale.Init(wxLocale::GetSystemLanguage());
+		locale.Init(wxLANGUAGE_DEFAULT);
 #endif
 
 		// Load Automation scripts
