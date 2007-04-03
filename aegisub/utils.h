@@ -57,15 +57,6 @@ void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help
 int SmallestPowerOf2(int x);
 
 
-///////////
-// Inlines
-inline void IntSwap(int &a,int &b) {
-	int c = a;
-	a = b;
-	b = c;
-}
-
-
 //////////
 // Macros
 #ifndef MIN
@@ -79,3 +70,34 @@ inline void IntSwap(int &a,int &b) {
 #ifndef MID
 #define MID(a,b,c) MAX((a),MIN((b),(c)))
 #endif
+
+#ifndef FORCEINLINE
+#ifdef __VISUALC__
+#define FORCEINLINE __forceinline
+#else
+#define FORCEINLINE __attribute__((always_inline))
+#endif
+#endif
+
+
+///////////
+// Inlines
+inline void IntSwap(int &a,int &b) {
+	int c = a;
+	a = b;
+	b = c;
+}
+
+
+//////////////////////////
+// Clamp integer to range
+// Code taken from http://bob.allegronetwork.com/prog/tricks.html#clamp
+FORCEINLINE int ClampSignedInteger32(int x,int min,int max) {
+	x -= min;
+	x &= (~x) >> 31;
+	x += min;
+	x -= max;
+	x &= x >> 31;
+	x += max;
+	return x;
+}

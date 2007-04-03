@@ -299,9 +299,9 @@ void AegiVideoFrame::ConvertFrom(const AegiVideoFrame &source) {
 				y = (*src_y++ - 16) * 298;
 
 				// Assign
-				*dst++ = MID(0,(y + 516 * u           + 128) >> 8,255);	// Blue
-				*dst++ = MID(0,(y - 100 * u - 208 * v + 128) >> 8,255);	// Green
-				*dst++ = MID(0,(y           + 409 * v + 128) >> 8,255);	// Red
+				*dst++ = ClampSignedInteger32((y + 516 * u + 128) >> 8,0,255);				// Blue
+				*dst++ = ClampSignedInteger32((y - 100 * u - 208 * v + 128) >> 8,0,255);	// Green
+				*dst++ = ClampSignedInteger32((y + 409 * v + 128) >> 8,0,255);				// Red
 				*dst++ = 0;
 			}
 		}
