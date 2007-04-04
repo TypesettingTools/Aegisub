@@ -111,6 +111,7 @@ aegisub_SOURCES = \
 	subtitle_format_txt.cpp \
 	subtitles_provider.cpp \
 	subtitles_provider_csri.cpp \
+	subtitles_provider_libass.cpp \
 	text_file_reader.cpp \
 	text_file_writer.cpp \
 	thesaurus.cpp \
