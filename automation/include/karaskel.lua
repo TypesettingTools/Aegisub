@@ -53,7 +53,8 @@ function karaskel.collect_head(subs)
 		if l.class == "style" then
 			styles.n = styles.n + 1
 			styles[styles.n] = l
-			styles[l.name] = l			
+			styles[l.name] = l
+			l.margin_v = l.margin_t
 		elseif l.class == "info" then
 			local k = l.key:lower()
 			if k == "playresx" then
@@ -195,8 +196,54 @@ function karaskel.preproc_line(subs, meta, styles, line)
 	
 	-- Full line sizes
 	line.width, line.height, line.descent, line.extlead = aegisub.text_extents(line.styleref, line.text_stripped)
-	-- And positioning (FIXME: assume centering for now)
-	line.left = (meta.res_x - line.styleref.margin_l - line.styleref.margin_r - line.width) / 2 + line.styleref.margin_l
+	-- Effective margins
+	line.margin_v = line.margin_t
+	line.eff_margin_l = ((line.margin_l > 0) and line.margin_l) or line.styleref.margin_l
+	line.eff_margin_r = ((line.margin_r > 0) and line.margin_r) or line.styleref.margin_r
+	line.eff_margin_t = ((line.margin_t > 0) and line.margin_t) or line.styleref.margin_t
+	line.eff_margin_b = ((line.margin_b > 0) and line.margin_b) or line.styleref.margin_b
+	line.eff_margin_v = ((line.margin_v > 0) and line.margin_v) or line.styleref.margin_v
+	-- And positioning
+	if line.styleref.align == 1 or line.styleref.align == 4 or line.styleref.align == 7 then
+		-- Left aligned
+		line.left = line.eff_margin_l
+		line.center = line.left + line.width / 2
+		line.right = line.left + line.width
+		line.x = line.left
+	elseif line.styleref.align == 2 or line.styleref.align == 5 or line.styleref.align == 8 then
+		-- Centered
+		line.left = (meta.res_x - line.eff_margin_l - line.eff_margin_r - line.width) / 2 + line.eff_margin_l
+		line.center = line.left + line.width / 2
+		line.right = line.left + line.width
+		line.x = line.center
+	elseif line.styleref.align == 3 or line.styleref.align == 6 or line.styleref.align == 9 then
+		-- Right aligned
+		line.left = meta.res_x - line.eff_margin_r - line.width
+		line.center = line.left + line.width / 2
+		line.right = line.left + line.width
+		line.x = line.right
+	end
+	line.hcenter = line.center
+	if line.styleref.align >=1 and line.styleref.align <= 3 then
+		-- Bottom aligned
+		line.bottom = meta.res_y - line.eff_margin_b
+		line.middle = line.bottom - line.height / 2
+		line.top = line.bottom - line.height
+		line.y = line.bottom
+	elseif line.styleref.align >= 4 and line.styleref.align <= 6 then
+		-- Mid aligned
+		line.top = (meta.res_y - line.eff_margin_t - line.eff_margin_b) / 2 + line.eff_margin_t
+		line.middle = line.top + line.height / 2
+		line.bottom = line.top + line.height
+		line.y = line.middle
+	elseif line.styleref.align >= 7 and line.styleref.align <= 9 then
+		-- Top aligned
+		line.top = line.eff_margin_t
+		line.middle = line.top + line.height / 2
+		line.bottom = line.top + line.height
+		line.y = line.top
+	end
+	line.vcenter = line.middle
 	
 	-- Generate furigana style
 	local furistyle = table.copy(line.styleref)
