@@ -127,6 +127,8 @@ namespace Automation4 {
 
 		virtual ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent) = 0; // subclasses should implement this, producing a new ScriptConfigDialog
 
+		wxString GetScriptSettingsIdentifier();
+
 	public:
 		virtual ~FeatureFilter();
 
@@ -174,6 +176,9 @@ namespace Automation4 {
 		wxWindow* GetWindow(wxWindow *parent);
 		void DeleteWindow();
 		virtual void ReadBack() = 0;
+
+		virtual wxString Serialise();
+		virtual void Unserialise(const wxString &serialised) { }
 	};
 
 

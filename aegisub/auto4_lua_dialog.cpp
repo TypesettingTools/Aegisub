@@ -36,11 +36,14 @@
 #include "auto4_lua.h"
 #include "../lua51/src/lualib.h"
 #include "../lua51/src/lauxlib.h"
+#include "string_codec.h"
+#include "utils.h"
 #include <wx/window.h>
 #include <wx/spinctrl.h>
 #include <wx/gbsizer.h>
 #include <wx/button.h>
 #include <wx/validate.h>
+#include <wx/tokenzr.h>
 #include <assert.h>
 
 namespace Automation4 {
@@ -125,6 +128,8 @@ namespace Automation4 {
 
 			virtual ~Label() { }
 
+			// Doesn't have a serialisable value so don't implement that sub-interface
+
 			wxControl *Create(wxWindow *parent)
 			{
 				return cw = new wxStaticText(parent, -1, label);
@@ -159,6 +164,21 @@ namespace Automation4 {
 
 			virtual ~Edit() { }
 
+			bool CanSerialiseValue()
+			{
+				return true;
+			}
+
+			wxString SerialiseValue()
+			{
+				return inline_string_encode(text);
+			}
+
+			void UnserialiseValue(const wxString &serialised)
+			{
+				text = inline_string_decode(serialised);
+			}
+
 			wxControl *Create(wxWindow *parent)
 			{
 				return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0);
@@ -189,6 +209,8 @@ namespace Automation4 {
 			}
 
 			virtual ~Textbox() { }
+
+			// Same serialisation interface as single-line edit
 
 			wxControl *Create(wxWindow *parent)
 			{
@@ -237,6 +259,23 @@ nospin:
 			}
 
 			virtual ~IntEdit() { }
+
+			bool CanSerialiseValue()
+			{
+				return true;
+			}
+
+			wxString SerialiseValue()
+			{
+				return wxString::Format(_T("%d"), value);
+			}
+
+			void UnserialiseValue(const wxString &serialised)
+			{
+				long tmp;
+				if (serialised.ToLong(&tmp))
+					value = tmp;
+			}
 
 			typedef wxValidator IntTextValidator; // TODO
 			wxControl *Create(wxWindow *parent)
@@ -288,6 +327,23 @@ nospin:
 
 			virtual ~FloatEdit() { }
 
+			bool CanSerialiseValue()
+			{
+				return true;
+			}
+
+			wxString SerialiseValue()
+			{
+				return PrettyFloatF(value);
+			}
+
+			void UnserialiseValue(const wxString &serialised)
+			{
+				double tmp;
+				if (serialised.ToDouble(&tmp))
+					value = (float)tmp;
+			}
+
 			typedef wxValidator FloatTextValidator;
 			wxControl *Create(wxWindow *parent)
 			{
@@ -338,6 +394,21 @@ nospin:
 
 			virtual ~Dropdown() { }
 
+			bool CanSerialiseValue()
+			{
+				return true;
+			}
+
+			wxString SerialiseValue()
+			{
+				return inline_string_encode(value);
+			}
+
+			void UnserialiseValue(const wxString &serialised)
+			{
+				value = inline_string_decode(serialised);
+			}
+
 			wxControl *Create(wxWindow *parent)
 			{
 				return cw = new wxComboBox(parent, -1, value, wxDefaultPosition, wxDefaultSize, items, wxCB_READONLY);
@@ -376,6 +447,22 @@ nospin:
 			}
 
 			virtual ~Checkbox() { }
+
+			bool CanSerialiseValue()
+			{
+				return true;
+			}
+
+			wxString SerialiseValue()
+			{
+				return value ? _T("1") : _T("0");
+			}
+
+			void UnserialiseValue(const wxString &serialised)
+			{
+				// fixme? should this allow more different "false" values?
+				value = (serialised == _T("0")) ? false : true;
+			}
 
 			wxControl *Create(wxWindow *parent)
 			{
@@ -573,6 +660,48 @@ badcontrol:
 			return 2;
 		} else {
 			return 1;
+		}
+	}
+
+	wxString LuaConfigDialog::Serialise()
+	{
+		if (controls.size() == 0)
+			return _T("");
+
+		wxString res;
+
+		// Format into "name1:value1|name2:value2|name3:value3|"
+		for (size_t i = 0; i < controls.size(); ++i) {
+			if (controls[i]->CanSerialiseValue()) {
+				wxString sn = inline_string_encode(controls[i]->name);
+				wxString sv = controls[i]->SerialiseValue();
+				res += wxString::Format(_T("%s:%s|"), sn.c_str(), sv.c_str());
+			}
+		}
+
+		// Remove trailing pipe
+		if (!res.IsEmpty())
+			res.RemoveLast();
+
+		return res;
+	}
+
+	void LuaConfigDialog::Unserialise(const wxString &serialised)
+	{
+		// Split by pipe
+		wxStringTokenizer tk(serialised, _T("|"));
+		while (tk.HasMoreTokens()) {
+			// Split by colon
+			wxString pair = tk.GetNextToken();
+			wxString name = inline_string_decode(pair.BeforeFirst(_T(':')));
+			wxString value = pair.AfterFirst(_T(':'));
+
+			// Hand value to all controls matching name
+			for (size_t i = 0; i < controls.size(); ++i) {
+				if (controls[i]->name == name && controls[i]->CanSerialiseValue()) {
+					controls[i]->UnserialiseValue(value);
+				}
+			}
 		}
 	}
 

@@ -298,8 +298,7 @@ namespace Automation4 {
 		return res;
 	}
 
-	Auto3ConfigDialog::Auto3ConfigDialog(lua_State *L, const wxString &_ident)
-		: ident(_ident)
+	Auto3ConfigDialog::Auto3ConfigDialog(lua_State *L)
 	{
 		present = false;
 		if (!lua_istable(L, -1)) {
@@ -523,8 +522,6 @@ continue_invalid_option:
 
 	void Auto3ConfigDialog::ReadBack()
 	{
-		wxString opthname = wxString::Format(_T("Automation Settings %s"), ident.c_str());
-
 		for (std::vector<Control>::iterator ctl = controls.begin(); ctl != controls.end(); ctl++) {
 			switch (ctl->option->kind) {
 				case COK_TEXT:
@@ -560,12 +557,9 @@ continue_invalid_option:
 					break;
 			}
 		}
-
-		// serialize the new settings and save them to the file
-		AssFile::top->SetScriptInfo(opthname, serialize());
 	}
 
-	wxString Auto3ConfigDialog::serialize()
+	wxString Auto3ConfigDialog::Serialise()
 	{
 		if (options.size() == 0)
 			return _T("");
@@ -599,7 +593,7 @@ continue_invalid_option:
 		return result;
 	}
 
-	void Auto3ConfigDialog::unserialize(wxString &settings)
+	void Auto3ConfigDialog::Unserialise(const wxString &settings)
 	{
 		wxStringTokenizer toker(settings, _T("|"), wxTOKEN_STRTOK);
 		while (toker.HasMoreTokens()) {
@@ -667,11 +661,7 @@ continue_invalid_option:
 	{
 		// configuration (let the config object do all the loading)
 		lua_getglobal(L, "configuration");
-		config = new Auto3ConfigDialog(L, GetName());
-
-		wxString opthname = wxString::Format(_T("Automation Settings %s"), GetName().c_str());
-		wxString serialized = AssFile::top->GetScriptInfo(opthname);
-		config->unserialize(serialized);
+		config = new Auto3ConfigDialog(L);
 
 		return config;
 	}

@@ -736,12 +736,12 @@ namespace Automation4 {
 
 		ps->ShowModal();
 		wxThread::ExitCode code = call.Wait();
-		//if (code) ThrowError();
 
 		delete ps;
 
-		// The config dialog table should now be on stack
+		
 		if (!code) {
+			// The config dialog table should now be on stack as LuaConfigDialog constructor expects
 			return config_dialog = new LuaConfigDialog(L, false);
 		} else {
 			return config_dialog = 0;

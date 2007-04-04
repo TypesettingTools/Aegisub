@@ -58,7 +58,7 @@
 #include <wx/wxprec.h>
 #include <wx/string.h>
 
-wxString inline_string_encode(wxString &input);
-wxString inline_string_decode(wxString &input);
+wxString inline_string_encode(const wxString &input);
+wxString inline_string_decode(const wxString &input);
 
 #endif

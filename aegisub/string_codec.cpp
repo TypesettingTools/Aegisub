@@ -38,7 +38,7 @@
 
 #include "string_codec.h"
 
-wxString inline_string_encode(wxString &input)
+wxString inline_string_encode(const wxString &input)
 {
 	const size_t inlen = input.length();
 	wxString output(_T(""));
@@ -54,7 +54,7 @@ wxString inline_string_encode(wxString &input)
 	return output;
 }
 
-wxString inline_string_decode(wxString &input)
+wxString inline_string_decode(const wxString &input)
 {
 	const size_t inlen = input.length();
 	wxString output(_T(""));

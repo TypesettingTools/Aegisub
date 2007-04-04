@@ -36,6 +36,8 @@
 #include "auto4_base.h"
 #include "ass_style.h"
 #include "options.h"
+#include "string_codec.h"
+#include "ass_file.h"
 #include <wx/filename.h>
 #include <wx/dir.h>
 #include <wx/dialog.h>
@@ -243,12 +245,21 @@ namespace Automation4 {
 		Unregister();
 	}
 
+	wxString FeatureFilter::GetScriptSettingsIdentifier()
+	{
+		return inline_string_encode(wxString::Format(_T("Automation Settings %s"), GetName().c_str()));
+	}
+
 	wxWindow* FeatureFilter::GetConfigDialogWindow(wxWindow *parent) {
 		if (config_dialog) {
 			delete config_dialog;
 			config_dialog = 0;
 		}
 		if ((config_dialog = GenerateConfigDialog(parent)) != NULL) {
+			wxString val = AssFile::top->GetScriptInfo(GetScriptSettingsIdentifier());
+			if (!val.IsEmpty()) {
+				config_dialog->Unserialise(val);
+			}
 			return config_dialog->GetWindow(parent);
 		} else {
 			return 0;
@@ -258,6 +269,11 @@ namespace Automation4 {
 	void FeatureFilter::LoadSettings(bool IsDefault) {
 		if (config_dialog) {
 			config_dialog->ReadBack();
+
+			wxString val = config_dialog->Serialise();
+			if (!val.IsEmpty()) {
+				AssFile::top->SetScriptInfo(GetScriptSettingsIdentifier(), val);
+			}
 		}
 	}
 
@@ -304,6 +320,11 @@ namespace Automation4 {
 	{
 		if (win) delete win;
 		win = 0;
+	}
+
+	wxString ScriptConfigDialog::Serialise()
+	{
+		return _T("");
 	}
 
 

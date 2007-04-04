@@ -130,6 +130,10 @@ namespace Automation4 {
 		virtual void ControlReadBack() = 0;
 		virtual void LuaReadBack(lua_State *L) = 0;
 
+		virtual bool CanSerialiseValue() { return false; }
+		virtual wxString SerialiseValue() { return _T(""); }
+		virtual void UnserialiseValue(const wxString &serialised) { }
+
 		LuaConfigDialogControl(lua_State *L);
 		virtual ~LuaConfigDialogControl() { }
 	};
@@ -156,6 +160,9 @@ namespace Automation4 {
 		LuaConfigDialog(lua_State *_L, bool include_buttons);
 		virtual ~LuaConfigDialog();
 		int LuaReadBack(lua_State *L); // read back internal structure to lua structures
+
+		wxString Serialise();
+		void Unserialise(const wxString &serialised);
 
 		void ReadBack(); // from auto4 base
 	};

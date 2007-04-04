@@ -113,20 +113,18 @@ namespace Automation4 {
 		};
 		std::vector<Control> controls;
 
-		wxString ident;
-
 	protected:
 		wxWindow* CreateWindow(wxWindow *parent);
 
 	public:
-		Auto3ConfigDialog(lua_State *L, const wxString &_ident);
+		Auto3ConfigDialog(lua_State *L);
 		virtual ~Auto3ConfigDialog();
 		int LuaReadBack(lua_State *L); // read back internal structure to lua structures
 
 		void ReadBack(); // from auto4 base
 
-		wxString serialize(); // make a string from the option name+value pairs
-		void unserialize(wxString &settings); // set the option values from a serialized string
+		wxString Serialise(); // make a string from the option name+value pairs
+		void Unserialise(const wxString &settings); // set the option values from a serialized string
 	};
 
 
