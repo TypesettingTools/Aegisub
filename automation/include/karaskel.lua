@@ -210,18 +210,21 @@ function karaskel.preproc_line(subs, meta, styles, line)
 		line.center = line.left + line.width / 2
 		line.right = line.left + line.width
 		line.x = line.left
+		line.halign = "left"
 	elseif line.styleref.align == 2 or line.styleref.align == 5 or line.styleref.align == 8 then
 		-- Centered
 		line.left = (meta.res_x - line.eff_margin_l - line.eff_margin_r - line.width) / 2 + line.eff_margin_l
 		line.center = line.left + line.width / 2
 		line.right = line.left + line.width
 		line.x = line.center
+		line.halign = "center"
 	elseif line.styleref.align == 3 or line.styleref.align == 6 or line.styleref.align == 9 then
 		-- Right aligned
 		line.left = meta.res_x - line.eff_margin_r - line.width
 		line.center = line.left + line.width / 2
 		line.right = line.left + line.width
 		line.x = line.right
+		line.halign = "right"
 	end
 	line.hcenter = line.center
 	if line.styleref.align >=1 and line.styleref.align <= 3 then
@@ -230,18 +233,21 @@ function karaskel.preproc_line(subs, meta, styles, line)
 		line.middle = line.bottom - line.height / 2
 		line.top = line.bottom - line.height
 		line.y = line.bottom
+		line.valign = "bottom"
 	elseif line.styleref.align >= 4 and line.styleref.align <= 6 then
 		-- Mid aligned
 		line.top = (meta.res_y - line.eff_margin_t - line.eff_margin_b) / 2 + line.eff_margin_t
 		line.middle = line.top + line.height / 2
 		line.bottom = line.top + line.height
 		line.y = line.middle
+		line.valign = "middle"
 	elseif line.styleref.align >= 7 and line.styleref.align <= 9 then
 		-- Top aligned
 		line.top = line.eff_margin_t
 		line.middle = line.top + line.height / 2
 		line.bottom = line.top + line.height
 		line.y = line.top
+		line.valign = "top"
 	end
 	line.vcenter = line.middle
 	

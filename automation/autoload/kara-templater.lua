@@ -221,6 +221,23 @@ function parse_template(meta, styles, line, templates, mods)
 	end
 end
 
+-- Iterator function, return all templates that apply to the given line
+function matching_templates(templates, line)
+	local lastkey = 0
+	local function test_next()
+		lastkey = lastkey + 1
+		local t = templates[lastkey]
+		if not t then
+			return nil
+		elseif t.style == line.style or not t.style then
+			return t
+		else
+			return test_next()
+		end
+	end
+	return test_next
+end
+
 
 -- Apply the templates
 function apply_templates(meta, styles, subs, templates)
@@ -234,16 +251,7 @@ function apply_templates(meta, styles, subs, templates)
 	-- run all run-once code snippets
 	for k, t in pairs(templates.once) do
 		assert(t.code, "WTF, a 'once' template without code?")
-		local f, err = loadstring(t.code, "template code once")
-		if not f then
-			aegisub.debug.out(2, "Failed to parse Lua code: %s\nCode that failed to parse: %s\n\n", err, t.code)
-		else
-			setfenv(f, tenv)
-			local res, err = pcall(f)
-			if not res then
-				aegisub.debug.out(2, "Runtime error in template code: %s\nCode producing error: %s\n\n", err, t.code)
-			end
-		end
+		run_template_code(t, tenv)
 	end
 	
 	-- start processing lines
@@ -256,6 +264,7 @@ function apply_templates(meta, styles, subs, templates)
 			l.comment = true
 			l.effect = "karaoke"
 			subs[i] = l
+			l.i = i
 			-- and then run it through the templates
 			apply_line(meta, styles, subs, l, templates, tenv)
 		end
@@ -263,19 +272,221 @@ function apply_templates(meta, styles, subs, templates)
 end
 
 function apply_line(meta, styles, subs, line, templates, tenv)
-	-- apply all line templates
-	for k, t in pairs(templates.line) do
+	-- Tell whether any templates were applied to this line, needed to know whether the original line should be removed from input
+	local applied_templates = false
+	
+	-- General variable replacement context
+	local varctx = {
+		layer = line.layer,
+		lstart = line.start_time,
+		lend = line.end_time,
+		ldur = line.duration,
+		lmid = line.start_time + line.duration/2,
+		style = line.style,
+		actor = line.actor,
+		margin_l = ((line.margin_l > 0) and line.margin_l) or line.styleref.margin_l,
+		margin_r = ((line.margin_r > 0) and line.margin_r) or line.styleref.margin_r,
+		margin_t = ((line.margin_t > 0) and line.margin_t) or line.styleref.margin_t,
+		margin_b = ((line.margin_b > 0) and line.margin_b) or line.styleref.margin_b,
+		margin_v = ((line.margin_t > 0) and line.margin_t) or line.styleref.margin_t,
+		syln = line.karaoke.n,
+		li = line.i,
+		lleft = line.left,
+		lcenter = line.left + line.width/2,
+		lright = line.left + line.width,
+		lx = line.x,
+		ly = line.y
+		-- TODO: more positioning vars
+	}
+	
+	-- Specific for whole-line processing
+	varctx["start"] = varctx.lstart
+	varctx["end"] = varctx.lend
+	varctx.dur = varctx.ldur
+	varctx.mid = varctx.lmid
+	varctx.i = varctx.li
+	varctx.left = varctx.lleft
+	varctx.center = varctx.lcenter
+	varctx.right = varctx.lright
+	varctx.x = varctx.lx
+	varctx.y = varctx.ly
+	
+	local function set_ctx_syl(syl)
+		varctx.sstart = syl.start_time
+		varctx.send = syl.end_time
+		varctx.sdur = syl.duration
+		varctx.smid = syl.start_time + syl.duration / 2
+		varctx["start"] = varctx.sstart
+		varctx["end"] = varctx.send
+		varctx.dur = varctx.sdur
+		varctx.mid = varctx.smid
+		varctx.si = syl.i
+		varctx.i = varctx.si
+		varctx.sleft = syl.left
+		varctx.scenter = syl.center
+		varctx.sright = syl.right
+		if line.halign == "left" then
+			varctx.sx = varctx.lleft + syl.left
+		elseif line.halign == "center" then
+			varctx.sx = varctx.lleft + syl.center
+		elseif line.halign == "right" then
+			varctx.sx = varctx.lleft + syl.right
+		end
+		varctx.sy = line.y
+		varctx.left = varctx.sleft
+		varctx.center = varctx.scenter
+		varctx.right = varctx.sright
+		varctx.x = varctx.sx
+		varctx.y = varctx.sy
 	end
-	-- loop over syllables
-	for i = 0, line.karaoke.n do
-		local syl = line.karaoke[i]
-		-- apply syllable templates
+
+	tenv.orgline = line
+	tenv.line = nil
+	tenv.syl = nil
+	tenv.char = nil
+	tenv.furi = nil
+
+	-- Apply all line templates
+	for t in matching_templates(templates.line, line) do
+		if t.code then
+			run_template_code(t, tenv)
+		else
+			applied_templates = true
+			local newline = table.copy(line)
+			tenv.line = newline
+			newline.text = ""
+			if t.pre ~= "" then
+				newline.text = newline.text .. run_text_template(t.pre, tenv, varctx)
+			end
+			if t.t ~= "" then
+				for i = 1, line.kara.n do
+					local syl = line.kara[i]
+					tenv.syl = syl
+					set_ctx_syl(syl)
+					newline.text = newline.text .. run_text_template(t.t, tenv, varctx)
+					if t.addtext then
+						if t.keeptags then
+							newline.text = newline.text .. syl.text
+						else
+							newline.text = newline.text .. syl.text_stripped
+						end
+					end
+				end
+			else
+				-- hmm, no main template for the line... put original text in
+				newline.text = newline.text .. line.text
+			end
+			newline.effect = "fx"
+			subs.append(newline)
+		end
+	end
+	
+	-- Loop over syllables
+	for i = 0, line.kara.n do
+		local syl = line.kara[i]
 		
-		-- apply character templates
+		-- Apply syllable templates
+		for t in matching_templates(templates.syl, line) do
+			tenv.syl = syl
+			set_ctx_syl(syl)
+	
+			if not t.inline_fx or t.inline_fx == syl.inline_fx then
+				if t.code then
+					run_code_template(t, tenv)
+				elseif t.multi then
+					for hl = 1, syl.highlights.n do
+						local hldata = syl.highlights[hl]
+						local hlsyl = table.copy(syl)
+						hlsyl.start_time = hldata.start_time
+						hlsyl.end_time = hldata.end_time
+						hlsyl.duration = hldata.duration
+						tenv.basesyl = syl
+						tenv.syl = hlsyl
+						set_ctx_syl(hlsyl)
+						
+						for j = 1, t.loops do
+							tenv.j = j
+							local newline = table.copy(line)
+							tenv.line = newline
+							newline.text = run_text_template(t, tenv, varctx)
+							if t.addtext then
+								newline.text = newline.text .. syl.text_stripped
+							end
+							newline.effect = "fx"
+							subs.append(newline)
+						end
+					end
+				else
+					for j = 1, t.loops do
+						tenv.j = j
+						local newline = table.copy(line)
+						tenv.line = newline
+						newline.text = run_text_template(t, tenv, varctx)
+						if t.addtext then
+							newline.text = newline.text .. syl.text_stripped
+						end
+						newline.effect = "fx"
+						subs.append(newline)
+					end
+				end
+			end
+		end
+		
+		-- Apply character templates
+		-- TODO
 	end
-	-- loop over furigana
+	
+	-- Loop over furigana
 	for i = 1, line.furi.n do
+		-- TODO
 	end
+end
+
+function run_code_template(template, tenv)
+	local f, err = loadstring(template.code, "template code")
+	if not f then
+		aegisub.debug.out(2, "Failed to parse Lua code: %s\nCode that failed to parse: %s\n\n", err, template.code)
+	else
+		setfenv(f, tenv)
+		for j = 1, template.loops do
+			tenv.j = j
+			local res, err = pcall(f)
+			if not res then
+				aegisub.debug.out(2, "Runtime error in template code: %s\nCode producing error: %s\n\n", err, template.code)
+			end
+		end
+	end
+end
+
+function run_text_template(template, tenv, varctx)
+	local res = template
+	
+	-- Replace the variables in the string (this is probably faster than using a custom function, but doesn't provide error reporting)
+	if varctx then
+		res = string.gsub(res, "$([%a_]+)", varctx)
+	end
+	
+	-- Function for evaluating expressions
+	local function expression_evaluator(expression)
+		f, err = loadstring(string.format("return (%s)", expression))
+		if (err) ~= nil then
+			aegisub.debug.out(2, "Error parsing expression: %s\nExpression producing error: %s\nTemplate with expression: %s\n\n", err, expression, template)
+			return "!" .. expression .. "!"
+		else
+			setfenv(f, tenv)
+			local res, val = pcall(f)
+			if res then
+				return val
+			else
+				aegisub.debug.out(2, "Runtime error in template expression: %s\nExpression producing error: %s\nTemplate with expression: %s\n\n", val, expression, template)
+				return "!" .. expression .. "!"
+			end
+		end
+	end
+	-- Find and evaluate expressions
+	res = string.gsub(res , "!(.-)!", expression_evaluator)
+	
+	return res
 end
 
 
