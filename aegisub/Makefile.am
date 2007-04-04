@@ -136,4 +136,15 @@ aegisub_SOURCES = \
 	video_zoom.cpp \
 	MatroskaParser.c
 
-
+noinst_HEADERS = \
+	boost/assert.hpp \
+	boost/checked_delete.hpp \
+	boost/shared_count.hpp \
+	boost/shared_ptr.hpp \
+	boost/throw_exception.hpp \
+	boost/workaround.hpp \
+	gl/glext.h \
+	csri/csri.h \
+	csri/logging.h \
+	csri/openerr.h \
+	mythes.hxx
