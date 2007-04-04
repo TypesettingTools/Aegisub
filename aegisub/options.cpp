@@ -145,6 +145,7 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Video Dummy Last Colour"), wxColour(47, 163, 254));
 	SetFloat(_T("Video Dummy Last FPS"), 23.976);
 	SetInt(_T("Video Dummy Last Length"), 40000);
+	SetBool(_T("Video Dummy Pattern"), false);
 
 	// Video Provider (Advanced)
 	SetModificationType(MOD_RESTART);

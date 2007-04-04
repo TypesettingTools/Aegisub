@@ -66,6 +66,7 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 		double fps;
 		long width, height, length;
 		wxColour colour;
+		bool pattern;
 
 		// Read back values and check sensibility
 		if (!dlg.fps->GetValue().ToDouble(&fps) || fps <= 0) {
@@ -95,6 +96,7 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 			length = 2;
 		}
 		colour = dlg.colour->GetColour();
+		pattern = dlg.pattern->GetValue();
 
 		// Write to options
 		Options.SetFloat(_T("Video Dummy Last FPS"), fps);
@@ -102,8 +104,9 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 		Options.SetInt(_T("Video Dummy Last Height"), height);
 		Options.SetInt(_T("Video Dummy Last Length"), length);
 		Options.SetColour(_T("Video Dummy Last Colour"), colour);
+		Options.SetBool(_T("Video Dummy Pattern"), pattern);
 
-		out_filename = DummyVideoProvider::MakeFilename(fps, length, width, height, colour);
+		out_filename = DummyVideoProvider::MakeFilename(fps, length, width, height, colour, pattern);
 		return true;
 	} else {
 		return false;
@@ -120,6 +123,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	width = new wxTextCtrl(this, -1);
 	height = new wxTextCtrl(this, -1);
 	colour = new ColourButton(this, -1, wxSize(30, 17), Options.AsColour(_T("Video Dummy Last Colour")));
+	pattern = new wxCheckBox(this, -1, _("Checkerboard pattern"));
 	//fps = new wxComboBox(this, Dummy_Video_FPS, Options.AsText(_T("Video Dummy Last FPS")), wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN);
 	fps = new wxTextCtrl(this, Dummy_Video_FPS, Options.AsText(_T("Video Dummy Last FPS")));
 	length = new wxSpinCtrl(this, Dummy_Video_Length);
@@ -137,6 +141,8 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	fg->Add(res_sizer, 1, wxEXPAND);
 	fg->Add(new wxStaticText(this, -1, _("Colour:")), 0, wxALIGN_CENTRE_VERTICAL);
 	fg->Add(colour, 1, wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
+	fg->AddStretchSpacer();
+	fg->Add(pattern, 1, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
 	fg->Add(new wxStaticText(this, -1, _("Frame rate (fps):")), 0, wxALIGN_CENTRE_VERTICAL);
 	fg->Add(fps, 1, wxEXPAND);
 	fg->Add(new wxStaticText(this, -1, _("Duration (frames):")), 0, wxALIGN_CENTRE_VERTICAL);
@@ -166,6 +172,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 			resolution_shortcuts->SetSelection(lastres);
 		lastres++;
 	}
+	pattern->SetValue(Options.AsBool(_T("Video Dummy Pattern")));
 	/*fps->Append(_T("23.976"));
 	fps->Append(_T("29.97"));
 	fps->Append(_T("24"));

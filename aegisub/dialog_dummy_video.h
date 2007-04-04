@@ -53,6 +53,7 @@ private:
 	wxTextCtrl *width;
 	wxTextCtrl *height;
 	ColourButton *colour;
+	wxCheckBox *pattern;
 	//wxComboBox *fps;
 	wxTextCtrl *fps;
 	wxSpinCtrl *length;

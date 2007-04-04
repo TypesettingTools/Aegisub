@@ -56,17 +56,17 @@ private:
 	int height;
 	AegiVideoFrame frame;
 
-	void Create(double fps, int frames, int _width, int _height, const wxColour &colour);
+	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
 protected:
 	const AegiVideoFrame DoGetFrame(int n);
 
 public:
 	DummyVideoProvider(wxString filename, double fps);
-	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour);
+	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 	~DummyVideoProvider();
 
-	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour);
+	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
 	int GetPosition();
 	int GetFrameCount();

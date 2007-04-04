@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include "video_provider_dummy.h"
+#include "colorspace.h"
 #include <wx/tokenzr.h>
 
 
@@ -52,7 +53,7 @@ public:
 
 ///////////////
 // Constructor
-void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height, const wxColour &colour) {
+void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
 	lastFrame = -1;
 	framecount = frames;
 	fps = _fps;
@@ -62,11 +63,56 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 	frame = AegiVideoFrame(width,height,FORMAT_RGB32);
 	unsigned char *dst = frame.data[0];
 	unsigned char r = colour.Red(), g = colour.Green(), b = colour.Blue();
-	for (int i=frame.pitch[0]*frame.h/frame.GetBpp();--i>=0;) {
-		*dst++ = b;
-		*dst++ = g;
-		*dst++ = r;
-		*dst++ = 0;
+
+	unsigned char h, s, l, lr, lg, lb; // light variants
+	rgb_to_hsl(r, g, b, &h, &s, &l);
+	l = 255 - (255 - l) / 2;
+	hsl_to_rgb(h, s, l, &lr, &lg, &lb);
+
+	if (pattern) {
+		int ppitch = frame.pitch[0] / frame.GetBpp();
+		for (int y = 0; y < frame.h; ++y) {
+			if ((y / 8) & 1) {
+				for (int x = 0; x < ppitch; ++x) {
+					if ((x / 8) & 1) {
+						*dst++ = b;
+						*dst++ = g;
+						*dst++ = r;
+						*dst++ = 0;
+					}
+					else {
+						*dst++ = lb;
+						*dst++ = lg;
+						*dst++ = lr;
+						*dst++ = 0;
+					}
+				}
+			}
+			else {
+				for (int x = 0; x < ppitch; ++x) {
+					if ((x / 8) & 1) {
+						*dst++ = lb;
+						*dst++ = lg;
+						*dst++ = lr;
+						*dst++ = 0;
+					}
+					else {
+						*dst++ = b;
+						*dst++ = g;
+						*dst++ = r;
+						*dst++ = 0;
+					}
+				}
+			}
+		}
+	}
+	else {
+		for (int i=frame.pitch[0]*frame.h/frame.GetBpp();--i>=0;) {
+			*dst++ = b;
+			*dst++ = g;
+			*dst++ = r;
+			*dst++ = 0;
+		}
 	}
 }
 
@@ -87,6 +133,7 @@ DummyVideoProvider::DummyVideoProvider(wxString filename, double _fps)
 
 	double parsedfps;
 	long _frames, _width, _height, red, green, blue;
+	bool pattern = false;
 
 	wxString field = t.GetNextToken();
 	if (!field.ToDouble(&parsedfps)) {
@@ -125,14 +172,19 @@ DummyVideoProvider::DummyVideoProvider(wxString filename, double _fps)
 		throw _T("Unable to parse bluecolour field in dummy video parameter list");
 	}
 
-	Create(_fps, _frames, _width, _height, wxColour(red, green, blue));
+	field = t.GetNextToken();
+	if (field == _T("c")) {
+		pattern = true;
+	}
+
+	Create(_fps, _frames, _width, _height, wxColour(red, green, blue), pattern);
 }
 
 
 //////////////////////
 // Direct constructor
-DummyVideoProvider::DummyVideoProvider(double _fps, int frames, int _width, int _height, const wxColour &colour) {
-	Create(_fps, frames, _width, _height, colour);
+DummyVideoProvider::DummyVideoProvider(double _fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
+	Create(_fps, frames, _width, _height, colour, pattern);
 }
 
 
@@ -144,8 +196,8 @@ DummyVideoProvider::~DummyVideoProvider() {
 
 //////////////////////////////////////////////////
 // Construct a fake filename describing the video
-wxString DummyVideoProvider::MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour) {
-	return wxString::Format(_T("?dummy:%f:%d:%d:%d:%d:%d:%d"), fps, frames, _width, _height, colour.Red(), colour.Green(), colour.Blue());
+wxString DummyVideoProvider::MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
+	return wxString::Format(_T("?dummy:%f:%d:%d:%d:%d:%d:%d:%s"), fps, frames, _width, _height, colour.Red(), colour.Green(), colour.Blue(), pattern?_T("c"):_T(""));
 }
 
 
