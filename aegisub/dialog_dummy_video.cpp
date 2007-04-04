@@ -49,7 +49,7 @@ static ResolutionShortcut resolutions[] = {
 	{_T("640x480 (SD fullscreen)"), 640, 480},
 	{_T("704x480 (SD anamorphic)"), 704, 480},
 	{_T("640x360 (SD widescreen)"), 640, 360},
-	{_T("704x396 (SD widescreen)"), 640, 396},
+	{_T("704x396 (SD widescreen)"), 704, 396},
 	{_T("640x352 (SD widescreen MOD16)"), 640, 352},
 	{_T("704x400 (SD widescreen MOD16)"), 704, 400},
 	{_T("1280x720 (HD 720p)"), 1280, 720},
