@@ -75,7 +75,7 @@ int SmallestPowerOf2(int x);
 #ifdef __VISUALC__
 #define FORCEINLINE __forceinline
 #else
-#define FORCEINLINE inline
+#define FORCEINLINE inline	// __attribute__((always_inline)) gives me errors on g++ ~amz
 #endif
 #endif
 
@@ -92,7 +92,7 @@ static inline void IntSwap(int &a,int &b) {
 //////////////////////////
 // Clamp integer to range
 // Code taken from http://bob.allegronetwork.com/prog/tricks.html#clamp
-FORCEINLINE static int ClampSignedInteger32(int x,int min,int max) {
+static FORCEINLINE int ClampSignedInteger32(int x,int min,int max) {
 	x -= min;
 	x &= (~x) >> 31;
 	x += min;
