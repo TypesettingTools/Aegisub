@@ -142,7 +142,7 @@ public:
 		if (i >= start && i-start <= length) {
 			// Determine which sub-cache this line resides in
 			size_t subcache = (i-start) / subcache_length;
-			assert(subcache >= 0 && subcache < sub_caches.size());
+			assert(subcache < sub_caches.size());
 
 			if (!sub_caches[subcache]) {
 				if (subcaches_are_final) {

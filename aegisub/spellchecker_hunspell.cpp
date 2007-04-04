@@ -196,7 +196,7 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 
 	// For each dictionary match, see if it can find the corresponding .aff
 	for (unsigned int i=0;i<dic.Count();i++) {
-		wxString curAff = dic[i].Left(MAX(0,dic[i].Length()-4)) + _T(".aff");
+		wxString curAff = dic[i].Left(dic[i].Length()-4) + _T(".aff");
 		for (unsigned int j=0;j<aff.Count();j++) {
 			// Found match
 			if (curAff == aff[j]) {

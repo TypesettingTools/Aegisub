@@ -37,14 +37,14 @@ typedef uint64_t __uint64;
 #error no audio system available
 #endif
 
-#define USE_DIRECTSHOW 0
-#define USE_DIRECTSOUND 0
-#define USE_HUNSPELL 0
+//#define USE_HUNSPELL 0
 #ifndef USE_LAVC
 #define USE_LAVC 0
 #endif
 #define USE_PRS 0
+#ifndef USE_FEXTRACKER
 #define USE_FEXTRACKER 1
+#endif
 #ifndef USE_LIBSSA
 #define USE_LIBSSA 0
 #endif

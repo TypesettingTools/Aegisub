@@ -74,7 +74,11 @@ void AssColor::Parse(const wxString value) {
 	}
 	
 	outval=strtoul(ostr+oindex,0,ishex?16:10);
-	if (isneg) outval+=2147483648; //2^31 (MSB)
+	if (isneg) {
+		// Two lines to stop g++ from bitching
+		outval+=2147483647; //2^31 (MSB)
+		outval++;
+	}
 
 	r = outval		& 0xFF;
 	g = (outval>>8)	& 0xFF;

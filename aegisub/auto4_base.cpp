@@ -332,11 +332,11 @@ namespace Automation4 {
 
 	ProgressSink::ProgressSink(wxWindow *parent)
 		: wxDialog(parent, -1, _T("Automation"), wxDefaultPosition, wxDefaultSize, wxDOUBLE_BORDER)
+		, debug_visible(false)
+		, data_updated(false)
 		, cancelled(false)
 		, has_inited(false)
 		, script_finished(false)
-		, debug_visible(false)
-		, data_updated(false)
 	{
 		// make the controls
 		progress_display = new wxGauge(this, -1, 1000, wxDefaultPosition, wxSize(300, 20));

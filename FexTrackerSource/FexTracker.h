@@ -1,4 +1,4 @@
-// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhï¿½t  (tentacle)
 // All rights reserved but the aegisub project is allowed to use it.
 
 
@@ -25,15 +25,15 @@ class FEXTRACKER_API FexTrackerConfig
 public:
 	inline FexTrackerConfig() : 
 		FeatureNumber(0),
-		EdgeDetectSigma(1.f),
 		WindowX(3), WindowY(3), 
 		SearchRange(15),
+		DetectSmoothSigma(0.9f),
+		EdgeDetectSigma(1.f),
 		MaxIterations(10),
 		MinDeterminant(0.01f),
 		MinDisplacement(0.1f),
 		MaxResidue(10.f),
 		IgnoreLightning(0),
-		DetectSmoothSigma(0.9f),
 		MinDistanceSquare(100.f)
 	{};
 

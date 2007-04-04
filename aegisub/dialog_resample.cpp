@@ -142,7 +142,7 @@ void DialogResample::ResampleTags (wxString name,int n,AssOverrideParameter *cur
 		curParam->SetFloat(curParam->AsFloat() * resizer);
 	}
 	if (curType == VARDATA_INT) {
-		curParam->SetInt(double(curParam->AsInt()) * resizer + 0.5);
+		curParam->SetInt(int(double(curParam->AsInt()) * resizer + 0.5));
 	}
 }
 

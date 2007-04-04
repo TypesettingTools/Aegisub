@@ -284,8 +284,8 @@ void VideoDisplayVisual::DrawOverlay() {
 								int fx = int(cos(angle)*oRadius);
 								int fy = -int(sin(angle)*oRadius);
 								DrawLine(0,0,fx,fy);
-								int mdx = cos(rz*3.1415926536/180.0)*20;
-								int mdy = -sin(rz*3.1415926536/180.0)*20;
+								int mdx = int(cos(rz*3.1415926536/180.0)*20);
+								int mdy = int(-sin(rz*3.1415926536/180.0)*20);
 								DrawLine(-mdx,-mdy,mdx,mdy);
 							}
 

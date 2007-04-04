@@ -71,7 +71,7 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 
 	if (pattern) {
 		int ppitch = frame.pitch[0] / frame.GetBpp();
-		for (int y = 0; y < frame.h; ++y) {
+		for (unsigned int y = 0; y < frame.h; ++y) {
 			if ((y / 8) & 1) {
 				for (int x = 0; x < ppitch; ++x) {
 					if ((x / 8) & 1) {

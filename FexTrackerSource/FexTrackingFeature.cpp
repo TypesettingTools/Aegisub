@@ -1,4 +1,4 @@
-// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhöft  (tentacle)
+// This file is part of FexTracker and (C) 2006 by Hajo Krabbenhï¿½t  (tentacle)
 // All rights reserved but the aegisub project is allowed to use it.
 
 // FexTrackingFeature.cpp: implementation of the FexTrackingFeature class.
@@ -19,4 +19,5 @@ FexTrackingFeature::~FexTrackingFeature()
 {
 
 }
+
  

@@ -111,7 +111,7 @@ LAVCAudioProvider::LAVCAudioProvider(wxString _filename)
 	}
 #endif
 	audStream = -1;
-	for (unsigned int i = 0; i < lavcfile->fctx->nb_streams; i++) {
+	for (int i = 0; i < lavcfile->fctx->nb_streams; i++) {
 		codecContext = lavcfile->fctx->streams[i]->codec;
 		if (codecContext->codec_type == CODEC_TYPE_AUDIO) {
 			stream = lavcfile->fctx->streams[i];

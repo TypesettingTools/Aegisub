@@ -173,14 +173,14 @@ void VideoDisplay::Render() {
 
 		// Window is wider than video, blackbox left/right
 		if (thisAr - vidAr > 0.01f) {
-			int delta = (w-vidAr*h);
+			int delta = int(w-vidAr*h);
 			dx1 += delta/2;
 			dx2 -= delta;
 		}
 
 		// Video is wider than window, blackbox top/bottom
 		else if (vidAr - thisAr > 0.01f) {
-			int delta = (h-w/vidAr);
+			int delta = int(h-w/vidAr);
 			dy1 += delta/2;
 			dy2 -= delta;
 		}
@@ -271,9 +271,9 @@ void VideoDisplay::UpdateSize() {
 	if (!IsShownOnScreen()) return;
 
 	// Get size
-	if (con->GetAspectRatioType() == 0) w = con->GetWidth() * zoomValue;
-	else w = con->GetHeight() * zoomValue * con->GetAspectRatioValue();
-	h = con->GetHeight() * zoomValue;
+	if (con->GetAspectRatioType() == 0) w = int(con->GetWidth() * zoomValue);
+	else w = int(con->GetHeight() * zoomValue * con->GetAspectRatioValue());
+	h = int(con->GetHeight() * zoomValue);
 	int _w,_h;
 	if (w <= 1 || h <= 1) return;
 	locked = true;

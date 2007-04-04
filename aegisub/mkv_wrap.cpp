@@ -163,7 +163,7 @@ void MatroskaWrapper::Parse() {
 			mkv_SetTrackMask(file, ~(1 << track));
 
 			// Progress bar
-			int totalTime = double(segInfo->Duration) / timecodeScale;
+			int totalTime = int(double(segInfo->Duration) / timecodeScale);
 			volatile bool canceled = false;
 			DialogProgress *progress = new DialogProgress(NULL,_("Parsing Matroska"),&canceled,_("Reading keyframe and timecode data from Matroska file."),0,totalTime);
 			progress->Show();
@@ -184,7 +184,7 @@ void MatroskaWrapper::Parse() {
 				}
 
 				// Update progress
-				progress->SetProgress(curTime,totalTime);
+				progress->SetProgress(int(curTime),totalTime);
 			}
 
 			// Clean up progress
@@ -261,8 +261,8 @@ void MatroskaWrapper::SetToTimecodes(FrameRate &target) {
 
 	// Constant framerate
 	if (isCFR) {
-		if (abs(estimateCFR - 23.976) < 0.01) estimateCFR = 24000.0 / 1001.0;
-		if (abs(estimateCFR - 29.97) < 0.01) estimateCFR = 30000.0 / 1001.0;
+		if (fabs(estimateCFR - 23.976) < 0.01) estimateCFR = 24000.0 / 1001.0;
+		if (fabs(estimateCFR - 29.97) < 0.01) estimateCFR = 30000.0 / 1001.0;
 		target.SetCFR(estimateCFR);
 	}
 
@@ -382,7 +382,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 		long int order = -1;
 
 		// Progress bar
-		int totalTime = double(segInfo->Duration) / timecodeScale;
+		int totalTime = int(double(segInfo->Duration) / timecodeScale);
 		volatile bool canceled = false;
 		DialogProgress *progress = new DialogProgress(NULL,_("Parsing Matroska"),&canceled,_("Reading subtitles from Matroska file."),0,totalTime);
 		progress->Show();
@@ -451,7 +451,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			}
 
 			// Update progress bar
-			progress->SetProgress(double(startTime) / 1000000.0,totalTime);
+			progress->SetProgress(int(double(startTime) / 1000000.0),totalTime);
 		}
 
 		// Insert into file

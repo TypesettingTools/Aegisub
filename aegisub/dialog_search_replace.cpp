@@ -356,8 +356,9 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		else {
 			wxString src = Text->Mid(tempPos);
 			if (!matchCase) src.MakeLower();
-			pos = src.Find(LookFor);
-			if (pos != -1) {
+			int tempPos = src.Find(LookFor);
+			if (tempPos != -1) {
+				pos = tempPos;
 				pos += tempPos;
 				found = true;
 				matchLen = LookFor.Length();

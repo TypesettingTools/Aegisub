@@ -278,6 +278,8 @@ namespace Automation4 {
 					((wxChoice*)control.control)->Insert(_T(""), 0);
 					break;
 
+				case COK_INVALID:
+					break;
 			}
 
 			if (opt->kind != COK_LABEL && opt->kind != COK_BOOL) {
@@ -462,6 +464,8 @@ namespace Automation4 {
 							opt.kind = COK_INVALID;
 						}
 						break;
+					case COK_INVALID:
+						break;
 				}
 				opt.value = opt.default_val;
 				lua_pop(L, 1);
@@ -555,6 +559,10 @@ continue_invalid_option:
 				case COK_STYLE:
 					ctl->option->value.stringval = ((wxChoice*)ctl->control)->GetStringSelection();
 					break;
+					
+				case COK_LABEL:
+				case COK_INVALID:
+					break;
 			}
 		}
 	}
@@ -634,6 +642,10 @@ continue_invalid_option:
 
 					case COK_COLOUR:
 						opt->value.colourval.Parse(optval);
+						break;
+
+					case COK_LABEL:
+					case COK_INVALID:
 						break;
 				}
 			}
@@ -1162,8 +1174,8 @@ continue_invalid_option:
 
 	Auto3Script::Auto3Script(const wxString &filename)
 		: Script(filename)
-		, L(0)
 		, filter(0)
+		, L(0)
 	{
 		try {
 			Create();

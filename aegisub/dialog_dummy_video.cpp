@@ -229,7 +229,7 @@ void DialogDummyVideo::UpdateLengthDisplay()
 	int lengthval;
 	if (!length_display) return;
 	if ((fps->GetValue().ToDouble(&fpsval)) && (lengthval = length->GetValue()) && fpsval > 0 && lengthval > 0) {
-		int tt = lengthval / fpsval * 1000; // frames / (frames/seconds) * 1000 = milliseconds
+		int tt = int(lengthval / fpsval * 1000); // frames / (frames/seconds) * 1000 = milliseconds
 		// 32 bit signed int can hold almost 600 positive hours when counting milliseconds, ASS allows at most just below 10 hours, so we're safe
 		int ms, s, m, h;
 		ms = tt % 1000; tt /= 1000;

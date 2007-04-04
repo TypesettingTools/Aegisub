@@ -659,7 +659,7 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 
 	num_samples = provider->GetNumSamples();
 	
-	for(int i=0;i!=sel.GetCount();i++) {
+	for(unsigned int i=0;i!=sel.GetCount();i++) {
 		cur = GetDialogue(sel[i]);
 		
 		temp = audioDisplay->GetSampleAtMS(cur->Start.GetMS());

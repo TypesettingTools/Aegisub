@@ -375,7 +375,8 @@ wxThread::ExitCode FontsCollectorThread::Entry() {
 // Collect
 void FontsCollectorThread::Collect() {
 	// Prepare
-	bool attaching = collector->AttachmentCheck->IsChecked();
+	bool attaching;
+	attaching = collector->AttachmentCheck->IsChecked();
 	bool zipOut = collector->ArchiveCheck->IsChecked();
 
 	// Make sure there is a separator at the end

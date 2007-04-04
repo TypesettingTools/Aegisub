@@ -252,8 +252,8 @@ namespace Automation4 {
 		void SetTitle(const wxString &_title);
 		void AddDebugOutput(const wxString &msg);
 
-		volatile bool script_finished;
 		volatile bool has_inited;
+		volatile bool script_finished;
 
 		DECLARE_EVENT_TABLE()
 	};

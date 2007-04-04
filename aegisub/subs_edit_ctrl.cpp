@@ -472,7 +472,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	// No tag available
 	int textLen = text.Length();
 	unsigned int posInTag = pos - tagStart;
-	if (tagStart+len > textLen || len <= 0 || tagStart < 0 || posInTag < 0) {
+	if (tagStart+len > textLen || len <= 0 || tagStart < 0) {
 		CallTipCancel();
 		return;
 	}
@@ -828,7 +828,8 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 			// Build menu
 			for (int i=0;i<nSugs;i++) {
-				wxMenuItem *itm = menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
+				wxMenuItem *itm;
+				itm = menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
 #if wxCHECK_VERSION(2, 8, 0) && defined(__WINDOWS__)
 				itm->SetFont(font);
 #endif

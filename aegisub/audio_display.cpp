@@ -691,7 +691,7 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 		// Center scroll
 		int oldSamples = samples;
 		UpdateSamples();
-		PositionSample += (oldSamples-samples)*w*pivot;
+		PositionSample += __int64((oldSamples-samples)*w*pivot);
 		if (PositionSample < 0) PositionSample = 0;
 
 		// Update
@@ -715,7 +715,7 @@ void AudioDisplay::UpdateSamples() {
 	int min = 8;
 	if (total < min) total = min;
 	int range = total-min;
-	samples = range*pow(samplesPercent/100.0,3)+min;
+	samples = int(range*pow(samplesPercent/100.0,3)+min);
 
 	// Set position
 	int length = w * samples;
@@ -806,7 +806,7 @@ void AudioDisplay::UpdateScrollbar() {
 	int page = w/12;
 	int len = provider->GetNumSamples() / samples / 12;
 	Position = PositionSample / samples;
-	ScrollBar->SetScrollbar(Position/12,page,len,page*0.7,true);
+	ScrollBar->SetScrollbar(Position/12,page,len,int(page*0.7),true);
 }
 
 

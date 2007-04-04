@@ -710,7 +710,7 @@ namespace Automation4 {
 
 		int n = lua_gettop(L);
 
-		laf->GetAssEntry(lua_tonumber(L, 1)-1);
+		laf->GetAssEntry(int(lua_tonumber(L, 1)-1));
 
 		for (int i = 2; i <= n; i++) {
 			lua_pushvalue(L, i);

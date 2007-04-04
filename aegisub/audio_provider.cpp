@@ -54,7 +54,7 @@ AudioProvider::AudioProvider() {
 // Destructor
 AudioProvider::~AudioProvider() {
 	// Clear buffers
-	delete raw;
+	delete[] raw;
 }
 
 
@@ -112,7 +112,7 @@ void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int
 	int needLen = n*channels*bytes_per_sample;
 	if (raw) {
 		if (raw_len < needLen) {
-			delete raw;
+			delete[] raw;
 			raw = NULL;
 		}
 	}
@@ -125,7 +125,7 @@ void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int
 		// Read raw samples
 		unsigned char *raw_char = (unsigned char*) raw;
 		GetAudio(raw,start,n);
-		int amplitude = h*scale;
+		int amplitude = int(h*scale);
 
 		// Calculate waveform
 		for (int i=0;i<n;i++) {
@@ -143,7 +143,7 @@ void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int
 		short *raw_short = (short*) raw;
 		GetAudio(raw,start,n);
 		int half_h = h/2;
-		int half_amplitude = half_h * scale;
+		int half_amplitude = int(half_h * scale);
 
 		// Calculate waveform
 		for (int i=0;i<n;i++) {

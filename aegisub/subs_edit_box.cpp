@@ -959,7 +959,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 	}
 	else if (tagname == _T("\\fn")) {
 		startfont.SetFaceName(style->font);
-		startfont.SetPointSize(style->fontsize);
+		startfont.SetPointSize(int(style->fontsize));
 		startfont.SetWeight(style->bold ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL);
 		startfont.SetStyle(style->italic ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
 		startfont.SetUnderlined(style->underline);

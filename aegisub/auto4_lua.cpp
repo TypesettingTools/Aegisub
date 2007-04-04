@@ -638,6 +638,7 @@ namespace Automation4 {
 
 		ps->ShowModal();
 		wxThread::ExitCode code = call.Wait();
+		(void) code;
 		//if (code) ThrowError();
 
 		delete ps;
@@ -709,6 +710,7 @@ namespace Automation4 {
 
 		ps->ShowModal();
 		wxThread::ExitCode code = call.Wait();
+		(void) code;
 		//if (code) ThrowError();
 
 		delete ps;

@@ -469,7 +469,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 ///////////////////
 // Choose font box
 void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
-	wxFont oldfont (work->fontsize, wxFONTFAMILY_DEFAULT, (work->italic?wxFONTSTYLE_ITALIC:wxFONTSTYLE_NORMAL), (work->bold?wxFONTWEIGHT_BOLD:wxFONTWEIGHT_NORMAL), work->underline, work->font, wxFONTENCODING_DEFAULT);
+	wxFont oldfont (int(work->fontsize), wxFONTFAMILY_DEFAULT, (work->italic?wxFONTSTYLE_ITALIC:wxFONTSTYLE_NORMAL), (work->bold?wxFONTWEIGHT_BOLD:wxFONTWEIGHT_NORMAL), work->underline, work->font, wxFONTENCODING_DEFAULT);
 	wxFont newfont = wxGetFontFromUser(this,oldfont);
 	if (newfont.Ok()) {
 		FontName->SetValue(newfont.GetFaceName());
