@@ -132,30 +132,28 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	// Support controls and layout
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 5);
 	fg->Add(new wxStaticText(this, -1, _("Video resolution:")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(resolution_shortcuts, 1, wxEXPAND);
+	fg->Add(resolution_shortcuts, 0, wxEXPAND);
 	fg->AddStretchSpacer();
 	wxBoxSizer *res_sizer = new wxBoxSizer(wxHORIZONTAL);
-	res_sizer->Add(width, 1, wxEXPAND);
+	res_sizer->Add(width, 0, wxEXPAND);
 	res_sizer->Add(new wxStaticText(this, -1, _T(" x ")), 0, wxALIGN_CENTRE_VERTICAL|wxFIXED_MINSIZE);
-	res_sizer->Add(height, 1, wxEXPAND);
-	fg->Add(res_sizer, 1, wxEXPAND);
+	res_sizer->Add(height, 0, wxEXPAND);
+	fg->Add(res_sizer, 0, wxEXPAND);
 	fg->Add(new wxStaticText(this, -1, _("Colour:")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(colour, 1, wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
+	fg->Add(colour, 0, wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
 	fg->AddStretchSpacer();
-	fg->Add(pattern, 1, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
+	fg->Add(pattern, 0, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
 	fg->Add(new wxStaticText(this, -1, _("Frame rate (fps):")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(fps, 1, wxEXPAND);
+	fg->Add(fps, 0, wxEXPAND);
 	fg->Add(new wxStaticText(this, -1, _("Duration (frames):")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(length, 1, wxEXPAND);
+	fg->Add(length, 0, wxEXPAND);
 	fg->AddStretchSpacer();
-	fg->Add(length_display, 1, wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT);
-	wxStdDialogButtonSizer *buttons = new wxStdDialogButtonSizer();
-	buttons->Add(ok_button = new wxButton(this, wxID_OK));
-	buttons->Add(cancel_button = new wxButton(this, wxID_CANCEL));
-	buttons->Realize();
+	fg->Add(length_display, 0, wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(fg, 1, wxALL, 5);
-	main_sizer->Add(buttons, 0, wxLEFT|wxRIGHT|wxBOTTOM, 5);
+	main_sizer->Add(fg, 0, wxALL, 5);
+	main_sizer->Add(CreateButtonSizer(wxOK|wxCANCEL), 0, wxLEFT|wxRIGHT|wxBOTTOM, 5);
+	ok_button = static_cast<wxButton*>(FindWindow(wxID_OK));
+	cancel_button = static_cast<wxButton*>(FindWindow(wxID_CANCEL));
 
 	// Layout
 	main_sizer->SetSizeHints(this);
