@@ -219,6 +219,9 @@ function parse_template(meta, styles, line, templates, mods)
 	if not inserted then
 		table.insert(templates.syl, template)
 	end
+	if not template.isline then
+		template.t = line.text
+	end
 end
 
 -- Iterator function, return all templates that apply to the given line
@@ -255,18 +258,21 @@ function apply_templates(meta, styles, subs, templates)
 	end
 	
 	-- start processing lines
-	local i, n = 1, #subs
+	local i, n = 0, #subs
 	while i < n do
-		local l = subs[i]
+		aegisub.progress.set(i/n*100)
 		i = i + 1
+		local l = subs[i]
 		if l.class == "dialogue" and ((l.effect == "" and not l.comment) or (l.effect == "karaoke" and l.comment)) then
-			-- make a karaoke source line off it
-			l.comment = true
-			l.effect = "karaoke"
-			subs[i] = l
 			l.i = i
-			-- and then run it through the templates
-			apply_line(meta, styles, subs, l, templates, tenv)
+			l.comment = false
+			karaskel.preproc_line(subs, meta, styles, l)
+			if apply_line(meta, styles, subs, l, templates, tenv) then
+				-- Some templates were applied to this line, make a karaoke timing line of it
+				l.comment = true
+				l.effect = "karaoke"
+				subs[i] = l
+			end			
 		end
 	end
 end
@@ -289,13 +295,13 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		margin_t = ((line.margin_t > 0) and line.margin_t) or line.styleref.margin_t,
 		margin_b = ((line.margin_b > 0) and line.margin_b) or line.styleref.margin_b,
 		margin_v = ((line.margin_t > 0) and line.margin_t) or line.styleref.margin_t,
-		syln = line.karaoke.n,
+		syln = line.kara.n,
 		li = line.i,
-		lleft = line.left,
-		lcenter = line.left + line.width/2,
-		lright = line.left + line.width,
-		lx = line.x,
-		ly = line.y
+		lleft = math.floor(line.left+0.5),
+		lcenter = math.floor(line.left + line.width/2 + 0.5),
+		lright = math.floor(line.left + line.width + 0.5),
+		lx = math.floor(line.x+0.5),
+		ly = math.floor(line.y+0.5)
 		-- TODO: more positioning vars
 	}
 	
@@ -322,17 +328,17 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		varctx.mid = varctx.smid
 		varctx.si = syl.i
 		varctx.i = varctx.si
-		varctx.sleft = syl.left
-		varctx.scenter = syl.center
-		varctx.sright = syl.right
+		varctx.sleft = math.floor(syl.left+0.5)
+		varctx.scenter = math.floor(syl.center+0.5)
+		varctx.sright = math.floor(syl.right+0.5)
 		if line.halign == "left" then
-			varctx.sx = varctx.lleft + syl.left
+			varctx.sx = math.floor(line.left + syl.left + 0.5)
 		elseif line.halign == "center" then
-			varctx.sx = varctx.lleft + syl.center
+			varctx.sx = math.floor(line.left + syl.center + 0.5)
 		elseif line.halign == "right" then
-			varctx.sx = varctx.lleft + syl.right
+			varctx.sx = math.floor(line.left + syl.right + 0.5)
 		end
-		varctx.sy = line.y
+		varctx.sy = math.floor(line.y+0.5)
 		varctx.left = varctx.sleft
 		varctx.center = varctx.scenter
 		varctx.right = varctx.sright
@@ -392,8 +398,13 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	
 			if not t.inline_fx or t.inline_fx == syl.inline_fx then
 				if t.code then
-					run_code_template(t, tenv)
+					if t.multi then
+						-- TODO: apply for each highlight
+					else
+						run_code_template(t, tenv)
+					end
 				elseif t.multi then
+					applied_templates = true
 					for hl = 1, syl.highlights.n do
 						local hldata = syl.highlights[hl]
 						local hlsyl = table.copy(syl)
@@ -408,7 +419,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 							tenv.j = j
 							local newline = table.copy(line)
 							tenv.line = newline
-							newline.text = run_text_template(t, tenv, varctx)
+							newline.text = run_text_template(t.t, tenv, varctx)
 							if t.addtext then
 								newline.text = newline.text .. syl.text_stripped
 							end
@@ -417,11 +428,12 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 						end
 					end
 				else
+					applied_templates = true
 					for j = 1, t.loops do
 						tenv.j = j
 						local newline = table.copy(line)
 						tenv.line = newline
-						newline.text = run_text_template(t, tenv, varctx)
+						newline.text = run_text_template(t.t, tenv, varctx)
 						if t.addtext then
 							newline.text = newline.text .. syl.text_stripped
 						end
@@ -440,6 +452,8 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	for i = 1, line.furi.n do
 		-- TODO
 	end
+	
+	return applied_templates
 end
 
 function run_code_template(template, tenv)
@@ -460,10 +474,25 @@ end
 
 function run_text_template(template, tenv, varctx)
 	local res = template
+	aegisub.debug.out(5, "Running text template '%s'\n", res)
 	
 	-- Replace the variables in the string (this is probably faster than using a custom function, but doesn't provide error reporting)
 	if varctx then
-		res = string.gsub(res, "$([%a_]+)", varctx)
+		aegisub.debug.out(5, "Has varctx, replacing variables\n")
+		local function var_replacer(varname)
+			varname = string.lower(varname)
+			aegisub.debug.out(5, "Found variable named '%s', ", varname)
+			if varctx[varname] ~= nil then
+				aegisub.debug.out(5, "it exists, value is '%s'\n", varctx[varname])
+				return varctx[varname]
+			else
+				aegisub.debug.out(5, "doesn't exist\n")
+				aegisub.debug.out(2, "Unknown variable name: %s\nIn karaoke template: %s\n\n", varname, template)
+				return "$" .. varname
+			end
+		end
+		res = string.gsub(res, "$([%a_]+)", var_replacer)
+		aegisub.debug.out(5, "Done replacing variables, new template string is '%s'\n", res)
 	end
 	
 	-- Function for evaluating expressions
@@ -484,7 +513,9 @@ function run_text_template(template, tenv, varctx)
 		end
 	end
 	-- Find and evaluate expressions
+	aegisub.debug.out(5, "Now evaluating expressions\n")
 	res = string.gsub(res , "!(.-)!", expression_evaluator)
+	aegisub.debug.out(5, "After evaluation: %s\nDone handling template\n\n", res)
 	
 	return res
 end
@@ -528,4 +559,4 @@ function macro_can_template(subs)
 end
 
 aegisub.register_macro("Apply karaoke template", "Applies karaoke effects from templates", macro_apply_templates, macro_can_template)
-aegisub.register_filter("Karaoke temokate", "Apply karaoke effect templates to the subtitles", 2000, filter_apply_templates)
+aegisub.register_filter("Karaoke template", "Apply karaoke effect templates to the subtitles", 2000, filter_apply_templates)
