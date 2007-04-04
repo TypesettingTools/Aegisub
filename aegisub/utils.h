@@ -75,7 +75,7 @@ int SmallestPowerOf2(int x);
 #ifdef __VISUALC__
 #define FORCEINLINE __forceinline
 #else
-#define FORCEINLINE __attribute__((always_inline))
+#define FORCEINLINE inline
 #endif
 #endif
 

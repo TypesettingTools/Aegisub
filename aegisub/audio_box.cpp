@@ -62,7 +62,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	loaded = false;
 	karaokeMode = false;
 
-	// Controls
+	// Sash and Display
 	audioScroll = new wxScrollBar(this,Audio_Scrollbar);
 	audioScroll->PushEventHandler(new FocusEvent());
 	audioScroll->SetToolTip(_("Seek bar"));
@@ -76,6 +76,11 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	Sash->SetMinimumSizeY(50);
 	audioDisplay->ScrollBar = audioScroll;
 	audioDisplay->box = this;
+	int _w,_h;
+	audioDisplay->GetSize(&_w,&_h);
+	audioDisplay->SetSizeHints(-1,_h,-1,_h);
+
+	// Zoom
 	HorizontalZoom = new wxSlider(this,Audio_Horizontal_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL);
 	HorizontalZoom->PushEventHandler(new FocusEvent());
 	HorizontalZoom->SetToolTip(_("Horizontal zoom"));
@@ -360,12 +365,8 @@ void AudioBox::OnSash(wxSashEvent& event) {
 	if (oldh == h) return;
 
 	// Resize
-	audioDisplay->SetSizeHints(w,h,w,h);
+	audioDisplay->SetSizeHints(w,h,-1,h);
 	audioDisplay->SetSize(w,h);
-	int _w,_h;
-	audioDisplay->GetSize(&_w,&_h);
-	audioDisplay->SetSizeHints(_w,_h,_w,_h);
-	//sashSizer->Fit(Sash);
 	sashSizer->Layout();
 	Sash->GetParent()->Layout();
 
