@@ -59,7 +59,7 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 	width = _width;
 	height = _height;
 
-	frame = AegiVideoFrame(640,480,FORMAT_RGB32);
+	frame = AegiVideoFrame(width,height,FORMAT_RGB32);
 	unsigned char *dst = frame.data[0];
 	unsigned char r = colour.Red(), g = colour.Green(), b = colour.Blue();
 	for (int i=frame.pitch[0]*frame.h/frame.GetBpp();--i>=0;) {
