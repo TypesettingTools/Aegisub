@@ -127,12 +127,26 @@ AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.]
 AC_CHECK_LIB([avcodec], [avcodec_init])
 AC_CHECK_LIB([avformat], [av_read_frame])
 
-PKG_CHECK_MODULES([LIBASS], libass >= 0.9.1, [
-	CPPFLAGS="$CPPFLAGS $LIBASS_CFLAGS"
-	LIBS="$LIBS $LIBASS_LIBS"
-	AC_DEFINE(HAVE_LIBASS, 1, [found libass via pkg-config])
-], [true])
-AC_CHECK_HEADERS([ass/ass.h])
+AC_ARG_WITH([libass], [AS_HELP_STRING([--without-libass],[disable libass @<:@default=check@:>@])],[],[with_libass=check])
+
+AS_IF([test "x$with_libass" != xno], [
+	PKG_CHECK_MODULES([LIBASS], libass >= 0.9.1, [
+		CPPFLAGS="$CPPFLAGS $LIBASS_CFLAGS"
+		LIBS="$LIBS $LIBASS_LIBS"
+		AC_DEFINE(HAVE_LIBASS, 1, [found libass via pkg-config])
+		AC_CHECK_HEADERS([ass/ass.h], [
+			with_libass=yes
+		], [	if test "x$with_libass" != xcheck
+			then	AC_MSG_FAILURE([--with-libass given, but libass headers not found])
+			fi
+			with_libass=no
+		])
+	], [	if test "x$with_libass" != xcheck
+		then	AC_MSG_FAILURE([--with-libass given, but libass pkgconfig module found])
+		fi
+		with_libass=no
+	])
+])
 
 PKG_CHECK_MODULES([GLIB], glib-2.0, [
 	CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
@@ -178,6 +192,8 @@ AC_HEADER_STDC
 AC_HEADER_STDBOOL
 
 AC_CONFIG_SUBDIRS([csri])
+
+AM_CONDITIONAL([USE_LIBASS], [test "$with_libass" != "no" ])
 
 AC_OUTPUT([
 	Makefile

@@ -1,4 +1,5 @@
-EXTRA_DIST = res.rc $(srcdir)/*.h
+EXTRA_DIST = res.rc $(srcdir)/*.h \
+	subtitles_provider_libass.cpp
 SUFFIXES = .c .cpp .rc
 
 SUBDIRS = bitmaps posix
@@ -12,6 +13,12 @@ BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGS = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
 LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a -lGL -lGLU
+
+if USE_LIBASS
+LIBASS=subtitles_provider_libass.cpp
+else
+LIBASS=
+endif
 
 #	auto4_ruby_assfile.cpp
 #	auto4_ruby.cpp
@@ -111,7 +118,7 @@ aegisub_SOURCES = \
 	subtitle_format_txt.cpp \
 	subtitles_provider.cpp \
 	subtitles_provider_csri.cpp \
-	subtitles_provider_libass.cpp \
+	$(LIBASS) \
 	text_file_reader.cpp \
 	text_file_writer.cpp \
 	thesaurus.cpp \
