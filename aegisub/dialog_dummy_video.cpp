@@ -150,8 +150,8 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	fg->AddStretchSpacer();
 	fg->Add(length_display, 0, wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(fg, 0, wxALL, 5);
-	main_sizer->Add(CreateButtonSizer(wxOK|wxCANCEL), 0, wxLEFT|wxRIGHT|wxBOTTOM, 5);
+	main_sizer->Add(fg, 0, wxALL|wxEXPAND, 5);
+	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
 	ok_button = static_cast<wxButton*>(FindWindow(wxID_OK));
 	cancel_button = static_cast<wxButton*>(FindWindow(wxID_CANCEL));
 
