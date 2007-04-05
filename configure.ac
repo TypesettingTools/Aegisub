@@ -124,6 +124,7 @@ AC_CHECK_LIB([m], [main])
 AC_CHECK_LIB([dl], [dlopen])
 
 AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
+AC_CHECK_FUNCS([Pa_GetStreamTime])
 AC_CHECK_LIB([avcodec], [avcodec_init])
 AC_CHECK_LIB([avformat], [av_read_frame])
 

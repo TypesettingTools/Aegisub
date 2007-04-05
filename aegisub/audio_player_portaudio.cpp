@@ -83,7 +83,13 @@ typedef unsigned __int64 uint64_t;
 
 //////////////////////
 // PortAudio callback
+#ifndef HAVE_PA_GETSTREAMTIME
 int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData) {
+#else
+int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
+	unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo *timei,
+	PaStreamCallbackFlags flags, void *userData) {
+#endif
 	// Get provider
 	PortAudioPlayer *player = (PortAudioPlayer *) userData;
 	AudioProvider *provider = player->GetProvider();
@@ -178,7 +184,12 @@ void PortAudioPlayer::Stop(bool timerToo) {
 // Open stream
 void PortAudioPlayer::OpenStream() {
 	// Open stream
-	PaError err = Pa_OpenDefaultStream(&stream,0,provider->GetChannels(),paInt16,provider->GetSampleRate(),256,16,paCallback,this);
+	PaError err = Pa_OpenDefaultStream(&stream,0,provider->GetChannels(),paInt16,provider->GetSampleRate(),256,
+#ifndef HAVE_PA_GETSTREAMTIME
+		16,	/* Pa v19 doesn't have a numberOfBuffers parameter */
+#endif
+		paCallback,this);
+
 	if (err != paNoError) {
 		throw wxString(_T("Failed initializing PortAudio stream with error: ") + wxString(Pa_GetErrorText(err),wxConvLocal));
 	}

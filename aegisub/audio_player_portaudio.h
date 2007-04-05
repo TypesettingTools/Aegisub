@@ -46,6 +46,10 @@ extern "C" {
 #include <portaudio.h>
 }
 
+#ifdef HAVE_PA_GETSTREAMTIME
+#define Pa_StreamTime Pa_GetStreamTime	/* PortAudio v19 */
+#define PaTimestamp PaTime
+#endif
 
 ////////////////////
 // Portaudio player
@@ -65,7 +69,14 @@ private:
 	PaTimestamp paStart;
 	volatile __int64 realPlayPos;
 
+#ifndef HAVE_PA_GETSTREAMTIME
 	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
+#else
+	static int paCallback(const void *inputBuffer, void *outputBuffer,
+		unsigned long framesPerBuffer,
+		const PaStreamCallbackTimeInfo *timei,
+		PaStreamCallbackFlags flags, void *userData);
+#endif
 
 public:
 	PortAudioPlayer();
