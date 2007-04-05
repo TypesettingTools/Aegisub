@@ -241,13 +241,7 @@ void AegiVideoFrame::GetFloat(float *buffer) const {
 			if (flipped) src = data[0] + (h-y-1)*pitch[0];	// I think that it requires flipped data - amz
 			else src = data[0] + y*pitch[0];
 			for (unsigned int x=0;x<w;x++) {
-				//temp = (*src++)*0.3 + (*src++)*0.4 + (*src++)*0.3;
-				temp += (*src)*0.3;
-				src++;
-				temp += (*src)*0.4;
-				src++;
-				temp += (*src)*0.3;
-				src++;				
+				temp = (*src++)*0.3 + (*src++)*0.4 + (*src++)*0.3;	
 				src += delta;
 				*dst++ = temp;
 			}
