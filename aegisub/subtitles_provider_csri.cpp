@@ -47,9 +47,6 @@
 
 ///////////////////
 // Link to library
-#if __VISUALC__ >= 1200
-#pragma comment(lib,"asa.lib")
-#endif
 
 
 /////////////////////////////////////////////////
@@ -114,6 +111,8 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	renderer = csri_renderer_default();
 	if (renderer)
 		instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
+	else
+		throw _T("No CSRI renderer available. Try installing one or switch to another subtitle provider.");
 }
 
 
