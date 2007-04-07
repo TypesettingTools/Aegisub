@@ -52,21 +52,21 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	jumptime.SetMS(VFR_Output.GetTimeAtFrame(jumpframe));
 
 	// Times
-	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
-	JumpTime = new wxTextCtrl(this,TEXT_JUMP_TIME,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20));
+	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
 	JumpFrame = new wxTextCtrl(this,TEXT_JUMP_FRAME,wxString::Format(_T("%i"),jumpframe),wxDefaultPosition,wxSize(60,20));
-	JumpTime->SetEventHandler(new DialogJumpToEvent(this));
+	JumpTime = new wxTextCtrl(this,TEXT_JUMP_TIME,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20));
 	JumpFrame->SetEventHandler(new DialogJumpToEvent(this));
-	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
+	JumpTime->SetEventHandler(new DialogJumpToEvent(this));
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
-	TimeSizer->Add(LabelTime,0,wxALIGN_CENTER_VERTICAL,0);
-	TimeSizer->Add(JumpTime,1,wxLEFT,5);
+	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
 	FrameSizer->Add(LabelFrame,0,wxALIGN_CENTER_VERTICAL,0);
 	FrameSizer->Add(JumpFrame,1,wxLEFT,5);
+	TimeSizer->Add(LabelTime,0,wxALIGN_CENTER_VERTICAL,0);
+	TimeSizer->Add(JumpTime,1,wxLEFT,5);
 	wxSizer *TimesSizer = new wxStaticBoxSizer(wxVERTICAL, this, _T(""));
+	TimesSizer->Add(FrameSizer,0,wxEXPAND | wxBOTTOM,5);
 	TimesSizer->Add(TimeSizer,0,wxEXPAND,0);
-	TimesSizer->Add(FrameSizer,0,wxEXPAND | wxTOP,5);
 
 	// Buttons
 	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
