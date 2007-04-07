@@ -171,6 +171,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Tools_Kanji_Timer, FrameMain::OnOpenKanjiTimer)
 	EVT_MENU(Menu_Tools_Hotkeys, FrameMain::OnOpenHotkeys)
 	EVT_MENU(Menu_Tools_Options, FrameMain::OnOpenOptions)
+	EVT_MENU(Menu_Tools_Log, FrameMain::OnOpenLog)
 	
 	EVT_MENU(Menu_Subs_Snap_Start_To_Video, FrameMain::OnSnapSubsStartToVid)
 	EVT_MENU(Menu_Subs_Snap_End_To_Video, FrameMain::OnSnapSubsEndToVid)
@@ -995,6 +996,13 @@ void FrameMain::OnOpenHotkeys (wxCommandEvent &event) {
 void FrameMain::OnOpenOptions (wxCommandEvent &event) {
 	DialogOptions options(this);
 	options.ShowModal();
+}
+
+
+//////////////////
+// Open log window
+void FrameMain::OnOpenLog (wxCommandEvent &event) {
+	LogWindow->Show(true);
 }
 
 

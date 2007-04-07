@@ -91,6 +91,8 @@ FrameMain::FrameMain (wxArrayString args)
 	// Set application's frame
 	AegisubApp::Get()->frame = this;
 
+	LogWindow = new wxLogWindow(this, _T("Aegisub log window"), false);
+
 	// Initialize flags
 	HasSelection = false;
 	menuCreated = false;
@@ -420,6 +422,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, _("&Options...") + wxString(_T("\t")) + Hotkeys.GetText(_T("Options")), _("Configure Aegisub"), wxBITMAP(options_button));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Hotkeys, _("&Hotkeys..."), _("Remap hotkeys"), wxBITMAP(hotkeys_button));
+	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g window..."), _("Open log window"), wxBITMAP(blank_button));
 	viewMenu->AppendSeparator();
 	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs only view"), _("Display subtitles only"));
 	viewMenu->AppendRadioItem(Menu_View_Video, _("Video+Subs view"), _("Display video and subtitles only"));

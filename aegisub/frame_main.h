@@ -99,6 +99,7 @@ private:
 	wxComboBox *ZoomBox;
 
 	wxWindow *PreviousFocus;
+	wxLogWindow *LogWindow;
 
 	Automation4::ScriptManager *local_scripts;
 
@@ -205,6 +206,7 @@ private:
 	void OnOpenKanjiTimer (wxCommandEvent &event);
 	void OnOpenHotkeys (wxCommandEvent &event);
 	void OnOpenOptions (wxCommandEvent &event);
+	void OnOpenLog (wxCommandEvent &event);
 	void OnGridEvent (wxCommandEvent &event);
 
 	void OnOpenAutomation (wxCommandEvent &event);
@@ -361,6 +363,7 @@ enum {
 	Menu_Tools_Kanji_Timer,
 	Menu_Tools_Hotkeys,
 	Menu_Tools_Options,
+	Menu_Tools_Log,
 
 	Menu_Help_Contents,
 	Menu_Help_IRCChannel,
