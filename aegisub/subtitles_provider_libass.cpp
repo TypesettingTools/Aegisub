@@ -44,6 +44,13 @@ extern "C" {
 }
 
 
+///////////
+// Library
+#ifdef __VISUALC__
+#pragma comment(lib,"libass.dll.a")
+#endif
+
+
 ///////////////////
 // libass provider
 class LibassSubtitlesProvider : public SubtitlesProvider {

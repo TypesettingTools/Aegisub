@@ -47,6 +47,9 @@
 
 ///////////////////
 // Link to library
+#if __VISUALC__ >= 1200
+//#pragma comment(lib,"asa.lib")
+#endif
 
 
 /////////////////////////////////////////////////

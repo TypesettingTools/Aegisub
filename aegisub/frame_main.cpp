@@ -1013,6 +1013,8 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 					// Always change script res
 					SubsBox->ass->SetScriptInfo(_T("PlayResX"), wxString::Format(_T("%d"), vidx));
 					SubsBox->ass->SetScriptInfo(_T("PlayResY"), wxString::Format(_T("%d"), vidy));
+					SubsBox->ass->FlagAsModified(_("Change script resolution"));
+					SubsBox->CommitChanges();
 					break;
 				case 0:
 				default:
