@@ -154,7 +154,7 @@ public:
 	void Reset();
 
 	void JumpToFrame(int n);
-	void JumpToTime(int ms);
+	void JumpToTime(int ms,bool exact=false);
 
 	void Refresh(bool video,bool subtitles);
 	void UpdateDisplays(bool full);

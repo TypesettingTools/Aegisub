@@ -270,19 +270,19 @@ bool AssFile::CanSave() {
 
 ////////////////////////////////////
 // Returns script as a single string
-wxString AssFile::GetString() {
-	using std::list;
-	wxString ret;
-	AssEntry *entry;
-	ret += 0xfeff;
-	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();) {
-		entry = *cur;
-		ret += entry->GetEntryData();
-		ret += L"\n";
-		cur++;
-	}
-	return ret;
-}
+//wxString AssFile::GetString() {
+//	using std::list;
+//	wxString ret;
+//	AssEntry *entry;
+//	ret += 0xfeff;
+//	for (list<AssEntry*>::iterator cur=Line.begin();cur!=Line.end();) {
+//		entry = *cur;
+//		ret += entry->GetEntryData();
+//		ret += L"\n";
+//		cur++;
+//	}
+//	return ret;
+//}
 
 
 ///////////////////////

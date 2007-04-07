@@ -500,7 +500,7 @@ namespace Automation4 {
 	{
 
 		try {
-			VALUE cfg;
+			VALUE cfg = 0;
 			if (has_config && config_dialog) {
 				cfg = config_dialog->RubyReadBack();
 				// TODO, write back stored options here

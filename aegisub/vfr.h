@@ -59,6 +59,8 @@ enum ASS_FrameRateType {
 ///////////////////
 // Framerate class
 class FrameRate {
+	friend class VideoContext;
+
 private:
 	double last_time;
 	int last_frame;

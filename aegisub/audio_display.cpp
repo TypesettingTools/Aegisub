@@ -1165,12 +1165,22 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		else if (y < h+timelineHeight) onScale = true;
 	}
 
+	// Buttons
+	bool leftIsDown = event.ButtonIsDown(wxMOUSE_BTN_LEFT);
+	bool rightIsDown = event.ButtonIsDown(wxMOUSE_BTN_RIGHT);
+	bool buttonIsDown = leftIsDown || rightIsDown;
+	bool leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
+	bool rightClick = event.ButtonDown(wxMOUSE_BTN_RIGHT);
+	bool middleClick = event.Button(wxMOUSE_BTN_MIDDLE);
+	bool buttonClick = leftClick || rightClick;
+	bool defCursor = true;
+
 	// Click type
-	if (event.ButtonDown(wxMOUSE_BTN_LEFT) && !holding) {
+	if (buttonClick && !holding) {
 		holding = true;
 		CaptureMouse();
 	}
-	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT) && holding) {
+	if (!buttonIsDown && holding) {
 		holding = false;
 		if (HasCapture()) ReleaseMouse();
 	}
@@ -1266,13 +1276,13 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Outside
 	if (!inside && hold == 0) return;
 
-	// Left/middle click
-	if (event.ButtonDown(wxMOUSE_BTN_LEFT) || event.Button(wxMOUSE_BTN_MIDDLE)) {
+	// Left click
+	if (leftClick) {
 		SetFocus();
 	}
 
 	// Right click
-	if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
+	if (rightClick) {
 		SetFocus();
 		if (karaoke->enabled) {
 			int syl = GetSyllableAtX(x);
@@ -1285,14 +1295,13 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		}
 	}
 
-	// Buttons
-	bool leftIsDown = event.ButtonIsDown(wxMOUSE_BTN_LEFT);
-	bool rightIsDown = event.ButtonIsDown(wxMOUSE_BTN_RIGHT);
-	bool buttonIsDown = leftIsDown || rightIsDown;
-	bool leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
-	bool rightClick = event.ButtonDown(wxMOUSE_BTN_RIGHT);
-	bool buttonClick = leftClick || rightClick;
-	bool defCursor = true;
+	// Middle click
+	if (middleClick) {
+		SetFocus();
+		if (VideoContext::Get()->IsLoaded()) {
+			VideoContext::Get()->JumpToTime(GetMSAtX(x),true);
+		}
+	}
 
 	// Timing
 	if (hasSel) {

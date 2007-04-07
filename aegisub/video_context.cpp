@@ -387,8 +387,11 @@ void VideoContext::JumpToFrame(int n) {
 
 ////////////////////////////
 // Jumps to a specific time
-void VideoContext::JumpToTime(int ms) {
-	JumpToFrame(VFR_Output.GetFrameAtTime(ms));
+void VideoContext::JumpToTime(int ms,bool exact) {
+	int frame;
+	if (exact) frame = VFR_Output.PFrameAtTime(ms);
+	else frame = VFR_Output.GetFrameAtTime(ms); 
+	JumpToFrame(frame);
 }
 
 
