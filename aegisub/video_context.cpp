@@ -405,7 +405,7 @@ wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
 
 ////////////////////////
 // Requests a new frame
-AegiVideoFrame VideoContext::GetFrame(int n) {
+AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 	// Current frame if -1
 	if (n == -1) n = frame_n;
 
@@ -426,7 +426,7 @@ AegiVideoFrame VideoContext::GetFrame(int n) {
 	}
 
 	// Raster subtitles if available/necessary
-	if (subsProvider && subsProvider->CanRaster()) {
+	if (!raw && subsProvider && subsProvider->CanRaster()) {
 		tempFrame.CopyFrom(*srcFrame);
 		subsProvider->DrawSubtitles(tempFrame,VFR_Input.GetTimeAtFrame(n,true,true)/1000.0);
 		return tempFrame;
@@ -547,7 +547,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 
 /////////////////
 // Save snapshot
-void VideoContext::SaveSnapshot() {
+void VideoContext::SaveSnapshot(bool raw) {
 	// Get folder
 	wxString option = Options.AsText(_("Video Screenshot Path"));
 	wxFileName videoFile(videoName);
@@ -576,7 +576,7 @@ void VideoContext::SaveSnapshot() {
 	}
 
 	// Save
-	GetFrame(frame_n).GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
+	GetFrame(frame_n,raw).GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
 }
 
 
@@ -796,4 +796,11 @@ void VideoContext::SetAspectRatio(int _type, double value) {
 // Enable or disable shader
 void VideoContext::SetShader(bool enabled) {
 	OpenGLWrapper::SetShader(enabled ? yv12shader : 0);
+}
+
+
+////////////////////////////////////////////////
+// Can draw subtitles independently from video?
+bool VideoContext::HasIndependentSubs() {
+	return subsProvider && subsProvider->CanRaster();
 }

@@ -76,11 +76,14 @@ private:
 	void OnKey(wxKeyEvent &event);
     void OnMouseEvent(wxMouseEvent& event);
 	void OnMouseLeave(wxMouseEvent& event);
-	void OnCopyToClipboard(wxCommandEvent &event);
-	void OnSaveSnapshot(wxCommandEvent &event);
-	void OnCopyCoords(wxCommandEvent &event);
 	void OnEraseBackground(wxEraseEvent &event) {}
 	void OnSizeEvent(wxSizeEvent &event);
+
+	void OnCopyCoords(wxCommandEvent &event);
+	void OnCopyToClipboard(wxCommandEvent &event);
+	void OnSaveSnapshot(wxCommandEvent &event);
+	void OnCopyToClipboardRaw(wxCommandEvent &event);
+	void OnSaveSnapshotRaw(wxCommandEvent &event);
 
 public:
 	VideoDisplayVisual *visual;

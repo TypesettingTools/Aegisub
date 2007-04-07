@@ -68,9 +68,11 @@
 ///////
 // IDs
 enum {
-	VIDEO_MENU_COPY_TO_CLIPBOARD = 1230,
-	VIDEO_MENU_COPY_COORDS,
+	VIDEO_MENU_COPY_COORDS = 1230,
+	VIDEO_MENU_COPY_TO_CLIPBOARD,
+	VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,
 	VIDEO_MENU_SAVE_SNAPSHOT,
+	VIDEO_MENU_SAVE_SNAPSHOT_RAW
 };
 
 
@@ -84,9 +86,11 @@ BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_SIZE(VideoDisplay::OnSizeEvent)
 	EVT_ERASE_BACKGROUND(VideoDisplay::OnEraseBackground)
 
+	EVT_MENU(VIDEO_MENU_COPY_COORDS,VideoDisplay::OnCopyCoords)
 	EVT_MENU(VIDEO_MENU_COPY_TO_CLIPBOARD,VideoDisplay::OnCopyToClipboard)
 	EVT_MENU(VIDEO_MENU_SAVE_SNAPSHOT,VideoDisplay::OnSaveSnapshot)
-	EVT_MENU(VIDEO_MENU_COPY_COORDS,VideoDisplay::OnCopyCoords)
+	EVT_MENU(VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,VideoDisplay::OnCopyToClipboardRaw)
+	EVT_MENU(VIDEO_MENU_SAVE_SNAPSHOT_RAW,VideoDisplay::OnSaveSnapshotRaw)
 END_EVENT_TABLE()
 
 
@@ -353,6 +357,11 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		wxMenu menu;
 		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT,_("Save PNG snapshot"));
 		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD,_("Copy image to Clipboard"));
+		menu.AppendSeparator();
+		bool canDoRaw = VideoContext::Get()->HasIndependentSubs();
+		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT_RAW,_("Save PNG snapshot (no subtitles)"))->Enable(canDoRaw);
+		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,_("Copy image to Clipboard (no subtitles)"))->Enable(canDoRaw);
+		menu.AppendSeparator();
 		menu.Append(VIDEO_MENU_COPY_COORDS,_("Copy coordinates to Clipboard"));
 		PopupMenu(&menu);
 		return;
@@ -491,10 +500,27 @@ void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 }
 
 
+//////////////////////////
+// Copy to clipboard (raw)
+void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &event) {
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1,true).GetImage(),24)));
+		wxTheClipboard->Close();
+	}
+}
+
+
 /////////////////
 // Save snapshot
 void VideoDisplay::OnSaveSnapshot(wxCommandEvent &event) {
-	VideoContext::Get()->SaveSnapshot();
+	VideoContext::Get()->SaveSnapshot(false);
+}
+
+
+//////////////////////
+// Save snapshot (raw)
+void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &event) {
+	VideoContext::Get()->SaveSnapshot(true);
 }
 
 

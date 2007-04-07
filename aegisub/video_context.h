@@ -124,8 +124,10 @@ public:
 	void RemoveDisplay(VideoDisplay *display);
 
 	VideoProvider *GetProvider() { return provider; }
-	AegiVideoFrame GetFrame(int n);
-	void SaveSnapshot();
+	AegiVideoFrame GetFrame(int n,bool raw=false);
+
+	bool HasIndependentSubs();
+	void SaveSnapshot(bool raw);
 
 	wxGLContext *GetGLContext(wxGLCanvas *canvas);
 	GLuint GetFrameAsTexture(int n);
