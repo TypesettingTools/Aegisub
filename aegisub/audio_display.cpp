@@ -159,8 +159,10 @@ void AudioDisplay::UpdateImage(bool weak) {
 		}
 	}
 
+	// Options
 	bool draw_boundary_lines = Options.AsBool(_T("Audio Draw Secondary Lines"));
 	bool draw_selection_background = Options.AsBool(_T("Audio Draw Selection Background"));
+	bool drawKeyframes = Options.AsBool(_T("Audio Draw Keyframes"));
 
 	// Invalid dimensions
 	if (w == 0 || displayH == 0) return;
@@ -227,6 +229,16 @@ void AudioDisplay::UpdateImage(bool weak) {
 		DrawSpectrum(dc,weak);
 	}
 
+	// Waveform
+	else if (provider) {
+		DrawWaveform(dc,weak);
+	}
+
+	// Nothing
+	else {
+		dc.DrawLine(0,h/2,w,h/2);
+	}
+
 	// Draw seconds boundaries
 	if (draw_boundary_lines) {
 		__int64 start = Position*samples;
@@ -243,34 +255,8 @@ void AudioDisplay::UpdateImage(bool weak) {
 	}
 
 	// Draw keyframes
-	if (VideoContext::Get()->KeyFramesLoaded() && draw_boundary_lines) {
-		wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
-		int nKeys = (int)KeyFrames.Count();
-		dc.SetPen(wxPen(wxColour(255,0,255),1));
-
-		// Get min and max frames to care about
-		int minFrame = VFR_Output.GetFrameAtTime(GetMSAtX(0),true);
-		int maxFrame = VFR_Output.GetFrameAtTime(GetMSAtX(w),true);
-
-		// Scan list
-		for (int i=0;i<nKeys;i++) {
-			int cur = KeyFrames[i];
-			if (cur >= minFrame && cur <= maxFrame) {
-				int x = GetXAtMS(VFR_Output.GetTimeAtFrame(cur,true));
-				dc.DrawLine(x,0,x,h);
-			}
-			else if (cur > maxFrame) break;
-		}
-	}
-
-	// Waveform
-	if (provider) {
-		if (!spectrum) DrawWaveform(dc,weak);
-	}
-
-	// Nothing
-	else {
-		dc.DrawLine(0,h/2,w,h/2);
+	if (drawKeyframes && VideoContext::Get()->KeyFramesLoaded()) {
+		DrawKeyframes(dc);
 	}
 
 	// Draw previous line
@@ -397,6 +383,11 @@ void AudioDisplay::UpdateImage(bool weak) {
 		}
 	}
 
+	// Draw timescale
+	if (timelineHeight) {
+		DrawTimescale(dc);
+	}
+
 	// Draw selection border
 	if (hasFocus) {
 		dc.SetPen(*wxGREEN_PEN);
@@ -404,67 +395,96 @@ void AudioDisplay::UpdateImage(bool weak) {
 		dc.DrawRectangle(0,0,w,h);
 	}
 
-	// Draw timescale
-	if (timelineHeight) {
-		dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-		dc.SetPen(*wxTRANSPARENT_PEN);
-		dc.DrawRectangle(0,h,w,timelineHeight);
-		dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT));
-		dc.DrawLine(0,h,w,h);
-		dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
-		dc.DrawLine(0,h+1,w,h+1);
-		dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
-		dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
-		wxFont scaleFont;
-		scaleFont.SetFaceName(_T("Tahoma")); // FIXME: hardcoded font name
-		scaleFont.SetPointSize(8);
-		dc.SetFont(scaleFont);
-
-		// Timescale ticks
-		__int64 start = Position*samples;
-		int rate = provider->GetSampleRate();
-		for (int i=1;i<32;i*=2) {
-			int pixBounds = rate / (samples * 4 / i);
-			if (pixBounds >= 8) {
-				for (int x=0;x<w;x++) {
-					__int64 pos = (x*samples)+start;
-					// Second boundary
-					if (pos % rate < samples) {
-						dc.DrawLine(x,h+2,x,h+8);
-
-						// Draw text
-						wxCoord textW,textH;
-						int hr = 0;
-						int m = 0;
-						int s = pos/rate;
-						while (s >= 3600) {
-							s -= 3600;
-							hr++;
-						}
-						while (s >= 60) {
-							s -= 60;
-							m++;
-						}
-						wxString text;
-						if (hr) text = wxString::Format(_T("%i:%02i:%02i"),hr,m,s);
-						else if (m) text = wxString::Format(_T("%i:%02i"),m,s);
-						else text = wxString::Format(_T("%i"),s);
-						dc.GetTextExtent(text,&textW,&textH,NULL,NULL,&scaleFont);
-						dc.DrawText(text,MAX(0,x-textW/2)+1,h+8);
-					}
-
-					// Other
-					else if (pos % (rate / 4 * i) < samples) {
-						dc.DrawLine(x,h+2,x,h+5);
-					}
-				}
-				break;
-			}
-		}
-	}
-
 	// Done
 	Refresh(false);
+}
+
+
+//////////////////
+// Draw keyframes
+void AudioDisplay::DrawKeyframes(wxDC &dc) {
+	wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
+	int nKeys = (int)KeyFrames.Count();
+	dc.SetPen(wxPen(wxColour(255,0,255),1));
+
+	// Get min and max frames to care about
+	int minFrame = VFR_Output.GetFrameAtTime(GetMSAtX(0),true);
+	int maxFrame = VFR_Output.GetFrameAtTime(GetMSAtX(w),true);
+
+	// Scan list
+	for (int i=0;i<nKeys;i++) {
+		int cur = KeyFrames[i];
+		if (cur >= minFrame && cur <= maxFrame) {
+			int x = GetXAtMS(VFR_Output.GetTimeAtFrame(cur,true));
+			dc.DrawLine(x,0,x,h);
+		}
+		else if (cur > maxFrame) break;
+	}
+}
+
+
+//////////////////
+// Draw timescale
+void AudioDisplay::DrawTimescale(wxDC &dc) {
+	// Set size
+	int timelineHeight = Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
+
+	// Set colours
+	dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+	dc.SetPen(*wxTRANSPARENT_PEN);
+	dc.DrawRectangle(0,h,w,timelineHeight);
+	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT));
+	dc.DrawLine(0,h,w,h);
+	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
+	dc.DrawLine(0,h+1,w,h+1);
+	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+	dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+	wxFont scaleFont;
+	scaleFont.SetFaceName(_T("Tahoma")); // FIXME: hardcoded font name
+	scaleFont.SetPointSize(8);
+	dc.SetFont(scaleFont);
+
+	// Timescale ticks
+	__int64 start = Position*samples;
+	int rate = provider->GetSampleRate();
+	for (int i=1;i<32;i*=2) {
+		int pixBounds = rate / (samples * 4 / i);
+		if (pixBounds >= 8) {
+			for (int x=0;x<w;x++) {
+				__int64 pos = (x*samples)+start;
+				// Second boundary
+				if (pos % rate < samples) {
+					dc.DrawLine(x,h+2,x,h+8);
+
+					// Draw text
+					wxCoord textW,textH;
+					int hr = 0;
+					int m = 0;
+					int s = pos/rate;
+					while (s >= 3600) {
+						s -= 3600;
+						hr++;
+					}
+					while (s >= 60) {
+						s -= 60;
+						m++;
+					}
+					wxString text;
+					if (hr) text = wxString::Format(_T("%i:%02i:%02i"),hr,m,s);
+					else if (m) text = wxString::Format(_T("%i:%02i"),m,s);
+					else text = wxString::Format(_T("%i"),s);
+					dc.GetTextExtent(text,&textW,&textH,NULL,NULL,&scaleFont);
+					dc.DrawText(text,MAX(0,x-textW/2)+1,h+8);
+				}
+
+				// Other
+				else if (pos % (rate / 4 * i) < samples) {
+					dc.DrawLine(x,h+2,x,h+5);
+				}
+			}
+			break;
+		}
+	}
 }
 
 
@@ -1372,7 +1392,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						if (leftIsDown && x != lastX) {
 							selStart = lastX;
 							selEnd = x;
-							curStartMS = GetBoundarySnap(GetMSAtX(lastX),event.ShiftDown()?0:10,true);
+							curStartMS = GetBoundarySnap(GetMSAtX(lastX),10,event.ShiftDown(),true);
 							curEndMS = GetMSAtX(x);
 							hold = 2;
 						}
@@ -1383,7 +1403,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 1 && buttonIsDown) {
 					// Set new value
 					if (x != selStart) {
-						int snapped = GetBoundarySnap(GetMSAtX(x),event.ShiftDown()?0:10,true);
+						int snapped = GetBoundarySnap(GetMSAtX(x),10,event.ShiftDown(),true);
 						selStart = GetXAtMS(snapped);
 						if (selStart > selEnd) {
 							int temp = selStart;
@@ -1403,7 +1423,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 2 && buttonIsDown) {
 					// Set new value
 					if (x != selEnd) {
-						int snapped = GetBoundarySnap(GetMSAtX(x),event.ShiftDown()?0:10,false);
+						int snapped = GetBoundarySnap(GetMSAtX(x),10,event.ShiftDown(),false);
 						selEnd = GetXAtMS(snapped);
 						//selEnd = GetBoundarySnap(x,event.ShiftDown()?0:10,false);
 						if (selStart > selEnd) {
@@ -1496,16 +1516,18 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 ////////////////////////
 // Get snap to boundary
-int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool start) {
+int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool shiftHeld,bool start) {
 	// Range?
 	if (rangeX <= 0) return ms;
 
 	// Convert range into miliseconds
 	int rangeMS = rangeX*samples*1000 / provider->GetSampleRate();
 
-	// Find the snap boundaries
+	// Keyframe boundaries
 	wxArrayInt boundaries;
-	if (VideoContext::Get()->KeyFramesLoaded() && Options.AsBool(_T("Audio Draw Secondary Lines"))) {
+	bool snapKey = Options.AsBool(_T("Audio snap to keyframes"));
+	if (shiftHeld) snapKey = !snapKey;
+	if (snapKey && VideoContext::Get()->KeyFramesLoaded() && Options.AsBool(_T("Audio Draw Keyframes"))) {
 		__int64 keyMS;
 		wxArrayInt keyFrames = VideoContext::Get()->GetKeyFrames();
 		int frame;
@@ -1521,7 +1543,9 @@ int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool start) {
 
 	// Other subtitles' boundaries
 	int inactiveType = Options.AsInt(_T("Audio Inactive Lines Display Mode"));
-	if (inactiveType == 1 || inactiveType == 2) {
+	bool snapLines = Options.AsBool(_T("Audio snap to other lines"));
+	if (shiftHeld) snapLines = !snapLines;
+	if (snapLines && (inactiveType == 1 || inactiveType == 2)) {
 		AssDialogue *shade;
 		int shadeX1,shadeX2;
 		int shadeFrom,shadeTo;

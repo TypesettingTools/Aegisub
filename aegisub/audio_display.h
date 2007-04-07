@@ -117,13 +117,15 @@ private:
 
 	void UpdateSamples();
 	void Reset();
+	void DrawTimescale(wxDC &dc);
+	void DrawKeyframes(wxDC &dc);
 	void DrawWaveform(wxDC &dc,bool weak);
 	void DrawSpectrum(wxDC &dc,bool weak);
 	void GetDialoguePos(__int64 &start,__int64 &end,bool cap);
 	void GetKaraokePos(__int64 &start,__int64 &end,bool cap);
 	void UpdatePosition(int pos,bool IsSample=false);
 
-	int GetBoundarySnap(int x,int range,bool start=true);
+	int GetBoundarySnap(int x,int range,bool shiftHeld,bool start=true);
 
 public:
 	AudioProvider *provider;

@@ -40,7 +40,7 @@
 #include "ass_file.h"
 #include "video_context.h"
 #ifdef WIN32
-#define CSRIAPI __declspec(dllimport)
+#define CSRIAPI
 #endif
 #include "csri/csri.h"
 

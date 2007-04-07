@@ -388,7 +388,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *audioMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *audioSizer1 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Options"));
 		wxSizer *audioSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Advanced - EXPERT USERS ONLY"));
-		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(2,2,5,5);
+		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(3,2,5,5);
 		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(4,2,5,5);
 		wxFlexGridSizer *audioSizer5 = new wxFlexGridSizer(4,2,5,5);
 		wxControl *control;
@@ -405,6 +405,12 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		audioSizer3->Add(control,1,wxEXPAND,0);
 		control = new wxCheckBox(audioPage,-1,_("Lock scroll on Cursor"));
 		Bind(control,_T("Audio lock scroll on cursor"));
+		audioSizer3->Add(control,1,wxEXPAND,0);
+		control = new wxCheckBox(audioPage,-1,_("Snap to keyframes"));
+		Bind(control,_T("Audio snap to keyframes"));
+		audioSizer3->Add(control,1,wxEXPAND,0);
+		control = new wxCheckBox(audioPage,-1,_("Snap to adjascent lines"));
+		Bind(control,_T("Audio snap to other lines"));
 		audioSizer3->Add(control,1,wxEXPAND,0);
 		audioSizer3->AddGrowableCol(0,1);
 
@@ -475,13 +481,15 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *displayMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *displaySizer1 = new wxStaticBoxSizer(wxVERTICAL,displayPage,_("Options"));
 		wxSizer *displaySizer2 = new wxStaticBoxSizer(wxVERTICAL,displayPage,_("Style"));
-		wxFlexGridSizer *displaySizer3 = new wxFlexGridSizer(2,2,2,2);
+		wxFlexGridSizer *displaySizer3 = new wxFlexGridSizer(3,2,2,2);
 		wxFlexGridSizer *displaySizer4 = new wxFlexGridSizer(14,2,2,2);
 
 		// First sizer
-		wxString labels1[4] = { _("Draw secondary lines"), _("Draw selection background"), _("Draw timeline"), _("Draw cursor time") };
-		wxString options1[4] = { _T("Draw Secondary Lines"), _T("Draw Selection Background") , _T("Draw Timeline"), _T("Draw Cursor Time")};
-		for (int i=0;i<4;i++) {
+		wxString labels1[5] = { _("Draw secondary lines"), _("Draw selection background"), _("Draw timeline"),
+								_("Draw cursor time"), _("Draw keyframes") };
+		wxString options1[5] = { _T("Draw Secondary Lines"), _T("Draw Selection Background") , _T("Draw Timeline"),
+								_T("Draw Cursor Time"), _T("Draw keyframes")};
+		for (int i=0;i<5;i++) {
 			wxCheckBox *control = new wxCheckBox(displayPage,-1,labels1[i]);
 			Bind(control,_T("Audio ") + options1[i]);
 			displaySizer3->Add(control,1,wxEXPAND | wxALL,5);

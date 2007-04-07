@@ -163,6 +163,8 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Audio Autofocus"),false);
 	SetBool(_T("Audio Wheel Default To Zoom"),false);
 	SetBool(_T("Audio lock scroll on cursor"),false);
+	SetBool(_T("Audio snap to keyframes"),false);
+	SetBool(_T("Audio snap to other lines"),false);
 	SetInt(_T("Timing Default Duration"), 2000);
 	SetInt(_T("Audio lead in"),200);
 	SetInt(_T("Audio lead out"),300);
@@ -235,6 +237,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Audio Line boundaries Thickness"), 2);
 	SetBool(_T("Audio Draw Secondary Lines"), true);
 	SetBool(_T("Audio Draw Selection Background"), true);
+	SetBool(_T("Audio Draw Keyframes"), true);
 	SetBool(_T("Audio Draw Timeline"),true);
 	SetBool(_T("Audio Draw Cursor Time"),true);
 	SetColour(_T("Audio Selection Background Modified"),wxColour(92,0,0));
