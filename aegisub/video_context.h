@@ -54,6 +54,7 @@ class AssDialogue;
 class VideoProvider;
 class VideoDisplay;
 class SubtitlesProvider;
+class VideoContextThread;
 
 
 //////////////
@@ -61,6 +62,7 @@ class SubtitlesProvider;
 class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
 	friend class VideoDisplayVisual;
+	friend class VideoContextThread;
 
 private:
 	static VideoContext *instance;
@@ -92,7 +94,12 @@ private:
 	int endFrame;
 	int playNextFrame;
 	int nextFrame;
+
 	bool threaded;
+	bool threadLocked;
+	int threadNextFrame;
+	wxMutex vidMutex;
+	wxThread *thread;
 
 	bool loaded;
 	bool isInverted;
@@ -181,4 +188,16 @@ public:
 	static void Clear();
 
 	DECLARE_EVENT_TABLE()
+};
+
+
+//////////
+// Thread
+class VideoContextThread : public wxThread {
+private:
+	VideoContext *parent;
+
+public:
+	VideoContextThread(VideoContext *parent);
+	wxThread::ExitCode Entry();
 };

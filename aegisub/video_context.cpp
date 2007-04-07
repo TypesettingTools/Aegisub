@@ -108,8 +108,12 @@ VideoContext::VideoContext() {
 	arType = 0;
 	arValue = 1.0;
 	isPlaying = false;
-	threaded = Options.AsBool(_T("Threaded Video"));
 	nextFrame = -1;
+
+	// Threads
+	threaded = Options.AsBool(_T("Threaded Video"));
+	threadLocked = false;
+	threadNextFrame = -1;
 }
 
 
@@ -373,15 +377,30 @@ void VideoContext::JumpToFrame(int n) {
 	// Prevent intervention during playback
 	if (isPlaying && n != playNextFrame) return;
 
-	// Set frame number
-	frame_n = n;
-	GetFrameAsTexture(n);
+	// Threaded
+	if (threaded && false) {	// Doesn't work, so it's disabled
+		wxMutexLocker lock(vidMutex);
+		threadNextFrame = n;
+		if (!threadLocked) {
+			threadLocked = true;
+			thread = new VideoContextThread(this);
+			thread->Create();
+			thread->Run();
+		}
+	}
 
-	// Display
-	UpdateDisplays(false);
+	// Not threaded
+	else {
+		// Set frame number
+		frame_n = n;
+		GetFrameAsTexture(n);
 
-	// Update grid
-	if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
+		// Display
+		UpdateDisplays(false);
+
+		// Update grid
+		if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
+	}
 }
 
 
@@ -803,4 +822,49 @@ void VideoContext::SetShader(bool enabled) {
 // Can draw subtitles independently from video?
 bool VideoContext::HasIndependentSubs() {
 	return subsProvider && subsProvider->CanRaster();
+}
+
+
+//////////////////////
+// Thread constructor
+VideoContextThread::VideoContextThread(VideoContext *par)
+: wxThread(wxTHREAD_DETACHED)
+{
+	parent = par;
+}
+
+
+//////////////////////
+// Thread entry point
+wxThread::ExitCode VideoContextThread::Entry() {
+	// Set up thread
+	int frame = parent->threadNextFrame;
+	int curFrame = parent->frame_n;
+	bool highSubs = Options.AsBool(_T("Highlight subs in frame"));
+
+	// Loop while there is work to do
+	while (true) {
+		// Get frame and set frame number
+		parent->GetFrameAsTexture(frame);
+		parent->frame_n = frame;
+
+		// Display
+		parent->UpdateDisplays(false);
+
+		// Update grid
+		if (!parent->isPlaying && highSubs) parent->grid->Refresh(false);
+
+		// Get lock and check if there is more to do
+		wxMutexLocker lock(parent->vidMutex);
+		curFrame = parent->frame_n;
+		frame = parent->threadNextFrame;
+
+		// Work done, kill thread and release context
+		if (curFrame == frame) {
+			parent->threadLocked = false;
+			parent->threadNextFrame = -1;
+			Delete();
+			return 0;
+		}
+	}
 }
