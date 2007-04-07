@@ -27,10 +27,11 @@ Please visit http://aegisub.net to download latest version
   o Normal and SSA mode have been merged into one, all functionality available to both is now used at once. This is the same behavior as Sabbu has. (AMZ)
   o Next line on commit is now on by default.
   o Auto-commit will never change to the next line.
-  o When dragging line start/end markers, they will snap to keyframes or nearby subtitle start/end markers, hold down "Shift" to override this behaviour.
+  o Added an option to, when dragging line start/end markers, snap to keyframes or nearby subtitle start/end markers. This behavior can always be toggled by holding down shift.
   o The "Play" shortcut will always play, regardless of whether it was already playing or not. There is a new shortcut for "Stop".
   o Styles for line start/end markers have changed.
   o Holding down ctrl lets you retime the original line while in Karaoke mode.
+  o Middle click will now jump the video to the time under the mouse.
 - Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections. (jfs)
 - Fixed loading of sections with unexpected cases. (AMZ)
 - Plain-text export (jfs)

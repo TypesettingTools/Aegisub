@@ -155,7 +155,7 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Allow Ancient Avisynth"),false);
 	SetText(_T("Video Provider"),_T("Avisynth"));
-	SetText(_T("Subtitles Provider"),_T("CSRI"));
+	SetText(_T("Subtitles Provider"),_T("csri"));
 	SetBool(_T("Video Use Pixel Shaders"),false);
 
 	// Audio Options

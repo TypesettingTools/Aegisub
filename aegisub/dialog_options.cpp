@@ -54,6 +54,7 @@
 #include "video_box.h"
 #include "video_slider.h"
 #include "video_provider.h"
+#include "subtitles_provider.h"
 #include "audio_box.h"
 #include "audio_display.h"
 
@@ -318,7 +319,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *videoSizer1 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Options"));
 		wxSizer *videoSizer2 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Advanced - EXPERT USERS ONLY"));
 		wxFlexGridSizer *videoSizer3 = new wxFlexGridSizer(5,2,5,5);
-		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(3,2,5,5);
+		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(4,2,5,5);
 		wxControl *control;
 
 		// First sizer
@@ -359,12 +360,20 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices4,wxCB_DROPDOWN | wxCB_READONLY);
 		Bind(control,_T("Video provider"),1);
 		videoSizer4->Add(control,1,wxEXPAND);
+		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Subtitles provider (except avisynth): ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		wxArrayString choices5 = SubtitlesProviderFactory::GetFactoryList();
+		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices5,wxCB_DROPDOWN | wxCB_READONLY);
+		Bind(control,_T("Subtitles provider"),1);
+		videoSizer4->Add(control,1,wxEXPAND);
 		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth memory limit: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		control = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator(NULL,false));
 		Bind(control,_T("Avisynth memorymax"));
 		videoSizer4->Add(control,1,wxEXPAND);
-		control = new wxCheckBox(videoPage,-1,_("Threaded video"));
-		Bind(control,_T("Threaded video"));
+		//control = new wxCheckBox(videoPage,-1,_("Threaded video"));
+		//Bind(control,_T("Threaded video"));
+		//videoSizer4->Add(control,1,wxEXPAND);
+		control = new wxCheckBox(videoPage,-1,_("Use pixel shaders if available"));
+		Bind(control,_T("Video use pixel shaders"));
 		videoSizer4->Add(control,1,wxEXPAND);
 		control = new wxCheckBox(videoPage,-1,_("Allow pre-2.56a Avisynth"));
 		Bind(control,_T("Allow Ancient Avisynth"));
