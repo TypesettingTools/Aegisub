@@ -428,31 +428,22 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 	// Current frame if -1
 	if (n == -1) n = frame_n;
 
-	// Get frame
-	AegiVideoFrame frame = provider->GetFrame(n);
-	AegiVideoFrame *srcFrame = &frame;
+	// Get available formats
+	int formats = FORMAT_RGB32;
+	if (yv12shader != 0 || OpenGLWrapper::UseShaders()) formats |= FORMAT_YV12;
 
-	// Convert to YV12 if it can't be handled
-	if (frame.format == FORMAT_YV12 && yv12shader == 0) {
-		if (!OpenGLWrapper::UseShaders()) {
-			tempRGBFrame.w = frame.w;
-			tempRGBFrame.h = frame.h;
-			tempRGBFrame.pitch[0] = frame.w * 4;
-			tempRGBFrame.format = FORMAT_RGB32;
-			tempRGBFrame.ConvertFrom(frame);
-			srcFrame = &tempRGBFrame;
-		}
-	}
+	// Get frame
+	AegiVideoFrame frame = provider->GetFrame(n,formats);
 
 	// Raster subtitles if available/necessary
 	if (!raw && subsProvider && subsProvider->CanRaster()) {
-		tempFrame.CopyFrom(*srcFrame);
+		tempFrame.CopyFrom(frame);
 		subsProvider->DrawSubtitles(tempFrame,VFR_Input.GetTimeAtFrame(n,true,true)/1000.0);
 		return tempFrame;
 	}
 
 	// Return pure frame
-	else return *srcFrame;
+	else return frame;
 }
 
 

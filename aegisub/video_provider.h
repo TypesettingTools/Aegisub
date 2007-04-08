@@ -63,6 +63,7 @@ class VideoProvider {
 private:
 	unsigned int cacheMax;
 	std::list<CachedFrame> cache;
+	AegiVideoFrame tempRGBFrame;
 
 	void Cache(int n,const AegiVideoFrame frame);
 	AegiVideoFrame GetCachedFrame(int n);
@@ -78,7 +79,7 @@ protected:
 public:
 	// Base methods
 	void GetFloatFrame(float* Buffer, int n);	// Get frame as float
-	const AegiVideoFrame GetFrame(int n);
+	const AegiVideoFrame GetFrame(int n, int formatMask=FORMAT_RGB32);
 	VideoProvider();
 	virtual ~VideoProvider();
 

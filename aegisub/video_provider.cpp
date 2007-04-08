@@ -54,12 +54,13 @@ VideoProvider::VideoProvider() {
 // Destructor
 VideoProvider::~VideoProvider() {
 	ClearCache();
+	tempRGBFrame.Clear();
 }
 
 
 /////////////
 // Get frame
-const AegiVideoFrame VideoProvider::GetFrame(int n) {
+const AegiVideoFrame VideoProvider::GetFrame(int n,int format) {
 	// See if frame is cached
 	CachedFrame cached;
 	for (std::list<CachedFrame>::iterator cur=cache.begin();cur!=cache.end();cur++) {
@@ -73,8 +74,22 @@ const AegiVideoFrame VideoProvider::GetFrame(int n) {
 
 	// Not cached, retrieve it
 	const AegiVideoFrame frame = DoGetFrame(n);
-	Cache(n,frame);
-	return frame;
+	const AegiVideoFrame *srcFrame = &frame;
+
+	// Convert to compatible format
+	if (!(frame.format & format)) {
+		if (format & FORMAT_RGB32) tempRGBFrame.format = FORMAT_RGB32;
+		else throw _T("Unable to negotiate formats.");
+		tempRGBFrame.w = frame.w;
+		tempRGBFrame.h = frame.h;
+		tempRGBFrame.pitch[0] = frame.w * 4;
+		tempRGBFrame.ConvertFrom(frame);
+		srcFrame = &tempRGBFrame;
+	}
+
+	// Cache frame
+	Cache(n,*srcFrame);
+	return *srcFrame;
 }
 
 

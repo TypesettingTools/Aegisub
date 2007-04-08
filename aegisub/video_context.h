@@ -74,7 +74,6 @@ private:
 	wxGLContext *glContext;
 	VideoFrameFormat vidFormat;
 	AegiVideoFrame tempFrame;
-	AegiVideoFrame tempRGBFrame;
 
 	wxString tempfile;
 	VideoProvider *provider;
