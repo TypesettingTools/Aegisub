@@ -391,16 +391,26 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 				}
 			}
 		}
-		if (badchars_removed > 0) {
-			wxLogWarning(_("The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\nThe catalog has been renamed to \"%s\"."), name.c_str());
+
+		// Make sure that there is no storage with the same name
+		if (CatalogList->FindString(name) != wxNOT_FOUND) {
+			wxMessageBox(_("A catalog with that name already exists."),_("Catalog name conflict"),wxICON_ERROR);
+			return;
 		}
 
+		// Warn about bad characters
+		if (badchars_removed > 0) {
+			wxMessageBox(wxString::Format(_("The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\nThe catalog has been renamed to \"%s\"."), name.c_str()),_("Invalid characters"));
+		}
+
+		// Add to list of storages
 		Store.Clear();
 		StorageList->Clear();
 		CatalogList->Append(name);
 		CatalogList->SetStringSelection(name);
 		StorageActions(true);
 
+		// Save
 		wxString dirname = AegisubApp::folderName;
 		dirname += _T("/catalog/");
 		if (!wxDirExists(dirname)) {

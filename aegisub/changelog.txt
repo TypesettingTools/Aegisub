@@ -105,6 +105,8 @@ Please visit http://aegisub.net to download latest version
 - Added shortcut keys (escape to close and delete to delete a style, plus ctrl+c/v for copy/paste) to style manager. (Dansolo)
 - Added a dummy video provider to create a blank video with customizeable options. (jfs & AMZ)
 - Changing script resolution when asked to on video loading will now set an undo point. (AMZ)
+- Frame number is now the default box on the "go to" dialog. (AMZ)
+- Two storages with the same name can no longer be created in the styles manager. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
