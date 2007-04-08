@@ -272,17 +272,17 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
+	wxButton *okButton = new wxButton(this, wxID_OK);
 #ifndef __WXMAC__
-	ButtonSizer->Add(new wxButton(this, wxID_OK),0,wxRIGHT,5);
+	ButtonSizer->Add(okButton,0,wxRIGHT,5);
 	ButtonSizer->Add(new wxButton(this, wxID_CANCEL),0,wxRIGHT,5);
 	ButtonSizer->Add(new wxButton(this, wxID_APPLY),0,wxRIGHT,5);
 #else
-	wxButton *okButton = new wxButton(this, wxID_OK);
 	ButtonSizer->Add(new wxButton(this, wxID_APPLY),0,wxRIGHT,5);
 	ButtonSizer->Add(new wxButton(this, wxID_CANCEL),0,wxRIGHT,5);
 	ButtonSizer->Add(okButton,0,wxRIGHT,5);
-	okButton->SetDefault();
 #endif
+	okButton->SetDefault();
 
 	// General Layout
 	MainSizer = new wxBoxSizer(wxVERTICAL);
@@ -360,8 +360,8 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		for (unsigned int i=0;i<styles.Count();i++) {
 			if (styles[i] == newStyleName) {
 				if (grid->ass->GetStyle(styles[i]) != style) {
-					int answer = wxMessageBox(_T("There is already a style with this name. Proceed anyway?"),_T("Style name conflict."),wxYES_NO);
-					if (answer == wxNO) return;
+					wxMessageBox(_T("There is already a style with this name. Please choose another name."),_T("Style name conflict."),wxICON_ERROR);
+					return;
 				}
 			}
 		}

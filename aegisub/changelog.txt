@@ -107,6 +107,8 @@ Please visit http://aegisub.net to download latest version
 - Changing script resolution when asked to on video loading will now set an undo point. (AMZ)
 - Frame number is now the default box on the "go to" dialog. (AMZ)
 - Two storages with the same name can no longer be created in the styles manager. (AMZ)
+- Style editor will no longer admit creation of styles with equal names. (AMZ)
+- Hitting enter on style editor will now "OK" it. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
