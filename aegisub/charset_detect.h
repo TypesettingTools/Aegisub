@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,54 +33,23 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-
-#ifndef TEXT_FILE_READER_H
-#define TEXT_FILE_READER_H
+#pragma once
 
 
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include <wx/dynarray.h>
-#include <fstream>
-#ifdef WIN32
-#include <stdio.h>
-#endif
+#include "../universalchardet/nsUniversalDetector.h"
 
 
-/////////
-// Class
-class TextFileReader {
+/////////////////////////////////
+// Character set detection class
+class CharSetDetect : public nsUniversalDetector {
 private:
-	wxString filename;
-	wxString encoding;
-#ifdef WIN32
-	FILE *file;
-#else
-	std::ifstream file;
-#endif
-	wxMBConv *conv;
-	bool Is16;
-	bool swap;
-	bool open;
-	bool customConv;
-	bool trim;
-
-	void Open();
-	void Close();
-	void SetEncodingConfiguration();
+	wxString result;
+	void Report(const char* aCharset);
 
 public:
-	TextFileReader(wxString filename,wxString encoding=_T(""),bool trim=true);
-	~TextFileReader();
-
-	wxString ReadLineFromFile();
-	bool HasMoreLines();
-
-	static void EnsureValid(const wxString encoding);
-	wxString GetCurrentEncoding();
-	static wxString GetEncoding(const wxString filename);
+	wxString GetEncoding(wxString filename);
+	PRBool done() const { return mDone; }
 };
-
-
-#endif

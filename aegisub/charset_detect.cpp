@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,53 +34,35 @@
 //
 
 
-#ifndef TEXT_FILE_READER_H
-#define TEXT_FILE_READER_H
-
-
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <wx/dynarray.h>
-#include <fstream>
-#ifdef WIN32
-#include <stdio.h>
-#endif
+#include "charset_detect.h"
+#include "text_file_reader.h"
 
 
-/////////
-// Class
-class TextFileReader {
-private:
-	wxString filename;
-	wxString encoding;
-#ifdef WIN32
-	FILE *file;
-#else
-	std::ifstream file;
-#endif
-	wxMBConv *conv;
-	bool Is16;
-	bool swap;
-	bool open;
-	bool customConv;
-	bool trim;
+////////////////
+// Get encoding
+wxString CharSetDetect::GetEncoding(wxString filename) {
+	// Open file
+	TextFileReader reader(filename,_T("Local"));
 
-	void Open();
-	void Close();
-	void SetEncodingConfiguration();
+	// Loop through it until it finds interesting lines
+	while (reader.HasMoreLines() && !done()) {
+		wxString line = reader.ReadLineFromFile();
+		wxCharBuffer buffer = line.mb_str(wxConvLocal);
+		HandleData(buffer,line.Length());
+	}
 
-public:
-	TextFileReader(wxString filename,wxString encoding=_T(""),bool trim=true);
-	~TextFileReader();
+	// Flag as finished
+	DataEnd();
 
-	wxString ReadLineFromFile();
-	bool HasMoreLines();
-
-	static void EnsureValid(const wxString encoding);
-	wxString GetCurrentEncoding();
-	static wxString GetEncoding(const wxString filename);
-};
+	// Return whatever it got
+	return result;
+}
 
 
-#endif
+//////////
+// Report
+void CharSetDetect::Report(const char* aCharset) {
+	result = wxString(aCharset,wxConvUTF8);
+}

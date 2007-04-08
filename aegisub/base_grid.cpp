@@ -311,6 +311,7 @@ void BaseGrid::OnPaint (wxPaintEvent &event) {
 		int w = 0;
 		int h = 0;
 		GetClientSize(&w,&h);
+		w -= scrollBar->GetSize().GetWidth();
 
 		// Prepare bitmap
 		if (bmp) {
@@ -337,6 +338,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	int w = 0;
 	int h = 0;
 	GetClientSize(&w,&h);
+	w -= scrollBar->GetSize().GetWidth();
 
 	// Set font
 	dc.SetFont(font);
@@ -534,7 +536,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			dc.DrawLine(dx,0,dx,maxH);
 		}
 		dc.DrawLine(0,0,0,maxH);
-		dc.DrawLine(w-1,0,w-1,h);
+		dc.DrawLine(w-1,0,w-1,maxH);
 	}
 
 	// Draw currently active line border

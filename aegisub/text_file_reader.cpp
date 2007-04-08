@@ -40,6 +40,7 @@
 #include <algorithm>
 #include <string>
 #include "text_file_reader.h"
+#include "charset_detect.h"
 
 
 ///////////////
@@ -125,8 +126,10 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	else if (b[0] == 0x00 && b[2] == 0x00) return _T("UTF-16BE");
 	else if (b[1] == 0x00 && b[3] == 0x00) return _T("UTF-16LE");
 
-	// Fallback to ascii
-	return _T("Local");
+	// Use universalchardet library to detect charset
+	CharSetDetect det;
+	return det.GetEncoding(_filename);
+	//return _T("Local");
 }
 
 
@@ -304,4 +307,11 @@ void TextFileReader::EnsureValid(wxString enc) {
 		error += _T(" is not supported.");
 		throw error;
 	}
+}
+
+
+///////////////////////////
+// Get encoding being used
+wxString TextFileReader::GetCurrentEncoding() {
+	return encoding;
 }
