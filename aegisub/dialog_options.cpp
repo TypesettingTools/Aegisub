@@ -361,7 +361,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices4,wxCB_DROPDOWN | wxCB_READONLY);
 		Bind(control,_T("Video provider"),1);
 		videoSizer4->Add(control,1,wxEXPAND);
-		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Subtitles provider (except avisynth): ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Subtitles provider: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		wxArrayString choices5 = SubtitlesProviderFactory::GetFactoryList();
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices5,wxCB_DROPDOWN | wxCB_READONLY);
 		Bind(control,_T("Subtitles provider"),1);
