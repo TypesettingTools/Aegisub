@@ -59,7 +59,10 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 	wxString error;
 	for (unsigned int i=0;i<list.Count();i++) {
 		try {
-			SubtitlesProvider *provider = GetFactory(list[i])->CreateProvider();
+			size_t pos = list[i].Find(_T('/'));
+			wxString name = list[i].Left(pos);
+			wxString subType = list[i].Mid(pos+1);
+			SubtitlesProvider *provider = GetFactory(list[i])->CreateProvider(subType);
 			if (provider) return provider;
 		}
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }

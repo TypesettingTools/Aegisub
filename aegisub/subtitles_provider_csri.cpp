@@ -36,6 +36,7 @@
 
 ///////////
 // Headers
+#include <wx/wxprec.h>
 #include "subtitles_provider.h"
 #include "ass_file.h"
 #include "video_context.h"
@@ -56,10 +57,11 @@
 // Common Subtitles Rendering Interface provider
 class CSRISubtitlesProvider : public SubtitlesProvider {
 private:
+	wxString subType;
 	csri_inst *instance;
 
 public:
-	CSRISubtitlesProvider();
+	CSRISubtitlesProvider(wxString subType);
 	~CSRISubtitlesProvider();
 
 	bool CanRaster() { return true; }
@@ -73,14 +75,34 @@ public:
 // Factory
 class CSRISubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
-	SubtitlesProvider *CreateProvider() { return new CSRISubtitlesProvider(); }
-	CSRISubtitlesProviderFactory() : SubtitlesProviderFactory(_T("csri")) {}
+	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new CSRISubtitlesProvider(subType); }
+	wxArrayString GetSubTypes() {
+		csri_info *info;
+		wxArrayString final;
+		for (csri_rend *cur = csri_renderer_default();cur;cur = csri_renderer_next(cur)) {
+			// Get renderer name
+			info = csri_renderer_info(cur);
+			const char* buffer = info->name;
+
+			// wxWidgets isn't initialized, so h4x into a wxString
+			int len = strlen(buffer);
+			wxString str;
+			str.Alloc(len+1);
+			for (int i=0;i<len;i++) {
+				str.Append((wxChar)buffer[i]);
+			}
+			final.Add(str);
+		}
+		return final;
+	}
+	CSRISubtitlesProviderFactory() : SubtitlesProviderFactory(_T("csri"),GetSubTypes()) {}
 } registerCSRI;
 
 
 ///////////////
 // Constructor
-CSRISubtitlesProvider::CSRISubtitlesProvider() {
+CSRISubtitlesProvider::CSRISubtitlesProvider(wxString type) {
+	subType = type;
 	instance = NULL;
 }
 
@@ -96,26 +118,37 @@ CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 //////////////////
 // Load subtitles
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
-	csri_rend *renderer;
-
 	// Close
 	if (instance) csri_close(instance);
 	instance = NULL;
 
 	// Prepare subtitles
-	//wxString subsfilename = VideoContext::Get()->GetTempWorkFile();
-	//subs->Save(subsfilename,false,false,_T("UTF-8"));
 	std::vector<char> data;
 	subs->SaveMemory(data,_T("UTF-8"));
 	delete subs;
 
+	// CSRI variables
+	csri_rend *cur,*renderer=NULL;
+	csri_info *info;
+
+	// Select renderer
+	for (cur = csri_renderer_default();cur;cur=csri_renderer_next(cur)) {
+		info = csri_renderer_info(cur);
+		wxString name(info->name,wxConvUTF8);
+		if (name == subType) {
+			renderer = cur;
+			break;
+		}
+	}
+
+	// Matching renderer not found, fallback to default
+	if (!renderer) {
+		renderer = csri_renderer_default();
+		if (!renderer) throw _T("No CSRI renderer available. Try installing one or switch to another subtitle provider.");
+	}
+
 	// Open
-	//instance = csri_open_file(csri_renderer_default(),subsfilename.mb_str(wxConvUTF8),NULL);
-	renderer = csri_renderer_default();
-	if (renderer)
-		instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
-	else
-		throw _T("No CSRI renderer available. Try installing one or switch to another subtitle provider.");
+	instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
 }
 
 

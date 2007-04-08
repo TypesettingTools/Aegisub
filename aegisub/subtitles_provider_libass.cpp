@@ -76,7 +76,7 @@ ass_library_t* LibassSubtitlesProvider::ass_library;
 // Factory
 class LibassSubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
-	SubtitlesProvider *CreateProvider() { return new LibassSubtitlesProvider(); }
+	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new LibassSubtitlesProvider(); }
 	LibassSubtitlesProviderFactory() : SubtitlesProviderFactory(_T("libass")) {}
 } registerLibass;
 

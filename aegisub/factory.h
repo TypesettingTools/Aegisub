@@ -47,22 +47,51 @@
 template <class T>
 class AegisubFactory {
 protected:
+	// Static map of all factories
 	static std::map<wxString,T*> *factories;
-	void RegisterFactory(wxString name) {
+
+	// Register one factory type (with possible subtypes)
+	void RegisterFactory(wxString name, wxArrayString subTypes=wxArrayString()) {
+		// Create factories if it doesn't exist
 		if (factories == NULL) factories = new std::map<wxString,T*>;
-		factories->insert(std::make_pair(name.Lower(),(T*)this));
+
+		// Prepare subtypes
+		if (subTypes.GetCount() == 0) subTypes.Add(_T(""));
+		else {
+			for (unsigned int i=0;i<subTypes.GetCount();i++) {
+				subTypes[i] = _T("/") + subTypes[i];
+			}
+		}
+
+		// Insert each subtype
+		for (unsigned int i=0;i<subTypes.GetCount();i++) {
+			factories->insert(std::make_pair(name.Lower() + subTypes[i],(T*)this));
+		}
 	}
+
+	// Get a factory with name
 	static T *GetFactory(wxString name) {
+		// No factories
 		if (factories == NULL) {
 			factories = new std::map<wxString,T*>;
 			return NULL;
 		}
-		typename std::map<wxString,T*>::iterator res = factories->find(name.Lower());
-		if (res != factories->end()) return res->second;
+
+		// Search for factory that matches
+		typename std::map<wxString,T*>::iterator cur;
+		for (cur = factories->begin();cur != factories->end();cur++) {
+			if (cur->first.StartsWith(name)) return cur->second;
+		}
+
+		// None found
 		return NULL;
 	}
 
 public:
+	// Virtual destructor
+	virtual ~AegisubFactory() {}
+
+	// Get list of all factories, with favourite as first
 	static wxArrayString GetFactoryList(wxString favourite=_T("")) {
 		if (factories == NULL) factories = new std::map<wxString,T*>;
 		wxArrayString list;
@@ -73,5 +102,4 @@ public:
 		}
 		return list;
 	}
-	virtual ~AegisubFactory() {}
 };

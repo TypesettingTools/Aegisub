@@ -66,8 +66,10 @@ public:
 // Factory
 class SubtitlesProviderFactory : public AegisubFactory<SubtitlesProviderFactory> {
 protected:
-	virtual SubtitlesProvider *CreateProvider()=0;
-	SubtitlesProviderFactory(wxString name) { RegisterFactory(name); }
+	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
+	SubtitlesProviderFactory(wxString name,wxArrayString subTypes=wxArrayString()) {
+		RegisterFactory(name,subTypes);
+	}
 
 public:
 	virtual ~SubtitlesProviderFactory() {}
