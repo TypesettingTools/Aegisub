@@ -40,7 +40,11 @@
 #include <algorithm>
 #include <string>
 #include "text_file_reader.h"
+
+#ifdef __WINDOWS__
+#define AUTODETECT_CHARSET
 #include "charset_detect.h"
+#endif
 
 
 ///////////////
@@ -126,10 +130,14 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	else if (b[0] == 0x00 && b[2] == 0x00) return _T("UTF-16BE");
 	else if (b[1] == 0x00 && b[3] == 0x00) return _T("UTF-16LE");
 
+	#ifdef AUTODETECT_CHARSET
 	// Use universalchardet library to detect charset
 	CharSetDetect det;
 	return det.GetEncoding(_filename);
-	//return _T("Local");
+	#else
+	// Fall back to local
+	return _T("Local");
+	#endif
 }
 
 
