@@ -272,7 +272,6 @@ void FrameMain::InitMenu() {
 	fileMenu = new wxMenu();
 	AppendBitmapMenuItem(fileMenu,Menu_File_New_Subtitles, _("&New Subtitles\t") + Hotkeys.GetText(_T("New Subtitles")), _("New subtitles"),wxBITMAP(new_toolbutton));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles, _("&Open Subtitles...\t") + Hotkeys.GetText(_T("Open Subtitles")), _("Opens a subtitles file"),wxBITMAP(open_toolbutton));
-	//fileMenu->Append(Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"),wxBITMAP(open_with_toolbutton));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles, _("&Save Subtitles\t") + Hotkeys.GetText(_T("Save Subtitles")), _("Saves subtitles"),wxBITMAP(save_toolbutton));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"), wxBITMAP(save_as_toolbutton));
@@ -288,16 +287,15 @@ void FrameMain::InitMenu() {
 	MenuBar->Append(fileMenu, _("&File"));
 
 	// Create Edit menu
+	// NOTE: Undo and Redo are actually controlled in frame_main_events, OnMenuOpen(). They will always be the first two items.
 	editMenu = new wxMenu();
-	wxMenuItem *item;
-	item = AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, _("-") + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo")), _("Undoes last action"),wxBITMAP(undo_button));
-	item = AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, _("-") + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo")), _("Redoes last action"),wxBITMAP(redo_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, _("&Undo") + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo")), _("Undoes last action"),wxBITMAP(undo_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, _("&Redo") + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo")), _("Redoes last action"),wxBITMAP(redo_button));
 	editMenu->AppendSeparator();
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Cut, _("Cut Lines\t") + Hotkeys.GetText(_T("Cut")), _("Cut subtitles"), wxBITMAP(cut_button));
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Copy, _("Copy Lines\t") + Hotkeys.GetText(_T("Copy")), _("Copy subtitles"), wxBITMAP(copy_button));
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste, _("Paste Lines\t") + Hotkeys.GetText(_T("Paste")), _("Paste subtitles"), wxBITMAP(paste_button));
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste_Over, _("Paste Lines Over...\t") + Hotkeys.GetText(_T("Paste Over")) , _("Paste subtitles over others"),wxBITMAP(paste_over_button));
-	//AppendBitmapMenuItem(editMenu,Menu_Edit_Delete, _("Delete Lines\t") + Hotkeys.GetText(_T("Grid Delete Rows")), _("Delete selected lines"), wxBITMAP(delete_button));
 	editMenu->AppendSeparator();
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Find, _("&Find...\t") + Hotkeys.GetText(_T("Find")), _("Find words in subtitles"),wxBITMAP(find_button));
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, _("Find Next\t") + Hotkeys.GetText(_T("Find Next")), _("Find next match of last word"),wxBITMAP(find_next_button));
