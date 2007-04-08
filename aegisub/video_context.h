@@ -160,6 +160,7 @@ public:
 
 	void SetVideo(const wxString &filename);
 	void Reset();
+	void Reload();
 
 	void JumpToFrame(int n);
 	void JumpToTime(int ms,bool exact=false);

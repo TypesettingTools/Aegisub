@@ -53,6 +53,7 @@ enum ModType {
 	MOD_EDIT_BOX,
 	MOD_GRID,
 	MOD_VIDEO,
+	MOD_VIDEO_RELOAD,
 	MOD_AUDIO
 };
 

@@ -57,6 +57,7 @@
 #include "subtitles_provider.h"
 #include "audio_box.h"
 #include "audio_display.h"
+#include "video_context.h"
 
 
 ///////////////
@@ -319,7 +320,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *videoSizer1 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Options"));
 		wxSizer *videoSizer2 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Advanced - EXPERT USERS ONLY"));
 		wxFlexGridSizer *videoSizer3 = new wxFlexGridSizer(5,2,5,5);
-		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(5,2,5,5);
 		wxControl *control;
 
 		// First sizer
@@ -379,6 +380,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		Bind(control,_T("Allow Ancient Avisynth"));
 		videoSizer4->Add(control,1,wxEXPAND);
 		videoSizer4->AddGrowableCol(1,1);
+		control = new wxCheckBox(videoPage,-1,_("Avisynth renders its own subs"));
+		Bind(control,_T("Avisynth render own subs"));
+		videoSizer4->Add(control,1,wxEXPAND);
 
 		// Sizers
 		videoSizer1->Add(videoSizer3,1,wxEXPAND | wxALL,5);
@@ -694,6 +698,7 @@ void DialogOptions::WriteToOptions(bool justApply) {
 	bool mustRestart = false;
 	bool editBox = false;
 	bool grid = false;
+	bool videoRestart = false;
 	bool video = false;
 	bool audio = false;
 
@@ -767,6 +772,7 @@ void DialogOptions::WriteToOptions(bool justApply) {
 			if (type == MOD_EDIT_BOX) editBox = true;
 			if (type == MOD_GRID) grid = true;
 			if (type == MOD_VIDEO) video = true;
+			if (type == MOD_VIDEO_RELOAD) videoRestart = true;
 			if (type == MOD_AUDIO) audio = true;
 		}
 	}
@@ -802,7 +808,10 @@ void DialogOptions::WriteToOptions(bool justApply) {
 		}
 
 		// Video
-		if (video) {
+		if (videoRestart) {
+			VideoContext::Get()->Reload();
+		}
+		else if (video) {
 			FrameMain *frame = (FrameMain*) GetParent();
 			frame->videoBox->videoSlider->Refresh();
 		}

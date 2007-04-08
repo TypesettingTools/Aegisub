@@ -188,10 +188,26 @@ void VideoContext::Reset() {
 	tempFrame.Clear();
 
 	// Remove provider
-	if (provider && subsProvider && provider->GetAsSubtitlesProvider() != subsProvider) delete subsProvider;
+	if (provider) {
+		if (subsProvider && !subsProvider->LockedToVideo()) delete subsProvider;
+		delete provider;
+		provider = NULL;
+	}
+	else delete subsProvider;
 	subsProvider = NULL;
-	delete provider;
-	provider = NULL;
+}
+
+
+////////////////
+// Reload video
+void VideoContext::Reload() {
+	if (IsLoaded()) {
+		wxString name = videoName;
+		int n = frame_n;
+		SetVideo(_T(""));
+		SetVideo(name);
+		JumpToFrame(n);
+	}
 }
 
 

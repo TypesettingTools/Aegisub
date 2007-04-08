@@ -83,6 +83,7 @@ public:
 
 	SubtitlesProvider *GetAsSubtitlesProvider();
 	void LoadSubtitles(AssFile *subs);
+	bool LockedToVideo() { return true; }
 
 	const AegiVideoFrame DoGetFrame(int n);
 	void GetFloatFrame(float* Buffer, int n);
@@ -412,7 +413,8 @@ PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosourc
 /////////////////////////////
 // Get as subtitles provider
 SubtitlesProvider *AvisynthVideoProvider::GetAsSubtitlesProvider() {
-	return this;
+	if (Options.AsBool(_T("Avisynth render own subs"))) return this;
+	return NULL;
 }
 
 

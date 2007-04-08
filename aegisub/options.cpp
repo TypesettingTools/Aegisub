@@ -140,6 +140,7 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Show keyframes on video slider"),true);
 
 	// Dummy video defaults
+	SetModificationType(MOD_AUTOMATIC);
 	SetInt(_T("Video Dummy Last Width"), 640);
 	SetInt(_T("Video Dummy Last Height"), 480);
 	SetColour(_T("Video Dummy Last Colour"), wxColour(47, 163, 254));
@@ -151,14 +152,20 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_RESTART);
 	SetBool(_T("Threaded Video"),false);
 	SetInt(_T("Avisynth MemoryMax"),64);
-	SetText(_T("Avisynth Subs Renderer"),_T("vsfilter"));
-	SetModificationType(MOD_AUTOMATIC);
-	SetBool(_T("Allow Ancient Avisynth"),false);
+	SetModificationType(MOD_VIDEO_RELOAD);
 	SetText(_T("Video Provider"),_T("Avisynth"));
-	SetText(_T("Subtitles Provider"),_T("csri"));
+	SetBool(_T("Allow Ancient Avisynth"),false);
+	SetText(_T("Avisynth subs renderer"),_T("vsfilter"));
+	SetBool(_T("Avisynth render own subs"),true);
+	#ifdef __WINDOWS__
+	SetText(_T("Subtitles Provider"),_T("csri/vsfilter"));
+	#else
+	SetText(_T("Subtitles Provider"),_T("csri/asa"));
+	#endif
 	SetBool(_T("Video Use Pixel Shaders"),false);
 
 	// Audio Options
+	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Audio Next Line on Commit"),true);
 	SetBool(_T("Audio Autofocus"),false);
 	SetBool(_T("Audio Wheel Default To Zoom"),false);
