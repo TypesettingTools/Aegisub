@@ -354,7 +354,8 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			// Load into file
 			wxString group = _T("[Script Info]");
 			int lasttime = 0;
-			int version = (CodecID == _T("S_TEXT/SSA"));
+			int version = 1;
+			if (CodecID == _T("S_TEXT/SSA")) version = 0;
 			wxStringTokenizer token(privString,_T("\r\n"),wxTOKEN_STRTOK);
 			while (token.HasMoreTokens()) {
 				wxString next = token.GetNextToken();

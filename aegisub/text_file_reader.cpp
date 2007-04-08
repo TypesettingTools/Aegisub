@@ -118,6 +118,12 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	ifile.close();
 #endif
 
+	// If any of the first four bytes are under 0x20 (the first printable character),
+	// except for 9-13 range, assume binary
+	for (int i=0;i<4;i++) {
+		if (b[i] < 9 || (b[i] > 13 && b[i] < 32)) return _T("binary");
+	}
+
 	// Try to get the byte order mark from them
 	if (b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) return _T("UTF-8");
 	else if (b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) return _T("UTF-32LE");
@@ -299,6 +305,7 @@ void TextFileReader::Close() {
 // Checks if there's more to read
 bool TextFileReader::HasMoreLines() {
 #ifdef WIN32
+	if (encoding == _T("binary")) return false;
 	return !feof(file);
 #else
 	return (!file.eof());
