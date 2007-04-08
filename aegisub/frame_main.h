@@ -237,8 +237,7 @@ private:
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
 	int TryToCloseSubs(bool enableCancel=true);
 
-	wxMenuItem *RebuildMenuItem(wxMenu *menu,int id,wxBitmap bmp1,wxBitmap bmp2,bool state);
-	void MenuItemEnable(int id,bool state,wxBitmap &bmp1,wxBitmap &bmp2);
+	void RebuildRecentList(wxString listName,wxMenu *menu,int startID);
 	void SynchronizeProject(bool FromSubs=false);
 
 public:

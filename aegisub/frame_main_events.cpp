@@ -227,34 +227,44 @@ void FrameMain::OnGridEvent (wxCommandEvent &event) {
 }
 
 
+///////////////////////
+// Rebuild recent list
+void FrameMain::RebuildRecentList(wxString listName,wxMenu *menu,int startID) {
+	// Wipe previous list
+	int count = (int)menu->GetMenuItemCount();
+	for (int i=count;--i>=0;) {
+		menu->Destroy(menu->FindItemByPosition(i));
+	}
+
+	// Rebuild
+	int added = 0;
+	wxString n;
+	wxArrayString entries = Options.GetRecentList(listName);
+	for (size_t i=0;i<entries.Count();i++) {
+		n = wxString::Format(_T("%i"),i+1);
+		if (i < 9) n = _T("&") + n;
+		wxFileName shortname(entries[i]);
+		wxString filename = shortname.GetFullName();
+		menu->Append(startID+i,n + _T(" ") + filename);
+		added++;
+	}
+
+	// Nothing added, add an empty placeholder
+	if (added == 0) menu->Append(startID,_("Empty"))->Enable(false);
+}
+
+
 ////////////////////////
 // Menu is being opened
 void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Get menu
-	//Freeze();
+	MenuBar->Freeze();
 	wxMenu *curMenu = event.GetMenu();
 
 	// File menu
 	if (curMenu == fileMenu) {
-		// Wipe recent
-		int count = (int)RecentSubs->GetMenuItemCount();
-		for (int i=count;--i>=0;) {
-			RecentSubs->Destroy(RecentSubs->FindItemByPosition(i));
-		}
-
 		// Rebuild recent
-		int added = 0;
-		wxString n;
-		wxArrayString entries = Options.GetRecentList(_T("Recent sub"));
-		for (size_t i=0;i<entries.Count();i++) {
-			n = wxString::Format(_T("%i"),i+1);
-			if (i < 9) n = _T("&") + n;
-			wxFileName shortname(entries[i]);
-			wxString filename = shortname.GetFullName();
-			RecentSubs->Append(Menu_File_Recent+i,n + _T(" ") + filename);
-			added++;
-		}
-		if (added == 0) RecentSubs->Append(Menu_File_Recent,_T("Empty"))->Enable(false);
+		RebuildRecentList(_T("Recent sub"),RecentSubs,Menu_File_Recent);
 	}
 
 	// View menu
@@ -279,12 +289,10 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	else if (curMenu == videoMenu) {
 		bool state = VideoContext::Get()->IsLoaded();
 
-		// Rebuild icons
-		RebuildMenuItem(videoMenu,Menu_Video_JumpTo,wxBITMAP(jumpto_button),wxBITMAP(jumpto_disable_button),state);
-		RebuildMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start,wxBITMAP(video_to_substart),wxBITMAP(video_to_substart_disable),state);
-		RebuildMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End,wxBITMAP(video_to_subend),wxBITMAP(video_to_subend_disable),state);
-
 		// Set states
+		MenuBar->Enable(Menu_Video_JumpTo,state);
+		MenuBar->Enable(Menu_Subs_Snap_Video_To_Start,state);
+		MenuBar->Enable(Menu_Subs_Snap_Video_To_End,state);
 		MenuBar->Enable(Menu_View_Zoom,state);
 		MenuBar->Enable(Menu_View_Zoom_50,state);
 		MenuBar->Enable(Menu_View_Zoom_100,state);
@@ -316,59 +324,10 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 			case 4: MenuBar->Check(Menu_Video_AR_Custom,true); break;
 		}
 
-		// Wipe recent
-		int count = (int)RecentVids->GetMenuItemCount();
-		for (int i=count;--i>=0;) {
-			RecentVids->Destroy(RecentVids->FindItemByPosition(i));
-		}
-		count = (int)RecentTimecodes->GetMenuItemCount();
-		for (int i=count;--i>=0;) {
-			RecentTimecodes->Destroy(RecentTimecodes->FindItemByPosition(i));
-		}
-		count = (int)RecentKeyframes->GetMenuItemCount();
-		for (int i=count;--i>=0;) {
-			RecentKeyframes->Destroy(RecentKeyframes->FindItemByPosition(i));
-		}
-
-		// Rebuild recent videos
-		int added = 0;
-		wxString n;
-		wxArrayString entries = Options.GetRecentList(_T("Recent vid"));
-		for (size_t i=0;i<entries.Count();i++) {
-			n = wxString::Format(_T("%i"),i+1);
-			if (i < 9) n = _T("&") + n;
-			wxFileName shortname(entries[i]);
-			wxString filename = shortname.GetFullName();
-			RecentVids->Append(Menu_Video_Recent+i,n + _T(" ") + filename);
-			added++;
-		}
-		if (added == 0) RecentVids->Append(Menu_Video_Recent,_T("Empty"))->Enable(false);
-
-		// Rebuild recent timecodes
-		added = 0;
-		entries = Options.GetRecentList(_T("Recent timecodes"));
-		for (size_t i=0;i<entries.Count();i++) {
-			n = wxString::Format(_T("%i"),i+1);
-			if (i < 9) n = _T("&") + n;
-			wxFileName shortname(entries[i]);
-			wxString filename = shortname.GetFullName();
-			RecentTimecodes->Append(Menu_Timecodes_Recent+i,n + _T(" ") + filename);
-			added++;
-		}
-		if (added == 0) RecentTimecodes->Append(Menu_Timecodes_Recent,_T("Empty"))->Enable(false);
-
-		// Rebuild recent Keyframes
-		added = 0;
-		entries = Options.GetRecentList(_T("Recent Keyframes"));
-		for (size_t i=0;i<entries.Count();i++) {
-			n = wxString::Format(_T("%i"),i+1);
-			if (i < 9) n = _T("&") + n;
-			wxFileName shortname(entries[i]);
-			wxString filename = shortname.GetFullName();
-			RecentKeyframes->Append(Menu_Keyframes_Recent+i,n + _T(" ") + filename);
-			added++;
-		}
-		if (added == 0) RecentKeyframes->Append(Menu_Keyframes_Recent,_T("Empty"))->Enable(false);
+		// Rebuild recent lists
+		RebuildRecentList(_T("Recent vid"),RecentVids,Menu_Video_Recent);
+		RebuildRecentList(_T("Recent timecodes"),RecentTimecodes,Menu_Timecodes_Recent);
+		RebuildRecentList(_T("Recent Keyframes"),RecentKeyframes,Menu_Keyframes_Recent);
 	}
 
 	// Audio menu
@@ -379,25 +338,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Audio_Open_From_Video,vidstate);
 		MenuBar->Enable(Menu_Audio_Close,state);
 
-		// Wipe recent
-		int count = (int)RecentAuds->GetMenuItemCount();
-		for (int i=count;--i>=0;) {
-			RecentAuds->Destroy(RecentAuds->FindItemByPosition(i));
-		}
-
 		// Rebuild recent
-		int added = 0;
-		wxString n;
-		wxArrayString entries = Options.GetRecentList(_T("Recent aud"));
-		for (size_t i=0;i<entries.Count();i++) {
-			n = wxString::Format(_T("%i"),i+1);
-			if (i < 9) n = _T("&") + n;
-			wxFileName shortname(entries[i]);
-			wxString filename = shortname.GetFullName();
-			RecentAuds->Append(Menu_Audio_Recent+i,n + _T(" ") + filename);
-			added++;
-		}
-		if (added == 0) RecentAuds->Append(Menu_Audio_Recent,_T("Empty"))->Enable(false);
+		RebuildRecentList(_T("Recent aud"),RecentAuds,Menu_Audio_Recent);
 	}
 
 	// Subtitles menu
@@ -413,7 +355,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(MENU_INSERT_BEFORE,state);
 		MenuBar->Enable(MENU_INSERT_AFTER,state);
 		MenuBar->Enable(MENU_SPLIT_BY_KARAOKE,state);
-		RebuildMenuItem(subtitlesMenu,MENU_DELETE,wxBITMAP(delete_button),wxBITMAP(delete_disable_button),state);
+		MenuBar->Enable(MENU_DELETE,state);
 		state2 = count > 0 && VideoContext::Get()->IsLoaded();
 		MenuBar->Enable(MENU_INSERT_BEFORE_VIDEO,state2);
 		MenuBar->Enable(MENU_INSERT_AFTER_VIDEO,state2);
@@ -442,10 +384,10 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 		// Video related
 		bool state = VideoContext::Get()->IsLoaded();
-		RebuildMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video,wxBITMAP(substart_to_video),wxBITMAP(substart_to_video_disable),state);
-		RebuildMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video,wxBITMAP(subend_to_video),wxBITMAP(subend_to_video_disable),state);
-		RebuildMenuItem(timingMenu,Menu_Video_Snap_To_Scene,wxBITMAP(snap_subs_to_scene),wxBITMAP(snap_subs_to_scene_disable),state);
-		RebuildMenuItem(timingMenu,Menu_Video_Shift_To_Frame,wxBITMAP(shift_to_frame),wxBITMAP(shift_to_frame_disable),state);
+		MenuBar->Enable(Menu_Subs_Snap_Start_To_Video,state);
+		MenuBar->Enable(Menu_Subs_Snap_End_To_Video,state);
+		MenuBar->Enable(Menu_Video_Snap_To_Scene,state);
+		MenuBar->Enable(Menu_Video_Shift_To_Frame,state);
 
 		// Other
 		state = count >= 2 && continuous;
@@ -456,18 +398,22 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Edit menu
 	else if (curMenu == editMenu) {
 		// Undo state
-		curMenu->FindItemByPosition(0)->SetText(_("Undo ")+AssFile::GetUndoDescription()+_T("\t")+Hotkeys.GetText(_T("Undo")));
-		curMenu->FindItemByPosition(1)->SetText(_("Redo ")+AssFile::GetRedoDescription()+_T("\t")+Hotkeys.GetText(_T("Redo")));
-		RebuildMenuItem(editMenu,Menu_Edit_Undo,wxBITMAP(undo_button),wxBITMAP(undo_disable_button),!AssFile::IsUndoStackEmpty());
-		RebuildMenuItem(editMenu,Menu_Edit_Redo,wxBITMAP(redo_button),wxBITMAP(redo_disable_button),!AssFile::IsRedoStackEmpty());
-
+		wxMenuItem *item;
+		item = MenuBar->FindItem(Menu_Edit_Undo);
+		item->SetText(_("&Undo")+wxString(_T(" "))+AssFile::GetUndoDescription()+_T("\t")+Hotkeys.GetText(_T("Undo")));
+		item->SetBitmap(wxBITMAP(undo_button));
+		item->Enable(!AssFile::IsUndoStackEmpty());
+		item = MenuBar->FindItem(Menu_Edit_Redo);
+		item->SetText(_("&Redo")+wxString(_T(" "))+AssFile::GetRedoDescription()+_T("\t")+Hotkeys.GetText(_T("Redo")));
+		item->SetBitmap(wxBITMAP(redo_button));
+		item->Enable(!AssFile::IsRedoStackEmpty());
 
 		// Copy/cut/paste
 		wxArrayInt sels = SubsBox->GetSelection();
 		bool state = (sels.Count() > 0);
-		RebuildMenuItem(editMenu,Menu_Edit_Cut,wxBITMAP(cut_button),wxBITMAP(cut_disable_button),state);
-		RebuildMenuItem(editMenu,Menu_Edit_Copy,wxBITMAP(copy_button),wxBITMAP(copy_disable_button),state);
-		RebuildMenuItem(editMenu,Menu_Edit_Paste,wxBITMAP(paste_button),wxBITMAP(paste_disable_button),state);
+		MenuBar->Enable(Menu_Edit_Cut,state);
+		MenuBar->Enable(Menu_Edit_Copy,state);
+		MenuBar->Enable(Menu_Edit_Paste,state);
 		MenuBar->Enable(Menu_Edit_Paste_Over,state);
 	}
 
@@ -494,7 +440,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		}
 	}
 
-	//Thaw();
+	MenuBar->Thaw();
 }
 
 

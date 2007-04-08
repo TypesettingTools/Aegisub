@@ -289,8 +289,9 @@ void FrameMain::InitMenu() {
 
 	// Create Edit menu
 	editMenu = new wxMenu();
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, _("&Undo\t") + Hotkeys.GetText(_T("Undo")), _("Undoes last action"),wxBITMAP(undo_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, _("&Redo\t") + Hotkeys.GetText(_T("Redo")), _("Redoes last action"),wxBITMAP(redo_button));
+	wxMenuItem *item;
+	item = AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, _("-") + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo")), _("Undoes last action"),wxBITMAP(undo_button));
+	item = AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, _("-") + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo")), _("Redoes last action"),wxBITMAP(redo_button));
 	editMenu->AppendSeparator();
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Cut, _("Cut Lines\t") + Hotkeys.GetText(_T("Cut")), _("Cut subtitles"), wxBITMAP(cut_button));
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Copy, _("Copy Lines\t") + Hotkeys.GetText(_T("Copy")), _("Copy subtitles"), wxBITMAP(copy_button));
@@ -535,55 +536,6 @@ void FrameMain::UpdateToolbar() {
 	toolbar->FindById(Menu_Video_Snap_To_Scene)->Enable(isVideo && selRows > 0);
 	toolbar->FindById(Menu_Video_Shift_To_Frame)->Enable(isVideo && selRows > 0);
 	toolbar->Realize();
-}
-
-
-////////////////////////////
-// Menu item enable/disable
-void FrameMain::MenuItemEnable (int id, bool state,wxBitmap &bmp1,wxBitmap &bmp2) {
-	wxMenuItem *item = MenuBar->FindItem(id);
-	wxBitmap bmp = item->GetBitmap();
-
-	// No image
-	if (bmp.GetWidth() == 0) {
-		item->Enable(state);
-	}
-
-	// Has image
-	else {
-		RebuildMenuItem(item->GetMenu(),id,bmp1,bmp2,state);
-	}
-}
-
-
-/////////////////////////////////
-// Helper to rebuild menu items
-wxMenuItem *FrameMain::RebuildMenuItem(wxMenu *menu,int findId,wxBitmap bmp1,wxBitmap bmp2,bool state) {
-	// Find pos
-	wxMenuItemList &items = menu->GetMenuItems();
-	int pos = -1;
-	for (size_t i=0;i<items.GetCount();i++) {
-		if (items[i]->GetId() == findId) {
-			pos = (int)i;
-			break;
-		}
-	}
-	if (pos == -1) return NULL;
-
-	// Get ID and pointer
-	wxMenuItem *cur = items[pos];
-	int id = cur->GetId();
-
-	// Rebuild
-	wxMenuItem *newItem = new wxMenuItem(menu,id,cur->GetText(),cur->GetHelp(),cur->GetKind(),cur->GetSubMenu());
-	if (state) newItem->SetBitmap(bmp1);
-	else newItem->SetBitmap(bmp2);
-
-	// Swap them
-	menu->Destroy(id);
-	menu->Insert(pos,newItem);
-	menu->Enable(id,state);
-	return cur;
 }
 
 

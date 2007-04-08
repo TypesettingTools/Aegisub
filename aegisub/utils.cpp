@@ -190,10 +190,11 @@ wxString PrettySize(int bytes) {
 
 //////////////////////////////////
 // Append a menu item with bitmap
-void AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp) {
+wxMenuItem* AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp) {
 	wxMenuItem *cur = new wxMenuItem(parentMenu,id,text,help);
 	cur->SetBitmap(bmp);
 	parentMenu->Append(cur);
+	return cur;
 }
 
 
