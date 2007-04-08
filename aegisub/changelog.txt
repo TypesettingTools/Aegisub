@@ -78,7 +78,7 @@ Please visit http://aegisub.net to download latest version
 - Tweaked the behavior of the margin boxes, now they no longer show padding zeros. (AMZ)
 - Minor fix to the calculation of the grid's "Style" column width. (AMZ)
 - Added a "Selection Onward" option to the Shift Times dialogue. (AMZ)
-- Main menu was completely re-designed, including several new options. (AMZ)
+- Main menu was completely re-designed, including several new options, better icons, and fixing of flickering and slowness. (AMZ)
 - Added Medusa-style (numpad) global timing shortcuts, that can be enabled with the button under the audio display. This is disabled by default. (AMZ)
 - Merged the three "Recombine" functions into a single one that autodetects the correct type. (AMZ)
 - Added a Call Tip feature to the edit box, so it shows the function prototype as you type it. (AMZ)
@@ -109,6 +109,7 @@ Please visit http://aegisub.net to download latest version
 - Two storages with the same name can no longer be created in the styles manager. (AMZ)
 - Style editor will no longer admit creation of styles with equal names. (AMZ)
 - Hitting enter on style editor will now "OK" it. (AMZ)
+- Added "Video Formats" to "Open Audio"'s file selector, so you can open audio directly from video files (regardless of whether they're loaded or not). This has always worked, but it was never explicit. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
