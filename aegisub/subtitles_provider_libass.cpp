@@ -47,7 +47,14 @@ extern "C" {
 ///////////
 // Library
 #ifdef __VISUALC__
-#pragma comment(lib,"libass.dll.a")
+#ifdef __WXDEBUG__
+//#pragma comment(lib,"libassd.lib")
+#pragma comment(lib,"freetype233MT_D.lib")
+#else
+//#pragma comment(lib,"libass.lib")
+#pragma comment(lib,"freetype233MT.lib")
+#endif
+#pragma comment(lib,"libfontconfig.lib")
 #endif
 
 
