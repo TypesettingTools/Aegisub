@@ -7,7 +7,13 @@ unsigned utf8_get_char(char **str);
 
 void my_mp_msg(int lvl, char *lvl_str, char *fmt, ...);
 
+#ifdef __VISUALC__
+static void mp_msg(int mod, int level, const char *fmt, ...) {
+	// MSVC doesn't like the # used all around for mp_msg, so it breaks va_arg
+}
+#else
 #define mp_msg(mod, level, args...) my_mp_msg(level, #level, args)
+#endif
 
 #define MSGT_ASS 43
 

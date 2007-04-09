@@ -1,0 +1,340 @@
+Index: ass_fontconfig.c
+===================================================================
+--- ass_fontconfig.c	(revision 1035)
++++ ass_fontconfig.c	(working copy)
+@@ -385,11 +385,15 @@
+ 	priv->family_default = family ? strdup(family) : 0;
+ 	priv->index_default = 0;
+ 	
++#ifdef __VISUALC__
++	priv->path_default = path;
++#else
+ 	rc = stat(path, &st);
+ 	if (!rc && S_ISREG(st.st_mode))
+ 		priv->path_default = path ? strdup(path) : 0;
+ 	else
+ 		priv->path_default = 0;
++#endif
+ 
+ 	return priv;
+ }
+Index: ass_utils.c
+===================================================================
+--- ass_utils.c	(revision 1035)
++++ ass_utils.c	(working copy)
+@@ -22,7 +22,9 @@
+ 
+ #include <stdlib.h>
+ #include <inttypes.h>
++#ifndef __VISUALC__
+ #include <sys/time.h>
++#endif
+ #include <time.h>
+ 
+ #include "mputils.h"
+Index: libass.vcproj
+===================================================================
+--- libass.vcproj	(revision 0)
++++ libass.vcproj	(revision 0)
+@@ -0,0 +1,243 @@
++<?xml version="1.0" encoding="Windows-1252"?>
++<VisualStudioProject
++	ProjectType="Visual C++"
++	Version="8.00"
++	Name="libass"
++	ProjectGUID="{8B19F154-54BC-46D6-8443-6BDEF1D438CF}"
++	RootNamespace="libass"
++	Keyword="Win32Proj"
++	>
++	<Platforms>
++		<Platform
++			Name="Win32"
++		/>
++	</Platforms>
++	<ToolFiles>
++	</ToolFiles>
++	<Configurations>
++		<Configuration
++			Name="Debug|Win32"
++			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
++			IntermediateDirectory="$(ConfigurationName)"
++			ConfigurationType="4"
++			CharacterSet="1"
++			>
++			<Tool
++				Name="VCPreBuildEventTool"
++			/>
++			<Tool
++				Name="VCCustomBuildTool"
++			/>
++			<Tool
++				Name="VCXMLDataGeneratorTool"
++			/>
++			<Tool
++				Name="VCWebServiceProxyGeneratorTool"
++			/>
++			<Tool
++				Name="VCMIDLTool"
++			/>
++			<Tool
++				Name="VCCLCompilerTool"
++				Optimization="0"
++				AdditionalIncludeDirectories=""
++				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
++				MinimalRebuild="true"
++				BasicRuntimeChecks="3"
++				RuntimeLibrary="3"
++				UsePrecompiledHeader="0"
++				WarningLevel="3"
++				Detect64BitPortabilityProblems="true"
++				DebugInformationFormat="4"
++				DisableSpecificWarnings="4996;4244;4267;4005"
++				ForcedIncludeFiles="msvc.h"
++			/>
++			<Tool
++				Name="VCManagedResourceCompilerTool"
++			/>
++			<Tool
++				Name="VCResourceCompilerTool"
++			/>
++			<Tool
++				Name="VCPreLinkEventTool"
++			/>
++			<Tool
++				Name="VCLibrarianTool"
++				OutputFile="$(OutDir)\libassd.lib"
++			/>
++			<Tool
++				Name="VCALinkTool"
++			/>
++			<Tool
++				Name="VCXDCMakeTool"
++			/>
++			<Tool
++				Name="VCBscMakeTool"
++			/>
++			<Tool
++				Name="VCFxCopTool"
++			/>
++			<Tool
++				Name="VCPostBuildEventTool"
++			/>
++		</Configuration>
++		<Configuration
++			Name="Release|Win32"
++			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
++			IntermediateDirectory="$(ConfigurationName)"
++			ConfigurationType="4"
++			CharacterSet="1"
++			WholeProgramOptimization="1"
++			>
++			<Tool
++				Name="VCPreBuildEventTool"
++			/>
++			<Tool
++				Name="VCCustomBuildTool"
++			/>
++			<Tool
++				Name="VCXMLDataGeneratorTool"
++			/>
++			<Tool
++				Name="VCWebServiceProxyGeneratorTool"
++			/>
++			<Tool
++				Name="VCMIDLTool"
++			/>
++			<Tool
++				Name="VCCLCompilerTool"
++				AdditionalIncludeDirectories=""
++				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
++				RuntimeLibrary="2"
++				UsePrecompiledHeader="0"
++				WarningLevel="3"
++				Detect64BitPortabilityProblems="true"
++				DebugInformationFormat="3"
++				DisableSpecificWarnings="4996;4244;4267;4005"
++				ForcedIncludeFiles="msvc.h"
++			/>
++			<Tool
++				Name="VCManagedResourceCompilerTool"
++			/>
++			<Tool
++				Name="VCResourceCompilerTool"
++			/>
++			<Tool
++				Name="VCPreLinkEventTool"
++			/>
++			<Tool
++				Name="VCLibrarianTool"
++				OutputFile="$(OutDir)\libass.lib"
++			/>
++			<Tool
++				Name="VCALinkTool"
++			/>
++			<Tool
++				Name="VCXDCMakeTool"
++			/>
++			<Tool
++				Name="VCBscMakeTool"
++			/>
++			<Tool
++				Name="VCFxCopTool"
++			/>
++			<Tool
++				Name="VCPostBuildEventTool"
++			/>
++		</Configuration>
++	</Configurations>
++	<References>
++	</References>
++	<Files>
++		<File
++			RelativePath=".\ass.c"
++			>
++		</File>
++		<File
++			RelativePath=".\ass.h"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_bitmap.c"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_bitmap.h"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_cache.c"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_cache.h"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_font.c"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_font.h"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_fontconfig.c"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_fontconfig.h"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_library.c"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_library.h"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_render.c"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_types.h"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_utils.c"
++			>
++		</File>
++		<File
++			RelativePath=".\ass_utils.h"
++			>
++		</File>
++		<File
++			RelativePath=".\help_mp.h"
++			>
++		</File>
++		<File
++			RelativePath=".\Makefile.am"
++			>
++		</File>
++		<File
++			RelativePath=".\Makefile.in"
++			>
++		</File>
++		<File
++			RelativePath=".\mputils.c"
++			>
++		</File>
++		<File
++			RelativePath=".\mputils.h"
++			>
++		</File>
++		<File
++			RelativePath=".\msvc.h"
++			>
++		</File>
++	</Files>
++	<Globals>
++	</Globals>
++</VisualStudioProject>
+Index: mputils.c
+===================================================================
+--- mputils.c	(revision 1035)
++++ mputils.c	(working copy)
+@@ -14,9 +14,9 @@
+ #endif
+ 
+ void my_mp_msg(int lvl, char *lvl_str, char *fmt, ...) {
++	va_list va;
+ 	if(lvl > MSGL_V) return;
+ 	printf("[ass] **%s**: ", lvl_str);
+-	va_list va;
+ 	va_start(va, fmt);
+ 	vprintf(fmt, va);
+ 	va_end(va);
+Index: mputils.h
+===================================================================
+--- mputils.h	(revision 1035)
++++ mputils.h	(working copy)
+@@ -7,7 +7,13 @@
+ 
+ void my_mp_msg(int lvl, char *lvl_str, char *fmt, ...);
+ 
++#ifdef __VISUALC__
++static void mp_msg(int mod, int level, const char *fmt, ...) {
++	// MSVC doesn't like the # used all around for mp_msg, so it breaks va_arg
++}
++#else
+ #define mp_msg(mod, level, args...) my_mp_msg(level, #level, args)
++#endif
+ 
+ #define MSGT_ASS 43
+ 
+Index: msvc.h
+===================================================================
+--- msvc.h	(revision 0)
++++ msvc.h	(revision 0)
+@@ -0,0 +1,20 @@
++#ifdef WIN32
++
++#include <stdlib.h>
++
++#define strtoll(p, e, b) _strtoi64(p, e, b) 
++#define snprintf _snprintf
++#define strcasecmp stricmp
++#define strncasecmp strnicmp
++
++#ifndef M_PI
++#define M_PI 3.1415926535897932384626433832795
++#endif
++
++#define __VISUALC__
++#define HAVE_FONTCONFIG
++
++#define S_IFREG  0100000
++#define S_ISREG(m)      (((m) & S_IFMT) == S_IFREG)
++
++#endif
