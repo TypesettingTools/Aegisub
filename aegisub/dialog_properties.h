@@ -59,6 +59,7 @@ private:
 	wxComboBox *collision;
 	wxTextCtrl *ResX;
 	wxTextCtrl *ResY;
+	wxCheckBox *ScaleBorder;
 
 	wxString ResXValue;
 	wxString ResYValue;

@@ -106,7 +106,7 @@ DialogProperties::DialogProperties (wxWindow *parent)
 
 	// Options
 	wxSizer *optionsBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
-	wxFlexGridSizer *optionsGrid = new wxFlexGridSizer(2,2,5,5);
+	wxFlexGridSizer *optionsGrid = new wxFlexGridSizer(3,2,5,5);
 	wxArrayString options;
 	options.Add(_("0: Smart wrapping, top line is wider"));
 	options.Add(_("1: End-of-line word wrapping, only \\N breaks"));
@@ -127,6 +127,11 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	else collision->SetSelection(0);
 	optionsGrid->Add(new wxStaticText(this,-1,_("Collision: ")),0,wxALIGN_CENTER_VERTICAL,0);
 	optionsGrid->Add(collision,1,wxEXPAND,0);
+	ScaleBorder = new wxCheckBox(this,-1,_("Scale Border and Shadow"));
+	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
+	ScaleBorder->SetValue(subs->GetScriptInfoAsInt(_T("ScaledBorderAndShadow")) == 1);
+	optionsGrid->AddSpacer(0);
+	optionsGrid->Add(ScaleBorder,1,wxEXPAND,0);
 	optionsGrid->AddGrowableCol(1,1);
 	optionsBox->Add(optionsGrid,1,wxEXPAND,0);
 
@@ -183,6 +188,7 @@ void DialogProperties::OnOK(wxCommandEvent &event) {
 	count += SetInfoIfDifferent(_T("WrapStyle"),wxString::Format(_T("%i"),WrapStyle->GetSelection()));
 	wxString col[2] = { _T("Normal"), _T("Reverse")};
 	count += SetInfoIfDifferent(_T("Collisions"),col[collision->GetSelection()]);
+	count += SetInfoIfDifferent(_T("ScaledBorderAndShadow"),ScaleBorder->GetValue()?_T("1"):_T("0"));
 
 	if (count) AssFile::top->FlagAsModified(_("property changes"));
 
