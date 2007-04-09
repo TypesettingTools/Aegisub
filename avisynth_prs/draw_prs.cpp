@@ -40,6 +40,12 @@
 #include "../prs/prs.h"
 
 
+/////////////
+// Libraries
+#pragma comment(lib,"wxpng.lib")
+#pragma comment(lib,"wxzlib.lib")
+
+
 ///////////////
 // Constructor
 DrawPRS::DrawPRS (IScriptEnvironment* _env, PClip _child, const char *filename)
