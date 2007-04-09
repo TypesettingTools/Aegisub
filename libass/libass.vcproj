@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\libassd.lib"
+				OutputFile="../lib/libass_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -127,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\libass.lib"
+				OutputFile="../lib/libass.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
