@@ -546,6 +546,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 	// Setup
 	bool isFile = (filename != _T(""));
+	bool isBinary = false;
 
 	// Load
 	try {
@@ -556,6 +557,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 			// Make sure that file isn't actually a timecode file
 			TextFileReader testSubs(filename);
+			isBinary = testSubs.GetCurrentEncoding() == _T("binary");
 			if (testSubs.HasMoreLines()) {
 				wxString cur = testSubs.ReadLineFromFile();
 				if (cur.Left(10) == _T("# timecode")) {
@@ -587,7 +589,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 	// Save copy
 	wxFileName origfile(filename);
-	if (Options.AsBool(_T("Auto backup")) && origfile.FileExists()) {
+	if (!isBinary && Options.AsBool(_T("Auto backup")) && origfile.FileExists()) {
 		// Get path
 		wxString path = Options.AsText(_T("Auto backup path"));
 		if (path.IsEmpty()) path = origfile.GetPath();
