@@ -48,7 +48,6 @@
 #include "video_display.h"
 #include "video_provider.h"
 #include "video_slider.h"
-#include "video_zoom.h"
 #include "ass_file.h"
 #include "dialog_search_replace.h"
 #include "vfr.h"

@@ -45,7 +45,6 @@
 #include "video_display.h"
 #include "video_display_visual.h"
 #include "video_display_fextracker.h"
-#include "video_zoom.h"
 #include "video_slider.h"
 #include "frame_main.h"
 #include "toggle_bitmap.h"

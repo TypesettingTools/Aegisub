@@ -46,7 +46,6 @@
 #include "frame_main.h"
 #include "video_display.h"
 #include "video_slider.h"
-#include "video_zoom.h"
 #include "video_box.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
