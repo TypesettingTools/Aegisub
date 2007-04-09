@@ -986,9 +986,15 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 		NeedCommit = false;
 
 		// Set times
-		if (dialogue && !dontReadTimes) {
-			curStartMS = dialogue->Start.GetMS();
-			curEndMS = dialogue->End.GetMS();
+		if (dialogue && !dontReadTimes && Options.AsBool(_T("Audio grab times on select"))) {
+			int s = dialogue->Start.GetMS();
+			int e = dialogue->End.GetMS();
+
+			// Never do it for 0:00:00.00->0:00:00.00 lines
+			if (s != 0 || e != 0) {
+				curStartMS = s;
+				curEndMS = e;
+			}
 		}
 	}
 

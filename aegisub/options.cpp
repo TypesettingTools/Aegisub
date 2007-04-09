@@ -167,6 +167,7 @@ void OptionsManager::LoadDefaults() {
 	// Audio Options
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Audio Next Line on Commit"),true);
+	SetBool(_T("Audio grab times on select"),true);
 	SetBool(_T("Audio Autofocus"),false);
 	SetBool(_T("Audio Wheel Default To Zoom"),false);
 	SetBool(_T("Audio lock scroll on cursor"),false);

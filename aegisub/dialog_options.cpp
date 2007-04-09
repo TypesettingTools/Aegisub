@@ -401,7 +401,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *audioMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *audioSizer1 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Options"));
 		wxSizer *audioSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Advanced - EXPERT USERS ONLY"));
-		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(3,2,5,5);
+		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(4,2,5,5);
 		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(4,2,5,5);
 		wxFlexGridSizer *audioSizer5 = new wxFlexGridSizer(4,2,5,5);
 		wxControl *control;
@@ -410,8 +410,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxCheckBox(audioPage,-1,_("Next line on commit"));
 		Bind(control,_T("Audio Next Line on Commit"));
 		audioSizer3->Add(control,1,wxEXPAND,0);
-		control = new wxCheckBox(audioPage,-1,_("Auto-focus on mouse over"));
-		Bind(control,_T("Audio Autofocus"));
+		control = new wxCheckBox(audioPage,-1,_("Grab times from line upon selection"));
+		Bind(control,_T("Audio grab times on select"));
 		audioSizer3->Add(control,1,wxEXPAND,0);
 		control = new wxCheckBox(audioPage,-1,_("Default mouse wheel to zoom"));
 		Bind(control,_T("Audio Wheel Default To Zoom"));
@@ -424,6 +424,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		audioSizer3->Add(control,1,wxEXPAND,0);
 		control = new wxCheckBox(audioPage,-1,_("Snap to adjascent lines"));
 		Bind(control,_T("Audio snap to other lines"));
+		audioSizer3->Add(control,1,wxEXPAND,0);
+		control = new wxCheckBox(audioPage,-1,_("Auto-focus on mouse over"));
+		Bind(control,_T("Audio Autofocus"));
 		audioSizer3->Add(control,1,wxEXPAND,0);
 		audioSizer3->AddGrowableCol(0,1);
 

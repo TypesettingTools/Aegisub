@@ -111,6 +111,7 @@ Please visit http://aegisub.net to download latest version
 - Hitting enter on style editor will now "OK" it. (AMZ)
 - Added "Video Formats" to "Open Audio"'s file selector, so you can open audio directly from video files (regardless of whether they're loaded or not). This has always worked, but it was never explicit. (AMZ)
 - Instead of falling back to your local charset, Aegisub will now use the "universalchardet" library (the one used by the Mozilla project) to autodetect the character set of non-Unicode files. (AMZ)
+- Added option to disable automatic grabbing of times from selected lines on the audio display. Also, it will never pick the times from 0:00:00.00 -> 0:00:00.00 lines. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
