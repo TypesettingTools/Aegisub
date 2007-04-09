@@ -184,6 +184,8 @@ private:
 	void OnSliderChange(wxCommandEvent &evt);
 	void OnRecentSelect(wxCommandEvent &evt);
 
+	static int lastx, lasty;
+
 public:
 	DialogColorPicker(wxWindow *parent, wxColour initial_color);
 	~DialogColorPicker();

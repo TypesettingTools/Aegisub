@@ -558,7 +558,13 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 
 	SetSizer(main_sizer);
 	main_sizer->SetSizeHints(this);
-	CenterOnParent();
+
+	// Position window
+	if (lastx == -1 && lasty == -1) {
+		CenterOnParent();
+	} else {
+		Move(lastx, lasty);
+	}
 
 	// Fill the controls
 	updating_controls = false;
@@ -573,6 +579,8 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 // Destructor
 DialogColorPicker::~DialogColorPicker()
 {
+	GetPosition(&lastx, &lasty);
+
 	delete rgb_spectrum[0];
 	delete rgb_spectrum[1];
 	delete rgb_spectrum[2];
@@ -1111,3 +1119,5 @@ void DialogColorPicker::OnRecentSelect(wxCommandEvent &evt)
 	SetColor(color.GetWXColor());
 }
 
+int DialogColorPicker::lastx = -1;
+int DialogColorPicker::lasty = -1;
