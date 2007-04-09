@@ -67,8 +67,8 @@ void AssColor::Parse(const wxString value) {
 		c=value[i];
 		if ((c >= 48 && c <= 57) || (c >= 65 && c <= 70) || (c >= 97 && c <= 102)) {
 			ostr[--oindex] = c;
-            if (c>=65) ishex = true;
-        }
+			if (c>=65) ishex = true;
+		}
 		else if (c == 'H' || c == 'h') ishex = true;
 		else if (c==45) isneg=true;
 	}
