@@ -40,7 +40,10 @@
 #include "video_context.h"
 #include "utils.h"
 extern "C" {
-#include <ass/ass.h>
+#ifdef __VISUALC__
+#include "stdint.h"
+#endif
+#include "../libass/ass.h"
 }
 
 
