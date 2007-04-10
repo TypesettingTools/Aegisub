@@ -138,16 +138,16 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	temp->SetToolTip(_("Stop (") + Hotkeys.GetText(_T("Audio Stop")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Before,wxBITMAP(button_play500before),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Before,wxBITMAP(button_playfivehbefore),wxDefaultPosition,wxSize(30,-1));
 	temp->SetToolTip(_("Play 500 ms before selection (") + Hotkeys.GetText(_T("Audio Play 500ms Before")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_After,wxBITMAP(button_play500after),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_After,wxBITMAP(button_playfivehafter),wxDefaultPosition,wxSize(30,-1));
 	temp->SetToolTip(_("Play 500 ms after selection (") + Hotkeys.GetText(_T("Audio Play 500ms after")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_First,wxBITMAP(button_playfirst500),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_First,wxBITMAP(button_playfirstfiveh),wxDefaultPosition,wxSize(30,-1));
 	temp->SetToolTip(_("Play first 500ms of selection (") + Hotkeys.GetText(_T("Audio Play First 500ms")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Last,wxBITMAP(button_playlast500),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Last,wxBITMAP(button_playlastfiveh),wxDefaultPosition,wxSize(30,-1));
 	temp->SetToolTip(_("Play last 500ms of selection (") + Hotkeys.GetText(_T("Audio Play Last 500ms")) + _T(")"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Play_To_End,wxBITMAP(button_playtoend),wxDefaultPosition,wxSize(30,-1));

@@ -124,13 +124,13 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Strikeout->SetToolTip(_("Strikeout"));
 	FontName = new wxBitmapButton(this,BUTTON_FONT_NAME,wxBITMAP(button_fontname),wxDefaultPosition,wxSize(30,20));
 	FontName->SetToolTip(_("Font Face Name"));
-	Color1 = new wxBitmapButton(this,BUTTON_COLOR1,wxBITMAP(button_color1),wxDefaultPosition,wxSize(30,20));
+	Color1 = new wxBitmapButton(this,BUTTON_COLOR1,wxBITMAP(button_color_one),wxDefaultPosition,wxSize(30,20));
 	Color1->SetToolTip(_("Primary color"));
-	Color2 = new wxBitmapButton(this,BUTTON_COLOR2,wxBITMAP(button_color2),wxDefaultPosition,wxSize(30,20));
+	Color2 = new wxBitmapButton(this,BUTTON_COLOR2,wxBITMAP(button_color_two),wxDefaultPosition,wxSize(30,20));
 	Color2->SetToolTip(_("Secondary color"));
-	Color3 = new wxBitmapButton(this,BUTTON_COLOR3,wxBITMAP(button_color3),wxDefaultPosition,wxSize(30,20));
+	Color3 = new wxBitmapButton(this,BUTTON_COLOR3,wxBITMAP(button_color_three),wxDefaultPosition,wxSize(30,20));
 	Color3->SetToolTip(_("Outline color"));
-	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBITMAP(button_color4),wxDefaultPosition,wxSize(30,20));
+	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBITMAP(button_color_four),wxDefaultPosition,wxSize(30,20));
 	Color4->SetToolTip(_("Shadow color"));
 	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));
