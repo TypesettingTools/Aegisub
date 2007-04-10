@@ -656,14 +656,25 @@ void AudioDisplay::RecreateImage() {
 void AudioDisplay::MakeDialogueVisible(bool force) {
 	// Variables
 	int temp1=0,temp2=0;
-	GetTimesSelection(temp1,temp2);
+	if (karaoke->enabled) {
+		// In karaoke mode the entire dialogue line should be visible instead of just the selected syllable
+		GetTimesDialogue(temp1, temp2);
+	} else {
+		GetTimesSelection(temp1,temp2);
+	}
 	int startPos = GetSampleAtMS(temp1);
 	int endPos = GetSampleAtMS(temp2);
 	int startX = GetXAtMS(temp1);
 	int endX = GetXAtMS(temp2);
 
 	if (force || startX < 50 || endX > w-50) {
-		UpdatePosition((startPos+endPos-w*samples)/2,true);
+		if (startX < 50) {
+			// Make sure the left edge of the selection is at least 50 pixels from the edge of the display
+			UpdatePosition(startPos - 50*samples, true);
+		} else {
+			// Otherwise center the selection in display
+			UpdatePosition((startPos+endPos-w*samples)/2,true);
+		}
 	}
 
 	// Update
