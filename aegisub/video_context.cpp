@@ -228,6 +228,7 @@ void VideoContext::UnloadTexture() {
 void VideoContext::SetVideo(const wxString &filename) {
 	// Unload video
 	Reset();
+	threaded = Options.AsBool(_T("Threaded Video"));
 	
 	// Load video
 	if (!filename.IsEmpty()) {

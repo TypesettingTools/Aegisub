@@ -144,17 +144,28 @@ public:
 	AudioDisplay(wxWindow *parent);
 	~AudioDisplay();
 
-	void AddLead(bool in,bool out);
 	void UpdateImage(bool weak=false);
 	void Update();
 	void RecreateImage();
 	void SetPosition(int pos);
 	void SetSamplesPercent(int percent,bool update=true,float pivot=0.5);
 	void SetScale(float scale);
-	void SetFile(wxString file,VideoProvider *vprovider=NULL);
-	void SetFromVideo();
 	void UpdateScrollbar();
 	void SetDialogue(SubtitlesGrid *_grid=NULL,AssDialogue *diag=NULL,int n=-1);
+	void MakeDialogueVisible(bool force=false);
+	void ChangeLine(int delta);
+	void Next();
+	void Prev();
+
+	void CommitChanges(bool nextLine=false);
+	void AddLead(bool in,bool out);
+
+	void SetFile(wxString file,VideoProvider *vprovider=NULL);
+	void SetFromVideo();
+	void Reload();
+
+	void Play(int start,int end);
+	void Stop();
 
 	__int64 GetSampleAtX(int x);
 	int GetXAtSample(__int64 n);
@@ -164,14 +175,6 @@ public:
 	__int64 GetSampleAtMS(__int64 ms);
 	int GetSyllableAtX(int x);
 
-	void MakeDialogueVisible(bool force=false);
-	void CommitChanges(bool nextLine=false);
-	void ChangeLine(int delta);
-	void Next();
-	void Prev();
-
-	void Play(int start,int end);
-	void Stop();
 	void GetTimesDialogue(int &start,int &end);
 	void GetTimesSelection(int &start,int &end);
 	void SetSelection(int start, int end);

@@ -701,9 +701,10 @@ void DialogOptions::WriteToOptions(bool justApply) {
 	bool mustRestart = false;
 	bool editBox = false;
 	bool grid = false;
-	bool videoRestart = false;
 	bool video = false;
 	bool audio = false;
+	bool videoReload = false;
+	bool audioReload = false;
 
 	// For each bound item
 	for (unsigned int i=0;i<binds.size();i++) {
@@ -775,8 +776,9 @@ void DialogOptions::WriteToOptions(bool justApply) {
 			if (type == MOD_EDIT_BOX) editBox = true;
 			if (type == MOD_GRID) grid = true;
 			if (type == MOD_VIDEO) video = true;
-			if (type == MOD_VIDEO_RELOAD) videoRestart = true;
+			if (type == MOD_VIDEO_RELOAD) videoReload = true;
 			if (type == MOD_AUDIO) audio = true;
+			if (type == MOD_AUDIO_RELOAD) audioReload = true;
 		}
 	}
 
@@ -811,7 +813,7 @@ void DialogOptions::WriteToOptions(bool justApply) {
 		}
 
 		// Video
-		if (videoRestart) {
+		if (videoReload) {
 			VideoContext::Get()->Reload();
 		}
 		else if (video) {
@@ -820,7 +822,11 @@ void DialogOptions::WriteToOptions(bool justApply) {
 		}
 
 		// Audio
-		if (audio) {
+		if (audioReload) {
+			FrameMain *frame = (FrameMain*) GetParent();
+			frame->audioBox->audioDisplay->Reload();
+		}
+		else if (audio) {
 			FrameMain *frame = (FrameMain*) GetParent();
 			frame->audioBox->audioDisplay->RecreateImage();
 			frame->audioBox->audioDisplay->Refresh();

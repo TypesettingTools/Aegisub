@@ -149,10 +149,9 @@ void OptionsManager::LoadDefaults() {
 	SetBool(_T("Video Dummy Pattern"), false);
 
 	// Video Provider (Advanced)
-	SetModificationType(MOD_RESTART);
-	SetBool(_T("Threaded Video"),false);
-	SetInt(_T("Avisynth MemoryMax"),64);
 	SetModificationType(MOD_VIDEO_RELOAD);
+	SetInt(_T("Avisynth MemoryMax"),64);
+	SetBool(_T("Threaded Video"),false);
 	SetText(_T("Video Provider"),_T("Avisynth"));
 	SetBool(_T("Allow Ancient Avisynth"),false);
 	SetText(_T("Avisynth subs renderer"),_T("vsfilter"));
@@ -180,7 +179,7 @@ void OptionsManager::LoadDefaults() {
 	SetInt(_T("Audio Inactive Lines Display Mode"),1);
 
 	// Audio Advanced
-	SetModificationType(MOD_AUTOMATIC);
+	SetModificationType(MOD_AUDIO_RELOAD);
 	SetInt(_T("Audio Cache"),1);
 	SetText(_T("Audio Provider"),_T("avisynth"));
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));

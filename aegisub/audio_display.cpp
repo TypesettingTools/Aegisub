@@ -769,7 +769,7 @@ void AudioDisplay::SetScale(float _scale) {
 
 //////////////////
 // Load from file
-void AudioDisplay::SetFile(wxString file, VideoProvider *vprovider) {
+void AudioDisplay::SetFile(wxString file, VideoProvider *vproviderLOL) {
 	// Unload
 	if (file.IsEmpty()) {
 		if (player) player->CloseStream();
@@ -827,6 +827,13 @@ void AudioDisplay::SetFromVideo() {
 
 		if (extension != _T(".d2v")) SetFile(VideoContext::Get()->videoName, VideoContext::Get()->GetProvider());
 	}
+}
+
+
+////////////////
+// Reload audio
+void AudioDisplay::Reload() {
+	if (provider) SetFile(provider->GetFilename());
 }
 
 
