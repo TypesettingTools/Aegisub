@@ -140,7 +140,6 @@ aegisub_SOURCES = \
 	video_provider_dummy.cpp \
 	video_provider_lavc.cpp \
 	video_slider.cpp \
-	video_zoom.cpp \
 	MatroskaParser.c
 
 noinst_HEADERS = \
