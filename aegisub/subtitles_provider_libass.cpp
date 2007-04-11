@@ -111,7 +111,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	ass_renderer = ass_renderer_init(ass_library);
 	if (!ass_renderer) throw _T("ass_renderer_init failed");
 	ass_set_font_scale(ass_renderer, 1.);
-	ass_set_fonts(ass_renderer, NULL, "Sans");
+	ass_set_fonts(ass_renderer, "c:\\windows\\fonts\\verdana.ttf", "Sans");
 }
 
 

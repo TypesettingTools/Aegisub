@@ -83,6 +83,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	wxPanel *audioPage = new wxPanel(book,-1);
 	wxPanel *displayPage = new wxPanel(book,-1);
 	wxPanel *autoPage = new wxPanel(book,-1);
+	wxPanel *hotkeysPage = new wxPanel(book,-1);
 
 	// General page
 	{
@@ -589,6 +590,38 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		autoPage->SetSizer(autoMainSizer);
 	}
 
+	// Hotkeys page
+	{
+		// Variables
+		hotkeysModified = false;
+		origKeys = Hotkeys.key;
+
+		// Description
+		wxStaticText *text = new wxStaticText(hotkeysPage,-1,_("List of all hotkeys (shortcuts) available in Aegisub.\nDouble click on any item to reassign it."),wxDefaultPosition,wxSize(150,-1));
+
+		// List of shortcuts
+		Shortcuts = new wxListView(hotkeysPage,Hotkey_List,wxDefaultPosition,wxSize(250,150),wxLC_REPORT | wxLC_SINGLE_SEL);
+		Shortcuts->InsertColumn(0,_("Function"),wxLIST_FORMAT_LEFT,200);
+		Shortcuts->InsertColumn(1,_("Key"),wxLIST_FORMAT_LEFT,120);
+
+		// Populate list
+		std::map<wxString,HotkeyType>::iterator cur;
+		for (cur = Hotkeys.key.end();cur-- != Hotkeys.key.begin();) {
+			wxListItem item;
+			item.SetText(wxGetTranslation(cur->second.origName));
+			item.SetData(&cur->second);
+			int pos = Shortcuts->InsertItem(item);
+			Shortcuts->SetItem(pos,1,cur->second.GetText());
+		}
+
+		// Main sizer
+		wxSizer *hotkeysSizer = new wxBoxSizer(wxVERTICAL);
+		hotkeysSizer->Add(text,0,wxALL|wxEXPAND,5);
+		hotkeysSizer->Add(Shortcuts,1,wxLEFT|wxRIGHT|wxTOP|wxEXPAND,5);
+		hotkeysSizer->Fit(hotkeysPage);
+		hotkeysPage->SetSizer(hotkeysSizer);
+	}
+
 	// List book
 	book->AddPage(generalPage,_("General"),true);
 	book->AddSubPage(filePage,_("File save/load"),true);
@@ -598,6 +631,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	book->AddPage(audioPage,_("Audio"),true);
 	book->AddSubPage(displayPage,_("Display"),true);
 	book->AddPage(autoPage,_("Automation"),true);
+	book->AddPage(hotkeysPage,_("Hotkeys"),true);
 	#ifdef wxUSE_TREEBOOK
 	book->ChangeSelection(Options.AsInt(_T("Options page")));
 	#endif
@@ -646,6 +680,7 @@ BEGIN_EVENT_TABLE(DialogOptions,wxDialog)
 	EVT_BUTTON(wxID_OK,DialogOptions::OnOK)
 	EVT_BUTTON(wxID_CANCEL,DialogOptions::OnCancel)
 	EVT_BUTTON(wxID_APPLY,DialogOptions::OnApply)
+	EVT_LIST_ITEM_ACTIVATED (Hotkey_List,DialogOptions::OnEditHotkey)
 END_EVENT_TABLE()
 
 
@@ -678,6 +713,10 @@ void DialogOptions::OnApply(wxCommandEvent &event) {
 //////////
 // Cancel
 void DialogOptions::OnCancel(wxCommandEvent &event) {
+	// Undo hotkeys
+	if (hotkeysModified) Hotkeys.key = origKeys;
+
+	// Set options
 	Options.SetInt(_T("Options page"),book->GetSelection());
 	Options.Save();
 	EndModal(0);
@@ -782,6 +821,22 @@ void DialogOptions::WriteToOptions(bool justApply) {
 		}
 	}
 
+	// Apply hotkey changes if modified
+	if (hotkeysModified) {
+		// Save changes
+		Hotkeys.modified = true;
+		Hotkeys.Save();
+		hotkeysModified = false;
+		origKeys = Hotkeys.key;
+
+		// Rebuild menu
+		FrameMain *parent = (FrameMain*) GetParent();
+		parent->InitMenu();
+
+		// Rebuild accelerator table
+		parent->SetAccelerators();
+	}
+
 	// Save options
 	Options.Save();
 
@@ -881,4 +936,90 @@ void DialogOptions::ReadFromOptions() {
 			button->SetColour(Options.AsColour(binds[i].option));
 		}
 	}
+}
+
+
+/////////////////
+// Edit a hotkey
+void DialogOptions::OnEditHotkey(wxListEvent &event) {
+	// Get key and store old
+	HotkeyType *curKey = (HotkeyType *)event.GetData();
+	int oldKeycode = curKey->keycode;
+	int oldFlags = curKey->flags;
+
+	// Open dialog
+	DialogInputHotkey input(curKey,event.GetText());
+	input.ShowModal();
+
+	// Update stuff if it changed
+	if (oldKeycode != curKey->keycode || oldFlags != curKey->flags) {
+		Shortcuts->SetItem(event.GetIndex(),1,curKey->GetText());
+		hotkeysModified = true;
+	}
+}
+
+
+/////////////////////
+// Input constructor
+DialogInputHotkey::DialogInputHotkey(HotkeyType *_key,wxString name)
+: wxDialog(NULL, -1, _("Press Key"), wxDefaultPosition, wxSize(200,50), wxCAPTION | wxWANTS_CHARS , _T("Press key"))
+{
+	// Key
+	key = _key;
+
+	// Text
+	wxStaticText *text = new wxStaticText(this,-1,_("Press key to bind to \"") + name + _("\" or esc to cancel."));
+
+	// Key capturer
+	capture = new CaptureKey(this);
+
+	// Main sizer
+	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
+	MainSizer->Add(text,1,wxALL,5);
+	MainSizer->SetSizeHints(this);
+	SetSizer(MainSizer);
+}
+
+
+////////////////////////
+// Capturer constructor
+CaptureKey::CaptureKey(DialogInputHotkey *_parent)
+: wxTextCtrl(_parent,-1,_T(""),wxDefaultPosition,wxSize(0,0))
+{
+	parent = _parent;
+	SetFocus();
+}
+
+
+/////////////////////
+// Input event table
+BEGIN_EVENT_TABLE(CaptureKey,wxTextCtrl)
+	EVT_KEY_DOWN(CaptureKey::OnKeyDown)
+	EVT_KILL_FOCUS(CaptureKey::OnLoseFocus)
+END_EVENT_TABLE()
+
+
+///////////////
+// On key down
+void CaptureKey::OnKeyDown(wxKeyEvent &event) {
+	int keycode = event.GetKeyCode();
+
+	if (keycode == WXK_ESCAPE) parent->EndModal(0);
+	else if (keycode != WXK_SHIFT && keycode != WXK_CONTROL && keycode != WXK_ALT) {
+		parent->key->keycode = keycode;
+		int mod = 0;
+		if (event.m_altDown) mod |= wxACCEL_ALT;
+		if (event.m_controlDown) mod |= wxACCEL_CTRL;
+		if (event.m_shiftDown) mod |= wxACCEL_SHIFT;
+		parent->key->flags = mod;
+		parent->EndModal(0);
+	}
+	else event.Skip();
+}
+
+
+//////////////
+// Keep focus
+void CaptureKey::OnLoseFocus(wxFocusEvent &event) {
+	SetFocus();
 }

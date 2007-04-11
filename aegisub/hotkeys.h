@@ -46,7 +46,7 @@
 
 //////////////
 // Prototypes
-class DialogHotkeys;
+class DialogOptions;
 
 
 ////////////////
@@ -72,7 +72,7 @@ public:
 /////////////////////////////
 // Class that stores hotkeys
 class HotkeyManager {
-	friend class DialogHotkeys;
+	friend class DialogOptions;
 private:
 	bool modified;
 	wxString filename;

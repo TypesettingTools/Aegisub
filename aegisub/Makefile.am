@@ -65,7 +65,6 @@ aegisub_SOURCES = \
 	dialog_export.cpp \
 	dialog_fextracker.cpp \
 	dialog_fonts_collector.cpp \
-	dialog_hotkeys.cpp \
 	dialog_jumpto.cpp \
 	dialog_kanji_timer.cpp \
 	dialog_options.cpp \

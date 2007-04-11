@@ -70,7 +70,6 @@
 #include "dialog_kanji_timer.h"
 #include "audio_display.h"
 #include "toggle_bitmap.h"
-#include "dialog_hotkeys.h"
 #include "dialog_timing_processor.h"
 #if USE_FEXTRACKER == 1
 #include "../FexTrackerSource/FexTracker.h"
@@ -168,7 +167,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Tools_Resample, FrameMain::OnOpenResample)
 	EVT_MENU(Menu_Tools_Timing_Processor, FrameMain::OnOpenTimingProcessor)
 	EVT_MENU(Menu_Tools_Kanji_Timer, FrameMain::OnOpenKanjiTimer)
-	EVT_MENU(Menu_Tools_Hotkeys, FrameMain::OnOpenHotkeys)
 	EVT_MENU(Menu_Tools_Options, FrameMain::OnOpenOptions)
 	EVT_MENU(Menu_Tools_Log, FrameMain::OnOpenLog)
 	
@@ -921,13 +919,6 @@ void FrameMain::OnOpenTimingProcessor (wxCommandEvent &event) {
 void FrameMain::OnOpenKanjiTimer (wxCommandEvent &event) {
 	DialogKanjiTimer kanjitimer(this,SubsBox);
 	kanjitimer.ShowModal();
-}
-
-///////////////////////
-// Open Hotkeys dialog
-void FrameMain::OnOpenHotkeys (wxCommandEvent &event) {
-	DialogHotkeys keys(this);
-	keys.ShowModal();
 }
 
 

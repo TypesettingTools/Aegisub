@@ -40,12 +40,17 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/listctrl.h>
 #include <vector>
+#include <map>
 #include "options.h"
+#include "hotkeys.h"
 
 
 //////////////
 // Prototypes
+class FrameMain;
+class DialogInputHotkey;
 #ifdef wxUSE_TREEBOOK
 class wxTreebook;
 #else
@@ -73,6 +78,11 @@ private:
 	wxTreebook *book;
 	std::vector<OptionsBind> binds;
 
+	// Hotkeys
+	std::map<wxString,HotkeyType> origKeys;
+	wxListView *Shortcuts;
+	bool hotkeysModified;
+
 	void Bind(wxControl *ctrl,wxString option,int param=0);
 	void WriteToOptions(bool justApply=false);
 	void ReadFromOptions();
@@ -80,10 +90,47 @@ private:
 	void OnOK(wxCommandEvent &event);
 	void OnCancel(wxCommandEvent &event);
 	void OnApply(wxCommandEvent &event);
+	void OnEditHotkey(wxListEvent &event);
 
 public:
 	DialogOptions(wxWindow *parent);
 	~DialogOptions();
 
 	DECLARE_EVENT_TABLE()
+};
+
+
+/////////////////////
+// Capture key class
+class CaptureKey : public wxTextCtrl {
+private:
+	DialogInputHotkey *parent;
+	void OnKeyDown(wxKeyEvent &event);
+	void OnLoseFocus(wxFocusEvent &event);
+
+public:
+	CaptureKey(DialogInputHotkey *parent);
+
+	DECLARE_EVENT_TABLE()
+};
+
+
+//////////////////////
+// Input dialog class
+class DialogInputHotkey : public wxDialog {
+	friend class CaptureKey;
+
+private:
+	CaptureKey *capture;
+	HotkeyType *key;
+
+public:
+	DialogInputHotkey(HotkeyType *key,wxString name);
+};
+
+
+///////
+// IDs
+enum {
+	Hotkey_List = 2500
 };

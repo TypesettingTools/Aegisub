@@ -204,7 +204,6 @@ private:
 	void OnOpenResample (wxCommandEvent &event);
 	void OnOpenTimingProcessor (wxCommandEvent &event);
 	void OnOpenKanjiTimer (wxCommandEvent &event);
-	void OnOpenHotkeys (wxCommandEvent &event);
 	void OnOpenOptions (wxCommandEvent &event);
 	void OnOpenLog (wxCommandEvent &event);
 	void OnGridEvent (wxCommandEvent &event);
@@ -360,7 +359,6 @@ enum {
 	Menu_Tools_Resample,
 	Menu_Tools_Timing_Processor,
 	Menu_Tools_Kanji_Timer,
-	Menu_Tools_Hotkeys,
 	Menu_Tools_Options,
 	Menu_Tools_Log,
 

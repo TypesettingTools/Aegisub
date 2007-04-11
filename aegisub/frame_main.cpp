@@ -241,7 +241,6 @@ void FrameMain::InitToolbar () {
 
 	// Options
 	Toolbar->AddTool(Menu_Tools_Options,_("Options"),wxBITMAP(options_button),_("Configure Aegisub"));
-	Toolbar->AddTool(Menu_Tools_Hotkeys,_("Hotkeys"),wxBITMAP(hotkeys_button),_("Remap hotkeys"));
 	Toolbar->AddTool(Grid_Toggle_Tags,_("Cycle Tag Hidding Mode"),wxBITMAP(toggle_tag_hiding),_("Cycle through tag-hiding modes"));
 
 	// Update
@@ -419,7 +418,6 @@ void FrameMain::InitMenu() {
 	viewMenu = new wxMenu();
 	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, _("&Options...") + wxString(_T("\t")) + Hotkeys.GetText(_T("Options")), _("Configure Aegisub"), wxBITMAP(options_button));
-	AppendBitmapMenuItem(viewMenu,Menu_Tools_Hotkeys, _("&Hotkeys..."), _("Remap hotkeys"), wxBITMAP(hotkeys_button));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g window..."), _("Open log window"), wxBITMAP(blank_button));
 	viewMenu->AppendSeparator();
 	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs only view"), _("Display subtitles only"));
