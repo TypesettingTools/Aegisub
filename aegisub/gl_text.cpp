@@ -54,6 +54,16 @@ OpenGLText::OpenGLText() {
 //////////////
 // Destructor
 OpenGLText::~OpenGLText() {
+	Reset();
+}
+
+
+/////////
+// Reset
+void OpenGLText::Reset() {
+	for (unsigned int i=0;i<textures.size();i++) delete textures[i];
+	textures.clear();
+	glyphs.clear();
 }
 
 
@@ -108,27 +118,23 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 	OpenGLTextGlyph glyph;
 	glyph.x = 0;
 	glyph.y = 0;
-	glyph.w = 0;
-	glyph.h = 0;
+	glyph.w = 16;
+	glyph.h = 16;
 	glyph.tex = 0;
-
-	// Render glyph;
-	int w = 16;
-	int h = 16;
 
 	// Insert into some texture
 	bool ok = false;
 	for (unsigned int i=0;i<textures.size();i++) {
-		if (textures[i]->CanFit(w,h)) {
-			textures[i]->Insert(glyph);
+		if (textures[i]->TryToInsert(glyph)) {
 			ok = true;
+			break;
 		}
 	}
 
 	// No texture could fit it, create a new one
 	if (!ok) {
-		textures.push_back(new OpenGLTextTexture());
-		textures.back()->Insert(glyph);
+		textures.push_back(new OpenGLTextTexture(256,256));
+		textures.back()->TryToInsert(glyph);
 	}
 
 	// Set glyph and return it
@@ -139,25 +145,54 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 
 ///////////////////////
 // Texture constructor
-OpenGLTextTexture::OpenGLTextTexture() {
+OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
+	width = w;
+	height = h;
+	tex = 0;
 }
 
 
 //////////////////////
 // Texture destructor
 OpenGLTextTexture::~OpenGLTextTexture() {
+	if (tex) {
+		tex = 0;
+	}
 }
 
 
 //////////////////////////
 // Can fit a glyph in it?
-bool OpenGLTextTexture::CanFit(int w,int h) {
-	return true;
+bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph glyph) {
+	// Get size
+	int w = glyph.w;
+	int h = glyph.h;
+
+	// Can fit in this row?
+	if (x + w < width) {
+		x += w;
+		if (y+h > nextY) nextY = y+h;
+		Insert(glyph);
+		return true;
+	}
+
+	// Can fit the next row?
+	else {
+		if (w < width) {
+			y = nextY;
+			nextY = y+h;
+			x = 0;
+			Insert(glyph);
+			return true;
+		}
+	}
+
+	// Can't fit
+	return false;
 }
 
 
-////////////////////////
-// Insert a glyph in it
+//////////
+// Insert
 void OpenGLTextTexture::Insert(OpenGLTextGlyph glyph) {
 }
-

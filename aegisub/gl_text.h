@@ -48,7 +48,8 @@
 class OpenGLTextGlyph {
 public:
 	int tex;
-	float x,y,w,h;
+	float x,y;
+	int w,h;
 };
 
 typedef std::map<int,OpenGLTextGlyph> glyphMap;
@@ -57,13 +58,18 @@ typedef std::map<int,OpenGLTextGlyph> glyphMap;
 ///////////////
 // Texture map
 class OpenGLTextTexture {
+private:
+	int x,y,nextY;
+	int width,height;
+
+	void Insert(OpenGLTextGlyph glyph);
+
 public:
 	GLuint tex;
 
-	bool CanFit(int w,int h);
-	void Insert(OpenGLTextGlyph glyph);
+	bool TryToInsert(OpenGLTextGlyph glyph);
 
-	OpenGLTextTexture();
+	OpenGLTextTexture(int w,int h);
 	~OpenGLTextTexture();
 };
 
@@ -83,6 +89,7 @@ private:
 
 	OpenGLTextGlyph GetGlyph(int i);
 	OpenGLTextGlyph CreateGlyph(int i);
+	void Reset();
 
 	static OpenGLText* GetInstance();
 	void DoSetFont(wxString face,int size);
