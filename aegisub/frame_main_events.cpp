@@ -949,13 +949,19 @@ void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
 ///////////////////////////////////////////////////////////
 // General handler for all Automation-generated menu items
 void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
+	SubsBox->BeginBatch();
+	// First get selection data
+	// This much be done before clearing the maps, since selection data are lost during that
+	std::vector<int> selected_lines = SubsBox->GetAbsoluteSelection();
+	int first_sel = SubsBox->GetFirstSelRow();
 	// Clear all maps from the subs grid before running the macro
 	// The stuff done by the macro might invalidate some of the iterators held by the grid, which will cause great crashing
 	SubsBox->Clear();
 	// Run the macro...
-	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsBox->ass, SubsBox->GetAbsoluteSelection(), SubsBox->GetFirstSelRow(), this);
+	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsBox->ass, selected_lines, first_sel, this);
 	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
 	SubsBox->UpdateMaps();
+	SubsBox->EndBatch();
 }
 
 
