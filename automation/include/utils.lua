@@ -69,6 +69,58 @@ end
 function ass_color(r,g,b)
 	return string.format("&H%02X%02X%02X&",b,g,r)
 end
+-- Format an alpha-string for \Xa style overrides
+function ass_alpha(a)
+	return string.format("&H%02X&", a)
+end
+-- Format an ABGR string for use in style definitions (these don't end with & either)
+function ass_style_color(r,g,b,a)
+	return string.format("&H%02X%02X%02X%02X",a,b,g,r)
+end
+
+-- Extract colour components of an ASS colour
+function extract_color(s)
+	local a, b, g, r
+	
+	-- Try a style first
+	a, b, g, r = s:match("&H(%x%x)(%x%x)(%x%x)(%x%x)")
+	if a then
+		return, r, g, b, a
+	end
+	
+	-- Then a colour override
+	b, g, r = s:match("&H(%x%x)(%x%x)(%x%x)&")
+	if b then
+		return, r, g, b, 0
+	end
+	
+	-- Then an alpha override
+	a = s:match("&H(%x%x)&")
+	if a then
+		return 0, 0, 0, a
+	end
+	
+	-- Ok how about HTML format then?
+	r, g, b, a = s:match("#(%x%x)(%x%x)?(%x%x)?(%x%x)?")
+	if r then
+		return r or 0, g or 0, b or 0, a or 0
+	end
+	
+	-- Failed...
+	return nil
+end
+
+-- Create an alpha override code from a style definition colour code
+function alpha_from_style(scolor)
+	local r, g, b, a = extract_color(scolor)
+	return ass_alpha(a)
+end
+
+-- Create an colour override code from a style definition colour code
+function colour_from_style(scolor)
+	local r, g, b = extract_color(scolor)
+	return ass_color(r, g, b)
+end
 
 -- Converts HSV (Hue, Saturation, Value)  to RGB
 function HSV_to_RGB(H,S,V)
@@ -178,4 +230,21 @@ function interpolate(pct, min, max)
 	else
 		return pct * (max - min) + min
 	end
+end
+
+-- Interpolate between two colour values, given in either style definition or style override format
+-- Return in style override format
+function interpolate_color(pct, first, last)
+	local r1, g1, b1 = extract_color(first)
+	local r2, g2, b2 = extract_color(first)
+	local r, g, b = interpolate(pct, r1, r2), interpolate(pct, g1, g2), interpolate(pct, b1, b2)
+	return ass_color(r, g, b)
+end
+
+-- Interpolate between two alpha values, given either in style override or as part as a style definition colour
+-- Return in style override format
+function interpolate_alpha(pct, first, last)
+	local r1, g1, b1, a1 = extract_color(first)
+	local r2, g2, b2, a2 = extract_color(first)
+	return ass_alpha(interpolate(pct, a1, a2))
 end
