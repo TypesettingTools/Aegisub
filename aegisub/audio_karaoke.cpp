@@ -231,8 +231,7 @@ bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 	// Load syllable data
 	for (size_t i=0;i<n;i++) {
 		block = curDiag->Blocks.at(i);
-		override = AssDialogueBlock::GetAsOverride(block);
-		if (override) {
+		if (override = AssDialogueBlock::GetAsOverride(block)) {
 			AssOverrideTag *len = GetKaraokeLength(override);
 			if (len) {
 				if (foundOne) syllables.push_back(temp);
@@ -246,8 +245,7 @@ bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 				temp.original_tagdata = len->Params.at(0);
 			}
 		}
-		else {
-			plain = AssDialogueBlock::GetAsPlain(block);
+		else if (plain = AssDialogueBlock::GetAsPlain(block)) {
 			temp.contents += plain->text;
 			if (plain->text != _T("")) foundOne = true;
 		}
