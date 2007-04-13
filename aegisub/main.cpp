@@ -41,6 +41,7 @@
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
 #include <wx/mimetype.h>
+#include <wx/utils.h>
 #include "main.h"
 #include "frame_main.h"
 #include "options.h"
@@ -114,7 +115,7 @@ bool AegisubApp::OnInit() {
 		AssExportFilterChain::PrepareFilters();
 
 		// Set association
-#ifndef DEBUG
+#ifndef _DEBUG
 		RegistryAssociate();
 #endif
 
@@ -370,11 +371,7 @@ void AegisubApp::GetFolderName () {
 ////////////
 // Open URL
 void AegisubApp::OpenURL(wxString url) {
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
-	if (type) {
-		wxString command = type->GetOpenCommand(url);
-		if (!command.empty()) wxExecute(command);
-	}
+	wxLaunchDefaultBrowser(url, wxBROWSER_NEW_WINDOW);
 }
 
 
