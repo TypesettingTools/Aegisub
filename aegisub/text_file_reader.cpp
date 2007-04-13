@@ -85,7 +85,7 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	for (int i=0;i<4;i++) b[i] = 0;
 
 	// Read four bytes from file
-#ifdef WIN32
+#ifdef TEXT_READER_USE_STDIO
 	// TODO: maybe make this use posix-style fopen() api's instead as well?
 	HANDLE ifile = CreateFile(
 		_filename.c_str(),			// filename
@@ -118,12 +118,6 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	ifile.close();
 #endif
 
-	// If any of the first four bytes are under 0x20 (the first printable character),
-	// except for 9-13 range, assume binary
-	for (int i=0;i<4;i++) {
-		if (b[i] < 9 || (b[i] > 13 && b[i] < 32)) return _T("binary");
-	}
-
 	// Try to get the byte order mark from them
 	if (b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) return _T("UTF-8");
 	else if (b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) return _T("UTF-32LE");
@@ -135,6 +129,12 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	// Try to guess UTF-16
 	else if (b[0] == 0x00 && b[2] == 0x00) return _T("UTF-16BE");
 	else if (b[1] == 0x00 && b[3] == 0x00) return _T("UTF-16LE");
+
+	// If any of the first four bytes are under 0x20 (the first printable character),
+	// except for 9-13 range, assume binary
+	for (int i=0;i<4;i++) {
+		if (b[i] < 9 || (b[i] > 13 && b[i] < 32)) return _T("binary");
+	}
 
 	#ifdef AUTODETECT_CHARSET
 	// Use universalchardet library to detect charset
@@ -193,7 +193,7 @@ wxString TextFileReader::ReadLineFromFile() {
 		char aux;
 		wchar_t ch = 0;
 		int n = 0;
-#ifdef WIN32
+#ifdef TEXT_READER_USE_STDIO
 		while (ch != L'\n' && !feof(file)) {
 			// Read two chars from file
 			fread(charbuffer, 2, 1, file);
@@ -219,7 +219,7 @@ wxString TextFileReader::ReadLineFromFile() {
 
 	// Read ASCII/UTF-8 line from file
 	else {
-#ifdef WIN32
+#ifdef TEXT_READER_USE_STDIO
 		char buffer[512];
 		while (1) {
 			buffer[511] = '\1';
@@ -272,7 +272,7 @@ wxString TextFileReader::ReadLineFromFile() {
 // Open file
 void TextFileReader::Open() {
 	if (open) return;
-#ifdef WIN32
+#ifdef TEXT_READER_USE_STDIO
 	// binary mode, because ascii mode is never to be trusted
 	file = _tfopen(filename.c_str(), _T("rb"));
 	if (file == 0) {
@@ -292,7 +292,7 @@ void TextFileReader::Open() {
 // Close file
 void TextFileReader::Close() {
 	if (!open) return;
-#ifdef WIN32
+#ifdef TEXT_READER_USE_STDIO
 	fclose(file);
 #else
 	file.close();
@@ -304,7 +304,7 @@ void TextFileReader::Close() {
 //////////////////////////////////
 // Checks if there's more to read
 bool TextFileReader::HasMoreLines() {
-#ifdef WIN32
+#ifdef TEXT_READER_USE_STDIO
 	if (encoding == _T("binary")) return false;
 	return !feof(file);
 #else

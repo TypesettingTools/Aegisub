@@ -34,8 +34,7 @@
 //
 
 
-#ifndef TEXT_FILE_READER_H
-#define TEXT_FILE_READER_H
+#pragma once
 
 
 ///////////
@@ -43,7 +42,7 @@
 #include <wx/wxprec.h>
 #include <wx/dynarray.h>
 #include <fstream>
-#ifdef WIN32
+#ifdef TEXT_READER_USE_STDIO
 #include <stdio.h>
 #endif
 
@@ -54,7 +53,7 @@ class TextFileReader {
 private:
 	wxString filename;
 	wxString encoding;
-#ifdef WIN32
+#ifdef TEXT_READER_USE_STDIO
 	FILE *file;
 #else
 	std::ifstream file;
@@ -82,5 +81,3 @@ public:
 	static wxString GetEncoding(const wxString filename);
 };
 
-
-#endif
