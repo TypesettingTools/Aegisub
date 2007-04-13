@@ -863,6 +863,7 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	if (update) {
 		ass->FlagAsModified(_("line insertion"));
 		CommitChanges();
+		AdjustScrollbar();
 	}
 }
 
