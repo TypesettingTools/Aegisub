@@ -345,9 +345,12 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Disable when playing
 	if (VideoContext::Get()->IsPlaying()) return;
 
+	// Set mode, for whatever reason this is needed
+	visual->SetMode(visual->mode);
+
+	// OnMouseLeave isn't called as long as we have an OnMouseEvent
+	// Just check for it and call it manually instead
 	if (event.Leaving()) {
-		// OnMouseLeave isn't called as long as we have an OnMouseEvent
-		// Just check for it and call it manually instead
 		OnMouseLeave(event);
 		event.Skip(true);
 		return;

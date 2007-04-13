@@ -501,34 +501,24 @@ void VideoDisplayVisual::DrawOverlay() {
 		glDisable(GL_COLOR_LOGIC_OP);
 
 		// Setup text
-		OpenGLText::SetFont(_T("Verdana"),10);
-		OpenGLText::Print(mouseText,x,y);
+		int tw,th;
+		OpenGLText::SetFont(_T("Verdana"),12,true);
+		OpenGLText::SetColour(wxColour(255,255,255));
+		OpenGLText::GetExtent(mouseText,tw,th);
 
-		//// Setup text
-		//wxFont font(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"));
-		//dc.SetFont(font);
-		//int tw,th;
-		//parent->GetTextExtent(mouseText,&tw,&th,NULL,NULL,&font);
+		// Calculate draw position
+		bool left = x > w/2;
+		bool bottom = y < h/2;
 
-		//// Inversion
-		//bool left = x > w/2;
-		//bool bottom = y < h/2;
+		// Text draw coords
+		int dx = x,dy = y;
+		if (left) dx -= tw + 4;
+		else dx += 4;
+		if (bottom) dy += 3;
+		else dy -= th + 3;
 
-		//// Text draw coords
-		//int dx = x,dy = y;
-		//if (left) dx -= tw + 4;
-		//else dx += 4;
-		//if (bottom) dy += 3;
-		//else dy -= th + 3;
-
-		//// Draw text
-		//dc.SetTextForeground(wxColour(64,64,64));
-		//dc.DrawText(mouseText,dx+1,dy-1);
-		//dc.DrawText(mouseText,dx+1,dy+1);
-		//dc.DrawText(mouseText,dx-1,dy-1);
-		//dc.DrawText(mouseText,dx-1,dy+1);
-		//dc.SetTextForeground(colour[2]);
-		//dc.DrawText(mouseText,dx,dy);
+		// Draw text
+		OpenGLText::Print(mouseText,dx,dy);
 	}
 }
 

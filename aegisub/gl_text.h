@@ -69,12 +69,12 @@ private:
 	int x,y,nextY;
 	int width,height;
 
-	void Insert(OpenGLTextGlyph glyph);
+	void Insert(OpenGLTextGlyph &glyph);
 
 public:
 	GLuint tex;
 
-	bool TryToInsert(OpenGLTextGlyph glyph);
+	bool TryToInsert(OpenGLTextGlyph &glyph);
 
 	OpenGLTextTexture(int w,int h);
 	~OpenGLTextTexture();
@@ -88,6 +88,8 @@ private:
 	float r,g,b,a;
 	int lineHeight;
 	int fontSize;
+	bool fontBold;
+	bool fontItalics;
 	wxString fontFace;
 	wxFont font;
 
@@ -104,13 +106,16 @@ private:
 	void Reset();
 
 	static OpenGLText* GetInstance();
-	void DoSetFont(wxString face,int size);
+	void DoSetFont(wxString face,int size,bool bold,bool italics);
 	void DoSetColour(wxColour col,float alpha);
 	void DoPrint(wxString text,int x,int y);
+	void DrawString(wxString text,int x,int y);
+	void DoGetExtent(wxString text,int &w,int &h);
 
 public:
 	static wxFont GetFont() { return GetInstance()->font; }
-	static void SetFont(wxString face,int size) { GetInstance()->DoSetFont(face,size); }
+	static void SetFont(wxString face=_T("Verdana"),int size=10,bool bold=true,bool italics=false) { GetInstance()->DoSetFont(face,size,bold,italics); }
 	static void SetColour(wxColour col,float alpha=1.0f) { GetInstance()->DoSetColour(col,alpha); }
 	static void Print(wxString text,int x,int y) { GetInstance()->DoPrint(text,x,y); }
+	static void GetExtent(wxString text,int &w,int &h) { GetInstance()->DoGetExtent(text,w,h); }
 };
