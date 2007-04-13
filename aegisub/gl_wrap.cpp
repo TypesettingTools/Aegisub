@@ -461,3 +461,8 @@ GLuint OpenGLWrapper::CreateYV12Shader(float tw,float th,float tws) {
 	// Return shader
 	return program;
 }
+
+
+/////////
+// Mutex
+wxMutex OpenGLWrapper::glMutex;

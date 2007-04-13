@@ -45,12 +45,15 @@ private:
 	float r2,g2,b2,a2;
 	int lw;
 
+
 	static void Initialize();
 	static GLuint CreateStandardVertexShader();
 	static GLuint CreateYV12PixelShader();
 	static GLuint CreateShaderProgram(GLuint vertex,GLuint pixel);
 
 public:
+	static wxMutex glMutex;
+
 	void SetLineColour(wxColour col,float alpha=1.0f,int width=1);
 	void SetFillColour(wxColour col,float alpha=1.0f);
 	void SetModeLine();

@@ -144,6 +144,7 @@ void VideoDisplay::Render() {
 	if (!context->IsLoaded()) return;
 
 	// Set GL context
+	wxMutexLocker glLock(OpenGLWrapper::glMutex);
 	SetCurrent(*context->GetGLContext(this));
 
 	// Get sizes
@@ -256,7 +257,7 @@ void VideoDisplay::Render() {
 	visual->DrawOverlay();
 
 	// Swap buffers
-	//glFinish();
+	glFinish();
 	//if (glGetError()) throw _T("Error finishing gl operation.");
 	SwapBuffers();
 }

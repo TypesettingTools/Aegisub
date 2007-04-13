@@ -395,7 +395,7 @@ void VideoContext::JumpToFrame(int n) {
 	if (isPlaying && n != playNextFrame) return;
 
 	// Threaded
-	if (threaded && false) {	// Doesn't work, so it's disabled
+	if (threaded) {	// Doesn't work, so it's disabled
 		wxMutexLocker lock(vidMutex);
 		threadNextFrame = n;
 		if (!threadLocked) {
@@ -853,8 +853,11 @@ wxThread::ExitCode VideoContextThread::Entry() {
 	// Loop while there is work to do
 	while (true) {
 		// Get frame and set frame number
-		parent->GetFrameAsTexture(frame);
-		parent->frame_n = frame;
+		{
+			wxMutexLocker glLock(OpenGLWrapper::glMutex);
+			parent->GetFrameAsTexture(frame);
+			parent->frame_n = frame;
+		}
 
 		// Display
 		parent->UpdateDisplays(false);
