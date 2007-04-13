@@ -517,7 +517,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		if (glGetError() != 0) throw _T("Error setting wrap_t texture parameter.");
 
-		// Load image data into texture
+		// Allocate texture
 		int height = frame.h;
 		if (frame.format == FORMAT_YV12) height = height * 3 / 2;
 		int tw = SmallestPowerOf2(MAX(frame.pitch[0]/frame.GetBpp(0),frame.pitch[1]+frame.pitch[2]));

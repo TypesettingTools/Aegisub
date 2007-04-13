@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include "gl_text.h"
+#include "utils.h"
 
 
 ///////////////////
@@ -79,6 +80,17 @@ OpenGLText* OpenGLText::GetInstance() {
 ////////////
 // Set font
 void OpenGLText::DoSetFont(wxString face,int size) {
+	// No change required
+	if (size == fontSize && face == fontFace) return;
+
+	// Set font
+	fontFace = face;
+	fontSize = size;
+	font.SetFaceName(fontFace);
+	font.SetPointSize(size);
+
+	// Delete all old data
+	Reset();
 }
 
 
@@ -95,6 +107,33 @@ void OpenGLText::DoSetColour(wxColour col,float alpha) {
 /////////
 // Print
 void OpenGLText::DoPrint(wxString text,int x,int y) {
+	// Variables
+	int dx=x,dy=y;
+	size_t len = text.Length();
+	OpenGLTextGlyph glyph;
+	lineHeight = 16;	// FIXME
+
+	// Set OpenGL
+	// TODO
+
+	// Draw string
+	for (size_t i=0;i<len;i++) {
+		// Get current character
+		int curChar = text[i];
+
+		// Handle carriage returns
+		if (curChar == '\n') {
+			dx = x;
+			dy += lineHeight;
+		}
+
+		// Handle normal glyphs
+		else {
+			glyph = GetGlyph(curChar);
+			glyph.Draw(dx,dy);
+			dx += glyph.w;
+		}
+	}
 }
 
 
@@ -116,11 +155,8 @@ OpenGLTextGlyph OpenGLText::GetGlyph(int i) {
 OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 	// Create glyph
 	OpenGLTextGlyph glyph;
-	glyph.x = 0;
-	glyph.y = 0;
-	glyph.w = 16;
-	glyph.h = 16;
-	glyph.tex = 0;
+	glyph.value = n;
+	glyph.GetMetrics();
 
 	// Insert into some texture
 	bool ok = false;
@@ -146,9 +182,25 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 ///////////////////////
 // Texture constructor
 OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
-	width = w;
-	height = h;
+	// Properties
+	x = y = 0;
+	width = SmallestPowerOf2(w);
+	height = SmallestPowerOf2(h);
 	tex = 0;
+
+	// Generate and bind
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	// Texture parameters
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+
+	// Allocate texture
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,width,height,0,GL_ALPHA,GL_UNSIGNED_BYTE,NULL);
+	if (glGetError()) throw _T("Could not allocate Text Texture");
 }
 
 
@@ -156,6 +208,7 @@ OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 // Texture destructor
 OpenGLTextTexture::~OpenGLTextTexture() {
 	if (tex) {
+		glDeleteTextures(1,&tex);
 		tex = 0;
 	}
 }
@@ -167,6 +220,8 @@ bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph glyph) {
 	// Get size
 	int w = glyph.w;
 	int h = glyph.h;
+	if (w > width) return false;
+	if (y+h > height) return false;
 
 	// Can fit in this row?
 	if (x + w < width) {
@@ -178,21 +233,95 @@ bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph glyph) {
 
 	// Can fit the next row?
 	else {
-		if (w < width) {
-			y = nextY;
-			nextY = y+h;
-			x = 0;
-			Insert(glyph);
-			return true;
-		}
+		y = nextY;
+		if (y+h > height) return false;
+		nextY = y+h;
+		x = 0;
+		Insert(glyph);
+		return true;
 	}
-
-	// Can't fit
-	return false;
 }
 
 
 //////////
 // Insert
 void OpenGLTextTexture::Insert(OpenGLTextGlyph glyph) {
+	// Glyph data
+	wxString str = wxChar(glyph.value);
+	int w = glyph.w;
+	int h = glyph.h;
+
+	// Fill glyph structure
+	glyph.x1 = float(x)/width;
+	glyph.y1 = float(y)/height;
+	glyph.x2 = float(x+w)/width;
+	glyph.y2 = float(y+h)/height;
+	glyph.tex = tex;
+
+	// Create bitmap and bind it to a DC
+	wxBitmap bmp(w,h,24);
+	wxMemoryDC dc(bmp);
+
+	// Draw text and convert to image
+	dc.SetFont(OpenGLText::GetFont());
+	dc.DrawText(str,0,0);
+	wxImage img = bmp.ConvertToImage();
+
+	// Upload image to video memory
+	const unsigned char* src = img.GetData();
+	glTexSubImage2D(GL_TEXTURE_2D,0,x,y,w,h,GL_ALPHA,GL_UNSIGNED_BYTE,src);
+	if (glGetError()) throw _T("Error uploading glyph data to video memory.");
+}
+
+
+////////////////
+// Draw a glyph
+void OpenGLTextGlyph::Draw(int x,int y) {
+	// Store matrix and translate
+	glPushMatrix();
+	glTranslatef((float)x,(float)y,0.0f);
+
+	// Set blend
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	// Draw quad
+	glBegin(GL_QUADS);
+		// Top-left
+		glTexCoord2f(x1,y1);
+		glVertex2f(0,0);
+		// Bottom-left
+		glTexCoord2f(x1,y2);
+		glVertex2f(0,h);
+		// Bottom-right
+		glTexCoord2f(x2,y2);
+		glVertex2f(w,h);
+		// Top-right
+		glTexCoord2f(x2,y1);
+		glVertex2f(w,0);
+	glEnd();
+
+	// Restore GL state
+	glDisable(GL_BLEND);
+	glPopMatrix();
+}
+
+
+/////////////////////
+// Get glyph metrics
+wxBitmap *OpenGLTextGlyph::tempBmp = NULL;
+void OpenGLTextGlyph::GetMetrics() {
+	// Glyph data
+	wxCoord desc,lead;
+	wxString str = wxChar(value);
+
+	// Create bitmap, if needed
+	if (!tempBmp) tempBmp = new wxBitmap(16,16,24);
+
+	// Get text extents
+	{
+		wxMemoryDC dc(*tempBmp);
+		dc.SetFont(OpenGLText::GetFont());
+		dc.GetTextExtent(str,&w,&h,&desc,&lead);
+	}
 }

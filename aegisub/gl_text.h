@@ -46,10 +46,17 @@
 /////////////////////
 // Glyph information
 class OpenGLTextGlyph {
+private:
+	static wxBitmap *tempBmp;
+
 public:
+	int value;
 	int tex;
-	float x,y;
+	float x1,y1,x2,y2;
 	int w,h;
+
+	void GetMetrics();
+	void Draw(int x,int y);
 };
 
 typedef std::map<int,OpenGLTextGlyph> glyphMap;
@@ -79,6 +86,11 @@ public:
 class OpenGLText {
 private:
 	float r,g,b,a;
+	int lineHeight;
+	int fontSize;
+	wxString fontFace;
+	wxFont font;
+
 	static OpenGLText* instance;
 
 	glyphMap glyphs;
@@ -97,6 +109,7 @@ private:
 	void DoPrint(wxString text,int x,int y);
 
 public:
+	static wxFont GetFont() { return GetInstance()->font; }
 	static void SetFont(wxString face,int size) { GetInstance()->DoSetFont(face,size); }
 	static void SetColour(wxColour col,float alpha=1.0f) { GetInstance()->DoSetColour(col,alpha); }
 	static void Print(wxString text,int x,int y) { GetInstance()->DoPrint(text,x,y); }

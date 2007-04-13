@@ -54,6 +54,7 @@
 #include "subs_edit_box.h"
 #include "export_visible_lines.h"
 #include "utils.h"
+#include "gl_text.h"
 
 
 ///////////////
@@ -498,6 +499,10 @@ void VideoDisplayVisual::DrawOverlay() {
 			glVertex2f(mx,sh);
 		glEnd();
 		glDisable(GL_COLOR_LOGIC_OP);
+
+		// Setup text
+		OpenGLText::SetFont(_T("Verdana"),10);
+		OpenGLText::Print(mouseText,x,y);
 
 		//// Setup text
 		//wxFont font(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"));
