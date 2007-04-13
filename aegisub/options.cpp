@@ -250,7 +250,7 @@ void OptionsManager::LoadDefaults() {
 	SetColour(_T("Audio Selection Background Modified"),wxColour(92,0,0));
 	SetColour(_T("Audio Selection Background"),wxColour(64,64,64));
 	SetColour(_T("Audio Seconds Boundaries"),wxColour(0,100,255));
-	SetColour(_T("Audio Waveform Modified"),wxColour(255,200,200));
+	SetColour(_T("Audio Waveform Modified"),wxColour(255,230,230));
 	SetColour(_T("Audio Waveform Selected"),wxColour(255,255,255));
 	SetColour(_T("Audio Waveform Inactive"),wxColour(0,80,0));
 	SetColour(_T("Audio Waveform"),wxColour(0,200,0));

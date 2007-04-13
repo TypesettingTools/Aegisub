@@ -260,53 +260,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 	}
 
 	// Draw previous line
-	int shadeType = Options.AsInt(_T("Audio Inactive Lines Display Mode"));
-	if (shadeType == 1 || shadeType == 2) {
-		dc.SetBrush(wxBrush(Options.AsColour(_T("Audio Line boundary inactive line"))));
-		int selWidth = Options.AsInt(_T("Audio Line boundaries Thickness"));
-		AssDialogue *shade;
-		int shadeX1,shadeX2;
-		int shadeFrom,shadeTo;
-
-		// Only previous
-		if (shadeType == 1) {
-			shadeFrom = this->line_n-1;
-			shadeTo = shadeFrom+1;
-		}
-
-		// All
-		else {
-			shadeFrom = 0;
-			shadeTo = grid->GetRows();
-		}
-		
-		for (int j=shadeFrom;j<shadeTo;j++) {
-			if (j == line_n) continue;
-			shade = grid->GetDialogue(j);
-
-			if (shade) {
-				// Get coordinates
-				shadeX1 = GetXAtMS(shade->Start.GetMS());
-				shadeX2 = GetXAtMS(shade->End.GetMS());
-				if (shadeX2 < 0 || shadeX1 > w) continue;
-
-				// Draw over waveform
-				if (!spectrum) {
-					int x1 = MAX(0,shadeX1);
-					int x2 = MIN(w,shadeX2);
-					dc.SetPen(wxPen(Options.AsColour(_T("Audio Waveform Inactive"))));
-					for (__int64 i=x1;i<x2;i++) {
-						dc.DrawLine(i,peak[i],i,min[i]-1);
-					}
-				}
-
-				// Draw boundaries
-				dc.SetPen(wxPen(Options.AsColour(_T("Audio Line boundary inactive line"))));
-				dc.DrawRectangle(shadeX1-selWidth/2+1,0,selWidth,h);
-				dc.DrawRectangle(shadeX2-selWidth/2+1,0,selWidth,h);
-			}
-		}
-	}
+	DrawInactiveLines(dc);
 
 	if (hasSel) {
 		// Draw boundaries
@@ -397,6 +351,79 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 	// Done
 	Refresh(false);
+}
+
+
+///////////////////////
+// Draw Inactive Lines
+void AudioDisplay::DrawInactiveLines(wxDC &dc) {
+	// Check if there is anything to do
+	int shadeType = Options.AsInt(_T("Audio Inactive Lines Display Mode"));
+	if (shadeType == 0) return;
+
+	// Spectrum?
+	bool spectrum = false;
+	if (provider && Options.AsBool(_T("Audio Spectrum"))) {
+		spectrum = true;
+	}
+
+	// Set options
+	dc.SetBrush(wxBrush(Options.AsColour(_T("Audio Line boundary inactive line"))));
+	int selWidth = Options.AsInt(_T("Audio Line boundaries Thickness"));
+	AssDialogue *shade;
+	int shadeX1,shadeX2;
+	int shadeFrom,shadeTo;
+
+	// Only previous
+	if (shadeType == 1) {
+		shadeFrom = this->line_n-1;
+		shadeTo = shadeFrom+1;
+	}
+
+	// All
+	else {
+		shadeFrom = 0;
+		shadeTo = grid->GetRows();
+	}
+	
+	for (int j=shadeFrom;j<shadeTo;j++) {
+		if (j == line_n) continue;
+		shade = grid->GetDialogue(j);
+
+		if (shade) {
+			// Get coordinates
+			shadeX1 = GetXAtMS(shade->Start.GetMS());
+			shadeX2 = GetXAtMS(shade->End.GetMS());
+			if (shadeX2 < 0 || shadeX1 > w) continue;
+
+			// Draw over waveform
+			if (!spectrum) {
+				// Selection
+				int selX1 = MAX(0,GetXAtMS(curStartMS));
+				int selX2 = MIN(w,GetXAtMS(curEndMS));
+
+				// Get ranges (x1->x2, x3->x4).
+				int x1 = MAX(0,shadeX1);
+				int x2 = MIN(w,shadeX2);
+				int x3 = MAX(x1,selX2);
+				int x4 = MAX(x2,selX2);
+
+				// Clip first range
+				x1 = MIN(x1,selX1);
+				x2 = MIN(x2,selX1);
+
+				// Set pen and draw
+				dc.SetPen(wxPen(Options.AsColour(_T("Audio Waveform Inactive"))));
+				for (int i=x1;i<x2;i++) dc.DrawLine(i,peak[i],i,min[i]-1);
+				for (int i=x3;i<x4;i++) dc.DrawLine(i,peak[i],i,min[i]-1);
+			}
+
+			// Draw boundaries
+			dc.SetPen(wxPen(Options.AsColour(_T("Audio Line boundary inactive line"))));
+			dc.DrawRectangle(shadeX1-selWidth/2+1,0,selWidth,h);
+			dc.DrawRectangle(shadeX2-selWidth/2+1,0,selWidth,h);
+		}
+	}
 }
 
 

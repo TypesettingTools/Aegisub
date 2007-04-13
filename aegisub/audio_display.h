@@ -119,6 +119,7 @@ private:
 	void Reset();
 	void DrawTimescale(wxDC &dc);
 	void DrawKeyframes(wxDC &dc);
+	void DrawInactiveLines(wxDC &dc);
 	void DrawWaveform(wxDC &dc,bool weak);
 	void DrawSpectrum(wxDC &dc,bool weak);
 	void GetDialoguePos(__int64 &start,__int64 &end,bool cap);

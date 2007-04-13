@@ -113,6 +113,7 @@ Please visit http://aegisub.net to download latest version
 - Instead of falling back to your local charset, Aegisub will now use the "universalchardet" library (the one used by the Mozilla project) to autodetect the character set of non-Unicode files. (AMZ)
 - Added option to disable automatic grabbing of times from selected lines on the audio display. Also, it will never pick the times from 0:00:00.00 -> 0:00:00.00 lines. (AMZ)
 - Added a "Scale Border and Shadow" check box to script properties dialog. (AMZ)
+- Fixed drawing of inactive lines in audio display to prevent it from being drawn over selection. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
