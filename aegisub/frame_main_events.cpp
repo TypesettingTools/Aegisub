@@ -1155,7 +1155,7 @@ void FrameMain::OnReplace(wxCommandEvent &event) {
 void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(0);
-	SetDisplayMode(-1,-1);
+	SetDisplayMode(-1,-2);
 }
 
 
@@ -1164,7 +1164,7 @@ void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 void FrameMain::OnSetARFull (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(1);
-	SetDisplayMode(-1,-1);
+	SetDisplayMode(-1,-2);
 }
 
 
@@ -1173,7 +1173,7 @@ void FrameMain::OnSetARFull (wxCommandEvent &event) {
 void FrameMain::OnSetARWide (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(2);
-	SetDisplayMode(-1,-1);
+	SetDisplayMode(-1,-2);
 }
 
 
@@ -1182,7 +1182,7 @@ void FrameMain::OnSetARWide (wxCommandEvent &event) {
 void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(3);
-	SetDisplayMode(-1,-1);
+	SetDisplayMode(-1,-2);
 }
 
 
