@@ -37,6 +37,7 @@
 
 ///////////
 // Headers
+#include <wx/intl.h>
 #include "dialog_spellchecker.h"
 #include "spellchecker.h"
 #include "subs_grid.h"
@@ -45,6 +46,7 @@
 #include "ass_dialogue.h"
 #include "utils.h"
 #include "subs_edit_box.h"
+#include "options.h"
 
 
 ///////
@@ -54,15 +56,50 @@ enum {
 	BUTTON_IGNORE,
 	BUTTON_REPLACE_ALL,
 	BUTTON_IGNORE_ALL,
-	BUTTON_ADD
+	BUTTON_ADD,
+	LIST_SUGGESTIONS,
+	LIST_LANGUAGES
 };
 
 
 ///////////////
 // Constructor
 DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
-: wxDialog(parent, -1, _T("Spell Checker"), wxDefaultPosition, wxDefaultSize)
+: wxDialog(parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
 {
+	// Get spell checker
+	spellchecker = SpellChecker::GetSpellChecker();
+	if (!spellchecker) {
+		wxMessageBox(_T("No spellchecker available."),_T("Error"),wxICON_ERROR);
+		Destroy();
+		return;
+	}
+
+	// Get languages
+	langCodes = spellchecker->GetLanguageList();
+	wxArrayString langNames;
+	const wxLanguageInfo *info;
+	for (size_t i=0;i<langCodes.Count();i++) {
+		wxString name;
+		info = wxLocale::FindLanguageInfo(langCodes[i]);
+		if (info) name = info->Description;
+		else name = langCodes[i];
+		langNames.Add(name);
+	}
+
+	// Get current language
+	wxString curLang = Options.AsText(_T("Spell checker language"));
+	int curLangPos = langCodes.Index(curLang);
+	if (curLangPos == wxNOT_FOUND) {
+		curLangPos = langCodes.Index(_T("en"));
+		if (curLangPos == wxNOT_FOUND) {
+			curLangPos = langCodes.Index(_T("en_US"));
+			if (curLangPos == wxNOT_FOUND) {
+				curLangPos = 0;
+			}
+		}
+	}
+
 	// Top sizer
 	origWord = new wxTextCtrl(this,-1,_T("original"),wxDefaultPosition,wxDefaultSize,wxTE_READONLY);
 	replaceWord = new wxTextCtrl(this,-1,_T("replace with"));
@@ -81,48 +118,26 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE_ALL,_("Ignore all")),0,wxEXPAND | wxBOTTOM,2);
 	actionsSizer->Add(new wxButton(this,BUTTON_ADD,_("Add to dictionary")),0,wxEXPAND | wxBOTTOM,0);
 
-	// Middle sizer
-	suggestList = new wxListBox(this,-1,wxDefaultPosition,wxSize(150,100));
-	wxBoxSizer *midSizer = new wxBoxSizer(wxHORIZONTAL);
-	midSizer->Add(suggestList,1,wxEXPAND);
-	midSizer->Add(actionsSizer,0,wxEXPAND | wxLEFT,5);
-
 	// Bottom sizer
-	wxBoxSizer *botSizer = new wxBoxSizer(wxHORIZONTAL);
-	botSizer->AddStretchSpacer(1);
-	botSizer->Add(new wxButton(this,wxID_CLOSE));
+	suggestList = new wxListBox(this,LIST_SUGGESTIONS,wxDefaultPosition,wxSize(150,100));
+	language = new wxComboBox(this,LIST_LANGUAGES,_T(""),wxDefaultPosition,wxDefaultSize,langNames,wxCB_DROPDOWN | wxCB_READONLY);
+	language->SetSelection(curLangPos);
+	wxFlexGridSizer *botSizer = new wxFlexGridSizer(2,2,5,5);
+	botSizer->Add(suggestList,1,wxEXPAND);
+	botSizer->Add(actionsSizer,0,wxEXPAND);
+	botSizer->Add(language,1,wxEXPAND);
+	botSizer->Add(new wxButton(this,wxID_CLOSE),0,wxEXPAND);
+	botSizer->AddGrowableCol(0,1);
 
 	// Main sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(topSizer,0,wxEXPAND | wxALL,5);
-	mainSizer->Add(midSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	mainSizer->Add(botSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
+	mainSizer->Add(botSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 	SetSizer(mainSizer);
 	CenterOnParent();
 
-	// Get spell checker
-	spellchecker = SpellChecker::GetSpellChecker();
-	if (!spellchecker) {
-		wxMessageBox(_T("No spellchecker available."),_T("Error"),wxICON_ERROR);
-		Destroy();
-		return;
-	}
-
-	// Go to first match
-	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsBox;
-	wxArrayInt sel = grid->GetSelection();
-	firstLine = (sel.Count()>0) ? sel[0] : 0;
-	bool hasTypos = FindNext(firstLine,0);
-
-	// File is already OK
-	if (!hasTypos) {
-		wxMessageBox(_("Aegisub has found no spelling mistakes in this script."),_("Spell checking complete."));
-		Destroy();
-		return;
-	}
-
-	// Show
-	ShowModal();
+	// Go to first match and show
+	if (GetFirstMatch()) ShowModal();
 }
 
 
@@ -231,6 +246,10 @@ BEGIN_EVENT_TABLE(DialogSpellChecker,wxDialog)
 	EVT_BUTTON(BUTTON_IGNORE,DialogSpellChecker::OnIgnore)
 	EVT_BUTTON(BUTTON_IGNORE_ALL,DialogSpellChecker::OnIgnoreAll)
 	EVT_BUTTON(BUTTON_ADD,DialogSpellChecker::OnAdd)
+
+	EVT_COMBOBOX(LIST_LANGUAGES,DialogSpellChecker::OnChangeLanguage)
+	EVT_LISTBOX(LIST_SUGGESTIONS,DialogSpellChecker::OnChangeSuggestion)
+	EVT_LISTBOX_DCLICK(LIST_SUGGESTIONS,DialogSpellChecker::OnTakeSuggestion)
 END_EVENT_TABLE()
 
 
@@ -314,4 +333,56 @@ void DialogSpellChecker::Replace() {
 	// Commit
 	grid->ass->FlagAsModified(_("Spell check replace"));
 	grid->CommitChanges();
+}
+
+
+///////////////////
+// Change language
+void DialogSpellChecker::OnChangeLanguage(wxCommandEvent &event) {
+	// Change language code
+	wxString code = langCodes[language->GetSelection()];
+	spellchecker->SetLanguage(code);
+	Options.SetText(_T("Spell checker language"),code);
+	Options.Save();
+
+	// Go back to first match
+	GetFirstMatch();
+}
+
+
+/////////////////////
+// Change suggestion
+void DialogSpellChecker::OnChangeSuggestion(wxCommandEvent &event) {
+	replaceWord->SetValue(suggestList->GetStringSelection());
+}
+
+
+/////////////////////////////////
+// Suggestion box double clicked
+void DialogSpellChecker::OnTakeSuggestion(wxCommandEvent &event) {
+	// First line should be unnecessary due to event above, but you never know...
+	replaceWord->SetValue(suggestList->GetStringSelection());
+	Replace();
+	FindOrDie();
+}
+
+
+///////////////
+// First match
+bool DialogSpellChecker::GetFirstMatch() {
+	// Get selection
+	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsBox;
+	wxArrayInt sel = grid->GetSelection();
+	firstLine = (sel.Count()>0) ? sel[0] : 0;
+	bool hasTypos = FindNext(firstLine,0);
+
+	// File is already OK
+	if (!hasTypos) {
+		wxMessageBox(_("Aegisub has found no spelling mistakes in this script."),_("Spell checking complete."));
+		Destroy();
+		return false;
+	}
+
+	// OK
+	return true;
 }

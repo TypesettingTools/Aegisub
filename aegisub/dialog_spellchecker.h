@@ -54,6 +54,7 @@ private:
 
 	std::map<wxString,wxString> autoReplace;
 	wxArrayString autoIgnore;
+	wxArrayString langCodes;
 
 	int wordStart,wordEnd;
 	int lastLine;
@@ -63,11 +64,17 @@ private:
 	wxTextCtrl *origWord;
 	wxTextCtrl *replaceWord;
 	wxListBox *suggestList;
+	wxComboBox *language;
 
 	bool FindOrDie();
 	bool FindNext(int startLine=-1,int startPos=-1);
+	bool GetFirstMatch();
 	void SetWord(wxString word);
 	void Replace();
+
+	void OnChangeLanguage(wxCommandEvent &event);
+	void OnChangeSuggestion(wxCommandEvent &event);
+	void OnTakeSuggestion(wxCommandEvent &event);
 
 	void OnClose(wxCommandEvent &event);
 	void OnReplace(wxCommandEvent &event);
@@ -79,5 +86,6 @@ private:
 public:
 	DialogSpellChecker(wxFrame *parent);
 	~DialogSpellChecker();
+
 	DECLARE_EVENT_TABLE()
 };
