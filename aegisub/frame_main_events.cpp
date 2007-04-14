@@ -85,6 +85,7 @@
 #include "dialog_version_check.h"
 #include "dialog_detached_video.h"
 #include "dialog_dummy_video.h"
+#include "dialog_spellchecker.h"
 
 
 ////////////////////
@@ -886,7 +887,8 @@ void FrameMain::OnOpenTranslation(wxCommandEvent& WXUNUSED(event)) {
 // Open Spell Checker
 void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	wxMessageBox(_T("TODO!"),_T("Spellchecker"));
+	DialogSpellChecker *spell = new DialogSpellChecker(this);
+	spell->Show();
 }
 
 
