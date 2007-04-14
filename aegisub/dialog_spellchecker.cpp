@@ -39,6 +39,12 @@
 // Headers
 #include "dialog_spellchecker.h"
 #include "spellchecker.h"
+#include "subs_grid.h"
+#include "frame_main.h"
+#include "ass_file.h"
+#include "ass_dialogue.h"
+#include "utils.h"
+#include "subs_edit_box.h"
 
 
 ///////
@@ -58,7 +64,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 : wxDialog(parent, -1, _T("Spell Checker"), wxDefaultPosition, wxDefaultSize)
 {
 	// Top sizer
-	origWord = new wxTextCtrl(this,-1,_T("original"));
+	origWord = new wxTextCtrl(this,-1,_T("original"),wxDefaultPosition,wxDefaultSize,wxTE_READONLY);
 	replaceWord = new wxTextCtrl(this,-1,_T("replace with"));
 	wxFlexGridSizer *topSizer = new wxFlexGridSizer(2,2,5,5);
 	topSizer->Add(new wxStaticText(this,-1,_("Misspelled word:")),0,wxALIGN_CENTER_VERTICAL);
@@ -103,14 +109,116 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	}
 
 	// Go to first match
-	FindNext(0,0);
+	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsBox;
+	wxArrayInt sel = grid->GetSelection();
+	firstLine = (sel.Count()>0) ? sel[0] : 0;
+	bool hasTypos = FindNext(firstLine,0);
+
+	// File is already OK
+	if (!hasTypos) {
+		wxMessageBox(_("Aegisub has found no spelling mistakes in this script."),_("Spell checking complete."));
+		Destroy();
+		return;
+	}
+
+	// Show
+	ShowModal();
+}
+
+
+//////////////
+// Destructor
+DialogSpellChecker::~DialogSpellChecker() {
+	if (spellchecker) delete spellchecker;
 }
 
 
 ///////////////////
 // Find next match
-void DialogSpellChecker::FindNext(int startLine,int startPos) {
+bool DialogSpellChecker::FindNext(int startLine,int startPos) {
+	// Set start
+	if (startLine != -1) lastLine = startLine;
+	if (startPos != -1) lastPos = 0;
 
+	// Get grid
+	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsBox;
+	int rows = grid->GetRows();
+
+	// Loop through lines
+	for (int i=lastLine;i<rows+firstLine;i++) {
+		startFindNextOuterLoop:
+		// Get dialogue
+		int curLine = i % rows;
+		AssDialogue *diag = grid->GetDialogue(curLine);
+
+		// Find list of words in it
+		IntPairVector results;
+		GetWordBoundaries(diag->Text,results);
+
+		// Look for spelling mistakes
+		for (size_t j=0;j<results.size();j++) {
+			// Get word
+			int s = results[j].first;
+			if (s < lastPos) continue;
+			int e = results[j].second;
+			wxString word = diag->Text.Mid(s,e-s);
+
+			// Check if it's on auto ignore
+			if (autoIgnore.Index(word) != wxNOT_FOUND) continue;
+
+			// Mistake
+			if (!spellchecker->CheckWord(word)) {
+				// Set word
+				wordStart = s;
+				wordEnd = e;
+				lastLine = i;
+				lastPos = e;
+
+				// Auto replace?
+				if (autoReplace.find(word) != autoReplace.end()) {
+					// lol mad h4x
+					replaceWord->SetValue(autoReplace[word]);
+					Replace();
+					goto startFindNextOuterLoop;
+				}
+
+				// Proceed normally
+				SetWord(word);
+				return true;
+			}
+		}
+
+		// Go to next
+		lastPos = 0;
+	}
+
+	// None found
+	return false;
+}
+
+
+////////////
+// Set word
+void DialogSpellChecker::SetWord(wxString word) {
+	// Get list of suggestions
+	wxArrayString sugs = spellchecker->GetSuggestions(word);
+
+	// Set fields
+	origWord->SetValue(word);
+	replaceWord->SetValue((sugs.Count()>0)? sugs[0] : word);
+
+	// Set suggestions list
+	suggestList->Clear();
+	for (size_t i=0;i<sugs.Count();i++) suggestList->Append(sugs[i]);
+
+	// Show word on the main program interface
+	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsBox;
+	int line = lastLine % grid->GetRows();
+	grid->SelectRow(line,false);
+	grid->MakeCellVisible(line,0);
+	grid->editBox->SetToLine(line);
+	grid->editBox->TextEdit->SetSelectionU(wordStart,wordEnd);
+	grid->EndBatch();
 }
 
 
@@ -136,28 +244,74 @@ void DialogSpellChecker::OnClose(wxCommandEvent &event) {
 ///////////
 // Replace
 void DialogSpellChecker::OnReplace(wxCommandEvent &event) {
+	Replace();
+	FindOrDie();
 }
 
 
 //////////////////////
 // Replace all errors
 void DialogSpellChecker::OnReplaceAll(wxCommandEvent &event) {
+	// Add word to autoreplace list
+	autoReplace[origWord->GetValue()] = replaceWord->GetValue();
+
+	// Replace
+	Replace();
+	FindOrDie();
 }
 
 
 /////////////////////
 // Ignore this error
 void DialogSpellChecker::OnIgnore(wxCommandEvent &event) {
+	// Next
+	FindOrDie();
 }
 
 
 /////////////////////
 // Ignore all errors
 void DialogSpellChecker::OnIgnoreAll(wxCommandEvent &event) {
+	// Add word to autoignore list
+	autoIgnore.Add(origWord->GetValue());
+
+	// Next
+	FindOrDie();
 }
 
 
 /////////////////////
 // Add to dictionary
 void DialogSpellChecker::OnAdd(wxCommandEvent &event) {
+	spellchecker->AddWord(origWord->GetValue());
+	FindOrDie();
+}
+
+
+///////////////////////////////////////////////
+// Goes to next... if it can't find one, close
+bool DialogSpellChecker::FindOrDie() {
+	if (!FindNext()) {
+		wxMessageBox(_("Aegisub has finished checking spelling of this script."),_("Spell checking complete."));
+		Destroy();
+		return false;
+	}
+	return true;
+}
+
+
+///////////
+// Replace
+void DialogSpellChecker::Replace() {
+	// Get dialog
+	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsBox;
+	AssDialogue *diag = grid->GetDialogue(lastLine % grid->GetRows());
+
+	// Replace
+	diag->Text = diag->Text.Left(wordStart) + replaceWord->GetValue() + diag->Text.Mid(wordEnd);
+	lastPos = wordStart + replaceWord->GetValue().Length();
+
+	// Commit
+	grid->ass->FlagAsModified(_("Spell check replace"));
+	grid->CommitChanges();
 }

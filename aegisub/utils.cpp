@@ -212,3 +212,74 @@ int SmallestPowerOf2(int x) {
 	x++;
 	return x;
 }
+
+
+///////////////////////
+// Get word boundaries
+void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int end) {
+	// Variables
+	wxChar cur;
+	int curPos;
+	int lastpos = -1;
+	int depth = 0;
+	if (end < 0) end = text.Length();
+	bool isDelim;
+
+	// Delimiters
+	wxString delim = _T(" .,;:!?-(){}[]\"/\\");
+	wxChar temp = 0xBF;
+	delim += temp;
+	temp = 0xA1;
+	delim += temp;
+
+	// Scan
+	for (int i=start;i<end+1;i++) {
+		// Current character
+		curPos = i;
+		if (i < end) cur = text[i];
+		else cur = '.';
+		isDelim = false;
+
+		// Increase depth
+		if (cur == '{') {
+			depth++;
+			if (depth == 1) {
+				if (lastpos+1 != curPos) {
+					results.push_back(std::pair<int,int>(lastpos+1,curPos));
+				}
+				continue;
+			}
+		}
+
+		// Decrease depth
+		if (cur == '}') {
+			depth--;
+			if (depth == 0) {
+				lastpos = i;
+				continue;
+			}
+		}
+
+		// Wrong depth
+		if (depth != 0) continue;
+
+		// Check if it is \n or \N
+		if (cur == '\\' && i < end-1 && (text[i+1] == 'N' || text[i+1] == 'n' || text[i+1] == 'h')) {
+			isDelim = true;
+			i++;
+		}
+
+		// Check for standard delimiters
+		if (delim.Find(cur) != wxNOT_FOUND) {
+			isDelim = true;
+		}
+
+		// Is delimiter?
+		if (isDelim) {
+			if (lastpos+1 != curPos) {
+				results.push_back(std::pair<int,int>(lastpos+1,curPos));
+			}
+			lastpos = i;
+		}
+	}
+}

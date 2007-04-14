@@ -888,7 +888,7 @@ void FrameMain::OnOpenTranslation(wxCommandEvent& WXUNUSED(event)) {
 void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	DialogSpellChecker *spell = new DialogSpellChecker(this);
-	spell->Show();
+	//spell->ShowModal();
 }
 
 

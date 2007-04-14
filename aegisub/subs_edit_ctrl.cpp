@@ -74,13 +74,6 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	// Set thesaurus
 	thesaurus = Thesaurus::GetThesaurus();
 	
-	// Delimiters
-	delim = _T(" .,;:!?-(){}[]\"/\\");
-	wxChar temp = 0xBF;
-	delim += temp;
-	temp = 0xA1;
-	delim += temp;
-
 	// Prototypes for call tips
 	tipProtoN = -1;
 	proto.Add(_T("move(x1,y1,x2,y2)"));
@@ -660,85 +653,46 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 	// See if it has a spellchecker
 	if (!spellchecker) return;
 
-	// Variables
-	wxChar cur;
+	// Results
 	wxString text = GetText();
-	int curPos;
-	int lastpos = -1;
-	int end = start+len;
-	int depth = 0;
-	if (len < 0) end = text.Length();
-	wxArrayInt startPos;
-	wxArrayInt endPos;
-	bool isDelim;
-
-	// Scan
-	for (int i=start;i<end+1;i++) {
-		// Current character
-		curPos = i;
-		if (i < end) cur = text[i];
-		else cur = '.';
-		isDelim = false;
-
-		// Increase depth
-		if (cur == '{') {
-			depth++;
-			if (depth == 1) {
-				if (lastpos+1 != curPos) {
-					startPos.Add(lastpos+1);
-					endPos.Add(curPos);
-				}
-				continue;
-			}
-		}
-
-		// Decrease depth
-		if (cur == '}') {
-			depth--;
-			if (depth == 0) {
-				lastpos = i;
-				continue;
-			}
-		}
-
-		// Wrong depth
-		if (depth != 0) continue;
-
-		// Check if it is \n or \N
-		if (cur == '\\' && i < end-1 && (text[i+1] == 'N' || text[i+1] == 'n' || text[i+1] == 'h')) {
-			isDelim = true;
-			i++;
-		}
-
-		// Check for standard delimiters
-		if (delim.Find(cur) != wxNOT_FOUND) {
-			isDelim = true;
-		}
-
-		// Is delimiter?
-		if (isDelim) {
-			if (lastpos+1 != curPos) {
-				startPos.Add(lastpos+1);
-				endPos.Add(curPos);
-			}
-			lastpos = i;
-		}
-	}
+	IntPairVector results;
+	GetWordBoundaries(text,results,start,(len == -1) ? len : start+len);
 
 	// Style
-	int count = startPos.Count();
+	int count = results.size();
 	for (int i=0;i<count;i++) {
 		// Get current word
-		wxString curWord = text.Mid(startPos[i],endPos[i]-startPos[i]);
+		int s = results[i].first;
+		int e = results[i].second;
+		wxString curWord = text.Mid(s,e-s);
 
 		// Check if it's valid
 		if (!spellchecker->CheckWord(curWord)) {
 			// Get length before it
-			int utf8len = GetUnicodePosition(startPos[i]);
+			int utf8len = GetUnicodePosition(s);
 
 			// Set styling
 			StartStyling(utf8len,32);
-			SetUnicodeStyling(startPos[i],endPos[i]-startPos[i],32);
+			SetUnicodeStyling(s,e-s,32);
+		}
+	}
+}
+
+
+//////////////////////////////////////
+// Get boundaries of word at position
+void SubsTextEditCtrl::GetBoundsOfWordAtPosition(int pos,int &_start,int &_end) {
+	// Results
+	IntPairVector results;
+	GetWordBoundaries(GetText(),results);
+
+	// Get boundaries
+	int count = results.size();
+	for (int i=0;i<count;i++) {
+		if (results[i].first <= pos && results[i].second >= pos) {
+			_start = results[i].first;
+			_end = results[i].second-1;
+			return;
 		}
 	}
 }
@@ -985,77 +939,6 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 	// Pop the menu
 	PopupMenu(&menu);
-}
-
-
-//////////////////////////////////////
-// Get boundaries of word at position
-void SubsTextEditCtrl::GetBoundsOfWordAtPosition(int pos,int &_start,int &_end) {
-	// Variables
-	wxString text = GetText();
-	int len = text.Length();
-	int lastDelimBefore = -1;
-	int firstDelimAfter = len;
-	wxChar cur,next;
-	int depth=0;
-
-	// Scan for delimiters
-	for (int i=0;i<len;i++) {
-		// Current char
-		cur = text[i];
-		if (i<len-1) next = text[i+1];
-		else next = 0;
-
-		// Depth
-		if (cur == '{') {
-			if (i >= pos) {
-				firstDelimAfter = i;
-				break;
-			}
-			depth++;
-		}
-		if (cur == '}') {
-			if (i < pos) {
-				lastDelimBefore = i;
-			}
-			depth--;
-		}
-		if (depth != 0) {
-			// Picked a location in invalid depth
-			if (pos == i) {
-				lastDelimBefore = -1;
-				firstDelimAfter = 0;
-				break;
-			}
-			continue;
-		}
-
-		// Line breaks
-		if (cur == '\\' && (next == 'N' || next == 'n' || next == 'h')) {
-			// Before
-			if (i < pos) {
-				i++;
-				lastDelimBefore = i;
-				continue;
-			}
-		}
-
-		// Check for delimiters
-		if (delim.Find(cur) != wxNOT_FOUND) {
-			// Before
-			if (i < pos) lastDelimBefore = i;
-			
-			// After
-			else {
-				firstDelimAfter = i;
-				break;
-			}
-		}
-	}
-
-	// Set start and end
-	_start = lastDelimBefore+1;
-	_end = firstDelimAfter-1;
 }
 
 

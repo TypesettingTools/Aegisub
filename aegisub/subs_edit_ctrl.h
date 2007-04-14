@@ -57,7 +57,6 @@ private:
 	SpellChecker *spellchecker;
 	Thesaurus *thesaurus;
 
-	wxString delim;
 	wxString currentWord;
 	wxArrayString sugs;
 	wxArrayString thesSugs;

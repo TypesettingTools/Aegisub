@@ -37,6 +37,17 @@
 #pragma once
 
 
+///////////
+// Headers
+#include <vector>
+#include <utility>
+
+
+////////////
+// Typedefs
+typedef std::vector<std::pair<int,int> > IntPairVector;
+
+
 ///////////////////////
 // Function prototypes
 #ifndef __LINUX__
@@ -55,6 +66,7 @@ wxString IntegerToString(int value);
 wxString PrettySize(int bytes);
 wxMenuItem *AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp,int pos=-1);
 int SmallestPowerOf2(int x);
+void GetWordBoundaries(const wxString text,IntPairVector &results,int start=0,int end=-1);
 
 
 //////////

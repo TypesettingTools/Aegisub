@@ -181,11 +181,12 @@ public:
 	bool Parse(wxString data,int version=1);	// Parses raw ASS data into everything else
 	void ParseASSTags();			// Parses text to generate block information (doesn't update data)
 	void ParseSRTTags();			// Converts tags to ass format and calls ParseASSTags+UpdateData
+	void ClearBlocks();				// Clear all blocks, ALWAYS call this after you're done processing tags
+
+	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *userData),void *userData=NULL);	// Callback to process parameters
 	void ConvertTagsToSRT();		// Converts tags to SRT format
 	void StripTags();				// Strips all tags from the text
 	void StripTag(wxString tagName);// Strips a specific tag from the text
-	void ClearBlocks();				// Clear all blocks, ALWAYS call this after you're done processing tags
-	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *userData),void *userData=NULL);	// Callback to process parameters
 	wxString GetStrippedText();		// Gets text without tags
 
 	void UpdateData();				// Updates raw data from current values + text

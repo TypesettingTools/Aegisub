@@ -38,6 +38,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <map>
 
 
 //////////////
@@ -51,14 +52,22 @@ class DialogSpellChecker : public wxDialog {
 private:
 	SpellChecker *spellchecker;
 
+	std::map<wxString,wxString> autoReplace;
+	wxArrayString autoIgnore;
+
+	int wordStart,wordEnd;
 	int lastLine;
 	int lastPos;
+	int firstLine;
 
 	wxTextCtrl *origWord;
 	wxTextCtrl *replaceWord;
 	wxListBox *suggestList;
 
-	void FindNext(int startLine=-1,int startPos=-1);
+	bool FindOrDie();
+	bool FindNext(int startLine=-1,int startPos=-1);
+	void SetWord(wxString word);
+	void Replace();
 
 	void OnClose(wxCommandEvent &event);
 	void OnReplace(wxCommandEvent &event);
@@ -69,5 +78,6 @@ private:
 
 public:
 	DialogSpellChecker(wxFrame *parent);
+	~DialogSpellChecker();
 	DECLARE_EVENT_TABLE()
 };
