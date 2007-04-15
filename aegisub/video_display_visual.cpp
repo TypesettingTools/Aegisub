@@ -500,6 +500,13 @@ void VideoDisplayVisual::DrawOverlay() {
 		glEnd();
 		glDisable(GL_COLOR_LOGIC_OP);
 
+		// Switch display
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho(0.0f,w,h,0.0f,-1000.0f,1000.0f);
+		glMatrixMode(GL_MODELVIEW);
+
 		// Setup text
 		int tw,th;
 		OpenGLText::SetFont(_T("Verdana"),12,true);
@@ -519,6 +526,11 @@ void VideoDisplayVisual::DrawOverlay() {
 
 		// Draw text
 		OpenGLText::Print(mouseText,dx,dy);
+
+		// Restore matrix
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
 	}
 }
 
