@@ -100,6 +100,7 @@ private:
 	wxTextCtrl *Angle;
 	wxComboBox *Encoding;
 	wxTextCtrl *Spacing;
+	wxTextCtrl *PreviewText;
 	SubtitlesPreview *SubsPreview;
 	wxSizer *MainSizer;
 

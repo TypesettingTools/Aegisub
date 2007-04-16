@@ -228,7 +228,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Misc
 	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Miscelaneous"));
-	wxSizer *MiscBoxTop = new wxFlexGridSizer(2,4,5,5);
+	wxFlexGridSizer *MiscBoxTop = new wxFlexGridSizer(2,4,5,5);
 	wxSizer *MiscBoxBottom = new wxBoxSizer(wxHORIZONTAL);
 	ScaleXValue = FloatToString(style->scalex);
 	ScaleYValue = FloatToString(style->scaley);
@@ -245,21 +245,20 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	Angle->SetToolTip(_("Angle to rotate in Z axis, in degrees"));
 	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."));
 	Spacing->SetToolTip(_("Character spacing, in pixels"));
-	SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER);
-	SubsPreview->SetStyle(style);
 	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale X%:")),1,wxALIGN_CENTER,0);
 	MiscBoxTop->Add(ScaleX,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
 	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale Y%:")),1,wxLEFT | wxALIGN_CENTER,5);
 	MiscBoxTop->Add(ScaleY,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
-	MiscBoxTop->Add(new wxStaticText(this,-1,_("Angle:")),1,wxALIGN_CENTER,0);
+	MiscBoxTop->Add(new wxStaticText(this,-1,_("Rotation:")),1,wxALIGN_CENTER,0);
 	MiscBoxTop->Add(Angle,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
 	MiscBoxTop->Add(new wxStaticText(this,-1,_("Spacing:")),1,wxLEFT | wxALIGN_CENTER,5);
 	MiscBoxTop->Add(Spacing,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
+	MiscBoxTop->AddGrowableCol(1,1);
+	MiscBoxTop->AddGrowableCol(3,1);
 	MiscBoxBottom->Add(new wxStaticText(this,-1,_("Encoding:")),0,wxLEFT | wxALIGN_CENTER,5);
 	MiscBoxBottom->Add(Encoding,1,wxLEFT | wxALIGN_CENTER,5);
 	MiscBox->Add(MiscBoxTop,0,wxEXPAND | wxALIGN_CENTER,0);
-	MiscBox->Add(MiscBoxBottom,0,wxEXPAND | wxTOP | wxALIGN_CENTER,5);
-	MiscBox->Add(SubsPreview,1,wxEXPAND | wxTOP,5);
+	MiscBox->Add(MiscBoxBottom,1,wxEXPAND | wxTOP | wxALIGN_CENTER,5);
 
 	// Set encoding value
 	int encLen = EncodingValue.Length();
@@ -272,6 +271,14 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 		}
 	}
 	if (!found) Encoding->Select(0);
+
+	// Preview
+	SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER);
+	SubsPreview->SetStyle(style);
+	PreviewText = new wxTextCtrl(this,-1,_T("preview text (TODO)"));
+	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Preview"));
+	PreviewBox->Add(SubsPreview,1,wxEXPAND | wxBOTTOM,5);
+	PreviewBox->Add(PreviewText,0,wxEXPAND | wxBOTTOM,0);
 
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -293,12 +300,13 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	LeftSizer->Add(NameSizer,0,wxBOTTOM | wxEXPAND,5);
 	LeftSizer->Add(FontSizer,0,wxBOTTOM | wxEXPAND,5);
 	LeftSizer->Add(ColorsSizer,0,wxBOTTOM | wxEXPAND,5);
-	LeftSizer->Add(OutlineBox,0,wxEXPAND,0);
+	LeftSizer->Add(MarginAlign,0,wxBOTTOM | wxEXPAND,0);
 
 	// Right side sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
-	RightSizer->Add(MarginAlign,0,wxBOTTOM | wxEXPAND,5);
-	RightSizer->Add(MiscBox,1,wxEXPAND,0);
+	RightSizer->Add(OutlineBox,0,wxEXPAND | wxBOTTOM,5);
+	RightSizer->Add(MiscBox,0,wxEXPAND | wxBOTTOM,5);
+	RightSizer->Add(PreviewBox,1,wxEXPAND,0);
 
 	// Controls Sizer
 	wxSizer *ControlSizer = new wxBoxSizer(wxHORIZONTAL);

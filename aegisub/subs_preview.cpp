@@ -139,6 +139,7 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	// Convert frame to bitmap
 	wxMemoryDC dc(*bmp);
 	wxBitmap tempBmp(frame.GetImage());
+	frame.Clear();
 	dc.DrawBitmap(tempBmp,0,0);
 	Refresh();
 }
