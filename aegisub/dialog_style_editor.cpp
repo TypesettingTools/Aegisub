@@ -48,12 +48,13 @@
 #include "utils.h"
 #include "dialog_colorpicker.h"
 #include "colour_button.h"
+#include "subs_preview.h"
 
 
 ///////////////
 // Constructor
 DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid)
-: wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStyleEditor"))
+: wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
 	// Set styles
 	grid = _grid;
@@ -244,6 +245,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	Angle->SetToolTip(_("Angle to rotate in Z axis, in degrees"));
 	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."));
 	Spacing->SetToolTip(_("Character spacing, in pixels"));
+	SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER);
+	SubsPreview->SetStyle(style);
 	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale X%:")),1,wxALIGN_CENTER,0);
 	MiscBoxTop->Add(ScaleX,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
 	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale Y%:")),1,wxLEFT | wxALIGN_CENTER,5);
@@ -254,8 +257,9 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	MiscBoxTop->Add(Spacing,0,wxLEFT | wxALIGN_CENTER | wxEXPAND,5);
 	MiscBoxBottom->Add(new wxStaticText(this,-1,_("Encoding:")),0,wxLEFT | wxALIGN_CENTER,5);
 	MiscBoxBottom->Add(Encoding,1,wxLEFT | wxALIGN_CENTER,5);
-	MiscBox->Add(MiscBoxTop,1,wxEXPAND | wxALIGN_CENTER,0);
+	MiscBox->Add(MiscBoxTop,0,wxEXPAND | wxALIGN_CENTER,0);
 	MiscBox->Add(MiscBoxBottom,0,wxEXPAND | wxTOP | wxALIGN_CENTER,5);
+	MiscBox->Add(SubsPreview,1,wxEXPAND | wxTOP,5);
 
 	// Set encoding value
 	int encLen = EncodingValue.Length();
@@ -284,19 +288,31 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 #endif
 	okButton->SetDefault();
 
+	// Left side sizer
+	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);
+	LeftSizer->Add(NameSizer,0,wxBOTTOM | wxEXPAND,5);
+	LeftSizer->Add(FontSizer,0,wxBOTTOM | wxEXPAND,5);
+	LeftSizer->Add(ColorsSizer,0,wxBOTTOM | wxEXPAND,5);
+	LeftSizer->Add(OutlineBox,0,wxEXPAND,0);
+
+	// Right side sizer
+	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
+	RightSizer->Add(MarginAlign,0,wxBOTTOM | wxEXPAND,5);
+	RightSizer->Add(MiscBox,1,wxEXPAND,0);
+
+	// Controls Sizer
+	wxSizer *ControlSizer = new wxBoxSizer(wxHORIZONTAL);
+	ControlSizer->Add(LeftSizer,0,wxEXPAND,0);
+	ControlSizer->Add(RightSizer,1,wxLEFT | wxEXPAND,5);
+
 	// General Layout
 	MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(NameSizer,0,wxALL | wxEXPAND,5);
-	MainSizer->Add(FontSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(ColorsSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(MarginAlign,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(OutlineBox,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(MiscBox,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
+	MainSizer->Add(ControlSizer,1,wxALL | wxALIGN_CENTER | wxEXPAND,5);
 	MainSizer->Add(ButtonSizer,0,wxBOTTOM | wxALIGN_CENTER | wxEXPAND,5);
 
 	// Set sizer
-	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
+	SetSizer(MainSizer);
 	CenterOnParent();
 }
 
@@ -457,6 +473,9 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 
 		// Exit
 		if (close) EndModal(1);
+
+		// Update preview
+		SubsPreview->SetStyle(style);
 	}
 
 	// Close

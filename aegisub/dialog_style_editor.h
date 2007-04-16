@@ -48,6 +48,7 @@
 // Prototypes
 class AssStyle;
 class SubtitlesGrid;
+class SubtitlesPreview;
 
 
 /////////
@@ -99,6 +100,7 @@ private:
 	wxTextCtrl *Angle;
 	wxComboBox *Encoding;
 	wxTextCtrl *Spacing;
+	SubtitlesPreview *SubsPreview;
 	wxSizer *MainSizer;
 
 	void SetBitmapColor (int n,wxColour color);
