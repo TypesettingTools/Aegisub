@@ -115,7 +115,7 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	}
 
 	// Get AegiVideoFrame
-	DummyVideoProvider vid(0.0,10,w,h,wxColour(47,163,255),true);
+	DummyVideoProvider vid(0.0,10,w,h,wxColour(125,153,176),true);
 	AegiVideoFrame frame = vid.GetFrame(0);
 
 	// Generate subtitles

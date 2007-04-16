@@ -99,6 +99,8 @@ public:
 	wxString GetMarginString(int which);					// Returns the margin value as a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	void SetMarginString(const wxString value,int which);	// Sets margin value from a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 
+	static void GetEncodings(wxArrayString &encodingStrings);
+
 	AssEntry *Clone();
 
 	AssStyle();

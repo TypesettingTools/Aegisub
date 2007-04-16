@@ -519,3 +519,29 @@ AssEntry *AssStyle::Clone() {
 	// Return
 	return final;
 }
+
+
+/////////////////////////////////////
+// Get a list of valid ASS encodings
+void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
+	encodingStrings.Clear();
+	encodingStrings.Add(wxString(_T("0 - ")) + _("ANSI"));
+	encodingStrings.Add(wxString(_T("1 - ")) + _("Default"));
+	encodingStrings.Add(wxString(_T("2 - ")) + _("Symbol"));
+	encodingStrings.Add(wxString(_T("77 - ")) + _("Mac"));
+	encodingStrings.Add(wxString(_T("128 - ")) + _("Shift_JIS"));
+	encodingStrings.Add(wxString(_T("129 - ")) + _("Hangeul"));
+	encodingStrings.Add(wxString(_T("130 - ")) + _("Johab"));
+	encodingStrings.Add(wxString(_T("134 - ")) + _("GB2312"));
+	encodingStrings.Add(wxString(_T("136 - ")) + _("Chinese BIG5"));
+	encodingStrings.Add(wxString(_T("161 - ")) + _("Greek"));
+	encodingStrings.Add(wxString(_T("162 - ")) + _("Turkish"));
+	encodingStrings.Add(wxString(_T("163 - ")) + _("Vietnamese"));
+	encodingStrings.Add(wxString(_T("177 - ")) + _("Hebrew"));
+	encodingStrings.Add(wxString(_T("178 - ")) + _("Arabic"));
+	encodingStrings.Add(wxString(_T("186 - ")) + _("Baltic"));
+	encodingStrings.Add(wxString(_T("204 - ")) + _("Russian"));
+	encodingStrings.Add(wxString(_T("222 - ")) + _("Thai"));
+	encodingStrings.Add(wxString(_T("238 - ")) + _("East European"));
+	encodingStrings.Add(wxString(_T("255 - ")) + _("OEM"));
+}
