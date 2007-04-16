@@ -45,6 +45,7 @@
 //////////////
 // Prototypes
 class AssStyle;
+class VideoProvider;
 
 
 /////////////////////////
@@ -54,6 +55,7 @@ private:
 	wxBitmap *bmp;
 	AssStyle *style;
 	wxString showText;
+	VideoProvider *vid;
 
 	void UpdateBitmap(int w=-1,int h=-1);
 	void OnSize(wxSizeEvent &event);

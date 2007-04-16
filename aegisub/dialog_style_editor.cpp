@@ -60,6 +60,7 @@ enum {
 	CHECKBOX_STYLE_ITALIC,
 	CHECKBOX_STYLE_UNDERLINE,
 	CHECKBOX_STYLE_STRIKEOUT,
+	CHECKBOX_OUTLINE,
 	BUTTON_COLOR_1,
 	BUTTON_COLOR_2,
 	BUTTON_COLOR_3,
@@ -80,7 +81,8 @@ enum {
 	TEXT_SCALE_Y,
 	TEXT_ANGLE,
 	TEXT_SPACING,
-	TEXT_PREVIEW
+	TEXT_PREVIEW,
+	COMBO_ENCODING
 };
 
 
@@ -140,12 +142,12 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&OutlineValue));
 	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&ShadowValue));
-	OutlineType = new wxCheckBox(this,-1,_("Opaque box"));
+	OutlineType = new wxCheckBox(this,CHECKBOX_OUTLINE,_("Opaque box"));
 	ScaleX = new wxTextCtrl(this,TEXT_SCALE_X,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleXValue));
 	ScaleY = new wxTextCtrl(this,TEXT_SCALE_Y,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleYValue));
 	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&AngleValue));
 	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&SpacingValue));
-	Encoding = new wxComboBox(this,-1,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
+	Encoding = new wxComboBox(this,COMBO_ENCODING,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
 	SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER);
 	PreviewText = NULL;	// Yes, this IS necessary
 	PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,Options.AsText(_T("Style editor preview text")));
@@ -366,8 +368,15 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_BUTTON(BUTTON_COLOR_2, DialogStyleEditor::OnSetColor2)
 	EVT_BUTTON(BUTTON_COLOR_3, DialogStyleEditor::OnSetColor3)
 	EVT_BUTTON(BUTTON_COLOR_4, DialogStyleEditor::OnSetColor4)
+
 	EVT_CHILD_FOCUS(DialogStyleEditor::OnChildFocus)
 	EVT_TEXT(TEXT_PREVIEW, DialogStyleEditor::OnPreviewTextChange)
+	EVT_CHECKBOX(CHECKBOX_STYLE_BOLD, DialogStyleEditor::OnCommandPreviewUpdate)
+	EVT_CHECKBOX(CHECKBOX_STYLE_ITALIC, DialogStyleEditor::OnCommandPreviewUpdate)
+	EVT_CHECKBOX(CHECKBOX_STYLE_UNDERLINE, DialogStyleEditor::OnCommandPreviewUpdate)
+	EVT_CHECKBOX(CHECKBOX_STYLE_STRIKEOUT, DialogStyleEditor::OnCommandPreviewUpdate)
+	EVT_CHECKBOX(CHECKBOX_OUTLINE, DialogStyleEditor::OnCommandPreviewUpdate)
+	EVT_COMBOBOX(COMBO_ENCODING, DialogStyleEditor::OnCommandPreviewUpdate)
 END_EVENT_TABLE()
 
 
@@ -550,6 +559,8 @@ void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 		work->bold = (newfont.GetWeight() == wxFONTWEIGHT_BOLD);
 		work->italic = (newfont.GetStyle() == wxFONTSTYLE_ITALIC);
 		work->underline = newfont.GetUnderlined();
+		UpdateWorkStyle();
+		SubsPreview->SetStyle(work);
 
 		// Comic sans warning
 		if (newfont.GetFaceName() == _T("Comic Sans MS")) {
@@ -591,6 +602,15 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 		SubsPreview->SetText(PreviewText->GetValue());
 		event.Skip();
 	}
+}
+
+
+///////////////////////////////////
+// Command event to update preview
+void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
+	UpdateWorkStyle();
+	SubsPreview->SetStyle(work);
+	event.Skip();
 }
 
 

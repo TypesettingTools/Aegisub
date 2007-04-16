@@ -118,6 +118,7 @@ private:
 	void OnSetColor3 (wxCommandEvent &event);
 	void OnSetColor4 (wxCommandEvent &event);
 	void OnChildFocus (wxChildFocusEvent &event);
+	void OnCommandPreviewUpdate (wxCommandEvent &event);
 	void OnPreviewTextChange (wxCommandEvent &event);
 
 public:
