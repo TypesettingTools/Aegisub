@@ -39,26 +39,24 @@
 
 ////////////
 // Includes
+#include "ass_style.h"
 #include "subs_preview.h"
 #include "video_provider_dummy.h"
 #include "subtitles_provider.h"
 #include "ass_file.h"
-#include "ass_style.h"
 
 
 ///////////////
 // Constructor
-SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int style)
-: wxWindow(parent,id,pos,size,style)
+SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int winStyle)
+: wxWindow(parent,id,pos,size,winStyle)
 {
-	SetSizeHints(size.GetWidth(),size.GetHeight(),-1,-1);
-	bmp = NULL;
 	AssStyle temp;
-	wxString text = _T("Aegisub 0123 ");
-	text += 0x6708;
-	text += 0x8a9e;
-	SetText(text);
+	bmp = NULL;
+	style = NULL;
 	SetStyle(&temp);
+	SetText(_T("preview"));
+	SetSizeHints(size.GetWidth(),size.GetHeight(),-1,-1);
 }
 
 
@@ -66,17 +64,31 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize si
 // Destructor
 SubtitlesPreview::~SubtitlesPreview() {
 	delete bmp;
+	delete style;
 }
 
 
 /////////////
 // Set style
 void SubtitlesPreview::SetStyle(AssStyle *_style) {
-	style = AssEntry::GetAsStyle(_style->Clone());
-	style->name = _T("Preview");
-	style->alignment = 5;
-	for (int i=0;i<4;i++) style->Margin[i] = 0;
-	style->UpdateData();
+	// Prepare style
+	AssStyle *tmpStyle = AssEntry::GetAsStyle(_style->Clone());
+	tmpStyle->name = _T("Preview");
+	tmpStyle->alignment = 5;
+	for (int i=0;i<4;i++) tmpStyle->Margin[i] = 0;
+	tmpStyle->UpdateData();
+
+	// See if it's any different from the current
+	if (style) {
+		if (tmpStyle->IsEqualTo(style)) {
+			delete tmpStyle;
+			return;
+		}
+	}
+
+	// Update
+	delete style;
+	style = tmpStyle;
 	UpdateBitmap();
 }
 
@@ -84,8 +96,10 @@ void SubtitlesPreview::SetStyle(AssStyle *_style) {
 ////////////
 // Set text
 void SubtitlesPreview::SetText(wxString text) {
-	showText = text;
-	UpdateBitmap();
+	if (text != showText) {
+		showText = text;
+		UpdateBitmap();
+	}
 }
 
 
@@ -126,7 +140,7 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	subs->InsertStyle(style);
 	subs->SetScriptInfo(_T("PlayResX"),wxString::Format(_T("%i"),w));
 	subs->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),h));
-	subs->AddLine(_T("Dialogue: 0,0:00:00.00,0:00:05.00,Preview,,0000,0000,0000,,") + showText,_T("[Events]"),0,ver,&outGroup);
+	subs->AddLine(_T("Dialogue: 0,0:00:00.00,0:00:05.00,Preview,,0000,0000,0000,,{\\q2}") + showText,_T("[Events]"),0,ver,&outGroup);
 
 	// Apply subtitles
 	SubtitlesProvider *provider = SubtitlesProviderFactory::GetProvider();

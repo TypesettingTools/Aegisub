@@ -342,6 +342,11 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Last open automation path"),_T(""));
 
 	SetBool(_T("kanji timer interpolation"),true);
+
+	wxString previewText = _T("Aegisub 0123 ");
+	previewText += 0x6708;
+	previewText += 0x8a9e;
+	SetText(_T("Style editor preview text"),previewText);
 }
 
 

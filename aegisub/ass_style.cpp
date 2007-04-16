@@ -126,6 +126,16 @@ wxString AssColor::GetSSAFormatted () {
 }
 
 
+/////////////
+// Operators
+bool AssColor::operator==(AssColor &col) const {
+	return r==col.r && g==col.g && b==col.b && a==col.a;
+}
+bool AssColor::operator!=(AssColor &col) const {
+	return r!=col.r || g!=col.g || b!=col.b || a!=col.a;
+}
+
+
 
 ///////////////////////// AssStyle /////////////////////////
 ///////////////////////
@@ -518,6 +528,41 @@ AssEntry *AssStyle::Clone() {
 
 	// Return
 	return final;
+}
+
+
+///////////////////////////
+// Equal to another style?
+bool AssStyle::IsEqualTo(AssStyle *style) {
+	// memcmp won't work because strings won't match
+	if (style->alignment != alignment || 
+		style->angle != angle ||
+		style->bold != bold ||
+		style->borderstyle != borderstyle ||
+		style->encoding != encoding ||
+		style->font != font ||
+		style->fontsize != fontsize ||
+		style->italic != italic ||
+		style->Margin[0] != Margin[0] ||
+		style->Margin[1] != Margin[1] ||
+		style->Margin[2] != Margin[2] ||
+		style->Margin[3] != Margin[3] ||
+		style->name != name ||
+		style->outline != outline ||
+		style->outline_w != outline_w ||
+		style->primary != primary ||
+		style->scalex != scalex ||
+		style->scaley != scaley ||
+		style->secondary != secondary ||
+		style->shadow != shadow ||
+		style->shadow_w != shadow_w ||
+		style->spacing != spacing ||
+		style->strikeout != strikeout ||
+		style->underline != underline ||
+		style->relativeTo != relativeTo)
+		return false;
+
+	else return true;
 }
 
 

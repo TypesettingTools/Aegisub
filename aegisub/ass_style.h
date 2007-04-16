@@ -53,6 +53,9 @@ public:
 	AssColor();
 	AssColor(wxColour &color);
 
+	bool operator==(AssColor &col) const;
+	bool operator!=(AssColor &col) const;
+
 	wxColor GetWXColor();					// Return as a wxColor
 	void SetWXColor(const wxColor &color);	// Sets from a wxColor
 	void Parse(const wxString value);		// Parse SSA or ASS-style color
@@ -96,12 +99,13 @@ public:
 	bool Parse(wxString data,int version=1);	// Parses raw ASS/SSA data into everything else
 	void UpdateData();				// Updates raw data
 	wxString GetSSAText();			// Retrieves SSA-formatted style
+
 	wxString GetMarginString(int which);					// Returns the margin value as a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	void SetMarginString(const wxString value,int which);	// Sets margin value from a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
-
 	static void GetEncodings(wxArrayString &encodingStrings);
 
 	AssEntry *Clone();
+	bool IsEqualTo(AssStyle *style);
 
 	AssStyle();
 	AssStyle(wxString data,int version=1);

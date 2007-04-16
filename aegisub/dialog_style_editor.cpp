@@ -49,6 +49,39 @@
 #include "dialog_colorpicker.h"
 #include "colour_button.h"
 #include "subs_preview.h"
+#include "options.h"
+
+
+///////
+// IDs
+enum {
+	BUTTON_STYLE_FONT = 1050,
+	CHECKBOX_STYLE_BOLD,
+	CHECKBOX_STYLE_ITALIC,
+	CHECKBOX_STYLE_UNDERLINE,
+	CHECKBOX_STYLE_STRIKEOUT,
+	BUTTON_COLOR_1,
+	BUTTON_COLOR_2,
+	BUTTON_COLOR_3,
+	BUTTON_COLOR_4,
+	RADIO_ALIGNMENT,
+	TEXT_FONT_NAME,
+	TEXT_FONT_SIZE,
+	TEXT_ALPHA_1,
+	TEXT_ALPHA_2,
+	TEXT_ALPHA_3,
+	TEXT_ALPHA_4,
+	TEXT_MARGIN_L,
+	TEXT_MARGIN_R,
+	TEXT_MARGIN_V,
+	TEXT_OUTLINE,
+	TEXT_SHADOW,
+	TEXT_SCALE_X,
+	TEXT_SCALE_Y,
+	TEXT_ANGLE,
+	TEXT_SPACING,
+	TEXT_PREVIEW
+};
 
 
 ///////////////
@@ -86,8 +119,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
-	FontName = new wxTextCtrl(this,-1,style->font,wxDefaultPosition,wxSize(150,20));
-	FontSize = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(30,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
+	FontName = new wxTextCtrl(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20));
+	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(30,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
 	wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
 	BoxItalic = new wxCheckBox(this,CHECKBOX_STYLE_ITALIC,_("Italic"));
@@ -97,24 +130,25 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	colorButton[1] = new ColourButton(this,BUTTON_COLOR_2,wxSize(45,16),style->secondary.GetWXColor());
 	colorButton[2] = new ColourButton(this,BUTTON_COLOR_3,wxSize(45,16),style->outline.GetWXColor());
 	colorButton[3] = new ColourButton(this,BUTTON_COLOR_4,wxSize(45,16),style->shadow.GetWXColor());
-	ColorAlpha1 = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha1Value));
-	ColorAlpha2 = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha2Value));
-	ColorAlpha3 = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha3Value));
-	ColorAlpha4 = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha4Value));
-	MarginL = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginLValue));
-	MarginR = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginRValue));
-	MarginV = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginVValue));
+	ColorAlpha1 = new wxTextCtrl(this,TEXT_ALPHA_1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha1Value));
+	ColorAlpha2 = new wxTextCtrl(this,TEXT_ALPHA_2,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha2Value));
+	ColorAlpha3 = new wxTextCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha3Value));
+	ColorAlpha4 = new wxTextCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha4Value));
+	MarginL = new wxTextCtrl(this,TEXT_MARGIN_L,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginLValue));
+	MarginR = new wxTextCtrl(this,TEXT_MARGIN_R,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginRValue));
+	MarginV = new wxTextCtrl(this,TEXT_MARGIN_V,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginVValue));
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
-	Outline = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&OutlineValue));
-	Shadow = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&ShadowValue));
+	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&OutlineValue));
+	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&ShadowValue));
 	OutlineType = new wxCheckBox(this,-1,_("Opaque box"));
-	ScaleX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleXValue));
-	ScaleY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleYValue));
-	Angle = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition, wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&AngleValue));
-	Spacing = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&SpacingValue));
+	ScaleX = new wxTextCtrl(this,TEXT_SCALE_X,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleXValue));
+	ScaleY = new wxTextCtrl(this,TEXT_SCALE_Y,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleYValue));
+	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&AngleValue));
+	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&SpacingValue));
 	Encoding = new wxComboBox(this,-1,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
 	SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER);
-	PreviewText = new wxTextCtrl(this,-1,_T("preview text (TODO)"));
+	PreviewText = NULL;	// Yes, this IS necessary
+	PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,Options.AsText(_T("Style editor preview text")));
 
 	// Set control tooltips
 	FontName->SetToolTip(_("Font face"));
@@ -148,6 +182,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	OutlineType->SetValue(style->borderstyle == 3);
 	SubsPreview->SetStyle(style);
 	Alignment->SetSelection(AlignToControl(style->alignment));
+	SubsPreview->SetText(PreviewText->GetValue());
 
 	// Set encoding value
 	int encLen = EncodingValue.Length();
@@ -331,6 +366,8 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_BUTTON(BUTTON_COLOR_2, DialogStyleEditor::OnSetColor2)
 	EVT_BUTTON(BUTTON_COLOR_3, DialogStyleEditor::OnSetColor3)
 	EVT_BUTTON(BUTTON_COLOR_4, DialogStyleEditor::OnSetColor4)
+	EVT_CHILD_FOCUS(DialogStyleEditor::OnChildFocus)
+	EVT_TEXT(TEXT_PREVIEW, DialogStyleEditor::OnPreviewTextChange)
 END_EVENT_TABLE()
 
 
@@ -410,56 +447,8 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 			work->name = newStyleName;
 		}
 
-		// Update scale
-		ScaleX->GetValue().ToDouble(&(work->scalex));
-		ScaleY->GetValue().ToDouble(&(work->scaley));
-
-		// Update encoding
-		long templ = 0;
-		wxString enc = Encoding->GetValue();
-		enc.Left(enc.Find(_T("-"))-1).ToLong(&templ);
-		work->encoding = templ;
-
-		// Angle and spacing
-		Angle->GetValue().ToDouble(&(work->angle));
-		Spacing->GetValue().ToDouble(&(work->spacing));
-
-		// Outline type
-		if(OutlineType->IsChecked()) work->borderstyle = 3;
-		else work->borderstyle = 1;
-
-		// Shadow and outline
-		Shadow->GetValue().ToDouble(&(work->shadow_w));
-		Outline->GetValue().ToDouble(&(work->outline_w));
-
-		// Alignment
-		work->alignment = ControlToAlign(Alignment->GetSelection());
-
-		// Margins
-		work->SetMarginString(MarginL->GetValue(),0);
-		work->SetMarginString(MarginR->GetValue(),1);
-		work->SetMarginString(MarginV->GetValue(),2); // make sure both top and bottom margins reflect vertical margin
-		work->SetMarginString(MarginV->GetValue(),3);
-
-		// Color alphas
-		ColorAlpha1->GetValue().ToLong(&templ);
-		work->primary.a = templ;
-		ColorAlpha2->GetValue().ToLong(&templ);
-		work->secondary.a = templ;
-		ColorAlpha3->GetValue().ToLong(&templ);
-		work->outline.a = templ;
-		ColorAlpha4->GetValue().ToLong(&templ);
-		work->shadow.a = templ;
-
-		// Bold/italic/underline/strikeout
-		work->bold = BoxBold->IsChecked();
-		work->italic = BoxItalic->IsChecked();
-		work->underline = BoxUnderline->IsChecked();
-		work->strikeout = BoxStrikeout->IsChecked();
-
-		// Font and its size
-		work->font = FontName->GetValue();
-		FontSize->GetValue().ToDouble(&(work->fontsize));
+		// Update work style
+		UpdateWorkStyle();
 
 		// Copy
 		*style = *work;
@@ -468,16 +457,80 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		grid->CommitChanges();
 
 		// Exit
-		if (close) EndModal(1);
+		if (close) {
+			EndModal(1);
+			Options.SetText(_T("Style editor preview text"),PreviewText->GetValue());
+			Options.Save();
+		}
 
 		// Update preview
-		SubsPreview->SetStyle(style);
+		else SubsPreview->SetStyle(style);
 	}
 
 	// Close
 	else {
-		if (close) EndModal(0);
+		if (close) {
+			EndModal(0);
+			Options.SetText(_T("Style editor preview text"),PreviewText->GetValue());
+			Options.Save();
+		}
 	}
+}
+
+
+/////////////////////
+// Update work style
+void DialogStyleEditor::UpdateWorkStyle() {
+	// Font and its size
+	work->font = FontName->GetValue();
+	FontSize->GetValue().ToDouble(&(work->fontsize));
+
+	// Update scale
+	ScaleX->GetValue().ToDouble(&(work->scalex));
+	ScaleY->GetValue().ToDouble(&(work->scaley));
+
+	// Update encoding
+	long templ = 0;
+	wxString enc = Encoding->GetValue();
+	enc.Left(enc.Find(_T("-"))-1).ToLong(&templ);
+	work->encoding = templ;
+
+	// Angle and spacing
+	Angle->GetValue().ToDouble(&(work->angle));
+	Spacing->GetValue().ToDouble(&(work->spacing));
+
+	// Outline type
+	if(OutlineType->IsChecked()) work->borderstyle = 3;
+	else work->borderstyle = 1;
+
+	// Shadow and outline
+	Shadow->GetValue().ToDouble(&(work->shadow_w));
+	Outline->GetValue().ToDouble(&(work->outline_w));
+
+	// Alignment
+	work->alignment = ControlToAlign(Alignment->GetSelection());
+
+	// Margins
+	work->SetMarginString(MarginL->GetValue(),0);
+	work->SetMarginString(MarginR->GetValue(),1);
+	work->SetMarginString(MarginV->GetValue(),2); // make sure both top and bottom margins reflect vertical margin
+	work->SetMarginString(MarginV->GetValue(),3);
+
+	// Color alphas
+	ColorAlpha1->GetValue().ToLong(&templ);
+	work->primary.a = templ;
+	ColorAlpha2->GetValue().ToLong(&templ);
+	work->secondary.a = templ;
+	ColorAlpha3->GetValue().ToLong(&templ);
+	work->outline.a = templ;
+	ColorAlpha4->GetValue().ToLong(&templ);
+	work->shadow.a = templ;
+
+	// Bold/italic/underline/strikeout
+	work->bold = BoxBold->IsChecked();
+	work->italic = BoxItalic->IsChecked();
+	work->underline = BoxUnderline->IsChecked();
+	work->strikeout = BoxStrikeout->IsChecked();
 }
 
 
@@ -518,6 +571,26 @@ void DialogStyleEditor::OnSetColor (int n) {
 		default: throw _T("Never gets here");
 	}
 	modify->SetWXColor(colorButton[n-1]->GetColour());
+	SubsPreview->SetStyle(work);
+}
+
+
+//////////////////////
+// Child focus change
+void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
+	UpdateWorkStyle();
+	SubsPreview->SetStyle(work);
+	event.Skip();
+}
+
+
+////////////////////////
+// Preview text changed
+void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
+	if (PreviewText) {
+		SubsPreview->SetText(PreviewText->GetValue());
+		event.Skip();
+	}
 }
 
 

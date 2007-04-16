@@ -107,6 +107,7 @@ private:
 	void SetBitmapColor (int n,wxColour color);
 	int AlignToControl (int n);
 	int ControlToAlign (int n);
+	void UpdateWorkStyle ();
 
 	void OnApply (wxCommandEvent &event);
 	void OnCancel (wxCommandEvent &event);
@@ -116,6 +117,8 @@ private:
 	void OnSetColor2 (wxCommandEvent &event);
 	void OnSetColor3 (wxCommandEvent &event);
 	void OnSetColor4 (wxCommandEvent &event);
+	void OnChildFocus (wxChildFocusEvent &event);
+	void OnPreviewTextChange (wxCommandEvent &event);
 
 public:
 	DialogStyleEditor(wxWindow *parent,AssStyle *style,SubtitlesGrid *grid);
@@ -125,22 +128,6 @@ public:
 	void OnSetColor (int n);
 
 	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-	BUTTON_STYLE_FONT = 1050,
-	CHECKBOX_STYLE_BOLD,
-	CHECKBOX_STYLE_ITALIC,
-	CHECKBOX_STYLE_UNDERLINE,
-	CHECKBOX_STYLE_STRIKEOUT,
-	BUTTON_COLOR_1,
-	BUTTON_COLOR_2,
-	BUTTON_COLOR_3,
-	BUTTON_COLOR_4,
-	RADIO_ALIGNMENT
 };
 
 
