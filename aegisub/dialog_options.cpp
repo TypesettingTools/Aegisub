@@ -58,6 +58,7 @@
 #include "audio_box.h"
 #include "audio_display.h"
 #include "video_context.h"
+#include "browse_button.h"
 
 
 ///////////////
@@ -84,6 +85,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	wxPanel *displayPage = new wxPanel(book,-1);
 	wxPanel *autoPage = new wxPanel(book,-1);
 	wxPanel *hotkeysPage = new wxPanel(book,-1);
+	BrowseButton *browse;
 
 	// General page
 	{
@@ -126,7 +128,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *fileSizer1 = new wxStaticBoxSizer(wxVERTICAL,filePage,_("Auto-save"));
 		wxSizer *fileSizer2 = new wxBoxSizer(wxHORIZONTAL);
 		wxSizer *fileSizer3 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("File paths"));
-		wxFlexGridSizer *fileSizer4 = new wxFlexGridSizer(3,2,5,5);
+		wxFlexGridSizer *fileSizer4 = new wxFlexGridSizer(3,3,5,5);
 		wxSizer *fileSizer5 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("Miscelanea"));
 		wxFlexGridSizer *fileSizer6 = new wxFlexGridSizer(3,2,5,5);
 
@@ -146,14 +148,25 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		edit = new wxTextCtrl(filePage,-1);
 		Bind(edit,_T("Auto save path"));
 		fileSizer4->Add(edit,1,wxEXPAND);
+		browse = new BrowseButton(filePage,-1,_T(""),BROWSE_FOLDER);
+		browse->Bind(edit);
+		fileSizer4->Add(browse,0,wxEXPAND);
+
 		fileSizer4->Add(new wxStaticText(filePage,-1,_("Auto-backup path:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
 		edit = new wxTextCtrl(filePage,-1);
 		Bind(edit,_T("Auto backup path"));
 		fileSizer4->Add(edit,1,wxEXPAND);
+		browse = new BrowseButton(filePage,-1,_T(""),BROWSE_FOLDER);
+		browse->Bind(edit);
+		fileSizer4->Add(browse,0,wxEXPAND);
+
 		fileSizer4->Add(new wxStaticText(filePage,-1,_("Crash recovery path:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
 		edit = new wxTextCtrl(filePage,-1);
 		Bind(edit,_T("Auto recovery path"));
 		fileSizer4->Add(edit,1,wxEXPAND);
+		browse = new BrowseButton(filePage,-1,_T(""),BROWSE_FOLDER);
+		browse->Bind(edit);
+		fileSizer4->Add(browse,0,wxEXPAND);
 		fileSizer4->AddGrowableCol(1,1);
 
 		// Third static box
@@ -189,19 +202,23 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Sizers
 		wxSizer *editMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *editSizer1 = new wxStaticBoxSizer(wxVERTICAL,editPage,_("Options"));
+		wxSizer *editSizer6 = new wxBoxSizer(wxHORIZONTAL);
 		wxFlexGridSizer *editSizer2 = new wxFlexGridSizer(4,2,5,5);
 		wxSizer *editSizer3 = new wxStaticBoxSizer(wxVERTICAL,editPage,_("Style"));
 		wxFlexGridSizer *editSizer4 = new wxFlexGridSizer(9,2,2,2);
 		wxSizer *editSizer5 = new wxBoxSizer(wxHORIZONTAL);
 
 		// First static box
-		wxString labels1[4] = { _("Path to dictionaries"), _("Enable call tips"), _("Link commiting of times"), _("Enable syntax highlighting") };
-		wxString options1[4] = { _T("Dictionaries path"), _T("Call Tips Enabled"), _T("Link Time Boxes Commit"), _T("Syntax Highlight Enabled") };
-		editSizer2->Add(new wxStaticText(editPage,-1,labels1[0]+_T(": ")),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+		wxString labels1[3] = { _("Enable call tips"), _("Enable syntax highlighting"), _("Link commiting of times") };
+		wxString options1[3] = { _T("Call Tips Enabled"), _T("Syntax Highlight Enabled"), _T("Link Time Boxes Commit") };
+		editSizer6->Add(new wxStaticText(editPage,-1,_("Path to dictionary files:")),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
 		wxTextCtrl *edit = new wxTextCtrl(editPage,-1,_T(""));
-		Bind(edit,options1[0]);
-		editSizer2->Add(edit,0,wxEXPAND|wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
-		for (int i=1;i<4;i++) {
+		Bind(edit,_T("Dictionaries path"));
+		editSizer6->Add(edit,1,wxEXPAND|wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FOLDER);
+		browse->Bind(edit);
+		editSizer6->Add(browse,0,wxEXPAND);
+		for (int i=0;i<3;i++) {
 			wxCheckBox *control = new wxCheckBox(editPage,-1,labels1[i]);
 			Bind(control,options1[i]);
 			editSizer2->Add(control,1,wxEXPAND,0);
@@ -231,15 +248,20 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Third sizer
 		editSizer5->Add(new wxStaticText(editPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FONT);
 		control = new wxTextCtrl(editPage,-1);
+		browse->Bind((wxTextCtrl*)control);
 		Bind(control,options2[9]);
 		editSizer5->Add(control,1,wxEXPAND | wxRIGHT,5);
 		control = new wxTextCtrl(editPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
+		browse->Bind((wxTextCtrl*)control,1);
 		Bind(control,options2[10]);
-		editSizer5->Add(control,0,wxEXPAND | wxRIGHT,0);
+		editSizer5->Add(control,0,wxEXPAND | wxRIGHT,5);
+		editSizer5->Add(browse,0,wxEXPAND);
 
 		// Sizers
 		editSizer1->Add(editSizer2,1,wxEXPAND | wxALL,5);
+		editSizer1->Add(editSizer6,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 		editSizer3->Add(editSizer4,1,wxEXPAND | wxALL,5);
 		editSizer3->Add(editSizer5,0,wxEXPAND | wxALL,5);
 		editMainSizer->Add(editSizer1,0,wxEXPAND | wxALL,0);
@@ -290,12 +312,16 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Third sizer
 		gridSizer4->Add(new wxStaticText(gridPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		browse = new BrowseButton(gridPage,-1,_T(""),BROWSE_FONT);
 		control = new wxTextCtrl(gridPage,-1);
 		Bind(control,_T("Grid font face"));
+		browse->Bind((wxTextCtrl*)control);
 		gridSizer4->Add(control,1,wxEXPAND | wxRIGHT,5);
 		control = new wxTextCtrl(gridPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
 		Bind(control,_T("Grid font size"));
-		gridSizer4->Add(control,0,wxEXPAND | wxRIGHT,0);
+		browse->Bind((wxTextCtrl*)control,1);
+		gridSizer4->Add(control,0,wxEXPAND | wxRIGHT,5);
+		gridSizer4->Add(browse,0,wxEXPAND);
 
 		// Fourth sizer
 		gridSizer5->Add(new wxStaticText(gridPage,-1,_("Replace override tags with: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);

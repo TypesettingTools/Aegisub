@@ -135,19 +135,28 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	AegiVideoFrame frame;
 	frame.CopyFrom(vid->GetFrame(0));
 
-	// Generate subtitles
-	AssFile *subs = new AssFile();
-	subs->LoadDefault();
-	int ver = 1;
-	wxString outGroup;
-	subs->InsertStyle(style);
-	subs->SetScriptInfo(_T("PlayResX"),wxString::Format(_T("%i"),w));
-	subs->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),h));
-	subs->AddLine(_T("Dialogue: 0,0:00:00.00,0:00:05.00,Preview,,0000,0000,0000,,{\\q2}") + showText,_T("[Events]"),0,ver,&outGroup);
+	// Try to get subtitles provider
+	SubtitlesProvider *provider = NULL;
+	try {
+		provider = SubtitlesProviderFactory::GetProvider();
+	} 
+	catch (...) {
+		wxMessageBox(_T("Could not get any subtitles provider for the preview box. Make sure that you have a provider installed."),_T("No subtitles provider"),wxICON_ERROR);
+	}
 
-	// Apply subtitles
-	SubtitlesProvider *provider = SubtitlesProviderFactory::GetProvider();
+	// Provider OK
 	if (provider) {
+		// Generate subtitles
+		AssFile *subs = new AssFile();
+		subs->LoadDefault();
+		int ver = 1;
+		wxString outGroup;
+		subs->InsertStyle(style);
+		subs->SetScriptInfo(_T("PlayResX"),wxString::Format(_T("%i"),w));
+		subs->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),h));
+		subs->AddLine(_T("Dialogue: 0,0:00:00.00,0:00:05.00,Preview,,0000,0000,0000,,{\\q2}") + showText,_T("[Events]"),0,ver,&outGroup);
+
+		// Apply subtitles
 		provider->LoadSubtitles(subs);
 		provider->DrawSubtitles(frame,0.1);
 		delete provider;
