@@ -806,14 +806,14 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 
 			// Video
 			if (curSubsVideo != VideoContext::Get()->videoName) {
-				if (curSubsVideo != _T("")) {
-					LoadVideo(curSubsVideo);
-					if (VideoContext::Get()->IsLoaded()) {
-						VideoContext::Get()->SetAspectRatio(videoAr,videoArValue);
-						videoBox->videoDisplay->SetZoomPos(videoZoom-1);
-						VideoContext::Get()->JumpToFrame(videoPos);
-					}
+				//if (curSubsVideo != _T("")) {
+				LoadVideo(curSubsVideo);
+				if (VideoContext::Get()->IsLoaded()) {
+					VideoContext::Get()->SetAspectRatio(videoAr,videoArValue);
+					videoBox->videoDisplay->SetZoomPos(videoZoom-1);
+					VideoContext::Get()->JumpToFrame(videoPos);
 				}
+				//}
 			}
 
 			// Keyframes
