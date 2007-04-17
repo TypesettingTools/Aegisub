@@ -114,6 +114,8 @@ Please visit http://aegisub.net to download latest version
 - Added option to disable automatic grabbing of times from selected lines on the audio display. Also, it will never pick the times from 0:00:00.00 -> 0:00:00.00 lines. (AMZ)
 - Added a "Scale Border and Shadow" check box to script properties dialog. (AMZ)
 - Fixed drawing of inactive lines in audio display to prevent it from being drawn over selection. (AMZ)
+- Style Editor dialog was redesigned to be more horizontal. (AMZ)
+- Style Editor dialog received a realtime styles preview box. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
