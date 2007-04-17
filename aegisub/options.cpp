@@ -157,7 +157,7 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Avisynth subs renderer"),_T("vsfilter"));
 	SetBool(_T("Avisynth render own subs"),true);
 	#ifdef __WINDOWS__
-	SetText(_T("Subtitles Provider"),_T("csri/vsfilter"));
+	SetText(_T("Subtitles Provider"),_T("csri/vsfilter_textsub"));
 	#else
 	SetText(_T("Subtitles Provider"),_T("csri/asa"));
 	#endif
