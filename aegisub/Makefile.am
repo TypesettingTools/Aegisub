@@ -54,6 +54,7 @@ aegisub_SOURCES = \
 	auto4_auto3.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
+	browse_button.cpp \
 	colorspace.cpp \
 	colour_button.cpp \
 	dialog_about.cpp \
