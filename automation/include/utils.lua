@@ -85,25 +85,25 @@ function extract_color(s)
 	-- Try a style first
 	a, b, g, r = s:match("&H(%x%x)(%x%x)(%x%x)(%x%x)")
 	if a then
-		return, r, g, b, a
+		return tonumber(r, 16), tonumber(g, 16), tonumber(b, 16), tonumber(a, 16)
 	end
 	
 	-- Then a colour override
 	b, g, r = s:match("&H(%x%x)(%x%x)(%x%x)&")
 	if b then
-		return, r, g, b, 0
+		return tonumber(r, 16), tonumber(g, 16), tonumber(b, 16), 0
 	end
 	
 	-- Then an alpha override
 	a = s:match("&H(%x%x)&")
 	if a then
-		return 0, 0, 0, a
+		return 0, 0, 0, tonumber(a, 16)
 	end
 	
 	-- Ok how about HTML format then?
 	r, g, b, a = s:match("#(%x%x)(%x%x)?(%x%x)?(%x%x)?")
 	if r then
-		return r or 0, g or 0, b or 0, a or 0
+		return tonumber(r or 0, 16), tonumber(g or 0, 16), tonumber(b or 0, 16), tonumber(a or 0, 16)
 	end
 	
 	-- Failed...
@@ -117,14 +117,14 @@ function alpha_from_style(scolor)
 end
 
 -- Create an colour override code from a style definition colour code
-function colour_from_style(scolor)
+function color_from_style(scolor)
 	local r, g, b = extract_color(scolor)
 	return ass_color(r, g, b)
 end
 
 -- Converts HSV (Hue, Saturation, Value)  to RGB
 function HSV_to_RGB(H,S,V)
-	local r,g,b;
+	local r,g,b = 0,0,0
 
 	-- Saturation is zero, make grey
 	if S == 0 then
@@ -141,6 +141,7 @@ function HSV_to_RGB(H,S,V)
 	-- Else, calculate color
 	else
 		-- Calculate subvalues
+		H = H % 360 -- Put H in range [0,360)
 		local Hi = math.floor(H/60)
 		local f = H/60.0 - Hi
 		local p = V*(1-S)
@@ -172,6 +173,8 @@ function HSV_to_RGB(H,S,V)
 			r = V*255.0
 			g = p*255.0
 			b = q*255.0
+		else
+			aegisub.debug.out(2, "RGB_to_HSV: Hi got an unexpected value: %d\n\n", Hi)
 		end
 	end
 	
