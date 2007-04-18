@@ -153,6 +153,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,Options.AsText(_T("Style editor preview text")));
 
 	// Set control tooltips
+	StyleName->SetToolTip(_("Style name"));
 	FontName->SetToolTip(_("Font face"));
 	FontSize->SetToolTip(_("Font size"));
 	colorButton[0]->SetToolTip(_("Click to choose primary color"));
@@ -175,6 +176,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."));
 	Spacing->SetToolTip(_("Character spacing, in pixels"));
 	Alignment->SetToolTip(_("Alignment in screen, in numpad style"));
+	SubsPreview->SetToolTip(_("Preview of current stlye"));
+	PreviewText->SetToolTip(_("Text to be used for the preview"));
 
 	// Set up controls
 	BoxBold->SetValue(style->bold);
