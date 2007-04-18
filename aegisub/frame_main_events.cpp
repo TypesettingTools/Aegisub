@@ -1351,7 +1351,7 @@ void FrameMain::OnOpenStylingAssistant (wxCommandEvent &event) {
 void FrameMain::OnAutoSave(wxTimerEvent &event) {
 	// Auto Save
 	try {
-		if (AssFile::top->loaded && AssFile::top->CanSave()) {
+		if (AssFile::top->loaded) {
 			// Set path
 			wxFileName origfile(AssFile::top->filename);
 			wxString path = Options.AsText(_T("Auto save path"));
@@ -1363,7 +1363,7 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 			if (!dstpath.DirExists()) wxMkdir(path);
 
 			// Save
-			wxString backup = path + origfile.GetName() + _T(".AUTOSAVE.") + origfile.GetExt();
+			wxString backup = path + origfile.GetName() + _T(".AUTOSAVE.ass");
 			AssFile::top->Save(backup,false,false);
 
 			// Set status bar
