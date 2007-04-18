@@ -344,7 +344,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 
 	SetBool(_T("kanji timer interpolation"),true);
 
-	wxString previewText = _T("Aegisub\N0123 ");
+	wxString previewText = _T("Aegisub\\N0123 ");
 	previewText += 0x6708;
 	previewText += 0x8a9e;
 	SetText(_T("Style editor preview text"),previewText);
