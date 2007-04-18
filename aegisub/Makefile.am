@@ -76,6 +76,7 @@ aegisub_SOURCES = \
 	dialog_search_replace.cpp \
 	dialog_selection.cpp \
 	dialog_shift_times.cpp \
+	dialog_spellchecker.cpp \
 	dialog_splash.cpp \
 	dialog_style_editor.cpp \
 	dialog_style_manager.cpp \
@@ -92,6 +93,7 @@ aegisub_SOURCES = \
 	fft.cpp \
 	frame_main.cpp \
 	frame_main_events.cpp \
+	gl_text.cpp \
 	gl_wrap.cpp \
 	hilimod_textctrl.cpp \
 	hotkeys.cpp \
