@@ -61,6 +61,14 @@
 #include "browse_button.h"
 
 
+///////
+// IDs
+enum {
+	 BUTTON_DEFAULTS = 2500,
+	 HOTKEY_LIST
+};
+
+
 ///////////////
 // Constructor
 DialogOptions::DialogOptions(wxWindow *parent)
@@ -351,7 +359,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxControl *control;
 
 		// First sizer
-		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Check video resolution on open: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		videoSizer3->Add(new wxStaticText(videoPage,-1,_("Match video resolution on open: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		wxString choices1[3] = { _("Never"), _("Ask"), _("Always") };
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices1,wxCB_READONLY | wxCB_DROPDOWN);
 		Bind(control,_T("Video check script res"));
@@ -626,7 +634,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxStaticText *text = new wxStaticText(hotkeysPage,-1,_("List of all hotkeys (shortcuts) available in Aegisub.\nDouble click on any item to reassign it."),wxDefaultPosition,wxSize(150,-1));
 
 		// List of shortcuts
-		Shortcuts = new wxListView(hotkeysPage,Hotkey_List,wxDefaultPosition,wxSize(250,150),wxLC_REPORT | wxLC_SINGLE_SEL);
+		Shortcuts = new wxListView(hotkeysPage,HOTKEY_LIST,wxDefaultPosition,wxSize(250,150),wxLC_REPORT | wxLC_SINGLE_SEL);
 		Shortcuts->InsertColumn(0,_("Function"),wxLIST_FORMAT_LEFT,200);
 		Shortcuts->InsertColumn(1,_("Key"),wxLIST_FORMAT_LEFT,120);
 
@@ -663,12 +671,12 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	#endif
 
 	// Buttons Sizer
-	//wxStdDialogButtonSizer *buttonSizer = static_cast<wxStdDialogButtonSizer*>(CreateButtonSizer(wxOK|wxCANCEL));
-	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
-	buttonSizer->AddButton(new wxButton(this,wxID_OK));
-	buttonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	buttonSizer->AddButton(new wxButton(this,wxID_APPLY));
-	buttonSizer->Realize();
+	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	buttonSizer->Add(new wxButton(this,BUTTON_DEFAULTS,_("Defaults")),0);
+	buttonSizer->AddStretchSpacer(1);
+	buttonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT,5);
+	buttonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
+	buttonSizer->Add(new wxButton(this,wxID_APPLY),0);
 
 	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -706,7 +714,8 @@ BEGIN_EVENT_TABLE(DialogOptions,wxDialog)
 	EVT_BUTTON(wxID_OK,DialogOptions::OnOK)
 	EVT_BUTTON(wxID_CANCEL,DialogOptions::OnCancel)
 	EVT_BUTTON(wxID_APPLY,DialogOptions::OnApply)
-	EVT_LIST_ITEM_ACTIVATED (Hotkey_List,DialogOptions::OnEditHotkey)
+	EVT_BUTTON(BUTTON_DEFAULTS,DialogOptions::OnDefaults)
+	EVT_LIST_ITEM_ACTIVATED (HOTKEY_LIST,DialogOptions::OnEditHotkey)
 END_EVENT_TABLE()
 
 
@@ -757,6 +766,17 @@ void DialogOptions::OnCancel(wxCommandEvent &event) {
 	}
 }
 
+
+////////////////////
+// Restore defaults
+void DialogOptions::OnDefaults(wxCommandEvent &event) {
+	int result = wxMessageBox(_("Are you sure that you want to restore the defaults? All your settings will be overriden."),_("Restore defaults?"),wxYES_NO);
+	if (result == wxYES) {
+		Options.LoadDefaults(true);
+		Options.Save();
+		ReadFromOptions();
+	}
+}
 
 
 ////////////////////

@@ -90,6 +90,7 @@ private:
 	void OnOK(wxCommandEvent &event);
 	void OnCancel(wxCommandEvent &event);
 	void OnApply(wxCommandEvent &event);
+	void OnDefaults(wxCommandEvent &event);
 	void OnEditHotkey(wxListEvent &event);
 
 public:
@@ -126,11 +127,4 @@ private:
 
 public:
 	DialogInputHotkey(HotkeyType *key,wxString name);
-};
-
-
-///////
-// IDs
-enum {
-	Hotkey_List = 2500
 };

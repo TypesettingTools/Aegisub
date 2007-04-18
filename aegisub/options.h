@@ -79,7 +79,7 @@ public:
 	void SetFile(wxString file);
 	void Save();
 	void Load();
-	void LoadDefaults();
+	void LoadDefaults(bool onlyDefaults=false);
 	void AddToRecentList (wxString entry,wxString list);
 	wxArrayString GetRecentList (wxString list);
 

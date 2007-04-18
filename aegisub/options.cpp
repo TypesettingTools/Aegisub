@@ -73,7 +73,7 @@ void OptionsManager::Clear() {
 
 ///////////////////////
 // Load default values
-void OptionsManager::LoadDefaults() {
+void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	///// PUBLIC //////
 	// Here go the options that can be edited by the options menu
 	
@@ -138,15 +138,6 @@ void OptionsManager::LoadDefaults() {
 	SetText(_T("Video Screenshot Path"),_T("?video"));
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
-
-	// Dummy video defaults
-	SetModificationType(MOD_AUTOMATIC);
-	SetInt(_T("Video Dummy Last Width"), 640);
-	SetInt(_T("Video Dummy Last Height"), 480);
-	SetColour(_T("Video Dummy Last Colour"), wxColour(47, 163, 254));
-	SetFloat(_T("Video Dummy Last FPS"), 23.976);
-	SetInt(_T("Video Dummy Last Length"), 40000);
-	SetBool(_T("Video Dummy Pattern"), false);
 
 	// Video Provider (Advanced)
 	SetModificationType(MOD_VIDEO_RELOAD);
@@ -264,9 +255,19 @@ void OptionsManager::LoadDefaults() {
 	SetModificationType(MOD_OFF);
 
 
+	// Only defaults?
+	if (onlyDefaults) return;
+
 
 	///// INTERNAL //////
 	// Options that are set by the program itself
+	SetInt(_T("Video Dummy Last Width"), 640);
+	SetInt(_T("Video Dummy Last Height"), 480);
+	SetColour(_T("Video Dummy Last Colour"), wxColour(47, 163, 254));
+	SetFloat(_T("Video Dummy Last FPS"), 23.976);
+	SetInt(_T("Video Dummy Last Length"), 40000);
+	SetBool(_T("Video Dummy Pattern"), false);
+
 	SetInt(_T("Locale Code"),-1);
 	SetBool(_T("Sync video with subs"),true);
 	SetText(_T("Spell checker language"),_T("en_US"));
