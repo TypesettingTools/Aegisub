@@ -47,7 +47,7 @@
 ///////////////
 // Constructor
 BrowseButton::BrowseButton(wxWindow *parent,int id,wxString text,BrowseType _type,wxPoint position,wxSize size)
-: wxButton (parent,id,text == _T("") ? _("Browse...") : text,position,size)
+: wxButton (parent,id,text == wxString(_T("")) ? wxString(_("Browse...")) : text,position,size)
 {
 	type = _type;
 	ctrl[0] = NULL;

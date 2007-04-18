@@ -33,8 +33,6 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#pragma once
-
 ///////////
 // Headers
 #include <wx/intl.h>
