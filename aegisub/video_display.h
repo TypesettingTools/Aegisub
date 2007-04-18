@@ -104,6 +104,7 @@ public:
 
 	void Render();
 
+	void ShowCursor(bool show);
 	void ConvertMouseCoords(int &x,int &y);
 	void DrawText(wxPoint Pos, wxString Text);
 	void UpdatePositionDisplay();

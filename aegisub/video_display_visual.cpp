@@ -84,22 +84,8 @@ void VideoDisplayVisual::SetMode(int _mode) {
 	// Set mode
 	mode = _mode;
 
-	// Hide cursor
-	if (mode == 0) {
-		// Bleeeh! Hate this 'solution':
-		#if __WXGTK__
-		static char cursor_image[] = {0};
-		wxCursor cursor(cursor_image, 8, 1, -1, -1, cursor_image);
-		#else
-		wxCursor cursor(wxCURSOR_BLANK);
-		#endif // __WXGTK__
-		parent->SetCursor(cursor);
-	}
-
-	// Show cursor
-	else {
-		parent->SetCursor(wxNullCursor);
-	}
+	// Display cursor or not
+	parent->ShowCursor(mode != 0);
 }
 
 

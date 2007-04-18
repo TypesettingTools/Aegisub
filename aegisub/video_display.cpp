@@ -132,6 +132,26 @@ VideoDisplay::~VideoDisplay () {
 }
 
 
+///////////////
+// Show cursor
+void VideoDisplay::ShowCursor(bool show) {
+	// Show
+	if (show) SetCursor(wxNullCursor);
+
+	// Hide
+	else {
+		// Bleeeh! Hate this 'solution':
+		#if __WXGTK__
+		static char cursor_image[] = {0};
+		wxCursor cursor(cursor_image, 8, 1, -1, -1, cursor_image);
+		#else
+		wxCursor cursor(wxCURSOR_BLANK);
+		#endif // __WXGTK__
+		SetCursor(cursor);
+	}
+}
+
+
 //////////
 // Render
 void VideoDisplay::Render() {
@@ -345,9 +365,6 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Disable when playing
 	if (VideoContext::Get()->IsPlaying()) return;
 
-	// Set mode, for whatever reason this is needed
-	visual->SetMode(visual->mode);
-
 	// OnMouseLeave isn't called as long as we have an OnMouseEvent
 	// Just check for it and call it manually instead
 	if (event.Leaving()) {
@@ -358,6 +375,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 	// Right click
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
+		// Create menu
 		wxMenu menu;
 		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT,_("Save PNG snapshot"));
 		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD,_("Copy image to Clipboard"));
@@ -367,9 +385,15 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,_("Copy image to Clipboard (no subtitles)"))->Enable(canDoRaw);
 		menu.AppendSeparator();
 		menu.Append(VIDEO_MENU_COPY_COORDS,_("Copy coordinates to Clipboard"));
+
+		// Show cursor and popup
+		ShowCursor(true);
 		PopupMenu(&menu);
 		return;
 	}
+
+	// Enforce correct cursor display
+	ShowCursor(visual->mode != 0);
 
 	// Click?
 	if (event.ButtonDown(wxMOUSE_BTN_ANY)) {
