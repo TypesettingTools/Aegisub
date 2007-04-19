@@ -62,7 +62,6 @@ DirectSoundPlayer::DirectSoundPlayer() {
 	buffer = NULL;
 	directSound = NULL;
 	thread = NULL;
-	threadRunning = false;
 	notificationEvent = NULL;
 }
 
@@ -82,12 +81,12 @@ void DirectSoundPlayer::OpenStream() {
 
 	// Initialize the DirectSound object
 	HRESULT res;
-	res = DirectSoundCreate8(NULL,&directSound,NULL);
+	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,NULL); // TODO: support selecting audio device
 	if (res != DS_OK) throw _T("Failed initializing DirectSound");
 
 	// Set DirectSound parameters
 	AegisubApp *app = (AegisubApp*) wxTheApp;
-	directSound->SetCooperativeLevel((HWND)app->frame->GetHandle(),DSSCL_NORMAL);
+	directSound->SetCooperativeLevel((HWND)app->frame->GetHandle(),DSSCL_PRIORITY);
 
 	// Create the wave format structure
 	WAVEFORMATEX waveFormat;
@@ -132,19 +131,25 @@ void DirectSoundPlayer::CloseStream() {
 	// Stop it
 	Stop();
 
-	// Delete the DirectSound buffer
-//	delete buffer;
-	buffer = NULL;
+	// Unref the DirectSound buffer
+	if (buffer) {
+		buffer->Release();
+		buffer = NULL;
+	}
 
-	// Delete the DirectSound object
-//	delete directSound;
-	directSound = NULL;
+	// Unref the DirectSound object
+	if (directSound) {
+		directSound->Release();
+		directSound = NULL;
+	}
 }
 
 
 ///////////////
 // Fill buffer
-void DirectSoundPlayer::FillBuffer(bool fill) {
+bool DirectSoundPlayer::FillBuffer() {
+	if (playPos >= endPos) return false;
+
 	// Variables
 	void *ptr1, *ptr2;
 	unsigned long int size1, size2;
@@ -168,7 +173,7 @@ void DirectSoundPlayer::FillBuffer(bool fill) {
 	}
 
 	// Error
-	if (!SUCCEEDED(res)) return;
+	if (FAILED(res)) return false;
 
 	// Set offset
 	offset = (offset + toWrite) % bufSize;
@@ -206,6 +211,8 @@ void DirectSoundPlayer::FillBuffer(bool fill) {
 
 	// Unlock
 	buffer->Unlock(ptr1,size1,ptr2,size2);
+
+	return true;
 }
 
 
@@ -214,24 +221,20 @@ void DirectSoundPlayer::FillBuffer(bool fill) {
 void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	// Make sure that it's stopped
 	Stop();
+	// The thread is now guaranteed dead
 
-	// Lock
-	wxMutexLocker locker(DSMutex);
+	// We sure better have a buffer
+	assert(buffer);
 
-	// Check if buffer is loaded
-	if (!buffer) return;
-	buffer->Stop();
-
-	// Create notification event
-	if (notificationEvent)
-		CloseHandle(notificationEvent);
+	// Create a new notification event
+	// It was already destroyed by Stop
 	notificationEvent = CreateEvent(NULL,false,false,NULL);
 
 	// Create notification interface
 	IDirectSoundNotify8 *notify;
 	HRESULT res;
 	res = buffer->QueryInterface(IID_IDirectSoundNotify8,(LPVOID*)&notify);
-	if (!SUCCEEDED(res)) return;
+	if (FAILED(res)) return;
 
 	// Set notification
 	DSBPOSITIONNOTIFY positionNotify[4];
@@ -253,19 +256,17 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	offset = 0;
 
 	// Fill buffer
-	FillBuffer(false);
+	FillBuffer();
+
+	// Start thread
+	thread = new DirectSoundPlayerThread(this);
+	thread->Create();
+	thread->Run();
 
 	// Play
 	buffer->SetCurrentPosition(0);
 	res = buffer->Play(0,0,DSBPLAY_LOOPING);
 	if (SUCCEEDED(res)) playing = true;
-
-	// Start thread
-	if (!thread) {
-		thread = new DirectSoundPlayerThread(this);
-		thread->Create();
-		thread->Run();
-	}
 
 	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
@@ -275,14 +276,13 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 ////////
 // Stop
 void DirectSoundPlayer::Stop(bool timerToo) {
-	// Lock
-	wxMutexLocker locker(DSMutex);
-
 	// Stop the thread
 	if (thread) {
-		thread->alive = false;
+		thread->Stop();
+		thread->Wait();
 		thread = NULL;
 	}
+	// The thread is now guaranteed dead and there are no concurrency problems to worry about
 
 	// Stop
 	if (buffer) buffer->Stop();
@@ -295,10 +295,8 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	offset = 0;
 
 	// Close event handle
-	if (notificationEvent) {
-		CloseHandle(notificationEvent);
-		notificationEvent = 0;
-	}
+	CloseHandle(notificationEvent);
+	notificationEvent = 0;
 
 	// Stop timer
 	if (timerToo && displayTimer) {
@@ -346,72 +344,50 @@ __int64 DirectSoundPlayer::GetCurrentPosition() {
 // Thread constructor
 DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
 	parent = par;
-	alive = true;
-	parent->threadRunning = true;
+	stopnotify = CreateSemaphore(NULL, 0, 1, NULL);
 }
 
 
 /////////////////////
 // Thread destructor
 DirectSoundPlayerThread::~DirectSoundPlayerThread() {
+	CloseHandle(stopnotify);
 }
 
 
 //////////////////////
 // Thread entry point
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
-	// Variables
-	unsigned long int playPos=0,endPos=0,bufSize=0;
-	bool playing;
+	// Objects to wait for
+	HANDLE notifies[2] = {stopnotify, parent->notificationEvent};
 
-	// Wait for notification
-	while (alive) {
-		// Get variables
-		bool booga = true;
-		if (booga) {
-			if (!alive) break;
-			wxMutexLocker locker(parent->DSMutex);
-			if (!alive) break;
-			playPos = parent->GetCurrentPosition();
-			endPos = parent->endPos;
-			bufSize = parent->bufSize;
-			playing = parent->playing;
-			if (!alive) break;
-		}
+	while (true) {
+		// Wait for something to happen
+		DWORD cause = WaitForMultipleObjects(2, notifies, false, INFINITE);
 
-		// Flag as stopped playing, but don't actually stop yet
-		if (playPos > endPos) {
-			if (!alive) break;
-			wxMutexLocker locker(parent->DSMutex);
-			if (!alive) break;
-			parent->playing = false;
-		}
-
-		// Still playing?
-		if (playPos < endPos + bufSize/8) {
-			// Wait for signal
-			if (!alive) break;
-			WaitForSingleObject(parent->notificationEvent,1000);
-			if (!alive) break;
-
-			// Fill buffer
-			wxMutexLocker locker(parent->DSMutex);
-			if (!alive) break;
-			parent->FillBuffer(false);
-			if (!alive) break;
-		}
-
-		// Over, stop it
-		else {
-			if (alive) parent->Stop();
+		if (cause == WAIT_OBJECT_0) {
+			// stopnotify
 			break;
+		}
+		else if (cause == WAIT_OBJECT_0 + 1) {
+			// dsound notification event
+			// fill the buffer
+			if (!parent->FillBuffer())
+				break; // end of stream
 		}
 	}
 
-	//wxMutexLocker locker(parent->DSMutex);
-	parent->threadRunning = false;
-	Delete();
+	parent->playing = false;
+	parent->buffer->Stop();
 	return 0;
+}
+
+
+////////////////////////
+// Stop playback thread
+void DirectSoundPlayerThread::Stop() {
+	// Increase the stopnotify by one, causing a wait for it to succeed
+	ReleaseSemaphore(stopnotify, 1, NULL);
 }
 
 #endif

@@ -56,9 +56,10 @@ class DirectSoundPlayer;
 class DirectSoundPlayerThread : public wxThread {
 private:
 	DirectSoundPlayer *parent;
+	HANDLE stopnotify;
 
 public:
-	bool alive;
+	void Stop(); // Notify thread to stop audio playback. Thread safe.
 	DirectSoundPlayerThread(DirectSoundPlayer *parent);
 	~DirectSoundPlayerThread();
 
@@ -72,9 +73,7 @@ class DirectSoundPlayer : public AudioPlayer {
 	friend class DirectSoundPlayerThread;
 
 private:
-	wxMutex DSMutex;
-
-	bool playing;
+	volatile bool playing;
 	float volume;
 	int offset;
 	int bufSize;
@@ -87,10 +86,9 @@ private:
 	IDirectSoundBuffer8 *buffer;
 	HANDLE notificationEvent;
 
-	void FillBuffer(bool fill);
+	bool FillBuffer();
 
 	DirectSoundPlayerThread *thread;
-	bool threadRunning;
 
 public:
 	DirectSoundPlayer();
@@ -112,7 +110,7 @@ public:
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
 
-	wxMutex *GetMutex() { return &DSMutex; }
+	//wxMutex *GetMutex() { return &DSMutex; }
 };
 
 #endif

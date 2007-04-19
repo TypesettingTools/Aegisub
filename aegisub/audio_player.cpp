@@ -97,10 +97,8 @@ void AudioPlayer::SetDisplayTimer(wxTimer *timer) {
 // Ask to stop later
 void AudioPlayer::RequestStop() {
 	wxCommandEvent event(wxEVT_STOP_AUDIO, 1000);
-    event.SetEventObject(this);
-	wxMutexGuiEnter();
-	AddPendingEvent(event);
-	wxMutexGuiLeave();
+	event.SetEventObject(this);
+	AddPendingEvent(event); // thread safe
 }
 
 
