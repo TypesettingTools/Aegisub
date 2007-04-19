@@ -184,7 +184,15 @@ void TextFileReader::SetEncodingConfiguration() {
 // Reads a line from file
 wxString TextFileReader::ReadLineFromFile() {
 	Open();
-	wxString wxbuffer = _T("");
+	wxString wxbuffer;
+	int bufAlloc = 1024;
+	wxbuffer.Alloc(bufAlloc);
+#ifdef TEXT_READER_USE_STDIO
+	char buffer[512];
+	buffer[0] = 0;
+#else
+	std::string buffer = "";
+#endif
 
 	// Read UTF-16 line from file
 	if (Is16) {
@@ -212,6 +220,10 @@ wxString TextFileReader::ReadLineFromFile() {
 
 			// Convert two chars into a widechar and append to string
 			ch = *((wchar_t*)charbuffer);
+			if (wxbuffer.Length() == bufAlloc) {
+				bufAlloc *= 2;
+				wxbuffer.Alloc(bufAlloc);
+			}
 			wxbuffer += ch;
 			n++;
 		}
@@ -220,7 +232,6 @@ wxString TextFileReader::ReadLineFromFile() {
 	// Read ASCII/UTF-8 line from file
 	else {
 #ifdef TEXT_READER_USE_STDIO
-		char buffer[512];
 		while (1) {
 			buffer[511] = '\1';
 			if (fgets(buffer, 512, file)) {
@@ -240,31 +251,30 @@ wxString TextFileReader::ReadLineFromFile() {
 			}
 		}
 #else
-		std::string buffer;
 		getline(file,buffer);
-		wxString lineresult(buffer.c_str(),*conv);
-		wxbuffer = lineresult;
+		wxbuffer = wxString(buffer.c_str(),*conv);
 #endif
 	}
 
 	// Remove line breaks
-	wxbuffer.Replace(_T("\r"),_T(""));
-	wxbuffer.Replace(_T("\n"),_T(""));
-
-	// Final string
-	wxString final = wxString(wxbuffer);
+	//wxbuffer.Replace(_T("\r"),_T("\0"));
+	//wxbuffer.Replace(_T("\n"),_T("\0"));
+	size_t len=wxbuffer.Length();
+	for (size_t i=0;i<len;i++) {
+		if (wxbuffer[i] == _T('\r') || wxbuffer[i] == _T('\n')) wxbuffer[i] = _T(' ');
+	}
 
 	// Remove BOM
-	if (final.length() > 0 && final[0] == 0xFEFF) {
-		final = final.Mid(1);
+	if (wxbuffer.Length() > 0 && wxbuffer[0] == 0xFEFF) {
+		wxbuffer = wxbuffer.Mid(1);
 	}
 
 	// Trim
 	if (trim) {
-		final.Trim(true);
-		final.Trim(false);
+		wxbuffer.Trim(true);
+		wxbuffer.Trim(false);
 	}
-	return final;
+	return wxbuffer;
 }
 
 

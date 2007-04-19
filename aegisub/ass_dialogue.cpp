@@ -252,11 +252,11 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 // Make data
 wxString AssDialogue::MakeData() {
 	// Prepare
-	wxString final = _T("");
+	static wxString final = _T("");
 
 	// Write all final
-	if (Comment) final += _T("Comment: ");
-	else final += _T("Dialogue: ");
+	if (Comment) final = _T("Comment: ");
+	else final = _T("Dialogue: ");
 
 	final += wxString::Format(_T("%01i"),Layer);
 	final += _T(",");
@@ -279,6 +279,12 @@ wxString AssDialogue::MakeData() {
 	Effect.Replace(_T(","),_T(";"));
 	final += Effect + _T(",");
 	final += Text;
+
+	// Make sure that final has no line breaks
+	final.Replace(_T("\n"),_T(""));
+	final.Replace(_T("\r"),_T(""));
+
+	// Return final
 	return final;
 }
 
@@ -824,7 +830,7 @@ AssEntry *AssDialogue::Clone() {
 	final->StartMS = final->StartMS;
 	final->Style = Style;
 	final->Text = Text;
-	final->SetEntryData(GetEntryData());
+	//final->SetEntryData(GetEntryData());
 
 	// Return
 	return final;

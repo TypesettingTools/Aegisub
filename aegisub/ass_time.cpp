@@ -67,20 +67,19 @@ void AssTime::ParseASS (const wxString _text) {
 
 	try {
 		// Hours
-		end = text.find(_T(":"),pos);
-		temp = text.SubString(pos,end-1);
+		end = text.Find(_T(':'));
+		temp = text.Left(end);
 		if (!temp.ToLong(&th)) throw 0;
 		pos = end+1;
+		text[end] = _T(' ');
 
 		// Minutes
-		end = text.find(_T(":"),pos);
-		temp = text.SubString(pos,end-1);
+		end = text.Find(_T(':'));
+		temp = text.Mid(pos,end-pos);
 		if (!temp.ToLong(&tm)) throw 0;
-		pos = end+1;
 
 		// Seconds
-		end = text.length();
-		temp = text.Mid(pos);
+		temp = text.Mid(end+1);
 		if (!temp.ToDouble(&ts_raw)) throw 0;
 
 		// Split into seconds and fraction

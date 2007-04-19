@@ -95,27 +95,30 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 		wxbuffer = file.ReadLineFromFile();
 
 		// Convert v4 styles to v4+ styles
-		// Ugly hacks to allow intermixed v4 and v4+ style sections
-		if (wxbuffer.Lower() == _T("[v4 styles]")) {
-			wxbuffer = _T("[V4+ Styles]");
-			curgroup = wxbuffer;
-			version = 0;
-		}
-		else if (wxbuffer.Lower() == _T("[v4+ styles]")) {
-			curgroup = wxbuffer;
-			version = 1;
-		}
-		else if (wxbuffer.Lower() == _T("[v4++ styles]")) {
-			wxbuffer = _T("[V4+ Styles]");
-			curgroup = wxbuffer;
-			version = 2;
-		}
-		// Not-so-special case for other groups, just set it
-		else if (!wxbuffer.IsEmpty() && wxbuffer[0] == _T('[')) {
-			curgroup = wxbuffer;
-			// default from extension in all other sections
-			//version = 1;
-			//if (filename.Right(4).Lower() == _T(".ssa")) version = 0;
+		if (!wxbuffer.IsEmpty() && wxbuffer[0] == _T('[')) {
+			// Ugly hacks to allow intermixed v4 and v4+ style sections
+			wxString low = wxbuffer.Lower();
+			if (low == _T("[v4 styles]")) {
+				wxbuffer = _T("[V4+ Styles]");
+				curgroup = wxbuffer;
+				version = 0;
+			}
+			else if (low == _T("[v4+ styles]")) {
+				curgroup = wxbuffer;
+				version = 1;
+			}
+			else if (low == _T("[v4++ styles]")) {
+				wxbuffer = _T("[V4+ Styles]");
+				curgroup = wxbuffer;
+				version = 2;
+			}
+			// Not-so-special case for other groups, just set it
+			else {
+				curgroup = wxbuffer;
+				// default from extension in all other sections
+				//version = 1;
+				//if (filename.Right(4).Lower() == _T(".ssa")) version = 0;
+			}
 		}
 
 		// Add line
