@@ -298,9 +298,10 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 	static wxString keepGroup;
 	if (!keepGroup.IsEmpty()) group = keepGroup;
 	if (outGroup) *outGroup = group;
+	wxString lowGroup = group.Lower();
 
 	// Attachment
-	if (group.Lower() == _T("[fonts]") || group.Lower() == _T("[graphics]")) {
+	if (lowGroup == _T("[fonts]") || lowGroup == _T("[graphics]")) {
 		// Check if it's valid data
 		size_t dataLen = data.Length();
 		bool validData = (dataLen > 0) && (dataLen <= 80);
@@ -309,7 +310,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 		}
 
 		// Is the filename line?
-		bool isFilename = (data.Left(10) == _T("fontname: ") && group == _T("[Fonts]")) || (data.Left(10) == _T("filename: ") && group == _T("[Graphics]"));
+		bool isFilename = (data.Left(10) == _T("fontname: ") && lowGroup == _T("[fonts]")) || (data.Left(10) == _T("filename: ") && lowGroup == _T("[graphics]"));
 
 		// The attachment file is static, since it is built through several calls to this
 		// After it's done building, it's reset to NULL
@@ -320,6 +321,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 			attach->Finish();
 			keepGroup.Clear();
 			group = origGroup;
+			lowGroup = group.Lower();
 			Line.push_back(attach);
 			attach = NULL;
 		}
@@ -343,6 +345,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 				attach->Finish();
 				keepGroup.Clear();
 				group = origGroup;
+				lowGroup = group.Lower();
 				entry = attach;
 				attach = NULL;
 			}
@@ -355,7 +358,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 	}
 
 	// Dialogue
-	if (group.Lower() == _T("[events]")) {
+	if (lowGroup == _T("[events]")) {
 		if ((data.Left(9) == _T("Dialogue:") || data.Left(8) == _T("Comment:"))) {
 			AssDialogue *diag = new AssDialogue(data,version);
 			lasttime = diag->Start.GetMS();
@@ -372,7 +375,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 	}
 
 	// Style
-	else if (group.Lower() == _T("[v4+ styles]")) {
+	else if (lowGroup == _T("[v4+ styles]")) {
 		if (data.Left(6) == _T("Style:")) {
 			AssStyle *style = new AssStyle(data,version);
 			entry = style;
@@ -387,7 +390,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 	}
 
 	// Script info
-	else if (group.Lower() == _T("[script info]")) {
+	else if (lowGroup == _T("[script info]")) {
 		// Comment
 		if (data.Left(1) == _T(";")) {
 			// Skip stupid comments added by other programs
