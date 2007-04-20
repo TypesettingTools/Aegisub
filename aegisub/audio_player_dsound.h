@@ -79,12 +79,12 @@ private:
 	int bufSize;
 
 	volatile __int64 playPos;
-	volatile __int64 startPos;
+	__int64 startPos;
 	volatile __int64 endPos;
+	DWORD startTime;
 
 	IDirectSound8 *directSound;
 	IDirectSoundBuffer8 *buffer;
-	HANDLE notificationEvent;
 
 	bool FillBuffer(bool fill);
 
