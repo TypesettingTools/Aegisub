@@ -314,19 +314,6 @@ __int64 DirectSoundPlayer::GetCurrentPosition() {
 	DWORD curtime = GetTickCount();
 	__int64 tdiff = curtime - startTime;
 	return startPos + tdiff * provider->GetSampleRate() / 1000;
-
-	// Read position
-	unsigned long int play,write;
-	HRESULT res = buffer->GetCurrentPosition(&play,NULL);
-	if (SUCCEEDED(res)) {
-		int bytesps = provider->GetBytesPerSample();
-		write = offset;
-		if (write < play) write += bufSize;
-		return playPos + play/bytesps - write/bytesps;
-	}
-
-	// Failed, just return playPos
-	return playPos;
 }
 
 

@@ -76,7 +76,7 @@ private:
 	volatile bool playing;
 	float volume;
 	int offset;
-	int bufSize;
+	DWORD bufSize;
 
 	volatile __int64 playPos;
 	__int64 startPos;
