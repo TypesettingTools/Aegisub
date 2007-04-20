@@ -86,7 +86,7 @@ private:
 	IDirectSoundBuffer8 *buffer;
 	HANDLE notificationEvent;
 
-	bool FillBuffer();
+	bool FillBuffer(bool fill);
 
 	DirectSoundPlayerThread *thread;
 

@@ -105,7 +105,7 @@ void DirectSoundPlayer::OpenStream() {
 	bufSize = MIN(MAX(min,aim),max);
 	DSBUFFERDESC desc;
 	desc.dwSize = sizeof(DSBUFFERDESC);
-	desc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLPOSITIONNOTIFY;
+	desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLPOSITIONNOTIFY;
 	desc.dwBufferBytes = bufSize;
 	desc.dwReserved = 0;
 	desc.lpwfxFormat = &waveFormat;
@@ -147,49 +147,67 @@ void DirectSoundPlayer::CloseStream() {
 
 ///////////////
 // Fill buffer
-bool DirectSoundPlayer::FillBuffer() {
+bool DirectSoundPlayer::FillBuffer(bool fill) {
 	if (playPos >= endPos) return false;
 
 	// Variables
+	HRESULT res;
 	void *ptr1, *ptr2;
 	unsigned long int size1, size2;
 	AudioProvider *provider = GetProvider();
 	int bytesps = provider->GetBytesPerSample();
 
 	// To write length
-	//int max = bufSize/4;
-	//if (fill) max = bufSize;
-	//int toWrite = MIN(max,(endPos-playPos)*bytesps);
-	int toWrite = bufSize/4;
+	int toWrite = 0;
+	if (fill) {
+		toWrite = bufSize;
+	}
+	else {
+		DWORD bufplay;
+		res = buffer->GetCurrentPosition(&bufplay, NULL);
+		if (FAILED(res)) return false;
+		toWrite = (int)bufplay - (int)offset;
+		if (toWrite < 0) toWrite += bufSize;
+		//wxLogDebug(_T("DSound Fill Buffer: bufplay=%u, offset=%d, toWrite=%d"), bufplay, offset, toWrite);
+	}
+	if (toWrite == 0) return true;
 
 	// Lock buffer
-	HRESULT res;
-	res = buffer->Lock(offset,toWrite,&ptr1,&size1,&ptr2,&size2,0);
+RetryLock:
+	if (fill) {
+		res = buffer->Lock(offset, toWrite, &ptr1, &size1, &ptr2, &size2, 0);
+	}
+	else {
+		res = buffer->Lock(offset, toWrite, &ptr1, &size1, &ptr2, &size2, 0);//DSBLOCK_FROMWRITECURSOR);
+	}
 
 	// Buffer lost?
 	if (res == DSERR_BUFFERLOST) {
+		wxLogDebug(_T("Lost DSound buffer"));
 		buffer->Restore();
-		res = buffer->Lock(offset,toWrite,&ptr1,&size1,&ptr2,&size2,0);
+		goto RetryLock;
 	}
 
 	// Error
 	if (FAILED(res)) return false;
 
-	// Set offset
+	// Update offset
 	offset = (offset + toWrite) % bufSize;
+
+	//wxLogDebug(_T("DSound Fill Buffer: offset=%d, toWrite=%d, size1=%u, size2=%u"), offset, toWrite, size1, size2);
 
 	// Convert size to number of samples
 	unsigned long int count1 = size1 / bytesps;
 	unsigned long int count2 = size2 / bytesps;
 
-	// Check if it's writing over play
+	// Check if remaining buffer is longer than remaining sound
 	unsigned long int totalCount = count1+count2;
 	unsigned long int left = 0;
 	if (endPos > playPos) left = endPos - playPos;
 	unsigned long int delta = 0;
 	if (totalCount > left) delta = totalCount - left;
 
-	// If so, don't allow it
+	// If so, zero-fill buffer first
 	if (delta) {
 		// Zero at start
 		memset(ptr1,0,size1);
@@ -204,13 +222,17 @@ bool DirectSoundPlayer::FillBuffer() {
 		delta -= temp;
 	}
 
+	//wxLogDebug(_T("DSound Fill Buffer, playpos=%d, count1=%u, count2=%u"), (int)playPos, count1, count2);
+
 	// Get source wave
-	if (count1) provider->GetAudioWithVolume(ptr1,playPos,count1,volume);
-	if (count2) provider->GetAudioWithVolume(ptr2,playPos+count1,count2,volume);
-	playPos += totalCount;
+	if (count1) provider->GetAudioWithVolume(ptr1, playPos, count1, volume);
+	if (count2) provider->GetAudioWithVolume(ptr2, playPos+count1, count2, volume);
+	playPos += count1+count2;
+
+	//wxLogDebug(_T("DSound Fill Buffer post-fill, playpos=%d, count1=%u, count2=%u"), (int)playPos, count1, count2);
 
 	// Unlock
-	buffer->Unlock(ptr1,size1,ptr2,size2);
+	buffer->Unlock(ptr1,count1*bytesps,ptr2,count2*bytesps);
 
 	return true;
 }
@@ -223,31 +245,10 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	Stop();
 	// The thread is now guaranteed dead
 
+	HRESULT res;
+
 	// We sure better have a buffer
 	assert(buffer);
-
-	// Create a new notification event
-	// It was already destroyed by Stop
-	notificationEvent = CreateEvent(NULL,false,false,NULL);
-
-	// Create notification interface
-	IDirectSoundNotify8 *notify;
-	HRESULT res;
-	res = buffer->QueryInterface(IID_IDirectSoundNotify8,(LPVOID*)&notify);
-	if (FAILED(res)) return;
-
-	// Set notification
-	DSBPOSITIONNOTIFY positionNotify[4];
-	positionNotify[0].dwOffset = bufSize / 8;
-	positionNotify[0].hEventNotify = notificationEvent;
-	positionNotify[1].dwOffset = 3 * bufSize / 8;
-	positionNotify[1].hEventNotify = notificationEvent;
-	positionNotify[2].dwOffset = 5 * bufSize / 8;
-	positionNotify[2].hEventNotify = notificationEvent;
-	positionNotify[3].dwOffset = 7 * bufSize / 8;
-	positionNotify[3].hEventNotify = notificationEvent;
-	res = notify->SetNotificationPositions(4,positionNotify);
-	notify->Release();
 
 	// Set variables
 	startPos = start;
@@ -255,8 +256,8 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	playPos = start;
 	offset = 0;
 
-	// Fill buffer
-	FillBuffer();
+	// Fill whole buffer
+	FillBuffer(true);
 
 	// Start thread
 	thread = new DirectSoundPlayerThread(this);
@@ -285,7 +286,7 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	// The thread is now guaranteed dead and there are no concurrency problems to worry about
 
 	// Stop
-	if (buffer) buffer->Stop();
+	if (buffer) buffer->Stop(); // the thread should have done this already
 
 	// Reset variables
 	playing = false;
@@ -295,7 +296,8 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	offset = 0;
 
 	// Close event handle
-	CloseHandle(notificationEvent);
+	if (notificationEvent)
+		CloseHandle(notificationEvent);
 	notificationEvent = 0;
 
 	// Stop timer
@@ -344,7 +346,7 @@ __int64 DirectSoundPlayer::GetCurrentPosition() {
 // Thread constructor
 DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
 	parent = par;
-	stopnotify = CreateSemaphore(NULL, 0, 1, NULL);
+	stopnotify = CreateEvent(NULL, false, false, NULL);
 }
 
 
@@ -358,24 +360,16 @@ DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 //////////////////////
 // Thread entry point
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
-	// Objects to wait for
-	HANDLE notifies[2] = {stopnotify, parent->notificationEvent};
-
-	while (true) {
-		// Wait for something to happen
-		DWORD cause = WaitForMultipleObjects(2, notifies, false, INFINITE);
-
-		if (cause == WAIT_OBJECT_0) {
-			// stopnotify
+	// Wake up thread every half second to fill buffer as needed
+	// This more or less assumes the buffer is at least one second long
+	while (WaitForSingleObject(stopnotify, 500)) {
+		if (!parent->FillBuffer(false))
+			// FillBuffer returns true if there's more to play
+			// So false means end-of-stream
 			break;
-		}
-		else if (cause == WAIT_OBJECT_0 + 1) {
-			// dsound notification event
-			// fill the buffer
-			if (!parent->FillBuffer())
-				break; // end of stream
-		}
 	}
+
+	wxLogDebug(_T("DS thread dead"));
 
 	parent->playing = false;
 	parent->buffer->Stop();
@@ -387,7 +381,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 // Stop playback thread
 void DirectSoundPlayerThread::Stop() {
 	// Increase the stopnotify by one, causing a wait for it to succeed
-	ReleaseSemaphore(stopnotify, 1, NULL);
+	SetEvent(stopnotify);
 }
 
 #endif
