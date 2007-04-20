@@ -198,9 +198,9 @@ wxString TextFileReader::ReadLineFromFile() {
 	if (Is16) {
 		char charbuffer[3];
 		charbuffer[2] = 0;
-		char aux;
 		wchar_t ch = 0;
 		int n = 0;
+		size_t len = 0;
 #ifdef TEXT_READER_USE_STDIO
 		while (ch != L'\n' && !feof(file)) {
 			// Read two chars from file
@@ -213,19 +213,19 @@ wxString TextFileReader::ReadLineFromFile() {
 
 			// Swap bytes for big endian
 			if (swap) {
-				aux = charbuffer[0];
+				register char aux = charbuffer[0];
 				charbuffer[0] = charbuffer[1];
 				charbuffer[1] = aux;
 			}
 
 			// Convert two chars into a widechar and append to string
 			ch = *((wchar_t*)charbuffer);
-			if (wxbuffer.Length() == bufAlloc) {
+			if (len >= bufAlloc - 1) {
 				bufAlloc *= 2;
 				wxbuffer.Alloc(bufAlloc);
 			}
 			wxbuffer += ch;
-			n++;
+			len++;
 		}
 	}
 

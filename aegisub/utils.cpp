@@ -283,3 +283,75 @@ void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int 
 		}
 	}
 }
+
+
+/////////////////////
+// String to integer
+// wxString::ToLong() is slow and not as flexible
+int StringToInt(const wxString &str,size_t start,size_t end) {
+	// Initialize to zero and get length if end set to -1
+	int sign = 1;
+	int value = 0;
+	if (end == -1) end = str.Length();
+
+	for (size_t pos=start;pos<end;pos++) {
+		// Get value and check if it's a number
+		int val = (int)(str[pos]);
+		if (val == _T(' ') || val == _T('\t')) continue;
+		if (val == _T('-')) sign = -1;
+		if (val < _T('0') || val > _T('9')) break;
+
+		// Shift value to next decimal place and increment the value just read
+		value = value * 10 + (val - _T('0'));
+	}
+
+	return value*sign;
+}
+
+
+
+/////////////////////////
+// String to fixed point
+int StringToFix(const wxString &str,size_t decimalPlaces,size_t start,size_t end) {
+	// Parts of the number
+	int sign = 1;
+	int major = 0;
+	int minor = 0;
+	if (end == -1) end = str.Length();
+	bool inMinor = false;
+	int *dst = &major;
+	size_t mCount = 0;
+
+	for (size_t pos=start;pos<end;pos++) {
+		// Get value and check if it's a number
+		int val = (int)(str[pos]);
+		if (val == _T(' ') || val == _T('\t')) continue;
+		if (val == _T('-')) sign = -1;
+
+		// Switch to minor
+		if (val == _T('.') || val == _T(',')) {
+			if (inMinor) break;
+			inMinor = true;
+			dst = &minor;
+			mCount = 0;
+			continue;
+		}
+		if (val < _T('0') || val > _T('9')) break;
+		*dst = (*dst * 10) + (val - _T('0'));
+		mCount++;
+	}
+
+	// Change minor to have the right number of decimal places
+	while (mCount > decimalPlaces) {
+		minor /= 10;
+		mCount--;
+	}
+	while (mCount < decimalPlaces) {
+		minor *= 10;
+		mCount++;
+	}
+
+	// Shift major and return
+	for (size_t i=0;i<decimalPlaces;i++) major *= 10;
+	return (major + minor)*sign;
+}

@@ -36,10 +36,11 @@
 
 ////////////
 // Includes
-#include "ass_time.h"
-#include "vfr.h"
 #include <fstream>
 #include <algorithm>
+#include "ass_time.h"
+#include "vfr.h"
+#include "utils.h"
 
 
 
@@ -54,37 +55,26 @@ AssTime::AssTime () {
 // Parses from ASS
 // ---------------
 // Note that this function is atomic, it won't touch the values if it's invalid.
-void AssTime::ParseASS (const wxString _text) {
+void AssTime::ParseASS (const wxString text) {
 	// Prepare
-	wxString text = _text;
-	text.Trim(true);
-	text.Trim(false);
-	wxString temp;
 	size_t pos = 0;
 	size_t end = 0;
-	long th,tm,ts,tms;
-	double ts_raw;
+	long th,tm,tms;
 
 	try {
 		// Hours
 		end = text.Find(_T(':'));
-		temp = text.Left(end);
-		if (!temp.ToLong(&th)) throw 0;
-		pos = end+1;
-		text[end] = _T(' ');
+		th = StringToInt(text,0,end);
 
 		// Minutes
-		end = text.Find(_T(':'));
-		temp = text.Mid(pos,end-pos);
-		if (!temp.ToLong(&tm)) throw 0;
+		pos = end+1;
+		while (text[++end] != _T(':'));
+		tm = StringToInt(text,pos,end);
 
-		// Seconds
-		temp = text.Mid(end+1);
-		if (!temp.ToDouble(&ts_raw)) throw 0;
-
-		// Split into seconds and fraction
-		ts = (long int)(ts_raw);
-		tms = (long int)((ts_raw-ts)*1000+0.5);
+		// Miliseconds (includes seconds)
+		pos = end+1;
+		end = text.Length();
+		tms = StringToFix(text,3,pos,end);
 	}
 
 	// Something went wrong, don't change anything
@@ -93,7 +83,7 @@ void AssTime::ParseASS (const wxString _text) {
 	}
 
 	// OK, set values
-	time = tms + ts*1000 + tm*60000 + th*3600000;
+	time = tms + tm*60000 + th*3600000;
 }
 
 
