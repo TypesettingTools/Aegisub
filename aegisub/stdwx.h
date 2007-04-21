@@ -77,7 +77,7 @@
 #include <wx/wfstream.h>
 #include <wx/tipdlg.h>
 #include <wx/event.h>
-#include <wx/wxscintilla.h>
+#include <wx/stc/stc.h>
 #include <wx/string.h>
 //#include <GL/glew.h>
 #include <GL/gl.h>

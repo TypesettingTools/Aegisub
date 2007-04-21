@@ -60,7 +60,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	// Generate library string
 	wxString libString = _("This build of Aegisub uses the following C/C++ libraries:\n");
 	libString += _T("wxWidgets - Copyright (c) 1998-2006 Julian Smart, Robert Roebling et al;\n");
-	libString += _T("wxScintilla - Copyright (c) 2004 wxCode;\n");
+	libString += _T("wxStyledTextCtrl - Copyright (c) 2004 wxCode;\n");
 	libString += _T("Lua - Copyright (c) 1994-2006 Lua.org, PUC-Rio;\n");
 #if USE_HUNSPELL == 1
 	libString += _T("Hunspell - Copyright (c) Kevin Hendricks;\n");

@@ -48,25 +48,25 @@
 ////////////////////////
 // Edit box constructor
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& wsize, long style, const wxValidator& validator, const wxString& name)
-: wxScintilla(parent, id, pos, wsize, 0, value)
+: wxStyledTextCtrl(parent, id, pos, wsize, 0, value)
 {
 	// Set properties
-	SetWrapMode(wxSCI_WRAP_WORD);
+	SetWrapMode(wxSTC_WRAP_WORD);
 	SetMarginWidth(1,0);
 	UsePopUp(false);
 	SetStyles();
 
 	// Set hotkeys
-	CmdKeyClear(wxSCI_KEY_RETURN,wxSCI_SCMOD_CTRL);
-	CmdKeyClear(wxSCI_KEY_RETURN,wxSCI_SCMOD_NULL);
-	CmdKeyClear(wxSCI_KEY_TAB,wxSCI_SCMOD_NULL);
-	CmdKeyClear(wxSCI_KEY_TAB,wxSCI_SCMOD_SHIFT);
-	CmdKeyClear('D',wxSCI_SCMOD_CTRL);
-	CmdKeyClear('L',wxSCI_SCMOD_CTRL);
-	CmdKeyClear('L',wxSCI_SCMOD_CTRL | wxSCI_SCMOD_SHIFT);
-	CmdKeyClear('T',wxSCI_SCMOD_CTRL);
-	CmdKeyClear('T',wxSCI_SCMOD_CTRL | wxSCI_SCMOD_SHIFT);
-	CmdKeyClear('U',wxSCI_SCMOD_CTRL);
+	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_SCMOD_CTRL);
+	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_SCMOD_NORM);
+	CmdKeyClear(wxSTC_KEY_TAB,wxSTC_SCMOD_NORM);
+	CmdKeyClear(wxSTC_KEY_TAB,wxSTC_SCMOD_SHIFT);
+	CmdKeyClear('D',wxSTC_SCMOD_CTRL);
+	CmdKeyClear('L',wxSTC_SCMOD_CTRL);
+	CmdKeyClear('L',wxSTC_SCMOD_CTRL | wxSTC_SCMOD_SHIFT);
+	CmdKeyClear('T',wxSTC_SCMOD_CTRL);
+	CmdKeyClear('T',wxSTC_SCMOD_CTRL | wxSTC_SCMOD_SHIFT);
+	CmdKeyClear('U',wxSTC_SCMOD_CTRL);
 
 	// Set spellchecker
 	spellchecker = SpellChecker::GetSpellChecker();
@@ -140,7 +140,7 @@ SubsTextEditCtrl::~SubsTextEditCtrl() {
 
 ///////////////////////
 // Control event table
-BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxScintilla)
+BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
 	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
 	EVT_KILL_FOCUS(SubsTextEditCtrl::OnLoseFocus)
 
@@ -215,7 +215,7 @@ void SubsTextEditCtrl::SetStyles() {
 	StyleSetForeground(6,Options.AsColour(_T("Syntax Highlight Line Break")));
 
 	// Misspelling indicator
-	IndicatorSetStyle(0,wxSCI_INDIC_SQUIGGLE);
+	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetForeground(0,wxColour(255,0,0));
 }
 

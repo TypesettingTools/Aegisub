@@ -40,7 +40,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
-#include <wx/wxscintilla.h>
+#include <wx/stc/stc.h>
 #include "spellchecker.h"
 #include "thesaurus.h"
 
@@ -52,7 +52,7 @@ class SubsEditBox;
 
 ////////////////////
 // SubsTextEditCtrl
-class SubsTextEditCtrl : public wxScintilla {
+class SubsTextEditCtrl : public wxStyledTextCtrl {
 private:
 	SpellChecker *spellchecker;
 	Thesaurus *thesaurus;

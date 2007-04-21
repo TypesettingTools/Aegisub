@@ -50,7 +50,7 @@ class TimeEdit;
 class SubsEditBox;
 class AudioDisplay;
 class HiliModTextCtrl;
-class wxScintilla;
+class wxStyledTextCtrl;
 
 
 //////////////////
@@ -107,10 +107,10 @@ private:
 
 	int BlockAtPos(int pos);
 
-	void OnEditText(wxScintillaEvent &event);
-	void OnNeedStyle(wxScintillaEvent &event);
-	void OnCharAdded(wxScintillaEvent &event);
-	void OnUpdateUI(wxScintillaEvent &event);
+	void OnEditText(wxStyledTextEvent &event);
+	void OnNeedStyle(wxStyledTextEvent &event);
+	void OnCharAdded(wxStyledTextEvent &event);
+	void OnUpdateUI(wxStyledTextEvent &event);
 
 	void OnButtonColor1(wxCommandEvent &event);
 	void OnButtonColor2(wxCommandEvent &event);
@@ -125,7 +125,7 @@ private:
 	void OnSyntaxBox(wxCommandEvent &event);
 	void OnFrameRadio(wxCommandEvent &event);
 	void OnTimeRadio(wxCommandEvent &event);
-	void OnKeyDown(wxScintillaEvent &event);
+	void OnKeyDown(wxStyledTextEvent &event);
 	void OnStyleChange(wxCommandEvent &event);
 	void OnActorChange(wxCommandEvent &event);
 	void OnLayerChange(wxCommandEvent &event);

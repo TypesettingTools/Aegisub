@@ -64,6 +64,7 @@
 #pragma comment(lib, "wxmsw28ud_core.lib")
 #pragma comment(lib, "wxmsw28ud_adv.lib")
 #pragma comment(lib, "wxmsw28ud_gl.lib")
+#pragma comment(lib, "wxmsw28ud_stc.lib")
 #else
 #pragma comment(lib, "wxregexu.lib")
 #pragma comment(lib, "wxbase28u.lib")
@@ -72,40 +73,12 @@
 #pragma comment(lib, "wxmsw28u_core.lib")
 #pragma comment(lib, "wxmsw28u_adv.lib")
 #pragma comment(lib, "wxmsw28u_gl.lib")
+#pragma comment(lib, "wxmsw28u_stc.lib")
 #endif
 
 #else 
-#if wxCHECK_VERSION(2, 7, 0)
-#ifdef __WXDEBUG__
-#pragma comment(lib, "wxregexud.lib")
-#pragma comment(lib, "wxbase27ud.lib")
-#pragma comment(lib, "wxmsw27ud_media.lib")
-#pragma comment(lib, "wxmsw27ud_core.lib")
-#pragma comment(lib, "wxmsw27ud_adv.lib")
-#else
-#pragma comment(lib, "wxregexu.lib")
-#pragma comment(lib, "wxbase27u.lib")
-#pragma comment(lib, "wxmsw27u_media.lib")
-#pragma comment(lib, "wxmsw27u_core.lib")
-#pragma comment(lib, "wxmsw27u_adv.lib")
-#endif
 
-#else if wxCHECK_VERSION(2, 6, 0)
-#ifdef __WXDEBUG__
-#pragma comment(lib, "wxregexud.lib")
-#pragma comment(lib, "wxbase26ud.lib")
-#pragma comment(lib, "wxmsw26ud_media.lib")
-#pragma comment(lib, "wxmsw26ud_core.lib")
-#pragma comment(lib, "wxmsw26ud_adv.lib")
-#else
-#pragma comment(lib, "wxregexu.lib")
-#pragma comment(lib, "wxbase26u.lib")
-#pragma comment(lib, "wxmsw26u_media.lib")
-#pragma comment(lib, "wxmsw26u_core.lib")
-#pragma comment(lib, "wxmsw26u_adv.lib")
-#endif
-
-#endif
+#error "Aegisub requires wxWidgets 2.8.0 or superior"
 
 #endif // wxWidgets
 
@@ -113,9 +86,7 @@
 /////////////
 // Scintilla
 #ifdef __WXDEBUG__
-#pragma comment(lib, "wxscintillaud.lib")
 #else
-#pragma comment(lib, "wxscintillau.lib")
 #endif
 
 

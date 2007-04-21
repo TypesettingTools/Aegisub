@@ -346,11 +346,11 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
-	EVT_SCI_MODIFIED(EDIT_BOX,SubsEditBox::OnEditText)
-	EVT_SCI_STYLENEEDED(EDIT_BOX,SubsEditBox::OnNeedStyle)
-	EVT_SCI_KEY(EDIT_BOX,SubsEditBox::OnKeyDown)
-	EVT_SCI_CHARADDED(EDIT_BOX,SubsEditBox::OnCharAdded)
-	EVT_SCI_UPDATEUI(EDIT_BOX,SubsEditBox::OnUpdateUI)
+	EVT_STC_MODIFIED(EDIT_BOX,SubsEditBox::OnEditText)
+	EVT_STC_STYLENEEDED(EDIT_BOX,SubsEditBox::OnNeedStyle)
+	EVT_STC_KEY(EDIT_BOX,SubsEditBox::OnKeyDown)
+	EVT_STC_CHARADDED(EDIT_BOX,SubsEditBox::OnCharAdded)
+	EVT_STC_UPDATEUI(EDIT_BOX,SubsEditBox::OnUpdateUI)
 
 	EVT_CHECKBOX(SYNTAX_BOX, SubsEditBox::OnSyntaxBox)
 	EVT_RADIOBUTTON(RADIO_TIME_BY_FRAME, SubsEditBox::OnFrameRadio)
@@ -392,9 +392,9 @@ void SubsEditBox::OnSize(wxSizeEvent &event) {
 
 /////////////////////
 // Text edited event
-void SubsEditBox::OnEditText(wxScintillaEvent &event) {
+void SubsEditBox::OnEditText(wxStyledTextEvent &event) {
 	int modType = event.GetModificationType();
-	if (modType == (wxSCI_MOD_INSERTTEXT | wxSCI_PERFORMED_USER) || modType == (wxSCI_MOD_DELETETEXT | wxSCI_PERFORMED_USER)) {
+	if (modType == (wxSTC_MOD_INSERTTEXT | wxSTC_PERFORMED_USER) || modType == (wxSTC_MOD_DELETETEXT | wxSTC_PERFORMED_USER)) {
 		//TextEdit->UpdateCallTip();
 	}
 }
@@ -402,14 +402,14 @@ void SubsEditBox::OnEditText(wxScintillaEvent &event) {
 
 //////////////////////////
 // User Interface updated
-void SubsEditBox::OnUpdateUI(wxScintillaEvent &event) {
+void SubsEditBox::OnUpdateUI(wxStyledTextEvent &event) {
 	TextEdit->UpdateCallTip();
 }
 
 
 //////////////
 // Need style
-void SubsEditBox::OnNeedStyle(wxScintillaEvent &event) {
+void SubsEditBox::OnNeedStyle(wxStyledTextEvent &event) {
 	// Check if it needs to fix text
 	wxString text = TextEdit->GetText();
 	if (text.Contains(_T("\n")) || text.Contains(_T("\r"))) {
@@ -423,14 +423,14 @@ void SubsEditBox::OnNeedStyle(wxScintillaEvent &event) {
 
 ///////////////////
 // Character added
-void SubsEditBox::OnCharAdded(wxScintillaEvent &event) {
+void SubsEditBox::OnCharAdded(wxStyledTextEvent &event) {
 	//int character = event.GetKey();
 }
 
 
 ////////////
 // Key down
-void SubsEditBox::OnKeyDown(wxScintillaEvent &event) {
+void SubsEditBox::OnKeyDown(wxStyledTextEvent &event) {
 }
 
 
