@@ -1,6 +1,9 @@
+sinclude([ac/acx_pthread.m4])
+sinclude([ac/ax_check_gl.m4])
+
 AC_PREREQ(2.57)
-AC_INIT([aegisub], [2.00-alpha])
-AC_CONFIG_AUX_DIR(ac)
+AC_INIT([Aegisub], [2.00-alpha],, [aegisub])
+AC_CONFIG_AUX_DIR([ac])
 AC_CONFIG_SRCDIR([aegisub/main.cpp])
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADER([aegisub/posix/acconf.h])
@@ -59,9 +62,9 @@ if test -z "$CONVERT"
 then	AC_MSG_FAILURE([aegisub needs convert (from ImageMagick) to produce xpms from the supplied bitmaps/icons])
 fi
 
-AC_C_FLAG([-pthread])
-AC_CXX_FLAG([-pthread])
-AC_CHECK_LIB([pthread], [pthread_join])
+ACX_PTHREAD([], [
+	AC_MSG_FAILURE([Aegisub needs pthreads])
+])
 
 AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
 AC_CHECK_FUNCS([Pa_GetStreamTime])
@@ -84,9 +87,12 @@ AC_ARG_WITH(wx-config,
     fi
 ])
 
-AC_CHECK_LIB([GL], [glBegin],,[
-	AC_MSG_FAILURE([system OpenGL support missing])
-])
+AX_CHECK_GL
+if test ! "$GL_LIBS"; then
+	AC_MSG_ERROR([Could not find system GL library])
+fi
+CPPFLAGS="$CPPFLAGS $GL_CFLAGS"
+LIBS="$LIBS $GL_LIBS"
 
 AC_MSG_CHECKING([wxWidgets version])
 if wxversion=`$WXCONFIG --version`; then

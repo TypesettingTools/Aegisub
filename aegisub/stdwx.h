@@ -79,8 +79,13 @@
 #include <wx/event.h>
 #include <wx/stc/stc.h>
 #include <wx/string.h>
+#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#include <OpenGL/GL.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 #include <wx/glcanvas.h>
 
 

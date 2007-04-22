@@ -37,8 +37,13 @@
 ////////////
 // Includes
 #include <wx/glcanvas.h>
+#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#include <OpenGL/GL.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 #include <wx/image.h>
 #include <string.h>
 #include <wx/clipbrd.h>

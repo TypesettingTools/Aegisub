@@ -37,7 +37,11 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#include <OpenGL/GL.h>
+#else
 #include <GL/gl.h>
+#endif
 #include "gl/glext.h"
 #include "gl_wrap.h"
 #include "options.h"
