@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,11 +36,84 @@
 
 ///////////
 // Headers
-#include "setup.h"
-#if USE_PORTAUDIO == 1
-#include "audio_player_portaudio.h"
+#include "audio_player.h"
 #include "audio_provider.h"
 #include "utils.h"
+extern "C" {
+#include <portaudio.h>
+}
+
+#ifdef HAVE_PA_GETSTREAMTIME
+#define Pa_StreamTime Pa_GetStreamTime	/* PortAudio v19 */
+#define PaTimestamp PaTime
+#endif
+
+
+///////////
+// Library
+#if __VISUALC__ >= 1200
+#pragma comment(lib,"portaudio.lib")
+#endif
+
+
+////////////////////
+// Portaudio player
+class PortAudioPlayer : public AudioPlayer {
+private:
+	static int pa_refcount;
+	wxMutex PAMutex;
+	volatile bool stopping;
+	//bool softStop;
+	bool playing;
+	float volume;
+
+	volatile __int64 playPos;
+	volatile __int64 startPos;
+	volatile __int64 endPos;
+	void *stream;
+	PaTimestamp paStart;
+	volatile __int64 realPlayPos;
+
+#ifndef HAVE_PA_GETSTREAMTIME
+	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
+#else
+	static int paCallback(const void *inputBuffer, void *outputBuffer,
+		unsigned long framesPerBuffer,
+		const PaStreamCallbackTimeInfo *timei,
+		PaStreamCallbackFlags flags, void *userData);
+#endif
+
+public:
+	PortAudioPlayer();
+	~PortAudioPlayer();
+
+	void OpenStream();
+	void CloseStream();
+
+	void Play(__int64 start,__int64 count);
+	void Stop(bool timerToo=true);
+	bool IsPlaying() { return playing; }
+
+	__int64 GetStartPosition() { return startPos; }
+	__int64 GetEndPosition() { return endPos; }
+	__int64 GetCurrentPosition() { return realPlayPos; }
+	void SetEndPosition(__int64 pos) { endPos = pos; }
+	void SetCurrentPosition(__int64 pos) { playPos = pos; realPlayPos = pos; }
+
+	void SetVolume(double vol) { volume = vol; }
+	double GetVolume() { return volume; }
+
+	wxMutex *GetMutex() { return &PAMutex; }
+};
+
+
+///////////
+// Factory
+class PortAudioPlayerFactory : public AudioPlayerFactory {
+public:
+	AudioPlayer *CreatePlayer() { return new PortAudioPlayer(); }
+	PortAudioPlayerFactory() : AudioPlayerFactory(_T("portaudio")) {}
+} registerPortAudioPlayer;
 
 
 /////////////////////
@@ -205,4 +278,3 @@ void PortAudioPlayer::CloseStream() {
 	} catch (...) {}
 }
 
-#endif

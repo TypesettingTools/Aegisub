@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "factory.h"
 
 
 //////////////
@@ -86,9 +87,21 @@ public:
 	AudioProvider *GetProvider();
 
 	void SetDisplayTimer(wxTimer *timer);
-	static AudioPlayer* GetAudioPlayer();
 
 	DECLARE_EVENT_TABLE()
+};
+
+
+///////////
+// Factory
+class AudioPlayerFactory : public AegisubFactory<AudioPlayerFactory> {
+protected:
+	virtual AudioPlayer *CreatePlayer()=0;
+	AudioPlayerFactory(wxString name) { RegisterFactory(name); }
+
+public:
+	virtual ~AudioPlayerFactory() {}
+	static AudioPlayer *GetAudioPlayer();
 };
 
 

@@ -39,14 +39,98 @@
 
 ///////////
 // Headers
-#include "setup.h"
-#if USE_DIRECTSOUND == 1
 #include <wx/wxprec.h>
+#include "audio_player.h"
 #include "audio_provider.h"
-#include "audio_player_dsound.h"
 #include "utils.h"
 #include "main.h"
 #include "frame_main.h"
+#include "audio_player.h"
+#include <mmsystem.h>
+#include <dsound.h>
+
+
+/////////////
+// Libraries
+#pragma comment(lib, "dsound.lib")
+#pragma comment(lib, "dxguid.lib")
+
+
+//////////////
+// Prototypes
+class DirectSoundPlayer;
+
+
+//////////
+// Thread
+class DirectSoundPlayerThread : public wxThread {
+private:
+	DirectSoundPlayer *parent;
+	HANDLE stopnotify;
+
+public:
+	void Stop(); // Notify thread to stop audio playback. Thread safe.
+	DirectSoundPlayerThread(DirectSoundPlayer *parent);
+	~DirectSoundPlayerThread();
+
+	wxThread::ExitCode Entry();
+};
+
+
+////////////////////
+// Portaudio player
+class DirectSoundPlayer : public AudioPlayer {
+	friend class DirectSoundPlayerThread;
+
+private:
+	volatile bool playing;
+	float volume;
+	int offset;
+	DWORD bufSize;
+
+	volatile __int64 playPos;
+	__int64 startPos;
+	volatile __int64 endPos;
+	DWORD startTime;
+
+	IDirectSound8 *directSound;
+	IDirectSoundBuffer8 *buffer;
+
+	bool FillBuffer(bool fill);
+
+	DirectSoundPlayerThread *thread;
+
+public:
+	DirectSoundPlayer();
+	~DirectSoundPlayer();
+
+	void OpenStream();
+	void CloseStream();
+
+	void Play(__int64 start,__int64 count);
+	void Stop(bool timerToo=true);
+	bool IsPlaying() { return playing; }
+
+	__int64 GetStartPosition() { return startPos; }
+	__int64 GetEndPosition() { return endPos; }
+	__int64 GetCurrentPosition();
+	void SetEndPosition(__int64 pos);
+	void SetCurrentPosition(__int64 pos);
+
+	void SetVolume(double vol) { volume = vol; }
+	double GetVolume() { return volume; }
+
+	//wxMutex *GetMutex() { return &DSMutex; }
+};
+
+
+///////////
+// Factory
+class DirectSoundPlayerFactory : public AudioPlayerFactory {
+public:
+	AudioPlayer *CreatePlayer() { return new DirectSoundPlayer(); }
+	DirectSoundPlayerFactory() : AudioPlayerFactory(_T("dsound")) {}
+} registerDirectSoundPlayer;
 
 
 ///////////////
@@ -379,5 +463,3 @@ void DirectSoundPlayerThread::Stop() {
 	// Increase the stopnotify by one, causing a wait for it to succeed
 	SetEvent(stopnotify);
 }
-
-#endif

@@ -90,6 +90,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	wxPanel *editPage = new wxPanel(book,-1);
 	wxPanel *videoPage = new wxPanel(book,-1);
 	wxPanel *audioPage = new wxPanel(book,-1);
+	wxPanel *audioAdvPage = new wxPanel(book,-1);
 	wxPanel *displayPage = new wxPanel(book,-1);
 	wxPanel *autoPage = new wxPanel(book,-1);
 	wxPanel *hotkeysPage = new wxPanel(book,-1);
@@ -435,10 +436,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Sizers
 		wxSizer *audioMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *audioSizer1 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Options"));
-		wxSizer *audioSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Advanced - EXPERT USERS ONLY"));
 		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(4,2,5,5);
 		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(4,2,5,5);
-		wxFlexGridSizer *audioSizer5 = new wxFlexGridSizer(4,2,5,5);
 		wxControl *control;
 
 		// First sizer
@@ -485,42 +484,10 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		audioSizer4->Add(control,1,wxEXPAND,0);
 		audioSizer4->AddGrowableCol(0,1);
 
-		// Third sizer
-		wxString choices2[3] = { _("None (NOT RECOMMENDED)"), _("RAM"), _("Hard Disk") };
-		control = new wxComboBox(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices2,wxCB_READONLY | wxCB_DROPDOWN);
-		Bind(control,_T("Audio Cache"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Cache type: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer5->Add(control,1,wxEXPAND,0);
-		wxString choices3[3] = { _T("ConvertToMono"), _T("GetLeftChannel"), _T("GetRightChannel") };
-		control = new wxComboBox(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices3,wxCB_DROPDOWN);
-		Bind(control,_T("Audio Downmixer"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Avisynth down-mixer: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer5->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1);
-		Bind(control,_T("Audio HD Cache Location"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD cache path: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer5->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1);
-		Bind(control,_T("Audio HD Cache Name"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("HD cache name: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer5->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
-		Bind(control,_T("Audio Spectrum Cutoff"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Spectrum cutoff: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer5->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
-		Bind(control,_T("Audio Spectrum Window"));
-		audioSizer5->Add(new wxStaticText(audioPage,-1,_("Spectrum FFT window exponent: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer5->Add(control,1,wxEXPAND,0);
-		audioSizer5->AddGrowableCol(0,1);
-
 		// Sizers
 		audioSizer1->Add(audioSizer3,0,wxEXPAND | wxALL,5);
 		audioSizer1->Add(audioSizer4,1,wxEXPAND | wxALL,5);
-		audioSizer2->Add(new wxStaticText(audioPage,-1,_("WARNING: Changing these settings might result in bugs,\ncrashes, glitches and/or movax.\nDon't touch these unless you know what you're doing.")),0,wxEXPAND | wxALL,5);
-		audioSizer2->Add(audioSizer5,1,wxEXPAND | wxALL,5);
 		audioMainSizer->Add(audioSizer1,0,wxEXPAND | wxALL,0);
-		audioMainSizer->Add(audioSizer2,0,wxEXPAND | wxTOP,5);
 		audioMainSizer->AddStretchSpacer(1);
 		audioMainSizer->Fit(audioPage);
 		audioPage->SetSizer(audioMainSizer);
@@ -576,6 +543,67 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		displayMainSizer->AddStretchSpacer(1);
 		displayMainSizer->Fit(displayPage);
 		displayPage->SetSizer(displayMainSizer);
+	}
+
+	// Audio advanced page
+	{
+		// Sizers
+		wxFlexGridSizer *audioAdvSizer1 = new wxFlexGridSizer(6,2,5,5);
+		wxSizer *audioAdvSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioAdvPage,_("Advanced - EXPERT USERS ONLY"));
+		wxSizer *audioAdvSizer3 = new wxBoxSizer(wxVERTICAL);
+
+		// Controls
+		wxControl *control;
+		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Audio provider: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxComboBox(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,AudioProviderFactory::GetFactoryList(),wxCB_DROPDOWN | wxCB_READONLY);
+		Bind(control,_T("Audio provider"),1);
+		audioAdvSizer1->Add(control,1,wxEXPAND);
+
+		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Audio player: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+		control = new wxComboBox(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,AudioPlayerFactory::GetFactoryList(),wxCB_DROPDOWN | wxCB_READONLY);
+		Bind(control,_T("Audio player"),1);
+		audioAdvSizer1->Add(control,1,wxEXPAND);
+
+		wxString choices2[3] = { _("None (NOT RECOMMENDED)"), _("RAM"), _("Hard Disk") };
+		control = new wxComboBox(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices2,wxCB_READONLY | wxCB_DROPDOWN);
+		Bind(control,_T("Audio Cache"));
+		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Cache type: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioAdvSizer1->Add(control,1,wxEXPAND,0);
+
+		wxString choices3[3] = { _T("ConvertToMono"), _T("GetLeftChannel"), _T("GetRightChannel") };
+		control = new wxComboBox(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices3,wxCB_DROPDOWN);
+		Bind(control,_T("Audio Downmixer"));
+		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Avisynth down-mixer: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioAdvSizer1->Add(control,1,wxEXPAND,0);
+
+		control = new wxTextCtrl(audioAdvPage,-1);
+		Bind(control,_T("Audio HD Cache Location"));
+		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("HD cache path: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioAdvSizer1->Add(control,1,wxEXPAND,0);
+		control = new wxTextCtrl(audioAdvPage,-1);
+
+		Bind(control,_T("Audio HD Cache Name"));
+		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("HD cache name: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioAdvSizer1->Add(control,1,wxEXPAND,0);
+
+		control = new wxTextCtrl(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
+		Bind(control,_T("Audio Spectrum Cutoff"));
+		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Spectrum cutoff: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioAdvSizer1->Add(control,1,wxEXPAND,0);
+
+		control = new wxTextCtrl(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
+		Bind(control,_T("Audio Spectrum Window"));
+		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Spectrum FFT window exponent: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
+		audioAdvSizer1->Add(control,1,wxEXPAND,0);
+		audioAdvSizer1->AddGrowableCol(0,1);
+
+		// Main sizer
+		audioAdvSizer2->Add(new wxStaticText(audioAdvPage,-1,_("WARNING: Changing these settings might result in bugs,\ncrashes, glitches and/or movax.\nDon't touch these unless you know what you're doing.")),0,wxEXPAND | wxALL,5);
+		audioAdvSizer2->Add(audioAdvSizer1,1,wxEXPAND | wxALL,5);
+		audioAdvSizer3->Add(audioAdvSizer2,0,wxEXPAND);
+		audioAdvSizer3->AddStretchSpacer(1);
+		audioAdvSizer3->Fit(audioAdvPage);
+		audioAdvPage->SetSizer(audioAdvSizer3);
 	}
 
 	// Automation page
@@ -664,6 +692,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	book->AddPage(videoPage,_("Video"),true);
 	book->AddPage(audioPage,_("Audio"),true);
 	book->AddSubPage(displayPage,_("Display"),true);
+	book->AddSubPage(audioAdvPage,_("Advanced"),true);
 	book->AddPage(autoPage,_("Automation"),true);
 	book->AddPage(hotkeysPage,_("Hotkeys"),true);
 	#ifdef wxUSE_TREEBOOK

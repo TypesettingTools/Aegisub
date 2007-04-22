@@ -83,13 +83,6 @@
 #endif // wxWidgets
 
 
-/////////////
-// Scintilla
-#ifdef __WXDEBUG__
-#else
-#endif
-
-
 ////////////////////////////
 // Standard Win32 Libraries
 #pragma comment(lib, "Vfw32.lib")
@@ -98,30 +91,6 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "wsock32.lib")
-
-
-///////////////
-// DirectSound
-#if USE_DIRECTSOUND == 1
-#pragma comment(lib, "dsound.lib")
-#pragma comment(lib, "dxguid.lib")
-#endif
-
-
-/////////////
-// PortAudio
-#if USE_PORTAUDIO == 1
-#pragma comment(lib,"portaudio.lib")
-#endif
-
-
-///////
-// Lua
-//#ifdef __WXDEBUG__
-//#pragma comment(lib,"lua503d.lib")
-//#else
-//#pragma comment(lib,"lua503.lib")
-//#endif
 
 
 ////////////

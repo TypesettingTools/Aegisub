@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -172,6 +172,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	// Audio Advanced
 	SetModificationType(MOD_AUDIO_RELOAD);
 	SetInt(_T("Audio Cache"),1);
+	SetText(_T("Audio Player"),_T("dsound"));
 	SetText(_T("Audio Provider"),_T("avisynth"));
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
 	SetText(_T("Audio HD Cache Location"),_T("default"));

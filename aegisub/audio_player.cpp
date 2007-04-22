@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,14 +37,8 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "setup.h"
-#if USE_PORTAUDIO == 1
-#include "audio_player_portaudio.h"
-#endif
-#if USE_DIRECTSOUND == 1
-#include "audio_player_dsound.h"
-#endif
-#include "audio_provider.h"
+#include "audio_player.h"
+#include "options.h"
 
 
 ///////////////
@@ -117,30 +111,31 @@ void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 
 //////////////
 // Get player
-AudioPlayer* AudioPlayer::GetAudioPlayer() {
-	// Prepare
-	AudioPlayer *player = NULL;
+AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
+	// List of providers
+	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio player")));
 
-	try {
-		// Get DirectSound player
-		#if USE_DIRECTSOUND == 1
-		player = new DirectSoundPlayer;
-		#endif
+	// None available
+	if (list.Count() == 0) throw _T("No audio players are available.");
 
-		// Get PortAudio player
-		#if USE_PORTAUDIO == 1
-		if (!player) player = new PortAudioPlayer;
-		#endif
-	}
-	catch (...) {
-		delete player;
-		player = NULL;
-		throw;
+	// Get provider
+	wxString error;
+	for (unsigned int i=0;i<list.Count();i++) {
+		try {
+			AudioPlayer *player = GetFactory(list[i])->CreatePlayer();
+			if (player) return player;
+		}
+		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
+		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
+		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
 	}
 
-	// Got player?
-	if (!player) throw _T("Unable to create audio player.");
-
-	// Return
-	return player;
+	// Failed
+	throw error;
 }
+
+
+//////////
+// Static
+template <class AudioPlayerFactory> std::map<wxString,AudioPlayerFactory*>* AegisubFactory<AudioPlayerFactory>::factories=NULL;
+
