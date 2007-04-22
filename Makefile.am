@@ -76,5 +76,3 @@ EXTRA_DIST = ac/config.rpath m4/ChangeLog  \
 	lua51/src/lvm.h \
 	lua51/src/lzio.c \
 	lua51/src/lzio.h
-
-ACLOCAL_AMFLAGS = -I m4
