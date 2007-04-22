@@ -273,9 +273,6 @@ RetryLock:
 	// Error
 	if (FAILED(res)) return false;
 
-	// Update offset
-	offset = (offset + toWrite) % bufSize;
-
 	// Convert size to number of samples
 	unsigned long int count1 = size1 / bytesps;
 	unsigned long int count2 = size2 / bytesps;
@@ -305,6 +302,9 @@ RetryLock:
 
 	// Unlock
 	buffer->Unlock(ptr1,count1*bytesps,ptr2,count2*bytesps);
+
+	// Update offset
+	offset = (offset + count1*bytesps + count2*bytesps) % bufSize;
 
 	return delta==0; // If delta>0 we hit end of stream
 }
@@ -421,7 +421,7 @@ DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	// Wake up thread every half second to fill buffer as needed
 	// This more or less assumes the buffer is at least one second long
-	while (WaitForSingleObject(stopnotify, 500)) {
+	while (WaitForSingleObject(stopnotify, 500) == WAIT_TIMEOUT) {
 		if (!parent->FillBuffer(false)) {
 			// FillBuffer returns false when end of stream is reached
 			wxLogDebug(_T("DS thread hit end of stream"));
@@ -431,27 +431,30 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 
 	// Now fill buffer with silence
 	DWORD bytesFilled = 0;
-	while (WaitForSingleObject(stopnotify, 500)) {
+	while (WaitForSingleObject(stopnotify, 500) == WAIT_TIMEOUT) {
 		void *buf1, *buf2;
 		DWORD size1, size2;
 		DWORD playpos;
 		HRESULT res;
 		res = parent->buffer->GetCurrentPosition(&playpos, NULL);
 		if (FAILED(res)) break;
-		res = parent->buffer->Lock(parent->offset, (playpos-parent->offset)%parent->bufSize, &buf1, &size1, &buf2, &size2, 0);
+		int toWrite = playpos - parent->offset;
+		while (toWrite < 0) toWrite += parent->bufSize;
+		res = parent->buffer->Lock(parent->offset, toWrite, &buf1, &size1, &buf2, &size2, 0);
 		if (FAILED(res)) break;
-		parent->offset = (parent->offset + size1 + size2) % parent->bufSize;
 		if (size1) memset(buf1, 0, size1);
 		if (size2) memset(buf2, 0, size2);
 		bytesFilled += size1 + size2;
 		parent->buffer->Unlock(buf1, size1, buf2, size2);
 		if (bytesFilled >= parent->bufSize) break;
+		parent->offset = (parent->offset + size1 + size2) % parent->bufSize;
 	}
+
+	WaitForSingleObject(stopnotify, 1500);
 
 	wxLogDebug(_T("DS thread dead"));
 
 	parent->playing = false;
-	WaitForSingleObject(stopnotify, 1500);
 	parent->buffer->Stop();
 	return 0;
 }
