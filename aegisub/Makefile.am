@@ -11,7 +11,7 @@ DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
-AM_CPPFLAGS = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
+AM_CPPFLAGS = -DAEGISUB -Iposix $(RUBY_CFLAGS) -include posix/defines.h $(BUILDINFO)
 LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a -lGL -lGLU
 
 if USE_LIBASS
@@ -20,9 +20,17 @@ else
 LIBASS=
 endif
 
-#	auto4_ruby_assfile.cpp
-#	auto4_ruby.cpp
-#	auto4_ruby_dialog.cpp
+if HAVE_PORTAUDIO
+PORTAUDIO=audio_player_portaudio.cpp
+else
+PORTAUDIO=
+endif
+
+#if HAVE_RUBY
+#AUTO4RUBY=auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
+#else
+#AUTO4RUBY=
+#endif
 
 aegisub_SOURCES = \
 	aegisublocale.cpp \
@@ -40,7 +48,7 @@ aegisub_SOURCES = \
 	audio_display.cpp \
 	audio_karaoke.cpp \
 	audio_player.cpp \
-	audio_player_portaudio.cpp \
+	$(PORTAUDIO) \
 	audio_provider.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_lavc.cpp \
@@ -52,6 +60,7 @@ aegisub_SOURCES = \
 	auto4_lua_assfile.cpp \
 	auto4_lua_dialog.cpp \
 	auto4_auto3.cpp \
+	$(AUTO4RUBY) \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
 	browse_button.cpp \
