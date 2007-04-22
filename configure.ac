@@ -8,7 +8,13 @@ AC_GNU_SOURCE
 
 AC_CANONICAL_HOST
 
-AM_GNU_GETTEXT
+# Commented out for now, since for some reason not all systems have
+# /usr/share/aclocal/gettext.m4 and can't get it. (Feisty Fawn for
+# one doesn't have it.)
+# wxWidgets doesn't use real gettext anyway, but implements its own
+# support, so only the gettext tools are required to compile the
+# po files.
+#AM_GNU_GETTEXT
 
 AC_DEFUN([AC_C_FLAG], [{
 	AC_LANG_PUSH(C)
@@ -57,6 +63,11 @@ AC_C_FLAG([-pthread])
 AC_CXX_FLAG([-pthread])
 AC_CHECK_LIB([pthread], [pthread_join])
 
+AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
+AC_CHECK_FUNCS([Pa_GetStreamTime])
+AC_CHECK_LIB([avcodec], [avcodec_init])
+AC_CHECK_LIB([avformat], [av_read_frame])
+
 AC_CHECK_HEADER([wchar.h],,[
 	AC_MSG_FAILURE([aegisub needs wide character support, find a wchar.h])
 ])
@@ -86,7 +97,7 @@ else
 fi
 
 CPPFLAGS="$CPPFLAGS `$WXCONFIG --cppflags | sed -e 's/-fno-exceptions//'` $FREETYPE_CFLAGS"
-LIBS="$LIBS `$WXCONFIG --libs` `$WXCONFIG --libs gl` $FREETYPE_LIBS"
+LIBS="$LIBS `$WXCONFIG --libs std,gl,stc` $FREETYPE_LIBS"
 
 AC_MSG_CHECKING([wxWidgets OpenGL support])
 AC_LINK_IFELSE([
@@ -102,31 +113,22 @@ int main(int argc, char **argv) {
 	AC_MSG_FAILURE([wxWidgets OpenGL support missing])
 ])
 
-AC_ARG_WITH(wxscintilla,
-	AC_HELP_STRING([--with-wxscintilla=DIR], [Use wxScintilla includes from DIR/include and libraries from DIR/lib.]),
-[
-    if test "$withval" != "yes" -a "$withval" != ""; then
-        WXSCINTDIR=$withval
-	if test "${WXSCINTDIR#/}" == "$WXSCINTDIR";
-	then	WXSCINTDIR="`pwd`/$WXSCINTDIR"
-	fi
-	CPPFLAGS="$CPPFLAGS -I$WXSCINTDIR/include"
-	LDFLAGS="$LDFLAGS -L$WXSCINTDIR/lib -Wl,-rpath,$WXSCINTDIR/lib"
-    fi
-],, [
-#include <wx/buffer.h>
+AC_MSG_CHECKING([wxWidgets StyledTextCtrl support])
+AC_LINK_IFELSE([
+#include <wx/stc/stc.h>
+int main(int argc, char **argv) {
+	wxStyledTextCtrl *canvas;
+	return 0;
+}
+],[
+	AC_MSG_RESULT([yes])
+],[
+	AC_MSG_RESULT([not available])
+	AC_MSG_FAILURE([wxWidgets missing StyledTextCtrl])
 ])
-
-AC_CHECK_HEADER([wx/wxscintilla.h],, [AC_MSG_ERROR([wxScintilla includes not found.])])
-LIBS="$LIBS -lwxscintilla"
 
 AC_CHECK_LIB([m], [main])
 AC_CHECK_LIB([dl], [dlopen])
-
-AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
-AC_CHECK_FUNCS([Pa_GetStreamTime])
-AC_CHECK_LIB([avcodec], [avcodec_init])
-AC_CHECK_LIB([avformat], [av_read_frame])
 
 AC_ARG_WITH([libass], [AS_HELP_STRING([--without-libass],[disable libass @<:@default=check@:>@])],[],[with_libass=check])
 

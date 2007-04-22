@@ -36,7 +36,9 @@
 
 ///////////
 // Headers
+#ifdef WIN32
 #define EMULATE_INTTYPES
+#endif
 #include <wx/wxprec.h>
 
 /* avcodec.h uses INT64_C in a *single* place. This prolly breaks on Win32,

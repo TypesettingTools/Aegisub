@@ -38,7 +38,9 @@
 
 #include "setup.h"
 
+#ifdef WIN32
 #define EMULATE_INTTYPES
+#endif
 #include <wx/filename.h>
 extern "C" {
 #include <ffmpeg/avcodec.h>

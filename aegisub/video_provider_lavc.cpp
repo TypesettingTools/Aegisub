@@ -36,7 +36,9 @@
 
 ///////////
 // Headers
+#ifdef WIN32
 #define EMULATE_INTTYPES
+#endif
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 #include <wx/wxprec.h>
