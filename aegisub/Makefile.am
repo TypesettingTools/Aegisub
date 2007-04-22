@@ -11,7 +11,7 @@ DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
-AM_CPPFLAGS = -DAEGISUB -Iposix $(RUBY_CFLAGS) -include posix/defines.h $(BUILDINFO)
+AM_CPPFLAGST = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
 LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a -lGL -lGLU
 
 if USE_LIBASS
@@ -30,11 +30,13 @@ AUDIO_PLAYER+=audio_player_alsa.cpp
 LDADD += -lasound
 endif
 
-#if HAVE_RUBY
-#AUTO4RUBY=auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
-#else
-#AUTO4RUBY=
-#endif
+if HAVE_RUBY
+AUTO4RUBY=auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
+AM_CPPFLAGS = $(shell ruby -r rbconfig -e "p '-I' + Config::CONFIG['rubylibdir'] + '/' + Config::CONFIG['arch'] ") $(AM_CPPFLAGST)
+else
+AUTO4RUBY=
+AM_CPPFLAGS = $(AM_CPPFLAGST)
+endif
 
 if HAVE_HUNSPELL
 HUNSPELL=spellchecker_hunspell.cpp
