@@ -20,10 +20,14 @@ else
 LIBASS=
 endif
 
+AUDIO_PLAYER=audio_player.cpp 
 if HAVE_PORTAUDIO
-PORTAUDIO=audio_player_portaudio.cpp
-else
-PORTAUDIO=
+AUDIO_PLAYER+=audio_player_portaudio.cpp 
+LDADD += -lportaudio
+endif
+if HAVE_ALSA
+AUDIO_PLAYER+=audio_player_alsa.cpp 
+LDADD += -lasound
 endif
 
 #if HAVE_RUBY
@@ -36,7 +40,7 @@ if HAVE_HUNSPELL
 HUNSPELL=spellchecker_hunspell.cpp
 else
 HUNSPELL=
-end
+endif
 
 aegisub_SOURCES = \
 	aegisublocale.cpp \
@@ -53,8 +57,7 @@ aegisub_SOURCES = \
 	audio_box.cpp \
 	audio_display.cpp \
 	audio_karaoke.cpp \
-	audio_player.cpp \
-	$(PORTAUDIO) \
+	$(AUDIO_PLAYER) \
 	audio_provider.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_lavc.cpp \
