@@ -75,6 +75,7 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	button_box->AddSpacer(10);
 	button_box->Add(close_button, 0);
 	button_box->AddStretchSpacer(2);
+	SetEscapeId(wxID_CLOSE);
 
 	// main layout
 	wxSizer *main_box = new wxBoxSizer(wxVERTICAL);

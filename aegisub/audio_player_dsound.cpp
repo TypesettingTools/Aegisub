@@ -356,6 +356,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 		if (FAILED(res)) break;
 		res = parent->buffer->Lock(parent->offset, (playpos-parent->offset)%parent->bufSize, &buf1, &size1, &buf2, &size2, 0);
 		if (FAILED(res)) break;
+		parent->offset = (parent->offset + size1 + size2) % parent->bufSize;
 		if (size1) memset(buf1, 0, size1);
 		if (size2) memset(buf2, 0, size2);
 		bytesFilled += size1 + size2;
@@ -366,6 +367,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	wxLogDebug(_T("DS thread dead"));
 
 	parent->playing = false;
+	WaitForSingleObject(stopnotify, 1500);
 	parent->buffer->Stop();
 	return 0;
 }

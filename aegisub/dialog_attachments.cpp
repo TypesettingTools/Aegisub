@@ -69,6 +69,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 	buttonSizer->Add(extractButton,1,0,0);
 	buttonSizer->Add(deleteButton,1,0,0);
 	buttonSizer->Add(new wxButton(this,BUTTON_CLOSE,_("&Close")),1,wxLEFT,5);
+	SetEscapeId(BUTTON_CLOSE);
 
 	// Main sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);

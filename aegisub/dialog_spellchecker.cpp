@@ -126,6 +126,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	botSizer->Add(language,1,wxEXPAND);
 	botSizer->Add(new wxButton(this,wxID_CLOSE),0,wxEXPAND);
 	botSizer->AddGrowableCol(0,1);
+	SetEscapeId(wxID_CLOSE);
 
 	// Main sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
