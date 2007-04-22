@@ -250,16 +250,12 @@ namespace Automation4 {
 			_stackcheck.check(1);
 			// and execute it
 			// this is where features are registered
-			// this should run really fast so a progress window isn't needed
-			// (if it infinite-loops, scripter is an idiot and already got his punishment)
-			{
-				LuaThreadedCall call(L, 0, 0);
-				if (call.Wait()) {
-					// error occurred, assumed to be on top of Lua stack
-					wxString *err = new wxString(lua_tostring(L, -1), wxConvUTF8);
-					err->Prepend(_T("Error initialising Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
-					throw err->c_str();
-				}
+			// don't thread this, as there's no point in it and it seems to break on wx 2.8.3, for some reason
+			if (lua_pcall(L, 0, 0, 0)) {
+				// error occurred, assumed to be on top of Lua stack
+				wxString *err = new wxString(lua_tostring(L, -1), wxConvUTF8);
+				err->Prepend(_T("Error initialising Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
+				throw err->c_str();
 			}
 			_stackcheck.check(0);
 			lua_getglobal(L, "version");

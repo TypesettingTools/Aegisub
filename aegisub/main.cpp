@@ -108,16 +108,16 @@ bool AegisubApp::OnInit() {
 		locale.Init(wxLANGUAGE_DEFAULT);
 #endif
 
+		// Set association
+#ifndef _DEBUG
+		RegistryAssociate();
+#endif
+
 		// Load Automation scripts
 		global_scripts = new Automation4::AutoloadScriptManager(Options.AsText(_T("Automation Autoload Path")));
 
 		// Load export filters
 		AssExportFilterChain::PrepareFilters();
-
-		// Set association
-#ifndef _DEBUG
-		RegistryAssociate();
-#endif
 
 		// Get parameter subs
 		wxArrayString subs;

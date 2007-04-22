@@ -32,6 +32,12 @@ endif
 #AUTO4RUBY=
 #endif
 
+if HAVE_HUNSPELL
+HUNSPELL=spellchecker_hunspell.cpp
+else
+HUNSPELL=
+end
+
 aegisub_SOURCES = \
 	aegisublocale.cpp \
 	ass_attachment.cpp \
@@ -115,7 +121,7 @@ aegisub_SOURCES = \
 	mythes.cxx \
 	options.cpp \
 	spellchecker.cpp \
-	spellchecker_hunspell.cpp \
+	$(HUNSPELL) \
 	static_bmp.cpp \
 	string_codec.cpp \
 	subs_edit_box.cpp \

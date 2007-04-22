@@ -48,7 +48,7 @@ SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Spell Checker")));
 
 	// None available
-	if (list.Count() == 0) throw _T("No spell checkers are available.");
+	if (list.Count() == 0) return 0; //throw _T("No spell checkers are available.");
 
 	// Get provider
 	wxString error;
