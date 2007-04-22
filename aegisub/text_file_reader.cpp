@@ -185,7 +185,7 @@ void TextFileReader::SetEncodingConfiguration() {
 wxString TextFileReader::ReadLineFromFile() {
 	Open();
 	wxString wxbuffer;
-	int bufAlloc = 1024;
+	size_t bufAlloc = 1024;
 	wxbuffer.Alloc(bufAlloc);
 #ifdef TEXT_READER_USE_STDIO
 	char buffer[512];
@@ -199,7 +199,6 @@ wxString TextFileReader::ReadLineFromFile() {
 		char charbuffer[3];
 		charbuffer[2] = 0;
 		wchar_t ch = 0;
-		int n = 0;
 		size_t len = 0;
 #ifdef TEXT_READER_USE_STDIO
 		while (ch != L'\n' && !feof(file)) {

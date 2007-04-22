@@ -79,7 +79,6 @@
 #include <wx/event.h>
 #include <wx/stc/stc.h>
 #include <wx/string.h>
-//#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <wx/glcanvas.h>
@@ -90,20 +89,6 @@
 #include <vector>
 #include <list>
 #include <map>
-
-
-///////////////
-// DirectSound
-#if USE_DIRECTSOUND == 1
-//#include <dsound.h>
-#endif
-
-
-////////////
-// Hunspell
-#if USE_HUNSPELL == 1
-#include <hunspell/hunspell.hxx>
-#endif
 
 
 #endif // C++

@@ -38,12 +38,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "setup.h"
 #include "mythes.hxx"
 
 // some basic utility routines
 
-#if USE_HUNSPELL == 0
+#if 0
 // string duplication routine
 char * mystrdup(const char * p)
 {
@@ -56,7 +55,17 @@ char * mystrdup(const char * p)
   }
   return NULL;
 }
+
+// remove cross-platform text line end characters
+void mychomp(char * s)
+{
+  int k = strlen(s);
+  if ((k > 0) && ((*(s+k-1)=='\r') || (*(s+k-1)=='\n'))) *(s+k-1) = '\0';
+  if ((k > 1) && (*(s+k-2) == '\r')) *(s+k-2) = '\0';
+}
 #endif
+char * mystrdup(const char * p);
+void mychomp(char * s);
 
 
 // return index of char in string
@@ -66,17 +75,6 @@ int mystr_indexOfChar(const char * d, int c)
   if (p) return (int)(p-d);
   return -1;
 }
-
-
-// remove cross-platform text line end characters
-#if USE_HUNSPELL == 0
-void mychomp(char * s)
-{
-  int k = strlen(s);
-  if ((k > 0) && ((*(s+k-1)=='\r') || (*(s+k-1)=='\n'))) *(s+k-1) = '\0';
-  if ((k > 1) && (*(s+k-2) == '\r')) *(s+k-2) = '\0';
-}
-#endif
 
 
 MyThes::MyThes(const char* idxpath, const char * datpath)

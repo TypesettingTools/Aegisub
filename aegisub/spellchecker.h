@@ -40,14 +40,13 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "factory.h"
 
 
 ///////////////////////////
 // Spellchecking interface
 class SpellChecker {
 public:
-	static SpellChecker *GetSpellChecker();
-
 	SpellChecker() {}
 	virtual ~SpellChecker() {}
 
@@ -59,4 +58,17 @@ public:
 
 	virtual wxArrayString GetLanguageList()=0;
 	virtual void SetLanguage(wxString language)=0;
+};
+
+
+///////////
+// Factory
+class SpellCheckerFactory : public AegisubFactory<SpellCheckerFactory> {
+protected:
+	virtual SpellChecker *CreateSpellChecker()=0;
+	SpellCheckerFactory(wxString name) { RegisterFactory(name); }
+
+public:
+	virtual ~SpellCheckerFactory() {}
+	static SpellChecker *GetSpellChecker();
 };

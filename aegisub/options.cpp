@@ -108,6 +108,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 
 	// Edit Box
 	SetText(_T("Dictionaries path"),_T("dictionaries"));
+	SetText(_T("Spell Checker"),_T("hunspell"));
 	SetBool(_T("Link time boxes commit"),true);
 	SetModificationType(MOD_EDIT_BOX);
 	SetBool(_T("Call tips enabled"),true);

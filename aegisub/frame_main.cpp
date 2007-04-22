@@ -234,9 +234,7 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
 	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample Script Resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBITMAP(timing_processor_toolbutton),_("Open Timing Post-processor dialog"));
-#if USE_HUNSPELL == 1
 	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),wxBITMAP(spellcheck_toolbutton),_("Open Spell checker"));
-#endif
 	Toolbar->AddSeparator();
 
 	// Options
@@ -332,9 +330,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBITMAP(translation_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
-#if USE_HUNSPELL == 1
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
-#endif
 	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
 
 	// Create timing menu

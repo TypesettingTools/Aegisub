@@ -40,7 +40,6 @@
 #include "dialog_about.h"
 #include "version.h"
 #include "options.h"
-#include "setup.h"
 
 
 ///////////////
@@ -62,21 +61,11 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += _T("wxWidgets - Copyright (c) 1998-2006 Julian Smart, Robert Roebling et al;\n");
 	libString += _T("wxStyledTextCtrl - Copyright (c) 2004 wxCode;\n");
 	libString += _T("Lua - Copyright (c) 1994-2006 Lua.org, PUC-Rio;\n");
-#if USE_HUNSPELL == 1
 	libString += _T("Hunspell - Copyright (c) Kevin Hendricks;\n");
-#endif
-#if USE_PORTAUDIO == 1
 	libString += _T("PortAudio - Copyright (c) 1999-2000 Ross Bencina, Phil Burk;\n");
-#endif
-#if USE_LAVC == 1
-	libString += _T("FFmpeg - Copyright (c) ??;\n");
-#endif
-#if USE_LIBASS == 1
-	libString += _T("libass - Copyright (c) 2006, Evgeniy Stepanov;\n");
-#endif
-#if USE_ASA == 1
+	libString += _T("FFmpeg - Copyright (c) 2001 Fabrice Bellard,;\n");
+	libString += _T("libass - Copyright (c) 2006-2007, Evgeniy Stepanov;\n");
 	libString += _T("asa - Copyright (c) 2004-2007, David Lamparter;\n");
-#endif
 	libString += _T("MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada\n");
 	libString += _T("Matroska Parser and VideoSink - Copyright (c) 2004-2007 Mike Matsnev\n");
 

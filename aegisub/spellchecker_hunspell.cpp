@@ -36,18 +36,63 @@
 
 ///////////
 // Headers
-#include "setup.h"
-#if USE_HUNSPELL == 1
+#include "spellchecker.h"
+#include "main.h"
+#include "utils.h"
+#include "options.h"
 #include <hunspell/hunspell.hxx>
+#include <wx/wxprec.h>
 #include <wx/wxprec.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
-#include "spellchecker_hunspell.h"
-#include "main.h"
-#include "utils.h"
-#include "options.h"
+
+
+/////////////
+// Libraries
+#if __VISUALC__ >= 1200
+#ifdef __WXDEBUG__
+#pragma comment(lib,"hunspelld.lib")
+#else
+#pragma comment(lib,"hunspell.lib")
+#endif
+#endif
+
+
+//////////////////
+// Hunspell class
+class HunspellSpellChecker : public SpellChecker {
+private:
+	Hunspell *hunspell;
+	wxCSConv *conv;
+	wxString affpath;
+	wxString dicpath;
+
+	void Reset();
+
+public:
+	HunspellSpellChecker();
+	~HunspellSpellChecker();
+
+	void AddWord(wxString word);
+	bool CanAddWord(wxString word);
+
+	bool CheckWord(wxString word);
+	wxArrayString GetSuggestions(wxString word);
+
+	wxArrayString GetLanguageList();
+	void SetLanguage(wxString language);
+};
+
+
+///////////
+// Factory
+class HunspellSpellCheckerFactory : public SpellCheckerFactory {
+public:
+	SpellChecker *CreateSpellChecker() { return new HunspellSpellChecker(); }
+	HunspellSpellCheckerFactory() : SpellCheckerFactory(_T("hunspell")) {}
+} registerHunspell;
 
 
 ///////////////
@@ -234,5 +279,3 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	conv = NULL;
 	if (hunspell) conv = new wxCSConv(wxString(hunspell->get_dic_encoding(),wxConvUTF8));
 }
-
-#endif

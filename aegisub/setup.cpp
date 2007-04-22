@@ -93,15 +93,4 @@
 #pragma comment(lib, "wsock32.lib")
 
 
-////////////
-// Hunspell
-#if USE_HUNSPELL == 1
-#ifdef __WXDEBUG__
-#pragma comment(lib,"hunspelld.lib")
-#else
-#pragma comment(lib,"hunspell.lib")
-#endif
-#endif
-
-
 #endif // VisualC

@@ -42,36 +42,6 @@
 //
 
 
-
-////////////////////////////////////
-// Enable DirectShow Video Provider
-// Requires: Win32, DirectX SDK
-#define USE_DIRECTSHOW 0
-
-
-///////////////////////////////////
-// Enable DirectSound Audio Player
-// Requires: Win32, DirectX SDK
-#define USE_DIRECTSOUND 1
-
-
-/////////////////////////////////
-// Enable PortAudio Audio Player
-// Requires: PortAudio library
-#define USE_PORTAUDIO 0
-
-
-////////////////////////////////
-// Enable Hunspell spellchecker
-#define USE_HUNSPELL 0
-
-
-//////////////////////////////
-// Enable LAVC video provider
-// Requires: FFMPEG library
-#define USE_LAVC 0
-
-
 ////////////////////////
 // Enable PRS Exporting
 // Requires: wxPNG library
@@ -84,17 +54,7 @@
 #define USE_FEXTRACKER 1
 
 
-// The following two are Linux-specific, so it would involve changing the makefiles
-// Therefore, I haven't changed the code to make them work, yet
-
-
 /////////////////
 // Enable LibASS
-// Requires: libass library, GNU?
+// Requires: libass library
 #define USE_LIBASS 0
-
-
-//////////////
-// Enable ASA
-// Requires: asa library
-#define USE_ASA 0

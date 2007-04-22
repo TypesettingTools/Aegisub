@@ -38,22 +38,35 @@
 // Headers
 #include "setup.h"
 #include "spellchecker.h"
-#if USE_HUNSPELL == 1
-#include "spellchecker_hunspell.h"
-#endif
+#include "options.h"
 
 
 /////////////////////
 // Get spell checker
-SpellChecker *SpellChecker::GetSpellChecker() {
-	// Initialize
-	SpellChecker *check = NULL;
+SpellChecker *SpellCheckerFactory::GetSpellChecker() {
+	// List of providers
+	wxArrayString list = GetFactoryList(Options.AsText(_T("Spell Checker")));
 
-	// Try hunspell
-	#if USE_HUNSPELL == 1
-	check = new HunspellSpellChecker();
-	#endif
+	// None available
+	if (list.Count() == 0) throw _T("No spell checkers are available.");
 
-	// Return
-	return check;
+	// Get provider
+	wxString error;
+	for (unsigned int i=0;i<list.Count();i++) {
+		try {
+			SpellChecker *checker = GetFactory(list[i])->CreateSpellChecker();
+			if (checker) return checker;
+		}
+		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
+		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
+		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
+	}
+
+	// Failed
+	throw error;
 }
+
+
+//////////
+// Static
+template <class SpellCheckerFactory> std::map<wxString,SpellCheckerFactory*>* AegisubFactory<SpellCheckerFactory>::factories=NULL;

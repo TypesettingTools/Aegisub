@@ -66,7 +66,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 : wxDialog(parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
 {
 	// Get spell checker
-	spellchecker = SpellChecker::GetSpellChecker();
+	spellchecker = SpellCheckerFactory::GetSpellChecker();
 	if (!spellchecker) {
 		wxMessageBox(_T("No spellchecker available."),_T("Error"),wxICON_ERROR);
 		Destroy();
