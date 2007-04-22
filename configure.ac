@@ -68,8 +68,9 @@ ACX_PTHREAD([], [
 
 AC_CHECK_LIB([portaudio], [Pa_Initialize],, [AC_MSG_ERROR([portaudio not found.])])
 AC_CHECK_FUNCS([Pa_GetStreamTime])
-AC_CHECK_LIB([avcodec], [avcodec_init])
-AC_CHECK_LIB([avformat], [av_read_frame])
+AC_CHECK_LIB([avcodec], [avcodec_init],, [AC_MSG_ERROR([avcodec not found.])])
+AC_CHECK_LIB([avformat], [av_read_frame],, [AC_MSG_ERROR([avformat not found.])])
+AC_CHECK_LIB([hunspell], [main],, [AC_MSG_ERROR([Hunspell not found.])])
 
 AC_CHECK_HEADER([wchar.h],,[
 	AC_MSG_FAILURE([aegisub needs wide character support, find a wchar.h])
