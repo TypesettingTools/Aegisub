@@ -129,6 +129,10 @@ public:
 ///////////////
 // Constructor
 PulseAudioPlayer::PulseAudioPlayer()
+: context_notify(0, 1)
+, context_success(0, 1)
+, stream_notify(0, 1)
+, stream_success(0, 1)
 {
 	volume = 1.0f;
 	paerror = 0;
@@ -219,7 +223,7 @@ void PulseAudioPlayer::OpenStream()
 	//printf("Connecting playback stream\n");
 	paerror = pa_stream_connect_playback(stream, NULL, NULL, PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE, NULL, NULL);
 	if (paerror) {
-		printf("PulseAudio reported error: %s\n", pa_strerror(paerror));
+		printf("PulseAudio reported error: %s (%d)\n", pa_strerror(paerror), paerror);
 		wxString s(pa_strerror(paerror), wxConvUTF8);
 		throw s.c_str();
 	}
@@ -228,7 +232,8 @@ void PulseAudioPlayer::OpenStream()
 		if (sstate == PA_STREAM_READY) {
 			break;
 		} else if (sstate == PA_STREAM_FAILED) {
-			printf("Stream connection failed for some reason\n");
+			paerror = pa_context_errno(context);
+			printf("Stream connection failed: %s (%d)\n", pa_strerror(paerror), paerror);
 			throw _T("Something went wrong connecting the stream");
 		}
 	}
@@ -268,7 +273,19 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 {
 	//printf("Starting PulseAudio playback\n");
 	if (!open) OpenStream();
-	if (is_playing) Stop();
+
+	if (is_playing) {
+		// If we're already playing, do a quick "reset"
+		is_playing = false;
+
+		pa_operation *op = pa_stream_flush(stream, (pa_stream_success_cb_t)pa_stream_success, this);
+		stream_success.Wait();
+		pa_operation_unref(op);
+		if (!stream_success_val) {
+			paerror = pa_context_errno(context);
+			printf("Error flushing stream: %s (%d)\n", pa_strerror(paerror), paerror);
+		}
+	}
 
 	start_frame = start;
 	cur_frame = start;
@@ -278,13 +295,20 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 	is_playing = true;
 
 	play_start_time = 0;
-	pa_stream_get_time(stream, &play_start_time);
+	paerror = pa_stream_get_time(stream, &play_start_time);
+	if (paerror) {
+		printf("Error getting stream time: %s (%d)\n", pa_strerror(paerror), paerror);
+	}
 
 	PulseAudioPlayer::pa_stream_write(stream, pa_stream_writable_size(stream), this);
 
 	pa_operation *op = pa_stream_trigger(stream, (pa_stream_success_cb_t)pa_stream_success, this);
 	stream_success.Wait();
 	pa_operation_unref(op);
+	if (!stream_success_val) {
+		paerror = pa_context_errno(context);
+		printf("Error triggering stream: %s (%d)\n", pa_strerror(paerror), paerror);
+	}
 
 	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
@@ -309,6 +333,10 @@ void PulseAudioPlayer::Stop(bool timerToo)
 	pa_operation *op = pa_stream_flush(stream, (pa_stream_success_cb_t)pa_stream_success, this);
 	stream_success.Wait();
 	pa_operation_unref(op);
+	if (!stream_success_val) {
+		paerror = pa_context_errno(context);
+		printf("Error flushing stream: %s (%d)\n", pa_strerror(paerror), paerror);
+	}
 
 	// And unref it
 	//printf("Stopped stream\n\n");
