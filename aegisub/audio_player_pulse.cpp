@@ -60,9 +60,9 @@ private:
 	bool is_playing;
 
 	// Audio data info
-	unsigned long start_frame;
-	unsigned long cur_frame;
-	unsigned long end_frame;
+	volatile unsigned long start_frame;
+	volatile unsigned long cur_frame;
+	volatile unsigned long end_frame;
 	unsigned long bpf; // bytes per frame
 
 	// Used for synchronising with async events
@@ -79,6 +79,7 @@ private:
 	volatile pa_context_state_t cstate;
 	pa_stream *stream;
 	volatile pa_stream_state_t sstate;
+	volatile pa_usec_t play_start_time; // timestamp when playback was started
 	int paerror;
 
 	// Called by PA to notify about contetxt operation completion
@@ -276,11 +277,17 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 
 	is_playing = true;
 
+	play_start_time = 0;
+	pa_stream_get_time(stream, &play_start_time);
+
 	PulseAudioPlayer::pa_stream_write(stream, pa_stream_writable_size(stream), this);
 
 	pa_operation *op = pa_stream_trigger(stream, (pa_stream_success_cb_t)pa_stream_success, this);
 	stream_success.Wait();
 	pa_operation_unref(op);
+
+	// Update timer
+	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
 
 
@@ -293,22 +300,22 @@ void PulseAudioPlayer::Stop(bool timerToo)
 
 	is_playing = false;
 
-	pa_operation *op = pa_stream_cork(stream, 0, (pa_stream_success_cb_t)pa_stream_success, this);
-	stream_success.Wait();
-	pa_operation_unref(op);
-
 	start_frame = 0;
 	cur_frame = 0;
 	end_frame = 0;
 
 	// Flush the stream of data
 	//printf("Flushing stream\n");
-	op = pa_stream_flush(stream, (pa_stream_success_cb_t)pa_stream_success, this);
+	pa_operation *op = pa_stream_flush(stream, (pa_stream_success_cb_t)pa_stream_success, this);
 	stream_success.Wait();
 	pa_operation_unref(op);
 
 	// And unref it
-	printf("Stopped stream\n\n");
+	//printf("Stopped stream\n\n");
+
+        if (timerToo && displayTimer) {
+                displayTimer->Stop();
+        }
 }
 
 
@@ -350,8 +357,14 @@ __int64 PulseAudioPlayer::GetEndPosition()
 // Get current position
 __int64 PulseAudioPlayer::GetCurrentPosition()
 {
-	// TODO: use pulse functions
-	return cur_frame;
+	if (!is_playing) return 0;
+
+	// Calculation duration we have played, in microseconds
+	pa_usec_t play_cur_time;
+	pa_stream_get_time(stream, &play_cur_time);
+	pa_usec_t playtime = play_cur_time - play_start_time;
+
+	return start_frame + playtime * provider->GetSampleRate() / (1000*1000);
 }
 
 
@@ -385,6 +398,8 @@ void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPl
 	if (!thread->is_playing) return;
 	if (thread->cur_frame >= thread->end_frame) {
 		thread->is_playing = false;
+		pa_operation *op = pa_stream_drain(p, NULL, NULL);
+		pa_operation_unref(op);
 		//printf("PA requested more buffer, but no more to stream\n");
 		return;
 	}
