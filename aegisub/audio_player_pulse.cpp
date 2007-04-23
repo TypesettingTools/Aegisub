@@ -148,23 +148,23 @@ PulseAudioPlayer::~PulseAudioPlayer()
 // Open stream
 void PulseAudioPlayer::OpenStream()
 {
-	printf("Opening PulseAudio stream\n");
+	//printf("Opening PulseAudio stream\n");
 	if (open) CloseStream();
 
 	// Get provider
 	AudioProvider *provider = GetProvider();
 
 	// Initialise a mainloop
-	printf("Initialising threaded main loop\n");
+	//printf("Initialising threaded main loop\n");
 	mainloop = pa_threaded_mainloop_new();
 	if (!mainloop) {
 		throw _T("Failed to initialise PulseAudio threaded mainloop object");
 	}
-	printf("Starting main loop\n");
+	//printf("Starting main loop\n");
 	pa_threaded_mainloop_start(mainloop);
 
 	// Create context
-	printf("Creating context\n");
+	//printf("Creating context\n");
 	context = pa_context_new(pa_threaded_mainloop_get_api(mainloop), "Aegisub");
 	if (!context) {
 		pa_threaded_mainloop_free(mainloop);
@@ -173,7 +173,7 @@ void PulseAudioPlayer::OpenStream()
 	pa_context_set_state_callback(context, (pa_context_notify_cb_t)pa_context_notify, this);
 
 	// Connect the context
-	printf("Connecting context\n");
+	//printf("Connecting context\n");
 	pa_context_connect(context, NULL, 0, NULL);
 	// Wait for connection
 	while (true) {
@@ -191,7 +191,7 @@ void PulseAudioPlayer::OpenStream()
 		}
 		// otherwise loop once more
 	}
-	printf("Context connected\n");
+	//printf("Context connected\n");
 	
 	// Set up stream
 	bpf = provider->GetChannels() * provider->GetBytesPerSample();
@@ -201,7 +201,7 @@ void PulseAudioPlayer::OpenStream()
 	ss.channels = provider->GetChannels();
 	pa_channel_map map;
 	pa_channel_map_init_auto(&map, ss.channels, PA_CHANNEL_MAP_DEFAULT);
-	printf("Creating stream\n");
+	//printf("Creating stream\n");
 	stream = pa_stream_new(context, "Sound", &ss, &map);
 	if (!stream) {
 		// argh!
@@ -215,7 +215,7 @@ void PulseAudioPlayer::OpenStream()
 	pa_stream_set_write_callback(stream, (pa_stream_request_cb_t)pa_stream_write, this);
 
 	// Connext stream
-	printf("Connecting playback stream\n");
+	//printf("Connecting playback stream\n");
 	paerror = pa_stream_connect_playback(stream, NULL, NULL, PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE, NULL, NULL);
 	if (paerror) {
 		printf("PulseAudio reported error: %s\n", pa_strerror(paerror));
@@ -231,10 +231,10 @@ void PulseAudioPlayer::OpenStream()
 			throw _T("Something went wrong connecting the stream");
 		}
 	}
-	printf("Connected playback stream, now playing\n\n");
+	//printf("Connected playback stream, now playing\n\n");
 
 	// Hopefully this marks success
-	printf("Finished opening PulseAudio\n\n");
+	//printf("Finished opening PulseAudio\n\n");
 	open = true;
 }
 
@@ -244,7 +244,7 @@ void PulseAudioPlayer::OpenStream()
 void PulseAudioPlayer::CloseStream()
 {
 	if (!open) return;
-	printf("Closing PuseAudio\n");
+	//printf("Closing PuseAudio\n");
 
 	if (is_playing) Stop();
 
@@ -256,7 +256,7 @@ void PulseAudioPlayer::CloseStream()
 	pa_threaded_mainloop_stop(mainloop);
 	pa_threaded_mainloop_free(mainloop);
 
-	printf("Closed PulseAudio\n");
+	//printf("Closed PulseAudio\n");
 	open = false;
 }
 
@@ -265,14 +265,14 @@ void PulseAudioPlayer::CloseStream()
 // Play
 void PulseAudioPlayer::Play(__int64 start,__int64 count)
 {
-	printf("Starting PulseAudio playback\n");
+	//printf("Starting PulseAudio playback\n");
 	if (!open) OpenStream();
 	if (is_playing) Stop();
 
 	start_frame = start;
 	cur_frame = start;
 	end_frame = start + count;
-	printf("start=%lu end=%lu\n", start_frame, end_frame);
+	//printf("start=%lu end=%lu\n", start_frame, end_frame);
 
 	is_playing = true;
 
@@ -289,7 +289,7 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 void PulseAudioPlayer::Stop(bool timerToo)
 {
 	if (!is_playing) return;
-	printf("Stopping PulseAudio\n");
+	//printf("Stopping PulseAudio\n");
 
 	is_playing = false;
 
@@ -302,28 +302,10 @@ void PulseAudioPlayer::Stop(bool timerToo)
 	end_frame = 0;
 
 	// Flush the stream of data
-	printf("Draining stream\n");
+	//printf("Flushing stream\n");
 	op = pa_stream_flush(stream, (pa_stream_success_cb_t)pa_stream_success, this);
 	stream_success.Wait();
 	pa_operation_unref(op);
-
-	// Then disconnect it
-	/*printf("Disconnecting stream\n");
-	paerror = pa_stream_disconnect(stream);
-	if (paerror) {
-		printf("PulseAudio reported error: %s\n", pa_strerror(paerror));
-		wxString s(pa_strerror(paerror), wxConvUTF8);
-		throw s.c_str();
-	}
-	while (true) {
-		stream_notify.Wait();
-		if (sstate == PA_STREAM_TERMINATED) {
-			break;
-		} else if (sstate == PA_STREAM_FAILED) {
-			printf("Stream stopping failed\n");
-			throw _T("Something went wrong disconnecting the stream?!");
-		}
-	}*/
 
 	// And unref it
 	printf("Stopped stream\n\n");
@@ -385,7 +367,6 @@ void PulseAudioPlayer::pa_context_success(pa_context *c, int success, PulseAudio
 void PulseAudioPlayer::pa_context_notify(pa_context *c, PulseAudioPlayer *thread)
 {
 	thread->cstate = pa_context_get_state(thread->context);
-	//printf("Context state change: %d\n", thread->cstate);
 	thread->context_notify.Post();
 }
 
@@ -404,16 +385,16 @@ void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPl
 	if (!thread->is_playing) return;
 	if (thread->cur_frame >= thread->end_frame) {
 		thread->is_playing = false;
-		printf("PA requested more buffer, but no more to stream\n");
+		//printf("PA requested more buffer, but no more to stream\n");
 		return;
 	}
 
-	printf("PA requested more buffer, %lu bytes\n", (unsigned long)length);
+	//printf("PA requested more buffer, %lu bytes\n", (unsigned long)length);
 	unsigned long bpf = thread->bpf;
 	unsigned long frames = length / thread->bpf;
 	unsigned long maxframes = thread->end_frame - thread->cur_frame;
 	if (frames > maxframes) frames = maxframes;
-	printf("Handing it %lu frames\n", frames);
+	//printf("Handing it %lu frames\n", frames);
 	void *buf = malloc(frames * bpf);
 	thread->provider->GetAudioWithVolume(buf, thread->cur_frame, frames, thread->volume);
 	::pa_stream_write(p, buf, frames*bpf, free, 0, PA_SEEK_RELATIVE);
@@ -425,7 +406,6 @@ void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPl
 void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 {
 	thread->sstate = pa_stream_get_state(thread->stream);
-	//printf("Stream state change: %d\n", thread->sstate);
 	thread->stream_notify.Post();
 }
 

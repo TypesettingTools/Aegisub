@@ -180,6 +180,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	#endif
 	SetText(_T("Audio Provider"),_T("avisynth"));
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
+	SetText(_T("Audio Alsa Device"), _T("plughw:0,0"));
 	SetText(_T("Audio HD Cache Location"),_T("default"));
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
 	SetInt(_T("Audio Spectrum Cutoff"),0);

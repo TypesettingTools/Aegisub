@@ -44,6 +44,7 @@
 #include "frame_main.h"
 #include "audio_player.h"
 #include <alsa/asoundlib.h>
+#include "options.h"
 
 
 //////////////
@@ -257,7 +258,8 @@ AlsaPlayerThread::AlsaPlayerThread(AudioProvider *_provider)
 	// We want playback
 	stream = SND_PCM_STREAM_PLAYBACK;
 	// Use default device and automatic sample type conversion
-	pcm_name = "plughw:0,0";
+	wxString device = Options.AsText(_T("Audio Alsa Device"));
+	pcm_name = strdup(device.mb_str(wxConvUTF8));
 
 	// Allocate params structure
 	snd_pcm_hw_params_alloca(&hwparams);
@@ -274,6 +276,7 @@ AlsaPlayerThread::AlsaPlayerThread(AudioProvider *_provider)
 /////////////////////
 // Thread destructor
 AlsaPlayerThread::~AlsaPlayerThread() {
+	free(pcm_name);
 }
 
 
