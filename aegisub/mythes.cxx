@@ -42,7 +42,7 @@
 
 // some basic utility routines
 
-#if 0
+#ifndef HAVE_HUNSPELL
 // string duplication routine
 char * mystrdup(const char * p)
 {

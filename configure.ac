@@ -1,6 +1,3 @@
-sinclude([ac/acx_pthread.m4])
-sinclude([ac/ax_check_gl.m4])
-
 AC_PREREQ(2.57)
 AC_INIT([Aegisub], [2.00-alpha],, [aegisub])
 AC_CONFIG_AUX_DIR([ac])
@@ -10,14 +7,6 @@ AC_CONFIG_HEADER([aegisub/posix/acconf.h])
 AC_GNU_SOURCE
 
 AC_CANONICAL_HOST
-
-# Commented out for now, since for some reason not all systems have
-# /usr/share/aclocal/gettext.m4 and can't get it. (Feisty Fawn for
-# one doesn't have it.)
-# wxWidgets doesn't use real gettext anyway, but implements its own
-# support, so only the gettext tools are required to compile the
-# po files.
-#AM_GNU_GETTEXT
 
 AC_DEFUN([AC_C_FLAG], [{
 	AC_LANG_PUSH(C)
@@ -58,8 +47,16 @@ AC_LANG(C++)
 AC_PROG_RANLIB
 
 AC_PATH_PROGS(CONVERT, [convert], [])
-if test -z "$CONVERT"
-then	AC_MSG_FAILURE([aegisub needs convert (from ImageMagick) to produce xpms from the supplied bitmaps/icons])
+if test -z "$CONVERT"; then
+	AC_MSG_FAILURE([Aegisub needs convert (from ImageMagick) to produce xpms from the supplied bitmaps/icons])
+fi
+
+dnl Don't replace this with AC_GNU_GETTEXT, we don't want the framework-mess
+dnl that macro depends on, just check if the single program we need is
+dnl installed on the system. We can probably even do with non-GNU versions.
+AC_PATH_PROGS(MSGFMT, [msgfmt], [])
+if test -z "$MSGFMT"
+then	AC_MSG_FAILURE([Aegisub needs msgfmt from gettext-tools to compile i18n string tables])
 fi
 
 ACX_PTHREAD([], [
@@ -100,7 +97,8 @@ AC_ARG_WITH(wx-config,
 
 AX_CHECK_GL
 if test ! "$GL_LIBS"; then
-	AC_MSG_ERROR([Could not find system GL library])
+	AC_MSG_WARN([Could not find system GL library])
+	AC_MSG_FAILURE([GL support is required to build Aegisub. (Try mesa3d)])
 fi
 CPPFLAGS="$CPPFLAGS $GL_CFLAGS"
 LIBS="$LIBS $GL_LIBS"

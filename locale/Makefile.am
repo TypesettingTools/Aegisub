@@ -2,7 +2,7 @@ LANGS=de es fr it ko pt_BR ru
 localedir = $(datadir)/locale
 
 %.gmo: %/aegisub.po
-	$(MSGFMT) -o $@ $<
+	msgfmt -o $@ $<
 
 all-am: $(foreach lang,$(LANGS),$(lang).gmo)
 
