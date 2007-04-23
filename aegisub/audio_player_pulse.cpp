@@ -278,7 +278,9 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 		// If we're already playing, do a quick "reset"
 		is_playing = false;
 
+		pa_threaded_mainloop_lock(mainloop);
 		pa_operation *op = pa_stream_flush(stream, (pa_stream_success_cb_t)pa_stream_success, this);
+		pa_threaded_mainloop_unlock(mainloop);
 		stream_success.Wait();
 		pa_operation_unref(op);
 		if (!stream_success_val) {
@@ -295,14 +297,18 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 	is_playing = true;
 
 	play_start_time = 0;
+	pa_threaded_mainloop_lock(mainloop);
 	paerror = pa_stream_get_time(stream, &play_start_time);
+	pa_threaded_mainloop_unlock(mainloop);
 	if (paerror) {
 		printf("Error getting stream time: %s (%d)\n", pa_strerror(paerror), paerror);
 	}
 
 	PulseAudioPlayer::pa_stream_write(stream, pa_stream_writable_size(stream), this);
 
+	pa_threaded_mainloop_lock(mainloop);
 	pa_operation *op = pa_stream_trigger(stream, (pa_stream_success_cb_t)pa_stream_success, this);
+	pa_threaded_mainloop_unlock(mainloop);
 	stream_success.Wait();
 	pa_operation_unref(op);
 	if (!stream_success_val) {
@@ -330,7 +336,9 @@ void PulseAudioPlayer::Stop(bool timerToo)
 
 	// Flush the stream of data
 	//printf("Flushing stream\n");
+	pa_threaded_mainloop_lock(mainloop);
 	pa_operation *op = pa_stream_flush(stream, (pa_stream_success_cb_t)pa_stream_success, this);
+	pa_threaded_mainloop_unlock(mainloop);
 	stream_success.Wait();
 	pa_operation_unref(op);
 	if (!stream_success_val) {
@@ -424,11 +432,20 @@ void PulseAudioPlayer::pa_stream_success(pa_stream *p, int success, PulseAudioPl
 void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPlayer *thread)
 {
 	if (!thread->is_playing) return;
-	if (thread->cur_frame >= thread->end_frame) {
+
+	if (thread->cur_frame >= thread->end_frame + thread->provider->GetSampleRate()) {
+		// More than a second past end of stream
 		thread->is_playing = false;
 		pa_operation *op = pa_stream_drain(p, NULL, NULL);
 		pa_operation_unref(op);
 		//printf("PA requested more buffer, but no more to stream\n");
+		return;
+
+	} else if (thread->cur_frame >= thread->end_frame) {
+		// Past end of stream, but not a full second, add some silence
+		void *buf = calloc(length, 1);
+		::pa_stream_write(p, buf, length, free, 0, PA_SEEK_RELATIVE);
+		thread->cur_frame += length / thread->bpf;
 		return;
 	}
 
