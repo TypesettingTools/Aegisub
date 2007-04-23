@@ -69,6 +69,10 @@ ACX_PTHREAD([], [
 AC_CHECK_LIB([asound], [snd_pcm_open], [found_audio=yes], [with_alsa=no])
 AC_CHECK_LIB([portaudio], [Pa_Initialize], [found_audio=yes], [with_portaudio=no])
 AC_CHECK_FUNCS([Pa_GetStreamTime])
+PKG_CHECK_MODULES([LIBPULSE], libpulse >= 0.5,
+	[found_audio=yes],
+	[with_pulseaudio=no]
+)
 AC_CHECK_LIB([avcodec], [avcodec_init],, [AC_MSG_ERROR([avcodec not found.])])
 AC_CHECK_LIB([avformat], [av_read_frame],, [AC_MSG_ERROR([avformat not found.])])
 AC_CHECK_LIB([hunspell], [main],, [with_hunspell=no])
@@ -212,6 +216,7 @@ AC_CONFIG_SUBDIRS([csri])
 AM_CONDITIONAL([USE_LIBASS], [test "$with_libass" != "no" ])
 AM_CONDITIONAL([HAVE_ALSA], [test "$with_alsa" != "no"])
 AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
+AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
 AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_hunspell" != "no"])
 AM_CONDITIONAL([HAVE_RUBY], [test "$with_ruby" != "no"])
 

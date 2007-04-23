@@ -22,12 +22,16 @@ endif
 
 AUDIO_PLAYER=audio_player.cpp 
 if HAVE_PORTAUDIO
-AUDIO_PLAYER+=audio_player_portaudio.cpp 
+AUDIO_PLAYER += audio_player_portaudio.cpp 
 LDADD += -lportaudio
 endif
 if HAVE_ALSA
-AUDIO_PLAYER+=audio_player_alsa.cpp 
+AUDIO_PLAYER += audio_player_alsa.cpp 
 LDADD += -lasound
+endif
+if HAVE_PULSEAUDIO
+AUDIO_PLAYER += audio_player_pulse.cpp 
+LDADD += -lpulse -lpulse-simple
 endif
 
 if HAVE_RUBY
