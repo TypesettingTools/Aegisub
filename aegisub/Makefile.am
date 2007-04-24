@@ -1,5 +1,4 @@
-EXTRA_DIST = res.rc $(srcdir)/*.h \
-	subtitles_provider_libass.cpp
+EXTRA_DIST = res.rc $(srcdir)/*.h
 SUFFIXES = .c .cpp .rc
 
 SUBDIRS = bitmaps posix
@@ -12,7 +11,8 @@ REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBU
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGST = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
-LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a
+aegisub_LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a
+aegisub_LDFLAGS = 
 
 if USE_LIBASS
 LIBASS=subtitles_provider_libass.cpp
@@ -23,15 +23,15 @@ endif
 AUDIO_PLAYER=audio_player.cpp 
 if HAVE_PORTAUDIO
 AUDIO_PLAYER += audio_player_portaudio.cpp 
-LDADD += -lportaudio
+aegisub_LDFLAGS += -lportaudio
 endif
 if HAVE_ALSA
 AUDIO_PLAYER += audio_player_alsa.cpp 
-LDADD += -lasound
+aegisub_LDFLAGS += -lasound
 endif
 if HAVE_PULSEAUDIO
 AUDIO_PLAYER += audio_player_pulse.cpp 
-LDADD += -lpulse
+aegisub_LDFLAGS += -lpulse
 endif
 
 if HAVE_RUBY
@@ -53,6 +53,19 @@ FFMPEG=audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp
 else
 FFMPEG=
 endif
+
+
+## These aren't built, but are listed here so 'make dist' can always find all the sources
+EXTRA_aegisub_SOURCES = \
+	subtitles_provider_libass.cpp \
+	spellchecker_hunspell.cpp \
+	audio_player_portaudio.cpp \
+	audio_player_alsa.cpp \
+	audio_player_pulse.cpp \
+	audio_player_dsound.cpp \
+	audio_provider_lavc.cpp \
+	lavc_file.cpp \
+	video_provider_lavc.cpp
 
 aegisub_SOURCES = \
 	$(AUDIO_PLAYER) \

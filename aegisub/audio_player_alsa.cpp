@@ -47,27 +47,23 @@
 #include "options.h"
 
 
-//////////////
-// Prototypes
-class AlsaPlayer;
-
-
-//////////
-// Thread
-class AlsaPlayerThread : public wxThread {
+///////////////
+// Alsa player
+class AlsaPlayer : public AudioPlayer {
 private:
-	wxMutex play_mutex; // held while playing
-	wxSemaphore play_notify; // posted when a playback operation is set up
-	wxSemaphore stop_notify; // when set, audio playback should stop asap
-	wxSemaphore shutdown_notify; // when set, thread should shutdown asap
-	wxMutex parameter_mutex;
+	bool open;
+	volatile bool playing;
+	volatile float volume;
 
-	AudioProvider *provider; // provides sample data!
+	volatile unsigned long start_frame; // first frame of playback
+	volatile unsigned long cur_frame; // last written frame + 1
+	volatile unsigned long end_frame; // last frame to play
+	unsigned long bpf; // bytes per frame
 
+	AudioProvider *provider;
 	snd_pcm_t *pcm_handle; // device handle
 	snd_pcm_stream_t stream; // stream direction
-	snd_pcm_hw_params_t *hwparams; // hardware info
-	char *pcm_name; // device name
+	snd_async_handler_t *pcm_callback;
 
 	snd_pcm_format_t sample_format;
 	unsigned int rate; // sample rate of audio
@@ -75,40 +71,10 @@ private:
 	int periods; // number of bytes in a frame
 	snd_pcm_uframes_t bufsize; // size of buffer in frames
 
-	volatile double volume; // volume to get audio at
-	volatile unsigned long start_frame; // first frame of playback
-	volatile unsigned long cur_frame; // last written frame + 1
-	volatile unsigned long end_frame; // last frame to play
-
 	void SetUpHardware();
-	void PlaybackLoop();
+	void SetUpAsync();
 
-public:
-	AlsaPlayerThread(AudioProvider *_provider);
-	~AlsaPlayerThread();
-	wxThread::ExitCode Entry();
-
-	// The following methods are all thread safe
-	void Play(unsigned long _start_frame, unsigned long _num_frames); // Notify thread to stop any playback and instead play specified range
-	void SetEndPosition(unsigned long _end_frame); // Notify thread to use new end position
-	void Stop(); // Notify thread to stop audio playback
-	void StopWait(); // Notify thread to stop, and wait for it to do it
-	void Shutdown(); // Notify the thread to stop playback and die
-	void SetVolume(double new_volume); // Set volume
-	unsigned long GetStartPosition(); // Get first played back frame number
-	unsigned long GetEndPosition(); // Get last frame number to be played back
-	unsigned long GetCurrentPosition(); // Get currently played back frame number
-	bool IsPlaying();
-};
-
-
-///////////////
-// Alsa player
-class AlsaPlayer : public AudioPlayer {
-private:
-	float volume;
-
-	AlsaPlayerThread *thread;
+	static void async_write_handler(snd_async_handler_t *pcm_callback);
 
 public:
 	AlsaPlayer();
@@ -145,143 +111,60 @@ public:
 
 ///////////////
 // Constructor
-AlsaPlayer::AlsaPlayer() {
+AlsaPlayer::AlsaPlayer()
+{
 	volume = 1.0f;
-	thread = NULL;
+	open = false;
+	playing = false;
+	start_frame = cur_frame = end_frame = bpf = 0;
+	provider = 0;
 }
 
 
 //////////////
 // Destructor
-AlsaPlayer::~AlsaPlayer() {
+AlsaPlayer::~AlsaPlayer()
+{
 	CloseStream();
 }
 
 
 ///////////////
 // Open stream
-void AlsaPlayer::OpenStream() {
+void AlsaPlayer::OpenStream()
+{
 	CloseStream();
 
 	// Get provider
-	AudioProvider *provider = GetProvider();
+	provider = GetProvider();
+	bpf = provider->GetChannels() * provider->GetBytesPerSample();
 
-	thread = new AlsaPlayerThread(provider);
-}
-
-
-////////////////
-// Close stream
-void AlsaPlayer::CloseStream() {
-	if (!thread) return;
-
-	thread->Shutdown();
-	thread->Wait();
-	thread = 0;
-}
-
-
-////////
-// Play
-void AlsaPlayer::Play(__int64 start,__int64 count) {
-	// Make sure that it's stopped
-	thread->Stop();
-
-	thread->Play(start, count);
-}
-
-
-////////
-// Stop
-void AlsaPlayer::Stop(bool timerToo) {
-	if (thread) thread->Stop();
-
-        if (timerToo && displayTimer) {
-                displayTimer->Stop();
-        }
-}
-
-
-bool AlsaPlayer::IsPlaying()
-{
-	return thread && thread->IsPlaying();
-}
-
-
-///////////
-// Set end
-void AlsaPlayer::SetEndPosition(__int64 pos) {
-	if (thread) thread->SetEndPosition(pos);
-}
-
-
-////////////////////////
-// Set current position
-void AlsaPlayer::SetCurrentPosition(__int64 pos) {
-	assert(false); // not supported (yet?)
-	// I believe this isn't used anywhere. I hope not.
-}
-
-
-__int64 AlsaPlayer::GetStartPosition()
-{
-	if (thread) return thread->GetStartPosition();
-	return 0;
-}
-
-
-__int64 AlsaPlayer::GetEndPosition()
-{
-	if (thread) return thread->GetEndPosition();
-	return 0;
-}
-
-
-////////////////////////
-// Get current position
-__int64 AlsaPlayer::GetCurrentPosition() {
-	if (thread) return thread->GetCurrentPosition();
-	return 0;
-}
-
-
-
-//////////////////////
-// Thread constructor
-AlsaPlayerThread::AlsaPlayerThread(AudioProvider *_provider)
-: wxThread(wxTHREAD_JOINABLE)
-, play_notify(0, 1)
-, stop_notify(0, 1)
-, shutdown_notify(0, 1)
-, provider(_provider)
-{
 	// We want playback
 	stream = SND_PCM_STREAM_PLAYBACK;
-	// Use default device and automatic sample type conversion
+	// And get a device name
 	wxString device = Options.AsText(_T("Audio Alsa Device"));
-	pcm_name = strdup(device.mb_str(wxConvUTF8));
-
-	// Allocate params structure
-	snd_pcm_hw_params_alloca(&hwparams);
 
 	// Open device for blocking access
-	if (snd_pcm_open(&pcm_handle, pcm_name, stream, 0) < 0) {
-		throw _T("Error opening default PCM device");
+	if (snd_pcm_open(&pcm_handle, device.mb_str(wxConvUTF8), stream, 0) < 0) { // supposedly we don't want SND_PCM_ASYNC even for async playback
+		throw _T("Error opening specified PCM device");
 	}
 
 	SetUpHardware();
+
+	// Register async handler
+	SetUpAsync();
+
+	// Now ready
+	open = true;
 }
 
 
-/////////////////////
-// Thread destructor
-AlsaPlayerThread::~AlsaPlayerThread() {
-	free(pcm_name);
-}
-
-
-void AlsaPlayerThread::SetUpHardware()
+void AlsaPlayer::SetUpHardware()
 {
+	// Allocate params structure
+	snd_pcm_hw_params_t *hwparams;
+	snd_pcm_hw_params_malloc(&hwparams);
+
 	// Get hardware params
 	if (snd_pcm_hw_params_any(pcm_handle, hwparams) < 0) {
 		throw _T("Error setting up default PCM device");
@@ -293,7 +176,16 @@ void AlsaPlayerThread::SetUpHardware()
 	}
 
 	// Set sample format
-	sample_format = SND_PCM_FORMAT_S16_LE; // TODO: support other formats
+	switch (provider->GetBytesPerSample()) {
+		case 1:
+			sample_format = SND_PCM_FORMAT_S8;
+			break;
+		case 2:
+			sample_format = SND_PCM_FORMAT_S16_LE;
+			break;
+		default:
+			throw _T("Can only handle 8 and 16 bit sound");
+	}
 	if (snd_pcm_hw_params_set_format(pcm_handle, hwparams, sample_format) < 0) {
 		throw _T("Could not set sample format");
 	}
@@ -313,8 +205,9 @@ void AlsaPlayerThread::SetUpHardware()
 		throw _T("Could not set number of channels");
 	}
 
-	// Set periods (size in bytes of one frame?)
-	periods = provider->GetChannels() * provider->GetBytesPerSample();
+	// Set periods (number of bytes ideally written at a time)
+	// Somewhat arbitrary for now (256 frames)
+	periods = provider->GetChannels() * provider->GetBytesPerSample() * 256;
 	if (snd_pcm_hw_params_set_periods(pcm_handle, hwparams, periods, 0) < 0) {
 		throw _T("Could not set periods");
 	}
@@ -333,145 +226,187 @@ void AlsaPlayerThread::SetUpHardware()
 	if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
 		throw _T("Failed applying sound hardware settings");
 	}
+
+	// And free memory again
+	snd_pcm_hw_params_free(hwparams);
 }
 
 
-//////////////////////
-// Thread entry point
-wxThread::ExitCode AlsaPlayerThread::Entry()
+void AlsaPlayer::SetUpAsync()
 {
-	// Loop as long as we aren't told to shutdown
-	while (shutdown_notify.TryWait() == wxSEMA_BUSY) {
-		// Wait for a playback operation
-		while (play_notify.WaitTimeout(100) == wxSEMA_NO_ERROR) {
-			// So playback was posted... now play something
-			play_mutex.Lock();
-			PlaybackLoop();
-			play_mutex.Unlock();
-		}
+	// Prepare software params struct
+	snd_pcm_sw_params_t *sw_params;
+	snd_pcm_sw_params_malloc (&sw_params);
+
+	// Get current parameters
+	if (snd_pcm_sw_params_current(pcm_handle, sw_params) < 0) {
+		throw _T("Couldn't get current SW params");
 	}
 
-	return 0;
-}
-
-void AlsaPlayerThread::PlaybackLoop()
-{
-	unsigned long datalen = rate/2;
-	void *data = malloc(datalen * periods);
-	unsigned long cur_pos = 0;
-
-	while (true) {
-		// Get/set parameters
-		parameter_mutex.Lock();
-		double vol = volume;
-		cur_frame = cur_pos;
-		unsigned long end_pos = end_frame;
-		parameter_mutex.Unlock();
-
-		// Check for stop
-		if (stop_notify.TryWait() != wxSEMA_BUSY) {
-			snd_pcm_drop(pcm_handle);
-			break;
-		}
-
-		// Check for end of stream
-		if (cur_pos >= end_pos) {
-			snd_pcm_drain(pcm_handle);
-			break;
-		}
-
-		// Write some frames
-		provider->GetAudioWithVolume(data, cur_pos, datalen, vol);
-		snd_pcm_sframes_t written = snd_pcm_writei(pcm_handle, data, datalen);
-		cur_pos += written;
+	// How full the buffer must be before playback begins
+	if (snd_pcm_sw_params_set_start_threshold(pcm_handle, sw_params, bufsize/2) < 0) {
+		throw _T("Failed setting start threshold");
 	}
 
-	free(data);
+	// The the largest write guaranteed never to block
+	if (snd_pcm_sw_params_set_avail_min(pcm_handle, sw_params, bufsize/4) < 0) {
+		throw _T("Failed setting min available buffer");
+	}
+
+	// Apply settings
+	if (snd_pcm_sw_params(pcm_handle, sw_params) < 0) {
+		throw _T("Failed applying SW params");
+	}
+
+	// And free struct again
+	snd_pcm_sw_params_free(sw_params);
+
+	// Attach async handler
+	if (snd_async_add_pcm_handler(&pcm_callback, pcm_handle, async_write_handler, this) < 0) {
+		throw _T("Failed attaching async handler");
+	}
 }
 
 
-void AlsaPlayerThread::Play(unsigned long _start_frame, unsigned long _num_frames)
+////////////////
+// Close stream
+void AlsaPlayer::CloseStream()
 {
-	StopWait();
+	if (!open) return;
 
-	cur_frame = start_frame = _start_frame;
-	end_frame = start_frame + _num_frames;
-	
-	play_notify.Post();
+	Stop();
+
+	// Remove async handler
+	snd_async_del_handler(pcm_callback);
+
+	// Close device
+	snd_pcm_close(pcm_handle);
+
+	// No longer working
+	open = false;
 }
 
 
-void AlsaPlayerThread::SetEndPosition(unsigned long _end_frame)
+////////
+// Play
+void AlsaPlayer::Play(__int64 start,__int64 count)
 {
-	parameter_mutex.Lock();
-	end_frame = _end_frame;
-	parameter_mutex.Unlock();
+	if (playing) {
+		// Quick reset
+		playing = false;
+		snd_pcm_drop(pcm_handle);
+	}
+
+	// Set params
+	start_frame = start;
+	cur_frame = start;
+	end_frame = start + count;
+	playing = true;
+
+	// Prepare a bit
+	snd_pcm_prepare (pcm_handle);
+	async_write_handler(pcm_callback);
+
+	// And go!
+	snd_pcm_start(pcm_handle);
+
+	// Update timer
+	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
+}
+
+
+////////
+// Stop
+void AlsaPlayer::Stop(bool timerToo)
+{
+	if (!open) return;
+	if (!playing) return;
+
+	// Reset data
+	playing = false;
+	start_frame = 0;
+	cur_frame = 0;
+	end_frame = 0;
+
+	// Then drop the playback
+	snd_pcm_drop(pcm_handle);
+
+        if (timerToo && displayTimer) {
+                displayTimer->Stop();
+        }
+}
+
+
+bool AlsaPlayer::IsPlaying()
+{
+	return playing;
+}
+
+
+///////////
+// Set end
+void AlsaPlayer::SetEndPosition(__int64 pos)
+{
+	end_frame = pos;
 }
 
 
 ////////////////////////
-// Stop playback thread
-void AlsaPlayerThread::Stop()
+// Set current position
+void AlsaPlayer::SetCurrentPosition(__int64 pos)
 {
-	stop_notify.Post();	
+	cur_frame = pos;
 }
 
 
-void AlsaPlayerThread::StopWait()
+__int64 AlsaPlayer::GetStartPosition()
 {
-	stop_notify.Post();
-	// Now wait for the play mutex to have been freed
-	play_mutex.Lock();
-	play_mutex.Unlock();
-}
-
-
-void AlsaPlayerThread::Shutdown()
-{
-	Stop();
-	shutdown_notify.Post();
-}
-
-
-void AlsaPlayerThread::SetVolume(double new_volume)
-{
-	parameter_mutex.Lock();
-	volume = new_volume;
-	parameter_mutex.Unlock();
-}
-
-
-unsigned long AlsaPlayerThread::GetStartPosition()
-{
-	wxMutexLocker lock(parameter_mutex);
 	return start_frame;
 }
 
 
-unsigned long AlsaPlayerThread::GetEndPosition()
+__int64 AlsaPlayer::GetEndPosition()
 {
-	wxMutexLocker lock(parameter_mutex);
 	return end_frame;
 }
 
 
-unsigned long AlsaPlayerThread::GetCurrentPosition()
+////////////////////////
+// Get current position
+__int64 AlsaPlayer::GetCurrentPosition()
 {
-	// Step 1: Get last written frame number
-	parameter_mutex.Lock();
-	unsigned long pos = cur_frame;
-	parameter_mutex.Unlock();
-
-	// Step 2: ???
-
-	// Step 3: Profit!
-	return pos;
+	return cur_frame; // FIXME
 }
 
 
-bool AlsaPlayerThread::IsPlaying()
+void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 {
-	return play_mutex.TryLock() == wxMUTEX_BUSY;
+	// TODO: check for broken pipes in here and restore as needed
+	AlsaPlayer *player = (AlsaPlayer*)snd_async_handler_get_callback_private(pcm_callback);
+
+	if (player->cur_frame >= player->end_frame + player->rate) {
+		// More than a second past end of stream
+		snd_pcm_drain(player->pcm_handle);
+		player->playing = false;
+		return;
+	}
+
+	snd_pcm_sframes_t frames = snd_pcm_avail_update(player->pcm_handle);
+
+	if (player->cur_frame >= player->end_frame) {
+		// Past end of stream, add some silence
+		void *buf = calloc(frames, player->bpf);
+		snd_pcm_writei(player->pcm_handle, buf, frames);
+		free(buf);
+		player->cur_frame += frames;
+		return;
+	}
+
+	void *buf = malloc(frames * player->bpf);
+	player->provider->GetAudioWithVolume(buf, player->cur_frame, frames, player->volume);
+	snd_pcm_writei(player->pcm_handle, buf, frames);
+	free(buf);
+	player->cur_frame += frames;
 }
 
 
