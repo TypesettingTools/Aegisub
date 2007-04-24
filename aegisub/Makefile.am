@@ -12,7 +12,7 @@ REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBU
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGST = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
-LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a -lGL -lGLU
+LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a
 
 if USE_LIBASS
 LIBASS=subtitles_provider_libass.cpp
@@ -31,7 +31,7 @@ LDADD += -lasound
 endif
 if HAVE_PULSEAUDIO
 AUDIO_PLAYER += audio_player_pulse.cpp 
-LDADD += -lpulse -lpulse-simple
+LDADD += -lpulse
 endif
 
 if HAVE_RUBY
@@ -48,7 +48,18 @@ else
 HUNSPELL=
 endif
 
+if HAVE_FFMPEG
+FFMPEG=audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp
+else
+FFMPEG=
+endif
+
 aegisub_SOURCES = \
+	$(AUDIO_PLAYER) \
+	$(AUTO4RUBY) \
+	$(HUNSPELL) \
+	$(LIBASS) \
+	$(FFMPEG) \
 	aegisublocale.cpp \
 	ass_attachment.cpp \
 	ass_dialogue.cpp \
@@ -63,10 +74,8 @@ aegisub_SOURCES = \
 	audio_box.cpp \
 	audio_display.cpp \
 	audio_karaoke.cpp \
-	$(AUDIO_PLAYER) \
 	audio_provider.cpp \
 	audio_provider_hd.cpp \
-	audio_provider_lavc.cpp \
 	audio_provider_ram.cpp \
 	audio_provider_stream.cpp \
 	audio_spectrum.cpp \
@@ -75,7 +84,6 @@ aegisub_SOURCES = \
 	auto4_lua_assfile.cpp \
 	auto4_lua_dialog.cpp \
 	auto4_auto3.cpp \
-	$(AUTO4RUBY) \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
 	browse_button.cpp \
@@ -123,14 +131,12 @@ aegisub_SOURCES = \
 	hotkeys.cpp \
 	idle_field_event.cpp \
 	kana_table.cpp \
-	lavc_file.cpp \
 	main.cpp \
 	md5.c \
 	mkv_wrap.cpp \
 	mythes.cxx \
 	options.cpp \
 	spellchecker.cpp \
-	$(HUNSPELL) \
 	static_bmp.cpp \
 	string_codec.cpp \
 	subs_edit_box.cpp \
@@ -145,7 +151,6 @@ aegisub_SOURCES = \
 	subtitle_format_txt.cpp \
 	subtitles_provider.cpp \
 	subtitles_provider_csri.cpp \
-	$(LIBASS) \
 	text_file_reader.cpp \
 	text_file_writer.cpp \
 	thesaurus.cpp \
@@ -165,7 +170,6 @@ aegisub_SOURCES = \
 	video_frame.cpp \
 	video_provider.cpp \
 	video_provider_dummy.cpp \
-	video_provider_lavc.cpp \
 	video_slider.cpp \
 	MatroskaParser.c
 

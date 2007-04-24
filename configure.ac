@@ -8,39 +8,9 @@ AC_GNU_SOURCE
 
 AC_CANONICAL_HOST
 
-AC_DEFUN([AC_C_FLAG], [{
-	AC_LANG_PUSH(C)
-	ac_c_flag_save="$CFLAGS"
-	CFLAGS="$CFLAGS $1"
-	AC_MSG_CHECKING([[whether $CC supports $1]])
-	AC_COMPILE_IFELSE(
-		[AC_LANG_PROGRAM([[]])],
-		[AC_MSG_RESULT([yes])],
-		[
-			CFLAGS="$ac_c_flag_save"
-			AC_MSG_RESULT([no])
-			$2
-		])
-	AC_LANG_POP(C)
-	}])
-AC_DEFUN([AC_CXX_FLAG], [{
-	AC_LANG_PUSH(C++)
-	ac_cxx_flag_save="$CXXFLAGS"
-	CXXFLAGS="$CXXFLAGS $1"
-	AC_MSG_CHECKING([[whether $CXX supports $1]])
-	AC_COMPILE_IFELSE(
-		[AC_LANG_PROGRAM([[]])],
-		[AC_MSG_RESULT([yes])],
-		[
-			CXXFLAGS="$ac_cxx_flag_save"
-			AC_MSG_RESULT([no])
-			$2
-		])
-	AC_LANG_POP(C++)
-	}])
 
-
-# Checks for programs.
+dnl Checks for programs.
+CHECK_GNU_MAKE
 AC_PROG_CC
 AC_PROG_CXX
 AC_LANG(C++)
@@ -62,22 +32,40 @@ fi
 ACX_PTHREAD([], [
 	AC_MSG_FAILURE([Aegisub needs pthreads])
 ])
+AC_MSG_CHECKING([whether pthreads works])
+AC_COMPILE_IFELSE([
+#include <stdlib.h>
+#include <pthread.h>
+int main() { return 0; }
+], [
+	AC_MSG_RESULT([yes])
+], [
+	AC_MSG_RESULT([no])
+	echo <<EOM
+***********************************************************************
+* Your pthreads installation seems to be broken.
+* Apart from obviously being bad, this can cause strange detection
+* errors as well.
+* On some Linux distributions, this can be caused by having the package
+* libpthread-dev installed. If you have this package, please uninstall
+* it now.
+***********************************************************************
+EOM
+	AC_MSG_FAILURE([You need a working pthreads installation.])
+])
+
 
 AC_CHECK_LIB([asound], [snd_pcm_open], [found_audio=yes], [with_alsa=no])
 AC_CHECK_LIB([portaudio], [Pa_Initialize], [found_audio=yes], [with_portaudio=no])
 AC_CHECK_FUNCS([Pa_GetStreamTime])
-PKG_CHECK_MODULES([LIBPULSE], libpulse >= 0.5,
-	[found_audio=yes],
-	[with_pulseaudio=no]
-)
-AC_CHECK_LIB([avcodec], [avcodec_init],, [AC_MSG_ERROR([avcodec not found.])])
-AC_CHECK_LIB([avformat], [av_read_frame],, [AC_MSG_ERROR([avformat not found.])])
+PKG_CHECK_MODULES([LIBPULSE], libpulse >= 0.5, [found_audio=yes], [with_pulseaudio=no])
+AC_CHECK_LIB([avcodec], [avcodec_init],, [with_ffmpeg=no])
+AC_CHECK_LIB([avformat], [av_read_frame],, [with_ffmpeg=no])
+if test "$with_ffmpeg" != "no"; then
+	found_video_provider=yes
+fi
 AC_CHECK_LIB([hunspell], [main],, [with_hunspell=no])
 AC_CHECK_LIB([ruby1.9], [ruby_init],, [with_ruby=no])
-
-if test -z "$found_audio"; then
-	AC_MSG_WARN([No audio interface found, Aegisub will be built without Audio support!])
-fi
 
 AC_CHECK_HEADER([wchar.h],,[
 	AC_MSG_FAILURE([aegisub needs wide character support, find a wchar.h])
@@ -219,6 +207,7 @@ AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
 AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
 AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_hunspell" != "no"])
 AM_CONDITIONAL([HAVE_RUBY], [test "$with_ruby" != "no"])
+AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])
 
 AC_OUTPUT([
 	Makefile
@@ -229,5 +218,38 @@ AC_OUTPUT([
 	aegisub/posix/Makefile
 	aegisub/bitmaps/Makefile
 ])
+
+if test -z "$found_audio"; then
+	echo <<EOM
+***********************************************************************
+* No supported audio player interface was found on your system.
+* If you want audio support in Aegisub you need to install one of
+* these libraries:
+*  - PulseAudio
+*    http://pulseaudio.org/
+*  - ALSA (Linux only) (Currently broken)
+*    http://www.alsa-project.org/
+*  - PortAudio (version 18 only, version 19 is not compatible)
+*    http://www.portaudio.com/
+***********************************************************************
+EOM
+fi
+
+if test -z "$found_video_provider"; then
+	echo <<EOM
+***********************************************************************
+* No supported video/audio reader interface was found on your system.
+* You will not be able to open any video or audio files in Aegisub
+* unless you install a supported video/audio provider.
+* You will however still be able to open "dummy" video, ie. a blank,
+* virtual video clip with subtitles overlaid.
+* Currently we only support one video/audio provider on non-Windows
+* systems:
+*  - FFmpeg (libavcodec + libavformat)
+*    http://ffmpeg.mplayerhq.hu/
+***********************************************************************
+EOM
+fi
+
 
 
