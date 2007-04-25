@@ -42,9 +42,8 @@
 
 // some basic utility routines
 
-#ifndef HAVE_HUNSPELL
 // string duplication routine
-char * mystrdup(const char * p)
+char * mythes_mystrdup(const char * p)
 {
    
   int sl = strlen(p) + 1;
@@ -57,15 +56,12 @@ char * mystrdup(const char * p)
 }
 
 // remove cross-platform text line end characters
-void mychomp(char * s)
+void mythes_mychomp(char * s)
 {
   int k = strlen(s);
   if ((k > 0) && ((*(s+k-1)=='\r') || (*(s+k-1)=='\n'))) *(s+k-1) = '\0';
   if ((k > 1) && (*(s+k-2) == '\r')) *(s+k-2) = '\0';
 }
-#endif
-char * mystrdup(const char * p);
-void mychomp(char * s);
 
 
 // return index of char in string
@@ -121,7 +117,7 @@ int MyThes::thInitialize(const char* idxpath, const char* datpath)
     char * wrd;
     wrd = (char *)calloc(1, MAX_WD_LEN);
     int len = readLine(pifile,wrd,MAX_WD_LEN);
-    encoding = mystrdup(wrd);
+    encoding = mythes_mystrdup(wrd);
     len = readLine(pifile,wrd,MAX_WD_LEN);
     int idxsz = atoi(wrd); 
     
@@ -262,10 +258,10 @@ int MyThes::Lookup(const char * pText, int len, mentry** pme)
         np = mystr_indexOfChar(p,'|');
         if (np >= 0) {
            *(buf+np) = '\0';
-	   pos = mystrdup(p);
+	   pos = mythes_mystrdup(p);
            p = p + np + 1;
 	} else {
-          pos = mystrdup("");
+          pos = mythes_mystrdup("");
         }
         
         // count the number of fields in the remaining line
@@ -286,10 +282,10 @@ int MyThes::Lookup(const char * pText, int len, mentry** pme)
             np = mystr_indexOfChar(d,'|');
             if (np > 0) {
 	      *(d+np) = '\0';
-              pm->psyns[j] = mystrdup(d);
+              pm->psyns[j] = mythes_mystrdup(d);
               d = d + np + 1;
             } else {
-              pm->psyns[j] = mystrdup(d);
+              pm->psyns[j] = mythes_mystrdup(d);
 	    }            
         }
 
@@ -300,9 +296,9 @@ int MyThes::Lookup(const char * pText, int len, mentry** pme)
              strncpy(dfn,pos,k);
              *(dfn+k) = ' ';
              strncpy((dfn+k+1),(pm->psyns[0]),m+1);
-             pm->defn = mystrdup(dfn);
+             pm->defn = mythes_mystrdup(dfn);
 	} else {
-	     pm->defn = mystrdup(pm->psyns[0]);
+	     pm->defn = mythes_mystrdup(pm->psyns[0]);
 	}
         free(pos);
         pm++;
@@ -355,7 +351,7 @@ int MyThes::readLine(FILE * pf, char * buf, int nc)
 {
     
   if (fgets(buf,nc,pf)) {
-    mychomp(buf);
+    mythes_mychomp(buf);
     return strlen(buf);
   }
   return -1;

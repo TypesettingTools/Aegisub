@@ -150,15 +150,10 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	fg->AddStretchSpacer();
 	fg->Add(length_display, 0, wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(fg, 0, wxALL|wxEXPAND, 5);
+	main_sizer->Add(fg, 1, wxALL|wxEXPAND, 5);
 	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
 	ok_button = static_cast<wxButton*>(FindWindow(wxID_OK));
 	cancel_button = static_cast<wxButton*>(FindWindow(wxID_CANCEL));
-
-	// Layout
-	main_sizer->SetSizeHints(this);
-	SetSizer(main_sizer);
-	CenterOnParent();
 
 	// Initialise controls
 	int lastwidth, lastheight, lastres = 0;
@@ -181,6 +176,11 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	length->SetRange(0, 0x10000000);
 	length->SetValue(Options.AsInt(_T("Video Dummy Last Length")));
 	UpdateLengthDisplay();
+
+	// Layout
+	main_sizer->SetSizeHints(this);
+	SetSizer(main_sizer);
+	CenterOnParent();
 }
 
 
