@@ -627,6 +627,7 @@ void SubsEditBox::OnStartTimeChange(wxCommandEvent &event) {
 	if (StartTime->time > EndTime->time) StartTime->SetTime(EndTime->time.GetMS());
 	bool join = Options.AsBool(_T("Link Time Boxes Commit")) && EndTime->HasBeenModified();
 	StartTime->Update();
+	Duration->Update();
 	if (join) EndTime->Update();
 	CommitTimes(true,join,true);
 }
@@ -638,6 +639,7 @@ void SubsEditBox::OnEndTimeChange(wxCommandEvent &event) {
 	if (StartTime->time > EndTime->time) EndTime->SetTime(StartTime->time.GetMS());
 	bool join = Options.AsBool(_T("Link Time Boxes Commit")) && StartTime->HasBeenModified();
 	EndTime->Update();
+	Duration->Update();
 	if (join) StartTime->Update();
 	CommitTimes(join,true,false);
 }
@@ -647,6 +649,8 @@ void SubsEditBox::OnEndTimeChange(wxCommandEvent &event) {
 // Duration changed
 void SubsEditBox::OnDurationChange(wxCommandEvent &event) {
 	EndTime->SetTime(StartTime->time.GetMS() + Duration->time.GetMS());
+	StartTime->Update();
+	EndTime->Update();
 	Duration->Update();
 	CommitTimes(false,true,true);
 }
@@ -654,10 +658,9 @@ void SubsEditBox::OnDurationChange(wxCommandEvent &event) {
 
 ///////////////////////
 // Commit time changes
-void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart) {
+void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart,bool commit) {
 	// Get selection
 	if (!start && !end) return;
-	grid->BeginBatch();
 	wxArrayInt sel = grid->GetSelection();
 	int n = sel.Count();
 	if (n == 0) return;
@@ -677,18 +680,16 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart) {
 				if (fromStart) cur->End = cur->Start;
 				else cur->Start = cur->End;
 			}
-
-			// Update
-			cur->UpdateData();
 		}
 	}
 
 	// Commit
-	grid->ass->FlagAsModified(_("commit times"));
-	grid->CommitChanges();
-	grid->EndBatch();
-	audio->SetDialogue(grid,grid->GetDialogue(sel[0]),sel[0]);
-	VideoContext::Get()->UpdateDisplays(false);
+	if (commit) {
+		grid->ass->FlagAsModified(_("modify times"));
+		grid->CommitChanges();
+		audio->SetDialogue(grid,grid->GetDialogue(sel[0]),sel[0]);
+		VideoContext::Get()->UpdateDisplays(false);
+	}
 }
 
 
@@ -866,8 +867,18 @@ void SubsEditBox::CommitText(bool weak) {
 
 	// Update line
 	if (cur) {
+		// Update text
 		cur->Text = TextEdit->GetText();
-		cur->UpdateData();
+
+		// Update times
+		cur->Start = StartTime->time;
+		cur->End = EndTime->time;
+		if (cur->Start > cur->End) cur->End = cur->Start;
+		StartTime->Update();
+		EndTime->Update();
+		Duration->Update();
+
+		// Update audio
 		if (!weak) {
 			grid->Refresh(false);
 			audio->SetDialogue(grid,cur,linen);

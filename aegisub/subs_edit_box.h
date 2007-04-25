@@ -103,7 +103,7 @@ private:
 	wxSizer *BottomSizer;
 
 	void SetControlsState(bool state);
-	void CommitTimes(bool start,bool end,bool fromStart);
+	void CommitTimes(bool start,bool end,bool fromStart,bool commit=true);
 
 	int BlockAtPos(int pos);
 

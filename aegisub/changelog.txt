@@ -116,6 +116,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed drawing of inactive lines in audio display to prevent it from being drawn over selection. (AMZ)
 - Style Editor dialog was redesigned to be more horizontal. (AMZ)
 - Style Editor dialog received a realtime styles preview box. (AMZ)
+- Commiting text now commits times as well. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
