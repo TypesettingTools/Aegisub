@@ -64,6 +64,7 @@ void* glGetProc(const char *str) { return aglGetProcAddress(str); }
 
 //////////////////////////////////////
 // OpenGL extension function pointers
+#ifndef __WXMAC_OSX__
 PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB = NULL;
 PFNGLDELETEOBJECTARBPROC glDeleteObjectARB = NULL;
 PFNGLCREATEPROGRAMOBJECTARBPROC glCreateProgramObjectARB = NULL;
@@ -75,6 +76,7 @@ PFNGLCOMPILESHADERARBPROC glCompileShaderARB = NULL;
 PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB = NULL;
 PFNGLUNIFORM1IARBPROC glUniform1iARB = NULL;
 PFNGLUNIFORM2FARBPROC glUniform2fARB = NULL;
+#endif
 
 
 ////////////////
@@ -305,6 +307,7 @@ void OpenGLWrapper::Initialize() {
 	if (!initialized) {
 		initialized = true;
 
+#ifndef __WXMAC_OSX__
 		glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC) glGetProc("glUseProgramObjectARB");
 		if (!glUseProgramObjectARB) throw _T("OpenGL shader support not available.");
 		glDeleteObjectARB = (PFNGLDELETEOBJECTARBPROC) glGetProc("glDeleteObjectARB");
@@ -317,6 +320,7 @@ void OpenGLWrapper::Initialize() {
 		glGetUniformLocationARB = (PFNGLGETUNIFORMLOCATIONARBPROC) glGetProc("glGetUniformLocationARB");
 		glUniform1iARB = (PFNGLUNIFORM1IARBPROC) glGetProc("glUniform1iARB");
 		glUniform2fARB = (PFNGLUNIFORM2FARBPROC) glGetProc("glUniform2fARB");
+#endif
 	}
 }
 
