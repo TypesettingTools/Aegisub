@@ -216,6 +216,7 @@ AC_OUTPUT([
 	automation/auto3/Makefile
 	automation/autoload/Makefile
 	automation/demos/Makefile
+	automation/demos/auto3/Makefile
 	automation/tests/Makefile
 	automation/include/Makefile
 	automation/v4-docs/Makefile
