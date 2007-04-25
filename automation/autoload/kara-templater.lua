@@ -34,7 +34,6 @@
 script_name = "Karaoke Templater"
 script_description = "Macro and export filter to apply karaoke effects using the template language"
 script_author = "Niels Martin Hansen"
-script_version = 1
 
 
 include("karaskel.lua")
@@ -141,6 +140,7 @@ function parse_template(meta, styles, line, templates, mods)
 		rest = t
 		m = m:lower()
 		if (m == "pre-line" or m == "line") and not inserted then
+			aegisub.debug.out("Found line template '%s'\n", line.text)
 			-- should really fail if already inserted
 			local id, t = string.headtail(rest)
 			id = id:lower()
@@ -226,10 +226,10 @@ end
 
 -- Iterator function, return all templates that apply to the given line
 function matching_templates(templates, line)
-	local lastkey = 0
+	local lastkey = nil
 	local function test_next()
-		lastkey = lastkey + 1
-		local t = templates[lastkey]
+		local k, t = next(templates, lastkey)
+		lastkey = k
 		if not t then
 			return nil
 		elseif t.style == line.style or not t.style then
@@ -321,10 +321,12 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		varctx.sstart = syl.start_time
 		varctx.send = syl.end_time
 		varctx.sdur = syl.duration
+		varctx.skdur = syl.duration / 10
 		varctx.smid = syl.start_time + syl.duration / 2
 		varctx["start"] = varctx.sstart
 		varctx["end"] = varctx.send
 		varctx.dur = varctx.sdur
+		varctx.kdur = varctx.skdur
 		varctx.mid = varctx.smid
 		varctx.si = syl.i
 		varctx.i = varctx.si
@@ -353,10 +355,13 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	tenv.furi = nil
 
 	-- Apply all line templates
+	aegisub.debug.out(5, "Running line templates\n")
 	for t in matching_templates(templates.line, line) do
 		if t.code then
+			aegisub.debug.out(5, "Code template, %s\n", t.code)
 			run_template_code(t, tenv)
 		else
+			aegisub.debug.out(5, "Line template, pre = '%s', t = '%s'\n", t.pre, t.t)
 			applied_templates = true
 			local newline = table.copy(line)
 			tenv.line = newline
@@ -386,6 +391,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 			subs.append(newline)
 		end
 	end
+	aegisub.debug.out(5, "Done running line templates\n\n")
 	
 	-- Loop over syllables
 	for i = 0, line.kara.n do
