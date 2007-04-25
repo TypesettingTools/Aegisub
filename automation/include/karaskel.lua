@@ -122,6 +122,7 @@ function karaskel.preproc_line(subs, meta, styles, line)
 		end
 
 		-- Check if there is a chance of furigana
+		-- FIXME: multi-highlights aren't being generated, are they? At least not with syllables with a lone # in
 		if syltext:find("|") or syltext:find("｜") then
 			syltext = syltext:gsub("｜", "|")
 			local maintext, furitext = syl:match("^(.-)|(.-)$")

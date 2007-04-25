@@ -1,10 +1,17 @@
-EXTRA_DIST = res.rc $(srcdir)/*.h
+EXTRA_DIST = res.rc $(srcdir)/*.h beautify
 SUFFIXES = .c .cpp .rc
 
-SUBDIRS = bitmaps posix
+## Most of these are just to catch extra sources for tarball.
+## I'm not sure if the build subdir should be included here...? --jfs
+SUBDIRS = bitmaps gl macosx posix win32
 
 bin_PROGRAMS = aegisub
 
+## My automake complains about these not being portable
+## Perhaps it should somehow be moved to a shell script that generates an
+## include, which is then included in source tarball? 
+## Similar to what the make-svn-rev-header.py scripts do currently.
+##  --jfs
 SVNREV := $(strip $(shell grep -m 1 revision= .svn/entries 2>/dev/null | cut -d \" -f 2))
 DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
@@ -56,15 +63,33 @@ endif
 
 
 ## These aren't built, but are listed here so 'make dist' can always find all the sources
+## This should also list all Win32 specific files
 EXTRA_aegisub_SOURCES = \
-	subtitles_provider_libass.cpp \
-	spellchecker_hunspell.cpp \
-	audio_player_portaudio.cpp \
 	audio_player_alsa.cpp \
-	audio_player_pulse.cpp \
 	audio_player_dsound.cpp \
+	audio_player_portaudio.cpp \
+	audio_player_pulse.cpp \
+	audio_provider_avs.cpp \
 	audio_provider_lavc.cpp \
+	auto4_ruby.cpp \
+	auto4_ruby_assfile.cpp \
+	auto4_ruby_dialog.cpp \
+	avisynth.h \
+	avisynth_wrap.cpp \
+	dialog_associations.cpp \
+	factory.h \
+	fextracker_main_events.cpp \
 	lavc_file.cpp \
+	setup0.h \
+	setup.cpp \
+	spellchecker_hunspell.cpp \
+	stdwx.cpp \
+	stdwx.h \
+	subtitle_format_prs.cpp \
+	subtitles_provider_libass.cpp \
+	video_display_fextracker.cpp \
+	video_provider_avs.cpp \
+	video_provider_dshow.cpp \
 	video_provider_lavc.cpp
 
 aegisub_SOURCES = \
@@ -159,7 +184,6 @@ aegisub_SOURCES = \
 	subtitle_format.cpp \
 	subtitle_format_ass.cpp \
 	subtitle_format_mkv.cpp \
-	subtitle_format_prs.cpp \
 	subtitle_format_srt.cpp \
 	subtitle_format_txt.cpp \
 	subtitles_provider.cpp \
