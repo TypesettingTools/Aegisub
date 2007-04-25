@@ -6,7 +6,7 @@ lua51/src/liblua.a:
 
 all-recursive: lua51/src/liblua.a
 
-EXTRA_DIST = ac/config.rpath m4/ChangeLog  \
+EXTRA_DIST = \
 	lua51/COPYRIGHT \
 	lua51/HISTORY \
 	lua51/INSTALL \
