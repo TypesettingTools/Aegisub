@@ -254,6 +254,24 @@ bool DirectSoundPlayer::FillBuffer(bool fill) {
 	}
 	if (toWrite == 0) return true;
 
+	// Make sure we only get as many samples as are available
+	if (playPos + toWrite/bytesps > endPos) {
+		toWrite = (endPos - playPos) * bytesps;
+	}
+
+	// If we're going to fill the entire buffer (ie. at start of playback) start by zeroing it out
+	if (fill) {
+RetryClear:
+		res = buffer->Lock(0, bufSize, &ptr1, &size1, &ptr2, &size2, 0);
+		if (res == DSERR_BUFFERLOST) {
+			buffer->Restore();
+			goto RetryClear;
+		}
+		memset(ptr1, 0, size1);
+		memset(ptr2, 0, size2);
+		buffer->Unlock(ptr1, size1, ptr2, size2);
+	}
+
 	// Lock buffer
 RetryLock:
 	if (fill) {
@@ -277,24 +295,6 @@ RetryLock:
 	unsigned long int count1 = size1 / bytesps;
 	unsigned long int count2 = size2 / bytesps;
 
-	// Check if remaining buffer is longer than remaining sound
-	unsigned long int totalCount = count1+count2;
-	unsigned long int left = 0;
-	if (endPos > playPos) left = endPos - playPos;
-	unsigned long int delta = 0;
-	if (totalCount > left) delta = totalCount - left;
-
-	// And only write the remaining samples
-	if (delta) {
-		// Lower counts
-		int temp = MIN(delta,count2);
-		count2 -= temp;
-		delta -= temp;
-		temp = MIN(delta,count1);
-		count1 -= temp;
-		delta -= temp;
-	}
-
 	// Get source wave
 	if (count1) provider->GetAudioWithVolume(ptr1, playPos, count1, volume);
 	if (count2) provider->GetAudioWithVolume(ptr2, playPos+count1, count2, volume);
@@ -306,7 +306,7 @@ RetryLock:
 	// Update offset
 	offset = (offset + count1*bytesps + count2*bytesps) % bufSize;
 
-	return delta==0; // If delta>0 we hit end of stream
+	return true; // If delta>0 we hit end of stream
 }
 
 
