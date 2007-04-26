@@ -1,9 +1,12 @@
+AUTOMAKE_OPTIONS = foreign
+
 EXTRA_DIST = res.rc $(srcdir)/*.h beautify
+
 SUFFIXES = .c .cpp .rc
 
 ## Most of these are just to catch extra sources for tarball.
 ## I'm not sure if the build subdir should be included here...? --jfs
-SUBDIRS = bitmaps gl macosx posix win32
+SUBDIRS = bitmaps posix
 
 bin_PROGRAMS = aegisub
 
@@ -12,7 +15,7 @@ bin_PROGRAMS = aegisub
 ## include, which is then included in source tarball? 
 ## Similar to what the make-svn-rev-header.py scripts do currently.
 ##  --jfs
-SVNREV := $(strip $(shell grep -m 1 revision= .svn/entries 2>/dev/null | cut -d \" -f 2))
+SVNREV := $(shell svnversion | sed 's/[^0-9]//')
 DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
@@ -90,7 +93,11 @@ EXTRA_aegisub_SOURCES = \
 	video_display_fextracker.cpp \
 	video_provider_avs.cpp \
 	video_provider_dshow.cpp \
-	video_provider_lavc.cpp
+	video_provider_lavc.cpp \
+	boost/*.hpp \
+	csri/*.h \
+	gl/*.h \
+	win32/stdint.h
 
 aegisub_SOURCES = \
 	$(AUDIO_PLAYER) \

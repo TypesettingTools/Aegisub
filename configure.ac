@@ -213,21 +213,11 @@ AC_OUTPUT([
 	Makefile
 	ac/Makefile
 	automation/Makefile
-	automation/auto3/Makefile
-	automation/autoload/Makefile
-	automation/demos/Makefile
-	automation/demos/auto3/Makefile
-	automation/tests/Makefile
-	automation/include/Makefile
-	automation/v4-docs/Makefile
 	FexTrackerSource/Makefile
 	locale/Makefile
 	aegisub/Makefile
 	aegisub/bitmaps/Makefile
-	aegisub/gl/Makefile
-	aegisub/macosx/Makefile
 	aegisub/posix/Makefile
-	aegisub/win32/Makefile
 ])
 
 if test -z "$found_audio"; then

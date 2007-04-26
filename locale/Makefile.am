@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS = foreign
+
 LANGS=de es fr it ko pt_BR ru
 localedir = $(datadir)/locale
 
