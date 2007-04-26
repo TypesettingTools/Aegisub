@@ -68,7 +68,9 @@ private:
 	snd_pcm_format_t sample_format;
 	unsigned int rate; // sample rate of audio
 	unsigned int real_rate; // actual sample rate played back
-	int periods; // number of bytes in a frame
+	unsigned int period_len; // length of period in microseconds
+	unsigned int buflen; // length of buffer in microseconds
+	snd_pcm_uframes_t period; // size of period in frames
 	snd_pcm_uframes_t bufsize; // size of buffer in frames
 
 	void SetUpHardware();
@@ -161,6 +163,8 @@ void AlsaPlayer::OpenStream()
 
 void AlsaPlayer::SetUpHardware()
 {
+	int dir;
+
 	// Allocate params structure
 	snd_pcm_hw_params_t *hwparams;
 	snd_pcm_hw_params_malloc(&hwparams);
@@ -205,22 +209,34 @@ void AlsaPlayer::SetUpHardware()
 		throw _T("Could not set number of channels");
 	}
 
-	// Set periods (number of bytes ideally written at a time)
-	// Somewhat arbitrary for now (256 frames)
-	periods = provider->GetChannels() * provider->GetBytesPerSample() * 256;
-	if (snd_pcm_hw_params_set_periods(pcm_handle, hwparams, periods, 0) < 0) {
-		throw _T("Could not set periods");
-	}
-
 	// Set buffer size
-	snd_pcm_uframes_t wanted_bufsize = rate;
-	bufsize = wanted_bufsize;
-	if (snd_pcm_hw_params_set_buffer_size_near(pcm_handle, hwparams, &bufsize) < 0) {
-		throw _T("Could not set buffer size");
+	unsigned int wanted_buflen = 1000000; // microseconds
+	buflen = wanted_buflen;
+	if (snd_pcm_hw_params_set_buffer_time_near(pcm_handle, hwparams, &buflen, &dir) < 0) {
+		throw _T("Couldn't set buffer length");
 	}
-	if (bufsize != wanted_bufsize) {
-		wxLogDebug(_T("Couldn't get wanted buffer size of %u, got %u instead"), wanted_bufsize, bufsize);
+	if (buflen != wanted_buflen) {
+		wxLogDebug(_T("Couldn't get wanted buffer size of %u, got %u instead"), wanted_buflen, buflen);
 	}
+	if (snd_pcm_hw_params_get_buffer_size(hwparams, &bufsize) < 0) {
+		throw _T("Couldn't get buffer size");
+	}
+	printf("Buffer size: %lu\n", bufsize);
+
+	// Set period (number of frames ideally written at a time)
+	// Somewhat arbitrary for now
+	unsigned int wanted_period = bufsize / 4;
+	period_len = wanted_period; // microseconds
+	if (snd_pcm_hw_params_set_period_time_near(pcm_handle, hwparams, &period_len, &dir) < 0) {
+		throw _T("Couldn't set period length");
+	}
+	if (period_len != wanted_period) {
+		wxLogDebug(_T("Couldn't get wanted period size of %d, got %d instead"), wanted_period, period_len);
+	}
+	if (snd_pcm_hw_params_get_period_size(hwparams, &period, &dir) < 0) {
+		throw _T("Couldn't get period size");
+	}
+	printf("Period size: %lu\n", period);
 
 	// Apply parameters
 	if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
@@ -249,7 +265,7 @@ void AlsaPlayer::SetUpAsync()
 	}
 
 	// The the largest write guaranteed never to block
-	if (snd_pcm_sw_params_set_avail_min(pcm_handle, sw_params, bufsize/4) < 0) {
+	if (snd_pcm_sw_params_set_avail_min(pcm_handle, sw_params, period) < 0) {
 		throw _T("Failed setting min available buffer");
 	}
 
