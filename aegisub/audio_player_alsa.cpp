@@ -194,6 +194,11 @@ void AlsaPlayer::SetUpHardware()
 		throw _T("Could not set sample format");
 	}
 
+	// Ask for resampling
+	if (snd_pcm_hw_params_set_rate_resample(pcm_handle, hwparams, 1) < 0) {
+		throw _T("Couldn't enable resampling");
+	}
+
 	// Set sample rate
 	rate = provider->GetSampleRate();
 	real_rate = rate;
@@ -208,6 +213,7 @@ void AlsaPlayer::SetUpHardware()
 	if (snd_pcm_hw_params_set_channels(pcm_handle, hwparams, provider->GetChannels()) < 0) {
 		throw _T("Could not set number of channels");
 	}
+	printf("Set sample rate %u (wanted %u)\n", real_rate, rate);
 
 	// Set buffer size
 	unsigned int wanted_buflen = 1000000; // microseconds
@@ -260,7 +266,7 @@ void AlsaPlayer::SetUpAsync()
 	}
 
 	// How full the buffer must be before playback begins
-	if (snd_pcm_sw_params_set_start_threshold(pcm_handle, sw_params, bufsize/2) < 0) {
+	if (snd_pcm_sw_params_set_start_threshold(pcm_handle, sw_params, bufsize - period) < 0) {
 		throw _T("Failed setting start threshold");
 	}
 
@@ -391,7 +397,7 @@ __int64 AlsaPlayer::GetEndPosition()
 // Get current position
 __int64 AlsaPlayer::GetCurrentPosition()
 {
-	return cur_frame; // FIXME
+	return cur_frame - bufsize; // FIXME
 }
 
 
@@ -409,6 +415,8 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 
 	snd_pcm_sframes_t frames = snd_pcm_avail_update(player->pcm_handle);
 
+	// TODO: handle underrun
+
 	if (player->cur_frame >= player->end_frame) {
 		// Past end of stream, add some silence
 		void *buf = calloc(frames, player->bpf);
@@ -418,11 +426,14 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 		return;
 	}
 
-	void *buf = malloc(frames * player->bpf);
-	player->provider->GetAudioWithVolume(buf, player->cur_frame, frames, player->volume);
-	snd_pcm_writei(player->pcm_handle, buf, frames);
+	void *buf = malloc(player->period * player->bpf);
+	while (frames >= player->period) {
+		player->provider->GetAudioWithVolume(buf, player->cur_frame, player->period, player->volume);
+		snd_pcm_writei(player->pcm_handle, buf, player->period);
+		player->cur_frame += player->period;
+		frames = snd_pcm_avail_update(player->pcm_handle);
+	}
 	free(buf);
-	player->cur_frame += frames;
 }
 
 
