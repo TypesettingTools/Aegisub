@@ -397,7 +397,9 @@ __int64 AlsaPlayer::GetEndPosition()
 // Get current position
 __int64 AlsaPlayer::GetCurrentPosition()
 {
-	return cur_frame - bufsize; // FIXME
+	snd_pcm_sframes_t delay = 0;
+	snd_pcm_delay(pcm_handle, &delay); // don't bother catching errors here
+	return cur_frame - delay;
 }
 
 
