@@ -129,7 +129,7 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	optionsGrid->Add(collision,1,wxEXPAND,0);
 	ScaleBorder = new wxCheckBox(this,-1,_("Scale Border and Shadow"));
 	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
-	ScaleBorder->SetValue(subs->GetScriptInfoAsInt(_T("ScaledBorderAndShadow")) == 1);
+	ScaleBorder->SetValue(subs->GetScriptInfo(_T("ScaledBorderAndShadow")) == _T("yes") ? 1 : 0);
 	optionsGrid->AddSpacer(0);
 	optionsGrid->Add(ScaleBorder,1,wxEXPAND,0);
 	optionsGrid->AddGrowableCol(1,1);
@@ -188,7 +188,7 @@ void DialogProperties::OnOK(wxCommandEvent &event) {
 	count += SetInfoIfDifferent(_T("WrapStyle"),wxString::Format(_T("%i"),WrapStyle->GetSelection()));
 	wxString col[2] = { _T("Normal"), _T("Reverse")};
 	count += SetInfoIfDifferent(_T("Collisions"),col[collision->GetSelection()]);
-	count += SetInfoIfDifferent(_T("ScaledBorderAndShadow"),ScaleBorder->GetValue()?_T("1"):_T("0"));
+	count += SetInfoIfDifferent(_T("ScaledBorderAndShadow"),ScaleBorder->GetValue()? _T("yes") : _T("no"));
 
 	if (count) AssFile::top->FlagAsModified(_("property changes"));
 
