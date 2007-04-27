@@ -78,11 +78,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	book = new wxTreebook(this,-1,wxDefaultPosition,wxSize(400,300));
 	needsRestart = false;
 
-	// Image list
-	//wxImageList *imgList = new wxImageList(16,15);
-	//imgList->Add(wxBITMAP(resample_toolbutton));
-	//book->AssignImageList(imgList);
-
 	// Panels
 	wxPanel *generalPage = new wxPanel(book,-1);
 	wxPanel *filePage = new wxPanel(book,-1);
@@ -438,50 +433,23 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *audioSizer1 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Options"));
 		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(4,2,5,5);
 		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(4,2,5,5);
-		wxControl *control;
 
 		// First sizer
-		control = new wxCheckBox(audioPage,-1,_("Next line on commit"));
-		Bind(control,_T("Audio Next Line on Commit"));
-		audioSizer3->Add(control,1,wxEXPAND,0);
-		control = new wxCheckBox(audioPage,-1,_("Grab times from line upon selection"));
-		Bind(control,_T("Audio grab times on select"));
-		audioSizer3->Add(control,1,wxEXPAND,0);
-		control = new wxCheckBox(audioPage,-1,_("Default mouse wheel to zoom"));
-		Bind(control,_T("Audio Wheel Default To Zoom"));
-		audioSizer3->Add(control,1,wxEXPAND,0);
-		control = new wxCheckBox(audioPage,-1,_("Lock scroll on Cursor"));
-		Bind(control,_T("Audio lock scroll on cursor"));
-		audioSizer3->Add(control,1,wxEXPAND,0);
-		control = new wxCheckBox(audioPage,-1,_("Snap to keyframes"));
-		Bind(control,_T("Audio snap to keyframes"));
-		audioSizer3->Add(control,1,wxEXPAND,0);
-		control = new wxCheckBox(audioPage,-1,_("Snap to adjascent lines"));
-		Bind(control,_T("Audio snap to other lines"));
-		audioSizer3->Add(control,1,wxEXPAND,0);
-		control = new wxCheckBox(audioPage,-1,_("Auto-focus on mouse over"));
-		Bind(control,_T("Audio Autofocus"));
-		audioSizer3->Add(control,1,wxEXPAND,0);
+		AddCheckBox(audioPage,audioSizer3,_("Next line on commit"),_T("Audio Next Line on Commit"));
+		AddCheckBox(audioPage,audioSizer3,_("Grab times from line upon selection"),_T("Audio grab times on select"));
+		AddCheckBox(audioPage,audioSizer3,_("Default mouse wheel to zoom"),_T("Audio Wheel Default To Zoom"));
+		AddCheckBox(audioPage,audioSizer3,_("Lock scroll on Cursor"),_T("Audio lock scroll on cursor"));
+		AddCheckBox(audioPage,audioSizer3,_("Snap to keyframes"),_T("Audio snap to keyframes"));
+		AddCheckBox(audioPage,audioSizer3,_("Snap to adjascent lines"),_T("Audio snap to other lines"));
+		AddCheckBox(audioPage,audioSizer3,_("Auto-focus on mouse over"),_T("Audio Autofocus"));
 		audioSizer3->AddGrowableCol(0,1);
 
 		// Second sizer
-		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
-		Bind(control,_T("Timing Default Duration"));
-		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default timing length: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer4->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
-		Bind(control,_T("Audio lead in"));
-		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default lead-in length: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer4->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
-		Bind(control,_T("Audio lead out"));
-		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Default lead-out length: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioSizer4->Add(control,1,wxEXPAND,0);
 		wxString choices1[3] = { _("Don't show"), _("Show previous"), _("Show all") };
-		control = new wxComboBox(audioPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices1,wxCB_READONLY | wxCB_DROPDOWN);
-		Bind(control,_T("Audio Inactive Lines Display Mode"));
-		audioSizer4->Add(new wxStaticText(audioPage,-1,_("Show inactive lines: ")),0,wxRIGHT,5);
-		audioSizer4->Add(control,1,wxEXPAND,0);
+		AddTextControl(audioPage,audioSizer4,_("Default timing length"),_T("Timing Default Duration"),TEXT_TYPE_NUMBER);
+		AddTextControl(audioPage,audioSizer4,_("Default lead-in length"),_T("Audio lead in"),TEXT_TYPE_NUMBER);
+		AddTextControl(audioPage,audioSizer4,_("Default lead-out length"),_T("Audio lead out"),TEXT_TYPE_NUMBER);
+		AddComboControl(audioPage,audioSizer4,_("Show inactive lines"),_T("Audio Inactive Lines Display Mode"),wxArrayString(3,choices1));
 		audioSizer4->AddGrowableCol(0,1);
 
 		// Sizers
@@ -553,48 +521,16 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *audioAdvSizer3 = new wxBoxSizer(wxVERTICAL);
 
 		// Controls
-		wxControl *control;
-		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Audio provider: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		control = new wxComboBox(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,AudioProviderFactory::GetFactoryList(),wxCB_DROPDOWN | wxCB_READONLY);
-		Bind(control,_T("Audio provider"),1);
-		audioAdvSizer1->Add(control,1,wxEXPAND);
-
-		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Audio player: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		control = new wxComboBox(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,AudioPlayerFactory::GetFactoryList(),wxCB_DROPDOWN | wxCB_READONLY);
-		Bind(control,_T("Audio player"),1);
-		audioAdvSizer1->Add(control,1,wxEXPAND);
-
 		wxString choices2[3] = { _("None (NOT RECOMMENDED)"), _("RAM"), _("Hard Disk") };
-		control = new wxComboBox(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices2,wxCB_READONLY | wxCB_DROPDOWN);
-		Bind(control,_T("Audio Cache"));
-		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Cache type: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioAdvSizer1->Add(control,1,wxEXPAND,0);
-
 		wxString choices3[3] = { _T("ConvertToMono"), _T("GetLeftChannel"), _T("GetRightChannel") };
-		control = new wxComboBox(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices3,wxCB_DROPDOWN);
-		Bind(control,_T("Audio Downmixer"));
-		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Avisynth down-mixer: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioAdvSizer1->Add(control,1,wxEXPAND,0);
-
-		control = new wxTextCtrl(audioAdvPage,-1);
-		Bind(control,_T("Audio HD Cache Location"));
-		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("HD cache path: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioAdvSizer1->Add(control,1,wxEXPAND,0);
-		control = new wxTextCtrl(audioAdvPage,-1);
-
-		Bind(control,_T("Audio HD Cache Name"));
-		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("HD cache name: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioAdvSizer1->Add(control,1,wxEXPAND,0);
-
-		control = new wxTextCtrl(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
-		Bind(control,_T("Audio Spectrum Cutoff"));
-		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Spectrum cutoff: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioAdvSizer1->Add(control,1,wxEXPAND,0);
-
-		control = new wxTextCtrl(audioAdvPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
-		Bind(control,_T("Audio Spectrum Window"));
-		audioAdvSizer1->Add(new wxStaticText(audioAdvPage,-1,_("Spectrum FFT window exponent: ")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-		audioAdvSizer1->Add(control,1,wxEXPAND,0);
+		AddComboControl(audioAdvPage,audioAdvSizer1,_("Audio provider"),_T("Audio Provider"),AudioProviderFactory::GetFactoryList(),true,1);
+		AddComboControl(audioAdvPage,audioAdvSizer1,_("Audio player"),_T("Audio Player"),AudioPlayerFactory::GetFactoryList(),true,1);
+		AddComboControl(audioAdvPage,audioAdvSizer1,_("Cache type"),_T("Audio Cache"),wxArrayString(3,choices2),true);
+		AddComboControl(audioAdvPage,audioAdvSizer1,_("Avisynth down-mixer"),_T("Audio Downmixer"),wxArrayString(3,choices3),false);
+		AddTextControl(audioAdvPage,audioAdvSizer1,_("HD cache path"),_T("Audio HD Cache Location"),TEXT_TYPE_FOLDER);
+		AddTextControl(audioAdvPage,audioAdvSizer1,_("HD cache name"),_T("Audio HD CAche Name"));
+		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum cutoff"),_T("Audio spectrum cutoff"),TEXT_TYPE_NUMBER);
+		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum FFT window exponent"),_T("Audio spectrum window"),TEXT_TYPE_NUMBER);
 		audioAdvSizer1->AddGrowableCol(0,1);
 
 		// Main sizer
@@ -612,37 +548,18 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *autoMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *autoSizer1 = new wxStaticBoxSizer(wxVERTICAL,autoPage,_("Options"));
 		wxFlexGridSizer *autoSizer2 = new wxFlexGridSizer(4,2,5,5);
-		wxControl *control;
 
 		// First sizer
-		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Base path: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		control = new wxTextCtrl(autoPage,-1);
-		Bind(control,_T("Automation Base Path"));
-		autoSizer2->Add(control,1,wxEXPAND);
-		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Include path: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		control = new wxTextCtrl(autoPage,-1);
-		Bind(control,_T("Automation Include Path"));
-		autoSizer2->Add(control,1,wxEXPAND);
-		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Auto-load path: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		control = new wxTextCtrl(autoPage,-1);
-		Bind(control,_T("Automation Autoload Path"));
-		autoSizer2->Add(control,1,wxEXPAND);
-		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Trace level: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		wxString trace_choices[6] = { _("0: Fatal"), _("1: Error"), _("2: Warning"), _("3: Hint"), _("4: Debug"), _("5: Trace") };
-		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,6,trace_choices,wxCB_READONLY | wxCB_DROPDOWN);
-		Bind(control,_T("Automation Trace Level"));
-		autoSizer2->Add(control,1,wxEXPAND);
+		AddTextControl(autoPage,autoSizer2,_("Base path"),_T("Automation Base Path"));
+		AddTextControl(autoPage,autoSizer2,_("Include path"),_T("Automation Include Path"));
+		AddTextControl(autoPage,autoSizer2,_("Auto-load path"),_T("Automation Autoload Path"));
+		wxString trace_choices[] = { _("0: Fatal"), _("1: Error"), _("2: Warning"), _("3: Hint"), _("4: Debug"), _("5: Trace") };
+		wxString prio_choices[] = { _("Normal"), _("Below Normal (recommended)"), _("Lowest") };
+		wxString reload_choices[] = { _("No scripts"), _("Subtitle-local scripts"), _("Global autoload scripts"), _("All scripts") };
+		AddComboControl(autoPage,autoSizer2,_("Trace level"),_T("Automation Trace Level"),wxArrayString(6,trace_choices));
+		AddComboControl(autoPage,autoSizer2,_("Thread priority"),_T("Automation Thread Priority"),wxArrayString(3,prio_choices));
+		AddComboControl(autoPage,autoSizer2,_("Autoreload on Export"),_T("Automation Autoreload Mode"),wxArrayString(4,reload_choices));
 		autoSizer2->AddGrowableCol(1,1);
-		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Thread priority: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		wxString prio_choices[3] = { _("Normal"), _("Below Normal (recommended)"), _("Lowest") };
-		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,prio_choices,wxCB_READONLY|wxCB_DROPDOWN);
-		Bind(control, _T("Automation Thread Priority"));
-		autoSizer2->Add(control, 1, wxEXPAND);
-		autoSizer2->Add(new wxStaticText(autoPage,-1,_("Autoreload on Export: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		wxString reload_choices[4] = { _("No scripts"), _("Subtitle-local scripts"), _("Global autoload scripts"), _("All scripts") };
-		control = new wxComboBox(autoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,4,reload_choices,wxCB_READONLY|wxCB_DROPDOWN);
-		Bind(control, _T("Automation Autoreload Mode"));
-		autoSizer2->Add(control, 1, wxEXPAND);
 
 		// Sizers
 		autoSizer1->Add(autoSizer2,1,wxEXPAND | wxALL,5);
@@ -734,6 +651,39 @@ void DialogOptions::Bind(wxControl *ctrl, wxString option,int param) {
 	bind.option = option;
 	bind.param = param;
 	binds.push_back(bind);
+}
+
+
+////////////////////
+// Add a wxTextCtrl
+void DialogOptions::AddTextControl(wxWindow *parent,wxSizer *sizer,wxString label,wxString option,TextType type) {
+	sizer->Add(new wxStaticText(parent,-1,label + wxString(_T(": "))),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+	wxTextCtrl *control;
+	if (type == TEXT_TYPE_NUMBER) control = new wxTextCtrl(parent,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator());
+	else control = new wxTextCtrl(parent,-1);
+	Bind(control,option);
+	sizer->Add(control,1,wxEXPAND);
+}
+
+
+////////////////////
+// Add a wxComboBox
+void DialogOptions::AddComboControl(wxWindow *parent,wxSizer *sizer,wxString label,wxString option,wxArrayString choices,bool readOnly,int bindParam) {
+	sizer->Add(new wxStaticText(parent,-1,label + wxString(_T(": "))),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
+	int flags = wxCB_DROPDOWN;
+	if (readOnly) flags |= wxCB_READONLY;
+	wxComboBox *control = new wxComboBox(parent,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices,flags);
+	Bind(control,option,bindParam);
+	sizer->Add(control,1,wxEXPAND);
+}
+
+
+//////////////////
+// Add a checkbox
+void DialogOptions::AddCheckBox(wxWindow *parent,wxSizer *sizer,wxString label,wxString option) {
+	wxControl *control = new wxCheckBox(parent,-1,label);
+	Bind(control,option);
+	sizer->Add(control,1,wxEXPAND,0);
 }
 
 

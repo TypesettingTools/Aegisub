@@ -69,6 +69,17 @@ public:
 };
 
 
+//////////////////
+// TextCtrl types
+enum TextType {
+	TEXT_TYPE_PLAIN,
+	TEXT_TYPE_NUMBER,
+	TEXT_TYPE_FILE,
+	TEXT_TYPE_FOLDER,
+	TEXT_TYPE_FONT
+};
+
+
 ////////////////////////
 // Options screen class
 class DialogOptions: public wxDialog {
@@ -86,6 +97,10 @@ private:
 	void Bind(wxControl *ctrl,wxString option,int param=0);
 	void WriteToOptions(bool justApply=false);
 	void ReadFromOptions();
+
+	void AddTextControl(wxWindow *parent,wxSizer *sizer,wxString label,wxString option,TextType type=TEXT_TYPE_PLAIN);
+	void AddComboControl(wxWindow *parent,wxSizer *sizer,wxString label,wxString option,wxArrayString choices,bool readOnly=true,int bindParam=0);
+	void AddCheckBox(wxWindow *parent,wxSizer *sizer,wxString label,wxString option);
 
 	void OnOK(wxCommandEvent &event);
 	void OnCancel(wxCommandEvent &event);
