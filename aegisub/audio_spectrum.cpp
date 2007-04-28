@@ -39,6 +39,7 @@
 #include "fft.h"
 #include "colorspace.h"
 #include "options.h"
+#include "utils.h"
 
 
 // Audio spectrum FFT data cache
@@ -210,12 +211,14 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider, unsigned long _line_lengt
 	// Generate colour maps
 	unsigned char *palptr = colours_normal;
 	for (int i = 0; i < 256; i++) {
-		hsl_to_rgb(170 + i * 2/3, 128 + i/2, i, palptr+0, palptr+1, palptr+2);
+		//hsl_to_rgb(170 + i * 2/3, 128 + i/2, i, palptr+0, palptr+1, palptr+2);	// Previous
+		hsl_to_rgb((255+128-i)/2, 128 + i/2, MIN(255,2*i), palptr+0, palptr+1, palptr+2);	// Icy blue
 		palptr += 3;
 	}
 	palptr = colours_selected;
 	for (int i = 0; i < 256; i++) {
-		hsl_to_rgb(170 + i * 2/3, 128 + i/2, i*3/4+64, palptr+0, palptr+1, palptr+2);
+		//hsl_to_rgb(170 + i * 2/3, 128 + i/2, i*3/4+64, palptr+0, palptr+1, palptr+2);
+		hsl_to_rgb((255+128-i)/2, 128 + i/2, MIN(255,3*i/2+64), palptr+0, palptr+1, palptr+2);	// Icy blue
 		palptr += 3;
 	}
 }
