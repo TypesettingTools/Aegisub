@@ -302,6 +302,9 @@ namespace Automation4 {
 			name = GetPrettyFilename();
 			description = e;
 		}
+		catch (Script *s) {
+			throw;
+		}
 		catch (...) {
 			Destroy();
 			loaded = false;

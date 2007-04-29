@@ -846,7 +846,8 @@ namespace Automation4 {
 						brackets_open = false;
 					}
 
-					break;}
+					break;
+				}
 
 			}
 

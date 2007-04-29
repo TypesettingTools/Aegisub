@@ -1320,6 +1320,14 @@ continue_invalid_option:
 	{
 		Destroy();
 
+#if 1
+		// HACK: Prevent auto3 scripts from ever loading
+		// This should be removed when things have been fixed
+		loaded = false;
+		name = GetFilename();
+		description = _T("Automation 3 scripts do currently not work in this version of Aegisub. Please use version 1.10 if you need to run this script.");
+#else
+
 		loaded = true;
 
 		try {
@@ -1415,6 +1423,7 @@ continue_invalid_option:
 			loaded = false;
 			throw;
 		}
+#endif
 	}
 
 	void Auto3Script::Destroy()
