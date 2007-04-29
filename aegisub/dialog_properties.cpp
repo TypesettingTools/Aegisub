@@ -129,7 +129,7 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	optionsGrid->Add(collision,1,wxEXPAND,0);
 	ScaleBorder = new wxCheckBox(this,-1,_("Scale Border and Shadow"));
 	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
-	ScaleBorder->SetValue(subs->GetScriptInfo(_T("ScaledBorderAndShadow")) == _T("yes") ? 1 : 0);
+	ScaleBorder->SetValue(subs->GetScriptInfo(_T("ScaledBorderAndShadow")).Lower() == _T("yes") ? 1 : 0);
 	optionsGrid->AddSpacer(0);
 	optionsGrid->Add(ScaleBorder,1,wxEXPAND,0);
 	optionsGrid->AddGrowableCol(1,1);
