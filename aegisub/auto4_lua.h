@@ -48,17 +48,6 @@ class wxWindow;
 
 namespace Automation4 {
 
-	// Manage reading in a Lua script file
-	struct LuaScriptReader {
-		FILE *f;
-		bool first;
-		char *databuf;
-		static const size_t bufsize = 512;
-		LuaScriptReader(const wxString &filename);
-		~LuaScriptReader();
-		static const char* reader_func(lua_State *L, void *data, size_t *size);
-	};
-
 	// Provides access to an AssFile object (and all lines contained) for a Lua script
 	class LuaAssFile {
 	private:

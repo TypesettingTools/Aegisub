@@ -34,7 +34,7 @@
 //
 
 #include "auto4_auto3.h"
-#include "auto4_lua.h"
+#include "auto4_lua_scriptreader.h"
 #include "../lua51/src/lualib.h"
 #include "../lua51/src/lauxlib.h"
 #include "options.h"
