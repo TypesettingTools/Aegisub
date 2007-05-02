@@ -1,0 +1,18 @@
+Automation 3 support in Automation 4 needs to be built as a separate library,
+to be able to have two versions of Lua side by side. This is required since
+Automation 3, and especially scripts written for it, relies on the Lua 5.0
+API.
+
+
+Compiling on Windows
+--------------------
+If you are building on Windows, be aware that Microsoft Visual C++ 2005
+(version 8) CAN NOT COMPILE LUA 5.0 CORRECTLY. While the build will succeed,
+the built binaries are broken and do not work correctly.
+
+You need to use Microsoft Visual C++ .NET 2003 (version 7.1) to build the
+Windows version of this library. Other compilers might also work.
+
+You should not need to build this DLL yourself even if you are building
+Aegisub; just get one built on someone else. Unless, of course, you want to
+hack the Auto3 code.
