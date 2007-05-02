@@ -128,6 +128,7 @@ aegisub_SOURCES = \
 	auto4_lua.cpp \
 	auto4_lua_assfile.cpp \
 	auto4_lua_dialog.cpp \
+	auto4_lua_scriptreader.cpp \
 	auto4_auto3.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
