@@ -727,7 +727,7 @@ void AssFile::GetResolution(int &sw,int &sh) {
 	// Height
 	wxString temp = GetScriptInfo(_T("PlayResY"));
 	if (temp.IsEmpty() || !temp.IsNumber()) {
-		sh = 288;
+		sh = 0;
 	}
 	else {
 		long templ;
@@ -738,12 +738,28 @@ void AssFile::GetResolution(int &sw,int &sh) {
 	// Width
 	temp = GetScriptInfo(_T("PlayResX"));
 	if (temp.IsEmpty() || !temp.IsNumber()) {
-		sw = 384;
+		sw = 0;
 	}
 	else {
 		long templ;
 		temp.ToLong(&templ);
 		sw = templ;
+	}
+
+	// Gabest logic?
+	if (sw == 0 && sh == 0) {
+		sw = 384;
+		sh = 288;
+	} else if (sw == 0) {
+		if (sh == 1024)
+			sw = 1280;
+		else
+			sw = sh * 4 / 3;
+	} else if (sh == 0) {
+		if (sw == 1280)
+			sh = 1024;
+		else
+			sh = sw * 3 / 4;
 	}
 }
 
