@@ -414,7 +414,51 @@ namespace Automation4 {
 		int *borderstyle, float *outline, float *shadow, int *align, int *margin_l, int *margin_r, int *margin_v, int *encoding)
 	{
 		Auto3ThreadedProcessor *self = (Auto3ThreadedProcessor*)cbdata;
-		// TODO
+
+		while (self->style_pointer != self->file->Line.end()) {
+			AssStyle *style = AssEntry::GetAsStyle(*self->style_pointer);
+			// Increase iterator before we test for and return style data, since it needs to be done either way
+			// The iterator should always point to the next line to be examined
+			self->style_pointer++;
+			if (style) {
+				// Put strings into buffers
+				self->stylename = style->name.mb_str(wxConvUTF8);
+				self->stylefont = style->font.mb_str(wxConvUTF8);
+				self->stylecolor[0] = style->primary.GetASSFormatted(true, false, true).mb_str(wxConvUTF8);
+				self->stylecolor[1] = style->secondary.GetASSFormatted(true, false, true).mb_str(wxConvUTF8);
+				self->stylecolor[2] = style->outline.GetASSFormatted(true, false, true).mb_str(wxConvUTF8);
+				self->stylecolor[3] = style->shadow.GetASSFormatted(true, false, true).mb_str(wxConvUTF8);
+
+				// Store data to lib
+				*name = self->stylename.data();
+				*fontname = self->stylefont.data();
+				*fontsize = (int)style->fontsize;
+				*color1 = self->stylecolor[0].data();
+				*color2 = self->stylecolor[1].data();
+				*color3 = self->stylecolor[2].data();
+				*color4 = self->stylecolor[3].data();
+				*bold = (int)style->bold;
+				*italic = (int)style->italic;
+				*underline = (int)style->italic;
+				*strikeout = (int)style->strikeout;
+				*scale_x = style->scalex;
+				*scale_y = style->scaley;
+				*spacing = style->spacing;
+				*angle = style->angle;
+				*borderstyle = style->borderstyle;
+				*outline = style->outline_w;
+				*shadow = style->shadow_w;
+				*align = style->alignment;
+				*margin_l = style->Margin[0];
+				*margin_r = style->Margin[1];
+				*margin_v = style->Margin[2];
+				*encoding = style->encoding;
+
+				// and return success
+				return 1;
+			}
+		}
+
 		return 0;
 	}
 
@@ -423,7 +467,35 @@ namespace Automation4 {
 		int *margin_l, int *margin_r, int *margin_v, char **effect, char **text, int *comment)
 	{
 		Auto3ThreadedProcessor *self = (Auto3ThreadedProcessor*)cbdata;
-		// TODO
+
+		while (self->subs_pointer != self->file->Line.end()) {
+			AssDialogue *dia = AssEntry::GetAsDialogue(*self->subs_pointer);
+			self->subs_pointer++;
+			if (dia) {
+				// Put strings into buffers
+				self->diagstyle = dia->Style.mb_str(wxConvUTF8);
+				self->diagactor = dia->Actor.mb_str(wxConvUTF8);
+				self->diageffect = dia->Effect.mb_str(wxConvUTF8);
+				self->diagtext = dia->Text.mb_str(wxConvUTF8);
+
+				// Store data to lib
+				*comment = (int)dia->Comment;
+				*layer = dia->Layer;
+				*start_time = dia->Start.GetMS()/10;
+				*end_time = dia->End.GetMS()/10;
+				*style = self->diagstyle.data();
+				*actor = self->diagactor.data();
+				*margin_l = dia->Margin[0];
+				*margin_r = dia->Margin[1];
+				*margin_v = dia->Margin[2];
+				*effect = self->diageffect.data();
+				*text = self->diagtext.data();
+
+				// return success
+				return 1;
+			}
+		}
+		
 		return 0;
 	}
 
@@ -431,7 +503,17 @@ namespace Automation4 {
 	void Auto3ThreadedProcessor::StartSubsWrite(void *cbdata)
 	{
 		Auto3ThreadedProcessor *self = (Auto3ThreadedProcessor*)cbdata;
-		// TODO: clear events section and set subs_pointer
+		
+		// clear all dialogue lines
+		std::list<AssEntry*>::iterator line = self->file->Line.begin();
+		while (line != self->file->Line.end()) {
+			std::list<AssEntry*>::iterator cur = line;
+			line++;
+			if (AssEntry::GetAsDialogue(*cur)) {
+				delete *cur;
+				self->file->Line.erase(cur);
+			}
+		}
 	}
 
 
@@ -439,7 +521,23 @@ namespace Automation4 {
 		int margin_l, int margin_r, int margin_v, const char *effect, const char *text, int comment)
 	{
 		Auto3ThreadedProcessor *self = (Auto3ThreadedProcessor*)cbdata;
-		// TODO
+		
+		// Construct dialogue object
+		AssDialogue *dia = new AssDialogue();
+		dia->Comment = !!comment;
+		dia->Layer = layer;
+		dia->Start.SetMS(start_time*10);
+		dia->End.SetMS(end_time*10);
+		dia->Style = wxString(style, wxConvUTF8);
+		dia->Actor = wxString(actor, wxConvUTF8);
+		dia->Margin[0] = margin_l;
+		dia->Margin[1] = margin_r;
+		dia->Margin[2] = dia->Margin[3] = margin_v;
+		dia->Effect = wxString(effect, wxConvUTF8);
+		dia->Text = wxString(text, wxConvUTF8);
+		
+		// Append to file
+		self->file->Line.push_back(dia);
 	}
 
 

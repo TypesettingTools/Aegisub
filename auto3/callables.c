@@ -82,9 +82,62 @@ static int LuaInclude(lua_State *L)
 static int LuaTextExtents(lua_State *L)
 {
 	struct Auto3Interpreter *script;
+	const char *text, *fontname;
+	int fontsize, bold, italic, spacing, encoding;
+	float scale_x, scale_y;
+	float out_width, out_height, out_descent, out_extlead;
+
 	script = GetScriptObject(L);
-	// TODO
-	return 0;
+
+	if (!script->cb.text_extents) return 0;
+
+	// get text
+	text = luaL_checkstring(L, 2);
+
+	// check we have style table
+	if (!lua_istable(L, 1)) {
+		lua_pushstring(L, "First argument to text_extents must be style table");
+		lua_error(L);
+	}
+
+	// get style def
+	lua_pushstring(L, "fontname"); lua_gettable(L, 1);
+	fontname = lua_tostring(L, -1);
+
+	lua_pushstring(L, "fontsize"); lua_gettable(L, 1);
+	fontsize = lua_tonumber(L, -1);
+
+	lua_pushstring(L, "bold"); lua_gettable(L, 1);
+	bold = lua_toboolean(L, -1);
+
+	lua_pushstring(L, "italic"); lua_gettable(L, 1);
+	italic = lua_toboolean(L, -1);
+
+	lua_pushstring(L, "scale_x"); lua_gettable(L, 1);
+	scale_x = lua_tonumber(L, -1);
+
+	lua_pushstring(L, "scale_y"); lua_gettable(L, 1);
+	scale_y = lua_tonumber(L, -1);
+
+	lua_pushstring(L, "spacing"); lua_gettable(L, 1);
+	spacing = lua_tonumber(L, -1);
+
+	lua_pushstring(L, "encoding"); lua_gettable(L, 1);
+	encoding = lua_tonumber(L, -1);
+
+	// get measurements
+	script->cb.text_extents(script->cb.rundata, text, fontname, fontsize, bold, italic,
+		spacing, scale_x, scale_y, encoding, &out_width, &out_height, &out_descent, &out_extlead);
+
+	// remove strings and stuff
+	lua_pop(L, 8);
+
+	// return result
+	lua_pushnumber(L, out_width);
+	lua_pushnumber(L, out_height);
+	lua_pushnumber(L, out_descent);
+	lua_pushnumber(L, out_extlead);
+	return 4;
 }
 
 

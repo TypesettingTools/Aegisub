@@ -115,9 +115,14 @@ namespace Automation4 {
 		Auto3ConfigDialog *config;
 		Auto3ProgressSink *sink;
 
+		// Iterators used for read/write callbacks
 		std::list<AssEntry*>::iterator style_pointer;
 		std::list<AssEntry*>::iterator subs_pointer;
 
+		// Char buffers holding data used in callbacks
+		wxCharBuffer stylename, stylefont, stylecolor[4], diagstyle, diagactor, diageffect, diagtext;
+
+		// Read/write callback functions
 		static void ResetStylePointer(void *cbdata);
 		static void ResetSubsPointer(void *cbdata);
 		static void GetMetaInfo(void *cbdata, int *res_x, int *res_y);

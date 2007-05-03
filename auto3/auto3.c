@@ -560,7 +560,7 @@ static void MakeStylesTable(lua_State *L, struct Auto3Interpreter *script)
 	int n;
 
 	lua_newtable(L);
-	n = 0;
+	n = -1;
 
 	script->cb.reset_style_pointer(script->cb.rwdata);
 	while (script->cb.get_next_style(script->cb.rwdata, &name, &fontname, &fontsize, &color1, &color2, &color3, &color4,
@@ -688,7 +688,7 @@ static void MakeEventsTable(lua_State *L, struct Auto3Interpreter *script)
 	int n;
 
 	lua_newtable(L);
-	n = 0;
+	n = -1;
 
 	script->cb.reset_subs_pointer(script->cb.rwdata);
 	while (script->cb.get_next_sub(script->cb.rwdata, &layer, &start_time, &end_time, &style, &actor,
