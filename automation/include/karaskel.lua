@@ -44,18 +44,40 @@ if not karaskel then
 end
 
 -- Collect styles and metadata from the subs
-function karaskel.collect_head(subs)
+function karaskel.collect_head(subs, generate_furigana)
 	local meta = { res_x = 0, res_y = 0 }
 	local styles = { n = 0 }
 	
-	for i = 1, #subs do
+	if not karaskel.furigana_scale then
+		karaskel.furigana_scale = 0.5
+	end
+	
+	local i = 1
+	while i < #subs do
 		local l = subs[i]
+		
 		if l.class == "style" then
+			-- Store styles into the style table
 			styles.n = styles.n + 1
 			styles[styles.n] = l
 			styles[l.name] = l
 			l.margin_v = l.margin_t
+			
+			-- And also generate furigana styles if wanted
+			if generate_furigana and not l.name:match("furigana") then
+				local fs = table.copy(l)
+				fs.fontsize = l.fontsize * karaskel.furigana_scale
+				fs.outline = l.outline * karaskel.furigana_scale
+				fs.shadow = l.shadow * karaskel.furigana_scale
+				fs.name = l.name .. "-furigana"
+				
+				styles.n = styles.n + 1
+				styles[styles.n] = fs
+				styles[fs.name] = fs
+			end
+			
 		elseif l.class == "info" then
+			-- Also look for script resolution
 			local k = l.key:lower()
 			if k == "playresx" then
 				meta.res_x = math.floor(l.value)
@@ -87,6 +109,39 @@ function karaskel.collect_head(subs)
 	
 	return meta, styles
 end
+
+
+-- Pre-process line, determining stripped text, karaoke data and splitting off furigana data
+-- Modifies the object passed for line
+function karaskel.preproc_line_text(meta, styles, line)
+	-- Assume line is class=dialogue
+	local kara = aegisub.parse_karaoke_data(line)
+	line.kara = { n = 0 }
+	line.furi = { n = 0 }
+	
+	line.text_stripped = ""
+	line.duration = line.end_time - line.start_time
+
+	local worksyl = { }
+	local cur_inline_fx = ""
+	for i = 0, #kara do
+		local syl = kara[i]
+		
+		-- Detect any inline-fx tags
+		local inline_fx = syl.text:match("%{.*\\%-(.-)[}\\]")
+		if inline_fx then
+			cur_inline_fx = inline_fx
+		end
+		
+	end
+end
+
+
+-- Pre-calculate positioning information for the given line, also layouting furigana text if needed
+-- Modifies the object passed for line
+function karaskel.preproc_line_pos(meta, styles, line)
+end
+
 
 -- Precalc some info on a line
 -- Modifies the line parameter
