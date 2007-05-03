@@ -33,12 +33,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="lua/lib/luad.lib"
-				OutputFile="$(OutDir)/auto3.dll"
+				OutputFile="../bin/aegisub-auto3d.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/auto3.pdb"
+				ProgramDatabaseFile="../bin/aegisub-auto3d.pdb"
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/auto3.lib"
+				ImportLibrary="../lib/aegisub-auto3d.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -66,9 +66,17 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
-			CharacterSet="1">
+			CharacterSet="1"
+			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				FavorSizeOrSpeed="2"
+				OptimizeForProcessor="2"
+				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;AUTO3LIB;WXUSINGDLL"
 				RuntimeLibrary="0"
@@ -81,15 +89,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxbase28u.lib wxbase28u_net.lib wxmsw28u_adv.lib wxmsw28u_core.lib wxmsw28u_richtext.lib wxpng.lib wxregexu.lib wxzlib.lib lua/lib/lua.lib"
+				AdditionalDependencies="lua/lib/lua.lib"
 				ShowProgress="2"
-				OutputFile="$(OutDir)/auto3.dll"
+				OutputFile="../bin/aegisub-auto3.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(OutDir)/auto3.lib"
+				SetChecksum="TRUE"
+				ImportLibrary="../lib/aegisub-auto3.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -122,6 +131,21 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
 				RelativePath=".\auto3.c">
+			</File>
+			<File
+				RelativePath=".\callables.c">
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter

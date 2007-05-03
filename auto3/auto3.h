@@ -37,6 +37,8 @@
 
 #ifdef AUTO3LIB
 #include "lua/include/lua.h"
+#include "lua/include/lualib.h"
+#include "lua/include/lauxlib.h"
 #endif
 
 
@@ -45,7 +47,7 @@ extern "C" {
 #endif
 
 
-// On Win32, filenames are wide, but UTF-8 everywhere else
+// On Win32, filenames are wide, but whatever encoding the system uses everywhere else
 #ifdef WIN32
 typedef wchar_t* filename_t;
 #else
@@ -82,9 +84,8 @@ struct Auto3ConfigOption {
 	enum Auto3ConfigOptionKind kind;
 	char *label;
 	char *hint;
-	int hasmin : 1; // whether there is a min value
-	int hasmax : 1; // whether there is a max value
-	union {
+	struct {
+		int valid; // non-zero if the value is present
 		int intval;
 		float floatval;
 	} min, max;
@@ -96,10 +97,68 @@ struct Auto3ConfigOption {
 };
 
 
+// Callback interface
+// The application should provide ALL of these functions
+struct Auto3Callbacks {
+	// Logging and status
+	// pointer passed to logging/status callbacks
+	void *logdata;
+	// log error during script execution
+	void (*log_error)(void *cbdata, const char *msg);
+	// log message during script execution
+	void (*log_message)(void *cbdata, const char *msg);
+	// set progress during script execution
+	void (*set_progress)(void *cbdata, float progress);
+	// set status message during script execution
+	void (*set_status)(void *cbdata, const char* msg);
+
+	// Reading/writing subtitles and related information
+	// pointer passed to read/write data callbacks
+	void *rwdata;
+	// application sets *res_x and *res_y to appropriate values
+	void (*get_meta_info)(void *cbdata, int *res_x, int *res_y);
+	// set style pointer to point at first style
+	void (*reset_style_pointer)(void *cbdata);
+	// Get the next style, the application must fill the data into its own buffers, which it then fill in pointers to
+	// (Ie. the application owns all strings allocated for this callback.)
+	// Return non-zero if a style was found and values filled, otherwise return zero
+	int (*get_next_style)(
+		void *cbdata, char **name, char **fontname, int *fontsize, char **color1, char **color2, char **color3, char **color4,
+		int *bold, int *italic, int *underline, int *strikeout, float *scale_x, float *scale_y, float *spacing, float *angle,
+		int *borderstyle, float *outline, float *shadow, int *align, int *margin_l, int *margin_r, int *margin_v, int *encoding);
+	// set subtitle pointer to point at first subtitle line
+	void (*reset_subs_pointer)(void *cbdata);
+	// Get next subtitle line, the application must fill the data into its own buffers, and then fill in pointers to those
+	// Return non-zero if a style was found and values filled, otherwise return zero
+	int (*get_next_sub)(
+		void *cbdata, int *layer, int *start_time, int *end_time, char **style, char **actor,
+		int *margin_l, int *margin_r, int *margin_v, char **effect, char **text, int *comment);
+	// start writing back new subtitles, application must clear all subtitle lines and be ready to write
+	void (*start_subs_write)(void *cbdata);
+	// Write a subtitle line back to subtitle file, char pointers are owned by the lib
+	void (*write_sub)(void *cbdata, int layer, int start_time, int end_time, const char *style, const char *actor,
+		int margin_l, int margin_r, int margin_v, const char *effect, const char *text, int comment);
+
+	// Getting various environment information during runtime
+	// pointer passed to runtime data callbacks
+	void *rundata;
+	// Resolve a filename passed to the include function
+	// The result must be allocated with Auto3Malloc and will be free'd by the lib
+	filename_t (*resolve_include)(void *cbdata, const char *incname);
+	// Get sizing information for a text string given a style
+	void (*text_extents)(void *cbdata, char *text, char *fontname, int fontsize, int bold, int italic,
+		int spacing, float scale_x, float scale_y, int encoding,
+		float *out_width, float *out_height, float *out_descent, float *out_extlead);
+	// Convert a time in milliseconds to a video frame number
+	int (*frame_from_ms)(void *cbdata, int ms);
+	// Convert a video frame number to a time in milliseconds
+	int (*ms_from_frame)(void *cbdata, int frame);
+};
+
+
 // Describes an interpreter
 struct Auto3Interpreter {
 	// Public attributes, treat them as read-only
-	filename_t filename;
 	char *name;
 	char *description;
 	
@@ -108,34 +167,10 @@ struct Auto3Interpreter {
 	// You may change the "value" field of these (in fact, do so)
 	struct Auto3ConfigOption *config;
 
-	// Callback stuff
-	// The application should fill these with relevant stuff
-	// Logging and status
-	void *logcbdata; // pointer passed to logging/status callbacks
-	void (*log_error)(void *cbdata, char *msg); // log error during script execution
-	void (*log_message)(void *cbdata, char *msg); // log message during script execution
-	void (*set_progress)(void *cbdata, float progress); // set progress during script execution
-	void (*set_status)(void *cbdata, char* msg); // set status message during script execution
-	// Reading/writing subtitles and related information
-	void *rwcbdata; // pointer passed to read/write data callbacks
-	void (*get_meta_info)(void *cbdata, int *res_x, int *res_y); // application sets *res_x and *res_y to appropriate values
-	void (*reset_style_pointer)(void *cbdata); // set style pointer to point at first style
-	// Get the next style, the application must fill the data into its own buffers, which it then fill in pointers to
-	// When there are no more styles, set *name=NULL
-	void (*get_next_style)(
-		void *cbdata, char **name, char **fontname, int *fontsize, char **color1, char **color2, char **color3, char **color4,
-		int *bold, int *italic, int *underline, int *strikeout, float *scale_x, float *scale_y, float *spacing, float *angle,
-		int *borderstyle, float *outline, float *shadow, int *align, int *margin_l, int *margin_r, int *margin_v, int *encoding);
-	void (*reset_subs_pointer)(void *cbdata); // set subtitle pointer to point at first subtitle line
-	// Get next subtitle line, the application must fill the data into its own buffers, and then fill in pointers to those
-	// When there are no more lines, set *text=NULL
-	void (*get_next_sub)(
-		void *cbdata, int *layer, int *start_time, int *end_time, char **style, char **actor,
-		int *margin_l, int *margin_r, int *margin_v, char **effect, char **text);
-	void (*start_subs_write)(void *cbdata); // start writing back new subtitles, application must clear all subtitle lines and be ready to write
-	// Write a subtitle line back to subtitle file, char pointers are owned by the lib
-	void (*write_sub)(void *cbdata, int layer, int start_time, int end_time, char *style, char *actor,
-		int margin_l, int margin_r, int margin_v, char *effect, char *text);
+	// Callbacks
+	// This is filled in from the 'cb' argument to the Create function,
+	// but may be modified later by the application
+	struct Auto3Callbacks cb;
 
 #ifdef AUTO3LIB
 	// Private data
@@ -145,9 +180,12 @@ struct Auto3Interpreter {
 
 
 // Create a new interpreter
+// filename is name of script file
+// prettyname is a UTF-8 string used as identifier for the script in error messages
+// cb should point to an Auto3Callbacks struct filled in; a copy of this struct will be made
+// error will be filled with any error message on fail, the application is responsible for freeing this string (use Auto3Free)
 // Returns pointer to interpreter object if successful, otherwise NULL
-// If this function fails, the error message is filled into the char* pointed to by error (may be NULL)
-AUTO3_API struct Auto3Interpreter *CreateAuto3Script(filename_t filename, char **error);
+AUTO3_API struct Auto3Interpreter *CreateAuto3Script(filename_t filename, char *prettyname, struct Auto3Callbacks *cb, char **error);
 // Release an interpreter
 AUTO3_API void DestroyAuto3Script(struct Auto3Interpreter *script);
 
@@ -165,7 +203,8 @@ AUTO3_API void Auto3Free(void *ptr);
 // then actual processing will take place.
 // After processing, start_subs_write will be called, followed by a number of calls to write_sub.
 // Any number of calls to the logging/status functions can take place during script execution
-AUTO3_API void RunAuto3Script(struct Auto3Interpreter *script);
+// Returns non-zero on error
+AUTO3_API int RunAuto3Script(struct Auto3Interpreter *script);
 
 
 #ifdef __cplusplus
