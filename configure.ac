@@ -206,8 +206,14 @@ AM_CONDITIONAL([HAVE_ALSA], [test "$with_alsa" != "no"])
 AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
 AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
 AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_hunspell" != "no"])
-AM_CONDITIONAL([HAVE_RUBY], [test "$with_ruby" != "no"])
 AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])
+dnl FIXME: These three should probably get proper --with flags,
+dnl and Ruby also keep its detection (warn/fail if you have --with-ruby
+dnl but the lib isn't detected.)
+AM_CONDITIONAL([WITH_AUTO4_RUBY], [test "$with_ruby" != "no"])
+AM_CONDITIONAL([WITH_AUTO4_LUA], [true])
+dnl TODO: Make the auto3 lib build on non-Win32 so this can be true
+AM_CONDITIONAL([WITH_AUTO3], [false])
 
 AC_OUTPUT([
 	Makefile

@@ -185,13 +185,15 @@ struct Auto3Interpreter {
 // cb should point to an Auto3Callbacks struct filled in; a copy of this struct will be made
 // error will be filled with any error message on fail, the application is responsible for freeing this string (use Auto3Free)
 // Returns pointer to interpreter object if successful, otherwise NULL
-AUTO3_API struct Auto3Interpreter *CreateAuto3Script(filename_t filename, char *prettyname, struct Auto3Callbacks *cb, char **error);
+AUTO3_API struct Auto3Interpreter *CreateAuto3Script(const filename_t filename, const char *prettyname, struct Auto3Callbacks *cb, char **error);
 // Release an interpreter
 AUTO3_API void DestroyAuto3Script(struct Auto3Interpreter *script);
 
 // Our "malloc" function, allocate memory for strings with this
 AUTO3_API void *Auto3Malloc(size_t amount);
-// Our "free" function, free generated error messages with this
+// Convenience function, use this for duplicating strings this lib should own
+AUTO3_API char *Auto3Strdup(const char *str);
+// Our "free" function, free strings with this
 AUTO3_API void Auto3Free(void *ptr);
 
 // Start the script execution

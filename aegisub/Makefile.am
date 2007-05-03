@@ -10,18 +10,13 @@ SUBDIRS = bitmaps posix
 
 bin_PROGRAMS = aegisub
 
-## My automake complains about these not being portable
-## Perhaps it should somehow be moved to a shell script that generates an
-## include, which is then included in source tarball? 
-## Similar to what the make-svn-rev-header.py scripts do currently.
-##  --jfs
 SVNREV := $(shell svnversion | sed 's/[^0-9]//')
 DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGST = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
-aegisub_LDADD = posix/libposix.a ../lua51/src/liblua.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a
+aegisub_LDADD = posix/libposix.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a
 aegisub_LDFLAGS = 
 
 if USE_LIBASS
@@ -44,12 +39,18 @@ AUDIO_PLAYER += audio_player_pulse.cpp
 aegisub_LDFLAGS += -lpulse
 endif
 
-if HAVE_RUBY
-AUTO4RUBY=auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
+AUTOMATION = auto4_base.cpp
+if WITH_AUTO4_LUA
+AUTOMATION +=  auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_scriptreader.cpp
+aegisub_LDADD += ../lua51/src/liblua.a
+endif
+if WITH_AUTO3
+AUTOMATION += auto4_auto3.cpp
+## FIXME: also link to whatever lib here
+endif
+if WITH_AUTO4_RUBY
+AUTOMATION += auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
 AM_CPPFLAGS = $(shell ruby -r rbconfig -e "p '-I' + Config::CONFIG['rubylibdir'] + '/' + Config::CONFIG['arch'] ") $(AM_CPPFLAGST)
-else
-AUTO4RUBY=
-AM_CPPFLAGS = $(AM_CPPFLAGST)
 endif
 
 if HAVE_HUNSPELL
@@ -74,6 +75,11 @@ EXTRA_aegisub_SOURCES = \
 	audio_player_pulse.cpp \
 	audio_provider_avs.cpp \
 	audio_provider_lavc.cpp \
+	auto4_lua.cpp \
+	auto4_lua_assfile.cpp \
+	auto4_lua_dialog.cpp \
+	auto4_lua_scriptreader.cpp \
+	auto4_auto3.cpp \
 	auto4_ruby.cpp \
 	auto4_ruby_assfile.cpp \
 	auto4_ruby_dialog.cpp \
@@ -101,7 +107,7 @@ EXTRA_aegisub_SOURCES = \
 
 aegisub_SOURCES = \
 	$(AUDIO_PLAYER) \
-	$(AUTO4RUBY) \
+	$(AUTOMATION) \
 	$(HUNSPELL) \
 	$(LIBASS) \
 	$(FFMPEG) \
@@ -124,12 +130,6 @@ aegisub_SOURCES = \
 	audio_provider_ram.cpp \
 	audio_provider_stream.cpp \
 	audio_spectrum.cpp \
-	auto4_base.cpp \
-	auto4_lua.cpp \
-	auto4_lua_assfile.cpp \
-	auto4_lua_dialog.cpp \
-	auto4_lua_scriptreader.cpp \
-	auto4_auto3.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
 	browse_button.cpp \

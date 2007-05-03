@@ -35,7 +35,9 @@
 
 #include "auto4_lua.h"
 #include "auto4_lua_scriptreader.h"
+#if WITH_AUTO3 == 1
 #include "auto4_auto3.h"
+#endif
 #include "ass_dialogue.h"
 #include "ass_style.h"
 #include "ass_file.h"
@@ -199,7 +201,11 @@ namespace Automation4 {
 					lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
 					// So this is an auto3 script...
 					// Throw it as an exception, the script factory manager will catch this and use the auto3 script instead of this script object
+#if WITH_AUTO3 == 1
 					throw new Auto3Script(GetFilename());
+#else
+					throw _T("Attempted loading an Automation 3 script, but Automation 3 support is not available");
+#endif
 				}
 			}
 			lua_getglobal(L, "script_name");
@@ -238,7 +244,8 @@ namespace Automation4 {
 			description = e;
 		}
 		catch (Script *s) {
-			throw;
+			// Be sure to properly propagate any scripts throw
+			throw s;
 		}
 		catch (...) {
 			Destroy();
@@ -427,7 +434,7 @@ namespace Automation4 {
 		lua_pop(L, 1);
 
 		lua_gc(L, LUA_GCCOLLECT, 0);
-		return (wxThread::ExitCode)result;
+		return (wxThread::ExitCode)result; // works no matter what MSVC says
 	}
 
 
@@ -479,7 +486,7 @@ namespace Automation4 {
 		lua_newtable(L);
 		for (size_t i = 0; i != ints.size(); ++i) {
 			lua_pushinteger(L, ints[i]+1);
-			lua_rawseti(L, -2, i+1);
+			lua_rawseti(L, -2, (int)i+1);
 		}
 	}
 

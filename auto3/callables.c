@@ -62,11 +62,13 @@ static int LuaInclude(lua_State *L)
 	if (filename) {
 		// Load include
 		if (Auto3LuaLoad(L, filename, incname, &error)) {
+			free(filename);
 			lua_pushfstring(L, "Failed to include file '%s', error: %s", incname, error);
 			lua_error(L);
 		}
 		// Run include (don't protect, we're already in a protected environment, we'd just propagate it anyway)
 		lua_call(L, 0, 0);
+		free(filename);
 	} else {
 		lua_pushfstring(L, "Failed to resolve include file '%s'", incname);
 		lua_error(L);

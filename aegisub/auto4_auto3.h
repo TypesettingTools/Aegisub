@@ -40,11 +40,10 @@
 #ifndef _AUTO4_AUTO3_H
 #define _AUTO4_AUTO3_H
 
-#include "auto4_base.h"
 #include <wx/thread.h>
 #include <wx/event.h>
-#include "../lua51/src/lua.h"
-#include "../lua51/src/lauxlib.h"
+#include "auto4_base.h"
+#include "../auto3/auto3.h"
 #include "ass_file.h"
 #include "ass_entry.h"
 #include "ass_dialogue.h"
@@ -54,61 +53,26 @@ namespace Automation4 {
 
 	class Auto3ProgressSink : public ProgressSink {
 	private:
-		lua_State *L;
+		Auto3Interpreter *script;
 
-		static int LuaSetStatus(lua_State *L);
-		static int LuaOutputDebug(lua_State *L);
-		static int LuaReportProgress(lua_State *L);
+		static void SetStatus(void *cbdata, const char *msg);
+		static void OutputDebug(void *cbdata, const char *msg);
+		static void ReportProgress(void *cbdata, float progress);
 
 	public:
-		Auto3ProgressSink(lua_State *_L, wxWindow *parent);
+		Auto3ProgressSink(Auto3Interpreter *_script, wxWindow *parent);
 		virtual ~Auto3ProgressSink();
-
-		static Auto3ProgressSink* GetObjPointer(lua_State *L, int idx);
 	};
 
-
-	enum Auto3ScriptConfigurationOptionKind {
-		COK_INVALID = 0,
-		COK_LABEL,
-		COK_TEXT,
-		COK_INT,
-		COK_FLOAT,
-		COK_BOOL,
-		COK_COLOUR,
-		COK_STYLE
-	};
-
-	struct Auto3ScriptConfigurationOption {
-		wxString name;
-		Auto3ScriptConfigurationOptionKind kind;
-		wxString label;
-		wxString hint;
-		union {
-			bool isset;
-			int intval;
-			double floatval;
-		} min, max;
-		struct {
-			wxString stringval;
-			int intval;
-			double floatval;
-			bool boolval;
-			AssColor colourval;
-		} default_val, value;
-	};
 
 	class Auto3ConfigDialog : public ScriptConfigDialog {
-		// copypasta
 	private:
-		bool present; // is there any configuration option set at all?
-
-		std::vector<Auto3ScriptConfigurationOption> options;
+		Auto3ConfigOption *options;
 
 		struct Control {
 			wxStaticText *label;
 			wxControl *control;
-			Auto3ScriptConfigurationOption *option;
+			Auto3ConfigOption *option;
 			Control() : label(0), control(0), option(0) {}
 		};
 		std::vector<Control> controls;
@@ -117,9 +81,8 @@ namespace Automation4 {
 		wxWindow* CreateWindow(wxWindow *parent);
 
 	public:
-		Auto3ConfigDialog(lua_State *L);
+		Auto3ConfigDialog(Auto3Interpreter *script);
 		virtual ~Auto3ConfigDialog();
-		int LuaReadBack(lua_State *L); // read back internal structure to lua structures
 
 		void ReadBack(); // from auto4 base
 
@@ -132,14 +95,14 @@ namespace Automation4 {
 	private:
 		Auto3ConfigDialog *config;
 		AssFile *_file;
-		lua_State *L;
+		Auto3Interpreter *script;
 
 	protected:
 		ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent);
 
 		void Init();
 	public:
-		Auto3Filter(const wxString &_name, const wxString &_description, lua_State *_L);
+		Auto3Filter(const wxString &_name, const wxString &_description, Auto3Interpreter *_script);
 
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	};
@@ -147,13 +110,29 @@ namespace Automation4 {
 
 	class Auto3ThreadedProcessor : public wxThread {
 	private:
-		lua_State *L;
+		Auto3Interpreter *script;
 		AssFile *file;
 		Auto3ConfigDialog *config;
 		Auto3ProgressSink *sink;
 
+		std::list<AssEntry*>::iterator style_pointer;
+		std::list<AssEntry*>::iterator subs_pointer;
+
+		static void ResetStylePointer(void *cbdata);
+		static void ResetSubsPointer(void *cbdata);
+		static void GetMetaInfo(void *cbdata, int *res_x, int *res_y);
+		static int GetNextStyle(
+			void *cbdata, char **name, char **fontname, int *fontsize, char **color1, char **color2, char **color3, char **color4,
+			int *bold, int *italic, int *underline, int *strikeout, float *scale_x, float *scale_y, float *spacing, float *angle,
+			int *borderstyle, float *outline, float *shadow, int *align, int *margin_l, int *margin_r, int *margin_v, int *encoding);
+		static int GetNextSub(void *cbdata, int *layer, int *start_time, int *end_time, char **style, char **actor,
+			int *margin_l, int *margin_r, int *margin_v, char **effect, char **text, int *comment);
+		static void StartSubsWrite(void *cbdata);
+		static void WriteSub(void *cbdata, int layer, int start_time, int end_time, const char *style, const char *actor,
+			int margin_l, int margin_r, int margin_v, const char *effect, const char *text, int comment);
+
 	public:
-		Auto3ThreadedProcessor(lua_State *_L, AssFile *_file, Auto3ConfigDialog *_config, Auto3ProgressSink *_sink);
+		Auto3ThreadedProcessor(Auto3Interpreter *_script, AssFile *_file, Auto3ConfigDialog *_config, Auto3ProgressSink *_sink);
 		virtual ExitCode Entry();
 	};
 
@@ -161,18 +140,17 @@ namespace Automation4 {
 	class Auto3Script : public Script {
 	private:
 		Auto3Filter *filter;
-		lua_State *L;
+		Auto3Interpreter *script;
 
-		static int LuaTextExtents(lua_State *L);
-		static int LuaInclude(lua_State *L);
-		static int LuaColorstringToRGB(lua_State *L);
-		static int LuaFrameFromMs(lua_State *L);
-		static int LuaMsFromFrame(lua_State *L);
+		static filename_t ResolveInclude(void *cbdata, const char *incname);
+		static void TextExtents(void *cbdata, char *text, char *fontname, int fontsize, int bold, int italic,
+			int spacing, float scale_x, float scale_y, int encoding,
+			float *out_width, float *out_height, float *out_descent, float *out_extlead);
+		static int FrameFromMs(void *cbdata, int ms);
+		static int MsFromFrame(void *cbdata, int frame);
 
 		void Create();
 		void Destroy();
-
-		static Auto3Script* GetScriptObject(lua_State *L);
 
 	public:
 		Auto3Script(const wxString &filename);

@@ -344,7 +344,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 
 
 // Create a new interpreter
-AUTO3_API struct Auto3Interpreter *CreateAuto3Script(filename_t filename, char *prettyname, struct Auto3Callbacks *cb, char **error)
+AUTO3_API struct Auto3Interpreter *CreateAuto3Script(const filename_t filename, const char *prettyname, struct Auto3Callbacks *cb, char **error)
 {
 	struct Auto3Interpreter *script;
 	lua_State *L;
@@ -519,6 +519,12 @@ AUTO3_API void DestroyAuto3Script(struct Auto3Interpreter *script)
 AUTO3_API void *Auto3Malloc(size_t amount)
 {
 	return malloc(amount);
+}
+
+// Convenience function, use this for duplicating strings this lib should own
+AUTO3_API char *Auto3Strdup(const char *str)
+{
+	return strdup(str);
 }
 
 // Our "free" function, free generated error messages with this
