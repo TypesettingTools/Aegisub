@@ -45,7 +45,7 @@
 ///////////////
 // Constructor
 AboutScreen::AboutScreen(wxWindow *parent)
-: wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxSize(300,240), wxSTAY_ON_TOP | wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
+: wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxSize(300,240), wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
 {
 	// Get splash
 	wxBitmap splash = wxBITMAP(splash);
