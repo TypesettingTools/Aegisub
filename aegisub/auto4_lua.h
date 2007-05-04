@@ -241,6 +241,8 @@ namespace Automation4 {
 	public:
 		static int LuaRegister(lua_State *L);
 
+		virtual ~LuaFeatureFilter() { }
+
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	};
 

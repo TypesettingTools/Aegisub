@@ -105,6 +105,8 @@ namespace Automation4 {
 		Auto3Filter(const wxString &_name, const wxString &_description, Auto3Interpreter *_script);
 
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
+
+		virtual ~Auto3Filter() { }
 	};
 
 

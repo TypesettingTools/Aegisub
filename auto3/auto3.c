@@ -674,8 +674,8 @@ static void MakeStylesTable(lua_State *L, struct Auto3Interpreter *script)
 		lua_settable(L, -3);
 	}
 
-	// Finally, make 'n' key in table
-	lua_pushstring(L, "n");
+	// Finally, make -1 key in table (because the name 'n' might clash with a style name)
+	lua_pushnumber(L, -1);
 	lua_pushnumber(L, n);
 	lua_settable(L, -3);
 }

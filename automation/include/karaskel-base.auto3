@@ -67,6 +67,107 @@ function karaskel.trace(s)
 	end
 end
 
+-- parse_syllable_data
+-- Generates the line.karaoke table
+-- This was moved to Lua code from the C++ code for various technical reasons
+function karaskel.parse_syllable_data(meta, styles, lines)
+	for i = 0, lines.n-1 do
+		local l = lines[i]
+		local ltext = l.text 
+		local indrawing = false
+		
+		l.karaoke = { n = 0 }
+		
+		local cursyl = {
+			duration = 0,
+			kind = "",
+			text = "",
+			text_stripped = ""
+		}
+		
+		l.text_stripped = ""
+		
+		while ltext ~= "" do
+			-- Find text part up until next tag start
+			local tagstart = string.find(ltext, "{")
+			
+			local textpart
+			if not tstart then
+				-- No tag start was found, rest of line is text
+				textpart = ltext
+				ltext = ""
+			else
+				-- Tag start was found, cut text part out
+				textpart = string.sub(ltext, 1, tagstart)
+				ltext = string.sub(ltext, tagstart+1) -- skip over opening brace
+			end
+			
+			-- Append text to relevant strings
+			if not indrawing then
+				l.text_stripped = l.text_stripped .. textpart
+				cursyl.text_stripped = cursyl.text_stripped .. textpart
+			end
+			cursyl.text = cursyl.text .. textpart
+			
+			-- If we're out of line text, we're done
+			if ltext == "" then
+				break
+			end
+			
+			-- Now find the tag group end
+			local tagend = string.find(ltext, "}")
+			
+			local tagpart
+			if not tagend then
+				tagpart = string.sub(ltext, tagstart+1)
+				ltext = ""
+			else
+				tagpart = string.sub(ltext, 1, tagend)
+				ltext = string.sub(ltext, tagend+1)
+			end
+			
+			-- Look for interesting tags (karaoke and drawing)
+			while tagpart ~= "" do
+				local tagstart, tagend, tag, param = string.find(tagpart, "\\([kKp]%a*)(%d+)")
+				
+				if tag and string.find(tag, "^[kK]") then
+					-- Karaoke tag, split stuff up
+					
+					-- If the kara tag wasn't the first thing in the group, prepend previous stuff
+					if tagstart > 1 then
+						cursyl.text = cursyl.text .. "{" .. string.sub(tagpart, 1, tagstart) .. "}"
+					end
+					
+					-- Store last tag to table and prepare new one
+					l.karaoke[l.karaoke.n] = cursyl
+					l.karaoke.n = l.karaoke.n + 1
+					cursyl = {
+						duration = param,
+						kind = tag,
+						text = "",
+						text_stripped = ""
+					}
+					
+					-- Remove up to and including this tag from the tagpart
+					tagpart = string.sub(tagpart, tagend)
+					
+				elseif tag and tag == "p" then
+					-- Switch drawing-mode on/off
+					indrawing = param > 0
+					
+				else
+					-- No more interesting tags here
+					cursyl.text = cursyl.text .. "{" .. tagpart .. "}"
+					break
+				end
+			end
+		end
+		
+		l.karaoke[l.karaoke.n] = cursyl
+		l.karaoke.n = l.karaoke.n + 1
+	end	
+end
+
 -- precalc_syllable_data
 -- Adds various extra fields to the line and syllable tables
 -- See the implementation and/or Aegisub help file for more information
@@ -277,6 +378,7 @@ function karaskel.process_lines(meta, styles, lines, config)
 	karaskel.trace("new skeleton")
 	karaskel.trace("skel_process_lines")
 	-- Do a little pre-calculation for each line and syllable
+	karaskel.parse_syllable_data(meta, styles, lines)
 	karaskel.precalc_syllable_data(meta, styles, lines)
 	karaskel.trace("skel_process_lines:2")
 	-- A var for the new output

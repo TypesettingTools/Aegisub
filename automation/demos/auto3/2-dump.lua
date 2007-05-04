@@ -9,7 +9,11 @@ name = "Reading data demonstration"
 description = "This is a demonstration of how to access the various data passed to an Automation script. It loops over the data structures provided, and dumps them to the debug console."
 configuration = {}
 
+include "karaskel-base.auto3"
+
 function process_lines(meta, styles, lines, config)
+	karaskel.parse_syllable_data(meta, styles, lines)
+	
 	-- This makes an alias for the aegisub.output_debug function. Remember that functions are first-class values in Lua.
 	-- The 'local' keyword makes the 'out' variable local to this function
 	local out = aegisub.output_debug
