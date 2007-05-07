@@ -562,7 +562,7 @@ namespace Automation4 {
 		if (script) Destroy();
 	}
 
-	void Auto3Script::TextExtents(void *cbdata, char *text, char *fontname, int fontsize, int bold, int italic, int spacing, 
+	void Auto3Script::TextExtents(void *cbdata, const char *text, const char *fontname, int fontsize, int bold, int italic, int spacing, 
 		float scale_x, float scale_y, int encoding, float *out_width, float *out_height, float *out_descent, float *out_extlead)
 	{
 		double resx, resy, resd, resl;
@@ -622,7 +622,7 @@ namespace Automation4 {
 		wfn[wfnlen] = 0;
 		return wfn;
 #else
-		return Auto3Strdup(fname.GetFullPath().mb_str(wxConvFilename));
+		return Auto3Strdup(fname.GetFullPath().fn_str());
 #endif
 	}
 
@@ -673,7 +673,7 @@ namespace Automation4 {
 		cb.ms_from_frame = MsFromFrame;
 
 		char *errormsg = 0;
-		script = CreateAuto3Script((const filename_t)GetFilename().fn_str(), GetPrettyFilename().mb_str(wxConvUTF8), &cb, &errormsg);
+		script = CreateAuto3Script((const filename_t)GetFilename().fn_str().data(), GetPrettyFilename().mb_str(wxConvUTF8).data(), &cb, &errormsg);
 
 		if (script) {
 			assert(errormsg == 0);

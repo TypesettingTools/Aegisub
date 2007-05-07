@@ -34,11 +34,11 @@
 //
 
 
-#include "auto3.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "auto3.h"
 
 
 // Win32 DLL entry point
@@ -67,11 +67,11 @@ struct script_reader_data {
 static const char *script_reader_func(lua_State *L, void *data, size_t *size)
 {
 	struct script_reader_data *self;
-	char *b;
+	unsigned char *b;
 	FILE *f;
 
 	self = (struct script_reader_data *)(data);
-	b = self->databuf;
+	b = (unsigned char *)self->databuf;
 	f = self->f;
 
 	if (feof(f)) {
@@ -100,7 +100,7 @@ static const char *script_reader_func(lua_State *L, void *data, size_t *size)
 						// can't support these files
 						*size = 0;
 						self->isfirst = -1;
-						strcpy(b, "File is an unsupported UTF");
+						strcpy(self->databuf, "File is an unsupported UTF");
 						return NULL;
 				}
 				// assume utf8 without bom, and rewind file

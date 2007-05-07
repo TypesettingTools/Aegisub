@@ -14,7 +14,7 @@ CHECK_GNU_MAKE
 AC_PROG_CC
 AC_PROG_CXX
 AC_LANG(C++)
-AC_PROG_RANLIB
+AC_PROG_LIBTOOL
 
 AC_PATH_PROGS(CONVERT, [convert], [])
 if test -z "$CONVERT"; then
@@ -213,11 +213,12 @@ dnl but the lib isn't detected.)
 AM_CONDITIONAL([WITH_AUTO4_RUBY], [test "$with_ruby" != "no"])
 AM_CONDITIONAL([WITH_AUTO4_LUA], [true])
 dnl TODO: Make the auto3 lib build on non-Win32 so this can be true
-AM_CONDITIONAL([WITH_AUTO3], [false])
+AM_CONDITIONAL([WITH_AUTO3], [true])
 
 AC_OUTPUT([
 	Makefile
 	ac/Makefile
+	auto3/Makefile
 	automation/Makefile
 	FexTrackerSource/Makefile
 	locale/Makefile

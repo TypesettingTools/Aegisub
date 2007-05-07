@@ -150,7 +150,7 @@ namespace Automation4 {
 		Auto3Interpreter *script;
 
 		static filename_t ResolveInclude(void *cbdata, const char *incname);
-		static void TextExtents(void *cbdata, char *text, char *fontname, int fontsize, int bold, int italic,
+		static void TextExtents(void *cbdata, const char *text, const char *fontname, int fontsize, int bold, int italic,
 			int spacing, float scale_x, float scale_y, int encoding,
 			float *out_width, float *out_height, float *out_descent, float *out_extlead);
 		static int FrameFromMs(void *cbdata, int ms);

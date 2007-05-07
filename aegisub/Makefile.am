@@ -8,7 +8,7 @@ SUBDIRS = bitmaps posix
 
 bin_PROGRAMS = aegisub
 
-SVNREV := $(shell svnversion | sed 's/[^0-9]//')
+SVNREV := $(shell svnversion | sed 's/[^0-9].*//')
 DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
@@ -44,7 +44,7 @@ aegisub_LDADD += ../lua51/src/liblua.a
 endif
 if WITH_AUTO3
 AUTOMATION += auto4_auto3.cpp
-## FIXME: also link to whatever lib here
+aegisub_LDADD += ../auto3/libaegisub-auto3.la
 endif
 if WITH_AUTO4_RUBY
 AUTOMATION += auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp

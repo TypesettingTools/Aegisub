@@ -35,6 +35,7 @@
 
 #pragma once
 
+#include <stdlib.h>
 #ifdef AUTO3LIB
 #include "lua/include/lua.h"
 #include "lua/include/lualib.h"
@@ -61,10 +62,18 @@ typedef char* filename_t;
 #ifndef AUTO3LIB
 // Definitions used when building Aegisub (ie. importing the symbols)
 // I believe GCC also knows about __declspec(dllimport) etc. and does something sensible with it
-#define AUTO3_API __declspec(dllimport)
+# ifdef _MSC_VER
+#  define AUTO3_API __declspec(dllimport)
+# else
+#  define AUTO3_API
+# endif
 #else
 // Otherwise we're exporting the symbols
-#define AUTO3_API __declspec(dllexport)
+# ifdef _MSC_VER
+#  define AUTO3_API __declspec(dllexport)
+# else
+#  define AUTO3_API
+# endif
 #endif
 
 
@@ -146,7 +155,7 @@ struct Auto3Callbacks {
 	// The result must be allocated with Auto3Malloc and will be free'd by the lib
 	filename_t (*resolve_include)(void *cbdata, const char *incname);
 	// Get sizing information for a text string given a style
-	void (*text_extents)(void *cbdata, char *text, char *fontname, int fontsize, int bold, int italic,
+	void (*text_extents)(void *cbdata, const char *text, const char *fontname, int fontsize, int bold, int italic,
 		int spacing, float scale_x, float scale_y, int encoding,
 		float *out_width, float *out_height, float *out_descent, float *out_extlead);
 	// Convert a time in milliseconds to a video frame number
