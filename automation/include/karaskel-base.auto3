@@ -51,7 +51,7 @@ karaskel = {
 	-- Set this to the name of the style used for out-of-line effect specifications, if any (read manual on this!)
 	ool_fx_style = false,
 	-- Show tracing messages?
-	engage_trace = true
+	engage_trace = false
 }
 
 function karaskel.warning(s)
@@ -87,18 +87,26 @@ function karaskel.parse_syllable_data(meta, styles, lines)
 		
 		l.text_stripped = ""
 		
+		local function report(misc)
+			karaskel.trace("l.text_stripped = " .. l.text_stripped)
+			karaskel.trace(string.format("cursyl: dur=%d kind=%s text='%s' text_stripped='%s'", cursyl.duration, cursyl.kind, cursyl.text, cursyl.text_stripped))
+			karaskel.trace(misc)
+		end
+		
+		report("starting parsing")
+		
 		while ltext ~= "" do
 			-- Find text part up until next tag start
 			local tagstart = string.find(ltext, "{")
 			
 			local textpart
-			if not tstart then
+			if not tagstart then
 				-- No tag start was found, rest of line is text
 				textpart = ltext
 				ltext = ""
 			else
 				-- Tag start was found, cut text part out
-				textpart = string.sub(ltext, 1, tagstart)
+				textpart = string.sub(ltext, 1, tagstart-1)
 				ltext = string.sub(ltext, tagstart+1) -- skip over opening brace
 			end
 			
@@ -108,6 +116,8 @@ function karaskel.parse_syllable_data(meta, styles, lines)
 				cursyl.text_stripped = cursyl.text_stripped .. textpart
 			end
 			cursyl.text = cursyl.text .. textpart
+			
+			report(string.format("tagstart=%d, textpart='%s', ltext='%s'", tagstart or -1, textpart, ltext))
 			
 			-- If we're out of line text, we're done
 			if ltext == "" then
@@ -119,16 +129,24 @@ function karaskel.parse_syllable_data(meta, styles, lines)
 			
 			local tagpart
 			if not tagend then
-				tagpart = string.sub(ltext, tagstart+1)
+				-- Technically wrong, unclosed tag group
+				tagpart = ltext
 				ltext = ""
 			else
-				tagpart = string.sub(ltext, 1, tagend)
+				-- Take tag group and rest of text
+				tagpart = string.sub(ltext, 1, tagend-1)
 				ltext = string.sub(ltext, tagend+1)
 			end
+			
+			karaskel.trace(string.format("tagend=%d, tagpart='%s', ltext='%s'", tagend or -1, tagpart, ltext))
 			
 			-- Look for interesting tags (karaoke and drawing)
 			while tagpart ~= "" do
 				local tagstart, tagend, tag, param = string.find(tagpart, "\\([kKp]%a*)(%d+)")
+				
+				karaskel.trace(string.format("tagstart=%d, tagend=%d, tag=%s, param=%s", tagstart or -1, tagend or -1, tag or "", param or ""))
+				
+				param = param and tonumber(param) or 0
 				
 				if tag and string.find(tag, "^[kK]") then
 					-- Karaoke tag, split stuff up
@@ -142,14 +160,14 @@ function karaskel.parse_syllable_data(meta, styles, lines)
 					l.karaoke[l.karaoke.n] = cursyl
 					l.karaoke.n = l.karaoke.n + 1
 					cursyl = {
-						duration = param,
+						duration = tonumber(param),
 						kind = tag,
 						text = "",
 						text_stripped = ""
 					}
 					
 					-- Remove up to and including this tag from the tagpart
-					tagpart = string.sub(tagpart, tagend)
+					tagpart = string.sub(tagpart, tagend+1)
 					
 				elseif tag and tag == "p" then
 					-- Switch drawing-mode on/off
@@ -157,9 +175,13 @@ function karaskel.parse_syllable_data(meta, styles, lines)
 					
 				else
 					-- No more interesting tags here
-					cursyl.text = cursyl.text .. "{" .. tagpart .. "}"
+					if tagpart ~= "" then
+						cursyl.text = cursyl.text .. "{" .. tagpart .. "}"
+					end
 					break
 				end
+				
+				report(string.format("indrawing=%s", indrawing and "t" or "f"))
 			end
 		end
 		
