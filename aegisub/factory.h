@@ -40,6 +40,8 @@
 ///////////
 // Headers
 #include <map>
+#include <wx/string.h>
+#include <wx/arrstr.h>
 
 
 /////////////////

@@ -4,8 +4,6 @@ EXTRA_DIST = res.rc $(srcdir)/*.h beautify
 
 SUFFIXES = .c .cpp .rc
 
-## Most of these are just to catch extra sources for tarball.
-## I'm not sure if the build subdir should be included here...? --jfs
 SUBDIRS = bitmaps posix
 
 bin_PROGRAMS = aegisub
@@ -15,7 +13,7 @@ DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
-AM_CPPFLAGST = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
+AM_CPPFLAGS = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
 aegisub_LDADD = posix/libposix.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a
 aegisub_LDFLAGS = 
 
@@ -50,7 +48,7 @@ AUTOMATION += auto4_auto3.cpp
 endif
 if WITH_AUTO4_RUBY
 AUTOMATION += auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
-AM_CPPFLAGS = $(shell ruby -r rbconfig -e "p '-I' + Config::CONFIG['rubylibdir'] + '/' + Config::CONFIG['arch'] ") $(AM_CPPFLAGST)
+AM_CPPFLAGS += $(shell ruby -r rbconfig -e "p '-I' + Config::CONFIG['rubylibdir'] + '/' + Config::CONFIG['arch'] ") $(AM_CPPFLAGST)
 endif
 
 if HAVE_HUNSPELL
