@@ -4,11 +4,14 @@ Please visit http://aegisub.net to download latest version
 = 2.00 - 2007.xx.xx ===========================
 
 - New Aegisub logo. (AMZ)
-- Automation 4 has replaced Automation 3, see the help file for more details (jfs)
-  o Automation 4 Lua uses Lua 5.1 instead of 5.0, meaning some new language features:
+- The Automation 4 system has been introduced. This means lots of changes. (jfs)
+  o The Lua engine is now based on Lua 5.1, which means a few new language features.
+  o A Ruby 1.9-based scripting engine has been added (Pomyk)
+  o Legacy Automation 3 scripts are still supported and is still based on Lua 5.0 to avoid compatibility problems
+    - Note that some scripts might still need minor changes to work
   o It is now possible to write macros that manipulate subtitles directly
-  o Scripts have full access to the entire subtitle file, not just the "Events" section
-  o Also has a compatibility Automation 3 engine, but due to some differences from Lua 5.0.2 to Lua 5.1, there is a good chance you will have to make minor changes to old scripts
+  o Scripts have full access to the entire subtitle file, not only the "Events" section
+  o Scripts are automatically reloaded when the Export dialog is opened (this can be changed in Options)
 - Video mode has been mostly rewriten and now uses OpenGL instead of software rendering, making it much faster on computers with video cards that don't belong to the stone age. (AMZ)
   o Optionally, it can use a Pixel Shader to convert YV12 to RGB32 in hardware, which is much faster, with a decent video card.
 - Visual Typesetting functionality implemented, which should make typesetting much easier and faster. It supports: (AMZ)
@@ -32,28 +35,39 @@ Please visit http://aegisub.net to download latest version
   o Styles for line start/end markers have changed.
   o Holding down ctrl lets you retime the original line while in Karaoke mode.
   o Middle click will now jump the video to the time under the mouse.
-- Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections. (jfs)
-- Fixed loading of sections with unexpected cases. (AMZ)
-- Plain-text export (jfs)
-- The style of the current line is automatically selected when opening the Style Manager (jfs)
-- Added long-missing Edit buttons in Style Manager (jfs)
+- Several changes to the Style Manager:
+  o Automatically select the style of the current line when Style Manager is opened. (jfs)
+  o Style storages with invalid characters are now caught, and the invalid characters replaced with safe ones. Previously such storages seemed to be created correctly but were never stored to disk. (jfs)
+  o Added long-missing Edit buttons. (jfs)
+  o Renaming a style will now ask you if you want to rename all instances of it on the script. (AMZ)
+  o Style name collisions (when moving from storage, creating or renaming) will now prompt the user before performing the action. (AMZ)
+  o Added an "Import from script..." button to import styles directly from other subtitle files. (AMZ)
+  o Added buttons to move styles up, down, to top or to bottom, on both storage and current script. (AMZ)
+  o Added sorting functionality for both storage and current script. (AMZ)
+  o Prevent creating multiple storages with the same names. (AMZ)
+- Style editor changes:
+  o Prevent creating multiple styles with the same names. (AMZ)
+  o New, more horizontal, layout (AMZ)
+  o Realtime preview box (AMZ)
+  o Hitting enter on style editor will now "OK" it. (AMZ)
+- Changes to subtitle reading/writing:
+  o Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections. (jfs)
+  o Fixed loading of sections with unexpected casing. (AMZ)
+  o Added plain-text export (jfs)
+  o Added support for reading ASS, SSA and SRT softsubs directly from Matroska files. (AMZ)
+  o Fixed loading of SRT and TXT files, which were causing an empty line to appear at the start of the file. (AMZ)
 - Various fixes to better handle paths/file names with non-ANSI characters on Windows (jfs/AMZ)
 - Video display fixed on Linux and maybe also Mac (Azzy)
-- Misc. fixes for building on Linux (Azzy)
+- Misc. fixes for building on Linux (Azzy, equinox, jfs)
 - libass support for subtitles on UNIX (Azzy)
 - Redesigned the FexTracker configuration window (jfs)
 - Framegrabs from the video now also includes framenumber in the filename (jfs)
 - Scrollbar in main subs grid didn't always allow scrolling through all the subs (jfs)
-- You can now no longer create a style storage whose name is invalid as a filename, instead the illegal characters are replaced with a safe character and a warning is displayed (jfs)
-  o Previously those storages seemed to be created correctly, but were never written to disk and thus lost
 - Added a "Auto Save on Every Change" option to config.dat (default false), that automatically saves the files whenever you change anything. (AMZ)
-- Added support for reading ASS, SSA and SRT softsubs directly from Matroska files. (AMZ)
 - Fixed line selection after pasting. (AMZ)
 - Times can now be copy and pasted with ctrl+c and Ctrl+V, as well as from context menu, in the time edit boxes. (AMZ)
 - Plain-text lines can now be pasted into the grid. They will be inserted as default lines with the text as their content. (AMZ)
 - Added Paste Over function, which allows you to paste subtitle lines over others, overwriting the fields of your choice. (AMZ)
-- Renaming a style will now ask you if you want to rename all instances of it on the script. (AMZ)
-- Style name collisions (when moving from storage, creating or renaming) will now prompt the user before performing the action. (AMZ)
 - Added global hotkey for Video Play (default Ctrl+P). (AMZ)
 - Added support to save and load keyframe list files. (AMZ)
 - Switching to a new line in audio mode now centers the line on the grid. (AMZ)
@@ -68,9 +82,6 @@ Please visit http://aegisub.net to download latest version
 - Added two options ("Audio HD Cache Location" and "Audio HD Cache Name") that allows you to specify where to keep the audio cache. (AMZ)
 - Flexibible audio cache names now allow you to have more than one copy of Aegisub open with audio loaded to HD cache. (AMZ)
 - Improved Splash Screen behavior to show up even if the program is frozen loading subtitles, and to center on the current display. (AMZ)
-- Added an "Import from script..." button to Styles Manager, to import styles directly from other subtitle files. (AMZ)
-- Added buttons to Styles Manager to move styles up, down, to top or to bottom, on both storage and current script. (AMZ)
-- Added sorting functionality to Styles Manager, for both storage and current script. (AMZ)
 - Tweaked the layout of Subtitles Edit area. (AMZ)
 - Actor and Effect fields now show a "ghosted" caption saying their name when they are not focused on and blank. (AMZ)
 - Aegisub now remembers if it was maximized when it was last quit, and restores its state when opening again. (AMZ)
@@ -84,16 +95,15 @@ Please visit http://aegisub.net to download latest version
 - Added a Call Tip feature to the edit box, so it shows the function prototype as you type it. (AMZ)
 - Added a much-needed options dialog with all the relevant config.dat options in it. (AMZ)
 - Added a Normal/Reverse dropdown to collisions on Script Properties. (AMZ)
-- Fixed loading of SRT and TXT files, which were causing an empty line to appear at the start of the file. (AMZ)
 - Added options to toggle the display of the audio timeline and of the time over the mouse cursor. (AMZ)
 - Destination of screenshots can now be set in the options dialog. (AMZ)
-- Moved karaoke syllable text in audio display to the top instead of bottom, since it often covers important information in spectrum mode (jfs)
+- Moved karaoke syllable text in audio display to the top instead of bottom, since it often covered important information in spectrum mode (jfs)
 - Implemented a version checker that can automatically or manually check if there are any updates to Aegisub. (AMZ)
 - Added support for reading v4.00++ (ASS2) files. (AMZ)
 - Changes to text will no longer be discarded when you commit timing in the audio display and vice-versa. (AMZ)
 - Fixed glitches related to the Duration time edit box. (AMZ)
 - Timing Post-Processor can now be restricted to selection. (AMZ)
-- Added support for using asa instead of VSFilter via Avisynth. (AMZ)
+- Added support for using other renderers than VSFilter with Avisynth as video provider. (AMZ)
 - Fixed subtitles positioning removing \p tags from the line. (AMZ)
 - Added Kanji Timing (AKA Karaoke Timing Copy) functionality. (Dansolo)
 - Added an audio clip export by right clicking on a line. (Dansolo)
@@ -106,16 +116,11 @@ Please visit http://aegisub.net to download latest version
 - Added a dummy video provider to create a blank video with customizeable options. (jfs & AMZ)
 - Changing script resolution when asked to on video loading will now set an undo point. (AMZ)
 - Frame number is now the default box on the "go to" dialog. (AMZ)
-- Two storages with the same name can no longer be created in the styles manager. (AMZ)
-- Style editor will no longer admit creation of styles with equal names. (AMZ)
-- Hitting enter on style editor will now "OK" it. (AMZ)
 - Added "Video Formats" to "Open Audio"'s file selector, so you can open audio directly from video files (regardless of whether they're loaded or not). This has always worked, but it was never explicit. (AMZ)
 - Instead of falling back to your local charset, Aegisub will now use the "universalchardet" library (the one used by the Mozilla project) to autodetect the character set of non-Unicode files. (AMZ)
 - Added option to disable automatic grabbing of times from selected lines on the audio display. Also, it will never pick the times from 0:00:00.00 -> 0:00:00.00 lines. (AMZ)
 - Added a "Scale Border and Shadow" check box to script properties dialog. (AMZ)
 - Fixed drawing of inactive lines in audio display to prevent it from being drawn over selection. (AMZ)
-- Style Editor dialog was redesigned to be more horizontal. (AMZ)
-- Style Editor dialog received a realtime styles preview box. (AMZ)
 - Commiting text now commits times as well. (AMZ)
 
 
