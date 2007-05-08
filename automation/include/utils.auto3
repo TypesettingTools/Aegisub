@@ -56,6 +56,59 @@ end
 function ass_color(r,g,b)
 	return string.format("&H%02X%02X%02X&",b,g,r)
 end
+-- Format an alpha-string for \Xa style overrides
+function ass_alpha(a)
+	return string.format("&H%02X&", a)
+end
+-- Format an ABGR string for use in style definitions (these don't end with & either)
+function ass_style_color(r,g,b,a)
+	return string.format("&H%02X%02X%02X%02X",a,b,g,r)
+end
+
+-- Extract colour components of an ASS colour
+function extract_color(s)
+	local a, b, g, r, d1, d2
+	
+	-- Try a style first
+	d1, d2, a, b, g, r = string.find(s, "&H(%x%x)(%x%x)(%x%x)(%x%x)")
+	if a then
+		return tonumber(r, 16), tonumber(g, 16), tonumber(b, 16), tonumber(a, 16)
+	end
+	
+	-- Then a colour override
+	d1, d2, b, g, r = string.find(s, "&H(%x%x)(%x%x)(%x%x)&")
+	if b then
+		return tonumber(r, 16), tonumber(g, 16), tonumber(b, 16), 0
+	end
+	
+	-- Then an alpha override
+	d1, d2, a = string.find(s, "&H(%x%x)&")
+	if a then
+		return 0, 0, 0, tonumber(a, 16)
+	end
+	
+	-- Ok how about HTML format then?
+	d1, d2, r, g, b, a = string.find(s, "#(%x%x)(%x%x)?(%x%x)?(%x%x)?")
+	if r then
+		return tonumber(r or 0, 16), tonumber(g or 0, 16), tonumber(b or 0, 16), tonumber(a or 0, 16)
+	end
+	
+	-- Failed...
+	return nil
+end
+aegisub.colorstring_to_rgb = extract_color
+
+-- Create an alpha override code from a style definition colour code
+function alpha_from_style(scolor)
+	local r, g, b, a = extract_color(scolor)
+	return ass_alpha(a)
+end
+
+-- Create an colour override code from a style definition colour code
+function color_from_style(scolor)
+	local r, g, b = extract_color(scolor)
+	return ass_color(r, g, b)
+end
 
 
 -- Converts HSV (Hue, Saturation, Value)  to RGB
