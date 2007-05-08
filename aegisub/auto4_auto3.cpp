@@ -673,7 +673,13 @@ namespace Automation4 {
 		cb.ms_from_frame = MsFromFrame;
 
 		char *errormsg = 0;
+		// Why oh why... GCC wants fn_str() to be dereffed with .data() but MSVC hates that...
+		// If anyone can FIXME to something more sensible, please do so
+#ifdef WIN32
+		script = CreateAuto3Script((const filename_t)GetFilename().fn_str(), GetPrettyFilename().mb_str(wxConvUTF8), &cb, &errormsg);
+#else
 		script = CreateAuto3Script((const filename_t)GetFilename().fn_str().data(), GetPrettyFilename().mb_str(wxConvUTF8).data(), &cb, &errormsg);
+#endif
 
 		if (script) {
 			assert(errormsg == 0);
