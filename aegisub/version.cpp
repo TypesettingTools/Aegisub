@@ -59,8 +59,8 @@
 
 #define BUILD_TIMESTAMP _T_rec(__DATE__) _T(" ") _T_rec(__TIME__)
 
-// If the BUILD_SVN_REVISION happens to be negative, the build is assumed to be a public-release build (ie. not prerel)
-// So manually edit build/svn-revision.h to match that, when doing such a build, or add some other magic to do that.
+// Define FINAL_RELEASE to mark a build as a "final" version, ie. not pre-release version
+// In that case it won't include the SVN revision information
 
 struct VersionInfoStruct {
 	// Some raw data
@@ -87,17 +87,29 @@ struct VersionInfoStruct {
 		IsDebug = false;
 #endif
 		SvnRev = BUILD_SVN_REVISION;
+#ifdef BUILD_SVN_DATE
+		BuildTime = _T_rec(BUILD_SVN_DATE);
+#else
 		BuildTime = BUILD_TIMESTAMP;
+#endif
 		BuildCredit = _T_rec(BUILD_CREDIT);
 
-		if (SvnRev > 0)
+		if (SvnRev > 0) {
 			SCMStr = wxString::Format(_T("SVN r%d"), SvnRev);
+#ifdef BUILD_SVN_LOCALMODS
+			SCMStr += BUILD_SVN_LOCALMODS ? _T("M") : _T("");
+#endif
 #ifdef BUILD_DARCS
-		else
+		} else {
 			SCMStr = _T("darcs");
 #endif
+		}
 
-		IsRelease = SvnRev < 0;
+#ifdef FINAL_RELEASE
+		IsRelease = true;
+#else
+		IsRelease = false;
+#endif
 		VersionStr = wxString::Format(_T("%s%s"), VersionNumber, IsRelease ? _T("") : _T(" PRE-RELEASE"));
 
 		LongVersionString = wxString::Format(_T("%s (%s%s, %s)"), VersionStr.c_str(), IsDebug ? _T("debug, ") : _T(""), SCMStr.c_str(), BuildCredit);
