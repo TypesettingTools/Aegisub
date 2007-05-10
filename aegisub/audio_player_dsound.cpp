@@ -395,6 +395,8 @@ __int64 DirectSoundPlayer::GetCurrentPosition() {
 	// Check if buffer is loaded
 	if (!buffer || !playing) return 0;
 
+	// FIXME: this should be based on not duration played but actual sample being heard
+	// (during vidoeo playback, cur_frame might get changed to resync)
 	DWORD curtime = GetTickCount();
 	__int64 tdiff = curtime - startTime;
 	return startPos + tdiff * provider->GetSampleRate() / 1000;

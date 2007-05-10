@@ -384,6 +384,8 @@ __int64 OpenALPlayer::GetEndPosition()
 // Get current position
 __int64 OpenALPlayer::GetCurrentPosition()
 {
+	// FIXME: this should be based on not duration played but actual sample being heard
+	// (during vidoeo playback, cur_frame might get changed to resync)
 	long extra = playback_segment_timer.Time();
 	return buffers_played * buffer_length + start_frame + extra * samplerate / 1000;
 }

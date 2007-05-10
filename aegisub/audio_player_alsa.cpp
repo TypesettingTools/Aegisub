@@ -397,6 +397,8 @@ __int64 AlsaPlayer::GetEndPosition()
 // Get current position
 __int64 AlsaPlayer::GetCurrentPosition()
 {
+	// FIXME: this should be based on not duration played but actual sample being heard
+	// (during vidoeo playback, cur_frame might get changed to resync)
 	snd_pcm_sframes_t delay = 0;
 	snd_pcm_delay(pcm_handle, &delay); // don't bother catching errors here
 	return cur_frame - delay;

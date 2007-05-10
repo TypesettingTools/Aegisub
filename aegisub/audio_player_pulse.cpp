@@ -395,6 +395,9 @@ __int64 PulseAudioPlayer::GetCurrentPosition()
 {
 	if (!is_playing) return 0;
 
+	// FIXME: this should be based on not duration played but actual sample being heard
+	// (during vidoeo playback, cur_frame might get changed to resync)
+
 	// Calculation duration we have played, in microseconds
 	pa_usec_t play_cur_time;
 	pa_stream_get_time(stream, &play_cur_time);
