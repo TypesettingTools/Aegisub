@@ -81,6 +81,7 @@ private:
 	ALsizei buf_first_queued; // index into buffers, first queued (non-free) buffer
 	ALsizei buffers_free; // number of free buffers
 	ALsizei buffers_played;
+	wxStopWatch playback_segment_timer;
 
 	void FillBuffers(ALsizei count);
 
@@ -189,7 +190,7 @@ void OpenALPlayer::OpenStream()
 
 	// Determine buffer length
 	samplerate = provider->GetSampleRate();
-	buffer_length = samplerate * 2 / num_buffers; // buffers for two seconds of audio
+	buffer_length = samplerate / num_buffers / 2; // buffers for half a second of audio
 
 	// Now ready
 	open = true;
@@ -241,6 +242,7 @@ void OpenALPlayer::Play(__int64 start,__int64 count)
 	// And go!
 	alSourcePlay(source);
 	wxTimer::Start(100);
+	playback_segment_timer.Start();
 
 	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
@@ -329,13 +331,16 @@ void OpenALPlayer::Notify()
 
 		// Update
 		buffers_played += newplayed;
+		playback_segment_timer.Start();
 
 		// Fill more buffers
 		FillBuffers(newplayed);
 	}
 
 	wxLogDebug(_T("frames played=%d, num frames=%d"), (buffers_played - num_buffers) * buffer_length, end_frame - start_frame);
+	// Check that all of the selected audio plus one full set of buffers has been queued
 	if ((buffers_played - num_buffers) * buffer_length > (ALsizei)(end_frame - start_frame)) {
+		// Then stop
 		Stop(true);
 	}
 }
@@ -379,10 +384,8 @@ __int64 OpenALPlayer::GetEndPosition()
 // Get current position
 __int64 OpenALPlayer::GetCurrentPosition()
 {
-	//snd_pcm_sframes_t delay = 0;
-	//snd_pcm_delay(pcm_handle, &delay); // don't bother catching errors here
-	//return cur_frame - delay;
-	return buffers_played * buffer_length;
+	long extra = playback_segment_timer.Time();
+	return buffers_played * buffer_length + start_frame + extra * samplerate / 1000;
 }
 
 
