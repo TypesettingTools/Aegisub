@@ -46,6 +46,7 @@ function karaskel.collect_head(subs, generate_furigana)
 	
 	local i = 1
 	while i < #subs do
+		if aegisub.progress.is_cancelled() then error("User cancelled") end
 		local l = subs[i]
 		
 		if l.class == "style" then
@@ -53,10 +54,11 @@ function karaskel.collect_head(subs, generate_furigana)
 			styles.n = styles.n + 1
 			styles[styles.n] = l
 			styles[l.name] = l
-			l.margin_v = l.margin_t
+			l.margin_v = l.margin_t -- convenience
 			
 			-- And also generate furigana styles if wanted
 			if generate_furigana and not l.name:match("furigana") then
+				aegisub.debug.out(5, "Creating furigana style for style: " .. l.name)
 				local fs = table.copy(l)
 				fs.fontsize = l.fontsize * karaskel.furigana_scale
 				fs.outline = l.outline * karaskel.furigana_scale
@@ -66,6 +68,7 @@ function karaskel.collect_head(subs, generate_furigana)
 				styles.n = styles.n + 1
 				styles[styles.n] = fs
 				styles[fs.name] = fs
+				-- TODO: also actually insert into file
 			end
 			
 		elseif l.class == "info" then
@@ -77,6 +80,8 @@ function karaskel.collect_head(subs, generate_furigana)
 				meta.res_y = math.floor(l.value)
 			end
 		end
+		
+		i = i + 1
 	end
 	
 	-- Fix missing resolution data
@@ -306,5 +311,59 @@ function karaskel.preproc_line(subs, meta, styles, line)
 	
 	-- Layout furigana
 	for i = 1, line.furi.n do
+	end
+end
+
+
+-- An actual "skeleton" function
+-- Parses the first word out of the Effect field of each dialogue line and runs "fx_"..effect on that line
+-- Lines with empty Effect field run fx_none
+-- Lines with unimplemented effects are left alone
+-- If the effect function returns true, the original line is kept in output,
+-- otherwise the original line is converted to a comment
+-- General prototype of an fx function: function(subs, meta, styles, line, fxdata)
+-- fxdata are extra data after the effect name in the Effect field
+function karaskel.fx_library_main(subs)
+	aegisub.progress.task("Collecting header info")
+	meta, styles = karaskel.collect_head(subs)
+	
+	aegisub.progress.task("Processing subs")
+	local i, maxi = 1, #subs
+	while i <= maxi do
+		aegisub.progress.set(i/maxi*100)
+		local l = subs[i]
+		
+		if l.class == "dialogue" then
+			aegisub.progress.task(l.text)
+			karaskel.preproc_line(subs, meta, styles, l)
+			local keep = true
+			local fx, fxdata = string.headtail(l.effect)
+			if fx == "" then fx = "none" end
+			if _G["fx_" .. fx] then
+				-- note to casual readers: _G is a special global variable that points to the global environment
+				-- specifically, _G["_G"] == _G
+				keep = _G["fx_" .. fx](subs, meta, styles, l, fxdata)
+			end
+			if not keep then
+				l = subs[i]
+				l.comment = true
+				subs[i] = l
+			end
+		end
+		
+		i = i + 1
+	end
+end
+-- Register an fx_library type karaoke
+karaskel.fx_library_registered = false
+function karaskel.use_fx_library(macrotoo)
+	if karaskel.fx_library_registered then return end
+	aegisub.register_filter(script_name or "fx_library", script_description or "Apply karaoke effects (fx_library skeleton)", 2000, karaskel.fx_library_main)
+	if macrotoo then
+		local function fxlibmacro(subs)
+			karaskel.fx_library_main(subs)
+			aegisub.set_undo_point(script_name or "karaoke effect")
+		end
+		aegisub.register_macro(script_name or "fx_library", script_description or "Apply karaoke effects (fx_library skeleton)", fxlibmacro)
 	end
 end
