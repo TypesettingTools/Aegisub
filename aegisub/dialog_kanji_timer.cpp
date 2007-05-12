@@ -247,7 +247,7 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 	int index = ListIndexFromStyleandIndex(SourceStyle->GetValue(), SourceIndex);
 	if (index != -1) {
 		AssDialogue					*line = grid->GetDialogue(index);
-		AssDialogueBlockOverride	*override;
+		AssDialogueBlockOverride	*ovr;
 		AssDialogueBlockPlain		*plain;
 		AssOverrideTag				*tag;
 		wxRegEx						reK(_T("\\\\[kK][of]?"),wxRE_NOSUB);
@@ -266,8 +266,8 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 
 		for (size_t i=0;i<blockn;i++) {
 			k = 0;
-			override = AssDialogueBlock::GetAsOverride(line->Blocks.at(i));
-			if (override) {
+			ovr = AssDialogueBlock::GetAsOverride(line->Blocks.at(i));
+			if (ovr) {
 				if (LastWasOverride) {
 					/* Explanation for LastWasOverride:
 					 * If we have a karaoke block with no text (IE for a pause)
@@ -276,8 +276,8 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 					 */
 					RegroupSourceText[textIndex++] = _T("");
 				}
-				for (size_t j=0;j<override->Tags.size();j++) {
-					tag = override->Tags.at(j);
+				for (size_t j=0;j<ovr->Tags.size();j++) {
+					tag = ovr->Tags.at(j);
 
 					if (reK.Matches(tag->Name)&&tag->Params.size() == 1)
 						k = tag->Params[0]->AsInt();
@@ -356,9 +356,11 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 		for(int index=0;index!=ItemCount;index++) {
 			SourceLength = RegroupGroups[index<<1].Len();
 
-			if (RegroupSourceText[SourceIndex].Len() == 0) {
-				//Karaoke block w/o text that is NOT in the middle of a group, just copy it over
-				//  since we can't figure out if it should go to the previous or the next group
+			if (RegroupSourceText[SourceIndex].Len() == 0 && RegroupSourceKLengths[SourceIndex] != 0) {
+				//Karaoke block with len>0 w/o text that is NOT in the middle of a group, just copy it over
+				//  since we can't figure out if it should go to the previous or the next group.
+				//  We're not going to copy these if they're 0 length because if they're 0 length and have no
+				//  text, then they're not necessary.
 				OutputText = wxString::Format(_("%s{\\k%i}"),OutputText.c_str(),RegroupSourceKLengths[SourceIndex]);
 				SourceIndex++;
 			}
@@ -439,6 +441,11 @@ void DialogKanjiTimer::SetSelected() {
 
 	else if (DestText->GetValue().StartsWith(SourceText->GetStringSelection()))
 		DestText->SetSelection(0,SourceText->GetStringSelection().Len());
+
+	else if (DestText->GetValue().Len()==1) {
+		SourceText->SelectAll();
+		DestText->SelectAll();
+	}
 
 	else if (SourceText->GetValue().Len()!=0 && DestText->GetValue().Len()!=0) {
 		bool foundit = false;
