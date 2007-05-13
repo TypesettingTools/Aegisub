@@ -233,7 +233,7 @@ end
 -- Return in style override format
 function interpolate_color(pct, first, last)
 	local r1, g1, b1 = extract_color(first)
-	local r2, g2, b2 = extract_color(first)
+	local r2, g2, b2 = extract_color(last)
 	local r, g, b = interpolate(pct, r1, r2), interpolate(pct, g1, g2), interpolate(pct, b1, b2)
 	return ass_color(r, g, b)
 end
@@ -242,6 +242,6 @@ end
 -- Return in style override format
 function interpolate_alpha(pct, first, last)
 	local r1, g1, b1, a1 = extract_color(first)
-	local r2, g2, b2, a2 = extract_color(first)
+	local r2, g2, b2, a2 = extract_color(last)
 	return ass_alpha(interpolate(pct, a1, a2))
 end
