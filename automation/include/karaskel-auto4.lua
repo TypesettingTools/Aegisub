@@ -385,14 +385,17 @@ function karaskel.do_furigana_layout(meta, styles, line)
 		-- Furigana-less syllables always generate a new layout group
 		-- So do furigana-endowed syllables that are marked as split
 		-- But if current lg has no width (usually only first) don't create a new
-		if (syl.furi.n == 0 or syl.furi[1].issplit) and lg.basewidth > 0 then
+		if (syl.furi.n == 0 or syl.furi[1].issplit or not last_had_furi) and lg.basewidth > 0 then
+			aegisub.debug.out(5, "Inserting layout group, basewidth=%d, furiwidth=%d\n", lg.basewidth, lg.furiwidth)
 			table.insert(lgroups, lg)
 			lg = { basewidth=0, furiwidth=0, syls={}, furi={}, spillback=false }
+			last_had_furi = false
 		end
 		
 		-- Add this syllable to lg
 		lg.basewidth = lg.basewidth + syl.prespacewidth + syl.width + syl.postspacewidth
 		table.insert(lg.syls, syl)
+		aegisub.debug.out("\tAdding syllable to layout group: %s (width=%d)\n", syl.text_stripped, syl.width)
 		
 		-- Add this syllable's furi to lg
 		for f = 1, syl.furi.n do
@@ -400,9 +403,12 @@ function karaskel.do_furigana_layout(meta, styles, line)
 			lg.furiwidth = lg.furiwidth + furi.width
 			lg.spillback = lg.spillback or furi.spillback
 			table.insert(lg.furi, furi)
+			aegisub.debug.out("\tAdding furigana to layout group: %s (width=%d)\n", furi.text, furi.width)
+			last_had_furi = true
 		end
 	end
 	-- Insert last lg
+	aegisub.debug.out(5, "Inserting layout group, basewidth=%d, furiwidth=%d\n", lg.basewidth, lg.furiwidth)
 	table.insert(lgroups, lg)
 	-- And end-sentinel
 	table.insert(lgroups, lgsentinel)
