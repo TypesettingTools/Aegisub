@@ -385,8 +385,9 @@ function karaskel.do_furigana_layout(meta, styles, line)
 		-- Furigana-less syllables always generate a new layout group
 		-- So do furigana-endowed syllables that are marked as split
 		-- But if current lg has no width (usually only first) don't create a new
-		if (syl.furi.n == 0 or syl.furi[1].issplit or not last_had_furi) and lg.basewidth > 0 then
-			aegisub.debug.out(5, "Inserting layout group, basewidth=%d, furiwidth=%d\n", lg.basewidth, lg.furiwidth)
+		aegisub.debug.out(5, "syl.furi.n=%d, isbreak=%s, last_had_furi=%s, lg.basewidth=%d\n", syl.furi.n, syl.furi.n > 0 and syl.furi[1].isbreak and "y" or "n", last_had_furi and "y" or "n", lg.basewidth)
+		if (syl.furi.n == 0 or syl.furi[1].isbreak or not last_had_furi) and lg.basewidth > 0 then
+			aegisub.debug.out(5, "Inserting layout group, basewidth=%d, furiwidth=%d, isbreak=%s\n", lg.basewidth, lg.furiwidth, syl.furi.n > 0 and syl.furi[1].isbreak and "y" or "n")
 			table.insert(lgroups, lg)
 			lg = { basewidth=0, furiwidth=0, syls={}, furi={}, spillback=false }
 			last_had_furi = false
@@ -395,7 +396,7 @@ function karaskel.do_furigana_layout(meta, styles, line)
 		-- Add this syllable to lg
 		lg.basewidth = lg.basewidth + syl.prespacewidth + syl.width + syl.postspacewidth
 		table.insert(lg.syls, syl)
-		aegisub.debug.out("\tAdding syllable to layout group: %s (width=%d)\n", syl.text_stripped, syl.width)
+		aegisub.debug.out("\tAdding syllable to layout group: '%s', width=%d, isbreak=%s\n", syl.text_stripped, syl.width, syl.furi.n > 0 and syl.furi[1].isbreak and "y" or "n")
 		
 		-- Add this syllable's furi to lg
 		for f = 1, syl.furi.n do
@@ -483,7 +484,7 @@ function karaskel.do_furigana_layout(meta, styles, line)
 			syl.right = syl.left + syl.width
 			curx = syl.right + syl.postspacewidth
 		end
-		line.width = curx
+		if curx > line.width then line.width = curx end
 		-- Place furigana
 		if lg.furiwidth < lg.basewidth or lg.spillback then
 			-- Center over group

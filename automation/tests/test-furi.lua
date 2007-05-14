@@ -50,6 +50,7 @@ function layout_furi(subs)
 			aegisub.progress.task(l.text)
 			karaskel.preproc_line_pos(meta, styles, l)
 			aegisub.progress.task("Line layouting done, rendering...")
+			aegisub.debug.out(4, "line width: %.2f\n", l.width)
 			-- First all syllables
 			for s = 0, l.kara.n do
 				local syl = l.kara[s]
