@@ -39,17 +39,20 @@ end
 function karaskel.collect_head(subs, generate_furigana)
 	local meta = { res_x = 0, res_y = 0 }
 	local styles = { n = 0 }
+	local toinsert = {}
+	local first_style_line = nil
 	
 	if not karaskel.furigana_scale then
 		karaskel.furigana_scale = 0.5
 	end
 	
-	local i = 1
-	while i < #subs do
+	-- First pass: collect all existing styles and get resolution info
+	for i = 1, #subs do
 		if aegisub.progress.is_cancelled() then error("User cancelled") end
 		local l = subs[i]
 		
 		if l.class == "style" then
+			if not first_style_line then first_style_line = i end
 			-- Store styles into the style table
 			styles.n = styles.n + 1
 			styles[styles.n] = l
@@ -65,26 +68,35 @@ function karaskel.collect_head(subs, generate_furigana)
 				fs.shadow = l.shadow * karaskel.furigana_scale
 				fs.name = l.name .. "-furigana"
 				
-				styles.n = styles.n + 1
-				styles[styles.n] = fs
-				styles[fs.name] = fs
-				-- TODO: also actually insert into file
+				table.insert(toinsert, fs) -- queue to insert in file
 			end
 			
 		elseif l.class == "info" then
 			-- Also look for script resolution
 			local k = l.key:lower()
-			if k == "playresx" then
-				meta.res_x = math.floor(l.value)
-			elseif k == "playresy" then
-				meta.res_y = math.floor(l.value)
-			end
+			meta[k] = l.value
 		end
-		
-		i = i + 1
 	end
 	
-	-- Fix missing resolution data
+	-- Second pass: insert all toinsert styles that don't already exist
+	for i = 1, #toinsert do
+		if not styles[toinsert[i].name] then
+			-- Insert into styles table
+			styles.n = styles.n + 1
+			styles[styles.n] = toinsert[i]
+			styles[toinsert[i].name] = toinsert[i]
+			-- And subtitle file
+			subs[-first_style_line] = toinsert[i]
+		end
+	end
+	
+	-- Fix resolution data
+	if meta.playresx then
+		meta.res_x = math.floor(meta.playresx)
+	end
+	if meta.playresy then
+		meta.res_y = math.floor(meta.playresy)
+	end
 	if meta.res_x == 0 and meta_res_y == 0 then
 		meta.res_x = 384
 		meta.res_y = 288
@@ -116,17 +128,10 @@ function karaskel.preproc_line_text(meta, styles, line)
 	line.kara = { n = 0 }
 	line.furi = { n = 0 }
 	
-	if styles[line.style] then
-		line.styleref = styles[line.style]
-	else
-		aegisub.debug.out(2, "WARNING: Style not found: " .. line.style .. "\n")
-		line.styleref = styles[1]
-	end
-	
 	line.text_stripped = ""
 	line.duration = line.end_time - line.start_time
 	
-	local worksyl = { highlights = {n=0} }
+	local worksyl = { highlights = {n=0}, furi = {n=0} }
 	local cur_inline_fx = ""
 	for i = 0, #kara do
 		local syl = kara[i]
@@ -146,7 +151,7 @@ function karaskel.preproc_line_text(meta, styles, line)
 		if prefix ~= "#" and prefix ~= "＃" and i > 0 then
 			line.kara[line.kara.n] = worksyl
 			line.kara.n = line.kara.n + 1
-			worksyl = { highlights = {n=0} }
+			worksyl = { highlights = {n=0}, furi = {n=0} }
 		end
 
 		-- Detect furigana (both regular and fullwidth pipes work)
@@ -167,8 +172,8 @@ function karaskel.preproc_line_text(meta, styles, line)
 			-- (Furi is always allowed to spill over the right edge of main text.)
 			local prefix = furitext:sub(1,unicode.charwidth(furitext,1))
 			if prefix == "!" or prefix == "！" then
-				furi.isbreak = true -- Don't join with furi in previous syllable
-				furi.spillback = false -- Allow to "spill" furi over the left edge of main text
+				furi.isbreak = true
+				furi.spillback = false
 			elseif prefix == "<" or prefix == "＜" then
 				furi.isbreak = true
 				furi.spillback = true
@@ -188,6 +193,8 @@ function karaskel.preproc_line_text(meta, styles, line)
 			
 			line.furi.n = line.furi.n + 1
 			line.furi[line.furi.n] = furi
+			worksyl.furi.n = worksyl.furi.n + 1
+			worksyl.furi[worksyl.furi.n] = furi
 		end
 		
 		-- Always add highlight data
@@ -216,8 +223,10 @@ function karaskel.preproc_line_text(meta, styles, line)
 			
 			-- And add new data to worksyl
 			worksyl.i = line.kara.n
-			worksyl.text_stripped = syltext
+			worksyl.text_stripped = prespace .. syltext .. postspace
 			worksyl.inline_fx = cur_inline_fx
+			worksyl.prespace = prespace
+			worksyl.postspace = postspace
 		else
 			-- This is just an extra highlight
 			worksyl.duration = worksyl.duration + syl.duration
@@ -231,9 +240,259 @@ function karaskel.preproc_line_text(meta, styles, line)
 end
 
 
--- Pre-calculate positioning information for the given line, also layouting furigana text if needed
+-- Pre-calculate sizing information for the given line, no layouting is done
+-- Modifies the object passed for line
+function karaskel.preproc_line_size(meta, styles, line)
+	if not line.kara then
+		karaskel.preproc_line_text(meta, styles, line)
+	end
+	
+	-- Add style information
+	if styles[line.style] then
+		line.styleref = styles[line.style]
+	else
+		aegisub.debug.out(2, "WARNING: Style not found: " .. line.style .. "\n")
+		line.styleref = styles[1]
+	end
+	
+	-- Calculate whole line sizing
+	line.width, line.height, line.descent, line.extlead = aegisub.text_extents(line.styleref, line.text_stripped)
+
+	-- Calculate syllable sizing
+	for s = 0, line.kara.n do
+		local syl = line.kara[s]
+		syl.style = line.styleref
+		syl.width, syl.height = aegisub.text_extents(syl.style, syl.text_stripped)
+		syl.prespacewidth = aegisub.text_extents(syl.style, syl.prespace)
+		syl.postspacewidth = aegisub.text_extents(syl.style, syl.postspace)
+	end
+	
+	-- Calculate furigana sizing
+	if styles[line.style .. "-furigana"] then
+		line.furistyle = styles[line.style .. "-furigana"]
+	else
+		aegisub.debug.out(4, "No furigana style defined for style '%s'\n", line.style)
+		line.furistyle = false
+	end
+	if line.furistyle then
+		for f = 1, line.furi.n do
+			local furi = line.furi[f]
+			furi.style = line.furistyle
+			furi.width, furi.height = aegisub.text_extents(furi.style, furi.text)
+		end
+	end
+end
+
+
+-- Layout a line, including furigana layout
 -- Modifies the object passed for line
 function karaskel.preproc_line_pos(meta, styles, line)
+	if not line.styleref then
+		karaskel.preproc_line_size(meta, styles, line)
+	end
+	
+	-- Syllable layouting must be done before the rest, since furigana layout may change the total width of the line
+	if line.furistyle then
+		karaskel.do_furigana_layout(meta, styles, line)
+	else
+		karaskel.do_basic_layout(meta, styles, line)
+	end
+
+	-- Effective margins
+	line.margin_v = line.margin_t
+	line.eff_margin_l = ((line.margin_l > 0) and line.margin_l) or line.styleref.margin_l
+	line.eff_margin_r = ((line.margin_r > 0) and line.margin_r) or line.styleref.margin_r
+	line.eff_margin_t = ((line.margin_t > 0) and line.margin_t) or line.styleref.margin_t
+	line.eff_margin_b = ((line.margin_b > 0) and line.margin_b) or line.styleref.margin_b
+	line.eff_margin_v = ((line.margin_v > 0) and line.margin_v) or line.styleref.margin_v
+	-- And positioning
+	if line.styleref.align == 1 or line.styleref.align == 4 or line.styleref.align == 7 then
+		-- Left aligned
+		line.left = line.eff_margin_l
+		line.center = line.left + line.width / 2
+		line.right = line.left + line.width
+		line.x = line.left
+		line.halign = "left"
+	elseif line.styleref.align == 2 or line.styleref.align == 5 or line.styleref.align == 8 then
+		-- Centered
+		line.left = (meta.res_x - line.eff_margin_l - line.eff_margin_r - line.width) / 2 + line.eff_margin_l
+		line.center = line.left + line.width / 2
+		line.right = line.left + line.width
+		line.x = line.center
+		line.halign = "center"
+	elseif line.styleref.align == 3 or line.styleref.align == 6 or line.styleref.align == 9 then
+		-- Right aligned
+		line.left = meta.res_x - line.eff_margin_r - line.width
+		line.center = line.left + line.width / 2
+		line.right = line.left + line.width
+		line.x = line.right
+		line.halign = "right"
+	end
+	line.hcenter = line.center
+	if line.styleref.align >=1 and line.styleref.align <= 3 then
+		-- Bottom aligned
+		line.bottom = meta.res_y - line.eff_margin_b
+		line.middle = line.bottom - line.height / 2
+		line.top = line.bottom - line.height
+		line.y = line.bottom
+		line.valign = "bottom"
+	elseif line.styleref.align >= 4 and line.styleref.align <= 6 then
+		-- Mid aligned
+		line.top = (meta.res_y - line.eff_margin_t - line.eff_margin_b) / 2 + line.eff_margin_t
+		line.middle = line.top + line.height / 2
+		line.bottom = line.top + line.height
+		line.y = line.middle
+		line.valign = "middle"
+	elseif line.styleref.align >= 7 and line.styleref.align <= 9 then
+		-- Top aligned
+		line.top = line.eff_margin_t
+		line.middle = line.top + line.height / 2
+		line.bottom = line.top + line.height
+		line.y = line.top
+		line.valign = "top"
+	end
+	line.vcenter = line.middle
+end
+
+
+-- Do simple syllable layouting (no furigana)
+function karaskel.do_basic_layout(meta, styles, line)
+	local curx = 0
+	for i = 0, line.kara.n do
+		local syl = line.kara[i]
+		syl.left = curx + syl.prespacewidth
+		syl.center = syl.left + syl.width / 2
+		syl.right = syl.left + syl.width
+		curx = curx + syl.prespacewidth + syl.width + syl.postspacewidth
+	end
+end
+
+
+-- Do advanced furigana layout algorithm
+function karaskel.do_furigana_layout(meta, styles, line)
+	-- Start by building layout groups
+	-- Two neighboring syllables with furigana that join together are part of the same layout group
+	-- A forced split creates a new layout group
+	local lgroups = {}
+	-- Start-sentinel
+	local lgsentinel = {basewidth=0, furiwidth=0, syls={}, furi={}, spillback=false, left=0, right=0}
+	table.insert(lgroups, lgsentinel)
+	-- Create groups
+	local last_had_furi = false
+	local lg = { basewidth=0, furiwidth=0, syls={}, furi={}, spillback=false }
+	for s = 0, line.kara.n do
+		local syl = line.kara[s]
+		-- Furigana-less syllables always generate a new layout group
+		-- So do furigana-endowed syllables that are marked as split
+		-- But if current lg has no width (usually only first) don't create a new
+		if (syl.furi.n == 0 or syl.furi[1].issplit) and lg.basewidth > 0 then
+			table.insert(lgroups, lg)
+			lg = { basewidth=0, furiwidth=0, syls={}, furi={}, spillback=false }
+		end
+		
+		-- Add this syllable to lg
+		lg.basewidth = lg.basewidth + syl.prespacewidth + syl.width + syl.postspacewidth
+		table.insert(lg.syls, syl)
+		
+		-- Add this syllable's furi to lg
+		for f = 1, syl.furi.n do
+			local furi = syl.furi[f]
+			lg.furiwidth = lg.furiwidth + furi.width
+			lg.spillback = lg.spillback or furi.spillback
+			table.insert(lg.furi, furi)
+		end
+	end
+	-- Insert last lg
+	table.insert(lgroups, lg)
+	-- And end-sentinel
+	table.insert(lgroups, lgsentinel)
+
+	-- Layout the groups at macro-level
+	-- Skip sentinel at ends in loop
+	local curx = 0
+	for i = 2, #lgroups-1 do
+		local lg = lgroups[i]
+		local prev = lgroups[i-1]
+		
+		-- Three cases: No furigana, furigana smaller than base and furigana larger than base
+		if lg.furiwidth == 0 then
+			-- Here wa can basically just place the base text
+			lg.left = curx
+			lg.right = lg.left + lg.basewidth
+			-- If there was any spillover from a previous group, add it to here
+			if prev.rightspill  and prev.rightspill > 0 then
+				lg.leftspill = 0
+				lg.rightspill = lg.basewidth - prev.rightspill
+				prev.rightspill = 0
+			end
+			curx = curx + lg.basewidth
+		elseif lg.furiwidth <= lg.basewidth then
+			-- If there was any rightspill from previous group, we have to stay 100% clear of that
+			if prev.rightspill and prev.rightspill > 0 then
+				curx = curx + prev.rightspill
+				prev.rightspill = 0
+			end
+			lg.left = curx
+			lg.right = lg.left + lg.basewidth
+			curx = curx + lg.basewidth
+			-- Negative spill here
+			lg.leftspill = (lg.furiwidth - lg.basewidth) / 2
+			lg.rightspill = lg.leftspill
+		else
+			-- Furigana is wider than base, we'll have to spill in some direction
+			if prev.rightspill and prev.rightspill > 0 then
+				curx = curx + prev.rightspill
+				prev.rightspill = 0
+			end
+			-- Do we spill only to the right or in both directions?
+			if lg.spillback then
+				-- Both directions
+				lg.leftspill = (lg.furiwidth - lg.basewidth) / 2
+				lg.rightspill = lg.leftspill
+				-- If there was any furigana or spill on previous syllable we can't overlap it
+				if prev.rightspill then
+					lg.left = curx + lg.leftspill
+				else
+					lg.left = curx
+				end
+			else
+				-- Only to the right
+				lg.leftspill = 0
+				lg.rightspill = lg.furiwidth - lg.basewidth
+				lg.left = curx
+			end
+			lg.right = lg.left + lg.basewidth
+			curx = lg.right
+		end
+	end
+	
+	-- Now the groups are layouted, so place the individual syllables/furigana
+	for i, lg in ipairs(lgroups) do
+		local basecenter = (lg.left + lg.right) / 2 -- centered furi is centered over this
+		local curx = lg.left -- base text is placed from here on
+		-- Place base syllables
+		for s, syl in ipairs(lg.syls) do
+			syl.left = curx + syl.prespacewidth
+			syl.center = syl.left + syl.width/2
+			syl.right = syl.left + syl.width
+			curx = syl.right + syl.postspacewidth
+		end
+		line.width = curx
+		-- Place furigana
+		if lg.furiwidth < lg.basewidth or lg.spillback then
+			-- Center over group
+			curx = lg.left + (lg.basewidth - lg.furiwidth) / 2
+		else
+			-- Left aligned
+			curx = lg.left
+		end
+		for f, furi in ipairs(lg.furi) do
+			furi.left = curx
+			furi.center = furi.left + furi.width/2
+			furi.right = furi.left + furi.width
+			curx = furi.right
+		end
+	end
 end
 
 

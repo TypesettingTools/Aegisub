@@ -1,14 +1,14 @@
-script_name = "Test furigana parsing"
-script_description = "Tests the Auto4/Lua karaskel furigana and multi-highlight parsing code by running it and dumping the result"
+script_name = "Test furigana"
+script_description = "Tests the Auto4/Lua karaskel furigana and multi-highlight code"
 script_author = "jfs"
 
 include "karaskel.lua"
 
-function test_furi(subs)
+function dump_furi(subs)
 	aegisub.progress.task("Collecting header data")
 	local meta, styles = karaskel.collect_head(subs, true) -- make sure to create furigana styles
 	
-	aegisub.progress.task("Preprocessing lines")
+	aegisub.progress.task("Processing lines")
 	for i = 1, #subs do
 		local l = subs[i]
 		if l.class == "dialogue" then
@@ -39,4 +39,36 @@ function test_furi(subs)
 	aegisub.debug.out(4, "Done dumping!")
 end
 
-aegisub.register_macro(script_name, script_description, test_furi)
+function layout_furi(subs)
+	aegisub.progress.task("Collecting header data")
+	local meta, styles = karaskel.collect_head(subs, true) -- make sure to create furigana styles
+	
+	aegisub.progress.task("Processing lines")
+	for i = 1, #subs do
+		local l = subs[i]
+		if l.class == "dialogue" then
+			aegisub.progress.task(l.text)
+			karaskel.preproc_line_pos(meta, styles, l)
+			aegisub.progress.task("Line layouting done, rendering...")
+			-- First all syllables
+			for s = 0, l.kara.n do
+				local syl = l.kara[s]
+				local lc = table.copy(l)
+				lc.text = string.format("{\\pos(%.1f,%.1f)\\k%d\\k%d\\an5}%s", l.left+syl.center, l.middle, syl.start_time/10, syl.kdur, syl.text_stripped)
+				subs.append(lc)
+			end
+			-- Then all furigana
+			for f = 1, l.furi.n do
+				local furi = l.furi[f]
+				local lc = table.copy(l)
+				lc.text = string.format("{\\pos(%.1f,%.1f)\\k%d\\k%d\\an5}%s", l.left+furi.center, l.top-l.height/2, furi.start_time/10, furi.duration/10, furi.text)
+				lc.style = furi.style.name
+				subs.append(lc)
+			end
+		end
+	end
+	aegisub.set_undo_point("Furigana layout test")
+end
+
+aegisub.register_macro("Test furi parsing", "Run the furigana parsing code and dump the result", dump_furi)
+aegisub.register_macro("Test furi layout", "Run the furigana layout code and render the result", layout_furi)
