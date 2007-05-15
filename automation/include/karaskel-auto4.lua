@@ -154,6 +154,15 @@ function karaskel.preproc_line_text(meta, styles, line)
 			worksyl = { highlights = {n=0}, furi = {n=0} }
 		end
 
+		-- Add highlight data
+		local hl = {
+			start_time = syl.start_time,
+			end_time = syl.end_time,
+			duration = syl.duration
+		}
+		worksyl.highlights.n = worksyl.highlights.n + 1
+		worksyl.highlights[worksyl.highlights.n] = hl
+		
 		-- Detect furigana (both regular and fullwidth pipes work)
 		-- Furigana is stored independantly from syllables
 		if syltext:find("|") or syltext:find("｜") then
@@ -186,25 +195,26 @@ function karaskel.preproc_line_text(meta, styles, line)
 				furitext = furitext:sub(unicode.charwidth(furitext,1)+1)
 			end
 			
+			-- Some of these may seem superflous, but a furi should ideally have the same "interface" as a syllable
 			furi.start_time = syl.start_time
 			furi.end_time = syl.end_time
 			furi.duration = syl.duration
+			furi.kdur = syl.duration / 10
 			furi.text = furitext
+			furi.text_stripped = furitext
+			furi.line = line
+			furi.tag = syl.tag
+			furi.inline_fx = cur_inline_fx
+			furi.i = line.kara.n
+			furi.prespace = ""
+			furi.postspace = ""
+			furi.highlights = { n=1, [1]=hl }
 			
 			line.furi.n = line.furi.n + 1
 			line.furi[line.furi.n] = furi
 			worksyl.furi.n = worksyl.furi.n + 1
 			worksyl.furi[worksyl.furi.n] = furi
 		end
-		
-		-- Always add highlight data
-		local hl = {
-			start_time = syl.start_time,
-			end_time = syl.end_time,
-			duration = syl.duration
-		}
-		worksyl.highlights.n = worksyl.highlights.n + 1
-		worksyl.highlights[worksyl.highlights.n] = hl
 		
 		-- Syllables that aren't part of a multi-highlight generate a new output-syllable
 		if prefix ~= "#" and prefix ~= "＃" then
@@ -219,17 +229,17 @@ function karaskel.preproc_line_text(meta, styles, line)
 			worksyl.end_time = syl.end_time
 			worksyl.tag = syl.tag
 			worksyl.line = line
-			worksyl.style = line.styleref
 			
 			-- And add new data to worksyl
 			worksyl.i = line.kara.n
-			worksyl.text_stripped = prespace .. syltext .. postspace
+			worksyl.text_stripped = prespace .. syltext .. postspace -- be sure to include the spaces so the original line can be built from text_stripped
 			worksyl.inline_fx = cur_inline_fx
 			worksyl.prespace = prespace
 			worksyl.postspace = postspace
 		else
 			-- This is just an extra highlight
 			worksyl.duration = worksyl.duration + syl.duration
+			worksyl.kdur = worksyl.kdur + syl.duration / 10
 			worksyl.end_time = syl.end_time
 		end
 	end
@@ -279,6 +289,8 @@ function karaskel.preproc_line_size(meta, styles, line)
 			local furi = line.furi[f]
 			furi.style = line.furistyle
 			furi.width, furi.height = aegisub.text_extents(furi.style, furi.text)
+			furi.prespacewidth = 0
+			furi.postspacewidth = 0
 		end
 	end
 end
