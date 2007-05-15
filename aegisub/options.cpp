@@ -93,7 +93,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 
 	// File Save/Load
 	SetModificationType(MOD_RESTART);
-	SetInt(_T("Auto save every seconds"),60);
+	SetInt(_T("Auto save every seconds"),60); // FIXME: this shouldn't need to require a restart
 	SetModificationType(MOD_AUTOMATIC);
 	SetText(_T("Auto save path"),_T("autosave"));
 	SetBool(_T("Auto backup"),true);
@@ -188,14 +188,17 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 
 	// Automation
 	SetModificationType(MOD_RESTART);
+	// TODO: these paths should be different on non-Windows systems
 	SetText(_T("Automation Base Path"), AegisubApp::folderName + _T("automation/"));
 	SetText(_T("Automation Include Path"), AegisubApp::folderName + _T("automation/include/"));
 	SetText(_T("Automation Autoload Path"), AegisubApp::folderName + _T("automation/autoload/"));
+	SetModificationType(MOD_AUTOMATIC);
 	SetInt(_T("Automation Trace Level"), 3);
 	SetInt(_T("Automation Thread Priority"), 1); // "below normal"
 	SetInt(_T("Automation Autoreload Mode"), 0); // never
 
 	// Generate colors
+	// FIXME: Can't reliably store the system colour-based ones in the config file, the user might change colour scheme
 	wxColour tempCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
 	wxColour textCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
 	wxColour background = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
@@ -352,8 +355,8 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("kanji timer interpolation"),true);
 
 	wxString previewText = _T("Aegisub\\N0123 ");
-	previewText += 0x6708;
-	previewText += 0x8a9e;
+	previewText += 0x6708; // kanji "moon"
+	previewText += 0x8a9e; // kanji "speak"
 	SetText(_T("Style editor preview text"),previewText);
 }
 
