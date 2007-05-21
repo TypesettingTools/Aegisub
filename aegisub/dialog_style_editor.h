@@ -61,9 +61,6 @@ private:
 	SubtitlesGrid *grid;
 
 	wxString FontSizeValue;
-	wxString MarginLValue;
-	wxString MarginRValue;
-	wxString MarginVValue;
 	wxString AlignmentValue;
 	wxString OutlineValue;
 	wxString ShadowValue;
@@ -82,9 +79,7 @@ private:
 	wxCheckBox *BoxStrikeout;
 	ColourButton *colorButton[4];
 	wxSpinCtrl *colorAlpha[4];
-	wxTextCtrl *MarginL;
-	wxTextCtrl *MarginR;
-	wxTextCtrl *MarginV;
+	wxSpinCtrl *margin[4];
 	wxRadioBox *Alignment;
 	wxTextCtrl *Outline;
 	wxTextCtrl *Shadow;

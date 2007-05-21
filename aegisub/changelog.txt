@@ -50,7 +50,7 @@ Please visit http://aegisub.net to download latest version
   o New, more horizontal, layout (AMZ)
   o Realtime preview box (AMZ)
   o Editable drop-down (combo box) to select fonts, instead of the OS's standard font chooser. This allows easy realtime preview of fonts. (AMZ)
-  o Alpha boxes now use spin controls. (AMZ)
+  o Alpha and margin edit boxes were replaced with spin controls. (AMZ)
   o Hitting enter will now "OK" it. (AMZ)
 - Changes to subtitle reading/writing:
   o Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections. (jfs)

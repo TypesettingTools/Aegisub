@@ -101,9 +101,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Prepare control values
 	FontSizeValue = FloatToString(style->fontsize);
-	MarginLValue = style->GetMarginString(0);
-	MarginRValue = style->GetMarginString(1);
-	MarginVValue = style->GetMarginString(2);
 	OutlineValue = FloatToString(style->outline_w);
 	ShadowValue = FloatToString(style->shadow_w);
 	ScaleXValue = FloatToString(style->scalex);
@@ -122,23 +119,21 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
 	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20),fontList,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
-	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(30,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
+	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
 	//wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
 	BoxItalic = new wxCheckBox(this,CHECKBOX_STYLE_ITALIC,_("Italic"));
 	BoxUnderline = new wxCheckBox(this,CHECKBOX_STYLE_UNDERLINE,_("Underline"));
 	BoxStrikeout = new wxCheckBox(this,CHECKBOX_STYLE_STRIKEOUT,_("Strikeout"));
-	colorButton[0] = new ColourButton(this,BUTTON_COLOR_1,wxSize(45,16),style->primary.GetWXColor());
-	colorButton[1] = new ColourButton(this,BUTTON_COLOR_2,wxSize(45,16),style->secondary.GetWXColor());
-	colorButton[2] = new ColourButton(this,BUTTON_COLOR_3,wxSize(45,16),style->outline.GetWXColor());
-	colorButton[3] = new ColourButton(this,BUTTON_COLOR_4,wxSize(45,16),style->shadow.GetWXColor());
-	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,255,style->primary.a);
-	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,255,style->secondary.a);
-	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,255,style->outline.a);
-	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,255,style->shadow.a);
-	MarginL = new wxTextCtrl(this,TEXT_MARGIN_L,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginLValue));
-	MarginR = new wxTextCtrl(this,TEXT_MARGIN_R,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginRValue));
-	MarginV = new wxTextCtrl(this,TEXT_MARGIN_V,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginVValue));
+	colorButton[0] = new ColourButton(this,BUTTON_COLOR_1,wxSize(55,16),style->primary.GetWXColor());
+	colorButton[1] = new ColourButton(this,BUTTON_COLOR_2,wxSize(55,16),style->secondary.GetWXColor());
+	colorButton[2] = new ColourButton(this,BUTTON_COLOR_3,wxSize(55,16),style->outline.GetWXColor());
+	colorButton[3] = new ColourButton(this,BUTTON_COLOR_4,wxSize(55,16),style->shadow.GetWXColor());
+	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->primary.a);
+	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->secondary.a);
+	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->outline.a);
+	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->shadow.a);
+	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&OutlineValue));
 	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&ShadowValue));
@@ -154,28 +149,29 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	previewButton = new ColourButton(this,BUTTON_PREVIEW_COLOR,wxSize(45,16),Options.AsColour(_T("Style editor preview background")));
 
 	// Set control tooltips
-	StyleName->SetToolTip(_("Style name"));
-	FontName->SetToolTip(_("Font face"));
-	FontSize->SetToolTip(_("Font size"));
-	colorButton[0]->SetToolTip(_("Click to choose primary color"));
-	colorButton[1]->SetToolTip(_("Click to choose secondary color"));
-	colorButton[2]->SetToolTip(_("Click to choose outline color"));
-	colorButton[3]->SetToolTip(_("Click to choose shadow color"));
-	for (int i=0;i<4;i++) colorAlpha[i]->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)"));
-	MarginL->SetToolTip(_("Distance from left edge, in pixels"));
-	MarginR->SetToolTip(_("Distance from right edge, in pixels"));
-	MarginV->SetToolTip(_("Distance from top/bottom edge, in pixels"));
-	OutlineType->SetToolTip(_("Checking this will display an opaque box instead of outline"));
-	Outline->SetToolTip(_("Outline width, in pixels"));
-	Shadow->SetToolTip(_("Shadow distance, in pixels"));
-	ScaleX->SetToolTip(_("Scale X, in percentage"));
-	ScaleY->SetToolTip(_("Scale Y, in percentage"));
-	Angle->SetToolTip(_("Angle to rotate in Z axis, in degrees"));
+	StyleName->SetToolTip(_("Style name."));
+	FontName->SetToolTip(_("Font face."));
+	FontSize->SetToolTip(_("Font size."));
+	colorButton[0]->SetToolTip(_("Click to choose primary color."));
+	colorButton[1]->SetToolTip(_("Click to choose secondary color."));
+	colorButton[2]->SetToolTip(_("Click to choose outline color."));
+	colorButton[3]->SetToolTip(_("Click to choose shadow color."));
+	for (int i=0;i<4;i++) colorAlpha[i]->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)."));
+	margin[0]->SetToolTip(_("Distance from left edge, in pixels."));
+	margin[1]->SetToolTip(_("Distance from right edge, in pixels."));
+	margin[2]->SetToolTip(_("Distance from top/bottom edge, in pixels."));
+	OutlineType->SetToolTip(_("Checking this will display an opaque box instead of outline."));
+	Outline->SetToolTip(_("Outline width, in pixels."));
+	Shadow->SetToolTip(_("Shadow distance, in pixels."));
+	ScaleX->SetToolTip(_("Scale X, in percentage."));
+	ScaleY->SetToolTip(_("Scale Y, in percentage."));
+	Angle->SetToolTip(_("Angle to rotate in Z axis, in degrees."));
 	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."));
-	Spacing->SetToolTip(_("Character spacing, in pixels"));
-	Alignment->SetToolTip(_("Alignment in screen, in numpad style"));
-	SubsPreview->SetToolTip(_("Preview of current stlye"));
-	PreviewText->SetToolTip(_("Text to be used for the preview"));
+	Spacing->SetToolTip(_("Character spacing, in pixels."));
+	Alignment->SetToolTip(_("Alignment in screen, in numpad style."));
+	SubsPreview->SetToolTip(_("Preview of current stlye."));
+	PreviewText->SetToolTip(_("Text to be used for the preview."));
+	previewButton->SetToolTip(_("Colour of preview background."));
 
 	// Set up controls
 	BoxBold->SetValue(style->bold);
@@ -234,26 +230,18 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	ColorsSizer->AddStretchSpacer(1);
 
 	// Margins
+	wxString marginLabels[] = { _("Left"), _("Right"), _("Vert") };
 	wxSizer *MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Margins"));
-	wxSizer *MarginSizerL = new wxBoxSizer(wxVERTICAL);
-	wxSizer *MarginSizerR = new wxBoxSizer(wxVERTICAL);
-	wxSizer *MarginSizerV = new wxBoxSizer(wxVERTICAL);
-	MarginSizerL->AddStretchSpacer(1);
-	MarginSizerL->Add(new wxStaticText(this,-1,_("Left")),0,wxCENTER,0);
-	MarginSizerL->Add(MarginL,0,wxTOP | wxCENTER,5);
-	MarginSizerL->AddStretchSpacer(1);
-	MarginSizerR->AddStretchSpacer(1);
-	MarginSizerR->Add(new wxStaticText(this,-1,_("Right")),0,wxCENTER,0);
-	MarginSizerR->Add(MarginR,0,wxTOP | wxCENTER,5);
-	MarginSizerR->AddStretchSpacer(1);
-	MarginSizerV->AddStretchSpacer(1);
-	MarginSizerV->Add(new wxStaticText(this,-1,_("Vert")),0,wxCENTER,0);
-	MarginSizerV->Add(MarginV,0,wxTOP | wxCENTER,5);
-	MarginSizerV->AddStretchSpacer(1);
 	MarginSizer->AddStretchSpacer(1);
-	MarginSizer->Add(MarginSizerL,0,wxEXPAND,0);
-	MarginSizer->Add(MarginSizerR,0,wxEXPAND | wxLEFT,5);
-	MarginSizer->Add(MarginSizerV,0,wxEXPAND | wxLEFT,5);
+	wxSizer *marginSubSizer[3];
+	for (int i=0;i<3;i++) {
+		marginSubSizer[i] = new wxBoxSizer(wxVERTICAL);
+		marginSubSizer[i]->AddStretchSpacer(1);
+		marginSubSizer[i]->Add(new wxStaticText(this,-1,marginLabels[i]),0,wxCENTER,0);
+		marginSubSizer[i]->Add(margin[i],0,wxTOP | wxCENTER,5);
+		marginSubSizer[i]->AddStretchSpacer(1);
+		MarginSizer->Add(marginSubSizer[i],0,wxEXPAND | wxLEFT,i?5:0);
+	}
 	MarginSizer->AddStretchSpacer(1);
 
 	// Margins+Alignment
@@ -520,10 +508,8 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	work->alignment = ControlToAlign(Alignment->GetSelection());
 
 	// Margins
-	work->SetMarginString(MarginL->GetValue(),0);
-	work->SetMarginString(MarginR->GetValue(),1);
-	work->SetMarginString(MarginV->GetValue(),2); // make sure both top and bottom margins reflect vertical margin
-	work->SetMarginString(MarginV->GetValue(),3);
+	for (int i=0;i<3;i++) work->Margin[i] = margin[i]->GetValue();
+	work->Margin[3] = margin[2]->GetValue();
 
 	// Color alphas
 	work->primary.a = colorAlpha[0]->GetValue();
