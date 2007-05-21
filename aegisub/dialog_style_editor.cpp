@@ -101,10 +101,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Prepare control values
 	FontSizeValue = FloatToString(style->fontsize);
-	ColorAlpha1Value = wxString::Format(_T("%i"),style->primary.a);
-	ColorAlpha2Value = wxString::Format(_T("%i"),style->secondary.a);
-	ColorAlpha3Value = wxString::Format(_T("%i"),style->outline.a);
-	ColorAlpha4Value = wxString::Format(_T("%i"),style->shadow.a);
 	MarginLValue = style->GetMarginString(0);
 	MarginRValue = style->GetMarginString(1);
 	MarginVValue = style->GetMarginString(2);
@@ -136,10 +132,10 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	colorButton[1] = new ColourButton(this,BUTTON_COLOR_2,wxSize(45,16),style->secondary.GetWXColor());
 	colorButton[2] = new ColourButton(this,BUTTON_COLOR_3,wxSize(45,16),style->outline.GetWXColor());
 	colorButton[3] = new ColourButton(this,BUTTON_COLOR_4,wxSize(45,16),style->shadow.GetWXColor());
-	ColorAlpha1 = new wxTextCtrl(this,TEXT_ALPHA_1,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha1Value));
-	ColorAlpha2 = new wxTextCtrl(this,TEXT_ALPHA_2,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha2Value));
-	ColorAlpha3 = new wxTextCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha3Value));
-	ColorAlpha4 = new wxTextCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ColorAlpha4Value));
+	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,255,style->primary.a);
+	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,255,style->secondary.a);
+	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,255,style->outline.a);
+	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,255,style->shadow.a);
 	MarginL = new wxTextCtrl(this,TEXT_MARGIN_L,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginLValue));
 	MarginR = new wxTextCtrl(this,TEXT_MARGIN_R,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginRValue));
 	MarginV = new wxTextCtrl(this,TEXT_MARGIN_V,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&MarginVValue));
@@ -165,10 +161,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	colorButton[1]->SetToolTip(_("Click to choose secondary color"));
 	colorButton[2]->SetToolTip(_("Click to choose outline color"));
 	colorButton[3]->SetToolTip(_("Click to choose shadow color"));
-	ColorAlpha1->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)"));
-	ColorAlpha2->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)"));
-	ColorAlpha3->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)"));
-	ColorAlpha4->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)"));
+	for (int i=0;i<4;i++) colorAlpha[i]->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)"));
 	MarginL->SetToolTip(_("Distance from left edge, in pixels"));
 	MarginR->SetToolTip(_("Distance from right edge, in pixels"));
 	MarginV->SetToolTip(_("Distance from top/bottom edge, in pixels"));
@@ -228,28 +221,17 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Colors sizer
 	wxSizer *ColorsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Colors"));
-	wxSizer *ColorSizer1 = new wxBoxSizer(wxVERTICAL);
-	wxSizer *ColorSizer2 = new wxBoxSizer(wxVERTICAL);
-	wxSizer *ColorSizer3 = new wxBoxSizer(wxVERTICAL);
-	wxSizer *ColorSizer4 = new wxBoxSizer(wxVERTICAL);
+	wxSizer *ColorSizer[4];
+	wxString colorLabels[] = { _("Primary"), _("Secondary"), _("Outline"), _("Shadow") };
 	ColorsSizer->AddStretchSpacer(1);
-	ColorsSizer->Add(ColorSizer1,0,0,0);
-	ColorsSizer->Add(ColorSizer2,0,wxLEFT,5);
-	ColorsSizer->Add(ColorSizer3,0,wxLEFT,5);
-	ColorsSizer->Add(ColorSizer4,0,wxLEFT,5);
+	for (int i=0;i<4;i++) {
+		ColorSizer[i] = new wxBoxSizer(wxVERTICAL);
+		ColorSizer[i]->Add(new wxStaticText(this,-1,colorLabels[i]),0,wxBOTTOM | wxALIGN_CENTER,5);
+		ColorSizer[i]->Add(colorButton[i],0,wxBOTTOM | wxALIGN_CENTER,5);
+		ColorSizer[i]->Add(colorAlpha[i],0,wxALIGN_CENTER,0);
+		ColorsSizer->Add(ColorSizer[i],0,wxLEFT,i?5:0);
+	}
 	ColorsSizer->AddStretchSpacer(1);
-	ColorSizer1->Add(new wxStaticText(this,-1,_("Primary")),0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer2->Add(new wxStaticText(this,-1,_("Secondary")),0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer3->Add(new wxStaticText(this,-1,_("Outline")),0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer4->Add(new wxStaticText(this,-1,_("Shadow")),0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer1->Add(colorButton[0],0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer2->Add(colorButton[1],0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer3->Add(colorButton[2],0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer4->Add(colorButton[3],0,wxBOTTOM | wxALIGN_CENTER,5);
-	ColorSizer1->Add(ColorAlpha1,0,wxALIGN_CENTER,0);
-	ColorSizer2->Add(ColorAlpha2,0,wxALIGN_CENTER,0);
-	ColorSizer3->Add(ColorAlpha3,0,wxALIGN_CENTER,0);
-	ColorSizer4->Add(ColorAlpha4,0,wxALIGN_CENTER,0);
 
 	// Margins
 	wxSizer *MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Margins"));
@@ -391,6 +373,10 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_COMBOBOX(COMBO_ENCODING, DialogStyleEditor::OnCommandPreviewUpdate)
 	EVT_COMBOBOX(TEXT_FONT_NAME, DialogStyleEditor::OnCommandPreviewUpdate)
 	EVT_TEXT_ENTER(TEXT_FONT_NAME, DialogStyleEditor::OnCommandPreviewUpdate)
+	EVT_SPINCTRL(TEXT_ALPHA_1, DialogStyleEditor::OnSpinPreviewUpdate)
+	EVT_SPINCTRL(TEXT_ALPHA_2, DialogStyleEditor::OnSpinPreviewUpdate)
+	EVT_SPINCTRL(TEXT_ALPHA_3, DialogStyleEditor::OnSpinPreviewUpdate)
+	EVT_SPINCTRL(TEXT_ALPHA_4, DialogStyleEditor::OnSpinPreviewUpdate)
 END_EVENT_TABLE()
 
 
@@ -540,14 +526,10 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	work->SetMarginString(MarginV->GetValue(),3);
 
 	// Color alphas
-	ColorAlpha1->GetValue().ToLong(&templ);
-	work->primary.a = templ;
-	ColorAlpha2->GetValue().ToLong(&templ);
-	work->secondary.a = templ;
-	ColorAlpha3->GetValue().ToLong(&templ);
-	work->outline.a = templ;
-	ColorAlpha4->GetValue().ToLong(&templ);
-	work->shadow.a = templ;
+	work->primary.a = colorAlpha[0]->GetValue();
+	work->secondary.a = colorAlpha[1]->GetValue();
+	work->outline.a = colorAlpha[2]->GetValue();
+	work->shadow.a = colorAlpha[3]->GetValue();
 
 	// Bold/italic/underline/strikeout
 	work->bold = BoxBold->IsChecked();

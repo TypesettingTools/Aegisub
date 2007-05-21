@@ -41,6 +41,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/spinctrl.h>
 #include "colour_button.h"
 
 
@@ -60,10 +61,6 @@ private:
 	SubtitlesGrid *grid;
 
 	wxString FontSizeValue;
-	wxString ColorAlpha1Value;
-	wxString ColorAlpha2Value;
-	wxString ColorAlpha3Value;
-	wxString ColorAlpha4Value;
 	wxString MarginLValue;
 	wxString MarginRValue;
 	wxString MarginVValue;
@@ -84,10 +81,7 @@ private:
 	wxCheckBox *BoxUnderline;
 	wxCheckBox *BoxStrikeout;
 	ColourButton *colorButton[4];
-	wxTextCtrl *ColorAlpha1;
-	wxTextCtrl *ColorAlpha2;
-	wxTextCtrl *ColorAlpha3;
-	wxTextCtrl *ColorAlpha4;
+	wxSpinCtrl *colorAlpha[4];
 	wxTextCtrl *MarginL;
 	wxTextCtrl *MarginR;
 	wxTextCtrl *MarginV;
@@ -120,6 +114,7 @@ private:
 	void OnSetColor4 (wxCommandEvent &event);
 	void OnChildFocus (wxChildFocusEvent &event);
 	void OnCommandPreviewUpdate (wxCommandEvent &event);
+	void OnSpinPreviewUpdate (wxSpinEvent &event) { OnCommandPreviewUpdate(event); }
 	void OnPreviewTextChange (wxCommandEvent &event);
 	void OnPreviewColourChange (wxCommandEvent &event);
 

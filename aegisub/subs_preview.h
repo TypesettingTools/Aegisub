@@ -66,6 +66,7 @@ public:
 	void SetStyle(AssStyle *style);
 	void SetText(wxString text);
 	void SetColour(wxColour col);
+	void Update() { UpdateBitmap(); }
 
 	SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int style,wxColour colour);
 	~SubtitlesPreview();
