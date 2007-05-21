@@ -38,6 +38,7 @@
 // Includes
 #include <wx/fontdlg.h>
 #include <wx/colordlg.h>
+#include <wx/fontenum.h>
 #include "dialog_style_editor.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
@@ -114,6 +115,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	EncodingValue = IntegerToString(style->encoding);
 	SpacingValue = FloatToString(style->spacing);
 	wxString alignValues[9] = { _T("7"),_T("8"),_T("9"),_T("4"),_T("5"),_T("6"),_T("1"),_T("2"),_T("3") };
+	wxArrayString fontList = wxFontEnumerator::GetFacenames();
+	fontList.Sort();
 
 	// Encoding options
 	wxArrayString encodingStrings;
@@ -121,9 +124,9 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
-	FontName = new wxTextCtrl(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20));
+	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20),fontList,wxCB_DROPDOWN);
 	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(30,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
-	wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
+	//wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
 	BoxItalic = new wxCheckBox(this,CHECKBOX_STYLE_ITALIC,_("Italic"));
 	BoxUnderline = new wxCheckBox(this,CHECKBOX_STYLE_UNDERLINE,_("Underline"));
@@ -211,7 +214,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	wxSizer *FontSizerBottom = new wxBoxSizer(wxHORIZONTAL);
 	FontSizerTop->Add(FontName,1,wxALL,0);
 	FontSizerTop->Add(FontSize,0,wxLEFT,5);
-	FontSizerTop->Add(FontButton,0,wxLEFT,5);
+	//FontSizerTop->Add(FontButton,0,wxLEFT,5);
 	FontSizerBottom->AddStretchSpacer(1);
 	FontSizerBottom->Add(BoxBold,0,0,0);
 	FontSizerBottom->Add(BoxItalic,0,wxLEFT,5);
@@ -380,6 +383,7 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_CHECKBOX(CHECKBOX_STYLE_STRIKEOUT, DialogStyleEditor::OnCommandPreviewUpdate)
 	EVT_CHECKBOX(CHECKBOX_OUTLINE, DialogStyleEditor::OnCommandPreviewUpdate)
 	EVT_COMBOBOX(COMBO_ENCODING, DialogStyleEditor::OnCommandPreviewUpdate)
+	EVT_COMBOBOX(TEXT_FONT_NAME, DialogStyleEditor::OnCommandPreviewUpdate)
 END_EVENT_TABLE()
 
 

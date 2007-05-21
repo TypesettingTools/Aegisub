@@ -77,7 +77,7 @@ private:
 	wxString SpacingValue;
 
 	wxTextCtrl *StyleName;
-	wxTextCtrl *FontName;
+	wxComboBox *FontName;
 	wxTextCtrl *FontSize;
 	wxCheckBox *BoxBold;
 	wxCheckBox *BoxItalic;

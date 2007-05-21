@@ -122,6 +122,7 @@ Please visit http://aegisub.net to download latest version
 - Added a "Scale Border and Shadow" check box to script properties dialog. (AMZ)
 - Fixed drawing of inactive lines in audio display to prevent it from being drawn over selection. (AMZ)
 - Commiting text now commits times as well. (AMZ)
+- Changed the Style Editor to have an editable drop-down (combo box) to select fonts, instead of the OS's standard font chooser. This allows easy realtime preview of subtitles. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
