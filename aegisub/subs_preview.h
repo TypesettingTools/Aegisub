@@ -56,6 +56,7 @@ private:
 	AssStyle *style;
 	wxString showText;
 	VideoProvider *vid;
+	wxColour backColour;
 
 	void UpdateBitmap(int w=-1,int h=-1);
 	void OnSize(wxSizeEvent &event);
@@ -64,8 +65,9 @@ private:
 public:
 	void SetStyle(AssStyle *style);
 	void SetText(wxString text);
+	void SetColour(wxColour col);
 
-	SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int style);
+	SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int style,wxColour colour);
 	~SubtitlesPreview();
 
 	DECLARE_EVENT_TABLE()

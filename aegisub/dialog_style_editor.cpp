@@ -66,6 +66,7 @@ enum {
 	BUTTON_COLOR_2,
 	BUTTON_COLOR_3,
 	BUTTON_COLOR_4,
+	BUTTON_PREVIEW_COLOR,
 	RADIO_ALIGNMENT,
 	TEXT_FONT_NAME,
 	TEXT_FONT_SIZE,
@@ -124,7 +125,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
-	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20),fontList,wxCB_DROPDOWN);
+	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20),fontList,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(30,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
 	//wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
@@ -151,9 +152,10 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&AngleValue));
 	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&SpacingValue));
 	Encoding = new wxComboBox(this,COMBO_ENCODING,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
-	SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER);
+	SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER,Options.AsColour(_T("Style editor preview background")));
 	PreviewText = NULL;	// Yes, this IS necessary
 	PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,Options.AsText(_T("Style editor preview text")));
+	previewButton = new ColourButton(this,BUTTON_PREVIEW_COLOR,wxSize(45,16),Options.AsColour(_T("Style editor preview background")));
 
 	// Set control tooltips
 	StyleName->SetToolTip(_("Style name"));
@@ -308,8 +310,11 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Preview
 	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Preview"));
+	wxSizer *PreviewBottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	PreviewBottomSizer->Add(PreviewText,1,wxEXPAND | wxRIGHT,5);
+	PreviewBottomSizer->Add(previewButton,0,wxEXPAND,0);
 	PreviewBox->Add(SubsPreview,1,wxEXPAND | wxBOTTOM,5);
-	PreviewBox->Add(PreviewText,0,wxEXPAND | wxBOTTOM,0);
+	PreviewBox->Add(PreviewBottomSizer,0,wxEXPAND | wxBOTTOM,0);
 
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -374,6 +379,7 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_BUTTON(BUTTON_COLOR_2, DialogStyleEditor::OnSetColor2)
 	EVT_BUTTON(BUTTON_COLOR_3, DialogStyleEditor::OnSetColor3)
 	EVT_BUTTON(BUTTON_COLOR_4, DialogStyleEditor::OnSetColor4)
+	EVT_BUTTON(BUTTON_PREVIEW_COLOR, DialogStyleEditor::OnPreviewColourChange)
 
 	EVT_CHILD_FOCUS(DialogStyleEditor::OnChildFocus)
 	EVT_TEXT(TEXT_PREVIEW, DialogStyleEditor::OnPreviewTextChange)
@@ -384,6 +390,7 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_CHECKBOX(CHECKBOX_OUTLINE, DialogStyleEditor::OnCommandPreviewUpdate)
 	EVT_COMBOBOX(COMBO_ENCODING, DialogStyleEditor::OnCommandPreviewUpdate)
 	EVT_COMBOBOX(TEXT_FONT_NAME, DialogStyleEditor::OnCommandPreviewUpdate)
+	EVT_TEXT_ENTER(TEXT_FONT_NAME, DialogStyleEditor::OnCommandPreviewUpdate)
 END_EVENT_TABLE()
 
 
@@ -609,6 +616,15 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 		SubsPreview->SetText(PreviewText->GetValue());
 		event.Skip();
 	}
+}
+
+
+/////////////////////////////////////////
+// Change colour of preview's background
+void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
+	SubsPreview->SetColour(previewButton->GetColour());
+	Options.SetColour(_T("Style editor preview background"),previewButton->GetColour());
+	Options.Save();
 }
 
 

@@ -48,7 +48,7 @@
 
 ///////////////
 // Constructor
-SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int winStyle)
+SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int winStyle,wxColour col)
 : wxWindow(parent,id,pos,size,winStyle)
 {
 	AssStyle temp;
@@ -58,6 +58,7 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize si
 	SetStyle(&temp);
 	SetText(_T("preview"));
 	SetSizeHints(size.GetWidth(),size.GetHeight(),-1,-1);
+	backColour = col;
 }
 
 
@@ -131,7 +132,7 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	}
 
 	// Get AegiVideoFrame
-	if (!vid) vid = new DummyVideoProvider(0.0,10,w,h,wxColour(125,153,176),true);
+	if (!vid) vid = new DummyVideoProvider(0.0,10,w,h,backColour,true);
 	AegiVideoFrame frame;
 	frame.CopyFrom(vid->GetFrame(0));
 
@@ -194,4 +195,14 @@ void SubtitlesPreview::OnSize(wxSizeEvent &event) {
 	delete vid;
 	vid = NULL;
 	UpdateBitmap(event.GetSize().GetWidth(),event.GetSize().GetHeight());
+}
+
+
+//////////////
+// Set colour
+void SubtitlesPreview::SetColour(wxColour col) {
+	backColour = col;
+	delete vid;
+	vid = NULL;
+	UpdateBitmap();
 }

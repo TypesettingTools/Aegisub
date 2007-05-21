@@ -102,6 +102,7 @@ private:
 	wxTextCtrl *Spacing;
 	wxTextCtrl *PreviewText;
 	SubtitlesPreview *SubsPreview;
+	ColourButton *previewButton;
 	wxSizer *MainSizer;
 
 	void SetBitmapColor (int n,wxColour color);
@@ -120,6 +121,7 @@ private:
 	void OnChildFocus (wxChildFocusEvent &event);
 	void OnCommandPreviewUpdate (wxCommandEvent &event);
 	void OnPreviewTextChange (wxCommandEvent &event);
+	void OnPreviewColourChange (wxCommandEvent &event);
 
 public:
 	DialogStyleEditor(wxWindow *parent,AssStyle *style,SubtitlesGrid *grid);
