@@ -209,6 +209,7 @@ function karaskel.preproc_line_text(meta, styles, line)
 			furi.prespace = ""
 			furi.postspace = ""
 			furi.highlights = { n=1, [1]=hl }
+			furi.isfuri = true
 			
 			line.furi.n = line.furi.n + 1
 			line.furi[line.furi.n] = furi
