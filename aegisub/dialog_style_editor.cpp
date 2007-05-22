@@ -134,6 +134,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->outline.a);
 	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->shadow.a);
 	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
+	margin[3] = 0;
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&OutlineValue));
 	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&ShadowValue));
@@ -599,6 +600,7 @@ void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
 ///////////////////////////////////
 // Command event to update preview
 void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
+	if (!IsShownOnScreen()) return;
 	UpdateWorkStyle();
 	SubsPreview->SetStyle(work);
 	event.Skip();

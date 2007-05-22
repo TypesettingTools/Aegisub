@@ -67,7 +67,7 @@ Please visit http://aegisub.net to download latest version
 - Scrollbar in main subs grid didn't always allow scrolling through all the subs (jfs)
 - Added a "Auto Save on Every Change" option to config.dat (default false), that automatically saves the files whenever you change anything. (AMZ)
 - Fixed line selection after pasting. (AMZ)
-- Times can now be copy and pasted with ctrl+c and Ctrl+V, as well as from context menu, in the time edit boxes. (AMZ)
+- Times can now be copy and pasted with Ctrl+C and Ctrl+V, as well as from context menu, in the time edit boxes. (AMZ)
 - Plain-text lines can now be pasted into the grid. They will be inserted as default lines with the text as their content. (AMZ)
 - Added Paste Over function, which allows you to paste subtitle lines over others, overwriting the fields of your choice. (AMZ)
 - Added global hotkey for Video Play (default Ctrl+P). (AMZ)
@@ -124,6 +124,7 @@ Please visit http://aegisub.net to download latest version
 - Added a "Scale Border and Shadow" check box to script properties dialog. (AMZ)
 - Fixed drawing of inactive lines in audio display to prevent it from being drawn over selection. (AMZ)
 - Commiting text now commits times as well. (AMZ)
+- Fixed display of end frames on the subtitles grid, when set to frame mode. (demi)
 
 
 = 1.10 beta - 2006.08.07 ===========================

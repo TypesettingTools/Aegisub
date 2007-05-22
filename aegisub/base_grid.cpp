@@ -428,7 +428,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			strings.Add(wxString::Format(_T("%i"),curDiag->Layer));
 			if (byFrame) {
 				strings.Add(wxString::Format(_T("%i"),VFR_Output.GetFrameAtTime(curDiag->Start.GetMS(),true)));
-				strings.Add(wxString::Format(_T("%i"),VFR_Output.GetFrameAtTime(curDiag->End.GetMS(),true)));
+				strings.Add(wxString::Format(_T("%i"),VFR_Output.GetFrameAtTime(curDiag->End.GetMS(),false)));
 			}
 			else {
 				strings.Add(curDiag->Start.GetASSFormated());
