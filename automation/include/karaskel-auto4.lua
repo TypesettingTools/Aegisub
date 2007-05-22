@@ -235,6 +235,7 @@ function karaskel.preproc_line_text(meta, styles, line)
 			worksyl.i = line.kara.n
 			worksyl.text_stripped = prespace .. syltext .. postspace -- be sure to include the spaces so the original line can be built from text_stripped
 			worksyl.inline_fx = cur_inline_fx
+			worksyl.text_spacestripped = syltext
 			worksyl.prespace = prespace
 			worksyl.postspace = postspace
 		else
@@ -273,7 +274,7 @@ function karaskel.preproc_line_size(meta, styles, line)
 	for s = 0, line.kara.n do
 		local syl = line.kara[s]
 		syl.style = line.styleref
-		syl.width, syl.height = aegisub.text_extents(syl.style, syl.text_stripped)
+		syl.width, syl.height = aegisub.text_extents(syl.style, syl.text_spacestripped)
 		syl.prespacewidth = aegisub.text_extents(syl.style, syl.prespace)
 		syl.postspacewidth = aegisub.text_extents(syl.style, syl.postspace)
 	end
