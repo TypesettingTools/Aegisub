@@ -74,8 +74,7 @@ private:
 
 	void OnPaint(wxPaintEvent& event);
 	void OnKey(wxKeyEvent &event);
-    void OnMouseEvent(wxMouseEvent& event);
-	void OnMouseLeave(wxMouseEvent& event);
+	void OnMouseEvent(wxMouseEvent& event);
 	void OnEraseBackground(wxEraseEvent &event) {}
 	void OnSizeEvent(wxSizeEvent &event);
 

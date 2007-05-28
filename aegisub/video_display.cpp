@@ -85,7 +85,6 @@ enum {
 // Event table
 BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
-	EVT_LEAVE_WINDOW(VideoDisplay::OnMouseLeave)
 	EVT_KEY_DOWN(VideoDisplay::OnKey)
 	EVT_PAINT(VideoDisplay::OnPaint)
 	EVT_SIZE(VideoDisplay::OnSizeEvent)
@@ -373,9 +372,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// OnMouseLeave isn't called as long as we have an OnMouseEvent
 	// Just check for it and call it manually instead
 	if (event.Leaving()) {
-		OnMouseLeave(event);
-		event.Skip(true);
-		return;
+		if (tracker) tracker->bTrackerEditing = 0;
 	}
 
 	// Right click
@@ -418,16 +415,6 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 	visual->OnKeyEvent(event);
 }
 
-
-
-//////////////////////
-// Mouse left display
-void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
-	if (VideoContext::Get()->IsPlaying()) return;
-	wxASSERT(visual);
-	visual->OnMouseEvent(event);
-	if (tracker) tracker->bTrackerEditing = 0;
-}
 
 
 ///////////////////

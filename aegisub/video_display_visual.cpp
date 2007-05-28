@@ -1103,6 +1103,10 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 		mouseY = y;
 		hasOverlay = true;
 	}
+	if (event.Leaving()) {
+		mouseX = -1;
+		mouseY = -1;
+	}
 
 	// Has something to draw
 	if (hasOverlay) {
@@ -1115,6 +1119,8 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 /////////////
 // Key event
 void VideoDisplayVisual::OnKeyEvent(wxKeyEvent &event) {
+	// FIXME: should these beconfigurable?
+	// Think of the frenchmen and other people not using qwerty layout
 	if (event.GetKeyCode() == 'A') SetMode(0);
 	if (event.GetKeyCode() == 'S') SetMode(1);
 	if (event.GetKeyCode() == 'D') SetMode(2);
