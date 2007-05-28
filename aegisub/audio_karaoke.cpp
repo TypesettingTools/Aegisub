@@ -164,7 +164,12 @@ void AudioKaraoke::Commit() {
 			wxLogDebug(_T("Updating syllable %d"), i);
 			syl = &syllables.at(i);
 			wxLogDebug(_T("Syllable pointer: %p; tagdata pointer: %p; length: %d"), syl, syl->original_tagdata, syl->length);
-			syl->original_tagdata->SetInt(syl->length);
+			// Some weird people have text before the first karaoke tag on a line.
+			// Check that a karaoke tag actually exists for the (non-)syllable to avoid a crash.
+			if (syl->original_tagdata)
+				syl->original_tagdata->SetInt(syl->length);
+			// Of course, if the user changed the duration of such a non-syllable, its timing can't be updated and will stay zero.
+			// There is no way to check for that right now, and I can't bother to fix it.
 		}
 		wxLogDebug(_T("Done updating syllables"));
 		workDiag->UpdateText();
