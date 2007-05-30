@@ -248,8 +248,10 @@ function apply_templates(meta, styles, subs, templates)
 	local tenv = {
 		-- put in some standard libs
 		string = string,
-		math = math
+		math = math,
+		_G = _G
 	}
+	tenv.tenv = tenv
 	
 	-- run all run-once code snippets
 	for k, t in pairs(templates.once) do
