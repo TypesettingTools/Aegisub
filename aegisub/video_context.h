@@ -103,6 +103,7 @@ private:
 	bool loaded;
 	bool isInverted;
 	bool isPlaying;
+	bool keepAudioSync;
 
 	float texW,texH;
 	int w,h;
@@ -145,6 +146,8 @@ public:
 	bool IsLoaded() { return loaded; }
 	bool IsPlaying() { return isPlaying; }
 	bool IsInverted() { return isInverted; }
+
+	void EnableAudioSync(bool sync = true) { keepAudioSync = sync; }
 
 	int GetWidth() { return w; }
 	int GetHeight() { return h; }

@@ -196,14 +196,18 @@ END_EVENT_TABLE()
 //////////////
 // Play video
 void VideoBox::OnVideoPlay(wxCommandEvent &event) {
-	VideoContext::Get()->Play();
+	VideoContext *ctx = VideoContext::Get();
+	ctx->EnableAudioSync(wxGetMouseState().ControlDown() == false);
+	ctx->Play();
 }
 
 
 ///////////////////
 // Play video line
 void VideoBox::OnVideoPlayLine(wxCommandEvent &event) {
-	VideoContext::Get()->PlayLine();
+	VideoContext *ctx = VideoContext::Get();
+	ctx->EnableAudioSync(wxGetMouseState().ControlDown() == false);
+	ctx->PlayLine();
 }
 
 
