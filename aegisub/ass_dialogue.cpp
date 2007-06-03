@@ -148,21 +148,22 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	wxString temp;
 
 	// Get type
-	if (rawData.substr(pos,9) == _T("Dialogue:")) {
+	if (rawData.StartsWith(_T("Dialogue:"))) {
 		Comment = false;
 		pos = 10;
 	}
-	else if (rawData.substr(pos,8) == _T("Comment:")) {
+	else if (rawData.StartsWith(_T("Comment:"))) {
 		Comment = true;
 		pos = 9;
 	}
 	else return false;
+
 	wxStringTokenizer tkn(rawData.Mid(pos),_T(","),wxTOKEN_RET_EMPTY_ALL);
+	if (!tkn.HasMoreTokens()) return false;
 
 	// Get first token and see if it has "Marked=" in it
-	if (!tkn.HasMoreTokens()) return false;
 	temp = tkn.GetNextToken().Trim(false).Trim(true);
-	if (temp.Lower().Left(7) == _T("marked=")) version = 0;
+	if (temp.Lower().StartsWith(_T("marked="))) version = 0;
 	else if (version == 0) version = 1;
 
 	// Get layer number
@@ -239,11 +240,10 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 #endif
 
 	// Get text
-	Text = tkn.GetNextToken();
-	while (tkn.HasMoreTokens()) {
-		Text += _T(",");
-		Text += tkn.GetNextToken();
-	}
+	Text = rawData.Mid(pos+tkn.GetPosition());
+
+
+
 	return true;
 }
 
@@ -507,21 +507,34 @@ void AssDialogue::ParseASSTags () {
 				end = len;
 			}
 			else work = Text.substr(cur,end-cur);
-			work = Text.substr(cur+1,end-cur-1);
+			
+			if (work.Find(_T("\\")) == wxNOT_FOUND) {
+				//We've found an override block with no backslashes
+				//We're going to assume it's a comment and not consider it an override block
+				//Currently we'll treat this as a plain text block, but feel free to create a new class
+				AssDialogueBlockPlain *block = new AssDialogueBlockPlain;
+				block->text = work;
+				Blocks.push_back(block);
 
-			// Create block
-			AssDialogueBlockOverride *block = new AssDialogueBlockOverride;
-			block->parent = this;
-			block->text = work;
-			block->ParseTags();
-			Blocks.push_back(block);
+			}
 
-			// Look for \p in block
-			std::vector<AssOverrideTag*>::iterator curTag;
-			for (curTag = block->Tags.begin();curTag != block->Tags.end();curTag++) {
-				AssOverrideTag *tag = *curTag;
-				if (tag->Name == _T("\\p")) {
-					drawingLevel = tag->Params.at(0)->AsInt();
+			else {
+				work = Text.substr(cur+1,end-cur-1);
+
+				// Create block
+				AssDialogueBlockOverride *block = new AssDialogueBlockOverride;
+				block->parent = this;
+				block->text = work;
+				block->ParseTags();
+				Blocks.push_back(block);
+
+				// Look for \p in block
+				std::vector<AssOverrideTag*>::iterator curTag;
+				for (curTag = block->Tags.begin();curTag != block->Tags.end();curTag++) {
+					AssOverrideTag *tag = *curTag;
+					if (tag->Name == _T("\\p")) {
+						drawingLevel = tag->Params.at(0)->AsInt();
+					}
 				}
 			}
 
