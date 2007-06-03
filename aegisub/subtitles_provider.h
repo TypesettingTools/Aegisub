@@ -75,4 +75,5 @@ protected:
 public:
 	virtual ~SubtitlesProviderFactory() {}
 	static SubtitlesProvider *GetProvider();
+	static bool ProviderAvailable();
 };

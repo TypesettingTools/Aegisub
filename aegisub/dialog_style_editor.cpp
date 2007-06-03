@@ -51,6 +51,7 @@
 #include "colour_button.h"
 #include "subs_preview.h"
 #include "options.h"
+#include "subtitles_provider.h"
 
 
 ///////
@@ -144,10 +145,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&AngleValue));
 	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&SpacingValue));
 	Encoding = new wxComboBox(this,COMBO_ENCODING,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
-	SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER,Options.AsColour(_T("Style editor preview background")));
-	PreviewText = NULL;	// Yes, this IS necessary
-	PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,Options.AsText(_T("Style editor preview text")));
-	previewButton = new ColourButton(this,BUTTON_PREVIEW_COLOR,wxSize(45,16),Options.AsColour(_T("Style editor preview background")));
 
 	// Set control tooltips
 	StyleName->SetToolTip(_("Style name."));
@@ -170,9 +167,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."));
 	Spacing->SetToolTip(_("Character spacing, in pixels."));
 	Alignment->SetToolTip(_("Alignment in screen, in numpad style."));
-	SubsPreview->SetToolTip(_("Preview of current stlye."));
-	PreviewText->SetToolTip(_("Text to be used for the preview."));
-	previewButton->SetToolTip(_("Colour of preview background."));
 
 	// Set up controls
 	BoxBold->SetValue(style->bold);
@@ -180,9 +174,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	BoxUnderline->SetValue(style->underline);
 	BoxStrikeout->SetValue(style->strikeout);
 	OutlineType->SetValue(style->borderstyle == 3);
-	SubsPreview->SetStyle(style);
 	Alignment->SetSelection(AlignToControl(style->alignment));
-	SubsPreview->SetText(PreviewText->GetValue());
 
 	// Set encoding value
 	int encLen = EncodingValue.Length();
@@ -281,11 +273,33 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Preview
 	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Preview"));
-	wxSizer *PreviewBottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	PreviewBottomSizer->Add(PreviewText,1,wxEXPAND | wxRIGHT,5);
-	PreviewBottomSizer->Add(previewButton,0,wxEXPAND,0);
-	PreviewBox->Add(SubsPreview,1,wxEXPAND | wxBOTTOM,5);
-	PreviewBox->Add(PreviewBottomSizer,0,wxEXPAND | wxBOTTOM,0);
+	if (SubtitlesProviderFactory::ProviderAvailable()) {
+		PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,Options.AsText(_T("Style editor preview text")));
+		previewButton = new ColourButton(this,BUTTON_PREVIEW_COLOR,wxSize(45,16),Options.AsColour(_T("Style editor preview background")));
+		SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER,Options.AsColour(_T("Style editor preview background")));
+	
+		SubsPreview->SetToolTip(_("Preview of current style."));
+		SubsPreview->SetStyle(style);
+		SubsPreview->SetText(PreviewText->GetValue());
+		PreviewText->SetToolTip(_("Text to be used for the preview."));
+		previewButton->SetToolTip(_("Colour of preview background."));
+
+		wxSizer *PreviewBottomSizer = new wxBoxSizer(wxHORIZONTAL);
+		PreviewBottomSizer->Add(PreviewText,1,wxEXPAND | wxRIGHT,5);
+		PreviewBottomSizer->Add(previewButton,0,wxEXPAND,0);
+		PreviewBox->Add(SubsPreview,1,wxEXPAND | wxBOTTOM,5);
+		PreviewBox->Add(PreviewBottomSizer,0,wxEXPAND | wxBOTTOM,0);
+	}
+	else {
+		wxStaticText *NoSP = new wxStaticText(this, -1, _("No subtitle providers available. Cannot preview subs."));
+		PreviewBox->AddStretchSpacer();
+		PreviewBox->Add(NoSP,1,wxEXPAND|wxLEFT|wxRIGHT,8);
+		PreviewBox->AddStretchSpacer();
+		SubsPreview = NULL;
+		PreviewText = NULL;
+	}
+
+
 
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -301,6 +315,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	ButtonSizer->Add(okButton,0,wxRIGHT,5);
 #endif
 	okButton->SetDefault();
+
 
 	// Left side sizer
 	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);
@@ -457,19 +472,19 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Exit
 		if (close) {
 			EndModal(1);
-			Options.SetText(_T("Style editor preview text"),PreviewText->GetValue());
+			if (PreviewText) Options.SetText(_T("Style editor preview text"),PreviewText->GetValue());
 			Options.Save();
 		}
 
 		// Update preview
-		else SubsPreview->SetStyle(style);
+		else if (SubsPreview) SubsPreview->SetStyle(style);
 	}
 
 	// Close
 	else {
 		if (close) {
 			EndModal(0);
-			Options.SetText(_T("Style editor preview text"),PreviewText->GetValue());
+			if (PreviewText) Options.SetText(_T("Style editor preview text"),PreviewText->GetValue());
 			Options.Save();
 		}
 	}
@@ -543,7 +558,7 @@ void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 		work->italic = (newfont.GetStyle() == wxFONTSTYLE_ITALIC);
 		work->underline = newfont.GetUnderlined();
 		UpdateWorkStyle();
-		SubsPreview->SetStyle(work);
+		if (SubsPreview) SubsPreview->SetStyle(work);
 
 		// Comic sans warning
 		if (newfont.GetFaceName() == _T("Comic Sans MS")) {
@@ -565,7 +580,7 @@ void DialogStyleEditor::OnSetColor (int n) {
 		default: throw _T("Never gets here");
 	}
 	modify->SetWXColor(colorButton[n-1]->GetColour());
-	SubsPreview->SetStyle(work);
+	if (SubsPreview) SubsPreview->SetStyle(work);
 }
 
 
@@ -573,7 +588,7 @@ void DialogStyleEditor::OnSetColor (int n) {
 // Child focus change
 void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
 	UpdateWorkStyle();
-	SubsPreview->SetStyle(work);
+	if (SubsPreview) SubsPreview->SetStyle(work);
 	event.Skip();
 }
 
@@ -582,7 +597,7 @@ void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
 // Preview text changed
 void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 	if (PreviewText) {
-		SubsPreview->SetText(PreviewText->GetValue());
+		if (SubsPreview) SubsPreview->SetText(PreviewText->GetValue());
 		event.Skip();
 	}
 }
@@ -591,7 +606,7 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 /////////////////////////////////////////
 // Change colour of preview's background
 void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
-	SubsPreview->SetColour(previewButton->GetColour());
+	if (SubsPreview) SubsPreview->SetColour(previewButton->GetColour());
 	Options.SetColour(_T("Style editor preview background"),previewButton->GetColour());
 	Options.Save();
 }
@@ -602,7 +617,7 @@ void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
 void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
 	if (!IsShownOnScreen()) return;
 	UpdateWorkStyle();
-	SubsPreview->SetStyle(work);
+	if (SubsPreview) SubsPreview->SetStyle(work);
 	event.Skip();
 }
 

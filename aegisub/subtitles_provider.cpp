@@ -45,6 +45,16 @@
 SubtitlesProvider::~SubtitlesProvider() {
 }
 
+////////////////////////////////////////////////////////////////
+// Check if provider available (doesn't verify provider works!)
+bool SubtitlesProviderFactory::ProviderAvailable() {
+	// List of providers
+	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
+
+	// None available
+	return (list.Count() > 0);
+}
+
 
 ////////////////
 // Get provider
