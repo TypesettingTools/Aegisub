@@ -128,6 +128,7 @@ Please visit http://aegisub.net to download latest version
 - Added a "Scale Border and Shadow" check box to script properties dialog. (AMZ)
 - Commiting text now commits times as well. (AMZ)
 - Fixed display of end frames on the subtitles grid, when set to frame mode. (demi)
+- Treat comments inside {}'s as plain text, not as overrides; Also, don't assume override blocks start with a backslash, even if they probably should (Dansolo)
 
 
 = 1.10 beta - 2006.08.07 ===========================
