@@ -112,9 +112,11 @@ void AssDialogueBlockOverride::ParseTags () {
 
 	// Initialize tokenizer
 	wxStringTokenizer tkn(text,_T("\\"),wxTOKEN_RET_EMPTY_ALL);
+	wxString curTag;
+	if (text.StartsWith(_T("\\"))) curTag = _T("\\");
 
 	while (tkn.HasMoreTokens()) {
-		wxString curTag = _T("\\");
+		//curTag will always start with a backslash after first loop - see end of loop
 		curTag += tkn.GetNextToken();
 		if (curTag == _T("\\")) continue;
 
@@ -130,6 +132,8 @@ void AssDialogueBlockOverride::ParseTags () {
 		AssOverrideTag *newTag = new AssOverrideTag;
 		newTag->SetText(curTag);
 		Tags.push_back(newTag);
+
+		curTag = _T("\\");
 	}
 }
 
