@@ -74,6 +74,7 @@
 // FrameMain constructor
 
 FrameMain::FrameMain (wxArrayString args)
+// FIXME: 800x600 default window size is tiny on high-res monitors, but maximised is not always desirable either
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(800,600),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
 #ifdef __WXGTK__

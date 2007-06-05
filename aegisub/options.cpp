@@ -95,7 +95,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetModificationType(MOD_RESTART);
 	SetInt(_T("Auto save every seconds"),60); // FIXME: this shouldn't need to require a restart
 	SetModificationType(MOD_AUTOMATIC);
-	SetText(_T("Auto save path"),_T("autosave"));
+	SetText(_T("Auto save path"),_T("autosave")); // what does this mean on linux? actually this should be under $HOME on any OS
 	SetBool(_T("Auto backup"),true);
 	SetText(_T("Auto backup path"),_T("autoback"));
 	SetText(_T("Auto recovery path"),_T("recovered"));
@@ -107,7 +107,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Auto save on every change"),false);
 
 	// Edit Box
-	SetText(_T("Dictionaries path"),_T("dictionaries"));
+	SetText(_T("Dictionaries path"),_T("dictionaries")); // don't these require restart?
 	SetText(_T("Spell Checker"),_T("hunspell"));
 	SetBool(_T("Link time boxes commit"),true);
 	SetModificationType(MOD_EDIT_BOX);
@@ -173,12 +173,14 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	// Audio Advanced
 	SetModificationType(MOD_AUDIO_RELOAD);
 	SetInt(_T("Audio Cache"),1);
-	#ifdef __WINDOWS__
+	#if defined(__WINDOWS__)
 	SetText(_T("Audio Player"),_T("dsound"));
+	#elif defined(__APPLE__)
+	SetText(_T("Autio Player"), _T("openal"));
 	#else
-	SetText(_T("Audio Player"),_T("portaudio"));
+	SetText(_T("Audio Player"),_T("portaudio")); // FIXME: should this be something else? perhaps alsa on linux and portaudio on everything else?
 	#endif
-	SetText(_T("Audio Provider"),_T("avisynth"));
+	SetText(_T("Audio Provider"),_T("avisynth")); // TODO: proper default on non-windows
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
 	SetText(_T("Audio Alsa Device"), _T("plughw:0,0"));
 	SetText(_T("Audio HD Cache Location"),_T("default"));
@@ -187,12 +189,12 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetInt(_T("Audio Spectrum Window"),8);
 
 	// Automation
-	SetModificationType(MOD_RESTART);
+	// The path changes only take effect when a script is (re)loaded but Automatic should be good enough, it certainly doesn't warrart a restart
+	SetModificationType(MOD_AUTOMATIC);
 	// TODO: these paths should be different on non-Windows systems
 	SetText(_T("Automation Base Path"), AegisubApp::folderName + _T("automation/"));
 	SetText(_T("Automation Include Path"), AegisubApp::folderName + _T("automation/include/"));
 	SetText(_T("Automation Autoload Path"), AegisubApp::folderName + _T("automation/autoload/"));
-	SetModificationType(MOD_AUTOMATIC);
 	SetInt(_T("Automation Trace Level"), 3);
 	SetInt(_T("Automation Thread Priority"), 1); // "below normal"
 	SetInt(_T("Automation Autoreload Mode"), 0); // never
