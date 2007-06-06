@@ -123,8 +123,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
 	performance_timer.Start();
-	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20),fontList,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
-	wxLogDebug(_T("Time to create and fill font face list: %d"), performance_timer.Time());
+	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20),0,0,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	wxLogDebug(_T("Time to create font face listbox: %d"), performance_timer.Time());
 	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
 	//wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
@@ -180,12 +180,19 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	BoxStrikeout->SetValue(style->strikeout);
 	OutlineType->SetValue(style->borderstyle == 3);
 	Alignment->SetSelection(AlignToControl(style->alignment));
+	// Fill font face list box
+	performance_timer.Start();
+	FontName->Freeze();
+	for (size_t i = 0; i < fontList.size(); i++) {
+		FontName->Append(fontList[i]);
+	}
+	FontName->Thaw();
+	wxLogDebug(_T("Time to fill font face listbox: %d"), performance_timer.Time());
 
 	// Set encoding value
-	int encLen = EncodingValue.Length();
 	bool found = false;
 	for (size_t i=0;i<encodingStrings.Count();i++) {
-		if (encodingStrings[i].Left(encLen) == EncodingValue) {
+		if (encodingStrings[i].StartsWith(EncodingValue)) {
 			Encoding->Select(i);
 			found = true;
 			break;
