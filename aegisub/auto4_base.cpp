@@ -72,10 +72,6 @@ namespace Automation4 {
 		if (!thedc) return false;
 		SetMapMode(thedc, MM_TEXT);
 
-		HDC dczero = GetDC(0);
-		//fontsize = -MulDiv((int)(fontsize+0.5), GetDeviceCaps(dczero, LOGPIXELSY), 72);
-		ReleaseDC(0, dczero);
-
 		LOGFONTW lf;
 		ZeroMemory(&lf, sizeof(lf));
 		lf.lfHeight = (LONG)fontsize;
