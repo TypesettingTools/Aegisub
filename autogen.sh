@@ -10,8 +10,8 @@ EXTRA_DIST = \\
 EOF
 
 find automation/ -name '*.lua' -or -name '*.rb' -or -name '*.auto3' -or -name '*.txt' | sed '{s/^automation\//\t/; s/$/ \\/}' >> automation/Makefile.am
-echo "\tdemos/raytracer-test1.ass \\" >> automation/Makefile.am
-echo "\tv4-docs/template-scripting-ideas.ass\n\n" >> automation/Makefile.am
+echo -e "\tdemos/raytracer-test1.ass \\" >> automation/Makefile.am
+echo -e "\tv4-docs/template-scripting-ideas.ass\n\n" >> automation/Makefile.am
 
 autoreconf -f -i -s
 

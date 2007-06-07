@@ -37,7 +37,6 @@ EXTRA_DIST = \
 	auto3.sln \
 	auto3.vcproj \
 	lua/ \
-	lua/Makefile \
 	lua/COPYRIGHT \
 	lua/README
 	lua/README.Aegisub \
