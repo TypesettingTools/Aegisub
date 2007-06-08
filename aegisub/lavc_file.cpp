@@ -34,7 +34,6 @@
 //
 
 
-#include "setup.h"
 #include <wx/wxprec.h>
 #include "lavc_file.h"
 

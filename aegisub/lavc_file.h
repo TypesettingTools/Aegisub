@@ -36,8 +36,6 @@
 
 #pragma once
 
-#include "setup.h"
-
 #ifdef WIN32
 #define EMULATE_INTTYPES
 #endif
