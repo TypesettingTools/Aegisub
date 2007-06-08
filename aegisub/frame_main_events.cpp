@@ -71,12 +71,6 @@
 #include "audio_display.h"
 #include "toggle_bitmap.h"
 #include "dialog_timing_processor.h"
-#if USE_FEXTRACKER == 1
-#include "../FexTrackerSource/FexTracker.h"
-#include "../FexTrackerSource/FexTrackingFeature.h"
-#include "../FexTrackerSource/FexMovement.h"
-#include "dialog_fextracker.h"
-#endif
 #include "dialog_progress.h"
 #include "dialog_options.h"
 #include "utils.h"

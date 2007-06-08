@@ -40,7 +40,6 @@
 #include <GL/glu.h>
 #include <wx/wxprec.h>
 #include "video_display_visual.h"
-#include "video_display_fextracker.h"
 #include "video_display.h"
 #include "video_provider.h"
 #include "vfr.h"
@@ -102,12 +101,6 @@ void VideoDisplayVisual::DrawOverlay() {
 	int y = mouseY;
 	int mx = mouseX * sw / w;
 	int my = mouseY * sh / h;
-
-	// Draw the control points for FexTracker
-	glDisable(GL_TEXTURE_2D);
-#if USE_FEXTRACKER == 1
-	parent->tracker->Render();
-#endif
 
 	// Draw lines
 	if (mode != 0) {
@@ -768,11 +761,6 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	bool hasOverlay = false;
 	bool realTime = Options.AsBool(_T("Video Visual Realtime"));
-
-	// Fextracker
-	#if USE_FEXTRACKER == 1
-	if (parent->tracker) parent->tracker->OnMouseEvent(event);
-	#endif
 
 	// Text of current coords
 	int vx = (sw * x + w/2) / w;

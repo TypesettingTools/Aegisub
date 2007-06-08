@@ -14,7 +14,7 @@ REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBU
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
 AM_CPPFLAGS = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
-aegisub_LDADD = posix/libposix.a ../FexTrackerSource/libfex.a ../csri/lib/.libs/libcsri.a
+aegisub_LDADD = posix/libposix.a ../csri/lib/.libs/libcsri.a
 aegisub_LDFLAGS = 
 
 if USE_LIBASS
@@ -85,7 +85,6 @@ EXTRA_aegisub_SOURCES = \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
 	factory.h \
-	fextracker_main_events.cpp \
 	lavc_file.cpp \
 	setup0.h \
 	setup.cpp \
@@ -94,7 +93,6 @@ EXTRA_aegisub_SOURCES = \
 	stdwx.h \
 	subtitle_format_prs.cpp \
 	subtitles_provider_libass.cpp \
-	video_display_fextracker.cpp \
 	video_provider_avs.cpp \
 	video_provider_dshow.cpp \
 	video_provider_lavc.cpp \
@@ -140,7 +138,6 @@ aegisub_SOURCES = \
 	dialog_detached_video.cpp \
 	dialog_dummy_video.cpp \
 	dialog_export.cpp \
-	dialog_fextracker.cpp \
 	dialog_fonts_collector.cpp \
 	dialog_jumpto.cpp \
 	dialog_kanji_timer.cpp \
@@ -208,7 +205,6 @@ aegisub_SOURCES = \
 	video_box.cpp \
 	video_context.cpp \
 	video_display.cpp \
-	video_display_fextracker.cpp \
 	video_display_visual.cpp \
 	video_frame.cpp \
 	video_provider.cpp \

@@ -231,7 +231,6 @@ AC_OUTPUT([
 	ac/Makefile
 	auto3/Makefile
 	automation/Makefile
-	FexTrackerSource/Makefile
 	locale/Makefile
 	aegisub/Makefile
 	aegisub/bitmaps/Makefile

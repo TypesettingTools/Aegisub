@@ -56,7 +56,6 @@ class AudioDisplay;
 class AssDialogue;
 class VideoProvider;
 class VideoDisplayVisual;
-class VideoDisplayFexTracker;
 class VideoBox;
 
 
@@ -86,7 +85,6 @@ private:
 
 public:
 	VideoDisplayVisual *visual;
-	VideoDisplayFexTracker *tracker;
 	VideoBox *box;
 
 	double zoomValue;

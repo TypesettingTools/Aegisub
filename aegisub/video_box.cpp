@@ -44,7 +44,6 @@
 #include "video_box.h"
 #include "video_display.h"
 #include "video_display_visual.h"
-#include "video_display_fextracker.h"
 #include "video_slider.h"
 #include "frame_main.h"
 #include "toggle_bitmap.h"
@@ -80,14 +79,6 @@ VideoBox::VideoBox(wxWindow *parent)
 	AutoScroll = new ToggleBitmap(videoPage,Video_Auto_Scroll,wxBITMAP(toggle_video_autoscroll),wxSize(30,-1));
 	AutoScroll->SetToolTip(_("Toggle autoscroll of video"));
 	AutoScroll->SetValue(Options.AsBool(_T("Sync video with subs")));
-
-	// Fextracker
-	#if USE_FEXTRACKER == 1
-	wxBitmapButton *VideoTrackerMenuButton = new wxBitmapButton(videoPage,Video_Tracker_Menu,wxBITMAP(button_track_points));
-	VideoTrackerMenuButton->SetToolTip(_("FexTracker"));
-	wxBitmapButton *VideoTrackerMenu2Button = new wxBitmapButton(videoPage,Video_Tracker_Menu2,wxBITMAP(button_track_trail));
-	VideoTrackerMenu2Button->SetToolTip(_("FexMovement"));
-	#endif
 
 	// Seek
 	videoSlider = new VideoSlider(videoPage,-1);
@@ -138,11 +129,6 @@ VideoBox::VideoBox(wxWindow *parent)
 	typeSizer->Add(scale,0,wxEXPAND,0);
 	typeSizer->Add(clip,0,wxEXPAND | wxBOTTOM,5);
 	typeSizer->Add(realtime,0,wxEXPAND,0);
-	#if USE_FEXTRACKER == 1
-	typeSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND|wxBOTTOM|wxTOP,5);
-	typeSizer->Add(VideoTrackerMenuButton,0,wxEXPAND,0);
-	typeSizer->Add(VideoTrackerMenu2Button,0,wxEXPAND,0);
-	#endif
 	typeSizer->AddStretchSpacer(1);
 
 	// Top sizer
@@ -184,12 +170,6 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 	EVT_BUTTON(Video_Mode_Scale, VideoBox::OnModeScale)
 	EVT_BUTTON(Video_Mode_Clip, VideoBox::OnModeClip)
 	EVT_TOGGLEBUTTON(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
-
-#if USE_FEXTRACKER == 1
-	EVT_BUTTON(Video_Tracker_Menu, VideoBox::OnVideoTrackerMenu)
-	EVT_BUTTON(Video_Tracker_Menu2, VideoBox::OnVideoTrackerMenu2)
-	EVT_MENU_RANGE(Video_Tracker_START,Video_Tracker_END, VideoBox::OnTrackerOption)
-#endif
 END_EVENT_TABLE()
 
 
@@ -275,46 +255,3 @@ void VideoBox::OnToggleRealtime(wxCommandEvent &event) {
 	Options.Save();
 }
 
-
-
-#if USE_FEXTRACKER == 1
-///////////////////
-// Tracker Menu
-void VideoBox::OnVideoTrackerMenu(wxCommandEvent &event) {
-	wxMenu menu( _("FexTracker") );
-	AppendBitmapMenuItem(&menu, Video_Track_Points, _("Track points"), _T(""), wxBITMAP(button_track_points));
-	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Point_Add, _("Add points to movement"), _T(""), wxBITMAP(button_track_point_add));
-	AppendBitmapMenuItem(&menu, Video_Track_Point_Del, _("Remove points from movement"), _T(""), wxBITMAP(button_track_point_del));
-	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Movement, _("Generate movement from points"), _T(""), wxBITMAP(button_track_movement));
-	PopupMenu(&menu);
-}
-
-	
-///////////////////
-// Movement Menu
-void VideoBox::OnVideoTrackerMenu2(wxCommandEvent &event) {
-	wxMenu menu( _("FexMovement") );
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_Empty, _("Generate empty movement"), _T(""), wxBITMAP(button_track_move));
-	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAll, _("Move subtitle"), _T(""), wxBITMAP(button_track_move));
-	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveBefore, _("Move subtitle (this frame and preceeding frames)"), _T(""), wxBITMAP(button_track_move));
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveOne, _("Move subtitle (this frame)"), _T(""), wxBITMAP(button_track_move));
-	AppendBitmapMenuItem(&menu, Video_Track_Movement_MoveAfter, _("Move subtitle (this frame and following frames)"), _T(""), wxBITMAP(button_track_move));
-	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Split_Line, _("Split line for movement"), _T(""), wxBITMAP(button_track_split_line));
-	menu.AppendSeparator();
-	AppendBitmapMenuItem(&menu, Video_Track_Link_File, _("Link movement file"), _T(""), wxBITMAP(button_track_move));
-	PopupMenu(&menu);
-}
-
-
-////////////////////
-// Forward options
-void VideoBox::OnTrackerOption(wxCommandEvent &event) {
-	videoDisplay->tracker->AddPendingEvent(event);
-}
-
-#endif

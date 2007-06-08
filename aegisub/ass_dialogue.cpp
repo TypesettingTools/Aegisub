@@ -38,10 +38,6 @@
 // Includes
 #include <fstream>
 #include <wx/tokenzr.h>
-#if USE_FEXTRACKER == 1
-#include "../FexTrackerSource/FexTracker.h"
-#include "../FexTrackerSource/FexMovement.h"
-#endif
 #include "setup.h"
 #include "ass_dialogue.h"
 #include "ass_override.h"
@@ -52,11 +48,6 @@
 ////////////////////// AssDialogue //////////////////////
 // Constructs AssDialogue
 AssDialogue::AssDialogue() {
-#if USE_FEXTRACKER == 1
-	Tracker = 0;
-	Movement = 0;
-#endif
-
 	group = _T("[Events]");
 
 	Valid = true;
@@ -76,11 +67,6 @@ AssDialogue::AssDialogue() {
 
 
 AssDialogue::AssDialogue(wxString _data,int version) {
-#if USE_FEXTRACKER == 1
-	Tracker = 0;
-	Movement = 0;
-#endif
-
 	// Set group
 	group = _T("[Events]");
 
@@ -115,18 +101,6 @@ AssDialogue::~AssDialogue () {
 // Clear
 void AssDialogue::Clear () {
 	ClearBlocks();
-#if USE_FEXTRACKER == 1
-	if( Tracker )
-	{
-		delete Tracker;
-		Tracker = 0;
-	}
-	if( Movement )
-	{
-		DeleteMovement( Movement );
-		Movement = 0;
-	}
-#endif
 }
 
 
@@ -230,19 +204,8 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	Effect.Trim(true);
 	Effect.Trim(false);
 
-#if USE_FEXTRACKER == 1
-	if( Effect.BeforeFirst(':')==_T("FexMovement") )
-	{
-		if( Movement ) DeleteMovement( Movement );
-		Movement = CreateMovement();
-		LoadMovement( Movement, Effect.AfterFirst(':').c_str() );
-	}
-#endif
-
 	// Get text
 	Text = rawData.Mid(pos+tkn.GetPosition());
-
-
 
 	return true;
 }

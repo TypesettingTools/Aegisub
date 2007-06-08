@@ -67,7 +67,6 @@
 #include "main.h"
 #include "video_slider.h"
 #include "video_box.h"
-#include "video_display_fextracker.h"
 
 
 ///////
@@ -117,10 +116,6 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	zoomValue = 1.0;
 	freeSize = false;
 	visual = new VideoDisplayVisual(this);
-	tracker = NULL;
-#if USE_FEXTRACKER == 1
-	tracker = new VideoDisplayFexTracker(this);
-#endif
 	SetCursor(wxNullCursor);
 }
 
@@ -129,9 +124,6 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 // Destructor
 VideoDisplay::~VideoDisplay () {
 	delete visual;
-#if USE_FEXTRACKER == 1
-	delete tracker;
-#endif
 	VideoContext::Get()->RemoveDisplay(this);
 }
 
@@ -368,12 +360,6 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 	// Disable when playing
 	if (VideoContext::Get()->IsPlaying()) return;
-
-	// OnMouseLeave isn't called as long as we have an OnMouseEvent
-	// Just check for it and call it manually instead
-	if (event.Leaving()) {
-		if (tracker) tracker->bTrackerEditing = 0;
-	}
 
 	// Right click
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {

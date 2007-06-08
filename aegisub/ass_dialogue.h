@@ -43,10 +43,6 @@
 #include <vector>
 #include "ass_entry.h"
 #include "ass_time.h"
-#if USE_FEXTRACKER == 1
-class FexTracker;
-class FexMovement;
-#endif
 
 
 //////////////
@@ -171,10 +167,6 @@ public:
 	wxString Actor;					// Actor name
 	wxString Effect;				// Effect name
 	wxString Text;					// Raw text data
-#if USE_FEXTRACKER == 1
-	FexTracker *Tracker;			// Point tracker
-	FexMovement *Movement;			// Point tracker generated movement
-#endif
 
 	ASS_EntryType GetType() { return ENTRY_DIALOGUE; }
 
