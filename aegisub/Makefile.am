@@ -86,7 +86,6 @@ EXTRA_aegisub_SOURCES = \
 	dialog_associations.cpp \
 	factory.h \
 	lavc_file.cpp \
-	setup0.h \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
 	stdwx.cpp \

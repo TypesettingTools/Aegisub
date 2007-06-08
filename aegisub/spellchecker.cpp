@@ -36,7 +36,6 @@
 
 ///////////
 // Headers
-#include "setup.h"
 #include "spellchecker.h"
 #include "options.h"
 

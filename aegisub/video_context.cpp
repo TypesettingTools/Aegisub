@@ -36,7 +36,6 @@
 
 ////////////
 // Includes
-#include "setup.h"
 #ifdef HAVE_APPLE_OPENGL_FRAMEWORK
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>

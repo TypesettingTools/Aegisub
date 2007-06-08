@@ -37,7 +37,6 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "setup.h"
 
 
 //////////////////////////////////

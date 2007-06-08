@@ -39,7 +39,6 @@
 
 ////////////
 // Includes
-#include "setup.h"
 #include <vector>
 #include "ass_entry.h"
 #include "ass_time.h"

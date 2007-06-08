@@ -36,7 +36,6 @@
 
 ////////////
 // Includes
-#include "setup.h"
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
 #include "subs_edit_box.h"

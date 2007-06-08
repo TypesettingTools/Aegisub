@@ -39,7 +39,6 @@
 
 ///////////
 // Headers
-#include "setup.h"
 #if USE_PRS == 1
 #include "subtitle_format.h"
 #include <vector>

@@ -48,7 +48,6 @@
 #include "frame_main.h"
 #include "toggle_bitmap.h"
 #include "options.h"
-#include "setup.h"
 #include "subs_grid.h"
 #include "video_provider.h"
 #include "ass_file.h"

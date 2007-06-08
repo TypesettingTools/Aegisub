@@ -39,7 +39,6 @@
 #include "video_provider.h"
 #include "video_provider_dummy.h"
 #include "options.h"
-#include "setup.h"
 #include "vfr.h"
 
 

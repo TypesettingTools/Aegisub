@@ -36,7 +36,6 @@
 
 ///////////////////
 // Include headers
-#include "setup.h"
 #include <wx/wxprec.h>
 #include <wx/mimetype.h>
 #include <wx/filename.h>
