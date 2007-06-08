@@ -7,7 +7,7 @@ cat > automation/Makefile.am <<EOF
 ## Please edit autogen.sh if you need to modify this file.
 
 automationdir = \$(datarootdir)/aegisub/automation
-automation_DATA = \\
+dist_automation_DATA = \\
 EOF
 
 find automation/ -name '*.lua' -or -name '*.rb' -or -name '*.auto3' -or -name '*.txt' | sed '{s/^automation\//\t/; s/$/ \\/}' >> automation/Makefile.am

@@ -36,7 +36,6 @@ libaegisub_auto3_la_SOURCES = \
 EXTRA_DIST = \
 	auto3.sln \
 	auto3.vcproj \
-	lua/ \
 	lua/COPYRIGHT \
 	lua/README
 	lua/README.Aegisub \
@@ -44,13 +43,33 @@ EXTRA_DIST = \
 	lua/DIFFS \
 	lua/HISTORY \
 	lua/lua.vcproj \
-	lua/doc/ \
 	lua/doc/contents.html \
 	lua/doc/manual.html \
 	lua/doc/readme.html \
-	lua/doc/logo.gif \
-	lua/include/ \
+	lua/doc/logo.gif
+
+noinst_HEADERS = \
+	auto3.h \
 	lua/include/lua.h \
 	lua/include/lualib.h \
-	lua/include/lauxlib.h
+	lua/include/lauxlib.h \
+	lua/src/lapi.h \
+	lua/src/lcode.h \
+	lua/src/ldebug.h \
+	lua/src/ldo.h \
+	lua/src/lfunc.h \
+	lua/src/lgc.h \
+	lua/src/llex.h \
+	lua/src/llimits.h \
+	lua/src/lmem.h \
+	lua/src/lobject.h \
+	lua/src/lopcodes.h \
+	lua/src/lparser.h \
+	lua/src/lstate.h \
+	lua/src/lstring.h \
+	lua/src/ltable.h \
+	lua/src/ltm.h \
+	lua/src/lundump.h \
+	lua/src/lzio.h \
+	lua/src/lvm.h
 

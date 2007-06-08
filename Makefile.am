@@ -14,7 +14,6 @@ EXTRA_DIST = \
 	lua51/Makefile \
 	lua51/README \
 	lua51/README.Aegisub \
-	lua51/doc/ \
 	lua51/doc/contents.html \
 	lua51/doc/logo.gif \
 	lua51/doc/lua.css \
@@ -22,7 +21,6 @@ EXTRA_DIST = \
 	lua51/doc/readme.html \
 	lua51/lua51.vcproj \
 	lua51/lua51_vc8.vcproj \
-	lua51/src/ \
 	lua51/src/Makefile \
 	lua51/src/lapi.c \
 	lua51/src/lapi.h \
