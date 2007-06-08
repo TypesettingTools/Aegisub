@@ -8,6 +8,17 @@ AC_GNU_SOURCE
 
 AC_CANONICAL_HOST
 
+# --enable-lemming: make errors non-fatal. to be used for
+# creating dist packages on boxes without X11. intentionally
+# not appearing in --help :)
+ignore_failure=""
+AC_ARG_ENABLE([lemming], [], [ignore_failure="$enableval"])
+AC_DEFUN([AC_MSG_XFAILURE], [{
+	if test "$ignore_failure" == "yes"
+	then	AC_MSG_WARN([$1])
+	else	AC_MSG_FAILURE([$1])
+	fi
+}])
 
 dnl Checks for programs.
 CHECK_GNU_MAKE
@@ -18,7 +29,7 @@ AC_PROG_LIBTOOL
 
 AC_PATH_PROGS(CONVERT, [convert], [])
 if test -z "$CONVERT"; then
-	AC_MSG_FAILURE([Aegisub needs convert (from ImageMagick) to produce xpms from the supplied bitmaps/icons])
+	AC_MSG_XFAILURE([Aegisub needs convert (from ImageMagick) to produce xpms from the supplied bitmaps/icons])
 fi
 
 dnl Don't replace this with AC_GNU_GETTEXT, we don't want the framework-mess
@@ -26,11 +37,11 @@ dnl that macro depends on, just check if the single program we need is
 dnl installed on the system. We can probably even do with non-GNU versions.
 AC_PATH_PROGS(MSGFMT, [msgfmt], [])
 if test -z "$MSGFMT"
-then	AC_MSG_FAILURE([Aegisub needs msgfmt from gettext-tools to compile i18n string tables])
+then	AC_MSG_XFAILURE([Aegisub needs msgfmt from gettext-tools to compile i18n string tables])
 fi
 
 ACX_PTHREAD([], [
-	AC_MSG_FAILURE([Aegisub needs pthreads])
+	AC_MSG_XFAILURE([Aegisub needs pthreads])
 ])
 AC_MSG_CHECKING([whether pthreads works])
 AC_COMPILE_IFELSE([
@@ -51,7 +62,7 @@ int main() { return 0; }
 * it now.
 ***********************************************************************
 EOM
-	AC_MSG_FAILURE([You need a working pthreads installation.])
+	AC_MSG_XFAILURE([You need a working pthreads installation.])
 ])
 
 
@@ -68,10 +79,10 @@ AC_CHECK_LIB([hunspell], [main],, [with_hunspell=no])
 AC_CHECK_LIB([ruby1.9], [ruby_init],, [with_ruby=no])
 
 AC_CHECK_HEADER([wchar.h],,[
-	AC_MSG_FAILURE([aegisub needs wide character support, find a wchar.h])
+	AC_MSG_XFAILURE([aegisub needs wide character support, find a wchar.h])
 ])
 PKG_CHECK_MODULES([FREETYPE], freetype2 >= 9.7.0,, [
-	AC_MSG_FAILURE([aegisub needs FreeType2 2.1.9, go install it])
+	AC_MSG_XFAILURE([aegisub needs FreeType2 2.1.9, go install it])
 ])
 
 WXCONFIG=wx-config
@@ -86,7 +97,7 @@ AC_ARG_WITH(wx-config,
 AX_CHECK_GL
 if test ! "$GL_LIBS"; then
 	AC_MSG_WARN([Could not find system GL library])
-	AC_MSG_FAILURE([GL support is required to build Aegisub. (Try mesa3d)])
+	AC_MSG_XFAILURE([GL support is required to build Aegisub. (Try mesa3d)])
 fi
 CPPFLAGS="$CPPFLAGS $GL_CFLAGS"
 LIBS="$LIBS $GL_LIBS"
@@ -96,7 +107,7 @@ if wxversion=`$WXCONFIG --version`; then
     AC_MSG_RESULT([$wxversion])
 else
     AC_MSG_RESULT([not found])
-    AC_MSG_ERROR([wxWidgets is required. Try --with-wx-config.])
+    AC_MSG_XFAILURE([wxWidgets is required. Try --with-wx-config.])
 fi
 
 CPPFLAGS="$CPPFLAGS `$WXCONFIG --cppflags | sed -e 's/-fno-exceptions//'` $FREETYPE_CFLAGS"
@@ -113,7 +124,7 @@ int main(int argc, char **argv) {
 	AC_MSG_RESULT([yes])
 ],[
 	AC_MSG_RESULT([not available])
-	AC_MSG_FAILURE([wxWidgets OpenGL support missing])
+	AC_MSG_XFAILURE([wxWidgets OpenGL support missing])
 ])
 
 AC_MSG_CHECKING([wxWidgets StyledTextCtrl support])
@@ -127,7 +138,7 @@ int main(int argc, char **argv) {
 	AC_MSG_RESULT([yes])
 ],[
 	AC_MSG_RESULT([not available])
-	AC_MSG_FAILURE([wxWidgets missing StyledTextCtrl])
+	AC_MSG_XFAILURE([wxWidgets missing StyledTextCtrl])
 ])
 
 AC_CHECK_LIB([m], [main])
@@ -143,12 +154,12 @@ AS_IF([test "x$with_libass" != xno], [
 		AC_CHECK_HEADERS([ass/ass.h], [
 			with_libass=yes
 		], [	if test "x$with_libass" != xcheck
-			then	AC_MSG_FAILURE([--with-libass given, but libass headers not found])
+			then	AC_MSG_XFAILURE([--with-libass given, but libass headers not found])
 			fi
 			with_libass=no
 		])
 	], [	if test "x$with_libass" != xcheck
-		then	AC_MSG_FAILURE([--with-libass given, but libass pkgconfig module found])
+		then	AC_MSG_XFAILURE([--with-libass given, but libass pkgconfig module found])
 		fi
 		with_libass=no
 	])
