@@ -468,7 +468,7 @@ void AssDialogue::ParseASSTags () {
 				work = Text.substr(cur);
 				end = len;
 			}
-			else work = Text.substr(cur,end-cur);
+			else work = Text.substr(cur,end-cur+1);
 			
 			if (work.Find(_T("\\")) == wxNOT_FOUND) {
 				//We've found an override block with no backslashes
@@ -481,8 +481,7 @@ void AssDialogue::ParseASSTags () {
 			}
 
 			else {
-				work = Text.substr(cur+1,end-cur-1);
-
+				work = work.substr(1,work.Len()-2); // trim { and }
 				// Create block
 				AssDialogueBlockOverride *block = new AssDialogueBlockOverride;
 				block->parent = this;
