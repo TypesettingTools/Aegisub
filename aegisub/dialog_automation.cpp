@@ -203,7 +203,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &evt)
 
 		try {
 			ExtraScriptInfo ei;
-			ei.script = Automation4::ScriptFactory::CreateFromFile(fname);
+			ei.script = Automation4::ScriptFactory::CreateFromFile(fname, false);
 			local_manager->Add(ei.script);
 			ei.is_global = false;
 			AddScript(ei);

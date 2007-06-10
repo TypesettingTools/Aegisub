@@ -847,7 +847,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 				sfname.MakeAbsolute(basepath);
 				if (sfname.FileExists()) {
 					sfnames = sfname.GetFullPath();
-					local_scripts->Add(Automation4::ScriptFactory::CreateFromFile(sfnames));
+					local_scripts->Add(Automation4::ScriptFactory::CreateFromFile(sfnames, true));
 				} else {
 					wxLogWarning(_T("Automation Script referenced could not be found.\nFilename specified: %s%s\nSearched relative to: %s\nResolved filename: %s"),
 						sfnamel.c_str(), sfnames.c_str(), basepath.c_str(), sfname.GetFullPath().c_str());

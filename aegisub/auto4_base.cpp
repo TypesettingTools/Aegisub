@@ -512,7 +512,7 @@ namespace Automation4 {
 		// copied from auto3
 		include_path.clear();
 		include_path.EnsureFileAccessible(filename);
-		wxStringTokenizer toker(Options.AsText(_T("Automation Include Path")), _T("|"), false);
+		wxStringTokenizer toker(Options.AsText(_T("Automation Include Path")), _T("|"), wxTOKEN_STRTOK);
 		while (toker.HasMoreTokens()) {
 			// todo? make some error reporting here
 			wxFileName path(toker.GetNextToken());
@@ -641,37 +641,45 @@ namespace Automation4 {
 
 	void AutoloadScriptManager::Reload()
 	{
-		wxDir dir;
-		if (!dir.Exists(path)) {
-			return;
-		}
-		if (!dir.Open(path)) {
-			return;
-		}
-
 		RemoveAll();
 
 		int error_count = 0;
 
-		wxString fn;
-		wxFileName script_path(path, _T(""));
-		bool more = dir.GetFirst(&fn, wxEmptyString, wxDIR_FILES);
-		while (more) {
-			script_path.SetName(fn);
-			try {
-				Add(ScriptFactory::CreateFromFile(script_path.GetFullPath()));
+		wxStringTokenizer tok(path, _T("|"), wxTOKEN_STRTOK);
+		while (tok.HasMoreTokens()) {
+			wxDir dir;
+			wxString dirname = tok.GetNextToken();
+			if (!dir.Exists(dirname)) {
+				wxLogWarning(_T("A directory was specified in the Automation autoload path, but it doesn't exist: %s"), dirname.c_str());
+				continue;
 			}
-			catch (const wchar_t *e) {
-				error_count++;
-				wxLogError(_T("Error loading Automation script: %s\n%s"), fn.c_str(), e);
+			if (!dir.Open(dirname)) {
+				wxLogWarning(_T("Failed to open a directory in the Automation autoload path: %s"), dirname.c_str());
+				continue;
 			}
-			catch (...) {
-				error_count++;
-				wxLogError(_T("Error loading Automation script: %s\nUnknown error."), fn.c_str());
+
+			wxString fn;
+			wxFileName script_path(path, _T(""));
+			bool more = dir.GetFirst(&fn, wxEmptyString, wxDIR_FILES);
+			while (more) {
+				script_path.SetName(fn);
+				try {
+					Script *s = ScriptFactory::CreateFromFile(script_path.GetFullPath(), true);
+					Add(s);
+					if (!s->GetLoadedState()) error_count++;
+				}
+				catch (const wchar_t *e) {
+					error_count++;
+					wxLogError(_T("Error loading Automation script: %s\n%s"), fn.c_str(), e);
+				}
+				catch (...) {
+					error_count++;
+					wxLogError(_T("Error loading Automation script: %s\nUnknown error."), fn.c_str());
+				}
+				more = dir.GetNext(&fn);
 			}
-			more = dir.GetNext(&fn);
 		}
-		if (error_count) {
+		if (error_count > 0) {
 			wxLogWarning(_T("One or more scripts placed in the Automation autoload directory failed to load\nPlease review the errors above, correct them and use the Reload Autoload dir button in Automation Manager to attempt loading the scripts again."));
 		}
 	}
@@ -699,7 +707,7 @@ namespace Automation4 {
 
 		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
 			if (*i == factory) {
-				throw _T("Automation 4: Attempt to register the same script factory multiple times.");
+				throw _T("Automation 4: Attempt to register the same script factory multiple times. This should never happen.");
 			}
 		}
 		factories->push_back(factory);
@@ -718,7 +726,7 @@ namespace Automation4 {
 		}
 	}
 
-	Script* ScriptFactory::CreateFromFile(const wxString &filename)
+	Script* ScriptFactory::CreateFromFile(const wxString &filename, bool log_errors)
 	{
 		if (!factories)
 			factories = new std::vector<ScriptFactory*>();
@@ -726,13 +734,22 @@ namespace Automation4 {
 		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
 			try {
 				Script *s = (*i)->Produce(filename);
-				if (s) return s;
+				if (s) {
+					if (!s->GetLoadedState() && log_errors) {
+						wxLogError(_("An Automation script failed to load. File name: '%s', error reported:"), filename.c_str());
+						wxLogError(s->GetDescription());
+					}
+					return s;
+				}
 			}
 			catch (Script *e) {
 				// This was the wrong script factory, but it throwing a Script object means it did know what to do about the file
 				// Use this script object
 				return e;
 			}
+		}
+		if (log_errors) {
+			wxLogWarning(_("The file was not recognised as an Automation script: %s"), filename.c_str());
 		}
 		return new UnknownScript(filename);
 	}
