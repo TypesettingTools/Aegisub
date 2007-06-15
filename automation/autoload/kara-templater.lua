@@ -34,6 +34,7 @@
 script_name = "Karaoke Templater"
 script_description = "Macro and export filter to apply karaoke effects using the template language"
 script_author = "Niels Martin Hansen"
+script_version = "0.9 beta 1"
 
 
 include("karaskel.lua")
@@ -130,7 +131,9 @@ function parse_template(meta, styles, line, templates, mods)
 		keeptags = false,
 		inline_fx = nil,
 		multi = false,
-		isline = false
+		isline = false,
+		perchar = false,
+		noblank = false
 	}
 	local inserted = false
 	
@@ -174,11 +177,7 @@ function parse_template(meta, styles, line, templates, mods)
 		elseif m == "syl" and not template.isline then
 			table.insert(templates.syl, template)
 			inserted = true
-		elseif m == "char" and not template.isline then
-			table.insert(templates.char, template)
-			inserted = true
 		elseif m == "furi" and not template.isline then
-			aegisub.debug.out(3, "Warning, furi template class used but furigana support isn't implemented yet\n\n")
 			table.insert(templates.furi, template)
 			inserted = true
 		elseif (m == "pre-line" or m == "line") and inserted then
@@ -202,6 +201,10 @@ function parse_template(meta, styles, line, templates, mods)
 			template.keeptags = true
 		elseif m == "multi" then
 			template.multi = true
+		elseif m == "char" then
+			template.perchar = true
+		elseif m == "noblank" then
+			template.noblank = true
 		elseif m == "fx" then
 			local fx, t = string.headtail(rest)
 			if fx ~= "" then
@@ -279,6 +282,37 @@ function apply_templates(meta, styles, subs, templates)
 	end
 end
 
+function set_ctx_syl(varctx, line, syl)
+	varctx.sstart = syl.start_time
+	varctx.send = syl.end_time
+	varctx.sdur = syl.duration
+	varctx.skdur = syl.duration / 10
+	varctx.smid = syl.start_time + syl.duration / 2
+	varctx["start"] = varctx.sstart
+	varctx["end"] = varctx.send
+	varctx.dur = varctx.sdur
+	varctx.kdur = varctx.skdur
+	varctx.mid = varctx.smid
+	varctx.si = syl.i
+	varctx.i = varctx.si
+	varctx.sleft = math.floor(syl.left+0.5)
+	varctx.scenter = math.floor(syl.center+0.5)
+	varctx.sright = math.floor(syl.right+0.5)
+	if line.halign == "left" then
+		varctx.sx = math.floor(line.left + syl.left + 0.5)
+	elseif line.halign == "center" then
+		varctx.sx = math.floor(line.left + syl.center + 0.5)
+	elseif line.halign == "right" then
+		varctx.sx = math.floor(line.left + syl.right + 0.5)
+	end
+	varctx.sy = math.floor(line.y+0.5)
+	varctx.left = varctx.sleft
+	varctx.center = varctx.scenter
+	varctx.right = varctx.sright
+	varctx.x = varctx.sx
+	varctx.y = varctx.sy
+end
+
 function apply_line(meta, styles, subs, line, templates, tenv)
 	-- Tell whether any templates were applied to this line, needed to know whether the original line should be removed from input
 	local applied_templates = false
@@ -304,7 +338,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		lright = math.floor(line.left + line.width + 0.5),
 		lx = math.floor(line.x+0.5),
 		ly = math.floor(line.y+0.5)
-		-- TODO: more positioning vars
+		-- TODO? more positioning vars
 	}
 	
 	-- Specific for whole-line processing
@@ -319,37 +353,6 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	varctx.x = varctx.lx
 	varctx.y = varctx.ly
 	
-	local function set_ctx_syl(syl)
-		varctx.sstart = syl.start_time
-		varctx.send = syl.end_time
-		varctx.sdur = syl.duration
-		varctx.skdur = syl.duration / 10
-		varctx.smid = syl.start_time + syl.duration / 2
-		varctx["start"] = varctx.sstart
-		varctx["end"] = varctx.send
-		varctx.dur = varctx.sdur
-		varctx.kdur = varctx.skdur
-		varctx.mid = varctx.smid
-		varctx.si = syl.i
-		varctx.i = varctx.si
-		varctx.sleft = math.floor(syl.left+0.5)
-		varctx.scenter = math.floor(syl.center+0.5)
-		varctx.sright = math.floor(syl.right+0.5)
-		if line.halign == "left" then
-			varctx.sx = math.floor(line.left + syl.left + 0.5)
-		elseif line.halign == "center" then
-			varctx.sx = math.floor(line.left + syl.center + 0.5)
-		elseif line.halign == "right" then
-			varctx.sx = math.floor(line.left + syl.right + 0.5)
-		end
-		varctx.sy = math.floor(line.y+0.5)
-		varctx.left = varctx.sleft
-		varctx.center = varctx.scenter
-		varctx.right = varctx.sright
-		varctx.x = varctx.sx
-		varctx.y = varctx.sy
-	end
-
 	tenv.orgline = line
 	tenv.line = nil
 	tenv.syl = nil
@@ -375,7 +378,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 				for i = 1, line.kara.n do
 					local syl = line.kara[i]
 					tenv.syl = syl
-					set_ctx_syl(syl)
+					set_ctx_syl(varctx, line, syl)
 					newline.text = newline.text .. run_text_template(t.t, tenv, varctx)
 					if t.addtext then
 						if t.keeptags then
@@ -399,66 +402,16 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	for i = 0, line.kara.n do
 		local syl = line.kara[i]
 		
-		-- Apply syllable templates
-		for t in matching_templates(templates.syl, line) do
-			tenv.syl = syl
-			set_ctx_syl(syl)
-	
-			if not t.inline_fx or t.inline_fx == syl.inline_fx then
-				if t.code then
-					if t.multi then
-						-- TODO: apply for each highlight
-					else
-						run_code_template(t, tenv)
-					end
-				elseif t.multi then
-					applied_templates = true
-					for hl = 1, syl.highlights.n do
-						local hldata = syl.highlights[hl]
-						local hlsyl = table.copy(syl)
-						hlsyl.start_time = hldata.start_time
-						hlsyl.end_time = hldata.end_time
-						hlsyl.duration = hldata.duration
-						tenv.basesyl = syl
-						tenv.syl = hlsyl
-						set_ctx_syl(hlsyl)
-						
-						for j = 1, t.loops do
-							tenv.j = j
-							local newline = table.copy(line)
-							tenv.line = newline
-							newline.text = run_text_template(t.t, tenv, varctx)
-							if t.addtext then
-								newline.text = newline.text .. syl.text_stripped
-							end
-							newline.effect = "fx"
-							subs.append(newline)
-						end
-					end
-				else
-					applied_templates = true
-					for j = 1, t.loops do
-						tenv.j = j
-						local newline = table.copy(line)
-						tenv.line = newline
-						newline.text = run_text_template(t.t, tenv, varctx)
-						if t.addtext then
-							newline.text = newline.text .. syl.text_stripped
-						end
-						newline.effect = "fx"
-						subs.append(newline)
-					end
-				end
-			end
-		end
-		
-		-- Apply character templates
-		-- TODO
+		applied_templates = applied_templates or
+			apply_syllable_templates(syl, line, templates.syl, tenv, varctx, subs)
 	end
 	
 	-- Loop over furigana
 	for i = 1, line.furi.n do
-		-- TODO
+		local furi = line.furi[i]
+		
+		applied_templates = applied_templates or
+			apply_syllable_templates(furi, line, templates.furi, tenv, varctx, subs)
 	end
 	
 	return applied_templates
@@ -469,6 +422,7 @@ function run_code_template(template, tenv)
 	if not f then
 		aegisub.debug.out(2, "Failed to parse Lua code: %s\nCode that failed to parse: %s\n\n", err, template.code)
 	else
+		local pcall = pcall
 		setfenv(f, tenv)
 		for j = 1, template.loops do
 			tenv.j = j
@@ -528,6 +482,113 @@ function run_text_template(template, tenv, varctx)
 	return res
 end
 
+function apply_syllable_templates(syl, line, templates, tenv, varctx, subs)
+	local applied_templates = false
+	
+	-- Loop over all templates matching the line style
+	for t in matching_templates(templates.syl, line) do
+		tenv.syl = syl
+		set_ctx_syl(varctx, line, syl)
+		
+		applied_templates = applied_templates or
+			apply_one_syllable_template(syl, line, t, tenv, varctx, subs, false, false)
+	end
+	
+	return applied_templates
+end
+
+function is_syl_blank(syl)
+	if syl.duration <= 0 then
+		return true
+	end
+	
+	-- try to remove common spacing characters
+	local t = syl.text_stripped
+	if t:len() <= 0 then return true end
+	t = t:gsub("[ \t\n\r]", "") -- regular ASCII space characters
+	t = t:gsub("　", "") -- fullwidth space
+	return t:len() <= 0
+end
+
+function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, skip_perchar, skip_multi)
+	local t = template
+	
+	-- Check for right inline_fx
+	if t.inline_fx and t.inline_fx ~= syl.inline_fx then
+		return false
+	end
+	
+	if t.noblank and is_syl_blank(syl) then
+		return false
+	end
+	
+	-- Recurse to per-char if required
+	if not skip_perchar and t.perchar then
+		local charsyl = table.copy(syl)
+		tenv.basesyl = tenv.basesyl or syl
+		tenv.syl = charsyl
+		set_ctx_syl(varctx, line, charsyl)
+		
+		local left, width = syl.left, 0
+		for c in unicode.chars(syl.text_stripped) do
+			charsyl.text = c
+			charsyl.text_stripped = c
+			charsyl.text_spacestripped = c
+			charsyl.prespace, charsyl.postspace = "", "" -- for whatever anyone might use these for
+			width = aegisub.text_extents(syl.style, c)
+			charsyl.left = left
+			charsyl.center = left + width/2
+			charsyl.right = left + width
+			charsyl.prespacewidth, charsyl.postspacewidth = 0, 0 -- whatever...
+			left = left + width
+			
+			apply_one_syllable_template(charsyl, line, t, tenv, varctx, subs, true, false)
+		end
+	
+		return true
+	end
+	
+	-- Recurse to multi-hl if required
+	if not skip_multi and t.multi then
+		local hlsyl = table.copy(syl)
+		tenv.basesyl = tenv.basesyl or syl
+		tenv.syl = hlsyl
+		set_ctx_syl(varctx, line, hlsyl)
+		
+		for hl = 1, syl.highlights.n do
+			local hldata = syl.highlights[hl]
+			hlsyl.start_time = hldata.start_time
+			hlsyl.end_time = hldata.end_time
+			hlsyl.duration = hldata.duration
+			
+			apply_one_syllable_template(hlsyl, line, t, tenv, varctx, subs, true, true)
+		end
+	
+		return true
+	end
+
+	-- Regular processing
+	if not t.inline_fx or t.inline_fx == syl.inline_fx then
+		if t.code then
+			run_code_template(t, tenv)
+		else
+			for j = 1, t.loops do
+				tenv.j = j
+				local newline = table.copy(line)
+				tenv.line = newline
+				newline.text = run_text_template(t.t, tenv, varctx)
+				if t.addtext then
+					newline.text = newline.text .. syl.text_stripped
+				end
+				newline.effect = "fx"
+				subs.append(newline)
+			end
+		end
+	end
+	
+	return true
+end
+
 
 -- Main function to do the templating
 function filter_apply_templates(subs, config)
@@ -567,4 +628,4 @@ function macro_can_template(subs)
 end
 
 aegisub.register_macro("Apply karaoke template", "Applies karaoke effects from templates", macro_apply_templates, macro_can_template)
-aegisub.register_filter("Karaoke template", "Apply karaoke effect templates to the subtitles", 2000, filter_apply_templates)
+aegisub.register_filter("Karaoke template", "Apply karaoke effect templates to the subtitles.\n\nSee the help file for information on how to use this.", 2000, filter_apply_templates)
