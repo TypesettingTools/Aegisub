@@ -295,9 +295,18 @@ function set_ctx_syl(varctx, line, syl)
 	varctx.mid = varctx.smid
 	varctx.si = syl.i
 	varctx.i = varctx.si
-	varctx.sleft = math.floor(syl.left+0.5)
-	varctx.scenter = math.floor(syl.center+0.5)
-	varctx.sright = math.floor(syl.right+0.5)
+	varctx.sleft = math.floor(line.left + syl.left+0.5)
+	varctx.scenter = math.floor(line.left + syl.center+0.5)
+	varctx.sright = math.floor(line.left + syl.right+0.5)
+	if syl.isfuri then
+		varctx.sbottom = varctx.ltop
+		varctx.stop = varctx.ltop - syl.height
+		varctx.smiddle = varctx.ltop - syl.height/2
+	else
+		varctx.stop = varctx.ltop
+		varctx.smiddle = varctx.lmiddle
+		varctx.sbottom = varctx.lbottom
+	end
 	if line.halign == "left" then
 		varctx.sx = math.floor(line.left + syl.left + 0.5)
 	elseif line.halign == "center" then
@@ -305,10 +314,14 @@ function set_ctx_syl(varctx, line, syl)
 	elseif line.halign == "right" then
 		varctx.sx = math.floor(line.left + syl.right + 0.5)
 	end
+	-- FIXME: furigana needs different y
 	varctx.sy = math.floor(line.y+0.5)
 	varctx.left = varctx.sleft
 	varctx.center = varctx.scenter
 	varctx.right = varctx.sright
+	varctx.top = varctx.stop
+	varctx.middle = varctx.smiddle
+	varctx.bottom = varctx.sbottom
 	varctx.x = varctx.sx
 	varctx.y = varctx.sy
 end
@@ -336,6 +349,9 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		lleft = math.floor(line.left+0.5),
 		lcenter = math.floor(line.left + line.width/2 + 0.5),
 		lright = math.floor(line.left + line.width + 0.5),
+		ltop = math.floor(line.top + 0.5),
+		lmiddle = math.floor(line.middle + 0.5),
+		lbottom = math.floor(line.bottom + 0.5),
 		lx = math.floor(line.x+0.5),
 		ly = math.floor(line.y+0.5)
 		-- TODO? more positioning vars
@@ -350,6 +366,9 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	varctx.left = varctx.lleft
 	varctx.center = varctx.lcenter
 	varctx.right = varctx.lright
+	varctx.top = varctx.ltop
+	varctx.middle = varctx.lmiddle
+	varctx.bottom = varctx.lbottom
 	varctx.x = varctx.lx
 	varctx.y = varctx.ly
 	
@@ -402,16 +421,20 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	for i = 0, line.kara.n do
 		local syl = line.kara[i]
 		
-		applied_templates = applied_templates or
-			apply_syllable_templates(syl, line, templates.syl, tenv, varctx, subs)
+		aegisub.debug.out(5, "Applying templates to syllable: %s\n", syl.text)
+		if apply_syllable_templates(syl, line, templates.syl, tenv, varctx, subs) then
+			applied_templates = true
+		end
 	end
 	
 	-- Loop over furigana
 	for i = 1, line.furi.n do
 		local furi = line.furi[i]
 		
-		applied_templates = applied_templates or
-			apply_syllable_templates(furi, line, templates.furi, tenv, varctx, subs)
+		aegisub.debug.out(5, "Applying templates to furigana: %s\n", furi.text)
+		if apply_syllable_templates(furi, line, templates.furi, tenv, varctx, subs) then
+			applied_templates = true
+		end
 	end
 	
 	return applied_templates
@@ -486,12 +509,13 @@ function apply_syllable_templates(syl, line, templates, tenv, varctx, subs)
 	local applied_templates = false
 	
 	-- Loop over all templates matching the line style
-	for t in matching_templates(templates.syl, line) do
+	for t in matching_templates(templates, line) do
 		tenv.syl = syl
 		set_ctx_syl(varctx, line, syl)
 		
-		applied_templates = applied_templates or
-			apply_one_syllable_template(syl, line, t, tenv, varctx, subs, false, false)
+		if apply_one_syllable_template(syl, line, t, tenv, varctx, subs, false, false) then
+			applied_templates = true
+		end
 	end
 	
 	return applied_templates
@@ -513,21 +537,25 @@ end
 function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, skip_perchar, skip_multi)
 	local t = template
 	
+	aegisub.debug.out(5, "Applying template to one syllable with text: %s\n", syl.text)
+	
 	-- Check for right inline_fx
 	if t.inline_fx and t.inline_fx ~= syl.inline_fx then
+		aegisub.debug.out(5, "Syllable has wrong inline-fx (wanted '%s', got '%s'), skipping.\n", t.inline_fx, syl.inline_fx)
 		return false
 	end
 	
 	if t.noblank and is_syl_blank(syl) then
+		aegisub.debug.out(5, "Syllable is blank, skipping.\n")
 		return false
 	end
 	
 	-- Recurse to per-char if required
 	if not skip_perchar and t.perchar then
+		aegisub.debug.out(5, "Doing per-character effects...\n")
 		local charsyl = table.copy(syl)
 		tenv.basesyl = tenv.basesyl or syl
 		tenv.syl = charsyl
-		set_ctx_syl(varctx, line, charsyl)
 		
 		local left, width = syl.left, 0
 		for c in unicode.chars(syl.text_stripped) do
@@ -541,6 +569,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			charsyl.right = left + width
 			charsyl.prespacewidth, charsyl.postspacewidth = 0, 0 -- whatever...
 			left = left + width
+			set_ctx_syl(varctx, line, charsyl)
 			
 			apply_one_syllable_template(charsyl, line, t, tenv, varctx, subs, true, false)
 		end
@@ -550,16 +579,17 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 	
 	-- Recurse to multi-hl if required
 	if not skip_multi and t.multi then
+		aegisub.debug.out(5, "Doing multi-highlight effects...\n")
 		local hlsyl = table.copy(syl)
 		tenv.basesyl = tenv.basesyl or syl
 		tenv.syl = hlsyl
-		set_ctx_syl(varctx, line, hlsyl)
 		
 		for hl = 1, syl.highlights.n do
 			local hldata = syl.highlights[hl]
 			hlsyl.start_time = hldata.start_time
 			hlsyl.end_time = hldata.end_time
 			hlsyl.duration = hldata.duration
+			set_ctx_syl(varctx, line, hlsyl)
 			
 			apply_one_syllable_template(hlsyl, line, t, tenv, varctx, subs, true, true)
 		end
@@ -568,21 +598,24 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 	end
 
 	-- Regular processing
-	if not t.inline_fx or t.inline_fx == syl.inline_fx then
-		if t.code then
-			run_code_template(t, tenv)
-		else
-			for j = 1, t.loops do
-				tenv.j = j
-				local newline = table.copy(line)
-				tenv.line = newline
-				newline.text = run_text_template(t.t, tenv, varctx)
-				if t.addtext then
-					newline.text = newline.text .. syl.text_stripped
-				end
-				newline.effect = "fx"
-				subs.append(newline)
+	if t.code then
+		aegisub.debug.out(5, "Running code line\n")
+		run_code_template(t, tenv)
+	else
+		aegisub.debug.out(5, "Running %d effect loops\n", t.loops)
+		for j = 1, t.loops do
+			tenv.j = j
+			local newline = table.copy(line)
+			newline.styleref = syl.style
+			newline.style = syl.style.name
+			tenv.line = newline
+			newline.text = run_text_template(t.t, tenv, varctx)
+			if t.addtext then
+				newline.text = newline.text .. syl.text_stripped
 			end
+			newline.effect = "fx"
+			aegisub.debug.out(5, "Generated line with text: %s\n", newline.text)
+			subs.append(newline)
 		end
 	end
 	
