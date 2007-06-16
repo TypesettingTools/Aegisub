@@ -1,0 +1,29 @@
+[Script Info]
+Title: Default Aegisub file
+ScriptType: v4.00+
+WrapStyle: 0
+PlayResX: 640
+PlayResY: 480
+Video Aspect Ratio: 0
+Video Zoom: 8
+Video Position: 500
+Last Style Storage: Default
+Video File: ?dummy:50.000000:1000:640:480:226:221:236:c
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,50,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,2,0,5,10,10,10,0
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("abs",1000,2000)!{\pos($x,$y)\1c&H0000FF&}
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("preline",-100)!{\pos($x,$y)\1c&H000000&}
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("start2syl")!{\pos($x,$y)\1c&HFF0000&}
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("presyl",-200,0)!{\pos($x,$y)\1a&HFF&\3c&H0000FF&}
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("syl")!{\pos($x,$y)\1c&H00FF00&}
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("postsyl",0,200)!{\pos($x,$y)\1a&HFF&\3c&H00FF00&}
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("syl2end",200,0)!{\pos($x,$y)\1c&HFF00FF&}
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("postline",0,100)!{\pos($x,$y)\1c&H00FFFF&}
+Comment: 0,0:00:00.00,0:00:00.00,Default,,0000,0000,0000,template noblank,!retime("sylpct",50,100)!{\pos($center,$middle)\an5\1a&HFF&\3c&HFFFFFF&\fscy300\t(\3a&HFF&)}
+Dialogue: 0,0:00:10.00,0:00:11.00,Default,,0000,0000,0000,,{\k30}ha{\k20}hi{\k50}ho
+Dialogue: 0,0:00:11.00,0:00:16.00,Default,,0000,0000,0000,,
