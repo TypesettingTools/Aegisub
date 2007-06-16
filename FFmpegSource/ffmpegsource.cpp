@@ -39,7 +39,7 @@ protected:
 			case PIX_FMT_RGB32: VI.pixel_type = VideoInfo::CS_BGR32; break;
 			case PIX_FMT_BGR24: VI.pixel_type = VideoInfo::CS_BGR24; break;
 			default:
-				Env->ThrowError("No suitable output format found");
+				Env->ThrowError("FFmpegSource: No suitable output format found");
 		}
 
 		if (BestFormat != CurrentFormat) {
@@ -120,6 +120,7 @@ private:
 
 	CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 		char *Codec = TI->CodecID;
+		// fourcc list from ffdshow
 		if (!strcmp(Codec, "V_MS/VFW/FOURCC")) {
 			switch (((BITMAPINFOHEADER *)TI->CodecPrivate)->biCompression) {
 				case MAKEFOURCC('F', 'F', 'D', 'S'):
@@ -518,7 +519,7 @@ PVideoFrame __stdcall FFMKVSource::GetFrame(int n, IScriptEnvironment* Env) {
 	return OutputFrame(Frame, Env);
 }
 
-class FFMpegSource : public FFBase {
+class FFmpegSource : public FFBase {
 private:
 	AVFormatContext *FormatContext;
 	AVCodecContext *CodecContext;
@@ -532,7 +533,7 @@ private:
 
 	int ReadNextFrame(AVFrame *Frame, int64_t *DTS);
 public:
-	FFMpegSource(const char *Source, int _Track, bool _ForceSeek, IScriptEnvironment* Env) : Track(_Track), ForceSeek(_ForceSeek) {
+	FFmpegSource(const char *Source, int _Track, bool _ForceSeek, IScriptEnvironment* Env) : Track(_Track), ForceSeek(_ForceSeek) {
 		CurrentFrame = 0;
 
 		if(av_open_input_file(&FormatContext, Source, NULL, 0, NULL) != 0)
@@ -596,7 +597,7 @@ public:
 		av_seek_frame(FormatContext, Track, 0, AVSEEK_FLAG_BACKWARD);
 	}
 
-	~FFMpegSource() {
+	~FFmpegSource() {
 		av_free(Frame);
 		avcodec_close(CodecContext);
 		av_close_input_file(FormatContext);
@@ -605,7 +606,7 @@ public:
     PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* Env);
 };
 
-int FFMpegSource::ReadNextFrame(AVFrame *Frame, int64_t *DTS) {
+int FFmpegSource::ReadNextFrame(AVFrame *Frame, int64_t *DTS) {
 	AVPacket Packet;
 	int FrameFinished = 0;
 	int Ret = -1;
@@ -629,7 +630,7 @@ int FFMpegSource::ReadNextFrame(AVFrame *Frame, int64_t *DTS) {
 	return Ret;
 }
 
-PVideoFrame __stdcall FFMpegSource::GetFrame(int n, IScriptEnvironment* Env) {
+PVideoFrame __stdcall FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
 	bool HasSeeked = false;
 
 	int IndexPosition = av_index_search_timestamp(FormatContext->streams[Track], FrameToDTS[n], AVSEEK_FLAG_BACKWARD);
@@ -658,7 +659,7 @@ PVideoFrame __stdcall FFMpegSource::GetFrame(int n, IScriptEnvironment* Env) {
 	return OutputFrame(Frame, Env);
 }
 
-AVSValue __cdecl CreateFFMpegSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	if (!Args[0].Defined())
     	Env->ThrowError("No source specified");
 
@@ -676,11 +677,11 @@ AVSValue __cdecl CreateFFMpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	if (IsMatroska)
 		return new FFMKVSource(Args[0].AsString(), Args[1].AsInt(-1), Env);
 	else
-		return new FFMpegSource(Args[0].AsString(), Args[1].AsInt(-1), Args[2].AsBool(false), Env);
+		return new FFmpegSource(Args[0].AsString(), Args[1].AsInt(-1), Args[2].AsBool(false), Env);
 }
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
-    Env->AddFunction("FFMpegSource", "[source]s[track]i[forceseek]b", CreateFFMpegSource, 0);
-    return "FFMpegSource";
+    Env->AddFunction("FFmpegSource", "[source]s[track]i[forceseek]b", CreateFFmpegSource, 0);
+    return "FFmpegSource";
 };
 
