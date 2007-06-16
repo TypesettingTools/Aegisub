@@ -66,8 +66,11 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize si
 // Destructor
 SubtitlesPreview::~SubtitlesPreview() {
 	delete bmp;
+	bmp = NULL;
 	delete style;
+	style = NULL;
 	delete vid;
+	vid = NULL;
 }
 
 
@@ -158,8 +161,11 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 		subs->AddLine(_T("Dialogue: 0,0:00:00.00,0:00:05.00,Preview,,0000,0000,0000,,{\\q2}") + showText,_T("[Events]"),0,ver,&outGroup);
 
 		// Apply subtitles
-		provider->LoadSubtitles(subs);
-		provider->DrawSubtitles(frame,0.1);
+		try {
+			provider->LoadSubtitles(subs);
+			provider->DrawSubtitles(frame,0.1);
+		}
+		catch (...) {}
 		delete provider;
 	}
 
