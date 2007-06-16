@@ -1,4 +1,16 @@
-#!/bin/sh
+#!/bin/bash
+
+test "X`echo -e`" = "X-e" && (
+	if `which bash`; then
+		echo "Your builtin echo doesn't support -e, running with bash instead."
+		bash $0
+		exit
+	elif
+		echo "Your builtin echo (or echo(1)) doesn't support -e."
+		echo "If you had bash I'd use that instead, but it seems you don't."
+		exit 1
+	fi
+)
 
 # Generate file list for automation subdir
 rm -f automation/Makefile.am
