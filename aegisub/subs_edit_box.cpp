@@ -915,8 +915,8 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 	}
 	else TextEdit->GetSelection(&selstart,&selend);
 	int len = TextEdit->GetText().Length();
-	selstart = MID(0,selstart,len);
-	selend = MID(0,selend,len);
+	selstart = TextEdit->GetReverseUnicodePosition(MID(0,selstart,len));
+	selend = TextEdit->GetReverseUnicodePosition(MID(0,selend,len));
 
 	// Current tag name
 	wxString alttagname = tagname;

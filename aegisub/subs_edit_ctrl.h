@@ -69,8 +69,6 @@ private:
 
 	wxString GetWordAtPosition(int pos);
 	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);
-	int GetUnicodePosition(int pos);
-	int GetReverseUnicodePosition(int pos);
 	void SetUnicodeStyling(int start,int length,int style);
 	void ShowPopupMenu(int activePos=-1);
 
@@ -94,6 +92,8 @@ public:
 	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
 	~SubsTextEditCtrl();
 
+	int GetUnicodePosition(int pos);
+	int GetReverseUnicodePosition(int pos);
 	void SetSelectionU(int start,int end);
 	void SetTextTo(const wxString text);
 	void UpdateStyle(int start=0,int length=-1);
