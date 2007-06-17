@@ -76,7 +76,7 @@ private:
 	TimeEdit *StartTime;
 	TimeEdit *EndTime;
 	TimeEdit *Duration;
-	HiliModTextCtrl *Layer;
+	wxSpinCtrl *Layer;
 	HiliModTextCtrl *MarginL;
 	HiliModTextCtrl *MarginR;
 	HiliModTextCtrl *MarginV;
@@ -128,7 +128,7 @@ private:
 	void OnKeyDown(wxStyledTextEvent &event);
 	void OnStyleChange(wxCommandEvent &event);
 	void OnActorChange(wxCommandEvent &event);
-	void OnLayerChange(wxCommandEvent &event);
+	void OnLayerChange(wxSpinEvent &event);
 	void OnStartTimeChange(wxCommandEvent &event);
 	void OnEndTimeChange(wxCommandEvent &event);
 	void OnDurationChange(wxCommandEvent &event);

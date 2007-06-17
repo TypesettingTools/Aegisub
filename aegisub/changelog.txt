@@ -14,25 +14,26 @@ Please visit http://aegisub.net to download latest version
   o Scripts are automatically reloaded when the Export dialog is opened (this can be changed in Options)
 - Video mode changes:
   o It has been mostly rewriten and now uses OpenGL instead of software rendering, making it much faster on computers with video cards that don't belong to the stone age. (AMZ)
-  o Optionally, it can use a Pixel Shader to convert YV12 to RGB32 in hardware, which is much faster, with a decent video card.
+  o Optionally, it can use a Pixel Shader to convert YV12 to RGB32 in hardware, which is much faster, with a decent video card. (AMZ)
   o Video display fixed on Linux and Mac (Azzy)
   o Made the video display detachable. (AMZ)
   o Fixed Custom Aspect Ratio input. (Dansolo)
   o Added a dummy video provider to create a blank video with customizeable options. (jfs/AMZ)
   o Destination of screenshots can now be set in the options dialog. (AMZ)
   o Added support for using other renderers than VSFilter with Avisynth as video provider. (AMZ)
+  o Added support for FFMpegSource in Avisynth provider if FFMpegSource.dll is on Aegisub's folder. (AMZ)
+  o Added support for DirectShowSource2 in Avisynth provider if avss.dll is on Aegisub's folder. (AMZ)
+  o Added support to save and load keyframe list files. (AMZ)
+  o Fixed subtitles positioning removing \p tags from the line. (AMZ)
+  o libass support for subtitles on all platforms (Azzy/AMZ)
+  o CSRI support for subtitles on all platforms (equinox/AMZ)
+  o Framegrabs from the video now also includes framenumber in the filename (jfs)
 - Visual Typesetting functionality implemented, which should make typesetting much easier and faster. It supports: (AMZ)
   o Dragging;
   o Rotation on Z axis;
   o Rotation on X/Y axes;
   o Scaling on X/Y axes;
   o Clipping to a rectangle.
-- Changes to Audio Spectrum: (jfs)
-  o The calculated FFT data are now cached, so things should be faster
-  o Actual signal power is now more accurately represented
-  o The palette is changed
-  o The selection is no longer shown by ugly reverse colour but with a different palette instead
-  o Use vertical zoom slider to amplify/dampen displayed signal strength (useful for better visualisation of quiet sections, or easier picking out the dominating frequencies in noisy sections)
 - Audio mode changes:
   o Normal and SSA mode have been merged into one, all functionality available to both is now used at once. This is the same behavior as Sabbu has. (AMZ)
   o Next line on commit is now on by default. (AMZ)
@@ -48,6 +49,14 @@ Please visit http://aegisub.net to download latest version
   o Added Medusa-style (numpad) global timing shortcuts, that can be enabled with the button under the audio display. This is disabled by default. (AMZ)
   o Fixed drawing of inactive lines in audio display to prevent it from being drawn over selection. (AMZ)
   o Added options to toggle the display of the audio timeline and of the time over the mouse cursor. (AMZ)
+  o Moved karaoke syllable text in audio display to the top instead of bottom, since it often covered important information in spectrum mode (jfs)
+  o Added option to disable automatic grabbing of times from selected lines on the audio display. Also, it will never pick the times from 0:00:00.00 -> 0:00:00.00 lines. (AMZ)
+- Changes to Audio Spectrum: (jfs)
+  o The calculated FFT data are now cached, so things should be faster
+  o Actual signal power is now more accurately represented
+  o The palette is changed
+  o The selection is no longer shown by ugly reverse colour but with a different palette instead
+  o Use vertical zoom slider to amplify/dampen displayed signal strength (useful for better visualisation of quiet sections, or easier picking out the dominating frequencies in noisy sections)
 - Style Manager changes:
   o Automatically select the style of the current line when Style Manager is opened. (jfs)
   o Style storages with invalid characters are now caught, and the invalid characters replaced with safe ones. Previously such storages seemed to be created correctly but were never stored to disk. (jfs)
@@ -73,7 +82,7 @@ Please visit http://aegisub.net to download latest version
   o Added support for reading ASS, SSA and SRT softsubs directly from Matroska files. (AMZ)
   o Fixed loading of SRT and TXT files, which were causing an empty line to appear at the start of the file. (AMZ)
   o Added support for reading v4.00++ (ASS2) files. (AMZ)
-- Main menu was re-designed:
+- Changes to main menu:
   o There are now new options, and most were moved around to have better organization. (AMZ/jfs)
   o General tweaks changes, such as better icons, and fixing of flickering and slowness. (AMZ)
   o Undo and redo now have descriptions. (Dansolo)
@@ -84,38 +93,35 @@ Please visit http://aegisub.net to download latest version
   o Added Paste Over function, which allows you to paste subtitle lines over others, overwriting the fields of your choice. (AMZ)
   o Scrollbar in grid didn't always allow scrolling through all the subs. (jfs)
   o Minor fix to the calculation of the grid's "Style" column width. (AMZ)
-- Times can now be copy and pasted with Ctrl+C and Ctrl+V, as well as from context menu, in the time edit boxes. (AMZ)
+- Subtitles edit box changes:
+  o The whole layout has been tweaked. (AMZ)
+  o Replaced wxTextCtrl with wxStyledTextCtrl, to solve many issues related to the Rich Text edit control. (AMZ)
+  o Improved Syntax Highlighter to include more features of ASS. (AMZ)
+  o Added an inline Hunspell-based Spell Checker. (AMZ)
+  o Added an inline MyThes-based Thesaurus. (AMZ)
+  o Times can now be copy and pasted with Ctrl+C and Ctrl+V, as well as from context menu, in the time edit boxes. (AMZ)
+  o Layer box replaced with a spin control in the subtitles edit box. (AMZ)
+  o Commiting text now commits times as well. (AMZ)
+  o Changes to text will no longer be discarded when you commit timing in the audio display and vice-versa. (AMZ)
+  o Added a Call Tip feature to the edit box, so it shows the function prototype as you type it. (AMZ)
+  o Fixed glitches related to the Duration time edit box. (AMZ)
+  o Tweaked the behavior of the margin boxes, now they no longer show padding zeros. (AMZ)
+  o Actor and Effect fields now show a "ghosted" caption saying their name when they are not focused on and blank. (AMZ)
+- Added a much-needed options dialog with all the relevant config.dat options in it. (AMZ)
 - Various fixes to better handle paths/file names with non-ANSI characters on Windows (jfs/AMZ)
 - Misc. fixes for building on Linux (Azzy, equinox, jfs)
-- libass support for subtitles on UNIX (Azzy)
-- Framegrabs from the video now also includes framenumber in the filename (jfs)
 - Added an option to automatically save the files whenever you change anything. (AMZ)
 - Added global hotkey for Video Play (default Ctrl+P). (AMZ)
-- Added support to save and load keyframe list files. (AMZ)
 - Commiting changes in audio to the last line will insert a new line after it. (AMZ)
 - Fonts collector can now collect fonts directly to a zipped archive; also, fixed behavior of the Escape key in it. (AMZ)
-- Added support for DirectShowSource2 if avss.dll is on Aegisub's folder. (AMZ)
-- Replaced wxTextCtrl with wxStyledTextCtrl, to solve many issues related to the Rich Text edit control. (AMZ)
-- Improved Syntax Highlighter to include more features of ASS. (AMZ)
-- Added an inline Hunspell-based Spell Checker. (AMZ)
-- Added an inline MyThes-based Thesaurus. (AMZ)
 - Added two options that allows you to specify where to keep the audio cache. (AMZ)
 - Improved Splash Screen behavior to show up even if the program is frozen loading subtitles, and to center on the current display. (AMZ)
-- Tweaked the layout of Subtitles Edit area. (AMZ)
-- Actor and Effect fields now show a "ghosted" caption saying their name when they are not focused on and blank. (AMZ)
 - Aegisub now remembers if it was maximized when it was last quit, and restores its state when opening again. (AMZ)
 - A few minor fixes to the Find dialogue regarding initial focus and the behavior of the Escape key. (AMZ)
-- Tweaked the behavior of the margin boxes, now they no longer show padding zeros. (AMZ)
 - Added a "Selection Onward" option to the Shift Times dialogue. (AMZ)
-- Added a Call Tip feature to the edit box, so it shows the function prototype as you type it. (AMZ)
-- Added a much-needed options dialog with all the relevant config.dat options in it. (AMZ)
 - Added a Normal/Reverse dropdown to collisions on Script Properties. (AMZ)
-- Moved karaoke syllable text in audio display to the top instead of bottom, since it often covered important information in spectrum mode (jfs)
 - Implemented a version checker that can automatically or manually check if there are any updates to Aegisub. (AMZ)
-- Changes to text will no longer be discarded when you commit timing in the audio display and vice-versa. (AMZ)
-- Fixed glitches related to the Duration time edit box. (AMZ)
 - Timing Post-Processor can now be restricted to selection. (AMZ)
-- Fixed subtitles positioning removing \p tags from the line. (AMZ)
 - Added Kanji Timing (AKA Karaoke Timing Copy) functionality. (Dansolo)
 - Added an audio clip export by right clicking on a line. (Dansolo)
 - Added a clear button for shifting history. (Dansolo)
@@ -123,9 +129,7 @@ Please visit http://aegisub.net to download latest version
 - Changing script resolution when asked to on video loading will now set an undo point. (AMZ)
 - Frame number is now the default box on the "go to" dialog. (AMZ)
 - Added "Video Formats" to "Open Audio"'s file selector, so you can open audio directly from video files (regardless of whether they're loaded or not). This has always worked, but it was never explicit. (AMZ)
-- Added option to disable automatic grabbing of times from selected lines on the audio display. Also, it will never pick the times from 0:00:00.00 -> 0:00:00.00 lines. (AMZ)
 - Added a "Scale Border and Shadow" check box to script properties dialog. (AMZ)
-- Commiting text now commits times as well. (AMZ)
 - Fixed display of end frames on the subtitles grid, when set to frame mode. (demi)
 - Treat comments inside {}'s as plain text, not as overrides; Also, don't assume override blocks start with a backslash, even if they probably should (Dansolo)
 - Removed FexTracker due to licensing problems; there are plans to implement a new motion tracker in its place (jfs)

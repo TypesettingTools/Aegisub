@@ -91,7 +91,7 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Effect->PushEventHandler(new IdleFieldHandler(Effect,_("Effect")));
 
 	// Middle controls
-	Layer = new HiliModTextCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_PROCESS_ENTER,NumValidator());
+	Layer = new wxSpinCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,0x7FFFFFFF,0);
 	Layer->SetToolTip(_("Layer number"));
 	StartTime = new TimeEdit(this,STARTTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER,NumValidator());
 	StartTime->SetToolTip(_("Start time"));
@@ -359,7 +359,8 @@ BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 	EVT_COMBOBOX(STYLE_COMBOBOX, SubsEditBox::OnStyleChange)
 	EVT_COMBOBOX(ACTOR_COMBOBOX, SubsEditBox::OnActorChange)
 	EVT_TEXT_ENTER(ACTOR_COMBOBOX, SubsEditBox::OnActorChange)
-	EVT_TEXT_ENTER(LAYER_BOX, SubsEditBox::OnLayerChange)
+	//EVT_TEXT_ENTER(LAYER_BOX, SubsEditBox::OnLayerChange)
+	EVT_SPINCTRL(LAYER_BOX, SubsEditBox::OnLayerChange)
 	EVT_TEXT_ENTER(STARTTIME_BOX, SubsEditBox::OnStartTimeChange)
 	EVT_TEXT_ENTER(ENDTIME_BOX, SubsEditBox::OnEndTimeChange)
 	EVT_TEXT_ENTER(DURATION_BOX, SubsEditBox::OnDurationChange)
@@ -591,14 +592,9 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 
 /////////////////
 // Layer changed
-void SubsEditBox::OnLayerChange(wxCommandEvent &event) {
+void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
 	// Value
-	long temp;
-	Layer->GetValue().ToLong(&temp);
-
-	// Update
-	Layer->Commited();
-	grid->BeginBatch();
+	long temp = event.GetPosition();
 
 	// Get selection
 	wxArrayInt sel = grid->GetSelection();
@@ -618,7 +614,6 @@ void SubsEditBox::OnLayerChange(wxCommandEvent &event) {
 	Layer->SetValue(wxString::Format(_("%i"),temp));
 	grid->ass->FlagAsModified(_("layer change"));
 	grid->CommitChanges();
-	grid->EndBatch();
 }
 
 
