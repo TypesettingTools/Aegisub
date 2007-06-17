@@ -301,7 +301,7 @@ function apply_templates(meta, styles, subs, templates)
 	-- run all run-once code snippets
 	for k, t in pairs(templates.once) do
 		assert(t.code, "WTF, a 'once' template without code?")
-		run_template_code(t, tenv)
+		run_code_template(t, tenv)
 	end
 	
 	-- start processing lines
@@ -429,7 +429,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	for t in matching_templates(templates.line, line) do
 		if t.code then
 			aegisub.debug.out(5, "Code template, %s\n", t.code)
-			run_template_code(t, tenv)
+			run_code_template(t, tenv)
 		else
 			aegisub.debug.out(5, "Line template, pre = '%s', t = '%s'\n", t.pre, t.t)
 			applied_templates = true
