@@ -232,7 +232,7 @@ void SRTSubtitleFormat::DialogueToSRT(AssDialogue *current,std::list<AssEntry*>:
 	// Fix line breaks
 	current->Text.Replace(_T("\\n"),_T("\r\n"),true);
 	current->Text.Replace(_T("\\N"),_T("\r\n"),true);
-	current->Text.Replace(_T("\r\n\r\n"),_T("\r\n"),true);
+	while (current->Text.Replace(_T("\r\n\r\n"),_T("\r\n"),true));
 }
 
 

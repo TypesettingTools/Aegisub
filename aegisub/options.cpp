@@ -157,7 +157,6 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 
 	// Audio Options
 	SetModificationType(MOD_AUTOMATIC);
-	SetBool(_T("Audio Next Line on Commit"),true);
 	SetBool(_T("Audio grab times on select"),true);
 	SetBool(_T("Audio Autofocus"),false);
 	SetBool(_T("Audio Wheel Default To Zoom"),false);
@@ -290,6 +289,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Audio Autocommit"),false);
 	SetBool(_T("Audio Autoscroll"),true);
 	SetBool(_T("Audio Medusa Timing Hotkeys"),false);
+	SetBool(_T("Audio Next Line on Commit"),true);
 
 	SetBool(_T("Shift Times ByTime"),true);
 	SetInt(_T("Shift Times Type"),0);

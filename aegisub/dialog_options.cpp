@@ -431,11 +431,10 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Sizers
 		wxSizer *audioMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *audioSizer1 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Options"));
-		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(3,2,5,5);
 		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(4,2,5,5);
 
 		// First sizer
-		AddCheckBox(audioPage,audioSizer3,_("Next line on commit"),_T("Audio Next Line on Commit"));
 		AddCheckBox(audioPage,audioSizer3,_("Grab times from line upon selection"),_T("Audio grab times on select"));
 		AddCheckBox(audioPage,audioSizer3,_("Default mouse wheel to zoom"),_T("Audio Wheel Default To Zoom"));
 		AddCheckBox(audioPage,audioSizer3,_("Lock scroll on Cursor"),_T("Audio lock scroll on cursor"));

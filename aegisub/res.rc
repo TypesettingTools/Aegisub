@@ -121,6 +121,7 @@ button_leadout BITMAP "bitmaps/button_leadout.bmp"
 
 toggle_audio_autoscroll BITMAP "bitmaps/toggle_audio_autoscroll.bmp"
 toggle_audio_autocommit BITMAP "bitmaps/toggle_audio_autocommit.bmp"
+toggle_audio_nextcommit BITMAP "bitmaps/toggle_audio_nextcommit.bmp"
 toggle_audio_ssa BITMAP "bitmaps/toggle_audio_ssa.bmp"
 toggle_audio_medusa BITMAP "bitmaps/toggle_audio_medusa.bmp"
 toggle_audio_spectrum BITMAP "bitmaps/toggle_audio_spectrum.bmp"

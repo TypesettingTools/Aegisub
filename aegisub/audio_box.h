@@ -73,6 +73,7 @@ private:
 	wxToggleButton *SplitButton;
 	wxButton *JoinButton;
 	ToggleBitmap *AutoScroll;
+	ToggleBitmap *NextCommit;
 	ToggleBitmap *MedusaMode;
 	ToggleBitmap *AutoCommit;
 	ToggleBitmap *SpectrumMode;
@@ -106,6 +107,7 @@ private:
 	void OnAutoCommit(wxCommandEvent &event);
 	void OnMedusaMode(wxCommandEvent &event);
 	void OnSpectrumMode(wxCommandEvent &event);
+	void OnNextLineCommit(wxCommandEvent &event);
 
 public:
 	AudioDisplay *audioDisplay;
@@ -163,6 +165,7 @@ enum {
 	Audio_Button_Leadout,
 
 	Audio_Check_AutoCommit,
+	Audio_Check_NextCommit,
 	Audio_Check_AutoGoto,
 	Audio_Check_Medusa,
 	Audio_Check_Spectrum
