@@ -456,7 +456,11 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 				end
 			else
 				-- hmm, no main template for the line... put original text in
-				newline.text = newline.text .. line.text
+				if t.keeptags then
+					newline.text = newline.text .. line.text
+				else
+					newline.text = newline.text .. line.text_stripped
+				end
 			end
 			newline.effect = "fx"
 			subs.append(newline)
