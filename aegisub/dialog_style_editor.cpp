@@ -125,7 +125,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	performance_timer.Start();
 	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20),0,0,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	wxLogDebug(_T("Time to create font face listbox: %d"), performance_timer.Time());
-	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,20),0,wxTextValidator(wxFILTER_NUMERIC,&FontSizeValue));
+	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&FontSizeValue,true,false));
 	//wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
 	BoxItalic = new wxCheckBox(this,CHECKBOX_STYLE_ITALIC,_("Italic"));
@@ -142,13 +142,13 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
 	margin[3] = 0;
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
-	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&OutlineValue));
-	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&ShadowValue));
+	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&OutlineValue,true,false));
+	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ShadowValue,true,false));
 	OutlineType = new wxCheckBox(this,CHECKBOX_OUTLINE,_("Opaque box"));
-	ScaleX = new wxTextCtrl(this,TEXT_SCALE_X,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleXValue));
-	ScaleY = new wxTextCtrl(this,TEXT_SCALE_Y,_T(""),wxDefaultPosition, wxSize(70,20),0,wxTextValidator(wxFILTER_NUMERIC,&ScaleYValue));
-	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&AngleValue));
-	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,wxTextValidator(wxFILTER_NUMERIC,&SpacingValue));
+	ScaleX = new wxTextCtrl(this,TEXT_SCALE_X,_T(""),wxDefaultPosition, wxSize(70,20),0,NumValidator(&ScaleXValue,true,false));
+	ScaleY = new wxTextCtrl(this,TEXT_SCALE_Y,_T(""),wxDefaultPosition, wxSize(70,20),0,NumValidator(&ScaleYValue,true,false));
+	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,NumValidator(&AngleValue,true,true));
+	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&SpacingValue,true,true));
 	Encoding = new wxComboBox(this,COMBO_ENCODING,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
 
 	// Set control tooltips

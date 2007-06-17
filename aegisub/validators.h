@@ -45,9 +45,27 @@
 
 /////////////////////
 // Numeric validator
-class NumValidator : public wxTextValidator {
+class NumValidator : public wxValidator {
+private:
+	double fValue;
+	int iValue;
+	wxString* valPtr;
+
+	bool isFloat;
+	bool isSigned;
+	wxObject* Clone() const;
+	bool Validate(wxWindow* parent);
+	bool TransferToWindow();
+	bool TransferFromWindow();
+
+	bool CheckCharacter(int chr,bool isFirst,bool &gotDecimal);
+
+	void OnChar(wxKeyEvent& event);
+
 public:
 	NumValidator(wxString* valPtr = NULL,bool isfloat=false,bool issigned=false);
+
+	DECLARE_EVENT_TABLE();
 };
 
 
