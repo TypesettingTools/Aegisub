@@ -1,9 +1,17 @@
+Changes
+1.1
+ Skip indexing for avi
+ Prefix all error messages with the plugin name
+ Can write v2 timecodes to a file
+ Fixed reported framerate
+
 Usage
-FFmpegSource(string source, int track = -1, bool forceseek = false)
+FFmpegSource(string source, int track = -1, bool forceseek = false, string timecodes = "")
 source: source file
 track: video track nubmer as seen by the relevant demuxer, must be a video track
        negative values means the first found video track
 forceseek: seek even if the format has no registered index, only useful for containers with limited avformat support
+timecodes: file to output timecodes to, implies indexing the file no matter what type
 
 Compatibility
 AVI, MKV, MP4: Frame accurate

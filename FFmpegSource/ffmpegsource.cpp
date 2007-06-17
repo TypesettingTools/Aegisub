@@ -19,7 +19,7 @@ extern "C" {
 
 #include "MatroskaParser.h"
 #include "avisynth.h"
-#include "stdiostream.cpp"
+#include "stdiostream.c"
 
 class FFBase : public IClip {
 private:
@@ -325,7 +325,7 @@ private:
 			return CODEC_ID_NONE;
 	}
 public:
-	FFMKVSource(const char *Source, int Track, IScriptEnvironment* Env) {
+	FFMKVSource(const char *Source, int Track, FILE *Timecodes, IScriptEnvironment* Env) {
 		BufferSize = 0;
 		Buffer = NULL;
 		Frame = NULL;
@@ -344,14 +344,14 @@ public:
 
 		ST.fp = fopen(Source ,"rb");
 		if (ST.fp == NULL)
-			Env->ThrowError("Can't open '%s': %s\n", Source, strerror(errno));
+			Env->ThrowError("FFmpegSource: Can't open '%s': %s\n", Source, strerror(errno));
 
 		setvbuf(ST.fp, NULL, _IOFBF, CACHESIZE);
 
 		MF = mkv_OpenEx(&ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 		if (MF == NULL) {
 			fclose(ST.fp);
-			Env->ThrowError("Can't parse Matroska file: %s\n", ErrorMessage);
+			Env->ThrowError("FFmpegSource: Can't parse Matroska file: %s\n", ErrorMessage);
 		}
 
 		if (Track < 0)
@@ -362,22 +362,22 @@ public:
 				}
 
 		if (Track < 0)
-			Env->ThrowError("No video track found");
+			Env->ThrowError("FFmpegSource: No video track found");
 
 		if ((unsigned)Track >= mkv_GetNumTracks(MF))
-			Env->ThrowError("Invalid track number: %d\n", Track);
+			Env->ThrowError("FFmpegSource: Invalid track number: %d\n", Track);
 
 		TrackInfo *TI = mkv_GetTrackInfo(MF, Track);
 
 		if (TI->Type != TT_VIDEO)
-			Env->ThrowError("Selected track is not video");
+			Env->ThrowError("FFmpegSource: Selected track is not video");
 
 		mkv_SetTrackMask(MF, ~(1 << Track));
 
 		if (TI->CompEnabled) {
 			CS = cs_Create(MF, Track, ErrorMessage, sizeof(ErrorMessage));
 			if (CS == NULL)
-				Env->ThrowError("Can't create decompressor: %s\n", ErrorMessage);
+				Env->ThrowError("FFmpegSource: Can't create decompressor: %s\n", ErrorMessage);
 		}
 
 		avcodec_get_context_defaults(&CodecContext);
@@ -386,10 +386,10 @@ public:
 
 		Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI));
 		if(Codec == NULL)
-			Env->ThrowError("Codec not found");
+			Env->ThrowError("FFmpegSource: Codec not found");
 
 		if(avcodec_open(&CodecContext, Codec) < 0)
-			Env->ThrowError("Could not open codec");
+			Env->ThrowError("FFmpegSource: Could not open codec");
 
 		VI.image_type = VideoInfo::IT_TFF;
 		VI.width = TI->AV.Video.PixelWidth;
@@ -409,6 +409,8 @@ public:
 
 			FrameToDTS.push_back(FI);
 			DTSToFrame[StartTime] = VI.num_frames;
+			if (Timecodes)
+				fprintf(Timecodes, "%f\n", (StartTime * mkv_TruncFloat(TI->TimecodeScale)) / (double)(1000000));
 			VI.num_frames++;
 		}
 
@@ -445,7 +447,7 @@ int FFMKVSource::ReadNextFrame(AVFrame *Frame, ulonglong *StartTime, IScriptEnvi
 			for (;;) {
 				int ReadBytes = cs_ReadData(CS, CSBuffer, sizeof(CSBuffer));
 				if (ReadBytes < 0)
-					Env->ThrowError("Error decompressing data: %s\n", cs_GetLastError(CS));
+					Env->ThrowError("FFmpegSource: Error decompressing data: %s\n", cs_GetLastError(CS));
 				if (ReadBytes == 0)
 					break;
 				Ret = avcodec_decode_video(&CodecContext, Frame, &FrameFinished, (uint8_t *)CSBuffer, ReadBytes);
@@ -456,24 +458,24 @@ int FFMKVSource::ReadNextFrame(AVFrame *Frame, ulonglong *StartTime, IScriptEnvi
 			size_t ReadBytes;
 
 			if (fseek(ST.fp, FilePos, SEEK_SET))
-				Env->ThrowError("fseek(): %s\n", strerror(errno));
+				Env->ThrowError("FFmpegSource: fseek(): %s\n", strerror(errno));
 
 			if (BufferSize < FrameSize) {
 				BufferSize = FrameSize;
 				Buffer = realloc(Buffer, BufferSize);
 				if (Buffer == NULL) 
-					Env->ThrowError("Out of memory\n");
+					Env->ThrowError("FFmpegSource: Out of memory\n");
 			}
 
 			ReadBytes = fread(Buffer, 1, FrameSize, ST.fp);
 			if (ReadBytes != FrameSize) {
 				if (ReadBytes == 0) {
 					if (feof(ST.fp))
-						fprintf(stderr, "Unexpected EOF while reading frame\n");
+						fprintf(stderr, "FFmpegSource: Unexpected EOF while reading frame\n");
 					else
-						fprintf(stderr, "Error reading frame: %s\n", strerror(errno));
+						fprintf(stderr, "FFmpegSource: Error reading frame: %s\n", strerror(errno));
 				} else
-					fprintf(stderr,"Short read while reading frame\n");
+					fprintf(stderr,"FFmpegSource: Short read while reading frame\n");
 				goto Done;
 			}
 
@@ -533,17 +535,17 @@ private:
 
 	int ReadNextFrame(AVFrame *Frame, int64_t *DTS);
 public:
-	FFmpegSource(const char *Source, int _Track, bool _ForceSeek, IScriptEnvironment* Env) : Track(_Track), ForceSeek(_ForceSeek) {
+	FFmpegSource(const char *Source, int _Track, bool _ForceSeek, FILE *Timecodes, IScriptEnvironment* Env) : Track(_Track), ForceSeek(_ForceSeek) {
 		CurrentFrame = 0;
 
 		if(av_open_input_file(&FormatContext, Source, NULL, 0, NULL) != 0)
-			Env->ThrowError("Couldn't open \"%s\"", Source);
+			Env->ThrowError("FFmpegSource: Couldn't open \"%s\"", Source);
 
 		if(av_find_stream_info(FormatContext) < 0)
-			Env->ThrowError("Couldn't find stream information");
+			Env->ThrowError("FFmpegSource: Couldn't find stream information");
 
 		if (Track >= (int)FormatContext->nb_streams)
-			Env->ThrowError("Invalid track number");
+			Env->ThrowError("FFmpegSource: Invalid track number");
 
 		if (Track < 0)
 			for(unsigned int i = 0; i < FormatContext->nb_streams; i++)
@@ -553,43 +555,54 @@ public:
 				}
 
 		if(Track < -1)
-			Env->ThrowError("Couldn't find a video stream");
+			Env->ThrowError("FFmpegSource: Couldn't find a video stream");
 
 		if (FormatContext->streams[Track]->codec->codec_type != CODEC_TYPE_VIDEO)
-			Env->ThrowError("Selected stream doesn't contain video");
+			Env->ThrowError("FFmpegSource: Selected stream doesn't contain video");
 
 		CodecContext = FormatContext->streams[Track]->codec;
 
 		Codec = avcodec_find_decoder(CodecContext->codec_id);
 		if(Codec == NULL)
-			Env->ThrowError("Codec not found");
+			Env->ThrowError("FFmpegSource: Codec not found");
 
 		if(avcodec_open(CodecContext, Codec) < 0)
-			Env->ThrowError("Could not open codec");
+			Env->ThrowError("FFmpegSource: Could not open codec");
 
 		VI.image_type = VideoInfo::IT_TFF;
 		VI.width = CodecContext->width;
 		VI.height = CodecContext->height;
-		VI.fps_denominator = CodecContext->time_base.num * 1000;
-		VI.fps_numerator = CodecContext->time_base.den;
+		VI.fps_denominator = FormatContext->streams[Track]->time_base.num;
+		VI.fps_numerator = FormatContext->streams[Track]->time_base.den;
+		VI.num_frames = FormatContext->streams[Track]->duration;
 
 		// sanity check framerate
-		if (VI.fps_numerator < VI.fps_denominator || CodecContext->time_base.num <= 0 || CodecContext->time_base.den <= 0) {
+		if (VI.fps_denominator > VI.fps_numerator || VI.fps_denominator <= 0 || VI.fps_numerator <= 0) {
 			VI.fps_denominator = 1;
 			VI.fps_numerator = 30;
 		}
-
+		
 		SetOutputFormat(CodecContext->pix_fmt, Env);
 
-		AVPacket Packet;
-
-		while (av_read_frame(FormatContext, &Packet) >= 0) {
-			if (Packet.stream_index == Track) {
-				FrameToDTS.push_back(Packet.dts);
-				DTSToFrame[Packet.dts] = VI.num_frames;
-				VI.num_frames++;
+		// skip indexing for avi
+		if (!strcmp(FormatContext->iformat->name, "avi") && !Timecodes) {
+			for (int i = 0; i < VI.num_frames; i++) {
+				FrameToDTS.push_back(i);
+				DTSToFrame[i] = i;
 			}
-			av_free_packet(&Packet);
+		} else {
+			AVPacket Packet;
+			VI.num_frames = 0;
+			while (av_read_frame(FormatContext, &Packet) >= 0) {
+				if (Packet.stream_index == Track) {
+					FrameToDTS.push_back(Packet.dts);
+					DTSToFrame[Packet.dts] = VI.num_frames;
+					if (Timecodes)
+						fprintf(Timecodes, "%f\n", (Packet.dts * FormatContext->streams[Track]->time_base.num * 1000) / (double)(FormatContext->streams[Track]->time_base.den));
+					VI.num_frames++;
+				}
+				av_free_packet(&Packet);
+			}
 		}
 
 		Frame = avcodec_alloc_frame();
@@ -661,27 +674,43 @@ PVideoFrame __stdcall FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
 
 AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	if (!Args[0].Defined())
-    	Env->ThrowError("No source specified");
+    	Env->ThrowError("FFmpegSource: No source specified");
 
 	av_register_all();
 
 	AVFormatContext *FormatContext;
 
 	if (av_open_input_file(&FormatContext, Args[0].AsString(), NULL, 0, NULL) != 0)
-		Env->ThrowError("Couldn't open \"%s\"", Args[0].AsString());
+		Env->ThrowError("FFmpegSource: Couldn't open \"%s\"", Args[0].AsString());
 
 	bool IsMatroska = !strcmp(FormatContext->iformat->name, "matroska");
 
 	av_close_input_file(FormatContext);
 
+	FILE *TCFile = NULL;
+	const char *Timecodes = Args[3].AsString("");
+	if (strcmp(Timecodes, "")) {
+		TCFile = fopen(Timecodes, "w");
+		if (!TCFile)
+			Env->ThrowError("FFmpegSource: Failed to open timecode output file for writing");
+		fprintf(TCFile, "# timecode format v2\n");
+	}
+
+	FFBase *Ret;
+
 	if (IsMatroska)
-		return new FFMKVSource(Args[0].AsString(), Args[1].AsInt(-1), Env);
+		Ret = new FFMKVSource(Args[0].AsString(), Args[1].AsInt(-1), TCFile, Env);
 	else
-		return new FFmpegSource(Args[0].AsString(), Args[1].AsInt(-1), Args[2].AsBool(false), Env);
+		Ret = new FFmpegSource(Args[0].AsString(), Args[1].AsInt(-1), Args[2].AsBool(false), TCFile, Env);
+
+	if (TCFile)
+		fclose(TCFile);
+
+	return Ret;
 }
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
-    Env->AddFunction("FFmpegSource", "[source]s[track]i[forceseek]b", CreateFFmpegSource, 0);
+    Env->AddFunction("FFmpegSource", "[source]s[track]i[forceseek]b[timecodes]s", CreateFFmpegSource, 0);
     return "FFmpegSource";
 };
 
