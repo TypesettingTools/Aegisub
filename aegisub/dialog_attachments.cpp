@@ -50,7 +50,7 @@
 ///////////////
 // Constructor
 DialogAttachments::DialogAttachments(wxWindow *parent)
-: wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize)
+: wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
 {
 	// List view
 	listView = new wxListView(this,ATTACHMENT_LIST,wxDefaultPosition,wxSize(500,200));
@@ -68,8 +68,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_GRAPHICS,_("Attach &Graphics")),1,0,0);
 	buttonSizer->Add(extractButton,1,0,0);
 	buttonSizer->Add(deleteButton,1,0,0);
-	buttonSizer->Add(new wxButton(this,BUTTON_CLOSE,_("&Close")),1,wxLEFT,5);
-	SetEscapeId(BUTTON_CLOSE);
+	buttonSizer->Add(new wxButton(this,wxID_CANCEL,_("&Close")),1,wxLEFT,5);
 
 	// Main sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -120,7 +119,6 @@ BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 	EVT_BUTTON(BUTTON_ATTACH_GRAPHICS,DialogAttachments::OnAttachGraphics)
 	EVT_BUTTON(BUTTON_EXTRACT,DialogAttachments::OnExtract)
 	EVT_BUTTON(BUTTON_DELETE,DialogAttachments::OnDelete)
-	EVT_BUTTON(BUTTON_CLOSE,DialogAttachments::OnClose)
 	EVT_LIST_ITEM_SELECTED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
 	EVT_LIST_ITEM_DESELECTED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
 	EVT_LIST_ITEM_FOCUSED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
@@ -238,13 +236,6 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 
 	// Update list
 	UpdateList();
-}
-
-
-/////////
-// Close
-void DialogAttachments::OnClose(wxCommandEvent &event) {
-	EndModal(0);
 }
 
 

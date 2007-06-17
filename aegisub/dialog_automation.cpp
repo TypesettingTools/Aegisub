@@ -54,7 +54,7 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	reload_button = new wxButton(this, Automation_Reload_Script, _("Re&load"));
 	info_button = new wxButton(this, Automation_Show_Info, _("Show &Info"));
 	reload_autoload_button = new wxButton(this, Automation_Reload_Autoload, _("Re&scan Autoload Dir"));
-	close_button = new wxButton(this, wxID_CLOSE);
+	close_button = new wxButton(this, wxID_CANCEL, _("&Close"));
 
 	// add headers to list view
 	list->InsertColumn(0, _T(""), wxLIST_FORMAT_CENTER, 20);
@@ -75,7 +75,6 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	button_box->AddSpacer(10);
 	button_box->Add(close_button, 0);
 	button_box->AddStretchSpacer(2);
-	SetEscapeId(wxID_CLOSE);
 
 	// main layout
 	wxSizer *main_box = new wxBoxSizer(wxVERTICAL);
@@ -160,7 +159,6 @@ BEGIN_EVENT_TABLE(DialogAutomation, wxDialog)
 	EVT_BUTTON(Automation_Reload_Script,DialogAutomation::OnReload)
 	EVT_BUTTON(Automation_Show_Info,DialogAutomation::OnInfo)
 	EVT_BUTTON(Automation_Reload_Autoload,DialogAutomation::OnReloadAutoload)
-	EVT_BUTTON(wxID_CLOSE,DialogAutomation::OnClose)
 	EVT_LIST_ITEM_SELECTED(Automation_List_Box,DialogAutomation::OnSelectionChange)
 	EVT_LIST_ITEM_DESELECTED(Automation_List_Box,DialogAutomation::OnSelectionChange)
 END_EVENT_TABLE()
@@ -290,11 +288,6 @@ void DialogAutomation::OnReloadAutoload(wxCommandEvent &evt)
 	global_manager->Reload();
 	RebuildList();
 	UpdateDisplay();
-}
-
-void DialogAutomation::OnClose(wxCommandEvent &evt)
-{
-	EndModal(0);
 }
 
 void DialogAutomation::OnSelectionChange(wxListEvent &evt)

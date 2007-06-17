@@ -72,7 +72,6 @@ private:
 	void OnRemove(wxCommandEvent &evt);
 	void OnReload(wxCommandEvent &evt);
 	void OnInfo(wxCommandEvent &evt);
-	void OnClose(wxCommandEvent &evt);
 	void OnReloadAutoload(wxCommandEvent &evt);
 	void OnSelectionChange(wxListEvent &evt);
 

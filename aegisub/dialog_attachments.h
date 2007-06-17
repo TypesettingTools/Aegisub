@@ -60,7 +60,6 @@ private:
 	void OnAttachGraphics(wxCommandEvent &event);
 	void OnExtract(wxCommandEvent &event);
 	void OnDelete(wxCommandEvent &event);
-	void OnClose(wxCommandEvent &event);
 	void OnListClick(wxListEvent &event);
 
 	void UpdateList();
@@ -80,6 +79,5 @@ enum {
 	BUTTON_ATTACH_GRAPHICS,
 	BUTTON_EXTRACT,
 	BUTTON_DELETE,
-	BUTTON_CLOSE,
 	ATTACHMENT_LIST
 };
