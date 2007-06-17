@@ -139,7 +139,7 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 
 	// Top sizer
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
-	//TopSizer->Add(new FloatSpinCtrl(this,-1,wxDefaultPosition,wxSize(60,20),0.0,50.0,20.0,0.5));
+	//TopSizer->Add(new FloatSpinCtrl(this,-1,wxDefaultPosition,wxSize(40,20),0,-20.0,50.0,0.0,0.5));
 	TopSizer->Add(CommentBox,0,wxRIGHT | wxALIGN_CENTER,5);
 	TopSizer->Add(StyleBox,1,wxRIGHT,5);
 	TopSizer->Add(ActorBox,1,wxRIGHT,5);

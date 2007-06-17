@@ -39,9 +39,32 @@
 #include <wx/wxprec.h>
 
 
+//////////////
+// Prototypes
+class FloatSpinCtrl;
+
+
+///////////////////
+// Float spin text
+class FloatSpinText : public wxTextCtrl {
+	friend class FloatSpinCtrl;
+private:
+	FloatSpinCtrl *parent;
+
+	FloatSpinText(FloatSpinCtrl *parent,int id);
+
+	void OnKillFocus(wxFocusEvent &event);
+	void OnKeyPress(wxKeyEvent &event);
+	void SendValue();
+
+	DECLARE_EVENT_TABLE()
+};
+
+
 //////////////////////
 // Float spin control
 class FloatSpinCtrl : public wxPanel {
+	friend class FloatSpinText;
 private:
 	wxTextCtrl *text;
 	wxSpinButton *button;
@@ -53,6 +76,8 @@ private:
 
 	void UpdateText();
 
+	void OnSpin(wxSpinEvent &event);
+
 public:
 	FloatSpinCtrl(wxWindow* parent,wxWindowID id=-1,const wxPoint& pos=wxDefaultPosition,const wxSize& size = wxDefaultSize, long style = wxSP_ARROW_KEYS, double min = 0.0, double max = 100.0, double initial = 0.0, double step = 1.0, const wxString& name = _T("wxSpinCtrl"));
 
@@ -62,4 +87,6 @@ public:
 	double GetValue() { return value; }
 	double GetMin() { return min; }
 	double GetMax() { return max; }
+
+	DECLARE_EVENT_TABLE()
 };

@@ -39,6 +39,15 @@
 #include <wx/wxprec.h>
 #include "float_spin.h"
 #include "utils.h"
+#include "validators.h"
+
+
+///////
+// IDs
+enum {
+	SPIN_BUTTON = 1100,
+	TEXT_EDIT
+};
 
 
 ///////////////
@@ -51,8 +60,8 @@ FloatSpinCtrl::FloatSpinCtrl(wxWindow* parent,wxWindowID id,const wxPoint& pos,c
 	value = initial;
 
 	// Create sub-controls
-	text = new wxTextCtrl(this,-1,_T(""));
-	button = new wxSpinButton(this,-1,wxDefaultPosition,wxSize(-1,20),wxSP_VERTICAL);
+	text = new FloatSpinText(this,TEXT_EDIT);
+	button = new wxSpinButton(this,SPIN_BUTTON,wxDefaultPosition,wxSize(-1,20),wxSP_VERTICAL);
 	SetRange(_min,_max,_step);
 
 	// Set sizer
@@ -60,7 +69,7 @@ FloatSpinCtrl::FloatSpinCtrl(wxWindow* parent,wxWindowID id,const wxPoint& pos,c
 	sizer->Add(text,1,wxEXPAND,0);
 	sizer->Add(button,0,wxEXPAND,0);
 	SetSizer(sizer);
-	sizer->SetSizeHints(this);
+	//sizer->SetSizeHints(this);
 
 	// Update text
 	UpdateText();
@@ -91,3 +100,84 @@ void FloatSpinCtrl::SetRange(double _min,double _max,double _step) {
 void FloatSpinCtrl::UpdateText() {
 	text->SetValue(PrettyFloatD(value));
 }
+
+
+///////////////
+// Event table
+BEGIN_EVENT_TABLE(FloatSpinCtrl,wxPanel)
+	EVT_SPIN(SPIN_BUTTON, FloatSpinCtrl::OnSpin)
+END_EVENT_TABLE()
+
+
+///////////
+// On spin
+void FloatSpinCtrl::OnSpin(wxSpinEvent &event) {
+	value = double(event.GetPosition())*step;
+	UpdateText();
+}
+
+
+////////////////////////// EDIT BOX ////////////////////////////
+
+///////////////
+// Constructor
+FloatSpinText::FloatSpinText(FloatSpinCtrl *_parent,int id)
+: wxTextCtrl(_parent,id,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator(NULL,true,true))
+{
+	parent = _parent;
+}
+
+
+//////////////
+// Focus lost
+void FloatSpinText::OnKillFocus(wxFocusEvent &event) {
+	SendValue();
+}
+
+
+///////////////
+// Key pressed
+void FloatSpinText::OnKeyPress(wxKeyEvent &event) {
+	int code = event.GetKeyCode();
+	if (code == WXK_UP || code == WXK_DOWN) {
+		// Update first
+		SendValue();
+
+		// Get delta
+		int sign = -1;
+		if (code == WXK_UP) sign = 1;
+
+		// Change value
+		int value = parent->button->GetValue()+sign;
+		parent->button->SetValue(value);
+		parent->value = parent->button->GetValue()*parent->step;
+		parent->UpdateText();
+
+		return;
+	}
+	event.Skip();
+}
+
+
+//////////////
+// Send value
+void FloatSpinText::SendValue() {
+	try {
+		double value = 0.0;
+		GetValue().ToDouble(&value);
+		int pos = int(value/parent->step);
+		parent->button->SetValue(pos);
+		parent->UpdateText();
+	}
+	catch (...) {
+		parent->UpdateText();
+	}
+}
+
+
+///////////////
+// Event table
+BEGIN_EVENT_TABLE(FloatSpinText,wxTextCtrl)
+	EVT_KEY_DOWN(FloatSpinText::OnKeyPress)
+	EVT_KILL_FOCUS(FloatSpinText::OnKillFocus)
+END_EVENT_TABLE()
