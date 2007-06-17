@@ -83,6 +83,7 @@ forums_button BITMAP "bitmaps/forums.bmp"
 about_button BITMAP "bitmaps/about.bmp"
 exit_button BITMAP "bitmaps/exit.bmp"
 sort_times_button BITMAP "bitmaps/sort_times.bmp"
+kanji_timer_button BITMAP "bitmaps/kanji_timer.bmp"
 
 button_play BITMAP "bitmaps/button_play.bmp"
 button_stop BITMAP "bitmaps/button_stop.bmp"

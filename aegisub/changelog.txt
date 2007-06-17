@@ -88,7 +88,6 @@ Please visit http://aegisub.net to download latest version
 - Various fixes to better handle paths/file names with non-ANSI characters on Windows (jfs/AMZ)
 - Misc. fixes for building on Linux (Azzy, equinox, jfs)
 - libass support for subtitles on UNIX (Azzy)
-- Redesigned the FexTracker configuration window (jfs)
 - Framegrabs from the video now also includes framenumber in the filename (jfs)
 - Added an option to automatically save the files whenever you change anything. (AMZ)
 - Added global hotkey for Video Play (default Ctrl+P). (AMZ)
@@ -129,7 +128,7 @@ Please visit http://aegisub.net to download latest version
 - Commiting text now commits times as well. (AMZ)
 - Fixed display of end frames on the subtitles grid, when set to frame mode. (demi)
 - Treat comments inside {}'s as plain text, not as overrides; Also, don't assume override blocks start with a backslash, even if they probably should (Dansolo)
-- Removed FexTracker due to licensing problems; there are plans to implement a new motion tracker in its place
+- Removed FexTracker due to licensing problems; there are plans to implement a new motion tracker in its place (jfs)
 
 
 = 1.10 beta - 2006.08.07 ===========================
