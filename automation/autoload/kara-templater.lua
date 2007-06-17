@@ -127,6 +127,7 @@ function parse_template(meta, styles, line, templates, mods)
 		pre = "",
 		style = line.style,
 		loops = 1,
+		layer = line.layer,
 		addtext = true,
 		keeptags = false,
 		inline_fx = nil,
@@ -341,8 +342,8 @@ function set_ctx_syl(varctx, line, syl)
 	varctx.sright = math.floor(line.left + syl.right+0.5)
 	if syl.isfuri then
 		varctx.sbottom = varctx.ltop
-		varctx.stop = varctx.ltop - syl.height
-		varctx.smiddle = varctx.ltop - syl.height/2
+		varctx.stop = math.floor(varctx.ltop - syl.height + 0.5)
+		varctx.smiddle = math.floor(varctx.ltop - syl.height/2 + 0.5)
 	else
 		varctx.stop = varctx.ltop
 		varctx.smiddle = varctx.lmiddle
@@ -355,8 +356,13 @@ function set_ctx_syl(varctx, line, syl)
 	elseif line.halign == "right" then
 		varctx.sx = math.floor(line.left + syl.right + 0.5)
 	end
-	-- FIXME: furigana needs different y
-	varctx.sy = math.floor(line.y+0.5)
+	if line.valign == "top" then
+		varctx.sy = varctx.stop
+	elseif line.valign == "middle" then
+		varctx.sy = varctx.smiddle
+	elseif line.valign == "bottom" then
+		varctx.sy = varctx.sbottom
+	end
 	varctx.left = varctx.sleft
 	varctx.center = varctx.scenter
 	varctx.right = varctx.sright
@@ -395,13 +401,13 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		lbottom = math.floor(line.bottom + 0.5),
 		lx = math.floor(line.x+0.5),
 		ly = math.floor(line.y+0.5)
-		-- TODO? more positioning vars
 	}
 	
 	-- Specific for whole-line processing
 	varctx["start"] = varctx.lstart
 	varctx["end"] = varctx.lend
 	varctx.dur = varctx.ldur
+	varctx.kdur = math.floor(varctx.dur / 10)
 	varctx.mid = varctx.lmid
 	varctx.i = varctx.li
 	varctx.left = varctx.lleft
@@ -429,6 +435,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 			applied_templates = true
 			local newline = table.copy(line)
 			tenv.line = newline
+			newline.layer = t.layer
 			newline.text = ""
 			if t.pre ~= "" then
 				newline.text = newline.text .. run_text_template(t.pre, tenv, varctx)
@@ -648,6 +655,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			local newline = table.copy(line)
 			newline.styleref = syl.style
 			newline.style = syl.style.name
+			newline.layer = t.layer
 			tenv.line = newline
 			newline.text = run_text_template(t.t, tenv, varctx)
 			if t.addtext then
