@@ -38,6 +38,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include "float_spin.h"
+#include "utils.h"
 
 
 ///////////////
@@ -47,14 +48,12 @@ FloatSpinCtrl::FloatSpinCtrl(wxWindow* parent,wxWindowID id,const wxPoint& pos,c
 : wxPanel(parent,id,pos,size,style,name)
 {
 	// Set data
-	min = _min;
-	max = _max;
-	step = _step;
 	value = initial;
 
 	// Create sub-controls
-	text = new wxTextCtrl(this,-1,wxString::Format(_T("%f"),initial));
+	text = new wxTextCtrl(this,-1,_T(""));
 	button = new wxSpinButton(this,-1,wxDefaultPosition,wxSize(-1,20),wxSP_VERTICAL);
+	SetRange(_min,_max,_step);
 
 	// Set sizer
 	wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -62,22 +61,33 @@ FloatSpinCtrl::FloatSpinCtrl(wxWindow* parent,wxWindowID id,const wxPoint& pos,c
 	sizer->Add(button,0,wxEXPAND,0);
 	SetSizer(sizer);
 	sizer->SetSizeHints(this);
+
+	// Update text
+	UpdateText();
 }
 
 
 /////////////
 // Set value
-void FloatSpinCtrl::SetValue(double value) {
+void FloatSpinCtrl::SetValue(double _value) {
+	value = _value;
+	button->SetValue(int(value/step));
+	text->SetValue(PrettyFloatD(value));
 }
 
 
 /////////////
 // Set range
-void FloatSpinCtrl::SetRange(double min,double max) {
+void FloatSpinCtrl::SetRange(double _min,double _max,double _step) {
+	min = _min;
+	max = _max;
+	step = _step;
+	button->SetRange(int(min/step),int(max/step));
 }
 
 
-////////////
-// Set step
-void FloatSpinCtrl::SetStep(double step) {
+///////////////
+// Update text
+void FloatSpinCtrl::UpdateText() {
+	text->SetValue(PrettyFloatD(value));
 }

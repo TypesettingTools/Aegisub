@@ -51,12 +51,13 @@ private:
 	double step;
 	double value;
 
+	void UpdateText();
+
 public:
 	FloatSpinCtrl(wxWindow* parent,wxWindowID id=-1,const wxPoint& pos=wxDefaultPosition,const wxSize& size = wxDefaultSize, long style = wxSP_ARROW_KEYS, double min = 0.0, double max = 100.0, double initial = 0.0, double step = 1.0, const wxString& name = _T("wxSpinCtrl"));
 
 	void SetValue(double value);
-	void SetRange(double min,double max);
-	void SetStep(double step);
+	void SetRange(double min,double max,double step);
 
 	double GetValue() { return value; }
 	double GetMin() { return min; }
