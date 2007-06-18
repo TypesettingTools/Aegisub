@@ -185,9 +185,11 @@ aegisub_SOURCES = \
 	subs_preview.cpp \
 	subtitle_format.cpp \
 	subtitle_format_ass.cpp \
+	subtitle_format_microdvd.cpp \
 	subtitle_format_mkv.cpp \
 	subtitle_format_srt.cpp \
 	subtitle_format_txt.cpp \
+	subtitle_format_ttxt.cpp \
 	subtitles_provider.cpp \
 	subtitles_provider_csri.cpp \
 	text_file_reader.cpp \
