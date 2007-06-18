@@ -39,58 +39,20 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <list>
+#include "subtitle_format.h"
 
 
-//////////////
-// Prototypes
-class AssFile;
-class AssEntry;
-
-
-///////////////////
-// Subtitle reader
-class SubtitleFormat {
-private:
-	bool isCopy;
-	AssFile *assFile;
-
-	void Register();
-	void Remove();
-
-	static std::list<SubtitleFormat*> formats;
-	static bool loaded;
-
-protected:
-	std::list<AssEntry*> *Line;
-	void CreateCopy();
-	void ClearCopy();
-
-	void Clear();
-	void LoadDefault(bool defline=true);
-	AssFile *GetAssFile() { return assFile; }
-	int AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outgroup=NULL);
-	double AskForFPS();
-
-	virtual wxString GetName()=0;
-	virtual wxArrayString GetReadWildcards();
-	virtual wxArrayString GetWriteWildcards();
-
+//////////////////////////
+// MicroDVD reader/writer
+class MicroDVDSubtitleFormat : public SubtitleFormat {
 public:
-	SubtitleFormat();
-	virtual ~SubtitleFormat();
-	void SetTarget(AssFile *file);
+	wxString GetName();
+	wxArrayString GetReadWildcards();
+	wxArrayString GetWriteWildcards();
 
-	static wxString GetWildcards(int mode);
+	bool CanReadFile(wxString filename);
+	void ReadFile(wxString filename,wxString forceEncoding);
 
-	virtual bool CanReadFile(wxString filename) { return false; };
-	virtual bool CanWriteFile(wxString filename) { return false; };
-	virtual void ReadFile(wxString filename,wxString forceEncoding=_T("")) { };
-	virtual void WriteFile(wxString filename,wxString encoding=_T("")) { };
-
-	static SubtitleFormat *GetReader(wxString filename);
-	static SubtitleFormat *GetWriter(wxString filename);
-	static void LoadFormats();
-	static void DestroyFormats();
+	bool CanWriteFile(wxString filename);
+	void WriteFile(wxString filename,wxString encoding);
 };

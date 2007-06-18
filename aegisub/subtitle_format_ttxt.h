@@ -40,7 +40,6 @@
 ///////////
 // Headers
 #include "subtitle_format.h"
-#include <wx/xml/xml.h>
 
 
 //////////////////////

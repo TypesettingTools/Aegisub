@@ -42,7 +42,9 @@
 #include "subtitle_format_txt.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_mkv.h"
+#include "subtitle_format_microdvd.h"
 #include "ass_file.h"
+#include "vfr.h"
 
 
 ///////////////
@@ -125,6 +127,7 @@ void SubtitleFormat::LoadFormats () {
 		new SRTSubtitleFormat();
 		new TXTSubtitleFormat();
 		new TTXTSubtitleFormat();
+		new MicroDVDSubtitleFormat();
 		new MKVSubtitleFormat();
 	}
 	loaded = true;
@@ -259,4 +262,55 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 
 	// Return final list
 	return final;
+}
+
+
+/////////////////////////////////
+// Ask the user to enter the FPS
+double SubtitleFormat::AskForFPS() {
+	wxArrayString choices;
+	
+	// Video FPS
+	bool vidLoaded = VFR_Output.IsLoaded();
+	if (vidLoaded) {
+		wxString vidFPS;
+		if (VFR_Output.GetFrameRateType() == VFR) vidFPS = _T("VFR");
+		else vidFPS = wxString::Format(_T("%.3f"),VFR_Output.GetAverage());
+		choices.Add(wxString::Format(_T("From video (%s)"),vidFPS.c_str()));
+	}
+	
+	// Standard FPS values
+	choices.Add(_("15.000 FPS"));
+	choices.Add(_("23.976 FPS (Decimated NTSC)"));
+	choices.Add(_("24.000 FPS (FILM)"));
+	choices.Add(_("25.000 FPS (PAL)"));
+	choices.Add(_("29.970 FPS (NTSC)"));
+	choices.Add(_("30.000 FPS"));
+	choices.Add(_("59.940 FPS (NTSC x2)"));
+	choices.Add(_("60.000 FPS"));
+	choices.Add(_("119.880 FPS (NTSC x4)"));
+	choices.Add(_("120.000 FPS"));
+
+	// Ask
+	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"),_("FPS"),choices);
+	if (choice == -1) return 0.0;
+
+	// Get FPS from choice
+	if (vidLoaded) choice--;
+	switch (choice) {
+		case -1: return -1.0; break; // VIDEO
+		case 0: return 15.0; break;
+		case 1: return 24.0 / 1.001; break;
+		case 2: return 24.0; break;
+		case 3: return 25.0; break;
+		case 4: return 30.0 / 1.001; break;
+		case 5: return 30.0; break;
+		case 6: return 60.0 / 1.001; break;
+		case 7: return 60.0; break;
+		case 8: return 120.0 / 1.001; break;
+		case 9: return 120.0; break;
+	}
+
+	// fubar
+	return 0.0;
 }

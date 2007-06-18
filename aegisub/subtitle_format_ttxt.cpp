@@ -39,6 +39,7 @@
 #include "subtitle_format_ttxt.h"
 #include "ass_dialogue.h"
 #include "ass_time.h"
+#include <wx/xml/xml.h>
 
 
 ///////////////////
