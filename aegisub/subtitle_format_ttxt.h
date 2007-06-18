@@ -39,12 +39,24 @@
 
 ///////////
 // Headers
+#include "ass_dialogue.h"
 #include "subtitle_format.h"
+#include <wx/xml/xml.h>
 
 
 //////////////////////
 // TTXT reader/writer
 class TTXTSubtitleFormat : public SubtitleFormat {
+private:
+	int version;
+	AssDialogue *diag;
+
+	bool ProcessLine(wxXmlNode *node);
+	void ProcessHeader(wxXmlNode *node);
+
+	void ConvertToTTXT();
+	void DialogueToTTXT(AssDialogue *current,std::list<AssEntry*>::iterator prev);
+
 public:
 	wxString GetName();
 	wxArrayString GetReadWildcards();

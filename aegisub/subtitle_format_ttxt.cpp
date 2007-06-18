@@ -37,9 +37,8 @@
 ///////////
 // Headers
 #include "subtitle_format_ttxt.h"
-#include "ass_dialogue.h"
 #include "ass_time.h"
-#include <wx/xml/xml.h>
+#include "ass_file.h"
 
 
 ///////////////////
@@ -61,8 +60,8 @@ wxArrayString TTXTSubtitleFormat::GetReadWildcards() {
 ///////////////////////
 // Get write wildcards
 wxArrayString TTXTSubtitleFormat::GetWriteWildcards() {
-	//return GetReadWildcards();
-	return wxArrayString();
+	return GetReadWildcards();
+	//return wxArrayString();
 }
 
 
@@ -76,8 +75,8 @@ bool TTXTSubtitleFormat::CanReadFile(wxString filename) {
 /////////////////////
 // Can write a file?
 bool TTXTSubtitleFormat::CanWriteFile(wxString filename) {
-	return false;
-	//return (filename.Right(5).Lower() == _T(".ttxt"));
+	//return false;
+	return (filename.Right(5).Lower() == _T(".ttxt"));
 }
 
 
@@ -96,77 +95,24 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 
 	// Check version
 	wxString verStr = doc.GetRoot()->GetPropVal(_T("version"),_T(""));
-	int version = -1;
+	version = -1;
 	if (verStr == _T("1.0")) version = 0;
 	else if (verStr == _T("1.1")) version = 1;
 	else throw wxString(_T("Unknown TTXT version: ") + verStr);
 
 	// Get children
-	AssDialogue *diag = NULL;
+	diag = NULL;
 	wxXmlNode *child = doc.GetRoot()->GetChildren();
 	int lines = 0;
 	while (child) {
 		// Line
 		if (child->GetName() == _T("TextSample")) {
-			// Get properties
-			wxString sampleTime = child->GetPropVal(_T("sampleTime"),_T("00:00:00.000"));
-			wxString text;
-			if (version == 0) text = child->GetPropVal(_T("text"),_T(""));
-			else text = child->GetNodeContent();
-
-			// Parse time
-			AssTime time;
-			time.ParseASS(sampleTime);
-
-			// Set end time of last line
-			if (diag) diag->End = time;
-			diag = NULL;
-
-			// Create line
-			if (!text.IsEmpty()) {
-				// Create dialogue
-				diag = new AssDialogue();
-				diag->Start = time;
-				diag->End.SetMS(time.GetMS()+5000);
-				diag->group = _T("[Events]");
-				diag->Style = _T("Default");
-				diag->Comment = false;
-				diag->StartMS = diag->Start.GetMS();
-
-				// Process text for 1.0
-				if (version == 0) {
-					wxString finalText;
-					finalText.Alloc(text.Length());
-					bool in = false;
-					bool first = true;
-					for (size_t i=0;i<text.Length();i++) {
-						if (text[i] == _T('\'')) {
-							if (!in && !first) finalText += _T("\\N");
-							first = false;
-							in = !in;
-						}
-						else if (in) finalText += text[i];
-					}
-					diag->Text = finalText;
-				}
-
-				// Process text for 1.1
-				else {
-					text.Replace(_T("\r"),_T(""));
-					text.Replace(_T("\n"),_T("\\N"));
-					diag->Text = text;
-				}
-
-				// Insert dialogue
-				diag->UpdateData();
-				Line->push_back(diag);
-				lines++;
-			}
+			if (ProcessLine(child)) lines++;
 		}
 
 		// Header
 		else if (child->GetName() == _T("TextStreamHeader")) {
-			// TODO
+			ProcessHeader(child);
 		}
 
 		// Proceed to next child
@@ -186,7 +132,213 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 }
 
 
+///////////////////////////
+// Process a dialogue line
+bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
+	// Get properties
+	wxString sampleTime = node->GetPropVal(_T("sampleTime"),_T("00:00:00.000"));
+	wxString text;
+	if (version == 0) text = node->GetPropVal(_T("text"),_T(""));
+	else text = node->GetNodeContent();
+
+	// Parse time
+	AssTime time;
+	time.ParseASS(sampleTime);
+
+	// Set end time of last line
+	if (diag) diag->End = time;
+	diag = NULL;
+
+	// Create line
+	if (!text.IsEmpty()) {
+		// Create dialogue
+		diag = new AssDialogue();
+		diag->Start = time;
+		diag->End.SetMS(time.GetMS()+5000);
+		diag->group = _T("[Events]");
+		diag->Style = _T("Default");
+		diag->Comment = false;
+		diag->StartMS = diag->Start.GetMS();
+
+		// Process text for 1.0
+		if (version == 0) {
+			wxString finalText;
+			finalText.Alloc(text.Length());
+			bool in = false;
+			bool first = true;
+			for (size_t i=0;i<text.Length();i++) {
+				if (text[i] == _T('\'')) {
+					if (!in && !first) finalText += _T("\\N");
+					first = false;
+					in = !in;
+				}
+				else if (in) finalText += text[i];
+			}
+			diag->Text = finalText;
+		}
+
+		// Process text for 1.1
+		else {
+			text.Replace(_T("\r"),_T(""));
+			text.Replace(_T("\n"),_T("\\N"));
+			diag->Text = text;
+		}
+
+		// Insert dialogue
+		diag->UpdateData();
+		Line->push_back(diag);
+		return true;
+	}
+
+	else return false;
+}
+
+
+//////////////////////
+// Process the header
+void TTXTSubtitleFormat::ProcessHeader(wxXmlNode *node) {
+	// TODO
+}
+
+
 ////////////////
 // Write a file
 void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
+	// Convert to TTXT
+	CreateCopy();
+	ConvertToTTXT();
+
+	// Create XML structure
+	wxXmlDocument doc;
+	wxXmlNode *root = new wxXmlNode(NULL,wxXML_ELEMENT_NODE,_T("TextStream"));
+	root->AddProperty(_T("version"),_T("1.1"));
+	doc.SetRoot(root);
+	wxXmlNode *node,*prevNode;
+
+	// Create header
+	node = new wxXmlNode(root,wxXML_ELEMENT_NODE,_T("TextStreamHeader"));
+	node->AddProperty(_T("width"),_T("400"));
+	node->AddProperty(_T("height"),_T("60"));
+	root->AddChild(node);
+	prevNode = node;
+
+	// Create lines
+	int i=1;
+	using std::list;
+	AssDialogue *prev = NULL;
+	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		if (current) {
+			// Get line
+			if (current->Comment) throw _T("Unexpected line type (comment)");
+
+			// If it doesn't start at the end of previous, add blank
+			if (prev && prev->End != current->Start) {
+				node = new wxXmlNode(root,wxXML_ELEMENT_NODE,_T("TextSample"));
+				node->AddProperty(_T("startTime"),_T("0") + prev->End.GetASSFormated(true));
+				node->AddProperty(_T("xml:space"),_T("preserve"));
+				node->SetContent(_T(""));
+				node->SetNext(prevNode);
+				prevNode = node;
+			}
+
+			// Generate and insert node
+			node = new wxXmlNode(root,wxXML_ELEMENT_NODE,_T("TextSample"));
+			node->AddProperty(_T("startTime"),_T("0") + current->Start.GetASSFormated(true));
+			node->AddProperty(_T("xml:space"),_T("preserve"));
+			node->SetContent(current->Text);
+			node->SetNext(prevNode);
+			prevNode = node;
+
+			// Set as previous
+			prev = current;
+
+			i++;
+		}
+		else throw _T("Unexpected line type");
+	}
+
+	// Save XML
+	//prevNode->SetNext(NULL);
+	doc.Save(filename);
+
+	// Clear
+	ClearCopy();
+}
+
+
+///////////////////////
+// Convert line to TTXT
+void TTXTSubtitleFormat::DialogueToTTXT(AssDialogue *current,std::list<AssEntry*>::iterator prev) {
+	using std::list;
+	AssDialogue *previous;
+	if (prev != Line->end()) previous = AssEntry::GetAsDialogue(*prev);
+	else previous = NULL;
+
+	// Strip ASS tags
+	current->StripTags();
+
+	// Join equal lines
+	if (previous != NULL) {
+		if (previous->Text == current->Text) {
+			if (abs(current->Start.GetMS() - previous->End.GetMS()) < 20) {
+				current->Start = (current->Start < previous->Start ? current->Start : previous->Start);
+				current->End = (current->End > previous->End ? current->End : previous->End);
+				delete *prev;
+				Line->erase(prev);
+			}
+		}
+	}
+
+	// Fix line breaks
+	current->Text.Replace(_T("\\n"),_T("\r\n"),true);
+	current->Text.Replace(_T("\\N"),_T("\r\n"),true);
+	while (current->Text.Replace(_T("\r\n\r\n"),_T("\r\n"),true));
+}
+
+
+//////////////////////////////
+// Converts whole file to TTXT
+void TTXTSubtitleFormat::ConvertToTTXT () {
+	using std::list;
+
+	// Sort lines
+	Line->sort(LessByPointedToValue<AssEntry>());
+
+	// Prepare processing
+	list<AssEntry*>::iterator next;
+	list<AssEntry*>::iterator prev = Line->end();
+	AssTime lastTime;
+
+	// Process lines
+	bool notfirst = false;
+	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur=next) {
+		next = cur;
+		next++;
+
+		// Dialogue line (not comment)
+		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		if (current && !current->Comment) {
+			DialogueToTTXT(current,prev);
+			notfirst = true;
+			prev = cur;
+			lastTime = current->End;
+		}
+
+		// Other line, delete it
+		else {
+			delete *cur;
+			Line->erase(cur);
+		}
+	}
+
+	// Insert blank line at the end
+	AssDialogue *diag = new AssDialogue();
+	diag->Start = lastTime;
+	diag->End.SetMS(lastTime.GetMS()+5000);
+	diag->group = _T("[Events]");
+	diag->Style = _T("Default");
+	diag->Comment = false;
+	diag->StartMS = diag->Start.GetMS();
+	Line->push_back(diag);
 }

@@ -131,12 +131,12 @@ void AssTime::SetMS (int _ms) {
 
 ////////////////
 // ASS Formated
-wxString AssTime::GetASSFormated () {
+wxString AssTime::GetASSFormated (bool msPrecision) {
 	int h,m,s,ms;
 	int _ms = time;
 
 	// Centisecond precision
-	if (!UseMSPrecision) _ms = _ms/10*10;
+	if (!UseMSPrecision && !msPrecision) _ms = _ms/10*10;
 
 	// Reset
 	h = m = s = ms = 0;
