@@ -690,7 +690,7 @@ end
 -- Main function to do the templating
 function filter_apply_templates(subs, config)
 	aegisub.progress.task("Collecting header data...")
-	local meta, styles = karaskel.collect_head(subs)
+	local meta, styles = karaskel.collect_head(subs, true)
 	
 	aegisub.progress.task("Parsing templates...")
 	local templates = parse_templates(meta, styles, subs)
