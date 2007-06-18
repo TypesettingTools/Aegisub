@@ -130,13 +130,16 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 				isFirst = false;
 
 				// If it wasn't an fps line, ask the user for it
-				if (fps == 0.0) {
+				if (fps <= 0.0) {
 					fps = AskForFPS();
 					if (fps == 0.0) return;
 					else if (fps > 0.0) cfr.SetCFR(fps);
 					else rate = &VFR_Output;
 				}
-				else continue;
+				else {
+					cfr.SetCFR(fps);
+					continue;
+				}
 			}
 
 			// Start and end times
@@ -176,7 +179,9 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	TextFileWriter file(filename,encoding);
 
 	// Write FPS line
-	file.WriteLineToFile(wxString::Format(_T("{1}{1}%.6f"),fps));
+	if (rate->GetFrameRateType() != VFR) {
+		file.WriteLineToFile(wxString::Format(_T("{1}{1}%.6f"),rate->GetAverage()));
+	}
 
 	// Write lines
 	using std::list;
