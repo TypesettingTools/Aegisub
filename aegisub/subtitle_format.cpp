@@ -40,9 +40,7 @@
 #include "subtitle_format_ass.h"
 #include "subtitle_format_srt.h"
 #include "subtitle_format_txt.h"
-//#if USE_PRS == 1
-//#include "subtitle_format_prs.h"
-//#endif
+#include "subtitle_format_ttxt.h"
 #include "subtitle_format_mkv.h"
 #include "ass_file.h"
 
@@ -126,10 +124,8 @@ void SubtitleFormat::LoadFormats () {
 		new ASSSubtitleFormat();
 		new SRTSubtitleFormat();
 		new TXTSubtitleFormat();
+		new TTXTSubtitleFormat();
 		new MKVSubtitleFormat();
-//#if USE_PRS == 1
-//		new PRSSubtitleFormat();
-//#endif
 	}
 	loaded = true;
 }
