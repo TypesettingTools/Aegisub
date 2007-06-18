@@ -89,9 +89,6 @@ function parse_code(meta, styles, line, templates, mods)
 		elseif m == "syl" then
 			table.insert(templates.syl, template)
 			inserted = true
-		elseif m == "char" then
-			table.insert(templates.char, template)
-			inserted = true
 		elseif m == "furi" then
 			table.insert(templates.furi, template)
 			inserted = true
@@ -117,8 +114,8 @@ function parse_code(meta, styles, line, templates, mods)
 end
 
 template_modifiers = {
-	"pre-line", "line", "syl", "char", "furi",
-	"all", "repeat", "loop", "notext", "keeptags", "multi", "fx"
+	"pre-line", "line", "syl", "furi", "char", "all", "repeat", "loop",
+	"notext", "keeptags", "noblank", "multi", "fx", "fxgroup"
 }
 
 function parse_template(meta, styles, line, templates, mods)
@@ -130,6 +127,7 @@ function parse_template(meta, styles, line, templates, mods)
 		layer = line.layer,
 		addtext = true,
 		keeptags = false,
+		fxgroup = nil,
 		inline_fx = nil,
 		multi = false,
 		isline = false,
@@ -183,7 +181,7 @@ function parse_template(meta, styles, line, templates, mods)
 			inserted = true
 		elseif (m == "pre-line" or m == "line") and inserted then
 			aegisub.out(2, "Unable to combine %s class templates with other template classes\n\n", m)
-		elseif (m == "syl" or m == "char" or m == "furi") and template.isline then
+		elseif (m == "syl" or m == "furi") and template.isline then
 			aegisub.out(2, "Unable to combine %s class template lines with line or pre-line classes\n\n", m)
 		elseif m == "all" then
 			template.style = nil
@@ -215,6 +213,15 @@ function parse_template(meta, styles, line, templates, mods)
 				aegisub.out(3, "No fx name following fx modifier\nIn template line: %s\nEffect field: %s\n\n", line.text, line.effect)
 				template.fx = nil
 			end
+		elseif m == "fxgroup" then
+			local fx, t = string.headtail(rest)
+			if fx ~= "" then
+				template.fxgroup = fx
+				rest = t
+			else
+				aegisub.out(3, "No fxgroup name following fxgroup modifier\nIn template linee: %s\nEffect field: %s\n\n", line.text, line.effect)
+				template.fxgroup = nil
+			end
 		else
 			aegisub.out(3, "Unknown modifier in template: %s\nIn template line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
 		end
@@ -229,14 +236,16 @@ function parse_template(meta, styles, line, templates, mods)
 end
 
 -- Iterator function, return all templates that apply to the given line
-function matching_templates(templates, line)
+function matching_templates(templates, line, tenv)
 	local lastkey = nil
 	local function test_next()
 		local k, t = next(templates, lastkey)
 		lastkey = k
 		if not t then
 			return nil
-		elseif t.style == line.style or not t.style then
+		elseif (t.style == line.style or not t.style) and
+				(not t.fxgroup or
+				(t.fxgroup and tenv.fxgroup[t.fxgroup] ~= false)) then
 			return t
 		else
 			return test_next()
@@ -297,6 +306,7 @@ function apply_templates(meta, styles, subs, templates)
 		line.end_time = newend
 		return ""
 	end
+	tenv.fxgroup = {}
 	
 	-- run all run-once code snippets
 	for k, t in pairs(templates.once) do
@@ -426,7 +436,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 
 	-- Apply all line templates
 	aegisub.debug.out(5, "Running line templates\n")
-	for t in matching_templates(templates.line, line) do
+	for t in matching_templates(templates.line, line, tenv) do
 		if t.code then
 			aegisub.debug.out(5, "Code template, %s\n", t.code)
 			run_code_template(t, tenv)
@@ -560,7 +570,7 @@ function apply_syllable_templates(syl, line, templates, tenv, varctx, subs)
 	local applied_templates = false
 	
 	-- Loop over all templates matching the line style
-	for t in matching_templates(templates, line) do
+	for t in matching_templates(templates, line, tenv) do
 		tenv.syl = syl
 		set_ctx_syl(varctx, line, syl)
 		
