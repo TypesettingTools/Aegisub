@@ -439,6 +439,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	for t in matching_templates(templates.line, line, tenv) do
 		if t.code then
 			aegisub.debug.out(5, "Code template, %s\n", t.code)
+			tenv.line = line
 			run_code_template(t, tenv)
 		else
 			aegisub.debug.out(5, "Line template, pre = '%s', t = '%s'\n", t.pre, t.t)
@@ -661,6 +662,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 	-- Regular processing
 	if t.code then
 		aegisub.debug.out(5, "Running code line\n")
+		tenv.line = line
 		run_code_template(t, tenv)
 	else
 		aegisub.debug.out(5, "Running %d effect loops\n", t.loops)
