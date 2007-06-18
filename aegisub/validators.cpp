@@ -61,6 +61,16 @@ NumValidator::NumValidator(wxString* _valPtr,bool isfloat,bool issigned) {
 }
 
 
+////////////////////
+// Copy constructor
+NumValidator::NumValidator(const NumValidator &from) {
+	valPtr = from.valPtr;
+	isFloat = from.isFloat;
+	isSigned = from.isSigned;
+	SetWindow(from.GetWindow());
+}
+
+
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(NumValidator, wxValidator)
@@ -91,7 +101,7 @@ bool NumValidator::Validate(wxWindow* parent) {
 	// Check each character
 	bool gotDecimal = false;
 	for (size_t i=0;i<value.Length();i++) {
-		if (!CheckCharacter(value[i],i==0,gotDecimal)) return false;
+		if (!CheckCharacter(value[i],i==0,true,gotDecimal)) return false;
 	}
 
 	// All clear
@@ -101,12 +111,15 @@ bool NumValidator::Validate(wxWindow* parent) {
 
 ///////////////////////////////////////
 // Check if a given character is valid
-bool NumValidator::CheckCharacter(int chr,bool isFirst,bool &gotDecimal) {
+bool NumValidator::CheckCharacter(int chr,bool isFirst,bool canSign,bool &gotDecimal) {
 	// Check sign
 	if (chr == _T('-') || chr == _T('+')) {
-		if (!isFirst || !isSigned) return false;
+		if (!isFirst || !canSign || !isSigned) return false;
 		else return true;
 	}
+
+	// Don't allow anything before a sign
+	if (isFirst && !canSign) return false;
 
 	// Check decimal point
 	if (chr == _T('.') || chr == _T(',')) {
@@ -151,10 +164,11 @@ void NumValidator::OnChar(wxKeyEvent& event) {
 		if (curchr == _T('+') || curchr == _T('-')) signs++;
 	}
 	bool gotDecimal = decimals > 0;
-	bool canSign = from == 0 && signs == 0;
+	bool isFirst = from == 0;
+	bool canSign = signs == 0;
 
 	// Check character
-	if (!CheckCharacter(chr,canSign,gotDecimal)) {
+	if (!CheckCharacter(chr,isFirst,canSign,gotDecimal)) {
 		if (!wxValidator::IsSilent()) wxBell();
 		return;
 	}

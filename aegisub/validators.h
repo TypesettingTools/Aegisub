@@ -58,12 +58,13 @@ private:
 	bool TransferToWindow();
 	bool TransferFromWindow();
 
-	bool CheckCharacter(int chr,bool isFirst,bool &gotDecimal);
+	bool CheckCharacter(int chr,bool isFirst,bool canSign,bool &gotDecimal);
 
 	void OnChar(wxKeyEvent& event);
 
 public:
 	NumValidator(wxString* valPtr = NULL,bool isfloat=false,bool issigned=false);
+	NumValidator(const NumValidator& from);
 
 	DECLARE_EVENT_TABLE();
 };
