@@ -94,6 +94,13 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 	// Check root node name
 	if (doc.GetRoot()->GetName() != _T("TextStream")) throw _T("Invalid TTXT file.");
 
+	// Check version
+	wxString verStr = doc.GetRoot()->GetPropVal(_T("version"),_T(""));
+	int version = -1;
+	if (verStr == _T("1.0")) version = 0;
+	else if (verStr == _T("1.1")) version = 1;
+	else throw wxString(_T("Unknown TTXT version: ") + verStr);
+
 	// Get children
 	AssDialogue *diag = NULL;
 	wxXmlNode *child = doc.GetRoot()->GetChildren();
@@ -103,7 +110,9 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 		if (child->GetName() == _T("TextSample")) {
 			// Get properties
 			wxString sampleTime = child->GetPropVal(_T("sampleTime"),_T("00:00:00.000"));
-			wxString text = child->GetPropVal(_T("text"),_T(""));
+			wxString text;
+			if (version == 0) text = child->GetPropVal(_T("text"),_T(""));
+			else text = child->GetNodeContent();
 
 			// Parse time
 			AssTime time;
@@ -115,30 +124,41 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 
 			// Create line
 			if (!text.IsEmpty()) {
-				// Process text
-				wxString finalText;
-				finalText.Alloc(text.Length());
-				bool in = false;
-				bool first = true;
-				for (size_t i=0;i<text.Length();i++) {
-					if (text[i] == _T('\'')) {
-						if (!in && !first) finalText += _T("\\N");
-						first = false;
-						in = !in;
-					}
-					else if (in) finalText += text[i];
-				}
-
 				// Create dialogue
 				diag = new AssDialogue();
 				diag->Start = time;
 				diag->End.SetMS(time.GetMS()+5000);
-				diag->Text = finalText;
 				diag->group = _T("[Events]");
 				diag->Style = _T("Default");
 				diag->Comment = false;
-				diag->UpdateData();
 				diag->StartMS = diag->Start.GetMS();
+
+				// Process text for 1.0
+				if (version == 0) {
+					wxString finalText;
+					finalText.Alloc(text.Length());
+					bool in = false;
+					bool first = true;
+					for (size_t i=0;i<text.Length();i++) {
+						if (text[i] == _T('\'')) {
+							if (!in && !first) finalText += _T("\\N");
+							first = false;
+							in = !in;
+						}
+						else if (in) finalText += text[i];
+					}
+					diag->Text = finalText;
+				}
+
+				// Process text for 1.1
+				else {
+					text.Replace(_T("\r"),_T(""));
+					text.Replace(_T("\n"),_T("\\N"));
+					diag->Text = text;
+				}
+
+				// Insert dialogue
+				diag->UpdateData();
 				Line->push_back(diag);
 				lines++;
 			}
