@@ -114,10 +114,25 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 
 			// Create line
 			if (!text.IsEmpty()) {
+				// Process text
+				wxString finalText;
+				finalText.Alloc(text.Length());
+				bool in = false;
+				bool first = true;
+				for (size_t i=0;i<text.Length();i++) {
+					if (text[i] == _T('\'')) {
+						if (!in && !first) finalText += _T("\\N");
+						first = false;
+						in = !in;
+					}
+					else if (in) finalText += text[i];
+				}
+
+				// Create dialogue
 				diag = new AssDialogue();
 				diag->Start = time;
 				diag->End.SetMS(time.GetMS()+5000);
-				diag->Text = text;
+				diag->Text = finalText;
 				diag->group = _T("[Events]");
 				diag->Style = _T("Default");
 				diag->Comment = false;
