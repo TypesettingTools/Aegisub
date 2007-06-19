@@ -39,6 +39,7 @@
 
 //////////
 // Headers
+#include <list>
 #include "video_frame.h"
 #include "factory.h"
 

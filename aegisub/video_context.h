@@ -39,9 +39,17 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <time.h>
+#include <wx/wxprec.h>
 #include <wx/glcanvas.h>
+#include <list>
+#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#include <OpenGL/GL.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
 #include "video_frame.h"
 
 

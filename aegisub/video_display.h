@@ -44,6 +44,7 @@
 #include <windows.h>
 #endif
 #include <time.h>
+#include <wx/glcanvas.h>
 #include "video_context.h"
 
 

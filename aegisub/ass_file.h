@@ -42,6 +42,7 @@
 #include <wx/wxprec.h>
 #include <fstream>
 #include <list>
+#include <vector>
 
 
 //////////////
