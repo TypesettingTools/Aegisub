@@ -54,7 +54,7 @@ bool TXTSubtitleFormat::CanReadFile(wxString filename) {
 //////////////
 // Can write?
 bool TXTSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".txt"));
+	return (filename.Right(4).Lower() == _T(".txt") && filename.Right(11).Lower() != _T(".encore.txt"));
 }
 
 

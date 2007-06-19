@@ -43,6 +43,7 @@
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_mkv.h"
 #include "subtitle_format_microdvd.h"
+#include "subtitle_format_encore.h"
 #include "ass_file.h"
 #include "vfr.h"
 
@@ -129,6 +130,7 @@ void SubtitleFormat::LoadFormats () {
 		new TTXTSubtitleFormat();
 		new MicroDVDSubtitleFormat();
 		new MKVSubtitleFormat();
+		new EncoreSubtitleFormat();
 	}
 	loaded = true;
 }
@@ -267,11 +269,11 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 
 /////////////////////////////////
 // Ask the user to enter the FPS
-double SubtitleFormat::AskForFPS() {
+double SubtitleFormat::AskForFPS(bool palNtscOnly) {
 	wxArrayString choices;
 	
 	// Video FPS
-	bool vidLoaded = VFR_Output.IsLoaded();
+	bool vidLoaded = !palNtscOnly && VFR_Output.IsLoaded();
 	if (vidLoaded) {
 		wxString vidFPS;
 		if (VFR_Output.GetFrameRateType() == VFR) vidFPS = _T("VFR");
@@ -280,20 +282,30 @@ double SubtitleFormat::AskForFPS() {
 	}
 	
 	// Standard FPS values
-	choices.Add(_("15.000 FPS"));
-	choices.Add(_("23.976 FPS (Decimated NTSC)"));
-	choices.Add(_("24.000 FPS (FILM)"));
+	if (!palNtscOnly) {
+		choices.Add(_("15.000 FPS"));
+		choices.Add(_("23.976 FPS (Decimated NTSC)"));
+		choices.Add(_("24.000 FPS (FILM)"));
+	}
 	choices.Add(_("25.000 FPS (PAL)"));
 	choices.Add(_("29.970 FPS (NTSC)"));
-	choices.Add(_("30.000 FPS"));
-	choices.Add(_("59.940 FPS (NTSC x2)"));
-	choices.Add(_("60.000 FPS"));
-	choices.Add(_("119.880 FPS (NTSC x4)"));
-	choices.Add(_("120.000 FPS"));
+	if (!palNtscOnly) {
+		choices.Add(_("30.000 FPS"));
+		choices.Add(_("59.940 FPS (NTSC x2)"));
+		choices.Add(_("60.000 FPS"));
+		choices.Add(_("119.880 FPS (NTSC x4)"));
+		choices.Add(_("120.000 FPS"));
+	}
 
 	// Ask
 	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"),_("FPS"),choices);
 	if (choice == -1) return 0.0;
+
+	// PAL/NTSC choice
+	if (palNtscOnly) {
+		if (choice == 0) return 25.0;
+		else return 30.0 / 1.001;
+	}
 
 	// Get FPS from choice
 	if (vidLoaded) choice--;

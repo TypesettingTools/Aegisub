@@ -34,40 +34,75 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #include "ass_dialogue.h"
-#include "subtitle_format.h"
-#include <wx/xml/xml.h>
+#include "subtitle_format_encore.h"
+#include "text_file_writer.h"
 
 
-//////////////////////
-// TTXT reader/writer
-class TTXTSubtitleFormat : public SubtitleFormat {
-private:
-	int version;
-	AssDialogue *diag;
-	AssDialogue *prev;
+////////
+// Name
+wxString EncoreSubtitleFormat::GetName() {
+	return _T("Adobe Encore");
+}
 
-	bool ProcessLine(wxXmlNode *node);
-	void ProcessHeader(wxXmlNode *node);
 
-	void WriteHeader(wxXmlNode *root);
-	void WriteLine(wxXmlNode *root,AssDialogue *line);
+/////////////
+// Wildcards
+wxArrayString EncoreSubtitleFormat::GetWriteWildcards() {
+	wxArrayString formats;
+	formats.Add(_T("encore.txt"));
+	return formats;
+}
 
-	void ConvertToTTXT();
 
-public:
-	wxString GetName();
-	wxArrayString GetReadWildcards();
-	wxArrayString GetWriteWildcards();
+///////////////////
+// Can write file?
+bool EncoreSubtitleFormat::CanWriteFile(wxString filename) {
+	return (filename.Right(11).Lower() == _T(".encore.txt"));
+}
 
-	bool CanReadFile(wxString filename);
-	void ReadFile(wxString filename,wxString forceEncoding);
 
-	bool CanWriteFile(wxString filename);
-	void WriteFile(wxString filename,wxString encoding);
-};
+//////////////
+// Write file
+void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
+	// Get FPS
+	double fps = AskForFPS(true);
+	if (fps <= 0.0) return;
+
+	// Open file
+	TextFileWriter file(_filename,encoding);
+
+	// Convert to encore
+	CreateCopy();
+	SortLines();
+	Merge(true,true,true);
+	ConvertTags(1,_T("\r\n"));
+
+	// Write lines
+	using std::list;
+	int i = 0;
+	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		if (current && !current->Comment) {
+			// Time stamps
+			i++;
+			AssTime time = current->Start;
+			int f = int(time.GetTimeMiliseconds() * fps / 1000.0 + 0.5);
+			wxString timeStamps = wxString::Format(_T("%i %02i:%02i:%02i:%02i "),i,time.GetTimeHours(),time.GetTimeMinutes(),time.GetTimeSeconds(),f);
+			time = current->End;
+			f = int(time.GetTimeMiliseconds() * fps / 1000.0 + 0.5);
+			timeStamps += wxString::Format(_T("%02i:%02i:%02i:%02i "),time.GetTimeHours(),time.GetTimeMinutes(),time.GetTimeSeconds(),f);
+
+			// Convert : to ; if it's NTSC
+			if (fps > 26.0) timeStamps.Replace(_T(":"),_T(";"));
+
+			// Write
+			file.WriteLineToFile(timeStamps + current->Text);
+		}
+	}
+
+	// Clean up
+	ClearCopy();
+}

@@ -278,3 +278,12 @@ bool operator != (AssTime &t1, AssTime &t2) {
 /////////////////
 // Static option
 bool AssTime::UseMSPrecision = false;
+
+
+///////
+// Get
+int AssTime::GetTimeHours() { return time / 3600000; }
+int AssTime::GetTimeMinutes() { return (time % 3600000)/60000; }
+int AssTime::GetTimeSeconds() { return (time % 60000)/1000; }
+int AssTime::GetTimeMiliseconds() { return (time % 1000); }
+int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
