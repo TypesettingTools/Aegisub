@@ -65,7 +65,7 @@
 #pragma comment(lib, "wxmsw28ud_gl.lib")
 #pragma comment(lib, "wxmsw28ud_stc.lib")
 #pragma comment(lib, "wxbase28ud_xml.lib")
-#pragma comment(lib, "wxexpat.lib")
+#pragma comment(lib, "wxexpatd.lib")
 #else
 #pragma comment(lib, "wxregexu.lib")
 #pragma comment(lib, "wxbase28u.lib")
