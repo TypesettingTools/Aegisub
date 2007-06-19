@@ -135,13 +135,8 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 ///////////////////////////
 // Process a dialogue line
 bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
-	// Get properties
+	// Get time
 	wxString sampleTime = node->GetPropVal(_T("sampleTime"),_T("00:00:00.000"));
-	wxString text;
-	if (version == 0) text = node->GetPropVal(_T("text"),_T(""));
-	else text = node->GetNodeContent();
-
-	// Parse time
 	AssTime time;
 	time.ParseASS(sampleTime);
 
@@ -149,12 +144,17 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 	if (diag) diag->End = time;
 	diag = NULL;
 
+	// Get text
+	wxString text;
+	if (version == 0) text = node->GetPropVal(_T("text"),_T(""));
+	else text = node->GetNodeContent();
+
 	// Create line
 	if (!text.IsEmpty()) {
 		// Create dialogue
 		diag = new AssDialogue();
 		diag->Start = time;
-		diag->End.SetMS(time.GetMS()+5000);
+		diag->End.SetMS(36000000-10);
 		diag->group = _T("[Events]");
 		diag->Style = _T("Default");
 		diag->Comment = false;
@@ -185,7 +185,6 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 		}
 
 		// Insert dialogue
-		diag->UpdateData();
 		Line->push_back(diag);
 		return true;
 	}
@@ -213,45 +212,18 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	wxXmlNode *root = new wxXmlNode(NULL,wxXML_ELEMENT_NODE,_T("TextStream"));
 	root->AddProperty(_T("version"),_T("1.1"));
 	doc.SetRoot(root);
-	wxXmlNode *node,*subNode;
 
 	// Create header
-	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextStreamHeader"));
-	node->AddProperty(_T("width"),_T("400"));
-	node->AddProperty(_T("height"),_T("60"));
-	root->AddChild(node);
+	WriteHeader(root);
 
 	// Create lines
 	int i=1;
 	using std::list;
-	AssDialogue *prev = NULL;
+	prev = NULL;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
-		if (current) {
-			// Get line
-			if (current->Comment) throw _T("Unexpected line type (comment)");
-
-			// If it doesn't start at the end of previous, add blank
-			if (prev && prev->End != current->Start) {
-				node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
-				node->AddProperty(_T("startTime"),_T("0") + prev->End.GetASSFormated(true));
-				node->AddProperty(_T("xml:space"),_T("preserve"));
-				subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),_T(""));
-				node->AddChild(subNode);
-				root->AddChild(node);
-			}
-
-			// Generate and insert node
-			node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
-			node->AddProperty(_T("sampleTime"),_T("0") + current->Start.GetASSFormated(true));
-			node->AddProperty(_T("xml:space"),_T("preserve"));
-			subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),current->Text);
-			node->AddChild(subNode);
-			root->AddChild(node);
-
-			// Set as previous
-			prev = current;
-
+		if (current && !current->Comment) {
+			WriteLine(root,current);
 			i++;
 		}
 		else throw _T("Unexpected line type");
@@ -263,6 +235,84 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 	// Clear
 	ClearCopy();
+}
+
+
+////////////////
+// Write header
+void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) {
+	// Write stream header
+	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextStreamHeader"));
+	node->AddProperty(_T("width"),_T("400"));
+	node->AddProperty(_T("height"),_T("60"));
+	node->AddProperty(_T("layer"),_T("0"));
+	node->AddProperty(_T("translation_x"),_T("0"));
+	node->AddProperty(_T("translation_y"),_T("0"));
+	root->AddChild(node);
+	root = node;
+
+	// Write sample description
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSampleDescription"));
+	node->AddProperty(_T("horizontalJustification"),_T("center"));
+	node->AddProperty(_T("verticalJustification"),_T("bottom"));
+	node->AddProperty(_T("backColor"),_T("0 0 0 0"));
+	node->AddProperty(_T("verticalText"),_T("no"));
+	node->AddProperty(_T("fillTextRegion"),_T("no"));
+	node->AddProperty(_T("continuousKaraoke"),_T("no"));
+	node->AddProperty(_T("scroll"),_T("None"));
+	root->AddChild(node);
+	root = node;
+
+	// Write font table
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("FontTable"));
+	wxXmlNode *subNode = new wxXmlNode(wxXML_ELEMENT_NODE,_T("FontTableEntry"));
+	subNode->AddProperty(_T("fontName"),_T("Sans"));
+	subNode->AddProperty(_T("fontID"),_T("1"));
+	node->AddChild(subNode);
+	root->AddChild(node);
+	
+	// Write text box
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextBox"));
+	node->AddProperty(_T("top"),_T("0"));
+	node->AddProperty(_T("left"),_T("0"));
+	node->AddProperty(_T("bottom"),_T("60"));
+	node->AddProperty(_T("right"),_T("400"));
+	root->AddChild(node);
+
+	// Write style
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("Style"));
+	node->AddProperty(_T("styles"),_T("Normal"));
+	node->AddProperty(_T("fontID"),_T("1"));
+	node->AddProperty(_T("fontSize"),_T("18"));
+	node->AddProperty(_T("color"),_T("ff ff ff ff"));
+	root->AddChild(node);
+}
+
+
+//////////////
+// Write line
+void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
+	// If it doesn't start at the end of previous, add blank
+	wxXmlNode *node,*subNode;
+	if (prev && prev->End != line->Start) {
+		node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
+		node->AddProperty(_T("sampleTime"),_T("0") + prev->End.GetASSFormated(true));
+		node->AddProperty(_T("xml:space"),_T("preserve"));
+		subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),_T(""));
+		node->AddChild(subNode);
+		root->AddChild(node);
+	}
+
+	// Generate and insert node
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
+	node->AddProperty(_T("sampleTime"),_T("0") + line->Start.GetASSFormated(true));
+	node->AddProperty(_T("xml:space"),_T("preserve"));
+	subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),line->Text);
+	node->AddChild(subNode);
+	root->AddChild(node);
+
+	// Set as previous
+	prev = line;
 }
 
 

@@ -50,9 +50,13 @@ class TTXTSubtitleFormat : public SubtitleFormat {
 private:
 	int version;
 	AssDialogue *diag;
+	AssDialogue *prev;
 
 	bool ProcessLine(wxXmlNode *node);
 	void ProcessHeader(wxXmlNode *node);
+
+	void WriteHeader(wxXmlNode *root);
+	void WriteLine(wxXmlNode *root,AssDialogue *line);
 
 	void ConvertToTTXT();
 	void DialogueToTTXT(AssDialogue *current,std::list<AssEntry*>::iterator prev);
