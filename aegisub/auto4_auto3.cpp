@@ -33,6 +33,8 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+#include <wx/spinctrl.h>
+#include <wx/tokenzr.h>
 #include "auto4_auto3.h"
 #include "../auto3/auto3.h"
 #include "options.h"

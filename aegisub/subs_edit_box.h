@@ -40,6 +40,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/spinctrl.h>
 #include "subs_edit_ctrl.h"
 
 

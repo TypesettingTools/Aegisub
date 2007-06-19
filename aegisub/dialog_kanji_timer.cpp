@@ -43,6 +43,7 @@
 
 ///////////
 // Headers
+#include <vector>
 #include "dialog_kanji_timer.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
