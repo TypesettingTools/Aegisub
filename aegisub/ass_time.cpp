@@ -136,7 +136,8 @@ wxString AssTime::GetASSFormated (bool msPrecision) {
 	int _ms = time;
 
 	// Centisecond precision
-	if (!UseMSPrecision && !msPrecision) _ms = _ms/10*10;
+	msPrecision = msPrecision || UseMSPrecision;
+	if (!msPrecision) _ms = _ms/10*10;
 
 	// Reset
 	h = m = s = ms = 0;
@@ -169,7 +170,7 @@ wxString AssTime::GetASSFormated (bool msPrecision) {
 	}
 	ms = _ms;
 
-	if (UseMSPrecision) return wxString::Format(_T("%01i:%02i:%02i.%03i"),h,m,s,ms);
+	if (msPrecision) return wxString::Format(_T("%01i:%02i:%02i.%03i"),h,m,s,ms);
 	else return wxString::Format(_T("%01i:%02i:%02i.%02i"),h,m,s,ms/10);
 }
 

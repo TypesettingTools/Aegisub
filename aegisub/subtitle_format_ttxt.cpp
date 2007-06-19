@@ -213,14 +213,13 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	wxXmlNode *root = new wxXmlNode(NULL,wxXML_ELEMENT_NODE,_T("TextStream"));
 	root->AddProperty(_T("version"),_T("1.1"));
 	doc.SetRoot(root);
-	wxXmlNode *node,*prevNode;
+	wxXmlNode *node,*subNode;
 
 	// Create header
-	node = new wxXmlNode(root,wxXML_ELEMENT_NODE,_T("TextStreamHeader"));
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextStreamHeader"));
 	node->AddProperty(_T("width"),_T("400"));
 	node->AddProperty(_T("height"),_T("60"));
 	root->AddChild(node);
-	prevNode = node;
 
 	// Create lines
 	int i=1;
@@ -234,21 +233,21 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 			// If it doesn't start at the end of previous, add blank
 			if (prev && prev->End != current->Start) {
-				node = new wxXmlNode(root,wxXML_ELEMENT_NODE,_T("TextSample"));
+				node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
 				node->AddProperty(_T("startTime"),_T("0") + prev->End.GetASSFormated(true));
 				node->AddProperty(_T("xml:space"),_T("preserve"));
-				node->SetContent(_T(""));
-				node->SetNext(prevNode);
-				prevNode = node;
+				subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),_T(""));
+				node->AddChild(subNode);
+				root->AddChild(node);
 			}
 
 			// Generate and insert node
-			node = new wxXmlNode(root,wxXML_ELEMENT_NODE,_T("TextSample"));
-			node->AddProperty(_T("startTime"),_T("0") + current->Start.GetASSFormated(true));
+			node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
+			node->AddProperty(_T("sampleTime"),_T("0") + current->Start.GetASSFormated(true));
 			node->AddProperty(_T("xml:space"),_T("preserve"));
-			node->SetContent(current->Text);
-			node->SetNext(prevNode);
-			prevNode = node;
+			subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),current->Text);
+			node->AddChild(subNode);
+			root->AddChild(node);
 
 			// Set as previous
 			prev = current;
