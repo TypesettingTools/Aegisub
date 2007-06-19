@@ -42,6 +42,9 @@
 #include <time.h>
 #include <wx/wxprec.h>
 #include <wx/glcanvas.h>
+#ifndef wxUSE_GLCANVAS
+#error "Aegisub requires wxWidgets to be compiled with OpenGL support."
+#endif
 #include <list>
 #ifdef HAVE_APPLE_OPENGL_FRAMEWORK
 #include <OpenGL/GL.h>
