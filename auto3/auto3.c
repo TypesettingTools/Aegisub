@@ -287,6 +287,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 						// expect it to be a string
 						if (lua_isstring(L, -1)) {
 							opt->default_val.stringval = strdup(lua_tostring(L, -1));
+							opt->value.stringval = strdup(opt->default_val.stringval);
 						} else {
 							// not a string, baaaad scripter
 							opt->kind = COK_INVALID;
@@ -296,6 +297,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 						// expect it to be a number
 						if (lua_isnumber(L, -1)) {
 							opt->default_val.intval = (int)lua_tonumber(L, -1);
+							opt->value.intval = opt->default_val.intval;
 						} else {
 							opt->kind = COK_INVALID;
 						}
@@ -304,6 +306,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 						// expect it to be a number
 						if (lua_isnumber(L, -1)) {
 							opt->default_val.floatval = (float)lua_tonumber(L, -1);
+							opt->value.floatval = opt->default_val.floatval;
 						} else {
 							opt->kind = COK_INVALID;
 						}
@@ -312,6 +315,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 						// expect it to be a bool
 						if (lua_isboolean(L, -1)) {
 							opt->default_val.intval = lua_toboolean(L, -1);
+							opt->value.intval = opt->default_val.intval;
 						} else {
 							opt->kind = COK_INVALID;
 						}
@@ -319,7 +323,6 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 					case COK_INVALID:
 						break;
 				}
-				memcpy(&opt->value, &opt->default_val, sizeof(opt->value));
 				lua_pop(L, 1);
 			}
 
@@ -331,6 +334,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 		lua_pop(L, 1);
 		// Such that the current key is on top, and we can get the next
 	}
+
 
 	// Remove 'config' table from stack
 	lua_pop(L, 1);
@@ -348,7 +352,7 @@ AUTO3_API struct Auto3Interpreter *CreateAuto3Script(const filename_t filename, 
 {
 	struct Auto3Interpreter *script;
 	lua_State *L;
-	
+
 	script = malloc(sizeof(struct Auto3Interpreter));
 	if (!script) return NULL;
 	// Copy in callbacks
@@ -466,7 +470,7 @@ AUTO3_API struct Auto3Interpreter *CreateAuto3Script(const filename_t filename, 
 
 
 	// Parse the config data
-	lua_getglobal(L, "config");
+	lua_getglobal(L, "configuration");
 	if (Auto3ParseConfigData(L, script, error)) {
 		goto faildescription;
 	}
