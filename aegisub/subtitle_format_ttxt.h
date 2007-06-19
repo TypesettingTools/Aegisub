@@ -59,7 +59,6 @@ private:
 	void WriteLine(wxXmlNode *root,AssDialogue *line);
 
 	void ConvertToTTXT();
-	void DialogueToTTXT(AssDialogue *current,std::list<AssEntry*>::iterator prev);
 
 public:
 	wxString GetName();

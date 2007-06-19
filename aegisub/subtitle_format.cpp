@@ -314,3 +314,83 @@ double SubtitleFormat::AskForFPS() {
 	// fubar
 	return 0.0;
 }
+
+
+//////////////
+// Sort lines
+void SubtitleFormat::SortLines() {
+	Line->sort(LessByPointedToValue<AssEntry>());
+}
+
+
+////////////////
+// Convert tags
+void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
+	using std::list;
+	list<AssEntry*>::iterator next;
+	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		if (current) {
+			// Strip tags
+			if (format == 1) current->StripTags();
+			else if (format == 2) current->ConvertTagsToSRT();
+
+			// Replace line breaks
+			current->Text.Replace(_T("\\h"),_T(" "),true);
+			current->Text.Replace(_T("\\n"),lineEnd,true);
+			current->Text.Replace(_T("\\N"),lineEnd,true);
+			while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true));
+		}
+	}
+}
+
+
+////////////////////////////////////////////
+// Merge identical and/or overlapping lines
+void SubtitleFormat::Merge(bool identical,bool overlaps,bool stripComments) {
+	using std::list;
+	list<AssEntry*>::iterator next;
+	list<AssEntry*>::iterator prev = Line->end();
+	AssDialogue *previous = NULL;
+
+	// Loop through each line
+	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur=next) {
+		next = cur;
+		next++;
+
+		// Dialogue line
+		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		if (current) {
+			// Strip comments and empty lines
+			if ((current->Comment && stripComments) || current->Text.IsEmpty()) {
+				delete *cur;
+				Line->erase(cur);
+			}
+
+			// Proper line
+			else {
+				// Check for duplication
+				if (previous != NULL) {
+					if (previous->Text == current->Text) {
+						if (abs(current->Start.GetMS() - previous->End.GetMS()) < 20) {
+							current->Start = (current->Start < previous->Start ? current->Start : previous->Start);
+							current->End = (current->End > previous->End ? current->End : previous->End);
+							delete *prev;
+							Line->erase(prev);
+						}
+					}
+				}
+
+				// Set as previous	
+				prev = cur;
+				previous = current;
+			}
+		}
+
+		// Other line, delete it
+		else {
+			delete *cur;
+			Line->erase(cur);
+		}
+	}
+}

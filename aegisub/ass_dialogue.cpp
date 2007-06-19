@@ -38,6 +38,7 @@
 // Includes
 #include <fstream>
 #include <wx/tokenzr.h>
+#include <wx/regex.h>
 #include "ass_dialogue.h"
 #include "ass_override.h"
 #include "vfr.h"
@@ -544,22 +545,8 @@ void AssDialogue::ParseASSTags () {
 //////////////
 // Strip tags
 void AssDialogue::StripTags () {
-	using std::list;
-	using std::vector;
-	ParseASSTags();
-	vector<AssDialogueBlock*>::iterator next;
-	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur=next) {
-		next = cur;
-		next++;
-		// FIXME: doesn't this crash when there's too many override blocks in one line?
-		if ((*cur)->type == BLOCK_OVERRIDE) {
-			delete *cur;
-			Blocks.erase(cur);
-		}
-	}
-	UpdateText();
-	UpdateData();
-	ClearBlocks();
+	static wxRegEx reg(_T("\\{[^\\{]*\\}"),wxRE_ADVANCED);
+	reg.Replace(&Text,_T(""));
 }
 
 

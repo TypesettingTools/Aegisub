@@ -175,6 +175,12 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	else if (fps > 0.0) cfr.SetCFR(fps);
 	else rate = &VFR_Output;
 
+	// Convert file
+	CreateCopy();
+	SortLines();
+	Merge(true,true,true);
+	ConvertTags(1,_T("|"));
+
 	// Open file
 	TextFileWriter file(filename,encoding);
 
@@ -191,11 +197,12 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			// Prepare data
 			int start = rate->GetFrameAtTime(current->Start.GetMS(),true);
 			int end = rate->GetFrameAtTime(current->End.GetMS(),false);
-			wxString text = current->Text;
-			text.Replace(_T("\\N"),_T("|"));
 
 			// Write data
-			file.WriteLineToFile(wxString::Format(_T("{%i}{%i}%s"),start,end,text.c_str()));
+			file.WriteLineToFile(wxString::Format(_T("{%i}{%i}%s"),start,end,current->Text.c_str()));
 		}
 	}
+
+	// Clean up
+	ClearCopy();
 }

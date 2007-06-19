@@ -316,68 +316,21 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
 }
 
 
-///////////////////////
-// Convert line to TTXT
-void TTXTSubtitleFormat::DialogueToTTXT(AssDialogue *current,std::list<AssEntry*>::iterator prev) {
-	using std::list;
-	AssDialogue *previous;
-	if (prev != Line->end()) previous = AssEntry::GetAsDialogue(*prev);
-	else previous = NULL;
-
-	// Strip ASS tags
-	current->StripTags();
-
-	// Join equal lines
-	if (previous != NULL) {
-		if (previous->Text == current->Text) {
-			if (abs(current->Start.GetMS() - previous->End.GetMS()) < 20) {
-				current->Start = (current->Start < previous->Start ? current->Start : previous->Start);
-				current->End = (current->End > previous->End ? current->End : previous->End);
-				delete *prev;
-				Line->erase(prev);
-			}
-		}
-	}
-
-	// Fix line breaks
-	current->Text.Replace(_T("\\n"),_T("\r\n"),true);
-	current->Text.Replace(_T("\\N"),_T("\r\n"),true);
-	while (current->Text.Replace(_T("\r\n\r\n"),_T("\r\n"),true));
-}
-
-
 //////////////////////////////
 // Converts whole file to TTXT
 void TTXTSubtitleFormat::ConvertToTTXT () {
-	using std::list;
+	// Convert
+	SortLines();
+	Merge(true,true,true);
+	ConvertTags(1,_T("\r\n"));
 
-	// Sort lines
-	Line->sort(LessByPointedToValue<AssEntry>());
-
-	// Prepare processing
-	list<AssEntry*>::iterator next;
-	list<AssEntry*>::iterator prev = Line->end();
+	// Find last line
 	AssTime lastTime;
-
-	// Process lines
-	bool notfirst = false;
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur=next) {
-		next = cur;
-		next++;
-
-		// Dialogue line (not comment)
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
-		if (current && !current->Comment) {
-			DialogueToTTXT(current,prev);
-			notfirst = true;
-			prev = cur;
-			lastTime = current->End;
-		}
-
-		// Other line, delete it
-		else {
-			delete *cur;
-			Line->erase(cur);
+	for (std::list<AssEntry*>::reverse_iterator cur=Line->rbegin();cur!=Line->rend();cur++) {
+		AssDialogue *prev = AssEntry::GetAsDialogue(*cur);
+		if (prev) {
+			lastTime = prev->End;
+			break;
 		}
 	}
 

@@ -181,7 +181,9 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 
 	// Convert to SRT
 	CreateCopy();
-	ConvertToSRT();
+	SortLines();
+	Merge(true,true,true);
+	ConvertTags(2,_T("\r\n"));
 
 	// Write lines
 	int i=1;
@@ -202,69 +204,7 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 		}
 		else throw _T("Unexpected line type");
 	}
+
+	// Clean up
 	ClearCopy();
-}
-
-
-///////////////////////
-// Convert line to SRT
-void SRTSubtitleFormat::DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator prev) {
-	using std::list;
-	AssDialogue *previous;
-	if (prev != Line->end()) previous = AssEntry::GetAsDialogue(*prev);
-	else previous = NULL;
-
-	// Strip ASS tags
-	current->ConvertTagsToSRT();
-
-	// Join equal lines
-	if (previous != NULL) {
-		if (previous->Text == current->Text) {
-			if (abs(current->Start.GetMS() - previous->End.GetMS()) < 20) {
-				current->Start = (current->Start < previous->Start ? current->Start : previous->Start);
-				current->End = (current->End > previous->End ? current->End : previous->End);
-				delete *prev;
-				Line->erase(prev);
-			}
-		}
-	}
-
-	// Fix line breaks
-	current->Text.Replace(_T("\\n"),_T("\r\n"),true);
-	current->Text.Replace(_T("\\N"),_T("\r\n"),true);
-	while (current->Text.Replace(_T("\r\n\r\n"),_T("\r\n"),true));
-}
-
-
-//////////////////////////////
-// Converts whole file to SRT
-void SRTSubtitleFormat::ConvertToSRT () {
-	using std::list;
-
-	// Sort lines
-	Line->sort(LessByPointedToValue<AssEntry>());
-
-	list<AssEntry*>::iterator next;
-	list<AssEntry*>::iterator prev = Line->end();
-
-	// Process lines
-	bool notfirst = false;
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur=next) {
-		next = cur;
-		next++;
-
-		// Dialogue line (not comment)
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
-		if (current && !current->Comment) {
-			DialogueToSRT(current,prev);
-			notfirst = true;
-			prev = cur;
-		}
-
-		// Other line, delete it
-		else {
-			delete *cur;
-			Line->erase(cur);
-		}
-	}
 }

@@ -50,10 +50,6 @@ class AssDialogue;
 /////////////////////
 // SRT reader/writer
 class SRTSubtitleFormat : public SubtitleFormat {
-private:
-	void ConvertToSRT();
-	void DialogueToSRT(AssDialogue *current,std::list<AssEntry*>::iterator prev);
-
 public:
 	wxString GetName();
 	wxArrayString GetReadWildcards();
