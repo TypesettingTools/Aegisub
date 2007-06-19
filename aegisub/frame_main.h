@@ -167,6 +167,7 @@ private:
 	void OnCloseAudio (wxCommandEvent &event);
 
 	void OnChooseLanguage (wxCommandEvent &event);
+	void OnPickAssociations (wxCommandEvent &event);
 	void OnViewStandard (wxCommandEvent &event);
 	void OnViewVideo (wxCommandEvent &event);
 	void OnViewAudio (wxCommandEvent &event);
@@ -339,6 +340,7 @@ enum {
 	Menu_Edit_Delete,
 
 	Menu_View_Language,
+	Menu_View_Associations,
 	Menu_View_Standard,
 	Menu_View_Audio,
 	Menu_View_Video,

@@ -79,6 +79,7 @@
 #include "dialog_detached_video.h"
 #include "dialog_dummy_video.h"
 #include "dialog_spellchecker.h"
+#include "dialog_associations.h"
 
 
 ////////////////////
@@ -180,6 +181,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Help_About, FrameMain::OnAbout)
 
 	EVT_MENU(Menu_View_Language, FrameMain::OnChooseLanguage)
+	EVT_MENU(Menu_View_Associations, FrameMain::OnPickAssociations)
 	EVT_MENU(Menu_View_Standard, FrameMain::OnViewStandard)
 	EVT_MENU(Menu_View_Audio, FrameMain::OnViewAudio)
 	EVT_MENU(Menu_View_Video, FrameMain::OnViewVideo)
@@ -1519,6 +1521,14 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 			}
 		}
 	}
+}
+
+
+/////////////////////
+// Pick associations
+void FrameMain::OnPickAssociations(wxCommandEvent &event) {
+	DialogAssociations diag(NULL);
+	diag.ShowModal();
 }
 
 

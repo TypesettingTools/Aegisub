@@ -294,7 +294,9 @@ void AegisubApp::RegistryAssociate () {
 
 	// Check associations
 	if (Options.AsBool(_T("Show associations"))) {
-		bool gotAll = DialogAssociations::CheckAssociation(_T("ass")) && DialogAssociations::CheckAssociation(_T("ssa")) && DialogAssociations::CheckAssociation(_T("srt"));
+		bool gotAll = DialogAssociations::CheckAssociation(_T("ass")) && DialogAssociations::CheckAssociation(_T("ssa")) &&
+					  DialogAssociations::CheckAssociation(_T("srt")) && DialogAssociations::CheckAssociation(_T("sub")) &&
+					  DialogAssociations::CheckAssociation(_T("ttxt"));
 		if (!gotAll) {
 			DialogAssociations diag(NULL);
 			diag.ShowModal();

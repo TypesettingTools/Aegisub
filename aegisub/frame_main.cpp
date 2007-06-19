@@ -415,7 +415,10 @@ void FrameMain::InitMenu() {
 	viewMenu = new wxMenu();
 	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, _("&Options...") + wxString(_T("\t")) + Hotkeys.GetText(_T("Options")), _("Configure Aegisub"), wxBITMAP(options_button));
+	AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), wxBITMAP(blank_button));
+#ifdef __WXDEBUG__
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g window..."), _("Open log window"), wxBITMAP(blank_button));
+#endif
 	viewMenu->AppendSeparator();
 	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs only view"), _("Display subtitles only"));
 	viewMenu->AppendRadioItem(Menu_View_Video, _("Video+Subs view"), _("Display video and subtitles only"));
@@ -1265,7 +1268,9 @@ bool FrameMain::LoadList(wxArrayString list) {
 	subsList.Add(_T("ass"));
 	subsList.Add(_T("ssa"));
 	subsList.Add(_T("srt"));
+	subsList.Add(_T("sub"));
 	subsList.Add(_T("txt"));
+	subsList.Add(_T("ttxt"));
 
 	// Audio formats
 	wxArrayString audioList;
@@ -1279,6 +1284,7 @@ bool FrameMain::LoadList(wxArrayString list) {
 	audioList.Add(_T("ape"));
 	audioList.Add(_T("flac"));
 	audioList.Add(_T("mka"));
+	audioList.Add(_T("m4a"));
 
 	// Scan list
 	wxString audio = _T("");

@@ -83,12 +83,14 @@ Please visit http://aegisub.net to download latest version
   o Fixed loading of SRT and TXT files, which were causing an empty line to appear at the start of the file. (AMZ)
   o Added support for reading v4.00++ (ASS2) files. (AMZ)
   o Added very basic reading support for MPEG-4 Streaming Text (TTXT) subtitles. (AMZ)
-  o Added full read-write support for MicroDVD subtitles. (AMZ)
+  o Added full read-write support for MicroDVD subtitles (the most common .sub format). (AMZ)
+  o Improved saving of SRT files. (AMZ)
 - Changes to main menu:
   o There are now new options, and most were moved around to have better organization. (AMZ/jfs)
   o General tweaks changes, such as better icons, and fixing of flickering and slowness. (AMZ)
   o Undo and redo now have descriptions. (Dansolo)
   o Merged the three "Recombine" functions into a single one that autodetects the correct type, and also supports two new cases. (AMZ)
+  o Added the associations dialogue to the menu. (AMZ)
 - Subtitles grid changes:
   o Fixed line selection after pasting. (AMZ)
   o Plain-text lines can now be pasted into the grid. They will be inserted as default lines with the text as their content. (AMZ)

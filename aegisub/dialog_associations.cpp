@@ -50,10 +50,14 @@ DialogAssociations::DialogAssociations (wxWindow *parent)
 	choices.Add(_T("Advanced Substation Alpha (.ass)"));
 	choices.Add(_T("Substation Alpha (.ssa)"));
 	choices.Add(_T("SubRip (.srt)"));
+	choices.Add(_T("MicroDVD (.sub)"));
+	choices.Add(_T("MPEG-4 Timed Text (.ttxt)"));
 	ListBox = new wxCheckListBox(this,-1,wxDefaultPosition,wxSize(200,80), choices);
 	ListBox->Check(0,CheckAssociation(_T("ass")));
 	ListBox->Check(1,CheckAssociation(_T("ssa")));
 	ListBox->Check(2,CheckAssociation(_T("srt")));
+	ListBox->Check(3,CheckAssociation(_T("sub")));
+	ListBox->Check(4,CheckAssociation(_T("ttxt")));
 
 	// Label and list sizer
 	wxStaticText *label = new wxStaticText(this,-1,_("Please select the formats you want to\nassociate with Aegisub:"),wxDefaultPosition,wxDefaultSize);
@@ -125,5 +129,7 @@ void DialogAssociations::OnOK(wxCommandEvent &event) {
 	if (ListBox->IsChecked(0)) AssociateType(_T("ass"));
 	if (ListBox->IsChecked(1)) AssociateType(_T("ssa"));
 	if (ListBox->IsChecked(2)) AssociateType(_T("srt"));
+	if (ListBox->IsChecked(3)) AssociateType(_T("sub"));
+	if (ListBox->IsChecked(4)) AssociateType(_T("ttxt"));
 	event.Skip();
 }
