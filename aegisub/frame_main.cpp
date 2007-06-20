@@ -68,6 +68,7 @@
 #include "auto4_base.h"
 #include "dialog_version_check.h"
 #include "dialog_detached_video.h"
+#include "standard_paths.h"
 
 
 /////////////////////////
@@ -571,9 +572,12 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		if (isFile) {
 			AssFile::top->Load(filename,charset);
 			SubsBox->LoadFromAss(AssFile::top,false,true);
+			wxFileName fn(filename);
+			StandardPaths::SetPathValue(_T("?script"),fn.GetPath());
 		}
 		else {
 			SubsBox->LoadDefault(AssFile::top);
+			StandardPaths::SetPathValue(_T("?script"),_T(""));
 		}
 	}
 	catch (const wchar_t *err) {

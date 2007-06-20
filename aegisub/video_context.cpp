@@ -70,6 +70,7 @@
 #include "video_box.h"
 #include "utils.h"
 #include "gl_wrap.h"
+#include "standard_paths.h"
 
 
 ///////
@@ -153,6 +154,9 @@ void VideoContext::Clear() {
 /////////
 // Reset
 void VideoContext::Reset() {
+	// Reset ?video path
+	StandardPaths::SetPathValue(_T("?video"),_T(""));
+
 	// Reset shader
 	if (yv12shader) {
 		OpenGLWrapper::DestroyShaderProgram(yv12shader);
@@ -314,6 +318,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 			// Set filename
 			videoName = filename;
 			Options.AddToRecentList(filename,_T("Recent vid"));
+			wxFileName fn(filename);
+			StandardPaths::SetPathValue(_T("?video"),fn.GetPath());
 
 			// Get frame
 			frame_n = 0;

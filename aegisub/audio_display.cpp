@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/tglbtn.h>
+#include <wx/filename.h>
 #include <math.h>
 #include <vector>
 #include "audio_display.h"
@@ -56,6 +57,7 @@
 #include "hotkeys.h"
 #include "utils.h"
 #include "timeedit_ctrl.h"
+#include "standard_paths.h"
 
 
 ///////////////
@@ -815,6 +817,7 @@ void AudioDisplay::SetFile(wxString file) {
 
 		loaded = false;
 		temporary = false;
+		StandardPaths::SetPathValue(_T("?audio"),_T(""));
 	}
 
 	// Load
@@ -837,6 +840,8 @@ void AudioDisplay::SetFile(wxString file) {
 			// Add to recent
 			wxLogDebug(_T("AudioDisplay::SetFile: add to recent"));
 			Options.AddToRecentList(file,_T("Recent aud"));
+			wxFileName fn(file);
+			StandardPaths::SetPathValue(_T("?audio"),fn.GetPath());
 
 			// Update
 			UpdateImage();
