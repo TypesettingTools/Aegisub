@@ -76,6 +76,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 	mainSizer->Add(buttonSizer,0,wxALL | wxEXPAND,5);
 	mainSizer->SetSizeHints(this);
 	SetSizer(mainSizer);
+	CenterOnParent();
 }
 
 

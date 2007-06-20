@@ -54,8 +54,7 @@ typedef std::vector<std::pair<int,int> > IntPairVector;
 __int64 abs64(__int64 input);
 #endif
 int CountMatches(wxString parent,wxString child);
-bool Copy(wxString src,wxString dst);
-bool Backup(wxString src,wxString dst);
+bool CopyFile(wxString src,wxString dst);
 wxString MakeRelativePath(wxString path,wxString reference);
 wxString DecodeRelativePath(wxString path,wxString reference);
 wxString PrettyFloat(wxString src);

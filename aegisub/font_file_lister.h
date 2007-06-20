@@ -40,74 +40,39 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
-#include <wx/stc/stc.h>
+#include <map>
 
 
-//////////////
-// Prototypes
-class AssFile;
-class AssOverrideParameter;
-class DialogFontsCollector;
-class FrameMain;
-
-
-/////////////////
-// Worker thread
-class FontsCollectorThread : public wxThread {
-private:
-	AssFile *subs;
-	AssStyle *curStyle;
-	wxString destination;
-	DialogFontsCollector *collector;
-	int curLine;
-	wxString destFolder;
-
-	static FontsCollectorThread *instance;
-
-	wxArrayString fonts;
-
-	bool ProcessFont(wxString fontname);
-	int CopyFont(wxString filename);
-	bool ArchiveFont(wxString filename);
-	bool AttachFont(wxString filename);
-
-	void Collect();
-	void AddFont(wxString fontname,bool isStyle);
-	void CollectFontData();
-	void AppendText(wxString text,int colour=0);
-
-public:
-	FontsCollectorThread(AssFile *subs,wxString destination,DialogFontsCollector *collector);
-	wxThread::ExitCode Entry();
-
-	static void GetFonts (wxString tagName,int par_n,AssOverrideParameter *param,void *usr);
-};
+////////////
+// Typedefs
+typedef struct FT_LibraryRec_ *FT_Library;
+typedef std::map<wxString,wxArrayString> FontMap;
 
 
 ////////////////////
-// Class definition
-class DialogFontsCollector : public wxDialog {
-	friend class FontsCollectorThread;
-
+// Font file lister
+class FontFileLister {
 private:
-	wxTextCtrl *DestBox;
-	wxStyledTextCtrl *LogBox;
-	wxButton *BrowseButton;
-	wxButton *StartButton;
-	wxButton *CloseButton;
-	wxStaticText *DestLabel;
-	wxRadioBox *CollectAction;
-	FrameMain *main;
+	static FontFileLister *instance;
+	FT_Library ft2lib;
 
-	void OnStart(wxCommandEvent &event);
-	void OnClose(wxCommandEvent &event);
-	void OnBrowse(wxCommandEvent &event);
-	void OnRadio(wxCommandEvent &event);
-	void Update(int value=-1);
+	FontMap fontTable;
+	wxArrayString fontFiles;
+
+	virtual void DoGatherData();
+
+	FontFileLister();
+	virtual ~FontFileLister();
+
+	wxArrayString DoGetFilesWithFace(wxString facename);
+	void DoClearData();
+	bool IsFilenameCached(wxString filename);
+	void AddFont(wxString filename,wxString facename);
+	void SaveCache();
+	void LoadCache();
 
 public:
-	DialogFontsCollector(wxWindow *parent);
-	~DialogFontsCollector();
-
-	DECLARE_EVENT_TABLE()
+	static wxArrayString GetFilesWithFace(wxString facename);
+	static void GatherData();
+	static void ClearData();
 };

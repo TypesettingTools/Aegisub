@@ -599,7 +599,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 		// Save
 		wxString backup = path + origfile.GetName() + _T(".ORIGINAL.") + origfile.GetExt();
-		Backup(filename,backup);
+		CopyFile(filename,backup);
 	}
 
 	// Sync

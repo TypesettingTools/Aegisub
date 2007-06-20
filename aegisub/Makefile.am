@@ -163,6 +163,7 @@ aegisub_SOURCES = \
 	export_framerate.cpp \
 	export_visible_lines.cpp \
 	fft.cpp \
+	font_file_lister.cpp \
 	frame_main.cpp \
 	frame_main_events.cpp \
 	gl_text.cpp \
