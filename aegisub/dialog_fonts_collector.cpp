@@ -158,16 +158,36 @@ END_EVENT_TABLE()
 ////////////////////
 // Start processing
 void DialogFontsCollector::OnStart(wxCommandEvent &event) {
-	// Check if it's OK to do it
-	wxString foldername = DestBox->GetValue();
-	wxFileName folder(foldername);
+	// Action being done
 	int action = CollectAction->GetSelection();
 
+	// Check if it's OK to do it
+	wxString foldername = DestBox->GetValue();
+	if (action == 1) foldername += _T("//");
+	wxFileName folder(foldername);
+	bool isFolder = folder.IsDir();
+
+	// Check if it's a folder
+	if (action == 1 && !isFolder) {
+		wxMessageBox(_("Invalid destination."),_("Error"),wxICON_EXCLAMATION | wxOK);
+		return;
+	}
+
 	// Make folder if it doesn't exist
-	if (action == 1 && !folder.DirExists()) {
-		folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+	if (action == 1 || action == 2) {
 		if (!folder.DirExists()) {
-			wxMessageBox(_("Invalid destination"),_("Error"),wxICON_EXCLAMATION | wxOK);
+			folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+			if (!folder.DirExists()) {
+				wxMessageBox(_("Could not create destination folder."),_("Error"),wxICON_EXCLAMATION | wxOK);
+				return;
+			}
+		}
+	}
+
+	// Check if we have a valid archive name
+	if (action == 2) {
+		if (isFolder || folder.GetName().IsEmpty() || folder.GetExt() != _T("zip")) {
+			wxMessageBox(_("Invalid path for .zip file."),_("Error"),wxICON_EXCLAMATION | wxOK);
 			return;
 		}
 	}
@@ -243,6 +263,7 @@ void DialogFontsCollector::Update(int value) {
 	CloseButton->Enable(true);
 	StartButton->Enable(true);
 	CollectAction->Enable(true);
+	wxString dst = DestBox->GetValue();
 
 	// Get value if -1
 	if (value == -1) {
@@ -264,17 +285,10 @@ void DialogFontsCollector::Update(int value) {
 		DestLabel->Enable(true);
 		DestLabel->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
 
-		// Remove filename from browser box
-		wxFileName fname1(DestBox->GetValue()+_T("/"));
-		if (fname1.DirExists()) {
-			DestBox->SetValue(fname1.GetPath());
-		}
-		else {
-			wxFileName fname2(DestBox->GetValue());
-			if (fname2.DirExists()) {
-				DestBox->SetValue(fname2.GetPath());
-			}
-			else DestBox->SetValue(((AegisubApp*)wxTheApp)->folderName);
+		// Remove filename from browse box
+		if (dst.Right(4) == _T(".zip")) {
+			wxFileName fn(dst);
+			DestBox->SetValue(fn.GetPath());
 		}
 	}
 
@@ -284,6 +298,13 @@ void DialogFontsCollector::Update(int value) {
 		BrowseButton->Enable(true);
 		DestLabel->Enable(true);
 		DestLabel->SetLabel(_("Enter the name of the destination zip file to collect the fonts to.\nIf a folder is entered, a default name will be used."));
+
+		// Add filename to browse box
+		if (dst.Right(4) != _T(".zip")) {
+			wxFileName fn(dst + _T("//"));
+			fn.SetFullName(_T("fonts.zip"));
+			DestBox->SetValue(fn.GetFullPath());
+		}
 	}
 }
 
@@ -340,6 +361,14 @@ void FontsCollectorThread::Collect() {
 		return;
 	}
 
+	// Open zip stream if saving to compressed archive
+	wxFFileOutputStream *out = NULL;
+	zip = NULL;
+	if (oper == 2) {
+		out = new wxFFileOutputStream(destFolder);
+		zip = new wxZipOutputStream(*out);
+	}
+
 	// Collect font data
 	AppendText(_("Collecting font data from system... "));
 	CollectFontData();
@@ -381,6 +410,15 @@ void FontsCollectorThread::Collect() {
 		bool result = ProcessFont(fonts[i]);
 		if (result) someOk = true;
 		if (!result) ok = false;
+	}
+
+	// Close ZIP archive
+	if (oper == 2) {
+		zip->Close();
+		delete zip;
+		delete out;
+
+		AppendText(wxString::Format(_("\nFinished writing to %s.\n"),destination.c_str()),1);
 	}
 
 	// Final result
@@ -471,7 +509,21 @@ int FontsCollectorThread::CopyFont(wxString filename) {
 ////////////////
 // Archive font
 bool FontsCollectorThread::ArchiveFont(wxString filename) {
-	return false;
+	// Open file
+	wxFFileInputStream in(filename);
+	if (!in.IsOk()) return false;
+
+	// Write to archive
+	try {
+		wxFileName fn(filename);
+		zip->PutNextEntry(fn.GetFullName());
+		zip->Write(in);
+	}
+	catch (...) {
+		return false;
+	}
+
+	return true;
 }
 
 

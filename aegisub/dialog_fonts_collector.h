@@ -49,6 +49,7 @@ class AssFile;
 class AssOverrideParameter;
 class DialogFontsCollector;
 class FrameMain;
+class wxZipOutputStream;
 
 
 /////////////////
@@ -59,6 +60,7 @@ private:
 	AssStyle *curStyle;
 	wxString destination;
 	DialogFontsCollector *collector;
+	wxZipOutputStream *zip;
 	int curLine;
 	wxString destFolder;
 
