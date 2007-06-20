@@ -37,46 +37,29 @@
 #pragma once
 
 
-////////////
-// Includes
+///////////
+// Headers
 #include <wx/wxprec.h>
 #include <map>
 
 
-////////////
-// Typedefs
-#ifdef WIN32
-typedef struct FT_LibraryRec_ *FT_Library;
-#endif
-typedef std::map<wxString,wxArrayString> FontMap;
-
-
-////////////////////
-// Font file lister
-class FontFileLister {
+//////////////////////////////////
+// Standard path conversion class
+class StandardPaths {
 private:
-#ifdef WIN32
-	FT_Library ft2lib;
-#endif
+	static StandardPaths *instance;
+	static StandardPaths *GetInstance();
 
-	static FontFileLister *instance;
-	FontMap fontTable;
-	wxArrayString fontFiles;
+	std::map<wxString,wxString> paths;
 
-	virtual void DoGatherData();
+	StandardPaths();
 
-	FontFileLister();
-	virtual ~FontFileLister();
-
-	wxArrayString DoGetFilesWithFace(wxString facename);
-	void DoClearData();
-	bool IsFilenameCached(wxString filename);
-	void AddFont(wxString filename,wxString facename);
-	void SaveCache();
-	void LoadCache();
+	wxString DoDecodePath(wxString path);
+	wxString DoEncodePath(wxString path);
+	void DoSetPathValue(wxString path,wxString value);
 
 public:
-	static wxArrayString GetFilesWithFace(wxString facename);
-	static void GatherData();
-	static void ClearData();
+	static wxString DecodePath(wxString path) { return GetInstance()->DoDecodePath(path); }
+	static wxString EncodePath(wxString path) { return GetInstance()->DoEncodePath(path); }
+	static void SetPathValue(wxString path,wxString value) { GetInstance()->DoSetPathValue(path,value); }
 };

@@ -40,14 +40,16 @@
 ////////////
 // Includes
 #include <wx/dir.h>
-#include <ft2build.h>
 #ifdef WIN32
-#include <shlobj.h>
-#endif
-#include "font_file_lister.h"
+#include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_SFNT_NAMES_H
+#include <shlobj.h>
+#endif
+#include "font_file_lister.h"
+#include "text_file_writer.h"
+#include "text_file_reader.h"
 
 
 ////////////////////
@@ -58,8 +60,10 @@ FontFileLister *FontFileLister::instance = NULL;
 ///////////////
 // Constructor
 FontFileLister::FontFileLister() {
+#ifdef WIN32
 	// Initialize freetype2
 	FT_Init_FreeType(&ft2lib);
+#endif
 }
 
 
@@ -105,17 +109,16 @@ void FontFileLister::DoClearData() {
 ///////////////////////////
 // Gather data from system
 void FontFileLister::DoGatherData() {
+#ifdef WIN32
+
 	// Get fonts folder
 	wxString source;
-	#ifdef WIN32
 	TCHAR szPath[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_FONTS,NULL,0,szPath))) {
 		source = wxString(szPath);
 	}
 	else source = wxGetOSDirectory() + _T("\\fonts");
 	source += _T("\\");
-	#endif
-	if (source == _T("")) return;
 
 	// Get the list of fonts in the fonts folder
 	wxArrayString fontfiles;
@@ -139,6 +142,13 @@ void FontFileLister::DoGatherData() {
 			FT_Done_Face(face);
 		}
 	}
+
+#else
+
+	// TODO: implement fconfig
+	return;
+
+#endif
 }
 
 

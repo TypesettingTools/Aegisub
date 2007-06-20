@@ -34,49 +34,59 @@
 //
 
 
-#pragma once
+///////////
+// Headers
+#include <wx/stdpaths.h>
+#include "standard_paths.h"
 
 
-////////////
-// Includes
-#include <wx/wxprec.h>
-#include <map>
+////////////////
+// Get instance
+StandardPaths *StandardPaths::GetInstance() {
+	if (!instance) instance = new StandardPaths();
+	return instance;
+}
 
 
-////////////
-// Typedefs
-#ifdef WIN32
-typedef struct FT_LibraryRec_ *FT_Library;
-#endif
-typedef std::map<wxString,wxArrayString> FontMap;
+///////////////
+// Constructor
+StandardPaths::StandardPaths() {
+	wxFileName aegiPath(wxStandardPaths::Get().GetExecutablePath());
+	SetPathValue(_T("?install"),aegiPath.GetPath());
+	SetPathValue(_T("?user"),wxStandardPaths::Get().GetUserDataDir());
+	SetPathValue(_T("?temp"),wxStandardPaths::Get().GetTempDir());
+}
 
 
-////////////////////
-// Font file lister
-class FontFileLister {
-private:
-#ifdef WIN32
-	FT_Library ft2lib;
-#endif
+///////////////
+// Decode path
+wxString StandardPaths::DoDecodePath(wxString path) {
+	// Decode
+	if (path[0] == _T('?')) {
+		// TODO
+		return path;
+	}
 
-	static FontFileLister *instance;
-	FontMap fontTable;
-	wxArrayString fontFiles;
+	// Nothing to decode
+	else return path;
+}
 
-	virtual void DoGatherData();
 
-	FontFileLister();
-	virtual ~FontFileLister();
+///////////////
+// Encode path
+wxString StandardPaths::DoEncodePath(wxString path) {
+	// TODO
+	return path;
+}
 
-	wxArrayString DoGetFilesWithFace(wxString facename);
-	void DoClearData();
-	bool IsFilenameCached(wxString filename);
-	void AddFont(wxString filename,wxString facename);
-	void SaveCache();
-	void LoadCache();
 
-public:
-	static wxArrayString GetFilesWithFace(wxString facename);
-	static void GatherData();
-	static void ClearData();
-};
+/////////////////////////
+// Set value of a ? path
+void StandardPaths::DoSetPathValue(wxString path,wxString value) {
+	paths[path] = value;
+}
+
+
+///////////////////
+// Static instance
+StandardPaths *StandardPaths::instance = NULL;
