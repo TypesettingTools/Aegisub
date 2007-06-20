@@ -178,6 +178,7 @@ aegisub_SOURCES = \
 	mythes.cxx \
 	options.cpp \
 	spellchecker.cpp \
+	standard_paths.cpp \
 	static_bmp.cpp \
 	string_codec.cpp \
 	subs_edit_box.cpp \
