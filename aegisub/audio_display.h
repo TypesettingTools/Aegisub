@@ -161,7 +161,7 @@ public:
 	void CommitChanges(bool nextLine=false);
 	void AddLead(bool in,bool out);
 
-	void SetFile(wxString file,VideoProvider *vprovider=NULL);
+	void SetFile(wxString file);
 	void SetFromVideo();
 	void Reload();
 

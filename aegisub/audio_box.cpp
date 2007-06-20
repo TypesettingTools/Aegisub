@@ -235,6 +235,7 @@ AudioBox::~AudioBox() {
 ////////////
 // Set file
 void AudioBox::SetFile(wxString file,bool FromVideo) {
+	wxLogDebug(_T("AudioBox::SetFile(file=%s, FromVideo=%d)"), file.c_str(), FromVideo?1:0);
 	loaded = false;
 
 	if (FromVideo) {
@@ -249,7 +250,9 @@ void AudioBox::SetFile(wxString file,bool FromVideo) {
 		audioName = file;
 	}
 
+	wxLogDebug(_T("AudioBox::SetFile: setting up accelerators in frameMain"));
 	frameMain->SetAccelerators();
+	wxLogDebug(_T("AudioBox::SetFile: returning"));
 }
 
 
@@ -499,18 +502,24 @@ void AudioBox::OnPlayToEnd(wxCommandEvent &event) {
 //////////////////
 // Commit changes
 void AudioBox::OnCommit(wxCommandEvent &event) {
+	wxLogDebug(_T("AudioBox::OnCommit"));
 	audioDisplay->SetFocus();
+	wxLogDebug(_T("AudioBox::OnCommit: has set focus, now committing changes"));
 	audioDisplay->CommitChanges(true);
+	wxLogDebug(_T("AudioBox::OnCommit: returning"));
 }
 
 
 //////////////////
 // Toggle karaoke
 void AudioBox::OnKaraoke(wxCommandEvent &event) {
+	wxLogDebug(_T("AudioBox::OnKaraoke"));
 	audioDisplay->SetFocus();
 	if (karaokeMode) {
+		wxLogDebug(_T("AudioBox::OnKaraoke: karaoke enabled, disabling"));
 		if (audioKaraoke->splitting) {
-			audioKaraoke->EndSplit(true);
+			wxLogDebug(_T("AudioBox::OnKaraoke: was splitting, committing"));
+			audioKaraoke->Commit(); // FIXME: the grid and editbox don't seem to get updated by this
 		}
 		karaokeMode = false;
 		audioKaraoke->enabled = false;
@@ -520,11 +529,14 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 	}
 
 	else {
+		wxLogDebug(_T("AudioBox::OnKaraoke: karaoke disabled, enabling"));
 		karaokeMode = true;
 		audioKaraoke->enabled = true;
 		SetKaraokeButtons(true,true);
 		audioDisplay->SetDialogue();
 	}
+
+	wxLogDebug(_T("AudioBox::OnKaraoke: returning"));
 }
 
 
@@ -546,6 +558,7 @@ void AudioBox::SetKaraokeButtons(bool join,bool split) {
 ///////////////
 // Join button
 void AudioBox::OnJoin(wxCommandEvent &event) {
+	wxLogDebug(_T("AudioBox::OnJoin"));
 	audioDisplay->SetFocus();
 	audioKaraoke->Join();
 }
@@ -554,6 +567,7 @@ void AudioBox::OnJoin(wxCommandEvent &event) {
 ////////////////
 // Split button
 void AudioBox::OnSplit(wxCommandEvent &event) {
+	wxLogDebug(_T("AudioBox::OnSplit"));
 	audioDisplay->SetFocus();
 	if (!audioKaraoke->splitting) {
 		audioKaraoke->BeginSplit();

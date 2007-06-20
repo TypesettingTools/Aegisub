@@ -132,6 +132,7 @@ AudioDisplay::~AudioDisplay() {
 /////////
 // Reset
 void AudioDisplay::Reset() {
+	wxLogDebug(_T("AudioDisplay::Reset"));
 	hasSel = false;
 	diagUpdated = false;
 	NeedCommit = false;
@@ -681,6 +682,7 @@ void AudioDisplay::RecreateImage() {
 /////////////////////////
 // Make dialogue visible
 void AudioDisplay::MakeDialogueVisible(bool force) {
+	wxLogDebug(_T("AudioDisplay::MakeDialogueVisible(force=%d)"), force?1:0);
 	// Variables
 	int temp1=0,temp2=0;
 	if (karaoke->enabled) {
@@ -712,6 +714,7 @@ void AudioDisplay::MakeDialogueVisible(bool force) {
 ////////////////
 // Set position
 void AudioDisplay::SetPosition(int pos) {
+	wxLogDebug(_T("AudioDisplay::SetPosition(pos=%d)"), pos);
 	Position = pos;
 	PositionSample = pos * samples;
 	UpdateImage();
@@ -796,9 +799,11 @@ void AudioDisplay::SetScale(float _scale) {
 
 //////////////////
 // Load from file
-void AudioDisplay::SetFile(wxString file, VideoProvider *vproviderLOL) {
+void AudioDisplay::SetFile(wxString file) {
+	wxLogDebug(_T("AudioDisplay::SetFile(file=%s, vproviderLOL=%p)"), file.c_str());
 	// Unload
 	if (file.IsEmpty()) {
+		wxLogDebug(_T("AudioDisplay::SetFile: file is empty, just closing audio"));
 		if (player) player->CloseStream();
 		delete provider;
 		delete player;
@@ -814,12 +819,15 @@ void AudioDisplay::SetFile(wxString file, VideoProvider *vproviderLOL) {
 
 	// Load
 	else {
+		wxLogDebug(_T("AudioDisplay::SetFile: unloading old file"));
 		SetFile(_T(""));
 		try {
 			// Get provider
+			wxLogDebug(_T("AudioDisplay::SetFile: get audio provider"));
 			provider = AudioProviderFactory::GetAudioProvider(file);
 
 			// Get player
+			wxLogDebug(_T("AudioDisplay::SetFile: get audio player"));
 			player = AudioPlayerFactory::GetAudioPlayer();
 			player->SetDisplayTimer(&UpdateTimer);
 			player->SetProvider(provider);
@@ -827,12 +835,14 @@ void AudioDisplay::SetFile(wxString file, VideoProvider *vproviderLOL) {
 			loaded = true;
 
 			// Add to recent
+			wxLogDebug(_T("AudioDisplay::SetFile: add to recent"));
 			Options.AddToRecentList(file,_T("Recent aud"));
 
 			// Update
 			UpdateImage();
 		}
 		catch (wxString &err) {
+			wxLogDebug(_T("AudioDisplay::SetFile: gotcha!"));
 			wxMessageBox(err,_T("Error loading audio"),wxICON_ERROR | wxOK);
 		}
 	}
@@ -840,19 +850,22 @@ void AudioDisplay::SetFile(wxString file, VideoProvider *vproviderLOL) {
 	assert(loaded == (provider != NULL));
 
 	// Set default selection
+	wxLogDebug(_T("AudioDisplay::SetFile: set default selection"));
 	int n = grid->editBox->linen;
 	SetDialogue(grid,grid->GetDialogue(n),n);
+	wxLogDebug(_T("AudioDisplay::SetFile: returning"));
 }
 
 
 ///////////////////
 // Load from video
 void AudioDisplay::SetFromVideo() {
+	wxLogDebug(_T("AudioDisplay::SetFromVideo"));
 	if (VideoContext::Get()->IsLoaded()) {
 		wxString extension = VideoContext::Get()->videoName.Right(4);
 		extension.LowerCase();
 
-		if (extension != _T(".d2v")) SetFile(VideoContext::Get()->videoName, VideoContext::Get()->GetProvider());
+		if (extension != _T(".d2v")) SetFile(VideoContext::Get()->videoName);
 	}
 }
 
@@ -860,6 +873,7 @@ void AudioDisplay::SetFromVideo() {
 ////////////////
 // Reload audio
 void AudioDisplay::Reload() {
+	wxLogDebug(_T("AudioDisplay::Reload"));
 	if (provider) SetFile(provider->GetFilename());
 }
 
@@ -920,12 +934,15 @@ __int64 AudioDisplay::GetSampleAtMS(__int64 ms) {
 ////////
 // Play
 void AudioDisplay::Play(int start,int end) {
+	wxLogDebug(_T("AudioDisplay::Play"));
 	Stop();
 
 	// Check provider
 	if (!provider) {
+		wxLogDebug(_T("AudioDisplay::Play: no audio provider"));
 		// Load temporary provider from video
 		if (VideoContext::Get()->IsLoaded()) {
+			wxLogDebug(_T("AudioDisplay::Play: has video provider"));
 			try {
 				// Get provider
 				provider = AudioProviderFactory::GetAudioProvider(VideoContext::Get()->videoName, 0);
@@ -936,15 +953,21 @@ void AudioDisplay::Play(int start,int end) {
 				player->SetProvider(provider);
 				player->OpenStream();
 				temporary = true;
+				wxLogDebug(_T("AudioDisplay::Play: got temp audio provider from video provider"));
 			}
 			catch (...) {
+				wxLogDebug(_T("AudioDisplay::Play: exception getting audio provider from video, returning"));
 				return;
 			}
 		}
-		if (!provider) return;
+		if (!provider) {
+			wxLogDebug(_T("AudioDisplay::Play: has no provider, returning"));
+			return;
+		}
 	}
 
 	// Set defaults
+	wxLogDebug(_T("AudioDisplay::Play: initialising playback"));
 	__int64 num_samples = provider->GetNumSamples();
 	start = GetSampleAtMS(start);
 	if (end != -1) end = GetSampleAtMS(end);
@@ -959,12 +982,14 @@ void AudioDisplay::Play(int start,int end) {
 
 	// Call play
 	player->Play(start,end-start);
+	wxLogDebug(_T("AudioDisplay::Play: playback started, returning"));
 }
 
 
 ////////
 // Stop
 void AudioDisplay::Stop() {
+	wxLogDebug(_T("AudioDisplay::Stop"));
 	if (VideoContext::Get()->IsPlaying()) VideoContext::Get()->Stop();
 	if (player) player->Stop();
 }
@@ -973,6 +998,7 @@ void AudioDisplay::Stop() {
 ///////////////////////////
 // Get samples of dialogue
 void AudioDisplay::GetTimesDialogue(int &start,int &end) {
+	wxLogDebug(_T("AudioDisplay::GetTimesDialogue"));
 	if (!dialogue) {
 		start = 0;
 		end = 0;
@@ -987,6 +1013,7 @@ void AudioDisplay::GetTimesDialogue(int &start,int &end) {
 ////////////////////////////
 // Get samples of selection
 void AudioDisplay::GetTimesSelection(int &start,int &end) {
+	wxLogDebug(_T("AudioDisplay::GetTimesSelection"));
 	start = 0;
 	end = 0;
 	if (!dialogue) return;
@@ -1010,6 +1037,7 @@ void AudioDisplay::GetTimesSelection(int &start,int &end) {
 /////////////////////////////
 // Set the current selection
 void AudioDisplay::SetSelection(int start, int end) {
+	wxLogDebug(_T("AudioDisplay::SetSelection(start=%d, end=%d)"), start, end);
 	curStartMS = start;
 	curEndMS = end;
 	Update();
@@ -1019,8 +1047,10 @@ void AudioDisplay::SetSelection(int start, int end) {
 ////////////////
 // Set dialogue
 void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
+	wxLogDebug(_T("AudioDisplay::SetDialogue"));
 	// Actual parameters
 	if (_grid) {
+		wxLogDebug(_T("AudioDisplay::SetDialogue: has grid"));
 		// Set variables
 		grid = _grid;
 		line_n = n;
@@ -1032,6 +1062,7 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 
 		// Set times
 		if (dialogue && !dontReadTimes && Options.AsBool(_T("Audio grab times on select"))) {
+			wxLogDebug(_T("AudioDisplay::SetDialogue: grabbing times"));
 			int s = dialogue->Start.GetMS();
 			int e = dialogue->End.GetMS();
 
@@ -1045,21 +1076,25 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 
 	// Read karaoke data
 	if (dialogue && karaoke->enabled) {
+		wxLogDebug(_T("AudioDisplay::SetDialogue: in karaoke mode, loading new line into karaoke control"));
 		NeedCommit = karaoke->LoadFromDialogue(dialogue);
 
 		// Reset karaoke pos
+		wxLogDebug(_T("AudioDisplay::SetDialogue: resetting karaoke position"));
 		if (karaoke->curSyllable == -1) karaoke->SetSyllable((int)karaoke->syllables.size()-1);
 		else karaoke->SetSyllable(0);
 	}
 
 	// Update
 	Update();
+	wxLogDebug(_T("AudioDisplay::SetDialogue: returning"));
 }
 
 
 //////////////////
 // Commit changes
 void AudioDisplay::CommitChanges (bool nextLine) {
+	wxLogDebug(_T("AudioDisplay::CommitChanges(nextLine=%d)"), nextLine?1:0);
 	// Loaded?
 	if (!loaded) return;
 
@@ -1067,12 +1102,14 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 	bool wasKaraSplitting = false;
 	bool validCommit = true;
 	if (!box->audioKaraoke->splitting) {
+		wxLogDebug(_T("AudioDisplay::CommitChanges: was splitting karaoke"));
 		if (!NeedCommit || curEndMS < curStartMS) validCommit = false;
 	}
 
 	// Update karaoke
 	int karSyl = 0;
 	if (karaoke->enabled) {
+		wxLogDebug(_T("AudioDisplay::CommitChanges: karaoke enabled, committing it"));
 		wasKaraSplitting = box->audioKaraoke->splitting;
 		karaoke->Commit();
 		karSyl = karaoke->curSyllable;
@@ -1080,6 +1117,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 	
 	// Commit ok?
 	if (validCommit) {
+		wxLogDebug(_T("AudioDisplay::CommitChanges: valid commit"));
 		// Reset flags
 		diagUpdated = false;
 		NeedCommit = false;
@@ -1098,19 +1136,22 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 
 			curDiag->Start.SetMS(curStartMS);
 			curDiag->End.SetMS(curEndMS);
-			if (!karaoke->enabled)
+			if (!karaoke->enabled) {
 				// If user was editing karaoke stuff, that should take precedence of manual changes in the editbox,
 				// so only updated from editbox when not in kara mode
 				curDiag->Text = grid->editBox->TextEdit->GetText();
+			}
 			curDiag->UpdateData();
 		}
 
 		// Update edit box
+		wxLogDebug(_T("AudioDisplay::CommitChanges: updating time edit boxes"));
 		grid->editBox->StartTime->Update();
 		grid->editBox->EndTime->Update();
 		grid->editBox->Duration->Update();
 
 		// Update grid
+		wxLogDebug(_T("AudioDisplay::CommitChanges: update grid"));
 		grid->editBox->Update(!karaoke->enabled);
 		grid->ass->FlagAsModified(_T(""));
 		grid->CommitChanges();
@@ -1118,11 +1159,13 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 		blockUpdate = false;
 	}
 
-	// Next line
+	// Next line (ugh what a condition, can this be simplified?)
 	if (nextLine && !karaoke->enabled && Options.AsBool(_T("Audio Next Line on Commit")) && !wasKaraSplitting) {
+		wxLogDebug(_T("AudioDisplay::CommitChanges: going to next line"));
 		// Insert a line if it doesn't exist
 		int nrows = grid->GetRows();
 		if (nrows == line_n + 1) {
+			wxLogDebug(_T("AudioDisplay::CommitChanges: was on last line, inserting new"));
 			AssDialogue *def = new AssDialogue;
 			def->Start = grid->GetDialogue(line_n)->End;
 			def->End = grid->GetDialogue(line_n)->End;
@@ -1140,6 +1183,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 	}
 
 	Update();
+	wxLogDebug(_T("AudioDisplay::CommitChanges: returning"));
 }
 
 
@@ -2029,11 +2073,14 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 ///////////////
 // Change line
 void AudioDisplay::ChangeLine(int delta) {
+	wxLogDebug(_T("AudioDisplay::ChangeLine(delta=%d)"), delta);
 	if (dialogue) {
+		wxLogDebug(_T("AudioDisplay::ChangeLine: has dialogue"));
 		// Get next line number and make sure it's within bounds
 		int next = line_n+delta;
 		if (next == -1) next = 0;
 		if (next == grid->GetRows()) next = grid->GetRows() - 1;
+		wxLogDebug(_T("AudioDisplay::ChangeLine: next=%s"), next);
 
 		// Set stuff
 		NeedCommit = false;
@@ -2045,33 +2092,40 @@ void AudioDisplay::ChangeLine(int delta) {
 		else UpdateImage(false);
 		line_n = next;
 	}
+	wxLogDebug(_T("AudioDisplay::ChangeLine: returning"));
 }
 
 
 ////////
 // Next
 void AudioDisplay::Next() {
+	wxLogDebug(_T("AudioDisplay::Next"));
 	// Karaoke
 	if (karaoke->enabled) {
+		wxLogDebug(_T("AudioDisplay::Next: karaoke enables, going to next syllable"));
 		int nextSyl = karaoke->curSyllable+1;
 		bool needsUpdate = true;
 
 		// Last syllable; jump to next
 		if (nextSyl >= (signed int)karaoke->syllables.size()) {
+			wxLogDebug(_T("AudioDisplay::Next: last syllable on line"));
 			// Already last?
 			if (line_n == grid->GetRows()-1) return;
 
 			if (NeedCommit) {
+				wxLogDebug(_T("AudioDisplay::Next: uncommitted karaoke changes"));
 				int result = wxMessageBox(_("Do you want to commit your changes? If you choose No, they will be discarded."),_("Commit?"),wxYES_NO | wxCANCEL | wxICON_QUESTION);
 				//int result = wxNO;
 				if (result == wxYES) {
 					CommitChanges();
 				}
 				else if (result == wxCANCEL) {
+					wxLogDebug(_T("AudioDisplay::Next: cancelled, returning"));
 					karaoke->curSyllable = (int)karaoke->syllables.size()-1;
 					return;
 				}
 			}
+			wxLogDebug(_T("AudioDisplay::Next: going to next line"));
 			nextSyl = 0;
 			karaoke->curSyllable = 0;
 			ChangeLine(1);
@@ -2079,6 +2133,7 @@ void AudioDisplay::Next() {
 		}
 
 		// Set syllable
+		wxLogDebug(_T("AudioDisplay::Next: set syllable"));
 		karaoke->SetSyllable(nextSyl);
 		if (needsUpdate) Update();
 		int start=0,end=0;
@@ -2088,40 +2143,50 @@ void AudioDisplay::Next() {
 
 	// Plain mode
 	else {
+		wxLogDebug(_T("AudioDisplay::Next: going to next line"));
 		ChangeLine(1);
 	}
+
+	wxLogDebug(_T("AudioDisplay::Next: returning"));
 }
 
 
 ////////////
 // Previous
 void AudioDisplay::Prev() {
+	wxLogDebug(_T("AudioDisplay::Prev"));
 	// Karaoke
 	if (karaoke->enabled) {
+		wxLogDebug(_T("AudioDisplay::Prev: karaoke enabled, going to prev syllable"));
 		int nextSyl = karaoke->curSyllable-1;
 		bool needsUpdate = true;
 
 		// First syllable; jump line
 		if (nextSyl < 0) {
+			wxLogDebug(_T("AudioDisplay::Prev: prev syllable on prev line"));
 			// Already first?
 			if (line_n == 0) return;
 
 			if (NeedCommit) {
+				wxLogDebug(_T("AudioDisplay::Prev: uncommitted karaoke changes"));
 				int result = wxMessageBox(_("Do you want to commit your changes? If you choose No, they will be discarded."),_("Commit?"),wxYES_NO | wxCANCEL);
 				if (result == wxYES) {
 					CommitChanges();
 				}
 				else if (result == wxCANCEL) {
 					karaoke->curSyllable = 0;
+					wxLogDebug(_T("AudioDisplay::Prev: cancelled, returning"));
 					return;
 				}
 			}
+			wxLogDebug(_T("AudioDisplay::Prev: going to prev line"));
 			karaoke->curSyllable = -1;
 			ChangeLine(-1);
 			needsUpdate = false;
 		}
 
 		// Set syllable
+		wxLogDebug(_T("AudioDisplay::Prev: set syllable"));
 		karaoke->SetSyllable(nextSyl);
 		if (needsUpdate) Update();
 		int start=0,end=0;
@@ -2131,8 +2196,11 @@ void AudioDisplay::Prev() {
 
 	// Plain mode
 	else {
+		wxLogDebug(_T("AudioDisplay::Prev: going to prev line"));
 		ChangeLine(-1);
 	}
+
+	wxLogDebug(_T("AudioDisplay::Prev: returning"));
 }
 
 
@@ -2159,6 +2227,7 @@ int AudioDisplay::GetSyllableAtX(int x) {
 ////////////////
 // Focus events
 void AudioDisplay::OnGetFocus(wxFocusEvent &event) {
+	wxLogDebug(_T("AudioDisplay::OnGetFocus"));
 	if (!hasFocus) {
 		hasFocus = true;
 		UpdateImage(true);
@@ -2166,6 +2235,7 @@ void AudioDisplay::OnGetFocus(wxFocusEvent &event) {
 }
 
 void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
+	wxLogDebug(_T("AudioDisplay::OnLoseFocus"));
 	if (hasFocus && loaded) {
 		hasFocus = false;
 		UpdateImage(true);
