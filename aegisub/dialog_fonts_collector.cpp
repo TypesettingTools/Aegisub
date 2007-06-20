@@ -370,7 +370,7 @@ void FontsCollectorThread::Collect() {
 	}
 
 	// Collect font data
-	AppendText(_("Collecting font data from system... "));
+	AppendText(_("Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster... "));
 	CollectFontData();
 	AppendText(_("done.\n\nScanning file for fonts..."));
 

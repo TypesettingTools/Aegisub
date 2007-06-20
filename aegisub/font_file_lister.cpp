@@ -40,6 +40,7 @@
 ////////////
 // Includes
 #include <wx/dir.h>
+#include <wx/tokenzr.h>
 #ifdef WIN32
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -50,6 +51,7 @@
 #include "font_file_lister.h"
 #include "text_file_writer.h"
 #include "text_file_reader.h"
+#include "standard_paths.h"
 
 
 ////////////////////
@@ -111,6 +113,9 @@ void FontFileLister::DoClearData() {
 void FontFileLister::DoGatherData() {
 #ifdef WIN32
 
+	// Load cache
+	LoadCache();
+
 	// Get fonts folder
 	wxString source;
 	TCHAR szPath[MAX_PATH];
@@ -142,6 +147,9 @@ void FontFileLister::DoGatherData() {
 			FT_Done_Face(face);
 		}
 	}
+
+	// Save cache
+	SaveCache();
 
 #else
 
@@ -176,12 +184,58 @@ bool FontFileLister::IsFilenameCached(wxString filename) {
 //////////////
 // Save cache
 void FontFileLister::SaveCache() {
-	// TODO
+	try {
+		// Open file
+		TextFileWriter file(StandardPaths::DecodePath(_T("?user/fontcache.dat")));
+
+		// For each face...
+		for (FontMap::iterator iter = fontTable.begin();iter!=fontTable.end();iter++) {
+			// Write face name
+			wxString line = iter->first + _T("?");
+			size_t len = iter->second.Count();
+
+			// Write file names
+			for (size_t i=0;i<len;i++) {
+				line += iter->second[i];
+				if (i != len-1) line += _T("|");
+			}
+
+			// Write line
+			file.WriteLineToFile(line);
+		}
+	}
+	catch (...) {
+	}
 }
 
 
 //////////////
 // Load cache
 void FontFileLister::LoadCache() {
-	// TODO
+	try {
+		// Load cache
+		TextFileReader file(StandardPaths::DecodePath(_T("?user/fontcache.dat")));
+
+		// Read each line
+		while (file.HasMoreLines()) {
+			// Read line
+			wxString line = file.ReadLineFromFile();
+			int pos = line.Find(_T('?'));
+
+			// Get face name
+			wxString face = line.Left(pos);
+			if (face.IsEmpty()) continue;
+
+			// Get files
+			wxStringTokenizer tkn(line.Mid(pos+1),_T("|"));
+			while (tkn.HasMoreTokens()) {
+				wxString file = tkn.GetNextToken();
+				if (!file.IsEmpty()) {
+					AddFont(file,face);
+				}
+			}
+		}
+	}
+	catch (...) {
+	}
 }

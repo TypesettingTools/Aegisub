@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/stdpaths.h>
+#include <wx/filename.h>
 #include "standard_paths.h"
 
 
@@ -51,10 +52,23 @@ StandardPaths *StandardPaths::GetInstance() {
 ///////////////
 // Constructor
 StandardPaths::StandardPaths() {
-	wxFileName aegiPath(wxStandardPaths::Get().GetExecutablePath());
-	SetPathValue(_T("?install"),aegiPath.GetPath());
-	SetPathValue(_T("?user"),wxStandardPaths::Get().GetUserDataDir());
-	SetPathValue(_T("?temp"),wxStandardPaths::Get().GetTempDir());
+	// Get paths
+	wxString dataDir = wxStandardPaths::Get().GetDataDir();
+	wxString userDir = wxStandardPaths::Get().GetUserDataDir();
+	wxString tempDir = wxStandardPaths::Get().GetTempDir();
+
+	// Set paths
+	DoSetPathValue(_T("?data"),dataDir);
+	DoSetPathValue(_T("?user"),userDir);
+	DoSetPathValue(_T("?temp"),tempDir);
+
+	// Create paths if they don't exist
+	wxFileName folder(dataDir + _T("/"));
+	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+	folder.Assign(userDir + _T("/"));
+	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+	folder.Assign(tempDir + _T("/"));
+	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
 }
 
 
@@ -63,8 +77,25 @@ StandardPaths::StandardPaths() {
 wxString StandardPaths::DoDecodePath(wxString path) {
 	// Decode
 	if (path[0] == _T('?')) {
-		// TODO
-		return path;
+		// Split ?part from rest
+		path.Replace(_T("\\"),_T("/"));
+		int pos = path.Find(_T("/"));
+		wxString path1,path2;
+		if (pos == wxNOT_FOUND) path1 = path;
+		else {
+			path1 = path.Left(pos);
+			path2 = path.Mid(pos+1);
+		}
+
+		// Replace ?part if valid
+		std::map<wxString,wxString>::iterator iter = paths.find(path1);
+		if (iter == paths.end()) return path;
+		wxString final = iter->second + _T("/") + path2;
+		final.Replace(_T("//"),_T("/"));
+#ifdef WIN32
+		final.Replace(_T("/"),_T("\\"));
+#endif
+		return final;
 	}
 
 	// Nothing to decode
