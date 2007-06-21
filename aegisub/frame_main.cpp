@@ -557,7 +557,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			// Make sure that file isn't actually a timecode file
 			TextFileReader testSubs(filename);
 			isBinary = testSubs.GetCurrentEncoding() == _T("binary");
-			if (testSubs.HasMoreLines()) {
+			if (!isBinary && testSubs.HasMoreLines()) {
 				wxString cur = testSubs.ReadLineFromFile();
 				if (cur.Left(10) == _T("# timecode")) {
 					LoadVFR(filename);

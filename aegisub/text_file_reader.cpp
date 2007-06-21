@@ -62,6 +62,7 @@ TextFileReader::TextFileReader(wxString _filename,wxString enc,bool _trim) {
 	// Set encoding
 	encoding = enc;
 	if (encoding.IsEmpty()) encoding = GetEncoding(filename);
+	if (encoding == _T("binary")) return;
 	SetEncodingConfiguration();
 }
 
@@ -127,8 +128,8 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	else if (b[0] == 0x2B && b[1] == 0x2F && b[2] == 0x76) return _T("UTF-7");
 
 	// Try to guess UTF-16
-	else if (b[0] == 0x00 && b[2] == 0x00) return _T("UTF-16BE");
-	else if (b[1] == 0x00 && b[3] == 0x00) return _T("UTF-16LE");
+	else if (b[0] == 0 && b[1] >= 32 && b[2] == 0 && b[3] >= 32) return _T("UTF-16BE");
+	else if (b[0] >= 32 && b[1] == 0 && b[2] >= 32 && b[3] == 0) return _T("UTF-16LE");
 
 	// If any of the first four bytes are under 0x20 (the first printable character),
 	// except for 9-13 range, assume binary
