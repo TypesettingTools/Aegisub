@@ -236,6 +236,7 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
 	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample Script Resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBITMAP(timing_processor_toolbutton),_("Open Timing Post-processor dialog"));
+	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),wxBITMAP(kanji_timer_button),_("Open Kanji Timer dialog"));
 	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),wxBITMAP(spellcheck_toolbutton),_("Open Spell checker"));
 	Toolbar->AddSeparator();
 
@@ -416,7 +417,9 @@ void FrameMain::InitMenu() {
 	viewMenu = new wxMenu();
 	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, _("&Options...") + wxString(_T("\t")) + Hotkeys.GetText(_T("Options")), _("Configure Aegisub"), wxBITMAP(options_button));
+#ifdef WIN32
 	AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), wxBITMAP(blank_button));
+#endif
 #ifdef __WXDEBUG__
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g window..."), _("Open log window"), wxBITMAP(blank_button));
 #endif
