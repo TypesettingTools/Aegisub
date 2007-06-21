@@ -26,15 +26,12 @@ endif
 AUDIO_PLAYER=audio_player.cpp 
 if HAVE_PORTAUDIO
 AUDIO_PLAYER += audio_player_portaudio.cpp 
-aegisub_LDFLAGS += -lportaudio
 endif
 if HAVE_ALSA
 AUDIO_PLAYER += audio_player_alsa.cpp 
-aegisub_LDFLAGS += -lasound
 endif
 if HAVE_PULSEAUDIO
 AUDIO_PLAYER += audio_player_pulse.cpp 
-aegisub_LDFLAGS += -lpulse
 endif
 
 AUTOMATION = auto4_base.cpp

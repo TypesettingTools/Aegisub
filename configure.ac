@@ -66,8 +66,8 @@ EOM
 ])
 
 
-AC_CHECK_LIB([asound], [snd_pcm_open], [found_audio=yes], [with_alsa=no])
-AC_CHECK_LIB([portaudio], [Pa_Initialize], [found_audio=yes], [with_portaudio=no])
+AC_CHECK_LIB([asound], [snd_pcm_open], [LIBS="-lasound $LIBS"; found_audio=yes], [with_alsa=no])
+AC_CHECK_LIB([portaudio], [Pa_Initialize], [LIBS="-lportaudio $LIBS";found_audio=yes], [with_portaudio=no])
 AC_CHECK_FUNCS([Pa_GetStreamTime])
 PKG_CHECK_MODULES([LIBPULSE], libpulse >= 0.5, [found_audio=yes], [with_pulseaudio=no])
 AC_CHECK_LIB([avcodec], [avcodec_init],, [with_ffmpeg=no])
@@ -110,8 +110,8 @@ else
     AC_MSG_XFAILURE([wxWidgets is required. Try --with-wx-config.])
 fi
 
-CPPFLAGS="$CPPFLAGS `$WXCONFIG --cppflags | sed -e 's/-fno-exceptions//'` $FREETYPE_CFLAGS"
-LIBS="$LIBS `$WXCONFIG --libs std,gl,stc` $FREETYPE_LIBS"
+CPPFLAGS="$CPPFLAGS `$WXCONFIG --cppflags | sed -e 's/-fno-exceptions//'` $FREETYPE_CFLAGS $LIBPULSE_CFLAGS"
+LIBS="$LIBS `$WXCONFIG --libs std,gl,stc` $FREETYPE_LIBS $LIBPULSE_LIBS"
 
 AC_MSG_CHECKING([wxWidgets OpenGL support])
 AC_LINK_IFELSE([
