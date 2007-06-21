@@ -44,7 +44,7 @@
 #include "ass_style.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
-#include "main.h"
+#include "standard_paths.h"
 #include "options.h"
 #include "subs_grid.h"
 
@@ -203,8 +203,7 @@ void DialogStyleManager::LoadCatalog () {
 	CatalogList->Clear();
 
 	// Create catalog if it doesn't exist
-	wxString dirname = AegisubApp::folderName;
-	dirname += _T("/catalog/");
+	wxString dirname = StandardPaths::DecodePath(_T("?user/catalog/"));
 	if (!wxDirExists(dirname)) {
 		if (!wxMkdir(dirname)) {
 			throw _T("Error creating directory!");
@@ -219,8 +218,7 @@ void DialogStyleManager::LoadCatalog () {
 	}
 
 	// Get dir
-	dirname = AegisubApp::folderName;
-	dirname += _T("/catalog/*.sty");
+	dirname = StandardPaths::DecodePath(_T("?user/catalog/*.sty"));
 
 	// Populate
 	wxString curfile = wxFindFirstFile(dirname,wxFILE);
@@ -411,8 +409,7 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 		StorageActions(true);
 
 		// Save
-		wxString dirname = AegisubApp::folderName;
-		dirname += _T("/catalog/");
+		wxString dirname = StandardPaths::DecodePath(_T("?user/catalog/"));
 		if (!wxDirExists(dirname)) {
 			if (!wxMkdir(dirname)) {
 				throw _T("Error creating directory!");
@@ -435,11 +432,7 @@ void DialogStyleManager::OnCatalogDelete (wxCommandEvent &event) {
 		message += _("\" from the catalog?");
 		int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
 		if (option == wxYES) {
-			wxString filename = AegisubApp::folderName;
-			filename += _T("/catalog/");
-			filename += name;
-			filename += _T(".sty");
-			wxRemoveFile(filename);
+			wxRemoveFile(StandardPaths::DecodePath(_T("?user/catalog/") + name + _T(".sty")));
 			CatalogList->Delete(sel);
 			StorageList->Clear();
 			StorageActions(false);

@@ -46,7 +46,7 @@
 #include "subtitles_provider.h"
 #include "video_context.h"
 #include "options.h"
-#include "main.h"
+#include "standard_paths.h"
 #include "vfr.h"
 #include "ass_file.h"
 #include "gl_wrap.h"
@@ -231,7 +231,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			bool ffsource = false;
 			if (env->FunctionExists("ffmpegsource")) ffsource = true;
 			if (!ffsource) {
-				wxFileName ffsourcepath(AegisubApp::folderName + _T("ffmpegsource.dll"));
+				wxFileName ffsourcepath(StandardPaths::DecodePath(_T("?data/ffmpegsource.dll")));
 				if (ffsourcepath.FileExists()) {
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading FFMpegSource"));
 					env->Invoke("LoadPlugin",env->SaveString(ffsourcepath.GetFullPath().mb_str(wxConvLocal)));
@@ -257,7 +257,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 				bool dss2 = false;
 				if (env->FunctionExists("dss2")) dss2 = true;
 				if (!dss2) {
-					wxFileName dss2path(AegisubApp::folderName + _T("avss.dll"));
+					wxFileName dss2path(StandardPaths::DecodePath(_T("?data/avss.dll")));
 					if (dss2path.FileExists()) {
 						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource2"));
 						env->Invoke("LoadPlugin",env->SaveString(dss2path.GetFullPath().mb_str(wxConvLocal)));
@@ -480,7 +480,7 @@ void AvisynthVideoProvider::LoadVSFilter() {
 	AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loading VSFilter"));
 	// Loading an avisynth plugin multiple times does almost nothing
 
-	wxFileName vsfilterPath(AegisubApp::folderName + _T("vsfilter.dll"));
+	wxFileName vsfilterPath(StandardPaths::DecodePath(_T("?data/vsfilter.dll")));
 	rendererCallString = _T("TextSub");
 
 	if (vsfilterPath.FileExists()) {
@@ -525,7 +525,7 @@ void AvisynthVideoProvider::LoadASA() {
 	AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Loading asa"));
 	// Loading an avisynth plugin multiple times does almost nothing
 
-	wxFileName asaPath(AegisubApp::folderName + _T("asa.dll"));
+	wxFileName asaPath(StandardPaths::DecodePath(_T("?data/asa.dll")));
 	rendererCallString = _T("asa");
 
 	if (asaPath.FileExists()) {

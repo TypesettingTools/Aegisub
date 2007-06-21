@@ -42,7 +42,6 @@
 #include <wx/intl.h>
 #include <wx/settings.h>
 #include "options.h"
-#include "main.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "colorspace.h"
@@ -190,10 +189,9 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	// Automation
 	// The path changes only take effect when a script is (re)loaded but Automatic should be good enough, it certainly doesn't warrart a restart
 	SetModificationType(MOD_AUTOMATIC);
-	// TODO: these paths should be different on non-Windows systems
-	SetText(_T("Automation Base Path"), AegisubApp::folderName + _T("automation/"));
-	SetText(_T("Automation Include Path"), AegisubApp::folderName + _T("automation/include/"));
-	SetText(_T("Automation Autoload Path"), AegisubApp::folderName + _T("automation/autoload/"));
+	SetText(_T("Automation Base Path"), _T("?data/automation/"));
+	SetText(_T("Automation Include Path"), _T("?user/automation/include/|?data/automation/include/"));
+	SetText(_T("Automation Autoload Path"), _T("?user/automation/autoload/|?data/automation/include/"));
 	SetInt(_T("Automation Trace Level"), 3);
 	SetInt(_T("Automation Thread Priority"), 1); // "below normal"
 	SetInt(_T("Automation Autoreload Mode"), 0); // never

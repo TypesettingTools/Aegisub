@@ -37,7 +37,7 @@
 ///////////
 // Headers
 #include "spellchecker.h"
-#include "main.h"
+#include "standard_paths.h"
 #include "utils.h"
 #include "options.h"
 #include <hunspell/hunspell.hxx>
@@ -228,7 +228,7 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 // Get list of available dictionaries
 wxArrayString HunspellSpellChecker::GetLanguageList() {
 	// Get dir name
-	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
+	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),StandardPaths::DecodePath(_T("?data/"))) + _T("/");
 	wxArrayString list;
 	wxFileName folder(path);
 	if (!folder.DirExists()) return list;
@@ -265,7 +265,7 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	if (language.IsEmpty()) return;
 
 	// Get dir name
-	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),AegisubApp::folderName) + _T("/");
+	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),StandardPaths::DecodePath(_T("?data/"))) + _T("/");
 
 	// Get affix and dictionary paths
 	affpath = path + language + _T(".aff");

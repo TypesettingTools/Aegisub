@@ -38,6 +38,7 @@
 #include "options.h"
 #include "string_codec.h"
 #include "ass_file.h"
+#include "standard_paths.h"
 #include <wx/filename.h>
 #include <wx/dir.h>
 #include <wx/dialog.h>
@@ -515,7 +516,7 @@ namespace Automation4 {
 		wxStringTokenizer toker(Options.AsText(_T("Automation Include Path")), _T("|"), wxTOKEN_STRTOK);
 		while (toker.HasMoreTokens()) {
 			// todo? make some error reporting here
-			wxFileName path(toker.GetNextToken());
+			wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
 			if (!path.IsOk()) continue;
 			if (path.IsRelative()) continue;
 			if (!path.DirExists()) continue;
@@ -648,18 +649,18 @@ namespace Automation4 {
 		wxStringTokenizer tok(path, _T("|"), wxTOKEN_STRTOK);
 		while (tok.HasMoreTokens()) {
 			wxDir dir;
-			wxString dirname = tok.GetNextToken();
+			wxString dirname = StandardPaths::DecodePath(tok.GetNextToken());
 			if (!dir.Exists(dirname)) {
-				wxLogWarning(_T("A directory was specified in the Automation autoload path, but it doesn't exist: %s"), dirname.c_str());
+				//wxLogWarning(_T("A directory was specified in the Automation autoload path, but it doesn't exist: %s"), dirname.c_str());
 				continue;
 			}
 			if (!dir.Open(dirname)) {
-				wxLogWarning(_T("Failed to open a directory in the Automation autoload path: %s"), dirname.c_str());
+				//wxLogWarning(_T("Failed to open a directory in the Automation autoload path: %s"), dirname.c_str());
 				continue;
 			}
 
 			wxString fn;
-			wxFileName script_path(path, _T(""));
+			wxFileName script_path(dirname + _T("/"), _T(""));
 			bool more = dir.GetFirst(&fn, wxEmptyString, wxDIR_FILES);
 			while (more) {
 				script_path.SetName(fn);

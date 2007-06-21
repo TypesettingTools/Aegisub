@@ -41,7 +41,7 @@
 #include <wx/fontdlg.h>
 #include "browse_button.h"
 #include "utils.h"
-#include "main.h"
+#include "standard_paths.h"
 
 
 ///////////////
@@ -68,8 +68,8 @@ void BrowseButton::Bind(wxTextCtrl *control,int pos) {
 void BrowseButton::OnPressed(wxCommandEvent &event) {
 	// Folder
 	if (type == BROWSE_FOLDER) {
-		wxString def = DecodeRelativePath(ctrl[0]->GetValue(),AegisubApp::folderName);
-		wxString dir = MakeRelativePath(wxDirSelector(_("Please choose the folder:"),def),AegisubApp::folderName);
+		wxString def = DecodeRelativePath(ctrl[0]->GetValue(),StandardPaths::DecodePath(_T("?user/")));
+		wxString dir = MakeRelativePath(wxDirSelector(_("Please choose the folder:"),def),StandardPaths::DecodePath(_T("?user/")));
 		if (dir != _T("")) ctrl[0]->SetValue(dir);
 	}
 

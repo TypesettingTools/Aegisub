@@ -596,7 +596,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		wxString path = Options.AsText(_T("Auto backup path"));
 		if (path.IsEmpty()) path = origfile.GetPath();
 		wxFileName dstpath(path);
-		if (!dstpath.IsAbsolute()) path = AegisubApp::folderName + path;
+		if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePath(_T("?user/") + path);
 		path += _T("/");
 		dstpath.Assign(path);
 		if (!dstpath.DirExists()) wxMkdir(path);
@@ -1140,7 +1140,7 @@ void FrameMain::OpenHelp(wxString page) {
 	if (!page.IsEmpty()) page = _T("::") + page;
 	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("chm"));
 	if (type) {
-		wxString command = type->GetOpenCommand(AegisubApp::folderName + _T("Aegisub.chm"));
+		wxString command = type->GetOpenCommand(StandardPaths::DecodePath(_T("?data/Aegisub.chm")));
 		if (!command.empty()) wxExecute(command + page);
 	}
 }

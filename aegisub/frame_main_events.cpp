@@ -41,6 +41,7 @@
 #include <wx/filename.h>
 #include <wx/tglbtn.h>
 #include <wx/rawbmp.h>
+#include <wx/stdpaths.h>
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "video_display.h"
@@ -80,6 +81,7 @@
 #include "dialog_dummy_video.h"
 #include "dialog_spellchecker.h"
 #include "dialog_associations.h"
+#include "standard_paths.h"
 
 
 ////////////////////
@@ -1352,7 +1354,7 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 			wxString path = Options.AsText(_T("Auto save path"));
 			if (path.IsEmpty()) path = origfile.GetPath();
 			wxFileName dstpath(path);
-			if (!dstpath.IsAbsolute()) path = AegisubApp::folderName + path;
+			if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePath(_T("?user/") + path);
 			path += _T("/");
 			dstpath.Assign(path);
 			if (!dstpath.DirExists()) wxMkdir(path);
@@ -1517,7 +1519,10 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 			int result = wxMessageBox(_T("Aegisub needs to be restarted so that the new language can be applied. Restart now?"),_T("Restart Aegisub?"),wxICON_QUESTION | wxYES_NO);
 			if (result == wxYES) {
 				// Restart Aegisub
-				if (Close()) wxExecute(AegisubApp::fullPath);
+				if (Close()) {
+					wxStandardPaths stand;
+					wxExecute(stand.GetExecutablePath());
+				}
 			}
 		}
 	}

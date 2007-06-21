@@ -40,19 +40,17 @@
 #include <algorithm>
 #include <string>
 #include <wx/filename.h>
+#include <wx/filefn.h>
 #include "dialog_shift_times.h"
 #include "video_display.h"
 #include "vfr.h"
 #include "subs_grid.h"
 #include "options.h"
-#include "main.h"
+#include "standard_paths.h"
 #include "ass_file.h"
 #include "ass_time.h"
 #include "ass_dialogue.h"
 #include "subs_edit_box.h"
-
-
-#define SHIFT_HISTORY_FILE (AegisubApp::folderName + _T("shift_history.txt"))
 
 
 ///////////////
@@ -172,7 +170,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	}
 
 	// Load history
-	LoadHistory(SHIFT_HISTORY_FILE);
+	LoadHistory(StandardPaths::DecodePath(_T("?user/shift_history.txt")));
 }
 
 
@@ -190,7 +188,7 @@ END_EVENT_TABLE()
 /////////////////
 // Clear History
 void DialogShiftTimes::OnClear(wxCommandEvent &event) {
-	remove(SHIFT_HISTORY_FILE.mb_str(wxConvLocal));
+	wxRemoveFile(StandardPaths::DecodePath(_T("?user/shift_history.txt")));
 	History->Clear();
 }
 

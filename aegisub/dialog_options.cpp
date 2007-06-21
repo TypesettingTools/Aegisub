@@ -44,8 +44,9 @@
 #endif
 #include "options.h"
 #include <wx/spinctrl.h>
+#include <wx/stdpaths.h>
 #include "frame_main.h"
-#include "main.h"
+#include "standard_paths.h"
 #include "validators.h"
 #include "colour_button.h"
 #include "subs_edit_box.h"
@@ -709,7 +710,10 @@ void DialogOptions::OnOK(wxCommandEvent &event) {
 		int answer = wxMessageBox(_("Aegisub must restart for the changes to take effect. Restart now?"),_("Restart Aegisub"),wxYES_NO);
 		if (answer == wxYES) {
 			FrameMain *frame = (FrameMain*) GetParent();
-			if (frame->Close()) wxExecute(AegisubApp::fullPath);
+			if (frame->Close()) {
+				wxStandardPaths stand;
+				wxExecute(stand.GetExecutablePath());
+			}
 		}
 	}
 }
@@ -739,7 +743,10 @@ void DialogOptions::OnCancel(wxCommandEvent &event) {
 		int answer = wxMessageBox(_("Aegisub must restart for the changes to take effect. Restart now?"),_("Restart Aegisub"),wxYES_NO);
 		if (answer == wxYES) {
 			FrameMain *frame = (FrameMain*) GetParent();
-			if (frame->Close()) wxExecute(AegisubApp::fullPath);
+			if (frame->Close()) {
+				wxStandardPaths stand;
+				wxExecute(stand.GetExecutablePath());
+			}
 		}
 	}
 }
@@ -871,7 +878,10 @@ void DialogOptions::WriteToOptions(bool justApply) {
 			int answer = wxMessageBox(_("Aegisub must restart for the changes to take effect. Restart now?"),_("Restart Aegisub"),wxYES_NO);
 			if (answer == wxYES) {
 				FrameMain *frame = (FrameMain*) GetParent();
-				if (frame->Close()) wxExecute(AegisubApp::fullPath);
+				if (frame->Close()) {
+					wxStandardPaths stand;
+					wxExecute(stand.GetExecutablePath());
+				}
 			}
 		}
 	}

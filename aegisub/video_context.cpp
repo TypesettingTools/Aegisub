@@ -65,7 +65,6 @@
 #include "options.h"
 #include "subs_edit_box.h"
 #include "audio_display.h"
-#include "main.h"
 #include "video_slider.h"
 #include "video_box.h"
 #include "utils.h"
@@ -591,17 +590,10 @@ void VideoContext::SaveSnapshot(bool raw) {
 	wxString option = Options.AsText(_("Video Screenshot Path"));
 	wxFileName videoFile(videoName);
 	wxString basepath;
-	if (option == _T("?video")) {
-		basepath = videoFile.GetPath();
+	if (option[0] == _T('?')) {
+		basepath = StandardPaths::DecodePath(option);
 	}
-	else if (option == _T("?script")) {
-		if (grid->ass->filename.IsEmpty()) basepath = videoFile.GetPath();
-		else {
-			wxFileName file2(grid->ass->filename);
-			basepath = file2.GetPath();
-		}
-	}
-	else basepath = DecodeRelativePath(option,((AegisubApp*)wxTheApp)->folderName);
+	else basepath = DecodeRelativePath(option,StandardPaths::DecodePath(_T("?user/")));
 	basepath += _T("/") + videoFile.GetName();
 
 	// Get full path

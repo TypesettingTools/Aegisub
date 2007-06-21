@@ -64,13 +64,9 @@ public:
 	FrameMain *frame;
 	Automation4::AutoloadScriptManager *global_scripts;
 
-	static wxString fullPath;
-	static wxString folderName;
 	static AegisubApp* Get() { return (AegisubApp*) wxTheApp; }
 	static void OpenURL(wxString url);
 
-	void GetFullPath(wxString arg);
-	void GetFolderName();
 	void RegistryAssociate();
 	void AssociateType(wxString type);
 

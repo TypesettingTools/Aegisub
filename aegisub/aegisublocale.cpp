@@ -43,7 +43,7 @@
 #include <wx/filename.h>
 #include <wx/choicdlg.h>
 #include "aegisublocale.h"
-#include "main.h"
+#include "standard_paths.h"
 
 
 ///////////////
@@ -65,7 +65,7 @@ void AegisubLocale::Init(int language) {
 	curCode = language;
 	locale = new wxLocale(language);
 #ifdef __WINDOWS__
-	locale->AddCatalogLookupPathPrefix(AegisubApp::folderName + _T("locale/"));
+	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath(_T("?data/locale/")));
 #endif
 	locale->AddCatalog(_T("aegisub"));
 	locale->AddCatalog(_T("wxstd"));
@@ -115,7 +115,7 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 	wxString temp1;
 
 	// Open directory
-	wxString folder = AegisubApp::folderName + _T("/locale/");
+	wxString folder = StandardPaths::DecodePath(_T("?data/locale/"));
 	wxDir dir;
 	if (!dir.Exists(folder)) return final;
 	if (!dir.Open(folder)) return final;

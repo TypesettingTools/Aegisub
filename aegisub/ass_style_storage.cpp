@@ -36,13 +36,13 @@
 
 ////////////
 // Includes
+#include <fstream>
 #include "ass_style_storage.h"
 #include "ass_style.h"
 #include "ass_file.h"
-#include "main.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include <fstream>
+#include "standard_paths.h"
 
 
 ///////////////////////
@@ -50,12 +50,7 @@
 void AssStyleStorage::Save(wxString name) {
 	if (name.IsEmpty()) return;
 
-	wxString filename = AegisubApp::folderName;
-	filename += _T("/catalog/");
-	filename += name;
-	filename += _T(".sty");
-
-	TextFileWriter file(filename, _T("UTF-8"));
+	TextFileWriter file(StandardPaths::DecodePath(_T("?data/catalog/")+name+_T(".sty")), _T("UTF-8"));
 
 	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
 		file.WriteLineToFile((*cur)->GetEntryData());
@@ -67,15 +62,9 @@ void AssStyleStorage::Save(wxString name) {
 // Load styles from disk
 void AssStyleStorage::Load(wxString name) {
 	if (name.IsEmpty()) return;
-
-	wxString filename = AegisubApp::folderName;
-	filename += _T("/catalog/");
-	filename += name;
-	filename += _T(".sty");
-
 	Clear();
 
-	TextFileReader file(filename, _T("UTF-8"));
+	TextFileReader file(StandardPaths::DecodePath(_T("?data/catalog/")+name+_T(".sty")), _T("UTF-8"));
 
 	AssStyle *curStyle;
 	while (file.HasMoreLines()) {

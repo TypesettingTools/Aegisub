@@ -42,6 +42,7 @@
 #include <wx/msgdlg.h>
 #include <wx/mimetype.h>
 #include <wx/utils.h>
+#include <wx/stdpaths.h>
 #include "main.h"
 #include "frame_main.h"
 #include "options.h"
@@ -58,6 +59,7 @@
 #include "auto4_base.h"
 #include "subtitle_format.h"
 #include "video_context.h"
+#include "standard_paths.h"
 
 
 ///////////////////
@@ -85,14 +87,12 @@ bool AegisubApp::OnInit() {
 		#endif
 
 		// Set config file
-		GetFullPath(argv[0]);
-		GetFolderName();
-		Options.SetFile(folderName + _T("/config.dat"));
+		Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
 		Options.Load();
 		AssTime::UseMSPrecision = Options.AsBool(_T("Use nonstandard Milisecond Times"));
 
 		// Set hotkeys file
-		Hotkeys.SetFile(folderName + _T("/hotkeys.dat"));
+		Hotkeys.SetFile(StandardPaths::DecodePath(_T("?user/hotkeys.dat")));
 		Hotkeys.Load();
 
 #ifdef __WINDOWS__
@@ -217,7 +217,7 @@ void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 }
 
 StackWalker::StackWalker() {
-	file.open(wxString(AegisubApp::folderName + _T("/stack.txt")).mb_str(),std::ios::out | std::ios::app);
+	file.open(wxString(StandardPaths::DecodePath(_T("?user/stack.txt"))).mb_str(),std::ios::out | std::ios::app);
 	if (file.is_open()) {
 		file << std::endl << "Begining stack dump:\n";
 	}
@@ -268,7 +268,9 @@ void AegisubApp::RegistryAssociate () {
 #if defined(__WINDOWS__)
 	// Command to open with this
 	wxString command;
-	command << _T("\"") << fullPath << _T("\" \"%1\"");
+	wxStandardPaths stand;
+	wxString fullPath = stand.GetExecutablePath();
+	command = _T("\"") + fullPath + _T("\" \"%1\"");
 
 	// Main program association
 	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub"));
@@ -317,66 +319,6 @@ void AegisubApp::RegistryAssociate () {
 }
 
 
-/////////////////////////////
-// Gets and stores full path
-void AegisubApp::GetFullPath(wxString arg) {
-	if (wxIsAbsolutePath(arg)) {
-		fullPath = arg;
-		return;
-	}
-
-	// Is it a relative path?
-	wxString currentDir(wxFileName::GetCwd());
-	if (currentDir.Last() != wxFILE_SEP_PATH) currentDir += wxFILE_SEP_PATH;
-	wxString str = currentDir + arg;
-	if (wxFileExists(str)) {
-		fullPath = str;
-		return;
-	}
-
-    // OK, it's neither an absolute path nor a relative path.
-    // Search PATH.
-    wxPathList pathList;
-    pathList.AddEnvList(_T("PATH"));
-    str = pathList.FindAbsoluteValidPath(arg);
-	if (!str.IsEmpty()) {
-		fullPath = str;
-		return;
-	}
-
-	fullPath = _T("");
-	return;
-}
-
-
-///////////////////////////////////
-// Gets folder name from full path
-void AegisubApp::GetFolderName () {
-#if defined(__WINDOWS__)
-	folderName = _T("");
-	wxFileName path(fullPath);
-#elif defined(__APPLE__)
-	wxFileName path;
-	path.AssignHomeDir();
-	path.AppendDir(_T("Library"));
-	path.AppendDir(_T("Application Support"));
-	if (!path.DirExists())
-		path.Mkdir();
-	path.AppendDir(_T("Aegisub"));
-	if (!path.DirExists())
-		path.Mkdir();
-#else
-	wxFileName path;
-	path.AssignHomeDir();
-	path.AppendDir(_T(".aegisub"));
-	if (!path.DirExists())
-		path.Mkdir();
-#endif
-	folderName += path.GetPath(wxPATH_GET_VOLUME);
-	folderName += _T("/");
-}
-
-
 ////////////
 // Open URL
 void AegisubApp::OpenURL(wxString url) {
@@ -395,12 +337,6 @@ void AegisubApp::MacOpenFile(const wxString &filename) {
 	}
 }
 #endif
-
-
-///////////
-// Statics
-wxString AegisubApp::fullPath;
-wxString AegisubApp::folderName;
 
 
 ///////////////
