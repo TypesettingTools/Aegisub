@@ -162,13 +162,13 @@ void AegisubApp::OnUnhandledException() {
 	// Attempt to recover file
 	wxFileName origfile(AssFile::top->filename);
 	wxString path = Options.AsText(_T("Auto recovery path"));
-	if (path.IsEmpty()) path = folderName;
+	if (path.IsEmpty()) path = StandardPaths::DecodePath(_T("?user/"));
 	wxFileName dstpath(path);
-	if (!dstpath.IsAbsolute()) path = AegisubApp::folderName + path;
+	if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePath(_T("?user/")) + path;
 	path += _T("/");
 	dstpath.Assign(path);
 	if (!dstpath.DirExists()) wxMkdir(path);
-	wxString filename = folderName + origfile.GetName() + _T(".RECOVER.ass");
+	wxString filename = StandardPaths::DecodePath(_T("?user/")) + origfile.GetName() + _T(".RECOVER.ass");
 	AssFile::top->Save(filename,false,false);
 
 	// Inform user of crash
@@ -182,9 +182,9 @@ void AegisubApp::OnFatalException() {
 	// Attempt to recover file
 	wxFileName origfile(AssFile::top->filename);
 	wxString path = Options.AsText(_T("Auto recovery path"));
-	if (path.IsEmpty()) path = folderName;
+	if (path.IsEmpty()) path = StandardPaths::DecodePath(_T("?user/"));
 	wxFileName dstpath(path);
-	if (!dstpath.IsAbsolute()) path = AegisubApp::folderName + path;
+	if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePath(_T("?user/")) + path;
 	path += _T("/");
 	dstpath.Assign(path);
 	if (!dstpath.DirExists()) wxMkdir(path);
