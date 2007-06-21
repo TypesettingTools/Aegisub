@@ -80,6 +80,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Tips enabled"),true);
 	SetBool(_T("Show splash"),true);
+	SetBool(_T("Local config"),false);
 	SetInt(_T("Undo levels"),8);
 	SetInt(_T("Recent timecodes max"),16);
 	SetInt(_T("Recent keyframes max"),16);
@@ -394,11 +395,10 @@ void OptionsManager::Load() {
 	// Load defaults
 	LoadDefaults();
 
-	// Check if file exists (create if it doesn't)
+	// Check if file exists
 	wxFileName path(filename);
 	if (!path.FileExists()) {
 		modified = true;
-		Save();
 		return;
 	}
 
@@ -426,9 +426,6 @@ void OptionsManager::Load() {
 		}
 		else SetText(key,value);
 	}
-
-	// Close
-	Save();
 }
 
 

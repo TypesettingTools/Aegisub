@@ -87,8 +87,13 @@ bool AegisubApp::OnInit() {
 		#endif
 
 		// Set config file
-		Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
+		Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 		Options.Load();
+		if (!Options.AsBool(_T("Local config"))) {
+			Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
+			Options.Load();
+		}
+		Options.Save();
 		AssTime::UseMSPrecision = Options.AsBool(_T("Use nonstandard Milisecond Times"));
 
 		// Set hotkeys file

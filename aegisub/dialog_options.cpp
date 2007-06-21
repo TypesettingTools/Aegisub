@@ -45,6 +45,7 @@
 #include "options.h"
 #include <wx/spinctrl.h>
 #include <wx/stdpaths.h>
+#include <wx/filefn.h>
 #include "frame_main.h"
 #include "standard_paths.h"
 #include "validators.h"
@@ -97,15 +98,12 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *genMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *genSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,generalPage,_("Startup"));
 		wxSizer *genSizer4 = new wxFlexGridSizer(2,2,5,5);
-		wxCheckBox *box = new wxCheckBox(generalPage,-1,_("Show Splash Screen"));
-		Bind(box,_T("Show splash"));
-		genSizer4->Add(box,1,wxALL,0);
-		box = new wxCheckBox(generalPage,-1,_("Show Tip of the Day"));
-		Bind(box,_T("Tips enabled"));
-		genSizer4->Add(box,1,wxALL,0);
-		box = new wxCheckBox(generalPage,-1,_("Auto Check for Updates"));
-		Bind(box,_T("Auto check for updates"));
-		genSizer4->Add(box,1,wxALL,0);
+
+		AddCheckBox(generalPage,genSizer4,_("Show Splash Screen"),_T("Show splash"));
+		AddCheckBox(generalPage,genSizer4,_("Show Tip of the Day"),_T("Tips enabled"));
+		AddCheckBox(generalPage,genSizer4,_("Auto Check for Updates"),_T("Auto check for updates"));
+		AddCheckBox(generalPage,genSizer4,_("Save config.dat locally"),_T("Local config"));
+
 		genSizer1->Add(genSizer4,1,wxEXPAND|wxALL,5);
 		wxSizer *genSizer2 = new wxStaticBoxSizer(wxVERTICAL,generalPage,_("Limits for levels and recent files"));
 		wxFlexGridSizer *genSizer3 = new wxFlexGridSizer(8,2,5,5);
@@ -869,6 +867,11 @@ void DialogOptions::WriteToOptions(bool justApply) {
 	}
 
 	// Save options
+	if (Options.AsBool(_T("Local config"))) Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
+	else {
+		Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
+		wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
+	}
 	Options.Save();
 
 	// Need restart?

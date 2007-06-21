@@ -119,6 +119,8 @@ Please visit http://aegisub.net to download latest version
   o Fixed behavior of the Escape key in it. (AMZ)
   o Redesigned the interface and replaced the log window with a much better Scintilla control. (AMZ)
   o You can now collect multiple times without reopening the dialog. (AMZ)
+- All user-specific files (configuration, style storages, etc) are now stored on Application Data\Aegisub in Windows. (AMZ)
+- config.dat can optionally be stored on the same folder as aegisub.exe. (AMZ)
 - Added a much-needed options dialog with all the relevant config.dat options in it. (AMZ)
 - Various fixes to better handle paths/file names with non-ANSI characters on Windows (jfs/AMZ)
 - Misc. fixes for building on Linux (Azzy, equinox, jfs)
