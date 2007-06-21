@@ -43,6 +43,7 @@
 #include <wx/mimetype.h>
 #include <wx/utils.h>
 #include <wx/stdpaths.h>
+#include <wx/filefn.h>
 #include "main.h"
 #include "frame_main.h"
 #include "options.h"
@@ -88,10 +89,12 @@ bool AegisubApp::OnInit() {
 
 		// Set config file
 		Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
+		Options.LoadDefaults();
 		Options.Load();
 		if (!Options.AsBool(_T("Local config"))) {
 			Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
 			Options.Load();
+			wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 		}
 		Options.Save();
 		AssTime::UseMSPrecision = Options.AsBool(_T("Use nonstandard Milisecond Times"));

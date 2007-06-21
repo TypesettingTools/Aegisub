@@ -392,9 +392,6 @@ void OptionsManager::Save() {
 ////////
 // Load
 void OptionsManager::Load() {
-	// Load defaults
-	LoadDefaults();
-
 	// Check if file exists
 	wxFileName path(filename);
 	if (!path.FileExists()) {

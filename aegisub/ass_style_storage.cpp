@@ -64,7 +64,7 @@ void AssStyleStorage::Load(wxString name) {
 	if (name.IsEmpty()) return;
 	Clear();
 
-	TextFileReader file(StandardPaths::DecodePath(_T("?data/catalog/")+name+_T(".sty")), _T("UTF-8"));
+	TextFileReader file(StandardPaths::DecodePath(_T("?user/catalog/")+name+_T(".sty")), _T("UTF-8"));
 
 	AssStyle *curStyle;
 	while (file.HasMoreLines()) {
