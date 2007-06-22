@@ -48,7 +48,7 @@
 ////////////////////////
 // Edit box constructor
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& wsize, long style, const wxValidator& validator, const wxString& name)
-: wxStyledTextCtrl(parent, id, pos, wsize, 0, value)
+: ScintillaTextCtrl(parent, id, value, pos, wsize, style, validator, name)
 {
 	// Set properties
 	SetWrapMode(wxSTC_WRAP_WORD);
@@ -604,49 +604,6 @@ void SubsTextEditCtrl::UpdateCallTip() {
 }
 
 
-///////////////////////////////////
-// Get unicode-compatible position
-int SubsTextEditCtrl::GetUnicodePosition(int pos) {
-	wxString string = GetText().Left(pos);
-	wxCharBuffer buffer = string.mb_str(wxConvUTF8);
-	return strlen(buffer);
-}
-
-
-///////////////////////////////////////
-// Reverse unicode-compatible position
-int SubsTextEditCtrl::GetReverseUnicodePosition(int pos) {
-	// Get UTF8
-	wxCharBuffer buffer = GetText().mb_str(wxConvUTF8);
-
-	// Limit position to it
-	if (pos > (signed)strlen(buffer)) pos = strlen(buffer);
-
-	// Get UTF8 substring
-	char *buf2 = new char[pos+1];
-	memcpy(buf2,buffer,pos);
-	buf2[pos] = 0;
-
-	// Convert back and return its length
-	wxString buf3(buf2,wxConvUTF8);
-	delete[] buf2;
-	return buf3.Length();
-}
-
-
-////////////////////////
-// Unicode-safe styling
-void SubsTextEditCtrl::SetUnicodeStyling(int start,int length,int style) {
-	// Get the real length
-	wxString string = GetText().Mid(start,length);
-	wxCharBuffer buffer = string.mb_str(wxConvUTF8);
-	int len = strlen(buffer);
-
-	// Set styling
-	SetStyling(len,style);
-}
-
-
 ///////////////
 // Spell check
 void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
@@ -674,25 +631,6 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 			// Set styling
 			StartStyling(utf8len,32);
 			SetUnicodeStyling(s,e-s,32);
-		}
-	}
-}
-
-
-//////////////////////////////////////
-// Get boundaries of word at position
-void SubsTextEditCtrl::GetBoundsOfWordAtPosition(int pos,int &_start,int &_end) {
-	// Results
-	IntPairVector results;
-	GetWordBoundaries(GetText(),results);
-
-	// Get boundaries
-	int count = results.size();
-	for (int i=0;i<count;i++) {
-		if (results[i].first <= pos && results[i].second >= pos) {
-			_start = results[i].first;
-			_end = results[i].second-1;
-			return;
 		}
 	}
 }
@@ -942,15 +880,6 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 }
 
 
-//////////////////////////////////
-// Get word at specified position
-wxString SubsTextEditCtrl::GetWordAtPosition(int pos) {
-	int start,end;
-	GetBoundsOfWordAtPosition(pos,start,end);
-	return GetText().Mid(start,end-start+1);
-}
-
-
 ///////////////////////////////
 // Split line preserving times
 void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
@@ -1098,11 +1027,4 @@ void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 
 	// Update styling
 	UpdateStyle();
-}
-
-
-////////////////////////////////
-// Set selection, unicode-aware
-void SubsTextEditCtrl::SetSelectionU(int start, int end) {
-	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));
 }

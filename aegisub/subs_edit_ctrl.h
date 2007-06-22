@@ -40,9 +40,9 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
-#include <wx/stc/stc.h>
 #include "spellchecker.h"
 #include "thesaurus.h"
+#include "scintilla_text_ctrl.h"
 
 
 //////////////
@@ -52,7 +52,7 @@ class SubsEditBox;
 
 ////////////////////
 // SubsTextEditCtrl
-class SubsTextEditCtrl : public wxStyledTextCtrl {
+class SubsTextEditCtrl : public ScintillaTextCtrl {
 private:
 	SpellChecker *spellchecker;
 	Thesaurus *thesaurus;
@@ -65,13 +65,9 @@ private:
 	wxArrayString proto;
 	int tipProtoN;
 
-	void OnMouseEvent(wxMouseEvent &event);
-
-	wxString GetWordAtPosition(int pos);
-	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);
-	void SetUnicodeStyling(int start,int length,int style);
 	void ShowPopupMenu(int activePos=-1);
 
+	void OnMouseEvent(wxMouseEvent &event);
 	void OnSplitLinePreserve(wxCommandEvent &event);
 	void OnSplitLineEstimate(wxCommandEvent &event);
 	void OnCut(wxCommandEvent &event);
@@ -92,9 +88,6 @@ public:
 	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
 	~SubsTextEditCtrl();
 
-	int GetUnicodePosition(int pos);
-	int GetReverseUnicodePosition(int pos);
-	void SetSelectionU(int start,int end);
 	void SetTextTo(const wxString text);
 	void UpdateStyle(int start=0,int length=-1);
 	void StyleSpellCheck(int start=0,int length=-1);
