@@ -606,6 +606,7 @@ void AudioKaraoke::SetSelection(int start,int end) {
 		syllables.at(i).selected = state;
 		if (state) sels++;
 	}
+	curSyllable = min;
 
 	// Set box buttons
 	box->SetKaraokeButtons(sels > 1,sels > 0);
@@ -680,8 +681,6 @@ void AudioKaraoke::EndSplit(bool commit) {
 		}
 	}
 
-	SetSelection(0);
-
 	// Update
 	if (hasSplit) {
 		wxLogDebug(_T("AudioKaraoke::EndSplit: hasSplit"));
@@ -700,41 +699,49 @@ void AudioKaraoke::EndSplit(bool commit) {
 // Split a syllable using the pending_slits data
 int AudioKaraoke::SplitSyl (unsigned int n) {
 	wxLogDebug(_T("AudioKaraoke::SplitSyl(n=%u)"), n);
+
+	// Avoid multiple vector resizes (this must be first)
 	syllables.reserve(syllables.size() + syllables[n].pending_splits.size());
 
-	// Start by sorting the split points
-	std::sort(syllables[n].pending_splits.begin(),syllables[n].pending_splits.end());
+	// The syllable we're splitting
+	KaraokeSyllable &basesyl = syllables[n];
+	wxLogDebug(_T("AudioKaraoke::SplitSyl: basesyl. contents='%s' selected=%d"), basesyl.contents.c_str(), basesyl.selected?1:0);
 
-	wxString originalText = syllables[n].contents;
-	int originalDuration = syllables[n].length;
+	// Start by sorting the split points
+	std::sort(basesyl.pending_splits.begin(), basesyl.pending_splits.end());
+
+	wxString originalText = basesyl.contents;
+	int originalDuration = basesyl.length;
 
 	// Fixup the first syllable
-	syllables[n].contents = originalText.Mid(0, syllables[n].pending_splits[0] + 1);
-	syllables[n].length = originalDuration * syllables[n].contents.Length() / originalText.Length();
-	int curpos = syllables[n].position + syllables[n].length;
+	basesyl.contents = originalText.Mid(0, basesyl.pending_splits[0] + 1);
+	syllables[n].length = originalDuration * basesyl.contents.Length() / originalText.Length();
+	int curpos = basesyl.position + basesyl.length;
 
 	// For each split, make a new syllable
-	for (unsigned int i = 0; i < syllables[n].pending_splits.size(); i++) {
-		KaraokeSyllable temp;
-		if (i < syllables[n].pending_splits.size()-1) {
+	for (unsigned int i = 0; i < basesyl.pending_splits.size(); i++) {
+		KaraokeSyllable newsyl;
+		if (i < basesyl.pending_splits.size()-1) {
 			// in the middle
-			temp.contents = originalText.Mid(syllables[n].pending_splits[i]+1, syllables[n].pending_splits[i+1] - syllables[n].pending_splits[i]);
+			newsyl.contents = originalText.Mid(basesyl.pending_splits[i]+1, basesyl.pending_splits[i+1] - basesyl.pending_splits[i]);
 		} else {
 			// the last one (take the rest)
-			temp.contents = originalText.Mid(syllables[n].pending_splits[i]+1);
+			newsyl.contents = originalText.Mid(basesyl.pending_splits[i]+1);
 		}
-		temp.length = originalDuration * temp.contents.Length() / originalText.Length();
-		temp.position = curpos;
-		temp.tag = syllables[n].tag;
-		curpos += temp.length;
-		syllables.insert(syllables.begin()+n+i+1, temp);
+		newsyl.length = originalDuration * newsyl.contents.Length() / originalText.Length();
+		newsyl.position = curpos;
+		newsyl.tag = basesyl.tag;
+		newsyl.selected = basesyl.selected;
+		wxLogDebug(_T("AudioKaraoke::SplitSyl: newsyl. contents='%s' selected=%d"), newsyl.contents.c_str(), newsyl.selected?1:0);
+		curpos += newsyl.length;
+		syllables.insert(syllables.begin()+n+i+1, newsyl);
 	}
 
 	// The total duration of the new syllables will be equal to or less than the original duration
 	// Fix this, so they'll always add up
 	// Use an unfair method, just adding 1 to each syllable one after another, until it's correct
 	int newDuration = 0;
-	for (unsigned int j = n; j < syllables[n].pending_splits.size()+n+1; j++) {
+	for (unsigned int j = n; j < basesyl.pending_splits.size()+n+1; j++) {
 		newDuration += syllables[j].length;
 	}
 	unsigned int k = n;
@@ -748,8 +755,8 @@ int AudioKaraoke::SplitSyl (unsigned int n) {
 	}
 
 	// Prepare for return and clear pending splits
-	int numsplits = syllables[n].pending_splits.size();
-	syllables[n].pending_splits.clear();
+	int numsplits = basesyl.pending_splits.size();
+	basesyl.pending_splits.clear();
 	return numsplits;
 }
 

@@ -1106,18 +1106,26 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 	// Check validity
 	bool wasKaraSplitting = false;
 	bool validCommit = true;
-	if (!box->audioKaraoke->splitting) {
-		wxLogDebug(_T("AudioDisplay::CommitChanges: was splitting karaoke"));
+	if (!karaoke->enabled && !karaoke->splitting) {
+		wxLogDebug(_T("AudioDisplay::CommitChanges: was not splitting karaoke"));
 		if (!NeedCommit || curEndMS < curStartMS) validCommit = false;
 	}
 
 	// Update karaoke
-	int karSyl = 0;
+	int karaSelStart = 0, karaSelEnd = -1;
 	if (karaoke->enabled) {
 		wxLogDebug(_T("AudioDisplay::CommitChanges: karaoke enabled, committing it"));
-		wasKaraSplitting = box->audioKaraoke->splitting;
+		wasKaraSplitting = karaoke->splitting;
 		karaoke->Commit();
-		karSyl = karaoke->curSyllable;
+		// Get karaoke selection
+		karaSelStart = karaoke->syllables.size();
+		for (size_t k = 0; k < karaoke->syllables.size(); ++k) {
+			if (karaoke->syllables[k].selected) {
+				if ((signed)k < karaSelStart) karaSelStart = k;
+				if ((signed)k > karaSelEnd) karaSelEnd = k;
+			}
+		}
+		wxLogDebug(_T("AudioDisplay::CommitChanges: karaSelStart=%d karaSelEnd=%d"), karaSelStart, karaSelEnd);
 	}
 	
 	// Commit ok?
@@ -1143,7 +1151,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 			curDiag->End.SetMS(curEndMS);
 			if (!karaoke->enabled) {
 				// If user was editing karaoke stuff, that should take precedence of manual changes in the editbox,
-				// so only updated from editbox when not in kara mode
+				// so only update from editbox when not in kara mode
 				curDiag->Text = grid->editBox->TextEdit->GetText();
 			}
 			curDiag->UpdateData();
@@ -1160,7 +1168,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 		grid->editBox->Update(!karaoke->enabled);
 		grid->ass->FlagAsModified(_T(""));
 		grid->CommitChanges();
-		karaoke->curSyllable = karSyl;
+		karaoke->SetSelection(karaSelStart, karaSelEnd);
 		blockUpdate = false;
 	}
 
@@ -2232,7 +2240,6 @@ int AudioDisplay::GetSyllableAtX(int x) {
 ////////////////
 // Focus events
 void AudioDisplay::OnGetFocus(wxFocusEvent &event) {
-	wxLogDebug(_T("AudioDisplay::OnGetFocus"));
 	if (!hasFocus) {
 		hasFocus = true;
 		UpdateImage(true);
@@ -2240,7 +2247,6 @@ void AudioDisplay::OnGetFocus(wxFocusEvent &event) {
 }
 
 void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
-	wxLogDebug(_T("AudioDisplay::OnLoseFocus"));
 	if (hasFocus && loaded) {
 		hasFocus = false;
 		UpdateImage(true);
