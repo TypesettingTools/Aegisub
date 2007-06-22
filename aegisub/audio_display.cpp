@@ -1107,7 +1107,6 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 	bool wasKaraSplitting = false;
 	bool validCommit = true;
 	if (!karaoke->enabled && !karaoke->splitting) {
-		wxLogDebug(_T("AudioDisplay::CommitChanges: was not splitting karaoke"));
 		if (!NeedCommit || curEndMS < curStartMS) validCommit = false;
 	}
 

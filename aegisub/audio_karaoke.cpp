@@ -88,10 +88,9 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	wxLogDebug(_T("AudioKaraoke::LoadFromDialogue(diag=%p)"), _diag);
 	// Make sure we're not in splitting-mode
 	if (splitting) {
-		wxLogDebug(_T("AudioKaraoke::LoadFromDialogue: is splitting, so going to commit"));
-		// Commit by default, discarding the splits requires explicitly cancelling
-		// This doesn't seem to work when changing line in the grid, WHY?
-		Commit();
+		wxLogDebug(_T("AudioKaraoke::LoadFromDialogue: is splitting, discarding splits"));
+		// Discard any splits and leave split-mode
+		EndSplit(false);
 	}
 
 	// Set dialogue
@@ -596,6 +595,7 @@ void AudioKaraoke::SetSelection(int start,int end) {
 		max = min;
 		min = temp;
 	}
+	wxLogDebug(_T("AudioKaraoke::SetSelection: min=%d, max=%d"), min, max);
 
 	// Set values
 	bool state;
@@ -607,9 +607,11 @@ void AudioKaraoke::SetSelection(int start,int end) {
 		if (state) sels++;
 	}
 	curSyllable = min;
+	selectionCount = max-min+1;
+	wxLogDebug(_T("AudioKaraoke::SetSelection: new curSyllable=%d, selectionCount=%d"), curSyllable, selectionCount);
 
 	// Set box buttons
-	box->SetKaraokeButtons(sels > 1,sels > 0);
+	box->SetKaraokeButtons();
 }
 
 
@@ -642,7 +644,7 @@ void AudioKaraoke::Join() {
 	}
 
 	// Set selection
-	curSyllable = first;
+	SetSelection(first);
 
 	// Update
 	must_rebuild = true;
@@ -659,7 +661,7 @@ void AudioKaraoke::BeginSplit() {
 	splitting = true;
 	split_cursor_syl = -1;
 	split_cursor_x = -1;
-	box->SetKaraokeButtons(false, true);
+	box->SetKaraokeButtons();
 	Refresh(false);
 }
 
@@ -689,6 +691,7 @@ void AudioKaraoke::EndSplit(bool commit) {
 		display->Update();
 	}
 	// Always redraw, since the display is different in splitting mode
+	box->SetKaraokeButtons();
 	Refresh(false);
 
 	wxLogDebug(_T("AudioKaraoke::EndSplit: returning"));

@@ -200,20 +200,16 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	KaraokeButton->SetToolTip(_("Toggle karaoke mode"));
 	karaokeSizer->Add(KaraokeButton,0,wxRIGHT|wxEXPAND,0);
 #ifndef __WXMAC__
-	JoinButton = new wxButton(this,Audio_Button_Join,_("Join"),wxDefaultPosition,wxSize(-1,10));
+	JoinButton = new wxButton(this,Audio_Button_Join,_T(""),wxDefaultPosition,wxSize(-1,10));
 #else
 	// we use this custom class to match the button style of toggle buttons in wxMac
-	JoinButton = new wxBevelButton(this,Audio_Button_Join,_("Join"),wxDefaultPosition,wxSize(-1,-1));
+	JoinButton = new wxBevelButton(this,Audio_Button_Join,_T(""),wxDefaultPosition,wxSize(-1,-1));
 #endif
-	JoinButton->SetToolTip(_("Join selected syllables"));
-	JoinButton->Enable(false);
 	karaokeSizer->Add(JoinButton,0,wxRIGHT|wxEXPAND,0);
-	SplitButton = new wxToggleButton(this,Audio_Button_Split,_("Split"),wxDefaultPosition,wxSize(-1,-1));
-	SplitButton->SetToolTip(_("Toggle splitting-mode"));
-	SplitButton->Enable(false);
-	SplitButton->SetValue(false);
+	SplitButton = new wxButton(this,Audio_Button_Split,_T(""),wxDefaultPosition,wxSize(-1,-1));
 	karaokeSizer->Add(SplitButton,0,wxRIGHT|wxEXPAND,5);
 	karaokeSizer->Add(audioKaraoke,1,wxEXPAND,0);
+	SetKaraokeButtons(); // labels, hints and enabled-ness for join/split buttons set here
 
 	// Main sizer
 	MainSizer = new wxBoxSizer(wxVERTICAL);
@@ -278,13 +274,13 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_BUTTON(Audio_Button_Commit, AudioBox::OnCommit)
 	EVT_BUTTON(Audio_Button_Goto, AudioBox::OnGoto)
 	EVT_BUTTON(Audio_Button_Join,AudioBox::OnJoin)
+	EVT_BUTTON(Audio_Button_Split,AudioBox::OnSplit)
 	EVT_BUTTON(Audio_Button_Leadin,AudioBox::OnLeadIn)
 	EVT_BUTTON(Audio_Button_Leadout,AudioBox::OnLeadOut)
 
 	EVT_TOGGLEBUTTON(Audio_Vertical_Link, AudioBox::OnVerticalLink)
 	EVT_TOGGLEBUTTON(Audio_Button_Karaoke, AudioBox::OnKaraoke)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoGoto,AudioBox::OnAutoGoto)
-	EVT_TOGGLEBUTTON(Audio_Button_Split,AudioBox::OnSplit)
 	EVT_TOGGLEBUTTON(Audio_Check_Medusa,AudioBox::OnMedusaMode)
 	EVT_TOGGLEBUTTON(Audio_Check_Spectrum,AudioBox::OnSpectrumMode)
 	EVT_TOGGLEBUTTON(Audio_Check_AutoCommit,AudioBox::OnAutoCommit)
@@ -523,7 +519,7 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 		}
 		karaokeMode = false;
 		audioKaraoke->enabled = false;
-		SetKaraokeButtons(false,false);
+		SetKaraokeButtons();
 		audioDisplay->SetDialogue();
 		audioKaraoke->Refresh(false);
 	}
@@ -532,7 +528,7 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 		wxLogDebug(_T("AudioBox::OnKaraoke: karaoke disabled, enabling"));
 		karaokeMode = true;
 		audioKaraoke->enabled = true;
-		SetKaraokeButtons(true,true);
+		SetKaraokeButtons();
 		audioDisplay->SetDialogue();
 	}
 
@@ -542,15 +538,25 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 
 ////////////////////////
 // Sets karaoke buttons
-void AudioBox::SetKaraokeButtons(bool join,bool split) {
+void AudioBox::SetKaraokeButtons() {
+	// What to enable
+	bool join,split;
+	join = audioKaraoke->enabled && (audioKaraoke->splitting || audioKaraoke->selectionCount>=2);
+	split = audioKaraoke->enabled;
+
 	audioDisplay->SetFocus();
-	JoinButton->Enable(join && !audioKaraoke->splitting);
+	JoinButton->Enable(join);
 	SplitButton->Enable(split);
-	SplitButton->SetValue(audioKaraoke->splitting);
 	if (audioKaraoke->splitting) {
-		SplitButton->SetLabel(_("Cancel Split"));
+		JoinButton->SetLabel(_("Cancel Split"));
+		JoinButton->SetToolTip(_("Discard all splits and leave split-mode"));
+		SplitButton->SetLabel(_("Accept Split"));
+		SplitButton->SetToolTip(_("Commit splits and leave split-mode"));
 	} else {
+		JoinButton->SetLabel(_("Join"));
+		JoinButton->SetToolTip(_("Join selected syllables"));
 		SplitButton->SetLabel(_("Split"));
+		SplitButton->SetToolTip(_("Enter split-mode"));
 	}
 }
 
@@ -560,7 +566,11 @@ void AudioBox::SetKaraokeButtons(bool join,bool split) {
 void AudioBox::OnJoin(wxCommandEvent &event) {
 	wxLogDebug(_T("AudioBox::OnJoin"));
 	audioDisplay->SetFocus();
-	audioKaraoke->Join();
+	if (!audioKaraoke->splitting) {
+		audioKaraoke->Join();
+	} else {
+		audioKaraoke->EndSplit(false);
+	}
 }
 
 
@@ -572,7 +582,7 @@ void AudioBox::OnSplit(wxCommandEvent &event) {
 	if (!audioKaraoke->splitting) {
 		audioKaraoke->BeginSplit();
 	} else {
-		audioKaraoke->EndSplit(false);
+		audioKaraoke->EndSplit(true);
 	}
 }
 

@@ -110,6 +110,7 @@ public:
 	AudioBox *box;
 
 	int curSyllable;
+	int selectionCount;
 	bool enabled;
 	bool splitting;
 	SylVector syllables;

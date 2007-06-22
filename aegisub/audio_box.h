@@ -70,7 +70,7 @@ private:
 	wxSashWindow *Sash;
 	ToggleBitmap *VerticalLink;
 
-	wxToggleButton *SplitButton;
+	wxButton *SplitButton;
 	wxButton *JoinButton;
 	ToggleBitmap *AutoScroll;
 	ToggleBitmap *NextCommit;
@@ -122,7 +122,7 @@ public:
 	~AudioBox();
 
 	void SetFile(wxString file,bool FromVideo);
-	void SetKaraokeButtons(bool join,bool split);
+	void SetKaraokeButtons();
 
 	DECLARE_EVENT_TABLE()
 };
