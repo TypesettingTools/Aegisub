@@ -82,7 +82,13 @@ bool AegisubApp::OnInit() {
 		setlocale(LC_CTYPE, "C");
 
 		// App name
+#ifdef __WXMSW__ || __WXMAC__
 		SetAppName(_T("Aegisub"));
+#else
+		SetAppName(_T("aegisub"));
+#endif
+
+		// Crash handling
 		#ifndef _DEBUG
 		wxHandleFatalExceptions(true);
 		#endif

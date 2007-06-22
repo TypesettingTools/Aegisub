@@ -63,12 +63,12 @@ StandardPaths::StandardPaths() {
 	DoSetPathValue(_T("?temp"),tempDir);
 
 	// Create paths if they don't exist
-	wxFileName folder(dataDir + _T("/"));
+	wxFileName folder(userDir + _T("/"));
 	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
-	folder.Assign(userDir + _T("/"));
-	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
-	folder.Assign(tempDir + _T("/"));
-	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+	//folder.Assign(dataDir + _T("/"));
+	//if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+	//folder.Assign(tempDir + _T("/"));
+	//if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
 }
 
 
