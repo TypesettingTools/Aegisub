@@ -52,6 +52,7 @@ Please visit http://aegisub.net to download latest version
   o Added option to disable automatic grabbing of times from selected lines on the audio display. Also, it will never pick the times from 0:00:00.00 -> 0:00:00.00 lines. (AMZ)
   o Moved karaoke syllable text in audio display to the top instead of bottom, since it often covered important information in spectrum mode (jfs)
   o Misc. changes and bugfixes in karaoke mode. Using the syllable splitter should be easier now. (jfs)
+  o Fixed loading of Avisynth Scripts as audio. (AMZ)
 - Changes to Audio Spectrum: (jfs)
   o The calculated FFT data are now cached, so things should be faster
   o Actual signal power is now more accurately represented

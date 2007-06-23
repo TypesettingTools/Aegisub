@@ -119,9 +119,19 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 	wxMutexLocker lock(AviSynthMutex);
 
 	try {
-		const char * argnames[3] = { 0, "video", "audio" };
-		AVSValue args[3] = { env->SaveString(filename.mb_str(wxConvLocal)), false, true };
-		script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
+		// Include
+		if (filename.EndsWith(_T(".avs"))) {
+			wxFileName fn(filename);
+			char *fname = env->SaveString(fn.GetShortPath().mb_str(wxConvLocal));
+			script = env->Invoke("Import", fname);
+		}
+
+		// Use DirectShowSource
+		else {
+			const char * argnames[3] = { 0, "video", "audio" };
+			AVSValue args[3] = { env->SaveString(filename.mb_str(wxConvLocal)), false, true };
+			script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
+		}
 
 		LoadFromClip(script);
 
