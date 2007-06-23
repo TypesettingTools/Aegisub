@@ -49,8 +49,9 @@ Please visit http://aegisub.net to download latest version
   o Added Medusa-style (numpad) global timing shortcuts, that can be enabled with the button under the audio display. This is disabled by default. (AMZ)
   o Fixed drawing of inactive lines in audio display to prevent it from being drawn over selection. (AMZ)
   o Added options to toggle the display of the audio timeline and of the time over the mouse cursor. (AMZ)
-  o Moved karaoke syllable text in audio display to the top instead of bottom, since it often covered important information in spectrum mode (jfs)
   o Added option to disable automatic grabbing of times from selected lines on the audio display. Also, it will never pick the times from 0:00:00.00 -> 0:00:00.00 lines. (AMZ)
+  o Moved karaoke syllable text in audio display to the top instead of bottom, since it often covered important information in spectrum mode (jfs)
+  o Misc. changes and bugfixes in karaoke mode. Using the syllable splitter should be easier now. (jfs)
 - Changes to Audio Spectrum: (jfs)
   o The calculated FFT data are now cached, so things should be faster
   o Actual signal power is now more accurately represented
@@ -146,7 +147,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed display of end frames on the subtitles grid, when set to frame mode. (demi)
 - Treat comments inside {}'s as plain text, not as overrides; Also, don't assume override blocks start with a backslash, even if they probably should (Dansolo)
 - Removed FexTracker due to licensing problems; there are plans to implement a new motion tracker in its place (jfs)
-- Changed translation assistent to use Scintilla text controls to avoid several issues, including Right-To-Left text entry.
+- Changed translation assistent to use Scintilla text controls to avoid several issues, including Right-To-Left text entry. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
