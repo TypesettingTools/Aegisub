@@ -904,7 +904,7 @@ __int64 AudioDisplay::GetSampleAtX(int x) {
 /////////////////////////////////////////////////
 // Gets the x coordinate corresponding to sample
 int AudioDisplay::GetXAtSample(__int64 n) {
-	return (n/samples)-Position;
+	return samples ? (n/samples)-Position : 0;
 }
 
 
@@ -1838,6 +1838,9 @@ void AudioDisplay::OnSize(wxSizeEvent &event) {
 ///////////////
 // Timer event
 void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
+	if (!origImage)
+		return;
+
 	// Get lock and check if it's OK
 	if (player->GetMutex()) {
 		wxMutexLocker locker(*player->GetMutex());
