@@ -42,6 +42,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include <vector>
+#include "ass_karaoke.h"
 
 
 //////////////
@@ -54,30 +55,19 @@ class AudioDisplay;
 class AudioBox;
 class AudioKaraokeTagMenu;
 
-
-//////////////////
-// Syllable class
-class KaraokeSyllable {
-public:
-	int length;
-	int position;
+///////////////////////////////////
+// Karaoke syllable with more info
+struct AudioKaraokeSyllable : AssKaraokeSyllable {
+	int start_time; // centiseconds
+	bool selected;
+	std::vector<int> pending_splits;
 	int display_w;
 	int display_x;
-	wxString contents;
-	wxString tag;
-	bool selected;
 
-	AssOverrideParameter *original_tagdata;
-
-	std::vector<int> pending_splits;
-
-	KaraokeSyllable();
+	AudioKaraokeSyllable();
+	AudioKaraokeSyllable(const AssKaraokeSyllable &base);
 };
-
-
-////////////
-// Typedefs
-typedef std::vector<KaraokeSyllable> SylVector;
+typedef std::vector<AudioKaraokeSyllable> AudioKaraokeVector;
 
 
 /////////
@@ -93,8 +83,6 @@ private:
 	int split_cursor_syl;
 	int split_cursor_x;
 
-	AssOverrideTag *GetKaraokeLength(AssDialogueBlockOverride *block);
-	wxString GetSyllableTag(AssDialogueBlockOverride *block,int n);
 	void AutoSplit();
 	bool ParseDialogue(AssDialogue *diag);
 
@@ -113,7 +101,7 @@ public:
 	int selectionCount;
 	bool enabled;
 	bool splitting;
-	SylVector syllables;
+	AudioKaraokeVector syllables;
 
 	AudioKaraoke(wxWindow *parent);
 	virtual ~AudioKaraoke();

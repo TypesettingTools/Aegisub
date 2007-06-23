@@ -302,19 +302,19 @@ void AudioDisplay::UpdateImage(bool weak) {
 				__int64 pos1,pos2;
 				int len,curpos;
 				wxCoord tw=0,th=0;
-				KaraokeSyllable *curSyl;
+				AudioKaraokeSyllable *curSyl;
 				wxString temptext;
 
 				// Draw syllables
 				for (size_t i=0;i<karn;i++) {
 					curSyl = &karaoke->syllables.at(i);
-					len = curSyl->length*10;
-					curpos = curSyl->position*10;
+					len = curSyl->duration*10;
+					curpos = curSyl->start_time*10;
 					if (len != -1) {
 						pos1 = GetXAtMS(curStartMS+curpos);
 						pos2 = GetXAtMS(curStartMS+len+curpos);
 						dc.DrawLine(pos2,0,pos2,h);
-						temptext = curSyl->contents;
+						temptext = curSyl->text;
 						temptext.Trim(true);
 						temptext.Trim(false);
 						GetTextExtent(temptext,&tw,&th,NULL,NULL,&curFont);
@@ -639,8 +639,8 @@ void AudioDisplay::GetKaraokePos(__int64 &karStart,__int64 &karEnd, bool cap) {
 		if (karaoke->curSyllable >= nsyls) karaoke->curSyllable = nsyls-1;
 
 		// Get positions
-		int pos = karaoke->syllables.at(karaoke->curSyllable).position;
-		int len = karaoke->syllables.at(karaoke->curSyllable).length;
+		int pos = karaoke->syllables.at(karaoke->curSyllable).start_time;
+		int len = karaoke->syllables.at(karaoke->curSyllable).duration;
 		karStart = GetXAtMS(curStartMS+pos*10);
 		karEnd = GetXAtMS(curStartMS+pos*10+len*10);
 
@@ -1025,8 +1025,8 @@ void AudioDisplay::GetTimesSelection(int &start,int &end) {
 
 	try {
 		if (karaoke->enabled) {
-			int pos = karaoke->syllables.at(karaoke->curSyllable).position;
-			int len = karaoke->syllables.at(karaoke->curSyllable).length;
+			int pos = karaoke->syllables.at(karaoke->curSyllable).start_time;
+			int len = karaoke->syllables.at(karaoke->curSyllable).duration;
 			start = curStartMS+pos*10;
 			end = curStartMS+pos*10+len*10;
 		}
@@ -1394,8 +1394,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		if (karaoke->enabled) {
 			int syl = GetSyllableAtX(x);
 			if (syl != -1) {
-				int start = karaoke->syllables.at(syl).position * 10 + dialogue->Start.GetMS();
-				int count = karaoke->syllables.at(syl).length * 10;
+				int start = karaoke->syllables.at(syl).start_time * 10 + dialogue->Start.GetMS();
+				int count = karaoke->syllables.at(syl).duration * 10;
 				player->Play(GetSampleAtMS(start),GetSampleAtMS(count));
 				//return;
 			}
@@ -1458,12 +1458,12 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			else {
 				// Look for a syllable
 				__int64 pos,len,curpos;
-				KaraokeSyllable *curSyl;
+				AudioKaraokeSyllable *curSyl;
 				size_t karn = karaoke->syllables.size();
 				for (size_t i=0;i<karn;i++) {
 					curSyl = &karaoke->syllables.at(i);
-					len = curSyl->length*10;
-					curpos = curSyl->position*10;
+					len = curSyl->duration*10;
+					curpos = curSyl->start_time*10;
 					if (len != -1) {
 						pos = GetXAtMS(curStartMS+len+curpos);
 
@@ -1560,14 +1560,14 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				if (hold == 4 && leftIsDown) {
 					// Set new value
 					int curpos,len,pos,nkar;
-					KaraokeSyllable *curSyl=NULL,*nextSyl=NULL;
+					AudioKaraokeSyllable *curSyl=NULL,*nextSyl=NULL;
 					curSyl = &karaoke->syllables.at(holdSyl);
 					nkar = (int)karaoke->syllables.size();
 					if (holdSyl < nkar-1) {
 						nextSyl = &karaoke->syllables.at(holdSyl+1);
 					}
-					curpos = curSyl->position;
-					len = curSyl->length;
+					curpos = curSyl->start_time;
+					len = curSyl->duration;
 					pos = GetXAtMS(curStartMS+(len+curpos)*10);
 					if (x != pos) {
 						// Calculate delta in centiseconds
@@ -2226,8 +2226,8 @@ int AudioDisplay::GetSyllableAtX(int x) {
 
 	// Find a matching syllable
 	for (size_t i=0;i<syllables;i++) {
-		sylstart = karaoke->syllables.at(i).position*10 + curStartMS;
-		sylend = karaoke->syllables.at(i).length*10 + sylstart;
+		sylstart = karaoke->syllables.at(i).start_time*10 + curStartMS;
+		sylend = karaoke->syllables.at(i).duration*10 + sylstart;
 		if (ms >= sylstart && ms < sylend) {
 			return (int)i;
 		}
