@@ -65,7 +65,6 @@ public:
 	void ParseSRT(const wxString text);	// Sets value to text-form time, in SRT format
 	wxString GetASSFormated(bool ms=false); // Returns the ASS representation of time
 	wxString GetSRTFormated();			// Returns the SRT representation of time
-	void UpdateFromTextCtrl(wxTextCtrl *ctrl);	// Reads value from text control and updates both
 };
 
 // Comparison operators

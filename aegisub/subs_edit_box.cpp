@@ -86,21 +86,21 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,25),styles,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	ActorBox->SetToolTip(_("Actor name for this speech. This is only for reference, and is mainly useless."));
 	ActorBox->PushEventHandler(new IdleFieldHandler(ActorBox,_("Actor")));
-	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(120,20),wxTE_PROCESS_ENTER);
+	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(80,20),wxTE_PROCESS_ENTER);
 	Effect->SetToolTip(_("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
 	Effect->PushEventHandler(new IdleFieldHandler(Effect,_("Effect")));
 
 	// Middle controls
 	Layer = new wxSpinCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,0x7FFFFFFF,0);
 	Layer->SetToolTip(_("Layer number"));
-	StartTime = new TimeEdit(this,STARTTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER,NumValidator());
+	StartTime = new TimeEdit(this,STARTTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER);
 	StartTime->SetToolTip(_("Start time"));
 	StartTime->showModified = true;
-	EndTime = new TimeEdit(this,ENDTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER,NumValidator());
+	EndTime = new TimeEdit(this,ENDTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER);
 	EndTime->SetToolTip(_("End time"));
 	EndTime->isEnd = true;
 	EndTime->showModified = true;
-	Duration = new TimeEdit(this,DURATION_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER,NumValidator());
+	Duration = new TimeEdit(this,DURATION_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER);
 	Duration->SetToolTip(_("Line duration"));
 	Duration->showModified = true;
 	MarginL = new HiliModTextCtrl(this,MARGINL_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
@@ -141,9 +141,9 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	//TopSizer->Add(new FloatSpinCtrl(this,-1,wxDefaultPosition,wxSize(40,20),0,-20.0,50.0,0.0,0.5));
 	TopSizer->Add(CommentBox,0,wxRIGHT | wxALIGN_CENTER,5);
-	TopSizer->Add(StyleBox,1,wxRIGHT,5);
-	TopSizer->Add(ActorBox,1,wxRIGHT,5);
-	TopSizer->Add(Effect,1,0,0);
+	TopSizer->Add(StyleBox,2,wxRIGHT,5);
+	TopSizer->Add(ActorBox,2,wxRIGHT,5);
+	TopSizer->Add(Effect,3,0,0);
 
 	// Middle sizer
 	splitLineMode = true;

@@ -212,8 +212,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *editSizer5 = new wxBoxSizer(wxHORIZONTAL);
 
 		// First static box
-		wxString labels1[3] = { _("Enable call tips"), _("Enable syntax highlighting"), _("Link commiting of times") };
-		wxString options1[3] = { _T("Call Tips Enabled"), _T("Syntax Highlight Enabled"), _T("Link Time Boxes Commit") };
+		wxString labels1[4] = { _("Enable call tips"), _("Enable syntax highlighting"), _("Link commiting of times"), _("Overwrite-Insertion in time boxes") };
+		wxString options1[4] = { _T("Call Tips Enabled"), _T("Syntax Highlight Enabled"), _T("Link Time Boxes Commit"), _T("Insert Mode on Time Boxes") };
 		editSizer6->Add(new wxStaticText(editPage,-1,_("Path to dictionary files:")),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
 		wxTextCtrl *edit = new wxTextCtrl(editPage,-1,_T(""));
 		Bind(edit,_T("Dictionaries path"));
@@ -221,7 +221,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FOLDER);
 		browse->Bind(edit);
 		editSizer6->Add(browse,0,wxEXPAND);
-		for (int i=0;i<3;i++) {
+		for (int i=0;i<4;i++) {
 			wxCheckBox *control = new wxCheckBox(editPage,-1,labels1[i]);
 			Bind(control,options1[i]);
 			editSizer2->Add(control,1,wxEXPAND,0);

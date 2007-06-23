@@ -55,12 +55,14 @@ private:
 	void UpdateText();
 	void CopyTime();
 	void PasteTime();
+	void UpdateTime();
 
 	void OnModified(wxCommandEvent &event);
 	void OnMouseEvent(wxMouseEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 	void OnCopy(wxCommandEvent &event);
 	void OnPaste(wxCommandEvent &event);
+	void OnKillFocus(wxFocusEvent &event);
 
 public:
 	AssTime time;

@@ -59,20 +59,42 @@ void AssTime::ParseASS (const wxString text) {
 	// Prepare
 	size_t pos = 0;
 	size_t end = 0;
-	long th,tm,tms;
+	long th=0,tm=0,tms=0;
+
+	// Count the number of colons
+	size_t len = text.Length();
+	int colons = 0;
+	for (pos=0;pos<len;pos++) if (text[pos] == _T(':')) colons++;
+	pos = 0;
+	
+	// Set start so that there are only two colons at most
+	if (colons > 2) {
+		for (pos=0;pos<len;pos++) {
+			if (text[pos] == _T(':')) {
+				colons--;
+				if (colons == 2) break;
+			}
+		}
+		pos++;
+		end = pos;
+	}
 
 	try {
 		// Hours
-		end = text.Find(_T(':'));
-		th = StringToInt(text,0,end);
+		if (colons == 2) {
+			while (text[end++] != _T(':'));
+			th = StringToInt(text,pos,end);
+			pos = end;
+		}
 
 		// Minutes
-		pos = end+1;
-		while (text[++end] != _T(':'));
-		tm = StringToInt(text,pos,end);
+		if (colons >= 1) {
+			while (text[end++] != _T(':'));
+			tm = StringToInt(text,pos,end);
+			pos = end;
+		}
 
 		// Miliseconds (includes seconds)
-		pos = end+1;
 		end = text.Length();
 		tms = StringToFix(text,3,pos,end);
 	}
@@ -217,34 +239,6 @@ wxString AssTime::GetSRTFormated () {
 
 	wxString result = wxString::Format(_T("%02i:%02i:%02i,%03i"),h,m,s,ms);
 	return result;
-}
-
-
-/////////////////////////////////////////////////
-// Reads value from a text control and update it
-void AssTime::UpdateFromTextCtrl(wxTextCtrl *ctrl) {
-	long start,end;
-	wxString text = ctrl->GetValue();
-	ctrl->GetSelection(&start,&end);
-	if (start == end) {
-		wxString nextChar = text.Mid(start,1);
-		if (nextChar == _T(":") || nextChar == _T(".")) {
-			wxString temp = text;
-			text = temp.Left(start-1);
-			text += nextChar;
-			text += temp.Mid(start-1,1);
-			text += temp.Mid(start+2);
-			start++;
-			end++;
-		}
-		else if (nextChar.IsEmpty()) text.Remove(start-1,1);
-		else text.Remove(start,1);
-	}
-
-	// Update time
-	ParseASS(text);
-	ctrl->SetValue(GetASSFormated());
-	ctrl->SetSelection(start,end);
 }
 
 

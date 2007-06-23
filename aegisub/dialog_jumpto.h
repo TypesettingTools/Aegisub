@@ -42,6 +42,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include "ass_time.h"
+#include "timeedit_ctrl.h"
 
 
 /////////
@@ -52,43 +53,21 @@ private:
 	long jumpframe;
 	AssTime jumptime;
 
-	wxTextCtrl *JumpTime;
+	TimeEdit *JumpTime;
 	wxTextCtrl *JumpFrame;
-
-public:
-	DialogJumpTo (wxWindow *parent);
-
-	void OnKey(wxKeyEvent &event);
-	void OnClose(bool ok);
-	void OnEditTime(wxCommandEvent &event);
-	void OnEditFrame(wxCommandEvent &event);
-};
-
-
-/////////////////
-// Event handler
-class DialogJumpToEvent : public wxEvtHandler {
-private:
-	DialogJumpTo *control;
 
 	void OnKey(wxKeyEvent &event);
 	void OnClose(wxCommandEvent &event);
 	void OnOK(wxCommandEvent &event);
 	void OnEditTime(wxCommandEvent &event);
 	void OnEditFrame(wxCommandEvent &event);
+	void OnClose(bool ok);
 
 public:
-	DialogJumpToEvent(DialogJumpTo *control);
+	DialogJumpTo (wxWindow *parent);
+
+
 	DECLARE_EVENT_TABLE()
 };
-
-
-///////
-// IDs
-enum {
-	TEXT_JUMP_TIME = 1100,
-	TEXT_JUMP_FRAME
-};
-
 
 #endif

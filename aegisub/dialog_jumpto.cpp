@@ -41,6 +41,14 @@
 #include "video_context.h"
 
 
+///////
+// IDs
+enum {
+	TEXT_JUMP_TIME = 1100,
+	TEXT_JUMP_FRAME
+};
+
+
 ///////////////
 // Constructor
 DialogJumpTo::DialogJumpTo (wxWindow *parent)
@@ -55,9 +63,7 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
 	JumpFrame = new wxTextCtrl(this,TEXT_JUMP_FRAME,wxString::Format(_T("%i"),jumpframe),wxDefaultPosition,wxSize(60,20));
-	JumpTime = new wxTextCtrl(this,TEXT_JUMP_TIME,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20));
-	JumpFrame->SetEventHandler(new DialogJumpToEvent(this));
-	JumpTime->SetEventHandler(new DialogJumpToEvent(this));
+	JumpTime = new TimeEdit(this,TEXT_JUMP_TIME,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20));
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
 	FrameSizer->Add(LabelFrame,0,wxALIGN_CENTER_VERTICAL,0);
@@ -71,9 +77,6 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	// Buttons
 	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
 	wxButton *OKButton = new wxButton(this,wxID_OK);
-	CancelButton->SetEventHandler(new DialogJumpToEvent(this));
-	OKButton->SetEventHandler(new DialogJumpToEvent(this));
-	OKButton->SetDefault();
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->Add(OKButton,1,wxRIGHT,5);
 	ButtonSizer->Add(CancelButton,0,0,0);
@@ -91,29 +94,21 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 }
 
 
-/////////////////
-// Event handler
-
-// Constructor
-DialogJumpToEvent::DialogJumpToEvent (DialogJumpTo *ctrl) {
-	control = ctrl;
-}
-
-// Table
-BEGIN_EVENT_TABLE(DialogJumpToEvent, wxEvtHandler)
-	EVT_KEY_DOWN(DialogJumpToEvent::OnKey)
-	EVT_BUTTON(wxID_CANCEL,DialogJumpToEvent::OnClose)
-	EVT_BUTTON(wxID_OK,DialogJumpToEvent::OnOK)
-	EVT_TEXT(TEXT_JUMP_TIME, DialogJumpToEvent::OnEditTime)
-	EVT_TEXT(TEXT_JUMP_FRAME, DialogJumpToEvent::OnEditFrame)
+///////////////
+// Event table
+BEGIN_EVENT_TABLE(DialogJumpTo, wxDialog)
+	EVT_KEY_DOWN(DialogJumpTo::OnKey)
+	EVT_BUTTON(wxID_CANCEL,DialogJumpTo::OnClose)
+	EVT_BUTTON(wxID_OK,DialogJumpTo::OnOK)
+	EVT_TEXT(TEXT_JUMP_TIME, DialogJumpTo::OnEditTime)
+	EVT_TEXT(TEXT_JUMP_FRAME, DialogJumpTo::OnEditFrame)
 END_EVENT_TABLE()
 
-// Redirects
-void DialogJumpToEvent::OnKey (wxKeyEvent &event) { control->OnKey(event); }
-void DialogJumpToEvent::OnClose (wxCommandEvent &event) { control->OnClose(false); }
-void DialogJumpToEvent::OnOK (wxCommandEvent &event) { control->OnClose(true); }
-void DialogJumpToEvent::OnEditTime (wxCommandEvent &event) { control->OnEditTime(event); }
-void DialogJumpToEvent::OnEditFrame (wxCommandEvent &event) { control->OnEditFrame(event); }
+
+/////////
+// Close
+void DialogJumpTo::OnClose (wxCommandEvent &event) { OnClose(false); }
+void DialogJumpTo::OnOK (wxCommandEvent &event) { OnClose(true); }
 
 
 //////////////////
@@ -142,10 +137,9 @@ void DialogJumpTo::OnClose(bool ok) {
 void DialogJumpTo::OnEditTime (wxCommandEvent &event) {
 	if (ready) {
 		ready = false;
-		jumptime.UpdateFromTextCtrl(JumpTime);
 
 		// Update frame
-		long newframe = VFR_Output.GetFrameAtTime(jumptime.GetMS());
+		long newframe = VFR_Output.GetFrameAtTime(JumpTime->time.GetMS());
 		if (jumpframe != newframe) {
 			jumpframe = newframe;
 			JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));

@@ -48,14 +48,34 @@
 TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name) :
 wxTextCtrl(parent,id,value,pos,size,wxTE_CENTRE | style,validator,name)
 {
+	// Set validator
+	wxTextValidator val(wxFILTER_INCLUDE_CHAR_LIST);
+	wxArrayString includes;
+	includes.Add(_T("0"));
+	includes.Add(_T("1"));
+	includes.Add(_T("2"));
+	includes.Add(_T("3"));
+	includes.Add(_T("4"));
+	includes.Add(_T("5"));
+	includes.Add(_T("6"));
+	includes.Add(_T("7"));
+	includes.Add(_T("8"));
+	includes.Add(_T("9"));
+	includes.Add(_T("."));
+	includes.Add(_T(":"));
+	val.SetIncludes(includes);
+	SetValidator(val);
+
+	// Other stuff
 	SetValue(time.GetASSFormated());
 	ready = true;
 	byFrame = false;
 	isEnd = false;
 	modified = false;
 	showModified = false;
-	time.UpdateFromTextCtrl(this);
+	UpdateTime();
 	Connect(wxEVT_COMMAND_TEXT_UPDATED,wxCommandEventHandler(TimeEdit::OnModified));
+	Connect(wxEVT_KILL_FOCUS,wxFocusEventHandler(TimeEdit::OnKillFocus));
 }
 
 
@@ -72,9 +92,9 @@ END_EVENT_TABLE()
 //////////////////
 // Modified event
 void TimeEdit::OnModified(wxCommandEvent &event) {
+	event.Skip();
 	if (!ready) return;
 	Modified();
-	event.Skip();
 }
 
 
@@ -87,7 +107,7 @@ void TimeEdit::Modified() {
 	
 	// Update
 	if (byFrame) Update();
-	else time.UpdateFromTextCtrl(this);
+	else UpdateTime();
 
 	// Colour
 	if (showModified && !modified) {
@@ -144,16 +164,128 @@ void TimeEdit::UpdateText() {
 }
 
 
+//////////
+// Update
+void TimeEdit::Update() {
+	// Update frame
+	if (byFrame) {
+		long temp;
+		GetValue().ToLong(&temp);
+		time.SetMS(VFR_Output.GetTimeAtFrame(temp,!isEnd));
+	}
+
+	// Update time if not on insertion mode
+	else if (!Options.AsBool(_T("Insert Mode on Time Boxes"))) {
+		UpdateTime();
+		SetValue(time.GetASSFormated());
+	}
+
+	// Update modified status
+	if (modified && showModified) {
+		SetBackgroundColour(wxNullColour);
+		Refresh();
+	}
+	modified = false;
+}
+
+
+/////////////////////////////////////////////////
+// Reads value from a text control and update it
+void TimeEdit::UpdateTime() {
+	bool insertion = Options.AsBool(_T("Insert Mode on Time Boxes"));
+	wxString text = GetValue();
+	long start=0,end=0;
+	if (insertion) {
+		GetSelection(&start,&end);
+		if (start == end) {
+			wxString nextChar = text.Mid(start,1);
+			if (nextChar == _T(":") || nextChar == _T(".")) {
+				wxString temp = text;
+				text = temp.Left(start-1);
+				text += nextChar;
+				text += temp.Mid(start-1,1);
+				text += temp.Mid(start+2);
+				start++;
+				end++;
+			}
+			else if (nextChar.IsEmpty()) text.Remove(start-1,1);
+			else text.Remove(start,1);
+		}
+	}
+
+	// Update time
+	time.ParseASS(text);
+	if (insertion) {
+		SetValue(time.GetASSFormated());
+		SetSelection(start,end);
+	}
+}
+
+
+///////////////
+// Key pressed
+void TimeEdit::OnKeyDown(wxKeyEvent &event) {
+	// Get key ID
+	int key = event.GetKeyCode();
+	bool insertMode = Options.AsBool(_T("Insert Mode on Time Boxes"));
+	Refresh();
+
+	// Check if it's an acceptable key
+	if (!event.ControlDown()) {
+		if (byFrame || !insertMode || (key != WXK_BACK && key != WXK_DELETE)) {
+			// Reset selection first, if necessary
+			if (!byFrame && insertMode) {
+				long from=0,to=0;
+				GetSelection(&from,&to);
+				if (to != from) SetSelection(from,from);
+			}
+
+			// Allow it through
+			event.Skip();
+		}
+	}
+
+	else {
+		// Copy
+		if (key == 'C' || key == 'X') {
+			CopyTime();
+		}
+
+		// Paste
+		if (key == 'V') {
+			PasteTime();
+		}
+	}
+}
+
+
+//////////////
+// Focus lost
+void TimeEdit::OnKillFocus(wxFocusEvent &event) {
+	if (!byFrame && !Options.AsBool(_T("Insert Mode on Time Boxes"))) {
+		if (time.GetASSFormated() != GetValue()) {
+			UpdateTime();
+			SetValue(time.GetASSFormated());
+		}
+	}
+	event.Skip();
+}
+
+
+///// Mouse/copy/paste events down here /////
+
 ///////////////
 // Mouse event
 void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
 	// Right click context menu
 	if (event.RightUp()) {
-		wxMenu menu;
-		menu.Append(Time_Edit_Copy,_T("&Copy"));
-		menu.Append(Time_Edit_Paste,_T("&Paste"));
-		PopupMenu(&menu);
-		return;
+		if (!byFrame && Options.AsBool(_T("Insert Mode on Time Boxes"))) {
+			wxMenu menu;
+			menu.Append(Time_Edit_Copy,_T("&Copy"));
+			menu.Append(Time_Edit_Paste,_T("&Paste"));
+			PopupMenu(&menu);
+			return;
+		}
 	}
 
 	// Allow other events through
@@ -177,60 +309,6 @@ void TimeEdit::OnPaste(wxCommandEvent &event) {
 	SetFocus();
 	PasteTime();
 	Refresh();
-}
-
-
-//////////
-// Update
-void TimeEdit::Update() {
-	// Update frame
-	if (byFrame) {
-		long temp;
-		GetValue().ToLong(&temp);
-		time.SetMS(VFR_Output.GetTimeAtFrame(temp,!isEnd));
-	}
-
-	// Update modified status
-	if (modified && showModified) {
-		SetBackgroundColour(wxNullColour);
-		Refresh();
-	}
-	modified = false;
-}
-
-
-///////////////
-// Key pressed
-void TimeEdit::OnKeyDown(wxKeyEvent &event) {
-	// Get key ID
-	int key = event.GetKeyCode();
-
-	// Check if it's an acceptable key
-	if (!event.ControlDown()) {
-		if (byFrame || (key != WXK_BACK && key != WXK_DELETE)) {
-			// Reset selection first, if necessary
-			if (!byFrame) {
-				long from=0,to=0;
-				GetSelection(&from,&to);
-				if (to != from) SetSelection(from,from);
-			}
-
-			// Allow it through
-			event.Skip();
-		}
-	}
-
-	else {
-		// Copy
-		if (key == 'C' || key == 'X') {
-			CopyTime();
-		}
-
-		// Paste
-		if (key == 'V') {
-			PasteTime();
-		}
-	}
 }
 
 

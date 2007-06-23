@@ -110,6 +110,11 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetText(_T("Dictionaries path"),_T("dictionaries")); // don't these require restart?
 	SetText(_T("Spell Checker"),_T("hunspell"));
 	SetBool(_T("Link time boxes commit"),true);
+#ifdef WIN32
+	SetBool(_T("Insert mode on time boxes"),true);
+#else
+	SetBool(_T("Insert mode on time boxes"),false);
+#endif
 	SetModificationType(MOD_EDIT_BOX);
 	SetBool(_T("Call tips enabled"),true);
 	SetBool(_T("Syntax highlight enabled"),true);
