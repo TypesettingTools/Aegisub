@@ -133,15 +133,20 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	CurrentCopy->Disable();
 	CurrentDelete->Disable();
 
+	// Buttons
+	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
+	buttonSizer->AddButton(new wxButton(this,wxID_HELP));
+	buttonSizer->SetCancelButton(new wxButton(this, wxID_CLOSE));
+	buttonSizer->Realize();
+
 	// General layout
 	wxSizer *StylesSizer = new wxBoxSizer(wxHORIZONTAL);
 	StylesSizer->Add(StorageBox,0,wxRIGHT | wxEXPAND,5);
 	StylesSizer->Add(CurrentBox,0,wxLEFT | wxEXPAND,0);
-	wxButton *CloseButton = new wxButton(this, wxID_CLOSE, _T(""), wxDefaultPosition, wxSize(100,25));
 	MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(CatalogBox,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,5);
-	MainSizer->Add(StylesSizer,0,wxEXPAND | wxALL,5);
-	MainSizer->Add(CloseButton,0,wxBOTTOM | wxALIGN_CENTER,5);
+	MainSizer->Add(StylesSizer,1,wxEXPAND | wxALL,5);
+	MainSizer->Add(buttonSizer,0,wxBOTTOM | wxEXPAND,5);
 
 	// Set sizer
 	SetSizer(MainSizer);

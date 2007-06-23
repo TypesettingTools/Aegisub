@@ -316,20 +316,14 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 
 	// Buttons
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	wxButton *okButton = new wxButton(this, wxID_OK);
-#ifndef __WXMAC__
-	ButtonSizer->Add(okButton,0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this, wxID_CANCEL),0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this, wxID_APPLY),0,wxRIGHT,5);
-#else
-	ButtonSizer->Add(new wxButton(this, wxID_APPLY),0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this, wxID_CANCEL),0,wxRIGHT,5);
-	ButtonSizer->Add(okButton,0,wxRIGHT,5);
-#endif
 	okButton->SetDefault();
-
+	ButtonSizer->AddButton(new wxButton(this, wxID_APPLY));
+	ButtonSizer->AddButton(new wxButton(this, wxID_CANCEL));
+	ButtonSizer->AddButton(new wxButton(this, wxID_HELP));
+	ButtonSizer->AddButton(okButton);
+	ButtonSizer->Realize();
 
 	// Left side sizer
 	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);
@@ -352,7 +346,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// General Layout
 	MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(ControlSizer,1,wxALL | wxALIGN_CENTER | wxEXPAND,5);
-	MainSizer->Add(ButtonSizer,0,wxBOTTOM | wxALIGN_CENTER | wxEXPAND,5);
+	MainSizer->Add(ButtonSizer,0,wxBOTTOM | wxEXPAND,5);
 
 	// Set sizer
 	MainSizer->SetSizeHints(this);
