@@ -110,6 +110,7 @@ aegisub_SOURCES = \
 	ass_export_filter.cpp \
 	ass_exporter.cpp \
 	ass_file.cpp \
+	ass_karaoke.cpp \
 	ass_override.cpp \
 	ass_style.cpp \
 	ass_style_storage.cpp \
