@@ -62,13 +62,21 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	grid = _grid;
 	audio = VideoContext::Get()->audio;
 
+	// Translation controls
+	OrigText = new ScintillaTextCtrl(this,TEXT_ORIGINAL,_T(""),wxDefaultPosition,wxSize(300,80));
+	OrigText->SetWrapMode(wxSTC_WRAP_WORD);
+	OrigText->SetMarginWidth(1,0);
+	OrigText->StyleSetForeground(1,wxColour(10,60,200));
+	OrigText->SetReadOnly(true);
+	//OrigText->PushEventHandler(new DialogTranslationEvent(this));
+	TransText = new ScintillaTextCtrl(this,TEXT_TRANS,_T(""),wxDefaultPosition,wxSize(300,80));
+	TransText->SetWrapMode(wxSTC_WRAP_WORD);
+	TransText->SetMarginWidth(1,0);
+	TransText->PushEventHandler(new DialogTranslationEvent(this));
+	TransText->SetFocus();
+
 	// Translation box
 	wxSizer *TranslationSizer = new wxBoxSizer(wxVERTICAL);
-	OrigText = new wxTextCtrl(this,TEXT_ORIGINAL,_T(""),wxDefaultPosition,wxSize(300,80),wxTE_MULTILINE | wxTE_RICH  | wxTE_READONLY);
-	TransText = new wxTextCtrl(this,TEXT_TRANS,_T(""),wxDefaultPosition,wxSize(300,80),wxTE_MULTILINE | wxTE_RICH2);
-	OrigText->SetEventHandler(new DialogTranslationEvent(this));
-	TransText->SetEventHandler(new DialogTranslationEvent(this));
-	TransText->SetFocus();
 	wxSizer *OriginalTransSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Original"));
 	wxSizer *TranslatedSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Translation"));
 	LineCount = new wxStaticText(this,-1,_("Current line: ?"));
@@ -177,16 +185,9 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 	grid->editBox->SetToLine(curline);
 	grid->EndBatch();
 
-	// Set styles
-	wxTextAttr Normal(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
-	wxTextAttr Highlight(wxColour(0,0,255));
-	wxFont font = Normal.GetFont();
-	font.SetPointSize(Options.AsInt(_T("Edit Font Size")));
-	Normal.SetFont(font);
-	Highlight.SetFont(font);
-
 	// Adds blocks
-	OrigText->Clear();
+	OrigText->SetReadOnly(false);
+	OrigText->ClearAll();
 	AssDialogueBlock *curBlock;
 	bool found = false;
 	int pos=-1;
@@ -194,21 +195,18 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 		curBlock = *cur;
 		if (curBlock->type == BLOCK_PLAIN) {
 			pos++;
+			int curLen = OrigText->GetUnicodePosition(OrigText->GetLength());
+			OrigText->AppendText(curBlock->text);
 			if (pos == block) {
-				OrigText->SetDefaultStyle(Highlight);
+				OrigText->StartUnicodeStyling(curLen);
+				OrigText->SetUnicodeStyling(curLen,curBlock->text.Length(),1);
 				found = true;
 			}
-			else OrigText->SetDefaultStyle(Normal);
 		}
-		else OrigText->SetDefaultStyle(Normal);
-
-		if (curBlock->type == BLOCK_OVERRIDE) OrigText->AppendText(_T("{"));
-		OrigText->AppendText(curBlock->text);
-		if (curBlock->type == BLOCK_OVERRIDE) OrigText->AppendText(_T("}"));
+		else if (curBlock->type == BLOCK_OVERRIDE) OrigText->AppendText(_T("{") + curBlock->text + _T("}"));
 	}
-	OrigText->SetDefaultStyle(Normal);
-	TransText->SetDefaultStyle(Normal);
 	current->ClearBlocks();
+	OrigText->SetReadOnly(true);
 
 	return true;
 }
@@ -276,7 +274,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 	if (Hotkeys.IsPressed(_T("Translation Assistant Prev"))) {
 		bool ok = JumpToLine(curline,curblock-1);
 		if (ok) {
-			TransText->Clear();
+			TransText->ClearAll();
 			TransText->SetFocus();
 		}
 
@@ -288,7 +286,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 	if (Hotkeys.IsPressed(_T("Translation Assistant Next")) || (Hotkeys.IsPressed(_T("Translation Assistant Accept")) && TransText->GetValue().IsEmpty())) {
 		bool ok = JumpToLine(curline,curblock+1);
 		if (ok) {
-			TransText->Clear();
+			TransText->ClearAll();
 			TransText->SetFocus();
 		}
 
@@ -322,7 +320,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		// Next
 		if (Hotkeys.IsPressed(_T("Translation Assistant Accept"))) {
 			JumpToLine(curline,curblock+1);
-			TransText->Clear();
+			TransText->ClearAll();
 			TransText->SetFocus();
 		}
 		else JumpToLine(curline,curblock);
@@ -340,7 +338,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 			if (curBlock->type == BLOCK_PLAIN) {
 				pos++;
 				if (pos == curblock) {
-					TransText->WriteText(curBlock->text);
+					TransText->AddText(curBlock->text);
 				}
 			}
 		}

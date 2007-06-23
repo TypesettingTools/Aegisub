@@ -84,6 +84,13 @@ int ScintillaTextCtrl::GetReverseUnicodePosition(int pos) {
 }
 
 
+//////////////////////////////
+// Start unicode-safe styling
+void ScintillaTextCtrl::StartUnicodeStyling(int start,int mask) {
+	StartStyling(GetUnicodePosition(start),mask);
+}
+
+
 ////////////////////////
 // Unicode-safe styling
 void ScintillaTextCtrl::SetUnicodeStyling(int start,int length,int style) {

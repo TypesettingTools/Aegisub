@@ -41,6 +41,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "scintilla_text_ctrl.h"
 
 
 //////////////
@@ -64,8 +65,8 @@ private:
 	int curblock;
 
 	wxStaticText *LineCount;
-	wxTextCtrl *OrigText;
-	wxTextCtrl *TransText;
+	ScintillaTextCtrl *OrigText;
+	ScintillaTextCtrl *TransText;
 	wxCheckBox *PreviewCheck;
 
 	void OnMinimize(wxIconizeEvent &event);
