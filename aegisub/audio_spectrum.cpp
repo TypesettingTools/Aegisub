@@ -216,10 +216,12 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 		line_length = 1 << (8 + quality_index - 1);
 	else
 		line_length = 1 << 8;
-	if (quality_index > 0)
-		fft_overlaps = 1 << (quality_index*2);
-	else
+	if (quality_index == 0)
 		fft_overlaps = 1;
+	else if (quality_index == 1)
+		fft_overlaps = 4;
+	else
+		fft_overlaps = 1 << quality_index;
 
 	__int64 _num_lines = provider->GetNumSamples() / line_length / 2;
 	//assert (_num_lines < (1<<31)); // hope it fits into 32 bits...
