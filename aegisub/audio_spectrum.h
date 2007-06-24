@@ -46,14 +46,22 @@
 class AudioSpectrumCache {
 public:
 	typedef std::vector<float> CacheLine;
+	typedef unsigned long LineAge;
 
-	virtual CacheLine& GetLine(unsigned long i) = 0;
+	// Get the i'th cache line from the tree and propagate down the current "age time"
+	virtual CacheLine& GetLine(unsigned long i, LineAge aging_time) = 0;
 
+	// Set the desired length of cache lines
 	static void SetLineLength(unsigned long new_length);
+
+	// Perform cache aging process
+	// Return true if the object Age was called on is still fresh, false if it's old and should be purged
+	virtual bool Age(LineAge aging_time) = 0;
 
 	virtual ~AudioSpectrumCache() {};
 
 protected:
+	static LineAge cache_line_age_limit;
 	static CacheLine null_line;
 	static unsigned long line_length;
 };
@@ -63,6 +71,7 @@ class AudioSpectrum {
 private:
 	// Data provider
 	AudioSpectrumCache *cache;
+	AudioSpectrumCache::LineAge cache_age;
 
 	// Colour pallettes
 	unsigned char colours_normal[256*3];

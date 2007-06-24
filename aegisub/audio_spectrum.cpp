@@ -44,6 +44,7 @@
 
 // Audio spectrum FFT data cache
 
+AudioSpectrumCache::LineAge AudioSpectrumCache::cache_line_age_limit = 0x10000; // TODO: make this less arbitrary
 AudioSpectrumCache::CacheLine AudioSpectrumCache::null_line;
 unsigned long AudioSpectrumCache::line_length;
 
@@ -60,10 +61,13 @@ class FinalSpectrumCache : public AudioSpectrumCache {
 private:
 	std::vector<CacheLine> data;
 	unsigned long start, length; // start and end of range
+	unsigned long last_access; // aging parameter
 
 public:
-	CacheLine& GetLine(unsigned long i)
+	CacheLine& GetLine(unsigned long i, LineAge aging_time)
 	{
+		last_access = aging_time;
+
 		// This check ought to be redundant
 		if (i >= start && i-start < length)
 			return data[i - start];
@@ -71,10 +75,18 @@ public:
 			return null_line;
 	}
 
+	bool Age(LineAge aging_time)
+	{
+		assert(aging_time >= last_access);
+
+		return aging_time - last_access <= cache_line_age_limit;
+	}
+
 	FinalSpectrumCache(AudioProvider *provider, unsigned long _start, unsigned long _length)
 	{
 		start = _start;
 		length = _length;
+		last_access = 0;
 
 		assert(length > 2);
 
@@ -138,7 +150,7 @@ private:
 	AudioProvider *provider;
 
 public:
-	CacheLine &GetLine(unsigned long i)
+	CacheLine &GetLine(unsigned long i, LineAge aging_time)
 	{
 		if (i >= start && i-start <= length) {
 			// Determine which sub-cache this line resides in
@@ -153,10 +165,31 @@ public:
 				}
 			}
 
-			return sub_caches[subcache]->GetLine(i);
+			return sub_caches[subcache]->GetLine(i, aging_time);
 		} else {
 			return null_line;
 		}
+	}
+
+	bool Age(LineAge aging_time)
+	{
+		bool living_caches = false;
+
+		// Age every active sub-cache
+		for (size_t i = 0; i < sub_caches.size(); ++i) {
+			if (sub_caches[i]) {
+				if (sub_caches[i]->Age(aging_time)) {
+					// The sub-cache is still fresh, so we are too
+					living_caches = true;
+				} else {
+					// Sub-cache is too old, remove it
+					delete sub_caches[i];
+					sub_caches[i] = 0;
+				}
+			}
+		}
+
+		return living_caches;
 	}
 
 	IntermediateSpectrumCache(AudioProvider *_provider, unsigned long _start, unsigned long _length, int _depth)
@@ -203,12 +236,14 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider, unsigned long _line_lengt
 
 	AudioSpectrumCache::SetLineLength(line_length);
 	cache = new IntermediateSpectrumCache(provider, 0, num_lines, 0);
+	cache_age = 0;
 
 	power_scale = 1;
 	minband = Options.AsInt(_T("Audio Spectrum Cutoff"));
 	maxband = line_length - minband * 2/3; // TODO: make this customisable?
 
 	// Generate colour maps
+	// TODO? allow selecting between several colour maps
 	unsigned char *palptr = colours_normal;
 	for (int i = 0; i < 256; i++) {
 		//hsl_to_rgb(170 + i * 2/3, 128 + i/2, i, palptr+0, palptr+1, palptr+2);	// Previous
@@ -258,7 +293,8 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 		if (imgcol <= last_imgcol_rendered)
 			continue;
 
-		AudioSpectrumCache::CacheLine &line = cache->GetLine(i);
+		AudioSpectrumCache::CacheLine &line = cache->GetLine(i, cache_age);
+		cache_age++;
 
 		// Calculate the signal power over frequency
 		// "Compressed" scale
@@ -325,6 +361,8 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 	}
 
 	delete[] power;
+
+	cache->Age(cache_age);
 }
 
 
