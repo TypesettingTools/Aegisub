@@ -49,7 +49,7 @@ public:
 	typedef std::vector<float> CacheLine;
 
 	// Get the overlap'th overlapping FFT in FFT group i, generating it if needed
-	virtual CacheLine& GetLine(unsigned long i, unsigned int overlap) = 0;
+	virtual CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created) = 0;
 
 	// Set the FFT size used
 	static void SetLineLength(unsigned long new_length);
@@ -83,7 +83,7 @@ private:
 	int maxband; // largest frequency band displayed
 
 public:
-	AudioSpectrum(AudioProvider *_provider, unsigned long _line_length);
+	AudioSpectrum(AudioProvider *_provider);
 	~AudioSpectrum();
 
 	void RenderRange(__int64 range_start, __int64 range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight);

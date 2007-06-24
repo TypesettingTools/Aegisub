@@ -577,7 +577,7 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 		unsigned char *img = (unsigned char *)malloc(h*w*3); // wxImage requires using malloc
 
 		if (!spectrumRenderer)
-			spectrumRenderer = new AudioSpectrum(provider, 1<<Options.AsInt(_T("Audio Spectrum Window")));
+			spectrumRenderer = new AudioSpectrum(provider);
 
 		spectrumRenderer->SetScaling(scale);
 

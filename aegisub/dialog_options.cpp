@@ -528,8 +528,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("HD cache path"),_T("Audio HD Cache Location"),TEXT_TYPE_FOLDER);
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("HD cache name"),_T("Audio HD CAche Name"));
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum cutoff"),_T("Audio spectrum cutoff"),TEXT_TYPE_NUMBER);
-		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum FFT window exponent"),_T("Audio spectrum window"),TEXT_TYPE_NUMBER);
-		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum FFT window overlaps"),_T("Audio spectrum overlaps"),TEXT_TYPE_NUMBER);
+		wxString spectrum_quality_choices[] = { _("0 - Regular quality"), _("1 - Better quality"), _("2 - High quality"), _("3 - Insane quality") };
+		AddComboControl(audioAdvPage,audioAdvSizer1,_("Spectrum quality"),_T("Audio spectrum quality"),wxArrayString(4,spectrum_quality_choices));
 		audioAdvSizer1->AddGrowableCol(0,1);
 
 		// Main sizer

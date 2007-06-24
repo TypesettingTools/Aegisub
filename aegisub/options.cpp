@@ -189,10 +189,9 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetText(_T("Audio Alsa Device"), _T("plughw:0,0"));
 	SetText(_T("Audio HD Cache Location"),_T("default"));
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
-	// Technically these can do with just the spectrum class being re-created
+	// Technically these can do with just the spectrum object being re-created
 	SetInt(_T("Audio Spectrum Cutoff"),0);
-	SetInt(_T("Audio Spectrum Window"),8);
-	SetInt(_T("Audio Spectrum Overlaps"),1);
+	SetInt(_T("Audio Spectrum Quality"),0);
 
 	// Automation
 	// The path changes only take effect when a script is (re)loaded but Automatic should be good enough, it certainly doesn't warrart a restart

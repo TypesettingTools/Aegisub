@@ -63,7 +63,7 @@ private:
 	unsigned int overlaps;
 
 public:
-	CacheLine& GetLine(unsigned long i, unsigned int overlap)
+	CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created)
 	{
 		// This check ought to be redundant
 		if (i >= start && i-start < length)
@@ -149,7 +149,7 @@ private:
 	AudioProvider *provider;
 
 public:
-	CacheLine &GetLine(unsigned long i, unsigned int overlap)
+	CacheLine &GetLine(unsigned long i, unsigned int overlap, bool &created)
 	{
 		if (i >= start && i-start <= length) {
 			// Determine which sub-cache this line resides in
@@ -157,6 +157,7 @@ public:
 			assert(subcache < sub_caches.size());
 
 			if (!sub_caches[subcache]) {
+				created = true;
 				if (subcaches_are_final) {
 					sub_caches[subcache] = new FinalSpectrumCache(provider, start+subcache*subcache_length, subcache_length, overlaps);
 				} else {
@@ -164,7 +165,7 @@ public:
 				}
 			}
 
-			return sub_caches[subcache]->GetLine(i, overlap);
+			return sub_caches[subcache]->GetLine(i, overlap, created);
 		} else {
 			return null_line;
 		}
@@ -204,17 +205,26 @@ public:
 
 // AudioSpectrum
 
-AudioSpectrum::AudioSpectrum(AudioProvider *_provider, unsigned long _line_length)
+AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 {
 	provider = _provider;
-	line_length = _line_length;
+
+	int quality_index = Options.AsInt(_T("Audio Spectrum Quality"));
+	if (quality_index < 0) quality_index = 0;
+	if (quality_index > 5) quality_index = 5; // no need to go freaking insane
+	if (quality_index > 1)
+		line_length = 1 << (8 + quality_index - 1);
+	else
+		line_length = 1 << 8;
+	if (quality_index > 0)
+		fft_overlaps = 1 << (quality_index*2);
+	else
+		fft_overlaps = 1;
 
 	__int64 _num_lines = provider->GetNumSamples() / line_length / 2;
 	//assert (_num_lines < (1<<31)); // hope it fits into 32 bits...
 	num_lines = (unsigned long)_num_lines;
 
-	fft_overlaps = Options.AsInt(_T("Audio Spectrum Overlaps"));
-	fft_overlaps = MAX(1, fft_overlaps);
 	AudioSpectrumCache::SetLineLength(line_length);
 	cache = new IntermediateSpectrumCache(provider, 0, num_lines, fft_overlaps, 0);
 
@@ -249,6 +259,9 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 	unsigned long first_line = (unsigned long)(fft_overlaps * range_start / line_length / 2);
 	unsigned long last_line = (unsigned long)(fft_overlaps * range_end / line_length / 2);
 
+	unsigned int cache_hits=0, cache_misses=0;
+	bool was_cache_miss;
+
 	float *power = new float[line_length];
 
 	int last_imgcol_rendered = -1;
@@ -275,12 +288,15 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 		if (imgcol <= last_imgcol_rendered)
 			continue;
 
-		AudioSpectrumCache::CacheLine &line = cache->GetLine(baseline, overlap);
+		was_cache_miss = false;
+		AudioSpectrumCache::CacheLine &line = cache->GetLine(baseline, overlap, was_cache_miss);
 		++overlap;
 		if (overlap >= fft_overlaps) {
 			overlap = 0;
 			++baseline;
 		}
+		if (was_cache_miss) cache_misses++;
+		else cache_hits++;
 
 		// Apply a "compressed" scaling to the signal power
 		for (unsigned int j = 0; j < line_length; j++) {
@@ -346,6 +362,8 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 	}
 
 	delete[] power;
+
+	wxLogDebug(_T("Rendered spectrum: %u cache hits, %u misses"), cache_hits, cache_misses);
 }
 
 
