@@ -57,7 +57,7 @@ private:
 	wxTextCtrl *JumpFrame;
 
 	void OnKey(wxKeyEvent &event);
-	void OnClose(wxCommandEvent &event);
+	void OnCloseButton(wxCommandEvent &event);
 	void OnOK(wxCommandEvent &event);
 	void OnEditTime(wxCommandEvent &event);
 	void OnEditFrame(wxCommandEvent &event);

@@ -98,7 +98,7 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 // Event table
 BEGIN_EVENT_TABLE(DialogJumpTo, wxDialog)
 	EVT_KEY_DOWN(DialogJumpTo::OnKey)
-	EVT_BUTTON(wxID_CANCEL,DialogJumpTo::OnClose)
+	EVT_BUTTON(wxID_CANCEL,DialogJumpTo::OnCloseButton)
 	EVT_BUTTON(wxID_OK,DialogJumpTo::OnOK)
 	EVT_TEXT(TEXT_JUMP_TIME, DialogJumpTo::OnEditTime)
 	EVT_TEXT(TEXT_JUMP_FRAME, DialogJumpTo::OnEditFrame)
@@ -107,7 +107,7 @@ END_EVENT_TABLE()
 
 /////////
 // Close
-void DialogJumpTo::OnClose (wxCommandEvent &event) { OnClose(false); }
+void DialogJumpTo::OnCloseButton (wxCommandEvent &event) { OnClose(false); }
 void DialogJumpTo::OnOK (wxCommandEvent &event) { OnClose(true); }
 
 
