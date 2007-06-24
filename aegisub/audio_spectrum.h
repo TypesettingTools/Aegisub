@@ -45,24 +45,21 @@
 // Spectrum cache basically caches the raw result of FFT
 class AudioSpectrumCache {
 public:
+	// Type of a single FFT result line
 	typedef std::vector<float> CacheLine;
-	typedef unsigned long LineAge;
 
-	// Get the i'th cache line from the tree and propagate down the current "age time"
-	virtual CacheLine& GetLine(unsigned long i, LineAge aging_time) = 0;
+	// Get the overlap'th overlapping FFT in FFT group i, generating it if needed
+	virtual CacheLine& GetLine(unsigned long i, unsigned int overlap) = 0;
 
-	// Set the desired length of cache lines
+	// Set the FFT size used
 	static void SetLineLength(unsigned long new_length);
-
-	// Perform cache aging process
-	// Return true if the object Age was called on is still fresh, false if it's old and should be purged
-	virtual bool Age(LineAge aging_time) = 0;
 
 	virtual ~AudioSpectrumCache() {};
 
 protected:
-	static LineAge cache_line_age_limit;
+	// A cache line containing only zero-values
 	static CacheLine null_line;
+	// The FFT size
 	static unsigned long line_length;
 };
 
@@ -71,7 +68,6 @@ class AudioSpectrum {
 private:
 	// Data provider
 	AudioSpectrumCache *cache;
-	AudioSpectrumCache::LineAge cache_age;
 
 	// Colour pallettes
 	unsigned char colours_normal[256*3];
@@ -81,6 +77,7 @@ private:
 
 	unsigned long line_length; // number of frequency components per line (half of number of samples)
 	unsigned long num_lines; // number of lines needed for the audio
+	unsigned int fft_overlaps; // number of overlaps used in FFT
 	float power_scale; // amplification of displayed power
 	int minband; // smallest frequency band displayed
 	int maxband; // largest frequency band displayed

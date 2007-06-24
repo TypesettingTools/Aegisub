@@ -529,6 +529,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("HD cache name"),_T("Audio HD CAche Name"));
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum cutoff"),_T("Audio spectrum cutoff"),TEXT_TYPE_NUMBER);
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum FFT window exponent"),_T("Audio spectrum window"),TEXT_TYPE_NUMBER);
+		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum FFT window overlaps"),_T("Audio spectrum overlaps"),TEXT_TYPE_NUMBER);
 		audioAdvSizer1->AddGrowableCol(0,1);
 
 		// Main sizer

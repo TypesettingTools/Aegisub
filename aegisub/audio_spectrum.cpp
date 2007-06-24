@@ -44,7 +44,6 @@
 
 // Audio spectrum FFT data cache
 
-AudioSpectrumCache::LineAge AudioSpectrumCache::cache_line_age_limit = 0x10000; // TODO: make this less arbitrary
 AudioSpectrumCache::CacheLine AudioSpectrumCache::null_line;
 unsigned long AudioSpectrumCache::line_length;
 
@@ -61,44 +60,35 @@ class FinalSpectrumCache : public AudioSpectrumCache {
 private:
 	std::vector<CacheLine> data;
 	unsigned long start, length; // start and end of range
-	unsigned long last_access; // aging parameter
+	unsigned int overlaps;
 
 public:
-	CacheLine& GetLine(unsigned long i, LineAge aging_time)
+	CacheLine& GetLine(unsigned long i, unsigned int overlap)
 	{
-		last_access = aging_time;
-
 		// This check ought to be redundant
 		if (i >= start && i-start < length)
-			return data[i - start];
+			return data[i - start + overlap*length];
 		else
 			return null_line;
 	}
 
-	bool Age(LineAge aging_time)
-	{
-		assert(aging_time >= last_access);
-
-		return aging_time - last_access <= cache_line_age_limit;
-	}
-
-	FinalSpectrumCache(AudioProvider *provider, unsigned long _start, unsigned long _length)
+	FinalSpectrumCache(AudioProvider *provider, unsigned long _start, unsigned long _length, unsigned int _overlaps)
 	{
 		start = _start;
 		length = _length;
-		last_access = 0;
+		overlaps = _overlaps;
+
+		if (overlaps <  1) overlaps = 1;
+		// Add an upper limit to number of overlaps or trust user to do sane things?
+		// Any limit should probably be a function of length
 
 		assert(length > 2);
 
 		// First fill the data vector with blanks
 		// Both start and end are included in the range stored, so we have end-start+1 elements
-		data.resize(length, null_line);
+		data.resize(length*overlaps, null_line);
 
-		// Start sample number of the next line calculated
-		// line_length is half of the number of samples used to calculate a line, since half of the output from
-		// a Fourier transform of real data is redundant, and not interesting for the purpose of creating
-		// a frequenmcy/power spectrum.
-		__int64 sample = start * line_length*2;
+		unsigned int overlap_offset = length / overlaps / 2;
 
 		// Raw sample data
 		short *raw_sample_data = new short[line_length*2];
@@ -107,23 +97,31 @@ public:
 		float *out_r = new float[line_length*2];
 		float *out_i = new float[line_length*2];
 
-		FFT fft; // TODO: use FFTW instead? A wavelet?
+		FFT fft; // Use FFTW instead? A wavelet?
 
-		for (unsigned long i = 0; i < length; ++i) {
-			provider->GetAudio(raw_sample_data, sample, line_length*2);
-			for (size_t j = 0; j < line_length; ++j) {
-				sample_data[j*2] = (float)raw_sample_data[j*2];
-				sample_data[j*2+1] = (float)raw_sample_data[j*2+1];
+		for (unsigned int overlap = 0; overlap < overlaps; ++overlap) {
+			// Start sample number of the next line calculated
+			// line_length is half of the number of samples used to calculate a line, since half of the output from
+			// a Fourier transform of real data is redundant, and not interesting for the purpose of creating
+			// a frequenmcy/power spectrum.
+			__int64 sample = start * line_length*2 + overlap*overlap_offset;
+
+			for (unsigned long i = 0; i < length; ++i) {
+				provider->GetAudio(raw_sample_data, sample, line_length*2);
+				for (size_t j = 0; j < line_length; ++j) {
+					sample_data[j*2] = (float)raw_sample_data[j*2];
+					sample_data[j*2+1] = (float)raw_sample_data[j*2+1];
+				}
+
+				fft.Transform(line_length*2, sample_data, out_r, out_i);
+
+				CacheLine &line = data[i + length*overlap];
+				for (size_t j = 0; j < line_length; ++j) {
+					line[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
+				}
+
+				sample += line_length*2;
 			}
-
-			fft.Transform(line_length*2, sample_data, out_r, out_i);
-
-			CacheLine &line = data[i];
-			for (size_t j = 0; j < line_length; ++j) {
-				line[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
-			}
-
-			sample += line_length*2;
 		}
 
 		delete[] raw_sample_data;
@@ -145,12 +143,13 @@ class IntermediateSpectrumCache : public AudioSpectrumCache {
 private:
 	std::vector<AudioSpectrumCache*> sub_caches;
 	unsigned long start, length, subcache_length;
+	unsigned int overlaps;
 	bool subcaches_are_final;
 	int depth;
 	AudioProvider *provider;
 
 public:
-	CacheLine &GetLine(unsigned long i, LineAge aging_time)
+	CacheLine &GetLine(unsigned long i, unsigned int overlap)
 	{
 		if (i >= start && i-start <= length) {
 			// Determine which sub-cache this line resides in
@@ -159,44 +158,24 @@ public:
 
 			if (!sub_caches[subcache]) {
 				if (subcaches_are_final) {
-					sub_caches[subcache] = new FinalSpectrumCache(provider, start+subcache*subcache_length, subcache_length);
+					sub_caches[subcache] = new FinalSpectrumCache(provider, start+subcache*subcache_length, subcache_length, overlaps);
 				} else {
-					sub_caches[subcache] = new IntermediateSpectrumCache(provider, start+subcache*subcache_length, subcache_length, depth+1);
+					sub_caches[subcache] = new IntermediateSpectrumCache(provider, start+subcache*subcache_length, subcache_length, overlaps, depth+1);
 				}
 			}
 
-			return sub_caches[subcache]->GetLine(i, aging_time);
+			return sub_caches[subcache]->GetLine(i, overlap);
 		} else {
 			return null_line;
 		}
 	}
 
-	bool Age(LineAge aging_time)
-	{
-		bool living_caches = false;
-
-		// Age every active sub-cache
-		for (size_t i = 0; i < sub_caches.size(); ++i) {
-			if (sub_caches[i]) {
-				if (sub_caches[i]->Age(aging_time)) {
-					// The sub-cache is still fresh, so we are too
-					living_caches = true;
-				} else {
-					// Sub-cache is too old, remove it
-					delete sub_caches[i];
-					sub_caches[i] = 0;
-				}
-			}
-		}
-
-		return living_caches;
-	}
-
-	IntermediateSpectrumCache(AudioProvider *_provider, unsigned long _start, unsigned long _length, int _depth)
+	IntermediateSpectrumCache(AudioProvider *_provider, unsigned long _start, unsigned long _length, unsigned int _overlaps, int _depth)
 	{
 		provider = _provider;
 		start = _start;
 		length = _length;
+		overlaps = _overlaps;
 		depth = _depth;
 
 		// FIXME: this calculation probably needs tweaking
@@ -234,16 +213,16 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider, unsigned long _line_lengt
 	//assert (_num_lines < (1<<31)); // hope it fits into 32 bits...
 	num_lines = (unsigned long)_num_lines;
 
+	fft_overlaps = Options.AsInt(_T("Audio Spectrum Overlaps"));
+	fft_overlaps = MAX(1, fft_overlaps);
 	AudioSpectrumCache::SetLineLength(line_length);
-	cache = new IntermediateSpectrumCache(provider, 0, num_lines, 0);
-	cache_age = 0;
+	cache = new IntermediateSpectrumCache(provider, 0, num_lines, fft_overlaps, 0);
 
 	power_scale = 1;
 	minband = Options.AsInt(_T("Audio Spectrum Cutoff"));
 	maxband = line_length - minband * 2/3; // TODO: make this customisable?
 
 	// Generate colour maps
-	// TODO? allow selecting between several colour maps
 	unsigned char *palptr = colours_normal;
 	for (int i = 0; i < 256; i++) {
 		//hsl_to_rgb(170 + i * 2/3, 128 + i/2, i, palptr+0, palptr+1, palptr+2);	// Previous
@@ -267,8 +246,8 @@ AudioSpectrum::~AudioSpectrum()
 
 void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight)
 {
-	unsigned long first_line = (unsigned long)(range_start / line_length / 2);
-	unsigned long last_line = (unsigned long)(range_end / line_length / 2);
+	unsigned long first_line = (unsigned long)(fft_overlaps * range_start / line_length / 2);
+	unsigned long last_line = (unsigned long)(fft_overlaps * range_end / line_length / 2);
 
 	float *power = new float[line_length];
 
@@ -287,17 +266,23 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 	const double onethirdmaxpower = maxpower / 3, twothirdmaxpower = maxpower * 2/3;
 	const double logoverscale = log(maxpower*upscale - twothirdmaxpower);
 
+	// Note that here "lines" are actually bands of power data
+	unsigned long baseline = first_line / fft_overlaps;
+	unsigned int overlap = first_line % fft_overlaps;
 	for (unsigned long i = first_line; i <= last_line; ++i) {
 		// Handle horizontal compression and don't unneededly re-render columns
 		int imgcol = imgleft + imgwidth * (i - first_line) / (last_line - first_line + 1);
 		if (imgcol <= last_imgcol_rendered)
 			continue;
 
-		AudioSpectrumCache::CacheLine &line = cache->GetLine(i, cache_age);
-		cache_age++;
+		AudioSpectrumCache::CacheLine &line = cache->GetLine(baseline, overlap);
+		++overlap;
+		if (overlap >= fft_overlaps) {
+			overlap = 0;
+			++baseline;
+		}
 
-		// Calculate the signal power over frequency
-		// "Compressed" scale
+		// Apply a "compressed" scaling to the signal power
 		for (unsigned int j = 0; j < line_length; j++) {
 			// First do a simple linear scale power calculation -- 8 gives a reasonable default scaling
 			power[j] = line[j] * upscale;
@@ -361,8 +346,6 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 	}
 
 	delete[] power;
-
-	cache->Age(cache_age);
 }
 
 
