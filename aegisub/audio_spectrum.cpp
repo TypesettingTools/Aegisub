@@ -88,7 +88,7 @@ public:
 		// Both start and end are included in the range stored, so we have end-start+1 elements
 		data.resize(length*overlaps, null_line);
 
-		unsigned int overlap_offset = length / overlaps / 2;
+		unsigned int overlap_offset = line_length / overlaps * 2; // FIXME: the result seems weird/wrong without this factor 2, but why?
 
 		// Raw sample data
 		short *raw_sample_data = new short[line_length*2];
