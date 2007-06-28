@@ -85,6 +85,9 @@ void VideoDisplayVisual::SetMode(int _mode) {
 
 	// Display cursor or not
 	parent->ShowCursor(mode != 0);
+
+	// Refresh parent
+	parent->Render();
 }
 
 
@@ -278,8 +281,10 @@ void VideoDisplayVisual::DrawOverlay() {
 							glPopMatrix();
 
 							// Draw line to mouse
-							SetLineColour(colour[0]);
-							DrawLine(dx,dy,mx,my);
+							if (x != -1) {
+								SetLineColour(colour[0]);
+								DrawLine(dx,dy,mx,my);
+							}
 						}
 
 						// Rotate XY
