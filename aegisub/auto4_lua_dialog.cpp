@@ -284,9 +284,12 @@ nospin:
 			wxControl *Create(wxWindow *parent)
 			{
 				if (hasspin) {
-					cw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, min, max, value);
+					wxSpinCtrl *scw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, min, max, value);
+					scw->SetRange(min, max);
+					scw->SetValue(value);
+					cw = scw;
 				} else {
-					cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0); //, IntTextValidator());
+					cw = new wxTextCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, 0); //, IntTextValidator());
 				}
 				cw->SetToolTip(hint);
 				return cw;
@@ -318,6 +321,8 @@ nospin:
 		class FloatEdit : public Edit {
 		public:
 			float value;
+			bool hasspin;
+			float min, max;
 			// FIXME: Can't support spin button atm
 
 			FloatEdit(lua_State *L)

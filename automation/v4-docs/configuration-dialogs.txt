@@ -71,6 +71,13 @@ max (number or nil)
   If both are present, the control gets a spin button, the user can click to
   update the value of the control. The user won't be able to close the
   dialog if the value is outside the range between "min" and "max".
+  
+
+Key defined only for the "floatedit" class:
+
+step (number or nil)
+  If nil/undefined, the value 1 (one) is used instead.
+  Specifies the size of change when the spin buttons are clicked.
 
 
 Keys defined only for the "dropdown" class:
