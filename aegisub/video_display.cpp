@@ -296,9 +296,21 @@ void VideoDisplay::DrawTVEffects() {
 
 	// Draw overscan mask
 	if (drawOverscan) {
-		// Parameters
-		DrawOverscanMask(int(sw * 0.067),int(sh * 0.05),wxColour(30,70,200),0.5);
-		DrawOverscanMask(int(sw * 0.033),int(sh * 0.035),wxColour(30,70,200),0.5);
+		// Get aspect ration
+		double ar = context->GetAspectRatioValue();
+
+		// Based on BBC's guidelines: http://www.bbc.co.uk/guidelines/dq/pdf/tv/tv_standards_london.pdf
+		// 16:9 or wider
+		if (ar > 1.75) {
+			DrawOverscanMask(int(sw * 0.1),int(sh * 0.05),wxColour(30,70,200),0.5);
+			DrawOverscanMask(int(sw * 0.035),int(sh * 0.035),wxColour(30,70,200),0.5);
+		}
+
+		// Less wide than 16:9 (use 4:3 standard)
+		else {
+			DrawOverscanMask(int(sw * 0.067),int(sh * 0.05),wxColour(30,70,200),0.5);
+			DrawOverscanMask(int(sw * 0.033),int(sh * 0.035),wxColour(30,70,200),0.5);
+		}
 	}
 }
 
