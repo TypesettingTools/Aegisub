@@ -116,7 +116,8 @@ VideoContext::VideoContext() {
 	keepAudioSync = true;
 
 	// Threads
-	threaded = Options.AsBool(_T("Threaded Video"));
+	//threaded = Options.AsBool(_T("Threaded Video"));
+	threaded = false;
 	threadLocked = false;
 	threadNextFrame = -1;
 }
@@ -182,6 +183,7 @@ void VideoContext::Reset() {
 	overKeyFramesLoaded = false;
 	isPlaying = false;
 	nextFrame = -1;
+	curLine = NULL;
 
 	// Update displays
 	UpdateDisplays(true);

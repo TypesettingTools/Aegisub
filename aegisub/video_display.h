@@ -72,6 +72,9 @@ private:
 	int dx1,dx2,dy1,dy2;
 	bool locked;
 
+	void DrawTVEffects();
+	void DrawOverscanMask(int sizeH,int sizeV,wxColour color,double alpha=0.5);
+
 	void OnPaint(wxPaintEvent& event);
 	void OnKey(wxKeyEvent &event);
 	void OnMouseEvent(wxMouseEvent& event);

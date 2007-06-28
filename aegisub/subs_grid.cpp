@@ -758,6 +758,9 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 	Clear();
 	if (keepSelection) yPos = oldPos;
 
+	// Clear from video
+	VideoContext::Get()->curLine = NULL;
+
 	// Get subtitles
 	if (_ass) ass = _ass;
 	else {

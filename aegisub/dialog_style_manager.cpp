@@ -54,6 +54,11 @@
 DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStylesManager"))
 {
+	// Set icon
+	wxIcon ico;
+	ico.CopyFromBitmap(wxBITMAP(style_toolbutton));
+	SetIcon(ico);
+
 	// Vars
 	grid = _grid;
 
@@ -67,7 +72,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	CatalogBox->Add(CatalogDelete,0,0,0);
 
 	// Storage styles list
-	StorageList = new wxListBox(this, LIST_STORAGE, wxDefaultPosition, wxSize(205,250), 0, NULL, wxLB_EXTENDED);
+	StorageList = new wxListBox(this, LIST_STORAGE, wxDefaultPosition, wxSize(260,250), 0, NULL, wxLB_EXTENDED);
 	wxSizer *StorageBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Storage"));
 	wxSizer *StorageButtons = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *StorageButtonsLow = new wxBoxSizer(wxHORIZONTAL);
@@ -100,7 +105,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	StorageDelete->Disable();
 
 	// Local styles list
-	CurrentList = new wxListBox(this, LIST_CURRENT, wxDefaultPosition, wxSize(205,250), 0, NULL, wxLB_EXTENDED);
+	CurrentList = new wxListBox(this, LIST_CURRENT, wxDefaultPosition, wxSize(260,250), 0, NULL, wxLB_EXTENDED);
 	wxSizer *CurrentBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Current script"));
 	wxSizer *CurrentButtons = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *CurrentButtonsLow = new wxBoxSizer(wxHORIZONTAL);

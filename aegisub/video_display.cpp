@@ -67,6 +67,7 @@
 #include "main.h"
 #include "video_slider.h"
 #include "video_box.h"
+#include "gl_wrap.h"
 
 
 ///////
@@ -218,6 +219,7 @@ void VideoDisplay::Render() {
 	glOrtho(0.0f,sw,sh,0.0f,-1000.0f,1000.0f);
 	glMatrixMode(GL_MODELVIEW);
 	if (glGetError()) throw _T("Error setting up matrices (wtf?).");
+	glShadeModel(GL_FLAT);
 
 	// Texture mode
 	if (w != pw || h != ph) {
@@ -267,6 +269,10 @@ void VideoDisplay::Render() {
 		glVertex2f(sw,0);
 	glEnd();
 	context->SetShader(false);
+	glDisable(GL_TEXTURE_2D);
+
+	// TV effects
+	DrawTVEffects();
 
 	// Draw overlay
 	wxASSERT(visual);
@@ -276,6 +282,58 @@ void VideoDisplay::Render() {
 	glFinish();
 	//if (glGetError()) throw _T("Error finishing gl operation.");
 	SwapBuffers();
+}
+
+
+///////////////////////////////////
+// TV effects (overscan and so on)
+void VideoDisplay::DrawTVEffects() {
+	// Get coordinates
+	int sw,sh;
+	VideoContext *context = VideoContext::Get();
+	context->GetScriptSize(sw,sh);
+	bool drawOverscan = false;
+
+	// Draw overscan mask
+	if (drawOverscan) {
+		// Parameters
+		DrawOverscanMask(int(sw * 0.067),int(sh * 0.05),wxColour(30,70,200),0.5);
+		DrawOverscanMask(int(sw * 0.033),int(sh * 0.035),wxColour(30,70,200),0.5);
+	}
+}
+
+
+//////////////////////
+// Draw overscan mask
+void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double alpha) {
+	// Parameters
+	int sw,sh;
+	VideoContext *context = VideoContext::Get();
+	context->GetScriptSize(sw,sh);
+	int rad1 = 24;
+	int gapH = sizeH+rad1;
+	int gapV = sizeV+rad1;
+	int rad2 = (int)sqrt(double(gapH*gapH + gapV*gapV))+1;
+
+	// Set up GL wrapper
+	OpenGLWrapper gl;
+	gl.SetFillColour(colour,alpha);
+	gl.SetLineColour(wxColour(0,0,0),0.0,1);
+
+	// Draw rectangles
+	gl.DrawRectangle(gapH,0,sw-gapH,sizeV);		// Top
+	gl.DrawRectangle(sw-sizeH,gapV,sw,sh-gapV);	// Right
+	gl.DrawRectangle(gapH,sh-sizeV,sw-gapH,sh);	// Bottom
+	gl.DrawRectangle(0,gapV,sizeH,sh-gapV);		// Left
+
+	// Draw corners
+	gl.DrawRing(gapH,gapV,rad1,rad2,1.0,180.0,270.0);		// Top-left
+	gl.DrawRing(sw-gapH,gapV,rad1,rad2,1.0,90.0,180.0);		// Top-right
+	gl.DrawRing(sw-gapH,sh-gapV,rad1,rad2,1.0,0.0,90.0);	// Bottom-right
+	gl.DrawRing(gapH,sh-gapV,rad1,rad2,1.0,270.0,360.0);	// Bottom-left
+
+	// Done
+	glDisable(GL_BLEND);
 }
 
 
