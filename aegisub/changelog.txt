@@ -25,9 +25,10 @@ Please visit http://aegisub.net to download latest version
   o Added support for DirectShowSource2 in Avisynth provider if avss.dll is on Aegisub's folder. (AMZ)
   o Added support to save and load keyframe list files. (AMZ)
   o Fixed subtitles positioning removing \p tags from the line. (AMZ)
-  o libass support for subtitles on all platforms (Azzy/AMZ)
-  o CSRI support for subtitles on all platforms (equinox/AMZ)
-  o Framegrabs from the video now also includes framenumber in the filename (jfs)
+  o libass support for subtitles on all platforms. (Azzy/AMZ)
+  o CSRI support for subtitles on all platforms. (equinox/AMZ)
+  o Framegrabs from the video now also includes framenumber in the filename. (jfs)
+  o Added a toggleable overscan mask to show which areas might get cropped by televisions. (AMZ)
 - Visual Typesetting functionality implemented, which should make typesetting much easier and faster. It supports: (AMZ)
   o Dragging;
   o Rotation on Z axis;

@@ -65,7 +65,8 @@ VideoDisplayVisual::VideoDisplayVisual(VideoDisplay *par) {
 	mode = -1;
 	SetMode(0);
 	colour[0] = wxColour(27,60,114);
-	colour[1] = wxColour(175,219,254);
+	//colour[1] = wxColour(175,219,254);
+	colour[1] = wxColour(166,247,177);
 	colour[2] = wxColour(255,255,255);
 	colour[3] = wxColour(187,0,0);
 }
