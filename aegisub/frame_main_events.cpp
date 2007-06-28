@@ -135,6 +135,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Video_Select_Visible, FrameMain::OnSelectVisible)
 	EVT_MENU(Menu_Video_Detach, FrameMain::OnDetachVideo)
 	EVT_MENU(Menu_Video_Dummy, FrameMain::OnDummyVideo)
+	EVT_MENU(Menu_Video_Overscan, FrameMain::OnOverscan)
 
 	EVT_MENU(Menu_Audio_Open_File, FrameMain::OnOpenAudio)
 	EVT_MENU(Menu_Audio_Open_From_Video, FrameMain::OnOpenAudioFromVideo)
@@ -318,6 +319,9 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 			case 3: MenuBar->Check(Menu_Video_AR_235,true); break;
 			case 4: MenuBar->Check(Menu_Video_AR_Custom,true); break;
 		}
+
+		// Set overscan mask
+		MenuBar->Check(Menu_Video_Overscan,Options.AsBool(_T("Show Overscan Mask")));
 
 		// Rebuild recent lists
 		RebuildRecentList(_T("Recent vid"),RecentVids,Menu_Video_Recent);
@@ -813,6 +817,16 @@ void FrameMain::OnDummyVideo (wxCommandEvent &event) {
 	if (DialogDummyVideo::CreateDummyVideo(this, fn)) {
 		LoadVideo(fn);
 	}
+}
+
+
+///////////////////
+// Overscan toggle
+void FrameMain::OnOverscan (wxCommandEvent &event) {
+	Options.SetBool(_T("Show overscan mask"),event.IsChecked());
+	Options.Save();
+	VideoContext::Get()->Stop();
+	videoBox->videoDisplay->Render();
 }
 
 

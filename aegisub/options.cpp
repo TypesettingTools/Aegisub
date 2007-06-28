@@ -144,6 +144,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetText(_T("Video Screenshot Path"),_T("?video"));
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
+	SetBool(_T("Show overscan mask"),false);
 
 	// Video Provider (Advanced)
 	SetModificationType(MOD_VIDEO_RELOAD);

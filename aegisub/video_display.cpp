@@ -292,7 +292,7 @@ void VideoDisplay::DrawTVEffects() {
 	int sw,sh;
 	VideoContext *context = VideoContext::Get();
 	context->GetScriptSize(sw,sh);
-	bool drawOverscan = false;
+	bool drawOverscan = Options.AsBool(_T("Show Overscan Mask"));
 
 	// Draw overscan mask
 	if (drawOverscan) {
@@ -310,7 +310,7 @@ void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double a
 	int sw,sh;
 	VideoContext *context = VideoContext::Get();
 	context->GetScriptSize(sw,sh);
-	int rad1 = 24;
+	int rad1 = int(sh * 0.05);
 	int gapH = sizeH+rad1;
 	int gapV = sizeV+rad1;
 	int rad2 = (int)sqrt(double(gapH*gapH + gapV*gapV))+1;

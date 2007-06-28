@@ -392,6 +392,7 @@ void FrameMain::InitMenu() {
 	AspectMenu->AppendCheckItem(Menu_Video_AR_235, _("&Cinematic (2.35)"), _("Forces video to 2.35 aspect ratio"));
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom..."), _("Forces video to a custom aspect ratio"));
 	videoMenu->Append(AspectParent);
+	videoMenu->AppendCheckItem(Menu_Video_Overscan, _("Show overscan mask"), _("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."));
 	videoMenu->AppendSeparator();
 	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, _("&Jump To...\t") + Hotkeys.GetText(_T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
 	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, _("Jump video to start\t") + Hotkeys.GetText(_T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), wxBITMAP(video_to_substart));
