@@ -468,6 +468,7 @@ void VideoDisplayVisual::DrawOverlay() {
 	// Current position info
 	if (mode == 0 && x >= 0 && x < w && y >= 0 && y < h) {
 		// Draw cross
+		glDisable(GL_LINE_SMOOTH);
 		glEnable(GL_COLOR_LOGIC_OP);
 		glLogicOp(GL_INVERT);
 		glBegin(GL_LINES);

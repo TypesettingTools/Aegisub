@@ -250,13 +250,10 @@ void OpenGLWrapper::SetFillColour(wxColour col,float alpha) {
 // Line
 void OpenGLWrapper::SetModeLine() {
 	glColor4f(r1,g1,b1,a1);
-	if (a1 == 1.0f) glDisable(GL_BLEND);
-	else {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	}
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glLineWidth(lw);
-	//glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
 }
 
 
