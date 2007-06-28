@@ -1065,6 +1065,7 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 		}
 
 		// Commit
+		SubsBox->editBox->Update();
 		SubsBox->ass->FlagAsModified(_("snap to scene"));
 		SubsBox->CommitChanges();
 	}
