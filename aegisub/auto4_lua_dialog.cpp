@@ -181,7 +181,9 @@ namespace Automation4 {
 
 			wxControl *Create(wxWindow *parent)
 			{
-				return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0);
+				cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0);
+				cw->SetToolTip(hint);
+				return cw;
 			}
 
 			void ControlReadBack()
@@ -216,6 +218,7 @@ namespace Automation4 {
 			{
 				cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
 				cw->SetMinSize(wxSize(0, 30));
+				cw->SetToolTip(hint);
 				return cw;
 			}
 
@@ -281,10 +284,12 @@ nospin:
 			wxControl *Create(wxWindow *parent)
 			{
 				if (hasspin) {
-					return cw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, min, max, value);
+					cw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, min, max, value);
 				} else {
-					return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0); //, IntTextValidator());
+					cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0); //, IntTextValidator());
 				}
+				cw->SetToolTip(hint);
+				return cw;
 			}
 
 			void ControlReadBack()
@@ -347,7 +352,9 @@ nospin:
 			typedef wxValidator FloatTextValidator;
 			wxControl *Create(wxWindow *parent)
 			{
-				return cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0); //, FloatTextValidator());
+				cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0); //, FloatTextValidator());
+				cw->SetToolTip(hint);
+				return cw;
 			}
 
 			void ControlReadBack()
@@ -411,7 +418,9 @@ nospin:
 
 			wxControl *Create(wxWindow *parent)
 			{
-				return cw = new wxComboBox(parent, -1, value, wxDefaultPosition, wxDefaultSize, items, wxCB_READONLY);
+				cw = new wxComboBox(parent, -1, value, wxDefaultPosition, wxDefaultSize, items, wxCB_READONLY);
+				cw->SetToolTip(hint);
+				return cw;
 			}
 
 			void ControlReadBack()
@@ -466,7 +475,9 @@ nospin:
 
 			wxControl *Create(wxWindow *parent)
 			{
-				return cw = new wxCheckBox(parent, -1, label);
+				cw = new wxCheckBox(parent, -1, label);
+				cw->SetToolTip(hint);
+				return cw;
 			}
 
 			void ControlReadBack()
