@@ -132,6 +132,8 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Color3->SetToolTip(_("Outline color"));
 	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBITMAP(button_color_four),wxDefaultPosition,wxSize(30,20));
 	Color4->SetToolTip(_("Shadow color"));
+	CommitButton = new wxButton(this,BUTTON_COMMIT,_("Commit"),wxDefaultPosition,wxSize(55,20));
+	CommitButton->SetToolTip(_T("Commits the text (Enter). Hold Ctrl to stay in line (Ctrl+Enter)."));
 	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));
 	ByFrame = new wxRadioButton(this,RADIO_TIME_BY_FRAME,_("Frame"));
@@ -168,7 +170,8 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	MiddleBotSizer->Add(Color1);
 	MiddleBotSizer->Add(Color2);
 	MiddleBotSizer->Add(Color3);
-	MiddleBotSizer->Add(Color4,0,wxRIGHT,10);
+	MiddleBotSizer->Add(Color4,0,wxRIGHT,5);
+	MiddleBotSizer->Add(CommitButton,0,wxRIGHT,10);
 	MiddleBotSizer->Add(ByTime,0,wxRIGHT | wxALIGN_CENTER,5);
 	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER,5);
 
@@ -379,6 +382,7 @@ BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 	EVT_BUTTON(BUTTON_ITALICS,SubsEditBox::OnButtonItalics)
 	EVT_BUTTON(BUTTON_UNDERLINE,SubsEditBox::OnButtonUnderline)
 	EVT_BUTTON(BUTTON_STRIKEOUT,SubsEditBox::OnButtonStrikeout)
+	EVT_BUTTON(BUTTON_COMMIT,SubsEditBox::OnButtonCommit)
 
 	EVT_SIZE(SubsEditBox::OnSize)
 END_EVENT_TABLE()
@@ -819,40 +823,47 @@ void SubsEditBox::DoKeyPress(wxKeyEvent &event) {
 
 	if (key == WXK_RETURN || key == WXK_NUMPAD_ENTER) {
 		if (enabled) {
-			// Update line
-			CommitText();
-
-			// Next line if control is not held down
-			bool updated = false;
-			if (!event.m_controlDown) {
-				AssDialogue *cur = grid->GetDialogue(linen);
-				int nrows = grid->GetRows();
-				int next = linen+1;
-				if (next >= nrows) {
-					AssDialogue *newline = new AssDialogue;
-					newline->Start = cur->End;
-					newline->End.SetMS(cur->End.GetMS()+5000);
-					newline->Style = cur->Style;
-					newline->UpdateData();
-					grid->InsertLine(newline,next-1,true,true);
-					updated = true;
-				}
-				grid->SelectRow(next);
-				grid->MakeCellVisible(next,0);
-				SetToLine(next);
-				if (next >= nrows) return;
-			}
-
-			// Update file
-			if (!updated) {
-				grid->ass->FlagAsModified(_("editing"));
-				grid->CommitChanges();
-			}
+			Commit(event.m_controlDown);
 			return;
 		}
 	}
 
 	event.Skip();
+}
+
+
+//////////
+// Commit
+void SubsEditBox::Commit(bool stay) {
+	// Update line
+	CommitText();
+
+	// Next line if control is not held down
+	bool updated = false;
+	if (!stay) {
+		AssDialogue *cur = grid->GetDialogue(linen);
+		int nrows = grid->GetRows();
+		int next = linen+1;
+		if (next >= nrows) {
+			AssDialogue *newline = new AssDialogue;
+			newline->Start = cur->End;
+			newline->End.SetMS(cur->End.GetMS()+5000);
+			newline->Style = cur->Style;
+			newline->UpdateData();
+			grid->InsertLine(newline,next-1,true,true);
+			updated = true;
+		}
+		grid->SelectRow(next);
+		grid->MakeCellVisible(next,0);
+		SetToLine(next);
+		if (next >= nrows) return;
+	}
+
+	// Update file
+	if (!updated) {
+		grid->ass->FlagAsModified(_("editing"));
+		grid->CommitChanges();
+	}
 }
 
 
@@ -1275,4 +1286,10 @@ void SubsEditBox::OnButtonStrikeout(wxCommandEvent &event) {
 	SetOverride(_T("\\s"));
 }
 
+
+//////////
+// Commit
+void SubsEditBox::OnButtonCommit(wxCommandEvent &event) {
+	Commit(wxGetMouseState().ControlDown());
+}
 

@@ -95,6 +95,7 @@ private:
 	wxButton *Color2;
 	wxButton *Color3;
 	wxButton *Color4;
+	wxButton *CommitButton;
 
 	wxSizer *TopSizer;
 	wxSizer *MiddleBotSizer;
@@ -122,6 +123,7 @@ private:
 	void OnButtonItalics(wxCommandEvent &event);
 	void OnButtonUnderline(wxCommandEvent &event);
 	void OnButtonStrikeout(wxCommandEvent &event);
+	void OnButtonCommit(wxCommandEvent &event);
 
 	void OnSyntaxBox(wxCommandEvent &event);
 	void OnFrameRadio(wxCommandEvent &event);
@@ -157,6 +159,7 @@ public:
 	void SetToLine(int n,bool weak=false);
 	void UpdateFrameTiming();
 	void DoKeyPress(wxKeyEvent &event);
+	void Commit(bool stay);
 
 	DECLARE_EVENT_TABLE()
 };
@@ -202,5 +205,6 @@ enum {
 	BUTTON_COLOR1,
 	BUTTON_COLOR2,
 	BUTTON_COLOR3,
-	BUTTON_COLOR4
+	BUTTON_COLOR4,
+	BUTTON_COMMIT
 };

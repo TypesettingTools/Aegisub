@@ -118,6 +118,7 @@ Please visit http://aegisub.net to download latest version
   o Fixed glitches related to the Duration time edit box. (AMZ)
   o Tweaked the behavior of the margin boxes, now they no longer show padding zeros. (AMZ)
   o Actor and Effect fields now show a "ghosted" caption saying their name when they are not focused on and blank. (AMZ)
+  o Added a "Commit" button that duplicates the Enter/Ctrl+Enter functionality, since those shortcuts were not obvious to everyone. (AMZ)
 - Changes to Fonts Collector:
   o Changed the font searching engine to something slower, but far more reliable. (jfs/AMZ)
   o Added option to just verify if you have the fonts. (AMZ)
