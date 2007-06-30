@@ -632,9 +632,12 @@ void AudioKaraoke::EndSplit(bool commit) {
 	wxLogDebug(_T("AudioKaraoke::EndSplit(commit=%d)"), commit?1:0);
 	splitting = false;
 	bool hasSplit = false;
-	for (unsigned int i = 0; i < syllables.size(); i ++) {
+	size_t first_sel = ~0;
+	for (size_t i = 0; i < syllables.size(); i ++) {
 		if (syllables[i].pending_splits.size() > 0) {
 			if (commit) {
+				if (syllables[i].selected && i < first_sel)
+					first_sel = i;
 				SplitSyl(i);
 				hasSplit = true;
 			} else {
@@ -648,6 +651,7 @@ void AudioKaraoke::EndSplit(bool commit) {
 		wxLogDebug(_T("AudioKaraoke::EndSplit: hasSplit"));
 		must_rebuild = true;
 		display->NeedCommit = true;
+		SetSelection(first_sel);
 		display->Update();
 	}
 	// Always redraw, since the display is different in splitting mode
@@ -679,7 +683,8 @@ int AudioKaraoke::SplitSyl (unsigned int n) {
 	// Fixup the first syllable
 	basesyl.text = originalText.Mid(0, basesyl.pending_splits[0] + 1);
 	basesyl.unstripped_text = basesyl.text;
-	syllables[n].duration = originalDuration * basesyl.text.Length() / originalText.Length();
+	basesyl.selected = false;
+	basesyl.duration = originalDuration * basesyl.text.Length() / originalText.Length();
 	int curpos = basesyl.start_time + basesyl.duration;
 
 	// For each split, make a new syllable
@@ -696,7 +701,7 @@ int AudioKaraoke::SplitSyl (unsigned int n) {
 		newsyl.duration = originalDuration * newsyl.text.Length() / originalText.Length();
 		newsyl.start_time = curpos;
 		newsyl.type = basesyl.type;
-		newsyl.selected = basesyl.selected;
+		newsyl.selected = false;//basesyl.selected;
 		wxLogDebug(_T("AudioKaraoke::SplitSyl: newsyl. contents='%s' selected=%d"), newsyl.text.c_str(), newsyl.selected?1:0);
 		curpos += newsyl.duration;
 		syllables.insert(syllables.begin()+n+i+1, newsyl);
