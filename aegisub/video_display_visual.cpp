@@ -169,18 +169,18 @@ void VideoDisplayVisual::DrawOverlay() {
 
 					// Get scale
 					if (isCur && mode == 4) {
-						scalX = curScaleX;
-						scalY = curScaleY;
+						scalX = curFloat1;
+						scalY = curFloat2;
 					}
 					else GetLineScale(diag,scalX,scalY);
 
 					// Get angle
 					GetLineRotation(diag,rx,ry,rz);
 					if (isCur) {
-						if (mode == 2) rz = curAngle;
+						if (mode == 2) rz = curFloat1;
 						else if (mode == 3) {
-							rx = curAngle;
-							ry = curAngle2;
+							rx = curFloat1;
+							ry = curFloat2;
 						}
 					}
 
@@ -859,23 +859,23 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 			// Rotate Z
 			if (mode == 2) {
-				startAngle = atan2(double(lineOrgY-y*sh/h),double(x*sw/w-lineOrgX)) * 180.0 / 3.1415926535897932;
+				startFloat1 = atan2(double(lineOrgY-y*sh/h),double(x*sw/w-lineOrgX)) * 180.0 / 3.1415926535897932;
 				GetLineRotation(curSelection,rx,ry,rz);
-				origAngle = rz;
-				curAngle = rz;
+				origFloat1 = rz;
+				curFloat1 = rz;
 				curSelection->StripTag(_T("\\frz"));
 				curSelection->StripTag(_T("\\fr"));
 			}
 
 			// Rotate XY
 			if (mode == 3) {
-				startAngle = (lineOrgY-y*sh/h)*2.0;
-				startAngle2 = (x*sw/w-lineOrgX)*2.0;
+				startFloat1 = (lineOrgY-y*sh/h)*2.0;
+				startFloat2 = (x*sw/w-lineOrgX)*2.0;
 				GetLineRotation(curSelection,rx,ry,rz);
-				origAngle = rx;
-				origAngle2 = ry;
-				curAngle = rx;
-				curAngle2 = ry;
+				origFloat1 = rx;
+				origFloat2 = ry;
+				curFloat1 = rx;
+				curFloat2 = ry;
 				curSelection->StripTag(_T("\\frx"));
 				curSelection->StripTag(_T("\\fry"));
 			}
@@ -887,10 +887,10 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 				startX = x;
 				startY = y;
 				GetLineScale(curSelection,scalX,scalY);
-				origScaleX = scalX;
-				origScaleY = scalY;
-				curScaleX = scalX;
-				curScaleY = scalY;
+				origFloat1 = scalX;
+				origFloat2 = scalY;
+				curFloat1 = scalX;
+				curFloat2 = scalY;
 				curSelection->StripTag(_T("\\fscx"));
 				curSelection->StripTag(_T("\\fscy"));
 			}
@@ -930,20 +930,20 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	else if (hold == 2) {
 		// Find angle
 		float screenAngle = atan2(double(lineOrgY-y*sh/h),double(x*sw/w-lineOrgX)) * 180.0 / 3.1415926535897932;
-		curAngle = screenAngle - startAngle + origAngle;
-		while (curAngle < 0.0f) curAngle += 360.0f;
-		while (curAngle >= 360.0f) curAngle -= 360.0f;
+		curFloat1 = screenAngle - startFloat1 + origFloat1;
+		while (curFloat1 < 0.0f) curFloat1 += 360.0f;
+		while (curFloat1 >= 360.0f) curFloat1 -= 360.0f;
 
 		// Snap
 		if (event.ShiftDown()) {
-			curAngle = (float)((int)((curAngle+15.0f)/30.0f))*30.0f;
-			if (curAngle == 360.0f) curAngle = 0.0f;
+			curFloat1 = (float)((int)((curFloat1+15.0f)/30.0f))*30.0f;
+			if (curFloat1 == 360.0f) curFloat1 = 0.0f;
 		}
 
 		// Update
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			wxString param = PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle));
+			wxString param = PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat1));
 			grid->editBox->SetOverride(_T("\\frz"),param,0,false);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
@@ -954,29 +954,29 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	else if (hold == 3) {
 		// Find screen angles
 		float screenAngle = (lineOrgY-y*sh/h)*2.0;
-		float screenAngle2 = (x*sw/w-lineOrgX)*2.0;
+		float screenFloat2 = (x*sw/w-lineOrgX)*2.0;
 
 		// Calculate
-		curAngle = screenAngle - startAngle + origAngle;
-		curAngle2 = screenAngle2 - startAngle2 + origAngle2;
-		while (curAngle < 0.0) curAngle += 360.0;
-		while (curAngle >= 360.0) curAngle -= 360.0;
-		while (curAngle2 < 0.0) curAngle2 += 360.0;
-		while (curAngle2 >= 360.0) curAngle2 -= 360.0;
+		curFloat1 = screenAngle - startFloat1 + origFloat1;
+		curFloat2 = screenFloat2 - startFloat2 + origFloat2;
+		while (curFloat1 < 0.0) curFloat1 += 360.0;
+		while (curFloat1 >= 360.0) curFloat1 -= 360.0;
+		while (curFloat2 < 0.0) curFloat2 += 360.0;
+		while (curFloat2 >= 360.0) curFloat2 -= 360.0;
 
 		// Oh Snap
 		if (event.ShiftDown()) {
-			curAngle = (float)((int)((curAngle+15.0f)/30.0f))*30.0f;
-			curAngle2 = (float)((int)((curAngle2+15.0f)/30.0f))*30.0f;
-			if (curAngle == 360.0f) curAngle = 0.0f;
-			if (curAngle2 == 360.0f) curAngle = 0.0f;
+			curFloat1 = (float)((int)((curFloat1+15.0f)/30.0f))*30.0f;
+			curFloat2 = (float)((int)((curFloat2+15.0f)/30.0f))*30.0f;
+			if (curFloat1 == 360.0f) curFloat1 = 0.0f;
+			if (curFloat2 == 360.0f) curFloat1 = 0.0f;
 		}
 
 		// Update
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0,false);
-			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0,false);
+			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat1)),0,false);
+			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat2)),0,false);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -985,22 +985,22 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 	// Scale
 	else if (hold == 4) {
 		// Calculate
-		curScaleX = (float(x - startX)/0.8f) + origScaleX;
-		curScaleY = (float(startY - y)/0.8f) + origScaleY;
-		if (curScaleX < 0.0f) curScaleX = 0.0f;
-		if (curScaleY < 0.0f) curScaleY = 0.0f;
+		curFloat1 = (float(x - startX)/0.8f) + origFloat1;
+		curFloat2 = (float(startY - y)/0.8f) + origFloat2;
+		if (curFloat1 < 0.0f) curFloat1 = 0.0f;
+		if (curFloat2 < 0.0f) curFloat2 = 0.0f;
 
 		// Snap
 		if (event.ShiftDown()) {
-			curScaleX = (float)((int)((curScaleX+12.5f)/25.0f))*25.0f;
-			curScaleY = (float)((int)((curScaleY+12.5f)/25.0f))*25.0f;
+			curFloat1 = (float)((int)((curFloat1+12.5f)/25.0f))*25.0f;
+			curFloat2 = (float)((int)((curFloat2+12.5f)/25.0f))*25.0f;
 		}
 
 		// Update
 		if (realTime) {
 			AssLimitToVisibleFilter::SetFrame(frame_n);
-			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0,false);
-			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0,false);
+			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat1)),0,false);
+			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat2)),0,false);
 			grid->editBox->CommitText(true);
 			grid->CommitChanges(false,true);
 		}
@@ -1046,19 +1046,19 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 
 		// Finished rotating Z
 		else if (hold == 2) {
-			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0,false);
+			grid->editBox->SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat1)),0,false);
 		}
 
 		// Finished rotating XY
 		else if (hold == 3) {
-			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)),0,false);
-			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle2)),0,false);
+			grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat1)),0,false);
+			grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat2)),0,false);
 		}
 
 		// Finished scaling
 		else if (hold == 4) {
-			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0,false);
-			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0,false);
+			grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat1)),0,false);
+			grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curFloat2)),0,false);
 		}
 
 		// Finished clipping
@@ -1114,7 +1114,7 @@ void VideoDisplayVisual::OnMouseEvent (wxMouseEvent &event) {
 /////////////
 // Key event
 void VideoDisplayVisual::OnKeyEvent(wxKeyEvent &event) {
-	// FIXME: should these beconfigurable?
+	// FIXME: should these be configurable?
 	// Think of the frenchmen and other people not using qwerty layout
 	if (event.GetKeyCode() == 'A') SetMode(0);
 	if (event.GetKeyCode() == 'S') SetMode(1);

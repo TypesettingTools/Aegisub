@@ -34,61 +34,29 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
-#include "gl_wrap.h"
 #include "video_dragable_feature.h"
-#include <vector>
 
 
-//////////////
-// Prototypes
-class VideoDisplay;
-class AssDialogue;
+///////////////
+// Constructor
+VideoDragAbleFeature::VideoDragAbleFeature() {
+	type = DRAG_NONE;
+	x = -1;
+	y = -1;
+	line = NULL;
+}
 
 
-////////////////////////
-// Visual handler class
-class VideoDisplayVisual : public OpenGLWrapper {
-	friend class VideoDisplay;
+/////////////////////
+// Is mouse over it?
+bool VideoDragAbleFeature::IsMouseOver(int x,int y) {
+	return false;
+}
 
-private:
-	wxColour colour[4];
 
-	int mouseX,mouseY;
-	int startX,startY;
-	int curX,curY,curX2,curY2;
-	int origX,origY;
-	float curFloat1,startFloat1,origFloat1;
-	float curFloat2,startFloat2,origFloat2;
-	int lineOrgX,lineOrgY;
-
-	int mode;
-	int hold;
-	bool holding;
-
-	wxString mouseText;
-	AssDialogue *curSelection;
-	VideoDisplay *parent;
-
-	std::vector<VideoDragAbleFeature> drags;
-
-	void GetLinePosition(AssDialogue *diag,int &x,int &y);
-	void GetLinePosition(AssDialogue *diag,int &x,int &y,int &orgx,int &orgy);
-	void GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz);
-	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
-	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2);
-
-	void DrawOverlay();
-	void OnMouseEvent(wxMouseEvent &event);
-	void OnKeyEvent(wxKeyEvent &event);
-
-public:
-	void SetMode(int mode);
-
-	VideoDisplayVisual(VideoDisplay *parent);
-	~VideoDisplayVisual();
-};
+////////////////
+// Draw feature
+void VideoDragAbleFeature::Draw(bool highlighted) {
+}
