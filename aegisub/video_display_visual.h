@@ -40,7 +40,7 @@
 ///////////
 // Headers
 #include "gl_wrap.h"
-#include "video_dragable_feature.h"
+#include "video_draggable_feature.h"
 #include <vector>
 
 
@@ -74,7 +74,7 @@ private:
 	AssDialogue *curSelection;
 	VideoDisplay *parent;
 
-	std::vector<VideoDragAbleFeature> drags;
+	std::vector<VideoDraggableFeature> drags;
 
 	void GetLinePosition(AssDialogue *diag,int &x,int &y);
 	void GetLinePosition(AssDialogue *diag,int &x,int &y,int &orgx,int &orgy);

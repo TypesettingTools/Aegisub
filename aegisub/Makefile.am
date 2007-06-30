@@ -210,7 +210,7 @@ aegisub_SOURCES = \
 	video_context.cpp \
 	video_display.cpp \
 	video_display_visual.cpp \
-	video_dragable_feature.cpp \
+	video_draggable_feature.cpp \
 	video_frame.cpp \
 	video_provider.cpp \
 	video_provider_dummy.cpp \
