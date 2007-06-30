@@ -55,11 +55,13 @@ Please visit http://aegisub.net to download latest version
   o Misc. changes and bugfixes in karaoke mode. Using the syllable splitter should be easier now. (jfs)
   o Fixed loading of Avisynth Scripts as audio. (AMZ)
 - Changes to Audio Spectrum: (jfs)
-  o The calculated FFT data are now cached, so things should be faster
-  o Actual signal power is now more accurately represented
-  o The palette is changed
-  o The selection is no longer shown by ugly reverse colour but with a different palette instead
-  o Use vertical zoom slider to amplify/dampen displayed signal strength (useful for better visualisation of quiet sections, or easier picking out the dominating frequencies in noisy sections)
+  o The calculated FFT data are now cached, so things should be faster.
+    - The maximum size of the cache can be configured. Default is unlimited, which provides the best performance assuming enough memory is available.
+  o The quality of the spectrum can be easier configured, better quality requires more CPU and memory.
+  o Actual signal power is now more accurately represented.
+  o The palette is changed.
+  o The selection is no longer shown by ugly reverse colour but with a different palette instead.
+  o Use vertical zoom slider to amplify/dampen displayed signal strength. (Useful for better visualisation of quiet sections, or easier picking out the dominating frequencies in noisy sections.)
 - Style Manager changes:
   o Automatically select the style of the current line when Style Manager is opened. (jfs)
   o Style storages with invalid characters are now caught, and the invalid characters replaced with safe ones. Previously such storages seemed to be created correctly but were never stored to disk. (jfs)

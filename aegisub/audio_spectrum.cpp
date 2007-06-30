@@ -35,6 +35,10 @@
 //
 
 #include <assert.h>
+#include <vector>
+#include <list>
+#include <utility>
+#include <algorithm>
 #include "audio_spectrum.h"
 #include "fft.h"
 #include "colorspace.h"
@@ -44,14 +48,54 @@
 
 // Audio spectrum FFT data cache
 
+// Spectrum cache basically caches the raw result of FFT
+class AudioSpectrumCache {
+public:
+	// Type of a single FFT result line
+	typedef std::vector<float> CacheLine;
+
+	// Types for cache aging
+	typedef unsigned int CacheAccessTime;
+	struct CacheAgeData {
+		CacheAccessTime access_time;
+		unsigned long first_line;
+		unsigned long num_lines; // includes overlap-lines
+		bool operator< (const CacheAgeData& second) { return access_time < second.access_time; }
+		CacheAgeData(CacheAccessTime t, unsigned long first, unsigned long num) : access_time(t), first_line(first), num_lines(num) { }
+	};
+	typedef std::vector<CacheAgeData> CacheAgeList;
+
+	// Get the overlap'th overlapping FFT in FFT group i, generating it if needed
+	virtual CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created, CacheAccessTime access_time) = 0;
+
+	// Get the total number of cache lines currently stored in this cache node's sub tree
+	virtual size_t GetManagedLineCount() = 0;
+
+	// Append to a list of last access times to the cache
+	virtual void GetLineAccessTimes(CacheAgeList &ages) = 0;
+
+	// Delete the cache storage starting with the given line id
+	// Return true if the object called on is empty and can safely be deleted too
+	virtual bool KillLine(unsigned long line_id) = 0;
+
+	// Set the FFT size used
+	static void SetLineLength(unsigned long new_length)
+	{
+		line_length = new_length;
+		null_line.resize(new_length, 0);
+	}
+
+	virtual ~AudioSpectrumCache() {};
+
+protected:
+	// A cache line containing only zero-values
+	static CacheLine null_line;
+	// The FFT size
+	static unsigned long line_length;
+};
+
 AudioSpectrumCache::CacheLine AudioSpectrumCache::null_line;
 unsigned long AudioSpectrumCache::line_length;
-
-void AudioSpectrumCache::SetLineLength(unsigned long new_length)
-{
-	line_length = new_length;
-	null_line.resize(new_length, 0);
-}
 
 
 // Bottom level FFT cache, holds actual power data itself
@@ -62,14 +106,33 @@ private:
 	unsigned long start, length; // start and end of range
 	unsigned int overlaps;
 
+	CacheAccessTime last_access;
+
 public:
-	CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created)
+	CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created, CacheAccessTime access_time)
 	{
+		last_access = access_time;
+
 		// This check ought to be redundant
 		if (i >= start && i-start < length)
 			return data[i - start + overlap*length];
 		else
 			return null_line;
+	}
+
+	size_t GetManagedLineCount()
+	{
+		return data.size();
+	}
+
+	void GetLineAccessTimes(CacheAgeList &ages)
+	{
+		ages.push_back(CacheAgeData(last_access, start, data.size()));
+	}
+
+	bool KillLine(unsigned long line_id)
+	{
+		return start == line_id;
 	}
 
 	FinalSpectrumCache(AudioProvider *provider, unsigned long _start, unsigned long _length, unsigned int _overlaps)
@@ -149,7 +212,7 @@ private:
 	AudioProvider *provider;
 
 public:
-	CacheLine &GetLine(unsigned long i, unsigned int overlap, bool &created)
+	CacheLine &GetLine(unsigned long i, unsigned int overlap, bool &created, CacheAccessTime access_time)
 	{
 		if (i >= start && i-start <= length) {
 			// Determine which sub-cache this line resides in
@@ -165,10 +228,44 @@ public:
 				}
 			}
 
-			return sub_caches[subcache]->GetLine(i, overlap, created);
+			return sub_caches[subcache]->GetLine(i, overlap, created, access_time);
 		} else {
 			return null_line;
 		}
+	}
+
+	size_t GetManagedLineCount()
+	{
+		size_t res = 0;
+		for (size_t i = 0; i < sub_caches.size(); ++i) {
+			if (sub_caches[i])
+				res += sub_caches[i]->GetManagedLineCount();
+		}
+		return res;
+	}
+
+	void GetLineAccessTimes(CacheAgeList &ages)
+	{
+		for (size_t i = 0; i < sub_caches.size(); ++i) {
+			if (sub_caches[i])
+				sub_caches[i]->GetLineAccessTimes(ages);
+		}
+	}
+
+	bool KillLine(unsigned long line_id)
+	{
+		int sub_caches_left = 0;
+		for (size_t i = 0; i < sub_caches.size(); ++i) {
+			if (sub_caches[i]) {
+				if (sub_caches[i]->KillLine(line_id)) {
+					delete sub_caches[i];
+					sub_caches[i] = 0;
+				} else {
+					sub_caches_left++;
+				}
+			}
+		}
+		return sub_caches_left == 0;
 	}
 
 	IntermediateSpectrumCache(AudioProvider *_provider, unsigned long _start, unsigned long _length, unsigned int _overlaps, int _depth)
@@ -203,6 +300,91 @@ public:
 };
 
 
+
+class AudioSpectrumCacheManager {
+private:
+	IntermediateSpectrumCache *cache_root;
+	unsigned long cache_hits, cache_misses;
+	AudioSpectrumCache::CacheAccessTime cur_time;
+
+	unsigned long max_lines_cached;
+
+public:
+	AudioSpectrumCache::CacheLine &GetLine(unsigned long i, unsigned int overlap)
+	{
+		bool created = false;
+		AudioSpectrumCache::CacheLine &res = cache_root->GetLine(i, overlap, created, cur_time++);
+		if (created)
+			cache_misses++;
+		else
+			cache_hits++;
+		return res;
+	}
+
+	void Age()
+	{
+		wxLogDebug(_T("AudioSpectrumCacheManager stats: hits=%u, misses=%u, misses%%=%f, managed lines=%u (max=%u)"), cache_hits, cache_misses, cache_misses/float(cache_hits+cache_misses)*100, cache_root->GetManagedLineCount(), max_lines_cached);
+
+		// 0 means no limit
+		if (max_lines_cached == 0)
+			return;
+		// No reason to proceed with complicated stuff if the count is too small
+		// (FIXME: does this really pay off?)
+		if (cache_root->GetManagedLineCount() < max_lines_cached)
+			return;
+
+		// Get and sort ages
+		AudioSpectrumCache::CacheAgeList ages;
+		cache_root->GetLineAccessTimes(ages);
+		std::sort(ages.begin(), ages.end());
+
+		// Number of lines we have found used so far
+		// When this exceeds max_lines_caches go into kill-mode
+		unsigned long cumulative_lines = 0;
+		// Run backwards through the line age list (the most recently accessed items are at end)
+		AudioSpectrumCache::CacheAgeList::reverse_iterator it = ages.rbegin();
+
+		// Find the point where we have too many lines cached
+		while (cumulative_lines < max_lines_cached) {
+			if (it == ages.rend()) {
+				wxLogDebug(_T("AudioSpectrumCacheManager done aging did not exceed max_lines_cached"));
+				return;
+			}
+			cumulative_lines += it->num_lines;
+			++it;
+		}
+
+		// By here, we have exceeded max_lines_cached so backtrack one
+		--it;
+
+		// And now start cleaning up
+		for (; it != ages.rend(); ++it) {
+			cache_root->KillLine(it->first_line);
+		}
+
+		wxLogDebug(_T("AudioSpectrumCacheManager done aging, managed lines now=%u (max=%u)"), cache_root->GetManagedLineCount(), max_lines_cached);
+		assert(cache_root->GetManagedLineCount() < max_lines_cached);
+	}
+
+	AudioSpectrumCacheManager(AudioProvider *provider, unsigned long line_length, unsigned long num_lines, unsigned int num_overlaps)
+	{
+		cache_hits = cache_misses = 0;
+		cur_time = 0;
+		cache_root = new IntermediateSpectrumCache(provider, 0, num_lines, num_overlaps, 0);
+
+		// option is stored in megabytes, but we want number of bytes
+		unsigned long max_cache_size = Options.AsInt(_T("Audio Spectrum Memory Max")) * 1024 * 1024;
+		unsigned long line_size = sizeof(AudioSpectrumCache::CacheLine::value_type) * line_length;
+		max_lines_cached = max_cache_size / line_size;
+	}
+
+	~AudioSpectrumCacheManager()
+	{
+		delete cache_root;
+	}
+};
+
+
 // AudioSpectrum
 
 AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
@@ -228,7 +410,7 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 	num_lines = (unsigned long)_num_lines;
 
 	AudioSpectrumCache::SetLineLength(line_length);
-	cache = new IntermediateSpectrumCache(provider, 0, num_lines, fft_overlaps, 0);
+	cache = new AudioSpectrumCacheManager(provider, line_length, num_lines, fft_overlaps);
 
 	power_scale = 1;
 	minband = Options.AsInt(_T("Audio Spectrum Cutoff"));
@@ -261,9 +443,6 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 	unsigned long first_line = (unsigned long)(fft_overlaps * range_start / line_length / 2);
 	unsigned long last_line = (unsigned long)(fft_overlaps * range_end / line_length / 2);
 
-	unsigned int cache_hits=0, cache_misses=0;
-	bool was_cache_miss;
-
 	float *power = new float[line_length];
 
 	int last_imgcol_rendered = -1;
@@ -290,15 +469,12 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 		if (imgcol <= last_imgcol_rendered)
 			continue;
 
-		was_cache_miss = false;
-		AudioSpectrumCache::CacheLine &line = cache->GetLine(baseline, overlap, was_cache_miss);
+		AudioSpectrumCache::CacheLine &line = cache->GetLine(baseline, overlap);
 		++overlap;
 		if (overlap >= fft_overlaps) {
 			overlap = 0;
 			++baseline;
 		}
-		if (was_cache_miss) cache_misses++;
-		else cache_hits++;
 
 		// Apply a "compressed" scaling to the signal power
 		for (unsigned int j = 0; j < line_length; j++) {
@@ -365,7 +541,7 @@ void AudioSpectrum::RenderRange(__int64 range_start, __int64 range_end, bool sel
 
 	delete[] power;
 
-	wxLogDebug(_T("Rendered spectrum: %u cache hits, %u misses"), cache_hits, cache_misses);
+	cache->Age();
 }
 
 

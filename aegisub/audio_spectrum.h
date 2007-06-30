@@ -38,36 +38,17 @@
 #define AUDIO_SPECTRUM_H
 
 #include <wx/wxprec.h>
-#include <vector>
 #include "audio_provider.h"
 
 
-// Spectrum cache basically caches the raw result of FFT
-class AudioSpectrumCache {
-public:
-	// Type of a single FFT result line
-	typedef std::vector<float> CacheLine;
-
-	// Get the overlap'th overlapping FFT in FFT group i, generating it if needed
-	virtual CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created) = 0;
-
-	// Set the FFT size used
-	static void SetLineLength(unsigned long new_length);
-
-	virtual ~AudioSpectrumCache() {};
-
-protected:
-	// A cache line containing only zero-values
-	static CacheLine null_line;
-	// The FFT size
-	static unsigned long line_length;
-};
+// Specified and implemented in cpp file, interface is private to spectrum code
+class AudioSpectrumCacheManager;
 
 
 class AudioSpectrum {
 private:
 	// Data provider
-	AudioSpectrumCache *cache;
+	AudioSpectrumCacheManager *cache;
 
 	// Colour pallettes
 	unsigned char colours_normal[256*3];

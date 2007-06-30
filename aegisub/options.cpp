@@ -193,6 +193,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	// Technically these can do with just the spectrum object being re-created
 	SetInt(_T("Audio Spectrum Cutoff"),0);
 	SetInt(_T("Audio Spectrum Quality"),0);
+	SetInt(_T("Audio Spectrum Memory Max"),0); // megabytes
 
 	// Automation
 	// The path changes only take effect when a script is (re)loaded but Automatic should be good enough, it certainly doesn't warrart a restart
