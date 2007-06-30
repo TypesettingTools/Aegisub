@@ -582,14 +582,18 @@ void AudioKaraoke::Join() {
 	// Loop
 	for (size_t i=0;i<syls;i++) {
 		curSyl = &syllables.at(i);
+		wxLogDebug(_T("AudioKaraoke::Join: syllable %d, text='%s', unstripped_text='%s', duration=%d"), i, curSyl->text.c_str(), curSyl->unstripped_text.c_str(), curSyl->duration);
 		if (curSyl->selected) {
 			if (!gotOne) {
 				gotOne = true;
 				first = i;
 			}
 			else {
-				syllables.at(i-1).duration += curSyl->duration;
-				syllables.at(i-1).unstripped_text += curSyl->unstripped_text;
+				AudioKaraokeSyllable &work = syllables.at(first);
+				wxLogDebug(_T("AudioKaraoke::Join: worksyl %d, text='%s', unstripped_text='%s', duration=%d"), i, work.text.c_str(), work.unstripped_text.c_str(), work.duration);
+				work.duration += curSyl->duration;
+				work.text += curSyl->text;
+				work.unstripped_text += curSyl->unstripped_text;
 				syllables.erase(syllables.begin()+i);
 				i--;
 				syls--;
@@ -605,6 +609,8 @@ void AudioKaraoke::Join() {
 	display->NeedCommit = true;
 	display->Update();
 	Refresh(false);
+
+	wxLogDebug(_T("AudioKaraoke::Join: returning"));
 }
 
 
