@@ -72,4 +72,5 @@ public:
 	static void Update() { GetInstance()->DoUpdate(); }
 	static void Bind(wxWindow *window,wxString tooltip,wxArrayString hotkeys) { GetInstance()->AddTips(window,tooltip,hotkeys); }
 	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey=_T(""));
+	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxString hotkey2);
 };

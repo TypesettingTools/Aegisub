@@ -61,6 +61,7 @@
 #include "audio_display.h"
 #include "video_context.h"
 #include "browse_button.h"
+#include "tooltip_manager.h"
 
 
 ///////
@@ -866,6 +867,9 @@ void DialogOptions::WriteToOptions(bool justApply) {
 
 		// Rebuild accelerator table
 		parent->SetAccelerators();
+
+		// Update tooltips
+		ToolTipManager::Update();
 	}
 
 	// Save options

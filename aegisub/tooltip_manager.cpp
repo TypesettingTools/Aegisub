@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include "tooltip_manager.h"
+#include "hotkeys.h"
 
 
 ///////////////////
@@ -69,6 +70,16 @@ void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey) {
 }
 
 
+////////////////////////
+// Two hotkeys overload
+void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxString hotkey2) {
+	wxArrayString hotkeys;
+	hotkeys.Add(hotkey1);
+	hotkeys.Add(hotkey2);
+	Bind(window,tooltip,hotkeys);
+}
+
+
 ///////////////////
 // Static instance
 ToolTipManager *ToolTipManager::instance = NULL;
@@ -84,7 +95,7 @@ void ToolTipBinding::Update() {
 	wxString finalTip = toolTip;
 	wxArrayString hotkeysLeft = hotkeys;
 	while (hotkeysLeft.Count()) {
-		finalTip.Replace(_T("%KEY%"),hotkeysLeft[0],false);
+		finalTip.Replace(_T("%KEY%"),Hotkeys.GetText(hotkeysLeft[0]),false);
 		hotkeysLeft.RemoveAt(0);
 	}
 	window->SetToolTip(finalTip);

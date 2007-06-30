@@ -48,6 +48,7 @@
 #include "options.h"
 #include "toggle_bitmap.h"
 #include "hotkeys.h"
+#include "tooltip_manager.h"
 
 #ifdef __WXMAC__
 #include "bevelButton.h"
@@ -123,46 +124,46 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxButton *temp;
 	temp = new wxBitmapButton(this,Audio_Button_Prev,wxBITMAP(button_prev),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Previous line/syllable (") + Hotkeys.GetText(_T("Audio Prev Line")) + _T("/") + Hotkeys.GetText(_T("Audio Prev Line Alt")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Previous line or syllable (%KEY%/%KEY%)"),_T("Audio Prev Line"),_T("Audio Prev Line Alt"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Next,wxBITMAP(button_next),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Next line/syllable (") + Hotkeys.GetText(_T("Audio Next Line")) + _T("/") + Hotkeys.GetText(_T("Audio Next Line Alt")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Next line/syllable (%KEY%/%KEY%)"),_T("Audio Next Line"),_T("Audio Next Line Alt"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Play,wxBITMAP(button_playsel),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Play selection (") + Hotkeys.GetText(_T("Audio Play")) + _T("/") + Hotkeys.GetText(_T("Audio Play Alt")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Play selection (%KEY%/%KEY%)"),_T("Audio Play"),_T("Audio Play Alt"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Play_Row,wxBITMAP(button_playline),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Play current line (") + Hotkeys.GetText(_T("Audio Play Original Line")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Play current line (%KEY%)"),_T("Audio Play Original Line"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Stop,wxBITMAP(button_stop),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Stop (") + Hotkeys.GetText(_T("Audio Stop")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Stop (%KEY%)"),_T("Audio Stop"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
 	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Before,wxBITMAP(button_playfivehbefore),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Play 500 ms before selection (") + Hotkeys.GetText(_T("Audio Play 500ms Before")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Play 500 ms before selection (%KEY%)"),_T("Audio Play 500ms Before"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_After,wxBITMAP(button_playfivehafter),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Play 500 ms after selection (") + Hotkeys.GetText(_T("Audio Play 500ms after")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Play 500 ms after selection (%KEY%)"),_T("Audio Play 500ms after"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_First,wxBITMAP(button_playfirstfiveh),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Play first 500ms of selection (") + Hotkeys.GetText(_T("Audio Play First 500ms")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Play first 500ms of selection (%KEY%)"),_T("Audio Play First 500ms"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Last,wxBITMAP(button_playlastfiveh),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Play last 500ms of selection (") + Hotkeys.GetText(_T("Audio Play Last 500ms")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Play last 500ms of selection (%KEY%)"),_T("Audio Play Last 500ms"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Play_To_End,wxBITMAP(button_playtoend),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Play from selection start to end of file (") + Hotkeys.GetText(_T("Audio Play To End")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Play from selection start to end of file (%KEY%)"),_T("Audio Play To End"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
 	temp = new wxBitmapButton(this,Audio_Button_Leadin,wxBITMAP(button_leadin),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Add lead in (") + Hotkeys.GetText(_T("Audio Add Lead In")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Add lead in (%KEY%)"),_T("Audio Add Lead In"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Leadout,wxBITMAP(button_leadout),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Add lead out (") + Hotkeys.GetText(_T("Audio Add Lead Out")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Add lead out (%KEY%)"),_T("Audio Add Lead Out"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
 	temp = new wxBitmapButton(this,Audio_Button_Commit,wxBITMAP(button_audio_commit),wxDefaultPosition,wxSize(30,-1));
-	temp->SetToolTip(_("Commit changes (") + Hotkeys.GetText(_T("Audio Commit (Stay)")) + _T("/") + Hotkeys.GetText(_T("Audio Commit Alt")) + _T(")"));
+	ToolTipManager::Bind(temp,_("Commit changes (%KEY%/%KEY%)"),_T("Audio Commit (Stay)"),_T("Audio Commit Alt"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
 	temp = new wxBitmapButton(this,Audio_Button_Goto,wxBITMAP(button_audio_goto),wxDefaultPosition,wxSize(30,-1));
 	temp->SetToolTip(_("Go to selection"));
