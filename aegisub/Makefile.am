@@ -200,6 +200,7 @@ aegisub_SOURCES = \
 	thesaurus_myspell.cpp \
 	timeedit_ctrl.cpp \
 	toggle_bitmap.cpp \
+	tooltip_manager.cpp \
 	utils.cpp \
 	validators.cpp \
 	variable_data.cpp \
