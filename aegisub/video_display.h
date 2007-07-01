@@ -56,7 +56,7 @@ class AudioProvider;
 class AudioDisplay;
 class AssDialogue;
 class VideoProvider;
-class VideoDisplayVisual;
+class VisualTool;
 class VideoBox;
 
 
@@ -64,9 +64,11 @@ class VideoBox;
 // Main class
 class VideoDisplay: public wxGLCanvas {
 	friend class AudioProvider;
-	friend class VideoDisplayVisual;
+	friend class VisualTool;
 
 private:
+	int visualMode;
+
 	wxSize origSize;
 	int w,h;
 	int dx1,dx2,dy1,dy2;
@@ -88,7 +90,7 @@ private:
 	void OnSaveSnapshotRaw(wxCommandEvent &event);
 
 public:
-	VideoDisplayVisual *visual;
+	VisualTool *visual;
 	VideoBox *box;
 
 	double zoomValue;
@@ -107,12 +109,12 @@ public:
 
 	void ShowCursor(bool show);
 	void ConvertMouseCoords(int &x,int &y);
-	void DrawText(wxPoint Pos, wxString Text);
 	void UpdatePositionDisplay();
 	void UpdateSize();
 	void SetZoom(double value);
 	void SetZoomPos(int pos);
 	void UpdateSubsRelativeTime();
+	void SetVisualMode(int mode);
 
 	DECLARE_EVENT_TABLE()
 };

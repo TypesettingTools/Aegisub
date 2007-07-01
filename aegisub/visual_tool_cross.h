@@ -34,29 +34,21 @@
 //
 
 
+#pragma once
+
+
 ///////////
 // Headers
-#include "video_draggable_feature.h"
+#include "visual_tool.h"
 
 
-///////////////
-// Constructor
-VideoDraggableFeature::VideoDraggableFeature() {
-	type = DRAG_NONE;
-	x = -1;
-	y = -1;
-	line = NULL;
-}
+////////////////////////
+// Crosshair tool class
+class VisualToolCross : public VisualTool {
+public:
+	VisualToolCross(VideoDisplay *parent);
+	~VisualToolCross();
 
-
-/////////////////////
-// Is mouse over it?
-bool VideoDraggableFeature::IsMouseOver(int x,int y) {
-	return false;
-}
-
-
-////////////////
-// Draw feature
-void VideoDraggableFeature::Draw(bool highlighted) {
-}
+	void Update();
+	void Draw();
+};

@@ -72,7 +72,7 @@ class VideoContextThread;
 // Main class
 class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
-	friend class VideoDisplayVisual;
+	friend class VisualTool;
 	friend class VideoContextThread;
 
 private:

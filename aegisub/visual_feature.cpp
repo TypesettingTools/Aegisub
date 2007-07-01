@@ -34,36 +34,29 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
-#include "ass_dialogue.h"
+#include "visual_feature.h"
 
 
-////////////////
-// Feature type
-enum DraggableFeatureType {
-	DRAG_NONE,
-	DRAG_BIG_SQUARE,
-	DRAG_BIG_CIRCLE,
-	DRAG_SMALL_SQUARE,
-	DRAG_SMALL_CIRCLE
-};
+///////////////
+// Constructor
+VisualDraggableFeature::VisualDraggableFeature() {
+	type = DRAG_NONE;
+	x = -1;
+	y = -1;
+	line = NULL;
+}
 
 
 /////////////////////
-// Drag-able feature
-class VideoDraggableFeature {
-public:
-	DraggableFeatureType type;
-	int x,y;
-	int index;
-	AssDialogue *line;
+// Is mouse over it?
+bool VisualDraggableFeature::IsMouseOver(int x,int y) {
+	return false;
+}
 
-	bool IsMouseOver(int x,int y);
-	void Draw(bool highlighted);
 
-	VideoDraggableFeature();
-};
+////////////////
+// Draw feature
+void VisualDraggableFeature::Draw(bool highlighted) {
+}

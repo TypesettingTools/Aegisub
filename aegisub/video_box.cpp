@@ -43,7 +43,6 @@
 #include <wx/rawbmp.h>
 #include "video_box.h"
 #include "video_display.h"
-#include "video_display_visual.h"
 #include "video_slider.h"
 #include "frame_main.h"
 #include "toggle_bitmap.h"
@@ -208,42 +207,42 @@ void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
 /////////////////
 // Standard mode
 void VideoBox::OnModeStandard(wxCommandEvent &event) {
-	videoDisplay->visual->SetMode(0);
+	videoDisplay->SetVisualMode(0);
 }
 
 
 /////////////
 // Drag mode
 void VideoBox::OnModeDrag(wxCommandEvent &event) {
-	videoDisplay->visual->SetMode(1);
+	videoDisplay->SetVisualMode(1);
 }
 
 
 /////////////////
 // Rotate Z mode
 void VideoBox::OnModeRotateZ(wxCommandEvent &event) {
-	videoDisplay->visual->SetMode(2);
+	videoDisplay->SetVisualMode(2);
 }
 
 
 //////////////////
 // Rotate XY mode
 void VideoBox::OnModeRotateXY(wxCommandEvent &event) {
-	videoDisplay->visual->SetMode(3);
+	videoDisplay->SetVisualMode(3);
 }
 
 
 //////////////
 // Scale mode
 void VideoBox::OnModeScale(wxCommandEvent &event) {
-	videoDisplay->visual->SetMode(4);
+	videoDisplay->SetVisualMode(4);
 }
 
 
 /////////////
 // Clip mode
 void VideoBox::OnModeClip(wxCommandEvent &event) {
-	videoDisplay->visual->SetMode(5);
+	videoDisplay->SetVisualMode(5);
 }
 
 

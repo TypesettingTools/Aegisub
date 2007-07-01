@@ -51,7 +51,6 @@
 #include <wx/config.h>
 #include "utils.h"
 #include "video_display.h"
-#include "video_display_visual.h"
 #include "video_provider.h"
 #include "vfr.h"
 #include "ass_file.h"
@@ -68,6 +67,8 @@
 #include "video_slider.h"
 #include "video_box.h"
 #include "gl_wrap.h"
+#include "visual_tool.h"
+#include "visual_tool_cross.h"
 
 
 ///////
@@ -116,8 +117,10 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	origSize = size;
 	zoomValue = 1.0;
 	freeSize = false;
-	visual = new VideoDisplayVisual(this);
+	visual = NULL;
 	SetCursor(wxNullCursor);
+	visualMode = -1;
+	SetVisualMode(0);
 }
 
 
@@ -125,6 +128,7 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 // Destructor
 VideoDisplay::~VideoDisplay () {
 	delete visual;
+	visual = NULL;
 	VideoContext::Get()->RemoveDisplay(this);
 }
 
@@ -275,8 +279,7 @@ void VideoDisplay::Render() {
 	DrawTVEffects();
 
 	// Draw overlay
-	wxASSERT(visual);
-	visual->DrawOverlay();
+	if (visual) visual->Draw();
 
 	// Swap buffers
 	glFinish();
@@ -451,7 +454,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Enforce correct cursor display
-	ShowCursor(visual->mode != 0);
+	ShowCursor(visualMode != 0);
 
 	// Click?
 	if (event.ButtonDown(wxMOUSE_BTN_ANY)) {
@@ -459,16 +462,21 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Send to visual
-	wxASSERT(visual);
-	visual->OnMouseEvent(event);
+	if (visual) visual->OnMouseEvent(event);
 }
 
 
 /////////////
 // Key event
 void VideoDisplay::OnKey(wxKeyEvent &event) {
-	wxASSERT(visual);
-	visual->OnKeyEvent(event);
+	// FIXME: should these be configurable?
+	// Think of the frenchmen and other people not using qwerty layout
+	if (event.GetKeyCode() == 'A') SetVisualMode(0);
+	if (event.GetKeyCode() == 'S') SetVisualMode(1);
+	if (event.GetKeyCode() == 'D') SetVisualMode(2);
+	if (event.GetKeyCode() == 'F') SetVisualMode(3);
+	if (event.GetKeyCode() == 'G') SetVisualMode(4);
+	if (event.GetKeyCode() == 'H') SetVisualMode(5);	
 }
 
 
@@ -603,6 +611,7 @@ void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &event) {
 /////////////////////
 // Copy coordinates
 void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
+	wxLogMessage(_T("TODO: FIXME"));
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
 		VideoContext::Get()->GetScriptSize(sw,sh);
@@ -611,23 +620,6 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 		wxTheClipboard->SetData(new wxTextDataObject(wxString::Format(_T("%i,%i"),vx,vy)));
 		wxTheClipboard->Close();
 	}
-}
-
-
-//////////////////
-// DrawVideoWithOverlay
-void VideoDisplay::DrawText( wxPoint Pos, wxString text ) {
-	//// Draw frame
-	//wxClientDC dc(this);
-	//dc.SetBrush(wxBrush(wxColour(128,128,128),wxSOLID));
-	//dc.DrawRectangle( 0,0, provider->GetWidth(), provider->GetHeight() );
-	//dc.SetTextForeground(wxColour(64,64,64));
-	//dc.DrawText(text,Pos.x+1,Pos.y-1);
-	//dc.DrawText(text,Pos.x+1,Pos.y+1);
-	//dc.DrawText(text,Pos.x-1,Pos.y-1);
-	//dc.DrawText(text,Pos.x-1,Pos.y+1);
-	//dc.SetTextForeground(wxColour(255,255,255));
-	//dc.DrawText(text,Pos.x,Pos.y);
 }
 
 
@@ -642,4 +634,20 @@ void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 	wxASSERT(h > 0);
 	x = (x-dx1)*w/dx2;
 	y = (y-dy1)*h/dy2;
+}
+
+
+////////////
+// Set mode
+void VideoDisplay::SetVisualMode(int mode) {
+	// Set visual
+	visualMode = mode;
+	delete visual;
+	switch (mode) {
+		case 0: visual = new VisualToolCross(this); break;
+		default: visual = NULL;
+	}
+
+	// Render
+	Render();
 }

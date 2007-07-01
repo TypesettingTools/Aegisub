@@ -81,17 +81,21 @@ bool AegisubApp::OnInit() {
 		setlocale(LC_NUMERIC, "C");
 		setlocale(LC_CTYPE, "C");
 
-		// App name
-#ifdef __WXMSW__ || __WXMAC__
+		// App name (yeah, this is a little weird to get rid of an odd warning)
+#ifdef __WXMSW__
+		SetAppName(_T("Aegisub"));
+#else
+#ifdef __WXMAC__
 		SetAppName(_T("Aegisub"));
 #else
 		SetAppName(_T("aegisub"));
 #endif
+#endif
 
 		// Crash handling
-		#ifndef _DEBUG
+#ifndef _DEBUG
 		wxHandleFatalExceptions(true);
-		#endif
+#endif
 
 		// Set config file
 		Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));

@@ -209,12 +209,13 @@ aegisub_SOURCES = \
 	video_box.cpp \
 	video_context.cpp \
 	video_display.cpp \
-	video_display_visual.cpp \
-	video_draggable_feature.cpp \
 	video_frame.cpp \
 	video_provider.cpp \
 	video_provider_dummy.cpp \
 	video_slider.cpp \
+	visual_feature.cpp \
+	visual_tool.cpp \
+	visual_tool_cross.cpp \
 	MatroskaParser.c
 
 noinst_HEADERS = \
