@@ -58,11 +58,17 @@ private:
 protected:
 	wxColour colour[4];
 
+	bool holding;
+	AssDialogue *curDiag;
+
 	int w,h,sw,sh,mx,my;
 	int frame_n;
 
 	bool leftClick;
 	bool leftDClick;
+	bool shiftDown;
+	bool ctrlDown;
+	bool altDown;
 
 	void GetLinePosition(AssDialogue *diag,int &x,int &y);
 	void GetLinePosition(AssDialogue *diag,int &x,int &y,int &orgx,int &orgy);
@@ -72,6 +78,12 @@ protected:
 	void FillPositionData();
 
 	VideoDisplay *GetParent() { return parent; }
+
+	virtual AssDialogue *GetActiveDialogueLine();
+	virtual bool CanHold() { return false; }
+	virtual void InitializeHold() {}
+	virtual void UpdateHold() {}
+	virtual void CommitHold() {}
 
 public:
 	int mouseX,mouseY;

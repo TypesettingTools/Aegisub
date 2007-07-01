@@ -81,11 +81,13 @@ PFNGLUNIFORM2FARBPROC glUniform2fARB = NULL;
 #endif
 
 
-////////////////
-// GLEW library
-//#if __VISUALC__ >= 1200
-//#pragma comment(lib,"glew32.lib")
-//#endif
+///////////////
+// Constructor
+OpenGLWrapper::OpenGLWrapper() {
+	r1 = g1 = b1 = a1 = 1.0f;
+	r2 = g2 = b2 = a2 = 1.0f;
+	lw = 1;
+}
 
 
 /////////////

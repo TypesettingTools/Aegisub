@@ -63,12 +63,120 @@ VisualTool::VisualTool(VideoDisplay *par) {
 	colour[1] = wxColour(166,247,177);
 	colour[2] = wxColour(255,255,255);
 	colour[3] = wxColour(187,0,0);
+
+	holding = false;
+	curDiag = NULL;
 }
 
 
 //////////////
 // Destructor
 VisualTool::~VisualTool() {
+}
+
+
+///////////////
+// Mouse event
+void VisualTool::OnMouseEvent (wxMouseEvent &event) {
+	// General variables
+	mouseX = event.GetX();
+	mouseY = event.GetY();
+	parent->ConvertMouseCoords(mouseX,mouseY);
+	parent->GetClientSize(&w,&h);
+	VideoContext::Get()->GetScriptSize(sw,sh);
+	frame_n = VideoContext::Get()->GetFrameN();
+	SubtitlesGrid *grid = VideoContext::Get()->grid;
+	bool realTime = Options.AsBool(_T("Video Visual Realtime"));
+
+	// Mouse leaving control
+	if (event.Leaving()) {
+		mouseX = -1;
+		mouseY = -1;
+	}
+
+	// Transformed mouse x/y
+	mx = mouseX * sw / w;
+	my = mouseY * sh / h;
+
+	// Clicks
+	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
+	leftDClick = event.LeftDClick();
+	shiftDown = event.m_shiftDown;
+	ctrlDown = event.m_controlDown;
+	altDown = event.m_altDown;
+
+	// Hold
+	if (CanHold()) {
+		// Start holding
+		if (!holding && event.LeftIsDown()) {
+			// Get a dialogue
+			curDiag = GetActiveDialogueLine();
+			if (curDiag) {
+				// Initialize Drag
+				InitializeHold();
+
+				// Set flags
+				holding = true;
+				parent->CaptureMouse();
+				if (realTime) AssLimitToVisibleFilter::SetFrame(frame_n);
+			}
+		}
+
+		if (holding) {
+			// Holding
+			if (event.LeftIsDown()) {
+				// Update drag
+				UpdateHold();
+
+				if (realTime) {
+					// Commit
+					CommitHold();
+					grid->editBox->CommitText(true);
+					grid->CommitChanges(false,true);
+				}
+			}
+
+			// Release
+			else {
+				// Disable limiting
+				if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
+
+				// Commit
+				CommitHold();
+				grid->editBox->CommitText();
+				grid->ass->FlagAsModified(_("visual typesetting"));
+				grid->CommitChanges(false,true);
+
+				// Clean up
+				holding = false;
+				curDiag = NULL;
+				parent->ReleaseMouse();
+				parent->SetFocus();
+			}
+		}
+	}
+
+	// Update
+	Update();
+}
+
+
+////////////////////////////
+// Get active dialogue line
+AssDialogue* VisualTool::GetActiveDialogueLine() {
+	SubtitlesGrid *grid = VideoContext::Get()->grid;
+	AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
+
+	// Check if it's within range
+	if (diag) {
+		int f1 = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
+		int f2 = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
+
+		// Invisible
+		if (f1 > frame_n || f2 < frame_n) return NULL;
+	}
+
+	return diag;
 }
 
 
@@ -299,40 +407,4 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) 
 		}
 	}
 	diag->ClearBlocks();
-}
-
-
-///////////////
-// Mouse event
-void VisualTool::OnMouseEvent (wxMouseEvent &event) {
-	// Coords
-	int x = event.GetX();
-	int y = event.GetY();
-	parent->ConvertMouseCoords(x,y);
-	parent->GetClientSize(&w,&h);
-	VideoContext::Get()->GetScriptSize(sw,sh);
-	frame_n = VideoContext::Get()->GetFrameN();
-
-	// Hover
-	if (x != mouseX || y != mouseY) {
-		mouseX = x;
-		mouseY = y;
-	}
-
-	// Mouse leaving control
-	if (event.Leaving()) {
-		mouseX = -1;
-		mouseY = -1;
-	}
-
-	// Transformed mouse x/y
-	mx = mouseX * sw / w;
-	my = mouseY * sh / h;
-
-	// Clicks
-	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
-	leftDClick = event.LeftDClick();
-
-	// Update
-	Update();
 }

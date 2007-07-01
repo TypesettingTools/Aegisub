@@ -83,7 +83,6 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent)
 //////////////
 // Destructor
 AudioKaraoke::~AudioKaraoke() {
-	wxLogDebug(_T("AudioKaraoke destructor"));
 	delete workDiag;
 }
 

@@ -37,38 +37,27 @@
 #pragma once
 
 
-//////////////////
-// OpenGL Wrapper
-class OpenGLWrapper {
-private:
-	float r1,g1,b1,a1;
-	float r2,g2,b2,a2;
-	int lw;
+///////////
+// Headers
+#include "visual_tool.h"
 
-	static void Initialize();
-	static GLuint CreateStandardVertexShader();
-	static GLuint CreateYV12PixelShader();
-	static GLuint CreateShaderProgram(GLuint vertex,GLuint pixel);
+
+/////////////////////////
+// Z Rotation tool class
+class VisualToolRotateZ : public VisualTool {
+private:
+	float curAngle,startAngle,origAngle;
+	int orgx,orgy,odx,ody;
+	float rx,ry;
+
+	bool CanHold() { return true; }
+	void InitializeHold();
+	void UpdateHold();
+	void CommitHold();
 
 public:
-	OpenGLWrapper();
+	VisualToolRotateZ(VideoDisplay *parent);
 
-	static wxMutex glMutex;
-
-	void SetLineColour(wxColour col,float alpha=1.0f,int width=1);
-	void SetFillColour(wxColour col,float alpha=1.0f);
-	void SetModeLine();
-	void SetModeFill();
-	void DrawLine(float x1,float y1,float x2,float y2);
-	void DrawEllipse(float x,float y,float radiusX,float radiusY);
-	void DrawCircle(float x,float y,float radius) { DrawEllipse(x,y,radius,radius); }
-	void DrawRectangle(float x1,float y1,float x2,float y2);
-	void DrawRing(float x,float y,float r1,float r2,float ar=1.0f,float arcStart=0.0f,float arcEnd=0.0f);
-
-	static bool UseShaders();
-	static bool IsExtensionSupported(const char *ext);
-	static bool ShadersAvailable();
-	static void SetShader(GLuint i);
-	static void DestroyShaderProgram(GLuint i);
-	static GLuint CreateYV12Shader(float tw,float th,float tws);
+	void Update();
+	void Draw();
 };
