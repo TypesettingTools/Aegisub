@@ -67,7 +67,12 @@ void VisualToolClip::Update() {
 ////////
 // Draw
 void VisualToolClip::Draw() {
+	// Get current line
+	AssDialogue *line = GetActiveDialogueLine();
+	if (!line) return;
+
 	// Get position
+	if (line != curDiag) GetLineClip(line,curX1,curY1,curX2,curY2);
 	int dx1 = curX1;
 	int dy1 = curY1;
 	int dx2 = curX2;
@@ -116,13 +121,21 @@ void VisualToolClip::UpdateHold() {
 	curY1 = startY * sh / h;
 	curX2 = mouseX * sw / w;
 	curY2 = mouseY * sh / h;
+
+	// Make sure 1 is smaller than 2
 	if (curX1 > curX2) IntSwap(curX1,curX2);
 	if (curY1 > curY2) IntSwap(curY1,curY2);
+
+	// Limit to video area
+	curX1 = MID(0,curX1,sw);
+	curX2 = MID(0,curX2,sw);
+	curY1 = MID(0,curY1,sh);
+	curY2 = MID(0,curY2,sh);
 }
 
 
 ///////////////
 // Commit hold
 void VisualToolClip::CommitHold() {
-	VideoContext::Get()->grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2),0,false);
+	SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2));
 }

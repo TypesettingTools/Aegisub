@@ -76,6 +76,7 @@ protected:
 	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
 	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2);
 	void FillPositionData();
+	void SetOverride(wxString tag,wxString value);
 
 	VideoDisplay *GetParent() { return parent; }
 

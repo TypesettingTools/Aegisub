@@ -70,7 +70,7 @@ void VisualToolCross::Update() {
 		int vx = (sw * mouseX + w/2) / w;
 		int vy = (sh * mouseY + h/2) / h;
 		SubtitlesGrid *grid = VideoContext::Get()->grid;
-		grid->editBox->SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy),0,false);
+		SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy));
 		grid->editBox->CommitText();
 		grid->ass->FlagAsModified(_("positioning"));
 		grid->CommitChanges(false,true);

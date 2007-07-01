@@ -219,6 +219,6 @@ void VisualToolRotateXY::UpdateHold() {
 ///////////////
 // Commit hold
 void VisualToolRotateXY::CommitHold() {
-	VideoContext::Get()->grid->editBox->SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleX)),0,false);
-	VideoContext::Get()->grid->editBox->SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleY)),0,false);
+	SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleX)));
+	SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleY)));
 }

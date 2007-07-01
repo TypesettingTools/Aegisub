@@ -71,6 +71,9 @@ void VisualToolScale::Draw() {
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;
 
+	// Get scale
+	if (line != curDiag) GetLineScale(line,curScaleX,curScaleY);
+
 	// Get line position and rotation
 	int dx,dy;
 	float rx,ry,rz;
@@ -165,6 +168,6 @@ void VisualToolScale::UpdateHold() {
 ///////////////
 // Commit hold
 void VisualToolScale::CommitHold() {
-	VideoContext::Get()->grid->editBox->SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)),0,false);
-	VideoContext::Get()->grid->editBox->SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)),0,false);
+	SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)));
+	SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)));
 }

@@ -194,6 +194,5 @@ void VisualToolRotateZ::UpdateHold() {
 ///////////////
 // Commit hold
 void VisualToolRotateZ::CommitHold() {
-	wxString param = PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle));
-	VideoContext::Get()->grid->editBox->SetOverride(_T("\\frz"),param,0,false);
+	SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)));
 }
