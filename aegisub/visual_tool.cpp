@@ -66,6 +66,15 @@ VisualTool::VisualTool(VideoDisplay *par) {
 
 	holding = false;
 	curDiag = NULL;
+
+	dragging = false;
+	curFeature = -1;
+	dragListOK = false;
+
+	mouseX = mouseY = -1;
+
+	if (CanDrag()) PopulateFeatureList();
+	frame_n = VideoContext::Get()->GetFrameN();
 }
 
 
@@ -105,8 +114,76 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 	ctrlDown = event.m_controlDown;
 	altDown = event.m_altDown;
 
+	// Drag a feature
+	if (CanDrag()) {
+		// Populate list if needed
+		if (!dragListOK) {
+			PopulateFeatureList();
+			dragListOK = true;
+		}
+
+		// Start dragging
+		if (!dragging && leftClick) {
+			// Get a feature
+			curFeature = GetHighlightedFeature();
+			if (curFeature != -1) {
+				// Initialize drag
+				InitializeDrag(features[curFeature]);
+				VideoContext::Get()->grid->editBox->SetToLine(features[curFeature].lineN,true);
+
+				// Set start value
+				dragStartX = mx;
+				dragStartY = my;
+				dragOrigX = features[curFeature].x;
+				dragOrigY = features[curFeature].y;
+
+				// Set flags
+				dragging = true;
+				parent->CaptureMouse();
+				if (realTime) AssLimitToVisibleFilter::SetFrame(frame_n);
+			}
+		}
+
+		if (dragging) {
+			// Dragging
+			if (event.LeftIsDown()) {
+				// Update position
+				features[curFeature].x = (mx - dragStartX + dragOrigX);
+				features[curFeature].y = (my - dragStartY + dragOrigY);
+
+				// Update drag
+				UpdateDrag(features[curFeature]);
+
+				if (realTime) {
+					// Commit
+					CommitDrag(features[curFeature]);
+					grid->editBox->CommitText(true);
+					grid->CommitChanges(false,true);
+				}
+			}
+
+			// Release
+			else {
+				// Disable limiting
+				if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
+
+				// Commit
+				CommitDrag(features[curFeature]);
+				grid->ass->FlagAsModified(_("visual typesetting"));
+				grid->CommitChanges(false,true);
+
+				// Clean up
+				dragging = false;
+				curFeature = -1;
+				parent->ReleaseMouse();
+				parent->SetFocus();
+			}
+		}
+
+	}
+
 	// Hold
-	if (CanHold()) {
+	if (!dragging && CanHold()) {
 		// Start holding
 		if (!holding && event.LeftIsDown()) {
 			// Get a dialogue
@@ -177,6 +254,45 @@ AssDialogue* VisualTool::GetActiveDialogueLine() {
 	}
 
 	return diag;
+}
+
+
+///////////////////////////
+// Get feature under mouse
+int VisualTool::GetHighlightedFeature() {
+	int highestLayerFound = -99999;
+	int bestMatch = -1;
+	for (size_t i=0;i<features.size();i++) {
+		if (features[i].IsMouseOver(mx,my) && features[i].layer > highestLayerFound) {
+			bestMatch = i;
+			highestLayerFound = features[i].layer;
+		}
+	}
+	return bestMatch;
+}
+
+
+/////////////////////
+// Draw all features
+void VisualTool::DrawAllFeatures() {
+	if (!dragListOK) {
+		PopulateFeatureList();
+		dragListOK = true;
+	}
+	int mouseOver = GetHighlightedFeature();
+	for (size_t i=0;i<features.size();i++) {
+		SetFillColour(colour[(signed)i == mouseOver ? 2 : 1],0.3f);
+		SetLineColour(colour[0]);
+		features[i].Draw(this);
+	}
+}
+
+
+///////////
+// Refresh
+void VisualTool::Refresh() {
+	frame_n = VideoContext::Get()->GetFrameN();
+	dragListOK = false;
 }
 
 

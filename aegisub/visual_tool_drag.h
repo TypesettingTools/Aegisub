@@ -46,10 +46,11 @@
 // Drag tool class
 class VisualToolDrag : public VisualTool {
 private:
-	bool CanHold() { return true; }
-	void InitializeHold();
-	void UpdateHold();
-	void CommitHold();
+	bool CanDrag() { return true; }
+	void PopulateFeatureList();
+	void InitializeDrag(VisualDraggableFeature &feature);
+	void UpdateDrag(VisualDraggableFeature &feature);
+	void CommitDrag(VisualDraggableFeature &feature);
 
 public:
 	VisualToolDrag(VideoDisplay *parent);

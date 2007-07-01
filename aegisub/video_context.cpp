@@ -52,6 +52,7 @@
 #include "video_display.h"
 #include "video_context.h"
 #include "video_provider.h"
+#include "visual_tool.h"
 #include "subtitles_provider.h"
 #include "vfr.h"
 #include "ass_file.h"
@@ -372,9 +373,13 @@ void VideoContext::UpdateDisplays(bool full) {
 		// If not shown, don't update the display itself
 		if (!display->IsShownOnScreen()) continue;
 
+		// Update visual controls
+		if (display->visual) display->visual->Refresh();
+
 		// Update controls
-		display->Refresh();
-		display->Update();
+		//display->Refresh();
+		//display->Update();
+		display->Render();
 	}
 }
 

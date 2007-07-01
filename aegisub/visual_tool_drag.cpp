@@ -45,6 +45,7 @@
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "utils.h"
+#include "vfr.h"
 
 
 ///////////////
@@ -67,28 +68,64 @@ void VisualToolDrag::Update() {
 ////////
 // Draw
 void VisualToolDrag::Draw() {
-	// Get line to draw
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
-
-
+	DrawAllFeatures();
 }
 
 
 /////////////////
-// Start holding
-void VisualToolDrag::InitializeHold() {
+// Populate list
+void VisualToolDrag::PopulateFeatureList() {
+	// Clear features
+	features.clear();
 
+	// Get video data
+	int numRows = VideoContext::Get()->grid->GetRows();
+	int framen = VideoContext::Get()->GetFrameN();
+
+	// For each line
+	AssDialogue *diag;
+	for (int i=numRows;--i>=0;) {
+		diag = VideoContext::Get()->grid->GetDialogue(i);
+		if (diag) {
+			// Line visible?
+			int f1 = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
+			int f2 = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
+			if (f1 <= framen && f2 >= framen) {
+				// Get position
+				int lineX,lineY;
+				int torgx,torgy;
+				GetLinePosition(diag,lineX,lineY,torgx,torgy);
+
+				// Create \pos feature
+				VisualDraggableFeature feat;
+				feat.x = lineX;
+				feat.y = lineY;
+				feat.layer = 0;
+				feat.type = DRAG_BIG_SQUARE;
+				feat.value = 0;
+				feat.line = diag;
+				feat.lineN = i;
+				features.push_back(feat);
+			}
+		}
+	}
+}
+
+
+//////////////////
+// Start dragging
+void VisualToolDrag::InitializeDrag(VisualDraggableFeature &feature) {
 }
 
 
 ///////////////
-// Update hold
-void VisualToolDrag::UpdateHold() {
+// Update drag
+void VisualToolDrag::UpdateDrag(VisualDraggableFeature &feature) {
 }
 
 
 ///////////////
-// Commit hold
-void VisualToolDrag::CommitHold() {
+// Commit drag
+void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
+	SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
 }

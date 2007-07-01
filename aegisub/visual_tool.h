@@ -39,8 +39,10 @@
 
 ///////////
 // Headers
+#include <vector>
 #include "video_display.h"
 #include "gl_wrap.h"
+#include "visual_feature.h"
 
 
 //////////////
@@ -61,6 +63,12 @@ protected:
 	bool holding;
 	AssDialogue *curDiag;
 
+	bool dragging;
+	int curFeature;
+	std::vector<VisualDraggableFeature> features;
+	int dragStartX,dragStartY,dragOrigX,dragOrigY;
+	bool dragListOK;
+
 	int w,h,sw,sh,mx,my;
 	int frame_n;
 
@@ -79,12 +87,20 @@ protected:
 	void SetOverride(wxString tag,wxString value);
 
 	VideoDisplay *GetParent() { return parent; }
+	AssDialogue *GetActiveDialogueLine();
+	int GetHighlightedFeature();
+	void DrawAllFeatures();
 
-	virtual AssDialogue *GetActiveDialogueLine();
 	virtual bool CanHold() { return false; }
 	virtual void InitializeHold() {}
 	virtual void UpdateHold() {}
 	virtual void CommitHold() {}
+
+	virtual bool CanDrag() { return false; }
+	virtual void PopulateFeatureList() { wxLogMessage(_T("wtf?")); }
+	virtual void InitializeDrag(VisualDraggableFeature &feature) {}
+	virtual void UpdateDrag(VisualDraggableFeature &feature) {}
+	virtual void CommitDrag(VisualDraggableFeature &feature) {}
 
 public:
 	int mouseX,mouseY;
@@ -92,6 +108,7 @@ public:
 	void OnMouseEvent(wxMouseEvent &event);
 	virtual void Update()=0;
 	virtual void Draw()=0;
+	void Refresh();
 
 	VisualTool(VideoDisplay *parent);
 	virtual ~VisualTool();

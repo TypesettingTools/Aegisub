@@ -42,6 +42,11 @@
 #include "ass_dialogue.h"
 
 
+//////////////
+// Prototypes
+class OpenGLWrapper;
+
+
 ////////////////
 // Feature type
 enum DraggableFeatureType {
@@ -59,11 +64,14 @@ class VisualDraggableFeature {
 public:
 	DraggableFeatureType type;
 	int x,y;
-	int index;
+	int layer;	// Higher = above
+	int value;
+
 	AssDialogue *line;
+	int lineN;
 
 	bool IsMouseOver(int x,int y);
-	void Draw(bool highlighted);
+	void Draw(OpenGLWrapper *gl);
 
 	VisualDraggableFeature();
 };

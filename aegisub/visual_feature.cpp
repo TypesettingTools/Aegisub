@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include "visual_feature.h"
+#include "gl_wrap.h"
 
 
 ///////////////
@@ -45,18 +46,32 @@ VisualDraggableFeature::VisualDraggableFeature() {
 	type = DRAG_NONE;
 	x = -1;
 	y = -1;
+	value = 0;
+	layer = 0;
+	lineN = -1;
 	line = NULL;
 }
 
 
 /////////////////////
 // Is mouse over it?
-bool VisualDraggableFeature::IsMouseOver(int x,int y) {
+bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
+	if (type == DRAG_BIG_SQUARE) {
+		if (mx < x-8 || mx > x+8 || my < y-8 || my > y+8) return false;
+		return true;
+	}
 	return false;
 }
 
 
 ////////////////
 // Draw feature
-void VisualDraggableFeature::Draw(bool highlighted) {
+void VisualDraggableFeature::Draw(OpenGLWrapper *gl) {
+	wxASSERT(gl);
+
+	if (type == DRAG_BIG_SQUARE) {
+		gl->DrawRectangle(x-8,y-8,x+8,y+8);
+		gl->DrawLine(x,y-16,x,y+16);
+		gl->DrawLine(x-16,y,x+16,y);
+	}
 }
