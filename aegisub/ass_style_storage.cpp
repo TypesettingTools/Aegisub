@@ -50,7 +50,7 @@
 void AssStyleStorage::Save(wxString name) {
 	if (name.IsEmpty()) return;
 
-	TextFileWriter file(StandardPaths::DecodePath(_T("?data/catalog/")+name+_T(".sty")), _T("UTF-8"));
+	TextFileWriter file(StandardPaths::DecodePath(_T("?user/catalog/")+name+_T(".sty")), _T("UTF-8"));
 
 	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
 		file.WriteLineToFile((*cur)->GetEntryData());
