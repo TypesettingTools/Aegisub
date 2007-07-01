@@ -216,6 +216,7 @@ aegisub_SOURCES = \
 	visual_feature.cpp \
 	visual_tool.cpp \
 	visual_tool_cross.cpp \
+	visual_tool_rotatexy.cpp \
 	visual_tool_rotatez.cpp \
 	MatroskaParser.c
 

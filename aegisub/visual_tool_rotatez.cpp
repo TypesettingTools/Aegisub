@@ -40,7 +40,6 @@
 ///////////
 // Headers
 #include "visual_tool_rotatez.h"
-#include "gl_text.h"
 #include "subs_grid.h"
 #include "subs_edit_box.h"
 #include "ass_file.h"
@@ -144,7 +143,7 @@ void VisualToolRotateZ::Draw() {
 		DrawLine(0,0,fx,fy);
 		int mdx = int(cos(rz*3.1415926536/180.0)*20);
 		int mdy = int(-sin(rz*3.1415926536/180.0)*20);
-		DrawLine(-mdx,-mdy,mdx,mdy);
+		DrawLine(fx-mdx,fy-mdy,fx+mdx,fy+mdy);
 	}
 
 	// Draw the rotation line
