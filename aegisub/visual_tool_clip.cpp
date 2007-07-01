@@ -39,25 +39,90 @@
 
 ///////////
 // Headers
-#include "visual_tool.h"
+#include "visual_tool_clip.h"
+#include "subs_grid.h"
+#include "subs_edit_box.h"
+#include "ass_file.h"
+#include "ass_dialogue.h"
+#include "utils.h"
 
 
-////////////////////
-// Scale tool class
-class VisualToolScale : public VisualTool {
-private:
-	float curScaleX,startScaleX,origScaleX;
-	float curScaleY,startScaleY,origScaleY;
-	int startX,startY;
+///////////////
+// Constructor
+VisualToolClip::VisualToolClip(VideoDisplay *_parent)
+: VisualTool(_parent)
+{
+	_parent->ShowCursor(false);
+}
 
-	bool CanHold() { return true; }
-	void InitializeHold();
-	void UpdateHold();
-	void CommitHold();
 
-public:
-	VisualToolScale(VideoDisplay *parent);
+//////////
+// Update
+void VisualToolClip::Update() {
+	// Render parent
+	GetParent()->Render();
+}
 
-	void Update();
-	void Draw();
-};
+
+////////
+// Draw
+void VisualToolClip::Draw() {
+	// Get position
+	int dx1 = curX1;
+	int dy1 = curY1;
+	int dx2 = curX2;
+	int dy2 = curY2;
+
+	// Draw rectangle
+	SetLineColour(colour[3]);
+	SetFillColour(colour[3],0.0f);
+	DrawRectangle(dx1,dy1,dx2,dy2);
+
+	// Draw outside area
+	SetLineColour(colour[3],0.0f);
+	SetFillColour(colour[3],0.3f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	DrawRectangle(0,0,sw,dy1);
+	DrawRectangle(0,dy2,sw,sh);
+	DrawRectangle(0,dy1,dx1,dy2);
+	DrawRectangle(dx2,dy1,sw,dy2);
+	glDisable(GL_BLEND);
+
+	// Draw circles
+	SetLineColour(colour[0]);
+	SetFillColour(colour[1],0.5);
+	DrawCircle(dx1,dy1,4);
+	DrawCircle(dx2,dy1,4);
+	DrawCircle(dx2,dy2,4);
+	DrawCircle(dx1,dy2,4);
+}
+
+
+/////////////////
+// Start holding
+void VisualToolClip::InitializeHold() {
+	startX = mouseX;
+	startY = mouseY;
+	curDiag->StripTag(_T("\\clip"));
+}
+
+
+///////////////
+// Update hold
+void VisualToolClip::UpdateHold() {
+	// Coordinates
+	curX1 = startX * sw / w;
+	curY1 = startY * sh / h;
+	curX2 = mouseX * sw / w;
+	curY2 = mouseY * sh / h;
+	if (curX1 > curX2) IntSwap(curX1,curX2);
+	if (curY1 > curY2) IntSwap(curY1,curY2);
+}
+
+
+///////////////
+// Commit hold
+void VisualToolClip::CommitHold() {
+	VideoContext::Get()->grid->editBox->SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2),0,false);
+}

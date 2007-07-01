@@ -39,25 +39,56 @@
 
 ///////////
 // Headers
-#include "visual_tool.h"
+#include "visual_tool_drag.h"
+#include "subs_grid.h"
+#include "subs_edit_box.h"
+#include "ass_file.h"
+#include "ass_dialogue.h"
+#include "utils.h"
 
 
-////////////////////
-// Scale tool class
-class VisualToolScale : public VisualTool {
-private:
-	float curScaleX,startScaleX,origScaleX;
-	float curScaleY,startScaleY,origScaleY;
-	int startX,startY;
+///////////////
+// Constructor
+VisualToolDrag::VisualToolDrag(VideoDisplay *_parent)
+: VisualTool(_parent)
+{
+	_parent->ShowCursor(false);
+}
 
-	bool CanHold() { return true; }
-	void InitializeHold();
-	void UpdateHold();
-	void CommitHold();
 
-public:
-	VisualToolScale(VideoDisplay *parent);
+//////////
+// Update
+void VisualToolDrag::Update() {
+	// Render parent
+	GetParent()->Render();
+}
 
-	void Update();
-	void Draw();
-};
+
+////////
+// Draw
+void VisualToolDrag::Draw() {
+	// Get line to draw
+	AssDialogue *line = GetActiveDialogueLine();
+	if (!line) return;
+
+
+}
+
+
+/////////////////
+// Start holding
+void VisualToolDrag::InitializeHold() {
+
+}
+
+
+///////////////
+// Update hold
+void VisualToolDrag::UpdateHold() {
+}
+
+
+///////////////
+// Commit hold
+void VisualToolDrag::CommitHold() {
+}

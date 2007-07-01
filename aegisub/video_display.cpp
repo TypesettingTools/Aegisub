@@ -72,6 +72,8 @@
 #include "visual_tool_rotatez.h"
 #include "visual_tool_rotatexy.h"
 #include "visual_tool_scale.h"
+#include "visual_tool_clip.h"
+#include "visual_tool_drag.h"
 
 
 ///////
@@ -648,11 +650,11 @@ void VideoDisplay::SetVisualMode(int mode) {
 	delete visual;
 	switch (mode) {
 		case 0: visual = new VisualToolCross(this); break;
-		//case 1: visual = new VisualToolDrag(this); break;
+		case 1: visual = new VisualToolDrag(this); break;
 		case 2: visual = new VisualToolRotateZ(this); break;
 		case 3: visual = new VisualToolRotateXY(this); break;
 		case 4: visual = new VisualToolScale(this); break;
-		//case 5: visual = new VisualToolClip(this); break;
+		case 5: visual = new VisualToolClip(this); break;
 		default: visual = NULL;
 	}
 

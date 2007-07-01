@@ -42,21 +42,17 @@
 #include "visual_tool.h"
 
 
-////////////////////
-// Scale tool class
-class VisualToolScale : public VisualTool {
+///////////////////
+// Drag tool class
+class VisualToolDrag : public VisualTool {
 private:
-	float curScaleX,startScaleX,origScaleX;
-	float curScaleY,startScaleY,origScaleY;
-	int startX,startY;
-
 	bool CanHold() { return true; }
 	void InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
 public:
-	VisualToolScale(VideoDisplay *parent);
+	VisualToolDrag(VideoDisplay *parent);
 
 	void Update();
 	void Draw();
