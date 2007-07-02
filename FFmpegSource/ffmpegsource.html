@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>
+FFmpegSource Documentation
+</title>
+</head>
+<body>
+<h1>FFmpegSource Documentation</h1>
+
+<h2>Changes</h2>
+<ul>
+
+<li>1.2<ul>
+<li>Compiled against ffmpeg rev9451</li>
+<li>Somewhat cleaner source code</li>
+<li>Linear access in addition to a few other modes of seeking can now be forced</li>
+<li>Can now save the index information to a file which makes subsequent file opening fast</li>
+<li>No longer skips indexing for any format</li>
+</ul></li>
+
+<li>1.1<ul>
+<li>Skip indexing for avi</li>
+<li>Prefix all error messages with the plugin name</li>
+<li>Can write v2 timecodes to a file</li>
+<li>Fixed reported framerate</li>
+</ul></li>
+
+</ul>
+
+<h2>Usage</h2>
+<p>
+<b>FFmpegSource(string source, int track = -1, int seekmode = 1, string timecodes, bool cache = true, string CacheFile)</b>
+</p>
+
+<p>
+<b>source:</b>
+  source file
+</p>
+
+<p>
+<b>track:</b>
+  track number as seen by the relevant demuxer, starts from 0, -1 means will pick the first video track
+</p>
+
+<p>
+<b>seekmode:</b>
+  force how seeking is handled, has no effect on matroska files which always use the equivalent of seekmode=1<br />
+    <b>0:</b> linear access, the definition of slow but should make some formats "usable"<br />
+    <b>1:</b> safe normal, bases seeking decisions on the reported keyframe positions<br />
+    <b>2:</b> unsafe normal, same as 1 but no error will be thrown if the exact destination has to be guessed<br />
+    <b>3:</b> aggressive, seek in the forward direction even if no closer keyframe is known to exist, only useful for containers where avformat doesn't report keyframes properly and testing
+</p>
+
+<p>
+<b>timecodes:</b>
+  file to output timecodes to, if the file exists it will always be overwritten
+</p>
+
+<p>
+<b>cache:</b>
+  write indexing information to a file for later use
+</p>
+
+<p>
+<b>cachefile:</b>
+  if specified the file to store the index information in, if nothing is specified <source>.ffcache is used
+</p>
+
+<h2>Compatibility</h2>
+<ul>
+<li>AVI, MKV, MP4, FLV: Frame accurate</li>
+<li>OGM: Messed up first frame and seeking produces smearing with seekmode=3, incredibly slow seeking without</li>
+<li>WMV: No seeking</li>
+<li>VOB: No rff flags applied, frame accurate?</li>
+<li>MPG: Seeking seems to be off by one or two frames now and then</li>
+<li>TS: Anything except seekmode=0 is a complete waste of time</li>
+</ul>
+
+<h2>Compiling</h2>
+
+<p><b>zlib</b> from http://www.zlib.net/</p>
+
+<p><b>FFmpeg svn</b> from http://ffmpeg.mplayerhq.hu/</p>
+
+<p><b>Required Configuration:</b>
+./configure --enable-shared --disable-static --enable-memalign-hack --enable-swscaler --enable-gpl</p>
+
+<p><b>Suggested Additional Options:</b>
+--disable-encoders --disable-muxers</p>
+
+</body>
+</html>

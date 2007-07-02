@@ -2,10 +2,7 @@
 #include <stdio.h>
 #include <map>
 #include <vector>
-#include <assert.h>
-
 #include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
 #include <string.h>
 #include <fcntl.h>
@@ -20,6 +17,7 @@ extern "C" {
 #include "MatroskaParser.h"
 #include "avisynth.h"
 #include "stdiostream.c"
+#include "matroskacodecs.c"
 
 class FFBase : public IClip {
 private:
@@ -29,9 +27,64 @@ private:
 protected:
 	VideoInfo VI;
 
+	struct FrameInfo {
+		int64_t DTS;
+		bool KeyFrame;
+
+		FrameInfo(int64_t _DTS, bool _KeyFrame) : DTS(_DTS), KeyFrame(_KeyFrame) {};
+	};
+
+	std::vector<FrameInfo> FrameToDTS;
+
+	int FindClosestKeyFrame(int Frame) {
+		for (unsigned int i = Frame; i > 0; i--)
+			if (FrameToDTS[i].KeyFrame)
+				return i;
+		return 0;
+	}
+
+	int FrameFromDTS(int64_t DTS) {
+		for (unsigned int i = 0; i < FrameToDTS.size(); i++)
+			if (FrameToDTS[i].DTS == DTS)
+				return i;
+		return -1;
+	}
+
+	int ClosestFrameFromDTS(int64_t DTS) {
+		int Frame = 0;
+		int64_t BestDiff = 0xFFFFFFFFFFFFFF;
+		for (unsigned int i = 0; i < FrameToDTS.size(); i++) {
+			int64_t CurrentDiff = FFABS(FrameToDTS[i].DTS - DTS);
+			if (CurrentDiff < BestDiff) {
+				BestDiff = CurrentDiff;
+				Frame = i;
+			}
+		}
+		return Frame;
+	}
+
+	bool LoadFrameInfoFromFile(FILE *CacheFile) {
+		if (ftell(CacheFile)) {
+			rewind(CacheFile);
+
+			fscanf(CacheFile, "%d\n", &VI.num_frames);
+
+			for (int i = 0; i < VI.num_frames; i++) {
+				int64_t DTSTemp;
+				int KFTemp;
+				fscanf(CacheFile, "%lld %d\n", &DTSTemp, &KFTemp);
+				FrameToDTS.push_back(FrameInfo(DTSTemp, KFTemp != 0));
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
 	void SetOutputFormat(int CurrentFormat, IScriptEnvironment *Env) {
 		int Loss;
-		int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), CurrentFormat, 1, &Loss);
+		int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), CurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
 
 		switch (BestFormat) {
 			case PIX_FMT_YUV420P: VI.pixel_type = VideoInfo::CS_I420; break;
@@ -45,7 +98,7 @@ protected:
 		if (BestFormat != CurrentFormat) {
 			ConvertFromFormat = CurrentFormat;
 			ConvertToFormat = BestFormat;
-			SWS = sws_getContext(VI.width, VI.height, ConvertFromFormat, VI.width, VI.height, ConvertToFormat, SWS_LANCZOS, NULL, NULL, NULL);
+			SWS = sws_getContext(VI.width, VI.height, ConvertFromFormat, VI.width, VI.height, ConvertToFormat, SWS_BICUBIC, NULL, NULL, NULL);
 		}
 	}
 
@@ -76,6 +129,7 @@ protected:
 			else
 				Env->BitBlt(Dst->GetWritePtr(), Dst->GetPitch(), Frame->data[0], Frame->linesize[0], Dst->GetRowSize(), Dst->GetHeight()); 
 		}
+
 		return Dst;
 	}
 
@@ -100,232 +154,18 @@ private:
 	AVFrame *Frame; 
 	int	CurrentFrame;
 
-	struct FFMKVFrameInfo {
-		ulonglong DTS;
-		bool KeyFrame;
-	};
-
-	std::vector<FFMKVFrameInfo> FrameToDTS;
-	std::map<ulonglong, int> DTSToFrame;
-
 	StdIoStream	ST; 
 	MatroskaFile *MF;
 
 	char ErrorMessage[256];
     unsigned int BufferSize;
-    void *Buffer;
+    uint8_t *Buffer;
     CompressedStream *CS;
 
-	int ReadNextFrame(AVFrame *Frame, ulonglong *StartTime, IScriptEnvironment* Env);
-
-	CodecID MatroskaToFFCodecID(TrackInfo *TI) {
-		char *Codec = TI->CodecID;
-		// fourcc list from ffdshow
-		if (!strcmp(Codec, "V_MS/VFW/FOURCC")) {
-			switch (((BITMAPINFOHEADER *)TI->CodecPrivate)->biCompression) {
-				case MAKEFOURCC('F', 'F', 'D', 'S'):
-				case MAKEFOURCC('F', 'V', 'F', 'W'):
-				case MAKEFOURCC('X', 'V', 'I', 'D'):
-				case MAKEFOURCC('D', 'I', 'V', 'X'):
-				case MAKEFOURCC('D', 'X', '5', '0'):
-				case MAKEFOURCC('M', 'P', '4', 'V'):
-				case MAKEFOURCC('3', 'I', 'V', 'X'):
-				case MAKEFOURCC('W', 'V', '1', 'F'):
-				case MAKEFOURCC('F', 'M', 'P', '4'):
-				case MAKEFOURCC('S', 'M', 'P', '4'):
-					return CODEC_ID_MPEG4;
-				case MAKEFOURCC('D', 'I', 'V', '3'):
-				case MAKEFOURCC('D', 'V', 'X', '3'):
-				case MAKEFOURCC('M', 'P', '4', '3'):
-					return CODEC_ID_MSMPEG4V3;
-				case MAKEFOURCC('M', 'P', '4', '2'):
-					return CODEC_ID_MSMPEG4V2;
-				case MAKEFOURCC('M', 'P', '4', '1'):
-					return CODEC_ID_MSMPEG4V1;
-				case MAKEFOURCC('W', 'M', 'V', '1'):
-					return CODEC_ID_WMV1;
-				case MAKEFOURCC('W', 'M', 'V', '2'):
-					return CODEC_ID_WMV2;
-				case MAKEFOURCC('W', 'M', 'V', '3'):
-					return CODEC_ID_WMV3;
-/*
-				case MAKEFOURCC('M', 'S', 'S', '1'):
-				case MAKEFOURCC('M', 'S', 'S', '2'):
-				case MAKEFOURCC('W', 'V', 'P', '2'):
-				case MAKEFOURCC('W', 'M', 'V', 'P'):
-					return CODEC_ID_WMV9_LIB;
-*/
-				case MAKEFOURCC('W', 'V', 'C', '1'):
-					return CODEC_ID_VC1;
-				case MAKEFOURCC('V', 'P', '5', '0'):
-					return CODEC_ID_VP5;
-				case MAKEFOURCC('V', 'P', '6', '0'):
-				case MAKEFOURCC('V', 'P', '6', '1'):
-				case MAKEFOURCC('V', 'P', '6', '2'):
-					return CODEC_ID_VP6;
-				case MAKEFOURCC('V', 'P', '6', 'F'):
-				case MAKEFOURCC('F', 'L', 'V', '4'):
-					return CODEC_ID_VP6F;	
-				case MAKEFOURCC('C', 'A', 'V', 'S'):
-					return CODEC_ID_CAVS;	
-				case MAKEFOURCC('M', 'P', 'G', '1'):
-				case MAKEFOURCC('M', 'P', 'E', 'G'):
-					return CODEC_ID_MPEG2VIDEO;	// not a typo
-				case MAKEFOURCC('M', 'P', 'G', '2'):
-				case MAKEFOURCC('E', 'M', '2', 'V'):
-				case MAKEFOURCC('M', 'M', 'E', 'S'):
-					return CODEC_ID_MPEG2VIDEO;
-				case MAKEFOURCC('H', '2', '6', '3'):
-				case MAKEFOURCC('S', '2', '6', '3'):
-				case MAKEFOURCC('L', '2', '6', '3'):
-				case MAKEFOURCC('M', '2', '6', '3'):
-				case MAKEFOURCC('U', '2', '6', '3'):
-				case MAKEFOURCC('X', '2', '6', '3'):
-					return CODEC_ID_H263;
-				case MAKEFOURCC('H', '2', '6', '4'):
-				case MAKEFOURCC('X', '2', '6', '4'):
-				case MAKEFOURCC('V', 'S', 'S', 'H'):
-				case MAKEFOURCC('D', 'A', 'V', 'C'):
-				case MAKEFOURCC('P', 'A', 'V', 'C'):
-				case MAKEFOURCC('A', 'V', 'C', '1'):
-					return CODEC_ID_H264;
-				case MAKEFOURCC('M', 'J', 'P', 'G'):
-				case MAKEFOURCC('L', 'J', 'P', 'G'):
-				case MAKEFOURCC('M', 'J', 'L', 'S'):
-				case MAKEFOURCC('J', 'P', 'E', 'G'): // questionable fourcc?
-				case MAKEFOURCC('A', 'V', 'R', 'N'):
-				case MAKEFOURCC('M', 'J', 'P', 'A'):
-					return CODEC_ID_MJPEG;
-				case MAKEFOURCC('D', 'V', 'S', 'D'):
-				case MAKEFOURCC('D', 'V', '2', '5'):
-				case MAKEFOURCC('D', 'V', '5', '0'):
-				case MAKEFOURCC('C', 'D', 'V', 'C'):
-				case MAKEFOURCC('C', 'D', 'V', '5'):
-				case MAKEFOURCC('D', 'V', 'I', 'S'):
-				case MAKEFOURCC('P', 'D', 'V', 'C'):
-					return CODEC_ID_DVVIDEO;
-				case MAKEFOURCC('H', 'F', 'Y', 'U'):
-				case MAKEFOURCC('F', 'F', 'V', 'H'):
-					return CODEC_ID_HUFFYUV;
-				case MAKEFOURCC('C', 'Y', 'U', 'V'):
-					return CODEC_ID_CYUV;
-				case MAKEFOURCC('A', 'S', 'V', '1'):
-					return CODEC_ID_ASV1;
-				case MAKEFOURCC('A', 'S', 'V', '2'):
-					return CODEC_ID_ASV2;
-				case MAKEFOURCC('V', 'C', 'R', '1'):
-					return CODEC_ID_VCR1;
-				case MAKEFOURCC('T', 'H', 'E', 'O'):
-					return CODEC_ID_THEORA;
-				case MAKEFOURCC('S', 'V', 'Q', '1'):
-					return CODEC_ID_SVQ1;
-				case MAKEFOURCC('S', 'V', 'Q', '3'):
-					return CODEC_ID_SVQ3;
-				case MAKEFOURCC('R', 'P', 'Z', 'A'):
-					return CODEC_ID_RPZA;
-				case MAKEFOURCC('F', 'F', 'V', '1'):
-					return CODEC_ID_FFV1;
-				case MAKEFOURCC('V', 'P', '3', '1'):
-					return CODEC_ID_VP3;
-				case MAKEFOURCC('R', 'L', 'E', '8'):
-					return CODEC_ID_MSRLE;
-				case MAKEFOURCC('M', 'S', 'Z', 'H'):
-					return CODEC_ID_MSZH;
-				case MAKEFOURCC('Z', 'L', 'I', 'B'):
-					return CODEC_ID_FLV1;
-				case MAKEFOURCC('F', 'L', 'V', '1'):
-					return CODEC_ID_ZLIB;
-/*
-				case MAKEFOURCC('P', 'N', 'G', '1'):
-					return CODEC_ID_COREPNG;
-*/
-				case MAKEFOURCC('M', 'P', 'N', 'G'):
-					return CODEC_ID_PNG;
-/*
-				case MAKEFOURCC('A', 'V', 'I', 'S'):
-					return CODEC_ID_AVISYNTH;
-*/
-				case MAKEFOURCC('C', 'R', 'A', 'M'):
-					return CODEC_ID_MSVIDEO1;
-				case MAKEFOURCC('R', 'T', '2', '1'):
-					return CODEC_ID_INDEO2;
-				case MAKEFOURCC('I', 'V', '3', '2'):
-				case MAKEFOURCC('I', 'V', '3', '1'):
-					return CODEC_ID_INDEO3;
-				case MAKEFOURCC('C', 'V', 'I', 'D'):
-					return CODEC_ID_CINEPAK;
-				case MAKEFOURCC('R', 'V', '1', '0'):
-					return CODEC_ID_RV10;
-				case MAKEFOURCC('R', 'V', '2', '0'):
-					return CODEC_ID_RV20;
-				case MAKEFOURCC('8', 'B', 'P', 'S'):
-					return CODEC_ID_8BPS;
-				case MAKEFOURCC('Q', 'R', 'L', 'E'):
-					return CODEC_ID_QTRLE;
-				case MAKEFOURCC('D', 'U', 'C', 'K'):
-					return CODEC_ID_TRUEMOTION1;
-				case MAKEFOURCC('T', 'M', '2', '0'):
-					return CODEC_ID_TRUEMOTION2;
-				case MAKEFOURCC('T', 'S', 'C', 'C'):
-					return CODEC_ID_TSCC;
-				case MAKEFOURCC('S', 'N', 'O', 'W'):
-					return CODEC_ID_SNOW;
-				case MAKEFOURCC('Q', 'P', 'E', 'G'):
-				case MAKEFOURCC('Q', '1', '_', '0'):
-				case MAKEFOURCC('Q', '1', '_', '1'):
-					return CODEC_ID_QPEG;
-				case MAKEFOURCC('H', '2', '6', '1'):
-				case MAKEFOURCC('M', '2', '6', '1'):
-					return CODEC_ID_H261;
-				case MAKEFOURCC('L', 'O', 'C', 'O'):
-					return CODEC_ID_LOCO;
-				case MAKEFOURCC('W', 'N', 'V', '1'):
-					return CODEC_ID_WNV1;
-				case MAKEFOURCC('C', 'S', 'C', 'D'):
-					return CODEC_ID_CSCD;
-				case MAKEFOURCC('Z', 'M', 'B', 'V'):
-					return CODEC_ID_ZMBV;
-				case MAKEFOURCC('U', 'L', 'T', 'I'):
-					return CODEC_ID_ULTI;
-				case MAKEFOURCC('V', 'I', 'X', 'L'):
-					return CODEC_ID_VIXL;
-				case MAKEFOURCC('A', 'A', 'S', 'C'):
-					return CODEC_ID_AASC;
-				case MAKEFOURCC('F', 'P', 'S', '1'):
-					return CODEC_ID_FRAPS;
-				default:
-					return CODEC_ID_NONE;
-			}
-		} else if (!strcmp(Codec, "V_MPEG4/ISO/AVC"))
-			return CODEC_ID_H264;
-		else if (!strcmp(Codec, "V_MPEG4/ISO/ASP"))
-			return CODEC_ID_MPEG4;
-		else if (!strcmp(Codec, "V_MPEG2"))
-			return CODEC_ID_MPEG2VIDEO;
-		else if (!strcmp(Codec, "V_MPEG1"))
-			return CODEC_ID_MPEG2VIDEO; // still not a typo
-		else if (!strcmp(Codec, "V_SNOW"))
-			return CODEC_ID_SNOW;
-		else if (!strcmp(Codec, "V_THEORA"))
-			return CODEC_ID_THEORA;
-		else if (!strncmp(Codec, "V_REAL/RV", 9)) {
-			switch (Codec[9]) {
-				case '1': 
-					return CODEC_ID_RV10;
-				case '2': 
-					return CODEC_ID_RV20;
-				case '3': 
-					return CODEC_ID_RV30;
-				case '4': 
-					return CODEC_ID_RV40;
-				default:
-					return CODEC_ID_NONE;
-			}
-		} else
-			return CODEC_ID_NONE;
-	}
+	unsigned int ReadNextFrame(int64_t *FirstStartTime, IScriptEnvironment *Env);
+	int DecodeNextFrame(AVFrame *Frame, int64_t *FirstStartTime, IScriptEnvironment* Env);
 public:
-	FFMKVSource(const char *Source, int Track, FILE *Timecodes, IScriptEnvironment* Env) {
+	FFMKVSource(const char *Source, int Track, FILE *Timecodes, bool Cache, FILE *CacheFile, IScriptEnvironment* Env) {
 		BufferSize = 0;
 		Buffer = NULL;
 		Frame = NULL;
@@ -342,16 +182,16 @@ public:
 		ST.base.memfree = (void (__cdecl *)(InputStream *,void *)) StdIoFree;
 		ST.base.progress = (int (__cdecl *)(InputStream *,ulonglong,ulonglong))StdIoProgress;
 
-		ST.fp = fopen(Source ,"rb");
+		ST.fp = fopen(Source, "rb");
 		if (ST.fp == NULL)
-			Env->ThrowError("FFmpegSource: Can't open '%s': %s\n", Source, strerror(errno));
+			Env->ThrowError("FFmpegSource: Can't open '%s': %s", Source, strerror(errno));
 
 		setvbuf(ST.fp, NULL, _IOFBF, CACHESIZE);
 
 		MF = mkv_OpenEx(&ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 		if (MF == NULL) {
 			fclose(ST.fp);
-			Env->ThrowError("FFmpegSource: Can't parse Matroska file: %s\n", ErrorMessage);
+			Env->ThrowError("FFmpegSource: Can't parse Matroska file: %s", ErrorMessage);
 		}
 
 		if (Track < 0)
@@ -364,8 +204,8 @@ public:
 		if (Track < 0)
 			Env->ThrowError("FFmpegSource: No video track found");
 
-		if ((unsigned)Track >= mkv_GetNumTracks(MF))
-			Env->ThrowError("FFmpegSource: Invalid track number: %d\n", Track);
+		if ((unsigned int)Track >= mkv_GetNumTracks(MF))
+			Env->ThrowError("FFmpegSource: Invalid track number: %d", Track);
 
 		TrackInfo *TI = mkv_GetTrackInfo(MF, Track);
 
@@ -377,7 +217,7 @@ public:
 		if (TI->CompEnabled) {
 			CS = cs_Create(MF, Track, ErrorMessage, sizeof(ErrorMessage));
 			if (CS == NULL)
-				Env->ThrowError("FFmpegSource: Can't create decompressor: %s\n", ErrorMessage);
+				Env->ThrowError("FFmpegSource: Can't create decompressor: %s", ErrorMessage);
 		}
 
 		avcodec_get_context_defaults(&CodecContext);
@@ -385,10 +225,10 @@ public:
 		CodecContext.extradata_size = TI->CodecPrivateSize;
 
 		Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI));
-		if(Codec == NULL)
+		if (Codec == NULL)
 			Env->ThrowError("FFmpegSource: Codec not found");
 
-		if(avcodec_open(&CodecContext, Codec) < 0)
+		if (avcodec_open(&CodecContext, Codec) < 0)
 			Env->ThrowError("FFmpegSource: Could not open codec");
 
 		VI.image_type = VideoInfo::IT_TFF;
@@ -399,24 +239,30 @@ public:
 
 		SetOutputFormat(CodecContext.pix_fmt, Env);	
 
-		unsigned TrackNumber, FrameSize, FrameFlags;
-		ulonglong StartTime, EndTime, FilePos;
+		// Needs to be indexed?
+		if (!(Cache && LoadFrameInfoFromFile(CacheFile))) {
+			unsigned int TrackNumber, FrameSize, FrameFlags;
+			uint64_t StartTime, EndTime, FilePos;
 
-		while (mkv_ReadFrame(MF, 0, &TrackNumber, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
-			FFMKVFrameInfo FI;
-			FI.DTS = StartTime;
-			FI.KeyFrame = (FrameFlags & FRAME_KF) != 0;
+			while (mkv_ReadFrame(MF, 0, &TrackNumber, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
+				FrameToDTS.push_back(FrameInfo(StartTime, (FrameFlags & FRAME_KF) != 0));
+				VI.num_frames++;
+			}
 
-			FrameToDTS.push_back(FI);
-			DTSToFrame[StartTime] = VI.num_frames;
-			if (Timecodes)
-				fprintf(Timecodes, "%f\n", (StartTime * mkv_TruncFloat(TI->TimecodeScale)) / (double)(1000000));
-			VI.num_frames++;
+			mkv_Seek(MF, FrameToDTS[0].DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
+
+			if (Cache) {
+				fprintf(CacheFile, "%d\n", VI.num_frames);
+				for (int i = 0; i < VI.num_frames; i++)
+					fprintf(CacheFile, "%lld %d\n", FrameToDTS[i].DTS, (int)(FrameToDTS[i].KeyFrame ? 1 : 0));			
+			}
 		}
 
-		Frame = avcodec_alloc_frame();
+		if (Timecodes)
+			for (int i = 0; i < VI.num_frames; i++)
+				fprintf(Timecodes, "%f\n", (FrameToDTS[i].DTS * mkv_TruncFloat(TI->TimecodeScale)) / (double)(1000000));
 
-		mkv_Seek(MF, FrameToDTS[0].DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
+		Frame = avcodec_alloc_frame();
 	}
 
 	~FFMKVSource() {
@@ -430,89 +276,104 @@ public:
     PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* Env);
 };
 
-int FFMKVSource::ReadNextFrame(AVFrame *Frame, ulonglong *StartTime, IScriptEnvironment* Env) {
-	unsigned TrackNumber, FrameFlags, FrameSize;
-	ulonglong EndTime, FilePos, StartTime2;
-	*StartTime = -1;
-	int FrameFinished = 0;
-	int Ret = -1;
+unsigned int FFMKVSource::ReadNextFrame(int64_t *FirstStartTime, IScriptEnvironment *Env) {
+	unsigned int TrackNumber, FrameFlags, FrameSize;
+	uint64_t EndTime, FilePos, StartTime;
+	*FirstStartTime = -1;
 
-	while (mkv_ReadFrame(MF, 0, &TrackNumber, &StartTime2, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
-		if ((longlong)*StartTime < 0)
-			*StartTime = StartTime2;
+	while (mkv_ReadFrame(MF, 0, &TrackNumber, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
+		if (*FirstStartTime < 0)
+			*FirstStartTime = StartTime;
 		if (CS) {
-			char CSBuffer[1024];
+			char CSBuffer[4096];
+
+			int DecompressedFrameSize = 0;
 
 			cs_NextFrame(CS, FilePos, FrameSize);
+
 			for (;;) {
 				int ReadBytes = cs_ReadData(CS, CSBuffer, sizeof(CSBuffer));
 				if (ReadBytes < 0)
-					Env->ThrowError("FFmpegSource: Error decompressing data: %s\n", cs_GetLastError(CS));
+					Env->ThrowError("FFmpegSource: Error decompressing data: %s", cs_GetLastError(CS));
 				if (ReadBytes == 0)
-					break;
-				Ret = avcodec_decode_video(&CodecContext, Frame, &FrameFinished, (uint8_t *)CSBuffer, ReadBytes);
-				if (FrameFinished)
-					goto Done;
+					return DecompressedFrameSize;
+
+				if (BufferSize < DecompressedFrameSize + ReadBytes) {
+					BufferSize = FrameSize;
+					Buffer = (uint8_t *)realloc(Buffer, BufferSize);
+					if (Buffer == NULL) 
+						Env->ThrowError("FFmpegSource: Out of memory");
+				}
+
+				memcpy(Buffer + DecompressedFrameSize, CSBuffer, ReadBytes);
+				DecompressedFrameSize += ReadBytes;
 			}
 		} else {
-			size_t ReadBytes;
-
 			if (fseek(ST.fp, FilePos, SEEK_SET))
-				Env->ThrowError("FFmpegSource: fseek(): %s\n", strerror(errno));
+				Env->ThrowError("FFmpegSource: fseek(): %s", strerror(errno));
 
 			if (BufferSize < FrameSize) {
 				BufferSize = FrameSize;
-				Buffer = realloc(Buffer, BufferSize);
+				Buffer = (uint8_t *)realloc(Buffer, BufferSize);
 				if (Buffer == NULL) 
-					Env->ThrowError("FFmpegSource: Out of memory\n");
+					Env->ThrowError("FFmpegSource: Out of memory");
 			}
 
-			ReadBytes = fread(Buffer, 1, FrameSize, ST.fp);
+			size_t ReadBytes = fread(Buffer, 1, FrameSize, ST.fp);
 			if (ReadBytes != FrameSize) {
 				if (ReadBytes == 0) {
 					if (feof(ST.fp))
-						fprintf(stderr, "FFmpegSource: Unexpected EOF while reading frame\n");
+						Env->ThrowError("FFmpegSource: Unexpected EOF while reading frame");
 					else
-						fprintf(stderr, "FFmpegSource: Error reading frame: %s\n", strerror(errno));
+						Env->ThrowError("FFmpegSource: Error reading frame: %s", strerror(errno));
 				} else
-					fprintf(stderr,"FFmpegSource: Short read while reading frame\n");
-				goto Done;
+					Env->ThrowError("FFmpegSource: Short read while reading frame");
+				return 0;
 			}
 
-			Ret = avcodec_decode_video(&CodecContext, Frame, &FrameFinished, (uint8_t *)Buffer, FrameSize);
-
-			if (FrameFinished)
-				goto Done;
+			return FrameSize;
 		}
 	}
 
-Done:
+	return 0;
+}
+
+int FFMKVSource::DecodeNextFrame(AVFrame *Frame, int64_t *FirstStartTime, IScriptEnvironment* Env) {
+	int FrameFinished = 0;
+	int Ret = -1;
+	int FrameSize;
+	int64_t TempStartTime = -1;
+
+	while (FrameSize = ReadNextFrame(&TempStartTime, Env)) {
+		if (*FirstStartTime < 0)
+			*FirstStartTime = TempStartTime;
+		Ret = avcodec_decode_video(&CodecContext, Frame, &FrameFinished, Buffer, FrameSize);
+
+		if (FrameFinished)
+			break;
+	}
+
 	return Ret;
 }
 
 PVideoFrame __stdcall FFMKVSource::GetFrame(int n, IScriptEnvironment* Env) {
 	bool HasSeeked = false;
-	bool HasBiggerKF = false;
 
-	for (int i = CurrentFrame + 1; i <= n; i++)
-		if (FrameToDTS[i].KeyFrame) {
-			HasBiggerKF = true;
-			break;
-		}	
-
-	if (n < CurrentFrame || HasBiggerKF) {
+	if (n < CurrentFrame || FindClosestKeyFrame(n) > CurrentFrame) {
 		mkv_Seek(MF, FrameToDTS[n].DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
 		avcodec_flush_buffers(&CodecContext);
 		HasSeeked = true;
 	}
 
 	do {
-		ulonglong StartTime;
-		int Ret = ReadNextFrame(Frame, &StartTime, Env);
+		int64_t StartTime;
+		int Ret = DecodeNextFrame(Frame, &StartTime, Env);
 
 		if (HasSeeked) {
-			CurrentFrame = DTSToFrame[StartTime];
 			HasSeeked = false;
+
+			if (StartTime < 0 || (CurrentFrame = FrameFromDTS(StartTime)) < 0)
+				Env->ThrowError("FFmpegSource: Frame accurate seeking not possible in this file");
 		}
 
 		CurrentFrame++;
@@ -529,19 +390,18 @@ private:
 	AVFrame *Frame;
 	int Track;
 	int	CurrentFrame;
-	std::vector<int64_t> FrameToDTS;
-	std::map<int64_t, int> DTSToFrame;
-	bool ForceSeek;
+	int SeekMode;
 
-	int ReadNextFrame(AVFrame *Frame, int64_t *DTS);
+	int DecodeNextFrame(AVFrame *Frame, int64_t *DTS);
 public:
-	FFmpegSource(const char *Source, int _Track, bool _ForceSeek, FILE *Timecodes, IScriptEnvironment* Env) : Track(_Track), ForceSeek(_ForceSeek) {
+	FFmpegSource(const char *Source, int _Track, int _SeekMode, FILE *Timecodes, bool Cache, FILE *CacheFile, IScriptEnvironment* Env) : Track(_Track), SeekMode(_SeekMode) {
 		CurrentFrame = 0;
+		Frame = NULL;
 
-		if(av_open_input_file(&FormatContext, Source, NULL, 0, NULL) != 0)
+		if (av_open_input_file(&FormatContext, Source, NULL, 0, NULL) != 0)
 			Env->ThrowError("FFmpegSource: Couldn't open \"%s\"", Source);
 
-		if(av_find_stream_info(FormatContext) < 0)
+		if (av_find_stream_info(FormatContext) < 0)
 			Env->ThrowError("FFmpegSource: Couldn't find stream information");
 
 		if (Track >= (int)FormatContext->nb_streams)
@@ -574,7 +434,7 @@ public:
 		VI.height = CodecContext->height;
 		VI.fps_denominator = FormatContext->streams[Track]->time_base.num;
 		VI.fps_numerator = FormatContext->streams[Track]->time_base.den;
-		VI.num_frames = FormatContext->streams[Track]->duration;
+		VI.num_frames = (int)FormatContext->streams[Track]->duration;
 
 		// sanity check framerate
 		if (VI.fps_denominator > VI.fps_numerator || VI.fps_denominator <= 0 || VI.fps_numerator <= 0) {
@@ -584,30 +444,32 @@ public:
 		
 		SetOutputFormat(CodecContext->pix_fmt, Env);
 
-		// skip indexing for avi
-		if (!strcmp(FormatContext->iformat->name, "avi") && !Timecodes) {
-			for (int i = 0; i < VI.num_frames; i++) {
-				FrameToDTS.push_back(i);
-				DTSToFrame[i] = i;
-			}
-		} else {
+		// Needs to be indexed?
+		if (!(Cache && LoadFrameInfoFromFile(CacheFile))) {
 			AVPacket Packet;
 			VI.num_frames = 0;
 			while (av_read_frame(FormatContext, &Packet) >= 0) {
 				if (Packet.stream_index == Track) {
-					FrameToDTS.push_back(Packet.dts);
-					DTSToFrame[Packet.dts] = VI.num_frames;
-					if (Timecodes)
-						fprintf(Timecodes, "%f\n", (Packet.dts * FormatContext->streams[Track]->time_base.num * 1000) / (double)(FormatContext->streams[Track]->time_base.den));
+					FrameToDTS.push_back(FrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) != 0));
 					VI.num_frames++;
 				}
 				av_free_packet(&Packet);
 			}
+
+			av_seek_frame(FormatContext, Track, 0, AVSEEK_FLAG_BACKWARD);
+
+			if (Cache) {
+				fprintf(CacheFile, "%d\n", VI.num_frames);
+				for (int i = 0; i < VI.num_frames; i++)
+					fprintf(CacheFile, "%lld %d\n", FrameToDTS[i].DTS, (int)(FrameToDTS[i].KeyFrame ? 1 : 0));			
+			}
 		}
 
-		Frame = avcodec_alloc_frame();
+		if (Timecodes)
+			for (int i = 0; i < VI.num_frames; i++)
+				fprintf(Timecodes, "%f\n", (FrameToDTS[i].DTS * FormatContext->streams[Track]->time_base.num * 1000) / (double)(FormatContext->streams[Track]->time_base.den));
 
-		av_seek_frame(FormatContext, Track, 0, AVSEEK_FLAG_BACKWARD);
+		Frame = avcodec_alloc_frame();
 	}
 
 	~FFmpegSource() {
@@ -619,7 +481,7 @@ public:
     PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* Env);
 };
 
-int FFmpegSource::ReadNextFrame(AVFrame *Frame, int64_t *DTS) {
+int FFmpegSource::DecodeNextFrame(AVFrame *Frame, int64_t *DTS) {
 	AVPacket Packet;
 	int FrameFinished = 0;
 	int Ret = -1;
@@ -627,7 +489,6 @@ int FFmpegSource::ReadNextFrame(AVFrame *Frame, int64_t *DTS) {
 
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
         if (Packet.stream_index == Track) {
-
 			Ret = avcodec_decode_video(CodecContext, Frame, &FrameFinished, Packet.data, Packet.size);
 
 			if (*DTS < 0)
@@ -646,28 +507,44 @@ int FFmpegSource::ReadNextFrame(AVFrame *Frame, int64_t *DTS) {
 PVideoFrame __stdcall FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
 	bool HasSeeked = false;
 
-	int IndexPosition = av_index_search_timestamp(FormatContext->streams[Track], FrameToDTS[n], AVSEEK_FLAG_BACKWARD);
-	int64_t NearestIndexDTS = -1;
-	if (IndexPosition >= 0)	
-		NearestIndexDTS = FormatContext->streams[Track]->index_entries[IndexPosition].timestamp;
-
-	if (n < CurrentFrame || NearestIndexDTS > FrameToDTS[CurrentFrame] || (ForceSeek && IndexPosition == -1 && n > CurrentFrame + 10)) {
-		av_seek_frame(FormatContext, Track, FrameToDTS[n], AVSEEK_FLAG_BACKWARD);
-		avcodec_flush_buffers(CodecContext);
-		HasSeeked = true;
+	if (SeekMode == 0) {
+		if (n < CurrentFrame) {
+			av_seek_frame(FormatContext, Track, 0, AVSEEK_FLAG_BACKWARD);
+			avcodec_flush_buffers(CodecContext);
+			CurrentFrame = 0;
+		}
+	} else {
+		if (n < CurrentFrame || FindClosestKeyFrame(n) > CurrentFrame || (SeekMode == 3 && n > CurrentFrame + 10)) {
+			av_seek_frame(FormatContext, Track, (SeekMode == 3) ? FrameToDTS[n].DTS : FrameToDTS[FindClosestKeyFrame(n)].DTS, AVSEEK_FLAG_BACKWARD);
+			avcodec_flush_buffers(CodecContext);
+			HasSeeked = true;
+		}
 	}
 
 	do {
 		int64_t DTS;
-		int Ret = ReadNextFrame(Frame, &DTS);
+		int Ret = DecodeNextFrame(Frame, &DTS);
 
 		if (HasSeeked) {
-			CurrentFrame = DTSToFrame[DTS];
-			HasSeeked = DTS < 0;
+			HasSeeked = false;
+
+			// Is the seek destination time known? Does it belong to a frame?
+			if (DTS < 0 || (CurrentFrame = FrameFromDTS(DTS)) < 0) {
+				switch (SeekMode) {
+					case 1:
+						Env->ThrowError("FFmpegSource: Frame accurate seeking not possible in this file");
+					case 2:
+					case 3:
+						CurrentFrame = ClosestFrameFromDTS(DTS);
+						break;
+					default:
+						Env->ThrowError("FFmpegSource: Failed assertion");
+				}	
+			}
 		}
 
 		CurrentFrame++;
-	} while (CurrentFrame <= n || HasSeeked);
+	} while (CurrentFrame <= n);
 
 	return OutputFrame(Frame, Env);
 }
@@ -676,19 +553,22 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	if (!Args[0].Defined())
     	Env->ThrowError("FFmpegSource: No source specified");
 
-	av_register_all();
+	// Generate default cache filename
+	char DefaultCacheFilename[MAX_PATH];
+	strcpy(DefaultCacheFilename, Args[0].AsString());
+	strcat(DefaultCacheFilename, ".ffcache");
 
-	AVFormatContext *FormatContext;
+	const char *Source = Args[0].AsString();
+	int Track = Args[1].AsInt(-1);
+	int SeekMode = Args[2].AsInt(1);
+	const char *Timecodes = Args[3].AsString("");
+	bool Cache = Args[4].AsBool(true);
+	const char *CacheFilename = Args[5].AsString(DefaultCacheFilename);
 
-	if (av_open_input_file(&FormatContext, Args[0].AsString(), NULL, 0, NULL) != 0)
-		Env->ThrowError("FFmpegSource: Couldn't open \"%s\"", Args[0].AsString());
-
-	bool IsMatroska = !strcmp(FormatContext->iformat->name, "matroska");
-
-	av_close_input_file(FormatContext);
+	if (SeekMode < 0 || SeekMode > 3)
+    	Env->ThrowError("FFmpegSource: Invalid seek mode selected");
 
 	FILE *TCFile = NULL;
-	const char *Timecodes = Args[3].AsString("");
 	if (strcmp(Timecodes, "")) {
 		TCFile = fopen(Timecodes, "w");
 		if (!TCFile)
@@ -696,21 +576,40 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 		fprintf(TCFile, "# timecode format v2\n");
 	}
 
+	FILE *CacheFile = NULL;
+	if (Cache) {
+		CacheFile = fopen(CacheFilename, "a+");
+		if (!CacheFile)
+			Env->ThrowError("FFmpegSource: Failed to open cache file");
+		fseek(CacheFile, 0, SEEK_END);
+	}
+
+	av_register_all();
+	AVFormatContext *FormatContext;
+
+	if (av_open_input_file(&FormatContext, Source, NULL, 0, NULL) != 0)
+		Env->ThrowError("FFmpegSource: Couldn't open \"%s\"", Args[0].AsString());
+	bool IsMatroska = !strcmp(FormatContext->iformat->name, "matroska");
+	av_close_input_file(FormatContext);
+
 	FFBase *Ret;
 
 	if (IsMatroska)
-		Ret = new FFMKVSource(Args[0].AsString(), Args[1].AsInt(-1), TCFile, Env);
+		Ret = new FFMKVSource(Source, Track, TCFile, Cache, CacheFile, Env);
 	else
-		Ret = new FFmpegSource(Args[0].AsString(), Args[1].AsInt(-1), Args[2].AsBool(false), TCFile, Env);
+		Ret = new FFmpegSource(Source, Track, SeekMode, TCFile, Cache, CacheFile, Env);
 
 	if (TCFile)
 		fclose(TCFile);
+
+	if (CacheFile)
+		fclose(CacheFile);
 
 	return Ret;
 }
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
-    Env->AddFunction("FFmpegSource", "[source]s[track]i[forceseek]b[timecodes]s", CreateFFmpegSource, 0);
+    Env->AddFunction("FFmpegSource", "[source]s[track]i[seekmode]i[timecodes]s[cache]b[cachefile]s", CreateFFmpegSource, 0);
     return "FFmpegSource";
 };
 
