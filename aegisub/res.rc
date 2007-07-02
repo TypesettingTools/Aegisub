@@ -139,6 +139,9 @@ visual_realtime BITMAP "bitmaps/visual_realtime.bmp"
 
 arrow_up BITMAP "bitmaps/arrow_up.bmp"
 arrow_down BITMAP "bitmaps/arrow_down.bmp"
+arrow_up_stop BITMAP "bitmaps/arrow_up_stop.bmp"
+arrow_down_stop BITMAP "bitmaps/arrow_down_stop.bmp"
+arrow_sort BITMAP "bitmaps/arrow_sort.bmp"
 
 splash BITMAP "bitmaps/splash.bmp"
 
