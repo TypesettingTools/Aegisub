@@ -136,16 +136,12 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	KeyframesSizer->AddStretchSpacer(1);
 
 	// Button sizer
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-	ApplyButton = new wxButton(this,wxID_APPLY);
-#ifndef __WXMAC__
-	ButtonSizer->Add(ApplyButton,0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,0,0);
-#else
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
-	ButtonSizer->Add(ApplyButton,0,0,0);
-#endif
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	ApplyButton = new wxButton(this,wxID_OK);
+	ButtonSizer->AddButton(ApplyButton);
+	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	ButtonSizer->AddButton(new wxButton(this,wxID_HELP));
+	ButtonSizer->Realize();
 
 	// Right Sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
@@ -234,7 +230,7 @@ BEGIN_EVENT_TABLE(DialogTimingProcessor,wxDialog)
 	EVT_CHECKBOX(CHECK_ENABLE_KEYFRAME,DialogTimingProcessor::OnCheckBox)
 	EVT_CHECKBOX(CHECK_ENABLE_ADJASCENT,DialogTimingProcessor::OnCheckBox)
 	EVT_CHECKLISTBOX(TIMING_STYLE_LIST,DialogTimingProcessor::OnCheckBox)
-	EVT_BUTTON(wxID_APPLY,DialogTimingProcessor::OnApply)
+	EVT_BUTTON(wxID_OK,DialogTimingProcessor::OnApply)
 	EVT_BUTTON(BUTTON_SELECT_ALL,DialogTimingProcessor::OnSelectAll)
 	EVT_BUTTON(BUTTON_SELECT_NONE,DialogTimingProcessor::OnSelectNone)
 END_EVENT_TABLE()
