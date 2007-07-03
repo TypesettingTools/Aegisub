@@ -515,8 +515,7 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 	if (karaokeMode) {
 		wxLogDebug(_T("AudioBox::OnKaraoke: karaoke enabled, disabling"));
 		if (audioKaraoke->splitting) {
-			wxLogDebug(_T("AudioBox::OnKaraoke: was splitting, committing"));
-			audioKaraoke->Commit(); // FIXME: the grid and editbox don't seem to get updated by this
+			audioKaraoke->EndSplit(false);
 		}
 		karaokeMode = false;
 		audioKaraoke->enabled = false;
