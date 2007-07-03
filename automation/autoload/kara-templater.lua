@@ -113,6 +113,7 @@ function parse_code(meta, styles, line, templates, mods)
 	end
 end
 
+-- List of reserved words that can't be used as "line" template identifiers
 template_modifiers = {
 	"pre-line", "line", "syl", "furi", "char", "all", "repeat", "loop",
 	"notext", "keeptags", "noblank", "multi", "fx", "fxgroup"
@@ -142,7 +143,7 @@ function parse_template(meta, styles, line, templates, mods)
 		rest = t
 		m = m:lower()
 		if (m == "pre-line" or m == "line") and not inserted then
-			aegisub.debug.out("Found line template '%s'\n", line.text)
+			aegisub.debug.out(5, "Found line template '%s'\n", line.text)
 			-- should really fail if already inserted
 			local id, t = string.headtail(rest)
 			id = id:lower()
