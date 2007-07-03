@@ -681,6 +681,7 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	event.Skip();
+	GetParent()->AddPendingEvent(event);
 }
 
 
