@@ -769,6 +769,9 @@ void BaseGrid::SetColumnWidths() {
 	}
 
 	// O(n) widths
+	bool showMargin[3];
+	showMargin[0] = showMargin[1] = showMargin[2] = false;
+	bool showLayer = false;
 	int styleLen = 0;
 	int actorLen = 0;
 	int effectLen = 0;
@@ -780,7 +783,10 @@ void BaseGrid::SetColumnWidths() {
 		curDiag = GetDialogue(i);
 		if (curDiag) {
 			// Layer
-			if (curDiag->Layer > maxLayer) maxLayer = curDiag->Layer;
+			if (curDiag->Layer > maxLayer) {
+				maxLayer = curDiag->Layer;
+				showLayer = true;
+			}
 
 			// Actor
 			if (!curDiag->Actor.IsEmpty()) {
@@ -798,6 +804,11 @@ void BaseGrid::SetColumnWidths() {
 			if (!curDiag->Effect.IsEmpty()) {
 				dc.GetTextExtent(curDiag->Effect, &fw, &fh, NULL, NULL, &font);
 				if (fw > effectLen) effectLen = fw;
+			}
+
+			// Margins
+			for (int j=0;j<3;j++) {
+				if (curDiag->Margin[j] != 0) showMargin[j] = true;
 			}
 
 			// Times
@@ -841,15 +852,13 @@ void BaseGrid::SetColumnWidths() {
 
 	// Set column widths
 	colWidth[0] = labelLen;
-	colWidth[1] = layerLen;
+	colWidth[1] = showLayer ? layerLen : 0;
 	colWidth[2] = startLen;
 	colWidth[3] = endLen;
 	colWidth[4] = styleLen;
 	colWidth[5] = actorLen;
 	colWidth[6] = effectLen;
-	colWidth[7] = marginLen;
-	colWidth[8] = marginLen;
-	colWidth[9] = marginLen;
+	for (int i=0;i<3;i++) colWidth[i+7] = showMargin[i] ? marginLen : 0;
 
 	// Hide columns
 	for (int i=0;i<10;i++) {

@@ -104,6 +104,7 @@ Please visit http://aegisub.net to download latest version
   o Added Paste Over function, which allows you to paste subtitle lines over others, overwriting the fields of your choice. (AMZ)
   o Scrollbar in grid didn't always allow scrolling through all the subs. (jfs)
   o Minor fix to the calculation of the grid's "Style" column width. (AMZ)
+  o Layer and margin columns are no longer shown if all lines have default values for those. (AMZ)
 - Subtitles edit box changes:
   o The whole layout has been tweaked. (AMZ)
   o Replaced wxTextCtrl with wxStyledTextCtrl, to solve many issues related to the Rich Text edit control. (AMZ)
