@@ -500,6 +500,7 @@ void FrameMain::InitContents() {
 	// Set display
 	SetDisplayMode(0,0);
 	Layout();
+	EditBox->TextEdit->SetFocus();
 }
 
 

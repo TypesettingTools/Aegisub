@@ -2095,7 +2095,7 @@ void AudioDisplay::ChangeLine(int delta) {
 		int next = line_n+delta;
 		if (next == -1) next = 0;
 		if (next == grid->GetRows()) next = grid->GetRows() - 1;
-		wxLogDebug(_T("AudioDisplay::ChangeLine: next=%s"), next);
+		wxLogDebug(_T("AudioDisplay::ChangeLine: next=%i"), next);
 
 		// Set stuff
 		NeedCommit = false;
