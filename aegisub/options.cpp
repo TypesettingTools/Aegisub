@@ -200,10 +200,10 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetModificationType(MOD_AUTOMATIC);
 	SetText(_T("Automation Base Path"), _T("?data/automation/"));
 	SetText(_T("Automation Include Path"), _T("?user/automation/include/|?data/automation/include/"));
-	SetText(_T("Automation Autoload Path"), _T("?user/automation/autoload/|?data/automation/include/"));
+	SetText(_T("Automation Autoload Path"), _T("?user/automation/autoload/|?data/automation/autoload/"));
 	SetInt(_T("Automation Trace Level"), 3);
 	SetInt(_T("Automation Thread Priority"), 1); // "below normal"
-	SetInt(_T("Automation Autoreload Mode"), 0); // never
+	SetInt(_T("Automation Autoreload Mode"), 1); // local only
 
 	// Generate colors
 	// FIXME: Can't reliably store the system colour-based ones in the config file, the user might change colour scheme
