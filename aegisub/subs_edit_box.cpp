@@ -847,7 +847,7 @@ void SubsEditBox::Commit(bool stay) {
 		if (next >= nrows) {
 			AssDialogue *newline = new AssDialogue;
 			newline->Start = cur->End;
-			newline->End.SetMS(cur->End.GetMS()+5000);
+			newline->End.SetMS(cur->End.GetMS()+Options.AsInt(_T("Timing Default Duration")));
 			newline->Style = cur->Style;
 			newline->UpdateData();
 			grid->InsertLine(newline,next-1,true,true);
@@ -1292,4 +1292,5 @@ void SubsEditBox::OnButtonStrikeout(wxCommandEvent &event) {
 void SubsEditBox::OnButtonCommit(wxCommandEvent &event) {
 	Commit(wxGetMouseState().ControlDown());
 }
+
 

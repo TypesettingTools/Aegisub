@@ -1181,7 +1181,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 			AssDialogue *def = new AssDialogue;
 			def->Start = grid->GetDialogue(line_n)->End;
 			def->End = grid->GetDialogue(line_n)->End;
-			def->End.SetMS(def->End.GetMS()+5000);
+			def->End.SetMS(def->End.GetMS()+Options.AsInt(_T("Timing Default Duration")));
 			def->Style = grid->GetDialogue(line_n)->Style;
 			grid->InsertLine(def,line_n,true);
 		}
@@ -2255,4 +2255,5 @@ void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
 		Refresh(false);
 	}
 }
+
 

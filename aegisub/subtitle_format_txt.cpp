@@ -164,7 +164,7 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		line->Style = _T("Default");
 		line->StartMS = 0;
 		line->Start.SetMS(0);
-		line->End.SetMS(5000);
+		line->End.SetMS(Options.AsInt(_T("Timing Default Duration")));
 		Line->push_back(line);
 	}
 }

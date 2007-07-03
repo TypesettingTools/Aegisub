@@ -416,7 +416,7 @@ void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 		def->Start = GetDialogue(n-1)->End;
 		def->End = GetDialogue(n)->Start;
 	}
-	if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+5000);
+	if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+Options.AsInt(_T("Timing Default Duration")));
 	def->Style = GetDialogue(n)->Style;
 
 	// Insert it
@@ -440,13 +440,13 @@ void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 	if (n == nrows-1) {
 		def->Start = GetDialogue(n)->End;
 		def->End = GetDialogue(n)->End;
-		def->End.SetMS(def->End.GetMS()+5000);
+		def->End.SetMS(def->End.GetMS()+Options.AsInt(_T("Timing Default Duration")));
 	}
 	else {
 		def->Start = GetDialogue(n)->End;
 		def->End = GetDialogue(n+1)->Start;
 	}
-	if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+5000);
+	if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+Options.AsInt(_T("Timing Default Duration")));
 	def->Style = GetDialogue(n)->Style;
 
 	// Insert it
@@ -468,7 +468,7 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 	AssDialogue *def = new AssDialogue;
 	int video_ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true);
 	def->Start.SetMS(video_ms);
-	def->End.SetMS(video_ms+5000);
+	def->End.SetMS(video_ms+Options.AsInt(_T("Timing Default Duration")));
 	def->Style = GetDialogue(n)->Style;
 
 	// Insert it
@@ -490,7 +490,7 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 	AssDialogue *def = new AssDialogue;
 	int video_ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true);
 	def->Start.SetMS(video_ms);
-	def->End.SetMS(video_ms+5000);
+	def->End.SetMS(video_ms+Options.AsInt(_T("Timing Default Duration")));
 	def->Style = GetDialogue(n)->Style;
 
 	// Insert it
