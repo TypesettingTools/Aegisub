@@ -151,9 +151,17 @@ void VisualToolScale::InitializeHold() {
 ///////////////
 // Update hold
 void VisualToolScale::UpdateHold() {
+	// Deltas
+	int deltaX = mouseX - startX;
+	int deltaY = startY - mouseY;
+	if (ctrlDown) {
+		if (abs(deltaX) >= abs(deltaY)) deltaY = 0;
+		else deltaX = 0;
+	}
+
 	// Calculate
-	curScaleX = (float(mouseX - startX)/0.8f) + origScaleX;
-	curScaleY = (float(startY - mouseY)/0.8f) + origScaleY;
+	curScaleX = (float(deltaX)/0.8f) + origScaleX;
+	curScaleY = (float(deltaY)/0.8f) + origScaleY;
 	if (curScaleX < 0.0f) curScaleX = 0.0f;
 	if (curScaleY < 0.0f) curScaleY = 0.0f;
 

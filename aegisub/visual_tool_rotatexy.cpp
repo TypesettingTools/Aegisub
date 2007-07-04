@@ -198,9 +198,17 @@ void VisualToolRotateXY::UpdateHold() {
 	float screenAngleX = (orgy-mouseY*sh/h)*2.0;
 	float screenAngleY = (mouseX*sw/w-orgx)*2.0;
 
+	// Deltas
+	float deltaX = screenAngleX - startAngleX;
+	float deltaY = screenAngleY - startAngleY;
+	if (ctrlDown) {
+		if (fabs(deltaX) >= fabs(deltaY)) deltaY = 0;
+		else deltaX = 0;
+	}
+
 	// Calculate
-	curAngleX = screenAngleX - startAngleX + origAngleX;
-	curAngleY = screenAngleY - startAngleY + origAngleY;
+	curAngleX = deltaX + origAngleX;
+	curAngleY = deltaY + origAngleY;
 	while (curAngleX < 0.0) curAngleX += 360.0;
 	while (curAngleX >= 360.0) curAngleX -= 360.0;
 	while (curAngleY < 0.0) curAngleY += 360.0;
