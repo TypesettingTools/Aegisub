@@ -56,6 +56,11 @@ private:
 	void UpdateHold();
 	void CommitHold();
 
+	bool CanDrag() { return true; }
+	void PopulateFeatureList();
+	void UpdateDrag(VisualDraggableFeature &feature);
+	void CommitDrag(VisualDraggableFeature &feature);
+
 public:
 	VisualToolRotateXY(VideoDisplay *parent);
 

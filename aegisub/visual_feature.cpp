@@ -73,9 +73,10 @@ bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
 
 	// Triangle
 	else if (type == DRAG_BIG_TRIANGLE) {
-		if (my < y-8 || my > y+8) return false;
+		int _my = my+2;
+		if (_my < y-8 || _my > y+8) return false;
 		int dx = mx-x;
-		int dy = my-y-8;
+		int dy = _my-y-8;
 		return (16*dx+9*dy < 0 && 16*dx-9*dy > 0);
 	}
 
@@ -113,10 +114,10 @@ void VisualDraggableFeature::Draw(OpenGLWrapper *gl) {
 
 	// Triangle
 	else if (type == DRAG_BIG_TRIANGLE) {
-		gl->DrawTriangle(x-9,y-8,x+9,y-8,x,y+8);
-		gl->DrawLine(x,y-2,x,y-18);
-		gl->DrawLine(x,y-2,x-14,y+6);
-		gl->DrawLine(x,y-2,x+14,y+6);
+		gl->DrawTriangle(x-9,y-6,x+9,y-6,x,y+10);
+		gl->DrawLine(x,y,x,y-16);
+		gl->DrawLine(x,y,x-14,y+8);
+		gl->DrawLine(x,y,x+14,y+8);
 	}
 
 	// Small circle

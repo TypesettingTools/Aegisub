@@ -53,6 +53,9 @@ VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
 	_parent->ShowCursor(false);
+	AssDialogue *line = GetActiveDialogueLine();
+	GetLinePosition(line,odx,ody,orgx,orgy);
+	GetLineRotation(line,curAngleX,curAngleY,rz);
 }
 
 
@@ -73,7 +76,8 @@ void VisualToolRotateXY::Draw() {
 
 	// Pivot coordinates
 	int dx=0,dy=0;
-	GetLinePosition(line,dx,dy,orgx,orgy);
+	if (dragging) GetLinePosition(line,dx,dy);
+	else GetLinePosition(line,dx,dy,orgx,orgy);
 	dx = orgx;
 	dy = orgy;
 
@@ -90,9 +94,7 @@ void VisualToolRotateXY::Draw() {
 	SetFillColour(colour[1],0.3f);
 
 	// Draw pivot
-	DrawCircle(dx,dy,7);
-	DrawLine(dx,dy-16,dx,dy+16);
-	DrawLine(dx-16,dy,dx+16,dy);
+	DrawAllFeatures();
 		
 	// Transform grid
 	glMatrixMode(GL_MODELVIEW);
@@ -229,4 +231,36 @@ void VisualToolRotateXY::UpdateHold() {
 void VisualToolRotateXY::CommitHold() {
 	SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleX)));
 	SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleY)));
+}
+
+
+//////////////////
+// Get \org pivot
+void VisualToolRotateXY::PopulateFeatureList() {
+	// Get line
+	curDiag = GetActiveDialogueLine();
+	GetLinePosition(curDiag,odx,ody,orgx,orgy);
+
+	// Set features
+	features.resize(1);
+	VisualDraggableFeature &feat = features.back();
+	feat.x = orgx;
+	feat.y = orgy;
+	feat.line = curDiag;
+	feat.type = DRAG_BIG_TRIANGLE;
+}
+
+
+///////////////////////////
+// Update dragging of \org
+void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature &feature) {
+	orgx = feature.x;
+	orgy = feature.y;
+}
+
+
+///////////////////////////
+// Commit dragging of \org
+void VisualToolRotateXY::CommitDrag(VisualDraggableFeature &feature) {
+	SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
 }

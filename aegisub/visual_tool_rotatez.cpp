@@ -53,6 +53,9 @@ VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
 	_parent->ShowCursor(false);
+	AssDialogue *line = GetActiveDialogueLine();
+	GetLinePosition(line,odx,ody,orgx,orgy);
+	GetLineRotation(line,rx,ry,curAngle);
 }
 
 
@@ -71,9 +74,13 @@ void VisualToolRotateZ::Draw() {
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;
 
+	// Draw pivot
+	DrawAllFeatures();
+
 	// Radius
 	int dx=0,dy=0;
-	GetLinePosition(line,dx,dy,orgx,orgy);
+	if (dragging) GetLinePosition(line,dx,dy);
+	else GetLinePosition(line,dx,dy,orgx,orgy);
 	int radius = (int) sqrt(double((dx-orgx)*(dx-orgx)+(dy-orgy)*(dy-orgy)));
 	int oRadius = radius;
 	if (radius < 50) radius = 50;
@@ -101,11 +108,6 @@ void VisualToolRotateZ::Draw() {
 	// Set colours
 	SetLineColour(colour[0]);
 	SetFillColour(colour[1],0.3f);
-
-	// Draw pivot
-	DrawCircle(dx,dy,7);
-	DrawLine(dx,dy-16,dx,dy+16);
-	DrawLine(dx-16,dy,dx+16,dy);
 
 	// Set up the projection
 	glMatrixMode(GL_MODELVIEW);
@@ -155,7 +157,7 @@ void VisualToolRotateZ::Draw() {
 	glPopMatrix();
 
 	// Draw line to mouse
-	if (mouseX != -1) {
+	if (mouseX != -1 && !dragging && GetHighlightedFeature() == -1) {
 		SetLineColour(colour[0]);
 		DrawLine(dx,dy,mx,my);
 	}
@@ -195,4 +197,36 @@ void VisualToolRotateZ::UpdateHold() {
 // Commit hold
 void VisualToolRotateZ::CommitHold() {
 	SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)));
+}
+
+
+//////////////////
+// Get \org pivot
+void VisualToolRotateZ::PopulateFeatureList() {
+	// Get line
+	curDiag = GetActiveDialogueLine();
+	GetLinePosition(curDiag,odx,ody,orgx,orgy);
+
+	// Set features
+	features.resize(1);
+	VisualDraggableFeature &feat = features.back();
+	feat.x = orgx;
+	feat.y = orgy;
+	feat.line = curDiag;
+	feat.type = DRAG_BIG_TRIANGLE;
+}
+
+
+///////////////////////////
+// Update dragging of \org
+void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature &feature) {
+	orgx = feature.x;
+	orgy = feature.y;
+}
+
+
+///////////////////////////
+// Commit dragging of \org
+void VisualToolRotateZ::CommitDrag(VisualDraggableFeature &feature) {
+	SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
 }

@@ -585,6 +585,7 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) 
 // Set override
 void VisualTool::SetOverride(wxString tag,wxString value) {
 	VideoContext::Get()->grid->editBox->SetOverride(tag,value,0,false);
+	parent->SetFocus();
 }
 
 
