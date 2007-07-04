@@ -53,6 +53,9 @@
 DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog(parent,-1,_("Timing Post-Processor"),wxDefaultPosition,wxSize(400,250),wxDEFAULT_DIALOG_STYLE)
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(timing_processor_toolbutton)));
+
 	// Set variables
 	grid = _grid;
 	leadInTime = Options.AsText(_T("Audio lead in"));

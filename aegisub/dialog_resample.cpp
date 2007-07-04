@@ -44,6 +44,7 @@
 #include "subs_grid.h"
 #include "validators.h"
 #include "video_context.h"
+#include "utils.h"
 
 
 ///////////////
@@ -51,6 +52,9 @@
 DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Resample resolution"),wxDefaultPosition)
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(resample_toolbutton)));
+
 	// Variables
 	AssFile *subs = AssFile::top;
 	grid = _grid;

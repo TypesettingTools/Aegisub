@@ -347,3 +347,28 @@ int StringToFix(const wxString &str,size_t decimalPlaces,size_t start,size_t end
 	for (size_t i=0;i<decimalPlaces;i++) major *= 10;
 	return (major + minor)*sign;
 }
+
+
+////////////////////////////////
+// Convert a wxBitmap to wxIcon
+// This is needed because wxIcon has to be 16x16 to work properly on win32
+wxIcon BitmapToIcon(wxBitmap iconBmp) {
+	// Create the icon and background bmp
+	wxIcon ico;
+	wxBitmap bmp(16,16);
+
+	// Blit bitmap into 16x16 one (don't remove brackets)
+	{
+		wxMemoryDC dc;
+		dc.SelectObject(bmp);
+		dc.SetBackground(wxColour(192,192,192));
+		dc.Clear();
+		dc.DrawBitmap(iconBmp,0,0,false);
+	}
+
+	// Create mask and convert to icon
+	wxMask *mask = new wxMask(bmp,wxColour(192,192,192));
+	bmp.SetMask(mask);
+	ico.CopyFromBitmap(bmp);
+	return ico;
+}

@@ -42,6 +42,7 @@
 #include "video_display.h"
 #include "validators.h"
 #include "video_provider.h"
+#include "utils.h"
 
 
 ///////////////
@@ -49,6 +50,9 @@
 DialogProperties::DialogProperties (wxWindow *parent)
 : wxDialog(parent, -1, _("Script Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(properties_toolbutton)));
+
 	// Setup
 	AssFile *subs = AssFile::top;
 

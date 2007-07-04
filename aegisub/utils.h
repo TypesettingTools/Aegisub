@@ -68,6 +68,7 @@ int SmallestPowerOf2(int x);
 void GetWordBoundaries(const wxString text,IntPairVector &results,int start=0,int end=-1);
 int StringToInt(const wxString &str,size_t start=0,size_t end=-1);
 int StringToFix(const wxString &str,size_t decimalPlaces,size_t start=0,size_t end=-1);
+wxIcon BitmapToIcon(wxBitmap bmp);
 
 
 //////////

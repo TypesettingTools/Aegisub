@@ -51,6 +51,7 @@
 #include "ass_time.h"
 #include "ass_dialogue.h"
 #include "subs_edit_box.h"
+#include "utils.h"
 
 
 ///////////////
@@ -58,6 +59,9 @@
 DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog(parent, -1, _("Shift Times"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(shift_times_toolbutton)));
+
 	// Set initial values
 	ready = true;
 	grid = _grid;

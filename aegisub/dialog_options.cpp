@@ -62,6 +62,7 @@
 #include "video_context.h"
 #include "browse_button.h"
 #include "tooltip_manager.h"
+#include "utils.h"
 
 
 ///////
@@ -77,6 +78,9 @@ enum {
 DialogOptions::DialogOptions(wxWindow *parent)
 : wxDialog(parent, -1, _T("Options"), wxDefaultPosition, wxDefaultSize)
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(options_button)));
+
 	// Create book
 	book = new wxTreebook(this,-1,wxDefaultPosition,wxSize(400,300));
 	needsRestart = false;

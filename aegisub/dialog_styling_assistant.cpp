@@ -48,6 +48,7 @@
 #include "audio_display.h"
 #include "audio_box.h"
 #include "hotkeys.h"
+#include "utils.h"
 
 
 ///////////////
@@ -55,6 +56,9 @@
 DialogStyling::DialogStyling (wxWindow *parent,SubtitlesGrid *_grid) :
 wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxRESIZE_BORDER)
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(styling_toolbutton)));
+
 	// Variables
 	grid = _grid;
 	audio = VideoContext::Get()->audio->box->audioDisplay;

@@ -48,6 +48,7 @@
 #include "audio_display.h"
 #include "frame_main.h"
 #include "hotkeys.h"
+#include "utils.h"
 
 
 ///////////////
@@ -55,6 +56,9 @@
 DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesGrid *_grid,int startrow,bool preview)
 : wxDialog(parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, _T("TranslationAssistant"))
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(translation_toolbutton)));
+
 	// Set variables
 	enablePreview = preview;
 	main = parent;

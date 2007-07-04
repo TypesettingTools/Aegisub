@@ -39,6 +39,7 @@
 #include "dialog_jumpto.h"
 #include "vfr.h"
 #include "video_context.h"
+#include "utils.h"
 
 
 ///////
@@ -54,6 +55,9 @@ enum {
 DialogJumpTo::DialogJumpTo (wxWindow *parent)
 : wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(jumpto_button)));
+
 	// Set initial values
 	ready = false;
 	jumpframe = VideoContext::Get()->GetFrameN();

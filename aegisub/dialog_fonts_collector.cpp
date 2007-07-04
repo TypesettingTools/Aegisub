@@ -68,6 +68,9 @@ enum IDs {
 DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 : wxDialog(parent,-1,_("Fonts Collector"),wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(font_collector_button)));
+
 	// Parent
 	main = (FrameMain*) parent;
 

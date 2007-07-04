@@ -65,6 +65,9 @@ enum {
 DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 : wxDialog(parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(spellcheck_toolbutton)));
+
 	// Get spell checker
 	spellchecker = SpellCheckerFactory::GetSpellChecker();
 	if (!spellchecker) {

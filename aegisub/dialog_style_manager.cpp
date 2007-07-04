@@ -47,6 +47,7 @@
 #include "standard_paths.h"
 #include "options.h"
 #include "subs_grid.h"
+#include "utils.h"
 
 
 ///////////////
@@ -55,9 +56,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStylesManager"))
 {
 	// Set icon
-	wxIcon ico;
-	ico.CopyFromBitmap(wxBITMAP(style_toolbutton));
-	SetIcon(ico);
+	SetIcon(BitmapToIcon(wxBITMAP(style_toolbutton)));
 
 	// Vars
 	grid = _grid;

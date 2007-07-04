@@ -37,6 +37,7 @@
 #include "dialog_automation.h"
 #include "auto4_base.h"
 #include "options.h"
+#include "utils.h"
 #include <wx/filename.h>
 #include <wx/filedlg.h>
 
@@ -44,6 +45,9 @@
 DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager *_local_manager)
 : wxDialog(parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize)
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(automation_toolbutton)));
+
 	local_manager = _local_manager;
 	global_manager = wxGetApp().global_scripts;
 

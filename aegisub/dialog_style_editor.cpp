@@ -94,6 +94,9 @@ enum {
 DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
+	// Set icon
+	SetIcon(BitmapToIcon(wxBITMAP(style_toolbutton)));
+
 	wxStopWatch performance_timer;
 	// Set styles
 	grid = _grid;
