@@ -60,9 +60,9 @@
 VisualTool::VisualTool(VideoDisplay *par) : eventSink(this) {
 	// Config
 	parent = par;
-	colour[0] = wxColour(27,60,114);
-	colour[1] = wxColour(166,247,177);
-	colour[2] = wxColour(255,255,255);
+	colour[0] = wxColour(106,32,19);
+	colour[1] = wxColour(255,169,40);
+	colour[2] = wxColour(255,253,185);
 	colour[3] = wxColour(187,0,0);
 
 	// Holding variables
@@ -298,8 +298,8 @@ void VisualTool::DrawAllFeatures() {
 
 	// Draw features
 	for (size_t i=0;i<features.size();i++) {
-		SetFillColour(colour[(signed)i == mouseOver ? 2 : 1],0.3f);
-		SetLineColour(colour[0]);
+		SetFillColour(colour[(signed)i == mouseOver ? 2 : 1],0.6f);
+		SetLineColour(colour[0],1.0f,2);
 		features[i].Draw(this);
 	}
 }

@@ -143,35 +143,55 @@ void VisualToolDrag::Draw() {
 
 	// Draw arrows
 	for (size_t i=0;i<features.size();i++) {
-		if (features[i].brother[0] != -1 && features[i].type == DRAG_BIG_SQUARE) {
+		if (features[i].brother[0] != -1 && (features[i].type == DRAG_BIG_CIRCLE || features[i].type == DRAG_BIG_TRIANGLE)) {
 			// Get features
 			VisualDraggableFeature *p1,*p2;
-			p1 = &features[i];
-			p2 = &features[p1->brother[0]];
+			p2 = &features[i];
+			p1 = &features[p2->brother[0]];
 
-			// See if the distance between them is at least 30 pixels
+			// Has arrow?
+			bool hasArrow = p2->type == DRAG_BIG_CIRCLE;
+			int arrowLen = hasArrow ? 10 : 0;
+
+			// See if the distance between them is enough
 			int dx = p2->x - p1->x;
 			int dy = p2->y - p1->y;
 			int dist = (int)sqrt(double(dx*dx + dy*dy));
-			if (dist < 30) continue;
+			if (dist < 20+arrowLen) continue;
 
 			// Get end points
 			int x1 = p1->x + dx*10/dist;
-			int x2 = p2->x - dx*20/dist;
+			int x2 = p2->x - dx*(10+arrowLen)/dist;
 			int y1 = p1->y + dy*10/dist;
-			int y2 = p2->y - dy*20/dist;
-
-			// Draw line
-			SetLineColour(colour[3],0.8f,2);
-			DrawLine(x1,y1,x2,y2);
+			int y2 = p2->y - dy*(10+arrowLen)/dist;
 
 			// Draw arrow
-			double angle = atan2(double(y2-y1),double(x2-x1))+1.570796;
-			int sx = int(cos(angle)*4);
-			int sy = int(-sin(angle)*4);
-			DrawLine(x2+sx,y2-sy,x2-sx,y2+sy);
-			DrawLine(x2+sx,y2-sy,x2+dx*10/dist,y2+dy*10/dist);
-			DrawLine(x2-sx,y2+sy,x2+dx*10/dist,y2+dy*10/dist);
+			if (hasArrow) {
+				// Calculate angle
+				double angle = atan2(double(y2-y1),double(x2-x1))+1.570796;
+				int sx = int(cos(angle)*4);
+				int sy = int(-sin(angle)*4);
+
+				// Arrow line
+				SetLineColour(colour[3],0.8f,2);
+				DrawLine(x1,y1,x2,y2);
+
+				// Arrow head
+				DrawLine(x2+sx,y2-sy,x2-sx,y2+sy);
+				DrawLine(x2+sx,y2-sy,x2+dx*10/dist,y2+dy*10/dist);
+				DrawLine(x2-sx,y2+sy,x2+dx*10/dist,y2+dy*10/dist);
+			}
+
+			// Draw dashed line
+			else {
+				SetLineColour(colour[3],0.5f,2);
+				int steps = (dist-20)/6;
+				double stepx = double(x2-x1)/steps;
+				double stepy = double(y2-y1)/steps;
+				for (int i=0;i<steps;i++) {
+					if (i % 2 == 0) DrawLine(x1+int(i*stepx),y1+int(i*stepy),x1+int((i+1)*stepx),y1+int((i+1)*stepy));
+				}
+			}
 		}
 	}
 }
@@ -215,6 +235,7 @@ void VisualToolDrag::PopulateFeatureList() {
 				feat.line = diag;
 				feat.lineN = i;
 				features.push_back(feat);
+				int parentN = features.size()-1;
 
 				// Create move destination feature
 				if (hasMove) {
@@ -229,8 +250,8 @@ void VisualToolDrag::PopulateFeatureList() {
 
 					// Add each other as brothers.
 					int n = features.size();
-					features[n-1].brother[0] = n-2;
-					features[n-2].brother[0] = n-1;
+					features[n-1].brother[0] = parentN;
+					features[parentN].brother[0] = n-1;
 				}
 
 				// Create org feature
@@ -243,6 +264,11 @@ void VisualToolDrag::PopulateFeatureList() {
 					feat.line = diag;
 					feat.lineN = i;
 					features.push_back(feat);
+
+					// Add each other as brothers.
+					int n = features.size();
+					features[n-1].brother[0] = parentN;
+					features[parentN].brother[1] = n-1;
 				}
 			}
 		}

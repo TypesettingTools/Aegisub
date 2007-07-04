@@ -108,7 +108,7 @@ void VisualToolRotateXY::Draw() {
 
 	// Draw grid
 	glShadeModel(GL_SMOOTH);
-	SetLineColour(colour[0],0.5f,1);
+	SetLineColour(colour[0],0.5f,2);
 	SetModeLine();
 	float r = colour[0].Red()/255.0f;
 	float g = colour[0].Green()/255.0f;
