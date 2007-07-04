@@ -139,7 +139,7 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 			if (curFeature != -1) {
 				// Initialize drag
 				InitializeDrag(features[curFeature]);
-				VideoContext::Get()->grid->editBox->SetToLine(features[curFeature].lineN,true);
+				if (features[curFeature].lineN != -1) VideoContext::Get()->grid->editBox->SetToLine(features[curFeature].lineN,true);
 
 				// Set start value
 				dragStartX = mx;
@@ -286,11 +286,17 @@ int VisualTool::GetHighlightedFeature() {
 /////////////////////
 // Draw all features
 void VisualTool::DrawAllFeatures() {
+	// Populate list, if needed
 	if (!dragListOK) {
 		PopulateFeatureList();
 		dragListOK = true;
 	}
-	int mouseOver = GetHighlightedFeature();
+
+	// Get feature that mouse is over
+	int mouseOver = curFeature;
+	if (curFeature == -1) mouseOver = GetHighlightedFeature();
+
+	// Draw features
 	for (size_t i=0;i<features.size();i++) {
 		SetFillColour(colour[(signed)i == mouseOver ? 2 : 1],0.3f);
 		SetLineColour(colour[0]);
@@ -303,7 +309,7 @@ void VisualTool::DrawAllFeatures() {
 // Refresh
 void VisualTool::Refresh() {
 	frame_n = VideoContext::Get()->GetFrameN();
-	dragListOK = false;
+	if (!dragging) dragListOK = false;
 	DoRefresh();
 }
 

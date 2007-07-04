@@ -53,7 +53,7 @@ private:
 	void UpdateHold();
 	void CommitHold();
 
-	bool CanDrag() { return false; }
+	bool CanDrag() { return true; }
 	void PopulateFeatureList();
 	void InitializeDrag(VisualDraggableFeature &feature);
 	void UpdateDrag(VisualDraggableFeature &feature);

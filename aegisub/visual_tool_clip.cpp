@@ -79,7 +79,7 @@ void VisualToolClip::Draw() {
 	if (!line) return;
 
 	// Get position
-	if (line != curDiag) GetLineClip(line,curX1,curY1,curX2,curY2);
+	if (!dragging && !holding) GetLineClip(line,curX1,curY1,curX2,curY2);
 	int dx1 = curX1;
 	int dy1 = curY1;
 	int dx2 = curX2;
@@ -93,13 +93,10 @@ void VisualToolClip::Draw() {
 	// Draw outside area
 	SetLineColour(colour[3],0.0f);
 	SetFillColour(colour[3],0.3f);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	DrawRectangle(0,0,sw,dy1);
 	DrawRectangle(0,dy2,sw,sh);
 	DrawRectangle(0,dy1,dx1,dy2);
 	DrawRectangle(dx2,dy1,sw,dy2);
-	glDisable(GL_BLEND);
 
 	// Draw circles
 	SetLineColour(colour[0]);
@@ -158,43 +155,47 @@ void VisualToolClip::CommitHold() {
 // Populate feature list
 void VisualToolClip::PopulateFeatureList() {
 	// Clear
-	features.clear();
-
-	// Setup basic feature
-	VisualDraggableFeature feat;
-	feat.type = DRAG_SMALL_CIRCLE;
+	if (features.size() != 4) {
+		features.clear();
+		features.resize(4);
+	}
 
 	// Top-left
-	feat.x = curX1;
-	feat.y = curY1;
-	feat.brother[0] = 1;
-	feat.brother[1] = 2;
-	feat.brother[2] = 3;
-	features.push_back(feat);
+	int i = 0;
+	features[i].x = curX1;
+	features[i].y = curY1;
+	features[i].brother[0] = 1;
+	features[i].brother[1] = 2;
+	features[i].brother[2] = 3;
+	features[i].type = DRAG_SMALL_CIRCLE;
+	i++;
 
 	// Top-right
-	feat.x = curX2;
-	feat.y = curY1;
-	feat.brother[0] = 0;
-	feat.brother[1] = 3;
-	feat.brother[2] = 2;
-	features.push_back(feat);
+	features[i].x = curX2;
+	features[i].y = curY1;
+	features[i].brother[0] = 0;
+	features[i].brother[1] = 3;
+	features[i].brother[2] = 2;
+	features[i].type = DRAG_SMALL_CIRCLE;
+	i++;
 
 	// Bottom-left
-	feat.x = curX1;
-	feat.y = curY2;
-	feat.brother[0] = 3;
-	feat.brother[1] = 0;
-	feat.brother[2] = 1;
-	features.push_back(feat);
+	features[i].x = curX1;
+	features[i].y = curY2;
+	features[i].brother[0] = 3;
+	features[i].brother[1] = 0;
+	features[i].brother[2] = 1;
+	features[i].type = DRAG_SMALL_CIRCLE;
+	i++;
 
 	// Bottom-right
-	feat.x = curX2;
-	feat.y = curY2;
-	feat.brother[0] = 2;
-	feat.brother[1] = 1;
-	feat.brother[2] = 0;
-	features.push_back(feat);
+	features[i].x = curX2;
+	features[i].y = curY2;
+	features[i].brother[0] = 2;
+	features[i].brother[1] = 1;
+	features[i].brother[2] = 0;
+	features[i].type = DRAG_SMALL_CIRCLE;
+	i++;
 }
 
 
