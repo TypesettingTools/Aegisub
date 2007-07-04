@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<NSSA>
+  <Note name="getfresh v4" author="getfresh" desc="Notebox by getfresh. Start a little early and end a little late as it fades+scrolls in." resx="1024" resy="768">
+    <Styles version="5">
+      <Style>Style: NoteBOX1,Arial,29,&amp;HFFD6AE85,&amp;HFFFFFFFF,&amp;HFFFFFFFF,&amp;HFF000000,0,0,0,0,100,100,0,0.00,1,0,0,7,0,0,0,0</Style>
+      <Style>Style: NoteBOX2,Arial,29,&amp;HFFFFFFFF,&amp;HFFFFFFFF,&amp;HFF000000,&amp;HFF000000,1,0,0,0,100,100,0,0.00,1,0.5,1.5,7,0,0,0,128</Style>
+      <Style>Style: NoteBOX3,Arial,29,&amp;HFFC9471E,&amp;HFFFFFFFF,&amp;HFFFFFFFF,&amp;HFF000000,0,0,0,0,100,100,0,0.00,1,0,0,7,0,0,0,0</Style>
+    </Styles>
+    <LSet lines="1">
+      <line style="NoteBOX1">{\pos(174,-99)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy70\t(0,500,\1a&amp;Haa&amp;\3a&amp;H00&amp;\4a&amp;H00&amp;)\t(3500,4000,,\alpha&amp;HFF&amp;)\bord3}{\p1}m 0 0 l 690 0 690 80 0 80{\p0}</line>
+      <line style="NoteBOX3">{\pos(254,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy144\fscx200\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,,\alpha&amp;HFF&amp;)\bord1.5}{\p1}m 0 0 l 1 0 1 47 0 47{\p0}</line>
+      <line style="NoteBOX3">{\pos(255,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy146\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 1 0 1 48 0 48{\p0}</line>
+      <line style="NoteBOX3">{\pos(170,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy100\t(0,500,\alpha&amp;H40&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 700 0 700 3 0 3{\p0}</line>
+      <line style="NoteBOX3">{\pos(170,-35)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy150\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 699 0 699 3 0 3{\p0}</line>
+      <line style="NoteBOX3">{\pos(170,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy77\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 1 0 1 93 0 93{\p0}</line>
+      <line style="NoteBOX3">{\pos(868,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy77\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 1 0 1 93 0 93{\p0}</line>
+      <line style="NoteBOX3">{\pos(170,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy77\t(0,500,\1a&amp;HCA&amp;\3a&amp;H00&amp;\4a&amp;H00&amp;)\t(3500,4000,,\alpha&amp;HFF&amp;)\bord3}{\p1}m 0 0 l 699 0 699 93 0 93{\p0}</line>
+      <line style="NoteBOX1">{\pos(184,-86)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)\1c&amp;HFFFFFF&amp;\3c&amp;H000000&amp;\bord0.5\shad1.5\b1\i1}NOTE</line>
+      <line style="NoteBOX2">{\pos(264,-92)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)\fs40}%line1%</line>
+    </LSet>
+    <LSet lines="2">
+      <line style="NoteBOX1">{\pos(174,-99)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy150\t(0,500,\1a&amp;Haa&amp;\3a&amp;H00&amp;\4a&amp;H00&amp;)\t(3500,4000,,\alpha&amp;HFF&amp;)\bord3}{\p1}m 0 0 l 690 0 690 80 0 80{\p0}</line>
+      <line style="NoteBOX3">{\pos(254,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy142\fscx200\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,,\alpha&amp;HFF&amp;)\bord1.5}{\p1}m 0 0 l 1 0 1 47 0 47{\p0}</line>
+      <line style="NoteBOX3">{\pos(173,-41)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy150\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)\bord1.5}{\p1}m 0 0 l 82 0 82 1 0 1{\p0}</line>
+      <line style="NoteBOX3">{\pos(255,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy130\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 1 0 1 48 0 48{\p0}</line>
+      <line style="NoteBOX3">{\pos(170,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy150\t(0,500,\alpha&amp;H50&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 700 0 700 3 0 3{\p0}</line>
+      <line style="NoteBOX3">{\pos(170,28)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy150\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 699 0 699 3 0 3{\p0}</line>
+      <line style="NoteBOX3">{\pos(170,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy150\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 2 0 2 93 0 93{\p0}</line>
+      <line style="NoteBOX3">{\pos(868,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy150\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)}{\p1}m 0 0 l 1 0 1 93 0 93{\p0}</line>
+      <line style="NoteBOX1">{\pos(170,-105)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\fscy145\t(0,500,\1a&amp;HCA&amp;\3a&amp;H00&amp;\4a&amp;H00&amp;)\t(3500,4000,,\alpha&amp;HFF&amp;)\bord3}{\p1}m 0 0 l 699 0 699 93 0 93{\p0}</line>
+      <line style="NoteBOX3">{\pos(184,-87)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)\1c&amp;HFFFFFF&amp;\3c&amp;H000000&amp;\bord0.5\shad1.5\b1\i1}NOTE</line>
+      <line style="NoteBOX2">{\pos(264,-85)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)\fs40}%line1%</line>
+      <line style="NoteBOX2">{\pos(180,-28)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&amp;HFF&amp;}0\N{\r\t(0,500,\alpha&amp;H00&amp;)\t(3500,4000,\alpha&amp;HFF&amp;)\fs40}%line2%</line>
+    </LSet>
+  </Note>
+</NSSA>
+
+
+<!--
+Style: NoteBOX1,Arial,29,&HFFF6E0FF,&HFFFFFFFF,&HFF000000,&HFF000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,0
+Style: NoteBOX2,Arial,29,&HFFFFFFFF,&HFFFFFFFF,&HFF000000,&HFF000000,0,0,0,0,100,100,0,0,1,0.5,0,7,0,0,0,128
+
+{\pos(174,-74)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy70\t(0,500,\1a&Haa&\3a&H00&\4a&H00&)\t(3500,4000,,\alpha&Hff&)\bord2}{\p1}m 0 0 l 690 0 690 60 0 60{\p0}
+{\pos(254,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy144\fscx200\t(0,500,\alpha&H00&)\t(3500,4000,,\alpha&Hff&)\bord1.5}{\p1}m 0 0 l 1 0 1 35 0 35{\p0}
+{\pos(255,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy146\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 1 0 1 36 0 36{\p0}
+{\pos(170,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy100\t(0,500,\alpha&H40&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 700 0 700 2 0 2{\p0}
+{\pos(170,-26)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy150\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 699 0 699 2 0 2{\p0}
+{\pos(170,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy77\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 1 0 1 70 0 70{\p0}
+{\pos(868,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy77\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 1 0 1 70 0 70{\p0}
+{\pos(170,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy77\t(0,500,\1a&Hca&\3a&H00&\4a&H00&)\t(3500,4000,,\alpha&Hff&)\bord2}{\p1}m 0 0 l 699 0 699 70 0 70{\p0}
+{\pos(184,-68)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)\1c&HFFFFFF&\bord0\shad1.5\bord0.5\3c&H000000&\b1\i1}NOTE
+{\pos(264,-69)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)\shad1.5\b1\fs30}%line1%
+
+
+{\pos(174,-74)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy150\t(0,500,\1a&Haa&\3a&H00&\4a&H00&)\t(3500,4000,,\alpha&Hff&)\bord2}{\p1}m 0 0 l 690 0 690 60 0 60{\p0}
+{\pos(254,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy142\fscx200\t(0,500,\alpha&H00&)\t(3500,4000,,\alpha&Hff&)\bord1.5}{\p1}m 0 0 l 1 0 1 35 0 35{\p0}
+{\pos(173,-31)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy150\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)\bord1.5}{\p1}m 0 0 l 82 0 82 1 0 1{\p0}
+{\pos(255,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy130\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 1 0 1 36 0 36{\p0}
+{\pos(170,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy150\t(0,500,\alpha&H50&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 700 0 700 2 0 2{\p0}
+{\pos(170,21)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy150\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 699 0 699 2 0 2{\p0}
+{\pos(170,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy150\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 2 0 2 70 0 70{\p0}
+{\pos(868,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy150\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)}{\p1}m 0 0 l 1 0 1 70 0 70{\p0}
+{\pos(170,-79)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\fscy145\t(0,500,\1a&Hca&\3a&H00&\4a&H00&)\t(3500,4000,,\alpha&Hff&)\bord2}{\p1}m 0 0 l 699 0 699 70 0 70{\p0}
+{\pos(184,-70)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)\1c&HFFFFFF&\bord0\shad1.5\bord0.5\3c&H000000&\b1\i1}NOTE
+{\pos(264,-64)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)\shad1.5\b1\fs30}%line1%
+{\pos(180,-21)\fscy0\t(0,500,\fscy320)\t(3500,4000,\fscy0)\alpha&Hff&}0\N{\r\t(0,500,\alpha&H00&)\t(3500,4000,\alpha&Hff&)\shad1.5\b1\fs30}%line2%
+-->

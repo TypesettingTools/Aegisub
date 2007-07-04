@@ -1,0 +1,103 @@
+
+Name=Raw code (first \k only)
+Code=$Code$
+FstK=True
+ONam=Code
+ODef=
+
+Name=Position
+Code=\pos($x$,$y$)
+FstK=True
+ONam=x
+ODef=
+ONam=y
+ODef=
+
+Name=Origin
+Code=\org($x$,$y$)
+FstK=True
+ONam=x
+ODef=
+ONam=y
+ODef=
+
+Name=Transformation
+Code=\t($Start Time$,$End Time$,$Acceleration$,$Code$)
+ONam=Start Time
+ODef=%karastart%
+ONam=End Time
+ODef=%karaend%
+ONam=Acceleration
+ODef=1
+ONam=Code
+ODef=
+
+Name=Move
+Code=\move($Start X$,$Start Y$,$End X$,$End Y$,$Start Time$,$End Time$)
+FstK=True
+ONam=Start X
+ODef=
+ONam=Start Y
+ODef=
+ONam=End X
+ODef=
+ONam=End Y
+ODef=
+ONam=Start Time
+ODef=
+ONam=End Time
+ODef=
+
+Name=Revert
+Code=\r
+
+Name=Expanding Border
+Code=\bord$Initial Border Size$\3a&$Initial Border Alpha$\t(%karastart%,%karaend%,\bord$Expanded Border Size$\3a&$Expanded Border Alpha$&)\t(%karaend%,%karaend%,\bord$Initial Border Size$\3a&$Initial Border Alpha$&)
+ONam=Initial Border Size
+ODef=1
+ONam=Expanded Border Size
+ODef=12
+ONam=Initial Border Alpha
+ODef=H00
+ONam=Expanded Border Alpha
+ODef=H60
+
+Name=Font Size
+Code=\fs$Size$
+ONam=Size
+ODef=20
+
+Name=Font Scaling (X)
+Code=\fscx$Scaling$
+ONam=Scaling
+ODef=100
+
+Name=Font Scaling (X)
+Code=\fscy$Scaling$
+ONam=Scaling
+ODef=100
+
+Name=Font Spacing (X)
+Code=\fspx$Spacing$
+ONam=Spacing
+ODef=0
+
+Name=Font Spacing (Y)
+Code=\fspy$Spacing$
+ONam=Spacing
+ODef=0
+
+Name=Font Rotation (X)
+Code=\frx$Rotation$
+ONam=Rotation
+ODef=0
+
+Name=Font Rotation (Y)
+Code=\fry$Rotation$
+ONam=Rotation
+ODef=0
+
+Name=Font Rotation (Z)
+Code=\frz$Rotation$
+ONam=Rotation
+ODef=0

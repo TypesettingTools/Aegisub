@@ -1,0 +1,492 @@
+4.3.6
+-Fix saving a project file with default layer names not showing any names when loading the file again
+-Fix small bug loading v5/6 scripts
+
+4.3.5
+-Truetype Collection (TTC) font files are supported in the font finder
+-Factorial should work now
+-More optimizations/cleanups
+
+4.3.4
+-Fixed/tweaked some UI stuff
+-More resize code added
+-Fixed double click in error list
+-Optimized some stuff
+-All karaoke variables now index from 0, not 1. This will break backwards compatibility with some karaoke, but it has never been consistent, so I am changing it.
+-Fixed %karamid%
+
+4.3.3
+-A bunch of fixes for noteboxes
+-Don't bother to scale resolution if the factor is 1:1
+
+4.3.2
+-Workaround for crash when line is 259 characters long
+-Workaround to prevent splitter from stealing focus on resize (by design, MS? What were you thinking?)
+-Fix in default notebox template
+
+4.3.1
+-Search/replace now affects everything as it used to
+-Unparsable dialogue/style lines are now parsed as strings, displayed with green background
+-Changing time precision or running search/replace refreshes the list automatically
+
+4.3.0.2
+-Fixed karaoke condition buttons
+
+4.3.0
+-Added notebox generator, see readme
+-List and utility panel are now resizable panes
+-Fixed a bug in resolution scaling
+-Fixed error checker crash
+-Fixed kanji timing crash
+
+4.2.0.10
+-Fixed strip SSA leaving off the last syllable
+
+4.2.0.9
+-Fixed a bunch of functions that did nothing
+
+4.2.0.8
+-Gradient fixes
+-Make screen update when you copy text from gradient/blur/etc to it, and don't copy text backwards
+
+4.2.0.7
+-v6 script support improved
+-Fix so that you can do both lead-in and lead-out
+-A bunch of UI crashes from 4.2.0 fixed
+
+4.2.0.6
+-Timecodes may now be unapplied
+
+4.2.0
+-Lead no longer makes the list backwards
+-Undo/redo optimized and now support adding/removing lines
+-Fixed styles
+-Optimizations, including overall memory usage
+-Fixed lead and remove duplicate lines
+-Reading negative times supported
+-Other misc fixes, mostly UI-related
+-Some Math constants added to $eval, see readme
+-Boolean inversion is now denoted as ~ as opposed to ! in $eval
+-Added LCM and GCD to $eval
+-Fix loading some files through command line
+-Fix to reading ARGB colors
+-Timecode transform added
+-Double clicking a line in the list will bring up the modify line dialogue box
+-Bold, Italic, etc. now specified as -1 (instead of 1) as per specs. Parsing will work correctly with either.
+
+4.1.0
+-V6 scripts (AKA V4++) supported
+-Fixed a bug with %layernum% when you have disabled layers
+-Undo/redo added
+-Fixed a couple of bugs with kanji timing
+-Effects files now use .exml extension. Old files may be renamed.
+-Manual transform times are now displayed in the listbox as entered, but are snapped internally to be between frames.
+-Conditions may now be edited directly instead of removing/readding
+-Completely rewritten script engine combining $logic and $eval
+-Workaround to prevent resaving UTF-16 files as UTF-8 by default
+-You may now edit the names for karaoke layers and effects.
+-Error checker now looks for decimals without leading integers (.1 vs 0.1)
+-Rudamentary SJIS/EUC-JP detection
+-Fixes to gradient maker
+-Lots of general optimizations and other internal code changes
+-Put layer condition checking back to per line instead of per syllable, as it should be
+-Added karaoke syllable-per-line mode
+
+4.0.0
+-Resolution scaling now has separate scale parameters for X and Y, no longer affects all lines, and no longer crashes
+-FPS is now a global parameter
+-Added option for ms precision. A modified VSFilter is required for it to work.
+-Lead-in/out now affect \t and \move
+-Karaoke layer options layed out a little differently
+-Added kanji timing
+-Fixed a possible crash with karaoke effects for short lines
+-Fixed trying to save a project file as ANSI
+-Various interface tweaks
+
+3.7.3
+-Fixed %text% for syllables with no text
+-Fixed logic with non-number, non-digit characters, such as space.
+
+3.7.2
+-Fixed $iif when a condition is false
+-Fix crash trying to remove an item in the karaoke tree when nothing is selected
+-Adding an effect to the karaoke tree selects it automatically
+-Added $str, see readme
+-Fixed one layer being disabled affecting all layers below it
+-Fixed one effect having unmet conditions disabling all effects below it
+
+3.7.1
+-Added lead-in/out. It does not yet correct for \t, \move, etc.
+
+3.7.0
+-Converting to C# 2.0. Filesize is much smaller. New bugs may be introduced.
+-Fixed bug loading project files where layers didn't specify repetitions.
+
+3.6.0
+-Added repetitions to karaoke effects. See readme.
+-Removing effects should work better now.
+-$logic should correctly interpret strings with numbers
+
+3.5.0
+-Programming structure improved
+-Random tweaks here and there
+-Fixed cloning (copying effects, duplicating layers) in many cases
+-Select first karaoke effects layer (if there is one) when loading a project
+-Added manual transform. See readme.
+-Improved precision of shifting by frame. Start times are now always rounded down (floor), while end times are rounded up (ceil)
+-Changed interface for karaoke effects to use a treeview for layers and effects
+-Fixed a bunch of eval functions
+-Font names can now contain anything except \ or }
+-Fix parameter order for $eval(round)
+
+3.2.5
+-Script parser should handle parenthesis better now.
+-Made $eval play nicer with decimals
+-(hopefully) fixed one parameter functions for $eval
+-$eval should bail and return String.Empty if it can't make sense of the data it's given
+-Added sqrt() to $eval (or you can still do ^0.5)
+-Fixed =/== in $evallogic/$iif
+-Strings in $evallogic/$iif no longer are expected to be in quotes
+
+3.2.4
+-Fixed <, <=, >, >=
+
+3.2.3
+-Fixed a few bugs with writing XML Project files
+-Fixed a bug when loading an XML project file that options would become confused between filters with multiple instances
+-Fixed a couple of bugs that rendered effect conditions pretty much useless
+-%layernum% and %layernumlps% now index from 1, not 0
+-Pressing enter in the condition dialog box will click OK automatically
+
+3.2.2
+-The selected line information now properly moves when the form is resized.
+
+3.2.1
+-You can now load files (except effects files) through the command line (do "Open With" in Explorer)
+
+3.2.0
+-Karaoke effects generator can now allow you to edit the actual text for each syllable by setting "don't add the syllable text itself" in Layer Conditions+Options and using %text%.
+-Length-based \k / \K fixed again
+
+3.1.0
+-Select/Deselect Line Range now accept the last line number (IE if you have a 10 line file, 1-10 works now)
+-Slight optimization to how effects are created
+-Blur now only has two types: true blur and glow. However, it is more powerful than before. See the readme for more.
+-Blur no longer adds an empty line at the end
+-Exponential blur no longer disregards BlurStart for the center line.
+-Gradient now accepts a parameter called mirror. See the readme, but know that leaving it at 100 (%) will act the same as it used to.
+-Added $listindex, $listindexwrap, $listindexlast functions
+
+3.0.3 (3.0.2019.28843)
+-Adding the same effect multiple times no longer mixes up the options between them.
+-Fixed length-based \k / \K
+
+3.0.2 (3.0.2017.31380)
+-Offset in gradient maker now only affects the second X,Y pair in \clip
+
+3.0.1 (3.0.2017.27737)
+-Detecting unclosed parenthesis/brackets at the end of the line now works.
+
+3.0 (3.0.2017.5108)
+-Added $len, $left, $mid, $right
+-Slight optimizations in $iif
+-Added select/deselect line range to list menu. If you don't know the line numbers, click on the lines and use the go to line option and it'll show the current line.
+-Made go to line show the selected line number by default and added a label to show this as well
+-Optimizations to shifting and length based \k-\K
+-Fixed strip SSA
+-Fixed linear glow type blur accuracy
+-Error checker will now report unclosed ampersands in \alpha, \2c, \2a, \3c, \3a, \4c, \4a
+-Error checker will now report lowercase hex markers in \alpha
+
+3.0 beta 6 (3.0.1975.5261)
+-Fixed shifting if your file is 10 hours or more
+-Fixed font check sometimes adding fonts more than once
+-Workaround for looking for vertical fonts (@fonts). It will just omit the @. It doesn't check if the font is actually capable of being vertical.
+-Added ability to search for fonts that aren't installed in a directory
+-Saving as UTF-8 fixed
+
+3.0 beta 5 (3.0.1958.3274)
+-Fixed shifting cutting off part of the line in many cases.
+
+3.0 beta 4
+-Made form resizable
+-Made default (and minimum) form width 1024 for those people using 1024x768
+-Fixed logarithmic glow blur alpha values
+-Fixed logarithmic and exponential gradient values when using a start color > 0
+-Added font checker. Make good use of it. I know I will.
+
+3.0 beta 3
+-Fixed some menu options that weren't doing anything
+-Double clicking on a line in error checking now takes you to the line in question. Also added a couple of checks for style lines.
+-Added a layered blur option.
+-Added option to do logarithmic and exponential gradients.
+-Removed messagebox popping up with $iif
+-Added some more error checks for various functions (not talking about the error checker, but when you enter invalid parameters to functions)
+
+3.0 beta 2 (3.0.1948.40271)
+-Also check for colors/alpha with lowercase hex codes (including the H) and also where there is not a trailing ampersand
+-Scale PlayResX and PlayResY too
+-Fixed eval
+-Added the "list" menu with some useful list functions
+-Performance increases in scripting/eval/evallogic. Thanks to DeathWolf for helping with this.
+-Fixed effect conditions
+
+3.0 beta 1 (3.0.1948.26940)
+-Complete rewrite of application using C# 1.1, so you now need .NET to run it. Speed increases and GUI improvements result.
+-Variables have changed formats. See readme.
+-Scripting language is much different. See readme.
+-Project files and effects list files both use XML now. They are not backwards compatible.
+-Program supports basically all normal encodings, including UTF-16 (Unicode) that previous versions didn't.
+-Gradient maker can do \1c, \2c, \3c, \4c (user selectable) and can handle RGBA (in ARGB order) and decimal input
+-Resolution scaling now scales a lot more stuff. See readme.
+
+
+
+
+--Old versions--
+
+
+2.0.161
+-Even bigger speedup
+-Completely rewrote effects procedure, kept the old one as it may be buggy, as usual
+-Made after 3.0 for those looking to avoid .Net (bad choice though)
+
+2.0.158
+-HUGE speedup
+-Will no longer affect non-karaoke dialog lines
+-Probably buggy
+-Made after 3.0 for those looking to avoid .Net (bad choice though)
+
+2.0.157
+-More bugfixes and speedups
+
+2.0.154
+-More bugfixes
+-Layer-per-syllable and fixed layer modes may be combined
+-New variables dealing with layers: $layernumtot$, $layernumlps$, $layernumlpstot$. If you have a "legacy" layer-per-syllable file, open the PSSA in Notepad and add PerSyllable=True. When using $layernum$ for layer-per-syllable, you must now use $layernumlps$.
+
+1.6.153
+-Fixed several bugs introduced in the last release
+-More speedups
+-Added $style$ variable (see readme)
+-Added ability to resize the program
+
+1.5.152
+-Fixed $iif with more than one comparison
+-Some other random bugfixes
+-There should be a minor speedup all around, but I don't know if it'll be noticeable
+
+1.5.151
+-Added ability to insert a gradient into a file without replacing a line
+
+1.5.150
+-A small bugfix in the gradient maker. Not sure if it even affected anything.
+
+1.5.149
+-Added some more to gradient maker
+-New HTML readme
+
+1.5.146
+-Added a bunch of stuff to gradient maker, such as copying to/from the SSA file and automatically adding text before and after the line.
+-Gradient maker no longer adds 1 extra line
+
+1.4.145
+-Another fix
+
+1.4.144
+-Fixed a gradient maker problem having to do with some parts of it being unfinished and disabled.
+
+1.4.143
+-More gradient maker work
+-Added $randlist
+
+1.3.142
+-Started to implement a gradient maker. It's not done and what is done is experimental.
+
+1.2.141
+-New version scheme, actually using minor (and eventually major) version numbers instead of just build numbers.
+-Added ability to change font in Listbox, including encoding.
+ 
+1.1.140
+-Fixed strip SSA, it should no longer strip numbers after \kf.
+
+1.1.139
+-Added: \k or \K depending on the length of the syllable
+-Fixed a little big with scaling where it would try to work on lines it shouldn't be (though it shouldn't have messed anything up)
+
+1.1.138
+-Added: SSA Resolution Scaling. Use at your own risk.
+-Removed: Old load/save projects
+-Removed: Old add effects procedure.
+
+1.1.137
+-Fixed: Shifting now correctly abides the lines being checked/unchecked
+
+1.1.136
+-Some minor interface tweaks
+-Added 'Move Down' for effects
+
+1.1.135
+-Restructured/cleaned up the code for adding karaoke effects. The old code will be left in for a little while until I can be sure there are no bugs in the new code. Please try the new code, but make sure you save before doing so.
+
+1.1.134
+-Fixed: Reparsing styles (made typo last build)
+
+1.1.133
+-Fixed: Read ASS Styles reparsing (also made slightly faster)
+
+1.1.132
+-Fixed: Read ASS Styles ([v4+ styles]) correctly.
+
+1.1.131
+-Fixed: Layer conditions and effect count were, in certain conditions, obtained from the wrong layer. This has been (hopefully) corrected.
+
+1.1.130
+-Fixed shifting...
+
+1.1.129
+-Fixed (I don't know): Shifting............. last time? Nah...
+
+1.1.128
+-Fixed (probably): Shifting... again. Should be accurate and not crash.
+
+1.1.127
+-Fixed (maybe): Shifting should be more accurate.
+
+1.1.126
+-Fixed: Effect condition checkboxes now correctly show as checked/unchecked when the condition is active/inactive as opposed to always being checked.
+-Fixed: Layer condition checkboxes now correctly show as checked/unchecked when the condition is active/inactive as opposed to always being checked.
+-Fixed: Effect conditions should no longer crash when loading a project.
+-Fixed: Layer conditions should now correctly load as layer conditions instead of effect conditions when loading a project.
+
+1.1.125
+-Added: $lastkaranzkstart$
+-Fixed: Trying to move/copy an effect when there are no effects no longer creates a blank effect.
+
+1.1.124
+-Fixed effects list not being correctly loaded if you open a SSA/ASS/PSSA from the command line.
+
+1.1.123
+-Added ability to load SSA/ASS and PSSA (project files) from command line. You can now associate SSATool with SSA, ASS and/or PSSA files and it will open them.
+
+1.1.122
+-Effects can now use variables in the code line and not just the options lines. If you don't know what this means, don't worry about it.
+
+1.1.121
+-Forgot to comment out some code before hitting compile in last version that made load project crash. Fixed.
+-Added script tracing in the help tab... Every call to the script parser adds a line to the listbox. It will be at least 2 lines per script call.
+
+1.1.120
+-Fixed bug in $calc where a negative as the first number would not be recognized.
+-Fixed: Trying to delete a layer when there are no layers no longer crashes.
+-Fixed: Trying to delete an effect condition when there are no effect conditions no longer crashes.
+-Fixes to load project
+
+1.1.119
+-Fixed: Shifting by difference now works in both directions.
+-Fixed: Shifting bug introduced last version for times w/o decimals hopefully fixed.
+-Improvement: Times are now stored as double precision instead of single precision.
+
+1.1.118
+-Fixed: Trying to save in various situations as opposed to save as no longer results in a crash
+-Fixed: $rand no longer returns 0 or gives type mismatch crashes
+-Fixed: Trying to move an effect up when there is no effect to move up no longer results in a crash
+-Fixed: Copying or moving an effect to another layer now includes the conditons.
+-Fixed: Shifting times should no longer mess up if a time has a decimal >= .995 (which was rounded as 1.0 before, screwing things up)
+
+1.1.117
+-Fixed: Scripting should now properly support recursion.
+
+1.1.116
+-Fixed bug where closing the program did not unload it from memory.
+-Fixed select/deselect all styles.
+
+1.1.115
+-Added script functions: and, nand, or, nor, not, xor
+-Added operator info to readme
+-Added script testing/debugging in the help tab. This is mostly for me, but you may test your own logic on it if you like.
+
+1.1.114
+-Fix stupid typo in new load project. Effects should correctly load now...
+
+1.1.113
+-Fixed new project format to actually attempt to load the SSA file itself
+-Added a progress popup w/ cancel option for karaoke effects
+-Added list of variables to readme
+
+1.1.112
+-New project format. Please only use the old format if you find bugs in the new one.
+-Added time shifting by difference.
+
+1.1.111
+-Make multicharacter comparisons (!=, <>, etc) work correctly
+-Fixed saving a ssa file without the extension causing a crash. Really this time.
+
+1.1.110
+-Changed to common dialog for open/save
+-Added version number to form title
+-Minor code cleanup, slightly smaller file
+
+1.1.109
+-Removed preview in the open box because it was causing problems for some computers.
+-Fixed saving a ssa file without the extension causing a crash.
+-Added remove duplicate dialog lines option-Useful for when stripping a multilayer SSA leaves you with duplicate lines.
+-Added tooltips for a few things.
+
+1.1.108
+-Minor tweaks in open/save windows
+-Fixed major multilayering bug introduced in build 105.
+
+1.1.107
+-Fix (allow) removal of effect conditions.
+
+1.1.106
+-Fix checkmarks in layer conditions tab.
+
+1.1.105
+-Remove limit of 100 layers
+-Fixed condition checking
+-Saving/loading project now also saves conditions.
+-Added "layer per syllable" mode
+-Added ability to not add layers to the output if the conditions are not met (as opposed to adding the line unchanged)
+-Added "Invert Line Selection" for the SSA list.
+
+1.1.104
+-Changed name to SSATool.
+-Changed the UI around.
+-Fixed: $iif should now work correctly when comparing numbers, as opposed to comparing them as strings
+-Added ability to define custom conditions specifying when each layer and each filter are used.
+-Added variable $karanumtot$ to tell how many syllables are on the line.
+
+1.0.103
+-Added ability to effect only certain lines.
+-Added option to shift only start/end times.
+
+1.0.102
+-Changed format of effects file and project files to get around some delimiting issues and to make more readable if you open them in a text editor.
+-Changed extension of project file to .pssa to get around a VB quirk (*.aas would also return .aasp files)
+-Added scripting functions: bound, round, int, sin, cos, tan, log, exp, abs
+-Calc now supports parenthesis and uses the order of operations instead of left-to-right processing.
+-Fixed floor behavior
+
+1.0.101
+-Made copy/move to layer work again.
+-Added scripting functions: ceil, floor. math is now a synonym for calc.
+
+1.0.100
+-Implemented simple inline scripting. Supported functions: iif, rand, randf (floating), calc (math)
+-Added variable $layernum$
+
+1.0.99
+-Fixed bug with enabling/disabling filters
+-Implemented save/load project, does not save layer conditions yet
+-Fixed saving effects list
+-Speedups
+
+1.0.98
+-Finished implementing the effects editor.
+
+1.0.97
+-The default style may now be effected. SSA by default calls Default *Default in your lines, which was screwing up the comparison.
+-Time shifting now correctly rounds decimals insdtead of giving you several numbers as an exponential.
+-Stripping a SSA will now copy lines which have unselected styles instead of leaving them out.

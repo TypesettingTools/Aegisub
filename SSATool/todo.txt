@@ -1,0 +1,18 @@
+Short term Fixes
+-(partial) Make listview ownerdraw not flicker so much
+-stop karaoke tree expanding on drag-drop
+
+
+Short term Improvements/optimizations
+-Auto correct simple errors with error checker
+-(partial) make scripting engine support ints and maybe points
+
+
+For 4.4
+-Line linking (probably)
+
+
+For 5.0
+-Gradient Preview?
+-Karaoke syllable coordinate calculation
+-assignment support in scripting engine

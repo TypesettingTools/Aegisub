@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<ESSA>
+	<Effect Name="Transformation" Code="\t($Start Time$,$End Time$,$Acceleration$,$Code$)">
+		<Option Name="Start Time">%karastart%</Option>
+		<Option Name="End Time">%karaend%</Option>
+		<Option Name="Acceleration">1</Option>
+		<Option Name="Code"></Option>
+	</Effect>
+</ESSA>

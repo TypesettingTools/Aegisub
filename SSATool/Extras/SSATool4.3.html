@@ -1,0 +1,661 @@
+<html>
+  <head>
+    <title>SSATool Readme</title>
+    <style type="text/css"> 
+      <!--
+      .header { background: #A0D0FF; border: thin black; margin-top: 0px; margin-bottom: 12px; color: #000000; padding: 6px; text-align: center; margin-left: 0px; margin-right: 0px; }
+      .box { background: #C0C0C0; border: thin black; color: #000000; width: 75%; border-color: #000000; text-align: left; padding-top: 4px; padding-bottom: 16px; padding-left: 12px; padding-right: 12px;  }
+      .exp { background: #DADADA; border-style: solid; border: thick black; margin-left: 32px; margin-right: 32px; margin-bottom: 24px; line-height: 130%; }
+      .subinfo { background: #D4D4D4; border: thin black; color: #000000; border-color: #000000; text-align: left; margin-left: 48px; margin-right: 32px;  }
+      #optlist li { list-style-type: square; line-height: 125%; }
+      #sublist li { list-style-type: circle; line-height: 150%; }
+      p { text-indent: 32px; }
+      h3 { text-indent: 10px; }
+      h4 { text-indent: 10px; }
+      -->
+    </style>
+  </head>
+  <body>
+    <center>
+      <h1>SSATool 4.3</h1><br />
+      <h2>Purpose</h2>To automate the creation and manipulation of Advanced Substation Alpha files.<br /><br />
+
+      <h2>Functions</h2>
+
+      <div class="box">
+        <div class="header">Shifting</div>
+        <div class="exp">
+          SSATool can shift a file by entering a time (hour:minutes:seconds.subseconds), by a given number of frames, or by specifying an 'old' time and the new time that it should be shifted to. Shifting by time or frames require a given direction, while time difference already has a direction, given the 2 times.
+        </div>
+        
+        <h4>Shifting options</h4>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Shift Start/End times: You may choose to only shift the start or end times of each line.</li>
+            <li>Replace negative times: If you're shifting backwards and some times end up negative, this option will replace them with a 0 time. After all, who wants to see subtitles before you even watch the video?</li>
+          <ul>
+        </div>
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Commands</div>
+        <div class="exp">
+          These are parameterless functions that don't take much explaining.
+        </div>
+        <ul id="sublist">
+          <li>Strip SSA: Strips all SSA code except for \k,\K,\kf,\ko. Useful for when you want to undo typesetting to a file but keep the timing.</li>
+          <li>Removes duplicate dialogue lines. If you've got a file that used layer per syllable type karaoke and you strip SSA, you'll have several duplicate lines.</li>
+          <li>Change last \k based on line length: Goes through dialog lines, and adjusts the length of the last syllable to match the length of the line. It is possible for this value to turn out negative if the timing is way off, so use it with care.</li>
+        </ul>
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Length-based \k or \K</div>
+        <div class="exp">
+          This changes each syllable to \k or \K as determined by a threshold.
+        </div>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Threshold: Anything above or equal to this gets changed to \K and anything under it uses \k.</li>
+          </ul>
+        </div>
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Scale Resolution</div>
+        <div class="exp">
+          SSATool can change a resolution of a SSA file for you. If you have two different files that you want to merge, but they have different resolutions, then you must use a function like this.
+        </div>
+        
+        <h4>Scaling options</h4>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Scale factor: Pretty straightforwardly, the amount that you want to scale by.</li>
+            <li>Scale PlayRes: Scale PlayResX/PlayResY in the header, if they're already there. They must be checked for this to do anything.</li>
+          </ul>
+        </div>
+
+        <h4>Scaled Parameters</h4>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Style lines: Font size, outline, shadow, margins</li>
+            <li>Dialogue lines: Margin overrides</li>
+            <li>\bord: using Y scale</li>
+            <li>\clip: using X and Y scales</li>
+            <li>\fs: using Y scale</li>
+            <li>\fsp: using X scale</li>
+            <li>\move: using X and Y scales</li>
+            <li>\org: using X and Y scales</li>
+            <li>\p: Coordinates will be scaled with X and Y scales. If a \p1 is in a \clip, it DOES continue past the clip unless you \p0.</li>
+            <li>\pbo: using Y scale</li>
+            <li>\pos: using X and Y scales</li>
+            <li>\shad: using Y scale</li>
+          </ul>
+        </div>
+
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Lead-in/out</div>
+        <div class="exp">
+          This adds a lead-in/out to lines. It can add a \k to the beginning of the line to compensate. It does not current affect other tags like \t, \move, etc.
+        </div>
+        
+        <h4>Options</h4>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>In Time: If checked, this is the amount of lead-in time. If it's a number, it's interpreted as seconds. Else it's interpreted as a timecode.</li>
+            <li>Out Time: If checked, this is the amount of lead-out time. If it's a number, it's interpreted as seconds. Else it's interpreted as a timecode.</li>
+            <li>Affect only karaoke lines: Affect only lines with \k in them if checked.</li>
+            <li>Add empty \k for karaoke: Add a \k to compensate for lead-in time to lines that have \k in them already.</li>
+          </ul>
+        </div>
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Gradient Maker</div>
+        <div class="exp">
+          This will create a gradient by making several lines using clip. You may type text in, or you may select a line from the loaded file and click "Copy Selected List Item to Input." If the line has dialogue: ... in it (IE the information for the line and not just the line itself), then select that and click the "Move Selected" button next to the "Before Grad." textbox. This will place that text before each line without actually putting it in the gradient. Fill in the boxes and click Create.
+        </div>
+        <h3>Options:</h3>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Before Gradient: This is text that doesn't get gradiented. Put all the Dialogue: ... stuff here. This is easily accomplished by highlighting the appropriate text in the "Gradient Text" field and clicking the "Move Selected" button.</li>
+            <li>Clip Lines: How many lines the gradient will span. More lines is more precise.</li>
+            <li>Start/End Pos: The start and end positions in coordinate form x,y. Only include the part that will increase, IE if you want to go across a 640x480 screen horizontally, only x should be increasing here, and the height of 480 is an offset (it's always there), so leave height 0 here.</li>
+            <li>Offset: Static values that are added to the second X and Y positions. See the above example, where the offset here would be 0,480.</li>
+            <li>Start/End Value: The start and end colors in (A)BGR form. They can be in decimal form or in hex form with leading H. Do not include ampersands. Alpha is optional (as denoted by the parenthesis).</li>
+            <li>Linear/Log/Exp grad: These control how the colors are scaled: linearly, logarithmically, or exponentially (base^ratio). If you use one of the latter two, set the base to something greater than 1.</li>
+            <li>Turnaround: This will allow you to go from the start value to the end value somewhere in the middle of the gradient, and then back to start RGB. It's a percentage. At 50%, it will turn around at the halfway point.</li>
+          </ul>
+        </div>
+      </div><br /><br />
+
+
+
+      <div class="box">
+        <div class="header">Blur</div>
+        <div class="exp">
+        This allows you to use layered alpha blurring. Make sure your input does not have a \bord or \pos coordinate in it, unless you're doing a glow, which does allow \pos. Also, if your line has dialogue: ... in it, make sure to select that part of the line and click the "Move Selected" button next to the "Before Blur" textbox.
+        </div>
+        <h3>Options:</h3>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Before Blur: This is text that doesn't get blurred. Put all the Dialogue: ... stuff here. This is easily accomplished by highlighting the appropriate text in the "Blur Text" field and clicking the "Move Selected" button.</li>
+            <li>Type: This allows you to select "true blur" or glow. True blur will move the line around with different alpha values given a position of the text. Glow will just leave the text in the same spot while creating subsequently larger borders with more alpha.</li>
+            <li>Lines: Only used with glow option. Creates the given amount of lines where each line has a larger border than the last.</li>
+            <li>Start/End alpha: Start and end alpha values. Decimal or hex with leading H. Omit the ampersands.</li>
+            <li>Blur Radius: How many pixels the blur should be.</li>
+            <li>Position: Only needed for true blur: The position on the screen where the text is in x,y form. Pixels will be added/subtracted to this value.</li>
+            <li>Linear/Log/Exp blur: These control how the alpha values are scaled: linearly, logarithmically, or exponentially (base^ratio). If you use one of the latter two, set the base to something greater than 1.</li>
+            <li>Affect: Will blur the selected elements (\1c, \2c, \3c, and/or \4c). Not applicable to glow.</li>
+            <li>On subsequent lines...: If not blurred, the elements selected here will have &HFF& alpha values for all lines except the main line.</li>
+          </ul>
+        </div>
+      </div><br /><br />
+
+      <div class="box">
+        <div class="header">Notebox Maker</div>
+        <div class="exp">
+        This allows you to easily create cool looking noteboxes from templates contained in the included XML file. Noteboxes can be one or two lines long and each template must specifically give code for each length. See the included file for an example. Templates may be of different resolutions. If a script is loaded which contains PlayResX and/or PlayResY, the generated notebox will be automatically resampled to the script size. Otherwise, the generated notebox will be at the default resolution of the template.
+        </div>
+        <h3>Options:</h3>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Copy styles to file: The styles for the notebox will not be inserted into your file just by generation of a notebox. You can use this button to insert them automatically in that case.</li>
+          </ul>
+        </div>
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Error Checker</div>
+        <div class="exp">
+          This will check a file for some common errors. It checks dialogue and style lines.</li>
+        </div>
+        <h4>Checks for:</h4>
+        <div class="subinfo">
+          <ul id="sublist">
+            <li>Unopened/unclosed parenthesis</li>
+            <li>Unopened/unclosed brackets</li>
+            <li>No trailing ampersand in color/alpha values</li>
+            <li>Lowercase H for hex</li>
+            <li>Malformed transformations (\t(time,time)\effect)</li>
+            <li>Decimals without leading integers (.01 vs. 0.01)</li>
+          </ul>
+        </div>
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Font Test</div>
+        <div class="exp">
+          This will search a file for all fonts used and check if they are installed on your system. If fonts are not installed, you may search a directory for the fonts. It does not make sure the files it finds have the needed styles. It only matches by font name.
+        </div>
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Manual Transform</div>
+        <div class="exp">
+          How many times have you wished you could use \t on something that doesn't allow it? How many times have you wanted a nonlinear acceleration parameter for \move? Here's a function that will automatically interpolate these things like \t, but it's much more powerful.  
+        </div>
+
+        <h3>Zones/the Times Listbox</h3>
+        <div class="subinfo">
+          <p>Manual Transform is based on zones, which are made up of a start and end time. There must be at least one zone. Each additional zone uses the end time of the previous zone as its start time. So if you entered the times of 0:00:00.00, 0:01:00.00 and 0:02:00.00, there are two zones: one from 0:00:00.00-0:01:00.00 and one from 0:01.00.00-0:02:00.00.</p>
+          <p>Based on these different zones, you can have variables which can scale differently at different times. Numbers can scale linearly during one zone and exponentially during another if you like. Text can change between zones.</p>
+          <p>If this flexibility is not required, just entering a start time and an end time, making one zone only, will keep things simple.</p>
+        </div>
+
+        <h3>Variables</h3>
+        <div class="subinfo">
+          <p>This is the data that gets scaled. To add a variable, click the new button and type a name into the popup. You can then edit the values for each time by clicking on the appropriate field in the variable list. You may use either a string or a number. Numbers will be scaled automatically, whereas strings will switch over when a new zone is reached.</p>
+          <p>If you enter a string and a number under the same variable, then it will treat both as a string. If you have a string and a number and a number (2 zones), it will print the string until it hits the second zone, where it will then scale between the two numbers. That is to say that if, in the current zone, the start and end variable values are both numbers, the number will be scaled; If one or both are non-numbers, both will be treated as strings.</p>
+          <p>Acceleration: You can use linear, logarithmic or exponential acceleration for each variable and zone. Exponential acceleration has 2 forms: ratio^base, which is specified by just entering a number > 1, or base^ratio by specifying exp<i>base</i> (Example: exp2). Specify a log transform by typing log<i>base</i>. If none of these are specified or are incorrectly entered, a linear transform will be used. ASSA itself uses ratio^base for acceleration, so the default behavior (entering a number) works the same as entering that number into \t.</p>
+        </div>
+
+        <h3>Other options</h3>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Code is how SSATool puts the variables together to form the text that gets output. To add the line times, use <b>%starttime%</b> and <b>%endtime%</b> in the code. To use a variable in the code, surround the variable name with percentage signs. You may use scripting functions here. If you're scaling an integer, you're going to want to round it with scripting because it will be printed as a decimal otherwise.</li>
+            <li>Times: Enter the times for this to span. You must enter at least two times. You may enter more than one time to create different zones where variables can be scaled differently. Times should be the first thing you add.</li>
+            <li>Frame Rate: The framerate of the video. All entered and output times will be snapped to the nearest frame.</li>
+          </ul>
+        </div>
+      </div><br /><br />
+      
+      <div class="box">
+        <div class="header">Kanji timing</div>
+        <div class="exp">
+          This function will allow you to time Kanji (or pretty much any other East Asian character set) from Roman letters. You may combine \k times, but this function can't work with \t as it can't be sure how to handle the times. It could also technically be used in reverse, but it's not capable of splitting syllables from the source style.<br /><br />
+          You must have your two character sets entered in different styles. The kanji may already be timed, but those times will be overridden if so. Empty syllables will be copied alone, or will be combined with the surrounding syllables if those are to be combined.
+        </div>
+        <h3>Options</h3>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Styles: Select your source and destination styles here. The source style will be used for times and all ASSA code. Destination lines will be overwritten in the list. Note: Any ASSA code appearing before the \k will be directly copied, and ASSA code after the \k is currently not copied at all.</li>
+            <li>Start: Brings the first lines of each style into the corresponding text fields.</li>
+            <li>Link: When you have selected corresponding syllables, this will pair them up and you will see them appear in the group list.</li>
+            <li>Unlink last: If you've made a mistake, this will unlink the last pair. You may use it as many times as needed.</li>
+            <li>Skip source line: Skip the current source line.</li>
+            <li>Skip destination line: Skip the current destination line. It won't be modified at all.</li>
+            <li>Go back a line: Goes back to the last line for both the source and destination. It does not undo any changes made, but you may redo it.</li>
+            <li>Accept line: When all of the grouping for a line is finished, this will modify the line in the list and automatically load the next lines for source and destination.</li> 
+          </ul>
+        </div>
+        <h3>Keyboard shortcuts</h3>
+        <div class="subinfo">
+          <div class="subinfo">
+            Don't use the mouse to highlight grouping. If you incorrectly try to split syllables from the source, the function won't work right, so please use the following keyboard shortcuts while the destination textbox has focus. They're much faster.
+          </div>
+          <ul id="optlist">
+            <li>Right/left arrows: Select more or less text from the destination, respectively.</li>
+            <li>Up/down arrows: Select more or less text from the source, respectively. The source text is locked so it can not be split, but you may combine syllables from it.</li>
+            <li>Enter: Link the selected text, or if all text is linked, accept the line and move on to the next.</li>
+            <li>Backspace: Undo the previous linked text.</li>
+          </ul>
+        </div>
+      </div><br /><br />
+      
+
+      <div class="box">
+        <div class="header">Karaoke effects</div>
+        <div class="exp">
+          The karaoke effect generator is a complex karaoke effects automator. In simple terms, it could be called a "\k to \t converter," though it is not limited to transformations. You have several variables (listed below) and scripting functions (listed further below in another section) available to use in template effects. You also have "raw code," which will just dump anything you put in there into the SSA. You can use variables in any of the effect fields. You may use raw code to accomplish anything that the other effects can do. Other effect templates are there just to make it easier for you to make presets. There's an effects editor to add your own presets available under the Effects menu.
+        </div>
+        
+
+
+        <h3>Layers</h3>
+        <div class="subinfo">
+          <p>Layers are the basis of the effects system. They are, in essence, one of the base elements of ASSA itself. The simplest implementation of a layer is a single dialogue line. That's it. The subtitler program reads each line and decides where each line goes, and in what order they go.</p>
+          <p>However, in SSATool, layers are different than how SSA itself looks at them. A layer is how SSATool processes a line in order to add effects. Depending on the complexity of an effect, it may take from one to several lines to accomplish. That is, you might have two or three or even dozens of dialogue lines composing what we see as one line! So each layer in SSATool will add another dialogue line with the same text but potentially different overrides. But to make things even more confusing, there's an exception: Layer-Per-Syllable. What happens if you want to do something to a syllable in a karaoke as its "turn" comes up, but the command to do what you want to do is a command that affects the whole dialogue line, even if you use \r? You often have to make a dialogue line corresponding to each syllable.</p>
+          <p>This is what layer-per-syllable does. It will dynamically create a new dialogue line (layer) for each syllable. You're typically going to want to see each line only for the syllable it corresponds to, because that's the basic reason why layer-per-syllable exists. To accomplish that, you're going to want to have a couple of effects in addition to your transformation code. These extra effects will be to make the line invisible except at the corresponding syllable. You'll use conditions (explained below) to apply alpha codes before and after this syllable. A sample layer-per-syllable project file should be bundled to show you how to go about it. Don't use it as a basis every time you want to do layer-per-syllable, because it will ensure that you don't understand how the process works. To make karaoke, you must first understand how ASSA renders karaoke.</p>    
+          <p>To enable layer-per-syllable mode, simply add a layer and make sure the Layer-per-Syllable checkbox is clicked. You may combine layer-per-syllable layers together or with fixed layers if you like.</p>
+        </div>
+
+        <h3>Conditions</h3>
+        <div class="subinfo">
+          <p>There are two types of conditions in the karaoke effects generator: effect conditions and layer conditions. They both do the same thing, but they work on a different scope. For both, you enter two things to compare. These things may be numbers or strings, and you may use variables and scripting functions (listed below).</p>
+          <ul id="optlist">
+            <br /><li>With effect conditions, each condition must be true for that effect to be applied, or it will just be skipped for that syllable. There is no condition checking for effects on a per-line scope, meaning the conditions are only checked per syllable, not per line. This is the more flexible option of the two.</li>
+            <br /><li>With layer conditions, each of these must work out for all of the effects in that layer to be applied. By default, if this is not met, there will be no dialogue line created at all. However, when you create your layer conditions, you may option to create the dialogue line WITHOUT effects if the conditions are not met. For fixed layers, the option is called, "Add line unchanged if layer conditions not met." If you're using layer-per-syllable, just that option will add the line several times (once per syllable) if the layer conditions aren't met, so you'll also want to enable the option, "Only add it once."</li>
+          </ul>
+        </div>
+
+        <h3>Layout</h3>
+        <div class="subinfo">
+          <p>The layout of the karaoke effects section can be a little confusing at first. At the left, there's a treeview. This holds information about all layers and effects. You can add a layer via the button under it. Once you have added and selected a layer, you may add effects to it through that button. You may drag items around the treeview to reorder them or to move effects to a different layer. You may duplicate or remove layers or effects through the corresponding buttons.</p>
+          <p>When you select a layer in the treeview, the layer options page automatically shows up. Here, you can add layer conditions or change the options for the layer. When you click on an effect, you get a tabbed setup where you can view the options for that effect or the conditions. To change an option for an effect, just click on the corresponding field.</p>
+        </div>
+        
+        <h3>Options</h3>
+        <div class="subinfo">
+          <ul id="optlist">
+            <li>Don't add the syllable text: This will leave out the actual text for the syllable. You may add it yourself in your effects using the %text% variable. This allows you to split a \k if you like.</li>
+            <li>Remove \k: This will remove \k, \K, \ko and \kf after applying effects. Keep a backup file before you use this option in case timing needs to be changed later.</li>
+            <li>Add line unchanged if conditions not met: If layer conditions aren't met, add the dialogue line with no effects. You could get missing dialogue lines without this option.</li>
+            <li>Only add it once: An extension of the above for layer-per-syllable mode to prevent dialogue lines from being added multiple times when layer conditions are not met.</li>
+            <li>Layer-per-Syllable: Enable Layer-per-Syllable mode for this layer. See the explanation above.</li>
+            <li>Repetitions: This only applies to non-LPS layers. The layer will be repeated this amount of times. It only applies to karaoke lines, not regular dialogue lines.</li>
+          </ul>
+        </div>
+
+
+        <h3>Karaoke variables</h3>
+        <div class="subinfo">
+          <table border="0" cellspacing="8">
+            <tr>
+              <td width="150">%karastart%</td>
+              <td>Start time of current kara block in milliseconds.</td>
+            </tr><tr>
+              <td>%karastart[n]%</td>
+              <td>Start time of kara block <i>n</i> in milliseconds. Yes, the square brackets should be there. You may use other variables in the brackets (except for another variable with brackets). Example: %karastart[%totkaranum%]%</td>
+            </tr><tr>
+              <td>%karaend%</td>
+              <td>End time of current kara block in milliseconds.</td>
+            </tr><tr>
+              <td>%karaend[n]%</td>
+              <td>End time of kara block <i>n</i> in milliseconds. Yes, the square brackets should be there. You may use other variables in the brackets (except for another variable with brackets).</td>
+            </tr><tr>
+              <td>%karamid%</td>
+              <td>Mid point of current kara block in milliseconds. ((start+end)/2)</td>
+            </tr><tr>
+              <td>%karalen%</td>
+              <td>Length of current kara block in milliseconds.</td>
+            </tr><tr>
+              <td>%karalen[n]%</td>
+              <td>Length of kara block n in milliseconds. Yes, the square brackets should be there. You may use other variables in the brackets (except for another variable with brackets.</td>
+            </tr><tr>
+              <td>%karanum%</td>
+              <td>The number of the kara block being evaluated, indexed from 0.</td>
+            </tr><tr>
+              <td>%karanumtot%</td>
+              <td>The total number of kara blocks in this line. If you compare with %karanum%, make sure to add 1 to %karanum% since it starts at 0.</td>
+            </tr><tr>
+              <td>%linestart%</td>
+              <td>Start time of current line in seconds in seconds</td>
+            </tr><tr>
+              <td>%lineend%</td>
+              <td>End time of current line in seconds</td>
+            </tr><tr>
+              <td>%linelen%</td>
+              <td>Length of current line in seconds</td>
+            </tr><tr>
+              <td>%layernum%</td>
+              <td>The current layer number, indexed from 0.</td>
+            </tr><tr>
+              <td>%layernumtot%</td>
+              <td>The total number of layers</td>
+            </tr><tr>
+              <td>%layernumlps%</td>
+              <td>The current layer number in layer-per-syllable mode. In fixed layer mode, this is also also used when repetitions of the layer is set > 1. Indexed from 0.</td>
+            </tr><tr>
+              <td>%layernumlpstot%</td>
+              <td>The total number of layers in layer-per-syllable mode. In fixed layer mode, it is the total number of repetitions of the current layer.</td>
+            </tr><tr>
+              <td>%name%</td>
+              <td>The name (SSA) or actor (ASS) of the line.</td>
+            </tr><tr>
+              <td>%style%</td>
+              <td>The name of the current style</td>
+            </tr><tr>
+              <td>%text%</td>
+              <td>The text inside of the current syllable. Recommended for use with "Don't add the syllable text itself" in the Layer Conditions+Options tab, but can be used by itself.</td>
+            </tr>
+          </table>
+        </div>
+      </div><br /><br />
+
+
+      <div class="box">
+        <div class="header">Scripting</div>
+        <h4>Functions</h4>
+        <div class="subinfo">
+          <table border="0" cellspacing="8">
+            <tr>
+              <td width="200">$eval(expression)</td>
+              <td>Does math/logic. It supports the sub-functions listed in the table below. Strings used in this must be surrounded by double quotes. Not using quotes should work in most situations, but this is mostly for reasons of backwards compatibility. If used for logic, it will return True or False (as booleans, so no quotes around them).</td>
+            </tr><tr>
+              <td>$iif(expression,t, f)</td>
+              <td>Inline if (a conditional statement). The expression may be a boolean logic expression, or it may be something that evaluates to true or false. If the expression is True, it returns the second argument. If it's false, it returns the third. If it (or you) messes up, it returns "error".</td>
+            </tr><tr>
+              <td>$len(text)</td>
+              <td>Returns the length of <i>text</i>.</td>
+            </tr><tr>
+              <td>$left(text,length)</td>
+              <td>Returns the first <i>length</i> characters of <i>text</i>.</td>
+            </tr><tr>
+              <td>$listindex(n,item,item,...)</td>
+              <td>Returns the n<super>th</super> supplied item indexed from 1. Returns "error" if the supplied value is incorrect.</td>
+            </tr><tr>
+              <td>$listindexlast(item,item,item,...)</td>
+              <td>Returns the n<super>th</super> supplied item indexed from 1. Returns "error" if the supplied value is less than one. Returns the last value if the index is too big.</td>
+            </tr><tr>
+              <td>$listindexwrap(item,item,item,...)</td>
+              <td>Returns the n<super>th</super> supplied item indexed from 1. Returns "error" if the supplied value is less than one. Wraps around to the beginning of the list if the index is too big.</td>
+            </tr><tr>
+              <td>$mid(text,start,length)</td>
+              <td>Returns <i>length</i> characters of <i>text</i>, starting at <i>start</i>. The first character is indexed as 0.</td>
+            </tr><tr>
+              <td>$randlist(item,item,item,...)</td>
+              <td>Returns a random item from the given inputs.</td>
+            </tr><tr>
+              <td>$right(text,length)</td>
+              <td>Returns the last <i>length</i> characters of <i>text</i>.</td>
+            </tr><tr>
+              <td>$str(text,n)</td>
+              <td>Repeats <i>text</i> <i>n</i> times.</td>
+            </tr>
+          </table>
+        </div>
+        <br /><br />
+
+        <h4>Eval Sub-Functions</h4>
+        <div class="subinfo">
+          <table border="0" cellspacing="8">
+            <tr>
+              <td width="200">abs</td>
+              <td>Return the absolute value of a number.</td>
+            </tr><tr>
+              <td>acos</td>
+              <td>Returns the arc-cosine of a number.</td>
+            </tr><tr>
+              <td>asin</td>
+              <td>Returns the arc-sin of a number.</td>
+            </tr><tr>
+              <td>atan</td>
+              <td>Returns the arc-tangent of a number given an angle.</td>
+            </tr><tr>
+              <td>atan2</td>
+              <td>Returns the arc-tangent of a coordinate. Format: atan2(x,y)</td>
+            </tr><tr>
+              <td>bound</td>
+              <td>Bounds a number between 2 values. Takes 3 parameters: Number, LBound, UBound. Returns LBound if Number < LBound, or UBound if Number > UBound. Otherwise returns Number.</td>
+            </tr><tr>
+              <td>ceil</td>
+              <td>Rounds up. Example: ceil(5.01) returns 6</td>
+            </tr><tr>
+              <td>cos</td>
+              <td>Return the cosine of a number.</td>
+            </tr><tr>
+              <td>fact</td>
+              <td>Computes the factorial of an integer. This is the same as the ! operator.</td>
+            </tr><tr>
+              <td>floor</td>
+              <td>Rounds down. Example: floor(5.99) returns 5. floor(-5.99) returns -6.</td>
+            </tr><tr>
+              <td>int</td>
+              <td>Returns the integer of a number. int(-5.99) returns -5.</td>
+            </tr><tr>
+              <td>len</td>
+              <td>Returns the length of a string.</td>
+            </tr><tr>
+              <td>log</td>
+              <td>Return the log of a number. It's base e. If you want a different base, do log(number)/log(base)</td>
+            </tr><tr>
+              <td>max</td>
+              <td>Return the higher of 2 numbers.</td>
+            </tr><tr>
+              <td>min</td>
+              <td>Return the lower of 2 numbers.</td>
+            </tr><tr>
+              <td>rand</td>
+              <td>Returns a bounded random integer. rand() gives you an integer from 0 to 1, rand(maxvalue) gives an integerfrom 0 to maxvalue, and rand(low,high) from low to high</td>
+            </tr><tr>
+              <td>randf
+              <td>Returns a bounded double precision floating point number. randf() gives you a double from 0 to 1, randf(maxvalue) gives a double from 0 to maxvalue, and randf(low,high) from low to high</td>
+            </tr><tr>
+              <td>round</td>
+              <td>Rounds a number to the given number of decimal places. Format: round(number,decimal places)</td>
+            </tr><tr>
+              <td>sin</td>
+              <td>Return the sin of a number.</td>
+            </tr><tr>
+              <td>sqrt</td>
+              <td>Return the square root of a number.</td>
+            </tr><tr>
+              <td>tan</td>
+              <td>Return the tangent of a number.</td>
+            </tr>
+          </table><br />
+          Take note that these do NOT have a leading $ like the above functions. They must be used INSIDE of $eval.
+        </div>
+        <br /><br />
+
+        <h4>Data types supported by eval</h4>
+        <div class="subinfo">
+          <table border="0" cellspacing="8">
+            <tr>
+              <td>Boolean</td>
+              <td>true or false. Capitalization does not matter. Do not enclose in quotes.</td>
+            </tr><tr>
+              <td width="60">Integer</td>
+              <td>Support not done, numbers currently treated as double. All mathematical/bitwise operations are available.</td>
+            </tr><tr>
+              <td>Double</td>
+              <td>Double-precision floating point number. All mathematical operations except modulus are available.</td>
+            </tr><tr>
+              <td>Point</td>
+              <td>An x,y pair. You may add or subtract points, or you may add, subtract, multiply or divide points by scalars. Not finished.</td>
+            </tr><tr>
+              <td>String</td>
+              <td>A string. + may be used to concatenate strings. All strings MUST be enclosed by quotes.</td>
+            </tr>
+          </table><br />
+          Boolean logic comparisons are available with all types. Also, note that conditions in the karaoke effects tool internally use $eval, so strings must be enclosed in quotes in there. Variables that are strings currently do NOT automatically do so.
+        </div>
+        <br /><br />
+
+        <h4>Constants supported by eval</h4>
+        <div class="subinfo">
+          <table border="0" cellspacing="8">
+            <tr>
+              <td>e</td>
+              <td>e, the natural logarithmic base.</td>
+            </tr><tr>
+              <td width="60">g</td>
+              <td>The golden ratio.</td>
+            </tr><tr>
+              <td>Pi</td>
+              <td>Pi.</td>
+            </tr><tr>
+              <td>y</td>
+              <td>Euler's constant.</td>
+            </tr>
+          </table><br />
+          All numerical constants are double precision (64-bit) floating points.
+        </div>
+        <br /><br />
+
+        <h4>Mathematical/Bitwise operators</h4>
+        <div class="subinfo">
+          <table border="0" cellspacing="8">
+            <tr>
+              <td width="60">+</td>
+              <td>Add</td>
+            </tr><tr>
+              <td>-</td>
+              <td>Subtract</td>
+            </tr><tr>
+              <td>*</td>
+              <td>Multiply</td>
+            </tr><tr>
+              <td>/</td>
+              <td>Divide</td>
+            </tr><tr>
+              <td>!</td>
+              <td>Factorial</td>
+            </tr><tr>
+              <td>%</td>
+              <td>Modulus (remainder after integer division)</td>
+            </tr><tr>
+              <td>&</td>
+              <td>Bitwise and</td>
+            </tr><tr>
+              <td>\</td>
+              <td>Bitwise or</td>
+            </tr><tr>
+              <td>\</td>
+              <td>Bitwise xor</td>
+            </tr><tr>
+              <td>&lt;&lt;</td>
+              <td>Shift left</td>
+            </tr><tr>
+              <td>&gt;&gt;</td>
+              <td>Shift right</td>
+            </tr><tr>
+              <td>~</td>
+              <td>Inversion</td>
+            </tr>
+          </table>
+        </div>
+        <br /><br />
+
+        <h4>Boolean/comparison operators</h4>
+        <div class="subinfo">
+          <table border="0" cellspacing="8">
+            <tr>
+              <td width="60">=</td>
+              <td>Equal to (if used with text, is case insensitive)</td>
+            </tr><tr>
+              <td>&lt;&gt;</td>
+              <td>Equal to (if used with text, is case sensitive)</td>
+            </tr><tr>
+              <td>==</td>
+              <td>Equal to (if used with text, is case sensitive)</td>
+            </tr><tr>
+              <td>!=</td>
+              <td>Not equal to (if used with text, is case insensitive)</td>
+            </tr><tr>
+              <td>!=</td>
+              <td>Not equal to (if used with text, is case sensitive)</td>
+            </tr><tr>
+              <td>&gt;</td>
+              <td>Greater than</td>
+            </tr><tr>
+              <td>&gt;=</td>
+              <td>Greater than or equal to</td>
+            </tr><tr>
+              <td>&lt;</td>
+              <td>Less than</td>
+            </tr><tr>
+              <td>&lt;=</td>
+              <td>Less than or equal to</td>
+            </tr><tr>
+              <td>||</td>
+              <td>Boolean or</td>
+            </tr><tr>
+              <td>&&</td>
+              <td>Boolean and</td>
+            </tr>
+          </table>
+        </div>
+      </div><br /><br />
+
+      <div class="box">
+        <div class="header">Effect and project files</div>
+        <h3>Effect files</h3>
+        <div class="subinfo">
+          Effect files are XML files that hold all preset effects except for "raw code," which is built in. They use the extension exml. You may edit them in a text editor by using the bundled effects as a template. There's also an effects editor in the program to write them for you.
+        </div><br />
+        
+        <h3>Project files</h3>
+        <div class="subinfo">
+          Project files are also XML files, but they are in a different format than the effect files. They contain all layer, filter and condition information as well as the filename to the loaded SSA, if applicable. They are not a script - they do not keep track of your commands, but merely karaoke effects information. They may be edited in a text editor, but I only recommend doing that if you want to make a slight modification to an existing file.
+        </div>
+      </div><br /><br />
+      
+      <div class="box">
+        <div class="header">File Encoding</div>
+          SSATool will open most common file encodings including ANSI (using your local codepage), Shift-JIS, and Unicode in 1, 2, or 4 octet versions. Some encodings, such as Shift-JIS are notoriously hard to detect, so if your file includes Japanese text and you're unsure of the encoding, please make sure to find out, or that it displays correctly if you use the open file option without the SJIS.<br /><br />
+          As of version 4.1, SSATool employs extremely simple algorithms for attempting to detect Shift-JIS and EUC-JP. If a file is under 4KB, 100 or more characters detected with either encoding will trigger a prompt asking to reload using that encoding. If the file is 4KB-8KB, the threshold is 300, and if the file is 8KB or more, 600.
+      </div><br /><br />
+
+      <div class="box">
+        <div class="header">Thanks</div>
+        The following are people I want to thank for helping me with this, be that by testing, lending me webspace, putting up educational code samples on the web, etc. Some will be in names, and others will be in online nicknames.<br />
+        <div class="subinfo">
+        <ul>
+          <li>DeathWolf - testing, feature suggestions, webspace</li>
+          <li>Neil Davidson - the <a href="http://www.codeproject.com/csharp/GetSaveFileName.asp?print=true">save file dialog w/ encoding</a> I'm using</li>
+          <li>PovRayMan - icon</li>
+          <li>SCR512 - testing</li>
+          <li>zalas - feature suggestions</li>
+          <li>Dead-Cow - testing</li>
+          <li>Nikolai - testing, feature suggestions</li>
+          <li>Anyone else I forgot</li>
+        </ul>
+        </div>
+      </div><br /><br />
+
+      SSATool is copyright (C) 2005-2006 Dan Donovan. It is free to use.
+    </center>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<PSSA>
+  <Files />
+  <Layer Enabled="True" PerSyllable="True" RemoveK="False" AddAll="False" AddOnce="False" DontAddText="False" AddText="True" AddK="True" AddASSA="True" AddClosingBracket="True" Repetitions="1">
+    <Effect InstanceName="Hide previous" Name="Raw code" Enabled="True">
+      <Option Name="Code">\1a&amp;HFF&amp;\2a&amp;HFF&amp;\3a&amp;HFF&amp;\4a&amp;HFF&amp;</Option>
+      <Condition ConditionOne="%karanum%" ConditionTwo="0" ConditionOperation="==" Enabled="True" />
+      <Condition ConditionOne="%layernumlps%" ConditionTwo="0" ConditionOperation="!=" Enabled="True" />
+    </Effect>
+    <Effect InstanceName="Main Code" Name="Raw code" Enabled="True">
+      <Option Name="Code">\r\t(%karastart%,%karamid%,\fscx50)\t(%karamid%,%karaend%,\fscx100)</Option>
+      <Condition ConditionOne="%karanum%" ConditionTwo="%layernumlps%" ConditionOperation="==" Enabled="True" />
+    </Effect>
+    <Effect InstanceName="Hide next" Name="Raw code" Enabled="True">
+      <Option Name="Code">\r\1a&amp;HFF&amp;\2a&amp;HFF&amp;\3a&amp;HFF&amp;\4a&amp;HFF&amp;</Option>
+      <Condition ConditionOne="%karanum%" ConditionTwo="$eval(%layernumlps%+1)" ConditionOperation="==" Enabled="True" />
+    </Effect>
+  </Layer>
+</PSSA>
