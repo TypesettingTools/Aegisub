@@ -140,9 +140,9 @@ void VisualToolRotateXY::Draw() {
 		glVertex3f(0.0f,0.0f,0.0f);
 		glVertex3f(50.0f,0.0f,0.0f);
 		glVertex3f(0.0f,0.0f,0.0f);
-		glVertex3f(0.0f,-50.0f,0.0f);
+		glVertex3f(0.0f,50.0f,0.0f);
 		glVertex3f(0.0f,0.0f,0.0f);
-		glVertex3f(0.0f,0.0f,-50.0f);
+		glVertex3f(0.0f,0.0f,50.0f);
 	glEnd();
 
 	// Draw arrow tops
@@ -155,20 +155,20 @@ void VisualToolRotateXY::Draw() {
 		glVertex3f(50.0f,-3.0f,-3.0f);
 	glEnd();
 	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(0.0f,-60.0f,0.0f);
-		glVertex3f(-3.0f,-50.0f,-3.0f);
-		glVertex3f(3.0f,-50.0f,-3.0f);
-		glVertex3f(3.0f,-50.0f,3.0f);
-		glVertex3f(-3.0f,-50.0f,3.0f);
-		glVertex3f(-3.0f,-50.0f,-3.0f);
+		glVertex3f(0.0f,60.0f,0.0f);
+		glVertex3f(-3.0f,50.0f,-3.0f);
+		glVertex3f(3.0f,50.0f,-3.0f);
+		glVertex3f(3.0f,50.0f,3.0f);
+		glVertex3f(-3.0f,50.0f,3.0f);
+		glVertex3f(-3.0f,50.0f,-3.0f);
 	glEnd();
 	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(0.0f,0.0f,-60.0f);
-		glVertex3f(-3.0f,-3.0f,-50.0f);
-		glVertex3f(3.0f,-3.0f,-50.0f);
-		glVertex3f(3.0f,3.0f,-50.0f);
-		glVertex3f(-3.0f,3.0f,-50.0f);
-		glVertex3f(-3.0f,-3.0f,-50.0f);
+		glVertex3f(0.0f,0.0f,60.0f);
+		glVertex3f(-3.0f,-3.0f,50.0f);
+		glVertex3f(3.0f,-3.0f,50.0f);
+		glVertex3f(3.0f,3.0f,50.0f);
+		glVertex3f(-3.0f,3.0f,50.0f);
+		glVertex3f(-3.0f,-3.0f,50.0f);
 	glEnd();
 
 	// Restore gl's state

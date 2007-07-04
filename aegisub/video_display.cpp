@@ -617,7 +617,6 @@ void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &event) {
 /////////////////////
 // Copy coordinates
 void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
-	wxLogMessage(_T("TODO: FIXME"));
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
 		VideoContext::Get()->GetScriptSize(sw,sh);
