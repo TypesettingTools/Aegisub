@@ -131,8 +131,10 @@ void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt)
 
 	if (evt.LeftDown()) {
 		CaptureMouse();
+		SetCursor(wxCursor(wxCURSOR_BLANK));
 	} else if (evt.LeftUp() && HasCapture()) {
 		ReleaseMouse();
+		SetCursor(wxNullCursor);
 	}
 
 	if (evt.LeftDown() || (HasCapture() && evt.LeftIsDown())) {
@@ -157,6 +159,7 @@ ColorPickerRecent::ColorPickerRecent(wxWindow *parent, wxWindowID id, int _cols,
 	SetClientSize(cols*cellsize, rows*cellsize);
 	SetMinSize(GetSize());
 	SetMaxSize(GetSize());
+	SetCursor(*wxCROSS_CURSOR);
 }
 
 void ColorPickerRecent::LoadFromString(const wxString &recent_string)
@@ -260,6 +263,7 @@ ColorPickerScreenDropper::ColorPickerScreenDropper(wxWindow *parent, wxWindowID 
 	SetClientSize(resx*magnification, resy*magnification);
 	SetMinSize(GetSize());
 	SetMaxSize(GetSize());
+	SetCursor(*wxCROSS_CURSOR);
 
 	capture = wxBitmap(resx, resy);
 	wxMemoryDC capdc;
@@ -290,7 +294,7 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 	} else if (evt.LeftDown()) {
 
 		if (x == 0 && y == 0 && integrated_dropper) {
-			SetCursor(*wxCROSS_CURSOR);
+			//SetCursor(*wxCROSS_CURSOR);
 			CaptureMouse();
 
 		} else if (x >= 0 && y >= 0 && x < resx && y < resy) {
@@ -306,7 +310,7 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 
 	} else if (HasCapture() && evt.LeftUp()) {
 		ReleaseMouse();
-		SetCursor(wxNullCursor);
+		//SetCursor(wxNullCursor);
 	}
 }
 
