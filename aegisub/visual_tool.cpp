@@ -57,7 +57,7 @@
 
 ///////////////
 // Constructor
-VisualTool::VisualTool(VideoDisplay *par) {
+VisualTool::VisualTool(VideoDisplay *par) : eventSink(this) {
 	parent = par;
 	colour[0] = wxColour(27,60,114);
 	colour[1] = wxColour(166,247,177);
@@ -169,8 +169,9 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 
 				// Commit
 				CommitDrag(features[curFeature]);
+				grid->editBox->CommitText();
 				grid->ass->FlagAsModified(_("visual typesetting"));
-				grid->CommitChanges(false,true);
+				grid->CommitChanges(false);
 
 				// Clean up
 				dragging = false;
@@ -222,7 +223,7 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				CommitHold();
 				grid->editBox->CommitText();
 				grid->ass->FlagAsModified(_("visual typesetting"));
-				grid->CommitChanges(false,true);
+				grid->CommitChanges(false);
 
 				// Clean up
 				holding = false;
@@ -293,6 +294,7 @@ void VisualTool::DrawAllFeatures() {
 void VisualTool::Refresh() {
 	frame_n = VideoContext::Get()->GetFrameN();
 	dragListOK = false;
+	DoRefresh();
 }
 
 
@@ -568,3 +570,21 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) 
 void VisualTool::SetOverride(wxString tag,wxString value) {
 	VideoContext::Get()->grid->editBox->SetOverride(tag,value,0,false);
 }
+
+
+//////////////////
+// Connect button
+void VisualTool::ConnectButton(wxButton *button) {
+	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(VisualToolEvent::OnButton),NULL,&eventSink);
+}
+
+
+//////////////
+// Event sink
+VisualToolEvent::VisualToolEvent(VisualTool *_tool) {
+	tool = _tool;
+}
+void VisualToolEvent::OnButton(wxCommandEvent &event) {
+	tool->OnButton(event);
+}
+

@@ -31,7 +31,7 @@ Please visit http://aegisub.net to download latest version
   o Framegrabs from the video now also includes framenumber in the filename. (jfs)
   o Added a toggleable overscan mask to show which areas might get cropped by televisions. (AMZ)
 - Visual Typesetting functionality implemented, which should make typesetting much easier and faster. It supports: (AMZ)
-  o Dragging;
+  o Dragging, including support for \move;
   o Rotation on Z axis;
   o Rotation on X/Y axes;
   o Scaling on X/Y axes;

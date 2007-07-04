@@ -48,19 +48,90 @@
 #include "vfr.h"
 
 
+///////
+// IDs
+enum {
+	BUTTON_TOGGLE_MOVE = 1300
+};
+
+
 ///////////////
 // Constructor
-VisualToolDrag::VisualToolDrag(VideoDisplay *_parent)
+VisualToolDrag::VisualToolDrag(VideoDisplay *_parent,wxSizer *toolbar,wxWindow *toolWindow)
 : VisualTool(_parent)
 {
 	_parent->ShowCursor(false);
+	toggleMove = new wxBitmapButton(toolWindow,BUTTON_TOGGLE_MOVE,wxBITMAP(visual_move_conv_move),wxDefaultPosition);
+	ConnectButton(toggleMove);
+	toolbar->Add(toggleMove,0,wxEXPAND);
+	toolbar->AddStretchSpacer(1);
+	toggleMoveOnMove = true;
+	UpdateToggleButtons();
+}
+
+
+/////////////////////////
+// Update toggle buttons
+void VisualToolDrag::UpdateToggleButtons() {
+	// Check which bitmap to use
+	bool toMove = true;
+	AssDialogue *line = GetActiveDialogueLine();
+	if (line) {
+		int x1,y1,x2,y2,t1,t2;
+		bool hasMove;
+		GetLineMove(line,hasMove,x1,y1,x2,y2,t1,t2);
+		toMove = !hasMove;
+	}
+
+	// No change needed
+	if (toMove == toggleMoveOnMove) return;
+
+	// Change bitmap
+	if (toMove) toggleMove->SetBitmapLabel(wxBITMAP(visual_move_conv_move));
+	else toggleMove->SetBitmapLabel(wxBITMAP(visual_move_conv_pos));
+	toggleMoveOnMove = toMove;
+}
+
+
+/////////////////////////
+// Toggle button pressed
+void VisualToolDrag::OnButton(wxCommandEvent &event) {
+	// Get line
+	AssDialogue *line = GetActiveDialogueLine();
+	if (!line) return;
+
+	// Toggle \move <-> \pos
+	if (event.GetId() == BUTTON_TOGGLE_MOVE) {
+		// Get coordinates
+		int x1,y1,x2,y2,t1,t2;
+		bool hasMove;
+		GetLinePosition(line,x1,y1);
+		GetLineMove(line,hasMove,x1,y1,x2,y2,t1,t2);
+
+		// Replace tag
+		if (hasMove) SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),x1,y1));
+		else SetOverride(_T("\\move"),wxString::Format(_T("(%i,%i,%i,%i,%i,%i)"),x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
+		SubtitlesGrid *grid = VideoContext::Get()->grid;
+		grid->editBox->CommitText();
+		grid->ass->FlagAsModified(_("visual typesetting"));
+		grid->CommitChanges(false,true);
+
+		// Update display
+		Refresh();
+	}
+}
+
+
+///////////
+// Refresh
+void VisualToolDrag::DoRefresh() {
+	UpdateToggleButtons();
 }
 
 
 //////////
 // Update
 void VisualToolDrag::Update() {
-	// Render parent
 	GetParent()->Render();
 }
 

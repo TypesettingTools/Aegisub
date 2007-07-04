@@ -67,6 +67,9 @@ VideoBox::VideoBox(wxWindow *parent)
 	videoPage = this;
 	frame = AegisubApp::Get()->frame;
 
+	// Visual controls sub-toolbar
+	visualSubToolBar = new wxBoxSizer(wxHORIZONTAL);
+
 	// Buttons
 	wxBitmapButton *VideoPlayButton = new wxBitmapButton(videoPage,Video_Play,wxBITMAP(button_play),wxDefaultPosition,wxSize(25,-1));
 	VideoPlayButton->SetToolTip(_("Play video starting on this position"));
@@ -130,9 +133,13 @@ VideoBox::VideoBox(wxWindow *parent)
 	typeSizer->AddStretchSpacer(1);
 
 	// Top sizer
-	wxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxFlexGridSizer *topSizer = new wxFlexGridSizer(2,2,0,0);
 	topSizer->Add(typeSizer,0,wxEXPAND,0);
 	topSizer->Add(videoDisplay,1,wxEXPAND,0);
+	topSizer->AddSpacer(0);
+	topSizer->Add(visualSubToolBar,1,wxEXPAND,0);
+	topSizer->AddGrowableCol(1);
+	topSizer->AddGrowableRow(0);
 
 	// Sizers
 	videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -147,6 +154,7 @@ VideoBox::VideoBox(wxWindow *parent)
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(topSizer,1,wxEXPAND,0);
+	VideoSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
 	VideoSizer->Add(videoBottomSizer,0,wxEXPAND,0);
 	SetSizer(VideoSizer);

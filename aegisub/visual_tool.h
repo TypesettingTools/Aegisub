@@ -49,13 +49,30 @@
 // Prototypes
 class VideoDisplay;
 class AssDialogue;
+class VisualTool;
+
+
+////////////////////
+// Event sink class
+class VisualToolEvent : public wxEvtHandler {
+private:
+	VisualTool *tool;
+
+public:
+	void OnButton(wxCommandEvent &event);
+
+	VisualToolEvent(VisualTool *tool);
+};
 
 
 ////////////////////////
 // Visual handler class
 class VisualTool : public OpenGLWrapper {
+	friend class VisualToolEvent;
+
 private:
 	VideoDisplay *parent;
+	VisualToolEvent eventSink;
 
 protected:
 	wxColour colour[4];
@@ -92,6 +109,9 @@ protected:
 	int GetHighlightedFeature();
 	void DrawAllFeatures();
 
+	void ConnectButton(wxButton *button);
+	virtual void OnButton(wxCommandEvent &event) {}
+
 	virtual bool CanHold() { return false; }
 	virtual void InitializeHold() {}
 	virtual void UpdateHold() {}
@@ -102,6 +122,8 @@ protected:
 	virtual void InitializeDrag(VisualDraggableFeature &feature) {}
 	virtual void UpdateDrag(VisualDraggableFeature &feature) {}
 	virtual void CommitDrag(VisualDraggableFeature &feature) {}
+
+	virtual void DoRefresh() {}
 
 public:
 	int mouseX,mouseY;
@@ -114,3 +136,4 @@ public:
 	VisualTool(VideoDisplay *parent);
 	virtual ~VisualTool();
 };
+

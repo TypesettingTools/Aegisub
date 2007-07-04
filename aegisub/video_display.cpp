@@ -114,6 +114,7 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 : wxGLCanvas (parent, id, attribList, pos, size, style, name)
 {
 	// Set options
+	box = NULL;
 	locked = false;
 	ControlSlider = NULL;
 	PositionDisplay = NULL;
@@ -646,16 +647,29 @@ void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 // Set mode
 void VideoDisplay::SetVisualMode(int mode) {
 	// Set visual
-	visualMode = mode;
-	delete visual;
-	switch (mode) {
-		case 0: visual = new VisualToolCross(this); break;
-		case 1: visual = new VisualToolDrag(this); break;
-		case 2: visual = new VisualToolRotateZ(this); break;
-		case 3: visual = new VisualToolRotateXY(this); break;
-		case 4: visual = new VisualToolScale(this); break;
-		case 5: visual = new VisualToolClip(this); break;
-		default: visual = NULL;
+	if (visualMode != mode) {
+		// Get toolbar
+		wxSizer *toolBar = NULL;
+		if (box) {
+			toolBar = box->visualSubToolBar;
+			toolBar->Clear(true);
+		}
+
+		// Replace mode
+		visualMode = mode;
+		delete visual;
+		switch (mode) {
+			case 0: visual = new VisualToolCross(this); break;
+			case 1: visual = new VisualToolDrag(this,toolBar,box); break;
+			case 2: visual = new VisualToolRotateZ(this); break;
+			case 3: visual = new VisualToolRotateXY(this); break;
+			case 4: visual = new VisualToolScale(this); break;
+			case 5: visual = new VisualToolClip(this); break;
+			default: visual = NULL;
+		}
+
+		// Update size to reflect toolbar changes
+		UpdateSize();
 	}
 
 	// Render

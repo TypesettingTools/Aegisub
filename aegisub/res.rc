@@ -131,6 +131,8 @@ toggle_video_autoscroll BITMAP "bitmaps/toggle_video_autoscroll.bmp"
 
 visual_standard BITMAP "bitmaps/visual_standard.bmp"
 visual_move BITMAP "bitmaps/visual_move.bmp"
+visual_move_conv_move BITMAP "bitmaps/visual_move_conv_move.bmp"
+visual_move_conv_pos BITMAP "bitmaps/visual_move_conv_pos.bmp"
 visual_rotatez BITMAP "bitmaps/visual_rotatez.bmp"
 visual_rotatexy BITMAP "bitmaps/visual_rotatexy.bmp"
 visual_scale BITMAP "bitmaps/visual_scale.bmp"

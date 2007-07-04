@@ -91,6 +91,7 @@ public:
 	VideoDisplay *videoDisplay;
 	VideoSlider *videoSlider;
 	FrameMain *frame;
+	wxSizer *visualSubToolBar;
 
 	VideoBox (wxWindow *parent);
 

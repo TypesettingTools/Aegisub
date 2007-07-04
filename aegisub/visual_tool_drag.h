@@ -46,14 +46,21 @@
 // Drag tool class
 class VisualToolDrag : public VisualTool {
 private:
+	wxBitmapButton *toggleMove;
+	bool toggleMoveOnMove;
+
 	bool CanDrag() { return true; }
 	void PopulateFeatureList();
 	void InitializeDrag(VisualDraggableFeature &feature);
 	void UpdateDrag(VisualDraggableFeature &feature);
 	void CommitDrag(VisualDraggableFeature &feature);
 
+	void OnButton(wxCommandEvent &event);
+	void UpdateToggleButtons();
+	void DoRefresh();
+
 public:
-	VisualToolDrag(VideoDisplay *parent);
+	VisualToolDrag(VideoDisplay *parent,wxSizer *toolbar,wxWindow *toolWindow);
 
 	void Update();
 	void Draw();
