@@ -485,7 +485,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 
 	eyedropper_bitmap = wxBITMAP(eyedropper_tool);
 	eyedropper_bitmap.SetMask(new wxMask(eyedropper_bitmap, wxColour(255, 0, 255)));
-	screen_dropper_icon = new wxStaticBitmap(this, SELECTOR_DROPPER, eyedropper_bitmap);
+	screen_dropper_icon = new wxStaticBitmap(this, SELECTOR_DROPPER, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
 	screen_dropper = new ColorPickerScreenDropper(this, SELECTOR_DROPPER_PICK, 7, 7, 8, false);
 
 	// Arrange the controls in a nice way
@@ -1139,32 +1139,30 @@ void DialogColorPicker::OnRecentSelect(wxCommandEvent &evt)
 
 void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt)
 {
-	if (evt.LeftDown()) {
-		if (screen_dropper_icon->HasCapture()) {
-release_capture:
-			screen_dropper_icon->ReleaseMouse();
-			screen_dropper_icon->SetCursor(wxNullCursor);
-			screen_dropper_icon->SetBitmap(eyedropper_bitmap);
-			return;
-		} else {
-			screen_dropper_icon->CaptureMouse();
-			eyedropper_grab_point = evt.GetPosition();
+	if (evt.LeftDown() && !screen_dropper_icon->HasCapture()) {
+		screen_dropper_icon->CaptureMouse();
+		eyedropper_grab_point = evt.GetPosition();
+		eyedropper_is_grabbed = false;
 #ifdef WIN32
-			screen_dropper_icon->SetCursor(wxCursor(_T("eyedropper_cursor")));
+		screen_dropper_icon->SetCursor(wxCursor(_T("eyedropper_cursor")));
 #else
-			screen_dropper_icon->SetCursor(*wxCROSS_CURSOR);
+		screen_dropper_icon->SetCursor(*wxCROSS_CURSOR);
 #endif
-			screen_dropper_icon->SetBitmap(wxNullBitmap);
-		}
+		screen_dropper_icon->SetBitmap(wxNullBitmap);
 	}
 
 	if (evt.LeftUp()) {
 #define ABS(x) (x < 0 ? -x : x)
 		wxPoint ptdiff = evt.GetPosition() - eyedropper_grab_point;
-		if (ABS(ptdiff.x) + ABS(ptdiff.y) > 7)
-			goto release_capture;
-		// test failed, didn't move enough distance to "drag-grab" the tool
-		// treat this as a click
+		bool release_now = eyedropper_is_grabbed || ABS(ptdiff.x) + ABS(ptdiff.y) > 7;
+		if (release_now) {
+			screen_dropper_icon->ReleaseMouse();
+			eyedropper_is_grabbed = false;
+			screen_dropper_icon->SetCursor(wxNullCursor);
+			screen_dropper_icon->SetBitmap(eyedropper_bitmap);
+		} else {
+			eyedropper_is_grabbed = true;
+		}
 	}
 
 	if (screen_dropper_icon->HasCapture()) {

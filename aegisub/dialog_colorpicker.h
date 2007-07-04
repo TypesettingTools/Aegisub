@@ -151,6 +151,7 @@ private:
 
 	wxBitmap eyedropper_bitmap;
 	wxPoint eyedropper_grab_point;
+	bool eyedropper_is_grabbed;
 
 	wxTextCtrl *ass_input;		// ASS hex format input
 	wxTextCtrl *html_input;		// HTML hex format input
