@@ -64,6 +64,7 @@ public:
 	void DrawCircle(float x,float y,float radius) { DrawEllipse(x,y,radius,radius); }
 	void DrawRectangle(float x1,float y1,float x2,float y2);
 	void DrawRing(float x,float y,float r1,float r2,float ar=1.0f,float arcStart=0.0f,float arcEnd=0.0f);
+	void DrawTriangle(float x1,float y1,float x2,float y2,float x3,float y3);
 
 	static bool UseShaders();
 	static bool IsExtensionSupported(const char *ext);

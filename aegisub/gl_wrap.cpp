@@ -135,6 +135,31 @@ void OpenGLWrapper::DrawRectangle(float x1,float y1,float x2,float y2) {
 }
 
 
+/////////////////
+// Draw triangle
+void OpenGLWrapper::DrawTriangle(float x1,float y1,float x2,float y2,float x3,float y3) {
+	// Fill
+	if (a2 != 0.0) {
+		SetModeFill();
+		glBegin(GL_TRIANGLES);
+			glVertex2f(x1,y1);
+			glVertex2f(x2,y2);
+			glVertex2f(x3,y3);
+		glEnd();
+	}
+
+	// Outline
+	if (a1 != 0.0) {
+		SetModeLine();
+		glBegin(GL_LINE_LOOP);
+			glVertex2f(x1,y1);
+			glVertex2f(x2,y2);
+			glVertex2f(x3,y3);
+		glEnd();
+	}
+}
+
+
 ///////////////////////
 // Draw ring (annulus)
 void OpenGLWrapper::DrawRing(float x,float y,float r1,float r2,float ar,float arcStart,float arcEnd) {

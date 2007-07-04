@@ -232,6 +232,18 @@ void VisualToolDrag::PopulateFeatureList() {
 					features[n-1].brother[0] = n-2;
 					features[n-2].brother[0] = n-1;
 				}
+
+				// Create org feature
+				if (torgx != x1 || torgy != y1) {
+					feat.x = torgx;
+					feat.y = torgy;
+					feat.layer = -1;
+					feat.type = DRAG_BIG_TRIANGLE;
+					feat.value = 0;
+					feat.line = diag;
+					feat.lineN = i;
+					features.push_back(feat);
+				}
 			}
 		}
 	}
@@ -256,8 +268,13 @@ void VisualToolDrag::UpdateDrag(VisualDraggableFeature &feature) {
 ///////////////
 // Commit drag
 void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
+	// Origin
+	if (feature.type == DRAG_BIG_TRIANGLE) {
+		SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
+	}
+
 	// Position
-	if (feature.brother[0] == -1) {
+	else if (feature.brother[0] == -1) {
 		SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
 	}
 
