@@ -510,6 +510,7 @@ void SubsEditBox::SetControlsState (bool state) {
 	Color3->Enable(state);
 	Color4->Enable(state);
 	FontName->Enable(state);
+	CommitButton->Enable(state);
 
 	UpdateFrameTiming();
 

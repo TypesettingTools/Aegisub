@@ -64,10 +64,18 @@ bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
 	}
 
 	// Circle
-	if (type == DRAG_BIG_CIRCLE) {
+	else if (type == DRAG_BIG_CIRCLE) {
 		int dx = mx-x;
 		int dy = my-y;
 		if (dx*dx + dy*dy <= 64) return true;
+		return false;
+	}
+
+	// Small circle
+	else if (type == DRAG_SMALL_CIRCLE) {
+		int dx = mx-x;
+		int dy = my-y;
+		if (dx*dx + dy*dy <= 16) return true;
 		return false;
 	}
 
@@ -89,7 +97,12 @@ void VisualDraggableFeature::Draw(OpenGLWrapper *gl) {
 	}
 
 	// Circle
-	if (type == DRAG_BIG_CIRCLE) {
+	else if (type == DRAG_BIG_CIRCLE) {
 		gl->DrawCircle(x,y,8);
+	}
+
+	// Small circle
+	else if (type == DRAG_SMALL_CIRCLE) {
+		gl->DrawCircle(x,y,4);
 	}
 }

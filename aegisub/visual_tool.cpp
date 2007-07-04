@@ -58,23 +58,33 @@
 ///////////////
 // Constructor
 VisualTool::VisualTool(VideoDisplay *par) : eventSink(this) {
+	// Config
 	parent = par;
 	colour[0] = wxColour(27,60,114);
 	colour[1] = wxColour(166,247,177);
 	colour[2] = wxColour(255,255,255);
 	colour[3] = wxColour(187,0,0);
 
+	// Holding variables
 	holding = false;
 	curDiag = NULL;
 
+	// Dragging variables
 	dragging = false;
 	curFeature = -1;
 	dragListOK = false;
 
+	// Video options
 	mouseX = mouseY = -1;
+	frame_n = 0;
+	if (VideoContext::Get()->IsLoaded()) {
+		parent->GetClientSize(&w,&h);
+		VideoContext::Get()->GetScriptSize(sw,sh);
+		frame_n = VideoContext::Get()->GetFrameN();
+	}
 
+	// Features
 	if (CanDrag()) PopulateFeatureList();
-	frame_n = VideoContext::Get()->GetFrameN();
 }
 
 

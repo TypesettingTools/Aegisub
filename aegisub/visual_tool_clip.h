@@ -53,6 +53,12 @@ private:
 	void UpdateHold();
 	void CommitHold();
 
+	bool CanDrag() { return false; }
+	void PopulateFeatureList();
+	void InitializeDrag(VisualDraggableFeature &feature);
+	void UpdateDrag(VisualDraggableFeature &feature);
+	void CommitDrag(VisualDraggableFeature &feature);
+
 public:
 	VisualToolClip(VideoDisplay *parent);
 

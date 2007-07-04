@@ -53,6 +53,13 @@ VisualToolClip::VisualToolClip(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
 	_parent->ShowCursor(false);
+
+	// Set defaults
+	curX1 = curY1 = 0;
+	curX2 = sw;
+	curY2 = sh;
+	AssDialogue *line = GetActiveDialogueLine();
+	if (line) GetLineClip(line,curX1,curY1,curX2,curY2);
 }
 
 
@@ -97,10 +104,13 @@ void VisualToolClip::Draw() {
 	// Draw circles
 	SetLineColour(colour[0]);
 	SetFillColour(colour[1],0.5);
-	DrawCircle(dx1,dy1,4);
-	DrawCircle(dx2,dy1,4);
-	DrawCircle(dx2,dy2,4);
-	DrawCircle(dx1,dy2,4);
+	if (CanDrag()) DrawAllFeatures();
+	else {
+		DrawCircle(dx1,dy1,4);
+		DrawCircle(dx2,dy1,4);
+		DrawCircle(dx2,dy2,4);
+		DrawCircle(dx1,dy2,4);
+	}
 }
 
 
@@ -131,6 +141,9 @@ void VisualToolClip::UpdateHold() {
 	curX2 = MID(0,curX2,sw);
 	curY1 = MID(0,curY1,sh);
 	curY2 = MID(0,curY2,sh);
+	
+	// Features
+	if (CanDrag()) PopulateFeatureList();
 }
 
 
@@ -138,4 +151,82 @@ void VisualToolClip::UpdateHold() {
 // Commit hold
 void VisualToolClip::CommitHold() {
 	SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2));
+}
+
+
+/////////////////////////
+// Populate feature list
+void VisualToolClip::PopulateFeatureList() {
+	// Clear
+	features.clear();
+
+	// Setup basic feature
+	VisualDraggableFeature feat;
+	feat.type = DRAG_SMALL_CIRCLE;
+
+	// Top-left
+	feat.x = curX1;
+	feat.y = curY1;
+	feat.brother[0] = 1;
+	feat.brother[1] = 2;
+	feat.brother[2] = 3;
+	features.push_back(feat);
+
+	// Top-right
+	feat.x = curX2;
+	feat.y = curY1;
+	feat.brother[0] = 0;
+	feat.brother[1] = 3;
+	feat.brother[2] = 2;
+	features.push_back(feat);
+
+	// Bottom-left
+	feat.x = curX1;
+	feat.y = curY2;
+	feat.brother[0] = 3;
+	feat.brother[1] = 0;
+	feat.brother[2] = 1;
+	features.push_back(feat);
+
+	// Bottom-right
+	feat.x = curX2;
+	feat.y = curY2;
+	feat.brother[0] = 2;
+	feat.brother[1] = 1;
+	feat.brother[2] = 0;
+	features.push_back(feat);
+}
+
+
+//////////////
+// Initialize
+void VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
+	curDiag = GetActiveDialogueLine();
+	curDiag->StripTag(_T("\\clip"));
+}
+
+
+///////////////
+// Update drag
+void VisualToolClip::UpdateDrag(VisualDraggableFeature &feature) {
+	// Update brothers
+	features[feature.brother[0]].y = feature.y;
+	features[feature.brother[1]].x = feature.x;
+
+	// Get "cur" from features
+	curX1 = features[0].x;
+	curX2 = features[3].x;
+	curY1 = features[0].y;
+	curY2 = features[3].y;
+
+	// Make sure p1 < p2
+	if (curX1 > curX2) IntSwap(curX1,curX2);
+	if (curY1 > curY2) IntSwap(curY1,curY2);
+}
+
+
+/////////////////
+// Done dragging
+void VisualToolClip::CommitDrag(VisualDraggableFeature &feature) {
+	CommitHold();
 }
