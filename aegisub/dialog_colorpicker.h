@@ -105,12 +105,15 @@ private:
 	wxBitmap capture;
 	int resx, resy;
 	int magnification;
+	bool integrated_dropper;
 
 	void OnMouse(wxMouseEvent &evt);
 	void OnPaint(wxPaintEvent &evt);
 
 public:
-	ColorPickerScreenDropper(wxWindow *parent, wxWindowID id, int _resx, int _resy, int _magnification);
+	ColorPickerScreenDropper(wxWindow *parent, wxWindowID id, int _resx, int _resy, int _magnification, bool _integrated_dropper);
+
+	void DropFromScreenXY(int x, int y);
 
 	DECLARE_EVENT_TABLE()
 };
@@ -146,6 +149,9 @@ private:
 	wxBitmap *hsv_spectrum;		// s/v spectrum
 	wxBitmap *hsv_slider;		// h spectrum
 
+	wxBitmap eyedropper_bitmap;
+	wxPoint eyedropper_grab_point;
+
 	wxTextCtrl *ass_input;		// ASS hex format input
 	wxTextCtrl *html_input;		// HTML hex format input
 
@@ -154,9 +160,7 @@ private:
 	wxBitmap preview_bitmap;
 	ColorPickerRecent *recent_box;
 	ColorPickerScreenDropper *screen_dropper;
-
-	wxButton *ok_button;
-	wxButton *cancel_button;
+	wxStaticBitmap *screen_dropper_icon;
 
 	void UpdateFromRGB();			// Update all other controls as a result of modifying an RGB control
 	void UpdateFromHSL();			// Update all other controls as a result of modifying an HSL control
@@ -182,7 +186,8 @@ private:
 	void OnChangeMode(wxCommandEvent &evt);
 	void OnSpectrumChange(wxCommandEvent &evt);
 	void OnSliderChange(wxCommandEvent &evt);
-	void OnRecentSelect(wxCommandEvent &evt);
+	void OnRecentSelect(wxCommandEvent &evt); // also handles dropper pick
+	void OnDropperMouse(wxMouseEvent &evt);
 
 	static int lastx, lasty;
 
@@ -213,7 +218,8 @@ enum {
 	SELECTOR_ASS_INPUT,
 	SELECTOR_HTML_INPUT,
 	SELECTOR_RECENT,
-	SELECTOR_DROPPER
+	SELECTOR_DROPPER,
+	SELECTOR_DROPPER_PICK,
 };
 
 
