@@ -46,8 +46,15 @@
 #include "options.h"
 
 
+#ifdef WIN32
+#define STATIC_BORDER_FLAG wxSTATIC_BORDER
+#else
+#define STATIC_BORDER_FLAG wxSIMPLE_BORDER
+#endif
+
+
 ColorPickerSpectrum::ColorPickerSpectrum(wxWindow *parent, wxWindowID id, wxBitmap *_background, int xx, int yy, PickerDirection _direction)
-: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER), x(xx), y(yy), background(_background), direction(_direction)
+: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG), x(xx), y(yy), background(_background), direction(_direction)
 {
 	// empty
 }
@@ -149,7 +156,7 @@ void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt)
 
 
 ColorPickerRecent::ColorPickerRecent(wxWindow *parent, wxWindowID id, int _cols, int _rows, int _cellsize)
-: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER)
+: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
 , rows(_rows)
 , cols(_cols)
 , cellsize(_cellsize)
@@ -258,7 +265,7 @@ void ColorPickerRecent::OnSize(wxSizeEvent &evt)
 
 
 ColorPickerScreenDropper::ColorPickerScreenDropper(wxWindow *parent, wxWindowID id, int _resx, int _resy, int _magnification, bool _integrated_dropper)
-: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER), resx(_resx), resy(_resy), magnification(_magnification), integrated_dropper(_integrated_dropper)
+: wxControl(parent, id, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG), resx(_resx), resy(_resy), magnification(_magnification), integrated_dropper(_integrated_dropper)
 {
 	SetClientSize(resx*magnification, resy*magnification);
 	SetMinSize(GetSize());
@@ -479,7 +486,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	html_input = new wxTextCtrl(this, SELECTOR_HTML_INPUT, _T(""), wxDefaultPosition, colorinput_size);
 
 	preview_bitmap = wxBitmap(40, 40, 24);
-	preview_box = new wxStaticBitmap(this, -1, preview_bitmap, wxDefaultPosition, wxSize(40, 40), wxSTATIC_BORDER);
+	preview_box = new wxStaticBitmap(this, -1, preview_bitmap, wxDefaultPosition, wxSize(40, 40), STATIC_BORDER_FLAG);
 
 	recent_box = new ColorPickerRecent(this, SELECTOR_RECENT, 8, 4, 16);
 
