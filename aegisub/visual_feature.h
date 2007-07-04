@@ -70,7 +70,7 @@ public:
 	AssDialogue *line;
 	int lineN;
 
-	VisualDraggableFeature *brother[4];
+	int brother[4];
 
 	bool IsMouseOver(int x,int y);
 	void Draw(OpenGLWrapper *gl);

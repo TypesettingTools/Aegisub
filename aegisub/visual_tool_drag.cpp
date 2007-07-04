@@ -72,11 +72,11 @@ void VisualToolDrag::Draw() {
 
 	// Draw arrows
 	for (size_t i=0;i<features.size();i++) {
-		if (features[i].brother[0] != NULL && features[i].type == DRAG_BIG_SQUARE) {
+		if (features[i].brother[0] != -1 && features[i].type == DRAG_BIG_SQUARE) {
 			// Get features
 			VisualDraggableFeature *p1,*p2;
 			p1 = &features[i];
-			p2 = p1->brother[0];
+			p2 = &features[p1->brother[0]];
 
 			// See if the distance between them is at least 30 pixels
 			int dx = p2->x - p1->x;
@@ -154,11 +154,12 @@ void VisualToolDrag::PopulateFeatureList() {
 					feat.value = t2;
 					feat.line = diag;
 					feat.lineN = i;
-
-					// Add each other as brothers. Yes, this looks weird.
-					feat.brother[0] = &features.back();
 					features.push_back(feat);
-					feat.brother[0]->brother[0] = &features.back();
+
+					// Add each other as brothers.
+					int n = features.size();
+					features[n-1].brother[0] = n-2;
+					features[n-2].brother[0] = n-1;
 				}
 			}
 		}
@@ -176,7 +177,6 @@ void VisualToolDrag::InitializeDrag(VisualDraggableFeature &feature) {
 // Update drag
 void VisualToolDrag::UpdateDrag(VisualDraggableFeature &feature) {
 	// Update "value" to reflect the time of the frame in which the feature is being dragged
-	int frame_n = VideoContext::Get()->GetFrameN();
 	int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
 	feature.value = MID(0,time - feature.line->Start.GetMS(),feature.line->End.GetMS()-feature.line->Start.GetMS());
 }
@@ -186,7 +186,7 @@ void VisualToolDrag::UpdateDrag(VisualDraggableFeature &feature) {
 // Commit drag
 void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 	// Position
-	if (feature.brother[0] == NULL) {
+	if (feature.brother[0] == -1) {
 		SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
 	}
 
@@ -195,8 +195,8 @@ void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 		// Get source on p1 and dest on p2
 		VisualDraggableFeature *p1,*p2;
 		p1 = &feature;
-		if (p1->type == DRAG_BIG_CIRCLE) p1 = p1->brother[0];
-		p2 = p1->brother[0];
+		if (p1->type == DRAG_BIG_CIRCLE) p1 = &features[p1->brother[0]];
+		p2 = &features[p1->brother[0]];
 
 		// Set override
 		SetOverride(_T("\\move"),wxString::Format(_T("(%i,%i,%i,%i,%i,%i)"),p1->x,p1->y,p2->x,p2->y,p1->value,p2->value));

@@ -50,7 +50,7 @@ VisualDraggableFeature::VisualDraggableFeature() {
 	layer = 0;
 	lineN = -1;
 	line = NULL;
-	for (int i=0;i<4;i++) brother[i] = NULL;
+	for (int i=0;i<4;i++) brother[i] = -1;
 }
 
 
