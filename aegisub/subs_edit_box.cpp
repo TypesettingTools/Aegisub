@@ -928,8 +928,11 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 
 	// Current tag name
 	wxString alttagname = tagname;
+	wxString removeTag;
 	if (tagname == _T("\\1c")) tagname = _T("\\c");
 	if (tagname == _T("\\fr")) tagname = _T("\\frz");
+	if (tagname == _T("\\pos")) removeTag = _T("\\move");
+	if (tagname == _T("\\move")) removeTag = _T("\\pos");
 
 	// Get block at start
 	size_t blockn = BlockAtPos(selstart);
@@ -999,9 +1002,6 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 		startcolor = style->shadow.GetWXColor();
 		isColor = true;
 	}
-	else if (tagname == _T("\\pos")) {
-		isGeneric = true;
-	}
 	else if (tagname == _T("\\frz")) {
 		startangle = style->angle;
 		isAngle = true;
@@ -1018,9 +1018,8 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 		startScale = style->scaley;
 		isScale = true;
 	}
-	else if (tagname == _T("\\clip")) {
-		isGeneric = true;
-	}
+	else isGeneric = true;
+
 	bool hasEnd = isFlag;
 
 	// Find current value of style
@@ -1163,7 +1162,8 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 		// Remove old of same
 		for (size_t i=0;i<override->Tags.size()-nInserted;i++) {
 			//if (insert.Contains(override->Tags.at(i)->Name)) {
-			if (insertTags.Index(override->Tags.at(i)->Name) != wxNOT_FOUND) {
+			wxString name = override->Tags.at(i)->Name;
+			if (insertTags.Index(name) != wxNOT_FOUND || removeTag == name) {
 				shift -= override->Tags.at(i)->ToString().Length();
 				override->Tags.erase(override->Tags.begin() + i);
 				i--;
@@ -1200,7 +1200,8 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 
 			// Remove old of same
 			for (size_t i=0;i<override->Tags.size()-nInserted;i++) {
-				if (insert.Contains(override->Tags.at(i)->Name)) {
+				wxString name = override->Tags.at(i)->Name;
+				if (insert.Contains(name) || removeTag == name) {
 					shift -= override->Tags.at(i)->ToString().Length();
 					override->Tags.erase(override->Tags.begin() + i);
 					i--;

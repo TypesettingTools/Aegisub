@@ -351,7 +351,7 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 				tag = override->Tags.at(j);
 
 				// Position
-				if ((tag->Name == _T("\\pos") || tag->Name == _("\\move")) && tag->Params.size() >= 2) {
+				if ((tag->Name == _T("\\pos") || tag->Name == _T("\\move")) && tag->Params.size() >= 2) {
 					if (!posSet) {
 						posx = tag->Params[0]->AsInt();
 						posy = tag->Params[1]->AsInt();
@@ -417,6 +417,43 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 		orgx = x;
 		orgy = y;
 	}
+}
+
+
+///////////////////////////////////////
+// Get the destination of move, if any
+void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2) {
+	// Parse tags
+	hasMove = false;
+	diag->ParseASSTags();
+	AssDialogueBlockOverride *override;
+	AssOverrideTag *tag;
+	size_t blockn = diag->Blocks.size();
+
+	// For each block
+	for (size_t i=0;i<blockn;i++) {
+		override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(i));
+		if (override) {
+			for (size_t j=0;j<override->Tags.size();j++) {
+				tag = override->Tags.at(j);
+
+				// Position
+				if (tag->Name == _T("\\move") && tag->Params.size() >= 4) {
+					hasMove = true;
+					x1 = tag->Params[0]->AsInt();
+					y1 = tag->Params[1]->AsInt();
+					x2 = tag->Params[2]->AsInt();
+					y2 = tag->Params[3]->AsInt();
+					if (tag->Params.size() >= 6) {
+						t1 = tag->Params[4]->AsInt();
+						t2 = tag->Params[5]->AsInt();
+					}
+					return;
+				}
+			}
+		}
+	}
+	diag->ClearBlocks();
 }
 
 
