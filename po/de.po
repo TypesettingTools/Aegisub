@@ -204,9 +204,8 @@ msgid "Discard all splits and leave split-mode"
 msgstr ""
 
 #: aegisub/audio_box.cpp:553
-#, fuzzy
 msgid "Accept Split"
-msgstr "Split abbrechen"
+msgstr "Split annehmen"
 
 #: aegisub/audio_box.cpp:554
 msgid "Commit splits and leave split-mode"
@@ -225,9 +224,8 @@ msgid "Split"
 msgstr "Splitten"
 
 #: aegisub/audio_box.cpp:559
-#, fuzzy
 msgid "Enter split-mode"
-msgstr "Split-Mode an/aus"
+msgstr "Split-Mode aktivieren"
 
 #: aegisub/audio_display.cpp:2132 aegisub/audio_display.cpp:2187
 msgid ""
@@ -265,14 +263,12 @@ msgid "Reading into RAM"
 msgstr "Lade in RAM..."
 
 #: aegisub/auto4_base.cpp:390 aegisub/dialog_kanji_timer.cpp:105
-#, fuzzy
 msgid "Close"
-msgstr "&Schliessen"
+msgstr "Schliessen"
 
 #: aegisub/auto4_base.cpp:392
-#, fuzzy
 msgid "Script completed"
-msgstr "Scripteigenschaften"
+msgstr ""
 
 #: aegisub/auto4_base.cpp:740
 #, c-format
@@ -345,9 +341,8 @@ msgid "Text"
 msgstr "Text"
 
 #: aegisub/browse_button.cpp:50
-#, fuzzy
 msgid "Browse..."
-msgstr "&Durchsuchen..."
+msgstr "Durchsuchen..."
 
 #: aegisub/browse_button.cpp:72
 msgid "Please choose the folder:"
@@ -370,18 +365,16 @@ msgid " by ArchMage ZeratuL.\n"
 msgstr " by ArchMage ZeratuL.\n"
 
 #: aegisub/dialog_about.cpp:79
-#, fuzzy
 msgid "Programmers: "
-msgstr "Frames: "
+msgstr "Programmierer: "
 
 #: aegisub/dialog_about.cpp:81
 msgid "Manual by: "
 msgstr ""
 
 #: aegisub/dialog_about.cpp:83
-#, fuzzy
 msgid "Forum, wiki and bug tracker hosting by: "
-msgstr "Forums- und Bugtrackerhosting durch Bot1.\n"
+msgstr "Forum, Wiki und Bugtracker gehosted durch: "
 
 #: aegisub/dialog_about.cpp:85
 msgid "SVN hosting by: "
@@ -469,16 +462,14 @@ msgid "Automation Manager"
 msgstr "Automationsmanager"
 
 #: aegisub/dialog_automation.cpp:56
-#, fuzzy
 msgid "&Add"
-msgstr "&Hinzufügen..."
+msgstr "&Hinzufügen"
 
 #: aegisub/dialog_automation.cpp:57
 msgid "&Remove"
 msgstr "&Entfernen"
 
 #: aegisub/dialog_automation.cpp:58
-#, fuzzy
 msgid "Re&load"
 msgstr "Neu &laden"
 
@@ -491,23 +482,20 @@ msgid "Re&scan Autoload Dir"
 msgstr ""
 
 #: aegisub/dialog_automation.cpp:65
-#, fuzzy
 msgid "Name"
-msgstr "Frame"
+msgstr "Name"
 
 #: aegisub/dialog_automation.cpp:66
-#, fuzzy
 msgid "Filename"
-msgstr "Vietnamesisch"
+msgstr "Dateiname"
 
 #: aegisub/dialog_automation.cpp:67
 msgid "Description"
 msgstr "Beschreibung"
 
 #: aegisub/dialog_automation.cpp:201
-#, fuzzy
 msgid "Add Automation script"
-msgstr "Automationsskript laden"
+msgstr "Automationsskript hinzufügen"
 
 #: aegisub/dialog_automation.cpp:272
 #, c-format
@@ -540,22 +528,18 @@ msgid "Correctly loaded"
 msgstr ""
 
 #: aegisub/dialog_automation.cpp:290
-#, fuzzy
 msgid "Failed to load"
-msgstr "Kopieren fehlgeschlagen: \""
+msgstr "Fehler beim Laden"
 
 #: aegisub/dialog_automation.cpp:293
-#, fuzzy
 msgid "Automation Script Info"
-msgstr "Automationsskript laden"
+msgstr ""
 
 #: aegisub/dialog_colorpicker.cpp:384
-#, fuzzy
 msgid "Select Colour"
 msgstr "Farbe wählen"
 
 #: aegisub/dialog_colorpicker.cpp:457
-#, fuzzy
 msgid "Colour spectrum"
 msgstr "Farbspektrum"
 
@@ -580,17 +564,14 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: aegisub/dialog_colorpicker.cpp:470
-#, fuzzy
 msgid "RGB colour"
 msgstr "RGB-Farbschema"
 
 #: aegisub/dialog_colorpicker.cpp:475
-#, fuzzy
 msgid "HSL colour"
 msgstr "HSL-Farbschema"
 
 #: aegisub/dialog_colorpicker.cpp:480
-#, fuzzy
 msgid "HSV colour"
 msgstr "HSV-Farbschema"
 
@@ -627,32 +608,28 @@ msgid "Value:"
 msgstr "Wert:"
 
 #: aegisub/dialog_detached_video.cpp:50
-#, fuzzy
 msgid "Detached Video"
-msgstr "Ende auf Video setzen"
+msgstr "Separates Videofenster"
 
 #: aegisub/dialog_dummy_video.cpp:118
-#, fuzzy
 msgid "Dummy video options"
-msgstr "Mit Video zum Ende springen"
+msgstr "Dummyvideo-Optionen"
 
 #: aegisub/dialog_dummy_video.cpp:126
 msgid "Checkerboard pattern"
-msgstr ""
+msgstr "Schachbrettmuster"
 
 #: aegisub/dialog_dummy_video.cpp:134
-#, fuzzy
 msgid "Video resolution:"
-msgstr "Auflösung anpassen"
+msgstr "Videoauflösung:"
 
 #: aegisub/dialog_dummy_video.cpp:142
-#, fuzzy
 msgid "Colour:"
-msgstr "Farben"
+msgstr "Farbe:"
 
 #: aegisub/dialog_dummy_video.cpp:146
 msgid "Frame rate (fps):"
-msgstr ""
+msgstr "Framerate (fps):"
 
 #: aegisub/dialog_dummy_video.cpp:148
 msgid "Duration (frames):"
@@ -733,9 +710,8 @@ msgid "&Start!"
 msgstr "&Start!"
 
 #: aegisub/dialog_fonts_collector.cpp:175
-#, fuzzy
 msgid "Invalid destination."
-msgstr "Ungültiges Seitenverhältnis"
+msgstr "Ungültiges Ziel"
 
 #: aegisub/dialog_fonts_collector.cpp:175
 #: aegisub/dialog_fonts_collector.cpp:184
@@ -794,31 +770,24 @@ msgid "Scanning file for fonts..."
 msgstr ""
 
 #: aegisub/dialog_fonts_collector.cpp:404
-#, fuzzy
 msgid "Done."
-msgstr "Keine"
+msgstr "Fertig."
 
 #: aegisub/dialog_fonts_collector.cpp:406
-#, fuzzy
 msgid "Checking fonts...\n"
-msgstr "Suche nach Schriftarten in Datei...\n"
+msgstr "Überprüfe Schriftarten...\n"
 
 #: aegisub/dialog_fonts_collector.cpp:407
-#, fuzzy
 msgid "Copying fonts to folder...\n"
-msgstr "Suche nach Schriftarten in Datei...\n"
+msgstr "Kopiere Schriftarten in Ordner...\n"
 
 #: aegisub/dialog_fonts_collector.cpp:408
-#, fuzzy
 msgid "Copying fonts to archive...\n"
-msgstr ""
-"\n"
-"Lese Schriftarten aus Registry...\n"
+msgstr "Kopiere Schriftarten in Archiv...\n"
 
 #: aegisub/dialog_fonts_collector.cpp:409
-#, fuzzy
 msgid "Attaching fonts to file...\n"
-msgstr "Suche nach Schriftarten in Datei...\n"
+msgstr "Hänge Schriftarten an Datei an...\n"
 
 #: aegisub/dialog_fonts_collector.cpp:425
 #, c-format
@@ -836,9 +805,8 @@ msgid "Done. All fonts copied."
 msgstr ""
 
 #: aegisub/dialog_fonts_collector.cpp:437
-#, fuzzy
 msgid "font attachment"
-msgstr "Anhänge"
+msgstr ""
 
 #: aegisub/dialog_fonts_collector.cpp:444
 msgid "Done. Some fonts could not be found."
@@ -849,38 +817,37 @@ msgid "Done. Some fonts could not be copied."
 msgstr ""
 
 #: aegisub/dialog_fonts_collector.cpp:465
-#, fuzzy
 msgid "Not found.\n"
-msgstr "Keine Vorkommen gefunden."
+msgstr "Nicht gefunden.\n"
 
 #: aegisub/dialog_fonts_collector.cpp:471
 msgid "Found.\n"
 msgstr ""
 
 #: aegisub/dialog_fonts_collector.cpp:486
-#, fuzzy, c-format
+#, c-format
 msgid "* Copied %s.\n"
-msgstr "\" kopiert.\n"
+msgstr "* Kopiert: %s\n"
 
 #: aegisub/dialog_fonts_collector.cpp:490
-#, fuzzy, c-format
+#, c-format
 msgid "* %s already exists on destination.\n"
-msgstr "\" existiert bereits im Ziel.\n"
+msgstr "* %s existiert bereits im Ziel.\n"
 
 #: aegisub/dialog_fonts_collector.cpp:493
-#, fuzzy, c-format
+#, c-format
 msgid "* Failed to copy %s.\n"
-msgstr "Kopieren fehlgeschlagen: \""
+msgstr "* Kopieren fehlgeschlagen: %s\n"
 
 #: aegisub/dialog_fonts_collector.cpp:562
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" found on style \"%s\".\n"
-msgstr "\" gefunden in Style \""
+msgstr "\"%s\" gefunden in Style \"%s\".\n"
 
 #: aegisub/dialog_fonts_collector.cpp:563
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" found on dialogue line \"%d\".\n"
-msgstr "\" gefunden auf Dialogzeile "
+msgstr "\"%s\" gefunden in Dialogzeile \"%d\".\n"
 
 #: aegisub/dialog_jumpto.cpp:56
 msgid "Jump to"
@@ -903,19 +870,16 @@ msgid "Shortcut Keys"
 msgstr ""
 
 #: aegisub/dialog_kanji_timer.cpp:74
-#, fuzzy
 msgid "Groups"
-msgstr "Gruppe"
+msgstr "Gruppen"
 
 #: aegisub/dialog_kanji_timer.cpp:75
-#, fuzzy
 msgid "Styles"
-msgstr "Style"
+msgstr "Styles"
 
 #: aegisub/dialog_kanji_timer.cpp:76
-#, fuzzy
 msgid "Commands"
-msgstr "Kommentare"
+msgstr "Befehle"
 
 #: aegisub/dialog_kanji_timer.cpp:86
 msgid ""
@@ -930,41 +894,36 @@ msgid ""
 msgstr ""
 
 #: aegisub/dialog_kanji_timer.cpp:89
-#, fuzzy
 msgid "Source Style"
-msgstr "Style setzen"
+msgstr "Quellstyle"
 
 #: aegisub/dialog_kanji_timer.cpp:91
-#, fuzzy
 msgid "Dest Style"
-msgstr "Style setzen"
+msgstr "Zielstyle"
 
 #: aegisub/dialog_kanji_timer.cpp:99
 msgid "Link"
 msgstr ""
 
 #: aegisub/dialog_kanji_timer.cpp:100
-#, fuzzy
 msgid "Unlink"
-msgstr "Unterstrichen"
+msgstr ""
 
 #: aegisub/dialog_kanji_timer.cpp:101
 msgid "Skip Source Line"
 msgstr ""
 
 #: aegisub/dialog_kanji_timer.cpp:102
-#, fuzzy
 msgid "Skip Dest Line"
-msgstr "Audio: Nächste Zeile"
+msgstr ""
 
 #: aegisub/dialog_kanji_timer.cpp:103
 msgid "Go Back a Line"
 msgstr ""
 
 #: aegisub/dialog_kanji_timer.cpp:104
-#, fuzzy
 msgid "Accept Line"
-msgstr "Änderungen übernehmen"
+msgstr "Zeile akzeptieren"
 
 #: aegisub/dialog_kanji_timer.cpp:108
 msgid "Attempt to interpolate kanji."
@@ -1002,9 +961,8 @@ msgid ""
 msgstr ""
 
 #: aegisub/dialog_kanji_timer.cpp:302
-#, fuzzy
 msgid "Kanji timer"
-msgstr "Audiodatei öffnen"
+msgstr "Kanjitimer"
 
 #: aegisub/dialog_kanji_timer.cpp:316
 msgid "Possible error parsing source line"
@@ -1019,7 +977,6 @@ msgid "Group all of the source text."
 msgstr ""
 
 #: aegisub/dialog_options.cpp:104
-#, fuzzy
 msgid "Startup"
 msgstr "Start"
 
@@ -1048,28 +1005,24 @@ msgid "Maximum undo levels"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:116
-#, fuzzy
 msgid "Maximum recent timecode files"
-msgstr "Timecodedatei öffnen"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:116
 msgid "Maximum recent keyframe files"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:116
-#, fuzzy
 msgid "Maximum recent subtitle files"
-msgstr "Untertitel exportieren"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:116
-#, fuzzy
 msgid "Maximum recent video files"
-msgstr "Videodatei öffnen"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:116
-#, fuzzy
 msgid "Maximum recent audio files"
-msgstr "Audiodatei öffnen"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:116
 msgid "Maximum recent find strings"
@@ -1088,7 +1041,6 @@ msgid "File paths"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:140
-#, fuzzy
 msgid "Miscelanea"
 msgstr "Verschiedenes"
 
@@ -1145,9 +1097,8 @@ msgstr ""
 #: aegisub/dialog_options.cpp:471 aegisub/dialog_options.cpp:554
 #: aegisub/dialog_properties.cpp:112 aegisub/dialog_timing_processor.cpp:70
 #: aegisub/frame_main.cpp:244 aegisub/hotkeys.cpp:320
-#, fuzzy
 msgid "Options"
-msgstr "Aktion"
+msgstr "Optionen"
 
 #: aegisub/dialog_options.cpp:220
 msgid "Enable call tips"
@@ -1172,34 +1123,31 @@ msgstr ""
 #: aegisub/dialog_options.cpp:239 aegisub/dialog_options.cpp:562
 #: aegisub/dialog_properties.cpp:126
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: aegisub/dialog_options.cpp:239
-#, fuzzy
 msgid "Brackets"
-msgstr "Punkte verfolgen"
+msgstr "Geschweifte Klammern"
 
 #: aegisub/dialog_options.cpp:239
 msgid "Slashes and Parentheses"
-msgstr ""
+msgstr "Schrägstriche und runde Klammern"
 
 #: aegisub/dialog_options.cpp:239
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 #: aegisub/dialog_options.cpp:239
-#, fuzzy
 msgid "Parameters"
-msgstr "Eigenschaften"
+msgstr "Parameter"
 
 #: aegisub/dialog_options.cpp:240
 msgid "Error Background"
-msgstr ""
+msgstr "Fehlermarkierung"
 
 #: aegisub/dialog_options.cpp:240
-#, fuzzy
 msgid "Line Break"
-msgstr "Dauer der Zeile"
+msgstr "Zeilenumbruch"
 
 #: aegisub/dialog_options.cpp:240
 msgid "Modified Background"
@@ -1210,37 +1158,32 @@ msgid "Syntax highlighter - "
 msgstr ""
 
 #: aegisub/dialog_options.cpp:258 aegisub/dialog_options.cpp:322
-#, fuzzy
 msgid "Font: "
-msgstr "Schrift"
+msgstr "Schrift: "
 
 #: aegisub/dialog_options.cpp:293
 msgid "Allow grid to take focus"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:293
-#, fuzzy
 msgid "Highlight subtitles that are currently visible in video"
-msgstr "Wählt alle Zeilen aus, die im aktuellen Videoframe sichtbar sind"
+msgstr "Hebt alle Zeilen hervor, die zur Zeit im Video sichtbar sind"
 
 #: aegisub/dialog_options.cpp:303
-#, fuzzy
 msgid "Standard foreground"
-msgstr "Normal"
+msgstr "Normale Textfarbe"
 
 #: aegisub/dialog_options.cpp:303
 msgid "Standard background"
-msgstr ""
+msgstr "Normaler Hintergrund"
 
 #: aegisub/dialog_options.cpp:303
-#, fuzzy
 msgid "Selection foreground"
-msgstr "Auswahl"
+msgstr "Ausgewählte Textfarbe"
 
 #: aegisub/dialog_options.cpp:304 aegisub/dialog_options.cpp:489
-#, fuzzy
 msgid "Selection background"
-msgstr "Auswahl"
+msgstr "Ausgewählter Hintergrund"
 
 #: aegisub/dialog_options.cpp:304
 msgid "Comment background"
@@ -1271,14 +1214,12 @@ msgid "Active Line Border"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:306
-#, fuzzy
 msgid "Lines"
-msgstr "Anzahl"
+msgstr "Zeilen"
 
 #: aegisub/dialog_options.cpp:335
-#, fuzzy
 msgid "Replace override tags with: "
-msgstr "Ersetzen durch:"
+msgstr "Ersetze Override-Tags durch:"
 
 #: aegisub/dialog_options.cpp:356 aegisub/dialog_options.cpp:523
 msgid "Advanced - EXPERT USERS ONLY"
@@ -1289,9 +1230,8 @@ msgid "Match video resolution on open: "
 msgstr ""
 
 #: aegisub/dialog_options.cpp:367
-#, fuzzy
 msgid "Default Zoom: "
-msgstr "Vorgabe"
+msgstr "Vorgabezoom: "
 
 #: aegisub/dialog_options.cpp:378
 msgid "Fast jump step in frames: "
@@ -1310,9 +1250,8 @@ msgid "Video provider: "
 msgstr ""
 
 #: aegisub/dialog_options.cpp:399
-#, fuzzy
 msgid "Subtitles provider: "
-msgstr "Untertiteldatei speichern"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:404
 msgid "Avisynth memory limit: "
@@ -1338,9 +1277,8 @@ msgid ""
 msgstr ""
 
 #: aegisub/dialog_options.cpp:442
-#, fuzzy
 msgid "Grab times from line upon selection"
-msgstr "Aus Auswahl entfernen"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:443
 msgid "Default mouse wheel to zoom"
@@ -1351,32 +1289,28 @@ msgid "Lock scroll on Cursor"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:445
-#, fuzzy
 msgid "Snap to keyframes"
-msgstr "Auf Szene einrasten"
+msgstr "Auf Keyframes einrasten"
 
 #: aegisub/dialog_options.cpp:446
-#, fuzzy
 msgid "Snap to adjascent lines"
-msgstr "Auf Szene einrasten\t"
+msgstr "Auf benachbarte Zeilen einrasten"
 
 #: aegisub/dialog_options.cpp:447
 msgid "Auto-focus on mouse over"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:451
-#, fuzzy
 msgid "Don't show"
-msgstr "Nicht passend auf:"
+msgstr "Nicht anzeigen"
 
 #: aegisub/dialog_options.cpp:451
 msgid "Show previous"
-msgstr ""
+msgstr "Vorherige anzeigen"
 
 #: aegisub/dialog_options.cpp:451
-#, fuzzy
 msgid "Show all"
-msgstr "Schattenfarbe"
+msgstr "Alle anzeigen"
 
 #: aegisub/dialog_options.cpp:452
 msgid "Default timing length"
@@ -1391,9 +1325,8 @@ msgid "Default lead-out length"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:455
-#, fuzzy
 msgid "Show inactive lines"
-msgstr "Schattenentfernung, in Pixeln"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:477
 msgid "Draw secondary lines"
@@ -1412,37 +1345,32 @@ msgid "Draw cursor time"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:478
-#, fuzzy
 msgid "Draw keyframes"
-msgstr " Frames "
+msgstr ""
 
 #: aegisub/dialog_options.cpp:489
-#, fuzzy
 msgid "Play cursor"
-msgstr "Audio abspielen"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:489
-#, fuzzy
 msgid "Background"
-msgstr "Rückwärts"
+msgstr "Hintergrund"
 
 #: aegisub/dialog_options.cpp:490
 msgid "Selection background - modified"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:490
-#, fuzzy
 msgid "Seconds boundary"
-msgstr "Sekundär"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:490
 msgid "Waveform"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:491
-#, fuzzy
 msgid "Waveform - selection"
-msgstr "Gehe zur Selektion"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:491
 msgid "Waveform - modified"
@@ -1469,9 +1397,8 @@ msgid "Syllable text"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:493
-#, fuzzy
 msgid "Syllable boundary"
-msgstr "Sekundär"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:527
 msgid "None (NOT RECOMMENDED)"
@@ -1486,14 +1413,12 @@ msgid "Hard Disk"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:529
-#, fuzzy
 msgid "Audio provider"
-msgstr "Audio: Vorherige Zeile"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:530
-#, fuzzy
 msgid "Audio player"
-msgstr "Audio: Abspielen"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:531
 msgid "Cache type"
@@ -1508,14 +1433,12 @@ msgid "HD cache path"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:534
-#, fuzzy
 msgid "HD cache name"
-msgstr "Name des Anhangs"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:535
-#, fuzzy
 msgid "Spectrum cutoff"
-msgstr "Spektrenmodus:"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:536
 msgid "0 - Regular quality"
@@ -1534,9 +1457,8 @@ msgid "3 - Insane quality"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:537
-#, fuzzy
 msgid "Spectrum quality"
-msgstr "Spektrenanzeige"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:538
 msgid "Spectrum cache memory max (MB)"
@@ -1556,57 +1478,51 @@ msgstr ""
 
 #: aegisub/dialog_options.cpp:561
 msgid "0: Fatal"
-msgstr ""
+msgstr "0: Fatal"
 
 #: aegisub/dialog_options.cpp:561
-#, fuzzy
 msgid "1: Error"
-msgstr "Fehler"
+msgstr "1: Fehler"
 
 #: aegisub/dialog_options.cpp:561
-#, fuzzy
 msgid "2: Warning"
-msgstr "Warnung"
+msgstr "2: Warnung"
 
 #: aegisub/dialog_options.cpp:561
 msgid "3: Hint"
-msgstr ""
+msgstr "3: Hinweis"
 
 #: aegisub/dialog_options.cpp:561
 msgid "4: Debug"
-msgstr ""
+msgstr "4: Debug"
 
 #: aegisub/dialog_options.cpp:561
 msgid "5: Trace"
-msgstr ""
+msgstr "5: Trace"
 
 #: aegisub/dialog_options.cpp:562
 msgid "Below Normal (recommended)"
-msgstr ""
+msgstr "Unterhalb Normal (empfohlen)"
 
 #: aegisub/dialog_options.cpp:562
-#, fuzzy
 msgid "Lowest"
-msgstr "Li."
+msgstr "Niedrigste"
 
 #: aegisub/dialog_options.cpp:563
-#, fuzzy
 msgid "No scripts"
-msgstr "Script"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:563
 msgid "Subtitle-local scripts"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:563
-#, fuzzy
 msgid "Global autoload scripts"
-msgstr "Automationsskript laden"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:563
-#, fuzzy
 msgid "All scripts"
-msgstr "Ungültiges Skript"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:564
 msgid "Trace level"
@@ -1621,11 +1537,10 @@ msgid "Autoreload on Export"
 msgstr ""
 
 #: aegisub/dialog_options.cpp:584
-#, fuzzy
 msgid ""
 "List of all hotkeys (shortcuts) available in Aegisub.\n"
 "Double click on any item to reassign it."
-msgstr "Verfügbare Funktionen: (Doppelklicken, um Taste zuzuweisen)"
+msgstr ""
 
 #: aegisub/dialog_options.cpp:588
 msgid "Function"
