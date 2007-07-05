@@ -86,7 +86,7 @@ void VisualToolClip::Draw() {
 	int dy2 = curY2;
 
 	// Draw rectangle
-	SetLineColour(colour[3]);
+	SetLineColour(colour[3],1.0f,2);
 	SetFillColour(colour[3],0.0f);
 	DrawRectangle(dx1,dy1,dx2,dy2);
 

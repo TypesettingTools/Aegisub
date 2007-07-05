@@ -193,7 +193,7 @@ void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
 	SplineCurve *c2 = NULL;
 
 	// Indices
-	int size = curves.size();
+	//int size = curves.size();
 	int i0 = curveIndex-1;
 	int i1 = curveIndex;
 	int i2 = curveIndex+1;
@@ -282,8 +282,11 @@ void Spline::GetPointList(std::vector<wxPoint> &points) {
 			int y3 = cur->y3;
 			int y4 = cur->y4;
 
-			// Hardcoded at 50 steps for now
-			int steps = 50;
+			// Find number of steps
+			int len = sqrt(double((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))) + sqrt(double((x2-x3)*(x2-x3)+(y2-y3)*(y2-y3))) + sqrt(double((x3-x4)*(x3-x4)+(y3-y4)*(y3-y4)));
+			int steps = len/8;
+
+			// Render curve
 			for (int i=0;i<steps;i++) {
 				// Get t and t-1 (u)
 				float t = float(i)/float(steps);

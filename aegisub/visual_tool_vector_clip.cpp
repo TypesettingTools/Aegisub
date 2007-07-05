@@ -68,7 +68,7 @@ void VisualToolVectorClip::Draw() {
 	spline.GetPointList(points);
 
 	// Draw lines
-	SetLineColour(colour[3]);
+	SetLineColour(colour[3],1.0f,2);
 	SetFillColour(colour[3],0.0f);
 	for (size_t i=0;i<points.size()-1;i++) {
 		DrawLine(points[i].x,points[i].y,points[i+1].x,points[i+1].y);
@@ -91,6 +91,7 @@ void VisualToolVectorClip::Draw() {
 	glColorMask(1,1,1,1);
 	glStencilFunc(GL_EQUAL, 0, 1);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	SetLineColour(colour[3],0.0f);
 	SetFillColour(wxColour(0,0,0),0.5f);
 	DrawRectangle(0,0,sw,sh);
 	glDisable(GL_STENCIL_TEST);
