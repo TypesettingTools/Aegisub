@@ -1,0 +1,5234 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: aegisub/dialog_kanji_timer.cpp:88 aegisub/dialog_kanji_timer.cpp:90
+msgid ""
+msgstr ""
+"Project-Id-Version: Aegisub\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-07-05 16:53+0200\n"
+"PO-Revision-Date: 2006-07-16 19:09-0300\n"
+"Last-Translator: Rodrigo Braz Monteiro <zeratul@cellosoft.com>\n"
+"Language-Team: KAA <oblisk@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Korean\n"
+"X-Poedit-Country: KOREA, REPUBLIC OF\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: aegisub/ass_style.cpp:573
+msgid "ANSI"
+msgstr "ANSI"
+
+#: aegisub/ass_style.cpp:574
+msgid "Default"
+msgstr "디폴트"
+
+#: aegisub/ass_style.cpp:575
+msgid "Symbol"
+msgstr "표상"
+
+#: aegisub/ass_style.cpp:576
+msgid "Mac"
+msgstr "Mac"
+
+#: aegisub/ass_style.cpp:577
+msgid "Shift_JIS"
+msgstr "Shift_JIS"
+
+#: aegisub/ass_style.cpp:578
+msgid "Hangeul"
+msgstr "한글"
+
+#: aegisub/ass_style.cpp:579
+msgid "Johab"
+msgstr "한글"
+
+#: aegisub/ass_style.cpp:580
+msgid "GB2312"
+msgstr "중국"
+
+#: aegisub/ass_style.cpp:581
+msgid "Chinese BIG5"
+msgstr "중국"
+
+#: aegisub/ass_style.cpp:582
+msgid "Greek"
+msgstr "그리스어"
+
+#: aegisub/ass_style.cpp:583
+msgid "Turkish"
+msgstr "터키"
+
+#: aegisub/ass_style.cpp:584
+msgid "Vietnamese"
+msgstr "베트남"
+
+#: aegisub/ass_style.cpp:585
+msgid "Hebrew"
+msgstr "히브리"
+
+#: aegisub/ass_style.cpp:586
+msgid "Arabic"
+msgstr "아라비아"
+
+#: aegisub/ass_style.cpp:587
+msgid "Baltic"
+msgstr "발트해"
+
+#: aegisub/ass_style.cpp:588
+msgid "Russian"
+msgstr "러시아"
+
+#: aegisub/ass_style.cpp:589
+msgid "Thai"
+msgstr "타이"
+
+#: aegisub/ass_style.cpp:590
+msgid "East European"
+msgstr "동양유럽"
+
+#: aegisub/ass_style.cpp:591
+msgid "OEM"
+msgstr "주문자 상표부착(OEM)"
+
+#: aegisub/audio_box.cpp:69
+msgid "Seek bar"
+msgstr "탐색"
+
+#: aegisub/audio_box.cpp:87
+msgid "Horizontal zoom"
+msgstr "수평 크기"
+
+#: aegisub/audio_box.cpp:90
+msgid "Vertical zoom"
+msgstr "수직 크기"
+
+#: aegisub/audio_box.cpp:93
+msgid "Audio Volume"
+msgstr "오디오 볼륨"
+
+#: aegisub/audio_box.cpp:100
+msgid "Link vertical zoom and volume sliders"
+msgstr "세로 쥼 이랑 볼륨 슬라이더 연결하기"
+
+#: aegisub/audio_box.cpp:127
+#, fuzzy
+msgid "Previous line or syllable (%KEY%/%KEY%)"
+msgstr "이전 줄/음절 ("
+
+#: aegisub/audio_box.cpp:130
+#, fuzzy
+msgid "Next line/syllable (%KEY%/%KEY%)"
+msgstr "다음 줄/음절 ("
+
+#: aegisub/audio_box.cpp:133
+#, fuzzy
+msgid "Play selection (%KEY%/%KEY%)"
+msgstr "선택 재생 ("
+
+#: aegisub/audio_box.cpp:136
+#, fuzzy
+msgid "Play current line (%KEY%)"
+msgstr "현재줄 재생 ("
+
+#: aegisub/audio_box.cpp:139
+msgid "Stop (%KEY%)"
+msgstr ""
+
+#: aegisub/audio_box.cpp:143
+#, fuzzy
+msgid "Play 500 ms before selection (%KEY%)"
+msgstr "선택 500 ms 전 재생 ("
+
+#: aegisub/audio_box.cpp:146
+#, fuzzy
+msgid "Play 500 ms after selection (%KEY%)"
+msgstr "선택 500 ms 후에 재생 ("
+
+#: aegisub/audio_box.cpp:149
+#, fuzzy
+msgid "Play first 500ms of selection (%KEY%)"
+msgstr "시작에서 500 ms 까지 재생  ("
+
+#: aegisub/audio_box.cpp:152
+#, fuzzy
+msgid "Play last 500ms of selection (%KEY%)"
+msgstr "마지막 500 ms  재생 ("
+
+#: aegisub/audio_box.cpp:155
+#, fuzzy
+msgid "Play from selection start to end of file (%KEY%)"
+msgstr "선택부터 끝가지 재생"
+
+#: aegisub/audio_box.cpp:159
+#, fuzzy
+msgid "Add lead in (%KEY%)"
+msgstr "르드 인 추가 ("
+
+#: aegisub/audio_box.cpp:162
+#, fuzzy
+msgid "Add lead out (%KEY%)"
+msgstr "르드 아웃 추가 ("
+
+#: aegisub/audio_box.cpp:166
+#, fuzzy
+msgid "Commit changes (%KEY%/%KEY%)"
+msgstr "적용 ("
+
+#: aegisub/audio_box.cpp:169
+msgid "Go to selection"
+msgstr "선택가기"
+
+#: aegisub/audio_box.cpp:173
+msgid "Automatically commit all changes"
+msgstr "자동 적용 "
+
+#: aegisub/audio_box.cpp:177
+msgid "Auto goes to next line on commit"
+msgstr ""
+
+#: aegisub/audio_box.cpp:181
+msgid "Auto scrolls audio display to selected line"
+msgstr "오디오 디스플래이 선텍한데로 자동 스크롤 "
+
+#: aegisub/audio_box.cpp:185
+msgid "Spectrum analyzer mode"
+msgstr "스팩트람 아나라이즈 모드"
+
+#: aegisub/audio_box.cpp:189
+msgid "Enable Medusa-Style Timing Shortcuts"
+msgstr ""
+
+#: aegisub/audio_box.cpp:200
+msgid "Karaoke"
+msgstr "가라오케"
+
+#: aegisub/audio_box.cpp:201
+msgid "Toggle karaoke mode"
+msgstr "가라오케 모드"
+
+#: aegisub/audio_box.cpp:551
+msgid "Cancel Split"
+msgstr "자르기 취소"
+
+#: aegisub/audio_box.cpp:552
+msgid "Discard all splits and leave split-mode"
+msgstr ""
+
+#: aegisub/audio_box.cpp:553
+#, fuzzy
+msgid "Accept Split"
+msgstr "자르기 취소"
+
+#: aegisub/audio_box.cpp:554
+msgid "Commit splits and leave split-mode"
+msgstr ""
+
+#: aegisub/audio_box.cpp:556
+msgid "Join"
+msgstr "붙이기"
+
+#: aegisub/audio_box.cpp:557
+msgid "Join selected syllables"
+msgstr "선택한 음절  붙이기"
+
+#: aegisub/audio_box.cpp:558
+msgid "Split"
+msgstr "스프릿"
+
+#: aegisub/audio_box.cpp:559
+#, fuzzy
+msgid "Enter split-mode"
+msgstr "쪼개기 모드 토글 "
+
+#: aegisub/audio_display.cpp:2132 aegisub/audio_display.cpp:2187
+msgid ""
+"Do you want to commit your changes? If you choose No, they will be discarded."
+msgstr "저장을 안하실라면 'No\"를 선텍하십시요."
+
+#: aegisub/audio_display.cpp:2132 aegisub/audio_display.cpp:2187
+msgid "Commit?"
+msgstr "저장할가요?"
+
+#: aegisub/audio_karaoke.cpp:788
+msgid "Karaoke tag"
+msgstr "가라오케 테그"
+
+#: aegisub/audio_karaoke.cpp:792
+msgid "Change karaoke tag to \\k"
+msgstr "가라오케 테그 바꾸기 \\k"
+
+#: aegisub/audio_karaoke.cpp:793
+msgid "Change karaoke tag to \\kf"
+msgstr "가라오께 테그 바꾸기 \\kf"
+
+#: aegisub/audio_karaoke.cpp:794
+msgid "Change karaoke tag to \\ko"
+msgstr "가라오께 테그 바꾸기 \\ko"
+
+#: aegisub/audio_provider_ram.cpp:85
+msgid "Load audio"
+msgstr "오디오 열기"
+
+#: aegisub/audio_provider_ram.cpp:85
+msgid "Reading into RAM"
+msgstr "메모리로 읽기"
+
+#: aegisub/auto4_base.cpp:390 aegisub/dialog_kanji_timer.cpp:105
+#, fuzzy
+msgid "Close"
+msgstr "닫기"
+
+#: aegisub/auto4_base.cpp:392
+#, fuzzy
+msgid "Script completed"
+msgstr "스크립 정보"
+
+#: aegisub/auto4_base.cpp:740
+#, c-format
+msgid "An Automation script failed to load. File name: '%s', error reported:"
+msgstr ""
+
+#: aegisub/auto4_base.cpp:753
+#, c-format
+msgid "The file was not recognised as an Automation script: %s"
+msgstr ""
+
+#: aegisub/auto4_base.cpp:774
+msgid "File was not recognized as a script"
+msgstr ""
+
+#: aegisub/base_grid.cpp:410
+msgid "#"
+msgstr "#"
+
+#: aegisub/base_grid.cpp:411
+msgid "L"
+msgstr "L"
+
+#: aegisub/base_grid.cpp:412 aegisub/dialog_kanji_timer.cpp:98
+#: aegisub/subs_grid.cpp:117
+msgid "Start"
+msgstr "시작"
+
+#: aegisub/base_grid.cpp:413 aegisub/subs_grid.cpp:118
+msgid "End"
+msgstr "끝"
+
+#: aegisub/base_grid.cpp:414 aegisub/dialog_options.cpp:215
+#: aegisub/dialog_options.cpp:287 aegisub/dialog_options.cpp:472
+#: aegisub/dialog_search_replace.cpp:93 aegisub/dialog_selection.cpp:96
+#: aegisub/subs_grid.cpp:119
+msgid "Style"
+msgstr "스타일"
+
+#: aegisub/base_grid.cpp:415 aegisub/dialog_search_replace.cpp:94
+#: aegisub/dialog_selection.cpp:97 aegisub/subs_edit_box.cpp:88
+#: aegisub/subs_grid.cpp:120
+msgid "Actor"
+msgstr "엑터"
+
+#: aegisub/base_grid.cpp:416 aegisub/subs_edit_box.cpp:91
+#: aegisub/subs_grid.cpp:121
+msgid "Effect"
+msgstr "영향"
+
+#: aegisub/base_grid.cpp:417 aegisub/dialog_style_editor.cpp:241
+#: aegisub/subs_grid.cpp:122
+msgid "Left"
+msgstr "왼쪽"
+
+#: aegisub/base_grid.cpp:418 aegisub/dialog_style_editor.cpp:241
+#: aegisub/subs_grid.cpp:123
+msgid "Right"
+msgstr "오른쪽"
+
+#: aegisub/base_grid.cpp:419 aegisub/dialog_style_editor.cpp:241
+#: aegisub/subs_grid.cpp:124
+msgid "Vert"
+msgstr "Vert"
+
+#: aegisub/base_grid.cpp:420 aegisub/dialog_kanji_timer.cpp:72
+#: aegisub/dialog_search_replace.cpp:92 aegisub/dialog_selection.cpp:95
+msgid "Text"
+msgstr "텍스트"
+
+#: aegisub/browse_button.cpp:50
+#, fuzzy
+msgid "Browse..."
+msgstr "찾기 (&B)"
+
+#: aegisub/browse_button.cpp:72
+msgid "Please choose the folder:"
+msgstr ""
+
+#: aegisub/dialog_about.cpp:48 aegisub/frame_main.cpp:444
+msgid "About Aegisub"
+msgstr "대하여"
+
+#: aegisub/dialog_about.cpp:60
+msgid "This build of Aegisub uses the following C/C++ libraries:\n"
+msgstr ""
+
+#: aegisub/dialog_about.cpp:74
+msgid "Translated into LANGUAGE by PERSON\n"
+msgstr "Translated into 조선말 by oblisk\n"
+
+#: aegisub/dialog_about.cpp:76
+msgid " by ArchMage ZeratuL.\n"
+msgstr "ArchMage ZeratuL 씀.\n"
+
+#: aegisub/dialog_about.cpp:80
+#, fuzzy
+msgid "Programmers: "
+msgstr "프래임:"
+
+#: aegisub/dialog_about.cpp:82
+msgid "Manual by: "
+msgstr ""
+
+#: aegisub/dialog_about.cpp:84
+#, fuzzy
+msgid "Forum, wiki and bug tracker hosting by: "
+msgstr "BBC, 버그 트레커 호스팅 Bot1 함.\n"
+
+#: aegisub/dialog_about.cpp:86
+msgid "SVN hosting by: "
+msgstr ""
+
+#: aegisub/dialog_about.cpp:90
+msgid ""
+"\n"
+"See the help file for full credits.\n"
+msgstr ""
+"\n"
+"크레디트를 보실라면 도움 파일을 보십시요.\n"
+
+#: aegisub/dialog_about.cpp:91
+#, c-format
+msgid "Built by %s on %s."
+msgstr "%s 위 %s 가 만듬."
+
+#: aegisub/dialog_associations.cpp:46
+msgid "Associate extensions"
+msgstr "파일 종유 추가"
+
+#: aegisub/dialog_associations.cpp:63
+msgid ""
+"Please select the formats you want to\n"
+"associate with Aegisub:"
+msgstr "에이지썹 하고 같이쓸  파일 종유을 선텍하시요."
+
+#: aegisub/dialog_associations.cpp:64
+msgid "Associations"
+msgstr "같이쓸  파일 종유"
+
+#: aegisub/dialog_attachments.cpp:53
+msgid "Attachment List"
+msgstr "리스트 붙이기"
+
+#: aegisub/dialog_attachments.cpp:63
+msgid "E&xtract"
+msgstr "끌어내다"
+
+#: aegisub/dialog_attachments.cpp:64
+msgid "&Delete"
+msgstr "지우기"
+
+#: aegisub/dialog_attachments.cpp:70
+msgid "Attach &Font"
+msgstr "글꼴 붙이기"
+
+#: aegisub/dialog_attachments.cpp:71
+msgid "Attach &Graphics"
+msgstr "그래픽 붙이기 "
+
+#: aegisub/dialog_attachments.cpp:74 aegisub/dialog_automation.cpp:61
+msgid "&Close"
+msgstr "닫기"
+
+#: aegisub/dialog_attachments.cpp:93
+msgid "Attachment name"
+msgstr "이름 붙이기 "
+
+#: aegisub/dialog_attachments.cpp:94
+msgid "Size"
+msgstr "크기"
+
+#: aegisub/dialog_attachments.cpp:95
+msgid "Group"
+msgstr "구룹"
+
+#: aegisub/dialog_attachments.cpp:139 aegisub/dialog_attachments.cpp:172
+msgid "Choose file to be attached"
+msgstr "붙일 파일 선택"
+
+#: aegisub/dialog_attachments.cpp:210
+msgid "Select the path to save the files to:"
+msgstr "무순 폴더 에다 파일을 저장할까요? "
+
+#: aegisub/dialog_attachments.cpp:214
+msgid "Select the path to save the file to:"
+msgstr "무순 폴더 에다 파일을 저장할까요? "
+
+#: aegisub/dialog_automation.cpp:46
+msgid "Automation Manager"
+msgstr "자동일 메네저"
+
+#: aegisub/dialog_automation.cpp:56
+#, fuzzy
+msgid "&Add"
+msgstr "추가 (&A)"
+
+#: aegisub/dialog_automation.cpp:57
+msgid "&Remove"
+msgstr "지우기 (&R)"
+
+#: aegisub/dialog_automation.cpp:58
+#, fuzzy
+msgid "Re&load"
+msgstr "재장전"
+
+#: aegisub/dialog_automation.cpp:59
+msgid "Show &Info"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:60
+msgid "Re&scan Autoload Dir"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:65
+#, fuzzy
+msgid "Name"
+msgstr "프래임"
+
+#: aegisub/dialog_automation.cpp:66
+#, fuzzy
+msgid "Filename"
+msgstr "베트남"
+
+#: aegisub/dialog_automation.cpp:67
+msgid "Description"
+msgstr "설명"
+
+#: aegisub/dialog_automation.cpp:195
+#, fuzzy
+msgid "Add Automation script"
+msgstr "자동일 스크립 열기"
+
+#: aegisub/dialog_automation.cpp:266
+#, c-format
+msgid ""
+"Total scripts loaded: %d\n"
+"Global scripts loaded: %d\n"
+"Local scripts loaded: %d\n"
+"\n"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:271
+msgid "Scripting engines installed:\n"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:278
+#, c-format
+msgid ""
+"\n"
+"Script info:\n"
+"Name: %s\n"
+"Description: %s\n"
+"Author: %s\n"
+"Version: %s\n"
+"Full path: %s\n"
+"State: %s"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:284
+msgid "Correctly loaded"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:284
+#, fuzzy
+msgid "Failed to load"
+msgstr "복사 실패"
+
+#: aegisub/dialog_automation.cpp:287
+#, fuzzy
+msgid "Automation Script Info"
+msgstr "자동일 스크립 열기"
+
+#: aegisub/dialog_colorpicker.cpp:377
+#, fuzzy
+msgid "Select Colour"
+msgstr "컬러 선택"
+
+#: aegisub/dialog_colorpicker.cpp:450
+#, fuzzy
+msgid "Colour spectrum"
+msgstr "컬러 스팩트람 "
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "RGB/R"
+msgstr "RGB/R"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "RGB/G"
+msgstr "RGB/G"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "RGB/B"
+msgstr "RGB/B"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "HSL/L"
+msgstr "HSL/L"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "HSV/H"
+msgstr "HSV/H"
+
+#: aegisub/dialog_colorpicker.cpp:463
+#, fuzzy
+msgid "RGB colour"
+msgstr "RGB 컬러"
+
+#: aegisub/dialog_colorpicker.cpp:468
+#, fuzzy
+msgid "HSL colour"
+msgstr "HSL 컬러"
+
+#: aegisub/dialog_colorpicker.cpp:473
+#, fuzzy
+msgid "HSV colour"
+msgstr "HSV 컬러"
+
+#: aegisub/dialog_colorpicker.cpp:493
+msgid "Spectrum mode:"
+msgstr "스팩트람 모드:"
+
+#: aegisub/dialog_colorpicker.cpp:505
+msgid "Red:"
+msgstr "빨강:"
+
+#: aegisub/dialog_colorpicker.cpp:507
+msgid "Green:"
+msgstr "녹색:"
+
+#: aegisub/dialog_colorpicker.cpp:509
+msgid "Blue:"
+msgstr "파란:"
+
+#: aegisub/dialog_colorpicker.cpp:522 aegisub/dialog_colorpicker.cpp:531
+msgid "Hue:"
+msgstr "색상:"
+
+#: aegisub/dialog_colorpicker.cpp:524 aegisub/dialog_colorpicker.cpp:533
+msgid "Sat.:"
+msgstr "채도:"
+
+#: aegisub/dialog_colorpicker.cpp:526
+msgid "Lum.:"
+msgstr "휘도:"
+
+#: aegisub/dialog_colorpicker.cpp:535
+msgid "Value:"
+msgstr "밸유"
+
+#: aegisub/dialog_detached_video.cpp:50
+#, fuzzy
+msgid "Detached Video"
+msgstr "세트 비디오 끝나기"
+
+#: aegisub/dialog_dummy_video.cpp:118
+#, fuzzy
+msgid "Dummy video options"
+msgstr "비디이 끝으로 가기"
+
+#: aegisub/dialog_dummy_video.cpp:126
+msgid "Checkerboard pattern"
+msgstr ""
+
+#: aegisub/dialog_dummy_video.cpp:134
+#, fuzzy
+msgid "Video resolution:"
+msgstr "해상도 다시보기"
+
+#: aegisub/dialog_dummy_video.cpp:142
+#, fuzzy
+msgid "Colour:"
+msgstr "칼러들"
+
+#: aegisub/dialog_dummy_video.cpp:146
+msgid "Frame rate (fps):"
+msgstr ""
+
+#: aegisub/dialog_dummy_video.cpp:148
+msgid "Duration (frames):"
+msgstr ""
+
+#: aegisub/dialog_dummy_video.cpp:239
+#, c-format
+msgid "Resulting duration: %d:%02d:%02d.%03d"
+msgstr ""
+
+#: aegisub/dialog_dummy_video.cpp:242
+msgid "Invalid fps or length value"
+msgstr ""
+
+#: aegisub/dialog_export.cpp:49
+msgid "Export"
+msgstr "밖으로 저장"
+
+#: aegisub/dialog_export.cpp:82
+msgid "Move up"
+msgstr "위로"
+
+#: aegisub/dialog_export.cpp:83
+msgid "Move down"
+msgstr "아래로"
+
+#: aegisub/dialog_export.cpp:84
+msgid "Select all"
+msgstr "다 선택"
+
+#: aegisub/dialog_export.cpp:85
+msgid "Select none"
+msgstr "선택 안함"
+
+#: aegisub/dialog_export.cpp:88
+msgid "Text encoding:"
+msgstr "글 엔코딩"
+
+#: aegisub/dialog_export.cpp:98
+msgid "Filters"
+msgstr "필터"
+
+#: aegisub/dialog_export.cpp:109 aegisub/dialog_export.cpp:113
+msgid "Export..."
+msgstr "밖으로 저장..."
+
+#: aegisub/dialog_export.cpp:185
+msgid "Export subtitles file"
+msgstr "자막 밖으로 저장"
+
+#: aegisub/dialog_fonts_collector.cpp:69 aegisub/frame_main.cpp:236
+msgid "Fonts Collector"
+msgstr "글꼴 모우기"
+
+#: aegisub/dialog_fonts_collector.cpp:84
+msgid "&Browse..."
+msgstr "찾기 (&B)"
+
+#: aegisub/dialog_fonts_collector.cpp:86
+#: aegisub/dialog_fonts_collector.cpp:289
+msgid ""
+"Choose the folder where the fonts will be collected to.\n"
+"It will be created if it doesn't exist."
+msgstr ""
+"글꼴들이 무순 폴더로 저장할까요?\n"
+"폴더가 없으면 만들어짐니다."
+
+#: aegisub/dialog_fonts_collector.cpp:89
+msgid "Destination"
+msgstr "목적지"
+
+#: aegisub/dialog_fonts_collector.cpp:110 aegisub/dialog_version_check.cpp:67
+msgid "Log"
+msgstr "기록"
+
+#: aegisub/dialog_fonts_collector.cpp:114
+msgid "&Start!"
+msgstr "시작!"
+
+#: aegisub/dialog_fonts_collector.cpp:175
+#, fuzzy
+msgid "Invalid destination."
+msgstr "무효 가로세로 비"
+
+#: aegisub/dialog_fonts_collector.cpp:175
+#: aegisub/dialog_fonts_collector.cpp:184
+#: aegisub/dialog_fonts_collector.cpp:193 aegisub/dialog_kanji_timer.cpp:197
+#: aegisub/dialog_kanji_timer.cpp:199 aegisub/dialog_kanji_timer.cpp:232
+#: aegisub/dialog_kanji_timer.cpp:316 aegisub/dialog_kanji_timer.cpp:348
+#: aegisub/dialog_kanji_timer.cpp:350 aegisub/dialog_options.cpp:240
+#: aegisub/subs_grid.cpp:672 aegisub/subs_grid.cpp:676
+#: aegisub/subs_grid.cpp:722
+msgid "Error"
+msgstr "에러"
+
+#: aegisub/dialog_fonts_collector.cpp:184
+msgid "Could not create destination folder."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:193
+msgid "Invalid path for .zip file."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:239
+msgid "Select archive file name"
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:247
+msgid "Select folder to save fonts on"
+msgstr "무순 폴더 에다 글꼴을 저장할까요? "
+
+#: aegisub/dialog_fonts_collector.cpp:303
+msgid ""
+"Enter the name of the destination zip file to collect the fonts to.\n"
+"If a folder is entered, a default name will be used."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:363
+msgid "Invalid destination directory."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:376
+msgid ""
+"Collecting font data from system. This might take a while, depending on the "
+"number of fonts installed. Results are cached and subsequent executions will "
+"be faster... "
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:378
+msgid ""
+"done.\n"
+"\n"
+"Scanning file for fonts..."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:403
+msgid ""
+"Done.\n"
+"\n"
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:405
+#, fuzzy
+msgid "Checking fonts...\n"
+msgstr "글꼴를 찾고있슴니다...\n"
+
+#: aegisub/dialog_fonts_collector.cpp:406
+#, fuzzy
+msgid "Copying fonts to folder...\n"
+msgstr "글꼴를 찾고있슴니다...\n"
+
+#: aegisub/dialog_fonts_collector.cpp:407
+#, fuzzy
+msgid "Copying fonts to archive...\n"
+msgstr ""
+"\n"
+"래지스터리에서 글꼴을 읽음...\n"
+
+#: aegisub/dialog_fonts_collector.cpp:408
+#, fuzzy
+msgid "Attaching fonts to file...\n"
+msgstr "글꼴를 찾고있슴니다...\n"
+
+#: aegisub/dialog_fonts_collector.cpp:424
+#, c-format
+msgid ""
+"\n"
+"Finished writing to %s.\n"
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:429
+msgid "Done. All fonts found."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:431
+msgid "Done. All fonts copied."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:436
+#, fuzzy
+msgid "font attachment"
+msgstr "어태치먼트"
+
+#: aegisub/dialog_fonts_collector.cpp:443
+msgid "Done. Some fonts could not be found."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:444
+msgid "Done. Some fonts could not be copied."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:464
+#, fuzzy
+msgid "Not found.\n"
+msgstr "결과없슴."
+
+#: aegisub/dialog_fonts_collector.cpp:470
+msgid "Found.\n"
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:485
+#, fuzzy, c-format
+msgid "* Copied %s.\n"
+msgstr "\" 복사 왕선.\n"
+
+#: aegisub/dialog_fonts_collector.cpp:489
+#, fuzzy, c-format
+msgid "* %s already exists on destination.\n"
+msgstr "\" 파일이 있슴.\n"
+
+#: aegisub/dialog_fonts_collector.cpp:492
+#, fuzzy, c-format
+msgid "* Failed to copy %s.\n"
+msgstr "복사 실패"
+
+#: aegisub/dialog_fonts_collector.cpp:561
+msgid "\" found on style \""
+msgstr "\"찾은 스타일 \""
+
+#: aegisub/dialog_fonts_collector.cpp:562
+msgid "\" found on dialogue line "
+msgstr "\" 자막 줄에 찾아슴"
+
+#: aegisub/dialog_jumpto.cpp:56
+msgid "Jump to"
+msgstr "가기"
+
+#: aegisub/dialog_jumpto.cpp:67
+msgid "Frame: "
+msgstr "프래임:"
+
+#: aegisub/dialog_jumpto.cpp:68 aegisub/dialog_shift_times.cpp:71
+msgid "Time: "
+msgstr "시간:"
+
+#: aegisub/dialog_kanji_timer.cpp:61
+msgid "Kanji timing"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:73
+msgid "Shortcut Keys"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:74
+#, fuzzy
+msgid "Groups"
+msgstr "구룹"
+
+#: aegisub/dialog_kanji_timer.cpp:75
+#, fuzzy
+msgid "Styles"
+msgstr "스타일"
+
+#: aegisub/dialog_kanji_timer.cpp:76
+#, fuzzy
+msgid "Commands"
+msgstr "코멘트"
+
+#: aegisub/dialog_kanji_timer.cpp:86
+msgid ""
+"When the destination textbox has focus, use the following keys:\n"
+"\n"
+"Right Arrow: Increase dest. selection length\n"
+"Left Arrow: Decrease dest. selection length\n"
+"Up Arrow: Increase source selection length\n"
+"Down Arrow: Decrease source selection length\n"
+"Enter: Link, accept line when done\n"
+"Backspace: Unlink last"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:89
+#, fuzzy
+msgid "Source Style"
+msgstr "스타일 시작"
+
+#: aegisub/dialog_kanji_timer.cpp:91
+#, fuzzy
+msgid "Dest Style"
+msgstr "스타일 시작"
+
+#: aegisub/dialog_kanji_timer.cpp:99
+msgid "Link"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:100
+#, fuzzy
+msgid "Unlink"
+msgstr "밑줄"
+
+#: aegisub/dialog_kanji_timer.cpp:101
+msgid "Skip Source Line"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:102
+#, fuzzy
+msgid "Skip Dest Line"
+msgstr "다음 오디오 줄"
+
+#: aegisub/dialog_kanji_timer.cpp:103
+msgid "Go Back a Line"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:104
+#, fuzzy
+msgid "Accept Line"
+msgstr "확인"
+
+#: aegisub/dialog_kanji_timer.cpp:108
+msgid "Attempt to interpolate kanji."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:112
+msgid "Source: "
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:113
+msgid "Dest: "
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:187
+msgid "kanji timing"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:197
+msgid "Select source and destination styles first."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:199
+msgid "The source and destination styles must be different."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:232
+msgid "Select source text first."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:301
+msgid ""
+"The source line contains text before the first karaoke block.\n"
+"Do you want to carry it over to the destination?\n"
+"It will be ignored otherwise."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:302
+#, fuzzy
+msgid "Question"
+msgstr "해상도"
+
+#: aegisub/dialog_kanji_timer.cpp:316
+msgid "Possible error parsing source line"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:348
+msgid "Group some text first."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:350
+msgid "Group all of the source text."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:369
+#, c-format
+msgid "%s{\\k%i}"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:378
+#, c-format
+msgid "%s{\\k%i}%s"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:104
+#, fuzzy
+msgid "Startup"
+msgstr "시작"
+
+#: aegisub/dialog_options.cpp:107
+msgid "Show Splash Screen"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:108
+msgid "Show Tip of the Day"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:109
+msgid "Auto Check for Updates"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:110
+msgid "Save config.dat locally"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:113
+msgid "Limits for levels and recent files"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:116
+msgid "Maximum undo levels"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:116
+#, fuzzy
+msgid "Maximum recent timecode files"
+msgstr "타임코드 열기"
+
+#: aegisub/dialog_options.cpp:116
+msgid "Maximum recent keyframe files"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:116
+#, fuzzy
+msgid "Maximum recent subtitle files"
+msgstr "자막 밖으로 저장"
+
+#: aegisub/dialog_options.cpp:116
+#, fuzzy
+msgid "Maximum recent video files"
+msgstr "비디오 파일 열기"
+
+#: aegisub/dialog_options.cpp:116
+#, fuzzy
+msgid "Maximum recent audio files"
+msgstr "오디오 파일 열기"
+
+#: aegisub/dialog_options.cpp:116
+msgid "Maximum recent find strings"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:116
+msgid "Maximum recent replace strings"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:136
+msgid "Auto-save"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:138
+msgid "File paths"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:140
+#, fuzzy
+msgid "Miscelanea"
+msgstr "기타"
+
+#: aegisub/dialog_options.cpp:144
+msgid "Auto-backup"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:150
+msgid "Auto-save every"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:152
+msgid "seconds."
+msgstr ""
+
+#: aegisub/dialog_options.cpp:155
+msgid "Auto-save path:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:163
+msgid "Auto-backup path:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:171
+msgid "Crash recovery path:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:181
+msgid "Auto-load linked files:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+msgid "Never"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+msgid "Always"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+msgid "Ask"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:186
+msgid "Text import actor separator:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:190
+msgid "Text import comment starter:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:212 aegisub/dialog_options.cpp:286
+#: aegisub/dialog_options.cpp:355 aegisub/dialog_options.cpp:437
+#: aegisub/dialog_options.cpp:471 aegisub/dialog_options.cpp:554
+#: aegisub/dialog_properties.cpp:112 aegisub/dialog_timing_processor.cpp:70
+#: aegisub/frame_main.cpp:244 aegisub/hotkeys.cpp:320
+#, fuzzy
+msgid "Options"
+msgstr "엑션"
+
+#: aegisub/dialog_options.cpp:220
+msgid "Enable call tips"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:220
+msgid "Enable syntax highlighting"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:220
+msgid "Link commiting of times"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:220
+msgid "Overwrite-Insertion in time boxes"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:222
+msgid "Path to dictionary files:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:239 aegisub/dialog_options.cpp:562
+#: aegisub/dialog_properties.cpp:126
+msgid "Normal"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:239
+#, fuzzy
+msgid "Brackets"
+msgstr "트렉 포인트"
+
+#: aegisub/dialog_options.cpp:239
+msgid "Slashes and Parentheses"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:239
+msgid "Tags"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:239
+#, fuzzy
+msgid "Parameters"
+msgstr "정보"
+
+#: aegisub/dialog_options.cpp:240
+msgid "Error Background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:240
+#, fuzzy
+msgid "Line Break"
+msgstr "줄 길이"
+
+#: aegisub/dialog_options.cpp:240
+msgid "Modified Background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:247
+msgid "Syntax highlighter - "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:258 aegisub/dialog_options.cpp:322
+#, fuzzy
+msgid "Font: "
+msgstr "글꼴"
+
+#: aegisub/dialog_options.cpp:293
+msgid "Allow grid to take focus"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:293
+#, fuzzy
+msgid "Highlight subtitles that are currently visible in video"
+msgstr "보이는 줄 다 선텍하기 "
+
+#: aegisub/dialog_options.cpp:303
+#, fuzzy
+msgid "Standard foreground"
+msgstr "스탄더드 셋팅"
+
+#: aegisub/dialog_options.cpp:303
+msgid "Standard background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:303
+#, fuzzy
+msgid "Selection foreground"
+msgstr "선택"
+
+#: aegisub/dialog_options.cpp:304 aegisub/dialog_options.cpp:489
+#, fuzzy
+msgid "Selection background"
+msgstr "선택"
+
+#: aegisub/dialog_options.cpp:304
+msgid "Comment background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:304
+msgid "Selected comment background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:305
+msgid "Collision foreground"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:305
+msgid "Line in frame background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:305
+msgid "Header"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:306
+msgid "Left Column"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:306
+msgid "Active Line Border"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:306
+#, fuzzy
+msgid "Lines"
+msgstr "시간들"
+
+#: aegisub/dialog_options.cpp:308
+msgid "selection background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:335
+#, fuzzy
+msgid "Replace override tags with: "
+msgstr "봐꿈"
+
+#: aegisub/dialog_options.cpp:356 aegisub/dialog_options.cpp:523
+msgid "Advanced - EXPERT USERS ONLY"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:362
+msgid "Match video resolution on open: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:367
+#, fuzzy
+msgid "Default Zoom: "
+msgstr "디폴트"
+
+#: aegisub/dialog_options.cpp:378
+msgid "Fast jump step in frames: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:382
+msgid "Screenshot save path: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:388
+msgid "Show keyframes in slider"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:394
+msgid "Video provider: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:399
+#, fuzzy
+msgid "Subtitles provider: "
+msgstr "자막 파일 저장"
+
+#: aegisub/dialog_options.cpp:404
+msgid "Avisynth memory limit: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:411
+msgid "Use pixel shaders if available"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:414
+msgid "Allow pre-2.56a Avisynth"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:418
+msgid "Avisynth renders its own subs"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:424 aegisub/dialog_options.cpp:542
+msgid ""
+"WARNING: Changing these settings might result in bugs,\n"
+"crashes, glitches and/or movax.\n"
+"Don't touch these unless you know what you're doing."
+msgstr ""
+
+#: aegisub/dialog_options.cpp:442
+#, fuzzy
+msgid "Grab times from line upon selection"
+msgstr "선택에서 빼오기"
+
+#: aegisub/dialog_options.cpp:443
+msgid "Default mouse wheel to zoom"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:444
+msgid "Lock scroll on Cursor"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:445
+#, fuzzy
+msgid "Snap to keyframes"
+msgstr "장면으로 스넵"
+
+#: aegisub/dialog_options.cpp:446
+#, fuzzy
+msgid "Snap to adjascent lines"
+msgstr "비디오 신으로 스냅"
+
+#: aegisub/dialog_options.cpp:447
+msgid "Auto-focus on mouse over"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:451
+#, fuzzy
+msgid "Don't show"
+msgstr "메치 못함"
+
+#: aegisub/dialog_options.cpp:451
+msgid "Show previous"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:451
+#, fuzzy
+msgid "Show all"
+msgstr "그림자 컬러"
+
+#: aegisub/dialog_options.cpp:452
+msgid "Default timing length"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:453
+msgid "Default lead-in length"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:454
+msgid "Default lead-out length"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:455
+#, fuzzy
+msgid "Show inactive lines"
+msgstr "그림자 거리 (화소)"
+
+#: aegisub/dialog_options.cpp:477
+msgid "Draw secondary lines"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:477
+msgid "Draw selection background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:477
+msgid "Draw timeline"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:478
+msgid "Draw cursor time"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:478
+#, fuzzy
+msgid "Draw keyframes"
+msgstr "프래임들"
+
+#: aegisub/dialog_options.cpp:489
+#, fuzzy
+msgid "Play cursor"
+msgstr "오디오 재생"
+
+#: aegisub/dialog_options.cpp:489
+#, fuzzy
+msgid "Background"
+msgstr "뒤로"
+
+#: aegisub/dialog_options.cpp:490
+msgid "Selection background - modified"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:490
+#, fuzzy
+msgid "Seconds boundary"
+msgstr "세컨더리"
+
+#: aegisub/dialog_options.cpp:490
+msgid "Waveform"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:491
+#, fuzzy
+msgid "Waveform - selection"
+msgstr "선택가기"
+
+#: aegisub/dialog_options.cpp:491
+msgid "Waveform - modified"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:491
+msgid "Waveform - inactive"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:492
+msgid "Boundary - start"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:492
+msgid "Boundary - end"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:492
+msgid "Boundary - inactive"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:493
+msgid "Syllable text"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:493
+#, fuzzy
+msgid "Syllable boundary"
+msgstr "세컨더리"
+
+#: aegisub/dialog_options.cpp:527
+msgid "None (NOT RECOMMENDED)"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:527
+msgid "RAM"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:527
+msgid "Hard Disk"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:529
+#, fuzzy
+msgid "Audio provider"
+msgstr "전 오디오 줄"
+
+#: aegisub/dialog_options.cpp:530
+#, fuzzy
+msgid "Audio player"
+msgstr "오디오 듯기"
+
+#: aegisub/dialog_options.cpp:531
+msgid "Cache type"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:532
+msgid "Avisynth down-mixer"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:533
+msgid "HD cache path"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:534
+#, fuzzy
+msgid "HD cache name"
+msgstr "이름 붙이기 "
+
+#: aegisub/dialog_options.cpp:535
+#, fuzzy
+msgid "Spectrum cutoff"
+msgstr "스팩트람 모드:"
+
+#: aegisub/dialog_options.cpp:536
+msgid "0 - Regular quality"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:536
+msgid "1 - Better quality"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:536
+msgid "2 - High quality"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:536
+msgid "3 - Insane quality"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:537
+#, fuzzy
+msgid "Spectrum quality"
+msgstr "스팩트람 아나라이즈 모드"
+
+#: aegisub/dialog_options.cpp:538
+msgid "Spectrum cache memory max (MB)"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:558
+msgid "Base path"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:559
+msgid "Include path"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:560
+msgid "Auto-load path"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:561
+msgid "0: Fatal"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:561
+#, fuzzy
+msgid "1: Error"
+msgstr "에러"
+
+#: aegisub/dialog_options.cpp:561
+#, fuzzy
+msgid "2: Warning"
+msgstr "경고"
+
+#: aegisub/dialog_options.cpp:561
+msgid "3: Hint"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:561
+msgid "4: Debug"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:561
+msgid "5: Trace"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:562
+msgid "Below Normal (recommended)"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:562
+#, fuzzy
+msgid "Lowest"
+msgstr "왼쪽"
+
+#: aegisub/dialog_options.cpp:563
+#, fuzzy
+msgid "No scripts"
+msgstr "스크립"
+
+#: aegisub/dialog_options.cpp:563
+msgid "Subtitle-local scripts"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:563
+#, fuzzy
+msgid "Global autoload scripts"
+msgstr "자동일 스크립 열기"
+
+#: aegisub/dialog_options.cpp:563
+#, fuzzy
+msgid "All scripts"
+msgstr "못 돼는 스크립"
+
+#: aegisub/dialog_options.cpp:564
+msgid "Trace level"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:565
+msgid "Thread priority"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:566
+msgid "Autoreload on Export"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:584
+#, fuzzy
+msgid ""
+"List of all hotkeys (shortcuts) available in Aegisub.\n"
+"Double click on any item to reassign it."
+msgstr "에이지썹 핫키들 보기. 키를 편집하실려면 더브클릭하세요."
+
+#: aegisub/dialog_options.cpp:588
+msgid "Function"
+msgstr "기능"
+
+#: aegisub/dialog_options.cpp:589
+msgid "Key"
+msgstr "키"
+
+#: aegisub/dialog_options.cpp:610
+msgid "General"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:611
+msgid "File save/load"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:612
+#, fuzzy
+msgid "Subtitles edit box"
+msgstr "자막 저장"
+
+#: aegisub/dialog_options.cpp:613
+#, fuzzy
+msgid "Subtitles grid"
+msgstr "자막 파일 저장"
+
+#: aegisub/dialog_options.cpp:614
+#, fuzzy
+msgid "Video"
+msgstr "비디오"
+
+#: aegisub/dialog_options.cpp:615
+#, fuzzy
+msgid "Audio"
+msgstr "오디오"
+
+#: aegisub/dialog_options.cpp:616
+msgid "Display"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:617
+#, fuzzy
+msgid "Advanced"
+msgstr "에드밴쓰  셋팅"
+
+#: aegisub/dialog_options.cpp:618 aegisub/frame_main.cpp:229
+msgid "Automation"
+msgstr "자동일"
+
+#: aegisub/dialog_options.cpp:619
+msgid "Hotkeys"
+msgstr "핫키"
+
+#: aegisub/dialog_options.cpp:626
+#, fuzzy
+msgid "Defaults"
+msgstr "디폴트"
+
+#: aegisub/dialog_options.cpp:715 aegisub/dialog_options.cpp:748
+#: aegisub/dialog_options.cpp:891
+msgid "Aegisub must restart for the changes to take effect. Restart now?"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:715 aegisub/dialog_options.cpp:748
+#: aegisub/dialog_options.cpp:891
+#, fuzzy
+msgid "Restart Aegisub"
+msgstr "대하여"
+
+#: aegisub/dialog_options.cpp:763
+msgid ""
+"Are you sure that you want to restore the defaults? All your settings will "
+"be overriden."
+msgstr ""
+
+#: aegisub/dialog_options.cpp:763
+msgid "Restore defaults?"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:1012
+msgid "Press Key"
+msgstr "키를 누름"
+
+#: aegisub/dialog_options.cpp:1018
+msgid "Press key to bind to \""
+msgstr "키 누름 \" 르로 바꾸기"
+
+#: aegisub/dialog_options.cpp:1018
+msgid "\" or esc to cancel."
+msgstr "취소를하시려면 \" 아니면 esc "
+
+#: aegisub/dialog_paste_over.cpp:47
+msgid "Select Fields to Paste Over"
+msgstr ""
+
+#: aegisub/dialog_paste_over.cpp:76
+#, fuzzy
+msgid "Please select the fields that you want to paste over:"
+msgstr "에이지썹 하고 같이쓸  파일 종유을 선텍하시요."
+
+#: aegisub/dialog_paste_over.cpp:77
+#, fuzzy
+msgid "Fields"
+msgstr "공간 안에"
+
+#: aegisub/dialog_properties.cpp:51
+msgid "Script Properties"
+msgstr "스크립 정보"
+
+#: aegisub/dialog_properties.cpp:60
+msgid "Title:"
+msgstr "제목:"
+
+#: aegisub/dialog_properties.cpp:62
+msgid "Original script:"
+msgstr "원래 스크립"
+
+#: aegisub/dialog_properties.cpp:64
+msgid "Translation:"
+msgstr "번역:"
+
+#: aegisub/dialog_properties.cpp:66
+msgid "Editing:"
+msgstr "편집함:"
+
+#: aegisub/dialog_properties.cpp:68
+msgid "Timing:"
+msgstr "타이밍:"
+
+#: aegisub/dialog_properties.cpp:70
+msgid "Synch point:"
+msgstr "씬크 포인트"
+
+#: aegisub/dialog_properties.cpp:72
+msgid "Updated by:"
+msgstr "격상함:"
+
+#: aegisub/dialog_properties.cpp:74
+msgid "Update details:"
+msgstr "격상 정보:"
+
+#: aegisub/dialog_properties.cpp:76
+msgid "Script"
+msgstr "스크립"
+
+#: aegisub/dialog_properties.cpp:98 aegisub/dialog_resample.cpp:63
+msgid "Resolution"
+msgstr "해상도"
+
+#: aegisub/dialog_properties.cpp:104 aegisub/dialog_resample.cpp:72
+msgid "From video"
+msgstr "비디오 에서"
+
+#: aegisub/dialog_properties.cpp:115
+msgid "0: Smart wrapping, top line is wider"
+msgstr "0: 스마트 포장, 윗줄이 더큼"
+
+#: aegisub/dialog_properties.cpp:116
+msgid "1: End-of-line word wrapping, only \\N breaks"
+msgstr "1: 끝단어 포장, \\n 만 잘라짐"
+
+#: aegisub/dialog_properties.cpp:117
+msgid "2: No word wrapping, both \\n and \\N break"
+msgstr "2: 단어 포장 없기, \\n이랑 \\N 잘라짐"
+
+#: aegisub/dialog_properties.cpp:118
+msgid "3: Smart wrapping, bottom line is wider"
+msgstr "3: 스마트 포장, 아레줄이 더큼"
+
+#: aegisub/dialog_properties.cpp:123
+#, fuzzy
+msgid "Warp Style: "
+msgstr "포장 스타일"
+
+#: aegisub/dialog_properties.cpp:127
+msgid "Reverse"
+msgstr ""
+
+#: aegisub/dialog_properties.cpp:132
+msgid "Collision: "
+msgstr ""
+
+#: aegisub/dialog_properties.cpp:134
+msgid "Scale Border and Shadow"
+msgstr ""
+
+#: aegisub/dialog_properties.cpp:135
+msgid ""
+"Scale border and shadow together with script/render resolution. If this is "
+"unchecked, relative border and shadow size will depend on renderer."
+msgstr ""
+
+#: aegisub/dialog_properties.cpp:197
+#, fuzzy
+msgid "property changes"
+msgstr "확인"
+
+#: aegisub/dialog_resample.cpp:53
+msgid "Resample resolution"
+msgstr "해상도 다시보기"
+
+#: aegisub/dialog_resample.cpp:71
+msgid "x"
+msgstr "x"
+
+#: aegisub/dialog_resample.cpp:80
+msgid "Change aspect ratio"
+msgstr "종횡비 바꾸기"
+
+#: aegisub/dialog_resample.cpp:88 aegisub/dialog_resample.cpp:92
+#: aegisub/frame_main.cpp:237
+msgid "Resample"
+msgstr "다시보기"
+
+#: aegisub/dialog_resample.cpp:240
+#, fuzzy
+msgid "resolution resampling"
+msgstr "해상 안맞음"
+
+#: aegisub/dialog_search_replace.cpp:66
+msgid "Find what:"
+msgstr "찾기:"
+
+#: aegisub/dialog_search_replace.cpp:71 aegisub/dialog_spellchecker.cpp:110
+msgid "Replace with:"
+msgstr "봐꿈"
+
+#: aegisub/dialog_search_replace.cpp:78 aegisub/dialog_selection.cpp:62
+msgid "Match case"
+msgstr "케이스 맞추기"
+
+#: aegisub/dialog_search_replace.cpp:79
+msgid "Use regular expressions"
+msgstr "보통 표정쓰기"
+
+#: aegisub/dialog_search_replace.cpp:80
+msgid "Update Video (slow)"
+msgstr "비디오 업데이트 (느림)"
+
+#: aegisub/dialog_search_replace.cpp:96 aegisub/dialog_shift_times.cpp:104
+msgid "All rows"
+msgstr "모든줄"
+
+#: aegisub/dialog_search_replace.cpp:97 aegisub/dialog_shift_times.cpp:104
+msgid "Selected rows"
+msgstr "줄들 선택하기"
+
+#: aegisub/dialog_search_replace.cpp:98 aegisub/dialog_selection.cpp:98
+msgid "In Field"
+msgstr "공간 안에"
+
+#: aegisub/dialog_search_replace.cpp:99
+msgid "Limit to"
+msgstr "제한"
+
+#: aegisub/dialog_search_replace.cpp:114
+msgid "Find next"
+msgstr "다음 검색"
+
+#: aegisub/dialog_search_replace.cpp:118
+msgid "Replace next"
+msgstr "다음 봐꿈"
+
+#: aegisub/dialog_search_replace.cpp:119
+msgid "Replace all"
+msgstr "전체 봐꿈"
+
+#: aegisub/dialog_search_replace.cpp:406 aegisub/dialog_search_replace.cpp:497
+#, fuzzy
+msgid "replace"
+msgstr "봐꾸기"
+
+#: aegisub/dialog_search_replace.cpp:500
+#, c-format
+msgid "%i matches were replaced."
+msgstr "%i 들 메치를 잘못두엇슴니다."
+
+#: aegisub/dialog_search_replace.cpp:505
+msgid "No matches found."
+msgstr "결과없슴."
+
+#: aegisub/dialog_search_replace.cpp:540 aegisub/dialog_spellchecker.cpp:116
+#: aegisub/hotkeys.cpp:328
+msgid "Replace"
+msgstr "봐꾸기"
+
+#: aegisub/dialog_search_replace.cpp:540 aegisub/hotkeys.cpp:326
+msgid "Find"
+msgstr "검색"
+
+#: aegisub/dialog_selection.cpp:50
+msgid "Select"
+msgstr "선택"
+
+#: aegisub/dialog_selection.cpp:57
+msgid "Exact match"
+msgstr "똑같은 메치"
+
+#: aegisub/dialog_selection.cpp:58
+msgid "Contains"
+msgstr "드러있는"
+
+#: aegisub/dialog_selection.cpp:59
+msgid "Regular Expression match"
+msgstr "보통 표정 메치"
+
+#: aegisub/dialog_selection.cpp:60
+msgid "Matches"
+msgstr "메치"
+
+#: aegisub/dialog_selection.cpp:61
+msgid "Doesn't Match"
+msgstr "메치 못함"
+
+#: aegisub/dialog_selection.cpp:63
+msgid "Dialogues"
+msgstr "대화"
+
+#: aegisub/dialog_selection.cpp:64
+msgid "Comments"
+msgstr "코멘트"
+
+#: aegisub/dialog_selection.cpp:67
+msgid "Match"
+msgstr "메치"
+
+#: aegisub/dialog_selection.cpp:81
+msgid "Set selection"
+msgstr "선택 쓰기"
+
+#: aegisub/dialog_selection.cpp:82
+msgid "Add to selection"
+msgstr "선택 더하기"
+
+#: aegisub/dialog_selection.cpp:83
+msgid "Subtract from selection"
+msgstr "선택에서 빼오기"
+
+#: aegisub/dialog_selection.cpp:84
+msgid "Intersect with selection"
+msgstr "선택이랑 통과하기"
+
+#: aegisub/dialog_selection.cpp:85
+msgid "Action"
+msgstr "엑션"
+
+#: aegisub/dialog_selection.cpp:88
+msgid "Match dialogues/comments"
+msgstr "대화/코맨트 짝지기"
+
+#: aegisub/dialog_selection.cpp:264
+#, c-format
+msgid "Selection was set to %i lines"
+msgstr "선택이 %i 개들 줄로돼있다"
+
+#: aegisub/dialog_selection.cpp:264 aegisub/dialog_selection.cpp:265
+#: aegisub/dialog_selection.cpp:266
+msgid "Selection"
+msgstr "선택"
+
+#: aegisub/dialog_selection.cpp:265
+#, c-format
+msgid "%i lines were added to selection"
+msgstr "%i 들 줄들이 추가 됏슴"
+
+#: aegisub/dialog_selection.cpp:266
+#, c-format
+msgid "%i lines were removed from selection"
+msgstr "%i 들 줄들이 제거 됏슴"
+
+#: aegisub/dialog_shift_times.cpp:60 aegisub/frame_main.cpp:233
+#: aegisub/hotkeys.cpp:325
+msgid "Shift Times"
+msgstr "시간 움지기기"
+
+#: aegisub/dialog_shift_times.cpp:72
+msgid "Frames: "
+msgstr "프래임:"
+
+#: aegisub/dialog_shift_times.cpp:75
+msgid "Enter time in h:mm:ss.cs notation"
+msgstr "시간을 h:mm:ss.cs 으로 쓰십시요."
+
+#: aegisub/dialog_shift_times.cpp:76
+msgid "Shift by time"
+msgstr "시간으로 움지기기"
+
+#: aegisub/dialog_shift_times.cpp:80
+msgid "Enter number of frames to shift by"
+msgstr "프래임 자리를 움지길 수 입력"
+
+#: aegisub/dialog_shift_times.cpp:81
+msgid "Shift by frames"
+msgstr "프래임으로 움지기기"
+
+#: aegisub/dialog_shift_times.cpp:91
+msgid "Forward"
+msgstr "앞으로"
+
+#: aegisub/dialog_shift_times.cpp:92
+msgid "Backward"
+msgstr "뒤로"
+
+#: aegisub/dialog_shift_times.cpp:93
+msgid ""
+"Shifts subs forward, making them appear later. Use if they are appearing too "
+"soon."
+msgstr "자막 (앞으로) 움지겨서 나중에 나타나기. (자막이 너무 일찍 나타나면.)"
+
+#: aegisub/dialog_shift_times.cpp:94
+msgid ""
+"Shifts subs backward, making them appear earlier. Use if they are appearing "
+"too late."
+msgstr "자막 (뒤로) 움지겨서 일찍 나타나기. (자막이 너무 늦개 나타나면.)"
+
+#: aegisub/dialog_shift_times.cpp:98
+msgid "Shift by"
+msgstr "움지기"
+
+#: aegisub/dialog_shift_times.cpp:104
+#, fuzzy
+msgid "Selection onward"
+msgstr "선택"
+
+#: aegisub/dialog_shift_times.cpp:105
+msgid "Affect"
+msgstr "영향"
+
+#: aegisub/dialog_shift_times.cpp:108
+msgid "Start and End times"
+msgstr "시작/끝 시간들"
+
+#: aegisub/dialog_shift_times.cpp:108
+msgid "Start times only"
+msgstr "시작 시간만"
+
+#: aegisub/dialog_shift_times.cpp:108
+msgid "End times only"
+msgstr "끝 시간만"
+
+#: aegisub/dialog_shift_times.cpp:109
+msgid "Times"
+msgstr "시간들"
+
+#: aegisub/dialog_shift_times.cpp:112
+msgid "History"
+msgstr "히스토리"
+
+#: aegisub/dialog_shift_times.cpp:119
+msgid "Clear"
+msgstr ""
+
+#: aegisub/dialog_shift_times.cpp:249
+msgid "unsaved, "
+msgstr "저장 안한,"
+
+#: aegisub/dialog_shift_times.cpp:254
+msgid " frames "
+msgstr "프래임들"
+
+#: aegisub/dialog_shift_times.cpp:257
+msgid "backward, "
+msgstr "뒤로,"
+
+#: aegisub/dialog_shift_times.cpp:258
+msgid "forward, "
+msgstr "앞으로,"
+
+#: aegisub/dialog_shift_times.cpp:261
+msgid "s+e, "
+msgstr "s+e,"
+
+#: aegisub/dialog_shift_times.cpp:262
+msgid "s, "
+msgstr "s,"
+
+#: aegisub/dialog_shift_times.cpp:263
+msgid "e, "
+msgstr "e, "
+
+#: aegisub/dialog_shift_times.cpp:266
+msgid "all"
+msgstr "전체"
+
+#: aegisub/dialog_shift_times.cpp:267
+#, c-format
+msgid "from %i onward"
+msgstr ""
+
+#: aegisub/dialog_shift_times.cpp:269
+msgid "sel "
+msgstr "sel"
+
+#: aegisub/dialog_shift_times.cpp:297
+#, fuzzy
+msgid "shifting"
+msgstr "편집함:"
+
+#: aegisub/dialog_spellchecker.cpp:66 aegisub/frame_main.cpp:240
+#, fuzzy
+msgid "Spell Checker"
+msgstr "철자 체크"
+
+#: aegisub/dialog_spellchecker.cpp:108
+msgid "Misspelled word:"
+msgstr ""
+
+#: aegisub/dialog_spellchecker.cpp:117
+#, fuzzy
+msgid "Replace All"
+msgstr "전체 봐꿈"
+
+#: aegisub/dialog_spellchecker.cpp:118
+msgid "Ignore"
+msgstr ""
+
+#: aegisub/dialog_spellchecker.cpp:119
+msgid "Ignore all"
+msgstr ""
+
+#: aegisub/dialog_spellchecker.cpp:120
+#, fuzzy
+msgid "Add to dictionary"
+msgstr "선택 더하기"
+
+#: aegisub/dialog_spellchecker.cpp:316
+msgid "Aegisub has finished checking spelling of this script."
+msgstr ""
+
+#: aegisub/dialog_spellchecker.cpp:316 aegisub/dialog_spellchecker.cpp:383
+#, fuzzy
+msgid "Spell checking complete."
+msgstr "단어 체크"
+
+#: aegisub/dialog_spellchecker.cpp:336
+#, fuzzy
+msgid "Spell check replace"
+msgstr "철자 체크"
+
+#: aegisub/dialog_spellchecker.cpp:383
+msgid "Aegisub has found no spelling mistakes in this script."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:95
+msgid "Style Editor"
+msgstr "스타일 편집"
+
+#: aegisub/dialog_style_editor.cpp:133 aegisub/subs_edit_box.cpp:118
+msgid "Bold"
+msgstr "굵게"
+
+#: aegisub/dialog_style_editor.cpp:134
+msgid "Italic"
+msgstr "기울임"
+
+#: aegisub/dialog_style_editor.cpp:135 aegisub/subs_edit_box.cpp:122
+msgid "Underline"
+msgstr "밑줄"
+
+#: aegisub/dialog_style_editor.cpp:136 aegisub/subs_edit_box.cpp:124
+msgid "Strikeout"
+msgstr "가로지르"
+
+#: aegisub/dialog_style_editor.cpp:147
+msgid "Alignment"
+msgstr "맞춤"
+
+#: aegisub/dialog_style_editor.cpp:150
+msgid "Opaque box"
+msgstr "투명 박스"
+
+#: aegisub/dialog_style_editor.cpp:158
+#, fuzzy
+msgid "Style name."
+msgstr "스타일 이름"
+
+#: aegisub/dialog_style_editor.cpp:159
+#, fuzzy
+msgid "Font face."
+msgstr "글꼴 페이쓰"
+
+#: aegisub/dialog_style_editor.cpp:160
+#, fuzzy
+msgid "Font size."
+msgstr "글꼴 사이즈"
+
+#: aegisub/dialog_style_editor.cpp:161
+#, fuzzy
+msgid "Click to choose primary color."
+msgstr "칼러선택을 마우스 킬릭으로 "
+
+#: aegisub/dialog_style_editor.cpp:162
+#, fuzzy
+msgid "Click to choose secondary color."
+msgstr "칼러선택을 마우스 킬릭으로 "
+
+#: aegisub/dialog_style_editor.cpp:163
+#, fuzzy
+msgid "Click to choose outline color."
+msgstr "칼러선택을 마우스 킬릭으로 "
+
+#: aegisub/dialog_style_editor.cpp:164
+#, fuzzy
+msgid "Click to choose shadow color."
+msgstr "칼러선택을 마우스 킬릭으로 "
+
+#: aegisub/dialog_style_editor.cpp:165
+#, fuzzy
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgstr "불투명, 0(불투) 부터 255(투명)"
+
+#: aegisub/dialog_style_editor.cpp:166
+#, fuzzy
+msgid "Distance from left edge, in pixels."
+msgstr "왼쪽 거리"
+
+#: aegisub/dialog_style_editor.cpp:167
+#, fuzzy
+msgid "Distance from right edge, in pixels."
+msgstr "오른쪽 거리"
+
+#: aegisub/dialog_style_editor.cpp:168
+#, fuzzy
+msgid "Distance from top/bottom edge, in pixels."
+msgstr "위/아래 거리"
+
+#: aegisub/dialog_style_editor.cpp:169
+#, fuzzy
+msgid "Checking this will display an opaque box instead of outline."
+msgstr "여기를 확인하시면 불투명한 상자로 변경이됌"
+
+#: aegisub/dialog_style_editor.cpp:170
+#, fuzzy
+msgid "Outline width, in pixels."
+msgstr "화소 아웃트라인 넓기"
+
+#: aegisub/dialog_style_editor.cpp:171
+#, fuzzy
+msgid "Shadow distance, in pixels."
+msgstr "그림자 거리 (화소)"
+
+#: aegisub/dialog_style_editor.cpp:172
+#, fuzzy
+msgid "Scale X, in percentage."
+msgstr "화소 X 크기"
+
+#: aegisub/dialog_style_editor.cpp:173
+#, fuzzy
+msgid "Scale Y, in percentage."
+msgstr "화소 Y 크기"
+
+#: aegisub/dialog_style_editor.cpp:174
+#, fuzzy
+msgid "Angle to rotate in Z axis, in degrees."
+msgstr "각도 가 Z-축으로 회전 "
+
+#: aegisub/dialog_style_editor.cpp:175
+msgid ""
+"Encoding, only useful in unicode if the font doesn't have the proper unicode "
+"mapping."
+msgstr "엔코딩은 유니코드 안에서만 편리함니다."
+
+#: aegisub/dialog_style_editor.cpp:176
+#, fuzzy
+msgid "Character spacing, in pixels."
+msgstr "글짜 거리 (화소)"
+
+#: aegisub/dialog_style_editor.cpp:177
+#, fuzzy
+msgid "Alignment in screen, in numpad style."
+msgstr "스크린 안에서 맞춤. 넘버패드 스타일"
+
+#: aegisub/dialog_style_editor.cpp:207
+msgid "Style name"
+msgstr "스타일 이름"
+
+#: aegisub/dialog_style_editor.cpp:211
+msgid "Font"
+msgstr "글꼴"
+
+#: aegisub/dialog_style_editor.cpp:227
+msgid "Colors"
+msgstr "칼러들"
+
+#: aegisub/dialog_style_editor.cpp:229
+msgid "Primary"
+msgstr "프라이머리"
+
+#: aegisub/dialog_style_editor.cpp:229
+msgid "Secondary"
+msgstr "세컨더리"
+
+#: aegisub/dialog_style_editor.cpp:229 aegisub/dialog_style_editor.cpp:261
+msgid "Outline"
+msgstr "아웃트라인"
+
+#: aegisub/dialog_style_editor.cpp:229
+msgid "Shadow"
+msgstr "그림자"
+
+#: aegisub/dialog_style_editor.cpp:242
+msgid "Margins"
+msgstr "마진"
+
+#: aegisub/dialog_style_editor.cpp:263
+msgid "Outline:"
+msgstr "아우트라인:"
+
+#: aegisub/dialog_style_editor.cpp:265
+msgid "Shadow:"
+msgstr "그림자:"
+
+#: aegisub/dialog_style_editor.cpp:271
+msgid "Miscelaneous"
+msgstr "기타"
+
+#: aegisub/dialog_style_editor.cpp:274
+msgid "Scale X%:"
+msgstr "크기 X%:"
+
+#: aegisub/dialog_style_editor.cpp:276
+msgid "Scale Y%:"
+msgstr "크기 Y%:"
+
+#: aegisub/dialog_style_editor.cpp:278
+#, fuzzy
+msgid "Rotation:"
+msgstr "자동일"
+
+#: aegisub/dialog_style_editor.cpp:280
+msgid "Spacing:"
+msgstr "스페이씽"
+
+#: aegisub/dialog_style_editor.cpp:284
+msgid "Encoding:"
+msgstr "엔코딩:"
+
+#: aegisub/dialog_style_editor.cpp:290
+#, fuzzy
+msgid "Preview"
+msgstr "변화 보기"
+
+#: aegisub/dialog_style_editor.cpp:298
+msgid "Preview of current style."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:301
+msgid "Text to be used for the preview."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:302
+msgid "Colour of preview background."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:311
+msgid "No subtitle providers available. Cannot preview subs."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:444 aegisub/dialog_style_manager.cpp:612
+#: aegisub/dialog_style_manager.cpp:636
+msgid "Copy of "
+msgstr "복사으"
+
+#: aegisub/dialog_style_editor.cpp:480 aegisub/subs_edit_box.cpp:561
+#, fuzzy
+msgid "style change"
+msgstr "스타일 메네저"
+
+#: aegisub/dialog_style_editor.cpp:576
+msgid ""
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a "
+"typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the "
+"history\n"
+"of computing, so please avoid using it unless it's REALLY suitable. Thanks."
+msgstr ""
+"\"Comic Sans\" 글꼴을 안쓰는게 좋갰슴니다... Comic Sans는 타이프세팅 "
+"(typesetting) 쓰는대 안좋슴니다.."
+
+#: aegisub/dialog_style_editor.cpp:576
+msgid "Warning"
+msgstr "경고"
+
+#: aegisub/dialog_style_manager.cpp:56 aegisub/frame_main.cpp:224
+msgid "Styles Manager"
+msgstr "스타일 메네저"
+
+#: aegisub/dialog_style_manager.cpp:65
+msgid "Catalog of available storages"
+msgstr "쓸수있는 공간"
+
+#: aegisub/dialog_style_manager.cpp:67 aegisub/dialog_style_manager.cpp:80
+#: aegisub/dialog_style_manager.cpp:123 aegisub/frame_main.cpp:192
+msgid "New"
+msgstr "세로"
+
+#: aegisub/dialog_style_manager.cpp:68 aegisub/dialog_style_manager.cpp:83
+#: aegisub/dialog_style_manager.cpp:126 aegisub/subs_grid.cpp:201
+msgid "Delete"
+msgstr "지우기"
+
+#: aegisub/dialog_style_manager.cpp:75
+msgid "Storage"
+msgstr "저장방"
+
+#: aegisub/dialog_style_manager.cpp:79
+msgid "Copy to current script ->"
+msgstr "현재 스크립으로 복사 ->"
+
+#: aegisub/dialog_style_manager.cpp:81 aegisub/dialog_style_manager.cpp:124
+#, fuzzy
+msgid "Edit"
+msgstr "편집"
+
+#: aegisub/dialog_style_manager.cpp:82 aegisub/dialog_style_manager.cpp:125
+#: aegisub/hotkeys.cpp:330
+msgid "Copy"
+msgstr "복사"
+
+#: aegisub/dialog_style_manager.cpp:93 aegisub/dialog_style_manager.cpp:136
+#, fuzzy
+msgid "Move style up."
+msgstr "자막 움지기기"
+
+#: aegisub/dialog_style_manager.cpp:94 aegisub/dialog_style_manager.cpp:137
+#, fuzzy
+msgid "Move style down."
+msgstr "아래로"
+
+#: aegisub/dialog_style_manager.cpp:95 aegisub/dialog_style_manager.cpp:138
+msgid "Move style to top."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:96 aegisub/dialog_style_manager.cpp:139
+msgid "Move style to bottom."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:97 aegisub/dialog_style_manager.cpp:140
+msgid "Sort styles alphabetically."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:117
+msgid "Current script"
+msgstr "현재 스크립"
+
+#: aegisub/dialog_style_manager.cpp:122
+msgid "<- Copy to storage"
+msgstr "<- 공간으로 복사"
+
+#: aegisub/dialog_style_manager.cpp:151
+msgid "Import from script..."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:408
+msgid "New storage name:"
+msgstr "공간이름:"
+
+#: aegisub/dialog_style_manager.cpp:408
+msgid "New catalog entry"
+msgstr "세로운 카탈로그"
+
+#: aegisub/dialog_style_manager.cpp:424
+msgid "A catalog with that name already exists."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:424
+msgid "Catalog name conflict"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:430
+#, c-format
+msgid ""
+"The specified catalog name contains one or more illegal characters. They "
+"have been replaced with underscores instead.\n"
+"The catalog has been renamed to \"%s\"."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:430
+#, fuzzy
+msgid "Invalid characters"
+msgstr "못 돼는 스크립"
+
+#: aegisub/dialog_style_manager.cpp:459
+msgid "Are you sure you want to delete the storage \""
+msgstr "공간을 지울까요? \""
+
+#: aegisub/dialog_style_manager.cpp:461
+msgid "\" from the catalog?"
+msgstr "\" 카탈로그 안에서?"
+
+#: aegisub/dialog_style_manager.cpp:462
+msgid "Confirm delete"
+msgstr "지울까요"
+
+#: aegisub/dialog_style_manager.cpp:598 aegisub/dialog_style_manager.cpp:649
+msgid "style copy"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:696
+#, fuzzy
+msgid "style paste"
+msgstr "스타일 이름"
+
+#: aegisub/dialog_style_manager.cpp:764 aegisub/dialog_style_manager.cpp:798
+msgid "Are you sure you want to delete these "
+msgstr "진짜 지움니까"
+
+#: aegisub/dialog_style_manager.cpp:766 aegisub/dialog_style_manager.cpp:800
+msgid " styles?"
+msgstr "스타일?"
+
+#: aegisub/dialog_style_manager.cpp:768 aegisub/dialog_style_manager.cpp:802
+msgid "Are you sure you want to delete this style?"
+msgstr "이 스타일을 지울까요?"
+
+#: aegisub/dialog_style_manager.cpp:769
+#, fuzzy
+msgid "Confirm delete from storage"
+msgstr "지울까요"
+
+#: aegisub/dialog_style_manager.cpp:803
+#, fuzzy
+msgid "Confirm delete from current"
+msgstr "지울까요"
+
+#: aegisub/dialog_style_manager.cpp:819
+msgid "style delete"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:831 aegisub/frame_main_events.cpp:622
+#: aegisub/frame_main_events.cpp:640
+msgid "Open subtitles file"
+msgstr "자막 파일 열기"
+
+#: aegisub/dialog_style_manager.cpp:847
+msgid "There selected file has no available styles."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:847
+msgid "Error Importing Styles"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:853
+msgid "Choose styles to import:"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:853
+#, fuzzy
+msgid "Import Styles"
+msgstr "자막 수출"
+
+#: aegisub/dialog_style_manager.cpp:876
+#, fuzzy
+msgid "style import"
+msgstr "스타일 편집"
+
+#: aegisub/dialog_style_manager.cpp:1033
+msgid "Are you sure? This cannot be undone!"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:1033
+#, fuzzy
+msgid "Sort styles"
+msgstr "스타일 시작"
+
+#: aegisub/dialog_style_manager.cpp:1085
+#, fuzzy
+msgid "style move"
+msgstr "스타일 이름"
+
+#: aegisub/dialog_styling_assistant.cpp:57
+msgid "Styling assistant"
+msgstr "스타일 도움"
+
+#: aegisub/dialog_styling_assistant.cpp:69
+#: aegisub/dialog_styling_assistant.cpp:70
+msgid "Current line"
+msgstr "현재 줄"
+
+#: aegisub/dialog_styling_assistant.cpp:75
+msgid "Styles available"
+msgstr "있는 스타일"
+
+#: aegisub/dialog_styling_assistant.cpp:80
+msgid "Set style"
+msgstr "스타일 시작"
+
+#: aegisub/dialog_styling_assistant.cpp:81 aegisub/dialog_translation.cpp:94
+msgid "Keys"
+msgstr "키"
+
+#: aegisub/dialog_styling_assistant.cpp:89 aegisub/dialog_translation.cpp:97
+msgid "Accept changes"
+msgstr "확인"
+
+#: aegisub/dialog_styling_assistant.cpp:91 aegisub/dialog_translation.cpp:99
+msgid "Preview changes"
+msgstr "변화 보기"
+
+#: aegisub/dialog_styling_assistant.cpp:93 aegisub/dialog_translation.cpp:101
+msgid "Previous line"
+msgstr "이전 줄"
+
+#: aegisub/dialog_styling_assistant.cpp:95 aegisub/dialog_translation.cpp:103
+msgid "Next line"
+msgstr "다음 줄"
+
+#: aegisub/dialog_styling_assistant.cpp:97
+#: aegisub/dialog_styling_assistant.cpp:119 aegisub/dialog_translation.cpp:107
+#: aegisub/dialog_translation.cpp:117
+msgid "Play Audio"
+msgstr "오디오 재생"
+
+#: aegisub/dialog_styling_assistant.cpp:98
+msgid "Click on list:"
+msgstr "표 마우스 클릭"
+
+#: aegisub/dialog_styling_assistant.cpp:99
+msgid "Select style"
+msgstr "전채 스타일을 선택"
+
+#: aegisub/dialog_styling_assistant.cpp:102
+msgid "Enable preview (slow)"
+msgstr "미리 보기 (느림)"
+
+#: aegisub/dialog_styling_assistant.cpp:154
+#, fuzzy
+msgid "style changes"
+msgstr "안저장한 "
+
+#: aegisub/dialog_styling_assistant.cpp:205
+#, fuzzy
+msgid "styling assistant"
+msgstr "스타일 도움"
+
+#: aegisub/dialog_timing_processor.cpp:54 aegisub/frame_main.cpp:238
+msgid "Timing Post-Processor"
+msgstr "전-프로세스 타이밍"
+
+#: aegisub/dialog_timing_processor.cpp:71
+#, fuzzy
+msgid "Affect selection only"
+msgstr "선택 쓰기"
+
+#: aegisub/dialog_timing_processor.cpp:76
+msgid "Lead-in/Lead-out"
+msgstr "르드-인/르드-아웃"
+
+#: aegisub/dialog_timing_processor.cpp:77
+msgid "Add lead in:"
+msgstr "르드 인 추가:"
+
+#: aegisub/dialog_timing_processor.cpp:78
+msgid "Enable adding of lead-ins to lines."
+msgstr "리드-인 넣기 가능하개"
+
+#: aegisub/dialog_timing_processor.cpp:81
+msgid "Lead in to be added, in miliseconds."
+msgstr "리드-인 넣기 (밀리세컨드)"
+
+#: aegisub/dialog_timing_processor.cpp:82
+msgid "Add lead out:"
+msgstr "르드 아웃 추가 ("
+
+#: aegisub/dialog_timing_processor.cpp:83
+msgid "Enable adding of lead-outs to lines."
+msgstr "리드-아웃 줄로 넣기 가능하개"
+
+#: aegisub/dialog_timing_processor.cpp:86
+msgid "Lead out to be added, in miliseconds."
+msgstr "리드-아웃 넣기 (밀리세컨드)"
+
+#: aegisub/dialog_timing_processor.cpp:94
+msgid "Make adjascent subtitles continuous"
+msgstr "인접하는 자막들을 게속"
+
+#: aegisub/dialog_timing_processor.cpp:95
+#: aegisub/dialog_timing_processor.cpp:113
+msgid "Enable"
+msgstr "가능하게"
+
+#: aegisub/dialog_timing_processor.cpp:96
+msgid ""
+"Enable snapping of subtitles together if they are within a certain distance "
+"of each other."
+msgstr "자막들이 거리가 있으면 자막 스대핑을 쓰기 "
+
+#: aegisub/dialog_timing_processor.cpp:98
+msgid "Threshold:"
+msgstr "문지방:"
+
+#: aegisub/dialog_timing_processor.cpp:100
+msgid ""
+"Maximum difference between start and end time for two subtitles to be made "
+"continuous, in miliseconds."
+msgstr "두 자막들의 시작/끝  최대한 차이점들이 게속돼는 (밀리쎄컨드) "
+
+#: aegisub/dialog_timing_processor.cpp:106
+msgid "Bias: Start <- "
+msgstr "바이어스: 시작 <-"
+
+#: aegisub/dialog_timing_processor.cpp:108
+msgid " -> End"
+msgstr "-> 끝"
+
+#: aegisub/dialog_timing_processor.cpp:111
+msgid "Keyframe snapping"
+msgstr "키 프래임 스댑잉"
+
+#: aegisub/dialog_timing_processor.cpp:114
+msgid ""
+"Enable snapping of subtitles to nearest keyframe, if distance is within "
+"threshold."
+msgstr "가까이 있는 자막을 키프래임으로 스댑하기"
+
+#: aegisub/dialog_timing_processor.cpp:116
+msgid "Starts before thres.:"
+msgstr "문지방전 시작:"
+
+#: aegisub/dialog_timing_processor.cpp:118
+msgid ""
+"Threshold for 'before start' distance, that is, how many frames a subtitle "
+"must start before a keyframe to snap to it."
+msgstr "문지방 \"시작 전\" 기리. 자막이 어디까지 자서 키프래임이 스댐 돼나."
+
+#: aegisub/dialog_timing_processor.cpp:119
+msgid "Starts after thres.:"
+msgstr "문지방앞 시작:"
+
+#: aegisub/dialog_timing_processor.cpp:121
+msgid ""
+"Threshold for 'after start' distance, that is, how many frames a subtitle "
+"must start after a keyframe to snap to it."
+msgstr "문지방 \"시작 앞\" 기리. 자막이 어디까지 자서 키프래임이 스댐 돼나."
+
+#: aegisub/dialog_timing_processor.cpp:122
+msgid "Ends before thres.:"
+msgstr "문지방전 끝:"
+
+#: aegisub/dialog_timing_processor.cpp:124
+msgid ""
+"Threshold for 'before end' distance, that is, how many frames a subtitle "
+"must end before a keyframe to snap to it."
+msgstr "문지방 \"끝 전\" 기리. 자막이 어디까지 자서 키프래임이 스댐 돼나."
+
+#: aegisub/dialog_timing_processor.cpp:125
+msgid "Ends after thres.:"
+msgstr "문지방앞 끝:"
+
+#: aegisub/dialog_timing_processor.cpp:127
+msgid ""
+"Threshold for 'after end' distance, that is, how many frames a subtitle must "
+"end after a keyframe to snap to it."
+msgstr "문지방 \"끝 앞\" 기리. 자막이 어디까지 자서 키프래임이 스댐 돼나."
+
+#: aegisub/dialog_timing_processor.cpp:160
+msgid "All"
+msgstr "전채"
+
+#: aegisub/dialog_timing_processor.cpp:161
+msgid "Select all styles."
+msgstr "전채 스타일을 선택"
+
+#: aegisub/dialog_timing_processor.cpp:162
+msgid "None"
+msgstr "없음"
+
+#: aegisub/dialog_timing_processor.cpp:163
+msgid "Deselect all styles."
+msgstr "전채 스타일을 선택 안함"
+
+#: aegisub/dialog_timing_processor.cpp:168
+msgid "Apply to styles"
+msgstr "스타일 적용"
+
+#: aegisub/dialog_timing_processor.cpp:171
+msgid "Select styles to process. Unchecked ones will be ignored."
+msgstr "스타일들을 골르십죠. "
+
+#: aegisub/dialog_timing_processor.cpp:317
+#, c-format
+msgid "One of the lines in the file (%i) has negative duration. Aborting."
+msgstr "한줄이 마이너스 (%i) 시간이 돼있다. 중지함."
+
+#: aegisub/dialog_timing_processor.cpp:317
+msgid "Invalid script"
+msgstr "못 돼는 스크립"
+
+#: aegisub/dialog_timing_processor.cpp:566
+#, fuzzy
+msgid "timing processor"
+msgstr "전-프로세스 타이밍"
+
+#: aegisub/dialog_tip.cpp:48
+msgid ""
+"Aegisub can export subtitles to other formats, character encodings, and even "
+"compensate Variable Frame Rate so you can hardsub them - it's all in the "
+"Export option in File menu."
+msgstr ""
+"에이지썹은 자막을 딴 포멧의로 밖으로 저장 할수있슴니다. 글꼴, 프레임레이트 정"
+"보가 저장뒘니다. "
+
+#: aegisub/dialog_tip.cpp:49
+msgid ""
+"You can easily translate subtitle files using the translation assistant."
+msgstr " 번역하는 도구는 번역하는데 도움이 뒘니다."
+
+#: aegisub/dialog_tip.cpp:50
+msgid ""
+"Styles can be stored in different storages, so that you can keep your "
+"projects organized."
+msgstr "스타일들은 여러가지의 보관 저장이 뒘니다."
+
+#: aegisub/dialog_tip.cpp:51
+msgid ""
+"Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter "
+"updates changes on current line without going to next. Check the manual for "
+"a complete list."
+msgstr ""
+"핫키를 많이 쓰세요! 보기: Ctrl+Enter는 현제 줄을 다음 줄로 안가고 업데이트가 "
+"뒘니다."
+
+#: aegisub/dialog_tip.cpp:52
+msgid ""
+"There is no reason to use the SSA format (as opposed to ASS). ASS is very "
+"similar, but adds some important functionality. Most importantly, however, "
+"is that only ASS supports certain override tags (such as \\pos and \\t). "
+"Those only work on SSA files because VSFilter/Textsub are merciful."
+msgstr ""
+"SSA 포맷을 쓸 이유가 없음니다. ASS 포맷은 SSA 포맷이랑 비슷하면서 중요한 기능"
+"이 있슴니다. ASS 포맷은 특별한 오버라이드 테그들을 지원함니다. "
+
+#: aegisub/dialog_tip.cpp:53
+msgid "DON'T PANIC!"
+msgstr "패닉 하지맙시다."
+
+#: aegisub/dialog_tip.cpp:54
+msgid ""
+"Aegisub has several features to make sure you will never lose your work. It "
+"will periodically save your subtitles to autosave folder, and will create a "
+"copy of subs whenever you open them, to autoback folder. Also, if it "
+"crashes, it will attempt to save a restore file."
+msgstr ""
+"에이지썹 아네서는 절데로 작업이 잃어지지 안슴니다. 자동-저장이  자동저장폴더"
+"로 저장이 됌니다. 자막을 열기마다  자동 복사가  됌니다. 복원 기능도 있슴니다."
+
+#: aegisub/dialog_tip.cpp:55
+msgid ""
+"The styling assistant is a practical way to set styles to each line, when "
+"each actor has a different style assigned to it."
+msgstr "스타일 도움 도구는 자막줄들을 특별한 스타일을 줌니다. "
+
+#: aegisub/dialog_tip.cpp:56
+msgid ""
+"The fonts collector is one of the most useful features, which resumes the "
+"boring task of hunting down fonts into a matter of a few clicks."
+msgstr "글꼴 모우기는 대단히 편리함니다. 글꼴들을 다루기 쉬운 도구입니다. "
+
+#: aegisub/dialog_tip.cpp:57
+msgid ""
+"When you are done with your subtitles and ready to distribute them, "
+"remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr ""
+"자막일을 끝나고 MP4, OGM, AVI 등을 쓰지맙시다. Matroska (마트로스카) 가 최고."
+
+#: aegisub/dialog_tip.cpp:58
+msgid ""
+"Much like anything loaded via DirectShow, certain files may have a strange "
+"structure (such as h.264 into AVI or XviD will null frames) which may cause "
+"unreliable seeking (that is, video frames might be off by one frame). This "
+"is not an Aegisub bug - you may consider reencoding those videos before "
+"working with them."
+msgstr ""
+"어떤 비디오 파일 엔코드들은  (h.264로 엔코드뒌 AVI 나 XviD 들은 프레임들 에로"
+"가 남니다. )  이것은 에이지썹 버그가 안님니다, 비디오를 바시 엔코드를 헤보세"
+"요."
+
+#: aegisub/dialog_tip.cpp:59
+msgid "If anything goes wrong, blame movax."
+msgstr "movax을 브레임 하자."
+
+#: aegisub/dialog_translation.cpp:57 aegisub/frame_main.cpp:235
+msgid "Translation Assistant"
+msgstr "번역 도움"
+
+#: aegisub/dialog_translation.cpp:84
+msgid "Original"
+msgstr "오리지날"
+
+#: aegisub/dialog_translation.cpp:85
+msgid "Translation"
+msgstr "번역"
+
+#: aegisub/dialog_translation.cpp:86
+msgid "Current line: ?"
+msgstr "현재 줄: ?"
+
+#: aegisub/dialog_translation.cpp:105
+msgid "Insert original"
+msgstr "오리지날"
+
+#: aegisub/dialog_translation.cpp:108
+msgid "Enable preview"
+msgstr "전채보기"
+
+#: aegisub/dialog_translation.cpp:183
+#, c-format
+msgid "Current line: %i/%i"
+msgstr "현제 줄:  %i/%i"
+
+#: aegisub/dialog_translation.cpp:319
+#, fuzzy
+msgid "translation assistant"
+msgstr "번역 도움"
+
+#: aegisub/dialog_version_check.cpp:57
+msgid "Version Checker"
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:173
+msgid "Could not open Internet File system. Aborting.\n"
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:182
+msgid "Attempting to open \""
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:193
+#, fuzzy
+msgid "Failed.\n"
+msgstr "파일"
+
+#: aegisub/dialog_version_check.cpp:203
+msgid "OK.\n"
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:262
+msgid "New version found!\n"
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:264
+msgid "Please go to the following URL to download it: "
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:278
+msgid "No new version has been found.\n"
+msgstr ""
+
+#: aegisub/export_clean_info.cpp:58
+msgid "Clean Script Info"
+msgstr "스크립 없에기"
+
+#: aegisub/export_clean_info.cpp:59
+msgid ""
+"Removes all but the absolutely required fields from the Script Info section. "
+"You might want to run this on files that you plan to distribute in original "
+"form."
+msgstr "스크립 인포에서 쓸대없는 것들을 지운다. "
+
+#: aegisub/export_fixstyle.cpp:58
+msgid "Fix Styles"
+msgstr "스타일 고치기"
+
+#: aegisub/export_fixstyle.cpp:59
+msgid ""
+"Fixes styles by replacing any style that isn't available on file with "
+"Default."
+msgstr "특이한 스타일을 디폴트로 고친다"
+
+#: aegisub/export_framerate.cpp:59
+msgid "Transform Framerate"
+msgstr "프래임래이트 편집"
+
+#: aegisub/export_framerate.cpp:60
+msgid ""
+"Transform subtitles times, including those in override tags, from input to "
+"output. This is most useful to convert CFR to VFR for hardsubbing. You "
+"usually DO NOT want to check this filter for softsubbing."
+msgstr ""
+"자막시간을 편집하기, 오버라으드테그, input/output들도. CFR에서 VFR으로 가는"
+"데 편리하다. "
+
+#: aegisub/export_framerate.cpp:86
+msgid "From Video"
+msgstr "비디오 에서"
+
+#: aegisub/export_framerate.cpp:103
+msgid "Variable"
+msgstr "변"
+
+#: aegisub/export_framerate.cpp:107
+msgid "Constant: "
+msgstr "일정한:"
+
+#: aegisub/export_framerate.cpp:124
+msgid "Input framerate: "
+msgstr "프래임래이트 더하기:"
+
+#: aegisub/export_framerate.cpp:126
+msgid "Output: "
+msgstr "아웃풋:"
+
+#: aegisub/frame_main.cpp:163
+msgid ""
+"Do you want Aegisub to check for updates whenever it starts? You can still "
+"do it manually via the Help menu."
+msgstr ""
+
+#: aegisub/frame_main.cpp:163
+msgid "Check for updates?"
+msgstr ""
+
+#: aegisub/frame_main.cpp:192 aegisub/frame_main.cpp:272
+#: aegisub/hotkeys.cpp:315
+msgid "New subtitles"
+msgstr "새 자막"
+
+#: aegisub/frame_main.cpp:193
+msgid "Open"
+msgstr "열기"
+
+#: aegisub/frame_main.cpp:193 aegisub/hotkeys.cpp:316
+msgid "Open subtitles"
+msgstr "자막 열기"
+
+#: aegisub/frame_main.cpp:194
+msgid "Save"
+msgstr "저장"
+
+#: aegisub/frame_main.cpp:194 aegisub/hotkeys.cpp:317
+msgid "Save subtitles"
+msgstr "자막 저장"
+
+#: aegisub/frame_main.cpp:198
+msgid "Jump To..."
+msgstr "가기..."
+
+#: aegisub/frame_main.cpp:198
+msgid "Jump video to time/frame"
+msgstr "비디오 시간/프래임으로 가기"
+
+#: aegisub/frame_main.cpp:199
+msgid "Zoom in"
+msgstr "줌인"
+
+#: aegisub/frame_main.cpp:199
+msgid "Zoom video in"
+msgstr "비디오 줌인"
+
+#: aegisub/frame_main.cpp:200
+msgid "Zoom out"
+msgstr "줌아우트"
+
+#: aegisub/frame_main.cpp:200
+msgid "Zoom video out"
+msgstr "비디오 줌아우트"
+
+#: aegisub/frame_main.cpp:213
+msgid "Jump video to start"
+msgstr "비디오 시작으로 가기"
+
+#: aegisub/frame_main.cpp:213 aegisub/frame_main.cpp:398
+msgid "Jumps the video to the start frame of current subtitle"
+msgstr "비디오 현재 자막 시작으로 가기"
+
+#: aegisub/frame_main.cpp:214
+msgid "Jump video to end"
+msgstr "비디이 끝으로 가기"
+
+#: aegisub/frame_main.cpp:214 aegisub/frame_main.cpp:399
+msgid "Jumps the video to the end frame of current subtitle"
+msgstr "비디오 현재 자막 끝으로 가기"
+
+#: aegisub/frame_main.cpp:215
+msgid "Snap start to video"
+msgstr "첫비디오를 스냅 "
+
+#: aegisub/frame_main.cpp:215 aegisub/frame_main.cpp:346
+msgid "Set start of selected subtitles to current video frame"
+msgstr "자막시작을 현재 비디오 프래임에 는다"
+
+#: aegisub/frame_main.cpp:216
+msgid "Snap end to video"
+msgstr "마지막 비디오를 스냅"
+
+#: aegisub/frame_main.cpp:216 aegisub/frame_main.cpp:347
+msgid "Set end of selected subtitles to current video frame"
+msgstr "자막끝을 현재 비디오 프래임에 는다"
+
+#: aegisub/frame_main.cpp:217
+msgid "Select visible"
+msgstr "보이기"
+
+#: aegisub/frame_main.cpp:217
+msgid "Selects all lines that are currently visible on video frame"
+msgstr "보이는 줄 다 선텍하기 "
+
+#: aegisub/frame_main.cpp:218
+msgid "Snap subtitles to scene"
+msgstr "자막을 신으로 움지기기"
+
+#: aegisub/frame_main.cpp:218
+msgid "Snap selected subtitles so they match current scene start/end"
+msgstr "자막을 시작/끝 으로 움지기기"
+
+#: aegisub/frame_main.cpp:219
+msgid "Shift subtitles to frame"
+msgstr "자막을 프래임으로 움지기기"
+
+#: aegisub/frame_main.cpp:219
+msgid "Shift selected subtitles so first selected starts at this frame"
+msgstr "선텍한 자막을 시작으로 움지기기 "
+
+#: aegisub/frame_main.cpp:223
+msgid "Properties"
+msgstr "정보"
+
+#: aegisub/frame_main.cpp:223
+msgid "Open Properties"
+msgstr "정보열기"
+
+#: aegisub/frame_main.cpp:224
+msgid "Open Styles Manager"
+msgstr "스타일 매네저 열기"
+
+#: aegisub/frame_main.cpp:225
+msgid "Attachments"
+msgstr "어태치먼트"
+
+#: aegisub/frame_main.cpp:225
+msgid "Open Attachment List"
+msgstr "어태치먼트 리스트 열기"
+
+#: aegisub/frame_main.cpp:229
+msgid "Open Automation manager"
+msgstr "자동일 매네저 열기"
+
+#: aegisub/frame_main.cpp:233
+#, fuzzy
+msgid "Open Shift Times Dialogue"
+msgstr "타임코드 열기"
+
+#: aegisub/frame_main.cpp:234
+msgid "Styling Assistant"
+msgstr "스타일 도움"
+
+#: aegisub/frame_main.cpp:234
+msgid "Open Styling Assistant"
+msgstr "스타일 도움 열기"
+
+#: aegisub/frame_main.cpp:235
+msgid "Open Translation Assistant"
+msgstr "번역 도움 열기"
+
+#: aegisub/frame_main.cpp:236
+msgid "Open Fonts Collector"
+msgstr "글꼴창 열기"
+
+#: aegisub/frame_main.cpp:237
+#, fuzzy
+msgid "Resample Script Resolution"
+msgstr "스크립 해성 다시하기"
+
+#: aegisub/frame_main.cpp:238
+msgid "Open Timing Post-processor dialog"
+msgstr "포스트-프로쎄써 다이알럭 열기"
+
+#: aegisub/frame_main.cpp:239
+msgid "Kanji Timer"
+msgstr ""
+
+#: aegisub/frame_main.cpp:239
+#, fuzzy
+msgid "Open Kanji Timer dialog"
+msgstr "포스트-프로쎄써 다이알럭 열기"
+
+#: aegisub/frame_main.cpp:240
+msgid "Open Spell checker"
+msgstr "단어체크 열기"
+
+#: aegisub/frame_main.cpp:244 aegisub/frame_main.cpp:420
+#, fuzzy
+msgid "Configure Aegisub"
+msgstr "대하여"
+
+#: aegisub/frame_main.cpp:245
+msgid "Cycle Tag Hidding Mode"
+msgstr "태그 숨기기 모드 보기"
+
+#: aegisub/frame_main.cpp:245
+msgid "Cycle through tag-hiding modes"
+msgstr "태그 숨기기 모드들 보기"
+
+#: aegisub/frame_main.cpp:272
+msgid "&New Subtitles\t"
+msgstr "세로 자막"
+
+#: aegisub/frame_main.cpp:273
+msgid "&Open Subtitles...\t"
+msgstr "자막 열기"
+
+#: aegisub/frame_main.cpp:273
+msgid "Opens a subtitles file"
+msgstr "자막 파일 열기"
+
+#: aegisub/frame_main.cpp:274
+msgid "&Open Subtitles with Charset..."
+msgstr "자세트있는 자막 열기"
+
+#: aegisub/frame_main.cpp:274
+msgid "Opens a subtitles file with a specific charset"
+msgstr "자세한 자세트있는 자막 열기"
+
+#: aegisub/frame_main.cpp:275
+msgid "&Save Subtitles\t"
+msgstr "자막 저장"
+
+#: aegisub/frame_main.cpp:275
+msgid "Saves subtitles"
+msgstr "자막 저장"
+
+#: aegisub/frame_main.cpp:276
+msgid "Save Subtitles as..."
+msgstr "세로 자막 저장"
+
+#: aegisub/frame_main.cpp:276
+msgid "Saves subtitles with another name"
+msgstr "딴 이름으로 자막 저장하기"
+
+#: aegisub/frame_main.cpp:277
+msgid "Export Subtitles..."
+msgstr "자막 수출"
+
+#: aegisub/frame_main.cpp:277
+msgid "Saves a copy of subtitles with processing applied to it."
+msgstr "자막 프로세스 저장"
+
+#: aegisub/frame_main.cpp:278 aegisub/frame_main.cpp:363
+#: aegisub/frame_main.cpp:369 aegisub/frame_main.cpp:375
+#: aegisub/frame_main.cpp:407
+msgid "Recent"
+msgstr "최신"
+
+#: aegisub/frame_main.cpp:282
+msgid "&Properties..."
+msgstr "편집"
+
+#: aegisub/frame_main.cpp:282
+msgid "Open script properties window"
+msgstr "스크립 편집 열기"
+
+#: aegisub/frame_main.cpp:283
+msgid "&Attachments..."
+msgstr "내용물... \t"
+
+#: aegisub/frame_main.cpp:283
+msgid "Open the attachment list"
+msgstr "어태치먼트 리스트 열기"
+
+#: aegisub/frame_main.cpp:285
+msgid "E&xit\t"
+msgstr "닫기"
+
+#: aegisub/frame_main.cpp:285
+msgid "Exit the application"
+msgstr "닫기"
+
+#: aegisub/frame_main.cpp:286
+msgid "&File"
+msgstr "파일"
+
+#: aegisub/frame_main.cpp:291 aegisub/frame_main_events.cpp:402
+#: aegisub/subs_edit_ctrl.cpp:866
+msgid "&Undo"
+msgstr "실행 취소"
+
+#: aegisub/frame_main.cpp:291 aegisub/frame_main_events.cpp:402
+msgid "Undoes last action"
+msgstr "취소"
+
+#: aegisub/frame_main.cpp:292 aegisub/frame_main_events.cpp:403
+#, fuzzy
+msgid "&Redo"
+msgstr "되살리기"
+
+#: aegisub/frame_main.cpp:292 aegisub/frame_main_events.cpp:403
+msgid "Redoes last action"
+msgstr "다시하기"
+
+#: aegisub/frame_main.cpp:294
+#, fuzzy
+msgid "Cut Lines\t"
+msgstr "줄들 선택"
+
+#: aegisub/frame_main.cpp:294
+msgid "Cut subtitles"
+msgstr "자막 커트"
+
+#: aegisub/frame_main.cpp:295
+#, fuzzy
+msgid "Copy Lines\t"
+msgstr "자막 붙이기"
+
+#: aegisub/frame_main.cpp:295
+msgid "Copy subtitles"
+msgstr "자막 붙이기"
+
+#: aegisub/frame_main.cpp:296
+#, fuzzy
+msgid "Paste Lines\t"
+msgstr "자막 붙이기"
+
+#: aegisub/frame_main.cpp:296
+msgid "Paste subtitles"
+msgstr "자막 붙이기"
+
+#: aegisub/frame_main.cpp:297
+#, fuzzy
+msgid "Paste Lines Over...\t"
+msgstr "붙이기... \t"
+
+#: aegisub/frame_main.cpp:297
+#, fuzzy
+msgid "Paste subtitles over others"
+msgstr "자막 붙이기"
+
+#: aegisub/frame_main.cpp:299
+msgid "&Find...\t"
+msgstr "찾기"
+
+#: aegisub/frame_main.cpp:299
+msgid "Find words in subtitles"
+msgstr "단어 찾기"
+
+#: aegisub/frame_main.cpp:300
+#, fuzzy
+msgid "Find Next\t"
+msgstr "다음 찾기"
+
+#: aegisub/frame_main.cpp:300
+msgid "Find next match of last word"
+msgstr "다음 맞는 단어 찾기"
+
+#: aegisub/frame_main.cpp:301
+#, fuzzy
+msgid "Search and &Replace...\t"
+msgstr "바꾸기"
+
+#: aegisub/frame_main.cpp:301
+msgid "Find and replace words in subtitles"
+msgstr "단어 바꾸기"
+
+#: aegisub/frame_main.cpp:302
+msgid "&Edit"
+msgstr "편집"
+
+#: aegisub/frame_main.cpp:307
+#, fuzzy
+msgid "&Insert Lines"
+msgstr "오리지날"
+
+#: aegisub/frame_main.cpp:309
+msgid "&Before Current"
+msgstr ""
+
+#: aegisub/frame_main.cpp:309
+#, fuzzy
+msgid "Inserts a line before current"
+msgstr "비디오 시간에  인서트하기 (전)"
+
+#: aegisub/frame_main.cpp:310
+msgid "&After Current"
+msgstr ""
+
+#: aegisub/frame_main.cpp:310
+#, fuzzy
+msgid "Inserts a line after current"
+msgstr "비디오 시간에  인서트하기 (압)"
+
+#: aegisub/frame_main.cpp:311
+msgid "Before Current, at Video Time"
+msgstr ""
+
+#: aegisub/frame_main.cpp:311
+#, fuzzy
+msgid "Inserts a line before current, starting at video time"
+msgstr "보이는 줄 다 선텍하기 "
+
+#: aegisub/frame_main.cpp:312
+#, fuzzy
+msgid "After Current, at Video Time"
+msgstr "현재 시간 움지기기"
+
+#: aegisub/frame_main.cpp:312
+#, fuzzy
+msgid "Inserts a line after current, starting at video time"
+msgstr "보이는 줄 다 선텍하기 "
+
+#: aegisub/frame_main.cpp:314
+#, fuzzy
+msgid "&Duplicate Lines"
+msgstr "복사  (&D)"
+
+#: aegisub/frame_main.cpp:314
+msgid "Duplicate the selected lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:315 aegisub/subs_grid.cpp:165
+msgid "&Duplicate and shift by 1 frame"
+msgstr "한 프래임 복사/움지기기 "
+
+#: aegisub/frame_main.cpp:315
+#, fuzzy
+msgid "Duplicate lines and shift by one frame"
+msgstr "한 프래임 복사/움지기기 "
+
+#: aegisub/frame_main.cpp:316
+#, fuzzy
+msgid "Delete Lines"
+msgstr "줄들 선택"
+
+#: aegisub/frame_main.cpp:316
+#, fuzzy
+msgid "Delete currently selected lines"
+msgstr "현재 타임코드파일 닫기"
+
+#: aegisub/frame_main.cpp:319
+msgid "Join Lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:321
+#, fuzzy
+msgid "&Concatenate"
+msgstr "붙이기 (연결) (&J)"
+
+#: aegisub/frame_main.cpp:321
+msgid "Joins selected lines in a single one, concatenating text together"
+msgstr ""
+
+#: aegisub/frame_main.cpp:322
+msgid "Keep &First"
+msgstr ""
+
+#: aegisub/frame_main.cpp:322
+msgid ""
+"Joins selected lines in a single one, keeping text of first and discarding "
+"remaining"
+msgstr ""
+
+#: aegisub/frame_main.cpp:323
+#, fuzzy
+msgid "As &Karaoke"
+msgstr "가라오케"
+
+#: aegisub/frame_main.cpp:323
+msgid "Joins selected lines in a single one, as karaoke"
+msgstr ""
+
+#: aegisub/frame_main.cpp:325 aegisub/subs_grid.cpp:185
+msgid "Recombine Lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:325
+msgid "Recombine subtitles when they have been split and merged"
+msgstr ""
+
+#: aegisub/frame_main.cpp:326
+#, fuzzy
+msgid "Split Lines (by karaoke)"
+msgstr "자르기 (가라오케)"
+
+#: aegisub/frame_main.cpp:326
+msgid "Uses karaoke timing to split line into multiple smaller lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:328
+#, fuzzy
+msgid "Swap Lines"
+msgstr "줄들 선택"
+
+#: aegisub/frame_main.cpp:328
+msgid "Swaps the two selected lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:329
+#, fuzzy
+msgid "Select Lines...\t"
+msgstr "줄 고르기..."
+
+#: aegisub/frame_main.cpp:329
+msgid "Selects lines based on defined criterea"
+msgstr "표준됀 줄 고르기"
+
+#: aegisub/frame_main.cpp:331
+msgid "&Styles Manager..."
+msgstr "스타일 매내저"
+
+#: aegisub/frame_main.cpp:331
+msgid "Open styles manager"
+msgstr "스타일 매내저 열기"
+
+#: aegisub/frame_main.cpp:332
+msgid "St&yling Assistant..."
+msgstr "스타일 도움"
+
+#: aegisub/frame_main.cpp:332
+msgid "Open styling assistant"
+msgstr "스타일 도움 열기"
+
+#: aegisub/frame_main.cpp:333
+msgid "&Translation Assistant..."
+msgstr "번역 도움"
+
+#: aegisub/frame_main.cpp:333
+msgid "Open translation assistant"
+msgstr "번역 도움 열기"
+
+#: aegisub/frame_main.cpp:334
+msgid "Resample resolution..."
+msgstr "해상 다시하기"
+
+#: aegisub/frame_main.cpp:334
+msgid "Changes resolution and modifies subtitles to conform to change"
+msgstr "해상도/자막 봐꾸기. "
+
+#: aegisub/frame_main.cpp:335
+msgid "&Fonts Collector..."
+msgstr "글꼴들..."
+
+#: aegisub/frame_main.cpp:335
+msgid "Open fonts collector"
+msgstr "글꼴들 열기"
+
+#: aegisub/frame_main.cpp:336
+#, fuzzy
+msgid "Spe&ll Checker..."
+msgstr "단어 체크"
+
+#: aegisub/frame_main.cpp:336
+msgid "Open spell checker"
+msgstr "단어 체크 열기"
+
+#: aegisub/frame_main.cpp:337
+#, fuzzy
+msgid "&Subtitles"
+msgstr "세로 자막"
+
+#: aegisub/frame_main.cpp:341
+#, fuzzy
+msgid "S&hift Times..."
+msgstr "시간 움지기기..."
+
+#: aegisub/frame_main.cpp:341
+msgid "Shift subtitles by time or frames"
+msgstr "자막을 시간/프레임으로 움지기기"
+
+#: aegisub/frame_main.cpp:342
+msgid "Sort by Time"
+msgstr "시간으로 보기"
+
+#: aegisub/frame_main.cpp:342
+msgid "Sort all subtitles by their start times"
+msgstr "자막을 시간/프레임으로 보기"
+
+#: aegisub/frame_main.cpp:343
+msgid "Timing Post-Processor..."
+msgstr "포스트-프로쎄써 타이밍 "
+
+#: aegisub/frame_main.cpp:343
+msgid ""
+"Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
+"timing and etc."
+msgstr "포스트-프로쎄써 실행. 리드 인/아웃, 타이밍, etc 들위해"
+
+#: aegisub/frame_main.cpp:344
+msgid "Kanji Timer..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:344
+#, fuzzy
+msgid "Open Kanji timer"
+msgstr "오디오 파일 열기"
+
+#: aegisub/frame_main.cpp:346
+#, fuzzy
+msgid "Snap Start to Video"
+msgstr "첫비디오를 스냅 "
+
+#: aegisub/frame_main.cpp:347
+#, fuzzy
+msgid "Snap End to Video"
+msgstr "마지막 비디오를 스냅"
+
+#: aegisub/frame_main.cpp:348 aegisub/hotkeys.cpp:340
+msgid "Snap to Scene"
+msgstr "장면으로 스넵"
+
+#: aegisub/frame_main.cpp:348
+msgid ""
+"Set start and end of subtitles to the keyframes around current video frame"
+msgstr "자막 시작/끝 을 키프래임으로 현재 비디오프래임으로 붙이기  "
+
+#: aegisub/frame_main.cpp:349
+#, fuzzy
+msgid "Shift to Current Frame"
+msgstr "현제 프래임 움지기기"
+
+#: aegisub/frame_main.cpp:349
+msgid "Shift selection so first selected line starts at current frame"
+msgstr "현제 프래임 움지겨서 시작하기"
+
+#: aegisub/frame_main.cpp:352
+#, fuzzy
+msgid "Make Times Continuous"
+msgstr "시간 돌아가게 (끝) (&m)"
+
+#: aegisub/frame_main.cpp:354
+#, fuzzy
+msgid "Change &Start"
+msgstr "종횡비 바꾸기"
+
+#: aegisub/frame_main.cpp:354
+msgid "Changes times of subs so start times begin on previous's end time"
+msgstr ""
+
+#: aegisub/frame_main.cpp:355
+msgid "Change &End"
+msgstr ""
+
+#: aegisub/frame_main.cpp:355
+msgid "Changes times of subs so end times begin on next's start time"
+msgstr ""
+
+#: aegisub/frame_main.cpp:357
+#, fuzzy
+msgid "&Timing"
+msgstr "타이밍:"
+
+#: aegisub/frame_main.cpp:361
+msgid "&Open Video..."
+msgstr "비디오 열기"
+
+#: aegisub/frame_main.cpp:361
+msgid "Opens a video file"
+msgstr "비디오 파일을 연다"
+
+#: aegisub/frame_main.cpp:362
+msgid "&Close Video"
+msgstr "비디오 닫기 "
+
+#: aegisub/frame_main.cpp:362
+msgid "Closes the currently open video file"
+msgstr "현제 비딩 닫기"
+
+#: aegisub/frame_main.cpp:365
+msgid "Use dummy video..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:365
+msgid "Opens a video clip with solid colour"
+msgstr ""
+
+#: aegisub/frame_main.cpp:367
+msgid "Open timecodes file..."
+msgstr "타임코드파일 열기"
+
+#: aegisub/frame_main.cpp:367
+msgid "Opens a VFR timecodes v1 or v2 file"
+msgstr "VFR 타임코드파일 v1/v2 열기"
+
+#: aegisub/frame_main.cpp:368
+msgid "Close timecodes file"
+msgstr "타임코드파일 닫기"
+
+#: aegisub/frame_main.cpp:368
+msgid "Closes the currently open timecodes file"
+msgstr "현재 타임코드파일 닫기"
+
+#: aegisub/frame_main.cpp:372
+msgid "Open keyframes..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:372
+#, fuzzy
+msgid "Opens a keyframe list file"
+msgstr "오디오 파일 열기"
+
+#: aegisub/frame_main.cpp:373
+msgid "Save keyframes..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:373
+msgid "Saves the current keyframe list"
+msgstr ""
+
+#: aegisub/frame_main.cpp:374
+#, fuzzy
+msgid "Close keyframes"
+msgstr "프래임들"
+
+#: aegisub/frame_main.cpp:374
+#, fuzzy
+msgid "Closes the currently open keyframes list"
+msgstr "현재 타임코드파일 닫기"
+
+#: aegisub/frame_main.cpp:378
+#, fuzzy
+msgid "Detach Video"
+msgstr "세트 비디오 시작하기"
+
+#: aegisub/frame_main.cpp:378
+msgid "Detach video, displaying it in a separate Window."
+msgstr ""
+
+#: aegisub/frame_main.cpp:380
+#, fuzzy
+msgid "Set Zoom"
+msgstr "확대 50%"
+
+#: aegisub/frame_main.cpp:382
+msgid "Set zoom to 50%"
+msgstr "확대 50%"
+
+#: aegisub/frame_main.cpp:383
+msgid "Set zoom to 100%"
+msgstr "확대 100%"
+
+#: aegisub/frame_main.cpp:384
+msgid "Set zoom to 200%"
+msgstr "확대 200%"
+
+#: aegisub/frame_main.cpp:387
+#, fuzzy
+msgid "Override Aspect Ratio"
+msgstr "무효 가로세로 비"
+
+#: aegisub/frame_main.cpp:389
+#, fuzzy
+msgid "&Default"
+msgstr "디폴트"
+
+#: aegisub/frame_main.cpp:389
+msgid "Leave video on original aspect ratio"
+msgstr "오리지날 가로세로 비"
+
+#: aegisub/frame_main.cpp:390
+#, fuzzy
+msgid "&Fullscreen (4:3)"
+msgstr "(4:3) 가로세로 비"
+
+#: aegisub/frame_main.cpp:390
+#, fuzzy
+msgid "Forces video to 4:3 aspect ratio"
+msgstr "2.35 가로세로 비 "
+
+#: aegisub/frame_main.cpp:391
+#, fuzzy
+msgid "&Widescreen (16:9)"
+msgstr "(16:9) 가로세로 비"
+
+#: aegisub/frame_main.cpp:391
+#, fuzzy
+msgid "Forces video to 16:9 aspect ratio"
+msgstr "2.35 가로세로 비 "
+
+#: aegisub/frame_main.cpp:392
+msgid "&Cinematic (2.35)"
+msgstr ""
+
+#: aegisub/frame_main.cpp:392
+msgid "Forces video to 2.35 aspect ratio"
+msgstr "2.35 가로세로 비 "
+
+#: aegisub/frame_main.cpp:393
+#, fuzzy
+msgid "Custom..."
+msgstr "커트... \t"
+
+#: aegisub/frame_main.cpp:393
+msgid "Forces video to a custom aspect ratio"
+msgstr "설계 가로세로 비 "
+
+#: aegisub/frame_main.cpp:395
+msgid "Show overscan mask"
+msgstr ""
+
+#: aegisub/frame_main.cpp:395
+msgid ""
+"Show a mask over the video, indicating areas that might get cropped off by "
+"overscan on televisions."
+msgstr ""
+
+#: aegisub/frame_main.cpp:397
+msgid "&Jump To...\t"
+msgstr "가기... \t (&J)"
+
+#: aegisub/frame_main.cpp:397
+msgid "Jump to frame or time"
+msgstr "시간/프래임으로 가기"
+
+#: aegisub/frame_main.cpp:398
+msgid "Jump video to start\t"
+msgstr "비디오 처음으로 가기"
+
+#: aegisub/frame_main.cpp:399
+msgid "Jump video to end\t"
+msgstr "비디오 끝으로 가기"
+
+#: aegisub/frame_main.cpp:400
+msgid "&Video"
+msgstr "비디오"
+
+#: aegisub/frame_main.cpp:404
+msgid "&Open Audio file..."
+msgstr "오디오 파일 열기..."
+
+#: aegisub/frame_main.cpp:404
+msgid "Opens an audio file"
+msgstr "오디오 파일 열기"
+
+#: aegisub/frame_main.cpp:405
+msgid "Open Audio from &Video"
+msgstr "비디오에서 오디오 파일 열기"
+
+#: aegisub/frame_main.cpp:405
+msgid "Opens the audio from the current video file"
+msgstr "현제 비디오에서 오디오 열기"
+
+#: aegisub/frame_main.cpp:406
+msgid "&Close Audio"
+msgstr "오디오 닫기"
+
+#: aegisub/frame_main.cpp:406
+msgid "Closes the currently open audio file"
+msgstr "현제 오디오 닫기"
+
+#: aegisub/frame_main.cpp:409
+msgid "&Audio"
+msgstr "오디오"
+
+#: aegisub/frame_main.cpp:413
+msgid "&Automation..."
+msgstr "자동"
+
+#: aegisub/frame_main.cpp:413
+msgid "Open automation manager"
+msgstr "자동 매내저 열기"
+
+#: aegisub/frame_main.cpp:415
+#, fuzzy
+msgid "&Automation"
+msgstr "자동일"
+
+#: aegisub/frame_main.cpp:419
+msgid "Select Aegisub interface language"
+msgstr "에이지썹 언어"
+
+#: aegisub/frame_main.cpp:420
+#, fuzzy
+msgid "&Options..."
+msgstr "비디오 열기"
+
+#: aegisub/frame_main.cpp:422
+#, fuzzy
+msgid "&Associations..."
+msgstr "같이쓸  파일 종유"
+
+#: aegisub/frame_main.cpp:422
+#, fuzzy
+msgid "Associate file types with Aegisub"
+msgstr "파일 종유 추가"
+
+#: aegisub/frame_main.cpp:425
+#, fuzzy
+msgid "Lo&g window..."
+msgstr "찾기"
+
+#: aegisub/frame_main.cpp:425
+msgid "Open log window"
+msgstr ""
+
+#: aegisub/frame_main.cpp:428
+msgid "Subs only view"
+msgstr "자막만 보기"
+
+#: aegisub/frame_main.cpp:428
+msgid "Display subtitles only"
+msgstr "자막 보기"
+
+#: aegisub/frame_main.cpp:429
+msgid "Video+Subs view"
+msgstr "비디오+자막 보기"
+
+#: aegisub/frame_main.cpp:429
+msgid "Display video and subtitles only"
+msgstr "비디오, 자막만 보기 "
+
+#: aegisub/frame_main.cpp:430
+msgid "Audio+Subs view"
+msgstr "오디오+자막 보기"
+
+#: aegisub/frame_main.cpp:430
+msgid "Display audio and subtitles only"
+msgstr "오디오+자막만 보기"
+
+#: aegisub/frame_main.cpp:431
+msgid "Full view"
+msgstr "다 보기"
+
+#: aegisub/frame_main.cpp:431
+msgid "Display audio, video and subtitles"
+msgstr "오디오, 자막, 비디오 보기"
+
+#: aegisub/frame_main.cpp:432
+msgid "Vie&w"
+msgstr "보기"
+
+#: aegisub/frame_main.cpp:436
+msgid "&Contents...\t"
+msgstr "내용물... \t"
+
+#: aegisub/frame_main.cpp:436
+msgid "Help topics"
+msgstr "도움 "
+
+#: aegisub/frame_main.cpp:438
+msgid "&Website..."
+msgstr "홈패이지..."
+
+#: aegisub/frame_main.cpp:438
+msgid "Visit Aegisub's official website"
+msgstr "에이지썹 홈패이지"
+
+#: aegisub/frame_main.cpp:439
+msgid "&Forums..."
+msgstr "포룸..."
+
+#: aegisub/frame_main.cpp:439
+msgid "Visit Aegisub's forums"
+msgstr "에이지썹  BBC 가기"
+
+#: aegisub/frame_main.cpp:440
+msgid "&Bug tracker..."
+msgstr "&버그 트레커..."
+
+#: aegisub/frame_main.cpp:440
+msgid "Visit Aegisub's bug tracker"
+msgstr "에이지썹 버그 트레커"
+
+#: aegisub/frame_main.cpp:441
+msgid "&IRC channel..."
+msgstr "IRC 방"
+
+#: aegisub/frame_main.cpp:441
+msgid "Visit Aegisub's official IRC channel"
+msgstr "에이지썹 IRC 방에 놀러오세요"
+
+#: aegisub/frame_main.cpp:443
+msgid "&Check for Updates..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:443
+msgid "Check to see if there is a new version of Aegisub available"
+msgstr ""
+
+#: aegisub/frame_main.cpp:444
+msgid "&About..."
+msgstr "대하여..."
+
+#: aegisub/frame_main.cpp:445
+msgid "&Help"
+msgstr "도움"
+
+#: aegisub/frame_main.cpp:634
+msgid "Save subtitles file"
+msgstr "자막 파일 저장"
+
+#: aegisub/frame_main.cpp:653 aegisub/frame_main_events.cpp:642
+msgid "Choose charset code:"
+msgstr "자세트 코드:"
+
+#: aegisub/frame_main.cpp:683
+msgid "Save before continuing?"
+msgstr "지금 저장할까요?"
+
+#: aegisub/frame_main.cpp:683
+msgid "Unsaved changes"
+msgstr "안저장한 "
+
+#: aegisub/frame_main.cpp:807
+msgid "Do you want to load/unload the associated files?"
+msgstr "관련됀 파일들을 로드/언로드 하실레요?"
+
+#: aegisub/frame_main.cpp:807
+msgid "(Un)Load files?"
+msgstr "파일 풀기"
+
+#: aegisub/frame_main.cpp:943
+msgid "You have timecodes loaded currently. Would you like to unload them?"
+msgstr "타임코드가  있음니다. 없에까요?"
+
+#: aegisub/frame_main.cpp:943
+msgid "Unload timecodes?"
+msgstr "파임코드 지우까요?"
+
+#: aegisub/frame_main.cpp:969
+#, c-format
+msgid ""
+"The resolution of the loaded video and the resolution specified for the "
+"subtitles don't match.\n"
+"\n"
+"Video resolution:\t%d x %d\n"
+"Script resolution:\t%d x %d\n"
+"\n"
+"Change subtitles resolution to match video?"
+msgstr ""
+"해상이 여른 비디오랑 자막이 안 맞슴니다.\n"
+"\n"
+"비디오 해상: \t%d x %d\n"
+"스크립 해상: \t%d x %d\n"
+"\n"
+"자막 해상을 바꿀가요?"
+
+#: aegisub/frame_main.cpp:969
+msgid "Resolution mismatch"
+msgstr "해상 안맞음"
+
+#: aegisub/frame_main.cpp:976
+#, fuzzy
+msgid "Change script resolution"
+msgstr "스크립 해성 다시하기"
+
+#: aegisub/frame_main_events.cpp:249
+msgid "Empty"
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:432
+#, fuzzy
+msgid "No Automation macros loaded"
+msgstr "자동일 매네저 열기"
+
+#: aegisub/frame_main_events.cpp:579
+msgid "Open video file"
+msgstr "비디오 파일 열기"
+
+#: aegisub/frame_main_events.cpp:599
+msgid "Open audio file"
+msgstr "오디오 파일 열기"
+
+#: aegisub/frame_main_events.cpp:642
+msgid "Charset"
+msgstr "자세트"
+
+#: aegisub/frame_main_events.cpp:713
+msgid "Open timecodes file"
+msgstr "타임코드 열기"
+
+#: aegisub/frame_main_events.cpp:973
+#, fuzzy
+msgid "Reloaded all Automation scripts"
+msgstr "자동일 스크립 열기"
+
+#: aegisub/frame_main_events.cpp:976
+#, fuzzy
+msgid "Reloaded autoload Automation scripts"
+msgstr "자동일 스크립 열기"
+
+#: aegisub/frame_main_events.cpp:1108
+#, fuzzy
+msgid "snap to scene"
+msgstr "비디오 신으로 스냅"
+
+#: aegisub/frame_main_events.cpp:1139
+#, fuzzy
+msgid "shift to frame"
+msgstr "프래임으로 움지기기"
+
+#: aegisub/frame_main_events.cpp:1235
+msgid ""
+"Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) "
+"form. Enter a value like 853x480 to set a specific resolution."
+msgstr ""
+"가로세로 비 바꾸기, 소수  (e.g. 2.35), 분수 (e.g. 16:9) 일종들. 853x480 포멧 "
+"해상도를 임녁 하시요."
+
+#: aegisub/frame_main_events.cpp:1235
+msgid "Enter aspect ratio"
+msgstr "종횡비 바꾸기"
+
+#: aegisub/frame_main_events.cpp:1270
+msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
+msgstr "무효 값! 가로세로 비는 0.5-5.0 이야 함니다."
+
+#: aegisub/frame_main_events.cpp:1270
+msgid "Invalid Aspect Ratio"
+msgstr "무효 가로세로 비"
+
+#: aegisub/frame_main_events.cpp:1371
+#, fuzzy
+msgid "sort"
+msgstr "밖으로 저장"
+
+#: aegisub/frame_main_events.cpp:1407
+msgid "File backup saved as \""
+msgstr "백업 파일 저장 \""
+
+#: aegisub/frame_main_events.cpp:1501
+msgid "ASS Override Tag mode set to "
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:1502
+msgid "show full tags."
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:1503
+msgid "simplify tags."
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:1504
+msgid "hide tags."
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:1526 aegisub/subs_edit_box.cpp:865
+#, fuzzy
+msgid "editing"
+msgstr "편집함:"
+
+#: aegisub/hotkeys.cpp:318
+msgid "Exit"
+msgstr "끝내기"
+
+#: aegisub/hotkeys.cpp:319
+msgid "Help"
+msgstr "도움"
+
+#: aegisub/hotkeys.cpp:322
+#, fuzzy
+msgid "Edit Box Commit"
+msgstr "오디오 적용 "
+
+#: aegisub/hotkeys.cpp:323
+msgid "Undo"
+msgstr "실행 취소"
+
+#: aegisub/hotkeys.cpp:324
+msgid "Redo"
+msgstr "되살리기"
+
+#: aegisub/hotkeys.cpp:327
+msgid "Find Next"
+msgstr "다음 찾기"
+
+#: aegisub/hotkeys.cpp:329
+msgid "Select Lines"
+msgstr "줄들 선택"
+
+#: aegisub/hotkeys.cpp:331
+msgid "Cut"
+msgstr "커트"
+
+#: aegisub/hotkeys.cpp:332
+msgid "Paste"
+msgstr "붙여넣기"
+
+#: aegisub/hotkeys.cpp:333
+#, fuzzy
+msgid "Paste Over"
+msgstr "붙여넣기"
+
+#: aegisub/hotkeys.cpp:335
+msgid "Video Jump"
+msgstr "비디오가기"
+
+#: aegisub/hotkeys.cpp:336
+msgid "Jump Video to Start"
+msgstr "비디오 시작으로가기"
+
+#: aegisub/hotkeys.cpp:337
+msgid "Jump Video to End"
+msgstr "비디오 끝으로가기"
+
+#: aegisub/hotkeys.cpp:338
+msgid "Set Start to Video"
+msgstr "세트 비디오 시작하기"
+
+#: aegisub/hotkeys.cpp:339
+msgid "Set End to Video"
+msgstr "세트 비디오 끝나기"
+
+#: aegisub/hotkeys.cpp:341
+msgid "Shift by Current Time"
+msgstr "현재 시간 움지기기"
+
+#: aegisub/hotkeys.cpp:342
+msgid "Zoom 50%"
+msgstr "줌인 50%"
+
+#: aegisub/hotkeys.cpp:343
+msgid "Zoom 100%"
+msgstr "줌인 100%"
+
+#: aegisub/hotkeys.cpp:344
+msgid "Zoom 200%"
+msgstr "줌인 200%"
+
+#: aegisub/hotkeys.cpp:346
+msgid "Video global prev frame"
+msgstr "비디오 전프래임"
+
+#: aegisub/hotkeys.cpp:347
+msgid "Video global next frame"
+msgstr "비디오 앞프래임"
+
+#: aegisub/hotkeys.cpp:348
+msgid "Video global focus seek"
+msgstr "비디오 포커스 찾기"
+
+#: aegisub/hotkeys.cpp:349
+#, fuzzy
+msgid "Video global play"
+msgstr "비디오 전프래임"
+
+#: aegisub/hotkeys.cpp:350
+msgid "Grid global prev line"
+msgstr "전 그리드 줄"
+
+#: aegisub/hotkeys.cpp:351
+msgid "Grid global next line"
+msgstr "앞 그리드 줄"
+
+#: aegisub/hotkeys.cpp:352
+msgid "Save Subtitles Alt"
+msgstr "자막 저장"
+
+#: aegisub/hotkeys.cpp:353
+msgid "Video global zoom in"
+msgstr "비디오 확대"
+
+#: aegisub/hotkeys.cpp:354
+msgid "Video global zoom out"
+msgstr "비디오 줌아웃"
+
+#: aegisub/hotkeys.cpp:356
+msgid "Grid move row down"
+msgstr "그리드 줄 밒으로"
+
+#: aegisub/hotkeys.cpp:357
+msgid "Grid move row up"
+msgstr "그리드 줄 위로"
+
+#: aegisub/hotkeys.cpp:358
+msgid "Grid delete rows"
+msgstr "그리드 줄 지우기"
+
+#: aegisub/hotkeys.cpp:359
+msgid "Grid duplicate rows"
+msgstr "사본 그리드 줄 지우기"
+
+#: aegisub/hotkeys.cpp:360
+msgid "Grid duplicate and shift one frame"
+msgstr "그리드 복사, 한프래임 움지기기"
+
+#: aegisub/hotkeys.cpp:362
+msgid "Audio Commit Alt"
+msgstr "오디오 Alt 적용 "
+
+#: aegisub/hotkeys.cpp:363
+msgid "Audio Commit"
+msgstr "오디오 적용 "
+
+#: aegisub/hotkeys.cpp:364
+msgid "Audio Commit (Stay)"
+msgstr "오디오 적용 (같은)"
+
+#: aegisub/hotkeys.cpp:365
+msgid "Audio Prev Line"
+msgstr "전 오디오 줄"
+
+#: aegisub/hotkeys.cpp:366
+msgid "Audio Prev Line Alt"
+msgstr "전 오디오 줄 (alt)"
+
+#: aegisub/hotkeys.cpp:367
+msgid "Audio Next Line"
+msgstr "다음 오디오 줄"
+
+#: aegisub/hotkeys.cpp:368
+msgid "Audio Next Line Alt"
+msgstr "다음 오디오 줄 (alt)"
+
+#: aegisub/hotkeys.cpp:369
+msgid "Audio Play"
+msgstr "오디오 듯기"
+
+#: aegisub/hotkeys.cpp:370
+msgid "Audio Play Alt"
+msgstr "오디오 듯기 (alt)"
+
+#: aegisub/hotkeys.cpp:371
+#, fuzzy
+msgid "Audio Play or Stop"
+msgstr "오디오 듯기 (alt)"
+
+#: aegisub/hotkeys.cpp:372
+#, fuzzy
+msgid "Audio Stop"
+msgstr "오디오 적용 "
+
+#: aegisub/hotkeys.cpp:373
+msgid "Audio Karaoke Increase Len"
+msgstr "오디오 가라오케 거리 올리기"
+
+#: aegisub/hotkeys.cpp:374
+msgid "Audio Karaoke Decrease Len"
+msgstr "오디오 가라오케 거리 내리기"
+
+#: aegisub/hotkeys.cpp:375
+msgid "Audio Karaoke Increase Len Shift"
+msgstr "오디오 가라오케 거리 움지기기 (올리기)"
+
+#: aegisub/hotkeys.cpp:376
+msgid "Audio Karaoke Decrease Len Shift"
+msgstr "오디오 가라오케 거리 움지기기 (내리기)"
+
+#: aegisub/hotkeys.cpp:377
+msgid "Audio Scroll Left"
+msgstr "오디오 왼쪽으로 스크롤"
+
+#: aegisub/hotkeys.cpp:378
+msgid "Audio Scroll Right"
+msgstr "오디오 오른쪽으로 스크롤"
+
+#: aegisub/hotkeys.cpp:379
+msgid "Audio Play First 500ms"
+msgstr "시작에서 오디오 500 ms 까지 재생"
+
+#: aegisub/hotkeys.cpp:380
+msgid "Audio Play Last 500ms"
+msgstr "끝에서 오디오 500 ms 뒤까지 재생"
+
+#: aegisub/hotkeys.cpp:381
+msgid "Audio Play 500ms Before"
+msgstr "오디오 500 ms 전  재생"
+
+#: aegisub/hotkeys.cpp:382
+msgid "Audio Play 500ms After"
+msgstr "오디오 500 ms 첫  재생"
+
+#: aegisub/hotkeys.cpp:383
+msgid "Audio Play To End"
+msgstr "오디오 듯기"
+
+#: aegisub/hotkeys.cpp:384
+msgid "Audio Play Original Line"
+msgstr "오리지날 오디오 재생"
+
+#: aegisub/hotkeys.cpp:385
+msgid "Audio Add Lead In"
+msgstr "오디오 리드 인 두기"
+
+#: aegisub/hotkeys.cpp:386
+msgid "Audio Add Lead Out"
+msgstr "오디오 리드 아웃 두기"
+
+#: aegisub/hotkeys.cpp:388
+msgid "Audio Medusa Toggle"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:389
+#, fuzzy
+msgid "Audio Medusa Play"
+msgstr "오디오 듯기"
+
+#: aegisub/hotkeys.cpp:390
+msgid "Audio Medusa Stop"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:391
+msgid "Audio Medusa Shift Start Back"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:392
+msgid "Audio Medusa Shift Start Forward"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:393
+msgid "Audio Medusa Shift End Back"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:394
+msgid "Audio Medusa Shift End Forward"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:395
+#, fuzzy
+msgid "Audio Medusa Play Before"
+msgstr "오디오 500 ms 전  재생"
+
+#: aegisub/hotkeys.cpp:396
+#, fuzzy
+msgid "Audio Medusa Play After"
+msgstr "오디오 500 ms 첫  재생"
+
+#: aegisub/hotkeys.cpp:397
+#, fuzzy
+msgid "Audio Medusa Next"
+msgstr "다음 오디오 줄"
+
+#: aegisub/hotkeys.cpp:398
+#, fuzzy
+msgid "Audio Medusa Previous"
+msgstr "전 오디오 줄"
+
+#: aegisub/hotkeys.cpp:400
+msgid "Translation Assistant Play"
+msgstr "번역 도움 재생"
+
+#: aegisub/hotkeys.cpp:401
+msgid "Translation Assistant Next"
+msgstr "번역 도움 다음"
+
+#: aegisub/hotkeys.cpp:402
+msgid "Translation Assistant Prev"
+msgstr "번역 도움 전"
+
+#: aegisub/hotkeys.cpp:403
+msgid "Translation Assistant Accept"
+msgstr "번역 도움 적용"
+
+#: aegisub/hotkeys.cpp:404
+msgid "Translation Assistant Preview"
+msgstr "번역 도움 보기"
+
+#: aegisub/hotkeys.cpp:405
+msgid "Translation Assistant Insert Original"
+msgstr "번역 도움 오리지날 느기"
+
+#: aegisub/hotkeys.cpp:407
+msgid "Styling Assistant Play"
+msgstr "스타일 도움 플레이"
+
+#: aegisub/hotkeys.cpp:408
+msgid "Styling Assistant Next"
+msgstr "다음 스타일 도움 "
+
+#: aegisub/hotkeys.cpp:409
+msgid "Styling Assistant Prev"
+msgstr "전 스타일 도움"
+
+#: aegisub/hotkeys.cpp:410
+msgid "Styling Assistant Accept"
+msgstr "스타일 도움 적용"
+
+#: aegisub/hotkeys.cpp:411
+msgid "Styling Assistant Preview"
+msgstr "스타일 도움 보기"
+
+#: aegisub/mkv_wrap.cpp:168 aegisub/mkv_wrap.cpp:388
+msgid "Parsing Matroska"
+msgstr "마트로스카 파싱 "
+
+#: aegisub/mkv_wrap.cpp:168
+msgid "Reading keyframe and timecode data from Matroska file."
+msgstr "마트로스카 파일에서  키프래임/타임코드 읽기."
+
+#: aegisub/mkv_wrap.cpp:388
+#, fuzzy
+msgid "Reading subtitles from Matroska file."
+msgstr "마트로스카 파일에서  키프래임/타임코드 읽기."
+
+#: aegisub/subs_edit_box.cpp:82
+msgid "Comment"
+msgstr "코멘트"
+
+#: aegisub/subs_edit_box.cpp:83
+msgid "Comment this line out. Commented lines don't show up on screen."
+msgstr "이 코맨트 지우시요.  코맨트가있는 줄은 스크린에 보이지 안슴니다."
+
+#: aegisub/subs_edit_box.cpp:85
+msgid "Style for this line."
+msgstr "이 줄 스타일."
+
+#: aegisub/subs_edit_box.cpp:87
+msgid ""
+"Actor name for this speech. This is only for reference, and is mainly "
+"useless."
+msgstr "이 대화 말한 엑터이름 "
+
+#: aegisub/subs_edit_box.cpp:90
+msgid ""
+"Effect for this line. This can be used to store extra information for "
+"karaoke scripts, or for the effects supported by the renderer."
+msgstr "이 줄의 에펙트들. 여기는 가라오께 스크립 정보나 에펙트를 저장함니다."
+
+#: aegisub/subs_edit_box.cpp:95
+msgid "Layer number"
+msgstr "레이어 숫"
+
+#: aegisub/subs_edit_box.cpp:97
+msgid "Start time"
+msgstr "시작 시간"
+
+#: aegisub/subs_edit_box.cpp:100
+msgid "End time"
+msgstr "끝 시간"
+
+#: aegisub/subs_edit_box.cpp:104
+msgid "Line duration"
+msgstr "줄 길이"
+
+#: aegisub/subs_edit_box.cpp:107
+#, fuzzy
+msgid "Left Margin (0 = default)"
+msgstr "왼쪽 줄 (0000 = 보통)"
+
+#: aegisub/subs_edit_box.cpp:110
+#, fuzzy
+msgid "Right Margin (0 = default)"
+msgstr "오른쪽 줄 (0000 = 보통)"
+
+#: aegisub/subs_edit_box.cpp:113
+#, fuzzy
+msgid "Vertical Margin (0 = default)"
+msgstr "수직 줄 (0000 = 보통)"
+
+#: aegisub/subs_edit_box.cpp:120
+msgid "Italics"
+msgstr "기울임"
+
+#: aegisub/subs_edit_box.cpp:126
+msgid "Font Face Name"
+msgstr "글꼴 패이쓰 이름"
+
+#: aegisub/subs_edit_box.cpp:128
+msgid "Primary color"
+msgstr "프라이머리 컬러"
+
+#: aegisub/subs_edit_box.cpp:130
+msgid "Secondary color"
+msgstr "세컨더리 컬러"
+
+#: aegisub/subs_edit_box.cpp:132
+msgid "Outline color"
+msgstr "아웃트라인 컬러"
+
+#: aegisub/subs_edit_box.cpp:134
+msgid "Shadow color"
+msgstr "그림자 컬러"
+
+#: aegisub/subs_edit_box.cpp:135
+#, fuzzy
+msgid "Commit"
+msgstr "저장할가요?"
+
+#: aegisub/subs_edit_box.cpp:136
+msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
+msgstr ""
+
+#: aegisub/subs_edit_box.cpp:137
+msgid "Time"
+msgstr "시간"
+
+#: aegisub/subs_edit_box.cpp:138
+msgid "Time by h:mm:ss.cs"
+msgstr "h:mm:ss.cs 으로 시간"
+
+#: aegisub/subs_edit_box.cpp:139
+msgid "Frame"
+msgstr "프래임"
+
+#: aegisub/subs_edit_box.cpp:140
+msgid "Time by frame number"
+msgstr "프래임으로 시간 "
+
+#: aegisub/subs_edit_box.cpp:592
+#, fuzzy
+msgid "actor change"
+msgstr "확인"
+
+#: aegisub/subs_edit_box.cpp:619
+#, c-format
+msgid "%i"
+msgstr ""
+
+#: aegisub/subs_edit_box.cpp:620
+#, fuzzy
+msgid "layer change"
+msgstr "안저장한 "
+
+#: aegisub/subs_edit_box.cpp:689
+#, fuzzy
+msgid "modify times"
+msgstr "시간으로 움지기기"
+
+#: aegisub/subs_edit_box.cpp:713
+#, fuzzy
+msgid "MarginL change"
+msgstr "변화 보기"
+
+#: aegisub/subs_edit_box.cpp:735
+#, fuzzy
+msgid "MarginR change"
+msgstr "변화 보기"
+
+#: aegisub/subs_edit_box.cpp:758
+#, fuzzy
+msgid "MarginV change"
+msgstr "변화 보기"
+
+#: aegisub/subs_edit_box.cpp:779
+#, fuzzy
+msgid "effect change"
+msgstr "확인"
+
+#: aegisub/subs_edit_box.cpp:799
+#, fuzzy
+msgid "comment change"
+msgstr "적용 ("
+
+#: aegisub/subs_edit_ctrl.cpp:720
+msgid "No correction suggestions"
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:732
+#, fuzzy, c-format
+msgid "Add \"%s\" to dictionary"
+msgstr "선택 더하기"
+
+#: aegisub/subs_edit_ctrl.cpp:738
+#, fuzzy
+msgid "No spell checker suggestions"
+msgstr "단어 체크 열기"
+
+#: aegisub/subs_edit_ctrl.cpp:745
+#, c-format
+msgid "Spell checker suggestions for \"%s\""
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:765 aegisub/subs_edit_ctrl.cpp:848
+#, fuzzy
+msgid "Disable"
+msgstr "변"
+
+#: aegisub/subs_edit_ctrl.cpp:778
+#, fuzzy
+msgid "Spell checker language"
+msgstr "철자 체크"
+
+#: aegisub/subs_edit_ctrl.cpp:829
+#, c-format
+msgid "Thesaurus suggestions for \"%s\""
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:833
+msgid "No thesaurus suggestions"
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:861
+msgid "Thesaurus language"
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:868
+msgid "Cu&t"
+msgstr "커트 (&t)"
+
+#: aegisub/subs_edit_ctrl.cpp:869 aegisub/subs_grid.cpp:195
+msgid "&Copy"
+msgstr "복사 (&C)"
+
+#: aegisub/subs_edit_ctrl.cpp:870 aegisub/subs_grid.cpp:197
+msgid "&Paste"
+msgstr "붙이기 (&P)"
+
+#: aegisub/subs_edit_ctrl.cpp:872
+msgid "Select &All"
+msgstr "전체 선택 (&A)"
+
+#: aegisub/subs_edit_ctrl.cpp:876
+msgid "Split at cursor (preserve times)"
+msgstr "커서 위치 스프릿 (시간보존)"
+
+#: aegisub/subs_edit_ctrl.cpp:877
+msgid "Split at cursor (estimate times)"
+msgstr "커서 위치 스프릿 (시간견적)"
+
+#: aegisub/subs_grid.cpp:115
+msgid "Line Number"
+msgstr "줄 숫"
+
+#: aegisub/subs_grid.cpp:116
+msgid "Layer"
+msgstr "레이어"
+
+#: aegisub/subs_grid.cpp:148
+msgid "&Insert (before)"
+msgstr "인서트 (전)  (&I)"
+
+#: aegisub/subs_grid.cpp:149
+msgid "Insert (after)"
+msgstr "인서트 (압) "
+
+#: aegisub/subs_grid.cpp:151
+msgid "Insert at video time (before)"
+msgstr "비디오 시간에  인서트하기 (전)"
+
+#: aegisub/subs_grid.cpp:152
+msgid "Insert at video time (after)"
+msgstr "비디오 시간에  인서트하기 (압)"
+
+#: aegisub/subs_grid.cpp:164
+msgid "&Duplicate"
+msgstr "복사  (&D)"
+
+#: aegisub/subs_grid.cpp:166
+msgid "Split (by karaoke)"
+msgstr "자르기 (가라오케)"
+
+#: aegisub/subs_grid.cpp:170
+msgid "&Swap"
+msgstr "스왑 (&S)"
+
+#: aegisub/subs_grid.cpp:174
+msgid "&Join (concatenate)"
+msgstr "붙이기 (연결) (&J)"
+
+#: aegisub/subs_grid.cpp:175
+msgid "Join (keep first)"
+msgstr "붙이기 (시작 변화하지안슴)"
+
+#: aegisub/subs_grid.cpp:176
+msgid "Join (as Karaoke)"
+msgstr "붙이기 (가라오케)"
+
+#: aegisub/subs_grid.cpp:180
+msgid "&Make times continuous (change start)"
+msgstr "시간 돌아가게 (처음) (&m)"
+
+#: aegisub/subs_grid.cpp:181
+msgid "&Make times continuous (change end)"
+msgstr "시간 돌아가게 (끝) (&m)"
+
+#: aegisub/subs_grid.cpp:190
+#, fuzzy
+msgid "Create audio clip"
+msgstr "자동일 스크립 만들기"
+
+#: aegisub/subs_grid.cpp:196
+msgid "C&ut"
+msgstr "복사 (&u)"
+
+#: aegisub/subs_grid.cpp:396
+#, fuzzy
+msgid "splitting"
+msgstr "쪼개기 모드 토글 "
+
+#: aegisub/subs_grid.cpp:641
+msgid "combining"
+msgstr ""
+
+#: aegisub/subs_grid.cpp:672
+msgid "The starting point is beyond the length of the audio loaded."
+msgstr ""
+
+#: aegisub/subs_grid.cpp:676
+msgid "There is no audio to save."
+msgstr ""
+
+#: aegisub/subs_grid.cpp:683
+#, fuzzy
+msgid "Save audio clip"
+msgstr "오디오 파일 열기"
+
+#: aegisub/subs_grid.cpp:722
+msgid "Couldn't allocate memory."
+msgstr ""
+
+#: aegisub/subs_grid.cpp:799 aegisub/subs_grid.cpp:800
+#, fuzzy
+msgid "load"
+msgstr "재장전"
+
+#: aegisub/subs_grid.cpp:841
+msgid "swap lines"
+msgstr ""
+
+#: aegisub/subs_grid.cpp:867
+#, fuzzy
+msgid "line insertion"
+msgstr "줄 길이"
+
+#: aegisub/subs_grid.cpp:989
+#, fuzzy
+msgid "paste"
+msgstr "붙여넣기"
+
+#: aegisub/subs_grid.cpp:1031
+#, fuzzy
+msgid "delete"
+msgstr "지우기"
+
+#: aegisub/subs_grid.cpp:1110
+#, fuzzy
+msgid "adjoin"
+msgstr "붙이기"
+
+#: aegisub/subs_grid.cpp:1271
+#, fuzzy
+msgid "split"
+msgstr "스프릿"
+
+#: aegisub/subs_grid.cpp:1432
+#, fuzzy
+msgid "timing"
+msgstr "타이밍:"
+
+#: aegisub/subtitle_format.cpp:263
+msgid "All Supported Formats ("
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:286
+msgid "15.000 FPS"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:287
+msgid "23.976 FPS (Decimated NTSC)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:288
+msgid "24.000 FPS (FILM)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:290
+msgid "25.000 FPS (PAL)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:291
+msgid "29.970 FPS (NTSC)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:293
+msgid "30.000 FPS"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:294
+msgid "59.940 FPS (NTSC x2)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:295
+msgid "60.000 FPS"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:296
+msgid "119.880 FPS (NTSC x4)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:297
+msgid "120.000 FPS"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:301
+msgid "Please choose the appropriate FPS for the subtitles:"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:301
+msgid "FPS"
+msgstr ""
+
+#: aegisub/subtitle_format_prs.cpp:143
+msgid "Exporting PRS"
+msgstr " PRS 밖으로 저장"
+
+#: aegisub/subtitle_format_prs.cpp:143
+msgid "Writing file"
+msgstr "파일 쓰기"
+
+#: aegisub/vfr.cpp:65
+msgid "No timecodes to average"
+msgstr "평균할 타임코드가 없음"
+
+#: aegisub/video_box.cpp:75
+msgid "Play video starting on this position"
+msgstr "여기서 재생"
+
+#: aegisub/video_box.cpp:77
+msgid "Play current line"
+msgstr "현재줄 재생"
+
+#: aegisub/video_box.cpp:79
+msgid "Stop video playback"
+msgstr "정지"
+
+#: aegisub/video_box.cpp:81
+msgid "Toggle autoscroll of video"
+msgstr "오토 스크롤 토글"
+
+#: aegisub/video_box.cpp:86
+msgid "Seek video."
+msgstr "시간으로 가기"
+
+#: aegisub/video_box.cpp:90
+msgid "Current frame time and number."
+msgstr "현제 프레임 시간  & 숫자"
+
+#: aegisub/video_box.cpp:94
+msgid "Time of this frame relative to start and end of current subs."
+msgstr "이 프래임의 타임 을 자막의 시작/끝 관계를 해준다 ."
+
+#: aegisub/video_box.cpp:110
+msgid "Standard mode, double click sets position."
+msgstr ""
+
+#: aegisub/video_box.cpp:112
+#, fuzzy
+msgid "Drag subtitles."
+msgstr "자막 저장"
+
+#: aegisub/video_box.cpp:114
+#, fuzzy
+msgid "Rotate subtitles on their Z axis."
+msgstr "자막을 시간/프레임으로 보기"
+
+#: aegisub/video_box.cpp:116
+#, fuzzy
+msgid "Rotate subtitles on their X and Y axes."
+msgstr "자막을 시간/프레임으로 보기"
+
+#: aegisub/video_box.cpp:118
+#, fuzzy
+msgid "Scale subtitles on X and Y axes."
+msgstr "자막을 신으로 움지기기"
+
+#: aegisub/video_box.cpp:120
+#, fuzzy
+msgid "Clip subtitles to a rectangle."
+msgstr "자막을 신으로 움지기기"
+
+#: aegisub/video_box.cpp:122
+msgid "Toggle realtime display of changes."
+msgstr ""
+
+#: aegisub/video_context.cpp:271
+msgid ""
+"You already have timecodes loaded. Replace them with the timecodes from the "
+"Matroska file?"
+msgstr ""
+"타임코드가 이미 있슴니다. 타임코드을 마트로스카 파일으로  페이스트 할가요?"
+
+#: aegisub/video_context.cpp:271
+msgid "Replace timecodes?"
+msgstr "전 파임코드를 지우까요?"
+
+#: aegisub/video_context.cpp:597
+msgid "Video Screenshot Path"
+msgstr ""
+
+#: aegisub/video_display.cpp:447
+msgid "Save PNG snapshot"
+msgstr "스냅샷 PNG로 저장"
+
+#: aegisub/video_display.cpp:448
+msgid "Copy image to Clipboard"
+msgstr "이미지 복사"
+
+#: aegisub/video_display.cpp:451
+#, fuzzy
+msgid "Save PNG snapshot (no subtitles)"
+msgstr "스냅샷 PNG로 저장"
+
+#: aegisub/video_display.cpp:452
+#, fuzzy
+msgid "Copy image to Clipboard (no subtitles)"
+msgstr "이미지 복사"
+
+#: aegisub/video_display.cpp:454
+msgid "Copy coordinates to Clipboard"
+msgstr "위치 복사하기"
+
+#: aegisub/visual_tool.cpp:183 aegisub/visual_tool.cpp:235
+#: aegisub/visual_tool_drag.cpp:116
+msgid "visual typesetting"
+msgstr ""
+
+#: aegisub/visual_tool_cross.cpp:75
+msgid "positioning"
+msgstr ""
+
+#~ msgid ""
+#~ "Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka "
+#~ "jfs).\n"
+#~ msgstr ""
+#~ "자동 단위(모듀얼) Copyright (c) 2005-2006 Niels Martin Hansen (aka jfs).\n"
+
+#~ msgid ""
+#~ "Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka "
+#~ "Tentacle).\n"
+#~ msgstr "모션캡쳐 Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n"
+
+#~ msgid ""
+#~ "Coding by ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n"
+#~ msgstr "코딩 ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle, nmap 씀.\n"
+
+#~ msgid "Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n"
+#~ msgstr ""
+#~ "매뉴얼 ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed 씀.\n"
+
+#~ msgid "SVN hosting by BerliOS and Mentar.\n"
+#~ msgstr "SVN 호스팅 BerliOS, Mentar 함\n"
+
+#~ msgid "Stop"
+#~ msgstr "정지"
+
+#~ msgid ""
+#~ "Substation Alpha Mode - Left click sets start and right click sets end"
+#~ msgstr "섭스테이션 알파모드 - 왼쪽클릭[시작] 오른쪽 클릭[끝]"
+
+#~ msgid "&Create..."
+#~ msgstr "만들기 (&C)"
+
+#~ msgid "&Apply now"
+#~ msgstr "지금적용 "
+
+#~ msgid "&Edit..."
+#~ msgstr "편집 (&E)"
+
+#~ msgid "C&lose"
+#~ msgstr "닫기"
+
+#~ msgid "Script name"
+#~ msgstr "스크립 이름"
+
+#~ msgid "Tracker configuration"
+#~ msgstr "트레커 편집"
+
+#~ msgid "Number of points to track:"
+#~ msgstr "진로 쫓기 숫자"
+
+#~ msgid "Minimal (squared) distance between two points:  "
+#~ msgstr "두 장소 최소량 거리"
+
+#~ msgid "Maximum feature movement:"
+#~ msgstr "최대한 움지기는 특징: "
+
+#~ msgid "Maximum feature appearance change:"
+#~ msgstr "최대한 보이는 특징: "
+
+#~ msgid "How much CPU per feature?"
+#~ msgstr "특징당 얼마 CPU 장치?"
+
+#~ msgid "Edge detect filter size:"
+#~ msgstr "끝 발견 필터 크기"
+
+#~ msgid "Feature comparison width:"
+#~ msgstr "너비 특징 비교: "
+
+#~ msgid "Feature comparison height:"
+#~ msgstr "높이 특징 비교:"
+
+#~ msgid "Minimal determinant:"
+#~ msgstr "최소향 결정:"
+
+#~ msgid "Minimal displacement per iteration:"
+#~ msgstr "반복당 최소향으 진지변환:"
+
+#~ msgid "Go!"
+#~ msgstr "시작!"
+
+#~ msgid "Choose"
+#~ msgstr "선택"
+
+#~ msgid "Angle:"
+#~ msgstr "각도:"
+
+#~ msgid "FexTracker"
+#~ msgstr "Fex트렉"
+
+#~ msgid "Add points to movement"
+#~ msgstr "무부먼트로 포인트 추가하기 "
+
+#~ msgid "Remove points from movement"
+#~ msgstr "무부먼트에서 포인트를 지우기"
+
+#~ msgid "Generate movement from points"
+#~ msgstr "무부먼트를 포인트에서  만들기"
+
+#~ msgid "FexMovement"
+#~ msgstr "Fex움지기기"
+
+#~ msgid "Generate empty movement"
+#~ msgstr "비어있는 무부먼트 만들기"
+
+#~ msgid "Move subtitle (this frame and preceeding frames)"
+#~ msgstr "자막 움지기기 (현재/뒤 프레임)"
+
+#~ msgid "Move subtitle (this frame)"
+#~ msgstr "프레임 자막 움지기기"
+
+#~ msgid "Move subtitle (this frame and following frames)"
+#~ msgstr "자막 움지기기 (현재/앞 프레임)"
+
+#~ msgid "Split line for movement"
+#~ msgstr "줄 나누기"
+
+#~ msgid "Link movement file"
+#~ msgstr "무부먼트파일로 링크하기"
+
+#~ msgid "Tracking points"
+#~ msgstr "프레킹 포인트"
+
+#~ msgid "Link name:"
+#~ msgstr "링크 이름:"
+
+#~ msgid "Link line to movement file"
+#~ msgstr "줄을 무부먼트파일로 링크하기"
+
+#~ msgid "Invalid folder"
+#~ msgstr "무효 폴더"
+
+#~ msgid "Could not find font "
+#~ msgstr "글꼴이 없음"
+
+#~ msgid "&Undo\t"
+#~ msgstr "취소"
+
+#~ msgid "Find next\t"
+#~ msgstr "다음 찾기"
+
+#~ msgid "Copy...\t"
+#~ msgstr "복사...\t"
+
+#~ msgid "Zoom &50%\t"
+#~ msgstr "줌인  &50%\t"
+
+#~ msgid "Zoom &100%\t"
+#~ msgstr "확대 100%"
+
+#~ msgid "Zoom &200%\t"
+#~ msgstr "줌인 &200%\t"
+
+#~ msgid "Snap start to video\t"
+#~ msgstr "비디오 시작스냅"
+
+#~ msgid "Snap end to video\t"
+#~ msgstr "비디오 끝스냅"
+
+#~ msgid "&Default Aspect Ratio"
+#~ msgstr "가로세로 비"
+
+#~ msgid "Forces video to fullscreen aspect ratio"
+#~ msgstr "풀스크린 가로세로 비"
+
+#~ msgid "Forces video to widescreen aspect ratio"
+#~ msgstr "와이드스크린 가로세로 비"
+
+#~ msgid "&2.35 Aspect Ratio"
+#~ msgstr "2.35 가로세로 비"
+
+#~ msgid "Custom Aspect Ratio..."
+#~ msgstr "설계 가로세로 비 "
+
+#~ msgid "&Hotkeys..."
+#~ msgstr "핫키"
+
+#~ msgid "Remap hotkeys"
+#~ msgstr "핫키 바꾸기"
+
+#~ msgid "&Tools"
+#~ msgstr "도구"
+
+#~ msgid "Save file"
+#~ msgstr "파일 저장"
+
+#~ msgid "Recombine (1, 1+2) into (1, 2)"
+#~ msgstr "(1, 1+2)을 (1, 2)으로 부치기 "
+
+#~ msgid "Recombine (1+2, 2) into (1, 2)"
+#~ msgstr "(1+2, 2)을 (1, 2)으로 부치기 "
+
+#~ msgid "Recombine (1, 1+2, 2) into (1, 2)"
+#~ msgstr "(1, 1+2, 2)을 (1, 2)으로 부치기 "

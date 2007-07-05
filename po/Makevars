@@ -1,0 +1,11 @@
+DOMAIN = aegisub
+
+subdir = po
+top_builddir = ..
+
+XGETTEXT_OPTIONS = -C -k_
+
+COPYRIGHT_HOLDER = Rodrigo Braz Monteiro
+MSGID_BUGS_ADDRESS =
+EXTRA_LOCALE_CATEGORIES =
+

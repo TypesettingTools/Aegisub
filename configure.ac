@@ -5,6 +5,8 @@ AC_CONFIG_SRCDIR([aegisub/main.cpp])
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADER([aegisub/posix/acconf.h])
 AC_GNU_SOURCE
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.14.5])
 
 AC_CANONICAL_HOST
 
@@ -30,14 +32,6 @@ AC_PROG_LIBTOOL
 AC_PATH_PROGS(CONVERT, [convert], [])
 if test -z "$CONVERT"; then
 	AC_MSG_XFAILURE([Aegisub needs convert (from ImageMagick) to produce xpms from the supplied bitmaps/icons])
-fi
-
-dnl Don't replace this with AC_GNU_GETTEXT, we don't want the framework-mess
-dnl that macro depends on, just check if the single program we need is
-dnl installed on the system. We can probably even do with non-GNU versions.
-AC_PATH_PROGS(MSGFMT, [msgfmt], [])
-if test -z "$MSGFMT"
-then	AC_MSG_XFAILURE([Aegisub needs msgfmt from gettext-tools to compile i18n string tables])
 fi
 
 ACX_PTHREAD([], [
@@ -231,7 +225,7 @@ AC_OUTPUT([
 	ac/Makefile
 	auto3/Makefile
 	automation/Makefile
-	locale/Makefile
+	po/Makefile.in
 	aegisub/Makefile
 	aegisub/bitmaps/Makefile
 	aegisub/posix/Makefile

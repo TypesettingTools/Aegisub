@@ -1,0 +1,5315 @@
+#: aegisub/dialog_kanji_timer.cpp:88 aegisub/dialog_kanji_timer.cpp:90
+msgid ""
+msgstr ""
+"Project-Id-Version: Aegisub\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-07-05 16:53+0200\n"
+"PO-Revision-Date: 2006-08-31 17:00+0100\n"
+"Last-Translator: Eduard Ereza Martínez <ereza@catsub.net>\n"
+"Language-Team: Eduard Ereza Martínez <ereza@catsub.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Catalan\n"
+
+#: aegisub/ass_style.cpp:573
+msgid "ANSI"
+msgstr "ANSI"
+
+#: aegisub/ass_style.cpp:574
+msgid "Default"
+msgstr "Predefinit"
+
+#: aegisub/ass_style.cpp:575
+msgid "Symbol"
+msgstr "Símbol"
+
+#: aegisub/ass_style.cpp:576
+msgid "Mac"
+msgstr "Mac"
+
+#: aegisub/ass_style.cpp:577
+msgid "Shift_JIS"
+msgstr "Shift_JIS"
+
+#: aegisub/ass_style.cpp:578
+msgid "Hangeul"
+msgstr "Hangul"
+
+#: aegisub/ass_style.cpp:579
+msgid "Johab"
+msgstr "Johab"
+
+#: aegisub/ass_style.cpp:580
+msgid "GB2312"
+msgstr "GB2312"
+
+#: aegisub/ass_style.cpp:581
+msgid "Chinese BIG5"
+msgstr "Xinès BIG5"
+
+#: aegisub/ass_style.cpp:582
+msgid "Greek"
+msgstr "Grec"
+
+#: aegisub/ass_style.cpp:583
+msgid "Turkish"
+msgstr "Turc"
+
+#: aegisub/ass_style.cpp:584
+msgid "Vietnamese"
+msgstr "Vietnamita"
+
+#: aegisub/ass_style.cpp:585
+msgid "Hebrew"
+msgstr "Hebreu"
+
+#: aegisub/ass_style.cpp:586
+msgid "Arabic"
+msgstr "Àrab"
+
+#: aegisub/ass_style.cpp:587
+msgid "Baltic"
+msgstr "Bàltic"
+
+#: aegisub/ass_style.cpp:588
+msgid "Russian"
+msgstr "Rus"
+
+#: aegisub/ass_style.cpp:589
+msgid "Thai"
+msgstr "Tailandès"
+
+#: aegisub/ass_style.cpp:590
+msgid "East European"
+msgstr "Europeu de l'est"
+
+#: aegisub/ass_style.cpp:591
+msgid "OEM"
+msgstr "OEM"
+
+#: aegisub/audio_box.cpp:69
+msgid "Seek bar"
+msgstr "Barra de desplaçament"
+
+#: aegisub/audio_box.cpp:87
+msgid "Horizontal zoom"
+msgstr "Ampliació horitzontal"
+
+#: aegisub/audio_box.cpp:90
+msgid "Vertical zoom"
+msgstr "Ampliació vertical"
+
+#: aegisub/audio_box.cpp:93
+msgid "Audio Volume"
+msgstr "Volum de l'àudio"
+
+#: aegisub/audio_box.cpp:100
+msgid "Link vertical zoom and volume sliders"
+msgstr "Enllaça les barres de desplaçament de l'ampliació vertical i el volum"
+
+#: aegisub/audio_box.cpp:127
+#, fuzzy
+msgid "Previous line or syllable (%KEY%/%KEY%)"
+msgstr "Línia/síl·laba anterior ("
+
+#: aegisub/audio_box.cpp:130
+#, fuzzy
+msgid "Next line/syllable (%KEY%/%KEY%)"
+msgstr "Línia/síl·laba següent ("
+
+#: aegisub/audio_box.cpp:133
+#, fuzzy
+msgid "Play selection (%KEY%/%KEY%)"
+msgstr "Reprodueix la selecció ("
+
+#: aegisub/audio_box.cpp:136
+#, fuzzy
+msgid "Play current line (%KEY%)"
+msgstr "Reprodueix la línia actual ("
+
+#: aegisub/audio_box.cpp:139
+msgid "Stop (%KEY%)"
+msgstr ""
+
+#: aegisub/audio_box.cpp:143
+#, fuzzy
+msgid "Play 500 ms before selection (%KEY%)"
+msgstr "Reprodueix 500 ms abans de la selecció ("
+
+#: aegisub/audio_box.cpp:146
+#, fuzzy
+msgid "Play 500 ms after selection (%KEY%)"
+msgstr "Reprodueix 500 ms després de la selecció ("
+
+#: aegisub/audio_box.cpp:149
+#, fuzzy
+msgid "Play first 500ms of selection (%KEY%)"
+msgstr "Reprodueix els primers 500 ms de la selecció ("
+
+#: aegisub/audio_box.cpp:152
+#, fuzzy
+msgid "Play last 500ms of selection (%KEY%)"
+msgstr "Reprodueix els últims 500 ms de la selecció ("
+
+#: aegisub/audio_box.cpp:155
+#, fuzzy
+msgid "Play from selection start to end of file (%KEY%)"
+msgstr "Reprodueix de l'inici de la selecció al final del fitxer ("
+
+#: aegisub/audio_box.cpp:159
+#, fuzzy
+msgid "Add lead in (%KEY%)"
+msgstr "Afegeix temps d'entrada ("
+
+#: aegisub/audio_box.cpp:162
+#, fuzzy
+msgid "Add lead out (%KEY%)"
+msgstr "Afegeix temps de sortida ("
+
+#: aegisub/audio_box.cpp:166
+#, fuzzy
+msgid "Commit changes (%KEY%/%KEY%)"
+msgstr "Aplica els canvis ("
+
+#: aegisub/audio_box.cpp:169
+msgid "Go to selection"
+msgstr "Vés a la selecció"
+
+#: aegisub/audio_box.cpp:173
+msgid "Automatically commit all changes"
+msgstr "Aplica tots els canvis automàticament"
+
+#: aegisub/audio_box.cpp:177
+msgid "Auto goes to next line on commit"
+msgstr ""
+
+#: aegisub/audio_box.cpp:181
+msgid "Auto scrolls audio display to selected line"
+msgstr "Mou la visualització de l'àudio a la línia seleccionada automàticament"
+
+#: aegisub/audio_box.cpp:185
+msgid "Spectrum analyzer mode"
+msgstr "Mode d'analitzador d'espectre"
+
+#: aegisub/audio_box.cpp:189
+msgid "Enable Medusa-Style Timing Shortcuts"
+msgstr ""
+
+#: aegisub/audio_box.cpp:200
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: aegisub/audio_box.cpp:201
+msgid "Toggle karaoke mode"
+msgstr "Activa/desactiva el mode de karaoke"
+
+#: aegisub/audio_box.cpp:551
+msgid "Cancel Split"
+msgstr "Cancel·la la divisió"
+
+#: aegisub/audio_box.cpp:552
+msgid "Discard all splits and leave split-mode"
+msgstr ""
+
+#: aegisub/audio_box.cpp:553
+#, fuzzy
+msgid "Accept Split"
+msgstr "Cancel·la la divisió"
+
+#: aegisub/audio_box.cpp:554
+msgid "Commit splits and leave split-mode"
+msgstr ""
+
+#: aegisub/audio_box.cpp:556
+msgid "Join"
+msgstr "Uneix"
+
+#: aegisub/audio_box.cpp:557
+msgid "Join selected syllables"
+msgstr "Uneix les síl·labes seleccionades"
+
+#: aegisub/audio_box.cpp:558
+msgid "Split"
+msgstr "Divideix"
+
+#: aegisub/audio_box.cpp:559
+#, fuzzy
+msgid "Enter split-mode"
+msgstr "Canvia el mode de divisió"
+
+#: aegisub/audio_display.cpp:2132 aegisub/audio_display.cpp:2187
+msgid ""
+"Do you want to commit your changes? If you choose No, they will be discarded."
+msgstr "Voleu aplicar els canvis? Si escolliu No, es descartaran."
+
+#: aegisub/audio_display.cpp:2132 aegisub/audio_display.cpp:2187
+msgid "Commit?"
+msgstr "Aplicar?"
+
+#: aegisub/audio_karaoke.cpp:788
+msgid "Karaoke tag"
+msgstr "Etiqueta de karaoke"
+
+#: aegisub/audio_karaoke.cpp:792
+msgid "Change karaoke tag to \\k"
+msgstr "Canvia l'etiqueta del karaoke a \\k"
+
+#: aegisub/audio_karaoke.cpp:793
+msgid "Change karaoke tag to \\kf"
+msgstr "Canvia l'etiqueta del karaoke a \\kf"
+
+#: aegisub/audio_karaoke.cpp:794
+msgid "Change karaoke tag to \\ko"
+msgstr "Canvia l'etiqueta del karaoke a \\ko"
+
+#: aegisub/audio_provider_ram.cpp:85
+msgid "Load audio"
+msgstr "Carrega l'àudio"
+
+#: aegisub/audio_provider_ram.cpp:85
+msgid "Reading into RAM"
+msgstr "S'està copiant a la RAM"
+
+#: aegisub/auto4_base.cpp:390 aegisub/dialog_kanji_timer.cpp:105
+#, fuzzy
+msgid "Close"
+msgstr "Tan&ca"
+
+#: aegisub/auto4_base.cpp:392
+#, fuzzy
+msgid "Script completed"
+msgstr "Propietats de l''script'"
+
+#: aegisub/auto4_base.cpp:740
+#, c-format
+msgid "An Automation script failed to load. File name: '%s', error reported:"
+msgstr ""
+
+#: aegisub/auto4_base.cpp:753
+#, c-format
+msgid "The file was not recognised as an Automation script: %s"
+msgstr ""
+
+#: aegisub/auto4_base.cpp:774
+msgid "File was not recognized as a script"
+msgstr ""
+
+#: aegisub/base_grid.cpp:410
+msgid "#"
+msgstr "N"
+
+#: aegisub/base_grid.cpp:411
+msgid "L"
+msgstr "C"
+
+#: aegisub/base_grid.cpp:412 aegisub/dialog_kanji_timer.cpp:98
+#: aegisub/subs_grid.cpp:117
+msgid "Start"
+msgstr "Inici"
+
+#: aegisub/base_grid.cpp:413 aegisub/subs_grid.cpp:118
+msgid "End"
+msgstr "Fi"
+
+#: aegisub/base_grid.cpp:414 aegisub/dialog_options.cpp:215
+#: aegisub/dialog_options.cpp:287 aegisub/dialog_options.cpp:472
+#: aegisub/dialog_search_replace.cpp:93 aegisub/dialog_selection.cpp:96
+#: aegisub/subs_grid.cpp:119
+msgid "Style"
+msgstr "Estil"
+
+#: aegisub/base_grid.cpp:415 aegisub/dialog_search_replace.cpp:94
+#: aegisub/dialog_selection.cpp:97 aegisub/subs_edit_box.cpp:88
+#: aegisub/subs_grid.cpp:120
+msgid "Actor"
+msgstr "Actor"
+
+#: aegisub/base_grid.cpp:416 aegisub/subs_edit_box.cpp:91
+#: aegisub/subs_grid.cpp:121
+msgid "Effect"
+msgstr "Efecte"
+
+#: aegisub/base_grid.cpp:417 aegisub/dialog_style_editor.cpp:241
+#: aegisub/subs_grid.cpp:122
+msgid "Left"
+msgstr "Esq."
+
+#: aegisub/base_grid.cpp:418 aegisub/dialog_style_editor.cpp:241
+#: aegisub/subs_grid.cpp:123
+msgid "Right"
+msgstr "Dreta"
+
+#: aegisub/base_grid.cpp:419 aegisub/dialog_style_editor.cpp:241
+#: aegisub/subs_grid.cpp:124
+msgid "Vert"
+msgstr "Vert."
+
+#: aegisub/base_grid.cpp:420 aegisub/dialog_kanji_timer.cpp:72
+#: aegisub/dialog_search_replace.cpp:92 aegisub/dialog_selection.cpp:95
+msgid "Text"
+msgstr "Text"
+
+#: aegisub/browse_button.cpp:50
+#, fuzzy
+msgid "Browse..."
+msgstr "Na&vega..."
+
+#: aegisub/browse_button.cpp:72
+msgid "Please choose the folder:"
+msgstr ""
+
+#: aegisub/dialog_about.cpp:48 aegisub/frame_main.cpp:444
+msgid "About Aegisub"
+msgstr "Quant a l'Aegisub"
+
+#: aegisub/dialog_about.cpp:60
+msgid "This build of Aegisub uses the following C/C++ libraries:\n"
+msgstr ""
+
+#: aegisub/dialog_about.cpp:74
+msgid "Translated into LANGUAGE by PERSON\n"
+msgstr "Traduït al català per Eduard Ereza Martínez.\n"
+
+#: aegisub/dialog_about.cpp:76
+msgid " by ArchMage ZeratuL.\n"
+msgstr " per ArchMage ZeratuL.\n"
+
+#: aegisub/dialog_about.cpp:80
+#, fuzzy
+msgid "Programmers: "
+msgstr "Marcs:"
+
+#: aegisub/dialog_about.cpp:82
+msgid "Manual by: "
+msgstr ""
+
+#: aegisub/dialog_about.cpp:84
+#, fuzzy
+msgid "Forum, wiki and bug tracker hosting by: "
+msgstr "Allotjament del fòrum i el sistema de seguiment d'errors per Bot1.\n"
+
+#: aegisub/dialog_about.cpp:86
+msgid "SVN hosting by: "
+msgstr ""
+
+#: aegisub/dialog_about.cpp:90
+msgid ""
+"\n"
+"See the help file for full credits.\n"
+msgstr ""
+"\n"
+"Vegeu el fitxer d'ajuda per als crèdits complets.\n"
+
+#: aegisub/dialog_about.cpp:91
+#, c-format
+msgid "Built by %s on %s."
+msgstr "Muntat per %s el %s."
+
+#: aegisub/dialog_associations.cpp:46
+msgid "Associate extensions"
+msgstr "Associa les extensions"
+
+#: aegisub/dialog_associations.cpp:63
+msgid ""
+"Please select the formats you want to\n"
+"associate with Aegisub:"
+msgstr ""
+"Escolliu els formats que voleu\n"
+"associar amb l'Aegisub:"
+
+#: aegisub/dialog_associations.cpp:64
+msgid "Associations"
+msgstr "Associacions"
+
+#: aegisub/dialog_attachments.cpp:53
+msgid "Attachment List"
+msgstr "Llista d'adjuncions"
+
+#: aegisub/dialog_attachments.cpp:63
+msgid "E&xtract"
+msgstr "E&xtreu"
+
+#: aegisub/dialog_attachments.cpp:64
+msgid "&Delete"
+msgstr "&Suprimeix"
+
+#: aegisub/dialog_attachments.cpp:70
+msgid "Attach &Font"
+msgstr "Adjunta tipus de &lletra"
+
+#: aegisub/dialog_attachments.cpp:71
+msgid "Attach &Graphics"
+msgstr "Adjunta &gràfics"
+
+#: aegisub/dialog_attachments.cpp:74 aegisub/dialog_automation.cpp:61
+msgid "&Close"
+msgstr "Tan&ca"
+
+#: aegisub/dialog_attachments.cpp:93
+msgid "Attachment name"
+msgstr "Nom de l'adjunció"
+
+#: aegisub/dialog_attachments.cpp:94
+msgid "Size"
+msgstr "Mida"
+
+#: aegisub/dialog_attachments.cpp:95
+msgid "Group"
+msgstr "Grup"
+
+#: aegisub/dialog_attachments.cpp:139 aegisub/dialog_attachments.cpp:172
+msgid "Choose file to be attached"
+msgstr "Escolliu el fitxer que voleu adjuntar"
+
+#: aegisub/dialog_attachments.cpp:210
+msgid "Select the path to save the files to:"
+msgstr "Seleccioneu el camí on desar els fitxers:"
+
+#: aegisub/dialog_attachments.cpp:214
+msgid "Select the path to save the file to:"
+msgstr "Seleccioneu el camí on desar el fitxer:"
+
+#: aegisub/dialog_automation.cpp:46
+msgid "Automation Manager"
+msgstr "Gestor de l'automatització"
+
+#: aegisub/dialog_automation.cpp:56
+#, fuzzy
+msgid "&Add"
+msgstr "&Afegeix..."
+
+#: aegisub/dialog_automation.cpp:57
+msgid "&Remove"
+msgstr "Sup&rimeix"
+
+#: aegisub/dialog_automation.cpp:58
+#, fuzzy
+msgid "Re&load"
+msgstr "Recarre&ga"
+
+#: aegisub/dialog_automation.cpp:59
+msgid "Show &Info"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:60
+msgid "Re&scan Autoload Dir"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:65
+#, fuzzy
+msgid "Name"
+msgstr "Marc"
+
+#: aegisub/dialog_automation.cpp:66
+#, fuzzy
+msgid "Filename"
+msgstr "Vietnamita"
+
+#: aegisub/dialog_automation.cpp:67
+msgid "Description"
+msgstr "Descripció"
+
+#: aegisub/dialog_automation.cpp:195
+#, fuzzy
+msgid "Add Automation script"
+msgstr "Carrega un 'script' d'Automatització"
+
+#: aegisub/dialog_automation.cpp:266
+#, c-format
+msgid ""
+"Total scripts loaded: %d\n"
+"Global scripts loaded: %d\n"
+"Local scripts loaded: %d\n"
+"\n"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:271
+msgid "Scripting engines installed:\n"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:278
+#, c-format
+msgid ""
+"\n"
+"Script info:\n"
+"Name: %s\n"
+"Description: %s\n"
+"Author: %s\n"
+"Version: %s\n"
+"Full path: %s\n"
+"State: %s"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:284
+msgid "Correctly loaded"
+msgstr ""
+
+#: aegisub/dialog_automation.cpp:284
+#, fuzzy
+msgid "Failed to load"
+msgstr "Ha fallat la còpia de \""
+
+#: aegisub/dialog_automation.cpp:287
+#, fuzzy
+msgid "Automation Script Info"
+msgstr "Carrega un 'script' d'Automatització"
+
+#: aegisub/dialog_colorpicker.cpp:377
+#, fuzzy
+msgid "Select Colour"
+msgstr "Seleccioneu un color"
+
+#: aegisub/dialog_colorpicker.cpp:450
+#, fuzzy
+msgid "Colour spectrum"
+msgstr "Espectre de colors"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "RGB/R"
+msgstr "RGB/R"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "RGB/G"
+msgstr "RGB/G"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "RGB/B"
+msgstr "RGB/B"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "HSL/L"
+msgstr "HSL/L"
+
+#: aegisub/dialog_colorpicker.cpp:457
+msgid "HSV/H"
+msgstr "HSV/H"
+
+#: aegisub/dialog_colorpicker.cpp:463
+#, fuzzy
+msgid "RGB colour"
+msgstr "Color RGB"
+
+#: aegisub/dialog_colorpicker.cpp:468
+#, fuzzy
+msgid "HSL colour"
+msgstr "Color HSL"
+
+#: aegisub/dialog_colorpicker.cpp:473
+#, fuzzy
+msgid "HSV colour"
+msgstr "Color HSV"
+
+#: aegisub/dialog_colorpicker.cpp:493
+msgid "Spectrum mode:"
+msgstr "Mode d'espectre:"
+
+#: aegisub/dialog_colorpicker.cpp:505
+msgid "Red:"
+msgstr "Vermell:"
+
+#: aegisub/dialog_colorpicker.cpp:507
+msgid "Green:"
+msgstr "Verd:"
+
+#: aegisub/dialog_colorpicker.cpp:509
+msgid "Blue:"
+msgstr "Blau:"
+
+#: aegisub/dialog_colorpicker.cpp:522 aegisub/dialog_colorpicker.cpp:531
+msgid "Hue:"
+msgstr "Tint:"
+
+#: aegisub/dialog_colorpicker.cpp:524 aegisub/dialog_colorpicker.cpp:533
+msgid "Sat.:"
+msgstr "Sat.:"
+
+#: aegisub/dialog_colorpicker.cpp:526
+msgid "Lum.:"
+msgstr "Llum.:"
+
+#: aegisub/dialog_colorpicker.cpp:535
+msgid "Value:"
+msgstr "Valor:"
+
+#: aegisub/dialog_detached_video.cpp:50
+#, fuzzy
+msgid "Detached Video"
+msgstr "Defineix el final al vídeo"
+
+#: aegisub/dialog_dummy_video.cpp:118
+#, fuzzy
+msgid "Dummy video options"
+msgstr "Posa el vídeo al final"
+
+#: aegisub/dialog_dummy_video.cpp:126
+msgid "Checkerboard pattern"
+msgstr ""
+
+#: aegisub/dialog_dummy_video.cpp:134
+#, fuzzy
+msgid "Video resolution:"
+msgstr "Reajusta la resolució"
+
+#: aegisub/dialog_dummy_video.cpp:142
+#, fuzzy
+msgid "Colour:"
+msgstr "Colors"
+
+#: aegisub/dialog_dummy_video.cpp:146
+msgid "Frame rate (fps):"
+msgstr ""
+
+#: aegisub/dialog_dummy_video.cpp:148
+msgid "Duration (frames):"
+msgstr ""
+
+#: aegisub/dialog_dummy_video.cpp:239
+#, c-format
+msgid "Resulting duration: %d:%02d:%02d.%03d"
+msgstr ""
+
+#: aegisub/dialog_dummy_video.cpp:242
+msgid "Invalid fps or length value"
+msgstr ""
+
+#: aegisub/dialog_export.cpp:49
+msgid "Export"
+msgstr "Exporta"
+
+#: aegisub/dialog_export.cpp:82
+msgid "Move up"
+msgstr "Mou amunt"
+
+#: aegisub/dialog_export.cpp:83
+msgid "Move down"
+msgstr "Mou avall"
+
+#: aegisub/dialog_export.cpp:84
+msgid "Select all"
+msgstr "Selecciona-ho tot"
+
+#: aegisub/dialog_export.cpp:85
+msgid "Select none"
+msgstr "No seleccionis res"
+
+#: aegisub/dialog_export.cpp:88
+msgid "Text encoding:"
+msgstr "Codificació del text:"
+
+#: aegisub/dialog_export.cpp:98
+msgid "Filters"
+msgstr "Filtres"
+
+#: aegisub/dialog_export.cpp:109 aegisub/dialog_export.cpp:113
+msgid "Export..."
+msgstr "Exporta..."
+
+#: aegisub/dialog_export.cpp:185
+msgid "Export subtitles file"
+msgstr "Exporta el fitxer de subtítols"
+
+#: aegisub/dialog_fonts_collector.cpp:69 aegisub/frame_main.cpp:236
+msgid "Fonts Collector"
+msgstr "Col·lector de tipus de lletra"
+
+#: aegisub/dialog_fonts_collector.cpp:84
+msgid "&Browse..."
+msgstr "Na&vega..."
+
+#: aegisub/dialog_fonts_collector.cpp:86
+#: aegisub/dialog_fonts_collector.cpp:289
+msgid ""
+"Choose the folder where the fonts will be collected to.\n"
+"It will be created if it doesn't exist."
+msgstr ""
+"Escolliu la carpeta on es col·lectaran els tipus de lletra.\n"
+"Es crearà si no existeix."
+
+#: aegisub/dialog_fonts_collector.cpp:89
+msgid "Destination"
+msgstr "Destinació"
+
+#: aegisub/dialog_fonts_collector.cpp:110 aegisub/dialog_version_check.cpp:67
+msgid "Log"
+msgstr "Registre"
+
+#: aegisub/dialog_fonts_collector.cpp:114
+msgid "&Start!"
+msgstr "C&omença!"
+
+#: aegisub/dialog_fonts_collector.cpp:175
+#, fuzzy
+msgid "Invalid destination."
+msgstr "Relació d'aspecte invàlida"
+
+#: aegisub/dialog_fonts_collector.cpp:175
+#: aegisub/dialog_fonts_collector.cpp:184
+#: aegisub/dialog_fonts_collector.cpp:193 aegisub/dialog_kanji_timer.cpp:197
+#: aegisub/dialog_kanji_timer.cpp:199 aegisub/dialog_kanji_timer.cpp:232
+#: aegisub/dialog_kanji_timer.cpp:316 aegisub/dialog_kanji_timer.cpp:348
+#: aegisub/dialog_kanji_timer.cpp:350 aegisub/dialog_options.cpp:240
+#: aegisub/subs_grid.cpp:672 aegisub/subs_grid.cpp:676
+#: aegisub/subs_grid.cpp:722
+msgid "Error"
+msgstr "Error"
+
+#: aegisub/dialog_fonts_collector.cpp:184
+msgid "Could not create destination folder."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:193
+msgid "Invalid path for .zip file."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:239
+msgid "Select archive file name"
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:247
+msgid "Select folder to save fonts on"
+msgstr "Seleccioneu la careta on desar els tipus de lletra"
+
+#: aegisub/dialog_fonts_collector.cpp:303
+msgid ""
+"Enter the name of the destination zip file to collect the fonts to.\n"
+"If a folder is entered, a default name will be used."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:363
+msgid "Invalid destination directory."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:376
+msgid ""
+"Collecting font data from system. This might take a while, depending on the "
+"number of fonts installed. Results are cached and subsequent executions will "
+"be faster... "
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:378
+msgid ""
+"done.\n"
+"\n"
+"Scanning file for fonts..."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:403
+msgid ""
+"Done.\n"
+"\n"
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:405
+#, fuzzy
+msgid "Checking fonts...\n"
+msgstr "S'estan cercant tipus de lletra al fitxer...\n"
+
+#: aegisub/dialog_fonts_collector.cpp:406
+#, fuzzy
+msgid "Copying fonts to folder...\n"
+msgstr "S'estan cercant tipus de lletra al fitxer...\n"
+
+#: aegisub/dialog_fonts_collector.cpp:407
+#, fuzzy
+msgid "Copying fonts to archive...\n"
+msgstr ""
+"\n"
+"S'estan llegint els tipus de lletra del registre...\n"
+
+#: aegisub/dialog_fonts_collector.cpp:408
+#, fuzzy
+msgid "Attaching fonts to file...\n"
+msgstr "S'estan cercant tipus de lletra al fitxer...\n"
+
+#: aegisub/dialog_fonts_collector.cpp:424
+#, c-format
+msgid ""
+"\n"
+"Finished writing to %s.\n"
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:429
+msgid "Done. All fonts found."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:431
+msgid "Done. All fonts copied."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:436
+#, fuzzy
+msgid "font attachment"
+msgstr "Adjuncions"
+
+#: aegisub/dialog_fonts_collector.cpp:443
+msgid "Done. Some fonts could not be found."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:444
+msgid "Done. Some fonts could not be copied."
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:464
+#, fuzzy
+msgid "Not found.\n"
+msgstr "No s'han trobat coincidències."
+
+#: aegisub/dialog_fonts_collector.cpp:470
+msgid "Found.\n"
+msgstr ""
+
+#: aegisub/dialog_fonts_collector.cpp:485
+#, fuzzy, c-format
+msgid "* Copied %s.\n"
+msgstr "\" copiada.\n"
+
+#: aegisub/dialog_fonts_collector.cpp:489
+#, fuzzy, c-format
+msgid "* %s already exists on destination.\n"
+msgstr "\" ja existeix a la destinació.\n"
+
+#: aegisub/dialog_fonts_collector.cpp:492
+#, fuzzy, c-format
+msgid "* Failed to copy %s.\n"
+msgstr "Ha fallat la còpia de \""
+
+#: aegisub/dialog_fonts_collector.cpp:561
+msgid "\" found on style \""
+msgstr "\" trobada a l'estil \""
+
+#: aegisub/dialog_fonts_collector.cpp:562
+msgid "\" found on dialogue line "
+msgstr "\" trobada a la línia de diàleg"
+
+#: aegisub/dialog_jumpto.cpp:56
+msgid "Jump to"
+msgstr "Salta a"
+
+#: aegisub/dialog_jumpto.cpp:67
+msgid "Frame: "
+msgstr "Marc:"
+
+#: aegisub/dialog_jumpto.cpp:68 aegisub/dialog_shift_times.cpp:71
+msgid "Time: "
+msgstr "Temps:"
+
+#: aegisub/dialog_kanji_timer.cpp:61
+msgid "Kanji timing"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:73
+msgid "Shortcut Keys"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:74
+#, fuzzy
+msgid "Groups"
+msgstr "Grup"
+
+#: aegisub/dialog_kanji_timer.cpp:75
+#, fuzzy
+msgid "Styles"
+msgstr "Estil"
+
+#: aegisub/dialog_kanji_timer.cpp:76
+#, fuzzy
+msgid "Commands"
+msgstr "Comentaris"
+
+#: aegisub/dialog_kanji_timer.cpp:86
+msgid ""
+"When the destination textbox has focus, use the following keys:\n"
+"\n"
+"Right Arrow: Increase dest. selection length\n"
+"Left Arrow: Decrease dest. selection length\n"
+"Up Arrow: Increase source selection length\n"
+"Down Arrow: Decrease source selection length\n"
+"Enter: Link, accept line when done\n"
+"Backspace: Unlink last"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:89
+#, fuzzy
+msgid "Source Style"
+msgstr "Defineix l'estil"
+
+#: aegisub/dialog_kanji_timer.cpp:91
+#, fuzzy
+msgid "Dest Style"
+msgstr "Defineix l'estil"
+
+#: aegisub/dialog_kanji_timer.cpp:99
+msgid "Link"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:100
+#, fuzzy
+msgid "Unlink"
+msgstr "Subratllat"
+
+#: aegisub/dialog_kanji_timer.cpp:101
+msgid "Skip Source Line"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:102
+#, fuzzy
+msgid "Skip Dest Line"
+msgstr "Àudio: Línia següent"
+
+#: aegisub/dialog_kanji_timer.cpp:103
+msgid "Go Back a Line"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:104
+#, fuzzy
+msgid "Accept Line"
+msgstr "Accepta els canvis"
+
+#: aegisub/dialog_kanji_timer.cpp:108
+msgid "Attempt to interpolate kanji."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:112
+msgid "Source: "
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:113
+msgid "Dest: "
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:187
+msgid "kanji timing"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:197
+msgid "Select source and destination styles first."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:199
+msgid "The source and destination styles must be different."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:232
+msgid "Select source text first."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:301
+msgid ""
+"The source line contains text before the first karaoke block.\n"
+"Do you want to carry it over to the destination?\n"
+"It will be ignored otherwise."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:302
+#, fuzzy
+msgid "Question"
+msgstr "Resolució"
+
+#: aegisub/dialog_kanji_timer.cpp:316
+msgid "Possible error parsing source line"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:348
+msgid "Group some text first."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:350
+msgid "Group all of the source text."
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:369
+#, c-format
+msgid "%s{\\k%i}"
+msgstr ""
+
+#: aegisub/dialog_kanji_timer.cpp:378
+#, c-format
+msgid "%s{\\k%i}%s"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:104
+#, fuzzy
+msgid "Startup"
+msgstr "Inici"
+
+#: aegisub/dialog_options.cpp:107
+msgid "Show Splash Screen"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:108
+msgid "Show Tip of the Day"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:109
+msgid "Auto Check for Updates"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:110
+msgid "Save config.dat locally"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:113
+msgid "Limits for levels and recent files"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:116
+msgid "Maximum undo levels"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:116
+#, fuzzy
+msgid "Maximum recent timecode files"
+msgstr "Obre un fitxer de codis de temps"
+
+#: aegisub/dialog_options.cpp:116
+msgid "Maximum recent keyframe files"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:116
+#, fuzzy
+msgid "Maximum recent subtitle files"
+msgstr "Exporta el fitxer de subtítols"
+
+#: aegisub/dialog_options.cpp:116
+#, fuzzy
+msgid "Maximum recent video files"
+msgstr "Obre un fitxer de vídeo"
+
+#: aegisub/dialog_options.cpp:116
+#, fuzzy
+msgid "Maximum recent audio files"
+msgstr "Obre un fitxer d'àudio"
+
+#: aegisub/dialog_options.cpp:116
+msgid "Maximum recent find strings"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:116
+msgid "Maximum recent replace strings"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:136
+msgid "Auto-save"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:138
+msgid "File paths"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:140
+#, fuzzy
+msgid "Miscelanea"
+msgstr "Miscel·lani"
+
+#: aegisub/dialog_options.cpp:144
+msgid "Auto-backup"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:150
+msgid "Auto-save every"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:152
+msgid "seconds."
+msgstr ""
+
+#: aegisub/dialog_options.cpp:155
+msgid "Auto-save path:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:163
+msgid "Auto-backup path:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:171
+msgid "Crash recovery path:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:181
+msgid "Auto-load linked files:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+msgid "Never"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+msgid "Always"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+msgid "Ask"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:186
+msgid "Text import actor separator:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:190
+msgid "Text import comment starter:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:212 aegisub/dialog_options.cpp:286
+#: aegisub/dialog_options.cpp:355 aegisub/dialog_options.cpp:437
+#: aegisub/dialog_options.cpp:471 aegisub/dialog_options.cpp:554
+#: aegisub/dialog_properties.cpp:112 aegisub/dialog_timing_processor.cpp:70
+#: aegisub/frame_main.cpp:244 aegisub/hotkeys.cpp:320
+#, fuzzy
+msgid "Options"
+msgstr "Acció"
+
+#: aegisub/dialog_options.cpp:220
+msgid "Enable call tips"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:220
+msgid "Enable syntax highlighting"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:220
+msgid "Link commiting of times"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:220
+msgid "Overwrite-Insertion in time boxes"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:222
+msgid "Path to dictionary files:"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:239 aegisub/dialog_options.cpp:562
+#: aegisub/dialog_properties.cpp:126
+msgid "Normal"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:239
+#, fuzzy
+msgid "Brackets"
+msgstr "Segueix els punts"
+
+#: aegisub/dialog_options.cpp:239
+msgid "Slashes and Parentheses"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:239
+msgid "Tags"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:239
+#, fuzzy
+msgid "Parameters"
+msgstr "Propietats"
+
+#: aegisub/dialog_options.cpp:240
+msgid "Error Background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:240
+#, fuzzy
+msgid "Line Break"
+msgstr "Durada de la línia"
+
+#: aegisub/dialog_options.cpp:240
+msgid "Modified Background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:247
+msgid "Syntax highlighter - "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:258 aegisub/dialog_options.cpp:322
+#, fuzzy
+msgid "Font: "
+msgstr "Tipus de lletra"
+
+#: aegisub/dialog_options.cpp:293
+msgid "Allow grid to take focus"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:293
+#, fuzzy
+msgid "Highlight subtitles that are currently visible in video"
+msgstr "Selecciona totes les línies actualment visibles al marc del vídeo"
+
+#: aegisub/dialog_options.cpp:303
+#, fuzzy
+msgid "Standard foreground"
+msgstr "Configuració estàndard"
+
+#: aegisub/dialog_options.cpp:303
+msgid "Standard background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:303
+#, fuzzy
+msgid "Selection foreground"
+msgstr "Selecció"
+
+#: aegisub/dialog_options.cpp:304 aegisub/dialog_options.cpp:489
+#, fuzzy
+msgid "Selection background"
+msgstr "Selecció"
+
+#: aegisub/dialog_options.cpp:304
+msgid "Comment background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:304
+msgid "Selected comment background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:305
+msgid "Collision foreground"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:305
+msgid "Line in frame background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:305
+msgid "Header"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:306
+msgid "Left Column"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:306
+msgid "Active Line Border"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:306
+#, fuzzy
+msgid "Lines"
+msgstr "Temps"
+
+#: aegisub/dialog_options.cpp:308
+msgid "selection background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:335
+#, fuzzy
+msgid "Replace override tags with: "
+msgstr "Substitueix amb:"
+
+#: aegisub/dialog_options.cpp:356 aegisub/dialog_options.cpp:523
+msgid "Advanced - EXPERT USERS ONLY"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:362
+msgid "Match video resolution on open: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:367
+#, fuzzy
+msgid "Default Zoom: "
+msgstr "Predefinit"
+
+#: aegisub/dialog_options.cpp:378
+msgid "Fast jump step in frames: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:382
+msgid "Screenshot save path: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:388
+msgid "Show keyframes in slider"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:394
+msgid "Video provider: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:399
+#, fuzzy
+msgid "Subtitles provider: "
+msgstr "Desa el fitxer de subtítols"
+
+#: aegisub/dialog_options.cpp:404
+msgid "Avisynth memory limit: "
+msgstr ""
+
+#: aegisub/dialog_options.cpp:411
+msgid "Use pixel shaders if available"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:414
+msgid "Allow pre-2.56a Avisynth"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:418
+msgid "Avisynth renders its own subs"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:424 aegisub/dialog_options.cpp:542
+msgid ""
+"WARNING: Changing these settings might result in bugs,\n"
+"crashes, glitches and/or movax.\n"
+"Don't touch these unless you know what you're doing."
+msgstr ""
+
+#: aegisub/dialog_options.cpp:442
+#, fuzzy
+msgid "Grab times from line upon selection"
+msgstr "Treu de la selecció"
+
+#: aegisub/dialog_options.cpp:443
+msgid "Default mouse wheel to zoom"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:444
+msgid "Lock scroll on Cursor"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:445
+#, fuzzy
+msgid "Snap to keyframes"
+msgstr "Enganxa a l'escena"
+
+#: aegisub/dialog_options.cpp:446
+#, fuzzy
+msgid "Snap to adjascent lines"
+msgstr "Enganxa a l'escena\t"
+
+#: aegisub/dialog_options.cpp:447
+msgid "Auto-focus on mouse over"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:451
+#, fuzzy
+msgid "Don't show"
+msgstr "No coincideix"
+
+#: aegisub/dialog_options.cpp:451
+msgid "Show previous"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:451
+#, fuzzy
+msgid "Show all"
+msgstr "Color de l'ombra"
+
+#: aegisub/dialog_options.cpp:452
+msgid "Default timing length"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:453
+msgid "Default lead-in length"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:454
+msgid "Default lead-out length"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:455
+#, fuzzy
+msgid "Show inactive lines"
+msgstr "Distància de l'ombra, en píxels"
+
+#: aegisub/dialog_options.cpp:477
+msgid "Draw secondary lines"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:477
+msgid "Draw selection background"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:477
+msgid "Draw timeline"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:478
+msgid "Draw cursor time"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:478
+#, fuzzy
+msgid "Draw keyframes"
+msgstr " marcs "
+
+#: aegisub/dialog_options.cpp:489
+#, fuzzy
+msgid "Play cursor"
+msgstr "Reprodueix l'àudio"
+
+#: aegisub/dialog_options.cpp:489
+#, fuzzy
+msgid "Background"
+msgstr "Endarrere"
+
+#: aegisub/dialog_options.cpp:490
+msgid "Selection background - modified"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:490
+#, fuzzy
+msgid "Seconds boundary"
+msgstr "Secundari"
+
+#: aegisub/dialog_options.cpp:490
+msgid "Waveform"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:491
+#, fuzzy
+msgid "Waveform - selection"
+msgstr "Vés a la selecció"
+
+#: aegisub/dialog_options.cpp:491
+msgid "Waveform - modified"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:491
+msgid "Waveform - inactive"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:492
+msgid "Boundary - start"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:492
+msgid "Boundary - end"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:492
+msgid "Boundary - inactive"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:493
+msgid "Syllable text"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:493
+#, fuzzy
+msgid "Syllable boundary"
+msgstr "Secundari"
+
+#: aegisub/dialog_options.cpp:527
+msgid "None (NOT RECOMMENDED)"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:527
+msgid "RAM"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:527
+msgid "Hard Disk"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:529
+#, fuzzy
+msgid "Audio provider"
+msgstr "Àudio: Línia anterior"
+
+#: aegisub/dialog_options.cpp:530
+#, fuzzy
+msgid "Audio player"
+msgstr "Àudio: Reprodueix"
+
+#: aegisub/dialog_options.cpp:531
+msgid "Cache type"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:532
+msgid "Avisynth down-mixer"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:533
+msgid "HD cache path"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:534
+#, fuzzy
+msgid "HD cache name"
+msgstr "Nom de l'adjunció"
+
+#: aegisub/dialog_options.cpp:535
+#, fuzzy
+msgid "Spectrum cutoff"
+msgstr "Mode d'espectre:"
+
+#: aegisub/dialog_options.cpp:536
+msgid "0 - Regular quality"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:536
+msgid "1 - Better quality"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:536
+msgid "2 - High quality"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:536
+msgid "3 - Insane quality"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:537
+#, fuzzy
+msgid "Spectrum quality"
+msgstr "Mode d'analitzador d'espectre"
+
+#: aegisub/dialog_options.cpp:538
+msgid "Spectrum cache memory max (MB)"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:558
+msgid "Base path"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:559
+msgid "Include path"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:560
+msgid "Auto-load path"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:561
+msgid "0: Fatal"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:561
+#, fuzzy
+msgid "1: Error"
+msgstr "Error"
+
+#: aegisub/dialog_options.cpp:561
+#, fuzzy
+msgid "2: Warning"
+msgstr "Advertència"
+
+#: aegisub/dialog_options.cpp:561
+msgid "3: Hint"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:561
+msgid "4: Debug"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:561
+msgid "5: Trace"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:562
+msgid "Below Normal (recommended)"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:562
+#, fuzzy
+msgid "Lowest"
+msgstr "Esq."
+
+#: aegisub/dialog_options.cpp:563
+#, fuzzy
+msgid "No scripts"
+msgstr "'Script'"
+
+#: aegisub/dialog_options.cpp:563
+msgid "Subtitle-local scripts"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:563
+#, fuzzy
+msgid "Global autoload scripts"
+msgstr "Carrega un 'script' d'Automatització"
+
+#: aegisub/dialog_options.cpp:563
+#, fuzzy
+msgid "All scripts"
+msgstr "'Script' invàlid"
+
+#: aegisub/dialog_options.cpp:564
+msgid "Trace level"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:565
+msgid "Thread priority"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:566
+msgid "Autoreload on Export"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:584
+#, fuzzy
+msgid ""
+"List of all hotkeys (shortcuts) available in Aegisub.\n"
+"Double click on any item to reassign it."
+msgstr ""
+"Llista de les dreceres del teclat disponibles a l'Aegisub. Feu doble clic en "
+"qualsevol objecte per canviar-les."
+
+#: aegisub/dialog_options.cpp:588
+msgid "Function"
+msgstr "Funció"
+
+#: aegisub/dialog_options.cpp:589
+msgid "Key"
+msgstr "Tecla"
+
+#: aegisub/dialog_options.cpp:610
+msgid "General"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:611
+msgid "File save/load"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:612
+#, fuzzy
+msgid "Subtitles edit box"
+msgstr "Desa els subtítols (alternatiu)"
+
+#: aegisub/dialog_options.cpp:613
+#, fuzzy
+msgid "Subtitles grid"
+msgstr "Desa el fitxer de subtítols"
+
+#: aegisub/dialog_options.cpp:614
+#, fuzzy
+msgid "Video"
+msgstr "&Vídeo"
+
+#: aegisub/dialog_options.cpp:615
+#, fuzzy
+msgid "Audio"
+msgstr "À&udio"
+
+#: aegisub/dialog_options.cpp:616
+msgid "Display"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:617
+#, fuzzy
+msgid "Advanced"
+msgstr "Configuració avançada"
+
+#: aegisub/dialog_options.cpp:618 aegisub/frame_main.cpp:229
+msgid "Automation"
+msgstr "Automatització"
+
+#: aegisub/dialog_options.cpp:619
+msgid "Hotkeys"
+msgstr "Dreceres del teclat"
+
+#: aegisub/dialog_options.cpp:626
+#, fuzzy
+msgid "Defaults"
+msgstr "Predefinit"
+
+#: aegisub/dialog_options.cpp:715 aegisub/dialog_options.cpp:748
+#: aegisub/dialog_options.cpp:891
+msgid "Aegisub must restart for the changes to take effect. Restart now?"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:715 aegisub/dialog_options.cpp:748
+#: aegisub/dialog_options.cpp:891
+#, fuzzy
+msgid "Restart Aegisub"
+msgstr "Quant a l'Aegisub"
+
+#: aegisub/dialog_options.cpp:763
+msgid ""
+"Are you sure that you want to restore the defaults? All your settings will "
+"be overriden."
+msgstr ""
+
+#: aegisub/dialog_options.cpp:763
+msgid "Restore defaults?"
+msgstr ""
+
+#: aegisub/dialog_options.cpp:1012
+msgid "Press Key"
+msgstr "Premeu la tecla"
+
+#: aegisub/dialog_options.cpp:1018
+msgid "Press key to bind to \""
+msgstr "Premeu la tecla que voleu assignar a \""
+
+#: aegisub/dialog_options.cpp:1018
+msgid "\" or esc to cancel."
+msgstr "\" o Esc per cancel·lar."
+
+#: aegisub/dialog_paste_over.cpp:47
+msgid "Select Fields to Paste Over"
+msgstr ""
+
+#: aegisub/dialog_paste_over.cpp:76
+#, fuzzy
+msgid "Please select the fields that you want to paste over:"
+msgstr ""
+"Escolliu els formats que voleu\n"
+"associar amb l'Aegisub:"
+
+#: aegisub/dialog_paste_over.cpp:77
+#, fuzzy
+msgid "Fields"
+msgstr "Al camp"
+
+#: aegisub/dialog_properties.cpp:51
+msgid "Script Properties"
+msgstr "Propietats de l''script'"
+
+#: aegisub/dialog_properties.cpp:60
+msgid "Title:"
+msgstr "Títol:"
+
+#: aegisub/dialog_properties.cpp:62
+msgid "Original script:"
+msgstr "'Script' original:"
+
+#: aegisub/dialog_properties.cpp:64
+msgid "Translation:"
+msgstr "Traducció:"
+
+#: aegisub/dialog_properties.cpp:66
+msgid "Editing:"
+msgstr "Edició:"
+
+#: aegisub/dialog_properties.cpp:68
+msgid "Timing:"
+msgstr "Temps:"
+
+#: aegisub/dialog_properties.cpp:70
+msgid "Synch point:"
+msgstr "Punt de sincronització:"
+
+#: aegisub/dialog_properties.cpp:72
+msgid "Updated by:"
+msgstr "Actualitzat per:"
+
+#: aegisub/dialog_properties.cpp:74
+msgid "Update details:"
+msgstr "Detalls de l'actualització:"
+
+#: aegisub/dialog_properties.cpp:76
+msgid "Script"
+msgstr "'Script'"
+
+#: aegisub/dialog_properties.cpp:98 aegisub/dialog_resample.cpp:63
+msgid "Resolution"
+msgstr "Resolució"
+
+#: aegisub/dialog_properties.cpp:104 aegisub/dialog_resample.cpp:72
+msgid "From video"
+msgstr "Del vídeo"
+
+#: aegisub/dialog_properties.cpp:115
+msgid "0: Smart wrapping, top line is wider"
+msgstr "0: Salt intel·ligent, la línia de dalt és més llarga"
+
+#: aegisub/dialog_properties.cpp:116
+msgid "1: End-of-line word wrapping, only \\N breaks"
+msgstr "1: Salt de paraules a final de línia, només \\N salta"
+
+#: aegisub/dialog_properties.cpp:117
+msgid "2: No word wrapping, both \\n and \\N break"
+msgstr "2: Sense salt de paraules, tant \\n com \\N salten"
+
+#: aegisub/dialog_properties.cpp:118
+msgid "3: Smart wrapping, bottom line is wider"
+msgstr "3: Salt intel·ligent, la línia de baix és més llarga"
+
+#: aegisub/dialog_properties.cpp:123
+#, fuzzy
+msgid "Warp Style: "
+msgstr "Estil de salt"
+
+#: aegisub/dialog_properties.cpp:127
+msgid "Reverse"
+msgstr ""
+
+#: aegisub/dialog_properties.cpp:132
+msgid "Collision: "
+msgstr ""
+
+#: aegisub/dialog_properties.cpp:134
+msgid "Scale Border and Shadow"
+msgstr ""
+
+#: aegisub/dialog_properties.cpp:135
+msgid ""
+"Scale border and shadow together with script/render resolution. If this is "
+"unchecked, relative border and shadow size will depend on renderer."
+msgstr ""
+
+#: aegisub/dialog_properties.cpp:197
+#, fuzzy
+msgid "property changes"
+msgstr "Accepta els canvis"
+
+#: aegisub/dialog_resample.cpp:53
+msgid "Resample resolution"
+msgstr "Reajusta la resolució"
+
+#: aegisub/dialog_resample.cpp:71
+msgid "x"
+msgstr "x"
+
+#: aegisub/dialog_resample.cpp:80
+msgid "Change aspect ratio"
+msgstr "Canvia la relació d'aspecte"
+
+#: aegisub/dialog_resample.cpp:88 aegisub/dialog_resample.cpp:92
+#: aegisub/frame_main.cpp:237
+msgid "Resample"
+msgstr "Reajusta"
+
+#: aegisub/dialog_resample.cpp:240
+#, fuzzy
+msgid "resolution resampling"
+msgstr "Resolució no coincident"
+
+#: aegisub/dialog_search_replace.cpp:66
+msgid "Find what:"
+msgstr "Cerca això:"
+
+#: aegisub/dialog_search_replace.cpp:71 aegisub/dialog_spellchecker.cpp:110
+msgid "Replace with:"
+msgstr "Substitueix amb:"
+
+#: aegisub/dialog_search_replace.cpp:78 aegisub/dialog_selection.cpp:62
+msgid "Match case"
+msgstr "Coincident amb majúscules/minúscules"
+
+#: aegisub/dialog_search_replace.cpp:79
+msgid "Use regular expressions"
+msgstr "Utilitza expressions regulars"
+
+#: aegisub/dialog_search_replace.cpp:80
+msgid "Update Video (slow)"
+msgstr "Actualitza el vídeo (lent)"
+
+#: aegisub/dialog_search_replace.cpp:96 aegisub/dialog_shift_times.cpp:104
+msgid "All rows"
+msgstr "Totes les línies"
+
+#: aegisub/dialog_search_replace.cpp:97 aegisub/dialog_shift_times.cpp:104
+msgid "Selected rows"
+msgstr "Les línies seleccionades"
+
+#: aegisub/dialog_search_replace.cpp:98 aegisub/dialog_selection.cpp:98
+msgid "In Field"
+msgstr "Al camp"
+
+#: aegisub/dialog_search_replace.cpp:99
+msgid "Limit to"
+msgstr "Limita a"
+
+#: aegisub/dialog_search_replace.cpp:114
+msgid "Find next"
+msgstr "Cerca el següent"
+
+#: aegisub/dialog_search_replace.cpp:118
+msgid "Replace next"
+msgstr "Substitueix el següent"
+
+#: aegisub/dialog_search_replace.cpp:119
+msgid "Replace all"
+msgstr "Substitueix-ho tot"
+
+#: aegisub/dialog_search_replace.cpp:406 aegisub/dialog_search_replace.cpp:497
+#, fuzzy
+msgid "replace"
+msgstr "Substitueix"
+
+#: aegisub/dialog_search_replace.cpp:500
+#, c-format
+msgid "%i matches were replaced."
+msgstr "S'han substituït %i coincidències."
+
+#: aegisub/dialog_search_replace.cpp:505
+msgid "No matches found."
+msgstr "No s'han trobat coincidències."
+
+#: aegisub/dialog_search_replace.cpp:540 aegisub/dialog_spellchecker.cpp:116
+#: aegisub/hotkeys.cpp:328
+msgid "Replace"
+msgstr "Substitueix"
+
+#: aegisub/dialog_search_replace.cpp:540 aegisub/hotkeys.cpp:326
+msgid "Find"
+msgstr "Cerca"
+
+#: aegisub/dialog_selection.cpp:50
+msgid "Select"
+msgstr "Selecciona"
+
+#: aegisub/dialog_selection.cpp:57
+msgid "Exact match"
+msgstr "Coincidència exacta"
+
+#: aegisub/dialog_selection.cpp:58
+msgid "Contains"
+msgstr "Conté"
+
+#: aegisub/dialog_selection.cpp:59
+msgid "Regular Expression match"
+msgstr "Coincidència amb l'expressió regular"
+
+#: aegisub/dialog_selection.cpp:60
+msgid "Matches"
+msgstr "Coincideix"
+
+#: aegisub/dialog_selection.cpp:61
+msgid "Doesn't Match"
+msgstr "No coincideix"
+
+#: aegisub/dialog_selection.cpp:63
+msgid "Dialogues"
+msgstr "Diàlegs"
+
+#: aegisub/dialog_selection.cpp:64
+msgid "Comments"
+msgstr "Comentaris"
+
+#: aegisub/dialog_selection.cpp:67
+msgid "Match"
+msgstr "Coincideix"
+
+#: aegisub/dialog_selection.cpp:81
+msgid "Set selection"
+msgstr "Defineix la selecció"
+
+#: aegisub/dialog_selection.cpp:82
+msgid "Add to selection"
+msgstr "Afegeix a la selecció"
+
+#: aegisub/dialog_selection.cpp:83
+msgid "Subtract from selection"
+msgstr "Treu de la selecció"
+
+#: aegisub/dialog_selection.cpp:84
+msgid "Intersect with selection"
+msgstr "Interseca amb la selecció"
+
+#: aegisub/dialog_selection.cpp:85
+msgid "Action"
+msgstr "Acció"
+
+#: aegisub/dialog_selection.cpp:88
+msgid "Match dialogues/comments"
+msgstr "Coincideix amb diàlegs/comentaris"
+
+#: aegisub/dialog_selection.cpp:264
+#, c-format
+msgid "Selection was set to %i lines"
+msgstr "S'han seleccionat %i línies"
+
+#: aegisub/dialog_selection.cpp:264 aegisub/dialog_selection.cpp:265
+#: aegisub/dialog_selection.cpp:266
+msgid "Selection"
+msgstr "Selecció"
+
+#: aegisub/dialog_selection.cpp:265
+#, c-format
+msgid "%i lines were added to selection"
+msgstr "S'han afegit %i línies a la selecció."
+
+#: aegisub/dialog_selection.cpp:266
+#, c-format
+msgid "%i lines were removed from selection"
+msgstr "S'han tret %i línies de la selecció"
+
+#: aegisub/dialog_shift_times.cpp:60 aegisub/frame_main.cpp:233
+#: aegisub/hotkeys.cpp:325
+msgid "Shift Times"
+msgstr "Desplaça els temps"
+
+#: aegisub/dialog_shift_times.cpp:72
+msgid "Frames: "
+msgstr "Marcs:"
+
+#: aegisub/dialog_shift_times.cpp:75
+msgid "Enter time in h:mm:ss.cs notation"
+msgstr "Introduïu el temps en notació h:mm:ss.cs"
+
+#: aegisub/dialog_shift_times.cpp:76
+msgid "Shift by time"
+msgstr "Desplaça per temps"
+
+#: aegisub/dialog_shift_times.cpp:80
+msgid "Enter number of frames to shift by"
+msgstr "Introduïu el nombre de marcs a desplaçar"
+
+#: aegisub/dialog_shift_times.cpp:81
+msgid "Shift by frames"
+msgstr "Desplaça per marcs"
+
+#: aegisub/dialog_shift_times.cpp:91
+msgid "Forward"
+msgstr "Endavant"
+
+#: aegisub/dialog_shift_times.cpp:92
+msgid "Backward"
+msgstr "Endarrere"
+
+#: aegisub/dialog_shift_times.cpp:93
+msgid ""
+"Shifts subs forward, making them appear later. Use if they are appearing too "
+"soon."
+msgstr ""
+"Desplaça els subtítols cap endavant, fent que apareguin més tard. Utilitzeu "
+"això si apareixen massa aviat."
+
+#: aegisub/dialog_shift_times.cpp:94
+msgid ""
+"Shifts subs backward, making them appear earlier. Use if they are appearing "
+"too late."
+msgstr ""
+"Desplaça els subtítols cap endarrere, fent que apareguin més aviat. "
+"Utilitzeu això si apareixen massa tard."
+
+#: aegisub/dialog_shift_times.cpp:98
+msgid "Shift by"
+msgstr "Desplaça per"
+
+#: aegisub/dialog_shift_times.cpp:104
+#, fuzzy
+msgid "Selection onward"
+msgstr "Selecció"
+
+#: aegisub/dialog_shift_times.cpp:105
+msgid "Affect"
+msgstr "Afecta"
+
+#: aegisub/dialog_shift_times.cpp:108
+msgid "Start and End times"
+msgstr "Temps d'inici i de final"
+
+#: aegisub/dialog_shift_times.cpp:108
+msgid "Start times only"
+msgstr "Només els temps d'inici"
+
+#: aegisub/dialog_shift_times.cpp:108
+msgid "End times only"
+msgstr "Només els temps de final"
+
+#: aegisub/dialog_shift_times.cpp:109
+msgid "Times"
+msgstr "Temps"
+
+#: aegisub/dialog_shift_times.cpp:112
+msgid "History"
+msgstr "Historial"
+
+#: aegisub/dialog_shift_times.cpp:119
+msgid "Clear"
+msgstr ""
+
+#: aegisub/dialog_shift_times.cpp:249
+msgid "unsaved, "
+msgstr "no desat, "
+
+#: aegisub/dialog_shift_times.cpp:254
+msgid " frames "
+msgstr " marcs "
+
+#: aegisub/dialog_shift_times.cpp:257
+msgid "backward, "
+msgstr "endarrere, "
+
+#: aegisub/dialog_shift_times.cpp:258
+msgid "forward, "
+msgstr "endavant, "
+
+#: aegisub/dialog_shift_times.cpp:261
+msgid "s+e, "
+msgstr "i+f, "
+
+#: aegisub/dialog_shift_times.cpp:262
+msgid "s, "
+msgstr "i, "
+
+#: aegisub/dialog_shift_times.cpp:263
+msgid "e, "
+msgstr "f, "
+
+#: aegisub/dialog_shift_times.cpp:266
+msgid "all"
+msgstr "tot"
+
+#: aegisub/dialog_shift_times.cpp:267
+#, c-format
+msgid "from %i onward"
+msgstr ""
+
+#: aegisub/dialog_shift_times.cpp:269
+msgid "sel "
+msgstr "sel "
+
+#: aegisub/dialog_shift_times.cpp:297
+#, fuzzy
+msgid "shifting"
+msgstr "Edició:"
+
+#: aegisub/dialog_spellchecker.cpp:66 aegisub/frame_main.cpp:240
+#, fuzzy
+msgid "Spell Checker"
+msgstr "Correcció ortogràfica"
+
+#: aegisub/dialog_spellchecker.cpp:108
+msgid "Misspelled word:"
+msgstr ""
+
+#: aegisub/dialog_spellchecker.cpp:117
+#, fuzzy
+msgid "Replace All"
+msgstr "Substitueix-ho tot"
+
+#: aegisub/dialog_spellchecker.cpp:118
+msgid "Ignore"
+msgstr ""
+
+#: aegisub/dialog_spellchecker.cpp:119
+msgid "Ignore all"
+msgstr ""
+
+#: aegisub/dialog_spellchecker.cpp:120
+#, fuzzy
+msgid "Add to dictionary"
+msgstr "Afegeix a la selecció"
+
+#: aegisub/dialog_spellchecker.cpp:316
+msgid "Aegisub has finished checking spelling of this script."
+msgstr ""
+
+#: aegisub/dialog_spellchecker.cpp:316 aegisub/dialog_spellchecker.cpp:383
+#, fuzzy
+msgid "Spell checking complete."
+msgstr "Correcció &ortogràfica..."
+
+#: aegisub/dialog_spellchecker.cpp:336
+#, fuzzy
+msgid "Spell check replace"
+msgstr "Correcció ortogràfica"
+
+#: aegisub/dialog_spellchecker.cpp:383
+msgid "Aegisub has found no spelling mistakes in this script."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:95
+msgid "Style Editor"
+msgstr "Editor d'estils"
+
+#: aegisub/dialog_style_editor.cpp:133 aegisub/subs_edit_box.cpp:118
+msgid "Bold"
+msgstr "Negreta"
+
+#: aegisub/dialog_style_editor.cpp:134
+msgid "Italic"
+msgstr "Cursiva"
+
+#: aegisub/dialog_style_editor.cpp:135 aegisub/subs_edit_box.cpp:122
+msgid "Underline"
+msgstr "Subratllat"
+
+#: aegisub/dialog_style_editor.cpp:136 aegisub/subs_edit_box.cpp:124
+msgid "Strikeout"
+msgstr "Tatxat"
+
+#: aegisub/dialog_style_editor.cpp:147
+msgid "Alignment"
+msgstr "Alineació"
+
+#: aegisub/dialog_style_editor.cpp:150
+msgid "Opaque box"
+msgstr "Capsa opaca"
+
+#: aegisub/dialog_style_editor.cpp:158
+#, fuzzy
+msgid "Style name."
+msgstr "Nom de l'estil"
+
+#: aegisub/dialog_style_editor.cpp:159
+#, fuzzy
+msgid "Font face."
+msgstr "Tipus de lletra"
+
+#: aegisub/dialog_style_editor.cpp:160
+#, fuzzy
+msgid "Font size."
+msgstr "Mida de la lletra"
+
+#: aegisub/dialog_style_editor.cpp:161
+#, fuzzy
+msgid "Click to choose primary color."
+msgstr "Feu clic per escollir un color"
+
+#: aegisub/dialog_style_editor.cpp:162
+#, fuzzy
+msgid "Click to choose secondary color."
+msgstr "Feu clic per escollir un color"
+
+#: aegisub/dialog_style_editor.cpp:163
+#, fuzzy
+msgid "Click to choose outline color."
+msgstr "Feu clic per escollir un color"
+
+#: aegisub/dialog_style_editor.cpp:164
+#, fuzzy
+msgid "Click to choose shadow color."
+msgstr "Feu clic per escollir un color"
+
+#: aegisub/dialog_style_editor.cpp:165
+#, fuzzy
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgstr "Definiu l'opacitat, de 0 (opac) a 255 (transparent)"
+
+#: aegisub/dialog_style_editor.cpp:166
+#, fuzzy
+msgid "Distance from left edge, in pixels."
+msgstr "Distància de la vora esquerra, en píxels"
+
+#: aegisub/dialog_style_editor.cpp:167
+#, fuzzy
+msgid "Distance from right edge, in pixels."
+msgstr "Distància de la vora dreta, en píxels"
+
+#: aegisub/dialog_style_editor.cpp:168
+#, fuzzy
+msgid "Distance from top/bottom edge, in pixels."
+msgstr "Distància de la vora superior/inferior, en píxels"
+
+#: aegisub/dialog_style_editor.cpp:169
+#, fuzzy
+msgid "Checking this will display an opaque box instead of outline."
+msgstr "Marcar això mostrarà una capsa opaca en lloc d'una vora"
+
+#: aegisub/dialog_style_editor.cpp:170
+#, fuzzy
+msgid "Outline width, in pixels."
+msgstr "Mida de la vora, en píxels"
+
+#: aegisub/dialog_style_editor.cpp:171
+#, fuzzy
+msgid "Shadow distance, in pixels."
+msgstr "Distància de l'ombra, en píxels"
+
+#: aegisub/dialog_style_editor.cpp:172
+#, fuzzy
+msgid "Scale X, in percentage."
+msgstr "Escalat X, en percentatge"
+
+#: aegisub/dialog_style_editor.cpp:173
+#, fuzzy
+msgid "Scale Y, in percentage."
+msgstr "Escalat Y, en percentatge"
+
+#: aegisub/dialog_style_editor.cpp:174
+#, fuzzy
+msgid "Angle to rotate in Z axis, in degrees."
+msgstr "Angle a rotar en l'eix Z, en graus"
+
+#: aegisub/dialog_style_editor.cpp:175
+msgid ""
+"Encoding, only useful in unicode if the font doesn't have the proper unicode "
+"mapping."
+msgstr ""
+"Codificació, només útil en Unicode si la lletra no té el mapeig Unicode "
+"correcte."
+
+#: aegisub/dialog_style_editor.cpp:176
+#, fuzzy
+msgid "Character spacing, in pixels."
+msgstr "Espaiat dels caràcters, en píxels"
+
+#: aegisub/dialog_style_editor.cpp:177
+#, fuzzy
+msgid "Alignment in screen, in numpad style."
+msgstr "Alineació a la pantalla, segons el teclat numèric"
+
+#: aegisub/dialog_style_editor.cpp:207
+msgid "Style name"
+msgstr "Nom de l'estil"
+
+#: aegisub/dialog_style_editor.cpp:211
+msgid "Font"
+msgstr "Tipus de lletra"
+
+#: aegisub/dialog_style_editor.cpp:227
+msgid "Colors"
+msgstr "Colors"
+
+#: aegisub/dialog_style_editor.cpp:229
+msgid "Primary"
+msgstr "Primari"
+
+#: aegisub/dialog_style_editor.cpp:229
+msgid "Secondary"
+msgstr "Secundari"
+
+#: aegisub/dialog_style_editor.cpp:229 aegisub/dialog_style_editor.cpp:261
+msgid "Outline"
+msgstr "Vora"
+
+#: aegisub/dialog_style_editor.cpp:229
+msgid "Shadow"
+msgstr "Ombra"
+
+#: aegisub/dialog_style_editor.cpp:242
+msgid "Margins"
+msgstr "Marges"
+
+#: aegisub/dialog_style_editor.cpp:263
+msgid "Outline:"
+msgstr "Vora:"
+
+#: aegisub/dialog_style_editor.cpp:265
+msgid "Shadow:"
+msgstr "Ombra:"
+
+#: aegisub/dialog_style_editor.cpp:271
+msgid "Miscelaneous"
+msgstr "Miscel·lani"
+
+#: aegisub/dialog_style_editor.cpp:274
+msgid "Scale X%:"
+msgstr "Escalat X%:"
+
+#: aegisub/dialog_style_editor.cpp:276
+msgid "Scale Y%:"
+msgstr "Escalat Y%:"
+
+#: aegisub/dialog_style_editor.cpp:278
+#, fuzzy
+msgid "Rotation:"
+msgstr "Automatització"
+
+#: aegisub/dialog_style_editor.cpp:280
+msgid "Spacing:"
+msgstr "Espaiat:"
+
+#: aegisub/dialog_style_editor.cpp:284
+msgid "Encoding:"
+msgstr "Codificació:"
+
+#: aegisub/dialog_style_editor.cpp:290
+#, fuzzy
+msgid "Preview"
+msgstr "Previsualitza els canvis"
+
+#: aegisub/dialog_style_editor.cpp:298
+msgid "Preview of current style."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:301
+msgid "Text to be used for the preview."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:302
+msgid "Colour of preview background."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:311
+msgid "No subtitle providers available. Cannot preview subs."
+msgstr ""
+
+#: aegisub/dialog_style_editor.cpp:444 aegisub/dialog_style_manager.cpp:612
+#: aegisub/dialog_style_manager.cpp:636
+msgid "Copy of "
+msgstr "Còpia de "
+
+#: aegisub/dialog_style_editor.cpp:480 aegisub/subs_edit_box.cpp:561
+#, fuzzy
+msgid "style change"
+msgstr "Gestor d'estils"
+
+#: aegisub/dialog_style_editor.cpp:576
+msgid ""
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a "
+"typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the "
+"history\n"
+"of computing, so please avoid using it unless it's REALLY suitable. Thanks."
+msgstr ""
+"Heu escollit usar el tipus de lletra \"Comic Sans\". Com a programador i "
+"editor d'estils,\n"
+"us haig de demanar que ho reconsidereu. La Comic Sans és la lletra més "
+"abusada en la història\n"
+"dels ordinadors, o sigui que eviteu usar-la a no ser que REALMENT sigui "
+"necessària. Gràcies."
+
+#: aegisub/dialog_style_editor.cpp:576
+msgid "Warning"
+msgstr "Advertència"
+
+#: aegisub/dialog_style_manager.cpp:56 aegisub/frame_main.cpp:224
+msgid "Styles Manager"
+msgstr "Gestor d'estils"
+
+#: aegisub/dialog_style_manager.cpp:65
+msgid "Catalog of available storages"
+msgstr "Catàleg de magatzems disponibles"
+
+#: aegisub/dialog_style_manager.cpp:67 aegisub/dialog_style_manager.cpp:80
+#: aegisub/dialog_style_manager.cpp:123 aegisub/frame_main.cpp:192
+msgid "New"
+msgstr "Nou"
+
+#: aegisub/dialog_style_manager.cpp:68 aegisub/dialog_style_manager.cpp:83
+#: aegisub/dialog_style_manager.cpp:126 aegisub/subs_grid.cpp:201
+msgid "Delete"
+msgstr "Suprimeix"
+
+#: aegisub/dialog_style_manager.cpp:75
+msgid "Storage"
+msgstr "Magatzem"
+
+#: aegisub/dialog_style_manager.cpp:79
+msgid "Copy to current script ->"
+msgstr "Copia a l''script' actual ->"
+
+#: aegisub/dialog_style_manager.cpp:81 aegisub/dialog_style_manager.cpp:124
+#, fuzzy
+msgid "Edit"
+msgstr "&Edita"
+
+#: aegisub/dialog_style_manager.cpp:82 aegisub/dialog_style_manager.cpp:125
+#: aegisub/hotkeys.cpp:330
+msgid "Copy"
+msgstr "Copia"
+
+#: aegisub/dialog_style_manager.cpp:93 aegisub/dialog_style_manager.cpp:136
+#, fuzzy
+msgid "Move style up."
+msgstr "Mou el subtítol"
+
+#: aegisub/dialog_style_manager.cpp:94 aegisub/dialog_style_manager.cpp:137
+#, fuzzy
+msgid "Move style down."
+msgstr "Mou avall"
+
+#: aegisub/dialog_style_manager.cpp:95 aegisub/dialog_style_manager.cpp:138
+msgid "Move style to top."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:96 aegisub/dialog_style_manager.cpp:139
+msgid "Move style to bottom."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:97 aegisub/dialog_style_manager.cpp:140
+msgid "Sort styles alphabetically."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:117
+msgid "Current script"
+msgstr "'Script' actual"
+
+#: aegisub/dialog_style_manager.cpp:122
+msgid "<- Copy to storage"
+msgstr "<- Copia al magatzem"
+
+#: aegisub/dialog_style_manager.cpp:151
+msgid "Import from script..."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:408
+msgid "New storage name:"
+msgstr "Nom del magatzem nou:"
+
+#: aegisub/dialog_style_manager.cpp:408
+msgid "New catalog entry"
+msgstr "Nova entrada al catàleg"
+
+#: aegisub/dialog_style_manager.cpp:424
+msgid "A catalog with that name already exists."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:424
+msgid "Catalog name conflict"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:430
+#, c-format
+msgid ""
+"The specified catalog name contains one or more illegal characters. They "
+"have been replaced with underscores instead.\n"
+"The catalog has been renamed to \"%s\"."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:430
+#, fuzzy
+msgid "Invalid characters"
+msgstr "'Script' invàlid"
+
+#: aegisub/dialog_style_manager.cpp:459
+msgid "Are you sure you want to delete the storage \""
+msgstr "Esteu segur que voleu suprimir el magatzem \""
+
+#: aegisub/dialog_style_manager.cpp:461
+msgid "\" from the catalog?"
+msgstr "\" del catàleg?"
+
+#: aegisub/dialog_style_manager.cpp:462
+msgid "Confirm delete"
+msgstr "Confirmeu la supressió"
+
+#: aegisub/dialog_style_manager.cpp:598 aegisub/dialog_style_manager.cpp:649
+msgid "style copy"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:696
+#, fuzzy
+msgid "style paste"
+msgstr "Nom de l'estil"
+
+#: aegisub/dialog_style_manager.cpp:764 aegisub/dialog_style_manager.cpp:798
+msgid "Are you sure you want to delete these "
+msgstr "Esteu segur que voleu suprimir aquests "
+
+#: aegisub/dialog_style_manager.cpp:766 aegisub/dialog_style_manager.cpp:800
+msgid " styles?"
+msgstr " estils?"
+
+#: aegisub/dialog_style_manager.cpp:768 aegisub/dialog_style_manager.cpp:802
+msgid "Are you sure you want to delete this style?"
+msgstr "Esteu segur que voleu suprimir aquest estil?"
+
+#: aegisub/dialog_style_manager.cpp:769
+#, fuzzy
+msgid "Confirm delete from storage"
+msgstr "Confirmeu la supressió"
+
+#: aegisub/dialog_style_manager.cpp:803
+#, fuzzy
+msgid "Confirm delete from current"
+msgstr "Confirmeu la supressió"
+
+#: aegisub/dialog_style_manager.cpp:819
+msgid "style delete"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:831 aegisub/frame_main_events.cpp:622
+#: aegisub/frame_main_events.cpp:640
+msgid "Open subtitles file"
+msgstr "Obre un fitxer de subtítols"
+
+#: aegisub/dialog_style_manager.cpp:847
+msgid "There selected file has no available styles."
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:847
+msgid "Error Importing Styles"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:853
+msgid "Choose styles to import:"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:853
+#, fuzzy
+msgid "Import Styles"
+msgstr "Exporta els subtítols..."
+
+#: aegisub/dialog_style_manager.cpp:876
+#, fuzzy
+msgid "style import"
+msgstr "Editor d'estils"
+
+#: aegisub/dialog_style_manager.cpp:1033
+msgid "Are you sure? This cannot be undone!"
+msgstr ""
+
+#: aegisub/dialog_style_manager.cpp:1033
+#, fuzzy
+msgid "Sort styles"
+msgstr "Defineix l'estil"
+
+#: aegisub/dialog_style_manager.cpp:1085
+#, fuzzy
+msgid "style move"
+msgstr "Nom de l'estil"
+
+#: aegisub/dialog_styling_assistant.cpp:57
+msgid "Styling assistant"
+msgstr "Auxiliar d'estils"
+
+#: aegisub/dialog_styling_assistant.cpp:69
+#: aegisub/dialog_styling_assistant.cpp:70
+msgid "Current line"
+msgstr "Línia actual"
+
+#: aegisub/dialog_styling_assistant.cpp:75
+msgid "Styles available"
+msgstr "Estils disponibles"
+
+#: aegisub/dialog_styling_assistant.cpp:80
+msgid "Set style"
+msgstr "Defineix l'estil"
+
+#: aegisub/dialog_styling_assistant.cpp:81 aegisub/dialog_translation.cpp:94
+msgid "Keys"
+msgstr "Tecles"
+
+#: aegisub/dialog_styling_assistant.cpp:89 aegisub/dialog_translation.cpp:97
+msgid "Accept changes"
+msgstr "Accepta els canvis"
+
+#: aegisub/dialog_styling_assistant.cpp:91 aegisub/dialog_translation.cpp:99
+msgid "Preview changes"
+msgstr "Previsualitza els canvis"
+
+#: aegisub/dialog_styling_assistant.cpp:93 aegisub/dialog_translation.cpp:101
+msgid "Previous line"
+msgstr "Línia anterior"
+
+#: aegisub/dialog_styling_assistant.cpp:95 aegisub/dialog_translation.cpp:103
+msgid "Next line"
+msgstr "Línia següent"
+
+#: aegisub/dialog_styling_assistant.cpp:97
+#: aegisub/dialog_styling_assistant.cpp:119 aegisub/dialog_translation.cpp:107
+#: aegisub/dialog_translation.cpp:117
+msgid "Play Audio"
+msgstr "Reprodueix l'àudio"
+
+#: aegisub/dialog_styling_assistant.cpp:98
+msgid "Click on list:"
+msgstr "Clic a la llista:"
+
+#: aegisub/dialog_styling_assistant.cpp:99
+msgid "Select style"
+msgstr "Selecciona l'estil"
+
+#: aegisub/dialog_styling_assistant.cpp:102
+msgid "Enable preview (slow)"
+msgstr "Activa la previsualització (lent)"
+
+#: aegisub/dialog_styling_assistant.cpp:154
+#, fuzzy
+msgid "style changes"
+msgstr "Canvis no desats"
+
+#: aegisub/dialog_styling_assistant.cpp:205
+#, fuzzy
+msgid "styling assistant"
+msgstr "Auxiliar d'estils"
+
+#: aegisub/dialog_timing_processor.cpp:54 aegisub/frame_main.cpp:238
+msgid "Timing Post-Processor"
+msgstr "Post-processador de temps"
+
+#: aegisub/dialog_timing_processor.cpp:71
+#, fuzzy
+msgid "Affect selection only"
+msgstr "Defineix la selecció"
+
+#: aegisub/dialog_timing_processor.cpp:76
+msgid "Lead-in/Lead-out"
+msgstr "Temps d'entrada/de sortida"
+
+#: aegisub/dialog_timing_processor.cpp:77
+msgid "Add lead in:"
+msgstr "Afegeix temps d'entrada:"
+
+#: aegisub/dialog_timing_processor.cpp:78
+msgid "Enable adding of lead-ins to lines."
+msgstr "Activa afegir temps d'entrada a les línies."
+
+#: aegisub/dialog_timing_processor.cpp:81
+msgid "Lead in to be added, in miliseconds."
+msgstr "Temps d'entrada que s'afegirà, en mil·lisegons."
+
+#: aegisub/dialog_timing_processor.cpp:82
+msgid "Add lead out:"
+msgstr "Afegeix temps de sortida:"
+
+#: aegisub/dialog_timing_processor.cpp:83
+msgid "Enable adding of lead-outs to lines."
+msgstr "Activa afegir temps de sortida a les línies."
+
+#: aegisub/dialog_timing_processor.cpp:86
+msgid "Lead out to be added, in miliseconds."
+msgstr "Temps de sortida que s'afegirà, en mil·lisegons."
+
+#: aegisub/dialog_timing_processor.cpp:94
+msgid "Make adjascent subtitles continuous"
+msgstr "Fes els subtítols adjacents continus"
+
+#: aegisub/dialog_timing_processor.cpp:95
+#: aegisub/dialog_timing_processor.cpp:113
+msgid "Enable"
+msgstr "Activa"
+
+#: aegisub/dialog_timing_processor.cpp:96
+msgid ""
+"Enable snapping of subtitles together if they are within a certain distance "
+"of each other."
+msgstr ""
+"Activa que els subtítols s'enganxin si estan a una certa distància l'un de "
+"l'altre."
+
+#: aegisub/dialog_timing_processor.cpp:98
+msgid "Threshold:"
+msgstr "Valor:"
+
+#: aegisub/dialog_timing_processor.cpp:100
+msgid ""
+"Maximum difference between start and end time for two subtitles to be made "
+"continuous, in miliseconds."
+msgstr ""
+"Diferència màxima entre el temps d'inici i final dels dos subtítols perquè "
+"es facin continus, en mil·lisegons."
+
+#: aegisub/dialog_timing_processor.cpp:106
+msgid "Bias: Start <- "
+msgstr "Desviació: Inici <- "
+
+#: aegisub/dialog_timing_processor.cpp:108
+msgid " -> End"
+msgstr " -> Final"
+
+#: aegisub/dialog_timing_processor.cpp:111
+msgid "Keyframe snapping"
+msgstr "Enganxament als marcs clau"
+
+#: aegisub/dialog_timing_processor.cpp:114
+msgid ""
+"Enable snapping of subtitles to nearest keyframe, if distance is within "
+"threshold."
+msgstr ""
+"Activa que els subtítols s'enganxin al marc clau més proper, si la distància "
+"és dins del valor."
+
+#: aegisub/dialog_timing_processor.cpp:116
+msgid "Starts before thres.:"
+msgstr "Valor si comença abans:"
+
+#: aegisub/dialog_timing_processor.cpp:118
+msgid ""
+"Threshold for 'before start' distance, that is, how many frames a subtitle "
+"must start before a keyframe to snap to it."
+msgstr ""
+"Valor per a la distància 'comença abans', això és, quants marcs ha de "
+"començar un subtítol abans d'un marc clau per enganxar-s'hi."
+
+#: aegisub/dialog_timing_processor.cpp:119
+msgid "Starts after thres.:"
+msgstr "Valor si comença després:"
+
+#: aegisub/dialog_timing_processor.cpp:121
+msgid ""
+"Threshold for 'after start' distance, that is, how many frames a subtitle "
+"must start after a keyframe to snap to it."
+msgstr ""
+"Valor per a la distància 'comença després', això és, quants marcs ha de "
+"començar un subtítol després d'un marc clau per enganxar-s'hi."
+
+#: aegisub/dialog_timing_processor.cpp:122
+msgid "Ends before thres.:"
+msgstr "Valor si acaba abans:"
+
+#: aegisub/dialog_timing_processor.cpp:124
+msgid ""
+"Threshold for 'before end' distance, that is, how many frames a subtitle "
+"must end before a keyframe to snap to it."
+msgstr ""
+"Valor per a la distància 'acaba abans', això és, quants marcs ha d'acabar un "
+"subtítol abans d'un marc clau per enganxar-s'hi."
+
+#: aegisub/dialog_timing_processor.cpp:125
+msgid "Ends after thres.:"
+msgstr "Valor si acaba després:"
+
+#: aegisub/dialog_timing_processor.cpp:127
+msgid ""
+"Threshold for 'after end' distance, that is, how many frames a subtitle must "
+"end after a keyframe to snap to it."
+msgstr ""
+"Valor per a la distància 'acaba després', això és, quants marcs ha d'acabar "
+"un subtítol després d'un marc clau per enganxar-s'hi."
+
+#: aegisub/dialog_timing_processor.cpp:160
+msgid "All"
+msgstr "Tot"
+
+#: aegisub/dialog_timing_processor.cpp:161
+msgid "Select all styles."
+msgstr "Selecciona tots els estils."
+
+#: aegisub/dialog_timing_processor.cpp:162
+msgid "None"
+msgstr "Res"
+
+#: aegisub/dialog_timing_processor.cpp:163
+msgid "Deselect all styles."
+msgstr "Deselecciona tots els estils."
+
+#: aegisub/dialog_timing_processor.cpp:168
+msgid "Apply to styles"
+msgstr "Aplica als estils"
+
+#: aegisub/dialog_timing_processor.cpp:171
+msgid "Select styles to process. Unchecked ones will be ignored."
+msgstr "Seleccioneu els estils a processar. Els desmarcats s'ignoraran."
+
+#: aegisub/dialog_timing_processor.cpp:317
+#, c-format
+msgid "One of the lines in the file (%i) has negative duration. Aborting."
+msgstr "Una de les línies del fitxer (%i) té durada negativa. S'està avortant."
+
+#: aegisub/dialog_timing_processor.cpp:317
+msgid "Invalid script"
+msgstr "'Script' invàlid"
+
+#: aegisub/dialog_timing_processor.cpp:566
+#, fuzzy
+msgid "timing processor"
+msgstr "Post-processador de temps"
+
+#: aegisub/dialog_tip.cpp:48
+msgid ""
+"Aegisub can export subtitles to other formats, character encodings, and even "
+"compensate Variable Frame Rate so you can hardsub them - it's all in the "
+"Export option in File menu."
+msgstr ""
+"L'Aegisub por exportar subtítols a altres formats, codificacions de "
+"caràcters i fins i tot compensar els marcs variables (VFR) quan creeu "
+"subtítols durs. Tot està a l'opció Exporta del menú Fitxer."
+
+#: aegisub/dialog_tip.cpp:49
+msgid ""
+"You can easily translate subtitle files using the translation assistant."
+msgstr ""
+"Podeu traduir fitxer de subtítols fàcilment utilitzant l'auxiliar de "
+"traducció."
+
+#: aegisub/dialog_tip.cpp:50
+msgid ""
+"Styles can be stored in different storages, so that you can keep your "
+"projects organized."
+msgstr ""
+"Els estils es poden emmagatzemar en diferents magatzems, de manera que podeu "
+"mantenir els vostres projectes organitzats."
+
+#: aegisub/dialog_tip.cpp:51
+msgid ""
+"Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter "
+"updates changes on current line without going to next. Check the manual for "
+"a complete list."
+msgstr ""
+"Utilitzeu les dreceres del teclat! Us faran la vida més fàcil. Per exemple, "
+"Ctrl+Enter actualitza els canvis de la línia actual sense anar a la següent. "
+"Vegeu el manual per a una llista completa."
+
+#: aegisub/dialog_tip.cpp:52
+msgid ""
+"There is no reason to use the SSA format (as opposed to ASS). ASS is very "
+"similar, but adds some important functionality. Most importantly, however, "
+"is that only ASS supports certain override tags (such as \\pos and \\t). "
+"Those only work on SSA files because VSFilter/Textsub are merciful."
+msgstr ""
+"No hi ha cap raó per utilitzar el format SSA (al contrari que l'ASS). L'ASS "
+"és molt similar, però afegeix funcionalitats importants. El més important és "
+"que només l'ASS suporta certes etiquetes (com ara \\pos i \\t). Aquestes "
+"etiquetes només funcionen als fitxers SSA perquè el VSFilter/Textsub és "
+"misericordiós."
+
+#: aegisub/dialog_tip.cpp:53
+msgid "DON'T PANIC!"
+msgstr "NO US ESPANTEU!"
+
+#: aegisub/dialog_tip.cpp:54
+msgid ""
+"Aegisub has several features to make sure you will never lose your work. It "
+"will periodically save your subtitles to autosave folder, and will create a "
+"copy of subs whenever you open them, to autoback folder. Also, if it "
+"crashes, it will attempt to save a restore file."
+msgstr ""
+"L'Aegisub té diverses característiques per assegurar que mai perdeu la "
+"vostra feina. Periòdicament, desarà els vostres subtítols a la carpeta de "
+"desament automàtic (autosave), i crearà una còpia dels subtítols sempre que "
+"els obriu, a la carpeta de còpia de seguretat automàtica (autoback). I si "
+"peta, intentarà desar un fitxer de restauració."
+
+#: aegisub/dialog_tip.cpp:55
+msgid ""
+"The styling assistant is a practical way to set styles to each line, when "
+"each actor has a different style assigned to it."
+msgstr ""
+"L'auxiliar d'estils és una manera pràctica de definir estils a cada línia "
+"quan cada actor té un estil diferent assignat."
+
+#: aegisub/dialog_tip.cpp:56
+msgid ""
+"The fonts collector is one of the most useful features, which resumes the "
+"boring task of hunting down fonts into a matter of a few clicks."
+msgstr ""
+"El col·lector de tipus de lletra és una de les característiques més útils, "
+"que redueix l'avorrida tasca de cercar tipus de lletra a fer uns quants "
+"clics."
+
+#: aegisub/dialog_tip.cpp:57
+msgid ""
+"When you are done with your subtitles and ready to distribute them, "
+"remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr ""
+"Quan hagueu acabat amb els vostres subtítols i estigueu preparat per "
+"distribuir-los, recordeu: digueu no a l'MP4, l'OGM o l'AVI. El Matroska és "
+"el vostre amic."
+
+#: aegisub/dialog_tip.cpp:58
+msgid ""
+"Much like anything loaded via DirectShow, certain files may have a strange "
+"structure (such as h.264 into AVI or XviD will null frames) which may cause "
+"unreliable seeking (that is, video frames might be off by one frame). This "
+"is not an Aegisub bug - you may consider reencoding those videos before "
+"working with them."
+msgstr ""
+"Gairebé com tot el que es carrega a través de DirectShow, alguns fitxers "
+"poden tenir una estructura estranya (com per exemple H.264 en un AVI o XviD "
+"amb marcs nuls), que poden causar un moviment inadequat (és a dir, els marcs "
+"del vídeo podrien estar desplaçats un marc). Això no és un error de "
+"l'Aegisub. Podeu considerar recomprimir aquests vídeos abans de traballar-hi."
+
+#: aegisub/dialog_tip.cpp:59
+msgid "If anything goes wrong, blame movax."
+msgstr "Si alguna cosa va malament, culpeu-ne en movax."
+
+#: aegisub/dialog_translation.cpp:57 aegisub/frame_main.cpp:235
+msgid "Translation Assistant"
+msgstr "Ajudant de traducció"
+
+#: aegisub/dialog_translation.cpp:84
+msgid "Original"
+msgstr "Original"
+
+#: aegisub/dialog_translation.cpp:85
+msgid "Translation"
+msgstr "Traducció"
+
+#: aegisub/dialog_translation.cpp:86
+msgid "Current line: ?"
+msgstr "Línia actual: ?"
+
+#: aegisub/dialog_translation.cpp:105
+msgid "Insert original"
+msgstr "Insereix l'original"
+
+#: aegisub/dialog_translation.cpp:108
+msgid "Enable preview"
+msgstr "Activa la previsualització"
+
+#: aegisub/dialog_translation.cpp:183
+#, c-format
+msgid "Current line: %i/%i"
+msgstr "Línia actual: %i/%i"
+
+#: aegisub/dialog_translation.cpp:319
+#, fuzzy
+msgid "translation assistant"
+msgstr "Ajudant de traducció"
+
+#: aegisub/dialog_version_check.cpp:57
+msgid "Version Checker"
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:173
+msgid "Could not open Internet File system. Aborting.\n"
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:182
+msgid "Attempting to open \""
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:193
+#, fuzzy
+msgid "Failed.\n"
+msgstr "Fitxer"
+
+#: aegisub/dialog_version_check.cpp:203
+msgid "OK.\n"
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:262
+msgid "New version found!\n"
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:264
+msgid "Please go to the following URL to download it: "
+msgstr ""
+
+#: aegisub/dialog_version_check.cpp:278
+msgid "No new version has been found.\n"
+msgstr ""
+
+#: aegisub/export_clean_info.cpp:58
+msgid "Clean Script Info"
+msgstr "Neteja la informació de l''script'"
+
+#: aegisub/export_clean_info.cpp:59
+msgid ""
+"Removes all but the absolutely required fields from the Script Info section. "
+"You might want to run this on files that you plan to distribute in original "
+"form."
+msgstr ""
+"Suprimeix absolutament tots els camps excepte els necessaris de la secció "
+"d'Informació de l''script'. Potser voldreu executar això en fitxers que "
+"vulgueu distribuir de manera original."
+
+#: aegisub/export_fixstyle.cpp:58
+msgid "Fix Styles"
+msgstr "Arregla els estils"
+
+#: aegisub/export_fixstyle.cpp:59
+msgid ""
+"Fixes styles by replacing any style that isn't available on file with "
+"Default."
+msgstr ""
+"Arregla els estils substituint qualsevol estil que no estigui disponible al "
+"fitxer per Default."
+
+#: aegisub/export_framerate.cpp:59
+msgid "Transform Framerate"
+msgstr "Transforma la velocitat dels marcs"
+
+#: aegisub/export_framerate.cpp:60
+msgid ""
+"Transform subtitles times, including those in override tags, from input to "
+"output. This is most useful to convert CFR to VFR for hardsubbing. You "
+"usually DO NOT want to check this filter for softsubbing."
+msgstr ""
+"Transforma els temps dels subtítols, incloent-hi les etiquetes, de l'entrada "
+"a la sortida. Això és útil per convertir de CFR (marcs constants) a VFR "
+"(marcs variables) per al subtitulat dur. Normalment NO voldreu activar "
+"aquest filtre per al subtitulat tou."
+
+#: aegisub/export_framerate.cpp:86
+msgid "From Video"
+msgstr "Del vídeo"
+
+#: aegisub/export_framerate.cpp:103
+msgid "Variable"
+msgstr "Variable"
+
+#: aegisub/export_framerate.cpp:107
+msgid "Constant: "
+msgstr "Constant:"
+
+#: aegisub/export_framerate.cpp:124
+msgid "Input framerate: "
+msgstr "Marcs d'entrada:"
+
+#: aegisub/export_framerate.cpp:126
+msgid "Output: "
+msgstr "Sortida:"
+
+#: aegisub/frame_main.cpp:163
+msgid ""
+"Do you want Aegisub to check for updates whenever it starts? You can still "
+"do it manually via the Help menu."
+msgstr ""
+
+#: aegisub/frame_main.cpp:163
+msgid "Check for updates?"
+msgstr ""
+
+#: aegisub/frame_main.cpp:192 aegisub/frame_main.cpp:272
+#: aegisub/hotkeys.cpp:315
+msgid "New subtitles"
+msgstr "Nous subtítols"
+
+#: aegisub/frame_main.cpp:193
+msgid "Open"
+msgstr "Obre"
+
+#: aegisub/frame_main.cpp:193 aegisub/hotkeys.cpp:316
+msgid "Open subtitles"
+msgstr "Obre els subtítols"
+
+#: aegisub/frame_main.cpp:194
+msgid "Save"
+msgstr "Desa"
+
+#: aegisub/frame_main.cpp:194 aegisub/hotkeys.cpp:317
+msgid "Save subtitles"
+msgstr "Desa els subtítols"
+
+#: aegisub/frame_main.cpp:198
+msgid "Jump To..."
+msgstr "Salta a..."
+
+#: aegisub/frame_main.cpp:198
+msgid "Jump video to time/frame"
+msgstr "Salta al temps/marc del vídeo"
+
+#: aegisub/frame_main.cpp:199
+msgid "Zoom in"
+msgstr "Amplia"
+
+#: aegisub/frame_main.cpp:199
+msgid "Zoom video in"
+msgstr "Amplia el vídeo"
+
+#: aegisub/frame_main.cpp:200
+msgid "Zoom out"
+msgstr "Redueix"
+
+#: aegisub/frame_main.cpp:200
+msgid "Zoom video out"
+msgstr "Redueix el vídeo"
+
+#: aegisub/frame_main.cpp:213
+msgid "Jump video to start"
+msgstr "Posa el vídeo a l'inici"
+
+#: aegisub/frame_main.cpp:213 aegisub/frame_main.cpp:398
+msgid "Jumps the video to the start frame of current subtitle"
+msgstr "Posa el vídeo al marc d'inici del subtítol actual"
+
+#: aegisub/frame_main.cpp:214
+msgid "Jump video to end"
+msgstr "Posa el vídeo al final"
+
+#: aegisub/frame_main.cpp:214 aegisub/frame_main.cpp:399
+msgid "Jumps the video to the end frame of current subtitle"
+msgstr "Posa el vídeo al marc final del subtítol actual"
+
+#: aegisub/frame_main.cpp:215
+msgid "Snap start to video"
+msgstr "Enganxa l'inici al vídeo"
+
+#: aegisub/frame_main.cpp:215 aegisub/frame_main.cpp:346
+msgid "Set start of selected subtitles to current video frame"
+msgstr "Posa l'inici dels subtítols seleccionats al marc actual del vídeo"
+
+#: aegisub/frame_main.cpp:216
+msgid "Snap end to video"
+msgstr "Enganxa el final al vídeo"
+
+#: aegisub/frame_main.cpp:216 aegisub/frame_main.cpp:347
+msgid "Set end of selected subtitles to current video frame"
+msgstr "Posa el final dels subtítols al marc actual del vídeo"
+
+#: aegisub/frame_main.cpp:217
+msgid "Select visible"
+msgstr "Selecciona els visibles"
+
+#: aegisub/frame_main.cpp:217
+msgid "Selects all lines that are currently visible on video frame"
+msgstr "Selecciona totes les línies actualment visibles al marc del vídeo"
+
+#: aegisub/frame_main.cpp:218
+msgid "Snap subtitles to scene"
+msgstr "Enganxa els subtítols a l'escena"
+
+#: aegisub/frame_main.cpp:218
+msgid "Snap selected subtitles so they match current scene start/end"
+msgstr ""
+"Canvia el temps dels subtítols seleccionats perquè coincideixin amb l'inici "
+"i final de l'escena actual"
+
+#: aegisub/frame_main.cpp:219
+msgid "Shift subtitles to frame"
+msgstr "Desplaça els subtítols al marc"
+
+#: aegisub/frame_main.cpp:219
+msgid "Shift selected subtitles so first selected starts at this frame"
+msgstr ""
+"Desplaça els subtítols seleccionats de manera que el primer seleccionat "
+"comenci en aquest marc"
+
+#: aegisub/frame_main.cpp:223
+msgid "Properties"
+msgstr "Propietats"
+
+#: aegisub/frame_main.cpp:223
+msgid "Open Properties"
+msgstr "Obre les propietats"
+
+#: aegisub/frame_main.cpp:224
+msgid "Open Styles Manager"
+msgstr "Obre el gestor d'estils"
+
+#: aegisub/frame_main.cpp:225
+msgid "Attachments"
+msgstr "Adjuncions"
+
+#: aegisub/frame_main.cpp:225
+msgid "Open Attachment List"
+msgstr "Obre la llista d'adjuncions"
+
+#: aegisub/frame_main.cpp:229
+msgid "Open Automation manager"
+msgstr "Obre el gestor de l'automatització"
+
+#: aegisub/frame_main.cpp:233
+#, fuzzy
+msgid "Open Shift Times Dialogue"
+msgstr "Obre un fitxer de codis de temps"
+
+#: aegisub/frame_main.cpp:234
+msgid "Styling Assistant"
+msgstr "Auxiliar d'estils"
+
+#: aegisub/frame_main.cpp:234
+msgid "Open Styling Assistant"
+msgstr "Obre l'auxiliar d'estils"
+
+#: aegisub/frame_main.cpp:235
+msgid "Open Translation Assistant"
+msgstr "Obre l'auxiliar de traducció"
+
+#: aegisub/frame_main.cpp:236
+msgid "Open Fonts Collector"
+msgstr "Obre el col·lector de tipus de lletra"
+
+#: aegisub/frame_main.cpp:237
+#, fuzzy
+msgid "Resample Script Resolution"
+msgstr "Reajusta la resolució de l''script'"
+
+#: aegisub/frame_main.cpp:238
+msgid "Open Timing Post-processor dialog"
+msgstr "Obre el diàleg del post-processador de temps"
+
+#: aegisub/frame_main.cpp:239
+msgid "Kanji Timer"
+msgstr ""
+
+#: aegisub/frame_main.cpp:239
+#, fuzzy
+msgid "Open Kanji Timer dialog"
+msgstr "Obre el diàleg del post-processador de temps"
+
+#: aegisub/frame_main.cpp:240
+msgid "Open Spell checker"
+msgstr "Obre la correcció ortogràfica"
+
+#: aegisub/frame_main.cpp:244 aegisub/frame_main.cpp:420
+#, fuzzy
+msgid "Configure Aegisub"
+msgstr "Quant a l'Aegisub"
+
+#: aegisub/frame_main.cpp:245
+msgid "Cycle Tag Hidding Mode"
+msgstr "Canvia el mode d'amagat de les etiquetes"
+
+#: aegisub/frame_main.cpp:245
+msgid "Cycle through tag-hiding modes"
+msgstr "Canvia els modes d'amagat de les etiquetes"
+
+#: aegisub/frame_main.cpp:272
+msgid "&New Subtitles\t"
+msgstr "&Nous subtítols\t"
+
+#: aegisub/frame_main.cpp:273
+msgid "&Open Subtitles...\t"
+msgstr "&Obre els subtítols...\t"
+
+#: aegisub/frame_main.cpp:273
+msgid "Opens a subtitles file"
+msgstr "Obre un fitxer de subtítols"
+
+#: aegisub/frame_main.cpp:274
+msgid "&Open Subtitles with Charset..."
+msgstr "&Obre els subtítols amb codificació..."
+
+#: aegisub/frame_main.cpp:274
+msgid "Opens a subtitles file with a specific charset"
+msgstr "Obre un fitxer de subtítols amb una codificació específica"
+
+#: aegisub/frame_main.cpp:275
+msgid "&Save Subtitles\t"
+msgstr "De&sa els subtítols\t"
+
+#: aegisub/frame_main.cpp:275
+msgid "Saves subtitles"
+msgstr "Desa els subtítols"
+
+#: aegisub/frame_main.cpp:276
+msgid "Save Subtitles as..."
+msgstr "Anomena i desa els subtítols..."
+
+#: aegisub/frame_main.cpp:276
+msgid "Saves subtitles with another name"
+msgstr "Desa els subtítols amb un altre nom"
+
+#: aegisub/frame_main.cpp:277
+msgid "Export Subtitles..."
+msgstr "Exporta els subtítols..."
+
+#: aegisub/frame_main.cpp:277
+msgid "Saves a copy of subtitles with processing applied to it."
+msgstr "Desa una còpia dels subtítols aplicant-hi uns processos."
+
+#: aegisub/frame_main.cpp:278 aegisub/frame_main.cpp:363
+#: aegisub/frame_main.cpp:369 aegisub/frame_main.cpp:375
+#: aegisub/frame_main.cpp:407
+msgid "Recent"
+msgstr "Recents"
+
+#: aegisub/frame_main.cpp:282
+msgid "&Properties..."
+msgstr "&Propietats..."
+
+#: aegisub/frame_main.cpp:282
+msgid "Open script properties window"
+msgstr "Obre la finestra de propietats de l''script'"
+
+#: aegisub/frame_main.cpp:283
+msgid "&Attachments..."
+msgstr "&Adjuncions..."
+
+#: aegisub/frame_main.cpp:283
+msgid "Open the attachment list"
+msgstr "Obre la llista d'adjuncions"
+
+#: aegisub/frame_main.cpp:285
+msgid "E&xit\t"
+msgstr "S&urt\t"
+
+#: aegisub/frame_main.cpp:285
+msgid "Exit the application"
+msgstr "Surt de l'aplicació"
+
+#: aegisub/frame_main.cpp:286
+msgid "&File"
+msgstr "&Fitxer"
+
+#: aegisub/frame_main.cpp:291 aegisub/frame_main_events.cpp:402
+#: aegisub/subs_edit_ctrl.cpp:866
+msgid "&Undo"
+msgstr "&Desfés"
+
+#: aegisub/frame_main.cpp:291 aegisub/frame_main_events.cpp:402
+msgid "Undoes last action"
+msgstr "Desfà l'última acció"
+
+#: aegisub/frame_main.cpp:292 aegisub/frame_main_events.cpp:403
+#, fuzzy
+msgid "&Redo"
+msgstr "&Refés\t"
+
+#: aegisub/frame_main.cpp:292 aegisub/frame_main_events.cpp:403
+msgid "Redoes last action"
+msgstr "Refà l'última acció"
+
+#: aegisub/frame_main.cpp:294
+#, fuzzy
+msgid "Cut Lines\t"
+msgstr "Selecciona les línies"
+
+#: aegisub/frame_main.cpp:294
+msgid "Cut subtitles"
+msgstr "Retalla els subtítols"
+
+#: aegisub/frame_main.cpp:295
+#, fuzzy
+msgid "Copy Lines\t"
+msgstr "Copia els subtítols"
+
+#: aegisub/frame_main.cpp:295
+msgid "Copy subtitles"
+msgstr "Copia els subtítols"
+
+#: aegisub/frame_main.cpp:296
+#, fuzzy
+msgid "Paste Lines\t"
+msgstr "Enganxa els subtítols"
+
+#: aegisub/frame_main.cpp:296
+msgid "Paste subtitles"
+msgstr "Enganxa els subtítols"
+
+#: aegisub/frame_main.cpp:297
+#, fuzzy
+msgid "Paste Lines Over...\t"
+msgstr "Enganxa...\t"
+
+#: aegisub/frame_main.cpp:297
+#, fuzzy
+msgid "Paste subtitles over others"
+msgstr "Enganxa els subtítols"
+
+#: aegisub/frame_main.cpp:299
+msgid "&Find...\t"
+msgstr "C&erca...\t"
+
+#: aegisub/frame_main.cpp:299
+msgid "Find words in subtitles"
+msgstr "Cerca paraules als subtítols"
+
+#: aegisub/frame_main.cpp:300
+#, fuzzy
+msgid "Find Next\t"
+msgstr "Cerca el següent"
+
+#: aegisub/frame_main.cpp:300
+msgid "Find next match of last word"
+msgstr "Cerca la següent coincidència de l'última paraula"
+
+#: aegisub/frame_main.cpp:301
+#, fuzzy
+msgid "Search and &Replace...\t"
+msgstr "Substituei&x...\t"
+
+#: aegisub/frame_main.cpp:301
+msgid "Find and replace words in subtitles"
+msgstr "Cerca i substitueix paraules als subtítols"
+
+#: aegisub/frame_main.cpp:302
+msgid "&Edit"
+msgstr "&Edita"
+
+#: aegisub/frame_main.cpp:307
+#, fuzzy
+msgid "&Insert Lines"
+msgstr "Insereix l'original"
+
+#: aegisub/frame_main.cpp:309
+msgid "&Before Current"
+msgstr ""
+
+#: aegisub/frame_main.cpp:309
+#, fuzzy
+msgid "Inserts a line before current"
+msgstr "Insereix al marc del vídeo (abans)"
+
+#: aegisub/frame_main.cpp:310
+msgid "&After Current"
+msgstr ""
+
+#: aegisub/frame_main.cpp:310
+#, fuzzy
+msgid "Inserts a line after current"
+msgstr "Insereix al marc del vídeo (després)"
+
+#: aegisub/frame_main.cpp:311
+msgid "Before Current, at Video Time"
+msgstr ""
+
+#: aegisub/frame_main.cpp:311
+#, fuzzy
+msgid "Inserts a line before current, starting at video time"
+msgstr "Selecciona totes les línies actualment visibles al marc del vídeo"
+
+#: aegisub/frame_main.cpp:312
+#, fuzzy
+msgid "After Current, at Video Time"
+msgstr "Desplaça pel temps actual"
+
+#: aegisub/frame_main.cpp:312
+#, fuzzy
+msgid "Inserts a line after current, starting at video time"
+msgstr "Selecciona totes les línies actualment visibles al marc del vídeo"
+
+#: aegisub/frame_main.cpp:314
+#, fuzzy
+msgid "&Duplicate Lines"
+msgstr "&Duplica"
+
+#: aegisub/frame_main.cpp:314
+msgid "Duplicate the selected lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:315 aegisub/subs_grid.cpp:165
+msgid "&Duplicate and shift by 1 frame"
+msgstr "&Duplica i desplaça un marc"
+
+#: aegisub/frame_main.cpp:315
+#, fuzzy
+msgid "Duplicate lines and shift by one frame"
+msgstr "&Duplica i desplaça un marc"
+
+#: aegisub/frame_main.cpp:316
+#, fuzzy
+msgid "Delete Lines"
+msgstr "Selecciona les línies"
+
+#: aegisub/frame_main.cpp:316
+#, fuzzy
+msgid "Delete currently selected lines"
+msgstr "Tanca el fitxer de codis de temps obert actualment"
+
+#: aegisub/frame_main.cpp:319
+msgid "Join Lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:321
+#, fuzzy
+msgid "&Concatenate"
+msgstr "&Uneix (concatena)"
+
+#: aegisub/frame_main.cpp:321
+msgid "Joins selected lines in a single one, concatenating text together"
+msgstr ""
+
+#: aegisub/frame_main.cpp:322
+msgid "Keep &First"
+msgstr ""
+
+#: aegisub/frame_main.cpp:322
+msgid ""
+"Joins selected lines in a single one, keeping text of first and discarding "
+"remaining"
+msgstr ""
+
+#: aegisub/frame_main.cpp:323
+#, fuzzy
+msgid "As &Karaoke"
+msgstr "Karaoke"
+
+#: aegisub/frame_main.cpp:323
+msgid "Joins selected lines in a single one, as karaoke"
+msgstr ""
+
+#: aegisub/frame_main.cpp:325 aegisub/subs_grid.cpp:185
+msgid "Recombine Lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:325
+msgid "Recombine subtitles when they have been split and merged"
+msgstr ""
+
+#: aegisub/frame_main.cpp:326
+#, fuzzy
+msgid "Split Lines (by karaoke)"
+msgstr "Divideix (per karaoke)"
+
+#: aegisub/frame_main.cpp:326
+msgid "Uses karaoke timing to split line into multiple smaller lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:328
+#, fuzzy
+msgid "Swap Lines"
+msgstr "Selecciona les línies"
+
+#: aegisub/frame_main.cpp:328
+msgid "Swaps the two selected lines"
+msgstr ""
+
+#: aegisub/frame_main.cpp:329
+#, fuzzy
+msgid "Select Lines...\t"
+msgstr "&Selecciona les línies...\t"
+
+#: aegisub/frame_main.cpp:329
+msgid "Selects lines based on defined criterea"
+msgstr "Selecciona les línies basant-se en un criteri definit"
+
+#: aegisub/frame_main.cpp:331
+msgid "&Styles Manager..."
+msgstr "Ge&stor d'estils..."
+
+#: aegisub/frame_main.cpp:331
+msgid "Open styles manager"
+msgstr "Obre el gestor d'estils"
+
+#: aegisub/frame_main.cpp:332
+msgid "St&yling Assistant..."
+msgstr "Au&xiliar d'estils..."
+
+#: aegisub/frame_main.cpp:332
+msgid "Open styling assistant"
+msgstr "Obre l'auxiliar d'estils"
+
+#: aegisub/frame_main.cpp:333
+msgid "&Translation Assistant..."
+msgstr "Auxiliar de &traducció..."
+
+#: aegisub/frame_main.cpp:333
+msgid "Open translation assistant"
+msgstr "Obre l'auxiliar de traducció"
+
+#: aegisub/frame_main.cpp:334
+msgid "Resample resolution..."
+msgstr "Reajusta la resolució..."
+
+#: aegisub/frame_main.cpp:334
+msgid "Changes resolution and modifies subtitles to conform to change"
+msgstr "Canvia la resolució i modifica els subtítols perquè s'adaptin al canvi"
+
+#: aegisub/frame_main.cpp:335
+msgid "&Fonts Collector..."
+msgstr "Col·lector de tipus de &lletra..."
+
+#: aegisub/frame_main.cpp:335
+msgid "Open fonts collector"
+msgstr "Obre el col·lector de tipus de lletra"
+
+#: aegisub/frame_main.cpp:336
+#, fuzzy
+msgid "Spe&ll Checker..."
+msgstr "Correcció &ortogràfica..."
+
+#: aegisub/frame_main.cpp:336
+msgid "Open spell checker"
+msgstr "Obre la correcció ortogràfica"
+
+#: aegisub/frame_main.cpp:337
+#, fuzzy
+msgid "&Subtitles"
+msgstr "&Nous subtítols\t"
+
+#: aegisub/frame_main.cpp:341
+#, fuzzy
+msgid "S&hift Times..."
+msgstr "Des&plaça els temps...\t"
+
+#: aegisub/frame_main.cpp:341
+msgid "Shift subtitles by time or frames"
+msgstr "Desplaça els subtítols per temps o per marcs"
+
+#: aegisub/frame_main.cpp:342
+msgid "Sort by Time"
+msgstr "Ordena per temps"
+
+#: aegisub/frame_main.cpp:342
+msgid "Sort all subtitles by their start times"
+msgstr "Ordena tots els subtítols pel seu temps d'inici"
+
+#: aegisub/frame_main.cpp:343
+msgid "Timing Post-Processor..."
+msgstr "Post-processador de temps..."
+
+#: aegisub/frame_main.cpp:343
+msgid ""
+"Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
+"timing and etc."
+msgstr ""
+"Executa un post-processador per al temps per tractar els temps d'entrada i "
+"de sortida, el temps de les escenes, etcètera."
+
+#: aegisub/frame_main.cpp:344
+msgid "Kanji Timer..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:344
+#, fuzzy
+msgid "Open Kanji timer"
+msgstr "Obre un fitxer d'àudio"
+
+#: aegisub/frame_main.cpp:346
+#, fuzzy
+msgid "Snap Start to Video"
+msgstr "Enganxa l'inici al vídeo"
+
+#: aegisub/frame_main.cpp:347
+#, fuzzy
+msgid "Snap End to Video"
+msgstr "Enganxa el final al vídeo"
+
+#: aegisub/frame_main.cpp:348 aegisub/hotkeys.cpp:340
+msgid "Snap to Scene"
+msgstr "Enganxa a l'escena"
+
+#: aegisub/frame_main.cpp:348
+msgid ""
+"Set start and end of subtitles to the keyframes around current video frame"
+msgstr ""
+"Posa l'inici i el final dels subtítols als marcs clau al voltant del marc de "
+"vídeo actual"
+
+#: aegisub/frame_main.cpp:349
+#, fuzzy
+msgid "Shift to Current Frame"
+msgstr "Desplaça al marc actual\t"
+
+#: aegisub/frame_main.cpp:349
+msgid "Shift selection so first selected line starts at current frame"
+msgstr ""
+"Desplaça la selecció de manera que la primera línia seleccionada comenci al "
+"marc actual"
+
+#: aegisub/frame_main.cpp:352
+#, fuzzy
+msgid "Make Times Continuous"
+msgstr "Fe&s els temps continus (canvia el final)"
+
+#: aegisub/frame_main.cpp:354
+#, fuzzy
+msgid "Change &Start"
+msgstr "Canvia la relació d'aspecte"
+
+#: aegisub/frame_main.cpp:354
+msgid "Changes times of subs so start times begin on previous's end time"
+msgstr ""
+
+#: aegisub/frame_main.cpp:355
+msgid "Change &End"
+msgstr ""
+
+#: aegisub/frame_main.cpp:355
+msgid "Changes times of subs so end times begin on next's start time"
+msgstr ""
+
+#: aegisub/frame_main.cpp:357
+#, fuzzy
+msgid "&Timing"
+msgstr "Temps:"
+
+#: aegisub/frame_main.cpp:361
+msgid "&Open Video..."
+msgstr "&Obre un vídeo..."
+
+#: aegisub/frame_main.cpp:361
+msgid "Opens a video file"
+msgstr "Obre un fitxer de vídeo"
+
+#: aegisub/frame_main.cpp:362
+msgid "&Close Video"
+msgstr "Tan&ca el vídeo"
+
+#: aegisub/frame_main.cpp:362
+msgid "Closes the currently open video file"
+msgstr "Tanca el fitxer de vídeo obert actualment"
+
+#: aegisub/frame_main.cpp:365
+msgid "Use dummy video..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:365
+msgid "Opens a video clip with solid colour"
+msgstr ""
+
+#: aegisub/frame_main.cpp:367
+msgid "Open timecodes file..."
+msgstr "Obre un fitxer de codis de temps"
+
+#: aegisub/frame_main.cpp:367
+msgid "Opens a VFR timecodes v1 or v2 file"
+msgstr "Obre un fitxer de codis de temps VFR (marcs variables) v1 o v2"
+
+#: aegisub/frame_main.cpp:368
+msgid "Close timecodes file"
+msgstr "Tanca el fitxer de codis de temps"
+
+#: aegisub/frame_main.cpp:368
+msgid "Closes the currently open timecodes file"
+msgstr "Tanca el fitxer de codis de temps obert actualment"
+
+#: aegisub/frame_main.cpp:372
+msgid "Open keyframes..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:372
+#, fuzzy
+msgid "Opens a keyframe list file"
+msgstr "Obre un fitxer d'àudio"
+
+#: aegisub/frame_main.cpp:373
+msgid "Save keyframes..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:373
+msgid "Saves the current keyframe list"
+msgstr ""
+
+#: aegisub/frame_main.cpp:374
+#, fuzzy
+msgid "Close keyframes"
+msgstr " marcs "
+
+#: aegisub/frame_main.cpp:374
+#, fuzzy
+msgid "Closes the currently open keyframes list"
+msgstr "Tanca el fitxer de codis de temps obert actualment"
+
+#: aegisub/frame_main.cpp:378
+#, fuzzy
+msgid "Detach Video"
+msgstr "Defineix l'inici al vídeo"
+
+#: aegisub/frame_main.cpp:378
+msgid "Detach video, displaying it in a separate Window."
+msgstr ""
+
+#: aegisub/frame_main.cpp:380
+#, fuzzy
+msgid "Set Zoom"
+msgstr "Defineix l'ampliació al 50%"
+
+#: aegisub/frame_main.cpp:382
+msgid "Set zoom to 50%"
+msgstr "Defineix l'ampliació al 50%"
+
+#: aegisub/frame_main.cpp:383
+msgid "Set zoom to 100%"
+msgstr "Defineix l'ampliació al 100%"
+
+#: aegisub/frame_main.cpp:384
+msgid "Set zoom to 200%"
+msgstr "Defineix l'ampliació al 200%"
+
+#: aegisub/frame_main.cpp:387
+#, fuzzy
+msgid "Override Aspect Ratio"
+msgstr "Relació d'aspecte invàlida"
+
+#: aegisub/frame_main.cpp:389
+#, fuzzy
+msgid "&Default"
+msgstr "Predefinit"
+
+#: aegisub/frame_main.cpp:389
+msgid "Leave video on original aspect ratio"
+msgstr "Deixa el vídeo amb la relació d'aspecte original"
+
+#: aegisub/frame_main.cpp:390
+#, fuzzy
+msgid "&Fullscreen (4:3)"
+msgstr "Re&lació d'aspecte de pantalla completa (4:3)"
+
+#: aegisub/frame_main.cpp:390
+#, fuzzy
+msgid "Forces video to 4:3 aspect ratio"
+msgstr "Força la relació d'aspecte del vídeo a 2.35"
+
+#: aegisub/frame_main.cpp:391
+#, fuzzy
+msgid "&Widescreen (16:9)"
+msgstr "Relació d'aspecte de pantalla panorà&mica (16:9)"
+
+#: aegisub/frame_main.cpp:391
+#, fuzzy
+msgid "Forces video to 16:9 aspect ratio"
+msgstr "Força la relació d'aspecte del vídeo a 2.35"
+
+#: aegisub/frame_main.cpp:392
+msgid "&Cinematic (2.35)"
+msgstr ""
+
+#: aegisub/frame_main.cpp:392
+msgid "Forces video to 2.35 aspect ratio"
+msgstr "Força la relació d'aspecte del vídeo a 2.35"
+
+#: aegisub/frame_main.cpp:393
+#, fuzzy
+msgid "Custom..."
+msgstr "Retalla...\t"
+
+#: aegisub/frame_main.cpp:393
+msgid "Forces video to a custom aspect ratio"
+msgstr "Força la relació d'aspecte del vídeo a un valor personalitzat"
+
+#: aegisub/frame_main.cpp:395
+msgid "Show overscan mask"
+msgstr ""
+
+#: aegisub/frame_main.cpp:395
+msgid ""
+"Show a mask over the video, indicating areas that might get cropped off by "
+"overscan on televisions."
+msgstr ""
+
+#: aegisub/frame_main.cpp:397
+msgid "&Jump To...\t"
+msgstr "&Salta a...\t"
+
+#: aegisub/frame_main.cpp:397
+msgid "Jump to frame or time"
+msgstr "Salta a un marc o un temps"
+
+#: aegisub/frame_main.cpp:398
+msgid "Jump video to start\t"
+msgstr "Posa el vídeo a l'inici\t"
+
+#: aegisub/frame_main.cpp:399
+msgid "Jump video to end\t"
+msgstr "Posa el vídeo al final\t"
+
+#: aegisub/frame_main.cpp:400
+msgid "&Video"
+msgstr "&Vídeo"
+
+#: aegisub/frame_main.cpp:404
+msgid "&Open Audio file..."
+msgstr "&Obre un fitxer d'àudio..."
+
+#: aegisub/frame_main.cpp:404
+msgid "Opens an audio file"
+msgstr "Obre un fitxer d'àudio"
+
+#: aegisub/frame_main.cpp:405
+msgid "Open Audio from &Video"
+msgstr "Obre l'àudio del &vídeo"
+
+#: aegisub/frame_main.cpp:405
+msgid "Opens the audio from the current video file"
+msgstr "Obre l'àudio del fitxer de vídeo actual"
+
+#: aegisub/frame_main.cpp:406
+msgid "&Close Audio"
+msgstr "Tan&ca l'àudio"
+
+#: aegisub/frame_main.cpp:406
+msgid "Closes the currently open audio file"
+msgstr "Tanca el fitxer d'àudio obert actualment"
+
+#: aegisub/frame_main.cpp:409
+msgid "&Audio"
+msgstr "À&udio"
+
+#: aegisub/frame_main.cpp:413
+msgid "&Automation..."
+msgstr "&Automatització..."
+
+#: aegisub/frame_main.cpp:413
+msgid "Open automation manager"
+msgstr "Obre el gestor de l'automatització"
+
+#: aegisub/frame_main.cpp:415
+#, fuzzy
+msgid "&Automation"
+msgstr "Automatització"
+
+#: aegisub/frame_main.cpp:419
+msgid "Select Aegisub interface language"
+msgstr "Seleccioneu l'idioma de la interfície de l'Aegisub"
+
+#: aegisub/frame_main.cpp:420
+#, fuzzy
+msgid "&Options..."
+msgstr "&Obre un vídeo..."
+
+#: aegisub/frame_main.cpp:422
+#, fuzzy
+msgid "&Associations..."
+msgstr "Associacions"
+
+#: aegisub/frame_main.cpp:422
+#, fuzzy
+msgid "Associate file types with Aegisub"
+msgstr "Associa les extensions"
+
+#: aegisub/frame_main.cpp:425
+#, fuzzy
+msgid "Lo&g window..."
+msgstr "C&erca...\t"
+
+#: aegisub/frame_main.cpp:425
+msgid "Open log window"
+msgstr ""
+
+#: aegisub/frame_main.cpp:428
+msgid "Subs only view"
+msgstr "Vista només dels subtítols"
+
+#: aegisub/frame_main.cpp:428
+msgid "Display subtitles only"
+msgstr "Mostra només els subtítols"
+
+#: aegisub/frame_main.cpp:429
+msgid "Video+Subs view"
+msgstr "Vista dels subtítols i el vídeo"
+
+#: aegisub/frame_main.cpp:429
+msgid "Display video and subtitles only"
+msgstr "Mostra només els subtítols i el vídeo"
+
+#: aegisub/frame_main.cpp:430
+msgid "Audio+Subs view"
+msgstr "Vista dels subtítols i l'àudio"
+
+#: aegisub/frame_main.cpp:430
+msgid "Display audio and subtitles only"
+msgstr "Mostra només els subtítols i l'àudio"
+
+#: aegisub/frame_main.cpp:431
+msgid "Full view"
+msgstr "Vista completa"
+
+#: aegisub/frame_main.cpp:431
+msgid "Display audio, video and subtitles"
+msgstr "Mostra els subtítols, l'àudio i el vídeo"
+
+#: aegisub/frame_main.cpp:432
+msgid "Vie&w"
+msgstr "&Visualitza"
+
+#: aegisub/frame_main.cpp:436
+msgid "&Contents...\t"
+msgstr "&Contingut...\t"
+
+#: aegisub/frame_main.cpp:436
+msgid "Help topics"
+msgstr "Temes d'ajuda"
+
+#: aegisub/frame_main.cpp:438
+msgid "&Website..."
+msgstr "Pàgina &web..."
+
+#: aegisub/frame_main.cpp:438
+msgid "Visit Aegisub's official website"
+msgstr "Visita la pàgina web oficial de l'Aegisub"
+
+#: aegisub/frame_main.cpp:439
+msgid "&Forums..."
+msgstr "&Fòrums..."
+
+#: aegisub/frame_main.cpp:439
+msgid "Visit Aegisub's forums"
+msgstr "Visita els fòrums de l'Aegisub"
+
+#: aegisub/frame_main.cpp:440
+msgid "&Bug tracker..."
+msgstr "&Eina de seguiment d'errors..."
+
+#: aegisub/frame_main.cpp:440
+msgid "Visit Aegisub's bug tracker"
+msgstr "Visita l'eina de seguiment d'errors de l'Aegisub"
+
+#: aegisub/frame_main.cpp:441
+msgid "&IRC channel..."
+msgstr "Canal d'&IRC"
+
+#: aegisub/frame_main.cpp:441
+msgid "Visit Aegisub's official IRC channel"
+msgstr "Visita el canal d'IRC oficial de l'Aegisub"
+
+#: aegisub/frame_main.cpp:443
+msgid "&Check for Updates..."
+msgstr ""
+
+#: aegisub/frame_main.cpp:443
+msgid "Check to see if there is a new version of Aegisub available"
+msgstr ""
+
+#: aegisub/frame_main.cpp:444
+msgid "&About..."
+msgstr "&Quant a..."
+
+#: aegisub/frame_main.cpp:445
+msgid "&Help"
+msgstr "A&juda"
+
+#: aegisub/frame_main.cpp:634
+msgid "Save subtitles file"
+msgstr "Desa el fitxer de subtítols"
+
+#: aegisub/frame_main.cpp:653 aegisub/frame_main_events.cpp:642
+msgid "Choose charset code:"
+msgstr "Escolliu el codi de la codificació:"
+
+#: aegisub/frame_main.cpp:683
+msgid "Save before continuing?"
+msgstr "Voleu desar abans de continuar?"
+
+#: aegisub/frame_main.cpp:683
+msgid "Unsaved changes"
+msgstr "Canvis no desats"
+
+#: aegisub/frame_main.cpp:807
+msgid "Do you want to load/unload the associated files?"
+msgstr "Voleu carregar o descarregar els fitxers associats?"
+
+#: aegisub/frame_main.cpp:807
+msgid "(Un)Load files?"
+msgstr "Càrrega de fitxers"
+
+#: aegisub/frame_main.cpp:943
+msgid "You have timecodes loaded currently. Would you like to unload them?"
+msgstr "Ja teniu codis de temps carregats. Els voleu descarregar?"
+
+#: aegisub/frame_main.cpp:943
+msgid "Unload timecodes?"
+msgstr "Descàrrega de codis de temps"
+
+#: aegisub/frame_main.cpp:969
+#, c-format
+msgid ""
+"The resolution of the loaded video and the resolution specified for the "
+"subtitles don't match.\n"
+"\n"
+"Video resolution:\t%d x %d\n"
+"Script resolution:\t%d x %d\n"
+"\n"
+"Change subtitles resolution to match video?"
+msgstr ""
+"La resolució del vídeo carregat i la resolució especificada als subtítols no "
+"coincideixen.\n"
+"\n"
+"Resolució del vídeo: %d x %d\n"
+"Resolució de l''script': %d x %d\n"
+"\n"
+"Voleu canviar la resolució dels subtítols perquè coincideixi amb la del "
+"vídeo?"
+
+#: aegisub/frame_main.cpp:969
+msgid "Resolution mismatch"
+msgstr "Resolució no coincident"
+
+#: aegisub/frame_main.cpp:976
+#, fuzzy
+msgid "Change script resolution"
+msgstr "Reajusta la resolució de l''script'"
+
+#: aegisub/frame_main_events.cpp:249
+msgid "Empty"
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:432
+#, fuzzy
+msgid "No Automation macros loaded"
+msgstr "Obre el gestor de l'automatització"
+
+#: aegisub/frame_main_events.cpp:579
+msgid "Open video file"
+msgstr "Obre un fitxer de vídeo"
+
+#: aegisub/frame_main_events.cpp:599
+msgid "Open audio file"
+msgstr "Obre un fitxer d'àudio"
+
+#: aegisub/frame_main_events.cpp:642
+msgid "Charset"
+msgstr "Codificació"
+
+#: aegisub/frame_main_events.cpp:713
+msgid "Open timecodes file"
+msgstr "Obre un fitxer de codis de temps"
+
+#: aegisub/frame_main_events.cpp:973
+#, fuzzy
+msgid "Reloaded all Automation scripts"
+msgstr "Carrega un 'script' d'Automatització"
+
+#: aegisub/frame_main_events.cpp:976
+#, fuzzy
+msgid "Reloaded autoload Automation scripts"
+msgstr "Carrega un 'script' d'Automatització"
+
+#: aegisub/frame_main_events.cpp:1108
+#, fuzzy
+msgid "snap to scene"
+msgstr "Enganxa a l'escena\t"
+
+#: aegisub/frame_main_events.cpp:1139
+#, fuzzy
+msgid "shift to frame"
+msgstr "Desplaça per marcs"
+
+#: aegisub/frame_main_events.cpp:1235
+msgid ""
+"Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) "
+"form. Enter a value like 853x480 to set a specific resolution."
+msgstr ""
+"Introduïu la relació d'aspecte de manera decimal (p. ex. 2.35) o fraccional "
+"(p. ex. 16:9). Introduïu un valor com ara 853x480 per definir una resolució "
+"específica."
+
+#: aegisub/frame_main_events.cpp:1235
+msgid "Enter aspect ratio"
+msgstr "Introduïu la relació d'aspecte"
+
+#: aegisub/frame_main_events.cpp:1270
+msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
+msgstr "Valor invàlid! La relació d'aspecte ha d'estar entre 0.5 i 5.0."
+
+#: aegisub/frame_main_events.cpp:1270
+msgid "Invalid Aspect Ratio"
+msgstr "Relació d'aspecte invàlida"
+
+#: aegisub/frame_main_events.cpp:1371
+#, fuzzy
+msgid "sort"
+msgstr "Exporta"
+
+#: aegisub/frame_main_events.cpp:1407
+msgid "File backup saved as \""
+msgstr "S'ha desat una còpia de seguretat del fitxer com a \""
+
+#: aegisub/frame_main_events.cpp:1501
+msgid "ASS Override Tag mode set to "
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:1502
+msgid "show full tags."
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:1503
+msgid "simplify tags."
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:1504
+msgid "hide tags."
+msgstr ""
+
+#: aegisub/frame_main_events.cpp:1526 aegisub/subs_edit_box.cpp:865
+#, fuzzy
+msgid "editing"
+msgstr "Edició:"
+
+#: aegisub/hotkeys.cpp:318
+msgid "Exit"
+msgstr "Sut"
+
+#: aegisub/hotkeys.cpp:319
+msgid "Help"
+msgstr "Ajuda"
+
+#: aegisub/hotkeys.cpp:322
+#, fuzzy
+msgid "Edit Box Commit"
+msgstr "Àudio: Aplica"
+
+#: aegisub/hotkeys.cpp:323
+msgid "Undo"
+msgstr "Desfés"
+
+#: aegisub/hotkeys.cpp:324
+msgid "Redo"
+msgstr "Refés"
+
+#: aegisub/hotkeys.cpp:327
+msgid "Find Next"
+msgstr "Cerca el següent"
+
+#: aegisub/hotkeys.cpp:329
+msgid "Select Lines"
+msgstr "Selecciona les línies"
+
+#: aegisub/hotkeys.cpp:331
+msgid "Cut"
+msgstr "Retalla"
+
+#: aegisub/hotkeys.cpp:332
+msgid "Paste"
+msgstr "Enganxa"
+
+#: aegisub/hotkeys.cpp:333
+#, fuzzy
+msgid "Paste Over"
+msgstr "Enganxa"
+
+#: aegisub/hotkeys.cpp:335
+msgid "Video Jump"
+msgstr "Salta el vídeo"
+
+#: aegisub/hotkeys.cpp:336
+msgid "Jump Video to Start"
+msgstr "Posa el vídeo a l'inici"
+
+#: aegisub/hotkeys.cpp:337
+msgid "Jump Video to End"
+msgstr "Posa el vídeo al final"
+
+#: aegisub/hotkeys.cpp:338
+msgid "Set Start to Video"
+msgstr "Defineix l'inici al vídeo"
+
+#: aegisub/hotkeys.cpp:339
+msgid "Set End to Video"
+msgstr "Defineix el final al vídeo"
+
+#: aegisub/hotkeys.cpp:341
+msgid "Shift by Current Time"
+msgstr "Desplaça pel temps actual"
+
+#: aegisub/hotkeys.cpp:342
+msgid "Zoom 50%"
+msgstr "Amplia al 50%"
+
+#: aegisub/hotkeys.cpp:343
+msgid "Zoom 100%"
+msgstr "Amplia al 100%"
+
+#: aegisub/hotkeys.cpp:344
+msgid "Zoom 200%"
+msgstr "Amplia al 200%"
+
+#: aegisub/hotkeys.cpp:346
+msgid "Video global prev frame"
+msgstr "Vídeo global: Marc anterior"
+
+#: aegisub/hotkeys.cpp:347
+msgid "Video global next frame"
+msgstr "Vídeo global: Marc següent"
+
+#: aegisub/hotkeys.cpp:348
+msgid "Video global focus seek"
+msgstr "Vídeo global: Cerca el focus"
+
+#: aegisub/hotkeys.cpp:349
+#, fuzzy
+msgid "Video global play"
+msgstr "Vídeo global: Marc anterior"
+
+#: aegisub/hotkeys.cpp:350
+msgid "Grid global prev line"
+msgstr "Graella global: Línia anterior"
+
+#: aegisub/hotkeys.cpp:351
+msgid "Grid global next line"
+msgstr "Graella global: Línia següent"
+
+#: aegisub/hotkeys.cpp:352
+msgid "Save Subtitles Alt"
+msgstr "Desa els subtítols (alternatiu)"
+
+#: aegisub/hotkeys.cpp:353
+msgid "Video global zoom in"
+msgstr "Vídeo global: Amplia"
+
+#: aegisub/hotkeys.cpp:354
+msgid "Video global zoom out"
+msgstr "Vídeo global: Redueix"
+
+#: aegisub/hotkeys.cpp:356
+msgid "Grid move row down"
+msgstr "Graella: Mou una línia avall"
+
+#: aegisub/hotkeys.cpp:357
+msgid "Grid move row up"
+msgstr "Graella: Mou una línia amunt"
+
+#: aegisub/hotkeys.cpp:358
+msgid "Grid delete rows"
+msgstr "Graella: Suprimeix línies"
+
+#: aegisub/hotkeys.cpp:359
+msgid "Grid duplicate rows"
+msgstr "Graella: Duplica línies"
+
+#: aegisub/hotkeys.cpp:360
+msgid "Grid duplicate and shift one frame"
+msgstr "Graella: Duplica i desplaça un marc"
+
+#: aegisub/hotkeys.cpp:362
+msgid "Audio Commit Alt"
+msgstr "Àudio: Aplica (alternatiu)"
+
+#: aegisub/hotkeys.cpp:363
+msgid "Audio Commit"
+msgstr "Àudio: Aplica"
+
+#: aegisub/hotkeys.cpp:364
+msgid "Audio Commit (Stay)"
+msgstr "Àudio: Aplica (mantingues)"
+
+#: aegisub/hotkeys.cpp:365
+msgid "Audio Prev Line"
+msgstr "Àudio: Línia anterior"
+
+#: aegisub/hotkeys.cpp:366
+msgid "Audio Prev Line Alt"
+msgstr "Àudio: Línia anterior (alternatiu)"
+
+#: aegisub/hotkeys.cpp:367
+msgid "Audio Next Line"
+msgstr "Àudio: Línia següent"
+
+#: aegisub/hotkeys.cpp:368
+msgid "Audio Next Line Alt"
+msgstr "Àudio: Línia següent (alternatiu)"
+
+#: aegisub/hotkeys.cpp:369
+msgid "Audio Play"
+msgstr "Àudio: Reprodueix"
+
+#: aegisub/hotkeys.cpp:370
+msgid "Audio Play Alt"
+msgstr "Àudio: Reprodueix (alternatiu)"
+
+#: aegisub/hotkeys.cpp:371
+#, fuzzy
+msgid "Audio Play or Stop"
+msgstr "Àudio: Reprodueix (alternatiu)"
+
+#: aegisub/hotkeys.cpp:372
+#, fuzzy
+msgid "Audio Stop"
+msgstr "Àudio: Aplica"
+
+#: aegisub/hotkeys.cpp:373
+msgid "Audio Karaoke Increase Len"
+msgstr "Àudio: Karaoke: incrementa la llargada"
+
+#: aegisub/hotkeys.cpp:374
+msgid "Audio Karaoke Decrease Len"
+msgstr "Àudio: Karaoke: decrementa la llargada"
+
+#: aegisub/hotkeys.cpp:375
+msgid "Audio Karaoke Increase Len Shift"
+msgstr "Àudio: Karaoke: Incrementa la llargada (shift)"
+
+#: aegisub/hotkeys.cpp:376
+msgid "Audio Karaoke Decrease Len Shift"
+msgstr "Àudio: Karaoke: Decrementa la llargada (shift)"
+
+#: aegisub/hotkeys.cpp:377
+msgid "Audio Scroll Left"
+msgstr "Àudio: Desplaça a l'esquerra"
+
+#: aegisub/hotkeys.cpp:378
+msgid "Audio Scroll Right"
+msgstr "Àudio: Desplaça a la dreta"
+
+#: aegisub/hotkeys.cpp:379
+msgid "Audio Play First 500ms"
+msgstr "Àudio: Reprodueix els primers 500 ms"
+
+#: aegisub/hotkeys.cpp:380
+msgid "Audio Play Last 500ms"
+msgstr "Àudio: Reprodueix els últims 500 ms"
+
+#: aegisub/hotkeys.cpp:381
+msgid "Audio Play 500ms Before"
+msgstr "Àudio: Reprodueix els 500 ms anteriors"
+
+#: aegisub/hotkeys.cpp:382
+msgid "Audio Play 500ms After"
+msgstr "Àudio: Reprodueix els 500 ms posteriors"
+
+#: aegisub/hotkeys.cpp:383
+msgid "Audio Play To End"
+msgstr "Àudio: Reprodueix fins al final"
+
+#: aegisub/hotkeys.cpp:384
+msgid "Audio Play Original Line"
+msgstr "Àudio: Reprodueix la línia original"
+
+#: aegisub/hotkeys.cpp:385
+msgid "Audio Add Lead In"
+msgstr "Àudio: Afegeix temps d'entrada"
+
+#: aegisub/hotkeys.cpp:386
+msgid "Audio Add Lead Out"
+msgstr "Àudio: Afegeix temps de sortida"
+
+#: aegisub/hotkeys.cpp:388
+msgid "Audio Medusa Toggle"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:389
+#, fuzzy
+msgid "Audio Medusa Play"
+msgstr "Àudio: Reprodueix"
+
+#: aegisub/hotkeys.cpp:390
+msgid "Audio Medusa Stop"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:391
+msgid "Audio Medusa Shift Start Back"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:392
+msgid "Audio Medusa Shift Start Forward"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:393
+msgid "Audio Medusa Shift End Back"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:394
+msgid "Audio Medusa Shift End Forward"
+msgstr ""
+
+#: aegisub/hotkeys.cpp:395
+#, fuzzy
+msgid "Audio Medusa Play Before"
+msgstr "Àudio: Reprodueix els 500 ms anteriors"
+
+#: aegisub/hotkeys.cpp:396
+#, fuzzy
+msgid "Audio Medusa Play After"
+msgstr "Àudio: Reprodueix els 500 ms posteriors"
+
+#: aegisub/hotkeys.cpp:397
+#, fuzzy
+msgid "Audio Medusa Next"
+msgstr "Àudio: Línia següent"
+
+#: aegisub/hotkeys.cpp:398
+#, fuzzy
+msgid "Audio Medusa Previous"
+msgstr "Àudio: Línia anterior"
+
+#: aegisub/hotkeys.cpp:400
+msgid "Translation Assistant Play"
+msgstr "Auxiliar de traducció: Reprodueix"
+
+#: aegisub/hotkeys.cpp:401
+msgid "Translation Assistant Next"
+msgstr "Auxiliar de traducció: Següent"
+
+#: aegisub/hotkeys.cpp:402
+msgid "Translation Assistant Prev"
+msgstr "Auxiliar de traducció: Anterior"
+
+#: aegisub/hotkeys.cpp:403
+msgid "Translation Assistant Accept"
+msgstr "Auxiliar de traducció: Accepta"
+
+#: aegisub/hotkeys.cpp:404
+msgid "Translation Assistant Preview"
+msgstr "Auxiliar de traducció: Previsualitza"
+
+#: aegisub/hotkeys.cpp:405
+msgid "Translation Assistant Insert Original"
+msgstr "Auxiliar de traducció: Insereix l'original"
+
+#: aegisub/hotkeys.cpp:407
+msgid "Styling Assistant Play"
+msgstr "Auxiliar d'estils: Reprodueix"
+
+#: aegisub/hotkeys.cpp:408
+msgid "Styling Assistant Next"
+msgstr "Auxiliar d'estils: Següent"
+
+#: aegisub/hotkeys.cpp:409
+msgid "Styling Assistant Prev"
+msgstr "Auxiliar d'estils: Anterior"
+
+#: aegisub/hotkeys.cpp:410
+msgid "Styling Assistant Accept"
+msgstr "Auxiliar d'estils: Accepta"
+
+#: aegisub/hotkeys.cpp:411
+msgid "Styling Assistant Preview"
+msgstr "Auxiliar d'estils: Previsualitza"
+
+#: aegisub/mkv_wrap.cpp:168 aegisub/mkv_wrap.cpp:388
+msgid "Parsing Matroska"
+msgstr "S'està analitzant el fitxer Matroska"
+
+#: aegisub/mkv_wrap.cpp:168
+msgid "Reading keyframe and timecode data from Matroska file."
+msgstr ""
+"S'estan llegint els marcs clau i les dades dels codis de temps del fitxer "
+"Matroska."
+
+#: aegisub/mkv_wrap.cpp:388
+#, fuzzy
+msgid "Reading subtitles from Matroska file."
+msgstr ""
+"S'estan llegint els marcs clau i les dades dels codis de temps del fitxer "
+"Matroska."
+
+#: aegisub/subs_edit_box.cpp:82
+msgid "Comment"
+msgstr "Comenta"
+
+#: aegisub/subs_edit_box.cpp:83
+msgid "Comment this line out. Commented lines don't show up on screen."
+msgstr ""
+"Comenta aquesta línia. Les línies comentades no es mostren a la pantalla"
+
+#: aegisub/subs_edit_box.cpp:85
+msgid "Style for this line."
+msgstr "Estil per a aquesta línia"
+
+#: aegisub/subs_edit_box.cpp:87
+msgid ""
+"Actor name for this speech. This is only for reference, and is mainly "
+"useless."
+msgstr ""
+"Nom de l'actor que diu aquest text. Només és una referència, i normalment és "
+"inútil."
+
+#: aegisub/subs_edit_box.cpp:90
+msgid ""
+"Effect for this line. This can be used to store extra information for "
+"karaoke scripts, or for the effects supported by the renderer."
+msgstr ""
+"Efecte per a aquesta línia. Es pot utilitzar per emmagatzemar informació "
+"extra als 'scripts' de karaoke, o per a efectes suportats pel programa "
+"renderitzador."
+
+#: aegisub/subs_edit_box.cpp:95
+msgid "Layer number"
+msgstr "Número de capa"
+
+#: aegisub/subs_edit_box.cpp:97
+msgid "Start time"
+msgstr "Temps d'inici"
+
+#: aegisub/subs_edit_box.cpp:100
+msgid "End time"
+msgstr "Temps de final"
+
+#: aegisub/subs_edit_box.cpp:104
+msgid "Line duration"
+msgstr "Durada de la línia"
+
+#: aegisub/subs_edit_box.cpp:107
+#, fuzzy
+msgid "Left Margin (0 = default)"
+msgstr "Marge esquerre (0000 = predefinit)"
+
+#: aegisub/subs_edit_box.cpp:110
+#, fuzzy
+msgid "Right Margin (0 = default)"
+msgstr "Marge dret (0000 = predefinit)"
+
+#: aegisub/subs_edit_box.cpp:113
+#, fuzzy
+msgid "Vertical Margin (0 = default)"
+msgstr "Marge vertical (0000 = predefinit)"
+
+#: aegisub/subs_edit_box.cpp:120
+msgid "Italics"
+msgstr "Cursiva"
+
+#: aegisub/subs_edit_box.cpp:126
+msgid "Font Face Name"
+msgstr "Nom del tipus de lletra"
+
+#: aegisub/subs_edit_box.cpp:128
+msgid "Primary color"
+msgstr "Color primari"
+
+#: aegisub/subs_edit_box.cpp:130
+msgid "Secondary color"
+msgstr "Color secundari"
+
+#: aegisub/subs_edit_box.cpp:132
+msgid "Outline color"
+msgstr "Color de la vora"
+
+#: aegisub/subs_edit_box.cpp:134
+msgid "Shadow color"
+msgstr "Color de l'ombra"
+
+#: aegisub/subs_edit_box.cpp:135
+#, fuzzy
+msgid "Commit"
+msgstr "Aplicar?"
+
+#: aegisub/subs_edit_box.cpp:136
+msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
+msgstr ""
+
+#: aegisub/subs_edit_box.cpp:137
+msgid "Time"
+msgstr "Temps"
+
+#: aegisub/subs_edit_box.cpp:138
+msgid "Time by h:mm:ss.cs"
+msgstr "Temps en h:mm:ss:cs"
+
+#: aegisub/subs_edit_box.cpp:139
+msgid "Frame"
+msgstr "Marc"
+
+#: aegisub/subs_edit_box.cpp:140
+msgid "Time by frame number"
+msgstr "Nombre del temps per marc"
+
+#: aegisub/subs_edit_box.cpp:592
+#, fuzzy
+msgid "actor change"
+msgstr "Accepta els canvis"
+
+#: aegisub/subs_edit_box.cpp:619
+#, c-format
+msgid "%i"
+msgstr ""
+
+#: aegisub/subs_edit_box.cpp:620
+#, fuzzy
+msgid "layer change"
+msgstr "Canvis no desats"
+
+#: aegisub/subs_edit_box.cpp:689
+#, fuzzy
+msgid "modify times"
+msgstr "Desplaça per temps"
+
+#: aegisub/subs_edit_box.cpp:713
+#, fuzzy
+msgid "MarginL change"
+msgstr "Previsualitza els canvis"
+
+#: aegisub/subs_edit_box.cpp:735
+#, fuzzy
+msgid "MarginR change"
+msgstr "Previsualitza els canvis"
+
+#: aegisub/subs_edit_box.cpp:758
+#, fuzzy
+msgid "MarginV change"
+msgstr "Previsualitza els canvis"
+
+#: aegisub/subs_edit_box.cpp:779
+#, fuzzy
+msgid "effect change"
+msgstr "Accepta els canvis"
+
+#: aegisub/subs_edit_box.cpp:799
+#, fuzzy
+msgid "comment change"
+msgstr "Aplica els canvis ("
+
+#: aegisub/subs_edit_ctrl.cpp:720
+msgid "No correction suggestions"
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:732
+#, fuzzy, c-format
+msgid "Add \"%s\" to dictionary"
+msgstr "Afegeix a la selecció"
+
+#: aegisub/subs_edit_ctrl.cpp:738
+#, fuzzy
+msgid "No spell checker suggestions"
+msgstr "Obre la correcció ortogràfica"
+
+#: aegisub/subs_edit_ctrl.cpp:745
+#, c-format
+msgid "Spell checker suggestions for \"%s\""
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:765 aegisub/subs_edit_ctrl.cpp:848
+#, fuzzy
+msgid "Disable"
+msgstr "Variable"
+
+#: aegisub/subs_edit_ctrl.cpp:778
+#, fuzzy
+msgid "Spell checker language"
+msgstr "Correcció ortogràfica"
+
+#: aegisub/subs_edit_ctrl.cpp:829
+#, c-format
+msgid "Thesaurus suggestions for \"%s\""
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:833
+msgid "No thesaurus suggestions"
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:861
+msgid "Thesaurus language"
+msgstr ""
+
+#: aegisub/subs_edit_ctrl.cpp:868
+msgid "Cu&t"
+msgstr "Re&talla"
+
+#: aegisub/subs_edit_ctrl.cpp:869 aegisub/subs_grid.cpp:195
+msgid "&Copy"
+msgstr "&Copia"
+
+#: aegisub/subs_edit_ctrl.cpp:870 aegisub/subs_grid.cpp:197
+msgid "&Paste"
+msgstr "Engan&xa"
+
+#: aegisub/subs_edit_ctrl.cpp:872
+msgid "Select &All"
+msgstr "Seleccion&a-ho tot"
+
+#: aegisub/subs_edit_ctrl.cpp:876
+msgid "Split at cursor (preserve times)"
+msgstr "Divideix al cursor (conserva els temps)"
+
+#: aegisub/subs_edit_ctrl.cpp:877
+msgid "Split at cursor (estimate times)"
+msgstr "Divideix al cursor (estima els temps)"
+
+#: aegisub/subs_grid.cpp:115
+msgid "Line Number"
+msgstr "Número de línia"
+
+#: aegisub/subs_grid.cpp:116
+msgid "Layer"
+msgstr "Capa"
+
+#: aegisub/subs_grid.cpp:148
+msgid "&Insert (before)"
+msgstr "&Insereix (abans)"
+
+#: aegisub/subs_grid.cpp:149
+msgid "Insert (after)"
+msgstr "Insereix (després)"
+
+#: aegisub/subs_grid.cpp:151
+msgid "Insert at video time (before)"
+msgstr "Insereix al marc del vídeo (abans)"
+
+#: aegisub/subs_grid.cpp:152
+msgid "Insert at video time (after)"
+msgstr "Insereix al marc del vídeo (després)"
+
+#: aegisub/subs_grid.cpp:164
+msgid "&Duplicate"
+msgstr "&Duplica"
+
+#: aegisub/subs_grid.cpp:166
+msgid "Split (by karaoke)"
+msgstr "Divideix (per karaoke)"
+
+#: aegisub/subs_grid.cpp:170
+msgid "&Swap"
+msgstr "Intercan&via"
+
+#: aegisub/subs_grid.cpp:174
+msgid "&Join (concatenate)"
+msgstr "&Uneix (concatena)"
+
+#: aegisub/subs_grid.cpp:175
+msgid "Join (keep first)"
+msgstr "Uneix (mantén el primer)"
+
+#: aegisub/subs_grid.cpp:176
+msgid "Join (as Karaoke)"
+msgstr "Uneix (com a karaoke)"
+
+#: aegisub/subs_grid.cpp:180
+msgid "&Make times continuous (change start)"
+msgstr "&Fes els temps continus (canvia l'inici)"
+
+#: aegisub/subs_grid.cpp:181
+msgid "&Make times continuous (change end)"
+msgstr "Fe&s els temps continus (canvia el final)"
+
+#: aegisub/subs_grid.cpp:190
+#, fuzzy
+msgid "Create audio clip"
+msgstr "Crea un 'script' d'Automatització"
+
+#: aegisub/subs_grid.cpp:196
+msgid "C&ut"
+msgstr "Ret&alla"
+
+#: aegisub/subs_grid.cpp:396
+#, fuzzy
+msgid "splitting"
+msgstr "Canvia el mode de divisió"
+
+#: aegisub/subs_grid.cpp:641
+msgid "combining"
+msgstr ""
+
+#: aegisub/subs_grid.cpp:672
+msgid "The starting point is beyond the length of the audio loaded."
+msgstr ""
+
+#: aegisub/subs_grid.cpp:676
+msgid "There is no audio to save."
+msgstr ""
+
+#: aegisub/subs_grid.cpp:683
+#, fuzzy
+msgid "Save audio clip"
+msgstr "Obre un fitxer d'àudio"
+
+#: aegisub/subs_grid.cpp:722
+msgid "Couldn't allocate memory."
+msgstr ""
+
+#: aegisub/subs_grid.cpp:799 aegisub/subs_grid.cpp:800
+#, fuzzy
+msgid "load"
+msgstr "Recarre&ga"
+
+#: aegisub/subs_grid.cpp:841
+msgid "swap lines"
+msgstr ""
+
+#: aegisub/subs_grid.cpp:867
+#, fuzzy
+msgid "line insertion"
+msgstr "Durada de la línia"
+
+#: aegisub/subs_grid.cpp:989
+#, fuzzy
+msgid "paste"
+msgstr "Enganxa"
+
+#: aegisub/subs_grid.cpp:1031
+#, fuzzy
+msgid "delete"
+msgstr "Suprimeix"
+
+#: aegisub/subs_grid.cpp:1110
+#, fuzzy
+msgid "adjoin"
+msgstr "Uneix"
+
+#: aegisub/subs_grid.cpp:1271
+#, fuzzy
+msgid "split"
+msgstr "Divideix"
+
+#: aegisub/subs_grid.cpp:1432
+#, fuzzy
+msgid "timing"
+msgstr "Temps:"
+
+#: aegisub/subtitle_format.cpp:263
+msgid "All Supported Formats ("
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:286
+msgid "15.000 FPS"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:287
+msgid "23.976 FPS (Decimated NTSC)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:288
+msgid "24.000 FPS (FILM)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:290
+msgid "25.000 FPS (PAL)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:291
+msgid "29.970 FPS (NTSC)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:293
+msgid "30.000 FPS"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:294
+msgid "59.940 FPS (NTSC x2)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:295
+msgid "60.000 FPS"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:296
+msgid "119.880 FPS (NTSC x4)"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:297
+msgid "120.000 FPS"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:301
+msgid "Please choose the appropriate FPS for the subtitles:"
+msgstr ""
+
+#: aegisub/subtitle_format.cpp:301
+msgid "FPS"
+msgstr ""
+
+#: aegisub/subtitle_format_prs.cpp:143
+msgid "Exporting PRS"
+msgstr "S'està exportant PRS"
+
+#: aegisub/subtitle_format_prs.cpp:143
+msgid "Writing file"
+msgstr "S'està escrivint el fitxer"
+
+#: aegisub/vfr.cpp:65
+msgid "No timecodes to average"
+msgstr "No hi ha codis de temps per fer la mitjana"
+
+#: aegisub/video_box.cpp:75
+msgid "Play video starting on this position"
+msgstr "Reprodueix el vídeo començant en aquesta posició"
+
+#: aegisub/video_box.cpp:77
+msgid "Play current line"
+msgstr "Reprodueix la línia actual"
+
+#: aegisub/video_box.cpp:79
+msgid "Stop video playback"
+msgstr "Atura la reproducció del vídeo"
+
+#: aegisub/video_box.cpp:81
+msgid "Toggle autoscroll of video"
+msgstr "Activa/desactiva el moviment automàtic del vídeo"
+
+#: aegisub/video_box.cpp:86
+msgid "Seek video."
+msgstr "Mou el vídeo."
+
+#: aegisub/video_box.cpp:90
+msgid "Current frame time and number."
+msgstr "Temps del marc actual i número."
+
+#: aegisub/video_box.cpp:94
+msgid "Time of this frame relative to start and end of current subs."
+msgstr ""
+"Temps d'aquest marc relatiu a l'inici i al final dels subtítols actuals."
+
+#: aegisub/video_box.cpp:110
+msgid "Standard mode, double click sets position."
+msgstr ""
+
+#: aegisub/video_box.cpp:112
+#, fuzzy
+msgid "Drag subtitles."
+msgstr "Desa els subtítols"
+
+#: aegisub/video_box.cpp:114
+#, fuzzy
+msgid "Rotate subtitles on their Z axis."
+msgstr "Ordena tots els subtítols pel seu temps d'inici"
+
+#: aegisub/video_box.cpp:116
+#, fuzzy
+msgid "Rotate subtitles on their X and Y axes."
+msgstr "Ordena tots els subtítols pel seu temps d'inici"
+
+#: aegisub/video_box.cpp:118
+#, fuzzy
+msgid "Scale subtitles on X and Y axes."
+msgstr "Enganxa els subtítols a l'escena"
+
+#: aegisub/video_box.cpp:120
+#, fuzzy
+msgid "Clip subtitles to a rectangle."
+msgstr "Enganxa els subtítols a l'escena"
+
+#: aegisub/video_box.cpp:122
+msgid "Toggle realtime display of changes."
+msgstr ""
+
+#: aegisub/video_context.cpp:271
+msgid ""
+"You already have timecodes loaded. Replace them with the timecodes from the "
+"Matroska file?"
+msgstr ""
+"Ja teniu codis de temps carregats. Voleu substituir-los amb els codis de "
+"temps del fitxer Matroska?"
+
+#: aegisub/video_context.cpp:271
+msgid "Replace timecodes?"
+msgstr "Substitució de codis de temps"
+
+#: aegisub/video_context.cpp:597
+msgid "Video Screenshot Path"
+msgstr ""
+
+#: aegisub/video_display.cpp:447
+msgid "Save PNG snapshot"
+msgstr "Desa una captura PNG"
+
+#: aegisub/video_display.cpp:448
+msgid "Copy image to Clipboard"
+msgstr "Copia la imatge al porta-retalls"
+
+#: aegisub/video_display.cpp:451
+#, fuzzy
+msgid "Save PNG snapshot (no subtitles)"
+msgstr "Desa una captura PNG"
+
+#: aegisub/video_display.cpp:452
+#, fuzzy
+msgid "Copy image to Clipboard (no subtitles)"
+msgstr "Copia la imatge al porta-retalls"
+
+#: aegisub/video_display.cpp:454
+msgid "Copy coordinates to Clipboard"
+msgstr "Copia les coordinades al porta-retalls"
+
+#: aegisub/visual_tool.cpp:183 aegisub/visual_tool.cpp:235
+#: aegisub/visual_tool_drag.cpp:116
+msgid "visual typesetting"
+msgstr ""
+
+#: aegisub/visual_tool_cross.cpp:75
+msgid "positioning"
+msgstr ""
+
+#~ msgid ""
+#~ "Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka "
+#~ "jfs).\n"
+#~ msgstr ""
+#~ "L'automatització és Copyright (c) 2005-2006 Niels Martin Hansen (jfs).\n"
+
+#~ msgid ""
+#~ "Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka "
+#~ "Tentacle).\n"
+#~ msgstr ""
+#~ "El seguiment de moviment és Copyright (c) 2006 Hajo Krabbenhoeft "
+#~ "(Tentacle).\n"
+
+#~ msgid ""
+#~ "Coding by ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n"
+#~ msgstr ""
+#~ "Programació per ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle i "
+#~ "nmap.\n"
+
+#~ msgid "Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n"
+#~ msgstr "Manual per ArchMage ZeratuL, jfs, movax, Kobi, TheFluff i Jcubed.\n"
+
+#~ msgid "SVN hosting by BerliOS and Mentar.\n"
+#~ msgstr "Allotjament del SVN per BerliOS i Mentrar.\n"
+
+#~ msgid "Stop"
+#~ msgstr "Atura"
+
+#~ msgid ""
+#~ "Substation Alpha Mode - Left click sets start and right click sets end"
+#~ msgstr ""
+#~ "Mode Substation Alpha - El clic esquerre defineix l'inici i el dret el "
+#~ "final"
+
+#~ msgid "&Create..."
+#~ msgstr "&Crea..."
+
+#~ msgid "&Apply now"
+#~ msgstr "&Aplica ara"
+
+#~ msgid "&Edit..."
+#~ msgstr "&Edita..."
+
+#~ msgid "C&lose"
+#~ msgstr "&Tanca"
+
+#~ msgid "Script name"
+#~ msgstr "Nom de l''script'"
+
+#~ msgid "Tracker configuration"
+#~ msgstr "Configuració del seguiment"
+
+#~ msgid "Number of points to track:"
+#~ msgstr "Nombre de punts a seguir:"
+
+#~ msgid "Minimal (squared) distance between two points:  "
+#~ msgstr "Distància mínima (quadrada) entre dos punts:"
+
+#~ msgid "Maximum feature movement:"
+#~ msgstr "Màxim de moviment:"
+
+#~ msgid "Maximum feature appearance change:"
+#~ msgstr "Màxim de canvi d'aparença:"
+
+#~ msgid "How much CPU per feature?"
+#~ msgstr "Quanta CPU per a cada característica?"
+
+#~ msgid "Edge detect filter size:"
+#~ msgstr "Mida del filtre de detecció de vores:"
+
+#~ msgid "Feature comparison width:"
+#~ msgstr "Amplada de la comparació:"
+
+#~ msgid "Feature comparison height:"
+#~ msgstr "Alçada de la comparació:"
+
+#~ msgid "Minimal determinant:"
+#~ msgstr "Determinant mínim:"
+
+#~ msgid "Minimal displacement per iteration:"
+#~ msgstr "Desplaçament mínim per iteració:"
+
+#~ msgid "Go!"
+#~ msgstr "Endavant!"
+
+#~ msgid "Choose"
+#~ msgstr "Escolliu"
+
+#~ msgid "Angle:"
+#~ msgstr "Angle:"
+
+#~ msgid "FexTracker"
+#~ msgstr "FexTracker"
+
+#~ msgid "Add points to movement"
+#~ msgstr "Afegeix punts al moviment"
+
+#~ msgid "Remove points from movement"
+#~ msgstr "Suprimeix punts del moviment"
+
+#~ msgid "Generate movement from points"
+#~ msgstr "Genera el moviment a partir dels punts"
+
+#~ msgid "FexMovement"
+#~ msgstr "FexMovement"
+
+#~ msgid "Generate empty movement"
+#~ msgstr "Genera un moviment buit"
+
+#~ msgid "Move subtitle (this frame and preceeding frames)"
+#~ msgstr "Mou el subtítol (aquest marc i els marcs precedents)"
+
+#~ msgid "Move subtitle (this frame)"
+#~ msgstr "Mou el subtítol (aquest marc)"
+
+#~ msgid "Move subtitle (this frame and following frames)"
+#~ msgstr "Mou el subtítol (aquest marc i els següents)"
+
+#~ msgid "Split line for movement"
+#~ msgstr "Divideix la línia per al moviment"
+
+#~ msgid "Link movement file"
+#~ msgstr "Enllaç al fitxer de moviment"
+
+#~ msgid "Tracking points"
+#~ msgstr "Punts de seguiment"
+
+#~ msgid "Link name:"
+#~ msgstr "Nom de l'enllaç:"
+
+#~ msgid "Link line to movement file"
+#~ msgstr "Enllaça la línia al fitxer de moviment"
+
+#~ msgid "Invalid folder"
+#~ msgstr "Carpeta invàlida"
+
+#~ msgid "Could not find font "
+#~ msgstr "No s'ha trobat el tipus de lletra"
+
+#~ msgid "&Undo\t"
+#~ msgstr "&Desfés\t"
+
+#~ msgid "Find next\t"
+#~ msgstr "Cerca el següent\t"
+
+#~ msgid "Copy...\t"
+#~ msgstr "Copia...\t"
+
+#~ msgid "Zoom &50%\t"
+#~ msgstr "Amplia al &50%\t"
+
+#~ msgid "Zoom &100%\t"
+#~ msgstr "Amplia al &100%\t"
+
+#~ msgid "Zoom &200%\t"
+#~ msgstr "Amplia al &200%\t"
+
+#~ msgid "Snap start to video\t"
+#~ msgstr "Enganxa l'inici al vídeo\t"
+
+#~ msgid "Snap end to video\t"
+#~ msgstr "Enganxa el final al vídeo\t"
+
+#~ msgid "&Default Aspect Ratio"
+#~ msgstr "Relació &d'aspecte predefinida"
+
+#~ msgid "Forces video to fullscreen aspect ratio"
+#~ msgstr "Força la relació d'aspecte del vídeo a pantalla completa"
+
+#~ msgid "Forces video to widescreen aspect ratio"
+#~ msgstr "Força la relació d'aspecte del vídeo a pantalla panoràmica"
+
+#~ msgid "&2.35 Aspect Ratio"
+#~ msgstr "Relació d'aspecte &2.35"
+
+#~ msgid "Custom Aspect Ratio..."
+#~ msgstr "Relació d'aspecte personalitzada..."
+
+#~ msgid "&Hotkeys..."
+#~ msgstr "&Dreceres del teclat..."
+
+#~ msgid "Remap hotkeys"
+#~ msgstr "Canvia les dreceres del teclat"
+
+#~ msgid "&Tools"
+#~ msgstr "E&ines"
+
+#~ msgid "Save file"
+#~ msgstr "Desa el fitxer"
+
+#~ msgid "Recombine (1, 1+2) into (1, 2)"
+#~ msgstr "Recombina (1, 1+2) a (1, 2)"
+
+#~ msgid "Recombine (1+2, 2) into (1, 2)"
+#~ msgstr "Recombina (1+2, 2) a (1, 2)"
+
+#~ msgid "Recombine (1, 1+2, 2) into (1, 2)"
+#~ msgstr "Recombina (1, 1+2, 2) a (1, 2)"

@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = ac auto3 automation csri aegisub locale
+SUBDIRS = ac auto3 automation csri aegisub po
 
 lua51/src/liblua.a:
 	make -C lua51/src CC=$(CXX) a
@@ -74,3 +74,5 @@ EXTRA_DIST = \
 	lua51/src/lvm.h \
 	lua51/src/lzio.c \
 	lua51/src/lzio.h
+
+ACLOCAL_AMFLAGS = -I m4
