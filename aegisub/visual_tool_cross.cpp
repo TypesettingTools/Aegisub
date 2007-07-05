@@ -91,6 +91,7 @@ void VisualToolCross::Draw() {
 	glDisable(GL_LINE_SMOOTH);
 	glEnable(GL_COLOR_LOGIC_OP);
 	glLogicOp(GL_INVERT);
+	glLineWidth(1);
 	glBegin(GL_LINES);
 		glColor3f(1.0f,1.0f,1.0f);
 		glVertex2f(0,my);

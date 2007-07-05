@@ -177,6 +177,7 @@ aegisub_SOURCES = \
 	options.cpp \
 	scintilla_text_ctrl.cpp \
 	spellchecker.cpp \
+	spline.cpp \
 	standard_paths.cpp \
 	static_bmp.cpp \
 	string_codec.cpp \
