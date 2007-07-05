@@ -132,6 +132,7 @@ VideoBox::VideoBox(wxWindow *parent)
 	typeSizer->Add(scale,0,wxEXPAND,0);
 	typeSizer->Add(clip,0,wxEXPAND,0);
 	typeSizer->Add(vectorClip,0,wxEXPAND | wxBOTTOM,5);
+	typeSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND | wxBOTTOM,5);
 	typeSizer->Add(realtime,0,wxEXPAND,0);
 	typeSizer->AddStretchSpacer(1);
 

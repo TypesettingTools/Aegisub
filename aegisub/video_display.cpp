@@ -668,7 +668,7 @@ void VideoDisplay::SetVisualMode(int mode) {
 			case 3: visual = new VisualToolRotateXY(this); break;
 			case 4: visual = new VisualToolScale(this); break;
 			case 5: visual = new VisualToolClip(this); break;
-			case 6: visual = new VisualToolVectorClip(this); break;
+			case 6: visual = new VisualToolVectorClip(this,toolBar,box); break;
 			default: visual = NULL;
 		}
 

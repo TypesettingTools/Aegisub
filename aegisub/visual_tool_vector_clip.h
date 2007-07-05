@@ -57,7 +57,7 @@ private:
 	void DoRefresh();
 
 public:
-	VisualToolVectorClip(VideoDisplay *parent);
+	VisualToolVectorClip(VideoDisplay *parent,wxSizer *toolbar,wxWindow *toolWindow);
 
 	void Update();
 	void Draw();

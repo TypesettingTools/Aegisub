@@ -40,12 +40,59 @@
 #include "ass_dialogue.h"
 
 
+///////
+// IDs
+enum {
+	BUTTON_DRAG = 1300,
+	BUTTON_LINE,
+	BUTTON_BICUBIC,
+	BUTTON_INSERT,
+	BUTTON_REMOVE,
+	BUTTON_CONVERT,
+	BUTTON_FREEHAND
+};
+
+
 ///////////////
 // Constructor
-VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent)
+VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxSizer *toolbar,wxWindow *toolWindow)
 : VisualTool(parent)
 {
 	DoRefresh();
+
+	// Create toolbar
+	wxButton *drag = new wxBitmapButton(toolWindow,BUTTON_DRAG,wxBITMAP(visual_vector_clip_drag));
+	wxButton *line = new wxBitmapButton(toolWindow,BUTTON_LINE,wxBITMAP(visual_vector_clip_line));
+	wxButton *bicubic = new wxBitmapButton(toolWindow,BUTTON_BICUBIC,wxBITMAP(visual_vector_clip_bicubic));
+	wxButton *convert = new wxBitmapButton(toolWindow,BUTTON_CONVERT,wxBITMAP(visual_vector_clip_convert));
+	wxButton *insert = new wxBitmapButton(toolWindow,BUTTON_INSERT,wxBITMAP(visual_vector_clip_insert));
+	wxButton *remove = new wxBitmapButton(toolWindow,BUTTON_REMOVE,wxBITMAP(visual_vector_clip_remove));
+	wxButton *freehand = new wxBitmapButton(toolWindow,BUTTON_FREEHAND,wxBITMAP(visual_vector_clip_freehand));
+	drag->SetToolTip(_("Drag control points."));
+	line->SetToolTip(_("Appends a line."));
+	bicubic->SetToolTip(_("Appends a bezier bicubic curve."));
+	convert->SetToolTip(_("Converts a segment between line and bicubic."));
+	insert->SetToolTip(_("Inserts a control point."));
+	remove->SetToolTip(_("Removes a control point."));
+	freehand->SetToolTip(_("Draws a freehand shape."));
+	ConnectButton(drag);
+	ConnectButton(line);
+	ConnectButton(bicubic);
+	ConnectButton(convert);
+	ConnectButton(insert);
+	ConnectButton(remove);
+	ConnectButton(freehand);
+	toolbar->Add(drag,0,wxEXPAND);
+	toolbar->Add(line,0,wxEXPAND);
+	toolbar->Add(bicubic,0,wxEXPAND | wxRIGHT,5);
+	toolbar->Add(new wxStaticLine(toolWindow,-1,wxDefaultPosition,wxDefaultSize,wxLI_VERTICAL),0,wxEXPAND | wxRIGHT,5);
+	toolbar->Add(convert,0,wxEXPAND);
+	toolbar->Add(insert,0,wxEXPAND);
+	toolbar->Add(remove,0,wxEXPAND | wxRIGHT,5);
+	toolbar->Add(new wxStaticLine(toolWindow,-1,wxDefaultPosition,wxDefaultSize,wxLI_VERTICAL),0,wxEXPAND | wxRIGHT,5);
+	toolbar->Add(freehand,0,wxEXPAND);
+	toolbar->AddStretchSpacer(1);
+
 }
 
 
