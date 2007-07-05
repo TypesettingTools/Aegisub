@@ -47,6 +47,28 @@ SplineCurve::SplineCurve() {
 }
 
 
+/////////////////////////////////////////////////////////
+// Split a curve in two using the de Casteljau algorithm
+void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
+	// Split a line
+	if (type == CURVE_LINE) {
+		c1.type = CURVE_LINE;
+		c2.type = CURVE_LINE;
+		c1.p1 = p1;
+		c1.p2 = p1*t+p2*(1-t);
+		c2.p1 = c1.p2;
+		c2.p2 = p2;
+	}
+
+	// Split a bicubic
+	else if (type == CURVE_BICUBIC) {
+		c1.type = CURVE_BICUBIC;
+		c2.type = CURVE_BICUBIC;
+		// TODO
+	}
+}
+
+
 //////////////////////
 // Spline constructor
 Spline::Spline() {
@@ -301,9 +323,17 @@ void Spline::GetPointList(std::vector<Vector2D> &points) {
 }
 
 
+///////////////////////////////////////////////////////
+// t value and curve of the point closest to reference
+void GetClosestParametricPoint(Vector2D reference,int &curve,float &t) {
+	// TODO
+}
+
+
 //////////////////////////////
 // Point closest to reference
 Vector2D Spline::GetClosestPoint(Vector2D reference) {
+	// TODO
 	return Vector2D(-1,-1);
 }
 
@@ -311,5 +341,6 @@ Vector2D Spline::GetClosestPoint(Vector2D reference) {
 //////////////////////////////////////
 // Control point closest to reference
 Vector2D Spline::GetClosestControlPoint(Vector2D reference) {
+	// TODO
 	return Vector2D(-1,-1);
 }

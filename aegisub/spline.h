@@ -63,6 +63,7 @@ public:
 	CurveType type;
 
 	SplineCurve();
+	void Split(SplineCurve &c1,SplineCurve &c2,float t=0.5);
 };
 
 
@@ -82,6 +83,7 @@ public:
 
 	void GetPointList(std::vector<Vector2D> &points);
 
+	void GetClosestParametricPoint(Vector2D reference,int &curve,float &t);
 	Vector2D GetClosestPoint(Vector2D reference);
 	Vector2D GetClosestControlPoint(Vector2D reference);
 };
