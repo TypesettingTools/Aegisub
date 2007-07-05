@@ -141,6 +141,7 @@ visual_rotatez BITMAP "bitmaps/visual_rotatez.bmp"
 visual_rotatexy BITMAP "bitmaps/visual_rotatexy.bmp"
 visual_scale BITMAP "bitmaps/visual_scale.bmp"
 visual_clip BITMAP "bitmaps/visual_clip.bmp"
+visual_vector_clip BITMAP "bitmaps/visual_vector_clip.bmp"
 visual_realtime BITMAP "bitmaps/visual_realtime.bmp"
 
 arrow_up BITMAP "bitmaps/arrow_up.bmp"

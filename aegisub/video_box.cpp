@@ -118,7 +118,7 @@ VideoBox::VideoBox(wxWindow *parent)
 	scale->SetToolTip(_("Scale subtitles on X and Y axes."));
 	clip = new wxBitmapButton(videoPage,Video_Mode_Clip,wxBITMAP(visual_clip));
 	clip->SetToolTip(_("Clip subtitles to a rectangle."));
-	vectorClip = new wxBitmapButton(videoPage,Video_Mode_Vector_Clip,wxBITMAP(visual_clip));
+	vectorClip = new wxBitmapButton(videoPage,Video_Mode_Vector_Clip,wxBITMAP(visual_vector_clip));
 	vectorClip->SetToolTip(_("Clip subtitles to a vectorial area."));
 	realtime = new ToggleBitmap(videoPage,Video_Mode_Realtime,wxBITMAP(visual_realtime),wxSize(20,20));
 	realtime->SetToolTip(_("Toggle realtime display of changes."));
