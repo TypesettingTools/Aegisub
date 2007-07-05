@@ -64,7 +64,25 @@ void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
 	else if (type == CURVE_BICUBIC) {
 		c1.type = CURVE_BICUBIC;
 		c2.type = CURVE_BICUBIC;
-		// TODO
+
+		// Sub-divisions
+		float u = 1-t;
+		Vector2D p12 = p1*t+p2*u;
+		Vector2D p23 = p2*t+p3*u;
+		Vector2D p34 = p3*t+p4*u;
+		Vector2D p123 = p12*t+p23*u;
+		Vector2D p234 = p23*t+p34*u;
+		Vector2D p1234 = p123*t+p234*u;
+
+		// Set points
+		c1.p1 = p1;
+		c1.p2 = p12;
+		c1.p3 = p123;
+		c1.p4 = p1234;
+		c2.p1 = p1234;
+		c2.p2 = p234;
+		c2.p3 = p34;
+		c2.p4 = p4;
 	}
 }
 
