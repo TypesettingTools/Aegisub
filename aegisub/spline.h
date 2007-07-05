@@ -42,6 +42,7 @@
 #include <wx/wxprec.h>
 #include <list>
 #include <vector>
+#include "vector2d.h"
 
 
 ///////////////
@@ -58,10 +59,7 @@ enum CurveType {
 // Spline curve
 class SplineCurve {
 public:
-	int x1,y1;
-	int x2,y2;
-	int x3,y3;
-	int x4,y4;
+	Vector2D p1,p2,p3,p4;
 	CurveType type;
 
 	SplineCurve();
@@ -82,8 +80,8 @@ public:
 	void AppendCurve(SplineCurve &curve);
 	void MovePoint(int curveIndex,int point,wxPoint pos);
 
-	void GetPointList(std::vector<wxPoint> &points);
+	void GetPointList(std::vector<Vector2D> &points);
 
-	wxPoint GetClosestPoint(wxPoint reference);
-	wxPoint GetClosestControlPoint(wxPoint reference);
+	Vector2D GetClosestPoint(Vector2D reference);
+	Vector2D GetClosestControlPoint(Vector2D reference);
 };

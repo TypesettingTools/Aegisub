@@ -111,7 +111,7 @@ void VisualToolVectorClip::Draw() {
 	if (!line) return;
 
 	// Parse vector
-	std::vector<wxPoint> points;
+	std::vector<Vector2D> points;
 	spline.GetPointList(points);
 
 	// Draw lines
@@ -150,8 +150,8 @@ void VisualToolVectorClip::Draw() {
 	SetLineColour(colour[3],0.9f,1);
 	for (std::list<SplineCurve>::iterator cur=spline.curves.begin();cur!=spline.curves.end();cur++) {
 		if (cur->type == CURVE_BICUBIC) {
-			DrawDashedLine(cur->x1,cur->y1,cur->x2,cur->y2,6);
-			DrawDashedLine(cur->x3,cur->y3,cur->x4,cur->y4,6);
+			DrawDashedLine(cur->p1.x,cur->p1.y,cur->p2.x,cur->p2.y,6);
+			DrawDashedLine(cur->p3.x,cur->p3.y,cur->p4.x,cur->p4.y,6);
 		}
 	}
 }
@@ -171,8 +171,8 @@ void VisualToolVectorClip::PopulateFeatureList() {
 		// First point
 		if (isFirst) {
 			isFirst = false;
-			feat.x = cur->x1;
-			feat.y = cur->y1;
+			feat.x = cur->p1.x;
+			feat.y = cur->p1.y;
 			feat.type = DRAG_SMALL_CIRCLE;
 			feat.value = i;
 			feat.value2 = 0;
@@ -181,8 +181,8 @@ void VisualToolVectorClip::PopulateFeatureList() {
 
 		// Line
 		if (cur->type == CURVE_LINE) {
-			feat.x = cur->x2;
-			feat.y = cur->y2;
+			feat.x = cur->p2.x;
+			feat.y = cur->p2.y;
 			feat.type = DRAG_SMALL_CIRCLE;
 			feat.value = i;
 			feat.value2 = 1;
@@ -195,22 +195,22 @@ void VisualToolVectorClip::PopulateFeatureList() {
 			int size = features.size();
 
 			// Control points
-			feat.x = cur->x2;
-			feat.y = cur->y2;
+			feat.x = cur->p2.x;
+			feat.y = cur->p2.y;
 			feat.value = i;
 			feat.value2 = 1;
 			feat.brother[0] = size-1;
 			feat.type = DRAG_SMALL_SQUARE;
 			features.push_back(feat);
-			feat.x = cur->x3;
-			feat.y = cur->y3;
+			feat.x = cur->p3.x;
+			feat.y = cur->p3.y;
 			feat.value2 = 2;
 			feat.brother[0] = size+2;
 			features.push_back(feat);
 
 			// End point
-			feat.x = cur->x4;
-			feat.y = cur->y4;
+			feat.x = cur->p4.x;
+			feat.y = cur->p4.y;
 			feat.type = DRAG_SMALL_CIRCLE;
 			feat.value2 = 3;
 			features.push_back(feat);
