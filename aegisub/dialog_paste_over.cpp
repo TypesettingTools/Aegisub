@@ -51,22 +51,22 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 
 	// List box
 	wxArrayString choices;
-	choices.Add(_T("Layer"));
-	choices.Add(_T("Start Time"));
-	choices.Add(_T("End Time"));
-	choices.Add(_T("Style"));
-	choices.Add(_T("Actor"));
-	choices.Add(_T("Margin Left"));
-	choices.Add(_T("Margin Right"));
+	choices.Add(_("Layer"));
+	choices.Add(_("Start Time"));
+	choices.Add(_("End Time"));
+	choices.Add(_("Style"));
+	choices.Add(_("Actor"));
+	choices.Add(_("Margin Left"));
+	choices.Add(_("Margin Right"));
 	if (mode == 1) {
-		choices.Add(_T("Margin Vertical"));
+		choices.Add(_("Margin Vertical"));
 	}
 	else {
-		choices.Add(_T("Margin Top"));
-		choices.Add(_T("Margin Bottom"));
+		choices.Add(_("Margin Top"));
+		choices.Add(_("Margin Bottom"));
 	}
-	choices.Add(_T("Effect"));
-	choices.Add(_T("Text"));
+	choices.Add(_("Effect"));
+	choices.Add(_("Text"));
 	ListBox = new wxCheckListBox(this,-1,wxDefaultPosition,wxSize(250,170), choices);
 
 	// Load checked items
@@ -80,10 +80,10 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 
 	// Top buttons
 	wxSizer *TopButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_All, _T("All")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_None, _T("None")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_Times, _T("Times")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_Text, _T("Text")),1,0,0);
+	TopButtonSizer->Add(new wxButton(this, Paste_Over_All, _("All")),1,0,0);
+	TopButtonSizer->Add(new wxButton(this, Paste_Over_None, _("None")),1,0,0);
+	TopButtonSizer->Add(new wxButton(this, Paste_Over_Times, _("Times")),1,0,0);
+	TopButtonSizer->Add(new wxButton(this, Paste_Over_Text, _("Text")),1,0,0);
 
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);

@@ -85,9 +85,9 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 
 	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
-	SourceStyle=new wxComboBox(this,-1,_(""),wxDefaultPosition,wxSize(160,-1),
+	SourceStyle=new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(160,-1),
 								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Source Style"));
-	DestStyle = new wxComboBox(this,-1,_(""),wxDefaultPosition,wxSize(160,-1),
+	DestStyle = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(160,-1),
 								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Dest Style"));
 
 	GroupsList = new wxListCtrl(this,-1,wxDefaultPosition,wxSize(180,100),wxLC_REPORT|wxLC_NO_HEADER|wxLC_HRULES|wxLC_VRULES);
@@ -299,7 +299,7 @@ void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 					 *Ask the user to copy it over or ignore it.
 					 */
 					int result = wxMessageBox(_("The source line contains text before the first karaoke block.\nDo you want to carry it over to the destination?\nIt will be ignored otherwise."),
-						         _("Question"),wxICON_QUESTION|wxYES_NO|wxYES_DEFAULT);
+						         _("Kanji timer"),wxICON_QUESTION|wxYES_NO|wxYES_DEFAULT);
 					TextBeforeOffset = plain->text.Len();
 					if (result==wxYES)
 						TextBeforeKaraoke = plain->text;
@@ -366,7 +366,7 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 				//  since we can't figure out if it should go to the previous or the next group.
 				//  We're not going to copy these if they're 0 length because if they're 0 length and have no
 				//  text, then they're not necessary.
-				OutputText = wxString::Format(_("%s{\\k%i}"),OutputText.c_str(),RegroupSourceKLengths[SourceIndex]);
+				OutputText = wxString::Format(_T("%s{\\k%i}"),OutputText.c_str(),RegroupSourceKLengths[SourceIndex]);
 				SourceIndex++;
 			}
 
@@ -375,7 +375,7 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 				SourceLength -= (RegroupSourceText[SourceIndex]).Len();
 				SourceIndex++;
 			}
-			OutputText = wxString::Format(_("%s{\\k%i}%s"),OutputText.c_str(),WorkingK,(RegroupGroups[(index<<1)+1]).c_str());
+			OutputText = wxString::Format(_T("%s{\\k%i}%s"),OutputText.c_str(),WorkingK,(RegroupGroups[(index<<1)+1]).c_str());
 		
 			WorkingK = 0;
 		}

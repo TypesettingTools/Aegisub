@@ -305,7 +305,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 								 _("Collision foreground"), _("Line in frame background"), _("Header"),
 		                         _("Left Column"), _("Active Line Border"), _("Lines") };
 		wxString options2[12] = { _T("standard foreground"), _T("background"), _T("selection foreground"),
-		                         _("selection background"), _T("comment background"), _T("selected comment background"),
+		                         _T("selection background"), _T("comment background"), _T("selected comment background"),
 		                        _T("collision foreground") , _T("inframe background"), _T("header"),
 		                         _T("left column"), _T("active border"), _T("lines") };
 		for (int i=0;i<12;i++) {
@@ -1015,7 +1015,7 @@ DialogInputHotkey::DialogInputHotkey(HotkeyType *_key,wxString name)
 	key = _key;
 
 	// Text
-	wxStaticText *text = new wxStaticText(this,-1,_("Press key to bind to \"") + name + _("\" or esc to cancel."));
+	wxStaticText *text = new wxStaticText(this,-1,wxString::Format(_("Press key to bind to \"%s\" or Esc to cancel."), name.c_str()));
 
 	// Key capturer
 	capture = new CaptureKey(this);

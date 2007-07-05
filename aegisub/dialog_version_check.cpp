@@ -179,7 +179,7 @@ wxThread::ExitCode VersionCheckThread::Entry() {
 #ifdef __WXDEBUG__
 		wxMutexGuiEnter();
 		if (!alive) goto endThread;
-		parent->logBox->AppendText(_("Attempting to open \"") + path + _T("\"... "));
+		parent->logBox->AppendText(wxString::Format(_("Attempting to open \"%s\"..."), path.c_str()));
 		wxMutexGuiLeave();
 #endif
 		wxFileSystem fs;
@@ -261,7 +261,7 @@ wxThread::ExitCode VersionCheckThread::Entry() {
 					if (!alive) goto endThread;
 					parent->logBox->AppendText(_("New version found!\n"));
 					parent->logBox->AppendText(parsed[3] + _T("\n"));
-					parent->logBox->AppendText(_("Please go to the following URL to download it: ") + parsed[2] + _T("\n"));
+					parent->logBox->AppendText(wxString::Format(_("Please go to the following URL to download it: %s\n"), parsed[2].c_str()));
 					if (!parent->visible) {
 						parent->Show();
 						parent->Raise();

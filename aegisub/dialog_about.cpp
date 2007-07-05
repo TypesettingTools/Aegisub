@@ -76,7 +76,6 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _(" by ArchMage ZeratuL.\n");
 	aboutString += _T("Copyright (c) 2005-2007 - Rodrigo Braz Monteiro.\n\n");
 	aboutString += _T("Automation - Copyright (c) 2005-2007 Niels Martin Hansen (aka jfs).\n");
-	aboutString += _T("Motion Tracker - Copyright (c) 2006 Hajo Krabbenhoeft (aka Tentacle).\n");
 	aboutString += _("Programmers: ");
 	aboutString += _T(" ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle, Yuvi,\n     Azzy, Pomyk, Motoko-chan, Dansolo, Haali.\n");
 	aboutString += _("Manual by: ");

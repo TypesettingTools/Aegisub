@@ -120,7 +120,7 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	long n;
 	subs->GetScriptInfo(_T("WrapStyle")).ToLong(&n);
 	WrapStyle->SetSelection(n);
-	optionsGrid->Add(new wxStaticText(this,-1,_("Warp Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
+	optionsGrid->Add(new wxStaticText(this,-1,_("Wrap Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
 	optionsGrid->Add(WrapStyle,1,wxEXPAND,0);
 	options.Clear();
 	options.Add(_("Normal"));

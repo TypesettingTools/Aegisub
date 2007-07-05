@@ -88,6 +88,12 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	SetSizer(main_box);
 	Center();
 
+	// why doesn't this work... the button gets the "default" decoration but doesn't answer to Enter
+	// ("esc" does work)
+	SetDefaultItem(close_button);
+	SetAffirmativeId(wxID_CANCEL);
+	close_button->SetDefault();
+
 	RebuildList();
 	UpdateDisplay();
 }

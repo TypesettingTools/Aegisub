@@ -102,8 +102,8 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	}
 
 	// Top sizer
-	origWord = new wxTextCtrl(this,-1,_T("original"),wxDefaultPosition,wxDefaultSize,wxTE_READONLY);
-	replaceWord = new wxTextCtrl(this,-1,_T("replace with"));
+	origWord = new wxTextCtrl(this,-1,_("original"),wxDefaultPosition,wxDefaultSize,wxTE_READONLY);
+	replaceWord = new wxTextCtrl(this,-1,_("replace with"));
 	wxFlexGridSizer *topSizer = new wxFlexGridSizer(2,2,5,5);
 	topSizer->Add(new wxStaticText(this,-1,_("Misspelled word:")),0,wxALIGN_CENTER_VERTICAL);
 	topSizer->Add(origWord,1,wxEXPAND);

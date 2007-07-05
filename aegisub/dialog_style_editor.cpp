@@ -158,15 +158,15 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	StyleName->SetToolTip(_("Style name."));
 	FontName->SetToolTip(_("Font face."));
 	FontSize->SetToolTip(_("Font size."));
-	colorButton[0]->SetToolTip(_("Click to choose primary color."));
-	colorButton[1]->SetToolTip(_("Click to choose secondary color."));
-	colorButton[2]->SetToolTip(_("Click to choose outline color."));
-	colorButton[3]->SetToolTip(_("Click to choose shadow color."));
+	colorButton[0]->SetToolTip(_("Choose primary color."));
+	colorButton[1]->SetToolTip(_("Choose secondary color."));
+	colorButton[2]->SetToolTip(_("Choose outline color."));
+	colorButton[3]->SetToolTip(_("Choose shadow color."));
 	for (int i=0;i<4;i++) colorAlpha[i]->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)."));
 	margin[0]->SetToolTip(_("Distance from left edge, in pixels."));
 	margin[1]->SetToolTip(_("Distance from right edge, in pixels."));
 	margin[2]->SetToolTip(_("Distance from top/bottom edge, in pixels."));
-	OutlineType->SetToolTip(_("Checking this will display an opaque box instead of outline."));
+	OutlineType->SetToolTip(_("When selected, display an opaque box behind the subtitles instead of an outline around the text."));
 	Outline->SetToolTip(_("Outline width, in pixels."));
 	Shadow->SetToolTip(_("Shadow distance, in pixels."));
 	ScaleX->SetToolTip(_("Scale X, in percentage."));
@@ -444,7 +444,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 			if (!work->name.StartsWith(_("Copy of "))) {
 				// See if user wants to update style name through script
 				int answer = wxNO;
-				if (work->name != _T("Default")) answer = wxMessageBox(_T("Do you want to change all instances of this style in the script to this new name?"),_T("Update script?"),wxYES_NO | wxCANCEL);
+				if (work->name != _T("Default")) answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"),_("Update script?"),wxYES_NO | wxCANCEL);
 
 				// Cancel
 				if (answer == wxCANCEL) return;

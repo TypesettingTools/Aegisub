@@ -236,7 +236,7 @@ void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
 	// Chose file name
 	if (CollectAction->GetSelection()==2) {
 		wxFileName fname(DestBox->GetValue());
-		wxString dest = wxFileSelector(_("Select archive file name"),DestBox->GetValue(),fname.GetFullName(),_T(".zip"),_T("Zip Archives (*.zip)|*.zip"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		wxString dest = wxFileSelector(_("Select archive file name"),DestBox->GetValue(),fname.GetFullName(),_T(".zip"),_("Zip Archives (*.zip)|*.zip"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 		if (!dest.empty()) {
 			DestBox->SetValue(dest);
 		}
@@ -373,9 +373,10 @@ void FontsCollectorThread::Collect() {
 	}
 
 	// Collect font data
-	AppendText(_("Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster... "));
+	AppendText(_("Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"));
 	CollectFontData();
-	AppendText(_("done.\n\nScanning file for fonts..."));
+	AppendText(_("Done collecting font data."));
+	AppendText(_("Scanning file for fonts..."));
 
 	// Scan file
 	AssDialogue *curDiag;
@@ -400,7 +401,7 @@ void FontsCollectorThread::Collect() {
 	}
 
 	// Copy fonts
-	AppendText(_("Done.\n\n"));
+	AppendText(wxString(_("Done.")) + _T("\n\n"));
 	switch (oper) {
 		case 0: AppendText(_("Checking fonts...\n")); break;
 		case 1: AppendText(_("Copying fonts to folder...\n")); break;
@@ -558,8 +559,8 @@ void FontsCollectorThread::AddFont(wxString fontname,bool isStyle) {
 	if (fonts.Index(fontname) == wxNOT_FOUND) {
 		fonts.Add(fontname);
 
-		if (isStyle) AppendText(wxString(_T("\"")) + fontname + _("\" found on style \"") + curStyle->name + _T("\".\n"));
-		if (!isStyle) AppendText(wxString(_T("\"")) + fontname + _("\" found on dialogue line ") + wxString::Format(_T("%i"),curLine) + _T(".\n"));
+		if (isStyle) AppendText(wxString::Format(_("\"%s\" found on style \"%s\".\n"), fontname.c_str(), curStyle->name.c_str()));
+		if (!isStyle) AppendText(wxString::Format(_("\"%s\" found on dialogue line \"%d\".\n"), fontname.c_str(), curLine));
 	}
 }
 
