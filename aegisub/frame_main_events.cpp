@@ -399,8 +399,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		// Undo state
 		editMenu->Remove(Menu_Edit_Undo);
 		editMenu->Remove(Menu_Edit_Redo);
-		AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, _("&Undo") + wxString(_T(" ")) + AssFile::GetUndoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo")), _("Undoes last action"),wxBITMAP(undo_button),0)->Enable(!AssFile::IsUndoStackEmpty());
-		AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, _("&Redo") + wxString(_T(" ")) + AssFile::GetRedoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo")), _("Redoes last action"),wxBITMAP(redo_button),1)->Enable(!AssFile::IsRedoStackEmpty());
+		AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, wxString::Format(_T("%s %s\t%s"), _("&Undo"), AssFile::GetUndoDescription().c_str(), Hotkeys.GetText(_T("Undo")).c_str()), _("Undoes last action"),wxBITMAP(undo_button),0)->Enable(!AssFile::IsUndoStackEmpty());
+		AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, wxString::Format(_T("%s %s\t%s"), _("&Redo"), AssFile::GetRedoDescription().c_str(), Hotkeys.GetText(_T("Redo")).c_str()), _("Redoes last action"),wxBITMAP(redo_button),1)->Enable(!AssFile::IsRedoStackEmpty());
 
 		// Copy/cut/paste
 		wxArrayInt sels = SubsBox->GetSelection();
@@ -576,7 +576,7 @@ void FrameMain::OnVideoPlay(wxCommandEvent &event) {
 // Open video
 void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open video path"));
-	wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),_T("Recommended Formats (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|Other supported formats (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|All Files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),_("Recommended Formats (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|Other supported formats (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|All Files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVideo(filename);
 		Options.SetText(_T("Last open video path"), filename);
@@ -596,7 +596,7 @@ void FrameMain::OnCloseVideo(wxCommandEvent& WXUNUSED(event)) {
 // Open Audio
 void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open audio path"));
-	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),_T("Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka|Video Formats (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|All files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),_("Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka|Video Formats (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|All files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadAudio(filename);
 		Options.SetText(_T("Last open audio path"), filename);
@@ -710,7 +710,7 @@ void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 // Open VFR tags
 void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 	wxString path = Options.AsText(_T("Last open timecodes path"));
-	wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),_T("All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),_("All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVFR(filename);
 		Options.SetText(_T("Last open timecodes path"), filename);

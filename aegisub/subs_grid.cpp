@@ -161,44 +161,44 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		//menu.AppendSeparator();
 
 		// Duplicate selection
-		menu.Append(MENU_DUPLICATE,_("&Duplicate"),_T("Duplicate the selected lines"))->Enable(continuous);
-		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_T("Duplicate lines and shift by one frame"))->Enable(continuous && VFR_Output.IsLoaded());
-		menu.Append(MENU_SPLIT_BY_KARAOKE,_("Split (by karaoke)"),_T("Uses karaoke timing to split line into multiple smaller lines"))->Enable(sels > 0);
+		menu.Append(MENU_DUPLICATE,_("&Duplicate"),_("Duplicate the selected lines"))->Enable(continuous);
+		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_("Duplicate lines and shift by one frame"))->Enable(continuous && VFR_Output.IsLoaded());
+		menu.Append(MENU_SPLIT_BY_KARAOKE,_("Split (by karaoke)"),_("Uses karaoke timing to split line into multiple smaller lines"))->Enable(sels > 0);
 
 		// Swaps selection
 		state = (sels == 2);
-		menu.Append(MENU_SWAP,_("&Swap"),_T("Swaps the two selected lines"))->Enable(state);
+		menu.Append(MENU_SWAP,_("&Swap"),_("Swaps the two selected lines"))->Enable(state);
 
 		// Join selection
 		state = (sels >= 2 && continuous);
-		menu.Append(MENU_JOIN_CONCAT,_("&Join (concatenate)"),_T("Joins selected lines in a single one, concatenating text together"))->Enable(state);
-		menu.Append(MENU_JOIN_REPLACE,_("Join (keep first)"),_T("Joins selected lines in a single one, keeping text of first and discarding remaining"))->Enable(state);
-		menu.Append(MENU_JOIN_AS_KARAOKE,_("Join (as Karaoke)"),_T(""))->Enable(state);
+		menu.Append(MENU_JOIN_CONCAT,_("&Join (concatenate)"),_("Joins selected lines in a single one, concatenating text together"))->Enable(state);
+		menu.Append(MENU_JOIN_REPLACE,_("Join (keep first)"),_("Joins selected lines in a single one, keeping text of first and discarding remaining"))->Enable(state);
+		menu.Append(MENU_JOIN_AS_KARAOKE,_("Join (as Karaoke)"),_("Joins selected lines in a single one, making each line into a karaoke syllable"))->Enable(state);
 		menu.AppendSeparator();
 
 		// Adjoin selection
-		menu.Append(MENU_ADJOIN,_("&Make times continuous (change start)"),_T("Changes times of subs so start times begin on previous's end time"))->Enable(state);
-		menu.Append(MENU_ADJOIN2,_("&Make times continuous (change end)"),_T("Changes times of subs so end times begin on next's start time"))->Enable(state);
+		menu.Append(MENU_ADJOIN,_("&Make times continuous (change start)"),_("Changes times of subs so start times begin on previous's end time"))->Enable(state);
+		menu.Append(MENU_ADJOIN2,_("&Make times continuous (change end)"),_("Changes times of subs so end times begin on next's start time"))->Enable(state);
 
 		// Recombine selection
 		state = (sels == 2 || sels == 3) && continuous;
-		menu.Append(MENU_RECOMBINE,_("Recombine Lines"),_T("Recombine subtitles when they have been split and merged"))->Enable(state);
+		menu.Append(MENU_RECOMBINE,_("Recombine Lines"),_("Recombine subtitles when they have been split and merged"))->Enable(state);
 		menu.AppendSeparator();
 
 		//Make audio clip
 		state = parentFrame->audioBox->audioDisplay->loaded==true;
-		menu.Append(MENU_AUDIOCLIP,_("Create audio clip"),_T("Create an audio clip of the selected line"))->Enable(state);
+		menu.Append(MENU_AUDIOCLIP,_("Create audio clip"),_("Create an audio clip of the selected line"))->Enable(state);
 		menu.AppendSeparator();
 
 
 		// Copy/cut/paste
-		menu.Append(MENU_COPY,_("&Copy"),_T("Copies selected lines to clipboard"));
-		menu.Append(MENU_CUT,_("C&ut"),_T("Cuts selected lines to clipboard"));
-		menu.Append(MENU_PASTE,_("&Paste"),_T("Paste lines from clipboard"));
+		menu.Append(MENU_COPY,_("&Copy"),_("Copies selected lines to clipboard"));
+		menu.Append(MENU_CUT,_("C&ut"),_("Cuts selected lines to clipboard"));
+		menu.Append(MENU_PASTE,_("&Paste"),_("Paste lines from clipboard"));
 		menu.AppendSeparator();
 
 		// Delete
-		menu.Append(MENU_DELETE,_("Delete"),_T("Delete currently selected lines"));
+		menu.Append(MENU_DELETE,_("Delete"),_("Delete currently selected lines"));
 
 		PopupMenu(&menu);
 	}

@@ -616,7 +616,7 @@ void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
 	}
 
 	// Done
-	Layer->SetValue(wxString::Format(_("%i"),temp));
+	Layer->SetValue(wxString::Format(_T("%i"),temp));
 	grid->ass->FlagAsModified(_("layer change"));
 	grid->CommitChanges();
 }
