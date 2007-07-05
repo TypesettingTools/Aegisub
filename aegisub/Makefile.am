@@ -205,6 +205,7 @@ aegisub_SOURCES = \
 	utils.cpp \
 	validators.cpp \
 	variable_data.cpp \
+	vector2d.cpp \
 	version.cpp \
 	vfr.cpp \
 	video_box.cpp \
