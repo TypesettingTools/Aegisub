@@ -143,7 +143,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 		renderer = csri_renderer_default();
 		if (!renderer) {
 			delete subs;
-			throw _T("No CSRI renderer available. Try installing one or switch to another subtitle provider.");
+			throw _T("No CSRI renderer available, cannot show subtitles. Try installing one or switch to another subtitle provider.");
 		}
 	}
 

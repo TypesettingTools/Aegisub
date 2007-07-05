@@ -90,10 +90,11 @@ void SubtitlesPreview::SetStyle(AssStyle *_style) {
 			delete tmpStyle;
 			return;
 		}
+
+		delete style;
 	}
 
 	// Update
-	delete style;
 	style = tmpStyle;
 	UpdateBitmap();
 }
@@ -149,7 +150,7 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	}
 
 	// Provider OK
-	if (provider) {
+	if (provider && provider->CanRaster()) {
 		// Generate subtitles
 		AssFile *subs = new AssFile();
 		subs->LoadDefault();
@@ -166,8 +167,8 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 			provider->DrawSubtitles(frame,0.1);
 		}
 		catch (...) {}
-		delete provider;
 	}
+	if (provider) delete provider;
 
 	// Convert frame to bitmap
 	wxMemoryDC dc(*bmp);
