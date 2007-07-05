@@ -92,7 +92,7 @@ void VisualToolClip::Draw() {
 
 	// Draw outside area
 	SetLineColour(colour[3],0.0f);
-	SetFillColour(colour[3],0.3f);
+	SetFillColour(wxColour(0,0,0),0.5f);
 	DrawRectangle(0,0,sw,dy1);
 	DrawRectangle(0,dy2,sw,sh);
 	DrawRectangle(0,dy1,dx1,dy2);

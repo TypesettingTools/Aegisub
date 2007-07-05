@@ -46,7 +46,7 @@ VisualDraggableFeature::VisualDraggableFeature() {
 	type = DRAG_NONE;
 	x = -1;
 	y = -1;
-	value = 0;
+	value = value2 = 0;
 	layer = 0;
 	lineN = -1;
 	line = NULL;
@@ -78,6 +78,12 @@ bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
 		int dx = mx-x;
 		int dy = _my-y-8;
 		return (16*dx+9*dy < 0 && 16*dx-9*dy > 0);
+	}
+
+	// Small square
+	else if (type == DRAG_SMALL_SQUARE) {
+		if (mx < x-4 || mx > x+4 || my < y-4 || my > y+4) return false;
+		return true;
 	}
 
 	// Small circle
@@ -118,6 +124,11 @@ void VisualDraggableFeature::Draw(OpenGLWrapper *gl) {
 		gl->DrawLine(x,y,x,y-16);
 		gl->DrawLine(x,y,x-14,y+8);
 		gl->DrawLine(x,y,x+14,y+8);
+	}
+
+	// Square
+	else if (type == DRAG_SMALL_SQUARE) {
+		gl->DrawRectangle(x-4,y-4,x+4,y+4);
 	}
 
 	// Small circle

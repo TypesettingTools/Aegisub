@@ -71,10 +71,9 @@ public:
 /////////////////////////
 // Spline managing class
 class Spline {
-private:
+public:
 	std::list<SplineCurve> curves;
 
-public:
 	Spline();
 
 	wxString EncodeToASS();

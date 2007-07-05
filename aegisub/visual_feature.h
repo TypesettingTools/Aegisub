@@ -66,7 +66,7 @@ public:
 	DraggableFeatureType type;
 	int x,y;
 	int layer;	// Higher = above
-	int value;
+	int value,value2;
 
 	AssDialogue *line;
 	int lineN;

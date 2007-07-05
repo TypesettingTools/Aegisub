@@ -62,6 +62,7 @@ private:
 	wxButton *rotatexy;
 	wxButton *scale;
 	wxButton *clip;
+	wxButton *vectorClip;
 	ToggleBitmap *realtime;
 
 	void OnVideoPlay(wxCommandEvent &event);
@@ -79,6 +80,7 @@ private:
 	void OnModeRotateXY(wxCommandEvent &event);
 	void OnModeScale(wxCommandEvent &event);
 	void OnModeClip(wxCommandEvent &event);
+	void OnModeVectorClip(wxCommandEvent &event);
 	void OnToggleRealtime(wxCommandEvent &event);
 
 public:
@@ -113,6 +115,7 @@ enum {
 	Video_Mode_Rotate_XY,
 	Video_Mode_Scale,
 	Video_Mode_Clip,
+	Video_Mode_Vector_Clip,
 	Video_Mode_Realtime,
 
 	Video_Tracker_Menu,

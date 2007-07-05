@@ -185,12 +185,7 @@ void VisualToolDrag::Draw() {
 			// Draw dashed line
 			else {
 				SetLineColour(colour[3],0.5f,2);
-				int steps = (dist-20)/6;
-				double stepx = double(x2-x1)/steps;
-				double stepy = double(y2-y1)/steps;
-				for (int i=0;i<steps;i++) {
-					if (i % 2 == 0) DrawLine(x1+int(i*stepx),y1+int(i*stepy),x1+int((i+1)*stepx),y1+int((i+1)*stepy));
-				}
+				DrawDashedLine(x1,y1,x2,y2,6);
 			}
 		}
 	}

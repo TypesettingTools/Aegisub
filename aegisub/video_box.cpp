@@ -118,6 +118,8 @@ VideoBox::VideoBox(wxWindow *parent)
 	scale->SetToolTip(_("Scale subtitles on X and Y axes."));
 	clip = new wxBitmapButton(videoPage,Video_Mode_Clip,wxBITMAP(visual_clip));
 	clip->SetToolTip(_("Clip subtitles to a rectangle."));
+	vectorClip = new wxBitmapButton(videoPage,Video_Mode_Vector_Clip,wxBITMAP(visual_clip));
+	vectorClip->SetToolTip(_("Clip subtitles to a vectorial area."));
 	realtime = new ToggleBitmap(videoPage,Video_Mode_Realtime,wxBITMAP(visual_realtime),wxSize(20,20));
 	realtime->SetToolTip(_("Toggle realtime display of changes."));
 	bool isRealtime = Options.AsBool(_T("Video Visual Realtime"));
@@ -128,7 +130,8 @@ VideoBox::VideoBox(wxWindow *parent)
 	typeSizer->Add(rotatez,0,wxEXPAND,0);
 	typeSizer->Add(rotatexy,0,wxEXPAND,0);
 	typeSizer->Add(scale,0,wxEXPAND,0);
-	typeSizer->Add(clip,0,wxEXPAND | wxBOTTOM,5);
+	typeSizer->Add(clip,0,wxEXPAND,0);
+	typeSizer->Add(vectorClip,0,wxEXPAND | wxBOTTOM,5);
 	typeSizer->Add(realtime,0,wxEXPAND,0);
 	typeSizer->AddStretchSpacer(1);
 
@@ -175,6 +178,7 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 	EVT_BUTTON(Video_Mode_Rotate_XY, VideoBox::OnModeRotateXY)
 	EVT_BUTTON(Video_Mode_Scale, VideoBox::OnModeScale)
 	EVT_BUTTON(Video_Mode_Clip, VideoBox::OnModeClip)
+	EVT_BUTTON(Video_Mode_Vector_Clip, VideoBox::OnModeVectorClip)
 	EVT_TOGGLEBUTTON(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
 END_EVENT_TABLE()
 
@@ -251,6 +255,13 @@ void VideoBox::OnModeScale(wxCommandEvent &event) {
 // Clip mode
 void VideoBox::OnModeClip(wxCommandEvent &event) {
 	videoDisplay->SetVisualMode(5);
+}
+
+
+////////////////////
+// Vector clip mode
+void VideoBox::OnModeVectorClip(wxCommandEvent &event) {
+	videoDisplay->SetVisualMode(6);
 }
 
 

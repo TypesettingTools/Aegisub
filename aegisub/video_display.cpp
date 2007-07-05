@@ -73,6 +73,7 @@
 #include "visual_tool_rotatexy.h"
 #include "visual_tool_scale.h"
 #include "visual_tool_clip.h"
+#include "visual_tool_vector_clip.h"
 #include "visual_tool_drag.h"
 
 
@@ -106,7 +107,7 @@ END_EVENT_TABLE()
 
 //////////////
 // Parameters
-int attribList[3] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, 0 };
+int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
 ///////////////
 // Constructor
@@ -185,18 +186,20 @@ void VideoDisplay::Render() {
 	wxASSERT(pw > 0);
 	wxASSERT(ph > 0);
 
+	// Clear frame buffer
+	glClearColor(0,0,0,0);
+	if (glGetError()) throw _T("Error setting glClearColor().");
+	glClearStencil(0);
+	if (glGetError()) throw _T("Error setting glClearStencil().");
+	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	if (glGetError()) throw _T("Error calling glClear().");
+
 	// Freesized transform
 	dx1 = 0;
 	dy1 = 0;
 	dx2 = w;
 	dy2 = h;
 	if (freeSize) {
-		// Clear frame buffer
-		glClearColor(0,0,0,0);
-		if (glGetError()) throw _T("Error setting glClearColor().");
-		glClear(GL_COLOR_BUFFER_BIT);
-		if (glGetError()) throw _T("Error calling glClear().");
-
 		// Set aspect ratio
 		float thisAr = float(w)/float(h);
 		float vidAr;
@@ -482,7 +485,8 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 	if (event.GetKeyCode() == 'D') SetVisualMode(2);
 	if (event.GetKeyCode() == 'F') SetVisualMode(3);
 	if (event.GetKeyCode() == 'G') SetVisualMode(4);
-	if (event.GetKeyCode() == 'H') SetVisualMode(5);	
+	if (event.GetKeyCode() == 'H') SetVisualMode(5);
+	if (event.GetKeyCode() == 'J') SetVisualMode(6);
 }
 
 
@@ -664,6 +668,7 @@ void VideoDisplay::SetVisualMode(int mode) {
 			case 3: visual = new VisualToolRotateXY(this); break;
 			case 4: visual = new VisualToolScale(this); break;
 			case 5: visual = new VisualToolClip(this); break;
+			case 6: visual = new VisualToolVectorClip(this); break;
 			default: visual = NULL;
 		}
 

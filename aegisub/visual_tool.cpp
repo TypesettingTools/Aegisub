@@ -581,6 +581,42 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) 
 }
 
 
+//////////////////////////////////////
+// Get line vector clip, if it exists
+wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale) {
+	// Prepare overrides
+	wxString result;
+	scale = 1;
+	diag->ParseASSTags();
+	AssDialogueBlockOverride *override;
+	AssOverrideTag *tag;
+	size_t blockn = diag->Blocks.size();
+	if (blockn == 0) {
+		diag->ClearBlocks();
+		return result;
+	}
+
+	// Process override
+	override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(0));
+	if (override) {
+		for (size_t j=0;j<override->Tags.size();j++) {
+			tag = override->Tags.at(j);
+			if (tag->Name == _T("\\clip")) {
+				if (tag->Params.size() == 1) {
+					result = tag->Params[0]->AsText();
+				}
+				if (tag->Params.size() == 2) {
+					scale = tag->Params[0]->AsInt();
+					result = tag->Params[1]->AsText();
+				}
+			}
+		}
+	}
+	diag->ClearBlocks();
+	return result;
+}
+
+
 ////////////////
 // Set override
 void VisualTool::SetOverride(wxString tag,wxString value) {
