@@ -68,16 +68,34 @@
 IMPLEMENT_APP(AegisubApp)
 
 
+#if 0
+void StartupLog(const wxString &msg) {
+	static wxStopWatch clock;
+	wxString nmsg = wxString::Format(_T("Startup: %d - %s\n"), clock.Time(), msg.c_str());
+#ifdef WIN32
+	OutputDebugStringW(nmsg.wc_str());
+#else
+	printf(nmsg.mb_str(wxConvLocal));
+#endif
+}
+#else
+#define StartupLog(a)
+#endif
+
+
 ///////////////////////////
 // Initialization function
 // -----------------------
 // Gets called when application starts, creates MainFrame
 bool AegisubApp::OnInit() {
+	StartupLog(_T("Inside OnInit"));
 	try {
 		// Initialize randomizer
+		StartupLog(_T("Initialize random generator"));
 		srand(time(NULL));
 
 		// locale for loading options
+		StartupLog(_T("Set initial locale"));
 		setlocale(LC_NUMERIC, "C");
 		setlocale(LC_CTYPE, "C");
 
@@ -94,10 +112,12 @@ bool AegisubApp::OnInit() {
 
 		// Crash handling
 #ifndef _DEBUG
+		StartupLog(_T("Install exception handler"));
 		wxHandleFatalExceptions(true);
 #endif
 
 		// Set config file
+		StartupLog(_T("Load configuration"));
 		Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 		Options.LoadDefaults();
 		Options.Load();
@@ -106,13 +126,16 @@ bool AegisubApp::OnInit() {
 			Options.Load();
 			wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 		}
+		StartupLog(_T("Store options back"));
 		Options.Save();
 		AssTime::UseMSPrecision = Options.AsBool(_T("Use nonstandard Milisecond Times"));
 
 		// Set hotkeys file
+		StartupLog(_T("Load hotkeys"));
 		Hotkeys.SetFile(StandardPaths::DecodePath(_T("?user/hotkeys.dat")));
 		Hotkeys.Load();
 
+		StartupLog(_T("Initialize final locale"));
 #ifdef __WINDOWS__
 		// Set locale
 		int lang = Options.AsInt(_T("Locale Code"));
@@ -128,22 +151,27 @@ bool AegisubApp::OnInit() {
 
 		// Set association
 #ifndef _DEBUG
+		StartupLog(_T("Install file type associations"));
 		RegistryAssociate();
 #endif
 
 		// Load Automation scripts
+		StartupLog(_T("Load global Automation scripts"));
 		global_scripts = new Automation4::AutoloadScriptManager(Options.AsText(_T("Automation Autoload Path")));
 
 		// Load export filters
+		StartupLog(_T("Prepare export filters"));
 		AssExportFilterChain::PrepareFilters();
 
 		// Get parameter subs
+		StartupLog(_T("Parse command line"));
 		wxArrayString subs;
 		for (int i=1;i<argc;i++) {
 			subs.Add(argv[i]);
 		}
 
 		// Open main frame
+		StartupLog(_T("Create main window"));
 		frame = new FrameMain(subs);
 		SetTopWindow(frame);
 	}
@@ -158,6 +186,7 @@ bool AegisubApp::OnInit() {
 		return false;
 	}
 
+	StartupLog(_T("Initialization complete"));
 	return true;
 }
 
