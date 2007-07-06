@@ -802,7 +802,7 @@ void AudioDisplay::SetScale(float _scale) {
 //////////////////
 // Load from file
 void AudioDisplay::SetFile(wxString file) {
-	wxLogDebug(_T("AudioDisplay::SetFile(file=%s, vproviderLOL=%p)"), file.c_str());
+	wxLogDebug(_T("AudioDisplay::SetFile(file=%s)"), file.c_str());
 	// Unload
 	if (file.IsEmpty()) {
 		wxLogDebug(_T("AudioDisplay::SetFile: file is empty, just closing audio"));
@@ -1611,7 +1611,12 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		// Update stuff
 		if (updated) {
 			if (diagUpdated) NeedCommit = true;
-			player->SetEndPosition(GetSampleAtX(selEnd));
+			if (karaoke->enabled) {
+				AudioKaraokeSyllable &syl = karaoke->syllables[karaoke->curSyllable];
+				player->SetEndPosition(GetSampleAtMS(curStartMS + (syl.start_time+syl.duration)*10));
+			} else {
+				player->SetEndPosition(GetSampleAtX(selEnd));
+			}
 			if (hold != 0) {
 				wxCursor cursor(wxCURSOR_SIZEWE);
 				SetCursor(cursor);
