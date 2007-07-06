@@ -45,7 +45,7 @@
 
 /////////
 // Class
-class ToggleBitmap : public wxWindow {
+class ToggleBitmap : public wxControl {
 private:
 	wxBitmap img;
 	bool state;

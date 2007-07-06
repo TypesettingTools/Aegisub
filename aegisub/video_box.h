@@ -56,34 +56,18 @@ class FrameMain;
 // Video box class
 class VideoBox : public wxPanel {
 private:
-	wxButton *standard;
-	wxButton *drag;
-	wxButton *rotatez;
-	wxButton *rotatexy;
-	wxButton *scale;
-	wxButton *clip;
-	wxButton *vectorClip;
-	ToggleBitmap *realtime;
-
 	void OnVideoPlay(wxCommandEvent &event);
 	void OnVideoPlayLine(wxCommandEvent &event);
 	void OnVideoStop(wxCommandEvent &event);
 	void OnVideoToggleScroll(wxCommandEvent &event);
 
-	void OnVideoTrackerMenu(wxCommandEvent &event);
-	void OnVideoTrackerMenu2(wxCommandEvent &event);
-	void OnTrackerOption(wxCommandEvent &event);
-
-	void OnModeStandard(wxCommandEvent &event);
-	void OnModeDrag(wxCommandEvent &event);
-	void OnModeRotateZ(wxCommandEvent &event);
-	void OnModeRotateXY(wxCommandEvent &event);
-	void OnModeScale(wxCommandEvent &event);
-	void OnModeClip(wxCommandEvent &event);
-	void OnModeVectorClip(wxCommandEvent &event);
+	void OnModeChange(wxCommandEvent &event);
 	void OnToggleRealtime(wxCommandEvent &event);
 
 public:
+	wxToolBar *visualToolBar;
+	wxSizer *visualSubToolBar;
+
 	ToggleBitmap *AutoScroll;
 	wxBoxSizer *VideoSizer;
 	wxBoxSizer *videoSliderSizer;
@@ -93,7 +77,6 @@ public:
 	VideoDisplay *videoDisplay;
 	VideoSlider *videoSlider;
 	FrameMain *frame;
-	wxSizer *visualSubToolBar;
 
 	VideoBox (wxWindow *parent);
 
@@ -117,22 +100,6 @@ enum {
 	Video_Mode_Clip,
 	Video_Mode_Vector_Clip,
 	Video_Mode_Realtime,
-
-	Video_Tracker_Menu,
-	Video_Tracker_Menu2,
-	Video_Tracker_START = 1000,
-	Video_Track_Points,
-	Video_Track_Point_Add,
-	Video_Track_Point_Del,
-	Video_Track_Movement,
-	Video_Track_Movement_MoveAll,
-	Video_Track_Movement_MoveOne,
-	Video_Track_Movement_MoveBefore,
-	Video_Track_Movement_MoveAfter,
-	Video_Track_Split_Line,
-	Video_Track_Link_File,
-	Video_Track_Movement_Empty,
-	Video_Tracker_END
 };
 
 #endif

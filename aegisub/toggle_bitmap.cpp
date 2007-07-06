@@ -37,14 +37,14 @@
 ///////////
 // Headers
 #include "toggle_bitmap.h"
-//#include <wx/event.h>
+#include <wx/wxprec.h>
 #include <wx/tglbtn.h>
 
 
 ///////////////
 // Constructor
 ToggleBitmap::ToggleBitmap(wxWindow *parent,wxWindowID id,const wxBitmap &image,const wxSize &size)
-: wxWindow (parent,id,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER)
+: wxControl (parent,id,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER)
 {
 	// Set variables
 	img = image;
@@ -57,6 +57,8 @@ ToggleBitmap::ToggleBitmap(wxWindow *parent,wxWindowID id,const wxBitmap &image,
 	if (size.GetHeight() != -1) h = size.GetHeight();
 	else h = img.GetHeight();
 	SetClientSize(w,h);
+	GetSize(&w,&h);
+	SetSizeHints(w,h,w,h);
 }
 
 
@@ -108,7 +110,7 @@ void ToggleBitmap::DrawImage(wxDC &dc) {
 
 ///////////////
 // Event table
-BEGIN_EVENT_TABLE(ToggleBitmap,wxWindow)
+BEGIN_EVENT_TABLE(ToggleBitmap,wxControl)
     EVT_MOUSE_EVENTS(ToggleBitmap::OnMouseEvent)
     EVT_PAINT(ToggleBitmap::OnPaint)
 END_EVENT_TABLE()

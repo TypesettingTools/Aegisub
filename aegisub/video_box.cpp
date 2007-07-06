@@ -106,39 +106,22 @@ VideoBox::VideoBox(wxWindow *parent)
 	videoSlider->Display = videoDisplay;
 	
 	// Typesetting buttons
-	standard = new wxBitmapButton(videoPage,Video_Mode_Standard,wxBITMAP(visual_standard));
-	standard->SetToolTip(_("Standard mode, double click sets position."));
-	drag = new wxBitmapButton(videoPage,Video_Mode_Drag,wxBITMAP(visual_move));
-	drag->SetToolTip(_("Drag subtitles."));
-	rotatez = new wxBitmapButton(videoPage,Video_Mode_Rotate_Z,wxBITMAP(visual_rotatez));
-	rotatez->SetToolTip(_("Rotate subtitles on their Z axis."));
-	rotatexy = new wxBitmapButton(videoPage,Video_Mode_Rotate_XY,wxBITMAP(visual_rotatexy));
-	rotatexy->SetToolTip(_("Rotate subtitles on their X and Y axes."));
-	scale = new wxBitmapButton(videoPage,Video_Mode_Scale,wxBITMAP(visual_scale));
-	scale->SetToolTip(_("Scale subtitles on X and Y axes."));
-	clip = new wxBitmapButton(videoPage,Video_Mode_Clip,wxBITMAP(visual_clip));
-	clip->SetToolTip(_("Clip subtitles to a rectangle."));
-	vectorClip = new wxBitmapButton(videoPage,Video_Mode_Vector_Clip,wxBITMAP(visual_vector_clip));
-	vectorClip->SetToolTip(_("Clip subtitles to a vectorial area."));
-	realtime = new ToggleBitmap(videoPage,Video_Mode_Realtime,wxBITMAP(visual_realtime),wxSize(20,20));
-	realtime->SetToolTip(_("Toggle realtime display of changes."));
-	bool isRealtime = Options.AsBool(_T("Video Visual Realtime"));
-	realtime->SetValue(isRealtime);
-	wxSizer *typeSizer = new wxBoxSizer(wxVERTICAL);
-	typeSizer->Add(standard,0,wxEXPAND,0);
-	typeSizer->Add(drag,0,wxEXPAND,0);
-	typeSizer->Add(rotatez,0,wxEXPAND,0);
-	typeSizer->Add(rotatexy,0,wxEXPAND,0);
-	typeSizer->Add(scale,0,wxEXPAND,0);
-	typeSizer->Add(clip,0,wxEXPAND,0);
-	typeSizer->Add(vectorClip,0,wxEXPAND | wxBOTTOM,5);
-	typeSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND | wxBOTTOM,5);
-	typeSizer->Add(realtime,0,wxEXPAND,0);
-	typeSizer->AddStretchSpacer(1);
+	visualToolBar = new wxToolBar(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL | wxTB_FLAT);
+	visualToolBar->AddTool(Video_Mode_Standard,_("Standard"),wxBITMAP(visual_standard),_("Standard mode, double click sets position."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Drag,_("Drag"),wxBITMAP(visual_move),_("Drag subtitles."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Rotate_Z,_("Rotate Z"),wxBITMAP(visual_rotatez),_("Rotate subtitles on their Z axis."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Rotate_XY,_("Rotate XY"),wxBITMAP(visual_rotatexy),_("Rotate subtitles on their X and Y axes."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Scale,_("Scale"),wxBITMAP(visual_scale),_("Scale subtitles on X and Y axes."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Clip,_("Clip"),wxBITMAP(visual_clip),_("Clip subtitles to a rectangle."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),wxBITMAP(visual_vector_clip),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
+	visualToolBar->AddSeparator();
+	visualToolBar->AddTool(Video_Mode_Realtime,_("Realtime"),wxBITMAP(visual_realtime),_("Toggle realtime display of changes."),wxITEM_CHECK);
+	visualToolBar->ToggleTool(Video_Mode_Realtime,Options.AsBool(_T("Video Visual Realtime")));
+	visualToolBar->Realize();
 
 	// Top sizer
 	wxFlexGridSizer *topSizer = new wxFlexGridSizer(2,2,0,0);
-	topSizer->Add(typeSizer,0,wxEXPAND,0);
+	topSizer->Add(visualToolBar,0,wxEXPAND,0);
 	topSizer->Add(videoDisplay,1,wxEXPAND,0);
 	topSizer->AddSpacer(0);
 	topSizer->Add(visualSubToolBar,1,wxEXPAND,0);
@@ -173,14 +156,8 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 	EVT_BUTTON(Video_Stop, VideoBox::OnVideoStop)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, VideoBox::OnVideoToggleScroll)
 
-	EVT_BUTTON(Video_Mode_Standard, VideoBox::OnModeStandard)
-	EVT_BUTTON(Video_Mode_Drag, VideoBox::OnModeDrag)
-	EVT_BUTTON(Video_Mode_Rotate_Z, VideoBox::OnModeRotateZ)
-	EVT_BUTTON(Video_Mode_Rotate_XY, VideoBox::OnModeRotateXY)
-	EVT_BUTTON(Video_Mode_Scale, VideoBox::OnModeScale)
-	EVT_BUTTON(Video_Mode_Clip, VideoBox::OnModeClip)
-	EVT_BUTTON(Video_Mode_Vector_Clip, VideoBox::OnModeVectorClip)
-	EVT_TOGGLEBUTTON(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
+	EVT_TOOL_RANGE(Video_Mode_Standard, Video_Mode_Vector_Clip, VideoBox::OnModeChange)
+	EVT_TOOL(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
 END_EVENT_TABLE()
 
 
@@ -217,59 +194,17 @@ void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
 }
 
 
-/////////////////
-// Standard mode
-void VideoBox::OnModeStandard(wxCommandEvent &event) {
-	videoDisplay->SetVisualMode(0);
-}
-
-
-/////////////
-// Drag mode
-void VideoBox::OnModeDrag(wxCommandEvent &event) {
-	videoDisplay->SetVisualMode(1);
-}
-
-
-/////////////////
-// Rotate Z mode
-void VideoBox::OnModeRotateZ(wxCommandEvent &event) {
-	videoDisplay->SetVisualMode(2);
-}
-
-
-//////////////////
-// Rotate XY mode
-void VideoBox::OnModeRotateXY(wxCommandEvent &event) {
-	videoDisplay->SetVisualMode(3);
-}
-
-
-//////////////
-// Scale mode
-void VideoBox::OnModeScale(wxCommandEvent &event) {
-	videoDisplay->SetVisualMode(4);
-}
-
-
-/////////////
-// Clip mode
-void VideoBox::OnModeClip(wxCommandEvent &event) {
-	videoDisplay->SetVisualMode(5);
-}
-
-
-////////////////////
-// Vector clip mode
-void VideoBox::OnModeVectorClip(wxCommandEvent &event) {
-	videoDisplay->SetVisualMode(6);
+////////////////
+// Mode changed
+void VideoBox::OnModeChange(wxCommandEvent &event) {
+	videoDisplay->SetVisualMode(event.GetId() - Video_Mode_Standard);
 }
 
 
 ///////////////////
 // Realtime toggle
 void VideoBox::OnToggleRealtime(wxCommandEvent &event) {
-	Options.SetBool(_T("Video Visual Realtime"),realtime->GetValue());
+	Options.SetBool(_T("Video Visual Realtime"),event.IsChecked());
 	Options.Save();
 }
 

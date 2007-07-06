@@ -656,6 +656,7 @@ void VideoDisplay::SetVisualMode(int mode) {
 		if (box) {
 			toolBar = box->visualSubToolBar;
 			toolBar->Clear(true);
+			if (!box->visualToolBar->GetToolState(mode + Video_Mode_Standard)) box->visualToolBar->ToggleTool(mode + Video_Mode_Standard,true);
 		}
 
 		// Replace mode
