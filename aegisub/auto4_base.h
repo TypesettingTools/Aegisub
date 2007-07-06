@@ -110,7 +110,7 @@ namespace Automation4 {
 		const wxString& GetDescription() const;
 
 		virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active) = 0;
-		virtual void Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent) = 0;
+		virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent) = 0;
 	};
 
 

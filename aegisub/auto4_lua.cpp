@@ -561,7 +561,7 @@ namespace Automation4 {
 		return result;
 	}
 
-	void LuaFeatureMacro::Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent)
+	void LuaFeatureMacro::Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
 		GetFeatureFunction(1); // 1 = processing function
 
@@ -575,12 +575,30 @@ namespace Automation4 {
 		ps->SetTitle(GetName());
 
 		// do call
-		LuaThreadedCall call(L, 3, 0);
+		// 3 args: subtitles, selected lines, active line
+		// 1 result: new selected lines
+		LuaThreadedCall call(L, 3, 1);
 
 		ps->ShowModal();
 		wxThread::ExitCode code = call.Wait();
-		(void) code;
+		(void) code; // ignore
 		//if (code) ThrowError();
+
+		// top of stack will be selected lines array, if any was returned
+		if (lua_istable(L, -1)) {
+			selected.clear();
+			selected.reserve(lua_objlen(L, -1));
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				if (lua_isnumber(L, -1)) {
+					selected.push_back(lua_tointeger(L, -1));
+				}
+				lua_pop(L, 1);
+			}
+			std::sort(selected.begin(), selected.end());
+		}
+		// either way, there will be something on the stack
+		lua_pop(L, 1);
 
 		delete ps;
 	}

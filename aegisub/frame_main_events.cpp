@@ -999,6 +999,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsBox->ass, selected_lines, first_sel, this);
 	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
 	SubsBox->UpdateMaps();
+	SubsBox->SetSelectionFromAbsolute(selected_lines);
 	SubsBox->EndBatch();
 	SubsBox->CommitChanges(true, false);
 }

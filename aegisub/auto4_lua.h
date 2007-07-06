@@ -222,7 +222,7 @@ namespace Automation4 {
 		virtual ~LuaFeatureMacro() { }
 
 		virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active);
-		virtual void Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent);
+		virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent);
 	};
 
 

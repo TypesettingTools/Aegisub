@@ -334,7 +334,7 @@ namespace Automation4 {
 		return false;
 	}
 
-	void RubyFeatureMacro::Process(AssFile *subs, const std::vector<int> &selected, int active, wxWindow * const progress_parent)
+	void RubyFeatureMacro::Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
 		delete RubyProgressSink::inst;
 		RubyProgressSink::inst = new RubyProgressSink(progress_parent, false);
@@ -375,14 +375,13 @@ namespace Automation4 {
 					break;
 
 				case T_FIXNUM:		// array of ints = selection
+					// i hope this works, can't test it  -jfs
 					int num = RARRAY(p)->len;
-					std::vector<int> sel(num);
+					selected.clear();
+					selected.reserve(num);
 					for(int i = 0; i < num; ++i) {
-						sel[i] = FIX2INT(RARRAY(p)->ptr[i]);
+						selected.push_back(FIX2INT(RARRAY(p)->ptr[i]));
 					}
-					FrameMain *frame = AegisubApp::Get()->frame;
-					frame->SubsBox->LoadFromAss(AssFile::top, true, true);
-					frame->SubsBox->SetSelectionFromAbsolute(sel);
 					break;
 				}				
 			}
