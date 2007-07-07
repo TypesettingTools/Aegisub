@@ -46,9 +46,9 @@ enum {
 	BUTTON_DRAG = VISUAL_SUB_TOOL_START,
 	BUTTON_LINE,
 	BUTTON_BICUBIC,
+	BUTTON_CONVERT,
 	BUTTON_INSERT,
 	BUTTON_REMOVE,
-	BUTTON_CONVERT,
 	BUTTON_FREEHAND,
 	BUTTON_FREEHAND_SMOOTH,
 	BUTTON_LAST		// Leave this at the end and don't use it
@@ -256,6 +256,27 @@ void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
 /////////////////////
 // Clicked a feature
 void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
+	// Delete a control point
+	if (mode == 5) {
+		int i = 0;
+		for (std::list<SplineCurve>::iterator cur=spline.curves.begin();cur!=spline.curves.end();i++,cur++) {
+			if (i == feature.value) {
+				// Update next
+				if (i != 0 || feature.value2 != 0) {
+					std::list<SplineCurve>::iterator next = cur;
+					next++;
+					if (next != spline.curves.end()) next->p1 = cur->p1;
+				}
+
+				// Erase and save changes
+				spline.curves.erase(cur);
+				SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+				curFeature = -1;
+				Commit(true);
+				return;
+			}
+		}
+	}
 }
 
 
@@ -375,7 +396,7 @@ void VisualToolVectorClip::DoRefresh() {
 		wxString vect;
 		int scale;
 		vect = GetLineVectorClip(line,scale);
-		if (vect.IsEmpty()) return;
+		//if (!vect.IsEmpty()) return;
 		spline.DecodeFromASS(vect);
 		PopulateFeatureList();
 	}

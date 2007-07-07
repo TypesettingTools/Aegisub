@@ -175,8 +175,7 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				if (realTime) {
 					// Commit
 					CommitDrag(features[curFeature]);
-					grid->editBox->CommitText(true);
-					grid->CommitChanges(false,true);
+					Commit();
 				}
 			}
 
@@ -188,9 +187,7 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				// Commit
 				dragging = false;
 				CommitDrag(features[curFeature]);
-				grid->editBox->CommitText();
-				grid->ass->FlagAsModified(_("visual typesetting"));
-				grid->CommitChanges(false);
+				Commit(true);
 
 				// Clean up
 				curFeature = -1;
@@ -227,8 +224,7 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				if (realTime) {
 					// Commit
 					CommitHold();
-					grid->editBox->CommitText(true);
-					grid->CommitChanges(false,true);
+					Commit();
 				}
 			}
 
@@ -240,9 +236,7 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				// Commit
 				holding = false;
 				CommitHold();
-				grid->editBox->CommitText();
-				grid->ass->FlagAsModified(_("visual typesetting"));
-				grid->CommitChanges(false);
+				Commit(true);
 
 				// Clean up
 				curDiag = NULL;
@@ -254,6 +248,16 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 
 	// Update
 	Update();
+}
+
+
+//////////
+// Commit
+void VisualTool::Commit(bool full) {
+	SubtitlesGrid *grid = VideoContext::Get()->grid;
+	if (full) grid->editBox->CommitText();
+	grid->ass->FlagAsModified(_("visual typesetting"));
+	grid->CommitChanges(false,!full);
 }
 
 

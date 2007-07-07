@@ -115,6 +115,7 @@ protected:
 	AssDialogue *GetActiveDialogueLine();
 	int GetHighlightedFeature();
 	void DrawAllFeatures();
+	void Commit(bool full=false);
 
 	void ConnectButton(wxButton *button);
 	virtual void OnButton(wxCommandEvent &event) {}
