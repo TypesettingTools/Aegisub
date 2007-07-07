@@ -51,23 +51,25 @@ public:
 	bool operator == (const Vector2D param) const;
 	bool operator != (const Vector2D param) const;
 
-	Vector2D operator - ();
+	Vector2D operator - () const;
 	Vector2D operator + (const Vector2D param) const;
 	Vector2D operator - (const Vector2D param) const;
-	Vector2D operator * (float param);
-	Vector2D operator / (float param);
+	Vector2D operator * (float param) const;
+	Vector2D operator / (float param) const;
 
 	Vector2D operator += (const Vector2D param);
 	Vector2D operator -= (const Vector2D param);
 	Vector2D operator *= (float param);
 	Vector2D operator /= (float param);
 
-	Vector2D Unit ();
+	Vector2D Unit () const;
 	float Cross (const Vector2D param) const;
 	float Dot (const Vector2D param) const;
 
 	float Len () const;
 	float Length () const { return Len(); }
+	float SquareLen () const;
+	float SquareLength () const { return SquareLen(); }
 };
 
 

@@ -62,6 +62,11 @@ public:
 	SplineCurve();
 	void Split(SplineCurve &c1,SplineCurve &c2,float t=0.5);
 	void Smooth(Vector2D prev,Vector2D next,float smooth=1.0f);
-	Vector2D GetStartPoint();
-	Vector2D GetEndPoint();
+
+	Vector2D GetPoint(float t) const;
+	Vector2D GetStartPoint() const;
+	Vector2D GetEndPoint() const;
+	Vector2D GetClosestPoint(Vector2D ref) const;
+	float GetClosestParam(Vector2D ref) const;
+	float GetQuickDistance(Vector2D ref) const;
 };

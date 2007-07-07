@@ -62,7 +62,7 @@ public:
 
 	void GetPointList(std::vector<Vector2D> &points);
 
-	void GetClosestParametricPoint(Vector2D reference,int &curve,float &t);
+	void GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &point);
 	Vector2D GetClosestPoint(Vector2D reference);
 	Vector2D GetClosestControlPoint(Vector2D reference);
 };

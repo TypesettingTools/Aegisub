@@ -167,6 +167,12 @@ void VisualToolVectorClip::Draw() {
 			DrawDashedLine(mx,my,c1->GetEndPoint().x,c1->GetEndPoint().y,6);
 		}
 	}
+	
+	// Draw preview of insert point
+	if (mode == 4) {
+		Vector2D p1 = spline.GetClosestPoint(Vector2D(mx,my));
+		DrawCircle(p1.x,p1.y,4);
+	}
 }
 
 

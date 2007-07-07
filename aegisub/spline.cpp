@@ -261,18 +261,10 @@ void Spline::GetPointList(std::vector<Vector2D> &points) {
 	// Generate points for each curve
 	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++) {
 		// First point
-		if (isFirst) {
-			pt.x = cur->p1.x;
-			pt.y = cur->p1.y;
-			points.push_back(pt);
-		}
+		if (isFirst) points.push_back(cur->p1);
 
 		// Line
-		if (cur->type == CURVE_LINE) {
-			pt.x = cur->p2.x;
-			pt.y = cur->p2.y;
-			points.push_back(pt);
-		}
+		if (cur->type == CURVE_LINE) points.push_back(cur->p2);
 
 		// Bicubic
 		else if (cur->type == CURVE_BICUBIC) {
@@ -290,11 +282,7 @@ void Spline::GetPointList(std::vector<Vector2D> &points) {
 			for (int i=0;i<steps;i++) {
 				// Get t and t-1 (u)
 				float t = float(i)/float(steps);
-				float u = 1.0f-t;
-
-				// Calculate the point and insert it
-				pt = p1*u*u*u + 3*p2*t*u*u + 3*p3*t*t*u + p4*t*t*t;
-				points.push_back(pt);
+				points.push_back(cur->GetPoint(t));
 			}
 		}
 	}
@@ -308,16 +296,47 @@ void Spline::GetPointList(std::vector<Vector2D> &points) {
 
 ///////////////////////////////////////////////////////
 // t value and curve of the point closest to reference
-void GetClosestParametricPoint(Vector2D reference,int &curve,float &t) {
-	// TODO
+void Spline::GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &pt) {
+	// Has at least one curve?
+	curve = 0;
+	t = 0.0f;
+	if (curves.size() == 0) return;
+
+	// Close the shape
+	SplineCurve pad;
+	pad.p1 = curves.back().GetEndPoint();
+	pad.p2 = curves.front().p1;
+	pad.type = CURVE_LINE;
+	curves.push_back(pad);
+
+	// Prepare
+	float closest = 8000000.0f;
+	int i = 0;
+	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++,i++) {
+		float param = cur->GetClosestParam(reference);
+		Vector2D p1 = cur->GetPoint(param);
+		float dist = (p1-reference).Len();
+		if (dist < closest) {
+			closest = dist;
+			t = param;
+			curve = i;
+			pt = p1;
+		}
+	}
+
+	// Remove closing and return
+	curves.pop_back();
 }
 
 
 //////////////////////////////
 // Point closest to reference
 Vector2D Spline::GetClosestPoint(Vector2D reference) {
-	// TODO
-	return Vector2D(-1,-1);
+	int curve;
+	float t;
+	Vector2D point;
+	GetClosestParametricPoint(reference,curve,t,point);
+	return point;
 }
 
 

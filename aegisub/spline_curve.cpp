@@ -120,16 +120,82 @@ void SplineCurve::Smooth(Vector2D P0,Vector2D P3,float smooth) {
 }
 
 
+///////////////
+// Get a point
+Vector2D SplineCurve::GetPoint(float t) const {
+	// Point
+	if (type == CURVE_POINT) return p1;
+
+	// Line
+	else if (type == CURVE_LINE) {
+		return p1*(1.0f-t) + p2*t;
+	}
+
+	// Bicubic
+	else if (type == CURVE_BICUBIC) {
+		float u = 1.0f-t;
+		return p1*u*u*u + 3*p2*t*u*u + 3*p3*t*t*u + p4*t*t*t;
+	}
+
+	else return Vector2D(0,0);
+}
+
+
 ///////////////////////
 // Get start/end point
-Vector2D SplineCurve::GetStartPoint() {
+Vector2D SplineCurve::GetStartPoint() const {
 	return p1;
 }
-Vector2D SplineCurve::GetEndPoint() {
+Vector2D SplineCurve::GetEndPoint() const {
 	switch (type) {
 		case CURVE_POINT: return p1;
 		case CURVE_LINE: return p2;
 		case CURVE_BICUBIC: return p4;
 		default: return p1;
 	}
+}
+
+
+//////////////////////////////////
+// Get point closest to reference
+Vector2D SplineCurve::GetClosestPoint(Vector2D ref) const {
+	return GetPoint(GetClosestParam(ref));
+}
+
+
+///////////////////////////////////////////
+// Get value of parameter closest to point
+float SplineCurve::GetClosestParam(Vector2D ref) const {
+	// Line
+	if (type == CURVE_LINE) {
+		//return MID(0.0f,((ref.x-p1.x)*(p2.x-p1.x) + (ref.y-p1.y)*(p2.y-p1.y))/(p2-p1).SquareLen(),1.0f);
+		return MID(0.0f,(ref-p1).Dot(p2-p1)/(p2-p1).SquareLen(),1.0f);
+	}
+
+	// Bicubic
+	if (type == CURVE_BICUBIC) {
+		int steps = 100;
+		float bestDist = 80000000.0f;
+		float bestT = 0.0f;
+		for (int i=0;i<=steps;i++) {
+			float t = float(i)/float(steps);
+			float dist = (GetPoint(t)-ref).Len();
+			if (dist < bestDist) {
+				bestDist = dist;
+				bestT = t;
+			}
+		}
+		return bestT;
+	}
+
+	// Something else
+	return 0.0f;
+}
+
+
+//////////////////
+// Quick distance
+float SplineCurve::GetQuickDistance(Vector2D ref) const {
+	if (type == CURVE_BICUBIC) return MIN(MIN((ref-p1).Len(),(ref-p2).Len()),MIN((ref-p3).Len(),(ref-p4).Len()));
+	else return (GetClosestPoint(ref)-ref).Len();
 }

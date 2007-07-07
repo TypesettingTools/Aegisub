@@ -109,14 +109,14 @@ Vector2D Vector2D::operator -= (const Vector2D param) {
 
 //////////
 // Negate
-Vector2D Vector2D::operator - () {
+Vector2D Vector2D::operator - () const {
 	return Vector2D(-x,-y);
 }
 
 
 ////////////////////////////
 // Multiplication by scalar
-Vector2D Vector2D::operator * (float param) {
+Vector2D Vector2D::operator * (float param) const {
 	return Vector2D(x * param,y * param);
 }
 
@@ -133,7 +133,7 @@ Vector2D operator * (float f,const Vector2D &v) {
 
 //////////////////////
 // Division by scalar
-Vector2D Vector2D::operator / (float param) {
+Vector2D Vector2D::operator / (float param) const {
 	return Vector2D(x / param,y / param);
 }
 
@@ -169,9 +169,16 @@ float Vector2D::Len () const {
 }
 
 
+//////////////////
+// Squared Length
+float Vector2D::SquareLen () const {
+	return x*x + y*y;
+}
+
+
 ///////////
 // Unitary
-Vector2D Vector2D::Unit () {
+Vector2D Vector2D::Unit () const {
 	float l = Len();
 	if (l != 0) {
 		Vector2D temp;
