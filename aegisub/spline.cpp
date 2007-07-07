@@ -99,6 +99,7 @@ void Spline::DecodeFromASS(wxString str) {
 	char lastCommand = 'm';
 	int x = 0;
 	int y = 0;
+	bool coordsSet = false;
 
 	// Tokenize the string
 	wxStringTokenizer tkn(str,_T(" "));
@@ -115,6 +116,7 @@ void Spline::DecodeFromASS(wxString str) {
 			if (stack.size() == 2 && lastCommand == 'm') {
 				x = stack[0];
 				y = stack[1];
+				coordsSet = true;
 				stack.clear();
 			}
 
@@ -165,6 +167,15 @@ void Spline::DecodeFromASS(wxString str) {
 			else if (token == _T("s")) lastCommand = 's';
 			else if (token == _T("c")) lastCommand = 'c';
 		}
+	}
+
+	// Got coordinates, but list is empty
+	if (curves.size() == 0 && coordsSet) {
+		SplineCurve curve;
+		curve.p1.x = x;
+		curve.p1.y = y;
+		curve.type = CURVE_POINT;
+		AppendCurve(curve);
 	}
 }
 

@@ -157,6 +157,16 @@ void VisualToolVectorClip::Draw() {
 			DrawDashedLine(cur->p3.x,cur->p3.y,cur->p4.x,cur->p4.y,6);
 		}
 	}
+
+	// Draw preview of inserted line
+	if (mode == 1 || mode == 2) {
+		if (spline.curves.size()) {
+			SplineCurve *c0 = &spline.curves.front();
+			SplineCurve *c1 = &spline.curves.back();
+			DrawDashedLine(mx,my,c0->p1.x,c0->p1.y,6);
+			DrawDashedLine(mx,my,c1->GetEndPoint().x,c1->GetEndPoint().y,6);
+		}
+	}
 }
 
 
@@ -225,7 +235,7 @@ void VisualToolVectorClip::PopulateFeatureList() {
 /////////////
 // Can drag?
 bool VisualToolVectorClip::DragEnabled() {
-	return mode == 0;
+	return mode <= 2;
 }
 
 
@@ -252,38 +262,93 @@ void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 /////////////
 // Can hold?
 bool VisualToolVectorClip::HoldEnabled() {
-	return mode == 6 || mode == 7;
+	return mode == 1 || mode == 2 || mode == 6 || mode == 7;
 }
 
 
 ///////////////////
 // Initialize hold
 void VisualToolVectorClip::InitializeHold() {
-	spline.curves.clear();
-	lastX = -100000;
-	lastY = -100000;
+	// Insert line/bicubic
+	if (mode == 1 || mode == 2) {
+		SplineCurve curve;
+
+		// Set start position
+		if (spline.curves.size()) {
+			curve.p1 = spline.curves.back().GetEndPoint();
+			if (mode == 1) curve.type = CURVE_LINE;
+			else curve.type = CURVE_BICUBIC;
+
+			// Remove point if that's all there is
+			if (spline.curves.size()==1 && spline.curves.front().type == CURVE_POINT) spline.curves.clear();
+		}
+		
+		// First point
+		else {
+			curve.p1 = Vector2D(mx,my);
+			curve.type = CURVE_POINT;
+		}
+
+		// Insert
+		spline.AppendCurve(curve);
+	}
+
+	// Freehand
+	if (mode == 6 || mode == 7) {
+		spline.curves.clear();
+		lastX = -100000;
+		lastY = -100000;
+	}
 }
 
 
 ///////////////
 // Update hold
 void VisualToolVectorClip::UpdateHold() {
-	if (lastX != -100000 && lastY != -100000) {
-		// See if distance is enough
-		Vector2D delta(lastX-mx,lastY-my);
-		int len = (int)delta.Len();
-		if (mode == 6 && len < 30) return;
-		if (mode == 7 && len < 60) return;
-	
-		// Generate curve and add it
-		SplineCurve curve;
-		curve.type = CURVE_LINE;
-		curve.p1 = Vector2D(lastX,lastY);
-		curve.p2 = Vector2D(mx,my);
-		spline.AppendCurve(curve);
+	// Insert line
+	if (mode == 1) {
+		spline.curves.back().p2 = Vector2D(mx,my);
 	}
-	lastX = mx;
-	lastY = my;
+
+	// Insert bicubic
+	if (mode == 2) {
+		SplineCurve &curve = spline.curves.back();
+		curve.p4 = Vector2D(mx,my);
+
+		// Control points
+		if (spline.curves.size() > 1) {
+			std::list<SplineCurve>::reverse_iterator iter = spline.curves.rbegin();
+			iter++;
+			SplineCurve &c0 = *iter;
+			Vector2D prevVector;
+			float len = (curve.p4-curve.p1).Len();
+			if (c0.type == CURVE_LINE) prevVector = c0.p2-c0.p1;
+			else prevVector = c0.p4-c0.p3;
+			curve.p2 = prevVector.Unit() * (0.25f*len) + curve.p1;
+		}
+		else curve.p2 = curve.p1 * 0.75 + curve.p4 * 0.25;
+		curve.p3 = curve.p1 * 0.25 + curve.p4 * 0.75;
+	}
+
+	// Freehand
+	if (mode == 6 || mode == 7) {
+		if (lastX != -100000 && lastY != -100000) {
+			// See if distance is enough
+			Vector2D delta(lastX-mx,lastY-my);
+			int len = (int)delta.Len();
+			if (mode == 6 && len < 30) return;
+			if (mode == 7 && len < 60) return;
+		
+			// Generate curve and add it
+			SplineCurve curve;
+			curve.type = CURVE_LINE;
+			curve.p1 = Vector2D(lastX,lastY);
+			curve.p2 = Vector2D(mx,my);
+			spline.AppendCurve(curve);
+		}
+		lastX = mx;
+		lastY = my;
+	}
 }
 
 

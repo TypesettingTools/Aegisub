@@ -93,6 +93,7 @@ void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
 void SplineCurve::Smooth(Vector2D P0,Vector2D P3,float smooth) {
 	// Validate
 	if (type != CURVE_LINE) return;
+	if (p1 == p2) return;
 	smooth = MID(0.0f,smooth,1.0f);
 
 	// Get points
@@ -116,4 +117,19 @@ void SplineCurve::Smooth(Vector2D P0,Vector2D P3,float smooth) {
 	p2 = m1+(c2-m1)*smooth + P1 - m1;
 	p3 = m2+(c2-m2)*smooth + P2 - m2;
 	type = CURVE_BICUBIC;
+}
+
+
+///////////////////////
+// Get start/end point
+Vector2D SplineCurve::GetStartPoint() {
+	return p1;
+}
+Vector2D SplineCurve::GetEndPoint() {
+	switch (type) {
+		case CURVE_POINT: return p1;
+		case CURVE_LINE: return p2;
+		case CURVE_BICUBIC: return p4;
+		default: return p1;
+	}
 }

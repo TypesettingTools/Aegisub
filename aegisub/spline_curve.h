@@ -62,4 +62,6 @@ public:
 	SplineCurve();
 	void Split(SplineCurve &c1,SplineCurve &c2,float t=0.5);
 	void Smooth(Vector2D prev,Vector2D next,float smooth=1.0f);
+	Vector2D GetStartPoint();
+	Vector2D GetEndPoint();
 };
