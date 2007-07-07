@@ -56,11 +56,13 @@ public:
 	wxString EncodeToASS();
 	void DecodeFromASS(wxString str);
 
-	void AppendCurve(SplineCurve &curve);
+	void AppendCurve(SplineCurve &curve) { InsertCurve(curve,-1); }
+	void InsertCurve(SplineCurve &curve,int index);
 	void MovePoint(int curveIndex,int point,wxPoint pos);
 	void Smooth(float smooth=1.0f);
 
 	void GetPointList(std::vector<Vector2D> &points);
+	SplineCurve *GetCurve(int index);
 
 	void GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &point);
 	Vector2D GetClosestPoint(Vector2D reference);

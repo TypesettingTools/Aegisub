@@ -55,9 +55,9 @@ void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
 		c1.type = CURVE_LINE;
 		c2.type = CURVE_LINE;
 		c1.p1 = p1;
-		c1.p2 = p1*t+p2*(1-t);
-		c2.p1 = c1.p2;
 		c2.p2 = p2;
+		c1.p2 = p1*(1-t)+p2*t;
+		c2.p1 = c1.p2;
 	}
 
 	// Split a bicubic
@@ -67,22 +67,22 @@ void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
 
 		// Sub-divisions
 		float u = 1-t;
-		Vector2D p12 = p1*t+p2*u;
-		Vector2D p23 = p2*t+p3*u;
-		Vector2D p34 = p3*t+p4*u;
-		Vector2D p123 = p12*t+p23*u;
-		Vector2D p234 = p23*t+p34*u;
-		Vector2D p1234 = p123*t+p234*u;
+		Vector2D p12 = p1*u+p2*t;
+		Vector2D p23 = p2*u+p3*t;
+		Vector2D p34 = p3*u+p4*t;
+		Vector2D p123 = p12*u+p23*t;
+		Vector2D p234 = p23*u+p34*t;
+		Vector2D p1234 = p123*u+p234*t;
 
 		// Set points
 		c1.p1 = p1;
+		c2.p4 = p4;
 		c1.p2 = p12;
 		c1.p3 = p123;
 		c1.p4 = p1234;
 		c2.p1 = p1234;
 		c2.p2 = p234;
 		c2.p3 = p34;
-		c2.p4 = p4;
 	}
 }
 
@@ -168,8 +168,7 @@ Vector2D SplineCurve::GetClosestPoint(Vector2D ref) const {
 float SplineCurve::GetClosestParam(Vector2D ref) const {
 	// Line
 	if (type == CURVE_LINE) {
-		//return MID(0.0f,((ref.x-p1.x)*(p2.x-p1.x) + (ref.y-p1.y)*(p2.y-p1.y))/(p2-p1).SquareLen(),1.0f);
-		return MID(0.0f,(ref-p1).Dot(p2-p1)/(p2-p1).SquareLen(),1.0f);
+		return GetClosestSegmentPart(p1,p2,ref);
 	}
 
 	// Bicubic
@@ -196,6 +195,32 @@ float SplineCurve::GetClosestParam(Vector2D ref) const {
 //////////////////
 // Quick distance
 float SplineCurve::GetQuickDistance(Vector2D ref) const {
-	if (type == CURVE_BICUBIC) return MIN(MIN((ref-p1).Len(),(ref-p2).Len()),MIN((ref-p3).Len(),(ref-p4).Len()));
+	// Bicubic
+	if (type == CURVE_BICUBIC) {
+		float len1 = GetClosestSegmentDistance(p1,p2,ref);
+		float len2 = GetClosestSegmentDistance(p2,p3,ref);
+		float len3 = GetClosestSegmentDistance(p3,p4,ref);
+		float len4 = GetClosestSegmentDistance(p4,p1,ref);
+		float len5 = GetClosestSegmentDistance(p1,p3,ref);
+		float len6 = GetClosestSegmentDistance(p2,p4,ref);
+		return MIN(MIN(MIN(len1,len2),MIN(len3,len4)),MIN(len5,len6));
+	}
+
+	// Something else
 	else return (GetClosestPoint(ref)-ref).Len();
+}
+
+
+//////////////////////////////////////////
+// Closest t in segment p1-p2 to point p3
+float SplineCurve::GetClosestSegmentPart(Vector2D pt1,Vector2D pt2,Vector2D pt3) const {
+	return MID(0.0f,(pt3-pt1).Dot(pt2-pt1)/(pt2-pt1).SquareLen(),1.0f);
+}
+
+
+/////////////////////////////////////////////////
+// Closest distance between p3 and segment p1-p2
+float SplineCurve::GetClosestSegmentDistance(Vector2D pt1,Vector2D pt2,Vector2D pt3) const {
+	float t = GetClosestSegmentPart(pt1,pt2,pt3);
+	return (pt1*(1.0f-t)+pt2*t-pt3).Len();
 }

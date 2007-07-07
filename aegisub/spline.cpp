@@ -181,9 +181,26 @@ void Spline::DecodeFromASS(wxString str) {
 
 
 ////////////////////////////////
-// Append a curve to the spline
-void Spline::AppendCurve(SplineCurve &curve) {
-	curves.push_back(curve);
+// Insert a curve to the spline
+void Spline::InsertCurve(SplineCurve &curve,int index) {
+	if (index == -1) curves.push_back(curve);
+	else {
+		std::list<SplineCurve>::iterator cur;
+		int i=0;
+		for (cur=curves.begin();cur!=curves.end() && i < index;cur++,i++);
+		curves.insert(cur,curve);
+	}
+}
+
+
+////////////////////////
+// Get a specific curve
+SplineCurve *Spline::GetCurve(int index) {
+	int i=0;
+	for (std::list<SplineCurve>::iterator cur=curves.begin();cur!=curves.end() && i <= index;cur++,i++) {
+		if (i==index) return &(*cur);
+	}
+	return NULL;
 }
 
 
@@ -279,7 +296,7 @@ void Spline::GetPointList(std::vector<Vector2D> &points) {
 			int steps = len/8;
 
 			// Render curve
-			for (int i=0;i<steps;i++) {
+			for (int i=1;i<=steps;i++) {
 				// Get t and t-1 (u)
 				float t = float(i)/float(steps);
 				points.push_back(cur->GetPoint(t));

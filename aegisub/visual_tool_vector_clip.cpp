@@ -289,7 +289,7 @@ void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 /////////////
 // Can hold?
 bool VisualToolVectorClip::HoldEnabled() {
-	return mode == 1 || mode == 2 || mode == 6 || mode == 7;
+	return mode <= 4 || mode == 6 || mode == 7;
 }
 
 
@@ -320,8 +320,45 @@ void VisualToolVectorClip::InitializeHold() {
 		spline.AppendCurve(curve);
 	}
 
+	// Convert and insert
+	else if (mode == 3 || mode == 4) {
+		// Get closest point
+		Vector2D pt;
+		int curve;
+		float t;
+		spline.GetClosestParametricPoint(Vector2D(mx,my),curve,t,pt);
+
+		// Convert
+		if (mode == 3) {
+		}
+
+		// Insert
+		else {
+			// Split the curve
+			SplineCurve *c1 = spline.GetCurve(curve);
+			SplineCurve c2;
+			if (!c1) {
+				SplineCurve ct;
+				ct.type = CURVE_LINE;
+				ct.p1 = spline.curves.back().GetEndPoint();
+				ct.p2 = spline.curves.front().p1;
+				ct.p2 = ct.p1*(1-t) + ct.p2*t;
+				spline.AppendCurve(ct);
+			}
+			else {
+				c1->Split(*c1,c2,t);
+				spline.InsertCurve(c2,curve+1);
+			}
+		}
+
+		// Commit
+		SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+		Commit(true);
+		holding = false;
+	}
+
 	// Freehand
-	if (mode == 6 || mode == 7) {
+	else if (mode == 6 || mode == 7) {
 		spline.curves.clear();
 		lastX = -100000;
 		lastY = -100000;
@@ -386,7 +423,7 @@ void VisualToolVectorClip::CommitHold() {
 	if (!holding && mode == 7) spline.Smooth();
 
 	// Save it
-	SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+	if (mode != 3 && mode != 4) SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
 }
 
 

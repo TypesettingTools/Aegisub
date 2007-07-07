@@ -55,6 +55,10 @@ enum CurveType {
 ////////////////
 // Spline curve
 class SplineCurve {
+private:
+	float GetClosestSegmentPart(Vector2D p1,Vector2D p2,Vector2D p3) const;
+	float GetClosestSegmentDistance(Vector2D p1,Vector2D p2,Vector2D p3) const;
+
 public:
 	Vector2D p1,p2,p3,p4;
 	CurveType type;
