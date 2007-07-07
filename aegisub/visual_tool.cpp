@@ -255,8 +255,8 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 // Commit
 void VisualTool::Commit(bool full) {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
-	if (full) grid->editBox->CommitText();
-	grid->ass->FlagAsModified(_("visual typesetting"));
+	grid->editBox->CommitText();
+	if (full) grid->ass->FlagAsModified(_("visual typesetting"));
 	grid->CommitChanges(false,!full);
 }
 
