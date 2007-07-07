@@ -68,7 +68,7 @@ VideoBox::VideoBox(wxWindow *parent)
 	frame = AegisubApp::Get()->frame;
 
 	// Visual controls sub-toolbar
-	visualSubToolBar = new wxBoxSizer(wxHORIZONTAL);
+	visualSubToolBar = new wxToolBar(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL | wxTB_BOTTOM | wxTB_FLAT);
 
 	// Buttons
 	wxBitmapButton *VideoPlayButton = new wxBitmapButton(videoPage,Video_Play,wxBITMAP(button_play),wxDefaultPosition,wxSize(25,-1));
@@ -120,13 +120,14 @@ VideoBox::VideoBox(wxWindow *parent)
 	visualToolBar->Realize();
 
 	// Top sizer
-	wxFlexGridSizer *topSizer = new wxFlexGridSizer(2,2,0,0);
-	topSizer->Add(visualToolBar,0,wxEXPAND,0);
-	topSizer->Add(videoDisplay,1,wxEXPAND,0);
-	topSizer->AddSpacer(0);
-	topSizer->Add(visualSubToolBar,1,wxEXPAND,0);
-	topSizer->AddGrowableCol(1);
-	topSizer->AddGrowableRow(0);
+	wxSizer *topTopSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
+	visualSubToolBar->Show(false);
+	topTopSizer->Add(visualToolBar,0,wxEXPAND,0);
+	topTopSizer->Add(videoDisplay,1,wxEXPAND,0);
+	topSizer->Add(topTopSizer,1,wxEXPAND,0);
+	topSizer->Add(visualSubToolBar,0,wxEXPAND | wxBOTTOM,4);
+	topSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND,0);
 
 	// Sizers
 	videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -141,7 +142,6 @@ VideoBox::VideoBox(wxWindow *parent)
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(topSizer,1,wxEXPAND,0);
-	VideoSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
 	VideoSizer->Add(videoBottomSizer,0,wxEXPAND,0);
 	SetSizer(VideoSizer);

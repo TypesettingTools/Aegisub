@@ -60,7 +60,7 @@ private:
 	void DoRefresh();
 
 public:
-	VisualToolDrag(VideoDisplay *parent,wxSizer *toolbar,wxWindow *toolWindow);
+	VisualToolDrag(VideoDisplay *parent,wxToolBar *toolbar);
 
 	void Update();
 	void Draw();

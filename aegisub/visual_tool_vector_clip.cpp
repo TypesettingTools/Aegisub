@@ -55,44 +55,23 @@ enum {
 
 ///////////////
 // Constructor
-VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxSizer *toolbar,wxWindow *toolWindow)
+VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *toolBar)
 : VisualTool(parent)
 {
 	DoRefresh();
 
 	// Create toolbar
-	wxButton *drag = new wxBitmapButton(toolWindow,BUTTON_DRAG,wxBITMAP(visual_vector_clip_drag));
-	wxButton *line = new wxBitmapButton(toolWindow,BUTTON_LINE,wxBITMAP(visual_vector_clip_line));
-	wxButton *bicubic = new wxBitmapButton(toolWindow,BUTTON_BICUBIC,wxBITMAP(visual_vector_clip_bicubic));
-	wxButton *convert = new wxBitmapButton(toolWindow,BUTTON_CONVERT,wxBITMAP(visual_vector_clip_convert));
-	wxButton *insert = new wxBitmapButton(toolWindow,BUTTON_INSERT,wxBITMAP(visual_vector_clip_insert));
-	wxButton *remove = new wxBitmapButton(toolWindow,BUTTON_REMOVE,wxBITMAP(visual_vector_clip_remove));
-	wxButton *freehand = new wxBitmapButton(toolWindow,BUTTON_FREEHAND,wxBITMAP(visual_vector_clip_freehand));
-	drag->SetToolTip(_("Drag control points."));
-	line->SetToolTip(_("Appends a line."));
-	bicubic->SetToolTip(_("Appends a bezier bicubic curve."));
-	convert->SetToolTip(_("Converts a segment between line and bicubic."));
-	insert->SetToolTip(_("Inserts a control point."));
-	remove->SetToolTip(_("Removes a control point."));
-	freehand->SetToolTip(_("Draws a freehand shape."));
-	ConnectButton(drag);
-	ConnectButton(line);
-	ConnectButton(bicubic);
-	ConnectButton(convert);
-	ConnectButton(insert);
-	ConnectButton(remove);
-	ConnectButton(freehand);
-	toolbar->Add(drag,0,wxEXPAND);
-	toolbar->Add(line,0,wxEXPAND);
-	toolbar->Add(bicubic,0,wxEXPAND | wxRIGHT,5);
-	toolbar->Add(new wxStaticLine(toolWindow,-1,wxDefaultPosition,wxDefaultSize,wxLI_VERTICAL),0,wxEXPAND | wxRIGHT,5);
-	toolbar->Add(convert,0,wxEXPAND);
-	toolbar->Add(insert,0,wxEXPAND);
-	toolbar->Add(remove,0,wxEXPAND | wxRIGHT,5);
-	toolbar->Add(new wxStaticLine(toolWindow,-1,wxDefaultPosition,wxDefaultSize,wxLI_VERTICAL),0,wxEXPAND | wxRIGHT,5);
-	toolbar->Add(freehand,0,wxEXPAND);
-	toolbar->AddStretchSpacer(1);
-
+	toolBar->AddTool(BUTTON_DRAG,_("Drag"),wxBITMAP(visual_vector_clip_drag),_("Drag control points."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_LINE,_("Line"),wxBITMAP(visual_vector_clip_line),_("Appends a line."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_BICUBIC,_("Bicubic"),wxBITMAP(visual_vector_clip_bicubic),_("Appends a bezier bicubic curve."),wxITEM_CHECK);
+	toolBar->AddSeparator();
+	toolBar->AddTool(BUTTON_CONVERT,_("Convert"),wxBITMAP(visual_vector_clip_convert),_("Converts a segment between line and bicubic."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_INSERT,_("Insert"),wxBITMAP(visual_vector_clip_insert),_("Inserts a control point."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_REMOVE,_("Remove"),wxBITMAP(visual_vector_clip_remove),_("Removes a control point."),wxITEM_CHECK);
+	toolBar->AddSeparator();
+	toolBar->AddTool(BUTTON_FREEHAND,_("Freehand"),wxBITMAP(visual_vector_clip_freehand),_("Draws a freehand shape."),wxITEM_CHECK);
+	toolBar->Realize();
+	toolBar->Show(true);
 }
 
 
@@ -117,7 +96,7 @@ void VisualToolVectorClip::Draw() {
 	// Draw lines
 	SetLineColour(colour[3],1.0f,2);
 	SetFillColour(colour[3],0.0f);
-	for (size_t i=0;i<points.size()-1;i++) {
+	for (int i=0;i<((signed)points.size())-1;i++) {
 		DrawLine(points[i].x,points[i].y,points[i+1].x,points[i+1].y);
 	}
 
@@ -126,7 +105,7 @@ void VisualToolVectorClip::Draw() {
 	glColorMask(0,0,0,0);
 	glStencilFunc(GL_NEVER,1,1);
 	glStencilOp(GL_INVERT,GL_INVERT,GL_INVERT);
-	for (size_t i=1;i<points.size()-1;i++) {
+	for (int i=0;i<((signed)points.size())-1;i++) {
 		glBegin(GL_TRIANGLES);
 			glVertex2f(points[0].x,points[0].y);
 			glVertex2f(points[i].x,points[i].y);

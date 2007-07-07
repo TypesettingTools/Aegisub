@@ -66,7 +66,8 @@ private:
 
 public:
 	wxToolBar *visualToolBar;
-	wxSizer *visualSubToolBar;
+	wxToolBar *visualSubToolBar;
+	//wxSizer *visualSubToolBar;
 
 	ToggleBitmap *AutoScroll;
 	wxBoxSizer *VideoSizer;

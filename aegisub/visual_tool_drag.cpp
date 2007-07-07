@@ -57,16 +57,18 @@ enum {
 
 ///////////////
 // Constructor
-VisualToolDrag::VisualToolDrag(VideoDisplay *_parent,wxSizer *toolbar,wxWindow *toolWindow)
+VisualToolDrag::VisualToolDrag(VideoDisplay *_parent,wxToolBar *toolBar)
 : VisualTool(_parent)
 {
 	_parent->ShowCursor(false);
-	toggleMove = new wxBitmapButton(toolWindow,BUTTON_TOGGLE_MOVE,wxBITMAP(visual_move_conv_move),wxDefaultPosition);
+	//toolBar->AddTool(BUTTON_TOGGLE_MOVE,_T("Toggle Move/Pos"),wxBITMAP(visual_move_conv_move));
+	toggleMove = new wxBitmapButton(toolBar,BUTTON_TOGGLE_MOVE,wxBITMAP(visual_move_conv_move),wxDefaultPosition);
 	ConnectButton(toggleMove);
-	toolbar->Add(toggleMove,0,wxEXPAND);
-	toolbar->AddStretchSpacer(1);
+	toolBar->AddControl(toggleMove);
 	toggleMoveOnMove = true;
-	UpdateToggleButtons();
+	//UpdateToggleButtons();
+	toolBar->Realize();
+	toolBar->Show(true);
 }
 
 

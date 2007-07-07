@@ -652,10 +652,12 @@ void VideoDisplay::SetVisualMode(int mode) {
 	// Set visual
 	if (visualMode != mode) {
 		// Get toolbar
-		wxSizer *toolBar = NULL;
+		wxToolBar *toolBar = NULL;
 		if (box) {
 			toolBar = box->visualSubToolBar;
-			toolBar->Clear(true);
+			toolBar->ClearTools();
+			toolBar->Realize();
+			toolBar->Show(false);
 			if (!box->visualToolBar->GetToolState(mode + Video_Mode_Standard)) box->visualToolBar->ToggleTool(mode + Video_Mode_Standard,true);
 		}
 
@@ -664,12 +666,12 @@ void VideoDisplay::SetVisualMode(int mode) {
 		delete visual;
 		switch (mode) {
 			case 0: visual = new VisualToolCross(this); break;
-			case 1: visual = new VisualToolDrag(this,toolBar,box); break;
+			case 1: visual = new VisualToolDrag(this,toolBar); break;
 			case 2: visual = new VisualToolRotateZ(this); break;
 			case 3: visual = new VisualToolRotateXY(this); break;
 			case 4: visual = new VisualToolScale(this); break;
 			case 5: visual = new VisualToolClip(this); break;
-			case 6: visual = new VisualToolVectorClip(this,toolBar,box); break;
+			case 6: visual = new VisualToolVectorClip(this,toolBar); break;
 			default: visual = NULL;
 		}
 

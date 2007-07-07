@@ -75,8 +75,7 @@
 // FrameMain constructor
 
 FrameMain::FrameMain (wxArrayString args)
-// FIXME: 860x600 default window size is tiny on high-res monitors, but maximised is not always desirable either
-: wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(860,600),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
+: wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
 #ifdef __WXGTK__
 /* XXX HACK XXX
@@ -495,6 +494,7 @@ void FrameMain::InitContents() {
 	TopSizer->Add(ToolSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 
 	// Set sizers/hints
+	MainSizer->Add(new wxStaticLine(Panel),0,wxEXPAND | wxALL,0);
 	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,0);
 	MainSizer->Add(BottomSizer,1,wxEXPAND | wxALL,0);
 	Panel->SetSizer(MainSizer);
