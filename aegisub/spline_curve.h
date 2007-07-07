@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,66 +39,27 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <wx/tglbtn.h>
+#include "vector2d.h"
 
 
-//////////////
-// Prototypes
-class VideoDisplay;
-class VideoSlider;
-class ToggleBitmap;
-class FrameMain;
-
-
-///////////////////
-// Video box class
-class VideoBox : public wxPanel {
-private:
-	void OnVideoPlay(wxCommandEvent &event);
-	void OnVideoPlayLine(wxCommandEvent &event);
-	void OnVideoStop(wxCommandEvent &event);
-	void OnVideoToggleScroll(wxCommandEvent &event);
-
-	void OnModeChange(wxCommandEvent &event);
-	void OnSubTool(wxCommandEvent &event);
-	void OnToggleRealtime(wxCommandEvent &event);
-
-public:
-	wxToolBar *visualToolBar;
-	wxToolBar *visualSubToolBar;
-	//wxSizer *visualSubToolBar;
-
-	ToggleBitmap *AutoScroll;
-	wxBoxSizer *VideoSizer;
-	wxBoxSizer *videoSliderSizer;
-	wxWindow *videoPage;
-	wxTextCtrl *VideoPosition;
-	wxTextCtrl *VideoSubsPos;
-	VideoDisplay *videoDisplay;
-	VideoSlider *videoSlider;
-	FrameMain *frame;
-
-	VideoBox (wxWindow *parent);
-
-	DECLARE_EVENT_TABLE()
+///////////////
+// Curve types
+enum CurveType {
+	CURVE_INVALID,
+	CURVE_POINT,
+	CURVE_LINE,
+	CURVE_BICUBIC
 };
 
 
-///////
-// IDs
-enum {
-	Video_Play = 500,
-	Video_Play_Line,
-	Video_Stop,
-	Video_Auto_Scroll,
+////////////////
+// Spline curve
+class SplineCurve {
+public:
+	Vector2D p1,p2,p3,p4;
+	CurveType type;
 
-	Video_Mode_Standard,
-	Video_Mode_Drag,
-	Video_Mode_Rotate_Z,
-	Video_Mode_Rotate_XY,
-	Video_Mode_Scale,
-	Video_Mode_Clip,
-	Video_Mode_Vector_Clip,
-	Video_Mode_Realtime,
+	SplineCurve();
+	void Split(SplineCurve &c1,SplineCurve &c2,float t=0.5);
+	void Smooth(Vector2D prev,Vector2D next,float smooth=1.0f);
 };

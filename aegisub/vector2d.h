@@ -64,9 +64,10 @@ public:
 
 	Vector2D Unit ();
 	float Cross (const Vector2D param) const;
-	virtual float Dot (const Vector2D param) const;
+	float Dot (const Vector2D param) const;
 
-	virtual float Len () const;
+	float Len () const;
+	float Length () const { return Len(); }
 };
 
 

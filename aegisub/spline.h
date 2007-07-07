@@ -42,29 +42,7 @@
 #include <wx/wxprec.h>
 #include <list>
 #include <vector>
-#include "vector2d.h"
-
-
-///////////////
-// Curve types
-enum CurveType {
-	CURVE_INVALID,
-	CURVE_POINT,
-	CURVE_LINE,
-	CURVE_BICUBIC
-};
-
-
-////////////////
-// Spline curve
-class SplineCurve {
-public:
-	Vector2D p1,p2,p3,p4;
-	CurveType type;
-
-	SplineCurve();
-	void Split(SplineCurve &c1,SplineCurve &c2,float t=0.5);
-};
+#include "spline_curve.h"
 
 
 /////////////////////////
@@ -80,6 +58,7 @@ public:
 
 	void AppendCurve(SplineCurve &curve);
 	void MovePoint(int curveIndex,int point,wxPoint pos);
+	void Smooth(float smooth=1.0f);
 
 	void GetPointList(std::vector<Vector2D> &points);
 

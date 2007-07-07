@@ -43,24 +43,28 @@
 ///////
 // IDs
 enum {
-	BUTTON_DRAG = 1300,
+	BUTTON_DRAG = VISUAL_SUB_TOOL_START,
 	BUTTON_LINE,
 	BUTTON_BICUBIC,
 	BUTTON_INSERT,
 	BUTTON_REMOVE,
 	BUTTON_CONVERT,
-	BUTTON_FREEHAND
+	BUTTON_FREEHAND,
+	BUTTON_FREEHAND_SMOOTH,
+	BUTTON_LAST		// Leave this at the end and don't use it
 };
 
 
 ///////////////
 // Constructor
-VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *toolBar)
+VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *_toolBar)
 : VisualTool(parent)
 {
 	DoRefresh();
+	mode = 0;
 
 	// Create toolbar
+	toolBar = _toolBar;
 	toolBar->AddTool(BUTTON_DRAG,_("Drag"),wxBITMAP(visual_vector_clip_drag),_("Drag control points."),wxITEM_CHECK);
 	toolBar->AddTool(BUTTON_LINE,_("Line"),wxBITMAP(visual_vector_clip_line),_("Appends a line."),wxITEM_CHECK);
 	toolBar->AddTool(BUTTON_BICUBIC,_("Bicubic"),wxBITMAP(visual_vector_clip_bicubic),_("Appends a bezier bicubic curve."),wxITEM_CHECK);
@@ -70,8 +74,28 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *toolB
 	toolBar->AddTool(BUTTON_REMOVE,_("Remove"),wxBITMAP(visual_vector_clip_remove),_("Removes a control point."),wxITEM_CHECK);
 	toolBar->AddSeparator();
 	toolBar->AddTool(BUTTON_FREEHAND,_("Freehand"),wxBITMAP(visual_vector_clip_freehand),_("Draws a freehand shape."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_FREEHAND_SMOOTH,_("Freehand smooth"),wxBITMAP(visual_vector_clip_freehand_smooth),_("Draws a smoothed freehand shape."),wxITEM_CHECK);
+	toolBar->ToggleTool(BUTTON_DRAG,true);
 	toolBar->Realize();
 	toolBar->Show(true);
+}
+
+
+////////////////////
+// Sub-tool pressed
+void VisualToolVectorClip::OnSubTool(wxCommandEvent &event) {
+	// Make sure clicked is checked and everything else isn't. (Yes, this is radio behavior, but the separators won't let me use it)
+	for (int i=BUTTON_DRAG;i<BUTTON_LAST;i++) {
+		toolBar->ToggleTool(i,i == event.GetId());
+	}
+	SetMode(event.GetId() - BUTTON_DRAG);
+}
+
+
+////////////
+// Set mode
+void VisualToolVectorClip::SetMode(int _mode) {
+	mode = _mode;
 }
 
 
@@ -96,8 +120,8 @@ void VisualToolVectorClip::Draw() {
 	// Draw lines
 	SetLineColour(colour[3],1.0f,2);
 	SetFillColour(colour[3],0.0f);
-	for (int i=0;i<((signed)points.size())-1;i++) {
-		DrawLine(points[i].x,points[i].y,points[i+1].x,points[i+1].y);
+	for (size_t i=1;i<points.size();i++) {
+		DrawLine(points[i-1].x,points[i-1].y,points[i].x,points[i].y);
 	}
 
 	// Draw stencil mask
@@ -105,11 +129,11 @@ void VisualToolVectorClip::Draw() {
 	glColorMask(0,0,0,0);
 	glStencilFunc(GL_NEVER,1,1);
 	glStencilOp(GL_INVERT,GL_INVERT,GL_INVERT);
-	for (int i=0;i<((signed)points.size())-1;i++) {
+	for (size_t i=2;i<points.size();i++) {
 		glBegin(GL_TRIANGLES);
 			glVertex2f(points[0].x,points[0].y);
+			glVertex2f(points[i-1].x,points[i-1].y);
 			glVertex2f(points[i].x,points[i].y);
-			glVertex2f(points[i+1].x,points[i+1].y);
 		glEnd();
 	}
 
@@ -198,6 +222,13 @@ void VisualToolVectorClip::PopulateFeatureList() {
 }
 
 
+/////////////
+// Can drag?
+bool VisualToolVectorClip::DragEnabled() {
+	return mode == 0;
+}
+
+
 //////////
 // Update
 void VisualToolVectorClip::UpdateDrag(VisualDraggableFeature &feature) {
@@ -208,6 +239,61 @@ void VisualToolVectorClip::UpdateDrag(VisualDraggableFeature &feature) {
 //////////
 // Commit
 void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
+	SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+}
+
+
+/////////////////////
+// Clicked a feature
+void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
+}
+
+
+/////////////
+// Can hold?
+bool VisualToolVectorClip::HoldEnabled() {
+	return mode == 6 || mode == 7;
+}
+
+
+///////////////////
+// Initialize hold
+void VisualToolVectorClip::InitializeHold() {
+	spline.curves.clear();
+	lastX = -100000;
+	lastY = -100000;
+}
+
+
+///////////////
+// Update hold
+void VisualToolVectorClip::UpdateHold() {
+	if (lastX != -100000 && lastY != -100000) {
+		// See if distance is enough
+		Vector2D delta(lastX-mx,lastY-my);
+		int len = (int)delta.Len();
+		if (mode == 6 && len < 30) return;
+		if (mode == 7 && len < 60) return;
+	
+		// Generate curve and add it
+		SplineCurve curve;
+		curve.type = CURVE_LINE;
+		curve.p1 = Vector2D(lastX,lastY);
+		curve.p2 = Vector2D(mx,my);
+		spline.AppendCurve(curve);
+	}
+	lastX = mx;
+	lastY = my;
+}
+
+
+///////////////
+// Commit hold
+void VisualToolVectorClip::CommitHold() {
+	// Smooth spline
+	if (!holding && mode == 7) spline.Smooth();
+
+	// Save it
 	SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
 }
 

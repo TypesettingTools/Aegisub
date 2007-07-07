@@ -38,53 +38,7 @@
 // Headers
 #include <wx/tokenzr.h>
 #include "spline.h"
-
-
-/////////////////////
-// Curve constructor
-SplineCurve::SplineCurve() {
-	type = CURVE_INVALID;
-}
-
-
-/////////////////////////////////////////////////////////
-// Split a curve in two using the de Casteljau algorithm
-void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
-	// Split a line
-	if (type == CURVE_LINE) {
-		c1.type = CURVE_LINE;
-		c2.type = CURVE_LINE;
-		c1.p1 = p1;
-		c1.p2 = p1*t+p2*(1-t);
-		c2.p1 = c1.p2;
-		c2.p2 = p2;
-	}
-
-	// Split a bicubic
-	else if (type == CURVE_BICUBIC) {
-		c1.type = CURVE_BICUBIC;
-		c2.type = CURVE_BICUBIC;
-
-		// Sub-divisions
-		float u = 1-t;
-		Vector2D p12 = p1*t+p2*u;
-		Vector2D p23 = p2*t+p3*u;
-		Vector2D p34 = p3*t+p4*u;
-		Vector2D p123 = p12*t+p23*u;
-		Vector2D p234 = p23*t+p34*u;
-		Vector2D p1234 = p123*t+p234*u;
-
-		// Set points
-		c1.p1 = p1;
-		c1.p2 = p12;
-		c1.p3 = p123;
-		c1.p4 = p1234;
-		c2.p1 = p1234;
-		c2.p2 = p234;
-		c2.p3 = p34;
-		c2.p4 = p4;
-	}
-}
+#include "utils.h"
 
 
 //////////////////////
@@ -361,4 +315,28 @@ Vector2D Spline::GetClosestPoint(Vector2D reference) {
 Vector2D Spline::GetClosestControlPoint(Vector2D reference) {
 	// TODO
 	return Vector2D(-1,-1);
+}
+
+
+///////////////////////
+// Smoothes the spline
+void Spline::Smooth(float smooth) {
+	// See if there are enough curves
+	if (curves.size() < 3) return;
+
+	// Smooth curve
+	SplineCurve *curve0 = NULL;
+	SplineCurve *curve1 = &curves.back();
+	SplineCurve *curve2 = NULL;
+	for (std::list<SplineCurve>::iterator cur=curves.begin();cur!=curves.end();) {
+		// Get curves
+		curve0 = curve1;
+		curve1 = &(*cur);
+		cur++;
+		if (cur == curves.end()) curve2 = &curves.front();
+		else curve2 = &(*cur);
+
+		// Smooth curve
+		curve1->Smooth(curve0->p1,curve2->p2,smooth);
+	}
 }

@@ -51,7 +51,7 @@
 ///////
 // IDs
 enum {
-	BUTTON_TOGGLE_MOVE = 1300
+	BUTTON_TOGGLE_MOVE = VISUAL_SUB_TOOL_START
 };
 
 

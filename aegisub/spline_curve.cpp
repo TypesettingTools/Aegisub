@@ -34,45 +34,86 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
-#include "visual_tool.h"
-#include "spline.h"
+#include "spline_curve.h"
+#include "utils.h"
 
 
-//////////////////////////
-// Vector clip tool class
-class VisualToolVectorClip : public VisualTool {
-private:
-	Spline spline;
-	wxToolBar *toolBar;
-	int mode;
-	int lastX,lastY;
+/////////////////////
+// Curve constructor
+SplineCurve::SplineCurve() {
+	type = CURVE_INVALID;
+}
 
-	void SetMode(int mode);
-	
-	bool CanHold() { return true; }
-	bool HoldEnabled();
-	void InitializeHold();
-	void UpdateHold();
-	void CommitHold();
 
-	bool CanDrag() { return true; }
-	bool DragEnabled();
-	void PopulateFeatureList();
-	void UpdateDrag(VisualDraggableFeature &feature);
-	void CommitDrag(VisualDraggableFeature &feature);
-	void ClickedFeature(VisualDraggableFeature &feature);
+/////////////////////////////////////////////////////////
+// Split a curve in two using the de Casteljau algorithm
+void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
+	// Split a line
+	if (type == CURVE_LINE) {
+		c1.type = CURVE_LINE;
+		c2.type = CURVE_LINE;
+		c1.p1 = p1;
+		c1.p2 = p1*t+p2*(1-t);
+		c2.p1 = c1.p2;
+		c2.p2 = p2;
+	}
 
-	void DoRefresh();
-	void OnSubTool(wxCommandEvent &event);
+	// Split a bicubic
+	else if (type == CURVE_BICUBIC) {
+		c1.type = CURVE_BICUBIC;
+		c2.type = CURVE_BICUBIC;
 
-public:
-	VisualToolVectorClip(VideoDisplay *parent,wxToolBar *toolbar);
+		// Sub-divisions
+		float u = 1-t;
+		Vector2D p12 = p1*t+p2*u;
+		Vector2D p23 = p2*t+p3*u;
+		Vector2D p34 = p3*t+p4*u;
+		Vector2D p123 = p12*t+p23*u;
+		Vector2D p234 = p23*t+p34*u;
+		Vector2D p1234 = p123*t+p234*u;
 
-	void Update();
-	void Draw();
-};
+		// Set points
+		c1.p1 = p1;
+		c1.p2 = p12;
+		c1.p3 = p123;
+		c1.p4 = p1234;
+		c2.p1 = p1234;
+		c2.p2 = p234;
+		c2.p3 = p34;
+		c2.p4 = p4;
+	}
+}
+
+
+//////////////////////
+// Smoothes the curve
+// Based on http://antigrain.com/research/bezier_interpolation/index.html
+void SplineCurve::Smooth(Vector2D P0,Vector2D P3,float smooth) {
+	// Validate
+	if (type != CURVE_LINE) return;
+	smooth = MID(0.0f,smooth,1.0f);
+
+	// Get points
+	Vector2D P1 = p1;
+	Vector2D P2 = p2;
+
+	// Calculate intermediate points
+	Vector2D c1 = (P0+P1)/2.0f;
+	Vector2D c2 = (P1+P2)/2.0f;
+	Vector2D c3 = (P2+P3)/2.0f;
+	float len1 = (P1-P0).Len();
+	float len2 = (P2-P1).Len();
+	float len3 = (P3-P2).Len();
+	float k1 = len1/(len1+len2);
+	float k2 = len2/(len2+len3);
+	Vector2D m1 = c1+(c2-c1)*k1;
+	Vector2D m2 = c2+(c3-c2)*k2;
+
+	// Set curve points
+	p4 = p2;
+	p2 = m1+(c2-m1)*smooth + P1 - m1;
+	p3 = m2+(c2-m2)*smooth + P2 - m2;
+	type = CURVE_BICUBIC;
+}

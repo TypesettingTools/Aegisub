@@ -52,6 +52,12 @@ class AssDialogue;
 class VisualTool;
 
 
+/////////////////////////
+// Visual sub tool range
+#define VISUAL_SUB_TOOL_START 1300
+#define VISUAL_SUB_TOOL_END (VISUAL_SUB_TOOL_START+100)
+
+
 ////////////////////
 // Event sink class
 class VisualToolEvent : public wxEvtHandler {
@@ -114,15 +120,18 @@ protected:
 	virtual void OnButton(wxCommandEvent &event) {}
 
 	virtual bool CanHold() { return false; }
+	virtual bool HoldEnabled() { return true; }
 	virtual void InitializeHold() {}
 	virtual void UpdateHold() {}
 	virtual void CommitHold() {}
 
 	virtual bool CanDrag() { return false; }
+	virtual bool DragEnabled() { return true; }
 	virtual void PopulateFeatureList() { wxLogMessage(_T("wtf?")); }
 	virtual void InitializeDrag(VisualDraggableFeature &feature) {}
 	virtual void UpdateDrag(VisualDraggableFeature &feature) {}
 	virtual void CommitDrag(VisualDraggableFeature &feature) {}
+	virtual void ClickedFeature(VisualDraggableFeature &feature) {}
 
 	virtual void DoRefresh() {}
 
@@ -130,6 +139,7 @@ public:
 	int mouseX,mouseY;
 
 	void OnMouseEvent(wxMouseEvent &event);
+	virtual void OnSubTool(wxCommandEvent &event) {}
 	virtual void Update()=0;
 	virtual void Draw()=0;
 	void Refresh();

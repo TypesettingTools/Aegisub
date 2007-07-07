@@ -132,8 +132,16 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 			dragListOK = true;
 		}
 
+		// Click on feature
+		if (!dragging && leftClick && !DragEnabled()) {
+			curFeature = GetHighlightedFeature();
+			if (curFeature != -1) {
+				ClickedFeature(features[curFeature]);
+			}
+		}
+
 		// Start dragging
-		if (!dragging && leftClick) {
+		if (!dragging && leftClick && DragEnabled()) {
 			// Get a feature
 			curFeature = GetHighlightedFeature();
 			if (curFeature != -1) {
@@ -178,13 +186,13 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
 
 				// Commit
+				dragging = false;
 				CommitDrag(features[curFeature]);
 				grid->editBox->CommitText();
 				grid->ass->FlagAsModified(_("visual typesetting"));
 				grid->CommitChanges(false);
 
 				// Clean up
-				dragging = false;
 				curFeature = -1;
 				parent->ReleaseMouse();
 				parent->SetFocus();
@@ -196,7 +204,7 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 	// Hold
 	if (!dragging && CanHold()) {
 		// Start holding
-		if (!holding && event.LeftIsDown()) {
+		if (!holding && event.LeftIsDown() && HoldEnabled()) {
 			// Get a dialogue
 			curDiag = GetActiveDialogueLine();
 			if (curDiag) {
@@ -230,13 +238,13 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
 
 				// Commit
+				holding = false;
 				CommitHold();
 				grid->editBox->CommitText();
 				grid->ass->FlagAsModified(_("visual typesetting"));
 				grid->CommitChanges(false);
 
 				// Clean up
-				holding = false;
 				curDiag = NULL;
 				parent->ReleaseMouse();
 				parent->SetFocus();

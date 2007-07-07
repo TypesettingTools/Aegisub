@@ -56,6 +56,7 @@
 #include "utils.h"
 #include "main.h"
 #include "toggle_bitmap.h"
+#include "visual_tool.h"
 
 
 ///////////////
@@ -157,6 +158,7 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, VideoBox::OnVideoToggleScroll)
 
 	EVT_TOOL_RANGE(Video_Mode_Standard, Video_Mode_Vector_Clip, VideoBox::OnModeChange)
+	EVT_TOOL_RANGE(VISUAL_SUB_TOOL_START,VISUAL_SUB_TOOL_END, VideoBox::OnSubTool)
 	EVT_TOOL(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
 END_EVENT_TABLE()
 
@@ -198,6 +200,13 @@ void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
 // Mode changed
 void VideoBox::OnModeChange(wxCommandEvent &event) {
 	videoDisplay->SetVisualMode(event.GetId() - Video_Mode_Standard);
+}
+
+
+///////////////////////////
+// Sub-tool button pressed
+void VideoBox::OnSubTool(wxCommandEvent &event) {
+	videoDisplay->visual->OnSubTool(event);
 }
 
 
