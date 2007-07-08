@@ -112,6 +112,7 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 		mouseY = -1;
 		mx = -1;
 		my = -1;
+		Update();
 		return;
 	}
 
