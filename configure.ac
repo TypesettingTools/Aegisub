@@ -79,15 +79,6 @@ PKG_CHECK_MODULES([FREETYPE], freetype2 >= 9.7.0,, [
 	AC_MSG_XFAILURE([aegisub needs FreeType2 2.1.9, go install it])
 ])
 
-WXCONFIG=wx-config
-AC_ARG_WITH(wx-config,
-	AC_HELP_STRING([--with-wx-config=FILE], [Use specific wx-config script to determine wxWidgets configuration. [[wx-config]]]),
-[
-    if test "$withval" != "yes" -a "$withval" != ""; then
-        WXCONFIG=$withval
-    fi
-])
-
 AX_CHECK_GL
 if test ! "$GL_LIBS"; then
 	AC_MSG_WARN([Could not find system GL library])
@@ -96,16 +87,27 @@ fi
 CPPFLAGS="$CPPFLAGS $GL_CFLAGS"
 LIBS="$LIBS $GL_LIBS"
 
-AC_MSG_CHECKING([wxWidgets version])
-if wxversion=`$WXCONFIG --version`; then
-    AC_MSG_RESULT([$wxversion])
-else
-    AC_MSG_RESULT([not found])
-    AC_MSG_XFAILURE([wxWidgets is required. Try --with-wx-config.])
+AM_OPTIONS_WXCONFIG
+AM_PATH_WXCONFIG(2.8.1, [has_wxconfig=1], [has_wxconfig=0], [std,gl,stc])
+if test "$has_wxconfig" != 1; then
+	echo <<EOM
+wxWidgets must be installed on your system
+but wx-config script couldn't be found.
+
+Please check that wx-config is in path, the directory
+where wxWidgets libraries are installed (returned by
+'wx-config --libs' command) is in LD_LIBRARY_PATH or
+equivalent variable and wxWidgets version is 2.8.1 or above.
+
+Also, make sure you have the STC (StyledTextCtrl) module
+installed. It is shipped with wxWidgets under the contrib
+directory, but not built by default.
+EOM
+	AC_MSG_ERROR([wxWidgets detection failed.])
 fi
 
-CPPFLAGS="$CPPFLAGS `$WXCONFIG --cppflags | sed -e 's/-fno-exceptions//'` $FREETYPE_CFLAGS $LIBPULSE_CFLAGS"
-LIBS="$LIBS `$WXCONFIG --libs std,gl,stc` $FREETYPE_LIBS $LIBPULSE_LIBS"
+CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS $FREETYPE_CFLAGS $LIBPULSE_CFLAGS"
+LIBS="$LIBS $WX_LIBS $FREETYPE_LIBS $LIBPULSE_LIBS"
 
 AC_MSG_CHECKING([wxWidgets OpenGL support])
 AC_LINK_IFELSE([
