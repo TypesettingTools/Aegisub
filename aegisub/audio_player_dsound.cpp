@@ -182,7 +182,8 @@ void DirectSoundPlayer::OpenStream() {
 	waveFormat.cbSize = 0;
 
 	// Create the buffer initializer
-	int aim = waveFormat.nAvgBytesPerSec + waveFormat.nAvgBytesPerSec/2; // one and a half second of buffer
+	//int aim = waveFormat.nAvgBytesPerSec + waveFormat.nAvgBytesPerSec/2; // one and a half second of buffer
+	int aim = waveFormat.nAvgBytesPerSec / 4; // quarter second of buffer
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
 	bufSize = MIN(MAX(min,aim),max);
@@ -423,7 +424,7 @@ DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	// Wake up thread every half second to fill buffer as needed
 	// This more or less assumes the buffer is at least one second long
-	while (WaitForSingleObject(stopnotify, 500) == WAIT_TIMEOUT) {
+	while (WaitForSingleObject(stopnotify, 100) == WAIT_TIMEOUT) {
 		if (!parent->FillBuffer(false)) {
 			// FillBuffer returns false when end of stream is reached
 			wxLogDebug(_T("DS thread hit end of stream"));
@@ -433,7 +434,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 
 	// Now fill buffer with silence
 	DWORD bytesFilled = 0;
-	while (WaitForSingleObject(stopnotify, 500) == WAIT_TIMEOUT) {
+	while (WaitForSingleObject(stopnotify, 100) == WAIT_TIMEOUT) {
 		void *buf1, *buf2;
 		DWORD size1, size2;
 		DWORD playpos;
@@ -452,7 +453,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 		parent->offset = (parent->offset + size1 + size2) % parent->bufSize;
 	}
 
-	WaitForSingleObject(stopnotify, 1500);
+	WaitForSingleObject(stopnotify, 300);
 
 	wxLogDebug(_T("DS thread dead"));
 
