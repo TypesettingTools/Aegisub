@@ -61,7 +61,7 @@ public:
 	void MovePoint(int curveIndex,int point,wxPoint pos);
 	void Smooth(float smooth=1.0f);
 
-	void GetPointList(std::vector<Vector2D> &points);
+	void GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointCurve);
 	SplineCurve *GetCurve(int index);
 
 	void GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &point);

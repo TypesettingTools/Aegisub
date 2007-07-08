@@ -84,10 +84,6 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *_tool
 ////////////////////
 // Sub-tool pressed
 void VisualToolVectorClip::OnSubTool(wxCommandEvent &event) {
-	// Make sure clicked is checked and everything else isn't. (Yes, this is radio behavior, but the separators won't let me use it)
-	for (int i=BUTTON_DRAG;i<BUTTON_LAST;i++) {
-		toolBar->ToggleTool(i,i == event.GetId());
-	}
 	SetMode(event.GetId() - BUTTON_DRAG);
 }
 
@@ -95,6 +91,10 @@ void VisualToolVectorClip::OnSubTool(wxCommandEvent &event) {
 ////////////
 // Set mode
 void VisualToolVectorClip::SetMode(int _mode) {
+	// Make sure clicked is checked and everything else isn't. (Yes, this is radio behavior, but the separators won't let me use it)
+	for (int i=BUTTON_DRAG;i<BUTTON_LAST;i++) {
+		toolBar->ToggleTool(i,i == _mode + BUTTON_DRAG);
+	}
 	mode = _mode;
 }
 
@@ -115,14 +115,8 @@ void VisualToolVectorClip::Draw() {
 
 	// Parse vector
 	std::vector<Vector2D> points;
-	spline.GetPointList(points);
-
-	// Draw lines
-	SetLineColour(colour[3],1.0f,2);
-	SetFillColour(colour[3],0.0f);
-	for (size_t i=1;i<points.size();i++) {
-		DrawLine(points[i-1].x,points[i-1].y,points[i].x,points[i].y);
-	}
+	std::vector<int> pointCurve;
+	spline.GetPointList(points,pointCurve);
 
 	// Draw stencil mask
 	glEnable(GL_STENCIL_TEST);
@@ -146,8 +140,26 @@ void VisualToolVectorClip::Draw() {
 	DrawRectangle(0,0,sw,sh);
 	glDisable(GL_STENCIL_TEST);
 
-	// Draw features
-	DrawAllFeatures();
+	// Get current position information for modes 3 and 4
+	Vector2D pt;
+	int highCurve = -1;
+	if (mode == 3 || mode == 4) {
+		float t;
+		spline.GetClosestParametricPoint(Vector2D(mx,my),highCurve,t,pt);
+	}
+
+	// Draw lines
+	SetFillColour(colour[3],0.0f);
+	SetLineColour(colour[3],1.0f,2);
+	int col = 3;
+	for (size_t i=1;i<points.size();i++) {
+		int useCol = pointCurve[i] == highCurve && curFeature == -1 ? 2 : 3;
+		if (col != useCol) {
+			col = useCol;
+			SetLineColour(colour[col],1.0f,2);
+		}
+		DrawLine(points[i-1].x,points[i-1].y,points[i].x,points[i].y);
+	}
 
 	// Draw lines connecting the bicubic features
 	SetLineColour(colour[3],0.9f,1);
@@ -157,6 +169,9 @@ void VisualToolVectorClip::Draw() {
 			DrawDashedLine(cur->p3.x,cur->p3.y,cur->p4.x,cur->p4.y,6);
 		}
 	}
+
+	// Draw features
+	DrawAllFeatures();
 
 	// Draw preview of inserted line
 	if (mode == 1 || mode == 2) {
@@ -169,10 +184,7 @@ void VisualToolVectorClip::Draw() {
 	}
 	
 	// Draw preview of insert point
-	if (mode == 4) {
-		Vector2D p1 = spline.GetClosestPoint(Vector2D(mx,my));
-		DrawCircle(p1.x,p1.y,4);
-	}
+	if (mode == 4) DrawCircle(pt.x,pt.y,4);
 }
 
 
@@ -241,7 +253,7 @@ void VisualToolVectorClip::PopulateFeatureList() {
 /////////////
 // Can drag?
 bool VisualToolVectorClip::DragEnabled() {
-	return mode <= 2;
+	return mode <= 4;
 }
 
 
@@ -330,6 +342,22 @@ void VisualToolVectorClip::InitializeHold() {
 
 		// Convert
 		if (mode == 3) {
+			SplineCurve *c1 = spline.GetCurve(curve);
+			if (!c1) {
+			}
+			else {
+				if (c1->type == CURVE_LINE) {
+					c1->type = CURVE_BICUBIC;
+					c1->p4 = c1->p2;
+					c1->p2 = c1->p1 * 0.75 + c1->p4 * 0.25;
+					c1->p3 = c1->p1 * 0.25 + c1->p4 * 0.75;
+				}
+
+				else if (c1->type == CURVE_BICUBIC) {
+					c1->type = CURVE_LINE;
+					c1->p2 = c1->p4;
+				}
+			}
 		}
 
 		// Insert
@@ -354,11 +382,11 @@ void VisualToolVectorClip::InitializeHold() {
 		// Commit
 		SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
 		Commit(true);
-		holding = false;
 	}
 
 	// Freehand
 	else if (mode == 6 || mode == 7) {
+		features.clear();
 		spline.curves.clear();
 		lastX = -100000;
 		lastY = -100000;
@@ -424,6 +452,9 @@ void VisualToolVectorClip::CommitHold() {
 
 	// Save it
 	if (mode != 3 && mode != 4) SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+
+	// End freedraw
+	if (mode == 6 || mode == 7) SetMode(0);
 }
 
 

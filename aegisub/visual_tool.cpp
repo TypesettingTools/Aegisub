@@ -104,13 +104,15 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 	parent->GetClientSize(&w,&h);
 	VideoContext::Get()->GetScriptSize(sw,sh);
 	frame_n = VideoContext::Get()->GetFrameN();
-	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	bool realTime = Options.AsBool(_T("Video Visual Realtime"));
 
 	// Mouse leaving control
 	if (event.Leaving()) {
 		mouseX = -1;
 		mouseY = -1;
+		mx = -1;
+		my = -1;
+		return;
 	}
 
 	// Transformed mouse x/y

@@ -269,19 +269,27 @@ void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
 
 //////////////////////////////////////
 // Gets a list of points in the curve
-void Spline::GetPointList(std::vector<Vector2D> &points) {
+void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointCurve) {
 	// Prepare
 	points.clear();
+	pointCurve.clear();
 	Vector2D pt;
 	bool isFirst = true;
+	int curve = 0;
 
 	// Generate points for each curve
-	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++) {
+	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++,curve++) {
 		// First point
-		if (isFirst) points.push_back(cur->p1);
+		if (isFirst) {
+			points.push_back(cur->p1);
+			pointCurve.push_back(curve);
+		}
 
 		// Line
-		if (cur->type == CURVE_LINE) points.push_back(cur->p2);
+		if (cur->type == CURVE_LINE) {
+			points.push_back(cur->p2);
+			pointCurve.push_back(curve);
+		}
 
 		// Bicubic
 		else if (cur->type == CURVE_BICUBIC) {
@@ -300,6 +308,7 @@ void Spline::GetPointList(std::vector<Vector2D> &points) {
 				// Get t and t-1 (u)
 				float t = float(i)/float(steps);
 				points.push_back(cur->GetPoint(t));
+				pointCurve.push_back(curve);
 			}
 		}
 	}
@@ -307,6 +316,7 @@ void Spline::GetPointList(std::vector<Vector2D> &points) {
 	// Insert a copy of the first point at the end
 	if (points.size()) {
 		points.push_back(points[0]);
+		pointCurve.push_back(curve);
 	}
 }
 
@@ -315,7 +325,7 @@ void Spline::GetPointList(std::vector<Vector2D> &points) {
 // t value and curve of the point closest to reference
 void Spline::GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &pt) {
 	// Has at least one curve?
-	curve = 0;
+	curve = -1;
 	t = 0.0f;
 	if (curves.size() == 0) return;
 
