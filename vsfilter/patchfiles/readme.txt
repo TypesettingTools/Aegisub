@@ -14,3 +14,6 @@ Patch applied in guliverkli/src/filters/transform/vsfilter/:
 
 File added to guliverkli/src/filters/transform/vsfilter/:
   csriapi.cpp  [also add to project file]
+
+The copy of VSFilter in the directory above this already has the patches
+applied.

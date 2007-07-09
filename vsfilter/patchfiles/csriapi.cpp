@@ -23,10 +23,10 @@
 #include <afxdlgs.h>
 #include <atlpath.h>
 #include "resource.h"
-#include "subtitles/VobSubFile.h"
-#include "subtitles/RTS.h"
-#include "subtitles/SSF.h"
-#include "SubPic/MemSubPic.h"
+#include "..\..\..\subtitles\VobSubFile.h"
+#include "..\..\..\subtitles\RTS.h"
+#include "..\..\..\subtitles\SSF.h"
+#include "..\..\..\SubPic\MemSubPic.h"
 
 // Be sure to have <csri/csri.h> in include path
 #define CSRIAPI extern "C" __declspec(dllexport)
@@ -42,7 +42,7 @@ extern "C" struct csri_vsfilter_inst {
 	size_t readorder;
 };
 typedef struct csri_vsfilter_inst csri_inst;
-#include "../csri/include/csri/csri.h"
+#include <csri/csri.h>
 static csri_rend csri_vsfilter = "vsfilter";
 
 
