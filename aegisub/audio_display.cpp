@@ -847,10 +847,14 @@ void AudioDisplay::SetFile(wxString file) {
 			UpdateImage();
 		}
 		catch (wxString &err) {
+			if (player) delete player;
+			if (provider) delete provider;
 			wxLogDebug(_T("AudioDisplay::SetFile: gotcha!"));
 			wxMessageBox(err,_T("Error loading audio"),wxICON_ERROR | wxOK);
 		}
 	}
+	
+	if (!loaded) return;
 
 	assert(loaded == (provider != NULL));
 
