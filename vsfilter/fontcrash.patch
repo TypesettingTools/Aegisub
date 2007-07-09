@@ -1,0 +1,49 @@
+Index: filters/transform/vsfilter/DirectVobSub.cpp
+
+===================================================================
+
+--- filters/transform/vsfilter/DirectVobSub.cpp	(revision 611)
+
++++ filters/transform/vsfilter/DirectVobSub.cpp	(working copy)
+
+@@ -231,9 +231,9 @@
+
+ 	if(lf)
+ 	{
+ 		if(lflen == sizeof(LOGFONTA))
+-			strcpy(((LOGFONTA*)lf)->lfFaceName, CStringA(m_defStyle.fontName));
++			strncpy_s(((LOGFONTA*)lf)->lfFaceName, LF_FACESIZE, CStringA(m_defStyle.fontName), _TRUNCATE);
+ 		else if(lflen == sizeof(LOGFONTW))
+-			wcscpy(((LOGFONTW*)lf)->lfFaceName, CStringW(m_defStyle.fontName));
++			wcsncpy_s(((LOGFONTW*)lf)->lfFaceName, LF_FACESIZE, CStringW(m_defStyle.fontName), _TRUNCATE);
+ 		else
+ 			return E_INVALIDARG;
+ 
+Index: subtitles/STS.cpp
+
+===================================================================
+
+--- subtitles/STS.cpp	(revision 611)
+
++++ subtitles/STS.cpp	(working copy)
+
+@@ -2957,7 +2957,7 @@
+
+ LOGFONTA& operator <<= (LOGFONTA& lfa, STSStyle& s)
+ {
+ 	lfa.lfCharSet = s.charSet;
+-	strcpy_s(lfa.lfFaceName, CStringA(s.fontName));
++	strncpy_s(lfa.lfFaceName, LF_FACESIZE, CStringA(s.fontName), _TRUNCATE);
+ 	HDC hDC = GetDC(0);
+ 	lfa.lfHeight = -MulDiv((int)(s.fontSize+0.5), GetDeviceCaps(hDC, LOGPIXELSY), 72);
+ 	ReleaseDC(0, hDC);
+@@ -2971,7 +2971,7 @@
+
+ LOGFONTW& operator <<= (LOGFONTW& lfw, STSStyle& s)
+ {
+ 	lfw.lfCharSet = s.charSet;
+-	wcscpy_s(lfw.lfFaceName, CStringW(s.fontName));
++	wcsncpy_s(lfw.lfFaceName, LF_FACESIZE, CStringW(s.fontName), _TRUNCATE);
+ 	HDC hDC = GetDC(0);
+ 	lfw.lfHeight = -MulDiv((int)(s.fontSize+0.5), GetDeviceCaps(hDC, LOGPIXELSY), 72);
+ 	ReleaseDC(0, hDC);

@@ -1,0 +1,68 @@
+Index: STS.h
+===================================================================
+--- STS.h	(revision 611)
++++ STS.h	(working copy)
+@@ -49,6 +49,7 @@
+ 	bool	fStrikeOut;
+ 	bool	fBlur;
+ 	double	fontAngleZ, fontAngleX, fontAngleY;
++	double	fontShiftX, fontShiftY;
+ 	int		relativeTo; // 0: window, 1: video, 2: undefined (~window)
+ 
+ 	STSStyle();
+Index: RTS.cpp
+===================================================================
+--- RTS.cpp	(revision 611)
++++ RTS.cpp	(working copy)
+@@ -156,8 +156,8 @@
+ 	{
+ 		double x, y, z, xx, yy, zz;
+ 
+-		x = scalex * mpPathPoints[i].x - org.x;
+-		y = scaley * mpPathPoints[i].y - org.y;
++		x = scalex * (mpPathPoints[i].x + m_style.fontShiftX * mpPathPoints[i].y) - org.x;
++		y = scaley * (mpPathPoints[i].y + m_style.fontShiftY * mpPathPoints[i].x) - org.y;
+ 		z = 0;
+ 
+ 		xx = x*caz + y*saz;
+@@ -1437,6 +1437,8 @@
+ 			params.Add(cmd.Mid(2)), cmd = cmd.Left(2);
+ 		else if(!cmd.Find(L"frx") || !cmd.Find(L"fry") || !cmd.Find(L"frz"))
+ 			params.Add(cmd.Mid(3)), cmd = cmd.Left(3);
++		else if(!cmd.Find(L"fax") || !cmd.Find(L"fay"))
++			params.Add(cmd.Mid(3)), cmd = cmd.Left(3);
+ 		else if(!cmd.Find(L"fr"))
+ 			params.Add(cmd.Mid(2)), cmd = cmd.Left(2);
+ 		else if(!cmd.Find(L"fscx") || !cmd.Find(L"fscy"))
+@@ -1618,6 +1620,18 @@
+ 				}
+ 			}
+ 		}
++		else if(cmd == L"fax")
++		{
++			style.fontShiftX = !p.IsEmpty()
++				? CalcAnimation(wcstod(p, NULL), style.fontShiftX, fAnimate)
++				: org.fontShiftX;
++		}
++		else if(cmd == L"fay")
++		{
++			style.fontShiftY = !p.IsEmpty()
++				? CalcAnimation(wcstod(p, NULL), style.fontShiftY, fAnimate)
++				: org.fontShiftY;
++		}
+ 		else if(cmd == L"fe")
+ 		{
+ 			int n = wcstol(p, NULL, 10);
+Index: STS.cpp
+===================================================================
+--- STS.cpp	(revision 611)
++++ STS.cpp	(working copy)
+@@ -2898,7 +2898,7 @@
+ 	fUnderline = false;
+ 	fStrikeOut = false;
+ 	fBlur = false;
+-	fontAngleZ = fontAngleX = fontAngleY = 0;
++	fontShiftX = fontShiftY = fontAngleZ = fontAngleX = fontAngleY = 0;
+ 	relativeTo = 2;
+ }
+ 
