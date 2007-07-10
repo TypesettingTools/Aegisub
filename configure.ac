@@ -103,7 +103,7 @@ Also, make sure you have the STC (StyledTextCtrl) module
 installed. It is shipped with wxWidgets under the contrib
 directory, but not built by default.
 EOM
-	AC_MSG_ERROR([wxWidgets detection failed.])
+	AC_MSG_XFAILURE([wxWidgets detection failed.])
 fi
 
 CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS $FREETYPE_CFLAGS $LIBPULSE_CFLAGS"
