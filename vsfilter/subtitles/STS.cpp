@@ -1303,6 +1303,7 @@ static bool LoadUUEFont(CTextFile* file)
 static bool OpenSubStationAlpha(CTextFile* file, CSimpleTextSubtitle& ret, int CharSet)
 {
 	bool fRet = false;
+	bool firstLine = true;
 
 	int version = 3, sver = 3;
 
@@ -1323,6 +1324,8 @@ static bool OpenSubStationAlpha(CTextFile* file, CSimpleTextSubtitle& ret, int C
 
 		if(entry == L"[script info]")
 		{
+			// [script info] must be the first line
+			if (!firstLine) return false;
 			fRet = true;
 		}
 		else if(entry == L"playresx")
@@ -1499,6 +1502,8 @@ if(version >= 6)marginRect.bottom = GetInt(buff);
 		{
 			LoadUUEFont(file);
 		}
+
+		firstLine = false;
 	}
 
 	return(fRet);
