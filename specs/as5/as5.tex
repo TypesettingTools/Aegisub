@@ -25,19 +25,24 @@
 
 
 \section{Abstract}
-This document specifies the \emph{AS5 subtitle format}, developed jointly by the
+This document specifies the \emph{AS5 Subtitle Format}, developed jointly by the
 Aegisub\cite{Aegisub} and asa\cite{asa} teams in order to replace the old
 \emph{Sub Station Alpha}\cite{SSA} subtitle format and its extensions:
 
 \begin{itemize}
-\item Advanced Sub Station Alpha (ASS) implemented by VSFilter\cite{VSFilter}
-\item Advanced Sub Station Alpha 2 (ASS2), also implemented by VSFilter
-\item Advanced Sub Station Alpha 3 (ASS3) implemented by equinox.
+\item Advanced Sub Station Alpha (ASS) implemented by Gabest in VSFilter\cite{VSFilter}
+\item Advanced Sub Station Alpha 2 (ASS2), also implemented by Gabest in VSFilter
+\item Advanced Sub Station Alpha 3 (ASS3) implemented by equinox in asa.
 \end{itemize}
 
 The goal is to create a flexible, easy to understand and powerful subtitle format
 that can be used in hardsubs or multiplexed into Matroska Video\cite{mkv} files as
 softsubs.
+
+AS5 has no official meaning. The "`A"' can stand for Aegisub, asa, ASS or Advanced,
+the "`S"' for Subtitles, and the 5 is a reference to the fact that it's a major
+improvement over SSA4 format (from which ASS, ASS2 and ASS3 derive). The full
+name of the format is "`AS5 Subtitle Format"'.
 
 
 \section{File Structure}
@@ -61,6 +66,7 @@ The file is divided in \emph{sections}, which are uniquely identified by a strin
 square brackets, in a line of its own. From that point on, every next line is considered
 to be part of the last found section until another section is found. There is no end-of-section
 termination mark; they always end at the start of the next one or at the end of the file.
+\emph{Section names are case sensitive.}
 
 Each section is divided in lines, each line representing one command or definition. Empty
 lines \emph{MUST} be ignored. It is recommended that programs generating AS5 files insert
@@ -69,10 +75,11 @@ be a blank line at the end of the file (as every line is required to end in a li
 
 Each line in a section takes the general form of \textit{Type: data1,data2,...,dataN}. An
 unknown \textit{Type} \emph{MUST} be ignored by a parser. It is recommended that subtitle
-editing programs keep such ignored lines in the file after re-saving it.
+editing programs keep such ignored lines in the file after re-saving it. Note that the space
+after the colon is \emph{mandatory}.
 
-There are two sections which are required, \emph{[AS5]} and \emph{[Data]}, the equivalents of
-\emph{[Script Info]} and \emph{[Events]} in previous formats. If either of those sections is
+There are two sections which are required, \emph{[AS5]} and \emph{[Events]}, the former being
+the equivalent of \emph{[Script Info]} in previous formats. If either of those sections is
 missing, the file is deemed invalid and \emph(MUST) be refused by the parser. Any other section
 can be ommitted from the file, and need not be implemented by all parsers. However, any unknown
 section \emph{MUST} be preserved in the file by a subtitle editing program when it re-saves a
@@ -101,7 +108,79 @@ the encoding used for the rest of the script\cite{Unicode BOM}. The first four b
 
 It is possible, therefore, to determine the encoding of the file by checking its first two bytes.
 
-This section \emph{MUST} declare the following properties:
+This section is used to declare several script properties that affect its parsing and rendering.
+All properties are stored in the format \textit{Name: data}, with one property per line. 
+This section \emph{MUST} always declare the following properties:
+
+\begin{itemize}
+\item ScriptType: Should always be set to \textit{AS5}, for this particular version of the specification.
+If this contains a value that the parser does not understand, it \emph{MUST} abort parsing.
+\item Resolution: Should contain the script resolution in \textit{WxH} format. For example, for a 640x480
+script, this should say \textit{"`Resolution: 640x480"'}. Note that this does not need to correspond to the
+video resolution, however, subtitles \emph{MUST} be rendered on such a coordinate space. That is, in a
+640x480 script, \textbackslash{pos(320,240)} always represents the center of the script, no matter the
+resolution of the video it's being drawn on. Also, in a 100x100 script, a radius 50 circle centered on
+the center will always take half of the height and half of the width of the video, even if that means
+being distorted if drawn on a 640x480 video.
+\end{itemize}
+
+Also, the following items are not required, but are recommended. They all have default values:
+
+\begin{itemize}
+\item Generator: The name of the program that generated this script, e.g. \textit{"`Generator: Aegisub"'}.
+Default value is empty. This should be ignored by the renderer, but might be useful for inter-editing-program
+interaction.
+\item Wrapping: The line wrapping style. This can be "`Manual"', in which case only \textbackslash{n} can
+break lines or "`Automatic"', in which the renderer chooses how to break them. The default is "`Automatic"'.
+Note that if this is set to manual, the line can NEVER be broken at anywhere other than forced line breaks,
+even if it means that the line will become unreadable because it goes outside the display area.
+\item Credits: Credits for the people who worked on this subtitle file. Should be ignored by the renderer.
+\item Title: The title of this script. Should be ignored by the renderer. Subtitling programs may opt to display
+this title to the user.
+\end{itemize}
+
+Although any other lines are allowed in this group, this is not encouraged, as they might conflict
+with future revisions of the format. Instead, they should be stored in \textit{[Private:PROGNAME]} groups,
+as mentioned above.
+
+\subsubsection{[Events]}
+
+The most important section, [Events], lists all the actual subtitle lines in the file. Each line is
+declared as \emph{"`Line: start,end,style,user,content"'} - the syntax has been radically simplified from
+previous incarnations of the format, and now consist of only five fields:
+
+\begin{itemize}
+\item Start: The start time of the line. See below for the timestamp format. A line is only displayed if
+the timestamp of the current frame is \emph{greater than or equal} to the start time. That is, start
+time is \emph{inclusive}.
+\item End: The end time of the line. It follows the same format as the start time. The line is only
+displayed if the timestamp of the current frame is \emph{lesser than} the end time. That is, end time is
+\emph{exclusive}. In particular, it means that a line whose start time is equal to its end time will
+never be displayed. If the end time is lesser than the start time, the renderer may issue a warning,
+but should render the remaining lines regardless of the issue.
+\item Style: The name of the default style used for this line. See the [Style] section below. Should be
+left blank if you want to use the the script's global default style. If an unknown style is specified,
+the renderer \emph{MUST} fallback to default, and might issue a warning.
+\item User: This field is used by the program to store program-specific data in each line. Renderers
+should ignore this. This should be left blank if it's not used.
+\item Content: The actual text of the line. This contains actual text and override tags. See the section
+on override tags for more information.
+\end{itemize}
+
+The timestamp format is h...h:mm:ss[.s...], that is, it begins with an integer of arbitrary length
+(up to a maximum of 4 digits) representing the number of hours, followed by two integers representing
+minutes, and a floating point number representing seconds. Localization is irrelevant: a period ("`."')
+is always used to separate the decimal point. This way, 0:21:42.5 and 0000:21:42.5000 are equivalent,
+and both represent 0 hours, 21 minutes, 42 seconds and 500 miliseconds.
+
+Spaces between each field \emph{MUST} be ignored by all parsers. Any spaces at the beginning of the
+content line should be stripped. A hard space or empty override block should be used if space at the
+start of a line is truly desirable. That is, the two following lines are identical:
+
+\begin{verbatim}
+Line:  0:12:31.57  ,  0:12:34.22  ,  ,  ,  Hello world of {\b1}AS5{\b0}!
+Line: 0:12:31.57,0:12:34.22,,,Hello world of {\b1}AS5{\b0}!
+\end{verbatim}
 
 
 \addcontentsline{toc}{section}{References}
