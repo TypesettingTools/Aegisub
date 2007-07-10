@@ -1,0 +1,113 @@
+\documentclass{spec}
+\newcommand{\syntax}[1]{
+
+	\subsubsection*{Syntax}
+
+	\begin{tabbing}
+
+	\hspace{2cm}\=\\[-16pt]
+
+	#1
+
+	\end{tabbing}
+
+}
+\newcommand{\secspec}[1]{Section:\>\texttt{#1}}
+\newcommand{\secspecs}[2]{Sections:\>\texttt{#1}, \texttt{#2}}
+
+\title{\LaTeX}
+\date{}
+
+\begin{document}
+\title{AS5 Subtitle Format Draft}
+\author{Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter}
+\spectitle
+
+
+\section{Abstract}
+This document specifies the \emph{AS5 subtitle format}, developed jointly by the
+Aegisub\cite{Aegisub} and asa\cite{asa} teams in order to replace the old
+\emph{Sub Station Alpha}\cite{SSA} subtitle format and its extensions:
+
+\begin{itemize}
+\item Advanced Sub Station Alpha (ASS) implemented by VSFilter\cite{VSFilter}
+\item Advanced Sub Station Alpha 2 (ASS2), also implemented by VSFilter
+\item Advanced Sub Station Alpha 3 (ASS3) implemented by equinox.
+\end{itemize}
+
+The goal is to create a flexible, easy to understand and powerful subtitle format
+that can be used in hardsubs or multiplexed into Matroska Video\cite{mkv} files as
+softsubs.
+
+
+\section{File Structure}
+\subsection{File Format}
+All AS5 files are \emph{REQUIRED} to comply with the three requirements below:
+
+\begin{itemize}
+\item Be encoded with one of \emph{UTF-8}\cite{UTF-8}, \emph{UTF-16 Big Endian}
+\cite{UTF-16} or \emph{UTF-16 Little Endian} Unicode Transformation Formats. UTF-8 is
+preffered.
+\item Not to have any character below Unicode code point U+20, except for U+09, U+0A, U+0D.
+That is, it must be a plain-text file.
+\item All lines must end with Windows line endings, that is, U+0D followed by U+0A.
+\end{itemize}
+
+The character set of a subtitle file can be autodetermined by its Byte-Order Mark or by
+the value of the first four bytes. See below.
+
+\subsection{File Structure}
+The file is divided in \emph{sections}, which are uniquely identified by a string inside
+square brackets, in a line of its own. From that point on, every next line is considered
+to be part of the last found section until another section is found. There is no end-of-section
+termination mark; they always end at the start of the next one or at the end of the file.
+
+\subsubsection{[AS5]}
+This must be the first section in every AS5 file. If the very first line of the file is not
+[AS5], the file \emph{MUST} be rejected by the parser as invalid. Note, however, that the first
+line is allowed to contain a Byte-Order Mark (BOM), which is the character U+FEFF encoded in
+the encoding used for the rest of the script. The first four bytes will therefore be:
+
+\begin{itemize}
+\item 0xEF 0xBB 0xBF 0x5B - UTF-8 (with BOM)
+\item 0x5B 0x41 0x53 0x53 - UTF-8 (without BOM)
+\item 0xFF 0xFE 0x5B 0x00 - UTF-16 LE (with BOM)
+\item 0x5B 0x00 0x41 0x00 - UTF-16 LE (without BOM)
+\item 0xFE 0xFF 0x00 0x5B - UTF-16 BE (with BOM)
+\item 0x00 0x5B 0x00 0x41 - UTF-16 BE (without BOM)
+\end{itemize}
+
+\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{1}
+
+\bibitem{Aegisub} Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter et al., Aegisub. Application, 2005-2007.\\
+\url{http://www.aegisub.net/}
+
+\bibitem{asa} David Lamparter, asa. Application, 2004-2007.\\
+\url{http://asa.diac24.net/}
+
+\bibitem{SSA} Kotus, Sub Station Alpha. Website, 1997-2003.\\
+\url{http://web.archive.org/web/*/http://www.eswat.demon.co.uk/substation.html}
+
+\bibitem{ASS} \#Anime-Fansubs, Advanced Sub Station Alpha.\\
+\url{http://www.anime-fansubs.org}\\
+\url{http://moodub.free.fr/video/ass-specs.doc}
+
+\bibitem{VSFilter} Gabest, VSFilter. Application, 2003-2007.\\
+\url{http://sourceforge.net/projects/guliverkli/}
+
+\bibitem{ASS3} David Lamparter, Advanced Sub Station Alpha 3. Website, 2007.\\
+\url{http://asa.diac24.net/ass3.pdf}
+
+\bibitem{mkv} The Matroska project.\\
+\url{http://www.matroska.org/}
+
+\bibitem{UTF-8} The Internet Society, RFC 3629, "`UTF-8, a transformation format of ISO 10646"'. Website, 2003.\\
+\url{http://tools.ietf.org/html/rfc3629}
+
+\bibitem{UTF-16} The Internet Society, RFC 2781, "`UTF-16, an encoding of ISO 10646"'. Website, 2000.\\
+\url{http://tools.ietf.org/html/rfc2781}
+
+\end{thebibliography}
+
+\end{document}
