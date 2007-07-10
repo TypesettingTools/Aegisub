@@ -54,7 +54,7 @@ That is, it must be a plain-text file.
 \end{itemize}
 
 The character set of a subtitle file can be autodetermined by its Byte-Order Mark or by
-the value of the first four bytes. See below.
+the value of the first two bytes. See below.
 
 \subsection{File Structure}
 The file is divided in \emph{sections}, which are uniquely identified by a string inside
@@ -62,11 +62,33 @@ square brackets, in a line of its own. From that point on, every next line is co
 to be part of the last found section until another section is found. There is no end-of-section
 termination mark; they always end at the start of the next one or at the end of the file.
 
+Each section is divided in lines, each line representing one command or definition. Empty
+lines \emph{MUST} be ignored. It is recommended that programs generating AS5 files insert
+a blank line at the end of each section to increase readability. There \emph{MUST} always
+be a blank line at the end of the file (as every line is required to end in a line break).
+
+Each line in a section takes the general form of \textit{Type: data1,data2,...,dataN}. An
+unknown \textit{Type} \emph{MUST} be ignored by a parser. It is recommended that subtitle
+editing programs keep such ignored lines in the file after re-saving it.
+
+There are two sections which are required, \emph{[AS5]} and \emph{[Data]}, the equivalents of
+\emph{[Script Info]} and \emph{[Events]} in previous formats. If either of those sections is
+missing, the file is deemed invalid and \emph(MUST) be refused by the parser. Any other section
+can be ommitted from the file, and need not be implemented by all parsers. However, any unknown
+section \emph{MUST} be preserved in the file by a subtitle editing program when it re-saves a
+file with sections that it does not recognize. It can, however, be removed at the user's discretion.
+
+Finally, there is a special type of undefined group, \emph{[Private:PROGNAME]}, which 
+\emph{MUST} be \emph{ENTIRELY} preserved by other programs when re-saving it. This is used to
+store program-specific data, for example, Aegisub would create a group called
+\emph{[Private:Aegisub]} to store its data inside. This type of group should be identified
+by the fact that it starts with \emph{"`[Private:"'}.
+
 \subsubsection{[AS5]}
 This must be the first section in every AS5 file. If the very first line of the file is not
 [AS5], the file \emph{MUST} be rejected by the parser as invalid. Note, however, that the first
 line is allowed to contain a Byte-Order Mark (BOM), which is the character U+FEFF encoded in
-the encoding used for the rest of the script. The first four bytes will therefore be:
+the encoding used for the rest of the script\cite{Unicode BOM}. The first four bytes will therefore be:
 
 \begin{itemize}
 \item 0xEF 0xBB 0xBF 0x5B - UTF-8 (with BOM)
@@ -76,6 +98,11 @@ the encoding used for the rest of the script. The first four bytes will therefor
 \item 0xFE 0xFF 0x00 0x5B - UTF-16 BE (with BOM)
 \item 0x00 0x5B 0x00 0x41 - UTF-16 BE (without BOM)
 \end{itemize}
+
+It is possible, therefore, to determine the encoding of the file by checking its first two bytes.
+
+This section \emph{MUST} declare the following properties:
+
 
 \addcontentsline{toc}{section}{References}
 \begin{thebibliography}{1}
@@ -107,6 +134,9 @@ the encoding used for the rest of the script. The first four bytes will therefor
 
 \bibitem{UTF-16} The Internet Society, RFC 2781, "`UTF-16, an encoding of ISO 10646"'. Website, 2000.\\
 \url{http://tools.ietf.org/html/rfc2781}
+
+\bibitem{Unicode BOM} Unicode, Inc, The Unicode Standard, Chapter 13. PDF, 1991-2000.\\
+\url{http://www.unicode.org/unicode/uni2book/ch13.pdf}
 
 \end{thebibliography}
 
