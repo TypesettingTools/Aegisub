@@ -30,7 +30,7 @@
 \HRule \\[0.5cm]
 \textsc{\huge AS5 Subtitle Format}\\
 \HRule \\[1.1cm]
-{\large By Rodrigo Braz Monteiro, Niels Martin Hansen and David Lamparter}\\[0.3cm]
+{\large By Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter and Karl Blomster}\\[0.3cm]
 This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License.\\
 \vfill
 
@@ -527,11 +527,12 @@ Set shadow depth in script resolution pixels
 \subsubsection{\textbackslash bordstyle}
 \textbf{Usage:}
 \begin{verbatim}
-\bordstyle(???)
+\bordstyle(0)
+\bordstyle(1)
 \end{verbatim}
 
 \textbf{Description:}
-Set border style in God or amz knows what
+Set border style; 0 means normal, 1 means solid bounding box
 
 \subsection{Font Scaling Tags}
 
@@ -554,6 +555,15 @@ Set font X/Y scaling in percent
 
 \textbf{Description:}
 Set font spacing between characters in pixels
+
+\subsubsection{\textbackslash fsvp}
+\textbf{Usage:}
+\begin{verbatim}
+\fsp(verticalspacing)
+\end{verbatim}
+
+\textbf{Description:}
+Set font spacing between vertical baselines in pixels
 
 \subsection{Colouring Tags}
 
@@ -619,14 +629,15 @@ See the alignment tags for more information regarding screen alignment.
 \textbf{Description:}
 Set alignment in various ways
 
-\subsubsection{\textbackslash relative}
+\subsubsection{\textbackslash rel}
 \textbf{Usage:}
 \begin{verbatim}
-\relative(???)
+\rel(0)
+\rel(1)
 \end{verbatim}
 
 \textbf{Description:}
-it is a mystery
+Script resolution relative to video area (0) or not (1)
 
 \subsubsection{\textbackslash vertical}
 \textbf{Usage:}
@@ -660,11 +671,25 @@ Set line position to x,y in script coordinates
 \subsubsection{\textbackslash org}
 \textbf{Usage:}
 \begin{verbatim}
-\pos(x,y)
+\org(x,y)
 \end{verbatim}
 
 \textbf{Description:}
-Set rotation origin to x,y in script coordinates
+Set origin to x,y in script coordinates
+
+\subsubsection{\textbackslash bls}
+\textbf{Usage:}
+\begin{verbatim}
+\bls[#]
+\end{verbatim}
+
+\textbf{Description:}
+This sets the baseline shift, that is, the vertical spacing between each character and the baseline
+in which it is supposed to be sitting on. The default value is 0, and the parameter is given in
+script coordinates.
+
+This tag can be animated with \textbackslash t, and can be reverted to style default by ommitting
+its parameter.
 
 \subsubsection{\textbackslash frx, \textbackslash fry, \textbackslash frz}
 \textbf{Usage:}
@@ -815,21 +840,6 @@ And for the two-curve version:
 \textbf{Description:}
 This sets the position of the text relative to the baseline start. This tag can be animated.
 \todo{Write proper specs for this.}
-
-
-\subsubsection{\textbackslash bls}
-\textbf{Usage:}
-\begin{verbatim}
-\bls[#]
-\end{verbatim}
-
-\textbf{Description:}
-This sets the baseline shift, that is, the vertical spacing between each character and the baseline
-in which it is supposed to be sitting on. The default value is 0, and the parameter is given in
-script coordinates.
-
-This tag can be animated with \textbackslash t, and can be reverted to style default by ommitting
-its parameter.
 
 \subsection{Rastering Tags}
 These tags affect how the subtitles are rasterized, that is, they affect things such as
