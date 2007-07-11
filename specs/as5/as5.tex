@@ -385,6 +385,15 @@ the next two the green component, and the last two the blue component (\#RRGGBB)
 style (Visual Basic hexadecimal) is not supported - if a parser finds any colour in \&HBBGGRR\& format,
 it \must\ issue an error.
 
+It is forbidden to write comments inside standard curly brackets. Any unknown tags \must\ be ignored,
+and anything that doesn't begin with a backslash \must\ be considered an error. For inline comments,
+you need to use a special variation, in which the first character inside the overrides block is an
+asterisk (*). Renderers \must\ completely ignore any text inside such blocks. For example:
+
+\begin{verbatim}
+{\fn(Verdana)\fs26\c#FFA040}Welcome to {\b1}AS5{\b0}!{*It's a nifty format, isn't it?}
+\end{verbatim}
+
 
 \subsection{Sub Station Alpha Tags}
 \todo{Write me}
@@ -429,7 +438,40 @@ were designed to enhance the flexibility of the format while dealing with unusua
 imagery.
 
 \subsubsection{\textbackslash distort}
-\todo{Write me}
+
+\textbf{Usage:}
+\begin{verbatim}
+\distort(x1,y1,x2,y2,x3,y3)
+\end{verbatim}
+
+\textbf{Description:}
+The distort tag allows you to apply an arbitrary distortion to the block that follows it.
+It takes three coordinate pairs that, along with the origin (at the current baseline position)
+specify a quadrilateral.
+
+$P_0$ is the origin, $P_1 = (x1,y1)$ is the corner at the end of the baseline for the affected text,
+$P_2 = (x2,y2)$ is the point above that, and $P_3 = (x3,y3)$ is the point above $P_0$. That is, they
+are listed clockwise from origin ($P_0$).
+
+This tag can be animated with \textbackslash t.
+
+\textbf{Implementation:}
+This tag cannot be reduced to an affine transformation, so it cannot be expressed in Matrix form.
+In order to transform a given (x,y) coordinate pair to it:
+
+\begin{enumerate}
+\item Normalize the (x,y) coordinates to a (u,v) system, so that $P_0$ = (0,0) and $P_2$ = (1,1).
+This can be done by dividing x by the block's baseline length (bl) and y by the block height (h).
+The matrix for this operation is:\\
+\[ \left[\begin{array}{ c c }
+\frac{1}{bl} & 0 \\
+0 & \frac{1}{h}
+\end{array} \right]\]
+\item Apply the following formula: $P = P_0 + (P_1-P_0) u + (P_3-P_0) v + (P_0+P_2-P_1-P_3) u v$\\
+This can be interpreted as simple vector operations, that is, apply that once using the x coordinates
+and another using the y coordinates. Since the four points are constant, the coeficients can be
+precalculated, resulting in a very fast transformation.\\
+\end{enumerate}
 
 \subsubsection{\textbackslash baseline}
 \todo{Write me}
