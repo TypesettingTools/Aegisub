@@ -71,12 +71,13 @@ The goal is to create a flexible, easy to understand and powerful subtitle forma
 that can be used in hardsubs or multiplexed into Matroska Video\cite{mkv} files as
 softsubs.
 
-AS5 has no official meaning. The "`A"' can stand for Aegisub, asa, ASS or Advanced,
-the "`S"' for Subtitles, and the 5 is a reference to the fact that it's a major
+AS5 has no official meaning. The ``A'' can stand for Aegisub, asa, ASS or Advanced,
+the ``S'' for Subtitles, and the 5 is a reference to the fact that it's a major
 improvement over SSA4 format (from which ASS, ASS2 and ASS3 derive). The full
-name of the format is "`AS5 Subtitle Format"'.
+name of the format is ``AS5 Subtitle Format''.
 
 
+\newpage
 \section{AS5 Files}
 \subsection{File Format}
 All AS5 files are \emph{REQUIRED} to comply with the three requirements below:
@@ -90,8 +91,15 @@ That is, it must be a plain-text file.
 \item All lines must end with Windows line endings, that is, U+0D followed by U+0A.
 \end{itemize}
 
-The character set of a subtitle file can be autodetermined by its Byte-Order Mark or by
-the value of the first two bytes. See below.
+These requirements are important so the AS5 format can be edited in most plain-text editors
+across most operating systems and languages without problems. The character set of a
+subtitle file can be autodetermined by its Byte-Order Mark or by the value of the first
+two bytes. See below.
+
+When used as a standalone file, the extension should be \textsc{.as5}. When multiplexed
+into a Matroska container, the Codec ID should be \textsc{S\_TEXT/AS5}.
+
+\todo{Get clearance from the Matroska team to use that Codec ID.}
 
 
 \subsection{File Structure}
@@ -122,7 +130,10 @@ Finally, there is a special type of undefined group, \emph{[Private:PROGNAME]}, 
 \must\ be \emph{ENTIRELY} preserved by other programs when re-saving it. This is used to
 store program-specific data. For example, Aegisub would create a group called
 \emph{[Private:Aegisub]} to store its data inside. This type of group should be identified
-by the fact that it starts with \emph{"`[Private:"'}.
+by the fact that it starts with \emph{``[Private:''}.
+
+Note that \emph{Format:} lines from the previous formats are not admitted in AS5. If the parser
+finds any of them, it \must\ halt parsing.
 
 The sections \may\ be written in any order, with the exception of the \emph{[AS5]} section which
 \must\ always be the first section.
@@ -152,7 +163,7 @@ This section \must\ always declare the following properties:
 \item ScriptType: Should always be set to \textit{AS5}, for this particular version of the specification.
 If this contains a value that the parser does not understand, it \must\ abort parsing.
 \item Resolution: Should contain the script resolution in \textit{WxH} format. For example, for a 640x480
-script, this should say \textit{"`Resolution: 640x480"'}. Note that this does not need to correspond to the
+script, this should say \textit{``Resolution: 640x480''}. Note that this does not need to correspond to the
 video resolution, however, subtitles \must\ be rendered on such a coordinate space. That is, in a
 640x480 script, \textbackslash{pos(320,240)} always represents the center of the script, no matter the
 resolution of the video it's being drawn on. Also, in a 100x100 script, a radius 50 circle centered on
@@ -163,11 +174,11 @@ being distorted if drawn on a video with a non-1:1 aspect ratio (for example, a 
 The following items \may\ also be used; they are not required, but are recommended. They all have default values:
 
 \begin{itemize}
-\item Generator: The name of the program that generated this script, e.g. \textit{"`Generator: Aegisub"'}.
+\item Generator: The name of the program that generated this script, e.g. \textit{``Generator: Aegisub''}.
 Default value is empty. This should be ignored by the renderer, but might be useful for inter-editing-program
 interaction.
-\item Wrapping: The line wrapping style. This can be "`Manual"', in which case only \textbackslash{n} can
-break lines or "`Automatic"', in which the renderer chooses how to break them. The default is "`Automatic"'.
+\item Wrapping: The line wrapping style. This can be ``Manual'', in which case only \textbackslash{n} can
+break lines or ``Automatic'', in which the renderer chooses how to break them. The default is ``Automatic''.
 Note that if this is set to manual, the line can NEVER be broken at anywhere other than forced line breaks,
 even if it means that the line will become unreadable because it goes outside the display area.
 \item Extensions: A comma-separated list of all extensions being used in this file. At the moment, there are
@@ -187,9 +198,15 @@ private data \must\ be stored in \textit{[Private:PROGNAME]} groups instead, as 
 
 \subsubsection{[Events]}
 
-The most important section, [Events], lists all the actual subtitle lines in the file. Each line is
-declared as \emph{"`Line: start,end,style,user,content"'} - the syntax has been radically simplified from
-previous incarnations of the format, and now consist of only five fields:
+The most important section, [Events], lists all the actual subtitle lines in the file. The syntax has
+been radically simplified from previous incarnations of the format, and now consist of only five fields.
+Each line is represented as:
+
+\begin{verbatim}
+Line: start,end,style,user,content
+\end{verbatim}
+
+Where:
 
 \begin{itemize}
 \item Start: The start time of the line. See below for the timestamp format. A line is only displayed if
@@ -213,7 +230,7 @@ on override tags for more information.
 The timestamp format is h...h:mm:ss[.s...], that is, it begins with an integer of arbitrary length
 (up to a maximum of 4 digits) representing the number of hours, followed by a one-digit or two-digit integer
 representing minutes, and a floating point number representing seconds. Leading zeroes in the hours field \may\
-be ommitted. Localization is irrelevant: a period ("`."') is always used to separate the decimal point.
+be ommitted. Localization is irrelevant: a period (``.'') is always used to separate the decimal point.
 This way, 0:21:42.5 and 0000:21:42.5000 are equivalent, and both represent 0 hours, 21 minutes, 42 seconds
 and 500 miliseconds.
 
@@ -231,13 +248,19 @@ Line: 0:02:31.570,00:02:34.22,,,Hello world of {\b1}AS5{\b0}!
 \subsubsection{[Styles]}
 
 This is equivalent to the \emph{[V4 Styles]} (and subsequent variations) from the Sub Station Alpha format.
-Each entry is declared as "`Style: name,parent,overrides"'. Like \emph{[Events]}, it has been greatly
-simplified when compared to the previous formats, and now contains only three fields. They are:
+Like \emph{[Events]}, it has been greatly simplified when compared to the previous formats, and now
+each entry contains only three fields. They are declared as:
+
+\begin{verbatim}
+Style: name,parent,overrides
+\end{verbatim}
+
+Where:
 
 \begin{itemize}
 \item Name: The name of this style. Style names are not case-sensitive, but \must\ be unique. A
-script with conflicting style names \must\ be rejected by the parser. If the style name is "`Default"', it
-will be used for all lines that omit the style name. If there is no "`Default"' line, the renderer
+script with conflicting style names \must\ be rejected by the parser. If the style name is ``Default'', it
+will be used for all lines that omit the style name. If there is no ``Default'' line, the renderer
 default is used.
 \item Parent: The style from which the current style derives from. See below for more information.
 Leaving this field blank means that the style derives from the renderer's default style.
@@ -245,7 +268,7 @@ Leaving this field blank means that the style derives from the renderer's defaul
 \end{itemize}
 
 Styles work in a very different way from the way they did on previous formats (with the notable exception
-of ASS3, which actually implements this very same style based on this format, as "`StyleEx"').
+of ASS3, which actually implements this very same style based on this format, as ``StyleEx'').
 Instead of setting multiple parameters across many commas, you simply specify override tags. When a line
 uses a style, it's as if the overrides of the style were inserted right before the start of the line
 contents.
@@ -253,7 +276,7 @@ contents.
 Also, a style can inherit from another style, and define new overrides which are then appended to those
 of the parent style. The parent style \must\ have been declared \emph{BEFORE} the style trying to use
 it as a parent. If the parent doesn't exist or wasn't declared yet, the parser must refuse to parse the
-script. This is important because otherwise you could get a "`inheritance loop"', where styles derive from
+script. This is important because otherwise you could get a ``inheritance loop'', where styles derive from
 each other in a cycle.
 
 For example, see the following \emph{[Styles]} group:
@@ -289,9 +312,197 @@ Since all that deriving a style from another does is append the new tags to the 
 this way of declaring styles is identical to the one above, but is more verbose.
 
 If no Default style is defined, the renderer \must\ choose its own defaults to render the text with.
-These are entirely arbitrary and can be set to anything, but the renderer \should\
-let the user set his own defaults.
+These are entirely arbitrary and can be set to anything, but the renderer \should\ let the user set
+his own defaults. A simple Sans-Serif font with white text and black borders is recommended.
 
+
+\subsubsection{[Resources]}
+
+The new \emph{[Resources]} section can be used to store information on external file resources,
+such as images and fonts. The general syntax is:
+
+\begin{verbatim}
+Resource: type,name,path
+\end{verbatim}
+
+Where:
+
+\begin{itemize}
+\item Type: Must be either ``font'' or ``image''. Any other types \must\ be ignored by the parser.
+\item Name: An unique name identifying this resource. For fonts, it must correspond to the font
+name, e.g., ``Verdana''. For images, it's the name that the file will be reffered as in the rest
+of the script. If there is already a resource with this same name, the parser \must\ abort the
+parsing.
+\item Path: The location of the file relative to the subtitles. This \must\ be a relative path
+for external .as5 files, or a container-specific string for AS5 multiplexed into a container.
+The relative path \must\ use forward slashes and be case-sensitive, in order to avoid UNIX
+compatibility issues.
+\end{itemize}
+
+
+\newpage
+\section{Style Overrides}
+
+\subsection{General Information on Override Tags}
+As with previous formats, AS5 uses override tags to set the style for lines. Also, it uses those
+same tags to set style definitions themselves (see above). Although many tags were imported from
+\emph{Advanced Sub Station Alpha}, do not assume that they behave exactly the same. Some had their
+behavior changed or properly defined. Also, AS5 defines many new tags in addition to the old ones.
+
+All tags must be inserted between a pair of curly brackets (\emph{\{\}}), except on style definitions.
+A pair can contain any number of override tags inside it. They should be listed one after the other,
+with no spaces or any other kind of separator between them. Tags then affect all text that follows
+it, unless re-overriden or reset by the \emph{\textbackslash r} tag. For example:
+
+\begin{verbatim}
+{\fn(Verdana)\fs26\c#FFA040}Welcome to {\b1}AS5{\b0}!
+\end{verbatim}
+
+In the following example, the first override block affects the entire text, but only ``AS5'' is bolded.
+
+Some tags might begin with a \# in their names. This means that there are actually five variations
+of this specific tag, the tag with \# replaced with a number from \emph{1} to \emph{4} (inclusive)
+or without it altogether - in that case, the tag is assumed to mean the \emph{1} variation. Those
+numbers represent the four different colours available on any given line:
+
+\begin{itemize}
+\item 1 - Primary colour, used for the main face of the text.
+\item 2 - Secondary colour, used on karaoke. See the karaoke tags for more information.
+\item 3 - Border colour. This is the colour of the border that outlines the text. See the \textbackslash
+bord tag for more information.
+\item 4 - Shadow colour. This is the colour of the shadow dropped by the text. See the \textbackslash
+shad tag for more information.
+\end{itemize}
+
+So, for example, you would use \textbackslash 1c or \textbackslash c to set the primary colour, or
+\textbackslash 3c to set the colour of the border. \textbackslash \#c, however, does not exist in
+itself.
+
+When a tag requires a floating point parameter, the decimal part must be specified using a period (.);
+never a comma. When a tag requires a colour parameter, it is given in HTML hexadecimal code, which is
+\# followed by a 6-digit hexadecimal string, where the first two digits represent the red component,
+the next two the green component, and the last two the blue component (\#RRGGBB). Sub Station Alpha
+style (Visual Basic hexadecimal) is not supported - if a parser finds any colour in \&HBBGGRR\& format,
+it \must\ issue an error.
+
+
+\subsection{Sub Station Alpha Tags}
+\todo{Write me}
+
+
+\subsection{Advanced Sub Station Alpha Tags}
+\todo{Write me}
+
+
+\subsection{AS5 Property Tags}
+These tags replace the old style and dialogue settings that were rarely used and generally only
+made the file more verbose and harder to read.
+
+\subsubsection{\textbackslash left}
+\todo{Write me}
+
+\subsubsection{\textbackslash right}
+\todo{Write me}
+
+\subsubsection{\textbackslash top}
+\todo{Write me}
+
+\subsubsection{\textbackslash bottom}
+\todo{Write me}
+
+\subsubsection{\textbackslash bordstyle}
+\todo{Write me}
+
+\subsubsection{\textbackslash effect}
+\todo{Write me. Is this really desirable?}
+
+\subsubsection{\textbackslash relative}
+\todo{Write me}
+
+\subsubsection{\textbackslash vertical}
+\todo{Write me}
+
+
+\subsection{AS5 Distortion Tags}
+These are tags characterized by the fact that they distort the shape of the text itself. They
+were designed to enhance the flexibility of the format while dealing with unusually-shaped
+imagery.
+
+\subsubsection{\textbackslash distort}
+\todo{Write me}
+
+\subsubsection{\textbackslash baseline}
+\todo{Write me}
+
+\subsubsection{\textbackslash bls}
+\todo{Write me}
+
+\subsubsection{\textbackslash fsc}
+\todo{Write me}
+
+\subsubsection{\textbackslash fay}
+\todo{Write me}
+
+\subsubsection{\textbackslash fax}
+\todo{Write me}
+
+
+\subsection{AS5 Rastering Tags}
+These tags affect how the subtitles are rasterized, that is, they affect things such as
+colour, blurring, etc.
+
+\subsubsection{\textbackslash\#vc}
+\todo{Write me}
+
+\subsubsection{\textbackslash{\#blend}}
+\todo{Write me}
+
+\subsubsection{\textbackslash iclip}
+\todo{Write me}
+
+\subsubsection{\textbackslash blur}
+\todo{Write me}
+
+
+\subsection{AS5 Advanced Tags}
+These are more advanced tags, which might prove to be fairly complex to implement. They include
+things such as ruby text support (also known as furigana, when used with Japanese Kanji).
+
+\todo{Write me}
+
+
+\newpage
+\section{Renderer Behaviour Specification}
+\todo{Write this section}
+
+
+\newpage
+\section{Container Multiplexing Specification}
+
+\subsection{Matroska}
+Storage of AS5 files in Matroska files is similar to how similar formats are stored.\cite{mkv ssa}
+The Codec ID used is \textsc{S\_TEXT/AS5}
+
+First, the entire file is converted to UTF-8 (if it isn't already UTF-8). Then, all sections other
+than \emph{[Events]} and \emph{[Resources]} are stored on the \emph{CodecPrivate} element. For the
+\emph{[Resources]} section, each line is parsed and files are converted to Matroska file attachments.
+\todo{Specify this more clearly.}
+
+Finally, each line in the \emph{[Events]} section is read and stored each in a block. The \emph{start}
+and \emph{end} fields are parsed (see the specifications on the section describing [Events]) and set
+as the \emph{TimeStamp} and \emph{BlockDuration} elements. The line itself is then stored in the
+following format:
+
+\begin{verbatim}
+Line: readOrder,style,userData,contents
+\end{verbatim}
+
+Where \emph{readOrder} is the number that the line had on the file. This is necessary so the file
+can be demultiplexed back in its original order, since lines will be stored in chronological order
+while inside the Matroska file. The remaining fields should just be copied from the original line.
+
+
+\newpage
 \addcontentsline{toc}{section}{References}
 \begin{thebibliography}{1}
 
@@ -314,17 +525,20 @@ let the user set his own defaults.
 \bibitem{ASS3} David Lamparter, Advanced Sub Station Alpha 3. Website, 2007.\\
 \url{http://asa.diac24.net/ass3.pdf}
 
-\bibitem{mkv} The Matroska project.\\
+\bibitem{mkv} The Matroska project. Website.\\
 \url{http://www.matroska.org/}
 
-\bibitem{UTF-8} The Internet Society, RFC 3629, "`UTF-8, a transformation format of ISO 10646"'. Website, 2003.\\
+\bibitem{UTF-8} The Internet Society, RFC 3629, ``UTF-8, a transformation format of ISO 10646''. Website, 2003.\\
 \url{http://tools.ietf.org/html/rfc3629}
 
-\bibitem{UTF-16} The Internet Society, RFC 2781, "`UTF-16, an encoding of ISO 10646"'. Website, 2000.\\
+\bibitem{UTF-16} The Internet Society, RFC 2781, ``UTF-16, an encoding of ISO 10646''. Website, 2000.\\
 \url{http://tools.ietf.org/html/rfc2781}
 
 \bibitem{Unicode BOM} Unicode, Inc, The Unicode Standard, Chapter 13. PDF, 1991-2000.\\
 \url{http://www.unicode.org/unicode/uni2book/ch13.pdf}
+
+\bibitem{mkv ssa} The Matroska project, specification for SSA/ASS subtitle formats. Website.\\
+\url{http://www.matroska.org/technical/specs/subtitles/ssa.html}
 
 \end{thebibliography}
 
