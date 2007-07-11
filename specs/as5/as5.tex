@@ -69,7 +69,9 @@ Aegisub\cite{Aegisub} and asa\cite{asa} teams in order to replace the old
 
 The goal is to create a flexible, easy to understand and powerful subtitle format
 that can be used in hardsubs or multiplexed into Matroska Video\cite{mkv} files as
-softsubs.
+softsubs. The syntax is heavily influenced by the older SSA and ASS formats, which in
+turn vaguely resemble the TeX typesetting language; but AS5 also has many differences
+compared to these older formats and you should not expect it to behave exactly like them.
 
 AS5 has no official meaning. The ``A'' can stand for Aegisub, asa, ASS or Advanced,
 the ``S'' for Subtitles, and the 5 is a reference to the fact that it's a major
@@ -85,7 +87,7 @@ All AS5 files are \emph{REQUIRED} to comply with the three requirements below:
 \begin{itemize}
 \item Be encoded with one of \emph{UTF-8}\cite{UTF-8}, \emph{UTF-16 Big Endian}
 \cite{UTF-16} or \emph{UTF-16 Little Endian} Unicode Transformation Formats. UTF-8 is
-preffered.
+preferred.
 \item Not to have any character below Unicode code point U+20, except for U+09, U+0A, U+0D.
 That is, it must be a plain-text file.
 \item All lines must end with Windows line endings, that is, U+0D followed by U+0A.
