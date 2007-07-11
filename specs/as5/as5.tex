@@ -362,8 +362,8 @@ it, unless re-overriden or reset by the \emph{\textbackslash r} tag. For example
 
 In the following example, the first override block affects the entire text, but only ``AS5'' is bolded.
 
-Some tags might begin with a \# in their names. This means that there are actually five variations
-of this specific tag, the tag with \# replaced with a number from \emph{1} to \emph{4} (inclusive)
+Some tags might begin with a \$ in their names. This means that there are actually five variations
+of this specific tag, the tag with \$ replaced with a number from \emph{1} to \emph{4} (inclusive)
 or without it altogether - in that case, the tag is assumed to mean the \emph{1} variation. Those
 numbers represent the four different colours available on any given line:
 
@@ -377,7 +377,7 @@ shad tag for more information.
 \end{itemize}
 
 So, for example, you would use \textbackslash 1c or \textbackslash c to set the primary colour, or
-\textbackslash 3c to set the colour of the border. \textbackslash \#c, however, does not exist in
+\textbackslash 3c to set the colour of the border. \textbackslash \$c, however, does not exist in
 itself.
 
 When a tag requires a floating point parameter, the decimal part must be specified using a period (.);
@@ -386,6 +386,10 @@ never a comma. When a tag requires a colour parameter, it is given in HTML hexad
 the next two the green component, and the last two the blue component (\#RRGGBB). Sub Station Alpha
 style (Visual Basic hexadecimal) is not supported - if a parser finds any colour in \&HBBGGRR\& format,
 it \must\ issue an error.
+
+Any tag might have its parameter enclosed inside parenthesis (``()''), but some tags require it. In
+particular, any tag that has more than on parameter, or whose parameter is text requires parenthesis.
+The parser \must\ issue a warning and disregard the tag if it ommitted mandatory parenthesis.
 
 It is forbidden to write comments inside standard curly brackets. Any unknown tags \must\ be ignored,
 and anything that doesn't begin with a backslash \must\ be considered an error. For inline comments,
@@ -409,17 +413,35 @@ asterisk (*). Renderers \must\ completely ignore any text inside such blocks. Fo
 These tags replace the old style and dialogue settings that were rarely used and generally only
 made the file more verbose and harder to read.
 
-\subsubsection{\textbackslash left}
-\todo{Write me}
+\subsubsection{\textbackslash left, \textbackslash right, \textbackslash top, \textbackslash bottom}
+\textbf{Usage:}
+\begin{verbatim}
+\left(distance)
+\right(distance)
+\top(distance)
+\bottom(distance)
+\end{verbatim}
 
-\subsubsection{\textbackslash right}
-\todo{Write me}
+\textbf{Desription:}
+Margins are the distance between the subtitle text and the edge of the frame. They are used for
+improved aesthetics, readability, and to avoid issues with overscan. Unless manually overriden
+by another tag (such as \textbackslash pos), the text should always be contained inside the box
+defined by the script area minus the four borders, as long as automatic line breaking mode is
+set (see the section on [AS5]).
 
-\subsubsection{\textbackslash top}
-\todo{Write me}
+All distance values are specified in script coordinates. The default value for all borders is 12.
+Margin tags can only be present once per line, and will affect all of it, not just the following
+block. Margin tags cannot be animated.
 
-\subsubsection{\textbackslash bottom}
-\todo{Write me}
+\textbf{Implementation:}
+The default positioning of the pivot point of the subtitles box is also determined by the margins.
+On left-align, the \emph{x} of pivot is set to the left margin; on right-align, to $w - r$,
+and on middle-align, to $\frac{w + r - l}{2}$, where \emph{w} is the script width, \emph{r} is
+the value of the right margin and \emph{l} is the value of the left margin, that is, it is put
+halfway between the edges defined by the margins. The rules are analogous to the \emph{y} coordinate.
+
+See the alignment tags for more information regarding screen alignment.
+
 
 \subsubsection{\textbackslash bordstyle}
 \todo{Write me}
@@ -484,15 +506,27 @@ precalculated, resulting in a very fast transformation.\\
 \todo{Write me}
 
 \subsubsection{\textbackslash bls}
-\todo{Write me}
+\textbf{Usage:}
+\begin{verbatim}
+\bls#
+\bls
+\end{verbatim}
+
+\textbf{Description:}
+This sets the baseline shift, that is, the vertical spacing between each character and the baseline
+in which it is supposed to be sitting on. The default value is 0, and the parameter is given in
+script coordinates.
+
+This tag can be animated with \textbackslash t, and can be reverted to style default by ommitting
+its parameter.
 
 \subsubsection{\textbackslash fsc}
 \todo{Write me}
 
-\subsubsection{\textbackslash fay}
+\subsubsection{\textbackslash fspv}
 \todo{Write me}
 
-\subsubsection{\textbackslash fax}
+\subsubsection{\textbackslash fax, \textbackslash fay}
 \todo{Write me}
 
 
@@ -500,16 +534,16 @@ precalculated, resulting in a very fast transformation.\\
 These tags affect how the subtitles are rasterized, that is, they affect things such as
 colour, blurring, etc.
 
-\subsubsection{\textbackslash\#vc}
+\subsubsection{\textbackslash\$vc}
 \todo{Write me}
 
-\subsubsection{\textbackslash{\#blend}}
+\subsubsection{\textbackslash{\$blend}}
 \todo{Write me}
 
 \subsubsection{\textbackslash iclip}
 \todo{Write me}
 
-\subsubsection{\textbackslash blur}
+\subsubsection{\textbackslash \$blur}
 \todo{Write me}
 
 
