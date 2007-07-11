@@ -271,7 +271,9 @@ Styles work in a very different way from the way they did on previous formats (w
 of ASS3, which actually implements this very same style based on this format, as ``StyleEx'').
 Instead of setting multiple parameters across many commas, you simply specify override tags. When a line
 uses a style, it's as if the overrides of the style were inserted right before the start of the line
-contents.
+contents, with one exception: certain tags without parameters revert to the style default. For example,
+\textbackslash c will revert the primary colour to the one specified in style. Such use of tags is invalid
+in the style definition, and \must\ be ignored if found in them.
 
 Also, a style can inherit from another style, and define new overrides which are then appended to those
 of the parent style. The parent style \must\ have been declared \emph{BEFORE} the style trying to use
@@ -442,6 +444,7 @@ imagery.
 \textbf{Usage:}
 \begin{verbatim}
 \distort(x1,y1,x2,y2,x3,y3)
+\distort
 \end{verbatim}
 
 \textbf{Description:}
@@ -453,6 +456,7 @@ $P_0$ is the origin, $P_1 = (x1,y1)$ is the corner at the end of the baseline fo
 $P_2 = (x2,y2)$ is the point above that, and $P_3 = (x3,y3)$ is the point above $P_0$. That is, they
 are listed clockwise from origin ($P_0$).
 
+If the parameter list is ommitted, the distort reverts to the style's default (none by default).
 This tag can be animated with \textbackslash t.
 
 \textbf{Implementation:}
@@ -462,12 +466,15 @@ In order to transform a given (x,y) coordinate pair to it:
 \begin{enumerate}
 \item Normalize the (x,y) coordinates to a (u,v) system, so that $P_0$ = (0,0) and $P_2$ = (1,1).
 This can be done by dividing x by the block's baseline length (bl) and y by the block height (h).
-The matrix for this operation is:\\
-\[ \left[\begin{array}{ c c }
-\frac{1}{bl} & 0 \\
-0 & \frac{1}{h}
-\end{array} \right]\]
-\item Apply the following formula: $P = P_0 + (P_1-P_0) u + (P_3-P_0) v + (P_0+P_2-P_1-P_3) u v$\\
+The affine 3D transformation matrix for this operation is:\\
+\[ \left[\begin{array}{ c c c c }
+\frac{1}{bl} & 0 & 0 & -\frac{P_{0x}}{bl} \\
+0 & \frac{1}{h} & 0 & -\frac{P_{0y}}{h} \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{array} \right]\]\\
+That is, $u = \frac{P_x - P_{0x}}{bl}; v = \frac{P_y - P_{0y}}{h}$.
+\item Apply the following formula: $P = P_0 + (P_1-P_0) u + (P_3-P_0) v + (P_0+P_2-P_1-P_3) u v$.\\
 This can be interpreted as simple vector operations, that is, apply that once using the x coordinates
 and another using the y coordinates. Since the four points are constant, the coeficients can be
 precalculated, resulting in a very fast transformation.\\
