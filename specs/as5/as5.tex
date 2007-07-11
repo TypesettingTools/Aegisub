@@ -133,10 +133,18 @@ store program-specific data. For example, Aegisub would create a group called
 by the fact that it starts with \emph{``[Private:''}.
 
 Note that \emph{Format:} lines from the previous formats are not admitted in AS5. If the parser
-finds any of them, it \must\ halt parsing.
+finds any of them, or any other unrecognized lines not specified here outside the \emph{[Private:]}
+section, it \must\ halt parsing, rejecting the file as invalid, and it \should\ emit a warning
+specifying where the problem lies.
 
 The sections \may\ be written in any order, with the exception of the \emph{[AS5]} section which
 \must\ always be the first section.
+
+Any line where the first character is a semicolon (\textit{;} - U+3B) is considered a "comment line"
+and \must\ be ignored by the parser; they also \must\ be preserved by an editing program when resaving.
+It is suggested that an editing program \should\ check whether commented lines are actually valid AS5
+lines, and if they are, display them to the user in some way as "disabled" lines. Note that commented
+out lines \must not\ influence subtitle rendering in any way.
 
 \subsubsection{[AS5]}
 This \must\ be the first section in every AS5 file. If the very first line of the file is not
@@ -192,7 +200,7 @@ Subtitling programs \should\ be able to display this title to the user.
 \end{itemize}
 
 Unlike in the previous incarnations of the format, storing private data here is not allowed, which means
-that this section \must not\ contain any properties not listed here. Any application-specific or otherwise
+that this section \must\ \not\ contain any properties not listed here. Any application-specific or otherwise
 private data \must\ be stored in \textit{[Private:PROGNAME]} groups instead, as mentioned above.
 
 
@@ -222,7 +230,7 @@ the script's global default style \must\ be used. If an unknown style name is sp
 fallback to default, and \may\ issue a warning.
 \item User: This field is used by the program to store program-specific data in each line. Renderers
 \should\ ignore this (but \may\ use it for application-specific extension features). This field \should\
-be left blank if it's not used. Note that whatever data is stored here \must not\ contain any commas!
+be left blank if it's not used. Note that whatever data is stored here \must\ \not\ contain any commas!
 \item Content: The actual text of the line. This contains actual text and override tags. See the section
 on override tags for more information.
 \end{itemize}
@@ -315,7 +323,8 @@ this way of declaring styles is identical to the one above, but is more verbose.
 
 If no Default style is defined, the renderer \must\ choose its own defaults to render the text with.
 These are entirely arbitrary and can be set to anything, but the renderer \should\ let the user set
-his own defaults. A simple Sans-Serif font with white text and black borders is recommended.
+his own defaults. A simple Sans-Serif font with white text and black borders is recommended if the
+user does not specify anything.
 
 
 \subsubsection{[Resources]}
@@ -380,12 +389,12 @@ So, for example, you would use \textbackslash 1c or \textbackslash c to set the 
 \textbackslash 3c to set the colour of the border. \textbackslash \$c, however, does not exist in
 itself.
 
-When a tag requires a floating point parameter, the decimal part must be specified using a period (.);
+When a tag requires a floating point parameter, the decimal part \must\ be specified using a period (.);
 never a comma. When a tag requires a colour parameter, it is given in HTML hexadecimal code, which is
 \# followed by a 6-digit hexadecimal string, where the first two digits represent the red component,
 the next two the green component, and the last two the blue component (\#RRGGBB). Sub Station Alpha
-style (Visual Basic hexadecimal) is not supported - if a parser finds any colour in \&HBBGGRR\& format,
-it \must\ issue an error.
+style (Visual Basic hexadecimal) is not supported - if a parser finds any colour in a format it does
+not recognize (including the SSA \&HBBGGRR\& format) it \must\ issue a warning and ignore the tag.
 
 In the tag specification in this document, optional parameters are denoted by being enclosed by square
 brackets (``[]''), and may be ommitted. For example, \emph{\textbackslash baseline(curve1[,curve2])}
@@ -394,12 +403,13 @@ is enclosed in square brackets, e.g. \emph{\textbackslash vc[(c1,c2,c3,c4)]}.
 
 Any tag might have its parameter enclosed inside parenthesis (``()''), but some tags require it. In
 particular, any tag that has more than on parameter, or whose parameter is text requires parenthesis.
-The parser \must\ issue a warning and disregard the tag if it ommitted mandatory parenthesis.
+The parser \must\ issue a warning and disregard the tag if it omits mandatory parenthesises.
 
 It is forbidden to write comments inside standard curly brackets. Any unknown tags \must\ be ignored,
-and anything that doesn't begin with a backslash \must\ be considered an error. For inline comments,
-you need to use a special variation, in which the first character inside the overrides block is an
-asterisk (*). Renderers \must\ completely ignore any text inside such blocks. For example:
+(the parser \should\ issue warnings about unknown tags) and anything that doesn't begin with a backslash
+\must\ be considered an error. For inline comments, you need to use a special variation, in which the
+first character inside the overrides block is an asterisk (*). Renderers \must\ completely ignore
+any text inside such blocks. For example:
 
 \begin{verbatim}
 {\fn(Verdana)\fs26\c#FFA040}Welcome to {\b1}AS5{\b0}!{*It's a nifty format, isn't it?}
