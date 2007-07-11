@@ -202,7 +202,7 @@ Subtitling programs \should\ be able to display this title to the user.
 \end{itemize}
 
 Unlike in the previous incarnations of the format, storing private data here is not allowed, which means
-that this section \must\ \not\ contain any properties not listed here. Any application-specific or otherwise
+that this section \mustnot\ contain any properties not listed here. Any application-specific or otherwise
 private data \must\ be stored in \textit{[Private:PROGNAME]} groups instead, as mentioned above.
 
 
@@ -232,7 +232,7 @@ the script's global default style \must\ be used. If an unknown style name is sp
 fallback to default, and \may\ issue a warning.
 \item User: This field is used by the program to store program-specific data in each line. Renderers
 \should\ ignore this (but \may\ use it for application-specific extension features). This field \should\
-be left blank if it's not used. Note that whatever data is stored here \must\ \not\ contain any commas!
+be left blank if it's not used. Note that whatever data is stored here \mustnot\ contain any commas!
 \item Content: The actual text of the line. This contains actual text and override tags. See the section
 on override tags for more information.
 \end{itemize}
@@ -418,6 +418,10 @@ any text inside such blocks. For example:
 \end{verbatim}
 
 
+\subsection{Vector Path Format}
+\todo{Write me}
+
+
 \subsection{Sub Station Alpha Tags}
 \todo{Write me}
 
@@ -439,7 +443,7 @@ made the file more verbose and harder to read.
 \bottom(distance)
 \end{verbatim}
 
-\textbf{Desription:}
+\textbf{Description:}
 Margins are the distance between the subtitle text and the edge of the frame. They are used for
 improved aesthetics, readability, and to avoid issues with overscan. Unless manually overriden
 by another tag (such as \textbackslash pos), the text should always be contained inside the box
@@ -508,7 +512,7 @@ In order to transform a given (x,y) coordinate pair to it:
 This can be done by dividing x by the block's baseline length (bl) and y by the block height (h).
 The affine 3D transformation matrix for this operation is:\\
 \begin{center}
-$\begin{bmatrix}
+$\displaystyle \begin{bmatrix}
 \frac{1}{bl} & 0 & 0 & -\frac{P_{0x}}{bl} \\
 0 & \frac{1}{h} & 0 & -\frac{P_{0y}}{h} \\
 0 & 0 & 1 & 0 \\
@@ -516,7 +520,7 @@ $\begin{bmatrix}
 \end{bmatrix}$
 \end{center}
 %\vspace{10pt}
-That is, $u = \frac{P_x - P_{0x}}{bl}; v = \frac{P_y - P_{0y}}{h}$.
+That is, $\displaystyle u = \frac{P_x - P_{0x}}{bl}; v = \frac{P_y - P_{0y}}{h}$.
 \item Apply the following formula: $P = P_0 + (P_1-P_0) u + (P_3-P_0) v + (P_0+P_2-P_1-P_3) u v$.\\
 This can be interpreted as simple vector operations, that is, apply that once using the x coordinates
 and another using the y coordinates. Since the four points are constant, the coeficients can be
@@ -524,7 +528,61 @@ precalculated, resulting in a very fast transformation.\\
 \end{enumerate}
 
 \subsubsection{\textbackslash baseline}
-\todo{Write me}
+
+\textbf{Usage:}
+\begin{verbatim}
+\baseline(path1[,path2])
+\end{verbatim}
+
+\textbf{Description:}
+Similarly to \textbackslash distort, this tag distorts the text, however, it does so by curving the
+baseline into a vector path, so you can write curved text. Alternatively, you can specify a second
+path to work as the ``ceiling'' of the text. The format of both path parameters is the standard
+vector path format (see above).
+
+\textbf{Implementation:}
+Implementation of this tag can be summarized by the conversion of a generic $P_n = (x,y)$ point into
+$P'_n = (x',y')$. Let $c1(t)$ and $c2(t)$ be the parametric equations of the two paths specified.
+The conversion can then be done in the following manner:
+
+\begin{enumerate}
+\item Find the parameter \emph{t} along the baseline path that corresponds to the x position of
+the point being converted. This can be done with a function that calculates the length from the
+beginning of the path until an arbitrary point $P_t = c1(t)$ along it.
+\item Calculate the base point along path1: $P_0 = c1(t)$
+\item Calculate \emph{u} so that $u = \frac{y-y_0}{h}$, where $y_0$ is the y coordinate of the original
+baseline and \emph{h} is the height of the block box.
+\end{enumerate}
+
+Now, for the single curve version:
+
+\begin{enumerate}
+\item Find the tangent vector of path1 at point $c1(t)$ and find the \emph{V} unit vector that is
+perpendicular to the curve at that point, by rotating the tangent vector by -90 degrees along the Z axis.
+This should give you a vector pointing ``up'', towards where the letters go. This can be summarized as:\\
+$\displaystyle V = ( \lim_{h \to 0} (c1_y(t)-c1_y(t+h)) , \lim _{h\to0} (c1_x(t)-c1_x(t+h)))\\
+V = \frac{V}{\left \| V \right \|}\\$
+\todo Is that correct?
+\item Multiply \emph{u} by the vector to find the offset from $P_0$, that is, $P'_n = P_0 + u V$.
+\end{enumerate}
+
+And for the two-curve version:
+
+\begin{enumerate}
+\item Calculate the ceiling point along path2: $P_1 = c2(t)$
+\item Get \emph{P} with the parametric equation of the line defined by $(P_0,P_1)$: $P = (1-u) P_0 + u P_1$.
+\end{enumerate}
+
+\subsubsection{\textbackslash blpos}
+\textbf{Usage:}
+\begin{verbatim}
+\blpos#
+\end{verbatim}
+
+\textbf{Description:}
+This sets the position of the text relative to the baseline start. This tag can be animated.
+\todo{Write proper specs for this.}
+
 
 \subsubsection{\textbackslash bls}
 \textbf{Usage:}
