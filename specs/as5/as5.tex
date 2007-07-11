@@ -20,7 +20,7 @@
 
 \begin{document}
 \title{AS5 Subtitle Format Draft}
-\author{Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter}
+\author{Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter, Karl Blomster}
 
 \begin{titlepage}
 \begin{center}
@@ -99,7 +99,7 @@ subtitle file can be autodetermined by its Byte-Order Mark or by the value of th
 two bytes. See below.
 
 When used as a standalone file, the extension should be \textsc{.as5}. When multiplexed
-into a Matroska container, the Codec ID should be \textsc{S\_TEXT/AS5}.
+into a Matroska container, the Codec ID used is \textsc{S\_TEXT/AS5}.
 
 \todo{Get clearance from the Matroska team to use that Codec ID.}
 
@@ -131,13 +131,13 @@ file with sections that it does not recognize. It can, however, be removed at th
 Finally, there is a special type of undefined group, \emph{[Private:PROGNAME]}, which 
 \must\ be \emph{ENTIRELY} preserved by other programs when re-saving it. This is used to
 store program-specific data. For example, Aegisub would create a group called
-\emph{[Private:Aegisub]} to store its data inside. This type of group should be identified
+\emph{[Private:Aegisub]} to store its data inside. This type of group is identified
 by the fact that it starts with \emph{``[Private:''}.
 
 Note that \emph{Format:} lines from the previous formats are not admitted in AS5. If the parser
-finds any of them, or any other unrecognized lines not specified here outside the \emph{[Private:]}
-section, it \must\ halt parsing, rejecting the file as invalid, and it \should\ emit a warning
-specifying where the problem lies.
+finds any of them, or any other unrecognized lines not specified here (outside the \emph{[Private:]}
+section), including but not limited to unknown sections, it \must\ halt parsing, rejecting the file
+as invalid, and it \should\ emit a warning specifying where the problem lies.
 
 The sections \may\ be written in any order, with the exception of the \emph{[AS5]} section which
 \must\ always be the first section.
@@ -189,7 +189,8 @@ Default value is empty. This should be ignored by the renderer, but might be use
 interaction.
 \item Wrapping: The line wrapping style. This can be ``Manual'', in which case only \textbackslash{n} can
 break lines or ``Automatic'', in which the renderer chooses how to break them. The default is ``Automatic''.
-Note that if this is set to manual, the line can NEVER be broken at anywhere other than forced line breaks,
+Even if it is set to Automatic, \textbackslash{n} will still insert a line break.
+On the other hand, if set to manual, the line can NEVER be broken at anywhere other than forced line breaks,
 even if it means that the line will become unreadable because it goes outside the display area.
 \item Extensions: A comma-separated list of all extensions being used in this file. At the moment, there are
 no extensions available. Renderers should read this to enable any extensions that they might support.
@@ -239,10 +240,9 @@ on override tags for more information.
 
 The timestamp format is h...h:mm:ss[.s...], that is, it begins with an integer of arbitrary length
 (up to a maximum of 4 digits) representing the number of hours, followed by a one-digit or two-digit integer
-representing minutes, and a floating point number representing seconds. Leading zeroes in the hours field \may\
-be ommitted. Localization is irrelevant: a period (``.'') is always used to separate the decimal point.
-This way, 0:21:42.5 and 0000:21:42.5000 are equivalent, and both represent 0 hours, 21 minutes, 42 seconds
-and 500 miliseconds.
+representing minutes, and a floating point number representing seconds. Leading zeroes \may\ be ommitted.
+Localization is irrelevant: a period (``.'') is always used to separate the decimal point. This way,
+0:21:42.5 and 0000:21:42.5000 are equivalent, and both represent 0 hours, 21 minutes, 42 seconds and 500 miliseconds.
 
 Spaces between each field \must\ be ignored by all parsers. Any spaces at the beginning of the
 content line \should\ be stripped by any editing program. A hard space (see the overrides section) or empty
@@ -324,9 +324,10 @@ Since all that deriving a style from another does is append the new tags to the 
 this way of declaring styles is identical to the one above, but is more verbose.
 
 If no Default style is defined, the renderer \must\ choose its own defaults to render the text with.
-These are entirely arbitrary and can be set to anything, but the renderer \should\ let the user set
-his own defaults. A simple Sans-Serif font with white text and black borders is recommended if the
-user does not specify anything.
+The defaults \must\ also be used any for any properties not specified in a given style (in other words,
+styles with no parent inherit from the renderer defaults). These defaults are entirely arbitrary and
+can be set to anything, but the renderer \should\ allow the user change them. A simple Sans-Serif font
+with white text and black borders is recommended if the user does not specify anything else.
 
 
 \subsubsection{[Resources]}
@@ -371,7 +372,7 @@ it, unless re-overriden or reset by the \emph{\textbackslash r} tag. For example
 {\fn(Verdana)\fs26\c#FFA040}Welcome to {\b1}AS5{\b0}!
 \end{verbatim}
 
-In the following example, the first override block affects the entire text, but only ``AS5'' is bolded.
+In the above example, the first override block affects the entire text, but only ``AS5'' is bolded.
 
 Some tags might begin with a \$ in their names. This means that there are actually five variations
 of this specific tag, the tag with \$ replaced with a number from \emph{1} to \emph{4} (inclusive)
@@ -403,9 +404,9 @@ brackets (``[]''), and may be ommitted. For example, \emph{\textbackslash baseli
 means that the second parameter is entirely optional. It's also possible that the entire parameter set
 is enclosed in square brackets, e.g. \emph{\textbackslash vc[(c1,c2,c3,c4)]}.
 
-Any tag might have its parameter enclosed inside parenthesis (``()''), but some tags require it. In
-particular, any tag that has more than on parameter, or whose parameter is text requires parenthesis.
-The parser \must\ issue a warning and disregard the tag if it omits mandatory parenthesises.
+The parameters of a tag \must\ be enclosed within parantheses, with exception for tags with only one numerical
+parameter, for which the parantheses \may\ be omitted. The parser \must\ issue a warning and disregard the tag
+if it omits mandatory parenthesises.
 
 It is forbidden to write comments inside standard curly brackets. Any unknown tags \must\ be ignored,
 (the parser \should\ issue warnings about unknown tags) and anything that doesn't begin with a backslash
@@ -422,17 +423,159 @@ any text inside such blocks. For example:
 \todo{Write me}
 
 
-\subsection{Sub Station Alpha Tags}
-\todo{Write me}
+\subsection{Special Character Escapes}
+The following tags are not really overrides, but rather escape codes for special characters. They
+\mustnot\ be inside an override block, but only in the middle of the text (i.e. not between \{ and \}).
 
+\todo{Write these following ones}
 
-\subsection{Advanced Sub Station Alpha Tags}
-\todo{Write me}
+\subsubsection{\textbackslash n}
 
+\subsubsection{\textbackslash h}
 
-\subsection{AS5 Property Tags}
-These tags replace the old style and dialogue settings that were rarely used and generally only
-made the file more verbose and harder to read.
+\subsubsection{\textbackslash \{, \textbackslash \}}
+
+\subsubsection{\textbackslash \textbackslash}
+
+\subsection{Basic Typography Tags}
+
+\subsubsection{\textbackslash i}
+\textbf{Usage:}
+\begin{verbatim}
+\i(1)
+\i(0)
+\end{verbatim}
+
+\textbf{Description:}
+Italics
+
+\subsubsection{\textbackslash b}
+\textbf{Usage:}
+\begin{verbatim}
+\b(1)
+\b(0)
+\end{verbatim}
+
+\textbf{Description:}
+Bold
+
+\subsubsection{\textbackslash u}
+\textbf{Usage:}
+\begin{verbatim}
+\u(1)
+\u(0)
+\end{verbatim}
+
+\textbf{Description:}
+Underline
+
+\subsubsection{\textbackslash s}
+\textbf{Usage:}
+\begin{verbatim}
+\s(1)
+\s(0)
+\end{verbatim}
+
+\textbf{Description:}
+Strikeout
+
+\subsubsection{\textbackslash fn}
+\textbf{Usage:}
+\begin{verbatim}
+\fn(fontname)
+\end{verbatim}
+
+\textbf{Description:}
+Set font name
+
+\subsubsection{\textbackslash fe}
+\textbf{Usage:}
+\begin{verbatim}
+\fe(fontencoding)
+\end{verbatim}
+
+\textbf{Description:}
+Set font encoding in some ISO code
+
+\subsubsection{\textbackslash fs}
+\textbf{Usage:}
+\begin{verbatim}
+\fs(size)
+\end{verbatim}
+
+\textbf{Description:}
+Set font size in points
+
+\subsubsection{\textbackslash bord}
+\textbf{Usage:}
+\begin{verbatim}
+\bord(bordersize)
+\end{verbatim}
+
+\textbf{Description:}
+Set border size in script resolution pixels
+
+\subsubsection{\textbackslash shad}
+\textbf{Usage:}
+\begin{verbatim}
+\shad(shadowsize)
+\end{verbatim}
+
+\textbf{Description:}
+Set shadow depth in script resolution pixels
+
+\subsubsection{\textbackslash bordstyle}
+\textbf{Usage:}
+\begin{verbatim}
+\bordstyle(???)
+\end{verbatim}
+
+\textbf{Description:}
+Set border style in God or amz knows what
+
+\subsection{Font Scaling Tags}
+
+\subsubsection{\textbackslash fsc, \textbackslash fscx, \textbackslash fscy}
+\textbf{Usage:}
+\begin{verbatim}
+\fsc(scale)
+\fscx(xscale)
+\fscy(yscale)
+\end{verbatim}
+
+\textbf{Description:}
+Set font X/Y scaling in percent
+
+\subsubsection{\textbackslash fsp}
+\textbf{Usage:}
+\begin{verbatim}
+\fsp(fontspacing)
+\end{verbatim}
+
+\textbf{Description:}
+Set font spacing between characters in pixels
+
+\subsection{Coloring Tags}
+
+\subsubsection{\textbackslash $c}
+\textbf{Usage:}
+\begin{verbatim}
+\$c(color)
+\end{verbatim}
+
+\textbf{Description:}
+Set font coloring in hexadecimal RGB
+
+\subsubsection{\textbackslash $a}
+\textbf{Usage:}
+\begin{verbatim}
+\$a(alpha)
+\end{verbatim}
+
+\textbf{Description:}
+Set font alpha channel (transparency) in hexadecimal RGB
+
+\subsection{Positioning and Rotation Tags}
 
 \subsubsection{\textbackslash left, \textbackslash right, \textbackslash top, \textbackslash bottom}
 \textbf{Usage:}
@@ -463,18 +606,108 @@ halfway between the edges defined by the margins. The rules are analogous to the
 
 See the alignment tags for more information regarding screen alignment.
 
+\subsubsection{\textbackslash an, \textbackslash ax, textbackslash \ay, \textbackslash nx, \textbackslash ny}
+\textbf{Usage:}
+\begin{verbatim}
+\an(numpadalignment)
+\ax(xalignment)
+\ay(yalignment)
+\nx(xinneralignment)
+\ny(yinneralignment)
+\end{verbatim}
 
-\subsubsection{\textbackslash bordstyle}
-\todo{Write me}
+\textbf{Description:}
+Set alignment in various ways
 
 \subsubsection{\textbackslash relative}
-\todo{Write me}
+\textbf{Usage:}
+\begin{verbatim}
+\relative(???)
+\end{verbatim}
+
+\textbf{Description:}
+it is a mystery
 
 \subsubsection{\textbackslash vertical}
-\todo{Write me}
+\textbf{Usage:}
+\begin{verbatim}
+\vertical(1)
+\vertical(0)
+\end{verbatim}
 
+\textbf{Description:}
+Makes text vertical
 
-\subsection{AS5 Distortion Tags}
+\subsubsection{\textbackslash q}
+\textbf{Usage:}
+\begin{verbatim}
+\q(0)
+\q(1)
+\end{verbatim}
+
+\textbf{Description:}
+Set wrap style to manual (0) or automatic (1)
+
+\subsubsection{\textbackslash pos}
+\textbf{Usage:}
+\begin{verbatim}
+\pos(x,y)
+\end{verbatim}
+
+\textbf{Description:}
+Set line position to x,y in script coordinates
+
+\subsubsection{\textbackslash org}
+\textbf{Usage:}
+\begin{verbatim}
+\pos(x,y)
+\end{verbatim}
+
+\textbf{Description:}
+Set rotation origin to x,y in script coordinates
+
+\subsubsection{\textbackslash frx, \textbackslash fry, \textbackslash frz}
+\textbf{Usage:}
+\begin{verbatim}
+\frx(xrotation)
+\fry(yrotation)
+\frz(zrotation)
+\end{verbatim}
+
+\textbf{Description:}
+Set font rotation around x/y/z axis in degrees
+
+\subsubsection{\textbackslash fax, \textbackslash fay}
+\textbf{Usage:}
+\begin{verbatim}
+\fax(xshearing)
+\fay(yshearing)
+\end{verbatim}
+
+\textbf{Description:}
+Set shearing in x and y axis, 0..1 (I think?)
+
+\subsection{Animation Tags}
+
+\subsubsection{\textbackslash fad}
+\textbf{Usage:}
+\begin{verbatim}
+\fad(t1,t2)
+\end{verbatim}
+
+\textbf{Description:}
+Fading text
+
+\subsubsection{\textbackslash t}
+\textbf{Usage:}
+\begin{verbatim}
+\t([t1,t2,]tags)
+\end{verbatim}
+
+\textbf{Description:}
+Animate tags between t1 and t2
+
+\subsection{Shape Transformation Tags}
 These are tags characterized by the fact that they distort the shape of the text itself. They
 were designed to enhance the flexibility of the format while dealing with unusually-shaped
 imagery.
@@ -598,34 +831,57 @@ script coordinates.
 This tag can be animated with \textbackslash t, and can be reverted to style default by ommitting
 its parameter.
 
-\subsubsection{\textbackslash fsc}
-\todo{Write me}
-
-\subsubsection{\textbackslash fspv}
-\todo{Write me}
-
-\subsubsection{\textbackslash fax, \textbackslash fay}
-\todo{Write me}
-
-
-\subsection{AS5 Rastering Tags}
+\subsection{Rastering Tags}
 These tags affect how the subtitles are rasterized, that is, they affect things such as
 colour, blurring, etc.
 
 \subsubsection{\textbackslash\$vc}
-\todo{Write me}
+\textbf{Usage:}
+\begin{verbatim}
+\$vc(color1,color2,color3,color4)
+\end{verbatim}
+
+\textbf{Description:}
+Sets the primary colour to blend with each of the four vertices of draw polygon. The primary use for this is to make smooth gradients easily, which are often required for proper blending with the background. Note that you can also set alpha using this tag.
 
 \subsubsection{\textbackslash{\$blend}}
-\todo{Write me}
+\textbf{Usage:}
+\begin{verbatim}
+\$blend(mode)
+\end{verbatim}
+
+\textbf{Description:}
+Sets the blending mode for the color specified. Acceptable values are "normal", "add" and "multiply".
+
+\subsubsection{\textbackslash clip}
+\textbf{Usage:}
+\begin{verbatim}
+\clip(x1,y1,x2,x2)
+\end{verbatim}
+
+\textbf{Description:}
+Clips so only text inside the rectangle formed by x1,y1,x2,y2 will be drawn
 
 \subsubsection{\textbackslash iclip}
-\todo{Write me}
+\textbf{Usage:}
+\begin{verbatim}
+\iclip(x1,y1,x2,x2)
+\end{verbatim}
+
+\textbf{Description:}
+The inverse of \textbackslash clip, i.e. clips so only text outside the rectangle formed
+by x1,y1,x2,y2 will be drawn.
 
 \subsubsection{\textbackslash \$blur}
-\todo{Write me}
+\textbf{Usage:}
+\begin{verbatim}
+\$blur(???)
+\end{verbatim}
 
+\textbf{Description:}
+Blurs stuff
 
-\subsection{AS5 Advanced Tags}
+\subsection{Advanced Typography Tags}
 These are more advanced tags, which might prove to be fairly complex to implement. They include
 things such as ruby text support (also known as furigana, when used with Japanese Kanji).
 
