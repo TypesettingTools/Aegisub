@@ -11,11 +11,11 @@
 \RequirePackage[utf8x]{inputenc}
 \RequirePackage[english]{babel}
 \RequirePackage[margin=3cm]{geometry}
-%\RequirePackage{amsmath}
-%\RequirePackage{amssymb}
-%\RequirePackage{latexsym}
-%\RequirePackage{amsxtra}
-%\RequirePackage{amscd}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{latexsym}
+\RequirePackage{amsxtra}
+\RequirePackage{amscd}
 \RequirePackage{charter}
 \RequirePackage{fancyhdr}
 \RequirePackage{color}

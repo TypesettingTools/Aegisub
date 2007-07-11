@@ -387,6 +387,11 @@ the next two the green component, and the last two the blue component (\#RRGGBB)
 style (Visual Basic hexadecimal) is not supported - if a parser finds any colour in \&HBBGGRR\& format,
 it \must\ issue an error.
 
+In the tag specification in this document, optional parameters are denoted by being enclosed by square
+brackets (``[]''), and may be ommitted. For example, \emph{\textbackslash baseline(curve1[,curve2])}
+means that the second parameter is entirely optional. It's also possible that the entire parameter set
+is enclosed in square brackets, e.g. \emph{\textbackslash vc[(c1,c2,c3,c4)]}.
+
 Any tag might have its parameter enclosed inside parenthesis (``()''), but some tags require it. In
 particular, any tag that has more than on parameter, or whose parameter is text requires parenthesis.
 The parser \must\ issue a warning and disregard the tag if it ommitted mandatory parenthesis.
@@ -446,9 +451,6 @@ See the alignment tags for more information regarding screen alignment.
 \subsubsection{\textbackslash bordstyle}
 \todo{Write me}
 
-\subsubsection{\textbackslash effect}
-\todo{Write me. Is this really desirable?}
-
 \subsubsection{\textbackslash relative}
 \todo{Write me}
 
@@ -466,7 +468,6 @@ imagery.
 \textbf{Usage:}
 \begin{verbatim}
 \distort(x1,y1,x2,y2,x3,y3)
-\distort
 \end{verbatim}
 
 \textbf{Description:}
@@ -477,6 +478,11 @@ specify a quadrilateral.
 $P_0$ is the origin, $P_1 = (x1,y1)$ is the corner at the end of the baseline for the affected text,
 $P_2 = (x2,y2)$ is the point above that, and $P_3 = (x3,y3)$ is the point above $P_0$. That is, they
 are listed clockwise from origin ($P_0$).
+
+The following picture illustrates how this tag works:\\
+\begin{center}
+\includegraphics[width=0.7\textwidth]{./distort}
+\end{center}
 
 If the parameter list is ommitted, the distort reverts to the style's default (none by default).
 This tag can be animated with \textbackslash t.
@@ -489,12 +495,15 @@ In order to transform a given (x,y) coordinate pair to it:
 \item Normalize the (x,y) coordinates to a (u,v) system, so that $P_0$ = (0,0) and $P_2$ = (1,1).
 This can be done by dividing x by the block's baseline length (bl) and y by the block height (h).
 The affine 3D transformation matrix for this operation is:\\
-\[ \left[\begin{array}{ c c c c }
+\begin{center}
+$\begin{bmatrix}
 \frac{1}{bl} & 0 & 0 & -\frac{P_{0x}}{bl} \\
 0 & \frac{1}{h} & 0 & -\frac{P_{0y}}{h} \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{array} \right]\]\\
+\end{bmatrix}$
+\end{center}
+%\vspace{10pt}
 That is, $u = \frac{P_x - P_{0x}}{bl}; v = \frac{P_y - P_{0y}}{h}$.
 \item Apply the following formula: $P = P_0 + (P_1-P_0) u + (P_3-P_0) v + (P_0+P_2-P_1-P_3) u v$.\\
 This can be interpreted as simple vector operations, that is, apply that once using the x coordinates
@@ -508,8 +517,7 @@ precalculated, resulting in a very fast transformation.\\
 \subsubsection{\textbackslash bls}
 \textbf{Usage:}
 \begin{verbatim}
-\bls#
-\bls
+\bls[#]
 \end{verbatim}
 
 \textbf{Description:}
