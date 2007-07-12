@@ -109,7 +109,8 @@ The file is divided in \emph{sections}, which are uniquely identified by a strin
 square brackets, in a line of its own. From that point on, every next line is considered
 to be part of the last found section until another section is found. There is no end-of-section
 termination mark; they always end at the start of the next one or at the end of the file.
-\emph{Section names are case sensitive.}
+There \must\ only be one and only one of each section; if the parser finds two lines containing
+the same section header, it \must\ reject the file as invalid. \emph{Section names are case sensitive.}
 
 Each section is divided in lines, each line representing one command or definition. Empty
 lines (that is, lines only containing a line ending) \must\ be ignored by the parser.
@@ -123,10 +124,8 @@ such ignored lines in the file after re-saving it. Note that the space after the
 
 There are two sections which are required, \emph{[AS5]} and \emph{[Events]}, the former being
 the equivalent of \emph{[Script Info]} in previous formats. If either of those sections is
-missing, the file is invalid and \emph(MUST) be refused by the parser. Any other section
-can be ommitted from the file, and need not be implemented by all parsers. However, any unknown
-section \must\ be preserved in the file by a subtitle editing program when it re-saves a
-file with sections that it does not recognize. It can, however, be removed at the user's discretion.
+missing, the file is invalid and \must\ be refused by the parser. Any other section
+can be ommitted from the file, and need not be implemented by all parsers.
 
 Finally, there is a special type of undefined group, \emph{[Private:PROGNAME]}, which 
 \must\ be \emph{ENTIRELY} preserved by other programs when re-saving it. This is used to
@@ -134,19 +133,22 @@ store program-specific data. For example, Aegisub would create a group called
 \emph{[Private:Aegisub]} to store its data inside. This type of group is identified
 by the fact that it starts with \emph{``[Private:''}.
 
+Additionally, private data may also be stored in any other section by using commented-out
+lines: any line where the first character is a semicolon (\textit{;} - U+3B) is considered a
+"comment line" and \must\ be ignored by the parser; they also \must\ be preserved by an editing program
+when resaving. It is suggested that an editing program \should\ check whether commented lines are
+actually valid AS5 lines, and if they are, display them to the user in some way as "disabled" lines.
+Note that commented out lines \mustnot\ influence subtitle rendering in any way.
+
 Note that \emph{Format:} lines from the previous formats are not admitted in AS5. If the parser
 finds any of them, or any other unrecognized lines not specified here (outside the \emph{[Private:]}
-section), including but not limited to unknown sections, it \must\ halt parsing, rejecting the file
-as invalid, and it \should\ emit a warning specifying where the problem lies.
+section, where any text data can be stored), including but not limited to unknown sections, it
+\must\ halt parsing, rejecting the file as invalid, and it \should\ emit a warning specifying
+where the problem lies.
 
 The sections \may\ be written in any order, with the exception of the \emph{[AS5]} section which
 \must\ always be the first section.
 
-Any line where the first character is a semicolon (\textit{;} - U+3B) is considered a "comment line"
-and \must\ be ignored by the parser; they also \must\ be preserved by an editing program when resaving.
-It is suggested that an editing program \should\ check whether commented lines are actually valid AS5
-lines, and if they are, display them to the user in some way as "disabled" lines. Note that commented
-out lines \must not\ influence subtitle rendering in any way.
 
 \subsubsection{[AS5]}
 This \must\ be the first section in every AS5 file. If the very first line of the file is not
@@ -167,7 +169,7 @@ It is possible, therefore, to determine the encoding of the file by checking its
 
 This section is used to declare several script properties that affect its parsing and rendering.
 All properties are stored in the format \textit{Name: data}, with one property per line. 
-This section \must\ always declare the following properties:
+This section \must\ always declare the following properties (a file that is missing one of them is not valid):
 
 \begin{itemize}
 \item ScriptType: Should always be set to \textit{AS5}, for this particular version of the specification.
@@ -189,7 +191,7 @@ Default value is empty. This should be ignored by the renderer, but might be use
 interaction.
 \item Wrapping: The line wrapping style. This can be ``Manual'', in which case only \textbackslash{n} can
 break lines or ``Automatic'', in which the renderer chooses how to break them. The default is ``Automatic''.
-Even if it is set to Automatic, \textbackslash{n} will still insert a line break.
+Even if it is set to Automatic, \textbackslash{n} will still insert a forced line break.
 On the other hand, if set to manual, the line can NEVER be broken at anywhere other than forced line breaks,
 even if it means that the line will become unreadable because it goes outside the display area.
 \item Extensions: A comma-separated list of all extensions being used in this file. At the moment, there are
@@ -202,9 +204,11 @@ if the list of extensions is suddenly lost.
 Subtitling programs \should\ be able to display this title to the user.
 \end{itemize}
 
-Unlike in the previous incarnations of the format, storing private data here is not allowed, which means
-that this section \mustnot\ contain any properties not listed here. Any application-specific or otherwise
-private data \must\ be stored in \textit{[Private:PROGNAME]} groups instead, as mentioned above.
+Unlike in the previous incarnations of the format, storing private properties here is not allowed, which means
+that this section \mustnot\ contain any properties not listed here. It \may\, just like any other section, contain
+commented-out lines prefixed with a semicolon (;) which of course may contain anything, but it is strongly recommended
+that any application-specific or otherwise private data \should\ be stored in the \textit{[Private:PROGNAME]}
+section instead, as mentioned above.
 
 
 \subsubsection{[Events]}
@@ -282,8 +286,8 @@ of ASS3, which actually implements this very same style based on this format, as
 Instead of setting multiple parameters across many commas, you simply specify override tags. When a line
 uses a style, it's as if the overrides of the style were inserted right before the start of the line
 contents, with one exception: certain tags without parameters revert to the style default. For example,
-\textbackslash c will revert the primary colour to the one specified in style. Such use of tags is invalid
-in the style definition, and \must\ be ignored if found in them.
+\textbackslash 1c will revert the primary colour to the one specified in style. Such use of tags is invalid
+in the style definition, and \must\ be ignored if found in them; the parser \may\ choose to emit a warning.
 
 Also, a style can inherit from another style, and define new overrides which are then appended to those
 of the parent style. The parent style \must\ have been declared \emph{BEFORE} the style trying to use
@@ -377,7 +381,8 @@ In the above example, the first override block affects the entire text, but only
 Some tags might begin with a \$ in their names. This means that there are actually five variations
 of this specific tag, the tag with \$ replaced with a number from \emph{1} to \emph{4} (inclusive)
 or without it altogether - in that case, the tag is assumed to mean the \emph{1} variation. Those
-numbers represent the four different colours available on any given line:
+numbers represent the four different colours available on any given line (see below). If no number
+is specified, the tag will affect all 4 colours. The 4 colurs are:
 
 \begin{itemize}
 \item 1 - Primary colour, used for the main face of the text.
@@ -388,16 +393,18 @@ bord tag for more information.
 shad tag for more information.
 \end{itemize}
 
-So, for example, you would use \textbackslash 1c or \textbackslash c to set the primary colour, or
-\textbackslash 3c to set the colour of the border. \textbackslash \$c, however, does not exist in
-itself.
+So, for example, you would use \textbackslash 1c to set the primary colour, or \textbackslash 3c to set
+the colour of the border. \textbackslash \$c, however, does not exist in itself.
 
 When a tag requires a floating point parameter, the decimal part \must\ be specified using a period (.);
 never a comma. When a tag requires a colour parameter, it is given in HTML hexadecimal code, which is
 \# followed by a 6-digit hexadecimal string, where the first two digits represent the red component,
 the next two the green component, and the last two the blue component (\#RRGGBB). Sub Station Alpha
 style (Visual Basic hexadecimal) is not supported - if a parser finds any colour in a format it does
-not recognize (including the SSA \&HBBGGRR\& format) it \must\ issue a warning and ignore the tag.
+not recognize (including the SSA \&HBBGGRR\& format) it \should\ issue a warning and it \must\ ignore the tag.
+
+The same is valid for any other tags with invalid parameters, or any tags the parser does not recognize:
+the tag \must\ be ignored and the parser \must\ emit a warning about the syntax error.
 
 In the tag specification in this document, optional parameters are denoted by being enclosed by square
 brackets (``[]''), and may be ommitted. For example, \emph{\textbackslash baseline(curve1[,curve2])}
@@ -408,11 +415,13 @@ The parameters of a tag \must\ be enclosed within parantheses, with exception fo
 parameter, for which the parantheses \may\ be omitted. The parser \must\ issue a warning and disregard the tag
 if it omits mandatory parenthesises.
 
-It is forbidden to write comments inside standard curly brackets. Any unknown tags \must\ be ignored,
-(the parser \should\ issue warnings about unknown tags) and anything that doesn't begin with a backslash
-\must\ be considered an error. For inline comments, you need to use a special variation, in which the
-first character inside the overrides block is an asterisk (*). Renderers \must\ completely ignore
-any text inside such blocks. For example:
+All tags \must\ start with a backslash (\textbackslash ). If an override block (a pair of curly brackets)
+or any tag starts with anything else than a backslash, it is considered a syntax error and the parser \must\
+reject the file as invalid. Thus it is not possible, as it was in earlier formats, to hide inline comments
+inside normal override blocks. There is, however a special kind of comment block that can be used for this.
+Any curly opening brace that is immediately followed by an asterisk (*) starts a comment block (ending with
+a matching closing curly brace), the contents of which \must\ be ignored by the parser and the renderer.
+For example:
 
 \begin{verbatim}
 {\fn(Verdana)\fs26\c#FFA040}Welcome to {\b1}AS5{\b0}!{*It's a nifty format, isn't it?}
