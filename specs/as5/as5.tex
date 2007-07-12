@@ -327,6 +327,7 @@ Style: Actor2,,\fn(Respublica)\fs24\bord2\shad2\4a#80\2c#000000\1c#FFB3CF
 Since all that deriving a style from another does is append the new tags to the end of the previous,
 this way of declaring styles is identical to the one above, but is more verbose.
 
+\todo{This is bad, we need to fix it with specified defaults to get consistent rendering}
 If no Default style is defined, the renderer \must\ choose its own defaults to render the text with.
 The defaults \must\ also be used any for any properties not specified in a given style (in other words,
 styles with no parent inherit from the renderer defaults). These defaults are entirely arbitrary and
@@ -378,7 +379,7 @@ it, unless re-overriden or reset by the \emph{\textbackslash r} tag. For example
 
 In the above example, the first override block affects the entire text, but only ``AS5'' is bolded.
 
-Some tags might begin with a \$ in their names. This means that there are actually five variations
+Some tags begin with a \$ in their names. This means that there are actually five variations
 of this specific tag, the tag with \$ replaced with a number from \emph{1} to \emph{4} (inclusive)
 or without it altogether - in that case, the tag is assumed to mean the \emph{1} variation. Those
 numbers represent the four different colours available on any given line (see below). If no number
@@ -400,11 +401,7 @@ When a tag requires a floating point parameter, the decimal part \must\ be speci
 never a comma. When a tag requires a colour parameter, it is given in HTML hexadecimal code, which is
 \# followed by a 6-digit hexadecimal string, where the first two digits represent the red component,
 the next two the green component, and the last two the blue component (\#RRGGBB). Sub Station Alpha
-style (Visual Basic hexadecimal) is not supported - if a parser finds any colour in a format it does
-not recognize (including the SSA \&HBBGGRR\& format) it \should\ issue a warning and it \must\ ignore the tag.
-
-The same is valid for any other tags with invalid parameters, or any tags the parser does not recognize:
-the tag \must\ be ignored and the parser \must\ emit a warning about the syntax error.
+style (Visual Basic hexadecimal) is not supported.
 
 In the tag specification in this document, optional parameters are denoted by being enclosed by square
 brackets (``[]''), and may be ommitted. For example, \emph{\textbackslash baseline(curve1[,curve2])}
@@ -412,39 +409,90 @@ means that the second parameter is entirely optional. It's also possible that th
 is enclosed in square brackets, e.g. \emph{\textbackslash vc[(c1,c2,c3,c4)]}.
 
 The parameters of a tag \must\ be enclosed within parantheses, with exception for tags with only one numerical
-parameter, for which the parantheses \may\ be omitted. The parser \must\ issue a warning and disregard the tag
-if it omits mandatory parenthesises.
+parameter, for which the parantheses \may\ be omitted.
 
 All tags \must\ start with a backslash (\textbackslash ). If an override block (a pair of curly brackets)
 or any tag starts with anything else than a backslash, it is considered a syntax error and the parser \must\
-reject the file as invalid. Thus it is not possible, as it was in earlier formats, to hide inline comments
-inside normal override blocks. There is, however a special kind of comment block that can be used for this.
-Any curly opening brace that is immediately followed by an asterisk (*) starts a comment block (ending with
-a matching closing curly brace), the contents of which \must\ be ignored by the parser and the renderer.
+ignore the block or tag and \should\ emit a warning (see the section "Invalid or Malformed Tags and Syntax Errors"
+below). Thus it is not possible, as it was in earlier formats, to hide inline comments inside normal override blocks.
+There is, however a special kind of comment block that can be used for this. Any curly opening brace that is
+immediately followed by an exclamation mark (!) starts a comment block (ending with a matching closing curly brace),
+the contents of which \must\ be ignored by the parser and the renderer.
 For example:
 
 \begin{verbatim}
-{\fn(Verdana)\fs26\c#FFA040}Welcome to {\b1}AS5{\b0}!{*It's a nifty format, isn't it?}
+{\fn(Verdana)\fs26\c#FFA040}Welcome to {\b1}AS5{\b0}!{!It's a nifty format, isn't it?}
 \end{verbatim}
+
+
+\subsection{Invalid or Malformed Tags and Syntax Errors}
+Any override tag (excluding the special character escape) that meets any of the following conditions:
+\begin{itemize}
+\item - is not specified in this document (that is, tags not present in the standard or just simply
+misspelled variants of existing tags)
+\item - does not start with a backslash
+\item - is found outside an override block (that is, not within curly braces)
+\item - is missing parantheses where they should be present, or is missing a matching opening/closing paranthesis
+\item - has arguments not matching those expected by the parser
+\end{itemize}
+is considered \emph{invalid} or \emph{malformed}. Invalid or malformed tags are syntax errors, and the renderer
+\must\ ignore them. The parser \should\ also emit warnings about these errors, although it should be noted that
+under certain circumstances it may be desirable to suppress warnings. The parser \should\ include an option to do so.
+
+Any curly brace (start/end of an override block) which is missing its matching pair is also a syntax error; the
+resulting line \must\ be drawn as if it was just plain text without the override block. Naturally, the parser
+\should\ warn about this.
+
+\todo{Finish this}
 
 
 \subsection{Vector Path Format}
 \todo{Write me}
 
 
+\todo{Write detailed descriptions for all the override tags}
+
 \subsection{Special Character Escapes}
-The following tags are not really overrides, but rather escape codes for special characters. They
+The following tags are not considered override tags, but rather escape codes for special characters. They
 \mustnot\ be inside an override block, but only in the middle of the text (i.e. not between \{ and \}).
 
-\todo{Write these following ones}
 
 \subsubsection{\textbackslash n}
+\textbf{Usage:}
+\begin{verbatim}
+Line 1\nLine 2
+\end{verbatim}
+
+\textbf{Description:}
+Inserts a line break
 
 \subsubsection{\textbackslash h}
+\textbf{Usage:}
+\begin{verbatim}
+Word1\hWord2
+\end{verbatim}
+
+\textbf{Description:}
+Inserts a "hard" space
 
 \subsubsection{\textbackslash \{, \textbackslash \}}
+\textbf{Usage:}
+\begin{verbatim}
+Text \textbackslash \{inside curly braces\textbackslash \}
+\end{verbatim}
+
+\textbf{Description:}
+\{ and \} respectively
 
 \subsubsection{\textbackslash \textbackslash}
+\textbf{Usage:}
+\begin{verbatim}
+A \textbackslash \textbackslash\ (backslash)
+\end{verbatim}
+
+\textbf{Description:}
+\textbackslash of course
+
 
 \subsection{Basic Typography Tags}
 
@@ -491,11 +539,11 @@ Strikeout
 \subsubsection{\textbackslash fn}
 \textbf{Usage:}
 \begin{verbatim}
-\fn(fontname)
+\fn(fontname1,fontname2,...,fontnameN)
 \end{verbatim}
 
 \textbf{Description:}
-Set font name
+List of preferred fonts in descending order of preference
 
 \subsubsection{\textbackslash fe}
 \textbf{Usage:}
