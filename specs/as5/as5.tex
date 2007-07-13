@@ -124,7 +124,7 @@ such ignored lines in the file after re-saving it. Note that the space after the
 
 There are two sections which are required, \emph{[AS5]} and \emph{[Events]}, the former being
 the equivalent of \emph{[Script Info]} in previous formats. If either of those sections is
-missing, the file is invalid and \must\ be refused by the parser. Any other section
+missing, the file is invalid and \must\ be rejected by the parser. Any other section
 can be ommitted from the file, and need not be implemented by all parsers.
 
 Finally, there is a special type of undefined group, \emph{[Private:PROGNAME]}, which 
@@ -140,15 +140,19 @@ when resaving. It is suggested that an editing program \should\ check whether co
 actually valid AS5 lines, and if they are, display them to the user in some way as "disabled" lines.
 Note that commented out lines \mustnot\ influence subtitle rendering in any way.
 
-Note that \emph{Format:} lines from the previous formats are not admitted in AS5. If the parser
-finds any of them, or any other unrecognized lines not specified here (outside the \emph{[Private:]}
-section, where any text data can be stored), including but not limited to unknown sections, it
-\must\ halt parsing, rejecting the file as invalid, and it \should\ emit a warning specifying
-where the problem lies.
-
 The sections \may\ be written in any order, with the exception of the \emph{[AS5]} section which
 \must\ always be the first section.
 
+In general, malformed lines in AS5 (such as unrecognized lines, lines with missing fields, fields
+with invalid data for its type (for example, malformed timestamps) or unrecognized section headers)
+are not considered fatal syntax errors. If nothing else is explicitly specified, the renderer \must\
+ignore such lines completely, and the parser \should\ emit a warning describing the syntax error. The
+spirit of this rule to be forgiving; something that doesn't make the entire file unuseable or dangerously
+ambigous should not be a fatal syntax error. It is usually better to render the valid parts of the file
+correctly and tell the user about the problematic lines by the way of warning messages. Under certain
+circumstances it may be desirable to suppress warning messages; a well-behaved parser \should\ include
+an option to do so, but in general it is probably more useful to let the user know about the problem
+instead of just silently failing to render the line.
 
 \subsubsection{[AS5]}
 This \must\ be the first section in every AS5 file. If the very first line of the file is not
@@ -168,12 +172,14 @@ the encoding used for the rest of the script\cite{Unicode BOM}. The first four b
 It is possible, therefore, to determine the encoding of the file by checking its first two bytes.
 
 This section is used to declare several script properties that affect its parsing and rendering.
-All properties are stored in the format \textit{Name: data}, with one property per line. 
+All properties are stored in the format \textit{Name: data}, with one property per line.
+
 This section \must\ always declare the following properties (a file that is missing one of them is not valid):
 
 \begin{itemize}
 \item ScriptType: Should always be set to \textit{AS5}, for this particular version of the specification.
-If this contains a value that the parser does not understand, it \must\ abort parsing.
+An unrecognized ScriptType value is considered a fatal syntax error, and \must\ cause the parser to
+reject the entire file as invalid.
 \item Resolution: Should contain the script resolution in \textit{WxH} format. For example, for a 640x480
 script, this should say \textit{``Resolution: 640x480''}. Note that this does not need to correspond to the
 video resolution, however, subtitles \must\ be rendered on such a coordinate space. That is, in a
@@ -181,6 +187,8 @@ video resolution, however, subtitles \must\ be rendered on such a coordinate spa
 resolution of the video it's being drawn on. Also, in a 100x100 script, a radius 50 circle centered on
 the center will always take half of the height and half of the width of the video, even if that means
 being distorted if drawn on a video with a non-1:1 aspect ratio (for example, a 640x480 video).
+An unrecognized or malformed Resolution value is considered a fatal syntax error, and \must\ cause the parser
+to reject the entire file as invalid.
 \end{itemize}
 
 The following items \may\ also be used; they are not required, but are recommended. They all have default values:
@@ -190,10 +198,12 @@ The following items \may\ also be used; they are not required, but are recommend
 Default value is empty. This should be ignored by the renderer, but might be useful for inter-editing-program
 interaction.
 \item Wrapping: The line wrapping style. This can be ``Manual'', in which case only \textbackslash{n} can
-break lines or ``Automatic'', in which the renderer chooses how to break them. The default is ``Automatic''.
+break lines or ``Automatic'', in which the renderer chooses how to break them. If this is not set, or if the
+value set is not recognized, the renderer \must\ default to ``Automatic''.
 Even if it is set to Automatic, \textbackslash{n} will still insert a forced line break.
 On the other hand, if set to manual, the line can NEVER be broken at anywhere other than forced line breaks,
 even if it means that the line will become unreadable because it goes outside the display area.
+This property is not case sensitive.
 \item Extensions: A comma-separated list of all extensions being used in this file. At the moment, there are
 no extensions available. Renderers should read this to enable any extensions that they might support.
 Editing programs \must\ keep this field intact, unless the user chooses otherwise. Scripts WILL break
@@ -204,11 +214,11 @@ if the list of extensions is suddenly lost.
 Subtitling programs \should\ be able to display this title to the user.
 \end{itemize}
 
-Unlike in the previous incarnations of the format, storing private properties here is not allowed, which means
-that this section \mustnot\ contain any properties not listed here. It \may\, just like any other section, contain
-commented-out lines prefixed with a semicolon (;) which of course may contain anything, but it is strongly recommended
-that any application-specific or otherwise private data \should\ be stored in the \textit{[Private:PROGNAME]}
-section instead, as mentioned above.
+Unlike in the previous incarnations of the format, storing private properties here is strongly discouraged,
+which means that this section \shouldnot\ contain any properties not listed here. It \may\, just like any other
+section, contain commented-out lines prefixed with a semicolon (;) which of course may contain anything, but it
+is strongly recommended that any application-specific or otherwise private data \should\ be stored in the
+\textit{[Private:PROGNAME]} section instead, as mentioned above, or if it is line-specific data, in the User field.
 
 
 \subsubsection{[Events]}
@@ -230,14 +240,14 @@ time is \emph{inclusive}.
 \item End: The end time of the line. It follows the same format as the start time. The line is only
 displayed if the timestamp of the current frame is \emph{lesser than} the end time. That is, end time is
 \emph{exclusive}. In particular, it means that a line whose start time is equal to its end time will
-never be displayed. If the end time is earlier than the start time, the renderer \may\ issue a warning,
-but it \should\ render the remaining lines regardless of the issue.
+never be displayed. If the end time is earlier than the start time, the renderer \should\ issue a warning,
+but this is not considered a fatal syntax error and it \should\ render the remaining lines regardless of the issue.
 \item Style: The name of the default style used for this line. See the [Style] section below. If left blank,
-the script's global default style \must\ be used. If an unknown style name is specified, the renderer \must\
-fallback to default, and \may\ issue a warning.
+the script's global default style \must\ be used. If there is no default style defined, or if an unknown
+style name is specified, the renderer \must\ fallback to its own defaults (see below), and \should\ issue a warning.
 \item User: This field is used by the program to store program-specific data in each line. Renderers
 \should\ ignore this (but \may\ use it for application-specific extension features). This field \should\
-be left blank if it's not used. Note that whatever data is stored here \mustnot\ contain any commas!
+be left empty if it's not used. Note that whatever data is stored here \mustnot\ contain any commas!
 \item Content: The actual text of the line. This contains actual text and override tags. See the section
 on override tags for more information.
 \end{itemize}
@@ -248,7 +258,7 @@ representing minutes, and a floating point number representing seconds. Leading 
 Localization is irrelevant: a period (``.'') is always used to separate the decimal point. This way,
 0:21:42.5 and 0000:21:42.5000 are equivalent, and both represent 0 hours, 21 minutes, 42 seconds and 500 miliseconds.
 
-Spaces between each field \must\ be ignored by all parsers. Any spaces at the beginning of the
+Spaces between each field \must\ be ignored by the parser. Any spaces at the beginning of the
 content line \should\ be stripped by any editing program. A hard space (see the overrides section) or empty
 override block should be used if space at the start of a line is truly desirable. That is, the two
 following lines are syntactically identical:
@@ -330,10 +340,56 @@ this way of declaring styles is identical to the one above, but is more verbose.
 \todo{This is bad, we need to fix it with specified defaults to get consistent rendering}
 If no Default style is defined, the renderer \must\ choose its own defaults to render the text with.
 The defaults \must\ also be used any for any properties not specified in a given style (in other words,
-styles with no parent inherit from the renderer defaults). These defaults are entirely arbitrary and
-can be set to anything, but the renderer \should\ allow the user change them. A simple Sans-Serif font
-with white text and black borders is recommended if the user does not specify anything else.
+styles with no parent inherit from the renderer defaults). To ensure consistent rendering while still 
+avoiding having to explicitly define every single property, some of these defaults are mandatory and
+specified below; some others have recommended values, also specified below, but a well-featured renderer
+\may\ allow the user to change these defaults at will.
 
+The following default overrides are mandatory and \must\ be set as following:
+\begin{itemize}
+\item \textbackslash i(0)
+\item \textbackslash b(0)
+\item \textbackslash u(0)
+\item \textbackslash s(0)
+\item \textbackslash fe(Unicode)
+\item \textbackslash bordstyle(0)
+\item \textbackslash fscx(100)
+\item \textbackslash fscy(100)
+\item \textbackslash fsp() - undefined (font default)
+\item \textbackslash fsvp() - undefined (font default)
+\item \textbackslash 1a(#00)
+\item \textbackslash 2a(#00)
+\item \textbackslash 3a(#00)
+\item \textbackslash 4a(#80)
+\item \textbackslash left(12)
+\item \textbackslash right(12)
+\item \textbackslash top(12)
+\item \textbackslash bottom(12)
+\item \textbackslash ax(50)
+\item \textbackslash ay(100)
+\item \textbackslash nx(50)
+\item \textbackslash ny(100)
+\item \textbackslash rel(0)
+\item \textbackslash vertical(0)
+\item \textbackslash q(1)
+\item \textbackslash pos() - undefined (defined by alignment and margins)
+\item \textbackslash org() - undefined (defined by alignment and margins)
+\item \textbackslash bls(0)
+\item \textbackslash frx(0)
+\item \textbackslash fry(0)
+\item \textbackslash frz(0)
+\item \textbackslash fax(0)
+\item \textbackslash fay(0)
+\item \textbackslash fad(0,0)
+\item \textbackslash distort() - undefined (none)
+\item \textbackslash baseline() - undefined (none)
+\item \textbackslash blpos(0)
+\item \textbackslash vc() - undefined (none)
+\item \textbackslash blend(normal)
+\item \textbackslash clip() - undefined (none)
+\item \textbackslash iclip() - undefined (none)
+\item \textbackslash \$blur(0)
+\end{itemize}
 
 \subsubsection{[Resources]}
 
@@ -699,8 +755,8 @@ Script resolution relative to video area (0) or not (1)
 \subsubsection{\textbackslash vertical}
 \textbf{Usage:}
 \begin{verbatim}
-\vertical(1)
 \vertical(0)
+\vertical(1)
 \end{verbatim}
 
 \textbf{Description:}
