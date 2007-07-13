@@ -1,7 +1,8 @@
 	CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 		char *Codec = TI->CodecID;
-		// fourcc list from ffdshow
+/* Video Codecs */
 		if (!strcmp(Codec, "V_MS/VFW/FOURCC")) {
+			// fourcc list from ffdshow
 			switch (((BITMAPINFOHEADER *)TI->CodecPrivate)->biCompression) {
 				case MAKEFOURCC('F', 'F', 'D', 'S'):
 				case MAKEFOURCC('F', 'V', 'F', 'W'):
@@ -201,6 +202,37 @@
 				default:
 					return CODEC_ID_NONE;
 			}
+/* Audio Codecs */
+		} else if (!strcmp(Codec, "A_AC3"))
+			return CODEC_ID_AC3;
+		else if (!strcmp(Codec, "A_MPEG/L3"))
+			return CODEC_ID_MP3;
+		else if (!strcmp(Codec, "A_MPEG/L2"))
+			return CODEC_ID_MP2;
+		else if (!strcmp(Codec, "A_MPEG/L1"))
+			return CODEC_ID_MP2; // correct?
+		else if (!strcmp(Codec, "A_DTS"))
+			return CODEC_ID_DTS;
+/*
+		else if (!strcmp(Codec, "A_PCM/INT/LIT"))
+			return CODEC_ID_PCM_S16LE;
+		else if (!strcmp(Codec, "A_PCM/FLOAT/IEEE"))
+			return CODEC_ID_PCM_S16LE;
+*/
+		else if (!strcmp(Codec, "A_TTA1"))
+			return CODEC_ID_TTA;
+		else if (!strcmp(Codec, "A_WAVPACK4"))
+			return CODEC_ID_WAVPACK;
+		else if (!strcmp(Codec, "A_VORBIS"))
+			return CODEC_ID_VORBIS;
+		else if (!strncmp(Codec, "A_REAL/", 7)) {
+			// not supported
+			return CODEC_ID_NONE;
+		} else if (!strncmp(Codec, "A_AAC", 5))
+			return CODEC_ID_AAC;
+		else if (!strcmp(Codec, "A_MS/ACM")) {
+			// not supported
+			return CODEC_ID_NONE;
 		} else
 			return CODEC_ID_NONE;
 	}
