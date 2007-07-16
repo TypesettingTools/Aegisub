@@ -463,6 +463,7 @@ void AssFile::LoadDefault (bool defline) {
 	AddLine(_T("WrapStyle: 0"), _T("[Script Info]"),-1,version);
 	AddLine(_T("PlayResX: 640"),_T("[Script Info]"),-1,version);
 	AddLine(_T("PlayResY: 480"),_T("[Script Info]"),-1,version);
+	AddLine(_T("ScaledBorderAndShadow: yes"),_T("[Script Info]"),-1,version);
 	AddLine(_T(""),_T("[Script Info]"),-1,version);
 	AddLine(_T("[V4+ Styles]"),_T("[V4+ Styles]"),-1,version);
 	AddLine(_T("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"),_T("[V4+ Styles]"),-1,version);
@@ -1026,4 +1027,5 @@ std::list<AssFile*> AssFile::UndoStack;
 std::list<AssFile*> AssFile::RedoStack;
 bool AssFile::Popping;
 bool AssFile::StackModified;
+
 
