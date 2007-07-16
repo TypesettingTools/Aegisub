@@ -183,14 +183,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxComboBox *combo = new wxComboBox(filePage,-1,_T(""),wxDefaultPosition,wxDefaultSize,3,choices,wxCB_DROPDOWN | wxCB_READONLY);
 		Bind(combo,_T("Autoload linked files"));
 		fileSizer6->Add(combo,1,wxEXPAND);
-		fileSizer6->Add(new wxStaticText(filePage,-1,_("Text import actor separator:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
-		edit = new wxTextCtrl(filePage,-1);
-		Bind(edit,_T("Text actor separator"));
-		fileSizer6->Add(edit,1,wxEXPAND);
-		fileSizer6->Add(new wxStaticText(filePage,-1,_("Text import comment starter:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
-		edit = new wxTextCtrl(filePage,-1);
-		Bind(edit,_T("Text comment starter"));
-		fileSizer6->Add(edit,1,wxEXPAND);
 		fileSizer6->AddGrowableCol(1,1);
 
 		// Sizers

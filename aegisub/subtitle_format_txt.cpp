@@ -42,6 +42,7 @@
 #include "ass_dialogue.h"
 #include "options.h"
 #include "version.h"
+#include "dialog_text_import.h"
 
 
 /////////////
@@ -84,6 +85,9 @@ wxArrayString TXTSubtitleFormat::GetWriteWildcards() {
 /////////////
 // Read file
 void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using namespace std;
+	// Import options
+	DialogTextImport dlg;
+	if (dlg.ShowModal() == wxID_CANCEL) return;
 
 	// Reader
 	TextFileReader file(filename,encoding,false);

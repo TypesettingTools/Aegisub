@@ -151,6 +151,7 @@ aegisub_SOURCES = \
 	dialog_style_editor.cpp \
 	dialog_style_manager.cpp \
 	dialog_styling_assistant.cpp \
+	dialog_text_import.cpp \
 	dialog_timing_processor.cpp \
 	dialog_tip.cpp \
 	dialog_translation.cpp \
