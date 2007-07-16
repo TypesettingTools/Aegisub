@@ -356,6 +356,8 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		return;
 	}
 
+	if (event.GetKeyCode() == WXK_ESCAPE) EndModal(1);
+
 	// Skip anything else
 	event.Skip();
 }
