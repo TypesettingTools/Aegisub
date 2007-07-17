@@ -627,6 +627,7 @@ function karaskel.use_classic_adv(use_furigana, macrotoo)
 			local l = subs[i]
 			if l.class == "dialogue" then
 				-- Link prev of this one
+				karaskel.preproc_line(subs, meta, styles, l)
 				l.prev = prevline
 				l.next = nil
 				-- Line next of prev one
