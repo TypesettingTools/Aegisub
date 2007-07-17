@@ -535,47 +535,143 @@ end
 -- otherwise the original line is converted to a comment
 -- General prototype of an fx function: function(subs, meta, styles, line, fxdata)
 -- fxdata are extra data after the effect name in the Effect field
-function karaskel.fx_library_main(subs)
-	aegisub.progress.task("Collecting header info")
-	meta, styles = karaskel.collect_head(subs)
-	
-	aegisub.progress.task("Processing subs")
-	local i, maxi = 1, #subs
-	while i <= maxi do
-		aegisub.progress.set(i/maxi*100)
-		local l = subs[i]
+local fx_library_registered = false
+function karaskel.use_fx_library_furi(use_furigana, macrotoo)
+	local function fx_library_main(subs)
+		aegisub.progress.task("Collecting header info")
+		meta, styles = karaskel.collect_head(subs, use_furigana)
 		
-		if l.class == "dialogue" then
-			aegisub.progress.task(l.text)
-			karaskel.preproc_line(subs, meta, styles, l)
-			local keep = true
-			local fx, fxdata = string.headtail(l.effect)
-			if fx == "" then fx = "none" end
-			if _G["fx_" .. fx] then
-				-- note to casual readers: _G is a special global variable that points to the global environment
-				-- specifically, _G["_G"] == _G
-				keep = _G["fx_" .. fx](subs, meta, styles, l, fxdata)
+		aegisub.progress.task("Processing subs")
+		local i, maxi = 1, #subs
+		while i <= maxi do
+			aegisub.progress.set(i/maxi*100)
+			local l = subs[i]
+			
+			if l.class == "dialogue" then
+				aegisub.progress.task(l.text)
+				karaskel.preproc_line(subs, meta, styles, l)
+				local keep = true
+				local fx, fxdata = string.headtail(l.effect)
+				if fx == "" then fx = "none" end
+				if _G["fx_" .. fx] then
+					-- note to casual readers: _G is a special global variable that points to the global environment
+					-- specifically, _G["_G"] == _G
+					keep = _G["fx_" .. fx](subs, meta, styles, l, fxdata)
+				end
+				if not keep then
+					l = subs[i]
+					l.comment = true
+					subs[i] = l
+				end
 			end
-			if not keep then
-				l = subs[i]
-				l.comment = true
-				subs[i] = l
-			end
+			
+			i = i + 1
 		end
-		
-		i = i + 1
 	end
-end
--- Register an fx_library type karaoke
-karaskel.fx_library_registered = false
-function karaskel.use_fx_library(macrotoo)
-	if karaskel.fx_library_registered then return end
-	aegisub.register_filter(script_name or "fx_library", script_description or "Apply karaoke effects (fx_library skeleton)", 2000, karaskel.fx_library_main)
+
+	if fx_library_registered then return end
+	aegisub.register_filter(script_name or "fx_library", script_description or "Apply karaoke effects (fx_library skeleton)", 2000, fx_library_main)
+	
 	if macrotoo then
 		local function fxlibmacro(subs)
-			karaskel.fx_library_main(subs)
+			fx_library_main(subs)
 			aegisub.set_undo_point(script_name or "karaoke effect")
 		end
 		aegisub.register_macro(script_name or "fx_library", script_description or "Apply karaoke effects (fx_library skeleton)", fxlibmacro)
+	end
+end
+function karaskel.use_fx_library(macrotoo)
+	return karaskel.use_fx_library_furi(false, macrotoo)
+end
+
+
+-- A skeleton that approximately simulates the Auto3 "advanced" one.
+-- Build a Auto3-like list of dialogue lines and also add linked list refs to lines.
+-- Call user-defined do_line function for each line, if it exists.
+-- The default do_line function will call the do_syllable function for each line,
+-- if the function exists.
+-- The function names called are constant.
+local classic_adv_registered = false
+function karaskel.use_classic_adv(use_furigana, macrotoo)
+	local function classic_adv_main(subs)
+		
+		local function default_do_syllable(subs, meta, styles, lines, line, syl)
+			-- do nothing
+		end
+	
+		local sylfunc = (type(_G.do_syllable)=="function" and _G.do_syllable) or default_do_syllable
+		local furifunc = (type(_G.do_furigana)=="function" and _G.do_furigana) or default_do_syllable
+
+		local function default_do_line(subs, meta, styles, lines, line)
+			for i = 0, line.kara.n do
+				sylfunc(subs, meta, styles, lines, line, line.kara[i])
+			end
+			if use_furigana then
+				for i = 0, line.furi.n do
+					furifunc(subs, meta, styles, lines, line, line.furi[i])
+				end
+			end
+		end
+		
+		aegisub.progress.task("Collecting header info")
+		local meta, styles = karaskel.collect_head(subs, use_furigana)
+		
+		-- Collect lines
+		aegisub.progress.task("Collecting subtitle lines")
+		local lines = { n=0 }
+		local prevline = nil
+		local i = 1
+		local curorgline, maxorglines = 1, #subs
+		while i <= #subs do
+			aegisub.progress.set(curorgline/maxorglines*100)
+			local l = subs[i]
+			if l.class == "dialogue" then
+				-- Link prev of this one
+				l.prev = prevline
+				l.next = nil
+				-- Line next of prev one
+				if prevline then
+					prevline.next = l
+				end
+				-- Insert into array
+				lines.n = lines.n + 1
+				lines[lines.n] = l
+				-- Update prev
+				prevline = l
+				-- Delete from file
+				subs[i] = nil
+			else
+				-- Only increase for non-dialogue lines
+				-- (Dialogue lines are deleted, so every other lines moves one down)
+				 i = i + 1
+			end
+			curorgline = curorgline + 1
+		end
+		
+		aegisub.progress.task("Processing subtitles")
+		local linefunc = default_do_line
+		if type(_G.do_line)=="function" then
+			linefunc = function(subs, meta, styles, lines, line)
+				return _G.do_line(subs, meta, styles, lines, line, default_do_line)
+			end
+		end
+		for i = 1, lines.n do
+			aegisub.progress.set(i/lines.n*100)
+			linefunc(subs, meta, styles, lines, lines[i])
+		end
+		
+		aegisub.progress.task("Finished")
+		aegisub.progress.set(100)
+	end
+	
+	if classic_adv_registered then return end
+	aegisub.register_filter(script_name or "classic_adv", script_description or "Apply karaoke effects (classic_adv skeleton)", 2000, classic_adv_main)
+	
+	if macrotoo then
+		local function classic_adv_macro(subs)
+			classic_adv_main(subs)
+			aegisub.set_undo_point(script_name or "karaoke effect")
+		end
+		aegisub.register_macro(script_name or "classic_adv", script_description or "Apply karaoke effects (classic_adv skeleton)", classic_adv_macro)
 	end
 end
