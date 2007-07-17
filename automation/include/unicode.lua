@@ -34,7 +34,7 @@ module("unicode")
 
 -- Return the number of bytes occupied by the character starting at the i'th byte in s
 function charwidth(s, i)
-	local b = s:byte(i)
+	local b = s:byte(i or 1)
 	if not b then
 		--aegisub.debug.out(3, "unicode.charwidth of '%s' @ %d, nil byte\n", s, i)
 		-- FIXME, something in karaskel results in this case, shouldn't happen

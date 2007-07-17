@@ -107,13 +107,13 @@ end
 -- Create an alpha override code from a style definition colour code
 function alpha_from_style(scolor)
 	local r, g, b, a = extract_color(scolor)
-	return ass_alpha(a)
+	return ass_alpha(a or 0)
 end
 
 -- Create an colour override code from a style definition colour code
 function color_from_style(scolor)
 	local r, g, b = extract_color(scolor)
-	return ass_color(r, g, b)
+	return ass_color(r or 0, g or 0, b or 0)
 end
 
 -- Converts HSV (Hue, Saturation, Value)  to RGB
