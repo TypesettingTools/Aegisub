@@ -202,6 +202,7 @@ function karaskel.preproc_line_text(meta, styles, line)
 			furi.kdur = syl.duration / 10
 			furi.text = furitext
 			furi.text_stripped = furitext
+			furi.text_spacestripped = furitext
 			furi.line = line
 			furi.tag = syl.tag
 			furi.inline_fx = cur_inline_fx
