@@ -315,7 +315,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	// Check if video was loaded properly
 	if (!script.AsClip()->GetVideoInfo().HasVideo()) {
 		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: No suitable video found"));
-		throw _T("No usable video found in ") + _filename;
+		throw _T("Avisynth: No usable video found in ") + _filename;
 	}
 
 	// Convert to RGB32
@@ -513,7 +513,7 @@ void AvisynthVideoProvider::LoadVSFilter() {
 		}
 		else if (!env->FunctionExists("TextSub")) {
 			AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Couldn't locate VSFilter"));
-			throw _T("Couldn't locate VSFilter");
+			throw _T("Couldn't locate VSFilter for Avisynth internal subtitle rendering");
 		}
 	}
 }
@@ -542,7 +542,7 @@ void AvisynthVideoProvider::LoadASA() {
 		}
 		else if (!env->FunctionExists("asa")) {
 			AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Couldn't locate asa"));
-			throw _T("Couldn't locate asa");
+			throw _T("Couldn't locate asa for Avisynth internal subtitle rendering");
 		}
 	}
 }

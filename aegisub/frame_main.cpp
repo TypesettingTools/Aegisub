@@ -561,7 +561,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		// File exists?
 		if (isFile) {
 			wxFileName fileCheck(filename);
-			if (!fileCheck.FileExists()) throw _T("File does not exist.");
+			if (!fileCheck.FileExists()) throw _T("Selected file does not exist.");
 
 			// Make sure that file isn't actually a timecode file
 			TextFileReader testSubs(filename);
@@ -1074,9 +1074,9 @@ void FrameMain::LoadKeyframes(wxString filename) {
 
 		// Read header
 		wxString cur = file.ReadLineFromFile();
-		if (cur != _T("# keyframe format v1")) throw _T("Invalid keyframes file.");
+		if (cur != _T("# keyframe format v1")) throw _T("Invalid keyframes file, missing header.");
 		cur = file.ReadLineFromFile();
-		if (cur.Left(4) != _T("fps ")) throw _T("Invalid keyframes file.");
+		if (cur.Left(4) != _T("fps ")) throw _T("Invalid keyframes file, missing FPS.");
 		cur = cur.Mid(4);
 		double fps;
 		cur.ToDouble(&fps);

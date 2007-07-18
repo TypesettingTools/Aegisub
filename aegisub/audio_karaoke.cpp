@@ -353,7 +353,7 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 						dc.DrawLine(splitxpos, 0, splitxpos, h);
 					}
 				} else {
-					wxLogError(_T("WTF? Failed to GetPartialTextExtents"));
+					wxLogError(_T("Karaoke syllable display: Failed to GetPartialTextExtents. This should never happen, except on severely overloaded systems."));
 				}
 			}
 

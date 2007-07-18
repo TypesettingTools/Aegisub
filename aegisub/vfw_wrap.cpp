@@ -59,7 +59,7 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	long hr = AVIFileOpen(&pfile, filename.wc_str(), OF_SHARE_DENY_WRITE, 0); 
 	if (hr != 0) {
 		AVIFileExit();
-		throw _T("Unable to open file.");
+		throw _T("Unable to open AVI file for reading keyframes.");
     }
 
 	// Open stream
@@ -68,7 +68,7 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	if (hr != 0) {
 		AVIFileRelease(pfile);
 		AVIFileExit();
-		throw _T("Unable to open stream.");
+		throw _T("Unable to open AVI stream for reading keyframes.");
 	}
 
 	// Get stream data

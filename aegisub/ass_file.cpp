@@ -408,7 +408,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 			if (versionString == _T("v4.00")) trueVersion = 0;
 			else if (versionString == _T("v4.00+")) trueVersion = 1;
 			else if (versionString == _T("v4.00++")) trueVersion = 2;
-			else throw _T("Unknown file version");
+			else throw _T("Unknown SSA file format version");
 			if (trueVersion != version) {
 				if (!(trueVersion == 2 && version == 1)) wxLogMessage(_T("Warning: File has the wrong extension."));
 				version = trueVersion;

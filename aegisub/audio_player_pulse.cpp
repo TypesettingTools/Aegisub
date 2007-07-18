@@ -192,6 +192,7 @@ void PulseAudioPlayer::OpenStream()
 			pa_threaded_mainloop_stop(mainloop);
 			pa_threaded_mainloop_free(mainloop);
 			wxString s(pa_strerror(paerror), wxConvUTF8);
+			s.Prepend(_T("PulseAudio reported error: "));
 			throw s.c_str();
 		}
 		// otherwise loop once more
@@ -219,12 +220,13 @@ void PulseAudioPlayer::OpenStream()
 	pa_stream_set_state_callback(stream, (pa_stream_notify_cb_t)pa_stream_notify, this);
 	pa_stream_set_write_callback(stream, (pa_stream_request_cb_t)pa_stream_write, this);
 
-	// Connext stream
+	// Connect stream
 	//printf("Connecting playback stream\n");
 	paerror = pa_stream_connect_playback(stream, NULL, NULL, PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE, NULL, NULL);
 	if (paerror) {
 		printf("PulseAudio reported error: %s (%d)\n", pa_strerror(paerror), paerror);
 		wxString s(pa_strerror(paerror), wxConvUTF8);
+		s.Prepend(_T("PulseAudio reported error: "));
 		throw s.c_str();
 	}
 	while (true) {
@@ -233,8 +235,8 @@ void PulseAudioPlayer::OpenStream()
 			break;
 		} else if (sstate == PA_STREAM_FAILED) {
 			paerror = pa_context_errno(context);
-			printf("Stream connection failed: %s (%d)\n", pa_strerror(paerror), paerror);
-			throw _T("Something went wrong connecting the stream");
+			printf("PulseAudio player: Stream connection failed: %s (%d)\n", pa_strerror(paerror), paerror);
+			throw _T("PulseAudio player: Something went wrong connecting the stream");
 		}
 	}
 	//printf("Connected playback stream, now playing\n\n");
@@ -285,7 +287,7 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 		pa_operation_unref(op);
 		if (!stream_success_val) {
 			paerror = pa_context_errno(context);
-			printf("Error flushing stream: %s (%d)\n", pa_strerror(paerror), paerror);
+			printf("PulseAudio player: Error flushing stream: %s (%d)\n", pa_strerror(paerror), paerror);
 		}
 	}
 
@@ -301,7 +303,7 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 	paerror = pa_stream_get_time(stream, &play_start_time);
 	pa_threaded_mainloop_unlock(mainloop);
 	if (paerror) {
-		printf("Error getting stream time: %s (%d)\n", pa_strerror(paerror), paerror);
+		printf("PulseAudio player: Error getting stream time: %s (%d)\n", pa_strerror(paerror), paerror);
 	}
 
 	PulseAudioPlayer::pa_stream_write(stream, pa_stream_writable_size(stream), this);
@@ -313,7 +315,7 @@ void PulseAudioPlayer::Play(__int64 start,__int64 count)
 	pa_operation_unref(op);
 	if (!stream_success_val) {
 		paerror = pa_context_errno(context);
-		printf("Error triggering stream: %s (%d)\n", pa_strerror(paerror), paerror);
+		printf("PulseAudio player: Error triggering stream: %s (%d)\n", pa_strerror(paerror), paerror);
 	}
 
 	// Update timer
@@ -343,7 +345,7 @@ void PulseAudioPlayer::Stop(bool timerToo)
 	pa_operation_unref(op);
 	if (!stream_success_val) {
 		paerror = pa_context_errno(context);
-		printf("Error flushing stream: %s (%d)\n", pa_strerror(paerror), paerror);
+		printf("PulseAudio player: Error flushing stream: %s (%d)\n", pa_strerror(paerror), paerror);
 	}
 
 	// And unref it

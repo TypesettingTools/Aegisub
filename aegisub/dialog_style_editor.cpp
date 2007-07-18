@@ -588,7 +588,7 @@ void DialogStyleEditor::OnSetColor (int n) {
 		case 2: modify = &work->secondary; break;
 		case 3: modify = &work->outline; break;
 		case 4: modify = &work->shadow; break;
-		default: throw _T("Never gets here");
+		default: throw _T("Internal error in style editor, attempted setting colour id outside range");
 	}
 	modify->SetWXColor(colorButton[n-1]->GetColour());
 	if (SubsPreview) SubsPreview->SetStyle(work);

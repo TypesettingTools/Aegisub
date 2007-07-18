@@ -78,7 +78,7 @@ const AegiVideoFrame VideoProvider::GetFrame(int n,int format) {
 	// Convert to compatible format
 	if (!(frame.format & format)) {
 		if (format & FORMAT_RGB32) tempRGBFrame.format = FORMAT_RGB32;
-		else throw _T("Unable to negotiate formats.");
+		else throw _T("Unable to negotiate video frame format.");
 		tempRGBFrame.w = frame.w;
 		tempRGBFrame.h = frame.h;
 		tempRGBFrame.pitch[0] = frame.w * 4;

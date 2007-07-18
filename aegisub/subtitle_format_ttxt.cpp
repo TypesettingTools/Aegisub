@@ -227,7 +227,7 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			WriteLine(root,current);
 			i++;
 		}
-		else throw _T("Unexpected line type");
+		else throw _T("Unexpected line type in TTXT file");
 	}
 
 	// Save XML

@@ -204,7 +204,7 @@ void FrameRate::Load(wxString filename) {
 
 		// Unknown
 		else {
-			throw _T("Unknown file format.");
+			throw _T("Unknown time code file format.");
 		}
 
 	}

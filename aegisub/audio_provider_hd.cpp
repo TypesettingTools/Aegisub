@@ -60,7 +60,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	wxLongLong freespace;
 	if (wxGetDiskSpace(DiskCachePath(), NULL, &freespace)) {
 		if (num_samples * channels * bytes_per_sample > freespace) {
-			throw wxString(_T("Not enough free diskspace in "))+DiskCachePath()+wxString(_T(" to cache the audio"));
+			throw wxString(_T("Not enough free disk space in "))+DiskCachePath()+wxString(_T(" to cache the audio"));
 		}
 	}
 
@@ -68,7 +68,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	diskCacheFilename = DiskCacheName();
 	file_cache.Create(diskCacheFilename,true,wxS_DEFAULT);
 	file_cache.Open(diskCacheFilename,wxFile::read_write);
-	if (!file_cache.IsOpened()) throw _T("Unable to write to disk cache.");
+	if (!file_cache.IsOpened()) throw _T("Unable to write to audio disk cache.");
 
 	// Start progress
 	volatile bool canceled = false;

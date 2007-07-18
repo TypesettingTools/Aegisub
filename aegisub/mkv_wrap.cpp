@@ -313,7 +313,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 	if (tracksFound.Count() == 0) {
 		target->LoadDefault(true);
 		Close();
-		throw _T("File has no known subtitle tracks.");
+		throw _T("File has no recognised subtitle tracks.");
 	}
 
 	// Only one track found

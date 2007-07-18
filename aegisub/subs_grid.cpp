@@ -574,7 +574,7 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 	bool cont;
 	wxArrayInt sel = GetSelection(&cont);
 	int nSel = sel.Count();
-	if ((nSel != 2 && nSel != 3) || !cont) throw _T("Invalid selection");
+	if ((nSel != 2 && nSel != 3) || !cont) throw _T("Invalid selection for recombining");
 	int n = sel[0];
 
 	// Get dialogues

@@ -235,7 +235,7 @@ void DialogStyleManager::LoadCatalog () {
 	wxString dirname = StandardPaths::DecodePath(_T("?user/catalog/"));
 	if (!wxDirExists(dirname)) {
 		if (!wxMkdir(dirname)) {
-			throw _T("Error creating directory!");
+			throw _T("Failed creating directory for style catalogues");
 		}
 		else {
 			// Create default style
@@ -441,7 +441,7 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 		wxString dirname = StandardPaths::DecodePath(_T("?user/catalog/"));
 		if (!wxDirExists(dirname)) {
 			if (!wxMkdir(dirname)) {
-				throw _T("Error creating directory!");
+				throw _T("Failed creating directory for style catalogues");
 			}
 		}
 		Store.Save(name);

@@ -148,7 +148,7 @@ void AlsaPlayer::OpenStream()
 
 	// Open device for blocking access
 	if (snd_pcm_open(&pcm_handle, device.mb_str(wxConvUTF8), stream, 0) < 0) { // supposedly we don't want SND_PCM_ASYNC even for async playback
-		throw _T("Error opening specified PCM device");
+		throw _T("ALSA player: Error opening specified PCM device");
 	}
 
 	SetUpHardware();
@@ -171,12 +171,12 @@ void AlsaPlayer::SetUpHardware()
 
 	// Get hardware params
 	if (snd_pcm_hw_params_any(pcm_handle, hwparams) < 0) {
-		throw _T("Error setting up default PCM device");
+		throw _T("ALSA player: Error setting up default PCM device");
 	}
 
 	// Set stream format
 	if (snd_pcm_hw_params_set_access(pcm_handle, hwparams, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-		throw _T("Could not set interleaved stream format");
+		throw _T("ALSA player: Could not set interleaved stream format");
 	}
 
 	// Set sample format
@@ -188,65 +188,65 @@ void AlsaPlayer::SetUpHardware()
 			sample_format = SND_PCM_FORMAT_S16_LE;
 			break;
 		default:
-			throw _T("Can only handle 8 and 16 bit sound");
+			throw _T("ALSA player: Can only handle 8 and 16 bit sound");
 	}
 	if (snd_pcm_hw_params_set_format(pcm_handle, hwparams, sample_format) < 0) {
-		throw _T("Could not set sample format");
+		throw _T("ALSA player: Could not set sample format");
 	}
 
 	// Ask for resampling
 	if (snd_pcm_hw_params_set_rate_resample(pcm_handle, hwparams, 1) < 0) {
-		throw _T("Couldn't enable resampling");
+		throw _T("ALSA player: Couldn't enable resampling");
 	}
 
 	// Set sample rate
 	rate = provider->GetSampleRate();
 	real_rate = rate;
 	if (snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, &real_rate, 0) < 0) {
-		throw _T("Could not set sample rate");
+		throw _T("ALSA player: Could not set sample rate");
 	}
 	if (rate != real_rate) {
-		wxLogDebug(_T("Could not set ideal sample rate %d, using %d instead"), rate, real_rate);
+		wxLogDebug(_T("ALSA player: Could not set ideal sample rate %d, using %d instead"), rate, real_rate);
 	}
 
 	// Set number of channels
 	if (snd_pcm_hw_params_set_channels(pcm_handle, hwparams, provider->GetChannels()) < 0) {
-		throw _T("Could not set number of channels");
+		throw _T("ALSA player: Could not set number of channels");
 	}
-	printf("Set sample rate %u (wanted %u)\n", real_rate, rate);
+	printf("ALSA player: Set sample rate %u (wanted %u)\n", real_rate, rate);
 
 	// Set buffer size
 	unsigned int wanted_buflen = 1000000; // microseconds
 	buflen = wanted_buflen;
 	if (snd_pcm_hw_params_set_buffer_time_near(pcm_handle, hwparams, &buflen, &dir) < 0) {
-		throw _T("Couldn't set buffer length");
+		throw _T("ALSA player: Couldn't set buffer length");
 	}
 	if (buflen != wanted_buflen) {
-		wxLogDebug(_T("Couldn't get wanted buffer size of %u, got %u instead"), wanted_buflen, buflen);
+		wxLogDebug(_T("ALSA player: Couldn't get wanted buffer size of %u, got %u instead"), wanted_buflen, buflen);
 	}
 	if (snd_pcm_hw_params_get_buffer_size(hwparams, &bufsize) < 0) {
-		throw _T("Couldn't get buffer size");
+		throw _T("ALSA player: Couldn't get buffer size");
 	}
-	printf("Buffer size: %lu\n", bufsize);
+	printf("ALSA player: Buffer size: %lu\n", bufsize);
 
 	// Set period (number of frames ideally written at a time)
 	// Somewhat arbitrary for now
 	unsigned int wanted_period = bufsize / 4;
 	period_len = wanted_period; // microseconds
 	if (snd_pcm_hw_params_set_period_time_near(pcm_handle, hwparams, &period_len, &dir) < 0) {
-		throw _T("Couldn't set period length");
+		throw _T("ALSA player: Couldn't set period length");
 	}
 	if (period_len != wanted_period) {
-		wxLogDebug(_T("Couldn't get wanted period size of %d, got %d instead"), wanted_period, period_len);
+		wxLogDebug(_T("ALSA player: Couldn't get wanted period size of %d, got %d instead"), wanted_period, period_len);
 	}
 	if (snd_pcm_hw_params_get_period_size(hwparams, &period, &dir) < 0) {
-		throw _T("Couldn't get period size");
+		throw _T("ALSA player: Couldn't get period size");
 	}
-	printf("Period size: %lu\n", period);
+	printf("ALSA player: Period size: %lu\n", period);
 
 	// Apply parameters
 	if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
-		throw _T("Failed applying sound hardware settings");
+		throw _T("ALSA player: Failed applying sound hardware settings");
 	}
 
 	// And free memory again
@@ -262,22 +262,22 @@ void AlsaPlayer::SetUpAsync()
 
 	// Get current parameters
 	if (snd_pcm_sw_params_current(pcm_handle, sw_params) < 0) {
-		throw _T("Couldn't get current SW params");
+		throw _T("ALSA player: Couldn't get current SW params");
 	}
 
 	// How full the buffer must be before playback begins
 	if (snd_pcm_sw_params_set_start_threshold(pcm_handle, sw_params, bufsize - period) < 0) {
-		throw _T("Failed setting start threshold");
+		throw _T("ALSA player: Failed setting start threshold");
 	}
 
 	// The the largest write guaranteed never to block
 	if (snd_pcm_sw_params_set_avail_min(pcm_handle, sw_params, period) < 0) {
-		throw _T("Failed setting min available buffer");
+		throw _T("ALSA player: Failed setting min available buffer");
 	}
 
 	// Apply settings
 	if (snd_pcm_sw_params(pcm_handle, sw_params) < 0) {
-		throw _T("Failed applying SW params");
+		throw _T("ALSA player: Failed applying SW params");
 	}
 
 	// And free struct again
@@ -285,7 +285,7 @@ void AlsaPlayer::SetUpAsync()
 
 	// Attach async handler
 	if (snd_async_add_pcm_handler(&pcm_callback, pcm_handle, async_write_handler, this) < 0) {
-		throw _T("Failed attaching async handler");
+		throw _T("ALSA player: Failed attaching async handler");
 	}
 }
 

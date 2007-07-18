@@ -410,7 +410,7 @@ void OptionsManager::Load() {
 	// Read header
 	TextFileReader file(filename);
 	wxString header = file.ReadLineFromFile();
-	if (header != _T("[Config]")) throw _T("Invalid config file");
+	if (header != _T("[Config]")) throw _T("Configuration file is invalid");
 
 	// Get variables
 	std::map<wxString,VariableData>::iterator cur;
@@ -495,7 +495,7 @@ int OptionsManager::AsInt(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsInt();
 	}
-	else throw _T("Undefined name");
+	else throw _T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
@@ -507,7 +507,7 @@ bool OptionsManager::AsBool(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsBool();
 	}
-	else throw _T("Undefined name");
+	else throw _T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
@@ -519,7 +519,7 @@ double OptionsManager::AsFloat(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsFloat();
 	}
-	else throw _T("Undefined name");
+	else throw _T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
@@ -531,7 +531,7 @@ wxString OptionsManager::AsText(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsText();
 	}
-	else throw _T("Undefined name");
+	else throw _T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
@@ -543,7 +543,7 @@ wxColour OptionsManager::AsColour(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsColour();
 	}
-	else throw _T("Undefined name");
+	else throw _T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
