@@ -689,7 +689,7 @@ void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 				scripts[i]->Reload();
 			}
 			catch (const wchar_t *e) {
-				wxLogError(_T("Error while reloading Automation scripts before export: %s", e.c_str());
+				wxLogError(_T("Error while reloading Automation scripts before export: %s"), e);
 			}
 			catch (...) {
 				wxLogError(_T("An unknown error occurred reloading Automation script '%s'."), scripts[i]->GetName().c_str());
