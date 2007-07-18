@@ -10,6 +10,15 @@ FFmpegSource Documentation
 <h2>Changes</h2>
 <ul>
 
+<li>1.4<ul>
+<li>Naming scheme of cache files changed to prevent confusion with the default names in files with multiple tracks of the same type</li>
+<li>Use mmx optimizations in swscaler when possible</li>
+<li>Now uses normal windows linebreaks in all files</li>
+<li>Removed FFAudioSource</li>
+<li>Merged FFVideoSource and FFAudioRefSource into FFmpegSource</li>
+<li>Added postprocessing with libpostproc in FFmpegSource and separately in FFPP</li>
+</ul></li>
+
 <li>1.3<ul>
 <li>Compiled against ffmpeg rev9620</li>
 <li>Added FFAudioRefSource</li>
@@ -36,55 +45,6 @@ FFmpegSource Documentation
 
 </ul>
 
-<h2>Usage</h2>
-<p>
-<b>FFVideoSource(string source, int track = -1, int seekmode = 1, string timecodes, bool cache = true, string cachefile)</b><br />
-A video source that is frame accurate for most popular containers
-</p>
-
-<p>
-<b>FFAudioSource(string source, int track = -1)</b><br />
-Very unreliable attempt at sample accurate seeking in audio files
-</p>
-
-<p>
-<b>FFAudioRefSource(string source, int track = -1, string cachefile)</b><br />
-Decodes all audio to a temporary file which ensures that it will always be sample accurate
-</p>
-
-<p>
-<b>source:</b>
-  source file
-</p>
-
-<p>
-<b>track:</b>
-  track number as seen by the relevant demuxer, starts from 0, -1 means it will pick the first suitable track
-</p>
-
-<p>
-<b>seekmode:</b>
-  force how seeking is handled, has no effect on matroska files which always use the equivalent of seekmode=1<br />
-    <b>0:</b> linear access, the definition of slow but should make some formats "usable"<br />
-    <b>1:</b> safe normal, bases seeking decisions on the reported keyframe positions<br />
-    <b>2:</b> unsafe normal, same as 1 but no error will be thrown if the exact destination has to be guessed<br />
-    <b>3:</b> aggressive, seek in the forward direction even if no closer keyframe is known to exist, only useful for containers where avformat doesn't report keyframes properly and testing
-</p>
-
-<p>
-<b>timecodes:</b>
-  file to output timecodes to, if the file exists it will always be overwritten
-</p>
-
-<p>
-<b>cache:</b>
-  write indexing information to a file for later use
-</p>
-
-<p>
-<b>cachefile:</b>
-  if specified the file to store the index information or raw audio in, if nothing is specified (source).ffcache is used for video and (source).ffracache for audio
-</p>
 
 <h2>Compatibility - Video</h2>
 <ul>
@@ -98,9 +58,108 @@ Decodes all audio to a temporary file which ensures that it will always be sampl
 
 <h2>Compatibility - Audio</h2>
 <ul>
-<li>Not sample accurate ever?</li>
+<li>Sample accurate in all containers</li>
 </ul>
 
+<h2>Usage</h2>
+<p>
+<b>FFmpegSource(string source, int vtrack = -1, int atrack = -2, string timecodes, bool vcache = true, string vcachefile, string acachefile, string pp, int ppquality = 6, int seekmode = 1)</b><br />
+</p>
+
+<p>
+<b>FFPP(clip, string pp, int ppquality = 6)</b><br />
+Separate postprocessing which also seems to include a few simple deinterlacers
+</p>
+
+
+<p>
+<b>source:</b>
+  Source file.
+</p>
+
+<p>
+<b>atrack &amp; vtrack:</b>
+  Track number as seen by the relevant demuxer, starts from 0, -1 means it will pick the first suitable track and -2 means it's disabled.
+</p>
+
+
+<p>
+<b>timecodes:</b>
+  File to output timecodes to, if the file exists it will be overwritten.
+</p>
+
+<p>
+<b>vcache:</b>
+  Write video indexing information to a file for later use.
+</p>
+
+<p>
+<b>vcachefile &amp; acachefile:</b>
+  Specifies the file to store the index information or raw audio in, if nothing is specified (source).ffv(tracknumber)cache is used for video and (source).ffa(tracknumber)cache for audio.
+</p>
+
+<p>
+<b>pp:</b>
+ See the table below for a full description, an empty string means no processing. It is recommended to avoid the autoq option since it's currently unknown what effect it will have on the processing.
+</p>
+
+<p>
+<b>ppquality:</b>
+  The quality to use for the specified postprocessing. Valid values are 0-6 where 0 usually means that no actual processing is done.
+</p>
+
+<p>
+<b>seekmode:</b>
+  Force how seeking is handled, has no effect on matroska files which always use the equivalent of seekmode=1<br />
+    <b>0:</b> linear access, the definition of slow but should make some formats "usable"<br />
+    <b>1:</b> safe normal, bases seeking decisions on the reported keyframe positions<br />
+    <b>2:</b> unsafe normal, same as 1 but no error will be thrown if the exact destination has to be guessed<br />
+    <b>3:</b> aggressive, seek in the forward direction even if no closer keyframe is known to exist, only useful for testing and containers where avformat doesn't report keyframes properly
+</p>
+
+<h2>PP string format</h2>
+<pre>
+Available postprocessing filters:
+Filters                        Options
+short  long name       short   long option     Description
+*      *               a       autoq           CPU power dependent enabler
+                       c       chrom           chrominance filtering enabled
+                       y       nochrom         chrominance filtering disabled
+                       n       noluma          luma filtering disabled
+hb     hdeblock        (2 threshold)           horizontal deblocking filter
+       1. difference factor: default=32, higher -> more deblocking
+       2. flatness threshold: default=39, lower -> more deblocking
+                       the h & v deblocking filters share these
+                       so you can't set different thresholds for h / v
+vb     vdeblock        (2 threshold)           vertical deblocking filter
+ha     hadeblock       (2 threshold)           horizontal deblocking filter
+va     vadeblock       (2 threshold)           vertical deblocking filter
+h1     x1hdeblock                              experimental h deblock filter 1
+v1     x1vdeblock                              experimental v deblock filter 1
+dr     dering                                  deringing filter
+al     autolevels                              automatic brightness / contrast
+                       f        fullyrange     stretch luminance to (0..255)
+lb     linblenddeint                           linear blend deinterlacer
+li     linipoldeint                            linear interpolating deinterlace
+ci     cubicipoldeint                          cubic interpolating deinterlacer
+md     mediandeint                             median deinterlacer
+fd     ffmpegdeint                             ffmpeg deinterlacer
+l5     lowpass5                                FIR lowpass deinterlacer
+de     default                                 hb:a,vb:a,dr:a
+fa     fast                                    h1:a,v1:a,dr:a
+ac                                             ha:a:128:7,va:a,dr:a
+tn     tmpnoise        (3 threshold)           temporal noise reducer
+                     1. <= 2. <= 3.            larger -> stronger filtering
+fq     forceQuant      <quantizer>             force quantizer
+Usage:
+<filterName>[:<option>[:<option>...]][[,|/][-]<filterName>[:<option>...]]...
+long form example:
+vdeblock:autoq/hdeblock:autoq/linblenddeint    default,-vdeblock
+short form example:
+vb:a/hb:a/lb                                   de,-vb
+more examples:
+tn:64:128:256
+</pre>
 
 <h2>Compiling</h2>
 
