@@ -38,7 +38,7 @@
 #include <wx/tokenzr.h>
 #include "ass_style.h"
 #include "utils.h"
-
+#include <ctype.h>
 
 ///////////////////////// AssColor //////////////////////////
 ////////////////
@@ -59,26 +59,20 @@ void AssColor::Parse(const wxString value) {
 	char c,ostr[12];
 	unsigned long outval;
 	int oindex=11;
-	bool ishex=false,isneg=false;
+	bool ishex=false;
 
 	ostr[11]=0;
 
 	for(int i=value.Len()-1;i>=0&&oindex>=0;i--) {
 		c=value[i];
-		if ((c >= 48 && c <= 57) || (c >= 65 && c <= 70) || (c >= 97 && c <= 102)) {
+		if (isxdigit(c) || c=='-') {
 			ostr[--oindex] = c;
-			if (c>=65) ishex = true;
+			if (c>='A') ishex = true;
 		}
 		else if (c == 'H' || c == 'h') ishex = true;
-		else if (c==45) isneg=true;
 	}
 	
 	outval=strtoul(ostr+oindex,0,ishex?16:10);
-	if (isneg) {
-		// Two lines to stop g++ from bitching
-		outval+=2147483647; //2^31 (MSB)
-		outval++;
-	}
 
 	r = outval		& 0xFF;
 	g = (outval>>8)	& 0xFF;
@@ -119,8 +113,7 @@ wxString AssColor::GetASSFormatted (bool alpha,bool stripped,bool isStyle) {
 /////////////////////////
 // Get decimal formatted
 wxString AssColor::GetSSAFormatted () {
-	long color = ((a&127)<<24)+(b<<16)+(g<<8)+r;
-	if ((a&128)!=0) color = 0-color;
+	long color = (a<<24)+(b<<16)+(g<<8)+r;
 	wxString output=wxString::Format(_T("%i"),(long)color);
 	return output;
 }
