@@ -264,7 +264,7 @@ void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 }
 
 StackWalker::StackWalker() {
-	file.open(wxString(StandardPaths::DecodePath(_T("?user/stack.txt"))).mb_str(),std::ios::out | std::ios::app);
+	file.open(wxString(StandardPaths::DecodePath(_T("?user/crashlog.txt"))).mb_str(),std::ios::out | std::ios::app);
 	if (file.is_open()) {
 		file << std::endl << "Begining stack dump:\n";
 	}
