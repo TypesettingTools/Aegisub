@@ -409,6 +409,10 @@ void FrameMain::InitMenu() {
 	audioMenu->Append(Menu_Audio_Close, _("&Close Audio"), _("Closes the currently open audio file"));
 	wxMenuItem *RecentAudParent = new wxMenuItem(audioMenu, Menu_File_Recent_Auds_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentAuds);
 	audioMenu->Append(RecentAudParent);
+#ifdef _DEBUG
+	audioMenu->Append(Menu_Audio_Open_Dummy, _T("Open 2h30 blank audio"), _T("Open a 150 minutes blank audio clip, for debugging"));
+	audioMenu->Append(Menu_Audio_Open_Dummy_Noise, _T("Open 2h30 noise audio"), _T("Open a 150 minutes noise-filled audio clip, for debugging"));
+#endif
 	MenuBar->Append(audioMenu, _("&Audio"));
 
 	// Create Automation menu

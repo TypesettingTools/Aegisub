@@ -140,6 +140,10 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Audio_Open_File, FrameMain::OnOpenAudio)
 	EVT_MENU(Menu_Audio_Open_From_Video, FrameMain::OnOpenAudioFromVideo)
 	EVT_MENU(Menu_Audio_Close, FrameMain::OnCloseAudio)	
+#ifdef _DEBUG
+	EVT_MENU(Menu_Audio_Open_Dummy, FrameMain::OnOpenDummyAudio)
+	EVT_MENU(Menu_Audio_Open_Dummy_Noise, FrameMain::OnOpenDummyNoiseAudio)
+#endif
 
 	EVT_MENU(Menu_Edit_Undo, FrameMain::OnUndo)
 	EVT_MENU(Menu_Edit_Redo, FrameMain::OnRedo)
@@ -613,6 +617,15 @@ void FrameMain::OnOpenAudioFromVideo (wxCommandEvent& WXUNUSED(event)) {
 void FrameMain::OnCloseAudio (wxCommandEvent& WXUNUSED(event)) {
 	LoadAudio(_T(""));
 }
+
+#ifdef _DEBUG
+void FrameMain::OnOpenDummyAudio (wxCommandEvent& WXUNUSED(event)) {
+	LoadAudio(_T("?dummy"));
+}
+void FrameMain::OnOpenDummyNoiseAudio (wxCommandEvent& WXUNUSED(event)) {
+	LoadAudio(_T("?noise"));
+}
+#endif
 
 
 //////////////////

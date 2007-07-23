@@ -58,6 +58,9 @@
 #include "utils.h"
 #include "timeedit_ctrl.h"
 #include "standard_paths.h"
+#ifdef _DEBUG
+#include "audio_provider_dummy.h"
+#endif
 
 
 ///////////////
@@ -827,7 +830,20 @@ void AudioDisplay::SetFile(wxString file) {
 		try {
 			// Get provider
 			wxLogDebug(_T("AudioDisplay::SetFile: get audio provider"));
+			bool is_dummy = false;
+#ifdef _DEBUG
+			if (file == _T("?dummy")) {
+				is_dummy = true;
+				provider = new DummyAudioProvider(150*60*1000, false); // 150 minutes non-noise
+			} else if (file == _T("?noise")) {
+				is_dummy = true;
+				provider = new DummyAudioProvider(150*60*1000, true); // 150 minutes noise
+			} else {
+				provider = AudioProviderFactory::GetAudioProvider(file);
+			}
+#else
 			provider = AudioProviderFactory::GetAudioProvider(file);
+#endif
 
 			// Get player
 			wxLogDebug(_T("AudioDisplay::SetFile: get audio player"));
@@ -838,10 +854,12 @@ void AudioDisplay::SetFile(wxString file) {
 			loaded = true;
 
 			// Add to recent
-			wxLogDebug(_T("AudioDisplay::SetFile: add to recent"));
-			Options.AddToRecentList(file,_T("Recent aud"));
-			wxFileName fn(file);
-			StandardPaths::SetPathValue(_T("?audio"),fn.GetPath());
+			if (!is_dummy) {
+				wxLogDebug(_T("AudioDisplay::SetFile: add to recent"));
+				Options.AddToRecentList(file,_T("Recent aud"));
+				wxFileName fn(file);
+				StandardPaths::SetPathValue(_T("?audio"),fn.GetPath());
+			}
 
 			// Update
 			UpdateImage();

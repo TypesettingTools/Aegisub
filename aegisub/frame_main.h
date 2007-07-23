@@ -166,6 +166,10 @@ private:
 	void OnOpenAudio (wxCommandEvent &event);
 	void OnOpenAudioFromVideo (wxCommandEvent &event);
 	void OnCloseAudio (wxCommandEvent &event);
+#ifdef _DEBUG
+	void OnOpenDummyAudio(wxCommandEvent &event);
+	void OnOpenDummyNoiseAudio(wxCommandEvent &event);
+#endif
 
 	void OnChooseLanguage (wxCommandEvent &event);
 	void OnPickAssociations (wxCommandEvent &event);
@@ -326,6 +330,10 @@ enum {
 	Menu_Audio_Open_File,
 	Menu_Audio_Open_From_Video,
 	Menu_Audio_Close,
+#ifdef _DEBUG
+	Menu_Audio_Open_Dummy,
+	Menu_Audio_Open_Dummy_Noise,
+#endif
 
 	Menu_Edit_Select,
 	Menu_Edit_Undo,
