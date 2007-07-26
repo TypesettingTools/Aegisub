@@ -51,11 +51,11 @@ private:
 	bool ready;
 	bool modified;
 
-	void Modified();
+	void Modified(bool byUser=true);
 	void UpdateText();
 	void CopyTime();
 	void PasteTime();
-	void UpdateTime();
+	void UpdateTime(bool byUser=true);
 
 	void OnModified(wxCommandEvent &event);
 	void OnMouseEvent(wxMouseEvent &event);

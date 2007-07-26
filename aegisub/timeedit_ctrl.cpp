@@ -100,14 +100,14 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 
 /////////////////////
 // Modified function
-void TimeEdit::Modified() {
+void TimeEdit::Modified(bool byUser) {
 	// Lock
 	if (!ready) return;
 	ready = false;
 	
 	// Update
 	if (byFrame) Update();
-	else UpdateTime();
+	else UpdateTime(byUser);
 
 	// Colour
 	if (showModified && !modified) {
@@ -126,7 +126,7 @@ void TimeEdit::SetTime(int ms,bool setModified) {
 	int oldMs = time.GetMS();
 	time.SetMS(ms);
 	UpdateText();
-	if (setModified && oldMs != ms) Modified();
+	if (setModified && oldMs != ms) Modified(false);
 }
 
 
@@ -191,11 +191,11 @@ void TimeEdit::Update() {
 
 /////////////////////////////////////////////////
 // Reads value from a text control and update it
-void TimeEdit::UpdateTime() {
+void TimeEdit::UpdateTime(bool byUser) {
 	bool insertion = Options.AsBool(_T("Insert Mode on Time Boxes"));
 	wxString text = GetValue();
 	long start=0,end=0;
-	if (insertion) {
+	if (insertion && byUser) {
 		GetSelection(&start,&end);
 		if (start == end) {
 			wxString nextChar = text.Mid(start,1);
