@@ -122,6 +122,7 @@ private:
 	void OnOpenRecentTimecodes (wxCommandEvent &event);
 	void OnOpenRecentKeyframes (wxCommandEvent &event);
 
+	void OnNewWindow (wxCommandEvent &event);
 	void OnCloseWindow (wxCloseEvent &event);
 	void OnMenuOpen (wxMenuEvent &event);
 	void OnExit(wxCommandEvent &WXUNUSED(event));
@@ -296,6 +297,7 @@ enum {
 	Menu_File_Export_Subtitles,
 	Menu_File_Open_VFR,
 	Menu_File_Close_VFR,
+	Menu_File_New_Window,
 	Menu_File_Exit,
 
 	Menu_File_Recent_Subs_Parent,

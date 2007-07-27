@@ -42,6 +42,7 @@
 #include <wx/tglbtn.h>
 #include <wx/rawbmp.h>
 #include <wx/stdpaths.h>
+#include <wx/sysopt.h>
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "video_display.h"
@@ -103,6 +104,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU_RANGE(Menu_Automation_Macro,Menu_Automation_Macro+99, FrameMain::OnAutomationMacro)
 
 	EVT_MENU_RANGE(MENU_GRID_START+1,MENU_GRID_END-1,FrameMain::OnGridEvent)
+	EVT_MENU(Menu_File_New_Window, FrameMain::OnNewWindow)
 	EVT_MENU(Menu_File_Exit, FrameMain::OnExit)
 	EVT_MENU(Menu_File_Open_Video, FrameMain::OnOpenVideo)
 	EVT_MENU(Menu_File_Close_Video, FrameMain::OnCloseVideo)
@@ -503,6 +505,14 @@ void FrameMain::OnOpenRecentAudio(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Audio_Recent;
 	wxString key = _T("Recent aud #") + wxString::Format(_T("%i"),number+1);
 	LoadAudio(Options.AsText(key));
+}
+
+
+///////////////////
+// Open new Window
+void FrameMain::OnNewWindow(wxCommandEvent& WXUNUSED(event)) {
+	wxStandardPaths stand;
+	wxExecute(stand.GetExecutablePath());
 }
 
 

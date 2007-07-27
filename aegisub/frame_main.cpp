@@ -285,6 +285,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (fileMenu,Menu_Tools_Properties, _("&Properties..."), _("Open script properties window"),wxBITMAP(properties_toolbutton));
 	AppendBitmapMenuItem (fileMenu,Menu_Tools_Attachments, _("&Attachments..."), _("Open the attachment list"), wxBITMAP(attach_button));
 	fileMenu->AppendSeparator();
+	AppendBitmapMenuItem(fileMenu,Menu_File_New_Window, _("New Window"), _("Open a new application window"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Exit, MakeHotkeyText(_("E&xit"), _T("Exit")), _("Exit the application"),wxBITMAP(exit_button));
 	MenuBar->Append(fileMenu, _("&File"));
 
