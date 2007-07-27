@@ -859,8 +859,13 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
 				// Check if there is already a style with that name
 				int test = CurrentList->FindString(styles[selections[i]]);
 				if (test != wxNOT_FOUND) {
-					int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed anyway?"),styles[selections[i]].c_str()),_T("Style name collision."),wxYES_NO);
-					if (answer != wxYES) continue;
+					int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Overwrite?"),styles[selections[i]].c_str()),_T("Style name collision."),wxYES_NO);
+					if (answer == wxYES) {
+						// Overwrite
+						modified = true;
+						*(AssFile::top->GetStyle(styles[selections[i]])) = *temp.GetStyle(styles[selections[i]]);
+					}
+					continue;
 				}
 
 				// Copy
