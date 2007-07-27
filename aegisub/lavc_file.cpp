@@ -35,6 +35,7 @@
 
 
 #include <wx/wxprec.h>
+#include <wx/filename.h>
 #include "lavc_file.h"
 
 LAVCFile::Initializer LAVCFile::init;
@@ -48,6 +49,11 @@ LAVCFile::LAVCFile(wxString filename)
 {
 	int result = 0;
 	fctx = NULL;
+
+#ifdef WIN32
+	wxFileName fn(filename);
+	filename = fn.GetShortPath();
+#endif
 
 	result = av_open_input_file(&fctx,filename.mb_str(wxConvLocal),NULL,0,NULL);
 	if (result != 0) throw _T("Failed opening file.");

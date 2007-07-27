@@ -128,13 +128,13 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 
 		// Use DirectShowSource
 		else {
+			wxFileName fn(filename);
 			const char * argnames[3] = { 0, "video", "audio" };
-			AVSValue args[3] = { env->SaveString(filename.mb_str(wxConvLocal)), false, true };
+			AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(wxConvLocal)), false, true };
 			script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
 		}
 
 		LoadFromClip(script);
-
 	}
 	
 	catch (AvisynthError &err) {

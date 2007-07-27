@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/filename.h>
 #include "dialog_detached_video.h"
 #include "video_box.h"
 #include "video_context.h"
@@ -48,10 +49,14 @@
 // Constructor
 DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 //: wxFrame(par,-1,_("Detached Video"))
-: wxDialog(par,-1,_("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
+: wxDialog(par,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 {
 	// Set parent
 	parent = par;
+
+	// Set title
+	wxFileName fn(VideoContext::Get()->videoName);
+	SetTitle(wxString::Format(_("Video: %s"),fn.GetFullName()));
 
 	// Set a background panel
 	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
