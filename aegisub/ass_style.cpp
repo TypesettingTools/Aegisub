@@ -145,7 +145,7 @@ AssStyle::AssStyle() {
 	primary.b = 255;
 	primary.a = 0;
 	secondary.r = 255;
-	secondary.g = 255;
+	secondary.g = 0;
 	secondary.b = 0;
 	secondary.a = 0;
 	outline.r = 0;

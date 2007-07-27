@@ -80,6 +80,7 @@ Please visit http://aegisub.net to download latest version
   o Editable drop-down (combo box) to select fonts, instead of the OS's standard font chooser. This allows easy realtime preview of fonts. (AMZ)
   o Alpha and margin edit boxes were replaced with spin controls. (AMZ)
   o Hitting enter will now "OK" it. (AMZ)
+  o Default secondary colour is now red. (AMZ)
 - Changes to subtitle reading/writing:
   o Instead of falling back to your local charset, Aegisub will now use the "universalchardet" library (the one used by the Mozilla project) to autodetect the character set of non-Unicode files. (AMZ)
   o Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections. (jfs)
