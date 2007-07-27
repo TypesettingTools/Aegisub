@@ -1218,38 +1218,38 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 ///////////////////////////
 // Setup accelerator table
 void FrameMain::SetAccelerators() {
-	wxAcceleratorEntry entry[20];
-	int i = 0;
+	std::vector<wxAcceleratorEntry> entry;
+	entry.reserve(20);
 
 	// Standard
-	entry[i++] = Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Video global next frame"),Video_Next_Frame);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Video global focus seek"),Video_Focus_Seek);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Grid global prev line"),Grid_Prev_Line);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Grid global next line"),Grid_Next_Line);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Save Subtitles Alt"),Menu_File_Save_Subtitles);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Video global play"),Video_Frame_Play);
-	entry[i++] = Hotkeys.GetAccelerator(_T("Edit box commit"),Edit_Box_Commit);
+	entry.push_back(Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Video global next frame"),Video_Next_Frame));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Video global focus seek"),Video_Focus_Seek));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Grid global prev line"),Grid_Prev_Line));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Grid global next line"),Grid_Next_Line));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Save Subtitles Alt"),Menu_File_Save_Subtitles));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Video global play"),Video_Frame_Play));
+	entry.push_back(Hotkeys.GetAccelerator(_T("Edit box commit"),Edit_Box_Commit));
 
 	// Medusa
 	bool medusaPlay = Options.AsBool(_T("Audio Medusa Timing Hotkeys"));
 	if (medusaPlay && audioBox->audioDisplay->loaded) {
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Play"),Medusa_Play);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Stop"),Medusa_Stop);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Play Before"),Medusa_Play_Before);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Play After"),Medusa_Play_After);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Next"),Medusa_Next);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Previous"),Medusa_Prev);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Forward"),Medusa_Shift_Start_Forward);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Back"),Medusa_Shift_Start_Back);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Forward"),Medusa_Shift_End_Forward);
-		entry[i++] = Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Back"),Medusa_Shift_End_Back);
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play"),Medusa_Play));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Stop"),Medusa_Stop));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play Before"),Medusa_Play_Before));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play After"),Medusa_Play_After));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Next"),Medusa_Next));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Previous"),Medusa_Prev));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Forward"),Medusa_Shift_Start_Forward));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Back"),Medusa_Shift_Start_Back));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Forward"),Medusa_Shift_End_Forward));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Back"),Medusa_Shift_End_Back));
 	}
 
 	// Set table
-	wxAcceleratorTable table(i,entry);
+	wxAcceleratorTable table(entry.size(),&entry[0]);
 	SetAcceleratorTable(table);
 }
 

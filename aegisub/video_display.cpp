@@ -487,6 +487,7 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 	if (event.GetKeyCode() == 'G') SetVisualMode(4);
 	if (event.GetKeyCode() == 'H') SetVisualMode(5);
 	if (event.GetKeyCode() == 'J') SetVisualMode(6);
+	event.Skip();
 }
 
 

@@ -47,7 +47,8 @@
 ///////////////
 // Constructor
 DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
-: wxFrame(par,-1,_("Detached Video")/*,wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX*/)
+//: wxFrame(par,-1,_("Detached Video"))
+: wxDialog(par,-1,_("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 {
 	// Set parent
 	parent = par;
@@ -75,4 +76,20 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 DialogDetachedVideo::~DialogDetachedVideo() {
 	parent->detachedVideo = NULL;
 	parent->SetDisplayMode(1,-1);
+}
+
+
+///////////////
+// Event table
+BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
+	EVT_KEY_DOWN(DialogDetachedVideo::OnKey)
+END_EVENT_TABLE()
+
+
+////////////
+// Key down
+void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
+	// Send to parent... except that it doesn't work
+	event.Skip();
+	GetParent()->AddPendingEvent(event);
 }

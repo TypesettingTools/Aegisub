@@ -45,12 +45,16 @@ class FrameMain;
 
 //////////////////////////////
 // Detached video frame class
-class DialogDetachedVideo : public wxFrame {
+class DialogDetachedVideo : public wxDialog {
 private:
 	VideoBox *videoBox;
 	FrameMain *parent;
 
+	void OnKey(wxKeyEvent &event);
+
 public:
 	DialogDetachedVideo(FrameMain *parent);
 	~DialogDetachedVideo();
+
+	DECLARE_EVENT_TABLE()
 };
