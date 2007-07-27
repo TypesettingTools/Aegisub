@@ -1049,11 +1049,18 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	int start,end;
 	bool gotfirst = false;
 	for (int i=n1;i<=n2;i++) {
+		// Get start and end time of current line
 		cur = GetDialogue(i);
 		start = cur->Start.GetMS();
 		end = cur->End.GetMS();
-		if (start < min_ms) min_ms = start;
-		if (end > max_ms) max_ms = end;
+
+		// Don't take the timing of zero lines
+		if (start != 0 || end != 0) {
+			if (start < min_ms) min_ms = start;
+			if (end > max_ms) max_ms = end;
+		}
+
+		// Set text
 		if (concat || !gotfirst) {
 			if (gotfirst) finalText += _T("\\N");
 			gotfirst = true;

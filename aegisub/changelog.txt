@@ -155,6 +155,7 @@ Please visit http://aegisub.net to download latest version
 - Treat comments inside {}'s as plain text, not as overrides; Also, don't assume override blocks start with a backslash, even if they probably should (Dansolo)
 - Removed FexTracker due to licensing problems; there are plans to implement a new motion tracker in its place (jfs)
 - Changed translation assistent to use Scintilla text controls to avoid several issues, including Right-To-Left text entry. (AMZ)
+- Joining of two lines will no longer take the timings of any line that starts and ends at 0 into consideration. (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================
