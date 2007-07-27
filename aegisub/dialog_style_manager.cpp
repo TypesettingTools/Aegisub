@@ -479,7 +479,7 @@ void DialogStyleManager::OnStorageEdit (wxCommandEvent &event) {
 	AssStyle *temp;
 	if (n == 1) {
 		temp = styleStorageMap.at(selections[0]);
-		DialogStyleEditor editor(this,temp,grid);
+		DialogStyleEditor editor(this,temp,grid,false,&Store);
 		int modified = editor.ShowModal();
 		if (modified) {
 			//LoadStorageStyles();
@@ -501,7 +501,7 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &event) {
 	AssStyle *temp;
 	if (n == 1) {
 		temp = styleMap.at(selections[0]);
-		DialogStyleEditor editor(this,temp,grid);
+		DialogStyleEditor editor(this,temp,grid,true,&Store);
 		int modified = editor.ShowModal();
 		if (modified) {
 			CurrentList->SetString(selections[0],temp->name);
@@ -613,7 +613,7 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &event) {
 	newName += temp->name;
 	temp->name = newName;
 
-	DialogStyleEditor editor(this,temp,grid);
+	DialogStyleEditor editor(this,temp,grid,false,&Store);
 	int modified = editor.ShowModal();
 	if (modified) {
 		Store.style.push_back(temp);
@@ -637,7 +637,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 	newName += temp->name;
 	temp->name = newName;
 
-	DialogStyleEditor editor(this,temp,grid);
+	DialogStyleEditor editor(this,temp,grid,true,&Store);
 	int modified = editor.ShowModal();
 	if (modified) {
 		AssFile::top->InsertStyle(temp);
@@ -725,7 +725,7 @@ void DialogStyleManager::PasteToStorage() {
 void DialogStyleManager::OnStorageNew (wxCommandEvent &event) {
 	AssStyle *temp = new AssStyle;
 
-	DialogStyleEditor editor(this,temp,grid);
+	DialogStyleEditor editor(this,temp,grid,false,&Store);
 	int modified = editor.ShowModal();
 	if (modified) {
 		Store.style.push_back(temp);
@@ -742,7 +742,7 @@ void DialogStyleManager::OnStorageNew (wxCommandEvent &event) {
 void DialogStyleManager::OnCurrentNew (wxCommandEvent &event) {
 	AssStyle *temp = new AssStyle;
 
-	DialogStyleEditor editor(this,temp,grid);
+	DialogStyleEditor editor(this,temp,grid,true,&Store);
 	int modified = editor.ShowModal();
 	if (modified) {
 		AssFile::top->InsertStyle(temp);

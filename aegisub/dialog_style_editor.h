@@ -50,15 +50,18 @@
 class AssStyle;
 class SubtitlesGrid;
 class SubtitlesPreview;
+class AssStyleStorage;
 
 
 /////////
 // Class
 class DialogStyleEditor : public wxDialog {
 private:
+	bool isLocal;
 	AssStyle *style;
 	AssStyle *work;
 	SubtitlesGrid *grid;
+	AssStyleStorage *store;
 
 	wxString FontSizeValue;
 	wxString AlignmentValue;
@@ -114,7 +117,7 @@ private:
 	void OnPreviewColourChange (wxCommandEvent &event);
 
 public:
-	DialogStyleEditor(wxWindow *parent,AssStyle *style,SubtitlesGrid *grid);
+	DialogStyleEditor(wxWindow *parent,AssStyle *style,SubtitlesGrid *grid,bool local,AssStyleStorage *store);
 	~DialogStyleEditor();
 
 	void Apply (bool apply,bool close);

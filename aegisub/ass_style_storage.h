@@ -55,6 +55,7 @@ class AssStyleStorage {
 public:
 	std::list<AssStyle*> style;
 
+	wxArrayString GetNames();
 	void Clear();
 	void Save(wxString name);
 	void Load(wxString name);

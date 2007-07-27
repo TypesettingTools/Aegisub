@@ -90,3 +90,15 @@ void AssStyleStorage::Clear () {
 	}
 	style.clear();
 }
+
+
+/////////////
+// Get names
+wxArrayString AssStyleStorage::GetNames() {
+	using std::list;
+	wxArrayString names;
+	for (list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
+		names.Add((*cur)->name);
+	}
+	return names;
+}

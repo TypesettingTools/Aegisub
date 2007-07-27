@@ -52,6 +52,7 @@
 #include "subs_preview.h"
 #include "options.h"
 #include "subtitles_provider.h"
+#include "ass_style_storage.h"
 
 
 ///////
@@ -91,13 +92,17 @@ enum {
 
 ///////////////
 // Constructor
-DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid)
+DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid,bool local,AssStyleStorage *_store)
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
+	wxStopWatch performance_timer;
 	// Set icon
 	SetIcon(BitmapToIcon(wxBITMAP(style_toolbutton)));
 
-	wxStopWatch performance_timer;
+	// Set variables
+	isLocal = local;
+	store = _store;
+
 	// Set styles
 	grid = _grid;
 	style = _style;
@@ -371,7 +376,6 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_BUTTON(wxID_APPLY, DialogStyleEditor::OnApply)
 	EVT_BUTTON(wxID_OK, DialogStyleEditor::OnOK)
 	EVT_BUTTON(wxID_CANCEL, DialogStyleEditor::OnCancel)
-	EVT_BUTTON(BUTTON_STYLE_FONT, DialogStyleEditor::OnChooseFont)
 	EVT_BUTTON(BUTTON_COLOR_1, DialogStyleEditor::OnSetColor1)
 	EVT_BUTTON(BUTTON_COLOR_2, DialogStyleEditor::OnSetColor2)
 	EVT_BUTTON(BUTTON_COLOR_3, DialogStyleEditor::OnSetColor3)
@@ -428,8 +432,12 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Style name
 		wxString newStyleName = StyleName->GetValue();
 
+		// Get list of existing styles
+		wxArrayString styles;
+		if (isLocal) styles = grid->ass->GetStyles();
+		else if (store) styles = store->GetNames();
+
 		// Check if style name is unique
-		wxArrayString styles = grid->ass->GetStyles();
 		for (unsigned int i=0;i<styles.Count();i++) {
 			if (styles[i] == newStyleName) {
 				if (grid->ass->GetStyle(styles[i]) != style) {
@@ -441,7 +449,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 
 		// Style name change
 		if (work->name != newStyleName) {
-			if (!work->name.StartsWith(_("Copy of "))) {
+			if (!work->name.StartsWith(_("Copy of ")) && isLocal) {
 				// See if user wants to update style name through script
 				int answer = wxNO;
 				if (work->name != _T("Default")) answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"),_("Update script?"),wxYES_NO | wxCANCEL);
@@ -477,8 +485,10 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Copy
 		*style = *work;
 		style->UpdateData();
-		AssFile::top->FlagAsModified(_("style change"));
-		grid->CommitChanges();
+		if (isLocal) {
+			AssFile::top->FlagAsModified(_("style change"));
+			grid->CommitChanges();
+		}
 
 		// Exit
 		if (close) {
