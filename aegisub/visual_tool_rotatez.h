@@ -60,6 +60,8 @@ private:
 	void UpdateDrag(VisualDraggableFeature &feature);
 	void CommitDrag(VisualDraggableFeature &feature);
 
+	void DoRefresh();
+
 public:
 	VisualToolRotateZ(VideoDisplay *parent);
 

@@ -61,6 +61,8 @@ private:
 	void UpdateDrag(VisualDraggableFeature &feature);
 	void CommitDrag(VisualDraggableFeature &feature);
 
+	void DoRefresh();
+
 public:
 	VisualToolRotateXY(VideoDisplay *parent);
 

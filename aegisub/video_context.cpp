@@ -390,8 +390,9 @@ void VideoContext::Refresh (bool video, bool subtitles) {
 	// Reset frame
 	lastFrame = -1;
 
-	// Get provider
+	// Update subtitles
 	if (subtitles && subsProvider) {
+		// Re-export
 		AssExporter exporter(grid->ass);
 		exporter.AddAutoFilters();
 		subsProvider->LoadSubtitles(exporter.ExportTransform());
@@ -412,7 +413,7 @@ void VideoContext::JumpToFrame(int n) {
 	if (isPlaying && n != playNextFrame) return;
 
 	// Threaded
-	if (threaded) {	// Doesn't work, so it's disabled
+	if (threaded && false) {	// Doesn't work, so it's disabled
 		wxMutexLocker lock(vidMutex);
 		threadNextFrame = n;
 		if (!threadLocked) {

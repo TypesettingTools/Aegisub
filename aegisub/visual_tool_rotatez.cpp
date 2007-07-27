@@ -53,9 +53,7 @@ VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
 	_parent->ShowCursor(false);
-	AssDialogue *line = GetActiveDialogueLine();
-	GetLinePosition(line,odx,ody,orgx,orgy);
-	GetLineRotation(line,rx,ry,curAngle);
+	DoRefresh();
 }
 
 
@@ -229,4 +227,13 @@ void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature &feature) {
 // Commit dragging of \org
 void VisualToolRotateZ::CommitDrag(VisualDraggableFeature &feature) {
 	SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
+}
+
+
+///////////
+// Refresh
+void VisualToolRotateZ::DoRefresh() {
+	AssDialogue *line = GetActiveDialogueLine();
+	GetLinePosition(line,odx,ody,orgx,orgy);
+	GetLineRotation(line,rx,ry,curAngle);
 }
