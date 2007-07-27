@@ -233,6 +233,9 @@ private:
 	void OnMedusaShiftEndBack(wxCommandEvent &event);
 	void OnMedusaPlayBefore(wxCommandEvent &event);
 	void OnMedusaPlayAfter(wxCommandEvent &event);
+	void OnMedusaEnter(wxCommandEvent &event);
+	void OnMedusaNext(wxCommandEvent &event);
+	void OnMedusaPrev(wxCommandEvent &event);
 
 	void LoadVideo(wxString filename,bool autoload=false);
 	void LoadAudio(wxString filename,bool FromVideo=false);
@@ -414,6 +417,7 @@ enum {
 	Medusa_Play_After,
 	Medusa_Next,
 	Medusa_Prev,
+	Medusa_Enter,
 
 	Menu_File_Recent = 2000,
 	Menu_Video_Recent = 2200,

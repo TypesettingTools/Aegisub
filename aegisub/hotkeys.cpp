@@ -190,6 +190,7 @@ void HotkeyType::FillMap() {
 		keyName[WXK_NUMPAD_MULTIPLY] = _T("KP_Multiply");
 		keyName[WXK_NUMPAD_DIVIDE] = _T("KP_Divide");
 		keyName[WXK_NUMPAD_DECIMAL] = _T("KP_Decimal");
+		keyName[WXK_NUMPAD_ENTER] = _T("KP_Enter");
 
 		keyName[WXK_F1] = _T("F1");
 		keyName[WXK_F2] = _T("F2");
@@ -396,6 +397,7 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Audio Medusa Play After"),_T("KP_3"));
 	SetHotkey(_("Audio Medusa Next"),_T("KP_2"));
 	SetHotkey(_("Audio Medusa Previous"),_T("KP_0"));
+	SetHotkey(_("Audio Medusa Enter"),_T("KP_Enter"));
 
 	SetHotkey(_("Translation Assistant Play"),_T("End"));
 	SetHotkey(_("Translation Assistant Next"),_T("PgDn"));

@@ -155,9 +155,10 @@ public:
 	void SetDialogue(SubtitlesGrid *_grid=NULL,AssDialogue *diag=NULL,int n=-1);
 	void MakeDialogueVisible(bool force=false);
 	void ChangeLine(int delta);
-	void Next();
-	void Prev();
+	void Next(bool play=true);
+	void Prev(bool play=true);
 
+	void UpdateTimeEditCtrls();
 	void CommitChanges(bool nextLine=false);
 	void AddLead(bool in,bool out);
 

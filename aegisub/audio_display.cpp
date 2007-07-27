@@ -1615,9 +1615,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 					diagUpdated = false;
 					NeedCommit = true;
 					if (curStartMS <= curEndMS) {
-						grid->editBox->StartTime->SetTime(curStartMS,true);
-						grid->editBox->EndTime->SetTime(curEndMS,true);
-						grid->editBox->Duration->SetTime(curEndMS-curStartMS,true);
+						UpdateTimeEditCtrls();
 						if (Options.AsBool(_T("Audio Autocommit"))) CommitChanges();
 					}
 
@@ -2140,7 +2138,7 @@ void AudioDisplay::ChangeLine(int delta) {
 
 ////////
 // Next
-void AudioDisplay::Next() {
+void AudioDisplay::Next(bool play) {
 	wxLogDebug(_T("AudioDisplay::Next"));
 	// Karaoke
 	if (karaoke->enabled) {
@@ -2180,7 +2178,7 @@ void AudioDisplay::Next() {
 		if (needsUpdate) Update();
 		int start=0,end=0;
 		GetTimesSelection(start,end);
-		Play(start,end);
+		if (play) Play(start,end);
 	}
 
 	// Plain mode
@@ -2195,7 +2193,7 @@ void AudioDisplay::Next() {
 
 ////////////
 // Previous
-void AudioDisplay::Prev() {
+void AudioDisplay::Prev(bool play) {
 	wxLogDebug(_T("AudioDisplay::Prev"));
 	// Karaoke
 	if (karaoke->enabled) {
@@ -2233,7 +2231,7 @@ void AudioDisplay::Prev() {
 		if (needsUpdate) Update();
 		int start=0,end=0;
 		GetTimesSelection(start,end);
-		Play(start,end);
+		if (play) Play(start,end);
 	}
 
 	// Plain mode
@@ -2284,3 +2282,10 @@ void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
 }
 
 
+//////////////////////////////
+// Update time edit controls
+void AudioDisplay::UpdateTimeEditCtrls() {
+	grid->editBox->StartTime->SetTime(curStartMS,true);
+	grid->editBox->EndTime->SetTime(curEndMS,true);
+	grid->editBox->Duration->SetTime(curEndMS-curStartMS,true);
+}

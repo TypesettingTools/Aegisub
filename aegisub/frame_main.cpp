@@ -1247,6 +1247,7 @@ void FrameMain::SetAccelerators() {
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Back"),Medusa_Shift_Start_Back));
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Forward"),Medusa_Shift_End_Forward));
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Back"),Medusa_Shift_End_Back));
+		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Enter"),Medusa_Enter));
 	}
 
 	// Set table
