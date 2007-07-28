@@ -182,8 +182,7 @@ void DirectSoundPlayer::OpenStream() {
 	waveFormat.cbSize = 0;
 
 	// Create the buffer initializer
-	//int aim = waveFormat.nAvgBytesPerSec + waveFormat.nAvgBytesPerSec/2; // one and a half second of buffer
-	int aim = waveFormat.nAvgBytesPerSec / 4; // quarter second of buffer
+	int aim = waveFormat.nAvgBytesPerSec * 15/100; // 150 ms buffer
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
 	bufSize = MIN(MAX(min,aim),max);
@@ -261,6 +260,8 @@ bool DirectSoundPlayer::FillBuffer(bool fill) {
 	}
 
 	// If we're going to fill the entire buffer (ie. at start of playback) start by zeroing it out
+	// If it's not zeroed out we might have a playback selection shorter than the buffer
+	// and then everything after the playback selection will be junk, which we don't want played.
 	if (fill) {
 RetryClear:
 		res = buffer->Lock(0, bufSize, &ptr1, &size1, &ptr2, &size2, 0);
@@ -296,6 +297,10 @@ RetryLock:
 	unsigned long int count1 = size1 / bytesps;
 	unsigned long int count2 = size2 / bytesps;
 
+	if (count1) wxLogDebug(_T("DS fill: %05lu -> %05lu"), (unsigned long)playPos, (unsigned long)playPos+count1);
+	if (count2) wxLogDebug(_T("DS fill: %05lu => %05lu"), (unsigned long)playPos+count1, (unsigned long)playPos+count1+count2);
+	if (!count1 && !count2) wxLogDebug(_T("DS fill: nothing"));
+
 	// Get source wave
 	if (count1) provider->GetAudioWithVolume(ptr1, playPos, count1, volume);
 	if (count2) provider->GetAudioWithVolume(ptr2, playPos+count1, count2, volume);
@@ -307,7 +312,7 @@ RetryLock:
 	// Update offset
 	offset = (offset + count1*bytesps + count2*bytesps) % bufSize;
 
-	return true; // If delta>0 we hit end of stream
+	return playPos < endPos;
 }
 
 
@@ -425,7 +430,7 @@ DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	// Wake up thread every half second to fill buffer as needed
 	// This more or less assumes the buffer is at least one second long
-	while (WaitForSingleObject(stopnotify, 100) == WAIT_TIMEOUT) {
+	while (WaitForSingleObject(stopnotify, 50) == WAIT_TIMEOUT) {
 		if (!parent->FillBuffer(false)) {
 			// FillBuffer returns false when end of stream is reached
 			wxLogDebug(_T("DS thread hit end of stream"));
@@ -435,7 +440,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 
 	// Now fill buffer with silence
 	DWORD bytesFilled = 0;
-	while (WaitForSingleObject(stopnotify, 100) == WAIT_TIMEOUT) {
+	while (WaitForSingleObject(stopnotify, 50) == WAIT_TIMEOUT) {
 		void *buf1, *buf2;
 		DWORD size1, size2;
 		DWORD playpos;
@@ -448,13 +453,15 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 		if (FAILED(res)) break;
 		if (size1) memset(buf1, 0, size1);
 		if (size2) memset(buf2, 0, size2);
+		if (size1) wxLogDebug(_T("DS blnk: %05ld -> %05ld"), (unsigned long)parent->playPos+bytesFilled, (unsigned long)parent->playPos+bytesFilled+size1);
+		if (size2) wxLogDebug(_T("DS blnk: %05ld => %05ld"), (unsigned long)parent->playPos+bytesFilled+size1, (unsigned long)parent->playPos+bytesFilled+size1+size2);
 		bytesFilled += size1 + size2;
 		parent->buffer->Unlock(buf1, size1, buf2, size2);
-		if (bytesFilled >= parent->bufSize) break;
+		if (bytesFilled > parent->bufSize) break;
 		parent->offset = (parent->offset + size1 + size2) % parent->bufSize;
 	}
 
-	WaitForSingleObject(stopnotify, 300);
+	WaitForSingleObject(stopnotify, 150);
 
 	wxLogDebug(_T("DS thread dead"));
 

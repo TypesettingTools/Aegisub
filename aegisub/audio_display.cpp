@@ -394,6 +394,7 @@ void AudioDisplay::DrawInactiveLines(wxDC &dc) {
 	
 	for (int j=shadeFrom;j<shadeTo;j++) {
 		if (j == line_n) continue;
+		if (j < 0) continue;
 		shade = grid->GetDialogue(j);
 
 		if (shade) {
