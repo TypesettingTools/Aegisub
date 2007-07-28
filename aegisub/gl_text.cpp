@@ -326,11 +326,14 @@ void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 	wxMemoryDC dc(bmp);
 
 	// Draw text and convert to image
+	dc.SetBackground(wxBrush(wxColour(0,0,0)));
+	dc.Clear();
 	dc.SetFont(OpenGLText::GetFont());
 	dc.SetTextForeground(wxColour(255,255,255));
 	dc.DrawText(str,0,0);
 	//bmp.SaveFile(wxString::Format(_T("glyph%i.bmp"),glyph.value),wxBITMAP_TYPE_BMP);
 	wxImage img = bmp.ConvertToImage();
+	//img.SaveFile(str + _T(".bmp"));
 
 	// Convert to alpha
 	int imgw = img.GetWidth();
