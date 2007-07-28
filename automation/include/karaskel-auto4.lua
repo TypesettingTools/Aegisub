@@ -411,7 +411,7 @@ function karaskel.do_furigana_layout(meta, styles, line)
 		-- Add this syllable to lg
 		lg.basewidth = lg.basewidth + syl.prespacewidth + syl.width + syl.postspacewidth
 		table.insert(lg.syls, syl)
-		aegisub.debug.out("\tAdding syllable to layout group: '%s', width=%d, isbreak=%s\n", syl.text_stripped, syl.width, syl.furi.n > 0 and syl.furi[1].isbreak and "y" or "n")
+		aegisub.debug.out(5, "\tAdding syllable to layout group: '%s', width=%d, isbreak=%s\n", syl.text_stripped, syl.width, syl.furi.n > 0 and syl.furi[1].isbreak and "y" or "n")
 		
 		-- Add this syllable's furi to lg
 		for f = 1, syl.furi.n do
@@ -419,7 +419,7 @@ function karaskel.do_furigana_layout(meta, styles, line)
 			lg.furiwidth = lg.furiwidth + furi.width
 			lg.spillback = lg.spillback or furi.spillback
 			table.insert(lg.furi, furi)
-			aegisub.debug.out("\tAdding furigana to layout group: %s (width=%d)\n", furi.text, furi.width)
+			aegisub.debug.out(5, "\tAdding furigana to layout group: %s (width=%d)\n", furi.text, furi.width)
 			last_had_furi = true
 		end
 	end
