@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
+// Copyright (c) 2007, David Lamparter, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,25 @@
 wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 	wxArrayString results;
 
-	// TODO: implement this
+	// Code stolen from asa
+	FcPattern *final, *tmp1, *tmp2;
+	FcResult res;
+	FcChar8 *filename;
+	char buffer[1024];
+	strcpy(buffer,facename.mb_str(wxConvUTF8));
+
+	// Get data from fconfig or something
+	tmp1 = FcPatternBuild(NULL,FC_FAMILY, FcTypeString,buffer,NULL);
+	if (!tmp1) return results;
+	tmp2 = FcFontRenderPrepare(fontconf, tmp1, aux);
+	FcPatternDestroy(tmp1);
+	final = FcFontMatch(fontconf, tmp2, &res);
+	FcPatternDestroy(tmp2);
+	if (!final) return results;
+	if (FcPatternGetString(final, FC_FILE, 0, &filename) == FcResultMatch) {
+		results.Add(wxString((char*) filename,wxConvLocal));
+	}
+	FcPatternDestroy(final);
 
 	return results;
 }
@@ -55,14 +73,18 @@ wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 //////////////
 // Initialize
 void FontConfigFontFileLister::DoInitialize() {
-	// TODO: implement this
+	fontconf = FcInitLoadConfigAndFonts();
+	aux = FcPatternCreate();
 }
 
 
 ////////////
 // Clean up
 void FontConfigFontFileLister::DoClearData() {
-	// TODO: implement this
+	if (aux) FcPatternDestroy(aux);
+#ifdef HAVE_FCFINI
+	FcFini();
+#endif
 }
 
 #endif

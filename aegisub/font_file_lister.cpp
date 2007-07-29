@@ -43,8 +43,10 @@
 #include "standard_paths.h"
 #ifdef WIN32
 #include "font_file_lister_freetype.h"
+#define FontListerClass FreetypeFontFileLister
 #else
 #include "font_file_lister_fontconfig.h"
+#define FontListerClass FontConfigFontFileLister
 #endif
 
 
@@ -68,13 +70,7 @@ FontFileLister::~FontFileLister() {
 ////////////////
 // Get instance
 void FontFileLister::GetInstance() {
-	if (!instance) {
-#ifdef WIN32
-		instance = new FreetypeFontFileLister();
-#else
-		instance = new FontConfigFontFileLister();
-#endif
-	}
+	if (!instance) instance = new FontListerClass();
 }
 
 

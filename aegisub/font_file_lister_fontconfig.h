@@ -39,6 +39,8 @@
 
 ////////////
 // Includes
+#include <fontconfig/fontconfig.h>
+#include <fontconfig/fcfreetype.h>
 #include "font_file_lister.h"
 
 
@@ -47,6 +49,9 @@
 class FontConfigFontFileLister : public FontFileLister {
 	friend class FontFileLister;
 private:
+	FcConfig *fontconf;
+	FcPattern *aux;
+
 	wxArrayString DoGetFilesWithFace(wxString facename);
 	void DoInitialize();
 	void DoClearData();
