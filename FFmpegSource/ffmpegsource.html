@@ -9,8 +9,19 @@ FFmpegSource Documentation
 
 <h2>Changes</h2>
 <ul>
+<li>1.5<ul>
+<li>Fixed a bug that made avformat opened files only return audio if only the audio cache needed to be created</li>
+<li>Rejects more corrupt cache files</li>
+<li>Fixed crash when a 0 byte audio cache file is present</li>
+<li>Improved framerate guessing for avformat which now takes takes the duration of the first frame into account</li>
+<li>Fixed a bug introduced in 1.4 that would make the number of reported frames too high for files opened with avformat</li>
+<li>Fixed mpeg2 and probably some other formats stored in mkv</li>
+<li>Fixed issues with large mkv files and large audio cache files</li>
+<li>FFmpeg is now compiled with liba52 and faad2</li>
+</ul></li>
 
 <li>1.4<ul>
+<li>Uses the average framerate for mkv files</li>
 <li>Naming scheme of cache files changed to prevent confusion with the default names in files with multiple tracks of the same type</li>
 <li>Use mmx optimizations in swscaler when possible</li>
 <li>Now uses normal windows linebreaks in all files</li>

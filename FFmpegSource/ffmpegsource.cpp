@@ -110,6 +110,13 @@ public:
 			if (avcodec_open(VideoCodecContext, VideoCodec) < 0)
 				Env->ThrowError("FFmpegSource: Could not open video codec");
 
+			// Fix for mpeg2 and other formats where decoding a frame is necessary to get information about the stream
+			if (VideoCodecContext->pix_fmt == PIX_FMT_NONE) {
+				int64_t Dummy;
+				DecodeNextFrame(DecodeFrame, &Dummy, Env);
+				mkv_Seek(MF, 0, MKVF_SEEK_TO_PREV_KEYFRAME);
+			}
+
 			VI.image_type = VideoInfo::IT_TFF;
 			VI.width = VideoTI->AV.Video.PixelWidth;
 			VI.height = VideoTI->AV.Video.PixelHeight;
@@ -204,7 +211,7 @@ public:
 
 		if (VideoTrack >= 0) {
 			mkv_SetTrackMask(MF, ~(1 << VideoTrack));
-			mkv_Seek(MF, FrameToDTS[0].DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
+			mkv_Seek(MF, FrameToDTS.front().DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
 
 			if (FrameToDTS.size() >= 2) {
 				double DTSDiff = (double)(FrameToDTS.back().DTS - FrameToDTS.front().DTS);
@@ -259,7 +266,7 @@ int FFMatroskaSource::ReadFrame(uint64_t AFilePos, unsigned int AFrameSize, Comp
 			DecompressedFrameSize += ReadBytes;
 		}
 	} else {
-		if (fseek(ST.fp, AFilePos, SEEK_SET))
+		if (_fseeki64(ST.fp, AFilePos, SEEK_SET))
 			Env->ThrowError("FFmpegSource: fseek(): %s", strerror(errno));
 
 		if (BufferSize < AFrameSize) {
@@ -414,7 +421,6 @@ public:
 			VI.height = VideoCodecContext->height;
 			VI.fps_denominator = FormatContext->streams[VideoTrack]->time_base.num;
 			VI.fps_numerator = FormatContext->streams[VideoTrack]->time_base.den;
-			VI.num_frames = (int)FormatContext->streams[VideoTrack]->duration;
 
 			// sanity check framerate
 			if (VI.fps_denominator > VI.fps_numerator || VI.fps_denominator <= 0 || VI.fps_numerator <= 0) {
@@ -457,10 +463,9 @@ public:
 		// Needs to be indexed?
 		if (!ACacheIsValid || !VCacheIsValid) {
 			AVPacket Packet;
-			VI.num_frames = 0;
 			while (av_read_frame(FormatContext, &Packet) >= 0) {
 				if (Packet.stream_index == VideoTrack && !VCacheIsValid) {
-					FrameToDTS.push_back(FrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) != 0));
+					FrameToDTS.push_back(FrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
 					VI.num_frames++;
 				} else if (Packet.stream_index == AudioTrack && !ACacheIsValid) {
 					int Size = Packet.size;
@@ -492,10 +497,15 @@ public:
 			avcodec_close(AudioCodecContext);
 
 		if (VideoTrack >= 0) {
-			av_seek_frame(FormatContext, VideoTrack, FrameToDTS[0].DTS, AVSEEK_FLAG_BACKWARD);
+			av_seek_frame(FormatContext, VideoTrack, FrameToDTS.front().DTS, AVSEEK_FLAG_BACKWARD);
 
 			if (!SaveTimecodesToFile(ATimecodes, FormatContext->streams[VideoTrack]->time_base.num * 1000, FormatContext->streams[VideoTrack]->time_base.den))
 				Env->ThrowError("FFmpegSource: Failed to write timecodes");
+
+			if (FrameToDTS.size() >= 2) {
+				int64_t DTSDiff = (double)(FrameToDTS[1].DTS - FrameToDTS[0].DTS);
+				VI.fps_denominator *= DTSDiff;
+			}
 		}
 	}
 
@@ -542,7 +552,7 @@ PVideoFrame __stdcall FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
 
 	if (SeekMode == 0) {
 		if (n < CurrentFrame) {
-			av_seek_frame(FormatContext, VideoTrack, FrameToDTS[0].DTS, AVSEEK_FLAG_BACKWARD);
+			av_seek_frame(FormatContext, VideoTrack, FrameToDTS.front().DTS, AVSEEK_FLAG_BACKWARD);
 			avcodec_flush_buffers(VideoCodecContext);
 			CurrentFrame = 0;
 		}

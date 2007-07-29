@@ -17,7 +17,7 @@ typedef struct StdIoStream StdIoStream;
  */
 int   StdIoRead(StdIoStream *st, ulonglong pos, void *buffer, int count) {
   size_t  rd;
-  if (fseek(st->fp, pos, SEEK_SET)) {
+  if (_fseeki64(st->fp, pos, SEEK_SET)) {
     st->error = errno;
     return -1;
   }
@@ -39,13 +39,13 @@ longlong StdIoScan(StdIoStream *st, ulonglong start, unsigned signature) {
   unsigned    cmp = 0;
   FILE	      *fp = st->fp;
 
-  if (fseek(fp, start, SEEK_SET))
+  if (_fseeki64(fp, start, SEEK_SET))
     return -1;
 
   while ((c = getc(fp)) != EOF) {
     cmp = ((cmp << 8) | c) & 0xffffffff;
     if (cmp == signature)
-      return ftell(fp) - 4;
+      return _ftelli64(fp) - 4;
   }
 
   return -1;

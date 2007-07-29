@@ -23,7 +23,7 @@ int FFBase::FrameFromDTS(int64_t ADTS) {
 
 int FFBase::ClosestFrameFromDTS(int64_t ADTS) {
 	int Frame = 0; 
-	int64_t BestDiff = 0xFFFFFFFFFFFFFF;
+	int64_t BestDiff = 0xFFFFFFFFFFFFFFLL;
 	for (int i = 0; i < (int)FrameToDTS.size(); i++) {
 		int64_t CurrentDiff = FFABS(FrameToDTS[i].DTS - ADTS);
 		if (CurrentDiff < BestDiff) {
@@ -51,7 +51,8 @@ bool FFBase::LoadFrameInfoFromFile(const char *AVideoCacheFile, const char *ASou
 	if (!CacheFile)
 		return false;
 
-	if (fscanf(CacheFile, "%d\r\n", &VI.num_frames) <= 0) {
+	if (fscanf(CacheFile, "%d\r\n", &VI.num_frames) <= 0 || VI.num_frames <= 0) {
+		VI.num_frames = 0;
 		fclose(CacheFile);
 		return false;
 	}
@@ -106,11 +107,14 @@ bool FFBase::PrepareAudioCache(const char *AAudioCacheFile, const char *ASource,
 	if (!strcmp(AAudioCacheFile, ""))
 		AAudioCacheFile = DefaultCacheFilename;
 
+	bool IsWritable = false;
+
 	AudioCache = fopen(AAudioCacheFile, "rb");
 	if (!AudioCache) {
 		AudioCache = fopen(AAudioCacheFile, "wb+");
 		if (!AudioCache)
 			Env->ThrowError("FFmpegSource: Failed to open the audio cache file for writing");
+		IsWritable = true;
 		return false;
 	}
 
@@ -121,9 +125,11 @@ bool FFBase::PrepareAudioCache(const char *AAudioCacheFile, const char *ASource,
 		return true;
 	}
 
-	AudioCache = freopen(AAudioCacheFile, "wb", AudioCache);
-	if (!AudioCache)
-		Env->ThrowError("FFmpegSource: Failed to open the audio cache file for writing");
+	if (!IsWritable) {
+		AudioCache = freopen(AAudioCacheFile, "wb+", AudioCache);
+		if (!AudioCache)
+			Env->ThrowError("FFmpegSource: Failed to open the audio cache file for writing");
+	}
 
 	return false;
 }
@@ -149,7 +155,9 @@ void FFBase::InitPP(int AWidth, int AHeight, const char *APPString, int AQuality
 		default:
 			Env->ThrowError("FFmpegSource: Input format is not supported for postprocessing");
 	}
+
 	PPContext = pp_get_context(VI.width, VI.height, Flags);
+
 	if (avpicture_alloc(&PPPicture, APixelFormat, AWidth, AHeight) < 0)
 			Env->ThrowError("FFmpegSource: Failed to allocate picture");
 }
