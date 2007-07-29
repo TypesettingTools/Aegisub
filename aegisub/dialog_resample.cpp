@@ -45,6 +45,7 @@
 #include "validators.h"
 #include "video_context.h"
 #include "utils.h"
+#include "subs_edit_box.h"
 
 
 ///////////////
@@ -238,7 +239,8 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 
 	// Flag as modified
 	subs->FlagAsModified(_("resolution resampling"));
-	grid->CommitChanges();;
+	grid->CommitChanges();
+	grid->editBox->Update();
 	EndModal(0);
 }
 
