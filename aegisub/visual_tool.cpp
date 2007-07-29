@@ -340,6 +340,8 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 	if (!diag) {
 		x = -1;
 		y = -1;
+		orgx = -1;
+		orgy = -1;
 		return;
 	}
 
@@ -495,6 +497,9 @@ void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int
 void VisualTool::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
 	// Default values
 	rx = ry = rz = 0.0f;
+
+	// No dialogue
+	if (!diag) return;
 
 	// Prepare overrides
 	diag->ParseASSTags();
