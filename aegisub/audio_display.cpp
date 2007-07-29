@@ -1215,6 +1215,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 		dontReadTimes = false;
 		curStartMS = curEndMS;
 		curEndMS = curStartMS + Options.AsInt(_T("Timing Default Duration"));
+		NeedCommit = true;
 	}
 
 	Update();
