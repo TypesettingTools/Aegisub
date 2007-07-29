@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Niels Martin Hansen, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,49 +34,69 @@
 //
 
 
-#pragma once
-
-
 ////////////
 // Includes
-#include <wx/wxprec.h>
-#include <map>
+#include "font_file_lister_freetype.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+#include FT_SFNT_NAMES_H
+#include <shlobj.h>
+#include <wx/dir.h>
 
 
-////////////
-// Typedefs
-#ifdef WIN32
-typedef struct FT_LibraryRec_ *FT_Library;
-#endif
-typedef std::map<wxString,wxArrayString> FontMap;
+///////////////
+// Constructor
+FreetypeFontFileLister::FreetypeFontFileLister() {
+	// Initialize freetype2
+	FT_Init_FreeType(&ft2lib);
+}
 
 
-////////////////////
-// Font file lister
-class FontFileLister {
-private:
-	static FontFileLister *instance;
-	static void GetInstance();
-	FontMap fontTable;
-	wxArrayString fontFiles;
+//////////////
+// Destructor
+FreetypeFontFileLister::~FreetypeFontFileLister() {
+}
 
-protected:
-	virtual wxArrayString DoGetFilesWithFace(wxString facename) { return CacheGetFilesWithFace(facename); }
-	virtual void DoInitialize()=0;
-	virtual void DoClearData() { ClearCache(); }
 
-	FontFileLister();
-	virtual ~FontFileLister();
+///////////////////////////
+// Gather data from system
+void FreetypeFontFileLister::DoInitialize() {
+	// Load cache
+	LoadCache();
 
-	wxArrayString CacheGetFilesWithFace(wxString facename);
-	bool IsFilenameCached(wxString filename);
-	void AddFont(wxString filename,wxString facename);
-	void SaveCache();
-	void LoadCache();
-	void ClearCache();
+	// Get fonts folder
+	wxString source;
+	TCHAR szPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_FONTS,NULL,0,szPath))) {
+		source = wxString(szPath);
+	}
+	else source = wxGetOSDirectory() + _T("\\fonts");
+	source += _T("\\");
 
-public:
-	static wxArrayString GetFilesWithFace(wxString facename);
-	static void Initialize();
-	static void ClearData();
-};
+	// Get the list of fonts in the fonts folder
+	wxArrayString fontfiles;
+	wxDir::GetAllFiles(source, &fontfiles, wxEmptyString, wxDIR_FILES);
+
+	// Loop through each file
+	int fterr;
+	for (unsigned int i=0;i<fontfiles.Count(); i++) {
+		// Check if it's cached
+		if (IsFilenameCached(fontfiles[i])) continue;
+
+		// Loop through each face in the file
+		for (int facenum=0;true;facenum++) {
+			// Get font face
+			FT_Face face;
+			fterr = FT_New_Face(ft2lib, fontfiles[i].mb_str(*wxConvFileName), facenum, &face);
+			if (fterr) break;
+
+			// Add font
+			AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal));
+			FT_Done_Face(face);
+		}
+	}
+
+	// Save cache
+	SaveCache();
+}

@@ -34,49 +34,35 @@
 //
 
 
-#pragma once
-
-
 ////////////
 // Includes
 #include <wx/wxprec.h>
-#include <map>
+#ifndef WIN32
+#include "font_file_lister_fontconfig.h"
+
+
+///////////////////////////////////
+// Get files that contain the face
+wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
+	wxArrayString results;
+
+	// TODO: implement this
+
+	return results;
+}
+
+
+//////////////
+// Initialize
+void FontConfigFontFileLister::DoInitialize() {
+	// TODO: implement this
+}
 
 
 ////////////
-// Typedefs
-#ifdef WIN32
-typedef struct FT_LibraryRec_ *FT_Library;
+// Clean up
+void FontConfigFontFileLister::DoClearData() {
+	// TODO: implement this
+}
+
 #endif
-typedef std::map<wxString,wxArrayString> FontMap;
-
-
-////////////////////
-// Font file lister
-class FontFileLister {
-private:
-	static FontFileLister *instance;
-	static void GetInstance();
-	FontMap fontTable;
-	wxArrayString fontFiles;
-
-protected:
-	virtual wxArrayString DoGetFilesWithFace(wxString facename) { return CacheGetFilesWithFace(facename); }
-	virtual void DoInitialize()=0;
-	virtual void DoClearData() { ClearCache(); }
-
-	FontFileLister();
-	virtual ~FontFileLister();
-
-	wxArrayString CacheGetFilesWithFace(wxString facename);
-	bool IsFilenameCached(wxString filename);
-	void AddFont(wxString filename,wxString facename);
-	void SaveCache();
-	void LoadCache();
-	void ClearCache();
-
-public:
-	static wxArrayString GetFilesWithFace(wxString facename);
-	static void Initialize();
-	static void ClearData();
-};

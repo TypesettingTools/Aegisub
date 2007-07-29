@@ -39,44 +39,15 @@
 
 ////////////
 // Includes
-#include <wx/wxprec.h>
-#include <map>
+#include "font_file_lister.h"
 
 
-////////////
-// Typedefs
-#ifdef WIN32
-typedef struct FT_LibraryRec_ *FT_Library;
-#endif
-typedef std::map<wxString,wxArrayString> FontMap;
-
-
-////////////////////
-// Font file lister
-class FontFileLister {
+/////////////////////////////
+// Freetype Font file lister
+class FontConfigFontFileLister : public FontFileLister {
+	friend class FontFileLister;
 private:
-	static FontFileLister *instance;
-	static void GetInstance();
-	FontMap fontTable;
-	wxArrayString fontFiles;
-
-protected:
-	virtual wxArrayString DoGetFilesWithFace(wxString facename) { return CacheGetFilesWithFace(facename); }
-	virtual void DoInitialize()=0;
-	virtual void DoClearData() { ClearCache(); }
-
-	FontFileLister();
-	virtual ~FontFileLister();
-
-	wxArrayString CacheGetFilesWithFace(wxString facename);
-	bool IsFilenameCached(wxString filename);
-	void AddFont(wxString filename,wxString facename);
-	void SaveCache();
-	void LoadCache();
-	void ClearCache();
-
-public:
-	static wxArrayString GetFilesWithFace(wxString facename);
-	static void Initialize();
-	static void ClearData();
+	wxArrayString DoGetFilesWithFace(wxString facename);
+	void DoInitialize();
+	void DoClearData();
 };

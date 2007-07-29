@@ -315,7 +315,7 @@ void DialogFontsCollector::Update(int value) {
 ///////////////////////
 // Collect font files
 void FontsCollectorThread::CollectFontData () {
-	FontFileLister::GatherData();
+	FontFileLister::Initialize();
 }
 
 
