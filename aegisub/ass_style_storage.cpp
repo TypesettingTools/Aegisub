@@ -95,10 +95,19 @@ void AssStyleStorage::Clear () {
 /////////////
 // Get names
 wxArrayString AssStyleStorage::GetNames() {
-	using std::list;
 	wxArrayString names;
-	for (list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
+	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
 		names.Add((*cur)->name);
 	}
 	return names;
+}
+
+
+///////////////////////
+// Get a style by name
+AssStyle *AssStyleStorage::GetStyle(wxString name) {
+	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
+		if ((*cur)->name == name) return *cur;
+	}
+	return NULL;
 }

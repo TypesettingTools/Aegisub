@@ -56,6 +56,7 @@ public:
 	std::list<AssStyle*> style;
 
 	wxArrayString GetNames();
+	AssStyle *GetStyle(wxString name);
 	void Clear();
 	void Save(wxString name);
 	void Load(wxString name);
