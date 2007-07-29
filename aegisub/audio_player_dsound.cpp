@@ -337,14 +337,18 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 	// Fill whole buffer
 	FillBuffer(true);
 
-	// Start thread
-	thread = new DirectSoundPlayerThread(this);
-	thread->Create();
-	thread->Run();
+	DWORD play_flag = 0;
+	if (count > bufSize) {
+		// Start thread
+		thread = new DirectSoundPlayerThread(this);
+		thread->Create();
+		thread->Run();
+		play_flag = DSBPLAY_LOOPING;
+	}
 
 	// Play
 	buffer->SetCurrentPosition(0);
-	res = buffer->Play(0,0,DSBPLAY_LOOPING);
+	res = buffer->Play(0,0,play_flag);
 	if (SUCCEEDED(res)) playing = true;
 	startTime = GetTickCount();
 
