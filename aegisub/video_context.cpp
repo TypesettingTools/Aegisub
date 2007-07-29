@@ -306,7 +306,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 			// Set frame rate
 			fps = provider->GetFPS();
-			if (!isVfr) {
+			if (!isVfr || provider->IsNativelyByFrames()) {
 				VFR_Input.SetCFR(fps);
 				if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
 			}
@@ -327,6 +327,10 @@ void VideoContext::SetVideo(const wxString &filename) {
 			frame_n = 0;
 			//UpdateDisplays(true);
 			Refresh(true,true);
+
+			// Show warning
+			wxString warning = provider->GetWarning();
+			if (!warning.IsEmpty()) wxMessageBox(warning,_T("Warning"),wxICON_WARNING | wxOK);
 		}
 		
 		catch (wxString &e) {

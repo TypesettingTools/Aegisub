@@ -59,6 +59,7 @@ private:
 	VideoInfo vi;
 	AegiVideoFrame iframe;
 
+	bool usedDirectShow;
 	wxString rendererCallString;
 
 	int num_frames;
@@ -66,6 +67,7 @@ private:
 
 	double fps;
 	wxArrayInt frameTime;
+	bool byFrame;
 
 	PClip RGB32Video;
 	PClip SubtitledVideo;
@@ -96,6 +98,8 @@ public:
 	int GetHeight() { return vi.height; };
 
 	void OverrideFrameTimeList(wxArrayInt list);
+	bool IsNativelyByFrames() { return byFrame; }
+	wxString GetWarning();
 };
 
 
@@ -118,6 +122,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, double _fps) {
 	fps = _fps;
 	num_frames = 0;
 	last_fnum = -1;
+	byFrame = false;
 
 	AVSTRACE(_T("AvisynthVideoProvider: Loading Subtitles Renderer"));
 	LoadRenderer();
@@ -160,7 +165,8 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Got AVS mutex"));
 	AVSValue script;
 
-	bool usedDirectshow = false;
+	byFrame = false;
+	usedDirectShow = false;
 
 	wxString extension = _filename.Right(4);
 	extension.LowerCase();
@@ -186,6 +192,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 				AVSValue args[2] = { videoFilename, false };
 				script = env->Invoke("AviSource", AVSValue(args,2), argnames);
 				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened .avi file without audio"));
+				byFrame = true;
 			}
 			
 			// On Failure, fallback to DSS
@@ -228,6 +235,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		// Some other format, such as mkv, mp4, ogm... try FFMpegSource and DirectShowSource
 		else {
 			// Try loading FFMpegSource
+			directshowOpen:
 			bool ffsource = false;
 			if (env->FunctionExists("ffmpegsource")) ffsource = true;
 			if (!ffsource) {
@@ -236,6 +244,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading FFMpegSource"));
 					env->Invoke("LoadPlugin",env->SaveString(ffsourcepath.GetFullPath().mb_str(wxConvLocal)));
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded FFMpegSource"));
+					byFrame = true;
 				}
 			}
 
@@ -250,7 +259,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 			// DirectShowSource
 			if (!ffsource) {
-				directshowOpen:
 				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening file with DirectShowSource"));
 
 				// Try loading DirectShowSource2
@@ -293,7 +301,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 							script = env->Invoke("DirectShowSource", AVSValue(args,4), argnames);
 						}
 						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS without audio"));
-						usedDirectshow = true;
+						usedDirectShow = true;
 					}
 
 					// Failed to find a suitable function
@@ -323,9 +331,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		script = env->Invoke("ConvertToRGB32", script);
 		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
 	}
-
-	// Directshow
-	//if (usedDirectshow) wxMessageBox(_T("Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!"),_T("DirectShowSource warning"),wxICON_EXCLAMATION);
 
 	// Cache
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Finished opening video, AVS mutex will be released now"));
@@ -555,5 +560,12 @@ void AvisynthVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 	num_frames = frameTime.Count();
 }
 
+
+///////////////
+// Get warning
+wxString AvisynthVideoProvider::GetWarning() {
+	if (usedDirectShow) return _("Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!");
+	else return _T("");
+}
 
 #endif

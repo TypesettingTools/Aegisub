@@ -110,6 +110,7 @@ public:
 	int GetWidth();
 	int GetHeight();
 	double GetFPS();
+	bool IsNativelyByFrames() { return true; }
 };
 
 

@@ -94,6 +94,8 @@ public:
 	virtual int GetHeight()=0;					// Returns the video height in pixels
 	virtual double GetFPS()=0;					// Get framerate in frames per second
 	virtual void OverrideFrameTimeList(wxArrayInt list) {}	// Override the list with the provided one, for VFR handling
+	virtual bool IsNativelyByFrames() { return false; }
+	virtual wxString GetWarning() { return _T(""); }
 };
 
 
