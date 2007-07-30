@@ -613,7 +613,8 @@ void AssFile::InsertAttachment (wxString filename) {
 	}
 
 	// Insert
-	if (filename.Right(4).Lower() == _T(".ttf")) newAttach->group = _T("[Fonts]");
+	wxString ext = filename.Right(4).Lower();
+	if (ext == _T(".ttf") || ext == _T(".ttc") || ext == _T(".pfb")) newAttach->group = _T("[Fonts]");
 	else newAttach->group = _T("[Graphics]");
 	InsertAttachment(newAttach);
 }
