@@ -150,6 +150,33 @@ public:
 			if (avcodec_open(AudioCodecContext, AudioCodec) < 0)
 				Env->ThrowError("FFmpegSource: Could not open audio codec");
 
+			// Fix for ac3 and other codecs where decoding a block of audio is required to get information about it
+			if (AudioCodecContext->channels == 0 || AudioCodecContext->sample_rate == 0) {
+				mkv_SetTrackMask(MF, ~(1 << AudioTrack));
+				uint64_t StartTime, EndTime, FilePos;
+				unsigned int Track, FrameFlags, FrameSize;
+				mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags);
+
+				uint8_t DecodingBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+				int Size = ReadFrame(FilePos, FrameSize, AudioCS, Env);
+				uint8_t *Data = Buffer;
+
+				while (Size > 0) {
+					int TempOutputBufSize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+					int Ret = avcodec_decode_audio2(AudioCodecContext, (int16_t *)DecodingBuffer, &TempOutputBufSize, Data, Size);
+					if (Ret < 0)
+						Env->ThrowError("FFmpegSource: Audio decoding error");
+
+					Size -= Ret;
+					Data += Ret;
+				}
+
+				mkv_Seek(MF, 0, MKVF_SEEK_TO_PREV_KEYFRAME);
+			}
+
+			VI.nchannels = AudioCodecContext->channels;
+			VI.audio_samples_per_second = AudioCodecContext->sample_rate;
+
 			switch (AudioCodecContext->sample_fmt) {
 				case SAMPLE_FMT_U8: VI.sample_type = SAMPLE_INT8; break;
 				case SAMPLE_FMT_S16: VI.sample_type = SAMPLE_INT16; break;
@@ -159,9 +186,6 @@ public:
 				default:
 					Env->ThrowError("FFmpegSource: Unsupported/unknown sample format");
 			}
-
-			VI.nchannels = AudioCodecContext->channels;
-			VI.audio_samples_per_second = AudioCodecContext->sample_rate;
 
 			ACacheIsValid = PrepareAudioCache(AAudioCache, ASource, AudioTrack, Env);
 			if (!ACacheIsValid)
@@ -199,6 +223,15 @@ public:
 					}
 				}
 
+			if (VideoTrack >= 0 && VI.num_frames == 0)
+				Env->ThrowError("FFmpegSource: Video track contains no frames");
+
+			if (AudioTrack >= 0 && VI.num_audio_samples == 0)
+				Env->ThrowError("FFmpegSource: Audio track contains no samples");
+
+			if (VideoTrack >= 0)
+				mkv_Seek(MF, FrameToDTS.front().DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
+
 			if (AVCache && !VCacheIsValid)
 				if (!SaveFrameInfoToFile(AVideoCache, ASource, VideoTrack))
 					Env->ThrowError("FFmpegSource: Failed to write video cache info");
@@ -211,7 +244,6 @@ public:
 
 		if (VideoTrack >= 0) {
 			mkv_SetTrackMask(MF, ~(1 << VideoTrack));
-			mkv_Seek(MF, FrameToDTS.front().DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
 
 			if (FrameToDTS.size() >= 2) {
 				double DTSDiff = (double)(FrameToDTS.back().DTS - FrameToDTS.front().DTS);
@@ -488,6 +520,15 @@ public:
 				av_free_packet(&Packet);
 			}
 
+			if (VideoTrack >= 0 && VI.num_frames == 0)
+				Env->ThrowError("FFmpegSource: Video track contains no frames");
+
+			if (AudioTrack >= 0 && VI.num_audio_samples == 0)
+				Env->ThrowError("FFmpegSource: Audio track contains no samples");
+
+			if (VideoTrack >= 0)
+				av_seek_frame(FormatContext, VideoTrack, FrameToDTS.front().DTS, AVSEEK_FLAG_BACKWARD);
+
 			if (AVCache)
 				if (!SaveFrameInfoToFile(AVideoCache, ASource, VideoTrack))
 					Env->ThrowError("FFmpegSource: Failed to write video cache info");
@@ -497,8 +538,6 @@ public:
 			avcodec_close(AudioCodecContext);
 
 		if (VideoTrack >= 0) {
-			av_seek_frame(FormatContext, VideoTrack, FrameToDTS.front().DTS, AVSEEK_FLAG_BACKWARD);
-
 			if (!SaveTimecodesToFile(ATimecodes, FormatContext->streams[VideoTrack]->time_base.num * 1000, FormatContext->streams[VideoTrack]->time_base.den))
 				Env->ThrowError("FFmpegSource: Failed to write timecodes");
 

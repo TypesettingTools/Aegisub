@@ -9,6 +9,12 @@ FFmpegSource Documentation
 
 <h2>Changes</h2>
 <ul>
+<li>1.6<ul>
+<li>Fixed ac3 and other formats stored in mkv</li>
+<li>Skip unnecessary seeking when index information already exists (gif file opening only 3/4 broken now)</li>
+<li>Throws an error when the selected audio/video track has no frames/samples</li>
+</ul></li>
+
 <li>1.5<ul>
 <li>Fixed a bug that made avformat opened files only return audio if only the audio cache needed to be created</li>
 <li>Rejects more corrupt cache files</li>
@@ -75,6 +81,10 @@ FFmpegSource Documentation
 <h2>Usage</h2>
 <p>
 <b>FFmpegSource(string source, int vtrack = -1, int atrack = -2, string timecodes, bool vcache = true, string vcachefile, string acachefile, string pp, int ppquality = 6, int seekmode = 1)</b><br />
+</p>
+
+<p>
+Note that the audio cache will always be created when opening files with audio and that it will be huge since it stores all audio as raw signed 16 bit pcm.
 </p>
 
 <p>
