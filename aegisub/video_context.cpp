@@ -741,7 +741,7 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	JumpToFrame(nextFrame);
 
 	// Sync audio
-	if (keepAudioSync && nextFrame % 10 == 0) {
+	if (keepAudioSync && nextFrame % 10 == 0 && audio && audio->provider && audio->player) {
 		__int64 audPos = audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame));
 		__int64 curPos = audio->player->GetCurrentPosition();
 		int delta = int(audPos-curPos);
