@@ -49,7 +49,8 @@ wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 	// Code stolen from asa
 	FcPattern *final, *tmp1, *tmp2;
 	FcResult res;
-	FcChar8 *filename;
+	FcChar8 *filename,*gotfamily;
+	int fontindex;
 	char buffer[1024];
 	strcpy(buffer,facename.mb_str(wxConvUTF8));
 
@@ -58,11 +59,16 @@ wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 	if (!tmp1) return results;
 	tmp2 = FcFontRenderPrepare(fontconf, tmp1, aux);
 	FcPatternDestroy(tmp1);
+	FcDefaultSubstitute(tmp2);
+	FcConfigSubstitute(fontconf, tmp2, FcMatchPattern);
 	final = FcFontMatch(fontconf, tmp2, &res);
 	FcPatternDestroy(tmp2);
 	if (!final) return results;
-	if (FcPatternGetString(final, FC_FILE, 0, &filename) == FcResultMatch) {
-		results.Add(wxString((char*) filename,wxConvLocal));
+	if (FcPatternGetString(final, FC_FILE, 0, &filename) == FcResultMatch && FcPatternGetInteger(final, FC_INDEX, 0, &fontindex) == FcResultMatch) {
+		FcPatternGetString(final, FC_FAMILY, fontindex, &gotfamily);
+		if (strcmp(gotfamily,buffer) == 0) {
+			results.Add(wxString((char*) filename,wxConvLocal));
+		}
 	}
 	FcPatternDestroy(final);
 
