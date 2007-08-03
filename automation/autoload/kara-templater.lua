@@ -321,7 +321,7 @@ function apply_templates(meta, styles, subs, templates)
 		aegisub.progress.set(i/n*100)
 		i = i + 1
 		local l = subs[i]
-		if l.class == "dialogue" and ((l.effect == "" and not l.comment) or (l.effect == "karaoke" and l.comment)) then
+		if l.class == "dialogue" and ((l.effect == "" and not l.comment) or l.effect:match("[Kk]araoke")) then
 			l.i = i
 			l.comment = false
 			karaskel.preproc_line(subs, meta, styles, l)
