@@ -257,7 +257,14 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 //////////
 // Commit
 void VisualTool::Commit(bool full) {
+	// Get grid
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
+
+	// See if anything actually changed
+	AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
+	if (diag && grid->editBox->TextEdit->GetText() == diag->Text) return;
+
+	// Commit changes
 	grid->editBox->CommitText();
 	if (full) grid->ass->FlagAsModified(_("visual typesetting"));
 	grid->CommitChanges(false,!full);

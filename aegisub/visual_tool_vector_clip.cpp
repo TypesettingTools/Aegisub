@@ -362,6 +362,9 @@ void VisualToolVectorClip::InitializeHold() {
 
 		// Insert
 		else {
+			// Check if there is at least one curve to split
+			if (spline.curves.size() == 0) return;
+
 			// Split the curve
 			SplineCurve *c1 = spline.GetCurve(curve);
 			SplineCurve c2;
