@@ -183,7 +183,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 		// Apply to dialogues
 		curDiag = AssEntry::GetAsDialogue(*cur);
-		if (curDiag) {
+		if (curDiag && !(curDiag->Comment && (curDiag->Effect.StartsWith(_T("template")) || curDiag->Effect.StartsWith(_T("code"))))) {
 			try {
 				// Override tags
 				curDiag->ParseASSTags();
