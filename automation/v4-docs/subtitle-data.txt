@@ -240,7 +240,7 @@ here could make it seem like.
 Internally, a cursor to the last accessed item is kept, to make sequential or
 mostly-sequential access to items faster, but totally random access will
 still be somewhat ineffecient. Accessing items near the start or end of the
-subtitle file can also be done reasonable fast however.
+subtitle file can also be done reasonably fast however.
 
 After an item-by-item deletion, the cursor will be placed at the item that
 now has the lowest id specified for the operation.
@@ -249,33 +249,6 @@ that now has the first id in the range of the operation.
 After an insert operation, the cursor will be placed after the last inserted
 item.
 An append operation does not move the cursor.
-
----
-
-Parsing tag data
-
-This function uses the Aegisub SSA parser to split a string into override
-blocks and text, and give separate access to each tag in override blocks.
-
-function aegisub.parse_tag_data(text)
-
-@text (string)
-  The SSA-format string to parse.
-
-Returns: A Parsed Tag Data table.
-
----
-
-Recreating a line from tag data
-
-This function takes a Parsed Tag Data table and creates an SSA string from it.
-
-function aegisub.unparse_tag_data(tagdata)
-
-@tagdata (table)
-  The Parsed Tag Data table to "unparse".
-
-Returns: A string, being the "unparsed" data.
 
 ---
 
@@ -290,65 +263,6 @@ function aegisub.parse_karaoke_data(text)
   The SSA-format string to parse.
 
 Returns: A Parsed Karaoke Data table.
-
----
-
-Parsed Tag Data table
-
-The Parsed Tag Data table is an Array Table containing a number of Parsed Line
-Block tables.
-
-
-Parsed Line Block table
-
-A Parsed Line Block describes part of a line. (See ass_dialogue.cpp:70 for a
-more complete description of this.
-There are several classes of Parsed Line Block tables, which have slightly
-varying fields.
-
-
-Base Parsed Line Block table class
-
-class (string)
-  One of:
-    "plain",
-    "override",
-    "drawing"
-
-
-"plain" and "drawing" Parsed Line Block table classes
-
-text (string)
-  The text contained in this block.
-
-
-"override" Parsed Line Block table class
-
-This class doesn't have any new, specifically named fields. It does, however,
-have multiple integer indexed fields, ie. acts as an Array Table.
-Each of these indexes refer to a table of type Parsed Override Tag.
-
-
-Parsed Override Tag table
-
-This table describes a single override-tag in an SSA line.
-
-valid (boolean)
-  Whether this tag was parsed as a valid tag, or is just used for representing
-  junk in the middle of the line.
-
-name (string)
-  Name of the tag, including leading backslash character. (In the case of
-  invalid tags, the leading backslash might not be present.)
-
-paran (boolean)
-  Whether this tag has parantheses in its textual representation.
-
-params (table)
-  This is an Array Table containing the parameters for this tag. It will
-  always have the maximum number of entries that can be supported by the tag,
-  but in case of omitted parameters, the parameters omitted will have 'false'
-  for value in this table.
 
 ---
 
