@@ -1220,7 +1220,7 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 // Setup accelerator table
 void FrameMain::SetAccelerators() {
 	std::vector<wxAcceleratorEntry> entry;
-	entry.reserve(20);
+	entry.reserve(32);
 
 	// Standard
 	entry.push_back(Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame));

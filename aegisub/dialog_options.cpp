@@ -1023,7 +1023,7 @@ DialogInputHotkey::DialogInputHotkey(HotkeyType *_key,wxString name)
 ////////////////////////
 // Capturer constructor
 CaptureKey::CaptureKey(DialogInputHotkey *_parent)
-: wxTextCtrl(_parent,-1,_T(""),wxDefaultPosition,wxSize(0,0))
+: wxTextCtrl(_parent,-1,_T(""),wxDefaultPosition,wxSize(0,0),wxTE_PROCESS_ENTER | wxTE_PROCESS_TAB)
 {
 	parent = _parent;
 	SetFocus();
