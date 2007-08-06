@@ -214,6 +214,13 @@ void SubsTextEditCtrl::SetStyles() {
 	StyleSetBold(6,true);
 	StyleSetForeground(6,Options.AsColour(_T("Syntax Highlight Line Break")));
 
+	// Karaoke template code block style
+	StyleSetFont(7,font);
+	StyleSetSize(7,size);
+	StyleSetBold(7,true);
+	//StyleSetItalic(7,true);
+	StyleSetForeground(7,Options.AsColour(_T("Syntax Highlight Karaoke Template")));
+
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetForeground(0,wxColour(255,0,0));
@@ -237,10 +244,10 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 	// Begin styling
 	StartStyling(0,255);
-	int ran = 0;
-	int depth = 0;
-	int curStyle = 0;
-	int curPos = 0;
+	int ran = 0;		// length of current range
+	int depth = 0;		// brace nesting depth
+	int curStyle = 0;	// style to apply to current range
+	int curPos = 0;		// start of current range?
 	wxChar curChar = 0;
 	wxChar prevChar = 0;
 	wxChar nextChar = 0;
@@ -282,6 +289,40 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			if (depth == 0) curStyle = 1;
 			else curStyle = 4;
 			numMode = false;
+		}
+
+		// Karaoke template block
+		else if (curChar == _T('!')) {
+			// Apply previous style
+			SetUnicodeStyling(curPos,ran,curStyle);
+			curPos += ran;
+			ran = -1; // such that ran++ later on resets it to 0 !
+			// Eat entire template block
+			int endPos = i+1;
+			while (endPos < end && text[endPos] != _T('!'))
+				endPos++;
+			SetUnicodeStyling(curPos,endPos-curPos+1,7);
+			curPos = endPos+1;
+			i = endPos+0;
+		}
+		// Karaoke template variable
+		else if (curChar == _T('$')) {
+			// Apply previous style
+			SetUnicodeStyling(curPos,ran,curStyle);
+			curPos += ran;
+			ran = -1; // such that ran++ later on resets it to 0 !
+			// Eat entire variable
+			int endPos = i+1;
+			while (endPos < end) {
+				wxChar ch = text[endPos];
+				if ((ch >= _T('A') && ch <= _T('Z')) || (ch >= _T('a') && ch <= _T('z')) || ch == _T('_'))
+					endPos++;
+				else
+					break;
+			}
+			SetUnicodeStyling(curPos,endPos-curPos,7);
+			curPos = endPos;
+			i = curPos-1;
 		}
 
 		// Outside

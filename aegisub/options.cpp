@@ -128,6 +128,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetColour(_T("Syntax Highlight Error"),wxColour(200,0,0));
 	SetColour(_T("Syntax Highlight Error Background"),wxColour(255,200,200));
 	SetColour(_T("Syntax Highlight Line Break"),wxColour(160,160,160));
+	SetColour(_T("Syntax Highlight Karaoke Template"), wxColour(128,0,192));
 	SetColour(_T("Edit Box Need Enter Background"),wxColour(192,192,255));
 #if defined(__WINDOWS__)
 	SetInt(_T("Edit Font Size"),9);

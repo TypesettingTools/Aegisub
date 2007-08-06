@@ -228,14 +228,14 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Second static box
 		wxControl *control;
-		wxString labels2[9] = { _("Normal"), _("Brackets"), _("Slashes and Parentheses"), _("Tags"), _("Parameters") ,
-			                    _("Error"), _("Error Background"), _("Line Break"), _("Modified Background") };
-		wxString options2[11] = { _T("Normal"), _T("Brackets"), _T("Slashes"), _T("Tags"), _T("Parameters") ,
-			                      _T("Error"), _T("Error Background"), _T("Line Break"), _T("Edit box need enter background"), _T("Edit Font Face"), _T("Edit Font Size") };
-		for (int i=0;i<9;i++) {
+		wxString labels2[10] = { _("Normal"), _("Brackets"), _("Slashes and Parentheses"), _("Tags"), _("Parameters") ,
+			                    _("Error"), _("Error Background"), _("Line Break"), _("Karaoke templates"), _("Modified Background") };
+		wxString options2[12] = { _T("Normal"), _T("Brackets"), _T("Slashes"), _T("Tags"), _T("Parameters") ,
+			                      _T("Error"), _T("Error Background"), _T("Line Break"), _T("Karaoke Template"), _T("Edit box need enter background"), _T("Edit Font Face"), _T("Edit Font Size") };
+		for (int i=0;i<10;i++) {
 			wxString caption = labels2[i]+_T(": ");
 			wxString option = options2[i];
-			if (i < 8) {
+			if (i < 9) {
 				caption = _("Syntax highlighter - ") + caption;
 				option = _T("Syntax highlight ") + option;
 			}
@@ -251,11 +251,11 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FONT);
 		control = new wxTextCtrl(editPage,-1);
 		browse->Bind((wxTextCtrl*)control);
-		Bind(control,options2[9]);
+		Bind(control,options2[10]);
 		editSizer5->Add(control,1,wxEXPAND | wxRIGHT,5);
 		control = new wxTextCtrl(editPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
 		browse->Bind((wxTextCtrl*)control,1);
-		Bind(control,options2[10]);
+		Bind(control,options2[11]);
 		editSizer5->Add(control,0,wxEXPAND | wxRIGHT,5);
 		editSizer5->Add(browse,0,wxEXPAND);
 
