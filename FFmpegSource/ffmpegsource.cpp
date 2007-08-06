@@ -112,6 +112,7 @@ public:
 
 			// Fix for mpeg2 and other formats where decoding a frame is necessary to get information about the stream
 			if (VideoCodecContext->pix_fmt == PIX_FMT_NONE) {
+				mkv_SetTrackMask(MF, ~(1 << VideoTrack));
 				int64_t Dummy;
 				DecodeNextFrame(DecodeFrame, &Dummy, Env);
 				mkv_Seek(MF, 0, MKVF_SEEK_TO_PREV_KEYFRAME);
@@ -245,12 +246,12 @@ public:
 		if (VideoTrack >= 0) {
 			mkv_SetTrackMask(MF, ~(1 << VideoTrack));
 
+			// Calculate the average framerate
 			if (FrameToDTS.size() >= 2) {
 				double DTSDiff = (double)(FrameToDTS.back().DTS - FrameToDTS.front().DTS);
 				VI.fps_denominator = (unsigned int)(DTSDiff * mkv_TruncFloat(VideoTI->TimecodeScale) / (double)1000 / (double)(VI.num_frames - 1) + 0.5);
 				VI.fps_numerator = 1000000; 
 			}
-
 
 			if (!SaveTimecodesToFile(ATimecodes, mkv_TruncFloat(VideoTI->TimecodeScale), 1000000))
 				Env->ThrowError("FFmpegSource: Failed to write timecodes");
@@ -541,6 +542,7 @@ public:
 			if (!SaveTimecodesToFile(ATimecodes, FormatContext->streams[VideoTrack]->time_base.num * 1000, FormatContext->streams[VideoTrack]->time_base.den))
 				Env->ThrowError("FFmpegSource: Failed to write timecodes");
 
+			// Adjust framerate to match the duration of the first frame
 			if (FrameToDTS.size() >= 2) {
 				int64_t DTSDiff = (double)(FrameToDTS[1].DTS - FrameToDTS[0].DTS);
 				VI.fps_denominator *= DTSDiff;
