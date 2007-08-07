@@ -39,8 +39,10 @@
 #ifdef WIN32
 #define EMULATE_INTTYPES
 #endif
+extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
+}
 #include <wx/wxprec.h>
 #include <wx/image.h>
 #include <algorithm>
@@ -55,7 +57,7 @@
 /////////////////////
 // Link to libraries
 #if __VISUALC__ >= 1200
-#pragma comment(lib, "swscale-0.lib")
+//#pragma comment(lib, "swscale-0.lib")
 #pragma comment(lib, "avcodec-51.lib")
 #pragma comment(lib, "avformat-51.lib")
 #pragma comment(lib, "avutil-49.lib")
@@ -238,7 +240,7 @@ void LAVCVideoProvider::Close() {
 	buffer2Size = 0;
 
 	// Clean frame
-	if (frame) av_free(frame);
+	if (frame) av_free((void*)frame);
 	frame = NULL;
 	
 	// Close codec context

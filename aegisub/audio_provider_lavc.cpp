@@ -49,8 +49,10 @@
  * - done in posix/defines.h
  */
 
+extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
+}
 #include "mkv_wrap.h"
 #include "lavc_file.h"
 #include "audio_provider.h"
