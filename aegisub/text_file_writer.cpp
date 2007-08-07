@@ -78,7 +78,11 @@ TextFileWriter::~TextFileWriter() {
 void TextFileWriter::Open() {
 	// Open file
 	if (open) return;
+#ifdef WIN32
+	file.open(filename.wc_str(),std::ios::out | std::ios::binary | std::ios::trunc);
+#else
 	file.open(wxFNCONV(filename),std::ios::out | std::ios::binary | std::ios::trunc);
+#endif
 	if (!file.is_open()) {
 		throw _T("Failed opening file for writing.");
 	}

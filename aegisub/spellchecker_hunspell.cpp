@@ -127,7 +127,8 @@ void HunspellSpellChecker::Reset() {
 // Can add to dictionary?
 bool HunspellSpellChecker::CanAddWord(wxString word) {
 	if (!hunspell) return false;
-	return (word.mb_str(*conv) != NULL);
+	wxCharBuffer buffer = word.mb_str(*conv);
+	return (buffer.data() != NULL);
 }
 
 

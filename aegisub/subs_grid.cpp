@@ -680,7 +680,7 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 	end=(end>num_samples)?num_samples:end;
 
 
-	wxString filename = wxFileSelector(_("Save audio clip"),0,0,_T("wav"),0,wxFD_SAVE|wxFD_OVERWRITE_PROMPT,this);
+	wxString filename = wxFileSelector(_("Save audio clip"),_T(""),_T(""),_T("wav"),_T(""),wxFD_SAVE|wxFD_OVERWRITE_PROMPT,this);
 
 	if (!filename.empty()) {
 		std::ofstream outfile(filename.mb_str(wxConvLocal),std::ios::binary);

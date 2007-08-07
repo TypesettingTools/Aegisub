@@ -54,7 +54,32 @@
 #pragma comment(lib, "wxpng.lib")
 #endif
 
-#if wxCHECK_VERSION(2, 8, 0)
+#if wxCHECK_VERSION(2, 9, 0)
+#ifdef __WXDEBUG__
+#pragma comment(lib, "wxregexud.lib")
+#pragma comment(lib, "wxbase29ud.lib")
+#pragma comment(lib, "wxbase29ud_net.lib")
+#pragma comment(lib, "wxmsw29ud_media.lib")
+#pragma comment(lib, "wxmsw29ud_core.lib")
+#pragma comment(lib, "wxmsw29ud_adv.lib")
+#pragma comment(lib, "wxmsw29ud_gl.lib")
+#pragma comment(lib, "wxmsw29ud_stc.lib")
+#pragma comment(lib, "wxbase29ud_xml.lib")
+#pragma comment(lib, "wxexpatd.lib")
+#else
+#pragma comment(lib, "wxregexu.lib")
+#pragma comment(lib, "wxbase29u.lib")
+#pragma comment(lib, "wxbase29u_net.lib")
+#pragma comment(lib, "wxmsw29u_media.lib")
+#pragma comment(lib, "wxmsw29u_core.lib")
+#pragma comment(lib, "wxmsw29u_adv.lib")
+#pragma comment(lib, "wxmsw29u_gl.lib")
+#pragma comment(lib, "wxmsw29u_stc.lib")
+#pragma comment(lib, "wxbase29u_xml.lib")
+#pragma comment(lib, "wxexpat.lib")
+#endif
+
+#elif wxCHECK_VERSION(2, 8, 0)
 #ifdef __WXDEBUG__
 #pragma comment(lib, "wxregexud.lib")
 #pragma comment(lib, "wxbase28ud.lib")
