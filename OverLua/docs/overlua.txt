@@ -1,0 +1,133 @@
+OverLua provides a Lua 5.1 runtime environment with access to all
+standard libraries.
+
+
+API the Lua script must implement
+---------------------------------
+
+Any initialisation, such as loading external data files, should be done
+in the Lua script's global environment.
+
+OverLua expects one function in the script:
+
+function render_frame(frame, timestamp)
+
+The function name must be literal "render_frame". It must not be local.
+
+The "frame" parameter is a userdata object representing the video frame
+there must be rendered to. Other functions take this object as parameter.
+
+The "timestamp" parameter is a value of type "number", representing the
+timestamp of the frame to be rendered, in seconds. The timestamp may be
+non-integer with any precision.
+
+The render_frame function should not return anything. Instead it modifies
+the frame object.
+
+The render_frame function should not assume that frames are requested in
+any specific order.
+
+
+The frame object
+----------------
+
+The "frame" object passed to the render_frame function has a number of
+fields accessible.
+
+The frame is always stored as RGB. No alpha channel is supported.
+
+
+frame.width
+
+An integer number storing the width of the frame in pixels.
+
+Read only.
+
+
+frame.height
+
+An integer number storing the height of the frame in pixels.
+
+Read only.
+
+
+red, green, blue = frame(x, y)
+
+"red", "green" and "blue" will be numbers in range 0..255 that will receive
+the respective colour channel values for the requested pixel.
+"x" and "y" are the pixel coordinates for the pixel to retrieve
+Pixel coordinates are counted from zero and start in the upper left corner.
+A pixel with coordinates (X, Y) has pixel number Y*frame.width+X.
+
+
+frame[n] = {red, green, blue}
+
+Set the value of the given pixel.
+
+The table on the right side of the equal sign must have at least three
+entries which must all be numbers. They are taken as red, green and blue
+values respectively, in regular enumeration order.
+"n" is the pixel number to be set.
+A pixel with coordinates (X, Y) has pixel number Y*frame.width+X.
+
+Using a table constructor as shown is recommended.
+
+
+surface = frame.create_cairo_surface()
+
+Create a Cairo rgb24 surface from the video frame. Drawing to the surface
+will _not_ affect the video frame. If you want the changes to the surface
+visible on the video you will need to overlay this surface on the video.
+
+
+frame.overlay_cairo_surface(surface, x, y)
+
+Overlay the given Cairo surface at the video frame such that the upper,
+left corner of the surface is positioned at pixel (x, y) on the video.
+Only argb32 and rgb24 type surfaces are supported.
+Proper alpha blending is used for argb32 surfaces.
+
+
+Setting a pixel value for a pixel outside the frame has no effect.
+Specifically, it will not produce an error or a warning message.
+
+Reading a pixel value for a pixel outside the frame will return black,
+ie. (0, 0, 0).
+
+
+Vector graphics interface
+-------------------------
+
+OverLua uses the Cairo library for all vector graphics handling, including
+text handling.
+
+See lua-cairo.txt for details.
+
+
+Raster graphics processing interface
+------------------------------------
+
+A raster graphics processing interface is also provided, to post-process
+the graphics produced by the vector graphics interface.
+
+The raster graphics interface operates directly on Cairo surfaces.
+
+
+raster.gaussian_blur(surface, sigma)
+
+Applies a strength sigma gaussian blur on the surface.
+
+
+raster.box3(surface, repetitions)
+raster.box5(sutface, repetitions)
+raster.box15(surface, repetitions)
+
+Applies a box filter (blur) of various sizes to the surface as many times as
+specified. Please note that no specific optimisation is done for applying
+box filters over more general filters and using box blur over gaussian blur
+is probably no faster and might even be slower.
+
+
+More filtering functions are planned, though no specifics yet.
+
+Wishes/suggestions are welcome, and so are patches to add more functions.

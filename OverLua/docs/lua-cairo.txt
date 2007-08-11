@@ -1,0 +1,292 @@
+Documentation for the Cairo interface provided in OverLua
+=========================================================
+
+First, this file will mostly attempt to describe the differences between the
+Cairo C API and the provided Lua API. If you want more general and in-depth
+information on Cairo, please see the documentation for the C API:
+
+<http://cairographics.org/manual/>
+
+
+Note that almost all of the *_reference functions are unimplemented currently.
+They should not be explicitly needed since Lua does its own management on
+objects as well, you can just copy and keep a Lua Cairo object and be
+guaranteed the underlying Cairo object won't be deleted until all Lua objects
+referring to it are gone.
+There are no *_destroy and *_get_reference_count functions either,
+for this reason.
+
+Finally the *_user_data functions are also removed from the API.
+
+
+Conventions in this file
+------------------------
+
+Variable name   Cairo object
+
+surf            Surface (cairo_surface_t)
+ctx             Context (cairo_t)
+face            Font face (cairo_font_face_t)
+sf              Scaled font (cairo_scaled_font_t)
+fo              Font options (cairo_font_options_t)
+mat             Matrix (cairo_matrix_t)
+path            Path (cairo_path_t)
+pat             Pattern (cairo_pattern_t)
+x, y            Coordinates
+r, g, b, a      Colour values (red, green, blue, alpha)
+
+
+If more than one of an object type is used they will get numeric suffixes.
+For matrix operations you might also see "matR", this is "result matrix".
+
+
+More "OO-like" syntax
+---------------------
+
+This Lua Cairo API provides a more common "OO-like" syntax for calls.
+For example, the cairo_set_source_surface(ctx, surf, x, y) function maps to
+ctx.set_source_surface(surf, x, y).
+
+
+Creating initial objects
+------------------------
+
+Many of the objects you will use are created from or by other objects, but
+you will need to create some non-dependant objects, most importantly image
+surface objects. All the object creation functions live in the global "cairo"
+table.
+
+
+surf = cairo.image_surface_create(width, height, pixel_format)
+
+Create a blank image surface object.
+
+width and height are in pixels. pixel_format is a string and must be one
+of "argb32", "rgb24", "a8" and "a1".
+
+
+fo = cairo.font_options_create()
+
+Create a new font options object.
+
+
+mat = cairo.matrix_create()
+
+Create a new matrix. It is initially the identity matrix.
+
+
+pat = cairo.pattern_create_rgb(r, g, b)
+pat = cairo.pattern_create_rgba(r, g, b, a)
+pat = cairo.pattern_create_for_surface(surf)
+pat = cairo.pattern_create_linear(x0, y0, x1, y1)
+pat = cairo.pattern_create_radial(x0, y0, r0, x1, y1, r1)
+
+Create various kinds of pattern objects.
+
+
+ctx = surf.create_context()
+
+Not strictly an "initial object", but Cairo context objects are important
+enough to explicitly list here. They are created by calling the
+create_context() method in a surface object. This will create a context
+object that draws to the surface it was created with.
+
+
+Other functions that have changed API
+-------------------------------------
+
+Some functions have changed API to better match the Lua programming model.
+
+
+ctx.set_dash()
+ctx.set_dash(0)
+ctx.set_dash(num[, offset])
+ctx.set_dash(dashes[, offset])
+
+There are several forms of the set_dash function. The two first disable
+dashing entirely.
+
+The third creates a repeating pattern of equal length on and off potions,
+each "num" units long. The offset argument is optional, its default is 0.
+
+The last creates a complex pattern. "dashes" must be a table of numbers
+describing the dashing pattern. offset is optional, default is 0.
+
+
+dashes, offset = ctx.get_dash()
+
+Returns current dashing setting, in same format as the last form of set_dash
+takes. If dashing is disabled, dashes will be an empty table.
+
+(You won't need to use the ctx.get_dash_count() function.)
+
+
+x0, y0, x1, y1 = ctx.clip_extents()
+x0, y0, x1, y1 = ctx.fill_extents()
+x0, y0, x1, y1 = ctx.stroke_extents()
+
+Return the smallest rectangle bounding the area that would be affected if
+performing a clip/fill/stroke operation.
+
+
+x, y = ctx.get_current_point()
+
+Get the current point for path gneration operations.
+
+
+mat = ctx.get_matrix()
+
+Get the current geometry transformation matrix.
+
+
+x, y = ctx.user_to_device(x, y)
+x, y = ctx.user_to_device_distance(x, y)
+x, y = ctx.device_to_user(x, y)
+x, y = ctx.device_to_user_distance(x, y)
+
+Returns the transformation of a point between device and user-space
+coordinates.
+
+
+offset, r, g, b, a = pat.get_color_stop_rgba(index)
+
+Returns nothing if the pattern is not a gradient pattern or the stop index
+is out of range.
+
+
+r, g, b, a = pat.get_rgba()
+
+Returns nothing if the pattern is not a solid colour fill pattern.
+
+
+surf = pat.get_surface()
+
+Returns nothing if the pattern is not a surface pattern.
+
+
+x0, y0, x1, y1 = pat.get_linear_points()
+
+Returns nothing if the pattern is not a linear gradient pattern.
+
+
+x0, y0, r0, x1, y1, r1 = pat.get_radial_circles()
+
+Returns nothing if the pattern is not a radial gradient pattern.
+
+
+extents = ctx.font_extents()
+extents = sf.font_extents()
+
+Get extents metrics for current font. The returned object is a Lua table
+with fields identical to the C struct cairo_font_extents_t.
+
+
+extents = ctx.tex_extents(utf8)
+extents = sf.text_extents(utf8)
+
+Get extents metrics for writing text given in utf8 with current font. The
+returned object is a Lua table with fields identical to the C
+struct cairo_text_extents_t.
+
+
+fo = sf.get_font_options()
+
+Get font options for a scaled font.
+
+
+mat = sf.get_font_matrix()
+
+Get text transformation matrix.
+
+
+mat = sf.get_ctm()
+
+Get the CTM. (Character transformation matrix?)
+
+
+fo1.merge(fo2)
+
+Merge font options fo2 into fo1.
+
+
+hash = fo.hash()
+
+Returns a hexadecimal string hash of fo.
+
+
+fo1.equal(fo2)
+
+Return true is fo1 equals fo2.
+
+
+fo = surf.get_font_options()
+
+Get current font options for surface.
+
+
+x, y = surf.get_device_offset()
+
+Get current device offset for surface.
+
+
+a, r, g, b = surf.get_pixel(x, y)
+r, g, b = surf.get_pixel(x, y)
+a = surf.get_pixel(x, y)
+
+Get colour value of a pixel on an image surface. This function replaces the
+cairo_image_surface_get_data(surf) function for reading surface contents.
+The number and meanings of return values depend on the surface pixel format.
+
+surf.set_pixel() is not implemented yet.
+
+
+matR = mat.copy()
+
+Duplicate a matrix. Not in Cairo C API.
+
+
+mat.xx, mat.yx, mat.xy, mat.yy, mat.x0, mat.y0
+
+Access the individual numbers in a matrix. These are both read and write.
+
+
+Functional programming on path objects
+--------------------------------------
+
+The path object still hasn't been completely implemented, but two useful
+functions do exist for it. These are functional programming style map and
+fold functions.
+
+
+path.map_coords(func)
+
+Transform every coordinate pair in path using func.
+
+func must be a function of type (x,y)->(x,y) ie. takes two arguments which
+are the x and y coordinates of the point and returns two numbers which are
+the new x and y coordinates of the point.
+
+Example: Produce a "wavy" effect.
+path.map_coords(function(x,y) return math.sin(x), math.cos(y) end)
+
+
+res = path.fold_coords(func, start)
+
+Produce a value by combining all the coordinate pairs using func.
+
+func must be a function of type (r,x,y)->(r) ie. takes three argument which
+are the current result and the x/y coordinates of the point, and returns a
+new result.
+When all points have been processed path.fold_coords returns the final result.
+
+Example: Find the maximum X coordinate.
+maxx = path.fold_coords(
+	function(maxx,x,y)
+		if not maxx then
+			return x
+		elseif x > maxx then
+			return x
+		else
+			return maxx
+		end
+	end, nil)
