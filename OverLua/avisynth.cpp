@@ -31,6 +31,7 @@
 #include "avisynth.h"
 
 #include "overlua.h"
+#include "vfr.h"
 
 // Lots of code lifted from the CSRI avisynth.cpp
 
@@ -38,6 +39,7 @@ class OverLuaAvisynth : public GenericVideoFilter {
 private:
 	OverLuaScript *script;
 	double spf; // seconds per frame - for frame/timestamp conversion
+	VFRTranslator *vfr;
 
 public:
 	OverLuaAvisynth(PClip _child, IScriptEnvironment *env, const char *file, const char *datastring, const char *vfrfile)
@@ -55,6 +57,10 @@ public:
 		try {
 			script = new OverLuaScript(file, datastring);
 			spf = (double)vi.fps_denominator / (double)vi.fps_numerator;
+			if (vfrfile)
+				vfr = GetVFRTranslator(vfrfile);
+			else
+				vfr = 0;
 		}
 		catch (const char *e) {
 			env->ThrowError(e);
@@ -66,6 +72,8 @@ public:
 
 	~OverLuaAvisynth()
 	{
+		if (vfr)
+			delete vfr;
 		delete script;
 	}
 
@@ -76,6 +84,8 @@ public:
 		env->MakeWritable(&avsframe);
 
 		double frametime = n * spf;
+		if (vfr)
+			frametime = vfr->TimeStampFromFrameNumber(n);
 		ptrdiff_t stride = avsframe->GetPitch();
 		unsigned char *plane = avsframe->GetWritePtr();
 
