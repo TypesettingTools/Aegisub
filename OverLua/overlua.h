@@ -47,7 +47,7 @@ private:
 	OverLuaScript() { }
 
 	template <class ScriptReaderClass>
-	void Create(ScriptReaderClass &reader, const char *chunkname)
+	void Create(ScriptReaderClass &reader, const char *chunkname, const char *datastring)
 	{
 		int err;
 
@@ -62,6 +62,12 @@ private:
 		// Debug print
 		lua_pushcclosure(L, lua_debug_print, 0);
 		lua_setglobal(L, "dprint");
+		// Datastring
+		if (datastring)
+			lua_pushstring(L, datastring);
+		else
+			lua_pushnil(L);
+		lua_setglobal(L, "overlua_datastring");
 
 		err = lua_load(L, reader.reader, &reader, chunkname);
 
@@ -79,8 +85,8 @@ private:
 	static int lua_debug_print(lua_State *L);
 
 public:
-	OverLuaScript(const char *filename);
-	OverLuaScript(const void *data, size_t length);
+	OverLuaScript(const char *filename, const char *_datastring = 0);
+	OverLuaScript(const void *data, size_t length, const char *_datastring = 0);
 	virtual ~OverLuaScript();
 
 	void RenderFrameRGB(OverLuaFrameAggregate &frame, double time);

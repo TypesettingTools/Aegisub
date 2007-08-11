@@ -40,7 +40,7 @@ private:
 	double spf; // seconds per frame - for frame/timestamp conversion
 
 public:
-	OverLuaAvisynth(PClip _child, IScriptEnvironment *env, const char *file)
+	OverLuaAvisynth(PClip _child, IScriptEnvironment *env, const char *file, const char *datastring, const char *vfrfile)
 		: GenericVideoFilter(_child)
 	{
 		switch (vi.pixel_type) {
@@ -53,7 +53,7 @@ public:
 		}
 
 		try {
-			script = new OverLuaScript(file);
+			script = new OverLuaScript(file, datastring);
 			spf = (double)vi.fps_denominator / (double)vi.fps_numerator;
 		}
 		catch (const char *e) {
@@ -112,14 +112,14 @@ public:
 
 	static AVSValue __cdecl Create(AVSValue args, void* user_data, IScriptEnvironment* env)
 	{
-		return new OverLuaAvisynth(args[0].AsClip(), env, args[1].AsString());
+		return new OverLuaAvisynth(args[0].AsClip(), env, args[1].AsString(), args[2].AsString(0), args[3].AsString(0));
 	}
 };
 
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* env)
 {
-	env->AddFunction("OverLua", "cs", OverLuaAvisynth::Create, 0);
+	env->AddFunction("OverLua", "cs[data]s[vfr]s", OverLuaAvisynth::Create, 0);
 	return "OverLua";
 }
 

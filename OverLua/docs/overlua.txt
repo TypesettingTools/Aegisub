@@ -2,6 +2,27 @@ OverLua provides a Lua 5.1 runtime environment with access to all
 standard libraries.
 
 
+The Avisynth filter
+-------------------
+
+The Avisynth filter version of OverLua exports one function:
+
+  OverLua(clip c, string scriptfile, string "datastring", string "vfrfile")
+
+The clip c argument is self-explanatory, the clip to render on.
+
+The scripfile is the path to the Lua script you want to load and run.
+
+datastring is a freeform string to pass to the Lua script. This will often
+be the path to a file with additional data for the script, such as timed
+subtitles/karaoke.
+
+vfrfile is the path to a timecode file Matroska format 1 or 2. If supplied,
+it will be used to translate frame numbers to timestamps instead of relying
+on the frame rate provided by Avisynth.
+VFR support is not implemented yet.
+
+
 API the Lua script must implement
 ---------------------------------
 
@@ -26,6 +47,11 @@ the frame object.
 
 The render_frame function should not assume that frames are requested in
 any specific order.
+
+
+If a "datastring" argument is supplied to the OverLua Avisynth function, the
+argument value will be available through the global variable
+"overlua_datastring" in the Lua script environment.
 
 
 The frame object

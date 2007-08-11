@@ -49,7 +49,7 @@ struct FileScriptReader {
 	}
 };
 
-OverLuaScript::OverLuaScript(const char *filename)
+OverLuaScript::OverLuaScript(const char *filename, const char *datastring)
 {
 	FileScriptReader reader;
 #ifdef WIN32
@@ -61,7 +61,7 @@ OverLuaScript::OverLuaScript(const char *filename)
 	reader.file = fopen(filename, "r");
 #endif
 
-	Create(reader, filename);
+	Create(reader, filename, datastring);
 
 	fclose(reader.file);
 }
@@ -84,36 +84,20 @@ int OverLuaScript::lua_debug_print(lua_State *L)
 {
 	const char *str = luaL_checkstring(L, 1);
 #ifdef WIN32
-	OutputDebugStringA(str);
+	OutputDebugStringA(str); // ought to be W version but conversion is such a hassle
 #else
 	printf(str);
 #endif
 	return 0;
 }
 
-OverLuaScript::OverLuaScript(const void *data, size_t length)
+OverLuaScript::OverLuaScript(const void *data, size_t length, const char *datastring)
 {
 	MemScriptReader reader;
 	reader.memdata = data;
 	reader.memdatasize = length;
 
-	Create(reader, "Memory script");
-
-	int err;
-
-	L = luaL_newstate();
-
-	err = lua_load(L, reader.reader, &reader, "Memory script");
-
-	// todo: better error handling
-	if (err == LUA_ERRSYNTAX) throw "Syntax error";
-	if (err = LUA_ERRMEM) throw "Memory error";
-
-	err = lua_pcall(L, 0, 0, 0);
-
-	if (err == LUA_ERRRUN) throw "Runtime error";
-	if (err == LUA_ERRMEM) throw "Memory error";
-	if (err == LUA_ERRERR) throw "Error-handler error";
+	Create(reader, "Memory script", datastring);
 }
 
 OverLuaScript::~OverLuaScript()
@@ -123,18 +107,12 @@ OverLuaScript::~OverLuaScript()
 
 void OverLuaScript::RenderFrameRGB(OverLuaFrameAggregate &frame, double time)
 {
-	OutputDebugStringW(L"RenderFrameRGB: get frame func\n");
 	lua_getglobal(L, "render_frame");
-	OutputDebugStringW(L"RenderFrameRGB: CreateLuaObject\n");
 	frame.CreateLuaObject(L);
 	lua_pushnumber(L, time);
-	OutputDebugStringW(L"RenderFrameRGB: call\n");
 	if (lua_pcall(L, 2, 0, 0)) {
 		const char *err = lua_tostring(L, -1);
-		//MessageBoxA(0, err, "OverLua", MB_ICONERROR);
 		throw err;
 	}
-	OutputDebugStringW(L"RenderFrameRGB: garbage collect\n");
 	lua_gc(L, LUA_GCCOLLECT, 0);
-	OutputDebugStringW(L"RenderFrameRGB: done rendering frame\n");
 }
