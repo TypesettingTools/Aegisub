@@ -326,16 +326,18 @@ static int gaussian_blur(lua_State *L)
 
 
 // n tap box blur
-template <size_t taps, int tapval>
 static int box_blur(lua_State *L)
 {
 	LuaCairoSurface *surfobj = LuaCairoSurface::GetObjPointer(L, 1);
+	int width = luaL_checkint(L, 1);
+	if (width <= 0) { luaL_error(L, "Width of box kernel for raster.box must be larger than zero, specified to %d.", width); return 0; }
 	int applications = luaL_optint(L, 1, 1);
-	int kernel[taps];
-	for (size_t i = 0; i < taps; i++)
-		kernel[i] = tapval;
+	int *kernel = new int[width];
+	for (int i = 0; i < width; i++)
+		kernel[i] = 1;
 	while (applications-- > 0)
-		ApplySeparableFilter(L, surfobj->GetSurface(), kernel, taps, 255);
+		ApplySeparableFilter(L, surfobj->GetSurface(), kernel, width, width);
+	delete[] kernel;
 	return 0;
 }
 
@@ -380,7 +382,7 @@ static int invert_image(lua_State *L)
 
 static luaL_Reg rasterlib[] = {
 	{"gaussian_blur", gaussian_blur},
-	{"box3", box_blur<3,85>}, {"box5", box_blur<5,51>}, {"box15", box_blur<15,17>},
+	{"box", box_blur},
 	{NULL, NULL}
 };
 
