@@ -329,9 +329,9 @@ static int gaussian_blur(lua_State *L)
 static int box_blur(lua_State *L)
 {
 	LuaCairoSurface *surfobj = LuaCairoSurface::GetObjPointer(L, 1);
-	int width = luaL_checkint(L, 1);
+	int width = luaL_checkint(L, 2);
 	if (width <= 0) { luaL_error(L, "Width of box kernel for raster.box must be larger than zero, specified to %d.", width); return 0; }
-	int applications = luaL_optint(L, 1, 1);
+	int applications = luaL_optint(L, 3, 1);
 	int *kernel = new int[width];
 	for (int i = 0; i < width; i++)
 		kernel[i] = 1;

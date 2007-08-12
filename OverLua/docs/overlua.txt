@@ -143,11 +143,9 @@ raster.gaussian_blur(surface, sigma)
 Applies a strength sigma gaussian blur on the surface.
 
 
-raster.box3(surface, repetitions)
-raster.box5(sutface, repetitions)
-raster.box15(surface, repetitions)
+raster.box(surface, size, repetitions)
 
-Applies a box filter (blur) of various sizes to the surface as many times as
+Applies a box filter (blur) of variable size to the surface as many times as
 specified. Please note that no specific optimisation is done for applying
 box filters over more general filters and using box blur over gaussian blur
 is probably no faster and might even be slower.
