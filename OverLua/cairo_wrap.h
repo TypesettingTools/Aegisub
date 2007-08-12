@@ -467,9 +467,6 @@ private:
 protected:
 	const char *GetTypeName();
 
-	// Extend the meta table with an equality operator
-	void CreateMetaTable(lua_State *L);
-
 public:
 	// Create a new font options object - will be owned
 	LuaCairoFontOptions(lua_State *L);
@@ -519,7 +516,7 @@ private:
 	// Not in Cairo API
 	CALLABLE(copy);
 
-	void RegMatrixCallables();
+	void RegMatrixCallables(lua_State *L);
 
 protected:
 	virtual int internal_lua_index(lua_State *L);
@@ -548,9 +545,27 @@ class LuaCairoPath : public LuaCairoBase<LuaCairoPath> {
 private:
 	cairo_path_t *path;
 
+	// Specifies whether the memory for the cairo_path_t object is owned by the Cairo library.
+	// If Cairo owns it we cannot add/remove elements from the path.
+	bool cairo_owns_memory;
+
+	// Number of path elemts we have allocated memory for. Undefined if cairo_owns_memory.
+	// This is different from path->length because that specifies the number of elements in use.
+	size_t path_elements_allocated;
+
+	// Management
+	void EnsurePathOwned(); // ensure that we own the path memory
+	void EnsureSpaceFor(size_t n); // ensure we own the path memory and there's space to add at least n more elements
+
 	// TODO: figure out what methods are needed
 	// Something to iterate over the parts at least
 	// Support for creating/modifying paths?
+
+	CALLABLE(clear);
+	CALLABLE(move_to);
+	CALLABLE(line_to);
+	CALLABLE(curve_to);
+	CALLABLE(close);
 
 	// Functional programming support
 	CALLABLE(map); // transform each path segment with a function
@@ -558,17 +573,28 @@ private:
 	CALLABLE(fold); // fold path segments into a single result value
 	CALLABLE(fold_coords); // fold coordinate pairs into a single result value
 
+	void RegPathCallables(lua_State *L);
+
 protected:
 	virtual int internal_lua_index(lua_State *L);
 	const char *GetTypeName();
 
 public:
-	// Create object based on path - does not copy path, but it will be implicitly owned
+	// Create object with new path - we will own the memory
+	LuaCairoPath(lua_State *L);
+	// Create object based on path - does not copy path, and lets Cairo own the memory
 	LuaCairoPath(lua_State *L, cairo_path_t *_path);
 	// Destructor
 	virtual ~LuaCairoPath();
 
 	cairo_path_t *GetPath() { return path; }
+
+	// Modifying the path
+	void ClearPath();
+	void MoveTo(double x, double y);
+	void LineTo(double x, double y);
+	void CurveTo(double x0, double y0, double x1, double y1, double x2, double y2);
+	void ClosePath();
 };
 
 

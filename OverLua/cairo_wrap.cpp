@@ -34,6 +34,8 @@
 #endif
 
 
+// Macros to help implementing callables
+
 #define CALLABLE_IMPL(C,N) int C ## ::lua_ ## N (lua_State *L)
 #define CALLABLE_NOTIMPL(C,N) CALLABLE_IMPL(C,N) { lua_pushliteral(L, "Method " # N " in class " # C " is not implemented"); lua_error(L); return 0; }
 #define CALLABLE_REG(name) AddCallable(lua_ ## name, # name)
@@ -41,6 +43,7 @@
 
 
 // Maps from strings to various Cairo enum types
+
 static const char *status_names_list[] = {
 	"success",
 	"no_memory",
@@ -75,7 +78,9 @@ static const char *pattern_extend_list[] = {"none", "repeat", "reflect", "pad", 
 static const char *pattern_filter_list[] = {"fast", "good", "best", "nearest", "bilinear", "gaussian", 0};
 static const char *pattern_type_list[] = {"solid", "surface", "linear", "radial", 0};
 
+
 // Misc. helper functions
+
 static void font_extents_to_lua(lua_State *L, cairo_font_extents_t &extents)
 {
 	lua_newtable(L);
@@ -90,6 +95,7 @@ static void font_extents_to_lua(lua_State *L, cairo_font_extents_t &extents)
 	lua_pushnumber(L, extents.max_y_advance);
 	lua_setfield(L, -2, "max_y_advance");
 }
+
 static void text_extents_to_lua(lua_State *L, cairo_text_extents_t &extents)
 {
 	lua_newtable(L);
@@ -107,6 +113,8 @@ static void text_extents_to_lua(lua_State *L, cairo_text_extents_t &extents)
 	lua_setfield(L, -2, "y_advance");
 }
 
+
+// Context (cairo_t)
 
 CALLABLE_IMPL(LuaCairoContext, reference)
 {
@@ -1084,6 +1092,8 @@ LuaCairoContext::~LuaCairoContext()
 }
 
 
+// Surface (cairo_surface_t)
+
 CALLABLE_IMPL(LuaCairoSurface, create_similar)
 {
 	LuaCairoSurface *surf = GetObjPointer(L, lua_upvalueindex(1));
@@ -1367,6 +1377,8 @@ LuaCairoSurface::~LuaCairoSurface()
 }
 
 
+// Font face (cairo_font_face_t)
+
 CALLABLE_NOTIMPL(LuaCairoFontFace, create_scaled_font)
 CALLABLE_NOTIMPL(LuaCairoFontFace, reference)
 
@@ -1402,6 +1414,8 @@ LuaCairoFontFace::~LuaCairoFontFace()
 	cairo_font_face_destroy(font_face);
 }
 
+
+// Scaled font (cairo_scaled_font_t)
 
 CALLABLE_NOTIMPL(LuaCairoScaledFont, reference)
 
@@ -1496,6 +1510,8 @@ LuaCairoScaledFont::~LuaCairoScaledFont()
 	cairo_scaled_font_destroy(scaled_font);
 }
 
+
+// Font options (cairo_font_options_t)
 
 CALLABLE_IMPL(LuaCairoFontOptions, copy)
 {
@@ -1632,10 +1648,6 @@ const char *LuaCairoFontOptions::GetTypeName()
 	return "font_options";
 }
 
-void LuaCairoFontOptions::CreateMetaTable(lua_State *L)
-{
-}
-
 LuaCairoFontOptions::LuaCairoFontOptions(lua_State *L) :
 	LuaCairoBase(L)
 {
@@ -1660,6 +1672,8 @@ LuaCairoFontOptions::~LuaCairoFontOptions()
 		cairo_font_options_destroy(font_options);
 }
 
+
+// Matrix (cairo_matrix_t)
 
 CALLABLE_IMPL(LuaCairoMatrix, init)
 {
@@ -1946,7 +1960,7 @@ CALLABLE_IMPL(LuaCairoMatrix, create)
 	return 1;
 }
 
-void LuaCairoMatrix::RegMatrixCallables()
+void LuaCairoMatrix::RegMatrixCallables(lua_State *L)
 {
 	CALLABLE_REG(init);
 	CALLABLE_REG(init_identity);
@@ -2027,13 +2041,25 @@ const char *LuaCairoMatrix::GetTypeName()
 void LuaCairoMatrix::CreateMetaTable(lua_State *L)
 {
 	LuaCairoBase::CreateMetaTable(L);
-	// TODO: reg arithmetic operators here
+
+	lua_pushcclosure(L, lua_op_add, 0);
+	lua_setfield(L, -2, "__add");
+	lua_pushcclosure(L, lua_op_sub, 0);
+	lua_setfield(L, -2, "__sub");
+	lua_pushcclosure(L, lua_op_mul, 0);
+	lua_setfield(L, -2, "__mul");
+	lua_pushcclosure(L, lua_op_div, 0);
+	lua_setfield(L, -2, "__div");
+	lua_pushcclosure(L, lua_op_unm, 0);
+	lua_setfield(L, -2, "__unm");
+	lua_pushcclosure(L, lua_op_eq, 0);
+	lua_setfield(L, -2, "__eq");
 }
 
 LuaCairoMatrix::LuaCairoMatrix(lua_State *L) :
 	LuaCairoBase(L)
 {
-	RegMatrixCallables();
+	RegMatrixCallables(L);
 
 	cairo_matrix_init_identity(&matrix);
 }
@@ -2041,7 +2067,7 @@ LuaCairoMatrix::LuaCairoMatrix(lua_State *L) :
 LuaCairoMatrix::LuaCairoMatrix(lua_State *L, const cairo_matrix_t *_matrix) :
 	LuaCairoBase(L)
 {
-	RegMatrixCallables();
+	RegMatrixCallables(L);
 
 	memcpy(&matrix, _matrix, sizeof(matrix));
 }
@@ -2057,7 +2083,188 @@ cairo_matrix_t *LuaCairoMatrix::GetMatrix()
 }
 
 
-CALLABLE_NOTIMPL(LuaCairoPath, map)
+// Path (cairo_path_t)
+
+static void path_element_to_lua(cairo_path_data_t *path, lua_State *L)
+{
+	lua_newtable(L);
+	switch (path[0].header.type) {
+		case CAIRO_PATH_MOVE_TO:
+			lua_pushliteral(L, "move_to");
+			lua_setfield(L, -2, "type");
+			lua_pushnumber(L, path[1].point.x);
+			lua_setfield(L, -2, "x");
+			lua_pushnumber(L, path[1].point.y);
+			lua_setfield(L, -2, "y");
+			break;
+
+		case CAIRO_PATH_LINE_TO:
+			lua_pushliteral(L, "line_to");
+			lua_setfield(L, -2, "type");
+			lua_pushnumber(L, path[1].point.x);
+			lua_setfield(L, -2, "x");
+			lua_pushnumber(L, path[1].point.y);
+			lua_setfield(L, -2, "y");
+			break;
+
+		case CAIRO_PATH_CURVE_TO:
+			lua_pushliteral(L, "curve_to");
+			lua_setfield(L, -2, "type");
+			lua_pushnumber(L, path[1].point.x);
+			lua_setfield(L, -2, "x0");
+			lua_pushnumber(L, path[1].point.y);
+			lua_setfield(L, -2, "y0");
+			lua_pushnumber(L, path[2].point.x);
+			lua_setfield(L, -2, "x1");
+			lua_pushnumber(L, path[2].point.y);
+			lua_setfield(L, -2, "y1");
+			lua_pushnumber(L, path[3].point.x);
+			lua_setfield(L, -2, "x2");
+			lua_pushnumber(L, path[3].point.y);
+			lua_setfield(L, -2, "y2");
+			break;
+
+		case CAIRO_PATH_CLOSE_PATH:
+			lua_pushliteral(L, "close");
+			lua_setfield(L, -2, "type");
+			break;
+
+		default:
+			lua_pushliteral(L, "unknown");
+			lua_setfield(L, -2, "type");
+			break;
+	}
+}
+
+static void read_lua_path_element(lua_State *L, cairo_path_data_t *path)
+{
+	lua_getfield(L, -1, "type");
+	if (!lua_isstring(L, -1)) {
+		luaL_error(L, "Invalid or missing 'type' field in path element table");
+		return;
+	}
+	const char *type = lua_tostring(L, -1);
+
+	if (strcmp(type, "move_to") == 0) {
+		path[0].header.length = 2;
+		path[0].header.type = CAIRO_PATH_MOVE_TO;
+		lua_getfield(L, -2, "x");
+		lua_getfield(L, -3, "y");
+		if (!lua_isnumber(L, -1) || !lua_isnumber(L, -2)) {
+			luaL_error(L, "Invalid 'x' or 'y' field in path element table with type 'move_to'");
+			return;
+		}
+		path[1].point.x = lua_tonumber(L, -2);
+		path[1].point.y = lua_tonumber(L, -1);
+		lua_pop(L, 3);
+		return;
+
+	} else if (strcmp(type, "line_to") == 0) {
+		path[0].header.length = 2;
+		path[0].header.type = CAIRO_PATH_LINE_TO;
+		lua_getfield(L, -2, "x");
+		lua_getfield(L, -3, "y");
+		if (!lua_isnumber(L, -1) || !lua_isnumber(L, -2)) {
+			luaL_error(L, "Invalid 'x' or 'y' field in path element table with type 'line_to'");
+			return;
+		}
+		path[1].point.x = lua_tonumber(L, -2);
+		path[1].point.y = lua_tonumber(L, -1);
+		lua_pop(L, 3);
+		return;
+
+	} else if (strcmp(type, "curve_to") == 0) {
+		path[0].header.length = 4;
+		path[0].header.type = CAIRO_PATH_CURVE_TO;
+		lua_getfield(L, -2, "x0");
+		lua_getfield(L, -3, "y0");
+		if (!lua_isnumber(L, -1) || !lua_isnumber(L, -2)) {
+			luaL_error(L, "Invalid 'x0' or 'y0' field in path element table with type 'line_to'");
+			return;
+		}
+		path[1].point.x = lua_tonumber(L, -2);
+		path[1].point.y = lua_tonumber(L, -1);
+		lua_getfield(L, -4, "x1");
+		lua_getfield(L, -5, "y1");
+		if (!lua_isnumber(L, -1) || !lua_isnumber(L, -2)) {
+			luaL_error(L, "Invalid 'x1' or 'y1' field in path element table with type 'line_to'");
+			return;
+		}
+		path[2].point.x = lua_tonumber(L, -2);
+		path[2].point.y = lua_tonumber(L, -1);
+		lua_getfield(L, -2, "x2");
+		lua_getfield(L, -3, "y2");
+		if (!lua_isnumber(L, -1) || !lua_isnumber(L, -2)) {
+			luaL_error(L, "Invalid 'x2' or 'y2' field in path element table with type 'line_to'");
+			return;
+		}
+		path[3].point.x = lua_tonumber(L, -2);
+		path[3].point.y = lua_tonumber(L, -1);
+		lua_pop(L, 7);
+		return;
+
+	} else if (strcmp(type, "close") == 0) {
+		path[0].header.length = 1;
+		path[0].header.type = CAIRO_PATH_CLOSE_PATH;
+		lua_pop(L, 1);
+		return;
+
+	} else {
+		luaL_error(L, "Invalid 'type' field in path element table, '%s'", type);
+	}
+}
+
+CALLABLE_NOTIMPL(LuaCairoPath, clear)
+CALLABLE_NOTIMPL(LuaCairoPath, move_to)
+CALLABLE_NOTIMPL(LuaCairoPath, line_to)
+CALLABLE_NOTIMPL(LuaCairoPath, curve_to)
+CALLABLE_NOTIMPL(LuaCairoPath, close)
+
+CALLABLE_IMPL(LuaCairoPath, map)
+{
+	LuaCairoPath *path = GetObjPointer(L, lua_upvalueindex(1));
+	if (!lua_isfunction(L, 1)) {
+		luaL_error(L, "First argument to path.map_coords must be a function, is %s", luaL_typename(L, 1));
+		return 0;
+	}
+
+	// Function should be p->p
+	cairo_path_t *p = path->path;
+	if (!p->num_data || !p->data) return 0;
+
+	// Prepare a new path for building
+	path->path = (cairo_path_t*)malloc(sizeof(cairo_path_t));
+	cairo_path_t *np = path->path;
+	np->num_data = 0;
+	np->status = CAIRO_STATUS_SUCCESS;
+	np->data = 0;
+
+	cairo_path_data_t *pd = p->data;
+	int outi = 0;
+	for (int i = 0; i < p->num_data; ) {
+		lua_pushvalue(L, 1);
+		path_element_to_lua(pd, L);
+		lua_call(L, 1, 1);
+
+		path->EnsureSpaceFor(4); // dumb but simple, ensures there's always enough space for even the longest segments
+		read_lua_path_element(L, np->data+outi);
+		np->num_data += np->data[outi].header.length;
+		outi += np->data[outi].header.length;
+		
+		i += pd->header.length;
+		pd += pd->header.length;
+	}
+
+	if (path->cairo_owns_memory) {
+		cairo_path_destroy(p);
+		path->cairo_owns_memory = false;
+	} else {
+		free(p->data);
+		free(p);
+	}
+
+	// Now just r should be left on top of stack
+	return 1;}
 
 CALLABLE_IMPL(LuaCairoPath, map_coords)
 {
@@ -2096,7 +2303,35 @@ CALLABLE_IMPL(LuaCairoPath, map_coords)
 	return 0;
 }
 
-CALLABLE_NOTIMPL(LuaCairoPath, fold);
+CALLABLE_IMPL(LuaCairoPath, fold)
+{
+	LuaCairoPath *path = GetObjPointer(L, lua_upvalueindex(1));
+	if (!lua_isfunction(L, 1)) {
+		luaL_error(L, "First argument to path.map_coords must be a function, is %s", luaL_typename(L, 1));
+		return 0;
+	}
+	luaL_checkany(L, 2);
+
+	// Function should be (r,p)->r
+	cairo_path_t *p = path->path;
+	if (!p->num_data || !p->data) return 0;
+
+	cairo_path_data_t *pd = p->data;
+	lua_pushvalue(L, 2); // initial 'r' for function
+	for (int i = 0; i < p->num_data; ) {
+		lua_pushvalue(L, 1);
+		lua_pushvalue(L, -2); // dig up 'r'
+		lua_remove(L, -3); // remove dug up 'r'
+		path_element_to_lua(pd, L);
+		lua_call(L, 2, 1);
+		// leave result 'r' on stack for next iteration or final return
+		i += pd->header.length;
+		pd += pd->header.length;
+	}
+
+	// Now just r should be left on top of stack
+	return 1;
+}
 
 CALLABLE_IMPL(LuaCairoPath, fold_coords)
 {
@@ -2134,6 +2369,43 @@ CALLABLE_IMPL(LuaCairoPath, fold_coords)
 	return 1;
 }
 
+void LuaCairoPath::EnsurePathOwned()
+{
+	if (cairo_owns_memory) {
+		cairo_path_t *np = (cairo_path_t*)malloc(sizeof(cairo_path_t));
+		np->status = path->status;
+		np->num_data = path->num_data;
+		np->data = (cairo_path_data_t*)malloc(path->num_data*sizeof(cairo_path_data_t));
+		memcpy(np->data, path->data, np->num_data*sizeof(cairo_path_data_t));
+		cairo_path_destroy(path);
+		path = np;
+		cairo_owns_memory = false;
+	}
+}
+
+void LuaCairoPath::EnsureSpaceFor(size_t n)
+{
+	EnsurePathOwned();
+
+	if (path_elements_allocated - path->num_data < n) {
+		path_elements_allocated = path->num_data*2 + n;
+		path->data = (cairo_path_data_t*)realloc(path->data, path_elements_allocated*sizeof(cairo_path_data_t));
+	}
+}
+
+void LuaCairoPath::RegPathCallables(lua_State *L)
+{
+	CALLABLE_REG(clear);
+	CALLABLE_REG(move_to);
+	CALLABLE_REG(line_to);
+	CALLABLE_REG(curve_to);
+	CALLABLE_REG(close);
+	CALLABLE_REG(map);
+	CALLABLE_REG(map_coords);
+	CALLABLE_REG(fold);
+	CALLABLE_REG(fold_coords);
+}
+
 int LuaCairoPath::internal_lua_index(lua_State *L)
 {
 	return LuaCairoBase::internal_lua_index(L);
@@ -2144,23 +2416,40 @@ const char *LuaCairoPath::GetTypeName()
 	return "path";
 }
 
+LuaCairoPath::LuaCairoPath(lua_State *L) :
+	LuaCairoBase(L)
+{
+	RegPathCallables(L);
+
+	cairo_owns_memory = false;
+	path = (cairo_path_t*)malloc(sizeof(cairo_path_t));
+	path->status = CAIRO_STATUS_SUCCESS;
+	path->num_data = 0;
+	path->data = 0;
+	EnsureSpaceFor(8);
+}
+
 LuaCairoPath::LuaCairoPath(lua_State *L, cairo_path_t *_path) :
 	LuaCairoBase(L)
 {
-	CALLABLE_REG(map);
-	CALLABLE_REG(map_coords);
-	CALLABLE_REG(fold);
-	CALLABLE_REG(fold_coords);
+	RegPathCallables(L);
 
-	// We always own the given path object
+	cairo_owns_memory = true;
 	path = _path;
 }
 
 LuaCairoPath::~LuaCairoPath()
 {
-	cairo_path_destroy(path);
+	if (cairo_owns_memory)
+		cairo_path_destroy(path);
+	else {
+		free(path->data);
+		free(path);
+	}
 }
 
+
+// Pattern (cairo_pattern_t)
 
 CALLABLE_IMPL(LuaCairoPattern, add_color_stop_rgb)
 {
@@ -2426,6 +2715,8 @@ LuaCairoPattern::~LuaCairoPattern()
 	cairo_pattern_destroy(pattern);
 }
 
+
+// Lua registration
 
 static const luaL_Reg cairolib[] = {
 	{"image_surface_create", LuaCairoSurface::lua_image_surface_create},
