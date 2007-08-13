@@ -408,10 +408,44 @@ static int invert_image(lua_State *L)
 }
 
 
+static int separable_filter(lua_State *L)
+{
+	cairo_surface_t *surf = CheckSurface(L, 1);
+	if (!lua_istable(L, 2)) {
+		luaL_error(L, "Expected table as second argument to raster.separable_filter, got %s", luaL_typename(L, 2));
+		return 0;
+	}
+	int divisor = luaL_checkint(L, 3);
+
+	int width = (int)lua_objlen(L, 2);
+	if (width < 1) {
+		luaL_error(L, "Cannot apply empty filter");
+		return 0;
+	}
+	int *kernel = new int[width];
+	int i = 0;
+	lua_pushnil(L);
+	while (lua_next(L, 2)) {
+		if (lua_isnumber(L, -1)) {
+			kernel[i] = (int)lua_tointeger(L, -1);
+		}
+		i++;
+		lua_pop(L, 1);
+	}
+
+	ApplySeparableFilter(L, surf, kernel, width, divisor);
+
+	delete[] kernel;
+
+	return 0;
+}
+
+
 // Registration
 
 static luaL_Reg rasterlib[] = {
 	{"gaussian_blur", gaussian_blur}, {"box_blur", box_blur},
+	{"separable_filter", separable_filter},
 	{"invert", invert_image},
 	{NULL, NULL}
 };

@@ -161,6 +161,22 @@ For RGB24 surfaces, all channels are inverted.
 For A8 and A1 surfaces the alpha is inverted.
 
 
+raster.separable_filter(surface, filter, divisor)
+
+Apply a custom separable filter over the image.
+
+The filter must be a table of integers. After the convoluted value of each
+pixel is calculated, it is divided by divisor before it's stored back to the
+image.
+
+Note that this function can only work on integers, floating point values in
+the filter or divisor will be rounded first. To get higher precision, scale
+up the filter and divisor. (Treat it as fixed-point math.)
+
+The filter is one-dimensional, but is applied first horizontally and then
+vertically ovre the image to get the final image.
+
+
 More filtering functions are planned, though no specifics yet.
 
 Wishes/suggestions are welcome, and so are patches to add more functions.
