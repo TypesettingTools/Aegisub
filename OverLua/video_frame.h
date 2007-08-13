@@ -298,7 +298,7 @@ badtable:
 	{
 		// Get inputs
 		MyType **ud = (MyType**)lua_touserdata(L, lua_upvalueindex(1));
-		LuaCairoSurface *surfwrap = LuaCairoSurface::CheckPointer(*(void**)lua_touserdata(L, 1));
+		LuaCairoSurface *surfwrap = LuaCairoSurface::GetObjPointer(L, 1);
 		if (!surfwrap) {
 			lua_pushliteral(L, "Argument to frame.overlay_cairo_surface is not a Cairo surface");
 			lua_error(L);
