@@ -1,5 +1,5 @@
 /*
- * Lua interface for the Cairo graphics library
+ * Lua interface for the cairo graphics library
  *
 
     Copyright 2007  Niels Martin Hansen
@@ -331,8 +331,8 @@ private:
 	CALLABLE(reference);
 	CALLABLE(status);
 
-	// Create Cairo context for this surface
-	// This deviates from the regular Cairo API
+	// Create cairo context for this surface
+	// This deviates from the regular cairo API
 	CALLABLE(create_context);
 
 	CALLABLE(finish);
@@ -504,7 +504,7 @@ private:
 	CALLABLE(transform_distance);
 	CALLABLE(transform_point);
 
-	// Pointwise arithmetic on matrices - not part of Cairo API
+	// Pointwise arithmetic on matrices - not part of cairo API
 	CALLABLE(op_add);
 	CALLABLE(op_sub);
 	CALLABLE(op_mul);
@@ -513,7 +513,7 @@ private:
 	// Equality operator
 	CALLABLE(op_eq);
 
-	// Not in Cairo API
+	// Not in cairo API
 	CALLABLE(copy);
 
 	void RegMatrixCallables(lua_State *L);
@@ -545,8 +545,8 @@ class LuaCairoPath : public LuaCairoBase<LuaCairoPath> {
 private:
 	cairo_path_t *path;
 
-	// Specifies whether the memory for the cairo_path_t object is owned by the Cairo library.
-	// If Cairo owns it we cannot add/remove elements from the path.
+	// Specifies whether the memory for the cairo_path_t object is owned by the cairo library.
+	// If cairo owns it we cannot add/remove elements from the path.
 	bool cairo_owns_memory;
 
 	// Number of path elemts we have allocated memory for. Undefined if cairo_owns_memory.
@@ -582,7 +582,7 @@ protected:
 public:
 	// Create object with new path - we will own the memory
 	LuaCairoPath(lua_State *L);
-	// Create object based on path - does not copy path, and lets Cairo own the memory
+	// Create object based on path - does not copy path, and lets cairo own the memory
 	LuaCairoPath(lua_State *L, cairo_path_t *_path);
 	// Destructor
 	virtual ~LuaCairoPath();

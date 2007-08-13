@@ -1,5 +1,5 @@
 /*
- * Lua interface for the Cairo graphics library
+ * Lua interface for the cairo graphics library
  *
 
     Copyright 2007  Niels Martin Hansen
@@ -42,7 +42,7 @@
 #define CALLABLE_REG2(func,name) AddCallable(lua_ ## func, # name)
 
 
-// Maps from strings to various Cairo enum types
+// Maps from strings to various cairo enum types
 
 static const char *status_names_list[] = {
 	"success",
@@ -235,7 +235,7 @@ CALLABLE_IMPL(LuaCairoContext, get_source)
 {
 	LuaCairoContext *ctx = GetObjPointer(L, lua_upvalueindex(1));
 	cairo_pattern_t *pat = cairo_get_source(ctx->context);
-	// The pattern is owned by Cairo here, so creating the Lua object will create the needed reference from Lua
+	// The pattern is owned by cairo here, so creating the Lua object will create the needed reference from Lua
 	new LuaCairoPattern(L, pat);
 	// Meaning that calling pattern_destroy here would be wrong
 	return 1;
@@ -1123,7 +1123,7 @@ CALLABLE_IMPL(LuaCairoSurface, create_context)
 	cairo_t *context = cairo_create(surf->surface);
 
 	if (!context || cairo_status(context) != CAIRO_STATUS_SUCCESS) {
-		lua_pushliteral(L, "Failed creating Cairo context");
+		lua_pushliteral(L, "Failed creating cairo context");
 		lua_error(L);
 		return 0;
 	}

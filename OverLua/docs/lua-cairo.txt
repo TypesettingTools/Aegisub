@@ -1,17 +1,17 @@
-Documentation for the Cairo interface provided in OverLua
+Documentation for the cairo interface provided in OverLua
 =========================================================
 
 First, this file will mostly attempt to describe the differences between the
-Cairo C API and the provided Lua API. If you want more general and in-depth
-information on Cairo, please see the documentation for the C API:
+cairo C API and the provided Lua API. If you want more general and in-depth
+information on cairo, please see the documentation for the C API:
 
 <http://cairographics.org/manual/>
 
 
 Note that almost all of the *_reference functions are unimplemented currently.
 They should not be explicitly needed since Lua does its own management on
-objects as well, you can just copy and keep a Lua Cairo object and be
-guaranteed the underlying Cairo object won't be deleted until all Lua objects
+objects as well, you can just copy and keep a Lua cairo object and be
+guaranteed the underlying cairo object won't be deleted until all Lua objects
 referring to it are gone.
 There are no *_destroy and *_get_reference_count functions either,
 for this reason.
@@ -43,7 +43,7 @@ For matrix operations you might also see "matR", this is "result matrix".
 More "OO-like" syntax
 ---------------------
 
-This Lua Cairo API provides a more common "OO-like" syntax for calls.
+This Lua cairo API provides a more common "OO-like" syntax for calls.
 For example, the cairo_set_source_surface(ctx, surf, x, y) function maps to
 ctx.set_source_surface(surf, x, y).
 
@@ -86,7 +86,7 @@ Create various kinds of pattern objects.
 
 ctx = surf.create_context()
 
-Not strictly an "initial object", but Cairo context objects are important
+Not strictly an "initial object", but cairo context objects are important
 enough to explicitly list here. They are created by calling the
 create_context() method in a surface object. This will create a context
 object that draws to the surface it was created with.
@@ -242,7 +242,7 @@ surf.set_pixel() is not implemented yet.
 
 matR = mat.copy()
 
-Duplicate a matrix. Not in Cairo C API.
+Duplicate a matrix. Not in cairo C API.
 
 
 mat.xx, mat.yx, mat.xy, mat.yy, mat.x0, mat.y0

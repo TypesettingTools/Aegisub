@@ -5,7 +5,7 @@ is currently primarily programmers.
 The name is intended as a pun on Overlay and Lua.
 
 To help produce overlay graphics, OverLua provides an interface to the
-Cairo vector graphics library. A library of functions to do raster-based
+cairo vector graphics library. A library of functions to do raster-based
 graphics processing is also included.
 
 Curerently the only known-working plugin interface to OverLua is the Avisynth
@@ -33,7 +33,7 @@ if you attempt to use it on a computer without SSE2 support.
 Finally, the DLL is built with OpenMP optimisations enabled, which means it
 will take advantage of multi-core and other SMP systems if available. The
 OpenMP optimisations are only in the raster image filtering and the
-Cairo surface/video frame interaction functions. If you do not use the raster
+cairo surface/video frame interaction functions. If you do not use the raster
 graphics operations much you won't see much gain from this SMP support either.
 
 

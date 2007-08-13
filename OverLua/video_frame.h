@@ -260,7 +260,7 @@ badtable:
 		// Always RGB24 format since we don't support video with alpha
 		cairo_surface_t *surf = cairo_image_surface_create(CAIRO_FORMAT_RGB24, (*ud)->width, (*ud)->height);
 		if (!surf || cairo_surface_status(surf) != CAIRO_STATUS_SUCCESS) {
-			lua_pushliteral(L, "Unable to create Cairo surface from video frame");
+			lua_pushliteral(L, "Unable to create cairo surface from video frame");
 			lua_error(L);
 			return 0;
 		}
@@ -300,7 +300,7 @@ badtable:
 		MyType **ud = (MyType**)lua_touserdata(L, lua_upvalueindex(1));
 		LuaCairoSurface *surfwrap = LuaCairoSurface::GetObjPointer(L, 1);
 		if (!surfwrap) {
-			lua_pushliteral(L, "Argument to frame.overlay_cairo_surface is not a Cairo surface");
+			lua_pushliteral(L, "Argument to frame.overlay_cairo_surface is not a cairo surface");
 			lua_error(L);
 			return 0;
 		}
@@ -310,7 +310,7 @@ badtable:
 		// More argument checks
 		cairo_surface_t *surf = surfwrap->GetSurface();
 		if (cairo_surface_get_type(surf) != CAIRO_SURFACE_TYPE_IMAGE) {
-			lua_pushliteral(L, "Argument to frame.overlay_cairo_surface is not a Cairo image surface");
+			lua_pushliteral(L, "Argument to frame.overlay_cairo_surface is not a cairo image surface");
 			lua_error(L);
 			return 0;
 		}

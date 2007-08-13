@@ -100,14 +100,14 @@ Using a table constructor as shown is recommended.
 
 surface = frame.create_cairo_surface()
 
-Create a Cairo rgb24 surface from the video frame. Drawing to the surface
+Create a cairo rgb24 surface from the video frame. Drawing to the surface
 will _not_ affect the video frame. If you want the changes to the surface
 visible on the video you will need to overlay this surface on the video.
 
 
 frame.overlay_cairo_surface(surface, x, y)
 
-Overlay the given Cairo surface at the video frame such that the upper,
+Overlay the given cairo surface at the video frame such that the upper,
 left corner of the surface is positioned at pixel (x, y) on the video.
 Only argb32 and rgb24 type surfaces are supported.
 Proper alpha blending is used for argb32 surfaces.
@@ -123,7 +123,7 @@ ie. (0, 0, 0).
 Vector graphics interface
 -------------------------
 
-OverLua uses the Cairo library for all vector graphics handling, including
+OverLua uses the cairo library for all vector graphics handling, including
 text handling.
 
 See lua-cairo.txt for details.
@@ -135,7 +135,7 @@ Raster graphics processing interface
 A raster graphics processing interface is also provided, to post-process
 the graphics produced by the vector graphics interface.
 
-The raster graphics interface operates directly on Cairo surfaces.
+The raster graphics interface operates directly on cairo surfaces.
 
 
 raster.gaussian_blur(surface, sigma)

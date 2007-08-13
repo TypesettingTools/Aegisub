@@ -41,8 +41,8 @@ using namespace cimg_library;
 // Type of images processed
 typedef CImg<unsigned char> Img;
 
-// Make an Img representing the image of a Cairo image surface
-// from the Lua wrapper of Cairo.
+// Make an Img representing the image of a cairo image surface
+// from the Lua wrapper of cairo.
 static inline Img ImgFromSurf(lua_State *L, int idx)
 {
 	LuaCairoSurface *surfobj = LuaCairoSurface::GetObjPointer(L, idx);
