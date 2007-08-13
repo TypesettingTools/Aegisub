@@ -143,12 +143,22 @@ raster.gaussian_blur(surface, sigma)
 Applies a strength sigma gaussian blur on the surface.
 
 
-raster.box(surface, size, repetitions)
+raster.box_blur(surface, size, repetitions)
 
-Applies a box filter (blur) of variable size to the surface as many times as
+Applies a box blur filter of variable size to the surface as many times as
 specified. Please note that no specific optimisation is done for applying
 box filters over more general filters and using box blur over gaussian blur
 is probably no faster and might even be slower.
+
+
+raster.invert(surface)
+
+Invert the colour in the given surface.
+
+For ARGB32 surfaces, only the colour channels are inverted, the alpha
+channel is kept as-is.
+For RGB24 surfaces, all channels are inverted.
+For A8 and A1 surfaces the alpha is inverted.
 
 
 More filtering functions are planned, though no specifics yet.

@@ -333,38 +333,35 @@ badtable:
 		if (sformat == CAIRO_FORMAT_ARGB32) {
 			// This has pre-multipled alpha
 			int fy = ypos; // frame y
-			int sy = 0; // source y
-			if (fy < 0) fy = 0, sy = -ypos;
-			int slines_to_compose = sheight-sy, flines_to_compose = fheight;
+			if (fy < 0) fy = 0, sdata -= ypos, sheight -= ypos;
+			int slines_to_compose = sheight, flines_to_compose = fheight;
 			int lines_to_compose = (slines_to_compose<flines_to_compose)?slines_to_compose:flines_to_compose;
 #pragma omp parallel for
 			for (int composition_line = 0; composition_line < lines_to_compose; composition_line++) {
-				uint32_t *sline = (uint32_t*)(sdata + sy*sstride);
+				uint32_t *sline = (uint32_t*)(sdata + composition_line*sstride);
 				int fx = xpos;
 				int sx = 0;
 				if (fx < 0) fx = 0, sx = -xpos;
 				for ( ; sx < swidth && fx < fwidth; fx++, sx++) {
-					RGBPixel pix = (*ud)->GetPixel(fx, fy);
+					RGBPixel pix = (*ud)->GetPixel(fx, fy+composition_line);
 					unsigned char a = 0xff - ((sline[sx] & 0xff000000) >> 24);
 					pix.r = ((sline[sx] & 0x00ff0000) >> 16) + a*pix.r/255;
 					pix.g = ((sline[sx] & 0x0000ff00) >> 8) + a*pix.g/255;
 					pix.b = (sline[sx] & 0x000000ff) + a*pix.b/255;
-					(*ud)->SetPixel(fx, fy, pix);
+					(*ud)->SetPixel(fx, fy+composition_line, pix);
 				}
-				fy++, sy++;
 			}
 		}
 
 		else if (sformat == CAIRO_FORMAT_RGB24) {
 			// Assume opaque alpha for all pixels
 			int fy = ypos; // frame y
-			int sy = 0; // source y
-			if (fy < 0) fy = 0, sy = -ypos;
-			int slines_to_compose = sheight-sy, flines_to_compose = fheight;
+			if (fy < 0) fy = 0, sdata -= ypos, sheight -= ypos;
+			int slines_to_compose = sheight, flines_to_compose = fheight;
 			int lines_to_compose = (slines_to_compose<flines_to_compose)?slines_to_compose:flines_to_compose;
 #pragma omp parallel for
 			for (int composition_line = 0; composition_line < lines_to_compose; composition_line++) {
-				uint32_t *sline = (uint32_t*)(sdata + sy*sstride);
+				uint32_t *sline = (uint32_t*)(sdata + composition_line*sstride);
 				int fx = xpos;
 				int sx = 0;
 				if (fx < 0) fx = 0, sx = -xpos;
@@ -373,7 +370,7 @@ badtable:
 						(sline[sx] & 0x00ff0000) >> 16,
 						(sline[sx] & 0x0000ff00) >> 8,
 						sline[sx] & 0x000000ff);
-					(*ud)->SetPixel(fx, fy, pix);
+					(*ud)->SetPixel(fx, fy+composition_line, pix);
 				}
 			}
 		}

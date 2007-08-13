@@ -26,8 +26,9 @@
 
 #include "cairo_wrap.h"
 #include <math.h>
-#include <windows.h>
+//#include <windows.h>
 #include <omp.h>
+#include <stdint.h>
 
 #include "raster_ops.h"
 #include "../lua51/src/lauxlib.h"
@@ -177,6 +178,17 @@ static inline void ImgToSurf(lua_State *L, int idx, const Img &img)
 	cairo_surface_mark_dirty(surf);
 }*/
 
+static inline cairo_surface_t *CheckSurface(lua_State *L, int idx)
+{
+	LuaCairoSurface *surfobj = LuaCairoSurface::GetObjPointer(L, idx);
+	cairo_surface_t *surf = surfobj->GetSurface();
+	if (cairo_surface_get_type(surf) != CAIRO_SURFACE_TYPE_IMAGE) {
+		lua_pushliteral(L, "Object for raster operation is not an image surface. Video frames are not accepted.");
+		lua_error(L);
+	}
+	return surf;
+}
+
 static inline double NormalDist(double sigma, double x)
 {
 	if (sigma <= 0 && x == 0) return 1;
@@ -247,10 +259,6 @@ void SeparableFilterY(unsigned char *src, unsigned char *dst, int width, int hei
 void ApplySeparableFilter(lua_State *L, cairo_surface_t *surf, int *kernel, int kernel_size, int divisor)
 {
 	// Get surface properties
-	if (cairo_surface_get_type(surf) != CAIRO_SURFACE_TYPE_IMAGE) {
-		lua_pushliteral(L, "Object for raster operation is not an image surface. Video frames are not accepted.");
-		lua_error(L);
-	}
 	cairo_surface_flush(surf);
 	int width = cairo_image_surface_get_width(surf);
 	int height = cairo_image_surface_get_height(surf);
@@ -293,7 +301,7 @@ void ApplySeparableFilter(lua_State *L, cairo_surface_t *surf, int *kernel, int 
 static int gaussian_blur(lua_State *L)
 {
 	// Get arguments
-	LuaCairoSurface *surfobj = LuaCairoSurface::GetObjPointer(L, 1);
+	cairo_surface_t *surf = CheckSurface(L, 1);
 	double sigma = luaL_checknumber(L, 2);
 
 	// Generate gaussian kernel
@@ -308,16 +316,8 @@ static int gaussian_blur(lua_State *L)
 		kernel[x] = val;
 		kernel[kernel_size - x - 1] = val;
 	}
-	/*while (ksum < 255) {
-		kernel[ksum%kernel_size]++;
-		ksum++;
-	}
-	while (ksum > 255) {
-		kernel[ksum%kernel_size]--;
-		ksum--;
-	}*/
 
-	ApplySeparableFilter(L, surfobj->GetSurface(), kernel, kernel_size, ksum);
+	ApplySeparableFilter(L, surf, kernel, kernel_size, ksum);
 
 	delete[] kernel;
 
@@ -328,7 +328,7 @@ static int gaussian_blur(lua_State *L)
 // n tap box blur
 static int box_blur(lua_State *L)
 {
-	LuaCairoSurface *surfobj = LuaCairoSurface::GetObjPointer(L, 1);
+	cairo_surface_t *surf = CheckSurface(L, 1);
 	int width = luaL_checkint(L, 2);
 	if (width <= 0) { luaL_error(L, "Width of box kernel for raster.box must be larger than zero, specified to %d.", width); return 0; }
 	int applications = luaL_optint(L, 3, 1);
@@ -336,7 +336,7 @@ static int box_blur(lua_State *L)
 	for (int i = 0; i < width; i++)
 		kernel[i] = 1;
 	while (applications-- > 0)
-		ApplySeparableFilter(L, surfobj->GetSurface(), kernel, width, width);
+		ApplySeparableFilter(L, surf, kernel, width, width);
 	delete[] kernel;
 	return 0;
 }
@@ -344,32 +344,62 @@ static int box_blur(lua_State *L)
 
 static int invert_image(lua_State *L)
 {
-	LuaCairoSurface *surfobj = LuaCairoSurface::GetObjPointer(L, 1);
-	cairo_surface_t *surf = surfobj->GetSurface();
-	if (cairo_surface_get_type(surf) != CAIRO_SURFACE_TYPE_IMAGE) {
-		lua_pushliteral(L, "Object for raster operation is not an image surface. Video frames are not accepted.");
-		lua_error(L);
-	}
+	cairo_surface_t *surf = CheckSurface(L, 1);
 	cairo_surface_flush(surf);
-	size_t width = (size_t)cairo_image_surface_get_width(surf);
-	size_t height = (size_t)cairo_image_surface_get_height(surf);
+	int width = cairo_image_surface_get_width(surf);
+	int height = cairo_image_surface_get_height(surf);
 	ptrdiff_t stride = (ptrdiff_t)cairo_image_surface_get_stride(surf);
 	unsigned char *data = cairo_image_surface_get_data(surf);
-
 	cairo_format_t format = cairo_image_surface_get_format(surf);
-	size_t datawidth = stride;
-	if (format == CAIRO_FORMAT_ARGB32 || format == CAIRO_FORMAT_RGB24)
-		datawidth = width*4;
-	else if (format == CAIRO_FORMAT_A8)
-		datawidth = width;
-	else if (format == CAIRO_FORMAT_A1)
-		datawidth = (width+31)/8 & ~4; // make sure this is rounded up to nearest four bytes
 
-	// This could be faster if done over 32 bit quantities
-	for (size_t y = 0; y < height; y++) {
-		unsigned char *line = data + y*stride;
-		for (size_t x = 0; x < datawidth; x++, line++)
-			*line = ~ *line;
+	// ARGB32 and RGB24 must be treated differently due to the premultipled alpha in ARGB32
+	// Also the alpha in ARGB32 is not inverted, only the colour channels
+	if (format == CAIRO_FORMAT_ARGB32) {
+#pragma omp parallel for
+		for (int y = 0; y < height; y++) {
+			uint32_t *line = (uint32_t*)(data + y*stride);
+			for (int x = 0; x < width; x++, line++) {
+				// The R, G and B channels are in range 0..a, and inverting means calculating
+				// max-current, so inversion here is a-c for each channel.
+				unsigned char a = (*line & 0xff000000) >> 24;
+				unsigned char r = (*line & 0x00ff0000) >> 16;
+				unsigned char g = (*line & 0x0000ff00) >> 8;
+				unsigned char b = *line & 0x000000ff;
+				*line = (a<<24) | ((a-r)<<16) | ((a-g)<<8) | (a-b);
+			}
+		}
+	}
+	else if (format == CAIRO_FORMAT_RGB24) {
+#pragma omp parallel for
+		for (int y = 0; y < height; y++) {
+			uint32_t *line = (uint32_t*)(data + y*stride);
+			for (int x = 0; x < width; x++, line++) {
+				// Invert R, G and B channels by XOR'ing them with 0xff each.
+				*line = *line ^ 0x00ffffff;
+			}
+		}
+	}
+	else if (format == CAIRO_FORMAT_A8) {
+#pragma omp parallel for
+		for (int y = 0; y < height; y++) {
+			unsigned char *line = data + y*stride;
+			for (int x = 0; x < width; x++, line++) {
+				*line = ~ *line;
+			}
+		}
+	}
+	else if (format == CAIRO_FORMAT_A1) {
+		int lwidth = (width + 31) / 32; // "long-width", width in 32 bit longints, rounded up
+#pragma omp parallel for
+		for (int y = 0; y < height; y++) {
+			// Pixels are stored packed into 32 bit quantities
+			uint32_t *line = (uint32_t*)(data + y*stride);
+			for (int x = 0; x < lwidth; x++, line++) {
+				// Yes this means we might end up inverting too many bits.. hopefully won't happen.
+				// (And even then, who would seriously use A1 surfaces?)
+				*line = ~ *line;
+			}
+		}
 	}
 
 	cairo_surface_mark_dirty(surf);
@@ -381,8 +411,8 @@ static int invert_image(lua_State *L)
 // Registration
 
 static luaL_Reg rasterlib[] = {
-	{"gaussian_blur", gaussian_blur},
-	{"box", box_blur},
+	{"gaussian_blur", gaussian_blur}, {"box_blur", box_blur},
+	{"invert", invert_image},
 	{NULL, NULL}
 };
 
