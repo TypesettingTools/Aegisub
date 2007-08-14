@@ -89,7 +89,7 @@ public:
 	OverLuaScript(const void *data, size_t length, const char *_datastring = 0);
 	virtual ~OverLuaScript();
 
-	void RenderFrameRGB(OverLuaFrameAggregate &frame, double time);
+	void RenderFrameRGB(BaseImageAggregate &frame, double time);
 
 };
 

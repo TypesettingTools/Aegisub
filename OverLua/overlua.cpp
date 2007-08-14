@@ -105,7 +105,7 @@ OverLuaScript::~OverLuaScript()
 	lua_close(L);
 }
 
-void OverLuaScript::RenderFrameRGB(OverLuaFrameAggregate &frame, double time)
+void OverLuaScript::RenderFrameRGB(BaseImageAggregate &frame, double time)
 {
 	lua_getglobal(L, "render_frame");
 	frame.CreateLuaObject(L);

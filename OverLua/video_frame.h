@@ -28,63 +28,159 @@
 #define VIDEO_FRAME_H
 
 #include "../lua51/src/lua.h"
+#include "../lua51/src/lauxlib.h"
 #include "cairo_wrap.h"
 #include <stddef.h>
 #include <memory.h>
 #include <stdint.h>
 #include <omp.h>
 
-// Forward
-class OverLuaFrameAggregate;
 
-// store a colour value
-struct RGBPixel {
-	unsigned char r, g, b;
-	RGBPixel(unsigned char R, unsigned char G, unsigned char B) : r(R), g(G), b(B) { }
+// Forward
+class BaseImageAggregate;
+
+
+// Supported pixel formats
+namespace PixelFormat {
+	// A constant value with a fake assignment operator
+	template <class T, T v>
+	struct NopAssigningConstant {
+		operator T() { return v; }
+		void operator = (const T &n) { }
+	};
+	typedef NopAssigningConstant<uint8_t,255> ROA; // "read only alpha"
+
+	// 24 bit formats
+	struct RGB {
+		uint8_t r, g, b;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline ROA A() const { return ROA(); }
+		RGB() : r(0), g(0), b(0) { }
+		template <class PixFmt> RGB(const PixFmt &src) { r = src.R(); g = src.G(); b = src.B(); }
+	};
+	struct BGR {
+		uint8_t b, g, r;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline ROA A() const { return ROA(); }
+		BGR() : r(0), g(0), b(0) { }
+		template <class PixFmt> BGR(const PixFmt &src) { r = src.R(); g = src.G(); b = src.B(); }
+	};
+
+	// 32 bit alpha-less formats
+	struct RGBX {
+		uint8_t r, g, b, x;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline ROA A() const { return ROA(); }
+		RGBX() : r(0), g(0), b(0) { }
+		template <class PixFmt> RGBX(const PixFmt &src) { r = src.R(); g = src.G(); b = src.B(); }
+	};
+	struct BGRX {
+		uint8_t b, g, r, x;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline ROA A() const { return ROA(); }
+		BGRX() : r(0), g(0), b(0) { }
+		template <class PixFmt> BGRX(const PixFmt &src) { r = src.R(); g = src.G(); b = src.B(); }
+	};
+	struct XRGB {
+		uint8_t x, r, g, b;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline ROA A() const { return ROA(); }
+		XRGB() : r(0), g(0), b(0) { }
+		template <class PixFmt> XRGB(const PixFmt &src) { r = src.R(); g = src.G(); b = src.B(); }
+	};
+	struct XBGR {
+		uint8_t x, b, g, r;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline ROA A() const { return ROA(); }
+		XBGR() : r(0), g(0), b(0) { }
+		template <class PixFmt> XBGR(const PixFmt &src) { r = src.R(); g = src.G(); b = src.B(); }
+	};
+
+	// 32 bit with alpha
+	struct RGBA {
+		uint8_t r, g, b, a;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline uint8_t &A() { return a; } inline uint8_t A() const { return a; }
+		RGBA() : r(0), g(0), b(0), a(0) { }
+		template <class PixFmt> RGBA(const PixFmt &src) { a = src.A(); r = src.R(); g = src.G(); b = src.B(); }
+	};
+	struct BGRA {
+		uint8_t b, g, r, a;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline uint8_t &A() { return a; } inline uint8_t A() const { return a; }
+		BGRA() : r(0), g(0), b(0), a(0) { }
+		template <class PixFmt> BGRA(const PixFmt &src) { a = src.A(); r = src.R(); g = src.G(); b = src.B(); }
+	};
+	struct ARGB {
+		uint8_t a, r, g, b;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline uint8_t &A() { return a; } inline uint8_t A() const { return a; }
+		ARGB() : r(0), g(0), b(0), a(0) { }
+		template <class PixFmt> ARGB(const PixFmt &src) { a = src.A(); r = src.R(); g = src.G(); b = src.B(); }
+	};
+	struct ABGR {
+		uint8_t a, b, g, r;
+		inline uint8_t &R() { return r; } inline uint8_t R() const { return r; }
+		inline uint8_t &G() { return g; } inline uint8_t G() const { return g; }
+		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
+		inline uint8_t &A() { return a; } inline uint8_t A() const { return a; }
+		ABGR() : r(0), g(0), b(0), a(0) { }
+		template <class PixFmt> ABGR(const PixFmt &src) { a = src.A(); r = src.R(); g = src.G(); b = src.B(); }
+	};
 };
+
 
 // Support any interleaved RGB format with 8 bit per channel
 // You usually don't want to instance this class directly,
 // look at OverLuaFrameAggregate defined below
-template<ptrdiff_t Rpos, ptrdiff_t Gpos, ptrdiff_t Bpos, ptrdiff_t PixelWidth>
-class OverLuaVideoFrame {
+template<class PixFmt>
+class BaseImage {
 public:
-	typedef OverLuaVideoFrame<Rpos,Gpos,Bpos,PixelWidth> MyType;
+	typedef BaseImage<PixFmt> MyType;
 
 	// video properties
-	unsigned width;
-	unsigned height;
+	int width;
+	int height;
 	ptrdiff_t stride;
 	unsigned char *data;
 
-	// read a pixel value
-	inline const RGBPixel GetPixel(unsigned x, unsigned y)
+	// Access a pixel value
+	inline const PixFmt &Pixel(int x, int y) const
 	{
-		RGBPixel res(0, 0, 0);
-		unsigned char *ptr = data + y*stride + x*PixelWidth;
-		res.r = ptr[Rpos];
-		res.g = ptr[Gpos];
-		res.b = ptr[Bpos];
-		return res;
+		return *((PixFmt*)(data + y*stride) + x)
 	}
 
-	// write a pixel value
-	inline void SetPixel(unsigned x, unsigned y, const RGBPixel &val)
+	inline PixFmt &Pixel(int x, int y)
 	{
-		unsigned char *ptr = data + y*stride + x*PixelWidth;
-		ptr[Rpos] = val.r;
-		ptr[Gpos] = val.g;
-		ptr[Bpos] = val.b;
+		return *((PixFmt*)(data + y*stride) + x);
 	}
 
-	OverLuaVideoFrame(unsigned _width, unsigned _height, ptrdiff_t _stride, unsigned char *_data)
+	BaseImage(unsigned _width, unsigned _height, ptrdiff_t _stride, unsigned char *_data)
 		: width(_width), height(_height), stride(_stride), data(_data)
 	{
 		owndata = false;
 		// nothing further to init
 	}
 
-	OverLuaVideoFrame(const MyType &src, bool copydata = false)
+	BaseImage(const MyType &src, bool copydata = false)
 	{
 		width = src.width;
 		height = src.height;
@@ -98,14 +194,14 @@ public:
 		}
 	}
 
-	~OverLuaVideoFrame()
+	~BaseImage()
 	{
 		if (owndata)
 			delete[] data;
 	}
 
 	// should never be called more than once on the same C++ object
-	void CreateLuaObject(lua_State *L, OverLuaFrameAggregate *aggregate = 0)
+	void CreateLuaObject(lua_State *L, BaseImageAggregate *aggregate = 0)
 	{
 		// create userdata object
 		MyType **ud = (MyType**)lua_newuserdata(L, sizeof(MyType*));
@@ -123,7 +219,7 @@ public:
 		lua_setfield(L, -2, "__gc");
 		if (aggregate) {
 			lua_pushlightuserdata(L, aggregate);
-			lua_setfield(L, -2, "videoframe");
+			lua_setfield(L, -2, "image");
 		}
 		lua_setmetatable(L, -2);
 	}
@@ -142,32 +238,32 @@ private:
 		if (lua_isnumber(L, 2)) {
 			if (lua_istable(L, 3)) {
 				int n = (int)lua_tointeger(L, 2);
-				unsigned x = n % (*ud)->width;
-				unsigned y = n / (*ud)->width;
+				int x = n % (*ud)->width;
+				int y = n / (*ud)->width;
 				if (x < 0 || y < 0 || x >= (*ud)->width || y >= (*ud)->height) return 0;
 
 				// read first three entries from table
-				RGBPixel color(0,0,0);
+				PixFmt color;
 				lua_pushnil(L);
 				if (!lua_next(L, 3)) goto badtable;
 				if (!lua_isnumber(L, -1)) goto badtable;
-				color.r = (unsigned char)lua_tointeger(L, -1);
+				color.R() = (unsigned char)lua_tointeger(L, -1);
 				lua_pop(L, 1);
 				if (!lua_next(L, 3)) goto badtable;
 				if (!lua_isnumber(L, -1)) goto badtable;
-				color.g = (unsigned char)lua_tointeger(L, -1);
+				color.G() = (unsigned char)lua_tointeger(L, -1);
 				lua_pop(L, 1);
 				if (!lua_next(L, 3)) goto badtable;
 				if (!lua_isnumber(L, -1)) goto badtable;
-				color.b = (unsigned char)lua_tointeger(L, -1);
+				color.B() = (unsigned char)lua_tointeger(L, -1);
 				lua_pop(L, 2);
 
-				(*ud)->SetPixel(x, y, color);
+				(*ud)->Pixel(x, y) = color;
 				return 0;
 
 			} else {
 badtable:
-				lua_pushliteral(L, "Value set into video frame pixel must be a table with at least 3 entries");
+				lua_pushliteral(L, "Value set into image pixel must be a table with at least 3 entries");
 				lua_error(L);
 				return 0;
 			}
@@ -201,7 +297,7 @@ badtable:
 				lua_pushvalue(L, 1);
 				lua_pushcclosure(L, lua_overlay_cairo_surface, 1);
 			} else {
-				lua_pushfstring(L, "Undefined field name in video frame: %s", fieldname);
+				lua_pushfstring(L, "Undefined field name in image: %s", fieldname);
 				lua_error(L);
 			}
 
@@ -209,7 +305,7 @@ badtable:
 
 		}
 
-		lua_pushfstring(L, "Unhandled field type indexing video frame: %s", lua_typename(L, lua_type(L, 2)));
+		lua_pushfstring(L, "Unhandled field type indexing image: %s", lua_typename(L, lua_type(L, 2)));
 		lua_error(L);
 		return 0;
 	}
@@ -221,19 +317,19 @@ badtable:
 		// third arg = y
 		MyType **ud = (MyType**)lua_touserdata(L, 1);
 
-		unsigned x = luaL_checkint(L, 2);
-		unsigned y = luaL_checkint(L, 3);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
 
-		RGBPixel color(0,0,0);
 		if (x < 0 || y < 0 || x >= (*ud)->width || y >= (*ud)->height) {
-			// already black, leave it
+			lua_pushinteger(L, 0);
+			lua_pushinteger(L, 0);
+			lua_pushinteger(L, 0);
 		} else {
-			// get it
-			color = (*ud)->GetPixel(x, y);
+			const PixFmt &p = (*ud)->Pixel(x, y);
+			lua_pushinteger(L, p.r);
+			lua_pushinteger(L, p.g);
+			lua_pushinteger(L, p.b);
 		}
-		lua_pushinteger(L, color.r);
-		lua_pushinteger(L, color.g);
-		lua_pushinteger(L, color.b);
 		return 3;
 	}
 
@@ -274,12 +370,11 @@ badtable:
 		int width = (*ud)->width;
 #pragma omp parallel for
 		for (int y = 0; y < height; y++) {
-			uint32_t *opix = (uint32_t*)(surfdata + y*surfstride);
+			PixFmt *ipix = (PixFmt*)((*ud)->data + y*((*ud)->stride));
+			PixelFormat::XBGR *opix = (PixelFormat::XBGR*)(surfdata + y*surfstride);
 			for (int x = 0; x < width; x++) {
 				// Hoping this will get optimised at least a bit by the compiler
-				RGBPixel ipix = (*ud)->GetPixel(x, y);
-				*opix = ipix.r << 16 | ipix.g << 8 | ipix.b;
-				opix++;
+				*opix++ = PixelFormat::XBGR(*ipix++);
 			}
 		}
 		cairo_surface_mark_dirty(surf);
@@ -338,17 +433,16 @@ badtable:
 			int lines_to_compose = (slines_to_compose<flines_to_compose)?slines_to_compose:flines_to_compose;
 #pragma omp parallel for
 			for (int composition_line = 0; composition_line < lines_to_compose; composition_line++) {
-				uint32_t *sline = (uint32_t*)(sdata + composition_line*sstride);
+				PixelFormat::ARGB *sline = (PixelFormat::ARGB*)(sdata + composition_line*sstride);
 				int fx = xpos;
 				int sx = 0;
 				if (fx < 0) fx = 0, sx = -xpos;
 				for ( ; sx < swidth && fx < fwidth; fx++, sx++) {
-					RGBPixel pix = (*ud)->GetPixel(fx, fy+composition_line);
-					unsigned char a = 0xff - ((sline[sx] & 0xff000000) >> 24);
-					pix.r = ((sline[sx] & 0x00ff0000) >> 16) + a*pix.r/255;
-					pix.g = ((sline[sx] & 0x0000ff00) >> 8) + a*pix.g/255;
-					pix.b = (sline[sx] & 0x000000ff) + a*pix.b/255;
-					(*ud)->SetPixel(fx, fy+composition_line, pix);
+					PixFmt &pix = (*ud)->Pixel(fx, fy+composition_line);
+					unsigned char a = 0xff - sline[sx].A();
+					pix.R() = sline[sx].R() + a*pix.R()/255;
+					pix.G() = sline[sx].G() + a*pix.G()/255;
+					pix.B() = sline[sx].B() + a*pix.B()/255;
 				}
 			}
 		}
@@ -361,16 +455,12 @@ badtable:
 			int lines_to_compose = (slines_to_compose<flines_to_compose)?slines_to_compose:flines_to_compose;
 #pragma omp parallel for
 			for (int composition_line = 0; composition_line < lines_to_compose; composition_line++) {
-				uint32_t *sline = (uint32_t*)(sdata + composition_line*sstride);
+				PixelFormat::XRGB *sline = (PixelFormat::XRGB*)(sdata + composition_line*sstride);
 				int fx = xpos;
 				int sx = 0;
 				if (fx < 0) fx = 0, sx = -xpos;
 				for ( ; sx < swidth && fx < fwidth; fx++, sx++) {
-					RGBPixel pix(
-						(sline[sx] & 0x00ff0000) >> 16,
-						(sline[sx] & 0x0000ff00) >> 8,
-						sline[sx] & 0x000000ff);
-					(*ud)->SetPixel(fx, fy+composition_line, pix);
+					sline[sx] = PixelFormat::XRGB((*ud)->Pixel(fx, fy+composition_line));
 				}
 			}
 		}
@@ -409,45 +499,45 @@ badtable:
 // in the C++ code. It nicely hides all templatyness away into various implementations.
 // This could probably have been designed better. Shame on me.
 
-class OverLuaFrameAggregate {
+class BaseImageAggregate {
 public:
-	virtual RGBPixel GetPixel(unsigned x, unsigned y) = 0;
-	virtual void SetPixel(unsigned x, unsigned y, const RGBPixel &val) = 0;
+	virtual PixelFormat::ARGB GetPixel(int x, int y) = 0;
+	virtual void SetPixel(int x, int y, const PixelFormat::ARGB &val) = 0;
 	virtual unsigned GetWidth() = 0;
 	virtual unsigned GetHeight() = 0;
 	virtual void CreateLuaObject(lua_State *L) = 0;
 };
 
-template <ptrdiff_t Rpos, ptrdiff_t Gpos, ptrdiff_t Bpos, ptrdiff_t PixelWidth>
-class OverLuaFrameAggregateImpl : public OverLuaFrameAggregate {
+template <class PixFmt>
+class BaseImageAggregateImpl : public BaseImageAggregate {
 public:
-	typedef OverLuaVideoFrame<Rpos, Gpos, Bpos, PixelWidth> VideoFrameType;
+	typedef BaseImage<PixFmt> ImageType;
 
 private:
-	VideoFrameType *frame;
+	ImageType *frame;
 	bool ownframe;
 
 public:
-	OverLuaFrameAggregateImpl(unsigned _width, unsigned _height, ptrdiff_t _stride, unsigned char *_data)
+	BaseImageAggregateImpl(unsigned _width, unsigned _height, ptrdiff_t _stride, unsigned char *_data)
 	{
-		frame = new VideoFrameType(_width, _height, _stride, _data);
+		frame = new ImageType(_width, _height, _stride, _data);
 		ownframe = true;
 	}
 
-	OverLuaFrameAggregateImpl(VideoFrameType *_frame)
+	BaseImageAggregateImpl(ImageType *_frame)
 	{
 		frame = _frame;
 		ownframe = false;
 	}
 
-	RGBPixel GetPixel(unsigned x, unsigned y)
+	PixelFormat::ARGB GetPixel(int x, int y)
 	{
-		return frame->GetPixel(x, y);
+		return PixelFormat::ARGB(frame->Pixel(x, y));
 	}
 
-	void SetPixel(unsigned x, unsigned y, const RGBPixel &val)
+	void SetPixel(int x, int y, const PixelFormat::ARGB &val)
 	{
-		frame->SetPixel(x, y, val);
+		frame->Pixel(x, y) = PixFmt(val);
 	}
 
 	unsigned GetWidth()
@@ -468,15 +558,15 @@ public:
 };
 
 // All common, sensible formats
-typedef OverLuaFrameAggregateImpl<2, 1, 0, 3> OverLuaVideoFrameBGR;
-typedef OverLuaFrameAggregateImpl<2, 1, 0, 4> OverLuaVideoFrameBGRX;
-typedef OverLuaFrameAggregateImpl<2, 1, 0, 4> OverLuaVideoFrameBGRA;
-typedef OverLuaFrameAggregateImpl<0, 1, 2, 3> OverLuaVideoFrameRGB;
-typedef OverLuaFrameAggregateImpl<0, 1, 2, 4> OverLuaVideoFrameRGBX;
-typedef OverLuaFrameAggregateImpl<0, 1, 2, 4> OverLuaVideoFrameRGBA;
-typedef OverLuaFrameAggregateImpl<1, 2, 3, 4> OverLuaVideoFrameXRGB;
-typedef OverLuaFrameAggregateImpl<1, 2, 3, 4> OverLuaVideoFrameARGB;
-typedef OverLuaFrameAggregateImpl<3, 2, 1, 4> OverLuaVideoFrameXBGR;
-typedef OverLuaFrameAggregateImpl<3, 2, 1, 4> OverLuaVideoFrameABGR;
+typedef BaseImageAggregateImpl<PixelFormat::RGB> ImageRGB;
+typedef BaseImageAggregateImpl<PixelFormat::BGR> ImageBGR;
+typedef BaseImageAggregateImpl<PixelFormat::RGBX> ImageRGBX;
+typedef BaseImageAggregateImpl<PixelFormat::BGRX> ImageBGRX;
+typedef BaseImageAggregateImpl<PixelFormat::XRGB> ImageXRGB;
+typedef BaseImageAggregateImpl<PixelFormat::XBGR> ImageXBGR;
+typedef BaseImageAggregateImpl<PixelFormat::RGBA> ImageRGBA;
+typedef BaseImageAggregateImpl<PixelFormat::BGRA> ImageBGRA;
+typedef BaseImageAggregateImpl<PixelFormat::ARGB> ImageARGB;
+typedef BaseImageAggregateImpl<PixelFormat::ABGR> ImageABGR;
 
 #endif

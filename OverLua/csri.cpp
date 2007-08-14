@@ -23,6 +23,9 @@
     IRC: jfs in #aegisub on irc.rizon.net
 
  */
+ 
+// CSRI interface is unmaintained for now
+#if 0
 
 #include <string.h>
 #include <memory.h>
@@ -112,22 +115,22 @@ CSRIAPI void csri_render(csri_inst *inst, struct csri_frame *frame, double time)
 	// check for correct pixfmt
 	if (frame->pixfmt != inst->frame_format.pixfmt) return;
 
-	OverLuaFrameAggregate *olframe = 0;
+	BaseImageAggregate *olframe = 0;
 	switch (frame->pixfmt) {
-#define HANDLE_RGB_FORMAT(fmtname, Rpos, Gpos, Bpos, PixelWidth) \
+#define HANDLE_RGB_FORMAT(fmtname, PixFmt) \
 	case fmtname: \
-		olframe = new OverLuaFrameAggregateImpl<Rpos,Gpos,Bpos,PixelWidth>(inst->frame_format.width, inst->frame_format.height, frame->strides[0], frame->planes[0]); \
+		olframe = new BaseImageAggregateImpl<PixelFormat:: ## PixFmt>(inst->frame_format.width, inst->frame_format.height, frame->strides[0], frame->planes[0]); \
 		break;
-		HANDLE_RGB_FORMAT(CSRI_F_RGBA, 0, 1, 2, 4)
-		HANDLE_RGB_FORMAT(CSRI_F_ARGB, 1, 2, 3, 4)
-		HANDLE_RGB_FORMAT(CSRI_F_BGRA, 2, 1, 0, 4)
-		HANDLE_RGB_FORMAT(CSRI_F_ABGR, 3, 2, 1, 4)
-		HANDLE_RGB_FORMAT(CSRI_F_RGB_, 0, 1, 2, 4)
-		HANDLE_RGB_FORMAT(CSRI_F__RGB, 1, 2, 3, 4)
-		HANDLE_RGB_FORMAT(CSRI_F_BGR_, 2, 1, 0, 4)
-		HANDLE_RGB_FORMAT(CSRI_F__BGR, 3, 2, 1, 4)
-		HANDLE_RGB_FORMAT(CSRI_F_RGB, 0, 1, 2, 3)
-		HANDLE_RGB_FORMAT(CSRI_F_BGR, 2, 1, 0, 3)
+		HANDLE_RGB_FORMAT(CSRI_F_RGBA, RGBA)
+		HANDLE_RGB_FORMAT(CSRI_F_ARGB, ARGB)
+		HANDLE_RGB_FORMAT(CSRI_F_BGRA, BGRA)
+		HANDLE_RGB_FORMAT(CSRI_F_ABGR, ABGR)
+		HANDLE_RGB_FORMAT(CSRI_F_RGB_, RGBX)
+		HANDLE_RGB_FORMAT(CSRI_F__RGB, XRGB)
+		HANDLE_RGB_FORMAT(CSRI_F_BGR_, BGRX)
+		HANDLE_RGB_FORMAT(CSRI_F__BGR, XBGR)
+		HANDLE_RGB_FORMAT(CSRI_F_RGB, RGB)
+		HANDLE_RGB_FORMAT(CSRI_F_BGR, BGR)
 		default: break; // what, we don't support this!
 #undef HANDLE_RGB_FORMAT
 	}
@@ -200,3 +203,5 @@ CSRIAPI csri_rend *csri_renderer_next(csri_rend *prev)
 	else
 		return 0;
 }
+
+#endif

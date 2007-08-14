@@ -24,6 +24,9 @@
 
  */
 
+// Must be included before <windows.h>, otherwise some macros from <windows.h> get in the way
+#include "video_frame.h"
+
 #include <windows.h>
 #include <string.h>
 #include <memory.h>
@@ -95,11 +98,11 @@ public:
 		try {
 			switch (vi.pixel_type) {
 				case VideoInfo::CS_BGR24: {
-					OverLuaVideoFrameBGR *frame = new OverLuaVideoFrameBGR(vi.width, vi.height, stride, plane);
+					ImageBGR *frame = new ImageBGR(vi.width, vi.height, stride, plane);
 					script->RenderFrameRGB(*frame, frametime);
 					} break;
 				case VideoInfo::CS_BGR32: {
-					OverLuaVideoFrameBGRX *frame = new OverLuaVideoFrameBGRX(vi.width, vi.height, stride, plane);
+					ImageBGRX *frame = new ImageBGRX(vi.width, vi.height, stride, plane);
 					script->RenderFrameRGB(*frame, frametime);
 					} break;
 			}
