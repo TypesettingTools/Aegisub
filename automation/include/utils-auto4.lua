@@ -178,6 +178,74 @@ function HSV_to_RGB(H,S,V)
 	return r,g,b
 end
 
+-- Convert HSL (Hue, Saturation, Luminance) to RGB
+-- Contributed by Gundamn
+function HSL_to_RGB(H, S, L)
+	local r, g, b;
+	
+	-- Make sure input is in range
+	H = H % 360
+	S = clamp(S, 0, 1)
+	L = clamp(L, 0, 1)
+
+	if S == 0 then
+		-- Simple case if saturation is 0, all grey
+		r = L
+		g = L
+		b = L
+		
+	else
+		-- More common case, saturated colour
+		if L < 0.5 then
+			Q = L * (1.0 + S)
+		else
+			Q = L + S - (L * S)
+		end
+
+		local P = 2.0 * L - Q
+
+		local Hk = H / 360
+
+		local Tr, Tg, Tb
+		if Hk < 1/3 then
+			Tr = Hk + 1/3
+			Tg = Hk
+			Tb = Hk + 2/3
+		elseif Hk > 2/3 then
+			Tr = Hk - 2/3
+			Tg = Hk
+			Tb = Hk - 1/3
+		else
+			Tr = Hk + 1/3
+			Tg = Hk
+			Tb = Hk - 1/3
+		end
+		
+		local function get_component(T)
+			if T < 1/6 then
+				return P + ((Q - P) * 6.0 * T)
+			elseif 1/6 <= T and T < 1/2 then
+				return Q
+			elseif 1/2 <= T and T < 2/3 then
+				return P + ((Q - P) * (2/3 - T) * 6.0)
+			else
+				return P
+			end
+		end
+		
+		r = get_component(Tr)
+		g = get_component(Tg)
+		b = get_component(Tb)
+
+	end
+
+	r = math.floor(r * 255)
+	g = math.floor(g * 255)
+	b = math.floor(b * 255)
+
+	return r, g, b
+end
+
 -- Removes spaces at the start and end of string
 function string.trim(s)
 	return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
