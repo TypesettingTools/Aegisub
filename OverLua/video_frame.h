@@ -42,10 +42,10 @@ class BaseImageAggregate;
 
 // Supported pixel formats
 namespace PixelFormat {
-	// A constant value with a fake assignment operator
+	// A constant value with a fake assignment operator, taking up no space
 	template <class T, T v>
 	struct NopAssigningConstant {
-		operator T() { return v; }
+		operator T() const { return v; }
 		void operator = (const T &n) { }
 	};
 	typedef NopAssigningConstant<uint8_t,255> ROA; // "read only alpha"
@@ -116,7 +116,7 @@ namespace PixelFormat {
 		inline uint8_t &B() { return b; } inline uint8_t B() const { return b; }
 		inline uint8_t &A() { return a; } inline uint8_t A() const { return a; }
 		RGBA() : r(0), g(0), b(0), a(0) { }
-		template <class PixFmt> RGBA(const PixFmt &src) { a = src.A(); r = src.R(); g = src.G(); b = src.B(); }
+		template <class PixFmt> RGBA(const PixFmt &src) { a = src.a; r = src.r; g = src.g; b = src.b; }
 	};
 	struct BGRA {
 		uint8_t b, g, r, a;
@@ -145,6 +145,12 @@ namespace PixelFormat {
 		ABGR() : r(0), g(0), b(0), a(0) { }
 		template <class PixFmt> ABGR(const PixFmt &src) { a = src.A(); r = src.R(); g = src.G(); b = src.B(); }
 	};
+
+	// cairo types
+	// These are only true for little endian architectures
+	// If OverLua is ever to run on big endian archs some conditional compiling should be used here
+	typedef BGRX cairo_rgb24;
+	typedef BGRA cairo_argb32;
 };
 
 
@@ -247,15 +253,15 @@ private:
 				lua_pushnil(L);
 				if (!lua_next(L, 3)) goto badtable;
 				if (!lua_isnumber(L, -1)) goto badtable;
-				color.R() = (unsigned char)lua_tointeger(L, -1);
+				color.r = (unsigned char)lua_tointeger(L, -1);
 				lua_pop(L, 1);
 				if (!lua_next(L, 3)) goto badtable;
 				if (!lua_isnumber(L, -1)) goto badtable;
-				color.G() = (unsigned char)lua_tointeger(L, -1);
+				color.g = (unsigned char)lua_tointeger(L, -1);
 				lua_pop(L, 1);
 				if (!lua_next(L, 3)) goto badtable;
 				if (!lua_isnumber(L, -1)) goto badtable;
-				color.B() = (unsigned char)lua_tointeger(L, -1);
+				color.b = (unsigned char)lua_tointeger(L, -1);
 				lua_pop(L, 2);
 
 				(*ud)->Pixel(x, y) = color;
@@ -371,10 +377,9 @@ badtable:
 #pragma omp parallel for
 		for (int y = 0; y < height; y++) {
 			PixFmt *ipix = (PixFmt*)((*ud)->data + y*((*ud)->stride));
-			PixelFormat::XBGR *opix = (PixelFormat::XBGR*)(surfdata + y*surfstride);
+			PixelFormat::cairo_rgb24 *opix = (PixelFormat::cairo_rgb24*)(surfdata + y*surfstride);
 			for (int x = 0; x < width; x++) {
-				// Hoping this will get optimised at least a bit by the compiler
-				*opix++ = PixelFormat::XBGR(*ipix++);
+				*opix++ = *ipix++;
 			}
 		}
 		cairo_surface_mark_dirty(surf);
@@ -395,7 +400,7 @@ badtable:
 		MyType **ud = (MyType**)lua_touserdata(L, lua_upvalueindex(1));
 		LuaCairoSurface *surfwrap = LuaCairoSurface::GetObjPointer(L, 1);
 		if (!surfwrap) {
-			lua_pushliteral(L, "Argument to frame.overlay_cairo_surface is not a cairo surface");
+			lua_pushliteral(L, "Argument to overlay_cairo_surface is not a cairo surface");
 			lua_error(L);
 			return 0;
 		}
@@ -405,7 +410,7 @@ badtable:
 		// More argument checks
 		cairo_surface_t *surf = surfwrap->GetSurface();
 		if (cairo_surface_get_type(surf) != CAIRO_SURFACE_TYPE_IMAGE) {
-			lua_pushliteral(L, "Argument to frame.overlay_cairo_surface is not a cairo image surface");
+			lua_pushliteral(L, "Argument to overlay_cairo_surface is not a cairo image surface");
 			lua_error(L);
 			return 0;
 		}
@@ -433,16 +438,16 @@ badtable:
 			int lines_to_compose = (slines_to_compose<flines_to_compose)?slines_to_compose:flines_to_compose;
 #pragma omp parallel for
 			for (int composition_line = 0; composition_line < lines_to_compose; composition_line++) {
-				PixelFormat::ARGB *sline = (PixelFormat::ARGB*)(sdata + composition_line*sstride);
+				PixelFormat::cairo_argb32 *sline = (PixelFormat::cairo_argb32*)(sdata + composition_line*sstride);
 				int fx = xpos;
 				int sx = 0;
 				if (fx < 0) fx = 0, sx = -xpos;
 				for ( ; sx < swidth && fx < fwidth; fx++, sx++) {
 					PixFmt &pix = (*ud)->Pixel(fx, fy+composition_line);
-					unsigned char a = 0xff - sline[sx].A();
-					pix.R() = sline[sx].R() + a*pix.R()/255;
-					pix.G() = sline[sx].G() + a*pix.G()/255;
-					pix.B() = sline[sx].B() + a*pix.B()/255;
+					unsigned char a = 0xff - sline[sx].a;
+					pix.r = sline[sx].r + a*pix.r/255;
+					pix.g = sline[sx].g + a*pix.g/255;
+					pix.b = sline[sx].b + a*pix.b/255;
 				}
 			}
 		}
@@ -455,12 +460,12 @@ badtable:
 			int lines_to_compose = (slines_to_compose<flines_to_compose)?slines_to_compose:flines_to_compose;
 #pragma omp parallel for
 			for (int composition_line = 0; composition_line < lines_to_compose; composition_line++) {
-				PixelFormat::XRGB *sline = (PixelFormat::XRGB*)(sdata + composition_line*sstride);
+				PixelFormat::cairo_rgb24 *sline = (PixelFormat::cairo_rgb24*)(sdata + composition_line*sstride);
 				int fx = xpos;
 				int sx = 0;
 				if (fx < 0) fx = 0, sx = -xpos;
 				for ( ; sx < swidth && fx < fwidth; fx++, sx++) {
-					sline[sx] = PixelFormat::XRGB((*ud)->Pixel(fx, fy+composition_line));
+					(*ud)->Pixel(fx, fy+composition_line) = sline[sx];
 				}
 			}
 		}
