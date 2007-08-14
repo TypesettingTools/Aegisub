@@ -1,5 +1,5 @@
 /*
- * OverLua video frame access interface
+ * OverLua RGB(A) image interface
  *
 
     Copyright 2007  Niels Martin Hansen
@@ -269,13 +269,13 @@ private:
 
 			} else {
 badtable:
-				lua_pushliteral(L, "Value set into image pixel must be a table with at least 3 entries");
+				lua_pushliteral(L, "Value set into image pixel must be a table with 3 entries");
 				lua_error(L);
 				return 0;
 			}
 		}
 
-		lua_pushliteral(L, "Undefined field in video frame");
+		lua_pushliteral(L, "Undefined field in image");
 		lua_error(L);
 		return 0;
 	}
@@ -362,7 +362,7 @@ badtable:
 		// Always RGB24 format since we don't support video with alpha
 		cairo_surface_t *surf = cairo_image_surface_create(CAIRO_FORMAT_RGB24, (*ud)->width, (*ud)->height);
 		if (!surf || cairo_surface_status(surf) != CAIRO_STATUS_SUCCESS) {
-			lua_pushliteral(L, "Unable to create cairo surface from video frame");
+			lua_pushliteral(L, "Unable to create cairo surface from image");
 			lua_error(L);
 			return 0;
 		}
@@ -499,11 +499,8 @@ badtable:
 };
 
 
-// Now, escape from the template madness that is OverLuaVideoFrame.
-// OverLuaFrameAggregate is the class that will be used for most passing around
-// in the C++ code. It nicely hides all templatyness away into various implementations.
-// This could probably have been designed better. Shame on me.
-
+// Now something so we can pretend all images have the same pixel format
+// and can pass around pointers to objects of one fixed base class.
 class BaseImageAggregate {
 public:
 	virtual PixelFormat::ARGB GetPixel(int x, int y) = 0;
@@ -573,5 +570,51 @@ typedef BaseImageAggregateImpl<PixelFormat::RGBA> ImageRGBA;
 typedef BaseImageAggregateImpl<PixelFormat::BGRA> ImageBGRA;
 typedef BaseImageAggregateImpl<PixelFormat::ARGB> ImageARGB;
 typedef BaseImageAggregateImpl<PixelFormat::ABGR> ImageABGR;
+
+
+// Access pixels with various edge conditions
+
+template<class PixFmt>
+inline PixFmt &GetPixelEdgeBlackness(BaseImage<PixFmt> &img, int x, int y)
+{
+	if (x < 0 || y < 0 || x >= img.width || x >= img.height) {
+		return PixFmt(); // all construct with all zeroes
+	} else {
+		return img.Pixel(x,y);
+	}
+}
+
+template<class PixFmt>
+inline PixFmt &GetPixelEdgeClosest(BaseImage<PixFmt> &img, int x, int y)
+{
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x >= img.width) x = img.width-1;
+	if (y >= img.height) y = img.height - 1;
+	return img.Pixel(x,y);
+}
+
+template<class PixFmt>
+inline PixFmt &GetPixelEdgeRepeat(BaseImage<PixFmt> &img, int x, int y)
+{
+	while (x < 0) x += img.width;
+	while (y < 0) y += img.height;
+	while (x >= img.width) x -= img.width;
+	while (y >= img.height) y -= img.height;
+	return img.Pixel(x,y);
+}
+
+template<class PixFmt>
+inline PixFmt &GetPixelEdgeMirror(BaseImage<PixFmt> &img, int x, int y)
+{
+	while (x < 0) x += img.width*2;
+	while (y < 0) y += img.height*2;
+	while (x >= img.width*2) x -= img.width*2;
+	while (y >= img.height*2) y -= img.height*2;
+	if (x >= img.width) x = img.width - x;
+	if (y >= img.height) y = img.height - y;
+	return img.Pixel(x,y);
+}
+
 
 #endif

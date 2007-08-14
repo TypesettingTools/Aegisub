@@ -25,8 +25,8 @@
  */
 
 #include "cairo_wrap.h"
+#include "image.h"
 #include <math.h>
-//#include <windows.h>
 #include <omp.h>
 #include <stdint.h>
 

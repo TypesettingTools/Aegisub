@@ -25,7 +25,7 @@
  */
 
 // Must be included before <windows.h>, otherwise some macros from <windows.h> get in the way
-#include "video_frame.h"
+#include "image.h"
 
 #include <windows.h>
 #include <string.h>

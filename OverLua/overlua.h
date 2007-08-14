@@ -34,7 +34,7 @@
 #include "../lua51/src/lauxlib.h"
 
 #include <stddef.h>
-#include "video_frame.h"
+#include "image.h"
 #include "cairo_wrap.h"
 #include "raster_ops.h"
 
