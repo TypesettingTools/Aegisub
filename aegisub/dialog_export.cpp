@@ -84,6 +84,9 @@ DialogExport::DialogExport (wxWindow *parent)
 	TopButtons->Add(new wxButton(this,Button_Select_All,_("Select all"),wxDefaultPosition,wxSize(80,-1)),1,wxEXPAND | wxRIGHT,0);
 	TopButtons->Add(new wxButton(this,Button_Select_None,_("Select none"),wxDefaultPosition,wxSize(80,-1)),1,wxEXPAND | wxRIGHT,0);
 
+	// Description field
+	Description = new wxTextCtrl(this, -1, _T(""), wxDefaultPosition, wxSize(200,60), wxTE_MULTILINE | wxTE_READONLY);
+
 	// Charset dropdown list
 	wxStaticText *charset_list_label = new wxStaticText(this, -1, _("Text encoding:"));
 	CharsetList = new wxChoice(this, Charset_List_Box, wxDefaultPosition, wxDefaultSize, FrameMain::GetEncodings());
@@ -96,7 +99,6 @@ DialogExport::DialogExport (wxWindow *parent)
 
 	// Top sizer
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Filters"));
-	Description = new wxTextCtrl(this, -1, _T(""), wxDefaultPosition, wxSize(200,60), wxTE_MULTILINE | wxTE_READONLY);
 	TopSizer->Add(FilterList,1,wxEXPAND,0);
 	TopSizer->Add(TopButtons,0,wxEXPAND,0);
 	TopSizer->Add(Description,0,wxEXPAND | wxTOP,5);

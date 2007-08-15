@@ -53,15 +53,32 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	grid = _grid;
 
 	// Matches box
+	Matches = new wxRadioButton(this,-1,_("Matches"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
+	DoesntMatch = new wxRadioButton(this,-1,_("Doesn't Match"),wxDefaultPosition,wxDefaultSize,0);
 	Match = new wxTextCtrl(this,-1,Options.AsText(_T("Select Text")),wxDefaultPosition,wxSize(200,-1));
+	MatchCase = new wxCheckBox(this,-1,_("Match case"));
 	Exact = new wxRadioButton(this,-1,_("Exact match"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	Contains = new wxRadioButton(this,-1,_("Contains"));
 	RegExp = new wxRadioButton(this,-1,_("Regular Expression match"));
-	Matches = new wxRadioButton(this,-1,_("Matches"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
-	DoesntMatch = new wxRadioButton(this,-1,_("Doesn't Match"),wxDefaultPosition,wxDefaultSize,0);
-	MatchCase = new wxCheckBox(this,-1,_("Match case"));
+
+	// Fields box
+	wxArrayString field;
+	field.Add(_("Text"));
+	field.Add(_("Style"));
+	field.Add(_("Actor"));
+	Field = new wxRadioBox(this,-1,_("In Field"),wxDefaultPosition,wxDefaultSize,field);
+
+	// Dialogues/comments box
 	MatchDialogues = new wxCheckBox(this,MATCH_DIALOGUES_CHECKBOX,_("Dialogues"));
 	MatchComments = new wxCheckBox(this,MATCH_COMMENTS_CHECKBOX,_("Comments"));
+
+	// Action box
+	wxArrayString actions;
+	actions.Add(_("Set selection"));
+	actions.Add(_("Add to selection"));
+	actions.Add(_("Subtract from selection"));
+	actions.Add(_("Intersect with selection"));
+	Action = new wxRadioBox(this,-1,_("Action"),wxDefaultPosition,wxDefaultSize,actions,1);
 
 	// Matches box sizer
 	wxSizer *MatchSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Match"));
@@ -76,27 +93,11 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	MatchSizer->Add(Contains,0,wxTOP|wxEXPAND,5);
 	MatchSizer->Add(RegExp,0,wxTOP|wxEXPAND,5);
 
-	// Action box
-	wxArrayString actions;
-	actions.Add(_("Set selection"));
-	actions.Add(_("Add to selection"));
-	actions.Add(_("Subtract from selection"));
-	actions.Add(_("Intersect with selection"));
-	Action = new wxRadioBox(this,-1,_("Action"),wxDefaultPosition,wxDefaultSize,actions,1);
-
 	// Dialogues / Comments box
 	wxSizer *DialogueSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Match dialogues/comments"));
 	DialogueSizer->Add(MatchDialogues,0, wxRIGHT|wxEXPAND,5);
 	DialogueSizer->Add(MatchComments,0, wxEXPAND);
 	
-	
-	// Fields box
-	wxArrayString field;
-	field.Add(_("Text"));
-	field.Add(_("Style"));
-	field.Add(_("Actor"));
-	Field = new wxRadioBox(this,-1,_("In Field"),wxDefaultPosition,wxDefaultSize,field);
-
 	// Buttons sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);

@@ -327,8 +327,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	wxButton *okButton = new wxButton(this, wxID_OK);
 	okButton->SetDefault();
-	ButtonSizer->AddButton(new wxButton(this, wxID_APPLY));
 	ButtonSizer->AddButton(new wxButton(this, wxID_CANCEL));
+	ButtonSizer->AddButton(new wxButton(this, wxID_APPLY));
 	ButtonSizer->AddButton(new wxButton(this, wxID_HELP));
 	ButtonSizer->AddButton(okButton);
 	ButtonSizer->Realize();

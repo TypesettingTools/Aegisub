@@ -79,8 +79,8 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	TimesSizer->Add(TimeSizer,0,wxEXPAND,0);
 
 	// Buttons
-	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
 	wxButton *OKButton = new wxButton(this,wxID_OK);
+	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->Add(OKButton,1,wxRIGHT,5);
 	ButtonSizer->Add(CancelButton,0,0,0);

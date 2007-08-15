@@ -66,6 +66,15 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	thresEndAfter = Options.AsText(_T("Timing processor key end after thres"));
 	adjsThresTime = Options.AsText(_T("Timing processor adjascent thres"));
 
+	// Styles box
+	wxArrayString styles = grid->ass->GetStyles();
+	StyleList = new wxCheckListBox(this,TIMING_STYLE_LIST,wxDefaultPosition,wxSize(150,150),styles);
+	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
+	wxButton *all = new wxButton(this,BUTTON_SELECT_ALL,_("All"));
+	all->SetToolTip(_("Select all styles."));
+	wxButton *none = new wxButton(this,BUTTON_SELECT_NONE,_("None"));
+	none->SetToolTip(_("Deselect all styles."));
+
 	// Options box
 	wxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
 	onlySelection = new wxCheckBox(this,-1,_("Affect selection only"));
@@ -157,18 +166,11 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 
 	// Style buttons sizer
 	wxSizer *StyleButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *all = new wxButton(this,BUTTON_SELECT_ALL,_("All"));
-	all->SetToolTip(_("Select all styles."));
-	wxButton *none = new wxButton(this,BUTTON_SELECT_NONE,_("None"));
-	none->SetToolTip(_("Deselect all styles."));
 	StyleButtonsSizer->Add(all,1,0,0);
 	StyleButtonsSizer->Add(none,1,0,0);
 
 	// Left sizer
 	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
-	wxArrayString styles = grid->ass->GetStyles();
-	StyleList = new wxCheckListBox(this,TIMING_STYLE_LIST,wxDefaultPosition,wxSize(150,150),styles);
-	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 	size_t len = StyleList->GetCount();
 	for (size_t i=0;i<len;i++) {
 		StyleList->Check(i);

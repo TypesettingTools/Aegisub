@@ -102,7 +102,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	wxButton *SkipDestLine = new wxButton(this,BUTTON_KTSKIPDEST,_("Skip Dest Line"));
 	wxButton *GoBackLine = new wxButton(this,BUTTON_KTGOBACK,_("Go Back a Line"));
 	wxButton *AcceptLine = new wxButton(this,BUTTON_KTACCEPT,_("Accept Line"));
-	wxButton *CloseKT = new wxButton(this,wxID_CLOSE,_("Close"),wxDefaultPosition,wxDefaultSize,wxALIGN_RIGHT);
+	wxButton *CloseKT = new wxButton(this,wxID_CLOSE,_("Close"));
 
 	//Checkbox
 	Interpolate = new wxCheckBox(this,-1,_("Attempt to interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);

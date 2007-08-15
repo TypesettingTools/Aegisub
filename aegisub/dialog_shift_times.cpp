@@ -114,8 +114,8 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	HistorySizer->Add(History,1,wxEXPAND,0);
 
 	// Buttons
-	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
 	wxButton *OKButton = new wxButton(this,wxID_OK);
+	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
 	wxButton *ClearButton = new wxButton(this,SHIFT_CLEAR_HISTORY,_("Clear"));
 	OKButton->SetDefault();
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);

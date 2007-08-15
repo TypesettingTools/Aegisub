@@ -120,6 +120,8 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	wxSizer *CurrentListSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *MoveImportSizer = new wxBoxSizer(wxHORIZONTAL);
 	MoveToStorage = new wxButton(this, BUTTON_CURRENT_COPYTO, _("<- Copy to storage"), wxDefaultPosition, wxSize(-1,25));
+	MoveImportSizer->Add(MoveToStorage,1,wxEXPAND | wxRIGHT,5);
+	MoveImportSizer->Add(new wxButton(this, BUTTON_CURRENT_IMPORT, _("Import from script...")),1,wxEXPAND,0);
 	CurrentNew = new wxButton(this, BUTTON_CURRENT_NEW, _("New"), wxDefaultPosition, wxSize(40,25));
 	CurrentEdit = new wxButton(this, BUTTON_CURRENT_EDIT, _("Edit"), wxDefaultPosition, wxSize(40,25));
 	CurrentCopy = new wxButton(this, BUTTON_CURRENT_COPY, _("Copy"), wxDefaultPosition, wxSize(40,25));
@@ -147,8 +149,6 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	CurrentButtonsLow->AddStretchSpacer(1);
 	CurrentListSizer->Add(CurrentList,1,wxEXPAND | wxRIGHT,0);
 	CurrentListSizer->Add(CurrentButtonsLow,0,wxEXPAND | wxALL,0);
-	MoveImportSizer->Add(MoveToStorage,1,wxEXPAND | wxRIGHT,5);
-	MoveImportSizer->Add(new wxButton(this, BUTTON_CURRENT_IMPORT, _("Import from script...")),1,wxEXPAND,0);
 	CurrentBox->Add(CurrentListSizer,1,wxEXPAND | wxBOTTOM,5);
 	CurrentBox->Add(MoveImportSizer,0,wxEXPAND | wxBOTTOM,5);
 	CurrentBox->Add(CurrentButtons,0,wxEXPAND | wxBOTTOM,0);
@@ -159,8 +159,8 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
-	buttonSizer->AddButton(new wxButton(this,wxID_HELP));
 	buttonSizer->SetCancelButton(new wxButton(this, wxID_CLOSE));
+	buttonSizer->AddButton(new wxButton(this,wxID_HELP));
 	buttonSizer->Realize();
 
 	// General layout

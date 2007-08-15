@@ -211,13 +211,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// First static box
 		wxString labels1[4] = { _("Enable call tips"), _("Enable syntax highlighting"), _("Link commiting of times"), _("Overwrite-Insertion in time boxes") };
 		wxString options1[4] = { _T("Call Tips Enabled"), _T("Syntax Highlight Enabled"), _T("Link Time Boxes Commit"), _T("Insert Mode on Time Boxes") };
-		editSizer6->Add(new wxStaticText(editPage,-1,_("Path to dictionary files:")),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
-		wxTextCtrl *edit = new wxTextCtrl(editPage,-1,_T(""));
-		Bind(edit,_T("Dictionaries path"));
-		editSizer6->Add(edit,1,wxEXPAND|wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
-		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FOLDER);
-		browse->Bind(edit);
-		editSizer6->Add(browse,0,wxEXPAND);
 		for (int i=0;i<4;i++) {
 			wxCheckBox *control = new wxCheckBox(editPage,-1,labels1[i]);
 			Bind(control,options1[i]);
@@ -225,6 +218,13 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		}
 		editSizer2->AddGrowableCol(0,1);
 		editSizer2->AddGrowableCol(1,1);
+		editSizer6->Add(new wxStaticText(editPage,-1,_("Path to dictionary files:")),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+		wxTextCtrl *edit = new wxTextCtrl(editPage,-1,_T(""));
+		Bind(edit,_T("Dictionaries path"));
+		editSizer6->Add(edit,1,wxEXPAND|wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FOLDER);
+		browse->Bind(edit);
+		editSizer6->Add(browse,0,wxEXPAND);
 
 		// Second static box
 		wxControl *control;
@@ -248,15 +248,15 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Third sizer
 		editSizer5->Add(new wxStaticText(editPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FONT);
 		control = new wxTextCtrl(editPage,-1);
-		browse->Bind((wxTextCtrl*)control);
 		Bind(control,options2[10]);
 		editSizer5->Add(control,1,wxEXPAND | wxRIGHT,5);
 		control = new wxTextCtrl(editPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
-		browse->Bind((wxTextCtrl*)control,1);
 		Bind(control,options2[11]);
 		editSizer5->Add(control,0,wxEXPAND | wxRIGHT,5);
+		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FONT);
+		browse->Bind((wxTextCtrl*)control);
+		browse->Bind((wxTextCtrl*)control,1);
 		editSizer5->Add(browse,0,wxEXPAND);
 
 		// Sizers
@@ -312,13 +312,13 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Third sizer
 		gridSizer4->Add(new wxStaticText(gridPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
-		browse = new BrowseButton(gridPage,-1,_T(""),BROWSE_FONT);
 		control = new wxTextCtrl(gridPage,-1);
 		Bind(control,_T("Grid font face"));
-		browse->Bind((wxTextCtrl*)control);
 		gridSizer4->Add(control,1,wxEXPAND | wxRIGHT,5);
 		control = new wxTextCtrl(gridPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
 		Bind(control,_T("Grid font size"));
+		browse = new BrowseButton(gridPage,-1,_T(""),BROWSE_FONT);
+		browse->Bind((wxTextCtrl*)control);
 		browse->Bind((wxTextCtrl*)control,1);
 		gridSizer4->Add(control,0,wxEXPAND | wxRIGHT,5);
 		gridSizer4->Add(browse,0,wxEXPAND);
