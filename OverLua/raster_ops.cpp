@@ -256,6 +256,7 @@ void SeparableFilterY(unsigned char *src, unsigned char *dst, int width, int hei
 }
 
 
+// Apply a simple separable FIR filter to an image
 void ApplySeparableFilter(lua_State *L, cairo_surface_t *surf, int *kernel, int kernel_size, int divisor)
 {
 	// Get surface properties
@@ -297,6 +298,89 @@ void ApplySeparableFilter(lua_State *L, cairo_surface_t *surf, int *kernel, int 
 }
 
 
+// Apply a general filter an image
+template <class FilterType>
+void ApplyGeneralFilter(lua_State *L, cairo_surface_t *surf, FilterType &filter)
+{
+	// Get surface properties
+	cairo_surface_flush(surf);
+	int width = cairo_image_surface_get_width(surf);
+	int height = cairo_image_surface_get_height(surf);
+	ptrdiff_t stride = (ptrdiff_t)cairo_image_surface_get_stride(surf);
+	cairo_format_t format = cairo_image_surface_get_format(surf);
+	unsigned char *data = cairo_image_surface_get_data(surf);
+
+	if (format != CAIRO_FORMAT_ARGB32 && format != CAIRO_FORMAT_RGB24 && format != CAIRO_FORMAT_A8) {
+		lua_pushliteral(L, "Unsupported image format for raster operation");
+		lua_error(L);
+	}
+
+	// Source image copy
+	unsigned char *wimg = new unsigned char[height*stride];
+	memcpy(wimg, data, height*stride);
+
+	if (format == CAIRO_FORMAT_ARGB32) {
+		BaseImage<PixelFormat::cairo_argb32> src(width, height, stride, wimg);
+		BaseImage<PixelFormat::cairo_argb32> dst(width, height, stride, data);
+#pragma omp parallel for
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				dst.Pixel(x,y) = filter.argb32(src, x, y);
+			}
+		}
+
+	} else if (format == CAIRO_FORMAT_RGB24) {
+		BaseImage<PixelFormat::cairo_rgb24> src(width, height, stride, wimg);
+		BaseImage<PixelFormat::cairo_rgb24> dst(width, height, stride, data);
+#pragma omp parallel for
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				dst.Pixel(x,y) = filter.rgb24(src, x, y);
+			}
+		}
+
+	} else if (format == CAIRO_FORMAT_A8) {
+		BaseImage<PixelFormat::A8> src(width, height, stride, wimg);
+		BaseImage<PixelFormat::A8> dst(width, height, stride, data);
+#pragma omp parallel for
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				dst.Pixel(x,y) = filter.a8(src, x, y);
+			}
+		}
+	}
+
+	// Clean up
+	cairo_surface_mark_dirty(surf);
+	delete[] wimg;
+}
+
+
+struct GaussianKernel {
+	int *kernel;
+	int width;
+	int divisor;
+	GaussianKernel(double sigma)
+	{
+		width = (int)(sigma*3 + 0.5) | 1; // binary-or with 1 to make sure the number is odd
+		if (width < 3) width = 3;
+		kernel = new int[width];
+		kernel[width/2] = (int)(NormalDist(sigma, 0) * 255);
+		divisor = kernel[width/2];
+		for (int x = width/2-1; x >= 0; x--) {
+			int val = (int)(NormalDist(sigma, width/2-x) * 255 + 0.5);
+			divisor += val*2;
+			kernel[x] = val;
+			kernel[width - x - 1] = val;
+		}
+	}
+	~GaussianKernel()
+	{
+		delete[] kernel;
+	}
+};
+
+
 // raster.gaussian_blur(imgsurf, sigma)
 static int gaussian_blur(lua_State *L)
 {
@@ -305,21 +389,9 @@ static int gaussian_blur(lua_State *L)
 	double sigma = luaL_checknumber(L, 2);
 
 	// Generate gaussian kernel
-	int kernel_size = (int)(sigma*3 + 0.5) | 1; // binary-or with 1 to make sure the number is odd
-	if (kernel_size < 3) kernel_size = 3;
-	int *kernel = new int[kernel_size];
-	kernel[kernel_size/2] = (int)(NormalDist(sigma, 0) * 255);
-	int ksum = kernel[kernel_size/2];
-	for (int x = kernel_size/2-1; x >= 0; x--) {
-		int val = (int)(NormalDist(sigma, kernel_size/2-x) * 255 + 0.5);
-		ksum += val*2;
-		kernel[x] = val;
-		kernel[kernel_size - x - 1] = val;
-	}
+	GaussianKernel gk(sigma);
 
-	ApplySeparableFilter(L, surf, kernel, kernel_size, ksum);
-
-	delete[] kernel;
+	ApplySeparableFilter(L, surf, gk.kernel, gk.width, gk.divisor);
 
 	return 0;
 }
@@ -338,6 +410,85 @@ static int box_blur(lua_State *L)
 	while (applications-- > 0)
 		ApplySeparableFilter(L, surf, kernel, width, width);
 	delete[] kernel;
+	return 0;
+}
+
+
+// TODO: figure out how to make this use bilinear pixel grabbing instead
+struct DirectionalBlurFilter {
+	GaussianKernel gk;
+	double xstep, ystep;
+	DirectionalBlurFilter(double angle, double sigma) :
+		gk(sigma)
+	{
+		xstep = cos(angle);
+		ystep = -sin(angle);
+	}
+	inline PixelFormat::A8 a8(BaseImage<PixelFormat::A8> &src, int x, int y)
+	{
+		int a = 0;
+		for (int t = -gk.width/2, i = 0; i < gk.width; t++, i++) {
+			//PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
+			PixelFormat::A8 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			a += srcpx.A() * gk.kernel[i];
+		}
+		PixelFormat::A8 res;
+		a = a / gk.divisor; if (a < 0) a = 0; if (a > 255) a = 255;
+		res.A() = a;
+		return res;
+	}
+	inline PixelFormat::cairo_rgb24 rgb24(BaseImage<PixelFormat::cairo_rgb24> &src, int x, int y)
+	{
+		int r = 0, g = 0, b = 0;
+		for (int t = -gk.width/2, i = 0; i < gk.width; t++, i++) {
+			//PixelFormat::cairo_rgb24 &srcpx = GetPixelBilinear<PixelFormat::cairo_rgb24, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
+			PixelFormat::cairo_rgb24 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			r += srcpx.R() * gk.kernel[i];
+			g += srcpx.G() * gk.kernel[i];
+			b += srcpx.B() * gk.kernel[i];
+		}
+		PixelFormat::cairo_rgb24 res;
+		r = r / gk.divisor; if (r < 0) r = 0; if (r > 255) r = 255;
+		g = g / gk.divisor; if (g < 0) g = 0; if (g > 255) g = 255;
+		b = b / gk.divisor; if (b < 0) b = 0; if (b > 255) b = 255;
+		res.R() = r;
+		res.G() = g;
+		res.B() = b;
+		return res;
+	}
+	inline PixelFormat::cairo_argb32 argb32(BaseImage<PixelFormat::cairo_argb32> &src, int x, int y)
+	{
+		int a = 0, r = 0, g = 0, b = 0;
+		for (int t = -gk.width/2, i = 0; i < gk.width; t++, i++) {
+			//PixelFormat::cairo_argb32 &srcpx = GetPixelBilinear<PixelFormat::cairo_argb32, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
+			PixelFormat::cairo_argb32 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			a += srcpx.A() * gk.kernel[i];
+			r += srcpx.R() * gk.kernel[i];
+			g += srcpx.G() * gk.kernel[i];
+			b += srcpx.B() * gk.kernel[i];
+		}
+		PixelFormat::cairo_argb32 res;
+		a = a / gk.divisor; if (a < 0) a = 0; if (a > 255) a = 255;
+		r = r / gk.divisor; if (r < 0) r = 0; if (r > 255) r = 255;
+		g = g / gk.divisor; if (g < 0) g = 0; if (g > 255) g = 255;
+		b = b / gk.divisor; if (b < 0) b = 0; if (b > 255) b = 255;
+		res.A() = a;
+		res.R() = r;
+		res.G() = g;
+		res.B() = b;
+		return res;
+	}};
+
+
+static int directional_blur(lua_State *L)
+{
+	cairo_surface_t *surf = CheckSurface(L, 1);
+	double angle = luaL_checknumber(L, 2);
+	double sigma = luaL_checknumber(L, 3);
+
+	DirectionalBlurFilter filter(angle, sigma);
+	ApplyGeneralFilter(L, surf, filter);
+
 	return 0;
 }
 
@@ -444,7 +595,7 @@ static int separable_filter(lua_State *L)
 // Registration
 
 static luaL_Reg rasterlib[] = {
-	{"gaussian_blur", gaussian_blur}, {"box_blur", box_blur},
+	{"gaussian_blur", gaussian_blur}, {"box_blur", box_blur}, {"directional_blur", directional_blur},
 	{"separable_filter", separable_filter},
 	{"invert", invert_image},
 	{NULL, NULL}

@@ -151,6 +151,12 @@ box filters over more general filters and using box blur over gaussian blur
 is probably no faster and might even be slower.
 
 
+raster.directional_blur(surface, angle, sigma)
+
+Apply a variable strength directional gaussian kernel blur to the image.
+Also known as motion blur. The angle is given in radians.
+
+
 raster.invert(surface)
 
 Invert the colour in the given surface.
