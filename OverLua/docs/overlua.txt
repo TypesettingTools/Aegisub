@@ -157,6 +157,11 @@ Apply a variable strength directional gaussian kernel blur to the image.
 Also known as motion blur. The angle is given in radians.
 
 
+raster.radial_blur(surface, cx, cy, sigma)
+
+Apply a variable strength radial gaussian blur centered on pixel (cx,cy).
+
+
 raster.invert(surface)
 
 Invert the colour in the given surface.

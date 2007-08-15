@@ -36,7 +36,7 @@ function render_frame(f, t)
 	ctx.text_path("OverLua")
 	ctx.fill()
 	
-	raster.gaussian_blur(surf, (1-math.cos(t*10))*2)
+	raster.directional_blur(surf, t, 5)
 	
 	f.overlay_cairo_surface(surf, 200, 50)
 end

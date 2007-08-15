@@ -477,7 +477,8 @@ struct DirectionalBlurFilter {
 		res.G() = g;
 		res.B() = b;
 		return res;
-	}};
+	}
+};
 
 
 static int directional_blur(lua_State *L)
@@ -487,6 +488,99 @@ static int directional_blur(lua_State *L)
 	double sigma = luaL_checknumber(L, 3);
 
 	DirectionalBlurFilter filter(angle, sigma);
+	ApplyGeneralFilter(L, surf, filter);
+
+	return 0;
+}
+
+
+struct RadialBlurFilter {
+	GaussianKernel gk;
+	int cx, cy;
+	RadialBlurFilter(int x, int y, double sigma) :
+		gk(sigma), cx(x), cy(y)
+	{
+	}
+	inline PixelFormat::A8 a8(BaseImage<PixelFormat::A8> &src, int x, int y)
+	{
+		if (x == cx && y == cy) return src.Pixel(x, y);
+		double xstep = x-cx, ystep = y-cy, ivlen = 1/sqrt(xstep*xstep+ystep*ystep);
+		xstep *= ivlen; ystep *= ivlen;
+		int divisor = 0;
+		int a = 0;
+		for (int t = 0, i = gk.width/2; i < gk.width; t++, i++) {
+			//PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
+			PixelFormat::A8 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			a += srcpx.A() * gk.kernel[i];
+			divisor += gk.kernel[i];
+		}
+		PixelFormat::A8 res;
+		a = a / divisor; if (a < 0) a = 0; if (a > 255) a = 255;
+		res.A() = a;
+		return res;
+	}
+	inline PixelFormat::cairo_rgb24 rgb24(BaseImage<PixelFormat::cairo_rgb24> &src, int x, int y)
+	{
+		if (x == cx && y == cy) return src.Pixel(x, y);
+		double xstep = x-cx, ystep = y-cy, ivlen = 1/sqrt(xstep*xstep+ystep*ystep);
+		xstep *= ivlen; ystep *= ivlen;
+		int divisor = 0;
+		int r = 0, g = 0, b = 0;
+		for (int t = 0, i = gk.width/2; i < gk.width; t++, i++) {
+			//PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
+			PixelFormat::cairo_rgb24 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			r += srcpx.R() * gk.kernel[i];
+			g += srcpx.G() * gk.kernel[i];
+			b += srcpx.B() * gk.kernel[i];
+			divisor += gk.kernel[i];
+		}
+		PixelFormat::cairo_rgb24 res;
+		r = r / divisor; if (r < 0) r = 0; if (r > 255) r = 255;
+		g = g / divisor; if (g < 0) g = 0; if (g > 255) g = 255;
+		b = b / divisor; if (b < 0) b = 0; if (b > 255) b = 255;
+		res.R() = r;
+		res.G() = g;
+		res.B() = b;
+		return res;
+	}
+	inline PixelFormat::cairo_argb32 argb32(BaseImage<PixelFormat::cairo_argb32> &src, int x, int y)
+	{
+		if (x == cx && y == cy) return src.Pixel(x, y);
+		double xstep = x-cx, ystep = y-cy, ivlen = 1/sqrt(xstep*xstep+ystep*ystep);
+		xstep *= ivlen; ystep *= ivlen;
+		int divisor = 0;
+		int a = 0, r = 0, g = 0, b = 0;
+		for (int t = 0, i = gk.width/2; i < gk.width; t++, i++) {
+			//PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
+			PixelFormat::cairo_argb32 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			a += srcpx.A() * gk.kernel[i];
+			r += srcpx.R() * gk.kernel[i];
+			g += srcpx.G() * gk.kernel[i];
+			b += srcpx.B() * gk.kernel[i];
+			divisor += gk.kernel[i];
+		}
+		PixelFormat::cairo_argb32 res;
+		a = a / divisor; if (a < 0) a = 0; if (a > 255) a = 255;
+		r = r / divisor; if (r < 0) r = 0; if (r > 255) r = 255;
+		g = g / divisor; if (g < 0) g = 0; if (g > 255) g = 255;
+		b = b / divisor; if (b < 0) b = 0; if (b > 255) b = 255;
+		res.A() = a;
+		res.R() = r;
+		res.G() = g;
+		res.B() = b;
+		return res;
+	}
+};
+
+
+static int radial_blur(lua_State *L)
+{
+	cairo_surface_t *surf = CheckSurface(L, 1);
+	int x = luaL_checkint(L, 2);
+	int y = luaL_checkint(L, 3);
+	double sigma = luaL_checknumber(L, 4);
+
+	RadialBlurFilter filter(x, y, sigma);
 	ApplyGeneralFilter(L, surf, filter);
 
 	return 0;
@@ -595,7 +689,8 @@ static int separable_filter(lua_State *L)
 // Registration
 
 static luaL_Reg rasterlib[] = {
-	{"gaussian_blur", gaussian_blur}, {"box_blur", box_blur}, {"directional_blur", directional_blur},
+	{"gaussian_blur", gaussian_blur}, {"box_blur", box_blur},
+	{"directional_blur", directional_blur}, {"radial_blur", radial_blur},
 	{"separable_filter", separable_filter},
 	{"invert", invert_image},
 	{NULL, NULL}
