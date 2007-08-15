@@ -543,7 +543,10 @@ void AudioBox::SetKaraokeButtons() {
 	join = audioKaraoke->enabled && (audioKaraoke->splitting || audioKaraoke->selectionCount>=2);
 	split = audioKaraoke->enabled;
 
-	audioDisplay->SetFocus();
+	// If we set focus here, the audio display will continually steal the focus
+	// when navigating via the grid and karaoke is enabled. So don't.
+	//audioDisplay->SetFocus();
+
 	JoinButton->Enable(join);
 	SplitButton->Enable(split);
 	if (audioKaraoke->splitting) {
