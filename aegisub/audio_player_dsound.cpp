@@ -362,8 +362,10 @@ void DirectSoundPlayer::Play(__int64 start,__int64 count) {
 void DirectSoundPlayer::Stop(bool timerToo) {
 	// Stop the thread
 	if (thread) {
-		thread->Stop();
-		thread->Wait();
+		if (thread->IsAlive()) {
+			thread->Stop();
+			thread->Wait();
+		}
 		thread = NULL;
 	}
 	// The thread is now guaranteed dead and there are no concurrency problems to worry about
