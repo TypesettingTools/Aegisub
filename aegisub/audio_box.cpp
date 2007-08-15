@@ -519,7 +519,6 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 		}
 		karaokeMode = false;
 		audioKaraoke->enabled = false;
-		SetKaraokeButtons();
 		audioDisplay->SetDialogue();
 		audioKaraoke->Refresh(false);
 	}
@@ -528,9 +527,9 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 		wxLogDebug(_T("AudioBox::OnKaraoke: karaoke disabled, enabling"));
 		karaokeMode = true;
 		audioKaraoke->enabled = true;
-		SetKaraokeButtons();
 		audioDisplay->SetDialogue();
 	}
+	SetKaraokeButtons();
 
 	wxLogDebug(_T("AudioBox::OnKaraoke: returning"));
 }

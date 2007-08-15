@@ -201,6 +201,10 @@ void AudioKaraoke::AutoSplit() {
 		newText += wxString::Format(_T("{\\k%i}"),curlen) + token;
 	}
 
+	// Workaround for bug #503
+	// Make the line one blank syllable if it's completely blank
+	if (newText == _T("")) newText = wxString::Format(_T("{\\k%d}"), timelen);
+
 	// Load
 	must_rebuild = true;
 	AssDialogue newDiag(diag->GetEntryData());
