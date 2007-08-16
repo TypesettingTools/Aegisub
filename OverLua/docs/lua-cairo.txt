@@ -290,3 +290,162 @@ maxx = path.fold_coords(
 			return maxx
 		end
 	end, nil)
+
+
+Enumeration mappings
+--------------------
+
+Everything represented by an enum in the cairo C API is represented by a
+string in the Lua API. Any enums not listed here don't have any mappings
+currently. (Which in turn means that any API requiring that enum is also
+unimplemented.)
+
+
+typedef enum _cairo_antialias {
+    CAIRO_ANTIALIAS_DEFAULT,                "default"
+    CAIRO_ANTIALIAS_NONE,                   "none"
+    CAIRO_ANTIALIAS_GRAY,                   "gray"
+    CAIRO_ANTIALIAS_SUBPIXEL                "subpixel"
+} cairo_antialias_t;
+
+typedef enum _cairo_fill_rule {
+    CAIRO_FILL_RULE_WINDING,                "winding"
+    CAIRO_FILL_RULE_EVEN_ODD                "even_odd"
+} cairo_fill_rule_t;
+
+typedef enum _cairo_line_cap {
+    CAIRO_LINE_CAP_BUTT,                    "butt"
+    CAIRO_LINE_CAP_ROUND,                   "round"
+    CAIRO_LINE_CAP_SQUARE                   "square"
+} cairo_line_cap_t;
+                               
+typedef enum _cairo_line_join {
+    CAIRO_LINE_JOIN_MITER,                  "miter"
+    CAIRO_LINE_JOIN_ROUND,                  "round"
+    CAIRO_LINE_JOIN_BEVEL                   "bevel"
+} cairo_line_join_t;
+                               
+typedef enum _cairo_operator {
+    CAIRO_OPERATOR_CLEAR,                   "clear"
+
+    CAIRO_OPERATOR_SOURCE,                  "source"
+    CAIRO_OPERATOR_OVER,                    "over"
+    CAIRO_OPERATOR_IN,                      "in"
+    CAIRO_OPERATOR_OUT,                     "out"
+    CAIRO_OPERATOR_ATOP,                    "atop"
+
+    CAIRO_OPERATOR_DEST,                    "dest"
+    CAIRO_OPERATOR_DEST_OVER,               "dest_over"
+    CAIRO_OPERATOR_DEST_IN,                 "dest_in"
+    CAIRO_OPERATOR_DEST_OUT,                "dest_out"
+    CAIRO_OPERATOR_DEST_ATOP,               "dest_atop"
+
+    CAIRO_OPERATOR_XOR,                     "xor"
+    CAIRO_OPERATOR_ADD,                     "add"
+    CAIRO_OPERATOR_SATURATE                 "saturate"
+} cairo_operator_t;
+                               
+typedef enum _cairo_path_data_type {
+    CAIRO_PATH_MOVE_TO,                     "move_to"
+    CAIRO_PATH_LINE_TO,                     "line_to"
+    CAIRO_PATH_CURVE_TO,                    "curve_to"
+    CAIRO_PATH_CLOSE_PATH                   "close"
+} cairo_path_data_type_t;
+
+typedef enum _cairo_extend {
+    CAIRO_EXTEND_NONE,                      "none"
+    CAIRO_EXTEND_REPEAT,                    "repeat"
+    CAIRO_EXTEND_REFLECT,                   "reflect"
+    CAIRO_EXTEND_PAD                        "pad"
+} cairo_extend_t;
+
+typedef enum _cairo_filter {
+    CAIRO_FILTER_FAST,                      "fast"
+    CAIRO_FILTER_GOOD,                      "good"
+    CAIRO_FILTER_BEST,                      "best"
+    CAIRO_FILTER_NEAREST,                   "nearest"
+    CAIRO_FILTER_BILINEAR,                  "bilinear"
+    CAIRO_FILTER_GAUSSIAN                   "gaussian"
+} cairo_filter_t;
+
+typedef enum _cairo_pattern_type {
+    CAIRO_PATTERN_TYPE_SOLID,               "solid"
+    CAIRO_PATTERN_TYPE_SURFACE,             "surface"
+    CAIRO_PATTERN_TYPE_LINEAR,              "linear"
+    CAIRO_PATTERN_TYPE_RADIAL               "radial"
+} cairo_pattern_type_t;
+
+typedef enum _cairo_font_slant {
+  CAIRO_FONT_SLANT_NORMAL,                  ""  (empty string)
+  CAIRO_FONT_SLANT_ITALIC,                  "italic"
+  CAIRO_FONT_SLANT_OBLIQUE                  "oblique"
+} cairo_font_slant_t;
+                               
+typedef enum _cairo_font_weight {
+  CAIRO_FONT_WEIGHT_NORMAL,                 ""  (empty string)
+  CAIRO_FONT_WEIGHT_BOLD                    "bold"
+} cairo_font_weight_t;
+
+typedef enum _cairo_subpixel_order {
+    CAIRO_SUBPIXEL_ORDER_DEFAULT,           "default"
+    CAIRO_SUBPIXEL_ORDER_RGB,               "rgb"
+    CAIRO_SUBPIXEL_ORDER_BGR,               "bgr"
+    CAIRO_SUBPIXEL_ORDER_VRGB,              "vrgb"
+    CAIRO_SUBPIXEL_ORDER_VBGR               "vbgr"
+} cairo_subpixel_order_t;
+                               
+typedef enum _cairo_hint_style {
+    CAIRO_HINT_STYLE_DEFAULT,               "default"
+    CAIRO_HINT_STYLE_NONE,                  "none"
+    CAIRO_HINT_STYLE_SLIGHT,                "slight"
+    CAIRO_HINT_STYLE_MEDIUM,                "medium"
+    CAIRO_HINT_STYLE_FULL                   "full"
+} cairo_hint_style_t;
+                               
+typedef enum _cairo_hint_metrics {
+    CAIRO_HINT_METRICS_DEFAULT,             "default"
+    CAIRO_HINT_METRICS_OFF,                 "on"
+    CAIRO_HINT_METRICS_ON                   "off"
+} cairo_hint_metrics_t;
+                               
+typedef enum _cairo_content {
+    CAIRO_CONTENT_COLOR,                    "c"
+    CAIRO_CONTENT_ALPHA,                    "a"
+    CAIRO_CONTENT_COLOR_ALPHA,              "ca"
+} cairo_content_t;
+Tnis enum and everything dependent on it is probably BROKEN.
+
+typedef enum _cairo_format {
+    CAIRO_FORMAT_ARGB32,                    "argb32"
+    CAIRO_FORMAT_RGB24,                     "rgb24"
+    CAIRO_FORMAT_A8,                        "a8"
+    CAIRO_FORMAT_A1,                        "a1"
+    /* CAIRO_FORMAT_RGB16_565               "rgb16_565"  (do not use) */
+} cairo_format_t;
+                               
+typedef enum _cairo_status {
+    CAIRO_STATUS_SUCCESS,                   "success"
+    CAIRO_STATUS_NO_MEMORY,                 "no_memory"
+    CAIRO_STATUS_INVALID_RESTORE,           "invalid_restore"
+    CAIRO_STATUS_INVALID_POP_GROUP,         "invalid_pop_group"
+    CAIRO_STATUS_NO_CURRENT_POINT,          "no_current_point"
+    CAIRO_STATUS_INVALID_MATRIX,            "invalid_matrix"
+    CAIRO_STATUS_INVALID_STATUS,            "invalid_status"
+    CAIRO_STATUS_NULL_POINTER,              "null_pointer"
+    CAIRO_STATUS_INVALID_STRING,            "invalid_string"
+    CAIRO_STATUS_INVALID_PATH_DATA,         "invalid_path_data"
+    CAIRO_STATUS_READ_ERROR,                "read_error"
+    CAIRO_STATUS_WRITE_ERROR,               "write_error"
+    CAIRO_STATUS_SURFACE_FINISHED,          "surface_finished"
+    CAIRO_STATUS_SURFACE_TYPE_MISMATCH,     "surface_type_mismatch"
+    CAIRO_STATUS_PATTERN_TYPE_MISMATCH,     "pattern_type_mismatch"
+    CAIRO_STATUS_INVALID_CONTENT,           "invalid_content"
+    CAIRO_STATUS_INVALID_FORMAT,            "invalid_format"
+    CAIRO_STATUS_INVALID_VISUAL,            "invalid_visual"
+    CAIRO_STATUS_FILE_NOT_FOUND,            "file_not_found"
+    CAIRO_STATUS_INVALID_DASH,              "invalid_dash"
+    CAIRO_STATUS_INVALID_DSC_COMMENT,       "invalid_dsc_comment"
+    CAIRO_STATUS_INVALID_INDEX,             "invalid_index"
+    CAIRO_STATUS_CLIP_NOT_REPRESENTABLE     "clip_not_representable"
+} cairo_status_t;
+
