@@ -73,7 +73,7 @@ static const char *operators_list[] = {
 	0 };
 static const char *font_slant_list[] = {"", "italic", "oblique", 0};
 static const char *font_weight_list[] = {"", "bold", 0};
-static const char *image_formats_list[] = {"argb32", "rgb24", "a8", "a1", "rgb16_565" 0};
+static const char *image_formats_list[] = {"argb32", "rgb24", "a8", "a1", "rgb16_565", 0};
 static const char *pattern_extend_list[] = {"none", "repeat", "reflect", "pad", 0};
 static const char *pattern_filter_list[] = {"fast", "good", "best", "nearest", "bilinear", "gaussian", 0};
 static const char *pattern_type_list[] = {"solid", "surface", "linear", "radial", 0};
