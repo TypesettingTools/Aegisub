@@ -810,14 +810,24 @@ void AudioDisplay::SetFile(wxString file) {
 	// Unload
 	if (file.IsEmpty()) {
 		wxLogDebug(_T("AudioDisplay::SetFile: file is empty, just closing audio"));
-		if (player) player->CloseStream();
+		try {
+			if (player) player->CloseStream();
+		}
+		catch (const wxChar *e) {
+			wxLogError(e);
+		}
 		delete provider;
 		delete player;
 		delete spectrumRenderer;
 		provider = NULL;
 		player = NULL;
 		spectrumRenderer = NULL;
-		Reset();
+		try {
+			Reset();
+		}
+		catch (const wxChar *e) {
+			wxLogError(e);
+		}
 
 		loaded = false;
 		temporary = false;
@@ -864,6 +874,11 @@ void AudioDisplay::SetFile(wxString file) {
 
 			// Update
 			UpdateImage();
+		}
+		catch (const wxChar *e) {
+			if (player) delete player;
+			if (provider) delete provider;
+			wxLogError(e);
 		}
 		catch (wxString &err) {
 			if (player) delete player;
