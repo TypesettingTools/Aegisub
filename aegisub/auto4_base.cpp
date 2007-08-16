@@ -146,24 +146,26 @@ namespace Automation4 {
 			for (unsigned int i = 0; i < text.length(); i++) {
 				int a, b, c, d;
 				thedc.GetTextExtent(text[i], &a, &b, &c, &d);
-				width += a + spacing;
-				height = b > height ? b : height;
-				descent = c > descent ? c : descent;
-				extlead= d > extlead ? d : extlead;
+				double scaling = fontsize / (double)(b>0?b:1); // semi-workaround for missing OS/2 table data for scaling
+				width += (a + spacing)*scaling;
+				height = b > height ? b*scaling : height;
+				descent = c > descent ? c*scaling : descent;
+				extlead = d > extlead ? d*scaling : extlead;
 			}
 		} else {
 			// If the inter-character spacing should be zero, kerning info can (and must) be used, so calculate everything in one go
 			long lwidth, lheight, ldescent, lextlead;
 			thedc.GetTextExtent(text, &lwidth, &lheight, &ldescent, &lextlead);
-			width = lwidth; height = lheight; descent = ldescent; extlead = lextlead;
+			double scaling = fontsize / (double)(lheight>0?lheight:1); // semi-workaround for missing OS/2 table data for scaling
+			width = lwidth*scaling; height = lheight*scaling; descent = ldescent*scaling; extlead = lextlead*scaling;
 		}
 #endif
 
 		// Compensate for scaling
 		width = style->scalex / 100 * width / 64;
-		height = style->scaley / 100 * height /64;
-		descent = style->scaley / 100 * descent /64;
-		extlead = style->scaley / 100 * extlead /64;
+		height = style->scaley / 100 * height / 64;
+		descent = style->scaley / 100 * descent / 64;
+		extlead = style->scaley / 100 * extlead / 64;
 
 		return true;
 	}
