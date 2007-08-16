@@ -808,7 +808,7 @@ void AudioDisplay::SetScale(float _scale) {
 void AudioDisplay::SetFile(wxString file) {
 	wxLogDebug(_T("AudioDisplay::SetFile(file=%s)"), file.c_str());
 	// Unload
-	if (file.IsEmpty()) {
+	if (file.IsEmpty()) try {
 		wxLogDebug(_T("AudioDisplay::SetFile: file is empty, just closing audio"));
 		try {
 			if (player) player->CloseStream();
@@ -832,6 +832,15 @@ void AudioDisplay::SetFile(wxString file) {
 		loaded = false;
 		temporary = false;
 		StandardPaths::SetPathValue(_T("?audio"),_T(""));
+	}
+	catch (wxString e) {
+		wxLogError(e);
+	}
+	catch (const wxChar *e) {
+		wxLogError(e);
+	}
+	catch (...) {
+		wxLogError(_T("Unknown error unloading audio"));
 	}
 
 	// Load
@@ -876,15 +885,20 @@ void AudioDisplay::SetFile(wxString file) {
 			UpdateImage();
 		}
 		catch (const wxChar *e) {
-			if (player) delete player;
-			if (provider) delete provider;
+			if (player) { delete player; player = 0; }
+			if (provider) { delete provider; provider = 0; }
 			wxLogError(e);
 		}
 		catch (wxString &err) {
-			if (player) delete player;
-			if (provider) delete provider;
+			if (player) { delete player; player = 0; }
+			if (provider) { delete provider; provider = 0; }
 			wxLogDebug(_T("AudioDisplay::SetFile: gotcha!"));
 			wxMessageBox(err,_T("Error loading audio"),wxICON_ERROR | wxOK);
+		}
+		catch (...) {
+			if (player) { delete player; player = 0; }
+			if (provider) { delete provider; provider = 0; }
+			wxLogError(_T("Unknown error loading audio"));
 		}
 	}
 	
