@@ -352,7 +352,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Select Match comments"),false);
 
 	SetText(_T("Color Picker Recent"), _T("&H000000& &H0000FF& &H00FFFF& &H00FF00& &HFFFF00& &HFF0000& &HFF00FF& &HFFFFFF&"));
-	SetInt(_T("Color Picker Mode"), 4);
+	SetInt(_T("Color Picker Mode"), 3);
 
 	SetText(_T("Last open subtitles path"),_T(""));
 	SetText(_T("Last open video path"),_T(""));
