@@ -137,10 +137,6 @@ ceil
 Takes one argument, produces one result.
 Round towards positive infinity.
 
-trunc
-Takes one argument, produces one result.
-Round towards zero.
-
 
 log
 Takes one argument, produces one result.
