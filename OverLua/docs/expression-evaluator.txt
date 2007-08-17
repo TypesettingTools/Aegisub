@@ -217,4 +217,10 @@ else return the third argument.
 Sample programs
 ---------------
 
-To be written. No functions in OverLua use the expression evaluator yet.
+For raster.pixel_value_map:
+
+"rand =t0 t0 =R t0 =G t0 =B"
+Create a field of random gray-values.
+
+"0 =R 1 G - =G"
+Zero out the red channel and invert the green channel.

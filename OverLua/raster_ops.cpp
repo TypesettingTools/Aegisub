@@ -30,6 +30,7 @@
 #include <omp.h>
 #include <stdint.h>
 
+#include "expression_engine.h"
 #include "raster_ops.h"
 #include "../lua51/src/lauxlib.h"
 
@@ -686,6 +687,82 @@ static int separable_filter(lua_State *L)
 }
 
 
+static int pixel_value_map(lua_State *L)
+{
+	cairo_surface_t *surf = CheckSurface(L, 1);
+	const char *program = luaL_checkstring(L, 2);
+
+	// Set up engine specs
+	ExpressionEngine::Specification spec;
+	spec.registers.resize(5);
+	spec.registers[0] = "R";
+	spec.registers[1] = "G";
+	spec.registers[2] = "B";
+	spec.registers[3] = "X";
+	spec.registers[4] = "Y";
+
+	// Compile program
+	ExpressionEngine::Machine machine;
+	try {
+		machine = ExpressionEngine::Machine(spec, program);
+	}
+	catch (const char *e) {
+		// This is a parse error
+		luaL_error(L, "Error in expression program near\"%s\"", e);
+	}
+
+	// Init image
+	cairo_surface_flush(surf);
+	int width = cairo_image_surface_get_width(surf);
+	int height = cairo_image_surface_get_height(surf);
+	ptrdiff_t stride = (ptrdiff_t)cairo_image_surface_get_stride(surf);
+	unsigned char *data = cairo_image_surface_get_data(surf);
+	cairo_format_t format = cairo_image_surface_get_format(surf);
+
+	if (format == CAIRO_FORMAT_ARGB32) {
+		BaseImage<PixelFormat::cairo_argb32> img(width, height, stride, data);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				PixelFormat::cairo_argb32 &p = img.Pixel(x, y);
+				machine.registers[0] = (double)p.R() / 255.0;
+				machine.registers[1] = (double)p.G() / 255.0;
+				machine.registers[2] = (double)p.B() / 255.0;
+				machine.registers[3] = x;
+				machine.registers[4] = y;
+				machine.Run();
+				p.R() = (uint8_t)(machine.registers[0] * 255);
+				p.G() = (uint8_t)(machine.registers[1] * 255);
+				p.B() = (uint8_t)(machine.registers[2] * 255);
+			}
+		}
+	}
+	else if (format == CAIRO_FORMAT_RGB24) {
+		BaseImage<PixelFormat::cairo_rgb24> img(width, height, stride, data);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				PixelFormat::cairo_rgb24 &p = img.Pixel(x, y);
+				machine.registers[0] = (double)p.R() / 255.0;
+				machine.registers[1] = (double)p.G() / 255.0;
+				machine.registers[2] = (double)p.B() / 255.0;
+				machine.registers[3] = x;
+				machine.registers[4] = y;
+				machine.Run();
+				p.R() = (uint8_t)(machine.registers[0] * 255);
+				p.G() = (uint8_t)(machine.registers[1] * 255);
+				p.B() = (uint8_t)(machine.registers[2] * 255);
+			}
+		}
+	}
+	else {
+		luaL_error(L, "Unsupported pixel format");
+	}
+
+	cairo_surface_mark_dirty(surf);
+
+	return 0;
+}
+
+
 // Registration
 
 static luaL_Reg rasterlib[] = {
@@ -693,6 +770,7 @@ static luaL_Reg rasterlib[] = {
 	{"directional_blur", directional_blur}, {"radial_blur", radial_blur},
 	{"separable_filter", separable_filter},
 	{"invert", invert_image},
+	{"pixel_value_map", pixel_value_map},
 	{NULL, NULL}
 };
 

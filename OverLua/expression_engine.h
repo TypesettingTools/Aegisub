@@ -105,6 +105,9 @@ namespace ExpressionEngine {
 
 		// Create a machine from a specification and a program source
 		Machine(const Specification &spec, const char *source);
+
+		// Create a blank machine
+		Machine() { }
 	};
 
 };

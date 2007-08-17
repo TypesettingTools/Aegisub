@@ -188,6 +188,25 @@ The filter is one-dimensional, but is applied first horizontally and then
 vertically ovre the image to get the final image.
 
 
+raster.pixel_value_map(surface, expression)
+
+Map an expression over every pixel RGB value in the surface. Only works for
+ARGB32 and RGB24 surfaces.
+
+The expression is an RPN expression in the OverLua Expression Evaluator
+language, see expression-evaluator.txt for details.
+
+No additional functions are made available to the expression evaluator by
+this function.
+
+The following new registers are made available to the expression evaluator:
+  R  In range 0..1, red component. Input and output.
+  G  Ditto, for green component.
+  B  Ditto, for blue component.
+  X  X-coordinate of pixel being processed. Input only.
+  Y  Y-coordinate of pixel being processed. Input only.
+
+
 More filtering functions are planned, though no specifics yet.
 
 Wishes/suggestions are welcome, and so are patches to add more functions.
