@@ -35,9 +35,6 @@
 
 #include "auto4_lua.h"
 #include "auto4_lua_scriptreader.h"
-#if WITH_AUTO3 == 1
-#include "auto4_auto3.h"
-#endif
 #include "ass_dialogue.h"
 #include "ass_style.h"
 #include "ass_file.h"
