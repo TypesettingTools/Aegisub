@@ -221,8 +221,8 @@ namespace Automation4 {
 		wxStaticText *task_display;
 		wxTextCtrl *debug_output;
 
-		bool debug_visible;
-		bool data_updated;
+		volatile bool debug_visible;
+		volatile bool data_updated;
 
 		float progress;
 		wxString task;
