@@ -201,11 +201,7 @@ namespace Automation4 {
 					lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
 					// So this is an auto3 script...
 					// Throw it as an exception, the script factory manager will catch this and use the auto3 script instead of this script object
-#if WITH_AUTO3 == 1
-					throw new Auto3Script(GetFilename());
-#else
-					throw _T("Attempted loading an Automation 3 script, but Automation 3 support is not available");
-#endif
+					throw _T("Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.");
 				}
 			}
 			lua_getglobal(L, "script_name");
