@@ -1,0 +1,224 @@
+Documentation for the RPN expression engine in OverLua
+======================================================
+
+For some graphics processing operationg, OverLua provides an RPN (Reverse
+Polish Notation) to do fast calculations. This expression engine is designed
+primarily to have very fast execution and be multithreading-safe in the
+runtime.
+
+The language is meant to support multi-variable calculations, so apart from
+the usual arithmetic operators there is also an assignment operator. Finally
+there is a limited number of temporary registers.
+
+There is no explicit Lua interface to the expression engine, rather it is
+implicitly used by some image processing functions. In those cases, a
+program is passed as a string to the image processing function.
+
+
+Stack machine execution model
+-----------------------------
+
+The expression evaluator is implemented as a stack machine with a number
+of registers. Some of these registers are used for input and/or output
+values and some are freely usable for temporary storage.
+
+The stack holds numbers in 'double' precision, this is the only data type
+supported by the machine. There are no practical limits on stack depth.
+
+The registers also hold numbers in 'double' precision. Depending on the
+function using the expression evaluator, different input/output registers
+will be available. The input/output registers will usually be single-letter
+names using uppercase letters. There are always exactly ten temporary
+registers available, named "t0" to "t9", ie. lowercase "t" followed by
+a digit. The contents of the temporary registers are undefined at the start
+of program execution.
+
+
+The program consists of a number of instructions executed sequentially. There
+are three basic types of instructions:
+ - push
+ - call
+ - store
+
+A 'push' instruction pushes a single number to the top of the stack. The
+source of the number can either be a constant or a register.
+
+A 'call' instruction pops some numbers from the stack, performs an operation
+on them and pushes a single number back onto the stack. This includes basic
+arithmetic operations such as addition, mulitiplication, but also functions
+such as sinus, rounding and logarithms. How many numbers are popped from the
+stack depends on the function.
+
+The 'store' instruction pops one number from the stack and stores it into
+a register, overwriting the previous number in the register.
+
+
+After every instruction in the program has been executed, any remaining numbers
+on the stack are discarded, and the numbers in the output registers are passed
+to the function using the expression evaluator.
+
+
+If a program operation attempt to pop a number from the stack when the stack
+is empty, the machine halts with an error state, and the result of the program
+is undefined.
+
+
+Expression syntax
+-----------------
+
+The syntax used to specify programs is very straightforward.
+
+The program consists of a number of tokens separated by whitespace. Each token
+translates into one instruction.
+
+
+A token can be a number. This translates into a 'push' instruction, pushing
+that number as a constant. The format for numbers is the same as in C.
+
+Examples: "1", "-5", "3.14", ".5" "2.998e8"
+
+
+A token can be a register name. This translates into a 'push' instruction,
+pushing the number in the register.
+
+Examples: "X", "Y", "t0", "t6"
+
+
+A token can be a basic arithmetic operator. These translate into 'call'
+instructions. Each of these represent a function that pops two numbers,
+performs the calculation and pushes the result.
+
+The basic arithmetic operators are: + - * / ^
+
+Examples:
+Suppose the two previous instructions were "A B" where A and B are registers.
+This means that now the stack contains B at the top and A just below.
+Operator "+" will then calculate "A + B". Operator "-" will calculate "A - B".
+Operator "*" will calculate "A * B". Operator "/" will calculate "A / B".
+Operator "^" will calculate "A ^ B", ie. A raised to the power of B.
+
+The result of illegal operations is undefined. It will most likely result in
+an invalid number being pushed onto the stack, and operating on that number
+will cause the error to propagate.
+
+
+A token matching the name of a defined function will translate into a 'call'
+instruction for the given function. A number of standard functions are always
+available, see below for details.
+
+
+An equal sign followed by the name of a register translated into a 'store'
+instruction, that will pop the number at the top of the stack and store it
+into the named register. There must not be any whitespace between the equal
+sign and the register name.
+
+Examples: "=X", "=t0"
+
+
+Standard function library
+-------------------------
+
+The following functions are always available in the machine.
+
+
+~  (tilde character)
+Takes one argument, produces one result.
+Unary minus. (Negate the argument.)
+
+abs
+Takes one argument, produces one result.
+Return the absolute value.
+
+floor
+Takes one argument, produces one result.
+Round towards negative infinity.
+
+ceil
+Takes one argument, produces one result.
+Round towards positive infinity.
+
+trunc
+Takes one argument, produces one result.
+Round towards zero.
+
+
+log
+Takes one argument, produces one result.
+Natural (base e) logarithm.
+
+exp
+Takes one argument, produces one result.
+Natural exponentiation. (e to the power of x.)
+
+sqrt
+Takes one argument, produces one result.
+Square root.
+
+e
+Takes no arguments, produces one result.
+Push the value of e.
+
+
+min
+Takes two arguments, produces one result.
+Return the smallest of the arguments.
+
+max
+Takes two arguments, produces one result.
+Return the largest of the arguments.
+
+
+pi
+Takes no arguments, produces one result.
+Push the value of pi.
+
+sin
+Takes one argument, produces one result.
+Sinus function. Argument in radians.
+
+cos
+Takes one argument, produces one result.
+Cosine function. Argument in radians.
+
+tan
+Takes one argument, produces one result.
+Tangent function. Argument in radians.
+
+asin
+Takes one argument, produces one result.
+Arc sinus function.
+
+acos
+Takes one argument, produces one result.
+Arc cosine function.
+
+atan
+Takes one argument, produces one result.
+Arc tangent function.
+
+
+mod
+Takes two arguments, produces one result.
+Modulo operation.
+
+
+rand
+Takes no arguments, produces one result.
+Return a random value in range 0..1.
+
+
+ifgtz
+Takes three arguments, produces one result.
+If the first argument is greater than zero, return the second argument,
+else return the third argument.
+
+ifeqz
+Takes three arguments, produces one result.
+If the first argument is equal to zero, return the second argument,
+else return the third argument.
+
+
+Sample programs
+---------------
+
+To be written. No functions in OverLua use the expression evaluator yet.

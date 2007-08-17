@@ -27,8 +27,8 @@ You can download the required runtime library at this location:
 
 <http://www.microsoft.com/downloads/details.aspx?FamilyID=200b2fd9-ae1a-4a14-984d-389c36f85647&DisplayLang=en>
 
-The DLL is built with SSE2 optimisations, meaning it will very likely crash
-if you attempt to use it on a computer without SSE2 support.
+The DLL is no longer built with SSE2. Appanrently some people still use
+CPU's without SSE2 support.
 
 Finally, the DLL is built with OpenMP optimisations enabled, which means it
 will take advantage of multi-core and other SMP systems if available. The
