@@ -224,3 +224,9 @@ Create a field of random gray-values.
 
 "0 =R 1 G - =G"
 Zero out the red channel and invert the green channel.
+
+
+For raster.pixel_coord_map:
+
+"X .5 rand - + =X  Y .5 rand - + =Y"
+Create some jitter in the pixels.

@@ -763,6 +763,73 @@ static int pixel_value_map(lua_State *L)
 }
 
 
+static int pixel_coord_map(lua_State *L)
+{
+	cairo_surface_t *surf = CheckSurface(L, 1);
+	const char *program = luaL_checkstring(L, 2);
+
+	// Set up engine specs
+	ExpressionEngine::Specification spec;
+	spec.registers.resize(2);
+	spec.registers[0] = "X";
+	spec.registers[1] = "Y";
+
+	// Compile program
+	ExpressionEngine::Machine machine;
+	try {
+		machine = ExpressionEngine::Machine(spec, program);
+	}
+	catch (const char *e) {
+		// This is a parse error
+		luaL_error(L, "Error in expression program near\"%s\"", e);
+	}
+
+	// Init image
+	cairo_surface_flush(surf);
+	int width = cairo_image_surface_get_width(surf);
+	int height = cairo_image_surface_get_height(surf);
+	ptrdiff_t stride = (ptrdiff_t)cairo_image_surface_get_stride(surf);
+	unsigned char *data = cairo_image_surface_get_data(surf);
+	cairo_format_t format = cairo_image_surface_get_format(surf);
+
+	unsigned char *work = new unsigned char[height * stride];
+	memcpy(work, data, height*stride);
+
+	if (format == CAIRO_FORMAT_ARGB32) {
+		BaseImage<PixelFormat::cairo_argb32> simg(width, height, stride, work);
+		BaseImage<PixelFormat::cairo_argb32> dimg(width, height, stride, data);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				machine.registers[0] = x;
+				machine.registers[1] = y;
+				machine.Run();
+				dimg.Pixel(x, y) = GetPixelBilinear<PixelFormat::cairo_argb32, EdgeCondition::Mirror<PixelFormat::cairo_argb32> >(simg, machine.registers[0], machine.registers[1]);
+			}
+		}
+	}
+	else if (format == CAIRO_FORMAT_RGB24) {
+		BaseImage<PixelFormat::cairo_rgb24> simg(width, height, stride, work);
+		BaseImage<PixelFormat::cairo_rgb24> dimg(width, height, stride, data);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				machine.registers[0] = x;
+				machine.registers[1] = y;
+				machine.Run();
+				dimg.Pixel(x, y) = GetPixelBilinear<PixelFormat::cairo_rgb24, EdgeCondition::Mirror<PixelFormat::cairo_rgb24> >(simg, machine.registers[0], machine.registers[1]);
+			}
+		}
+	}
+	else {
+		luaL_error(L, "Unsupported pixel format");
+	}
+
+	delete[] work;
+	cairo_surface_mark_dirty(surf);
+
+	return 0;
+}
+
+
 // Registration
 
 static luaL_Reg rasterlib[] = {
@@ -770,7 +837,7 @@ static luaL_Reg rasterlib[] = {
 	{"directional_blur", directional_blur}, {"radial_blur", radial_blur},
 	{"separable_filter", separable_filter},
 	{"invert", invert_image},
-	{"pixel_value_map", pixel_value_map},
+	{"pixel_value_map", pixel_value_map}, {"pixel_coord_map", pixel_coord_map},
 	{NULL, NULL}
 };
 

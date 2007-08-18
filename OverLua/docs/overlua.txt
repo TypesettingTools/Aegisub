@@ -207,6 +207,23 @@ The following new registers are made available to the expression evaluator:
   Y  Y-coordinate of pixel being processed. Input only.
 
 
+raster.pixel_coord_map(surface, expression)
+
+Map each pixel coordinate pair to a new coordinate pair in the surface. Only
+works for ARGB32 and RGB24 surfaces.
+
+The expression is an RPN expression in the OverLua Expression Evaluator
+language, see expression-evaluator.txt for details.
+
+No additional functions are made available to the expression evaluator by
+this function.
+
+The following new registers are made available to the expression evaluator:
+  X  Absolute pixel X coordinate. Input and output. The output may be
+     non-integer, in that case bilinear interpolation is used.
+  Y Ditto, for Y coordinate.
+
+
 More filtering functions are planned, though no specifics yet.
 
 Wishes/suggestions are welcome, and so are patches to add more functions.
