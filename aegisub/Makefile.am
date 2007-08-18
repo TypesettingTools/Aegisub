@@ -168,6 +168,7 @@ aegisub_SOURCES = \
 	frame_main_events.cpp \
 	gl_text.cpp \
 	gl_wrap.cpp \
+	help_button.cpp \
 	hilimod_textctrl.cpp \
 	hotkeys.cpp \
 	idle_field_event.cpp \

@@ -48,6 +48,7 @@
 #include "options.h"
 #include "subs_grid.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -160,7 +161,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
 	buttonSizer->SetCancelButton(new wxButton(this, wxID_CLOSE));
-	buttonSizer->AddButton(new wxButton(this,wxID_HELP));
+	buttonSizer->AddButton(new HelpButton(this,_T("style_manager")));
 	buttonSizer->Realize();
 
 	// General layout
