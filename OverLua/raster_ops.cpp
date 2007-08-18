@@ -429,8 +429,8 @@ struct DirectionalBlurFilter {
 	{
 		int a = 0;
 		for (int t = -gk.width/2, i = 0; i < gk.width; t++, i++) {
-			//PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
-			PixelFormat::A8 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::Repeat<PixelFormat::A8> >(src, x+xstep*t, y+ystep*t);
+			//PixelFormat::A8 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
 			a += srcpx.A() * gk.kernel[i];
 		}
 		PixelFormat::A8 res;
@@ -442,8 +442,8 @@ struct DirectionalBlurFilter {
 	{
 		int r = 0, g = 0, b = 0;
 		for (int t = -gk.width/2, i = 0; i < gk.width; t++, i++) {
-			//PixelFormat::cairo_rgb24 &srcpx = GetPixelBilinear<PixelFormat::cairo_rgb24, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
-			PixelFormat::cairo_rgb24 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			PixelFormat::cairo_rgb24 &srcpx = GetPixelBilinear<PixelFormat::cairo_rgb24, EdgeCondition::Repeat<PixelFormat::cairo_rgb24> >(src, x+xstep*t, y+ystep*t);
+			//PixelFormat::cairo_rgb24 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
 			r += srcpx.R() * gk.kernel[i];
 			g += srcpx.G() * gk.kernel[i];
 			b += srcpx.B() * gk.kernel[i];
@@ -461,8 +461,8 @@ struct DirectionalBlurFilter {
 	{
 		int a = 0, r = 0, g = 0, b = 0;
 		for (int t = -gk.width/2, i = 0; i < gk.width; t++, i++) {
-			//PixelFormat::cairo_argb32 &srcpx = GetPixelBilinear<PixelFormat::cairo_argb32, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
-			PixelFormat::cairo_argb32 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			PixelFormat::cairo_argb32 &srcpx = GetPixelBilinear<PixelFormat::cairo_argb32, EdgeCondition::Repeat<PixelFormat::cairo_argb32> >(src, x+xstep*t, y+ystep*t);
+			//PixelFormat::cairo_argb32 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
 			a += srcpx.A() * gk.kernel[i];
 			r += srcpx.R() * gk.kernel[i];
 			g += srcpx.G() * gk.kernel[i];
@@ -510,8 +510,8 @@ struct RadialBlurFilter {
 		int divisor = 0;
 		int a = 0;
 		for (int t = 0, i = gk.width/2; i < gk.width; t++, i++) {
-			//PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
-			PixelFormat::A8 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::Repeat<PixelFormat::A8> >(src, x+xstep*t, y+ystep*t);
+			//PixelFormat::A8 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
 			a += srcpx.A() * gk.kernel[i];
 			divisor += gk.kernel[i];
 		}
@@ -528,8 +528,8 @@ struct RadialBlurFilter {
 		int divisor = 0;
 		int r = 0, g = 0, b = 0;
 		for (int t = 0, i = gk.width/2; i < gk.width; t++, i++) {
-			//PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
-			PixelFormat::cairo_rgb24 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			PixelFormat::cairo_rgb24 &srcpx = GetPixelBilinear<PixelFormat::cairo_rgb24, EdgeCondition::Repeat<PixelFormat::cairo_rgb24> >(src, x+xstep*t, y+ystep*t);
+			//PixelFormat::cairo_rgb24 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
 			r += srcpx.R() * gk.kernel[i];
 			g += srcpx.G() * gk.kernel[i];
 			b += srcpx.B() * gk.kernel[i];
@@ -552,8 +552,8 @@ struct RadialBlurFilter {
 		int divisor = 0;
 		int a = 0, r = 0, g = 0, b = 0;
 		for (int t = 0, i = gk.width/2; i < gk.width; t++, i++) {
-			//PixelFormat::A8 &srcpx = GetPixelBilinear<PixelFormat::A8, EdgeCondition::repeat>(src, x+xstep*t, y+ystep*t);
-			PixelFormat::cairo_argb32 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
+			PixelFormat::cairo_argb32 &srcpx = GetPixelBilinear<PixelFormat::cairo_argb32, EdgeCondition::Repeat<PixelFormat::cairo_argb32> >(src, x+xstep*t, y+ystep*t);
+			//PixelFormat::cairo_argb32 &srcpx = EdgeCondition::repeat(src, (int)(x+xstep*t), (int)(y+ystep*t));
 			a += srcpx.A() * gk.kernel[i];
 			r += srcpx.R() * gk.kernel[i];
 			g += srcpx.G() * gk.kernel[i];

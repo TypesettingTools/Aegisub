@@ -588,66 +588,74 @@ typedef BaseImageAggregateImpl<PixelFormat::ABGR> ImageABGR;
 // Access pixels with various edge conditions
 namespace EdgeCondition {
 	template<class PixFmt>
-	inline PixFmt &blackness(BaseImage<PixFmt> &img, int x, int y)
-	{
-		if (x < 0 || y < 0 || x >= img.width || x >= img.height) {
-			return PixFmt(); // all construct with all zeroes
-		} else {
+	struct Blackness {
+		static inline PixFmt &get(BaseImage<PixFmt> &img, int x, int y)
+		{
+			if (x < 0 || y < 0 || x >= img.width || x >= img.height) {
+				return PixFmt(); // all construct with all zeroes
+			} else {
+				return img.Pixel(x,y);
+			}
+		}
+	};
+
+	template<class PixFmt>
+	struct Closest {
+		static inline PixFmt &get(BaseImage<PixFmt> &img, int x, int y)
+		{
+			if (x < 0) x = 0;
+			if (y < 0) y = 0;
+			if (x >= img.width) x = img.width-1;
+			if (y >= img.height) y = img.height - 1;
 			return img.Pixel(x,y);
 		}
-	}
+	};
 
 	template<class PixFmt>
-	inline PixFmt &closest(BaseImage<PixFmt> &img, int x, int y)
-	{
-		if (x < 0) x = 0;
-		if (y < 0) y = 0;
-		if (x >= img.width) x = img.width-1;
-		if (y >= img.height) y = img.height - 1;
-		return img.Pixel(x,y);
-	}
+	struct Repeat {
+		static inline PixFmt &get(BaseImage<PixFmt> &img, int x, int y)
+		{
+			while (x < 0) x += img.width;
+			while (y < 0) y += img.height;
+			while (x >= img.width) x -= img.width;
+			while (y >= img.height) y -= img.height;
+			return img.Pixel(x,y);
+		}
+	};
 
 	template<class PixFmt>
-	inline PixFmt &repeat(BaseImage<PixFmt> &img, int x, int y)
-	{
-		while (x < 0) x += img.width;
-		while (y < 0) y += img.height;
-		while (x >= img.width) x -= img.width;
-		while (y >= img.height) y -= img.height;
-		return img.Pixel(x,y);
-	}
-
-	template<class PixFmt>
-	inline PixFmt &mirror(BaseImage<PixFmt> &img, int x, int y)
-	{
-		while (x < 0) x += img.width*2;
-		while (y < 0) y += img.height*2;
-		while (x >= img.width*2) x -= img.width*2;
-		while (y >= img.height*2) y -= img.height*2;
-		if (x >= img.width) x = img.width - x;
-		if (y >= img.height) y = img.height - y;
-		return img.Pixel(x,y);
-	}
+	struct Mirror {
+		static inline PixFmt &get(BaseImage<PixFmt> &img, int x, int y)
+		{
+			while (x < 0) x += img.width*2;
+			while (y < 0) y += img.height*2;
+			while (x >= img.width*2) x -= img.width*2;
+			while (y >= img.height*2) y -= img.height*2;
+			if (x >= img.width) x = img.width - x;
+			if (y >= img.height) y = img.height - y;
+			return img.Pixel(x,y);
+		}
+	};
 }
 
 
 // FIXME: this is completely broken, the compiler won't accept it
 // when instantiated with one of the EdgeCondition functions for EdgeCond
-template<class PixFmt, class EdgeCond>
+template<class PixFmt, typename EdgeCond>
 inline PixFmt GetPixelBilinear(BaseImage<PixFmt> &img, double x, double y)
 {
 	PixFmt res;
 	double xpct = x - floor(x), ypct = y - floor(y);
 
-	const PixFmt &src11 = EdgeCond(img, (int)x, (int)y);
-	const PixFmt &src12 = EdgeCond(img, (int)x, 1+(int)y);
-	const PixFmt &src21 = EdgeCond(img, 1+(int)x, (int)y);
-	const PixFmt &src22 = EdgeCond(img, 1+(int)x, 1+(int)y);
+	const PixFmt &src11 = EdgeCond::get(img, (int)x, (int)y);
+	const PixFmt &src12 = EdgeCond::get(img, (int)x, 1+(int)y);
+	const PixFmt &src21 = EdgeCond::get(img, 1+(int)x, (int)y);
+	const PixFmt &src22 = EdgeCond::get(img, 1+(int)x, 1+(int)y);
 
-	res.R() += (1-xpct) * (1-ypct) * src11.R() + (1-xpct) * ypct * src12.R() + xpct * (1-ypct) * src21.R() + xpct * ypct * src22.R();
-	res.G() += (1-xpct) * (1-ypct) * src11.G() + (1-xpct) * ypct * src12.G() + xpct * (1-ypct) * src21.G() + xpct * ypct * src22.G();
-	res.B() += (1-xpct) * (1-ypct) * src11.B() + (1-xpct) * ypct * src12.B() + xpct * (1-ypct) * src21.B() + xpct * ypct * src22.B();
-	res.A() += (1-xpct) * (1-ypct) * src11.A() + (1-xpct) * ypct * src12.A() + xpct * (1-ypct) * src21.A() + xpct * ypct * src22.A();
+	res.R() = (1-xpct) * (1-ypct) * src11.R() + (1-xpct) * ypct * src12.R() + xpct * (1-ypct) * src21.R() + xpct * ypct * src22.R();
+	res.G() = (1-xpct) * (1-ypct) * src11.G() + (1-xpct) * ypct * src12.G() + xpct * (1-ypct) * src21.G() + xpct * ypct * src22.G();
+	res.B() = (1-xpct) * (1-ypct) * src11.B() + (1-xpct) * ypct * src12.B() + xpct * (1-ypct) * src21.B() + xpct * ypct * src22.B();
+	res.A() = (1-xpct) * (1-ypct) * src11.A() + (1-xpct) * ypct * src12.A() + xpct * (1-ypct) * src21.A() + xpct * ypct * src22.A();
 
 	return res;
 }
