@@ -43,6 +43,7 @@
 #include "options.h"
 #include "subs_grid.h"
 #include "utils.h"
+#include "ass_dialogue.h"
 
 
 ////////////////////////
@@ -242,6 +243,10 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	bool numMode = false;			// everything is considered a number/parameter until this is unset
 	bool drawingMode = false;		// for \p1 -> \p0 stuff
 
+	// Check if it's a template line
+	AssDialogue *diag = control->grid->GetDialogue(control->linen);
+	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("template"));
+
 	// Begin styling
 	StartStyling(0,255);
 	int ran = 0;		// length of current range
@@ -292,7 +297,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		}
 
 		// Karaoke template block
-		else if (curChar == _T('!')) {
+		else if (templateLine && curChar == _T('!')) {
 			// Apply previous style
 			SetUnicodeStyling(curPos,ran,curStyle);
 			curPos += ran;
@@ -306,7 +311,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			i = endPos+0;
 		}
 		// Karaoke template variable
-		else if (curChar == _T('$')) {
+		else if (templateLine && curChar == _T('$')) {
 			// Apply previous style
 			SetUnicodeStyling(curPos,ran,curStyle);
 			curPos += ran;
