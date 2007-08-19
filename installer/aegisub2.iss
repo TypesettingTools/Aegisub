@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 Release Candidate 1"
+#define MyAppVerName "Aegisub 2.00 alpha r1515"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -18,88 +18,154 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=true
 OutputDir=output
-OutputBaseFilename=Aegisub2-RC1-setup
-Compression=lzma/ultra
+OutputBaseFilename=Aegisub 2.00 alpha r1515 setup
+Compression=lzma/ultra64
 SolidCompression=true
-; Prevent from installing on Win9x and earlier than 2k
-MinVersion=0.0,5.0
+MinVersion=0,5.0.2195
 ShowLanguageDialog=no
 LanguageDetectionMethod=none
 WizardImageFile=welcome.bmp
 WizardSmallImageFile=aegisub.bmp
+AppCopyright=© 2005-2007 The Aegisub Team
+PrivilegesRequired=poweruser
+DisableProgramGroupPage=true
+UsePreviousGroup=false
+AlwaysShowComponentsList=true
+AppVersion=2.00 Release Candidate 1
+AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
+UninstallDisplayIcon={app}\Aegisub.exe
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
 
-[Tasks]
-Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
-
 [Files]
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-DestDir: {app}; Source: install\Aegisub.exe; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\readme.txt; Flags: isreadme ignoreversion; Components: main
+; redist
+;DestDir: {tmp}; Source: redist\vcredist_x86.exe; Flags: dontcopy nocompression; Components: main/runtime
+; main
+DestDir: {app}; Source: install\Aegisub.exe; Flags: ignoreversion nocompression; Components: main
+DestDir: {app}; Source: install\Aegisub.pdb; Flags: ignoreversion; Components: main/pdb
 DestDir: {app}; Source: install\changelog.txt; Flags: ignoreversion; Tasks: ; Components: main
 DestDir: {app}; Source: install\license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
-DestDir: {app}; Source: install\wxbase28u_net_vc_aegisub.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\wxbase28u_vc_aegisub.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\wxbase28u_xml_vc_aegisub.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\wxmsw28u_adv_vc_aegisub.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\wxmsw28u_core_vc_aegisub.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\wxmsw28u_gl_vc_aegisub.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\wxmsw28u_richtext_vc_aegisub.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\wxmsw28u_stc_vc_aegisub.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\lua51.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\aegisub-auto3.dll; Flags: ignoreversion; Components: main auto/auto3
-DestDir: {app}\csri; Source: install\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
-DestDir: {app}\automation\include; Source: install\automation\include\utils.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\utils-auto4.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\utils.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\unicode.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.lua; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-auto4.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.lua; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\demos; Source: install\automation\demos\future-windy-blur.lua; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\kara-templater.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\line-per-syllable.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\multi-template.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\simple-k-replacer.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\docs; Source: install\automation\docs\automation3.txt; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}; Source: install\aegisub-auto3.dll; Flags: ignoreversion; Components: main
+; avisynth
 DestDir: {app}; Source: redist\avisynth\devil.dll; Flags: ignoreversion; Components: codec/avisynth
 DestDir: {app}; Source: redist\avisynth\avisynth.dll; Flags: ignoreversion; Components: codec/avisynth
 DestDir: {app}; Source: redist\avisynth\DirectShowSource.dll; Flags: ignoreversion; Components: codec/avisynth
-Source: redist\vcredist_x86.exe; DestDir: {sys}; Flags: dontcopy; Components: 
+; ffmpegsource
+DestDir: {app}; Source: install\FFMpegSource.dll; Flags: ignoreversion; Components: codec/ffmpegsource
+DestDir: {app}; Source: install\avcodec-51.dll; Flags: ignoreversion; Components: codec/ffmpegsource
+DestDir: {app}; Source: install\avformat-51.dll; Flags: ignoreversion; Components: codec/ffmpegsource
+DestDir: {app}; Source: install\avutil-49.dll; Flags: ignoreversion; Components: codec/ffmpegsource
+DestDir: {app}; Source: install\postproc-51.dll; Flags: ignoreversion; Components: codec/ffmpegsource
+DestDir: {app}; Source: install\swscale-0.dll; Flags: ignoreversion; Components: codec/ffmpegsource
+; vsfilter
+DestDir: {app}\csri; Source: install\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
+; auto4 main
+DestDir: {app}\automation\include; Source: install\automation\include\utils.lua; Flags: ignoreversion; Components: auto/lua
+DestDir: {app}\automation\include; Source: install\automation\include\utils-auto4.lua; Flags: ignoreversion; Components: auto/lua
+DestDir: {app}\automation\include; Source: install\automation\include\unicode.lua; Flags: ignoreversion; Components: auto/lua
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel.lua; Flags: ignoreversion; Components: auto/lua
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-auto4.lua; Flags: ignoreversion; Components: auto/lua
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\kara-templater.lua; Flags: ignoreversion; Components: auto/lua
+; auto4 samples
+DestDir: {app}\automation\demos; Source: install\automation\demos\future-windy-blur.lua; Flags: ignoreversion; Components: auto/lua/samples
+DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion; Components: auto/lua/samples
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion; Components: auto/lua/samples
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion; Components: auto/lua/samples
+; auto3
+DestDir: {app}\automation\include; Source: install\automation\include\utils.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.lua; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.lua; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\line-per-syllable.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\multi-template.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\simple-k-replacer.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\docs; Source: install\automation\docs\automation3.txt; Flags: ignoreversion; Components: auto/auto3
+; dictionaries
+Source: install\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_AT
+Source: install\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
+Source: install\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
+Source: install\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
+Source: install\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
+Source: install\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
+Source: install\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
+Source: install\dictionaries\es_ES.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
+Source: install\dictionaries\es_ES.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
+Source: install\dictionaries\fr_FR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
+Source: install\dictionaries\fr_FR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
+Source: install\dictionaries\it_IT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/it_IT
+Source: install\dictionaries\it_IT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/it_IT
+Source: install\dictionaries\nl_NL.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/nl_NL
+Source: install\dictionaries\nl_NL.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/nl_NL
+Source: install\dictionaries\pl_PL.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pl_PL
+Source: install\dictionaries\pl_PL.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pl_PL
+Source: install\dictionaries\pt_BR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
+Source: install\dictionaries\pt_BR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
+Source: install\dictionaries\pt_PT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
+Source: install\dictionaries\pt_PT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
+Source: install\dictionaries\sk_SK.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
+Source: install\dictionaries\sk_SK.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
+Source: install\dictionaries\sl_SI.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
+Source: install\dictionaries\sl_SI.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
+Source: install\dictionaries\sv_SE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
+Source: install\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
+Source: install\dictionaries\sw_KE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sw_KE
+Source: install\dictionaries\sw_KE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sw_KE
+; thesaurii
+Source: install\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
+Source: install\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
+Source: install\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
+Source: install\dictionaries\th_en_US.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
+Source: install\dictionaries\th_es_ES.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
+Source: install\dictionaries\th_es_ES.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
+Source: install\dictionaries\th_fr_FR.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
+Source: install\dictionaries\th_fr_FR.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
+Source: install\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
+Source: install\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
 
 [Icons]
-Name: {group}\{#MyAppName}; Filename: {app}\{#MyAppExeName}
-Name: {group}\{cm:ProgramOnTheWeb,{#MyAppName}}; Filename: {#MyAppURL}
-Name: {group}\{cm:UninstallProgram,{#MyAppName}}; Filename: {uninstallexe}
-Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desktopicon
+Name: {commonprograms}\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main; Comment: Aegisub subtitle editor
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-Filename: {sys}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2005 runtime libraries; Components: main/runtime; Tasks: ; Languages: 
+;Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2005 runtime libraries...; Components: main/runtime; Parameters: /Q
+
 [Components]
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
-Name: main/runtime; Description: Runtime libraries; Flags: fixed
+;Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
+Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
 Name: codec/avisynth; Description: Avisynth 2.56a; Flags: fixed; Types: custom compact full
-Name: codec/ffmpegsource; Description: FFmpegSource; Types: full
+Name: codec/ffmpegsource; Description: FFmpegSource; Types: full compact custom; Flags: fixed
 Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full custom; Flags: fixed
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages: 
 Name: auto/lua/samples; Description: Lua sample scripts; Types: full
-Name: auto/auto3; Description: Automation 3 backwards compatibility
-Name: help; Description: Help files; Types: full
-Name: i18n; Description: Languages; Types: full
-Name: i18n/english; Description: English; Flags: fixed; Types: compact full custom
-Name: i18n/german; Description: German; Types: full
-Name: dic; Description: Spell checker and thesaurus; Types: full
-Name: dic/english; Description: English dictionary and thesaurus; Types: full
-Name: dic/german; Description: German dictionary and thesaurus; Types: full
+Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
+Name: help; Description: Help files (not written yet); Flags: fixed
+Name: i18n; Description: Languages; Types: full custom compact; Flags: fixed
+Name: i18n/english; Description: English (built in); Flags: fixed; Types: compact full custom
+Name: dic; Description: Spell checker; Types: full
+Name: dic/en_GB; Description: British English dictionary; Types: full
+Name: dic/en_US; Description: American English dictionary; Types: full
+Name: dic/nl_NL; Description: Dutch dictionary; Types: full
+Name: dic/fr_FR; Description: French dictionary; Types: full
+Name: dic/de_DE; Description: German dictionary; Types: full
+Name: dic/de_AT; Description: Austrian German dictionary; Types: full
+Name: dic/it_IT; Description: Italian dictionary; Types: full
+Name: dic/es_ES; Description: Estonian dictionary; Types: full
+Name: dic/pl_PL; Description: Polish dictionary; Types: full
+Name: dic/pt_PT; Description: Portuguese dictionary; Types: full
+Name: dic/pt_BR; Description: Brazilian Portuguese dictionary; Types: full
+Name: dic/sk_SK; Description: Slovak dictionary; Types: full
+Name: dic/sl_SI; Description: Slovenian dictionary; Types: full
+Name: dic/sw_KE; Description: Swahili dictionary; Types: full
+Name: dic/sv_SE; Description: Swedish dictionary; Types: full
+Name: th; Description: Thesaurus; Types: full
+Name: th/en_US; Description: American English thesaurus; Types: full
+Name: th/es_ES; Description: Estonian thesaurus; Types: full
+Name: th/fr_FR; Description: French thesaurus; Types: full
+Name: th/de_DE; Description: German thesaurus; Types: full
+Name: th/it_IT; Description: Italian thesaurus; Types: full
