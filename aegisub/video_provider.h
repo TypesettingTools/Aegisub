@@ -96,6 +96,7 @@ public:
 	virtual void OverrideFrameTimeList(wxArrayInt list) {}	// Override the list with the provided one, for VFR handling
 	virtual bool IsNativelyByFrames() { return false; }
 	virtual wxString GetWarning() { return _T(""); }
+	virtual wxString GetDecoderName() { return _("Unknown"); }
 };
 
 
