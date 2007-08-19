@@ -105,7 +105,7 @@ static int LuaTextExtents(lua_State *L)
 	fontname = lua_tostring(L, -1);
 
 	lua_pushstring(L, "fontsize"); lua_gettable(L, 1);
-	fontsize = lua_tonumber(L, -1);
+	fontsize = (int)lua_tonumber(L, -1);
 
 	lua_pushstring(L, "bold"); lua_gettable(L, 1);
 	bold = lua_toboolean(L, -1);
@@ -114,16 +114,16 @@ static int LuaTextExtents(lua_State *L)
 	italic = lua_toboolean(L, -1);
 
 	lua_pushstring(L, "scale_x"); lua_gettable(L, 1);
-	scale_x = lua_tonumber(L, -1);
+	scale_x = (float)lua_tonumber(L, -1);
 
 	lua_pushstring(L, "scale_y"); lua_gettable(L, 1);
-	scale_y = lua_tonumber(L, -1);
+	scale_y = (float)lua_tonumber(L, -1);
 
 	lua_pushstring(L, "spacing"); lua_gettable(L, 1);
-	spacing = lua_tonumber(L, -1);
+	spacing = (int)lua_tonumber(L, -1);
 
 	lua_pushstring(L, "encoding"); lua_gettable(L, 1);
-	encoding = lua_tonumber(L, -1);
+	encoding = (int)lua_tonumber(L, -1);
 
 	// get measurements
 	script->cb.text_extents(script->cb.rundata, text, fontname, fontsize, bold, italic,
