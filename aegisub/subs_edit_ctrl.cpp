@@ -245,7 +245,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 	// Check if it's a template line
 	AssDialogue *diag = control->grid->GetDialogue(control->linen);
-	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("template"));
+	bool templateLine = diag && diag->Comment && (diag->Effect.Lower().StartsWith(_T("template")) || diag->Effect.Lower().StartsWith(_T("code")));
 
 	// Begin styling
 	StartStyling(0,255);
