@@ -66,6 +66,7 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	field.Add(_("Text"));
 	field.Add(_("Style"));
 	field.Add(_("Actor"));
+	field.Add(_("Effect"));
 	Field = new wxRadioBox(this,-1,_("In Field"),wxDefaultPosition,wxDefaultSize,field);
 
 	// Dialogues/comments box
@@ -149,6 +150,7 @@ bool DialogSelection::StringMatches(AssDialogue *diag) {
 	if (field == 0) text = diag->Text;
 	else if (field == 1) text = diag->Style;
 	else if (field == 2) text = diag->Actor;
+	else if (field == 3) text = diag->Effect;
 
 	// RegExp?
 	bool isReg = false;
