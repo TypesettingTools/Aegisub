@@ -242,6 +242,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		// Some other format, such as mkv, mp4, ogm... try FFMpegSource and DirectShowSource
 		else {
 			// Try loading FFMpegSource
+			directshowOpen:
 			bool ffsource = false;
 			if (env->FunctionExists("ffmpegsource")) ffsource = true;
 			if (!ffsource) {
@@ -263,7 +264,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 				ffsource = true;
 				decoderName = _T("FFmpegSource");
 			}
-				directshowOpen:
 
 			// DirectShowSource
 			if (!ffsource) {
