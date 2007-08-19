@@ -112,6 +112,7 @@ public:
 	int GetWidth();
 	int GetHeight();
 	double GetFPS();
+	wxString GetDecoderName() { return _T("FFMpeg/libavcodec")); }
 	bool IsNativelyByFrames() { return true; }
 };
 

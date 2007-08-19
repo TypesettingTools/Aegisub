@@ -242,3 +242,11 @@ int DummyVideoProvider::GetHeight() {
 double DummyVideoProvider::GetFPS() {
 	return fps;
 }
+
+
+////////////////////
+// Get decoder name
+wxString DummyVideoProvider::GetDecoderName() {
+	return _("Dummy Video Provider");
+}
+

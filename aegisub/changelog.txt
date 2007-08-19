@@ -159,6 +159,7 @@ Please visit http://aegisub.net to download latest version
 - Joining of two lines will no longer take the timings of any line that starts and ends at 0 into consideration. (AMZ)
 - Added a "new window" command to the file menu, to launch a new instance of Aegisub. (AMZ)
 - Added "Effect" field to the Select Lines dialog. (demi`)
+- Added a new "Video Details" dialog, that lists some information regarding the currently open video. (demi`)
 
 
 = 1.10 beta - 2006.08.07 ===========================

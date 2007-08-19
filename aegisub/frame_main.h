@@ -211,6 +211,8 @@ private:
 	void OnOpenResample (wxCommandEvent &event);
 	void OnOpenTimingProcessor (wxCommandEvent &event);
 	void OnOpenKanjiTimer (wxCommandEvent &event);
+	void OnOpenVideoDetails (wxCommandEvent &event);
+
 	void OnOpenOptions (wxCommandEvent &event);
 	void OnOpenLog (wxCommandEvent &event);
 	void OnGridEvent (wxCommandEvent &event);
@@ -331,6 +333,7 @@ enum {
 	Menu_Video_Detach,
 	Menu_Video_Dummy,
 	Menu_Video_Overscan,
+	Menu_Video_Details,
 
 	Menu_Audio_Open_File,
 	Menu_Audio_Open_From_Video,

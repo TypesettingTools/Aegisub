@@ -156,6 +156,7 @@ aegisub_SOURCES = \
 	dialog_tip.cpp \
 	dialog_translation.cpp \
 	dialog_version_check.cpp \
+	dialog_video_details.cpp \
 	drop.cpp \
 	export_clean_info.cpp \
 	export_fixstyle.cpp \

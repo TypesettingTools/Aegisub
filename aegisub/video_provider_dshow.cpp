@@ -121,6 +121,7 @@ public:
 	double GetFPS() { return fps; };
 	int GetWidth() { return width; };
 	int GetHeight() { return height; };
+	wxString GetDecoderName() { return _("DirectShow"); }
 
 	void OverrideFrameTimeList(wxArrayInt list);
 };

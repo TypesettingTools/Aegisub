@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Niels Martin Hansen
+// Copyright (c) 2007, Alysson Souza e Silva (demi_alucard)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,51 +30,29 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
-// The dummy video provider needs a header, since it needs to be created directly as a special case
-
-#ifndef _VIDEO_PROVIDER_DUMMY_H
-#define _VIDEO_PROVIDER_DUMMY_H
-
+#ifndef _DIALOG_VIDEO_DETAILS_H
+#define _DIALOG_VIDEO_DETAILS_H
 
 ///////////
 // Headers
-#include "video_provider.h"
-#include <wx/colour.h>
+#include <wx/dialog.h>
 
-
-////////////////////////
-// Dummy video provider
-class DummyVideoProvider : public VideoProvider {
+class DialogVideoDetails : public wxDialog {
 private:
-	int lastFrame;
-	int framecount;
-	double fps;
-	int width;
-	int height;
-	AegiVideoFrame frame;
-
-	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
-
-protected:
-	const AegiVideoFrame DoGetFrame(int n);
+	wxString PrettyTimeStamp(int frames, double fps);
+	wxString PrettyAR(int width, int height);
+	
+	int width, height;
+	int framecount, fps;
 
 public:
-	DummyVideoProvider(wxString filename, double fps);
-	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
-	~DummyVideoProvider();
+	DialogVideoDetails(wxWindow *parent);
+	virtual ~DialogVideoDetails();
 
-	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
-
-	int GetPosition();
-	int GetFrameCount();
-
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-	wxString GetDecoderName();
+	DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -61,6 +61,7 @@ private:
 
 	bool usedDirectShow;
 	wxString rendererCallString;
+	wxString decoderName;
 
 	int num_frames;
 	int last_fnum;
@@ -100,6 +101,7 @@ public:
 	void OverrideFrameTimeList(wxArrayInt list);
 	bool IsNativelyByFrames() { return byFrame; }
 	wxString GetWarning();
+	wxString GetDecoderName() { return _T("Avisynth/") + decoderName; }
 };
 
 
@@ -167,6 +169,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 	byFrame = false;
 	usedDirectShow = false;
+	decoderName = _("Unknown");
 
 	wxString extension = _filename.Right(4);
 	extension.LowerCase();
@@ -193,6 +196,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 				script = env->Invoke("AviSource", AVSValue(args,2), argnames);
 				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened .avi file without audio"));
 				byFrame = true;
+				decoderName = _T("AviSource");
 			}
 			
 			// On Failure, fallback to DSS
@@ -206,6 +210,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Dec3_Mpeg2Source") && mpeg2dec3_priority) {
 			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with Mpeg2Dec3_Mpeg2Source"));
 			script = env->Invoke("Mpeg2Dec3_Mpeg2Source", videoFilename);
+			decoderName = _T("Mpeg2Dec3_Mpeg2Source");
 
             //if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
 			if (env->FunctionExists("SetPlanarLegacyAlignment")) {
@@ -218,6 +223,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		else if (extension == _T(".d2v") && env->FunctionExists("DGDecode_Mpeg2Source")) {
 			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with DGDecode_Mpeg2Source"));
 			script = env->Invoke("Mpeg2Source", videoFilename);
+			decoderName = _T("DGDecode_Mpeg2Source");
 
             //note that DGDecode will also have issues like if the version is too ancient but no sane person
             //would use that anyway
@@ -226,6 +232,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Source")) {
 			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with other Mpeg2Source"));
 			script = env->Invoke("Mpeg2Source", videoFilename);
+			decoderName = _T("Mpeg2Source");
 
             //if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
         	if (env->FunctionExists("SetPlanarLegacyAlignment"))
@@ -235,7 +242,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		// Some other format, such as mkv, mp4, ogm... try FFMpegSource and DirectShowSource
 		else {
 			// Try loading FFMpegSource
-			directshowOpen:
 			bool ffsource = false;
 			if (env->FunctionExists("ffmpegsource")) ffsource = true;
 			if (!ffsource) {
@@ -255,7 +261,9 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 				script = env->Invoke("ffmpegsource", videoFilename);
 				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with FFMpegSource"));
 				ffsource = true;
+				decoderName = _T("FFmpegSource");
 			}
+				directshowOpen:
 
 			// DirectShowSource
 			if (!ffsource) {
@@ -285,6 +293,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 					}
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS2"));
 					dss2 = true;
+					decoderName = _T("DSS2");
 				}
 
 				// Try DirectShowSource
@@ -302,6 +311,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 						}
 						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS without audio"));
 						usedDirectShow = true;
+						decoderName = _T("DirectShowSource");
 					}
 
 					// Failed to find a suitable function

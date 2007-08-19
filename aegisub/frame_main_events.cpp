@@ -83,6 +83,7 @@
 #include "dialog_spellchecker.h"
 #include "dialog_associations.h"
 #include "standard_paths.h"
+#include "dialog_video_details.h"
 
 
 ////////////////////
@@ -138,6 +139,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Video_Detach, FrameMain::OnDetachVideo)
 	EVT_MENU(Menu_Video_Dummy, FrameMain::OnDummyVideo)
 	EVT_MENU(Menu_Video_Overscan, FrameMain::OnOverscan)
+	EVT_MENU(Menu_Video_Details, FrameMain::OnOpenVideoDetails)
 
 	EVT_MENU(Menu_Audio_Open_File, FrameMain::OnOpenAudio)
 	EVT_MENU(Menu_Audio_Open_From_Video, FrameMain::OnOpenAudioFromVideo)
@@ -311,6 +313,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
 		MenuBar->Enable(Menu_Video_Close_Keyframes,VideoContext::Get()->OverKeyFramesLoaded());
 		MenuBar->Enable(Menu_Video_Save_Keyframes,VideoContext::Get()->KeyFramesLoaded());
+		MenuBar->Enable(Menu_Video_Details,state);
+		MenuBar->Enable(Menu_Video_Overscan,state);
 
 		// Set AR radio
 		int arType = VideoContext::Get()->GetAspectRatioType();
@@ -851,6 +855,15 @@ void FrameMain::OnOverscan (wxCommandEvent &event) {
 	Options.Save();
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->Render();
+}
+
+
+//////////////////////
+// Show video details
+void FrameMain::OnOpenVideoDetails (wxCommandEvent &event) {
+	VideoContext::Get()->Stop();
+	DialogVideoDetails videodetails(this);
+	videodetails.ShowModal();	
 }
 
 
