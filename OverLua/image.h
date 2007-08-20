@@ -652,10 +652,10 @@ inline PixFmt GetPixelBilinear(BaseImage<PixFmt> &img, double x, double y)
 	const PixFmt &src21 = EdgeCond::get(img, 1+(int)x, (int)y);
 	const PixFmt &src22 = EdgeCond::get(img, 1+(int)x, 1+(int)y);
 
-	res.R() = (1-xpct) * (1-ypct) * src11.R() + (1-xpct) * ypct * src12.R() + xpct * (1-ypct) * src21.R() + xpct * ypct * src22.R();
-	res.G() = (1-xpct) * (1-ypct) * src11.G() + (1-xpct) * ypct * src12.G() + xpct * (1-ypct) * src21.G() + xpct * ypct * src22.G();
-	res.B() = (1-xpct) * (1-ypct) * src11.B() + (1-xpct) * ypct * src12.B() + xpct * (1-ypct) * src21.B() + xpct * ypct * src22.B();
-	res.A() = (1-xpct) * (1-ypct) * src11.A() + (1-xpct) * ypct * src12.A() + xpct * (1-ypct) * src21.A() + xpct * ypct * src22.A();
+	res.R() = (uint8_t)((1-xpct) * (1-ypct) * src11.R() + (1-xpct) * ypct * src12.R() + xpct * (1-ypct) * src21.R() + xpct * ypct * src22.R());
+	res.G() = (uint8_t)((1-xpct) * (1-ypct) * src11.G() + (1-xpct) * ypct * src12.G() + xpct * (1-ypct) * src21.G() + xpct * ypct * src22.G());
+	res.B() = (uint8_t)((1-xpct) * (1-ypct) * src11.B() + (1-xpct) * ypct * src12.B() + xpct * (1-ypct) * src21.B() + xpct * ypct * src22.B());
+	res.A() = (uint8_t)((1-xpct) * (1-ypct) * src11.A() + (1-xpct) * ypct * src12.A() + xpct * (1-ypct) * src21.A() + xpct * ypct * src22.A());
 
 	return res;
 }
