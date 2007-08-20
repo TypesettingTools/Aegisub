@@ -556,6 +556,10 @@ void FontsCollectorThread::GetFonts (wxString tagName,int par_n,AssOverrideParam
 ///////////////
 // Adds a font
 void FontsCollectorThread::AddFont(wxString fontname,bool isStyle) {
+	// @-fonts (CJK vertical layout variations) should be listed as the non-@ name
+	if (fontname.StartsWith(_T("@"), 0))
+		fontname.Remove(0, 1);
+
 	if (fonts.Index(fontname) == wxNOT_FOUND) {
 		fonts.Add(fontname);
 
