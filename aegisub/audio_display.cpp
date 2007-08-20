@@ -731,6 +731,7 @@ void AudioDisplay::SetPosition(int pos) {
 // Update position
 void AudioDisplay::UpdatePosition (int pos,bool IsSample) {
 	// Safeguards
+	if (!provider) return;
 	if (IsSample) pos /= samples;
 	int len = provider->GetNumSamples() / samples;
 	if (pos < 0) pos = 0;
