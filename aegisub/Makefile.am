@@ -121,6 +121,7 @@ aegisub_SOURCES = \
 	audio_provider.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_ram.cpp \
+	audio_provider_pcm.cpp \
 	audio_provider_stream.cpp \
 	audio_spectrum.cpp \
 	avisynth_wrap.cpp \

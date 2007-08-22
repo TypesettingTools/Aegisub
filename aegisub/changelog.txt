@@ -55,9 +55,10 @@ Please visit http://aegisub.net to download latest version
   o Moved karaoke syllable text in audio display to the top instead of bottom, since it often covered important information in spectrum mode (jfs)
   o Misc. changes and bugfixes in karaoke mode. Using the syllable splitter should be easier now. (jfs)
   o Fixed loading of Avisynth Scripts as audio. (AMZ)
+  o PCM WAV files are now streamed directly from disk instead of being "decoded" into RAM or onto another disk file. Only works for 8 and 16 bit sampledepths. (jfs)
 - Changes to Audio Spectrum: (jfs)
   o The calculated FFT data are now cached, so things should be faster.
-    - The maximum size of the cache can be configured. Default is unlimited, which provides the best performance assuming enough memory is available.
+    - The maximum size of the cache can be configured. Default is unlimited, which provides the best performance assuming enough memory is available. (Limit it if you're working with huge audio files!)
   o The quality of the spectrum can be easier configured, better quality requires more CPU and memory.
   o Actual signal power is now more accurately represented.
   o The palette is changed.

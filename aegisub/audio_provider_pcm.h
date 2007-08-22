@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Contact: mailto:jiifurusu@gmail.com
 //
 
 
@@ -39,56 +39,35 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include "factory.h"
+#include "audio_provider.h"
+#include <wx/file.h>
+#include <vector>
 
 
-//////////////
-// Prototypes
-class AudioDisplay;
-class VideoProvider;
-
-
-////////////////////////
-// Audio provider class
-class AudioProvider {
-private:
-	void *raw;
-	int raw_len;
-
+/////////////////////////////
+// Audio provider base class
+class PCMAudioProvider : public AudioProvider {
 protected:
-	int channels;
-	__int64 num_samples; // for one channel, ie. number of PCM frames
-	int sample_rate;
-	int bytes_per_sample;
+	wxMutex filemutex;
+	wxFile file;
 
-	wxString filename;
+	// Hold data for an index point,
+	// to support files where audio data are
+	// split into multiple blocks.
+	// Using long long's should be safe on most compilers,
+	// wx defines wxFileOffset as long long when possible
+	struct IndexPoint {
+		long long start_byte;
+		long long start_sample;
+		long long num_samples;
+	};
+	typedef std::vector<IndexPoint> IndexVector;
+	IndexVector index_points;
 
 public:
-	AudioProvider();
-	virtual ~AudioProvider();
-
-	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, __int64 start, __int64 count)=0;
-	void GetAudioWithVolume(void *buf, __int64 start, __int64 count, double volume);
-
-	__int64 GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-	int GetChannels();
-
-	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
+	virtual void GetAudio(void *buf, __int64 start, __int64 count);
 };
 
+// Construct the right PCM audio provider (if any) for the file
+AudioProvider *CreatePCMAudioProvider(const wxString &filename);
 
-///////////
-// Factory
-class AudioProviderFactory : public AegisubFactory<AudioProviderFactory> {
-protected:
-	virtual AudioProvider *CreateProvider(wxString filename)=0;
-	AudioProviderFactory(wxString name) { RegisterFactory(name); }
-
-public:
-	virtual ~AudioProviderFactory() {}
-	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
-};

@@ -39,6 +39,7 @@
 #include <wx/wxprec.h>
 #include "audio_provider_ram.h"
 #include "audio_provider_hd.h"
+#include "audio_provider_pcm.h"
 #include "options.h"
 #include "audio_display.h"
 
@@ -185,6 +186,10 @@ void AudioProvider::GetAudioWithVolume(void *buf, __int64 start, __int64 count, 
 AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cache) {
 	// Prepare provider
 	AudioProvider *provider = NULL;
+
+	// Try a PCM provider first
+	provider = CreatePCMAudioProvider(filename);
+	if (provider) return provider;
 
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio provider")));
