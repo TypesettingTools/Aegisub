@@ -675,7 +675,9 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			newline.layer = t.layer
 			tenv.line = newline
 			newline.text = run_text_template(t.t, tenv, varctx)
-			if t.addtext then
+			if t.keeptags then
+			newline.text = newline.text .. syl.text
+			elseif t.addtext then
 				newline.text = newline.text .. syl.text_stripped
 			end
 			newline.effect = "fx"
