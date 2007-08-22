@@ -281,13 +281,26 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 	}
 
 	if (ei) {
-		info += wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s"),
+		info += wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:\n"),
 			ei->script->GetName().c_str(),
 			ei->script->GetDescription().c_str(),
 			ei->script->GetAuthor().c_str(),
 			ei->script->GetVersion().c_str(),
 			ei->script->GetFilename().c_str(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load"));
+		for (std::vector<Automation4::Feature*>::iterator f = ei->script->GetFeatures().begin(); f != ei->script->GetFeatures().end(); ++f) {
+			switch ((*f)->GetClass()) {
+				case Automation4::SCRIPTFEATURE_MACRO:
+					info += _("    Macro: "); break;
+				case Automation4::SCRIPTFEATURE_FILTER:
+					info += _("    Export filter: "); break;
+				case Automation4::SCRIPTFEATURE_SUBFORMAT:
+					info += _("    Subtitle format handler: "); break;
+				default:
+					info += _T("    Unknown class: "); break;
+			}
+			info += (*f)->GetName() + _T("\n");
+		}
 	}
 
 	wxMessageBox(info, _("Automation Script Info"));
