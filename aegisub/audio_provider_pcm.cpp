@@ -58,7 +58,7 @@ void PCMAudioProvider::GetAudio(void *buf, __int64 start, __int64 count)
 			if (samples_can_do > count) samples_can_do = count;
 
 			// Read as many samples we can
-			file.Seek(ip.start_byte + (start - ip.start_sample) * bytes_per_sample, wxFromStart);
+			file.Seek(ip.start_byte + (start - ip.start_sample) * bytes_per_sample * channels, wxFromStart);
 			file.Read(buf, samples_can_do * bytes_per_sample * channels);
 
 			// Update data
