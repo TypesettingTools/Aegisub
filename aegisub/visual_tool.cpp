@@ -261,8 +261,11 @@ void VisualTool::Commit(bool full) {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 
 	// See if anything actually changed
-	AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
-	if (diag && grid->editBox->TextEdit->GetText() == diag->Text) return;
+	// Fix by jfs: Only if not doing a  full commit. Not sure why, but this avoids bug #532
+	if (!full) {
+		AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
+		if (diag && grid->editBox->TextEdit->GetText() == diag->Text) return;
+	}
 
 	// Commit changes
 	grid->editBox->CommitText();
