@@ -276,29 +276,23 @@ public:
 AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 {
 	AudioProvider *provider = 0;
-	wxLogDebug(_T("Inside CreatePCMAudioProvider"));
 
 	// Try Microsoft/IBM RIFF WAV first
 	// XXX: This is going to blow up if built on big endian archs
-	wxLogDebug(_T("Trying to create RIFF WAV PCM provider"));
 	try { provider = new RiffWavPCMAudioProvider(filename); }
-	catch (const wxChar *e) { wxLogWarning(_T("Thrown creating RIFF PCM WAV provider: %s"), e); provider = 0; }
 	catch (...) { provider = 0; }
 
 	if (provider && provider->GetChannels() > 1) {
-		wxLogDebug(_T("Have a PCM provider with non-mono sound"));
 		// Can't feed non-mono audio to the rest of the program.
 		// Create a downmixing proxy and if it fails, don't provide PCM.
 		try {
 			provider = new DownmixingAudioProvider(provider);
 		}
 		catch (...) {
-			wxLogDebug(_T("Failed creating downmixer for PCM"));
 			delete provider;
 			provider = 0;
 		}
 	}
 
-	wxLogDebug(_T("Returning from CreatePCMAudioProvider: %p"), provider);
 	return provider;
 }
