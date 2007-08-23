@@ -1037,8 +1037,8 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
 	SubsBox->UpdateMaps();
 	SubsBox->SetSelectionFromAbsolute(selected_lines);
-	SubsBox->EndBatch();
 	SubsBox->CommitChanges(true, false);
+	SubsBox->EndBatch();
 }
 
 
