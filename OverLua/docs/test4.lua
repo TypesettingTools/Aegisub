@@ -54,9 +54,10 @@ function render_frame(f, t)
 	-- Then use the blurred video frame as fill source
 	c.set_source(fspattern)
 	c.fill_preserve()
-	-- And create a very dark and rather transparent colour
-	-- Filling this on top of the first fill will create a darkening/reddening effect
-	c.set_source_rgba(0.2, 0, 0, 0.3)
+	-- And create a very dark colour
+	-- Adding this on top of the first fill will create a reddening effect
+	c.set_source_rgba(0.1, 0, 0, 1)
+	c.set_operator("add")
 	c.fill()
 	
 	-- Finally draw the surface onto the video
