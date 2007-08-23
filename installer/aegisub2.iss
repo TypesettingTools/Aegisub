@@ -32,7 +32,7 @@ DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
 AppVersion=2.00 Release Candidate 1
-AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
+AppID={24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
 [Languages]
@@ -130,7 +130,7 @@ Name: {commonprograms}\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {a
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-;Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2005 runtime libraries...; Components: main/runtime; Parameters: /Q
+;Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Components: main/runtime; Parameters: /Q
 
 [Components]
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
