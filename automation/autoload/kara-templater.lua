@@ -260,6 +260,7 @@ end
 function apply_templates(meta, styles, subs, templates)
 	-- the environment the templates will run in
 	local tenv = {
+		meta = meta,
 		-- put in some standard libs
 		string = string,
 		math = math,
