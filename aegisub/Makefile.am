@@ -175,6 +175,7 @@ aegisub_SOURCES = \
 	hotkeys.cpp \
 	idle_field_event.cpp \
 	kana_table.cpp \
+	keyframe.cpp \
 	main.cpp \
 	md5.c \
 	mkv_wrap.cpp \

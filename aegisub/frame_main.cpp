@@ -69,6 +69,7 @@
 #include "dialog_version_check.h"
 #include "dialog_detached_video.h"
 #include "standard_paths.h"
+#include "keyframe.h"
 
 
 /////////////////////////
@@ -836,7 +837,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			}
 
 			// Keyframes
-			LoadKeyframes(curSubsKeyframes);
+			KeyFrameFile::Load(curSubsKeyframes);
 
 			// Audio
 			if (curSubsAudio != audioBox->audioName) {
@@ -1054,98 +1055,6 @@ void FrameMain::LoadVFR(wxString filename) {
 
 	SubsBox->CommitChanges();
 	EditBox->UpdateFrameTiming();
-}
-
-
-//////////////////
-// Load Keyframes
-void FrameMain::LoadKeyframes(wxString filename) {
-	// Unload
-	if (filename.IsEmpty()) {
-		wxArrayInt keyFrames;
-		keyFrames.Empty();
-		VideoContext::Get()->CloseOverKeyFrames();
-		videoBox->videoSlider->Refresh();
-		audioBox->audioDisplay->Update();
-		Refresh();
-		return;
-	}
-
-	// Load
-	try {
-		// Open file
-		wxArrayInt keyFrames;
-		keyFrames.Empty();
-		TextFileReader file(filename,_T("ASCII"));
-
-		// Read header
-		wxString cur = file.ReadLineFromFile();
-		if (cur != _T("# keyframe format v1")) throw _T("Invalid keyframes file, missing header.");
-		cur = file.ReadLineFromFile();
-		if (cur.Left(4) != _T("fps ")) throw _T("Invalid keyframes file, missing FPS.");
-		cur = cur.Mid(4);
-		double fps;
-		cur.ToDouble(&fps);
-		if (fps == 0.0) throw _T("Invalid FPS.");
-
-		// Read lines
-		while (file.HasMoreLines()) {
-			cur = file.ReadLineFromFile();
-			if (!cur.IsEmpty() && cur.IsNumber()) {
-				long temp;
-				cur.ToLong(&temp);
-				keyFrames.Add(temp);
-			}
-		}
-
-		// Set keyframes
-		VideoContext::Get()->SetOverKeyFrames(keyFrames);
-		VideoContext::Get()->SetKeyFramesName(filename);
-
-		// Set FPS
-		if (!VideoContext::Get()->IsLoaded()) {
-			VideoContext::Get()->SetFPS(fps);
-			VFR_Input.SetCFR(fps);
-			if (!VFR_Output.IsLoaded()) VFR_Output.SetCFR(fps);
-		}
-
-		// Add to recent
-		Options.AddToRecentList(filename,_T("Recent keyframes"));
-
-		// Refresh display
-		Refresh();
-		audioBox->audioDisplay->Update();
-	}
-
-	// Fail
-	catch (const wchar_t *error) {
-		wxString err(error);
-		wxMessageBox(err, _T("Error opening keyframes file"), wxOK | wxICON_ERROR, this);
-	}
-	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error opening keyframes file"), wxOK | wxICON_ERROR, this);
-	}
-}
-
-
-//////////////////
-// Save Keyframes
-void FrameMain::SaveKeyframes(wxString filename) {
-	// Get keyframes
-	wxArrayInt keyFrames = VideoContext::Get()->GetKeyFrames();
-
-	// Write header
-	TextFileWriter file(filename,_T("ASCII"));
-	file.WriteLineToFile(_T("# keyframe format v1"));
-	file.WriteLineToFile(wxString::Format(_T("fps %f"),VideoContext::Get()->GetFPS()));
-
-	// Write keyframes
-	for (unsigned int i=0;i<keyFrames.Count();i++) {
-		file.WriteLineToFile(wxString::Format(_T("%i"),keyFrames[i]));
-	}
-
-	// Add to recent
-	Options.AddToRecentList(filename,_T("Recent keyframes"));
 }
 
 

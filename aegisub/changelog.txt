@@ -153,7 +153,7 @@ Please visit http://aegisub.net to download latest version
 - Frame number is now the default box on the "go to" dialog. (AMZ)
 - Added "Video Formats" to "Open Audio"'s file selector, so you can open audio directly from video files (regardless of whether they're loaded or not). This has always worked, but it was never explicit. (AMZ)
 - Added a "Scale Border and Shadow" check box to script properties dialog. (AMZ)
-- Fixed display of end frames on the subtitles grid, when set to frame mode. (demi)
+- Fixed display of end frames on the subtitles grid, when set to frame mode. (demi`)
 - Treat comments inside {}'s as plain text, not as overrides; Also, don't assume override blocks start with a backslash, even if they probably should (Dansolo)
 - Removed FexTracker due to licensing problems; there are plans to implement a new motion tracker in its place (jfs)
 - Changed translation assistent to use Scintilla text controls to avoid several issues, including Right-To-Left text entry. (AMZ)
@@ -161,6 +161,7 @@ Please visit http://aegisub.net to download latest version
 - Added a "new window" command to the file menu, to launch a new instance of Aegisub. (AMZ)
 - Added "Effect" field to the Select Lines dialog. (demi`)
 - Added a new "Video Details" dialog, that lists some information regarding the currently open video. (demi`)
+- Added support for reading keyframes from xvid pass files. (demi`)
 
 
 = 1.10 beta - 2006.08.07 ===========================

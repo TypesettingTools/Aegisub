@@ -84,6 +84,7 @@
 #include "dialog_associations.h"
 #include "standard_paths.h"
 #include "dialog_video_details.h"
+#include "keyframe.h"
 
 
 ////////////////////
@@ -500,7 +501,10 @@ void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Keyframes_Recent;
 	wxString key = _T("Recent Keyframes #") + wxString::Format(_T("%i"),number+1);
-	LoadKeyframes(Options.AsText(key));
+	KeyFrameFile::Load(Options.AsText(key));
+	videoBox->videoSlider->Refresh();
+	audioBox->audioDisplay->Update();
+	Refresh();
 }
 
 
@@ -759,20 +763,26 @@ void FrameMain::OnCloseVFR(wxCommandEvent &event) {
 void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 	// Pick file
 	wxString path = Options.AsText(_T("Last open keyframes path"));
-	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),path,_T(""),_T(".txt"),_T("Text files (*.txt)|*.txt"),wxFD_FILE_MUST_EXIST | wxFD_OPEN);
+	wxString filename = wxFileSelector(_T("Select the keyframes file to open"),path,_T(""),_T(".txt"),_T("All supported formats (*.txt, *.pass)|*.txt;*.pass|All files (*.*)|*.*"),wxFD_FILE_MUST_EXIST | wxFD_OPEN);
 	if (filename.IsEmpty()) return;
 	Options.SetText(_T("Last open keyframes path"),filename);
 	Options.Save();
 
 	// Load
-	LoadKeyframes(filename);
+	KeyFrameFile::Load(filename);
+	videoBox->videoSlider->Refresh();
+	audioBox->audioDisplay->Update();
+	Refresh();
 }
 
 
 ///////////////////
 // Close keyframes
 void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
-	LoadKeyframes(_T(""));
+	VideoContext::Get()->CloseOverKeyFrames();
+	videoBox->videoSlider->Refresh();
+	audioBox->audioDisplay->Update();
+	Refresh();
 }
 
 
@@ -787,7 +797,7 @@ void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 	Options.Save();
 
 	// Save
-	SaveKeyframes(filename);
+	KeyFrameFile::Save(filename);
 }
 
 
