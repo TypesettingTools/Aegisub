@@ -2283,6 +2283,7 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
 					if(t1 <= 0 && t2 <= 0) {t1 = 0; t2 = m_delay;}
 
 					if(m_time <= t1) p = p1;
+					else if (p1 == p2) p = p1; // jfs: avoid rounding error problems sometimes causing subtitles with \pos to jump around a bit
 					else if(t1 < m_time && m_time < t2)
 					{
 						double t = 1.0*(m_time-t1)/(t2-t1);
