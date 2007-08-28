@@ -248,7 +248,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	}
 	else {
 		SetLexer(wxSTC_LEX_CONTAINER);
-	}*
+	}*/
 
 	// Set variables
 	wxString text = GetText();
