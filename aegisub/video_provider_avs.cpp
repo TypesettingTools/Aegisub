@@ -298,6 +298,15 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 				// Try DirectShowSource
 				if (!dss2) {
+					// Load DirectShowSource.dll from app dir if it exists
+					wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
+					if (dsspath.FileExists()) {
+						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource"));
+						env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(wxConvLocal)));
+						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource"));
+					}
+
+					// Then try using DSS
 					if (env->FunctionExists("DirectShowSource")) {
 						if (fps == 0.0) {
 							const char *argnames[3] = { 0, "video", "audio" };

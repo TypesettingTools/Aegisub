@@ -45,6 +45,7 @@
 #include "avisynth_wrap.h"
 #include "utils.h"
 #include "options.h"
+#include "standard_paths.h"
 
 
 ////////////////////////
@@ -131,7 +132,21 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 			wxFileName fn(filename);
 			const char * argnames[3] = { 0, "video", "audio" };
 			AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(wxConvLocal)), false, true };
-			script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
+
+			// Load DirectShowSource.dll from app dir if it exists
+			wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
+			if (dsspath.FileExists()) {
+				env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(wxConvLocal)));
+			}
+
+			// Load audio with DSS if it exists
+			if (env->FunctionExists("DirectShowSource")) {
+				script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
+			}
+			// Otherwise fail
+			else {
+				throw AvisynthError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.");
+			}
 		}
 
 		LoadFromClip(script);
