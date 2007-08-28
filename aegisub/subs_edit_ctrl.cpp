@@ -234,6 +234,22 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	// Styling enabled?
 	if (Options.AsBool(_T("Syntax Highlight Enabled")) == 0) return;
 
+	// Check if it's a template line
+	AssDialogue *diag = control->grid->GetDialogue(control->linen);
+	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("template"));
+	bool templateCodeLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("code"));
+
+	// Template code lines get Lua highlighting instead of ASS highlighting
+	// This is broken and needs some extra work
+	/*if (templateCodeLine) {
+		SetLexer(wxSTC_LEX_LUA);
+		Colourise(start, start+_length);
+		return;
+	}
+	else {
+		SetLexer(wxSTC_LEX_CONTAINER);
+	}*
+
 	// Set variables
 	wxString text = GetText();
 	int end = start + _length;
@@ -242,10 +258,6 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	// Flags
 	bool numMode = false;			// everything is considered a number/parameter until this is unset
 	bool drawingMode = false;		// for \p1 -> \p0 stuff
-
-	// Check if it's a template line
-	AssDialogue *diag = control->grid->GetDialogue(control->linen);
-	bool templateLine = diag && diag->Comment && (diag->Effect.Lower().StartsWith(_T("template")) || diag->Effect.Lower().StartsWith(_T("code")));
 
 	// Begin styling
 	StartStyling(0,255);
