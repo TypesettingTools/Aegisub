@@ -78,7 +78,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	// Write to disk
 	int block = 4096;
 	char *temp = new char[block * channels * bytes_per_sample];
-	for (__int64 i=0;i<num_samples && !canceled; i+=block) {
+	for (long long i=0;i<num_samples && !canceled; i+=block) {
 		if (block+i > num_samples) block = num_samples - i;
 		source->GetAudio(temp,i,block);
 		file_cache.Write(temp,block * channels * bytes_per_sample);
@@ -107,10 +107,10 @@ HDAudioProvider::~HDAudioProvider() {
 
 /////////////
 // Get audio
-void HDAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
+void HDAudioProvider::GetAudio(void *buf, long long start, long long count) {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
-		__int64 oldcount = count;
+		long long oldcount = count;
 		count = num_samples-start;
 		if (count < 0) count = 0;
 

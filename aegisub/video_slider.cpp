@@ -101,7 +101,7 @@ int VideoSlider::GetValueAtX(int x) {
 	if (w <= 10) return 0;
 
 	// Calculate
-	return __int64(x-5)*__int64(max-min)/__int64(w-10)+min;
+	return (long long)(x-5)*(long long)(max-min)/(long long)(w-10)+min;
 }
 
 
@@ -116,7 +116,7 @@ int VideoSlider::GetXAtValue(int value) {
 	if (max-min <= 0) return 0;
 
 	// Calculate
-	return __int64(value-min)*__int64(w-10)/__int64(max-min)+5;
+	return (long long)(value-min)*(long long)(w-10)/(long long)(max-min)+5;
 }
 
 

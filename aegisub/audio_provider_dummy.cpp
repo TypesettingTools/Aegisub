@@ -47,7 +47,7 @@ DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
 	channels = 1;
 	sample_rate = 44100;
 	bytes_per_sample = 2;
-	num_samples = (__int64)dur_ms * sample_rate / 1000;
+	num_samples = (long long)dur_ms * sample_rate / 1000;
 }
 
 
@@ -59,7 +59,7 @@ DummyAudioProvider::~DummyAudioProvider() {
 
 /////////////
 // Get audio
-void DummyAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
+void DummyAudioProvider::GetAudio(void *buf, long long start, long long count) {
 	short *workbuf = (short*)buf;
 
 	if (noise) {

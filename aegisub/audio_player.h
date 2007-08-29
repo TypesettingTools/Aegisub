@@ -67,7 +67,7 @@ public:
 	virtual void OpenStream() {}
 	virtual void CloseStream() {}
 
-	virtual void Play(__int64 start,__int64 count)=0;	// Play sample range
+	virtual void Play(long long start,long long count)=0;	// Play sample range
 	virtual void Stop(bool timerToo=true)=0;			// Stop playing
 	virtual void RequestStop();							// Request it to stop playing in a thread-safe way
 	virtual bool IsPlaying()=0;
@@ -75,11 +75,11 @@ public:
 	virtual void SetVolume(double volume)=0;
 	virtual double GetVolume()=0;
 
-	virtual __int64 GetStartPosition()=0;
-	virtual __int64 GetEndPosition()=0;
-	virtual __int64 GetCurrentPosition()=0;
-	virtual void SetEndPosition(__int64 pos)=0;
-	virtual void SetCurrentPosition(__int64 pos)=0;
+	virtual long long GetStartPosition()=0;
+	virtual long long GetEndPosition()=0;
+	virtual long long GetCurrentPosition()=0;
+	virtual void SetEndPosition(long long pos)=0;
+	virtual void SetCurrentPosition(long long pos)=0;
 
 	virtual wxMutex *GetMutex();
 

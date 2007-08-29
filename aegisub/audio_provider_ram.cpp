@@ -55,7 +55,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *source) {
 	blockcount = 0;
 
 	// Allocate cache
-	__int64 ssize = source->GetNumSamples() * source->GetBytesPerSample();
+	long long ssize = source->GetNumSamples() * source->GetBytesPerSample();
 	blockcount = (ssize + CacheBlockSize - 1) >> CacheBits;
 	blockcache = new char*[blockcount];
 	for (int i = 0; i < blockcount; i++) {
@@ -124,10 +124,10 @@ void RAMAudioProvider::Clear() {
 
 /////////////
 // Get audio
-void RAMAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
+void RAMAudioProvider::GetAudio(void *buf, long long start, long long count) {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
-		__int64 oldcount = count;
+		long long oldcount = count;
 		count = num_samples-start;
 		if (count < 0) count = 0;
 
@@ -151,7 +151,7 @@ void RAMAudioProvider::GetAudio(void *buf, __int64 start, __int64 count) {
 		char *charbuf = (char *)buf;
 		int i = (start*bytes_per_sample) >> CacheBits;
 		int start_offset = (start*bytes_per_sample) & (CacheBlockSize-1);
-		__int64 bytesremaining = count*bytes_per_sample;
+		long long bytesremaining = count*bytes_per_sample;
 		
 		// Copy
 		while (bytesremaining) {

@@ -157,7 +157,7 @@ void MatroskaWrapper::Parse() {
 			//CompressedStream *cs = NULL;
 
 			// Timecode scale
-			__int64 timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
+			longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
 
 			// Mask other tracks away
 			mkv_SetTrackMask(file, ~(1 << track));
@@ -376,7 +376,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 
 		// Read timecode scale
 		SegmentInfo *segInfo = mkv_GetFileInfo(file);
-		__int64 timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
+		longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
 
 		// Prepare STD vector to get lines inserted
 		std::vector<wxString> subList;
@@ -407,8 +407,8 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			wxString blockString(tmp,wxConvUTF8);
 
 			// Get start and end times
-			//__int64 timecodeScaleLow = timecodeScale / 100;
-			__int64 timecodeScaleLow = 1000000;
+			//longlong timecodeScaleLow = timecodeScale / 100;
+			longlong timecodeScaleLow = 1000000;
 			AssTime subStart,subEnd;
 			subStart.SetMS(startTime / timecodeScaleLow);
 			subEnd.SetMS(endTime / timecodeScaleLow);

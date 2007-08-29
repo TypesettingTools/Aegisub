@@ -18,8 +18,10 @@
 
 #include <stdwx.h>
 
-typedef int64_t __int64;
-typedef uint64_t __uint64;
+// These shouldn't be needed any longer, if there are
+// any occurrences of __int64 replace them with long long.
+//typedef int64_t __int64;
+//typedef uint64_t __uint64;
 #define abs64 llabs
 
 #include "res.h"

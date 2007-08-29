@@ -52,5 +52,5 @@ public:
 	DummyAudioProvider(unsigned long dur_ms, bool _noise);
 	~DummyAudioProvider();
 
-	void GetAudio(void *buf, __int64 start, __int64 count);
+	void GetAudio(void *buf, long long start, long long count);
 };

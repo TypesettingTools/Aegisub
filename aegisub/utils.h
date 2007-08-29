@@ -51,7 +51,7 @@ typedef std::vector<std::pair<int,int> > IntPairVector;
 ///////////////////////
 // Function prototypes
 #ifndef __LINUX__
-__int64 abs64(__int64 input);
+long long abs64(long long input);
 #endif
 int CountMatches(wxString parent,wxString child);
 bool CopyFile(wxString src,wxString dst);

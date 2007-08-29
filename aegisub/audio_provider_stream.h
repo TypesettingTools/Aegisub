@@ -68,7 +68,7 @@ public:
 	StreamAudioProvider();
 	~StreamAudioProvider();
 
-	void GetAudio(void *buf, __int64 start, __int64 count);
-	void Append(void *buf, __int64 count);
+	void GetAudio(void *buf, long long start, long long count);
+	void Append(void *buf, long long count);
 	void SetParams(int channels,int rate,int bps);
 };

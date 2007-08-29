@@ -41,7 +41,7 @@
 #include <stdint.h>
 
 
-void PCMAudioProvider::GetAudio(void *buf, __int64 start, __int64 count)
+void PCMAudioProvider::GetAudio(void *buf, long long start, long long count)
 {
 	// We'll be seeking in the file so state can become inconsistent
 	wxMutexLocker _fml(filemutex);
@@ -217,7 +217,7 @@ public:
 		delete provider;
 	}
 
-	void GetAudio(void *buf, __int64 start, __int64 count)
+	void GetAudio(void *buf, long long start, long long count)
 	{
 		if (count == 0) return;
 

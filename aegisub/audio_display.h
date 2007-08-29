@@ -71,10 +71,10 @@ private:
 	wxBitmap *origImage;
 	wxBitmap *spectrumDisplay;
 	wxBitmap *spectrumDisplaySelected;
-	__int64 PositionSample;
+	long long PositionSample;
 	float scale;
 	int samples;
-	__int64 Position;
+	long long Position;
 	int samplesPercent;
 	int oldCurPos;
 	bool hasFocus;
@@ -86,12 +86,12 @@ private:
 	bool diagUpdated;
 	bool holding;
 	bool draggingScale;
-	__int64 selStart;
-	__int64 selEnd;
-	__int64 lineStart;
-	__int64 lineEnd;
-	__int64 selStartCap;
-	__int64 selEndCap;
+	long long selStart;
+	long long selEnd;
+	long long lineStart;
+	long long lineEnd;
+	long long selStartCap;
+	long long selEndCap;
 	int hold;
 	int lastX;
 	int lastDragX;
@@ -103,7 +103,7 @@ private:
 	int *min;
 
 	int scrubTime;
-	__int64 scrubLastPos;
+	long long scrubLastPos;
 	bool scrubbing;
 	int scrubLastRate;
 
@@ -122,8 +122,8 @@ private:
 	void DrawInactiveLines(wxDC &dc);
 	void DrawWaveform(wxDC &dc,bool weak);
 	void DrawSpectrum(wxDC &dc,bool weak);
-	void GetDialoguePos(__int64 &start,__int64 &end,bool cap);
-	void GetKaraokePos(__int64 &start,__int64 &end,bool cap);
+	void GetDialoguePos(long long &start,long long &end,bool cap);
+	void GetKaraokePos(long long &start,long long &end,bool cap);
 	void UpdatePosition(int pos,bool IsSample=false);
 
 	int GetBoundarySnap(int x,int range,bool shiftHeld,bool start=true);
@@ -169,12 +169,12 @@ public:
 	void Play(int start,int end);
 	void Stop();
 
-	__int64 GetSampleAtX(int x);
-	int GetXAtSample(__int64 n);
-	int GetMSAtX(__int64 x);
-	int GetXAtMS(__int64 ms);
-	int GetMSAtSample(__int64 x);
-	__int64 GetSampleAtMS(__int64 ms);
+	long long GetSampleAtX(int x);
+	int GetXAtSample(long long n);
+	int GetMSAtX(long long x);
+	int GetXAtMS(long long ms);
+	int GetMSAtSample(long long x);
+	long long GetSampleAtMS(long long ms);
 	int GetSyllableAtX(int x);
 
 	void GetTimesDialogue(int &start,int &end);

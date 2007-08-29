@@ -80,7 +80,7 @@ private:
 public:
 	LAVCAudioProvider(wxString _filename);
 	virtual ~LAVCAudioProvider();
-	virtual void GetAudio(void *buf, __int64 start, __int64 count);
+	virtual void GetAudio(void *buf, long long start, long long count);
 };
 
 
@@ -151,7 +151,7 @@ LAVCAudioProvider::LAVCAudioProvider(wxString _filename)
 	resample_ratio = (float)sample_rate / (float)codecContext->sample_rate;
 
 	double length = (double)stream->duration * av_q2d(stream->time_base);
-	num_samples = (__int64)(length * sample_rate);
+	num_samples = (long long)(length * sample_rate);
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
@@ -181,10 +181,10 @@ void LAVCAudioProvider::Destroy()
 		lavcfile->Release();
 }
 
-void LAVCAudioProvider::GetAudio(void *buf, __int64 start, __int64 count)
+void LAVCAudioProvider::GetAudio(void *buf, long long start, long long count)
 {
 	int16_t *_buf = (int16_t *)buf;
-	__int64 _count = num_samples - start;
+	long long _count = num_samples - start;
 	if (count < _count)
 		_count = count;
 	if (_count < 0)
@@ -203,8 +203,8 @@ void LAVCAudioProvider::GetAudio(void *buf, __int64 start, __int64 count)
 
 			samples = bytesout >> 1;
 			if (rsct) {
-				if ((__int64)(samples * resample_ratio / codecContext->channels) > _count)
-					samples = (__int64)(_count / resample_ratio * codecContext->channels);
+				if ((long long)(samples * resample_ratio / codecContext->channels) > _count)
+					samples = (long long)(_count / resample_ratio * codecContext->channels);
 				samples = audio_resample(rsct, _buf, buffer, samples / codecContext->channels);
 
 				assert(samples <= _count);

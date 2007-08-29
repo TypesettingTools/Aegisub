@@ -67,12 +67,12 @@ private:
 	bool playing;
 	float volume;
 
-	volatile __int64 playPos;
-	volatile __int64 startPos;
-	volatile __int64 endPos;
+	volatile long long playPos;
+	volatile long long startPos;
+	volatile long long endPos;
 	void *stream;
 	PaTimestamp paStart;
-	volatile __int64 realPlayPos;
+	volatile long long realPlayPos;
 
 #ifndef HAVE_PA_GETSTREAMTIME
 	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
@@ -90,15 +90,15 @@ public:
 	void OpenStream();
 	void CloseStream();
 
-	void Play(__int64 start,__int64 count);
+	void Play(long long start,long long count);
 	void Stop(bool timerToo=true);
 	bool IsPlaying() { return playing; }
 
-	__int64 GetStartPosition() { return startPos; }
-	__int64 GetEndPosition() { return endPos; }
-	__int64 GetCurrentPosition() { return realPlayPos; }
-	void SetEndPosition(__int64 pos) { endPos = pos; }
-	void SetCurrentPosition(__int64 pos) { playPos = pos; realPlayPos = pos; }
+	long long GetStartPosition() { return startPos; }
+	long long GetEndPosition() { return endPos; }
+	long long GetCurrentPosition() { return realPlayPos; }
+	void SetEndPosition(long long pos) { endPos = pos; }
+	void SetCurrentPosition(long long pos) { playPos = pos; realPlayPos = pos; }
 
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
@@ -150,10 +150,6 @@ PortAudioPlayer::~PortAudioPlayer() {
 	if (!--pa_refcount) Pa_Terminate();
 }
 
-#ifdef __WINDOWS__
-typedef unsigned __int64 uint64_t;
-#endif
-
 //////////////////////
 // PortAudio callback
 #ifndef HAVE_PA_GETSTREAMTIME
@@ -169,8 +165,8 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
 	int end = 0;
 
 	// Calculate how much left
-	__int64 lenAvailable = player->endPos - player->playPos;
-	uint64_t avail = 0;
+	long long lenAvailable = player->endPos - player->playPos;
+	unsigned long long avail = 0;
 	if (lenAvailable > 0) {
 		avail = lenAvailable;
 		if (avail > framesPerBuffer) {
@@ -198,7 +194,7 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
 	// Set play position (and real one)
 	player->playPos += framesPerBuffer;
 #ifndef __APPLE__
-	player->realPlayPos = (__int64)(Pa_StreamTime(player->stream) - player->paStart) + player->startPos;
+	player->realPlayPos = (long long)(Pa_StreamTime(player->stream) - player->paStart) + player->startPos;
 #else
 	// AudioDeviceGetCurrentTime(), used by Pa_StreamTime() on OS X, is buggered, so use playPos for now
 	player->realPlayPos = player->playPos;
@@ -211,7 +207,7 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
 
 ////////
 // Play
-void PortAudioPlayer::Play(__int64 start,__int64 count) {
+void PortAudioPlayer::Play(long long start,long long count) {
 	// Stop if it's already playing
 	wxMutexLocker locker(PAMutex);
 

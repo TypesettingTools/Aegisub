@@ -67,7 +67,7 @@ public:
 	AudioSpectrum(AudioProvider *_provider);
 	~AudioSpectrum();
 
-	void RenderRange(__int64 range_start, __int64 range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight);
+	void RenderRange(long long range_start, long long range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight);
 
 	void SetScaling(float _power_scale);
 };

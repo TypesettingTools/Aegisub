@@ -68,14 +68,14 @@ class MkvFrame {
 public:
 	double time;
 	bool isKey;
-	__int64 filePos;
+	long long filePos;
 
 	MkvFrame() {
 		time = 0;
 		isKey = false;
 		filePos = -1;
 	}
-	MkvFrame(bool keyframe,double timecode,__int64 _filePos) {
+	MkvFrame(bool keyframe,double timecode,long long _filePos) {
 		isKey = keyframe;
 		time = timecode;
 		filePos = _filePos;

@@ -65,7 +65,7 @@ protected:
 	IndexVector index_points;
 
 public:
-	virtual void GetAudio(void *buf, __int64 start, __int64 count);
+	virtual void GetAudio(void *buf, long long start, long long count);
 };
 
 // Construct the right PCM audio provider (if any) for the file

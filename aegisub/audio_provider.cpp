@@ -68,7 +68,7 @@ int AudioProvider::GetChannels() {
 
 //////////////////////////
 // Get number of samples
-__int64 AudioProvider::GetNumSamples() {
+long long AudioProvider::GetNumSamples() {
 	return num_samples;
 }
 
@@ -96,7 +96,7 @@ wxString AudioProvider::GetFilename() {
 
 ////////////////
 // Get waveform
-void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale) {
+void AudioProvider::GetWaveForm(int *min,int *peak,long long start,int w,int h,int samples,float scale) {
 	// Setup
 	int channels = GetChannels();
 	int n = w * samples;
@@ -161,7 +161,7 @@ void AudioProvider::GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int
 
 /////////////////////////
 // Get audio with volume
-void AudioProvider::GetAudioWithVolume(void *buf, __int64 start, __int64 count, double volume) {
+void AudioProvider::GetAudioWithVolume(void *buf, long long start, long long count, double volume) {
 	GetAudio(buf,start,count);
 	if (volume == 1.0) return;
 
@@ -171,7 +171,7 @@ void AudioProvider::GetAudioWithVolume(void *buf, __int64 start, __int64 count, 
 		int value;
 
 		// Modify
-		for (__int64 i=0;i<count;i++) {
+		for (long long i=0;i<count;i++) {
 			value = (int)(buffer[i]*volume+0.5);
 			if (value < -0x8000) value = -0x8000;
 			if (value > 0x7FFF) value = 0x7FFF;

@@ -100,15 +100,15 @@ public:
 	void OpenStream();
 	void CloseStream();
 
-	void Play(__int64 start,__int64 count);
+	void Play(long long start,long long count);
 	void Stop(bool timerToo=true);
 	bool IsPlaying();
 
-	__int64 GetStartPosition();
-	__int64 GetEndPosition();
-	__int64 GetCurrentPosition();
-	void SetEndPosition(__int64 pos);
-	void SetCurrentPosition(__int64 pos);
+	long long GetStartPosition();
+	long long GetEndPosition();
+	long long GetCurrentPosition();
+	void SetEndPosition(long long pos);
+	void SetCurrentPosition(long long pos);
 
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
@@ -271,7 +271,7 @@ void PulseAudioPlayer::CloseStream()
 
 ////////
 // Play
-void PulseAudioPlayer::Play(__int64 start,__int64 count)
+void PulseAudioPlayer::Play(long long start,long long count)
 {
 	//printf("Starting PulseAudio playback\n");
 	if (!open) OpenStream();
@@ -365,7 +365,7 @@ bool PulseAudioPlayer::IsPlaying()
 
 ///////////
 // Set end
-void PulseAudioPlayer::SetEndPosition(__int64 pos)
+void PulseAudioPlayer::SetEndPosition(long long pos)
 {
 	end_frame = pos;
 }
@@ -373,19 +373,19 @@ void PulseAudioPlayer::SetEndPosition(__int64 pos)
 
 ////////////////////////
 // Set current position
-void PulseAudioPlayer::SetCurrentPosition(__int64 pos)
+void PulseAudioPlayer::SetCurrentPosition(long long pos)
 {
 	cur_frame = pos;
 }
 
 
-__int64 PulseAudioPlayer::GetStartPosition()
+long long PulseAudioPlayer::GetStartPosition()
 {
 	return start_frame;
 }
 
 
-__int64 PulseAudioPlayer::GetEndPosition()
+long long PulseAudioPlayer::GetEndPosition()
 {
 	return end_frame;
 }
@@ -393,7 +393,7 @@ __int64 PulseAudioPlayer::GetEndPosition()
 
 ////////////////////////
 // Get current position
-__int64 PulseAudioPlayer::GetCurrentPosition()
+long long PulseAudioPlayer::GetCurrentPosition()
 {
 	if (!is_playing) return 0;
 

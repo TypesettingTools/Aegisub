@@ -58,7 +58,7 @@ private:
 
 protected:
 	int channels;
-	__int64 num_samples; // for one channel, ie. number of PCM frames
+	long long num_samples; // for one channel, ie. number of PCM frames
 	int sample_rate;
 	int bytes_per_sample;
 
@@ -69,15 +69,15 @@ public:
 	virtual ~AudioProvider();
 
 	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, __int64 start, __int64 count)=0;
-	void GetAudioWithVolume(void *buf, __int64 start, __int64 count, double volume);
+	virtual void GetAudio(void *buf, long long start, long long count)=0;
+	void GetAudioWithVolume(void *buf, long long start, long long count, double volume);
 
-	__int64 GetNumSamples();
+	long long GetNumSamples();
 	int GetSampleRate();
 	int GetBytesPerSample();
 	int GetChannels();
 
-	void GetWaveForm(int *min,int *peak,__int64 start,int w,int h,int samples,float scale);
+	void GetWaveForm(int *min,int *peak,long long start,int w,int h,int samples,float scale);
 };
 
 
