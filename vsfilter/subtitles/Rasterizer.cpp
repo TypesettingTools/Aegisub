@@ -528,6 +528,11 @@ bool Rasterizer::ScanConvert()
 
 using namespace std;
 
+// Overlap the subtitle with itself displaces (dx,dy) and (-dx,dy) pixels, conceptually.
+// Actually, mark in the widened region buffer such that the normal region
+// translated dy in the Y axis has its spans extended by dx pixels in both directions.
+// If any spans overlap after this extension, they are merged.
+// How the actual calculation is done I'm still not sure.
 void Rasterizer::_OverlapRegion(tSpanBuffer& dst, tSpanBuffer& src, int dx, int dy)
 {
 	tSpanBuffer temp;
@@ -543,6 +548,7 @@ void Rasterizer::_OverlapRegion(tSpanBuffer& dst, tSpanBuffer& src, int dx, int 
 
 	// Don't worry -- even if dy<0 this will still work! // G: hehe, the evil twin :)
 
+	// This is where the X-axis is mirrored
 	unsigned __int64 offset1 = (((__int64)dy)<<32) - dx;
 	unsigned __int64 offset2 = (((__int64)dy)<<32) + dx;
 
@@ -642,6 +648,8 @@ bool Rasterizer::CreateWidenedRegion(int r)
 {
 	if(r < 0) r = 0;
 
+	// Do a half circle.
+	// _OverlapRegion mirrors this so both halves are done.
 	for(int y = -r; y <= r; ++y)
 	{
 		int x = (int)(0.5 + sqrt(float(r*r - y*y)));
@@ -739,6 +747,8 @@ bool Rasterizer::Rasterize(int xsub, int ysub, bool fBlur)
 		}
 	}
 
+	// If we're blurring, do a 3x3 box blur
+	// Can't do it on subpictures smaller than 3x3 pixels
 	if(fBlur && mOverlayWidth >= 3 && mOverlayHeight >= 3)
 	{
 		int pitch = mOverlayWidth*2;
@@ -750,6 +760,7 @@ bool Rasterizer::Rasterize(int xsub, int ysub, bool fBlur)
 
 		int border = !mWideOutline.empty() ? 1 : 0;
 
+		// This could be done in a separated way and win some speed
 		for(int j = 1; j < mOverlayHeight-1; j++)
 		{
 			byte* src = tmp + pitch*j + 2 + border;
