@@ -771,22 +771,6 @@ bool Rasterizer::Rasterize(int xsub, int ysub, bool fBlur)
 
 ///////////////////////////////////////////////////////////////////////////
 
-/*#define pixmix(s)																 \
-	int a = (((s)*(color>>24))>>6)&0xff;										 \
-	int ia = 256-a;																 \
-																				 \
-	dst[wt] = ((((dst[wt]&0x00ff00ff)*ia + (color&0x00ff00ff)*a)&0xff00ff00)>>8) \
-			| ((((dst[wt]&0x0000ff00)*ia + (color&0x0000ff00)*a)&0x00ff0000)>>8) \
-			| ((((dst[wt]>>8)&0x00ff0000)*ia)&0xff000000);
-
-#define pixmix2(s)																 \
-	int a = ((((s)*(am[wt]))*(color>>24))>>12)&0xff;							 \
-	int ia = 256-a;																 \
-																				 \
-	dst[wt] = ((((dst[wt]&0x00ff00ff)*ia + (color&0x00ff00ff)*a)&0xff00ff00)>>8) \
-			| ((((dst[wt]&0x0000ff00)*ia + (color&0x0000ff00)*a)&0x00ff0000)>>8) \
-			| ((((dst[wt]>>8)&0x00ff0000)*ia)&0xff000000);*/
-
 static __forceinline void pixmix(DWORD *dst, DWORD color, DWORD alpha)
 {
 	int a = (((alpha)*(color>>24))>>12)&0xff;
@@ -893,55 +877,6 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 				// Are we rendering the fill or a border/shadow? I think...
 				if(fBody)
 				{
-					// Old code
-/*
-					const byte* s = fBorder?(src+1):src;
-					for(int wt=0; wt<w; ++wt)
-					{
-						pixmix(s[wt*2]);
-					}
-*/
-					/*__asm
-					{
-						pxor		mm0, mm0
-
-						mov			eax, color
-						mov			ebx, eax
-						and			eax, 0x00ffffff
-						movd		mm3, eax
-						punpcklbw	mm3, mm0 // mm3 = color&0xffffff
-						shr			ebx, 24 // bl = color>>24
-
-						mov			ecx, w
-						mov			esi, s
-						mov			edi, dst
-
-				pixmixloop:
-
-						xor			eax, eax
-						mov			al, [esi] // s[wt*2]
-						imul		eax, ebx
-						shr			eax, 6
-						and			eax, 0xff
-						imul		eax, 0x01010101
-
-						movd		mm1, eax
-						movq		mm2, _00ff00ff00ff00ff
-						punpcklbw	mm1, mm0 // a
-						psubsw		mm2, mm1 // ia
-						pmullw		mm1, mm3 // a *= color
-						movd		mm4, [edi]
-						punpcklbw	mm4, mm0 // dst[wt]
-						pmullw		mm2, mm4 // ia *= dst[wt]
-						paddsw		mm1, mm2 // a*color += ia*dst[wt]
-						psrlw		mm1, 8
-						packuswb	mm1, mm1
-						movd		[edi], mm1
-
-						add			esi, 2
-						add			edi, 4
-						loop		pixmixloop
-					}*/
 					// Run over every pixel, overlaying the subtitles with the fill colour
 					if(fSSE2)
 						for(int wt=0; wt<w; ++wt)
@@ -957,53 +892,6 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 				// Not body, ie. something else (border, shadow, I guess)
 				else
 				{
-/*					for(int wt=0; wt<w; ++wt)
-					{
-						pixmix(src[wt*2+1]-src[wt*2]);
-					}
-*/
-					/*__asm
-					{
-						pxor		mm0, mm0
-
-						mov			eax, color
-						mov			ebx, eax
-						and			eax, 0x00ffffff
-						movd		mm3, eax
-						punpcklbw	mm3, mm0 // mm3 = color&0xffffff
-						shr			ebx, 24 // bl = color>>24
-
-						mov			ecx, w
-						mov			esi, src
-						mov			edi, dst
-
-					pixmixloop2:
-
-						xor			eax, eax
-						mov			al, [esi+1] // src[wt*2+1]-src[wt*2]
-						sub			al, [esi]
-						imul		eax, ebx
-						shr			eax, 6
-						and			eax, 0xff
-						imul		eax, 0x01010101
-
-						movd		mm1, eax
-						movq		mm2, _00ff00ff00ff00ff
-						punpcklbw	mm1, mm0 // a
-						psubsw		mm2, mm1 // ia
-						pmullw		mm1, mm3 // a *= color
-						movd		mm4, [edi]
-						punpcklbw	mm4, mm0 // dst[wt]
-						pmullw		mm2, mm4 // ia *= dst[wt]
-						paddsw		mm1, mm2 // a*color += ia*dst[wt]
-						psrlw		mm1, 8
-						packuswb	mm1, mm1
-						movd		[edi], mm1
-
-						add			esi, 2
-						add			edi, 4
-						loop		pixmixloop2
-					}*/
 					if(fSSE2)
 						for(int wt=0; wt<w; ++wt)
 							// It would seems src (not s here?) contains two different
@@ -1019,7 +907,6 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 						for(int wt=0; wt<w; ++wt)
 							pixmix(&dst[wt], color, (src[wt*2+1] - src[wt*2])<<6);
 				}
-				//__asm emms;
 			}
 			// not (switchpts[1] == 0xffffffff)
 			else
@@ -1029,18 +916,6 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 
 				if(fBody)
 				{
-					/*const byte* s = fBorder?(src+1):src;
-					
-					for(int wt=0; wt<w; ++wt)
-					{
-						if(wt+xo >= sw[1])
-						{
-							while(wt+xo >= sw[1]) sw += 2;
-							color = sw[-2];
-						}
-
-						pixmix(s[wt*2]);
-					}*/
 					if(fSSE2) 
 					for(int wt=0; wt<w; ++wt)
 					{
@@ -1060,16 +935,6 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 				// Not body
 				else
 				{
-					/*for(int wt=0; wt<w; ++wt)
-					{
-						if(wt+xo >= sw[1])
-						{
-							while(wt+xo >= sw[1]) sw += 2;
-							color = sw[-2];
-						}
-
-						pixmix(src[wt*2+1]-src[wt*2]);
-					}*/
 					if(fSSE2) 
 					for(int wt=0; wt<w; ++wt)
 					{
