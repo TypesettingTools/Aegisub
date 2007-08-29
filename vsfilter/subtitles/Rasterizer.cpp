@@ -819,10 +819,19 @@ static __forceinline void pixmix_sse2(DWORD* dst, DWORD color, DWORD alpha)
 	*dst = (DWORD)_mm_cvtsi128_si32(r);
 }
 
+// For CPUID usage in Rasterizer::Draw
 #include "../dsutil/vd.h"
 
 static const __int64 _00ff00ff00ff00ff = 0x00ff00ff00ff00ffi64;
 
+// Render a subpicture onto a surface.
+// spd is the surface to render on.
+// clipRect is a rectangular clip region to render inside.
+// pAlphaMask is an alpha clipping mask.
+// xsub and ysub ???
+// switchpts seems to be an array of interlaced colour switching coordinates/colours to switch to.
+// fBody tells whether to render the body of the subs.
+// fBorder tells whether to render the border of the subs.
 CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int xsub, int ysub, const long* switchpts, bool fBody, bool fBorder)
 {
 	CRect bbox(0, 0, 0, 0);
@@ -831,20 +840,26 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 
 	// clip
 
+	// Limit drawn area to intersection of rendering surface and rectangular clip area
 	CRect r(0, 0, spd.w, spd.h);
 	r &= clipRect;
 
+	// Remember that all subtitle coordinates are specified in 1/8 pixels
+	// (x+4)>>3 rounds to nearest whole pixel.
+	// ??? What is xsub, ysub, mOffsetX and mOffsetY ?
 	int x = (xsub + mOffsetX + 4)>>3;
 	int y = (ysub + mOffsetY + 4)>>3;
 	int w = mOverlayWidth;
 	int h = mOverlayHeight;
 	int xo = 0, yo = 0;
 
+	// Again, limiting?
 	if(x < r.left) {xo = r.left-x; w -= r.left-x; x = r.left;}
 	if(y < r.top) {yo = r.top-y; h -= r.top-y; y = r.top;}
 	if(x+w > r.right) w = r.right-x;
 	if(y+h > r.bottom) h = r.bottom-y;
 
+	// Check if there's actually anything to render
 	if(w <= 0 || h <= 0) return(bbox);
 
 	bbox.SetRect(x, y, x+w, y+h);
@@ -852,25 +867,35 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 
 	// draw
 
+	// The alpha bitmap of the subtitles?
 	const byte* src = mpOverlayBuffer + 2*(mOverlayWidth * yo + xo);
 	const byte* s = fBorder ? (src+1) : src;
+	// The complex "vector clip mask" I think.
 	const byte* am = pAlphaMask + spd.w * y + x;
+	// How would this differ from src?
 	unsigned long* dst = (unsigned long *)((char *)spd.bits + spd.pitch * y) + x;
 
+	// ??? What is switchpts ?
 	unsigned long color = switchpts[0];
 
+	// CPUID from VDub
 	bool fSSE2 = !!(g_cpuid.m_flags & CCpuID::sse2);
 
+	// Every remaining line in the bitmap to be rendered...
 	while(h--)
 	{
+		// Basic case of no complex clipping mask
 		if(!pAlphaMask)
 		{
+			// Again, what is switchpts?
 			if(switchpts[1] == 0xffffffff)
 			{
+				// Are we rendering the fill or a border/shadow? I think...
 				if(fBody)
 				{
-					const byte* s = fBorder?(src+1):src;
+					// Old code
 /*
+					const byte* s = fBorder?(src+1):src;
 					for(int wt=0; wt<w; ++wt)
 					{
 						pixmix(s[wt*2]);
@@ -917,13 +942,19 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 						add			edi, 4
 						loop		pixmixloop
 					}*/
+					// Run over every pixel, overlaying the subtitles with the fill colour
 					if(fSSE2)
 						for(int wt=0; wt<w; ++wt)
+							// Why s[wt*2] and not s[wt] ?
+							// The <<6 is due to pixmix expecting the alpha parameter to be
+							// the multiplication of two 6-bit unsigned numbers but we
+							// only have one here. (No alpha mask.)
 							pixmix_sse2(&dst[wt], color, s[wt*2]<<6);
 					else
 						for(int wt=0; wt<w; ++wt)
 							pixmix(&dst[wt], color, s[wt*2]<<6);
 				}
+				// Not body, ie. something else (border, shadow, I guess)
 				else
 				{
 /*					for(int wt=0; wt<w; ++wt)
@@ -975,6 +1006,14 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 					}*/
 					if(fSSE2)
 						for(int wt=0; wt<w; ++wt)
+							// It would seems src (not s here?) contains two different
+							// bitmaps interlaced per pixel.
+							// So here's using the difference between those two.
+							// What if the difference underflows??
+							// I guess src[wt*2+1] is the widened region for border
+							// created by CreateWidenedRegion, and thus contains
+							// both the fill and the border, so subtracting the fill
+							// from that is always safe.
 							pixmix_sse2(&dst[wt], color, (src[wt*2+1] - src[wt*2])<<6);
 					else
 						for(int wt=0; wt<w; ++wt)
@@ -982,8 +1021,10 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 				}
 				//__asm emms;
 			}
+			// not (switchpts[1] == 0xffffffff)
 			else
 			{
+				// switchpts plays an important rule here
 				const long *sw = switchpts;
 
 				if(fBody)
@@ -1003,6 +1044,9 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 					if(fSSE2) 
 					for(int wt=0; wt<w; ++wt)
 					{
+						// xo is the offset (usually negative) we have moved into the image
+						// So if we have passed the switchpoint (?) switch to another colour
+						// (So switchpts stores both colours *and* coordinates?)
 						if(wt+xo >= sw[1]) {while(wt+xo >= sw[1]) sw += 2; color = sw[-2];}
 						pixmix_sse2(&dst[wt], color, s[wt*2]<<6);
 					}
@@ -1013,6 +1057,7 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 						pixmix(&dst[wt], color, s[wt*2]<<6);
 					}
 				}
+				// Not body
 				else
 				{
 					/*for(int wt=0; wt<w; ++wt)
@@ -1040,6 +1085,7 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 				}
 			}
 		}
+		// Here we *do* have an alpha mask
 		else
 		{
 			if(switchpts[1] == 0xffffffff)
@@ -1054,6 +1100,11 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 					}*/
 					if(fSSE2)
 						for(int wt=0; wt<w; ++wt)
+							// Both s and am contain 6-bit bitmaps of two different
+							// alpha masks; s is the subtitle shape and am is the
+							// clipping mask.
+							// Multiplying them together yields a 12-bit number.
+							// I think some imprecision is introduced here??
 							pixmix_sse2(&dst[wt], color, s[wt*2] * am[wt]);
 					else
 						for(int wt=0; wt<w; ++wt)
@@ -1144,6 +1195,7 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 			}
 		}
 
+		// Step to next scanline
 		src += 2*mOverlayWidth;
 		s += 2*mOverlayWidth;
 		am += spd.w;
