@@ -88,9 +88,9 @@ private:
 	int offset;
 	DWORD bufSize;
 
-	volatile long long playPos;
-	long long startPos;
-	volatile long long endPos;
+	volatile int64_t playPos;
+	int64_t startPos;
+	volatile int64_t endPos;
 	DWORD startTime;
 
 	IDirectSound8 *directSound;
@@ -107,15 +107,15 @@ public:
 	void OpenStream();
 	void CloseStream();
 
-	void Play(long long start,long long count);
+	void Play(int64_t start,int64_t count);
 	void Stop(bool timerToo=true);
 	bool IsPlaying() { return playing; }
 
-	long long GetStartPosition() { return startPos; }
-	long long GetEndPosition() { return endPos; }
-	long long GetCurrentPosition();
-	void SetEndPosition(long long pos);
-	void SetCurrentPosition(long long pos);
+	int64_t GetStartPosition() { return startPos; }
+	int64_t GetEndPosition() { return endPos; }
+	int64_t GetCurrentPosition();
+	void SetEndPosition(int64_t pos);
+	void SetCurrentPosition(int64_t pos);
 
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
@@ -318,7 +318,7 @@ RetryLock:
 
 ////////
 // Play
-void DirectSoundPlayer::Play(long long start,long long count) {
+void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 	// Make sure that it's stopped
 	Stop();
 	// The thread is now guaranteed dead
@@ -389,14 +389,14 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 
 ///////////
 // Set end
-void DirectSoundPlayer::SetEndPosition(long long pos) {
+void DirectSoundPlayer::SetEndPosition(int64_t pos) {
 	if (playing) endPos = pos;
 }
 
 
 ////////////////////////
 // Set current position
-void DirectSoundPlayer::SetCurrentPosition(long long pos) {
+void DirectSoundPlayer::SetCurrentPosition(int64_t pos) {
 	startPos = playPos = pos;
 	startTime = GetTickCount();
 }
@@ -404,14 +404,14 @@ void DirectSoundPlayer::SetCurrentPosition(long long pos) {
 
 ////////////////////////
 // Get current position
-long long DirectSoundPlayer::GetCurrentPosition() {
+int64_t DirectSoundPlayer::GetCurrentPosition() {
 	// Check if buffer is loaded
 	if (!buffer || !playing) return 0;
 
 	// FIXME: this should be based on not duration played but actual sample being heard
 	// (during vidoeo playback, cur_frame might get changed to resync)
 	DWORD curtime = GetTickCount();
-	long long tdiff = curtime - startTime;
+	int64_t tdiff = curtime - startTime;
 	return startPos + tdiff * provider->GetSampleRate() / 1000;
 }
 

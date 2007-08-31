@@ -95,15 +95,15 @@ public:
 	void OpenStream();
 	void CloseStream();
 
-	void Play(long long start,long long count);
+	void Play(int64_t start,int64_t count);
 	void Stop(bool timerToo=true);
 	bool IsPlaying();
 
-	long long GetStartPosition();
-	long long GetEndPosition();
-	long long GetCurrentPosition();
-	void SetEndPosition(long long pos);
-	void SetCurrentPosition(long long pos);
+	int64_t GetStartPosition();
+	int64_t GetEndPosition();
+	int64_t GetCurrentPosition();
+	void SetEndPosition(int64_t pos);
+	void SetCurrentPosition(int64_t pos);
 
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
@@ -217,7 +217,7 @@ void OpenALPlayer::CloseStream()
 
 ////////
 // Play
-void OpenALPlayer::Play(long long start,long long count)
+void OpenALPlayer::Play(int64_t start,int64_t count)
 {
 	if (playing) {
 		// Quick reset
@@ -354,7 +354,7 @@ bool OpenALPlayer::IsPlaying()
 
 ///////////
 // Set end
-void OpenALPlayer::SetEndPosition(long long pos)
+void OpenALPlayer::SetEndPosition(int64_t pos)
 {
 	end_frame = pos;
 }
@@ -362,19 +362,19 @@ void OpenALPlayer::SetEndPosition(long long pos)
 
 ////////////////////////
 // Set current position
-void OpenALPlayer::SetCurrentPosition(long long pos)
+void OpenALPlayer::SetCurrentPosition(int64_t pos)
 {
 	cur_frame = pos;
 }
 
 
-long long OpenALPlayer::GetStartPosition()
+int64_t OpenALPlayer::GetStartPosition()
 {
 	return start_frame;
 }
 
 
-long long OpenALPlayer::GetEndPosition()
+int64_t OpenALPlayer::GetEndPosition()
 {
 	return end_frame;
 }
@@ -382,7 +382,7 @@ long long OpenALPlayer::GetEndPosition()
 
 ////////////////////////
 // Get current position
-long long OpenALPlayer::GetCurrentPosition()
+int64_t OpenALPlayer::GetCurrentPosition()
 {
 	// FIXME: this should be based on not duration played but actual sample being heard
 	// (during vidoeo playback, cur_frame might get changed to resync)

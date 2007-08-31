@@ -203,8 +203,8 @@ void AudioDisplay::UpdateImage(bool weak) {
 	lineEnd = 0;
 	selStartCap = 0;
 	selEndCap = 0;
-	long long drawSelStart = 0;
-	long long drawSelEnd = 0;
+	int64_t drawSelStart = 0;
+	int64_t drawSelEnd = 0;
 	if (dialogue) {
 		GetDialoguePos(lineStart,lineEnd,false);
 		hasSel = true;
@@ -247,7 +247,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 	// Draw seconds boundaries
 	if (draw_boundary_lines) {
-		long long start = Position*samples;
+		int64_t start = Position*samples;
 		int rate = provider->GetSampleRate();
 		int pixBounds = rate / samples;
 		dc.SetPen(wxPen(Options.AsColour(_T("Audio Seconds Boundaries")),1,wxDOT));
@@ -302,7 +302,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 				if (!spectrum) dc.SetTextForeground(Options.AsColour(_T("Audio Syllable text")));
 				else dc.SetTextForeground(wxColour(255,255,255));
 				size_t karn = karaoke->syllables.size();
-				long long pos1,pos2;
+				int64_t pos1,pos2;
 				int len,curpos;
 				wxCoord tw=0,th=0;
 				AudioKaraokeSyllable *curSyl;
@@ -479,13 +479,13 @@ void AudioDisplay::DrawTimescale(wxDC &dc) {
 	dc.SetFont(scaleFont);
 
 	// Timescale ticks
-	long long start = Position*samples;
+	int64_t start = Position*samples;
 	int rate = provider->GetSampleRate();
 	for (int i=1;i<32;i*=2) {
 		int pixBounds = rate / (samples * 4 / i);
 		if (pixBounds >= 8) {
 			for (int x=0;x<w;x++) {
-				long long pos = (x*samples)+start;
+				int64_t pos = (x*samples)+start;
 				// Second boundary
 				if (pos % rate < samples) {
 					dc.DrawLine(x,h+2,x,h+8);
@@ -541,7 +541,7 @@ void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 	// Draw pre-selection
 	if (!hasSel) selStartCap = w;
 	dc.SetPen(wxPen(Options.AsColour(_T("Audio Waveform"))));
-	for (long long i=0;i<selStartCap;i++) {
+	for (int64_t i=0;i<selStartCap;i++) {
 		dc.DrawLine(i,peak[i],i,min[i]-1);
 	}
 
@@ -551,13 +551,13 @@ void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 			if (NeedCommit && !karaoke->enabled) dc.SetPen(wxPen(Options.AsColour(_T("Audio Waveform Modified"))));
 			else dc.SetPen(wxPen(Options.AsColour(_T("Audio Waveform Selected"))));
 		}
-		for (long long i=selStartCap;i<selEndCap;i++) {
+		for (int64_t i=selStartCap;i<selEndCap;i++) {
 			dc.DrawLine(i,peak[i],i,min[i]-1);
 		}
 
 		// Draw post-selection
 		dc.SetPen(wxPen(Options.AsColour(_T("Audio Waveform"))));
-		for (long long i=selEndCap;i<w;i++) {
+		for (int64_t i=selEndCap;i<w;i++) {
 			dc.DrawLine(i,peak[i],i,min[i]-1);
 		}
 	}
@@ -618,7 +618,7 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 
 //////////////////////////
 // Get selection position
-void AudioDisplay::GetDialoguePos(long long &selStart,long long &selEnd, bool cap) {
+void AudioDisplay::GetDialoguePos(int64_t &selStart,int64_t &selEnd, bool cap) {
 	selStart = GetXAtMS(curStartMS);
 	selEnd = GetXAtMS(curEndMS);
 
@@ -633,7 +633,7 @@ void AudioDisplay::GetDialoguePos(long long &selStart,long long &selEnd, bool ca
 
 ////////////////////////
 // Get karaoke position
-void AudioDisplay::GetKaraokePos(long long &karStart,long long &karEnd, bool cap) {
+void AudioDisplay::GetKaraokePos(int64_t &karStart,int64_t &karEnd, bool cap) {
 	try {
 		// Wrap around
 		int nsyls = (int)karaoke->syllables.size();
@@ -759,7 +759,7 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 		// Center scroll
 		int oldSamples = samples;
 		UpdateSamples();
-		PositionSample += long long((oldSamples-samples)*w*pivot);
+		PositionSample += int64_t((oldSamples-samples)*w*pivot);
 		if (PositionSample < 0) PositionSample = 0;
 
 		// Update
@@ -776,7 +776,7 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 void AudioDisplay::UpdateSamples() {
 	// Set samples
 	if (!provider) return;
-	long long totalSamples = provider->GetNumSamples();
+	int64_t totalSamples = provider->GetNumSamples();
 	int total = totalSamples / w;
 	int max = 5760000 / w;	// 2 minutes at 48 kHz maximum
 	if (total > max) total = max;
@@ -949,42 +949,42 @@ void AudioDisplay::UpdateScrollbar() {
 
 //////////////////////////////////////////////
 // Gets the sample number at the x coordinate
-long long AudioDisplay::GetSampleAtX(int x) {
+int64_t AudioDisplay::GetSampleAtX(int x) {
 	return (x+Position)*samples;
 }
 
 
 /////////////////////////////////////////////////
 // Gets the x coordinate corresponding to sample
-int AudioDisplay::GetXAtSample(long long n) {
+int AudioDisplay::GetXAtSample(int64_t n) {
 	return samples ? (n/samples)-Position : 0;
 }
 
 
 /////////////////
 // Get MS from X
-int AudioDisplay::GetMSAtX(long long x) {
+int AudioDisplay::GetMSAtX(int64_t x) {
 	return (PositionSample+(x*samples)) * 1000 / provider->GetSampleRate();
 }
 
 
 /////////////////
 // Get X from MS
-int AudioDisplay::GetXAtMS(long long ms) {
+int AudioDisplay::GetXAtMS(int64_t ms) {
 	return ((ms * provider->GetSampleRate() / 1000)-PositionSample)/samples;
 }
 
 
 ////////////////////
 // Get MS At sample
-int AudioDisplay::GetMSAtSample(long long x) {
+int AudioDisplay::GetMSAtSample(int64_t x) {
 	return x * 1000 / provider->GetSampleRate();
 }
 
 
 ////////////////////
 // Get Sample at MS
-long long AudioDisplay::GetSampleAtMS(long long ms) {
+int64_t AudioDisplay::GetSampleAtMS(int64_t ms) {
 	return ms * provider->GetSampleRate() / 1000;
 }
 
@@ -1026,7 +1026,7 @@ void AudioDisplay::Play(int start,int end) {
 
 	// Set defaults
 	wxLogDebug(_T("AudioDisplay::Play: initialising playback"));
-	long long num_samples = provider->GetNumSamples();
+	int64_t num_samples = provider->GetNumSamples();
 	start = GetSampleAtMS(start);
 	if (end != -1) end = GetSampleAtMS(end);
 	else end = num_samples-1;
@@ -1301,8 +1301,8 @@ void AudioDisplay::OnPaint(wxPaintEvent& event) {
 // Mouse event
 void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Get x,y
-	long long x = event.GetX();
-	long long y = event.GetY();
+	int64_t x = event.GetX();
+	int64_t y = event.GetY();
 	bool karMode = karaoke->enabled;
 	bool shiftDown = event.m_shiftDown;
 	int timelineHeight = Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
@@ -1511,7 +1511,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			// Karaoke mode
 			else {
 				// Look for a syllable
-				long long pos,len,curpos;
+				int64_t pos,len,curpos;
 				AudioKaraokeSyllable *curSyl;
 				size_t karn = karaoke->syllables.size();
 				for (size_t i=0;i<karn;i++) {
@@ -1625,7 +1625,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 					pos = GetXAtMS(curStartMS+(len+curpos)*10);
 					if (x != pos) {
 						// Calculate delta in centiseconds
-						int delta = ((long long)(x-pos)*samples*100)/provider->GetSampleRate();
+						int delta = ((int64_t)(x-pos)*samples*100)/provider->GetSampleRate();
 
 						// Apply delta
 						int deltaMode = 0;
@@ -1701,7 +1701,7 @@ int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool shiftHeld,bool start) {
 	bool snapKey = Options.AsBool(_T("Audio snap to keyframes"));
 	if (shiftHeld) snapKey = !snapKey;
 	if (snapKey && VideoContext::Get()->KeyFramesLoaded() && Options.AsBool(_T("Audio Draw Keyframes"))) {
-		long long keyMS;
+		int64_t keyMS;
 		wxArrayInt keyFrames = VideoContext::Get()->GetKeyFrames();
 		int frame;
 		for (unsigned int i=0;i<keyFrames.Count();i++) {
@@ -1799,11 +1799,11 @@ int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool shiftHeld,bool start) {
 	// Scrub
 	if (scrubbing && scrubButton) {
 		// Get current data
-		long long exactPos = MAX(0,GetSampleAtX(x));
+		int64_t exactPos = MAX(0,GetSampleAtX(x));
 		int curScrubTime = clock();
 		int scrubDeltaTime = curScrubTime - scrubTime;
 		bool invert = exactPos < scrubLastPos;
-		long long curScrubPos = exactPos;
+		int64_t curScrubPos = exactPos;
 
 		if (scrubDeltaTime > 0) {
 			// Get derived data
@@ -1811,7 +1811,7 @@ int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool shiftHeld,bool start) {
 			int curRate = MID(int(scrubLastRate-rateChange),abs(int(exactPos - scrubLastPos)) * CLOCKS_PER_SEC / scrubDeltaTime,int(scrubLastRate+rateChange));
 			if (abs(curRate-scrubLastRate) < rateChange) curRate = scrubLastRate;
 			curScrubPos = scrubLastPos + (curRate * scrubDeltaTime / CLOCKS_PER_SEC * (invert ? -1 : 1));
-			long long scrubDelta = curScrubPos - scrubLastPos;
+			int64_t scrubDelta = curScrubPos - scrubLastPos;
 			scrubLastRate = curRate;
 
 			// Copy data to buffer
@@ -1913,7 +1913,7 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 	// Draw cursor
 	int curpos = -1;
 	if (player->IsPlaying()) {
-		long long curPos = player->GetCurrentPosition();
+		int64_t curPos = player->GetCurrentPosition();
 		if (curPos > player->GetStartPosition() && curPos < player->GetEndPosition()) {
 			// Scroll if needed
 			int posX = GetXAtSample(curPos);

@@ -167,7 +167,7 @@ public:
 			// line_length is half of the number of samples used to calculate a line, since half of the output from
 			// a Fourier transform of real data is redundant, and not interesting for the purpose of creating
 			// a frequenmcy/power spectrum.
-			long long sample = start * line_length*2 + overlap*overlap_offset;
+			int64_t sample = start * line_length*2 + overlap*overlap_offset;
 
 			for (unsigned long i = 0; i < length; ++i) {
 				provider->GetAudio(raw_sample_data, sample, line_length*2);
@@ -405,7 +405,7 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 	else
 		fft_overlaps = 1 << quality_index;
 
-	long long _num_lines = provider->GetNumSamples() / line_length / 2;
+	int64_t _num_lines = provider->GetNumSamples() / line_length / 2;
 	//assert (_num_lines < (1<<31)); // hope it fits into 32 bits...
 	num_lines = (unsigned long)_num_lines;
 
@@ -438,7 +438,7 @@ AudioSpectrum::~AudioSpectrum()
 }
 
 
-void AudioSpectrum::RenderRange(long long range_start, long long range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight)
+void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight)
 {
 	unsigned long first_line = (unsigned long)(fft_overlaps * range_start / line_length / 2);
 	unsigned long last_line = (unsigned long)(fft_overlaps * range_end / line_length / 2);

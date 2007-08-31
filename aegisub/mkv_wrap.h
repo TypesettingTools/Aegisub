@@ -43,6 +43,7 @@
 #include <stdio.h>
 #include <vector>
 #include <list>
+#include <stdint.h>
 #include "MatroskaParser.h"
 #include "vfr.h"
 
@@ -68,14 +69,14 @@ class MkvFrame {
 public:
 	double time;
 	bool isKey;
-	long long filePos;
+	int64_t filePos;
 
 	MkvFrame() {
 		time = 0;
 		isKey = false;
 		filePos = -1;
 	}
-	MkvFrame(bool keyframe,double timecode,long long _filePos) {
+	MkvFrame(bool keyframe,double timecode,int64_t _filePos) {
 		isKey = keyframe;
 		time = timecode;
 		filePos = _filePos;

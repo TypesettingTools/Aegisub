@@ -38,6 +38,7 @@
 // Headers
 #include <algorithm>
 #include <errno.h>
+#include <stdint.h>
 #include <wx/tokenzr.h>
 #include <wx/choicdlg.h>
 #include <wx/filename.h>

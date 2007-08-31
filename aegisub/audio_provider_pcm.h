@@ -54,18 +54,18 @@ protected:
 	// Hold data for an index point,
 	// to support files where audio data are
 	// split into multiple blocks.
-	// Using long long's should be safe on most compilers,
-	// wx defines wxFileOffset as long long when possible
+	// Using int64_t's should be safe on most compilers,
+	// wx defines wxFileOffset as int64 when possible
 	struct IndexPoint {
-		long long start_byte;
-		long long start_sample;
-		long long num_samples;
+		int64_t start_byte;
+		int64_t start_sample;
+		int64_t num_samples;
 	};
 	typedef std::vector<IndexPoint> IndexVector;
 	IndexVector index_points;
 
 public:
-	virtual void GetAudio(void *buf, long long start, long long count);
+	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 };
 
 // Construct the right PCM audio provider (if any) for the file

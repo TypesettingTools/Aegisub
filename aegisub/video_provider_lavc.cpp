@@ -84,7 +84,7 @@ private:
 	wxArrayInt bytePos;
 
 	bool isMkv;
-	long long lastDecodeTime;
+	int64_t lastDecodeTime;
 	int frameNumber;
 	int length;
 	AegiVideoFrame curFrame;
@@ -375,16 +375,16 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 	// Needs to seek
 	else {
 		// Prepare seek
-		long long seekTo;
+		int64_t seekTo;
 		int result = 0;
 
 #if 0
 		// Get time to seek to
 		if (isMkv) {
-			//long long base = AV_TIME_BASE;
-			//long long time = VFR_Output.GetTimeAtFrame(n,true) * base / 1000000;
-			//seekTo = av_rescale(time,stream->time_base.den,AV_TIME_BASE * long long(stream->time_base.num));
-			//seekTo = long long(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
+			//int64_t base = AV_TIME_BASE;
+			//int64_t time = VFR_Output.GetTimeAtFrame(n,true) * base / 1000000;
+			//seekTo = av_rescale(time,stream->time_base.den,AV_TIME_BASE * int64_t(stream->time_base.num));
+			//seekTo = int64_t(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
 			//seekTo = bytePos[n];
 
 			//result = av_seek_frame(formatContext,vidStream,seekTo,AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_BYTE);
@@ -392,8 +392,8 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 			// Prepare mkv seek
 			ulonglong startTime, endTime, filePos;
 			unsigned int rt, frameSize, frameFlags;
-			ulonglong targetTime = (long long)(VFR_Output.GetTimeAtFrame(n,true,true))*1000000;
-			//ulonglong targetTime = (long long)(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
+			ulonglong targetTime = (int64_t)(VFR_Output.GetTimeAtFrame(n,true,true))*1000000;
+			//ulonglong targetTime = (int64_t)(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
 			//ulonglong targetTime = mkv.rawFrames[n].time * 1000000;
 			mkv_Seek(mkv.file,targetTime,MKVF_SEEK_TO_PREV_KEYFRAME);
 

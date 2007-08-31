@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <stdint.h>
 #include "factory.h"
 
 
@@ -67,7 +68,7 @@ public:
 	virtual void OpenStream() {}
 	virtual void CloseStream() {}
 
-	virtual void Play(long long start,long long count)=0;	// Play sample range
+	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
 	virtual void Stop(bool timerToo=true)=0;			// Stop playing
 	virtual void RequestStop();							// Request it to stop playing in a thread-safe way
 	virtual bool IsPlaying()=0;
@@ -75,11 +76,11 @@ public:
 	virtual void SetVolume(double volume)=0;
 	virtual double GetVolume()=0;
 
-	virtual long long GetStartPosition()=0;
-	virtual long long GetEndPosition()=0;
-	virtual long long GetCurrentPosition()=0;
-	virtual void SetEndPosition(long long pos)=0;
-	virtual void SetCurrentPosition(long long pos)=0;
+	virtual int64_t GetStartPosition()=0;
+	virtual int64_t GetEndPosition()=0;
+	virtual int64_t GetCurrentPosition()=0;
+	virtual void SetEndPosition(int64_t pos)=0;
+	virtual void SetCurrentPosition(int64_t pos)=0;
 
 	virtual wxMutex *GetMutex();
 

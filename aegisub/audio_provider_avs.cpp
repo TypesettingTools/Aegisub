@@ -66,8 +66,8 @@ public:
 
 	wxString GetFilename();
 
-	void GetAudio(void *buf, long long start, long long count);
-	void GetWaveForm(int *min,int *peak,long long start,int w,int h,int samples,float scale);
+	void GetAudio(void *buf, int64_t start, int64_t count);
+	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
 
 
@@ -206,10 +206,10 @@ wxString AvisynthAudioProvider::GetFilename() {
 
 /////////////
 // Get audio
-void AvisynthAudioProvider::GetAudio(void *buf, long long start, long long count) {
+void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
-		long long oldcount = count;
+		int64_t oldcount = count;
 		count = num_samples-start;
 		if (count < 0) count = 0;
 

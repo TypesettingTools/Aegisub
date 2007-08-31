@@ -41,6 +41,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <stdint.h>
 #include "audio_provider.h"
 #include "audio_player.h"
 #include "audio_spectrum.h"
@@ -71,10 +72,10 @@ private:
 	wxBitmap *origImage;
 	wxBitmap *spectrumDisplay;
 	wxBitmap *spectrumDisplaySelected;
-	long long PositionSample;
+	int64_t PositionSample;
 	float scale;
 	int samples;
-	long long Position;
+	int64_t Position;
 	int samplesPercent;
 	int oldCurPos;
 	bool hasFocus;
@@ -86,12 +87,12 @@ private:
 	bool diagUpdated;
 	bool holding;
 	bool draggingScale;
-	long long selStart;
-	long long selEnd;
-	long long lineStart;
-	long long lineEnd;
-	long long selStartCap;
-	long long selEndCap;
+	int64_t selStart;
+	int64_t selEnd;
+	int64_t lineStart;
+	int64_t lineEnd;
+	int64_t selStartCap;
+	int64_t selEndCap;
 	int hold;
 	int lastX;
 	int lastDragX;
@@ -103,7 +104,7 @@ private:
 	int *min;
 
 	int scrubTime;
-	long long scrubLastPos;
+	int64_t scrubLastPos;
 	bool scrubbing;
 	int scrubLastRate;
 
@@ -122,8 +123,8 @@ private:
 	void DrawInactiveLines(wxDC &dc);
 	void DrawWaveform(wxDC &dc,bool weak);
 	void DrawSpectrum(wxDC &dc,bool weak);
-	void GetDialoguePos(long long &start,long long &end,bool cap);
-	void GetKaraokePos(long long &start,long long &end,bool cap);
+	void GetDialoguePos(int64_t &start,int64_t &end,bool cap);
+	void GetKaraokePos(int64_t &start,int64_t &end,bool cap);
 	void UpdatePosition(int pos,bool IsSample=false);
 
 	int GetBoundarySnap(int x,int range,bool shiftHeld,bool start=true);
@@ -169,12 +170,12 @@ public:
 	void Play(int start,int end);
 	void Stop();
 
-	long long GetSampleAtX(int x);
-	int GetXAtSample(long long n);
-	int GetMSAtX(long long x);
-	int GetXAtMS(long long ms);
-	int GetMSAtSample(long long x);
-	long long GetSampleAtMS(long long ms);
+	int64_t GetSampleAtX(int x);
+	int GetXAtSample(int64_t n);
+	int GetMSAtX(int64_t x);
+	int GetXAtMS(int64_t ms);
+	int GetMSAtSample(int64_t x);
+	int64_t GetSampleAtMS(int64_t ms);
 	int GetSyllableAtX(int x);
 
 	void GetTimesDialogue(int &start,int &end);

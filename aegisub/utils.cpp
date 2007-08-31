@@ -47,7 +47,7 @@
 #ifndef __LINUX__
 //////////////////////////
 // Absolute of 64 bit int
-long long abs64(long long input) {
+int64_t abs64(int64_t input) {
 	if (input < 0) return -input;
 	return input;
 }

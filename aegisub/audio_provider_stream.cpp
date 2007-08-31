@@ -67,9 +67,9 @@ StreamAudioProvider::~StreamAudioProvider() {
 
 /////////////
 // Get audio
-void StreamAudioProvider::GetAudio(void *buf, long long start, long long count) {
+void StreamAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	// Write
-	long long left = count;
+	int64_t left = count;
 	int written = 0;
 	int toWrite;
 	short *dst = (short*) buf;
@@ -101,7 +101,7 @@ void StreamAudioProvider::GetAudio(void *buf, long long start, long long count) 
 	// Still left, fill with zero
 	if (left > 0) {
 		hasBuf = false;
-		for (long long i=written;i<count;i++) {
+		for (int64_t i=written;i<count;i++) {
 			dst[i] = 0;
 		}
 	}
@@ -110,9 +110,9 @@ void StreamAudioProvider::GetAudio(void *buf, long long start, long long count) 
 
 //////////////////////////
 // Append audio to stream
-void StreamAudioProvider::Append(void *voidptr, long long count) {
+void StreamAudioProvider::Append(void *voidptr, int64_t count) {
 	// Read
-	long long left = count;
+	int64_t left = count;
 	int read = 0;
 	int toRead;
 	short *src = (short*) voidptr;

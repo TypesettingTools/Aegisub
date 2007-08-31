@@ -21,7 +21,7 @@ interface IVideoSinkNotify : public IUnknown {
 #define	IVS_YUY2  4
 #define	IVS_YV12  8
 
-typedef void  (*ReadFrameFunc)(long long timestamp, unsigned format, unsigned bpp,
+typedef void  (*ReadFrameFunc)(__int64 timestamp, unsigned format, unsigned bpp,
 			       const unsigned char *frame, unsigned width, unsigned height, int stride,
 			       unsigned arx, unsigned ary,
 			       void *arg);
@@ -43,7 +43,7 @@ interface IVideoSink : public IUnknown {
 [uuid("80CADA0E-DFA5-4fcc-99DD-52F7C1B0E575")]
 interface IVideoSink2 : public IUnknown {
   STDMETHOD(NotifyFrame)(HANDLE hEvent) = 0;
-  STDMETHOD(GetFrameFormat)(unsigned *type, unsigned *width, unsigned *height, unsigned *arx, unsigned *ary, long long *def_duration) = 0;
+  STDMETHOD(GetFrameFormat)(unsigned *type, unsigned *width, unsigned *height, unsigned *arx, unsigned *ary, __int64 *def_duration) = 0;
 };
 
 HRESULT CreateVideoSink(IBaseFilter **pVS);

@@ -651,7 +651,7 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 //////////////
 // Export audio clip of line
 void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
-	long long num_samples,start=0,end=0,temp;
+	int64_t num_samples,start=0,end=0,temp;
 	AudioDisplay *audioDisplay = parentFrame->audioBox->audioDisplay;
 	AudioProvider *provider = audioDisplay->provider;
 	AssDialogue *cur;

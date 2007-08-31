@@ -41,6 +41,7 @@
 // Headers
 #include <vector>
 #include <utility>
+#include <stdint.h>
 
 
 ////////////
@@ -51,7 +52,7 @@ typedef std::vector<std::pair<int,int> > IntPairVector;
 ///////////////////////
 // Function prototypes
 #ifndef __LINUX__
-long long abs64(long long input);
+int64_t abs64(int64_t input);
 #endif
 int CountMatches(wxString parent,wxString child);
 bool CopyFile(wxString src,wxString dst);

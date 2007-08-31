@@ -85,15 +85,15 @@ public:
 	void OpenStream();
 	void CloseStream();
 
-	void Play(long long start,long long count);
+	void Play(int64_t start,int64_t count);
 	void Stop(bool timerToo=true);
 	bool IsPlaying();
 
-	long long GetStartPosition();
-	long long GetEndPosition();
-	long long GetCurrentPosition();
-	void SetEndPosition(long long pos);
-	void SetCurrentPosition(long long pos);
+	int64_t GetStartPosition();
+	int64_t GetEndPosition();
+	int64_t GetCurrentPosition();
+	void SetEndPosition(int64_t pos);
+	void SetCurrentPosition(int64_t pos);
 
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
@@ -311,7 +311,7 @@ void AlsaPlayer::CloseStream()
 
 ////////
 // Play
-void AlsaPlayer::Play(long long start,long long count)
+void AlsaPlayer::Play(int64_t start,int64_t count)
 {
 	if (playing) {
 		// Quick reset
@@ -367,7 +367,7 @@ bool AlsaPlayer::IsPlaying()
 
 ///////////
 // Set end
-void AlsaPlayer::SetEndPosition(long long pos)
+void AlsaPlayer::SetEndPosition(int64_t pos)
 {
 	end_frame = pos;
 }
@@ -375,19 +375,19 @@ void AlsaPlayer::SetEndPosition(long long pos)
 
 ////////////////////////
 // Set current position
-void AlsaPlayer::SetCurrentPosition(long long pos)
+void AlsaPlayer::SetCurrentPosition(int64_t pos)
 {
 	cur_frame = pos;
 }
 
 
-long long AlsaPlayer::GetStartPosition()
+int64_t AlsaPlayer::GetStartPosition()
 {
 	return start_frame;
 }
 
 
-long long AlsaPlayer::GetEndPosition()
+int64_t AlsaPlayer::GetEndPosition()
 {
 	return end_frame;
 }
@@ -395,7 +395,7 @@ long long AlsaPlayer::GetEndPosition()
 
 ////////////////////////
 // Get current position
-long long AlsaPlayer::GetCurrentPosition()
+int64_t AlsaPlayer::GetCurrentPosition()
 {
 	// FIXME: this should be based on not duration played but actual sample being heard
 	// (during vidoeo playback, cur_frame might get changed to resync)

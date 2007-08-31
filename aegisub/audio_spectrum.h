@@ -38,6 +38,7 @@
 #define AUDIO_SPECTRUM_H
 
 #include <wx/wxprec.h>
+#include <stdint.h>
 #include "audio_provider.h"
 
 
@@ -67,7 +68,7 @@ public:
 	AudioSpectrum(AudioProvider *_provider);
 	~AudioSpectrum();
 
-	void RenderRange(long long range_start, long long range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight);
+	void RenderRange(int64_t range_start, int64_t range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight);
 
 	void SetScaling(float _power_scale);
 };

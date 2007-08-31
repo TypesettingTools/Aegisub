@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <stdint.h>
 #include "factory.h"
 
 
@@ -58,7 +59,7 @@ private:
 
 protected:
 	int channels;
-	long long num_samples; // for one channel, ie. number of PCM frames
+	int64_t num_samples; // for one channel, ie. number of PCM frames
 	int sample_rate;
 	int bytes_per_sample;
 
@@ -69,15 +70,15 @@ public:
 	virtual ~AudioProvider();
 
 	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, long long start, long long count)=0;
-	void GetAudioWithVolume(void *buf, long long start, long long count, double volume);
+	virtual void GetAudio(void *buf, int64_t start, int64_t count)=0;
+	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume);
 
-	long long GetNumSamples();
+	int64_t GetNumSamples();
 	int GetSampleRate();
 	int GetBytesPerSample();
 	int GetChannels();
 
-	void GetWaveForm(int *min,int *peak,long long start,int w,int h,int samples,float scale);
+	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
 
 

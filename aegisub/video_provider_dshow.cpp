@@ -87,12 +87,12 @@ private:
 	unsigned int height;
 	unsigned int num_frames;
 	double fps;
-	long long defd;
+	int64_t defd;
 
 	HRESULT OpenVideo(wxString _filename);
 	void CloseVideo();
 
-	static void ReadFrame(long long timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, int stride, unsigned arx, unsigned ary,	void *arg);
+	static void ReadFrame(__int64 timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, int stride, unsigned arx, unsigned ary,	void *arg);
 	int NextFrame(DF &df,int &fn);
 
 	void RegROT();
@@ -359,7 +359,7 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 
 	// Set FPS and frame duration
 	if (defd == 0) defd = 417083;
-	if (fps != 0.0) defd = long long (10000000.0 / fps) + 1;
+	if (fps != 0.0) defd = int64_t (10000000.0 / fps) + 1;
 	else fps = 10000000.0 / double(++defd);
 
 	// Set number of frames
@@ -404,7 +404,7 @@ void DirectShowVideoProvider::CloseVideo() {
 
 /////////////////////////
 // Read DirectShow frame
-void DirectShowVideoProvider::ReadFrame(long long timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, int stride, unsigned arx, unsigned ary, void *arg) {
+void DirectShowVideoProvider::ReadFrame(int64_t timestamp, unsigned format, unsigned bpp, const unsigned char *frame, unsigned width, unsigned height, int stride, unsigned arx, unsigned ary, void *arg) {
 	// Set frame
 	DF *df = (DF*) arg;
 	df->timestamp = timestamp;
@@ -472,7 +472,7 @@ int DirectShowVideoProvider::NextFrame(DF &df,int &_fn) {
 			// VFR
 			else {
 				for (unsigned int i=0;i<frameTime.Count();i++) {
-					if (df.timestamp < (long long) frameTime[i] * 10000) {
+					if (df.timestamp < (int64_t) frameTime[i] * 10000) {
 						frameno = i-1;
 						break;
 					}

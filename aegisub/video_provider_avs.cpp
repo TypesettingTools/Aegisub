@@ -346,6 +346,9 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	}
 
 	// Convert to RGB32
+	// If "Avisynth renders its own subs" is enabled, this should always be done,
+	// regardless of shaders being enabled or not. (Since VSFilter will convert
+	// to RGB32 and back again itself either way.)
 	if (!OpenGLWrapper::UseShaders()) {
 		script = env->Invoke("ConvertToRGB32", script);
 		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));

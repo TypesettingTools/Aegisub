@@ -41,7 +41,7 @@
 #include <stdint.h>
 
 
-void PCMAudioProvider::GetAudio(void *buf, long long start, long long count)
+void PCMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 {
 	// We'll be seeking in the file so state can become inconsistent
 	wxMutexLocker _fml(filemutex);
@@ -54,7 +54,7 @@ void PCMAudioProvider::GetAudio(void *buf, long long start, long long count)
 		if (ip.start_sample <= start && ip.start_sample+ip.num_samples > start) {
 
 			// How many samples we can maximum take from this block
-			long long samples_can_do = ip.num_samples - start + ip.start_sample;
+			int64_t samples_can_do = ip.num_samples - start + ip.start_sample;
 			if (samples_can_do > count) samples_can_do = count;
 
 			// Read as many samples we can
@@ -166,8 +166,8 @@ public:
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
-				long long samples = ch.size / bytes_per_sample;
-				long long frames = samples / channels;
+				int64_t samples = ch.size / bytes_per_sample;
+				int64_t frames = samples / channels;
 
 				IndexPoint ip;
 				ip.start_sample = num_samples;
@@ -217,7 +217,7 @@ public:
 		delete provider;
 	}
 
-	void GetAudio(void *buf, long long start, long long count)
+	void GetAudio(void *buf, int64_t start, int64_t count)
 	{
 		if (count == 0) return;
 

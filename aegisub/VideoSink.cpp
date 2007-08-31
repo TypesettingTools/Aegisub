@@ -212,7 +212,7 @@ public:
   void		  SetTypes(unsigned t) { m_types = t; }
 
   HRESULT GetFrameFormat(unsigned *type, unsigned *width, unsigned *height, int *stride,
-			 unsigned *pbpp, unsigned *arx, unsigned *ary, long long *def_duration)
+			 unsigned *pbpp, unsigned *arx, unsigned *ary, __int64 *def_duration)
   {
     if (!IsConnected())
       return VFW_E_NOT_CONNECTED;
@@ -449,7 +449,7 @@ public:
     m_hNotify = hEvent;
     return S_OK;
   }
-  STDMETHOD(GetFrameFormat)(unsigned *type, unsigned *width, unsigned *height, unsigned *arx, unsigned *ary, long long *def_duration) {
+  STDMETHOD(GetFrameFormat)(unsigned *type, unsigned *width, unsigned *height, unsigned *arx, unsigned *ary, __int64 *def_duration) {
     CheckPointer(type, E_POINTER);
     CheckPointer(width, E_POINTER);
     CheckPointer(height, E_POINTER);
