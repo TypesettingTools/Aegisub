@@ -1,19 +1,5 @@
 #include "ffmpegsource.h"
 
-int GetSWSCPUFlags(IScriptEnvironment *Env) {
-	int Flags = 0;
-	long CPUFlags = Env->GetCPUFlags();
-
-	if (CPUFlags & CPUF_MMX)
-		CPUFlags |= SWS_CPU_CAPS_MMX;
-	if (CPUFlags & CPUF_INTEGER_SSE)
-		CPUFlags |= SWS_CPU_CAPS_MMX2;
-	if (CPUFlags & CPUF_3DNOW)
-		CPUFlags |= SWS_CPU_CAPS_3DNOW;
-
-	return Flags;
-}
-
 int FFBase::FrameFromDTS(int64_t ADTS) {
 	for (int i = 0; i < (int)FrameToDTS.size(); i++)
 		if (FrameToDTS[i].DTS == ADTS)
@@ -101,37 +87,203 @@ bool FFBase::SaveTimecodesToFile(const char *ATimecodeFile, int64_t ScaleD, int6
 	return true;
 }
 
-bool FFBase::PrepareAudioCache(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env) {
+
+static FLAC__StreamDecoderReadStatus FLACStreamDecoderReadCallback(const FLAC__StreamDecoder *ADecoder, FLAC__byte ABuffer[], size_t *ABytes, FFBase *AOwner) {
+	if(*ABytes > 0) {
+		*ABytes = fread(ABuffer, sizeof(FLAC__byte), *ABytes, AOwner->FCFile);
+		if(ferror(AOwner->FCFile))
+			return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
+		else if(*ABytes == 0)
+			return FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM;
+		else
+			return FLAC__STREAM_DECODER_READ_STATUS_CONTINUE;
+	} else {
+		return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
+	}
+}
+
+static FLAC__StreamDecoderSeekStatus FLACStreamDecoderSeekCallback(const FLAC__StreamDecoder *ADecoder, FLAC__uint64 AAbsoluteByteOffset, FFBase *AOwner) {
+	if(_fseeki64(AOwner->FCFile, AAbsoluteByteOffset, SEEK_SET) < 0)
+		return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
+	else
+		return FLAC__STREAM_DECODER_SEEK_STATUS_OK;
+}
+
+static FLAC__StreamDecoderTellStatus FLACStreamDecoderTellCallback(const FLAC__StreamDecoder *ADecoder, FLAC__uint64 *AAbsoluteByteOffset, FFBase *AOwner) {
+	__int64 Pos;
+	if ((Pos = _ftelli64(AOwner->FCFile)) < 0) {
+		return FLAC__STREAM_DECODER_TELL_STATUS_ERROR;
+	} else {
+		*AAbsoluteByteOffset = (FLAC__uint64)Pos;
+		return FLAC__STREAM_DECODER_TELL_STATUS_OK;
+	}
+}
+
+static FLAC__StreamDecoderLengthStatus FLACStreamDecoderLengthCallback(const FLAC__StreamDecoder *ADecoder, FLAC__uint64 *AStreamLength, FFBase *AOwner) {
+	__int64 OriginalPos;
+	__int64 Length;
+	if ((OriginalPos = _ftelli64(AOwner->FCFile)) < 0)
+		return FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR;
+	_fseeki64(AOwner->FCFile, 0, SEEK_END);
+	if ((Length = _ftelli64(AOwner->FCFile)) < 0)
+		return FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR;
+	_fseeki64(AOwner->FCFile, OriginalPos, SEEK_SET);
+	*AStreamLength = Length;
+	return FLAC__STREAM_DECODER_LENGTH_STATUS_OK;
+}
+
+static FLAC__bool FLACStreamDecoderEofCallback(const FLAC__StreamDecoder *ADecoder, FFBase *AOwner) {
+	return feof(AOwner->FCFile) ? true : false;
+}
+
+static FLAC__StreamDecoderWriteStatus FLACStreamDecoderWriteCallback(const FLAC__StreamDecoder *ADecoder, const FLAC__Frame *AFrame, const FLAC__int32 *const ABuffer[], FFBase *AOwner) {
+	unsigned Blocksize = AFrame->header.blocksize;
+	const VideoInfo VI = AOwner->GetVideoInfo();
+	int16_t *Buffer = (int16_t *)AOwner->FCBuffer;
+
+	int j = 0;
+	while (AOwner->FCCount > 0 && Blocksize > 0) {
+		for (int i = 0; i < VI.nchannels; i++)
+			*Buffer++ = ABuffer[i][j];
+		j++;
+		AOwner->FCCount--;
+		Blocksize--;
+	}
+
+	AOwner->FCBuffer = Buffer;
+
+	return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
+}
+
+static void FLACStreamDecoderMetadataCallback(const FLAC__StreamDecoder *ADecoder, const FLAC__StreamMetadata *AMetadata, FFBase *AOwner) {
+	AOwner->FCError = (AMetadata->data.stream_info.total_samples <= 0);
+}
+
+static void FLACStreamDecoderErrorCallback(const FLAC__StreamDecoder *ADecoder, FLAC__StreamDecoderErrorStatus AStatus, FFBase *AOwner) {
+	AOwner->FCError = true;
+}
+
+bool FFBase::OpenAudioCache(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env) {
 	char DefaultCacheFilename[1024];
 	sprintf(DefaultCacheFilename, "%s.ffa%dcache", ASource, AAudioTrack);
 	if (!strcmp(AAudioCacheFile, ""))
 		AAudioCacheFile = DefaultCacheFilename;
 
-	bool IsWritable = false;
-
-	AudioCache = fopen(AAudioCacheFile, "rb");
-	if (!AudioCache) {
-		AudioCache = fopen(AAudioCacheFile, "wb+");
-		if (!AudioCache)
-			Env->ThrowError("FFmpegSource: Failed to open the audio cache file for writing");
-		IsWritable = true;
+	// Is an empty file?
+	FCFile = fopen(AAudioCacheFile, "rb");
+	int64_t CacheSize;
+	if (FCFile) {
+		_fseeki64(FCFile, 0, SEEK_END);
+		CacheSize = _ftelli64(FCFile);
+		_fseeki64(FCFile, 0, SEEK_SET);
+		if (CacheSize <= 0) {
+			fclose(FCFile);
+			FCFile = NULL;
+			return false;
+		}
+	} else {
 		return false;
 	}
 
-	_fseeki64(AudioCache, 0, SEEK_END);
-	int64_t CacheSize = _ftelli64(AudioCache);
-	if (CacheSize > 0) {
-		VI.num_audio_samples = VI.AudioSamplesFromBytes(CacheSize);
-		return true;
+	// If FLAC?
+	FLACAudioCache = FLAC__stream_decoder_new();
+	if (FLAC__stream_decoder_init_stream(FLACAudioCache,
+		&(FLAC__StreamDecoderReadCallback)FLACStreamDecoderReadCallback,
+		&(FLAC__StreamDecoderSeekCallback)FLACStreamDecoderSeekCallback,
+		&(FLAC__StreamDecoderTellCallback)FLACStreamDecoderTellCallback,
+		&(FLAC__StreamDecoderLengthCallback)FLACStreamDecoderLengthCallback,
+		&(FLAC__StreamDecoderEofCallback)FLACStreamDecoderEofCallback,
+		&(FLAC__StreamDecoderWriteCallback)FLACStreamDecoderWriteCallback,
+		&(FLAC__StreamDecoderMetadataCallback)FLACStreamDecoderMetadataCallback, &(FLAC__StreamDecoderErrorCallback)FLACStreamDecoderErrorCallback, this) == FLAC__STREAM_DECODER_INIT_STATUS_OK) {
+		FCError = true;
+		FLAC__stream_decoder_process_until_end_of_metadata(FLACAudioCache);
+		if (!FCError) {
+			VI.num_audio_samples = FLAC__stream_decoder_get_total_samples(FLACAudioCache);
+			AudioCacheType = acFLAC;
+			return true;
+		}
 	}
+	FLAC__stream_decoder_delete(FLACAudioCache);
+	FLACAudioCache = NULL;
 
-	if (!IsWritable) {
-		AudioCache = freopen(AAudioCacheFile, "wb+", AudioCache);
-		if (!AudioCache)
-			Env->ThrowError("FFmpegSource: Failed to open the audio cache file for writing");
+	// Raw audio
+	VI.num_audio_samples = VI.AudioSamplesFromBytes(CacheSize);
+	AudioCacheType = acRaw;
+	RawAudioCache = FCFile;
+	FCFile = NULL;
+	return true;
+}
+
+static FLAC__StreamEncoderWriteStatus FLACStreamEncoderWriteCallback(const FLAC__StreamEncoder *ASncoder, const FLAC__byte ABuffer[], size_t ABytes, unsigned ABamples, unsigned ACurrentFrame, FFBase *AOwner) {
+	fwrite(ABuffer, sizeof(FLAC__byte), ABytes, AOwner->FCFile);
+	if(ferror(AOwner->FCFile))
+		return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
+	else
+		return FLAC__STREAM_ENCODER_WRITE_STATUS_OK;
+}
+
+static FLAC__StreamEncoderSeekStatus FLACStreamEncoderSeekCallback(const FLAC__StreamEncoder *AEncoder, FLAC__uint64 AAbsoluteByteOffset, FFBase *AOwner) {
+	if(_fseeki64(AOwner->FCFile, AAbsoluteByteOffset, SEEK_SET) < 0)
+		return FLAC__STREAM_ENCODER_SEEK_STATUS_ERROR;
+	else
+		return FLAC__STREAM_ENCODER_SEEK_STATUS_OK;
+}
+
+static FLAC__StreamEncoderTellStatus FLACStreamEncoderTellCallback(const FLAC__StreamEncoder *AEncoder, FLAC__uint64 *AAbsoluteByteOffset, FFBase *AOwner) {
+	__int64 Pos;
+	if((Pos = _ftelli64(AOwner->FCFile)) < 0) {
+		return FLAC__STREAM_ENCODER_TELL_STATUS_ERROR;
+	} else {
+		*AAbsoluteByteOffset = (FLAC__uint64)Pos;
+		return FLAC__STREAM_ENCODER_TELL_STATUS_OK;
 	}
+}
 
-	return false;
+FLAC__StreamEncoder *FFBase::NewFLACCacheWriter(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, int ACompression, IScriptEnvironment *Env) {
+	char DefaultCacheFilename[1024];
+	sprintf(DefaultCacheFilename, "%s.ffa%dcache", ASource, AAudioTrack);
+	if (!strcmp(AAudioCacheFile, ""))
+		AAudioCacheFile = DefaultCacheFilename;
+
+	FCFile = fopen(AAudioCacheFile, "wb");
+	if (!FCFile)
+		Env->ThrowError("FFmpegSource: Failed to open '%s' for writing", AAudioCacheFile);
+	FLAC__StreamEncoder *FSE;
+	FSE = FLAC__stream_encoder_new();
+	FLAC__stream_encoder_set_channels(FSE, VI.nchannels);
+	FLAC__stream_encoder_set_bits_per_sample(FSE, VI.BytesPerChannelSample() * 8);
+	FLAC__stream_encoder_set_sample_rate(FSE, VI.audio_samples_per_second);
+	FLAC__stream_encoder_set_compression_level(FSE, ACompression);
+	if (FLAC__stream_encoder_init_stream(FSE, &(FLAC__StreamEncoderWriteCallback)FLACStreamEncoderWriteCallback,
+		&(FLAC__StreamEncoderSeekCallback)FLACStreamEncoderSeekCallback,
+		&(FLAC__StreamEncoderTellCallback)FLACStreamEncoderTellCallback, NULL, this)
+		!= FLAC__STREAM_ENCODER_INIT_STATUS_OK)
+		Env->ThrowError("FFmpegSource: Failed to initialize the FLAC encoder for '%s'", AAudioCacheFile);
+
+	return FSE;
+}
+
+void FFBase::CloseFLACCacheWriter(FLAC__StreamEncoder *AFSE) {
+	FLAC__stream_encoder_finish(AFSE);
+	FLAC__stream_encoder_delete(AFSE);
+	fclose(FCFile);
+	FCFile = NULL;
+}
+
+FILE *FFBase::NewRawCacheWriter(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env) {
+	char DefaultCacheFilename[1024];
+	sprintf(DefaultCacheFilename, "%s.ffa%dcache", ASource, AAudioTrack);
+	if (!strcmp(AAudioCacheFile, ""))
+		AAudioCacheFile = DefaultCacheFilename;
+
+	FILE *RCF = fopen(AAudioCacheFile, "wb");
+	if (RCF == NULL)
+		Env->ThrowError("FFmpegSource: Failed to open '%s' for writing", AAudioCacheFile);
+	return RCF;
+}
+
+void FFBase::CloseRawCacheWriter(FILE *ARawCache) {
+	fclose(ARawCache);
 }
 
 void FFBase::InitPP(int AWidth, int AHeight, const char *APPString, int AQuality, int APixelFormat, IScriptEnvironment *Env) {
@@ -164,9 +316,10 @@ void FFBase::InitPP(int AWidth, int AHeight, const char *APPString, int AQuality
 
 void FFBase::SetOutputFormat(int ACurrentFormat, IScriptEnvironment *Env) {
 	int Loss;
-	int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), ACurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+	int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), ACurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
 
 	switch (BestFormat) {
+		case PIX_FMT_YUVJ420P: // stupid yv12 distinctions, also inexplicably completely undeniably incompatible with all other supported output formats
 		case PIX_FMT_YUV420P: VI.pixel_type = VideoInfo::CS_I420; break;
 		case PIX_FMT_YUYV422: VI.pixel_type = VideoInfo::CS_YUY2; break;
 		case PIX_FMT_RGB32: VI.pixel_type = VideoInfo::CS_BGR32; break;
@@ -220,22 +373,47 @@ PVideoFrame FFBase::OutputFrame(AVFrame *AFrame, IScriptEnvironment *Env) {
 }
 
 void __stdcall FFBase::GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment* Env) {
-	_fseeki64(AudioCache, VI.BytesFromAudioSamples(Start), SEEK_SET);
-	fread(Buf, 1, VI.BytesFromAudioSamples(Count), AudioCache);
+	if (AudioCacheType == acRaw) {
+		_fseeki64(RawAudioCache, VI.BytesFromAudioSamples(Start), SEEK_SET);
+		fread(Buf, 1, VI.BytesFromAudioSamples(Count), RawAudioCache);
+	} else if (AudioCacheType == acFLAC) {
+		FCCount = Count;
+		FCBuffer = Buf;
+		FLAC__stream_decoder_seek_absolute(FLACAudioCache, Start);
+		while (FCCount > 0)
+			FLAC__stream_decoder_process_single(FLACAudioCache);
+	} else {
+		Env->ThrowError("FFmpegSource: Audio requested but none available");
+	}
 }
 
 FFBase::FFBase() {
 	memset(&VI, 0, sizeof(VI));
-	AudioCache = NULL;
+	AudioCacheType = acNone;
+	FCError = false;
+	RawAudioCache = NULL;
+	FLACAudioCache = NULL;
 	PPContext = NULL;
 	PPMode = NULL;
 	SWS = NULL;
+	DecodingBuffer = new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+	FLACBuffer = new FLAC__int32[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 	ConvertToFormat = PIX_FMT_NONE;
 	memset(&PPPicture, 0, sizeof(PPPicture));
 	DecodeFrame = avcodec_alloc_frame();
 }
 
 FFBase::~FFBase() {
+	delete [] DecodingBuffer;
+	delete [] FLACBuffer;
+	if (RawAudioCache)
+		fclose(RawAudioCache);
+	if (FLACAudioCache) {
+		FLAC__stream_decoder_finish(FLACAudioCache);
+		FLAC__stream_decoder_delete(FLACAudioCache);
+	}
+	if (FCFile)
+		fclose(FCFile);
 	if (SWS)
 		sws_freeContext(SWS);
 	if (PPMode)

@@ -9,6 +9,24 @@ FFmpegSource Documentation
 
 <h2>Changes</h2>
 <ul>
+<li>1.10<ul>
+<li>The audio cache compression level is now ignored if the source isn't 16bit and the raw format is used instead</li>
+<li>FLAC is now actually initialized properly so the cache actually works for files that aren't stereo (16bit limit still applies)</li>
+<li>Now uses proper callbacks for FLAC so it works with larger than 2GB files</li>
+<li>Doesn't (over)write the video cache with an empty one in certain cases when avformat is used for the source</li>
+</ul></li>
+
+<li>1.9<ul>
+<li>Added the possibility to compress the audio cache with FLAC (currently only works with 16bit audio)</li>
+<li>Added another planar YUV 4:2:0 format to the supported output formats (fixes certain mov files)</li>
+<li>Less memory is now allocated on the stack which makes av_find_stream_info() work for all files (fixes certain mov files)</li>
+<li>Updated FFmpeg to rev 10186</li>
+</ul></li>
+
+<li>1.8<ul>
+<li>Updated FFmpeg to rev 10141</li>
+</ul></li>
+
 <li>1.7<ul>
 <li>Updated FFmpeg</li>
 <li>Fixed error with mkv for codecs without codec private data and the first packet doesn't belong to them</li>
@@ -85,7 +103,7 @@ FFmpegSource Documentation
 
 <h2>Usage</h2>
 <p>
-<b>FFmpegSource(string source, int vtrack = -1, int atrack = -2, string timecodes, bool vcache = true, string vcachefile, string acachefile, string pp, int ppquality = 6, int seekmode = 1)</b><br />
+<b>FFmpegSource(string source, int vtrack = -1, int atrack = -2, string timecodes, bool vcache = true, string vcachefile, string acachefile, int accompression = -1, string pp, int ppquality = 6, int seekmode = 1)</b><br />
 </p>
 
 <p>
@@ -96,7 +114,6 @@ Note that the audio cache will always be created when opening files with audio a
 <b>FFPP(clip, string pp, int ppquality = 6)</b><br />
 Separate postprocessing which also seems to include a few simple deinterlacers
 </p>
-
 
 <p>
 <b>source:</b>
@@ -116,12 +133,17 @@ Separate postprocessing which also seems to include a few simple deinterlacers
 
 <p>
 <b>vcache:</b>
-  Write video indexing information to a file for later use.
+  Write video indexing information to a file for later use. This setting does not control if The video index is loaded which it always is if it exists.
 </p>
 
 <p>
 <b>vcachefile &amp; acachefile:</b>
   Specifies the file to store the index information or raw audio in, if nothing is specified (source).ffv(tracknumber)cache is used for video and (source).ffa(tracknumber)cache for audio.
+</p>
+
+<p>
+<b>accompression</b>
+  Audio cache compression, -1 means raw audio and 0-8 uses FLAC with that compression level.
 </p>
 
 <p>
