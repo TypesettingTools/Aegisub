@@ -691,6 +691,9 @@ void DialogStyleManager::PasteToCurrent() {
 	while (st.HasMoreTokens()) {
 		AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
 		if (s->Valid) {
+			while (AssFile::top->GetStyle(s->name) != NULL)
+				s->name = _T("Copy of ") + s->name;
+
 			AssFile::top->InsertStyle(s);
 			LoadCurrentStyles(AssFile::top);
 		}
@@ -714,6 +717,9 @@ void DialogStyleManager::PasteToStorage() {
 	while (st.HasMoreTokens()) {
 		AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
 		if (s->Valid) {
+			while (Store.GetStyle(s->name) != NULL)
+				s->name = _T("Copy of ") + s->name;
+
 			Store.style.push_back(s);
 			Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 		}
