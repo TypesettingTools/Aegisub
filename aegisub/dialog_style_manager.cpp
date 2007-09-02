@@ -689,16 +689,26 @@ void DialogStyleManager::PasteToCurrent() {
 
 	wxStringTokenizer st(data,_T('\n'));
 	while (st.HasMoreTokens()) {
-		AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
-		if (s->Valid) {
-			while (AssFile::top->GetStyle(s->name) != NULL)
-				s->name = _T("Copy of ") + s->name;
+		try {
+			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+			if (s->Valid) {
+				while (AssFile::top->GetStyle(s->name) != NULL)
+					s->name = _T("Copy of ") + s->name;
 
-			AssFile::top->InsertStyle(s);
-			LoadCurrentStyles(AssFile::top);
+				s->UpdateData();
+				AssFile::top->InsertStyle(s);
+				LoadCurrentStyles(AssFile::top);
+
+				grid->ass->FlagAsModified(_("style paste"));
+				grid->CommitChanges();
+			}
+			else
+				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
 		}
-		grid->ass->FlagAsModified(_("style paste"));
-		grid->CommitChanges();
+		catch (...) {
+			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
+		}
+
 	}
 }
 void DialogStyleManager::PasteToStorage() {
@@ -715,16 +725,26 @@ void DialogStyleManager::PasteToStorage() {
 
 	wxStringTokenizer st(data,_T('\n'));
 	while (st.HasMoreTokens()) {
-		AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
-		if (s->Valid) {
-			while (Store.GetStyle(s->name) != NULL)
-				s->name = _T("Copy of ") + s->name;
+		try {
+			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+			if (s->Valid) {
+				while (Store.GetStyle(s->name) != NULL)
+					s->name = _T("Copy of ") + s->name;
 
-			Store.style.push_back(s);
-			Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+				s->UpdateData();
+				Store.style.push_back(s);
+				Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+
+				LoadStorageStyles();
+				StorageList->SetStringSelection(s->name);
+			}
+			else
+				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
 		}
-		LoadStorageStyles();
-		StorageList->SetStringSelection(s->name);
+		catch(...) {
+			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
+		}
+
 	}
 }
 ///////////////
