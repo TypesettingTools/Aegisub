@@ -443,44 +443,48 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	-- Apply all line templates
 	aegisub.debug.out(5, "Running line templates\n")
 	for t in matching_templates(templates.line, line, tenv) do
-		if t.code then
-			aegisub.debug.out(5, "Code template, %s\n", t.code)
-			tenv.line = line
-			run_code_template(t, tenv)
-		else
-			aegisub.debug.out(5, "Line template, pre = '%s', t = '%s'\n", t.pre, t.t)
-			applied_templates = true
-			local newline = table.copy(line)
-			tenv.line = newline
-			newline.layer = t.layer
-			newline.text = ""
-			if t.pre ~= "" then
-				newline.text = newline.text .. run_text_template(t.pre, tenv, varctx)
-			end
-			if t.t ~= "" then
-				for i = 1, line.kara.n do
-					local syl = line.kara[i]
-					tenv.syl = syl
-					set_ctx_syl(varctx, line, syl)
-					newline.text = newline.text .. run_text_template(t.t, tenv, varctx)
-					if t.addtext then
-						if t.keeptags then
-							newline.text = newline.text .. syl.text
-						else
-							newline.text = newline.text .. syl.text_stripped
+		tenv.j = 0
+		while tenv.j < t.loops do
+			tenv.j = tenv.j + 1
+			if t.code then
+				aegisub.debug.out(5, "Code template, %s\n", t.code)
+				tenv.line = line
+				run_code_template(t, tenv)
+			else
+				aegisub.debug.out(5, "Line template, pre = '%s', t = '%s'\n", t.pre, t.t)
+				applied_templates = true
+				local newline = table.copy(line)
+				tenv.line = newline
+				newline.layer = t.layer
+				newline.text = ""
+				if t.pre ~= "" then
+					newline.text = newline.text .. run_text_template(t.pre, tenv, varctx)
+				end
+				if t.t ~= "" then
+					for i = 1, line.kara.n do
+						local syl = line.kara[i]
+						tenv.syl = syl
+						set_ctx_syl(varctx, line, syl)
+						newline.text = newline.text .. run_text_template(t.t, tenv, varctx)
+						if t.addtext then
+							if t.keeptags then
+								newline.text = newline.text .. syl.text
+							else
+								newline.text = newline.text .. syl.text_stripped
+							end
 						end
 					end
-				end
-			else
-				-- hmm, no main template for the line... put original text in
-				if t.keeptags then
-					newline.text = newline.text .. line.text
 				else
-					newline.text = newline.text .. line.text_stripped
+					-- hmm, no main template for the line... put original text in
+					if t.keeptags then
+						newline.text = newline.text .. line.text
+					else
+						newline.text = newline.text .. line.text_stripped
+					end
 				end
+				newline.effect = "fx"
+				subs.append(newline)
 			end
-			newline.effect = "fx"
-			subs.append(newline)
 		end
 	end
 	aegisub.debug.out(5, "Done running line templates\n\n")
