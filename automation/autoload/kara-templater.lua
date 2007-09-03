@@ -282,6 +282,9 @@ function apply_templates(meta, styles, subs, templates)
 		elseif mode == "postsyl" then
 			newstart = line.start_time + syl.end_time + addstart
 			newend = line.start_time + syl.end_time + addend
+		elseif mode == "line" then
+			newstart = line.start_time + addstart
+			newend = line.end_time + addend
 		elseif mode == "preline" then
 			newstart = line.start_time + addstart
 			newend = line.start_time + addend
@@ -306,6 +309,7 @@ function apply_templates(meta, styles, subs, templates)
 		end
 		line.start_time = newstart
 		line.end_time = newend
+		line.duration = newend - newstart
 		return ""
 	end
 	tenv.fxgroup = {}
