@@ -1,3 +1,23 @@
+//  Copyright (c) 2007 Fredrik Mellbin
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+
 #include "ffmpegsource.h"
 
 int FFBase::FrameFromDTS(int64_t ADTS) {
@@ -316,14 +336,14 @@ void FFBase::InitPP(int AWidth, int AHeight, const char *APPString, int AQuality
 
 void FFBase::SetOutputFormat(int ACurrentFormat, IScriptEnvironment *Env) {
 	int Loss;
-	int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), ACurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+	int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_RGB24), ACurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
 
 	switch (BestFormat) {
 		case PIX_FMT_YUVJ420P: // stupid yv12 distinctions, also inexplicably completely undeniably incompatible with all other supported output formats
 		case PIX_FMT_YUV420P: VI.pixel_type = VideoInfo::CS_I420; break;
 		case PIX_FMT_YUYV422: VI.pixel_type = VideoInfo::CS_YUY2; break;
 		case PIX_FMT_RGB32: VI.pixel_type = VideoInfo::CS_BGR32; break;
-		case PIX_FMT_BGR24: VI.pixel_type = VideoInfo::CS_BGR24; break;
+		case PIX_FMT_RGB24: VI.pixel_type = VideoInfo::CS_BGR24; break;
 		default:
 			Env->ThrowError("FFmpegSource: No suitable output format found");
 	}
@@ -398,6 +418,7 @@ FFBase::FFBase() {
 	SWS = NULL;
 	DecodingBuffer = new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 	FLACBuffer = new FLAC__int32[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+	FCFile = NULL;
 	ConvertToFormat = PIX_FMT_NONE;
 	memset(&PPPicture, 0, sizeof(PPPicture));
 	DecodeFrame = avcodec_alloc_frame();

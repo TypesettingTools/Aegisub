@@ -9,6 +9,13 @@ FFmpegSource Documentation
 
 <h2>Changes</h2>
 <ul>
+<li>1.11<ul>
+<li>Now officially uses the MIT license</li>
+<li>Supports more audio formats in matroska</li>
+<li>RGB24 output no longer has swapped colors if the video is converted to it for output</li>
+<li>Fixed an access violation on close when no audio is opened (introduced in 1.10)</li>
+</ul></li>
+
 <li>1.10<ul>
 <li>The audio cache compression level is now ignored if the source isn't 16bit and the raw format is used instead</li>
 <li>FLAC is now actually initialized properly so the cache actually works for files that aren't stereo (16bit limit still applies)</li>

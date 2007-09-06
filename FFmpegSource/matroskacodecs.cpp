@@ -1,3 +1,23 @@
+//  Copyright (c) 2007 Fredrik Mellbin
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+
 #include "ffmpegsource.h"
 
 CodecID MatroskaToFFCodecID(TrackInfo *TI) {
@@ -215,25 +235,38 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 		return CODEC_ID_MP2; // correct?
 	else if (!strcmp(Codec, "A_DTS"))
 		return CODEC_ID_DTS;
-/*
-	else if (!strcmp(Codec, "A_PCM/INT/LIT"))
-		return CODEC_ID_PCM_S16LE;
-	else if (!strcmp(Codec, "A_PCM/FLOAT/IEEE"))
-		return CODEC_ID_PCM_S16LE;
-*/
+	else if (!strcmp(Codec, "A_PCM/INT/LIT")) {
+		switch (TI->AV.Audio.BitDepth) {
+			case 8: return CODEC_ID_PCM_S8;
+			case 16: return CODEC_ID_PCM_S16LE;
+			case 24: return CODEC_ID_PCM_S24LE;
+			case 32: return CODEC_ID_PCM_S32LE;
+			default: CODEC_ID_NONE;
+		}
+	} else if (!strcmp(Codec, "A_PCM/FLOAT/IEEE"))
+		return CODEC_ID_NONE; // no float codec id?
 	else if (!strcmp(Codec, "A_TTA1"))
 		return CODEC_ID_TTA;
 	else if (!strcmp(Codec, "A_WAVPACK4"))
 		return CODEC_ID_WAVPACK;
 	else if (!strcmp(Codec, "A_VORBIS"))
 		return CODEC_ID_VORBIS;
-	else if (!strncmp(Codec, "A_REAL/", 7)) {
-		// not supported
-		return CODEC_ID_NONE;
-	} else if (!strncmp(Codec, "A_AAC", 5))
+	else if (!strcmp(Codec, "A_REAL/14_4"))
+		return CODEC_ID_RA_144;
+	else if (!strcmp(Codec, "A_REAL/28_8"))
+		return CODEC_ID_RA_288;
+	else if (!strcmp(Codec, "A_REAL/COOK"))
+		return CODEC_ID_COOK;
+	else if (!strcmp(Codec, "A_REAL/SIPR"))
+		return CODEC_ID_NONE; // no sipr codec id?
+	else if (!strcmp(Codec, "A_REAL/ATRC"))
+		return CODEC_ID_ATRAC3;
+	else if (!strncmp(Codec, "A_AAC", 5))
 		return CODEC_ID_AAC;
 	else if (!strcmp(Codec, "A_MS/ACM")) {
-		// not supported
+		// nothing useful here anyway?
+		//#include "Mmreg.h"
+		//((WAVEFORMATEX *)TI->CodecPrivate)->wFormatTag
 		return CODEC_ID_NONE;
 	} else
 		return CODEC_ID_NONE;
