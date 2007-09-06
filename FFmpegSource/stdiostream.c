@@ -1,12 +1,4 @@
-/* first we need to create an I/O object that the parser will use to read the
- * source file
- */
-struct StdIoStream {
-  struct InputStream  base;
-  FILE		      *fp;
-  int		      error;
-};
-typedef struct StdIoStream StdIoStream;
+#include "stdiostream.h"
 
 #define	CACHESIZE     65536
 
