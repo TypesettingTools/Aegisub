@@ -70,7 +70,7 @@ FFPP::~FFPP() {
 	avpicture_free(&OutputPicture);
 }
 
-PVideoFrame __stdcall FFPP::GetFrame(int n, IScriptEnvironment* Env) {
+PVideoFrame FFPP::GetFrame(int n, IScriptEnvironment* Env) {
 	PVideoFrame Src = child->GetFrame(n, Env);
 	PVideoFrame Dst = Env->NewVideoFrame(vi);
 

@@ -11,9 +11,12 @@ FFmpegSource Documentation
 <ul>
 <li>1.11<ul>
 <li>Now officially uses the MIT license</li>
+<li>Much cleaner source</li>
+<li>Can be compiled without support for compressing the audio cache with FLAC</li>
 <li>Supports more audio formats in matroska</li>
-<li>RGB24 output no longer has swapped colors if the video is converted to it for output</li>
+<li>RGB24 output no longer has swapped colors if the video is converted to it for output (there still seems to be some bugs lurking when conversion is done with libswscale)</li>
 <li>Fixed an access violation on close when no audio is opened (introduced in 1.10)</li>
+<li>Updated FFmpeg to rev 10423</li>
 </ul></li>
 
 <li>1.10<ul>
@@ -222,7 +225,9 @@ tn:64:128:256
 
 <p><b>FFmpeg svn</b> from http://ffmpeg.mplayerhq.hu/</p>
 
-<p><b>Required Configuration:</b>
+<p><b>FLAC (optional)</b> from http://flac.sourceforge.net/</p>
+
+<p><b>Required FFmpeg Configuration:</b>
 ./configure --enable-shared --disable-static --enable-memalign-hack --enable-gpl --enable-swscaler</p>
 
 <p><b>Suggested Additional Options:</b>

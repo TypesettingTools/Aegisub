@@ -107,7 +107,7 @@ bool FFBase::SaveTimecodesToFile(const char *ATimecodeFile, int64_t ScaleD, int6
 	return true;
 }
 
-
+#ifdef FLAC_CACHE
 static FLAC__StreamDecoderReadStatus FLACStreamDecoderReadCallback(const FLAC__StreamDecoder *ADecoder, FLAC__byte ABuffer[], size_t *ABytes, FFBase *AOwner) {
 	if(*ABytes > 0) {
 		*ABytes = fread(ABuffer, sizeof(FLAC__byte), *ABytes, AOwner->FCFile);
@@ -182,6 +182,7 @@ static void FLACStreamDecoderMetadataCallback(const FLAC__StreamDecoder *ADecode
 static void FLACStreamDecoderErrorCallback(const FLAC__StreamDecoder *ADecoder, FLAC__StreamDecoderErrorStatus AStatus, FFBase *AOwner) {
 	AOwner->FCError = true;
 }
+#endif // FLAC_CACHE
 
 bool FFBase::OpenAudioCache(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env) {
 	char DefaultCacheFilename[1024];
@@ -205,7 +206,8 @@ bool FFBase::OpenAudioCache(const char *AAudioCacheFile, const char *ASource, in
 		return false;
 	}
 
-	// If FLAC?
+#ifdef FLAC_CACHE
+	// is FLAC?
 	FLACAudioCache = FLAC__stream_decoder_new();
 	if (FLAC__stream_decoder_init_stream(FLACAudioCache,
 		&(FLAC__StreamDecoderReadCallback)FLACStreamDecoderReadCallback,
@@ -225,6 +227,7 @@ bool FFBase::OpenAudioCache(const char *AAudioCacheFile, const char *ASource, in
 	}
 	FLAC__stream_decoder_delete(FLACAudioCache);
 	FLACAudioCache = NULL;
+#endif // FLAC_CACHE
 
 	// Raw audio
 	VI.num_audio_samples = VI.AudioSamplesFromBytes(CacheSize);
@@ -234,6 +237,7 @@ bool FFBase::OpenAudioCache(const char *AAudioCacheFile, const char *ASource, in
 	return true;
 }
 
+#ifdef FLAC_CACHE
 static FLAC__StreamEncoderWriteStatus FLACStreamEncoderWriteCallback(const FLAC__StreamEncoder *ASncoder, const FLAC__byte ABuffer[], size_t ABytes, unsigned ABamples, unsigned ACurrentFrame, FFBase *AOwner) {
 	fwrite(ABuffer, sizeof(FLAC__byte), ABytes, AOwner->FCFile);
 	if(ferror(AOwner->FCFile))
@@ -289,6 +293,7 @@ void FFBase::CloseFLACCacheWriter(FLAC__StreamEncoder *AFSE) {
 	fclose(FCFile);
 	FCFile = NULL;
 }
+#endif // FLAC_CACHE
 
 FILE *FFBase::NewRawCacheWriter(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env) {
 	char DefaultCacheFilename[1024];
@@ -392,16 +397,18 @@ PVideoFrame FFBase::OutputFrame(AVFrame *AFrame, IScriptEnvironment *Env) {
 	return Dst;
 }
 
-void __stdcall FFBase::GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment* Env) {
+void FFBase::GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment* Env) {
 	if (AudioCacheType == acRaw) {
 		_fseeki64(RawAudioCache, VI.BytesFromAudioSamples(Start), SEEK_SET);
 		fread(Buf, 1, VI.BytesFromAudioSamples(Count), RawAudioCache);
+#ifdef FLAC_CACHE
 	} else if (AudioCacheType == acFLAC) {
 		FCCount = Count;
 		FCBuffer = Buf;
 		FLAC__stream_decoder_seek_absolute(FLACAudioCache, Start);
 		while (FCCount > 0)
 			FLAC__stream_decoder_process_single(FLACAudioCache);
+#endif // FLAC_CACHE
 	} else {
 		Env->ThrowError("FFmpegSource: Audio requested but none available");
 	}
@@ -412,12 +419,14 @@ FFBase::FFBase() {
 	AudioCacheType = acNone;
 	FCError = false;
 	RawAudioCache = NULL;
-	FLACAudioCache = NULL;
 	PPContext = NULL;
 	PPMode = NULL;
 	SWS = NULL;
 	DecodingBuffer = new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+#ifdef FLAC_CACHE
+	FLACAudioCache = NULL;
 	FLACBuffer = new FLAC__int32[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+#endif // FLAC_CACHE
 	FCFile = NULL;
 	ConvertToFormat = PIX_FMT_NONE;
 	memset(&PPPicture, 0, sizeof(PPPicture));
@@ -426,13 +435,15 @@ FFBase::FFBase() {
 
 FFBase::~FFBase() {
 	delete [] DecodingBuffer;
-	delete [] FLACBuffer;
 	if (RawAudioCache)
 		fclose(RawAudioCache);
+#ifdef FLAC_CACHE
+	delete [] FLACBuffer;
 	if (FLACAudioCache) {
 		FLAC__stream_decoder_finish(FLACAudioCache);
 		FLAC__stream_decoder_delete(FLACAudioCache);
 	}
+#endif // FLAC_CACHE
 	if (FCFile)
 		fclose(FCFile);
 	if (SWS)

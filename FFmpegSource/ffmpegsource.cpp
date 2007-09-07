@@ -126,8 +126,9 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 
 	// Needs to be indexed?
 	if (!ACacheIsValid || !VCacheIsValid) {
-
+#ifdef FLAC_CACHE
 		FLAC__StreamEncoder *FSE = NULL;
+#endif // FLAC_CACHE
 		FILE *RawCache = NULL;
 		if (!ACacheIsValid)
 			if (AACCompression >= 0)
@@ -136,7 +137,9 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 				AudioCacheType = acRaw;	
 
 		switch (AudioCacheType) {
+#ifdef FLAC_CACHE
 			case acFLAC: FSE = NewFLACCacheWriter(AAudioCache, ASource, AudioTrack, AACCompression, Env); break;
+#endif // FLAC_CACHE
 			case acRaw: RawCache = NewRawCacheWriter(AAudioCache, ASource, AudioTrack, Env); break;
 		}
 
@@ -161,12 +164,14 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 					Data += Ret;
 					VI.num_audio_samples += DecodedSamples;
 
-					if (AudioCacheType == acFLAC) {
+					if (AudioCacheType == acRaw) {
+						fwrite(DecodingBuffer, 1, TempOutputBufSize, RawCache);
+#ifdef FLAC_CACHE
+					} else if (AudioCacheType == acFLAC) {
 						for (int i = 0; i < DecodedSamples * VI.nchannels; i++)
 							FLACBuffer[i] = ((int16_t *)DecodingBuffer)[i];
-						FLAC__stream_encoder_process_interleaved(FSE, FLACBuffer, DecodedSamples); 
-					} else if (AudioCacheType == acRaw) {
-						fwrite(DecodingBuffer, 1, TempOutputBufSize, RawCache);
+						FLAC__stream_encoder_process_interleaved(FSE, FLACBuffer, DecodedSamples);
+#endif // FLAC_CACHE
 					}
 				}
 			}
@@ -176,7 +181,9 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 
 		if (!ACacheIsValid) {
 			switch (AudioCacheType) {
+#ifdef FLAC_CACHE
 				case acFLAC: CloseFLACCacheWriter(FSE); break;
+#endif // FLAC_CACHE
 				case acRaw: CloseRawCacheWriter(RawCache); break;
 			}
 
@@ -249,7 +256,7 @@ Done:
 	return Ret;
 }
 
-PVideoFrame __stdcall FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
+PVideoFrame FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
 	bool HasSeeked = false;
 	int ClosestKF = FindClosestKeyFrame(n);
 

@@ -1,3 +1,28 @@
+//  Copyright (c) 2007 Fredrik Mellbin
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+
+#ifndef FFMPEGSOURCE_H
+#define FFMPEGSOURCE_H
+
+#define FLAC_CACHE
+
 #include <windows.h>
 #include <stdio.h>
 #include <vector>
@@ -7,14 +32,18 @@
 #include <fcntl.h>
 #include <io.h>
 
+#ifdef FLAC_CACHE
 #include <stream_decoder.h>
 #include <stream_encoder.h>
+#endif // FLAC_CACHE
 
 extern "C" {
 #include <ffmpeg\avformat.h>
 #include <ffmpeg\avcodec.h>
 #include <ffmpeg\swscale.h>
 #include <postproc\postprocess.h>
+
+#include "stdiostream.h"
 }
 
 #include "MatroskaParser.h"
@@ -50,12 +79,15 @@ private:
 protected:
 	VideoInfo VI;
 	AVFrame *DecodeFrame;
-	FILE *RawAudioCache;
-	FLAC__StreamDecoder *FLACAudioCache;
 	AudioCacheFormat AudioCacheType;
+	FILE *RawAudioCache;
+
+#ifdef FLAC_CACHE
+	FLAC__StreamDecoder *FLACAudioCache;
+	FLAC__int32 *FLACBuffer;
+#endif // FLAC_CACHE
 
 	uint8_t *DecodingBuffer;
-	FLAC__int32 *FLACBuffer;
 
 	struct FrameInfo {
 		int64_t DTS;
@@ -73,8 +105,10 @@ protected:
 	bool SaveTimecodesToFile(const char *ATimecodeFile, int64_t ScaleD, int64_t ScaleN);
 
 	bool OpenAudioCache(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env);
+#ifdef FLAC_CACHE
 	FLAC__StreamEncoder *FFBase::NewFLACCacheWriter(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, int ACompression, IScriptEnvironment *Env);
 	void FFBase::CloseFLACCacheWriter(FLAC__StreamEncoder *AFSE);
+#endif // FLAC_CACHE
 	FILE *FFBase::NewRawCacheWriter(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env);
 	void FFBase::CloseRawCacheWriter(FILE *ARawCache);
 
@@ -113,3 +147,26 @@ public:
 	~FFmpegSource();
 	PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* Env);
 };
+
+class FFMatroskaSource : public FFBase {
+private:
+	StdIoStream	ST; 
+    unsigned int BufferSize;
+    CompressedStream *VideoCS;
+    CompressedStream *AudioCS;
+	AVCodecContext *VideoCodecContext;
+	MatroskaFile *MF;
+	char ErrorMessage[256];
+    uint8_t *Buffer;
+	int	CurrentFrame;
+
+	int ReadFrame(uint64_t AFilePos, unsigned int AFrameSize, CompressedStream *ACS, IScriptEnvironment *Env);
+	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, IScriptEnvironment* Env);
+	int GetTrackIndex(int Index, unsigned char ATrackType, IScriptEnvironment *Env);
+public:
+	FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString, int AQuality, IScriptEnvironment* Env);
+	~FFMatroskaSource();
+    PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* Env);
+};
+
+#endif
