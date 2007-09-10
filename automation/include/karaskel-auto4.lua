@@ -353,7 +353,7 @@ function karaskel.preproc_line_pos(meta, styles, line)
 		line.valign = "bottom"
 	elseif line.styleref.align >= 4 and line.styleref.align <= 6 then
 		-- Mid aligned
-		line.top = (meta.res_y - line.eff_margin_t - line.eff_margin_b) / 2 + line.eff_margin_t
+		line.top = (meta.res_y - line.eff_margin_t - line.eff_margin_b - line.height) / 2 + line.eff_margin_t
 		line.middle = line.top + line.height / 2
 		line.bottom = line.top + line.height
 		line.y = line.middle
