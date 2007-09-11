@@ -34,9 +34,6 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #include "visual_tool_cross.h"

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include <wx/intl.h>
+#include <wx/choicdlg.h>
 #include "subtitle_format.h"
 #include "subtitle_format_ass.h"
 #include "subtitle_format_srt.h"

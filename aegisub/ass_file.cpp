@@ -39,6 +39,8 @@
 #include <list>
 #include <fstream>
 #include <wx/filename.h>
+#include <wx/log.h>
+#include <wx/msgdlg.h>
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
@@ -1028,5 +1030,6 @@ std::list<AssFile*> AssFile::UndoStack;
 std::list<AssFile*> AssFile::RedoStack;
 bool AssFile::Popping;
 bool AssFile::StackModified;
+
 
 

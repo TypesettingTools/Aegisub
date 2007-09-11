@@ -37,6 +37,8 @@
 ///////////
 // Headers
 #include "dialog_text_import.h"
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 #include "options.h"
 
 
@@ -48,7 +50,6 @@ DialogTextImport::DialogTextImport()
 	// Main controls
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 5);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	edit_separator = new wxTextCtrl(this, EDIT_ACTOR_SEPARATOR, Options.AsText(_T("text actor separator")));
 	edit_comment = new wxTextCtrl(this, EDIT_COMMENT_STARTER, Options.AsText(_T("text comment starter")));
 

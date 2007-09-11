@@ -40,6 +40,8 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/button.h>
+#include <wx/textctrl.h>
 
 
 ///////////////

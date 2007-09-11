@@ -40,6 +40,8 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/window.h>
+#include <wx/bitmap.h>
 
 
 //////////////

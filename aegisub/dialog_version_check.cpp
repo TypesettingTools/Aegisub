@@ -40,6 +40,7 @@
 #include <wx/fs_inet.h>
 #include <wx/txtstrm.h>
 #include <wx/tokenzr.h>
+#include <wx/button.h>
 #include <wx/event.h>
 #include "dialog_version_check.h"
 #include "version.h"

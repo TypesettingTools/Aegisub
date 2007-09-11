@@ -36,6 +36,7 @@
 
 ////////////
 // Includes
+#include <wx/dcmemory.h>
 #include "colour_button.h"
 #include "dialog_colorpicker.h"
 

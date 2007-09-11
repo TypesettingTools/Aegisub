@@ -40,6 +40,10 @@
 
 ///////////
 // Headers
+#include <wx/dialog.h>
+#include <wx/radiobut.h>
+#include <wx/radiobox.h>
+#include <wx/listbox.h>
 #include "timeedit_ctrl.h"
 
 

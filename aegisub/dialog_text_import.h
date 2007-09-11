@@ -39,6 +39,7 @@
 ///////////
 // Headers
 #include <wx/dialog.h>
+#include <wx/textctrl.h>
 
 
 class DialogTextImport : public wxDialog {

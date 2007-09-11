@@ -40,6 +40,8 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/string.h>
+#include <wx/arrstr.h>
 #include <vector>
 
 

@@ -38,6 +38,7 @@
 // Includes
 #include <wx/wxprec.h>
 #include <wx/display.h>
+#include <wx/dcclient.h>
 #include "dialog_splash.h"
 #include "options.h"
 #include "dialog_tip.h"

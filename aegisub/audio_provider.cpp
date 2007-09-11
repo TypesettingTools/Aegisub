@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/thread.h>
 #include "audio_provider_ram.h"
 #include "audio_provider_hd.h"
 #include "audio_provider_pcm.h"

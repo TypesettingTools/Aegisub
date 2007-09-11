@@ -46,6 +46,7 @@
 #include <list>
 #include <vector>
 #include <wx/wxprec.h>
+#include <wx/dynarray.h>
 
 
 ///////////////////////

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include <wx/dcmemory.h>
+#include <wx/image.h>
 #include "gl_text.h"
 #include "utils.h"
 

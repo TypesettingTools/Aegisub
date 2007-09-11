@@ -41,6 +41,10 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/dialog.h>
+#include <wx/combobox.h>
+#include <wx/listbox.h>
+#include <wx/button.h>
 #include <vector>
 #include "ass_style_storage.h"
 

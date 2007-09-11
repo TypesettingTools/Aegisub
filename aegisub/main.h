@@ -41,6 +41,7 @@
 ///////////////////
 // Include headers
 #include <wx/wxprec.h>
+#include <wx/app.h>
 #include <wx/stackwalk.h>
 #include <fstream>
 #include "aegisublocale.h"

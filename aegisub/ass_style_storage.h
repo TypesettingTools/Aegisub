@@ -41,6 +41,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/arrstr.h>
 #include <list>
 
 

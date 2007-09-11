@@ -40,6 +40,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/dialog.h>
+#include <wx/textctrl.h>
+#include <wx/sizer.h>
 
 
 //////////////

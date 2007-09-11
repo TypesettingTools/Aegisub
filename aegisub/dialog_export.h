@@ -40,6 +40,13 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/dialog.h>
+#include <wx/sizer.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
+#include <wx/checklst.h>
+#include <wx/choice.h>
+#include <wx/panel.h>
 #include <map>
 
 

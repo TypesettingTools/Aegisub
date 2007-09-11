@@ -37,7 +37,8 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#include <wx/msgdlg.h>
+#ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glext.h>
 #else
@@ -53,20 +54,14 @@
 #ifdef __WIN32__
 void* glGetProc(const char *str) { return wglGetProcAddress(str); }
 #else
-#ifdef __WXMAC_OSX__
-#ifndef HAVE_APPLE_OPENGL_FRAMEWORK
-void* glGetProc(const char *str) { return aglGetProcAddress(str); }
-#endif
-#else
 //void* glGetProc(const char *str) { return glXGetProcAddress((const GLubyte *)str); }
 #define glGetProc(a) glXGetProcAddress((const GLubyte *)(a))
-#endif
 #endif
 
 
 //////////////////////////////////////
 // OpenGL extension function pointers
-#ifndef __WXMAC_OSX__
+#ifndef __APPLE__
 PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB = NULL;
 PFNGLDELETEOBJECTARBPROC glDeleteObjectARB = NULL;
 PFNGLCREATEPROGRAMOBJECTARBPROC glCreateProgramObjectARB = NULL;
@@ -366,7 +361,7 @@ void OpenGLWrapper::Initialize() {
 
 //////////////////////
 // Set current shader
-void OpenGLWrapper::SetShader(GLuint i) {
+void OpenGLWrapper::SetShader(GLhandleARB i) {
 	if (UseShaders()) {
 		Initialize();
 		glUseProgramObjectARB(i);
@@ -377,7 +372,7 @@ void OpenGLWrapper::SetShader(GLuint i) {
 
 //////////////////////////
 // Destroy shader program
-void OpenGLWrapper::DestroyShaderProgram(GLuint i) {
+void OpenGLWrapper::DestroyShaderProgram(GLhandleARB i) {
 	if (UseShaders()) {
 		Initialize();
 		SetShader(0);
@@ -389,10 +384,10 @@ void OpenGLWrapper::DestroyShaderProgram(GLuint i) {
 
 ////////////////////////////////////////////////////////
 // Create shader program from vertex and pixel shaders
-GLuint OpenGLWrapper::CreateShaderProgram(GLuint vertex,GLuint pixel) {
+GLhandleARB OpenGLWrapper::CreateShaderProgram(GLhandleARB vertex,GLhandleARB pixel) {
 	// Create instance
 	Initialize();
-	GLuint program = glCreateProgramObjectARB();
+	GLhandleARB program = glCreateProgramObjectARB();
 	if (glGetError()) throw _T("Error creating shader program.");
 
 	// Attach shaders
@@ -412,10 +407,10 @@ GLuint OpenGLWrapper::CreateShaderProgram(GLuint vertex,GLuint pixel) {
 
 /////////////////////////////////
 // Create standard Vertex shader
-GLuint OpenGLWrapper::CreateStandardVertexShader() {
+GLhandleARB OpenGLWrapper::CreateStandardVertexShader() {
 	// Create instance
 	Initialize();
-	GLuint shader = glCreateShaderObjectARB(GL_VERTEX_SHADER);
+	GLhandleARB shader = glCreateShaderObjectARB(GL_VERTEX_SHADER);
 	if (glGetError()) throw _T("Error generating vertex shader.");
 
 	// Read source
@@ -439,10 +434,10 @@ GLuint OpenGLWrapper::CreateStandardVertexShader() {
 
 ///////////////////////////////////
 // Create YV12->RGB32 Pixel Shader
-GLuint OpenGLWrapper::CreateYV12PixelShader() {
+GLhandleARB OpenGLWrapper::CreateYV12PixelShader() {
 	// Create instance
 	Initialize();
-	GLuint shader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER);
+	GLhandleARB shader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER);
 	if (glGetError()) throw _T("Error generating pixel shader.");
 
 	// Read source
@@ -481,17 +476,17 @@ GLuint OpenGLWrapper::CreateYV12PixelShader() {
 
 /////////////////////////////////////
 // Create YV12->RGB32 Shader Program
-GLuint OpenGLWrapper::CreateYV12Shader(float tw,float th,float tws) {
+GLhandleARB OpenGLWrapper::CreateYV12Shader(float tw,float th,float tws) {
 	// Create vertex shader
-	GLuint ver = OpenGLWrapper::CreateStandardVertexShader();
+	GLhandleARB ver = OpenGLWrapper::CreateStandardVertexShader();
 	if (glGetError() != 0) throw _T("Error creating generic vertex shader");
 
 	// Create pixel shader
-	GLuint pix = OpenGLWrapper::CreateYV12PixelShader();
+	GLhandleARB pix = OpenGLWrapper::CreateYV12PixelShader();
 	if (glGetError() != 0) throw _T("Error creating YV12 pixel shader");
 
 	// Create program
-	GLuint program = OpenGLWrapper::CreateShaderProgram(ver,pix);
+	GLhandleARB program = OpenGLWrapper::CreateShaderProgram(ver,pix);
 	if (glGetError() != 0) throw _T("Error creating shader program");
 
 	// Set shader

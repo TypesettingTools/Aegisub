@@ -37,7 +37,7 @@
 ////////////
 // Includes
 #include <wx/glcanvas.h>
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
 #else
@@ -112,7 +112,11 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 ///////////////
 // Constructor
 VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+#ifdef __WXMAC__
+: wxGLCanvas (parent, id, pos, size, style, name, attribList)
+#else
 : wxGLCanvas (parent, id, attribList, pos, size, style, name)
+#endif
 {
 	// Set options
 	box = NULL;
@@ -173,7 +177,11 @@ void VideoDisplay::Render() {
 
 	// Set GL context
 	wxMutexLocker glLock(OpenGLWrapper::glMutex);
+#ifdef __WXMAC__
+	SetCurrent();
+#else
 	SetCurrent(*context->GetGLContext(this));
+#endif
 
 	// Get sizes
 	int w,h,sw,sh,pw,ph;

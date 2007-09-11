@@ -40,6 +40,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/event.h>
+#include <wx/timer.h>
+#include <wx/thread.h>
 #include <stdint.h>
 #include "factory.h"
 
@@ -47,8 +50,6 @@
 //////////////
 // Prototypes
 class AudioProvider;
-class wxTimer;
-class wxMutex;
 
 
 ///////////////////////////
@@ -109,4 +110,5 @@ public:
 /////////
 // Event
 DECLARE_EVENT_TYPE(wxEVT_STOP_AUDIO, -1)
+
 

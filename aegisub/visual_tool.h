@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include <vector>
+#include <wx/log.h>
 #include "video_display.h"
 #include "gl_wrap.h"
 #include "visual_feature.h"
@@ -148,4 +149,5 @@ public:
 	VisualTool(VideoDisplay *parent);
 	virtual ~VisualTool();
 };
+
 

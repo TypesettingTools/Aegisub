@@ -44,6 +44,7 @@
 #include "colorspace.h"
 #include "options.h"
 #include "utils.h"
+#include <wx/log.h>
 
 
 // Audio spectrum FFT data cache
@@ -60,7 +61,7 @@ public:
 		CacheAccessTime access_time;
 		unsigned long first_line;
 		unsigned long num_lines; // includes overlap-lines
-		bool operator< (const CacheAgeData& second) { return access_time < second.access_time; }
+		bool operator< (const CacheAgeData& second) const { return access_time < second.access_time; }
 		CacheAgeData(CacheAccessTime t, unsigned long first, unsigned long num) : access_time(t), first_line(first), num_lines(num) { }
 	};
 	typedef std::vector<CacheAgeData> CacheAgeList;
@@ -549,4 +550,5 @@ void AudioSpectrum::SetScaling(float _power_scale)
 {
 	power_scale = _power_scale;
 }
+
 

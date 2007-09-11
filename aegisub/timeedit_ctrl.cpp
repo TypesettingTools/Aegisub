@@ -37,6 +37,8 @@
 ////////////
 // Includes
 #include <wx/clipbrd.h>
+#include <wx/valtext.h>
+#include <wx/menu.h>
 #include "timeedit_ctrl.h"
 #include "ass_time.h"
 #include "vfr.h"

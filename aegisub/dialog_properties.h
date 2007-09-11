@@ -40,6 +40,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/textctrl.h>
+#include <wx/combobox.h>
+#include <wx/checkbox.h>
 
 
 ////////////////////

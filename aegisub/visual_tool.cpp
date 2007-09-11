@@ -37,7 +37,11 @@
 //////////////
 // Headers
 #include <wx/glcanvas.h>
-#include <GL/glu.h>
+#ifdef __APPLE__
+#include <OpenGL/GL.h>
+#else
+#include <GL/gl.h>
+#endif
 #include <wx/wxprec.h>
 #include "visual_tool.h"
 #include "video_display.h"
@@ -670,4 +674,5 @@ VisualToolEvent::VisualToolEvent(VisualTool *_tool) {
 void VisualToolEvent::OnButton(wxCommandEvent &event) {
 	tool->OnButton(event);
 }
+
 

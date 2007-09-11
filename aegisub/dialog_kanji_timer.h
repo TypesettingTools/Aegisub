@@ -44,6 +44,8 @@
 #include <wx/listctrl.h>
 #include <wx/regex.h>
 #include <wx/checkbox.h>
+#include <wx/dialog.h>
+#include <wx/combobox.h>
 #include <vector>
 #include "options.h"
 #include "kana_table.h"

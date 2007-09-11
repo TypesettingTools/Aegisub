@@ -39,6 +39,7 @@
 
 ///////////
 // Headers
+#include <wx/menuitem.h>
 #include <vector>
 #include <utility>
 #include <stdint.h>

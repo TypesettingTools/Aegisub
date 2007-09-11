@@ -40,6 +40,7 @@
 #include <wx/mimetype.h>
 #include <wx/filename.h>
 #include <wx/tglbtn.h>
+#include <wx/statline.h>
 #include <wx/rawbmp.h>
 #include "video_box.h"
 #include "video_display.h"
@@ -216,4 +217,5 @@ void VideoBox::OnToggleRealtime(wxCommandEvent &event) {
 	Options.SetBool(_T("Video Visual Realtime"),event.IsChecked());
 	Options.Save();
 }
+
 

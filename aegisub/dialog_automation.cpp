@@ -40,6 +40,8 @@
 #include "utils.h"
 #include <wx/filename.h>
 #include <wx/filedlg.h>
+#include <wx/log.h>
+#include <wx/msgdlg.h>
 
 
 DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager *_local_manager)

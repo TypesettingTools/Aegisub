@@ -41,6 +41,7 @@
 // Headers
 #include "audio_provider.h"
 #include <wx/file.h>
+#include <wx/thread.h>
 #include <vector>
 
 
@@ -70,4 +71,5 @@ public:
 
 // Construct the right PCM audio provider (if any) for the file
 AudioProvider *CreatePCMAudioProvider(const wxString &filename);
+
 

@@ -44,8 +44,13 @@
 #include "frame_main.h"
 #include "audio_player.h"
 #include "options.h"
+#ifdef __APPLE__
+#include <OpenAL/AL.h>
+#include <OpenAL/ALC.h>
+#else
 #include <al.h>
 #include <alc.h>
+#endif
 
 
 // Auto-link to OpenAL lib for MSVC
@@ -389,5 +394,6 @@ int64_t OpenALPlayer::GetCurrentPosition()
 	long extra = playback_segment_timer.Time();
 	return buffers_played * buffer_length + start_frame + extra * samplerate / 1000;
 }
+
 
 

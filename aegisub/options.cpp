@@ -182,7 +182,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	#if defined(__WINDOWS__)
 	SetText(_T("Audio Player"),_T("dsound"));
 	#elif defined(__APPLE__)
-	SetText(_T("Autio Player"), _T("openal"));
+	SetText(_T("Audio Player"), _T("openal"));
 	#else
 	SetText(_T("Audio Player"),_T("portaudio")); // FIXME: should this be something else? perhaps alsa on linux and portaudio on everything else?
 	#endif
@@ -496,7 +496,7 @@ int OptionsManager::AsInt(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsInt();
 	}
-	else throw _T("Internal error: Attempted getting undefined configuration setting");
+	else throw key.c_str();//_T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
@@ -508,7 +508,7 @@ bool OptionsManager::AsBool(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsBool();
 	}
-	else throw _T("Internal error: Attempted getting undefined configuration setting");
+	else throw key.c_str();//_T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
@@ -520,7 +520,7 @@ double OptionsManager::AsFloat(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsFloat();
 	}
-	else throw _T("Internal error: Attempted getting undefined configuration setting");
+	else throw key.c_str();//_T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
@@ -532,7 +532,7 @@ wxString OptionsManager::AsText(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsText();
 	}
-	else throw _T("Internal error: Attempted getting undefined configuration setting");
+	else throw key.c_str();//_T("Internal error: Attempted getting undefined configuration setting");
 }
 
 
@@ -544,7 +544,7 @@ wxColour OptionsManager::AsColour(wxString key) {
 	if (cur != opt.end()) {
 		return (*cur).second.AsColour();
 	}
-	else throw _T("Internal error: Attempted getting undefined configuration setting");
+	else throw key.c_str();//_T("Internal error: Attempted getting undefined configuration setting");
 }
 
 

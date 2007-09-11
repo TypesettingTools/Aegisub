@@ -37,6 +37,9 @@
 ///////////
 // Headers
 #include <wx/config.h>
+#include <wx/stattext.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include "dialog_paste_over.h"
 #include "options.h"
 

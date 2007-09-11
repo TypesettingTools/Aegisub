@@ -41,7 +41,9 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_SFNT_NAMES_H
-#include <shlobj.h>
+#ifdef WIN32
+# include <shlobj.h>
+#endif
 #include <wx/dir.h>
 
 
@@ -67,12 +69,20 @@ void FreetypeFontFileLister::DoInitialize() {
 
 	// Get fonts folder
 	wxString source;
+#ifdef WIN32
 	TCHAR szPath[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_FONTS,NULL,0,szPath))) {
 		source = wxString(szPath);
 	}
 	else source = wxGetOSDirectory() + _T("\\fonts");
 	source += _T("\\");
+#else
+# ifdef __APPLE__
+	// XXXHACK: Is this always a correct assumption?
+	// Fonts might be instaled in more places, I think...
+	source = _T("/Library/Fonts/");
+# endif
+#endif
 
 	// Get the list of fonts in the fonts folder
 	wxArrayString fontfiles;

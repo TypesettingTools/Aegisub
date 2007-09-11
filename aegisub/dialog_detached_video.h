@@ -37,6 +37,9 @@
 #pragma once
 
 
+#include <wx/dialog.h>
+
+
 //////////////
 // Prototypes
 class VideoBox;

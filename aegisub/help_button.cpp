@@ -38,6 +38,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include <wx/mimetype.h>
+#include <wx/log.h>
 #include "help_button.h"
 #include "utils.h"
 #include "standard_paths.h"
@@ -69,4 +70,5 @@ void HelpButton::OnPressed(wxCommandEvent &event) {
 		if (!command.empty()) wxExecute(command);
 	}
 }
+
 

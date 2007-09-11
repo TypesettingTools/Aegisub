@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 RESFILE="$1"
 SRCDIR="$2"
@@ -22,11 +22,12 @@ XPMNAMES=""
 for I in *.bmp
 do
 	DNAME="`grep "bitmaps/$I" $RESFILE | cut -d ' ' -f 1`"
-	/bin/echo -e "${DNAME}_xpm.xpm: \$(srcdir)/$I
+	echo -e "${DNAME}_xpm.xpm: \$(srcdir)/$I
 \t\$(CONVERT) -transparent \\#c0c0c0 \$(srcdir)/$I ${DNAME}_xpm.xpm
 "
 	XPMNAMES="${XPMNAMES} ${DNAME}_xpm.xpm"
 done
 
 echo "bmp2xpm: $XPMNAMES"
+
 

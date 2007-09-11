@@ -39,6 +39,7 @@
 
 ///////////
 // Headers
+#include <wx/toolbar.h>
 #include "visual_tool.h"
 #include "spline.h"
 

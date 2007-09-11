@@ -38,7 +38,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#ifdef __APPLE__
 #include <OpenGL/GL.h>
 #else
 #include <GL/gl.h>

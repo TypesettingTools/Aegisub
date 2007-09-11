@@ -45,6 +45,7 @@
 #endif
 #include <time.h>
 #include <wx/glcanvas.h>
+#include <wx/combobox.h>
 #include "video_context.h"
 
 
@@ -118,4 +119,5 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
+
 

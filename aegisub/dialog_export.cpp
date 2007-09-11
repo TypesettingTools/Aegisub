@@ -37,6 +37,10 @@
 ///////////
 // Headers
 #include <wx/tokenzr.h>
+#include <wx/button.h>
+#include <wx/stattext.h>
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
 #include "dialog_export.h"
 #include "ass_file.h"
 #include "ass_exporter.h"

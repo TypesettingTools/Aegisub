@@ -40,6 +40,13 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/dialog.h>
+#include <wx/sizer.h>
+#include <wx/checkbox.h>
+#include <wx/textctrl.h>
+#include <wx/slider.h>
+#include <wx/checklst.h>
+#include <wx/button.h>
 #include <vector>
 
 

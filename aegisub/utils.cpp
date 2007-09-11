@@ -38,6 +38,8 @@
 // Headers
 #include <wx/wxprec.h>
 #include <wx/filename.h>
+#include <wx/menu.h>
+#include <wx/dcmemory.h>
 #include "utils.h"
 #ifdef __UNIX__
 #include <unistd.h>
@@ -184,7 +186,10 @@ wxString PrettySize(int bytes) {
 // Append a menu item with bitmap
 wxMenuItem* AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp,int pos) {
 	wxMenuItem *cur = new wxMenuItem(parentMenu,id,text,help);
+	// Mac software does not use icons in menus so we shouldn't either
+#ifndef __APPLE__
 	cur->SetBitmap(bmp);
+#endif
 	if (pos == -1) parentMenu->Append(cur);
 	else parentMenu->Insert(pos,cur);
 	return cur;
@@ -218,7 +223,7 @@ void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int 
 	bool isDelim;
 
 	// Delimiters
-	wxString delim = _T(" .,;:!?-(){}[]\"/\\");
+	wxString delim(_T(" .,;:!?-(){}[]\"\\/"));
 	wxChar temp = 0xBF;
 	delim += temp;
 	temp = 0xA1;

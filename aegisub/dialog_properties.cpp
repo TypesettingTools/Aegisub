@@ -36,6 +36,10 @@
 
 ///////////
 // Headers
+#include <wx/dialog.h>
+#include <wx/stattext.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include "dialog_properties.h"
 #include "options.h"
 #include "ass_file.h"

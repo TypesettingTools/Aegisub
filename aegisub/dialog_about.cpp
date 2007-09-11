@@ -37,6 +37,9 @@
 ////////////
 // Includes
 #include <wx/statline.h>
+#include <wx/stattext.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include "dialog_about.h"
 #include "version.h"
 #include "options.h"
@@ -60,7 +63,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	wxString libString = _("This build of Aegisub uses the following C/C++ libraries:\n");
 	libString += _T("wxWidgets - Copyright (c) 1998-2006 Julian Smart, Robert Roebling et al;\n");
 	libString += _T("wxStyledTextCtrl - Copyright (c) 2004 wxCode;\n");
-	libString += _T("Lua - Copyright (c) 1994-2006 Lua.org, PUC-Rio;\n");
+	libString += _T("Lua - Copyright (c) 1994-2007 Lua.org, PUC-Rio;\n");
 	libString += _T("Hunspell - Copyright (c) Kevin Hendricks;\n");
 	libString += _T("PortAudio - Copyright (c) 1999-2000 Ross Bencina, Phil Burk;\n");
 	libString += _T("FFmpeg - Copyright (c) 2001 Fabrice Bellard,;\n");
@@ -101,7 +104,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	wxPanel *buttonPanel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->AddStretchSpacer(1);
-#ifndef __WXMAC__
+#ifndef __APPLE__
 	ButtonSizer->Add(new wxButton(buttonPanel,wxID_OK),0,wxALIGN_RIGHT | wxALL,7);
 #else
 	wxButton *okButton = new wxButton(buttonPanel,wxID_OK);

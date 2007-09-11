@@ -41,7 +41,16 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/string.h>
+#include <wx/panel.h>
+#include <wx/menu.h>
+#include <wx/scrolbar.h>
+#include <wx/button.h>
+#include <wx/bmpbuttn.h>
 #include <wx/sashwin.h>
+#include <wx/slider.h>
+#include <wx/sizer.h>
+#include <wx/textctrl.h>
 
 
 //////////////

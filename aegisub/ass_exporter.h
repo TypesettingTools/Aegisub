@@ -40,6 +40,9 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/string.h>
+#include <wx/sizer.h>
+#include <wx/arrstr.h>
 #include <list>
 #include <map>
 

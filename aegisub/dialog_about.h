@@ -40,6 +40,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/dialog.h>
 #include "static_bmp.h"
 
 

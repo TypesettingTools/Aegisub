@@ -36,8 +36,10 @@
 
 ///////////
 // Headers
-#include "dialog_associations.h"
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include <wx/config.h>
+#include "dialog_associations.h"
 
 
 ///////////////

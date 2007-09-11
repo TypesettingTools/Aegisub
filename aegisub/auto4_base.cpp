@@ -49,6 +49,10 @@
 #include <wx/sizer.h>
 #include <wx/filefn.h>
 #include <wx/tokenzr.h>
+#include <wx/dcmemory.h>
+#include <wx/msgdlg.h>
+#include <wx/log.h>
+
 
 #ifdef WIN32
 #include <windows.h>

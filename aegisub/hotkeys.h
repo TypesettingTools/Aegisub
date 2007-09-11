@@ -41,6 +41,8 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/string.h>
+#include <wx/accel.h>
 #include <map>
 
 

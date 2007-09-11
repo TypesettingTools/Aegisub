@@ -36,7 +36,7 @@
 
 ////////////
 // Includes
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
 #else
@@ -290,7 +290,11 @@ void VideoContext::SetVideo(const wxString &filename) {
 #endif
 
 			// Set GL context
+#ifdef __WXMAC__
+			GetGLContext(displayList.front())->SetCurrent();
+#else
 			GetGLContext(displayList.front())->SetCurrent(*displayList.front());
+#endif
 
 			// Choose a provider
 			provider = VideoProviderFactory::GetProvider(filename,overFps);
@@ -456,7 +460,12 @@ void VideoContext::JumpToTime(int ms,bool exact) {
 //////////////////
 // Get GL context
 wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
+#ifdef __WXMAC__
+	// This is probably wrong...
+	if (!glContext) glContext = new wxGLContext(0, canvas, wxPalette(), 0);
+#else
 	if (!glContext) glContext = new wxGLContext(canvas);
+#endif
 	return glContext;
 }
 
@@ -499,7 +508,11 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 	lastFrame = n;
 
 	// Set context
+#ifdef __APPLE__
+	GetGLContext(displayList.front())->SetCurrent();
+#else
 	GetGLContext(displayList.front())->SetCurrent(*displayList.front());
+#endif
 	glEnable(GL_TEXTURE_2D);
 	if (glGetError() != 0) throw _T("Error enabling texture.");
 

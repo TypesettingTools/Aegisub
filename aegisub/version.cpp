@@ -92,7 +92,11 @@ struct VersionInfoStruct {
 #else
 		BuildTime = BUILD_TIMESTAMP;
 #endif
+#ifdef BUILD_CREDIT
 		BuildCredit = _T_rec(BUILD_CREDIT);
+#else
+		BuildCredit = _T("anonymous");
+#endif
 
 		if (SvnRev > 0) {
 			SCMStr = wxString::Format(_T("SVN r%d"), SvnRev);

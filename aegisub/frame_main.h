@@ -41,6 +41,13 @@
 ///////////////////
 // Include headers
 #include <wx/wxprec.h>
+#include <wx/frame.h>
+#include <wx/menu.h>
+#include <wx/log.h>
+#include <wx/timer.h>
+#include <wx/combobox.h>
+#include <wx/sizer.h>
+#include <wx/panel.h>
 #include <vector>
 
 

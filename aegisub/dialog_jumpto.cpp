@@ -36,6 +36,11 @@
 
 ///////////
 // Headers
+#include <wx/dialog.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include "dialog_jumpto.h"
 #include "vfr.h"
 #include "video_context.h"

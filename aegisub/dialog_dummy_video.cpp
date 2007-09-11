@@ -37,6 +37,7 @@
 #include "dialog_dummy_video.h"
 #include <wx/datetime.h>
 #include <wx/sizer.h>
+#include <wx/log.h>
 #include "options.h"
 
 

@@ -42,6 +42,7 @@
 #include <wx/filename.h>
 #include <wx/tokenzr.h>
 #include <wx/image.h>
+#include <wx/statline.h>
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "avisynth_wrap.h"
@@ -81,7 +82,7 @@ FrameMain::FrameMain (wxArrayString args)
 #ifdef __WXGTK__
 /* XXX HACK XXX
  * Gtk just got initialized. And if we're using the SCIM IME,
- * it just did a setlocale(LC_ALL, ""). so, BOOM. "§!$)(!"§$.
+ * it just did a setlocale(LC_ALL, ""). so, BOOM.
  */
  	setlocale(LC_ALL, "");
 	setlocale(LC_CTYPE, "C");
@@ -280,7 +281,9 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"), wxBITMAP(save_as_toolbutton));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."), wxBITMAP(blank_button));
 	wxMenuItem *RecentParent = new wxMenuItem(fileMenu, Menu_File_Recent_Subs_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentSubs);
+#ifndef __APPLE__
 	RecentParent->SetBitmap(wxBITMAP(blank_button));
+#endif
 	fileMenu->Append(RecentParent);
 	fileMenu->AppendSeparator();
 	AppendBitmapMenuItem (fileMenu,Menu_Tools_Properties, _("&Properties..."), _("Open script properties window"),wxBITMAP(properties_toolbutton));
@@ -310,7 +313,9 @@ void FrameMain::InitMenu() {
 	subtitlesMenu = new wxMenu();
 	wxMenu *InsertMenu = new wxMenu;
 	wxMenuItem *InsertParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Insert,_("&Insert Lines"),_T(""),wxITEM_NORMAL,InsertMenu);
+#ifndef __APPLE__
 	InsertParent->SetBitmap(wxBITMAP(blank_button));
+#endif
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE,_("&Before Current"),_("Inserts a line before current"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER,_("&After Current"),_("Inserts a line after current"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE_VIDEO,_("Before Current, at Video Time"),_("Inserts a line before current, starting at video time"),wxBITMAP(blank_button));
@@ -322,7 +327,9 @@ void FrameMain::InitMenu() {
 	subtitlesMenu->AppendSeparator();
 	wxMenu *JoinMenu = new wxMenu;
 	wxMenuItem *JoinParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Join,_("Join Lines"),_T(""),wxITEM_NORMAL,JoinMenu);
+#ifndef __APPLE__
 	JoinParent->SetBitmap(wxBITMAP(blank_button));
+#endif
 	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_CONCAT,_("&Concatenate"),_("Joins selected lines in a single one, concatenating text together"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_REPLACE,_("Keep &First"),_("Joins selected lines in a single one, keeping text of first and discarding remaining"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_AS_KARAOKE,_("As &Karaoke"),_("Joins selected lines in a single one, as karaoke"),wxBITMAP(blank_button));
@@ -355,7 +362,9 @@ void FrameMain::InitMenu() {
 	timingMenu->AppendSeparator();
 	wxMenu *ContinuousMenu = new wxMenu;
 	wxMenuItem *ContinuousParent = new wxMenuItem(subtitlesMenu,-1,_("Make Times Continuous"),_T(""),wxITEM_NORMAL,ContinuousMenu);
+#ifndef __APPLE__
 	ContinuousParent->SetBitmap(wxBITMAP(blank_button));
+#endif
 	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN,_("Change &Start"),_("Changes times of subs so start times begin on previous's end time"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN2,_("Change &End"),_("Changes times of subs so end times begin on next's start time"),wxBITMAP(blank_button));
 	timingMenu->Append(ContinuousParent);
@@ -384,14 +393,18 @@ void FrameMain::InitMenu() {
 	videoMenu->Append(Menu_Video_Detach, _("Detach Video"), _("Detach video, displaying it in a separate Window."));
 	wxMenu *ZoomMenu = new wxMenu;
 	wxMenuItem *ZoomParent = new wxMenuItem(subtitlesMenu,Menu_View_Zoom,_("Set Zoom"),_T(""),wxITEM_NORMAL,ZoomMenu);
+#ifndef __APPLE__
 	ZoomParent->SetBitmap(wxBITMAP(blank_button));
+#endif
 	ZoomMenu->Append(Menu_View_Zoom_50, MakeHotkeyText(_T("&50%"), _T("Zoom 50%")), _("Set zoom to 50%"));
 	ZoomMenu->Append(Menu_View_Zoom_100, MakeHotkeyText(_T("&100%"), _T("Zoom 100%")), _("Set zoom to 100%"));
 	ZoomMenu->Append(Menu_View_Zoom_200, MakeHotkeyText(_T("&200%"), _T("Zoom 200%")), _("Set zoom to 200%"));
 	videoMenu->Append(ZoomParent);
 	wxMenu *AspectMenu = new wxMenu;
 	wxMenuItem *AspectParent = new wxMenuItem(subtitlesMenu,Menu_Video_AR,_("Override Aspect Ratio"),_T(""),wxITEM_NORMAL,AspectMenu);
+#ifndef __APPLE__
 	AspectParent->SetBitmap(wxBITMAP(blank_button));
+#endif
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Default, _("&Default"), _("Leave video on original aspect ratio"));
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Full, _("&Fullscreen (4:3)"), _("Forces video to 4:3 aspect ratio"));
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Wide, _("&Widescreen (16:9)"), _("Forces video to 16:9 aspect ratio"));

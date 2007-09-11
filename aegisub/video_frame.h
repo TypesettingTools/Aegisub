@@ -35,6 +35,7 @@
 
 
 #pragma once
+#include <wx/image.h>
 
 
 //////////////////////

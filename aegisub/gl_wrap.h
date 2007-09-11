@@ -35,6 +35,16 @@
 
 
 #pragma once
+#ifdef __APPLE__
+#include <OpenGL/GL.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+typedef GLuint GLhandleARB;
+#endif
+#include <wx/thread.h>
+#include <wx/colour.h>
 
 
 //////////////////
@@ -46,9 +56,9 @@ private:
 	int lw;
 
 	static void Initialize();
-	static GLuint CreateStandardVertexShader();
-	static GLuint CreateYV12PixelShader();
-	static GLuint CreateShaderProgram(GLuint vertex,GLuint pixel);
+	static GLhandleARB CreateStandardVertexShader();
+	static GLhandleARB CreateYV12PixelShader();
+	static GLhandleARB CreateShaderProgram(GLhandleARB vertex,GLhandleARB pixel);
 
 public:
 	OpenGLWrapper();
@@ -70,7 +80,7 @@ public:
 	static bool UseShaders();
 	static bool IsExtensionSupported(const char *ext);
 	static bool ShadersAvailable();
-	static void SetShader(GLuint i);
-	static void DestroyShaderProgram(GLuint i);
-	static GLuint CreateYV12Shader(float tw,float th,float tws);
+	static void SetShader(GLhandleARB i);
+	static void DestroyShaderProgram(GLhandleARB i);
+	static GLhandleARB CreateYV12Shader(float tw,float th,float tws);
 };

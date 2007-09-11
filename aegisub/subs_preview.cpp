@@ -34,11 +34,11 @@
 //
 
 
-#pragma once
-
-
 ////////////
 // Includes
+#include <wx/msgdlg.h>
+#include <wx/dcclient.h>
+#include <wx/dcmemory.h>
 #include "ass_style.h"
 #include "subs_preview.h"
 #include "video_provider_dummy.h"

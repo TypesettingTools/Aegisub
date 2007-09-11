@@ -39,6 +39,9 @@
 #include <wx/filename.h>
 #include <wx/filedlg.h>
 #include <wx/choicdlg.h>
+#include <wx/intl.h>
+#include <wx/clipbrd.h>
+#include <wx/tokenzr.h>
 #include "dialog_style_manager.h"
 #include "dialog_style_editor.h"
 #include "ass_style.h"
@@ -457,9 +460,7 @@ void DialogStyleManager::OnCatalogDelete (wxCommandEvent &event) {
 	int sel = CatalogList->GetSelection();
 	if (sel != wxNOT_FOUND) {
 		wxString name = CatalogList->GetString(sel);
-		wxString message = _("Are you sure you want to delete the storage \"");
-		message += name;
-		message += _("\" from the catalog?");
+		wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name.c_str());
 		int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
 		if (option == wxYES) {
 			wxRemoveFile(StandardPaths::DecodePath(_T("?user/catalog/") + name + _T(".sty")));
@@ -1195,5 +1196,6 @@ END_EVENT_TABLE()
 void DialogStyleManagerEvent::OnKeyDown(wxKeyEvent &event) {
 	control->OnKeyDown(event); //we need to access controls, so rather than make the controls public...
 }
+
 
 

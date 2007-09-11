@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/gdicmn.h>
 #include <list>
 #include <vector>
 #include "spline_curve.h"

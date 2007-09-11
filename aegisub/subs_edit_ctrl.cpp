@@ -237,7 +237,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	// Check if it's a template line
 	AssDialogue *diag = control->grid->GetDialogue(control->linen);
 	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("template"));
-	bool templateCodeLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("code"));
+	//bool templateCodeLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("code"));
 
 	// Template code lines get Lua highlighting instead of ASS highlighting
 	// This is broken and needs some extra work
@@ -702,7 +702,7 @@ void SubsTextEditCtrl::SetTextTo(const wxString _text) {
 	Freeze();
 	wxString text = _text;
 	text.Replace(_T("\r\n"),_T("\\N"));
-	text.Replace(_T("\n\r"),_T("\\N"));
+	//text.Replace(_T("\n\r"),_T("\\N")); // never a valid linebreak
 	text.Replace(_T("\r"),_T("\\N"));
 	text.Replace(_T("\n"),_T("\\N"));
 

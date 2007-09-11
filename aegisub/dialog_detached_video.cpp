@@ -56,7 +56,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 
 	// Set title
 	wxFileName fn(VideoContext::Get()->videoName);
-	SetTitle(wxString::Format(_("Video: %s"),fn.GetFullName()));
+	SetTitle(wxString::Format(_("Video: %s"),fn.GetFullName().c_str()));
 
 	// Set a background panel
 	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);

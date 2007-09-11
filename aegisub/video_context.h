@@ -42,16 +42,18 @@
 #include <time.h>
 #include <wx/wxprec.h>
 #include <wx/glcanvas.h>
+#include <wx/timer.h>
 #ifndef wxUSE_GLCANVAS
 #error "Aegisub requires wxWidgets to be compiled with OpenGL support."
 #endif
 #include <list>
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
+typedef GLuint GLhandleARB;
 #endif
 #include "video_frame.h"
 
@@ -80,7 +82,7 @@ private:
 	std::list<VideoDisplay*> displayList;
 
 	GLuint lastTex;
-	GLuint yv12shader;
+	GLhandleARB yv12shader;
 	int lastFrame;
 	wxGLContext *glContext;
 	VideoFrameFormat vidFormat;

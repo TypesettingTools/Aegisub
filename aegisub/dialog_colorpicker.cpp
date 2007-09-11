@@ -40,6 +40,10 @@
 #include <wx/gbsizer.h>
 #include <wx/event.h>
 #include <wx/tokenzr.h>
+#include <wx/dcclient.h>
+#include <wx/dcmemory.h>
+#include <wx/dcscreen.h>
+#include <wx/settings.h>
 #include "dialog_colorpicker.h"
 #include "colorspace.h"
 #include "ass_style.h"

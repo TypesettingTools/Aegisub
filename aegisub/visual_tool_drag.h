@@ -39,6 +39,8 @@
 
 ///////////
 // Headers
+#include <wx/bmpbuttn.h>
+#include <wx/toolbar.h>
 #include "visual_tool.h"
 
 

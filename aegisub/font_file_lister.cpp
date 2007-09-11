@@ -41,7 +41,7 @@
 #include "text_file_writer.h"
 #include "text_file_reader.h"
 #include "standard_paths.h"
-#ifdef WIN32
+#if defined(WIN32) || defined(__APPLE__)
 #include "font_file_lister_freetype.h"
 #define FontListerClass FreetypeFontFileLister
 #else

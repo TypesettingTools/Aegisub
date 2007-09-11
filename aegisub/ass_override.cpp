@@ -39,6 +39,7 @@
 #include "ass_dialogue.h"
 #include "ass_override.h"
 #include <wx/tokenzr.h>
+#include <wx/log.h>
 
 
 ////////////////////// AssOverrideParameter //////////////////////

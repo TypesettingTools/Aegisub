@@ -41,6 +41,11 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/dialog.h>
+#include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/radiobut.h>
+#include <wx/radiobox.h>
 
 
 //////////////

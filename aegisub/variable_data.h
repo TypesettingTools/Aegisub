@@ -40,6 +40,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/colour.h>
 
 
 /////////////////

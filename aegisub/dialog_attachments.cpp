@@ -40,6 +40,8 @@
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
+#include <wx/button.h>
+#include <wx/sizer.h>
 #include "dialog_attachments.h"
 #include "ass_file.h"
 #include "ass_attachment.h"

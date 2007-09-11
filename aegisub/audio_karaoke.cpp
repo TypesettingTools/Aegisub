@@ -36,12 +36,16 @@
 
 ///////////
 // Headers
-#include <wx/tokenzr.h>
 #include "audio_karaoke.h"
 #include "audio_display.h"
 #include "audio_box.h"
 #include "ass_dialogue.h"
 #include "ass_override.h"
+#include <wx/tokenzr.h>
+#include <wx/menu.h>
+#include <wx/log.h>
+#include <wx/dcclient.h>
+#include <wx/settings.h>
 #include <algorithm>
 
 
@@ -858,4 +862,5 @@ void AudioKaraokeTagMenu::OnSelectItem(wxCommandEvent &event) {
 	//kara->display->Update();
 	kara->SetSelection(firstsel, lastsel);
 }
+
 

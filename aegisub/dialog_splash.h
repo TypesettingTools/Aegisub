@@ -41,6 +41,8 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
+#include <wx/frame.h>
+#include <wx/timer.h>
 
 
 ///////////////////////

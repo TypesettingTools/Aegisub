@@ -35,6 +35,7 @@
 
 ///////////
 // Headers
+#include <wx/msgdlg.h>
 #include "video_context.h"
 #include "keyframe.h"
 #include "text_file_reader.h"

@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/sizer.h>
 #include "float_spin.h"
 #include "utils.h"
 #include "validators.h"

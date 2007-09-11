@@ -40,6 +40,7 @@
 //////////
 // Headers
 #include <list>
+#include <wx/intl.h>
 #include "video_frame.h"
 #include "factory.h"
 

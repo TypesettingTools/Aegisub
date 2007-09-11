@@ -36,6 +36,7 @@
 
 ///////////
 // Headers
+#include <wx/textctrl.h>
 #include "validators.h"
 #include "utils.h"
 

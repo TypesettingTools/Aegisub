@@ -41,6 +41,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/string.h>
 #include <fstream>
 
 

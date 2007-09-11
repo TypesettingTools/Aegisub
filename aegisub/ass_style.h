@@ -38,6 +38,7 @@
 
 ///////////
 // Headers
+#include <wx/colour.h>
 #include "ass_entry.h"
 
 
