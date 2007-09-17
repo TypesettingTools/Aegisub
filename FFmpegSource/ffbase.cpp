@@ -318,6 +318,7 @@ void FFBase::InitPP(int AWidth, int AHeight, const char *APPString, int AQuality
 	if (AQuality < 0 || AQuality > PP_QUALITY_MAX)
 		Env->ThrowError("FFmpegSource: Quality is out of range");
 
+	// Unsafe?
 	PPMode = pp_get_mode_by_name_and_quality((char *)APPString, AQuality);
 	if (!PPMode)
 		Env->ThrowError("FFmpegSource: Invalid postprocesing settings");
@@ -341,14 +342,14 @@ void FFBase::InitPP(int AWidth, int AHeight, const char *APPString, int AQuality
 
 void FFBase::SetOutputFormat(int ACurrentFormat, IScriptEnvironment *Env) {
 	int Loss;
-	int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_RGB24), ACurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+	int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), ACurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
 
 	switch (BestFormat) {
 		case PIX_FMT_YUVJ420P: // stupid yv12 distinctions, also inexplicably completely undeniably incompatible with all other supported output formats
 		case PIX_FMT_YUV420P: VI.pixel_type = VideoInfo::CS_I420; break;
 		case PIX_FMT_YUYV422: VI.pixel_type = VideoInfo::CS_YUY2; break;
 		case PIX_FMT_RGB32: VI.pixel_type = VideoInfo::CS_BGR32; break;
-		case PIX_FMT_RGB24: VI.pixel_type = VideoInfo::CS_BGR24; break;
+		case PIX_FMT_BGR24: VI.pixel_type = VideoInfo::CS_BGR24; break;
 		default:
 			Env->ThrowError("FFmpegSource: No suitable output format found");
 	}
@@ -422,6 +423,7 @@ FFBase::FFBase() {
 	PPContext = NULL;
 	PPMode = NULL;
 	SWS = NULL;
+	LastFrameNum = -1;
 	DecodingBuffer = new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 #ifdef FLAC_CACHE
 	FLACAudioCache = NULL;

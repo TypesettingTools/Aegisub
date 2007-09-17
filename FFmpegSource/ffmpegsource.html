@@ -9,6 +9,14 @@ FFmpegSource Documentation
 
 <h2>Changes</h2>
 <ul>
+<li>1.12<ul>
+<li>Now caches the last fully decoded frame to increase the reliability of seekmode=-1 and possibly reduce seeking in other modes</li>
+<li>Video that needs to be converted to a suitable output format should now always have correct colors (was reversed in 1.11 and inconsistent in earlier versions)</li>
+<li>Added seekmode=-1 which is mostly useful for opening image files very carefully</li>
+<li>Now throws an error if the container is unseekable and seekmode=-1 isn't set</li>
+<li>Updated FFmpeg to rev 10492 + camtasia swapped colors fix</li>
+</ul></li>
+
 <li>1.11<ul>
 <li>Now officially uses the MIT license</li>
 <li>Much cleaner source</li>
@@ -104,6 +112,7 @@ FFmpegSource Documentation
 <li>VOB: No rff flags applied, frame accurate?</li>
 <li>MPG: Seeking seems to be off by one or two frames now and then</li>
 <li>TS: don't bother</li>
+<li>Image files: most formats can be opened if seekmode=-1 is set</li>
 </ul>
 
 <h2>Compatibility - Audio</h2>
@@ -117,7 +126,7 @@ FFmpegSource Documentation
 </p>
 
 <p>
-Note that the audio cache will always be created when opening files with audio and that it will be huge since it stores all audio as raw signed 16 bit pcm.
+Note that the audio cache will always be created when opening files with audio and that it will be huge since it stores all audio as raw signed 16/24/32 bit pcm, unsigned 8 bit pcm or as float, using flac to compress it is also possible to reduce the size by half.
 </p>
 
 <p>
@@ -152,7 +161,7 @@ Separate postprocessing which also seems to include a few simple deinterlacers
 </p>
 
 <p>
-<b>accompression</b>
+<b>accompression:</b>
   Audio cache compression, -1 means raw audio and 0-8 uses FLAC with that compression level.
 </p>
 
@@ -169,6 +178,7 @@ Separate postprocessing which also seems to include a few simple deinterlacers
 <p>
 <b>seekmode:</b>
   Force how seeking is handled, has no effect on matroska files which always use the equivalent of seekmode=1<br />
+    <b>-1:</b> linear access without rewind, will throw an error if each successive requested frame number isn't bigger than the last one, only intended for opening images but might work on well with some obscure video format<br />
     <b>0:</b> linear access, the definition of slow but should make some formats "usable"<br />
     <b>1:</b> safe normal, bases seeking decisions on the reported keyframe positions<br />
     <b>2:</b> unsafe normal, same as 1 but no error will be thrown if the exact destination has to be guessed<br />

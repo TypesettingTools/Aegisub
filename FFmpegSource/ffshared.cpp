@@ -72,6 +72,9 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	if (VTrack <= -2 && ATrack <= -2)
 		Env->ThrowError("FFmpegSource: No tracks selected");
 
+	if (SeekMode < -1 || SeekMode > 3)
+		Env->ThrowError("FFmpegSource: Invalid seekmode selected");
+
 #ifdef FLAC_CACHE
 	if (ACCompression < -1 || ACCompression > 8)
 #else
@@ -87,10 +90,14 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	bool IsMatroska = !strcmp(FormatContext->iformat->name, "matroska");
 	av_close_input_file(FormatContext);
 
-	if (IsMatroska)
+	if (IsMatroska) {
 		return new FFMatroskaSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, Env);
-	else
+	} else {
+		// Do a separate indexing pass, enjoy the constructor sideeffects
+		if (SeekMode == -1)
+			delete new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, -2, Env);
 		return new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, SeekMode, Env);
+	}
 }
 
 AVSValue __cdecl CreateFFPP(AVSValue Args, void* UserData, IScriptEnvironment* Env) {

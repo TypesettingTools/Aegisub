@@ -241,7 +241,7 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 			case 16: return CODEC_ID_PCM_S16LE;
 			case 24: return CODEC_ID_PCM_S24LE;
 			case 32: return CODEC_ID_PCM_S32LE;
-			default: CODEC_ID_NONE;
+			default: return CODEC_ID_NONE;
 		}
 	} else if (!strcmp(Codec, "A_PCM/FLOAT/IEEE"))
 		return CODEC_ID_NONE; // no float codec id?

@@ -44,7 +44,10 @@ int FFMatroskaSource::GetTrackIndex(int Index, unsigned char ATrackType, IScript
 	return Index;
 }
 
-FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString, int AQuality, IScriptEnvironment* Env) {
+FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes,
+	bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString,
+	int AQuality, IScriptEnvironment* Env) {
+
 	CurrentFrame = 0;
 	int VideoTrack;
 	int AudioTrack;
@@ -386,6 +389,9 @@ Done:
 }
 
 PVideoFrame FFMatroskaSource::GetFrame(int n, IScriptEnvironment* Env) {
+	if (LastFrameNum == n)
+		return LastFrame;
+
 	bool HasSeeked = false;
 
 	if (n < CurrentFrame || FindClosestKeyFrame(n) > CurrentFrame) {
@@ -408,5 +414,7 @@ PVideoFrame FFMatroskaSource::GetFrame(int n, IScriptEnvironment* Env) {
 		CurrentFrame++;
 	} while (CurrentFrame <= n);
 
-	return OutputFrame(DecodeFrame, Env);
+	LastFrame = OutputFrame(DecodeFrame, Env);
+	LastFrameNum = n;
+	return LastFrame;
 }

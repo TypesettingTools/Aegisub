@@ -81,13 +81,16 @@ protected:
 	AVFrame *DecodeFrame;
 	AudioCacheFormat AudioCacheType;
 	FILE *RawAudioCache;
+	PVideoFrame LastFrame;
+	int LastFrameNum;
+	uint8_t *DecodingBuffer;
 
 #ifdef FLAC_CACHE
 	FLAC__StreamDecoder *FLACAudioCache;
 	FLAC__int32 *FLACBuffer;
 #endif // FLAC_CACHE
 
-	uint8_t *DecodingBuffer;
+
 
 	struct FrameInfo {
 		int64_t DTS;

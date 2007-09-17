@@ -20,10 +20,6 @@
 
 #include "ffmpegsource.h"
 
-static DWORD WINAPI AVFindStreamInfoExecute(AVFormatContext *FormatContext) {
-	return av_find_stream_info(FormatContext);
-}
-
 int FFmpegSource::GetTrackIndex(int Index, CodecType ATrackType, IScriptEnvironment *Env) {
 	if (Index == -1)
 		for (unsigned int i = 0; i < FormatContext->nb_streams; i++)
@@ -46,7 +42,10 @@ int FFmpegSource::GetTrackIndex(int Index, CodecType ATrackType, IScriptEnvironm
 	return Index;
 }
 
-FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString, int AQuality, int ASeekMode, IScriptEnvironment* Env) {
+FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes,
+	bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString,
+	int AQuality, int ASeekMode, IScriptEnvironment* Env) {
+
 	CurrentFrame = 0;
 	SeekMode = ASeekMode;
 
@@ -71,7 +70,10 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 	bool ACacheIsValid = true;
 
 	if (VideoTrack >= 0) {
-		VCacheIsValid = LoadFrameInfoFromFile(AVideoCache, ASource, VideoTrack);
+		if (SeekMode >= 0 && av_seek_frame(FormatContext, VideoTrack, 0, AVSEEK_FLAG_BACKWARD) < 0)
+			Env->ThrowError("FFmpegSource: Video track is unseekable");
+
+		VCacheIsValid = LoadFrameInfoFromFile(AVideoCache, ASource, VideoTrack);		
 
 		VideoCodecContext = FormatContext->streams[VideoTrack]->codec;
 
@@ -123,6 +125,9 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 
 		ACacheIsValid = OpenAudioCache(AAudioCache, ASource, AudioTrack, Env);
 	}
+
+	if ((!ACacheIsValid || !VCacheIsValid) && SeekMode == -1)
+		Env->ThrowError("FFmpegSource: Unusual indexing error, report on doom9");	
 
 	// Needs to be indexed?
 	if (!ACacheIsValid || !VCacheIsValid) {
@@ -257,22 +262,30 @@ Done:
 }
 
 PVideoFrame FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
-	bool HasSeeked = false;
-	int ClosestKF = FindClosestKeyFrame(n);
+	if (LastFrameNum == n)
+		return LastFrame;
 
-	if (SeekMode == 0) {
-		if (n < CurrentFrame) {
-			av_seek_frame(FormatContext, VideoTrack, FrameToDTS.front().DTS, AVSEEK_FLAG_BACKWARD);
-			avcodec_flush_buffers(VideoCodecContext);
-			CurrentFrame = 0;
+	bool HasSeeked = false;
+
+	if (SeekMode >= 0) {
+		int ClosestKF = FindClosestKeyFrame(n);
+
+		if (SeekMode == 0) {
+			if (n < CurrentFrame) {
+				av_seek_frame(FormatContext, VideoTrack, 0, AVSEEK_FLAG_BACKWARD);
+				avcodec_flush_buffers(VideoCodecContext);
+				CurrentFrame = 0;
+			}
+		} else {
+			// 10 frames is used as a margin to prevent excessive seeking since the predicted best keyframe isn't always selected by avformat
+			if (n < CurrentFrame || ClosestKF > CurrentFrame + 10 || (SeekMode == 3 && n > CurrentFrame + 10)) {
+				av_seek_frame(FormatContext, VideoTrack, (SeekMode == 3) ? FrameToDTS[n].DTS : FrameToDTS[ClosestKF].DTS, AVSEEK_FLAG_BACKWARD);
+				avcodec_flush_buffers(VideoCodecContext);
+				HasSeeked = true;
+			}
 		}
-	} else {
-		// 10 frames is used as a margin to prevent excessive seeking since the predicted best keyframe isn't always selected by avformat
-		if (n < CurrentFrame || ClosestKF > CurrentFrame + 10 || (SeekMode == 3 && n > CurrentFrame + 10)) {
-			av_seek_frame(FormatContext, VideoTrack, (SeekMode == 3) ? FrameToDTS[n].DTS : FrameToDTS[ClosestKF].DTS, AVSEEK_FLAG_BACKWARD);
-			avcodec_flush_buffers(VideoCodecContext);
-			HasSeeked = true;
-		}
+	} else if (n < CurrentFrame) {
+		Env->ThrowError("FFmpegSource: Non-linear access attempted");	
 	}
 
 	do {
@@ -300,5 +313,7 @@ PVideoFrame FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
 		CurrentFrame++;
 	} while (CurrentFrame <= n);
 
-	return OutputFrame(DecodeFrame, Env);
+	LastFrame = OutputFrame(DecodeFrame, Env);
+	LastFrameNum = n;
+	return LastFrame;
 }
