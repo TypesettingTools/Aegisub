@@ -444,6 +444,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	aegisub.debug.out(5, "Running line templates\n")
 	for t in matching_templates(templates.line, line, tenv) do
 		tenv.j = 0
+		tenv.maxj = t.loops
 		while tenv.j < t.loops do
 			tenv.j = tenv.j + 1
 			if t.code then
@@ -519,6 +520,7 @@ function run_code_template(template, tenv)
 	else
 		local pcall = pcall
 		setfenv(f, tenv)
+		tenv.maxj = template.loops
 		for j = 1, template.loops do
 			tenv.j = j
 			local res, err = pcall(f)
@@ -676,6 +678,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 		run_code_template(t, tenv)
 	else
 		aegisub.debug.out(5, "Running %d effect loops\n", t.loops)
+		tenv.maxj = t.loops
 		for j = 1, t.loops do
 			tenv.j = j
 			local newline = table.copy(line)
@@ -685,7 +688,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			tenv.line = newline
 			newline.text = run_text_template(t.t, tenv, varctx)
 			if t.keeptags then
-			newline.text = newline.text .. syl.text
+				newline.text = newline.text .. syl.text
 			elseif t.addtext then
 				newline.text = newline.text .. syl.text_stripped
 			end
