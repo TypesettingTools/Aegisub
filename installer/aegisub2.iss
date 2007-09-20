@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1515"
+#define MyAppVerName "Aegisub 2.00 alpha r1564"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -18,7 +18,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=true
 OutputDir=output
-OutputBaseFilename=Aegisub 2.00 alpha r1515 setup
+OutputBaseFilename={#MyAppVerName} setup
 Compression=lzma/ultra64
 SolidCompression=true
 MinVersion=0,5.0.2195
@@ -32,7 +32,7 @@ DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
 AppVersion=2.00 Release Candidate 1
-AppID={24BC8B57-716C-444F-B46B-A3349B9164C5}
+AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}}
 UninstallDisplayIcon={app}\Aegisub.exe
 
 [Languages]
@@ -69,9 +69,10 @@ DestDir: {app}\automation\include; Source: install\automation\include\karaskel-a
 DestDir: {app}\automation\autoload; Source: install\automation\autoload\kara-templater.lua; Flags: ignoreversion; Components: auto/lua
 ; auto4 samples
 DestDir: {app}\automation\demos; Source: install\automation\demos\future-windy-blur.lua; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion; Components: auto/lua/samples
+;DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion; Components: auto/lua/samples
 DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion; Components: auto/lua/samples
 DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion; Components: auto/lua/samples
+;DestDir: {app}\automation\autoload; Source: install\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion; Components: auto/lua/samples
 ; auto3
 DestDir: {app}\automation\include; Source: install\automation\include\utils.auto3; Flags: ignoreversion; Components: auto/auto3
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel.auto3; Flags: ignoreversion; Components: auto/auto3
@@ -79,9 +80,9 @@ DestDir: {app}\automation\include; Source: install\automation\include\karaskel-a
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.lua; Flags: ignoreversion; Components: auto/auto3
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.lua; Flags: ignoreversion; Components: auto/auto3
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\line-per-syllable.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\multi-template.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\simple-k-replacer.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\line-per-syllable.lua; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\multi-template.lua; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\simple-k-replacer.lua; Flags: ignoreversion; Components: auto/auto3
 DestDir: {app}\automation\docs; Source: install\automation\docs\automation3.txt; Flags: ignoreversion; Components: auto/auto3
 ; dictionaries
 Source: install\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_AT
