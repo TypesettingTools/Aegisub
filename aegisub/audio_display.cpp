@@ -1956,17 +1956,19 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 			// Draw cursor
 			wxMemoryDC src;
 			curpos = GetXAtSample(curPos);
-			dc.SetPen(wxPen(Options.AsColour(_T("Audio Play cursor"))));
-			src.SelectObject(*origImage);
-			if (fullDraw) {
-				//dc.Blit(0,0,w,h,&src,0,0);
-				dc.DrawLine(curpos,0,curpos,h);
-				//dc.Blit(0,0,curpos-10,h,&src,0,0);
-				//dc.Blit(curpos+10,0,w-curpos-10,h,&src,curpos+10,0);
-			}
-			else {
-				dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
-				dc.DrawLine(curpos,0,curpos,h);
+			if (curpos >= 0 && curpos < GetClientSize().GetWidth()) {
+				dc.SetPen(wxPen(Options.AsColour(_T("Audio Play cursor"))));
+				src.SelectObject(*origImage);
+				if (fullDraw) {
+					//dc.Blit(0,0,w,h,&src,0,0);
+					dc.DrawLine(curpos,0,curpos,h);
+					//dc.Blit(0,0,curpos-10,h,&src,0,0);
+					//dc.Blit(curpos+10,0,w-curpos-10,h,&src,curpos+10,0);
+				}
+				else {
+					dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
+					dc.DrawLine(curpos,0,curpos,h);
+				}
 			}
 		}
 		else {
