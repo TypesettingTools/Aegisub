@@ -32,7 +32,7 @@ DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
 AppVersion=2.00 Release Candidate 1
-AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}}
+AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
 [Languages]
@@ -40,24 +40,25 @@ Name: english; MessagesFile: compiler:Default.isl
 
 [Files]
 ; redist
-;DestDir: {tmp}; Source: redist\vcredist_x86.exe; Flags: dontcopy nocompression; Components: main/runtime
+Source: RuntimeTestLibrary\RuntimeTestLibrary.dll; Flags: dontcopy
+Source: redist\vcredist_x86.exe; Flags: dontcopy nocompression; Components: main/runtime
 ; main
-DestDir: {app}; Source: install\Aegisub.exe; Flags: ignoreversion nocompression; Components: main
+DestDir: {app}; Source: install\Aegisub.exe; Flags: ignoreversion; Components: main
 DestDir: {app}; Source: install\Aegisub.pdb; Flags: ignoreversion; Components: main/pdb
 DestDir: {app}; Source: install\changelog.txt; Flags: ignoreversion; Tasks: ; Components: main
 DestDir: {app}; Source: install\license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
 DestDir: {app}; Source: install\aegisub-auto3.dll; Flags: ignoreversion; Components: main
 ; avisynth
-DestDir: {app}; Source: redist\avisynth\devil.dll; Flags: ignoreversion; Components: codec/avisynth
-DestDir: {app}; Source: redist\avisynth\avisynth.dll; Flags: ignoreversion; Components: codec/avisynth
-DestDir: {app}; Source: redist\avisynth\DirectShowSource.dll; Flags: ignoreversion; Components: codec/avisynth
+DestDir: {app}; Source: redist\avisynth\devil.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: redist\avisynth\avisynth.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: redist\avisynth\DirectShowSource.dll; Flags: ignoreversion; Components: codec
 ; ffmpegsource
-DestDir: {app}; Source: install\FFMpegSource.dll; Flags: ignoreversion; Components: codec/ffmpegsource
-DestDir: {app}; Source: install\avcodec-51.dll; Flags: ignoreversion; Components: codec/ffmpegsource
-DestDir: {app}; Source: install\avformat-51.dll; Flags: ignoreversion; Components: codec/ffmpegsource
-DestDir: {app}; Source: install\avutil-49.dll; Flags: ignoreversion; Components: codec/ffmpegsource
-DestDir: {app}; Source: install\postproc-51.dll; Flags: ignoreversion; Components: codec/ffmpegsource
-DestDir: {app}; Source: install\swscale-0.dll; Flags: ignoreversion; Components: codec/ffmpegsource
+DestDir: {app}; Source: install\FFMpegSource.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: install\avcodec-51.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: install\avformat-51.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: install\avutil-49.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: install\postproc-51.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: install\swscale-0.dll; Flags: ignoreversion; Components: codec
 ; vsfilter
 DestDir: {app}\csri; Source: install\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
 ; auto4 main
@@ -66,13 +67,14 @@ DestDir: {app}\automation\include; Source: install\automation\include\utils-auto
 DestDir: {app}\automation\include; Source: install\automation\include\unicode.lua; Flags: ignoreversion; Components: auto/lua
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel.lua; Flags: ignoreversion; Components: auto/lua
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel-auto4.lua; Flags: ignoreversion; Components: auto/lua
+DestDir: {app}\automation\include; Source: install\automation\include\cleantags.lua; Flags: ignoreversion; Components: auto/lua
 DestDir: {app}\automation\autoload; Source: install\automation\autoload\kara-templater.lua; Flags: ignoreversion; Components: auto/lua
 ; auto4 samples
 DestDir: {app}\automation\demos; Source: install\automation\demos\future-windy-blur.lua; Flags: ignoreversion; Components: auto/lua/samples
-;DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion; Components: auto/lua/samples
+DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion; Components: auto/lua/samples
 DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion; Components: auto/lua/samples
 DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion; Components: auto/lua/samples
-;DestDir: {app}\automation\autoload; Source: install\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion; Components: auto/lua/samples
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion; Components: auto/lua/samples
 ; auto3
 DestDir: {app}\automation\include; Source: install\automation\include\utils.auto3; Flags: ignoreversion; Components: auto/auto3
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel.auto3; Flags: ignoreversion; Components: auto/auto3
@@ -80,9 +82,9 @@ DestDir: {app}\automation\include; Source: install\automation\include\karaskel-a
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.lua; Flags: ignoreversion; Components: auto/auto3
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.lua; Flags: ignoreversion; Components: auto/auto3
 DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\line-per-syllable.lua; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\multi-template.lua; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\simple-k-replacer.lua; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\line-per-syllable.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\multi-template.auto3; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\simple-k-replacer.auto3; Flags: ignoreversion; Components: auto/auto3
 DestDir: {app}\automation\docs; Source: install\automation\docs\automation3.txt; Flags: ignoreversion; Components: auto/auto3
 ; dictionaries
 Source: install\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_AT
@@ -112,8 +114,6 @@ Source: install\dictionaries\sl_SI.aff; DestDir: {app}\dictionaries; Flags: igno
 Source: install\dictionaries\sl_SI.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
 Source: install\dictionaries\sv_SE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
 Source: install\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
-Source: install\dictionaries\sw_KE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sw_KE
-Source: install\dictionaries\sw_KE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sw_KE
 ; thesaurii
 Source: install\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
 Source: install\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
@@ -131,15 +131,13 @@ Name: {commonprograms}\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {a
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-;Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Components: main/runtime; Parameters: /Q
+Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Components: main/runtime; Parameters: /Q
 
 [Components]
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
-;Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
+Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528; Check: CheckNeedRuntime
 Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
-Name: codec/avisynth; Description: Avisynth 2.56a; Flags: fixed; Types: custom compact full
-Name: codec/ffmpegsource; Description: FFmpegSource; Types: full compact custom; Flags: fixed
 Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full custom; Flags: fixed
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages: 
@@ -162,7 +160,6 @@ Name: dic/pt_PT; Description: Portuguese dictionary; Types: full
 Name: dic/pt_BR; Description: Brazilian Portuguese dictionary; Types: full
 Name: dic/sk_SK; Description: Slovak dictionary; Types: full
 Name: dic/sl_SI; Description: Slovenian dictionary; Types: full
-Name: dic/sw_KE; Description: Swahili dictionary; Types: full
 Name: dic/sv_SE; Description: Swedish dictionary; Types: full
 Name: th; Description: Thesaurus; Types: full
 Name: th/en_US; Description: American English thesaurus; Types: full
@@ -170,3 +167,38 @@ Name: th/es_ES; Description: Estonian thesaurus; Types: full
 Name: th/fr_FR; Description: French thesaurus; Types: full
 Name: th/de_DE; Description: German thesaurus; Types: full
 Name: th/it_IT; Description: Italian thesaurus; Types: full
+
+[Messages]
+; Replacement for License page, no need to bother the user with legal mumbo-jumbo
+WelcomeLabel2=This will install {#MyAppVerName} on your computer.%n%n{#MyAppName} is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the {#MyAppName} website for information on obtaining the source code.
+
+[Code]
+var
+	RuntimeLibChecked: Boolean;
+	RuntimeLibInstalled: Boolean;
+
+function LoadLibrary(lpFileName: string): LongInt; external 'LoadLibraryA@kernel32.dll stdcall';
+function FreeLibrary(hModule: LongInt): Boolean; external 'FreeLibrary@kernel32.dll stdcall';
+
+function CheckNeedRuntime: Boolean;
+var
+  LibHandle: LongInt;
+begin
+	if not RuntimeLibChecked then
+	begin
+		RuntimeLibInstalled := True;
+		try
+		  ExtractTemporaryFile('RuntimeTestLibrary.dll');
+		  LibHandle := LoadLibrary(ExpandConstant('{tmp}') + '\RuntimeTestLibrary.dll');
+		  if LibHandle = 0 then
+		    RuntimeLibInstalled := False
+		  else
+		    FreeLibrary(LibHandle);
+		except
+			RuntimeLibInstalled := False;
+		end;
+		RuntimeLibChecked := True;
+	end;
+	Result := not RuntimeLibInstalled;
+end;
+
