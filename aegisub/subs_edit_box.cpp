@@ -81,35 +81,35 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	styles.Add(_T(""));
 	CommentBox = new wxCheckBox(this,COMMENT_CHECKBOX,_("Comment"));
 	CommentBox->SetToolTip(_("Comment this line out. Commented lines don't show up on screen."));
-	StyleBox = new wxComboBox(this,STYLE_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,25),styles,wxCB_READONLY | wxTE_PROCESS_ENTER);
+	StyleBox = new wxComboBox(this,STYLE_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,-1),styles,wxCB_READONLY | wxTE_PROCESS_ENTER);
 	StyleBox->SetToolTip(_("Style for this line."));
-	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,25),styles,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,-1),styles,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	ActorBox->SetToolTip(_("Actor name for this speech. This is only for reference, and is mainly useless."));
 	ActorBox->PushEventHandler(new IdleFieldHandler(ActorBox,_("Actor")));
-	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(80,20),wxTE_PROCESS_ENTER);
+	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(80,-1),wxTE_PROCESS_ENTER);
 	Effect->SetToolTip(_("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
 	Effect->PushEventHandler(new IdleFieldHandler(Effect,_("Effect")));
 
 	// Middle controls
-	Layer = new wxSpinCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(50,20),wxSP_ARROW_KEYS,0,0x7FFFFFFF,0);
+	Layer = new wxSpinCtrl(this,LAYER_BOX,_T(""),wxDefaultPosition,wxSize(50,-1),wxSP_ARROW_KEYS,0,0x7FFFFFFF,0);
 	Layer->SetToolTip(_("Layer number"));
-	StartTime = new TimeEdit(this,STARTTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER);
+	StartTime = new TimeEdit(this,STARTTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,-1),wxTE_PROCESS_ENTER);
 	StartTime->SetToolTip(_("Start time"));
 	StartTime->showModified = true;
-	EndTime = new TimeEdit(this,ENDTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER);
+	EndTime = new TimeEdit(this,ENDTIME_BOX,_T(""),wxDefaultPosition,wxSize(75,-1),wxTE_PROCESS_ENTER);
 	EndTime->SetToolTip(_("End time"));
 	EndTime->isEnd = true;
 	EndTime->showModified = true;
-	Duration = new TimeEdit(this,DURATION_BOX,_T(""),wxDefaultPosition,wxSize(75,20),wxTE_PROCESS_ENTER);
+	Duration = new TimeEdit(this,DURATION_BOX,_T(""),wxDefaultPosition,wxSize(75,-1),wxTE_PROCESS_ENTER);
 	Duration->SetToolTip(_("Line duration"));
 	Duration->showModified = true;
-	MarginL = new HiliModTextCtrl(this,MARGINL_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
+	MarginL = new HiliModTextCtrl(this,MARGINL_BOX,_T(""),wxDefaultPosition,wxSize(40,-1),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
 	MarginL->SetToolTip(_("Left Margin (0 = default)"));
 	MarginL->SetMaxLength(4);
-	MarginR = new HiliModTextCtrl(this,MARGINR_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
+	MarginR = new HiliModTextCtrl(this,MARGINR_BOX,_T(""),wxDefaultPosition,wxSize(40,-1),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
 	MarginR->SetToolTip(_("Right Margin (0 = default)"));
 	MarginR->SetMaxLength(4);
-	MarginV = new HiliModTextCtrl(this,MARGINV_BOX,_T(""),wxDefaultPosition,wxSize(40,20),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
+	MarginV = new HiliModTextCtrl(this,MARGINV_BOX,_T(""),wxDefaultPosition,wxSize(40,-1),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
 	MarginV->SetToolTip(_("Vertical Margin (0 = default)"));
 	MarginV->SetMaxLength(4);
 
@@ -132,7 +132,7 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Color3->SetToolTip(_("Outline color"));
 	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBITMAP(button_color_four),wxDefaultPosition,wxSize(30,20));
 	Color4->SetToolTip(_("Shadow color"));
-	CommitButton = new wxButton(this,BUTTON_COMMIT,_("Commit"),wxDefaultPosition,wxSize(55,20));
+	CommitButton = new wxButton(this,BUTTON_COMMIT,_("Commit"),wxDefaultPosition,wxSize(-1,20));
 	ToolTipManager::Bind(CommitButton,_("Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."),_T("Edit Box Commit"));
 	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));
@@ -143,35 +143,35 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	//TopSizer->Add(new FloatSpinCtrl(this,-1,wxDefaultPosition,wxSize(40,20),0,-20.0,50.0,0.0,0.5));
 	TopSizer->Add(CommentBox,0,wxRIGHT | wxALIGN_CENTER,5);
-	TopSizer->Add(StyleBox,2,wxRIGHT,5);
-	TopSizer->Add(ActorBox,2,wxRIGHT,5);
-	TopSizer->Add(Effect,3,0,0);
+	TopSizer->Add(StyleBox,2,wxRIGHT|wxALIGN_CENTER,5);
+	TopSizer->Add(ActorBox,2,wxRIGHT|wxALIGN_CENTER,5);
+	TopSizer->Add(Effect,3,wxALIGN_CENTER,5);
 
 	// Middle sizer
 	splitLineMode = true;
 	MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
-	MiddleSizer->Add(Layer,0,wxRIGHT,5);
-	MiddleSizer->Add(StartTime,0,wxRIGHT,0);
-	MiddleSizer->Add(EndTime,0,wxRIGHT,5);
-	MiddleSizer->Add(Duration,0,wxRIGHT,5);
-	MiddleSizer->Add(MarginL,0,0,0);
-	MiddleSizer->Add(MarginR,0,0,0);
-	MiddleSizer->Add(MarginV,0,0,0);
+	MiddleSizer->Add(Layer,0,wxRIGHT|wxALIGN_CENTER,5);
+	MiddleSizer->Add(StartTime,0,wxRIGHT|wxALIGN_CENTER,0);
+	MiddleSizer->Add(EndTime,0,wxRIGHT|wxALIGN_CENTER,5);
+	MiddleSizer->Add(Duration,0,wxRIGHT|wxALIGN_CENTER,5);
+	MiddleSizer->Add(MarginL,0,wxALIGN_CENTER,0);
+	MiddleSizer->Add(MarginR,0,wxALIGN_CENTER,0);
+	MiddleSizer->Add(MarginV,0,wxALIGN_CENTER,0);
 	MiddleSizer->AddSpacer(5);
 
 	// Middle-bottom sizer
 	MiddleBotSizer = new wxBoxSizer(wxHORIZONTAL);
-	MiddleBotSizer->Add(Bold);
-	MiddleBotSizer->Add(Italics);
-	MiddleBotSizer->Add(Underline);
-	MiddleBotSizer->Add(Strikeout);
-	MiddleBotSizer->Add(FontName);
+	MiddleBotSizer->Add(Bold,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->Add(Italics,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->Add(Underline,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->Add(Strikeout,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->Add(FontName,0,wxALIGN_CENTER,0);
 	MiddleBotSizer->AddSpacer(5);
-	MiddleBotSizer->Add(Color1);
-	MiddleBotSizer->Add(Color2);
-	MiddleBotSizer->Add(Color3);
-	MiddleBotSizer->Add(Color4,0,wxRIGHT,5);
-	MiddleBotSizer->Add(CommitButton,0,wxRIGHT,10);
+	MiddleBotSizer->Add(Color1,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->Add(Color2,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->Add(Color3,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->Add(Color4,0,wxRIGHT|wxALIGN_CENTER,5);
+	MiddleBotSizer->Add(CommitButton,0,wxRIGHT|wxALIGN_CENTER,10);
 	MiddleBotSizer->Add(ByTime,0,wxRIGHT | wxALIGN_CENTER,5);
 	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER,5);
 

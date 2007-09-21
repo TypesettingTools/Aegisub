@@ -131,9 +131,9 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
 	performance_timer.Start();
-	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,20),0,0,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,-1),0,0,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	wxLogDebug(_T("Time to create font face listbox: %d"), performance_timer.Time());
-	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&FontSizeValue,true,false));
+	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(&FontSizeValue,true,false));
 	//wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
 	BoxItalic = new wxCheckBox(this,CHECKBOX_STYLE_ITALIC,_("Italic"));
@@ -143,11 +143,11 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	colorButton[1] = new ColourButton(this,BUTTON_COLOR_2,wxSize(55,16),style->secondary.GetWXColor());
 	colorButton[2] = new ColourButton(this,BUTTON_COLOR_3,wxSize(55,16),style->outline.GetWXColor());
 	colorButton[3] = new ColourButton(this,BUTTON_COLOR_4,wxSize(55,16),style->shadow.GetWXColor());
-	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->primary.a);
-	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->secondary.a);
-	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->outline.a);
-	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,255,style->shadow.a);
-	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,_T(""),wxDefaultPosition,wxSize(60,20),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
+	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->primary.a);
+	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->secondary.a);
+	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->outline.a);
+	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->shadow.a);
+	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
 	margin[3] = 0;
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&OutlineValue,true,false));

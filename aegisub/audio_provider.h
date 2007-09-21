@@ -54,7 +54,7 @@ class VideoProvider;
 // Audio provider class
 class AudioProvider {
 private:
-	void *raw;
+	char *raw;
 	int raw_len;
 
 protected:

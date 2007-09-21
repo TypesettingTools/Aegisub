@@ -120,7 +120,7 @@ void AudioProvider::GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int
 	}
 	if (!raw) {
 		raw_len = needLen;
-		raw = (void*) new char[raw_len];
+		raw = new char[raw_len];
 	}
 
 	if (bytes_per_sample == 1) {
