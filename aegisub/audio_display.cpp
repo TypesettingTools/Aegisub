@@ -1483,7 +1483,12 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		// Grab start/end
 		if (hold == 0) {
 			bool gotGrab = false;
-			bool karTime = karMode && !event.ControlDown();
+			bool karTime = karMode && !
+#ifdef __APPLE__
+				event.CmdDown();
+#else
+				event.ControlDown();
+#endif
 
 			// Line timing mode
 			if (!karTime) {
