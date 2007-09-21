@@ -168,7 +168,11 @@ END_EVENT_TABLE()
 // Play video
 void VideoBox::OnVideoPlay(wxCommandEvent &event) {
 	VideoContext *ctx = VideoContext::Get();
+#ifdef __APPLE__
+	ctx->EnableAudioSync(wxGetMouseState().CmdDown() == false);
+#else
 	ctx->EnableAudioSync(wxGetMouseState().ControlDown() == false);
+#endif
 	ctx->Play();
 }
 
@@ -177,7 +181,11 @@ void VideoBox::OnVideoPlay(wxCommandEvent &event) {
 // Play video line
 void VideoBox::OnVideoPlayLine(wxCommandEvent &event) {
 	VideoContext *ctx = VideoContext::Get();
+#ifdef __APPLE__
+	ctx->EnableAudioSync(wxGetMouseState().CmdDown() == false);
+#else
 	ctx->EnableAudioSync(wxGetMouseState().ControlDown() == false);
+#endif
 	ctx->PlayLine();
 }
 

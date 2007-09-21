@@ -1154,7 +1154,11 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 
 		case 'C' :
 		case 'c' :
+#ifdef __APPLE__
+			if (event.CmdDown()) {
+#else
 			if (event.ControlDown()) {
+#endif
 				if (wxWindow::FindFocus()==CurrentList) {
 					CopyToClipboard(CurrentList,styleMap);
 				}
@@ -1166,7 +1170,11 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 
 		case 'V' :
 		case 'v' :
+#ifdef __APPLE__
+			if (event.CmdDown()) {
+#else
 			if (event.ControlDown()) {
+#endif
 				if (wxWindow::FindFocus()==CurrentList) {
 					PasteToCurrent();
 				}

@@ -128,7 +128,11 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
 	leftDClick = event.LeftDClick();
 	shiftDown = event.m_shiftDown;
+#ifdef __APPLE__
+	ctrlDown = event.m_metaDown; // Cmd key
+#else
 	ctrlDown = event.m_controlDown;
+#endif
 	altDown = event.m_altDown;
 
 	// Drag a feature

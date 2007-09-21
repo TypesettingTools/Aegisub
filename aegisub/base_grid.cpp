@@ -577,7 +577,11 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	// Modifiers
 	bool shift = event.m_shiftDown;
 	bool alt = event.m_altDown;
+#ifdef __APPLE__
+	bool ctrl = event.m_metaDown;
+#else
 	bool ctrl = event.m_controlDown;
+#endif
 
 	// Row that mouse is over
 	bool click = event.ButtonDown(wxMOUSE_BTN_LEFT);
@@ -952,7 +956,11 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	// Get scan code
 	int key = event.GetKeyCode();
+#ifdef __APPLE__
+	bool ctrl = event.m_metaDown;
+#else
 	bool ctrl = event.m_controlDown;
+#endif
 	bool alt = event.m_altDown;
 	bool shift = event.m_shiftDown;
 

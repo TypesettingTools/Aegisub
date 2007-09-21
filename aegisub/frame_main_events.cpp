@@ -1006,7 +1006,11 @@ void FrameMain::OnOpenLog (wxCommandEvent &event) {
 ///////////////////
 // Open Automation
 void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
+#ifdef __APPLE__
+	if (wxGetMouseState().CmdDown()) {
+#else
 	if (wxGetMouseState().ControlDown()) {
+#endif
 		wxGetApp().global_scripts->Reload();
 		if (wxGetMouseState().ShiftDown()) {
 			const std::vector<Automation4::Script*> scripts = local_scripts->GetScripts();

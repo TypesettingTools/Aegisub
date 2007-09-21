@@ -233,7 +233,11 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	Refresh();
 
 	// Check if it's an acceptable key
+#ifdef __APPLE__
+	if (!event.CmdDown()) {
+#else
 	if (!event.ControlDown()) {
+#endif
 		if (byFrame || !insertMode || (key != WXK_BACK && key != WXK_DELETE)) {
 			// Reset selection first, if necessary
 			if (!byFrame && insertMode) {

@@ -824,7 +824,11 @@ void SubsEditBox::DoKeyPress(wxKeyEvent &event) {
 
 	if (key == WXK_RETURN || key == WXK_NUMPAD_ENTER) {
 		if (enabled) {
+#ifdef __APPLE__
+			Commit(event.m_metaDown);
+#else
 			Commit(event.m_controlDown);
+#endif
 			return;
 		}
 	}
@@ -1292,7 +1296,12 @@ void SubsEditBox::OnButtonStrikeout(wxCommandEvent &event) {
 //////////
 // Commit
 void SubsEditBox::OnButtonCommit(wxCommandEvent &event) {
-	Commit(wxGetMouseState().ControlDown());
+	Commit(wxGetMouseState().
+#ifdef __APPLE__
+		   CmdDown());
+#else
+		   ControlDown());
+#endif
 }
 
 

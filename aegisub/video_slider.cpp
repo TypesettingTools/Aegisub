@@ -247,7 +247,11 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 
 	// Get flags
 	int key = event.GetKeyCode();
+#ifdef __APPLE__
+	bool ctrl = event.m_metaDown;
+#else
 	bool ctrl = event.m_controlDown;
+#endif
 	bool alt = event.m_altDown;
 	bool shift = event.m_shiftDown;
 	int direction = 0;
