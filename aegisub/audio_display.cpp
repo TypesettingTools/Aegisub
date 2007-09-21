@@ -63,10 +63,16 @@
 #endif
 
 
+#ifdef __WXMAC__
+# define AudioDisplayWindowStyle wxWANTS_CHARS
+#else
+# define AudioDisplayWindowSTyle wxSUNKEN_BORDER | wxWANTS_CHARS
+#endif
+
 ///////////////
 // Constructor
 AudioDisplay::AudioDisplay(wxWindow *parent)
-: wxWindow (parent, -1, wxDefaultPosition, wxSize(200,Options.AsInt(_T("Audio Display Height"))), wxSUNKEN_BORDER | wxWANTS_CHARS , _T("Audio Display"))
+: wxWindow (parent, -1, wxDefaultPosition, wxSize(200,Options.AsInt(_T("Audio Display Height"))), AudioDisplayWindowStyle , _T("Audio Display"))
 {
 	// Set variables
 	origImage = NULL;
