@@ -1354,7 +1354,13 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 		// Zoom
 		if (zoom) {
+#ifdef __APPLE__
+			// Reverse scroll directions on Apple... ugly hack
+			// Otherwise left=right and right=left on systems that support four-way scrolling.
 			int step = -event.GetWheelRotation() / event.GetWheelDelta();
+#else
+			int step = event.GetWheelRotation() / event.GetWheelDelta();
+#endif
 			int value = box->HorizontalZoom->GetValue()+step;
 			box->HorizontalZoom->SetValue(value);
 			SetSamplesPercent(value,true,float(x)/float(w));
@@ -1362,7 +1368,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 		// Scroll
 		else {
-			int step = event.GetWheelRotation() * w / 360;
+			int step = -event.GetWheelRotation() * w / 360;
 			UpdatePosition(Position+step,false);
 			UpdateImage();
 		}
