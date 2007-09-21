@@ -66,7 +66,7 @@
 #ifdef __WXMAC__
 # define AudioDisplayWindowStyle wxWANTS_CHARS
 #else
-# define AudioDisplayWindowSTyle wxSUNKEN_BORDER | wxWANTS_CHARS
+# define AudioDisplayWindowStyle wxSUNKEN_BORDER | wxWANTS_CHARS
 #endif
 
 ///////////////
