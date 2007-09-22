@@ -337,10 +337,18 @@ END_EVENT_TABLE()
 // Key pressed
 void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
 	//int keycode = event.GetKeyCode();
+#ifdef __APPLE__
+	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
+#else
 	Hotkeys.SetPressed(event.GetKeyCode(),event.m_controlDown,event.m_altDown,event.m_shiftDown);
+#endif
 
 	// Backspace
+#ifdef __APPLE__
+	if (event.GetKeyCode() == WXK_BACK && !event.m_metaDown && !event.m_altDown && !event.m_shiftDown) {
+#else
 	if (event.GetKeyCode() == WXK_BACK && !event.m_controlDown && !event.m_altDown && !event.m_shiftDown) {
+#endif
 		long from,to;
 		GetSelection(&from,&to);
 		if (from > 0) SetSelection(from-1,to);

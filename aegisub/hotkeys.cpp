@@ -157,6 +157,7 @@ wxString HotkeyType::GetKeyName(int keycode) {
 // Fill map
 void HotkeyType::FillMap() {
 	if (keyName.empty()) {
+		keyName[WXK_BACK] = _T("Backspace");
 		keyName[WXK_SPACE] = _T("Space");
 		keyName[WXK_RETURN] = _T("Enter");
 		keyName[WXK_TAB] = _T("Tab");
@@ -316,24 +317,43 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("New subtitles"),_T("Ctrl-N"));
 	SetHotkey(_("Open subtitles"),_T("Ctrl-O"));
 	SetHotkey(_("Save subtitles"),_T("Ctrl-S"));
+#ifdef __APPLE__
+	SetHotkey(_("Exit"),_T("Ctrl-Q"));
+	SetHotkey(_("Help"),_T("Ctrl-?"));
+	SetHotkey(_("Options"),_T("Ctrl-,"));
+#else
 	SetHotkey(_("Exit"),_T("Alt-F4"));
 	SetHotkey(_("Help"),_T("F1"));
 	SetHotkey(_("Options"),_T("Alt-O"));
+#endif
 
 	SetHotkey(_("Edit Box Commit"),_T("Ctrl-Enter"));
 	SetHotkey(_("Undo"),_T("Ctrl-Z"));
+#ifdef __APPLE__
+	SetHotkey(_("Redo"),_T("Ctrl-Shift-Z"));
+#else
 	SetHotkey(_("Redo"),_T("Ctrl-Y"));
+#endif
 	SetHotkey(_("Shift Times"),_T("Ctrl-I"));
 	SetHotkey(_("Find"),_T("Ctrl-F"));
+#ifdef __APPLE__
+	SetHotkey(_("Find Next"),_T("Ctrl-G"));
+	SetHotkey(_("Replace"),_T("Ctrl-Shift-F")); // non-standard?
+#else
 	SetHotkey(_("Find Next"),_T("F3"));
 	SetHotkey(_("Replace"),_T("Ctrl-H"));
+#endif
 	SetHotkey(_("Select Lines"),_T(""));
 	SetHotkey(_("Copy"),_T("Ctrl-C"));
 	SetHotkey(_("Cut"),_T("Ctrl-X"));
 	SetHotkey(_("Paste"),_T("Ctrl-V"));
 	SetHotkey(_("Paste Over"),_T("Ctrl-Shift-V"));
 
+#ifdef __APPLE__
+	SetHotkey(_("Video Jump"),_T("Ctrl-J"));
+#else
 	SetHotkey(_("Video Jump"),_T("Ctrl-G"));
+#endif
 	SetHotkey(_("Jump Video to Start"),_T("Ctrl-1"));
 	SetHotkey(_("Jump Video to End"),_T("Ctrl-2"));
 	SetHotkey(_("Set Start to Video"),_T("Ctrl-3"));
@@ -356,7 +376,11 @@ void HotkeyManager::LoadDefaults() {
 
 	SetHotkey(_("Grid move row down"),_T("Alt-Down"));
 	SetHotkey(_("Grid move row up"),_T("Alt-Up"));
+#ifdef __APPLE__
+	SetHotkey(_("Grid delete rows"),_T("Ctrl-Backspace"));
+#else
 	SetHotkey(_("Grid delete rows"),_T("Ctrl-Delete"));
+#endif
 	SetHotkey(_("Grid duplicate rows"),_T(""));
 	SetHotkey(_("Grid duplicate and shift one frame"),_T("Ctrl-D"));
 

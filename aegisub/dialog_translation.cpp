@@ -272,7 +272,11 @@ void DialogTranslationEvent::OnTransBoxKey(wxKeyEvent &event) { control->OnTrans
 /////////////////////
 // Key pressed event
 void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
+#ifdef __APPLE__
+	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
+#else
 	Hotkeys.SetPressed(event.GetKeyCode(),event.m_controlDown,event.m_altDown,event.m_shiftDown);
+#endif
 
 	// Previous
 	if (Hotkeys.IsPressed(_T("Translation Assistant Prev"))) {

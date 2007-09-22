@@ -1048,7 +1048,11 @@ void CaptureKey::OnKeyDown(wxKeyEvent &event) {
 		parent->key->keycode = keycode;
 		int mod = 0;
 		if (event.m_altDown) mod |= wxACCEL_ALT;
+#ifdef __APPLE__
+		if (event.m_metaDown) mod |= wxACCEL_CTRL;
+#else
 		if (event.m_controlDown) mod |= wxACCEL_CTRL;
+#endif
 		if (event.m_shiftDown) mod |= wxACCEL_SHIFT;
 		parent->key->flags = mod;
 		parent->EndModal(0);

@@ -226,7 +226,11 @@ void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
 // Process keyboard events
 void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 	// Get key
+#ifdef __APPLE__
+	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
+#else
 	Hotkeys.SetPressed(event.GetKeyCode(),event.m_controlDown,event.m_altDown,event.m_shiftDown);
+#endif
 
 	// Get selection
 	bool continuous = false;

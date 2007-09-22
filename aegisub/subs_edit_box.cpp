@@ -1296,11 +1296,10 @@ void SubsEditBox::OnButtonStrikeout(wxCommandEvent &event) {
 //////////
 // Commit
 void SubsEditBox::OnButtonCommit(wxCommandEvent &event) {
-	Commit(wxGetMouseState().
 #ifdef __APPLE__
-		   CmdDown());
+	Commit(wxGetMouseState().CmdDown());
 #else
-		   ControlDown());
+	Commit(wxGetMouseState().ControlDown());
 #endif
 }
 

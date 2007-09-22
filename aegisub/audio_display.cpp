@@ -2000,7 +2000,11 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 // Key down
 void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 	int key = event.GetKeyCode();
+#ifdef __APPLE__
+	Hotkeys.SetPressed(key,event.m_metaDown,event.m_altDown,event.m_shiftDown);
+#else
 	Hotkeys.SetPressed(key,event.m_controlDown,event.m_altDown,event.m_shiftDown);
+#endif
 
 	// Accept
 	if (Hotkeys.IsPressed(_T("Audio Commit"))) {
