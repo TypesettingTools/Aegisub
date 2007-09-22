@@ -76,6 +76,14 @@ wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 }
 
 
+///////////////
+// Constructor
+FontConfigFontFileLister::FontConfigFontFileLister()
+: fontconf(0), aux(0)
+{
+}
+
+
 //////////////
 // Initialize
 void FontConfigFontFileLister::DoInitialize() {

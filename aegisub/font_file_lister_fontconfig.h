@@ -51,6 +51,8 @@ class FontConfigFontFileLister : public FontFileLister {
 private:
 	FcConfig *fontconf;
 	FcPattern *aux;
+	
+	FontConfigFontFileLister();
 
 	wxArrayString DoGetFilesWithFace(wxString facename);
 	void DoInitialize();
