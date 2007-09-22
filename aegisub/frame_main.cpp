@@ -767,13 +767,22 @@ void FrameMain::UpdateTitle() {
 	wxString newTitle = _T("");
 #ifndef __WXMAC__
 	if (subsMod) newTitle << _T("* ");
-#endif
 	if (AssFile::top->filename != _T("")) {
 		wxFileName file (AssFile::top->filename);
 		newTitle << file.GetFullName();
 	}
 	else newTitle << _T("Untitled");
 	newTitle << _T(" - Aegisub ") << GetAegisubLongVersionString();
+#else
+	// Apple HIG says "untitled" should not be capitalised
+	// and the window is a document window, it shouldn't contain the app name
+	// (The app name is already present in the menu bar)
+	if (AssFile::top->filename != _T("")) {
+		wxFileName file (AssFile::top->filename);
+		newTitle << file.GetFullName();
+	}
+	else newTitle << _T("untitled");
+#endif
 	
 #ifdef __WXMAC__
 	// On Mac, set the mark in the close button
