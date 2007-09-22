@@ -765,13 +765,21 @@ void FrameMain::UpdateTitle() {
 	
 	// Create ideal title
 	wxString newTitle = _T("");
+#ifndef __WXMAC__
 	if (subsMod) newTitle << _T("* ");
+#endif
 	if (AssFile::top->filename != _T("")) {
 		wxFileName file (AssFile::top->filename);
 		newTitle << file.GetFullName();
 	}
 	else newTitle << _T("Untitled");
 	newTitle << _T(" - Aegisub ") << GetAegisubLongVersionString();
+	
+#ifdef __WXMAC__
+	// On Mac, set the mark in the close button
+	WindowRef wnd = (WindowRef)MacGetWindowRef();
+	SetWindowModified(wnd, subsMod);
+#endif
 
 	// Get current title
 	wxString curTitle = GetTitle();
