@@ -82,13 +82,13 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	audioDisplay->SetSizeHints(-1,_h,-1,_h);
 
 	// Zoom
-	HorizontalZoom = new wxSlider(this,Audio_Horizontal_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL);
+	HorizontalZoom = new wxSlider(this,Audio_Horizontal_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH);
 	HorizontalZoom->PushEventHandler(new FocusEvent());
 	HorizontalZoom->SetToolTip(_("Horizontal zoom"));
-	VerticalZoom = new wxSlider(this,Audio_Vertical_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_INVERSE);
+	VerticalZoom = new wxSlider(this,Audio_Vertical_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE);
 	VerticalZoom->PushEventHandler(new FocusEvent());
 	VerticalZoom->SetToolTip(_("Vertical zoom"));
-	VolumeBar = new wxSlider(this,Audio_Volume,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_INVERSE);
+	VolumeBar = new wxSlider(this,Audio_Volume,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE);
 	VolumeBar->PushEventHandler(new FocusEvent());
 	VolumeBar->SetToolTip(_("Audio Volume"));
 	bool link = Options.AsBool(_T("Audio Link"));
