@@ -261,6 +261,14 @@ void FrameMain::InitMenu() {
 	if (menuCreated) {
 		SetMenuBar(NULL);
 	}
+	
+#ifdef __WXMAC__
+	// Make sure special menu items are placed correctly on Mac
+	wxApp::s_macAboutMenuItemId = Menu_Help_About;
+	wxApp::s_macExitMenuItemId = Menu_File_Exit;
+	wxApp::s_macPreferencesMenuItemId = Menu_Tools_Options;
+	wxApp::s_macHelpMenuTitleName = _("&Help");
+#endif
 
 	// Generate menubar
 	MenuBar = new wxMenuBar();
