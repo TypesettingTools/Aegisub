@@ -37,10 +37,10 @@
 ///////////
 // Headers
 #include "dialog_options.h"
-#ifdef wxUSE_TREEBOOK
+#if wxUSE_TREEBOOK && !__WXMAC__
 #include <wx/treebook.h>
 #else
-#define AddSubPage(a,b,c) AddPage(a,b,c)
+#define AddSubPage(page,text,select) AddPage(page,wxString::Format(_T("\t%s"),text),select)
 #endif
 #include "options.h"
 #include <wx/spinctrl.h>

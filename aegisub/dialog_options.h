@@ -52,7 +52,7 @@
 // Prototypes
 class FrameMain;
 class DialogInputHotkey;
-#ifdef wxUSE_TREEBOOK
+#if wxUSE_TREEBOOK && !__WXMAC__
 class wxTreebook;
 #else
 #include <wx/choicebk.h>
