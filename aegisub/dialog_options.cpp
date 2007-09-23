@@ -393,6 +393,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxComboBox(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,choices5,wxCB_DROPDOWN | wxCB_READONLY);
 		Bind(control,_T("Subtitles provider"),1);
 		videoSizer4->Add(control,1,wxEXPAND);
+#ifdef WIN32
 		videoSizer4->Add(new wxStaticText(videoPage,-1,_("Avisynth memory limit: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		control = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxDefaultSize,0,NumValidator(NULL,false));
 		Bind(control,_T("Avisynth memorymax"));
@@ -410,6 +411,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxCheckBox(videoPage,-1,_("Avisynth renders its own subs"));
 		Bind(control,_T("Avisynth render own subs"));
 		videoSizer4->Add(control,1,wxEXPAND);
+#endif
 
 		// Sizers
 		videoSizer1->Add(videoSizer3,1,wxEXPAND | wxALL,5);
@@ -521,7 +523,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddComboControl(audioAdvPage,audioAdvSizer1,_("Audio provider"),_T("Audio Provider"),AudioProviderFactory::GetFactoryList(),true,1);
 		AddComboControl(audioAdvPage,audioAdvSizer1,_("Audio player"),_T("Audio Player"),AudioPlayerFactory::GetFactoryList(),true,1);
 		AddComboControl(audioAdvPage,audioAdvSizer1,_("Cache type"),_T("Audio Cache"),wxArrayString(3,choices2),true);
+#ifdef WIN32
 		AddComboControl(audioAdvPage,audioAdvSizer1,_("Avisynth down-mixer"),_T("Audio Downmixer"),wxArrayString(3,choices3),false);
+#endif
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("HD cache path"),_T("Audio HD Cache Location"),TEXT_TYPE_FOLDER);
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("HD cache name"),_T("Audio HD CAche Name"));
 		AddTextControl(audioAdvPage,audioAdvSizer1,_("Spectrum cutoff"),_T("Audio spectrum cutoff"),TEXT_TYPE_NUMBER);
