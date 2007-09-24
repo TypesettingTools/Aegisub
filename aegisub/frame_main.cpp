@@ -129,17 +129,20 @@ FrameMain::FrameMain (wxArrayString args)
 	// Splash screen
 	// It doesn't work properly on wxMac, and the jumping dock icon
 	// signals the same as the splash screen either way.
-	#if !_DEBUG && !__WXMAC__
+#if !_DEBUG && !__WXMAC__
 	if (Options.AsBool(_T("Show Splash"))) {
 		SplashScreen *splash = new SplashScreen(this);
 		splash->Show(true);
 		splash->Update();
 	}
-	else {
+	else
+#endif
+	{
+#if !_DEBUG
 		// Show tip of the day
 		TipOfTheDay::Show(this);
+#endif
 	}
-	#endif
 	wxSafeYield();
 
 	// Set autosave timer
