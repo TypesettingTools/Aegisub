@@ -163,7 +163,7 @@ wxThread::ExitCode VersionCheckThread::Entry() {
 	paths.Add(_T("http://aegisub.cellosoft.com/latest.txt"));
 	paths.Add(_T("http://www.malakith.net/amz/aegisub/latest.txt"));
 	wxFSFile *fp = NULL;
-
+	
 	// Try each path until it finds one that works
 	for (unsigned int i=0;i<paths.Count();i++) {
 		// Get path and make sure that it has a handle for it
@@ -292,6 +292,5 @@ endThread:
 	wxMutexGuiLeave();
 	delete fp;
 	fp = NULL;
-	Delete();
 	return 0;
 }
