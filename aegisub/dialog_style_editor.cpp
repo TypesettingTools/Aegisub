@@ -127,6 +127,15 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Encoding options
 	wxArrayString encodingStrings;
 	AssStyle::GetEncodings(encodingStrings);
+	
+	// Create sizers
+	wxSizer *NameSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Style name"));
+	wxSizer *FontSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Font"));
+	wxSizer *ColorsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Colors"));
+	wxSizer *MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Margins"));
+	wxSizer *OutlineBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Outline"));
+	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Miscelaneous"));
+	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Preview"));
 
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
@@ -209,11 +218,9 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	if (!found) Encoding->Select(0);
 
 	// Style name sizer
-	wxSizer *NameSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Style name"));
 	NameSizer->Add(StyleName,1,wxALL,0);
 
 	// Font sizer
-	wxSizer *FontSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Font"));
 	wxSizer *FontSizerTop = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *FontSizerBottom = new wxBoxSizer(wxHORIZONTAL);
 	FontSizerTop->Add(FontName,1,wxALL,0);
@@ -229,7 +236,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	FontSizer->Add(FontSizerBottom,1,wxTOP | wxEXPAND,5);
 
 	// Colors sizer
-	wxSizer *ColorsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Colors"));
 	wxSizer *ColorSizer[4];
 	wxString colorLabels[] = { _("Primary"), _("Secondary"), _("Outline"), _("Shadow") };
 	ColorsSizer->AddStretchSpacer(1);
@@ -244,7 +250,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Margins
 	wxString marginLabels[] = { _("Left"), _("Right"), _("Vert") };
-	wxSizer *MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Margins"));
 	MarginSizer->AddStretchSpacer(1);
 	wxSizer *marginSubSizer[3];
 	for (int i=0;i<3;i++) {
@@ -263,7 +268,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	MarginAlign->Add(Alignment,0,wxLEFT | wxEXPAND,5);
 
 	// Outline
-	wxSizer *OutlineBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Outline"));
 	OutlineBox->AddStretchSpacer(1);
 	OutlineBox->Add(new wxStaticText(this,-1,_("Outline:")),0,wxALIGN_CENTER,0);
 	OutlineBox->Add(Outline,0,wxLEFT | wxALIGN_CENTER,5);
@@ -273,7 +277,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	OutlineBox->AddStretchSpacer(1);
 
 	// Misc
-	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Miscelaneous"));
 	wxFlexGridSizer *MiscBoxTop = new wxFlexGridSizer(2,4,5,5);
 	wxSizer *MiscBoxBottom = new wxBoxSizer(wxHORIZONTAL);
 	MiscBoxTop->Add(new wxStaticText(this,-1,_("Scale X%:")),1,wxALIGN_CENTER,0);
@@ -292,7 +295,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	MiscBox->Add(MiscBoxBottom,1,wxEXPAND | wxTOP | wxALIGN_CENTER,5);
 
 	// Preview
-	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Preview"));
 	SubsPreview = NULL;
 	PreviewText = NULL;
 	if (SubtitlesProviderFactory::ProviderAvailable()) {
