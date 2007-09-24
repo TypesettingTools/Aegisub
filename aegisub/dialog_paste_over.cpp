@@ -52,6 +52,11 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 	// Script mode
 	int mode = 1; // ASS
 
+	// Label and list sizer
+	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Fields"));
+	wxStaticText *label = new wxStaticText(this,-1,_("Please select the fields that you want to paste over:"),wxDefaultPosition,wxDefaultSize);
+	ListSizer->Add(label,0,wxEXPAND,0);
+	
 	// List box
 	wxArrayString choices;
 	choices.Add(_("Layer"));
@@ -71,15 +76,10 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 	choices.Add(_("Effect"));
 	choices.Add(_("Text"));
 	ListBox = new wxCheckListBox(this,-1,wxDefaultPosition,wxSize(250,170), choices);
+	ListSizer->Add(ListBox,0,wxEXPAND|wxTOP,5);
 
 	// Load checked items
 	for (unsigned int i=0;i<choices.Count();i++) ListBox->Check(i,Options.AsBool(wxString::Format(_T("Paste Over #%i"),i)));
-
-	// Label and list sizer
-	wxStaticText *label = new wxStaticText(this,-1,_("Please select the fields that you want to paste over:"),wxDefaultPosition,wxDefaultSize);
-	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Fields"));
-	ListSizer->Add(label,0,wxEXPAND,0);
-	ListSizer->Add(ListBox,0,wxEXPAND|wxTOP,5);
 
 	// Top buttons
 	wxSizer *TopButtonSizer = new wxBoxSizer(wxHORIZONTAL);

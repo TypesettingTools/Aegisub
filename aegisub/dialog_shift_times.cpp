@@ -66,12 +66,16 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	ready = true;
 	grid = _grid;
 	shiftframe = 0;
+	
+	// Static-box sizers before anything else
+	wxSizer *TimesSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Shift by"));
+	wxSizer *HistorySizer = new wxStaticBoxSizer(wxVERTICAL,this,_("History"));
 
 	// Times
-	RadioTime = new wxRadioButton(this,RADIO_TIME,_("Time: "),wxDefaultPosition,wxSize(60,20), wxRB_GROUP);
-	RadioFrames = new wxRadioButton(this,RADIO_FRAME,_("Frames: "),wxDefaultPosition,wxSize(60,20));
-	ShiftTime = new TimeEdit(this,TEXT_SHIFT_TIME,_T(""),wxDefaultPosition,wxSize(60,20));
-	ShiftFrame = new wxTextCtrl(this,TEXT_SHIFT_FRAME,wxString::Format(_T("%i"),shiftframe),wxDefaultPosition,wxSize(60,20));
+	RadioTime = new wxRadioButton(this,RADIO_TIME,_("Time: "),wxDefaultPosition,wxDefaultSize, wxRB_GROUP);
+	RadioFrames = new wxRadioButton(this,RADIO_FRAME,_("Frames: "),wxDefaultPosition,wxDefaultSize);
+	ShiftTime = new TimeEdit(this,TEXT_SHIFT_TIME,_T(""),wxDefaultPosition,wxDefaultSize);
+	ShiftFrame = new wxTextCtrl(this,TEXT_SHIFT_FRAME,wxString::Format(_T("%i"),shiftframe),wxDefaultPosition,wxDefaultSize);
 	ShiftTime->SetToolTip(_("Enter time in h:mm:ss.cs notation"));
 	RadioTime->SetToolTip(_("Shift by time"));
 	ShiftFrame->Disable();
@@ -80,12 +84,11 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 		ShiftFrame->SetToolTip(_("Enter number of frames to shift by"));
 		RadioFrames->SetToolTip(_("Shift by frames"));
 	}
-	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
-	TimeSizer->Add(RadioTime,0,wxALIGN_CENTER_VERTICAL,0);
-	TimeSizer->Add(ShiftTime,1,wxLEFT,5);
-	FrameSizer->Add(RadioFrames,0,wxALIGN_CENTER_VERTICAL,0);
-	FrameSizer->Add(ShiftFrame,1,wxLEFT,5);
+	wxSizer *TimeFrameSizer = new wxFlexGridSizer(2,2,5,5);
+	TimeFrameSizer->Add(RadioTime,0,wxALIGN_CENTER_VERTICAL,0);
+	TimeFrameSizer->Add(ShiftTime,1);
+	TimeFrameSizer->Add(RadioFrames,0,wxALIGN_CENTER_VERTICAL,0);
+	TimeFrameSizer->Add(ShiftFrame,1);
 
 	// Direction
 	DirectionForward = new wxRadioButton(this,-1,_("Forward"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
@@ -95,9 +98,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	wxSizer *DirectionSizer = new wxBoxSizer(wxHORIZONTAL);
 	DirectionSizer->Add(DirectionForward,1,wxEXPAND,0);
 	DirectionSizer->Add(DirectionBackward,1,wxLEFT | wxEXPAND,5);
-	wxSizer *TimesSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Shift by"));
-	TimesSizer->Add(TimeSizer,0,wxEXPAND,0);
-	TimesSizer->Add(FrameSizer,0,wxEXPAND | wxTOP,5);
+	TimesSizer->Add(TimeFrameSizer,0,wxEXPAND,0);
 	TimesSizer->Add(DirectionSizer,0,wxEXPAND | wxTOP,5);
 
 	// Selection
@@ -109,7 +110,6 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	TimesChoice = new wxRadioBox(this,-1,_("Times"), wxDefaultPosition, wxDefaultSize, 3, TimesChoices, 3, wxRA_SPECIFY_ROWS);
 
 	// History
-	wxSizer *HistorySizer = new wxStaticBoxSizer(wxVERTICAL,this,_("History"));
 	History = new wxListBox(this,-1,wxDefaultPosition,wxSize(350,100), 0, NULL, wxLB_HSCROLL);
 	HistorySizer->Add(History,1,wxEXPAND,0);
 

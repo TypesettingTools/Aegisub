@@ -61,6 +61,7 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	AssFile *subs = AssFile::top;
 
 	// Script details crap
+	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Script"));
 	wxStaticText *TitleLabel = new wxStaticText(this,-1,_("Title:"));
 	TitleEdit = new wxTextCtrl(this,-1,subs->GetScriptInfo(_T("Title")),wxDefaultPosition,wxSize(200,20));
 	wxStaticText *OrigScriptLabel = new wxStaticText(this,-1,_("Original script:"));
@@ -77,7 +78,6 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	UpdatedEdit = new wxTextCtrl(this,-1,subs->GetScriptInfo(_T("Script Updated By")),wxDefaultPosition,wxSize(200,20));
 	wxStaticText *UpdateDetailsLabel = new wxStaticText(this,-1,_("Update details:"));
 	UpdateDetailsEdit = new wxTextCtrl(this,-1,subs->GetScriptInfo(_T("Update Details")),wxDefaultPosition,wxSize(200,20));
-	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Script"));
 	wxFlexGridSizer *TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
 	TopSizerGrid->Add(TitleLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
 	TopSizerGrid->Add(TitleEdit,1,wxEXPAND,0);

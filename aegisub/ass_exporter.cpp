@@ -65,13 +65,18 @@ void AssExporter::DrawSettings(wxWindow *parent,wxSizer *AddTo) {
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
+		// Make sure to construct static box sizer first, so it won't overlap
+		// the controls on wxMac.
+		box = new wxStaticBoxSizer(wxVERTICAL,parent,(*cur)->RegisterName);
 		window = (*cur)->GetConfigDialogWindow(parent);
 		if (window) {
-			box = new wxStaticBoxSizer(wxVERTICAL,parent,(*cur)->RegisterName);
 			box->Add(window,0,wxEXPAND,0);
 			AddTo->Add(box,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 			AddTo->Show(box,false);
 			Sizers[(*cur)->RegisterName] = box;
+		}
+		else {
+			delete box;
 		}
 	}
 }

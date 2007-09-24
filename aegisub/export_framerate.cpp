@@ -127,8 +127,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	MainSizer->Add(OutputSizer,0,wxEXPAND,0);
 
 	// Window
-	MainSizer->SetSizeHints(base);
-	base->SetSizer(MainSizer);
+	base->SetSizerAndFit(MainSizer);
 	return base;
 }
 

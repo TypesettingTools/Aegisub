@@ -53,6 +53,11 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	// Variables
 	grid = _grid;
 
+	// Static-box sizers before anything else
+	wxSizer *MatchSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Match"));
+	wxSizer *MatchTopSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *DialogueSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Match dialogues/comments"));
+	
 	// Matches box
 	Matches = new wxRadioButton(this,-1,_("Matches"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	DoesntMatch = new wxRadioButton(this,-1,_("Doesn't Match"),wxDefaultPosition,wxDefaultSize,0);
@@ -83,8 +88,6 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	Action = new wxRadioBox(this,-1,_("Action"),wxDefaultPosition,wxDefaultSize,actions,1);
 
 	// Matches box sizer
-	wxSizer *MatchSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Match"));
-	wxSizer *MatchTopSizer = new wxBoxSizer(wxHORIZONTAL);
 	MatchTopSizer->Add(Matches,0,wxEXPAND|wxRIGHT,5);
 	MatchTopSizer->Add(DoesntMatch,0,wxEXPAND,0);
 	MatchTopSizer->AddStretchSpacer(1);
@@ -96,7 +99,6 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	MatchSizer->Add(RegExp,0,wxTOP|wxEXPAND,5);
 
 	// Dialogues / Comments box
-	wxSizer *DialogueSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Match dialogues/comments"));
 	DialogueSizer->Add(MatchDialogues,0, wxRIGHT|wxEXPAND,5);
 	DialogueSizer->Add(MatchComments,0, wxEXPAND);
 	

@@ -67,6 +67,7 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	adjsThresTime = Options.AsText(_T("Timing processor adjascent thres"));
 
 	// Styles box
+	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
 	wxArrayString styles = grid->ass->GetStyles();
 	StyleList = new wxCheckListBox(this,TIMING_STYLE_LIST,wxDefaultPosition,wxSize(150,150),styles);
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
@@ -170,7 +171,6 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	StyleButtonsSizer->Add(none,1,0,0);
 
 	// Left sizer
-	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
 	size_t len = StyleList->GetCount();
 	for (size_t i=0;i<len;i++) {
 		StyleList->Check(i);
