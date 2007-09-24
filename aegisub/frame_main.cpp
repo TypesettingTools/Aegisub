@@ -127,7 +127,9 @@ FrameMain::FrameMain (wxArrayString args)
 	Show();
 
 	// Splash screen
-	#ifndef _DEBUG
+	// It doesn't work properly on wxMac, and the jumping dock icon
+	// signals the same as the splash screen either way.
+	#if !_DEBUG && !__WXMAC__
 	if (Options.AsBool(_T("Show Splash"))) {
 		SplashScreen *splash = new SplashScreen(this);
 		splash->Show(true);
