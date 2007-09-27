@@ -338,7 +338,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER_VIDEO,_("After Current, at Video Time"),_("Inserts a line after current, starting at video time"),wxBITMAP(blank_button));
 	subtitlesMenu->Append(InsertParent);
 	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE,MakeHotkeyText(_("&Duplicate Lines"), _T("Grid duplicate rows")),_("Duplicate the selected lines"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE_NEXT_FRAME,MakeHotkeyText(_("&Duplicate and shift by 1 frame"), _T("Grid duplicate and shift one frame")),_("Duplicate lines and shift by one frame"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE_NEXT_FRAME,MakeHotkeyText(_("&Duplicate and Shift by 1 Frame"), _T("Grid duplicate and shift one frame")),_("Duplicate lines and shift by one frame"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(subtitlesMenu,MENU_DELETE,MakeHotkeyText(_("Delete Lines"), _T("Grid delete rows")),_("Delete currently selected lines"),wxBITMAP(delete_button));
 	subtitlesMenu->AppendSeparator();
 	wxMenu *JoinMenu = new wxMenu;
@@ -359,7 +359,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBITMAP(styling_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBITMAP(translation_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample Resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
 	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
@@ -392,17 +392,17 @@ void FrameMain::InitMenu() {
 	videoMenu->Append(Menu_File_Close_Video, _("&Close Video"), _("Closes the currently open video file"));
 	wxMenuItem *RecentVidParent = new wxMenuItem(videoMenu, Menu_File_Recent_Vids_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentVids);
 	videoMenu->Append(RecentVidParent);
-	videoMenu->Append(Menu_Video_Dummy, _("Use dummy video..."), _("Opens a video clip with solid colour"));
+	videoMenu->Append(Menu_Video_Dummy, _("Use Dummy Video..."), _("Opens a video clip with solid colour"));
 	videoMenu->Append(Menu_Video_Details, _("Show video details..."), _("Shows video details"));
 	videoMenu->AppendSeparator();
-	videoMenu->Append(Menu_File_Open_VFR, _("Open timecodes file..."), _("Opens a VFR timecodes v1 or v2 file"));
-	videoMenu->Append(Menu_File_Close_VFR, _("Close timecodes file"), _("Closes the currently open timecodes file"))->Enable(false);
+	videoMenu->Append(Menu_File_Open_VFR, _("Open Timecodes File..."), _("Opens a VFR timecodes v1 or v2 file"));
+	videoMenu->Append(Menu_File_Close_VFR, _("Close Timecodes File"), _("Closes the currently open timecodes file"))->Enable(false);
 	wxMenuItem *RecentTimesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Timecodes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentTimecodes);
 	videoMenu->Append(RecentTimesParent);
 	videoMenu->AppendSeparator();
-	videoMenu->Append(Menu_Video_Load_Keyframes, _("Open keyframes..."), _("Opens a keyframe list file"));
-	videoMenu->Append(Menu_Video_Save_Keyframes, _("Save keyframes..."), _("Saves the current keyframe list"))->Enable(false);
-	videoMenu->Append(Menu_Video_Close_Keyframes, _("Close keyframes"), _("Closes the currently open keyframes list"))->Enable(false);
+	videoMenu->Append(Menu_Video_Load_Keyframes, _("Open Keyframes..."), _("Opens a keyframe list file"));
+	videoMenu->Append(Menu_Video_Save_Keyframes, _("Save Keyframes..."), _("Saves the current keyframe list"))->Enable(false);
+	videoMenu->Append(Menu_Video_Close_Keyframes, _("Close Keyframes"), _("Closes the currently open keyframes list"))->Enable(false);
 	wxMenuItem *RecentKeyframesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Keyframes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentKeyframes);
 	videoMenu->Append(RecentKeyframesParent);
 	videoMenu->AppendSeparator();
@@ -427,23 +427,24 @@ void FrameMain::InitMenu() {
 	AspectMenu->AppendCheckItem(Menu_Video_AR_235, _("&Cinematic (2.35)"), _("Forces video to 2.35 aspect ratio"));
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom..."), _("Forces video to a custom aspect ratio"));
 	videoMenu->Append(AspectParent);
-	videoMenu->AppendCheckItem(Menu_Video_Overscan, _("Show overscan mask"), _("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."));
+	videoMenu->AppendCheckItem(Menu_Video_Overscan, _("Show Overscan Mask"), _("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."));
 	videoMenu->AppendSeparator();
-	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, MakeHotkeyText(_("&Jump To..."), _T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
-	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, MakeHotkeyText(_("Jump video to start"), _T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), wxBITMAP(video_to_substart));
-	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End, MakeHotkeyText(_("Jump video to end"), _T("Jump Video To End")), _("Jumps the video to the end frame of current subtitle"), wxBITMAP(video_to_subend));
+	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, MakeHotkeyText(_("&Jump to..."), _T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
+	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, MakeHotkeyText(_("Jump Video to Start"), _T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), wxBITMAP(video_to_substart));
+	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End, MakeHotkeyText(_("Jump Video to End"), _T("Jump Video To End")), _("Jumps the video to the end frame of current subtitle"), wxBITMAP(video_to_subend));
 	MenuBar->Append(videoMenu, _("&Video"));
 
 	// Create audio menu
 	audioMenu = new wxMenu();
-	audioMenu->Append(Menu_Audio_Open_File, _("&Open Audio file..."), _("Opens an audio file"));
+	audioMenu->Append(Menu_Audio_Open_File, _("&Open Audio File..."), _("Opens an audio file"));
 	audioMenu->Append(Menu_Audio_Open_From_Video, _("Open Audio from &Video"), _("Opens the audio from the current video file"));
 	audioMenu->Append(Menu_Audio_Close, _("&Close Audio"), _("Closes the currently open audio file"));
 	wxMenuItem *RecentAudParent = new wxMenuItem(audioMenu, Menu_File_Recent_Auds_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentAuds);
 	audioMenu->Append(RecentAudParent);
 #ifdef _DEBUG
-	audioMenu->Append(Menu_Audio_Open_Dummy, _T("Open 2h30 blank audio"), _T("Open a 150 minutes blank audio clip, for debugging"));
-	audioMenu->Append(Menu_Audio_Open_Dummy_Noise, _T("Open 2h30 noise audio"), _T("Open a 150 minutes noise-filled audio clip, for debugging"));
+	audioMenu->AppendSeparator();
+	audioMenu->Append(Menu_Audio_Open_Dummy, _T("Open 2h30 Blank Audio"), _T("Open a 150 minutes blank audio clip, for debugging"));
+	audioMenu->Append(Menu_Audio_Open_Dummy_Noise, _T("Open 2h30 Noise Audio"), _T("Open a 150 minutes noise-filled audio clip, for debugging"));
 #endif
 	MenuBar->Append(audioMenu, _("&Audio"));
 
@@ -461,12 +462,12 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), wxBITMAP(blank_button));
 #endif
 #ifdef __WXDEBUG__
-	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g window..."), _("Open log window"), wxBITMAP(blank_button));
+	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g Window..."), _("Open log window"), wxBITMAP(blank_button));
 #endif
 	viewMenu->AppendSeparator();
-	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs only view"), _("Display subtitles only"));
-	viewMenu->AppendRadioItem(Menu_View_Video, _("Video+Subs view"), _("Display video and subtitles only"));
-	viewMenu->AppendRadioItem(Menu_View_Audio, _("Audio+Subs view"), _("Display audio and subtitles only"));
+	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs Only View"), _("Display subtitles only"));
+	viewMenu->AppendRadioItem(Menu_View_Video, _("Video+Subs View"), _("Display video and subtitles only"));
+	viewMenu->AppendRadioItem(Menu_View_Audio, _("Audio+Subs View"), _("Display audio and subtitles only"));
 	viewMenu->AppendRadioItem(Menu_View_Standard, _("Full view"), _("Display audio, video and subtitles"));
 	MenuBar->Append(viewMenu, _("Vie&w"));
 
@@ -476,8 +477,8 @@ void FrameMain::InitMenu() {
 	helpMenu->AppendSeparator();
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"),wxBITMAP(website_button));
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"),wxBITMAP(forums_button));
-	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug tracker..."), _("Visit Aegisub's bug tracker"),wxBITMAP(bugtracker_button));
-	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC channel..."), _("Visit Aegisub's official IRC channel"), wxBITMAP(irc_button));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug Tracker..."), _("Visit Aegisub's bug tracker"),wxBITMAP(bugtracker_button));
+	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC Channel..."), _("Visit Aegisub's official IRC channel"), wxBITMAP(irc_button));
 	helpMenu->AppendSeparator();
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),wxBITMAP(about_button));

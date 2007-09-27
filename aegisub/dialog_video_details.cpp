@@ -114,17 +114,3 @@ wxString DialogVideoDetails::PrettyTimeStamp(int frames, double fps)
 	int h = tt;
 	return wxString::Format(_T("%d:%02d:%02d.%03d"), h, m, s, cs);
 }
-
-
-//////////////
-// Destructor
-DialogVideoDetails::~DialogVideoDetails()
-{
-}
-
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogVideoDetails,wxDialog)
-
-END_EVENT_TABLE()

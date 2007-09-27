@@ -130,6 +130,7 @@ void KeyFrameFile::OpenAegiKeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 	}	
 }
 
+
 ///////////////////
 // XviD stats file
 void KeyFrameFile::OpenXviDKeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
@@ -139,13 +140,13 @@ void KeyFrameFile::OpenXviDKeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 
 	// Read lines
 	while (file.HasMoreLines()) {
-		cur = file.ReadLineFromFile();
-		wxString teste = cur.Left(1);
 		if (cur.StartsWith(_T("i"))) {			
 			keyFrames.Add(count);
-		}
-		if (cur.StartsWith(_T("i")) || cur.StartsWith(_T("p")) || cur.StartsWith(_T("b"))) {
 			count++;
 		}
+		else if (cur.StartsWith(_T("p")) || cur.StartsWith(_T("b"))) {
+			count++;
+		}
+		cur = file.ReadLineFromFile();
 	}
 }

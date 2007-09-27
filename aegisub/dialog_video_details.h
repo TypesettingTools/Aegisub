@@ -50,9 +50,6 @@ private:
 
 public:
 	DialogVideoDetails(wxWindow *parent);
-	virtual ~DialogVideoDetails();
-
-	DECLARE_EVENT_TABLE()
 };
 
 #endif
