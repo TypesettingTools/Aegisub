@@ -166,7 +166,7 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
 
 	// Calculate how much left
 	int64_t lenAvailable = player->endPos - player->playPos;
-	unsigned int64_t avail = 0;
+	uint64_t avail = 0;
 	if (lenAvailable > 0) {
 		avail = lenAvailable;
 		if (avail > framesPerBuffer) {
