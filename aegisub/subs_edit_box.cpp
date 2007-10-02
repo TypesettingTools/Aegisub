@@ -132,7 +132,7 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Color3->SetToolTip(_("Outline color"));
 	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBITMAP(button_color_four),wxDefaultPosition,wxSize(30,20));
 	Color4->SetToolTip(_("Shadow color"));
-	CommitButton = new wxButton(this,BUTTON_COMMIT,_("Commit"),wxDefaultPosition,wxSize(-1,20));
+	CommitButton = new wxButton(this,BUTTON_COMMIT,_("Commit"),wxDefaultPosition,wxDefaultSize);
 	ToolTipManager::Bind(CommitButton,_("Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."),_T("Edit Box Commit"));
 	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));

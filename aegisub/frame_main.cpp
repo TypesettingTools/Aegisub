@@ -211,7 +211,7 @@ void FrameMain::InitToolbar () {
 		toAdd += _T("%");
 		choices.Add(toAdd);
 	}
-	ZoomBox = new wxComboBox(Toolbar,Toolbar_Zoom_Dropdown,_T("75%"),wxDefaultPosition,wxSize(100,20),choices,wxCB_READONLY);
+	ZoomBox = new wxComboBox(Toolbar,Toolbar_Zoom_Dropdown,_T("75%"),wxDefaultPosition,wxDefaultSize,choices,wxCB_READONLY);
 	Toolbar->AddControl(ZoomBox);
 	Toolbar->AddSeparator();
 
