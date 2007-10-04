@@ -154,6 +154,9 @@ function parse_template(meta, styles, line, templates, mods)
 					break
 				end
 			end
+			if id == "" then
+				id = nil
+			end
 			if id then
 				rest = t
 			end
