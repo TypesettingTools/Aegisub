@@ -1009,7 +1009,10 @@ void AudioDisplay::Play(int start,int end) {
 			wxLogDebug(_T("AudioDisplay::Play: has video provider"));
 			try {
 				// Get provider
-				provider = AudioProviderFactory::GetAudioProvider(VideoContext::Get()->videoName, 0);
+				if (!VideoContext::Get()->videoName.StartsWith(_T("?dummy")))
+					provider = AudioProviderFactory::GetAudioProvider(VideoContext::Get()->videoName, 0);
+				else
+					return;
 
 				// Get player
 				player = AudioPlayerFactory::GetAudioPlayer();
