@@ -100,8 +100,14 @@ bool FFBase::SaveTimecodesToFile(const char *ATimecodeFile, int64_t ScaleD, int6
 	if (!TimecodeFile)
 		return false;
 
+	std::set<int64_t> Timecodes;
 	for (int i = 0; i < VI.num_frames; i++)
-		fprintf(TimecodeFile, "%f\r\n", (FrameToDTS[i].DTS * ScaleD) / (double)ScaleN);
+		Timecodes.insert(FrameToDTS[i].DTS);
+
+	fprintf(TimecodeFile, "# timecode format v2\r\n");
+
+	for (std::set<int64_t>::iterator Cur=Timecodes.begin(); Cur!=Timecodes.end(); Cur++)
+		fprintf(TimecodeFile, "%f\r\n", (*Cur * ScaleD) / (double)ScaleN);
 
 	fclose(TimecodeFile);
 	return true;

@@ -6,103 +6,9 @@ FFmpegSource Documentation
 </head>
 <body>
 <h1>FFmpegSource Documentation</h1>
-
-<h2>Changes</h2>
-<ul>
-<li>1.12<ul>
-<li>Now caches the last fully decoded frame to increase the reliability of seekmode=-1 and possibly reduce seeking in other modes</li>
-<li>Video that needs to be converted to a suitable output format should now always have correct colors (was reversed in 1.11 and inconsistent in earlier versions)</li>
-<li>Added seekmode=-1 which is mostly useful for opening image files very carefully</li>
-<li>Now throws an error if the container is unseekable and seekmode=-1 isn't set</li>
-<li>Updated FFmpeg to rev 10492 + camtasia swapped colors fix</li>
-</ul></li>
-
-<li>1.11<ul>
-<li>Now officially uses the MIT license</li>
-<li>Much cleaner source</li>
-<li>Can be compiled without support for compressing the audio cache with FLAC</li>
-<li>Supports more audio formats in matroska</li>
-<li>RGB24 output no longer has swapped colors if the video is converted to it for output (there still seems to be some bugs lurking when conversion is done with libswscale)</li>
-<li>Fixed an access violation on close when no audio is opened (introduced in 1.10)</li>
-<li>Updated FFmpeg to rev 10423</li>
-</ul></li>
-
-<li>1.10<ul>
-<li>The audio cache compression level is now ignored if the source isn't 16bit and the raw format is used instead</li>
-<li>FLAC is now actually initialized properly so the cache actually works for files that aren't stereo (16bit limit still applies)</li>
-<li>Now uses proper callbacks for FLAC so it works with larger than 2GB files</li>
-<li>Doesn't (over)write the video cache with an empty one in certain cases when avformat is used for the source</li>
-</ul></li>
-
-<li>1.9<ul>
-<li>Added the possibility to compress the audio cache with FLAC (currently only works with 16bit audio)</li>
-<li>Added another planar YUV 4:2:0 format to the supported output formats (fixes certain mov files)</li>
-<li>Less memory is now allocated on the stack which makes av_find_stream_info() work for all files (fixes certain mov files)</li>
-<li>Updated FFmpeg to rev 10186</li>
-</ul></li>
-
-<li>1.8<ul>
-<li>Updated FFmpeg to rev 10141</li>
-</ul></li>
-
-<li>1.7<ul>
-<li>Updated FFmpeg</li>
-<li>Fixed error with mkv for codecs without codec private data and the first packet doesn't belong to them</li>
-</ul></li>
-
-<li>1.6<ul>
-<li>Fixed ac3 and other formats stored in mkv</li>
-<li>Skip unnecessary seeking when index information already exists (gif file opening only 3/4 broken now)</li>
-<li>Throws an error when the selected audio/video track has no frames/samples</li>
-</ul></li>
-
-<li>1.5<ul>
-<li>Fixed a bug that made avformat opened files only return audio if only the audio cache needed to be created</li>
-<li>Rejects more corrupt cache files</li>
-<li>Fixed crash when a 0 byte audio cache file is present</li>
-<li>Improved framerate guessing for avformat which now takes takes the duration of the first frame into account</li>
-<li>Fixed a bug introduced in 1.4 that would make the number of reported frames too high for files opened with avformat</li>
-<li>Fixed mpeg2 and probably some other formats stored in mkv</li>
-<li>Fixed issues with large mkv files and large audio cache files</li>
-<li>FFmpeg is now compiled with liba52 and faad2</li>
-</ul></li>
-
-<li>1.4<ul>
-<li>Uses the average framerate for mkv files</li>
-<li>Naming scheme of cache files changed to prevent confusion with the default names in files with multiple tracks of the same type</li>
-<li>Use mmx optimizations in swscaler when possible</li>
-<li>Now uses normal windows linebreaks in all files</li>
-<li>Removed FFAudioSource</li>
-<li>Merged FFVideoSource and FFAudioRefSource into FFmpegSource</li>
-<li>Added postprocessing with libpostproc in FFmpegSource and separately in FFPP</li>
-</ul></li>
-
-<li>1.3<ul>
-<li>Compiled against ffmpeg rev9620</li>
-<li>Added FFAudioRefSource</li>
-<li>Added FFAudioSource (has big issues)</li>
-<li>Renamed FFmpegSource to FFVideoSource</li>
-<li>Adjusted seeking in the forward direction to only be done if the requested frame is more than 10 frames away to reduce unnecessary seeking</li>
-<li>Now outputs the last frame properly when there are decoding delays</li>
-</ul></li>
-
-<li>1.2<ul>
-<li>Compiled against ffmpeg rev9451</li>
-<li>Somewhat cleaner source code</li>
-<li>Linear access in addition to a few other modes of seeking can now be forced</li>
-<li>Can now save the index information to a file which makes subsequent file opening fast</li>
-<li>No longer skips indexing for any format</li>
-</ul></li>
-
-<li>1.1<ul>
-<li>Skip indexing for avi</li>
-<li>Prefix all error messages with the plugin name</li>
-<li>Can write v2 timecodes to a file</li>
-<li>Fixed reported framerate</li>
-</ul></li>
-
-</ul>
-
+<p>
+Loads video files without sucking
+</p>
 
 <h2>Compatibility - Video</h2>
 <ul>
@@ -119,6 +25,12 @@ FFmpegSource Documentation
 <ul>
 <li>Sample accurate in all containers</li>
 </ul>
+
+<h2>Loading the Plugin - Dll Hell</h2>
+<p>
+In order to load FFmpegSource all included dlls except ffmpegsource.dll must be located in the path or in the current working directory.
+It is also possible to autoload it if you put all dlls and the avsi file in avisynth's autoloading directory (usually C:\Program Files\AviSynth 2.5\plugins).
+</p>
 
 <h2>Usage</h2>
 <p>
@@ -235,13 +147,119 @@ tn:64:128:256
 
 <p><b>FFmpeg svn</b> from http://ffmpeg.mplayerhq.hu/</p>
 
-<p><b>FLAC (optional)</b> from http://flac.sourceforge.net/</p>
+<p><b>FLAC (optional)</b> from http://flac.sourceforge.net/ (static library seems to be broken)</p>
 
 <p><b>Required FFmpeg Configuration:</b>
 ./configure --enable-shared --disable-static --enable-memalign-hack --enable-gpl --enable-swscaler</p>
 
 <p><b>Suggested Additional Options:</b>
 --disable-encoders --disable-muxers --enable-small</p>
+
+<h2>Changes</h2>
+<ul>
+<li>1.13<ul>
+<li>Now always sorts the output timecodes so native avc in mkv won't have out of order values</li>
+<li>Fixed the missing '# timecode format v2' line in saved timecode files</li>
+<li>Now properly handles video files where the output resolution isn't known until a frame has been decoded (seems to fix flv4)</li>
+<li>Now throws an error if the video decoder returns zero size video</li>
+<li>Added an avsi file for easy autoloading</li>
+<li>Updated libFLAC to 1.2.1<li>
+<li>Updated FFmpeg to rev 10671 + camtasia swapped colors fix</li>
+</ul></li>
+
+<li>1.12<ul>
+<li>Now caches the last fully decoded frame to increase the reliability of seekmode=-1 and possibly reduce seeking in other modes</li>
+<li>Video that needs to be converted to a suitable output format should now always have correct colors (was reversed in 1.11 and inconsistent in earlier versions)</li>
+<li>Added seekmode=-1 which is mostly useful for opening image files very carefully</li>
+<li>Now throws an error if the container is unseekable and seekmode=-1 isn't set</li>
+<li>Updated FFmpeg to rev 10492 + camtasia swapped colors fix</li>
+</ul></li>
+
+<li>1.11<ul>
+<li>Now officially uses the MIT license</li>
+<li>Much cleaner source</li>
+<li>Can be compiled without support for compressing the audio cache with FLAC</li>
+<li>Supports more audio formats in matroska</li>
+<li>RGB24 output no longer has swapped colors if the video is converted to it for output (there still seems to be some bugs lurking when conversion is done with libswscale)</li>
+<li>Fixed an access violation on close when no audio is opened (introduced in 1.10)</li>
+<li>Updated FFmpeg to rev 10423</li>
+</ul></li>
+
+<li>1.10<ul>
+<li>The audio cache compression level is now ignored if the source isn't 16bit and the raw format is used instead</li>
+<li>FLAC is now actually initialized properly so the cache actually works for files that aren't stereo (16bit limit still applies)</li>
+<li>Now uses proper callbacks for FLAC so it works with larger than 2GB files</li>
+<li>Doesn't (over)write the video cache with an empty one in certain cases when avformat is used for the source</li>
+</ul></li>
+
+<li>1.9<ul>
+<li>Added the possibility to compress the audio cache with FLAC (currently only works with 16bit audio)</li>
+<li>Added another planar YUV 4:2:0 format to the supported output formats (fixes certain mov files)</li>
+<li>Less memory is now allocated on the stack which makes av_find_stream_info() work for all files (fixes certain mov files)</li>
+<li>Updated FFmpeg to rev 10186</li>
+</ul></li>
+
+<li>1.8<ul>
+<li>Updated FFmpeg to rev 10141</li>
+</ul></li>
+
+<li>1.7<ul>
+<li>Updated FFmpeg</li>
+<li>Fixed error with mkv for codecs without codec private data and the first packet doesn't belong to them</li>
+</ul></li>
+
+<li>1.6<ul>
+<li>Fixed ac3 and other formats stored in mkv</li>
+<li>Skip unnecessary seeking when index information already exists (gif file opening only 3/4 broken now)</li>
+<li>Throws an error when the selected audio/video track has no frames/samples</li>
+</ul></li>
+
+<li>1.5<ul>
+<li>Fixed a bug that made avformat opened files only return audio if only the audio cache needed to be created</li>
+<li>Rejects more corrupt cache files</li>
+<li>Fixed crash when a 0 byte audio cache file is present</li>
+<li>Improved framerate guessing for avformat which now takes takes the duration of the first frame into account</li>
+<li>Fixed a bug introduced in 1.4 that would make the number of reported frames too high for files opened with avformat</li>
+<li>Fixed mpeg2 and probably some other formats stored in mkv</li>
+<li>Fixed issues with large mkv files and large audio cache files</li>
+<li>FFmpeg is now compiled with liba52 and faad2</li>
+</ul></li>
+
+<li>1.4<ul>
+<li>Uses the average framerate for mkv files</li>
+<li>Naming scheme of cache files changed to prevent confusion with the default names in files with multiple tracks of the same type</li>
+<li>Use mmx optimizations in swscaler when possible</li>
+<li>Now uses normal windows linebreaks in all files</li>
+<li>Removed FFAudioSource</li>
+<li>Merged FFVideoSource and FFAudioRefSource into FFmpegSource</li>
+<li>Added postprocessing with libpostproc in FFmpegSource and separately in FFPP</li>
+</ul></li>
+
+<li>1.3<ul>
+<li>Compiled against ffmpeg rev9620</li>
+<li>Added FFAudioRefSource</li>
+<li>Added FFAudioSource (has big issues)</li>
+<li>Renamed FFmpegSource to FFVideoSource</li>
+<li>Adjusted seeking in the forward direction to only be done if the requested frame is more than 10 frames away to reduce unnecessary seeking</li>
+<li>Now outputs the last frame properly when there are decoding delays</li>
+</ul></li>
+
+<li>1.2<ul>
+<li>Compiled against ffmpeg rev9451</li>
+<li>Somewhat cleaner source code</li>
+<li>Linear access in addition to a few other modes of seeking can now be forced</li>
+<li>Can now save the index information to a file which makes subsequent file opening fast</li>
+<li>No longer skips indexing for any format</li>
+</ul></li>
+
+<li>1.1<ul>
+<li>Skip indexing for avi</li>
+<li>Prefix all error messages with the plugin name</li>
+<li>Can write v2 timecodes to a file</li>
+<li>Fixed reported framerate</li>
+</ul></li>
+
+</ul>
 
 </body>
 </html>

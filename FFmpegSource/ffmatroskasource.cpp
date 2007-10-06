@@ -113,7 +113,7 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 			Env->ThrowError("FFmpegSource: Could not open video codec");
 
 		// Fix for mpeg2 and other formats where decoding a frame is necessary to get information about the stream
-		if (VideoCodecContext->pix_fmt == PIX_FMT_NONE) {
+		if (VideoCodecContext->pix_fmt == PIX_FMT_NONE || VideoCodecContext->width == 0 || VideoCodecContext->height == 0) {
 			mkv_SetTrackMask(MF, ~(1 << VideoTrack));
 			int64_t Dummy;
 			DecodeNextFrame(DecodeFrame, &Dummy, Env);
@@ -125,6 +125,9 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 		VI.height = VideoTI->AV.Video.PixelHeight;
 		VI.fps_denominator = 1;
 		VI.fps_numerator = 30;
+
+		if (VI.width <= 0 || VI.height <= 0)
+			Env->ThrowError("FFmpegSource: Codec returned zero size video");
 
 		SetOutputFormat(VideoCodecContext->pix_fmt, Env);
 		InitPP(VI.width, VI.height, APPString, AQuality, VideoCodecContext->pix_fmt, Env);

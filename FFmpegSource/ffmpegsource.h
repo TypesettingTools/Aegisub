@@ -26,6 +26,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <vector>
+#include <set>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>

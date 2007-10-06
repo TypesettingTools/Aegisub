@@ -84,11 +84,21 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 		if (avcodec_open(VideoCodecContext, VideoCodec) < 0)
 			Env->ThrowError("FFmpegSource: Could not open video codec");
 
+		// Fix for mpeg2 and other formats where decoding a frame is necessary to get information about the stream
+		if (SeekMode >= 0 && (VideoCodecContext->pix_fmt == PIX_FMT_NONE || VideoCodecContext->width == 0 || VideoCodecContext->height == 0)) {
+			int64_t Dummy;
+			DecodeNextFrame(DecodeFrame, &Dummy);
+			av_seek_frame(FormatContext, VideoTrack, 0, AVSEEK_FLAG_BACKWARD);
+		}
+
 		VI.image_type = VideoInfo::IT_TFF;
 		VI.width = VideoCodecContext->width;
 		VI.height = VideoCodecContext->height;
 		VI.fps_denominator = FormatContext->streams[VideoTrack]->time_base.num;
 		VI.fps_numerator = FormatContext->streams[VideoTrack]->time_base.den;
+
+		if (VI.width <= 0 || VI.height <= 0)
+			Env->ThrowError("FFmpegSource: Codec returned zero size video");
 
 		// sanity check framerate
 		if (VI.fps_denominator > VI.fps_numerator || VI.fps_denominator <= 0 || VI.fps_numerator <= 0) {
@@ -220,7 +230,7 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 
 		// Adjust framerate to match the duration of the first frame
 		if (FrameToDTS.size() >= 2) {
-			int64_t DTSDiff = (double)(FrameToDTS[1].DTS - FrameToDTS[0].DTS);
+			int64_t DTSDiff = FFMAX(FrameToDTS[1].DTS - FrameToDTS[0].DTS, 1);
 			VI.fps_denominator *= DTSDiff;
 		}
 	}
