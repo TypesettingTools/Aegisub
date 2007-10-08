@@ -94,17 +94,19 @@ function parse_code(meta, styles, line, templates, mods)
 			inserted = true
 		elseif m == "all" then
 			template.style = nil
+		elseif m == "noblank" then
+			template.noblank = true
 		elseif m == "repeat" or m == "loop" then
 			local times, t = string.headtail(rest)
 			template.loops = tonumber(times)
 			if not template.loops then
-				aegisub.out(3, "Failed reading this repeat-count to a number: %s\nIn template code line: %s\nEffect field: %s\n\n", times, line.text, line.effect)
+				aegisub.debug.out(3, "Failed reading this repeat-count to a number: %s\nIn template code line: %s\nEffect field: %s\n\n", times, line.text, line.effect)
 				template.loops = 1
 			else
 				rest = t
 			end
 		else
-			aegisub.out(3, "Unknown modifier in code template: %s\nIn template code line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
+			aegisub.debug.out(3, "Unknown modifier in code template: %s\nIn template code line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
 		end
 	end
 	
@@ -184,16 +186,16 @@ function parse_template(meta, styles, line, templates, mods)
 			table.insert(templates.furi, template)
 			inserted = true
 		elseif (m == "pre-line" or m == "line") and inserted then
-			aegisub.out(2, "Unable to combine %s class templates with other template classes\n\n", m)
+			aegisub.debug.out(2, "Unable to combine %s class templates with other template classes\n\n", m)
 		elseif (m == "syl" or m == "furi") and template.isline then
-			aegisub.out(2, "Unable to combine %s class template lines with line or pre-line classes\n\n", m)
+			aegisub.debug.out(2, "Unable to combine %s class template lines with line or pre-line classes\n\n", m)
 		elseif m == "all" then
 			template.style = nil
 		elseif m == "repeat" or m == "loop" then
 			local times, t = string.headtail(rest)
 			template.loops = tonumber(times)
 			if not template.loops then
-				aegisub.out(3, "Failed reading this repeat-count to a number: %s\nIn template line: %s\nEffect field: %s\n\n", times, line.text, line.effect)
+				aegisub.debug.out(3, "Failed reading this repeat-count to a number: %s\nIn template line: %s\nEffect field: %s\n\n", times, line.text, line.effect)
 				template.loops = 1
 			else
 				rest = t
@@ -214,7 +216,7 @@ function parse_template(meta, styles, line, templates, mods)
 				template.fx = fx
 				rest = t
 			else
-				aegisub.out(3, "No fx name following fx modifier\nIn template line: %s\nEffect field: %s\n\n", line.text, line.effect)
+				aegisub.debug.out(3, "No fx name following fx modifier\nIn template line: %s\nEffect field: %s\n\n", line.text, line.effect)
 				template.fx = nil
 			end
 		elseif m == "fxgroup" then
@@ -223,11 +225,11 @@ function parse_template(meta, styles, line, templates, mods)
 				template.fxgroup = fx
 				rest = t
 			else
-				aegisub.out(3, "No fxgroup name following fxgroup modifier\nIn template linee: %s\nEffect field: %s\n\n", line.text, line.effect)
+				aegisub.debug.out(3, "No fxgroup name following fxgroup modifier\nIn template linee: %s\nEffect field: %s\n\n", line.text, line.effect)
 				template.fxgroup = nil
 			end
 		else
-			aegisub.out(3, "Unknown modifier in template: %s\nIn template line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
+			aegisub.debug.out(3, "Unknown modifier in template: %s\nIn template line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
 		end
 	end
 	
