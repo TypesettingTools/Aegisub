@@ -507,7 +507,9 @@ void AvisynthVideoProvider::LoadVSFilter() {
 	AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loading VSFilter"));
 	// Loading an avisynth plugin multiple times does almost nothing
 
-	wxFileName vsfilterPath(StandardPaths::DecodePath(_T("?data/vsfilter.dll")));
+	wxFileName vsfilterPath(StandardPaths::DecodePath(_T("?data/csri/vsfilter.dll")));
+	if (!vsfilterPath.FileExists())
+		vsfilterPath = wxFileName(StandardPaths::DecodePath(_T("?data/vsfilter.dll")));
 	rendererCallString = _T("TextSub");
 
 	if (vsfilterPath.FileExists()) {
