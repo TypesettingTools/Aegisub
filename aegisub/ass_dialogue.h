@@ -125,7 +125,7 @@ public:
 	int Scale;
 
 	AssDialogueBlockDrawing();
-	void MultiplyCoords(double x,double y);
+	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 	wxString GetText();
 };
 

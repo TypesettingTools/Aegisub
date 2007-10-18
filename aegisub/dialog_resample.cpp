@@ -59,16 +59,39 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	// Variables
 	AssFile *subs = AssFile::top;
 	grid = _grid;
+
+	// Margins
+	MarginSymmetrical = NULL;	// Do not remove this
+	wxSizer *MarginBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Margin offset"));
+	wxSizer *MarginSizer = new wxGridSizer(3,3,5,5);
+	MarginTop = new wxTextCtrl(this,TEXT_MARGIN_T,_T("0"),wxDefaultPosition,wxSize(50,-1),0);
+	MarginLeft = new wxTextCtrl(this,TEXT_MARGIN_L,_T("0"),wxDefaultPosition,wxSize(50,-1),0);
+	MarginSymmetrical = new wxCheckBox(this,CHECK_SYMMETRICAL,_("Symmetrical"));
+	MarginRight = new wxTextCtrl(this,TEXT_MARGIN_R,_T("0"),wxDefaultPosition,wxSize(50,-1),0);
+	MarginBottom = new wxTextCtrl(this,TEXT_MARGIN_B,_T("0"),wxDefaultPosition,wxSize(50,-1),0);
+	MarginSizer->AddSpacer(1);
+	MarginSizer->Add(MarginTop,1,wxEXPAND);
+	MarginSizer->AddSpacer(1);
+	MarginSizer->Add(MarginLeft,1,wxEXPAND);
+	MarginSizer->Add(MarginSymmetrical,1,wxEXPAND);
+	MarginSizer->Add(MarginRight,1,wxEXPAND);
+	MarginSizer->AddSpacer(1);
+	MarginSizer->Add(MarginBottom,1,wxEXPAND);
+	MarginSizer->AddSpacer(1);
+	MarginBoxSizer->Add(MarginSizer,1,wxALIGN_CENTER|wxBOTTOM,5);
+	MarginSymmetrical->SetValue(true);
+	MarginRight->Enable(false);
+	MarginBottom->Enable(false);
 	
-	// Resolution line
+	// Resolution
 	wxSizer *ResBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Resolution"));
 	wxSizer *ResSizer = new wxBoxSizer(wxHORIZONTAL);
 	int sw,sh;
 	subs->GetResolution(sw,sh);
 	ResXValue = wxString::Format(_T("%i"),sw);
 	ResYValue = wxString::Format(_T("%i"),sh);
-	ResX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&ResXValue));
-	ResY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&ResYValue));
+	ResX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(&ResXValue));
+	ResY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(&ResYValue));
 	wxStaticText *ResText = new wxStaticText(this,-1,_("x"));
 	wxButton *FromVideo = new wxButton(this,BUTTON_DEST_FROM_VIDEO,_("From video"));
 	if (!VideoContext::Get()->IsLoaded()) FromVideo->Enable(false);
@@ -76,8 +99,6 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
 	ResSizer->Add(ResY,1,wxRIGHT,5);
 	ResSizer->Add(FromVideo,1,0,0);
-
-	// Resolution box
 	Anamorphic = new wxCheckBox(this,CHECK_ANAMORPHIC,_("Change aspect ratio"));
 	ResBoxSizer->Add(ResSizer,1,wxEXPAND|wxBOTTOM,5);
 	ResBoxSizer->Add(Anamorphic,0,0,0);
@@ -97,11 +118,13 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(ResBoxSizer,1,wxEXPAND|wxALL,5);
+	MainSizer->Add(MarginBoxSizer,1,wxEXPAND|wxALL,5);
+	MainSizer->Add(ResBoxSizer,0,wxEXPAND|wxALL,5);
 	MainSizer->Add(ButtonSizer,0,wxEXPAND|wxRIGHT|wxLEFT|wxBOTTOM,5);
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 	CenterOnParent();
+	instance = this;
 }
 
 
@@ -110,13 +133,23 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 BEGIN_EVENT_TABLE(DialogResample,wxDialog)
 	EVT_BUTTON(BUTTON_RESAMPLE,DialogResample::OnResample)
 	EVT_BUTTON(BUTTON_DEST_FROM_VIDEO,DialogResample::OnGetDestRes)
+	EVT_CHECKBOX(CHECK_SYMMETRICAL,DialogResample::OnSymmetrical)
+	EVT_TEXT(TEXT_MARGIN_T,DialogResample::OnMarginChange)
+	EVT_TEXT(TEXT_MARGIN_L,DialogResample::OnMarginChange)
+	EVT_TEXT(TEXT_MARGIN_R,DialogResample::OnMarginChange)
+	EVT_TEXT(TEXT_MARGIN_B,DialogResample::OnMarginChange)
 END_EVENT_TABLE()
 
 
 /////////////////
 // Resample tags
 void DialogResample::ResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag) {
+	instance->DoResampleTags(name,n,curParam,_curDiag);
+}
+void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag) {
 	double resizer = 1.0;
+	bool isX = false;
+	bool isY = false;
 
 	switch (curParam->classification) {
 		case PARCLASS_ABSOLUTE_SIZE:
@@ -125,10 +158,12 @@ void DialogResample::ResampleTags (wxString name,int n,AssOverrideParameter *cur
 			
 		case PARCLASS_ABSOLUTE_POS_X:
 			resizer = rx;
+			isX = true;
 			break;
 
 		case PARCLASS_ABSOLUTE_POS_Y:
 			resizer = ry;
+			isY = true;
 			break;
 
 		case PARCLASS_RELATIVE_SIZE_X:
@@ -144,10 +179,16 @@ void DialogResample::ResampleTags (wxString name,int n,AssOverrideParameter *cur
 
 	VariableDataType curType = curParam->GetType();
 	if (curType == VARDATA_FLOAT) {
-		curParam->SetFloat(curParam->AsFloat() * resizer);
+		float par = curParam->AsFloat();
+		if (isX) par += m[0];
+		if (isY) par += m[2];
+		curParam->SetFloat(par * resizer);
 	}
 	if (curType == VARDATA_INT) {
-		curParam->SetInt(int(double(curParam->AsInt()) * resizer + 0.5));
+		int par = curParam->AsInt();
+		if (isX) par += m[0];
+		if (isY) par += m[2];
+		curParam->SetInt(int(double(par) * resizer + 0.5));
 	}
 }
 
@@ -163,6 +204,12 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	long y2 = 0;
 	ResX->GetValue().ToLong(&x2);
 	ResY->GetValue().ToLong(&y2);
+
+	// Get margins
+	MarginLeft->GetValue().ToLong(&m[0]);
+	MarginRight->GetValue().ToLong(&m[1]);
+	MarginTop->GetValue().ToLong(&m[2]);
+	MarginBottom->GetValue().ToLong(&m[3]);
 
 	// Check for validity
 	if (x1 == 0 || x2 == 0 || y1 == 0 || y2 == 0) {
@@ -187,7 +234,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 			try {
 				// Override tags
 				curDiag->ParseASSTags();
-				curDiag->ProcessParameters(ResampleTags,curDiag);
+				curDiag->ProcessParameters(&DialogResample::ResampleTags,curDiag);
 
 				// Drawing tags
 				size_t nblocks = curDiag->Blocks.size();
@@ -195,14 +242,14 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 				for (size_t i=0;i<nblocks;i++) {
 					curBlock = AssDialogueBlock::GetAsDrawing(curDiag->Blocks.at(i));
 					if (curBlock) {
-						curBlock->MultiplyCoords(rx,ry);
+						curBlock->TransformCoords(m[0],m[2],rx,ry);
 					}
 				}
 
 				// Margins
 				for (int i=0;i<2;i++) {
-					curDiag->Margin[i] = int(curDiag->Margin[i] * rx + 0.5);
-					curDiag->Margin[i+2] = int(curDiag->Margin[i+2] * ry + 0.5);
+					curDiag->Margin[i] = int((curDiag->Margin[i]+m[i]) * rx + 0.5);
+					curDiag->Margin[i+2] = int((curDiag->Margin[i+2]+m[i+2]) * ry + 0.5);
 				}
 
 				// Update
@@ -223,12 +270,14 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 		curStyle = AssEntry::GetAsStyle(*cur);
 		if (curStyle) {
 			curStyle->fontsize = int(curStyle->fontsize * r + 0.5);
-			//curStyle->outline_w *= r;
-			//curStyle->shadow_w *= r;
+			curStyle->outline_w *= r;
+			curStyle->shadow_w *= r;
 			curStyle->spacing *= rx;
 			curStyle->scalex *= ar;
-			for (int i=0;i<2;i++) curStyle->Margin[i] = int(curStyle->Margin[i] * rx + 0.5);
-			for (int i=2;i<4;i++) curStyle->Margin[i] = int(curStyle->Margin[i] * ry + 0.5);
+			for (int i=0;i<2;i++) {
+				curStyle->Margin[i] = int((curStyle->Margin[i]+m[i]) * rx + 0.5);
+				curStyle->Margin[i+2] = int((curStyle->Margin[i+2]+m[i+2]) * ry + 0.5);
+			}
 			curStyle->UpdateData();
 		}
 	}
@@ -253,9 +302,31 @@ void DialogResample::OnGetDestRes (wxCommandEvent &event) {
 }
 
 
+////////////////////////////////
+// Symmetrical checkbox clicked
+void DialogResample::OnSymmetrical (wxCommandEvent &event) {
+	bool state = !MarginSymmetrical->IsChecked();
+	MarginRight->Enable(state);
+	MarginBottom->Enable(state);
+	if (!state) {
+		MarginRight->SetValue(MarginLeft->GetValue());
+		MarginBottom->SetValue(MarginTop->GetValue());
+	}
+}
+
+
+////////////////////////
+// Margin value changed
+void DialogResample::OnMarginChange (wxCommandEvent &event) {
+	if (!MarginSymmetrical) return;
+	bool state = !MarginSymmetrical->IsChecked();
+	if (!state && (event.GetEventObject() == MarginLeft || event.GetEventObject() == MarginTop)) {
+		MarginRight->SetValue(MarginLeft->GetValue());
+		MarginBottom->SetValue(MarginTop->GetValue());
+	}
+}
+
+
 ////////////////////
 // Static variables
-double DialogResample::r;
-double DialogResample::rx;
-double DialogResample::ry;
-double DialogResample::ar;
+DialogResample *DialogResample::instance = NULL;

@@ -883,7 +883,7 @@ wxString AssDialogueBlockDrawing::GetText() {
 
 ////////////////////////
 // Multiply coordinates
-void AssDialogueBlockDrawing::MultiplyCoords(double x,double y) {
+void AssDialogueBlockDrawing::TransformCoords(int mx,int my,double x,double y) {
 	// HACK: Implement a proper parser ffs!!
 	wxStringTokenizer tkn(GetText(),_T(" "),wxTOKEN_DEFAULT);
 	wxString cur;
@@ -897,10 +897,10 @@ void AssDialogueBlockDrawing::MultiplyCoords(double x,double y) {
 
 		// Number, process it
 		if (cur.IsNumber()) {
-			// Multiply it
+			// Transform it
 			cur.ToLong(&temp);
-			if (isX) temp = (long int)(temp*x + 0.5);
-			else temp = (long int)(temp*y + 0.5);
+			if (isX) temp = (long int)((temp+mx)*x + 0.5);
+			else temp = (long int)((temp+my)*y + 0.5);
 
 			// Write back to list
 			final += wxString::Format(_T("%i "),temp);

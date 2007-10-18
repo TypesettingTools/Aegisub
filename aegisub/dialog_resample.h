@@ -61,13 +61,24 @@ private:
 	wxString ResXValue,ResYValue;
 	wxTextCtrl *ResX;
 	wxTextCtrl *ResY;
+	wxTextCtrl *MarginLeft;
+	wxTextCtrl *MarginRight;
+	wxTextCtrl *MarginTop;
+	wxTextCtrl *MarginBottom;
 	wxCheckBox *Anamorphic;
+	wxCheckBox *MarginSymmetrical;
 
-	static double rx,ry,r,ar;
+	double rx,ry,r,ar;
+	long m[4];
+	static DialogResample *instance;
 
 	void OnResample (wxCommandEvent &event);
 	void OnGetDestRes (wxCommandEvent &event);
+	void OnSymmetrical (wxCommandEvent &event);
+	void OnMarginChange (wxCommandEvent &event);
+
 	static void ResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag);
+	void DoResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag);
 
 public:
 	DialogResample(wxWindow *parent, SubtitlesGrid *grid);
@@ -81,7 +92,12 @@ public:
 enum {
 	BUTTON_DEST_FROM_VIDEO = 1520,
 	BUTTON_RESAMPLE,
-	CHECK_ANAMORPHIC
+	CHECK_ANAMORPHIC,
+	CHECK_SYMMETRICAL,
+	TEXT_MARGIN_T,
+	TEXT_MARGIN_L,
+	TEXT_MARGIN_R,
+	TEXT_MARGIN_B
 };
 
 
