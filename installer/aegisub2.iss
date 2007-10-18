@@ -33,11 +33,13 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1606"
+#define MyAppVerName "Aegisub 2.00 alpha r1611"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
 
+; Set these to 0 to make building the installer faster.
+; Only intended for testing.
 #define IncludeSpeller 1
 #define IncludeThesaurus 1
 
@@ -65,7 +67,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1606
+AppVersion=2.00 alpha r1611
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -74,8 +76,8 @@ Name: english; MessagesFile: compiler:Default.isl
 
 [Files]
 ; redist
-Source: RuntimeTestLibrary\RuntimeTestLibrary.dll; Flags: dontcopy
-Source: redist\vcredist_x86_sp1.exe; Flags: dontcopy nocompression; Components: main/runtime
+Source: RuntimeTestLibrary\RuntimeTestLibrary.dll; Flags: dontcopy nocompression
+Source: redist\vcredist_x86.exe; DestDir: {tmp}; Flags: nocompression deleteafterinstall; Components: main/runtime
 ; main
 DestDir: {app}; Source: install\Aegisub.exe; Flags: ignoreversion; Components: main
 DestDir: {app}; Source: install\Aegisub.pdb; Flags: ignoreversion; Components: main/pdb
@@ -122,7 +124,7 @@ DestDir: {app}\automation\auto3; Source: install\automation\auto3\simple-k-repla
 DestDir: {app}\automation\docs; Source: install\automation\docs\automation3.txt; Flags: ignoreversion; Components: auto/auto3
 ; dictionaries
 #if IncludeSpeller != 0
-Source: install\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_AT
+Source: install\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: dic/de_AT
 Source: install\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
 Source: install\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
 Source: install\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
@@ -152,7 +154,7 @@ Source: install\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: igno
 #endif
 ; thesauri
 #if IncludeThesaurus != 0
-Source: install\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
+Source: install\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/de_DE
 Source: install\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
 Source: install\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
 Source: install\dictionaries\th_en_US.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
@@ -169,7 +171,7 @@ Name: {commonprograms}\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {a
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-Filename: {tmp}\vcredist_x86_sp1.exe; StatusMsg: Installing runtime libraries...; Components: main/runtime; Parameters: /Q
+Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Components: main/runtime; Parameters: /Q
 
 [Components]
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
