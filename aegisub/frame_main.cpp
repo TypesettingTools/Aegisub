@@ -884,7 +884,9 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			}
 
 			// Keyframes
-			KeyFrameFile::Load(curSubsKeyframes);
+			if (curSubsKeyframes != _T("")) {
+				KeyFrameFile::Load(curSubsKeyframes);
+			}
 
 			// Audio
 			if (curSubsAudio != audioBox->audioName) {
