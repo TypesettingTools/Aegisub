@@ -212,6 +212,8 @@ wxString TextFileReader::ReadLineFromFile() {
 #else
 		while (ch != L'\n' && !file.eof()) {
 			// Read two chars from file
+			charbuffer[0] = 0;
+			charbuffer[1] = 0;
 			file.read(charbuffer,2);
 #endif
 
