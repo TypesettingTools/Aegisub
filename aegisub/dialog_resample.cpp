@@ -212,6 +212,10 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 		return;
 	}
 
+	// Add margins to original resolution
+	x1 += m[0] + m[1];
+	x2 += m[2] + m[3];
+
 	// Calculate resamples
 	rx = double(x2)/double(x1);
 	ry = double(y2)/double(y1);
