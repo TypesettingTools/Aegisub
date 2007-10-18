@@ -46,6 +46,7 @@
 #include "video_context.h"
 #include "utils.h"
 #include "subs_edit_box.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -104,17 +105,11 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	ResBoxSizer->Add(Anamorphic,0,0,0);
 
 	// Button sizer
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-#ifndef __WXMAC__
-	ButtonSizer->Add(new wxButton(this,BUTTON_RESAMPLE,_("Resample")),0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,0);
-#else
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
-	wxButton *resampleButton = new wxButton(this,BUTTON_RESAMPLE,_("Resample"));
-	ButtonSizer->Add(resampleButton,0,wxRight,0);
-	resampleButton->SetDefault();
-#endif
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
+	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	ButtonSizer->AddButton(new HelpButton(this,_T("dialog_resample")));
+	ButtonSizer->Realize();
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
@@ -131,7 +126,7 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogResample,wxDialog)
-	EVT_BUTTON(BUTTON_RESAMPLE,DialogResample::OnResample)
+	EVT_BUTTON(wxID_OK,DialogResample::OnResample)
 	EVT_BUTTON(BUTTON_DEST_FROM_VIDEO,DialogResample::OnGetDestRes)
 	EVT_CHECKBOX(CHECK_SYMMETRICAL,DialogResample::OnSymmetrical)
 	EVT_TEXT(TEXT_MARGIN_T,DialogResample::OnMarginChange)

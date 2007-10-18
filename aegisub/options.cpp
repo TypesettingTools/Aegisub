@@ -116,7 +116,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Insert mode on time boxes"),false);
 #endif
 	SetModificationType(MOD_EDIT_BOX);
-	SetBool(_T("Call tips enabled"),true);
+	SetBool(_T("Call tips enabled"),false);
 	SetBool(_T("Syntax highlight enabled"),true);
 
 	// Edit box cosmetic
