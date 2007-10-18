@@ -179,7 +179,7 @@ void DirectSoundPlayer::OpenStream() {
 	waveFormat.wBitsPerSample = provider->GetBytesPerSample() * 8;
 	waveFormat.nBlockAlign = waveFormat.nChannels * waveFormat.wBitsPerSample / 8;
 	waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
-	waveFormat.cbSize = 0;
+	waveFormat.cbSize = sizeof(waveFormat);
 
 	// Create the buffer initializer
 	int aim = waveFormat.nAvgBytesPerSec * 15/100; // 150 ms buffer
@@ -188,7 +188,7 @@ void DirectSoundPlayer::OpenStream() {
 	bufSize = MIN(MAX(min,aim),max);
 	DSBUFFERDESC desc;
 	desc.dwSize = sizeof(DSBUFFERDESC);
-	desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLPOSITIONNOTIFY;
+	desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS;
 	desc.dwBufferBytes = bufSize;
 	desc.dwReserved = 0;
 	desc.lpwfxFormat = &waveFormat;
