@@ -259,7 +259,10 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			ffsource = false;
 			if (env->FunctionExists("ffmpegsource")) {
 				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking FFMpegSource"));
-				script = env->Invoke("ffmpegsource", videoFilename);
+				const char *argnames[2] = { "source", "vcache" };
+				AVSValue args[2] = { videoFilename, false };
+				script = env->Invoke("ffmpegsource", AVSValue(args,2), argnames);
+				//script = env->Invoke("ffmpegsource", videoFilename);
 				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with FFMpegSource"));
 				ffsource = true;
 				decoderName = _T("FFmpegSource");
