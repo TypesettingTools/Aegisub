@@ -21,7 +21,9 @@
 #ifndef FFMPEGSOURCE_H
 #define FFMPEGSOURCE_H
 
+#ifndef NO_FLAC_CACHE
 #define FLAC_CACHE
+#endif
 
 #include <windows.h>
 #include <stdio.h>

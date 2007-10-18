@@ -457,7 +457,7 @@ void VisualToolVectorClip::CommitHold() {
 	if (mode != 3 && mode != 4) SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
 
 	// End freedraw
-	if (mode == 6 || mode == 7) SetMode(0);
+	if (!holding && (mode == 6 || mode == 7)) SetMode(0);
 }
 
 
