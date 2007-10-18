@@ -347,7 +347,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 					size_t match_start;
 					regex.GetMatch(&match_start,&matchLen,0);
 					pos = match_start + tempPos;
-					//matchLen++;
 					found = true;
 				}
 			}
@@ -355,12 +354,12 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 		// Normal
 		else {
+			int textPos = tempPos;
 			wxString src = Text->Mid(tempPos);
 			if (!matchCase) src.MakeLower();
 			int tempPos = src.Find(LookFor);
 			if (tempPos != -1) {
-				pos = tempPos;
-				pos += tempPos;
+				pos = textPos+tempPos;
 				found = true;
 				matchLen = LookFor.Length();
 			}
