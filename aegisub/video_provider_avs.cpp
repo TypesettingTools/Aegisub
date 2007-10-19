@@ -185,6 +185,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .avs file with Import"));
 			script = env->Invoke("Import", videoFilename);
 			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Finished"));
+			decoderName = _T("Import");
 		}
 
 		// Open avi file with AviSource
