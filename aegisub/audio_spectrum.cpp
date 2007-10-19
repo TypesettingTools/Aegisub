@@ -374,7 +374,10 @@ public:
 		cache_root = new IntermediateSpectrumCache(provider, 0, num_lines, num_overlaps, 0);
 
 		// option is stored in megabytes, but we want number of bytes
-		unsigned long max_cache_size = Options.AsInt(_T("Audio Spectrum Memory Max")) * 1024 * 1024;
+		unsigned long max_cache_size = Options.AsInt(_T("Audio Spectrum Memory Max"));
+		// It can't go too low
+		if (max_cache_size < 5) max_cache_size = 128;
+		max_cache_size *= 1024 * 1024;
 		unsigned long line_size = sizeof(AudioSpectrumCache::CacheLine::value_type) * line_length;
 		max_lines_cached = max_cache_size / line_size;
 	}
@@ -392,22 +395,66 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 {
 	provider = _provider;
 
+	// Determine the quality of the spectrum rendering based on an index
 	int quality_index = Options.AsInt(_T("Audio Spectrum Quality"));
 	if (quality_index < 0) quality_index = 0;
 	if (quality_index > 5) quality_index = 5; // no need to go freaking insane
-	if (quality_index > 1)
-		line_length = 1 << (8 + quality_index - 1);
-	else
-		line_length = 1 << 8;
-	if (quality_index == 0)
-		fft_overlaps = 1;
-	else if (quality_index == 1)
-		fft_overlaps = 4;
-	else
-		fft_overlaps = 1 << quality_index;
+
+	// Line length determines the balance between resolution in the time and frequency domains.
+	// Larger line length gives better resolution in frequency domain,
+	// smaller gives better resolution in time domain.
+	// Any values uses the same amount of memory, but larger values takes (slightly) more CPU.
+	// Line lengths must be powers of 2 due to the FFT algorithm.
+	// 2^8 is a good compromise between time and frequency domain resolution, any smaller
+	// gives an unreasonably low resolution in the frequency domain.
+
+	// Increasing the number of overlaps gives better resolution in the time domain.
+	// Doubling the number of overlaps doubles memory and CPU use, and also
+	// doubles resolution in the time domain.
+
+	switch (quality_index) {
+		case 0:
+			// No overlaps, good comprimise between time/frequency resolution.
+			// 4 bytes used per sample.
+			line_length = 1<<8;
+			fft_overlaps = 1;
+			break;
+		case 1:
+			// Double frequency resolution, the resulting half time resolution
+			// is countered with an overlap.
+			// 8 bytes per sample.
+			line_length = 1<<9;
+			fft_overlaps = 2;
+			break;
+		case 2:
+			// Resulting double resolution in both domains.
+			// 16 bytes per sample.
+			line_length = 1<<9;
+			fft_overlaps = 4;
+			break;
+		case 3:
+			// Double frequency and quadrouble time resolution.
+			// 32 bytes per sample.
+			line_length = 1<<9;
+			fft_overlaps = 8;
+			break;
+		case 4:
+			// Quadrouble resolution in both domains.
+			// 64 bytes per sample.
+			line_length = 1<<10;
+			fft_overlaps = 16;
+			break;
+		case 5:
+			// Eight-double resolution in both domains.
+			// 256 bytes per sample.
+			line_length = 1<<11;
+			fft_overlaps = 64;
+			break;
+		default:
+			throw _T("Internal error in AudioSpectrum class - impossible quality index");
+	}
 
 	int64_t _num_lines = provider->GetNumSamples() / line_length / 2;
-	//assert (_num_lines < (1<<31)); // hope it fits into 32 bits...
 	num_lines = (unsigned long)_num_lines;
 
 	AudioSpectrumCache::SetLineLength(line_length);

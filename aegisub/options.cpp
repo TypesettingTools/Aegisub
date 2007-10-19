@@ -193,8 +193,8 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
 	// Technically these can do with just the spectrum object being re-created
 	SetInt(_T("Audio Spectrum Cutoff"),0);
-	SetInt(_T("Audio Spectrum Quality"),0);
-	SetInt(_T("Audio Spectrum Memory Max"),0); // megabytes
+	SetInt(_T("Audio Spectrum Quality"),1);
+	SetInt(_T("Audio Spectrum Memory Max"),128); // megabytes
 
 	// Automation
 	// The path changes only take effect when a script is (re)loaded but Automatic should be good enough, it certainly doesn't warrart a restart
