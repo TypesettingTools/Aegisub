@@ -80,7 +80,6 @@ enum TextType {
 	TEXT_TYPE_FONT
 };
 
-
 ////////////////////////
 // Options screen class
 class DialogOptions: public wxDialog {
@@ -107,7 +106,10 @@ private:
 	void OnCancel(wxCommandEvent &event);
 	void OnApply(wxCommandEvent &event);
 	void OnDefaults(wxCommandEvent &event);
-	void OnEditHotkey(wxListEvent &event);
+
+	void OnEditHotkey(wxCommandEvent &event);
+	void OnClearHotkey(wxCommandEvent &event);
+	void OnDefaultHotkey(wxCommandEvent &event);
 
 public:
 	DialogOptions(wxWindow *parent);

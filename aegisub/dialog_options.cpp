@@ -69,7 +69,10 @@
 // IDs
 enum {
 	 BUTTON_DEFAULTS = 2500,
-	 HOTKEY_LIST
+	 HOTKEY_LIST,
+	 BUTTON_HOTKEY_SET,
+	 BUTTON_HOTKEY_CLEAR,
+	 BUTTON_HOTKEY_DEFAULT
 };
 
 
@@ -576,9 +579,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		hotkeysModified = false;
 		origKeys = Hotkeys.key;
 
-		// Description
-		wxStaticText *text = new wxStaticText(hotkeysPage,-1,_("List of all hotkeys (shortcuts) available in Aegisub.\nDouble click on any item to reassign it."),wxDefaultPosition,wxSize(150,-1));
-
 		// List of shortcuts
 		Shortcuts = new wxListView(hotkeysPage,HOTKEY_LIST,wxDefaultPosition,wxSize(250,150),wxLC_REPORT | wxLC_SINGLE_SEL);
 		Shortcuts->InsertColumn(0,_("Function"),wxLIST_FORMAT_LEFT,200);
@@ -594,10 +594,16 @@ DialogOptions::DialogOptions(wxWindow *parent)
 			Shortcuts->SetItem(pos,1,cur->second.GetText());
 		}
 
+		// Create buttons
+		wxSizer *buttons = new wxBoxSizer(wxHORIZONTAL);
+		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_SET,_("Set Hotkey...")),1,wxEXPAND|wxRIGHT,5);
+		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_CLEAR,_("Clear Hotkey")),1,wxEXPAND|wxRIGHT,5);
+		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_DEFAULT,_("Default")),1,wxEXPAND|wxRIGHT,0);
+
 		// Main sizer
 		wxSizer *hotkeysSizer = new wxBoxSizer(wxVERTICAL);
-		hotkeysSizer->Add(text,0,wxALL|wxEXPAND,5);
 		hotkeysSizer->Add(Shortcuts,1,wxLEFT|wxRIGHT|wxTOP|wxEXPAND,5);
+		hotkeysSizer->Add(buttons,0,wxALL|wxEXPAND,5);
 		hotkeysSizer->Fit(hotkeysPage);
 		hotkeysPage->SetSizer(hotkeysSizer);
 	}
@@ -695,7 +701,9 @@ BEGIN_EVENT_TABLE(DialogOptions,wxDialog)
 	EVT_BUTTON(wxID_CANCEL,DialogOptions::OnCancel)
 	EVT_BUTTON(wxID_APPLY,DialogOptions::OnApply)
 	EVT_BUTTON(BUTTON_DEFAULTS,DialogOptions::OnDefaults)
-	EVT_LIST_ITEM_ACTIVATED (HOTKEY_LIST,DialogOptions::OnEditHotkey)
+	EVT_BUTTON(BUTTON_HOTKEY_SET,DialogOptions::OnEditHotkey)
+	EVT_BUTTON(BUTTON_HOTKEY_CLEAR,DialogOptions::OnClearHotkey)
+	EVT_BUTTON(BUTTON_HOTKEY_DEFAULT,DialogOptions::OnDefaultHotkey)
 END_EVENT_TABLE()
 
 
@@ -984,20 +992,66 @@ void DialogOptions::ReadFromOptions() {
 
 /////////////////
 // Edit a hotkey
-void DialogOptions::OnEditHotkey(wxListEvent &event) {
+void DialogOptions::OnEditHotkey(wxCommandEvent &event) {
+	// Get selection
+	int sel = Shortcuts->GetFirstSelected();
+	if (sel == wxNOT_FOUND) return;
+
 	// Get key and store old
-	HotkeyType *curKey = (HotkeyType *)event.GetData();
+	HotkeyType *curKey = (HotkeyType *) Shortcuts->GetItemData(sel);
 	int oldKeycode = curKey->keycode;
 	int oldFlags = curKey->flags;
 
 	// Open dialog
-	DialogInputHotkey input(curKey,event.GetText());
+	DialogInputHotkey input(curKey,Shortcuts->GetItemText(sel));
 	input.ShowModal();
 
 	// Update stuff if it changed
 	if (oldKeycode != curKey->keycode || oldFlags != curKey->flags) {
-		Shortcuts->SetItem(event.GetIndex(),1,curKey->GetText());
+		Shortcuts->SetItem(sel,1,curKey->GetText());
 		hotkeysModified = true;
+	}
+}
+
+
+//////////////////
+// Clear a hotkey
+void DialogOptions::OnClearHotkey(wxCommandEvent &event) {
+	for (int item=-1;true;) {
+		item = Shortcuts->GetNextItem(item,wxLIST_NEXT_ALL,wxLIST_STATE_SELECTED);
+		if (item == -1) break;
+
+		HotkeyType *curKey = (HotkeyType *) Shortcuts->GetItemData(item);
+		if (curKey->keycode != 0 || curKey->flags != 0) {
+			hotkeysModified = true;
+			curKey->keycode = 0;
+			curKey->flags = 0;
+			Shortcuts->SetItem(item,1,curKey->GetText());
+		}
+	}
+}
+
+
+///////////////////////////
+// Reset hotkey to default
+void DialogOptions::OnDefaultHotkey(wxCommandEvent &event) {
+	// Load defaults
+	HotkeyManager defs;
+	defs.LoadDefaults();
+
+	// Replace
+	for (int item=-1;true;) {
+		item = Shortcuts->GetNextItem(item,wxLIST_NEXT_ALL,wxLIST_STATE_SELECTED);
+		if (item == -1) break;
+
+		HotkeyType *curKey = (HotkeyType *) Shortcuts->GetItemData(item);
+		HotkeyType *origKey = &defs.key[curKey->origName.Lower()];
+		if (origKey->keycode != curKey->keycode || origKey->flags != curKey->flags) {
+			hotkeysModified = true;
+			curKey->keycode = origKey->keycode;
+			curKey->flags = origKey->flags;
+			Shortcuts->SetItem(item,1,curKey->GetText());
+		}
 	}
 }
 
