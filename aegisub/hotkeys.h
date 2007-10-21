@@ -94,6 +94,7 @@ public:
 	void Save();
 	void Load();
 	void LoadDefaults();
+	HotkeyType *Find(int keycode,int mod);
 
 	wxString GetText(wxString function);
 	wxAcceleratorEntry GetAccelerator(wxString function,int id);

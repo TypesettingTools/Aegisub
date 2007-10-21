@@ -72,7 +72,8 @@ enum {
 	 HOTKEY_LIST,
 	 BUTTON_HOTKEY_SET,
 	 BUTTON_HOTKEY_CLEAR,
-	 BUTTON_HOTKEY_DEFAULT
+	 BUTTON_HOTKEY_DEFAULT,
+	 BUTTON_HOTKEY_DEFAULT_ALL
 };
 
 
@@ -597,8 +598,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Create buttons
 		wxSizer *buttons = new wxBoxSizer(wxHORIZONTAL);
 		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_SET,_("Set Hotkey...")),1,wxEXPAND|wxRIGHT,5);
-		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_CLEAR,_("Clear Hotkey")),1,wxEXPAND|wxRIGHT,5);
-		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_DEFAULT,_("Default")),1,wxEXPAND|wxRIGHT,0);
+		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_CLEAR,_("Clear Hotkey")),0,wxEXPAND|wxRIGHT,5);
+		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_DEFAULT,_("Default")),0,wxEXPAND|wxRIGHT,5);
+		buttons->Add(new wxButton(hotkeysPage,BUTTON_HOTKEY_DEFAULT_ALL,_("Default All")),0,wxEXPAND|wxRIGHT,0);
 
 		// Main sizer
 		wxSizer *hotkeysSizer = new wxBoxSizer(wxVERTICAL);
@@ -704,6 +706,7 @@ BEGIN_EVENT_TABLE(DialogOptions,wxDialog)
 	EVT_BUTTON(BUTTON_HOTKEY_SET,DialogOptions::OnEditHotkey)
 	EVT_BUTTON(BUTTON_HOTKEY_CLEAR,DialogOptions::OnClearHotkey)
 	EVT_BUTTON(BUTTON_HOTKEY_DEFAULT,DialogOptions::OnDefaultHotkey)
+	EVT_BUTTON(BUTTON_HOTKEY_DEFAULT_ALL,DialogOptions::OnDefaultAllHotkey)
 END_EVENT_TABLE()
 
 
@@ -1003,7 +1006,7 @@ void DialogOptions::OnEditHotkey(wxCommandEvent &event) {
 	int oldFlags = curKey->flags;
 
 	// Open dialog
-	DialogInputHotkey input(curKey,Shortcuts->GetItemText(sel));
+	DialogInputHotkey input(curKey,Shortcuts->GetItemText(sel),Shortcuts);
 	input.ShowModal();
 
 	// Update stuff if it changed
@@ -1051,18 +1054,51 @@ void DialogOptions::OnDefaultHotkey(wxCommandEvent &event) {
 			curKey->keycode = origKey->keycode;
 			curKey->flags = origKey->flags;
 			Shortcuts->SetItem(item,1,curKey->GetText());
+
+			// Unmap duplicate
+			HotkeyType *dup = Hotkeys.Find(origKey->keycode,origKey->flags);
+			if (dup) {
+				dup->keycode = 0;
+				dup->flags = 0;
+				int item = Shortcuts->FindItem(-1,(wxUIntPtr)dup);
+				if (item != -1) Shortcuts->SetItem(item,1,dup->GetText());
+			}
 		}
 	}
 }
 
 
+////////////////////////////////
+// Reset all hotkeys to default
+void DialogOptions::OnDefaultAllHotkey(wxCommandEvent &event) {
+	Hotkeys.LoadDefaults();
+	Shortcuts->Freeze();
+	Shortcuts->ClearAll();
+	Shortcuts->InsertColumn(0,_("Function"),wxLIST_FORMAT_LEFT,200);
+	Shortcuts->InsertColumn(1,_("Key"),wxLIST_FORMAT_LEFT,120);
+
+	// Populate list
+	std::map<wxString,HotkeyType>::iterator cur;
+	for (cur = Hotkeys.key.end();cur-- != Hotkeys.key.begin();) {
+		wxListItem item;
+		item.SetText(wxGetTranslation(cur->second.origName));
+		item.SetData(&cur->second);
+		int pos = Shortcuts->InsertItem(item);
+		Shortcuts->SetItem(pos,1,cur->second.GetText());
+	}
+	hotkeysModified = true;
+	Shortcuts->Thaw();
+}
+
+
 /////////////////////
 // Input constructor
-DialogInputHotkey::DialogInputHotkey(HotkeyType *_key,wxString name)
+DialogInputHotkey::DialogInputHotkey(HotkeyType *_key,wxString name,wxListView *shorts)
 : wxDialog(NULL, -1, _("Press Key"), wxDefaultPosition, wxSize(200,50), wxCAPTION | wxWANTS_CHARS , _T("Press key"))
 {
 	// Key
 	key = _key;
+	shortcuts = shorts;
 
 	// Text
 	wxStaticText *text = new wxStaticText(this,-1,wxString::Format(_("Press key to bind to \"%s\" or Esc to cancel."), name.c_str()));
@@ -1099,11 +1135,11 @@ END_EVENT_TABLE()
 ///////////////
 // On key down
 void CaptureKey::OnKeyDown(wxKeyEvent &event) {
+	// Get key
 	int keycode = event.GetKeyCode();
-
 	if (keycode == WXK_ESCAPE) parent->EndModal(0);
 	else if (keycode != WXK_SHIFT && keycode != WXK_CONTROL && keycode != WXK_ALT) {
-		parent->key->keycode = keycode;
+		// Get modifier
 		int mod = 0;
 		if (event.m_altDown) mod |= wxACCEL_ALT;
 #ifdef __APPLE__
@@ -1112,7 +1148,26 @@ void CaptureKey::OnKeyDown(wxKeyEvent &event) {
 		if (event.m_controlDown) mod |= wxACCEL_CTRL;
 #endif
 		if (event.m_shiftDown) mod |= wxACCEL_SHIFT;
+
+		// Check if keycode is free
+		HotkeyType *dup = Hotkeys.Find(keycode,mod);
+		if (dup) {
+			int result = wxMessageBox(wxString::Format(_("The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"),dup->GetText().c_str(),dup->origName.c_str()),_("Hotkey conflict"),wxYES_NO | wxICON_EXCLAMATION);
+			if (result == wxNO) {
+				parent->EndModal(0);
+				return;
+			}
+			dup->keycode = 0;
+			dup->flags = 0;
+			int item = parent->shortcuts->FindItem(-1,(wxUIntPtr)dup);
+			if (item != -1) parent->shortcuts->SetItem(item,1,dup->GetText());
+		}
+
+		// Set keycode
+		parent->key->keycode = keycode;
 		parent->key->flags = mod;
+
+		// End dialogue
 		parent->EndModal(0);
 	}
 	else event.Skip();

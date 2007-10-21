@@ -110,6 +110,7 @@ private:
 	void OnEditHotkey(wxCommandEvent &event);
 	void OnClearHotkey(wxCommandEvent &event);
 	void OnDefaultHotkey(wxCommandEvent &event);
+	void OnDefaultAllHotkey(wxCommandEvent &event);
 
 public:
 	DialogOptions(wxWindow *parent);
@@ -142,7 +143,8 @@ class DialogInputHotkey : public wxDialog {
 private:
 	CaptureKey *capture;
 	HotkeyType *key;
+	wxListView *shortcuts;
 
 public:
-	DialogInputHotkey(HotkeyType *key,wxString name);
+	DialogInputHotkey(HotkeyType *key,wxString name,wxListView *Shortcuts);
 };

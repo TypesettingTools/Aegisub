@@ -505,3 +505,15 @@ bool HotkeyManager::IsPressed(wxString function) {
 	else throw _T("Hotkey not defined");
 }
 
+
+///////////////////////
+// Search for a hotkey
+HotkeyType *HotkeyManager::Find(int keycode,int mod) {
+	for (std::map<wxString,HotkeyType>::iterator cur = key.begin();cur != key.end();cur++) {
+		if (cur->second.keycode == keycode && cur->second.flags == mod) {
+			return &(cur->second);
+		}
+	}
+
+	return NULL;
+}
