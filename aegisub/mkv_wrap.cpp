@@ -248,13 +248,13 @@ void MatroskaWrapper::SetToTimecodes(FrameRate &target) {
 
 	// Check if it's CFR
 	bool isCFR = true;
-	double estimateCFR = timecodes.back() / timecodes.size()-1;
+	double estimateCFR = timecodes.back() / (timecodes.size()-1);
 	double t1,t2;
 	for (int i=1;i<frames;i++) {
 		t1 = timecodes[i];
 		t2 = timecodes[i-1];
-		int delta = int(t1 - t2 - estimateCFR);
-		if (abs(delta > 2)) {
+		int delta = abs(int(t1 - t2 - estimateCFR));
+		if (delta > 2) {
 			isCFR = false;
 			break;
 		}
@@ -262,8 +262,9 @@ void MatroskaWrapper::SetToTimecodes(FrameRate &target) {
 
 	// Constant framerate
 	if (isCFR) {
-		if (fabs(estimateCFR - 23.976) < 0.01) estimateCFR = 24000.0 / 1001.0;
-		if (fabs(estimateCFR - 29.97) < 0.01) estimateCFR = 30000.0 / 1001.0;
+		estimateCFR = 1/estimateCFR * 1000.0;
+		if (fabs(estimateCFR - 24000.0/1001.0) < 0.02) estimateCFR = 24000.0 / 1001.0;
+		if (fabs(estimateCFR - 30000.0/1001.0) < 0.02) estimateCFR = 30000.0 / 1001.0;
 		target.SetCFR(estimateCFR);
 	}
 
