@@ -163,6 +163,8 @@ Please visit http://aegisub.net to download latest version
 - Added a new "Video Details" dialog, that lists some information regarding the currently open video. (demi`)
 - Added support for reading keyframes from xvid pass files. (demi`)
 - Added offsetting support to the resolution resampler. (AMZ)
+- Several fixes to Matroska parsing. (AMZ)
+- Untitled files will now get auto-saved as "Untitled.AUTOSAVE.ass". (AMZ)
 
 
 = 1.10 beta - 2006.08.07 ===========================

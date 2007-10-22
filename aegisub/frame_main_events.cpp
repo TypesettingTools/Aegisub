@@ -1457,7 +1457,9 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 			if (!dstpath.DirExists()) wxMkdir(path);
 
 			// Save
-			wxString backup = path + origfile.GetName() + _T(".AUTOSAVE.ass");
+			wxString name = origfile.GetName();
+			if (name.IsEmpty()) name = _T("Untitled");
+			wxString backup = path + origfile.GetName() + name + _T(".AUTOSAVE.ass");
 			AssFile::top->Save(backup,false,false);
 
 			// Set status bar
