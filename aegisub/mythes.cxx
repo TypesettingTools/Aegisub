@@ -371,6 +371,7 @@ int MyThes::binsearch(char * sw, char* list[], int nlst)
     lp = 0;
     up = nlst-1;
     indx = -1;
+    if (nlst == 0) return -1;
     if (strcmp(sw,list[lp]) < 0) return -1;
     if (strcmp(sw,list[up]) > 0) return -1;
     while (indx < 0 ) {
@@ -393,4 +394,5 @@ char * MyThes::get_th_encoding()
   if (encoding) return encoding;
   return NULL;
 }
+
 
