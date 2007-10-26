@@ -122,7 +122,7 @@ void KeyFrameFile::OpenAegiKeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 	// Read lines
 	while (file.HasMoreLines()) {
 		cur = file.ReadLineFromFile();
-		if (!cur.IsEmpty() && cur.StartsWith(_T("#")) && cur.IsNumber()) {
+		if (!cur.IsEmpty() && !cur.StartsWith(_T("#")) && cur.IsNumber()) {
 			long temp;
 			cur.ToLong(&temp);
 			keyFrames.Add(temp);
