@@ -171,7 +171,7 @@ void MatroskaWrapper::Parse() {
 			progress->SetProgress(0,1);
 
 			// Read frames
-			int frameN = 0;
+			register int frameN = 0;
 			while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
 				// Read value
 				double curTime = double(startTime) / 1000000.0;
@@ -184,8 +184,11 @@ void MatroskaWrapper::Parse() {
 					throw _T("Canceled");
 				}
 
-				// Update progress
-				progress->SetProgress(int(curTime),totalTime);
+				// Identical to (frameN % 2048) == 0,
+				// but much faster.
+				if ((frameN & (2048 - 1)) == 0)
+					// Update progress
+					progress->SetProgress(int(curTime),totalTime);
 			}
 
 			// Clean up progress
