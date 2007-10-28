@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1611"
+#define MyAppVerName "Aegisub 2.00 alpha r1618"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -67,7 +67,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1611
+AppVersion=2.00 alpha r1618
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -76,8 +76,8 @@ Name: english; MessagesFile: compiler:Default.isl
 
 [Files]
 ; redist
-Source: RuntimeTestLibrary\RuntimeTestLibrary.dll; Flags: dontcopy nocompression
-Source: redist\vcredist_x86.exe; DestDir: {tmp}; Flags: nocompression deleteafterinstall; Components: main/runtime
+;Source: RuntimeTestLibrary\RuntimeTestLibrary.dll; Flags: dontcopy nocompression
+Source: redist\vcredist_x86.exe; Flags: dontcopy nocompression
 ; main
 DestDir: {app}; Source: install\Aegisub.exe; Flags: ignoreversion; Components: main
 DestDir: {app}; Source: install\Aegisub.pdb; Flags: ignoreversion; Components: main/pdb
@@ -98,30 +98,30 @@ DestDir: {app}; Source: install\swscale-0.dll; Flags: ignoreversion; Components:
 ; vsfilter
 DestDir: {app}\csri; Source: install\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
 ; auto4 main
-DestDir: {app}\automation\include; Source: install\automation\include\utils.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\utils-auto4.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\unicode.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-auto4.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\include; Source: install\automation\include\cleantags.lua; Flags: ignoreversion; Components: auto/lua
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\kara-templater.lua; Flags: ignoreversion; Components: auto/lua
+DestDir: {app}\automation\include; Source: install\automation\include\utils.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\unicode.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\cleantags.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\kara-templater.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 ; auto4 samples
-DestDir: {app}\automation\demos; Source: install\automation\demos\future-windy-blur.lua; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion; Components: auto/lua/samples
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion; Components: auto/lua/samples
+DestDir: {app}\automation\demos; Source: install\automation\demos\future-windy-blur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: install\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 ; auto3
-DestDir: {app}\automation\include; Source: install\automation\include\utils.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.lua; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.lua; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\line-per-syllable.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\multi-template.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\simple-k-replacer.auto3; Flags: ignoreversion; Components: auto/auto3
-DestDir: {app}\automation\docs; Source: install\automation\docs\automation3.txt; Flags: ignoreversion; Components: auto/auto3
+DestDir: {app}\automation\include; Source: install\automation\include\utils.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\line-per-syllable.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\multi-template.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\auto3; Source: install\automation\auto3\simple-k-replacer.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\docs; Source: install\automation\docs\automation3.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 ; dictionaries
 #if IncludeSpeller != 0
 Source: install\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: dic/de_AT
@@ -175,7 +175,7 @@ Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Co
 
 [Components]
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
-Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528; Check: CheckNeedRuntime
+;Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528; Check: CheckNeedRuntime
 Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
 Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full custom; Flags: fixed
@@ -217,31 +217,26 @@ Name: th/it_IT; Description: Italian thesaurus; Types: full
 WelcomeLabel2=This will install {#MyAppVerName} on your computer.%n%n{#MyAppName} is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the {#MyAppName} website for information on obtaining the source code.
 
 [Code]
-var
-	RuntimeLibChecked: Boolean;
-	RuntimeLibInstalled: Boolean;
-
 function LoadLibrary(lpFileName: string): LongInt; external 'LoadLibraryA@kernel32.dll stdcall';
 function FreeLibrary(hModule: LongInt): Boolean; external 'FreeLibrary@kernel32.dll stdcall';
 
-function CheckNeedRuntime: Boolean;
+procedure CurStepChanged(CurStep: TSetupStep)
 var
   LibHandle: LongInt;
+  ExecResult: Integer;
 begin
-	if not RuntimeLibChecked then
+	if CurStep = ssPostInstall then
 	begin
-		RuntimeLibInstalled := True;
-		try
-		  ExtractTemporaryFile('RuntimeTestLibrary.dll');
-		  LibHandle := LoadLibrary(ExpandConstant('{tmp}') + '\RuntimeTestLibrary.dll');
-		  if LibHandle = 0 then
-		    RuntimeLibInstalled := False
-		  else
-		    FreeLibrary(LibHandle);
-		except
-			RuntimeLibInstalled := False;
-		end;
-		RuntimeLibChecked := True;
+		LibHandle := LoadLibrary(ExpandConstant('{app}\csri\vsfilter.dll'));
+		if LibHandle = 0 then
+		begin
+			ExtractTemporaryFile('vcredist_x86.exe');
+			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/Q', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
+			begin
+				MsgBox('Installation of runtime libraries failed. Aegisub will probably not work. The error was: ' + SysErrorMessage(ExecResult));
+			end;
+		end
+		else
+			FreeLibrary(LibHandle);
 	end;
-	Result := not RuntimeLibInstalled;
 end;
