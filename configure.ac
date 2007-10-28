@@ -161,16 +161,6 @@ AS_IF([test "x$with_libass" != xno], [
 	])
 ])
 
-PKG_CHECK_MODULES([GLIB], glib-2.0, [
-	CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
-	LIBS="$LIBS $GLIB_LIBS"
-
-	AC_CHECK_LIB([ssa], [SSA_Init])
-	AC_CHECK_HEADERS([libssa/libssa.h])
-], [
-	AC_MSG_WARN([not testing for libssa as it depends on glib-2.0, which was not found])
-])
-
 AC_C_CONST
 AC_C_INLINE
 AC_C_VOLATILE
