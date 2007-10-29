@@ -48,6 +48,12 @@ KanaTable::KanaTable() {
 	Insert(L"\u3048",L"\u30a8",L"e");
 	Insert(L"\u304a",L"\u30aa",L"o");
 
+	Insert(L"\u304b",L"\u30ab",L"ka");
+	Insert(L"\u304d",L"\u30ad",L"ki");
+	Insert(L"\u304f",L"\u30af",L"ku");
+	Insert(L"\u3051",L"\u30b1",L"ke");
+	Insert(L"\u3053",L"\u30b3",L"ko");
+
 	Insert(L"\u3055",L"\u30b5",L"sa");
 	Insert(L"\u3057",L"\u30b7",L"shi");
 	Insert(L"\u3059",L"\u30b9",L"su");
@@ -86,10 +92,13 @@ KanaTable::KanaTable() {
 	Insert(L"\u308a",L"\u30ea",L"ri");
 	Insert(L"\u308b",L"\u30eb",L"ru");
 	Insert(L"\u308c",L"\u30ec",L"re");
-	Insert(L"\u308a",L"\u30ed",L"ro");
+	Insert(L"\u308d",L"\u30ed",L"ro");
 
 	Insert(L"\u308f",L"\u30ef",L"wa");
+	Insert(L"\u3090",L"\u30f0",L"wi");
+	Insert(L"\u3091",L"\u30f1",L"we");
 	Insert(L"\u3092",L"\u30f2",L"wo");
+
 	Insert(L"\u3093",L"\u30f3",L"n");
 
 	Insert(L"\u304c",L"\u30ac",L"ga");
@@ -105,8 +114,8 @@ KanaTable::KanaTable() {
 	Insert(L"\u305e",L"\u30be",L"zo");
 
 	Insert(L"\u3060",L"\u30c0",L"da");
-	Insert(L"\u3062",L"\u30c2",L"di");
-	Insert(L"\u3065",L"\u30c5",L"du");
+	Insert(L"\u3062",L"\u30c2",L"ji");
+	Insert(L"\u3065",L"\u30c5",L"zu");
 	Insert(L"\u3067",L"\u30c7",L"de");
 	Insert(L"\u3069",L"\u30c9",L"do");
 
@@ -121,6 +130,92 @@ KanaTable::KanaTable() {
 	Insert(L"\u3077",L"\u30d7",L"pu");
 	Insert(L"\u307a",L"\u30da",L"pe");
 	Insert(L"\u307d",L"\u30dd",L"po");
+
+	Insert(L"\u304d\u3083",L"\u30ad\u30e3",L"kya");
+	Insert(L"\u304d\u3085",L"\u30ad\u30e5",L"kyu");
+	Insert(L"\u304d\u3087",L"\u30ad\u30e7",L"kyo");
+
+	Insert(L"\u3057\u3083",L"\u30b7\u30e3",L"sha");
+	Insert(L"\u3057\u3085",L"\u30b7\u30e5",L"shu");
+	Insert(L"\u3057\u3087",L"\u30b7\u30e7",L"sho");
+	
+	Insert(L"\u3061\u3083",L"\u30c1\u30e3",L"cha");
+	Insert(L"\u3061\u3085",L"\u30c1\u30e5",L"chu");
+	Insert(L"\u3061\u3087",L"\u30c1\u30e7",L"cho");
+
+	Insert(L"\u306b\u3083",L"\u30cb\u30e3",L"nya");
+	Insert(L"\u306b\u3085",L"\u30cb\u30e5",L"nyu");
+	Insert(L"\u306b\u3087",L"\u30cb\u30e7",L"nyo");
+
+	Insert(L"\u3072\u3083",L"\u30d2\u30e3",L"hya");
+	Insert(L"\u3072\u3085",L"\u30d2\u30e5",L"hyu");
+	Insert(L"\u3072\u3087",L"\u30d2\u30e7",L"hyo");
+
+	Insert(L"\u307f\u3083",L"\u30df\u30e3",L"mya");
+	Insert(L"\u307f\u3085",L"\u30df\u30e5",L"myu");
+	Insert(L"\u307f\u3087",L"\u30df\u30e7",L"myo");
+
+	Insert(L"\u308a\u3083",L"\u30ea\u30e3",L"rya");
+	Insert(L"\u308a\u3085",L"\u30ea\u30e5",L"ryu");
+	Insert(L"\u308a\u3087",L"\u30ea\u30e7",L"ryo");
+
+	Insert(L"\u304e\u3083",L"\u30ae\u30e3",L"gya");
+	Insert(L"\u304e\u3085",L"\u30ae\u30e5",L"gyu");
+	Insert(L"\u304e\u3087",L"\u30ae\u30e7",L"gyo");
+
+	Insert(L"\u3058\u3083",L"\u30b8\u30e3",L"ja");
+	Insert(L"\u3058\u3085",L"\u30b8\u30e5",L"ju");
+	Insert(L"\u3058\u3087",L"\u30b8\u30e7",L"jo");
+	
+	Insert(L"\u3062\u3083",L"\u30c2\u30e3",L"ja");
+	Insert(L"\u3062\u3085",L"\u30c2\u30e5",L"ju");
+	Insert(L"\u3062\u3087",L"\u30c2\u30e7",L"jo");
+
+	Insert(L"\u3073\u3083",L"\u30d3\u30e3",L"bya");
+	Insert(L"\u3073\u3085",L"\u30d3\u30e5",L"byu");
+	Insert(L"\u3073\u3087",L"\u30d3\u30e7",L"byo");
+
+	Insert(L"\u3074\u3083",L"\u30d4\u30e3",L"pya");
+	Insert(L"\u3074\u3085",L"\u30d4\u30e5",L"pyu");
+	Insert(L"\u3074\u3087",L"\u30d4\u30e7",L"pyo");
+
+	Insert(L"",L"\u30d5\u30a1",L"fa");
+	Insert(L"",L"\u30d5\u30a3",L"fi");
+	Insert(L"",L"\u30d5\u30a7",L"fe");
+	Insert(L"",L"\u30d5\u30a9",L"fo");
+
+	Insert(L"",L"\u30f4\u30a1",L"va");
+	Insert(L"",L"\u30f4\u30a3",L"vi");
+	Insert(L"",L"\u30f4",L"vu");
+	Insert(L"",L"\u30f4\u30a7",L"ve");
+	Insert(L"",L"\u30f4\u30a9",L"vo");
+	Insert(L"",L"\u30d5\u30e5",L"fyu");
+
+	Insert(L"",L"\u30a4\u30a7",L"ye");
+	Insert(L"",L"\u30a6\u30a3",L"wi");
+	Insert(L"",L"\u30a6\u30a7",L"we");
+	Insert(L"",L"\u30a6\u30a9",L"wo");
+
+	Insert(L"",L"\u30f4\u30e3",L"vya");
+	Insert(L"",L"\u30f4\u30e5",L"vyu");
+	Insert(L"",L"\u30f4\u30e7",L"vyo");
+
+	Insert(L"",L"\u30b7\u30a7",L"she");
+	Insert(L"",L"\u30b8\u30a7",L"je");
+	Insert(L"",L"\u30c1\u30a7",L"che");
+
+	Insert(L"",L"\u30c6\u30a3",L"ti");
+	Insert(L"",L"\u30c6\u30a5",L"tu");
+	Insert(L"",L"\u30c6\u30e5",L"tyu");
+
+	Insert(L"",L"\u30c7\u30a3",L"di");
+	Insert(L"",L"\u30c7\u30a5",L"du");
+	Insert(L"",L"\u30c7\u30a5",L"dyu");
+
+	Insert(L"",L"\u30c4\u30a1",L"tsa");
+	Insert(L"",L"\u30c4\u30a3",L"tsi");
+	Insert(L"",L"\u30c4\u30a7",L"tse");
+	Insert(L"",L"\u30c4\u30a9",L"tso");
 }
 
 
