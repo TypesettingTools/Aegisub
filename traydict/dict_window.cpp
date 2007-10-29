@@ -47,7 +47,7 @@
 ///////////////
 // Constructor
 DictWindow::DictWindow()
-: wxFrame(NULL,-1,_T("TrayDict v0.06 - By Rodrigo Braz Monteiro"),wxDefaultPosition,wxSize(620,500),wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN)
+: wxFrame(NULL,-1,_T("TrayDict v1.00 - EXPERIMENTAL - By Rodrigo Braz Monteiro"),wxDefaultPosition,wxSize(620,500),wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN)
 {
 	// Icons
 	SetIcon(wxICON(wxicon));

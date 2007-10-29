@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="prs_avisynth"
-	ProjectGUID="{D5222148-5C1C-4944-A7F6-BB636B54929E}"
-	RootNamespace="prs_avisynth"
+	Name="TrayDict"
+	ProjectGUID="{6A21BC2D-4AB0-49AE-8B8E-F3FDD2A88430}"
+	RootNamespace="TrayDict"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -17,9 +17,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -40,14 +40,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PRS_AVISYNTH_EXPORTS"
+				AdditionalIncludeDirectories="D:\wxWidgets-2.8.6\lib\vc_lib\mswud"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4996"
 			/>
 			<Tool
@@ -61,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../lib/libprs_d.lib"
-				OutputFile="../lib/avs_prs_d.dll"
-				LinkIncremental="2"
+				OutputFile="bin/traydict_d.exe"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="D:\wxWidgets-2.8.6\lib\vc_lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -98,7 +99,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -119,11 +120,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PRS_AVISYNTH_EXPORTS"
+				AdditionalIncludeDirectories="D:\wxWidgets-2.8.6\lib\vc_lib\mswu"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4996"
 			/>
@@ -138,8 +140,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../lib/libprs.lib"
-				OutputFile="../lib/avs_prs.dll"
+				OutputFile="bin/traydict.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="D:\wxWidgets-2.8.6\lib\vc_lib"
 				GenerateDebugInformation="true"
@@ -177,18 +178,74 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Filter"
+		<File
+			RelativePath=".\dict_window.cpp"
 			>
-			<File
-				RelativePath=".\draw_prs.cpp"
+		</File>
+		<File
+			RelativePath=".\dict_window.h"
+			>
+		</File>
+		<File
+			RelativePath=".\dictionary.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\dictionary.h"
+			>
+		</File>
+		<File
+			RelativePath=".\kana_table.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\kana_table.h"
+			>
+		</File>
+		<File
+			RelativePath=".\main.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\main.h"
+			>
+		</File>
+		<File
+			RelativePath=".\res.rc"
+			>
+		</File>
+		<File
+			RelativePath=".\systray.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\systray.h"
+			>
+		</File>
+		<File
+			RelativePath="..\aegisub\text_file_reader.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
 				>
-			</File>
-			<File
-				RelativePath=".\draw_prs.h"
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="NO_AUTODETECT_CHARSET"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
 				>
-			</File>
-		</Filter>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="NO_AUTODETECT_CHARSET"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\aegisub\text_file_reader.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

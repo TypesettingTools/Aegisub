@@ -47,6 +47,46 @@
 IMPLEMENT_APP(TrayDict)
 
 
+/////////////
+// Libraries
+#if __VISUALC__ >= 1200
+#ifdef __WXDEBUG__
+#pragma comment(lib, "wxzlibd.lib")
+#pragma comment(lib, "wxpngd.lib")
+#else
+#pragma comment(lib, "wxzlib.lib")
+#pragma comment(lib, "wxpng.lib")
+#endif
+
+#ifdef __WXDEBUG__
+#pragma comment(lib, "wxregexud.lib")
+#pragma comment(lib, "wxbase28ud.lib")
+#pragma comment(lib, "wxbase28ud_net.lib")
+#pragma comment(lib, "wxmsw28ud_media.lib")
+#pragma comment(lib, "wxmsw28ud_core.lib")
+#pragma comment(lib, "wxmsw28ud_adv.lib")
+#pragma comment(lib, "wxbase28ud_xml.lib")
+#pragma comment(lib, "wxexpatd.lib")
+#else
+#pragma comment(lib, "wxregexu.lib")
+#pragma comment(lib, "wxbase28u.lib")
+#pragma comment(lib, "wxbase28u_net.lib")
+#pragma comment(lib, "wxmsw28u_media.lib")
+#pragma comment(lib, "wxmsw28u_core.lib")
+#pragma comment(lib, "wxmsw28u_adv.lib")
+#pragma comment(lib, "wxbase28u_xml.lib")
+#pragma comment(lib, "wxexpat.lib")
+#endif
+
+#pragma comment(lib, "Vfw32.lib")
+#pragma comment(lib, "comctl32.lib")
+#pragma comment(lib, "rpcrt4.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "wsock32.lib")
+#endif
+
+
 //////////////
 // Initialize
 bool TrayDict::OnInit() {

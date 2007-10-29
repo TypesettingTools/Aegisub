@@ -43,7 +43,7 @@
 #include <wx/wfstream.h>
 #include <stdio.h>
 #include "dictionary.h"
-#include "text_file_reader.h"
+#include "../aegisub/text_file_reader.h"
 #include "main.h"
 
 

@@ -42,8 +42,10 @@
 #include "text_file_reader.h"
 
 #ifdef __WINDOWS__
+#ifndef NO_AUTODETECT_CHARSET
 #define AUTODETECT_CHARSET
 #include "charset_detect.h"
+#endif
 #endif
 
 
