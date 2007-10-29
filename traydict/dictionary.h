@@ -9,7 +9,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //     this list of conditions and the following disclaimer in the documentation
 //     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
+//   * Neither the name of the TrayDict Group nor the names of its contributors
 //     may be used to endorse or promote products derived from this software
 //     without specific prior written permission.
 //
@@ -27,11 +27,14 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB
+// TRAYDICT
 //
 // Website: http://aegisub.cellosoft.com
 // Contact: mailto:zeratul@cellosoft.com
 //
+
+
+#pragma once
 
 
 ///////////
@@ -58,7 +61,7 @@ public:
 class SearchResult {
 public:
 	DictEntry *entry;
-	int relevancy;
+	int relevance;
 };
 bool operator < (const SearchResult &a,const SearchResult &b);
 
@@ -71,7 +74,6 @@ public:
 	wxString dicName;
 
 	std::list<SearchResult> results;
-	void Print(wxTextCtrl *target,int bitmask);
 	bool ownData;
 	int time;
 
@@ -95,7 +97,7 @@ public:
 
 	void Load(wxString filename);
 	void Search(ResultSet &results,wxString query);
-	int GetRelevancy(wxString substr,wxString str,bool isPop,bool english=false);
+	int GetRelevance(wxString substr,wxString str,bool isPop,bool english=false);
 
 	Dictionary(wxString name,wxCheckBox *check);
 	~Dictionary();

@@ -9,7 +9,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //     this list of conditions and the following disclaimer in the documentation
 //     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
+//   * Neither the name of the TrayDict Group nor the names of its contributors
 //     may be used to endorse or promote products derived from this software
 //     without specific prior written permission.
 //
@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB
+// TRAYDICT
 //
 // Website: http://aegisub.cellosoft.com
 // Contact: mailto:zeratul@cellosoft.com
@@ -41,6 +41,7 @@
 #include "dict_window.h"
 #include "systray.h"
 #include "dictionary.h"
+#include "dictionary_display.h"
 #include "main.h"
 
 
@@ -120,7 +121,7 @@ DictWindow::DictWindow()
 	searchPane.CloseButton(false);
 
 	// Results
-	results = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(280,400),wxTE_RICH2 | wxTE_MULTILINE | wxTE_DONTWRAP | wxTE_READONLY);
+	results = new DictionaryDisplay(this);
 	manager->AddPane(results,wxCENTER,_("Results"));
 	manager->Update();
 
@@ -207,7 +208,7 @@ void DictWindow::Search(wxString text) {
 	int bitmask = (checkKanji->GetValue() ? 1 : 0) | (checkKana->GetValue() ? 2 : 0) | (checkRomaji->GetValue() ? 4 : 0) | (checkEnglish->GetValue() ? 8 : 0);
 
 	// Clear text
-	results->Clear();
+	results->ResultsStart();
 	entry->SetSelection(0,entry->GetValue().Length());
 
 	// Search each dictionary
@@ -217,17 +218,16 @@ void DictWindow::Search(wxString text) {
 			ResultSet res;
 			dict[i]->Search(res,text);
 
-			// Sort results by relevancy
+			// Sort results by relevance
 			res.results.sort();
 
 			// Print
-			res.Print(results,bitmask);
+			results->Print(res);
 		}
 	}
 
-	// Show start
-	results->ShowPosition(0);
-	results->SetSelection(0,0);
+	// Done
+	results->ResultsDone();
 }
 
 

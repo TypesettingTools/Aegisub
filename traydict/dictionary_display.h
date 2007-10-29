@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,36 +33,21 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#pragma once
+
 
 ///////////
 // Headers
-#include <wx/taskbar.h>
+#include <wx/html/htmlwin.h>
+#include "dictionary.h"
 
 
-//////////////////////
-// Systray icon class
-class Systray : public wxTaskBarIcon {
-private:
-	wxFrame *master;
-
-	void OnLeftClick(wxTaskBarIconEvent &event);
-	void OnExit(wxCommandEvent &event);
-	void OnOpen(wxCommandEvent &event);
-	wxMenu* CreatePopupMenu();
-
+///////////////////////////////////
+// Dictionary result display class
+class DictionaryDisplay : public wxHtmlWindow {
 public:
-	Systray(wxFrame *master);
-	~Systray();
-
-	void BringUp();
-
-	DECLARE_EVENT_TABLE();
-};
-
-
-///////
-// IDs
-enum {
-	SYSTRAY_EXIT = 1500,
-	SYSTRAY_OPEN
+	DictionaryDisplay(wxWindow *parent);
+	void Print(const ResultSet &results);
+	void ResultsStart();
+	void ResultsDone();
 };

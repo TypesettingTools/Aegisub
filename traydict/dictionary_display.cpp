@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,78 +33,79 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <wx/taskbar.h>
-#include "systray.h"
-#include "dict_window.h"
+#include <wx/html/htmlwin.h>
+#include "dictionary_display.h"
+#include "main.h"
+#include "../aegisub/text_file_reader.h"
 
 
 ///////////////
 // Constructor
-Systray::Systray(wxFrame *mast) {
-	master = mast;
-	SetIcon(wxICON(wxicon),_T("TrayDict"));
+DictionaryDisplay::DictionaryDisplay(wxWindow *parent)
+: wxHtmlWindow(parent,-1)
+{
+	SetBorders(0);
 }
 
 
-//////////////
-// Destructor
-Systray::~Systray() {
+/////////////////
+// Print results
+void DictionaryDisplay::Print(const ResultSet &results)
+{
+	// Clear page
+	SetPage(_T(""));
+
+	// Colours
+	wchar_t col[][8] = {L"#FFFFFF",L"#FEFAED"};
+
+	// Go through each result
+	AppendToPage(_T("<table cellpadding='2' cellspacing='0' border='0'>"));
+	int i = 0;
+	for (std::list<SearchResult>::const_iterator cur=results.results.begin();cur!=results.results.end();cur++) {
+		// Get entry
+		DictEntry *entry = (*cur).entry;
+
+		// Generate row string
+		wxString row = wxString::Format(_T("<tr bgcolor='%s'>"),col[(i/3) % 2]);
+		row += _T("<td>") + entry->kanji + _T("</td>");
+		row += _T("<td>") + entry->kana + _T(" </td>");
+		row += _T("<td>") + Dictionary::kanatable.KanaToRomaji(entry->kana) + _T(" </td>");
+		row += _T("<td>") + entry->english + _T("</td>");
+		row += _T("</tr>");
+
+		// Append string to page
+		AppendToPage(row);
+		i++;
+	}
+	AppendToPage(_T("</table>"));
 }
 
 
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(Systray,wxTaskBarIcon)
-	EVT_TASKBAR_LEFT_UP(Systray::OnLeftClick)
-	EVT_MENU(SYSTRAY_OPEN,Systray::OnOpen)
-	EVT_MENU(SYSTRAY_EXIT,Systray::OnExit)
-END_EVENT_TABLE()
+/////////////////
+// Start results
+void DictionaryDisplay::ResultsStart()
+{
+	Freeze();
 
+	// Get stylesheet path
+	wxString stylesheet;
+	TextFileReader styleFile(TrayDict::folderName + _T("traydict.css"));
+	while (styleFile.HasMoreLines()) {
+		stylesheet += styleFile.ReadLineFromFile() + _T("\n");
+	}
 
-//////////////
-// Left click
-void Systray::OnLeftClick(wxTaskBarIconEvent &event) {
-	if (master->IsShown()) master->Hide();
-	else BringUp();
+	// Insert header
+	AppendToPage(wxString::Format(_T("<html><head><style>%s</style></head><body>"),stylesheet.c_str()));
 }
 
 
-////////
-// Open
-void Systray::OnOpen(wxCommandEvent &event) {
-	if (master->IsShown()) master->Hide();
-	else BringUp();
-}
-
-
-////////
-// Exit
-void Systray::OnExit(wxCommandEvent &event) {
-	master->Destroy();
-}
-
-
-/////////
-// Popup
-wxMenu* Systray::CreatePopupMenu() {
-	wxMenu *popup = new wxMenu();
-	if (master->IsShown()) popup->Append(SYSTRAY_OPEN,_T("Hide"));
-	else popup->Append(SYSTRAY_OPEN,_T("Show"));
-	popup->Append(SYSTRAY_EXIT,_T("Exit"));
-	return popup;
-}
-
-
-////////////
-// Bring up
-void Systray::BringUp() {
-	//if (IsOk()) RemoveIcon();
-	master->Show();
-	master->Restore();
-	master->Raise();
-	((DictWindow*)master)->entry->SetFocus();
+/////////////////////////
+// Done printing results
+void DictionaryDisplay::ResultsDone()
+{
+	AppendToPage(_T("</body></html>"));
+	HistoryClear();
+	Thaw();
 }

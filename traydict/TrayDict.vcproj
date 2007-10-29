@@ -45,11 +45,13 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="stdwx.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="stdwx.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -123,11 +125,13 @@
 				AdditionalIncludeDirectories="D:\wxWidgets-2.8.6\lib\vc_lib\mswu"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="stdwx.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="stdwx.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -178,74 +182,114 @@
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath=".\dict_window.cpp"
+		<Filter
+			Name="Dialogs"
 			>
-		</File>
-		<File
-			RelativePath=".\dict_window.h"
-			>
-		</File>
-		<File
-			RelativePath=".\dictionary.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\dictionary.h"
-			>
-		</File>
-		<File
-			RelativePath=".\kana_table.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\kana_table.h"
-			>
-		</File>
-		<File
-			RelativePath=".\main.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\main.h"
-			>
-		</File>
-		<File
-			RelativePath=".\res.rc"
-			>
-		</File>
-		<File
-			RelativePath=".\systray.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\systray.h"
-			>
-		</File>
-		<File
-			RelativePath="..\aegisub\text_file_reader.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
+			<File
+				RelativePath=".\dict_window.cpp"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions="NO_AUTODETECT_CHARSET"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
+			</File>
+			<File
+				RelativePath=".\dict_window.h"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions="NO_AUTODETECT_CHARSET"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="..\aegisub\text_file_reader.h"
+			</File>
+		</Filter>
+		<Filter
+			Name="Core"
 			>
-		</File>
+			<File
+				RelativePath=".\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\main.h"
+				>
+			</File>
+			<File
+				RelativePath=".\res.rc"
+				>
+			</File>
+			<File
+				RelativePath=".\stdwx.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\stdwx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\systray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\systray.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Utils"
+			>
+			<File
+				RelativePath=".\kana_table.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\kana_table.h"
+				>
+			</File>
+			<File
+				RelativePath="..\aegisub\text_file_reader.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_AUTODETECT_CHARSET"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_AUTODETECT_CHARSET"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\aegisub\text_file_reader.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Dictionary"
+			>
+			<File
+				RelativePath=".\dictionary.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dictionary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dictionary_display.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dictionary_display.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

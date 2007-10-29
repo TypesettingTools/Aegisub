@@ -9,7 +9,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //     this list of conditions and the following disclaimer in the documentation
 //     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
+//   * Neither the name of the TrayDict Group nor the names of its contributors
 //     may be used to endorse or promote products derived from this software
 //     without specific prior written permission.
 //
@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB
+// TRAYDICT
 //
 // Website: http://aegisub.cellosoft.com
 // Contact: mailto:zeratul@cellosoft.com
@@ -251,13 +251,13 @@ void Dictionary::Search(ResultSet &results,wxString query) {
 			// Matches kanji?
 			if (cur->kanji.Contains(query)) {
 				addThis = true;
-				rel = GetRelevancy(query,cur->kanji,cur->english.Contains(_T("(P)")));
+				rel = GetRelevance(query,cur->kanji,cur->english.Contains(_T("(P)")));
 			}
 
 			// Matches kana?
 			else if (cur->kana.Contains(query)) {
 				addThis = true;
-				rel = GetRelevancy(query,cur->kana,cur->english.Contains(_T("(P)")));
+				rel = GetRelevance(query,cur->kana,cur->english.Contains(_T("(P)")));
 			}
 		}
 
@@ -269,20 +269,20 @@ void Dictionary::Search(ResultSet &results,wxString query) {
 			// Matches english?
 			if (cur->english.Lower().Contains(lowQuery)) {
 				addThis = true;
-				rel = GetRelevancy(lowQuery,cur->english,cur->english.Contains(_T("(P)")),true);
+				rel = GetRelevance(lowQuery,cur->english,cur->english.Contains(_T("(P)")),true);
 			}
 
 			// Matches wapuro romaji?
 			if (cur->romaji.Contains(lowQuery)) {
 				addThis = true;
-				rel = GetRelevancy(lowQuery,cur->romaji,cur->english.Contains(_T("(P)")));
+				rel = GetRelevance(lowQuery,cur->romaji,cur->english.Contains(_T("(P)")));
 			}
 		}
 
 		// Add entry
 		if (addThis) {
 			SearchResult res;
-			res.relevancy = rel;
+			res.relevance = rel;
 			res.entry = cur;
 			results.results.push_back(res);
 			cur = NULL;
@@ -302,7 +302,7 @@ void Dictionary::Search(ResultSet &results,wxString query) {
 
 /////////////////
 // Get relevancy
-int Dictionary::GetRelevancy(wxString substr,wxString _str,bool isPop,bool english) {
+int Dictionary::GetRelevance(wxString substr,wxString _str,bool isPop,bool english) {
 	// Best score
 	int bestScore = 0;
 
@@ -384,7 +384,7 @@ int Dictionary::GetRelevancy(wxString substr,wxString _str,bool isPop,bool engli
 //////////////////////////
 // Comparison for sorting
 bool operator < (const SearchResult &a,const SearchResult &b) {
-	return (a.relevancy > b.relevancy);
+	return (a.relevance > b.relevance);
 }
 
 
@@ -418,6 +418,7 @@ ResultSet::~ResultSet() {
 
 ///////////////////
 // Print resultset
+/*
 void ResultSet::Print(wxTextCtrl *target,int bitmask) {
 	// Get options
 	bool drawKanji = (bitmask & 1) != 0;
@@ -585,3 +586,4 @@ void ResultSet::Print(wxTextCtrl *target,int bitmask) {
 	// Print two carriage returns
 	target->AppendText(_T("\n\n"));
 }
+*/

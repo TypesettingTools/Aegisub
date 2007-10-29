@@ -9,7 +9,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //     this list of conditions and the following disclaimer in the documentation
 //     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
+//   * Neither the name of the TrayDict Group nor the names of its contributors
 //     may be used to endorse or promote products derived from this software
 //     without specific prior written permission.
 //
@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB
+// TRAYDICT
 //
 // Website: http://aegisub.cellosoft.com
 // Contact: mailto:zeratul@cellosoft.com
@@ -44,6 +44,7 @@
 // Prototypes
 class Systray;
 class Dictionary;
+class DictionaryDisplay;
 
 
 //////////////////////////
@@ -51,7 +52,7 @@ class Dictionary;
 class DictWindow : public wxFrame {
 private:
 	wxMenuBar *menu;
-	wxTextCtrl *results;
+	DictionaryDisplay *results;
 	Systray *systray;
 	std::vector<Dictionary*> dict;
 

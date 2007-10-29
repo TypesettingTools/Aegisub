@@ -9,7 +9,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //     this list of conditions and the following disclaimer in the documentation
 //     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
+//   * Neither the name of the TrayDict Group nor the names of its contributors
 //     may be used to endorse or promote products derived from this software
 //     without specific prior written permission.
 //
@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB
+// TRAYDICT
 //
 // Website: http://aegisub.cellosoft.com
 // Contact: mailto:zeratul@cellosoft.com
@@ -66,6 +66,7 @@ IMPLEMENT_APP(TrayDict)
 #pragma comment(lib, "wxmsw28ud_core.lib")
 #pragma comment(lib, "wxmsw28ud_adv.lib")
 #pragma comment(lib, "wxmsw28ud_aui.lib")
+#pragma comment(lib, "wxmsw28ud_html.lib")
 #pragma comment(lib, "wxbase28ud_xml.lib")
 #pragma comment(lib, "wxexpatd.lib")
 #else
@@ -76,6 +77,7 @@ IMPLEMENT_APP(TrayDict)
 #pragma comment(lib, "wxmsw28u_core.lib")
 #pragma comment(lib, "wxmsw28u_adv.lib")
 #pragma comment(lib, "wxmsw28u_aui.lib")
+#pragma comment(lib, "wxmsw28u_html.lib")
 #pragma comment(lib, "wxbase28u_xml.lib")
 #pragma comment(lib, "wxexpat.lib")
 #endif

@@ -9,7 +9,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //     this list of conditions and the following disclaimer in the documentation
 //     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
+//   * Neither the name of the TrayDict Group nor the names of its contributors
 //     may be used to endorse or promote products derived from this software
 //     without specific prior written permission.
 //
@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB
+// TRAYDICT
 //
 // Website: http://aegisub.cellosoft.com
 // Contact: mailto:zeratul@cellosoft.com
@@ -396,14 +396,22 @@ wxString KanaTable::KanaToRomaji(wxString kana,int type) {
 					// Check if it needs to add a macron
 					wxString last = lastSyl.Right(1);
 					wxString curV = cur->hepburn;
-					if ((last == _T("o") && curV == _T("u")) || (last == curV && last != lastSyl && last != _T("n"))) {
-						final += 0x304;
+					if ((last == _T("o") && curV == _T("u")) || (last == curV && last != _T("n") /*&& last != lastSyl */)) {
+						wchar_t macron;
+						switch(last[0]) {
+							case L'a': macron = 257; break;
+							case L'e': macron = 275; break;
+							case L'i': macron = 299; break;
+							case L'o': macron = 333; break;
+							case L'u': macron = 363; break;
+						}
+						final = final.Left(final.Length()-1) + macron;
 						vetoAdd = true;
 					}
 				}
 			}
 
-			// Wapura
+			// Wopura
 			else {
 				if (longVowel) {
 					longVowel = false;
