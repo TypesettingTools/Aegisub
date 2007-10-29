@@ -33,22 +33,81 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#pragma once
 
-#include <wx/wxprec.h>
-#include "lavc_file.h"
+///////////
+// Headers
+#include "lavc_keyframes.h"
 
-class LAVCKeyFrames {
-	private:
-		LAVCFile* file;					// Video file
-		AVCodecContext* codecContext;	// Codec context
-		AVCodec* codec;					// Used codec
-		AVStream* stream;				// Used stream
-		AVFrame* frame;					// Frame buffer
+///////////////
+// Constructor
+LAVCKeyFrames::LAVCKeyFrames(const wxString& filename) 
+ : file(0), codecContext(0), codec(0), stream(0), frame(0), 
+   streamN(-1) {
+	// Open LAVCFile
+	file = LAVCFile::Create(filename);
 
-		int streamN;					// Stream index
-	public:
-		LAVCKeyFrames(const wxString& filename);
-		~LAVCKeyFrames();
-		wxArrayInt GetKeyFrames();
-};
+	// Find video stream
+	for (unsigned int i = 0; i < file->fctx->nb_streams; ++i) {
+		codecContext = file->fctx->streams[i]->codec;
+		codecContext->skip_frame = AVDISCARD_NONKEY;
+		codecContext->workaround_bugs = FF_BUG_AUTODETECT;
+		if (codecContext->codec_type == CODEC_TYPE_VIDEO) {
+			stream = file->fctx->streams[i];
+			stream->discard = AVDISCARD_NONKEY;
+			streamN = i;
+			break;
+		}
+	}
+	if (streamN == -1) throw _T("Could not find a video stream");
+
+	// Find codec
+	codec = avcodec_find_decoder(codecContext->codec_id);
+	if (!codec) throw _T("Could not find suitable video decoder");
+
+	// Open codec
+	int result = avcodec_open(codecContext, codec);
+	if (result < 0) throw _T("Failed to open video decoder");
+
+	// Allocate frame
+	frame = avcodec_alloc_frame();
+}
+
+//////////////
+// Destructor
+LAVCKeyFrames::~LAVCKeyFrames() {
+	if (frame) av_free((void*) frame);
+	if (codec && codecContext) avcodec_close(codecContext);
+	if (file) file->Release();
+}
+
+////////////////////////////
+// Parse file for keyframes
+wxArrayInt LAVCKeyFrames::GetKeyFrames() {
+	wxArrayInt keyframes;
+
+	AVPacket packet;
+	register unsigned int frameN = 0;		// Number of parsed frames
+	while (av_read_frame(file->fctx, &packet) >= 0) {
+		// Check if packet is part of video stream
+		if (packet.stream_index == streamN) {
+			// Increment number of passed frames
+			++frameN;
+			// Decode frame
+			int frameFinished;
+			avcodec_decode_video(codecContext, frame, &frameFinished, packet.data, packet.size);
+
+			// Success?
+			if(frameFinished) {
+				if (frame->key_frame)
+					// Aegisub starts counting at frame 0, so the result must be
+					// parsed frames - 1
+					keyframes.Add(frameN - 1);
+				
+				// Free packet
+				av_free_packet(&packet);
+			}
+		}
+    }
+
+	return keyframes;
+}
