@@ -362,7 +362,7 @@ BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 	EVT_COMBOBOX(STYLE_COMBOBOX, SubsEditBox::OnStyleChange)
 	EVT_COMBOBOX(ACTOR_COMBOBOX, SubsEditBox::OnActorChange)
 	EVT_TEXT_ENTER(ACTOR_COMBOBOX, SubsEditBox::OnActorChange)
-	//EVT_TEXT_ENTER(LAYER_BOX, SubsEditBox::OnLayerChange)
+	EVT_TEXT_ENTER(LAYER_BOX, SubsEditBox::OnLayerEnter)
 	EVT_SPINCTRL(LAYER_BOX, SubsEditBox::OnLayerChange)
 	EVT_TEXT_ENTER(STARTTIME_BOX, SubsEditBox::OnStartTimeChange)
 	EVT_TEXT_ENTER(ENDTIME_BOX, SubsEditBox::OnEndTimeChange)
@@ -595,8 +595,8 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 }
 
 
-/////////////////
-// Layer changed
+///////////////////////////
+// Layer changed with spin
 void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
 	// Value
 	long temp = event.GetPosition();
@@ -616,7 +616,32 @@ void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
 	}
 
 	// Done
-	Layer->SetValue(wxString::Format(_T("%i"),temp));
+	grid->ass->FlagAsModified(_("layer change"));
+	grid->CommitChanges();
+}
+
+
+////////////////////////////
+// Layer changed with enter
+void SubsEditBox::OnLayerEnter(wxCommandEvent &event) {
+	// Value
+	long temp = Layer->GetValue();
+
+	// Get selection
+	wxArrayInt sel = grid->GetSelection();
+
+	// Update
+	int n = sel.Count();
+	AssDialogue *cur;
+	for (int i=0;i<n;i++) {
+		cur = grid->GetDialogue(sel[i]);
+		if (cur) {
+			cur->Layer = temp;
+			cur->UpdateData();
+		}
+	}
+
+	// Done
 	grid->ass->FlagAsModified(_("layer change"));
 	grid->CommitChanges();
 }

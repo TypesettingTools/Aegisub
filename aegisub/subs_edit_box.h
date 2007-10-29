@@ -131,6 +131,7 @@ private:
 	void OnKeyDown(wxStyledTextEvent &event);
 	void OnStyleChange(wxCommandEvent &event);
 	void OnActorChange(wxCommandEvent &event);
+	void OnLayerEnter(wxCommandEvent &event);
 	void OnLayerChange(wxSpinEvent &event);
 	void OnStartTimeChange(wxCommandEvent &event);
 	void OnEndTimeChange(wxCommandEvent &event);
