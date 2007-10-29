@@ -55,7 +55,7 @@ HUNSPELL=
 endif
 
 if HAVE_FFMPEG
-FFMPEG=audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp
+FFMPEG=audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp lavc_keyframes.cpp
 else
 FFMPEG=
 endif
@@ -83,6 +83,7 @@ EXTRA_aegisub_SOURCES = \
 	dialog_associations.cpp \
 	factory.h \
 	lavc_file.cpp \
+	lavc_keyframes.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
 	stdwx.cpp \

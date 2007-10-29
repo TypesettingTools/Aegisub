@@ -62,6 +62,9 @@
 #include "ass_style.h"
 #include "subs_grid.h"
 #include "vfw_wrap.h"
+#ifndef __WINDOWS__
+#include "lavc_keyframes.h"
+#endif
 #include "mkv_wrap.h"
 #include "options.h"
 #include "subs_edit_box.h"
@@ -282,12 +285,17 @@ void VideoContext::SetVideo(const wxString &filename) {
 				// Close mkv
 				MatroskaWrapper::wrapper.Close();
 			}
-#ifdef __WINDOWS__
+
 			else if (ext == _T(".avi")) {
+#ifdef __WINDOWS__
 				KeyFrames = VFWWrapper::GetKeyFrames(filename);
+#else
+				LAVCKeyFrames k(filename);
+				KeyFrames = k.GetKeyFrames();
+#endif
 				keyFramesLoaded = true;
 			}
-#endif
+
 
 			// Set GL context
 #ifdef __WXMAC__
