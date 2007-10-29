@@ -187,6 +187,11 @@ void AssFile::SaveMemory(std::vector<char> &dst,const wxString encoding) {
 	if (enc.IsEmpty()) enc = _T("UTF-8");
 	if (enc != _T("UTF-8")) throw _T("Memory writer only supports UTF-8 for now.");
 
+	// Check if subs contain at least one style
+	// Add a default style if they don't for compatibility with libass/asa
+	if (GetStyles().Count() == 0)
+		InsertStyle(new AssStyle());
+
 	// Prepare vector
 	dst.clear();
 	dst.reserve(0x4000);
@@ -805,7 +810,6 @@ wxArrayString AssFile::GetStyles() {
 			styles.Add(curstyle->name);
 		}
 	}
-	if (styles.GetCount() == 0) styles.Add(_T("Default"));
 	return styles;
 }
 
@@ -1030,6 +1034,7 @@ std::list<AssFile*> AssFile::UndoStack;
 std::list<AssFile*> AssFile::RedoStack;
 bool AssFile::Popping;
 bool AssFile::StackModified;
+
 
 
 
