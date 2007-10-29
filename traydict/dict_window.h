@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <vector>
+#include <wx/aui/aui.h>
 
 
 //////////////
@@ -64,8 +65,8 @@ private:
 	void Search(wxString text);
 
 public:
-	wxTextCtrl *entry;
-	wxPanel *panel;
+	wxAuiManager *manager;
+	wxComboBox *entry;
 	wxCheckBox *checkKanji;
 	wxCheckBox *checkKana;
 	wxCheckBox *checkRomaji;

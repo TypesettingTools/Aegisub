@@ -63,11 +63,13 @@ DictWindow::DictWindow()
 	//bar->SetStatusWidths(3,widths);
 
 	// Panel
-	panel = new wxPanel(this);
+	wxPanel *panel = new wxPanel(this);
 
-	// Controls
-	entry = new wxTextCtrl(panel,ENTRY_FIELD,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
-	results = new wxTextCtrl(panel,-1,_T(""),wxDefaultPosition,wxSize(280,400),wxTE_RICH2 | wxTE_MULTILINE | wxTE_DONTWRAP | wxTE_READONLY);
+	// Manager
+	manager = new wxAuiManager(this);
+
+	// Search bar
+	entry = new wxComboBox(panel,ENTRY_FIELD,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	wxButton *searchButton = new wxButton(panel,BUTTON_SEARCH,_T("Search"),wxDefaultPosition,wxSize(80,-1));
 	wxSizer *entrySizer = new wxBoxSizer(wxHORIZONTAL);
 	entrySizer->Add(entry,1,wxEXPAND | wxRIGHT,5);
@@ -103,12 +105,24 @@ DictWindow::DictWindow()
 	optionsSizer->Add(checkJplaces,0,wxCENTER | wxRIGHT,0);
 	optionsSizer->AddStretchSpacer(1);
 
-	// Main sizer
-	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(entrySizer,0,wxEXPAND | wxALL,5);
-	mainSizer->Add(optionsSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	mainSizer->Add(results,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	panel->SetSizer(mainSizer);
+	// Upper pane
+	wxSizer *searchSizer = new wxBoxSizer(wxVERTICAL);
+	searchSizer->Add(entrySizer,0,wxEXPAND | wxALL,5);
+	searchSizer->Add(optionsSizer,0,wxEXPAND | wxALL,5);
+	panel->SetSizer(searchSizer);
+	manager->AddPane(panel,wxTOP,_("Search"));
+	wxAuiPaneInfo &searchPane = manager->GetPane(panel);
+	searchPane.MinSize(searchSizer->GetMinSize());
+	searchPane.FloatingSize(searchSizer->GetMinSize());
+	searchPane.Resizable(false);
+	searchPane.RightDockable(false);
+	searchPane.LeftDockable(false);
+	searchPane.CloseButton(false);
+
+	// Results
+	results = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(280,400),wxTE_RICH2 | wxTE_MULTILINE | wxTE_DONTWRAP | wxTE_READONLY);
+	manager->AddPane(results,wxCENTER,_("Results"));
+	manager->Update();
 
 	// Create dictionary files
 	if (false) {
@@ -158,7 +172,7 @@ BEGIN_EVENT_TABLE(DictWindow,wxFrame)
 	EVT_BUTTON(BUTTON_SEARCH,DictWindow::OnSearch)
 	EVT_TEXT_ENTER(ENTRY_FIELD,DictWindow::OnSearch)
 	EVT_HOTKEY(HOTKEY_ID,DictWindow::OnHotkey)
-	EVT_CLOSE(DictWindow::OnClose)
+	//EVT_CLOSE(DictWindow::OnClose)
 END_EVENT_TABLE()
 
 
