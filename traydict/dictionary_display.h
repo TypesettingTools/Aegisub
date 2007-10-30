@@ -38,16 +38,17 @@
 
 ///////////
 // Headers
-#include <wx/html/htmlwin.h>
 #include "dictionary.h"
+#include "gecko_display.h"
 
 
 ///////////////////////////////////
 // Dictionary result display class
-class DictionaryDisplay : public wxHtmlWindow {
+class DictionaryDisplay : public GeckoDisplay {
 public:
 	DictionaryDisplay(wxWindow *parent);
-	void Print(const ResultSet &results);
+
+	void PrintResults(const ResultSet &results);
 	void ResultsStart();
 	void ResultsDone();
 };

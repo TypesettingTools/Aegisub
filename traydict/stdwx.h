@@ -21,7 +21,6 @@
 #include <wx/event.h>
 #include <wx/string.h>
 #include <wx/aui/aui.h>
-#include <wx/html/htmlwin.h>
 
 #include <vector>
 #include <list>

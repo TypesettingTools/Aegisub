@@ -222,7 +222,7 @@ void DictWindow::Search(wxString text) {
 			res.results.sort();
 
 			// Print
-			results->Print(res);
+			results->PrintResults(res);
 		}
 	}
 

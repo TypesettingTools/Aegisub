@@ -33,76 +33,32 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+
 ///////////
 // Headers
-#include "dictionary_display.h"
-#include "main.h"
-#include "../aegisub/text_file_reader.h"
+#include "gecko_display.h"
 
 
 ///////////////
 // Constructor
-DictionaryDisplay::DictionaryDisplay(wxWindow *parent)
-: GeckoDisplay(parent)
+GeckoDisplay::GeckoDisplay(wxWindow *parent)
+: wxPanel(parent)
 {
+
 }
 
 
-/////////////////
-// Print results
-void DictionaryDisplay::PrintResults(const ResultSet &results)
+///////////////
+// Append text
+void GeckoDisplay::AppendText(wxString text)
 {
-	// Clear page
-	SetText(_T(""));
 
-	// Colours
-	wchar_t col[][8] = {L"#FFFFFF",L"#FEFAED"};
-
-	// Go through each result
-	AppendText(_T("<table cellpadding='2' cellspacing='0' border='0'>"));
-	int i = 0;
-	for (std::list<SearchResult>::const_iterator cur=results.results.begin();cur!=results.results.end();cur++) {
-		// Get entry
-		DictEntry *entry = (*cur).entry;
-
-		// Generate row string
-		wxString row = wxString::Format(_T("<tr bgcolor='%s'>"),col[(i/3) % 2]);
-		row += _T("<td>") + entry->kanji + _T("</td>");
-		row += _T("<td>") + entry->kana + _T(" </td>");
-		row += _T("<td>") + Dictionary::kanatable.KanaToRomaji(entry->kana) + _T(" </td>");
-		row += _T("<td>") + entry->english + _T("</td>");
-		row += _T("</tr>");
-
-		// Append string to page
-		AppendText(row);
-		i++;
-	}
-	AppendText(_T("</table>"));
 }
 
 
-/////////////////
-// Start results
-void DictionaryDisplay::ResultsStart()
+////////////
+// Set text
+void GeckoDisplay::SetText(wxString text)
 {
-	Freeze();
 
-	// Get stylesheet path
-	wxString stylesheet;
-	TextFileReader styleFile(TrayDict::folderName + _T("traydict.css"));
-	while (styleFile.HasMoreLines()) {
-		stylesheet += styleFile.ReadLineFromFile() + _T("\n");
-	}
-
-	// Insert header
-	AppendText(wxString::Format(_T("<html><head><style>%s</style></head><body>"),stylesheet.c_str()));
-}
-
-
-/////////////////////////
-// Done printing results
-void DictionaryDisplay::ResultsDone()
-{
-	AppendText(_T("</body></html>"));
-	Thaw();
 }

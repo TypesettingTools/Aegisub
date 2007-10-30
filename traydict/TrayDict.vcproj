@@ -289,6 +289,14 @@
 				RelativePath=".\dictionary_display.h"
 				>
 			</File>
+			<File
+				RelativePath=".\gecko_display.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gecko_display.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
