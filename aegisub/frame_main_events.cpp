@@ -1458,8 +1458,9 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 
 			// Save
 			wxString name = origfile.GetName();
-			if (name.IsEmpty()) name = _T("Untitled");
-			wxString backup = path + origfile.GetName() + name + _T(".AUTOSAVE.ass");
+			wxString backup = path;
+			if (name.IsEmpty()) backup += _T("Untitled.AUTOSAVE.ass");
+			else backup += origfile.GetName() + _T(".AUTOSAVE.ass");
 			AssFile::top->Save(backup,false,false);
 
 			// Set status bar
