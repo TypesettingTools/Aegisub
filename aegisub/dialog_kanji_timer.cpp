@@ -53,6 +53,7 @@
 #include "validators.h"
 #include "video_context.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -119,7 +120,8 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	ResSizerGrid1->Add(DestText,0,wxALIGN_CENTER,3);
 	ResBoxSizer1->Add(ResSizerGrid1,1,wxALIGN_CENTER|wxEXPAND,5);
 	//Frame: Shortcut Keys
-	ResBoxSizer2->Add(ShortcutKeys,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL | wxRIGHT,5);
+	ResBoxSizer2->Add(ShortcutKeys,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL | wxRIGHT,5);
+	ResBoxSizer2->Add(Interpolate,0,wxALIGN_LEFT | wxTOP,10);
 	//Frame: Groups
 	ResBoxSizer3->Add(GroupsList,1,wxALIGN_CENTER,5);
 	//Frame: Styles
@@ -140,18 +142,27 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	ResSizer1->Add(ResBoxSizer2,0,wxEXPAND | wxRIGHT,5);
 	ResSizer1->Add(ResBoxSizer3,1,wxEXPAND,5);
 	
+	// Top sizer
+	wxFlexGridSizer *topSizer = new wxFlexGridSizer(3,2,0,0);
+	topSizer->Add(ResBoxSizer1,0,wxEXPAND | wxLEFT | wxRIGHT,5);
+	topSizer->Add(ResBoxSizer4,0,wxEXPAND | wxLEFT | wxRIGHT,5);
+	topSizer->Add(ResSizer1,0,wxEXPAND | wxALL,5);
+	topSizer->Add(ResBoxSizer5,0,wxEXPAND | wxALL,5);
+	topSizer->AddGrowableCol(0,1);
+
+	// Button sizer
+	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
+	buttonSizer->AddButton(CloseKT);
+	buttonSizer->AddButton(new HelpButton(this,_T("Kanji Timer")));
+	buttonSizer->SetAffirmativeButton(CloseKT);
+	buttonSizer->Realize();
+
 	// Main sizer
-	wxFlexGridSizer *MainSizer = new wxFlexGridSizer(3,2,0,0);
-	MainSizer->Add(ResBoxSizer1,0,wxEXPAND | wxLEFT | wxRIGHT,5);
-	MainSizer->Add(ResBoxSizer4,0,wxEXPAND | wxLEFT | wxRIGHT,5);
-	MainSizer->Add(ResSizer1,0,wxEXPAND | wxALL,5);
-	MainSizer->Add(ResBoxSizer5,0,wxEXPAND | wxALL,5);
-	MainSizer->AddGrowableCol(0,1);
-	MainSizer->Add(Interpolate,0,wxEXPAND | wxALL,5);
-	MainSizer->AddGrowableCol(0,1);
-	MainSizer->Add(CloseKT,0,wxEXPAND | wxALL,5);
-	MainSizer->SetSizeHints(this);
-	SetSizer(MainSizer);
+	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(topSizer,1,wxEXPAND | wxBOTTOM,5);
+	mainSizer->Add(buttonSizer,0,wxEXPAND | wxBOTTOM,5);
+	mainSizer->SetSizeHints(this);
+	SetSizer(mainSizer);
 	CenterOnParent();
 }
 
