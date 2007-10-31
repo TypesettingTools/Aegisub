@@ -33,80 +33,54 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#pragma once
+
 
 ///////////
 // Headers
-#include "gecko_display.h"
-#include "gecko_controller.h"
-#include "main.h"
-
-
-///////////////
-// Constructor
-GeckoDisplay::GeckoDisplay(wxWindow *parent)
-: wxPanel(parent)
-{
-	controller = NULL;
-	controller = new GeckoController(this,TrayDict::folderName);
-	controller->AddRef();
-}
+#include <wx/wxprec.h>
+#include "gecko/nsStringAPI.h"
+#include "gecko/nsEmbedAPI.h"
+#include "gecko/nsIWebBrowserChrome.h"
+#include "gecko/nsIEmbeddingSiteWindow.h"
+#include "gecko/nsIWebProgressListener.h"
+#include "gecko/nsWeakReference.h"
+#include "gecko/nsIWebNavigation.h"
+#include "gecko/nsIWebBrowser.h"
+#include "gecko/nsIBaseWindow.h"
 
 
 //////////////
-// Destructor
-GeckoDisplay::~GeckoDisplay()
-{
-	controller->Release();
-	//delete controller;
-}
+// Prototypes
+class GeckoDisplay;
 
 
 ////////////////////
-// Initialize gecko
-void GeckoDisplay::InitGecko()
+// Gecko Controller
+class GeckoController : public nsIWebBrowserChrome,
+						public nsIEmbeddingSiteWindow,
+						public nsIWebProgressListener,
+						public nsSupportsWeakReference
 {
-}
+private:
+	int refCount;
+	static int controllers;
+	GeckoDisplay *display;
 
+	nsCOMPtr<nsIWebNavigation> nsNav;
+	nsCOMPtr<nsIWebBrowser> nsWebBrowser;
+	nsCOMPtr<nsIBaseWindow> mBaseWindow;
+	unsigned int mChromeFlags;
 
-///////////////
-// Append text
-void GeckoDisplay::AppendText(wxString text)
-{
+public:
+	GeckoController(GeckoDisplay *_display,const wxString _path);
+	~GeckoController();
 
-}
+	void SetSize(wxSize &size);
 
-
-////////////
-// Set text
-void GeckoDisplay::SetText(wxString text)
-{
-
-}
-
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(GeckoDisplay,wxPanel)
-	EVT_SIZE(GeckoDisplay::OnSize)
-	EVT_SET_FOCUS(GeckoDisplay::OnSetFocus)
-	EVT_KILL_FOCUS(GeckoDisplay::OnKillFocus)
-END_EVENT_TABLE()
-
-
-////////
-// Size
-void GeckoDisplay::OnSize(wxSizeEvent &event)
-{
-	if (controller) controller->SetSize(event.GetSize());
-}
-
-
-/////////
-// Focus
-void GeckoDisplay::OnSetFocus(wxFocusEvent &event)
-{
-}
-
-void GeckoDisplay::OnKillFocus(wxFocusEvent &event)
-{
-}
+	NS_DECL_ISUPPORTS
+	NS_DECL_NSIWEBBROWSERCHROME
+	NS_DECL_NSIEMBEDDINGSITEWINDOW
+	NS_DECL_NSIWEBPROGRESSLISTENER
+	//NS_DECL_NSISUPPORTSWEAKREFERENCE
+};

@@ -101,6 +101,7 @@ bool TrayDict::OnInit() {
 	// Get path
 	GetFullPath(argv[0]);
 	GetFolderName();
+	wxSetWorkingDirectory(folderName);
 
 	// Create the window
 	DictWindow *window = new DictWindow();

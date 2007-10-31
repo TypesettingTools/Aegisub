@@ -124,6 +124,7 @@ DictWindow::DictWindow()
 	results = new DictionaryDisplay(this);
 	manager->AddPane(results,wxCENTER,_("Results"));
 	manager->Update();
+	results->InitGecko();
 
 	// Create dictionary files
 	if (false) {

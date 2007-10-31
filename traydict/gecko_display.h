@@ -35,16 +35,40 @@
 
 #pragma once
 
+
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "gecko/nsStringAPI.h"
+#include "gecko/nsEmbedAPI.h"
+#include "gecko/nsIWebBrowserChrome.h"
+#include "gecko/nsIEmbeddingSiteWindow.h"
+#include "gecko/nsIWebProgressListener.h"
+
+
+//////////////
+// Prototypes
+class GeckoController;
+
 
 /////////////////
 // Gecko Display
 class GeckoDisplay : public wxPanel {
+private:
+	GeckoController *controller;
+
+	void OnSize(wxSizeEvent &event);
+	void OnSetFocus(wxFocusEvent &event);
+	void OnKillFocus(wxFocusEvent &event);
+
 public:
 	GeckoDisplay(wxWindow *parent);
+	~GeckoDisplay();
+
+	void InitGecko();
 
 	void AppendText(wxString text);
 	void SetText(wxString text);
+
+	DECLARE_EVENT_TABLE()
 };

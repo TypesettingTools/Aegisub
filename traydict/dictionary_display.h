@@ -39,14 +39,22 @@
 ///////////
 // Headers
 #include "dictionary.h"
+//#include "IEHtmlWin.h"
 #include "gecko_display.h"
 
 
 ///////////////////////////////////
 // Dictionary result display class
+//class DictionaryDisplay : public IEHtmlWin {
 class DictionaryDisplay : public GeckoDisplay {
+private:
+	wxString data;
+
 public:
 	DictionaryDisplay(wxWindow *parent);
+
+	void SetText(wxString text);
+	void AppendText(wxString text);
 
 	void PrintResults(const ResultSet &results);
 	void ResultsStart();

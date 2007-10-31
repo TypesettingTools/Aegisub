@@ -66,8 +66,8 @@
 				Name="VCLinkerTool"
 				OutputFile="bin/traydict_d.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="D:\wxWidgets-2.8.6\lib\vc_lib"
-				IgnoreDefaultLibraryNames=""
+				AdditionalLibraryDirectories="D:\wxWidgets-2.8.6\lib\vc_lib;F:\Projects\aegisub\src\traydict\geckolib"
+				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -289,12 +289,32 @@
 				RelativePath=".\dictionary_display.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Rendering Engines"
+			>
+			<File
+				RelativePath=".\gecko_controller.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gecko_controller.h"
+				>
+			</File>
 			<File
 				RelativePath=".\gecko_display.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\gecko_display.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IEHtmlWin.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IEHtmlWin.h"
 				>
 			</File>
 		</Filter>
