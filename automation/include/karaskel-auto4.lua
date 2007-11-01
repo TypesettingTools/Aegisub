@@ -61,7 +61,7 @@ function karaskel.collect_head(subs, generate_furigana)
 			
 			-- And also generate furigana styles if wanted
 			if generate_furigana and not l.name:match("furigana") then
-				aegisub.debug.out(5, "Creating furigana style for style: " .. l.name)
+				aegisub.debug.out(5, "Creating furigana style for style: " .. l.name .. "\n")
 				local fs = table.copy(l)
 				fs.fontsize = l.fontsize * karaskel.furigana_scale
 				fs.outline = l.outline * karaskel.furigana_scale
