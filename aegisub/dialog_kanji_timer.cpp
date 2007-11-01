@@ -186,7 +186,7 @@ END_EVENT_TABLE()
 void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	Options.SetBool(_T("kanji timer interpolation"),Interpolate->IsChecked());
 	Options.Save();
-	bool modified = LinesToChange.empty();
+	bool modified = !LinesToChange.empty();
 	
 	while(LinesToChange.empty()==false) {
 		std::pair<int,wxString> p = LinesToChange.back();
@@ -197,6 +197,7 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	if (modified) {
 		grid->ass->FlagAsModified(_("kanji timing"));
 		grid->CommitChanges();
+		grid->UpdateMaps();
 		LinesToChange.clear();
 	}
 	Close();
