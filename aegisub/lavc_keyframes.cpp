@@ -36,6 +36,7 @@
 
 ///////////
 // Headers
+#include "dialog_progress.h"
 #include "lavc_keyframes.h"
 
 ///////////////
@@ -84,14 +85,28 @@ LAVCKeyFrames::~LAVCKeyFrames() {
 // Parse file for keyframes
 wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 	wxArrayInt keyframes;
-
+	
 	AVPacket packet;
+	int total_frames = stream->duration;
 	register unsigned int frameN = 0;		// Number of parsed frames
-	while (av_read_frame(file->fctx, &packet) >= 0) {
+
+	volatile bool canceled = false;
+        DialogProgress *progress = new DialogProgress(NULL,_("Load keyframes"),&canceled,_("Reading keyframes from video"),0,total_frames);
+        progress->Show();
+	progress->SetProgress(0,1);
+
+	while (av_read_frame(file->fctx, &packet) >= 0 && !canceled) {
 		// Check if packet is part of video stream
 		if (packet.stream_index == streamN) {
 			// Increment number of passed frames
 			++frameN;
+			
+			/* Might need some adjustments here, to make it
+			appear as fluid as wanted. Just copied 2points thingy,
+			and reduced it a bit */
+			if ((frameN & (1024 - 1)) == 0)
+				progress->SetProgress(frameN,total_frames);
+
 			// Decode frame
 			int frameFinished;
 			avcodec_decode_video(codecContext, frame, &frameFinished, packet.data, packet.size);
@@ -107,7 +122,11 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 				av_free_packet(&packet);
 			}
 		}
-    }
-
+	}
+ 	
+	// Clean up progress
+        if (!canceled) progress->Destroy();
+        else throw wxString(_T("Keyframe loading cancelled by user"));
+	
 	return keyframes;
 }
