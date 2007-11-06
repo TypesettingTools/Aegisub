@@ -81,15 +81,19 @@ function parse_code(meta, styles, line, templates, mods)
 		rest = t
 		m = m:lower()
 		if m == "once" then
+			aegisub.debug.out(5, "Found run-once code line: %s\n", line.text)
 			table.insert(templates.once, template)
 			inserted = true
 		elseif m == "line" then
+			aegisub.debug.out(5, "Found per-line code line: %s\n", line.text)
 			table.insert(templates.line, template)
 			inserted = true
 		elseif m == "syl" then
+			aegisub.debug.out(5, "Found per-syl code line: %s\n", line.text)
 			table.insert(templates.syl, template)
 			inserted = true
 		elseif m == "furi" then
+			aegisub.debug.out(5, "Found per-syl code line: %s\n", line.text)
 			table.insert(templates.furi, template)
 			inserted = true
 		elseif m == "all" then
@@ -111,6 +115,7 @@ function parse_code(meta, styles, line, templates, mods)
 	end
 	
 	if not inserted then
+		aegisub.debug.out(5, "Found implicit run-once code line: %s\n", line.text)
 		table.insert(templates.once, template)
 	end
 end
