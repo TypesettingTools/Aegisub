@@ -484,16 +484,26 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 
 ////////////////////////////// LOTS OF HAALI C CODE DOWN HERE ///////////////////////////////////////
 
+#ifdef __VISUALC__
+#define std_fread fread
+#define std_fseek _fseeki64
+#define std_ftell _ftelli64
+#else
+#define std_fread fread
+#define std_fseek fseeko64
+#define std_ftell ftello64
+#endif
+
 ///////////////
 // STDIO class
 int StdIoRead(InputStream *_st, ulonglong pos, void *buffer, int count) {
   MkvStdIO *st = (MkvStdIO *) _st;
   size_t  rd;
-  if (fseek(st->fp, pos, SEEK_SET)) {
+  if (std_fseek(st->fp, pos, SEEK_SET)) {
     st->error = errno;
     return -1;
   }
-  rd = fread(buffer, 1, count, st->fp);
+  rd = std_fread(buffer, 1, count, st->fp);
   if (rd == 0) {
     if (feof(st->fp))
       return 0;
@@ -512,13 +522,13 @@ longlong StdIoScan(InputStream *_st, ulonglong start, unsigned signature) {
   unsigned    cmp = 0;
   FILE	      *fp = st->fp;
 
-  if (fseek(fp, start, SEEK_SET))
+  if (std_fseek(fp, start, SEEK_SET))
     return -1;
 
   while ((c = getc(fp)) != EOF) {
     cmp = ((cmp << 8) | c) & 0xffffffff;
     if (cmp == signature)
-      return ftell(fp) - 4;
+      return std_ftell(fp) - 4;
   }
 
   return -1;
