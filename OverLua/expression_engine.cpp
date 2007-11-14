@@ -263,7 +263,7 @@ namespace ExpressionEngine {
 
 	static bool f_ifgtz(Stack &stack, void *data)
 	{
-		if (stack.size() >= 2) {
+		if (stack.size() >= 3) {
 			double v1 = stack.back();
 			stack.pop_back();
 			double v2 = stack.back();
@@ -283,7 +283,7 @@ namespace ExpressionEngine {
 
 	static bool f_ifeqz(Stack &stack, void *data)
 	{
-		if (stack.size() >= 2) {
+		if (stack.size() >= 3) {
 			double v1 = stack.back();
 			stack.pop_back();
 			double v2 = stack.back();
