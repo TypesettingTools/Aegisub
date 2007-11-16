@@ -418,6 +418,11 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 	}
 
 	snd_pcm_sframes_t frames = snd_pcm_avail_update(player->pcm_handle);
+	
+	if (frames == -EPIPE) {
+		snd_pcm_prepare(player->pcm_handle);
+		frames = snd_pcm_avail_update(player->pcm_handle);
+	}
 
 	// TODO: handle underrun
 
@@ -434,12 +439,16 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 	while (frames >= player->period) {
 		unsigned long start = player->cur_frame;
 		player->provider->GetAudioWithVolume(buf, player->cur_frame, player->period, player->volume);
-		snd_pcm_writei(player->pcm_handle, buf, player->period);
+		int err = snd_pcm_writei(player->pcm_handle, buf, player->period);
+		if(err == -EPIPE) {
+			snd_pcm_prepare(player->pcm_handle);
+		}
 		player->cur_frame += player->period;
 		frames = snd_pcm_avail_update(player->pcm_handle);
 	}
 	free(buf);
 }
+
 
 
 
