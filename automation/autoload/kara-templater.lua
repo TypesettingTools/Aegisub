@@ -475,6 +475,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 					for i = 1, line.kara.n do
 						local syl = line.kara[i]
 						tenv.syl = syl
+						tenv.basesyl = syl
 						set_ctx_syl(varctx, line, syl)
 						newline.text = newline.text .. run_text_template(t.t, tenv, varctx)
 						if t.addtext then
@@ -595,6 +596,7 @@ function apply_syllable_templates(syl, line, templates, tenv, varctx, subs)
 	-- Loop over all templates matching the line style
 	for t in matching_templates(templates, line, tenv) do
 		tenv.syl = syl
+		tenv.basesyl = syl
 		set_ctx_syl(varctx, line, syl)
 		
 		if apply_one_syllable_template(syl, line, t, tenv, varctx, subs, false, false) then
@@ -638,7 +640,6 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 	if not skip_perchar and t.perchar then
 		aegisub.debug.out(5, "Doing per-character effects...\n")
 		local charsyl = table.copy(syl)
-		tenv.basesyl = tenv.basesyl or syl
 		tenv.syl = charsyl
 		
 		local left, width = syl.left, 0
@@ -665,7 +666,6 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 	if not skip_multi and t.multi then
 		aegisub.debug.out(5, "Doing multi-highlight effects...\n")
 		local hlsyl = table.copy(syl)
-		tenv.basesyl = tenv.basesyl or syl
 		tenv.syl = hlsyl
 		
 		for hl = 1, syl.highlights.n do
