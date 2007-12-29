@@ -35,6 +35,7 @@
 #include <stdint.h>
 #include <omp.h>
 #include <math.h>
+#include <assert.h>
 
 
 // Forward
@@ -631,8 +632,8 @@ namespace EdgeCondition {
 			while (y < 0) y += img.height*2;
 			while (x >= img.width*2) x -= img.width*2;
 			while (y >= img.height*2) y -= img.height*2;
-			if (x >= img.width) x = img.width - x;
-			if (y >= img.height) y = img.height - y;
+			if (x >= img.width) x = img.width*2 - x;
+			if (y >= img.height) y = img.height*2 - y;
 			return img.Pixel(x,y);
 		}
 	};
@@ -646,6 +647,9 @@ inline PixFmt GetPixelBilinear(BaseImage<PixFmt> &img, double x, double y)
 {
 	PixFmt res;
 	double xpct = x - floor(x), ypct = y - floor(y);
+
+	if (xpct == 0 && ypct == 0)
+		return EdgeCond::get(img, (int)x, (int)y);
 
 	const PixFmt &src11 = EdgeCond::get(img, (int)x, (int)y);
 	const PixFmt &src12 = EdgeCond::get(img, (int)x, 1+(int)y);
