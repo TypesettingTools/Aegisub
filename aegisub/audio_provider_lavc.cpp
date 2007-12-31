@@ -36,6 +36,9 @@
 
 ///////////
 // Headers
+#include "config.h"
+#ifdef WITH_FFMPEG
+
 #ifdef WIN32
 #define EMULATE_INTTYPES
 #endif
@@ -224,3 +227,4 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 	}
 }
 
+#endif

@@ -33,6 +33,10 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+
+#include "config.h"
+#ifdef WITH_AUTOMATION
+
 #include "auto4_lua.h"
 #include "../lua51/src/lualib.h"
 #include "../lua51/src/lauxlib.h"
@@ -749,3 +753,5 @@ badcontrol:
 	}
 
 };
+
+#endif // WITH_AUTOMATION

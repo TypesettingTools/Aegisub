@@ -33,6 +33,9 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+#include "config.h"
+#ifdef WITH_AUTOMATION
+
 #include "auto4_lua.h"
 #include "auto4_lua_scriptreader.h"
 #include "ass_dialogue.h"
@@ -904,3 +907,5 @@ namespace Automation4 {
 	LuaScriptFactory _lua_script_factory;
 
 };
+
+#endif // WITH_AUTOMATION

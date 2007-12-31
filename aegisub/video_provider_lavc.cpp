@@ -36,6 +36,9 @@
 
 ///////////
 // Headers
+#include "config.h"
+#ifdef WITH_FFMPEG
+
 #ifdef WIN32
 #define EMULATE_INTTYPES
 #endif
@@ -52,16 +55,6 @@ extern "C" {
 #include "utils.h"
 #include "vfr.h"
 #include "ass_file.h"
-
-
-/////////////////////
-// Link to libraries
-#if __VISUALC__ >= 1200
-//#pragma comment(lib, "swscale-0.lib")
-#pragma comment(lib, "avcodec-51.lib")
-#pragma comment(lib, "avformat-51.lib")
-#pragma comment(lib, "avutil-49.lib")
-#endif
 
 
 ///////////////////////
@@ -541,3 +534,5 @@ int LAVCVideoProvider::GetWidth() {
 int LAVCVideoProvider::GetHeight() {
 	return codecContext->height;
 }
+
+#endif // WITH_FFMPEG

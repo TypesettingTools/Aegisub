@@ -35,6 +35,9 @@
 
 ///////////
 // Headers
+#include "config.h"
+#ifdef WITH_LIBASS
+
 #include "subtitles_provider.h"
 #include "ass_file.h"
 #include "video_context.h"
@@ -45,20 +48,6 @@ extern "C" {
 #endif
 #include "../libass/ass.h"
 }
-
-
-///////////
-// Library
-#ifdef __VISUALC__
-#ifdef __WXDEBUG__
-//#pragma comment(lib,"libassd.lib")
-#pragma comment(lib,"freetype233MT_D.lib")
-#else
-//#pragma comment(lib,"libass.lib")
-#pragma comment(lib,"freetype233MT.lib")
-#endif
-#pragma comment(lib,"libfontconfig.lib")
-#endif
 
 
 ///////////////////
@@ -194,3 +183,5 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 		img = img->next;
 	}
 }
+
+#endif // WITH_LIBASS

@@ -34,6 +34,8 @@
 //
 
 
+#include "config.h"
+#ifdef WITH_FFMPEG
 #include <wx/wxprec.h>
 #include <wx/filename.h>
 #include "lavc_file.h"
@@ -73,3 +75,6 @@ LAVCFile::~LAVCFile()
 	if (fctx)
 		av_close_input_file(fctx);
 }
+
+
+#endif // WITH_FFMPEG

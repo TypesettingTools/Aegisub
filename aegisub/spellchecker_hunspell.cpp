@@ -36,6 +36,9 @@
 
 ///////////
 // Headers
+#include "config.h"
+#ifdef WITH_HUNSPELL
+
 #include "spellchecker.h"
 #include "standard_paths.h"
 #include "utils.h"
@@ -47,17 +50,6 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
-
-
-/////////////
-// Libraries
-#if __VISUALC__ >= 1200
-#ifdef __WXDEBUG__
-#pragma comment(lib,"hunspelld.lib")
-#else
-#pragma comment(lib,"hunspell.lib")
-#endif
-#endif
 
 
 //////////////////
@@ -280,3 +272,5 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	conv = NULL;
 	if (hunspell) conv = new wxCSConv(wxString(hunspell->get_dic_encoding(),wxConvUTF8));
 }
+
+#endif // WITH_HUNSPELL

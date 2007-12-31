@@ -33,6 +33,9 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+#include "config.h"
+#ifdef WITH_AUTOMATION
+
 #include "auto4_lua_scriptreader.h"
 
 namespace Automation4 {
@@ -103,3 +106,5 @@ namespace Automation4 {
 	}
 
 };
+
+#endif // WITH_AUTOMATION

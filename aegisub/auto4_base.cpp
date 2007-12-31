@@ -33,6 +33,9 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+#include "config.h"
+#ifdef WITH_AUTOMATION
+
 #include "auto4_base.h"
 #include "ass_style.h"
 #include "options.h"
@@ -782,3 +785,5 @@ namespace Automation4 {
 	}
 
 };
+
+#endif // WITH_AUTOMATION

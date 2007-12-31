@@ -39,6 +39,9 @@
 
 ///////////
 // Headers
+#include "config.h"
+#ifdef WITH_DIRECTSOUND
+
 #include <wx/wxprec.h>
 #include "audio_player.h"
 #include "audio_provider.h"
@@ -48,12 +51,6 @@
 #include "audio_player.h"
 #include <mmsystem.h>
 #include <dsound.h>
-
-
-/////////////
-// Libraries
-#pragma comment(lib, "dsound.lib")
-#pragma comment(lib, "dxguid.lib")
 
 
 //////////////
@@ -483,3 +480,5 @@ void DirectSoundPlayerThread::Stop() {
 	// Increase the stopnotify by one, causing a wait for it to succeed
 	SetEvent(stopnotify);
 }
+
+#endif // WITH_DIRECTSOUND

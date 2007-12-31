@@ -164,4 +164,7 @@ eyedropper_cursor CURSOR "bitmaps/eyedropper.cur"
 
 splash BITMAP "bitmaps/splash.bmp"
 
+
+// The following define is necessary for Visual Studio
+#define wxUSE_NO_MANIFEST 1
 #include "wx/msw/wx.rc"

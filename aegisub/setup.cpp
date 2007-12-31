@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include "config.h"
 
 
 //////////////////////////////////
@@ -119,6 +120,71 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "wsock32.lib")
+
+
+//////////////
+// DirectShow
+#ifdef WITH_DIRECTSHOW
+#ifdef __WXDEBUG__
+#pragma comment(lib, "strmbasdu.lib")
+#else
+#pragma comment(lib, "strmbaseu.lib")
+#endif
+#endif
+
+
+////////////////
+// Direct Sound
+#ifdef WITH_DIRECTSOUND
+#pragma comment(lib, "dsound.lib")
+#pragma comment(lib, "dxguid.lib")
+#endif
+
+
+////////
+// Ruby
+#ifdef WITH_RUBY
+#pragma comment(lib,"ws2_32.lib")
+#pragma comment(lib,"msvcr80-ruby19-static.lib")
+#endif
+
+
+////////////
+// Hunspell
+#ifdef WITH_HUNSPELL
+#ifdef __WXDEBUG__
+#pragma comment(lib,"hunspelld.lib")
+#else
+#pragma comment(lib,"hunspell.lib")
+#endif
+#endif
+
+
+//////////
+// FFMPEG
+#ifdef WITH_FFMPEG
+#pragma comment(lib, "avcodec-51.lib")
+#pragma comment(lib, "avformat-51.lib")
+#pragma comment(lib, "avutil-49.lib")
+#endif
+
+
+/////////////
+// FreeType2
+#ifdef WITH_FREETYPE2
+#ifdef __WXDEBUG__
+#pragma comment(lib,"freetype233MT_D.lib")
+#else
+#pragma comment(lib,"freetype233MT.lib")
+#endif
+#endif
+
+
+///////////////
+// Font Config
+#ifdef WITH_FONTCONFIG
+#pragma comment(lib,"libfontconfig.lib")
+#endif
 
 
 #endif // VisualC

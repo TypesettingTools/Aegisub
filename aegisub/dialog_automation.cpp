@@ -33,6 +33,9 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+#include "config.h"
+#ifdef WITH_AUTOMATION
+
 #include "main.h"
 #include "dialog_automation.h"
 #include "auto4_base.h"
@@ -319,3 +322,5 @@ void DialogAutomation::OnSelectionChange(wxListEvent &evt)
 {
 	UpdateDisplay();
 }
+
+#endif // WITH_AUTOMATION

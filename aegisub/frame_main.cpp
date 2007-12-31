@@ -43,6 +43,7 @@
 #include <wx/tokenzr.h>
 #include <wx/image.h>
 #include <wx/statline.h>
+#include "config.h"
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "avisynth_wrap.h"
@@ -66,11 +67,13 @@
 #include "utils.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "auto4_base.h"
 #include "dialog_version_check.h"
 #include "dialog_detached_video.h"
 #include "standard_paths.h"
 #include "keyframe.h"
+#ifdef WITH_AUTOMATION
+#include "auto4_base.h"
+#endif
 
 
 /////////////////////////
@@ -106,7 +109,9 @@ FrameMain::FrameMain (wxArrayString args)
 	wxImage::AddHandler(png);
 
 	// Storage for subs-file-local scripts
+#ifdef WITH_AUTOMATION
 	local_scripts = new Automation4::ScriptManager();
+#endif
 
 	// Create menu and tool bars
 	if (Options.AsBool(_T("Maximized"))) Maximize(true);
@@ -183,7 +188,9 @@ FrameMain::FrameMain (wxArrayString args)
 // FrameMain destructor
 FrameMain::~FrameMain () {
 	DeInitContents();
+#ifdef WITH_AUTOMATION
 	delete local_scripts;
+#endif
 }
 
 
@@ -232,8 +239,10 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddSeparator();
 
 	// Automation
+#ifdef WITH_AUTOMATION
 	Toolbar->AddTool(Menu_Tools_Automation,_("Automation"),wxBITMAP(automation_toolbutton),_("Open Automation manager"));
 	Toolbar->AddSeparator();
+#endif
 
 	// Tools
 	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),wxBITMAP(shift_times_toolbutton),_("Open Shift Times Dialogue"));
@@ -449,10 +458,12 @@ void FrameMain::InitMenu() {
 	MenuBar->Append(audioMenu, _("&Audio"));
 
 	// Create Automation menu
+#ifdef WITH_AUTOMATION
 	automationMenu = new wxMenu();
 	AppendBitmapMenuItem (automationMenu,Menu_Tools_Automation, _("&Automation..."),_("Open automation manager"), wxBITMAP(automation_toolbutton));
 	automationMenu->AppendSeparator();
 	MenuBar->Append(automationMenu, _("&Automation"));
+#endif
 
 	// Create view menu
 	viewMenu = new wxMenu();
@@ -851,9 +862,11 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		if (curSubsAudio != audioBox->audioName ||
 			curSubsVFR != VFR_Output.GetFilename() ||
 			curSubsVideo != VideoContext::Get()->videoName ||
-			curSubsKeyframes != VideoContext::Get()->GetKeyFramesName() ||
-			!AutoScriptString.IsEmpty() ||
-			local_scripts->GetScripts().size() > 0) {
+			curSubsKeyframes != VideoContext::Get()->GetKeyFramesName()
+#ifdef WITH_AUTOMATION
+			|| !AutoScriptString.IsEmpty() || local_scripts->GetScripts().size() > 0
+#endif
+			) {
 			hasToLoad = true;
 		}
 
@@ -895,6 +908,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			}
 
 			// Automation scripts
+#ifdef WITH_AUTOMATION
 			local_scripts->RemoveAll();
 			wxStringTokenizer tok(AutoScriptString, _T("|"), wxTOKEN_STRTOK);
 			wxFileName subsfn(subs->filename);
@@ -925,6 +939,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 						sfnamel.c_str(), sfnames.c_str(), basepath.c_str(), sfname.GetFullPath().c_str());
 				}
 			}
+#endif
 		}
 
 		// Display
@@ -963,6 +978,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		// 2. Otherwise try making it relative to the subs filename
 		// 3. If step 2 failed, or absolut path is shorter than path relative to subs, use absolute path ("/")
 		// 4. Otherwise, use path relative to subs ("~")
+#ifdef WITH_AUTOMATION
 		wxString scripts_string;
 		wxString autobasefn(Options.AsText(_T("Automation Base Path")));
 
@@ -989,6 +1005,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			scripts_string += scriptfn;
 		}
 		subs->SetScriptInfo(_T("Automation Scripts"), scripts_string);
+#endif
 	}
 }
 

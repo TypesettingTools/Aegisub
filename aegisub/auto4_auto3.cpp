@@ -33,6 +33,10 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+#include "config.h"
+#ifdef WITH_AUTOMATION
+#ifdef WITH_AUTO3
+
 #include <wx/spinctrl.h>
 #include <wx/tokenzr.h>
 #include "auto4_auto3.h"
@@ -753,3 +757,6 @@ namespace Automation4 {
 	Auto3ScriptFactory _auto3_script_factory;
 
 };
+
+#endif // WITH_AUTO3
+#endif // WITH_AUTOMATION

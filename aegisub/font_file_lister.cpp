@@ -36,14 +36,17 @@
 
 ////////////
 // Includes
+#include "config.h"
 #include <wx/tokenzr.h>
 #include "font_file_lister.h"
 #include "text_file_writer.h"
 #include "text_file_reader.h"
 #include "standard_paths.h"
 #if defined(WIN32) || defined(__APPLE__)
+#ifdef WITH_FREETYPE2
 #include "font_file_lister_freetype.h"
 #define FontListerClass FreetypeFontFileLister
+#endif
 #else
 #include "font_file_lister_fontconfig.h"
 #define FontListerClass FontConfigFontFileLister
@@ -70,7 +73,9 @@ FontFileLister::~FontFileLister() {
 ////////////////
 // Get instance
 void FontFileLister::GetInstance() {
+#ifdef FontListerClass
 	if (!instance) instance = new FontListerClass();
+#endif
 }
 
 

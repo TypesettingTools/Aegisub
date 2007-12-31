@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,80 +34,59 @@
 //
 
 
-#ifndef MAIN_H
-#define MAIN_H
+#pragma once
 
 
-///////////////////
-// Include headers
-#include <wx/wxprec.h>
-#include <wx/app.h>
-#include <wx/stackwalk.h>
-#include <fstream>
-#include "aegisublocale.h"
-#include "config.h"
+// Enable Automation
+// Requires: Lua
+//#define WITH_AUTOMATION
 
 
-//////////////
-// Prototypes
-class FrameMain;
-namespace Automation4 { class AutoloadScriptManager; }
+// Enable Automation 3
+// Requires: auto3 dll, Lua
+//#define WITH_AUTO3
 
 
-////////////////////////////////
-// Application class definition
-class AegisubApp: public wxApp {
-private:
-	void OnMouseWheel(wxMouseEvent &event);
-	void OnKey(wxKeyEvent &key);
-
-public:
-	AegisubLocale locale;
-	FrameMain *frame;
-#ifdef WITH_AUTOMATION
-	Automation4::AutoloadScriptManager *global_scripts;
-#endif
-
-	static AegisubApp* Get() { return (AegisubApp*) wxTheApp; }
-	static void OpenURL(wxString url);
-
-	void RegistryAssociate();
-	void AssociateType(wxString type);
-
-	bool OnInit();
-	int OnExit();
-	int OnRun();
-	
-#ifdef __WXMAC__
-	// Apple events
-	virtual void MacOpenFile(const wxString &filename);
-#endif
-
-#ifndef _DEBUG
-	void OnUnhandledException();
-	void OnFatalException();
-#endif
-
-	//int OnRun();
-	DECLARE_EVENT_TABLE()
-};
-
-DECLARE_APP(AegisubApp)
+// Enable DirectShow video provider
+// Requires: DirectShow "baseclasses", Platform SDK?
+//#define WITH_DIRECTSHOW
 
 
-////////////////
-// Stack walker
-#if wxUSE_STACKWALKER == 1
-class StackWalker: public wxStackWalker {
-private:
-	std::ofstream file;
-
-public:
-	StackWalker();
-	~StackWalker();
-	void OnStackFrame(const wxStackFrame& frame);
-};
-#endif
+// Enable DirectSound audio player
+// Requires: PlatformSDK?
+//#define WITH_DIRECTSOUND
 
 
-#endif
+// Enable FFmpeg video and audio decoders
+// Requires: libavcodec and libavformat
+//#define WITH_FFMPEG
+
+
+// Enable Ruby support for Automation
+// Requires: Ruby 1.9
+//#define WITH_RUBY
+
+
+// Enable FreeType2 font lister for the fonts collector
+// Requires: FreeType2
+//#define WITH_FREETYPE2
+
+
+// Enable Hunspell-based spellchecker
+// Requires: hunspell
+//#define WITH_HUNSPELL
+
+
+// Enable FontConfig
+// Requires: fontconfig
+//#define WITH_FONTCONFIG
+
+
+// Enable CSRI
+// Requires: csri
+//#define WITH_CSRI
+
+
+// Enable libass
+// Requires: libass
+//#define WITH_LIBASS

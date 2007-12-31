@@ -36,6 +36,9 @@
 
 ///////////
 // Headers
+#include "config.h"
+#ifdef WITH_DIRECTSHOW
+
 #pragma warning(disable: 4995)
 #include <wx/wxprec.h>
 #ifdef __WINDOWS__
@@ -54,15 +57,6 @@
 #include "videosink.h"
 #include "gl_wrap.h"
 #include "options.h"
-
-
-///////////////////////
-// DirectShow library
-#ifdef __WXDEBUG__
-#pragma comment(lib, "strmbasdu.lib")
-#else
-#pragma comment(lib, "strmbaseu.lib")
-#endif
 
 
 ///////////////////////////////////
@@ -591,3 +585,4 @@ void DirectShowVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 }
 
 #endif
+#endif // WITH_DIRECTSHOW

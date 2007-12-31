@@ -49,6 +49,7 @@
 #include <wx/sizer.h>
 #include <wx/panel.h>
 #include <vector>
+#include "config.h"
 
 
 ////////////////////
@@ -108,7 +109,9 @@ private:
 	wxWindow *PreviousFocus;
 	wxLogWindow *LogWindow;
 
+#ifdef WITH_AUTOMATION
 	Automation4::ScriptManager *local_scripts;
+#endif
 
 	std::vector<Automation4::FeatureMacro*> activeMacroItems;
 	int AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros);

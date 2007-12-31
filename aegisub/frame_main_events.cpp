@@ -75,7 +75,9 @@
 #include "dialog_progress.h"
 #include "dialog_options.h"
 #include "utils.h"
+#ifdef WITH_AUTOMATION
 #include "auto4_base.h"
+#endif
 #include "dialog_automation.h"
 #include "dialog_version_check.h"
 #include "dialog_detached_video.h"
@@ -424,6 +426,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	}
 
 	// Automation menu
+#ifdef WITH_AUTOMATION
 	else if (curMenu == automationMenu) {
 		// Remove old macro items
 		for (unsigned int i = 0; i < activeMacroItems.size(); i++) {
@@ -445,6 +448,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 			activeMacroItems.push_back(0);
 		}
 	}
+#endif
 
 	MenuBar->Thaw();
 }
@@ -453,6 +457,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 //////////////////////////////
 // Macro menu creation helper
 int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros) {
+#ifdef WITH_AUTOMATION
 	if (macros.empty()) {
 		return 0;
 	}
@@ -466,6 +471,9 @@ int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::Fe
 	}
 
 	return macros.size();
+#else
+	return 0;
+#endif
 }
 
 
@@ -712,6 +720,7 @@ void FrameMain::OnNewSubtitles(wxCommandEvent& WXUNUSED(event)) {
 ////////////////////
 // Export subtitles
 void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
+#ifdef WITH_AUTOMATION
 	int autoreload = Options.AsInt(_T("Automation Autoreload Mode"));
 	if (autoreload & 1) {
 		// Local scripts
@@ -732,6 +741,7 @@ void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 		// Global scripts
 		wxGetApp().global_scripts->Reload();
 	}
+#endif
 
 	DialogExport exporter(this);
 	exporter.ShowModal();
@@ -1006,6 +1016,7 @@ void FrameMain::OnOpenLog (wxCommandEvent &event) {
 ///////////////////
 // Open Automation
 void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
+#ifdef WITH_AUTOMATION
 #ifdef __APPLE__
 	if (wxGetMouseState().CmdDown()) {
 #else
@@ -1037,12 +1048,14 @@ void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
 		DialogAutomation dlg(this, local_scripts);
 		dlg.ShowModal();
 	}
+#endif
 }
 
 
 ///////////////////////////////////////////////////////////
 // General handler for all Automation-generated menu items
 void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
+#ifdef WITH_AUTOMATION
 	SubsBox->BeginBatch();
 	// First get selection data
 	// This much be done before clearing the maps, since selection data are lost during that
@@ -1058,6 +1071,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	SubsBox->SetSelectionFromAbsolute(selected_lines);
 	SubsBox->CommitChanges(true, false);
 	SubsBox->EndBatch();
+#endif
 }
 
 

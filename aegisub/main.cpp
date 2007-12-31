@@ -44,6 +44,7 @@
 #include <wx/utils.h>
 #include <wx/stdpaths.h>
 #include <wx/filefn.h>
+#include "config.h"
 #include "main.h"
 #include "frame_main.h"
 #include "options.h"
@@ -57,10 +58,12 @@
 #include "ass_time.h"
 #include "ass_dialogue.h"
 #include "subs_grid.h"
-#include "auto4_base.h"
 #include "subtitle_format.h"
 #include "video_context.h"
 #include "standard_paths.h"
+#ifdef WITH_AUTOMATION
+#include "auto4_base.h"
+#endif
 
 
 ///////////////////
@@ -156,8 +159,10 @@ bool AegisubApp::OnInit() {
 #endif
 
 		// Load Automation scripts
+#ifdef WITH_AUTOMATION
 		StartupLog(_T("Load global Automation scripts"));
 		global_scripts = new Automation4::AutoloadScriptManager(Options.AsText(_T("Automation Autoload Path")));
+#endif
 
 		// Load export filters
 		StartupLog(_T("Prepare export filters"));
@@ -197,7 +202,9 @@ int AegisubApp::OnExit() {
 	SubtitleFormat::DestroyFormats();
 	VideoContext::Clear();
 	Options.Clear();
+#ifdef WITH_AUTOMATION
 	delete global_scripts;
+#endif
 	return wxApp::OnExit();
 }
 

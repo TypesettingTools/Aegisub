@@ -36,6 +36,9 @@
 
 ////////////
 // Includes
+#include "config.h"
+#ifdef WITH_FREETYPE2
+
 #include "font_file_lister_freetype.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -110,3 +113,5 @@ void FreetypeFontFileLister::DoInitialize() {
 	// Save cache
 	SaveCache();
 }
+
+#endif WITH_FREETYPE2

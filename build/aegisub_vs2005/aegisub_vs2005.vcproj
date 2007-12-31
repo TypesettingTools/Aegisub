@@ -24,6 +24,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="if not exist &quot;..\..\aegisub\win32\config.h&quot; (copy &quot;..\..\aegisub\win32\config0.h&quot; &quot;..\..\aegisub\win32\config.h&quot;)&#x0D;&#x0A;if not exist &quot;..\build-credit.h&quot; (copy &quot;..\build-credit-base.h&quot; &quot;..\build-credit.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -40,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../../aegisub/win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +64,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="../../bin/aegisub_d.exe"
 				LinkIncremental="2"
+				GenerateManifest="true"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -102,6 +106,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="if not exist &quot;..\..\aegisub\win32\config.h&quot; (copy &quot;..\..\aegisub\win32\config0.h&quot; &quot;..\..\aegisub\win32\config.h&quot;)&#x0D;&#x0A;if not exist &quot;..\build-credit.h&quot; (copy &quot;..\build-credit-base.h&quot; &quot;..\build-credit.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -117,9 +122,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="../../aegisub/win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="stdwx.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -136,7 +143,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="../../bin/aegisub.exe"
 				LinkIncremental="1"
+				GenerateManifest="true"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -300,23 +309,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\audio_player_alsa.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\audio_player_dsound.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_openal.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_portaudio.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_pulse.cpp"
 				>
 			</File>
 			<File
@@ -698,6 +691,14 @@
 			<File
 				RelativePath="..\..\aegisub\MatroskaParser.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\aegisub\MatroskaParser.h"
@@ -706,6 +707,14 @@
 			<File
 				RelativePath="..\..\aegisub\md5.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\aegisub\md5.h"
@@ -1072,6 +1081,14 @@
 			Name="Core"
 			>
 			<File
+				RelativePath="..\..\aegisub\win32\config.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\win32\config0.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\frame_main.cpp"
 				>
 			</File>
@@ -1197,14 +1214,6 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\keyframe.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\lavc_keyframes.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\lavc_keyframes.h"
 				>
 			</File>
 			<File

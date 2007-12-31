@@ -36,6 +36,9 @@
 
 ///////////
 // Headers
+#include "config.h"
+#ifdef WITH_CSRI
+
 #include <wx/wxprec.h>
 #include "subtitles_provider.h"
 #include "ass_file.h"
@@ -199,3 +202,5 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	// Render
 	csri_render(instance,&frame,time);
 }
+
+#endif // WITH_CSRI

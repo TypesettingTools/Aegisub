@@ -33,6 +33,8 @@
 // Contact: mailto:pomyk@go2.pl
 //
 
+#include "config.h"
+#ifdef WITH_RUBY
 #include "auto4_ruby.h"
 #include "auto4_auto3.h"
 #include "ass_dialogue.h"
@@ -53,14 +55,6 @@
 #include <wx/window.h>
 #include <assert.h>
 #include <algorithm>
-
-
-///////////////////
-// Include library
-#if __VISUALC__ >= 1200
-#pragma comment(lib,"ws2_32.lib")
-#pragma comment(lib,"msvcr80-ruby19-static.lib")
-#endif
 
 
 namespace Automation4 {
@@ -721,3 +715,5 @@ namespace Automation4 {
 		return backtr;
 	}
 };
+
+#endif // WITH_RUBY
