@@ -40,10 +40,10 @@
 #include <algorithm>
 #include <string>
 #include "text_file_reader.h"
+#include "config.h"
 
 #ifdef __WINDOWS__
-#ifndef NO_AUTODETECT_CHARSET
-#define AUTODETECT_CHARSET
+#ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
 #endif
 #endif
@@ -143,7 +143,7 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 		if (b[i] < 9 || (b[i] > 13 && b[i] < 32)) return _T("binary");
 	}
 
-	#ifdef AUTODETECT_CHARSET
+	#ifdef WITH_UNIVCHARDET
 	// Use universalchardet library to detect charset
 	CharSetDetect det;
 	return det.GetEncoding(_filename);

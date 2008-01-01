@@ -38,12 +38,12 @@
 
 
 // Enable Automation
-// Requires: Lua
+// Requires: Lua (in repository)
 //#define WITH_AUTOMATION
 
 
 // Enable Automation 3
-// Requires: auto3 dll, Lua
+// Requires: auto3 dll (in repository), Lua (in repository)
 //#define WITH_AUTO3
 
 
@@ -90,3 +90,8 @@
 // Enable libass
 // Requires: libass
 //#define WITH_LIBASS
+
+
+// Enable universal charset detector
+// Requires: universalcharset (in repository)
+//#define WITH_UNIVCHARDET
