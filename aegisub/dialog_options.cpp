@@ -523,7 +523,10 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		// Controls
 		wxString choices2[3] = { _("None (NOT RECOMMENDED)"), _("RAM"), _("Hard Disk") };
+#ifdef WIN32
 		wxString choices3[3] = { _T("ConvertToMono"), _T("GetLeftChannel"), _T("GetRightChannel") };
+#endif
+		
 		AddComboControl(audioAdvPage,audioAdvSizer1,_("Audio provider"),_T("Audio Provider"),AudioProviderFactory::GetFactoryList(),true,1);
 		AddComboControl(audioAdvPage,audioAdvSizer1,_("Audio player"),_T("Audio Player"),AudioPlayerFactory::GetFactoryList(),true,1);
 		AddComboControl(audioAdvPage,audioAdvSizer1,_("Cache type"),_T("Audio Cache"),wxArrayString(3,choices2),true);

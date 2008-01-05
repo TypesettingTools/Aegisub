@@ -62,7 +62,7 @@
 #include "ass_style.h"
 #include "subs_grid.h"
 #include "vfw_wrap.h"
-#ifndef __WINDOWS__
+#if !defined(__WINDOWS__) && !defined(__APPLE__)
 #include "lavc_keyframes.h"
 #endif
 #include "mkv_wrap.h"
@@ -290,8 +290,10 @@ void VideoContext::SetVideo(const wxString &filename) {
 #ifdef __WINDOWS__
 				KeyFrames = VFWWrapper::GetKeyFrames(filename);
 #else
+#ifndef __APPLE__
 				LAVCKeyFrames k(filename);
 				KeyFrames = k.GetKeyFrames();
+#endif
 #endif
 				keyFramesLoaded = true;
 			}

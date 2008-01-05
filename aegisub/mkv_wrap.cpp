@@ -490,8 +490,8 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 #define std_ftell _ftelli64
 #else
 #define std_fread fread
-#define std_fseek fseeko64
-#define std_ftell ftello64
+#define std_fseek fseeko
+#define std_ftell ftello
 #endif
 
 ///////////////
