@@ -21,8 +21,8 @@
 #include "ffmpegsource.h"
 
 int FFBase::FrameFromDTS(int64_t ADTS) {
-	for (int i = 0; i < (int)FrameToDTS.size(); i++)
-		if (FrameToDTS[i].DTS == ADTS)
+	for (int i = 0; i < (int)Frames.size(); i++)
+		if (Frames[i].DTS == ADTS)
 			return i;
 	return -1;
 }
@@ -30,8 +30,8 @@ int FFBase::FrameFromDTS(int64_t ADTS) {
 int FFBase::ClosestFrameFromDTS(int64_t ADTS) {
 	int Frame = 0; 
 	int64_t BestDiff = 0xFFFFFFFFFFFFFFLL;
-	for (int i = 0; i < (int)FrameToDTS.size(); i++) {
-		int64_t CurrentDiff = FFABS(FrameToDTS[i].DTS - ADTS);
+	for (int i = 0; i < (int)Frames.size(); i++) {
+		int64_t CurrentDiff = FFABS(Frames[i].DTS - ADTS);
 		if (CurrentDiff < BestDiff) {
 			BestDiff = CurrentDiff;
 			Frame = i;
@@ -42,7 +42,7 @@ int FFBase::ClosestFrameFromDTS(int64_t ADTS) {
 
 int FFBase::FindClosestKeyFrame(int AFrame) {
 	for (int i = AFrame; i > 0; i--)
-		if (FrameToDTS[i].KeyFrame)
+		if (Frames[i].KeyFrame)
 			return i;
 	return 0;
 }
@@ -67,7 +67,7 @@ bool FFBase::LoadFrameInfoFromFile(const char *AVideoCacheFile, const char *ASou
 		int64_t DTSTemp;
 		int KFTemp;
 		fscanf(CacheFile, "%lld %d\r\n", &DTSTemp, &KFTemp);
-		FrameToDTS.push_back(FrameInfo(DTSTemp, KFTemp != 0));
+		Frames.push_back(FrameInfo(DTSTemp, KFTemp != 0));
 	}
 
 	fclose(CacheFile);
@@ -86,7 +86,7 @@ bool FFBase::SaveFrameInfoToFile(const char *AVideoCacheFile, const char *ASourc
 
 	fprintf(CacheFile, "%d\r\n", VI.num_frames);
 	for (int i = 0; i < VI.num_frames; i++)
-		fprintf(CacheFile, "%lld %d\r\n", FrameToDTS[i].DTS, (int)(FrameToDTS[i].KeyFrame ? 1 : 0));		
+		fprintf(CacheFile, "%lld %d\r\n", Frames[i].DTS, (int)(Frames[i].KeyFrame ? 1 : 0));		
 
 	fclose(CacheFile);
 	return true;
@@ -102,7 +102,7 @@ bool FFBase::SaveTimecodesToFile(const char *ATimecodeFile, int64_t ScaleD, int6
 
 	std::set<int64_t> Timecodes;
 	for (int i = 0; i < VI.num_frames; i++)
-		Timecodes.insert(FrameToDTS[i].DTS);
+		Timecodes.insert(Frames[i].DTS);
 
 	fprintf(TimecodeFile, "# timecode format v2\r\n");
 
@@ -364,6 +364,15 @@ void FFBase::SetOutputFormat(int ACurrentFormat, IScriptEnvironment *Env) {
 		ConvertToFormat = BestFormat;
 		SWS = sws_getContext(VI.width, VI.height, ACurrentFormat, VI.width, VI.height, ConvertToFormat, GetSWSCPUFlags(Env) | SWS_BICUBIC, NULL, NULL, NULL);
 	}
+
+	if (BestFormat == PIX_FMT_YUVJ420P || BestFormat == PIX_FMT_YUV420P) {
+		VI.height -= VI.height & 1;
+		VI.width -= VI.width & 1;
+	}
+
+	if (BestFormat == PIX_FMT_YUYV422) {
+		VI.width -= VI.width & 1;
+	}
 }
 
 PVideoFrame FFBase::OutputFrame(AVFrame *AFrame, IScriptEnvironment *Env) {
@@ -407,7 +416,7 @@ PVideoFrame FFBase::OutputFrame(AVFrame *AFrame, IScriptEnvironment *Env) {
 void FFBase::GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment* Env) {
 	if (AudioCacheType == acRaw) {
 		_fseeki64(RawAudioCache, VI.BytesFromAudioSamples(Start), SEEK_SET);
-		fread(Buf, 1, VI.BytesFromAudioSamples(Count), RawAudioCache);
+		fread(Buf, 1, (size_t)VI.BytesFromAudioSamples(Count), RawAudioCache);
 #ifdef FLAC_CACHE
 	} else if (AudioCacheType == acFLAC) {
 		FCCount = Count;

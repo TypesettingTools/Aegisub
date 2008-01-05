@@ -25,7 +25,7 @@
 /* read count bytes into buffer starting at file position pos
  * return the number of bytes read, -1 on error or 0 on EOF
  */
-int   StdIoRead(StdIoStream *st, ulonglong pos, void *buffer, int count) {
+int StdIoRead(StdIoStream *st, ulonglong pos, void *buffer, int count) {
   size_t  rd;
   if (_fseeki64(st->fp, pos, SEEK_SET)) {
     st->error = errno;
@@ -72,21 +72,21 @@ const char *StdIoGetLastError(StdIoStream *st) {
 }
 
 /* memory allocation, this is done via stdlib */
-void  *StdIoMalloc(StdIoStream *st, size_t size) {
+void *StdIoMalloc(StdIoStream *st, size_t size) {
   return malloc(size);
 }
 
-void  *StdIoRealloc(StdIoStream *st, void *mem, size_t size) {
+void *StdIoRealloc(StdIoStream *st, void *mem, size_t size) {
   return realloc(mem,size);
 }
 
-void  StdIoFree(StdIoStream *st, void *mem) {
+void StdIoFree(StdIoStream *st, void *mem) {
   free(mem);
 }
 
 /* progress report handler for lengthy operations
  * returns 0 to abort operation, nonzero to continue
  */
-int   StdIoProgress(StdIoStream *st, ulonglong cur, ulonglong max) {
+int StdIoProgress(StdIoStream *st, ulonglong cur, ulonglong max) {
   return 1;
 }

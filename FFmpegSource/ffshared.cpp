@@ -90,13 +90,46 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	bool IsMatroska = !strcmp(FormatContext->iformat->name, "matroska");
 	av_close_input_file(FormatContext);
 
+	FrameInfoVector Frames;
+
 	if (IsMatroska) {
-		return new FFMatroskaSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, Env);
+		return new FFMatroskaSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, Env, &Frames);
 	} else {
 		// Do a separate indexing pass, enjoy the constructor sideeffects
 		if (SeekMode == -1)
-			delete new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, -2, Env);
-		return new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, SeekMode, Env);
+			delete new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, -2, Env, &Frames);
+		return new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, SeekMode, Env, &Frames);
+	}
+}
+
+AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+	if (!UserData) {
+		av_register_all();
+		UserData = (void *)-1;
+	}
+
+	if (!Args[0].Defined())
+    	Env->ThrowError("FFmpegSource: No source specified");
+
+	const char *Source = Args[0].AsString();
+	int ATrack = Args[1].AsInt(-1);
+	const char *ACacheFile = Args[2].AsString("");
+	const char *ADemuxedFile = Args[3].AsString("");
+
+	if (ATrack <= -2)
+		Env->ThrowError("FFmpegSource: No tracks selected");
+
+	AVFormatContext *FormatContext;
+
+	if (av_open_input_file(&FormatContext, Source, NULL, 0, NULL) != 0)
+		Env->ThrowError("FFmpegSource: Couldn't open %s", Args[0].AsString());
+	bool IsMatroska = !strcmp(FormatContext->iformat->name, "matroska");
+	av_close_input_file(FormatContext);
+
+	if (IsMatroska) {
+		return new FFMatroskaAudioSource(Source, ATrack, ACacheFile, Env);
+	} else {
+		return new FFmpegAudioSource(Source, ATrack, ACacheFile, ADemuxedFile, Env);
 	}
 }
 
@@ -106,6 +139,7 @@ AVSValue __cdecl CreateFFPP(AVSValue Args, void* UserData, IScriptEnvironment* E
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
     Env->AddFunction("FFmpegSource", "[source]s[vtrack]i[atrack]i[timecodes]s[vcache]b[vcachefile]s[acachefile]s[accompression]i[pp]s[ppquality]i[seekmode]i", CreateFFmpegSource, 0);
-    Env->AddFunction("FFPP", "c[pp]s[ppquality]i", CreateFFPP, 0);
+    Env->AddFunction("FFAudioSource", "[source]s[atrack]i[acachefile]s[ademuxedfile]s", CreateFFAudioSource, 0);
+	Env->AddFunction("FFPP", "c[pp]s[ppquality]i", CreateFFPP, 0);
     return "FFmpegSource";
 };

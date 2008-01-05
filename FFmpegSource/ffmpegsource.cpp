@@ -42,10 +42,13 @@ int FFmpegSource::GetTrackIndex(int Index, CodecType ATrackType, IScriptEnvironm
 	return Index;
 }
 
+
+
 FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes,
 	bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString,
-	int AQuality, int ASeekMode, IScriptEnvironment* Env) {
+	int AQuality, int ASeekMode, IScriptEnvironment *Env, FrameInfoVector *AFrames) {
 
+	AFrames = &Frames;
 	CurrentFrame = 0;
 	SeekMode = ASeekMode;
 
@@ -161,7 +164,7 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 		AVPacket Packet;
 		while (av_read_frame(FormatContext, &Packet) >= 0) {
 			if (Packet.stream_index == VideoTrack && !VCacheIsValid) {
-				FrameToDTS.push_back(FrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
+				Frames.push_back(FrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
 				VI.num_frames++;
 			} else if (Packet.stream_index == AudioTrack && !ACacheIsValid) {
 				int Size = Packet.size;
@@ -173,7 +176,7 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 					if (Ret < 0)
 						Env->ThrowError("FFmpegSource: Audio decoding error");
 
-					int DecodedSamples = VI.AudioSamplesFromBytes(TempOutputBufSize);
+					int DecodedSamples = (int)VI.AudioSamplesFromBytes(TempOutputBufSize);
 
 					Size -= Ret;
 					Data += Ret;
@@ -214,7 +217,7 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 			Env->ThrowError("FFmpegSource: Audio track contains no samples");
 
 		if (VideoTrack >= 0)
-			av_seek_frame(FormatContext, VideoTrack, FrameToDTS.front().DTS, AVSEEK_FLAG_BACKWARD);
+			av_seek_frame(FormatContext, VideoTrack, Frames.front().DTS, AVSEEK_FLAG_BACKWARD);
 
 		if (AVCache && !VCacheIsValid)
 			if (!SaveFrameInfoToFile(AVideoCache, ASource, VideoTrack))
@@ -229,8 +232,8 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 			Env->ThrowError("FFmpegSource: Failed to write timecodes");
 
 		// Adjust framerate to match the duration of the first frame
-		if (FrameToDTS.size() >= 2) {
-			int64_t DTSDiff = FFMAX(FrameToDTS[1].DTS - FrameToDTS[0].DTS, 1);
+		if (Frames.size() >= 2) {
+			unsigned int DTSDiff = (unsigned int)FFMAX(Frames[1].DTS - Frames[0].DTS, 1);
 			VI.fps_denominator *= DTSDiff;
 		}
 	}
@@ -289,7 +292,7 @@ PVideoFrame FFmpegSource::GetFrame(int n, IScriptEnvironment* Env) {
 		} else {
 			// 10 frames is used as a margin to prevent excessive seeking since the predicted best keyframe isn't always selected by avformat
 			if (n < CurrentFrame || ClosestKF > CurrentFrame + 10 || (SeekMode == 3 && n > CurrentFrame + 10)) {
-				av_seek_frame(FormatContext, VideoTrack, (SeekMode == 3) ? FrameToDTS[n].DTS : FrameToDTS[ClosestKF].DTS, AVSEEK_FLAG_BACKWARD);
+				av_seek_frame(FormatContext, VideoTrack, (SeekMode == 3) ? Frames[n].DTS : Frames[ClosestKF].DTS, AVSEEK_FLAG_BACKWARD);
 				avcodec_flush_buffers(VideoCodecContext);
 				HasSeeked = true;
 			}

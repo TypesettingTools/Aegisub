@@ -1,1 +1,0 @@
-loadplugin("ffmpegsource.dll")

@@ -46,8 +46,9 @@ int FFMatroskaSource::GetTrackIndex(int Index, unsigned char ATrackType, IScript
 
 FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes,
 	bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString,
-	int AQuality, IScriptEnvironment* Env) {
+	int AQuality, IScriptEnvironment* Env, FrameInfoVector *AFrames) {
 
+	AFrames = &Frames;
 	CurrentFrame = 0;
 	int VideoTrack;
 	int AudioTrack;
@@ -121,8 +122,8 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 		}
 
 		VI.image_type = VideoInfo::IT_TFF;
-		VI.width = VideoTI->AV.Video.PixelWidth;
-		VI.height = VideoTI->AV.Video.PixelHeight;
+		VI.width = VideoCodecContext->width;
+		VI.height = VideoCodecContext->height;;
 		VI.fps_denominator = 1;
 		VI.fps_numerator = 30;
 
@@ -163,7 +164,6 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 			unsigned int Track, FrameFlags, FrameSize;
 			mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags);
 
-			uint8_t DecodingBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 			int Size = ReadFrame(FilePos, FrameSize, AudioCS, Env);
 			uint8_t *Data = Buffer;
 
@@ -224,7 +224,7 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 
 		while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0)
 			if (Track == VideoTrack && !VCacheIsValid) {
-				FrameToDTS.push_back(FrameInfo(StartTime, (FrameFlags & FRAME_KF) != 0));
+				Frames.push_back(FrameInfo(StartTime, (FrameFlags & FRAME_KF) != 0));
 				VI.num_frames++;
 			} else if (Track == AudioTrack && !ACacheIsValid) {
 				int Size = ReadFrame(FilePos, FrameSize, AudioCS, Env);
@@ -236,7 +236,7 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 					if (Ret < 0)
 						Env->ThrowError("FFmpegSource: Audio decoding error");
 
-					int DecodedSamples = VI.AudioSamplesFromBytes(TempOutputBufSize);
+					int DecodedSamples = (int)VI.AudioSamplesFromBytes(TempOutputBufSize);
 
 					Size -= Ret;
 					Data += Ret;
@@ -274,7 +274,7 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 			Env->ThrowError("FFmpegSource: Audio track contains no samples");
 
 		if (VideoTrack >= 0)
-			mkv_Seek(MF, FrameToDTS.front().DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
+			mkv_Seek(MF, Frames.front().DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
 
 		if (AVCache && !VCacheIsValid)
 			if (!SaveFrameInfoToFile(AVideoCache, ASource, VideoTrack))
@@ -290,8 +290,8 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 		mkv_SetTrackMask(MF, ~(1 << VideoTrack));
 
 		// Calculate the average framerate
-		if (FrameToDTS.size() >= 2) {
-			double DTSDiff = (double)(FrameToDTS.back().DTS - FrameToDTS.front().DTS);
+		if (Frames.size() >= 2) {
+			double DTSDiff = (double)(Frames.back().DTS - Frames.front().DTS);
 			VI.fps_denominator = (unsigned int)(DTSDiff * mkv_TruncFloat(VideoTI->TimecodeScale) / (double)1000 / (double)(VI.num_frames - 1) + 0.5);
 			VI.fps_numerator = 1000000; 
 		}
@@ -398,7 +398,7 @@ PVideoFrame FFMatroskaSource::GetFrame(int n, IScriptEnvironment* Env) {
 	bool HasSeeked = false;
 
 	if (n < CurrentFrame || FindClosestKeyFrame(n) > CurrentFrame) {
-		mkv_Seek(MF, FrameToDTS[n].DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
+		mkv_Seek(MF, Frames[n].DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
 		avcodec_flush_buffers(VideoCodecContext);
 		HasSeeked = true;
 	}

@@ -23,14 +23,8 @@ Loads video files without sucking
 
 <h2>Compatibility - Audio</h2>
 <ul>
-<li>Sample accurate in all containers</li>
+<li>Should be sample accurate in all containers with audio cache</li>
 </ul>
-
-<h2>Loading the Plugin - Dll Hell</h2>
-<p>
-In order to load FFmpegSource all included dlls except ffmpegsource.dll must be located in the path or in the current working directory.
-It is also possible to autoload it if you put all dlls and the avsi file in avisynth's autoloading directory (usually C:\Program Files\AviSynth 2.5\plugins).
-</p>
 
 <h2>Usage</h2>
 <p>
@@ -39,6 +33,14 @@ It is also possible to autoload it if you put all dlls and the avsi file in avis
 
 <p>
 Note that the audio cache will always be created when opening files with audio and that it will be huge since it stores all audio as raw signed 16/24/32 bit pcm, unsigned 8 bit pcm or as float, using flac to compress it is also possible to reduce the size by half.
+</p>
+
+<p>
+<b>FFAudioSource(string source, int atrack = -1, string acachefile, string ademuxedfile)</b><br />
+</p>
+
+<p>
+Experimental, may or may not be accurate enough for real usage.
 </p>
 
 <p>
@@ -69,7 +71,12 @@ Separate postprocessing which also seems to include a few simple deinterlacers
 
 <p>
 <b>vcachefile &amp; acachefile:</b>
-  Specifies the file to store the index information or raw audio in, if nothing is specified (source).ffv(tracknumber)cache is used for video and (source).ffa(tracknumber)cache for audio.
+  Specifies the file to store the index information or raw audio in, if nothing is specified (source).ffv(tracknumber)cache is used for video and (source).ffa(d if FFAudioSource is used)(tracknumber)cache for audio.
+</p>
+
+<p>
+<b>ademuxedfile:</b>
+  Specifies the file to store the demuxed audio stream in. Only used by FFAudioSource if the stream isn't matroska. If nothing is specified (source).ffasd(tracknumber)cache is used.
 </p>
 
 <p>
@@ -154,6 +161,16 @@ tn:64:128:256
 
 <p><b>Suggested Additional Options:</b>
 --disable-encoders --disable-muxers --enable-small</p>
+
+<h2>Changes</h2>
+<ul>
+<li>1.14<ul>
+<li>If the output colorspace is YV12 or YUY2 the width and height may be automatically cropped by one pixel to make it an even number</li>
+<li>FLAC cache is disabled because the static FLAC lib doesn't want to link</li>
+<li>Added the experimental FFAudioSource which doesn't need a huge uncompressed cache</li>
+<li>The plugin is now statically compiled</li>
+<li>Updated FFmpeg to rev 11413</li>
+</ul></li>
 
 <h2>Changes</h2>
 <ul>
