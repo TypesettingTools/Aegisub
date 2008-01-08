@@ -627,7 +627,7 @@ void FrameMain::OnCloseVideo(wxCommandEvent& WXUNUSED(event)) {
 // Open Audio
 void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open audio path"));
-	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),_("Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka|Video Formats (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|All files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),_("Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a|Video Formats (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|All files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadAudio(filename);
 		Options.SetText(_T("Last open audio path"), filename);
