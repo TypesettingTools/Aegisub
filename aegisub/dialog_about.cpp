@@ -61,24 +61,24 @@ AboutScreen::AboutScreen(wxWindow *parent)
 
 	// Generate library string
 	wxString libString = _("This build of Aegisub uses the following C/C++ libraries:\n");
-	libString += _T("wxWidgets - Copyright (c) 1998-2006 Julian Smart, Robert Roebling et al;\n");
+	libString += _T("wxWidgets - Copyright (c) 1998-2008 Julian Smart, Robert Roebling et al;\n");
 	libString += _T("wxStyledTextCtrl - Copyright (c) 2004 wxCode;\n");
-	libString += _T("Lua - Copyright (c) 1994-2007 Lua.org, PUC-Rio;\n");
+	libString += _T("Lua - Copyright (c) 1994-2008 Lua.org, PUC-Rio;\n");
 	libString += _T("Hunspell - Copyright (c) Kevin Hendricks;\n");
 	libString += _T("PortAudio - Copyright (c) 1999-2000 Ross Bencina, Phil Burk;\n");
 	libString += _T("FFmpeg - Copyright (c) 2001 Fabrice Bellard,;\n");
-	libString += _T("libass - Copyright (c) 2006-2007, Evgeniy Stepanov;\n");
-	libString += _T("asa - Copyright (c) 2004-2007, David Lamparter;\n");
+	libString += _T("libass - Copyright (c) 2006-2008, Evgeniy Stepanov;\n");
+	libString += _T("asa - Copyright (c) 2004-2008, David Lamparter;\n");
 	libString += _T("MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada\n");
-	libString += _T("Matroska Parser and VideoSink - Copyright (c) 2004-2007 Mike Matsnev\n");
+	libString += _T("Matroska Parser and VideoSink - Copyright (c) 2004-2008 Mike Matsnev\n");
 
 	// Generate about string
 	wxString aboutString;
 	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
 	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
 	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _(" by ArchMage ZeratuL.\n");
-	aboutString += _T("Copyright (c) 2005-2007 - Rodrigo Braz Monteiro.\n\n");
-	aboutString += _T("Automation - Copyright (c) 2005-2007 Niels Martin Hansen (aka jfs).\n");
+	aboutString += _T("Copyright (c) 2005-2008 - Rodrigo Braz Monteiro.\n\n");
+	aboutString += _T("Automation - Copyright (c) 2005-2008 Niels Martin Hansen (aka jfs).\n");
 	aboutString += _("Programmers: ");
 	aboutString += _T(" ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle, Yuvi,\n     Azzy, Pomyk, Motoko-chan, Dansolo, Haali.\n");
 	aboutString += _("Manual by: ");
