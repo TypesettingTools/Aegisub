@@ -108,7 +108,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\aegisub\win32\config.h&quot; (copy &quot;..\..\aegisub\win32\config0.h&quot; &quot;..\..\aegisub\win32\config.h&quot;)&#x0D;&#x0A;if not exist &quot;..\build-credit.h&quot; (copy &quot;..\build-credit-base.h&quot; &quot;..\build-credit.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
+				CommandLine="if not exist &quot;..\..\aegisub\win32\config.h&quot; (copy &quot;..\..\aegisub\win32\config0.h&quot; &quot;..\..\aegisub\win32\config.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -132,6 +132,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h"
 			/>
 			<Tool
