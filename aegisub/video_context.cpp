@@ -625,9 +625,22 @@ void VideoContext::SaveSnapshot(bool raw) {
 	wxString option = Options.AsText(_("Video Screenshot Path"));
 	wxFileName videoFile(videoName);
 	wxString basepath;
+	// Is it a path specifier and not an actual fixed path?
 	if (option[0] == _T('?')) {
+		// If dummy video is loaded, we can't save to the video location
+		if (option.StartsWith(_T("?video")) && (videoName.Find(_T("?dummy")) != wxString::wxNOT_FOUND)) {
+			// So try the script location instead
+			option = _T("?script");
+		}
+		// Find out where the ?specifier points to
 		basepath = StandardPaths::DecodePath(option);
+		// If whereever that is isn't defined, we can't save there
+		if ((basepath == _T("\\")) || (basepath == _T("/"))) {
+			// So save to the current user's home dir instead
+			basepath = wxGetHomeDir();
+		}
 	}
+	// Actual fixed (possibly relative) path, decode it
 	else basepath = DecodeRelativePath(option,StandardPaths::DecodePath(_T("?user/")));
 	basepath += _T("/") + videoFile.GetName();
 
