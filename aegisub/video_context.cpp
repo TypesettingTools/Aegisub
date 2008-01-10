@@ -628,7 +628,7 @@ void VideoContext::SaveSnapshot(bool raw) {
 	// Is it a path specifier and not an actual fixed path?
 	if (option[0] == _T('?')) {
 		// If dummy video is loaded, we can't save to the video location
-		if (option.StartsWith(_T("?video")) && (videoName.Find(_T("?dummy")) != wxString::wxNOT_FOUND)) {
+		if (option.StartsWith(_T("?video")) && (videoName.Find(_T("?dummy")) != wxNOT_FOUND)) {
 			// So try the script location instead
 			option = _T("?script");
 		}
