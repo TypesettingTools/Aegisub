@@ -1496,7 +1496,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			// Line timing mode
 			if (!karTime) {
 				// Grab start
-				if (abs64 (x - selStart) < 6) {
+				if (abs64 (x - selStart) < 6 && Options.AsBool(_T("Disable Dragging Times"))==false) {
 					wxCursor cursor(wxCURSOR_SIZEWE);
 					SetCursor(cursor);
 					defCursor = false;
@@ -1507,7 +1507,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				}
 
 				// Grab end
-				else if (abs64 (x - selEnd) < 6) {
+				else if (abs64 (x - selEnd) < 6 && Options.AsBool(_T("Disable Dragging Times"))==false) {
 					wxCursor cursor(wxCURSOR_SIZEWE);
 					SetCursor(cursor);
 					defCursor = false;

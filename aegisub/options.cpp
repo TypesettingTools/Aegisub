@@ -175,6 +175,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetInt(_T("Audio lead out"),300);
 	SetModificationType(MOD_AUDIO);
 	SetInt(_T("Audio Inactive Lines Display Mode"),1);
+	SetBool(_T("Disable Dragging Times"), false);
 
 	// Audio Advanced
 	SetModificationType(MOD_AUDIO_RELOAD);
