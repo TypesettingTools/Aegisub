@@ -37,6 +37,10 @@
 #pragma once
 
 
+// Build credit: Set this to a string with your name as you want it to appear on the program
+#define BUILD_CREDIT "Anonymous"
+
+
 ////////////// HIGH PRIORITY /////////////
 
 // Enable Automation

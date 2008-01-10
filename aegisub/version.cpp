@@ -37,14 +37,19 @@
 #include <wx/datetime.h>
 #include "version.h"
 
-#if defined(__WINDOWS__) || defined(__APPLE__)
+#ifdef __WINDOWS__
+#include "win32/config.h"
 #include "../build/svn-revision.h"
-#include "../build/build-credit.h"
+#else
+#ifdef __APPLE__
+#include "macosx/config.h"
+#include "../build/svn-revision.h"
 
 #else
 
 #ifndef BUILD_SVN_REVISION
 #define BUILD_SVN_REVISION 0
+#endif
 #endif
 #endif
 
