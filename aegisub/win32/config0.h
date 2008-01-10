@@ -37,6 +37,8 @@
 #pragma once
 
 
+////////////// HIGH PRIORITY /////////////
+
 // Enable Automation
 // Requires: Lua (in repository)
 //#define WITH_AUTOMATION
@@ -47,14 +49,48 @@
 //#define WITH_AUTO3
 
 
+// Enable DirectSound audio player
+// Requires: DirectX SDK
+//#define WITH_DIRECTSOUND
+
+
+///////////// MEDIUM PRIORITY ////////////
+
+// Enable FreeType2 font lister for the fonts collector
+// Requires: FreeType2
+//#define WITH_FREETYPE2
+
+
+// Enable CSRI, required for styles previews in the style editor and some video providers
+// Requires: csri
+//#define WITH_CSRI
+
+
+// Enable universal charset detector, so Aegisub can automatically detect the encoding of non-unicode subtitles
+// Requires: universalcharset (in repository)
+//#define WITH_UNIVCHARDET
+
+
+// Enable Hunspell-based spellchecker
+// Requires: hunspell
+//#define WITH_HUNSPELL
+
+
+/////////////// LOW PRIORITY ////////////
+
 // Enable DirectShow video provider
-// Requires: DirectShow "baseclasses", Platform SDK?
+// Requires: DirectShow "baseclasses", DirectX SDK
 //#define WITH_DIRECTSHOW
 
 
-// Enable DirectSound audio player
-// Requires: PlatformSDK?
-//#define WITH_DIRECTSOUND
+// Enable FontConfig
+// Requires: fontconfig
+//#define WITH_FONTCONFIG
+
+
+// Enable libass
+// Requires: libass
+//#define WITH_LIBASS
 
 
 // Enable FFmpeg video and audio decoders
@@ -66,32 +102,3 @@
 // Requires: Ruby 1.9
 //#define WITH_RUBY
 
-
-// Enable FreeType2 font lister for the fonts collector
-// Requires: FreeType2
-//#define WITH_FREETYPE2
-
-
-// Enable Hunspell-based spellchecker
-// Requires: hunspell
-//#define WITH_HUNSPELL
-
-
-// Enable FontConfig
-// Requires: fontconfig
-//#define WITH_FONTCONFIG
-
-
-// Enable CSRI
-// Requires: csri
-//#define WITH_CSRI
-
-
-// Enable libass
-// Requires: libass
-//#define WITH_LIBASS
-
-
-// Enable universal charset detector
-// Requires: universalcharset (in repository)
-//#define WITH_UNIVCHARDET
