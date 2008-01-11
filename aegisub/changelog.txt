@@ -56,6 +56,7 @@ Please visit http://aegisub.net to download latest version
   o Misc. changes and bugfixes in karaoke mode. Using the syllable splitter should be easier now. (jfs)
   o Fixed loading of Avisynth Scripts as audio. (AMZ)
   o PCM WAV files are now streamed directly from disk instead of being "decoded" into RAM or onto another disk file. Only works for 8 and 16 bit sampledepths. (jfs)
+  o Added *.m4a to the list of recognized audio formats in the audio open dialog. (TheFluff)
 - Changes to Audio Spectrum: (jfs)
   o The calculated FFT data are now cached, so things should be faster.
     - The maximum size of the cache can be configured. Default is unlimited, which provides the best performance assuming enough memory is available. (Limit it if you're working with huge audio files!)
@@ -165,7 +166,7 @@ Please visit http://aegisub.net to download latest version
 - Added offsetting support to the resolution resampler. (AMZ)
 - Several fixes to Matroska parsing. (AMZ)
 - Untitled files will now get auto-saved as "Untitled.AUTOSAVE.ass". (AMZ)
-- Added *.m4a to the list of recognized audio formats in the audio open dialog. (TheFluff)
+
 
 
 = 1.10 beta - 2006.08.07 ===========================
