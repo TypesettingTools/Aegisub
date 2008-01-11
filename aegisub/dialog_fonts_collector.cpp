@@ -361,7 +361,9 @@ void FontsCollectorThread::Collect() {
 	int oper = collector->CollectAction->GetSelection();
 	destFolder = collector->DestBox->GetValue();
 	if (oper == 1 && !wxFileName::DirExists(destFolder)) {
+		wxMutexGuiEnter();
 		AppendText(_("Invalid destination directory."),1);
+		wxMutexGuiLeave();
 		return;
 	}
 
@@ -374,10 +376,14 @@ void FontsCollectorThread::Collect() {
 	}
 
 	// Collect font data
+	wxMutexGuiEnter();
 	AppendText(_("Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"));
+	wxMutexGuiLeave();
 	CollectFontData();
+	wxMutexGuiEnter();
 	AppendText(_("Done collecting font data."));
 	AppendText(_("Scanning file for fonts..."));
+	wxMutexGuiLeave();
 
 	// Scan file
 	AssDialogue *curDiag;
@@ -402,6 +408,7 @@ void FontsCollectorThread::Collect() {
 	}
 
 	// Copy fonts
+	wxMutexGuiEnter();
 	AppendText(wxString(_("Done.")) + _T("\n\n"));
 	switch (oper) {
 		case 0: AppendText(_("Checking fonts...\n")); break;
@@ -409,6 +416,7 @@ void FontsCollectorThread::Collect() {
 		case 2: AppendText(_("Copying fonts to archive...\n")); break;
 		case 3: AppendText(_("Attaching fonts to file...\n")); break;
 	}
+	wxMutexGuiLeave();
 	bool ok = true;
 	bool someOk = false;
 	for (size_t i=0;i<fonts.Count();i++) {
@@ -423,14 +431,22 @@ void FontsCollectorThread::Collect() {
 		delete zip;
 		delete out;
 
+		wxMutexGuiEnter();
 		AppendText(wxString::Format(_("\nFinished writing to %s.\n"),destination.c_str()),1);
+		wxMutexGuiLeave();
 	}
 
 	// Final result
 	if (ok) {
-		if (oper == 0) AppendText(_("Done. All fonts found."),1);
+		if (oper == 0) {
+			wxMutexGuiEnter();
+			AppendText(_("Done. All fonts found."),1);
+			wxMutexGuiLeave();
+		}
 		else {
+			wxMutexGuiEnter();
 			AppendText(_("Done. All fonts copied."),1);
+			wxMutexGuiLeave();
 
 			// Modify file if it was attaching
 			if (oper == 3 && someOk) {
@@ -442,8 +458,10 @@ void FontsCollectorThread::Collect() {
 		}
 	}
 	else {
+		wxMutexGuiEnter();
 		if (oper == 0) AppendText(_("Done. Some fonts could not be found."),2);
 		else  AppendText(_("Done. Some fonts could not be copied."),2);
+		wxMutexGuiLeave();
 	}
 }
 
