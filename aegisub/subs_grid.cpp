@@ -1260,8 +1260,8 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
 
 	// Modify text
 	wxString orig = n1->Text;
-	n1->Text = orig.Left(pos);
-	n2->Text = orig.Mid(pos);
+	n1->Text = orig.Left(pos).Trim(true); // Trim off trailing whitespace
+	n2->Text = orig.Mid(pos).Trim(false); // Trim off leading whitespace
 
 	// Modify time
 	if (mode == 1) {
