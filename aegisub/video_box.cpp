@@ -63,11 +63,10 @@
 ///////////////
 // Constructor
 VideoBox::VideoBox(wxWindow *parent) 
-: wxPanel (parent,5000)
+: wxPanel (parent,-1)
 {
 	// Parent
 	videoPage = this;
-	frame = AegisubApp::Get()->frame;
 
 	// Visual controls sub-toolbar
 	visualSubToolBar = new wxToolBar(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL | wxTB_BOTTOM | wxTB_FLAT);
@@ -96,7 +95,7 @@ VideoBox::VideoBox(wxWindow *parent)
 	VideoSubsPos->SetToolTip(_("Time of this frame relative to start and end of current subs."));
 
 	// Display
-	videoDisplay = new VideoDisplay(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER,_T("VideoBox"));
+	videoDisplay = new VideoDisplay(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
 	videoDisplay->ControlSlider = videoSlider;
 	videoDisplay->PositionDisplay = VideoPosition;
 	videoDisplay->SubsPosition = VideoSubsPos;

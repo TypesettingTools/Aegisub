@@ -81,7 +81,6 @@ public:
 	wxTextCtrl *VideoSubsPos;
 	VideoDisplay *videoDisplay;
 	VideoSlider *videoSlider;
-	FrameMain *frame;
 
 	VideoBox (wxWindow *parent);
 

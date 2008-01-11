@@ -235,6 +235,7 @@ void VideoDisplay::Render() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glViewport(dx1,dy1,dx2,dy2);
+	if (glGetError()) throw _T("Error setting GL viewport.");
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0.0f,sw,sh,0.0f,-1000.0f,1000.0f);
@@ -372,8 +373,8 @@ void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double a
 ///////////////
 // Update size
 void VideoDisplay::UpdateSize() {
-	// Free size?
-	if (freeSize) return;
+	// Don't do anything if it's a free sizing display
+	//if (freeSize) return;
 
 	// Loaded?
 	VideoContext *con = VideoContext::Get();
@@ -382,9 +383,14 @@ void VideoDisplay::UpdateSize() {
 	if (!IsShownOnScreen()) return;
 
 	// Get size
-	if (con->GetAspectRatioType() == 0) w = int(con->GetWidth() * zoomValue);
-	else w = int(con->GetHeight() * zoomValue * con->GetAspectRatioValue());
-	h = int(con->GetHeight() * zoomValue);
+	if (freeSize) {
+		GetClientSize(&w,&h);
+	}
+	else {
+		if (con->GetAspectRatioType() == 0) w = int(con->GetWidth() * zoomValue);
+		else w = int(con->GetHeight() * zoomValue * con->GetAspectRatioValue());
+		h = int(con->GetHeight() * zoomValue);
+	}
 	int _w,_h;
 	if (w <= 1 || h <= 1) return;
 	locked = true;
@@ -438,6 +444,9 @@ void VideoDisplay::OnPaint(wxPaintEvent& event) {
 // Size Event
 void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 	//Refresh(false);
+	if (freeSize) {
+		UpdateSize();
+	}
 	event.Skip();
 }
 
