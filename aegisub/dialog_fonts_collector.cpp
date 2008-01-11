@@ -80,6 +80,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 		wxFileName filename(AssFile::top->filename);
 		dest = filename.GetPath();
 	}
+	while (dest.Right(1) == _T("/")) dest = dest.Left(dest.Length()-1);
 	DestBox = new wxTextCtrl(this,-1,dest,wxDefaultPosition,wxSize(250,20),0);
 	BrowseButton = new wxButton(this,BROWSE_BUTTON,_("&Browse..."));
 	wxSizer *DestBottomSizer = new wxBoxSizer(wxHORIZONTAL);
