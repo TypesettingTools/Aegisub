@@ -41,6 +41,8 @@
 #include <fstream>
 #include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/filefn.h>
+#include <wx/utils.h>
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -412,7 +414,12 @@ void OptionsManager::Load() {
 	// Read header
 	TextFileReader file(filename);
 	wxString header = file.ReadLineFromFile();
-	if (header != _T("[Config]")) throw _T("Configuration file is invalid");
+	if (header != _T("[Config]")) {
+		wxMessageBox(_("Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."),_("Error"),wxCENTRE|wxICON_WARNING);
+		wxRenameFile(filename,filename + wxString::Format(_T(".%i.backup"),wxGetUTCTime()));
+		modified = true;
+		return;
+	}
 
 	// Get variables
 	std::map<wxString,VariableData>::iterator cur;
