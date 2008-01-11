@@ -200,17 +200,21 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	ResX->GetValue().ToLong(&x2);
 	ResY->GetValue().ToLong(&y2);
 
+	// Sanity check
+	if (x1 == 0 || y1 == 0) {
+		wxMessageBox(_T("Invalid source resolution. This should not happen. Please contact the developers."),_("Error"),wxCENTRE|wxICON_ERROR);
+		return;
+	}
+	if (x2 == 0 || y2 == 0) {
+		wxMessageBox(_("Invalid resolution: destination resolution cannot be 0 on either dimension."),_("Error"),wxCENTRE|wxICON_ERROR);
+		return;
+	}
+
 	// Get margins
 	MarginLeft->GetValue().ToLong(&m[0]);
 	MarginRight->GetValue().ToLong(&m[1]);
 	MarginTop->GetValue().ToLong(&m[2]);
 	MarginBottom->GetValue().ToLong(&m[3]);
-
-	// Check for validity
-	if (x1 == 0 || x2 == 0 || y1 == 0 || y2 == 0) {
-		EndModal(0);
-		return;
-	}
 
 	// Add margins to original resolution
 	x1 += m[0] + m[1];
