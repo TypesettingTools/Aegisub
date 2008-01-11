@@ -61,12 +61,15 @@
 ///////////// MEDIUM PRIORITY ////////////
 
 // Enable FreeType2 font lister for the fonts collector
+// If you're on Visual Studio, also uncomment the library names and make sure they match the files that you have
 // Requires: FreeType2
 //#define WITH_FREETYPE2
+//#define FT2_LIB_RELEASE "freetype235.lib"
+//#define FT2_LIB_DEBUG "freetype235_D.lib"
 
 
 // Enable CSRI, required for styles previews in the style editor and some video providers
-// Requires: csri
+// Requires: csri (in repository)
 //#define WITH_CSRI
 
 

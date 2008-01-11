@@ -173,9 +173,11 @@
 // FreeType2
 #ifdef WITH_FREETYPE2
 #ifdef __WXDEBUG__
-#pragma comment(lib,"freetype233MT_D.lib")
+//#pragma comment(lib,"freetype233MT_D.lib")
+#pragma comment(lib,FT2_LIB_DEBUG)
 #else
-#pragma comment(lib,"freetype233MT.lib")
+//#pragma comment(lib,"freetype233MT.lib")
+#pragma comment(lib,FT2_LIB_RELEASE)
 #endif
 #endif
 
