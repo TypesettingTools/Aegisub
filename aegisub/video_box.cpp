@@ -77,7 +77,7 @@ VideoBox::VideoBox(wxWindow *parent)
 	VideoPlayButton->SetToolTip(_("Play video starting on this position"));
 	wxBitmapButton *VideoPlayLineButton = new wxBitmapButton(videoPage,Video_Play_Line,wxBITMAP(button_playline),wxDefaultPosition,wxSize(25,-1));
 	VideoPlayLineButton->SetToolTip(_("Play current line"));
-	wxBitmapButton *VideoStopButton = new wxBitmapButton(videoPage,Video_Stop,wxBITMAP(button_stop),wxDefaultPosition,wxSize(25,-1));
+	wxBitmapButton *VideoStopButton = new wxBitmapButton(videoPage,Video_Stop,wxBITMAP(button_pause),wxDefaultPosition,wxSize(25,-1));
 	VideoStopButton->SetToolTip(_("Stop video playback"));
 	AutoScroll = new ToggleBitmap(videoPage,Video_Auto_Scroll,wxBITMAP(toggle_video_autoscroll),wxSize(30,-1));
 	AutoScroll->SetToolTip(_("Toggle autoscroll of video"));

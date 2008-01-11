@@ -90,6 +90,7 @@ sort_times_button BITMAP "bitmaps/sort_times.bmp"
 kanji_timer_button BITMAP "bitmaps/kanji_timer.bmp"
 
 button_play BITMAP "bitmaps/button_play.bmp"
+button_pause BITMAP "bitmaps/button_pause.bmp"
 button_stop BITMAP "bitmaps/button_stop.bmp"
 
 button_track_points BITMAP "bitmaps/button_track_points.bmp"
