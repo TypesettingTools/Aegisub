@@ -165,6 +165,7 @@ Please visit http://aegisub.net to download latest version
 - Added offsetting support to the resolution resampler. (AMZ)
 - Several fixes to Matroska parsing. (AMZ)
 - Untitled files will now get auto-saved as "Untitled.AUTOSAVE.ass". (AMZ)
+- Added *.m4a to the list of recognized audio formats in the audio open dialog. (TheFluff)
 
 
 = 1.10 beta - 2006.08.07 ===========================
