@@ -54,6 +54,7 @@ private:
 	FrameMain *parent;
 
 	void OnKey(wxKeyEvent &event);
+	void OnClose(wxCloseEvent &event);
 
 public:
 	DialogDetachedVideo(FrameMain *parent);

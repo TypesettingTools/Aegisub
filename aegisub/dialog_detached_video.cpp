@@ -79,8 +79,6 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 /////////////
 // Destructor
 DialogDetachedVideo::~DialogDetachedVideo() {
-	parent->detachedVideo = NULL;
-	parent->SetDisplayMode(1,-1);
 }
 
 
@@ -88,6 +86,7 @@ DialogDetachedVideo::~DialogDetachedVideo() {
 // Event table
 BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
 	EVT_KEY_DOWN(DialogDetachedVideo::OnKey)
+	EVT_CLOSE(DialogDetachedVideo::OnClose)
 END_EVENT_TABLE()
 
 
@@ -97,4 +96,14 @@ void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
 	// Send to parent... except that it doesn't work
 	event.Skip();
 	GetParent()->AddPendingEvent(event);
+}
+
+
+////////////////
+// Close window
+void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
+	FrameMain *par = parent;
+	Destroy();
+	par->detachedVideo = NULL;
+	par->SetDisplayMode(1,-1);
 }
