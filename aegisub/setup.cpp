@@ -153,9 +153,9 @@
 // Hunspell
 #ifdef WITH_HUNSPELL
 #ifdef __WXDEBUG__
-#pragma comment(lib,"hunspelld.lib")
+#pragma comment(lib,"libhunspell_d.lib")
 #else
-#pragma comment(lib,"hunspell.lib")
+#pragma comment(lib,"libhunspell.lib")
 #endif
 #endif
 

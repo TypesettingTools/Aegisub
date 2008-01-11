@@ -131,7 +131,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	if (!hunspell) return;
 
 	// Add to currently loaded file
-	hunspell->put_word(word.mb_str(*conv));
+	hunspell->add(word.mb_str(*conv));
 
 	// Load dictionary
 	wxArrayString dic;
