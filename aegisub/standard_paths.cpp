@@ -53,12 +53,14 @@ StandardPaths *StandardPaths::GetInstance() {
 // Constructor
 StandardPaths::StandardPaths() {
 	// Get paths
-	wxFileName dataDir(wxStandardPaths::Get().GetExecutablePath());
+	//wxFileName dataDir(wxStandardPaths::Get().GetDataDir());
+	wxString dataDir = wxStandardPaths::Get().GetDataDir();
 	wxString userDir = wxStandardPaths::Get().GetUserDataDir();
 	wxString tempDir = wxStandardPaths::Get().GetTempDir();
 
 	// Set paths
-	DoSetPathValue(_T("?data"),dataDir.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE));
+	//DoSetPathValue(_T("?data"),dataDir.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE));
+	DoSetPathValue(_T("?data"),dataDir);
 	DoSetPathValue(_T("?user"),userDir);
 	DoSetPathValue(_T("?temp"),tempDir);
 
