@@ -946,7 +946,9 @@ void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
 	GetSelection(&from, &to);
 	from = GetReverseUnicodePosition(from);
 	to = GetReverseUnicodePosition(to);
-	control->grid->SplitLine(control->linen,from,0);
+	// Call SplitLine() with the text currently in the editbox.
+	// This makes sure we split what the user sees, not the committed line.
+	control->grid->SplitLine(control->linen,from,0,GetText());
 }
 
 
@@ -957,7 +959,9 @@ void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &event) {
 	GetSelection(&from, &to);
 	from = GetReverseUnicodePosition(from);
 	to = GetReverseUnicodePosition(to);
-	control->grid->SplitLine(control->linen,from,1);
+	// Call SplitLine() with the text currently in the editbox.
+	// This makes sure we split what the user sees, not the committed line.
+	control->grid->SplitLine(control->linen,from,1,GetText());
 }
 
 

@@ -115,7 +115,7 @@ public:
 	void JoinLines(int first,int last,bool concat=true);
 	void JoinAsKaraoke(int first,int last);
 	void AdjoinLines(int first,int last,bool setStart);
-	void SplitLine(int lineNumber,int splitPosition,int mode);
+	void SplitLine(int lineNumber,int splitPosition,int mode,wxString splitText = _T(""));
 	void SplitLineByKaraoke(int lineNumber);
 	void DuplicateLines(int first,int last,bool nextFrame=false);
 

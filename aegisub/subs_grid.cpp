@@ -1251,11 +1251,20 @@ void SubtitlesGrid::ShiftLineByFrames(int n,int len,int type) {
 
 //////////////
 // Split line
-void SubtitlesGrid::SplitLine(int n,int pos,int mode) {
+void SubtitlesGrid::SplitLine(int n,int pos,int mode,wxString textIn) {
 	// Split
 	AssDialogue *n1,*n2;
-	n1 = GetDialogue(n);
-	n2 = new AssDialogue(n1->GetEntryData());
+	// No textIn? Get saved text
+	if (textIn.IsEmpty()) { 
+		n1 = GetDialogue(n);
+		n2 = new AssDialogue(n1->GetEntryData());
+	}
+	// Otherwise use textIn
+	else { 
+		n1 = GetDialogue(n);
+		n1->Text = textIn;
+		n2 = new AssDialogue(n1->GetEntryData());
+	}
 	InsertLine(n2,n,true,false);
 
 	// Modify text
