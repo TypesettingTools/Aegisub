@@ -55,6 +55,12 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 	// Set parent
 	parent = par;
 
+	// Set up window
+	int x = Options.AsInt(_T("Detached video last x"));
+	int y = Options.AsInt(_T("Detached video last y"));
+	if (x != -1 && y != -1) SetPosition(wxPoint(x,y));
+	if (Options.AsBool(_T("Detached video maximized"))) Maximize();
+
 	// Set obscure stuff
 	SetExtraStyle(GetExtraStyle() & (~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
@@ -85,6 +91,8 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 /////////////
 // Destructor
 DialogDetachedVideo::~DialogDetachedVideo() {
+	Options.SetBool(_T("Detached video maximized"),IsMaximized());
+	Options.Save();
 }
 
 
@@ -93,6 +101,7 @@ DialogDetachedVideo::~DialogDetachedVideo() {
 BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
 	EVT_KEY_DOWN(DialogDetachedVideo::OnKey)
 	EVT_CLOSE(DialogDetachedVideo::OnClose)
+	EVT_MOVE(DialogDetachedVideo::OnMove)
 END_EVENT_TABLE()
 
 
@@ -109,9 +118,17 @@ void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
 // Close window
 void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
 	FrameMain *par = parent;
+	Options.SetBool(_T("Detached video"),false);
 	Destroy();
 	par->detachedVideo = NULL;
 	par->SetDisplayMode(-1,-1);
-	Options.SetBool(_T("Detached video"),false);
-	Options.Save();
+}
+
+
+///////////////
+// Move window
+void DialogDetachedVideo::OnMove(wxMoveEvent &event) {
+	wxPoint pos = event.GetPosition();
+	Options.SetInt(_T("Detached video last x"),pos.x);
+	Options.SetInt(_T("Detached video last y"),pos.y);
 }

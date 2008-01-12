@@ -148,7 +148,6 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
 	SetBool(_T("Show overscan mask"),false);
-	SetBool(_T("Detached video"),false);
 
 	// Video Provider (Advanced)
 	SetModificationType(MOD_VIDEO_RELOAD);
@@ -333,6 +332,10 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetInt(_T("Audio Sample Rate"),0);
 
 	SetBool(_T("Video Visual Realtime"),true);
+	SetBool(_T("Detached video"),false);
+	SetInt(_T("Detached video last x"),-1);
+	SetInt(_T("Detached video last y"),-1);
+	SetBool(_T("Detached video maximized"),false);
 
 	SetInt(_T("Timing processor key start before thres"),5);
 	SetInt(_T("Timing processor key start after thres"),4);
