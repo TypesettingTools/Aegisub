@@ -1066,7 +1066,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	SetDisplayMode(-1,-1);
 	EditBox->UpdateFrameTiming();
 
-	if (!VideoContext::Get()->IsLoaded()) DetachVideo(false);
+	DetachVideo(VideoContext::Get()->IsLoaded() && Options.AsBool(_T("Detached Video")));
 	Thaw();
 }
 

@@ -43,6 +43,7 @@
 #include "video_context.h"
 #include "video_display.h"
 #include "frame_main.h"
+#include "options.h"
 
 
 ///////////////
@@ -76,6 +77,8 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 
 	// Update
 	parent->SetDisplayMode(0,-1);
+	Options.SetBool(_T("Detached video"),true);
+	Options.Save();
 }
 
 
@@ -109,4 +112,6 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
 	Destroy();
 	par->detachedVideo = NULL;
 	par->SetDisplayMode(-1,-1);
+	Options.SetBool(_T("Detached video"),false);
+	Options.Save();
 }
