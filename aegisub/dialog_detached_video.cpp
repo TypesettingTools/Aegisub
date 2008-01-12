@@ -108,5 +108,5 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
 	FrameMain *par = parent;
 	Destroy();
 	par->detachedVideo = NULL;
-	par->SetDisplayMode(1,-1);
+	par->SetDisplayMode(-1,-1);
 }

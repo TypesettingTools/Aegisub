@@ -1014,6 +1014,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 // Loads video
 void FrameMain::LoadVideo(wxString file,bool autoload) {
 	if (blockVideoLoad) return;
+	Freeze();
 	VideoContext::Get()->Stop();
 	try {
 		if (VideoContext::Get()->IsLoaded() && VFR_Output.GetFrameRateType() == VFR && !autoload) {
@@ -1064,6 +1065,9 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	SubsBox->CommitChanges(true);
 	SetDisplayMode(-1,-1);
 	EditBox->UpdateFrameTiming();
+
+	if (!VideoContext::Get()->IsLoaded()) DetachVideo(false);
+	Thaw();
 }
 
 
@@ -1132,6 +1136,25 @@ void FrameMain::OpenHelp(wxString page) {
 	if (type) {
 		wxString command = type->GetOpenCommand(StandardPaths::DecodePath(_T("?data/Aegisub.chm")));
 		if (!command.empty()) wxExecute(command + page);
+	}
+}
+
+
+///////////////////////
+// Detach video window
+void FrameMain::DetachVideo(bool detach) {
+	if (detach) {
+		if (!detachedVideo) {
+			detachedVideo = new DialogDetachedVideo(this);
+			detachedVideo->Show();
+		}
+	}
+	else {
+		if (detachedVideo) {
+			detachedVideo->Destroy();
+			SetDisplayMode(-1,-1);
+			detachedVideo = NULL;
+		}
 	}
 }
 

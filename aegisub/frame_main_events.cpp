@@ -80,7 +80,6 @@
 #endif
 #include "dialog_automation.h"
 #include "dialog_version_check.h"
-#include "dialog_detached_video.h"
 #include "dialog_dummy_video.h"
 #include "dialog_spellchecker.h"
 #include "dialog_associations.h"
@@ -853,8 +852,7 @@ void FrameMain::OnSetZoom(wxCommandEvent &event) {
 ////////////////
 // Detach video
 void FrameMain::OnDetachVideo(wxCommandEvent &event) {
-	detachedVideo = new DialogDetachedVideo(this);
-	detachedVideo->Show();
+	DetachVideo();
 }
 
 

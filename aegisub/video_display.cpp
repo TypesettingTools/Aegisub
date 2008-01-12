@@ -176,7 +176,7 @@ void VideoDisplay::Render() {
 	if (!context->IsLoaded()) return;
 
 	// Set GL context
-	wxMutexLocker glLock(OpenGLWrapper::glMutex);
+	//wxMutexLocker glLock(OpenGLWrapper::glMutex);
 #ifdef __WXMAC__
 	SetCurrent();
 #else

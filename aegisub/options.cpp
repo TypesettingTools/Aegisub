@@ -148,6 +148,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
 	SetBool(_T("Show overscan mask"),false);
+	SetBool(_T("Detached video"),false);
 
 	// Video Provider (Advanced)
 	SetModificationType(MOD_VIDEO_RELOAD);

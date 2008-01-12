@@ -279,6 +279,7 @@ public:
 	static wxArrayString GetEncodings();
 	void UpdateTitle();
 	void StatusTimeout(wxString text,int ms=10000);
+	void DetachVideo(bool detach=true);
 
 	void SetAccelerators();
 	void InitMenu();
