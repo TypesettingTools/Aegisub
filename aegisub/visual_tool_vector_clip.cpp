@@ -78,6 +78,10 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *_tool
 	toolBar->ToggleTool(BUTTON_DRAG,true);
 	toolBar->Realize();
 	toolBar->Show(true);
+
+	// Set default mode
+	PopulateFeatureList();
+	if (features.size() == 0) SetMode(1);
 }
 
 
@@ -176,10 +180,12 @@ void VisualToolVectorClip::Draw() {
 	// Draw preview of inserted line
 	if (mode == 1 || mode == 2) {
 		if (spline.curves.size()) {
-			SplineCurve *c0 = &spline.curves.front();
-			SplineCurve *c1 = &spline.curves.back();
-			DrawDashedLine(mx,my,c0->p1.x,c0->p1.y,6);
-			DrawDashedLine(mx,my,c1->GetEndPoint().x,c1->GetEndPoint().y,6);
+			if (mx != -1 || my != -1) {
+				SplineCurve *c0 = &spline.curves.front();
+				SplineCurve *c1 = &spline.curves.back();
+				DrawDashedLine(mx,my,c0->p1.x,c0->p1.y,6);
+				DrawDashedLine(mx,my,c1->GetEndPoint().x,c1->GetEndPoint().y,6);
+			}
 		}
 	}
 	
