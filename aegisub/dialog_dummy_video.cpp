@@ -39,6 +39,7 @@
 #include <wx/sizer.h>
 #include <wx/log.h>
 #include "options.h"
+#include "help_button.h"
 
 
 struct ResolutionShortcut {
@@ -152,9 +153,19 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	fg->Add(length_display, 0, wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(fg, 1, wxALL|wxEXPAND, 5);
-	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
-	ok_button = static_cast<wxButton*>(FindWindow(wxID_OK));
-	cancel_button = static_cast<wxButton*>(FindWindow(wxID_CANCEL));
+
+	ok_button = new wxButton(this,wxID_OK);
+	cancel_button = new wxButton(this,wxID_CANCEL);
+	wxStdDialogButtonSizer *btnSizer = new wxStdDialogButtonSizer();
+	btnSizer->AddButton(ok_button);
+	btnSizer->AddButton(cancel_button);
+	btnSizer->AddButton(new HelpButton(this,_T("Dummy Video")));
+	btnSizer->Realize();
+	main_sizer->Add(new wxStaticLine(this,wxHORIZONTAL),0,wxALL|wxEXPAND,5);
+	main_sizer->Add(btnSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,5);
+//	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
+//	ok_button = static_cast<wxButton*>(FindWindow(wxID_OK));
+//	cancel_button = static_cast<wxButton*>(FindWindow(wxID_CANCEL));
 
 	// Initialise controls
 	int lastwidth, lastheight, lastres = 0;

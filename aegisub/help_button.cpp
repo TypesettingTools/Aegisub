@@ -96,6 +96,7 @@ void HelpButton::InitStatic() {
 		pages = new std::map<wxString,wxString>;
 		std::map<wxString,wxString> &page = *pages;
 		page[_T("Colour Picker")] = _T("Colour_Picker");
+		page[_T("Dummy Video")] = _T("Video#Dummy_video");
 		page[_T("Fonts Collector")] = _T("Fonts_Collector");
 		page[_T("Kanji Timer")] = _T("Kanji_Timer");
 		page[_T("Main")] = _T("");
