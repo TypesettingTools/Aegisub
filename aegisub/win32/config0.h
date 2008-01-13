@@ -79,7 +79,7 @@
 
 
 // Enable Hunspell-based spellchecker
-// Requires: hunspell
+// Requires: hunspell (in repository for Win32)
 //#define WITH_HUNSPELL
 
 
