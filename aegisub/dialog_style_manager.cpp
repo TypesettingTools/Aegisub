@@ -562,7 +562,17 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &event) {
 			Store.style.push_back(temp);
 		}
 		else {
-			// Bug user?
+			int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?"),CurrentList->GetString(selections[i]).c_str()),_T("Style name collision."),wxYES_NO);
+			if (answer == wxYES) {
+				// Remove the old style
+				temp = styleStorageMap.at(selections[i]);
+				Store.style.remove(temp);
+				// And save the new one instead
+				temp = new AssStyle;
+				*temp = *styleMap.at(selections[i]);
+				Store.style.push_back(temp);
+			}
+			// else do nothing
 		}
 	}
 	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));

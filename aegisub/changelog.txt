@@ -70,7 +70,7 @@ Please visit http://aegisub.net to download latest version
   o Style storages with invalid characters are now caught, and the invalid characters replaced with safe ones. Previously such storages seemed to be created correctly but were never stored to disk. (jfs)
   o Added long-missing Edit buttons. (jfs)
   o Renaming a style will now ask you if you want to rename all instances of it on the script. (AMZ)
-  o Style name collisions (when moving from storage, creating or renaming) will now prompt the user before performing the action. (AMZ)
+  o Style name collisions (when moving from/to storage, creating or renaming) will now prompt the user before performing the action. (AMZ)
   o Added an "Import from script..." button to import styles directly from other subtitle files. (AMZ)
   o Added buttons to move styles up, down, to top or to bottom, on both storage and current script. (AMZ)
   o Added sorting functionality for both storage and current script. (AMZ)
@@ -123,7 +123,7 @@ Please visit http://aegisub.net to download latest version
   o Tweaked the behavior of the margin boxes, now they no longer show padding zeros. (AMZ)
   o Actor and Effect fields now show a "ghosted" caption saying their name when they are not focused on and blank. (AMZ)
   o Added a "Commit" button that duplicates the Enter/Ctrl+Enter functionality, since those shortcuts were not obvious to everyone. (AMZ)
-  o The "Split at cursor" functions now trims off leading/trailing whitespace around the split point. (TheFluff)
+  o Improved the "split at cursor" functions so that they now split what you see (instead of splitting the committed line) and trim off leading/trailing whitespace. (TheFluff)
 - Changes to Fonts Collector:
   o Changed the font searching engine to something slower, but far more reliable. (jfs/AMZ)
   o Added option to just verify if you have the fonts. (AMZ)
