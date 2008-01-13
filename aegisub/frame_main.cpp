@@ -491,7 +491,7 @@ void FrameMain::InitMenu() {
 	helpMenu->AppendSeparator();
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"),wxBITMAP(website_button));
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"),wxBITMAP(forums_button));
-	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug Tracker..."), _("Visit Aegisub's bug tracker"),wxBITMAP(bugtracker_button));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug Tracker..."), _("Visit Aegisub's bug tracker to report bugs and request new features"),wxBITMAP(bugtracker_button));
 	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC Channel..."), _("Visit Aegisub's official IRC channel"), wxBITMAP(irc_button));
 	helpMenu->AppendSeparator();
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),wxBITMAP(blank_button));

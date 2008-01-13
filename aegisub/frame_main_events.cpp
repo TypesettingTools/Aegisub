@@ -583,14 +583,14 @@ void FrameMain::OnForums(wxCommandEvent& WXUNUSED(event)) {
 ///////////////////
 // Open bugtracker
 void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
-	AegisubApp::OpenURL(_T("http://www.malakith.net/aegibug/"));
+	AegisubApp::OpenURL(_T("http://aegibug.nyo.dk/"));
 }
 
 
 ////////////////////
 // Open IRC channel
 void FrameMain::OnIRCChannel(wxCommandEvent& WXUNUSED(event)) {
-	AegisubApp::OpenURL(_T("irc://irc.chatsociety.net/aegisub"));
+	AegisubApp::OpenURL(_T("irc://irc.rizon.net/aegisub"));
 }
 
 
