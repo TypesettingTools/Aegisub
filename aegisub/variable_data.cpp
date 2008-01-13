@@ -172,6 +172,7 @@ int VariableData::AsInt() const {
 	if (type == VARDATA_BOOL) return (*value_bool)?1:0;
 	if (type == VARDATA_INT) return *value_int;
 	if (type == VARDATA_FLOAT) return (int)(*value_float);
+	if (type == VARDATA_TEXT) return 0;
 	throw _T("Wrong parameter type, should be int");
 }
 
@@ -182,6 +183,7 @@ double VariableData::AsFloat() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_FLOAT) return *value_float;
 	if (type == VARDATA_INT) return (float)(*value_int);
+	if (type == VARDATA_TEXT) return 0.0f;
 	throw _T("Wrong parameter type, should be float");
 }
 
@@ -193,6 +195,7 @@ bool VariableData::AsBool() const {
 	if (type == VARDATA_BOOL) return *value_bool;
 	if (type == VARDATA_INT) return ((*value_int)!=0);
 	if (type == VARDATA_FLOAT) return ((*value_float)!=0);
+	if (type == VARDATA_TEXT) return false;
 	throw _T("Wrong parameter type, should be bool");
 }
 

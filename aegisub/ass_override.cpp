@@ -663,15 +663,21 @@ end_tokenizing:
 			// Determine parameter type and set value
 			switch (curproto->type) {
 				case VARDATA_INT: {
-					long temp = 0;
-					curtok.ToLong(&temp);
-					newparam->SetInt(temp);
+					if (!(curtok.StartsWith(_T("!")) || curtok.StartsWith(_T("$")))) {
+						long temp = 0;
+						curtok.ToLong(&temp);
+						newparam->SetInt(temp);
+					}
+					else newparam->SetText(curtok);
 					break;
 				}
 				case VARDATA_FLOAT: {
-					double temp = 0.0;
-					curtok.ToDouble(&temp);
-					newparam->SetFloat(temp);
+					if (!(curtok.StartsWith(_T("!")) || curtok.StartsWith(_T("$")))) {
+						double temp = 0.0;
+						curtok.ToDouble(&temp);
+						newparam->SetFloat(temp);
+					}
+					else newparam->SetText(curtok);
 					break;
 				}
 				case VARDATA_TEXT: {
@@ -679,9 +685,12 @@ end_tokenizing:
 					break;
 				}
 				case VARDATA_BOOL: {
-					long temp = false;
-					curtok.ToLong(&temp);
-					newparam->SetBool(temp != 0);
+					if (!(curtok.StartsWith(_T("!")) || curtok.StartsWith(_T("$")))) {
+						long temp = false;
+						curtok.ToLong(&temp);
+						newparam->SetBool(temp != 0);
+					}
+					else newparam->SetText(curtok);
 					break;
 				}
 				case VARDATA_BLOCK: {
