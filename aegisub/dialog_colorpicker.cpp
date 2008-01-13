@@ -48,6 +48,7 @@
 #include "colorspace.h"
 #include "ass_style.h"
 #include "options.h"
+#include "help_button.h"
 
 
 #ifdef WIN32
@@ -560,7 +561,11 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	picker_sizer->Add(recent_box, 0, wxALIGN_CENTER);
 	picker_sizer->AddStretchSpacer();
 
-	wxSizer *button_sizer = CreateStdDialogButtonSizer(wxOK|wxCANCEL);
+	wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer();
+	button_sizer->AddButton(new wxButton(this,wxID_OK));
+	button_sizer->AddButton(new wxButton(this,wxID_CANCEL));
+	button_sizer->AddButton(new HelpButton(this,_T("Colour Picker")));
+	button_sizer->Realize();
 
 	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
 	input_sizer->Add(rgb_box, 0, wxALIGN_CENTER|wxEXPAND);
