@@ -53,6 +53,7 @@
 #include "options.h"
 #include "subtitles_provider.h"
 #include "ass_style_storage.h"
+#include "help_button.h"
 
 
 ///////
@@ -331,7 +332,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	okButton->SetDefault();
 	ButtonSizer->AddButton(new wxButton(this, wxID_CANCEL));
 	ButtonSizer->AddButton(new wxButton(this, wxID_APPLY));
-	ButtonSizer->AddButton(new wxButton(this, wxID_HELP));
+	ButtonSizer->AddButton(new HelpButton(this, _T("Style Editor")));
 	ButtonSizer->AddButton(okButton);
 	ButtonSizer->Realize();
 

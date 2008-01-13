@@ -114,13 +114,14 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 	BottomSizer->Add(RightSizer,1,wxEXPAND,0);
 
 	// Button sizer
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->Add(new HelpButton(this,_T("Styling Assistant")),0,wxRIGHT,0);
-	ButtonSizer->AddStretchSpacer(1);
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
 	wxButton *PlayButton = new wxButton(this,BUTTON_PLAY,_("Play Audio"));
 	PlayButton->Enable(audio->loaded);
-	ButtonSizer->Add(PlayButton,0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT,0);
+	ButtonSizer->AddButton(PlayButton);
+	ButtonSizer->AddButton(new HelpButton(this,_T("Styling Assistant")));
+	ButtonSizer->SetNegativeButton(PlayButton);
+	ButtonSizer->Realize();
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

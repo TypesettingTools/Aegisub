@@ -63,6 +63,7 @@
 #include "browse_button.h"
 #include "tooltip_manager.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////
@@ -629,12 +630,17 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	#endif
 
 	// Buttons Sizer
+	wxStdDialogButtonSizer *stdButtonSizer = new wxStdDialogButtonSizer();
+	stdButtonSizer->AddButton(new wxButton(this,wxID_OK));
+	stdButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	stdButtonSizer->AddButton(new wxButton(this,wxID_APPLY));
+	stdButtonSizer->AddButton(new HelpButton(this,_T("Options")));
+	stdButtonSizer->Realize();
 	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	buttonSizer->Add(new wxButton(this,BUTTON_DEFAULTS,_("Defaults")),0);
+	wxButton *defaultButton = new wxButton(this,BUTTON_DEFAULTS,_("Restore Defaults"));
+	buttonSizer->Add(defaultButton,0,wxEXPAND);
 	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT,5);
-	buttonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
-	buttonSizer->Add(new wxButton(this,wxID_APPLY),0);
+	buttonSizer->Add(stdButtonSizer,0,wxEXPAND);
 
 	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);

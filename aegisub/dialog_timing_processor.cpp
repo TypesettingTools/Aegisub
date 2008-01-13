@@ -46,6 +46,7 @@
 #include "ass_time.h"
 #include "vfr.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -153,7 +154,7 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	ApplyButton = new wxButton(this,wxID_OK);
 	ButtonSizer->AddButton(ApplyButton);
 	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new wxButton(this,wxID_HELP));
+	ButtonSizer->AddButton(new HelpButton(this,_T("Timing Processor")));
 	ButtonSizer->Realize();
 
 	// Right Sizer
