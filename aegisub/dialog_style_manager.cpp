@@ -164,7 +164,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
 	buttonSizer->SetCancelButton(new wxButton(this, wxID_CLOSE));
-	buttonSizer->AddButton(new HelpButton(this,_T("style_manager")));
+	buttonSizer->AddButton(new HelpButton(this,_T("Styles Manager")));
 	buttonSizer->Realize();
 
 	// General layout

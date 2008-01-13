@@ -90,7 +90,6 @@ private:
 	void OnStyleBoxEnter (wxCommandEvent &event);
 	void OnListClicked (wxCommandEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
-	void OnHelpButton(wxCommandEvent &event);
 	void OnPlayButton(wxCommandEvent &event);
 
 	void SetStyle (wxString curName,bool jump=true);

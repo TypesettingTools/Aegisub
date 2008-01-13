@@ -71,6 +71,7 @@
 #include "dialog_detached_video.h"
 #include "standard_paths.h"
 #include "keyframe.h"
+#include "help_button.h"
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
@@ -1133,12 +1134,7 @@ void FrameMain::LoadVFR(wxString filename) {
 /////////////
 // Open help
 void FrameMain::OpenHelp(wxString page) {
-	if (!page.IsEmpty()) page = _T("::") + page;
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("chm"));
-	if (type) {
-		wxString command = type->GetOpenCommand(StandardPaths::DecodePath(_T("?data/Aegisub.chm")));
-		if (!command.empty()) wxExecute(command + page);
-	}
+	HelpButton::OpenPage(_T("Main"));
 }
 
 

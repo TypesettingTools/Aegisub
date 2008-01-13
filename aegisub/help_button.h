@@ -47,9 +47,14 @@
 // Browse button class
 class HelpButton : public wxButton {
 private:
-	wxString page;
+	wxString id;
 	void OnPressed(wxCommandEvent &event);
+
+	static std::map<wxString,wxString> *pages;
+	static void InitStatic();
 
 public:
 	HelpButton(wxWindow *parent,wxString page=_T(""),wxPoint position=wxDefaultPosition,wxSize size=wxDefaultSize);
+
+	static void OpenPage(const wxString page);
 };

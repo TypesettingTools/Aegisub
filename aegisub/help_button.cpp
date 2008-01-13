@@ -39,6 +39,7 @@
 #include <wx/wxprec.h>
 #include <wx/mimetype.h>
 #include <wx/log.h>
+#include <map>
 #include "help_button.h"
 #include "utils.h"
 #include "standard_paths.h"
@@ -49,7 +50,7 @@
 HelpButton::HelpButton(wxWindow *parent,wxString _page,wxPoint position,wxSize size)
 : wxButton (parent,wxID_HELP,_T(""),position,size)
 {
-	page = _page;
+	id = _page;
 	Connect(GetId(),wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(HelpButton::OnPressed));
 }
 
@@ -58,17 +59,46 @@ HelpButton::HelpButton(wxWindow *parent,wxString _page,wxPoint position,wxSize s
 // Pressed
 void HelpButton::OnPressed(wxCommandEvent &event) {
 	// Verify if the page is valid
-	if (page.IsEmpty()) {
+	if (id.IsEmpty()) {
 		wxLogMessage(_T("TODO"));
 		return;
 	}
 
+	// Open
+	OpenPage(id);
+}
+
+
+///////////////
+// Open a page
+void HelpButton::OpenPage(const wxString pageID) {
+	// Transcode
+	InitStatic();
+	wxString page = (*pages)[pageID];
+
 	// Get the file type
 	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
 	if (type) {
-		wxString command = type->GetOpenCommand(StandardPaths::DecodePath(wxString::Format(_T("?data/docs/%s.html"),page.c_str())));
-		if (!command.empty()) wxExecute(command);
+		wxString path = StandardPaths::DecodePath(wxString::Format(_T("http://aegisub.cellosoft.com/docs/%s"),page.c_str()));
+		//wxString command = type->GetOpenCommand(path);
+		//if (!command.empty()) wxExecute(command);
+		wxLaunchDefaultBrowser(path);
 	}
 }
 
 
+//////////////
+// Static map
+std::map<wxString,wxString> *HelpButton::pages = NULL;
+
+void HelpButton::InitStatic() {
+	if (!pages) {
+		pages = new std::map<wxString,wxString>;
+		std::map<wxString,wxString> &page = *pages;
+		page[_T("Main")] = _T("");
+		page[_T("Styling Assistant")] = _T("Styling_Assistant");
+		page[_T("Styles Manager")] = _T("Styles");
+		page[_T("Kanji Timer")] = _T("Kanji_Timer");
+		page[_T("Resampler")] = _T("Resolution_Resampler");
+	}
+}

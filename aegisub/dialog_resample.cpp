@@ -108,7 +108,7 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
 	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,_T("dialog_resample")));
+	ButtonSizer->AddButton(new HelpButton(this,_T("Resample")));
 	ButtonSizer->Realize();
 
 	// Main sizer

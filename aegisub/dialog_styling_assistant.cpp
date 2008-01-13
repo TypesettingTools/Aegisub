@@ -49,6 +49,7 @@
 #include "audio_box.h"
 #include "hotkeys.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -114,7 +115,7 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 
 	// Button sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->Add(new wxButton(this,wxID_HELP),0,wxRIGHT,0);
+	ButtonSizer->Add(new HelpButton(this,_T("Styling Assistant")),0,wxRIGHT,0);
 	ButtonSizer->AddStretchSpacer(1);
 	wxButton *PlayButton = new wxButton(this,BUTTON_PLAY,_("Play Audio"));
 	PlayButton->Enable(audio->loaded);
@@ -215,7 +216,6 @@ void DialogStyling::SetStyle (wxString curName, bool jump) {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogStyling,wxDialog)
-	EVT_BUTTON(wxID_HELP, DialogStyling::OnHelpButton)
 	EVT_BUTTON(BUTTON_PLAY, DialogStyling::OnPlayButton)
 	//EVT_TEXT_ENTER(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxEnter)
 	EVT_TEXT(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxModified)
@@ -299,13 +299,6 @@ void DialogStyling::OnListClicked(wxCommandEvent &event) {
 	SetStyle(Styles->GetString(n));
 	Styles->SetSelection(wxNOT_FOUND);
 	TypeBox->SetFocus();
-}
-
-
-///////////////
-// Help button
-void DialogStyling::OnHelpButton(wxCommandEvent &event) {
-	FrameMain::OpenHelp(_T("stylingassistant2.htm"));
 }
 
 
