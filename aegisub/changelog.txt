@@ -1,7 +1,7 @@
 Aegisub changelog
 Please visit http://aegisub.net to download latest version
 
-= 2.00 - 2007.xx.xx ===========================
+= 2.00 - 2008.xx.xx ===========================
 
 - New Aegisub logo. (AMZ)
 - The Automation 4 system has been introduced. This means lots of changes. (jfs)
@@ -168,6 +168,7 @@ Please visit http://aegisub.net to download latest version
 - Added offsetting support to the resolution resampler. (AMZ)
 - Several fixes to Matroska parsing. (AMZ)
 - Untitled files will now get auto-saved as "Untitled.AUTOSAVE.ass". (AMZ)
+- Added several "Help" buttons. (AMZ)
 
 
 

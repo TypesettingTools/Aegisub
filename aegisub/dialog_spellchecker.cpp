@@ -45,6 +45,7 @@
 #include "utils.h"
 #include "subs_edit_box.h"
 #include "options.h"
+#include "help_button.h"
 
 
 ///////
@@ -113,29 +114,33 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 
 	// Actions sizer
 	wxSizer *actionsSizer = new wxBoxSizer(wxVERTICAL);
-	actionsSizer->Add(new wxButton(this,BUTTON_REPLACE,_("Replace")),0,wxEXPAND | wxBOTTOM,2);
-	actionsSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace All")),0,wxEXPAND | wxBOTTOM,2);
-	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE,_("Ignore")),0,wxEXPAND | wxBOTTOM,2);
-	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE_ALL,_("Ignore all")),0,wxEXPAND | wxBOTTOM,2);
-	actionsSizer->Add(new wxButton(this,BUTTON_ADD,_("Add to dictionary")),0,wxEXPAND | wxBOTTOM,0);
+	actionsSizer->Add(new wxButton(this,BUTTON_REPLACE,_("Replace")),0,wxEXPAND | wxBOTTOM,5);
+	actionsSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace All")),0,wxEXPAND | wxBOTTOM,5);
+	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE,_("Ignore")),0,wxEXPAND | wxBOTTOM,5);
+	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE_ALL,_("Ignore all")),0,wxEXPAND | wxBOTTOM,5);
+	actionsSizer->Add(new wxButton(this,BUTTON_ADD,_("Add to dictionary")),0,wxEXPAND | wxBOTTOM,5);
+	actionsSizer->Add(new HelpButton(this,_T("Spell Checker")),0,wxEXPAND | wxBOTTOM,0);
+	actionsSizer->AddStretchSpacer(1);
 
 	// Bottom sizer
-	suggestList = new wxListBox(this,LIST_SUGGESTIONS,wxDefaultPosition,wxSize(150,100));
+	suggestList = new wxListBox(this,LIST_SUGGESTIONS,wxDefaultPosition,wxSize(300,150));
 	language = new wxComboBox(this,LIST_LANGUAGES,_T(""),wxDefaultPosition,wxDefaultSize,langNames,wxCB_DROPDOWN | wxCB_READONLY);
 	language->SetSelection(curLangPos);
 	wxFlexGridSizer *botSizer = new wxFlexGridSizer(2,2,5,5);
 	botSizer->Add(suggestList,1,wxEXPAND);
-	botSizer->Add(actionsSizer,0,wxEXPAND);
-	botSizer->Add(language,1,wxEXPAND);
-	botSizer->Add(new wxButton(this,wxID_CLOSE),0,wxEXPAND);
+	botSizer->Add(actionsSizer,1,wxEXPAND);
+	botSizer->Add(language,0,wxEXPAND);
+	botSizer->Add(new wxButton(this,wxID_CANCEL),0,wxEXPAND);
 	botSizer->AddGrowableCol(0,1);
-	SetEscapeId(wxID_CLOSE);
+	botSizer->AddGrowableRow(0,1);
+	//SetEscapeId(wxID_CLOSE);
 
 	// Main sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(topSizer,0,wxEXPAND | wxALL,5);
 	mainSizer->Add(botSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 	SetSizer(mainSizer);
+	mainSizer->SetSizeHints(this);
 	CenterOnParent();
 
 	// Go to first match and show
@@ -242,7 +247,7 @@ void DialogSpellChecker::SetWord(wxString word) {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogSpellChecker,wxDialog)
-	EVT_BUTTON(wxID_CLOSE,DialogSpellChecker::OnClose)
+	EVT_BUTTON(wxID_CANCEL,DialogSpellChecker::OnClose)
 	EVT_BUTTON(BUTTON_REPLACE,DialogSpellChecker::OnReplace)
 	EVT_BUTTON(BUTTON_REPLACE_ALL,DialogSpellChecker::OnReplaceAll)
 	EVT_BUTTON(BUTTON_IGNORE,DialogSpellChecker::OnIgnore)

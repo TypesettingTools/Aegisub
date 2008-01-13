@@ -99,6 +99,7 @@ void HelpButton::InitStatic() {
 		page[_T("Main")] = _T("");
 		page[_T("Options")] = _T("Options");
 		page[_T("Resampler")] = _T("Resolution_Resampler");
+		page[_T("Spell Checker")] = _T("Other_Tools");
 		page[_T("Style Editor")] = _T("Styles");
 		page[_T("Styles Manager")] = _T("Styles");
 		page[_T("Styling Assistant")] = _T("Styling_Assistant");
