@@ -56,7 +56,7 @@ private:
 	TimeEdit *JumpTime;
 	wxTextCtrl *JumpFrame;
 
-	void OnKey(wxKeyEvent &event);
+	void OnKey(wxCommandEvent &event);
 	void OnCloseButton(wxCommandEvent &event);
 	void OnOK(wxCommandEvent &event);
 	void OnEditTime(wxCommandEvent &event);

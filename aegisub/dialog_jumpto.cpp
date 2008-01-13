@@ -58,7 +58,7 @@ enum {
 ///////////////
 // Constructor
 DialogJumpTo::DialogJumpTo (wxWindow *parent)
-: wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
+: wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS , _T("JumpTo"))
 {
 	// Set icon
 	SetIcon(BitmapToIcon(wxBITMAP(jumpto_button)));
@@ -71,8 +71,8 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	// Times
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
-	JumpFrame = new wxTextCtrl(this,TEXT_JUMP_FRAME,wxString::Format(_T("%i"),jumpframe),wxDefaultPosition,wxSize(60,20));
-	JumpTime = new TimeEdit(this,TEXT_JUMP_TIME,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20));
+	JumpFrame = new wxTextCtrl(this,TEXT_JUMP_FRAME,wxString::Format(_T("%i"),jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
+	JumpTime = new TimeEdit(this,TEXT_JUMP_TIME,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
 	FrameSizer->Add(LabelFrame,0,wxALIGN_CENTER_VERTICAL,0);
@@ -106,7 +106,8 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogJumpTo, wxDialog)
-	EVT_KEY_DOWN(DialogJumpTo::OnKey)
+	EVT_TEXT_ENTER(TEXT_JUMP_FRAME,DialogJumpTo::OnKey)
+	EVT_TEXT_ENTER(TEXT_JUMP_TIME,DialogJumpTo::OnKey)
 	EVT_BUTTON(wxID_CANCEL,DialogJumpTo::OnCloseButton)
 	EVT_BUTTON(wxID_OK,DialogJumpTo::OnOK)
 	EVT_TEXT(TEXT_JUMP_TIME, DialogJumpTo::OnEditTime)
@@ -122,22 +123,17 @@ void DialogJumpTo::OnOK (wxCommandEvent &event) { OnClose(true); }
 
 //////////////////
 // On Key pressed
-void DialogJumpTo::OnKey(wxKeyEvent &event) {
-	int key = event.GetKeyCode();
-	if (key == WXK_RETURN) {
-		VideoContext::Get()->JumpToFrame(jumpframe);
-		EndModal(0);
-		return;
-	}
-	event.Skip();
+void DialogJumpTo::OnKey(wxCommandEvent &event) {
+	EndModal(0);
+	VideoContext::Get()->JumpToFrame(jumpframe);
 }
 
 
 ////////////////////////
 // On OK button pressed
 void DialogJumpTo::OnClose(bool ok) {
-	if (ok)	VideoContext::Get()->JumpToFrame(jumpframe);
 	EndModal(0);
+	if (ok)	VideoContext::Get()->JumpToFrame(jumpframe);
 }
 
 
