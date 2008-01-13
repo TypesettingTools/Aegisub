@@ -30,6 +30,7 @@ Please visit http://aegisub.net to download latest version
   o CSRI support for subtitles on all platforms. (equinox/AMZ)
   o Framegrabs from the video now also includes framenumber in the filename. (jfs)
   o Added a toggleable overscan mask to show which areas might get cropped by televisions. (AMZ)
+  o Keyframe data will no longer be loaded for video files which are all keyframes (i.e. most lossless AVI files) since it was meaningless. (TheFluff)
 - Visual Typesetting functionality implemented, which should make typesetting much easier and faster. It supports: (AMZ)
   o Dragging, including support for \move;
   o Rotation on Z axis;

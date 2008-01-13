@@ -297,7 +297,23 @@ void VideoContext::SetVideo(const wxString &filename) {
 #endif
 				keyFramesLoaded = true;
 			}
+			
+			// Check if the file is all keyframes
+			bool isAllKeyFrames = true;
+			for (unsigned int i=1; i<KeyFrames.GetCount(); i++) {
+				// Is the last keyframe not this keyframe -1?
+				if (KeyFrames[i-1] != (i-1)) {
+					// It's not all keyframes, go ahead
+					isAllKeyFrames = false;
+					break;
+				}
+			}
 
+			// If it is all keyframes, discard the keyframe info as it is useless
+			if (isAllKeyFrames) {
+				KeyFrames.Clear();
+				keyFramesLoaded = false;
+			}
 
 			// Set GL context
 #ifdef __WXMAC__
