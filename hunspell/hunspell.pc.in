@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: hunspell
+Description: Hunpell spellchecking library
+Version: @VERSION@
+Libs: -L${libdir} -lhunspell-@HUNSPELL_VERSION_MAJOR@.@HUNSPELL_VERSION_MINOR@
+Cflags: -I${includedir}/hunspell

@@ -1,0 +1,9 @@
+* Problems with UTF-8 flag support on ARM platform (fail reputf and maputf test)
+
+* Interactive interface has some visualisation problem with UTF-8 characters
+
+* -U, -u options doesn't support Unicode.
+
+* Compound handling is not thread safe in Hungarian specific code
+
+* stemming is experimental and incomplete

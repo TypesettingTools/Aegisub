@@ -181,6 +181,8 @@ FrameMain::FrameMain (wxArrayString args)
 		DialogVersionCheck *checker = new DialogVersionCheck (this,true);
 		(void)checker;
 	}
+
+	//ShowFullScreen(true,wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
 }
 
 

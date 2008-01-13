@@ -477,6 +477,13 @@ wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
 	if (!glContext) glContext = new wxGLContext(canvas);
 #endif
 	return glContext;
+	/*
+	if (!((VideoDisplay*)canvas)->freeSize) return glContext;
+	else {
+		static wxGLContext *test = NULL;
+		if (test = NULL) test = new wxGLContext(canvas,glContext);
+		return test;
+	}*/
 }
 
 

@@ -169,6 +169,7 @@ void VideoDisplay::ShowCursor(bool show) {
 void VideoDisplay::Render() {
 	// Is shown?
 	if (!IsShownOnScreen()) return;
+	if (!wxIsMainThread()) throw _T("Error: trying to render from non-primary thread");
 
 	// Get video context
 	VideoContext *context = VideoContext::Get();

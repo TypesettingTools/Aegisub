@@ -1,0 +1,132 @@
+About Hunspell
+--------------
+
+Hunspell is a spell checker and morphological analyzer library and program
+designed for languages with rich morphology and complex word compounding or
+character encoding. Hunspell interfaces: Ispell-like terminal interface
+using Curses library, Ispell pipe interface, OpenOffice.org UNO module.
+
+Hunspell's code base comes from the OpenOffice.org MySpell
+(http://lingucomponent.openoffice.org/MySpell-3.zip). See README.MYSPELL,
+AUTHORS.MYSPELL and license.myspell files.
+Hunspell is designed to eventually replace Myspell in OpenOffice.org.
+
+Main features of Hunspell spell checker and morphological analyzer:
+
+- Unicode support (affix rules work only with the first 65535 Unicode characters)
+
+- Morphological analysis (in custom item and arrangement style)
+
+- Max. 65535 affix classes and twofold affix stripping (for agglutinative
+  languages, like Azeri, Basque, Estonian, Finnish, Hungarian, Turkish, etc.)
+
+- Support complex compoundings (for example, Hungarian and German)
+
+- Support language specific features (for example, special casing of
+  Azeri and Turkish dotted i, or German sharp s)
+
+- Handle conditional affixes, circumfixes, fogemorphemes,
+  forbidden words, pseudoroots and homonyms.
+
+- Free software (LGPL, GPL, MPL tri-license)
+
+Compiling
+---------
+
+./configure
+make
+make install
+
+For dictionary development, use the --with-warnings option of configure.
+
+For compiling morphological analyser and stemmer code and tools, use the
+--with-experimental option of configure.
+
+For interactive user interface of Hunspell executable, use the --with-ui option.
+
+The developer packages you need to compile Hunspell's interface:
+
+glibc-devel
+
+optional developer packages:
+
+ncurses (need for --with-ui)
+readline (for fancy input line editing,
+  configure parameter: --with-readline)
+locale and gettext (but you can also use the
+  --with-included-gettext configure parameter)
+
+Hunspell distribution uses new Autoconf (2.59) and Automake (1.9).
+
+Testing
+-------
+
+Testing Hunspell (see tests in tests/ subdirectory):
+
+make check
+
+or with Valgrind debugger:
+
+make check
+VALGRIND=[Valgrind_tool] make check
+
+For example:
+
+make check
+VALGRIND=memcheck make check
+
+Documentation
+-------------
+
+features and dictionary format:
+man 4 hunspell
+
+man hunspell
+hunspell -h
+http://hunspell.sourceforge.net
+
+Usage
+-----
+
+The src/tools dictionary contains three executables.
+A spell checker with Ispell-like curses interface and Ispell
+compatible pipe interface (hunspell) and two small example
+program (hunmorph and hunstem).
+
+After compiling and installing (see INSTALL) you can
+run the Hunspell spell checker (compiled with user interface)
+with a Hunspell or Myspell dictionary:
+
+hunspell -d en_UK text.txt
+
+or without interface:
+
+hunspell -d en_UK -l <text.txt
+
+(Dictionaries consists of an affix and dictionary file.)
+
+Usage of Hunmorph morphological analyzer:
+
+hunmorph en_UK.aff en_UK.dic input_file
+
+Using Hunspell library with GCC
+-------------------------------
+
+Including in your program:
+#include <hunspell.hxx>
+
+Linking with Hunspell static library:
+g++ -lhunspell example.cxx 
+
+Dictionaries
+------------
+
+Myspell dictionaries:
+http://lingucomponent.openoffice.org/spell_dic.html
+
+Aspell dictionaries (need some conversion):
+ftp://ftp.gnu.org/gnu/aspell/dict
+Conversion steps: see relevant feature request at http://hunspell.sf.net.
+
+Németh László
+nemeth at OOo
