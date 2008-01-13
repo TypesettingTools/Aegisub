@@ -52,6 +52,7 @@
 #include "ass_dialogue.h"
 #include "subs_edit_box.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -111,24 +112,16 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 
 	// History
 	History = new wxListBox(this,-1,wxDefaultPosition,wxSize(350,100), 0, NULL, wxLB_HSCROLL);
+	wxButton *ClearButton = new wxButton(this,SHIFT_CLEAR_HISTORY,_("Clear"));
 	HistorySizer->Add(History,1,wxEXPAND,0);
+	HistorySizer->Add(ClearButton,0,wxEXPAND,0);
 
 	// Buttons
-	wxButton *OKButton = new wxButton(this,wxID_OK);
-	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
-	wxButton *ClearButton = new wxButton(this,SHIFT_CLEAR_HISTORY,_("Clear"));
-	OKButton->SetDefault();
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(2);
-#ifndef __WXMAC__
-	ButtonSizer->Add(OKButton,0,wxALIGN_CENTER|wxRIGHT,5);
-	ButtonSizer->Add(CancelButton,0,wxALIGN_CENTER|wxRIGHT,0);
-#else
-	ButtonSizer->Add(CancelButton,0,wxRIGHT,5);
-	ButtonSizer->Add(OKButton,0,wxRIGHT,0);
-#endif
-	ButtonSizer->AddStretchSpacer(1);
-	ButtonSizer->Add(ClearButton,0,wxALIGN_RIGHT|wxRIGHT,5);
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
+	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	ButtonSizer->AddButton(new HelpButton(this,_T("Shift Times")));
+	ButtonSizer->Realize();
 
 	// General layout
 	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);

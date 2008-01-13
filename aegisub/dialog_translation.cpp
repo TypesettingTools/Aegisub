@@ -49,6 +49,7 @@
 #include "frame_main.h"
 #include "hotkeys.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -112,12 +113,14 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	KeysSizer->Add(PreviewCheck,0,wxTOP,5);
 
 	// Button sizer
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	wxButton *PlayButton = new wxButton(this,BUTTON_TRANS_PLAY,_("Play Audio"));
 	PlayButton->Enable(audio->loaded);
-	ButtonSizer->Add(PlayButton,0,wxRIGHT,0);
-	ButtonSizer->Add(new wxButton(this,wxID_CLOSE),0,wxRIGHT,0);
+	ButtonSizer->AddButton(PlayButton);
+	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	ButtonSizer->AddButton(new HelpButton(this,_T("Translation Assistant")));
+	ButtonSizer->SetAffirmativeButton(PlayButton);
+	ButtonSizer->Realize();
 
 	// General layout
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

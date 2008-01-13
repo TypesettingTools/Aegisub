@@ -96,11 +96,13 @@ void HelpButton::InitStatic() {
 		pages = new std::map<wxString,wxString>;
 		std::map<wxString,wxString> &page = *pages;
 		page[_T("Colour Picker")] = _T("Colour_Picker");
+		page[_T("Fonts Collector")] = _T("Fonts_Collector");
 		page[_T("Kanji Timer")] = _T("Kanji_Timer");
 		page[_T("Main")] = _T("");
 		page[_T("Options")] = _T("Options");
 		page[_T("Resampler")] = _T("Resolution_Resampler");
-		page[_T("Spell Checker")] = _T("Other_Tools");
+		page[_T("Shift Times")] = _T("Other_Tools#Shift_Times");
+		page[_T("Spell Checker")] = _T("Other_Tools#Spell_Checker");
 		page[_T("Style Editor")] = _T("Styles");
 		page[_T("Styles Manager")] = _T("Styles");
 		page[_T("Styling Assistant")] = _T("Styling_Assistant");

@@ -52,6 +52,7 @@
 #include "main.h"
 #include "font_file_lister.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////
@@ -113,17 +114,14 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 
 	// Buttons sizer
 	StartButton = new wxButton(this,START_BUTTON,_("&Start!"));
+	CloseButton = new wxButton(this,wxID_CANCEL);
 	StartButton->SetDefault();
-	CloseButton = new wxButton(this,wxID_CANCEL,_T("Close"));
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-#ifdef __WXMAC__ 
-	ButtonSizer->Add(CloseButton,0,wxRIGHT,5);
-	ButtonSizer->Add(StartButton);
-#else
-	ButtonSizer->Add(StartButton,0,wxRIGHT,5);
-	ButtonSizer->Add(CloseButton);
-#endif
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	ButtonSizer->AddButton(StartButton);
+	ButtonSizer->AddButton(CloseButton);
+	ButtonSizer->AddButton(new HelpButton(this,_T("Fonts Collector")));
+	ButtonSizer->SetAffirmativeButton(StartButton);
+	ButtonSizer->Realize();
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
