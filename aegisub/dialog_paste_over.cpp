@@ -42,6 +42,7 @@
 #include <wx/button.h>
 #include "dialog_paste_over.h"
 #include "options.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -89,10 +90,11 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 	TopButtonSizer->Add(new wxButton(this, Paste_Over_Text, _("Text")),1,0,0);
 
 	// Buttons
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-	ButtonSizer->Add(new wxButton(this, wxID_OK),0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this, wxID_CANCEL),0,0,0);
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	ButtonSizer->AddButton(new wxButton(this, wxID_OK));
+	ButtonSizer->AddButton(new wxButton(this, wxID_CANCEL));
+	ButtonSizer->AddButton(new HelpButton(this,_T("Paste Over")));
+	ButtonSizer->Realize();
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

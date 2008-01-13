@@ -45,6 +45,7 @@
 #include "ass_file.h"
 #include "ass_exporter.h"
 #include "frame_main.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -109,15 +110,13 @@ DialogExport::DialogExport (wxWindow *parent)
 	TopSizer->Add(charset_list_sizer, 0, wxEXPAND | wxTOP, 5);
 
 	// Button sizer
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-#ifndef __WXMAC__
-	ButtonSizer->Add(new wxButton(this,Button_Process,_("Export...")),0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,0);
-#else
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this,Button_Process,_("Export...")),0,wxRIGHT,0);
-#endif
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	wxButton *process = new wxButton(this,Button_Process,_("Export..."));
+	ButtonSizer->AddButton(process);
+	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	ButtonSizer->AddButton(new HelpButton(this,_T("Export")));
+	ButtonSizer->SetAffirmativeButton(process);
+	ButtonSizer->Realize();
 
 	// Draw stuff sizer
 	HorizSizer = new wxBoxSizer(wxHORIZONTAL);

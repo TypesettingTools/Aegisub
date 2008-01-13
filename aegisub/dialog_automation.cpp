@@ -41,6 +41,7 @@
 #include "auto4_base.h"
 #include "options.h"
 #include "utils.h"
+#include "help_button.h"
 #include <wx/filename.h>
 #include <wx/filedlg.h>
 #include <wx/log.h>
@@ -82,6 +83,7 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	button_box->AddSpacer(10);
 	button_box->Add(reload_autoload_button, 0);
 	button_box->AddSpacer(10);
+	button_box->Add(new HelpButton(this,_T("Automation Manager")), 0);
 	button_box->Add(close_button, 0);
 	button_box->AddStretchSpacer(2);
 

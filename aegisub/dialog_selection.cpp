@@ -43,6 +43,7 @@
 #include "subs_grid.h"
 #include "ass_dialogue.h"
 #include "options.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -103,17 +104,11 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	DialogueSizer->Add(MatchComments,0, wxEXPAND);
 	
 	// Buttons sizer
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-#ifndef __WXMAC__
-	ButtonSizer->Add(new wxButton(this,wxID_OK),0,wxRIGHT,5);
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,0);
-#else
-	wxButton *okButton = new wxButton(this,wxID_OK);
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxRIGHT,5);
-	ButtonSizer->Add(okButton,0,wxRIGHT,0);
-	okButton->SetDefault();
-#endif
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
+	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	ButtonSizer->AddButton(new HelpButton(this,_T("Select Lines")));
+	ButtonSizer->Realize();
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

@@ -47,6 +47,7 @@
 #include "ass_attachment.h"
 #include "utils.h"
 #include "options.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -73,7 +74,8 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_GRAPHICS,_("Attach &Graphics")),1,0,0);
 	buttonSizer->Add(extractButton,1,0,0);
 	buttonSizer->Add(deleteButton,1,0,0);
-	buttonSizer->Add(new wxButton(this,wxID_CANCEL,_("&Close")),1,wxLEFT,5);
+	buttonSizer->Add(new HelpButton(this,_T("Attachment Manager")),1,wxLEFT,5);
+	buttonSizer->Add(new wxButton(this,wxID_CANCEL,_("&Close")),1,0,0);
 
 	// Main sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);

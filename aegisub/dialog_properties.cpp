@@ -47,6 +47,7 @@
 #include "validators.h"
 #include "video_provider.h"
 #include "utils.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -144,11 +145,10 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	optionsBox->Add(optionsGrid,1,wxEXPAND,0);
 
 	// Button sizer
-	wxButton *ButtonOK = new wxButton(this,wxID_OK);
-	ButtonOK->SetDefault();
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-	ButtonSizer->Add(ButtonOK,0,0,0);
+	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
+	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
+	ButtonSizer->AddButton(new HelpButton(this,_T("Properties")));
+	ButtonSizer->Realize();
 
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

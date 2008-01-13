@@ -95,15 +95,21 @@ void HelpButton::InitStatic() {
 	if (!pages) {
 		pages = new std::map<wxString,wxString>;
 		std::map<wxString,wxString> &page = *pages;
+		page[_T("Attachment Manager")] = _T("Attachment_Manager");
+		page[_T("Automation Manager")] = _T("Automation_Manager");
 		page[_T("Colour Picker")] = _T("Colour_Picker");
-		page[_T("Dummy Video")] = _T("Video#Dummy_video");
+		page[_T("Dummy Video")] = _T("Dummy_video");
+		page[_T("Export")] = _T("Export");
 		page[_T("Fonts Collector")] = _T("Fonts_Collector");
 		page[_T("Kanji Timer")] = _T("Kanji_Timer");
 		page[_T("Main")] = _T("");
 		page[_T("Options")] = _T("Options");
+		page[_T("Paste Over")] = _T("Paste_Over");
+		page[_T("Properties")] = _T("Properties");
 		page[_T("Resampler")] = _T("Resolution_Resampler");
-		page[_T("Shift Times")] = _T("Other_Tools#Shift_Times");
-		page[_T("Spell Checker")] = _T("Other_Tools#Spell_Checker");
+		page[_T("Shift Times")] = _T("Shift_Times");
+		page[_T("Select Lines")] = _T("Select_Lines");
+		page[_T("Spell Checker")] = _T("Spell_Checker");
 		page[_T("Style Editor")] = _T("Styles");
 		page[_T("Styles Manager")] = _T("Styles");
 		page[_T("Styling Assistant")] = _T("Styling_Assistant");
