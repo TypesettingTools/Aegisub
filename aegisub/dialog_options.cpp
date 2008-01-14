@@ -473,11 +473,11 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxFlexGridSizer *displaySizer4 = new wxFlexGridSizer(14,2,2,2);
 
 		// First sizer
-		wxString labels1[5] = { _("Draw secondary lines"), _("Draw selection background"), _("Draw timeline"),
-								_("Draw cursor time"), _("Draw keyframes") };
-		wxString options1[5] = { _T("Draw Secondary Lines"), _T("Draw Selection Background") , _T("Draw Timeline"),
-								_T("Draw Cursor Time"), _T("Draw keyframes")};
-		for (int i=0;i<5;i++) {
+		wxString labels1[6] = { _("Draw secondary lines"), _("Draw selection background"), _("Draw timeline"),
+								_("Draw cursor time"), _("Draw keyframes"), _("Draw video position") };
+		wxString options1[6] = { _T("Draw Secondary Lines"), _T("Draw Selection Background") , _T("Draw Timeline"),
+								_T("Draw Cursor Time"), _T("Draw keyframes"), _T("Draw video position")};
+		for (int i=0;i<6;i++) {
 			wxCheckBox *control = new wxCheckBox(displayPage,-1,labels1[i]);
 			Bind(control,_T("Audio ") + options1[i]);
 			displaySizer3->Add(control,1,wxEXPAND | wxALL,5);

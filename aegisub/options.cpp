@@ -260,6 +260,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Audio Draw Keyframes"), true);
 	SetBool(_T("Audio Draw Timeline"),true);
 	SetBool(_T("Audio Draw Cursor Time"),true);
+	SetBool(_T("Audio Draw Video Position"),true);
 	SetColour(_T("Audio Selection Background Modified"),wxColour(92,0,0));
 	SetColour(_T("Audio Selection Background"),wxColour(64,64,64));
 	SetColour(_T("Audio Seconds Boundaries"),wxColour(0,100,255));

@@ -266,6 +266,15 @@ void AudioDisplay::UpdateImage(bool weak) {
 		}
 	}
 
+	// Draw current frame
+	if (Options.AsBool(_T("Audio Draw Video Position"))) {
+		if (VideoContext::Get()->IsLoaded()) {
+			dc.SetPen(wxPen(Options.AsColour(_T("Audio Play Cursor")),2,wxLONG_DASH));
+			int x = GetXAtMS(VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN()));
+			dc.DrawLine(x,0,x,h);
+		}
+	}
+
 	// Draw keyframes
 	if (drawKeyframes && VideoContext::Get()->KeyFramesLoaded()) {
 		DrawKeyframes(dc);
