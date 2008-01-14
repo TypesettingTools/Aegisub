@@ -1020,9 +1020,16 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	Freeze();
 	VideoContext::Get()->Stop();
 	try {
-		if (VideoContext::Get()->IsLoaded() && VFR_Output.GetFrameRateType() == VFR && !autoload) {
-			int result = wxMessageBox(_("You have timecodes loaded currently. Would you like to unload them?"), _("Unload timecodes?"), wxYES_NO, this);
-			if (result == wxYES) {
+		if (VideoContext::Get()->IsLoaded()) {
+			if (VFR_Output.GetFrameRateType() == VFR) {
+				if (!autoload) {
+					int result = wxMessageBox(_("You have timecodes loaded currently. Would you like to unload them?"), _("Unload timecodes?"), wxYES_NO, this);
+					if (result == wxYES) {
+						VFR_Output.Unload();
+					}
+				}
+			}
+			else {
 				VFR_Output.Unload();
 			}
 		}
