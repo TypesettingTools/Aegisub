@@ -773,10 +773,9 @@ namespace Automation4 {
 		for (int i = 0; i < (int)dia->Blocks.size(); i++) {
 			AssDialogueBlock *block = dia->Blocks[i];
 
-			switch (block->type) {
+			switch (block->GetType()) {
 
 				case BLOCK_BASE:
-					assert(block->type != BLOCK_BASE);
 					break;
 
 				case BLOCK_PLAIN:

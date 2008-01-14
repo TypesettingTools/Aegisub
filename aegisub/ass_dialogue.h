@@ -83,18 +83,16 @@ enum ASS_BlockType {
 // The GetText() method generates a new value for the "text" field from
 // the other fields in the specific class, and returns the new value.
 //
-// TODO: Support for {\p#}...{\p0}
-//
 class AssDialogueBlock {
 public:
 	wxString text;
-	ASS_BlockType type;
 	AssDialogue *parent;
 
 	AssDialogueBlock();
 	virtual ~AssDialogueBlock();
 
-	virtual wxString GetText() = 0; // make the class abstract
+	virtual ASS_BlockType GetType() = 0;
+	virtual wxString GetText() { return text; }
 	static AssDialogueBlockPlain *GetAsPlain(AssDialogueBlock *base);		// Returns a block base as a plain block if it is valid, null otherwise
 	static AssDialogueBlockOverride *GetAsOverride(AssDialogueBlock *base);	// Returns a block base as an override block if it is valid, null otherwise
 	static AssDialogueBlockDrawing *GetAsDrawing(AssDialogueBlock *base);	// Returns a block base as a drawing block if it is valid, null otherwise
@@ -109,8 +107,8 @@ public:
 // 
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
+	ASS_BlockType GetType() { return BLOCK_PLAIN; }
 	AssDialogueBlockPlain();
-	wxString GetText();
 };
 
 
@@ -124,9 +122,9 @@ class AssDialogueBlockDrawing : public AssDialogueBlock {
 public:
 	int Scale;
 
+	ASS_BlockType GetType() { return BLOCK_DRAWING; }
 	AssDialogueBlockDrawing();
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
-	wxString GetText();
 };
 
 
@@ -142,6 +140,7 @@ public:
 	~AssDialogueBlockOverride();
 	std::vector<AssOverrideTag*> Tags;
 
+	ASS_BlockType GetType() { return BLOCK_OVERRIDE; }
 	wxString GetText();
 	void ParseTags();		// Parses tags
 	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *),void *userData);

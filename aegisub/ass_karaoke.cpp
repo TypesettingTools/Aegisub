@@ -56,10 +56,9 @@ void ParseAssKaraokeTags(AssDialogue *line, AssKaraokeVector &syls)
 	for (int i = 0; i < (int)line->Blocks.size(); i++) {
 		AssDialogueBlock *block = line->Blocks[i];
 
-		switch (block->type) {
+		switch (block->GetType()) {
 
 			case BLOCK_BASE:
-				assert(block->type != BLOCK_BASE);
 				break;
 
 			case BLOCK_PLAIN:

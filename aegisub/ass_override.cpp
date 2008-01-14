@@ -83,7 +83,6 @@ void AssOverrideParameter::operator= (const AssOverrideParameter &param) {
 ///////////////
 // Constructor
 AssDialogueBlockOverride::AssDialogueBlockOverride () {
-	type = BLOCK_OVERRIDE;
 }
 
 

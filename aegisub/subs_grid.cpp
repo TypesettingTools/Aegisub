@@ -1313,7 +1313,7 @@ void SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 	// copying lost of code from automation.cpp here
 	// maybe it should be refactored, since a similar proc is also needed in audio_karaoke ?
 	for (std::vector<AssDialogueBlock*>::iterator block = line->Blocks.begin(); block != line->Blocks.end(); block++) {
-		switch ((*block)->type) {
+		switch ((*block)->GetType()) {
 			case BLOCK_BASE:
 				throw wxString(_T("BLOCK_BASE found processing dialogue blocks. This should never happen."));
 

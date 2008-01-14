@@ -163,7 +163,7 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 	current->ParseASSTags();
 	size_t size_blocks = current->Blocks.size();
 	for (size_t i=0;i<size_blocks;i++) {
-		if (current->Blocks.at(i)->type == BLOCK_PLAIN) nblocks++;
+		if (current->Blocks.at(i)->GetType() == BLOCK_PLAIN) nblocks++;
 	}
 
 	// Wrap around
@@ -200,7 +200,7 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 	int pos=-1;
 	for (vector<AssDialogueBlock*>::iterator cur=current->Blocks.begin();cur!=current->Blocks.end();cur++) {
 		curBlock = *cur;
-		if (curBlock->type == BLOCK_PLAIN) {
+		if (curBlock->GetType() == BLOCK_PLAIN) {
 			pos++;
 			int curLen = OrigText->GetUnicodePosition(OrigText->GetLength());
 			OrigText->AppendText(curBlock->text);
@@ -210,7 +210,7 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 				found = true;
 			}
 		}
-		else if (curBlock->type == BLOCK_OVERRIDE) OrigText->AppendText(_T("{") + curBlock->text + _T("}"));
+		else if (curBlock->GetType() == BLOCK_OVERRIDE) OrigText->AppendText(_T("{") + curBlock->text + _T("}"));
 	}
 	current->ClearBlocks();
 	OrigText->SetReadOnly(true);
@@ -312,7 +312,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		cur->ParseASSTags();
 		int nblock = -1;
 		for (unsigned int i=0;i<cur->Blocks.size();i++) {
-			if (cur->Blocks.at(i)->type == BLOCK_PLAIN) nblock++;
+			if (cur->Blocks.at(i)->GetType() == BLOCK_PLAIN) nblock++;
 			if (nblock == curblock) {
 				cur->Blocks.at(i)->text = TransText->GetValue();
 				break;
@@ -346,7 +346,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		current->ParseASSTags();
 		for (vector<AssDialogueBlock*>::iterator cur=current->Blocks.begin();cur!=current->Blocks.end();cur++) {
 			curBlock = *cur;
-			if (curBlock->type == BLOCK_PLAIN) {
+			if (curBlock->GetType() == BLOCK_PLAIN) {
 				pos++;
 				if (pos == curblock) {
 					TransText->AddText(curBlock->text);

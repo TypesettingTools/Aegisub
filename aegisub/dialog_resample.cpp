@@ -167,6 +167,16 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 
 		case PARCLASS_RELATIVE_SIZE_Y:
 			//resizer = ry;
+			break;
+
+		case PARCLASS_DRAWING:
+			{
+				AssDialogueBlockDrawing block;
+				block.text = curParam->AsText();
+				block.TransformCoords(m[0],m[2],rx,ry);
+				curParam->SetText(block.GetText());
+			}
+			return;
 
 		default:
 			return;

@@ -264,7 +264,7 @@ bool AssFile::CanSave() {
 		if (curdiag) {
 			curdiag->ParseASSTags();
 			for (size_t i=0;i<curdiag->Blocks.size();i++) {
-				if (curdiag->Blocks[i]->type != BLOCK_PLAIN) return false;
+				if (curdiag->Blocks[i]->GetType() != BLOCK_PLAIN) return false;
 			}
 			curdiag->ClearBlocks();
 		}

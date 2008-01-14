@@ -561,7 +561,7 @@ void AssDialogue::StripTag (wxString tagName) {
 
 	// Look for blocks
 	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
-		if ((*cur)->type == BLOCK_OVERRIDE) {
+		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
 			AssDialogueBlockOverride *over = AssDialogueBlock::GetAsOverride(*cur);
 			wxString temp;
 			for (size_t i=0;i<over->Tags.size();i++) {
@@ -682,7 +682,7 @@ void AssDialogue::UpdateText () {
 	using std::vector;
 	Text = _T("");
 	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
-		if ((*cur)->type == BLOCK_OVERRIDE) {
+		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
 			Text += _T("{");
 			Text += (*cur)->GetText();
 			Text += _T("}");
@@ -737,7 +737,7 @@ void AssDialogue::ProcessParameters(void (*callback)(wxString tagName,int par_n,
 	AssDialogueBlockOverride *curBlock;
 	//ParseASSTags();
 	for (std::vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
-		if ((*cur)->type == BLOCK_OVERRIDE) {
+		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
 			curBlock = static_cast<AssDialogueBlockOverride*> (*cur);
 			curBlock->ProcessParameters(callback,userData);
 		}
@@ -802,7 +802,6 @@ AssEntry *AssDialogue::Clone() {
 ///////////////
 // Constructor
 AssDialogueBlock::AssDialogueBlock () {
-	type = BLOCK_BASE;
 }
 
 
@@ -818,7 +817,7 @@ AssDialogueBlock::~AssDialogueBlock () {
 // If it isn't a plain block, returns NULL
 AssDialogueBlockPlain *AssDialogueBlock::GetAsPlain(AssDialogueBlock *base) {
 	if (!base) return NULL;
-	if (base->type == BLOCK_PLAIN) {
+	if (base->GetType() == BLOCK_PLAIN) {
 		return static_cast<AssDialogueBlockPlain*> (base);
 	}
 	return NULL;
@@ -831,7 +830,7 @@ AssDialogueBlockPlain *AssDialogueBlock::GetAsPlain(AssDialogueBlock *base) {
 // If it isn't an override block, returns NULL
 AssDialogueBlockOverride *AssDialogueBlock::GetAsOverride(AssDialogueBlock *base) {
 	if (!base) return NULL;
-	if (base->type == BLOCK_OVERRIDE) {
+	if (base->GetType() == BLOCK_OVERRIDE) {
 		return static_cast<AssDialogueBlockOverride*> (base);
 	}
 	return NULL;
@@ -844,7 +843,7 @@ AssDialogueBlockOverride *AssDialogueBlock::GetAsOverride(AssDialogueBlock *base
 // If it isn't an drawing block, returns NULL
 AssDialogueBlockDrawing *AssDialogueBlock::GetAsDrawing(AssDialogueBlock *base) {
 	if (!base) return NULL;
-	if (base->type == BLOCK_DRAWING) {
+	if (base->GetType() == BLOCK_DRAWING) {
 		return static_cast<AssDialogueBlockDrawing*> (base);
 	}
 	return NULL;
@@ -855,14 +854,6 @@ AssDialogueBlockDrawing *AssDialogueBlock::GetAsDrawing(AssDialogueBlock *base) 
 ///////////////
 // Constructor
 AssDialogueBlockPlain::AssDialogueBlockPlain () {
-	type = BLOCK_PLAIN;
-}
-
-
-///////////////////
-// Return the text
-wxString AssDialogueBlockPlain::GetText() {
-	return text;
 }
 
 
@@ -870,14 +861,6 @@ wxString AssDialogueBlockPlain::GetText() {
 ///////////////
 // Constructor
 AssDialogueBlockDrawing::AssDialogueBlockDrawing () {
-	type = BLOCK_DRAWING;
-}
-
-
-///////////////////
-// Return the text
-wxString AssDialogueBlockDrawing::GetText() {
-	return text;
 }
 
 
