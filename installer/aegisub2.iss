@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1618"
+#define MyAppVerName "Aegisub 2.00 alpha r1720"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -67,7 +67,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1618
+AppVersion=2.00 alpha r1720
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -79,91 +79,91 @@ Name: english; MessagesFile: compiler:Default.isl
 ;Source: RuntimeTestLibrary\RuntimeTestLibrary.dll; Flags: dontcopy nocompression
 Source: redist\vcredist_x86.exe; Flags: dontcopy nocompression
 ; main
-DestDir: {app}; Source: install\Aegisub.exe; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: install\Aegisub.pdb; Flags: ignoreversion; Components: main/pdb
-DestDir: {app}; Source: install\changelog.txt; Flags: ignoreversion; Tasks: ; Components: main
-DestDir: {app}; Source: install\license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
-DestDir: {app}; Source: install\aegisub-auto3.dll; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: ..\bin\Aegisub.exe; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: ..\bin\Aegisub.pdb; Flags: ignoreversion; Components: main/pdb
+DestDir: {app}; Source: ..\aegisub\changelog.txt; Flags: ignoreversion; Tasks: ; Components: main
+DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
+DestDir: {app}; Source: ..\bin\aegisub-auto3.dll; Flags: ignoreversion; Components: main
 ; avisynth
-DestDir: {app}; Source: redist\avisynth\devil.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: redist\avisynth\avisynth.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: redist\avisynth\DirectShowSource.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\devil.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\avisynth.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\DirectShowSource.dll; Flags: ignoreversion; Components: codec
 ; ffmpegsource
-DestDir: {app}; Source: install\FFMpegSource.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: install\avcodec-51.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: install\avformat-51.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: install\avutil-49.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: install\postproc-51.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: install\swscale-0.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\FFMpegSource.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\avcodec-51.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\avformat-51.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\avutil-49.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\postproc-51.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\swscale-0.dll; Flags: ignoreversion; Components: codec
 ; vsfilter
-DestDir: {app}\csri; Source: install\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
+DestDir: {app}\csri; Source: ..\bin\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
 ; auto4 main
-DestDir: {app}\automation\include; Source: install\automation\include\utils.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\unicode.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\cleantags.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\kara-templater.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\utils.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\unicode.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\karaskel.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\karaskel-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\cleantags.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\automation\autoload\kara-templater.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 ; auto4 samples
-DestDir: {app}\automation\demos; Source: install\automation\demos\future-windy-blur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\demos; Source: install\automation\demos\kara-templater-retime.ass; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: install\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\demos; Source: ..\automation\demos\future-windy-blur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\demos; Source: ..\automation\tests\kara-templater-retime.ass; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 ; auto3
-DestDir: {app}\automation\include; Source: install\automation\include\utils.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-adv.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: install\automation\include\karaskel-base.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\line-per-syllable.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\multi-template.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\auto3; Source: install\automation\auto3\simple-k-replacer.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\docs; Source: install\automation\docs\automation3.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\utils.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\karaskel.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\karaskel-adv.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\karaskel-adv.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\karaskel-base.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\karaskel-base.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\auto3; Source: ..\automation\auto3\line-per-syllable.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\auto3; Source: ..\automation\auto3\multi-template.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\auto3; Source: ..\automation\auto3\simple-k-replacer.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
+DestDir: {app}\automation\docs; Source: ..\automation\automation3.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 ; dictionaries
 #if IncludeSpeller != 0
-Source: install\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: dic/de_AT
-Source: install\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
-Source: install\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
-Source: install\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
-Source: install\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
-Source: install\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
-Source: install\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
-Source: install\dictionaries\es_ES.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
-Source: install\dictionaries\es_ES.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
-Source: install\dictionaries\fr_FR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
-Source: install\dictionaries\fr_FR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
-Source: install\dictionaries\it_IT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/it_IT
-Source: install\dictionaries\it_IT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/it_IT
-Source: install\dictionaries\nl_NL.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/nl_NL
-Source: install\dictionaries\nl_NL.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/nl_NL
-Source: install\dictionaries\pl_PL.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pl_PL
-Source: install\dictionaries\pl_PL.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pl_PL
-Source: install\dictionaries\pt_BR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
-Source: install\dictionaries\pt_BR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
-Source: install\dictionaries\pt_PT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
-Source: install\dictionaries\pt_PT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
-Source: install\dictionaries\sk_SK.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
-Source: install\dictionaries\sk_SK.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
-Source: install\dictionaries\sl_SI.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
-Source: install\dictionaries\sl_SI.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
-Source: install\dictionaries\sv_SE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
-Source: install\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
+Source: ..\bin\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: dic/de_AT
+Source: ..\bin\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
+Source: ..\bin\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
+Source: ..\bin\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
+Source: ..\bin\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
+Source: ..\bin\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
+Source: ..\bin\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
+Source: ..\bin\dictionaries\es_ES.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
+Source: ..\bin\dictionaries\es_ES.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
+Source: ..\bin\dictionaries\fr_FR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
+Source: ..\bin\dictionaries\fr_FR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
+Source: ..\bin\dictionaries\it_IT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/it_IT
+Source: ..\bin\dictionaries\it_IT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/it_IT
+Source: ..\bin\dictionaries\nl_NL.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/nl_NL
+Source: ..\bin\dictionaries\nl_NL.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/nl_NL
+Source: ..\bin\dictionaries\pl_PL.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pl_PL
+Source: ..\bin\dictionaries\pl_PL.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pl_PL
+Source: ..\bin\dictionaries\pt_BR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
+Source: ..\bin\dictionaries\pt_BR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
+Source: ..\bin\dictionaries\pt_PT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
+Source: ..\bin\dictionaries\pt_PT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
+Source: ..\bin\dictionaries\sk_SK.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
+Source: ..\bin\dictionaries\sk_SK.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
+Source: ..\bin\dictionaries\sl_SI.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
+Source: ..\bin\dictionaries\sl_SI.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
+Source: ..\bin\dictionaries\sv_SE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
+Source: ..\bin\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
 #endif
 ; thesauri
 #if IncludeThesaurus != 0
-Source: install\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/de_DE
-Source: install\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
-Source: install\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
-Source: install\dictionaries\th_en_US.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
-Source: install\dictionaries\th_es_ES.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
-Source: install\dictionaries\th_es_ES.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
-Source: install\dictionaries\th_fr_FR.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
-Source: install\dictionaries\th_fr_FR.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
-Source: install\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
-Source: install\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
+Source: ..\bin\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/de_DE
+Source: ..\bin\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
+Source: ..\bin\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
+Source: ..\bin\dictionaries\th_en_US.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
+Source: ..\bin\dictionaries\th_es_ES.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
+Source: ..\bin\dictionaries\th_es_ES.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
+Source: ..\bin\dictionaries\th_fr_FR.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
+Source: ..\bin\dictionaries\th_fr_FR.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
+Source: ..\bin\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
+Source: ..\bin\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
 #endif
 
 [Icons]
