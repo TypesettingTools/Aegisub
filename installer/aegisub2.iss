@@ -171,7 +171,7 @@ Name: {commonprograms}\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {a
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Components: main/runtime; Parameters: /Q
+;Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Components: main/runtime; Parameters: /Q
 
 [Components]
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
@@ -220,7 +220,7 @@ WelcomeLabel2=This will install {#MyAppVerName} on your computer.%n%n{#MyAppName
 function LoadLibrary(lpFileName: string): LongInt; external 'LoadLibraryA@kernel32.dll stdcall';
 function FreeLibrary(hModule: LongInt): Boolean; external 'FreeLibrary@kernel32.dll stdcall';
 
-procedure CurStepChanged(CurStep: TSetupStep)
+procedure CurStepChanged(CurStep: TSetupStep);
 var
   LibHandle: LongInt;
   ExecResult: Integer;
@@ -233,7 +233,7 @@ begin
 			ExtractTemporaryFile('vcredist_x86.exe');
 			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/Q', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
 			begin
-				MsgBox('Installation of runtime libraries failed. Aegisub will probably not work. The error was: ' + SysErrorMessage(ExecResult));
+				MsgBox('Installation of runtime libraries failed. Aegisub will probably not work. The error was: ' + SysErrorMessage(ExecResult), mbInformation, MB_OK);
 			end;
 		end
 		else
