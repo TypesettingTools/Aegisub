@@ -75,10 +75,15 @@ wxArrayString GetName(FT_Face &face,int id) {
 		FT_SfntName name;
 		FT_Get_Sfnt_Name(face,i,&name);
 		if (name.name_id == id) {
-			char *str = new char[name.string_len+1];
+			char *str = new char[name.string_len+2];
 			memcpy(str,name.string,name.string_len);
 			str[name.string_len] = 0;
-			final.Add(wxString(str, wxConvLocal));
+			str[name.string_len+1] = 0;
+			if (name.encoding_id == 0) final.Add(wxString(str, wxConvLocal));
+			else if (name.encoding_id == 1) {
+				wxMBConvUTF16LE conv;
+				final.Add(wxString((wxChar*)str,conv));
+			}
 			delete [] str;
 		}
 	}
