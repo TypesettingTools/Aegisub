@@ -81,8 +81,9 @@ wxArrayString GetName(FT_Face &face,int id) {
 			str[name.string_len+1] = 0;
 			if (name.encoding_id == 0) final.Add(wxString(str, wxConvLocal));
 			else if (name.encoding_id == 1) {
-				wxMBConvUTF16LE conv;
-				final.Add(wxString((wxChar*)str,conv));
+				wxMBConvUTF16BE conv;
+				wxString string(str,conv);
+				final.Add(string);
 			}
 			delete [] str;
 		}
@@ -140,14 +141,24 @@ void FreetypeFontFileLister::DoInitialize() {
 				wxArrayString family = GetName(face,1);
 				wxArrayString subFamily = GetName(face,2);
 				wxArrayString fullName = GetName(face,4);
-				//AddFont(fontfiles[i],family);
-				for (size_t j=0;j<family.Count() && j<subFamily.Count();j++) AddFont(fontfiles[i],family[j] + _T(" ") + subFamily[j]);
+				for (size_t j=0;j<family.Count() && j<subFamily.Count();j++) {
+					if (subFamily[j] != _T("Regular")) {
+						AddFont(fontfiles[i],family[j] + _T(" ") + subFamily[j]);
+						AddFont(fontfiles[i],_T("*")+family[j]);
+					}
+					else AddFont(fontfiles[i],family[j]);
+				}
 				for (size_t j=0;j<fullName.Count();j++) AddFont(fontfiles[i],fullName[j]);
 			}
 
-			// Add font
-			AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal));
-			if (face->style_name) AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal) + _T(" ") + wxString(face->style_name, wxConvLocal));
+			// Ordinary fonts
+			else {
+				if (face->style_name) {
+					AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal) + _T(" ") + wxString(face->style_name, wxConvLocal));
+					AddFont(fontfiles[i],_T("*")+wxString(face->family_name, wxConvLocal));
+				}
+				else AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal));
+			}
 			FT_Done_Face(face);
 		}
 	}

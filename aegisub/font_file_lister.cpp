@@ -100,7 +100,11 @@ void FontFileLister::ClearData() {
 wxArrayString FontFileLister::CacheGetFilesWithFace(wxString facename) {
 	FontMap::iterator iter = fontTable.find(facename);
 	if (iter != fontTable.end()) return iter->second;
-	else return wxArrayString();
+	else {
+		iter = fontTable.find(_T("*")+facename);
+		if (iter != fontTable.end()) return iter->second;
+		return wxArrayString();
+	}
 }
 
 
