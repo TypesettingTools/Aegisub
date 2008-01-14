@@ -40,6 +40,7 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
+#include <wx/fontenum.h>
 #include "ass_override.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
@@ -94,12 +95,17 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 
 	// Action radio box
 	wxArrayString choices;
-	choices.Add(_T("Check fonts for availability"));
-	choices.Add(_T("Copy fonts to folder"));
-	choices.Add(_T("Copy fonts to zipped archive"));
-	choices.Add(_T("Attach fonts to current subtitles"));
+	choices.Add(_("Check fonts for availability"));
+	choices.Add(_("Copy fonts to folder"));
+	choices.Add(_("Copy fonts to zipped archive"));
+	choices.Add(_("Attach fonts to current subtitles"));
+#ifdef __WXDEBUG__
+	choices.Add(_("DEBUG: Verify all fonts in system"));
+#endif
 	CollectAction = new wxRadioBox(this,RADIO_BOX,_T("Action"),wxDefaultPosition,wxDefaultSize,choices,1);
-	CollectAction->SetSelection(Options.AsInt(_T("Fonts Collector Action")));
+	size_t lastAction = Options.AsInt(_T("Fonts Collector Action"));
+	if (lastAction >= choices.GetCount()) lastAction = 0;
+	CollectAction->SetSelection(lastAction);
 
 	// Log box
 	LogBox = new wxStyledTextCtrl(this,-1,wxDefaultPosition,wxSize(300,210),0,_T(""));
@@ -384,25 +390,33 @@ void FontsCollectorThread::Collect() {
 	wxMutexGuiLeave();
 
 	// Scan file
-	AssDialogue *curDiag;
-	curLine = 0;
-	for (std::list<AssEntry*>::iterator cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-		// Collect from style
-		curStyle = AssEntry::GetAsStyle(*cur);
-		if (curStyle) {
-			AddFont(curStyle->font,true);
-		}
+	if (collector->CollectAction->GetSelection() != 4) {
+		AssDialogue *curDiag;
+		curLine = 0;
+		for (std::list<AssEntry*>::iterator cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
+			// Collect from style
+			curStyle = AssEntry::GetAsStyle(*cur);
+			if (curStyle) {
+				AddFont(curStyle->font,0);
+			}
 
-		// Collect from dialogue
-		else {
-			curDiag = AssEntry::GetAsDialogue(*cur);
-			if (curDiag) {
-				curLine++;
-				curDiag->ParseASSTags();
-				curDiag->ProcessParameters(GetFonts);
-				curDiag->ClearBlocks();
+			// Collect from dialogue
+			else {
+				curDiag = AssEntry::GetAsDialogue(*cur);
+				if (curDiag) {
+					curLine++;
+					curDiag->ParseASSTags();
+					curDiag->ProcessParameters(GetFonts);
+					curDiag->ClearBlocks();
+				}
 			}
 		}
+	}
+
+	// For maitenance, gather all on system
+	else {
+		wxArrayString fonts = wxFontEnumerator::GetFacenames();
+		for (size_t i=0;i<fonts.Count();i++) AddFont(fonts[i],2);
 	}
 
 	// Copy fonts
@@ -484,7 +498,7 @@ bool FontsCollectorThread::ProcessFont(wxString name) {
 	}
 
 	// Just checking, found
-	else if (action == 0) {
+	else if (action == 0 || action == 4) {
 		AppendText(_("Found.\n"),1);
 		return true;
 	}
@@ -565,14 +579,14 @@ bool FontsCollectorThread::AttachFont(wxString filename) {
 // Get fonts from ass overrides
 void FontsCollectorThread::GetFonts (wxString tagName,int par_n,AssOverrideParameter *param,void *usr) {
 	if (tagName == _T("\\fn")) {
-		instance->AddFont(param->AsText(),false);
+		instance->AddFont(param->AsText(),1);
 	}
 }
 
 
 ///////////////
 // Adds a font
-void FontsCollectorThread::AddFont(wxString fontname,bool isStyle) {
+void FontsCollectorThread::AddFont(wxString fontname,int mode) {
 	// @-fonts (CJK vertical layout variations) should be listed as the non-@ name
 	if (fontname.StartsWith(_T("@"), 0))
 		fontname.Remove(0, 1);
@@ -580,8 +594,9 @@ void FontsCollectorThread::AddFont(wxString fontname,bool isStyle) {
 	if (fonts.Index(fontname) == wxNOT_FOUND) {
 		fonts.Add(fontname);
 
-		if (isStyle) AppendText(wxString::Format(_("\"%s\" found on style \"%s\".\n"), fontname.c_str(), curStyle->name.c_str()));
-		if (!isStyle) AppendText(wxString::Format(_("\"%s\" found on dialogue line \"%d\".\n"), fontname.c_str(), curLine));
+		if (mode == 0) AppendText(wxString::Format(_("\"%s\" found on style \"%s\".\n"), fontname.c_str(), curStyle->name.c_str()));
+		else if (mode == 1) AppendText(wxString::Format(_("\"%s\" found on dialogue line \"%d\".\n"), fontname.c_str(), curLine));
+		else AppendText(wxString::Format(_("\"%s\" found.\n"), fontname.c_str()));
 	}
 }
 

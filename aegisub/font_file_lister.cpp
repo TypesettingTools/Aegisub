@@ -115,6 +115,11 @@ void FontFileLister::ClearCache() {
 ////////////
 // Add font
 void FontFileLister::AddFont(wxString filename,wxString facename) {
+	// See if it's a valid facename
+	facename.Trim(true).Trim(false);
+	if (facename.IsEmpty()) return;
+	if (facename.Lower().StartsWith(_T("copyright "))) return;
+
 	// Add filename to general list
 	if (fontFiles.Index(filename) == wxNOT_FOUND) {
 		fontFiles.Add(filename);

@@ -74,7 +74,7 @@ private:
 	bool AttachFont(wxString filename);
 
 	void Collect();
-	void AddFont(wxString fontname,bool isStyle);
+	void AddFont(wxString fontname,int mode);
 	void CollectFontData();
 	void AppendText(wxString text,int colour=0);
 

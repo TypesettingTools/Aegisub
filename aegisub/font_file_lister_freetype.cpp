@@ -64,6 +64,21 @@ FreetypeFontFileLister::~FreetypeFontFileLister() {
 }
 
 
+//////////////////////
+// Get name from face
+wxString GetName(FT_Face &face,int i) {
+	// Get name
+	FT_SfntName name;
+	FT_Get_Sfnt_Name(face,i,&name);
+	char *str = new char[name.string_len+1];
+	memcpy(str,name.string,name.string_len);
+	str[name.string_len] = 0;
+	wxString final(str, wxConvLocal);
+	delete [] str;
+	return final;
+}
+
+
 ///////////////////////////
 // Gather data from system
 void FreetypeFontFileLister::DoInitialize() {
@@ -104,8 +119,23 @@ void FreetypeFontFileLister::DoInitialize() {
 			fterr = FT_New_Face(ft2lib, fontfiles[i].mb_str(*wxConvFileName), facenum, &face);
 			if (fterr) break;
 
+			// Special names for TTF and OTF
+			int nameCount = 0;
+			wxString ext = fontfiles[i].Right(4).Lower();
+			if (ext == _T(".otf") || ext == _T(".ttf") || ext == _T(".ttc_")) nameCount = FT_Get_Sfnt_Name_Count(face);
+			if (nameCount >= 5) {
+				wxString family = GetName(face,1);
+				wxString subFamily = GetName(face,2);
+				wxString fullName = GetName(face,4);
+				//AddFont(fontfiles[i],family);
+				AddFont(fontfiles[i],family + _T(" ") + subFamily);;
+				AddFont(fontfiles[i],fullName);
+				AddFont(fontfiles[i],GetName(face,11));
+			}
+
 			// Add font
 			AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal));
+			if (face->style_name) AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal) + _T(" ") + wxString(face->style_name, wxConvLocal));
 			FT_Done_Face(face);
 		}
 	}
