@@ -67,6 +67,7 @@ private:
 	void OnModeChange(wxCommandEvent &event);
 	void OnSubTool(wxCommandEvent &event);
 	void OnToggleRealtime(wxCommandEvent &event);
+	void OnHelp(wxCommandEvent &event);
 
 public:
 	wxToolBar *visualToolBar;
@@ -104,4 +105,5 @@ enum {
 	Video_Mode_Clip,
 	Video_Mode_Vector_Clip,
 	Video_Mode_Realtime,
+	Video_Mode_Help
 };

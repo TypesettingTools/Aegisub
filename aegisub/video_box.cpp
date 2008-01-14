@@ -58,6 +58,7 @@
 #include "main.h"
 #include "toggle_bitmap.h"
 #include "visual_tool.h"
+#include "help_button.h"
 
 
 ///////////////
@@ -118,6 +119,7 @@ VideoBox::VideoBox(wxWindow *parent)
 	visualToolBar->AddSeparator();
 	visualToolBar->AddTool(Video_Mode_Realtime,_("Realtime"),wxBITMAP(visual_realtime),_("Toggle realtime display of changes."),wxITEM_CHECK);
 	visualToolBar->ToggleTool(Video_Mode_Realtime,Options.AsBool(_T("Video Visual Realtime")));
+	visualToolBar->AddTool(Video_Mode_Help,_("Help"),wxBITMAP(visual_help),_("Open the manual page for Visual Typesetting."));
 	visualToolBar->Realize();
 
 	// Top sizer
@@ -160,6 +162,7 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 	EVT_TOOL_RANGE(Video_Mode_Standard, Video_Mode_Vector_Clip, VideoBox::OnModeChange)
 	EVT_TOOL_RANGE(VISUAL_SUB_TOOL_START,VISUAL_SUB_TOOL_END, VideoBox::OnSubTool)
 	EVT_TOOL(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
+	EVT_TOOL(Video_Mode_Help, VideoBox::OnHelp)
 END_EVENT_TABLE()
 
 
@@ -223,6 +226,13 @@ void VideoBox::OnSubTool(wxCommandEvent &event) {
 void VideoBox::OnToggleRealtime(wxCommandEvent &event) {
 	Options.SetBool(_T("Video Visual Realtime"),event.IsChecked());
 	Options.Save();
+}
+
+
+////////
+// Help
+void VideoBox::OnHelp(wxCommandEvent &event) {
+	HelpButton::OpenPage(_T("Visual Typesetting"));
 }
 
 

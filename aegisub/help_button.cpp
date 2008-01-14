@@ -114,5 +114,6 @@ void HelpButton::InitStatic() {
 		page[_T("Styles Manager")] = _T("Styles");
 		page[_T("Styling Assistant")] = _T("Styling_Assistant");
 		page[_T("Timing Processor")] = _T("Timing_Post-Processor");
+		page[_T("Visual Typesetting")] = _T("Visual_Typesetting");
 	}
 }
