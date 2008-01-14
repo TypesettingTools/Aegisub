@@ -66,15 +66,23 @@ FreetypeFontFileLister::~FreetypeFontFileLister() {
 
 //////////////////////
 // Get name from face
-wxString GetName(FT_Face &face,int i) {
+wxArrayString GetName(FT_Face &face,int id) {
 	// Get name
-	FT_SfntName name;
-	FT_Get_Sfnt_Name(face,i,&name);
-	char *str = new char[name.string_len+1];
-	memcpy(str,name.string,name.string_len);
-	str[name.string_len] = 0;
-	wxString final(str, wxConvLocal);
-	delete [] str;
+	wxArrayString final;
+	int count = FT_Get_Sfnt_Name_Count(face);
+
+	for (int i=0;i<count;i++) {
+		FT_SfntName name;
+		FT_Get_Sfnt_Name(face,i,&name);
+		if (name.name_id == id) {
+			char *str = new char[name.string_len+1];
+			memcpy(str,name.string,name.string_len);
+			str[name.string_len] = 0;
+			final.Add(wxString(str, wxConvLocal));
+			delete [] str;
+		}
+	}
+
 	return final;
 }
 
@@ -123,14 +131,13 @@ void FreetypeFontFileLister::DoInitialize() {
 			int nameCount = 0;
 			wxString ext = fontfiles[i].Right(4).Lower();
 			if (ext == _T(".otf") || ext == _T(".ttf") || ext == _T(".ttc_")) nameCount = FT_Get_Sfnt_Name_Count(face);
-			if (nameCount >= 5) {
-				wxString family = GetName(face,1);
-				wxString subFamily = GetName(face,2);
-				wxString fullName = GetName(face,4);
+			if (nameCount > 0) {
+				wxArrayString family = GetName(face,1);
+				wxArrayString subFamily = GetName(face,2);
+				wxArrayString fullName = GetName(face,4);
 				//AddFont(fontfiles[i],family);
-				AddFont(fontfiles[i],family + _T(" ") + subFamily);;
-				AddFont(fontfiles[i],fullName);
-				AddFont(fontfiles[i],GetName(face,11));
+				for (size_t j=0;j<family.Count() && j<subFamily.Count();j++) AddFont(fontfiles[i],family[j] + _T(" ") + subFamily[j]);
+				for (size_t j=0;j<fullName.Count();j++) AddFont(fontfiles[i],fullName[j]);
 			}
 
 			// Add font
