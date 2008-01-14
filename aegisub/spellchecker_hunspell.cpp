@@ -60,6 +60,7 @@ private:
 	wxCSConv *conv;
 	wxString affpath;
 	wxString dicpath;
+	wxString usrdicpath;
 
 	void Reset();
 
@@ -133,13 +134,19 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	// Add to currently loaded file
 	hunspell->add(word.mb_str(*conv));
 
+	// Ensure that the path exists
+	wxFileName fn(usrdicpath);
+	if (!fn.DirExists()) {
+		wxFileName::Mkdir(fn.GetPath());
+	}
+
 	// Load dictionary
 	wxArrayString dic;
 	wxString curLine;
-	if (!dicpath.IsEmpty()) {			// Even if you ever want to remove this "if", keep the braces, so the stream closes at the end
+	bool added = false;
+	if (fn.FileExists()) {	// Even if you ever want to remove this "if", keep the braces, so the stream closes at the end
 		bool first = true;
-		bool added = false;
-		wxFileInputStream in(dicpath);
+		wxFileInputStream in(usrdicpath);
 		if (!in.IsOk()) return;
 		wxTextInputStream textIn(in,_T(" \t"),*conv);
 
@@ -148,6 +155,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 			// Read line
 			curLine = textIn.ReadLine();
 			curLine.Trim();
+			if (curLine.IsEmpty()) continue;
 
 			// First
 			if (first) {
@@ -165,9 +173,12 @@ void HunspellSpellChecker::AddWord(wxString word) {
 			dic.Add(curLine);
 		}
 	}
+
+	// Not added yet
+	if (!added) dic.Add(word);
 	
 	// Write back to disk
-	wxFileOutputStream out(dicpath);
+	wxFileOutputStream out(usrdicpath);
 	if (!out.IsOk()) return;
 	wxTextOutputStream textOut(out,wxEOL_UNIX,*conv);
 	textOut.WriteString(wxString::Format(_T("%i"),dic.Count())+_T("\n"));
@@ -259,10 +270,12 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 
 	// Get dir name
 	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),StandardPaths::DecodePath(_T("?data/"))) + _T("/");
+	wxString userPath = StandardPaths::DecodePath(_T("?user/dictionaries/user_"));
 
 	// Get affix and dictionary paths
 	affpath = path + language + _T(".aff");
 	dicpath = path + language + _T(".dic");
+	usrdicpath = userPath + language + _T(".dic");
 
 	// Check if language is available
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;
@@ -270,7 +283,23 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	// Load
 	hunspell = new Hunspell(affpath.mb_str(wxConvLocal),dicpath.mb_str(wxConvLocal));
 	conv = NULL;
-	if (hunspell) conv = new wxCSConv(wxString(hunspell->get_dic_encoding(),wxConvUTF8));
+	if (hunspell) {
+		conv = new wxCSConv(wxString(hunspell->get_dic_encoding(),wxConvUTF8));
+
+		// Load user dictionary
+		if (wxFileExists(usrdicpath)) {
+			wxFileInputStream in(usrdicpath);
+			if (!in.IsOk()) return;
+			wxTextInputStream textIn(in,_T(" \t"),*conv);
+			while (in.CanRead() && !in.Eof()) {
+				// Read line
+				wxString curLine = textIn.ReadLine();
+				curLine.Trim();
+				if (curLine.IsEmpty() || curLine.IsNumber()) continue;
+				hunspell->add(curLine.mb_str(*conv));
+			}
+		}
+	}
 }
 
 #endif // WITH_HUNSPELL

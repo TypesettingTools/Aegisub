@@ -99,7 +99,7 @@ void HelpButton::InitStatic() {
 		page[_T("Automation Manager")] = _T("Automation_Manager");
 		page[_T("Colour Picker")] = _T("Colour_Picker");
 		page[_T("Dummy Video")] = _T("Dummy_video");
-		page[_T("Export")] = _T("Export");
+		page[_T("Export")] = _T("Exporting");
 		page[_T("Fonts Collector")] = _T("Fonts_Collector");
 		page[_T("Kanji Timer")] = _T("Kanji_Timer");
 		page[_T("Main")] = _T("");

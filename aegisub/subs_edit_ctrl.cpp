@@ -1004,6 +1004,7 @@ void SubsTextEditCtrl::OnSelectAll(wxCommandEvent &event) {
 // Add word to dictionary
 void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &event) {
 	if (spellchecker) spellchecker->AddWord(currentWord);
+	UpdateStyle();
 	SetFocus();
 }
 
