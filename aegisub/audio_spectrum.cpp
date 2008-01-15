@@ -39,6 +39,9 @@
 #include <list>
 #include <utility>
 #include <algorithm>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 #include "audio_spectrum.h"
 #include "fft.h"
 #include "colorspace.h"
@@ -155,11 +158,11 @@ public:
 		unsigned int overlap_offset = line_length / overlaps * 2; // FIXME: the result seems weird/wrong without this factor 2, but why?
 
 		// Raw sample data
-		short *raw_sample_data = new short[line_length*2];
-		float *sample_data = new float[line_length*2];
+		short *raw_sample_data = NULL;
+		float *sample_data = NULL;
 		// Real and imaginary components of the output
-		float *out_r = new float[line_length*2];
-		float *out_i = new float[line_length*2];
+		float *out_r = NULL;
+		float *out_i = NULL;
 
 		FFT fft; // Use FFTW instead? A wavelet?
 
@@ -170,28 +173,45 @@ public:
 			// a frequenmcy/power spectrum.
 			int64_t sample = start * line_length*2 + overlap*overlap_offset;
 
-			for (unsigned long i = 0; i < length; ++i) {
-				provider->GetAudio(raw_sample_data, sample, line_length*2);
-				for (size_t j = 0; j < line_length; ++j) {
-					sample_data[j*2] = (float)raw_sample_data[j*2];
-					sample_data[j*2+1] = (float)raw_sample_data[j*2+1];
+			long len = length;
+#ifdef _OPENMP
+#pragma omp parallel shared(overlap,len,line_length)
+#endif
+			{
+				short *raw_sample_data = new short[line_length*2];
+				float *sample_data = new float[line_length*2];
+				float *out_r = new float[line_length*2];
+				float *out_i = new float[line_length*2];
+
+#ifdef _OPENMP
+#pragma omp for
+#endif
+				for (long i = 0; i < len; ++i) {
+					// Initialize
+					sample = start * line_length*2 + overlap*overlap_offset + i*line_length*2;
+
+					provider->GetAudio(raw_sample_data, sample, line_length*2);
+					for (size_t j = 0; j < line_length; ++j) {
+						sample_data[j*2] = (float)raw_sample_data[j*2];
+						sample_data[j*2+1] = (float)raw_sample_data[j*2+1];
+					}
+
+					fft.Transform(line_length*2, sample_data, out_r, out_i);
+
+					CacheLine &line = data[i + length*overlap];
+					for (size_t j = 0; j < line_length; ++j) {
+						line[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
+					}
+
+					//sample += line_length*2;
 				}
 
-				fft.Transform(line_length*2, sample_data, out_r, out_i);
-
-				CacheLine &line = data[i + length*overlap];
-				for (size_t j = 0; j < line_length; ++j) {
-					line[j] = sqrt(out_r[j]*out_r[j] + out_i[j]*out_i[j]);
-				}
-
-				sample += line_length*2;
+				delete[] raw_sample_data;
+				delete[] sample_data;
+				delete[] out_r;
+				delete[] out_i;
 			}
 		}
-
-		delete[] raw_sample_data;
-		delete[] sample_data;
-		delete[] out_r;
-		delete[] out_i;
 	}
 
 	virtual ~FinalSpectrumCache()
