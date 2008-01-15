@@ -425,7 +425,7 @@ void VideoContext::UpdateDisplays(bool full) {
 	}
 
 	// Update audio display
-	if (audio && audio->loaded) {
+	if (audio && audio->loaded && audio->IsShownOnScreen()) {
 		if (Options.AsBool(_T("Audio Draw Video Position"))) {
 			audio->UpdateImage(false);
 		}
