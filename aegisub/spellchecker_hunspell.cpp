@@ -132,7 +132,11 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	if (!hunspell) return;
 
 	// Add to currently loaded file
+#ifdef WITH_OLD_HUNSPELL
+	hunspell->put_word(word.mb_str(*conv));
+#else
 	hunspell->add(word.mb_str(*conv));
+#endif
 
 	// Ensure that the path exists
 	wxFileName fn(usrdicpath);
@@ -296,7 +300,11 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 				wxString curLine = textIn.ReadLine();
 				curLine.Trim();
 				if (curLine.IsEmpty() || curLine.IsNumber()) continue;
+#ifdef WITH_OLD_HUNSPELL
+				hunspell->put_word(curLine.mb_str(*conv));
+#else
 				hunspell->add(curLine.mb_str(*conv));
+#endif
 			}
 		}
 	}

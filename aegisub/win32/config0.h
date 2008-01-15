@@ -80,7 +80,10 @@
 
 // Enable Hunspell-based spellchecker
 // Requires: hunspell (in repository for Win32)
+// If you have an old version of Hunspell (that uses Hunspell::put_word() instead of Hunspell::add()),
+// uncomment the second line as well.
 //#define WITH_HUNSPELL
+//#define WITH_OLD_HUNSPELL
 
 
 /////////////// LOW PRIORITY ////////////
