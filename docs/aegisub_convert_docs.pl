@@ -11,7 +11,8 @@
 #
 #########
 # 
-# No copyright, no license.
+# Written by Karl Blomster (TheFluff) 2008
+# This script is hereby given into the public domain. Do whatever you want with it.
 #
 ########################
 
