@@ -1,15 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Rodrigo Braz Monteiro
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: aegisub/dialog_kanji_timer.cpp:88 aegisub/dialog_kanji_timer.cpp:90
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-05 16:53+0200\n"
+"POT-Creation-Date: 2008-01-15 02:30-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,483 +16,478 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: aegisub/ass_style.cpp:573
+#: ass_style.cpp:567
 msgid "ANSI"
 msgstr ""
 
-#: aegisub/ass_style.cpp:574
+#: ass_style.cpp:568 dialog_options.cpp:606
 msgid "Default"
 msgstr ""
 
-#: aegisub/ass_style.cpp:575
+#: ass_style.cpp:569
 msgid "Symbol"
 msgstr ""
 
-#: aegisub/ass_style.cpp:576
+#: ass_style.cpp:570
 msgid "Mac"
 msgstr ""
 
-#: aegisub/ass_style.cpp:577
+#: ass_style.cpp:571
 msgid "Shift_JIS"
 msgstr ""
 
-#: aegisub/ass_style.cpp:578
+#: ass_style.cpp:572
 msgid "Hangeul"
 msgstr ""
 
-#: aegisub/ass_style.cpp:579
+#: ass_style.cpp:573
 msgid "Johab"
 msgstr ""
 
-#: aegisub/ass_style.cpp:580
+#: ass_style.cpp:574
 msgid "GB2312"
 msgstr ""
 
-#: aegisub/ass_style.cpp:581
+#: ass_style.cpp:575
 msgid "Chinese BIG5"
 msgstr ""
 
-#: aegisub/ass_style.cpp:582
+#: ass_style.cpp:576
 msgid "Greek"
 msgstr ""
 
-#: aegisub/ass_style.cpp:583
+#: ass_style.cpp:577
 msgid "Turkish"
 msgstr ""
 
-#: aegisub/ass_style.cpp:584
+#: ass_style.cpp:578
 msgid "Vietnamese"
 msgstr ""
 
-#: aegisub/ass_style.cpp:585
+#: ass_style.cpp:579
 msgid "Hebrew"
 msgstr ""
 
-#: aegisub/ass_style.cpp:586
+#: ass_style.cpp:580
 msgid "Arabic"
 msgstr ""
 
-#: aegisub/ass_style.cpp:587
+#: ass_style.cpp:581
 msgid "Baltic"
 msgstr ""
 
-#: aegisub/ass_style.cpp:588
+#: ass_style.cpp:582
 msgid "Russian"
 msgstr ""
 
-#: aegisub/ass_style.cpp:589
+#: ass_style.cpp:583
 msgid "Thai"
 msgstr ""
 
-#: aegisub/ass_style.cpp:590
+#: ass_style.cpp:584
 msgid "East European"
 msgstr ""
 
-#: aegisub/ass_style.cpp:591
+#: ass_style.cpp:585
 msgid "OEM"
 msgstr ""
 
-#: aegisub/audio_box.cpp:69
+#: audio_box.cpp:69
 msgid "Seek bar"
 msgstr ""
 
-#: aegisub/audio_box.cpp:87
+#: audio_box.cpp:87
 msgid "Horizontal zoom"
 msgstr ""
 
-#: aegisub/audio_box.cpp:90
+#: audio_box.cpp:90
 msgid "Vertical zoom"
 msgstr ""
 
-#: aegisub/audio_box.cpp:93
+#: audio_box.cpp:93
 msgid "Audio Volume"
 msgstr ""
 
-#: aegisub/audio_box.cpp:100
+#: audio_box.cpp:100
 msgid "Link vertical zoom and volume sliders"
 msgstr ""
 
-#: aegisub/audio_box.cpp:127
+#: audio_box.cpp:127
 msgid "Previous line or syllable (%KEY%/%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:130
+#: audio_box.cpp:130
 msgid "Next line/syllable (%KEY%/%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:133
+#: audio_box.cpp:133
 msgid "Play selection (%KEY%/%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:136
+#: audio_box.cpp:136
 msgid "Play current line (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:139
+#: audio_box.cpp:139
 msgid "Stop (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:143
+#: audio_box.cpp:143
 msgid "Play 500 ms before selection (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:146
+#: audio_box.cpp:146
 msgid "Play 500 ms after selection (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:149
+#: audio_box.cpp:149
 msgid "Play first 500ms of selection (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:152
+#: audio_box.cpp:152
 msgid "Play last 500ms of selection (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:155
+#: audio_box.cpp:155
 msgid "Play from selection start to end of file (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:159
+#: audio_box.cpp:159
 msgid "Add lead in (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:162
+#: audio_box.cpp:162
 msgid "Add lead out (%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:166
+#: audio_box.cpp:166
 msgid "Commit changes (%KEY%/%KEY%)"
 msgstr ""
 
-#: aegisub/audio_box.cpp:169
+#: audio_box.cpp:169
 msgid "Go to selection"
 msgstr ""
 
-#: aegisub/audio_box.cpp:173
+#: audio_box.cpp:173
 msgid "Automatically commit all changes"
 msgstr ""
 
-#: aegisub/audio_box.cpp:177
+#: audio_box.cpp:177
 msgid "Auto goes to next line on commit"
 msgstr ""
 
-#: aegisub/audio_box.cpp:181
+#: audio_box.cpp:181
 msgid "Auto scrolls audio display to selected line"
 msgstr ""
 
-#: aegisub/audio_box.cpp:185
+#: audio_box.cpp:185
 msgid "Spectrum analyzer mode"
 msgstr ""
 
-#: aegisub/audio_box.cpp:189
+#: audio_box.cpp:189
 msgid "Enable Medusa-Style Timing Shortcuts"
 msgstr ""
 
-#: aegisub/audio_box.cpp:200
+#: audio_box.cpp:200
 msgid "Karaoke"
 msgstr ""
 
-#: aegisub/audio_box.cpp:201
+#: audio_box.cpp:201
 msgid "Toggle karaoke mode"
 msgstr ""
 
-#: aegisub/audio_box.cpp:551
+#: audio_box.cpp:553
 msgid "Cancel Split"
 msgstr ""
 
-#: aegisub/audio_box.cpp:552
+#: audio_box.cpp:554
 msgid "Discard all splits and leave split-mode"
 msgstr ""
 
-#: aegisub/audio_box.cpp:553
+#: audio_box.cpp:555
 msgid "Accept Split"
 msgstr ""
 
-#: aegisub/audio_box.cpp:554
+#: audio_box.cpp:556
 msgid "Commit splits and leave split-mode"
 msgstr ""
 
-#: aegisub/audio_box.cpp:556
+#: audio_box.cpp:558
 msgid "Join"
 msgstr ""
 
-#: aegisub/audio_box.cpp:557
+#: audio_box.cpp:559
 msgid "Join selected syllables"
 msgstr ""
 
-#: aegisub/audio_box.cpp:558
+#: audio_box.cpp:560
 msgid "Split"
 msgstr ""
 
-#: aegisub/audio_box.cpp:559
+#: audio_box.cpp:561
 msgid "Enter split-mode"
 msgstr ""
 
-#: aegisub/audio_display.cpp:2132 aegisub/audio_display.cpp:2187
+#: audio_display.cpp:2224 audio_display.cpp:2279
 msgid ""
 "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr ""
 
-#: aegisub/audio_display.cpp:2132 aegisub/audio_display.cpp:2187
+#: audio_display.cpp:2224 audio_display.cpp:2279
 msgid "Commit?"
 msgstr ""
 
-#: aegisub/audio_karaoke.cpp:788
+#: audio_karaoke.cpp:796
 msgid "Karaoke tag"
 msgstr ""
 
-#: aegisub/audio_karaoke.cpp:792
+#: audio_karaoke.cpp:800
 msgid "Change karaoke tag to \\k"
 msgstr ""
 
-#: aegisub/audio_karaoke.cpp:793
+#: audio_karaoke.cpp:801
 msgid "Change karaoke tag to \\kf"
 msgstr ""
 
-#: aegisub/audio_karaoke.cpp:794
+#: audio_karaoke.cpp:802
 msgid "Change karaoke tag to \\ko"
 msgstr ""
 
-#: aegisub/audio_provider_ram.cpp:85
+#: audio_provider_ram.cpp:85
 msgid "Load audio"
 msgstr ""
 
-#: aegisub/audio_provider_ram.cpp:85
+#: audio_provider_ram.cpp:85
 msgid "Reading into RAM"
 msgstr ""
 
-#: aegisub/auto4_base.cpp:390 aegisub/dialog_kanji_timer.cpp:105
+#: auto4_base.cpp:399 dialog_kanji_timer.cpp:106
 msgid "Close"
 msgstr ""
 
-#: aegisub/auto4_base.cpp:392
+#: auto4_base.cpp:401
 msgid "Script completed"
 msgstr ""
 
-#: aegisub/auto4_base.cpp:740
-#, c-format
+#: auto4_base.cpp:749
+#, possible-c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
 msgstr ""
 
-#: aegisub/auto4_base.cpp:753
-#, c-format
+#: auto4_base.cpp:762
+#, possible-c-format
 msgid "The file was not recognised as an Automation script: %s"
 msgstr ""
 
-#: aegisub/auto4_base.cpp:774
+#: auto4_base.cpp:783
 msgid "File was not recognized as a script"
 msgstr ""
 
-#: aegisub/base_grid.cpp:410
+#: base_grid.cpp:410
 msgid "#"
 msgstr ""
 
-#: aegisub/base_grid.cpp:411
+#: base_grid.cpp:411
 msgid "L"
 msgstr ""
 
-#: aegisub/base_grid.cpp:412 aegisub/dialog_kanji_timer.cpp:98
-#: aegisub/subs_grid.cpp:117
+#: base_grid.cpp:412 dialog_kanji_timer.cpp:99 subs_grid.cpp:117
 msgid "Start"
 msgstr ""
 
-#: aegisub/base_grid.cpp:413 aegisub/subs_grid.cpp:118
+#: base_grid.cpp:413 subs_grid.cpp:118
 msgid "End"
 msgstr ""
 
-#: aegisub/base_grid.cpp:414 aegisub/dialog_options.cpp:215
-#: aegisub/dialog_options.cpp:287 aegisub/dialog_options.cpp:472
-#: aegisub/dialog_search_replace.cpp:93 aegisub/dialog_selection.cpp:96
-#: aegisub/subs_grid.cpp:119
+#: base_grid.cpp:414 dialog_options.cpp:212 dialog_options.cpp:284
+#: dialog_options.cpp:471 dialog_paste_over.cpp:66
+#: dialog_search_replace.cpp:94 dialog_selection.cpp:74 subs_grid.cpp:119
 msgid "Style"
 msgstr ""
 
-#: aegisub/base_grid.cpp:415 aegisub/dialog_search_replace.cpp:94
-#: aegisub/dialog_selection.cpp:97 aegisub/subs_edit_box.cpp:88
-#: aegisub/subs_grid.cpp:120
+#: base_grid.cpp:415 dialog_paste_over.cpp:67 dialog_search_replace.cpp:95
+#: dialog_selection.cpp:75 subs_edit_box.cpp:88 subs_grid.cpp:120
 msgid "Actor"
 msgstr ""
 
-#: aegisub/base_grid.cpp:416 aegisub/subs_edit_box.cpp:91
-#: aegisub/subs_grid.cpp:121
+#: base_grid.cpp:416 dialog_paste_over.cpp:77 dialog_selection.cpp:76
+#: subs_edit_box.cpp:91 subs_grid.cpp:121
 msgid "Effect"
 msgstr ""
 
-#: aegisub/base_grid.cpp:417 aegisub/dialog_style_editor.cpp:241
-#: aegisub/subs_grid.cpp:122
+#: base_grid.cpp:417 dialog_style_editor.cpp:253 subs_grid.cpp:122
 msgid "Left"
 msgstr ""
 
-#: aegisub/base_grid.cpp:418 aegisub/dialog_style_editor.cpp:241
-#: aegisub/subs_grid.cpp:123
+#: base_grid.cpp:418 dialog_style_editor.cpp:253 subs_grid.cpp:123
 msgid "Right"
 msgstr ""
 
-#: aegisub/base_grid.cpp:419 aegisub/dialog_style_editor.cpp:241
-#: aegisub/subs_grid.cpp:124
+#: base_grid.cpp:419 dialog_style_editor.cpp:253 subs_grid.cpp:124
 msgid "Vert"
 msgstr ""
 
-#: aegisub/base_grid.cpp:420 aegisub/dialog_kanji_timer.cpp:72
-#: aegisub/dialog_search_replace.cpp:92 aegisub/dialog_selection.cpp:95
+#: base_grid.cpp:420 dialog_kanji_timer.cpp:73 dialog_paste_over.cpp:78
+#: dialog_paste_over.cpp:90 dialog_search_replace.cpp:93
+#: dialog_selection.cpp:73
 msgid "Text"
 msgstr ""
 
-#: aegisub/browse_button.cpp:50
+#: browse_button.cpp:50
 msgid "Browse..."
 msgstr ""
 
-#: aegisub/browse_button.cpp:72
+#: browse_button.cpp:74
 msgid "Please choose the folder:"
 msgstr ""
 
-#: aegisub/dialog_about.cpp:48 aegisub/frame_main.cpp:444
+#: dialog_about.cpp:51 frame_main.cpp:498
 msgid "About Aegisub"
 msgstr ""
 
-#: aegisub/dialog_about.cpp:60
+#: dialog_about.cpp:63
 msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 msgstr ""
 
-#: aegisub/dialog_about.cpp:74
+#: dialog_about.cpp:77
 msgid "Translated into LANGUAGE by PERSON\n"
 msgstr ""
 
-#: aegisub/dialog_about.cpp:76
+#: dialog_about.cpp:79
 msgid " by ArchMage ZeratuL.\n"
 msgstr ""
 
-#: aegisub/dialog_about.cpp:80
+#: dialog_about.cpp:82
 msgid "Programmers: "
 msgstr ""
 
-#: aegisub/dialog_about.cpp:82
+#: dialog_about.cpp:84
 msgid "Manual by: "
 msgstr ""
 
-#: aegisub/dialog_about.cpp:84
+#: dialog_about.cpp:86
 msgid "Forum, wiki and bug tracker hosting by: "
 msgstr ""
 
-#: aegisub/dialog_about.cpp:86
+#: dialog_about.cpp:88
 msgid "SVN hosting by: "
 msgstr ""
 
-#: aegisub/dialog_about.cpp:90
+#: dialog_about.cpp:92
 msgid ""
 "\n"
 "See the help file for full credits.\n"
 msgstr ""
 
-#: aegisub/dialog_about.cpp:91
-#, c-format
+#: dialog_about.cpp:93
+#, possible-c-format
 msgid "Built by %s on %s."
 msgstr ""
 
-#: aegisub/dialog_associations.cpp:46
+#: dialog_associations.cpp:48
 msgid "Associate extensions"
 msgstr ""
 
-#: aegisub/dialog_associations.cpp:63
+#: dialog_associations.cpp:65
 msgid ""
 "Please select the formats you want to\n"
 "associate with Aegisub:"
 msgstr ""
 
-#: aegisub/dialog_associations.cpp:64
+#: dialog_associations.cpp:66
 msgid "Associations"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:53
+#: dialog_attachments.cpp:56
 msgid "Attachment List"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:63
+#: dialog_attachments.cpp:66
 msgid "E&xtract"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:64
+#: dialog_attachments.cpp:67
 msgid "&Delete"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:70
+#: dialog_attachments.cpp:73
 msgid "Attach &Font"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:71
+#: dialog_attachments.cpp:74
 msgid "Attach &Graphics"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:74 aegisub/dialog_automation.cpp:61
+#: dialog_attachments.cpp:78 dialog_automation.cpp:67
 msgid "&Close"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:93
+#: dialog_attachments.cpp:97
 msgid "Attachment name"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:94
+#: dialog_attachments.cpp:98
 msgid "Size"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:95
+#: dialog_attachments.cpp:99
 msgid "Group"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:139 aegisub/dialog_attachments.cpp:172
+#: dialog_attachments.cpp:143 dialog_attachments.cpp:176
 msgid "Choose file to be attached"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:210
+#: dialog_attachments.cpp:214
 msgid "Select the path to save the files to:"
 msgstr ""
 
-#: aegisub/dialog_attachments.cpp:214
+#: dialog_attachments.cpp:218
 msgid "Select the path to save the file to:"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:46
+#: dialog_automation.cpp:52
 msgid "Automation Manager"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:56
+#: dialog_automation.cpp:62
 msgid "&Add"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:57
+#: dialog_automation.cpp:63
 msgid "&Remove"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:58
+#: dialog_automation.cpp:64
 msgid "Re&load"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:59
+#: dialog_automation.cpp:65
 msgid "Show &Info"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:60
+#: dialog_automation.cpp:66
 msgid "Re&scan Autoload Dir"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:65
+#: dialog_automation.cpp:71
 msgid "Name"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:66
+#: dialog_automation.cpp:72
 msgid "Filename"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:67
+#: dialog_automation.cpp:73
 msgid "Description"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:195
+#: dialog_automation.cpp:208
 msgid "Add Automation script"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:266
-#, c-format
+#: dialog_automation.cpp:279
+#, possible-c-format
 msgid ""
 "Total scripts loaded: %d\n"
 "Global scripts loaded: %d\n"
@@ -501,12 +495,12 @@ msgid ""
 "\n"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:271
+#: dialog_automation.cpp:284
 msgid "Scripting engines installed:\n"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:278
-#, c-format
+#: dialog_automation.cpp:291
+#, possible-c-format
 msgid ""
 "\n"
 "Script info:\n"
@@ -515,361 +509,404 @@ msgid ""
 "Author: %s\n"
 "Version: %s\n"
 "Full path: %s\n"
-"State: %s"
+"State: %s\n"
+"\n"
+"Features provided by script:\n"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:284
+#: dialog_automation.cpp:297
 msgid "Correctly loaded"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:284
+#: dialog_automation.cpp:297
 msgid "Failed to load"
 msgstr ""
 
-#: aegisub/dialog_automation.cpp:287
+#: dialog_automation.cpp:301
+msgid "    Macro: "
+msgstr ""
+
+#: dialog_automation.cpp:303
+msgid "    Export filter: "
+msgstr ""
+
+#: dialog_automation.cpp:305
+msgid "    Subtitle format handler: "
+msgstr ""
+
+#: dialog_automation.cpp:313
 msgid "Automation Script Info"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:377
+#: dialog_colorpicker.cpp:389
 msgid "Select Colour"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:450
+#: dialog_colorpicker.cpp:462
 msgid "Colour spectrum"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:457
+#: dialog_colorpicker.cpp:469
 msgid "RGB/R"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:457
+#: dialog_colorpicker.cpp:469
 msgid "RGB/G"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:457
+#: dialog_colorpicker.cpp:469
 msgid "RGB/B"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:457
+#: dialog_colorpicker.cpp:469
 msgid "HSL/L"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:457
+#: dialog_colorpicker.cpp:469
 msgid "HSV/H"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:463
+#: dialog_colorpicker.cpp:475
 msgid "RGB colour"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:468
+#: dialog_colorpicker.cpp:480
 msgid "HSL colour"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:473
+#: dialog_colorpicker.cpp:485
 msgid "HSV colour"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:493
+#: dialog_colorpicker.cpp:505
 msgid "Spectrum mode:"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:505
+#: dialog_colorpicker.cpp:517
 msgid "Red:"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:507
+#: dialog_colorpicker.cpp:519
 msgid "Green:"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:509
+#: dialog_colorpicker.cpp:521
 msgid "Blue:"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:522 aegisub/dialog_colorpicker.cpp:531
+#: dialog_colorpicker.cpp:534 dialog_colorpicker.cpp:543
 msgid "Hue:"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:524 aegisub/dialog_colorpicker.cpp:533
+#: dialog_colorpicker.cpp:536 dialog_colorpicker.cpp:545
 msgid "Sat.:"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:526
+#: dialog_colorpicker.cpp:538
 msgid "Lum.:"
 msgstr ""
 
-#: aegisub/dialog_colorpicker.cpp:535
+#: dialog_colorpicker.cpp:547
 msgid "Value:"
 msgstr ""
 
-#: aegisub/dialog_detached_video.cpp:50
-msgid "Detached Video"
+#: dialog_detached_video.cpp:69
+#, possible-c-format
+msgid "Video: %s"
 msgstr ""
 
-#: aegisub/dialog_dummy_video.cpp:118
+#: dialog_dummy_video.cpp:120
 msgid "Dummy video options"
 msgstr ""
 
-#: aegisub/dialog_dummy_video.cpp:126
+#: dialog_dummy_video.cpp:128
 msgid "Checkerboard pattern"
 msgstr ""
 
-#: aegisub/dialog_dummy_video.cpp:134
+#: dialog_dummy_video.cpp:136
 msgid "Video resolution:"
 msgstr ""
 
-#: aegisub/dialog_dummy_video.cpp:142
+#: dialog_dummy_video.cpp:144
 msgid "Colour:"
 msgstr ""
 
-#: aegisub/dialog_dummy_video.cpp:146
+#: dialog_dummy_video.cpp:148
 msgid "Frame rate (fps):"
 msgstr ""
 
-#: aegisub/dialog_dummy_video.cpp:148
+#: dialog_dummy_video.cpp:150
 msgid "Duration (frames):"
 msgstr ""
 
-#: aegisub/dialog_dummy_video.cpp:239
-#, c-format
+#: dialog_dummy_video.cpp:251
+#, possible-c-format
 msgid "Resulting duration: %d:%02d:%02d.%03d"
 msgstr ""
 
-#: aegisub/dialog_dummy_video.cpp:242
+#: dialog_dummy_video.cpp:254
 msgid "Invalid fps or length value"
 msgstr ""
 
-#: aegisub/dialog_export.cpp:49
+#: dialog_export.cpp:54
 msgid "Export"
 msgstr ""
 
-#: aegisub/dialog_export.cpp:82
-msgid "Move up"
-msgstr ""
-
-#: aegisub/dialog_export.cpp:83
-msgid "Move down"
-msgstr ""
-
-#: aegisub/dialog_export.cpp:84
-msgid "Select all"
-msgstr ""
-
-#: aegisub/dialog_export.cpp:85
-msgid "Select none"
-msgstr ""
-
-#: aegisub/dialog_export.cpp:88
-msgid "Text encoding:"
-msgstr ""
-
-#: aegisub/dialog_export.cpp:98
+#: dialog_export.cpp:57
 msgid "Filters"
 msgstr ""
 
-#: aegisub/dialog_export.cpp:109 aegisub/dialog_export.cpp:113
+#: dialog_export.cpp:88
+msgid "Move up"
+msgstr ""
+
+#: dialog_export.cpp:89
+msgid "Move down"
+msgstr ""
+
+#: dialog_export.cpp:90
+msgid "Select all"
+msgstr ""
+
+#: dialog_export.cpp:91
+msgid "Select none"
+msgstr ""
+
+#: dialog_export.cpp:97
+msgid "Text encoding:"
+msgstr ""
+
+#: dialog_export.cpp:114
 msgid "Export..."
 msgstr ""
 
-#: aegisub/dialog_export.cpp:185
+#: dialog_export.cpp:190
 msgid "Export subtitles file"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:69 aegisub/frame_main.cpp:236
+#: dialog_fonts_collector.cpp:71 frame_main.cpp:242
 msgid "Fonts Collector"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:84
+#: dialog_fonts_collector.cpp:87
 msgid "&Browse..."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:86
-#: aegisub/dialog_fonts_collector.cpp:289
+#: dialog_fonts_collector.cpp:89 dialog_fonts_collector.cpp:294
 msgid ""
 "Choose the folder where the fonts will be collected to.\n"
 "It will be created if it doesn't exist."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:89
+#: dialog_fonts_collector.cpp:92
 msgid "Destination"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:110 aegisub/dialog_version_check.cpp:67
+#: dialog_fonts_collector.cpp:98
+msgid "Check fonts for availability"
+msgstr ""
+
+#: dialog_fonts_collector.cpp:99
+msgid "Copy fonts to folder"
+msgstr ""
+
+#: dialog_fonts_collector.cpp:100
+msgid "Copy fonts to zipped archive"
+msgstr ""
+
+#: dialog_fonts_collector.cpp:101
+msgid "Attach fonts to current subtitles"
+msgstr ""
+
+#: dialog_fonts_collector.cpp:103
+msgid "DEBUG: Verify all fonts in system"
+msgstr ""
+
+#: dialog_fonts_collector.cpp:118 dialog_version_check.cpp:68
 msgid "Log"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:114
+#: dialog_fonts_collector.cpp:122
 msgid "&Start!"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:175
+#: dialog_fonts_collector.cpp:180
 msgid "Invalid destination."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:175
-#: aegisub/dialog_fonts_collector.cpp:184
-#: aegisub/dialog_fonts_collector.cpp:193 aegisub/dialog_kanji_timer.cpp:197
-#: aegisub/dialog_kanji_timer.cpp:199 aegisub/dialog_kanji_timer.cpp:232
-#: aegisub/dialog_kanji_timer.cpp:316 aegisub/dialog_kanji_timer.cpp:348
-#: aegisub/dialog_kanji_timer.cpp:350 aegisub/dialog_options.cpp:240
-#: aegisub/subs_grid.cpp:672 aegisub/subs_grid.cpp:676
-#: aegisub/subs_grid.cpp:722
+#: dialog_fonts_collector.cpp:180 dialog_fonts_collector.cpp:189
+#: dialog_fonts_collector.cpp:198 dialog_kanji_timer.cpp:209
+#: dialog_kanji_timer.cpp:211 dialog_kanji_timer.cpp:244
+#: dialog_kanji_timer.cpp:328 dialog_kanji_timer.cpp:360
+#: dialog_kanji_timer.cpp:362 dialog_options.cpp:237 dialog_resample.cpp:215
+#: dialog_resample.cpp:219 options.cpp:423 subs_grid.cpp:676 subs_grid.cpp:680
+#: subs_grid.cpp:726
 msgid "Error"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:184
+#: dialog_fonts_collector.cpp:189
 msgid "Could not create destination folder."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:193
+#: dialog_fonts_collector.cpp:198
 msgid "Invalid path for .zip file."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:239
+#: dialog_fonts_collector.cpp:244
 msgid "Select archive file name"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:247
+#: dialog_fonts_collector.cpp:244
+msgid "Zip Archives (*.zip)|*.zip"
+msgstr ""
+
+#: dialog_fonts_collector.cpp:252
 msgid "Select folder to save fonts on"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:303
+#: dialog_fonts_collector.cpp:308
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to.\n"
 "If a folder is entered, a default name will be used."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:363
+#: dialog_fonts_collector.cpp:368
 msgid "Invalid destination directory."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:376
+#: dialog_fonts_collector.cpp:381
 msgid ""
 "Collecting font data from system. This might take a while, depending on the "
 "number of fonts installed. Results are cached and subsequent executions will "
-"be faster... "
+"be faster...\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:378
-msgid ""
-"done.\n"
-"\n"
-"Scanning file for fonts..."
+#: dialog_fonts_collector.cpp:383
+msgid "Done collecting font data."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:403
-msgid ""
-"Done.\n"
-"\n"
+#: dialog_fonts_collector.cpp:384
+msgid "Scanning file for fonts..."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:405
+#: dialog_fonts_collector.cpp:417
+msgid "Done."
+msgstr ""
+
+#: dialog_fonts_collector.cpp:419
 msgid "Checking fonts...\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:406
+#: dialog_fonts_collector.cpp:420
 msgid "Copying fonts to folder...\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:407
+#: dialog_fonts_collector.cpp:421
 msgid "Copying fonts to archive...\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:408
+#: dialog_fonts_collector.cpp:422
 msgid "Attaching fonts to file...\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:424
-#, c-format
+#: dialog_fonts_collector.cpp:438
+#, possible-c-format
 msgid ""
 "\n"
 "Finished writing to %s.\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:429
+#: dialog_fonts_collector.cpp:444
 msgid "Done. All fonts found."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:431
+#: dialog_fonts_collector.cpp:447
 msgid "Done. All fonts copied."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:436
+#: dialog_fonts_collector.cpp:452
 msgid "font attachment"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:443
+#: dialog_fonts_collector.cpp:459
 msgid "Done. Some fonts could not be found."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:444
+#: dialog_fonts_collector.cpp:460
 msgid "Done. Some fonts could not be copied."
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:464
+#: dialog_fonts_collector.cpp:480
 msgid "Not found.\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:470
+#: dialog_fonts_collector.cpp:486
 msgid "Found.\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:485
-#, c-format
+#: dialog_fonts_collector.cpp:501
+#, possible-c-format
 msgid "* Copied %s.\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:489
-#, c-format
+#: dialog_fonts_collector.cpp:505
+#, possible-c-format
 msgid "* %s already exists on destination.\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:492
-#, c-format
+#: dialog_fonts_collector.cpp:508
+#, possible-c-format
 msgid "* Failed to copy %s.\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:561
-msgid "\" found on style \""
+#: dialog_fonts_collector.cpp:581
+#, possible-c-format
+msgid "\"%s\" found on style \"%s\".\n"
 msgstr ""
 
-#: aegisub/dialog_fonts_collector.cpp:562
-msgid "\" found on dialogue line "
+#: dialog_fonts_collector.cpp:582
+#, possible-c-format
+msgid "\"%s\" found on dialogue line \"%d\".\n"
 msgstr ""
 
-#: aegisub/dialog_jumpto.cpp:56
+#: dialog_fonts_collector.cpp:583
+#, possible-c-format
+msgid "\"%s\" found.\n"
+msgstr ""
+
+#: dialog_jumpto.cpp:61
 msgid "Jump to"
 msgstr ""
 
-#: aegisub/dialog_jumpto.cpp:67
+#: dialog_jumpto.cpp:72
 msgid "Frame: "
 msgstr ""
 
-#: aegisub/dialog_jumpto.cpp:68 aegisub/dialog_shift_times.cpp:71
+#: dialog_jumpto.cpp:73 dialog_shift_times.cpp:76
 msgid "Time: "
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:61
+#: dialog_kanji_timer.cpp:62
 msgid "Kanji timing"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:73
+#: dialog_kanji_timer.cpp:74
 msgid "Shortcut Keys"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:74
+#: dialog_kanji_timer.cpp:75
 msgid "Groups"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:75
+#: dialog_kanji_timer.cpp:76
 msgid "Styles"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:76
+#: dialog_kanji_timer.cpp:77
 msgid "Commands"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:86
+#: dialog_kanji_timer.cpp:87
 msgid ""
 "When the destination textbox has focus, use the following keys:\n"
 "\n"
@@ -881,1396 +918,1454 @@ msgid ""
 "Backspace: Unlink last"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:89
+#: dialog_kanji_timer.cpp:90
 msgid "Source Style"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:91
+#: dialog_kanji_timer.cpp:92
 msgid "Dest Style"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:99
+#: dialog_kanji_timer.cpp:100
 msgid "Link"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:100
+#: dialog_kanji_timer.cpp:101
 msgid "Unlink"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:101
+#: dialog_kanji_timer.cpp:102
 msgid "Skip Source Line"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:102
+#: dialog_kanji_timer.cpp:103
 msgid "Skip Dest Line"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:103
+#: dialog_kanji_timer.cpp:104
 msgid "Go Back a Line"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:104
+#: dialog_kanji_timer.cpp:105
 msgid "Accept Line"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:108
+#: dialog_kanji_timer.cpp:109
 msgid "Attempt to interpolate kanji."
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:112
+#: dialog_kanji_timer.cpp:113
 msgid "Source: "
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:113
+#: dialog_kanji_timer.cpp:114
 msgid "Dest: "
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:187
+#: dialog_kanji_timer.cpp:198
 msgid "kanji timing"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:197
+#: dialog_kanji_timer.cpp:209
 msgid "Select source and destination styles first."
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:199
+#: dialog_kanji_timer.cpp:211
 msgid "The source and destination styles must be different."
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:232
+#: dialog_kanji_timer.cpp:244
 msgid "Select source text first."
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:301
+#: dialog_kanji_timer.cpp:313
 msgid ""
 "The source line contains text before the first karaoke block.\n"
 "Do you want to carry it over to the destination?\n"
 "It will be ignored otherwise."
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:302
-msgid "Question"
+#: dialog_kanji_timer.cpp:314
+msgid "Kanji timer"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:316
+#: dialog_kanji_timer.cpp:328
 msgid "Possible error parsing source line"
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:348
+#: dialog_kanji_timer.cpp:360
 msgid "Group some text first."
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:350
+#: dialog_kanji_timer.cpp:362
 msgid "Group all of the source text."
 msgstr ""
 
-#: aegisub/dialog_kanji_timer.cpp:369
-#, c-format
-msgid "%s{\\k%i}"
-msgstr ""
-
-#: aegisub/dialog_kanji_timer.cpp:378
-#, c-format
-msgid "%s{\\k%i}%s"
-msgstr ""
-
-#: aegisub/dialog_options.cpp:104
+#: dialog_options.cpp:109
 msgid "Startup"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:107
+#: dialog_options.cpp:112
 msgid "Show Splash Screen"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:108
+#: dialog_options.cpp:113
 msgid "Show Tip of the Day"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:109
+#: dialog_options.cpp:114
 msgid "Auto Check for Updates"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:110
+#: dialog_options.cpp:115
 msgid "Save config.dat locally"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:113
+#: dialog_options.cpp:118
 msgid "Limits for levels and recent files"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:116
+#: dialog_options.cpp:121
 msgid "Maximum undo levels"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:116
+#: dialog_options.cpp:121
 msgid "Maximum recent timecode files"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:116
+#: dialog_options.cpp:121
 msgid "Maximum recent keyframe files"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:116
+#: dialog_options.cpp:121
 msgid "Maximum recent subtitle files"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:116
+#: dialog_options.cpp:121
 msgid "Maximum recent video files"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:116
+#: dialog_options.cpp:121
 msgid "Maximum recent audio files"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:116
+#: dialog_options.cpp:121
 msgid "Maximum recent find strings"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:116
+#: dialog_options.cpp:121
 msgid "Maximum recent replace strings"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:136
+#: dialog_options.cpp:141
 msgid "Auto-save"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:138
+#: dialog_options.cpp:143
 msgid "File paths"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:140
+#: dialog_options.cpp:145
 msgid "Miscelanea"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:144
+#: dialog_options.cpp:149
 msgid "Auto-backup"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:150
+#: dialog_options.cpp:155
 msgid "Auto-save every"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:152
+#: dialog_options.cpp:157
 msgid "seconds."
 msgstr ""
 
-#: aegisub/dialog_options.cpp:155
+#: dialog_options.cpp:160
 msgid "Auto-save path:"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:163
+#: dialog_options.cpp:168
 msgid "Auto-backup path:"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:171
+#: dialog_options.cpp:176
 msgid "Crash recovery path:"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:181
+#: dialog_options.cpp:186
 msgid "Auto-load linked files:"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+#: dialog_options.cpp:187 dialog_options.cpp:360
 msgid "Never"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+#: dialog_options.cpp:187 dialog_options.cpp:360
 msgid "Always"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:182 aegisub/dialog_options.cpp:363
+#: dialog_options.cpp:187 dialog_options.cpp:360
 msgid "Ask"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:186
-msgid "Text import actor separator:"
-msgstr ""
-
-#: aegisub/dialog_options.cpp:190
-msgid "Text import comment starter:"
-msgstr ""
-
-#: aegisub/dialog_options.cpp:212 aegisub/dialog_options.cpp:286
-#: aegisub/dialog_options.cpp:355 aegisub/dialog_options.cpp:437
-#: aegisub/dialog_options.cpp:471 aegisub/dialog_options.cpp:554
-#: aegisub/dialog_properties.cpp:112 aegisub/dialog_timing_processor.cpp:70
-#: aegisub/frame_main.cpp:244 aegisub/hotkeys.cpp:320
+#: dialog_options.cpp:209 dialog_options.cpp:283 dialog_options.cpp:352
+#: dialog_options.cpp:436 dialog_options.cpp:470 dialog_options.cpp:558
+#: dialog_properties.cpp:117 dialog_timing_processor.cpp:81 frame_main.cpp:262
+#: hotkeys.cpp:323 hotkeys.cpp:327
 msgid "Options"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:220
+#: dialog_options.cpp:217
 msgid "Enable call tips"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:220
+#: dialog_options.cpp:217
 msgid "Enable syntax highlighting"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:220
+#: dialog_options.cpp:217
 msgid "Link commiting of times"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:220
+#: dialog_options.cpp:217
 msgid "Overwrite-Insertion in time boxes"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:222
+#: dialog_options.cpp:226
 msgid "Path to dictionary files:"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:239 aegisub/dialog_options.cpp:562
-#: aegisub/dialog_properties.cpp:126
+#: dialog_options.cpp:236 dialog_options.cpp:566 dialog_properties.cpp:131
 msgid "Normal"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:239
+#: dialog_options.cpp:236
 msgid "Brackets"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:239
+#: dialog_options.cpp:236
 msgid "Slashes and Parentheses"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:239
+#: dialog_options.cpp:236
 msgid "Tags"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:239
+#: dialog_options.cpp:236
 msgid "Parameters"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:240
+#: dialog_options.cpp:237
 msgid "Error Background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:240
+#: dialog_options.cpp:237
 msgid "Line Break"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:240
+#: dialog_options.cpp:237
+msgid "Karaoke templates"
+msgstr ""
+
+#: dialog_options.cpp:237
 msgid "Modified Background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:247
+#: dialog_options.cpp:244
 msgid "Syntax highlighter - "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:258 aegisub/dialog_options.cpp:322
+#: dialog_options.cpp:255 dialog_options.cpp:319
 msgid "Font: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:293
+#: dialog_options.cpp:290
 msgid "Allow grid to take focus"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:293
+#: dialog_options.cpp:290
 msgid "Highlight subtitles that are currently visible in video"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:303
+#: dialog_options.cpp:300
 msgid "Standard foreground"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:303
+#: dialog_options.cpp:300
 msgid "Standard background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:303
+#: dialog_options.cpp:300
 msgid "Selection foreground"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:304 aegisub/dialog_options.cpp:489
+#: dialog_options.cpp:301 dialog_options.cpp:488
 msgid "Selection background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:304
+#: dialog_options.cpp:301
 msgid "Comment background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:304
+#: dialog_options.cpp:301
 msgid "Selected comment background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:305
+#: dialog_options.cpp:302
 msgid "Collision foreground"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:305
+#: dialog_options.cpp:302
 msgid "Line in frame background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:305
+#: dialog_options.cpp:302
 msgid "Header"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:306
+#: dialog_options.cpp:303
 msgid "Left Column"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:306
+#: dialog_options.cpp:303
 msgid "Active Line Border"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:306
+#: dialog_options.cpp:303
 msgid "Lines"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:308
-msgid "selection background"
-msgstr ""
-
-#: aegisub/dialog_options.cpp:335
+#: dialog_options.cpp:332
 msgid "Replace override tags with: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:356 aegisub/dialog_options.cpp:523
+#: dialog_options.cpp:353 dialog_options.cpp:522
 msgid "Advanced - EXPERT USERS ONLY"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:362
+#: dialog_options.cpp:359
 msgid "Match video resolution on open: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:367
+#: dialog_options.cpp:364
 msgid "Default Zoom: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:378
+#: dialog_options.cpp:375
 msgid "Fast jump step in frames: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:382
+#: dialog_options.cpp:379
 msgid "Screenshot save path: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:388
+#: dialog_options.cpp:385
 msgid "Show keyframes in slider"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:394
+#: dialog_options.cpp:391
 msgid "Video provider: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:399
+#: dialog_options.cpp:396
 msgid "Subtitles provider: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:404
+#: dialog_options.cpp:402
 msgid "Avisynth memory limit: "
 msgstr ""
 
-#: aegisub/dialog_options.cpp:411
-msgid "Use pixel shaders if available"
-msgstr ""
-
-#: aegisub/dialog_options.cpp:414
+#: dialog_options.cpp:412
 msgid "Allow pre-2.56a Avisynth"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:418
+#: dialog_options.cpp:416
 msgid "Avisynth renders its own subs"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:424 aegisub/dialog_options.cpp:542
+#: dialog_options.cpp:423 dialog_options.cpp:546
 msgid ""
 "WARNING: Changing these settings might result in bugs,\n"
 "crashes, glitches and/or movax.\n"
 "Don't touch these unless you know what you're doing."
 msgstr ""
 
-#: aegisub/dialog_options.cpp:442
+#: dialog_options.cpp:441
 msgid "Grab times from line upon selection"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:443
+#: dialog_options.cpp:442
 msgid "Default mouse wheel to zoom"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:444
+#: dialog_options.cpp:443
 msgid "Lock scroll on Cursor"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:445
+#: dialog_options.cpp:444
 msgid "Snap to keyframes"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:446
+#: dialog_options.cpp:445
 msgid "Snap to adjascent lines"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:447
+#: dialog_options.cpp:446
 msgid "Auto-focus on mouse over"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:451
+#: dialog_options.cpp:450
 msgid "Don't show"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:451
+#: dialog_options.cpp:450
 msgid "Show previous"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:451
+#: dialog_options.cpp:450
 msgid "Show all"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:452
+#: dialog_options.cpp:451
 msgid "Default timing length"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:453
+#: dialog_options.cpp:452
 msgid "Default lead-in length"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:454
+#: dialog_options.cpp:453
 msgid "Default lead-out length"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:455
+#: dialog_options.cpp:454
 msgid "Show inactive lines"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:477
+#: dialog_options.cpp:476
 msgid "Draw secondary lines"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:477
+#: dialog_options.cpp:476
 msgid "Draw selection background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:477
+#: dialog_options.cpp:476
 msgid "Draw timeline"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:478
+#: dialog_options.cpp:477
 msgid "Draw cursor time"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:478
+#: dialog_options.cpp:477
 msgid "Draw keyframes"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:489
+#: dialog_options.cpp:477
+msgid "Draw video position"
+msgstr ""
+
+#: dialog_options.cpp:488
 msgid "Play cursor"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:489
+#: dialog_options.cpp:488
 msgid "Background"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:490
+#: dialog_options.cpp:489
 msgid "Selection background - modified"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:490
+#: dialog_options.cpp:489
 msgid "Seconds boundary"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:490
+#: dialog_options.cpp:489
 msgid "Waveform"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:491
+#: dialog_options.cpp:490
 msgid "Waveform - selection"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:491
+#: dialog_options.cpp:490
 msgid "Waveform - modified"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:491
+#: dialog_options.cpp:490
 msgid "Waveform - inactive"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:492
+#: dialog_options.cpp:491
 msgid "Boundary - start"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:492
+#: dialog_options.cpp:491
 msgid "Boundary - end"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:492
+#: dialog_options.cpp:491
 msgid "Boundary - inactive"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:493
+#: dialog_options.cpp:492
 msgid "Syllable text"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:493
+#: dialog_options.cpp:492
 msgid "Syllable boundary"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:527
+#: dialog_options.cpp:526
 msgid "None (NOT RECOMMENDED)"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:527
+#: dialog_options.cpp:526
 msgid "RAM"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:527
+#: dialog_options.cpp:526
 msgid "Hard Disk"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:529
+#: dialog_options.cpp:531
 msgid "Audio provider"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:530
+#: dialog_options.cpp:532
 msgid "Audio player"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:531
+#: dialog_options.cpp:533
 msgid "Cache type"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:532
+#: dialog_options.cpp:535
 msgid "Avisynth down-mixer"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:533
+#: dialog_options.cpp:537
 msgid "HD cache path"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:534
+#: dialog_options.cpp:538
 msgid "HD cache name"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:535
+#: dialog_options.cpp:539
 msgid "Spectrum cutoff"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:536
+#: dialog_options.cpp:540
 msgid "0 - Regular quality"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:536
+#: dialog_options.cpp:540
 msgid "1 - Better quality"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:536
+#: dialog_options.cpp:540
 msgid "2 - High quality"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:536
+#: dialog_options.cpp:540
 msgid "3 - Insane quality"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:537
+#: dialog_options.cpp:541
 msgid "Spectrum quality"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:538
+#: dialog_options.cpp:542
 msgid "Spectrum cache memory max (MB)"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:558
+#: dialog_options.cpp:562
 msgid "Base path"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:559
+#: dialog_options.cpp:563
 msgid "Include path"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:560
+#: dialog_options.cpp:564
 msgid "Auto-load path"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:561
+#: dialog_options.cpp:565
 msgid "0: Fatal"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:561
+#: dialog_options.cpp:565
 msgid "1: Error"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:561
+#: dialog_options.cpp:565
 msgid "2: Warning"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:561
+#: dialog_options.cpp:565
 msgid "3: Hint"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:561
+#: dialog_options.cpp:565
 msgid "4: Debug"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:561
+#: dialog_options.cpp:565
 msgid "5: Trace"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:562
+#: dialog_options.cpp:566
 msgid "Below Normal (recommended)"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:562
+#: dialog_options.cpp:566
 msgid "Lowest"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:563
+#: dialog_options.cpp:567
 msgid "No scripts"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:563
+#: dialog_options.cpp:567
 msgid "Subtitle-local scripts"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:563
+#: dialog_options.cpp:567
 msgid "Global autoload scripts"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:563
+#: dialog_options.cpp:567
 msgid "All scripts"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:564
+#: dialog_options.cpp:568
 msgid "Trace level"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:565
+#: dialog_options.cpp:569
 msgid "Thread priority"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:566
+#: dialog_options.cpp:570
 msgid "Autoreload on Export"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:584
-msgid ""
-"List of all hotkeys (shortcuts) available in Aegisub.\n"
-"Double click on any item to reassign it."
-msgstr ""
-
-#: aegisub/dialog_options.cpp:588
+#: dialog_options.cpp:589 dialog_options.cpp:1086
 msgid "Function"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:589
+#: dialog_options.cpp:590 dialog_options.cpp:1087
 msgid "Key"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:610
+#: dialog_options.cpp:604
+msgid "Set Hotkey..."
+msgstr ""
+
+#: dialog_options.cpp:605
+msgid "Clear Hotkey"
+msgstr ""
+
+#: dialog_options.cpp:607
+msgid "Default All"
+msgstr ""
+
+#: dialog_options.cpp:618
 msgid "General"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:611
+#: dialog_options.cpp:619
 msgid "File save/load"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:612
+#: dialog_options.cpp:620
 msgid "Subtitles edit box"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:613
+#: dialog_options.cpp:621
 msgid "Subtitles grid"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:614
+#: dialog_options.cpp:622 dialog_video_details.cpp:55
 msgid "Video"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:615
+#: dialog_options.cpp:623
 msgid "Audio"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:616
+#: dialog_options.cpp:624
 msgid "Display"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:617
+#: dialog_options.cpp:625
 msgid "Advanced"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:618 aegisub/frame_main.cpp:229
+#: dialog_options.cpp:626 frame_main.cpp:247
 msgid "Automation"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:619
+#: dialog_options.cpp:627
 msgid "Hotkeys"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:626
-msgid "Defaults"
+#: dialog_options.cpp:640
+msgid "Restore Defaults"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:715 aegisub/dialog_options.cpp:748
-#: aegisub/dialog_options.cpp:891
+#: dialog_options.cpp:731 dialog_options.cpp:764 dialog_options.cpp:907
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:715 aegisub/dialog_options.cpp:748
-#: aegisub/dialog_options.cpp:891
+#: dialog_options.cpp:731 dialog_options.cpp:764 dialog_options.cpp:907
 msgid "Restart Aegisub"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:763
+#: dialog_options.cpp:779
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overriden."
 msgstr ""
 
-#: aegisub/dialog_options.cpp:763
+#: dialog_options.cpp:779
 msgid "Restore defaults?"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:1012
+#: dialog_options.cpp:1106
 msgid "Press Key"
 msgstr ""
 
-#: aegisub/dialog_options.cpp:1018
-msgid "Press key to bind to \""
+#: dialog_options.cpp:1113
+#, possible-c-format
+msgid "Press key to bind to \"%s\" or Esc to cancel."
 msgstr ""
 
-#: aegisub/dialog_options.cpp:1018
-msgid "\" or esc to cancel."
+#: dialog_options.cpp:1164
+#, possible-c-format
+msgid ""
+"The hotkey %s is already mapped to %s. If you proceed, that hotkey will be "
+"cleared. Proceed?"
 msgstr ""
 
-#: aegisub/dialog_paste_over.cpp:47
+#: dialog_options.cpp:1164
+msgid "Hotkey conflict"
+msgstr ""
+
+#: dialog_paste_over.cpp:51
 msgid "Select Fields to Paste Over"
 msgstr ""
 
-#: aegisub/dialog_paste_over.cpp:76
-msgid "Please select the fields that you want to paste over:"
-msgstr ""
-
-#: aegisub/dialog_paste_over.cpp:77
+#: dialog_paste_over.cpp:57
 msgid "Fields"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:51
+#: dialog_paste_over.cpp:58
+msgid "Please select the fields that you want to paste over:"
+msgstr ""
+
+#: dialog_paste_over.cpp:63 subs_grid.cpp:116
+msgid "Layer"
+msgstr ""
+
+#: dialog_paste_over.cpp:64
+msgid "Start Time"
+msgstr ""
+
+#: dialog_paste_over.cpp:65
+msgid "End Time"
+msgstr ""
+
+#: dialog_paste_over.cpp:68
+msgid "Margin Left"
+msgstr ""
+
+#: dialog_paste_over.cpp:69
+msgid "Margin Right"
+msgstr ""
+
+#: dialog_paste_over.cpp:71
+msgid "Margin Vertical"
+msgstr ""
+
+#: dialog_paste_over.cpp:74
+msgid "Margin Top"
+msgstr ""
+
+#: dialog_paste_over.cpp:75
+msgid "Margin Bottom"
+msgstr ""
+
+#: dialog_paste_over.cpp:87 dialog_timing_processor.cpp:75
+msgid "All"
+msgstr ""
+
+#: dialog_paste_over.cpp:88 dialog_timing_processor.cpp:77
+msgid "None"
+msgstr ""
+
+#: dialog_paste_over.cpp:89 dialog_shift_times.cpp:111
+msgid "Times"
+msgstr ""
+
+#: dialog_properties.cpp:56
 msgid "Script Properties"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:60
-msgid "Title:"
-msgstr ""
-
-#: aegisub/dialog_properties.cpp:62
-msgid "Original script:"
-msgstr ""
-
-#: aegisub/dialog_properties.cpp:64
-msgid "Translation:"
-msgstr ""
-
-#: aegisub/dialog_properties.cpp:66
-msgid "Editing:"
-msgstr ""
-
-#: aegisub/dialog_properties.cpp:68
-msgid "Timing:"
-msgstr ""
-
-#: aegisub/dialog_properties.cpp:70
-msgid "Synch point:"
-msgstr ""
-
-#: aegisub/dialog_properties.cpp:72
-msgid "Updated by:"
-msgstr ""
-
-#: aegisub/dialog_properties.cpp:74
-msgid "Update details:"
-msgstr ""
-
-#: aegisub/dialog_properties.cpp:76
+#: dialog_properties.cpp:65
 msgid "Script"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:98 aegisub/dialog_resample.cpp:63
+#: dialog_properties.cpp:66
+msgid "Title:"
+msgstr ""
+
+#: dialog_properties.cpp:68
+msgid "Original script:"
+msgstr ""
+
+#: dialog_properties.cpp:70
+msgid "Translation:"
+msgstr ""
+
+#: dialog_properties.cpp:72
+msgid "Editing:"
+msgstr ""
+
+#: dialog_properties.cpp:74
+msgid "Timing:"
+msgstr ""
+
+#: dialog_properties.cpp:76
+msgid "Synch point:"
+msgstr ""
+
+#: dialog_properties.cpp:78
+msgid "Updated by:"
+msgstr ""
+
+#: dialog_properties.cpp:80
+msgid "Update details:"
+msgstr ""
+
+#: dialog_properties.cpp:103 dialog_resample.cpp:88
 msgid "Resolution"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:104 aegisub/dialog_resample.cpp:72
+#: dialog_properties.cpp:109 dialog_resample.cpp:97
 msgid "From video"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:115
+#: dialog_properties.cpp:120
 msgid "0: Smart wrapping, top line is wider"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:116
+#: dialog_properties.cpp:121
 msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:117
+#: dialog_properties.cpp:122
 msgid "2: No word wrapping, both \\n and \\N break"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:118
+#: dialog_properties.cpp:123
 msgid "3: Smart wrapping, bottom line is wider"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:123
-msgid "Warp Style: "
+#: dialog_properties.cpp:128
+msgid "Wrap Style: "
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:127
+#: dialog_properties.cpp:132
 msgid "Reverse"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:132
+#: dialog_properties.cpp:137
 msgid "Collision: "
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:134
+#: dialog_properties.cpp:139
 msgid "Scale Border and Shadow"
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:135
+#: dialog_properties.cpp:140
 msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
 msgstr ""
 
-#: aegisub/dialog_properties.cpp:197
+#: dialog_properties.cpp:201
 msgid "property changes"
 msgstr ""
 
-#: aegisub/dialog_resample.cpp:53
+#: dialog_resample.cpp:55
 msgid "Resample resolution"
 msgstr ""
 
-#: aegisub/dialog_resample.cpp:71
+#: dialog_resample.cpp:66
+msgid "Margin offset"
+msgstr ""
+
+#: dialog_resample.cpp:70
+msgid "Symmetrical"
+msgstr ""
+
+#: dialog_resample.cpp:96
 msgid "x"
 msgstr ""
 
-#: aegisub/dialog_resample.cpp:80
+#: dialog_resample.cpp:103
 msgid "Change aspect ratio"
 msgstr ""
 
-#: aegisub/dialog_resample.cpp:88 aegisub/dialog_resample.cpp:92
-#: aegisub/frame_main.cpp:237
-msgid "Resample"
+#: dialog_resample.cpp:219
+msgid ""
+"Invalid resolution: destination resolution cannot be 0 on either dimension."
 msgstr ""
 
-#: aegisub/dialog_resample.cpp:240
+#: dialog_resample.cpp:303
 msgid "resolution resampling"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:66
+#: dialog_search_replace.cpp:67
 msgid "Find what:"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:71 aegisub/dialog_spellchecker.cpp:110
+#: dialog_search_replace.cpp:72 dialog_spellchecker.cpp:111
 msgid "Replace with:"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:78 aegisub/dialog_selection.cpp:62
+#: dialog_search_replace.cpp:79 dialog_selection.cpp:66
 msgid "Match case"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:79
+#: dialog_search_replace.cpp:80
 msgid "Use regular expressions"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:80
+#: dialog_search_replace.cpp:81
 msgid "Update Video (slow)"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:96 aegisub/dialog_shift_times.cpp:104
+#: dialog_search_replace.cpp:97 dialog_shift_times.cpp:106
 msgid "All rows"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:97 aegisub/dialog_shift_times.cpp:104
+#: dialog_search_replace.cpp:98 dialog_shift_times.cpp:106
 msgid "Selected rows"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:98 aegisub/dialog_selection.cpp:98
+#: dialog_search_replace.cpp:99 dialog_selection.cpp:77
 msgid "In Field"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:99
+#: dialog_search_replace.cpp:100
 msgid "Limit to"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:114
+#: dialog_search_replace.cpp:115
 msgid "Find next"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:118
+#: dialog_search_replace.cpp:119
 msgid "Replace next"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:119
+#: dialog_search_replace.cpp:120
 msgid "Replace all"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:406 aegisub/dialog_search_replace.cpp:497
+#: dialog_search_replace.cpp:406 dialog_search_replace.cpp:497
 msgid "replace"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:500
-#, c-format
+#: dialog_search_replace.cpp:500
+#, possible-c-format
 msgid "%i matches were replaced."
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:505
+#: dialog_search_replace.cpp:505
 msgid "No matches found."
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:540 aegisub/dialog_spellchecker.cpp:116
-#: aegisub/hotkeys.cpp:328
+#: dialog_search_replace.cpp:540 dialog_spellchecker.cpp:117 hotkeys.cpp:341
+#: hotkeys.cpp:344
 msgid "Replace"
 msgstr ""
 
-#: aegisub/dialog_search_replace.cpp:540 aegisub/hotkeys.cpp:326
+#: dialog_search_replace.cpp:540 hotkeys.cpp:338
 msgid "Find"
 msgstr ""
 
-#: aegisub/dialog_selection.cpp:50
+#: dialog_selection.cpp:52
 msgid "Select"
 msgstr ""
 
-#: aegisub/dialog_selection.cpp:57
-msgid "Exact match"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:58
-msgid "Contains"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:59
-msgid "Regular Expression match"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:60
-msgid "Matches"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:61
-msgid "Doesn't Match"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:63
-msgid "Dialogues"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:64
-msgid "Comments"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:67
+#: dialog_selection.cpp:58
 msgid "Match"
 msgstr ""
 
-#: aegisub/dialog_selection.cpp:81
-msgid "Set selection"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:82
-msgid "Add to selection"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:83
-msgid "Subtract from selection"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:84
-msgid "Intersect with selection"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:85
-msgid "Action"
-msgstr ""
-
-#: aegisub/dialog_selection.cpp:88
+#: dialog_selection.cpp:60
 msgid "Match dialogues/comments"
 msgstr ""
 
-#: aegisub/dialog_selection.cpp:264
-#, c-format
+#: dialog_selection.cpp:63
+msgid "Matches"
+msgstr ""
+
+#: dialog_selection.cpp:64
+msgid "Doesn't Match"
+msgstr ""
+
+#: dialog_selection.cpp:67
+msgid "Exact match"
+msgstr ""
+
+#: dialog_selection.cpp:68
+msgid "Contains"
+msgstr ""
+
+#: dialog_selection.cpp:69
+msgid "Regular Expression match"
+msgstr ""
+
+#: dialog_selection.cpp:80
+msgid "Dialogues"
+msgstr ""
+
+#: dialog_selection.cpp:81
+msgid "Comments"
+msgstr ""
+
+#: dialog_selection.cpp:85
+msgid "Set selection"
+msgstr ""
+
+#: dialog_selection.cpp:86
+msgid "Add to selection"
+msgstr ""
+
+#: dialog_selection.cpp:87
+msgid "Subtract from selection"
+msgstr ""
+
+#: dialog_selection.cpp:88
+msgid "Intersect with selection"
+msgstr ""
+
+#: dialog_selection.cpp:89
+msgid "Action"
+msgstr ""
+
+#: dialog_selection.cpp:265
+#, possible-c-format
 msgid "Selection was set to %i lines"
 msgstr ""
 
-#: aegisub/dialog_selection.cpp:264 aegisub/dialog_selection.cpp:265
-#: aegisub/dialog_selection.cpp:266
+#: dialog_selection.cpp:265 dialog_selection.cpp:266 dialog_selection.cpp:267
 msgid "Selection"
 msgstr ""
 
-#: aegisub/dialog_selection.cpp:265
-#, c-format
+#: dialog_selection.cpp:266
+#, possible-c-format
 msgid "%i lines were added to selection"
 msgstr ""
 
-#: aegisub/dialog_selection.cpp:266
-#, c-format
+#: dialog_selection.cpp:267
+#, possible-c-format
 msgid "%i lines were removed from selection"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:60 aegisub/frame_main.cpp:233
-#: aegisub/hotkeys.cpp:325
+#: dialog_shift_times.cpp:61 frame_main.cpp:252 hotkeys.cpp:337
 msgid "Shift Times"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:72
+#: dialog_shift_times.cpp:72
+msgid "Shift by"
+msgstr ""
+
+#: dialog_shift_times.cpp:73
+msgid "History"
+msgstr ""
+
+#: dialog_shift_times.cpp:77
 msgid "Frames: "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:75
+#: dialog_shift_times.cpp:80
 msgid "Enter time in h:mm:ss.cs notation"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:76
+#: dialog_shift_times.cpp:81
 msgid "Shift by time"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:80
+#: dialog_shift_times.cpp:85
 msgid "Enter number of frames to shift by"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:81
+#: dialog_shift_times.cpp:86
 msgid "Shift by frames"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:91
+#: dialog_shift_times.cpp:95
 msgid "Forward"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:92
+#: dialog_shift_times.cpp:96
 msgid "Backward"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:93
+#: dialog_shift_times.cpp:97
 msgid ""
 "Shifts subs forward, making them appear later. Use if they are appearing too "
 "soon."
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:94
+#: dialog_shift_times.cpp:98
 msgid ""
 "Shifts subs backward, making them appear earlier. Use if they are appearing "
 "too late."
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:98
-msgid "Shift by"
-msgstr ""
-
-#: aegisub/dialog_shift_times.cpp:104
+#: dialog_shift_times.cpp:106
 msgid "Selection onward"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:105
+#: dialog_shift_times.cpp:107
 msgid "Affect"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:108
+#: dialog_shift_times.cpp:110
 msgid "Start and End times"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:108
+#: dialog_shift_times.cpp:110
 msgid "Start times only"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:108
+#: dialog_shift_times.cpp:110
 msgid "End times only"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:109
-msgid "Times"
-msgstr ""
-
-#: aegisub/dialog_shift_times.cpp:112
-msgid "History"
-msgstr ""
-
-#: aegisub/dialog_shift_times.cpp:119
+#: dialog_shift_times.cpp:115
 msgid "Clear"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:249
+#: dialog_shift_times.cpp:242
 msgid "unsaved, "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:254
+#: dialog_shift_times.cpp:247
 msgid " frames "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:257
+#: dialog_shift_times.cpp:250
 msgid "backward, "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:258
+#: dialog_shift_times.cpp:251
 msgid "forward, "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:261
+#: dialog_shift_times.cpp:254
 msgid "s+e, "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:262
+#: dialog_shift_times.cpp:255
 msgid "s, "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:263
+#: dialog_shift_times.cpp:256
 msgid "e, "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:266
+#: dialog_shift_times.cpp:259
 msgid "all"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:267
-#, c-format
+#: dialog_shift_times.cpp:260
+#, possible-c-format
 msgid "from %i onward"
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:269
+#: dialog_shift_times.cpp:262
 msgid "sel "
 msgstr ""
 
-#: aegisub/dialog_shift_times.cpp:297
+#: dialog_shift_times.cpp:290
 msgid "shifting"
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:66 aegisub/frame_main.cpp:240
+#: dialog_spellchecker.cpp:67 frame_main.cpp:258
 msgid "Spell Checker"
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:108
+#: dialog_spellchecker.cpp:106
+msgid "original"
+msgstr ""
+
+#: dialog_spellchecker.cpp:107
+msgid "replace with"
+msgstr ""
+
+#: dialog_spellchecker.cpp:109
 msgid "Misspelled word:"
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:117
+#: dialog_spellchecker.cpp:118
 msgid "Replace All"
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:118
+#: dialog_spellchecker.cpp:119
 msgid "Ignore"
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:119
+#: dialog_spellchecker.cpp:120
 msgid "Ignore all"
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:120
+#: dialog_spellchecker.cpp:121
 msgid "Add to dictionary"
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:316
+#: dialog_spellchecker.cpp:321
 msgid "Aegisub has finished checking spelling of this script."
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:316 aegisub/dialog_spellchecker.cpp:383
+#: dialog_spellchecker.cpp:321 dialog_spellchecker.cpp:388
 msgid "Spell checking complete."
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:336
+#: dialog_spellchecker.cpp:341
 msgid "Spell check replace"
 msgstr ""
 
-#: aegisub/dialog_spellchecker.cpp:383
+#: dialog_spellchecker.cpp:388
 msgid "Aegisub has found no spelling mistakes in this script."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:95
+#: dialog_style_editor.cpp:97
 msgid "Style Editor"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:133 aegisub/subs_edit_box.cpp:118
+#: dialog_style_editor.cpp:133
+msgid "Style name"
+msgstr ""
+
+#: dialog_style_editor.cpp:134
+msgid "Font"
+msgstr ""
+
+#: dialog_style_editor.cpp:135
+msgid "Colors"
+msgstr ""
+
+#: dialog_style_editor.cpp:136
+msgid "Margins"
+msgstr ""
+
+#: dialog_style_editor.cpp:137 dialog_style_editor.cpp:241
+msgid "Outline"
+msgstr ""
+
+#: dialog_style_editor.cpp:138
+msgid "Miscelaneous"
+msgstr ""
+
+#: dialog_style_editor.cpp:139
+msgid "Preview"
+msgstr ""
+
+#: dialog_style_editor.cpp:148 subs_edit_box.cpp:118
 msgid "Bold"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:134
+#: dialog_style_editor.cpp:149
 msgid "Italic"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:135 aegisub/subs_edit_box.cpp:122
+#: dialog_style_editor.cpp:150 subs_edit_box.cpp:122
 msgid "Underline"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:136 aegisub/subs_edit_box.cpp:124
+#: dialog_style_editor.cpp:151 subs_edit_box.cpp:124
 msgid "Strikeout"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:147
+#: dialog_style_editor.cpp:162
 msgid "Alignment"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:150
+#: dialog_style_editor.cpp:165
 msgid "Opaque box"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:158
+#: dialog_style_editor.cpp:173
 msgid "Style name."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:159
+#: dialog_style_editor.cpp:174
 msgid "Font face."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:160
+#: dialog_style_editor.cpp:175
 msgid "Font size."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:161
-msgid "Click to choose primary color."
+#: dialog_style_editor.cpp:176
+msgid "Choose primary color."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:162
-msgid "Click to choose secondary color."
+#: dialog_style_editor.cpp:177
+msgid "Choose secondary color."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:163
-msgid "Click to choose outline color."
+#: dialog_style_editor.cpp:178
+msgid "Choose outline color."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:164
-msgid "Click to choose shadow color."
+#: dialog_style_editor.cpp:179
+msgid "Choose shadow color."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:165
+#: dialog_style_editor.cpp:180
 msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:166
+#: dialog_style_editor.cpp:181
 msgid "Distance from left edge, in pixels."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:167
+#: dialog_style_editor.cpp:182
 msgid "Distance from right edge, in pixels."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:168
+#: dialog_style_editor.cpp:183
 msgid "Distance from top/bottom edge, in pixels."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:169
-msgid "Checking this will display an opaque box instead of outline."
+#: dialog_style_editor.cpp:184
+msgid ""
+"When selected, display an opaque box behind the subtitles instead of an "
+"outline around the text."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:170
+#: dialog_style_editor.cpp:185
 msgid "Outline width, in pixels."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:171
+#: dialog_style_editor.cpp:186
 msgid "Shadow distance, in pixels."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:172
+#: dialog_style_editor.cpp:187
 msgid "Scale X, in percentage."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:173
+#: dialog_style_editor.cpp:188
 msgid "Scale Y, in percentage."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:174
+#: dialog_style_editor.cpp:189
 msgid "Angle to rotate in Z axis, in degrees."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:175
+#: dialog_style_editor.cpp:190
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:176
+#: dialog_style_editor.cpp:191
 msgid "Character spacing, in pixels."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:177
+#: dialog_style_editor.cpp:192
 msgid "Alignment in screen, in numpad style."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:207
-msgid "Style name"
-msgstr ""
-
-#: aegisub/dialog_style_editor.cpp:211
-msgid "Font"
-msgstr ""
-
-#: aegisub/dialog_style_editor.cpp:227
-msgid "Colors"
-msgstr ""
-
-#: aegisub/dialog_style_editor.cpp:229
+#: dialog_style_editor.cpp:241
 msgid "Primary"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:229
+#: dialog_style_editor.cpp:241
 msgid "Secondary"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:229 aegisub/dialog_style_editor.cpp:261
-msgid "Outline"
-msgstr ""
-
-#: aegisub/dialog_style_editor.cpp:229
+#: dialog_style_editor.cpp:241
 msgid "Shadow"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:242
-msgid "Margins"
-msgstr ""
-
-#: aegisub/dialog_style_editor.cpp:263
+#: dialog_style_editor.cpp:273
 msgid "Outline:"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:265
+#: dialog_style_editor.cpp:275
 msgid "Shadow:"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:271
-msgid "Miscelaneous"
-msgstr ""
-
-#: aegisub/dialog_style_editor.cpp:274
+#: dialog_style_editor.cpp:283
 msgid "Scale X%:"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:276
+#: dialog_style_editor.cpp:285
 msgid "Scale Y%:"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:278
+#: dialog_style_editor.cpp:287
 msgid "Rotation:"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:280
+#: dialog_style_editor.cpp:289
 msgid "Spacing:"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:284
+#: dialog_style_editor.cpp:293
 msgid "Encoding:"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:290
-msgid "Preview"
-msgstr ""
-
-#: aegisub/dialog_style_editor.cpp:298
+#: dialog_style_editor.cpp:306
 msgid "Preview of current style."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:301
+#: dialog_style_editor.cpp:309
 msgid "Text to be used for the preview."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:302
+#: dialog_style_editor.cpp:310
 msgid "Colour of preview background."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:311
+#: dialog_style_editor.cpp:319
 msgid "No subtitle providers available. Cannot preview subs."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:444 aegisub/dialog_style_manager.cpp:612
-#: aegisub/dialog_style_manager.cpp:636
+#: dialog_style_editor.cpp:468 dialog_style_manager.cpp:624
+#: dialog_style_manager.cpp:648
 msgid "Copy of "
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:480 aegisub/subs_edit_box.cpp:561
+#: dialog_style_editor.cpp:471
+msgid ""
+"Do you want to change all instances of this style in the script to this new "
+"name?"
+msgstr ""
+
+#: dialog_style_editor.cpp:471
+msgid "Update script?"
+msgstr ""
+
+#: dialog_style_editor.cpp:505 subs_edit_box.cpp:561
 msgid "style change"
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:576
+#: dialog_style_editor.cpp:602
 msgid ""
 "You have chosen to use the \"Comic Sans\" font. As the programmer and a "
 "typesetter,\n"
@@ -2279,443 +2374,445 @@ msgid ""
 "of computing, so please avoid using it unless it's REALLY suitable. Thanks."
 msgstr ""
 
-#: aegisub/dialog_style_editor.cpp:576
+#: dialog_style_editor.cpp:602
 msgid "Warning"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:56 aegisub/frame_main.cpp:224
+#: dialog_style_manager.cpp:60 frame_main.cpp:239
 msgid "Styles Manager"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:65
+#: dialog_style_manager.cpp:69
 msgid "Catalog of available storages"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:67 aegisub/dialog_style_manager.cpp:80
-#: aegisub/dialog_style_manager.cpp:123 aegisub/frame_main.cpp:192
+#: dialog_style_manager.cpp:71 dialog_style_manager.cpp:84
+#: dialog_style_manager.cpp:129 frame_main.cpp:208
 msgid "New"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:68 aegisub/dialog_style_manager.cpp:83
-#: aegisub/dialog_style_manager.cpp:126 aegisub/subs_grid.cpp:201
+#: dialog_style_manager.cpp:72 dialog_style_manager.cpp:87
+#: dialog_style_manager.cpp:132 subs_grid.cpp:201
 msgid "Delete"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:75
+#: dialog_style_manager.cpp:79
 msgid "Storage"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:79
+#: dialog_style_manager.cpp:83
 msgid "Copy to current script ->"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:81 aegisub/dialog_style_manager.cpp:124
+#: dialog_style_manager.cpp:85 dialog_style_manager.cpp:130
 msgid "Edit"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:82 aegisub/dialog_style_manager.cpp:125
-#: aegisub/hotkeys.cpp:330
+#: dialog_style_manager.cpp:86 dialog_style_manager.cpp:131 hotkeys.cpp:347
 msgid "Copy"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:93 aegisub/dialog_style_manager.cpp:136
+#: dialog_style_manager.cpp:97 dialog_style_manager.cpp:142
 msgid "Move style up."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:94 aegisub/dialog_style_manager.cpp:137
+#: dialog_style_manager.cpp:98 dialog_style_manager.cpp:143
 msgid "Move style down."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:95 aegisub/dialog_style_manager.cpp:138
+#: dialog_style_manager.cpp:99 dialog_style_manager.cpp:144
 msgid "Move style to top."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:96 aegisub/dialog_style_manager.cpp:139
+#: dialog_style_manager.cpp:100 dialog_style_manager.cpp:145
 msgid "Move style to bottom."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:97 aegisub/dialog_style_manager.cpp:140
+#: dialog_style_manager.cpp:101 dialog_style_manager.cpp:146
 msgid "Sort styles alphabetically."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:117
+#: dialog_style_manager.cpp:121
 msgid "Current script"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:122
+#: dialog_style_manager.cpp:126
 msgid "<- Copy to storage"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:151
+#: dialog_style_manager.cpp:128
 msgid "Import from script..."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:408
+#: dialog_style_manager.cpp:412
 msgid "New storage name:"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:408
+#: dialog_style_manager.cpp:412
 msgid "New catalog entry"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:424
+#: dialog_style_manager.cpp:428
 msgid "A catalog with that name already exists."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:424
+#: dialog_style_manager.cpp:428
 msgid "Catalog name conflict"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:430
-#, c-format
+#: dialog_style_manager.cpp:434
+#, possible-c-format
 msgid ""
 "The specified catalog name contains one or more illegal characters. They "
 "have been replaced with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:430
+#: dialog_style_manager.cpp:434
 msgid "Invalid characters"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:459
-msgid "Are you sure you want to delete the storage \""
+#: dialog_style_manager.cpp:463
+#, possible-c-format
+msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:461
-msgid "\" from the catalog?"
-msgstr ""
-
-#: aegisub/dialog_style_manager.cpp:462
+#: dialog_style_manager.cpp:464
 msgid "Confirm delete"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:598 aegisub/dialog_style_manager.cpp:649
+#: dialog_style_manager.cpp:610 dialog_style_manager.cpp:661
 msgid "style copy"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:696
+#: dialog_style_manager.cpp:713
 msgid "style paste"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:764 aegisub/dialog_style_manager.cpp:798
+#: dialog_style_manager.cpp:717 dialog_style_manager.cpp:720
+#: dialog_style_manager.cpp:753 dialog_style_manager.cpp:756
+msgid "Could not parse style"
+msgstr ""
+
+#: dialog_style_manager.cpp:802 dialog_style_manager.cpp:836
 msgid "Are you sure you want to delete these "
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:766 aegisub/dialog_style_manager.cpp:800
+#: dialog_style_manager.cpp:804 dialog_style_manager.cpp:838
 msgid " styles?"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:768 aegisub/dialog_style_manager.cpp:802
+#: dialog_style_manager.cpp:806 dialog_style_manager.cpp:840
 msgid "Are you sure you want to delete this style?"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:769
+#: dialog_style_manager.cpp:807
 msgid "Confirm delete from storage"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:803
+#: dialog_style_manager.cpp:841
 msgid "Confirm delete from current"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:819
+#: dialog_style_manager.cpp:857
 msgid "style delete"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:831 aegisub/frame_main_events.cpp:622
-#: aegisub/frame_main_events.cpp:640
+#: dialog_style_manager.cpp:869 frame_main_events.cpp:661
+#: frame_main_events.cpp:679
 msgid "Open subtitles file"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:847
+#: dialog_style_manager.cpp:885
 msgid "There selected file has no available styles."
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:847
+#: dialog_style_manager.cpp:885
 msgid "Error Importing Styles"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:853
+#: dialog_style_manager.cpp:891
 msgid "Choose styles to import:"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:853
+#: dialog_style_manager.cpp:891
 msgid "Import Styles"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:876
+#: dialog_style_manager.cpp:919
 msgid "style import"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:1033
+#: dialog_style_manager.cpp:1076
 msgid "Are you sure? This cannot be undone!"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:1033
+#: dialog_style_manager.cpp:1076
 msgid "Sort styles"
 msgstr ""
 
-#: aegisub/dialog_style_manager.cpp:1085
+#: dialog_style_manager.cpp:1128
 msgid "style move"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:57
+#: dialog_styling_assistant.cpp:58
 msgid "Styling assistant"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:69
-#: aegisub/dialog_styling_assistant.cpp:70
+#: dialog_styling_assistant.cpp:70 dialog_styling_assistant.cpp:71
 msgid "Current line"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:75
+#: dialog_styling_assistant.cpp:76
 msgid "Styles available"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:80
+#: dialog_styling_assistant.cpp:81
 msgid "Set style"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:81 aegisub/dialog_translation.cpp:94
+#: dialog_styling_assistant.cpp:82 dialog_translation.cpp:95
 msgid "Keys"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:89 aegisub/dialog_translation.cpp:97
+#: dialog_styling_assistant.cpp:90 dialog_translation.cpp:98
 msgid "Accept changes"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:91 aegisub/dialog_translation.cpp:99
+#: dialog_styling_assistant.cpp:92 dialog_translation.cpp:100
 msgid "Preview changes"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:93 aegisub/dialog_translation.cpp:101
+#: dialog_styling_assistant.cpp:94 dialog_translation.cpp:102
 msgid "Previous line"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:95 aegisub/dialog_translation.cpp:103
+#: dialog_styling_assistant.cpp:96 dialog_translation.cpp:104
 msgid "Next line"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:97
-#: aegisub/dialog_styling_assistant.cpp:119 aegisub/dialog_translation.cpp:107
-#: aegisub/dialog_translation.cpp:117
+#: dialog_styling_assistant.cpp:98 dialog_styling_assistant.cpp:119
+#: dialog_translation.cpp:108 dialog_translation.cpp:117
 msgid "Play Audio"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:98
+#: dialog_styling_assistant.cpp:99
 msgid "Click on list:"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:99
+#: dialog_styling_assistant.cpp:100
 msgid "Select style"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:102
+#: dialog_styling_assistant.cpp:103
 msgid "Enable preview (slow)"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:154
+#: dialog_styling_assistant.cpp:156
 msgid "style changes"
 msgstr ""
 
-#: aegisub/dialog_styling_assistant.cpp:205
+#: dialog_styling_assistant.cpp:207
 msgid "styling assistant"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:54 aegisub/frame_main.cpp:238
+#: dialog_text_import.cpp:48
+msgid "Text import options"
+msgstr ""
+
+#: dialog_text_import.cpp:57
+msgid "Actor separator:"
+msgstr ""
+
+#: dialog_text_import.cpp:59
+msgid "Comment starter:"
+msgstr ""
+
+#: dialog_timing_processor.cpp:55 frame_main.cpp:256
 msgid "Timing Post-Processor"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:71
+#: dialog_timing_processor.cpp:71
+msgid "Apply to styles"
+msgstr ""
+
+#: dialog_timing_processor.cpp:74
+msgid "Select styles to process. Unchecked ones will be ignored."
+msgstr ""
+
+#: dialog_timing_processor.cpp:76
+msgid "Select all styles."
+msgstr ""
+
+#: dialog_timing_processor.cpp:78
+msgid "Deselect all styles."
+msgstr ""
+
+#: dialog_timing_processor.cpp:82
 msgid "Affect selection only"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:76
+#: dialog_timing_processor.cpp:87
 msgid "Lead-in/Lead-out"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:77
+#: dialog_timing_processor.cpp:88
 msgid "Add lead in:"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:78
+#: dialog_timing_processor.cpp:89
 msgid "Enable adding of lead-ins to lines."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:81
+#: dialog_timing_processor.cpp:92
 msgid "Lead in to be added, in miliseconds."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:82
+#: dialog_timing_processor.cpp:93
 msgid "Add lead out:"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:83
+#: dialog_timing_processor.cpp:94
 msgid "Enable adding of lead-outs to lines."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:86
+#: dialog_timing_processor.cpp:97
 msgid "Lead out to be added, in miliseconds."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:94
+#: dialog_timing_processor.cpp:105
 msgid "Make adjascent subtitles continuous"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:95
-#: aegisub/dialog_timing_processor.cpp:113
+#: dialog_timing_processor.cpp:106 dialog_timing_processor.cpp:124
 msgid "Enable"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:96
+#: dialog_timing_processor.cpp:107
 msgid ""
 "Enable snapping of subtitles together if they are within a certain distance "
 "of each other."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:98
+#: dialog_timing_processor.cpp:109
 msgid "Threshold:"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:100
+#: dialog_timing_processor.cpp:111
 msgid ""
 "Maximum difference between start and end time for two subtitles to be made "
 "continuous, in miliseconds."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:106
+#: dialog_timing_processor.cpp:117
 msgid "Bias: Start <- "
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:108
+#: dialog_timing_processor.cpp:119
 msgid " -> End"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:111
+#: dialog_timing_processor.cpp:122
 msgid "Keyframe snapping"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:114
+#: dialog_timing_processor.cpp:125
 msgid ""
 "Enable snapping of subtitles to nearest keyframe, if distance is within "
 "threshold."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:116
+#: dialog_timing_processor.cpp:127
 msgid "Starts before thres.:"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:118
+#: dialog_timing_processor.cpp:129
 msgid ""
 "Threshold for 'before start' distance, that is, how many frames a subtitle "
 "must start before a keyframe to snap to it."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:119
+#: dialog_timing_processor.cpp:130
 msgid "Starts after thres.:"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:121
+#: dialog_timing_processor.cpp:132
 msgid ""
 "Threshold for 'after start' distance, that is, how many frames a subtitle "
 "must start after a keyframe to snap to it."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:122
+#: dialog_timing_processor.cpp:133
 msgid "Ends before thres.:"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:124
+#: dialog_timing_processor.cpp:135
 msgid ""
 "Threshold for 'before end' distance, that is, how many frames a subtitle "
 "must end before a keyframe to snap to it."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:125
+#: dialog_timing_processor.cpp:136
 msgid "Ends after thres.:"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:127
+#: dialog_timing_processor.cpp:138
 msgid ""
 "Threshold for 'after end' distance, that is, how many frames a subtitle must "
 "end after a keyframe to snap to it."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:160
-msgid "All"
-msgstr ""
-
-#: aegisub/dialog_timing_processor.cpp:161
-msgid "Select all styles."
-msgstr ""
-
-#: aegisub/dialog_timing_processor.cpp:162
-msgid "None"
-msgstr ""
-
-#: aegisub/dialog_timing_processor.cpp:163
-msgid "Deselect all styles."
-msgstr ""
-
-#: aegisub/dialog_timing_processor.cpp:168
-msgid "Apply to styles"
-msgstr ""
-
-#: aegisub/dialog_timing_processor.cpp:171
-msgid "Select styles to process. Unchecked ones will be ignored."
-msgstr ""
-
-#: aegisub/dialog_timing_processor.cpp:317
-#, c-format
+#: dialog_timing_processor.cpp:320
+#, possible-c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:317
+#: dialog_timing_processor.cpp:320
 msgid "Invalid script"
 msgstr ""
 
-#: aegisub/dialog_timing_processor.cpp:566
+#: dialog_timing_processor.cpp:569
 msgid "timing processor"
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:48
+#: dialog_tip.cpp:50
 msgid ""
-"Aegisub can export subtitles to other formats, character encodings, and even "
-"compensate Variable Frame Rate so you can hardsub them - it's all in the "
-"Export option in File menu."
+"Aegisub can export subtitles to many different formats, character encodings, "
+"and even compensate Variable Frame Rate so you can hardsub them - it's all "
+"in the Export option in File menu."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:49
+#: dialog_tip.cpp:51
 msgid ""
 "You can easily translate subtitle files using the translation assistant."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:50
+#: dialog_tip.cpp:52
 msgid ""
 "Styles can be stored in different storages, so that you can keep your "
 "projects organized."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:51
+#: dialog_tip.cpp:53
 msgid ""
 "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter "
 "updates changes on current line without going to next. Check the manual for "
 "a complete list."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:52
+#: dialog_tip.cpp:54
 msgid ""
 "There is no reason to use the SSA format (as opposed to ASS). ASS is very "
 "similar, but adds some important functionality. Most importantly, however, "
 "is that only ASS supports certain override tags (such as \\pos and \\t). "
-"Those only work on SSA files because VSFilter/Textsub are merciful."
+"Those only work on SSA files because VSFilter/Textsub is merciful."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:53
+#: dialog_tip.cpp:55
 msgid "DON'T PANIC!"
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:54
+#: dialog_tip.cpp:56
 msgid ""
 "Aegisub has several features to make sure you will never lose your work. It "
 "will periodically save your subtitles to autosave folder, and will create a "
@@ -2723,25 +2820,25 @@ msgid ""
 "crashes, it will attempt to save a restore file."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:55
+#: dialog_tip.cpp:57
 msgid ""
 "The styling assistant is a practical way to set styles to each line, when "
 "each actor has a different style assigned to it."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:56
+#: dialog_tip.cpp:58
 msgid ""
 "The fonts collector is one of the most useful features, which resumes the "
 "boring task of hunting down fonts into a matter of a few clicks."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:57
+#: dialog_tip.cpp:59
 msgid ""
 "When you are done with your subtitles and ready to distribute them, "
 "remember: say no to MP4, OGM or AVI. Matroska is your friend."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:58
+#: dialog_tip.cpp:60
 msgid ""
 "Much like anything loaded via DirectShow, certain files may have a strange "
 "structure (such as h.264 into AVI or XviD will null frames) which may cause "
@@ -2750,1078 +2847,1147 @@ msgid ""
 "working with them."
 msgstr ""
 
-#: aegisub/dialog_tip.cpp:59
+#: dialog_tip.cpp:61
+msgid ""
+"Try the spectrum mode for the audio display, it can make it much easier to "
+"spot where the important points in the audio are."
+msgstr ""
+
+#: dialog_tip.cpp:62
+msgid ""
+"If you decode your audio to a PCM WAV file before loading it in Aegisub, you "
+"don't have to wait for it to be decoded before you can use it."
+msgstr ""
+
+#: dialog_tip.cpp:63
+msgid ""
+"Having video open is often more a nuisance than a help when timing "
+"subtitles. Timing with only audio open is often much easier. You can always "
+"adjust the subtitles to match the video later on."
+msgstr ""
+
+#: dialog_tip.cpp:64
+msgid ""
+"If the audio doesn't seem to work properly during video playback, try "
+"loading audio separately. Just select Audio->Load from video, that usually "
+"makes the audio much more reliable."
+msgstr ""
+
+#: dialog_tip.cpp:65
 msgid "If anything goes wrong, blame movax."
 msgstr ""
 
-#: aegisub/dialog_translation.cpp:57 aegisub/frame_main.cpp:235
+#: dialog_translation.cpp:58 frame_main.cpp:254
 msgid "Translation Assistant"
 msgstr ""
 
-#: aegisub/dialog_translation.cpp:84
+#: dialog_translation.cpp:85
 msgid "Original"
 msgstr ""
 
-#: aegisub/dialog_translation.cpp:85
+#: dialog_translation.cpp:86
 msgid "Translation"
 msgstr ""
 
-#: aegisub/dialog_translation.cpp:86
+#: dialog_translation.cpp:87
 msgid "Current line: ?"
 msgstr ""
 
-#: aegisub/dialog_translation.cpp:105
+#: dialog_translation.cpp:106
 msgid "Insert original"
 msgstr ""
 
-#: aegisub/dialog_translation.cpp:108
+#: dialog_translation.cpp:109
 msgid "Enable preview"
 msgstr ""
 
-#: aegisub/dialog_translation.cpp:183
-#, c-format
+#: dialog_translation.cpp:186
+#, possible-c-format
 msgid "Current line: %i/%i"
 msgstr ""
 
-#: aegisub/dialog_translation.cpp:319
+#: dialog_translation.cpp:326
 msgid "translation assistant"
 msgstr ""
 
-#: aegisub/dialog_version_check.cpp:57
+#: dialog_version_check.cpp:58
 msgid "Version Checker"
 msgstr ""
 
-#: aegisub/dialog_version_check.cpp:173
+#: dialog_version_check.cpp:174
 msgid "Could not open Internet File system. Aborting.\n"
 msgstr ""
 
-#: aegisub/dialog_version_check.cpp:182
-msgid "Attempting to open \""
+#: dialog_version_check.cpp:183
+#, possible-c-format
+msgid "Attempting to open \"%s\"..."
 msgstr ""
 
-#: aegisub/dialog_version_check.cpp:193
+#: dialog_version_check.cpp:194
 msgid "Failed.\n"
 msgstr ""
 
-#: aegisub/dialog_version_check.cpp:203
+#: dialog_version_check.cpp:204
 msgid "OK.\n"
 msgstr ""
 
-#: aegisub/dialog_version_check.cpp:262
+#: dialog_version_check.cpp:263
 msgid "New version found!\n"
 msgstr ""
 
-#: aegisub/dialog_version_check.cpp:264
-msgid "Please go to the following URL to download it: "
+#: dialog_version_check.cpp:265
+#, possible-c-format
+msgid "Please go to the following URL to download it: %s\n"
 msgstr ""
 
-#: aegisub/dialog_version_check.cpp:278
+#: dialog_version_check.cpp:279
 msgid "No new version has been found.\n"
 msgstr ""
 
-#: aegisub/export_clean_info.cpp:58
+#: dialog_video_details.cpp:50
+msgid "Video Details"
+msgstr ""
+
+#: dialog_video_details.cpp:69
+msgid "File name:"
+msgstr ""
+
+#: dialog_video_details.cpp:71
+msgid "FPS:"
+msgstr ""
+
+#: dialog_video_details.cpp:73
+msgid "Resolution:"
+msgstr ""
+
+#: dialog_video_details.cpp:75
+msgid "Length:"
+msgstr ""
+
+#: dialog_video_details.cpp:77
+msgid "Decoder:"
+msgstr ""
+
+#: export_clean_info.cpp:58
 msgid "Clean Script Info"
 msgstr ""
 
-#: aegisub/export_clean_info.cpp:59
+#: export_clean_info.cpp:59
 msgid ""
 "Removes all but the absolutely required fields from the Script Info section. "
 "You might want to run this on files that you plan to distribute in original "
 "form."
 msgstr ""
 
-#: aegisub/export_fixstyle.cpp:58
+#: export_fixstyle.cpp:58
 msgid "Fix Styles"
 msgstr ""
 
-#: aegisub/export_fixstyle.cpp:59
+#: export_fixstyle.cpp:59
 msgid ""
 "Fixes styles by replacing any style that isn't available on file with "
 "Default."
 msgstr ""
 
-#: aegisub/export_framerate.cpp:59
+#: export_framerate.cpp:59
 msgid "Transform Framerate"
 msgstr ""
 
-#: aegisub/export_framerate.cpp:60
+#: export_framerate.cpp:60
 msgid ""
 "Transform subtitles times, including those in override tags, from input to "
 "output. This is most useful to convert CFR to VFR for hardsubbing. You "
 "usually DO NOT want to check this filter for softsubbing."
 msgstr ""
 
-#: aegisub/export_framerate.cpp:86
+#: export_framerate.cpp:86
 msgid "From Video"
 msgstr ""
 
-#: aegisub/export_framerate.cpp:103
+#: export_framerate.cpp:103
 msgid "Variable"
 msgstr ""
 
-#: aegisub/export_framerate.cpp:107
+#: export_framerate.cpp:107
 msgid "Constant: "
 msgstr ""
 
-#: aegisub/export_framerate.cpp:124
+#: export_framerate.cpp:124
 msgid "Input framerate: "
 msgstr ""
 
-#: aegisub/export_framerate.cpp:126
+#: export_framerate.cpp:126
 msgid "Output: "
 msgstr ""
 
-#: aegisub/frame_main.cpp:163
+#: frame_main.cpp:175
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
 msgstr ""
 
-#: aegisub/frame_main.cpp:163
+#: frame_main.cpp:175
 msgid "Check for updates?"
 msgstr ""
 
-#: aegisub/frame_main.cpp:192 aegisub/frame_main.cpp:272
-#: aegisub/hotkeys.cpp:315
+#: frame_main.cpp:208 frame_main.cpp:302 hotkeys.cpp:317
 msgid "New subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:193
+#: frame_main.cpp:209
 msgid "Open"
 msgstr ""
 
-#: aegisub/frame_main.cpp:193 aegisub/hotkeys.cpp:316
+#: frame_main.cpp:209 hotkeys.cpp:318
 msgid "Open subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:194
+#: frame_main.cpp:210
 msgid "Save"
 msgstr ""
 
-#: aegisub/frame_main.cpp:194 aegisub/hotkeys.cpp:317
+#: frame_main.cpp:210 hotkeys.cpp:319
 msgid "Save subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:198
+#: frame_main.cpp:214
 msgid "Jump To..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:198
+#: frame_main.cpp:214
 msgid "Jump video to time/frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:199
+#: frame_main.cpp:215
 msgid "Zoom in"
 msgstr ""
 
-#: aegisub/frame_main.cpp:199
+#: frame_main.cpp:215
 msgid "Zoom video in"
 msgstr ""
 
-#: aegisub/frame_main.cpp:200
+#: frame_main.cpp:216
 msgid "Zoom out"
 msgstr ""
 
-#: aegisub/frame_main.cpp:200
+#: frame_main.cpp:216
 msgid "Zoom video out"
 msgstr ""
 
-#: aegisub/frame_main.cpp:213
+#: frame_main.cpp:229
 msgid "Jump video to start"
 msgstr ""
 
-#: aegisub/frame_main.cpp:213 aegisub/frame_main.cpp:398
+#: frame_main.cpp:229 frame_main.cpp:445
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr ""
 
-#: aegisub/frame_main.cpp:214
+#: frame_main.cpp:230
 msgid "Jump video to end"
 msgstr ""
 
-#: aegisub/frame_main.cpp:214 aegisub/frame_main.cpp:399
+#: frame_main.cpp:230 frame_main.cpp:446
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr ""
 
-#: aegisub/frame_main.cpp:215
+#: frame_main.cpp:231
 msgid "Snap start to video"
 msgstr ""
 
-#: aegisub/frame_main.cpp:215 aegisub/frame_main.cpp:346
+#: frame_main.cpp:231 frame_main.cpp:386
 msgid "Set start of selected subtitles to current video frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:216
+#: frame_main.cpp:232
 msgid "Snap end to video"
 msgstr ""
 
-#: aegisub/frame_main.cpp:216 aegisub/frame_main.cpp:347
+#: frame_main.cpp:232 frame_main.cpp:387
 msgid "Set end of selected subtitles to current video frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:217
+#: frame_main.cpp:233
 msgid "Select visible"
 msgstr ""
 
-#: aegisub/frame_main.cpp:217
+#: frame_main.cpp:233
 msgid "Selects all lines that are currently visible on video frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:218
+#: frame_main.cpp:234
 msgid "Snap subtitles to scene"
 msgstr ""
 
-#: aegisub/frame_main.cpp:218
+#: frame_main.cpp:234
 msgid "Snap selected subtitles so they match current scene start/end"
 msgstr ""
 
-#: aegisub/frame_main.cpp:219
+#: frame_main.cpp:235
 msgid "Shift subtitles to frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:219
+#: frame_main.cpp:235
 msgid "Shift selected subtitles so first selected starts at this frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:223
-msgid "Properties"
-msgstr ""
-
-#: aegisub/frame_main.cpp:223
-msgid "Open Properties"
-msgstr ""
-
-#: aegisub/frame_main.cpp:224
+#: frame_main.cpp:239
 msgid "Open Styles Manager"
 msgstr ""
 
-#: aegisub/frame_main.cpp:225
+#: frame_main.cpp:240
+msgid "Properties"
+msgstr ""
+
+#: frame_main.cpp:240
+msgid "Open Properties"
+msgstr ""
+
+#: frame_main.cpp:241
 msgid "Attachments"
 msgstr ""
 
-#: aegisub/frame_main.cpp:225
+#: frame_main.cpp:241
 msgid "Open Attachment List"
 msgstr ""
 
-#: aegisub/frame_main.cpp:229
-msgid "Open Automation manager"
-msgstr ""
-
-#: aegisub/frame_main.cpp:233
-msgid "Open Shift Times Dialogue"
-msgstr ""
-
-#: aegisub/frame_main.cpp:234
-msgid "Styling Assistant"
-msgstr ""
-
-#: aegisub/frame_main.cpp:234
-msgid "Open Styling Assistant"
-msgstr ""
-
-#: aegisub/frame_main.cpp:235
-msgid "Open Translation Assistant"
-msgstr ""
-
-#: aegisub/frame_main.cpp:236
+#: frame_main.cpp:242
 msgid "Open Fonts Collector"
 msgstr ""
 
-#: aegisub/frame_main.cpp:237
+#: frame_main.cpp:247
+msgid "Open Automation manager"
+msgstr ""
+
+#: frame_main.cpp:252
+msgid "Open Shift Times Dialogue"
+msgstr ""
+
+#: frame_main.cpp:253
+msgid "Styling Assistant"
+msgstr ""
+
+#: frame_main.cpp:253
+msgid "Open Styling Assistant"
+msgstr ""
+
+#: frame_main.cpp:254
+msgid "Open Translation Assistant"
+msgstr ""
+
+#: frame_main.cpp:255
+msgid "Resample"
+msgstr ""
+
+#: frame_main.cpp:255
 msgid "Resample Script Resolution"
 msgstr ""
 
-#: aegisub/frame_main.cpp:238
+#: frame_main.cpp:256
 msgid "Open Timing Post-processor dialog"
 msgstr ""
 
-#: aegisub/frame_main.cpp:239
+#: frame_main.cpp:257
 msgid "Kanji Timer"
 msgstr ""
 
-#: aegisub/frame_main.cpp:239
+#: frame_main.cpp:257
 msgid "Open Kanji Timer dialog"
 msgstr ""
 
-#: aegisub/frame_main.cpp:240
+#: frame_main.cpp:258
 msgid "Open Spell checker"
 msgstr ""
 
-#: aegisub/frame_main.cpp:244 aegisub/frame_main.cpp:420
+#: frame_main.cpp:262 frame_main.cpp:474
 msgid "Configure Aegisub"
 msgstr ""
 
-#: aegisub/frame_main.cpp:245
+#: frame_main.cpp:263
 msgid "Cycle Tag Hidding Mode"
 msgstr ""
 
-#: aegisub/frame_main.cpp:245
+#: frame_main.cpp:263
 msgid "Cycle through tag-hiding modes"
 msgstr ""
 
-#: aegisub/frame_main.cpp:272
-msgid "&New Subtitles\t"
+#: frame_main.cpp:287 frame_main.cpp:499
+msgid "&Help"
 msgstr ""
 
-#: aegisub/frame_main.cpp:273
-msgid "&Open Subtitles...\t"
+#: frame_main.cpp:302
+msgid "&New Subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:273
+#: frame_main.cpp:303
+msgid "&Open Subtitles..."
+msgstr ""
+
+#: frame_main.cpp:303
 msgid "Opens a subtitles file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:274
+#: frame_main.cpp:304
 msgid "&Open Subtitles with Charset..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:274
+#: frame_main.cpp:304
 msgid "Opens a subtitles file with a specific charset"
 msgstr ""
 
-#: aegisub/frame_main.cpp:275
-msgid "&Save Subtitles\t"
+#: frame_main.cpp:305
+msgid "&Save Subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:275
+#: frame_main.cpp:305
 msgid "Saves subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:276
+#: frame_main.cpp:306
 msgid "Save Subtitles as..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:276
+#: frame_main.cpp:306
 msgid "Saves subtitles with another name"
 msgstr ""
 
-#: aegisub/frame_main.cpp:277
+#: frame_main.cpp:307
 msgid "Export Subtitles..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:277
+#: frame_main.cpp:307
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr ""
 
-#: aegisub/frame_main.cpp:278 aegisub/frame_main.cpp:363
-#: aegisub/frame_main.cpp:369 aegisub/frame_main.cpp:375
-#: aegisub/frame_main.cpp:407
+#: frame_main.cpp:308 frame_main.cpp:405 frame_main.cpp:412 frame_main.cpp:418
+#: frame_main.cpp:454
 msgid "Recent"
 msgstr ""
 
-#: aegisub/frame_main.cpp:282
+#: frame_main.cpp:314
 msgid "&Properties..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:282
+#: frame_main.cpp:314
 msgid "Open script properties window"
 msgstr ""
 
-#: aegisub/frame_main.cpp:283
+#: frame_main.cpp:315
 msgid "&Attachments..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:283
+#: frame_main.cpp:315
 msgid "Open the attachment list"
 msgstr ""
 
-#: aegisub/frame_main.cpp:285
-msgid "E&xit\t"
+#: frame_main.cpp:316
+msgid "&Fonts Collector..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:285
+#: frame_main.cpp:316
+msgid "Open fonts collector"
+msgstr ""
+
+#: frame_main.cpp:320
+msgid "New Window"
+msgstr ""
+
+#: frame_main.cpp:320
+msgid "Open a new application window"
+msgstr ""
+
+#: frame_main.cpp:322
+msgid "E&xit"
+msgstr ""
+
+#: frame_main.cpp:322
 msgid "Exit the application"
 msgstr ""
 
-#: aegisub/frame_main.cpp:286
+#: frame_main.cpp:323
 msgid "&File"
 msgstr ""
 
-#: aegisub/frame_main.cpp:291 aegisub/frame_main_events.cpp:402
-#: aegisub/subs_edit_ctrl.cpp:866
+#: frame_main.cpp:328 frame_main_events.cpp:415 subs_edit_ctrl.cpp:924
 msgid "&Undo"
 msgstr ""
 
-#: aegisub/frame_main.cpp:291 aegisub/frame_main_events.cpp:402
+#: frame_main.cpp:328 frame_main_events.cpp:415
 msgid "Undoes last action"
 msgstr ""
 
-#: aegisub/frame_main.cpp:292 aegisub/frame_main_events.cpp:403
+#: frame_main.cpp:329 frame_main_events.cpp:416
 msgid "&Redo"
 msgstr ""
 
-#: aegisub/frame_main.cpp:292 aegisub/frame_main_events.cpp:403
+#: frame_main.cpp:329 frame_main_events.cpp:416
 msgid "Redoes last action"
 msgstr ""
 
-#: aegisub/frame_main.cpp:294
-msgid "Cut Lines\t"
+#: frame_main.cpp:331
+msgid "Cut Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:294
+#: frame_main.cpp:331
 msgid "Cut subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:295
-msgid "Copy Lines\t"
+#: frame_main.cpp:332
+msgid "Copy Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:295
+#: frame_main.cpp:332
 msgid "Copy subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:296
-msgid "Paste Lines\t"
+#: frame_main.cpp:333
+msgid "Paste Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:296
+#: frame_main.cpp:333
 msgid "Paste subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:297
-msgid "Paste Lines Over...\t"
+#: frame_main.cpp:334
+msgid "Paste Lines Over..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:297
+#: frame_main.cpp:334
 msgid "Paste subtitles over others"
 msgstr ""
 
-#: aegisub/frame_main.cpp:299
-msgid "&Find...\t"
+#: frame_main.cpp:336
+msgid "&Find..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:299
+#: frame_main.cpp:336
 msgid "Find words in subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:300
-msgid "Find Next\t"
+#: frame_main.cpp:337 hotkeys.cpp:340 hotkeys.cpp:343
+msgid "Find Next"
 msgstr ""
 
-#: aegisub/frame_main.cpp:300
+#: frame_main.cpp:337
 msgid "Find next match of last word"
 msgstr ""
 
-#: aegisub/frame_main.cpp:301
-msgid "Search and &Replace...\t"
+#: frame_main.cpp:338
+msgid "Search and &Replace..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:301
+#: frame_main.cpp:338
 msgid "Find and replace words in subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:302
+#: frame_main.cpp:339
 msgid "&Edit"
 msgstr ""
 
-#: aegisub/frame_main.cpp:307
+#: frame_main.cpp:344
 msgid "&Insert Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:309
+#: frame_main.cpp:348
+msgid "&Styles Manager..."
+msgstr ""
+
+#: frame_main.cpp:348
+msgid "Open styles manager"
+msgstr ""
+
+#: frame_main.cpp:349
+msgid "St&yling Assistant..."
+msgstr ""
+
+#: frame_main.cpp:349
+msgid "Open styling assistant"
+msgstr ""
+
+#: frame_main.cpp:350
+msgid "&Translation Assistant..."
+msgstr ""
+
+#: frame_main.cpp:350
+msgid "Open translation assistant"
+msgstr ""
+
+#: frame_main.cpp:351
+msgid "Resample Resolution..."
+msgstr ""
+
+#: frame_main.cpp:351
+msgid "Changes resolution and modifies subtitles to conform to change"
+msgstr ""
+
+#: frame_main.cpp:352
+msgid "Spe&ll Checker..."
+msgstr ""
+
+#: frame_main.cpp:352
+msgid "Open spell checker"
+msgstr ""
+
+#: frame_main.cpp:354
 msgid "&Before Current"
 msgstr ""
 
-#: aegisub/frame_main.cpp:309
+#: frame_main.cpp:354
 msgid "Inserts a line before current"
 msgstr ""
 
-#: aegisub/frame_main.cpp:310
+#: frame_main.cpp:355
 msgid "&After Current"
 msgstr ""
 
-#: aegisub/frame_main.cpp:310
+#: frame_main.cpp:355
 msgid "Inserts a line after current"
 msgstr ""
 
-#: aegisub/frame_main.cpp:311
+#: frame_main.cpp:356
 msgid "Before Current, at Video Time"
 msgstr ""
 
-#: aegisub/frame_main.cpp:311
+#: frame_main.cpp:356
 msgid "Inserts a line before current, starting at video time"
 msgstr ""
 
-#: aegisub/frame_main.cpp:312
+#: frame_main.cpp:357
 msgid "After Current, at Video Time"
 msgstr ""
 
-#: aegisub/frame_main.cpp:312
+#: frame_main.cpp:357
 msgid "Inserts a line after current, starting at video time"
 msgstr ""
 
-#: aegisub/frame_main.cpp:314
+#: frame_main.cpp:359
 msgid "&Duplicate Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:314
+#: frame_main.cpp:359 subs_grid.cpp:164
 msgid "Duplicate the selected lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:315 aegisub/subs_grid.cpp:165
-msgid "&Duplicate and shift by 1 frame"
+#: frame_main.cpp:360
+msgid "&Duplicate and Shift by 1 Frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:315
+#: frame_main.cpp:360 subs_grid.cpp:165
 msgid "Duplicate lines and shift by one frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:316
+#: frame_main.cpp:361
 msgid "Delete Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:316
+#: frame_main.cpp:361 subs_grid.cpp:201
 msgid "Delete currently selected lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:319
+#: frame_main.cpp:364
 msgid "Join Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:321
+#: frame_main.cpp:368
 msgid "&Concatenate"
 msgstr ""
 
-#: aegisub/frame_main.cpp:321
+#: frame_main.cpp:368 subs_grid.cpp:174
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr ""
 
-#: aegisub/frame_main.cpp:322
+#: frame_main.cpp:369
 msgid "Keep &First"
 msgstr ""
 
-#: aegisub/frame_main.cpp:322
+#: frame_main.cpp:369 subs_grid.cpp:175
 msgid ""
 "Joins selected lines in a single one, keeping text of first and discarding "
 "remaining"
 msgstr ""
 
-#: aegisub/frame_main.cpp:323
+#: frame_main.cpp:370
 msgid "As &Karaoke"
 msgstr ""
 
-#: aegisub/frame_main.cpp:323
+#: frame_main.cpp:370
 msgid "Joins selected lines in a single one, as karaoke"
 msgstr ""
 
-#: aegisub/frame_main.cpp:325 aegisub/subs_grid.cpp:185
+#: frame_main.cpp:372 subs_grid.cpp:185
 msgid "Recombine Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:325
+#: frame_main.cpp:372 subs_grid.cpp:185
 msgid "Recombine subtitles when they have been split and merged"
 msgstr ""
 
-#: aegisub/frame_main.cpp:326
+#: frame_main.cpp:373
 msgid "Split Lines (by karaoke)"
 msgstr ""
 
-#: aegisub/frame_main.cpp:326
+#: frame_main.cpp:373 subs_grid.cpp:166
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:328
+#: frame_main.cpp:375
 msgid "Swap Lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:328
+#: frame_main.cpp:375 subs_grid.cpp:170
 msgid "Swaps the two selected lines"
 msgstr ""
 
-#: aegisub/frame_main.cpp:329
-msgid "Select Lines...\t"
+#: frame_main.cpp:376
+msgid "Select Lines..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:329
+#: frame_main.cpp:376
 msgid "Selects lines based on defined criterea"
 msgstr ""
 
-#: aegisub/frame_main.cpp:331
-msgid "&Styles Manager..."
-msgstr ""
-
-#: aegisub/frame_main.cpp:331
-msgid "Open styles manager"
-msgstr ""
-
-#: aegisub/frame_main.cpp:332
-msgid "St&yling Assistant..."
-msgstr ""
-
-#: aegisub/frame_main.cpp:332
-msgid "Open styling assistant"
-msgstr ""
-
-#: aegisub/frame_main.cpp:333
-msgid "&Translation Assistant..."
-msgstr ""
-
-#: aegisub/frame_main.cpp:333
-msgid "Open translation assistant"
-msgstr ""
-
-#: aegisub/frame_main.cpp:334
-msgid "Resample resolution..."
-msgstr ""
-
-#: aegisub/frame_main.cpp:334
-msgid "Changes resolution and modifies subtitles to conform to change"
-msgstr ""
-
-#: aegisub/frame_main.cpp:335
-msgid "&Fonts Collector..."
-msgstr ""
-
-#: aegisub/frame_main.cpp:335
-msgid "Open fonts collector"
-msgstr ""
-
-#: aegisub/frame_main.cpp:336
-msgid "Spe&ll Checker..."
-msgstr ""
-
-#: aegisub/frame_main.cpp:336
-msgid "Open spell checker"
-msgstr ""
-
-#: aegisub/frame_main.cpp:337
+#: frame_main.cpp:377
 msgid "&Subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:341
+#: frame_main.cpp:381
 msgid "S&hift Times..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:341
+#: frame_main.cpp:381
 msgid "Shift subtitles by time or frames"
 msgstr ""
 
-#: aegisub/frame_main.cpp:342
+#: frame_main.cpp:382
 msgid "Sort by Time"
 msgstr ""
 
-#: aegisub/frame_main.cpp:342
+#: frame_main.cpp:382
 msgid "Sort all subtitles by their start times"
 msgstr ""
 
-#: aegisub/frame_main.cpp:343
+#: frame_main.cpp:383
 msgid "Timing Post-Processor..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:343
+#: frame_main.cpp:383
 msgid ""
 "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
 "timing and etc."
 msgstr ""
 
-#: aegisub/frame_main.cpp:344
+#: frame_main.cpp:384
 msgid "Kanji Timer..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:344
+#: frame_main.cpp:384
 msgid "Open Kanji timer"
 msgstr ""
 
-#: aegisub/frame_main.cpp:346
+#: frame_main.cpp:386
 msgid "Snap Start to Video"
 msgstr ""
 
-#: aegisub/frame_main.cpp:347
+#: frame_main.cpp:387
 msgid "Snap End to Video"
 msgstr ""
 
-#: aegisub/frame_main.cpp:348 aegisub/hotkeys.cpp:340
+#: frame_main.cpp:388 hotkeys.cpp:361
 msgid "Snap to Scene"
 msgstr ""
 
-#: aegisub/frame_main.cpp:348
+#: frame_main.cpp:388
 msgid ""
 "Set start and end of subtitles to the keyframes around current video frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:349
+#: frame_main.cpp:389
 msgid "Shift to Current Frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:349
+#: frame_main.cpp:389
 msgid "Shift selection so first selected line starts at current frame"
 msgstr ""
 
-#: aegisub/frame_main.cpp:352
+#: frame_main.cpp:392
 msgid "Make Times Continuous"
 msgstr ""
 
-#: aegisub/frame_main.cpp:354
+#: frame_main.cpp:396
 msgid "Change &Start"
 msgstr ""
 
-#: aegisub/frame_main.cpp:354
+#: frame_main.cpp:396 subs_grid.cpp:180
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr ""
 
-#: aegisub/frame_main.cpp:355
+#: frame_main.cpp:397
 msgid "Change &End"
 msgstr ""
 
-#: aegisub/frame_main.cpp:355
+#: frame_main.cpp:397 subs_grid.cpp:181
 msgid "Changes times of subs so end times begin on next's start time"
 msgstr ""
 
-#: aegisub/frame_main.cpp:357
+#: frame_main.cpp:399
 msgid "&Timing"
 msgstr ""
 
-#: aegisub/frame_main.cpp:361
+#: frame_main.cpp:403
 msgid "&Open Video..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:361
+#: frame_main.cpp:403
 msgid "Opens a video file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:362
+#: frame_main.cpp:404
 msgid "&Close Video"
 msgstr ""
 
-#: aegisub/frame_main.cpp:362
+#: frame_main.cpp:404
 msgid "Closes the currently open video file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:365
-msgid "Use dummy video..."
+#: frame_main.cpp:407
+msgid "Use Dummy Video..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:365
+#: frame_main.cpp:407
 msgid "Opens a video clip with solid colour"
 msgstr ""
 
-#: aegisub/frame_main.cpp:367
-msgid "Open timecodes file..."
+#: frame_main.cpp:408
+msgid "Show Video Details..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:367
+#: frame_main.cpp:408
+msgid "Shows video details"
+msgstr ""
+
+#: frame_main.cpp:410
+msgid "Open Timecodes File..."
+msgstr ""
+
+#: frame_main.cpp:410
 msgid "Opens a VFR timecodes v1 or v2 file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:368
-msgid "Close timecodes file"
+#: frame_main.cpp:411
+msgid "Close Timecodes File"
 msgstr ""
 
-#: aegisub/frame_main.cpp:368
+#: frame_main.cpp:411
 msgid "Closes the currently open timecodes file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:372
-msgid "Open keyframes..."
+#: frame_main.cpp:415
+msgid "Open Keyframes..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:372
+#: frame_main.cpp:415
 msgid "Opens a keyframe list file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:373
-msgid "Save keyframes..."
+#: frame_main.cpp:416
+msgid "Save Keyframes..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:373
+#: frame_main.cpp:416
 msgid "Saves the current keyframe list"
 msgstr ""
 
-#: aegisub/frame_main.cpp:374
-msgid "Close keyframes"
+#: frame_main.cpp:417
+msgid "Close Keyframes"
 msgstr ""
 
-#: aegisub/frame_main.cpp:374
+#: frame_main.cpp:417
 msgid "Closes the currently open keyframes list"
 msgstr ""
 
-#: aegisub/frame_main.cpp:378
+#: frame_main.cpp:421
 msgid "Detach Video"
 msgstr ""
 
-#: aegisub/frame_main.cpp:378
+#: frame_main.cpp:421
 msgid "Detach video, displaying it in a separate Window."
 msgstr ""
 
-#: aegisub/frame_main.cpp:380
+#: frame_main.cpp:423
 msgid "Set Zoom"
 msgstr ""
 
-#: aegisub/frame_main.cpp:382
+#: frame_main.cpp:427
 msgid "Set zoom to 50%"
 msgstr ""
 
-#: aegisub/frame_main.cpp:383
+#: frame_main.cpp:428
 msgid "Set zoom to 100%"
 msgstr ""
 
-#: aegisub/frame_main.cpp:384
+#: frame_main.cpp:429
 msgid "Set zoom to 200%"
 msgstr ""
 
-#: aegisub/frame_main.cpp:387
+#: frame_main.cpp:432
 msgid "Override Aspect Ratio"
 msgstr ""
 
-#: aegisub/frame_main.cpp:389
+#: frame_main.cpp:436
 msgid "&Default"
 msgstr ""
 
-#: aegisub/frame_main.cpp:389
+#: frame_main.cpp:436
 msgid "Leave video on original aspect ratio"
 msgstr ""
 
-#: aegisub/frame_main.cpp:390
+#: frame_main.cpp:437
 msgid "&Fullscreen (4:3)"
 msgstr ""
 
-#: aegisub/frame_main.cpp:390
+#: frame_main.cpp:437
 msgid "Forces video to 4:3 aspect ratio"
 msgstr ""
 
-#: aegisub/frame_main.cpp:391
+#: frame_main.cpp:438
 msgid "&Widescreen (16:9)"
 msgstr ""
 
-#: aegisub/frame_main.cpp:391
+#: frame_main.cpp:438
 msgid "Forces video to 16:9 aspect ratio"
 msgstr ""
 
-#: aegisub/frame_main.cpp:392
+#: frame_main.cpp:439
 msgid "&Cinematic (2.35)"
 msgstr ""
 
-#: aegisub/frame_main.cpp:392
+#: frame_main.cpp:439
 msgid "Forces video to 2.35 aspect ratio"
 msgstr ""
 
-#: aegisub/frame_main.cpp:393
+#: frame_main.cpp:440
 msgid "Custom..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:393
+#: frame_main.cpp:440
 msgid "Forces video to a custom aspect ratio"
 msgstr ""
 
-#: aegisub/frame_main.cpp:395
-msgid "Show overscan mask"
+#: frame_main.cpp:442
+msgid "Show Overscan Mask"
 msgstr ""
 
-#: aegisub/frame_main.cpp:395
+#: frame_main.cpp:442
 msgid ""
 "Show a mask over the video, indicating areas that might get cropped off by "
 "overscan on televisions."
 msgstr ""
 
-#: aegisub/frame_main.cpp:397
-msgid "&Jump To...\t"
+#: frame_main.cpp:444
+msgid "&Jump to..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:397
+#: frame_main.cpp:444
 msgid "Jump to frame or time"
 msgstr ""
 
-#: aegisub/frame_main.cpp:398
-msgid "Jump video to start\t"
+#: frame_main.cpp:445 hotkeys.cpp:357
+msgid "Jump Video to Start"
 msgstr ""
 
-#: aegisub/frame_main.cpp:399
-msgid "Jump video to end\t"
+#: frame_main.cpp:446 hotkeys.cpp:358
+msgid "Jump Video to End"
 msgstr ""
 
-#: aegisub/frame_main.cpp:400
+#: frame_main.cpp:447
 msgid "&Video"
 msgstr ""
 
-#: aegisub/frame_main.cpp:404
-msgid "&Open Audio file..."
+#: frame_main.cpp:451
+msgid "&Open Audio File..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:404
+#: frame_main.cpp:451
 msgid "Opens an audio file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:405
+#: frame_main.cpp:452
 msgid "Open Audio from &Video"
 msgstr ""
 
-#: aegisub/frame_main.cpp:405
+#: frame_main.cpp:452
 msgid "Opens the audio from the current video file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:406
+#: frame_main.cpp:453
 msgid "&Close Audio"
 msgstr ""
 
-#: aegisub/frame_main.cpp:406
+#: frame_main.cpp:453
 msgid "Closes the currently open audio file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:409
+#: frame_main.cpp:461
 msgid "&Audio"
 msgstr ""
 
-#: aegisub/frame_main.cpp:413
+#: frame_main.cpp:466
 msgid "&Automation..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:413
+#: frame_main.cpp:466
 msgid "Open automation manager"
 msgstr ""
 
-#: aegisub/frame_main.cpp:415
+#: frame_main.cpp:468
 msgid "&Automation"
 msgstr ""
 
-#: aegisub/frame_main.cpp:419
+#: frame_main.cpp:473
 msgid "Select Aegisub interface language"
 msgstr ""
 
-#: aegisub/frame_main.cpp:420
+#: frame_main.cpp:474
 msgid "&Options..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:422
+#: frame_main.cpp:476
 msgid "&Associations..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:422
+#: frame_main.cpp:476
 msgid "Associate file types with Aegisub"
 msgstr ""
 
-#: aegisub/frame_main.cpp:425
-msgid "Lo&g window..."
+#: frame_main.cpp:479
+msgid "Lo&g Window..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:425
+#: frame_main.cpp:479
 msgid "Open log window"
 msgstr ""
 
-#: aegisub/frame_main.cpp:428
-msgid "Subs only view"
+#: frame_main.cpp:482
+msgid "Subs Only View"
 msgstr ""
 
-#: aegisub/frame_main.cpp:428
+#: frame_main.cpp:482
 msgid "Display subtitles only"
 msgstr ""
 
-#: aegisub/frame_main.cpp:429
-msgid "Video+Subs view"
+#: frame_main.cpp:483
+msgid "Video+Subs View"
 msgstr ""
 
-#: aegisub/frame_main.cpp:429
+#: frame_main.cpp:483
 msgid "Display video and subtitles only"
 msgstr ""
 
-#: aegisub/frame_main.cpp:430
-msgid "Audio+Subs view"
+#: frame_main.cpp:484
+msgid "Audio+Subs View"
 msgstr ""
 
-#: aegisub/frame_main.cpp:430
+#: frame_main.cpp:484
 msgid "Display audio and subtitles only"
 msgstr ""
 
-#: aegisub/frame_main.cpp:431
+#: frame_main.cpp:485
 msgid "Full view"
 msgstr ""
 
-#: aegisub/frame_main.cpp:431
+#: frame_main.cpp:485
 msgid "Display audio, video and subtitles"
 msgstr ""
 
-#: aegisub/frame_main.cpp:432
+#: frame_main.cpp:486
 msgid "Vie&w"
 msgstr ""
 
-#: aegisub/frame_main.cpp:436
-msgid "&Contents...\t"
+#: frame_main.cpp:490
+msgid "&Contents..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:436
+#: frame_main.cpp:490
 msgid "Help topics"
 msgstr ""
 
-#: aegisub/frame_main.cpp:438
+#: frame_main.cpp:492
 msgid "&Website..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:438
+#: frame_main.cpp:492
 msgid "Visit Aegisub's official website"
 msgstr ""
 
-#: aegisub/frame_main.cpp:439
+#: frame_main.cpp:493
 msgid "&Forums..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:439
+#: frame_main.cpp:493
 msgid "Visit Aegisub's forums"
 msgstr ""
 
-#: aegisub/frame_main.cpp:440
-msgid "&Bug tracker..."
+#: frame_main.cpp:494
+msgid "&Bug Tracker..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:440
-msgid "Visit Aegisub's bug tracker"
+#: frame_main.cpp:494
+msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr ""
 
-#: aegisub/frame_main.cpp:441
-msgid "&IRC channel..."
+#: frame_main.cpp:495
+msgid "&IRC Channel..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:441
+#: frame_main.cpp:495
 msgid "Visit Aegisub's official IRC channel"
 msgstr ""
 
-#: aegisub/frame_main.cpp:443
+#: frame_main.cpp:497
 msgid "&Check for Updates..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:443
+#: frame_main.cpp:497
 msgid "Check to see if there is a new version of Aegisub available"
 msgstr ""
 
-#: aegisub/frame_main.cpp:444
+#: frame_main.cpp:498
 msgid "&About..."
 msgstr ""
 
-#: aegisub/frame_main.cpp:445
-msgid "&Help"
-msgstr ""
-
-#: aegisub/frame_main.cpp:634
+#: frame_main.cpp:689
 msgid "Save subtitles file"
 msgstr ""
 
-#: aegisub/frame_main.cpp:653 aegisub/frame_main_events.cpp:642
+#: frame_main.cpp:708 frame_main_events.cpp:681
 msgid "Choose charset code:"
 msgstr ""
 
-#: aegisub/frame_main.cpp:683
+#: frame_main.cpp:738
 msgid "Save before continuing?"
 msgstr ""
 
-#: aegisub/frame_main.cpp:683
+#: frame_main.cpp:738
 msgid "Unsaved changes"
 msgstr ""
 
-#: aegisub/frame_main.cpp:807
+#: frame_main.cpp:881
 msgid "Do you want to load/unload the associated files?"
 msgstr ""
 
-#: aegisub/frame_main.cpp:807
+#: frame_main.cpp:881
 msgid "(Un)Load files?"
 msgstr ""
 
-#: aegisub/frame_main.cpp:943
+#: frame_main.cpp:1026
 msgid "You have timecodes loaded currently. Would you like to unload them?"
 msgstr ""
 
-#: aegisub/frame_main.cpp:943
+#: frame_main.cpp:1026
 msgid "Unload timecodes?"
 msgstr ""
 
-#: aegisub/frame_main.cpp:969
-#, c-format
+#: frame_main.cpp:1057
+#, possible-c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
 "subtitles don't match.\n"
@@ -3832,911 +3998,1070 @@ msgid ""
 "Change subtitles resolution to match video?"
 msgstr ""
 
-#: aegisub/frame_main.cpp:969
+#: frame_main.cpp:1057
 msgid "Resolution mismatch"
 msgstr ""
 
-#: aegisub/frame_main.cpp:976
+#: frame_main.cpp:1064
 msgid "Change script resolution"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:249
+#: frame_main_events.cpp:260
 msgid "Empty"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:432
+#: frame_main_events.cpp:446
 msgid "No Automation macros loaded"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:579
+#: frame_main_events.cpp:609
 msgid "Open video file"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:599
+#: frame_main_events.cpp:609
+msgid ""
+"Recommended Formats (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|Other supported "
+"formats (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*."
+"mpg;*.vob|All Files (*.*)|*.*"
+msgstr ""
+
+#: frame_main_events.cpp:629
 msgid "Open audio file"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:642
+#: frame_main_events.cpp:629
+msgid ""
+"Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a)|*.wav;"
+"*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a|Video Formats (*.avi,*.mkv,"
+"*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|All files (*.*)|*.*"
+msgstr ""
+
+#: frame_main_events.cpp:681
 msgid "Charset"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:713
+#: frame_main_events.cpp:754
 msgid "Open timecodes file"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:973
+#: frame_main_events.cpp:754
+msgid "All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"
+msgstr ""
+
+#: frame_main_events.cpp:1038
 msgid "Reloaded all Automation scripts"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:976
+#: frame_main_events.cpp:1041
 msgid "Reloaded autoload Automation scripts"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1108
+#: frame_main_events.cpp:1177
 msgid "snap to scene"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1139
+#: frame_main_events.cpp:1208
 msgid "shift to frame"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1235
+#: frame_main_events.cpp:1304
 msgid ""
 "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) "
 "form. Enter a value like 853x480 to set a specific resolution."
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1235
+#: frame_main_events.cpp:1304
 msgid "Enter aspect ratio"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1270
+#: frame_main_events.cpp:1339
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1270
+#: frame_main_events.cpp:1339
 msgid "Invalid Aspect Ratio"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1371
+#: frame_main_events.cpp:1440
 msgid "sort"
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1407
+#: frame_main_events.cpp:1479
 msgid "File backup saved as \""
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1501
+#: frame_main_events.cpp:1573
 msgid "ASS Override Tag mode set to "
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1502
+#: frame_main_events.cpp:1574
 msgid "show full tags."
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1503
+#: frame_main_events.cpp:1575
 msgid "simplify tags."
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1504
+#: frame_main_events.cpp:1576
 msgid "hide tags."
 msgstr ""
 
-#: aegisub/frame_main_events.cpp:1526 aegisub/subs_edit_box.cpp:865
+#: frame_main_events.cpp:1598 subs_edit_box.cpp:894
 msgid "editing"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:318
+#: hotkeys.cpp:321 hotkeys.cpp:325
 msgid "Exit"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:319
+#: hotkeys.cpp:322 hotkeys.cpp:326 video_box.cpp:122
 msgid "Help"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:322
+#: hotkeys.cpp:330
 msgid "Edit Box Commit"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:323
+#: hotkeys.cpp:331
 msgid "Undo"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:324
+#: hotkeys.cpp:333 hotkeys.cpp:335
 msgid "Redo"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:327
-msgid "Find Next"
-msgstr ""
-
-#: aegisub/hotkeys.cpp:329
+#: hotkeys.cpp:346
 msgid "Select Lines"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:331
+#: hotkeys.cpp:348
 msgid "Cut"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:332
+#: hotkeys.cpp:349
 msgid "Paste"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:333
+#: hotkeys.cpp:350
 msgid "Paste Over"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:335
+#: hotkeys.cpp:353 hotkeys.cpp:355
 msgid "Video Jump"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:336
-msgid "Jump Video to Start"
-msgstr ""
-
-#: aegisub/hotkeys.cpp:337
-msgid "Jump Video to End"
-msgstr ""
-
-#: aegisub/hotkeys.cpp:338
+#: hotkeys.cpp:359
 msgid "Set Start to Video"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:339
+#: hotkeys.cpp:360
 msgid "Set End to Video"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:341
+#: hotkeys.cpp:362
 msgid "Shift by Current Time"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:342
+#: hotkeys.cpp:363
 msgid "Zoom 50%"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:343
+#: hotkeys.cpp:364
 msgid "Zoom 100%"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:344
+#: hotkeys.cpp:365
 msgid "Zoom 200%"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:346
+#: hotkeys.cpp:367
 msgid "Video global prev frame"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:347
+#: hotkeys.cpp:368
 msgid "Video global next frame"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:348
+#: hotkeys.cpp:369
 msgid "Video global focus seek"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:349
+#: hotkeys.cpp:370
 msgid "Video global play"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:350
+#: hotkeys.cpp:371
 msgid "Grid global prev line"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:351
+#: hotkeys.cpp:372
 msgid "Grid global next line"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:352
+#: hotkeys.cpp:373
 msgid "Save Subtitles Alt"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:353
+#: hotkeys.cpp:374
 msgid "Video global zoom in"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:354
+#: hotkeys.cpp:375
 msgid "Video global zoom out"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:356
+#: hotkeys.cpp:377
 msgid "Grid move row down"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:357
+#: hotkeys.cpp:378
 msgid "Grid move row up"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:358
+#: hotkeys.cpp:380 hotkeys.cpp:382
 msgid "Grid delete rows"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:359
+#: hotkeys.cpp:384
 msgid "Grid duplicate rows"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:360
+#: hotkeys.cpp:385
 msgid "Grid duplicate and shift one frame"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:362
+#: hotkeys.cpp:387
 msgid "Audio Commit Alt"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:363
+#: hotkeys.cpp:388
 msgid "Audio Commit"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:364
+#: hotkeys.cpp:389
 msgid "Audio Commit (Stay)"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:365
+#: hotkeys.cpp:390
 msgid "Audio Prev Line"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:366
+#: hotkeys.cpp:391
 msgid "Audio Prev Line Alt"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:367
+#: hotkeys.cpp:392
 msgid "Audio Next Line"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:368
+#: hotkeys.cpp:393
 msgid "Audio Next Line Alt"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:369
+#: hotkeys.cpp:394
 msgid "Audio Play"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:370
+#: hotkeys.cpp:395
 msgid "Audio Play Alt"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:371
+#: hotkeys.cpp:396
 msgid "Audio Play or Stop"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:372
+#: hotkeys.cpp:397
 msgid "Audio Stop"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:373
+#: hotkeys.cpp:398
 msgid "Audio Karaoke Increase Len"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:374
+#: hotkeys.cpp:399
 msgid "Audio Karaoke Decrease Len"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:375
+#: hotkeys.cpp:400
 msgid "Audio Karaoke Increase Len Shift"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:376
+#: hotkeys.cpp:401
 msgid "Audio Karaoke Decrease Len Shift"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:377
+#: hotkeys.cpp:402
 msgid "Audio Scroll Left"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:378
+#: hotkeys.cpp:403
 msgid "Audio Scroll Right"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:379
+#: hotkeys.cpp:404
 msgid "Audio Play First 500ms"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:380
+#: hotkeys.cpp:405
 msgid "Audio Play Last 500ms"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:381
+#: hotkeys.cpp:406
 msgid "Audio Play 500ms Before"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:382
+#: hotkeys.cpp:407
 msgid "Audio Play 500ms After"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:383
+#: hotkeys.cpp:408
 msgid "Audio Play To End"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:384
+#: hotkeys.cpp:409
 msgid "Audio Play Original Line"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:385
+#: hotkeys.cpp:410
 msgid "Audio Add Lead In"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:386
+#: hotkeys.cpp:411
 msgid "Audio Add Lead Out"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:388
+#: hotkeys.cpp:413
 msgid "Audio Medusa Toggle"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:389
+#: hotkeys.cpp:414
 msgid "Audio Medusa Play"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:390
+#: hotkeys.cpp:415
 msgid "Audio Medusa Stop"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:391
+#: hotkeys.cpp:416
 msgid "Audio Medusa Shift Start Back"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:392
+#: hotkeys.cpp:417
 msgid "Audio Medusa Shift Start Forward"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:393
+#: hotkeys.cpp:418
 msgid "Audio Medusa Shift End Back"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:394
+#: hotkeys.cpp:419
 msgid "Audio Medusa Shift End Forward"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:395
+#: hotkeys.cpp:420
 msgid "Audio Medusa Play Before"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:396
+#: hotkeys.cpp:421
 msgid "Audio Medusa Play After"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:397
+#: hotkeys.cpp:422
 msgid "Audio Medusa Next"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:398
+#: hotkeys.cpp:423
 msgid "Audio Medusa Previous"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:400
+#: hotkeys.cpp:424
+msgid "Audio Medusa Enter"
+msgstr ""
+
+#: hotkeys.cpp:426
 msgid "Translation Assistant Play"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:401
+#: hotkeys.cpp:427
 msgid "Translation Assistant Next"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:402
+#: hotkeys.cpp:428
 msgid "Translation Assistant Prev"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:403
+#: hotkeys.cpp:429
 msgid "Translation Assistant Accept"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:404
+#: hotkeys.cpp:430
 msgid "Translation Assistant Preview"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:405
+#: hotkeys.cpp:431
 msgid "Translation Assistant Insert Original"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:407
+#: hotkeys.cpp:433
 msgid "Styling Assistant Play"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:408
+#: hotkeys.cpp:434
 msgid "Styling Assistant Next"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:409
+#: hotkeys.cpp:435
 msgid "Styling Assistant Prev"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:410
+#: hotkeys.cpp:436
 msgid "Styling Assistant Accept"
 msgstr ""
 
-#: aegisub/hotkeys.cpp:411
+#: hotkeys.cpp:437
 msgid "Styling Assistant Preview"
 msgstr ""
 
-#: aegisub/mkv_wrap.cpp:168 aegisub/mkv_wrap.cpp:388
+#: lavc_keyframes.cpp:96
+msgid "Load keyframes"
+msgstr ""
+
+#: lavc_keyframes.cpp:96
+msgid "Reading keyframes from video"
+msgstr ""
+
+#: mkv_wrap.cpp:169 mkv_wrap.cpp:393
 msgid "Parsing Matroska"
 msgstr ""
 
-#: aegisub/mkv_wrap.cpp:168
+#: mkv_wrap.cpp:169
 msgid "Reading keyframe and timecode data from Matroska file."
 msgstr ""
 
-#: aegisub/mkv_wrap.cpp:388
+#: mkv_wrap.cpp:393
 msgid "Reading subtitles from Matroska file."
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:82
+#: options.cpp:423
+msgid ""
+"Configuration file is either invalid or corrupt. The current file will be "
+"backed up and replaced with a default file."
+msgstr ""
+
+#: subs_edit_box.cpp:82
 msgid "Comment"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:83
+#: subs_edit_box.cpp:83
 msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:85
+#: subs_edit_box.cpp:85
 msgid "Style for this line."
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:87
+#: subs_edit_box.cpp:87
 msgid ""
 "Actor name for this speech. This is only for reference, and is mainly "
 "useless."
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:90
+#: subs_edit_box.cpp:90
 msgid ""
 "Effect for this line. This can be used to store extra information for "
 "karaoke scripts, or for the effects supported by the renderer."
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:95
+#: subs_edit_box.cpp:95
 msgid "Layer number"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:97
+#: subs_edit_box.cpp:97
 msgid "Start time"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:100
+#: subs_edit_box.cpp:100
 msgid "End time"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:104
+#: subs_edit_box.cpp:104
 msgid "Line duration"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:107
+#: subs_edit_box.cpp:107
 msgid "Left Margin (0 = default)"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:110
+#: subs_edit_box.cpp:110
 msgid "Right Margin (0 = default)"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:113
+#: subs_edit_box.cpp:113
 msgid "Vertical Margin (0 = default)"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:120
+#: subs_edit_box.cpp:120
 msgid "Italics"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:126
+#: subs_edit_box.cpp:126
 msgid "Font Face Name"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:128
+#: subs_edit_box.cpp:128
 msgid "Primary color"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:130
+#: subs_edit_box.cpp:130
 msgid "Secondary color"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:132
+#: subs_edit_box.cpp:132
 msgid "Outline color"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:134
+#: subs_edit_box.cpp:134
 msgid "Shadow color"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:135
+#: subs_edit_box.cpp:135
 msgid "Commit"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:136
+#: subs_edit_box.cpp:136
 msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:137
+#: subs_edit_box.cpp:137
 msgid "Time"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:138
+#: subs_edit_box.cpp:138
 msgid "Time by h:mm:ss.cs"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:139
+#: subs_edit_box.cpp:139
 msgid "Frame"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:140
+#: subs_edit_box.cpp:140
 msgid "Time by frame number"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:592
+#: subs_edit_box.cpp:592
 msgid "actor change"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:619
-#, c-format
-msgid "%i"
-msgstr ""
-
-#: aegisub/subs_edit_box.cpp:620
+#: subs_edit_box.cpp:619 subs_edit_box.cpp:645
 msgid "layer change"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:689
+#: subs_edit_box.cpp:714
 msgid "modify times"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:713
+#: subs_edit_box.cpp:738
 msgid "MarginL change"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:735
+#: subs_edit_box.cpp:760
 msgid "MarginR change"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:758
+#: subs_edit_box.cpp:783
 msgid "MarginV change"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:779
+#: subs_edit_box.cpp:804
 msgid "effect change"
 msgstr ""
 
-#: aegisub/subs_edit_box.cpp:799
+#: subs_edit_box.cpp:824
 msgid "comment change"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:720
+#: subs_edit_ctrl.cpp:778
 msgid "No correction suggestions"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:732
-#, c-format
+#: subs_edit_ctrl.cpp:790
+#, possible-c-format
 msgid "Add \"%s\" to dictionary"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:738
+#: subs_edit_ctrl.cpp:796
 msgid "No spell checker suggestions"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:745
-#, c-format
+#: subs_edit_ctrl.cpp:803
+#, possible-c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:765 aegisub/subs_edit_ctrl.cpp:848
+#: subs_edit_ctrl.cpp:823 subs_edit_ctrl.cpp:906
 msgid "Disable"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:778
+#: subs_edit_ctrl.cpp:836
 msgid "Spell checker language"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:829
-#, c-format
+#: subs_edit_ctrl.cpp:887
+#, possible-c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:833
+#: subs_edit_ctrl.cpp:891
 msgid "No thesaurus suggestions"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:861
+#: subs_edit_ctrl.cpp:919
 msgid "Thesaurus language"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:868
+#: subs_edit_ctrl.cpp:926
 msgid "Cu&t"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:869 aegisub/subs_grid.cpp:195
+#: subs_edit_ctrl.cpp:927 subs_grid.cpp:195
 msgid "&Copy"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:870 aegisub/subs_grid.cpp:197
+#: subs_edit_ctrl.cpp:928 subs_grid.cpp:197
 msgid "&Paste"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:872
+#: subs_edit_ctrl.cpp:930
 msgid "Select &All"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:876
+#: subs_edit_ctrl.cpp:934
 msgid "Split at cursor (preserve times)"
 msgstr ""
 
-#: aegisub/subs_edit_ctrl.cpp:877
+#: subs_edit_ctrl.cpp:935
 msgid "Split at cursor (estimate times)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:115
+#: subs_grid.cpp:115
 msgid "Line Number"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:116
-msgid "Layer"
-msgstr ""
-
-#: aegisub/subs_grid.cpp:148
+#: subs_grid.cpp:148
 msgid "&Insert (before)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:149
+#: subs_grid.cpp:149
 msgid "Insert (after)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:151
+#: subs_grid.cpp:151
 msgid "Insert at video time (before)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:152
+#: subs_grid.cpp:152
 msgid "Insert at video time (after)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:164
+#: subs_grid.cpp:164
 msgid "&Duplicate"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:166
+#: subs_grid.cpp:165
+msgid "&Duplicate and shift by 1 frame"
+msgstr ""
+
+#: subs_grid.cpp:166
 msgid "Split (by karaoke)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:170
+#: subs_grid.cpp:170
 msgid "&Swap"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:174
+#: subs_grid.cpp:174
 msgid "&Join (concatenate)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:175
+#: subs_grid.cpp:175
 msgid "Join (keep first)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:176
+#: subs_grid.cpp:176
 msgid "Join (as Karaoke)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:180
+#: subs_grid.cpp:176
+msgid ""
+"Joins selected lines in a single one, making each line into a karaoke "
+"syllable"
+msgstr ""
+
+#: subs_grid.cpp:180
 msgid "&Make times continuous (change start)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:181
+#: subs_grid.cpp:181
 msgid "&Make times continuous (change end)"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:190
+#: subs_grid.cpp:190
 msgid "Create audio clip"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:196
+#: subs_grid.cpp:190
+msgid "Create an audio clip of the selected line"
+msgstr ""
+
+#: subs_grid.cpp:195
+msgid "Copies selected lines to clipboard"
+msgstr ""
+
+#: subs_grid.cpp:196
 msgid "C&ut"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:396
+#: subs_grid.cpp:196
+msgid "Cuts selected lines to clipboard"
+msgstr ""
+
+#: subs_grid.cpp:197
+msgid "Paste lines from clipboard"
+msgstr ""
+
+#: subs_grid.cpp:400
 msgid "splitting"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:641
+#: subs_grid.cpp:645
 msgid "combining"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:672
+#: subs_grid.cpp:676
 msgid "The starting point is beyond the length of the audio loaded."
 msgstr ""
 
-#: aegisub/subs_grid.cpp:676
+#: subs_grid.cpp:680
 msgid "There is no audio to save."
 msgstr ""
 
-#: aegisub/subs_grid.cpp:683
+#: subs_grid.cpp:687
 msgid "Save audio clip"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:722
+#: subs_grid.cpp:726
 msgid "Couldn't allocate memory."
 msgstr ""
 
-#: aegisub/subs_grid.cpp:799 aegisub/subs_grid.cpp:800
+#: subs_grid.cpp:803 subs_grid.cpp:804
 msgid "load"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:841
+#: subs_grid.cpp:845
 msgid "swap lines"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:867
+#: subs_grid.cpp:871
 msgid "line insertion"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:989
+#: subs_grid.cpp:993
 msgid "paste"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:1031
+#: subs_grid.cpp:1035
 msgid "delete"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:1110
+#: subs_grid.cpp:1121
 msgid "adjoin"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:1271
+#: subs_grid.cpp:1291
 msgid "split"
 msgstr ""
 
-#: aegisub/subs_grid.cpp:1432
+#: subs_grid.cpp:1452
 msgid "timing"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:263
+#: subtitle_format.cpp:265
 msgid "All Supported Formats ("
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:286
+#: subtitle_format.cpp:288
 msgid "15.000 FPS"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:287
+#: subtitle_format.cpp:289
 msgid "23.976 FPS (Decimated NTSC)"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:288
+#: subtitle_format.cpp:290
 msgid "24.000 FPS (FILM)"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:290
+#: subtitle_format.cpp:292
 msgid "25.000 FPS (PAL)"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:291
+#: subtitle_format.cpp:293
 msgid "29.970 FPS (NTSC)"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:293
+#: subtitle_format.cpp:295
 msgid "30.000 FPS"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:294
+#: subtitle_format.cpp:296
 msgid "59.940 FPS (NTSC x2)"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:295
+#: subtitle_format.cpp:297
 msgid "60.000 FPS"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:296
+#: subtitle_format.cpp:298
 msgid "119.880 FPS (NTSC x4)"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:297
+#: subtitle_format.cpp:299
 msgid "120.000 FPS"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:301
+#: subtitle_format.cpp:303
 msgid "Please choose the appropriate FPS for the subtitles:"
 msgstr ""
 
-#: aegisub/subtitle_format.cpp:301
+#: subtitle_format.cpp:303
 msgid "FPS"
 msgstr ""
 
-#: aegisub/subtitle_format_prs.cpp:143
+#: subtitle_format_prs.cpp:143
 msgid "Exporting PRS"
 msgstr ""
 
-#: aegisub/subtitle_format_prs.cpp:143
+#: subtitle_format_prs.cpp:143
 msgid "Writing file"
 msgstr ""
 
-#: aegisub/vfr.cpp:65
+#: vfr.cpp:65
 msgid "No timecodes to average"
 msgstr ""
 
-#: aegisub/video_box.cpp:75
+#: video_box.cpp:77
 msgid "Play video starting on this position"
 msgstr ""
 
-#: aegisub/video_box.cpp:77
+#: video_box.cpp:79
 msgid "Play current line"
 msgstr ""
 
-#: aegisub/video_box.cpp:79
+#: video_box.cpp:81
 msgid "Stop video playback"
 msgstr ""
 
-#: aegisub/video_box.cpp:81
+#: video_box.cpp:83
 msgid "Toggle autoscroll of video"
 msgstr ""
 
-#: aegisub/video_box.cpp:86
+#: video_box.cpp:88
 msgid "Seek video."
 msgstr ""
 
-#: aegisub/video_box.cpp:90
+#: video_box.cpp:92
 msgid "Current frame time and number."
 msgstr ""
 
-#: aegisub/video_box.cpp:94
+#: video_box.cpp:96
 msgid "Time of this frame relative to start and end of current subs."
 msgstr ""
 
-#: aegisub/video_box.cpp:110
+#: video_box.cpp:112
+msgid "Standard"
+msgstr ""
+
+#: video_box.cpp:112
 msgid "Standard mode, double click sets position."
 msgstr ""
 
-#: aegisub/video_box.cpp:112
+#: video_box.cpp:113 visual_tool_vector_clip.cpp:68
+msgid "Drag"
+msgstr ""
+
+#: video_box.cpp:113
 msgid "Drag subtitles."
 msgstr ""
 
-#: aegisub/video_box.cpp:114
+#: video_box.cpp:114
+msgid "Rotate Z"
+msgstr ""
+
+#: video_box.cpp:114
 msgid "Rotate subtitles on their Z axis."
 msgstr ""
 
-#: aegisub/video_box.cpp:116
+#: video_box.cpp:115
+msgid "Rotate XY"
+msgstr ""
+
+#: video_box.cpp:115
 msgid "Rotate subtitles on their X and Y axes."
 msgstr ""
 
-#: aegisub/video_box.cpp:118
+#: video_box.cpp:116
+msgid "Scale"
+msgstr ""
+
+#: video_box.cpp:116
 msgid "Scale subtitles on X and Y axes."
 msgstr ""
 
-#: aegisub/video_box.cpp:120
+#: video_box.cpp:117
+msgid "Clip"
+msgstr ""
+
+#: video_box.cpp:117
 msgid "Clip subtitles to a rectangle."
 msgstr ""
 
-#: aegisub/video_box.cpp:122
+#: video_box.cpp:118
+msgid "Vector Clip"
+msgstr ""
+
+#: video_box.cpp:118
+msgid "Clip subtitles to a vectorial area."
+msgstr ""
+
+#: video_box.cpp:120
+msgid "Realtime"
+msgstr ""
+
+#: video_box.cpp:120
 msgid "Toggle realtime display of changes."
 msgstr ""
 
-#: aegisub/video_context.cpp:271
+#: video_box.cpp:122
+msgid "Open the manual page for Visual Typesetting."
+msgstr ""
+
+#: video_context.cpp:277
 msgid ""
 "You already have timecodes loaded. Replace them with the timecodes from the "
 "Matroska file?"
 msgstr ""
 
-#: aegisub/video_context.cpp:271
+#: video_context.cpp:277
 msgid "Replace timecodes?"
 msgstr ""
 
-#: aegisub/video_context.cpp:597
+#: video_context.cpp:663
 msgid "Video Screenshot Path"
 msgstr ""
 
-#: aegisub/video_display.cpp:447
+#: video_display.cpp:468
 msgid "Save PNG snapshot"
 msgstr ""
 
-#: aegisub/video_display.cpp:448
+#: video_display.cpp:469
 msgid "Copy image to Clipboard"
 msgstr ""
 
-#: aegisub/video_display.cpp:451
+#: video_display.cpp:472
 msgid "Save PNG snapshot (no subtitles)"
 msgstr ""
 
-#: aegisub/video_display.cpp:452
+#: video_display.cpp:473
 msgid "Copy image to Clipboard (no subtitles)"
 msgstr ""
 
-#: aegisub/video_display.cpp:454
+#: video_display.cpp:475
 msgid "Copy coordinates to Clipboard"
 msgstr ""
 
-#: aegisub/visual_tool.cpp:183 aegisub/visual_tool.cpp:235
-#: aegisub/visual_tool_drag.cpp:116
+#: video_provider_avs.cpp:172 video_provider.h:100
+msgid "Unknown"
+msgstr ""
+
+#: video_provider_avs.cpp:595
+msgid ""
+"Warning! The file is being opened using Avisynth's DirectShowSource, which "
+"has unreliable seeking. Frame numbers might not match the real number. "
+"PROCEED AT YOUR OWN RISK!"
+msgstr ""
+
+#: video_provider_dshow.cpp:118
+msgid "DirectShow"
+msgstr ""
+
+#: video_provider_dummy.cpp:250
+msgid "Dummy Video Provider"
+msgstr ""
+
+#: visual_tool.cpp:280 visual_tool_drag.cpp:115
 msgid "visual typesetting"
 msgstr ""
 
-#: aegisub/visual_tool_cross.cpp:75
+#: visual_tool_cross.cpp:72
 msgid "positioning"
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:68
+msgid "Drag control points."
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:69
+msgid "Line"
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:69
+msgid "Appends a line."
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:70
+msgid "Bicubic"
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:70
+msgid "Appends a bezier bicubic curve."
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:72
+msgid "Convert"
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:72
+msgid "Converts a segment between line and bicubic."
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:73
+msgid "Insert"
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:73
+msgid "Inserts a control point."
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:74
+msgid "Remove"
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:74
+msgid "Removes a control point."
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:76
+msgid "Freehand"
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:76
+msgid "Draws a freehand shape."
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:77
+msgid "Freehand smooth"
+msgstr ""
+
+#: visual_tool_vector_clip.cpp:77
+msgid "Draws a smoothed freehand shape."
 msgstr ""
