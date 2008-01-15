@@ -253,6 +253,9 @@ sub parse_and_fix_html {
 	# kill the "toolbox" at the bottom left
 	$content =~ s!<div class=\"portlet\" id=\"p-tb\".*?(<\!-- end of the left)!$1!s;
 	
+	# kill "recent changes"
+	$content =~ s!<li id=\"n-recentchanges\">.*?</li>!!;
+	
 	# handle the @import links to get the css right
 	while ( $content =~ m!\@import \"(.+?)\";!mg ) {
 		my $importlink = $1;
