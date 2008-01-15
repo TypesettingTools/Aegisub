@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1720"
+#define MyAppVerName "Aegisub 2.00 alpha r1723"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -67,7 +67,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1720
+AppVersion=2.00 alpha r1723
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -175,7 +175,7 @@ Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; F
 
 [Components]
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
-;Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528; Check: CheckNeedRuntime
+;Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
 Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
 Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full custom; Flags: fixed
@@ -227,7 +227,8 @@ var
 begin
 	if CurStep = ssPostInstall then
 	begin
-		LibHandle := LoadLibrary(ExpandConstant('{app}\csri\vsfilter.dll'));
+		// LibHandle := LoadLibrary(ExpandConstant('{app}\csri\vsfilter.dll'));
+    LibHandle := 0;
 		if LibHandle = 0 then
 		begin
 			ExtractTemporaryFile('vcredist_x86.exe');
