@@ -149,11 +149,11 @@ exit(0);
 
 ##########################################
 
+
+# parse out pages this page links to
+# modify it
+# return filename of the page, modified html and list of links
 sub parse_and_fix_html {
-	# parse out pages this page links to
-	# modify it
-	# return filename of the page, modified html and list of links
-	
 	#get arguments
 	my ($url, $base, $content) = @_;
 	my (@links, @links_to_modify); # list of links to return later
@@ -172,16 +172,16 @@ sub parse_and_fix_html {
 	foreach my $tag ( $html->links() ) {
 		my ($tagname, %attrs) = @{$tag};
 		
-		my $quoted = quotemeta($host);
+		my $quoted = quotemeta($docs_base_url);
 		
 		# does the link interest us?
 		if ( ($tagname eq 'a') and exists($attrs{'href'}) ) {
 			my $href = quotemeta($attrs{'href'}); # quotemeta?
-			$href =~ s!\&!\&amp\;!g; # quotemeta kills &amp; things
+			$href =~ s!\&!\&amp\;!g; # quotemeta kills &amp; things for some reason
 			
 			# skip and kill special or "edit" links
 			if ( $attrs{'href'} =~ m!docs/index\.php\?!i ) {
-				$content =~ s!<a(.*?)href\=\"${href}\"(.*?)>(.*?)</a>!$3!gi;
+				$content =~ s!<a href=\"${href}\".*?>(.*?)</a>!$1!gi;
 				next(LINKLIST);
 			}
 			# skip and kill image/special links
@@ -189,8 +189,12 @@ sub parse_and_fix_html {
 				$content =~ s!<a.*?href\=\"${href}\".*?>(.*?)</a>!$1!gi;
 				next(LINKLIST);
 			}
-			# don't process #anchor links
-			if ( $attrs{'href'} =~ m!\#(.*?)$! ) {
+			# change somepage#anchor links so they point to the right document,
+			# but don't return them for further processing
+			# BUG: if a page is ONLY referred to by this type of link, it won't get downloaded!
+			# (highly unlikely)
+			if ( $attrs{'href'} =~ m!.+\#(.*?)$! ) {
+				push(@links_to_modify, $attrs{'href'});
 				next(LINKLIST);
 			}
 			
@@ -199,7 +203,7 @@ sub parse_and_fix_html {
 				push(@links_to_modify, $attrs{'href'});
 			}
 			# is not relative and goes somewhere else than aegisub.cellosoft.com
-			# so we're not interested in it
+			# so we're not interested in it (#anchor links are not touched either)
 			else { next(LINKLIST); }
 			
 			push(@links, URI->new_abs($attrs{'href'}, $base));
@@ -240,8 +244,13 @@ sub parse_and_fix_html {
 	
 	
 	# kill the topbar
-	$content =~ s!\<div id=\"topbar\".*?\<\!-- end topbar --\>!!s;
+	$content =~ s!<div id=\"topbar\".*?<\!-- end topbar -->!!s;
 	
+	# kill the article/discussion/history thing
+	$content =~ s!<div id=\"p-cactions\".*?</div>!!s;
+	
+	# kill the "toolbox" at the bottom left
+	$content =~ s!<div class=\"portlet\" id=\"p-tb\".*?(<\!-- end of the left)!$1!s;
 	
 	# handle the @import links to get the css right
 	while ( $content =~ m!\@import \"(.+?)\";!mg ) {
@@ -261,7 +270,7 @@ sub parse_and_fix_html {
 			substr($link,0,1) = ''; 
 		}
 		$link = quotemeta($link);
-		$content =~ s!$link!$converted!g;
+		$content =~ s!\"$link\"!\"$converted\"!g;
 	}
 	
 	
@@ -325,7 +334,7 @@ sub convert_link {
 		$link = $$link;
 	}
 	
-	# SPECIAL CASE: it's one of those fukken @ import links, do something else with it
+	# SPECIAL CASE: it's one of those fukken @import links, do something else with it
 	if ( substr($link,0,1) eq '@' ) {
 		substr($link,0,1) = '';
 		return(convert_css_link($link));
@@ -342,8 +351,14 @@ sub convert_link {
 	
 	# if it doesn't have a filename extension it's probably a page,
 	# and then we need to tack on .html to the end (fuck internet explorer)
-	# oh and jfs's .lua pages aren't lua scripts either
-	if ( $link !~ m!/.*?\.\w{2,4}$! or (substr($link,-4) eq '.lua') ) {
+	# oh and jfs's .lua pages aren't really lua scripts either
+	my $bdirquoted = quotemeta($base_dir);
+	if ( $link =~ m/^(${bdirquoted}.+?)\#.*$/ ) {
+		my $pagename = $1;
+		if ( $pagename !~ m!\.html$! or (substr($pagename,-4) eq '.lua') ) {
+			$link =~ s!^${pagename}!${pagename}.html!;
+		}
+	} elsif ( $link !~ m!/.*?\.\w{2,4}$! or (substr($link,-4) eq '.lua') ) {
 			$link = $link . '.html'; 
 	}
 	
@@ -375,10 +390,21 @@ sub convert_css_link {
 sub parse_css {
 	my ($url, $base, $content) = @_;
 	my @links;
+	# my $quoted = quotemeta($docs_base_url); # <--- not used
 	
+	# find url("stuff") blocks
 	LINKLIST:
-	while ( $content =~ m!url\(\"(.+?)\"\)!mgi ) {
-		push(@links, URI->new_abs($1, $base));
+	while ( $content =~ m!url\((\")?(.+?)(\")?\)!mgi ) {
+		my $text = $2;
+		
+		# skip it if it's nonrelative and goes somewhere else than aegisub.cellosoft.com
+		if ( $text =~ m!^http!i ) {
+			# actually fuck this there shouldn't be any nonrelative links in there anyway
+			next(LINKLIST)
+				#unless ( $text =~ m!^${quoted}!i );
+		}
+		
+		push(@links, URI->new_abs($text, $base));
 	}
 	
 	my $filename = convert_link($url);
