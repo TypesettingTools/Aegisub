@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+#ifdef WITH_FFMPEG
 #include "dialog_progress.h"
 #include "lavc_keyframes.h"
 
@@ -130,3 +132,5 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 	
 	return keyframes;
 }
+
+#endif // WITH_FFMPEG

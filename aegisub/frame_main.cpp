@@ -236,9 +236,10 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddSeparator();
 
 	// Property stuff
-	Toolbar->AddTool(Menu_Tools_Properties,_("Properties"),wxBITMAP(properties_toolbutton),_("Open Properties"));
 	Toolbar->AddTool(Menu_Tools_Styles_Manager,_("Styles Manager"),wxBITMAP(style_toolbutton),_("Open Styles Manager"));
+	Toolbar->AddTool(Menu_Tools_Properties,_("Properties"),wxBITMAP(properties_toolbutton),_("Open Properties"));
 	Toolbar->AddTool(Menu_Tools_Attachments,_("Attachments"),wxBITMAP(attach_button),_("Open Attachment List"));
+	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
 	Toolbar->AddSeparator();
 
 	// Automation
@@ -251,7 +252,6 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),wxBITMAP(shift_times_toolbutton),_("Open Shift Times Dialogue"));
 	Toolbar->AddTool(Menu_Tools_Styling,_("Styling Assistant"),wxBITMAP(styling_toolbutton),_("Open Styling Assistant"));
 	Toolbar->AddTool(Menu_Tools_Translation,_("Translation Assistant"),wxBITMAP(translation_toolbutton),_("Open Translation Assistant"));
-	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
 	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample Script Resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBITMAP(timing_processor_toolbutton),_("Open Timing Post-processor dialog"));
 	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),wxBITMAP(kanji_timer_button),_("Open Kanji Timer dialog"));
@@ -313,6 +313,7 @@ void FrameMain::InitMenu() {
 	fileMenu->AppendSeparator();
 	AppendBitmapMenuItem (fileMenu,Menu_Tools_Properties, _("&Properties..."), _("Open script properties window"),wxBITMAP(properties_toolbutton));
 	AppendBitmapMenuItem (fileMenu,Menu_Tools_Attachments, _("&Attachments..."), _("Open the attachment list"), wxBITMAP(attach_button));
+	AppendBitmapMenuItem (fileMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
 	fileMenu->AppendSeparator();
 #ifndef __APPLE__
 	// Doesn't work on Mac, only one instance is ever allowed there from OS side
@@ -344,6 +345,12 @@ void FrameMain::InitMenu() {
 #ifndef __APPLE__
 	InsertParent->SetBitmap(wxBITMAP(blank_button));
 #endif
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBITMAP(styling_toolbutton));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBITMAP(translation_toolbutton));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample Resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
+	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE,_("&Before Current"),_("Inserts a line before current"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER,_("&After Current"),_("Inserts a line after current"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE_VIDEO,_("Before Current, at Video Time"),_("Inserts a line before current, starting at video time"),wxBITMAP(blank_button));
@@ -367,13 +374,6 @@ void FrameMain::InitMenu() {
 	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("Swap Lines"),_("Swaps the two selected lines"),wxBITMAP(arrow_sort));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, MakeHotkeyText(_("Select Lines..."), _T("Select lines")), _("Selects lines based on defined criterea"),wxBITMAP(select_lines_button));
-	subtitlesMenu->AppendSeparator();
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBITMAP(styling_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBITMAP(translation_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample Resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
 	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
 
 	// Create timing menu

@@ -147,7 +147,7 @@ bool FontFileLister::IsFilenameCached(wxString filename) {
 void FontFileLister::SaveCache() {
 	try {
 		// Open file
-		TextFileWriter file(StandardPaths::DecodePath(_T("?user/fontcache.dat")));
+		TextFileWriter file(StandardPaths::DecodePath(_T("?user/fontscache.dat")));
 
 		// For each face...
 		for (FontMap::iterator iter = fontTable.begin();iter!=fontTable.end();iter++) {
@@ -175,7 +175,7 @@ void FontFileLister::SaveCache() {
 void FontFileLister::LoadCache() {
 	try {
 		// Load cache
-		TextFileReader file(StandardPaths::DecodePath(_T("?user/fontcache.dat")));
+		TextFileReader file(StandardPaths::DecodePath(_T("?user/fontscache.dat")));
 
 		// Read each line
 		while (file.HasMoreLines()) {

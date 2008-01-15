@@ -62,8 +62,11 @@
 #include "ass_style.h"
 #include "subs_grid.h"
 #include "vfw_wrap.h"
+#include "config.h"
 #if !defined(__WINDOWS__) && !defined(__APPLE__)
+#ifdef WITH_FFMPEG
 #include "lavc_keyframes.h"
+#endif
 #endif
 #include "mkv_wrap.h"
 #include "options.h"
@@ -287,15 +290,20 @@ void VideoContext::SetVideo(const wxString &filename) {
 			}
 
 			else if (ext == _T(".avi")) {
+				keyFramesLoaded = false;
+				KeyFrames.Clear();
 #ifdef __WINDOWS__
 				KeyFrames = VFWWrapper::GetKeyFrames(filename);
+				keyFramesLoaded = true;
 #else
 #ifndef __APPLE__
+#ifdef WITH_FFMPEG
 				LAVCKeyFrames k(filename);
 				KeyFrames = k.GetKeyFrames();
-#endif
-#endif
 				keyFramesLoaded = true;
+#endif
+#endif
+#endif
 			}
 			
 			// Check if the file is all keyframes
