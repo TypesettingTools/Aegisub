@@ -87,7 +87,7 @@ namespace Automation4 {
 
   void PerlScript::load()
   {
-	wxLogTrace("Loading %*s inside %s", 0, GetFilename().c_str(), package.c_str());
+	wxLogTrace(_T("Loading %*s inside %s"), 0, GetFilename().c_str(), package.c_str());
 
 	// Feed some defaults into the script info
 	name = GetPrettyFilename().BeforeLast(_T('.'));
@@ -129,7 +129,7 @@ namespace Automation4 {
   }
   
   void PerlScript::unload() {
-	wxLogTrace("Unloading %*s(%s)", 0, name, package.c_str());
+	wxLogTrace(_T("Unloading %*s(%s)"), 0, name, package.c_str());
 
 	// Deinstantiate(?) all features and clear the vector
 	for(; !features.empty(); features.pop_back()) {
@@ -146,7 +146,7 @@ namespace Automation4 {
 
   void PerlScript::activate(PerlScript *script)
   {
-	wxLogTrace("Activating %*s(%s)", 0, script->GetName(), script->GetPackage().c_str());
+	wxLogTrace(_T("Activating %*s(%s)"), 0, script->GetName(), script->GetPackage().c_str());
 
 	// Check if the source file is newer
 	if(script->reload) {
@@ -160,7 +160,7 @@ namespace Automation4 {
 	}
 
 	// Hooking $SIG{__WARN__}
-	wxLogTrace("Hooking $SIG{__WARN__}", 0);
+	wxLogTrace(_T("Hooking $SIG{__WARN__}"), 0);
 	eval_pv("$SIG{__WARN__} = \\&Aegisub::warn", 1);
 
 	// Add the script's includes to @INC
@@ -176,11 +176,11 @@ namespace Automation4 {
 	  av_unshift(inc_av, inc_count);
 	  // Add the include paths
 	  for(I32 i = 0; i < inc_count; i++) {
-		wxLogDebug("Adding %d to @INC", include_path.Item(i).c_str());
+		wxLogDebug(_T("Adding %d to @INC"), include_path.Item(i).c_str());
 		AV_TOUCH(inc_av, i)
 		  AV_STORE(newSVpv(script->include_path.Item(i).mb_str(wx2pl), 0));
 	  }
-	  wxLogTrace("@INC = ( %*s )", 0, SvPV_nolen(eval_pv("\"@INC\"", 1)));
+	  wxLogTrace(_T("@INC = ( %*s )"), 0, SvPV_nolen(eval_pv("\"@INC\"", 1)));
 	}
 	else {
 	  wxLogWarning(_("Unable to add the automation include path(s) to @INC, you may have problems running the script."));
@@ -189,12 +189,12 @@ namespace Automation4 {
 	// Set the values of script vars
 	script->WriteVars();
 	active = script;
-	wxLogDebug("%s(%p) activated", active->GetName().c_str(), active);
+	wxLogDebug(_T("%s(%p) activated"), active->GetName().c_str(), active);
   }
 
   void PerlScript::deactivate()
   {
-	wxLogTrace("Deactivating %*s (%s)", 0, active->GetName().c_str(), active->GetPackage().c_str());
+	wxLogTrace(_T("Deactivating %*s (%s)"), 0, active->GetName().c_str(), active->GetPackage().c_str());
 
 	// Revert @INC to its value before the script activation
 	AV *inc_av = get_av("main::INC", 0);
@@ -214,17 +214,17 @@ namespace Automation4 {
 	active->ReadVars();
 
 	// Unooking $SIG{__WARN__}
-	wxLogTrace("Releasing $SIG{__WARN__} hook", 0);
+	wxLogTrace(_T("Releasing $SIG{__WARN__} hook"), 0);
 	eval_pv("undef $SIG{__WARN__}", 1);
 
-	wxLogDebug("%s(%p) deactivated", active->GetName().c_str(), active);
+	wxLogDebug(_T("%s(%p) deactivated"), active->GetName().c_str(), active);
 	active = NULL;
   }
   
   void PerlScript::AddFeature(Feature *feature)
   {
 	features.push_back(feature);
-	wxLogDebug("Added %s to %s(%s)'s features", feature->GetName(), name, package);
+	wxLogDebug(_T("Added %s to %s(%s)'s features"), feature->GetName(), name, package);
   }
 
   void PerlScript::DeleteFeature(Feature *feature)
@@ -232,7 +232,7 @@ namespace Automation4 {
 	for(std::vector<Feature*>::iterator it = features.begin(); it != features.end(); it++)
 	  if(*it == feature) {
 		delete feature;
-		wxLogDebug("Deleted %s from %s(%s)'s features", feature->GetName(), name, package);
+		wxLogDebug(_T("Deleted %s from %s(%s)'s features"), feature->GetName(), name, package);
 		features.erase(it);
 	  }
   }

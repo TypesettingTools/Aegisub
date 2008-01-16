@@ -46,6 +46,7 @@
 #include "ass_file.h"
 //#include "ass_dialogue.h"
 
+#undef _
 #include <EXTERN.h>
 #include <perl.h>
 #include <XSUB.h>
@@ -54,6 +55,7 @@
 
 
 // the fucking perl.h redefines _() -.- please disregard warnings during compilation
+#undef _
 #define _(s)	wxGetTranslation(_T(s))
 
 
