@@ -41,6 +41,7 @@
 #include "vfr.h"
 #include "utils.h"
 #include "text_file_reader.h"
+#include "text_file_writer.h"
 
 
 /////////////////////
@@ -220,6 +221,17 @@ void FrameRate::Load(wxString filename) {
 
 	// Add to recent
 	Options.AddToRecentList(filename,_T("Recent timecodes"));
+}
+
+
+////////
+// Save
+void FrameRate::Save(wxString filename) {
+	TextFileWriter file(filename,_T("ASCII"));
+	file.WriteLineToFile(_T("# timecode format v2"));
+	for (size_t i=0;i<Frame.size();i++) {
+		file.WriteLineToFile(wxString::Format(_T("%f"),(float)Frame[i]));
+	}
 }
 
 

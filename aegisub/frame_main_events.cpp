@@ -119,6 +119,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_File_Save_Subtitles_With_Charset, FrameMain::OnSaveSubtitlesCharset)
 	EVT_MENU(Menu_File_Export_Subtitles, FrameMain::OnExportSubtitles)
 	EVT_MENU(Menu_File_Open_VFR, FrameMain::OnOpenVFR)
+	EVT_MENU(Menu_File_Save_VFR, FrameMain::OnSaveVFR)
 	EVT_MENU(Menu_File_Close_VFR, FrameMain::OnCloseVFR)
 	EVT_MENU(Menu_Video_Load_Keyframes, FrameMain::OnOpenKeyframes)
 	EVT_MENU(Menu_Video_Save_Keyframes, FrameMain::OnSaveKeyframes)
@@ -312,6 +313,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_235,state);
 		MenuBar->Enable(Menu_Video_AR_Custom,state);
 		MenuBar->Enable(Menu_Video_Detach,state && !detachedVideo);
+		MenuBar->Enable(Menu_File_Save_VFR,VFR_Output.GetFrameRateType() == VFR);
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
 		MenuBar->Enable(Menu_Video_Close_Keyframes,VideoContext::Get()->OverKeyFramesLoaded());
 		MenuBar->Enable(Menu_Video_Save_Keyframes,VideoContext::Get()->KeyFramesLoaded());
@@ -758,6 +760,20 @@ void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 		Options.Save();
 	}
 }
+
+
+/////////////////
+// Save VFR tags
+void FrameMain::OnSaveVFR(wxCommandEvent &event) {
+	wxString path = Options.AsText(_T("Last open timecodes path"));
+	wxString filename = wxFileSelector(_("Save timecodes file"),path,_T(""),_T(""),_("All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"),wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (!filename.empty()) {
+		SaveVFR(filename);
+		Options.SetText(_T("Last open timecodes path"), filename);
+		Options.Save();
+	}
+}
+
 
 
 //////////////////

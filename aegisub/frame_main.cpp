@@ -408,6 +408,7 @@ void FrameMain::InitMenu() {
 	videoMenu->Append(Menu_Video_Details, _("Show Video Details..."), _("Shows video details"));
 	videoMenu->AppendSeparator();
 	videoMenu->Append(Menu_File_Open_VFR, _("Open Timecodes File..."), _("Opens a VFR timecodes v1 or v2 file"));
+	videoMenu->Append(Menu_File_Save_VFR, _("Save Timecodes File..."), _("Saves a VFR timecodes v2 file"));
 	videoMenu->Append(Menu_File_Close_VFR, _("Close Timecodes File"), _("Closes the currently open timecodes file"))->Enable(false);
 	wxMenuItem *RecentTimesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Timecodes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentTimecodes);
 	videoMenu->Append(RecentTimesParent);
@@ -1135,6 +1136,13 @@ void FrameMain::LoadVFR(wxString filename) {
 
 	SubsBox->CommitChanges();
 	EditBox->UpdateFrameTiming();
+}
+
+
+/////////////
+// Saves VFR
+void FrameMain::SaveVFR(wxString filename) {
+	VFR_Output.Save(filename);
 }
 
 

@@ -154,6 +154,7 @@ private:
 	void OnOpenVideo (wxCommandEvent &event);
 	void OnCloseVideo (wxCommandEvent &event);
 	void OnOpenVFR (wxCommandEvent &event);
+	void OnSaveVFR (wxCommandEvent &event);
 	void OnCloseVFR (wxCommandEvent &event);
 	void OnOpenKeyframes (wxCommandEvent &event);
 	void OnCloseKeyframes (wxCommandEvent &event);
@@ -252,6 +253,7 @@ private:
 	void LoadVideo(wxString filename,bool autoload=false);
 	void LoadAudio(wxString filename,bool FromVideo=false);
 	void LoadVFR(wxString filename);
+	void SaveVFR(wxString filename);
 	void LoadSubtitles(wxString filename,wxString charset=_T(""));
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
 	int TryToCloseSubs(bool enableCancel=true);
@@ -310,6 +312,7 @@ enum {
 	Menu_File_Save_Subtitles_With_Charset,
 	Menu_File_Export_Subtitles,
 	Menu_File_Open_VFR,
+	Menu_File_Save_VFR,
 	Menu_File_Close_VFR,
 	Menu_File_New_Window,
 	Menu_File_Exit,

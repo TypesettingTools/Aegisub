@@ -90,7 +90,9 @@ public:
 
 	// Loading always unloads even on failure
 	void Load(wxString file);
+	void Save(wxString file);
 	void Unload();
+
 	int GetFrameAtTime(int ms,bool start=true);
 	int GetTimeAtFrame(int frame,bool start=true,bool exact=false);
 
