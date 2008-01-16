@@ -250,6 +250,7 @@ void MatroskaWrapper::SetToTimecodes(FrameRate &target) {
 	//std::sort<std::vector<double>::iterator>(timecodes.begin(),timecodes.end());
 
 	// Check if it's CFR
+	/*
 	bool isCFR = true;
 	double estimateCFR = timecodes.back() / (timecodes.size()-1);
 	double t1,t2;
@@ -262,6 +263,9 @@ void MatroskaWrapper::SetToTimecodes(FrameRate &target) {
 			break;
 		}
 	}
+	*/
+	bool isCFR = false;
+	double estimateCFR = 0;
 
 	// Constant framerate
 	if (isCFR) {
