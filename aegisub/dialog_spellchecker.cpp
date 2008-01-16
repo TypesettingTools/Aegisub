@@ -112,6 +112,9 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	topSizer->Add(replaceWord,1,wxEXPAND);
 	topSizer->AddGrowableCol(1,1);
 
+	// List
+	suggestList = new wxListBox(this,LIST_SUGGESTIONS,wxDefaultPosition,wxSize(300,150));
+
 	// Actions sizer
 	wxSizer *actionsSizer = new wxBoxSizer(wxVERTICAL);
 	actionsSizer->Add(new wxButton(this,BUTTON_REPLACE,_("Replace")),0,wxEXPAND | wxBOTTOM,5);
@@ -123,7 +126,6 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	actionsSizer->AddStretchSpacer(1);
 
 	// Bottom sizer
-	suggestList = new wxListBox(this,LIST_SUGGESTIONS,wxDefaultPosition,wxSize(300,150));
 	language = new wxComboBox(this,LIST_LANGUAGES,_T(""),wxDefaultPosition,wxDefaultSize,langNames,wxCB_DROPDOWN | wxCB_READONLY);
 	language->SetSelection(curLangPos);
 	wxFlexGridSizer *botSizer = new wxFlexGridSizer(2,2,5,5);

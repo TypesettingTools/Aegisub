@@ -147,6 +147,7 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	// Button sizer
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
+	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
 	ButtonSizer->AddButton(new HelpButton(this,_T("Properties")));
 	ButtonSizer->Realize();
 
