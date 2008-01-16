@@ -81,7 +81,7 @@ namespace Automation4 {
 	  char** env = NULL;
 	  int argc = 3;
 	  char *argv[3] = { "aegisub", "-e", "0" };
-#ifdef __WINDOWS__
+#ifdef __VISUALC__
 	  char **argv2 = (char**) argv;
 	  PERL_SYS_INIT3(&argc,&argv2,&env);
 #endif
@@ -102,6 +102,9 @@ namespace Automation4 {
 	  // Perl interpreter deinitialization
 	  perl_destruct(parser);
 	  perl_free(parser);
+#ifdef __VISUALC__
+	  PERL_SYS_TERM();
+#endif
 	}
 	
 	virtual Script* Produce(const wxString &filename) const
