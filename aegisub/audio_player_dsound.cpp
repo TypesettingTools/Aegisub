@@ -39,7 +39,6 @@
 
 ///////////
 // Headers
-#include "config.h"
 #ifdef WITH_DIRECTSOUND
 
 #include <wx/wxprec.h>

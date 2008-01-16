@@ -45,7 +45,7 @@
 #include <wx/stackwalk.h>
 #include <fstream>
 #include "aegisublocale.h"
-#include "config.h"
+
 
 
 //////////////

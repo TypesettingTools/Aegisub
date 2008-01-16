@@ -36,7 +36,7 @@
 
 ///////////
 // Headers
-#include "config.h"
+
 #ifdef WITH_HUNSPELL
 
 #include "spellchecker.h"

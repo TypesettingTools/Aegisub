@@ -62,7 +62,7 @@
 #include "ass_style.h"
 #include "subs_grid.h"
 #include "vfw_wrap.h"
-#include "config.h"
+
 #if !defined(__WINDOWS__) && !defined(__APPLE__)
 #ifdef WITH_FFMPEG
 #include "lavc_keyframes.h"

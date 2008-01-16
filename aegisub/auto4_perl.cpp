@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Simone Cociancich
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,51 +30,88 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Contact: mailto:jiifurusu@gmail.com
 //
 
 
+#ifdef WITH_PERL
 
-#ifdef WITH_FFMPEG
-#include <wx/wxprec.h>
-#include <wx/filename.h>
-#include "lavc_file.h"
 
-LAVCFile::Initializer LAVCFile::init;
+#include "auto4_perl.h"
 
-LAVCFile::Initializer::Initializer()
-{
-	av_register_all();
-}
 
-LAVCFile::LAVCFile(wxString filename)
-{
-	int result = 0;
-	fctx = NULL;
+namespace Automation4 {
 
-#ifdef WIN32
-	wxFileName fn(filename);
-	filename = fn.GetShortPath();
-#endif
+  
+///////////////////////////////////
+// Perl -> C++ interface (XSUBS)
+//
+  EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);  
 
-	result = av_open_input_file(&fctx,filename.mb_str(wxConvLocal),NULL,0,NULL);
-	if (result != 0) throw _T("Failed opening file.");
+  // Copypasted from somewhere
+  EXTERN_C void xs_perl_main(pTHX)
+  {
+	dXSUB_SYS;
+	
+	/* DynaLoader is a special case */
+	newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, __FILE__);
 
-	// Get stream info
-	result = av_find_stream_info(fctx);
-	if (result < 0) {
-		av_close_input_file(fctx);
-		fctx = NULL;
-		throw _T("Unable to read stream info");
+	// My XSUBS ^^
+	xs_perl_script(aTHX);
+	xs_perl_misc(aTHX);
+	xs_perl_console(aTHX);
+  }
+
+
+///////////////////////
+// PerlScriptFactory
+//
+  class PerlScriptFactory : public ScriptFactory {
+  private:
+	PerlInterpreter *parser;
+
+  public:
+	PerlScriptFactory()
+	{ 
+	  // Script engine properties
+	  engine_name = _T("Perl");
+	  filename_pattern = _T("*") _T(PERL_SCRIPT_EXTENSION);
+	  
+	  // Perl interpreter initialization (ONE FOR ALL THE SCRIPTS)
+	  parser = perl_alloc();
+	  perl_construct(parser);
+	  char *_embedding[] = { "aegisub", "-e", "0" };
+	  perl_parse(parser, xs_perl_main,
+				 3, _embedding,
+				 NULL);
+	  // (That was pretty magic o_O)
+
+	  // Let's register the perl script factory \o/
+	  Register(this);
 	}
-	refs = 1;
-}
+	
+	~PerlScriptFactory()
+	{
+	  // Perl interpreter deinitialization
+	  perl_destruct(parser);
+	  perl_free(parser);
+	}
+	
+	virtual Script* Produce(const wxString &filename) const
+	{
+	  if(filename.EndsWith(_T(PERL_SCRIPT_EXTENSION))) {
+		return new PerlScript(filename);
+	  }
+	  else {
+		return 0;
+	  }
+	}
+  };
 
-LAVCFile::~LAVCFile()
-{
-	if (fctx)
-		av_close_input_file(fctx);
-}
+  // The one and only (thank goodness ¬.¬) perl engine!!!
+  PerlScriptFactory _perl_script_factory;
+
+};
 
 
-#endif // WITH_FFMPEG
+#endif //WITH_PERL

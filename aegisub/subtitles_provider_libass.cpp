@@ -35,7 +35,7 @@
 
 ///////////
 // Headers
-#include "config.h"
+
 #ifdef WITH_LIBASS
 
 #include "subtitles_provider.h"

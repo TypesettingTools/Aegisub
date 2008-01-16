@@ -53,7 +53,7 @@
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h"
+				ForcedIncludeFiles="stdwx.h;config.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -135,7 +135,7 @@
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h"
+				ForcedIncludeFiles="stdwx.h;config.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -402,46 +402,94 @@
 				RelativePath="..\..\aegisub\auto4_base.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_lua.cpp"
+			<Filter
+				Name="Lua"
 				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_lua.h"
+				<File
+					RelativePath="..\..\aegisub\auto4_lua.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_lua.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_lua_assfile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_lua_dialog.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_lua_scriptreader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_lua_scriptreader.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Ruby"
 				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_lua_assfile.cpp"
+				<File
+					RelativePath="..\..\aegisub\auto4_ruby.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_ruby.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_ruby_assfile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_ruby_dialog.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Perl"
 				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_lua_dialog.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_lua_scriptreader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_lua_scriptreader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_ruby.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_ruby.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_ruby_assfile.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_ruby_dialog.cpp"
-				>
-			</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perl.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perl_ass.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perl_console.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perl_console.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perl_macro.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perl_misc.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perl_script.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_perldata.inc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Wrappers"

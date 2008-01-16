@@ -36,7 +36,7 @@
 
 ////////////
 // Includes
-#include "config.h"
+
 #ifdef WITH_FREETYPE2
 
 #include "font_file_lister_freetype.h"

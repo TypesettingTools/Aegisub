@@ -44,7 +44,7 @@
 #include <wx/utils.h>
 #include <wx/stdpaths.h>
 #include <wx/filefn.h>
-#include "config.h"
+
 #include "main.h"
 #include "frame_main.h"
 #include "options.h"

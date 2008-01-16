@@ -36,7 +36,7 @@
 
 ///////////
 // Headers
-#include "config.h"
+
 #ifdef WITH_CSRI
 
 #include <wx/wxprec.h>

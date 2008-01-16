@@ -40,7 +40,7 @@
 #include <algorithm>
 #include <string>
 #include "text_file_reader.h"
-#include "config.h"
+
 
 #ifdef __WINDOWS__
 #ifdef WITH_UNIVCHARDET

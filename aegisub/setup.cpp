@@ -37,7 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "config.h"
+
 
 
 //////////////////////////////////
@@ -175,6 +175,13 @@
 // Font Config
 #ifdef WITH_FONTCONFIG
 #pragma comment(lib,"libfontconfig.lib")
+#endif
+
+
+////////
+// Perl
+#ifdef WITH_PERL
+#pragma comment(lib,"perl510.lib")
 #endif
 
 

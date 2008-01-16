@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Simone Cociancich
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,51 +30,62 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Contact: mailto:jiifurusu@gmail.com
 //
 
 
+#pragma once
+#ifndef _AUTO4_PERL_CONSOLE_H
+#define _AUTO4_PERL_CONSOLE_H
 
-#ifdef WITH_FFMPEG
-#include <wx/wxprec.h>
-#include <wx/filename.h>
-#include "lavc_file.h"
 
-LAVCFile::Initializer LAVCFile::init;
+#include "auto4_perl.h"
+#include <wx/textctrl.h>
 
-LAVCFile::Initializer::Initializer()
-{
-	av_register_all();
-}
 
-LAVCFile::LAVCFile(wxString filename)
-{
-	int result = 0;
-	fctx = NULL;
+namespace Automation4 {
 
-#ifdef WIN32
-	wxFileName fn(filename);
-	filename = fn.GetShortPath();
+  class PerlConsole : public PerlFeatureMacro {
+  private:
+	static PerlConsole *registered;
+
+	// Nested classes are messy, therefore we use them :)
+	class Dialog : public wxDialog {
+	private:
+	  wxTextCtrl *txt_out, *txt_hist, *txt_in;
+	  
+	public:
+	  Dialog();
+
+	  bool Create(wxWindow* parent, wxWindowID id, const wxString& title,
+				  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, 
+				  long style = wxDEFAULT_DIALOG_STYLE, const wxString& name = _T("console_dialog"));
+
+	  void InputEnter(wxCommandEvent& evt);
+	  void Echo(const wxString &str);
+	};
+	
+	Dialog *dialog;
+	wxWindow *parent_window;
+
+	SV *cout;
+	wxString evaluate(const wxString &str);
+
+  public:
+	PerlConsole(const wxString &name, const wxString &desc, PerlScript *script);
+	virtual ~PerlConsole();
+
+	static PerlConsole *GetConsole() { return registered; }
+
+	virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active) { return true; }
+	virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent);
+
+	static wxString Evaluate(const wxString &str) { if(registered) return registered->evaluate(str); }
+	static XS(register_console);
+	static XS(echo);
+  };
+
+};
+
+
 #endif
-
-	result = av_open_input_file(&fctx,filename.mb_str(wxConvLocal),NULL,0,NULL);
-	if (result != 0) throw _T("Failed opening file.");
-
-	// Get stream info
-	result = av_find_stream_info(fctx);
-	if (result < 0) {
-		av_close_input_file(fctx);
-		fctx = NULL;
-		throw _T("Unable to read stream info");
-	}
-	refs = 1;
-}
-
-LAVCFile::~LAVCFile()
-{
-	if (fctx)
-		av_close_input_file(fctx);
-}
-
-
-#endif // WITH_FFMPEG

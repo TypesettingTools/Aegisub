@@ -13,7 +13,7 @@
 
 #include "hunspell.hxx"
 #include "hunspell.h"
-#include "config.h"
+
 
 #ifndef MOZILLA_CLIENT
 #ifndef W32

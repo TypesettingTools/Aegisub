@@ -49,7 +49,7 @@
 #include <wx/sizer.h>
 #include <wx/panel.h>
 #include <vector>
-#include "config.h"
+
 
 
 ////////////////////

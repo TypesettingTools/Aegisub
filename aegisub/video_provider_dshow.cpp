@@ -36,7 +36,7 @@
 
 ///////////
 // Headers
-#include "config.h"
+
 #ifdef WITH_DIRECTSHOW
 
 #pragma warning(disable: 4995)

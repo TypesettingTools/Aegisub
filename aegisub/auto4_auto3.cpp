@@ -33,7 +33,7 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
-#include "config.h"
+
 #ifdef WITH_AUTOMATION
 #ifdef WITH_AUTO3
 

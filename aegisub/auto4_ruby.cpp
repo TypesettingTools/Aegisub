@@ -33,7 +33,6 @@
 // Contact: mailto:pomyk@go2.pl
 //
 
-#include "config.h"
 #ifdef WITH_RUBY
 #include "auto4_ruby.h"
 #include "auto4_auto3.h"

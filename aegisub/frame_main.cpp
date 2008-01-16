@@ -43,7 +43,7 @@
 #include <wx/tokenzr.h>
 #include <wx/image.h>
 #include <wx/statline.h>
-#include "config.h"
+
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "avisynth_wrap.h"
