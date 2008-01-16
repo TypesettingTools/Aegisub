@@ -76,15 +76,16 @@ namespace Automation4 {
 	virtual ~PerlConsole();
 
 	static PerlConsole *GetConsole() { return registered; }
+	Dialog *GetDialog() { return dialog; }
 
 	virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active) { return true; }
 	virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent);
 
 	static wxString Evaluate(const wxString &str) { if(registered) return registered->evaluate(str); }
-	static XS(register_console);
-	static XS(echo);
   };
 
+	XS(register_console);
+	XS(echo);
 };
 
 

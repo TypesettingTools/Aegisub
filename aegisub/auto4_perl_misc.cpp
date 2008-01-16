@@ -45,7 +45,7 @@ namespace Automation4 {
 
   void xs_perl_misc(pTHX)
   {
-	newXS("Aegisub::warn", PerlLog::log_warning, __FILE__);
+	newXS("Aegisub::warn", log_warning, __FILE__);
 	newXS("Aegisub::text_extents", text_extents, __FILE__);
   }
 
@@ -54,7 +54,7 @@ namespace Automation4 {
 // PerlLog
 //
 
-  XS(PerlLog::log_warning)
+  XS(log_warning)
   {
 	dXSARGS;
 	wxString buffer;

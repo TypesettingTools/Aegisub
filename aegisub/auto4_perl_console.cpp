@@ -49,8 +49,8 @@ namespace Automation4 {
 
   void xs_perl_console(pTHX)
   {
-	newXS("Aegisub::PerlConsole::echo", PerlConsole::echo, __FILE__);
-	newXS("Aegisub::PerlConsole::register_console", PerlConsole::register_console, __FILE__);
+	newXS("Aegisub::PerlConsole::echo", echo, __FILE__);
+	newXS("Aegisub::PerlConsole::register_console", register_console, __FILE__);
   }
 
 
@@ -220,7 +220,7 @@ namespace Automation4 {
 	return wxString(SvPV_nolen(e), pl2wx);
   }
 
-  XS(PerlConsole::register_console)
+  XS(register_console)
   {
 	dXSARGS;
 	PerlScript *script = PerlScript::GetScript();
@@ -234,13 +234,13 @@ namespace Automation4 {
 		name = wxString(SvPV_nolen(ST(0)), pl2wx);
 	  }
 
-	  if(!registered)
+	  if(!PerlConsole::GetConsole())
 		// If there's no registered console
 		script->AddFeature(new PerlConsole(name, desc, script));
 	}
   }
 
-  XS(PerlConsole::echo)
+  XS(echo)
   {
 	dXSARGS;
 
@@ -253,9 +253,9 @@ namespace Automation4 {
 	  buffer << _T(" ") << wxString(SvPV_nolen(ST(i)), pl2wx);
 	}
 
-	if(registered) {
+	if(PerlConsole::GetConsole()) {
 	  // If there's a console echo to it
-	  registered->dialog->Echo(buffer);
+	  PerlConsole::GetConsole()->GetDialog()->Echo(buffer);
 	}
 	else {
 	  // Otherwise print on stdout

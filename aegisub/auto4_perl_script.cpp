@@ -41,6 +41,8 @@
 #include "auto4_perl_console.h"
 #include "version.h"
 #include "standard_paths.h"
+#include <wx/filename.h>
+#include <wx/utils.h>
 
 
 namespace Automation4 {
@@ -48,8 +50,8 @@ namespace Automation4 {
 
   void xs_perl_script(pTHX)
   {
-	newXS("Aegisub::Script::set_info", PerlScript::set_info, __FILE__);
-	newXS("Aegisub::Script::register_macro", PerlScript::register_macro, __FILE__);
+	newXS("Aegisub::Script::set_info", set_info, __FILE__);
+	newXS("Aegisub::Script::register_macro", register_macro, __FILE__);
   }
 
 
@@ -92,13 +94,17 @@ namespace Automation4 {
 	// Feed some defaults into the script info
 	name = GetPrettyFilename().BeforeLast(_T('.'));
 	description = _("Perl script");
-	author = wxString(getlogin(), wxConvLibc);
+	author = wxGetUserId();
 	version = GetAegisubShortVersionString();
 
 	// Get file's mtime
-	struct stat s;
-	stat(GetFilename().mb_str(wxConvLibc), &s);
-	mtime = s.st_mtime;
+	//struct stat s;
+	//stat(GetFilename().mb_str(wxConvLibc), &s);
+	//mtime = s.st_mtime;
+	wxFileName fn(GetFilename());
+	wxDateTime mod;
+	fn.GetTimes(NULL,&mod,NULL);
+	mtime = mod.GetTicks();
 
 	// Create the script's package
 	gv_stashpv(package.mb_str(wx2pl), 1);
@@ -150,10 +156,13 @@ namespace Automation4 {
 
 	// Check if the source file is newer
 	if(script->reload) {
-	  struct stat s;
-	  stat(script->GetFilename().mb_str(wxConvLibc), &s);
-	  if(script->mtime != s.st_mtime) {
-		printf("%d != %d !\n", script->mtime, s.st_mtime);
+//	  struct stat s;
+//	  stat(script->GetFilename().mb_str(wxConvLibc), &s);
+	  wxFileName fn(script->GetFilename());
+	  wxDateTime mod;
+	  fn.GetTimes(NULL,&mod,NULL);
+	  if(script->mtime != mod.GetTicks()) {
+		printf("%d != %d !\n", script->mtime, mod.GetTicks());
 		wxLogVerbose(_("Reloading %s because the file on disk (%s) changed"), script->GetName().c_str(), script->GetFilename().c_str());
 		script->Reload();
 	  }
@@ -176,7 +185,7 @@ namespace Automation4 {
 	  av_unshift(inc_av, inc_count);
 	  // Add the include paths
 	  for(I32 i = 0; i < inc_count; i++) {
-		wxLogDebug(_T("Adding %d to @INC"), include_path.Item(i).c_str());
+		wxLogDebug(_T("Adding %d to @INC"), script->include_path.Item(i).c_str());
 		AV_TOUCH(inc_av, i)
 		  AV_STORE(newSVpv(script->include_path.Item(i).mb_str(wx2pl), 0));
 	  }
@@ -205,7 +214,7 @@ namespace Automation4 {
 	  if(av_len(active->inc_saved) >= 0) {
 		// If there's a saved one
 		AV_COPY(active->inc_saved, inc_av);
-		wxLogTrace("@INC = ( %*s )", 0, SvPV_nolen(eval_pv("\"@INC\"", 1)));
+		wxLogTrace(_T("@INC = ( %*s )"), 0, SvPV_nolen(eval_pv("\"@INC\"", 1)));
 		av_clear(active->inc_saved);
 	  }
 	}
@@ -300,9 +309,10 @@ namespace Automation4 {
 	sv_setpv(whore, version.mb_str(wx2pl));
   }
 
-  XS(PerlScript::set_info)
+  XS(set_info)
   {
 	dXSARGS;
+	PerlScript *active = PerlScript::GetActive();
 	if(active) {
 	  // Update the object's vars
 	  active->ReadVars();
@@ -310,13 +320,13 @@ namespace Automation4 {
 	  // Set script info vars
 	  switch (items) {
 	  case 4:
-		active->version = wxString(SvPV_nolen(ST(3)), pl2wx);
+		active->SetVersion(wxString(SvPV_nolen(ST(3)), pl2wx));
 	  case 3:
-		active->author = wxString(SvPV_nolen(ST(2)), pl2wx);
+		active->SetAuthor(wxString(SvPV_nolen(ST(2)), pl2wx));
 	  case 2:
-		active->description = wxString(SvPV_nolen(ST(1)), pl2wx);
+		active->SetDescription(wxString(SvPV_nolen(ST(1)), pl2wx));
 	  case 1:
-		active->name = wxString(SvPV_nolen(ST(0)), pl2wx);
+		active->SetName(wxString(SvPV_nolen(ST(0)), pl2wx));
 	  }
 
 	  // Update the package's vars
@@ -324,9 +334,10 @@ namespace Automation4 {
 	}
   }
 
-  XS(PerlScript::register_macro)
+  XS(register_macro)
   {
 	dXSARGS;
+	PerlScript *active = PerlScript::GetActive();
 	if(active && items >= 3) {
 	  wxString name, description;
 	  SV *proc_sub = NULL, *val_sub = NULL;

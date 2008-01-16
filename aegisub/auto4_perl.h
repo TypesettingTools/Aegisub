@@ -33,7 +33,6 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
-
 #pragma once
 #ifndef _AUTO4_PERL_H
 #define _AUTO4_PERL_H
@@ -52,7 +51,7 @@
 #include <XSUB.h>
 
 #include "auto4_perldata.inc"  // Parl variables manipulation macros
-
+#undef bool
 
 // the fucking perl.h redefines _() -.- please disregard warnings during compilation
 #undef _
@@ -68,7 +67,6 @@
 
 
 namespace Automation4 {
-
 
 ///////////
 // XSUBS
@@ -115,13 +113,19 @@ namespace Automation4 {
 	void WriteVars() const;	// Sync the script's vars from script object to perl package
 
 	/* TODO: add c++ equivalents */
-	static XS(set_info);	// Aegisub::Script::set_info()
 	void AddFeature(Feature *feature);
 	void DeleteFeature(Feature *feature);
-	static XS(register_macro);		// Aegisub::Script::register_macro()
-	static XS(register_console);	// Aegisub::Script::register_console() /* TODO: move this into PerlConsole class */
+	static PerlScript *GetActive() { return active; }
 
+	void SetName(const wxString &str) { name = str; }
+	void SetDescription(const wxString &str) { description = str; }
+	void SetAuthor(const wxString &str) { author = str; }
+	void SetVersion(const wxString &str) { version = str; }
   };
+
+  XS(set_info);	// Aegisub::Script::set_info()
+  XS(register_macro);		// Aegisub::Script::register_macro()
+  XS(register_console);	// Aegisub::Script::register_console() /* TODO: move this into PerlConsole class */
 
 
 //////////////////
@@ -170,10 +174,10 @@ namespace Automation4 {
 //
   class PerlLog {
   public:
-	static XS(log_warning);	// Aegisub::warn()
   };
 
-  XS(text_extents);	// Aegisub::text_extents()
+	XS(log_warning);	// Aegisub::warn()
+	XS(text_extents);	// Aegisub::text_extents()
 
 
 };
