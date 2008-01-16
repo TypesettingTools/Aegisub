@@ -141,7 +141,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
 	performance_timer.Start();
-	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,-1),0,0,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	//FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,-1),0,0,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,-1),0,0,wxCB_DROPDOWN);
 	wxLogDebug(_T("Time to create font face listbox: %d"), performance_timer.Time());
 	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(&FontSizeValue,true,false));
 	//wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
