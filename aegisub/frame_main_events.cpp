@@ -567,25 +567,21 @@ void FrameMain::OnContents(wxCommandEvent& WXUNUSED(event)) {
 ////////////////
 // Open website
 void FrameMain::OnWebsite(wxCommandEvent& WXUNUSED(event)) {
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
-	if (type) {
-		wxString command = type->GetOpenCommand(_T("http://www.aegisub.net/"));
-		if (!command.empty()) wxExecute(command);
-	}
+	AegisubApp::OpenURL(_T("http://www.aegisub.net/"));
 }
 
 
 ///////////////
 // Open forums
 void FrameMain::OnForums(wxCommandEvent& WXUNUSED(event)) {
-	AegisubApp::OpenURL(_T("http://www.malakith.net/aegisub/"));
+	AegisubApp::OpenURL(_T("http://forum.aegisub.net/"));
 }
 
 
 ///////////////////
 // Open bugtracker
 void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
-	AegisubApp::OpenURL(_T("http://aegibug.nyo.dk/"));
+	AegisubApp::OpenURL(_T("http://bugs.aegisub.net/"));
 }
 
 

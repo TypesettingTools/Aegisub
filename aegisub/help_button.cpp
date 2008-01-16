@@ -79,7 +79,7 @@ void HelpButton::OpenPage(const wxString pageID) {
 	// Get the file type
 	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
 	if (type) {
-		wxString path = StandardPaths::DecodePath(wxString::Format(_T("http://aegisub.cellosoft.com/docs/%s"),page.c_str()));
+		wxString path = StandardPaths::DecodePath(wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str()));
 		//wxString command = type->GetOpenCommand(path);
 		//if (!command.empty()) wxExecute(command);
 		wxLaunchDefaultBrowser(path);
