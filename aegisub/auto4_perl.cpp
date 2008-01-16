@@ -78,12 +78,19 @@ namespace Automation4 {
 	  filename_pattern = _T("*") _T(PERL_SCRIPT_EXTENSION);
 	  
 	  // Perl interpreter initialization (ONE FOR ALL THE SCRIPTS)
+	  char** env = NULL;
+	  int argc = 3;
+	  char *argv[3] = { "aegisub", "-e", "0" };
+#ifdef __WINDOWS__
+	  char **argv2 = (char**) argv;
+	  PERL_SYS_INIT3(&argc,&argv2,&env);
+#endif
 	  parser = perl_alloc();
 	  perl_construct(parser);
-	  char *_embedding[] = { "aegisub", "-e", "0" };
 	  perl_parse(parser, xs_perl_main,
-				 3, _embedding,
+				 argc, argv,
 				 NULL);
+	  //free(argv);
 	  // (That was pretty magic o_O)
 
 	  // Let's register the perl script factory \o/
