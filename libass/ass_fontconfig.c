@@ -65,19 +65,20 @@ static char* _select_font(fc_instance_t* priv, const char* family, unsigned bold
 {
 	FcBool rc;
 	FcResult result;
-	FcPattern *pat, *rpat;
+	FcPattern *pat = 0, *rpat;
 	int val_i;
 	FcChar8* val_s;
 	FcBool val_b;
 	FcCharSet* val_cs;
-	FcFontSet* fset;
+	FcFontSet* fset = 0;
 	int curf, bestf, bestdiff = 0;
+	char* retval = 0;
 	
 	*index = 0;
 
 	pat = FcPatternCreate();
 	if (!pat)
-		return 0;
+		goto error;
 	
 	FcPatternAddString(pat, FC_FAMILY, (const FcChar8*)family);
 	FcPatternAddBool(pat, FC_OUTLINE, FcTrue);
@@ -88,7 +89,7 @@ static char* _select_font(fc_instance_t* priv, const char* family, unsigned bold
 	
 	rc = FcConfigSubstitute(priv->config, pat, FcMatchPattern);
 	if (!rc)
-		return 0;
+		goto error;
 
 	fset = FcFontSort(priv->config, pat, FcTrue, NULL, &result);
 
@@ -123,18 +124,18 @@ static char* _select_font(fc_instance_t* priv, const char* family, unsigned bold
 	}
 
 	if (bestf < 0)
-		return 0;
+		goto error;
 
 	rpat = fset->fonts[bestf];
 	
 	result = FcPatternGetInteger(rpat, FC_INDEX, 0, &val_i);
 	if (result != FcResultMatch)
-		return 0;
+		goto error;
 	*index = val_i;
 
 	result = FcPatternGetString(rpat, FC_FAMILY, 0, &val_s);
 	if (result != FcResultMatch)
-		return 0;
+		goto error;
 
 	if (strcasecmp((const char*)val_s, family) != 0)
 		mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_SelectedFontFamilyIsNotTheRequestedOne,
@@ -142,9 +143,13 @@ static char* _select_font(fc_instance_t* priv, const char* family, unsigned bold
 
 	result = FcPatternGetString(rpat, FC_FILE, 0, &val_s);
 	if (result != FcResultMatch)
-		return 0;
+		goto error;
 	
-	return strdup((const char*)val_s);
+	retval = strdup((const char*)val_s);
+ error:
+	if (pat) FcPatternDestroy(pat);
+	if (fset) FcFontSetDestroy(fset);
+	return retval;
 }
 
 /**
@@ -192,6 +197,7 @@ char* fontconfig_select(fc_instance_t* priv, const char* family, unsigned bold, 
 	return fontconfig_select_with_charset(priv, family, bold, italic, index, 0);
 }
 
+#if (FC_VERSION < 20402)
 static char* validate_fname(char* name)
 {
 	char* fname;
@@ -227,6 +233,7 @@ static char* validate_fname(char* name)
 	*q = 0;
 	return fname;
 }
+#endif
 
 /**
  * \brief Process memory font.
@@ -239,21 +246,18 @@ static char* validate_fname(char* name)
 */ 
 static void process_fontdata(fc_instance_t* priv, ass_library_t* library, FT_Library ftlibrary, int idx)
 {
-	char buf[1000];
-	FILE* fp = 0;
 	int rc;
-	struct stat st;
-	char* fname;
 	const char* name = library->fontdata[idx].name;
 	const char* data = library->fontdata[idx].data;
 	int data_size = library->fontdata[idx].size;
-	const char* fonts_dir = library->fonts_dir;
-	FT_Face face;
-	FcPattern* pattern;
-	FcFontSet* fset;
-	FcBool res;
 
 #if (FC_VERSION < 20402)
+	struct stat st;
+	char* fname;
+	const char* fonts_dir = library->fonts_dir;
+	char buf[1000];
+	FILE* fp = 0;
+
 	if (!fonts_dir)
 		return;
 	rc = stat(fonts_dir, &st);
@@ -283,6 +287,10 @@ static void process_fontdata(fc_instance_t* priv, ass_library_t* library, FT_Lib
 	fclose(fp);
 
 #else // (FC_VERSION >= 20402)
+	FT_Face face;
+	FcPattern* pattern;
+	FcFontSet* fset;
+	FcBool res;
 
 	rc = FT_New_Memory_Face(ftlibrary, (unsigned char*)data, data_size, 0, &face);
 	if (rc) {
@@ -326,7 +334,6 @@ static void process_fontdata(fc_instance_t* priv, ass_library_t* library, FT_Lib
 fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, const char* family, const char* path)
 {
 	int rc;
-	struct stat st;
 	fc_instance_t* priv = calloc(1, sizeof(fc_instance_t));
 	const char* dir = library->fonts_dir;
 	int i;
@@ -383,17 +390,8 @@ fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, con
 	}
 
 	priv->family_default = family ? strdup(family) : 0;
+	priv->path_default = path ? strdup(path) : 0;
 	priv->index_default = 0;
-	
-#ifdef __VISUALC__
-	priv->path_default = path;
-#else
-	rc = stat(path, &st);
-	if (!rc && S_ISREG(st.st_mode))
-		priv->path_default = path ? strdup(path) : 0;
-	else
-		priv->path_default = 0;
-#endif
 
 	return priv;
 }

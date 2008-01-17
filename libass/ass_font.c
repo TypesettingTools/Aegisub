@@ -25,6 +25,7 @@
 #include FT_FREETYPE_H
 #include FT_SYNTHESIS_H
 #include FT_GLYPH_H
+#include FT_TRUETYPE_TABLES_H
 
 #include "ass.h"
 #include "ass_library.h"
@@ -32,6 +33,7 @@
 #include "ass_bitmap.h"
 #include "ass_cache.h"
 #include "ass_fontconfig.h"
+#include "ass_utils.h"
 #include "mputils.h"
 
 /**
@@ -62,6 +64,17 @@ static void charmap_magic(FT_Face face)
 	}
 }
 
+static void update_transform(ass_font_t* font)
+{
+	int i;
+	FT_Matrix m;
+	m.xx = double_to_d16(font->scale_x);
+	m.yy = double_to_d16(font->scale_y);
+	m.xy = m.yx = 0;
+	for (i = 0; i < font->n_faces; ++i)
+		FT_Set_Transform(font->faces[i], &m, &font->v);
+}
+
 /**
  * \brief find a memory font by name
  */
@@ -83,12 +96,13 @@ ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_
 	int index;
 	FT_Face face;
 	int error;
-	ass_font_t* font;
+	ass_font_t* fontp;
+	ass_font_t font;
 	int mem_idx;
 
-	font = ass_font_cache_find(desc);
-	if (font)
-		return font;
+	fontp = ass_font_cache_find(desc);
+	if (fontp)
+		return fontp;
 	
 	path = fontconfig_select(fc_priv, desc->family, desc->bold, desc->italic, &index);
 	
@@ -110,54 +124,72 @@ ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_
 
 	charmap_magic(face);
 	
-	font = calloc(1, sizeof(ass_font_t));
-	font->ftlibrary = ftlibrary;
-	font->faces[0] = face;
-	font->n_faces = 1;
-	font->desc.family = strdup(desc->family);
-	font->desc.bold = desc->bold;
-	font->desc.italic = desc->italic;
+	font.ftlibrary = ftlibrary;
+	font.faces[0] = face;
+	font.n_faces = 1;
+	font.desc.family = strdup(desc->family);
+	font.desc.bold = desc->bold;
+	font.desc.italic = desc->italic;
 
-	font->m.xx = font->m.yy = (FT_Fixed)0x10000L;
-	font->m.xy = font->m.yy = 0;
-	font->v.x = font->v.y = 0;
-	font->size = 0;
+	font.scale_x = font.scale_y = 1.;
+	font.v.x = font.v.y = 0;
+	font.size = 0.;
 
 #ifdef HAVE_FONTCONFIG
-	font->charset = FcCharSetCreate();
+	font.charset = FcCharSetCreate();
 #endif
 
-	ass_font_cache_add(font);
-	
-	return font;
+	return ass_font_cache_add(&font);
 }
 
 /**
  * \brief Set font transformation matrix and shift vector
  **/
-void ass_font_set_transform(ass_font_t* font, FT_Matrix* m, FT_Vector* v)
+void ass_font_set_transform(ass_font_t* font, double scale_x, double scale_y, FT_Vector* v)
 {
-	int i;
-	font->m.xx = m->xx;
-	font->m.xy = m->xy;
-	font->m.yx = m->yx;
-	font->m.yy = m->yy;
+	font->scale_x = scale_x;
+	font->scale_y = scale_y;
 	font->v.x = v->x;
 	font->v.y = v->y;
-	for (i = 0; i < font->n_faces; ++i)
-		FT_Set_Transform(font->faces[i], &font->m, &font->v);
+	update_transform(font);
+}
+
+static void face_set_size(FT_Face face, double size)
+{
+#if (FREETYPE_MAJOR > 2) || ((FREETYPE_MAJOR == 2) && (FREETYPE_MINOR > 1))
+	TT_HoriHeader *hori = FT_Get_Sfnt_Table(face, ft_sfnt_hhea);
+	TT_OS2 *os2 = FT_Get_Sfnt_Table(face, ft_sfnt_os2);
+	double mscale = 1.;
+	FT_Size_RequestRec rq;
+	FT_Size_Metrics *m = &face->size->metrics;
+	// VSFilter uses metrics from TrueType OS/2 table
+	// The idea was borrowed from asa (http://asa.diac24.net)
+	if (hori && os2)
+		mscale = ((double)(hori->Ascender - hori->Descender)) / (os2->usWinAscent + os2->usWinDescent);
+	memset(&rq, 0, sizeof(rq));
+	rq.type = FT_SIZE_REQUEST_TYPE_REAL_DIM;
+	rq.width = 0;
+	rq.height = double_to_d6(size * mscale);
+	rq.horiResolution = rq.vertResolution = 0;
+	FT_Request_Size(face, &rq);
+	m->ascender /= mscale;
+	m->descender /= mscale;
+	m->height /= mscale;
+#else
+	FT_Set_Char_Size(face, 0, double_to_d6(size), 0, 0);
+#endif
 }
 
 /**
  * \brief Set font size
  **/
-void ass_font_set_size(ass_font_t* font, int size)
+void ass_font_set_size(ass_font_t* font, double size)
 {
 	int i;
 	if (font->size != size) {
 		font->size = size;
 		for (i = 0; i < font->n_faces; ++i)
-			FT_Set_Pixel_Sizes(font->faces[i], 0, size);
+			face_set_size(font->faces[i], size);
 	}
 }
 
@@ -193,9 +225,8 @@ static void ass_font_reselect(void* fontconfig_priv, ass_font_t* font, uint32_t 
 	}
 
 	font->faces[font->n_faces++] = face;
-	
-	FT_Set_Transform(face, &font->m, &font->v);
-	FT_Set_Pixel_Sizes(face, 0, font->size);
+	update_transform(font);
+	FT_Set_Pixel_Sizes(face, 0, (int)font->size);
 }
 #endif
 
@@ -229,13 +260,14 @@ void ass_font_get_asc_desc(ass_font_t* font, uint32_t ch, int* asc, int* desc)
  * \brief Get a glyph
  * \param ch character code
  **/
-FT_Glyph ass_font_get_glyph(void* fontconfig_priv, ass_font_t* font, uint32_t ch)
+FT_Glyph ass_font_get_glyph(void* fontconfig_priv, ass_font_t* font, uint32_t ch, ass_hinting_t hinting)
 {
 	int error;
 	int index = 0;
 	int i;
 	FT_Glyph glyph;
 	FT_Face face = 0;
+	int flags = 0;
 
 	if (ch < 0x20)
 		return 0;
@@ -264,7 +296,14 @@ FT_Glyph ass_font_get_glyph(void* fontconfig_priv, ass_font_t* font, uint32_t ch
 	}
 #endif
 
-	error = FT_Load_Glyph(face, index, FT_LOAD_NO_BITMAP );
+	switch (hinting) {
+	case ASS_HINTING_NONE: flags = FT_LOAD_NO_HINTING; break;
+	case ASS_HINTING_LIGHT: flags = FT_LOAD_FORCE_AUTOHINT | FT_LOAD_TARGET_LIGHT; break;
+	case ASS_HINTING_NORMAL: flags = FT_LOAD_FORCE_AUTOHINT; break;
+	case ASS_HINTING_NATIVE: flags = 0; break;
+	}
+	
+	error = FT_Load_Glyph(face, index, FT_LOAD_NO_BITMAP | flags);
 	if (error) {
 		mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_ErrorLoadingGlyph);
 		return 0;

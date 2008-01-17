@@ -27,7 +27,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <inttypes.h>
 
 #ifdef USE_ICONV
@@ -347,7 +347,7 @@ void process_force_style(ass_track_t* track) {
 					COLORVAL(SecondaryColour)
 					COLORVAL(OutlineColour)
 					COLORVAL(BackColour)
-					INTVAL(FontSize)
+					FPVAL(FontSize)
 					INTVAL(Bold)
 					INTVAL(Italic)
 					INTVAL(Underline)
@@ -435,7 +435,7 @@ static int process_style(ass_track_t* track, char *str)
 				// this will destroy SSA's TertiaryColour, but i'm not going to use it anyway
 				if (track->track_type == TRACK_TYPE_SSA)
 					target->OutlineColour = target->BackColour;
-			INTVAL(FontSize)
+			FPVAL(FontSize)
 			INTVAL(Bold)
 			INTVAL(Italic)
 			INTVAL(Underline)
@@ -572,8 +572,10 @@ static int decode_font(ass_track_t* track)
 	dsize = q - buf;
 	assert(dsize <= size / 4 * 3 + 2);
 	
-	if (track->library->extract_fonts)
+	if (track->library->extract_fonts) {
 		ass_add_font(track->library, track->parser_priv->fontname, (char*)buf, dsize);
+		buf = 0;
+	}
 
 error_decode_font:
 	if (buf) free(buf);

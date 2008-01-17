@@ -56,6 +56,7 @@ typedef struct ass_settings_s {
 	int use_margins; // 0 - place all subtitles inside original frame
 	                 // 1 - use margins for placing toptitles and subtitles
 	double aspect; // frame aspect ratio, d_width / d_height.
+	ass_hinting_t hinting;
 
 	char* default_font;
 	char* default_family;
@@ -112,7 +113,7 @@ typedef struct glyph_info_s {
 	int shadow;
 	double frx, fry, frz; // rotation
 	
-	glyph_hash_key_t hash_key;
+	bitmap_hash_key_t hash_key;
 } glyph_info_t;
 
 typedef struct line_info_s {
@@ -136,7 +137,7 @@ typedef struct render_context_s {
 	
 	ass_font_t* font;
 	char* font_path;
-	int font_size;
+	double font_size;
 	
 	FT_Stroker stroker;
 	int alignment; // alignment overrides go here; if zero, style value will be used
@@ -252,6 +253,7 @@ ass_renderer_t* ass_renderer_init(ass_library_t* library)
 	// images_root and related stuff is zero-filled in calloc
 	
 	ass_font_cache_init();
+	ass_bitmap_cache_init();
 	ass_glyph_cache_init();
 
 	text_info.glyphs = calloc(MAX_GLYPHS, sizeof(glyph_info_t));
@@ -266,6 +268,7 @@ ass_init_exit:
 void ass_renderer_done(ass_renderer_t* priv)
 {
 	ass_font_cache_done();
+	ass_bitmap_cache_done();
 	ass_glyph_cache_done();
 	if (render_context.stroker) {
 		FT_Stroker_Done(render_context.stroker);
@@ -378,43 +381,16 @@ static ass_image_t** render_glyph(bitmap_t* bm, int dst_x, int dst_y, uint32_t c
 }
 
 /**
- * \brief Render text_info_t struct into ass_image_t list
- * Rasterize glyphs and put them in glyph cache.
+ * \brief Convert text_info_t struct to ass_image_t list
+ * Splits glyphs in halves when needed (for \kf karaoke).
  */
 static ass_image_t* render_text(text_info_t* text_info, int dst_x, int dst_y)
 {
 	int pen_x, pen_y;
-	int i, error;
+	int i;
 	bitmap_t* bm;
-	glyph_hash_val_t hash_val;
 	ass_image_t* head;
 	ass_image_t** tail = &head;
-
-	for (i = 0; i < text_info->length; ++i) {
-		if (text_info->glyphs[i].glyph) {
-			if ((text_info->glyphs[i].symbol == '\n') || (text_info->glyphs[i].symbol == 0))
-				continue;
-			error = glyph_to_bitmap(ass_renderer->synth_priv,
-					text_info->glyphs[i].glyph, text_info->glyphs[i].outline_glyph,
-					&text_info->glyphs[i].bm, &text_info->glyphs[i].bm_o,
-					&text_info->glyphs[i].bm_s, text_info->glyphs[i].be);
-			if (error)
-				text_info->glyphs[i].symbol = 0;
-			FT_Done_Glyph(text_info->glyphs[i].glyph);
-			if (text_info->glyphs[i].outline_glyph)
-				FT_Done_Glyph(text_info->glyphs[i].outline_glyph);
-
-			// cache
-			hash_val.bbox_scaled = text_info->glyphs[i].bbox;
-			hash_val.bm_o = text_info->glyphs[i].bm_o;
-			hash_val.bm = text_info->glyphs[i].bm;
-			hash_val.bm_s = text_info->glyphs[i].bm_s;
-			hash_val.advance.x = text_info->glyphs[i].advance.x;
-			hash_val.advance.y = text_info->glyphs[i].advance.y;
-			cache_add_glyph(&(text_info->glyphs[i].hash_key), &hash_val);
-
-		}
-	}
 
 	for (i = 0; i < text_info->length; ++i) {
 		glyph_info_t* info = text_info->glyphs + i;
@@ -521,7 +497,7 @@ static void compute_string_bbox( text_info_t* info, FT_BBox *abbox ) {
 /**
  * \brief Check if starting part of (*p) matches sample. If true, shift p to the first symbol after the matching part.
  */
-static inline int mystrcmp(char** p, const char* sample) {
+static int mystrcmp(char** p, const char* sample) {
 	int len = strlen(sample);
 	if (strncmp(*p, sample, len) == 0) {
 		(*p) += len;
@@ -530,9 +506,7 @@ static inline int mystrcmp(char** p, const char* sample) {
 		return 0;
 }
 
-double ass_internal_font_size_coeff = 0.8;
-
-static void change_font_size(int sz)
+static void change_font_size(double sz)
 {
 	double size = sz * frame_context.font_scale;
 
@@ -568,6 +542,7 @@ static void update_font(void)
 	desc.italic = val;
 
 	render_context.font = ass_font_new(priv->library, priv->ftlibrary, priv->fontconfig_priv, &desc);
+	free(desc.family);
 	
 	if (render_context.font)
 		change_font_size(render_context.font_size);
@@ -680,7 +655,7 @@ static unsigned interpolate_alpha(long long now,
 	return a;
 }
 
-static void reset_render_context();
+static void reset_render_context(void);
 
 /**
  * \brief Parse style override tag.
@@ -719,8 +694,8 @@ static char* parse_tag(char* p, double pwr) {
 		else
 			render_context.hspacing = render_context.style->Spacing;
 	} else if (mystrcmp(&p, "fs")) {
-		int val;
-		if (mystrtoi(&p, 10, &val))
+		double val;
+		if (mystrtod(&p, &val))
 			val = render_context.font_size * ( 1 - pwr ) + val * pwr;
 		else
 			val = render_context.style->FontSize;
@@ -834,7 +809,7 @@ static char* parse_tag(char* p, double pwr) {
 		} else
 			render_context.alignment = render_context.style->Alignment;
 	} else if (mystrcmp(&p, "a")) {
-		int val = strtol(p, &p, 10);
+		int val;
 		if (mystrtoi(&p, 10, &val) && val)
 			render_context.alignment = val;
 		else
@@ -927,11 +902,14 @@ static char* parse_tag(char* p, double pwr) {
 		if (v3 < 0.)
 			v3 = 0.;
 		t = frame_context.time - render_context.event->Start; // FIXME: move to render_context
-		if (t < t1)
+		if (t <= t1)
 			k = 0.;
-		else if (t > t2)
+		else if (t >= t2)
 			k = 1.;
-		else k = pow(((double)(t - t1)) / delta_t, v3);
+		else {
+			assert(delta_t != 0.);
+			k = pow(((double)(t - t1)) / delta_t, v3);
+		}
 		while (*p == '\\')
 			p = parse_tag(p, k); // maybe k*pwr ? no, specs forbid nested \t's 
 		skip_all(')'); // FIXME: better skip(')'), but much more tags support required
@@ -1219,70 +1197,121 @@ static void free_render_context(void)
 }
 
 /**
- * \brief Get normal and outline glyphs from cache (if possible) or font face
- * \param index face glyph index
+ * \brief Get normal and outline (border) glyphs
  * \param symbol ucs4 char
  * \param info out: struct filled with extracted data
- * \param advance advance vector of the extracted glyph
- * \return 0 on success
+ * \param advance subpixel shift vector used for cache lookup
+ * Tries to get both glyphs from cache.
+ * If they can't be found, gets a glyph from font face, generates outline with FT_Stroker,
+ * and add them to cache.
+ * The glyphs are returned in info->glyph and info->outline_glyph
  */
-static int get_glyph(int symbol, glyph_info_t* info, FT_Vector* advance)
+static void get_outline_glyph(int symbol, glyph_info_t* info, FT_Vector* advance)
 {
 	int error;
 	glyph_hash_val_t* val;
-	glyph_hash_key_t* key = &(info->hash_key);
-	
-	key->font = render_context.font;
-	key->size = render_context.font_size;
-	key->ch = symbol;
-	key->outline = (render_context.border * 0xFFFF); // convert to 16.16
-	key->scale_x = (render_context.scale_x * 0xFFFF);
-	key->scale_y = (render_context.scale_y * 0xFFFF);
-	key->frx = (render_context.frx * 0xFFFF);
-	key->fry = (render_context.fry * 0xFFFF);
-	key->frz = (render_context.frz * 0xFFFF);
-	key->advance = *advance;
-	key->bold = render_context.bold;
-	key->italic = render_context.italic;
-	key->be = render_context.be;
+	glyph_hash_key_t key;
+	key.font = render_context.font;
+	key.size = render_context.font_size;
+	key.ch = symbol;
+	key.scale_x = (render_context.scale_x * 0xFFFF);
+	key.scale_y = (render_context.scale_y * 0xFFFF);
+	key.advance = *advance;
+	key.bold = render_context.bold;
+	key.italic = render_context.italic;
+	key.outline = render_context.border * 0xFFFF;
 
-	val = cache_find_glyph(key);
-//	val = 0;
-	
+	info->glyph = info->outline_glyph = 0;
+
+	val = cache_find_glyph(&key);
 	if (val) {
-		info->glyph = info->outline_glyph = 0;
-		info->bm = val->bm;
-		info->bm_o = val->bm_o;
-		info->bm_s = val->bm_s;
+		FT_Glyph_Copy(val->glyph, &info->glyph);
+		if (val->outline_glyph)
+			FT_Glyph_Copy(val->outline_glyph, &info->outline_glyph);
 		info->bbox = val->bbox_scaled;
 		info->advance.x = val->advance.x;
 		info->advance.y = val->advance.y;
+	} else {
+		glyph_hash_val_t v;
+		info->glyph = ass_font_get_glyph(frame_context.ass_priv->fontconfig_priv, render_context.font, symbol, global_settings->hinting);
+		if (!info->glyph)
+			return;
+		info->advance.x = d16_to_d6(info->glyph->advance.x);
+		info->advance.y = d16_to_d6(info->glyph->advance.y);
+		FT_Glyph_Get_CBox( info->glyph, FT_GLYPH_BBOX_PIXELS, &info->bbox);
 
-		return 0;
+		if (render_context.stroker) {
+			info->outline_glyph = info->glyph;
+			error = FT_Glyph_StrokeBorder( &(info->outline_glyph), render_context.stroker, 0 , 0 ); // don't destroy original
+			if (error) {
+				mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_FT_Glyph_Stroke_Error, error);
+			}
+		}
+
+		memset(&v, 0, sizeof(v));
+		FT_Glyph_Copy(info->glyph, &v.glyph);
+		if (info->outline_glyph)
+			FT_Glyph_Copy(info->outline_glyph, &v.outline_glyph);
+		v.advance = info->advance;
+		v.bbox_scaled = info->bbox;
+		cache_add_glyph(&key, &v);
 	}
+}
 
-	// not found, get a new outline glyph from face
-//	mp_msg(MSGT_ASS, MSGL_INFO, "miss, index = %d, symbol = %c, adv = (%d, %d)\n", index, symbol, advance->x, advance->y);
+static void transform_3d(FT_Vector shift, FT_Glyph* glyph, FT_Glyph* glyph2, double frx, double fry, double frz);
 
-	info->outline_glyph = 0;
-	info->bm = info->bm_o = info->bm_s = 0;
+/**
+ * \brief Get bitmaps for a glyph
+ * \param info glyph info
+ * Tries to get glyph bitmaps from bitmap cache.
+ * If they can't be found, they are generated by rotating and rendering the glyph.
+ * After that, bitmaps are added to the cache.
+ * They are returned in info->bm (glyph), info->bm_o (outline) and info->bm_s (shadow).
+ */
+static void get_bitmap_glyph(glyph_info_t* info)
+{
+	bitmap_hash_val_t* val;
+	bitmap_hash_key_t* key = &info->hash_key;
 	
-	info->glyph = ass_font_get_glyph(frame_context.ass_priv->fontconfig_priv, render_context.font, symbol);
-	if (!info->glyph)
-		return 0;
+	val = cache_find_bitmap(key);
+/* 	val = 0; */
+	
+	if (val) {
+		info->bm = val->bm;
+		info->bm_o = val->bm_o;
+		info->bm_s = val->bm_s;
+	} else {
+		FT_Vector shift;
+		bitmap_hash_val_t hash_val;
+		int error;
+		info->bm = info->bm_o = info->bm_s = 0;
+		if (info->glyph && info->symbol != '\n' && info->symbol != 0) {
+			// calculating rotation shift vector (from rotation origin to the glyph basepoint)
+			shift.x = int_to_d6(info->hash_key.shift_x);
+			shift.y = int_to_d6(info->hash_key.shift_y);
+			// apply rotation
+			transform_3d(shift, &info->glyph, &info->outline_glyph, info->frx, info->fry, info->frz);
 
-	info->advance.x = d16_to_d6(info->glyph->advance.x);
-	info->advance.y = d16_to_d6(info->glyph->advance.y);
+			// render glyph
+			error = glyph_to_bitmap(ass_renderer->synth_priv,
+					info->glyph, info->outline_glyph,
+					&info->bm, &info->bm_o,
+					&info->bm_s, info->be);
+			if (error)
+				info->symbol = 0;
 
-	if (render_context.stroker) {
-		info->outline_glyph = info->glyph;
-		error = FT_Glyph_Stroke( &(info->outline_glyph), render_context.stroker, 0 ); // don't destroy original
-		if (error) {
-			mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_FT_Glyph_Stroke_Error, error);
+			// add bitmaps to cache
+			hash_val.bm_o = info->bm_o;
+			hash_val.bm = info->bm;
+			hash_val.bm_s = info->bm_s;
+			cache_add_bitmap(&(info->hash_key), &hash_val);
 		}
 	}
-
-	return 0;
+	// deallocate glyphs
+	if (info->glyph)
+		FT_Done_Glyph(info->glyph);
+	if (info->outline_glyph)
+		FT_Done_Glyph(info->outline_glyph);
 }
 
 /**
@@ -1294,7 +1323,7 @@ static int get_glyph(int symbol, glyph_info_t* info, FT_Vector* advance)
  *   lines[].asc
  *   lines[].desc
  */
-static void measure_text()
+static void measure_text(void)
 {
 	int cur_line = 0, max_asc = 0, max_desc = 0;
 	int i;
@@ -1386,6 +1415,11 @@ static void wrap_lines_smart(int max_text_width)
 		
 		if (cur->symbol == ' ')
 			last_space = i;
+
+		// make sure the hard linebreak is not forgotten when
+		// there was a new soft linebreak just inserted
+		if (cur->symbol == '\n' && break_type == 1)
+			i--;
 	}
 #define DIFF(x,y) (((x) < (y)) ? (y - x) : (x - y))
 	exit = 0;
@@ -1558,7 +1592,7 @@ static void get_base_point(FT_BBox bbox, int alignment, int* bx, int* by)
  * \param b out: 4-vector
  * Calculates a * m and stores result in b
  */
-static inline void transform_point_3d(double *a, double *m, double *b)
+static void transform_point_3d(double *a, double *m, double *b)
 {
 	b[0] = a[0] * m[0] + a[1] * m[4] + a[2] * m[8] +  a[3] * m[12];
 	b[1] = a[0] * m[1] + a[1] * m[5] + a[2] * m[9] +  a[3] * m[13];
@@ -1573,13 +1607,26 @@ static inline void transform_point_3d(double *a, double *m, double *b)
  * Transforms v by m, projects the result back to the screen plane
  * Result is returned in v.
  */
-static inline void transform_vector_3d(FT_Vector* v, double *m) {
+static void transform_vector_3d(FT_Vector* v, double *m) {
+	const double camera = 2500 * frame_context.border_scale; // camera distance
 	double a[4], b[4];
 	a[0] = d6_to_double(v->x);
 	a[1] = d6_to_double(v->y);
 	a[2] = 0.;
 	a[3] = 1.;
 	transform_point_3d(a, m, b);
+	/* Apply perspective projection with the following matrix:
+	   2500     0     0     0
+	      0  2500     0     0
+	      0     0     0     0
+	      0     0     8     2500
+	   where 2500 is camera distance, 8 - z-axis scale.
+	   Camera is always located in (org_x, org_y, -2500). This means
+	   that different subtitle events can be displayed at the same time
+	   using different cameras. */
+	b[0] *= camera;
+	b[1] *= camera;
+	b[3] = 8 * b[2] + camera;
 	if (b[3] < 0.001 && b[3] > -0.001)
 		b[3] = b[3] < 0. ? -0.001 : 0.001;
 	v->x = double_to_d6(b[0] / b[3]);
@@ -1593,28 +1640,35 @@ static inline void transform_vector_3d(FT_Vector* v, double *m) {
  * Transforms glyph by m, projects the result back to the screen plane
  * Result is returned in glyph.
  */
-static inline void transform_glyph_3d(FT_Glyph glyph, double *m) {
+static void transform_glyph_3d(FT_Glyph glyph, double *m, FT_Vector shift) {
 	int i;
 	FT_Outline* outline = &((FT_OutlineGlyph)glyph)->outline;
+	FT_Vector* p = outline->points;
 
-	for (i=0; i<outline->n_points; i++)
-		transform_vector_3d(outline->points + i, m);
+	for (i=0; i<outline->n_points; i++) {
+		p[i].x += shift.x;
+		p[i].y += shift.y;
+		transform_vector_3d(p + i, m);
+		p[i].x -= shift.x;
+		p[i].y -= shift.y;
+	}
 
-	transform_vector_3d(&glyph->advance, m);
+	//transform_vector_3d(&glyph->advance, m);
 }
 
 /**
  * \brief Apply 3d transformation to several objects
- * \param vec FreeType vector
+ * \param shift FreeType vector
  * \param glyph FreeType glyph
  * \param glyph2 FreeType glyph
  * \param frx x-axis rotation angle
  * \param fry y-axis rotation angle
  * \param frz z-axis rotation angle
- * Rotates the given vector and both glyphs by frx, fry and frz.
+ * Rotates both glyphs by frx, fry and frz. Shift vector is added before rotation and subtracted after it.
  */
-void transform_3d(FT_Vector* vec, FT_Glyph* glyph, FT_Glyph* glyph2, double frx, double fry, double frz)
+static void transform_3d(FT_Vector shift, FT_Glyph* glyph, FT_Glyph* glyph2, double frx, double fry, double frz)
 {
+	fry = - fry; // FreeType's y axis goes in the opposite direction
 	if (frx != 0. || fry != 0. || frz != 0.) {
 		double m[16];
 		double sx = sin(frx);
@@ -1623,19 +1677,16 @@ void transform_3d(FT_Vector* vec, FT_Glyph* glyph, FT_Glyph* glyph2, double frx,
 		double cx = cos(frx);
 		double cy = cos(fry);
 		double cz = cos(frz);
-		m[0] = cy * cz;   m[1] = cz*sx*sy + sz*cx;   m[2]  = sz*sx - cz*cx*sy;   m[3] = 0.0;
-		m[4] = -sz*cy;    m[5] = cz*cx - sz*sy*sx;   m[6]  = sz*sy*cx + cz*sx;   m[7] = 0.0;
-		m[8] = sy;        m[9] = -sx*cy;             m[10] = cx*cy;              m[11] = 0.0;
-		m[12] = 0.0;      m[13] = 0.0;               m[14] = 0.0;                m[15] = 1.0;
+		m[0] = cy * cz;            m[1] = cy*sz;              m[2]  = -sy;    m[3] = 0.0;
+		m[4] = -cx*sz + sx*sy*cz;  m[5] = cx*cz + sx*sy*sz;   m[6]  = sx*cy;  m[7] = 0.0;
+		m[8] = sx*sz + cx*sy*cz;   m[9] = -sx*cz + cx*sy*sz;  m[10] = cx*cy;  m[11] = 0.0;
+		m[12] = 0.0;               m[13] = 0.0;               m[14] = 0.0;    m[15] = 1.0;
 
 		if (glyph && *glyph)
-			transform_glyph_3d(*glyph, m);
+			transform_glyph_3d(*glyph, m, shift);
 
 		if (glyph2 && *glyph2)
-			transform_glyph_3d(*glyph2, m);
-
-		if (vec)
-			transform_vector_3d(vec, m);
+			transform_glyph_3d(*glyph2, m, shift);
 	}
 }
 
@@ -1650,7 +1701,6 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
 	FT_UInt previous; 
 	FT_UInt num_glyphs;
 	FT_Vector pen;
-	int error;
 	unsigned code;
 	FT_BBox bbox;
 	int i, j;
@@ -1708,34 +1758,20 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
 		shift.x = pen.x & 63;
 		shift.y = pen.y & 63;
 
-		{
-			FT_Matrix matrix;
-			matrix.xx = (FT_Fixed)( render_context.scale_x * frame_context.font_scale_x * 0x10000L );
-			matrix.xy = (FT_Fixed)( 0 * 0x10000L );
-			matrix.yx = (FT_Fixed)( 0 * 0x10000L );
-			matrix.yy = (FT_Fixed)( render_context.scale_y * 0x10000L );
+		ass_font_set_transform(render_context.font,
+				       render_context.scale_x * frame_context.font_scale_x,
+				       render_context.scale_y,
+				       &shift );
 
-			ass_font_set_transform(render_context.font, &matrix, &shift );
-		}
+		get_outline_glyph(code, text_info.glyphs + text_info.length, &shift);
 		
-		error = get_glyph(code, text_info.glyphs + text_info.length, &shift);
-
-		if (error) {
-			continue;
-		}
-		
-		text_info.glyphs[text_info.length].pos.x = d6_to_int(pen.x);
-		text_info.glyphs[text_info.length].pos.y = d6_to_int(pen.y);
+		text_info.glyphs[text_info.length].pos.x = pen.x >> 6;
+		text_info.glyphs[text_info.length].pos.y = pen.y >> 6;
 		
 		pen.x += text_info.glyphs[text_info.length].advance.x;
 		pen.x += double_to_d6(render_context.hspacing);
 		pen.y += text_info.glyphs[text_info.length].advance.y;
 		
-		// if it's an outline glyph, we still need to fill the bbox
-		if (text_info.glyphs[text_info.length].glyph) {
-			FT_Glyph_Get_CBox( text_info.glyphs[text_info.length].glyph, FT_GLYPH_BBOX_PIXELS, &(text_info.glyphs[text_info.length].bbox) );
-		}
-
 		previous = code;
 
 		text_info.glyphs[text_info.length].symbol = code;
@@ -1758,6 +1794,21 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
 				      &text_info.glyphs[text_info.length].desc);
 		text_info.glyphs[text_info.length].asc *= render_context.scale_y;
 		text_info.glyphs[text_info.length].desc *= render_context.scale_y;
+
+		// fill bitmap_hash_key
+		text_info.glyphs[text_info.length].hash_key.font = render_context.font;
+		text_info.glyphs[text_info.length].hash_key.size = render_context.font_size;
+		text_info.glyphs[text_info.length].hash_key.outline = render_context.border * 0xFFFF;
+		text_info.glyphs[text_info.length].hash_key.scale_x = render_context.scale_x * 0xFFFF;
+		text_info.glyphs[text_info.length].hash_key.scale_y = render_context.scale_y * 0xFFFF;
+		text_info.glyphs[text_info.length].hash_key.frx = render_context.frx * 0xFFFF;
+		text_info.glyphs[text_info.length].hash_key.fry = render_context.fry * 0xFFFF;
+		text_info.glyphs[text_info.length].hash_key.frz = render_context.frz * 0xFFFF;
+		text_info.glyphs[text_info.length].hash_key.bold = render_context.bold;
+		text_info.glyphs[text_info.length].hash_key.italic = render_context.italic;
+		text_info.glyphs[text_info.length].hash_key.ch = code;
+		text_info.glyphs[text_info.length].hash_key.advance = shift;
+		text_info.glyphs[text_info.length].hash_key.be = render_context.be;
 
 		text_info.length++;
 
@@ -1797,16 +1848,16 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
 		last_break = -1;
 		for (i = 1; i < text_info.length + 1; ++i) { // (text_info.length + 1) is the end of the last line
 			if ((i == text_info.length) || text_info.glyphs[i].linebreak) {
-				int width, shift;
+				int width, shift = 0;
 				glyph_info_t* first_glyph = text_info.glyphs + last_break + 1;
 				glyph_info_t* last_glyph = text_info.glyphs + i - 1;
 
 				while ((last_glyph > first_glyph) && ((last_glyph->symbol == '\n') || (last_glyph->symbol == 0)))
 					last_glyph --;
 
-				width = last_glyph->pos.x + last_glyph->bbox.xMax - first_glyph->pos.x - first_glyph->bbox.xMin;
-				shift = - first_glyph->bbox.xMin; // now text line starts exactly at 0 (left margin)
+				width = last_glyph->pos.x + d6_to_int(last_glyph->advance.x) - first_glyph->pos.x;
 				if (halign == HALIGN_LEFT) { // left aligned, no action
+					shift = 0;
 				} else if (halign == HALIGN_RIGHT) { // right aligned
 					shift = max_text_width - width;
 				} else if (halign == HALIGN_CENTER) { // centered
@@ -1893,13 +1944,13 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
 		render_context.clip_y1 = y2scr(render_context.clip_y1);
 	}
 
-	// rotate glyphs if needed
+	// calculate rotation parameters
 	{
 		FT_Vector center;
 		
 		if (render_context.have_origin) {
-			center.x = render_context.org_x;
-			center.y = render_context.org_y;
+			center.x = x2scr(render_context.org_x);
+			center.y = y2scr(render_context.org_y);
 		} else {
 			int bx, by;
 			get_base_point(bbox, alignment, &bx, &by);
@@ -1908,27 +1959,21 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
 		}
 
 		for (i = 0; i < text_info.length; ++i) {
-			FT_Vector start;
-			FT_Vector start_old;
 			glyph_info_t* info = text_info.glyphs + i;
 
-			// calculating shift vector
-			// shift = (position - center)*M - (position - center)
-			start.x = int_to_d6(info->pos.x + device_x - center.x);
-			start.y = - int_to_d6(info->pos.y + device_y - center.y);
-			start_old.x = start.x;
-			start_old.y = start.y;
-
-			transform_3d(&start, &info->glyph, &info->outline_glyph, info->frx, info->fry, info->frz);
-			
-			start.x -= start_old.x;
-			start.y -= start_old.y;
-
-			info->pos.x += d6_to_int(start.x);
-			info->pos.y -= d6_to_int(start.y);
-
+			if (info->hash_key.frx || info->hash_key.fry || info->hash_key.frz) {
+				info->hash_key.shift_x = info->pos.x + device_x - center.x;
+				info->hash_key.shift_y = - (info->pos.y + device_y - center.y);
+			} else {
+				info->hash_key.shift_x = 0;
+				info->hash_key.shift_y = 0;
+			}
 		}
 	}
+
+	// convert glyphs to bitmaps
+	for (i = 0; i < text_info.length; ++i)
+		get_bitmap_glyph(text_info.glyphs + i);
 
 	event_images->top = device_y - d6_to_int(text_info.lines[0].asc);
 	event_images->height = d6_to_int(text_info.height);
@@ -1959,6 +2004,7 @@ static void ass_reconfigure(ass_renderer_t* priv)
 {
 	priv->render_id = ++last_render_id;
 	ass_glyph_cache_reset();
+	ass_bitmap_cache_reset();
 	ass_free_images(priv->prev_images_root);
 	priv->prev_images_root = 0;
 }
@@ -2009,6 +2055,14 @@ void ass_set_font_scale(ass_renderer_t* priv, double font_scale)
 	}
 }
 
+void ass_set_hinting(ass_renderer_t* priv, ass_hinting_t ht)
+{
+	if (priv->settings.hinting != ht) {
+		priv->settings.hinting = ht;
+		ass_reconfigure(priv);
+	}
+}
+
 int ass_set_fonts(ass_renderer_t* priv, const char* default_font, const char* default_family)
 {
 	if (priv->settings.default_font)
@@ -2047,7 +2101,7 @@ static int ass_start_frame(ass_renderer_t *priv, ass_track_t* track, long long n
 
 	ass_lazy_track_init();
 	
-	frame_context.font_scale = global_settings->font_size_coeff * ass_internal_font_size_coeff *
+	frame_context.font_scale = global_settings->font_size_coeff *
 	                           frame_context.orig_height / frame_context.track->PlayResY;
 	frame_context.border_scale = ((double)frame_context.orig_height) / frame_context.track->PlayResY;
 

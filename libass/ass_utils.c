@@ -22,10 +22,6 @@
 
 #include <stdlib.h>
 #include <inttypes.h>
-#ifndef __VISUALC__
-#include <sys/time.h>
-#endif
-#include <time.h>
 
 #include "mputils.h"
 #include "ass_utils.h"
