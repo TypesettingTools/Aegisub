@@ -21,10 +21,10 @@ use utf8; # just to be safe
 use POSIX (); # gah, we only need floor(), no need to import all of IEEE 1003.1
 
 
-# TODO: discuss what should be exported by default
+# Export everything by default
 our @ISA 		= qw(Exporter);
-our @EXPORT		= qw(extract_color alpha_from_style color_from_style HSV_to_RGB HSL_to_RGB interpolate_color interpolate_alpha);
-our @EXPORT_OK	= qw(ass_color ass_alpha ass_style_color string_trim clamp interpolate);
+our @EXPORT		= qw(extract_color alpha_from_style color_from_style HSV_to_RGB HSL_to_RGB interpolate_color interpolate_alpha
+	ass_color ass_alpha ass_style_color string_trim clamp interpolate);
 
 
 # Given 3 integers R,G,B, returns ASS formatted &HBBGGRR& string
@@ -57,20 +57,20 @@ sub extract_color {
 	# This here thingie is a switch statement. Magic!
 	given ( $string ) {
 		# try v4+ style (ABGR)
-		when ( /\&H([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/i ) {
+		when ( /\&H([[:xdigit:]]{2})([[:xdigit:]]{2})([[:xdigit:]]{2})([[:xdigit:]]{2})/i ) {
 			return(hex($4), hex($3), hex($2), hex($1));
 		}
 		# color override? (BGR)
-		when ( /\&H([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})\&H/i ) {
+		when ( /\&H([[:xdigit:]]{2})([[:xdigit:]]{2})([[:xdigit:]]{2})\&H/i ) {
 			return(0, hex($3), hex($2), hex($1));
 		}
 		# alpha override? (A)
 		# (bug: bogus results with \c&H<hex>& with the first four zeros omitted)
-		when ( /\&H([a-f0-9]{2})\&/i ) {
+		when ( /\&H([[:xdigit:]]{2})\&/i ) {
 			return(hex($1), 0, 0, 0);
 		}
 		# try HTML format for laffs (RGB)
-		when ( /\#([a-f0-9]{2})([a-f0-9]{2})?([a-f0-9]{2})?/i ) {
+		when ( /\#([[:xdigit:]]{2})([[:xdigit:]]{2})?([[:xdigit:]]{2})?/i ) {
 			return(0, (hex($2) or 0), (hex($2) or 0), (hex($3) or 0));
 		}
 		default {
@@ -134,6 +134,7 @@ sub HSV_to_RGB {
 
 
 # Converts 3 integers H, S, L (hue, saturation, luminance) to R, G, B
+# NOTE: THE OUTPUT AND S,V INPUT IS IN THE RANGE [0,1]!
 # Routine is best performed to "The HSL Song" by Diablo-D3 and the #darkhold idlers.
 # The lyrics are as follows:
 # I see a little silluetto of a man 
