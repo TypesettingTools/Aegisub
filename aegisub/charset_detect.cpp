@@ -38,6 +38,8 @@
 // Headers
 #include "charset_detect.h"
 #include "text_file_reader.h"
+#include "../universalchardet/nsCharSetProber.h"
+#include <wx/choicdlg.h>
 
 
 ////////////////
@@ -60,9 +62,52 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 	return result;
 }
 
+struct CharDetResult {
+	float confidence;
+	wxString name;
+
+	bool operator < (CharDetResult &par) { return confidence > par.confidence; }
+};
 
 //////////
 // Report
 void CharSetDetect::Report(const char* aCharset) {
+	// Store the result reported
 	result = wxString(aCharset,wxConvUTF8);
+
+	// Grab every result obtained
+	std::list<CharDetResult> results;
+	for (int i=0;i<NUM_OF_CHARSET_PROBERS;i++) {
+		int probes = mCharSetProbers[i]->GetProbeCount();
+		for (int j=0;j<probes;j++) {
+			float conf = mCharSetProbers[i]->GetConfidence(j);
+
+			// Only bother with those whose confidence is at least 5%
+			if (conf > 0.05f) {
+				results.push_back(CharDetResult());
+				results.back().name = wxString(mCharSetProbers[i]->GetCharSetName(j),wxConvUTF8);
+				results.back().confidence = mCharSetProbers[i]->GetConfidence(j);
+			}
+		}
+	}
+
+	// If you got more than one valid result, ask the user which he wants
+	if (results.size() > 1) {
+		results.sort();
+
+		// Get choice from user
+		int n = results.size();
+		wxArrayString choices;
+		for (std::list<CharDetResult>::iterator cur=results.begin();cur!=results.end();cur++) {
+			choices.Add(wxString::Format(_T("%f%% - "),(*cur).confidence*100.0f) + (*cur).name);
+		}
+		int choice = wxGetSingleChoiceIndex(_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),_("Choose character set"),choices);
+		if (choice == -1) throw _T("Canceled");
+
+		// Retrieve name
+		int i = 0;
+		for (std::list<CharDetResult>::iterator cur=results.begin();cur!=results.end();cur++,i++) {
+			if (i == choice) result = (*cur).name;
+		}
+	}
 }

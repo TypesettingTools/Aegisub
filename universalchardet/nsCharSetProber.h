@@ -60,6 +60,10 @@ public:
   virtual float     GetConfidence(void) = 0;
   virtual void      SetOpion() = 0;
 
+  virtual const char* GetCharSetName(int i) { return GetCharSetName(); }
+  virtual float     GetConfidence(int i) { return GetConfidence(); }
+  virtual int       GetProbeCount(void) { return 1; }
+
 #ifdef DEBUG_chardet
   virtual void  DumpStatus() {};
 #endif

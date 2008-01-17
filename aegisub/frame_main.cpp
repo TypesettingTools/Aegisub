@@ -616,8 +616,9 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			if (!fileCheck.FileExists()) throw _T("Selected file does not exist.");
 
 			// Make sure that file isn't actually a timecode file
-			TextFileReader testSubs(filename);
-			isBinary = testSubs.GetCurrentEncoding() == _T("binary");
+			TextFileReader testSubs(filename,charset);
+			charset = testSubs.GetCurrentEncoding();
+			isBinary = charset == _T("binary");
 			if (!isBinary && testSubs.HasMoreLines()) {
 				wxString cur = testSubs.ReadLineFromFile();
 				if (cur.Left(10) == _T("# timecode")) {

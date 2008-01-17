@@ -60,6 +60,10 @@ public:
   float     GetConfidence(void);
   void      SetOpion() {};
 
+  const char* GetCharSetName(int i) { return mProbers[i]->GetCharSetName(); }
+  float     GetConfidence(int i) { return mProbers[i]->GetConfidence(); }
+  int       GetProbeCount(void) { return NUM_OF_PROBERS; }
+
 #ifdef DEBUG_chardet
   void  DumpStatus();
 #endif
