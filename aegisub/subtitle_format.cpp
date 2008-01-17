@@ -262,7 +262,7 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 		temp1 += all[i] + _T(",");
 		temp2 += all[i] + _T(";");
 	}
-	final = _("All Supported Formats (") + temp1.Left(temp1.Length()-1) + _T(")|") + temp2.Left(temp2.Length()-1) + _T("|") + final.Left(final.Length()-1);
+	final = wxString(_("All Supported Formats")) + _T(" (") + temp1.Left(temp1.Length()-1) + _T(")|") + temp2.Left(temp2.Length()-1) + _T("|") + final.Left(final.Length()-1);
 
 	// Return final list
 	return final;

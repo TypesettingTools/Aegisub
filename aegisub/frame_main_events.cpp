@@ -604,7 +604,10 @@ void FrameMain::OnVideoPlay(wxCommandEvent &event) {
 // Open video
 void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open video path"));
-	wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),_("Recommended Formats (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|Other supported formats (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|All Files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString str = wxString(_("Recommended Formats")) + _T(" (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|")
+		         + _("Other supported formats") + _T(" (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|")
+				 + _("All Files") + _T(" (*.*)|*.*");
+	wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVideo(filename);
 		Options.SetText(_T("Last open video path"), filename);
@@ -624,7 +627,10 @@ void FrameMain::OnCloseVideo(wxCommandEvent& WXUNUSED(event)) {
 // Open Audio
 void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open audio path"));
-	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),_("Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a|Video Formats (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|All files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString str = wxString(_("Audio Formats")) + _T(" (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a|")
+		         + _("Video Formats") + _T(" (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|")
+				 + _("All files") + _T(" (*.*)|*.*");
+	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadAudio(filename);
 		Options.SetText(_T("Last open audio path"), filename);
@@ -749,7 +755,9 @@ void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 // Open VFR tags
 void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 	wxString path = Options.AsText(_T("Last open timecodes path"));
-	wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),_("All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|")
+		           + _("All Files") + _T(" (*.*)|*.*");
+	wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVFR(filename);
 		Options.SetText(_T("Last open timecodes path"), filename);
@@ -762,7 +770,9 @@ void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 // Save VFR tags
 void FrameMain::OnSaveVFR(wxCommandEvent &event) {
 	wxString path = Options.AsText(_T("Last open timecodes path"));
-	wxString filename = wxFileSelector(_("Save timecodes file"),path,_T(""),_T(""),_("All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"),wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|")
+		           + _("All Files") + _T(" (*.*)|*.*");
+	wxString filename = wxFileSelector(_("Save timecodes file"),path,_T(""),_T(""),str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (!filename.empty()) {
 		SaveVFR(filename);
 		Options.SetText(_T("Last open timecodes path"), filename);
