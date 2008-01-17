@@ -58,6 +58,7 @@
 //#define WITH_DIRECTSOUND
 
 
+
 ///////////// MEDIUM PRIORITY ////////////
 
 // Enable FreeType2 font lister for the fonts collector
@@ -86,12 +87,21 @@
 //#define WITH_OLD_HUNSPELL
 
 
+
 /////////////// LOW PRIORITY ////////////
 
 // Enable DirectShow video provider
 // Requires: DirectShow "baseclasses", DirectX SDK
 //#define WITH_DIRECTSHOW
 
+
+// Enable Perl scripting
+// Requires: perl library (ActivePerl comes with one for Visual C++ under lib\core\)
+//#define WITH_PERL
+
+
+
+///////////// NOT RECOMMENDED /////////////
 
 // Enable FontConfig
 // Requires: fontconfig
