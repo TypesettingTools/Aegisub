@@ -366,6 +366,7 @@ function set_ctx_syl(varctx, line, syl)
 	varctx.sleft = math.floor(line.left + syl.left+0.5)
 	varctx.scenter = math.floor(line.left + syl.center+0.5)
 	varctx.sright = math.floor(line.left + syl.right+0.5)
+	varctx.swidth = math.floor(syl.width + 0.5)
 	if syl.isfuri then
 		varctx.sbottom = varctx.ltop
 		varctx.stop = math.floor(varctx.ltop - syl.height + 0.5)
@@ -375,6 +376,7 @@ function set_ctx_syl(varctx, line, syl)
 		varctx.smiddle = varctx.lmiddle
 		varctx.sbottom = varctx.lbottom
 	end
+	varctx.sheight = syl.height
 	if line.halign == "left" then
 		varctx.sx = math.floor(line.left + syl.left + 0.5)
 	elseif line.halign == "center" then
@@ -392,9 +394,11 @@ function set_ctx_syl(varctx, line, syl)
 	varctx.left = varctx.sleft
 	varctx.center = varctx.scenter
 	varctx.right = varctx.sright
+	varctx.width = varctx.swidth
 	varctx.top = varctx.stop
 	varctx.middle = varctx.smiddle
 	varctx.bottom = varctx.sbottom
+	varctx.height = varctx.sheight
 	varctx.x = varctx.sx
 	varctx.y = varctx.sy
 end
@@ -422,9 +426,11 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		lleft = math.floor(line.left+0.5),
 		lcenter = math.floor(line.left + line.width/2 + 0.5),
 		lright = math.floor(line.left + line.width + 0.5),
+		lwidth = math.floor(line.width + 0.5),
 		ltop = math.floor(line.top + 0.5),
 		lmiddle = math.floor(line.middle + 0.5),
 		lbottom = math.floor(line.bottom + 0.5),
+		lheight = math.floor(line.height + 0.5),
 		lx = math.floor(line.x+0.5),
 		ly = math.floor(line.y+0.5)
 	}
@@ -439,9 +445,11 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	varctx.left = varctx.lleft
 	varctx.center = varctx.lcenter
 	varctx.right = varctx.lright
+	varctx.width = varctx.lwidth
 	varctx.top = varctx.ltop
 	varctx.middle = varctx.lmiddle
 	varctx.bottom = varctx.lbottom
+	varctx.height = varctx.lheight
 	varctx.x = varctx.lx
 	varctx.y = varctx.ly
 	
