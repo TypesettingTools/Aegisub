@@ -68,9 +68,9 @@ register_macro NAME, DESC, PROC_SUB, VAL_SUB
 	NAME	The name of the macro.
 	DESC	A dascription for the macro.
 	PROC_SUB	A ref to a subroutine to be used as the macro processing function
-		(see the next section).
+		(see the callbacks section).
 	VAL_SUB	A ref to a subrotine to be used as the macro validation function
-		(see next)(optional, if not defined will be considered as always true).
+		(see callbacks)(optional, if not defined will be considered as always true).
 
 set_info NAME, DESC, AUTHOR, VERSION
 	You can set all of the script's info values with a call to this function
@@ -123,7 +123,12 @@ macro_processing_function LINES, SELECTED, ACTIVE
 	The first two arguments can be modified, and the modification will be
 	reflected in the subtitles file
 	Arguments:
-	LINES	A ref the the list containing the subtitle file lines
+	LINES	A reference to the list containing the subtitle file lines.
+		Each element of the list is actually a hash with the name of the fields
+		as keys. See the Lua documentation; this is basically the same structure.
+		EXAMPLE:
+		my $l = $lines->[$linenumber]; # an entire line
+		my $text = $lines->[$linenumber]->{"text"} # the text field of a dialogue line
 	SELECTED	A ref to an array of ints, showing the currently selected lines in
 		the file
 	ACTIVE	Index of the currently active line in the subtitle file (sic)
