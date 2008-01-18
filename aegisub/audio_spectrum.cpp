@@ -576,8 +576,8 @@ void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool sel
 
 				// Iterate over pixels, picking a range of samples for each
 				for (int y = 0; y < imgheight; ++y) {
-					int sample1 = maxband * y/imgheight + minband;
-					int sample2 = maxband * (y+1)/imgheight + minband;
+					int sample1 = MAX(0,maxband * y/imgheight + minband);
+					int sample2 = MIN(signed(line_length),maxband * (y+1)/imgheight + minband);
 					float maxval = 0;
 					for (int samp = sample1; samp <= sample2; samp++) {
 						if (power[samp] > maxval) maxval = power[samp];
