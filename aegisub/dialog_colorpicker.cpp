@@ -513,40 +513,44 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	spectrum_sizer->Add(slider);
 	spectrum_box->Add(spectrum_sizer, 0, wxALL, 3);
 
-	wxSizer *rgb_sizer = new wxFlexGridSizer(3, 2, 5, 5);
-	rgb_sizer->Add(new wxStaticText(this, -1, _("Red:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	wxFlexGridSizer *rgb_sizer = new wxFlexGridSizer(3, 2, 5, 5);
+	rgb_sizer->Add(new wxStaticText(this, -1, _("Red:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	rgb_sizer->Add(rgb_input[0], 0);
-	rgb_sizer->Add(new wxStaticText(this, -1, _("Green:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	rgb_sizer->Add(new wxStaticText(this, -1, _("Green:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	rgb_sizer->Add(rgb_input[1], 0);
-	rgb_sizer->Add(new wxStaticText(this, -1, _("Blue:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	rgb_sizer->Add(new wxStaticText(this, -1, _("Blue:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	rgb_sizer->Add(rgb_input[2], 0);
-	rgb_box->Add(rgb_sizer, 0, wxALL, 3);
+	rgb_sizer->AddGrowableCol(0,1);
+	rgb_box->Add(rgb_sizer, 1, wxEXPAND | wxALL, 3);
 
-	wxSizer *ass_input_sizer = new wxFlexGridSizer(2, 2, 5, 5);
-	ass_input_sizer->Add(new wxStaticText(this, -1, _T("ASS:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	wxFlexGridSizer *ass_input_sizer = new wxFlexGridSizer(2, 2, 5, 5);
+	ass_input_sizer->Add(new wxStaticText(this, -1, _T("ASS:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	ass_input_sizer->Add(ass_input, 0);
-	ass_input_sizer->Add(new wxStaticText(this, -1, _T("HTML:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	ass_input_sizer->Add(new wxStaticText(this, -1, _T("HTML:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	ass_input_sizer->Add(html_input, 0);
-	rgb_box->AddStretchSpacer();
-	rgb_box->Add(ass_input_sizer, 0, wxALL|wxCENTER, 3);
+	ass_input_sizer->AddStretchSpacer();
+	ass_input_sizer->AddGrowableCol(0,1);
+	rgb_box->Add(ass_input_sizer, 0, wxALL|wxCENTER|wxEXPAND, 3);
 
-	wxSizer *hsl_sizer = new wxFlexGridSizer(3, 2, 5, 5);
-	hsl_sizer->Add(new wxStaticText(this, -1, _("Hue:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	wxFlexGridSizer *hsl_sizer = new wxFlexGridSizer(3, 2, 5, 5);
+	hsl_sizer->Add(new wxStaticText(this, -1, _("Hue:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	hsl_sizer->Add(hsl_input[0], 0);
-	hsl_sizer->Add(new wxStaticText(this, -1, _("Sat.:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	hsl_sizer->Add(new wxStaticText(this, -1, _("Sat.:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	hsl_sizer->Add(hsl_input[1], 0);
-	hsl_sizer->Add(new wxStaticText(this, -1, _("Lum.:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	hsl_sizer->Add(new wxStaticText(this, -1, _("Lum.:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	hsl_sizer->Add(hsl_input[2], 0);
-	hsl_box->Add(hsl_sizer, 0, wxALL, 3);
+	hsl_sizer->AddGrowableCol(0,1);
+	hsl_box->Add(hsl_sizer, 0, wxALL|wxEXPAND, 3);
 
-	wxSizer *hsv_sizer = new wxFlexGridSizer(3, 2, 5, 5);
-	hsv_sizer->Add(new wxStaticText(this, -1, _("Hue:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	wxFlexGridSizer *hsv_sizer = new wxFlexGridSizer(3, 2, 5, 5);
+	hsv_sizer->Add(new wxStaticText(this, -1, _("Hue:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	hsv_sizer->Add(hsv_input[0], 0);
-	hsv_sizer->Add(new wxStaticText(this, -1, _("Sat.:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	hsv_sizer->Add(new wxStaticText(this, -1, _("Sat.:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	hsv_sizer->Add(hsv_input[1], 0);
-	hsv_sizer->Add(new wxStaticText(this, -1, _("Value:"), wxDefaultPosition, colorinput_labelsize), 0, wxALIGN_CENTER_VERTICAL);
+	hsv_sizer->Add(new wxStaticText(this, -1, _("Value:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	hsv_sizer->Add(hsv_input[2], 0);
-	hsv_box->Add(hsv_sizer, 0, wxALL, 3);
+	hsv_sizer->AddGrowableCol(0,1);
+	hsv_box->Add(hsv_sizer, 0, wxALL|wxEXPAND, 3);
 
 	wxSizer *hsx_sizer = new wxBoxSizer(wxHORIZONTAL);
 	hsx_sizer->Add(hsl_box);
@@ -564,7 +568,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer();
 	button_sizer->AddButton(new wxButton(this,wxID_OK));
 	button_sizer->AddButton(new wxButton(this,wxID_CANCEL));
-	button_sizer->AddButton(new HelpButton(this,_T("Colour Picker")));
+	button_sizer->AddButton(new HelpButton(this,_("Colour Picker")));
 	button_sizer->Realize();
 
 	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
@@ -577,7 +581,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	input_sizer->Add(button_sizer, 0, wxALIGN_RIGHT|wxALIGN_BOTTOM);
 
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
-	main_sizer->Add(spectrum_box, 0, wxALL, 5);
+	main_sizer->Add(spectrum_box, 1, wxALL | wxEXPAND, 5);
 	main_sizer->Add(input_sizer, 0, (wxALL&~wxLEFT)|wxEXPAND, 5);
 
 	SetSizer(main_sizer);

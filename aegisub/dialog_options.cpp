@@ -107,12 +107,13 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	{
 		wxSizer *genMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *genSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,generalPage,_("Startup"));
-		wxSizer *genSizer4 = new wxFlexGridSizer(2,2,5,5);
+		wxFlexGridSizer *genSizer4 = new wxFlexGridSizer(2,2,5,5);
 
 		AddCheckBox(generalPage,genSizer4,_("Show Splash Screen"),_T("Show splash"));
 		AddCheckBox(generalPage,genSizer4,_("Show Tip of the Day"),_T("Tips enabled"));
 		AddCheckBox(generalPage,genSizer4,_("Auto Check for Updates"),_T("Auto check for updates"));
 		AddCheckBox(generalPage,genSizer4,_("Save config.dat locally"),_T("Local config"));
+		genSizer4->AddGrowableCol(0,1);
 
 		genSizer1->Add(genSizer4,1,wxEXPAND|wxALL,5);
 		wxSizer *genSizer2 = new wxStaticBoxSizer(wxVERTICAL,generalPage,_("Limits for levels and recent files"));
@@ -221,7 +222,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 			Bind(control,options1[i]);
 			editSizer2->Add(control,1,wxEXPAND,0);
 		}
-		editSizer2->AddGrowableCol(0,1);
+		//editSizer2->AddGrowableCol(0,1);
 		editSizer2->AddGrowableCol(1,1);
 		editSizer6->Add(new wxStaticText(editPage,-1,_("Path to dictionary files:")),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
 		wxTextCtrl *edit = new wxTextCtrl(editPage,-1,_T(""));
@@ -444,7 +445,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddCheckBox(audioPage,audioSizer3,_("Snap to keyframes"),_T("Audio snap to keyframes"));
 		AddCheckBox(audioPage,audioSizer3,_("Snap to adjascent lines"),_T("Audio snap to other lines"));
 		AddCheckBox(audioPage,audioSizer3,_("Auto-focus on mouse over"),_T("Audio Autofocus"));
-		audioSizer3->AddGrowableCol(0,1);
+		audioSizer3->AddGrowableCol(1,1);
 
 		// Second sizer
 		wxString choices1[3] = { _("Don't show"), _("Show previous"), _("Show all") };

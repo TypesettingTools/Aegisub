@@ -96,7 +96,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	GroupsList->InsertColumn(1, _T(""), wxLIST_FORMAT_CENTER, 72);
 
 	//Buttons
-	wxButton *Start = new wxButton(this,BUTTON_KTSTART,_("Start"));
+	wxButton *Start = new wxButton(this,BUTTON_KTSTART,_("Start!"));
 	wxButton *Link = new wxButton(this,BUTTON_KTLINK,_("Link"));
 	wxButton *Unlink = new wxButton(this,BUTTON_KTUNLINK,_("Unlink"));
 	wxButton *SkipSourceLine = new wxButton(this,BUTTON_KTSKIPSOURCE,_("Skip Source Line"));
