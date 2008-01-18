@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-17 18:14-0200\n"
+"POT-Creation-Date: 2008-01-18 14:48-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -269,17 +269,17 @@ msgstr ""
 msgid "Script completed"
 msgstr ""
 
-#: auto4_base.cpp:749
+#: auto4_base.cpp:752
 #, possible-c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
 msgstr ""
 
-#: auto4_base.cpp:762
+#: auto4_base.cpp:765
 #, possible-c-format
 msgid "The file was not recognised as an Automation script: %s"
 msgstr ""
 
-#: auto4_base.cpp:783
+#: auto4_base.cpp:801
 msgid "File was not recognized as a script"
 msgstr ""
 
@@ -1030,6 +1030,14 @@ msgstr ""
 msgid "Group all of the source text."
 msgstr ""
 
+#: dialog_options.cpp:84 dialog_options.cpp:209 dialog_options.cpp:283
+#: dialog_options.cpp:352 dialog_options.cpp:436 dialog_options.cpp:470
+#: dialog_options.cpp:558 dialog_properties.cpp:117
+#: dialog_timing_processor.cpp:81 frame_main.cpp:262 hotkeys.cpp:323
+#: hotkeys.cpp:327
+msgid "Options"
+msgstr ""
+
 #: dialog_options.cpp:109
 msgid "Startup"
 msgstr ""
@@ -1136,13 +1144,6 @@ msgstr ""
 
 #: dialog_options.cpp:187 dialog_options.cpp:360
 msgid "Ask"
-msgstr ""
-
-#: dialog_options.cpp:209 dialog_options.cpp:283 dialog_options.cpp:352
-#: dialog_options.cpp:436 dialog_options.cpp:470 dialog_options.cpp:558
-#: dialog_properties.cpp:117 dialog_timing_processor.cpp:81 frame_main.cpp:262
-#: hotkeys.cpp:323 hotkeys.cpp:327
-msgid "Options"
 msgstr ""
 
 #: dialog_options.cpp:217
@@ -2731,6 +2732,13 @@ msgstr ""
 msgid ""
 "Maximum difference between start and end time for two subtitles to be made "
 "continuous, in miliseconds."
+msgstr ""
+
+#: dialog_timing_processor.cpp:113
+msgid ""
+"Sets how to set the adjoining of lines. If set totally to left, it will "
+"extend start time of the second line; if totally to right, it will extend "
+"the end time of the first line."
 msgstr ""
 
 #: dialog_timing_processor.cpp:117
