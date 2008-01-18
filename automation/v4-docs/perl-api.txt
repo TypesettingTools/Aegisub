@@ -1,0 +1,137 @@
+------------------------------------
+Quick reference on Perl engine's API
+------------------------------------
+
+Every symbol contained in this reference is automatically made visible to the
+executing script. They are not however imported in the script's package, so
+they must be referenced with their full name. (A mechanism to import them
+through the canonical perl commands `use' and `import' will be deployed sooner
+or later.)
+
+
+====================================
+package Aegisub
+
+------------------------------------
+Subroutines defined:
+
+text_extents STYLE, TEXT
+	Computes the metric for a string of text, based on a specific style.
+	Arguments:
+		STYLE	The style to use, as a string or ref to a style line.
+		TEXT	Text for which to compute the metrics.
+	Returns:
+		WIDTH	The width of the text (if called in scalar context, only this is returned).
+		ASCENT		The ascent, i.e. the distance from the baseline to the top.
+		DESCENT		Descent, i.e. the distance from the baseline to the bottom.
+		EXTLEADING	External leading, i.e. the distance between to lines of text.
+
+warn LIST
+	Prints a warning through the GUI log facilities. It is automatically hooked
+	to the global `warn' function during script execution.
+	Arguments:
+		LIST	List of arguments to print.
+
+
+====================================
+package Aegisub::PerlConsole
+------------------------------------
+This package contains the perl console, a debug tool not intended for normal
+use by normal users. They are shown here for completeness.
+
+------------------------------------
+Subroutines defined:
+
+echo LIST
+	Prints a list of arguments on the console, or on STDOUT if no console is
+	registered, a trailing \n is printed too
+	Arguments:
+	LIST	List of arguments to print.
+
+register_console NAME, DESC
+	Registers an instance of the console, as a macro. You don't want to know
+	any more because in fact you'll never have to do with this. >:)
+	Arguments:
+	NAME	Set the name for the macro. (optional)
+	DESC	Set the macro's description. (optional)
+
+
+====================================
+package Aegisub::Script
+
+------------------------------------
+Subroutines defined:
+
+register_macro NAME, DESC, PROC_SUB, VAL_SUB
+	Register a new macro.
+	Arguments:
+	NAME	The name of the macro.
+	DESC	A dascription for the macro.
+	PROC_SUB	A ref to a subroutine to be used as the macro processing function
+		(see the next section).
+	VAL_SUB	A ref to a subrotine to be used as the macro validation function
+		(see next)(optional, if not defined will be considered as always true).
+
+set_info NAME, DESC, AUTHOR, VERSION
+	You can set all of the script's info values with a call to this function
+	Arguments: see the parts about script variables, anything is optional.
+
+
+====================================
+package Aegisub::Script::pxxxxxxxx
+------------------------------------
+Every script that's loaded gets its code evaluated inside a different package -
+whose name is chosen at 'random', whereas the perl interpreter is unique, so
+they all see the same global package, and can possibly access other
+scripts'. Therefore is recommended to ALWAYS declare all of the script's local
+variables with `my', if they have to reside outside any function body, and of
+course to `use strict' to check on this. You can still define another package
+for your script, the script's predefined variables will still be visible
+[maybe?] from it, but this is discouraged.
+
+------------------------------------
+Variables defined:
+
+$script_author
+	Holds the script author's name. Default is the user executing aegisub.
+
+$script_description
+	Holds a description for the script. Default is 'Perl script'.
+
+$script_name
+	Holds the script's name. Default is the script's filename.
+
+$script_version
+	Holds the script's version. Default is current aegisub's version.
+
+$_script_path
+	The full path to the script's file. Any change to this variable is ignored.
+
+$_script_package
+	The full script package as a string. Any change to this variable is
+	currently ignored
+
+$_script_reload [BROKEN]
+	When this is set to true. The script will automatically be reload before
+	any execution if its file changed on disk. Useful during the development.
+
+------------------------------------
+Callbacks definable:
+
+macro_processing_function LINES, SELECTED, ACTIVE
+	A function to be used as a callback for Aegisub::Script::register_macro().
+	The first two arguments can be modified, and the modification will be
+	reflected in the subtitles file
+	Arguments:
+	LINES	A ref the the list containing the subtitle file lines
+	SELECTED	A ref to an array of ints, showing the currently selected lines in
+		the file
+	ACTIVE	Index of the currently active line in the subtitle file (sic)
+
+macro_validation_function LINES, SELECTED, ACTIVE
+	A function to be used as a callback for Aegisub::Script::register_macro().
+	Arguments: same as macro_processing_function; however any change to the
+		first two ones will be ignored upon function return.
+	Returns:
+	VALID	A 'bolean' value to indicate if the macro is applicable to this
+		particualar subtitles file.
