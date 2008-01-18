@@ -1655,7 +1655,7 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 				// Restart Aegisub
 				if (Close()) {
 					wxStandardPaths stand;
-					wxExecute(stand.GetExecutablePath());
+					wxExecute(_T("\"") + stand.GetExecutablePath() + _T("\""));
 				}
 			}
 		}

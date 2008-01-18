@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1723"
+#define MyAppVerName "Aegisub 2.00 alpha r1756"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -67,7 +67,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1723
+AppVersion=2.00 alpha r1756
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -165,6 +165,9 @@ Source: ..\bin\dictionaries\th_fr_FR.idx; DestDir: {app}\dictionaries; Flags: ig
 Source: ..\bin\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
 Source: ..\bin\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
 #endif
+; localization
+Source: ..\bin\locale\pt_BR\aegisub.mo; DestDir: {app}\locale\pt_BR; Flags: ignoreversion; Components: i18n/pt_BR
+Source: ..\bin\locale\pt_BR\wxstd.mo; DestDir: {app}\locale\pt_BR; Flags: ignoreversion; Components: i18n/pt_BR
 
 [Icons]
 Name: {commonprograms}\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main; Comment: Aegisub subtitle editor
@@ -186,6 +189,7 @@ Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
 Name: help; Description: Help files (not written yet); Flags: fixed
 Name: i18n; Description: Languages; Types: full custom compact; Flags: fixed
 Name: i18n/english; Description: English (built in); Flags: fixed; Types: compact full custom
+Name: i18n/pt_BR; Description: Brazilian Portuguese; Types: full
 #if IncludeSpeller != 0
 Name: dic; Description: Spell checker; Types: full
 Name: dic/en_GB; Description: British English dictionary; Types: full
