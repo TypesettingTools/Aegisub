@@ -181,7 +181,9 @@ Source: ..\bin\locale\pt_BR\aegisub.mo; DestDir: {app}\locale\pt_BR; Flags: igno
 Source: ..\bin\locale\pt_BR\wxstd.mo; DestDir: {app}\locale\pt_BR; Flags: ignoreversion; Components: i18n/pt_BR
 
 [Icons]
-Name: {commonprograms}\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main; Comment: Aegisub subtitle editor
+Name: {commonprograms}\Aegisub\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Aegisub subtitle editor
+Name: {commonprograms}\Aegisub\Uninstall; Filename: {app}\unins000.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Uninstall Aegisub
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\Aegisub.exe"; WorkingDir: {app}; IconIndex: 0; Components: main/qcklnch; Comment: Aegisub subtitle editor
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
@@ -191,6 +193,8 @@ Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; F
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
 ;Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
 Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
+Name: main/icons; Description: Programs menu icons; Types: custom compact full
+Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
 Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full custom; Flags: fixed
 Name: auto; Description: Automation 4 scripting support; Types: compact full
@@ -243,6 +247,9 @@ procedure CurStepChanged(CurStep: TSetupStep);
 var
   LibHandle: LongInt;
   ExecResult: Integer;
+  CustomPage: TOutputProgressWizardPage;
+  temp1: String;
+  temp2: String;
 begin
 	if CurStep = ssPostInstall then
 	begin
@@ -250,11 +257,17 @@ begin
     LibHandle := 0;
 		if LibHandle = 0 then
 		begin
+		  temp2 := SetupMessage(msgInstallingLabel);
+		  StringChangeEx(temp2,'[name]','{#MyAppName}',False);
+		  CustomPage := CreateOutputProgressPage(SetupMessage(msgWizardInstalling),temp2);
+		  CustomPage.SetText('Installing Visual C++ 2005 SP1 Runtimes...','');
+		  CustomPage.Show();
 			ExtractTemporaryFile('vcredist_x86.exe');
-			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/Q', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
+			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/q:a /c:"VCREDI~3.EXE /q:a /c:""msiexec /i vcredist.msi /qn"" "', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
 			begin
 				MsgBox('Installation of runtime libraries failed. Aegisub will probably not work. The error was: ' + SysErrorMessage(ExecResult), mbInformation, MB_OK);
 			end;
+			CustomPage.Hide();
 		end
 		else
 			FreeLibrary(LibHandle);
