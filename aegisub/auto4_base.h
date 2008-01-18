@@ -352,6 +352,7 @@ namespace Automation4 {
 		static void Register(ScriptFactory *factory);
 		static void Unregister(ScriptFactory *factory);
 		static Script* CreateFromFile(const wxString &filename, bool log_errors);
+		static bool CanHandleScriptFormat(const wxString &filename);
 		static const std::vector<ScriptFactory*>& GetFactories();
 	};
 

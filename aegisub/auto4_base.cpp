@@ -674,9 +674,12 @@ namespace Automation4 {
 			while (more) {
 				script_path.SetName(fn);
 				try {
-					Script *s = ScriptFactory::CreateFromFile(script_path.GetFullPath(), true);
-					Add(s);
-					if (!s->GetLoadedState()) error_count++;
+					wxString fullpath = script_path.GetFullPath();
+					if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
+						Script *s = ScriptFactory::CreateFromFile(fullpath, true);
+						Add(s);
+						if (!s->GetLoadedState()) error_count++;
+					}
 				}
 				catch (const wchar_t *e) {
 					error_count++;
@@ -762,6 +765,21 @@ namespace Automation4 {
 			wxLogWarning(_("The file was not recognised as an Automation script: %s"), filename.c_str());
 		}
 		return new UnknownScript(filename);
+	}
+
+	bool ScriptFactory::CanHandleScriptFormat(const wxString &filename)
+	{
+		// Just make this always return true to bitch about unknown script formats in autoload
+
+		if (!factories)
+			factories = new std::vector<ScriptFactory*>();
+
+		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
+			wxString pattern = (*i)->GetFilenamePattern();
+			if (filename.Matches(pattern)) return true;
+		}
+
+		return false;
 	}
 
 	const std::vector<ScriptFactory*>& ScriptFactory::GetFactories()

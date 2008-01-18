@@ -69,11 +69,13 @@ namespace Automation4 {
   class PerlScriptFactory : public ScriptFactory {
   private:
 	PerlInterpreter *parser;
+	bool loaded;
 
   public:
 	PerlScriptFactory()
 	{ 
 	  // Script engine properties
+	  loaded = false;
 	  engine_name = _T("Perl");
 	  filename_pattern = _T("*") _T(PERL_SCRIPT_EXTENSION);
 
@@ -103,16 +105,19 @@ namespace Automation4 {
 
 	  // Let's register the perl script factory \o/
 	  Register(this);
+	  loaded = true;
 	}
 	
 	~PerlScriptFactory()
 	{
 	  // Perl interpreter deinitialization
-	  perl_destruct(parser);
-	  perl_free(parser);
+      if (loaded) {
+		perl_destruct(parser);
+	    perl_free(parser);
 #ifdef __VISUALC__
-	  PERL_SYS_TERM();
+	    PERL_SYS_TERM();
 #endif
+	  }
 	}
 	
 	virtual Script* Produce(const wxString &filename) const

@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1760"
+#define MyAppVerName "Aegisub 2.00 alpha r1762"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -68,7 +68,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1760
+AppVersion=2.00 alpha r1762
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -115,6 +115,7 @@ DestDir: {app}\automation\autoload; Source: ..\automation\autoload\cleantags-aut
 ; perl
 #if IncludePerl != 0
 DestDir: {app}\automation\docs; Source: ..\automation\v4-docs\perl-api.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\Aegisub.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
 DestDir: {app}\automation\include; Source: ..\automation\include\Auto4Utils.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
 DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\PerlConsole.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
 DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\Script.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
