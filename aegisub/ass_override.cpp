@@ -659,10 +659,13 @@ end_tokenizing:
 		}
 
 		if (isDefault == false) {
+			wxChar firstChar = curtok[0];
+			bool notAuto4 = firstChar != _T('!') && firstChar != _T('$') && firstChar != _T('%');
+
 			// Determine parameter type and set value
 			switch (curproto->type) {
 				case VARDATA_INT: {
-					if (!(curtok.StartsWith(_T("!")) || curtok.StartsWith(_T("$")))) {
+					if (notAuto4) {
 						long temp = 0;
 						curtok.ToLong(&temp);
 						newparam->SetInt(temp);
@@ -671,7 +674,7 @@ end_tokenizing:
 					break;
 				}
 				case VARDATA_FLOAT: {
-					if (!(curtok.StartsWith(_T("!")) || curtok.StartsWith(_T("$")))) {
+					if (notAuto4) {
 						double temp = 0.0;
 						curtok.ToDouble(&temp);
 						newparam->SetFloat(temp);
@@ -684,7 +687,7 @@ end_tokenizing:
 					break;
 				}
 				case VARDATA_BOOL: {
-					if (!(curtok.StartsWith(_T("!")) || curtok.StartsWith(_T("$")))) {
+					if (notAuto4) {
 						long temp = false;
 						curtok.ToLong(&temp);
 						newparam->SetBool(temp != 0);
