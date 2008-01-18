@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1756"
+#define MyAppVerName "Aegisub 2.00 alpha r1755"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -62,12 +62,12 @@ ShowLanguageDialog=no
 LanguageDetectionMethod=none
 WizardImageFile=welcome.bmp
 WizardSmallImageFile=aegisub.bmp
-AppCopyright=© 2005-2007 The Aegisub Team
+AppCopyright=© 2005-2008 The Aegisub Team
 PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1756
+AppVersion=2.00 alpha r1755
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
