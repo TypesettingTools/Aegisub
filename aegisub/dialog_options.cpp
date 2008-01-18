@@ -81,7 +81,7 @@ enum {
 ///////////////
 // Constructor
 DialogOptions::DialogOptions(wxWindow *parent)
-: wxDialog(parent, -1, _T("Options"), wxDefaultPosition, wxDefaultSize)
+: wxDialog(parent, -1, _("Options"), wxDefaultPosition, wxDefaultSize)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(wxBITMAP(options_button)));
