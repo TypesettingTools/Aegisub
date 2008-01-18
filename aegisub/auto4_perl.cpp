@@ -76,6 +76,14 @@ namespace Automation4 {
 	  // Script engine properties
 	  engine_name = _T("Perl");
 	  filename_pattern = _T("*") _T(PERL_SCRIPT_EXTENSION);
+
+	  // On Visual Studio, first check if the dll is available
+	  // This needs to be done because it is set to delay loading of this dll
+#ifdef __VISUALC__
+	  HMODULE dll = LoadLibrary(_T("perl510.dll"));
+	  if (!dll) return;
+	  FreeLibrary(dll);
+#endif
 	  
 	  // Perl interpreter initialization (ONE FOR ALL THE SCRIPTS)
 	  char** env = NULL;

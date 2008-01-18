@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1755"
+#define MyAppVerName "Aegisub 2.00 alpha r1760"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -42,6 +42,7 @@
 ; Only intended for testing.
 #define IncludeSpeller 1
 #define IncludeThesaurus 1
+#define IncludePerl 1
 
 [Setup]
 AppName={#MyAppName}
@@ -67,7 +68,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1755
+AppVersion=2.00 alpha r1760
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -111,6 +112,15 @@ DestDir: {app}\automation\demos; Source: ..\automation\tests\kara-templater-reti
 DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: ..\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+; perl
+#if IncludePerl != 0
+DestDir: {app}\automation\docs; Source: ..\automation\v4-docs\perl-api.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\automation\include\Auto4Utils.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
+DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\PerlConsole.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
+DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\Script.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-1p-edgeblur.pl; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl/samples; Attribs: readonly
+DestDir: {app}\automation\demos; Source: ..\automation\demos\perl-console.pl; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl/samples; Attribs: readonly
+#endif
 ; auto3
 DestDir: {app}\automation\include; Source: ..\automation\include\utils.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 DestDir: {app}\automation\include; Source: ..\automation\include\karaskel.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
@@ -185,6 +195,10 @@ Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full cu
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages: 
 Name: auto/lua/samples; Description: Lua sample scripts; Types: full
+#if IncludePerl != 0
+Name: auto/perl; Description: Perl (requires a Perl distribution); Types: compact full; Flags: checkablealone; Languages:
+Name: auto/perl/samples; Description: Perl sample scripts; Types: compact full; Flags: checkablealone; Languages:
+#endif
 Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
 Name: help; Description: Help files (not written yet); Flags: fixed
 Name: i18n; Description: Languages; Types: full custom compact; Flags: fixed
