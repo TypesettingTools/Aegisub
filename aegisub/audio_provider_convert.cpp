@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Simone Cociancich
+// Copyright (c) 2008, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,63 +30,48 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
 
 #pragma once
-#ifndef _AUTO4_PERL_CONSOLE_H
-#define _AUTO4_PERL_CONSOLE_H
 
 
-#include "auto4_perl.h"
-#include <wx/textctrl.h>
+///////////
+// Headers
+#include "audio_provider_convert.h"
 
 
-namespace Automation4 {
-
-  class PerlConsole : public PerlFeatureMacro {
-  private:
-	static PerlConsole *registered;
-
-	// Nested classes are messy, therefore we use them :)
-	class Dialog : public wxDialog {
-	private:
-	  wxTextCtrl *txt_out, *txt_hist, *txt_in;
-	  
-	public:
-	  Dialog();
-
-	  bool Create(wxWindow* parent, wxWindowID id, const wxString& title,
-				  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, 
-				  long style = wxDEFAULT_DIALOG_STYLE, const wxString& name = _T("console_dialog"));
-
-	  void InputEnter(wxCommandEvent& evt);
-	  void Echo(const wxString &str);
-	};
-	
-	Dialog *dialog;
-	wxWindow *parent_window;
-
-	SV *cout;
-	wxString evaluate(const wxString &str);
-
-  public:
-	PerlConsole(const wxString &name, const wxString &desc, PerlScript *script);
-	virtual ~PerlConsole();
-
-	static PerlConsole *GetConsole() { return registered; }
-	Dialog *GetDialog() { return dialog; }
-
-	virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active) { return true; }
-	virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent);
-
-	static wxString Evaluate(const wxString &str) { if(registered) return registered->evaluate(str); else return _T(""); }
-  };
-
-	XS(register_console);
-	XS(echo);
-};
+///////////////
+// Constructor
+ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) {
+	source = src;
+	channels = 1;
+	num_samples = source->GetNumSamples();
+	sample_rate = source->GetSampleRate();
+	bytes_per_sample = 2;
+}
 
 
-#endif
+//////////////
+// Destructor
+ConvertAudioProvider::~ConvertAudioProvider() {
+	delete source;
+}
+
+
+/////////////
+// Get audio
+void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t count) {
+	// Convert from 8-bit to 16-bit
+	if (source->GetBytesPerSample() == 1) {
+		unsigned char *buffer = new unsigned char[count];
+		source->GetAudio(buffer,start,count);
+		short temp;
+		short *dst = (short*) destination;
+		for (int64_t i=0;i<count;i++) {
+			temp = (short) buffer[i];
+			dst[i] = (temp-128)*256+temp;
+		}
+	}
+}

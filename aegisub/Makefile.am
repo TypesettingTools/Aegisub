@@ -120,6 +120,7 @@ aegisub_SOURCES = \
 	audio_display.cpp \
 	audio_karaoke.cpp \
 	audio_provider.cpp \
+	audio_provider_convert.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_ram.cpp \
 	audio_provider_pcm.cpp \

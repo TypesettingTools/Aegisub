@@ -333,6 +333,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_provider_convert.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_provider_convert.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_provider_dummy.cpp"
 				>
 			</File>

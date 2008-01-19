@@ -41,6 +41,7 @@
 #include "audio_provider_ram.h"
 #include "audio_provider_hd.h"
 #include "audio_provider_pcm.h"
+#include "audio_provider_convert.h"
 #include "options.h"
 #include "audio_display.h"
 
@@ -190,7 +191,10 @@ AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cac
 
 	// Try a PCM provider first
 	provider = CreatePCMAudioProvider(filename);
-	if (provider) return provider;
+	if (provider) {
+		if (provider->GetBytesPerSample() == 2) return provider;
+		return new ConvertAudioProvider(provider);
+	}
 
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio provider")));
