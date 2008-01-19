@@ -185,7 +185,7 @@ void AudioKaraoke::AutoSplit() {
 	wxLogDebug(_T("AudioKaraoke::AutoSplit"));
 
 	// Get lengths
-	int timelen = (diag->End.GetMS() - diag->Start.GetMS())/10;
+	int timeLen = (diag->End.GetMS() - diag->Start.GetMS())/10;
 	int letterlen = diag->Text.Length();
 	int round = letterlen / 2;
 	int curlen;
@@ -194,20 +194,34 @@ void AudioKaraoke::AutoSplit() {
 
 	// Parse words
 	wxStringTokenizer tkz(diag->Text,_T(" "),wxTOKEN_RET_DELIMS);
+	wxArrayString words;
 	while (tkz.HasMoreTokens()) {
-		wxString token = tkz.GetNextToken();
-		curlen = (token.Length() * timelen + round) / letterlen;
+		words.Add(tkz.GetNextToken());
+	}
+
+	// Process words
+	for (size_t i=0;i<words.Count();i++) {
+		curlen = (words[i].Length() * timeLen + round) / letterlen;
 		acumLen += curlen;
-		if (acumLen > timelen) {
-			curlen -= acumLen - timelen;
-			acumLen = timelen;
+
+		// Don't let it accumulate over total length
+		if (acumLen > timeLen) {
+			curlen -= acumLen - timeLen;
+			acumLen = timeLen;
 		}
-		newText += wxString::Format(_T("{\\k%i}"),curlen) + token;
+
+		// Ensure that it accumulates all of it
+		if (i == words.Count()-1 && acumLen < timeLen) {
+			curlen += timeLen - acumLen;
+			acumLen = timeLen;
+		}
+
+		newText += wxString::Format(_T("{\\k%i}"),curlen) + words[i];
 	}
 
 	// Workaround for bug #503
 	// Make the line one blank syllable if it's completely blank
-	if (newText == _T("")) newText = wxString::Format(_T("{\\k%d}"), timelen);
+	if (newText == _T("")) newText = wxString::Format(_T("{\\k%d}"), timeLen);
 
 	// Load
 	must_rebuild = true;
