@@ -238,6 +238,9 @@ AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cac
 		}
 	}
 
+	// Give it a conversor if needed
+	if (provider && provider->GetBytesPerSample() != 2) provider = new ConvertAudioProvider(provider);
+
 	// Return
 	return provider;
 }
