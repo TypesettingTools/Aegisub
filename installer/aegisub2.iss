@@ -43,6 +43,7 @@
 #define IncludeSpeller 1
 #define IncludeThesaurus 1
 #define IncludePerl 1
+#define IncludeFfmpeg 0
 
 [Setup]
 AppName={#MyAppName}
@@ -91,11 +92,14 @@ DestDir: {app}; Source: ..\bin\avisynth.dll; Flags: ignoreversion; Components: c
 DestDir: {app}; Source: ..\bin\DirectShowSource.dll; Flags: ignoreversion; Components: codec
 ; ffmpegsource
 DestDir: {app}; Source: ..\bin\FFMpegSource.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\ffmpegsource.html; Flags: ignoreversion; Components: codec
+#if IncludeFfmpeg != 0
 DestDir: {app}; Source: ..\bin\avcodec-51.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\bin\avformat-51.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\bin\avutil-49.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\bin\postproc-51.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\bin\swscale-0.dll; Flags: ignoreversion; Components: codec
+#endif
 ; vsfilter
 DestDir: {app}\csri; Source: ..\bin\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
 ; auto4 main
@@ -197,7 +201,6 @@ Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags
 Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
 Name: main/icons; Description: Programs menu icons; Types: custom compact full
 Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
-Name: docs; Description: Documentation files; Types: custom compact full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
 Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full custom; Flags: fixed
 Name: auto; Description: Automation 4 scripting support; Types: compact full
@@ -208,7 +211,7 @@ Name: auto/perl; Description: Perl (requires a Perl 5.10 distribution); Types: c
 Name: auto/perl/samples; Description: Perl sample scripts; Types: compact full; Flags: checkablealone; Languages:
 #endif
 Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
-Name: help; Description: Help files (not written yet); Flags: fixed
+Name: docs; Description: Documentation files; Types: custom compact full
 Name: i18n; Description: Languages; Types: full custom compact; Flags: fixed
 Name: i18n/english; Description: English (built in); Flags: fixed; Types: compact full custom
 Name: i18n/pt_BR; Description: Brazilian Portuguese; Types: full
