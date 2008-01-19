@@ -39,6 +39,7 @@
 #include <wx/wxprec.h>
 #include <wx/mimetype.h>
 #include <wx/log.h>
+#include <wx/filename.h>
 #include <map>
 #include "help_button.h"
 #include "utils.h"
@@ -79,9 +80,13 @@ void HelpButton::OpenPage(const wxString pageID) {
 	// Get the file type
 	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
 	if (type) {
-		wxString path = StandardPaths::DecodePath(wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str()));
-		//wxString command = type->GetOpenCommand(path);
-		//if (!command.empty()) wxExecute(command);
+		//wxString path = StandardPaths::DecodePath(wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str()));
+		wxString docsPath = StandardPaths::DecodePath(_T("?data/docs"));
+#ifdef __WINDOWS__
+		docsPath.Replace(_T("\\"),_T("/"));
+		docsPath = _T("/") + docsPath;
+#endif
+		wxString path = StandardPaths::DecodePath(wxString::Format(_T("file://%s/%s.html"),docsPath.c_str(),page.c_str()));
 		wxLaunchDefaultBrowser(path);
 	}
 }
@@ -102,7 +107,7 @@ void HelpButton::InitStatic() {
 		page[_T("Export")] = _T("Exporting");
 		page[_T("Fonts Collector")] = _T("Fonts_Collector");
 		page[_T("Kanji Timer")] = _T("Kanji_Timer");
-		page[_T("Main")] = _T("");
+		page[_T("Main")] = _T("Main_Page");
 		page[_T("Options")] = _T("Options");
 		page[_T("Paste Over")] = _T("Paste_Over");
 		page[_T("Properties")] = _T("Properties");

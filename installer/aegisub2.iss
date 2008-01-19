@@ -179,6 +179,8 @@ Source: ..\bin\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ig
 ; localization
 Source: ..\bin\locale\pt_BR\aegisub.mo; DestDir: {app}\locale\pt_BR; Flags: ignoreversion; Components: i18n/pt_BR
 Source: ..\bin\locale\pt_BR\wxstd.mo; DestDir: {app}\locale\pt_BR; Flags: ignoreversion; Components: i18n/pt_BR
+; documentation
+Source: ..\docs\output\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: "*svn"
 
 [Icons]
 Name: {commonprograms}\Aegisub\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Aegisub subtitle editor
@@ -195,13 +197,14 @@ Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags
 Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
 Name: main/icons; Description: Programs menu icons; Types: custom compact full
 Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
+Name: docs; Description: Documentation files; Types: custom compact full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
 Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full custom; Flags: fixed
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages: 
 Name: auto/lua/samples; Description: Lua sample scripts; Types: full
 #if IncludePerl != 0
-Name: auto/perl; Description: Perl (requires a Perl distribution); Types: compact full; Flags: checkablealone; Languages:
+Name: auto/perl; Description: Perl (requires a Perl 5.10 distribution); Types: compact full; Flags: checkablealone; Languages:
 Name: auto/perl/samples; Description: Perl sample scripts; Types: compact full; Flags: checkablealone; Languages:
 #endif
 Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
