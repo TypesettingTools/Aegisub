@@ -13,7 +13,7 @@ DARCSREV := $(strip $(shell head -n 1 ../_darcs/inventory 2>/dev/null))
 REVISION := $(if $(SVNREV),-DBUILD_SVN_REVISION=$(SVNREV)) $(if $(DARCSREV),-DBUILD_DARCS)
 BUILDINFO := -DBUILD_CREDIT="\"$(shell whoami)\"" $(REVISION)
 
-AM_CPPFLAGS = -DAEGISUB -Iposix -include posix/defines.h $(BUILDINFO)
+AM_CPPFLAGS = -DAEGISUB -Iposix -include posix/defines.h -include posix/config.h $(BUILDINFO)
 aegisub_LDADD = posix/libposix.a ../csri/lib/.libs/libcsri.a
 aegisub_LDFLAGS = 
 

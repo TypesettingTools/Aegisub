@@ -38,7 +38,9 @@
 
 
 // Build credit: Set this to a string with your name as you want it to appear on the program
+#ifndef BUILD_CREDIT
 #define BUILD_CREDIT "Anonymous"
+#endif
 
 
 ////////////// HIGH PRIORITY /////////////
