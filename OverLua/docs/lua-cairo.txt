@@ -267,7 +267,7 @@ are the x and y coordinates of the point and returns two numbers which are
 the new x and y coordinates of the point.
 
 Example: Produce a "wavy" effect.
-path.map_coords(function(x,y) return math.sin(x), math.cos(y) end)
+path.map_coords(function(x,y) return x+math.sin(x), y+math.cos(y) end)
 
 
 res = path.fold_coords(func, start)
