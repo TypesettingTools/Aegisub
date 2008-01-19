@@ -260,7 +260,8 @@ wxString TextFileReader::ReadLineFromFile() {
 		}
 #else
 		getline(file,buffer);
-		wxbuffer = wxString(buffer.c_str(),*conv);
+		wxbuffer.Clear();
+		if (buffer.length()) wxbuffer = wxString(buffer.c_str(),*conv);
 #endif
 	}
 
