@@ -54,7 +54,7 @@ mkdir($base_dir) or die("Couldn't create directory ", $base_dir, ": $!")
 chdir($base_dir) or die("Couldn't change directory to ", $base_dir, ": $!");
 
 
-print("Starting downloading and conversion of documentation wiki to ", $base_dir, ".\n",
+print("Starting downloading and conversion of documentation wiki to ", $base_dir, "\n",
 	"This will probably take a while.\n");
 
 
@@ -234,7 +234,12 @@ sub parse_and_fix_html {
 		}
 		elsif ( ($tagname eq 'img') and exists($attrs{'src'}) ) {
 			if ( $attrs{'src'} =~ m!^$quoted!i or (substr($attrs{'src'},0,1) eq '/') ) {
-				push(@links_to_modify, $attrs{'src'});
+				# "flatten" image links
+				my $flatlink = $attrs{'src'};
+				$flatlink =~ s!/docs/images/.+/(.+?\.(jpg|gif|png))!${base_dir}/images/$1!i;
+				my $quotedsrc = quotemeta($attrs{'src'});
+				$content =~ s!$quotedsrc!$flatlink!;
+				#push(@links_to_modify, $attrs{'src'});
 			}
 			else { next(LINKLIST); }
 			
@@ -291,6 +296,14 @@ sub write_to_disk {
 	$path =~ m!(.*)/(.*?)\.\w{2,4}$!;
 	my ($tree, $filename) = ($1, $2);
 	
+	# is it an image link?
+	if ( $tree =~ m!\./images/! ) {
+		# hax it
+		$path =~ s!/images/.+/!/images/!i;
+		$tree =~ s!/images.+!/images!i;
+	}
+	
+	# I don't think this is necessary really
 	mkpath($tree) unless ( -e $tree and -d $tree );
 	
 	if ( $type =~ m!^text! ) {
