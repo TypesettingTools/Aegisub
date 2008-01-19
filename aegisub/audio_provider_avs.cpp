@@ -175,9 +175,11 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 
 	// Convert to 16 bits per sample
 	script = env->Invoke("ConvertAudioTo16bit", script);
+	vi = script.AsClip()->GetVideoInfo();
 
 	// Convert sample rate
 	int setsample = Options.AsInt(_T("Audio Sample Rate"));
+	if (vi.SamplesPerSecond() < 32000) setsample = 44100;
 	if (setsample != 0) {
 		AVSValue args[2] = { script, setsample };
 		script = env->Invoke("ResampleAudio", AVSValue(args,2));

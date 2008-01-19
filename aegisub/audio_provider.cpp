@@ -220,6 +220,9 @@ AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cac
 	// Failed
 	if (!provider) throw error;
 
+	// Give it a conversor if needed
+	if (provider->GetBytesPerSample() != 2) provider = new ConvertAudioProvider(provider);
+
 	// Change provider to RAM/HD cache if needed
 	if (cache == -1) cache = Options.AsInt(_T("Audio Cache"));
 	if (cache) {
@@ -237,9 +240,6 @@ AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cac
 			provider = final;
 		}
 	}
-
-	// Give it a conversor if needed
-	if (provider && provider->GetBytesPerSample() != 2) provider = new ConvertAudioProvider(provider);
 
 	// Return
 	return provider;

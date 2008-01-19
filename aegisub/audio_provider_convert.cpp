@@ -63,8 +63,11 @@ ConvertAudioProvider::~ConvertAudioProvider() {
 /////////////
 // Get audio
 void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t count) {
+	// Bits per sample
+	int srcBps = source->GetBytesPerSample();
+
 	// Convert from 8-bit to 16-bit
-	if (source->GetBytesPerSample() == 1) {
+	if (srcBps == 1) {
 		unsigned char *buffer = new unsigned char[count];
 		source->GetAudio(buffer,start,count);
 		short temp;
@@ -73,5 +76,12 @@ void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t co
 			temp = (short) buffer[i];
 			dst[i] = (temp-128)*256+temp;
 		}
+		delete [] buffer;
 	}
+
+	// No conversion needed
+	else if (srcBps == 2) source->GetAudio(destination,start,count);
+
+	// Unsupported
+	else throw _T("Unknown bits per sample value.");
 }
