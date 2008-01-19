@@ -137,7 +137,7 @@ function karaskel.preproc_line_text(meta, styles, line)
 		local syl = kara[i]
 		
 		-- Detect any inline-fx tags
-		local inline_fx = syl.text:match("%{.*\\%-([^}\\]-)")
+		local inline_fx = syl.text:match("%{.*\\%-([^}\\]+)")
 		if inline_fx then
 			cur_inline_fx = inline_fx
 		end

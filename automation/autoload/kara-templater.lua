@@ -136,7 +136,7 @@ function parse_template(meta, styles, line, templates, mods)
 		addtext = true,
 		keeptags = false,
 		fxgroup = nil,
-		inline_fx = nil,
+		fx = nil,
 		multi = false,
 		isline = false,
 		perchar = false,
@@ -634,7 +634,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 	aegisub.debug.out(5, "Applying template to one syllable with text: %s\n", syl.text)
 	
 	-- Check for right inline_fx
-	if t.inline_fx and t.inline_fx ~= syl.inline_fx then
+	if t.fx and t.fx ~= syl.inline_fx then
 		aegisub.debug.out(5, "Syllable has wrong inline-fx (wanted '%s', got '%s'), skipping.\n", t.inline_fx, syl.inline_fx)
 		return false
 	end
