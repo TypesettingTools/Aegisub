@@ -80,7 +80,6 @@ protected:
 	bool showCol[16];
 
 	virtual void OnPopupMenu(bool alternate=false) {}
-	void AdjustScrollbar();
 	void ScrollTo(int y);
 	int yPos;
 
@@ -92,6 +91,7 @@ public:
 	std::vector<AssDialogue *> diagPtrMap;
 	std::vector<bool> selMap;
 
+	void AdjustScrollbar();
 	void SetColumnWidths();
 	void BeginBatch();
 	void EndBatch();

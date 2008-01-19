@@ -1090,6 +1090,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	SubsBox->UpdateMaps();
 	SubsBox->SetSelectionFromAbsolute(selected_lines);
 	SubsBox->CommitChanges(true, false);
+	SubsBox->AdjustScrollbar();
 	SubsBox->EndBatch();
 #endif
 }
