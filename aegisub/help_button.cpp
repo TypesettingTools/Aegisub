@@ -111,7 +111,7 @@ void HelpButton::InitStatic() {
 		page[_T("Options")] = _T("Options");
 		page[_T("Paste Over")] = _T("Paste_Over");
 		page[_T("Properties")] = _T("Properties");
-		page[_T("Resampler")] = _T("Resolution_Resampler");
+		page[_T("Resample resolution")] = _T("Resolution_Resampler");
 		page[_T("Shift Times")] = _T("Shift_Times");
 		page[_T("Select Lines")] = _T("Select_Lines");
 		page[_T("Spell Checker")] = _T("Spell_Checker");
@@ -119,6 +119,7 @@ void HelpButton::InitStatic() {
 		page[_T("Styles Manager")] = _T("Styles");
 		page[_T("Styling Assistant")] = _T("Styling_Assistant");
 		page[_T("Timing Processor")] = _T("Timing_Post-Processor");
+		page[_T("Translation Assistant")] = _T("Translation_Assistant");
 		page[_T("Visual Typesetting")] = _T("Visual_Typesetting");
 	}
 }
