@@ -1914,6 +1914,8 @@ void AudioDisplay::OnSize(wxSizeEvent &event) {
 	h -= Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
 
 	// Update image
+	UpdateSamples();
+	UpdatePosition(PositionSample / samples);
 	UpdateImage();
 	
 	// Update scrollbar
