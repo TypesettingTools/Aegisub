@@ -167,7 +167,7 @@ eyedropper_cursor CURSOR "bitmaps/eyedropper.cur"
 
 splash BITMAP "bitmaps/splash.bmp"
 
-assdraw3 BITMAP "bitmaps/assdraw3.bmp"
+assdraw3 BITMAP "bitmaps/assdraw.bmp"
 
 
 // The following define is necessary for Visual Studio
