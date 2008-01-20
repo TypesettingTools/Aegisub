@@ -108,7 +108,7 @@ void DialogAttachments::UpdateList() {
 			listView->InsertItem(row,attach->GetFileName(true));
 			listView->SetItem(row,1,PrettySize(attach->GetData().size()));
 			listView->SetItem(row,2,attach->group);
-			listView->SetItemData(row,(long)attach);
+			listView->SetItemPtrData(row,wxPtrToUInt(attach));
 		}
 	}
 }
@@ -214,7 +214,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &event) {
 		if (listView->GetNextSelected(i) != -1) path = wxDirSelector(_("Select the path to save the files to:"),Options.AsText(_T("Fonts Collector Destination"))) + _T("/");
 		else {
 			// Default path
-			wxString defPath = ((AssAttachment*) listView->GetItemData(i))->GetFileName();
+			wxString defPath = ((AssAttachment*) wxUIntToPtr(listView->GetItemData(i)))->GetFileName();
 			path = wxFileSelector(_("Select the path to save the file to:"),Options.AsText(_T("Fonts Collector Destination")),defPath);
 			fullPath = true;
 		}
@@ -222,7 +222,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &event) {
 
 		// Loop through items in list
 		while (i != -1) {
-			AssAttachment *attach = (AssAttachment*) listView->GetItemData(i);
+			AssAttachment *attach = (AssAttachment*) wxUIntToPtr(listView->GetItemData(i));
 			wxString filename = path;
 			if (!fullPath) filename += attach->GetFileName();
 			attach->Extract(filename);
@@ -238,7 +238,7 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 	// Loop through items in list
 	int i = listView->GetFirstSelected();
 	while (i != -1) {
-		AssFile::top->Line.remove((AssEntry*)listView->GetItemData(i));
+		AssFile::top->Line.remove((AssEntry*)wxUIntToPtr(listView->GetItemData(i)));
 		i = listView->GetNextSelected(i);
 	}
 

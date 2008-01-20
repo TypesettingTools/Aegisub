@@ -1011,7 +1011,7 @@ void DialogOptions::OnEditHotkey(wxCommandEvent &event) {
 	if (sel == wxNOT_FOUND) return;
 
 	// Get key and store old
-	HotkeyType *curKey = (HotkeyType *) Shortcuts->GetItemData(sel);
+	HotkeyType *curKey = (HotkeyType *) wxUIntToPtr(Shortcuts->GetItemData(sel));
 	int oldKeycode = curKey->keycode;
 	int oldFlags = curKey->flags;
 
@@ -1034,7 +1034,7 @@ void DialogOptions::OnClearHotkey(wxCommandEvent &event) {
 		item = Shortcuts->GetNextItem(item,wxLIST_NEXT_ALL,wxLIST_STATE_SELECTED);
 		if (item == -1) break;
 
-		HotkeyType *curKey = (HotkeyType *) Shortcuts->GetItemData(item);
+		HotkeyType *curKey = (HotkeyType *) wxUIntToPtr(Shortcuts->GetItemData(item));
 		if (curKey->keycode != 0 || curKey->flags != 0) {
 			hotkeysModified = true;
 			curKey->keycode = 0;
@@ -1057,7 +1057,7 @@ void DialogOptions::OnDefaultHotkey(wxCommandEvent &event) {
 		item = Shortcuts->GetNextItem(item,wxLIST_NEXT_ALL,wxLIST_STATE_SELECTED);
 		if (item == -1) break;
 
-		HotkeyType *curKey = (HotkeyType *) Shortcuts->GetItemData(item);
+		HotkeyType *curKey = (HotkeyType *) wxUIntToPtr(Shortcuts->GetItemData(item));
 		HotkeyType *origKey = &defs.key[curKey->origName.Lower()];
 		if (origKey->keycode != curKey->keycode || origKey->flags != curKey->flags) {
 			hotkeysModified = true;
@@ -1070,7 +1070,7 @@ void DialogOptions::OnDefaultHotkey(wxCommandEvent &event) {
 			if (dup) {
 				dup->keycode = 0;
 				dup->flags = 0;
-				int item = Shortcuts->FindItem(-1,(wxUIntPtr)dup);
+				int item = Shortcuts->FindItem(-1,wxPtrToUInt(dup));
 				if (item != -1) Shortcuts->SetItem(item,1,dup->GetText());
 			}
 		}
@@ -1169,7 +1169,7 @@ void CaptureKey::OnKeyDown(wxKeyEvent &event) {
 			}
 			dup->keycode = 0;
 			dup->flags = 0;
-			int item = parent->shortcuts->FindItem(-1,(wxUIntPtr)dup);
+			int item = parent->shortcuts->FindItem(-1,wxPtrToUInt(dup));
 			if (item != -1) parent->shortcuts->SetItem(item,1,dup->GetText());
 		}
 

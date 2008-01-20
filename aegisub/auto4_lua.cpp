@@ -429,7 +429,8 @@ namespace Automation4 {
 		lua_pop(L, 1);
 
 		lua_gc(L, LUA_GCCOLLECT, 0);
-		return (wxThread::ExitCode)result; // works no matter what MSVC says
+		if (result) return (wxThread::ExitCode) 1;
+		else return 0;
 	}
 
 

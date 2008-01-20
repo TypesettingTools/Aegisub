@@ -41,6 +41,11 @@
 #include "ass_file.h"
 
 
+#ifdef __VISUALC__
+#pragma warning(disable: 4800)
+#endif
+
+
 namespace Automation4 {
 
   

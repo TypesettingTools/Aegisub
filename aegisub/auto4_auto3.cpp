@@ -393,7 +393,8 @@ namespace Automation4 {
 		sink->script_finished = true;
 		wxWakeUpIdle();
 
-		return (wxThread::ExitCode)res; // no matter what MSVC says, this works (zero/non-zero is all that matters here anyway)
+		if (res) return (wxThread::ExitCode) 1;
+		else return 0;
 	}
 
 

@@ -44,6 +44,9 @@
 #include <wx/filename.h>
 #include <wx/utils.h>
 
+#ifdef __VISUALC__
+#pragma warning(disable: 4800)
+#endif
 
 namespace Automation4 {
 

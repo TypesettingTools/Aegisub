@@ -39,7 +39,7 @@
 
 // Discards values of selected that are past the end of AssFile::Line
 #define CHOP_SELECTED(ass, sel) \
-	for(; sel.back() >= ass->Line.size(); sel.pop_back())
+	for(; sel.back() >= (int)ass->Line.size(); sel.pop_back())
 
 
 // Conversions between std::vector<v_t> and AVs

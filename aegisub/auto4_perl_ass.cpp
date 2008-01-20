@@ -45,6 +45,11 @@
 #include "ass_attachment.h"
 
 
+// Disable warning
+#ifdef __VISUALC__
+#pragma warning(disable: 4800)
+#endif
+
 // For wxString::Trim
 #define right  true
 #define left  false
@@ -438,7 +443,7 @@ namespace Automation4 {
 	std::list<AssEntry*>::iterator it = ass->Line.begin();
 	for(I32 i = 0; i <= av_len(lines); i++) {
 	  if(!av_exists(lines, i)) continue;
-	  if(i < ass->Line.size()) {
+	  if(i < (I32)ass->Line.size()) {
 		if(*it) delete *it;
 		AV_FETCH(lines, i)
 		  *it++ = MakeAssEntry((HV*)SvRV(AV_VAL));
