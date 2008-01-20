@@ -36,6 +36,7 @@
 
 ///////////
 // Headers
+#ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
 #include "text_file_reader.h"
 #include "../universalchardet/nsCharSetProber.h"
@@ -119,3 +120,5 @@ void CharSetDetect::Report(const char* aCharset) {
 	// Store the result reported
 	result = wxString(aCharset,wxConvUTF8);
 }
+
+#endif // WITH_UNIVCHARDET
