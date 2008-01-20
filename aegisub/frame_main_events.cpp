@@ -178,6 +178,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Tools_Kanji_Timer, FrameMain::OnOpenKanjiTimer)
 	EVT_MENU(Menu_Tools_Options, FrameMain::OnOpenOptions)
 	EVT_MENU(Menu_Tools_Log, FrameMain::OnOpenLog)
+	EVT_MENU(Menu_Tools_ASSDraw, FrameMain::OnOpenASSDraw)
 	
 	EVT_MENU(Menu_Subs_Snap_Start_To_Video, FrameMain::OnSnapSubsStartToVid)
 	EVT_MENU(Menu_Subs_Snap_End_To_Video, FrameMain::OnSnapSubsEndToVid)
@@ -1030,6 +1031,13 @@ void FrameMain::OnOpenOptions (wxCommandEvent &event) {
 // Open log window
 void FrameMain::OnOpenLog (wxCommandEvent &event) {
 	LogWindow->Show(true);
+}
+
+
+//////////////////
+// Launch ASSDraw
+void FrameMain::OnOpenASSDraw (wxCommandEvent &event) {
+	wxExecute(StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")));
 }
 
 

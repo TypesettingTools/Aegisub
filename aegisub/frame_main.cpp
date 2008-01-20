@@ -249,6 +249,10 @@ void FrameMain::InitToolbar () {
 #endif
 
 	// Tools
+	if (HasASSDraw()) {
+		Toolbar->AddTool(Menu_Tools_ASSDraw,_T("ASSDraw3"),wxBITMAP(assdraw3),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."));
+		Toolbar->AddSeparator();
+	}
 	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),wxBITMAP(shift_times_toolbutton),_("Open Shift Times Dialogue"));
 	Toolbar->AddTool(Menu_Tools_Styling,_("Styling Assistant"),wxBITMAP(styling_toolbutton),_("Open Styling Assistant"));
 	Toolbar->AddTool(Menu_Tools_Translation,_("Translation Assistant"),wxBITMAP(translation_toolbutton),_("Open Translation Assistant"));
@@ -350,6 +354,10 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBITMAP(translation_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample Resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
+	if (HasASSDraw()) {
+		subtitlesMenu->AppendSeparator();
+		AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_ASSDraw,_T("ASSDraw3..."),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."), wxBITMAP(assdraw3));
+	}
 	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE,_("&Before Current"),_("Inserts a line before current"),wxBITMAP(blank_button));
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER,_("&After Current"),_("Inserts a line after current"),wxBITMAP(blank_button));
@@ -1360,4 +1368,16 @@ bool FrameMain::LoadList(wxArrayString list) {
 void FrameMain::SetUndoRedoDesc() {
 	editMenu->SetHelpString(0,_T("Undo ")+AssFile::GetUndoDescription());
 	editMenu->SetHelpString(1,_T("Redo ")+AssFile::GetRedoDescription());
+}
+
+
+/////////////////////////////////
+// Check if ASSDraw is available
+bool FrameMain::HasASSDraw() {
+#ifdef __WINDOWS__
+	wxFileName fn(StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")));
+	return fn.FileExists();
+#else
+	return false;
+#endif
 }

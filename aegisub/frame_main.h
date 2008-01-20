@@ -223,6 +223,7 @@ private:
 	void OnOpenTimingProcessor (wxCommandEvent &event);
 	void OnOpenKanjiTimer (wxCommandEvent &event);
 	void OnOpenVideoDetails (wxCommandEvent &event);
+	void OnOpenASSDraw (wxCommandEvent &event);
 
 	void OnOpenOptions (wxCommandEvent &event);
 	void OnOpenLog (wxCommandEvent &event);
@@ -289,6 +290,7 @@ public:
 	void SetDisplayMode(int showVid,int showAudio);
 	
 	void SetUndoRedoDesc();
+	bool HasASSDraw();
 
 	DECLARE_EVENT_TABLE()
 };
@@ -393,6 +395,7 @@ enum {
 	Menu_Tools_Kanji_Timer,
 	Menu_Tools_Options,
 	Menu_Tools_Log,
+	Menu_Tools_ASSDraw,
 
 	Menu_Help_Contents,
 	Menu_Help_IRCChannel,
