@@ -33,7 +33,8 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppVerName "Aegisub 2.00 alpha r1762"
+#define MyAppRevision "r1787"
+#define MyAppVerName "Aegisub 2.00 alpha"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -47,7 +48,7 @@
 
 [Setup]
 AppName={#MyAppName}
-AppVerName={#MyAppVerName}
+AppVerName={#MyAppVerName} {#MyAppRevision}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
@@ -56,7 +57,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=true
 OutputDir=output
-OutputBaseFilename={#MyAppVerName} setup
+OutputBaseFilename=aegisub-{#MyAppRevision}-setup
 Compression=lzma/ultra64
 SolidCompression=true
 MinVersion=0,5.0.2195
@@ -69,7 +70,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha r1762
+AppVersion=2.00 alpha {#MyAppRevision}
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -266,7 +267,7 @@ begin
 		  temp2 := SetupMessage(msgInstallingLabel);
 		  StringChangeEx(temp2,'[name]','{#MyAppName}',False);
 		  CustomPage := CreateOutputProgressPage(SetupMessage(msgWizardInstalling),temp2);
-		  CustomPage.SetText('Installing Visual C++ 2005 SP1 Runtimes...','');
+		  CustomPage.SetText('Installing Visual C++ 2005 SP1 Runtimes... This might take a few minutes.','');
 		  CustomPage.Show();
 			ExtractTemporaryFile('vcredist_x86.exe');
 			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/q:a /c:"VCREDI~3.EXE /q:a /c:""msiexec /i vcredist.msi /qn"" "', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
