@@ -120,6 +120,7 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "wsock32.lib")
+#pragma comment(lib, "opengl32.lib")
 
 
 //////////////

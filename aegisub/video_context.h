@@ -43,6 +43,7 @@
 #include <wx/wxprec.h>
 #include <wx/glcanvas.h>
 #include <wx/timer.h>
+#include <wx/stopwatch.h>
 #ifndef wxUSE_GLCANVAS
 #error "Aegisub requires wxWidgets to be compiled with OpenGL support."
 #endif
@@ -100,8 +101,7 @@ private:
 
 	wxMutex playMutex;
 	wxTimer playback;
-	clock_t playTime;
-	clock_t startTime;
+	wxStopWatch playTime;
 	int startFrame;
 	int endFrame;
 	int playNextFrame;

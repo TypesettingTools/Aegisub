@@ -724,10 +724,9 @@ void VideoContext::Play() {
 	isPlaying = true;
 
 	// Start timer
-	startTime = clock();
-	playTime = startTime;
+	playTime.Start();
 	playback.SetOwner(this,VIDEO_PLAY_TIMER);
-	playback.Start(1);
+	playback.Start(10);
 }
 
 
@@ -751,12 +750,11 @@ void VideoContext::PlayLine() {
 	JumpToFrame(startFrame);
 
 	// Set other variables
-	startTime = clock();
-	playTime = startTime;
+	playTime.Start(curline->Start.GetMS());
 
 	// Start timer
 	playback.SetOwner(this,VIDEO_PLAY_TIMER);
-	playback.Start(1);
+	playback.Start(10);
 }
 
 
@@ -781,9 +779,7 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	wxMutexLocker lock(playMutex);
 
 	// Get time difference
-	clock_t cur = clock();
-	clock_t dif = (clock() - startTime)*1000/CLOCKS_PER_SEC;
-	playTime = cur;
+	int dif = playTime.Time();
 
 	// Find next frame
 	int startMs = VFR_Output.GetTimeAtFrame(startFrame);
