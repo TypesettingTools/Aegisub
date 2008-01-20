@@ -105,6 +105,7 @@ private:
 	void OnClose(wxCommandEvent &event);
 	void OnBrowse(wxCommandEvent &event);
 	void OnRadio(wxCommandEvent &event);
+	void OnAddText(wxCommandEvent &event);
 	void Update(int value=-1);
 
 public:
@@ -112,4 +113,12 @@ public:
 	~DialogFontsCollector();
 
 	DECLARE_EVENT_TABLE()
+};
+
+
+//////////////////////////////////////
+// Helper class to pass strings along
+struct ColourString {
+	wxString text;
+	int colour;
 };

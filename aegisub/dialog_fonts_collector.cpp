@@ -65,6 +65,12 @@ enum IDs {
 };
 
 
+/////////
+// Event
+DECLARE_EVENT_TYPE(EVT_ADD_TEXT, -1)
+DEFINE_EVENT_TYPE(EVT_ADD_TEXT)
+
+
 ///////////////
 // Constructor
 DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
@@ -160,12 +166,18 @@ BEGIN_EVENT_TABLE(DialogFontsCollector, wxDialog)
 	EVT_BUTTON(BROWSE_BUTTON,DialogFontsCollector::OnBrowse)
 	EVT_BUTTON(wxID_CLOSE,DialogFontsCollector::OnClose)
 	EVT_RADIOBOX(RADIO_BOX,DialogFontsCollector::OnRadio)
+	EVT_COMMAND(0,EVT_ADD_TEXT,DialogFontsCollector::OnAddText)
 END_EVENT_TABLE()
 
 
 ////////////////////
 // Start processing
 void DialogFontsCollector::OnStart(wxCommandEvent &event) {
+	// Clear
+	LogBox->SetReadOnly(false);
+	LogBox->ClearAll();
+	LogBox->SetReadOnly(true);
+
 	// Action being done
 	int action = CollectAction->GetSelection();
 
@@ -317,6 +329,23 @@ void DialogFontsCollector::Update(int value) {
 }
 
 
+////////////
+// Add text
+void DialogFontsCollector::OnAddText(wxCommandEvent &event) {
+	ColourString *str = (ColourString*) event.GetClientData();
+	LogBox->SetReadOnly(false);
+	int pos = LogBox->GetLength();
+	LogBox->AppendText(str->text);
+	if (str->colour) {
+		LogBox->StartStyling(pos,31);
+		LogBox->SetStyling(str->text.Length(),str->colour);
+	}
+	delete str;
+	LogBox->GotoPos(pos);
+	LogBox->SetReadOnly(true);
+}
+
+
 ///////////////////////
 // Collect font files
 void FontsCollectorThread::CollectFontData () {
@@ -354,13 +383,6 @@ wxThread::ExitCode FontsCollectorThread::Entry() {
 ///////////
 // Collect
 void FontsCollectorThread::Collect() {
-	// Clear log box
-	wxMutexGuiEnter();
-	collector->LogBox->SetReadOnly(false);
-	collector->LogBox->ClearAll();
-	collector->LogBox->SetReadOnly(true);
-	wxMutexGuiLeave();
-
 	// Set destination folder
 	int oper = collector->CollectAction->GetSelection();
 	destFolder = collector->DestBox->GetValue();
@@ -588,19 +610,12 @@ void FontsCollectorThread::AddFont(wxString fontname,int mode) {
 ///////////////
 // Append text
 void FontsCollectorThread::AppendText(wxString text,int colour) {
-	wxStyledTextCtrl *LogBox = collector->LogBox;
-	wxMutexGuiEnter();
-	LogBox->SetReadOnly(false);
-	int pos = LogBox->GetLength();
-	LogBox->AppendText(text);
-	if (colour) {
-		LogBox->StartStyling(pos,31);
-		LogBox->SetStyling(text.Length(),colour);
-	}
-	LogBox->GotoPos(pos);
-	LogBox->SetReadOnly(true);
-	//wxSafeYield();
-	wxMutexGuiLeave();
+	ColourString *str = new ColourString;
+	str->text = text;
+	str->colour = colour;
+	wxCommandEvent event(EVT_ADD_TEXT,0);
+	event.SetClientData(str);
+	collector->AddPendingEvent(event);
 }
 
 
