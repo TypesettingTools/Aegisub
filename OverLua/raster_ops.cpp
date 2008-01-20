@@ -727,12 +727,14 @@ static int pixel_value_map(lua_State *L)
 				machine.registers[0] = (double)p.R() / 255.0;
 				machine.registers[1] = (double)p.G() / 255.0;
 				machine.registers[2] = (double)p.B() / 255.0;
-				machine.registers[3] = x;
-				machine.registers[4] = y;
+				machine.registers[3] = (double)p.A() / 255.0;
+				machine.registers[4] = x;
+				machine.registers[5] = y;
 				machine.Run();
 				p.R() = (uint8_t)(machine.registers[0] * 255);
 				p.G() = (uint8_t)(machine.registers[1] * 255);
 				p.B() = (uint8_t)(machine.registers[2] * 255);
+				p.A() = (uint8_t)(machine.registers[3] * 255);
 			}
 		}
 	}
