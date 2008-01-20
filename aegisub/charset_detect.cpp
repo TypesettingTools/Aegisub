@@ -42,6 +42,13 @@
 #include <wx/choicdlg.h>
 
 
+struct CharDetResult {
+	float confidence;
+	wxString name;
+
+	bool operator < (CharDetResult &par) { return confidence > par.confidence; }
+};
+
 ////////////////
 // Get encoding
 wxString CharSetDetect::GetEncoding(wxString filename) {
@@ -58,23 +65,6 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 	// Flag as finished
 	DataEnd();
 
-	// Return whatever it got
-	return result;
-}
-
-struct CharDetResult {
-	float confidence;
-	wxString name;
-
-	bool operator < (CharDetResult &par) { return confidence > par.confidence; }
-};
-
-//////////
-// Report
-void CharSetDetect::Report(const char* aCharset) {
-	// Store the result reported
-	result = wxString(aCharset,wxConvUTF8);
-
 	// Grab every result obtained
 	std::list<CharDetResult> results;
 	for (int i=0;i<NUM_OF_CHARSET_PROBERS;i++) {
@@ -82,8 +72,8 @@ void CharSetDetect::Report(const char* aCharset) {
 		for (int j=0;j<probes;j++) {
 			float conf = mCharSetProbers[i]->GetConfidence(j);
 
-			// Only bother with those whose confidence is at least 5%
-			if (conf > 0.05f) {
+			// Only bother with those whose confidence is at least 1%
+			if (conf > 0.01f) {
 				results.push_back(CharDetResult());
 				results.back().name = wxString(mCharSetProbers[i]->GetCharSetName(j),wxConvUTF8);
 				results.back().confidence = mCharSetProbers[i]->GetConfidence(j);
@@ -98,16 +88,34 @@ void CharSetDetect::Report(const char* aCharset) {
 		// Get choice from user
 		int n = results.size();
 		wxArrayString choices;
+		wxArrayString picked;
+		int i = 0;
 		for (std::list<CharDetResult>::iterator cur=results.begin();cur!=results.end();cur++) {
-			choices.Add(wxString::Format(_T("%f%% - "),(*cur).confidence*100.0f) + (*cur).name);
+			wxString name = (*cur).name;
+			if (picked.Index(name) == wxNOT_FOUND) {
+				picked.Add(name);
+				choices.Add(wxString::Format(_T("%f%% - "),(*cur).confidence*100.0f) + name);
+				i++;
+				if (i == 20) break;
+			}
 		}
 		int choice = wxGetSingleChoiceIndex(_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),_("Choose character set"),choices);
 		if (choice == -1) throw _T("Canceled");
 
 		// Retrieve name
-		int i = 0;
+		i = 0;
 		for (std::list<CharDetResult>::iterator cur=results.begin();cur!=results.end();cur++,i++) {
 			if (i == choice) result = (*cur).name;
 		}
 	}
+
+	// Return whatever it got
+	return result;
+}
+
+//////////
+// Report
+void CharSetDetect::Report(const char* aCharset) {
+	// Store the result reported
+	result = wxString(aCharset,wxConvUTF8);
 }
