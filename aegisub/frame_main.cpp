@@ -250,7 +250,7 @@ void FrameMain::InitToolbar () {
 
 	// Tools
 	if (HasASSDraw()) {
-		Toolbar->AddTool(Menu_Tools_ASSDraw,_T("ASSDraw3"),wxBITMAP(assdraw3),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."));
+		Toolbar->AddTool(Menu_Tools_ASSDraw,_T("ASSDraw3"),wxBITMAP(assdraw),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."));
 		Toolbar->AddSeparator();
 	}
 	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),wxBITMAP(shift_times_toolbutton),_("Open Shift Times Dialogue"));
@@ -356,7 +356,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
 	if (HasASSDraw()) {
 		subtitlesMenu->AppendSeparator();
-		AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_ASSDraw,_T("ASSDraw3..."),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."), wxBITMAP(assdraw3));
+		AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_ASSDraw,_T("ASSDraw3..."),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."), wxBITMAP(assdraw));
 	}
 	subtitlesMenu->AppendSeparator();
 	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE,_("&Before Current"),_("Inserts a line before current"),wxBITMAP(blank_button));
