@@ -66,6 +66,7 @@ AC_CHECK_FUNCS([Pa_GetStreamTime])
 PKG_CHECK_MODULES([LIBPULSE], libpulse >= 0.5, [found_audio=yes], [with_pulseaudio=no])
 AC_CHECK_LIB([avcodec], [avcodec_init],, [with_ffmpeg=no])
 AC_CHECK_LIB([avformat], [av_read_frame],, [with_ffmpeg=no])
+AC_CHECK_LIB([swscale], [sws_scale],, [with_ffmpeg=no])
 if test "$with_ffmpeg" != "no"; then
 	found_video_provider=yes
 fi
@@ -254,6 +255,7 @@ if test -z "$found_video_provider"; then
 ***********************************************************************
 EOM
 fi
+
 
 
 

@@ -45,6 +45,7 @@
 extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
+#include <ffmpeg/swscale.h>
 }
 #include <wx/wxprec.h>
 #include <wx/image.h>
@@ -70,7 +71,11 @@ private:
 	AVCodec *codec;
 	AVFrame *frame;
 	int vidStream;
-
+	
+	AVFrame *frameRGB;
+	uint8_t *bufferRGB;
+	SwsContext *sws_context;
+	
 	int display_w;
 	int display_h;
 
@@ -130,6 +135,9 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename,double fps) {
 	codec = NULL;
 	stream = NULL;
 	frame = NULL;
+	frameRGB = NULL;
+	bufferRGB = NULL;
+	sws_context = NULL;
 	buffer1 = NULL;
 	buffer2 = NULL;
 	buffer1Size = 0;
@@ -236,6 +244,17 @@ void LAVCVideoProvider::Close() {
 	// Clean frame
 	if (frame) av_free((void*)frame);
 	frame = NULL;
+	
+	// Free SWS context and other stuff from RGB conversion
+	if (sws_context)
+		sws_freeContext(sws_context);
+	sws_context = NULL;
+	if(frameRGB)
+		av_free(frameRGB);
+	frameRGB = NULL;
+	if(bufferRGB)
+		delete(bufferRGB);
+	bufferRGB = NULL;
 	
 	// Close codec context
 	if (codec && codecContext) avcodec_close(codecContext);
@@ -429,75 +448,54 @@ const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
 		}
 #endif
 	}
-
-	// Convert to RGB32
-	AVFrame *useFrame = frame;
-	AVFrame *frameRGB = NULL;
-	//if (true) {
-	//	// Set properties
-	//	int w = codecContext->width;
-	//	int h = codecContext->height;
-	//	PixelFormat convFormat = PIX_FMT_RGB24;
-	//	unsigned int dstSize = avpicture_get_size(convFormat,w,h);
-
-	//	// Allocate RGB32 buffer
-	//	frameRGB = avcodec_alloc_frame();
-	//	uint8_t *buffer = new uint8_t[dstSize];
-	//	avpicture_fill((AVPicture*) frameRGB, buffer, convFormat, w, h);
-
-	//	// Convert to RGB32
-	//	img_convert((AVPicture*) frameRGB, convFormat, (AVPicture*) frame, codecContext->pix_fmt, w, h);
-	//	useFrame = frameRGB;
-	//}
-
+	
+	
 	// Get aegisub frame
 	AegiVideoFrame &final = curFrame;
+	
 	if (frame) {
+		int w = codecContext->width;
+		int h = codecContext->height;
+		PixelFormat srcFormat = codecContext->pix_fmt;
+		PixelFormat dstFormat = PIX_FMT_RGB32;
+
+		// Allocate RGB32 buffer
+		if(!sws_context) //first frame
+		{
+			frameRGB = avcodec_alloc_frame();
+			unsigned int dstSize = avpicture_get_size(dstFormat,w,h);
+			bufferRGB = new uint8_t[dstSize];
+			
+			sws_context = sws_getContext(w, h, srcFormat, w, h, dstFormat, SWS_PRINT_INFO, NULL, NULL, NULL);
+		}
+		avpicture_fill((AVPicture*) frameRGB, bufferRGB, dstFormat, w, h);
+		
 		// Set AegiVideoFrame
-		PixelFormat format = codecContext->pix_fmt;
-		unsigned int size = avpicture_get_size(format,codecContext->width,codecContext->height);
 		final.w = codecContext->width;
 		final.h = codecContext->height;
 		final.flipped = false;
-		final.invertChannels = false;
-
-		// Set format
-		switch (format) {
-			case PIX_FMT_BGR24: final.invertChannels = true;
-			case PIX_FMT_RGB24: final.format = FORMAT_RGB24; break;
-			#ifdef __WINDOWS__
-			case PIX_FMT_BGR32: final.invertChannels = true;
-			#endif
-			case PIX_FMT_RGB32: final.format = FORMAT_RGB32; break;
-			case PIX_FMT_YUYV422: final.format = FORMAT_YUY2; break;
-			case PIX_FMT_YUV420P: final.format = FORMAT_YV12; break;
-			default: throw _T("ffmpeg returned an unknown frame format.");
-		}
+		final.invertChannels = true;
+		final.format = FORMAT_RGB32;
 
 		// Allocate
-		for (int i=0;i<4;i++) final.pitch[i] = useFrame->linesize[i];
+		for (int i=0;i<4;i++) final.pitch[i] = frameRGB->linesize[i];
 		final.Allocate();
-
-		// Copy data
-		if (final.format == FORMAT_YV12) {
-			memcpy(final.data[0],useFrame->data[0],useFrame->linesize[0] * final.h);
-			memcpy(final.data[1],useFrame->data[1],useFrame->linesize[1] * final.h / 2);
-			memcpy(final.data[2],useFrame->data[2],useFrame->linesize[2] * final.h / 2);
-		}
-		else memcpy(final.data[0],useFrame->data[0],size);
+		
+		// Convert to RGB32, and write directly to the output frame
+		sws_scale(sws_context, frame->data, frame->linesize, 0, h, final.data, frameRGB->linesize);
+		
 	}
-
-	// No frame available
-	else final = AegiVideoFrame(GetWidth(),GetHeight());
+	else // No frame available
+	{
+		final = AegiVideoFrame(GetWidth(),GetHeight());
+	}
 
 	// Set current frame
 	validFrame = true;
-	//curFrame = final;
 	frameNumber = n;
-	if (frameRGB) av_free(frameRGB);
 
 	// Return
-	return curFrame;
+	return final;
 }
 
 
