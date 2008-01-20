@@ -186,6 +186,9 @@ Source: ..\bin\locale\pt_BR\aegisub.mo; DestDir: {app}\locale\pt_BR; Flags: igno
 Source: ..\bin\locale\pt_BR\wxstd.mo; DestDir: {app}\locale\pt_BR; Flags: ignoreversion; Components: i18n/pt_BR
 ; documentation
 Source: ..\docs\output\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: "*svn"
+; ASSDraw3
+Source: ..\bin\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion; Components: assdraw
+Source: ..\bin\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw
 
 [Icons]
 Name: {commonprograms}\Aegisub\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Aegisub subtitle editor
@@ -241,6 +244,7 @@ Name: th/fr_FR; Description: French thesaurus; Types: full
 Name: th/de_DE; Description: German thesaurus; Types: full
 Name: th/it_IT; Description: Italian thesaurus; Types: full
 #endif
+Name: assdraw; Description: ai-chan's ASSDraw3 for ASS vector drawing; Types: full
 
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo

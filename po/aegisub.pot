@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-18 14:48-0200\n"
+"POT-Creation-Date: 2008-01-20 15:44-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "ANSI"
 msgstr ""
 
-#: ass_style.cpp:568 dialog_options.cpp:606
+#: ass_style.cpp:568 dialog_options.cpp:607
 msgid "Default"
 msgstr ""
 
@@ -228,28 +228,28 @@ msgstr ""
 msgid "Enter split-mode"
 msgstr ""
 
-#: audio_display.cpp:2224 audio_display.cpp:2279
+#: audio_display.cpp:2226 audio_display.cpp:2281
 msgid ""
 "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr ""
 
-#: audio_display.cpp:2224 audio_display.cpp:2279
+#: audio_display.cpp:2226 audio_display.cpp:2281
 msgid "Commit?"
 msgstr ""
 
-#: audio_karaoke.cpp:796
+#: audio_karaoke.cpp:810
 msgid "Karaoke tag"
 msgstr ""
 
-#: audio_karaoke.cpp:800
+#: audio_karaoke.cpp:814
 msgid "Change karaoke tag to \\k"
 msgstr ""
 
-#: audio_karaoke.cpp:801
+#: audio_karaoke.cpp:815
 msgid "Change karaoke tag to \\kf"
 msgstr ""
 
-#: audio_karaoke.cpp:802
+#: audio_karaoke.cpp:816
 msgid "Change karaoke tag to \\ko"
 msgstr ""
 
@@ -306,7 +306,7 @@ msgstr ""
 msgid "L"
 msgstr ""
 
-#: base_grid.cpp:412 dialog_kanji_timer.cpp:99 subs_grid.cpp:117
+#: base_grid.cpp:412 subs_grid.cpp:117
 msgid "Start"
 msgstr ""
 
@@ -314,8 +314,8 @@ msgstr ""
 msgid "End"
 msgstr ""
 
-#: base_grid.cpp:414 dialog_options.cpp:212 dialog_options.cpp:284
-#: dialog_options.cpp:471 dialog_paste_over.cpp:66
+#: base_grid.cpp:414 dialog_options.cpp:213 dialog_options.cpp:285
+#: dialog_options.cpp:472 dialog_paste_over.cpp:66
 #: dialog_search_replace.cpp:94 dialog_selection.cpp:74 subs_grid.cpp:119
 msgid "Style"
 msgstr ""
@@ -356,17 +356,17 @@ msgstr ""
 msgid "Please choose the folder:"
 msgstr ""
 
-#: charset_detect.cpp:104
+#: charset_detect.cpp:102
 msgid ""
 "Aegisub could not narrow down the character set to a single one.\n"
 "Please pick one below:"
 msgstr ""
 
-#: charset_detect.cpp:104
+#: charset_detect.cpp:102
 msgid "Choose character set"
 msgstr ""
 
-#: dialog_about.cpp:51 frame_main.cpp:499
+#: dialog_about.cpp:51 frame_main.cpp:507
 msgid "About Aegisub"
 msgstr ""
 
@@ -623,20 +623,24 @@ msgstr ""
 msgid "Blue:"
 msgstr ""
 
-#: dialog_colorpicker.cpp:534 dialog_colorpicker.cpp:543
+#: dialog_colorpicker.cpp:536 dialog_colorpicker.cpp:546
 msgid "Hue:"
 msgstr ""
 
-#: dialog_colorpicker.cpp:536 dialog_colorpicker.cpp:545
+#: dialog_colorpicker.cpp:538 dialog_colorpicker.cpp:548
 msgid "Sat.:"
 msgstr ""
 
-#: dialog_colorpicker.cpp:538
+#: dialog_colorpicker.cpp:540
 msgid "Lum.:"
 msgstr ""
 
-#: dialog_colorpicker.cpp:547
+#: dialog_colorpicker.cpp:550
 msgid "Value:"
+msgstr ""
+
+#: dialog_colorpicker.cpp:571
+msgid "Colour Picker"
 msgstr ""
 
 #: dialog_detached_video.cpp:69
@@ -713,192 +717,192 @@ msgstr ""
 msgid "Export subtitles file"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:71 frame_main.cpp:242
+#: dialog_fonts_collector.cpp:77 frame_main.cpp:242
 msgid "Fonts Collector"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:87
+#: dialog_fonts_collector.cpp:93
 msgid "&Browse..."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:89 dialog_fonts_collector.cpp:294
+#: dialog_fonts_collector.cpp:95 dialog_fonts_collector.cpp:306
 msgid ""
 "Choose the folder where the fonts will be collected to.\n"
 "It will be created if it doesn't exist."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:92
+#: dialog_fonts_collector.cpp:98
 msgid "Destination"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:98
+#: dialog_fonts_collector.cpp:104
 msgid "Check fonts for availability"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:99
+#: dialog_fonts_collector.cpp:105
 msgid "Copy fonts to folder"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:100
+#: dialog_fonts_collector.cpp:106
 msgid "Copy fonts to zipped archive"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:101
+#: dialog_fonts_collector.cpp:107
 msgid "Attach fonts to current subtitles"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:103
+#: dialog_fonts_collector.cpp:109
 msgid "DEBUG: Verify all fonts in system"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:118 dialog_version_check.cpp:68
+#: dialog_fonts_collector.cpp:124 dialog_version_check.cpp:68
 msgid "Log"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:122
+#: dialog_fonts_collector.cpp:128
 msgid "&Start!"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:180
+#: dialog_fonts_collector.cpp:192
 msgid "Invalid destination."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:180 dialog_fonts_collector.cpp:189
-#: dialog_fonts_collector.cpp:198 dialog_kanji_timer.cpp:209
+#: dialog_fonts_collector.cpp:192 dialog_fonts_collector.cpp:201
+#: dialog_fonts_collector.cpp:210 dialog_kanji_timer.cpp:209
 #: dialog_kanji_timer.cpp:211 dialog_kanji_timer.cpp:244
 #: dialog_kanji_timer.cpp:328 dialog_kanji_timer.cpp:360
-#: dialog_kanji_timer.cpp:362 dialog_options.cpp:237 dialog_resample.cpp:215
-#: dialog_resample.cpp:219 options.cpp:423 subs_grid.cpp:676 subs_grid.cpp:680
+#: dialog_kanji_timer.cpp:362 dialog_options.cpp:238 dialog_resample.cpp:215
+#: dialog_resample.cpp:219 options.cpp:433 subs_grid.cpp:676 subs_grid.cpp:680
 #: subs_grid.cpp:726
 msgid "Error"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:189
+#: dialog_fonts_collector.cpp:201
 msgid "Could not create destination folder."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:198
+#: dialog_fonts_collector.cpp:210
 msgid "Invalid path for .zip file."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:244
+#: dialog_fonts_collector.cpp:256
 msgid "Select archive file name"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:244
+#: dialog_fonts_collector.cpp:256
 msgid "Zip Archives (*.zip)|*.zip"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:252
+#: dialog_fonts_collector.cpp:264
 msgid "Select folder to save fonts on"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:308
+#: dialog_fonts_collector.cpp:320
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to.\n"
 "If a folder is entered, a default name will be used."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:368
+#: dialog_fonts_collector.cpp:390
 msgid "Invalid destination directory."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:381
+#: dialog_fonts_collector.cpp:403
 msgid ""
 "Collecting font data from system. This might take a while, depending on the "
 "number of fonts installed. Results are cached and subsequent executions will "
 "be faster...\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:383
+#: dialog_fonts_collector.cpp:405
 msgid "Done collecting font data."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:384
+#: dialog_fonts_collector.cpp:406
 msgid "Scanning file for fonts..."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:417
+#: dialog_fonts_collector.cpp:439
 msgid "Done."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:419
+#: dialog_fonts_collector.cpp:441
 msgid "Checking fonts...\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:420
+#: dialog_fonts_collector.cpp:442
 msgid "Copying fonts to folder...\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:421
+#: dialog_fonts_collector.cpp:443
 msgid "Copying fonts to archive...\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:422
+#: dialog_fonts_collector.cpp:444
 msgid "Attaching fonts to file...\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:438
+#: dialog_fonts_collector.cpp:460
 #, possible-c-format
 msgid ""
 "\n"
 "Finished writing to %s.\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:444
+#: dialog_fonts_collector.cpp:466
 msgid "Done. All fonts found."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:447
+#: dialog_fonts_collector.cpp:469
 msgid "Done. All fonts copied."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:452
+#: dialog_fonts_collector.cpp:474
 msgid "font attachment"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:459
+#: dialog_fonts_collector.cpp:481
 msgid "Done. Some fonts could not be found."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:460
+#: dialog_fonts_collector.cpp:482
 msgid "Done. Some fonts could not be copied."
 msgstr ""
 
-#: dialog_fonts_collector.cpp:480
+#: dialog_fonts_collector.cpp:502
 msgid "Not found.\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:486
+#: dialog_fonts_collector.cpp:508
 msgid "Found.\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:501
+#: dialog_fonts_collector.cpp:523
 #, possible-c-format
 msgid "* Copied %s.\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:505
+#: dialog_fonts_collector.cpp:527
 #, possible-c-format
 msgid "* %s already exists on destination.\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:508
+#: dialog_fonts_collector.cpp:530
 #, possible-c-format
 msgid "* Failed to copy %s.\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:581
+#: dialog_fonts_collector.cpp:603
 #, possible-c-format
 msgid "\"%s\" found on style \"%s\".\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:582
+#: dialog_fonts_collector.cpp:604
 #, possible-c-format
 msgid "\"%s\" found on dialogue line \"%d\".\n"
 msgstr ""
 
-#: dialog_fonts_collector.cpp:583
+#: dialog_fonts_collector.cpp:605
 #, possible-c-format
 msgid "\"%s\" found.\n"
 msgstr ""
@@ -953,6 +957,10 @@ msgstr ""
 
 #: dialog_kanji_timer.cpp:92
 msgid "Dest Style"
+msgstr ""
+
+#: dialog_kanji_timer.cpp:99
+msgid "Start!"
 msgstr ""
 
 #: dialog_kanji_timer.cpp:100
@@ -1030,10 +1038,10 @@ msgstr ""
 msgid "Group all of the source text."
 msgstr ""
 
-#: dialog_options.cpp:84 dialog_options.cpp:209 dialog_options.cpp:283
-#: dialog_options.cpp:352 dialog_options.cpp:436 dialog_options.cpp:470
-#: dialog_options.cpp:558 dialog_properties.cpp:117
-#: dialog_timing_processor.cpp:81 frame_main.cpp:262 hotkeys.cpp:323
+#: dialog_options.cpp:84 dialog_options.cpp:210 dialog_options.cpp:284
+#: dialog_options.cpp:353 dialog_options.cpp:437 dialog_options.cpp:471
+#: dialog_options.cpp:559 dialog_properties.cpp:117
+#: dialog_timing_processor.cpp:81 frame_main.cpp:266 hotkeys.cpp:323
 #: hotkeys.cpp:327
 msgid "Options"
 msgstr ""
@@ -1058,632 +1066,632 @@ msgstr ""
 msgid "Save config.dat locally"
 msgstr ""
 
-#: dialog_options.cpp:118
+#: dialog_options.cpp:119
 msgid "Limits for levels and recent files"
 msgstr ""
 
-#: dialog_options.cpp:121
+#: dialog_options.cpp:122
 msgid "Maximum undo levels"
 msgstr ""
 
-#: dialog_options.cpp:121
+#: dialog_options.cpp:122
 msgid "Maximum recent timecode files"
 msgstr ""
 
-#: dialog_options.cpp:121
+#: dialog_options.cpp:122
 msgid "Maximum recent keyframe files"
 msgstr ""
 
-#: dialog_options.cpp:121
+#: dialog_options.cpp:122
 msgid "Maximum recent subtitle files"
 msgstr ""
 
-#: dialog_options.cpp:121
+#: dialog_options.cpp:122
 msgid "Maximum recent video files"
 msgstr ""
 
-#: dialog_options.cpp:121
+#: dialog_options.cpp:122
 msgid "Maximum recent audio files"
 msgstr ""
 
-#: dialog_options.cpp:121
+#: dialog_options.cpp:122
 msgid "Maximum recent find strings"
 msgstr ""
 
-#: dialog_options.cpp:121
+#: dialog_options.cpp:122
 msgid "Maximum recent replace strings"
 msgstr ""
 
-#: dialog_options.cpp:141
+#: dialog_options.cpp:142
 msgid "Auto-save"
 msgstr ""
 
-#: dialog_options.cpp:143
+#: dialog_options.cpp:144
 msgid "File paths"
 msgstr ""
 
-#: dialog_options.cpp:145
+#: dialog_options.cpp:146
 msgid "Miscelanea"
 msgstr ""
 
-#: dialog_options.cpp:149
+#: dialog_options.cpp:150
 msgid "Auto-backup"
 msgstr ""
 
-#: dialog_options.cpp:155
+#: dialog_options.cpp:156
 msgid "Auto-save every"
 msgstr ""
 
-#: dialog_options.cpp:157
+#: dialog_options.cpp:158
 msgid "seconds."
 msgstr ""
 
-#: dialog_options.cpp:160
+#: dialog_options.cpp:161
 msgid "Auto-save path:"
 msgstr ""
 
-#: dialog_options.cpp:168
+#: dialog_options.cpp:169
 msgid "Auto-backup path:"
 msgstr ""
 
-#: dialog_options.cpp:176
+#: dialog_options.cpp:177
 msgid "Crash recovery path:"
 msgstr ""
 
-#: dialog_options.cpp:186
+#: dialog_options.cpp:187
 msgid "Auto-load linked files:"
 msgstr ""
 
-#: dialog_options.cpp:187 dialog_options.cpp:360
+#: dialog_options.cpp:188 dialog_options.cpp:361
 msgid "Never"
 msgstr ""
 
-#: dialog_options.cpp:187 dialog_options.cpp:360
+#: dialog_options.cpp:188 dialog_options.cpp:361
 msgid "Always"
 msgstr ""
 
-#: dialog_options.cpp:187 dialog_options.cpp:360
+#: dialog_options.cpp:188 dialog_options.cpp:361
 msgid "Ask"
 msgstr ""
 
-#: dialog_options.cpp:217
+#: dialog_options.cpp:218
 msgid "Enable call tips"
 msgstr ""
 
-#: dialog_options.cpp:217
+#: dialog_options.cpp:218
 msgid "Enable syntax highlighting"
 msgstr ""
 
-#: dialog_options.cpp:217
+#: dialog_options.cpp:218
 msgid "Link commiting of times"
 msgstr ""
 
-#: dialog_options.cpp:217
+#: dialog_options.cpp:218
 msgid "Overwrite-Insertion in time boxes"
 msgstr ""
 
-#: dialog_options.cpp:226
+#: dialog_options.cpp:227
 msgid "Path to dictionary files:"
 msgstr ""
 
-#: dialog_options.cpp:236 dialog_options.cpp:566 dialog_properties.cpp:131
+#: dialog_options.cpp:237 dialog_options.cpp:567 dialog_properties.cpp:131
 msgid "Normal"
 msgstr ""
 
-#: dialog_options.cpp:236
+#: dialog_options.cpp:237
 msgid "Brackets"
 msgstr ""
 
-#: dialog_options.cpp:236
+#: dialog_options.cpp:237
 msgid "Slashes and Parentheses"
 msgstr ""
 
-#: dialog_options.cpp:236
+#: dialog_options.cpp:237
 msgid "Tags"
 msgstr ""
 
-#: dialog_options.cpp:236
+#: dialog_options.cpp:237
 msgid "Parameters"
 msgstr ""
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:238
 msgid "Error Background"
 msgstr ""
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:238
 msgid "Line Break"
 msgstr ""
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:238
 msgid "Karaoke templates"
 msgstr ""
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:238
 msgid "Modified Background"
 msgstr ""
 
-#: dialog_options.cpp:244
+#: dialog_options.cpp:245
 msgid "Syntax highlighter - "
 msgstr ""
 
-#: dialog_options.cpp:255 dialog_options.cpp:319
+#: dialog_options.cpp:256 dialog_options.cpp:320
 msgid "Font: "
 msgstr ""
 
-#: dialog_options.cpp:290
+#: dialog_options.cpp:291
 msgid "Allow grid to take focus"
 msgstr ""
 
-#: dialog_options.cpp:290
+#: dialog_options.cpp:291
 msgid "Highlight subtitles that are currently visible in video"
 msgstr ""
 
-#: dialog_options.cpp:300
+#: dialog_options.cpp:301
 msgid "Standard foreground"
 msgstr ""
 
-#: dialog_options.cpp:300
+#: dialog_options.cpp:301
 msgid "Standard background"
 msgstr ""
 
-#: dialog_options.cpp:300
+#: dialog_options.cpp:301
 msgid "Selection foreground"
 msgstr ""
 
-#: dialog_options.cpp:301 dialog_options.cpp:488
+#: dialog_options.cpp:302 dialog_options.cpp:489
 msgid "Selection background"
 msgstr ""
 
-#: dialog_options.cpp:301
+#: dialog_options.cpp:302
 msgid "Comment background"
 msgstr ""
 
-#: dialog_options.cpp:301
+#: dialog_options.cpp:302
 msgid "Selected comment background"
 msgstr ""
 
-#: dialog_options.cpp:302
+#: dialog_options.cpp:303
 msgid "Collision foreground"
 msgstr ""
 
-#: dialog_options.cpp:302
+#: dialog_options.cpp:303
 msgid "Line in frame background"
 msgstr ""
 
-#: dialog_options.cpp:302
+#: dialog_options.cpp:303
 msgid "Header"
 msgstr ""
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:304
 msgid "Left Column"
 msgstr ""
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:304
 msgid "Active Line Border"
 msgstr ""
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:304
 msgid "Lines"
 msgstr ""
 
-#: dialog_options.cpp:332
+#: dialog_options.cpp:333
 msgid "Replace override tags with: "
 msgstr ""
 
-#: dialog_options.cpp:353 dialog_options.cpp:522
+#: dialog_options.cpp:354 dialog_options.cpp:523
 msgid "Advanced - EXPERT USERS ONLY"
 msgstr ""
 
-#: dialog_options.cpp:359
+#: dialog_options.cpp:360
 msgid "Match video resolution on open: "
 msgstr ""
 
-#: dialog_options.cpp:364
+#: dialog_options.cpp:365
 msgid "Default Zoom: "
 msgstr ""
 
-#: dialog_options.cpp:375
+#: dialog_options.cpp:376
 msgid "Fast jump step in frames: "
 msgstr ""
 
-#: dialog_options.cpp:379
+#: dialog_options.cpp:380
 msgid "Screenshot save path: "
 msgstr ""
 
-#: dialog_options.cpp:385
+#: dialog_options.cpp:386
 msgid "Show keyframes in slider"
 msgstr ""
 
-#: dialog_options.cpp:391
+#: dialog_options.cpp:392
 msgid "Video provider: "
 msgstr ""
 
-#: dialog_options.cpp:396
+#: dialog_options.cpp:397
 msgid "Subtitles provider: "
 msgstr ""
 
-#: dialog_options.cpp:402
+#: dialog_options.cpp:403
 msgid "Avisynth memory limit: "
 msgstr ""
 
-#: dialog_options.cpp:412
+#: dialog_options.cpp:413
 msgid "Allow pre-2.56a Avisynth"
 msgstr ""
 
-#: dialog_options.cpp:416
+#: dialog_options.cpp:417
 msgid "Avisynth renders its own subs"
 msgstr ""
 
-#: dialog_options.cpp:423 dialog_options.cpp:546
+#: dialog_options.cpp:424 dialog_options.cpp:547
 msgid ""
 "WARNING: Changing these settings might result in bugs,\n"
 "crashes, glitches and/or movax.\n"
 "Don't touch these unless you know what you're doing."
 msgstr ""
 
-#: dialog_options.cpp:441
+#: dialog_options.cpp:442
 msgid "Grab times from line upon selection"
 msgstr ""
 
-#: dialog_options.cpp:442
+#: dialog_options.cpp:443
 msgid "Default mouse wheel to zoom"
 msgstr ""
 
-#: dialog_options.cpp:443
+#: dialog_options.cpp:444
 msgid "Lock scroll on Cursor"
 msgstr ""
 
-#: dialog_options.cpp:444
+#: dialog_options.cpp:445
 msgid "Snap to keyframes"
 msgstr ""
 
-#: dialog_options.cpp:445
+#: dialog_options.cpp:446
 msgid "Snap to adjascent lines"
 msgstr ""
 
-#: dialog_options.cpp:446
+#: dialog_options.cpp:447
 msgid "Auto-focus on mouse over"
 msgstr ""
 
-#: dialog_options.cpp:450
+#: dialog_options.cpp:451
 msgid "Don't show"
 msgstr ""
 
-#: dialog_options.cpp:450
+#: dialog_options.cpp:451
 msgid "Show previous"
 msgstr ""
 
-#: dialog_options.cpp:450
+#: dialog_options.cpp:451
 msgid "Show all"
 msgstr ""
 
-#: dialog_options.cpp:451
+#: dialog_options.cpp:452
 msgid "Default timing length"
 msgstr ""
 
-#: dialog_options.cpp:452
+#: dialog_options.cpp:453
 msgid "Default lead-in length"
 msgstr ""
 
-#: dialog_options.cpp:453
+#: dialog_options.cpp:454
 msgid "Default lead-out length"
 msgstr ""
 
-#: dialog_options.cpp:454
+#: dialog_options.cpp:455
 msgid "Show inactive lines"
 msgstr ""
 
-#: dialog_options.cpp:476
+#: dialog_options.cpp:477
 msgid "Draw secondary lines"
 msgstr ""
 
-#: dialog_options.cpp:476
+#: dialog_options.cpp:477
 msgid "Draw selection background"
 msgstr ""
 
-#: dialog_options.cpp:476
+#: dialog_options.cpp:477
 msgid "Draw timeline"
 msgstr ""
 
-#: dialog_options.cpp:477
+#: dialog_options.cpp:478
 msgid "Draw cursor time"
 msgstr ""
 
-#: dialog_options.cpp:477
+#: dialog_options.cpp:478
 msgid "Draw keyframes"
 msgstr ""
 
-#: dialog_options.cpp:477
+#: dialog_options.cpp:478
 msgid "Draw video position"
 msgstr ""
 
-#: dialog_options.cpp:488
+#: dialog_options.cpp:489
 msgid "Play cursor"
 msgstr ""
 
-#: dialog_options.cpp:488
+#: dialog_options.cpp:489
 msgid "Background"
 msgstr ""
 
-#: dialog_options.cpp:489
+#: dialog_options.cpp:490
 msgid "Selection background - modified"
 msgstr ""
 
-#: dialog_options.cpp:489
+#: dialog_options.cpp:490
 msgid "Seconds boundary"
 msgstr ""
 
-#: dialog_options.cpp:489
+#: dialog_options.cpp:490
 msgid "Waveform"
 msgstr ""
 
-#: dialog_options.cpp:490
+#: dialog_options.cpp:491
 msgid "Waveform - selection"
 msgstr ""
 
-#: dialog_options.cpp:490
+#: dialog_options.cpp:491
 msgid "Waveform - modified"
 msgstr ""
 
-#: dialog_options.cpp:490
+#: dialog_options.cpp:491
 msgid "Waveform - inactive"
 msgstr ""
 
-#: dialog_options.cpp:491
+#: dialog_options.cpp:492
 msgid "Boundary - start"
 msgstr ""
 
-#: dialog_options.cpp:491
+#: dialog_options.cpp:492
 msgid "Boundary - end"
 msgstr ""
 
-#: dialog_options.cpp:491
+#: dialog_options.cpp:492
 msgid "Boundary - inactive"
 msgstr ""
 
-#: dialog_options.cpp:492
+#: dialog_options.cpp:493
 msgid "Syllable text"
 msgstr ""
 
-#: dialog_options.cpp:492
+#: dialog_options.cpp:493
 msgid "Syllable boundary"
 msgstr ""
 
-#: dialog_options.cpp:526
+#: dialog_options.cpp:527
 msgid "None (NOT RECOMMENDED)"
 msgstr ""
 
-#: dialog_options.cpp:526
+#: dialog_options.cpp:527
 msgid "RAM"
 msgstr ""
 
-#: dialog_options.cpp:526
+#: dialog_options.cpp:527
 msgid "Hard Disk"
 msgstr ""
 
-#: dialog_options.cpp:531
+#: dialog_options.cpp:532
 msgid "Audio provider"
 msgstr ""
 
-#: dialog_options.cpp:532
+#: dialog_options.cpp:533
 msgid "Audio player"
 msgstr ""
 
-#: dialog_options.cpp:533
+#: dialog_options.cpp:534
 msgid "Cache type"
 msgstr ""
 
-#: dialog_options.cpp:535
+#: dialog_options.cpp:536
 msgid "Avisynth down-mixer"
 msgstr ""
 
-#: dialog_options.cpp:537
+#: dialog_options.cpp:538
 msgid "HD cache path"
 msgstr ""
 
-#: dialog_options.cpp:538
+#: dialog_options.cpp:539
 msgid "HD cache name"
 msgstr ""
 
-#: dialog_options.cpp:539
+#: dialog_options.cpp:540
 msgid "Spectrum cutoff"
 msgstr ""
 
-#: dialog_options.cpp:540
+#: dialog_options.cpp:541
 msgid "0 - Regular quality"
 msgstr ""
 
-#: dialog_options.cpp:540
+#: dialog_options.cpp:541
 msgid "1 - Better quality"
 msgstr ""
 
-#: dialog_options.cpp:540
+#: dialog_options.cpp:541
 msgid "2 - High quality"
 msgstr ""
 
-#: dialog_options.cpp:540
+#: dialog_options.cpp:541
 msgid "3 - Insane quality"
 msgstr ""
 
-#: dialog_options.cpp:541
+#: dialog_options.cpp:542
 msgid "Spectrum quality"
 msgstr ""
 
-#: dialog_options.cpp:542
+#: dialog_options.cpp:543
 msgid "Spectrum cache memory max (MB)"
 msgstr ""
 
-#: dialog_options.cpp:562
+#: dialog_options.cpp:563
 msgid "Base path"
 msgstr ""
 
-#: dialog_options.cpp:563
+#: dialog_options.cpp:564
 msgid "Include path"
 msgstr ""
 
-#: dialog_options.cpp:564
+#: dialog_options.cpp:565
 msgid "Auto-load path"
 msgstr ""
 
-#: dialog_options.cpp:565
+#: dialog_options.cpp:566
 msgid "0: Fatal"
 msgstr ""
 
-#: dialog_options.cpp:565
+#: dialog_options.cpp:566
 msgid "1: Error"
 msgstr ""
 
-#: dialog_options.cpp:565
+#: dialog_options.cpp:566
 msgid "2: Warning"
 msgstr ""
 
-#: dialog_options.cpp:565
+#: dialog_options.cpp:566
 msgid "3: Hint"
 msgstr ""
 
-#: dialog_options.cpp:565
+#: dialog_options.cpp:566
 msgid "4: Debug"
 msgstr ""
 
-#: dialog_options.cpp:565
+#: dialog_options.cpp:566
 msgid "5: Trace"
 msgstr ""
 
-#: dialog_options.cpp:566
+#: dialog_options.cpp:567
 msgid "Below Normal (recommended)"
 msgstr ""
 
-#: dialog_options.cpp:566
+#: dialog_options.cpp:567
 msgid "Lowest"
 msgstr ""
 
-#: dialog_options.cpp:567
+#: dialog_options.cpp:568
 msgid "No scripts"
 msgstr ""
 
-#: dialog_options.cpp:567
+#: dialog_options.cpp:568
 msgid "Subtitle-local scripts"
 msgstr ""
 
-#: dialog_options.cpp:567
+#: dialog_options.cpp:568
 msgid "Global autoload scripts"
 msgstr ""
 
-#: dialog_options.cpp:567
+#: dialog_options.cpp:568
 msgid "All scripts"
 msgstr ""
 
-#: dialog_options.cpp:568
+#: dialog_options.cpp:569
 msgid "Trace level"
 msgstr ""
 
-#: dialog_options.cpp:569
+#: dialog_options.cpp:570
 msgid "Thread priority"
 msgstr ""
 
-#: dialog_options.cpp:570
+#: dialog_options.cpp:571
 msgid "Autoreload on Export"
 msgstr ""
 
-#: dialog_options.cpp:589 dialog_options.cpp:1086
+#: dialog_options.cpp:590 dialog_options.cpp:1087
 msgid "Function"
 msgstr ""
 
-#: dialog_options.cpp:590 dialog_options.cpp:1087
+#: dialog_options.cpp:591 dialog_options.cpp:1088
 msgid "Key"
 msgstr ""
 
-#: dialog_options.cpp:604
+#: dialog_options.cpp:605
 msgid "Set Hotkey..."
 msgstr ""
 
-#: dialog_options.cpp:605
+#: dialog_options.cpp:606
 msgid "Clear Hotkey"
 msgstr ""
 
-#: dialog_options.cpp:607
+#: dialog_options.cpp:608
 msgid "Default All"
 msgstr ""
 
-#: dialog_options.cpp:618
+#: dialog_options.cpp:619
 msgid "General"
 msgstr ""
 
-#: dialog_options.cpp:619
+#: dialog_options.cpp:620
 msgid "File save/load"
 msgstr ""
 
-#: dialog_options.cpp:620
+#: dialog_options.cpp:621
 msgid "Subtitles edit box"
 msgstr ""
 
-#: dialog_options.cpp:621
+#: dialog_options.cpp:622
 msgid "Subtitles grid"
 msgstr ""
 
-#: dialog_options.cpp:622 dialog_video_details.cpp:55
+#: dialog_options.cpp:623 dialog_video_details.cpp:55
 msgid "Video"
 msgstr ""
 
-#: dialog_options.cpp:623
+#: dialog_options.cpp:624
 msgid "Audio"
 msgstr ""
 
-#: dialog_options.cpp:624
+#: dialog_options.cpp:625
 msgid "Display"
 msgstr ""
 
-#: dialog_options.cpp:625
+#: dialog_options.cpp:626
 msgid "Advanced"
 msgstr ""
 
-#: dialog_options.cpp:626 frame_main.cpp:247
+#: dialog_options.cpp:627 frame_main.cpp:247
 msgid "Automation"
 msgstr ""
 
-#: dialog_options.cpp:627
+#: dialog_options.cpp:628
 msgid "Hotkeys"
 msgstr ""
 
-#: dialog_options.cpp:640
+#: dialog_options.cpp:641
 msgid "Restore Defaults"
 msgstr ""
 
-#: dialog_options.cpp:731 dialog_options.cpp:764 dialog_options.cpp:907
+#: dialog_options.cpp:732 dialog_options.cpp:765 dialog_options.cpp:908
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
 msgstr ""
 
-#: dialog_options.cpp:731 dialog_options.cpp:764 dialog_options.cpp:907
+#: dialog_options.cpp:732 dialog_options.cpp:765 dialog_options.cpp:908
 msgid "Restart Aegisub"
 msgstr ""
 
-#: dialog_options.cpp:779
+#: dialog_options.cpp:780
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overriden."
 msgstr ""
 
-#: dialog_options.cpp:779
+#: dialog_options.cpp:780
 msgid "Restore defaults?"
 msgstr ""
 
-#: dialog_options.cpp:1106
+#: dialog_options.cpp:1107
 msgid "Press Key"
 msgstr ""
 
-#: dialog_options.cpp:1113
+#: dialog_options.cpp:1114
 #, possible-c-format
 msgid "Press key to bind to \"%s\" or Esc to cancel."
 msgstr ""
 
-#: dialog_options.cpp:1164
+#: dialog_options.cpp:1165
 #, possible-c-format
 msgid ""
 "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be "
 "cleared. Proceed?"
 msgstr ""
 
-#: dialog_options.cpp:1164
+#: dialog_options.cpp:1165
 msgid "Hotkey conflict"
 msgstr ""
 
@@ -2011,7 +2019,7 @@ msgstr ""
 msgid "%i lines were removed from selection"
 msgstr ""
 
-#: dialog_shift_times.cpp:61 frame_main.cpp:252 hotkeys.cpp:337
+#: dialog_shift_times.cpp:61 frame_main.cpp:256 hotkeys.cpp:337
 msgid "Shift Times"
 msgstr ""
 
@@ -2132,7 +2140,7 @@ msgstr ""
 msgid "shifting"
 msgstr ""
 
-#: dialog_spellchecker.cpp:67 frame_main.cpp:258
+#: dialog_spellchecker.cpp:67 frame_main.cpp:262
 msgid "Spell Checker"
 msgstr ""
 
@@ -2548,8 +2556,8 @@ msgstr ""
 msgid "style delete"
 msgstr ""
 
-#: dialog_style_manager.cpp:869 frame_main_events.cpp:665
-#: frame_main_events.cpp:683
+#: dialog_style_manager.cpp:869 frame_main_events.cpp:666
+#: frame_main_events.cpp:684
 msgid "Open subtitles file"
 msgstr ""
 
@@ -2658,7 +2666,7 @@ msgstr ""
 msgid "Comment starter:"
 msgstr ""
 
-#: dialog_timing_processor.cpp:55 frame_main.cpp:256
+#: dialog_timing_processor.cpp:55 frame_main.cpp:260
 msgid "Timing Post-Processor"
 msgstr ""
 
@@ -2914,7 +2922,7 @@ msgstr ""
 msgid "If anything goes wrong, blame movax."
 msgstr ""
 
-#: dialog_translation.cpp:58 frame_main.cpp:254
+#: dialog_translation.cpp:58 frame_main.cpp:258
 msgid "Translation Assistant"
 msgstr ""
 
@@ -3067,7 +3075,7 @@ msgstr ""
 msgid "Check for updates?"
 msgstr ""
 
-#: frame_main.cpp:208 frame_main.cpp:302 hotkeys.cpp:317
+#: frame_main.cpp:208 frame_main.cpp:306 hotkeys.cpp:317
 msgid "New subtitles"
 msgstr ""
 
@@ -3115,7 +3123,7 @@ msgstr ""
 msgid "Jump video to start"
 msgstr ""
 
-#: frame_main.cpp:229 frame_main.cpp:446
+#: frame_main.cpp:229 frame_main.cpp:454
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr ""
 
@@ -3123,7 +3131,7 @@ msgstr ""
 msgid "Jump video to end"
 msgstr ""
 
-#: frame_main.cpp:230 frame_main.cpp:447
+#: frame_main.cpp:230 frame_main.cpp:455
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr ""
 
@@ -3131,7 +3139,7 @@ msgstr ""
 msgid "Snap start to video"
 msgstr ""
 
-#: frame_main.cpp:231 frame_main.cpp:386
+#: frame_main.cpp:231 frame_main.cpp:394
 msgid "Set start of selected subtitles to current video frame"
 msgstr ""
 
@@ -3139,7 +3147,7 @@ msgstr ""
 msgid "Snap end to video"
 msgstr ""
 
-#: frame_main.cpp:232 frame_main.cpp:387
+#: frame_main.cpp:232 frame_main.cpp:395
 msgid "Set end of selected subtitles to current video frame"
 msgstr ""
 
@@ -3195,843 +3203,847 @@ msgstr ""
 msgid "Open Automation manager"
 msgstr ""
 
-#: frame_main.cpp:252
-msgid "Open Shift Times Dialogue"
-msgstr ""
-
-#: frame_main.cpp:253
-msgid "Styling Assistant"
-msgstr ""
-
-#: frame_main.cpp:253
-msgid "Open Styling Assistant"
-msgstr ""
-
-#: frame_main.cpp:254
-msgid "Open Translation Assistant"
-msgstr ""
-
-#: frame_main.cpp:255
-msgid "Resample"
-msgstr ""
-
-#: frame_main.cpp:255
-msgid "Resample Script Resolution"
+#: frame_main.cpp:253 frame_main.cpp:359
+msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
 msgstr ""
 
 #: frame_main.cpp:256
-msgid "Open Timing Post-processor dialog"
+msgid "Open Shift Times Dialogue"
 msgstr ""
 
 #: frame_main.cpp:257
-msgid "Kanji Timer"
+msgid "Styling Assistant"
 msgstr ""
 
 #: frame_main.cpp:257
-msgid "Open Kanji Timer dialog"
+msgid "Open Styling Assistant"
 msgstr ""
 
 #: frame_main.cpp:258
+msgid "Open Translation Assistant"
+msgstr ""
+
+#: frame_main.cpp:259
+msgid "Resample"
+msgstr ""
+
+#: frame_main.cpp:259
+msgid "Resample Script Resolution"
+msgstr ""
+
+#: frame_main.cpp:260
+msgid "Open Timing Post-processor dialog"
+msgstr ""
+
+#: frame_main.cpp:261
+msgid "Kanji Timer"
+msgstr ""
+
+#: frame_main.cpp:261
+msgid "Open Kanji Timer dialog"
+msgstr ""
+
+#: frame_main.cpp:262
 msgid "Open Spell checker"
 msgstr ""
 
-#: frame_main.cpp:262 frame_main.cpp:475
+#: frame_main.cpp:266 frame_main.cpp:483
 msgid "Configure Aegisub"
 msgstr ""
 
-#: frame_main.cpp:263
+#: frame_main.cpp:267
 msgid "Cycle Tag Hidding Mode"
 msgstr ""
 
-#: frame_main.cpp:263
+#: frame_main.cpp:267
 msgid "Cycle through tag-hiding modes"
 msgstr ""
 
-#: frame_main.cpp:287 frame_main.cpp:500
+#: frame_main.cpp:291 frame_main.cpp:508
 msgid "&Help"
 msgstr ""
 
-#: frame_main.cpp:302
+#: frame_main.cpp:306
 msgid "&New Subtitles"
 msgstr ""
 
-#: frame_main.cpp:303
+#: frame_main.cpp:307
 msgid "&Open Subtitles..."
 msgstr ""
 
-#: frame_main.cpp:303
+#: frame_main.cpp:307
 msgid "Opens a subtitles file"
 msgstr ""
 
-#: frame_main.cpp:304
+#: frame_main.cpp:308
 msgid "&Open Subtitles with Charset..."
 msgstr ""
 
-#: frame_main.cpp:304
+#: frame_main.cpp:308
 msgid "Opens a subtitles file with a specific charset"
 msgstr ""
 
-#: frame_main.cpp:305
+#: frame_main.cpp:309
 msgid "&Save Subtitles"
 msgstr ""
 
-#: frame_main.cpp:305
+#: frame_main.cpp:309
 msgid "Saves subtitles"
 msgstr ""
 
-#: frame_main.cpp:306
+#: frame_main.cpp:310
 msgid "Save Subtitles as..."
 msgstr ""
 
-#: frame_main.cpp:306
+#: frame_main.cpp:310
 msgid "Saves subtitles with another name"
 msgstr ""
 
-#: frame_main.cpp:307
+#: frame_main.cpp:311
 msgid "Export Subtitles..."
 msgstr ""
 
-#: frame_main.cpp:307
+#: frame_main.cpp:311
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr ""
 
-#: frame_main.cpp:308 frame_main.cpp:405 frame_main.cpp:413 frame_main.cpp:419
-#: frame_main.cpp:455
+#: frame_main.cpp:312 frame_main.cpp:413 frame_main.cpp:421 frame_main.cpp:427
+#: frame_main.cpp:463
 msgid "Recent"
 msgstr ""
 
-#: frame_main.cpp:314
+#: frame_main.cpp:318
 msgid "&Properties..."
 msgstr ""
 
-#: frame_main.cpp:314
+#: frame_main.cpp:318
 msgid "Open script properties window"
 msgstr ""
 
-#: frame_main.cpp:315
+#: frame_main.cpp:319
 msgid "&Attachments..."
 msgstr ""
 
-#: frame_main.cpp:315
+#: frame_main.cpp:319
 msgid "Open the attachment list"
 msgstr ""
 
-#: frame_main.cpp:316
+#: frame_main.cpp:320
 msgid "&Fonts Collector..."
 msgstr ""
 
-#: frame_main.cpp:316
+#: frame_main.cpp:320
 msgid "Open fonts collector"
 msgstr ""
 
-#: frame_main.cpp:320
+#: frame_main.cpp:324
 msgid "New Window"
 msgstr ""
 
-#: frame_main.cpp:320
+#: frame_main.cpp:324
 msgid "Open a new application window"
 msgstr ""
 
-#: frame_main.cpp:322
+#: frame_main.cpp:326
 msgid "E&xit"
 msgstr ""
 
-#: frame_main.cpp:322
+#: frame_main.cpp:326
 msgid "Exit the application"
 msgstr ""
 
-#: frame_main.cpp:323
+#: frame_main.cpp:327
 msgid "&File"
 msgstr ""
 
-#: frame_main.cpp:328 frame_main_events.cpp:417 subs_edit_ctrl.cpp:924
+#: frame_main.cpp:332 frame_main_events.cpp:418 subs_edit_ctrl.cpp:924
 msgid "&Undo"
 msgstr ""
 
-#: frame_main.cpp:328 frame_main_events.cpp:417
+#: frame_main.cpp:332 frame_main_events.cpp:418
 msgid "Undoes last action"
 msgstr ""
 
-#: frame_main.cpp:329 frame_main_events.cpp:418
+#: frame_main.cpp:333 frame_main_events.cpp:419
 msgid "&Redo"
 msgstr ""
 
-#: frame_main.cpp:329 frame_main_events.cpp:418
+#: frame_main.cpp:333 frame_main_events.cpp:419
 msgid "Redoes last action"
 msgstr ""
 
-#: frame_main.cpp:331
+#: frame_main.cpp:335
 msgid "Cut Lines"
 msgstr ""
 
-#: frame_main.cpp:331
+#: frame_main.cpp:335
 msgid "Cut subtitles"
 msgstr ""
 
-#: frame_main.cpp:332
+#: frame_main.cpp:336
 msgid "Copy Lines"
 msgstr ""
 
-#: frame_main.cpp:332
+#: frame_main.cpp:336
 msgid "Copy subtitles"
 msgstr ""
 
-#: frame_main.cpp:333
+#: frame_main.cpp:337
 msgid "Paste Lines"
 msgstr ""
 
-#: frame_main.cpp:333
+#: frame_main.cpp:337
 msgid "Paste subtitles"
 msgstr ""
 
-#: frame_main.cpp:334
+#: frame_main.cpp:338
 msgid "Paste Lines Over..."
 msgstr ""
 
-#: frame_main.cpp:334
+#: frame_main.cpp:338
 msgid "Paste subtitles over others"
 msgstr ""
 
-#: frame_main.cpp:336
+#: frame_main.cpp:340
 msgid "&Find..."
 msgstr ""
 
-#: frame_main.cpp:336
+#: frame_main.cpp:340
 msgid "Find words in subtitles"
 msgstr ""
 
-#: frame_main.cpp:337 hotkeys.cpp:340 hotkeys.cpp:343
+#: frame_main.cpp:341 hotkeys.cpp:340 hotkeys.cpp:343
 msgid "Find Next"
 msgstr ""
 
-#: frame_main.cpp:337
+#: frame_main.cpp:341
 msgid "Find next match of last word"
 msgstr ""
 
-#: frame_main.cpp:338
+#: frame_main.cpp:342
 msgid "Search and &Replace..."
 msgstr ""
 
-#: frame_main.cpp:338
+#: frame_main.cpp:342
 msgid "Find and replace words in subtitles"
 msgstr ""
 
-#: frame_main.cpp:339
+#: frame_main.cpp:343
 msgid "&Edit"
 msgstr ""
 
-#: frame_main.cpp:344
+#: frame_main.cpp:348
 msgid "&Insert Lines"
 msgstr ""
 
-#: frame_main.cpp:348
+#: frame_main.cpp:352
 msgid "&Styles Manager..."
 msgstr ""
 
-#: frame_main.cpp:348
+#: frame_main.cpp:352
 msgid "Open styles manager"
 msgstr ""
 
-#: frame_main.cpp:349
+#: frame_main.cpp:353
 msgid "St&yling Assistant..."
 msgstr ""
 
-#: frame_main.cpp:349
+#: frame_main.cpp:353
 msgid "Open styling assistant"
 msgstr ""
 
-#: frame_main.cpp:350
+#: frame_main.cpp:354
 msgid "&Translation Assistant..."
 msgstr ""
 
-#: frame_main.cpp:350
+#: frame_main.cpp:354
 msgid "Open translation assistant"
 msgstr ""
 
-#: frame_main.cpp:351
+#: frame_main.cpp:355
 msgid "Resample Resolution..."
 msgstr ""
 
-#: frame_main.cpp:351
+#: frame_main.cpp:355
 msgid "Changes resolution and modifies subtitles to conform to change"
 msgstr ""
 
-#: frame_main.cpp:352
+#: frame_main.cpp:356
 msgid "Spe&ll Checker..."
 msgstr ""
 
-#: frame_main.cpp:352
+#: frame_main.cpp:356
 msgid "Open spell checker"
 msgstr ""
 
-#: frame_main.cpp:354
+#: frame_main.cpp:362
 msgid "&Before Current"
 msgstr ""
 
-#: frame_main.cpp:354
+#: frame_main.cpp:362
 msgid "Inserts a line before current"
 msgstr ""
 
-#: frame_main.cpp:355
+#: frame_main.cpp:363
 msgid "&After Current"
 msgstr ""
 
-#: frame_main.cpp:355
+#: frame_main.cpp:363
 msgid "Inserts a line after current"
 msgstr ""
 
-#: frame_main.cpp:356
+#: frame_main.cpp:364
 msgid "Before Current, at Video Time"
 msgstr ""
 
-#: frame_main.cpp:356
+#: frame_main.cpp:364
 msgid "Inserts a line before current, starting at video time"
 msgstr ""
 
-#: frame_main.cpp:357
+#: frame_main.cpp:365
 msgid "After Current, at Video Time"
 msgstr ""
 
-#: frame_main.cpp:357
+#: frame_main.cpp:365
 msgid "Inserts a line after current, starting at video time"
 msgstr ""
 
-#: frame_main.cpp:359
+#: frame_main.cpp:367
 msgid "&Duplicate Lines"
 msgstr ""
 
-#: frame_main.cpp:359 subs_grid.cpp:164
+#: frame_main.cpp:367 subs_grid.cpp:164
 msgid "Duplicate the selected lines"
 msgstr ""
 
-#: frame_main.cpp:360
+#: frame_main.cpp:368
 msgid "&Duplicate and Shift by 1 Frame"
 msgstr ""
 
-#: frame_main.cpp:360 subs_grid.cpp:165
+#: frame_main.cpp:368 subs_grid.cpp:165
 msgid "Duplicate lines and shift by one frame"
 msgstr ""
 
-#: frame_main.cpp:361
+#: frame_main.cpp:369
 msgid "Delete Lines"
 msgstr ""
 
-#: frame_main.cpp:361 subs_grid.cpp:201
+#: frame_main.cpp:369 subs_grid.cpp:201
 msgid "Delete currently selected lines"
 msgstr ""
 
-#: frame_main.cpp:364
+#: frame_main.cpp:372
 msgid "Join Lines"
 msgstr ""
 
-#: frame_main.cpp:368
+#: frame_main.cpp:376
 msgid "&Concatenate"
 msgstr ""
 
-#: frame_main.cpp:368 subs_grid.cpp:174
+#: frame_main.cpp:376 subs_grid.cpp:174
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr ""
 
-#: frame_main.cpp:369
+#: frame_main.cpp:377
 msgid "Keep &First"
 msgstr ""
 
-#: frame_main.cpp:369 subs_grid.cpp:175
+#: frame_main.cpp:377 subs_grid.cpp:175
 msgid ""
 "Joins selected lines in a single one, keeping text of first and discarding "
 "remaining"
 msgstr ""
 
-#: frame_main.cpp:370
+#: frame_main.cpp:378
 msgid "As &Karaoke"
 msgstr ""
 
-#: frame_main.cpp:370
+#: frame_main.cpp:378
 msgid "Joins selected lines in a single one, as karaoke"
 msgstr ""
 
-#: frame_main.cpp:372 subs_grid.cpp:185
+#: frame_main.cpp:380 subs_grid.cpp:185
 msgid "Recombine Lines"
 msgstr ""
 
-#: frame_main.cpp:372 subs_grid.cpp:185
+#: frame_main.cpp:380 subs_grid.cpp:185
 msgid "Recombine subtitles when they have been split and merged"
 msgstr ""
 
-#: frame_main.cpp:373
+#: frame_main.cpp:381
 msgid "Split Lines (by karaoke)"
 msgstr ""
 
-#: frame_main.cpp:373 subs_grid.cpp:166
+#: frame_main.cpp:381 subs_grid.cpp:166
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr ""
 
-#: frame_main.cpp:375
+#: frame_main.cpp:383
 msgid "Swap Lines"
 msgstr ""
 
-#: frame_main.cpp:375 subs_grid.cpp:170
+#: frame_main.cpp:383 subs_grid.cpp:170
 msgid "Swaps the two selected lines"
 msgstr ""
 
-#: frame_main.cpp:376
+#: frame_main.cpp:384
 msgid "Select Lines..."
 msgstr ""
 
-#: frame_main.cpp:376
+#: frame_main.cpp:384
 msgid "Selects lines based on defined criterea"
 msgstr ""
 
-#: frame_main.cpp:377
+#: frame_main.cpp:385
 msgid "&Subtitles"
 msgstr ""
 
-#: frame_main.cpp:381
+#: frame_main.cpp:389
 msgid "S&hift Times..."
 msgstr ""
 
-#: frame_main.cpp:381
+#: frame_main.cpp:389
 msgid "Shift subtitles by time or frames"
 msgstr ""
 
-#: frame_main.cpp:382
+#: frame_main.cpp:390
 msgid "Sort by Time"
 msgstr ""
 
-#: frame_main.cpp:382
+#: frame_main.cpp:390
 msgid "Sort all subtitles by their start times"
 msgstr ""
 
-#: frame_main.cpp:383
+#: frame_main.cpp:391
 msgid "Timing Post-Processor..."
 msgstr ""
 
-#: frame_main.cpp:383
+#: frame_main.cpp:391
 msgid ""
 "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
 "timing and etc."
 msgstr ""
 
-#: frame_main.cpp:384
+#: frame_main.cpp:392
 msgid "Kanji Timer..."
 msgstr ""
 
-#: frame_main.cpp:384
+#: frame_main.cpp:392
 msgid "Open Kanji timer"
 msgstr ""
 
-#: frame_main.cpp:386
+#: frame_main.cpp:394
 msgid "Snap Start to Video"
 msgstr ""
 
-#: frame_main.cpp:387
+#: frame_main.cpp:395
 msgid "Snap End to Video"
 msgstr ""
 
-#: frame_main.cpp:388 hotkeys.cpp:361
+#: frame_main.cpp:396 hotkeys.cpp:361
 msgid "Snap to Scene"
 msgstr ""
 
-#: frame_main.cpp:388
+#: frame_main.cpp:396
 msgid ""
 "Set start and end of subtitles to the keyframes around current video frame"
 msgstr ""
 
-#: frame_main.cpp:389
+#: frame_main.cpp:397
 msgid "Shift to Current Frame"
 msgstr ""
 
-#: frame_main.cpp:389
+#: frame_main.cpp:397
 msgid "Shift selection so first selected line starts at current frame"
 msgstr ""
 
-#: frame_main.cpp:392
+#: frame_main.cpp:400
 msgid "Make Times Continuous"
 msgstr ""
 
-#: frame_main.cpp:396
+#: frame_main.cpp:404
 msgid "Change &Start"
 msgstr ""
 
-#: frame_main.cpp:396 subs_grid.cpp:180
+#: frame_main.cpp:404 subs_grid.cpp:180
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr ""
 
-#: frame_main.cpp:397
+#: frame_main.cpp:405
 msgid "Change &End"
 msgstr ""
 
-#: frame_main.cpp:397 subs_grid.cpp:181
+#: frame_main.cpp:405 subs_grid.cpp:181
 msgid "Changes times of subs so end times begin on next's start time"
 msgstr ""
 
-#: frame_main.cpp:399
+#: frame_main.cpp:407
 msgid "&Timing"
 msgstr ""
 
-#: frame_main.cpp:403
+#: frame_main.cpp:411
 msgid "&Open Video..."
 msgstr ""
 
-#: frame_main.cpp:403
+#: frame_main.cpp:411
 msgid "Opens a video file"
 msgstr ""
 
-#: frame_main.cpp:404
+#: frame_main.cpp:412
 msgid "&Close Video"
 msgstr ""
 
-#: frame_main.cpp:404
+#: frame_main.cpp:412
 msgid "Closes the currently open video file"
 msgstr ""
 
-#: frame_main.cpp:407
+#: frame_main.cpp:415
 msgid "Use Dummy Video..."
 msgstr ""
 
-#: frame_main.cpp:407
+#: frame_main.cpp:415
 msgid "Opens a video clip with solid colour"
 msgstr ""
 
-#: frame_main.cpp:408
+#: frame_main.cpp:416
 msgid "Show Video Details..."
 msgstr ""
 
-#: frame_main.cpp:408
+#: frame_main.cpp:416
 msgid "Shows video details"
 msgstr ""
 
-#: frame_main.cpp:410
+#: frame_main.cpp:418
 msgid "Open Timecodes File..."
 msgstr ""
 
-#: frame_main.cpp:410
+#: frame_main.cpp:418
 msgid "Opens a VFR timecodes v1 or v2 file"
 msgstr ""
 
-#: frame_main.cpp:411
+#: frame_main.cpp:419
 msgid "Save Timecodes File..."
 msgstr ""
 
-#: frame_main.cpp:411
+#: frame_main.cpp:419
 msgid "Saves a VFR timecodes v2 file"
 msgstr ""
 
-#: frame_main.cpp:412
+#: frame_main.cpp:420
 msgid "Close Timecodes File"
 msgstr ""
 
-#: frame_main.cpp:412
+#: frame_main.cpp:420
 msgid "Closes the currently open timecodes file"
 msgstr ""
 
-#: frame_main.cpp:416
+#: frame_main.cpp:424
 msgid "Open Keyframes..."
 msgstr ""
 
-#: frame_main.cpp:416
+#: frame_main.cpp:424
 msgid "Opens a keyframe list file"
 msgstr ""
 
-#: frame_main.cpp:417
+#: frame_main.cpp:425
 msgid "Save Keyframes..."
 msgstr ""
 
-#: frame_main.cpp:417
+#: frame_main.cpp:425
 msgid "Saves the current keyframe list"
 msgstr ""
 
-#: frame_main.cpp:418
+#: frame_main.cpp:426
 msgid "Close Keyframes"
 msgstr ""
 
-#: frame_main.cpp:418
+#: frame_main.cpp:426
 msgid "Closes the currently open keyframes list"
 msgstr ""
 
-#: frame_main.cpp:422
+#: frame_main.cpp:430
 msgid "Detach Video"
 msgstr ""
 
-#: frame_main.cpp:422
+#: frame_main.cpp:430
 msgid "Detach video, displaying it in a separate Window."
 msgstr ""
 
-#: frame_main.cpp:424
+#: frame_main.cpp:432
 msgid "Set Zoom"
 msgstr ""
 
-#: frame_main.cpp:428
+#: frame_main.cpp:436
 msgid "Set zoom to 50%"
 msgstr ""
 
-#: frame_main.cpp:429
+#: frame_main.cpp:437
 msgid "Set zoom to 100%"
 msgstr ""
 
-#: frame_main.cpp:430
+#: frame_main.cpp:438
 msgid "Set zoom to 200%"
 msgstr ""
 
-#: frame_main.cpp:433
+#: frame_main.cpp:441
 msgid "Override Aspect Ratio"
 msgstr ""
 
-#: frame_main.cpp:437
+#: frame_main.cpp:445
 msgid "&Default"
 msgstr ""
 
-#: frame_main.cpp:437
+#: frame_main.cpp:445
 msgid "Leave video on original aspect ratio"
 msgstr ""
 
-#: frame_main.cpp:438
+#: frame_main.cpp:446
 msgid "&Fullscreen (4:3)"
 msgstr ""
 
-#: frame_main.cpp:438
+#: frame_main.cpp:446
 msgid "Forces video to 4:3 aspect ratio"
 msgstr ""
 
-#: frame_main.cpp:439
+#: frame_main.cpp:447
 msgid "&Widescreen (16:9)"
 msgstr ""
 
-#: frame_main.cpp:439
+#: frame_main.cpp:447
 msgid "Forces video to 16:9 aspect ratio"
 msgstr ""
 
-#: frame_main.cpp:440
+#: frame_main.cpp:448
 msgid "&Cinematic (2.35)"
 msgstr ""
 
-#: frame_main.cpp:440
+#: frame_main.cpp:448
 msgid "Forces video to 2.35 aspect ratio"
 msgstr ""
 
-#: frame_main.cpp:441
+#: frame_main.cpp:449
 msgid "Custom..."
 msgstr ""
 
-#: frame_main.cpp:441
+#: frame_main.cpp:449
 msgid "Forces video to a custom aspect ratio"
 msgstr ""
 
-#: frame_main.cpp:443
+#: frame_main.cpp:451
 msgid "Show Overscan Mask"
 msgstr ""
 
-#: frame_main.cpp:443
+#: frame_main.cpp:451
 msgid ""
 "Show a mask over the video, indicating areas that might get cropped off by "
 "overscan on televisions."
 msgstr ""
 
-#: frame_main.cpp:445
+#: frame_main.cpp:453
 msgid "&Jump to..."
 msgstr ""
 
-#: frame_main.cpp:445
+#: frame_main.cpp:453
 msgid "Jump to frame or time"
 msgstr ""
 
-#: frame_main.cpp:446 hotkeys.cpp:357
+#: frame_main.cpp:454 hotkeys.cpp:357
 msgid "Jump Video to Start"
 msgstr ""
 
-#: frame_main.cpp:447 hotkeys.cpp:358
+#: frame_main.cpp:455 hotkeys.cpp:358
 msgid "Jump Video to End"
 msgstr ""
 
-#: frame_main.cpp:448
+#: frame_main.cpp:456
 msgid "&Video"
 msgstr ""
 
-#: frame_main.cpp:452
+#: frame_main.cpp:460
 msgid "&Open Audio File..."
 msgstr ""
 
-#: frame_main.cpp:452
+#: frame_main.cpp:460
 msgid "Opens an audio file"
 msgstr ""
 
-#: frame_main.cpp:453
+#: frame_main.cpp:461
 msgid "Open Audio from &Video"
 msgstr ""
 
-#: frame_main.cpp:453
+#: frame_main.cpp:461
 msgid "Opens the audio from the current video file"
 msgstr ""
 
-#: frame_main.cpp:454
+#: frame_main.cpp:462
 msgid "&Close Audio"
 msgstr ""
 
-#: frame_main.cpp:454
+#: frame_main.cpp:462
 msgid "Closes the currently open audio file"
 msgstr ""
 
-#: frame_main.cpp:462
+#: frame_main.cpp:470
 msgid "&Audio"
 msgstr ""
 
-#: frame_main.cpp:467
+#: frame_main.cpp:475
 msgid "&Automation..."
 msgstr ""
 
-#: frame_main.cpp:467
+#: frame_main.cpp:475
 msgid "Open automation manager"
 msgstr ""
 
-#: frame_main.cpp:469
+#: frame_main.cpp:477
 msgid "&Automation"
 msgstr ""
 
-#: frame_main.cpp:474
+#: frame_main.cpp:482
 msgid "Select Aegisub interface language"
 msgstr ""
 
-#: frame_main.cpp:475
+#: frame_main.cpp:483
 msgid "&Options..."
 msgstr ""
 
-#: frame_main.cpp:477
+#: frame_main.cpp:485
 msgid "&Associations..."
 msgstr ""
 
-#: frame_main.cpp:477
+#: frame_main.cpp:485
 msgid "Associate file types with Aegisub"
 msgstr ""
 
-#: frame_main.cpp:480
+#: frame_main.cpp:488
 msgid "Lo&g Window..."
 msgstr ""
 
-#: frame_main.cpp:480
+#: frame_main.cpp:488
 msgid "Open log window"
 msgstr ""
 
-#: frame_main.cpp:483
+#: frame_main.cpp:491
 msgid "Subs Only View"
 msgstr ""
 
-#: frame_main.cpp:483
+#: frame_main.cpp:491
 msgid "Display subtitles only"
 msgstr ""
 
-#: frame_main.cpp:484
+#: frame_main.cpp:492
 msgid "Video+Subs View"
 msgstr ""
 
-#: frame_main.cpp:484
+#: frame_main.cpp:492
 msgid "Display video and subtitles only"
 msgstr ""
 
-#: frame_main.cpp:485
+#: frame_main.cpp:493
 msgid "Audio+Subs View"
 msgstr ""
 
-#: frame_main.cpp:485
+#: frame_main.cpp:493
 msgid "Display audio and subtitles only"
 msgstr ""
 
-#: frame_main.cpp:486
+#: frame_main.cpp:494
 msgid "Full view"
 msgstr ""
 
-#: frame_main.cpp:486
+#: frame_main.cpp:494
 msgid "Display audio, video and subtitles"
 msgstr ""
 
-#: frame_main.cpp:487
+#: frame_main.cpp:495
 msgid "Vie&w"
 msgstr ""
 
-#: frame_main.cpp:491
+#: frame_main.cpp:499
 msgid "&Contents..."
 msgstr ""
 
-#: frame_main.cpp:491
+#: frame_main.cpp:499
 msgid "Help topics"
 msgstr ""
 
-#: frame_main.cpp:493
+#: frame_main.cpp:501
 msgid "&Website..."
 msgstr ""
 
-#: frame_main.cpp:493
+#: frame_main.cpp:501
 msgid "Visit Aegisub's official website"
 msgstr ""
 
-#: frame_main.cpp:494
+#: frame_main.cpp:502
 msgid "&Forums..."
 msgstr ""
 
-#: frame_main.cpp:494
+#: frame_main.cpp:502
 msgid "Visit Aegisub's forums"
 msgstr ""
 
-#: frame_main.cpp:495
+#: frame_main.cpp:503
 msgid "&Bug Tracker..."
 msgstr ""
 
-#: frame_main.cpp:495
+#: frame_main.cpp:503
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr ""
 
-#: frame_main.cpp:496
+#: frame_main.cpp:504
 msgid "&IRC Channel..."
 msgstr ""
 
-#: frame_main.cpp:496
+#: frame_main.cpp:504
 msgid "Visit Aegisub's official IRC channel"
 msgstr ""
 
-#: frame_main.cpp:498
+#: frame_main.cpp:506
 msgid "&Check for Updates..."
 msgstr ""
 
-#: frame_main.cpp:498
+#: frame_main.cpp:506
 msgid "Check to see if there is a new version of Aegisub available"
 msgstr ""
 
-#: frame_main.cpp:499
+#: frame_main.cpp:507
 msgid "&About..."
 msgstr ""
 
-#: frame_main.cpp:691
+#: frame_main.cpp:699
 msgid "Save subtitles file"
 msgstr ""
 
-#: frame_main.cpp:710 frame_main_events.cpp:685
+#: frame_main.cpp:718 frame_main_events.cpp:686
 msgid "Choose charset code:"
 msgstr ""
 
-#: frame_main.cpp:740
+#: frame_main.cpp:748
 msgid "Save before continuing?"
 msgstr ""
 
-#: frame_main.cpp:740
+#: frame_main.cpp:748
 msgid "Unsaved changes"
 msgstr ""
 
-#: frame_main.cpp:883
+#: frame_main.cpp:891
 msgid "Do you want to load/unload the associated files?"
 msgstr ""
 
-#: frame_main.cpp:883
+#: frame_main.cpp:891
 msgid "(Un)Load files?"
 msgstr ""
 
-#: frame_main.cpp:1028
+#: frame_main.cpp:1036
 msgid "You have timecodes loaded currently. Would you like to unload them?"
 msgstr ""
 
-#: frame_main.cpp:1028
+#: frame_main.cpp:1036
 msgid "Unload timecodes?"
 msgstr ""
 
-#: frame_main.cpp:1059
+#: frame_main.cpp:1067
 #, possible-c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
@@ -4043,130 +4055,130 @@ msgid ""
 "Change subtitles resolution to match video?"
 msgstr ""
 
-#: frame_main.cpp:1059
+#: frame_main.cpp:1067
 msgid "Resolution mismatch"
 msgstr ""
 
-#: frame_main.cpp:1066
+#: frame_main.cpp:1074
 msgid "Change script resolution"
 msgstr ""
 
-#: frame_main_events.cpp:261
+#: frame_main_events.cpp:262
 msgid "Empty"
 msgstr ""
 
-#: frame_main_events.cpp:448
+#: frame_main_events.cpp:449
 msgid "No Automation macros loaded"
 msgstr ""
 
-#: frame_main_events.cpp:607
+#: frame_main_events.cpp:608
 msgid "Recommended Formats"
 msgstr ""
 
-#: frame_main_events.cpp:608
+#: frame_main_events.cpp:609
 msgid "Other supported formats"
 msgstr ""
 
-#: frame_main_events.cpp:609 frame_main_events.cpp:759
-#: frame_main_events.cpp:774
+#: frame_main_events.cpp:610 frame_main_events.cpp:760
+#: frame_main_events.cpp:775
 msgid "All Files"
 msgstr ""
 
-#: frame_main_events.cpp:610
+#: frame_main_events.cpp:611
 msgid "Open video file"
 msgstr ""
 
-#: frame_main_events.cpp:630
+#: frame_main_events.cpp:631
 msgid "Audio Formats"
 msgstr ""
 
-#: frame_main_events.cpp:631
+#: frame_main_events.cpp:632
 msgid "Video Formats"
 msgstr ""
 
-#: frame_main_events.cpp:632
+#: frame_main_events.cpp:633
 msgid "All files"
 msgstr ""
 
-#: frame_main_events.cpp:633
+#: frame_main_events.cpp:634
 msgid "Open audio file"
 msgstr ""
 
-#: frame_main_events.cpp:685
+#: frame_main_events.cpp:686
 msgid "Charset"
 msgstr ""
 
-#: frame_main_events.cpp:758 frame_main_events.cpp:773
+#: frame_main_events.cpp:759 frame_main_events.cpp:774
 msgid "All Supported Types"
 msgstr ""
 
-#: frame_main_events.cpp:760
+#: frame_main_events.cpp:761
 msgid "Open timecodes file"
 msgstr ""
 
-#: frame_main_events.cpp:775
+#: frame_main_events.cpp:776
 msgid "Save timecodes file"
 msgstr ""
 
-#: frame_main_events.cpp:1060
+#: frame_main_events.cpp:1068
 msgid "Reloaded all Automation scripts"
 msgstr ""
 
-#: frame_main_events.cpp:1063
+#: frame_main_events.cpp:1071
 msgid "Reloaded autoload Automation scripts"
 msgstr ""
 
-#: frame_main_events.cpp:1199
+#: frame_main_events.cpp:1208
 msgid "snap to scene"
 msgstr ""
 
-#: frame_main_events.cpp:1230
+#: frame_main_events.cpp:1239
 msgid "shift to frame"
 msgstr ""
 
-#: frame_main_events.cpp:1326
+#: frame_main_events.cpp:1335
 msgid ""
 "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) "
 "form. Enter a value like 853x480 to set a specific resolution."
 msgstr ""
 
-#: frame_main_events.cpp:1326
+#: frame_main_events.cpp:1335
 msgid "Enter aspect ratio"
 msgstr ""
 
-#: frame_main_events.cpp:1361
+#: frame_main_events.cpp:1370
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr ""
 
-#: frame_main_events.cpp:1361
+#: frame_main_events.cpp:1370
 msgid "Invalid Aspect Ratio"
 msgstr ""
 
-#: frame_main_events.cpp:1462
+#: frame_main_events.cpp:1471
 msgid "sort"
 msgstr ""
 
-#: frame_main_events.cpp:1501
+#: frame_main_events.cpp:1510
 msgid "File backup saved as \""
 msgstr ""
 
-#: frame_main_events.cpp:1595
+#: frame_main_events.cpp:1604
 msgid "ASS Override Tag mode set to "
 msgstr ""
 
-#: frame_main_events.cpp:1596
+#: frame_main_events.cpp:1605
 msgid "show full tags."
 msgstr ""
 
-#: frame_main_events.cpp:1597
+#: frame_main_events.cpp:1606
 msgid "simplify tags."
 msgstr ""
 
-#: frame_main_events.cpp:1598
+#: frame_main_events.cpp:1607
 msgid "hide tags."
 msgstr ""
 
-#: frame_main_events.cpp:1620 subs_edit_box.cpp:894
+#: frame_main_events.cpp:1629 subs_edit_box.cpp:894
 msgid "editing"
 msgstr ""
 
@@ -4502,7 +4514,7 @@ msgstr ""
 msgid "Reading subtitles from Matroska file."
 msgstr ""
 
-#: options.cpp:423
+#: options.cpp:433
 msgid ""
 "Configuration file is either invalid or corrupt. The current file will be "
 "backed up and replaced with a default file."
