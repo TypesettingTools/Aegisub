@@ -750,7 +750,7 @@ void VideoContext::PlayLine() {
 	JumpToFrame(startFrame);
 
 	// Set other variables
-	playTime.Start(curline->Start.GetMS());
+	playTime.Start();
 
 	// Start timer
 	playback.SetOwner(this,VIDEO_PLAY_TIMER);
