@@ -101,6 +101,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 	provider = NULL;
 	player = NULL;
 	hold = 0;
+	samples = 0;
 	hasFocus = (wxWindow::FindFocus() == this);
 
 	// Init
@@ -1914,8 +1915,10 @@ void AudioDisplay::OnSize(wxSizeEvent &event) {
 	h -= Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
 
 	// Update image
-	UpdateSamples();
-	UpdatePosition(PositionSample / samples);
+	if (samples) {
+		UpdateSamples();
+		UpdatePosition(PositionSample / samples);
+	}
 	UpdateImage();
 	
 	// Update scrollbar
