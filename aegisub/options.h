@@ -68,6 +68,7 @@ private:
 	wxString filename;
 	std::map<wxString,VariableData> opt;
 	std::map<wxString,ModType> optType;
+	int lastVersion;
 
 	void SetModificationType(ModType type);
 
@@ -83,11 +84,11 @@ public:
 	void AddToRecentList (wxString entry,wxString list);
 	wxArrayString GetRecentList (wxString list);
 
-	void SetInt(wxString key,int param);
-	void SetFloat(wxString key,double param);
-	void SetBool(wxString key,bool param);
-	void SetText(wxString key,wxString param);
-	void SetColour(wxString key,wxColour param);
+	void SetInt(wxString key,int param,int ifLastVersion=0);
+	void SetFloat(wxString key,double param,int ifLastVersion=0);
+	void SetBool(wxString key,bool param,int ifLastVersion=0);
+	void SetText(wxString key,wxString param,int ifLastVersion=0);
+	void SetColour(wxString key,wxColour param,int ifLastVersion=0);
 	void ResetWith(wxString key,wxString param);
 
 	bool IsDefined(wxString key);

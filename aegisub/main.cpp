@@ -64,6 +64,7 @@
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
+#include "version.h"
 
 
 ///////////////////
@@ -130,6 +131,8 @@ bool AegisubApp::OnInit() {
 			wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 		}
 		StartupLog(_T("Store options back"));
+		Options.SetInt(_T("Last Version"),GetSVNRevision());
+		Options.LoadDefaults();	// Override options based on version number
 		Options.Save();
 		AssTime::UseMSPrecision = Options.AsBool(_T("Use nonstandard Milisecond Times"));
 

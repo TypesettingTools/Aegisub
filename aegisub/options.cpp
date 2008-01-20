@@ -54,6 +54,7 @@
 // Constructor
 OptionsManager::OptionsManager() {
 	modified = false;
+	lastVersion = -1;
 }
 
 
@@ -77,6 +78,8 @@ void OptionsManager::Clear() {
 void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	///// PUBLIC //////
 	// Here go the options that can be edited by the options menu
+
+	if (onlyDefaults) lastVersion = -1;
 	
 	// General
 	SetModificationType(MOD_AUTOMATIC);
@@ -109,8 +112,10 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Auto save on every change"),false);
 
 	// Edit Box
-	SetText(_T("Dictionaries path"),_T("dictionaries")); // don't these require restart?
+	SetModificationType(MOD_RESTART);
+	SetText(_T("Dictionaries path"),_T("dictionaries"));
 	SetText(_T("Spell Checker"),_T("hunspell"));
+	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Link time boxes commit"),true);
 #ifdef WIN32
 	SetBool(_T("Insert mode on time boxes"),true);
@@ -118,7 +123,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Insert mode on time boxes"),false);
 #endif
 	SetModificationType(MOD_EDIT_BOX);
-	SetBool(_T("Call tips enabled"),false);
+	SetBool(_T("Call tips enabled"),false,1700);
 	SetBool(_T("Syntax highlight enabled"),true);
 
 	// Edit box cosmetic
@@ -144,25 +149,25 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetInt(_T("Video Check Script Res"), 0);
 	SetInt(_T("Video Default Zoom"), 7);
 	SetInt(_T("Video Fast Jump Step"), 10);
-	SetText(_T("Video Screenshot Path"),_T("?video"));
+	SetText(_T("Video Screenshot Path"),_T("?video"),1700);
 	SetModificationType(MOD_VIDEO);
 	SetBool(_T("Show keyframes on video slider"),true);
 	SetBool(_T("Show overscan mask"),false);
 
 	// Video Provider (Advanced)
 	SetModificationType(MOD_VIDEO_RELOAD);
-	SetInt(_T("Avisynth MemoryMax"),64);
-	SetBool(_T("Threaded Video"),false);
-	SetText(_T("Video Provider"),_T("Avisynth"));
-	SetBool(_T("Allow Ancient Avisynth"),false);
-	SetText(_T("Avisynth subs renderer"),_T("vsfilter"));
-	SetBool(_T("Avisynth render own subs"),true);
+	SetInt(_T("Avisynth MemoryMax"),64,1700);
+	SetBool(_T("Threaded Video"),false,1700);
+	SetText(_T("Video Provider"),_T("Avisynth"),1700);
+	SetBool(_T("Allow Ancient Avisynth"),false,1700);
+	SetText(_T("Avisynth subs renderer"),_T("vsfilter"),1700);
+	SetBool(_T("Avisynth render own subs"),true,1700);
 	#ifdef __WINDOWS__
-	SetText(_T("Subtitles Provider"),_T("csri/vsfilter_textsub"));
+	SetText(_T("Subtitles Provider"),_T("csri/vsfilter_textsub"),1700);
 	#else
 	SetText(_T("Subtitles Provider"),_T("csri/asa"));
 	#endif
-	SetBool(_T("Video Use Pixel Shaders"),false);
+	SetBool(_T("Video Use Pixel Shaders"),false,1700);
 
 	// Audio Options
 	SetModificationType(MOD_AUTOMATIC);
@@ -181,19 +186,19 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 
 	// Audio Advanced
 	SetModificationType(MOD_AUDIO_RELOAD);
-	SetInt(_T("Audio Cache"),1);
+	SetInt(_T("Audio Cache"),1,1700);
 	#if defined(__WINDOWS__)
-	SetText(_T("Audio Player"),_T("dsound"));
+	SetText(_T("Audio Player"),_T("dsound"),1700);
 	#elif defined(__APPLE__)
 	SetText(_T("Audio Player"), _T("openal"));
 	#else
 	SetText(_T("Audio Player"),_T("portaudio")); // FIXME: should this be something else? perhaps alsa on linux and portaudio on everything else?
 	#endif
-	SetText(_T("Audio Provider"),_T("avisynth")); // TODO: proper default on non-windows
-	SetText(_T("Audio Downmixer"),_T("ConvertToMono"));
+	SetText(_T("Audio Provider"),_T("avisynth"),1700); // TODO: proper default on non-windows
+	SetText(_T("Audio Downmixer"),_T("ConvertToMono"),1700);
 	SetText(_T("Audio Alsa Device"), _T("plughw:0,0"));
-	SetText(_T("Audio HD Cache Location"),_T("default"));
-	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"));
+	SetText(_T("Audio HD Cache Location"),_T("default"),1700);
+	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"),1700);
 	// Technically these can do with just the spectrum object being re-created
 	SetInt(_T("Audio Spectrum Cutoff"),0);
 	SetInt(_T("Audio Spectrum Quality"),1);
@@ -202,9 +207,9 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	// Automation
 	// The path changes only take effect when a script is (re)loaded but Automatic should be good enough, it certainly doesn't warrart a restart
 	SetModificationType(MOD_AUTOMATIC);
-	SetText(_T("Automation Base Path"), _T("?data/automation/"));
-	SetText(_T("Automation Include Path"), _T("?user/automation/include/|?data/automation/include/"));
-	SetText(_T("Automation Autoload Path"), _T("?user/automation/autoload/|?data/automation/autoload/"));
+	SetText(_T("Automation Base Path"), _T("?data/automation/"),1700);
+	SetText(_T("Automation Include Path"), _T("?user/automation/include/|?data/automation/include/"),1700);
+	SetText(_T("Automation Autoload Path"), _T("?user/automation/autoload/|?data/automation/autoload/"),1700);
 	SetInt(_T("Automation Trace Level"), 3);
 	SetInt(_T("Automation Thread Priority"), 1); // "below normal"
 	SetInt(_T("Automation Autoreload Mode"), 1); // local only
@@ -268,8 +273,8 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetColour(_T("Audio Waveform Selected"),wxColour(255,255,255));
 	SetColour(_T("Audio Waveform Inactive"),wxColour(0,80,0));
 	SetColour(_T("Audio Waveform"),wxColour(0,200,0));
-	SetColour(_T("Audio Line boundary start"),wxColour(216,0,0));
-	SetColour(_T("Audio Line boundary end"),wxColour(230,125,0));
+	SetColour(_T("Audio Line boundary start"),wxColour(216,0,0),1700);
+	SetColour(_T("Audio Line boundary end"),wxColour(230,125,0),1700);
 	SetColour(_T("Audio Line boundary inactive line"),wxColour(128,128,128));
 	SetColour(_T("Audio Syllable boundaries"),wxColour(255,255,0));
 	SetColour(_T("Audio Syllable text"),wxColour(255,0,0));
@@ -279,7 +284,10 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 
 
 	// Only defaults?
-	if (onlyDefaults) return;
+	if (onlyDefaults) {
+		lastVersion = -1;
+		return;
+	}
 
 
 	///// INTERNAL //////
@@ -291,7 +299,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetInt(_T("Video Dummy Last Length"), 40000);
 	SetBool(_T("Video Dummy Pattern"), false);
 
-	SetInt(_T("Locale Code"),-1);
+	SetInt(_T("Locale Code"),-1,1700);
 	SetBool(_T("Sync video with subs"),true);
 	SetText(_T("Spell checker language"),_T("en_US"));
 	SetText(_T("Thesaurus language"),_T("en_US"));
@@ -310,7 +318,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Shift Times Direction"),true);
 
 	SetInt(_T("Tips current"),0);
-	SetBool(_T("Show associations"),true);
+	SetBool(_T("Show associations"),true,1700);
 	SetBool(_T("Maximized"),false);
 
 	SetBool(_T("Find Match Case"),false);
@@ -360,7 +368,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	SetBool(_T("Select Match comments"),false);
 
 	SetText(_T("Color Picker Recent"), _T("&H000000& &H0000FF& &H00FFFF& &H00FF00& &HFFFF00& &HFF0000& &HFF00FF& &HFFFFFF&"));
-	SetInt(_T("Color Picker Mode"), 4);
+	SetInt(_T("Color Picker Mode"), 4, 1700);
 
 	SetText(_T("Last open subtitles path"),_T(""));
 	SetText(_T("Last open video path"),_T(""));
@@ -376,6 +384,8 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 	previewText += 0x8a9e; // kanji "speak"
 	SetText(_T("Style editor preview text"),previewText);
 	SetColour(_T("Style editor preview background"),wxColour(125,153,176));
+
+	lastVersion = -1;
 }
 
 
@@ -445,12 +455,21 @@ void OptionsManager::Load() {
 		}
 		else SetText(key,value);
 	}
+
+	// Get last version
+	if (IsDefined(_T("Last Version"))) {
+		long temp;
+		AsText(_T("Last Version")).ToLong(&temp);
+		lastVersion = temp;
+	}
+	else lastVersion = 1; // This was implemented in 1784, assume that anything before that is 1.
 }
 
 
 /////////////
 // Write int
-void OptionsManager::SetInt(wxString key,int param) {
+void OptionsManager::SetInt(wxString key,int param,int ifLastVersion) {
+	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetInt(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
@@ -459,7 +478,8 @@ void OptionsManager::SetInt(wxString key,int param) {
 
 ///////////////
 // Write float
-void OptionsManager::SetFloat(wxString key,double param) {
+void OptionsManager::SetFloat(wxString key,double param,int ifLastVersion) {
+	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetFloat(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
@@ -468,7 +488,8 @@ void OptionsManager::SetFloat(wxString key,double param) {
 
 ////////////////
 // Write string
-void OptionsManager::SetText(wxString key,wxString param) {
+void OptionsManager::SetText(wxString key,wxString param,int ifLastVersion) {
+	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetText(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
@@ -477,7 +498,8 @@ void OptionsManager::SetText(wxString key,wxString param) {
 
 /////////////////
 // Write boolean
-void OptionsManager::SetBool(wxString key,bool param) {
+void OptionsManager::SetBool(wxString key,bool param,int ifLastVersion) {
+	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetBool(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
@@ -486,7 +508,8 @@ void OptionsManager::SetBool(wxString key,bool param) {
 
 ////////////////
 // Write colour
-void OptionsManager::SetColour(wxString key,wxColour param) {
+void OptionsManager::SetColour(wxString key,wxColour param,int ifLastVersion) {
+	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetColour(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
 	modified = true;
