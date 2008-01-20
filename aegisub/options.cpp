@@ -54,6 +54,7 @@
 // Constructor
 OptionsManager::OptionsManager() {
 	modified = false;
+	overriding = false;
 	lastVersion = -1;
 }
 
@@ -75,10 +76,11 @@ void OptionsManager::Clear() {
 
 ///////////////////////
 // Load default values
-void OptionsManager::LoadDefaults(bool onlyDefaults) {
+void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	///// PUBLIC //////
 	// Here go the options that can be edited by the options menu
 
+	if (doOverride) overriding = true;
 	if (onlyDefaults) lastVersion = -1;
 	
 	// General
@@ -284,108 +286,106 @@ void OptionsManager::LoadDefaults(bool onlyDefaults) {
 
 
 	// Only defaults?
-	if (onlyDefaults) {
-		lastVersion = -1;
-		return;
+	if (!onlyDefaults) {
+
+		///// INTERNAL //////
+		// Options that are set by the program itself
+		SetInt(_T("Video Dummy Last Width"), 640);
+		SetInt(_T("Video Dummy Last Height"), 480);
+		SetColour(_T("Video Dummy Last Colour"), wxColour(47, 163, 254));
+		SetFloat(_T("Video Dummy Last FPS"), 23.976);
+		SetInt(_T("Video Dummy Last Length"), 40000);
+		SetBool(_T("Video Dummy Pattern"), false);
+
+		SetInt(_T("Locale Code"),-1,1700);
+		SetBool(_T("Sync video with subs"),true);
+		SetText(_T("Spell checker language"),_T("en_US"));
+		SetText(_T("Thesaurus language"),_T("en_US"));
+		SetInt(_T("Options Page"),0);
+
+		SetBool(_T("Audio Link"),true);
+		SetBool(_T("Audio Autocommit"),false);
+		SetBool(_T("Audio Autoscroll"),true);
+		SetBool(_T("Audio Medusa Timing Hotkeys"),false);
+		SetBool(_T("Audio Next Line on Commit"),true);
+
+		SetBool(_T("Shift Times ByTime"),true);
+		SetInt(_T("Shift Times Type"),0);
+		SetInt(_T("Shift Times Length"),0);
+		SetInt(_T("Shift Times Affect"),0);
+		SetBool(_T("Shift Times Direction"),true);
+
+		SetInt(_T("Tips current"),0);
+		SetBool(_T("Show associations"),true,1700);
+		SetBool(_T("Maximized"),false);
+
+		SetBool(_T("Find Match Case"),false);
+		SetBool(_T("Find RegExp"),false);
+		SetBool(_T("Find Update Video"),false);
+		SetInt(_T("Find Affect"),0);
+		SetInt(_T("Find Field"),0);
+
+		SetInt(_T("Grid hide overrides"),1);
+		for (int i=0;i<10;i++) SetBool(_T("Grid show column ") + IntegerToString(i),true);
+
+		for (int i=0;i<9;i++) SetBool(wxString::Format(_T("Paste Over #%i"),i),false);
+		SetBool(_T("Paste Over #9"),true);
+
+		SetText(_T("Fonts Collector Destination"),_T("?script"));
+		SetInt(_T("Fonts Collector Action"),0);
+
+		SetInt(_T("Audio Display Height"),100);
+		SetBool(_T("Audio Spectrum"),false);
+		SetInt(_T("Audio Sample Rate"),0);
+
+		SetBool(_T("Video Visual Realtime"),true);
+		SetBool(_T("Detached video"),false);
+		SetInt(_T("Detached video last x"),-1);
+		SetInt(_T("Detached video last y"),-1);
+		SetBool(_T("Detached video maximized"),false);
+
+		SetInt(_T("Timing processor key start before thres"),5);
+		SetInt(_T("Timing processor key start after thres"),4);
+		SetInt(_T("Timing processor key end before thres"),5);
+		SetInt(_T("Timing processor key end after thres"),6);
+		SetInt(_T("Timing processor adjascent thres"),300);
+		SetBool(_T("Timing processor Enable lead-in"),true);
+		SetBool(_T("Timing processor Enable lead-out"),true);
+		SetBool(_T("Timing processor Enable keyframe"),true);
+		SetBool(_T("Timing processor Enable adjascent"),true);
+		SetBool(_T("Timing processor Only Selection"),false);
+		SetFloat(_T("Timing processor adjascent bias"),1.0);
+
+		SetText(_T("Select Text"),_T(""));
+		SetInt(_T("Select Condition"),0);
+		SetInt(_T("Select Field"),0);
+		SetInt(_T("Select Action"),0);
+		SetInt(_T("Select Mode"),1);
+		SetBool(_T("Select Match case"),false);
+		SetBool(_T("Select Match dialogues"),true);
+		SetBool(_T("Select Match comments"),false);
+
+		SetText(_T("Color Picker Recent"), _T("&H000000& &H0000FF& &H00FFFF& &H00FF00& &HFFFF00& &HFF0000& &HFF00FF& &HFFFFFF&"));
+		SetInt(_T("Color Picker Mode"), 4, 1700);
+
+		SetText(_T("Last open subtitles path"),_T(""));
+		SetText(_T("Last open video path"),_T(""));
+		SetText(_T("Last open audio path"),_T(""));
+		SetText(_T("Last open timecodes path"),_T(""));
+		SetText(_T("Last open keyframes path"),_T(""));
+		SetText(_T("Last open automation path"),_T(""));
+
+		SetBool(_T("kanji timer interpolation"),true);
+
+		wxString previewText = _T("Aegisub\\N0123 ");
+		previewText += 0x6708; // kanji "moon"
+		previewText += 0x8a9e; // kanji "speak"
+		SetText(_T("Style editor preview text"),previewText);
+		SetColour(_T("Style editor preview background"),wxColour(125,153,176));
 	}
 
-
-	///// INTERNAL //////
-	// Options that are set by the program itself
-	SetInt(_T("Video Dummy Last Width"), 640);
-	SetInt(_T("Video Dummy Last Height"), 480);
-	SetColour(_T("Video Dummy Last Colour"), wxColour(47, 163, 254));
-	SetFloat(_T("Video Dummy Last FPS"), 23.976);
-	SetInt(_T("Video Dummy Last Length"), 40000);
-	SetBool(_T("Video Dummy Pattern"), false);
-
-	SetInt(_T("Locale Code"),-1,1700);
-	SetBool(_T("Sync video with subs"),true);
-	SetText(_T("Spell checker language"),_T("en_US"));
-	SetText(_T("Thesaurus language"),_T("en_US"));
-	SetInt(_T("Options Page"),0);
-
-	SetBool(_T("Audio Link"),true);
-	SetBool(_T("Audio Autocommit"),false);
-	SetBool(_T("Audio Autoscroll"),true);
-	SetBool(_T("Audio Medusa Timing Hotkeys"),false);
-	SetBool(_T("Audio Next Line on Commit"),true);
-
-	SetBool(_T("Shift Times ByTime"),true);
-	SetInt(_T("Shift Times Type"),0);
-	SetInt(_T("Shift Times Length"),0);
-	SetInt(_T("Shift Times Affect"),0);
-	SetBool(_T("Shift Times Direction"),true);
-
-	SetInt(_T("Tips current"),0);
-	SetBool(_T("Show associations"),true,1700);
-	SetBool(_T("Maximized"),false);
-
-	SetBool(_T("Find Match Case"),false);
-	SetBool(_T("Find RegExp"),false);
-	SetBool(_T("Find Update Video"),false);
-	SetInt(_T("Find Affect"),0);
-	SetInt(_T("Find Field"),0);
-
-	SetInt(_T("Grid hide overrides"),1);
-	for (int i=0;i<10;i++) SetBool(_T("Grid show column ") + IntegerToString(i),true);
-
-	for (int i=0;i<9;i++) SetBool(wxString::Format(_T("Paste Over #%i"),i),false);
-	SetBool(_T("Paste Over #9"),true);
-
-	SetText(_T("Fonts Collector Destination"),_T("?script"));
-	SetInt(_T("Fonts Collector Action"),0);
-
-	SetInt(_T("Audio Display Height"),100);
-	SetBool(_T("Audio Spectrum"),false);
-	SetInt(_T("Audio Sample Rate"),0);
-
-	SetBool(_T("Video Visual Realtime"),true);
-	SetBool(_T("Detached video"),false);
-	SetInt(_T("Detached video last x"),-1);
-	SetInt(_T("Detached video last y"),-1);
-	SetBool(_T("Detached video maximized"),false);
-
-	SetInt(_T("Timing processor key start before thres"),5);
-	SetInt(_T("Timing processor key start after thres"),4);
-	SetInt(_T("Timing processor key end before thres"),5);
-	SetInt(_T("Timing processor key end after thres"),6);
-	SetInt(_T("Timing processor adjascent thres"),300);
-	SetBool(_T("Timing processor Enable lead-in"),true);
-	SetBool(_T("Timing processor Enable lead-out"),true);
-	SetBool(_T("Timing processor Enable keyframe"),true);
-	SetBool(_T("Timing processor Enable adjascent"),true);
-	SetBool(_T("Timing processor Only Selection"),false);
-	SetFloat(_T("Timing processor adjascent bias"),1.0);
-
-	SetText(_T("Select Text"),_T(""));
-	SetInt(_T("Select Condition"),0);
-	SetInt(_T("Select Field"),0);
-	SetInt(_T("Select Action"),0);
-	SetInt(_T("Select Mode"),1);
-	SetBool(_T("Select Match case"),false);
-	SetBool(_T("Select Match dialogues"),true);
-	SetBool(_T("Select Match comments"),false);
-
-	SetText(_T("Color Picker Recent"), _T("&H000000& &H0000FF& &H00FFFF& &H00FF00& &HFFFF00& &HFF0000& &HFF00FF& &HFFFFFF&"));
-	SetInt(_T("Color Picker Mode"), 4, 1700);
-
-	SetText(_T("Last open subtitles path"),_T(""));
-	SetText(_T("Last open video path"),_T(""));
-	SetText(_T("Last open audio path"),_T(""));
-	SetText(_T("Last open timecodes path"),_T(""));
-	SetText(_T("Last open keyframes path"),_T(""));
-	SetText(_T("Last open automation path"),_T(""));
-
-	SetBool(_T("kanji timer interpolation"),true);
-
-	wxString previewText = _T("Aegisub\\N0123 ");
-	previewText += 0x6708; // kanji "moon"
-	previewText += 0x8a9e; // kanji "speak"
-	SetText(_T("Style editor preview text"),previewText);
-	SetColour(_T("Style editor preview background"),wxColour(125,153,176));
-
 	lastVersion = -1;
+	overriding = false;
 }
 
 
@@ -469,6 +469,10 @@ void OptionsManager::Load() {
 /////////////
 // Write int
 void OptionsManager::SetInt(wxString key,int param,int ifLastVersion) {
+	if (ifLastVersion == -1) {
+		if (overriding) ifLastVersion = 0;
+		else ifLastVersion = 0x7FFFFFFF;
+	}
 	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetInt(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
@@ -479,6 +483,10 @@ void OptionsManager::SetInt(wxString key,int param,int ifLastVersion) {
 ///////////////
 // Write float
 void OptionsManager::SetFloat(wxString key,double param,int ifLastVersion) {
+	if (ifLastVersion == -1) {
+		if (overriding) ifLastVersion = 0;
+		else ifLastVersion = 0x7FFFFFFF;
+	}
 	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetFloat(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
@@ -489,6 +497,10 @@ void OptionsManager::SetFloat(wxString key,double param,int ifLastVersion) {
 ////////////////
 // Write string
 void OptionsManager::SetText(wxString key,wxString param,int ifLastVersion) {
+	if (ifLastVersion == -1) {
+		if (overriding) ifLastVersion = 0;
+		else ifLastVersion = 0x7FFFFFFF;
+	}
 	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetText(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
@@ -499,6 +511,10 @@ void OptionsManager::SetText(wxString key,wxString param,int ifLastVersion) {
 /////////////////
 // Write boolean
 void OptionsManager::SetBool(wxString key,bool param,int ifLastVersion) {
+	if (ifLastVersion == -1) {
+		if (overriding) ifLastVersion = 0;
+		else ifLastVersion = 0x7FFFFFFF;
+	}
 	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetBool(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;
@@ -509,6 +525,10 @@ void OptionsManager::SetBool(wxString key,bool param,int ifLastVersion) {
 ////////////////
 // Write colour
 void OptionsManager::SetColour(wxString key,wxColour param,int ifLastVersion) {
+	if (ifLastVersion == -1) {
+		if (overriding) ifLastVersion = 0;
+		else ifLastVersion = 0x7FFFFFFF;
+	}
 	if (lastVersion >= ifLastVersion) return;
 	opt[key.Lower()].SetColour(param);
 	if (curModType != MOD_OFF) optType[key.Lower()] = curModType;

@@ -132,7 +132,7 @@ bool AegisubApp::OnInit() {
 		}
 		StartupLog(_T("Store options back"));
 		Options.SetInt(_T("Last Version"),GetSVNRevision());
-		Options.LoadDefaults();	// Override options based on version number
+		Options.LoadDefaults(false,true);	// Override options based on version number
 		Options.Save();
 		AssTime::UseMSPrecision = Options.AsBool(_T("Use nonstandard Milisecond Times"));
 

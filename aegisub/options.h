@@ -65,6 +65,7 @@ class OptionsManager {
 private:
 	ModType curModType;
 	bool modified;
+	bool overriding;
 	wxString filename;
 	std::map<wxString,VariableData> opt;
 	std::map<wxString,ModType> optType;
@@ -80,15 +81,15 @@ public:
 	void SetFile(wxString file);
 	void Save();
 	void Load();
-	void LoadDefaults(bool onlyDefaults=false);
+	void LoadDefaults(bool onlyDefaults=false,bool versionOverride=false);
 	void AddToRecentList (wxString entry,wxString list);
 	wxArrayString GetRecentList (wxString list);
 
-	void SetInt(wxString key,int param,int ifLastVersion=0);
-	void SetFloat(wxString key,double param,int ifLastVersion=0);
-	void SetBool(wxString key,bool param,int ifLastVersion=0);
-	void SetText(wxString key,wxString param,int ifLastVersion=0);
-	void SetColour(wxString key,wxColour param,int ifLastVersion=0);
+	void SetInt(wxString key,int param,int ifLastVersion=-1);
+	void SetFloat(wxString key,double param,int ifLastVersion=-1);
+	void SetBool(wxString key,bool param,int ifLastVersion=-1);
+	void SetText(wxString key,wxString param,int ifLastVersion=-1);
+	void SetColour(wxString key,wxColour param,int ifLastVersion=-1);
 	void ResetWith(wxString key,wxString param);
 
 	bool IsDefined(wxString key);
