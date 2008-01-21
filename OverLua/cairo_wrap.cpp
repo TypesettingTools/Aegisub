@@ -999,6 +999,7 @@ LuaCairoContext::LuaCairoContext(lua_State *L, cairo_t *_context) :
 	CALLABLE_REG(set_source_rgba);
 	CALLABLE_REG(set_source);
 	CALLABLE_REG(set_source_surface);
+	CALLABLE_REG(get_source);
 	CALLABLE_REG(set_antialias);
 	CALLABLE_REG(get_antialias);
 	CALLABLE_REG(set_dash);

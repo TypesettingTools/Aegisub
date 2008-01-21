@@ -692,14 +692,36 @@ static int pixel_value_map(lua_State *L)
 	cairo_surface_t *surf = CheckSurface(L, 1);
 	const char *program = luaL_checkstring(L, 2);
 
+	// Init image
+	cairo_surface_flush(surf);
+	int width = cairo_image_surface_get_width(surf);
+	int height = cairo_image_surface_get_height(surf);
+	ptrdiff_t stride = (ptrdiff_t)cairo_image_surface_get_stride(surf);
+	unsigned char *data = cairo_image_surface_get_data(surf);
+	cairo_format_t format = cairo_image_surface_get_format(surf);
+
 	// Set up engine specs
 	ExpressionEngine::Specification spec;
-	spec.registers.resize(5);
-	spec.registers[0] = "R";
-	spec.registers[1] = "G";
-	spec.registers[2] = "B";
-	spec.registers[3] = "X";
-	spec.registers[4] = "Y";
+	if (format == CAIRO_FORMAT_ARGB32) {
+		spec.registers.resize(6);
+		spec.registers[0] = "R";
+		spec.registers[1] = "G";
+		spec.registers[2] = "B";
+		spec.registers[3] = "A";
+		spec.registers[4] = "X";
+		spec.registers[5] = "Y";
+	}
+	else if (format == CAIRO_FORMAT_RGB24) {
+		spec.registers.resize(5);
+		spec.registers[0] = "R";
+		spec.registers[1] = "G";
+		spec.registers[2] = "B";
+		spec.registers[3] = "X";
+		spec.registers[4] = "Y";
+	}
+	else {
+		luaL_error(L, "Unsupported pixel format");
+	}
 
 	// Compile program
 	ExpressionEngine::Machine machine;
@@ -710,14 +732,6 @@ static int pixel_value_map(lua_State *L)
 		// This is a parse error
 		luaL_error(L, "Error in expression program near\"%s\"", e);
 	}
-
-	// Init image
-	cairo_surface_flush(surf);
-	int width = cairo_image_surface_get_width(surf);
-	int height = cairo_image_surface_get_height(surf);
-	ptrdiff_t stride = (ptrdiff_t)cairo_image_surface_get_stride(surf);
-	unsigned char *data = cairo_image_surface_get_data(surf);
-	cairo_format_t format = cairo_image_surface_get_format(surf);
 
 	if (format == CAIRO_FORMAT_ARGB32) {
 		BaseImage<PixelFormat::cairo_argb32> img(width, height, stride, data);
