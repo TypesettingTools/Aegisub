@@ -34,6 +34,9 @@
 //
 
 
+#ifdef WITH_PORTAUDIO
+
+
 ///////////
 // Headers
 #include "audio_player.h"
@@ -274,3 +277,5 @@ void PortAudioPlayer::CloseStream() {
 	} catch (...) {}
 }
 
+
+#endif // WITH_PORTAUDIO

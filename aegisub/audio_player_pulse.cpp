@@ -34,6 +34,9 @@
 //
 
 
+#ifdef WITH_PULSEAUDIO
+
+
 ///////////
 // Headers
 #include <wx/wxprec.h>
@@ -475,5 +478,4 @@ void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 }
 
 
-
-
+#endif // WITH_PULSEAUDIO

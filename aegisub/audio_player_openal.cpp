@@ -34,6 +34,9 @@
 //
 
 
+#ifdef WITH_OPENAL
+
+
 ///////////
 // Headers
 #include <wx/wxprec.h>
@@ -395,4 +398,6 @@ int64_t OpenALPlayer::GetCurrentPosition()
 	return buffers_played * buffer_length + start_frame + extra * samplerate / 1000;
 }
 
+
+#endif // WITH_OPENAL
 

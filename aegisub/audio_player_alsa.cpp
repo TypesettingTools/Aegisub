@@ -34,6 +34,9 @@
 //
 
 
+#ifdef WITH_ALSA
+
+
 ///////////
 // Headers
 #include <wx/wxprec.h>
@@ -450,5 +453,4 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 }
 
 
-
-
+#endif // WITH_ALSA

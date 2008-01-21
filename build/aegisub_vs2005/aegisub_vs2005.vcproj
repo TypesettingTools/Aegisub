@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="aegisub_vs2005"
 	ProjectGUID="{65C67A5D-D31C-4DB6-965B-69AF7EFA4B5A}"
 	RootNamespace="aegisub_vs2005"
@@ -496,7 +496,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_player_alsa.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_player_dsound.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_openal.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_portaudio.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_pulse.cpp"
 				>
 			</File>
 			<File
