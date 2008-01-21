@@ -365,7 +365,7 @@ void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
 
 ////////////////////////////////////////////
 // Merge identical and/or overlapping lines
-void SubtitleFormat::Merge(bool identical,bool overlaps,bool stripComments) {
+void SubtitleFormat::Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue) {
 	using std::list;
 	list<AssEntry*>::iterator next;
 	list<AssEntry*>::iterator prev = Line->end();
@@ -407,8 +407,10 @@ void SubtitleFormat::Merge(bool identical,bool overlaps,bool stripComments) {
 
 		// Other line, delete it
 		else {
-			delete *cur;
-			Line->erase(cur);
+			if (stripNonDialogue) {
+				delete *cur;
+				Line->erase(cur);
+			}
 		}
 	}
 }

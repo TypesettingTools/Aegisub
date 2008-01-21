@@ -71,7 +71,7 @@ protected:
 	void ClearCopy();
 	void SortLines();
 	void ConvertTags(int format,wxString lineEnd);
-	void Merge(bool identical,bool overlaps,bool stripComments);
+	void Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue);
 
 	void Clear();
 	void LoadDefault(bool defline=true);

@@ -49,6 +49,7 @@ struct SubPicture {
 	std::vector<unsigned char> data[2];
 	int x,y;
 	int w,h;
+	int start,end;
 };
 
 struct RLEGroup {

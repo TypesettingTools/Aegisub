@@ -178,7 +178,7 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Convert file
 	CreateCopy();
 	SortLines();
-	Merge(true,true,true);
+	Merge(true,true,true,false);
 	ConvertTags(1,_T("|"));
 
 	// Open file
