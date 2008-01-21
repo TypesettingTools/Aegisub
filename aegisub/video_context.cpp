@@ -296,12 +296,10 @@ void VideoContext::SetVideo(const wxString &filename) {
 				KeyFrames = VFWWrapper::GetKeyFrames(filename);
 				keyFramesLoaded = true;
 #else
-#ifndef __APPLE__
 #ifdef WITH_FFMPEG
 				LAVCKeyFrames k(filename);
 				KeyFrames = k.GetKeyFrames();
 				keyFramesLoaded = true;
-#endif
 #endif
 #endif
 			}
