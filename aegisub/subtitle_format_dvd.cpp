@@ -250,6 +250,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 
 				// Advance
 				dataRead += (2*w-sw)*3;
+				//dataRead += sw*3;
 			}
 
 			// Encode into subpicture format
@@ -264,6 +265,8 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 
 				// End of line, write b000000cc
 				if (groups[m].eol) nibbles = 4;
+
+				// Get proper nibble count
 				else {
 					if (len < 4) nibbles = 1;
 					else if (len < 16) nibbles = 2;
@@ -284,10 +287,14 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 					}
 					else data.back() = nibble[n] | last;
 					off = !off;
+
+					// Check if just wrote end of line
+					if (len == 0 && n == 0) {
+						last = 0;
+						off = false;
+					}
 				}
 			}
-			last = 0;
-			off = false;
 			data.resize(data.size());
 		}
 	}
