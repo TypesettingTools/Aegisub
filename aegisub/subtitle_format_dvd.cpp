@@ -114,9 +114,10 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 		// Get the image
 		AegiVideoFrame dst;
 		dst.CopyFrom(srcFrame);
+		double time = (current->Start.GetMS()/1000.0 + current->End.GetMS()/1000.0)/2.0;
 		#pragma omp critical
 		{
-			provider->DrawSubtitles(dst,current->Start.GetMS()/1000.0);
+			provider->DrawSubtitles(dst,time);
 		}
 		wxImage img = dst.GetImage();
 		dst.Clear();
@@ -146,7 +147,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 
 				// Background
 				if (r > 127 && g < 20) {
-					r = 255;
+					r = 200;
 					g = 0;
 					b = 0;
 				}
@@ -191,15 +192,88 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 			}
 		}
 		
-		// Get subpicture
-		wxImage subPic = img.GetSubImage(wxRect(startX,startY,endX-startX+1,endY-startY+1));
-
 		// Save image
 		if (startX > endX) endX = startX;
 		if (startY > endY) endY = startY;
-		pics[i].img = subPic;
+		int sw = endX-startX+1;
+		int sh = endY-startY+1;
 		pics[i].x = startX;
 		pics[i].y = startY;
+		pics[i].w = sw;
+		pics[i].h = sh;
+
+		// RLE to memory
+		for (int j=0;j<2;j++) {
+			int curCol = -1;
+			int col;
+			int temp;
+			int len = 0;
+			dataRead = data + ((startY+j)*w+startX)*3;
+			std::vector<RLEGroup> groups;
+			groups.reserve(1024);
+
+			// Read this scanline
+			for (int y=startY+j;y<=endY;y+=2) {
+				for (int x=startX;x<=endX;x++) {
+					// Read current pixel colour
+					temp = *dataRead;
+					if (temp == 200) col = 0;
+					else if (temp == 255) col = 1;
+					else if (temp == 0) col = 2;
+					else col = 3;
+
+					// See if it matches
+					if (col == curCol) {
+						len++;
+						if (len == 255) {
+							if (len) groups.push_back(RLEGroup(curCol,len,false));
+							len = 0;
+						}
+					}
+					else {
+						if (len) groups.push_back(RLEGroup(curCol,len,false));
+						len = 1;
+						curCol = col;
+					}
+
+					dataRead += 3;
+				}
+
+				// Flush
+				if (len) groups.push_back(RLEGroup(curCol,0,true));
+				else {
+					groups.back().len = 0;
+					groups.back().eol = true;
+				}
+
+				// Advance
+				dataRead += (2*w-sw)*3;
+			}
+
+			// Encode into subpicture format
+			int nibble[4];
+			nibble[3] = 0;
+			bool off = false;
+			std::vector<unsigned char> &data = pics[i].data[j];
+			unsigned char last = 0;
+			for (size_t m=0;m<groups.size();m++) {
+				int nibbles;
+				if (groups[m].eol) nibbles = 4;
+				else nibbles = groups[m].len >> 2;
+				nibble[0] = groups[m].col | ((groups[m].len & 0x3) << 2);
+				nibble[1] = (groups[m].len & 0x3C) >> 2;
+				nibble[2] = (groups[m].len & 0xC0) >> 6;
+				for (int n=0;n<nibbles;n++) {
+					if (!off) {
+						last = nibble[nibbles-n-1] << 4;
+						data.push_back(last);
+					}
+					else data.back() = data.back() | last;
+					off = !off;
+				}
+			}
+			data.resize(data.size());
+		}
 	}
 
 	// Clean up
@@ -214,7 +288,4 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Get subpictures
 	std::vector<SubPicture> pics;
 	GetSubPictureList(pics);
-
-	// Dump as PNG
-	//for (size_t i=0;i<pics.size();i++) pics[i].img.SaveFile(filename + wxString::Format(_T("_%03i.png"),i));
 }

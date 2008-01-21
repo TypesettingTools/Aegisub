@@ -42,11 +42,20 @@
 #include "subtitle_format.h"
 
 
-////////////////
-// Helper class
+//////////////////
+// Helper classes
 struct SubPicture {
-	wxImage img;
+	//wxImage img;
+	std::vector<unsigned char> data[2];
 	int x,y;
+	int w,h;
+};
+
+struct RLEGroup {
+	int col;
+	int len;
+	bool eol;
+	RLEGroup(int _col,int _len,bool _eol) { col = _col; len = _len; eol = _eol; }
 };
 
 
