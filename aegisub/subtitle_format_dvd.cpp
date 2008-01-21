@@ -245,6 +245,8 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 					groups.back().len = 0;
 					groups.back().eol = true;
 				}
+				curCol = -1;
+				len = 0;
 
 				// Advance
 				dataRead += (2*w-sw)*3;
@@ -324,7 +326,7 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 		// Calculate lengths
 		size_t controlLen = 30;
-		size_t packetLen = 2 + pics[i].data[0].size() + pics[i].data[1].size() + controlLen;
+		size_t packetLen = 4 + pics[i].data[0].size() + pics[i].data[1].size() + controlLen;
 		size_t packetStart = pos;
 
 		// Write position of the next packet and control
@@ -348,7 +350,7 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		unsigned char pix0_b2 = line0pos & 0xFF;
 		unsigned char pix1_b1 = (line1pos & 0xFF00) >> 8;
 		unsigned char pix1_b2 = line1pos & 0xFF;
-		int delay = (pics[i].end - pics[i].start)/10;
+		int delay = (pics[i].end - pics[i].start)*90/1024;
 		unsigned char delay_b1 = (delay & 0xFF00) >> 8;
 		unsigned char delay_b2 = delay & 0xFF;
 		int sx = pics[i].x;
@@ -357,10 +359,10 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		int ey = pics[i].h + sy;
 		unsigned char dispx_b1 = (sx & 0xFF0) >> 4;
 		unsigned char dispx_b2 = ((sx & 0x0F) << 4) | ((ex & 0xF00) >> 8);
-		unsigned char dispx_b3 = (sx & 0xFF);
+		unsigned char dispx_b3 = (ex & 0xFF);
 		unsigned char dispy_b1 = (sy & 0xFF0) >> 4;
 		unsigned char dispy_b2 = ((sy & 0x0F) << 4) | ((ey & 0xF00) >> 8);
-		unsigned char dispy_b3 = (sy & 0xFF);
+		unsigned char dispy_b3 = (ey & 0xFF);
 
 		// Write control group
 		unsigned char control[] = {
