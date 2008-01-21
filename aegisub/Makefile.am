@@ -196,6 +196,7 @@ aegisub_SOURCES = \
 	subs_preview.cpp \
 	subtitle_format.cpp \
 	subtitle_format_ass.cpp \
+	subtitle_format_dvd.cpp \
 	subtitle_format_encore.cpp \
 	subtitle_format_microdvd.cpp \
 	subtitle_format_mkv.cpp \
