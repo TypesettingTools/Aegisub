@@ -42,9 +42,20 @@
 #include "subtitle_format.h"
 
 
+////////////////
+// Helper class
+struct SubPicture {
+	wxImage img;
+	int x,y;
+};
+
+
 //////////////////////////
 // DVD subpictures writer
 class DVDSubtitleFormat : public SubtitleFormat {
+private:
+	void GetSubPictureList(std::vector<SubPicture> &pics);
+
 public:
 	wxString GetName();
 	wxArrayString GetWriteWildcards();

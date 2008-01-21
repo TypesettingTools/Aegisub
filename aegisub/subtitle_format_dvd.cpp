@@ -44,6 +44,9 @@
 #include "subtitles_provider.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 
 ///////////////
@@ -70,115 +73,148 @@ bool DVDSubtitleFormat::CanWriteFile(wxString filename) {
 
 
 ///////////////////////
-// Actually write them
-void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
+// Get subpicture list
+void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 	// Create video frame
 	int w = 720;
 	int h = 480;
 	VideoProvider *video = new DummyVideoProvider(10,1,w,h,wxColour(255,0,0),false);
-	AegiVideoFrame srcFrame;
-	srcFrame.CopyFrom(video->GetFrame(0));
+	AegiVideoFrame srcFrame = video->GetFrame(0);
 	delete video;
-
-	// Subtitles
-	SubtitlesProvider *provider = SubtitlesProviderFactory::GetProvider();
 
 	// Prepare subtitles
 	CreateCopy();
 	SortLines();
 	//Merge(true,true,true);
-	provider->LoadSubtitles(GetAssFile());
 
-	// Write lines
+	// Count and index lines
 	using std::list;
-	int i = 0;
+	int count = 0;
+	std::vector<AssDialogue*> diags;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
 		if (current) {
-			// Get the image
-			AegiVideoFrame dst;
-			dst.CopyFrom(srcFrame);
+			diags.push_back(current);
+			count++;
+		}
+	}
+	pics.resize(count);
+
+	SubtitlesProvider *provider = NULL;
+	provider = SubtitlesProviderFactory::GetProvider();
+	provider->LoadSubtitles(GetAssFile());
+
+	// Write lines
+	int i;
+	#pragma omp parallel for shared(diags,pics,provider) private(i)
+	for (i=0;i<count;i++) {
+		// Dialogue
+		AssDialogue *current = diags[i];
+
+		// Get the image
+		AegiVideoFrame dst;
+		dst.CopyFrom(srcFrame);
+		#pragma omp critical
+		{
 			provider->DrawSubtitles(dst,current->Start.GetMS()/1000.0);
-			wxImage img = dst.GetImage();
-			dst.Clear();
+		}
+		wxImage img = dst.GetImage();
+		dst.Clear();
 
-			// Perform colour reduction on image
-			unsigned char r,g,b;
-			unsigned char *data = img.GetData();
-			const unsigned char *dataRead = data;
-			unsigned char *dataWrite = data;
-			int startY = 0;
-			int endY;
-			int startX = w;
-			int endX = 0;
+		// Perform colour reduction on image
+		unsigned char r,g,b;
+		unsigned char *data = img.GetData();
+		const unsigned char *dataRead = data;
+		unsigned char *dataWrite = data;
+		int startY = 0;
+		int endY = 0;
+		int startX = w;
+		int endX = 0;
 
-			// For each line
-			for (int y=h;--y>=0;) {
-				bool hasData = false;
-				int lineStartX = 0;
-				int lineEndX;
+		// For each line
+		for (int y=h;--y>=0;) {
+			bool hasData = false;
+			int lineStartX = 0;
+			int lineEndX;
 
-				// Scan line
-				for (int x=w;--x>=0;) {
-					// Read
-					r = *(dataRead++);
-					g = *(dataRead++);
-					b = *(dataRead++);
+			// Scan line
+			for (int x=w;--x>=0;) {
+				// Read
+				r = *(dataRead++);
+				g = *(dataRead++);
+				b = *(dataRead++);
 
-					// Background
-					if (r > 127 && g < 20) {
+				// Background
+				if (r > 127 && g < 20) {
+					r = 255;
+					g = 0;
+					b = 0;
+				}
+
+				// Text
+				else {
+					// Mark coordinates
+					hasData = true;
+					if (lineStartX == 0) lineStartX = w-x-1;
+					lineEndX = w-x-1;
+
+					// Set colour
+					if (r > 170 && g > 170) {
 						r = 255;
+						g = 255;
+						b = 255;
+					}
+					else if (r > 85 && g > 85) {
+						r = 127;
+						g = 127;
+						b = 127;
+					}
+					else {
+						r = 0;
 						g = 0;
 						b = 0;
 					}
-
-					// Text
-					else {
-						// Mark coordinates
-						hasData = true;
-						if (lineStartX == 0) lineStartX = w-x-1;
-						lineEndX = w-x-1;
-
-						// Set colour
-						if (r > 170 && g > 170) {
-							r = 255;
-							g = 255;
-							b = 255;
-						}
-						else if (r > 85 && g > 85) {
-							r = 127;
-							g = 127;
-							b = 127;
-						}
-						else {
-							r = 0;
-							g = 0;
-							b = 0;
-						}
-					}
-
-					// Write
-					*(dataWrite++) = r;
-					*(dataWrite++) = g;
-					*(dataWrite++) = b;
 				}
 
-				// Mark as last found so far
-				if (hasData) {
-					if (startY == 0) startY = h-y-1;
-					endY = h-y-1;
-					if (lineStartX < startX) startX = lineStartX;
-					if (lineEndX > endX) endX = lineEndX;
-				}
+				// Write
+				*(dataWrite++) = r;
+				*(dataWrite++) = g;
+				*(dataWrite++) = b;
 			}
 
-			// Save image
-			img.GetSubImage(wxRect(startX,startY,endX-startX+1,endY-startY+1)).SaveFile(filename + wxString::Format(_T("%03i.png"),i));
-			i++;
+			// Mark as last found so far
+			if (hasData) {
+				if (startY == 0) startY = h-y-1;
+				endY = h-y-1;
+				if (lineStartX < startX) startX = lineStartX;
+				if (lineEndX > endX) endX = lineEndX;
+			}
 		}
+		
+		// Get subpicture
+		wxImage subPic = img.GetSubImage(wxRect(startX,startY,endX-startX+1,endY-startY+1));
+
+		// Save image
+		if (startX > endX) endX = startX;
+		if (startY > endY) endY = startY;
+		pics[i].img = subPic;
+		pics[i].x = startX;
+		pics[i].y = startY;
 	}
 
 	// Clean up
 	delete provider;
 	srcFrame.Clear();
+}
+
+
+///////////////////////
+// Actually write them
+void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
+	// Get subpictures
+	std::vector<SubPicture> pics;
+	GetSubPictureList(pics);
+
+	// Dump as PNG
+	//for (size_t i=0;i<pics.size();i++) pics[i].img.SaveFile(filename + wxString::Format(_T("_%03i.png"),i));
 }
