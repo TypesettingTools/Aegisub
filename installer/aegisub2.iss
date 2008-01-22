@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppRevision "r1800"
+#define MyAppRevision "r1813"
 #define MyAppVerName "Aegisub 2.00 alpha"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
@@ -182,8 +182,10 @@ Source: ..\bin\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: ig
 Source: ..\bin\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
 #endif
 ; localization
-Source: ..\bin\locale\pt_BR\aegisub.mo; DestDir: {app}\locale\pt_BR; Flags: ignoreversion; Components: i18n/pt_BR
-Source: ..\bin\locale\pt_BR\wxstd.mo; DestDir: {app}\locale\pt_BR; Flags: ignoreversion; Components: i18n/pt_BR
+Source: ..\po\ca.mo; DestDir: {app}\locale\ca; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/ca
+Source: ..\po\wxstd-ca.mo; DestDir: {app}\locale\ca; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/ca
+Source: ..\po\pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/pt_BR
+Source: ..\po\wxstd-pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/pt_BR
 ; documentation
 Source: ..\docs\output\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: "*svn"
 ; ASSDraw3
@@ -219,6 +221,7 @@ Name: docs; Description: Documentation files; Types: custom compact full
 Name: i18n; Description: Languages; Types: full custom compact; Flags: fixed
 Name: i18n/english; Description: English (built in); Flags: fixed; Types: compact full custom
 Name: i18n/pt_BR; Description: Brazilian Portuguese; Types: full
+Name: i18n/ca; Description: Catalan; Types: full
 #if IncludeSpeller != 0
 Name: dic; Description: Spell checker; Types: full
 Name: dic/en_GB; Description: British English dictionary; Types: full
