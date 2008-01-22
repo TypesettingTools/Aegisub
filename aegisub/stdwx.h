@@ -60,6 +60,7 @@
 
 /////////////////////
 // wxWidgets headers
+#pragma warning(disable: 6011)
 #include <wx/wxprec.h>
 #include <wx/notebook.h>
 #include <wx/statline.h>
@@ -89,6 +90,7 @@
 #include <GL/glu.h>
 #endif
 #include <wx/glcanvas.h>
+
 
 
 ///////////////

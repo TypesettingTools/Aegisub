@@ -594,12 +594,12 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 	}
 
 	if (!weak) {
-		unsigned char *img = (unsigned char *)malloc(h*w*3); // wxImage requires using malloc
-
 		if (!spectrumRenderer)
 			spectrumRenderer = new AudioSpectrum(provider);
 
 		spectrumRenderer->SetScaling(scale);
+
+		unsigned char *img = (unsigned char *)malloc(h*w*3); // wxImage requires using malloc
 
 		// Use a slightly slower, but simple way
 		// Always draw the spectrum for the entire width

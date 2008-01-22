@@ -108,9 +108,9 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 
 	// VertVol sider
 	wxSizer *VertVol = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *VertVolArea = new wxBoxSizer(wxVERTICAL);
 	VertVol->Add(VerticalZoom,1,wxEXPAND,0);
 	VertVol->Add(VolumeBar,1,wxEXPAND,0);
+	wxSizer *VertVolArea = new wxBoxSizer(wxVERTICAL);
 	VertVolArea->Add(VertVol,1,wxEXPAND,0);
 	VertVolArea->Add(VerticalLink,0,wxEXPAND,0);
 

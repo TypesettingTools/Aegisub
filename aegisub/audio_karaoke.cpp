@@ -363,12 +363,12 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 			if (syl.pending_splits.size() > 0) {
 				wxArrayInt widths;
 				if (dc.GetPartialTextExtents(temptext, widths)) {
-					for (unsigned int i = 0; i < syl.pending_splits.size(); i++) {
+					for (unsigned int j = 0; j < syl.pending_splits.size(); j++) {
 						dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
 						int splitxpos = dx + 4;
 						// Handle splitters placed before first char in syllable; these are represented as -1
-						if (syl.pending_splits[i] >= 0) {
-							splitxpos += widths[syl.pending_splits[i]];
+						if (syl.pending_splits[j] >= 0) {
+							splitxpos += widths[syl.pending_splits[j]];
 						} else {
 							splitxpos += 0;
 						}
