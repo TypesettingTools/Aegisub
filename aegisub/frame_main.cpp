@@ -46,7 +46,9 @@
 
 #include "subs_grid.h"
 #include "frame_main.h"
+#ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
+#endif
 #include "video_display.h"
 #include "video_provider.h"
 #include "video_slider.h"
@@ -1104,7 +1106,7 @@ void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 		wxString err(error);
 		wxMessageBox(err, _T("Error opening audio file"), wxOK | wxICON_ERROR, this);
 	}
-	#ifdef __WINDOWS__ 
+	#ifdef WITH_AVISYNTH
 	catch (AvisynthError err) {
 		wxMessageBox (wxString(_T("AviSynth error: ")) + wxString(err.msg,wxConvUTF8), _T("Error loading audio"), wxOK | wxICON_ERROR);
 		return;

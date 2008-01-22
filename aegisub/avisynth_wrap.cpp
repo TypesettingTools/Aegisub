@@ -36,9 +36,9 @@
 
 ////////////
 // Includes
-#include "avisynth_wrap.h"
 
-#ifdef __WINDOWS__
+#ifdef WITH_AVISYNTH
+#include "avisynth_wrap.h"
 #include "options.h"
 
 #ifdef DEBUG_AVISYNTH_CODE

@@ -60,6 +60,11 @@
 //#define WITH_DIRECTSOUND
 
 
+// Enable Avisynth
+// Requires: nothing (just the avisynth dlls)
+//#define WITH_AVISYNTH
+
+
 
 ///////////// MEDIUM PRIORITY ////////////
 
