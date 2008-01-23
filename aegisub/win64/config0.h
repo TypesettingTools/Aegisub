@@ -60,6 +60,11 @@
 //#define WITH_DIRECTSOUND
 
 
+// Enable Avisynth
+// Requires: nothing (just the avisynth dlls)
+//#define WITH_AVISYNTH
+
+
 
 ///////////// MEDIUM PRIORITY ////////////
 
@@ -124,3 +129,22 @@
 // Requires: Ruby 1.9
 //#define WITH_RUBY
 
+
+// Enable PortAudio audio player
+// Requires PortAudio release 18
+//#define WITH_PORTAUDIO
+
+
+// Enable ALSA audio player
+// Requires Linux and libasound
+//#define WITH_ALSA
+
+
+// Enable OpenAL audio player
+// Requires OpenAL development libraries and headers
+//#define WITH_OPENAL
+
+
+// Enable Pulse Audio audio player
+// Requires libpulse (and a *NIX compatible system and a running sound server to actually use)
+//#define WITH_PULSEAUDIO
