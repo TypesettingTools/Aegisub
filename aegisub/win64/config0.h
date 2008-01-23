@@ -72,8 +72,8 @@
 // If you're on Visual Studio, also uncomment the library names and make sure they match the files that you have
 // Requires: FreeType2
 //#define WITH_FREETYPE2
-//#define FT2_LIB_RELEASE "freetype235.lib"
-//#define FT2_LIB_DEBUG "freetype235_D.lib"
+//#define FT2_LIB_RELEASE "freetype235_x64.lib"
+//#define FT2_LIB_DEBUG "freetype235_D_x64.lib"
 
 
 // Enable CSRI, required for styles previews in the style editor and some video providers

@@ -38,7 +38,7 @@
 #include "version.h"
 
 #ifdef __WINDOWS__
-#include "win32/config.h"
+#include "config.h"
 #include "../build/svn-revision.h"
 #else
 #ifdef __APPLE__
