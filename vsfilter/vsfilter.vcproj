@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="vsfilter"
 	ProjectGUID="{7A3950FD-A235-459A-ACA2-5170863CD32C}"
 	RootNamespace="vsfilter"
@@ -149,6 +149,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="delayimp.lib strmbaseu.lib winmm.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\lib"
 				ModuleDefinitionFile=".\vsfilter.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"

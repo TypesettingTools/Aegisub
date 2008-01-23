@@ -127,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="../lib/univcset_d.lib"
+				OutputFile="../lib/univcset_d_x64.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -250,7 +250,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="../lib/univcset.lib"
+				OutputFile="../lib/univcset_x64.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
