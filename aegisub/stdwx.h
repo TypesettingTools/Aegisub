@@ -99,5 +99,7 @@
 #include <list>
 #include <map>
 
+#pragma warning(default: 6011)
+
 
 #endif // C++

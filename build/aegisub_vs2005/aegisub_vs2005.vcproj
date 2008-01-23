@@ -132,7 +132,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../aegisub/win64;../../hunspell/src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -305,7 +305,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="../../aegisub/win64;../../hunspell/src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				OpenMP="true"
 				UsePrecompiledHeader="2"
@@ -1388,14 +1388,6 @@
 			Name="Core"
 			>
 			<File
-				RelativePath="..\..\aegisub\win32\config.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\win32\config0.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\frame_main.cpp"
 				>
 			</File>
@@ -1819,6 +1811,34 @@
 				RelativePath="..\..\aegisub\visual_tool_vector_clip.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Config"
+			>
+			<Filter
+				Name="win32"
+				>
+				<File
+					RelativePath="..\..\aegisub\win32\config.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\win32\config0.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="win64"
+				>
+				<File
+					RelativePath="..\..\aegisub\win64\config.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\win64\config0.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\aegisub\changelog.txt"

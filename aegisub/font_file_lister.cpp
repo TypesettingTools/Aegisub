@@ -42,7 +42,7 @@
 #include "text_file_writer.h"
 #include "text_file_reader.h"
 #include "standard_paths.h"
-#if defined(WIN32) || defined(__APPLE__)
+#if defined(__WINDOWS__) || defined(__APPLE__)
 #ifdef WITH_FREETYPE2
 #include "font_file_lister_freetype.h"
 #define FontListerClass FreetypeFontFileLister

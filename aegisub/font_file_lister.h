@@ -47,7 +47,7 @@
 
 ////////////
 // Typedefs
-#if defined(WIN32) || defined(__APPLE__)
+#if defined(__WINDOWS__) || defined(__APPLE__)
 typedef struct FT_LibraryRec_ *FT_Library;
 #endif
 typedef std::map<wxString,wxArrayString> FontMap;
