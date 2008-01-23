@@ -1,3 +1,3 @@
 release;1.10-524;http://www.aegisub.net/;Aegisub 1.10
 
-svn;1787;http://www.malakith.net/amz/aegisub/;Aegisub Pre-Release 2.00 r1787 build - Several important bug fixes... as usual.
+svn;1813;http://www.malakith.net/amz/aegisub/;Aegisub Pre-Release 2.00 r1813 build - Guess what? Bug fixes!

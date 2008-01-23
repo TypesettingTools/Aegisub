@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="aegisub_vs2005"
 	ProjectGUID="{65C67A5D-D31C-4DB6-965B-69AF7EFA4B5A}"
 	RootNamespace="aegisub_vs2005"
@@ -157,7 +157,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/aegisub_d.exe"
+				OutputFile="../../bin/aegisub_d_x64.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../lib"
 				GenerateManifest="true"
@@ -328,7 +328,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/aegisub.exe"
+				OutputFile="../../bin/aegisub_x64.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../lib"
 				GenerateManifest="true"
