@@ -641,24 +641,32 @@ namespace Automation4 {
 
 	void LuaFeatureFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog)
 	{
+		LuaStackcheck stackcheck(L);
+
 		GetFeatureFunction(1); // 1 = processing function
 		assert(lua_isfunction(L, -1));
+		stackcheck.check(1);
 
 		// prepare function call
 		// subtitles (undo doesn't make sense in exported subs, in fact it'll totally break the undo system)
 		LuaAssFile *subsobj = new LuaAssFile(L, subs, true/*allow modifications*/, false/*disallow undo*/);
-		(void) subsobj;
+		assert(lua_isuserdata(L, -1));
+		stackcheck.check(2);
 		// config
 		if (has_config && config_dialog) {
-			assert(config_dialog->LuaReadBack(L) == 1);
+			int results_produced = config_dialog->LuaReadBack(L);
+			assert(results_produced == 1);
 			// TODO, write back stored options here
 		} else {
 			// no config so put an empty table instead
 			lua_newtable(L);
 		}
+		assert(lua_istable(L, -1));
+		stackcheck.check(3);
 
 		LuaProgressSink *ps = new LuaProgressSink(L, export_dialog, false);
 		ps->SetTitle(GetName());
+		stackcheck.check(3);
 
 		// do call
 		LuaThreadedCall call(L, 2, 0);
@@ -667,6 +675,11 @@ namespace Automation4 {
 		wxThread::ExitCode code = call.Wait();
 		(void) code;
 		//if (code) ThrowError();
+
+		stackcheck.check(0);
+
+		// Just ensure that subsobj survives until here
+		(void) subsobj;
 
 		delete ps;
 	}
