@@ -1,0 +1,69 @@
+# Project: ASSDraw
+# Compiler: Default GCC compiler
+# Compiler Type: MingW 3
+# Makefile created by wxDev-C++ 6.10.2 on 20/01/08 23:46
+
+CPP       = g++.exe
+CC        = gcc.exe
+WINDRES   = windres.exe
+OBJ       = ../Default\ Profile/assdraw.o ../Default\ Profile/cmd.o ../Default\ Profile/engine.o ../Default\ Profile/dlgctrl.o ../Default\ Profile/canvas.o ../Default\ Profile/AGGWindow.o ../Default\ Profile/agg_vcgen_bcspline.o ../Default\ Profile/agg_bcspline.o ../Default\ Profile/library.o ../Default\ Profile/settings.o ../Default\ Profile/assdraw_settings.o ../Default\ Profile/canvas_mouse.o ../Default\ Profile/ASSDraw3_private.res
+LINKOBJ   = "../Default Profile/assdraw.o" "../Default Profile/cmd.o" "../Default Profile/engine.o" "../Default Profile/dlgctrl.o" "../Default Profile/canvas.o" "../Default Profile/AGGWindow.o" "../Default Profile/agg_vcgen_bcspline.o" "../Default Profile/agg_bcspline.o" "../Default Profile/library.o" "../Default Profile/settings.o" "../Default Profile/assdraw_settings.o" "../Default Profile/canvas_mouse.o" "../Default Profile/ASSDraw3_private.res"
+LIBS      = -L"D:/Program Files/Dev-Cpp/Lib" -L"E:/DEV/agg-2.5" -L"E:/DEV/wxTreeMultiCtrl" -lwxmsw28_propgrid -mwindows -lwxmsw28 -lwxmsw28_gl -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lopengl32 -lagg  -s 
+INCS      = -I"include" -I"E:/DEV" -I"E:/DEV/agg-2.5/include" -I"E:/DEV/wxTreeMultiCtrl/include"
+CXXINCS   = -I"D:/Program Files/Dev-Cpp/lib/gcc/mingw32/3.4.2/include" -I"D:/Program Files/Dev-Cpp/include/c++/3.4.2/backward" -I"D:/Program Files/Dev-Cpp/include/c++/3.4.2/mingw32" -I"D:/Program Files/Dev-Cpp/include/c++/3.4.2" -I"D:/Program Files/Dev-Cpp/include" -I"D:/Program Files/Dev-Cpp/" -I"D:/Program Files/Dev-Cpp/include/common/wx/msw" -I"D:/Program Files/Dev-Cpp/include/common/wx/generic" -I"D:/Program Files/Dev-Cpp/include/common/wx/fl" -I"D:/Program Files/Dev-Cpp/include/common/wx/gizmos" -I"D:/Program Files/Dev-Cpp/include/common/wx/html" -I"D:/Program Files/Dev-Cpp/include/common/wx/mmedia" -I"D:/Program Files/Dev-Cpp/include/common/wx/net" -I"D:/Program Files/Dev-Cpp/include/common/wx/ogl" -I"D:/Program Files/Dev-Cpp/include/common/wx/plot" -I"D:/Program Files/Dev-Cpp/include/common/wx/protocol" -I"D:/Program Files/Dev-Cpp/include/common/wx/stc" -I"D:/Program Files/Dev-Cpp/include/common/wx/svg" -I"D:/Program Files/Dev-Cpp/include/common/wx/xml" -I"D:/Program Files/Dev-Cpp/include/common/wx/xrc" -I"D:/Program Files/Dev-Cpp/include/common/wx" -I"D:/Program Files/Dev-Cpp/include/common" -I"E:/dev/ACE-5.5" -I"E:/DEV" -I"E:/DEV/agg-2.5/include" -I"E:/DEV/wxTreeMultiCtrl/include"
+RCINCS    = --include-dir "D:/PROGRA~1/Dev-Cpp/include/common"
+BIN       = ../Default\ Profile/ASSDraw3.exe
+DEFINES   = 
+CXXFLAGS  = $(CXXINCS) $(DEFINES) -D__WXMSW__ -DNO_GCC_PRAGMA -fno-rtti -fno-exceptions  -Wno-deprecated   -fexpensive-optimizations -O3
+CFLAGS    = $(INCS) $(DEFINES)   -fexpensive-optimizations -O3
+GPROF     = gprof.exe
+RM        = rm -f
+LINK      = g++.exe
+
+.PHONY: all all-before all-after clean clean-custom
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	$(RM) $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(LINK) $(LINKOBJ) -o "..\Default Profile\ASSDraw3.exe" $(LIBS)
+
+../Default\ Profile/assdraw.o: $(GLOBALDEPS) assdraw.cpp assdraw.hpp _common.hpp enums.hpp include_once.hpp
+	$(CPP) -c assdraw.cpp -o "../Default Profile/assdraw.o" $(CXXFLAGS)
+
+../Default\ Profile/cmd.o: $(GLOBALDEPS) cmd.cpp
+	$(CPP) -c cmd.cpp -o "../Default Profile/cmd.o" $(CXXFLAGS)
+
+../Default\ Profile/engine.o: $(GLOBALDEPS) engine.cpp
+	$(CPP) -c engine.cpp -o "../Default Profile/engine.o" $(CXXFLAGS)
+
+../Default\ Profile/dlgctrl.o: $(GLOBALDEPS) dlgctrl.cpp assdraw.hpp _common.hpp
+	$(CPP) -c dlgctrl.cpp -o "../Default Profile/dlgctrl.o" $(CXXFLAGS)
+
+../Default\ Profile/canvas.o: $(GLOBALDEPS) canvas.cpp assdraw.hpp _common.hpp cmd.hpp agghelper.hpp
+	$(CPP) -c canvas.cpp -o "../Default Profile/canvas.o" $(CXXFLAGS)
+
+../Default\ Profile/AGGWindow.o: $(GLOBALDEPS) wxAGG/AGGWindow.cpp wxAGG/AGGWindow.h wxAGG/PixelFormatConvertor.h
+	$(CPP) -c wxAGG/AGGWindow.cpp -o "../Default Profile/AGGWindow.o" $(CXXFLAGS)
+
+../Default\ Profile/agg_vcgen_bcspline.o: $(GLOBALDEPS) agg_vcgen_bcspline.cpp agg_vcgen_bcspline.h agg_bcspline.h
+	$(CPP) -c agg_vcgen_bcspline.cpp -o "../Default Profile/agg_vcgen_bcspline.o" $(CXXFLAGS)
+
+../Default\ Profile/agg_bcspline.o: $(GLOBALDEPS) agg_bcspline.cpp agg_bcspline.h
+	$(CPP) -c agg_bcspline.cpp -o "../Default Profile/agg_bcspline.o" $(CXXFLAGS)
+
+../Default\ Profile/library.o: $(GLOBALDEPS) library.cpp assdraw.hpp _common.hpp library.hpp engine.hpp _common.hpp wxAGG/AGGWindow.h wxAGG/PixelFormatConvertor.h agg_conv_bcspline.h agg_vcgen_bcspline.h agg_bcspline.h
+	$(CPP) -c library.cpp -o "../Default Profile/library.o" $(CXXFLAGS)
+
+../Default\ Profile/settings.o: $(GLOBALDEPS) settings.cpp assdraw.hpp _common.hpp settings.hpp _common.hpp
+	$(CPP) -c settings.cpp -o "../Default Profile/settings.o" $(CXXFLAGS)
+
+../Default\ Profile/assdraw_settings.o: $(GLOBALDEPS) assdraw_settings.cpp assdraw.hpp _common.hpp
+	$(CPP) -c assdraw_settings.cpp -o "../Default Profile/assdraw_settings.o" $(CXXFLAGS)
+
+../Default\ Profile/canvas_mouse.o: $(GLOBALDEPS) canvas_mouse.cpp canvas_mouse.hpp _common.hpp enums.hpp engine.hpp _common.hpp wxAGG/AGGWindow.h wxAGG/PixelFormatConvertor.h agg_conv_bcspline.h agg_vcgen_bcspline.h agg_bcspline.h canvas.hpp engine.hpp enums.hpp
+	$(CPP) -c canvas_mouse.cpp -o "../Default Profile/canvas_mouse.o" $(CXXFLAGS)
+
+../Default\ Profile/ASSDraw3_private.res: ../Default\ Profile/ASSDraw3_private.rc assdraw.rc 
+	$(WINDRES) --input-format=rc -o "../Default Profile/ASSDraw3_private.res" $(RCINCS) ../DEFAUL~1/ASSDRA~1.RC -O coff
