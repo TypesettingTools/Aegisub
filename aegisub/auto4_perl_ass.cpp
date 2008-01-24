@@ -75,24 +75,24 @@ namespace Automation4 {
 
   wxString PerlAss::GetEntryClass(AssEntry *entry)
   {
-	wxString data = entry->GetEntryData();
-
-	if(entry->GetType() == ENTRY_DIALOGUE) return _T("dialogue");
-
-	if(entry->GetType() == ENTRY_STYLE) {
+	switch(entry->GetType()) {
+	case ENTRY_DIALOGUE: return _T("dialogue");
+	case ENTRY_STYLE:
 	  return _T("style");
 	  /* TODO: add stylex recognition */
-	}
-
-	if(entry->GetType() == ENTRY_BASE) {
+	  break;
+	case ENTRY_ATTACHMENT: return _T("attachment");
+	default:
+	case ENTRY_BASE:
+	  wxString data(entry->GetEntryData());
 	  if(entry->group == _T("[Script Info]") && data.Matches(_T("*:*"))) return _T("info"); 
-
+		
 	  if(data == entry->group) return _T("head");
-
+	  
 	  if(data.StartsWith(_T("Format:"))) return _T("format");
-
+	  
 	  if(data.IsEmpty()) return _T("clear");
-
+	  
 	  if(data.Trim(left).StartsWith(_T(";"))) return _T("comment");
 	}
 
@@ -103,12 +103,14 @@ namespace Automation4 {
 
   HV *PerlAss::MakeHasshEntry(AssEntry *e)
   {
-	switch((int)e->GetType()) {
+	switch(e->GetType()) {
 	case ENTRY_DIALOGUE:
 	  return MakeHasshDialogue(AssEntry::GetAsDialogue(e));
 
 	case ENTRY_STYLE:
 	  return MakeHasshStyle(AssEntry::GetAsStyle(e));
+
+	case ENTRY_ATTACHMENT:
 
 	default:
 	case ENTRY_BASE:
@@ -296,12 +298,16 @@ namespace Automation4 {
 	  // It seems to be a style, let's call the specialized function
 	  return MakeAssStyle(entry);
 	}
+	else if(cl == _T("attachment")) {
+	  /* TODO */
+	  return NULL;
+	}
 	else {
+	  // A base entry
 	  AssEntry *e = new AssEntry();
 
 	  ASS_BASIC_INIT(entry, e);
 
-	  // A base entry
 	  if(cl == _T("info")) {
 		wxString key, value;
 		HV_FETCH(entry, "key", 3) {

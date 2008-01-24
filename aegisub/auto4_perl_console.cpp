@@ -47,13 +47,6 @@
 namespace Automation4 {
 
 
-  void xs_perl_console(pTHX)
-  {
-	newXS("Aegisub::PerlConsole::echo", echo, __FILE__);
-	newXS("Aegisub::PerlConsole::register_console", register_console, __FILE__);
-  }
-
-
 ////////////////////////////////////
 // PerlConsole::Dialog
 //
@@ -114,12 +107,6 @@ namespace Automation4 {
 	}
   }
 
-  inline void PerlConsole::Dialog::Echo(const wxString &str)
-  {
-	if(txt_out) *txt_out << str << _T("\n");
-	else PerlIO_printf(PerlIO_stdout(), "%s\n", str.mb_str(wxConvLocal).data());
-  }
-  
 
 //////////////////////
 // PerlConsole
@@ -134,8 +121,10 @@ namespace Automation4 {
 	parent_window = NULL;
 	dialog = new Dialog();
 
-	// Fuck off any previously registered console °_°
-	if(registered) delete registered;
+	// Remove any previously registered console °_°
+	if(registered) {
+	  registered->script->DeleteFeature(registered);
+	}
 	registered = this;
   }
 
@@ -146,7 +135,7 @@ namespace Automation4 {
 	/* TODO: Free something? */
 
 	// Delete the registered console
-	PerlConsole::registered = NULL;
+	registered = NULL;
   }
 
   void PerlConsole::Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent)
@@ -197,6 +186,9 @@ namespace Automation4 {
 	code << str;
 	// Evaluate the code
 	SV *e = eval_pv(code.mb_str(wx2pl), 0);
+	/* TODO: use threaded calls */
+	/*PerlThread eval(code.mb_str(wx2pl), 1, PerlThread::EVAL);
+	  e = (SV*)eval.Wait();*/
 	/* TODO: check for errors */
 	script->ReadVars();
 
@@ -220,52 +212,28 @@ namespace Automation4 {
 	return wxString(SvPV_nolen(e), pl2wx);
   }
 
-  XS(register_console)
+  wxString PerlConsole::Evaluate(const wxString &str)
   {
-	dXSARGS;
-	PerlScript *script = PerlScript::GetScript();
-	if(script) {
-	  wxString name = _T("Perl console");
-	  wxString desc = _T("Show the Perl console");
-	  switch (items) {
-	  case 2:
-		desc = wxString(SvPV_nolen(ST(1)), pl2wx);
-	  case 1:
-		name = wxString(SvPV_nolen(ST(0)), pl2wx);
-	  }
-
-	  if(!PerlConsole::GetConsole())
-		// If there's no registered console
-		script->AddFeature(new PerlConsole(name, desc, script));
-	}
-  }
-
-  XS(echo)
-  {
-	dXSARGS;
-
-	// We should get some parameters
-	if(items == 0) XSRETURN_EMPTY;
-
-	// Join the params in a unique string :S
-	wxString buffer = wxString(SvPV_nolen(ST(0)), pl2wx);
-	for(int i = 1; i < items; i++) {
-	  buffer << _T(" ") << wxString(SvPV_nolen(ST(i)), pl2wx);
-	}
-
-	if(PerlConsole::GetConsole()) {
-	  // If there's a console echo to it
-	  PerlConsole::GetConsole()->GetDialog()->Echo(buffer);
+	if(registered) {
+	  return registered->evaluate(str);
 	}
 	else {
-	  // Otherwise print on stdout
-	  PerlIO_printf(PerlIO_stdout(), "%s\n", buffer.mb_str(wxConvLocal).data());
-	  // (through perl io system)
+	  /* TODO: print error */
+	  return _T("");
 	}
-
-	XSRETURN_EMPTY;
   }
 
+  void PerlConsole::Echo(const wxString &str)
+  {
+	if(registered && registered->dialog->txt_out) {
+	  *(registered->dialog->txt_out) << str << _T("\n");
+	}
+	else {
+	  PerlIO_printf(PerlIO_stdout(), "%s\n", str.c_str());
+	}
+  }
+  
+  
 };
 
 

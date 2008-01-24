@@ -45,6 +45,10 @@
 
 namespace Automation4 {
 
+
+/////////////////
+// PerlConsole
+//
   class PerlConsole : public PerlFeatureMacro {
   private:
 	static PerlConsole *registered;
@@ -52,6 +56,7 @@ namespace Automation4 {
 	// Nested classes are messy, therefore we use them :)
 	class Dialog : public wxDialog {
 	private:
+	  friend class PerlConsole;
 	  wxTextCtrl *txt_out, *txt_hist, *txt_in;
 	  
 	public:
@@ -62,13 +67,11 @@ namespace Automation4 {
 				  long style = wxDEFAULT_DIALOG_STYLE, const wxString& name = _T("console_dialog"));
 
 	  void InputEnter(wxCommandEvent& evt);
-	  void Echo(const wxString &str);
 	};
 	
 	Dialog *dialog;
 	wxWindow *parent_window;
 
-	SV *cout;
 	wxString evaluate(const wxString &str);
 
   public:
@@ -76,16 +79,15 @@ namespace Automation4 {
 	virtual ~PerlConsole();
 
 	static PerlConsole *GetConsole() { return registered; }
-	Dialog *GetDialog() { return dialog; }
 
 	virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active) { return true; }
 	virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent);
 
-	static wxString Evaluate(const wxString &str) { if(registered) return registered->evaluate(str); else return _T(""); }
+	static wxString Evaluate(const wxString &str);
+	static void Echo(const wxString &str);
   };
 
-	XS(register_console);
-	XS(echo);
+
 };
 
 

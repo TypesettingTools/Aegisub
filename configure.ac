@@ -73,6 +73,21 @@ fi
 AC_CHECK_LIB([hunspell], [main],, [with_hunspell=no])
 AC_CHECK_LIB([ruby1.9], [ruby_init],, [with_ruby=no])
 
+dnl Perl engine
+AC_ARG_ENABLE([auto4-perl],
+	[AS_HELP_STRING([--enable-auto4-perl],[enable automation4 perl engine (under development)@<:@default=no@:>@])],,
+	[enable_auto4_perl=no])
+if test "$enable_auto4_perl" != "no"; then
+	echo -n 'checking for perl version >= 5.004... '
+	if perl -e 'require 5.004'; then
+		enable_auto4_perl=yes
+		echo 'yes'
+	else
+		enable_auto4_perl=no
+	fi
+fi
+
+
 AC_CHECK_HEADER([wchar.h],,[
 	AC_MSG_XFAILURE([aegisub needs wide character support, find a wchar.h])
 ])
@@ -208,6 +223,7 @@ AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])
 dnl FIXME: These three should probably get proper --with flags,
 dnl and Ruby also keep its detection (warn/fail if you have --with-ruby
 dnl but the lib isn't detected.)
+AM_CONDITIONAL([WITH_AUTO4_PERL], [test "$enable_auto4_perl" != "no"])
 AM_CONDITIONAL([WITH_AUTO4_RUBY], [test "$with_ruby" != "no"])
 AM_CONDITIONAL([WITH_AUTO4_LUA], [true])
 dnl TODO: Make the auto3 lib build on non-Win32 so this can be true

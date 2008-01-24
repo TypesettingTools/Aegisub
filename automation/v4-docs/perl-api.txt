@@ -2,18 +2,35 @@
 Quick reference on Perl engine's API
 ------------------------------------
 
-Every symbol contained in this reference is automatically made visible to the
-executing script. They are not however imported in the script's package, so
-they must be referenced with their full name. (A mechanism to import them
-through the canonical perl commands `use' and `import' will be deployed sooner
-or later.)
+All the packages that form the perl interface to Aegisub are automatically
+loaded, however none of their symbols are exported initially. If you want to
+import them you can use the usual 'use' mechanism; if you call it without a
+list of imports it will import more or less everything (exceptions to this are
+explicitely signaled in the docs) in your script's package.
 
 
 ====================================
 package Aegisub
 
 ------------------------------------
+Constants defined:
+							   <--EXPORTABLE-->
+
+LOG_FATAL	==  0
+LOG_ERROR	==  1
+LOG_WARNING	==  2
+LOG_HINT	==  3
+LOG_DEBUG	==  4
+LOG_TRACE	==  5
+LOG_MESSAGE	==	6
+	Log levels, to be used with the 'log' function.
+
+LOG_WX	==	8
+	Flag to force logging through wxWidgets facilites.
+
+------------------------------------
 Subroutines defined:
+								<--EXPORTED-->
 
 text_extents STYLE, TEXT
 	Computes the metric for a string of text, based on a specific style.
@@ -22,15 +39,54 @@ text_extents STYLE, TEXT
 		TEXT	Text for which to compute the metrics.
 	Returns:
 		WIDTH	The width of the text (if called in scalar context, only this is returned).
-		ASCENT		The ascent, i.e. the distance from the baseline to the top.
+		ASCENT		The ascent, i.e. the distance from the baseline to the top of the letters.
 		DESCENT		Descent, i.e. the distance from the baseline to the bottom.
 		EXTLEADING	External leading, i.e. the distance between to lines of text.
 
+log_fatal LIST
+ ...
+log_message LIST
+	These are shortcut for 'log(LOG_FATAL, LIST)' through 'log(LOG_MESSAGE,
+	LIST)' (see below).
+
+							   <--EXPORTABLE-->
+
+log LEVEL, LIST
+log LIST
+	Prints a log message inside the progress window, if LEVEL is less or equal
+	to the tracelevel set inside automation options. If called from outside a
+	callback (i.e. during script loading) prints through the wxWidgets logging
+	mechanism. 'log(LIST)' is equal to 'log(LOG_MESSAGE, LIST)'. The short form
+	is used whenever there are at least two arguments and the first one cannot
+	be converted to an integer; it is always used when given only one argument.
+	This is not exported by default (review man perlfunc to understand why :).
+	Arguments:
+	LEVEL	The debug level, may be one of the following (the descriptions are
+		indicative):
+		 0	Fatal error, for vital error;
+		 1	Error, for serious but not too much threatening errors;
+		 2	Warning, for something that's apparently going wrong;
+		 3	Hint, for indicating somthing peculiar is happening;
+		 4	Debug, for debugging;
+		 5	Trace, for really verbose debugging;
+		 6	Message, always printed.
+		If you OR one of these values with the flag LOG_WX the log message will
+		be delivered though wxWidgets regardless of wether there is a progress
+		window displayed (you won't normally need this feature, though).
+	LIST	List of arguments to print.
+
 warn LIST
-	Prints a warning through the GUI log facilities. It is automatically hooked
-	to the global `warn' function during script execution.
+	Prints a warning through the GUI log facilities (it is equivalent to
+	'log(LOG_WARNING, LIST)'). It is automatically hooked to the global 'warn'
+	function during script execution, but it is not exported by default.
 	Arguments:
 		LIST	List of arguments to print.
+
+							 <--NOT EXPORTABLE-->
+
+wxlog LEVEL, LIST
+wxlog LIST
+	Similar to 'log', with LOG_WX flag implicitely set.
 
 
 ====================================
@@ -41,10 +97,11 @@ use by normal users. They are shown here for completeness.
 
 ------------------------------------
 Subroutines defined:
+								<--EXPORTED-->
 
 echo LIST
 	Prints a list of arguments on the console, or on STDOUT if no console is
-	registered, a trailing \n is printed too
+	registered, a trailing \n is printed too.
 	Arguments:
 	LIST	List of arguments to print.
 
@@ -57,23 +114,81 @@ register_console NAME, DESC
 
 
 ====================================
+package Aegisub::Progress
+------------------------------------
+
+This package provides an interface to the progress window automatically showed
+during the execution of a feature. Its functions are somewhat different to
+those available in lua because of clarity, however aliases are given. You can
+see this in the following list: wherever a function has two names the first is
+the 'official' one and is automatically exported with 'use Aegisub::Progress',
+while if you want to use the second one you'll have to explicitely import them.
+
+------------------------------------
+Subroutines defined:
+								<--EXPORTED-->
+
+set_progress VALUE
+	Sets the value of the progress bar. It accepts values comprised in [0, 1]
+	OR (1, 100] (for instance, a value of 0.86 is equivalent to a value of 86:
+	they both represent '86%'). You should really always use values in the
+	range [0, 1] if you don't wanna be mocked by your friends and relatives
+	(and normally they're more immediately computable).
+	Arguments:
+		VALUE	The value for the progress bar.
+
+set_task DESC
+	Sets the description for the current task inside progress window (just
+	below the progress bar).
+	Arguments:
+		DESC	The description for the current task.
+
+set_title TITLE
+	Sets the title for the progress window (which is not actually the window's
+	title, but a flashier label below it). The default title is 'Executing ...'
+	(with the ellpsis possibly replaced by the feature's name).
+	Arguments:
+		TITLE	The title to set.
+
+is_cancelled
+	Returns: A boolean indicating wether the cancel button on the progress
+		windw where pressed in the near past.
+
+							   <--EXPORTABLE-->
+
+set VALUE
+	Synonym for 'set_progress(VALUE)'.
+
+task DESC
+	Synonym for 'set_desc(DESC)',
+
+title TITLE
+	Synonym for 'set_title(TITLE)'.
+
+
+====================================
 package Aegisub::Script
 
 ------------------------------------
 Subroutines defined:
+								<--EXPORTED-->
 
 register_macro NAME, DESC, PROC_SUB, VAL_SUB
 	Register a new macro.
 	Arguments:
 	NAME	The name of the macro.
-	DESC	A dascription for the macro.
+	DESC	A description for the macro.
 	PROC_SUB	A ref to a subroutine to be used as the macro processing function
-		(see the callbacks section).
-	VAL_SUB	A ref to a subrotine to be used as the macro validation function
+		(see the callbacks section). Please, really use a reference and not
+		just the name of the sub, because of the script 'pacakging' described
+		below.
+	VAL_SUB	A ref to a subroutine to be used as the macro validation function
 		(see callbacks)(optional, if not defined will be considered as always true).
 
 set_info NAME, DESC, AUTHOR, VERSION
-	You can set all of the script's info values with a call to this function
+	You can set all of the script's info values with a call to this
+	function. (Otherwise you can set the corresponding predefined script
+	variables individually.)
 	Arguments: see the parts about script variables, anything is optional.
 
 
@@ -81,13 +196,13 @@ set_info NAME, DESC, AUTHOR, VERSION
 package Aegisub::Script::pxxxxxxxx
 ------------------------------------
 Every script that's loaded gets its code evaluated inside a different package -
-whose name is chosen at 'random', whereas the perl interpreter is unique, so
-they all see the same global package, and can possibly access other
-scripts'. Therefore is recommended to ALWAYS declare all of the script's local
-variables with `my', if they have to reside outside any function body, and of
-course to `use strict' to check on this. You can still define another package
-for your script, the script's predefined variables will still be visible
-[maybe?] from it, but this is discouraged.
+whose name is chosen at 'random' - whereas the perl interpreter is unique, so
+all the scripts see the same global package, and can possibly access other
+scripts' packages. Therefore is recommended to ALWAYS declare all of the
+script's local variables with 'my', and of course to 'use strict' to check on
+this. You can still declare another package for your script; the script's
+predefined variables should be still visible from it without any change in the
+code (they're declared as 'our'), however this is discouraged.
 
 ------------------------------------
 Variables defined:
@@ -102,41 +217,56 @@ $script_name
 	Holds the script's name. Default is the script's filename.
 
 $script_version
-	Holds the script's version. Default is current aegisub's version.
+	Holds the script's version. Default is current aegisub version.
 
 $_script_path
-	The full path to the script's file. Any change to this variable is ignored.
+	The full path to the script's file. Any change to this variable is ignored
+	and overwritten.
 
 $_script_package
 	The full script package as a string. Any change to this variable is
-	currently ignored
+	currently ignored and overwritten, and may be so forever.
 
 $_script_reload [BROKEN]
-	When this is set to true. The script will automatically be reload before
-	any execution if its file changed on disk. Useful during the development.
+	When this is set to true, the script will automatically be reloaded before
+	any execution if its file changed on disk. (However, at present time, it is
+	just a shortcut to make aegisub crash.)
 
 ------------------------------------
 Callbacks definable:
 
 macro_processing_function LINES, SELECTED, ACTIVE
 	A function to be used as a callback for Aegisub::Script::register_macro().
-	The first two arguments can be modified, and the modification will be
-	reflected in the subtitles file
+	This function will be called when the user selects the corresponding macro
+	in the Automation menu. The first two arguments can be modified, and the
+	modifications will be reflected in the subtitles file.
 	Arguments:
 	LINES	A reference to the list containing the subtitle file lines.
-		Each element of the list is actually a hash with the name of the fields
-		as keys. See the Lua documentation; this is basically the same structure.
-		EXAMPLE:
-		my $l = $lines->[$linenumber]; # an entire line
-		my $text = $lines->[$linenumber]->{"text"} # the text field of a dialogue line
-	SELECTED	A ref to an array of ints, showing the currently selected lines in
-		the file
-	ACTIVE	Index of the currently active line in the subtitle file (sic)
+		Each element of the list is a reference to a hash that represents a
+		single subtitle line. For the hash keys refer to lua documentation,
+		they are basically the same.
+		Example:
+
+			my $lines = $_[0]; # DON'T shift @_ (unless you reconstruct it
+			                   # afterwards) or you'll break everything and
+        	                   # your hard disk be erased >:)
+			# The first selected line's index
+			my $first = $_[1][0];
+			# An entire line
+			my $l = $lines->[$first];
+			# The text field of a dialogue line
+			my $text = $lines->[$first]->{"text"};
+
+	SELECTED	A ref to an array of ints, showing the currently selected
+		lines in the file.
+	ACTIVE	Index of the currently active line in the subtitle file (sic).
 
 macro_validation_function LINES, SELECTED, ACTIVE
 	A function to be used as a callback for Aegisub::Script::register_macro().
+	This function will be called whenever the Automation menu is opened to
+	decide what macros are applyable to the current script.
 	Arguments: same as macro_processing_function; however any change to the
 		first two ones will be ignored upon function return.
 	Returns:
 	VALID	A 'bolean' value to indicate if the macro is applicable to this
-		particualar subtitles file.
+		particular subtitles file.

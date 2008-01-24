@@ -33,6 +33,7 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+
 #pragma once
 #ifndef _AUTO4_PERL_H
 #define _AUTO4_PERL_H
@@ -43,17 +44,16 @@
 #include <wx/string.h>
 
 #include "ass_file.h"
-//#include "ass_dialogue.h"
 
 #undef _
 #include <EXTERN.h>
 #include <perl.h>
 #include <XSUB.h>
 
-#include "auto4_perldata.inc"  // Parl variables manipulation macros
+#include "auto4_perldata.inc"  // Perl variables manipulation macros
 #undef bool
 
-// the fucking perl.h redefines _() -.- please disregard warnings during compilation
+// the fucking perl.h redefines _() -.-
 #undef _
 #define _(s)	wxGetTranslation(_T(s))
 
@@ -66,20 +66,82 @@
 #define PERL_SCRIPT_EXTENSION ".pl"  /* TODO maybe: make it multi-extension */
 
 
+// Debug support
+/* define the following to activate tracing for the perl engine */
+//#define WXTRACE_AUTOPERL
+#define wxTRACE_AutoPerl _T("auto4_perl")
+
+#define wxTRACE_METH(name) \
+	wxLogTrace(wxTRACE_AutoPerl, _T("\t=== %p::%s() ==="), this, _T(#name))
+
+#define wxTRACE_FUNC(name) \
+	wxLogTrace(wxTRACE_AutoPerl, _T("\t=== %s() ==="), _T(#name))
+
+#define wxTRACE_RET(name) \
+	wxLogTrace(wxTRACE_AutoPerl, _T("\t___ %s() returned ___"), _T(#name))
+
+
 namespace Automation4 {
 
-///////////
-// XSUBS
+
+/////////////
+// PerlLog
 //
-  void xs_perl_script(pTHX);
-  void xs_perl_misc(pTHX);
-  void xs_perl_console(pTHX);
+#define LOG_FATAL	0
+#define LOG_ERROR	1
+#define LOG_WARNING	2
+#define LOG_HINT	3
+#define LOG_DEBUG	4
+#define LOG_TRACE	5
+#define LOG_MESSAGE	6
+
+#define LOG_WX		8
+
+#define PerlLogFatal(str)		PerlLog(LOG_FATAL, str)
+#define PerlLogFatalError(str)	PerlLog(LOG_FATAL, str)
+#define PerlLogError(str)		PerlLog(LOG_ERROR, str)
+#define PerlLogWarning(str)		PerlLog(LOG_WARNING, str)
+#define PerlLogHint(str)		PerlLog(LOG_HINT, str)
+#define PerlLogVerbose(str)		PerlLog(LOG_HINT, str)
+#define PerlLogDebug(str)		PerlLog(LOG_DEBUG, str)
+#define PerlLogTrace(str)		PerlLog(LOG_TRACE, str)
+#define PerlLogMessage(str)		PerlLog(LOG_MESSAGE, str)
+
+  void PerlLog(unsigned int level, const wxString &msg);
+
+
+////////////////
+// PerlThread
+//
+  class PerlThread : public wxThread {
+  private:
+	const char *pv;
+	SV *sv;
+	I32 flags;
+
+	bool type;
+
+	wxThreadError launch();
+
+  public:
+	enum { EVAL = 0, CALL = 1 };
+
+	PerlThread();
+	PerlThread(const char *sub_name, I32 flags, bool type = CALL);
+	PerlThread(SV *sv, I32 flags, bool type = CALL);
+
+	wxThreadError Call(const char *sub_name, I32 flags);
+	wxThreadError Call(SV *sv, I32 flags);
+	wxThreadError Eval(const char* p, I32 croak_on_error);
+	wxThreadError Eval(SV* sv, I32 flags);
+
+	virtual ExitCode Entry();
+  };
 
 
 ///////////////////
 // Script object
 //
-  class PerlFeatureMacro;
   class PerlScript : public Script {
   private:
 	static PerlScript *active;	// The active script (at any given time)
@@ -93,39 +155,32 @@ namespace Automation4 {
 	void load();	// It doas all the script initialization
 	void unload();	// It does all the script disposing
 
-	static void activate(PerlScript *script);	// Set the active script /* TODO: add @INC hacking */
+	static void activate(PerlScript *script);	// Set the active script
 	static void deactivate();	// Unset the active script
 
   public:
 	PerlScript(const wxString &filename);
 	virtual ~PerlScript();
+	static PerlScript *GetScript() { return active; }		// Query the value of the active script
 
 	virtual void Reload();	// Reloading of a loaded script
 
 	void Activate()       { activate(this); }	// Set the script as active
 	void Deactivate() const { deactivate(); }	// Unset the active script
 
-	const wxString& GetPackage() const { return package; }	// The perl package containing script code
-	static PerlScript *GetScript() { return active; }		// Query the value of the active script
-
-	/* TODO maybe: change these into tying of scalars */
+	/* TODO maybe: move to tied scalars */
 	void ReadVars();		// Sync the script's vars from perl package to script object
 	void WriteVars() const;	// Sync the script's vars from script object to perl package
 
-	/* TODO: add c++ equivalents */
 	void AddFeature(Feature *feature);
 	void DeleteFeature(Feature *feature);
-	static PerlScript *GetActive() { return active; }
 
+	const wxString& GetPackage() const { return package; }	// The perl package containing script code
 	void SetName(const wxString &str) { name = str; }
 	void SetDescription(const wxString &str) { description = str; }
 	void SetAuthor(const wxString &str) { author = str; }
 	void SetVersion(const wxString &str) { version = str; }
   };
-
-  XS(set_info);	// Aegisub::Script::set_info()
-  XS(register_macro);		// Aegisub::Script::register_macro()
-  XS(register_console);	// Aegisub::Script::register_console() /* TODO: move this into PerlConsole class */
 
 
 //////////////////
@@ -148,6 +203,22 @@ namespace Automation4 {
   };
 
 
+//////////////////////
+// PerlProgressSink
+//
+  class PerlProgressSink : public ProgressSink {
+  private:
+	static PerlProgressSink *sink;
+  public:
+	PerlProgressSink(wxWindow *parent, const wxString &title = _T("..."));
+	~PerlProgressSink();
+	static PerlProgressSink *GetProgressSink() { return sink; }
+
+	bool IsCancelled() const { return cancelled; }
+	void Log(int level, const wxString &message) { if(level <= trace_level) AddDebugOutput(message); }
+  };
+
+
 ///////////////////////////////////////////////////
 // Conversion between aegisub data and perl data
 //
@@ -167,17 +238,6 @@ namespace Automation4 {
 	static AssDialogue *MakeAssDialogue(HV *diag);
 	static AssFile *MakeAssLines(AssFile *ass, AV *lines);
   };
-
-
-/////////////////////////
-// Misc utility functions
-//
-  class PerlLog {
-  public:
-  };
-
-	XS(log_warning);	// Aegisub::warn()
-	XS(text_extents);	// Aegisub::text_extents()
 
 
 };

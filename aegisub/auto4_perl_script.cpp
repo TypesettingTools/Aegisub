@@ -38,24 +38,18 @@
 
 
 #include "auto4_perl.h"
-#include "auto4_perl_console.h"
 #include "version.h"
 #include "standard_paths.h"
 #include <wx/filename.h>
 #include <wx/utils.h>
 
+
 #ifdef __VISUALC__
 #pragma warning(disable: 4800)
 #endif
 
+
 namespace Automation4 {
-
-
-  void xs_perl_script(pTHX)
-  {
-	newXS("Aegisub::Script::set_info", set_info, __FILE__);
-	newXS("Aegisub::Script::register_macro", register_macro, __FILE__);
-  }
 
 
 //////////////////////
@@ -69,12 +63,14 @@ namespace Automation4 {
 	// Create a package name for the script
 	package.Printf(_T("Aegisub::Script::p%lx"), this);
 
+	// local @INC; # lol
 	inc_saved = newAV();
 
+	// Buggy
 	reload = false;
 	mtime = 0;
 
-	// Load the code
+	// Load the script
 	load();
   }
 
@@ -92,7 +88,8 @@ namespace Automation4 {
 
   void PerlScript::load()
   {
-	wxLogTrace(_T("Loading %*s inside %s"), 0, GetFilename().c_str(), package.c_str());
+	wxTRACE_METH(load);
+	wxLogTrace(wxTRACE_AutoPerl, _T("filename = '%s', package = '%s'"), GetFilename().c_str(), package.c_str());
 
 	// Feed some defaults into the script info
 	name = GetPrettyFilename().BeforeLast(_T('.'));
@@ -100,10 +97,6 @@ namespace Automation4 {
 	author = wxGetUserId();
 	version = GetAegisubShortVersionString();
 
-	// Get file's mtime
-	//struct stat s;
-	//stat(GetFilename().mb_str(wxConvLibc), &s);
-	//mtime = s.st_mtime;
 	wxFileName fn(GetFilename());
 	wxDateTime mod;
 	fn.GetTimes(NULL,&mod,NULL);
@@ -125,8 +118,10 @@ namespace Automation4 {
 
 	// Let's eval the 'boxed' script
 	eval_pv(_script.mb_str(wx2pl), 0);
+	// and check on errors
 	if(SvTRUE(ERRSV)) {
-	  wxLogError(wxString(SvPV_nolen(ERRSV), pl2wx));
+	  description = wxString(SvPV_nolen(ERRSV), pl2wx);
+	  wxLogError(description); // Remove?
 	  loaded = false;
 	}
 	else {
@@ -135,10 +130,13 @@ namespace Automation4 {
 
 	// The script has done loading (running)
 	deactivate();
+
+	wxTRACE_RET(load);
   }
   
   void PerlScript::unload() {
-	wxLogTrace(_T("Unloading %*s(%s)"), 0, name, package.c_str());
+	wxTRACE_METH(unload);
+	wxLogTrace(wxTRACE_AutoPerl, _T("name = '%s' package = '%s'"), name.c_str(), package.c_str());
 
 	// Deinstantiate(?) all features and clear the vector
 	for(; !features.empty(); features.pop_back()) {
@@ -150,14 +148,18 @@ namespace Automation4 {
 	hv_undef((HV*)gv_stashpv(package.mb_str(wx2pl), 0));
 
 	// Officially finished with unloading
+	wxLogDebug(_T("'%s' (%s) unloaded"), name.c_str(), package.c_str());
 	loaded = false;
+	wxTRACE_RET(unload);
   }
 
   void PerlScript::activate(PerlScript *script)
   {
-	wxLogTrace(_T("Activating %*s(%s)"), 0, script->GetName(), script->GetPackage().c_str());
+	wxTRACE_FUNC(PerlScript::activate);
+	wxLogTrace(wxTRACE_AutoPerl, _T("name = '%s',  package = '%s'"), script->GetName().c_str(), script->GetPackage().c_str());
 
 	// Check if the source file is newer
+	/* FIX */
 	if(script->reload) {
 //	  struct stat s;
 //	  stat(script->GetFilename().mb_str(wxConvLibc), &s);
@@ -165,14 +167,13 @@ namespace Automation4 {
 	  wxDateTime mod;
 	  fn.GetTimes(NULL,&mod,NULL);
 	  if(script->mtime != mod.GetTicks()) {
-		printf("%d != %d !\n", script->mtime, mod.GetTicks());
-		wxLogVerbose(_("Reloading %s because the file on disk (%s) changed"), script->GetName().c_str(), script->GetFilename().c_str());
+		PerlLogVerbose(wxString::Format(_("Reloading %s because the file on disk (%s) changed"), script->GetName().c_str(), script->GetFilename().c_str()));
 		script->Reload();
 	  }
 	}
 
 	// Hooking $SIG{__WARN__}
-	wxLogTrace(_T("Hooking $SIG{__WARN__}"), 0);
+	wxLogTrace(wxTRACE_AutoPerl, _T("$SIG{__WARN__} = \\&Aegisub::warn"));
 	eval_pv("$SIG{__WARN__} = \\&Aegisub::warn", 1);
 
 	// Add the script's includes to @INC
@@ -186,27 +187,34 @@ namespace Automation4 {
 	  // Make room in @INC
 	  I32 inc_count = script->include_path.GetCount();
 	  av_unshift(inc_av, inc_count);
-	  // Add the include paths
+	  // Add the automation include paths
 	  for(I32 i = 0; i < inc_count; i++) {
-		wxLogDebug(_T("Adding %d to @INC"), script->include_path.Item(i).c_str());
+		wxLogTrace(wxTRACE_AutoPerl, _T("$INC[%d] = '%s'"), i, script->include_path.Item(i).c_str());
 		AV_TOUCH(inc_av, i)
 		  AV_STORE(newSVpv(script->include_path.Item(i).mb_str(wx2pl), 0));
 	  }
-	  wxLogTrace(_T("@INC = ( %*s )"), 0, SvPV_nolen(eval_pv("\"@INC\"", 1)));
+	  wxLogDebug(_T("@INC = ( %s )"), wxString(SvPV_nolen(eval_pv("\"@INC\"", 1)), pl2wx).c_str());
 	}
 	else {
-	  wxLogWarning(_("Unable to add the automation include path(s) to @INC, you may have problems running the script."));
+	  PerlLogWarning(_("Unable to add the automation include path(s) to @INC: the script's code may not compile or execute properly."));
 	}
+
+	// Require the core modules
+	load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub", 7), NULL);
+	load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub::Progress", 17), NULL);
+	//load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub::Script", 15), NULL);
 
 	// Set the values of script vars
 	script->WriteVars();
+
 	active = script;
-	wxLogDebug(_T("%s(%p) activated"), active->GetName().c_str(), active);
+	wxLogDebug(_T("'%s' (%p) activated"), active->GetName().c_str(), active);
   }
 
   void PerlScript::deactivate()
   {
-	wxLogTrace(_T("Deactivating %*s (%s)"), 0, active->GetName().c_str(), active->GetPackage().c_str());
+	wxTRACE_FUNC(PerlScript::deactivate);
+	wxLogTrace(wxTRACE_AutoPerl, _T("name = '%s', package = '%s'"), active->GetName().c_str(), active->GetPackage().c_str());
 
 	// Revert @INC to its value before the script activation
 	AV *inc_av = get_av("main::INC", 0);
@@ -217,7 +225,7 @@ namespace Automation4 {
 	  if(av_len(active->inc_saved) >= 0) {
 		// If there's a saved one
 		AV_COPY(active->inc_saved, inc_av);
-		wxLogTrace(_T("@INC = ( %*s )"), 0, SvPV_nolen(eval_pv("\"@INC\"", 1)));
+		wxLogDebug(_T("@INC = ( %s )"), wxString(SvPV_nolen(eval_pv("\"@INC\"", 1)), pl2wx).c_str());
 		av_clear(active->inc_saved);
 	  }
 	}
@@ -225,8 +233,8 @@ namespace Automation4 {
 	// Read the values of script vars
 	active->ReadVars();
 
-	// Unooking $SIG{__WARN__}
-	wxLogTrace(_T("Releasing $SIG{__WARN__} hook"), 0);
+	// Unhooking $SIG{__WARN__}
+	wxLogTrace(wxTRACE_AutoPerl, _T("undef $SIG{__WARN__}"));
 	eval_pv("undef $SIG{__WARN__}", 1);
 
 	wxLogDebug(_T("%s(%p) deactivated"), active->GetName().c_str(), active);
@@ -235,22 +243,25 @@ namespace Automation4 {
   
   void PerlScript::AddFeature(Feature *feature)
   {
+	wxTRACE_METH(AddFeature);
 	features.push_back(feature);
-	wxLogDebug(_T("Added %s to %s(%s)'s features"), feature->GetName(), name, package);
+	wxLogDebug(_T("Added '%s' to '%s'(%s)'s features"), feature->GetName().c_str(), name.c_str(), package.c_str());
   }
 
   void PerlScript::DeleteFeature(Feature *feature)
   {
+	wxTRACE_METH(DeleteFeature);
 	for(std::vector<Feature*>::iterator it = features.begin(); it != features.end(); it++)
 	  if(*it == feature) {
 		delete feature;
-		wxLogDebug(_T("Deleted %s from %s(%s)'s features"), feature->GetName(), name, package);
+		wxLogDebug(_T("Deleted '%s' from '%s'(%s)'s features"), feature->GetName().c_str(), name.c_str(), package.c_str());
 		features.erase(it);
 	  }
   }
 
   void PerlScript::ReadVars()
   {
+	wxTRACE_METH(ReadVars);
 	// This will get anything inside it °_°
 	SV *whore = NULL;
 	// All the vars' names will stick to it #_#
@@ -279,6 +290,7 @@ namespace Automation4 {
 
   void PerlScript::WriteVars() const
   {
+	wxTRACE_METH(WriteVars);
 	// Somewhat as above
 	SV *whore = NULL;
 	wxString bitch;
@@ -312,52 +324,144 @@ namespace Automation4 {
 	sv_setpv(whore, version.mb_str(wx2pl));
   }
 
-  XS(set_info)
+  
+//////////////////////
+// PerlFeatureMacro
+//
+
+  PerlFeatureMacro::PerlFeatureMacro(const wxString &name, const wxString &description, PerlScript *own_script, SV *proc_sub, SV *val_sub):
+	Feature(SCRIPTFEATURE_MACRO, name),
+	FeatureMacro(name, description)
   {
-	dXSARGS;
-	PerlScript *active = PerlScript::GetActive();
-	if(active) {
-	  // Update the object's vars
-	  active->ReadVars();
+	// We know what script we belong to ^_^
+	script = own_script;
 
-	  // Set script info vars
-	  switch (items) {
-	  case 4:
-		active->SetVersion(wxString(SvPV_nolen(ST(3)), pl2wx));
-	  case 3:
-		active->SetAuthor(wxString(SvPV_nolen(ST(2)), pl2wx));
-	  case 2:
-		active->SetDescription(wxString(SvPV_nolen(ST(1)), pl2wx));
-	  case 1:
-		active->SetName(wxString(SvPV_nolen(ST(0)), pl2wx));
-	  }
-
-	  // Update the package's vars
-	  active->WriteVars();
-	}
+	// And not surprisingly we have some callbacks too
+	processing_sub = newSVsv(proc_sub);
+	validation_sub = newSVsv(val_sub);
   }
 
-  XS(register_macro)
-  {
-	dXSARGS;
-	PerlScript *active = PerlScript::GetActive();
-	if(active && items >= 3) {
-	  wxString name, description;
-	  SV *proc_sub = NULL, *val_sub = NULL;
-	  switch (items) {
-	  case 4:
-		val_sub  = sv_mortalcopy(ST(3));
-	  case 3:
-		proc_sub = sv_mortalcopy(ST(2));
-		description = wxString(SvPV_nolen(ST(1)), pl2wx);
-		name = wxString(SvPV_nolen(ST(0)), pl2wx);
-	  }
-	  if(proc_sub) {
-		active->AddFeature(new PerlFeatureMacro(name, description, active, proc_sub, val_sub));
-		XSRETURN_YES;
-	  }
+  PerlFeatureMacro::~PerlFeatureMacro() {
+	// The macro subroutines get undefined
+	CV *cv = Nullcv;
+	HV *hv = NULL;
+	GV *gv = NULL;
+	if(processing_sub) {
+	  cv = sv_2cv(processing_sub, &hv, &gv, 1);
+	  cv_undef(cv);
+	  if(hv) hv_undef(hv);
 	}
-	XSRETURN_UNDEF;
+	if(validation_sub) {
+	  cv = sv_2cv(validation_sub, &hv, &gv, 1);
+	  cv_undef(cv);
+	  if(hv) hv_undef(hv);
+	}
+  };
+  
+  bool PerlFeatureMacro::Validate(AssFile *subs, const std::vector<int> &selected, int active)
+  {
+	// If there's no validation subroutine defined simply return true
+	if(!validation_sub) return true;
+	// otherwise...
+
+	// Sub lines
+	AV *lines = PerlAss::MakeHasshLines(NULL, subs);
+	// Selection array
+	AV *selected_av = newAV();
+	VECTOR_AV(selected, selected_av, int, iv);
+
+	// Activate the owner script
+	script->Activate();
+
+	bool ret = false;
+	int c = 0;
+
+	// Prepare the stack
+	dSP;
+
+	ENTER;
+	SAVETMPS;
+
+	// Push the parameters on the stack
+	PUSHMARK(SP);
+	XPUSHs(sv_2mortal(newRV_noinc((SV*)lines)));
+	XPUSHs(sv_2mortal(newRV_noinc((SV*)selected_av)));
+	XPUSHs(sv_2mortal(newSViv(active)));
+	PUTBACK;
+
+	// Call back the callback
+	c = call_sv(validation_sub, G_EVAL | G_SCALAR);
+	SPAGAIN;
+
+	if(SvTRUE(ERRSV)) {
+	  wxLogVerbose(wxString(SvPV_nolen(ERRSV), pl2wx));
+	  ret = false;
+	}
+	else {
+	  SV *wtf = sv_mortalcopy(POPs);
+	  ret = SvTRUE(wtf);
+	}
+
+	// Tidy up everything
+	PUTBACK;
+	FREETMPS;
+	LEAVE;
+
+	// Deactivate the script
+	script->Deactivate();
+
+	return ret;
+  }
+
+  void PerlFeatureMacro::Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent)
+  {
+	// Convert the AssFile::Line to perl stuff
+	AV *lines = PerlAss::MakeHasshLines(NULL, subs);
+	// Same with the selection array
+	AV *selected_av = newAV();
+	VECTOR_AV(selected, selected_av, int, iv);
+
+	script->Activate();
+
+	// Prepare the stack
+	dSP;
+
+	ENTER;
+	SAVETMPS;
+
+	// Push the parameters on the stack
+	PUSHMARK(SP);
+	XPUSHs(sv_2mortal(newRV_noinc((SV*)lines)));
+	XPUSHs(sv_2mortal(newRV_noinc((SV*)selected_av)));
+	XPUSHs(sv_2mortal(newSViv(active)));
+	PUTBACK;
+
+	// Create a progress window
+	PerlProgressSink *ps = new PerlProgressSink(progress_parent, GetName());
+	// Start the callback thread
+	PerlThread call(processing_sub, G_EVAL | G_VOID);
+	// Show the progress window
+	ps->ShowModal();
+	// And wait unitl it's dismessed
+	delete ps;
+	// Now wait the thread to return
+	call.Wait();
+
+	if(!SvTRUE(ERRSV)) {
+	  // Non-error: recreate the hassh :S
+	  subs->FlagAsModified(GetName());
+	  PerlAss::MakeAssLines(subs, lines);
+	  // And reset selection vector
+	  selected.clear();
+	  AV_VECTOR(selected_av, selected, IV);
+	  CHOP_SELECTED(subs, selected);
+	}
+
+	// Clean everything
+	FREETMPS;
+	LEAVE;
+
+	script->Deactivate();
   }
 
 

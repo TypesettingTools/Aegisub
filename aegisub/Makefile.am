@@ -47,6 +47,11 @@ if WITH_AUTO4_RUBY
 AUTOMATION += auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
 AM_CPPFLAGS += $(shell ruby -r rbconfig -e "p '-I' + Config::CONFIG['rubylibdir'] + '/' + Config::CONFIG['arch'] ") $(AM_CPPFLAGST)
 endif
+if WITH_AUTO4_PERL
+AUTOMATION += auto4_perl.cpp auto4_perl_script.cpp auto4_perl_dialogs.cpp auto4_perl_ass.cpp auto4_perl_console.cpp
+AM_CPPFLAGS += $(shell perl -MExtUtils::Embed -eccflags -eperl_inc)
+aegisub_LDFLAGS += $(shell perl -MExtUtils::Embed -eldopts)
+endif
 
 if HAVE_HUNSPELL
 HUNSPELL=spellchecker_hunspell.cpp
