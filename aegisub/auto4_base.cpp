@@ -337,7 +337,7 @@ namespace Automation4 {
 	// ProgressSink
 
 	ProgressSink::ProgressSink(wxWindow *parent)
-		: wxDialog(parent, -1, _T("Automation"), wxDefaultPosition, wxDefaultSize, wxDOUBLE_BORDER)
+		: wxDialog(parent, -1, _T("Automation"), wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
 		, debug_visible(false)
 		, data_updated(false)
 		, cancelled(false)
