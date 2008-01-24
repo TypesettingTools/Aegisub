@@ -679,11 +679,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\aegisub\auto4_perl_macro.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\aegisub\auto4_perl_misc.cpp"
+					RelativePath="..\..\aegisub\auto4_perl_dialogs.cpp"
 					>
 				</File>
 				<File
