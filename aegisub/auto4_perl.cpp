@@ -468,12 +468,12 @@ namespace Automation4 {
 	ExitCode ec = NULL;
 	switch(type) {
 	case CALL:
-	  if(sv) ec = (ExitCode)call_sv(sv, flags);
-	  else if(pv) ec = (ExitCode)call_pv(pv, flags);
+	  if(sv) ec = (ExitCode)((size_t)call_sv(sv, flags));
+	  else if(pv) ec = (ExitCode)((size_t)call_pv(pv, flags));
 	  break;
 	case EVAL:
-	  if(sv) ec = (ExitCode)eval_sv(sv, flags);
-	  else if(pv) ec = (ExitCode)eval_pv(pv, flags);
+	  if(sv) ec = (ExitCode)((size_t)eval_sv(sv, flags));
+	  else if(pv) ec = (ExitCode)((size_t)eval_pv(pv, flags));
 	}
 
 	if(SvTRUE(ERRSV)) {
