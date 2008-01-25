@@ -67,7 +67,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += _T("    Lua - Copyright (c) 1994-2008 Lua.org, PUC-Rio;\n");
 #endif
 #ifdef WITH_PERL
-	libString += _T("    Perl - Copyright (c) 1987-2007, Larry Wall et al;\n");
+	libString += _T("    Perl - Copyright (c) 1987-2007 Larry Wall et al;\n");
 #endif
 #ifdef WITH_RUBY
 	// Insert ruby string here
@@ -81,21 +81,35 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #ifdef WITH_FFMPEG
 	libString += _T("    FFmpeg - Copyright (c) 2001 Fabrice Bellard,;\n");
 #endif
-#ifdef WITH_LIBASS
-	libString += _T("    libass - Copyright (c) 2006-2008, Evgeniy Stepanov;\n");
+#ifdef WITH_AVISYNTH
+	libString += _T("    Avisynth 2.5 - Copyright 2002 Ben Rudiak-Gould et al;\n");
 #endif
 #ifdef WITH_CSRI
-	libString += _T("    csri - Copyright (c) 2004-2008, David Lamparter;\n");
+	libString += _T("    csri - Copyright (c) 2004-2008 David Lamparter;\n");
 #endif
-	libString += _T("    MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada\n");
-	libString += _T("    Matroska Parser and VideoSink - Copyright (c) 2004-2008 Mike Matsnev\n");
+#ifdef __WINDOWS__
+	libString += _T("    vsfilter - Copyright (c) Gabest;\n");
+#endif
+#ifdef WITH_LIBASS
+	libString += _T("    libass - Copyright (c) 2006-2008 Evgeniy Stepanov;\n");
+#endif
+#ifdef WITH_UNIVCHARDET
+	libString += _T("    UniversalCharDet - Copyright (c) 1998 Netscape Communications Corp.;\n");
+#endif
+#ifdef __WINDOWS__
+	libString += _T("    Matroska Parser and VideoSink - Copyright (c) 2004-2008 Mike Matsnev;\n");
+#endif
+#ifdef WITH_FREETYPE2
+	libString += _T("    Freetype - Copyright (c) 1996-2001, 2006 David Turner, Robert Wilhelm,\n    and Werner Lemberg;\n");
+#endif
+	libString += _T("    MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada.\n");
 
 	// Generate about string
 	wxString aboutString;
 	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
 	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
 	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _T(".\n");
-	aboutString += _T("Copyright (c) 2005-2008 - Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
+	aboutString += _T("Copyright (c) 2005-2008 Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
 	aboutString += _T("Automation - Copyright (c) 2005-2008 Niels Martin Hansen.\n");
 	aboutString += _("Programmers:");
 	aboutString += _T(" Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter,\n");
@@ -121,7 +135,8 @@ AboutScreen::AboutScreen(wxWindow *parent)
 
 	// Text sizer
 	wxSizer *TextSizer = new wxBoxSizer(wxVERTICAL);
-	TextSizer->Add(new wxStaticText(this,-1,aboutString),1);
+	//TextSizer->Add(new wxStaticText(this,-1,aboutString),1);
+	TextSizer->Add(new wxTextCtrl(this,-1,aboutString,wxDefaultPosition,wxSize(410,200),wxTE_MULTILINE | wxTE_READONLY),1,wxEXPAND);
 
 	// Buttons panel
 	wxPanel *buttonPanel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
@@ -139,8 +154,8 @@ AboutScreen::AboutScreen(wxWindow *parent)
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(PicSizer,0,0,0);
-	MainSizer->Add(TextSizer,0,wxEXPAND | wxALL,10);
+	MainSizer->Add(PicSizer,0,wxCENTER,0);
+	MainSizer->Add(TextSizer,0,wxEXPAND | wxALL,0);
 	MainSizer->Add(new wxStaticLine(this,wxID_ANY),0,wxEXPAND | wxALL,0);
 	MainSizer->Add(buttonPanel,0,wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT,0);
 
