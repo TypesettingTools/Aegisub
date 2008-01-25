@@ -50,6 +50,12 @@ ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) {
 	num_samples = source->GetNumSamples();
 	sample_rate = source->GetSampleRate();
 	bytes_per_sample = 2;
+
+	sampleMult = 1;
+	if (sample_rate < 16000) sampleMult = 4;
+	else if (sample_rate < 32000) sampleMult = 2;
+	sample_rate *= sampleMult;
+	num_samples *= sampleMult;
 }
 
 
@@ -60,28 +66,99 @@ ConvertAudioProvider::~ConvertAudioProvider() {
 }
 
 
+/////////////////////
+// Convert to 16-bit
+void ConvertAudioProvider::Make16Bit(const char *src, short *dst, int64_t count) {
+	for (int64_t i=0;i<count;i++) {
+		dst[i] = (src[i]-128)*255;
+	}
+}
+
+
+//////////////////////
+// Change sample rate
+// This requres 16-bit input
+void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_t count) {
+	// Upsample by 2
+	if (sampleMult == 2) {
+		int64_t size = count/2;
+		short cur;
+		short next = 0;
+		for (int64_t i=0;i<size;i++) {
+			cur = next;
+			next = *src++;
+			*(dst++) = cur;
+			*(dst++) = (cur+next)/2;
+		}
+		if (count%2) *(dst++) = next;
+	}
+
+	// Upsample by 4
+	else if (sampleMult == 4) {
+		int64_t size = count/4;
+		short cur;
+		short next = 0;
+		for (int64_t i=0;i<size;i++) {
+			cur = next;
+			next = *(src++);
+			*(dst++) = cur;
+			*(dst++) = (cur*3+next)/4;
+			*(dst++) = (cur+next)/2;
+			*(dst++) = (cur+next*3)/4;
+		}
+		for (int i=0;i<count%4;i++) *(dst++) = next;
+	}
+
+	// Nothing to do (shouldn't really get here, but...)
+	else if (sampleMult == 1) memcpy((void*)src,dst,count);
+}
+
+
 /////////////
 // Get audio
 void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t count) {
 	// Bits per sample
 	int srcBps = source->GetBytesPerSample();
 
-	// Convert from 8-bit to 16-bit
-	if (srcBps == 1) {
-		unsigned char *buffer = new unsigned char[count];
-		source->GetAudio(buffer,start,count);
-		short temp;
-		short *dst = (short*) destination;
-		for (int64_t i=0;i<count;i++) {
-			temp = (short) buffer[i];
-			dst[i] = (temp-128)*256+temp;
-		}
-		delete [] buffer;
+	// Nothing to do
+	if (sampleMult == 1 && srcBps == 2) {
+		source->GetAudio(destination,start,count);
 	}
 
-	// No conversion needed
-	else if (srcBps == 2) source->GetAudio(destination,start,count);
+	// Convert
+	else {
+		// Allocate buffers with sufficient size for the entire operation
+		size_t fullSize = count;
+		int64_t srcCount = count / sampleMult;
+		short *buffer1 = NULL;
+		short *buffer2 = NULL;
+		short *last = NULL;
 
-	// Unsupported
-	else throw _T("Unknown bits per sample value.");
+		// Read audio
+		buffer1 = new short[fullSize];
+		source->GetAudio(buffer1,start/sampleMult,srcCount);
+
+		// Convert from 8-bit to 16-bit
+		if (srcBps == 1) {
+			if (sampleMult == 1) {
+				Make16Bit((const char*)buffer1,(short*)destination,srcCount);
+			}
+			else {
+				buffer2 = new short[fullSize];
+				Make16Bit((const char*)buffer1,buffer2,srcCount);
+				last = buffer2;
+			}
+		}
+
+		// Already 16-bit
+		else if (srcBps == 2) last = buffer1;
+
+		// Convert sample rate
+		if (sampleMult != 1) {
+			ChangeSampleRate(last,(short*)destination,count);
+		}
+
+		delete [] buffer1;
+		delete [] buffer2;
+	}
 }

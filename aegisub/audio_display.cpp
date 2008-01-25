@@ -792,21 +792,23 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 void AudioDisplay::UpdateSamples() {
 	// Set samples
 	if (!provider) return;
-	int64_t totalSamples = provider->GetNumSamples();
-	int total = totalSamples / w;
-	int max = 5760000 / w;	// 2 minutes at 48 kHz maximum
-	if (total > max) total = max;
-	int min = 8;
-	if (total < min) total = min;
-	int range = total-min;
-	samples = int(range*pow(samplesPercent/100.0,3)+min);
+	if (w) {
+		int64_t totalSamples = provider->GetNumSamples();
+		int total = totalSamples / w;
+		int max = 5760000 / w;	// 2 minutes at 48 kHz maximum
+		if (total > max) total = max;
+		int min = 8;
+		if (total < min) total = min;
+		int range = total-min;
+		samples = int(range*pow(samplesPercent/100.0,3)+min);
 
-	// Set position
-	int length = w * samples;
-	if (PositionSample + length > totalSamples) {
-		PositionSample = totalSamples - length;
-		if (PositionSample < 0) PositionSample = 0;
-		Position = PositionSample / samples;
+		// Set position
+		int length = w * samples;
+		if (PositionSample + length > totalSamples) {
+			PositionSample = totalSamples - length;
+			if (PositionSample < 0) PositionSample = 0;
+			if (samples) Position = PositionSample / samples;
+		}
 	}
 }
 
@@ -1915,8 +1917,8 @@ void AudioDisplay::OnSize(wxSizeEvent &event) {
 	h -= Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
 
 	// Update image
+	UpdateSamples();
 	if (samples) {
-		UpdateSamples();
 		UpdatePosition(PositionSample / samples);
 	}
 	UpdateImage();

@@ -46,7 +46,11 @@
 // Audio provider class
 class ConvertAudioProvider : public AudioProvider {
 private:
+	int sampleMult;
+
 	AudioProvider *source;
+	void Make16Bit(const char *src, short *dst, int64_t count);
+	void ChangeSampleRate(const short *src, short *dst, int64_t count);
 
 public:
 	ConvertAudioProvider(AudioProvider *source);
