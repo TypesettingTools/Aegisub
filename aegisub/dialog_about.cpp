@@ -61,34 +61,55 @@ AboutScreen::AboutScreen(wxWindow *parent)
 
 	// Generate library string
 	wxString libString = _("This build of Aegisub uses the following C/C++ libraries:\n");
-	libString += _T("wxWidgets - Copyright (c) 1998-2008 Julian Smart, Robert Roebling et al;\n");
-	libString += _T("wxStyledTextCtrl - Copyright (c) 2004 wxCode;\n");
-	libString += _T("Lua - Copyright (c) 1994-2008 Lua.org, PUC-Rio;\n");
-	libString += _T("Hunspell - Copyright (c) Kevin Hendricks;\n");
-	libString += _T("PortAudio - Copyright (c) 1999-2000 Ross Bencina, Phil Burk;\n");
-	libString += _T("FFmpeg - Copyright (c) 2001 Fabrice Bellard,;\n");
-	libString += _T("libass - Copyright (c) 2006-2008, Evgeniy Stepanov;\n");
-	libString += _T("asa - Copyright (c) 2004-2008, David Lamparter;\n");
-	libString += _T("MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada\n");
-	libString += _T("Matroska Parser and VideoSink - Copyright (c) 2004-2008 Mike Matsnev\n");
+	libString += _T("    wxWidgets - Copyright (c) 1998-2008 Julian Smart, Robert Roebling et al;\n");
+	libString += _T("    wxStyledTextCtrl - Copyright (c) 2004 wxCode;\n");
+#ifdef WITH_AUTOMATION
+	libString += _T("    Lua - Copyright (c) 1994-2008 Lua.org, PUC-Rio;\n");
+#endif
+#ifdef WITH_PERL
+	libString += _T("    Perl - Copyright (c) 1987-2007, Larry Wall et al;\n");
+#endif
+#ifdef WITH_RUBY
+	// Insert ruby string here
+#endif
+#ifdef WITH_HUNSPELL
+	libString += _T("    Hunspell - Copyright (c) Kevin Hendricks;\n");
+#endif
+#ifdef WITH_PORTAUDIO
+	libString += _T("    PortAudio - Copyright (c) 1999-2000 Ross Bencina, Phil Burk;\n");
+#endif
+#ifdef WITH_FFMPEG
+	libString += _T("    FFmpeg - Copyright (c) 2001 Fabrice Bellard,;\n");
+#endif
+#ifdef WITH_LIBASS
+	libString += _T("    libass - Copyright (c) 2006-2008, Evgeniy Stepanov;\n");
+#endif
+#ifdef WITH_CSRI
+	libString += _T("    csri - Copyright (c) 2004-2008, David Lamparter;\n");
+#endif
+	libString += _T("    MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada\n");
+	libString += _T("    Matroska Parser and VideoSink - Copyright (c) 2004-2008 Mike Matsnev\n");
 
 	// Generate about string
 	wxString aboutString;
 	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
 	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
-	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _(" by ArchMage ZeratuL.\n");
-	aboutString += _T("Copyright (c) 2005-2008 - Rodrigo Braz Monteiro.\n\n");
+	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _T(".\n");
+	aboutString += _T("Copyright (c) 2005-2008 - Rodrigo Braz Monteiro et al.\n\n");
 	aboutString += _T("Automation - Copyright (c) 2005-2008 Niels Martin Hansen (aka jfs).\n");
 	aboutString += _("Programmers:");
-	aboutString += _T(" ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle, Yuvi,\n     Azzy, Pomyk, Motoko-chan, Dansolo, Haali.\n");
+	aboutString += _T(" Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter,\n");
+	aboutString += _T("    Dan Donovan, Alysson Souza e Silva, Karl Blomster, Simone Cociancich,\n");
+	aboutString += _T("    Fredrik Mellbin, Patryk Pomykalski, ai-chan, Evgeniy Stepanov,\n");
+	aboutString += _T("    Mike Matsnev, 2points, p-static, David Conrad, Daniel Moscoviter.\n");
 	aboutString += _("Manual by:");
-	aboutString += _T(" TheFluff, ArchMage ZeratuL, jfs, movax, Kobi, Jcubed.\n");
+	aboutString += _T(" Karl Blomster, Niels Martin Hansen, Rodrigo Braz Monteiro.\n");
 	aboutString += _("Forum and wiki hosting by:");
-	aboutString += _T(" Bot1.\n");
+	aboutString += _T(" Sigurd Tao Lyngse.\n");
 	aboutString += _("SVN hosting by:");
-	aboutString += _T(" equinox, BerliOS, Mentar.\n");
+	aboutString += _T(" David Lamparter, BerliOS, Mentar.\n");
 	aboutString += _("Bug tracker hosting by:");
-	aboutString += _T(" jfs\n");
+	aboutString += _T(" Niels Martin Hansen.\n");
 	aboutString += translatorCredit;
 	aboutString += _T("\n") + libString;
 	aboutString += _("\nSee the help file for full credits.\n");
