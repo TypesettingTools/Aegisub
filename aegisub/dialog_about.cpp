@@ -95,8 +95,8 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
 	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
 	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _T(".\n");
-	aboutString += _T("Copyright (c) 2005-2008 - Rodrigo Braz Monteiro et al.\n\n");
-	aboutString += _T("Automation - Copyright (c) 2005-2008 Niels Martin Hansen (aka jfs).\n");
+	aboutString += _T("Copyright (c) 2005-2008 - Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
+	aboutString += _T("Automation - Copyright (c) 2005-2008 Niels Martin Hansen.\n");
 	aboutString += _("Programmers:");
 	aboutString += _T(" Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter,\n");
 	aboutString += _T("    Dan Donovan, Alysson Souza e Silva, Karl Blomster, Simone Cociancich,\n");
