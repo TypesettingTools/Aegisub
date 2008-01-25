@@ -52,7 +52,7 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
 ASSDrawSrcTxtCtrl::ASSDrawSrcTxtCtrl(wxWindow *parent, ASSDrawFrame *frame)
-	: wxTextCtrl(parent, wxID_ANY, "", __DPDS__ , wxTE_MULTILINE )
+	: wxTextCtrl(parent, wxID_ANY, _T(""), __DPDS__ , wxTE_MULTILINE )
 {
 	m_frame = frame;
 }
@@ -67,7 +67,7 @@ void ASSDrawSrcTxtCtrl::CustomOnChar(wxKeyEvent &event)
 	case WXK_TAB:
 		break; //do nothing
 	default:
-		//m_frame->SetTitle(wxString::Format("Key: %d", event.GetKeyCode()));
+		//m_frame->SetTitle(wxString::Format(_T("Key: %d"), event.GetKeyCode()));
 		event.Skip(true);
 	}
 	
@@ -185,14 +185,14 @@ void ASSDrawTransformDlg::OnTemplatesCombo(wxCommandEvent &event)
 	if (pos == -1)
 		return;
 
-	txtctrl_m11->SetValue( wxString::Format("%.1f", combo_templatesValues[pos].f1) );
-	txtctrl_m12->SetValue( wxString::Format("%.1f", combo_templatesValues[pos].f2) );
-	txtctrl_m21->SetValue( wxString::Format("%.1f", combo_templatesValues[pos].f3) );
-	txtctrl_m22->SetValue( wxString::Format("%.1f", combo_templatesValues[pos].f4) );
-	txtctrl_mx->SetValue( wxString::Format("%.1f", combo_templatesValues[pos].f5) );
-	txtctrl_my->SetValue( wxString::Format("%.1f", combo_templatesValues[pos].f6) );
-	txtctrl_nx->SetValue( wxString::Format("%.1f", combo_templatesValues[pos].f7) );
-	txtctrl_ny->SetValue( wxString::Format("%.1f", combo_templatesValues[pos].f8) );
+	txtctrl_m11->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f1) );
+	txtctrl_m12->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f2) );
+	txtctrl_m21->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f3) );
+	txtctrl_m22->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f4) );
+	txtctrl_mx->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f5) );
+	txtctrl_my->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f6) );
+	txtctrl_nx->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f7) );
+	txtctrl_ny->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f8) );
 }
 
 void ASSDrawTransformDlg::EndModal(int retCode)
@@ -217,7 +217,7 @@ void ASSDrawTransformDlg::EndModal(int retCode)
 	if (ok)
 		wxDialog::EndModal(wxID_OK);
 	else
-	    wxMessageBox("One or more values entered are not real numbers.\nPlease fix.", _T("Value error"), wxOK | wxICON_INFORMATION, m_frame);
+	    wxMessageBox(_T("One or more values entered are not real numbers.\nPlease fix."), _T("Value error"), wxOK | wxICON_INFORMATION, m_frame);
 
 }
 
@@ -228,7 +228,7 @@ ASSDrawAboutDlg::ASSDrawAboutDlg(ASSDrawFrame *parent, unsigned timeout)
 	SetBackgroundColour(*wxWHITE);
 	htmlwin = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(396, 200), wxHW_DEFAULT_STYLE | wxSIMPLE_BORDER);
 	htmlwin->SetPage(
-"<html><body> \
+_T("<html><body> \
 <p>ASSDraw3 is a tool for designing shapes to be used in ASS subtitle file. \
 <p>To add lines or curves, initiate the draw mode by clicking on the drawing tools. \
 Then, either click on empty space or drag from an existing point to add the new lines/curves. \
@@ -253,7 +253,7 @@ Control points for Bezier curves are generated once you release the mouse button
 <li> jfs, ArchMageZeratul, RoRo and everyone at Aegisub's forum <a href=\"http://malakith.net/aegisub\">http://malakith.net/aegisub</a> for all suggestions and supports. \
 </ul> \
 <p>ai-chan recommends Aegisub for all your subtitle and typesetting needs! \
-</body></html>"
+</body></html>")
 	);	
 	htmlwin->Connect(wxEVT_COMMAND_HTML_LINK_CLICKED, wxHtmlLinkEventHandler(ASSDrawAboutDlg::OnURL), NULL, this);
 	
@@ -263,7 +263,7 @@ Control points for Bezier curves are generated once you release the mouse button
 	
 	sizer->Add(new BigStaticBitmapCtrl(this, wxBITMAP(assdraw3_), *wxWHITE, this), 1, wxEXPAND);
 	sizer->Add(htmlwin, 1, wxLEFT | wxRIGHT, 2);
-	sizer->Add(new wxStaticText(this, wxID_ANY, wxString::Format("Version: %s", VERSION)), 1, wxEXPAND | wxALL, 2);
+	sizer->Add(new wxStaticText(this, wxID_ANY, wxString::Format(_T("Version: %s"), VERSION)), 1, wxEXPAND | wxALL, 2);
 	sizer->Add(new wxButton(this, wxID_OK), 0, wxALIGN_CENTER | wxBOTTOM, 10);
 	SetSizer(sizer);
 	sizer->Layout();
@@ -286,13 +286,13 @@ int ASSDrawAboutDlg::ShowModal()
 {
 	if (time_out > 0)
 		timer.Start(time_out * 1000, true);
-	wxDialog::ShowModal();
+	return wxDialog::ShowModal();
 }
 
 void ASSDrawAboutDlg::OnURL(wxHtmlLinkEvent &event)
 {
 	wxString URL(event.GetLinkInfo().GetHref());
-	if (URL.StartsWith("http://"))
+	if (URL.StartsWith(_T("http://")))
 		::wxLaunchDefaultBrowser(URL);
 	else
 		event.Skip(true);

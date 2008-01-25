@@ -40,7 +40,7 @@ ASSDrawShapePreview::ASSDrawShapePreview( wxWindow *parent, ASSDrawShapeLibrary 
 	shapelib = _shapelib;
 	if (ParseASS(initialcmds) > 0)
 		SetFitToViewPointOnNextPaint(5, 5);
-	cb = new wxCheckBox(this, wxID_ANY, "");
+	cb = new wxCheckBox(this, wxID_ANY, _T(""));
 }
 
 void ASSDrawShapePreview::OnSize(wxSizeEvent& event)
@@ -72,11 +72,11 @@ ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame 
 	
 	wxToolBar *tbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
 	tbar->SetMargins(0, 3);
-	tbar->AddTool(TOOL_SAVE, wxBITMAP(add), "Save canvas");
+	tbar->AddTool(TOOL_SAVE, wxBITMAP(add), _T("Save canvas"));
 	tbar->AddSeparator();
-	tbar->AddTool(TOOL_CHECK, wxBITMAP(check), "Select all");
-	tbar->AddTool(TOOL_UNCHECK, wxBITMAP(uncheck), "Select none");
-	tbar->AddTool(TOOL_DELETE, wxBITMAP(delcross), "Delete selected");
+	tbar->AddTool(TOOL_CHECK, wxBITMAP(check), _T("Select all"));
+	tbar->AddTool(TOOL_UNCHECK, wxBITMAP(uncheck), _T("Select none"));
+	tbar->AddTool(TOOL_DELETE, wxBITMAP(delcross), _T("Delete selected"));
 
 	libarea = new wxScrolledWindow(this, wxID_ANY, __DPDS__ , wxScrolledWindowStyle | wxSIMPLE_BORDER);
 	libarea->SetBackgroundColour(wxColour(0xFF, 0xFF, 0x99));
@@ -152,17 +152,17 @@ void ASSDrawShapeLibrary::OnMouseRightClick(wxMouseEvent &event)
 	{
 		activepreview = prev;
 		wxMenu *menu = new wxMenu;
-		wxMenuItem *menuload = new wxMenuItem(menu, MENU_LOAD, wxT("Load to canvas"));
+		wxMenuItem *menuload = new wxMenuItem(menu, MENU_LOAD, _T("Load to canvas"));
 		wxFont f = menuload->GetFont();
 		f.SetWeight(wxFONTWEIGHT_BOLD);
 		menuload->SetFont(f);
 		menu->Append(menuload);
-		//menu->Append(MENU_LOAD, wxT("Load to canvas"))->GetFont().SetWeight(wxFONTWEIGHT_BOLD);
-		menu->Append(MENU_COPYCLIPBOARD, wxT("Copy commands to clipboard"));
-		menu->Append(MENU_SAVECANVAS, wxT("Save canvas here"));
+		//menu->Append(MENU_LOAD, _T("Load to canvas"))->GetFont().SetWeight(wxFONTWEIGHT_BOLD);
+		menu->Append(MENU_COPYCLIPBOARD, _T("Copy commands to clipboard"));
+		menu->Append(MENU_SAVECANVAS, _T("Save canvas here"));
 		wxMenu *submenu = new wxMenu;
-		submenu->Append(MENU_DELETE, wxT("Confirm delete?"));
-		menu->Append(MENU_DUMMY, wxT("Delete from library"), submenu);
+		submenu->Append(MENU_DELETE, _T("Confirm delete?"));
+		menu->Append(MENU_DUMMY, _T("Delete from library"), submenu);
 		PopupMenu(menu);
 		delete menu;
 	}
@@ -251,7 +251,7 @@ std::vector< ASSDrawShapePreview *> ASSDrawShapeLibrary::GetShapePreviews()
 
 void ASSDrawShapeLibrary::LoadToCanvas(ASSDrawShapePreview *preview)
 {
-	m_frame->m_canvas->AddUndo("Load shape from library");
+	m_frame->m_canvas->AddUndo(_T("Load shape from library"));
 	m_frame->m_canvas->ParseASS(preview->GenerateASS());
 	m_frame->m_canvas->RefreshDisplay();
 	m_frame->m_canvas->RefreshUndocmds();

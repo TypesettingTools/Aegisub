@@ -279,7 +279,7 @@ protected:
 	// after the bounding quadrangle has changed, update the shape to fill up inside it
 	virtual void UpdateNonUniformTransformation();
 
-	friend class UndoRedo;
+	friend struct UndoRedo;
 	
 	DECLARE_EVENT_TABLE()
 };
@@ -295,6 +295,7 @@ public:
 	virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 	{
 		m_canvas->ReceiveBackgroundImageFileDropEvent(filenames.Item(0));
+		return true;
 	}
 
 protected:

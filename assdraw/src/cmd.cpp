@@ -68,7 +68,7 @@ DrawCmd_L::DrawCmd_L ( int x, int y, PointSystem *ps, DrawCmd *prev )
 // to ASS drawing command
 wxString DrawCmd_L::ToString()
 {
-     return wxString::Format(wxT("l %d %d"), m_point->x(), m_point->y());
+     return wxString::Format(_T("l %d %d"), m_point->x(), m_point->y());
 }
 
 
@@ -129,9 +129,9 @@ wxString DrawCmd_B::ToString()
 	Point* c1 = (*iterate++);
 	Point* c2 = (*iterate);
 	if (initialized)
-		return wxString::Format(wxT("b %d %d %d %d %d %d"), c1->x(), c1->y(), c2->x(), c2->y(), m_point->x(), m_point->y());
+		return wxString::Format(_T("b %d %d %d %d %d %d"), c1->x(), c1->y(), c2->x(), c2->y(), m_point->x(), m_point->y());
 	else
-		return wxString::Format(wxT("b ? ? ? ? %d %d"), m_point->x(), m_point->y());
+		return wxString::Format(_T("b ? ? ? ? %d %d"), m_point->x(), m_point->y());
 }
 
 
@@ -162,7 +162,7 @@ DrawCmd_S::DrawCmd_S
 		int ix = *it; it++;
 		int iy = *it; it++;
 		n++;
-		//::wxLogMessage("%d %d\n", ix, iy);
+		//::wxLogMessage(_T("%d %d\n"), ix, iy);
 		controlpoints.push_back( new Point( ix, iy, ps, CP, this, n ) );
 	}
 
@@ -202,11 +202,11 @@ wxString DrawCmd_S::ToString()
 	for (; iterate != controlpoints.end(); iterate++)
 	{
 		if (initialized)
-			assout = wxString::Format(wxT("%s %d %d"), assout.c_str(), (*iterate)->x(), (*iterate)->y()); 
+			assout = wxString::Format(_T("%s %d %d"), assout.c_str(), (*iterate)->x(), (*iterate)->y()); 
 		else
-			assout = wxString::Format(wxT("%s ? ?"), assout.c_str());
+			assout = wxString::Format(_T("%s ? ?"), assout.c_str());
 	}
-	assout = wxString::Format(wxT("%s %d %d"), assout.c_str(), m_point->x(), m_point->y());
-	if (closed) assout = wxString::Format(wxT("%s c"), assout.c_str());
+	assout = wxString::Format(_T("%s %d %d"), assout.c_str(), m_point->x(), m_point->y());
+	if (closed) assout = wxString::Format(_T("%s c"), assout.c_str());
 	return assout;
 }

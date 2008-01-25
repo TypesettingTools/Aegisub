@@ -97,7 +97,7 @@ void ASSDrawFrame::ApplySettings()
 		wxColourToAggRGBA(colors.library_shape, shapes[i]->rgba_shape);
 	shapelib->libarea->Refresh();
 	
-	m_canvas->SetDrawCmdSet(wxT(behaviors.parse_spc? "m n l b s p c _":"m n l b _"));
+	m_canvas->SetDrawCmdSet(behaviors.parse_spc? _T("m n l b s p c _"):_T("m n l b _"));
 
 	UpdateASSCommandStringToSrcTxtCtrl(m_canvas->GenerateASS());
 }
@@ -122,9 +122,9 @@ void ASSDrawFrame::OnSettingsChanged(wxCommandEvent& event)
 
 void ASSDrawFrame::LoadSettings()
 {
-	#define CFGREADCOLOR(color) if (config->Read(#color, &tmpstr)) color.Set(tmpstr);
-	#define CFGREAD(var) config->Read(#var, &var);
-	config->SetPath("settings");
+	#define CFGREADCOLOR(color) if (config->Read(wxString(#color,wxConvUTF8), &tmpstr)) color.Set(tmpstr);
+	#define CFGREAD(var) config->Read(wxString(#var,wxConvUTF8), &var);
+	config->SetPath(_T("settings"));
 	wxString tmpstr;
 	CFGREADCOLOR(colors.canvas_bg)
 	CFGREADCOLOR(colors.canvas_shape_normal)
@@ -152,14 +152,14 @@ void ASSDrawFrame::LoadSettings()
 	CFGREAD(behaviors.parse_spc)
 	CFGREAD(behaviors.nosplashscreen)
 	CFGREAD(behaviors.confirmquit)
-	config->SetPath("..");
+	config->SetPath(_T(".."));
 }
 
 void ASSDrawFrame::SaveSettings()
 {
-	#define CFGWRITE(var) config->Write(#var, var);
-	#define CFGWRITECOLOR(color) config->Write(#color, color.GetAsString(wxC2S_HTML_SYNTAX));
-	config->SetPath("settings");
+	#define CFGWRITE(var) config->Write(wxString(#var,wxConvUTF8), var);
+	#define CFGWRITECOLOR(color) config->Write(wxString(#color,wxConvUTF8), color.GetAsString(wxC2S_HTML_SYNTAX));
+	config->SetPath(_T("settings"));
 	CFGWRITECOLOR(colors.canvas_bg)
 	CFGWRITECOLOR(colors.canvas_shape_normal)
 	CFGWRITECOLOR(colors.canvas_shape_preview)
@@ -186,5 +186,5 @@ void ASSDrawFrame::SaveSettings()
 	CFGWRITE(behaviors.parse_spc)
 	CFGWRITE(behaviors.nosplashscreen)
 	CFGWRITE(behaviors.confirmquit)
-	config->SetPath("..");
+	config->SetPath(_T(".."));
 }

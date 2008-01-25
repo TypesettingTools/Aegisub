@@ -40,6 +40,7 @@
 #include "_common.hpp"
 
 #include <vector>
+#include <wx/wxprec.h>
 #include <wx/aui/aui.h>
 #include <wx/fileconf.h>
 #include <wx/help.h>
@@ -50,7 +51,7 @@
 #include "library.hpp" // shape library
 
 //#define BETAVERSION 2
-#define VERSION "3.0 final"
+#define VERSION _T("3.0 final")
 
 // this header file declares the following classes
 class ASSDrawApp;

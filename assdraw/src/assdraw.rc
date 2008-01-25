@@ -28,38 +28,38 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-APPICO                  ICON                    "../tsukasa.ico"
+APPICO                  ICON                    "tsukasa.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
 //
 
-ASSDRAW3_               BITMAP                  "../bitmaps/assdraw3.bmp"
-NEW_                    BITMAP                  "../bitmaps/new_.bmp"
-SRC_                    BITMAP                  "../bitmaps/src_.bmp"
-PREVIEW_                BITMAP                  "../bitmaps/preview_.bmp"
-ARR_                    BITMAP                  "../bitmaps/arr_.bmp"
-M_                      BITMAP                  "../bitmaps/m_.bmp"
-N_                      BITMAP                  "../bitmaps/n_.bmp"
-L_                      BITMAP                  "../bitmaps/l_.bmp"
-B_                      BITMAP                  "../bitmaps/b_.bmp"
-S_                      BITMAP                  "../bitmaps/s_.bmp"
-P_                      BITMAP                  "../bitmaps/p_.bmp"
-C_                      BITMAP                  "../bitmaps/c_.bmp"
-DEL_                    BITMAP                  "../bitmaps/del_.bmp"
-NUT_                    BITMAP                  "../bitmaps/nut_.bmp"
-SC_ROT_                 BITMAP                  "../bitmaps/sc_rot_.bmp"
-ROT_                    BITMAP                  "../bitmaps/rot_.bmp"
-HELP_                   BITMAP                  "../bitmaps/help_.bmp"
-TRANSFORM               BITMAP                  "../bitmaps/transform.bmp"
-PAN_SHP                 BITMAP                  "../bitmaps/pan_shp.bmp"
-PAN_BG                  BITMAP                  "../bitmaps/pan_bg.bmp"
-//PAN_BOTH                BITMAP                  "../bitmaps/pan_both.bmp"
-ADD                     BITMAP                  "../bitmaps/add_.bmp"
-CHECK                   BITMAP                  "../bitmaps/check_.bmp"
-UNCHECK                 BITMAP                  "../bitmaps/uncheck_.bmp"
-DELCROSS                BITMAP                  "../bitmaps/del_cross.bmp"
+ASSDRAW3_               BITMAP                  "bitmaps/assdraw3.bmp"
+NEW_                    BITMAP                  "bitmaps/new_.bmp"
+SRC_                    BITMAP                  "bitmaps/src_.bmp"
+PREVIEW_                BITMAP                  "bitmaps/preview_.bmp"
+ARR_                    BITMAP                  "bitmaps/arr_.bmp"
+M_                      BITMAP                  "bitmaps/m_.bmp"
+N_                      BITMAP                  "bitmaps/n_.bmp"
+L_                      BITMAP                  "bitmaps/l_.bmp"
+B_                      BITMAP                  "bitmaps/b_.bmp"
+S_                      BITMAP                  "bitmaps/s_.bmp"
+P_                      BITMAP                  "bitmaps/p_.bmp"
+C_                      BITMAP                  "bitmaps/c_.bmp"
+DEL_                    BITMAP                  "bitmaps/del_.bmp"
+NUT_                    BITMAP                  "bitmaps/nut_.bmp"
+SC_ROT_                 BITMAP                  "bitmaps/sc_rot_.bmp"
+ROT_                    BITMAP                  "bitmaps/rot_.bmp"
+HELP_                   BITMAP                  "bitmaps/help_.bmp"
+TRANSFORM               BITMAP                  "bitmaps/transform.bmp"
+PAN_SHP                 BITMAP                  "bitmaps/pan_shp.bmp"
+PAN_BG                  BITMAP                  "bitmaps/pan_bg.bmp"
+//PAN_BOTH                BITMAP                  "bitmaps/pan_both.bmp"
+ADD                     BITMAP                  "bitmaps/add_.bmp"
+CHECK                   BITMAP                  "bitmaps/check_.bmp"
+UNCHECK                 BITMAP                  "bitmaps/uncheck_.bmp"
+DELCROSS                BITMAP                  "bitmaps/del_cross.bmp"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

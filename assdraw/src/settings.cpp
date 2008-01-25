@@ -65,44 +65,44 @@ void ASSDrawSettingsDialog::Init()
 		//wxSUNKEN_BORDER
 	);
 
-    #define APPENDCOLOURPROP(pgid, label, color) pgid = propgrid->Append( wxColourProperty(wxT(label), wxPG_LABEL, color) );
+    #define APPENDCOLOURPROP(pgid, label, color) pgid = propgrid->Append( wxColourProperty(label, wxPG_LABEL, color) );
     #define APPENDUINTPROP(pgid, label, uint) \
-		pgid = propgrid->Append( wxUIntProperty(wxT(label), wxPG_LABEL, uint) ); \
+		pgid = propgrid->Append( wxUIntProperty(label, wxPG_LABEL, uint) ); \
 		propgrid->SetPropertyValidator( pgid, validator );
     #define APPENDBOOLPROP(pgid, label, boolvar) \
-	    pgid = propgrid->Append( wxBoolProperty ( wxT(label), wxPG_LABEL, boolvar ) ); \
+	    pgid = propgrid->Append( wxBoolProperty (label, wxPG_LABEL, boolvar ) ); \
     	propgrid->SetPropertyAttribute( pgid, wxPG_BOOL_USE_CHECKBOX, (long)1 );
 	wxLongPropertyValidator validator(0x0,0xFF);
     
-    propgrid->Append( wxPropertyCategory(wxT("Appearance"),wxPG_LABEL) );
-	APPENDCOLOURPROP(colors_canvas_bg_pgid, "Canvas", m_frame->colors.canvas_bg)
-	APPENDCOLOURPROP(colors_canvas_shape_normal_pgid, "Drawing", m_frame->colors.canvas_shape_normal)
-	APPENDUINTPROP(alphas_canvas_shape_normal_pgid, "Drawing @", m_frame->alphas.canvas_shape_normal)
-	APPENDCOLOURPROP(colors_canvas_shape_preview_pgid, "Preview", m_frame->colors.canvas_shape_preview)
-	APPENDUINTPROP(alphas_canvas_shape_preview_pgid, "Preview @", m_frame->alphas.canvas_shape_preview)
-	APPENDCOLOURPROP(colors_canvas_shape_outline_pgid, "Outline", m_frame->colors.canvas_shape_outline)
-	APPENDUINTPROP(alphas_canvas_shape_outline_pgid, "Outline @", m_frame->alphas.canvas_shape_outline)
-	APPENDCOLOURPROP(colors_canvas_shape_guideline_pgid, "Control lines", m_frame->colors.canvas_shape_guideline)
-	APPENDUINTPROP(alphas_canvas_shape_guideline_pgid, "Control lines @", m_frame->alphas.canvas_shape_guideline)
-	APPENDCOLOURPROP(colors_canvas_shape_mainpoint_pgid, "Points", m_frame->colors.canvas_shape_mainpoint)
-	APPENDUINTPROP(alphas_canvas_shape_mainpoint_pgid, "Points @", m_frame->alphas.canvas_shape_mainpoint)
-	APPENDCOLOURPROP(colors_canvas_shape_controlpoint_pgid, "Control points", m_frame->colors.canvas_shape_controlpoint)
-	APPENDUINTPROP(alphas_canvas_shape_controlpoint_pgid, "Control points @", m_frame->alphas.canvas_shape_controlpoint)
-	APPENDCOLOURPROP(colors_canvas_shape_selectpoint_pgid, "Selected points", m_frame->colors.canvas_shape_selectpoint)
-	APPENDUINTPROP(alphas_canvas_shape_selectpoint_pgid, "Selected points @", m_frame->alphas.canvas_shape_selectpoint)
-	APPENDCOLOURPROP(colors_library_libarea_pgid, "Library", m_frame->colors.library_libarea)
-	APPENDCOLOURPROP(colors_library_shape_pgid, "Library shapes", m_frame->colors.library_shape)
-	APPENDCOLOURPROP(colors_origin_pgid, "Origin", m_frame->colors.origin)
-	APPENDUINTPROP(sizes_origincross_pgid, "Origin cross size", m_frame->sizes.origincross)
-	APPENDCOLOURPROP(colors_ruler_h_pgid, "H ruler", m_frame->colors.ruler_h)
-	APPENDCOLOURPROP(colors_ruler_v_pgid, "V ruler", m_frame->colors.ruler_v)
+    propgrid->Append( wxPropertyCategory(_T("Appearance"),wxPG_LABEL) );
+	APPENDCOLOURPROP(colors_canvas_bg_pgid, _T("Canvas"), m_frame->colors.canvas_bg)
+	APPENDCOLOURPROP(colors_canvas_shape_normal_pgid, _T("Drawing"), m_frame->colors.canvas_shape_normal)
+	APPENDUINTPROP(alphas_canvas_shape_normal_pgid, _T("Drawing @"), m_frame->alphas.canvas_shape_normal)
+	APPENDCOLOURPROP(colors_canvas_shape_preview_pgid, _T("Preview"), m_frame->colors.canvas_shape_preview)
+	APPENDUINTPROP(alphas_canvas_shape_preview_pgid, _T("Preview @"), m_frame->alphas.canvas_shape_preview)
+	APPENDCOLOURPROP(colors_canvas_shape_outline_pgid, _T("Outline"), m_frame->colors.canvas_shape_outline)
+	APPENDUINTPROP(alphas_canvas_shape_outline_pgid, _T("Outline @"), m_frame->alphas.canvas_shape_outline)
+	APPENDCOLOURPROP(colors_canvas_shape_guideline_pgid, _T("Control lines"), m_frame->colors.canvas_shape_guideline)
+	APPENDUINTPROP(alphas_canvas_shape_guideline_pgid, _T("Control lines @"), m_frame->alphas.canvas_shape_guideline)
+	APPENDCOLOURPROP(colors_canvas_shape_mainpoint_pgid, _T("Points"), m_frame->colors.canvas_shape_mainpoint)
+	APPENDUINTPROP(alphas_canvas_shape_mainpoint_pgid, _T("Points @"), m_frame->alphas.canvas_shape_mainpoint)
+	APPENDCOLOURPROP(colors_canvas_shape_controlpoint_pgid, _T("Control points"), m_frame->colors.canvas_shape_controlpoint)
+	APPENDUINTPROP(alphas_canvas_shape_controlpoint_pgid, _T("Control points @"), m_frame->alphas.canvas_shape_controlpoint)
+	APPENDCOLOURPROP(colors_canvas_shape_selectpoint_pgid, _T("Selected points"), m_frame->colors.canvas_shape_selectpoint)
+	APPENDUINTPROP(alphas_canvas_shape_selectpoint_pgid, _T("Selected points @"), m_frame->alphas.canvas_shape_selectpoint)
+	APPENDCOLOURPROP(colors_library_libarea_pgid, _T("Library"), m_frame->colors.library_libarea)
+	APPENDCOLOURPROP(colors_library_shape_pgid, _T("Library shapes"), m_frame->colors.library_shape)
+	APPENDCOLOURPROP(colors_origin_pgid, _T("Origin"), m_frame->colors.origin)
+	APPENDUINTPROP(sizes_origincross_pgid, _T("Origin cross size"), m_frame->sizes.origincross)
+	APPENDCOLOURPROP(colors_ruler_h_pgid, _T("H ruler"), m_frame->colors.ruler_h)
+	APPENDCOLOURPROP(colors_ruler_v_pgid, _T("V ruler"), m_frame->colors.ruler_v)
 
-    propgrid->Append( wxPropertyCategory(wxT("Behaviors"),wxPG_LABEL) );
-	APPENDBOOLPROP(behaviors_capitalizecmds_pgid, "Capitalize commands", m_frame->behaviors.capitalizecmds);
-	APPENDBOOLPROP(behaviors_autoaskimgopac_pgid, "Ask for image opacity", m_frame->behaviors.autoaskimgopac);
-	APPENDBOOLPROP(behaviors_parse_spc_pgid, "Parse S/P/C", m_frame->behaviors.parse_spc);
-	APPENDBOOLPROP(behaviors_nosplashscreen_pgid, "No splash screen", m_frame->behaviors.nosplashscreen);
-	APPENDBOOLPROP(behaviors_confirmquit_pgid, "Confirm quit", m_frame->behaviors.confirmquit);
+    propgrid->Append( wxPropertyCategory(_T("Behaviors"),wxPG_LABEL) );
+	APPENDBOOLPROP(behaviors_capitalizecmds_pgid, _T("Capitalize commands"), m_frame->behaviors.capitalizecmds);
+	APPENDBOOLPROP(behaviors_autoaskimgopac_pgid, _T("Ask for image opacity"), m_frame->behaviors.autoaskimgopac);
+	APPENDBOOLPROP(behaviors_parse_spc_pgid, _T("Parse S/P/C"), m_frame->behaviors.parse_spc);
+	APPENDBOOLPROP(behaviors_nosplashscreen_pgid, _T("No splash screen"), m_frame->behaviors.nosplashscreen);
+	APPENDBOOLPROP(behaviors_confirmquit_pgid, _T("Confirm quit"), m_frame->behaviors.confirmquit);
 	
 	wxFlexGridSizer *sizer = new wxFlexGridSizer(2, 1, 0, 0);
 	sizer->AddGrowableCol(0);
@@ -110,10 +110,10 @@ void ASSDrawSettingsDialog::Init()
 	sizer->Add(propgrid, 1, wxEXPAND);
 
 	wxBoxSizer *bsizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *abutton = new wxButton(this, wxID_ANY, "Apply");
+	wxButton *abutton = new wxButton(this, wxID_ANY, _T("Apply"));
 	abutton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ASSDrawSettingsDialog::OnSettingsApplyButtonClicked), NULL, this);
 	bsizer->Add(abutton, 2, wxEXPAND);
-	wxButton *rbutton = new wxButton(this, wxID_ANY, "Revert");
+	wxButton *rbutton = new wxButton(this, wxID_ANY, _T("Revert"));
 	rbutton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ASSDrawSettingsDialog::OnSettingsRevertButtonClicked), NULL, this);
 	bsizer->Add(rbutton, 1, wxEXPAND);
 	bsizer->Layout();

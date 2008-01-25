@@ -139,7 +139,7 @@ ASSDrawEngine::ASSDrawEngine( wxWindow *parent, int extraflags )
 	setfitviewpoint = false;
 	rgba_shape = agg::rgba(0,0,1);
 	color_bg = PixelFormat::AGGType::color_type(255, 255, 255);
-	drawcmdset = wxT("m n l b s p c _"); //the spaces and underscore are in there for a reason, guess?
+	drawcmdset = _T("m n l b s p c _"); //the spaces and underscore are in there for a reason, guess?
 	ResetEngine();
 }
 
@@ -156,10 +156,10 @@ int ASSDrawEngine::ParseASS ( wxString str )
 	str.Replace(_T("\t"), _T(""));
 	str.Replace(_T("\r"), _T(""));
 	str.Replace(_T("\n"), _T(""));
-	str = str.Lower() + wxT(" _ _");
+	str = str.Lower() + _T(" _ _");
 	// we don't use regex because the pattern is too simple
-	wxStringTokenizer tkz( str, wxT(" ") );
-	wxString currcmd(wxT(""));
+	wxStringTokenizer tkz( str, _T(" ") );
+	wxString currcmd(_T(""));
 	std::vector<int> val;
 	wxString token;
 	long tmp_int;
@@ -180,7 +180,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 				done = true;
 				
 				// N
-				if (currcmd.IsSameAs(wxT("n")) && val.size() >= 2)
+				if (currcmd.IsSameAs(_T("n")) && val.size() >= 2)
 				{
 					tmp_n_pnt.x = val[0], tmp_n_pnt.y = val[1];
 					n_collected = true;
@@ -194,7 +194,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 				if (s_command != NULL)
 				{
 					bool ends = true;
-					if (currcmd.IsSameAs(wxT("p"))&& val.size() >= 2)
+					if (currcmd.IsSameAs(_T("p"))&& val.size() >= 2)
 					{
 						s_command->m_point->type = CP;
 						s_command->m_point->num = s_command->controlpoints.size() + 1;
@@ -202,7 +202,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 						s_command->m_point = new Point(val[0], val[1], pointsys, MP, s_command);
 						ends = false;
 					}
-					else if (currcmd.IsSameAs(wxT("c")))
+					else if (currcmd.IsSameAs(_T("c")))
 						s_command->closed = true;
 
 					if (ends)
@@ -213,11 +213,11 @@ int ASSDrawEngine::ParseASS ( wxString str )
 				}
 				
 				// M
-				if (currcmd.IsSameAs(wxT("m")) && val.size() >= 2)
+				if (currcmd.IsSameAs(_T("m")) && val.size() >= 2)
 					AppendCmd ( M, val[0], val[1] );
 				
 				// L
-				if (currcmd.IsSameAs(wxT("l")) && val.size() >= 2)
+				if (currcmd.IsSameAs(_T("l")) && val.size() >= 2)
 				{
 					AppendCmd ( L, val[0], val[1] );
 					val.erase(val.begin(), val.begin()+2);
@@ -227,7 +227,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 				}
 				
 				// B
-				if (currcmd.IsSameAs(wxT("b")) && val.size() >= 6)
+				if (currcmd.IsSameAs(_T("b")) && val.size() >= 6)
 				{
 					AppendCmd ( new DrawCmd_B(val[4], val[5], val[0], val[1],
 					val[2], val[3], pointsys, LastCmd()) );
@@ -238,7 +238,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 				}
 				
 				// S
-				if (currcmd.IsSameAs(wxT("s")) && val.size() >= 6)
+				if (currcmd.IsSameAs(_T("s")) && val.size() >= 6)
 				{
 					int num = (val.size() / 2) * 2;
 					std::vector<int> val2;
