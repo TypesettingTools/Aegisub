@@ -190,10 +190,7 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	using std::list;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
-		if (current) {
-			// Get line
-			if (current->Comment) throw _T("Unexpected line type (comment)");
-
+		if (current && !current->Comment) {
 			// Write line
 			file.WriteLineToFile(wxString::Format(_T("%i"),i));
 			file.WriteLineToFile(current->Start.GetSRTFormated() + _T(" --> ") + current->End.GetSRTFormated());
@@ -202,7 +199,6 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 
 			i++;
 		}
-		else throw _T("Unexpected line type");
 	}
 
 	// Clean up
