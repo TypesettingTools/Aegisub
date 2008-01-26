@@ -136,7 +136,7 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 			// Load DirectShowSource.dll from app dir if it exists
 			wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
 			if (dsspath.FileExists()) {
-				env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(wxConvLocal)));
+				env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(wxConvLocal)));
 			}
 
 			// Load audio with DSS if it exists
