@@ -47,7 +47,7 @@
 ///////////////
 // Constructor
 SplashScreen::SplashScreen(wxWindow *parent)
-: wxFrame (parent, -1, _T(""), wxDefaultPosition, wxSize(400,240), wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR , _T("Splash"))
+: wxFrame (parent, -1, _T(""), wxDefaultPosition, wxSize(420,240), wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR , _T("Splash"))
 {
 	// Set parent
 	par = parent;
