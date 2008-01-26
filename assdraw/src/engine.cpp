@@ -146,7 +146,7 @@ ASSDrawEngine::ASSDrawEngine( wxWindow *parent, int extraflags )
 ASSDrawEngine::~ASSDrawEngine()
 {
     ResetEngine ( false );
-    delete pointsys;
+    //delete pointsys;
 }
 
 // parse ASS draw commands; returns the number of parsed commands
