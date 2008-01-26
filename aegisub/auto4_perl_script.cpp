@@ -109,6 +109,7 @@ namespace Automation4 {
 
 	// 'Enclose' the script into its package
 	wxString _script = _T("package ") + package + _T(";\n")
+	  _T("require Aegisub; require Aegisub::Script; require Aegisub::Progress;") // Core modules
 	  _T("our ($_script_reload, $_script_path, $_script_package);\n") // Internal vars
 	  _T("our ($script_name, $script_description, $script_author, $script_version);\n") // Package info
 	  _T("open SCRIPT, $_script_path;\n")  // Open the script file
@@ -118,18 +119,18 @@ namespace Automation4 {
 
 	// Let's eval the 'boxed' script
 	eval_pv(_script.mb_str(wx2pl), 0);
+	SV *_err = newSVsv(ERRSV);  // We need this later
+	// Done running
+	deactivate();
 	// and check on errors
-	if(SvTRUE(ERRSV)) {
-	  description = wxString(SvPV_nolen(ERRSV), pl2wx);
-	  wxLogError(description); // Remove?
+	if(SvTRUE(_err)) {
+	  description = wxString(SvPV_nolen(_err), pl2wx);
+	  //wxLogError(description);  // Remove?
 	  loaded = false;
 	}
 	else {
 	  loaded = true;
 	}
-
-	// The script has done loading (running)
-	deactivate();
 
 	wxTRACE_RET(load);
   }
@@ -200,8 +201,8 @@ namespace Automation4 {
 	}
 
 	// Require the core modules
-	load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub", 7), NULL);
-	load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub::Progress", 17), NULL);
+	//load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub", 7), NULL);
+	//load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub::Progress", 17), NULL);
 	//load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub::Script", 15), NULL);
 
 	// Set the values of script vars

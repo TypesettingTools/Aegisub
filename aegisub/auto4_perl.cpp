@@ -57,8 +57,8 @@ namespace Automation4 {
 // Perl -> C++ interface (XSUBS)
 //
 
-  /* Aegisub */
-  XS(perl_log)  // Aegisub::log()
+  /* package Aegisub */
+  XS(perl_log)
   {
 	wxTRACE_FUNC(Aegisub::log);
 	dXSARGS;
@@ -74,7 +74,7 @@ namespace Automation4 {
 	PerlLog(level, msg);
   }
 
-  XS(perl_warning)  // Aegisub::warn()
+  XS(perl_warning)
   {
 	wxTRACE_FUNC(Aegisub::warn);
 	dXSARGS;
@@ -87,7 +87,7 @@ namespace Automation4 {
   }
 
 
-  XS(perl_text_extents)  // Aegisub::text_extents
+  XS(perl_text_extents)
   {
 	wxTRACE_FUNC(Aegisub::text_extents);
 	dXSARGS;

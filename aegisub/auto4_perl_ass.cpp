@@ -84,16 +84,14 @@ namespace Automation4 {
 	case ENTRY_ATTACHMENT: return _T("attachment");
 	default:
 	case ENTRY_BASE:
-	  wxString data(entry->GetEntryData());
-	  if(entry->group == _T("[Script Info]") && data.Matches(_T("*:*"))) return _T("info"); 
-		
-	  if(data == entry->group) return _T("head");
-	  
-	  if(data.StartsWith(_T("Format:"))) return _T("format");
-	  
-	  if(data.IsEmpty()) return _T("clear");
-	  
+	  wxString data(entry->GetEntryData());	  
 	  if(data.Trim(left).StartsWith(_T(";"))) return _T("comment");
+	  else {
+		if(entry->group == _T("[Script Info]") && data.Matches(_T("*:*"))) return _T("info");
+		if(data == entry->group) return _T("head");
+		if(data.StartsWith(_T("Format:"))) return _T("format");
+		if(data.IsEmpty()) return _T("clear");
+	  }
 	}
 
 	// Fallback
