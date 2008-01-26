@@ -60,7 +60,6 @@
 
 /////////////////////
 // wxWidgets headers
-#pragma warning(disable: 6011)
 #include <wx/wxprec.h>
 #include <wx/notebook.h>
 #include <wx/statline.h>
@@ -99,7 +98,6 @@
 #include <list>
 #include <map>
 
-#pragma warning(default: 6011)
 
 
 #endif // C++

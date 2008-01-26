@@ -33,8 +33,8 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppRevision "r1813"
-#define MyAppVerName "Aegisub 2.00 alpha"
+#define MyAppRevision "r1840"
+#define MyAppVer "2.1.0 Release Preview"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -46,9 +46,10 @@
 #define IncludePerl 1
 #define IncludeFfmpeg 0
 
+
 [Setup]
 AppName={#MyAppName}
-AppVerName={#MyAppVerName} {#MyAppRevision}
+AppVerName={#MyAppName} {#MyAppVer} {#MyAppRevision}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
@@ -57,7 +58,11 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=true
 OutputDir=output
+#ifndef Lite
 OutputBaseFilename=aegisub-{#MyAppRevision}-setup
+#else
+OutputBaseFilename=aegisub-{#MyAppRevision}-lite-setup
+#endif
 Compression=lzma/ultra64
 SolidCompression=true
 MinVersion=0,5.0.2195
@@ -70,7 +75,7 @@ PrivilegesRequired=poweruser
 DisableProgramGroupPage=true
 UsePreviousGroup=false
 AlwaysShowComponentsList=true
-AppVersion=2.00 alpha {#MyAppRevision}
+AppVersion={#MyAppVer} {#MyAppRevision}
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 UninstallDisplayIcon={app}\Aegisub.exe
 
@@ -124,6 +129,7 @@ DestDir: {app}\automation\include; Source: ..\automation\include\Aegisub.pm; Fla
 DestDir: {app}\automation\include; Source: ..\automation\include\Auto4Utils.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
 DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\PerlConsole.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
 DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\Script.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
+DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\Progress.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-1p-edgeblur.pl; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl/samples; Attribs: readonly
 DestDir: {app}\automation\demos; Source: ..\automation\demos\perl-console.pl; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl/samples; Attribs: readonly
 #endif
@@ -140,11 +146,12 @@ DestDir: {app}\automation\auto3; Source: ..\automation\auto3\simple-k-replacer.a
 DestDir: {app}\automation\docs; Source: ..\automation\automation3.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 ; dictionaries
 #if IncludeSpeller != 0
+Source: ..\bin\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
+Source: ..\bin\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
+#ifndef Lite
 Source: ..\bin\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: dic/de_AT
 Source: ..\bin\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
 Source: ..\bin\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
-Source: ..\bin\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
-Source: ..\bin\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
 Source: ..\bin\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
 Source: ..\bin\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
 Source: ..\bin\dictionaries\es_ES.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
@@ -168,8 +175,10 @@ Source: ..\bin\dictionaries\sl_SI.dic; DestDir: {app}\dictionaries; Flags: ignor
 Source: ..\bin\dictionaries\sv_SE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
 Source: ..\bin\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
 #endif
+#endif
 ; thesauri
 #if IncludeThesaurus != 0
+#ifndef Lite
 Source: ..\bin\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/de_DE
 Source: ..\bin\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
 Source: ..\bin\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
@@ -181,6 +190,7 @@ Source: ..\bin\dictionaries\th_fr_FR.idx; DestDir: {app}\dictionaries; Flags: ig
 Source: ..\bin\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
 Source: ..\bin\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
 #endif
+#endif
 ; localization
 Source: ..\po\ca.mo; DestDir: {app}\locale\ca; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/ca
 Source: ..\po\wxstd-ca.mo; DestDir: {app}\locale\ca; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/ca
@@ -189,11 +199,12 @@ Source: ..\po\wxstd-pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: wxstd.mo; F
 ; documentation
 Source: ..\docs\output\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: "*svn"
 ; ASSDraw3
-Source: ..\bin\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion; Components: assdraw
+Source: ..\bin\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion nocompression; Components: assdraw
 Source: ..\bin\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw
 
 [Icons]
 Name: {commonprograms}\Aegisub\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Aegisub subtitle editor
+Name: {commonprograms}\Aegisub\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Flags: createonlyiffileexists; Comment: Aegisub subtitle editor
 Name: {commonprograms}\Aegisub\Uninstall; Filename: {app}\unins000.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Uninstall Aegisub
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\Aegisub.exe"; WorkingDir: {app}; IconIndex: 0; Components: main/qcklnch; Comment: Aegisub subtitle editor
 
@@ -225,6 +236,7 @@ Name: i18n/ca; Description: Catalan; Types: full
 #if IncludeSpeller != 0
 Name: dic; Description: Spell checker; Types: full
 Name: dic/en_GB; Description: British English dictionary; Types: full
+#ifndef Lite
 Name: dic/en_US; Description: American English dictionary; Types: full
 Name: dic/nl_NL; Description: Dutch dictionary; Types: full
 Name: dic/fr_FR; Description: French dictionary; Types: full
@@ -239,7 +251,9 @@ Name: dic/sk_SK; Description: Slovak dictionary; Types: full
 Name: dic/sl_SI; Description: Slovenian dictionary; Types: full
 Name: dic/sv_SE; Description: Swedish dictionary; Types: full
 #endif
+#endif
 #if IncludeThesaurus != 0
+#ifndef Lite
 Name: th; Description: Thesaurus; Types: full
 Name: th/en_US; Description: American English thesaurus; Types: full
 Name: th/es_ES; Description: Estonian thesaurus; Types: full
@@ -247,11 +261,12 @@ Name: th/fr_FR; Description: French thesaurus; Types: full
 Name: th/de_DE; Description: German thesaurus; Types: full
 Name: th/it_IT; Description: Italian thesaurus; Types: full
 #endif
+#endif
 Name: assdraw; Description: ai-chan's ASSDraw3 for ASS vector drawing; Types: full
 
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
-WelcomeLabel2=This will install {#MyAppVerName} on your computer.%n%n{#MyAppName} is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the {#MyAppName} website for information on obtaining the source code.
+WelcomeLabel2=This will install {#MyAppName} {#MyAppVer} on your computer.%n%n{#MyAppName} is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the {#MyAppName} website for information on obtaining the source code.
 
 [Code]
 function LoadLibrary(lpFileName: string): LongInt; external 'LoadLibraryA@kernel32.dll stdcall';
