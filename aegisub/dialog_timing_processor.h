@@ -77,8 +77,8 @@ private:
 	wxTextCtrl *keysEndAfter;
 
 	wxCheckBox *adjsEnable;
-	wxTextCtrl *adjascentThres;
-	wxSlider *adjascentBias;
+	wxTextCtrl *adjacentThres;
+	wxSlider *adjacentBias;
 
 	wxCheckListBox *StyleList;
 	wxButton *ApplyButton;

@@ -348,13 +348,13 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		SetInt(_T("Timing processor key start after thres"),4);
 		SetInt(_T("Timing processor key end before thres"),5);
 		SetInt(_T("Timing processor key end after thres"),6);
-		SetInt(_T("Timing processor adjascent thres"),300);
+		SetInt(_T("Timing processor adjacent thres"),300);
 		SetBool(_T("Timing processor Enable lead-in"),true);
 		SetBool(_T("Timing processor Enable lead-out"),true);
 		SetBool(_T("Timing processor Enable keyframe"),true);
-		SetBool(_T("Timing processor Enable adjascent"),true);
+		SetBool(_T("Timing processor Enable adjacent"),true);
 		SetBool(_T("Timing processor Only Selection"),false);
-		SetFloat(_T("Timing processor adjascent bias"),1.0);
+		SetFloat(_T("Timing processor adjacent bias"),1.0);
 
 		SetText(_T("Select Text"),_T(""));
 		SetInt(_T("Select Condition"),0);

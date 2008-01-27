@@ -443,7 +443,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddCheckBox(audioPage,audioSizer3,_("Default mouse wheel to zoom"),_T("Audio Wheel Default To Zoom"));
 		AddCheckBox(audioPage,audioSizer3,_("Lock scroll on Cursor"),_T("Audio lock scroll on cursor"));
 		AddCheckBox(audioPage,audioSizer3,_("Snap to keyframes"),_T("Audio snap to keyframes"));
-		AddCheckBox(audioPage,audioSizer3,_("Snap to adjascent lines"),_T("Audio snap to other lines"));
+		AddCheckBox(audioPage,audioSizer3,_("Snap to adjacent lines"),_T("Audio snap to other lines"));
 		AddCheckBox(audioPage,audioSizer3,_("Auto-focus on mouse over"),_T("Audio Autofocus"));
 		audioSizer3->AddGrowableCol(1,1);
 

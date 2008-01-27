@@ -571,7 +571,7 @@ Please visit http://aegisub.net to download latest version
 - Fixed crash when trying to apply overrides on a line with *Default or non-existing style (amz)
 - Fixed unhandled exception when attempting to load unknown audio formats (amz)
 - Fixed bug causing artifacts like {\fs40{\fnArial}} if you tried to insert style with cursor positioned just to the left of "}" (amz)
-- Fixed bug causing crashes on lines with multiple adjascent override groups (amz)
+- Fixed bug causing crashes on lines with multiple adjacent override groups (amz)
 - Fixed delay in playing audio by switching implementation from WMME to DirectShow (amz)
 - Focus is now set back to editbox when you click on of the style override buttons (amz)
 - Installer now checks for user level and OS compatibility before installing (movax)
