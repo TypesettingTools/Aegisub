@@ -334,7 +334,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		SetText(_T("Fonts Collector Destination"),_T("?script"));
 		SetInt(_T("Fonts Collector Action"),0);
 
-		SetInt(_T("Audio Display Height"),100);
+		SetInt(_T("Audio Display Height"),200,1784);
 		SetBool(_T("Audio Spectrum"),false);
 		SetInt(_T("Audio Sample Rate"),0);
 

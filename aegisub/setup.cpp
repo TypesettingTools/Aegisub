@@ -126,6 +126,7 @@
 //////////////
 // DirectShow
 #ifdef WITH_DIRECTSHOW
+#pragma comment(lib, "strmiids.lib")
 #ifdef __WXDEBUG__
 #pragma comment(lib, "strmbasdu.lib")
 #else
