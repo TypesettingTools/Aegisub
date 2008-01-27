@@ -1,7 +1,7 @@
 Aegisub changelog
 Please visit http://aegisub.net to download latest version
 
-= 2.00 - 2008.xx.xx ===========================
+= 2.2.0 - 2008.xx.xx ===========================
 
 - New Aegisub logo. (amz)
 - The Automation 4 system has been introduced. This means lots of changes. (jfs)

@@ -1,3 +1,3 @@
 release;1.10-524;http://www.aegisub.net/;Aegisub 1.10
 
-svn;1813;http://www.malakith.net/amz/aegisub/;Aegisub Pre-Release 2.00 r1813 build - Guess what? Bug fixes!
+svn;1847;http://www.malakith.net/amz/aegisub/;Aegisub 2.1.0 Release Preview r1847 build - Core executable considered stable unless someone finds any issues. Marked "Release Preview" due to incomplete documentation, scripts, and translations.

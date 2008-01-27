@@ -266,8 +266,8 @@ namespace Automation4 {
   XS(perl_console_register)
   {
 	wxTRACE_FUNC(Aegisub::PerlConsole::register_console);
-#ifdef WITH_PERLCONSOLE
 	dXSARGS;
+#ifdef WITH_PERLCONSOLE
 
 	PerlScript *script = PerlScript::GetScript();
 	if(script) {

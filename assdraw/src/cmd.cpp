@@ -125,11 +125,12 @@ void DrawCmd_B::Init ( unsigned n )
 // to ASS drawing command
 wxString DrawCmd_B::ToString()
 {
-	PointList::iterator iterate = controlpoints.begin();
-	Point* c1 = (*iterate++);
-	Point* c2 = (*iterate);
-	if (initialized)
+	if (initialized) {
+		PointList::iterator iterate = controlpoints.begin();
+		Point* c1 = (*iterate++);
+		Point* c2 = (*iterate);
 		return wxString::Format(_T("b %d %d %d %d %d %d"), c1->x(), c1->y(), c2->x(), c2->y(), m_point->x(), m_point->y());
+	}
 	else
 		return wxString::Format(_T("b ? ? ? ? %d %d"), m_point->x(), m_point->y());
 }
