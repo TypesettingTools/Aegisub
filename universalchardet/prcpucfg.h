@@ -143,7 +143,7 @@
 
 #else /* defined(_M_IX86) || defined(_X86_) */
 
-#ifdef WIN64
+#if defined(_M_AMD64) || defined(_M_X64) || defined(__x86_64__) || defined(__LP64__)
 
 #define IS_LITTLE_ENDIAN 1
 #undef  IS_BIG_ENDIAN
