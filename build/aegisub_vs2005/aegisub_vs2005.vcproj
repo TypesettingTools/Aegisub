@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="aegisub_vs2005"
 	ProjectGUID="{65C67A5D-D31C-4DB6-965B-69AF7EFA4B5A}"
 	RootNamespace="aegisub_vs2005"
@@ -860,38 +860,6 @@
 			Name="Utilities"
 			>
 			<File
-				RelativePath="..\..\aegisub\aegisublocale.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\aegisublocale.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\charset_detect.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\charset_detect.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\colorspace.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\colorspace.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\drop.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\drop.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\factory.h"
 				>
 			</File>
@@ -925,62 +893,6 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\font_file_lister_freetype.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\idle_field_event.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\idle_field_event.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\kana_table.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\kana_table.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\MatroskaParser.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\MatroskaParser.h"
 				>
 			</File>
 			<File
@@ -1024,30 +936,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\mythes.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\mythes.hxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\spline.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\spline.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\spline_curve.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\spline_curve.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\standard_paths.cpp"
 				>
 			</File>
@@ -1080,27 +968,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\tooltip_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\tooltip_manager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\utils.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\aegisub\utils.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\validators.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\validators.h"
 				>
 			</File>
 			<File
@@ -1111,30 +983,174 @@
 				RelativePath="..\..\aegisub\variable_data.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\aegisub\vector2d.cpp"
+			<Filter
+				Name="Video"
 				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\vector2d.h"
+				<File
+					RelativePath="..\..\aegisub\MatroskaParser.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\MatroskaParser.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\vfr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\vfr.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\VideoSink.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\VideoSink.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="I18n"
 				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\vfr.cpp"
+				<File
+					RelativePath="..\..\aegisub\aegisublocale.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\aegisublocale.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\charset_detect.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\charset_detect.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\kana_table.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\kana_table.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\mythes.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\mythes.hxx"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="UI"
 				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\vfr.h"
+				<File
+					RelativePath="..\..\aegisub\drop.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\drop.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\idle_field_event.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\idle_field_event.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\tooltip_manager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\tooltip_manager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\validators.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\validators.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Graphics"
 				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\VideoSink.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\VideoSink.h"
-				>
-			</File>
+				<File
+					RelativePath="..\..\aegisub\colorspace.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\colorspace.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\spline.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\spline.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\spline_curve.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\spline_curve.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\vector2d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\vector2d.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Dialogs"
