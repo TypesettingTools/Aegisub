@@ -266,6 +266,7 @@ namespace Automation4 {
   XS(perl_console_register)
   {
 	wxTRACE_FUNC(Aegisub::PerlConsole::register_console);
+#ifdef WITH_PERLCONSOLE
 	dXSARGS;
 
 	PerlScript *script = PerlScript::GetScript();
@@ -283,6 +284,11 @@ namespace Automation4 {
 		// If there's no registered console
 		script->AddFeature(new PerlConsole(name, desc, script));
 	}
+	XSRETURN_YES;
+#else
+	PerlLogWarning(_("Tried to register PerlConsole, but support for it was disabled in this version."));  // Warning or Hint?
+	XSRETURN_UNDEF;
+#endif
   }
 
   XS(perl_console_echo)
@@ -299,15 +305,16 @@ namespace Automation4 {
 	  buffer << _T(" ") << wxString(SvPV_nolen(ST(i)), pl2wx);
 	}
 
+#ifdef WITH_PERLCONSOLE
 	if(PerlConsole::GetConsole()) {
 	  // If there's a console echo to it
 	  PerlConsole::Echo(buffer);
 	}
-	else {
+	else
+#endif
 	  // Otherwise print on stdout
 	  PerlIO_printf(PerlIO_stdout(), "%s\n", buffer.mb_str(wxConvLocal).data());
 	  // (through perl io system)
-	}
   }
 
   /* Universal loader */

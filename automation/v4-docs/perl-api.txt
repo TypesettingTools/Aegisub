@@ -86,7 +86,8 @@ warn LIST
 
 wxlog LEVEL, LIST
 wxlog LIST
-	Similar to 'log', with LOG_WX flag implicitely set.
+	Similar to 'log', but with LOG_WX flag implicitely set. This function is
+	top-secret.
 
 
 ====================================

@@ -416,6 +416,7 @@ namespace Automation4 {
 
   void PerlFeatureMacro::Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent)
   {
+	/* TODO: extend the progress window 'coverage' */
 	// Convert the AssFile::Line to perl stuff
 	AV *lines = PerlAss::MakeHasshLines(NULL, subs);
 	// Same with the selection array

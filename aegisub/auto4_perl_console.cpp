@@ -35,6 +35,7 @@
 
 
 #ifdef WITH_PERL
+#ifdef WITH_PERLCONSOLE
 
 
 #include "auto4_perl.h"
@@ -237,4 +238,5 @@ namespace Automation4 {
 };
 
 
+#endif //WITH_PERLCONSOLE
 #endif //WITH_PERL
