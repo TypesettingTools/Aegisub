@@ -1037,7 +1037,7 @@ void FrameMain::OnOpenLog (wxCommandEvent &event) {
 //////////////////
 // Launch ASSDraw
 void FrameMain::OnOpenASSDraw (wxCommandEvent &event) {
-	wxExecute(StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")));
+	wxExecute(_T("\"") + StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")) + _T("\""));
 }
 
 
