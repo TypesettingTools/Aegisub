@@ -125,7 +125,6 @@ namespace Automation4 {
 	// and check on errors
 	if(SvTRUE(_err)) {
 	  description = wxString(SvPV_nolen(_err), pl2wx);
-	  //wxLogError(description);  // Remove?
 	  loaded = false;
 	}
 	else {
@@ -159,20 +158,6 @@ namespace Automation4 {
 	wxTRACE_FUNC(PerlScript::activate);
 	wxLogTrace(wxTRACE_AutoPerl, _T("name = '%s',  package = '%s'"), script->GetName().c_str(), script->GetPackage().c_str());
 
-	// Check if the source file is newer
-	/* FIX */
-	if(script->reload) {
-//	  struct stat s;
-//	  stat(script->GetFilename().mb_str(wxConvLibc), &s);
-	  wxFileName fn(script->GetFilename());
-	  wxDateTime mod;
-	  fn.GetTimes(NULL,&mod,NULL);
-	  if(script->mtime != mod.GetTicks()) {
-		PerlLogVerbose(wxString::Format(_("Reloading %s because the file on disk (%s) changed"), script->GetName().c_str(), script->GetFilename().c_str()));
-		script->Reload();
-	  }
-	}
-
 	// Hooking $SIG{__WARN__}
 	wxLogTrace(wxTRACE_AutoPerl, _T("$SIG{__WARN__} = \\&Aegisub::warn"));
 	eval_pv("$SIG{__WARN__} = \\&Aegisub::warn", 1);
@@ -199,11 +184,6 @@ namespace Automation4 {
 	else {
 	  PerlLogWarning(_("Unable to add the automation include path(s) to @INC: the script's code may not compile or execute properly."));
 	}
-
-	// Require the core modules
-	//load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub", 7), NULL);
-	//load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub::Progress", 17), NULL);
-	//load_module(PERL_LOADMOD_NOIMPORT, newSVpvn("Aegisub::Script", 15), NULL);
 
 	// Set the values of script vars
 	script->WriteVars();
@@ -233,6 +213,20 @@ namespace Automation4 {
 	
 	// Read the values of script vars
 	active->ReadVars();
+
+	// If reload flag is set...
+	/* STILL BROKEN :< */
+	if(active->reload) {
+	  // check if the source file on disk changed
+	  wxFileName fn(active->GetFilename());
+	  wxDateTime mod;
+	  fn.GetTimes(NULL,&mod,NULL);
+	  if(active->mtime != mod.GetTicks()) {
+		// and reload the script
+		PerlLogVerbose(wxString::Format(_("Reloading %s because the file on disk (%s) changed."), active->GetName().c_str(), active->GetFilename().c_str()));
+		active->Reload();
+	  }
+	}
 
 	// Unhooking $SIG{__WARN__}
 	wxLogTrace(wxTRACE_AutoPerl, _T("undef $SIG{__WARN__}"));
@@ -284,9 +278,9 @@ namespace Automation4 {
 	whore = get_sv(bitch.mb_str(wx2pl), 0);
 	if(whore) version = wxString(SvPV_nolen(whore), pl2wx);
 
-	bitch = package + _T("::_script_reload");
-	whore = get_sv(bitch.mb_str(wx2pl), 0);
-	if(whore) reload = SvTRUE(whore);
+	//bitch = package + _T("::_script_reload");
+	//whore = get_sv(bitch.mb_str(wx2pl), 0);
+	//if(whore) reload = SvTRUE(whore);
   }
 
   void PerlScript::WriteVars() const
@@ -423,47 +417,52 @@ namespace Automation4 {
 	AV *selected_av = newAV();
 	VECTOR_AV(selected, selected_av, int, iv);
 
-	script->Activate();
-
 	// Prepare the stack
 	dSP;
-
 	ENTER;
 	SAVETMPS;
 
-	// Push the parameters on the stack
+	// Push the arguments onto the stack
 	PUSHMARK(SP);
-	XPUSHs(sv_2mortal(newRV_noinc((SV*)lines)));
-	XPUSHs(sv_2mortal(newRV_noinc((SV*)selected_av)));
+	SV* lines_ref = sv_2mortal(newRV_noinc((SV*)lines));
+	XPUSHs(lines_ref);
+	SV* selected_ref = sv_2mortal(newRV_noinc((SV*)selected_av));
+	XPUSHs(selected_ref);
 	XPUSHs(sv_2mortal(newSViv(active)));
 	PUTBACK;
 
 	// Create a progress window
 	PerlProgressSink *ps = new PerlProgressSink(progress_parent, GetName());
 	// Start the callback thread
+	script->Activate();
 	PerlThread call(processing_sub, G_EVAL | G_VOID);
-	// Show the progress window
+	// Show the progress window until it is dismissed
 	ps->ShowModal();
-	// And wait unitl it's dismessed
-	delete ps;
 	// Now wait the thread to return
 	call.Wait();
+	script->Deactivate();
 
 	if(!SvTRUE(ERRSV)) {
-	  // Non-error: recreate the hassh :S
+	  // Show progress sink again
+	  ps->Show(true);
+	  ps->SetTask(_("Saving changes"));
+
+	  // Recreate the ass :S
 	  subs->FlagAsModified(GetName());
-	  PerlAss::MakeAssLines(subs, lines);
+	  PerlAss::MakeAssLines(subs, (AV*)SvRV(lines_ref));
 	  // And reset selection vector
 	  selected.clear();
-	  AV_VECTOR(selected_av, selected, IV);
+	  AV_VECTOR((AV*)SvRV(selected_ref), selected, IV);
 	  CHOP_SELECTED(subs, selected);
-	}
 
-	// Clean everything
+	  ps->Hide();
+	}
+	// Delete the progress sink
+	ps->Destroy();
+
+	// Clean the call stack
 	FREETMPS;
 	LEAVE;
-
-	script->Deactivate();
   }
 
 

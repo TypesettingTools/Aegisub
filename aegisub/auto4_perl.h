@@ -68,7 +68,7 @@
 
 // Debug support
 /* define the following to activate tracing for the perl engine */
-//#define WXTRACE_AUTOPERL
+#define WXTRACE_AUTOPERL
 #define wxTRACE_AutoPerl _T("auto4_perl")
 
 #define wxTRACE_METH(name) \

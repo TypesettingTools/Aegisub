@@ -100,7 +100,7 @@ namespace Automation4 {
 	  text = wxString(SvPV_nolen(ST(1)), pl2wx);
 	}
 	else {
-	  /* TODO maybe: emit warning */
+	  PerlLogWarning(_("Not enough parameters for Aegisub::text_extents()"));
 	  // We needed 2 parameters at least!
 	  XSRETURN_UNDEF;
 	}
@@ -251,7 +251,7 @@ namespace Automation4 {
   XS(perl_progress_cancelled)
   {
 	wxTRACE_FUNC(Aegisub::Progress::is_cancelled);
-	dXSARGS;
+	dMARK; dAX;
 
 	if(PerlProgressSink *ps = PerlProgressSink::GetProgressSink()) {
 	  if(ps->IsCancelled())	XSRETURN_YES;
@@ -266,8 +266,8 @@ namespace Automation4 {
   XS(perl_console_register)
   {
 	wxTRACE_FUNC(Aegisub::PerlConsole::register_console);
-	dXSARGS;
 #ifdef WITH_PERLCONSOLE
+	dXSARGS;
 
 	PerlScript *script = PerlScript::GetScript();
 	if(script) {
@@ -286,6 +286,7 @@ namespace Automation4 {
 	}
 	XSRETURN_YES;
 #else
+	dMARK; dAX;
 	PerlLogWarning(_("Tried to register PerlConsole, but support for it was disabled in this version."));  // Warning or Hint?
 	XSRETURN_UNDEF;
 #endif

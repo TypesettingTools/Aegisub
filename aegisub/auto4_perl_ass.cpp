@@ -249,6 +249,7 @@ namespace Automation4 {
 	return diag;
   }
 
+  /* TODO: report progress */
   AV *PerlAss::MakeHasshLines(AV *lines, AssFile *ass)
   {
 	if(!lines) {
@@ -436,6 +437,7 @@ namespace Automation4 {
 	return d;
   }
 
+  /* TODO: report progress */
   AssFile *PerlAss::MakeAssLines(AssFile *ass, AV *lines)
   {
 	if(!ass) {
@@ -443,9 +445,13 @@ namespace Automation4 {
 	  return NULL;
 	}
 
+	// There may be a progress sink to report to
+	PerlProgressSink *ps = PerlProgressSink::GetProgressSink();
+
 	dAV;
 	std::list<AssEntry*>::iterator it = ass->Line.begin();
-	for(I32 i = 0; i <= av_len(lines); i++) {
+	I32 len = av_len(lines);
+	for(I32 i = 0; i <= len; i++) {
 	  if(!av_exists(lines, i)) continue;
 	  if(i < (I32)ass->Line.size()) {
 		if(*it) delete *it;
@@ -456,6 +462,9 @@ namespace Automation4 {
 		AV_FETCH(lines, i)
 		  ass->Line.push_back(MakeAssEntry((HV*)SvRV(AV_VAL)));
 	  }
+
+	  // Report progress
+	  if(ps) ps->SetProgress((i+1)/(len+1) * 100);
 	}
 
 	for(; it != ass->Line.end();) {
