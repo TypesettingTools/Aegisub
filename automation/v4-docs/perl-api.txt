@@ -232,10 +232,6 @@ $_script_package
 	The full script package as a string. Any change to this variable is
 	currently ignored and overwritten, and may be so forever.
 
-$_script_reload [BROKEN]
-	When this is set to true, the script will automatically be reloaded before
-	any execution if its file changed on disk. (However, at present time, it is
-	just a shortcut to make aegisub crash.)
 
 ------------------------------------
 Callbacks definable:
@@ -269,9 +265,9 @@ macro_processing_function LINES, SELECTED, ACTIVE
 macro_validation_function LINES, SELECTED, ACTIVE
 	A function to be used as a callback for Aegisub::Script::register_macro().
 	This function will be called whenever the Automation menu is opened to
-	decide what macros are applyable to the current script.
+	decide what macros are applicable to the current script.
 	Arguments: same as macro_processing_function; however any change to the
 		first two ones will be ignored upon function return.
 	Returns:
-	VALID	A 'bolean' value to indicate if the macro is applicable to this
+	VALID	A 'boolean' value to indicate if the macro is applicable to this
 		particular subtitles file.
