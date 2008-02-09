@@ -5,8 +5,12 @@ Quick reference on Perl engine's API
 All the packages that form the perl interface to Aegisub are automatically
 loaded, however none of their symbols are exported initially. If you want to
 import them you can use the usual 'use' mechanism; if you call it without a
-list of imports it will import more or less everything (exceptions to this are
-explicitely signaled in the docs) in your script's package.
+list of imports it will import more or less everything in your script's
+package. Wether they are exported or not is indicated in the following
+reference by <--EXPORTED--> (exported by default within a plain 'use'
+statement) and <--EXPORTABLE--> (can be imported specifying them explicitely in
+the 'use' statement) tags. Finally, <--NOT EXPORTABLE--> indicates symbols that
+can't be exported through 'use'.
 
 
 ====================================
@@ -14,7 +18,7 @@ package Aegisub
 
 ------------------------------------
 Constants defined:
-							   <--EXPORTABLE-->
+                               <--EXPORTABLE-->
 
 LOG_FATAL	==  0
 LOG_ERROR	==  1
@@ -30,7 +34,7 @@ LOG_WX	==	8
 
 ------------------------------------
 Subroutines defined:
-								<--EXPORTED-->
+                                <--EXPORTED-->
 
 text_extents STYLE, TEXT
 	Computes the metric for a string of text, based on a specific style.
@@ -46,28 +50,30 @@ text_extents STYLE, TEXT
 log_fatal LIST
  ...
 log_message LIST
-	These are shortcut for 'log(LOG_FATAL, LIST)' through 'log(LOG_MESSAGE,
-	LIST)' (see below).
+	These are shortcuts for 'log(LOG_FATAL, LIST)' to 'log(LOG_MESSAGE, LIST)'
+	(see below).
 
-							   <--EXPORTABLE-->
+                               <--EXPORTABLE-->
 
 log LEVEL, LIST
 log LIST
 	Prints a log message inside the progress window, if LEVEL is less or equal
 	to the tracelevel set inside automation options. If called from outside a
 	callback (i.e. during script loading) prints through the wxWidgets logging
-	mechanism. 'log(LIST)' is equal to 'log(LOG_MESSAGE, LIST)'. The short form
-	is used whenever there are at least two arguments and the first one cannot
-	be converted to an integer; it is always used when given only one argument.
-	This is not exported by default (review man perlfunc to understand why :).
+	mechanism. 'log(LIST)' is equal to 'log(Aegisub::LOG_MESSAGE, LIST)'. The
+	short form is used whenever there are at least two arguments and the first
+	one cannot be read as an integer; it is always used when given only one
+	argument.  This function is not exported by default (review man perlfunc to
+	understand why :).
+
 	Arguments:
 	LEVEL	The debug level, may be one of the following (the descriptions are
 		indicative):
-		 0	Fatal error, for vital error;
+		 0	Fatal error, for vital errors;
 		 1	Error, for serious but not too much threatening errors;
 		 2	Warning, for something that's apparently going wrong;
-		 3	Hint, for indicating somthing peculiar is happening;
-		 4	Debug, for debugging;
+		 3	Hint, for indicating something peculiar is happening;
+		 4	Debug, for debugging!
 		 5	Trace, for really verbose debugging;
 		 6	Message, always printed.
 		If you OR one of these values with the flag LOG_WX the log message will
@@ -77,28 +83,30 @@ log LIST
 
 warn LIST
 	Prints a warning through the GUI log facilities (it is equivalent to
-	'log(LOG_WARNING, LIST)'). It is automatically hooked to the global 'warn'
-	function during script execution, but it is not exported by default.
+	'log(Aegisub::LOG_WARNING, LIST)'). It is automatically hooked to the
+	global 'warn' function during script execution, thus it is not exported by
+	default.
 	Arguments:
 		LIST	List of arguments to print.
 
-							 <--NOT EXPORTABLE-->
+                             <--NOT EXPORTABLE-->
 
 wxlog LEVEL, LIST
 wxlog LIST
-	Similar to 'log', but with LOG_WX flag implicitely set. This function is
-	top-secret.
+	Similar to 'log', but with the LOG_WX flag implicitely set. This function
+	is top-secret.
 
 
 ====================================
 package Aegisub::PerlConsole
 ------------------------------------
 This package contains the perl console, a debug tool not intended for normal
-use by normal users. They are shown here for completeness.
+use by normal users (it's not even enabled in release builds). They are shown
+here for completeness.
 
 ------------------------------------
 Subroutines defined:
-								<--EXPORTED-->
+                                <--EXPORTED-->
 
 echo LIST
 	Prints a list of arguments on the console, or on STDOUT if no console is
@@ -117,17 +125,13 @@ register_console NAME, DESC
 ====================================
 package Aegisub::Progress
 ------------------------------------
-
 This package provides an interface to the progress window automatically showed
 during the execution of a feature. Its functions are somewhat different to
-those available in lua because of clarity, however aliases are given. You can
-see this in the following list: wherever a function has two names the first is
-the 'official' one and is automatically exported with 'use Aegisub::Progress',
-while if you want to use the second one you'll have to explicitely import them.
+those available in lua because of clarity, however aliases are given.
 
 ------------------------------------
 Subroutines defined:
-								<--EXPORTED-->
+                                <--EXPORTED-->
 
 set_progress VALUE
 	Sets the value of the progress bar. It accepts values comprised in [0, 1]
@@ -153,9 +157,9 @@ set_title TITLE
 
 is_cancelled
 	Returns: A boolean indicating wether the cancel button on the progress
-		windw where pressed in the near past.
+		window where pressed in the near past.
 
-							   <--EXPORTABLE-->
+                               <--EXPORTABLE-->
 
 set VALUE
 	Synonym for 'set_progress(VALUE)'.
@@ -172,7 +176,7 @@ package Aegisub::Script
 
 ------------------------------------
 Subroutines defined:
-								<--EXPORTED-->
+                                <--EXPORTED-->
 
 register_macro NAME, DESC, PROC_SUB, VAL_SUB
 	Register a new macro.
