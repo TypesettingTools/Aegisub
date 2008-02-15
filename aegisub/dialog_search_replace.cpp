@@ -311,9 +311,11 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	}
 	
 	wxArrayInt sels = grid->GetSelection();
+	int firstLine = 0;
+	if (sels.Count() > 0) firstLine = sels[0];
 	// if selection has changed reset values
-	if (sels[0] < curLine) {
-		curLine = sels[0];
+	if (firstLine < curLine) {
+		curLine = firstLine;
 		Modified = false;
 		LastWasFind = true;
 		pos = 0;
