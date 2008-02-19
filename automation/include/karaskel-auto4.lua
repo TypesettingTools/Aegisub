@@ -219,7 +219,7 @@ function karaskel.preproc_line_text(meta, styles, line)
 		end
 		
 		-- Syllables that aren't part of a multi-highlight generate a new output-syllable
-		if prefix ~= "#" and prefix ~= "＃" then
+		if not worksyl.text or (prefix ~= "#" and prefix ~= "＃") then
 			-- Update stripped line-text
 			line.text_stripped = line.text_stripped .. prespace .. syltext .. postspace
 			
