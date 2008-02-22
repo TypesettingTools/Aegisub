@@ -35,7 +35,7 @@ end
 
 function do_fx(subs, meta, line)
 	local l = table.copy(line)
-	l.text = string.format("{\\pos(%d,%d)\\1c%s\\1a&HFF&\\3a&HFF&\\4a&HFF&\\t(0,200,\\1a&H00&\\3a&H00&\\4a&H00&)\\t(%d,%d,\\1a&HFF&\\3a&HFF&\\4a&HFF&)}%s", meta.res_x/2, line.styleref.margin_t, line.styleref.color2, line.duration+200, line.duration+400, line.text_stripped)
+	l.text = string.format("{\\pos(%d,%d)\\an5\\1c%s\\1a&HFF&\\3a&HFF&\\4a&HFF&\\t(0,200,\\1a&H00&\\3a&H00&\\4a&H00&)\\t(%d,%d,\\1a&HFF&\\3a&HFF&\\4a&HFF&)}%s", line.center, line.middle, line.styleref.color2, line.duration+200, line.duration+400, line.text_stripped)
 	l.start_time = l.start_time - 200
 	l.end_time = l.end_time + 200
 	l.layer = 1
@@ -52,9 +52,9 @@ function do_fx(subs, meta, line)
 				l.end_time = l.start_time + syl.duration * 1.5
 			end
 			l.layer = 2
-			local temp = string.format("{\\be1\\move(%d,%d,%%d,%%d)\\1a&Hd0\\bord0\\shad0\\t(0.6,\\1a&HFF&)}%s", line.left+syl.center, line.styleref.margin_t, syl.text_stripped)
+			local temp = string.format("{\\be1\\move(%d,%d,%%d,%%d)\\an5\\1a&Hd0\\bord0\\shad0\\t(0.6,\\1a&HFF&)}%s", line.left+syl.center, line.middle, syl.text_stripped)
 			for j = -8, 8 do
-				l.text = string.format(temp, line.left+syl.center+math.cos(math.rad(j*4))*30, line.styleref.margin_t+math.sin(math.rad(j*4))*30)
+				l.text = string.format(temp, line.left+syl.center+math.cos(math.rad(j*4))*30, line.middle+math.sin(math.rad(j*4))*30)
 				subs.append(l)
 			end
 		end
