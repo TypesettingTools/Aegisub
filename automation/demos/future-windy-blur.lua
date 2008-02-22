@@ -6,7 +6,7 @@ include("karaskel.lua")
 script_name = "Future Windy Blur"
 script_description = "Highlights blown away by the winds of change."
 script_author = "jfs"
-script_version = "1.3"
+script_version = "1.4"
 
 function new_windy_blur(subs)
 	aegisub.progress.task("Getting header data...")
