@@ -1,0 +1,5 @@
+* The autogen.sh script is basic and might not work.
+* If auto4 doesn't get picked up supply the --with-lua* flags.
+* Read the README file.
+* This is incomplete (just like this documentation!)
+

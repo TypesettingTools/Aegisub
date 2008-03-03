@@ -1,0 +1,491 @@
+AC_PREREQ(2.57)
+
+######################
+# aegisub version info
+######################
+m4_define([aegisub_major_version], [2])
+m4_define([aegisub_minor_version], [1])
+m4_define([aegisub_version], [aegisub_major_version.aegisub_minor_version-dev])
+
+
+###################
+# Required packages
+###################
+m4_define([pkgconfig_required_version], [0.20])
+m4_define([libass_required_version], [0.9.1])
+m4_define([freetype_required_version], [9.7.0])
+m4_define([fontconfig_required_version], [2.4])
+m4_define([perl_required_version], [5.004])
+m4_define([ruby_required_version], [1.8])
+m4_define([lua_auto4_required_version], [5.1])
+m4_define([lua_auto3_required_version], [5.0])
+
+
+#######
+# Setup
+#######
+AC_INIT([Aegisub], [aegisub_version],, [aegisub])
+AC_CONFIG_SRCDIR([aegisub/main.cpp])
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADER([aegisub/posix/acconf.h])
+AC_GNU_SOURCE
+AC_CANONICAL_HOST
+AM_MAINTAINER_MODE
+
+
+########################
+# Configurable variables
+########################
+aegisubdatadir="$datadir/aegisub/2.1"
+AC_SUBST(aegisubdatadir)
+
+
+####################
+# Check for programs
+####################
+CHECK_GNU_MAKE
+AC_PROG_CC
+AC_PROG_CXX
+AC_LANG(C++)
+AC_PROG_LIBTOOL
+AC_PROG_INSTALL
+PKG_PROG_PKG_CONFIG([0.20])
+
+
+###################################################
+# Check for pthreads and setup variables / compiler
+###################################################
+ACX_PTHREAD([], [AC_MSG_FAILURE([aegisub requires pthreads])])
+#LIBS="$PTHREAD_LIBS $LIBS";
+#CFLAGS="$CFLAGS $PTHREAD_CFLAGS";
+CC="$PTHREAD_CC";
+
+
+######################
+# Check compiler flags
+######################
+AC_C_FLAG([-Wall])
+AC_C_FLAG([-O2])
+AC_C_FLAG([-Wextra],[AC_C_FLAG([-W])])
+AC_C_FLAG([-Wno-unused-parameter])
+AC_C_FLAG([-std=gnu99])
+AC_CXX_FLAG([-Wall])
+AC_CXX_FLAG([-Wextra],[AC_CXX_FLAG([-W])])
+AC_CXX_FLAG([-Wno-unused-parameter])
+AC_CXX_FLAG([-Wno-long-long])
+AC_CXX_FLAG([-O2])
+AC_CXX_FLAG([-fpermissive])
+AC_CXX_FLAG([-fno-strict-aliasing])
+AC_CXX_FLAG([-std=c++98])
+
+
+######################################
+# Check Headers / Features / Libraries
+######################################
+AC_PATH_XTRA
+AC_HEADER_STDC
+AC_HEADER_STDBOOL
+AC_C_CONST
+AC_C_INLINE
+AC_C_VOLATILE
+AC_CHECK_LIB([m], [main])
+AC_LIBTOOL_DLOPEN_SELF
+AC_MSG_CHECKING([[whether preprocessor supports #pragma once]])
+AC_PREPROC_IFELSE(
+  [AC_LANG_PROGRAM([[#pragma once]])],
+  [
+    AC_MSG_RESULT([yes])
+    AC_DEFINE([HAVE_PRAGMA_ONCE], [1], [Preprocessor support for #pragma once])
+  ],
+[AC_MSG_RESULT([no])])
+
+
+
+
+#################
+# Audio Providers
+#################
+
+AC_ARG_WITH(alsa, [  --without-alsa          build without ALSA audio provider. (default: auto)], alsa_disabled="(disabled)")
+if test "x$with_alsa" != xno; then
+  AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound"; found_audio=yes; with_alsa=yes], [with_alsa=no])
+fi
+AC_SUBST(ALSA_LDFLAGS)
+AM_CONDITIONAL([HAVE_ALSA], [test "$with_alsa" != "no"])
+
+AC_ARG_WITH(portaudio,[  --without-portaudio     build without PortAudio audio provider.
+                          (default: auto)], portaudio_disabled="(disabled)")
+if test "x$with_portaudio" != xno; then
+
+aegisub_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $PTHREAD_CFLAGS $PTHREAD_LIBS"
+  AC_CHECK_LIB([portaudio], [Pa_Initialize], [PORTAUDIO_LDFLAGS="-lportaudio"; found_audio=yes; with_portaudio=yes], [with_portaudio=no])
+fi
+if test "x$with_portaudio" != xno; then
+  AC_CHECK_LIB([portaudio], [Pa_GetStreamTime], [LIBS="-lportaudio"], [with_portaudio_getstreamtime=no])
+    if test "x$with_portaudio_getstreamtime" != xno; then
+     AC_DEFINE(HAVE_PA_GETSTREAMTIME, 1, [Define to 1 if Pa_GetStreamTime is available in PortAudio])
+  fi
+CPPFLAGS="$aegisub_save_CPPFLAGS"
+fi
+
+AC_SUBST(PORTAUDIO_LDFLAGS)
+AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
+
+AC_ARG_WITH(pulseaudio,[  --without-pulseaudio    build without PulseAudio audio provider.
+                          (default: auto)], pulseaudio_disabled="(disabled)")
+if test "x$with_pulseaudio" != xno; then
+  PKG_CHECK_MODULES(LIBPULSE, libpulse >= 0.5, [found_audio=yes; with_pulseaudio=yes], [with_pulseaudio=no])
+fi
+AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
+
+
+
+
+#################
+# Video Providers
+#################
+
+AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provider.. (default: auto)], ffmpeg_disabled="(disabled)")
+if test "$without_ffmpeg" != xno; then
+
+  AC_CHECK_LIB([avcodec], [avcodec_init],AVCODEC_LDFLAGS="-lavcodec", [with_ffmpeg=no])
+ 
+  AC_CHECK_LIB([avformat], [av_read_frame],AVFORMAT_LDFLAGS="-lavcodec", [with_ffmpeg=no])
+
+  AC_CHECK_LIB([avformat], [sws_scale],MOSTLY_HARMLESS=, [with_ffmpeg=no])
+  if test "$with_ffmpeg" != "no"; then
+    found_video_provider=yes
+    with_ffmpeg="yes"
+  fi
+fi
+AC_SUBST(AVCODEC_LDFLAGS)
+AC_SUBST(AVFORMAT_LDFLAGS)
+AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])
+
+
+
+
+###################
+# Subtitle Provider
+###################
+AC_ARG_WITH(libass, [  --without-libass        disable libass (default=autodetect)],libass_disabled="(disabled)")
+
+if test "x$with_libass" != xno; then
+  PKG_CHECK_MODULES(LIBASS, libass >= 0.9.1)
+
+  aegisub_save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$LIBASS_LIBS"
+  AC_CHECK_LIB([ass], [ass_read_styles],[LIBASS_LIBS="$LIBASS_LIBS]", with_libass=no)
+  LDFLAGS="$aegisub_save_LDFLAGS"
+
+  aegisub_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$LIBASS_CFLAGS"
+  AC_CHECK_HEADER([ass/ass.h],[LIBASS_CFLAGS="$LIBASS_CFLAGS"],with_libass="no")
+  CPPFLAGS="$aegisub_save_CPPFLAGS"
+fi
+
+if test "$with_libass" != "no"; then
+  AC_DEFINE(HAVE_LIBASS, 1, [found libass via pkg-config])
+  with_libass="yes"
+fi
+
+AC_SUBST(LIBASS_LIBS)
+AC_SUBST(LIBASS_CFLAGS)
+
+AM_CONDITIONAL([HAVE_LIBASS], [test "$with_libass" != "no" ])
+
+
+
+##############################
+# Program Support and Features
+##############################
+AC_CHECK_HEADER([wchar.h],,[AC_MSG_FAILURE([aegisub requires wide character support])])
+
+AX_CHECK_GL
+if test ! "$GL_LIBS"; then
+	AC_MSG_FAILURE([aegisub requires GL support.])
+fi
+AC_SUBST(GL_CFLAGS)
+AC_SUBST(GL_LIBS)
+
+PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.7.0, [], [AC_MSG_FAILURE([aegisub requires >= FreeType2 2.1.9])])
+
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4, [], [AC_MSG_FAILURE([aegisub requires >= fontconfig >= 2.4])])
+
+AC_CHECK_LIB([hunspell], [main], HUNSPELL_LDFLAGS="-lhunspell", [with_hunspell=no])
+AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_hunspell" != "no"])
+AC_SUBST(HUNSPELL_LDFLAGS)
+
+
+
+
+############
+# Automation
+############
+AC_ARG_WITH(lua,
+[  --without-lua          build without lua 5.1 (auto3)], [lua_disabled="(disabled)"])
+
+AC_ARG_WITH(lua-lib,
+[  --with-lua-lib=PREFIX   PATH location of lua 5.1 library], [lua_lib_dir="$withval"])
+
+AC_ARG_WITH(lua-include,
+[  --with-lua-include=PREFIX
+                          PATH location of lua 5.1 includes], [lua_include_dir="$withval"])
+
+if test "$without_lua" != no; then
+  aegisub_save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$LDFLAGS -L$lua_lib_dir"
+  AC_CHECK_LIB([lua], [lua_call], LUA_LDFLAGS="-L$lua_lib_dir -llua", with_lua_lib=no)
+  LDFLAGS="$aegisub_save_LDFLAGS"
+
+  aegisub_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS -I$lua_include_dir"
+  AC_CHECK_HEADER([lua.h],LUA_CPPLAGS="-I$lua_include_dir",with_lua_include="no")
+  CPPFLAGS="$aegisub_save_CPPFLAGS"
+fi
+
+if test "$with_lua_lib" != "no" && test "$with_lua_include" != "no"; then
+  with_auto4="yes"
+else
+  with_auto4="no"
+fi
+
+AC_SUBST(LUA_CPPFLAGS)
+AC_SUBST(LUA_LDFLAGS)
+AM_CONDITIONAL([HAVE_AUTO4_LUA], [test "$with_auto4" != "no"])
+
+
+AC_ARG_WITH(perl, [  --without-perl          build without PERL Automation. (default: auto)], perl_disabled="(disabled)")
+AC_ARG_WITH(perl-bin, [  --with-perl-bin=PATH    location of PERL binary.. (default: $PATH)], [WITH_PERL_BIN="$withval"])
+
+if test -z "$perl_disabled"; then
+  if test -z "$WITH_PERL_BIN"; then
+    AC_PATH_PROG([PERL_BIN],perl,no)
+  else
+    PERL_BIN="$WITH_PERL_BIN"
+  fi
+
+  if test "$PERL_BIN" != "no"; then
+    AC_MSG_CHECKING([checking for perl version >= 5.004])
+    if $PERL_BIN -e 'require 5.004'; then
+      AC_MSG_RESULT([yes])
+      with_perl=yes
+
+      AC_MSG_CHECKING([checking $PERL_BIN clfags])
+      PERL_CFLAGS=`$PERL_BIN -MExtUtils::Embed -eccflags -eperl_inc`
+      AC_MSG_RESULT([$PERL_CFLAGS])
+
+      AC_MSG_CHECKING([checking $PERL_BIN libs])
+      PERL_LDFLAGS=`$PERL_BIN -MExtUtils::Embed -eldopts`
+      AC_MSG_RESULT([$PERL_LDFLAGS])
+
+    else
+      AC_MSG_RESULT([yes])
+      with_perl=no
+    fi
+  fi
+fi
+
+AC_SUBST(PERL_CFLAGS)
+AC_SUBST(PERL_LDFLAGS)
+
+AM_CONDITIONAL([HAVE_AUTO4_PERL], [test "$with_perl" != "no"])
+
+
+AC_ARG_WITH(ruby, [  --without-ruby          build without Ruby Automation. (default: auto)], ruby_disabled="(disabled)")
+AC_ARG_WITH(ruby-bin, [  --with-ruby-bin=PATH    location of RUBY binary.. (default: $PATH)], [WITH_RUBY_BIN="$withval"])
+
+if test -z "$ruby_disabled"; then
+  if test -z "$WITH_RUBY_BIN"; then
+    AC_PATH_PROG([RUBY_BIN],ruby,no)
+  else
+    RUBY_BIN="$WITH_RUBY_BIN"
+  fi
+
+  if test "$RUBY_BIN" != "no"; then
+    AC_MSG_CHECKING([checking for ruby version >= 1.8])
+    if $RUBY_BIN -r rbconfig -e 'if Config::CONFIG@<:@"ruby_version"@:>@.to_f >= 1.8  then exit(0) else exit(1) end' ; then
+      AC_MSG_RESULT([yes])
+      with_ruby=yes
+
+      AC_MSG_CHECKING([checking $RUBY_BIN -r rbconfig archdir, cflags])
+      RUBY_CFLAGS=`$RUBY_BIN -r rbconfig -e "printf(\"-I%s %s\", Config::CONFIG@<:@'archdir'@:>@, Config::CONFIG@<:@'CFLAGS'@:>@)"`
+      AC_MSG_RESULT([$RUBY_CFLAGS])
+
+      AC_MSG_CHECKING([checking $RUBY_BIN rbconfig libs])
+      RUBY_LDFLAGS=`$RUBY_BIN -r rbconfig -e "print Config::CONFIG@<:@'LIBS'@:>@"`
+      AC_MSG_RESULT([$RUBY_LDFLAGS])
+
+    else
+      AC_MSG_RESULT([yes])
+      with_ruby=no
+    fi
+  fi
+fi
+
+AC_SUBST(RUBY_CFLAGS)
+AC_SUBST(RUBY_LDFLAGS)
+AM_CONDITIONAL([HAVE_AUTO4_RUBY], [test "$with_ruby" != "no"])
+
+
+AC_ARG_WITH(lua50-lib,
+[  --with-lua50-lib=PREFIX  PATH location of lua 5.0 library
+                          (required for auto3 support)], [lua50_lib_dir="$withval"])
+AC_ARG_WITH(lua50-include,
+[  --with-lua50-include=PREFIX
+                          PATH location of lua 5.0 includes
+                          (required for auto3 support)], [lua50_include_dir="$withval"])
+
+
+#if test -z "$lua50-lib-dir"; then
+#  AC_MSG_WARN([You must supply both --with-lua50-lib AND --with-lua50-include.])
+#fi
+
+if ! test -z "$lua50_lib_dir" && ! test -z "$lua50_include_dir"; then
+  aegisub_save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="-L$lua50_lib_dir"
+  AC_CHECK_LIB([lua], [lua_call],[LUA50_LDFLAGS="-L$lua50_lib_dir -llua"; lua50_lib="yes"], [lua50_lib="no"])
+  LDFLAGS="$aegisub_save_LDFLAGS"
+
+  aegisub_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$lua50_include_dir"
+  AC_CHECK_HEADER([lua.h],[LUA50_CPPFLAGS="-I$lua50_include_dir"; lua50_include="yes"],[lua50_include="no"])
+  CPPFLAGS="$aegisub_save_CPPFLAGS"
+fi
+
+if test "$lua50_lib" = "yes" && test "$lua50_include" = "yes"; then
+ with_auto3="yes"
+else
+  with_auto3="no"
+fi
+
+AM_CONDITIONAL([HAVE_AUTO3_LUA], [test "$with_auto3" != "no"])
+AC_SUBST(LUA50_CPPFLAGS)
+AC_SUBST(LUA50_LDFLAGS)
+
+
+
+
+################
+# Widget support
+################
+AM_OPTIONS_WXCONFIG
+AM_PATH_WXCONFIG(2.8.1, [have_wxconfig=1], [have_wxconfig=0], [std,gl,stc])
+
+if test "$have_wxconfig" != 1; then
+  AC_MSG_FAILURE([
+wxWidgets detection failed, please set --with-wx* or add
+the libraries to your LDFLAGS, CXX/CFLAGS.
+  ])
+fi
+#CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
+#CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
+#CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
+
+
+aegisub_save_CPPLAGS="$CPPLAGS"
+CPPFLAGS="$WX_CFLAGS"
+
+AC_MSG_CHECKING([wxWidgets OpenGL support])
+AC_TRY_COMPILE([#include <wx/glcanvas.h>],
+  [wxGLCanvas *canvas;],
+  with_wxgl=yes, with_wxgl=no)
+AC_MSG_RESULT($with_wxgl)
+
+if test "$with_wxgl" = "no"; then
+  AC_MSG_FAILURE([wxWidgets OpenGL support missing])
+fi
+
+AC_MSG_CHECKING([wxWidgets StyledTextCtrl support])
+AC_TRY_COMPILE([#include <wx/stc/stc.h>],
+  [wxStyledTextCtrl *canvas;],
+  with_wxstc=yes, with_wxstc=no)
+AC_MSG_RESULT($with_wxstc)
+
+if test "$with_wxstc" = "no"; then
+  AC_MSG_FAILURE([wxWidgets missing StyledTextCtrl])
+fi
+
+CPPFLAGS="$aegisub_save_CPPFLAGS"
+
+
+
+
+################################################
+# Internationalisation support (keep this last!)
+################################################
+AC_PROG_INTLTOOL
+AM_GLIB_GNU_GETTEXT
+
+GETTEXT_PACKAGE=aegisub21
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
+                   [The prefix for our gettext translation domains.])
+
+
+AC_OUTPUT([
+	Makefile
+	auto3/Makefile
+	automation/Makefile
+	po/Makefile.in
+	aegisub/Makefile
+	aegisub/bitmaps/Makefile
+	aegisub/posix/Makefile
+])
+
+
+if test -z "$found_audio"; then
+  AC_MSG_NOTICE([
+
+***********************************************************************
+* No supported audio player interface was found on your system.
+* If you want audio support in Aegisub you need to install one of
+* these libraries:
+*  - PulseAudio
+*    * http://pulseaudio.org/
+*  - ALSA (Linux only) (Currently broken)
+*    * http://www.alsa-project.org/
+*  - PortAudio (version 18 only, version 19 is not compatible)
+*    * http://www.portaudio.com/
+***********************************************************************
+  ])
+fi
+
+if test -z "$found_video_provider"; then
+  AC_MSG_NOTICE([
+
+***********************************************************************
+* No supported video/audio reader interface was found on your system.
+* You will not be able to open any video or audio files in Aegisub
+* unless you install a supported video/audio provider.
+* You will however still be able to open "dummy" video, ie. a blank,
+* virtual video clip with subtitles overlaid.
+* Currently we only support one video/audio provider on non-Windows
+* systems:
+*  - FFmpeg (libavcodec + libavformat)
+*    * http://ffmpeg.mplayerhq.hu/
+***********************************************************************
+  ])
+fi
+
+
+AC_MSG_RESULT([
+Scripting Engines:
+  auto4 Perl:            $with_perl $perl_disabled
+  auto3:                 $with_auto3
+  auto4:                 $with_auto4 $lua_disabled
+  auto4 Ruby:            $with_ruby $ruby_disabled
+
+Audio Providers:
+  ALSA:                  $with_alsa $alsa_disabled
+  PortAudio:             $with_portaudio $portaudio_disabled
+  PulseAudio:            $with_pulseaudio $pulseaudio_disabled
+
+Video Providers
+  ffmpeg:                $with_ffmpeg $ffmpeg_disabled
+
+Subtitle Providers:
+  asa:                   $with_asa
+  libass:                $with_libass
+]);
