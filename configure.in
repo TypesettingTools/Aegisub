@@ -161,8 +161,8 @@ fi
 #################
 
 AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provider.. (default: auto)], ffmpeg_disabled="(disabled)")
-if test "$without_ffmpeg" != xno; then
 
+if test "$with_ffmpeg" != "no"; then
   AC_CHECK_LIB([avcodec], [avcodec_init],AVCODEC_LDFLAGS="-lavcodec", [with_ffmpeg=no])
   AC_CHECK_LIB([avformat], [av_read_frame],AVFORMAT_LDFLAGS="-lavcodec", [with_ffmpeg=no])
   AC_CHECK_LIB([avformat], [sws_scale],[with_swscale="yes"], [with_swscale="no"])
@@ -272,20 +272,21 @@ AC_ARG_WITH(lua-include,
 [  --with-lua-include=PREFIX
                           PATH location of lua 5.1 includes], [lua_include_dir="-I$withval"])
 
-if test "$without_lua" != no; then
+if test "$with_lua" != no; then
   aegisub_save_LDFLAGS="$LDFLAGS"
   
   LDFLAGS="$LDFLAGS -L$lua_lib_dir"
-  AC_CHECK_LIB([lua], [lua_call], LUA_LDFLAGS="$lua_lib_dir -llua", with_lua_lib=no)
+  AC_CHECK_LIB([lua], [lua_call], LUA_LDFLAGS="$lua_lib_dir -llua", with_lua_lib="no")
   LDFLAGS="$aegisub_save_LDFLAGS"
 
   aegisub_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I$lua_include_dir"
-  AC_CHECK_HEADER([lua.h],[LUA_CPPFLAGS="$lua_include_dir"],with_lua_include="no")
+  AC_CHECK_HEADER([lua.h],[LUA_CPPFLAGS="$lua_include_dir"], with_lua_include="no")
   CPPFLAGS="$aegisub_save_CPPFLAGS"
+
 fi
 
-if test "$with_lua_lib" != "no" && test "$with_lua_include" != "no"; then
+if (test "$with_lua_lib" != "no" || ! test "$have_lua_include" != "no") && test "$with_lua" != "no"; then
   with_auto4="yes"
   AC_DEFINE(WITH_AUTOMATION, 1, [Enable Automation (auto4), requires lua])
 else
