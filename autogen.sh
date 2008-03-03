@@ -29,7 +29,7 @@ srcdir=`pwd`
 test -z "$srcdir" && srcdir=.
 ORIGDIR=`pwd`
 cd $srcdir
-AWK_BIN ?= awk
+AWK_BIN=awk
 
 test $TEST_TYPE $FILE || {
     echo
@@ -40,13 +40,13 @@ test $TEST_TYPE $FILE || {
 
 # bmp -> xmp via the res.rc
 if [ ! -f ${srcdir}/aegisub/bitmaps/Makefile.bitmaps ]; then
-	cat ${srcdir}/aegisub/res.rc | $AWK_BIN -f ${srcdir}/aegisub/bitmaps/genxpm.awk ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
+	cat ${srcdir}/aegisub/res.rc | ${AWK_BIN} -f ${srcdir}/aegisub/bitmaps/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
 fi
 cd ${srcdir}/aegisub/bitmaps
 make -f Makefile.bitmaps
 cd ${srcdir}
 
-awk '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST="); for (v in image) printf(" \\\n %s", image[v])' \
+awk '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST="); for (v in image) printf(" \\\n %s", image[v])}' \
   ${srcdir}/aegisub/res.rc \
   > ${srcdir}/aegisub/bitmaps/Makefile.am
 
