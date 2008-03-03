@@ -266,14 +266,15 @@ AC_ARG_WITH(lua,
 [  --without-lua           build without lua 5.1 (auto3)], [lua_disabled="(disabled)"])
 
 AC_ARG_WITH(lua-lib,
-[  --with-lua-lib=PREFIX   PATH location of lua 5.1 library], [lua_lib_dir="$withval"])
+[  --with-lua-lib=PREFIX   PATH location of lua 5.1 library], [lua_lib_dir="-L$withval"])
 
 AC_ARG_WITH(lua-include,
 [  --with-lua-include=PREFIX
-                          PATH location of lua 5.1 includes], [lua_include_dir="$withval"])
+                          PATH location of lua 5.1 includes], [lua_include_dir="-I$withval"])
 
 if test "$without_lua" != no; then
   aegisub_save_LDFLAGS="$LDFLAGS"
+  
   LDFLAGS="$LDFLAGS -L$lua_lib_dir"
   AC_CHECK_LIB([lua], [lua_call], LUA_LDFLAGS="-L$lua_lib_dir -llua", with_lua_lib=no)
   LDFLAGS="$aegisub_save_LDFLAGS"
@@ -375,11 +376,11 @@ AM_CONDITIONAL([HAVE_AUTO4_RUBY], [test "$with_ruby" != "no"])
 
 AC_ARG_WITH(lua50-lib,
 [  --with-lua50-lib=PREFIX PATH location of lua 5.0 library
-                          (required for auto3 support)], [lua50_lib_dir="$withval"])
+                          (required for auto3 support)], [lua50_lib_dir="-L$withval"])
 AC_ARG_WITH(lua50-include,
 [  --with-lua50-include=PREFIX
                           PATH location of lua 5.0 includes
-                          (required for auto3 support)], [lua50_include_dir="$withval"])
+                          (required for auto3 support)], [lua50_include_dir="-I$withval"])
 
 
 #if test -z "$lua50-lib-dir"; then
@@ -389,12 +390,12 @@ AC_ARG_WITH(lua50-include,
 if ! test -z "$lua50_lib_dir" && ! test -z "$lua50_include_dir"; then
   aegisub_save_LDFLAGS="$LDFLAGS"
   LDFLAGS="-L$lua50_lib_dir"
-  AC_CHECK_LIB([lua], [lua_call],[LUA50_LDFLAGS="-L$lua50_lib_dir -llua"; lua50_lib="yes"], [lua50_lib="no"])
+  AC_CHECK_LIB([lua], [lua_call],[LUA50_LDFLAGS="$lua50_lib_dir -llua"; lua50_lib="yes"], [lua50_lib="no"])
   LDFLAGS="$aegisub_save_LDFLAGS"
 
   aegisub_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="-I$lua50_include_dir"
-  AC_CHECK_HEADER([lua.h],[LUA50_CPPFLAGS="-I$lua50_include_dir"; lua50_include="yes"],[lua50_include="no"])
+  AC_CHECK_HEADER([lua.h],[LUA50_CPPFLAGS="$lua50_include_dir"; lua50_include="yes"],[lua50_include="no"])
   CPPFLAGS="$aegisub_save_CPPFLAGS"
 fi
 
