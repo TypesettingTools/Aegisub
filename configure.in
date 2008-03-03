@@ -243,8 +243,13 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
   AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.]),
   [AC_MSG_FAILURE([aegisub requires >= fontconfig >= 2.4])])
 
-AC_CHECK_LIB([hunspell], [main],[HUNSPELL_LDFLAGS="-lhunspell"; with_hunspell="yes"], [with_hunspell=no])
-if test "$with_libass" = "yes"; then
+
+AC_ARG_WITH(hunspell, [  --without-hunspell  build without hunspell support], alsa_disabled="(disabled)")
+if test "x$with_hunspell" != xno; then
+  AC_CHECK_LIB([hunspell], [main],[HUNSPELL_LDFLAGS="-lhunspell"; with_hunspell="yes"], [with_hunspell=no])
+fi
+
+if test "$with_hunspell" = "yes"; then
   AC_DEFINE(WITH_HUNSPELL, 1, [Enable hunspell support])
 fi
 
