@@ -276,12 +276,12 @@ if test "$without_lua" != no; then
   aegisub_save_LDFLAGS="$LDFLAGS"
   
   LDFLAGS="$LDFLAGS -L$lua_lib_dir"
-  AC_CHECK_LIB([lua], [lua_call], LUA_LDFLAGS="-L$lua_lib_dir -llua", with_lua_lib=no)
+  AC_CHECK_LIB([lua], [lua_call], LUA_LDFLAGS="$lua_lib_dir -llua", with_lua_lib=no)
   LDFLAGS="$aegisub_save_LDFLAGS"
 
   aegisub_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I$lua_include_dir"
-  AC_CHECK_HEADER([lua.h],[LUA_CPPFLAGS="-I$lua_include_dir"],with_lua_include="no")
+  AC_CHECK_HEADER([lua.h],[LUA_CPPFLAGS="$lua_include_dir"],with_lua_include="no")
   CPPFLAGS="$aegisub_save_CPPFLAGS"
 fi
 
