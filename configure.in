@@ -264,7 +264,7 @@ if test "$without_lua" != no; then
 
   aegisub_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I$lua_include_dir"
-  AC_CHECK_HEADER([lua.h],LUA_CPPLAGS="-I$lua_include_dir",with_lua_include="no")
+  AC_CHECK_HEADER([lua.h],[LUA_CPPFLAGS="-I$lua_include_dir"],with_lua_include="no")
   CPPFLAGS="$aegisub_save_CPPFLAGS"
 fi
 
