@@ -18,12 +18,14 @@ if HAVE_ALSA
 noinst_LIBRARIES += libaudio_alsa.a
 libaudio_alsa_a_SOURCES = audio_player_alsa.cpp
 aegisub_LDFLAGS += @ALSA_LDFLAGS@
+aegisub_LDADD += libaudio_alsa.a
 endif
 
 if HAVE_PORTAUDIO
 noinst_LIBRARIES += libaudio_portaudio.a
 libaudio_portaudio_a_SOURCES = audio_player_portaudio.cpp
 aegisub_LDFLAGS += @PORTAUDIO_LDFLAGS@
+aegisub_LDADD += libaudio_portaudio.a
 endif
 
 if HAVE_PULSEAUDIO
@@ -31,6 +33,7 @@ noinst_LIBRARIES += libaudio_pulseaudio.a
 libaudio_pulseaudio_a_SOURCES = audio_player_pulse.cpp
 libaudio_pulseaudio_a_CFLAGS = @LIBPULSE_CFLAGS@
 aegisub_LDFLAGS += @LIBPULSE_LIBS@
+aegisub_LDADD += libaudio_pulseaudio.a
 endif
 
 if HAVE_FFMPEG
@@ -38,6 +41,7 @@ noinst_LIBRARIES += libaudiovideo_ffmpeg.a
 libaudiovideo_ffmpeg_a_SOURCES = audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp lavc_keyframes.cpp
 libaudiovideo_ffmpeg_a_CFLAGS = @AVFORMAT_CFLAGS @AVCODEC_CFLAGS@
 aegisub_LDFLAGS += @AVFORMAT_LDFLAGS@ @AVCODEC_LDFLAGS@ @SWSCALE_LDFLAGS@
+aegisub_LDADD += libaudiovideo_ffmpeg.a
 endif
 
 if HAVE_LIBASS
@@ -45,12 +49,14 @@ noinst_LIBRARIES += libsubtitle_ass.a
 libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
 libsubtitle_ass_a_CFLAGS = @LIBASS_CFLAGS@
 aegisub_LDFLAGS += @LIBASS_LIBS@
+aegisub_LDADD += libsubtitle_ass.a
 endif
 
 if HAVE_HUNSPELL
 noinst_LIBRARIES += libspell_hunspell.a
 libspell_hunspell_a_SOURCES = spellchecker_hunspell.cpp
 aegisub_LDFLAGS += @HUNSPELL_LDFLAGS@
+aegisub_LDADD +=
 endif
 
 if HAVE_AUTO4_LUA
@@ -58,6 +64,7 @@ noinst_LIBRARIES += libauto4_lua.a
 libauto4_lua_a_SOURCES = auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_scriptreader.cpp
 libauto4_lua_a_CFLAGS = @LUA_CPPFLAGS@
 aegisub_LDFLAGS += @LUA_LDFLAGS@
+aegisub_LDADD += libauto4_lua.a
 endif
 
 if HAVE_AUTO4_PERL
@@ -65,6 +72,7 @@ noinst_LIBRARIES += libauto4_perl.a
 libauto4_perl_a_SOURCES = auto4_perl.cpp auto4_perl_script.cpp auto4_perl_dialogs.cpp auto4_perl_ass.cpp auto4_perl_console.cpp auto4_perl.h auto4_perl_console.h
 libauto4_perl_a_CFLAGS = @PERL_CFLAGS@
 aegisub_LDFLAGS += @PERL_LDFLAGS@
+aegisub_LDADD += libauto4_perl.a
 endif
 
 if HAVE_AUTO4_RUBY
@@ -72,6 +80,7 @@ noinst_LIBRARIES += libauto4_ruby.a
 libauto4_ruby_a_SOURCES = auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
 lubauto4_ruby_hunspell_a_CFLAGS = @RUBY_CFLAGS@
 aegisub_LDFLAGS += @RUBY_LDFLAGS@
+aegisub_LDADD += libauto4_ruby.a
 endif
 
 if HAVE_AUTO3_LUA
