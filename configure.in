@@ -244,7 +244,7 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
   [AC_MSG_FAILURE([aegisub requires >= fontconfig >= 2.4])])
 
 
-AC_ARG_WITH(hunspell, [  --without-hunspell  build without hunspell support], alsa_disabled="(disabled)")
+AC_ARG_WITH(hunspell, [  --without-hunspell      build without hunspell support], alsa_disabled="(disabled)")
 if test "x$with_hunspell" != xno; then
   AC_CHECK_LIB([hunspell], [main],[HUNSPELL_LDFLAGS="-lhunspell"; with_hunspell="yes"], [with_hunspell=no])
 fi
@@ -263,7 +263,7 @@ AC_SUBST(HUNSPELL_LDFLAGS)
 # Automation
 ############
 AC_ARG_WITH(lua,
-[  --without-lua          build without lua 5.1 (auto3)], [lua_disabled="(disabled)"])
+[  --without-lua           build without lua 5.1 (auto3)], [lua_disabled="(disabled)"])
 
 AC_ARG_WITH(lua-lib,
 [  --with-lua-lib=PREFIX   PATH location of lua 5.1 library], [lua_lib_dir="$withval"])
@@ -374,7 +374,7 @@ AM_CONDITIONAL([HAVE_AUTO4_RUBY], [test "$with_ruby" != "no"])
 
 
 AC_ARG_WITH(lua50-lib,
-[  --with-lua50-lib=PREFIX  PATH location of lua 5.0 library
+[  --with-lua50-lib=PREFIX PATH location of lua 5.0 library
                           (required for auto3 support)], [lua50_lib_dir="$withval"])
 AC_ARG_WITH(lua50-include,
 [  --with-lua50-include=PREFIX
