@@ -11,6 +11,10 @@ m4_define([aegisub_version], [aegisub_major_version.aegisub_minor_version-dev])
 ###################
 # Required packages
 ###################
+m4_define([ffmpeg_required_version], [1])
+m4_define([portaudio_required_version], [1])
+m4_define([pulseaudio_required_version], [1])
+
 m4_define([pkgconfig_required_version], [0.20])
 m4_define([libass_required_version], [0.9.1])
 m4_define([freetype_required_version], [9.7.0])
@@ -110,23 +114,32 @@ AC_ARG_WITH(alsa, [  --without-alsa          build without ALSA audio provider. 
 if test "x$with_alsa" != xno; then
   AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound"; found_audio=yes; with_alsa=yes], [with_alsa=no])
 fi
+if test "$with_alsa" = yes; then
+  AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support])
+fi
+
 AC_SUBST(ALSA_LDFLAGS)
 AM_CONDITIONAL([HAVE_ALSA], [test "$with_alsa" != "no"])
 
 AC_ARG_WITH(portaudio,[  --without-portaudio     build without PortAudio audio provider.
                           (default: auto)], portaudio_disabled="(disabled)")
-if test "x$with_portaudio" != xno; then
 
-aegisub_save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $PTHREAD_CFLAGS $PTHREAD_LIBS"
+if test "x$with_portaudio" != xno; then
+  aegisub_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $PTHREAD_CFLAGS $PTHREAD_LIBS"
   AC_CHECK_LIB([portaudio], [Pa_Initialize], [PORTAUDIO_LDFLAGS="-lportaudio"; found_audio=yes; with_portaudio=yes], [with_portaudio=no])
 fi
+
 if test "x$with_portaudio" != xno; then
   AC_CHECK_LIB([portaudio], [Pa_GetStreamTime], [LIBS="-lportaudio"], [with_portaudio_getstreamtime=no])
     if test "x$with_portaudio_getstreamtime" != xno; then
      AC_DEFINE(HAVE_PA_GETSTREAMTIME, 1, [Define to 1 if Pa_GetStreamTime is available in PortAudio])
   fi
 CPPFLAGS="$aegisub_save_CPPFLAGS"
+fi
+
+if test "$with_portaudio" = yes; then
+  AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio Audio Provider])
 fi
 
 AC_SUBST(PORTAUDIO_LDFLAGS)
@@ -138,8 +151,9 @@ if test "x$with_pulseaudio" != xno; then
   PKG_CHECK_MODULES(LIBPULSE, libpulse >= 0.5, [found_audio=yes; with_pulseaudio=yes], [with_pulseaudio=no])
 fi
 AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
-
-
+if test "$with_pulseaudio" == no; then
+  AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
+fi
 
 
 #################
@@ -157,6 +171,7 @@ if test "$without_ffmpeg" != xno; then
   if test "$with_ffmpeg" != "no"; then
     found_video_provider=yes
     with_ffmpeg="yes"
+    AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
   fi
 fi
 AC_SUBST(AVCODEC_LDFLAGS)
@@ -186,7 +201,7 @@ if test "x$with_libass" != xno; then
 fi
 
 if test "$with_libass" != "no"; then
-  AC_DEFINE(HAVE_LIBASS, 1, [found libass via pkg-config])
+  AC_DEFINE(WITH_LIBASS, 1, [Enable libass Subtitle Provider])
   with_libass="yes"
 fi
 
@@ -209,11 +224,19 @@ fi
 AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
 
-PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.7.0, [], [AC_MSG_FAILURE([aegisub requires >= FreeType2 2.1.9])])
+PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.7.0,
+  AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
+  [AC_MSG_FAILURE([aegisub requires >= FreeType2 2.1.9])])
 
-PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4, [], [AC_MSG_FAILURE([aegisub requires >= fontconfig >= 2.4])])
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
+  AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.]),
+  [AC_MSG_FAILURE([aegisub requires >= fontconfig >= 2.4])])
 
-AC_CHECK_LIB([hunspell], [main], HUNSPELL_LDFLAGS="-lhunspell", [with_hunspell=no])
+AC_CHECK_LIB([hunspell], [main],[HUNSPELL_LDFLAGS="-lhunspell"; with_hunspell="yes"], [with_hunspell=no])
+if test "$with_libass" = "yes"; then
+  AC_DEFINE(WITH_HUNSPELL, 1, [Enable hunspell support])
+fi
+
 AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_hunspell" != "no"])
 AC_SUBST(HUNSPELL_LDFLAGS)
 
@@ -247,6 +270,7 @@ fi
 
 if test "$with_lua_lib" != "no" && test "$with_lua_include" != "no"; then
   with_auto4="yes"
+  AC_DEFINE(WITH_AUTOMATION, 1, [Enable Automation (auto4), requires lua])
 else
   with_auto4="no"
 fi
@@ -266,12 +290,15 @@ if test -z "$perl_disabled"; then
     PERL_BIN="$WITH_PERL_BIN"
   fi
 
+# XXX: add a --with-perlconsole flag.
+# AC_DEFINE(WITH_PERLCONSOLE, 1, [Enable PERL Console support (for debugging purposes)])
+
   if test "$PERL_BIN" != "no"; then
     AC_MSG_CHECKING([checking for perl version >= 5.004])
     if $PERL_BIN -e 'require 5.004'; then
       AC_MSG_RESULT([yes])
       with_perl=yes
-
+      AC_DEFINE(WITH_PERL, 1, [Enable PERL support.])
       AC_MSG_CHECKING([checking $PERL_BIN clfags])
       PERL_CFLAGS=`$PERL_BIN -MExtUtils::Embed -eccflags -eperl_inc`
       AC_MSG_RESULT([$PERL_CFLAGS])
@@ -308,6 +335,7 @@ if test -z "$ruby_disabled"; then
     if $RUBY_BIN -r rbconfig -e 'if Config::CONFIG@<:@"ruby_version"@:>@.to_f >= 1.8  then exit(0) else exit(1) end' ; then
       AC_MSG_RESULT([yes])
       with_ruby=yes
+      AC_DEFINE(WITH_RUBY, 1, [Enable RUBY Automation.])
 
       AC_MSG_CHECKING([checking $RUBY_BIN -r rbconfig archdir, cflags])
       RUBY_CFLAGS=`$RUBY_BIN -r rbconfig -e "printf(\"-I%s %s\", Config::CONFIG@<:@'archdir'@:>@, Config::CONFIG@<:@'CFLAGS'@:>@)"`
@@ -356,6 +384,7 @@ fi
 
 if test "$lua50_lib" = "yes" && test "$lua50_include" = "yes"; then
  with_auto3="yes"
+ AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
 else
   with_auto3="no"
 fi
