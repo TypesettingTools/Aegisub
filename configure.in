@@ -164,16 +164,27 @@ AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provid
 if test "$without_ffmpeg" != xno; then
 
   AC_CHECK_LIB([avcodec], [avcodec_init],AVCODEC_LDFLAGS="-lavcodec", [with_ffmpeg=no])
- 
   AC_CHECK_LIB([avformat], [av_read_frame],AVFORMAT_LDFLAGS="-lavcodec", [with_ffmpeg=no])
+  AC_CHECK_LIB([avformat], [sws_scale],[with_swscale="yes"], [with_swscale="no"])
 
-  AC_CHECK_LIB([avformat], [sws_scale],MOSTLY_HARMLESS=, [with_ffmpeg=no])
-  if test "$with_ffmpeg" != "no"; then
+  if test "$with_swscale" = "no"; then
+    AC_CHECK_LIB([swscale], [sws_scale],[SWSCALE_LDFLAGS="-lswscale"; with_swscale_lib="yes"], [with_swscale_lib="no"])
+  fi
+
+  if test "$with_swscale" = "yes" || test "$with_swscale_lib" = "yes"; then
+    with_ffmpeg="yes";
+  else 
+    with_ffmpeg="no";
+  fi
+
+  if test "$with_ffmpeg" = "yes"; then
     found_video_provider=yes
     with_ffmpeg="yes"
     AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
   fi
 fi
+
+AC_SUBST(SWSCALE_LDFLAGS)
 AC_SUBST(AVCODEC_LDFLAGS)
 AC_SUBST(AVFORMAT_LDFLAGS)
 AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])

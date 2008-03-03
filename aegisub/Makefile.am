@@ -37,7 +37,7 @@ if HAVE_FFMPEG
 noinst_LIBRARIES += libaudiovideo_ffmpeg.a
 libaudiovideo_ffmpeg_a_SOURCES = audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp lavc_keyframes.cpp
 libaudiovideo_ffmpeg_a_CFLAGS = @AVFORMAT_CFLAGS @AVCODEC_CFLAGS@
-aegisub_LDFLAGS += @AVFORMAT_LDFLAGS@ @AVCODEC_LDFLAGS@
+aegisub_LDFLAGS += @AVFORMAT_LDFLAGS@ @AVCODEC_LDFLAGS@ @SWSCALE_LDFLAGS@
 endif
 
 if HAVE_LIBASS
