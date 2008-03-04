@@ -34,7 +34,7 @@
 //
 
 
-#ifdef WITH_AUTOMATION
+#ifdef WITH_AUTO4_LUA
 
 #include "auto4_lua.h"
 #include "../lua51/src/lualib.h"
@@ -753,4 +753,4 @@ badcontrol:
 
 };
 
-#endif // WITH_AUTOMATION
+#endif // WITH_AUTO4_LUA

@@ -46,8 +46,13 @@
 ////////////// HIGH PRIORITY /////////////
 
 // Enable Automation
-// Requires: Lua (in repository)
+// Requires: Nothing
 //#define WITH_AUTOMATION
+
+
+// Enable Automation 4 Lua
+// Requires: Lua 5.1 (in repository)
+//#define WITH_AUTO4_LUA
 
 
 // Enable Automation 3

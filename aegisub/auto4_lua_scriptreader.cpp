@@ -33,7 +33,7 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
-#ifdef WITH_AUTOMATION
+#ifdef WITH_AUTO4_LUA
 
 #include "auto4_lua_scriptreader.h"
 
@@ -106,4 +106,4 @@ namespace Automation4 {
 
 };
 
-#endif // WITH_AUTOMATION
+#endif // WITH_AUTO4_LUA
