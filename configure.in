@@ -390,7 +390,7 @@ if test -z "$ruby_disabled"; then
       AC_MSG_RESULT([$RUBY_CFLAGS])
 
       AC_MSG_CHECKING([checking $RUBY_BIN rbconfig libs])
-      RUBY_LDFLAGS=`$RUBY_BIN -r rbconfig -e "print Config::CONFIG@<:@'LIBS'@:>@"`
+      RUBY_LDFLAGS=`$RUBY_BIN -r rbconfig -e "print Config::CONFIG@<:@'LIBRUBYARG'@:>@"`
       AC_MSG_RESULT([$RUBY_LDFLAGS])
 
     else
