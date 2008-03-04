@@ -174,7 +174,7 @@ AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provid
 
 if test "$with_ffmpeg" != "no"; then
   AC_CHECK_LIB([avcodec], [avcodec_init],AVCODEC_LDFLAGS="-lavcodec", [with_ffmpeg=no])
-  AC_CHECK_LIB([avformat], [av_read_frame],AVFORMAT_LDFLAGS="-lavcodec", [with_ffmpeg=no])
+  AC_CHECK_LIB([avformat], [av_read_frame],AVFORMAT_LDFLAGS="-lavformat", [with_ffmpeg=no])
   AC_CHECK_LIB([avformat], [sws_scale],[with_swscale="yes"], [with_swscale="no"])
 
   if test "$with_swscale" = "no"; then
