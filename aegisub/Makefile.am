@@ -36,6 +36,14 @@ aegisub_LDFLAGS += @LIBPULSE_LIBS@
 aegisub_LDADD += libaudio_pulseaudio.a
 endif
 
+if HAVE_OPENAL
+noinst_LIBRARIES += libaudio_openal.a
+libaudio_openal_a_SOURCES = audio_player_openal.cpp
+libaudio_openal_a_CFLAGS = @OPENAL_CFLAGS@
+aegisub_LDFLAGS += @OPENAL_LIBS@
+aegisub_LDADD += libaudio_openal.a
+endif
+
 if HAVE_FFMPEG
 noinst_LIBRARIES += libaudiovideo_ffmpeg.a
 libaudiovideo_ffmpeg_a_SOURCES = audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp lavc_keyframes.cpp
