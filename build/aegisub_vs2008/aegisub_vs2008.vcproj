@@ -497,7 +497,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_player_alsa.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_player_dsound.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_dsound.h"
 				>
 			</File>
 			<File
@@ -505,11 +513,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_player_openal.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_player_portaudio.cpp"
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_player_portaudio.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_player_pulse.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_pulse.h"
 				>
 			</File>
 			<File
@@ -1753,7 +1773,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\subtitles_provider_csri.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\subtitles_provider_libass.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\subtitles_provider_libass.h"
 				>
 			</File>
 		</Filter>
