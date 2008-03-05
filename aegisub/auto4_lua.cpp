@@ -44,8 +44,15 @@
 #include "text_file_reader.h"
 #include "options.h"
 #include "vfr.h"
+
+#ifdef __WINDOWS__
 #include "../lua51/src/lualib.h"
 #include "../lua51/src/lauxlib.h"
+#else
+#include "lualib.h"
+#include "lauxlib.h"
+#endif
+
 #include <wx/msgdlg.h>
 #include <wx/filename.h>
 #include <wx/filefn.h>

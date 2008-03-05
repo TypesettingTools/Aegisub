@@ -36,7 +36,11 @@
 #pragma once
 
 #include <wx/wxprec.h>
+#ifdef __WINDOWS__
 #include "../lua51/src/lua.h"
+#else
+#include "lua.h"
+#endif
 
 namespace Automation4 {
 

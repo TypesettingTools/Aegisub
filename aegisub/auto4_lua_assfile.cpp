@@ -40,8 +40,15 @@
 #include "ass_style.h"
 #include "ass_file.h"
 #include "ass_override.h"
+
+#ifdef __WINDOWS__
 #include "../lua51/src/lualib.h"
 #include "../lua51/src/lauxlib.h"
+#else
+#include "lualib.h"
+#include "lauxlib.h"
+#endif
+
 #include <assert.h>
 #include <algorithm>
 

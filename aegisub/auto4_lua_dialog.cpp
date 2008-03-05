@@ -37,8 +37,15 @@
 #ifdef WITH_AUTO4_LUA
 
 #include "auto4_lua.h"
+
+#ifdef __WINDOWS__
 #include "../lua51/src/lualib.h"
 #include "../lua51/src/lauxlib.h"
+#else
+#include "lualib.h"
+#include "lauxlib.h"
+#endif
+
 #include "string_codec.h"
 #include "utils.h"
 #include <wx/window.h>
