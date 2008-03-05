@@ -111,4 +111,6 @@ protected:
 public:
 	virtual ~VideoProviderFactory() {}
 	static VideoProvider *GetProvider(wxString video,double fps=0.0);
+
+	static void RegisterProviders();
 };

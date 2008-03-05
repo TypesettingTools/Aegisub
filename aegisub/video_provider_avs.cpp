@@ -41,77 +41,13 @@
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
 #include <wx/filename.h>
-#include "avisynth_wrap.h"
-#include "video_provider.h"
-#include "subtitles_provider.h"
+#include "video_provider_avs.h"
 #include "video_context.h"
 #include "options.h"
 #include "standard_paths.h"
 #include "vfr.h"
 #include "ass_file.h"
 #include "gl_wrap.h"
-
-
-////////////
-// Provider
-class AvisynthVideoProvider: public VideoProvider, SubtitlesProvider, AviSynthWrapper {
-private:
-	VideoInfo vi;
-	AegiVideoFrame iframe;
-
-	bool usedDirectShow;
-	wxString rendererCallString;
-	wxString decoderName;
-
-	int num_frames;
-	int last_fnum;
-
-	double fps;
-	wxArrayInt frameTime;
-	bool byFrame;
-
-	PClip RGB32Video;
-	PClip SubtitledVideo;
-
-	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
-
-	void LoadVSFilter();
-	void LoadASA();
-	void LoadRenderer();
-
-public:
-	AvisynthVideoProvider(wxString _filename, double fps=0.0);
-	~AvisynthVideoProvider();
-
-	SubtitlesProvider *GetAsSubtitlesProvider();
-	void LoadSubtitles(AssFile *subs);
-	bool LockedToVideo() { return true; }
-
-	const AegiVideoFrame DoGetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
-
-	// properties
-	int GetPosition() { return last_fnum; };
-	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
-	int GetWidth() { return vi.width; };
-	int GetHeight() { return vi.height; };
-
-	void OverrideFrameTimeList(wxArrayInt list);
-	bool IsNativelyByFrames() { return byFrame; }
-	wxString GetWarning();
-	wxString GetDecoderName() { return _T("Avisynth/") + decoderName; }
-};
-
-
-///////////
-// Factory
-class AvisynthVideoProviderFactory : public VideoProviderFactory {
-public:
-	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new AvisynthVideoProvider(video,fps); }
-	AvisynthVideoProviderFactory() : VideoProviderFactory(_T("avisynth")) {}
-} registerAVS;
 
 
 ///////////////

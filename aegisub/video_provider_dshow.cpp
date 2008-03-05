@@ -51,12 +51,12 @@
 #include <windows.h>
 #include <tchar.h>
 #include <initguid.h>
-#include "video_provider.h"
 #include "utils.h"
 #include "vfr.h"
 #include "videosink.h"
 #include "gl_wrap.h"
 #include "options.h"
+#include "video_provider_dshow.h"
 
 
 ///////////////////////////////////

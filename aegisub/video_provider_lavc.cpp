@@ -42,11 +42,6 @@
 #ifdef WIN32
 #define EMULATE_INTTYPES
 #endif
-extern "C" {
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-#include <ffmpeg/swscale.h>
-}
 #include <wx/wxprec.h>
 #include <wx/image.h>
 #include <algorithm>
@@ -56,74 +51,6 @@ extern "C" {
 #include "utils.h"
 #include "vfr.h"
 #include "ass_file.h"
-
-
-///////////////////////
-// LibAVCodec provider
-class LAVCVideoProvider : public VideoProvider {
-	friend class LAVCAudioProvider;
-private:
-	MatroskaWrapper mkv;
-
-	LAVCFile *lavcfile;
-	AVCodecContext *codecContext;
-	AVStream *stream;
-	AVCodec *codec;
-	AVFrame *frame;
-	int vidStream;
-	
-	AVFrame *frameRGB;
-	uint8_t *bufferRGB;
-	SwsContext *sws_context;
-	
-	int display_w;
-	int display_h;
-
-	wxArrayInt bytePos;
-
-	bool isMkv;
-	int64_t lastDecodeTime;
-	int frameNumber;
-	int length;
-	AegiVideoFrame curFrame;
-	bool validFrame;
-
-	uint8_t *buffer1;
-	uint8_t *buffer2;
-	int buffer1Size;
-	int buffer2Size;
-
-	bool GetNextFrame();
-	void LoadVideo(wxString filename, double fps);
-	void Close();
-
-protected:
-	const AegiVideoFrame DoGetFrame(int n);
-
-public:
-	LAVCVideoProvider(wxString filename, double fps);
-	~LAVCVideoProvider();
-
-	int GetPosition();
-	int GetFrameCount();
-
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-	wxString GetDecoderName() { return _T("FFMpeg/libavcodec"); }
-	bool IsNativelyByFrames() { return true; }
-};
-
-
-
-
-///////////
-// Factory
-class LAVCVideoProviderFactory : public VideoProviderFactory {
-public:
-	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new LAVCVideoProvider(video,fps); }
-	LAVCVideoProviderFactory() : VideoProviderFactory(_T("ffmpeg")) {}
-} registerLAVCVideo;
 
 
 ///////////////

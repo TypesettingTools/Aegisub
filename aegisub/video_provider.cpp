@@ -40,6 +40,16 @@
 #include "video_provider_dummy.h"
 #include "options.h"
 #include "vfr.h"
+#ifdef WITH_AVISYNTH
+#include "video_provider_avs.h"
+#endif
+#ifdef WITH_DIRECTSHOW
+#include "video_provider_dshow.h"
+#endif
+#ifdef WITH_FFMPEG
+#include "video_provider_lavc.h"
+#endif
+#include "video_provider_dummy.h"
 
 
 ///////////////
@@ -149,6 +159,12 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
 		return new DummyVideoProvider(video, fps);
 	}
 
+	// Register the first time
+	// HACK: move this into program initialization later
+	static bool init = false;
+	if (!init) RegisterProviders();
+	init = true;
+
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Video provider")));
 
@@ -169,6 +185,21 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
 
 	// Failed
 	throw error;
+}
+
+
+//////////////////////////
+// Register all providers
+void VideoProviderFactory::RegisterProviders() {
+#ifdef WITH_AVISYNTH
+	new AvisynthVideoProviderFactory();
+#endif
+#ifdef WITH_DIRECTSHOW
+	new DirectShowVideoProviderFactory();
+#endif
+#ifdef WITH_FFMPEG
+	new LAVCVideoProviderFactory();
+#endif
 }
 
 

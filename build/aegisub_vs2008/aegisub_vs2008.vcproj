@@ -1471,6 +1471,14 @@
 			<File
 				RelativePath="..\..\aegisub\version.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="FINAL_RELEASE"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\aegisub\version.h"
@@ -1569,7 +1577,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\video_provider_avs.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\video_provider_dshow.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\video_provider_dshow.h"
 				>
 			</File>
 			<File
@@ -1582,6 +1598,10 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\video_provider_lavc.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\video_provider_lavc.h"
 				>
 			</File>
 			<File
