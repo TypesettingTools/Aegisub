@@ -43,7 +43,12 @@ extern "C" {
 #ifdef __VISUALC__
 #include "stdint.h"
 #endif
+
+#ifdef __WINDOWS__
 #include "../libass/ass.h"
+#else
+#include "ass/ass.h"
+#endif
 }
 
 
