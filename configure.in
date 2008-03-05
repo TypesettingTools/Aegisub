@@ -134,7 +134,7 @@ AC_ARG_WITH(alsa, [  --without-alsa          build without ALSA audio provider. 
 if test "x$with_alsa" != xno; then
   AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound"; found_audio=yes; with_alsa=yes], [with_alsa=no])
 fi
-if test "$with_alsa" = yes; then
+if test "$with_alsa" = "yes"; then
   AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support])
 fi
 
@@ -158,7 +158,7 @@ if test "x$with_portaudio" != xno; then
 CPPFLAGS="$aegisub_save_CPPFLAGS"
 fi
 
-if test "$with_portaudio" = yes; then
+if test "$with_portaudio" = "yes"; then
   AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio Audio Provider])
 fi
 
@@ -171,7 +171,7 @@ if test "x$with_pulseaudio" != xno; then
   PKG_CHECK_MODULES(LIBPULSE, libpulse >= 0.5, [found_audio=yes; with_pulseaudio=yes], [with_pulseaudio=no])
 fi
 AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
-if test "$with_pulseaudio" == no; then
+if test "$with_pulseaudio" = "yes"; then
   AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
 fi
 
@@ -181,7 +181,7 @@ if test "x$with_openal" != xno; then
   PKG_CHECK_MODULES(OPENAL, libpulse >= 0.0.8, [found_audio=yes; with_openal=yes], [with_openal=no])
 fi
 AM_CONDITIONAL([HAVE_OPENAL], [test "$with_openal" != "no"])
-if test "$with_openal" == no; then
+if test "$with_openal" = "yes"; then
   AC_DEFINE(WITH_OPENAL, 1, [Enable OpenAL support])
 fi
 
