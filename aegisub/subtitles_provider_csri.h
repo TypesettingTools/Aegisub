@@ -34,47 +34,44 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
+
+#ifdef WITH_CSRI
+
 #include <wx/wxprec.h>
-#include "video_frame.h"
-#include "factory.h"
+#include "subtitles_provider.h"
+#ifdef WIN32
+#define CSRIAPI
+#endif
+#include "csri/csri.h"
 
 
-//////////////
-// Prototypes
-class AssFile;
+/////////////////////////////////////////////////
+// Common Subtitles Rendering Interface provider
+class CSRISubtitlesProvider : public SubtitlesProvider {
+private:
+	wxString subType;
+	csri_inst *instance;
 
-
-////////////////////////////////
-// Subtitles provider interface
-class SubtitlesProvider {
 public:
-	virtual ~SubtitlesProvider();
+	CSRISubtitlesProvider(wxString subType);
+	~CSRISubtitlesProvider();
 
-	virtual bool CanRaster() { return false; }
-	virtual bool LockedToVideo() { return false; }
+	bool CanRaster() { return true; }
 
-	virtual void LoadSubtitles(AssFile *subs)=0;
-	virtual void DrawSubtitles(AegiVideoFrame &dst,double time) {}
+	void LoadSubtitles(AssFile *subs);
+	void DrawSubtitles(AegiVideoFrame &dst,double time);
 };
 
 
 ///////////
 // Factory
-class SubtitlesProviderFactory : public AegisubFactory<SubtitlesProviderFactory> {
-protected:
-	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
-	SubtitlesProviderFactory(wxString name,wxArrayString subTypes=wxArrayString()) {
-		RegisterFactory(name,subTypes);
-	}
-
+class CSRISubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
-	virtual ~SubtitlesProviderFactory() {}
-	static SubtitlesProvider *GetProvider();
-	static void RegisterProviders();
-	static bool ProviderAvailable();
+	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new CSRISubtitlesProvider(subType); }
+	wxArrayString GetSubTypes();
+	CSRISubtitlesProviderFactory() : SubtitlesProviderFactory(_T("csri"),GetSubTypes()) {}
 };
+
+#endif

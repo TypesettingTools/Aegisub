@@ -37,6 +37,12 @@
 ///////////
 // Headers
 #include "subtitles_provider.h"
+#ifdef WITH_CSRI
+#include "subtitles_provider_csri.h"
+#endif
+#ifdef WITH_LIBASS
+#include "subtitles_provider_libass.h"
+#endif
 #include "options.h"
 
 
@@ -59,6 +65,12 @@ bool SubtitlesProviderFactory::ProviderAvailable() {
 ////////////////
 // Get provider
 SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
+	// Register them
+	// HACK: fix me
+	static bool init = false;
+	if (!init) RegisterProviders();
+	init = true;
+
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
 
@@ -82,6 +94,18 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 
 	// Failed
 	throw error;
+}
+
+
+//////////////////////
+// Register providers
+void SubtitlesProviderFactory::RegisterProviders() {
+#ifdef WITH_CSRI
+	new CSRISubtitlesProviderFactory();
+#endif
+#ifdef WITH_LIBASS
+	new LibassSubtitlesProviderFactory();
+#endif
 }
 
 

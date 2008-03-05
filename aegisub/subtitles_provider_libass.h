@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
+// Copyright (c) 2006-2007, Rodrigo Braz Monteiro, Evgeniy Stepanov
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,48 +33,47 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-
-#pragma once
-
-
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include "video_frame.h"
-#include "factory.h"
+
+#ifdef WITH_LIBASS
+
+#include "subtitles_provider.h"
+extern "C" {
+#ifdef __VISUALC__
+#include "stdint.h"
+#endif
+#include "../libass/ass.h"
+}
 
 
-//////////////
-// Prototypes
-class AssFile;
+///////////////////
+// libass provider
+class LibassSubtitlesProvider : public SubtitlesProvider {
+private:
+	static ass_library_t* ass_library;
+	ass_renderer_t* ass_renderer;
+	ass_track_t* ass_track;
 
-
-////////////////////////////////
-// Subtitles provider interface
-class SubtitlesProvider {
 public:
-	virtual ~SubtitlesProvider();
+	LibassSubtitlesProvider();
+	~LibassSubtitlesProvider();
 
-	virtual bool CanRaster() { return false; }
-	virtual bool LockedToVideo() { return false; }
+	bool CanRaster() { return true; }
 
-	virtual void LoadSubtitles(AssFile *subs)=0;
-	virtual void DrawSubtitles(AegiVideoFrame &dst,double time) {}
+	void LoadSubtitles(AssFile *subs);
+	void DrawSubtitles(AegiVideoFrame &dst,double time);
 };
+
+ass_library_t* LibassSubtitlesProvider::ass_library;
 
 
 ///////////
 // Factory
-class SubtitlesProviderFactory : public AegisubFactory<SubtitlesProviderFactory> {
-protected:
-	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
-	SubtitlesProviderFactory(wxString name,wxArrayString subTypes=wxArrayString()) {
-		RegisterFactory(name,subTypes);
-	}
-
+class LibassSubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
-	virtual ~SubtitlesProviderFactory() {}
-	static SubtitlesProvider *GetProvider();
-	static void RegisterProviders();
-	static bool ProviderAvailable();
+	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new LibassSubtitlesProvider(); }
+	LibassSubtitlesProviderFactory() : SubtitlesProviderFactory(_T("libass")) {}
 };
+
+#endif

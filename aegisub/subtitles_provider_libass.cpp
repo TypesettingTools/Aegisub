@@ -42,42 +42,6 @@
 #include "ass_file.h"
 #include "video_context.h"
 #include "utils.h"
-extern "C" {
-#ifdef __VISUALC__
-#include "stdint.h"
-#endif
-#include "../libass/ass.h"
-}
-
-
-///////////////////
-// libass provider
-class LibassSubtitlesProvider : public SubtitlesProvider {
-private:
-	static ass_library_t* ass_library;
-	ass_renderer_t* ass_renderer;
-	ass_track_t* ass_track;
-
-public:
-	LibassSubtitlesProvider();
-	~LibassSubtitlesProvider();
-
-	bool CanRaster() { return true; }
-
-	void LoadSubtitles(AssFile *subs);
-	void DrawSubtitles(AegiVideoFrame &dst,double time);
-};
-
-ass_library_t* LibassSubtitlesProvider::ass_library;
-
-
-///////////
-// Factory
-class LibassSubtitlesProviderFactory : public SubtitlesProviderFactory {
-public:
-	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new LibassSubtitlesProvider(); }
-	LibassSubtitlesProviderFactory() : SubtitlesProviderFactory(_T("libass")) {}
-} registerLibass;
 
 
 ///////////////

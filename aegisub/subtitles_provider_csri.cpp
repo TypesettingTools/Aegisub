@@ -40,66 +40,9 @@
 #ifdef WITH_CSRI
 
 #include <wx/wxprec.h>
-#include "subtitles_provider.h"
+#include "subtitles_provider_csri.h"
 #include "ass_file.h"
 #include "video_context.h"
-#ifdef WIN32
-#define CSRIAPI
-#endif
-#include "csri/csri.h"
-
-
-///////////////////
-// Link to library
-#if __VISUALC__ >= 1200
-//#pragma comment(lib,"asa.lib")
-#endif
-
-
-/////////////////////////////////////////////////
-// Common Subtitles Rendering Interface provider
-class CSRISubtitlesProvider : public SubtitlesProvider {
-private:
-	wxString subType;
-	csri_inst *instance;
-
-public:
-	CSRISubtitlesProvider(wxString subType);
-	~CSRISubtitlesProvider();
-
-	bool CanRaster() { return true; }
-
-	void LoadSubtitles(AssFile *subs);
-	void DrawSubtitles(AegiVideoFrame &dst,double time);
-};
-
-
-///////////
-// Factory
-class CSRISubtitlesProviderFactory : public SubtitlesProviderFactory {
-public:
-	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new CSRISubtitlesProvider(subType); }
-	wxArrayString GetSubTypes() {
-		csri_info *info;
-		wxArrayString final;
-		for (csri_rend *cur = csri_renderer_default();cur;cur = csri_renderer_next(cur)) {
-			// Get renderer name
-			info = csri_renderer_info(cur);
-			const char* buffer = info->name;
-
-			// wxWidgets isn't initialized, so h4x into a wxString
-			int len = strlen(buffer);
-			wxString str;
-			str.Alloc(len+1);
-			for (int i=0;i<len;i++) {
-				str.Append((wxChar)buffer[i]);
-			}
-			final.Add(str);
-		}
-		return final;
-	}
-	CSRISubtitlesProviderFactory() : SubtitlesProviderFactory(_T("csri"),GetSubTypes()) {}
-} registerCSRI;
 
 
 ///////////////
@@ -202,5 +145,29 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	// Render
 	csri_render(instance,&frame,time);
 }
+
+
+/////////////////////
+// Get CSRI subtypes
+wxArrayString CSRISubtitlesProviderFactory::GetSubTypes() {
+	csri_info *info;
+	wxArrayString final;
+	for (csri_rend *cur = csri_renderer_default();cur;cur = csri_renderer_next(cur)) {
+		// Get renderer name
+		info = csri_renderer_info(cur);
+		const char* buffer = info->name;
+
+		// wxWidgets isn't initialized, so h4x into a wxString
+		int len = strlen(buffer);
+		wxString str;
+		str.Alloc(len+1);
+		for (int i=0;i<len;i++) {
+			str.Append((wxChar)buffer[i]);
+		}
+		final.Add(str);
+	}
+	return final;
+}
+
 
 #endif // WITH_CSRI
