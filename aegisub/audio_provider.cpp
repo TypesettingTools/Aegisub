@@ -46,7 +46,7 @@
 #include "audio_provider_avs.h"
 #endif
 #ifdef WITH_FFMPEG
-#include "audio_provider_avs.h"
+#include "audio_provider_lavc.h"
 #endif
 #include "options.h"
 #include "audio_display.h"
