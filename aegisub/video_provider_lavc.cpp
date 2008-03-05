@@ -45,7 +45,7 @@
 #include <wx/wxprec.h>
 #include <wx/image.h>
 #include <algorithm>
-#include "video_provider.h"
+#include "video_provider_lavc.h"
 #include "mkv_wrap.h"
 #include "lavc_file.h"
 #include "utils.h"
