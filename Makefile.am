@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = auto3 automation aegisub po
+SUBDIRS = aegisub auto3 automation po m4macros
 
 EXTRA_DIST = \
 	intltool-extract.in \
