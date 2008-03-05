@@ -529,6 +529,7 @@ universalchardet/Makefile
 auto3/Makefile
 automation/Makefile
 po/Makefile.in
+m4macros/Makefile
 ])
 
 

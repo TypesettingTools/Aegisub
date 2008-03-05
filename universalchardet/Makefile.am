@@ -2,7 +2,7 @@ noinst_LIBRARIES = libuniversalchardet.a
 
 AM_CPPFLAGS = -D_X86_
 
-nodist_libuniversalchardet_a_SOURCES = \
+libuniversalchardet_a_SOURCES = \
 	CharDistribution.cpp \
 	JpCntx.cpp \
 	LangBulgarianModel.cpp \
@@ -29,7 +29,7 @@ nodist_libuniversalchardet_a_SOURCES = \
 	nsUTF8Prober.cpp \
 	nsUniversalDetector.cpp
 
-nodist_libuniversalchardet_a_SOURCES += \
+libuniversalchardet_a_SOURCES += \
 	CharDistribution.h \
 	JpCntx.h \
 	nsBig5Prober.h \
