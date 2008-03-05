@@ -65,8 +65,6 @@ public:
 	void DrawSubtitles(AegiVideoFrame &dst,double time);
 };
 
-ass_library_t* LibassSubtitlesProvider::ass_library;
-
 
 ///////////
 // Factory

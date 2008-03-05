@@ -148,4 +148,10 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	}
 }
 
+
+//////////
+// Static
+ass_library_t* LibassSubtitlesProvider::ass_library;
+
+
 #endif // WITH_LIBASS
