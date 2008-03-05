@@ -444,9 +444,7 @@ AM_CONDITIONAL([HAVE_AUTO3_LUA], [test "$with_auto3" != "no"])
 AC_SUBST(LUA50_CPPFLAGS)
 AC_SUBST(LUA50_LDFLAGS)
 
-echo "with_automation: ($with_automation)"
 if test "$with_automation" = "yes"; then
-echo "here"
   AC_DEFINE(WITH_AUTOMATION, 1, [Enable Automation support, requires any automation language.])
 fi  
 
