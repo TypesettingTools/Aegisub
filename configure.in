@@ -435,12 +435,12 @@ AC_ARG_WITH(lua50-include,
 
 if ! test -z "$lua50_lib_dir" && ! test -z "$lua50_include_dir"; then
   aegisub_save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="-L$lua50_lib_dir"
-  AC_CHECK_LIB([lua], [lua_call],[LUA50_LDFLAGS="$lua50_lib_dir -llua"; lua50_lib="yes"], [lua50_lib="no"])
+  LDFLAGS="$lua50_lib_dir -llua"
+  AC_CHECK_LIB([lualib], [luaopen_base], [LUA50_LDFLAGS="$lua50_lib_dir -llua -llualib"; lua50_lib="yes"], [lua50_lib="no"])
   LDFLAGS="$aegisub_save_LDFLAGS"
 
   aegisub_save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="-I$lua50_include_dir"
+  CPPFLAGS="$lua50_include_dir"
   AC_CHECK_HEADER([lua.h],[LUA50_CPPFLAGS="$lua50_include_dir"; lua50_include="yes"],[lua50_include="no"])
   CPPFLAGS="$aegisub_save_CPPFLAGS"
 fi
