@@ -63,38 +63,6 @@ extern "C" {
 #include "options.h"
 
 
-///////////////////////
-// LAVC Audio Provider
-class LAVCAudioProvider : public AudioProvider {
-private:
-	LAVCFile *lavcfile;
-
-	AVCodecContext *codecContext;
-	ReSampleContext *rsct;
-	float resample_ratio;
-	AVStream *stream;
-	int audStream;
-
-	int16_t *buffer;
-
-	void Destroy();
-
-public:
-	LAVCAudioProvider(wxString _filename);
-	virtual ~LAVCAudioProvider();
-	virtual void GetAudio(void *buf, int64_t start, int64_t count);
-};
-
-
-///////////
-// Factory
-class LAVCAudioProviderFactory : public AudioProviderFactory {
-public:
-	AudioProvider *CreateProvider(wxString file) { return new LAVCAudioProvider(file); }
-	LAVCAudioProviderFactory() : AudioProviderFactory(_T("lavc")) {}
-} registerLAVCaudio;
-
-
 ///////////////
 // Constructor
 LAVCAudioProvider::LAVCAudioProvider(wxString _filename)

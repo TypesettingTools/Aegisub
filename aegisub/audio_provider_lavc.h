@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2006, Rodrigo Braz Monteiro, Fredrik Mellbin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,63 +34,62 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
+#ifdef WITH_FFMPEG
+
+#ifdef WIN32
+#define EMULATE_INTTYPES
+#endif
 #include <wx/wxprec.h>
+
+/* avcodec.h uses INT64_C in a *single* place. This prolly breaks on Win32,
+ * but, well. Let's at least fix it for Linux.
+ *
+#define __STDC_CONSTANT_MACROS 1
 #include <stdint.h>
-#include "factory.h"
+ * - done in posix/defines.h
+ */
+
+extern "C" {
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
+}
+#include "mkv_wrap.h"
+#include "lavc_file.h"
+#include "audio_provider.h"
+#include "lavc_file.h"
 
 
-//////////////
-// Prototypes
-class AudioDisplay;
-class VideoProvider;
-
-
-////////////////////////
-// Audio provider class
-class AudioProvider {
+///////////////////////
+// LAVC Audio Provider
+class LAVCAudioProvider : public AudioProvider {
 private:
-	char *raw;
-	int raw_len;
+	LAVCFile *lavcfile;
 
-protected:
-	int channels;
-	int64_t num_samples; // for one channel, ie. number of PCM frames
-	int sample_rate;
-	int bytes_per_sample;
+	AVCodecContext *codecContext;
+	ReSampleContext *rsct;
+	float resample_ratio;
+	AVStream *stream;
+	int audStream;
 
-	wxString filename;
+	int16_t *buffer;
+
+	void Destroy();
 
 public:
-	AudioProvider();
-	virtual ~AudioProvider();
-
-	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, int64_t start, int64_t count)=0;
-	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume);
-
-	int64_t GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-	int GetChannels();
-
-	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
+	LAVCAudioProvider(wxString _filename);
+	virtual ~LAVCAudioProvider();
+	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 };
 
 
 ///////////
 // Factory
-class AudioProviderFactory : public AegisubFactory<AudioProviderFactory> {
-protected:
-	virtual AudioProvider *CreateProvider(wxString filename)=0;
-	AudioProviderFactory(wxString name) { RegisterFactory(name); }
-
+class LAVCAudioProviderFactory : public AudioProviderFactory {
 public:
-	virtual ~AudioProviderFactory() {}
-	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
-	static void RegisterProviders();
+	AudioProvider *CreateProvider(wxString file) { return new LAVCAudioProvider(file); }
+	LAVCAudioProviderFactory() : AudioProviderFactory(_T("lavc")) {}
 };
+
+#endif

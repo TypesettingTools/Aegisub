@@ -42,6 +42,12 @@
 #include "audio_provider_hd.h"
 #include "audio_provider_pcm.h"
 #include "audio_provider_convert.h"
+#ifdef WITH_AVISYNTH
+#include "audio_provider_avs.h"
+#endif
+#ifdef WITH_FFMPEG
+#include "audio_provider_avs.h"
+#endif
 #include "options.h"
 #include "audio_display.h"
 
@@ -186,6 +192,12 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 ////////////////
 // Get provider
 AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cache) {
+	// Initialize providers
+	// HACK: fixme
+	static bool init = false;
+	if (!init) RegisterProviders();
+	init = true;
+
 	// Prepare provider
 	AudioProvider *provider = NULL;
 
@@ -243,6 +255,18 @@ AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cac
 
 	// Return
 	return provider;
+}
+
+
+///////////////////////////
+// Register all providers
+void AudioProviderFactory::RegisterProviders() {
+#ifdef WITH_AVISYNTH
+	new AvisynthAudioProviderFactory();
+#endif
+#ifdef WITH_FFMPEG
+	new LAVCAudioProviderFactory();
+#endif
 }
 
 

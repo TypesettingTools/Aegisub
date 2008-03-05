@@ -525,6 +525,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_provider_avs.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_provider_convert.cpp"
 				>
 			</File>
@@ -550,6 +554,10 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\audio_provider_lavc.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_provider_lavc.h"
 				>
 			</File>
 			<File

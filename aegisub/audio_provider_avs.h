@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2006, Rodrigo Braz Monteiro, Fredrik Mellbin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,63 +34,44 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include <stdint.h>
-#include "factory.h"
-
-
-//////////////
-// Prototypes
-class AudioDisplay;
-class VideoProvider;
+#ifdef WITH_AVISYNTH
+#include <Mmreg.h>
+#include "audio_provider.h"
+#include "avisynth_wrap.h"
 
 
 ////////////////////////
 // Audio provider class
-class AudioProvider {
+class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
 private:
-	char *raw;
-	int raw_len;
-
-protected:
-	int channels;
-	int64_t num_samples; // for one channel, ie. number of PCM frames
-	int sample_rate;
-	int bytes_per_sample;
-
 	wxString filename;
+	PClip clip;
+
+	void LoadFromClip(AVSValue clip);
+	void OpenAVSAudio();
+	void SetFile();
+	void Unload();
 
 public:
-	AudioProvider();
-	virtual ~AudioProvider();
+	AvisynthAudioProvider(wxString _filename);
+	~AvisynthAudioProvider();
 
-	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, int64_t start, int64_t count)=0;
-	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume);
+	wxString GetFilename();
 
-	int64_t GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-	int GetChannels();
-
+	void GetAudio(void *buf, int64_t start, int64_t count);
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
 
 
 ///////////
 // Factory
-class AudioProviderFactory : public AegisubFactory<AudioProviderFactory> {
-protected:
-	virtual AudioProvider *CreateProvider(wxString filename)=0;
-	AudioProviderFactory(wxString name) { RegisterFactory(name); }
-
+class AvisynthAudioProviderFactory : public AudioProviderFactory {
 public:
-	virtual ~AudioProviderFactory() {}
-	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
-	static void RegisterProviders();
+	AudioProvider *CreateProvider(wxString file) { return new AvisynthAudioProvider(file); }
+	AvisynthAudioProviderFactory() : AudioProviderFactory(_T("avisynth")) {}
 };
+
+#endif

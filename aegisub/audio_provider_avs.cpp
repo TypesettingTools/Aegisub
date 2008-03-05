@@ -41,43 +41,10 @@
 #include <wx/filename.h>
 #include <Mmreg.h>
 #include <time.h>
-#include "audio_provider.h"
-#include "avisynth_wrap.h"
+#include "audio_provider_avs.h"
 #include "utils.h"
 #include "options.h"
 #include "standard_paths.h"
-
-
-////////////////////////
-// Audio provider class
-class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
-private:
-	wxString filename;
-	PClip clip;
-
-	void LoadFromClip(AVSValue clip);
-	void OpenAVSAudio();
-	void SetFile();
-	void Unload();
-
-public:
-	AvisynthAudioProvider(wxString _filename);
-	~AvisynthAudioProvider();
-
-	wxString GetFilename();
-
-	void GetAudio(void *buf, int64_t start, int64_t count);
-	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
-};
-
-
-///////////
-// Factory
-class AvisynthAudioProviderFactory : public AudioProviderFactory {
-public:
-	AudioProvider *CreateProvider(wxString file) { return new AvisynthAudioProvider(file); }
-	AvisynthAudioProviderFactory() : AudioProviderFactory(_T("avisynth")) {}
-} registerAVSaudio;
 
 
 //////////////
