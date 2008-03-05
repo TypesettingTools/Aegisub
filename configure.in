@@ -274,8 +274,8 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
   [AC_MSG_FAILURE([aegisub requires >= fontconfig >= 2.4])])
 
 
-AC_ARG_WITH(hunspell, [  --without-hunspell      build without hunspell support], alsa_disabled="(disabled)")
-if test "x$with_hunspell" != xno; then
+AC_ARG_WITH(hunspell, [  --without-hunspell      build without hunspell support], hunspell_disabled="(disabled)")
+if test "$with_hunspell" != "no"; then
   AC_CHECK_LIB([hunspell], [main],[HUNSPELL_LDFLAGS="-lhunspell"; with_hunspell="yes"], [with_hunspell=no])
 fi
 
@@ -573,4 +573,7 @@ Video Providers
 Subtitle Providers:
   asa:                   $with_asa
   libass:                $with_libass
+
+Misc Packages:
+  hunspell:              $with_hunspell $hunspell_disabled
 ]);
