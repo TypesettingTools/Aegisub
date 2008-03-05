@@ -38,7 +38,7 @@
 
 #ifdef WITH_LIBASS
 
-#include "subtitles_provider.h"
+#include "subtitles_provider_libass.h"
 #include "ass_file.h"
 #include "video_context.h"
 #include "utils.h"
