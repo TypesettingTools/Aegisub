@@ -42,9 +42,10 @@
 #include <wx/wxprec.h>
 #include <wx/dynarray.h>
 #include <wx/string.h>
-#include <fstream>
 #ifdef TEXT_READER_USE_STDIO
 #include <stdio.h>
+#else
+#include <fstream>
 #endif
 
 

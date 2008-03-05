@@ -61,13 +61,6 @@ aegisub_LDFLAGS += @LIBASS_LIBS@
 aegisub_LDADD += libsubtitle_ass.a
 endif
 
-if HAVE_HUNSPELL
-noinst_LIBRARIES += libspell_hunspell.a
-libspell_hunspell_a_SOURCES = spellchecker_hunspell.cpp
-aegisub_LDFLAGS += @HUNSPELL_LDFLAGS@
-aegisub_LDADD += libspell_hunspell.a
-endif
-
 if HAVE_AUTO4_LUA
 noinst_LIBRARIES += libauto4_lua.a
 libauto4_lua_a_SOURCES = auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_scriptreader.cpp
@@ -95,6 +88,21 @@ endif
 if HAVE_AUTO3_LUA
 AUTO3_LUA = auto4_auto3.cpp
 aegisub_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3
+endif
+
+
+if HAVE_HUNSPELL
+noinst_LIBRARIES += libmisc_hunspell.a
+libmisc_hunspell_a_SOURCES = spellchecker_hunspell.cpp
+aegisub_LDFLAGS += @HUNSPELL_LDFLAGS@
+aegisub_LDADD += libmisc_hunspell.a
+endif
+
+if HAVE_UNIVCHARDET
+noinst_LIBRARIES += libmisc_universalchardet.a
+libmisc_universalchardet_a_SOURCES = charset_detect.cpp
+libmisc_universalchardet_a_CPPFLAGS = -D_X86_ -DTEXT_READER_USE_STDIO
+aegisub_LDADD += libmisc_universalchardet.a ../universalchardet/libuniversalchardet.a
 endif
 
 

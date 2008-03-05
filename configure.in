@@ -282,9 +282,21 @@ fi
 if test "$with_hunspell" = "yes"; then
   AC_DEFINE(WITH_HUNSPELL, 1, [Enable hunspell support])
 fi
-
 AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_hunspell" != "no"])
 AC_SUBST(HUNSPELL_LDFLAGS)
+
+
+
+AC_ARG_WITH(univchardet, [  --without-univchardet      build without universalchardet support], univchardet_disabled="(disabled)")
+if test "$with_univchardet" != "no"; then
+  with_univchardet="yes"
+  AC_DEFINE(WITH_UNIVCHARDET, 1, [Enable universalchardet support])
+else
+  with_univchardet="no"
+fi
+AM_CONDITIONAL([HAVE_UNIVCHARDET], [test "$with_univchardet" != "no"])
+
+
 
 
 
@@ -509,13 +521,14 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
 
 
 AC_OUTPUT([
-	Makefile
-	auto3/Makefile
-	automation/Makefile
-	po/Makefile.in
-	aegisub/Makefile
-	aegisub/bitmaps/Makefile
-	aegisub/posix/Makefile
+Makefile
+aegisub/Makefile
+aegisub/bitmaps/Makefile
+aegisub/posix/Makefile
+universalchardet/Makefile
+auto3/Makefile
+automation/Makefile
+po/Makefile.in
 ])
 
 
@@ -576,4 +589,5 @@ Subtitle Providers:
 
 Misc Packages:
   hunspell:              $with_hunspell $hunspell_disabled
+  universalchardet:      $with_univchardet $univchardet_disabled
 ]);

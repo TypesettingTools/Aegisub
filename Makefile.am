@@ -1,6 +1,22 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = aegisub auto3 automation po m4macros
+
+if HAVE_UNIVCHARDET
+univchardet = universalchardet
+endif
+
+if HAVE_AUTO3_LUA
+auto3 = auto3
+endif
+
+
+SUBDIRS = \
+	$(univchardet) \
+	$(auto3) \
+	aegisub \
+	automation \
+	po \
+	m4macros
 
 EXTRA_DIST = \
 	intltool-extract.in \
