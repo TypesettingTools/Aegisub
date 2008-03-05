@@ -318,7 +318,8 @@ fi
 
 if (test "$with_lua_lib" != "no" || ! test "$have_lua_include" != "no") && test "$with_lua" != "no"; then
   with_auto4="yes"
-  AC_DEFINE(WITH_AUTOMATION, 1, [Enable Automation (auto4), requires lua])
+  with_automation="yes"
+  AC_DEFINE(WITH_AUTO4_LUA, 1, [Enable Automation (auto4), requires lua])
 else
   with_auto4="no"
 fi
@@ -346,6 +347,7 @@ if test -z "$perl_disabled"; then
     if $PERL_BIN -e 'require 5.004'; then
       AC_MSG_RESULT([yes])
       with_perl=yes
+      with_automation="yes"
       AC_DEFINE(WITH_PERL, 1, [Enable PERL support.])
       AC_MSG_CHECKING([checking $PERL_BIN clfags])
       PERL_CFLAGS=`$PERL_BIN -MExtUtils::Embed -eccflags -eperl_inc`
@@ -383,6 +385,7 @@ if test -z "$ruby_disabled"; then
     if $RUBY_BIN -r rbconfig -e 'if Config::CONFIG@<:@"ruby_version"@:>@.to_f >= 1.8  then exit(0) else exit(1) end' ; then
       AC_MSG_RESULT([yes])
       with_ruby=yes
+      with_automation="yes"
       AC_DEFINE(WITH_RUBY, 1, [Enable RUBY Automation.])
 
       AC_MSG_CHECKING([checking $RUBY_BIN -r rbconfig archdir, cflags])
@@ -431,8 +434,8 @@ if ! test -z "$lua50_lib_dir" && ! test -z "$lua50_include_dir"; then
 fi
 
 if test "$lua50_lib" = "yes" && test "$lua50_include" = "yes"; then
- with_auto3="yes"
- AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
+  with_auto3="yes"
+  AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
 else
   with_auto3="no"
 fi
@@ -441,7 +444,13 @@ AM_CONDITIONAL([HAVE_AUTO3_LUA], [test "$with_auto3" != "no"])
 AC_SUBST(LUA50_CPPFLAGS)
 AC_SUBST(LUA50_LDFLAGS)
 
+echo "with_automation: ($with_automation)"
+if test "$with_automation" = "yes"; then
+echo "here"
+  AC_DEFINE(WITH_AUTOMATION, 1, [Enable Automation support, requires any automation language.])
+fi  
 
+AM_CONDITIONAL([HAVE_AUTOMATION], [test "$with_auto3" = "yes"])
 
 
 ################
