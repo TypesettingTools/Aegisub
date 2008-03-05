@@ -47,12 +47,16 @@
 #include "frame_main.h"
 #include "audio_player.h"
 #include "options.h"
-#ifdef __APPLE__
+
+#ifdef __WINDOWS__
+#include <al.h>
+#include <alc.h>
+#elif defined(__APPLE__)
 #include <OpenAL/AL.h>
 #include <OpenAL/ALC.h>
 #else
-#include <al.h>
-#include <alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 #endif
 
 
