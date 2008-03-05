@@ -39,12 +39,9 @@
 
 ///////////
 // Headers
-#include "audio_player.h"
+#include "audio_player_portaudio.h"
 #include "audio_provider.h"
 #include "utils.h"
-extern "C" {
-#include <portaudio.h>
-}
 
 #ifdef HAVE_PA_GETSTREAMTIME
 #define Pa_StreamTime Pa_GetStreamTime	/* PortAudio v19 */
@@ -57,66 +54,6 @@ extern "C" {
 #if __VISUALC__ >= 1200
 #pragma comment(lib,"portaudio.lib")
 #endif
-
-
-////////////////////
-// Portaudio player
-class PortAudioPlayer : public AudioPlayer {
-private:
-	static int pa_refcount;
-	wxMutex PAMutex;
-	volatile bool stopping;
-	//bool softStop;
-	bool playing;
-	float volume;
-
-	volatile int64_t playPos;
-	volatile int64_t startPos;
-	volatile int64_t endPos;
-	void *stream;
-	PaTimestamp paStart;
-	volatile int64_t realPlayPos;
-
-#ifndef HAVE_PA_GETSTREAMTIME
-	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
-#else
-	static int paCallback(const void *inputBuffer, void *outputBuffer,
-		unsigned long framesPerBuffer,
-		const PaStreamCallbackTimeInfo *timei,
-		PaStreamCallbackFlags flags, void *userData);
-#endif
-
-public:
-	PortAudioPlayer();
-	~PortAudioPlayer();
-
-	void OpenStream();
-	void CloseStream();
-
-	void Play(int64_t start,int64_t count);
-	void Stop(bool timerToo=true);
-	bool IsPlaying() { return playing; }
-
-	int64_t GetStartPosition() { return startPos; }
-	int64_t GetEndPosition() { return endPos; }
-	int64_t GetCurrentPosition() { return realPlayPos; }
-	void SetEndPosition(int64_t pos) { endPos = pos; }
-	void SetCurrentPosition(int64_t pos) { playPos = pos; realPlayPos = pos; }
-
-	void SetVolume(double vol) { volume = vol; }
-	double GetVolume() { return volume; }
-
-	wxMutex *GetMutex() { return &PAMutex; }
-};
-
-
-///////////
-// Factory
-class PortAudioPlayerFactory : public AudioPlayerFactory {
-public:
-	AudioPlayer *CreatePlayer() { return new PortAudioPlayer(); }
-	PortAudioPlayerFactory() : AudioPlayerFactory(_T("portaudio")) {}
-} registerPortAudioPlayer;
 
 
 /////////////////////

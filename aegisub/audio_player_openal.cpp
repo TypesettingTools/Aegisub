@@ -45,7 +45,7 @@
 #include "utils.h"
 #include "main.h"
 #include "frame_main.h"
-#include "audio_player.h"
+#include "audio_player_openal.h"
 #include "options.h"
 #ifdef __APPLE__
 #include <OpenAL/AL.h>
@@ -60,73 +60,6 @@
 #ifdef _MSC_VER
 #pragma comment(lib, "openal32.lib")
 #endif
-
-
-/////////////////
-// OpenAL player
-class OpenALPlayer : public AudioPlayer, wxTimer {
-private:
-	bool open;
-	volatile bool playing;
-	volatile float volume;
-
-	static const ALsizei num_buffers = 8;
-	ALsizei buffer_length;
-	ALsizei samplerate;
-
-	volatile unsigned long start_frame; // first frame of playback
-	volatile unsigned long cur_frame; // last written frame + 1
-	volatile unsigned long end_frame; // last frame to play
-	unsigned long bpf; // bytes per frame
-
-	AudioProvider *provider;
-	ALCdevice *device; // device handle
-	ALCcontext *context; // sound context
-	ALuint buffers[num_buffers]; // sound buffers
-	ALuint source; // playback source
-
-	ALsizei buf_first_free; // index into buffers, first free (unqueued) buffer
-	ALsizei buf_first_queued; // index into buffers, first queued (non-free) buffer
-	ALsizei buffers_free; // number of free buffers
-	ALsizei buffers_played;
-	wxStopWatch playback_segment_timer;
-
-	void FillBuffers(ALsizei count);
-
-protected:
-	void Notify(); // from wxTimer
-
-public:
-	OpenALPlayer();
-	~OpenALPlayer();
-
-	void OpenStream();
-	void CloseStream();
-
-	void Play(int64_t start,int64_t count);
-	void Stop(bool timerToo=true);
-	bool IsPlaying();
-
-	int64_t GetStartPosition();
-	int64_t GetEndPosition();
-	int64_t GetCurrentPosition();
-	void SetEndPosition(int64_t pos);
-	void SetCurrentPosition(int64_t pos);
-
-	void SetVolume(double vol) { volume = vol; }
-	double GetVolume() { return volume; }
-};
-
-
-
-///////////
-// Factory
-class OpenALPlayerFactory : public AudioPlayerFactory {
-public:
-	AudioPlayer *CreatePlayer() { return new OpenALPlayer(); }
-	OpenALPlayerFactory() : AudioPlayerFactory(_T("openal")) {}
-} registerOALPlayer;
-
 
 
 ///////////////

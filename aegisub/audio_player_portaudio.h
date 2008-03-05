@@ -34,82 +34,76 @@
 //
 
 
-#pragma once
+#ifdef WITH_PORTAUDIO
 
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <wx/event.h>
-#include <wx/timer.h>
-#include <wx/thread.h>
-#include <stdint.h>
-#include "factory.h"
+#include "audio_player.h"
+#include "audio_provider.h"
+#include "utils.h"
+extern "C" {
+#include <portaudio.h>
+}
 
 
-//////////////
-// Prototypes
-class AudioProvider;
-
-
-///////////////////////////
-// Audio Player base class
-class AudioPlayer : public wxEvtHandler {
+////////////////////
+// Portaudio player
+class PortAudioPlayer : public AudioPlayer {
 private:
-	void OnStopAudio(wxCommandEvent &event);
+	static int pa_refcount;
+	wxMutex PAMutex;
+	volatile bool stopping;
+	//bool softStop;
+	bool playing;
+	float volume;
 
-protected:
-	AudioProvider *provider;
-	wxTimer *displayTimer;
+	volatile int64_t playPos;
+	volatile int64_t startPos;
+	volatile int64_t endPos;
+	void *stream;
+	PaTimestamp paStart;
+	volatile int64_t realPlayPos;
+
+#ifndef HAVE_PA_GETSTREAMTIME
+	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
+#else
+	static int paCallback(const void *inputBuffer, void *outputBuffer,
+		unsigned long framesPerBuffer,
+		const PaStreamCallbackTimeInfo *timei,
+		PaStreamCallbackFlags flags, void *userData);
+#endif
 
 public:
-	AudioPlayer();
-	virtual ~AudioPlayer();
+	PortAudioPlayer();
+	~PortAudioPlayer();
 
-	virtual void OpenStream() {}
-	virtual void CloseStream() {}
+	void OpenStream();
+	void CloseStream();
 
-	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
-	virtual void Stop(bool timerToo=true)=0;			// Stop playing
-	virtual void RequestStop();							// Request it to stop playing in a thread-safe way
-	virtual bool IsPlaying()=0;
+	void Play(int64_t start,int64_t count);
+	void Stop(bool timerToo=true);
+	bool IsPlaying() { return playing; }
 
-	virtual void SetVolume(double volume)=0;
-	virtual double GetVolume()=0;
+	int64_t GetStartPosition() { return startPos; }
+	int64_t GetEndPosition() { return endPos; }
+	int64_t GetCurrentPosition() { return realPlayPos; }
+	void SetEndPosition(int64_t pos) { endPos = pos; }
+	void SetCurrentPosition(int64_t pos) { playPos = pos; realPlayPos = pos; }
 
-	virtual int64_t GetStartPosition()=0;
-	virtual int64_t GetEndPosition()=0;
-	virtual int64_t GetCurrentPosition()=0;
-	virtual void SetEndPosition(int64_t pos)=0;
-	virtual void SetCurrentPosition(int64_t pos)=0;
+	void SetVolume(double vol) { volume = vol; }
+	double GetVolume() { return volume; }
 
-	virtual wxMutex *GetMutex();
-
-	void SetProvider(AudioProvider *provider);
-	AudioProvider *GetProvider();
-
-	void SetDisplayTimer(wxTimer *timer);
-
-	DECLARE_EVENT_TABLE()
+	wxMutex *GetMutex() { return &PAMutex; }
 };
 
 
 ///////////
 // Factory
-class AudioPlayerFactory : public AegisubFactory<AudioPlayerFactory> {
-protected:
-	virtual AudioPlayer *CreatePlayer()=0;
-	AudioPlayerFactory(wxString name) { RegisterFactory(name); }
-
+class PortAudioPlayerFactory : public AudioPlayerFactory {
 public:
-	virtual ~AudioPlayerFactory() {}
-	static AudioPlayer *GetAudioPlayer();
-	static void RegisterFactories();
+	AudioPlayer *CreatePlayer() { return new PortAudioPlayer(); }
+	PortAudioPlayerFactory() : AudioPlayerFactory(_T("portaudio")) {}
 };
 
-
-/////////
-// Event
-DECLARE_EVENT_TYPE(wxEVT_STOP_AUDIO, -1)
-
-
+#endif

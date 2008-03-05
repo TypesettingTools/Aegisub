@@ -45,73 +45,8 @@
 #include "utils.h"
 #include "main.h"
 #include "frame_main.h"
-#include "audio_player.h"
-#include <alsa/asoundlib.h>
+#include "audio_player_alsa.h"
 #include "options.h"
-
-
-///////////////
-// Alsa player
-class AlsaPlayer : public AudioPlayer {
-private:
-	bool open;
-	volatile bool playing;
-	volatile float volume;
-
-	volatile unsigned long start_frame; // first frame of playback
-	volatile unsigned long cur_frame; // last written frame + 1
-	volatile unsigned long end_frame; // last frame to play
-	unsigned long bpf; // bytes per frame
-
-	AudioProvider *provider;
-	snd_pcm_t *pcm_handle; // device handle
-	snd_pcm_stream_t stream; // stream direction
-	snd_async_handler_t *pcm_callback;
-
-	snd_pcm_format_t sample_format;
-	unsigned int rate; // sample rate of audio
-	unsigned int real_rate; // actual sample rate played back
-	unsigned int period_len; // length of period in microseconds
-	unsigned int buflen; // length of buffer in microseconds
-	snd_pcm_uframes_t period; // size of period in frames
-	snd_pcm_uframes_t bufsize; // size of buffer in frames
-
-	void SetUpHardware();
-	void SetUpAsync();
-
-	static void async_write_handler(snd_async_handler_t *pcm_callback);
-
-public:
-	AlsaPlayer();
-	~AlsaPlayer();
-
-	void OpenStream();
-	void CloseStream();
-
-	void Play(int64_t start,int64_t count);
-	void Stop(bool timerToo=true);
-	bool IsPlaying();
-
-	int64_t GetStartPosition();
-	int64_t GetEndPosition();
-	int64_t GetCurrentPosition();
-	void SetEndPosition(int64_t pos);
-	void SetCurrentPosition(int64_t pos);
-
-	void SetVolume(double vol) { volume = vol; }
-	double GetVolume() { return volume; }
-};
-
-
-
-///////////
-// Factory
-class AlsaPlayerFactory : public AudioPlayerFactory {
-public:
-	AudioPlayer *CreatePlayer() { return new AlsaPlayer(); }
-	AlsaPlayerFactory() : AudioPlayerFactory(_T("alsa")) {}
-} registerAlsaPlayer;
-
 
 
 ///////////////

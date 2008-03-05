@@ -39,6 +39,21 @@
 #include <wx/wxprec.h>
 #include "audio_player.h"
 #include "options.h"
+#ifdef WITH_ALSA
+#include "audio_player_alsa.h"
+#endif
+#ifdef WITH_DIRECTSOUND
+#include "audio_player_dsound.h"
+#endif
+#ifdef WITH_OPENAL
+#include "audio_player_openal.h"
+#endif
+#ifdef WITH_PORTAUDIO
+#include "audio_player_portaudio.h"
+#endif
+#ifdef WITH_PULSEAUDIO
+#include "audio_player_pulse.h"
+#endif
 
 
 ///////////////
@@ -112,6 +127,12 @@ void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 //////////////
 // Get player
 AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
+	// Register factories
+	// HACK: fix me
+	static bool init = false;
+	if (!init) RegisterFactories();
+	init = true;
+
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio player")));
 
@@ -132,6 +153,27 @@ AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
 
 	// Failed
 	throw error;
+}
+
+
+//////////////////////////
+// Register all factories
+void AudioPlayerFactory::RegisterFactories() {
+#ifdef WITH_ALSA
+	new AlsaPlayerFactory();
+#endif
+#ifdef WITH_DIRECTSOUND
+	new DirectSoundPlayerFactory();
+#endif
+#ifdef WITH_OPENAL
+	new OpenALPlayerFactory();
+#endif
+#ifdef WITH_PORTAUDIO
+	new PortAudioPlayerFactory();
+#endif
+#ifdef WITH_PULSEAUDIO
+	new PulseAudioPlayerFactory();
+#endif
 }
 
 
