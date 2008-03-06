@@ -114,6 +114,7 @@ public:
 	bool IsNativelyByFrames() { return false; }
 
 	void OverrideFrameTimeList(wxArrayInt list);
+	int GetDesiredCacheSize() { return 8; }
 };
 
 

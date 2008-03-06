@@ -106,6 +106,7 @@ public:
 	double GetFPS();
 	wxString GetDecoderName() { return _T("FFMpeg/libavcodec"); }
 	bool IsNativelyByFrames() { return true; }
+	int GetDesiredCacheSize() { return 8; }
 };
 
 

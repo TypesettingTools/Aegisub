@@ -73,7 +73,6 @@ LAVCVideoProvider::LAVCVideoProvider(wxString filename,double fps) {
 	validFrame = false;
 
 	// Load
-	SetCacheMax(8);
 	LoadVideo(filename,fps);
 }
 

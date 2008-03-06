@@ -139,7 +139,6 @@ DirectShowVideoProvider::DirectShowVideoProvider(wxString _filename, double _fps
 	fps = _fps;
 	m_registered = false;
 	m_hFrameReady = CreateEvent(NULL, FALSE, FALSE, NULL);
-	SetCacheMax(8);
 	HRESULT hr = OpenVideo(_filename);
 	if (FAILED(hr)) throw _T("Failed opening DirectShow content.");
 }
