@@ -44,8 +44,12 @@
 #ifdef WIN32
 #define CSRIAPI
 #endif
-#include "csri/csri.h"
 
+ifdef __WINDOWS__
+#include "../csri/include/csri/csri.h"
+#else
+#include "csri/csri.h"
+#fi
 
 /////////////////////////////////////////////////
 // Common Subtitles Rendering Interface provider
