@@ -1,0 +1,4 @@
+#!/bin/bash -x
+
+autoreconf -f -i -s
+

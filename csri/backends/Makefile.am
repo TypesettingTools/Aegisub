@@ -1,0 +1,4 @@
+if BUILD_LIBASS
+LIBASS_DIR = libass
+endif
+SUBDIRS = $(LIBASS_DIR)

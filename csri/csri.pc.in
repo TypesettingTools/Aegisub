@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: csri
+Description: csri - common subtitle renderer interface
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lcsri
+Cflags: -I${includedir}

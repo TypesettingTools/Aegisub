@@ -1,0 +1,22 @@
+PROJECT_NAME           = CSRI
+PROJECT_NUMBER         = 0.1
+OUTPUT_DIRECTORY       = doc
+
+JAVADOC_AUTOBRIEF      = YES
+OPTIMIZE_OUTPUT_FOR_C  = YES
+PREDEFINED             = DOXYGEN
+ENUM_VALUES_PER_LINE   = 1
+EXPAND_AS_DEFINED      = _CSRI_H _CSRI_HELPER_H
+
+INPUT                  = include/csri include/subhelp.h
+FILE_PATTERNS          = *.h
+RECURSIVE              = YES
+
+HTML_OUTPUT            = html
+HTML_FILE_EXTENSION    = .html
+
+GENERATE_MAN           = YES
+MAN_OUTPUT             = man
+MAN_EXTENSION          = .3
+MAN_LINKS              = NO
+
