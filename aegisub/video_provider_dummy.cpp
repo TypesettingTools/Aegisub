@@ -203,7 +203,7 @@ wxString DummyVideoProvider::MakeFilename(double fps, int frames, int _width, in
 
 /////////////
 // Get frame
-const AegiVideoFrame DummyVideoProvider::DoGetFrame(int n) {
+const AegiVideoFrame DummyVideoProvider::GetFrame(int n,int formatMask) {
 	lastFrame = n;
 	return frame;
 }

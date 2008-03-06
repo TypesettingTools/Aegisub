@@ -102,7 +102,7 @@ public:
 
 	void RefreshSubtitles();
 
-	const AegiVideoFrame DoGetFrame(int n);
+	const AegiVideoFrame GetFrame(int n, int formatMask);
 	void GetFloatFrame(float* Buffer, int n);
 
 	int GetPosition() { return last_fnum; };
@@ -111,6 +111,7 @@ public:
 	int GetWidth() { return width; };
 	int GetHeight() { return height; };
 	wxString GetDecoderName() { return _("DirectShow"); }
+	bool IsNativelyByFrames() { return false; }
 
 	void OverrideFrameTimeList(wxArrayInt list);
 };

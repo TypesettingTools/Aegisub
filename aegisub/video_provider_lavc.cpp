@@ -298,7 +298,7 @@ wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
 
 /////////////
 // Get frame
-const AegiVideoFrame LAVCVideoProvider::DoGetFrame(int n) {
+const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 	// Return stored frame
 	n = MID(0,n,GetFrameCount()-1);
 	if (n == frameNumber) {

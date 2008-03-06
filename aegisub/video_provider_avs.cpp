@@ -302,7 +302,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 ////////////////////////
 // Actually get a frame
-const AegiVideoFrame AvisynthVideoProvider::DoGetFrame(int _n) {
+const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n,int formatMask) {
 	// Transform n if overriden
 	int n = _n;
 	if (frameTime.Count()) {

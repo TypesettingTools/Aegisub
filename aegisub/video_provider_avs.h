@@ -79,7 +79,7 @@ public:
 	void LoadSubtitles(AssFile *subs);
 	bool LockedToVideo() { return true; }
 
-	const AegiVideoFrame DoGetFrame(int n);
+	const AegiVideoFrame GetFrame(int n,int formatMask);
 	void GetFloatFrame(float* Buffer, int n);
 
 	// properties

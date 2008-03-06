@@ -50,105 +50,7 @@
 #include "video_provider_lavc.h"
 #endif
 #include "video_provider_dummy.h"
-
-
-///////////////
-// Constructor
-VideoProvider::VideoProvider() {
-	cacheMax = 0;
-}
-
-
-//////////////
-// Destructor
-VideoProvider::~VideoProvider() {
-	ClearCache();
-	tempRGBFrame.Clear();
-}
-
-
-/////////////
-// Get frame
-const AegiVideoFrame VideoProvider::GetFrame(int n,int format) {
-	// See if frame is cached
-	CachedFrame cached;
-	for (std::list<CachedFrame>::iterator cur=cache.begin();cur!=cache.end();cur++) {
-		cached = *cur;
-		if (cached.n == n) {
-			cache.erase(cur);
-			cache.push_back(cached);
-			return cached.frame;
-		}
-	}
-
-	// Not cached, retrieve it
-	const AegiVideoFrame frame = DoGetFrame(n);
-	const AegiVideoFrame *srcFrame = &frame;
-
-	// Convert to compatible format
-	if (!(frame.format & format)) {
-		if (format & FORMAT_RGB32) tempRGBFrame.format = FORMAT_RGB32;
-		else throw _T("Unable to negotiate video frame format.");
-		tempRGBFrame.w = frame.w;
-		tempRGBFrame.h = frame.h;
-		tempRGBFrame.pitch[0] = frame.w * 4;
-		tempRGBFrame.ConvertFrom(frame);
-		srcFrame = &tempRGBFrame;
-	}
-
-	// Cache frame
-	Cache(n,*srcFrame);
-	return *srcFrame;
-}
-
-
-////////////////
-// Get as float
-void VideoProvider::GetFloatFrame(float* buffer, int n) {
-	const AegiVideoFrame frame = GetFrame(n);
-	frame.GetFloat(buffer);
-}
-
-
-//////////////////////////
-// Set maximum cache size
-void VideoProvider::SetCacheMax(int n) {
-	if (n < 0) n = 0;
-	cacheMax = n;
-}
-
-
-////////////////
-// Add to cache
-void VideoProvider::Cache(int n,const AegiVideoFrame frame) {
-	// Cache enabled?
-	if (cacheMax == 0) return;
-
-	// Cache full, use frame at front
-	if (cache.size() >= cacheMax) {
-		cache.push_back(cache.front());
-		cache.pop_front();
-	}
-
-	// Cache not full, insert new one
-	else {
-		cache.push_back(CachedFrame());
-	}
-
-	// Cache
-	cache.front().n = n;
-	cache.front().frame.CopyFrom(frame);
-}
-
-
-///////////////
-// Clear cache
-void VideoProvider::ClearCache() {
-	while (cache.size()) {
-		cache.front().frame.Clear();
-		cache.pop_front();
-	}
-}
+#include "video_provider_cache.h"
 
 
 ////////////////
@@ -175,8 +77,15 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
 	wxString error;
 	for (unsigned int i=0;i<list.Count();i++) {
 		try {
+			// Create provider
 			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video,fps);
-			if (provider) return provider;
+			if (provider) {
+				// Cache if necessary
+				if (provider->GetDesiredCacheSize()) {
+					provider = new VideoProviderCache(provider);
+				}
+				return provider;
+			}
 		}
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
 		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }

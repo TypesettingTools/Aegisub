@@ -1,4 +1,4 @@
-// Copyright (c) 2006-2007, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Rodrigo Braz Monteiro, Fredrik Mellbin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,89 +34,60 @@
 //
 
 
-///////////
+#pragma once
+
+
+//////////
 // Headers
-
-#ifdef WITH_FFMPEG
-
-#ifdef WIN32
-#define EMULATE_INTTYPES
-#endif
-extern "C" {
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-#include <ffmpeg/swscale.h>
-}
+#include <list>
 #include "video_provider.h"
-#include "mkv_wrap.h"
-#include "lavc_file.h"
 
 
-///////////////////////
-// LibAVCodec provider
-class LAVCVideoProvider : public VideoProvider {
-	friend class LAVCAudioProvider;
+////////////////
+// Cached frame
+class CachedFrame {
+public:
+	AegiVideoFrame frame;
+	int n;
+};
+
+
+////////////////////////////
+// Video Provider interface
+class VideoProviderCache : public VideoProvider {
 private:
-	MatroskaWrapper mkv;
+	VideoProvider *master;
+	unsigned int cacheMax;
+	std::list<CachedFrame> cache;
+	AegiVideoFrame tempRGBFrame;
+	int pos;
 
-	LAVCFile *lavcfile;
-	AVCodecContext *codecContext;
-	AVStream *stream;
-	AVCodec *codec;
-	AVFrame *frame;
-	int vidStream;
-	
-	AVFrame *frameRGB;
-	uint8_t *bufferRGB;
-	SwsContext *sws_context;
-	
-	int display_w;
-	int display_h;
-
-	wxArrayInt bytePos;
-
-	bool isMkv;
-	int64_t lastDecodeTime;
-	int frameNumber;
-	int length;
-	AegiVideoFrame curFrame;
-	bool validFrame;
-
-	uint8_t *buffer1;
-	uint8_t *buffer2;
-	int buffer1Size;
-	int buffer2Size;
-
-	bool GetNextFrame();
-	void LoadVideo(wxString filename, double fps);
-	void Close();
+	void Cache(int n,const AegiVideoFrame frame);
+	AegiVideoFrame GetCachedFrame(int n);
 
 protected:
+	// Cache functions
+	void SetCacheMax(int n_frames);
+	void ClearCache();
 
 public:
-	LAVCVideoProvider(wxString filename, double fps);
-	~LAVCVideoProvider();
+	// Base methods
+	void GetFloatFrame(float* Buffer, int n);	// Get frame as float
+	const AegiVideoFrame GetFrame(int n, int formatMask);
+	VideoProviderCache(VideoProvider *master);
+	virtual ~VideoProviderCache();
 
-	const AegiVideoFrame GetFrame(int n,int formatType);
-	int GetPosition();
-	int GetFrameCount();
+	// Subtitles
+	virtual SubtitlesProvider *GetAsSubtitlesProvider();	// Get subtitles provider
 
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-	wxString GetDecoderName() { return _T("FFMpeg/libavcodec"); }
-	bool IsNativelyByFrames() { return true; }
+	// Override the following methods:
+	virtual int GetPosition();				// Get the number of the last frame loaded
+	virtual int GetFrameCount();			// Get total number of frames
+	virtual int GetWidth();					// Returns the video width in pixels
+	virtual int GetHeight();				// Returns the video height in pixels
+	virtual double GetFPS();				// Get framerate in frames per second
+	virtual void OverrideFrameTimeList(wxArrayInt list);	// Override the list with the provided one, for VFR handling
+	virtual bool IsNativelyByFrames();
+	virtual wxString GetWarning();
+	virtual wxString GetDecoderName();
 };
-
-
-
-
-///////////
-// Factory
-class LAVCVideoProviderFactory : public VideoProviderFactory {
-public:
-	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new LAVCVideoProvider(video,fps); }
-	LAVCVideoProviderFactory() : VideoProviderFactory(_T("ffmpeg")) {}
-};
-
-#endif
