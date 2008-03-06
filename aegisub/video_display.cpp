@@ -458,6 +458,10 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Locked?
 	if (locked) return;
 
+	// Mouse coordinates
+	mouse_x = event.GetX();
+	mouse_y = event.GetY();
+
 	// Disable when playing
 	if (VideoContext::Get()->IsPlaying()) return;
 
@@ -643,8 +647,8 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
 		VideoContext::Get()->GetScriptSize(sw,sh);
-		int vx = (sw * visual->mouseX + w/2) / w;
-		int vy = (sh * visual->mouseY + h/2) / h;
+		int vx = (sw * mouse_x + w/2) / w;
+		int vy = (sh * mouse_y + h/2) / h;
 		wxTheClipboard->SetData(new wxTextDataObject(wxString::Format(_T("%i,%i"),vx,vy)));
 		wxTheClipboard->Close();
 	}

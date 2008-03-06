@@ -73,6 +73,7 @@ private:
 	wxSize origSize;
 	int w,h;
 	int dx1,dx2,dy1,dy2;
+	int mouse_x,mouse_y;
 	bool locked;
 
 	void DrawTVEffects();
