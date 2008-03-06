@@ -280,7 +280,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	}
 
 	// Check if video was loaded properly
-	if (!script.AsClip()->GetVideoInfo().HasVideo()) {
+	if (!script.IsClip() || !script.AsClip()->GetVideoInfo().HasVideo()) {
 		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: No suitable video found"));
 		throw _T("Avisynth: No usable video found in ") + _filename;
 	}
