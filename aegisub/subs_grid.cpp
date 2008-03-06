@@ -1052,6 +1052,7 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	AssDialogue *cur;
 	int start,end;
 	bool gotfirst = false;
+	bool gottime = false;
 	for (int i=n1;i<=n2;i++) {
 		// Get start and end time of current line
 		cur = GetDialogue(i);
@@ -1062,6 +1063,7 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 		if (start != 0 || end != 0) {
 			if (start < min_ms) min_ms = start;
 			if (end > max_ms) max_ms = end;
+			gottime = true;
 		}
 
 		// Set text
@@ -1070,6 +1072,12 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 			gotfirst = true;
 			finalText += cur->Text;
 		}
+	}
+
+	// If it didn't get any times, then it's probably because they were all 0 lines.
+	if (!gottime) {
+		min_ms = 0;
+		max_ms = 0;
 	}
 
 	// Apply settings to first line
