@@ -93,6 +93,7 @@ void StartupLog(const wxString &msg) {
 // Gets called when application starts, creates MainFrame
 bool AegisubApp::OnInit() {
 	StartupLog(_T("Inside OnInit"));
+	frame = NULL;
 	try {
 		// Initialize randomizer
 		StartupLog(_T("Initialize random generator"));
@@ -409,7 +410,7 @@ END_EVENT_TABLE()
 void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
 	wxPoint pt;
 	wxWindow *target = wxFindWindowAtPointer(pt);
-	if (target == frame->audioBox->audioDisplay || target == frame->SubsBox) {
+	if (frame && (target == frame->audioBox->audioDisplay || target == frame->SubsBox)) {
 		if (target->IsShownOnScreen()) target->AddPendingEvent(event);
 		else event.Skip();
 	}
