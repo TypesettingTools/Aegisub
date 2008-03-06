@@ -138,7 +138,7 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	// Get AegiVideoFrame
 	if (!vid) vid = new DummyVideoProvider(0.0,10,w,h,backColour,true);
 	AegiVideoFrame frame;
-	frame.CopyFrom(vid->GetFrame(0));
+	frame.CopyFrom(vid->GetFrame(0,FORMAT_RGB32));
 
 	// Try to get subtitles provider
 	SubtitlesProvider *provider = NULL;

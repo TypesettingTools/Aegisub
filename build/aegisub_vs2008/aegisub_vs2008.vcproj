@@ -1609,6 +1609,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\video_provider_cache.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\video_provider_cache.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\video_provider_dshow.cpp"
 				>
 			</File>
