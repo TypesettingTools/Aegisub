@@ -363,7 +363,11 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		return;
 	}
 
+	// Close
 	if (event.GetKeyCode() == WXK_ESCAPE) EndModal(1);
+
+	// Ignore enter
+	if (event.GetKeyCode() == WXK_RETURN || event.GetKeyCode() == WXK_NUMPAD_ENTER) return;
 
 	// Skip anything else
 	event.Skip();
