@@ -290,9 +290,6 @@ noinst_HEADERS = \
 	boost/throw_exception.hpp \
 	boost/workaround.hpp \
 	gl/glext.h \
-	csri/csri.h \
-	csri/logging.h \
-	csri/openerr.h \
 	mythes.hxx
 
 EXTRA_DIST = $(srcdir)/*.h beautify
