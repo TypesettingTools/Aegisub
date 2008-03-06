@@ -130,6 +130,9 @@ AC_PREPROC_IFELSE(
   ],
 [AC_MSG_RESULT([no])])
 
+AX_OPENMP([with_openmp="yes"], [with_openmp="no"])
+if test $with_openmp == "yes"; then
+fi
 
 
 
