@@ -40,6 +40,7 @@
 #include "charset_detect.h"
 #include "text_file_reader.h"
 #include "../universalchardet/nsCharSetProber.h"
+#include <wx/intl.h>
 #include <wx/choicdlg.h>
 
 
@@ -67,7 +68,9 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 	DataEnd();
 
 	// Grab every result obtained
+	wxString local = wxLocale::GetSystemEncodingName();
 	std::list<CharDetResult> results;
+	bool gotLocal = false;
 	for (int i=0;i<NUM_OF_CHARSET_PROBERS;i++) {
 		if (mCharSetProbers[i]) {
 			int probes = mCharSetProbers[i]->GetProbeCount();
@@ -75,9 +78,10 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 				float conf = mCharSetProbers[i]->GetConfidence(j);
 
 				// Only bother with those whose confidence is at least 1%
-				if (conf > 0.01f) {
+				wxString curName = wxString(mCharSetProbers[i]->GetCharSetName(j),wxConvUTF8);
+				if (conf > 0.01f || curName == local) {
 					results.push_back(CharDetResult());
-					results.back().name = wxString(mCharSetProbers[i]->GetCharSetName(j),wxConvUTF8);
+					results.back().name = curName;
 					results.back().confidence = mCharSetProbers[i]->GetConfidence(j);
 				}
 			}
@@ -86,6 +90,14 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 
 	// If you got more than one valid result, ask the user which he wants
 	if (results.size() > 1) {
+		// Add local
+		if (!gotLocal) {
+			results.push_back(CharDetResult());
+			results.back().name = local;
+			results.back().confidence = 0;
+		}
+
+		// Sort by confidence
 		results.sort();
 
 		// Get choice from user
@@ -97,7 +109,16 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 			wxString name = (*cur).name;
 			if (picked.Index(name) == wxNOT_FOUND) {
 				picked.Add(name);
-				choices.Add(wxString::Format(_T("%f%% - "),(*cur).confidence*100.0f) + name);
+
+				// Generate name
+				wxString choiceStr;
+				if ((*cur).confidence > 0.0f) choiceStr = wxString::Format(_T("%f%% - "),(*cur).confidence*100.0f);
+				else choiceStr = _T("Unknown - ");
+				choiceStr += name;
+				if (name == local) choiceStr += _T(" (local)");
+
+				// Insert
+				choices.Add(choiceStr);
 				i++;
 				if (i == 20) break;
 			}
