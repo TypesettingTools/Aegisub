@@ -157,6 +157,10 @@ void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
 ///////////////////////////////
 // Transform framerate in tags
 void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOverrideParameter *curParam,void *curData) {
+	// Only modify anything if this is a number
+	VariableDataType type = curParam->GetType();
+	if (type != VARDATA_INT && type != VARDATA_FLOAT) return;
+
 	// Setup
 	LineData *lineData = (LineData*) curData;
 	AssDialogue *curDiag = lineData->line;;
