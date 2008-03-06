@@ -237,11 +237,19 @@ void AssFile::Export(wxString _filename) {
 // Can save file?
 bool AssFile::CanSave() {
 	// ASS format?
-	if (filename.Lower().Right(4) == _T(".ass")) return true;
+	wxString ext = filename.Lower().Right(4);
+	if (ext == _T(".ass")) return true;
+
+	// Never save texts
+	if (ext == _T(".txt")) return false;
 
 	// Check if it's a known extension
 	SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
 	if (!writer) return false;
+
+	// Check if format supports timing
+	bool canTime = true;
+	//if (filename.Lower().Right(4) == _T(".txt")) canTime = false;
 
 	// Scan through the lines
 	AssStyle defstyle;
@@ -262,6 +270,10 @@ bool AssFile::CanSave() {
 		// Check dialog
 		curdiag = AssEntry::GetAsDialogue(*cur);
 		if (curdiag) {
+			// Timed?
+			if (!canTime && (curdiag->Start.GetMS() != 0 || curdiag->End.GetMS() != 0)) return false;
+
+			// Overrides?
 			curdiag->ParseASSTags();
 			for (size_t i=0;i<curdiag->Blocks.size();i++) {
 				if (curdiag->Blocks[i]->GetType() != BLOCK_PLAIN) return false;
