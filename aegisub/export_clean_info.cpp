@@ -83,12 +83,13 @@ void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs, wxWindow *export_di
 			continue;
 		}
 
-		wxString field = curEntry->GetEntryData().Left(curEntry->GetEntryData().Find(_T(':')));
-		if (field != _T("ScriptType") &&
-			field != _T("Collisions") &&
-			field != _T("PlayResX") &&
-			field != _T("PlayResY") &&
-			field != _T("WrapStyle")) {
+		wxString field = curEntry->GetEntryData().Left(curEntry->GetEntryData().Find(_T(':'))).Lower();
+		if (field != _T("scripttype") &&
+			field != _T("collisions") &&
+			field != _T("playresx") &&
+			field != _T("playresy") &&
+			field != _T("wrapstyle") &&
+			field != _T("scaledborderandshadow")) {
 			delete curEntry;
 			subs->Line.erase(cur);
 		}
