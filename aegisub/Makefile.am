@@ -139,7 +139,6 @@ EXTRA_aegisub_SOURCES = \
 	video_provider_dshow.cpp \
 	video_provider_lavc.cpp \
 	boost/*.hpp \
-	csri/*.h \
 	gl/*.h \
 	win32/stdint.h
 
