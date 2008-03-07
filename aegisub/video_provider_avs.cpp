@@ -52,7 +52,7 @@
 
 ///////////////
 // Constructor
-AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename, double _fps) {
+AvisynthVideoProvider::AvisynthVideoProvider(Aegisub::String _filename, double _fps) {
 	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
@@ -97,7 +97,7 @@ AvisynthVideoProvider::~AvisynthVideoProvider() {
 
 /////////////////////////////////////////
 // Actually open the video into Avisynth
-PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priority) {
+PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3_priority) {
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening video"));
 	wxMutexLocker lock(AviSynthMutex);
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Got AVS mutex"));
@@ -107,7 +107,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	usedDirectShow = false;
 	decoderName = _("Unknown");
 
-	wxString extension = _filename.Right(4);
+	wxString extension = wxString(_filename.c_str()).Right(4);
 	extension.LowerCase();
 
 	try {
@@ -369,7 +369,7 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n,int formatMask) {
 
 ////////////////////////////////////////////////////////
 // Apply VSFilter subtitles, or whatever is appropriate
-PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosource) {
+PClip AvisynthVideoProvider::ApplySubtitles(Aegisub::String _filename, PClip videosource) {
 	AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Applying subtitles"));
 	wxMutexLocker lock(AviSynthMutex);
 	AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Got AVS mutex"));
@@ -383,7 +383,7 @@ PClip AvisynthVideoProvider::ApplySubtitles(wxString _filename, PClip videosourc
 
 	try {
 		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Now invoking ") + rendererCallString);
-		script = env->Invoke(rendererCallString.mb_str(wxConvUTF8), AVSValue(args,2));
+		script = env->Invoke(wxString(rendererCallString.c_str()).mb_str(wxConvUTF8), AVSValue(args,2));
 		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Invoked successfully"));
 	}
 	catch (AvisynthError &err) {
@@ -422,7 +422,7 @@ void AvisynthVideoProvider::LoadSubtitles(AssFile *subs) {
 	delete subs;
 
 	// Load subtitles
-	SubtitledVideo = ApplySubtitles(subfilename, RGB32Video);
+	SubtitledVideo = ApplySubtitles(subfilename.c_str(), RGB32Video);
 	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Subtitles refreshed"));
 	vi = SubtitledVideo->GetVideoInfo();
 	AVSTRACE(_T("AvisynthVideoProvider: Got video info"));
@@ -527,9 +527,9 @@ void AvisynthVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 
 ///////////////
 // Get warning
-wxString AvisynthVideoProvider::GetWarning() {
-	if (usedDirectShow) return _("Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!");
-	else return _T("");
+Aegisub::String AvisynthVideoProvider::GetWarning() {
+	if (usedDirectShow) return L"Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!";
+	else return L"";
 }
 
 #endif

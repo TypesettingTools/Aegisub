@@ -69,7 +69,7 @@ class DirectShowVideoProvider: public VideoProvider {
 	};
 
 private:
-	wxArrayInt frameTime;
+	Aegisub::IntArray frameTime;
 
 	unsigned int last_fnum;
 	unsigned int width;
@@ -97,7 +97,7 @@ private:
 	DWORD                   m_rot_cookie;
 
 public:
-	DirectShowVideoProvider(wxString _filename, double _fps=0.0);
+	DirectShowVideoProvider(Aegisub::String _filename, double _fps=0.0);
 	~DirectShowVideoProvider();
 
 	void RefreshSubtitles();
@@ -110,10 +110,10 @@ public:
 	double GetFPS() { return fps; };
 	int GetWidth() { return width; };
 	int GetHeight() { return height; };
-	wxString GetDecoderName() { return _("DirectShow"); }
+	Aegisub::String GetDecoderName() { return L"DirectShow"; }
 	bool IsNativelyByFrames() { return false; }
 
-	void OverrideFrameTimeList(wxArrayInt list);
+	void OverrideFrameTimeList(Aegisub::IntArray list);
 	int GetDesiredCacheSize() { return 8; }
 };
 
@@ -123,7 +123,7 @@ public:
 // Factory
 class DirectShowVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new DirectShowVideoProvider(video,fps); }
+	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new DirectShowVideoProvider(video,fps); }
 };
 
 #endif

@@ -119,8 +119,9 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 
 ///////////////////////
 // Parsing constructor
-DummyVideoProvider::DummyVideoProvider(wxString filename, double _fps)
+DummyVideoProvider::DummyVideoProvider(Aegisub::String _filename, double _fps)
 {
+	wxString filename = _filename;
 	wxString params;
 	if (!filename.StartsWith(_T("?dummy:"), &params)) {
 		throw _T("Attempted creating dummy video provider with non-dummy filename");
@@ -246,7 +247,7 @@ double DummyVideoProvider::GetFPS() {
 
 ////////////////////
 // Get decoder name
-wxString DummyVideoProvider::GetDecoderName() {
-	return _("Dummy Video Provider");
+Aegisub::String DummyVideoProvider::GetDecoderName() {
+	return L"Dummy Video Provider";
 }
 

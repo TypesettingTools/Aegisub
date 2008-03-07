@@ -162,15 +162,15 @@ int VideoProviderCache::GetHeight() {
 double VideoProviderCache::GetFPS() {
 	return master->GetFPS();
 }
-void VideoProviderCache::OverrideFrameTimeList(wxArrayInt list) {
+void VideoProviderCache::OverrideFrameTimeList(Aegisub::IntArray list) {
 	master->OverrideFrameTimeList(list);
 }
 bool VideoProviderCache::IsNativelyByFrames() {
 	return master->IsNativelyByFrames();
 }
-wxString VideoProviderCache::GetWarning() {
+Aegisub::String VideoProviderCache::GetWarning() {
 	return master->GetWarning();
 }
-wxString VideoProviderCache::GetDecoderName() {
+Aegisub::String VideoProviderCache::GetDecoderName() {
 	return master->GetDecoderName();
 }

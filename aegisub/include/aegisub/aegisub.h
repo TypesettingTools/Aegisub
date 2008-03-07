@@ -52,6 +52,9 @@ namespace Aegisub {
 
 	// String array
 	typedef std::vector<String> StringArray;
+
+	// Integer array
+	typedef std::vector<int> IntArray;
 };
 
 

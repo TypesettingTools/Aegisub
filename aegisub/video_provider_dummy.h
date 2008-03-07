@@ -59,7 +59,7 @@ private:
 	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
 public:
-	DummyVideoProvider(wxString filename, double fps);
+	DummyVideoProvider(Aegisub::String filename, double fps);
 	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 	~DummyVideoProvider();
 
@@ -72,7 +72,7 @@ public:
 	int GetWidth();
 	int GetHeight();
 	double GetFPS();
-	wxString GetDecoderName();
+	Aegisub::String GetDecoderName();
 };
 
 #endif

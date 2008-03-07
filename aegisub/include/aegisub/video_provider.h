@@ -66,17 +66,17 @@ public:
 	virtual double GetFPS()=0;					// Get framerate in frames per second
 
 	// Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
-	virtual wxString GetWarning() { return _T(""); }
+	virtual Aegisub::String GetWarning() { return L""; }
 
 	// Name of decoder, e.g. "Avisynth/FFMPegSource"
-	virtual wxString GetDecoderName() { return _("Unknown"); }
+	virtual Aegisub::String GetDecoderName() { return L"Unknown"; }
 
 	// How many frames does this provider wants that Aegisub caches? Set to 0 if it doesn't require caching.
 	virtual int GetDesiredCacheSize() { return 0; }
 
 	// For providers that are natively time-based (e.g. DirectShow)
 	virtual bool IsNativelyByFrames() { return true; }
-	virtual void OverrideFrameTimeList(wxArrayInt list) {}	// Override the list with the provided one, for VFR handling
+	virtual void OverrideFrameTimeList(Aegisub::IntArray list) {}	// Override the list with the provided one, for VFR handling
 
 	// If this video provider has a built-in subtitles provider, return that
 	virtual SubtitlesProvider *GetAsSubtitlesProvider() { return NULL; }
@@ -87,5 +87,5 @@ public:
 // Factory
 class VideoProviderFactory {
 public:
-	virtual VideoProvider *CreateProvider(wxString video,double fps=0.0)=0;
+	virtual VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0)=0;
 };

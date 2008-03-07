@@ -47,6 +47,7 @@
 #include <vector>
 #include <wx/wxprec.h>
 #include <wx/dynarray.h>
+#include "include/aegisub/aegisub.h"
 
 
 ///////////////////////
@@ -65,7 +66,7 @@ class FrameRate {
 private:
 	double last_time;
 	int last_frame;
-	std::vector<int> Frame;
+	Aegisub::IntArray Frame;
 
 	// contains the assumed fps for v1 timecodes, average for v2 and actual fps for cfr
 	double AverageFrameRate; 
@@ -101,7 +102,7 @@ public:
 	ASS_FrameRateType GetFrameRateType() { return FrameRateType; };
 	wxString GetFilename() { return vfrFile; };
 
-	wxArrayInt GetFrameTimeList();
+	Aegisub::IntArray GetFrameTimeList();
 	double GetCommonFPS();
 };
 

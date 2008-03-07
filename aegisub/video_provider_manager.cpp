@@ -58,7 +58,7 @@
 VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video,double fps) {
 	// First check special case of dummy video
 	if (video.StartsWith(_T("?dummy:"))) {
-		return new DummyVideoProvider(video, fps);
+		return new DummyVideoProvider(video.c_str(), fps);
 	}
 
 	// List of providers
@@ -72,7 +72,7 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video,double fp
 	for (unsigned int i=0;i<list.Count();i++) {
 		try {
 			// Create provider
-			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video,fps);
+			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.c_str(),fps);
 			if (provider) {
 				// Cache if necessary
 				if (provider->GetDesiredCacheSize()) {

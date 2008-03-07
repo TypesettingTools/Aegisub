@@ -86,8 +86,8 @@ public:
 	virtual int GetWidth();					// Returns the video width in pixels
 	virtual int GetHeight();				// Returns the video height in pixels
 	virtual double GetFPS();				// Get framerate in frames per second
-	virtual void OverrideFrameTimeList(wxArrayInt list);	// Override the list with the provided one, for VFR handling
+	virtual void OverrideFrameTimeList(Aegisub::IntArray list);	// Override the list with the provided one, for VFR handling
 	virtual bool IsNativelyByFrames();
-	virtual wxString GetWarning();
-	virtual wxString GetDecoderName();
+	virtual Aegisub::String GetWarning();
+	virtual Aegisub::String GetDecoderName();
 };

@@ -51,8 +51,8 @@ private:
 	AegiVideoFrame iframe;
 
 	bool usedDirectShow;
-	wxString rendererCallString;
-	wxString decoderName;
+	Aegisub::String rendererCallString;
+	Aegisub::String decoderName;
 
 	int num_frames;
 	int last_fnum;
@@ -64,15 +64,15 @@ private:
 	PClip RGB32Video;
 	PClip SubtitledVideo;
 
-	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(wxString _filename, PClip videosource);
+	PClip OpenVideo(Aegisub::String _filename, bool mpeg2dec3_priority = true);
+	PClip ApplySubtitles(Aegisub::String _filename, PClip videosource);
 
 	void LoadVSFilter();
 	void LoadASA();
 	void LoadRenderer();
 
 public:
-	AvisynthVideoProvider(wxString _filename, double fps=0.0);
+	AvisynthVideoProvider(Aegisub::String _filename, double fps=0.0);
 	~AvisynthVideoProvider();
 
 	SubtitlesProvider *GetAsSubtitlesProvider();
@@ -91,8 +91,8 @@ public:
 
 	void OverrideFrameTimeList(wxArrayInt list);
 	bool IsNativelyByFrames() { return byFrame; }
-	wxString GetWarning();
-	wxString GetDecoderName() { return _T("Avisynth/") + decoderName; }
+	Aegisub::String GetWarning();
+	Aegisub::String GetDecoderName() { return Aegisub::String(L"Avisynth/") + decoderName; }
 };
 
 
@@ -100,7 +100,7 @@ public:
 // Factory
 class AvisynthVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new AvisynthVideoProvider(video,fps); }
+	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new AvisynthVideoProvider(video,fps); }
 };
 
 

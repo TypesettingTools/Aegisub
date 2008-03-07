@@ -62,7 +62,7 @@
 ///////////////
 // Constructor
 // Based on Haali's code for DirectShowSource2
-DirectShowVideoProvider::DirectShowVideoProvider(wxString _filename, double _fps) {
+DirectShowVideoProvider::DirectShowVideoProvider(Aegisub::String _filename, double _fps) {
 	fps = _fps;
 	m_registered = false;
 	m_hFrameReady = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -387,17 +387,17 @@ int DirectShowVideoProvider::NextFrame(DF &df,int &_fn) {
 		if (df.timestamp >= 0) {
 			// CFR frame number
 			int frameno = -1;
-			if (frameTime.Count() == 0) frameno = (int)((double)df.timestamp / defd + 0.5);
+			if (frameTime.size() == 0) frameno = (int)((double)df.timestamp / defd + 0.5);
 
 			// VFR
 			else {
-				for (unsigned int i=0;i<frameTime.Count();i++) {
+				for (unsigned int i=0;i<frameTime.size();i++) {
 					if (df.timestamp < (int64_t) frameTime[i] * 10000) {
 						frameno = i-1;
 						break;
 					}
 				}
-				if (frameno == -1) frameno = frameTime.Count()-1;
+				if (frameno == -1) frameno = frameTime.size()-1;
 			}
 
 			// Got a good one
@@ -427,7 +427,7 @@ const AegiVideoFrame DirectShowVideoProvider::GetFrame(int n,int formatMask) {
 	// Time to seek to
 	REFERENCE_TIME cur;
 	cur = defd * n + 10001;
-	if (frameTime.Count() > (unsigned) n) cur = frameTime[n] * 10000 + 10001;
+	if (frameTime.size() > (unsigned) n) cur = frameTime[n] * 10000 + 10001;
 	if (cur < 0) cur = 0;
 
 	// Is next
@@ -505,9 +505,9 @@ void DirectShowVideoProvider::GetFloatFrame(float* Buffer, int n) {
 
 ////////////////////////
 // Override frame times
-void DirectShowVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
+void DirectShowVideoProvider::OverrideFrameTimeList(Aegisub::IntArray list) {
 	frameTime = list;
-	num_frames = frameTime.Count();
+	num_frames = frameTime.size();
 }
 
 #endif

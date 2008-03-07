@@ -404,10 +404,8 @@ int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) {
 
 ////////////////////////////////////////
 // Get the current list of frames/times
-wxArrayInt FrameRate::GetFrameTimeList() {
-	wxArrayInt final;
-	for (unsigned int i=0;i<Frame.size();i++) final.Add(Frame[i]);
-	return final;
+Aegisub::IntArray FrameRate::GetFrameTimeList() {
+	return Frame;
 }
 
 
