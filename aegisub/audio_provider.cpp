@@ -192,12 +192,6 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 ////////////////
 // Get provider
 AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cache) {
-	// Initialize providers
-	// HACK: fixme
-	static bool init = false;
-	if (!init) RegisterProviders();
-	init = true;
-
 	// Prepare provider
 	AudioProvider *provider = NULL;
 

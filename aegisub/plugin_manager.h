@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,83 +34,18 @@
 //
 
 
-#ifndef MAIN_H
-#define MAIN_H
+#pragma once
 
 
-///////////////////
-// Include headers
-#include <wx/wxprec.h>
-#include <wx/app.h>
-#include <wx/stackwalk.h>
-#include <fstream>
-#include "aegisublocale.h"
-
-
-
-//////////////
-// Prototypes
-class FrameMain;
-class PluginManager;
-namespace Automation4 { class AutoloadScriptManager; }
-
-
-////////////////////////////////
-// Application class definition
-class AegisubApp: public wxApp {
+////////////////////////
+// Plugin manager class
+class PluginManager {
 private:
-	PluginManager *plugins;
-
-	void OnMouseWheel(wxMouseEvent &event);
-	void OnKey(wxKeyEvent &key);
+	bool init;
 
 public:
-	AegisubLocale locale;
-	FrameMain *frame;
-#ifdef WITH_AUTOMATION
-	Automation4::AutoloadScriptManager *global_scripts;
-#endif
+	PluginManager();
+	~PluginManager();
 
-	static AegisubApp* Get() { return (AegisubApp*) wxTheApp; }
-	static void OpenURL(wxString url);
-
-	void RegistryAssociate();
-	void AssociateType(wxString type);
-
-	bool OnInit();
-	int OnExit();
-	int OnRun();
-	
-#ifdef __WXMAC__
-	// Apple events
-	virtual void MacOpenFile(const wxString &filename);
-#endif
-
-#ifndef _DEBUG
-	void OnUnhandledException();
-	void OnFatalException();
-#endif
-
-	//int OnRun();
-	DECLARE_EVENT_TABLE()
+	void RegisterBuiltInPlugins();
 };
-
-DECLARE_APP(AegisubApp)
-
-
-////////////////
-// Stack walker
-#if wxUSE_STACKWALKER == 1
-class StackWalker: public wxStackWalker {
-private:
-	std::ofstream file;
-
-public:
-	StackWalker();
-	~StackWalker();
-	void OnStackFrame(const wxStackFrame& frame);
-};
-#endif
-
-
-#endif

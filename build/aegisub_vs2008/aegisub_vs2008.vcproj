@@ -1445,6 +1445,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\plugin_manager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\plugin_manager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\setup.cpp"
 				>
 			</File>

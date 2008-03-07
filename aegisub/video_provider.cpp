@@ -61,12 +61,6 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
 		return new DummyVideoProvider(video, fps);
 	}
 
-	// Register the first time
-	// HACK: move this into program initialization later
-	static bool init = false;
-	if (!init) RegisterProviders();
-	init = true;
-
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Video provider")));
 

@@ -104,7 +104,7 @@ protected:
 public:
 	virtual ~AudioPlayerFactory() {}
 	static AudioPlayer *GetAudioPlayer();
-	static void RegisterFactories();
+	static void RegisterProviders();
 };
 
 

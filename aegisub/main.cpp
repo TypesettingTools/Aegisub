@@ -65,6 +65,7 @@
 #include "auto4_base.h"
 #endif
 #include "version.h"
+#include "plugin_manager.h"
 
 
 ///////////////////
@@ -156,11 +157,9 @@ bool AegisubApp::OnInit() {
 		locale.Init(wxLANGUAGE_DEFAULT);
 #endif
 
-		// Set association
-#ifndef _DEBUG
-		StartupLog(_T("Install file type associations"));
-		RegistryAssociate();
-#endif
+		// Load plugins
+		plugins = new PluginManager();
+		plugins->RegisterBuiltInPlugins();
 
 		// Load Automation scripts
 #ifdef WITH_AUTOMATION
@@ -171,6 +170,12 @@ bool AegisubApp::OnInit() {
 		// Load export filters
 		StartupLog(_T("Prepare export filters"));
 		AssExportFilterChain::PrepareFilters();
+
+		// Set association
+#ifndef _DEBUG
+		StartupLog(_T("Install file type associations"));
+		RegistryAssociate();
+#endif
 
 		// Get parameter subs
 		StartupLog(_T("Parse command line"));
@@ -205,6 +210,7 @@ bool AegisubApp::OnInit() {
 int AegisubApp::OnExit() {
 	SubtitleFormat::DestroyFormats();
 	VideoContext::Clear();
+	delete plugins;
 	Options.Clear();
 #ifdef WITH_AUTOMATION
 	delete global_scripts;

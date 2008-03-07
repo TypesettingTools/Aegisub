@@ -66,12 +66,6 @@ bool SubtitlesProviderFactory::ProviderAvailable() {
 ////////////////
 // Get provider
 SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
-	// Register them
-	// HACK: fix me
-	static bool init = false;
-	if (!init) RegisterProviders();
-	init = true;
-
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
 

@@ -127,12 +127,6 @@ void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 //////////////
 // Get player
 AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
-	// Register factories
-	// HACK: fix me
-	static bool init = false;
-	if (!init) RegisterFactories();
-	init = true;
-
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio player")));
 
@@ -158,7 +152,7 @@ AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
 
 //////////////////////////
 // Register all factories
-void AudioPlayerFactory::RegisterFactories() {
+void AudioPlayerFactory::RegisterProviders() {
 #ifdef WITH_ALSA
 	new AlsaPlayerFactory();
 #endif

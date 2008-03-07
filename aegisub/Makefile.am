@@ -231,6 +231,7 @@ aegisub_SOURCES = \
 	mkv_wrap.cpp \
 	mythes.cxx \
 	options.cpp \
+	plugin_manager.cpp \
 	scintilla_text_ctrl.cpp \
 	spellchecker.cpp \
 	spline.cpp \
