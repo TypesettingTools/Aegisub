@@ -94,7 +94,7 @@ endif
 if HAVE_HUNSPELL
 noinst_LIBRARIES += libmisc_hunspell.a
 libmisc_hunspell_a_SOURCES = spellchecker_hunspell.cpp
-aegisub_LDFLAGS += @HUNSPELL_LDFLAGS@
+aegisub_LDFLAGS += @HUNSPELL_LIBS@
 aegisub_LDADD += libmisc_hunspell.a
 endif
 
