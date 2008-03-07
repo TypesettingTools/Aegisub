@@ -160,7 +160,11 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetModificationType(MOD_VIDEO_RELOAD);
 	SetInt(_T("Avisynth MemoryMax"),64,1700);
 	SetBool(_T("Threaded Video"),false,1700);
+	#ifdef __WINDOWS__
 	SetText(_T("Video Provider"),_T("Avisynth"),1700);
+	#else
+	SetText(_T("Video Provider"),_T("FFMPEG"),1945);
+	#endif
 	SetBool(_T("Allow Ancient Avisynth"),false,1700);
 	SetText(_T("Avisynth subs renderer"),_T("vsfilter"),1700);
 	SetBool(_T("Avisynth render own subs"),true,1700);
@@ -190,13 +194,15 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetModificationType(MOD_AUDIO_RELOAD);
 	SetInt(_T("Audio Cache"),1,1700);
 	#if defined(__WINDOWS__)
-	SetText(_T("Audio Player"),_T("dsound"),1700);
+	SetText(_T("Audio Player"),_T("DirectSound"),1945);
+	SetText(_T("Audio Provider"),_T("avisynth"),1700);
 	#elif defined(__APPLE__)
 	SetText(_T("Audio Player"), _T("openal"));
+	SetText(_T("Audio Provider"),_T("FFMPEG"),1945);
 	#else
 	SetText(_T("Audio Player"),_T("portaudio")); // FIXME: should this be something else? perhaps alsa on linux and portaudio on everything else?
+	SetText(_T("Audio Provider"),_T("FFMPEG"),1945);
 	#endif
-	SetText(_T("Audio Provider"),_T("avisynth"),1700); // TODO: proper default on non-windows
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"),1700);
 	SetText(_T("Audio Alsa Device"), _T("plughw:0,0"));
 	SetText(_T("Audio HD Cache Location"),_T("default"),1700);

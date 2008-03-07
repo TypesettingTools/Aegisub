@@ -75,7 +75,6 @@ class CSRISubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
 	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new CSRISubtitlesProvider(subType); }
 	wxArrayString GetSubTypes();
-	CSRISubtitlesProviderFactory() : SubtitlesProviderFactory(_T("csri"),GetSubTypes()) {}
 };
 
 #endif

@@ -191,7 +191,7 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 
 ////////////////
 // Get provider
-AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cache) {
+AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, int cache) {
 	// Prepare provider
 	AudioProvider *provider = NULL;
 
@@ -254,16 +254,16 @@ AudioProvider *AudioProviderFactory::GetAudioProvider(wxString filename, int cac
 
 ///////////////////////////
 // Register all providers
-void AudioProviderFactory::RegisterProviders() {
+void AudioProviderFactoryManager::RegisterProviders() {
 #ifdef WITH_AVISYNTH
-	new AvisynthAudioProviderFactory();
+	RegisterFactory(new AvisynthAudioProviderFactory(),_T("Avisynth"));
 #endif
 #ifdef WITH_FFMPEG
-	new LAVCAudioProviderFactory();
+	RegisterFactory(new LAVCAudioProviderFactory(),_T("FFMPEG"));
 #endif
 }
 
 
 //////////
 // Static
-template <class AudioProviderFactory> std::map<wxString,AudioProviderFactory*>* AegisubFactory<AudioProviderFactory>::factories=NULL;
+template <class AudioProviderFactory> std::map<wxString,AudioProviderFactory*>* FactoryManager<AudioProviderFactory>::factories=NULL;

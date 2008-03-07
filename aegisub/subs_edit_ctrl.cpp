@@ -70,7 +70,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	CmdKeyClear('U',wxSTC_SCMOD_CTRL);
 
 	// Set spellchecker
-	spellchecker = SpellCheckerFactory::GetSpellChecker();
+	spellchecker = SpellCheckerFactoryManager::GetSpellChecker();
 
 	// Set thesaurus
 	thesaurus = Thesaurus::GetThesaurus();

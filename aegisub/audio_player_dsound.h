@@ -137,7 +137,6 @@ public:
 class DirectSoundPlayerFactory : public AudioPlayerFactory {
 public:
 	AudioPlayer *CreatePlayer() { return new DirectSoundPlayer(); }
-	DirectSoundPlayerFactory() : AudioPlayerFactory(_T("dsound")) {}
 };
 
 #endif

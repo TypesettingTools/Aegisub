@@ -54,7 +54,7 @@ SubtitlesProvider::~SubtitlesProvider() {
 
 ////////////////////////////////////////////////////////////////
 // Check if provider available (doesn't verify provider works!)
-bool SubtitlesProviderFactory::ProviderAvailable() {
+bool SubtitlesProviderFactoryManager::ProviderAvailable() {
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
 
@@ -65,7 +65,7 @@ bool SubtitlesProviderFactory::ProviderAvailable() {
 
 ////////////////
 // Get provider
-SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
+SubtitlesProvider* SubtitlesProviderFactoryManager::GetProvider() {
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
 
@@ -94,16 +94,17 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 
 //////////////////////
 // Register providers
-void SubtitlesProviderFactory::RegisterProviders() {
+void SubtitlesProviderFactoryManager::RegisterProviders() {
 #ifdef WITH_CSRI
-	new CSRISubtitlesProviderFactory();
+	CSRISubtitlesProviderFactory *csri = new CSRISubtitlesProviderFactory();
+	RegisterFactory(csri,_T("CSRI"),csri->GetSubTypes());
 #endif
 #ifdef WITH_LIBASS
-	new LibassSubtitlesProviderFactory();
+	RegisterFactory(new LibassSubtitlesProviderFactory(),_T("libass"));
 #endif
 }
 
 
 //////////
 // Static
-template <class SubtitlesProviderFactory> std::map<wxString,SubtitlesProviderFactory*>* AegisubFactory<SubtitlesProviderFactory>::factories=NULL;
+template <class SubtitlesProviderFactory> std::map<wxString,SubtitlesProviderFactory*>* FactoryManager<SubtitlesProviderFactory>::factories=NULL;

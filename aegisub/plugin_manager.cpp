@@ -41,6 +41,7 @@
 #include "audio_provider.h"
 #include "audio_player.h"
 #include "subtitles_provider.h"
+#include "spellchecker.h"
 
 
 ///////////////
@@ -60,10 +61,11 @@ PluginManager::~PluginManager() {
 // Registers all built-in plugins
 void PluginManager::RegisterBuiltInPlugins() {
 	if (!init) {
-		VideoProviderFactory::RegisterProviders();
-		AudioProviderFactory::RegisterProviders();
-		AudioPlayerFactory::RegisterProviders();
-		SubtitlesProviderFactory::RegisterProviders();
+		VideoProviderFactoryManager::RegisterProviders();
+		AudioProviderFactoryManager::RegisterProviders();
+		AudioPlayerFactoryManager::RegisterProviders();
+		SubtitlesProviderFactoryManager::RegisterProviders();
+		SpellCheckerFactoryManager::RegisterProviders();
 	}
 
 	// Done

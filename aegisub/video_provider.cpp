@@ -55,7 +55,7 @@
 
 ////////////////
 // Get provider
-VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
+VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video,double fps) {
 	// First check special case of dummy video
 	if (video.StartsWith(_T("?dummy:"))) {
 		return new DummyVideoProvider(video, fps);
@@ -93,19 +93,19 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video,double fps) {
 
 //////////////////////////
 // Register all providers
-void VideoProviderFactory::RegisterProviders() {
+void VideoProviderFactoryManager::RegisterProviders() {
 #ifdef WITH_AVISYNTH
-	new AvisynthVideoProviderFactory();
+	RegisterFactory(new AvisynthVideoProviderFactory(),_T("Avisynth"));
 #endif
 #ifdef WITH_DIRECTSHOW
-	new DirectShowVideoProviderFactory();
+	RegisterFactory(new DirectShowVideoProviderFactory(),_T("DirectShow"));
 #endif
 #ifdef WITH_FFMPEG
-	new LAVCVideoProviderFactory();
+	RegisterFactory(new LAVCVideoProviderFactory(),_T("FFMPEG"));
 #endif
 }
 
 
 //////////
 // Static
-template <class VideoProviderFactory> std::map<wxString,VideoProviderFactory*>* AegisubFactory<VideoProviderFactory>::factories=NULL;
+template <class VideoProviderFactory> std::map<wxString,VideoProviderFactory*>* FactoryManager<VideoProviderFactory>::factories=NULL;

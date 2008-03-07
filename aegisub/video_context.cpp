@@ -329,13 +329,13 @@ void VideoContext::SetVideo(const wxString &filename) {
 #endif
 
 			// Choose a provider
-			provider = VideoProviderFactory::GetProvider(filename,overFps);
+			provider = VideoProviderFactoryManager::GetProvider(filename,overFps);
 			loaded = provider != NULL;
 
 			// Get subtitles provider
 			try {
 				subsProvider = provider->GetAsSubtitlesProvider();
-				if (!subsProvider) subsProvider = SubtitlesProviderFactory::GetProvider();
+				if (!subsProvider) subsProvider = SubtitlesProviderFactoryManager::GetProvider();
 			}
 			catch (wxString err) { wxMessageBox(_T("Error while loading subtitles provider: ") + err,_T("Subtitles provider"));	}
 			catch (const wchar_t *err) { wxMessageBox(_T("Error while loading subtitles provider: ") + wxString(err),_T("Subtitles provider"));	}

@@ -222,10 +222,11 @@
 				OpenMP="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
+				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
 				WarningLevel="3"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h;config.h"
 			/>
@@ -917,7 +918,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\factory.h"
+				RelativePath="..\..\aegisub\factory_manager.h"
 				>
 			</File>
 			<File
@@ -1670,6 +1671,10 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\spellchecker_hunspell.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\spellchecker_hunspell.h"
 				>
 			</File>
 			<File

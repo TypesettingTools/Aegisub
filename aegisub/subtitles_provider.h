@@ -41,7 +41,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include "video_frame.h"
-#include "factory.h"
+#include "factory_manager.h"
 
 
 //////////////
@@ -65,16 +65,19 @@ public:
 
 ///////////
 // Factory
-class SubtitlesProviderFactory : public AegisubFactory<SubtitlesProviderFactory> {
-protected:
-	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
-	SubtitlesProviderFactory(wxString name,wxArrayString subTypes=wxArrayString()) {
-		RegisterFactory(name,subTypes);
-	}
-
+class SubtitlesProviderFactory {
 public:
 	virtual ~SubtitlesProviderFactory() {}
+	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
+};
+
+
+///////////////////
+// Factory Manager
+class SubtitlesProviderFactoryManager : public FactoryManager<SubtitlesProviderFactory> {
+public:
 	static SubtitlesProvider *GetProvider();
 	static void RegisterProviders();
 	static bool ProviderAvailable();
 };
+

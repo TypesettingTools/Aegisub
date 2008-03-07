@@ -126,7 +126,7 @@ void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 
 //////////////
 // Get player
-AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
+AudioPlayer* AudioPlayerFactoryManager::GetAudioPlayer() {
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio player")));
 
@@ -152,26 +152,26 @@ AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
 
 //////////////////////////
 // Register all factories
-void AudioPlayerFactory::RegisterProviders() {
+void AudioPlayerFactoryManager::RegisterProviders() {
 #ifdef WITH_ALSA
-	new AlsaPlayerFactory();
+	RegisterFactory(new AlsaPlayerFactory(),_T("ALSA"));
 #endif
 #ifdef WITH_DIRECTSOUND
-	new DirectSoundPlayerFactory();
+	RegisterFactory(new DirectSoundPlayerFactory(),_T("DirectSound"));
 #endif
 #ifdef WITH_OPENAL
-	new OpenALPlayerFactory();
+	RegisterFactory(new OpenALPlayerFactory(),_T("OpenAL"));
 #endif
 #ifdef WITH_PORTAUDIO
-	new PortAudioPlayerFactory();
+	RegisterFactory(new PortAudioPlayerFactory(),_T("PortAudio"));
 #endif
 #ifdef WITH_PULSEAUDIO
-	new PulseAudioPlayerFactory();
+	RegisterFactory(new PulseAudioPlayerFactory(),_T("PulseAudio"));
 #endif
 }
 
 
 //////////
 // Static
-template <class AudioPlayerFactory> std::map<wxString,AudioPlayerFactory*>* AegisubFactory<AudioPlayerFactory>::factories=NULL;
+template <class AudioPlayerFactory> std::map<wxString,AudioPlayerFactory*>* FactoryManager<AudioPlayerFactory>::factories=NULL;
 

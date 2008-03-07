@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,66 +34,49 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
+
+#ifdef WITH_HUNSPELL
+
+#include "spellchecker.h"
+#include <hunspell/hunspell.hxx>
 #include <wx/wxprec.h>
-#include <stdint.h>
-#include "factory_manager.h"
 
 
-//////////////
-// Prototypes
-class AudioDisplay;
-class VideoProvider;
 
-
-////////////////////////
-// Audio provider class
-class AudioProvider {
+//////////////////
+// Hunspell class
+class HunspellSpellChecker : public SpellChecker {
 private:
-	char *raw;
-	int raw_len;
+	Hunspell *hunspell;
+	wxCSConv *conv;
+	wxString affpath;
+	wxString dicpath;
+	wxString usrdicpath;
 
-protected:
-	int channels;
-	int64_t num_samples; // for one channel, ie. number of PCM frames
-	int sample_rate;
-	int bytes_per_sample;
-
-	wxString filename;
+	void Reset();
 
 public:
-	AudioProvider();
-	virtual ~AudioProvider();
+	HunspellSpellChecker();
+	~HunspellSpellChecker();
 
-	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, int64_t start, int64_t count)=0;
-	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume);
+	void AddWord(wxString word);
+	bool CanAddWord(wxString word);
 
-	int64_t GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-	int GetChannels();
+	bool CheckWord(wxString word);
+	wxArrayString GetSuggestions(wxString word);
 
-	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
+	wxArrayString GetLanguageList();
+	void SetLanguage(wxString language);
 };
 
 
 ///////////
 // Factory
-class AudioProviderFactory {
+class HunspellSpellCheckerFactory : public SpellCheckerFactory {
 public:
-	virtual AudioProvider *CreateProvider(wxString filename)=0;
+	SpellChecker *CreateSpellChecker() { return new HunspellSpellChecker(); }
 };
 
-
-///////////////////
-// Factory Manager
-class AudioProviderFactoryManager : public FactoryManager<AudioProviderFactory> {
-public:
-	static void RegisterProviders();
-	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
-};
+#endif

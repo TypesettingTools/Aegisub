@@ -124,7 +124,6 @@ public:
 class DirectShowVideoProviderFactory : public VideoProviderFactory {
 public:
 	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new DirectShowVideoProvider(video,fps); }
-	DirectShowVideoProviderFactory() : VideoProviderFactory(_T("dshow")) {}
 };
 
 #endif

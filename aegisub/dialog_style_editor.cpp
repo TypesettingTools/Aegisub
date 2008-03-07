@@ -299,7 +299,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Preview
 	SubsPreview = NULL;
 	PreviewText = NULL;
-	if (SubtitlesProviderFactory::ProviderAvailable()) {
+	if (SubtitlesProviderFactoryManager::ProviderAvailable()) {
 		PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,Options.AsText(_T("Style editor preview text")));
 		previewButton = new ColourButton(this,BUTTON_PREVIEW_COLOR,wxSize(45,16),Options.AsColour(_T("Style editor preview background")));
 		SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER,Options.AsColour(_T("Style editor preview background")));

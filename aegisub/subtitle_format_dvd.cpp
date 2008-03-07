@@ -97,7 +97,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 	pics.resize(count);
 
 	SubtitlesProvider *provider = NULL;
-	provider = SubtitlesProviderFactory::GetProvider();
+	provider = SubtitlesProviderFactoryManager::GetProvider();
 	provider->LoadSubtitles(GetAssFile());
 
 	// Write lines

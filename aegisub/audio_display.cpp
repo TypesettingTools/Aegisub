@@ -878,15 +878,15 @@ void AudioDisplay::SetFile(wxString file) {
 				is_dummy = true;
 				provider = new DummyAudioProvider(150*60*1000, true); // 150 minutes noise
 			} else {
-				provider = AudioProviderFactory::GetAudioProvider(file);
+				provider = AudioProviderFactoryManager::GetAudioProvider(file);
 			}
 #else
-			provider = AudioProviderFactory::GetAudioProvider(file);
+			provider = AudioProviderFactoryManager::GetAudioProvider(file);
 #endif
 
 			// Get player
 			wxLogDebug(_T("AudioDisplay::SetFile: get audio player"));
-			player = AudioPlayerFactory::GetAudioPlayer();
+			player = AudioPlayerFactoryManager::GetAudioPlayer();
 			player->SetDisplayTimer(&UpdateTimer);
 			player->SetProvider(provider);
 			player->OpenStream();
@@ -1022,12 +1022,12 @@ void AudioDisplay::Play(int start,int end) {
 			try {
 				// Get provider
 				if (!VideoContext::Get()->videoName.StartsWith(_T("?dummy")))
-					provider = AudioProviderFactory::GetAudioProvider(VideoContext::Get()->videoName, 0);
+					provider = AudioProviderFactoryManager::GetAudioProvider(VideoContext::Get()->videoName, 0);
 				else
 					return;
 
 				// Get player
-				player = AudioPlayerFactory::GetAudioPlayer();
+				player = AudioPlayerFactoryManager::GetAudioPlayer();
 				player->SetDisplayTimer(&UpdateTimer);
 				player->SetProvider(provider);
 				player->OpenStream();

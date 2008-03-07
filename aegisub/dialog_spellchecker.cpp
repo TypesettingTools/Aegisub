@@ -70,7 +70,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	SetIcon(BitmapToIcon(wxBITMAP(spellcheck_toolbutton)));
 
 	// Get spell checker
-	spellchecker = SpellCheckerFactory::GetSpellChecker();
+	spellchecker = SpellCheckerFactoryManager::GetSpellChecker();
 	if (!spellchecker) {
 		wxMessageBox(_T("No spellchecker available."),_T("Error"),wxICON_ERROR);
 		Destroy();

@@ -40,7 +40,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "factory.h"
+#include "factory_manager.h"
 
 
 ///////////////////////////
@@ -63,12 +63,16 @@ public:
 
 ///////////
 // Factory
-class SpellCheckerFactory : public AegisubFactory<SpellCheckerFactory> {
-protected:
-	virtual SpellChecker *CreateSpellChecker()=0;
-	SpellCheckerFactory(wxString name) { RegisterFactory(name); }
-
+class SpellCheckerFactory {
 public:
-	virtual ~SpellCheckerFactory() {}
+	virtual SpellChecker *CreateSpellChecker()=0;
+};
+
+
+///////////////////
+// Factory Manager
+class SpellCheckerFactoryManager : public FactoryManager<SpellCheckerFactory> {
+public:
 	static SpellChecker *GetSpellChecker();
+	static void RegisterProviders();
 };

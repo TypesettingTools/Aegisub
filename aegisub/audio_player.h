@@ -44,7 +44,7 @@
 #include <wx/timer.h>
 #include <wx/thread.h>
 #include <stdint.h>
-#include "factory.h"
+#include "factory_manager.h"
 
 
 //////////////
@@ -96,16 +96,20 @@ public:
 
 ///////////
 // Factory
-class AudioPlayerFactory : public AegisubFactory<AudioPlayerFactory> {
-protected:
-	virtual AudioPlayer *CreatePlayer()=0;
-	AudioPlayerFactory(wxString name) { RegisterFactory(name); }
-
+class AudioPlayerFactory {
 public:
-	virtual ~AudioPlayerFactory() {}
+	virtual AudioPlayer *CreatePlayer()=0;
+};
+
+
+///////////////////
+// Factory Manager
+class AudioPlayerFactoryManager : public FactoryManager<AudioPlayerFactory> {
+public:
 	static AudioPlayer *GetAudioPlayer();
 	static void RegisterProviders();
 };
+
 
 
 /////////

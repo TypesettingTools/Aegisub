@@ -39,7 +39,7 @@
 
 #ifdef WITH_HUNSPELL
 
-#include "spellchecker.h"
+#include "spellchecker_hunspell.h"
 #include "standard_paths.h"
 #include "utils.h"
 #include "options.h"
@@ -50,42 +50,6 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
-
-
-//////////////////
-// Hunspell class
-class HunspellSpellChecker : public SpellChecker {
-private:
-	Hunspell *hunspell;
-	wxCSConv *conv;
-	wxString affpath;
-	wxString dicpath;
-	wxString usrdicpath;
-
-	void Reset();
-
-public:
-	HunspellSpellChecker();
-	~HunspellSpellChecker();
-
-	void AddWord(wxString word);
-	bool CanAddWord(wxString word);
-
-	bool CheckWord(wxString word);
-	wxArrayString GetSuggestions(wxString word);
-
-	wxArrayString GetLanguageList();
-	void SetLanguage(wxString language);
-};
-
-
-///////////
-// Factory
-class HunspellSpellCheckerFactory : public SpellCheckerFactory {
-public:
-	SpellChecker *CreateSpellChecker() { return new HunspellSpellChecker(); }
-	HunspellSpellCheckerFactory() : SpellCheckerFactory(_T("hunspell")) {}
-} registerHunspell;
 
 
 ///////////////

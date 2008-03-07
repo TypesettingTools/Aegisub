@@ -101,7 +101,6 @@ public:
 class AvisynthVideoProviderFactory : public VideoProviderFactory {
 public:
 	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new AvisynthVideoProvider(video,fps); }
-	AvisynthVideoProviderFactory() : VideoProviderFactory(_T("avisynth")) {}
 };
 
 

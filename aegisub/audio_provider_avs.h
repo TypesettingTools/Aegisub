@@ -71,7 +71,6 @@ public:
 class AvisynthAudioProviderFactory : public AudioProviderFactory {
 public:
 	AudioProvider *CreateProvider(wxString file) { return new AvisynthAudioProvider(file); }
-	AvisynthAudioProviderFactory() : AudioProviderFactory(_T("avisynth")) {}
 };
 
 #endif
