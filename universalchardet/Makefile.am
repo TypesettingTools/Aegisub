@@ -56,3 +56,10 @@ libuniversalchardet_a_SOURCES += \
 	protypes.h \
 	prtypes.h \
 	xpcom-config.h
+
+EXTRA_DIST = \
+	Big5Freq.tab \
+	EUCKRFreq.tab \
+	EUCTWFreq.tab \ 
+	GB2312Freq.tab \
+	JISFreq.tab
