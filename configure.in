@@ -194,8 +194,8 @@ if test "$with_openal" = "yes"; then
   AC_DEFINE(WITH_OPENAL, 1, [Enable OpenAL support])
 fi
 
-AC_SUBST(OPENAL_CFLAGS)
-AC_SUBST(OPENAL_LIBS)
+
+
 
 #################
 # Video Providers
