@@ -100,9 +100,11 @@ endif
 
 if HAVE_UNIVCHARDET
 noinst_LIBRARIES += libmisc_universalchardet.a
-libmisc_universalchardet_a_SOURCES = charset_detect.cpp
+libmisc_universalchardet_a_SOURCES = charset_detect.cpp text_file_reader.cpp
 libmisc_universalchardet_a_CPPFLAGS = -D_X86_ -DTEXT_READER_USE_STDIO
 aegisub_LDADD += libmisc_universalchardet.a ../universalchardet/libuniversalchardet.a
+else
+UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
 endif
 
 
@@ -147,6 +149,7 @@ aegisub_SOURCES = \
 	$(LIBASS) \
 	$(FFMPEG) \
 	$(AUTO3_LUA) \
+	$(UNIVCHARSET) \
 	auto4_base.cpp \
 	audio_player.cpp \
 	aegisublocale.cpp \
@@ -250,7 +253,6 @@ aegisub_SOURCES = \
 	subtitle_format_ttxt.cpp \
 	subtitles_provider.cpp \
 	subtitles_provider_csri.cpp \
-	text_file_reader.cpp \
 	text_file_writer.cpp \
 	thesaurus.cpp \
 	thesaurus_myspell.cpp \
@@ -289,6 +291,7 @@ noinst_HEADERS = \
 	boost/throw_exception.hpp \
 	boost/workaround.hpp \
 	gl/glext.h \
-	mythes.hxx
+	mythes.hxx \
+	auto4_perldata.inc
 
 EXTRA_DIST = $(srcdir)/*.h beautify
