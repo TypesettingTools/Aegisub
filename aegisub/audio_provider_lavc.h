@@ -89,7 +89,6 @@ public:
 class LAVCAudioProviderFactory : public AudioProviderFactory {
 public:
 	AudioProvider *CreateProvider(wxString file) { return new LAVCAudioProvider(file); }
-	LAVCAudioProviderFactory() : AudioProviderFactory(_T("lavc")) {}
 };
 
 #endif

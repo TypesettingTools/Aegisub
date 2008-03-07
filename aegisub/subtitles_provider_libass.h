@@ -76,7 +76,6 @@ public:
 class LibassSubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
 	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new LibassSubtitlesProvider(); }
-	LibassSubtitlesProviderFactory() : SubtitlesProviderFactory(_T("libass")) {}
 };
 
 #endif

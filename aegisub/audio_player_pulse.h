@@ -124,7 +124,6 @@ public:
 class PulseAudioPlayerFactory : public AudioPlayerFactory {
 public:
 	AudioPlayer *CreatePlayer() { return new PulseAudioPlayer(); }
-	PulseAudioPlayerFactory() : AudioPlayerFactory(_T("pulse")) {}
 };
 
 #endif

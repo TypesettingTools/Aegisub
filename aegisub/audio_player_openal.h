@@ -122,7 +122,6 @@ public:
 class OpenALPlayerFactory : public AudioPlayerFactory {
 public:
 	AudioPlayer *CreatePlayer() { return new OpenALPlayer(); }
-	OpenALPlayerFactory() : AudioPlayerFactory(_T("openal")) {}
 };
 
 #endif

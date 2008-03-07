@@ -109,7 +109,6 @@ public:
 class AlsaPlayerFactory : public AudioPlayerFactory {
 public:
 	AudioPlayer *CreatePlayer() { return new AlsaPlayer(); }
-	AlsaPlayerFactory() : AudioPlayerFactory(_T("alsa")) {}
 };
 
 #endif

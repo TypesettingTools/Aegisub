@@ -117,7 +117,6 @@ public:
 class LAVCVideoProviderFactory : public VideoProviderFactory {
 public:
 	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new LAVCVideoProvider(video,fps); }
-	LAVCVideoProviderFactory() : VideoProviderFactory(_T("ffmpeg")) {}
 };
 
 #endif

@@ -103,7 +103,6 @@ public:
 class PortAudioPlayerFactory : public AudioPlayerFactory {
 public:
 	AudioPlayer *CreatePlayer() { return new PortAudioPlayer(); }
-	PortAudioPlayerFactory() : AudioPlayerFactory(_T("portaudio")) {}
 };
 
 #endif
