@@ -40,7 +40,7 @@
 ///////////
 // Headers
 #include "audio_player_portaudio.h"
-#include "audio_provider.h"
+#include "audio_provider_manager.h"
 #include "utils.h"
 
 #ifdef HAVE_PA_GETSTREAMTIME
