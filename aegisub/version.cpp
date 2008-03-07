@@ -78,7 +78,7 @@ struct VersionInfoStruct {
 		wxString SCMStr, VersionStr;
 
 		// Update this whenever a new version is released
-		VersionNumber = _T("v2.1.0");
+		VersionNumber = _T("v2.1.1");
 #ifdef _DEBUG
 		IsDebug = true;
 #else

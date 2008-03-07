@@ -1508,14 +1508,6 @@
 			<File
 				RelativePath="..\..\aegisub\version.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="FINAL_RELEASE"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\aegisub\version.h"
