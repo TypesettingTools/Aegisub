@@ -128,7 +128,6 @@ EXTRA_aegisub_SOURCES = \
 	avisynth.h \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
-	factory.h \
 	lavc_file.cpp \
 	lavc_keyframes.cpp \
 	setup.cpp \
