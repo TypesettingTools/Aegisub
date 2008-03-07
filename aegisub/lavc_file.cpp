@@ -47,10 +47,11 @@ LAVCFile::Initializer::Initializer()
 	av_register_all();
 }
 
-LAVCFile::LAVCFile(wxString filename)
+LAVCFile::LAVCFile(Aegisub::String _filename)
 {
 	int result = 0;
 	fctx = NULL;
+	wxString filename = _filename.c_str();
 
 #ifdef WIN32
 	wxFileName fn(filename);

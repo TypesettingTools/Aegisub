@@ -55,7 +55,7 @@
 
 ///////////////
 // Constructor
-LAVCVideoProvider::LAVCVideoProvider(wxString filename,double fps) {
+LAVCVideoProvider::LAVCVideoProvider(Aegisub::String filename,double fps) {
 	// Init variables
 	codecContext = NULL;
 	lavcfile = NULL;
@@ -86,7 +86,7 @@ LAVCVideoProvider::~LAVCVideoProvider() {
 
 //////////////
 // Load video
-void LAVCVideoProvider::LoadVideo(wxString filename, double fps) {
+void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 	// Close first
 	Close();
 

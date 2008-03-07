@@ -48,6 +48,7 @@ extern "C" {
 #include <ffmpeg/swscale.h>
 }
 #include "include/aegisub/video_provider.h"
+#include "include/aegisub/aegisub.h"
 #include "mkv_wrap.h"
 #include "lavc_file.h"
 
@@ -94,7 +95,7 @@ private:
 protected:
 
 public:
-	LAVCVideoProvider(wxString filename, double fps);
+	LAVCVideoProvider(Aegisub::String filename, double fps);
 	~LAVCVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n,int formatType);
@@ -104,7 +105,7 @@ public:
 	int GetWidth();
 	int GetHeight();
 	double GetFPS();
-	wxString GetDecoderName() { return _T("FFMpeg/libavcodec"); }
+	Aegisub::String GetDecoderName() { return L"FFMpeg/libavcodec"; }
 	bool IsNativelyByFrames() { return true; }
 	int GetDesiredCacheSize() { return 8; }
 };

@@ -44,12 +44,14 @@ extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 }
+#include "include/aegisub/aegisub.h"
+
 
 class LAVCFile {
 private:
 	unsigned refs;
 
-	LAVCFile(wxString filename);
+	LAVCFile(Aegisub::String filename);
 	~LAVCFile();
 
 	class Initializer {
@@ -61,7 +63,7 @@ private:
 public:
 	AVFormatContext *fctx;
 	
-	static LAVCFile *Create(wxString filename) { return new LAVCFile(filename); }
+	static LAVCFile *Create(Aegisub::String filename) { return new LAVCFile(filename); }
 	LAVCFile *AddRef() { refs++; return this; };
 	void Release() { if (!--refs) delete this; };
 };
