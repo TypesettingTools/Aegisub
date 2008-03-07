@@ -41,7 +41,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include "audio_player.h"
-#include "audio_provider.h"
+#include "audio_provider_manager.h"
 #include "utils.h"
 #include "main.h"
 #include "frame_main.h"
