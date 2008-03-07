@@ -37,7 +37,7 @@
 // Headers
 #include <wx/intl.h>
 #include "dialog_spellchecker.h"
-#include "spellchecker.h"
+#include "spellchecker_manager.h"
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "ass_file.h"

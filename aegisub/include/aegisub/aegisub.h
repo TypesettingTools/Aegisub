@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,47 +37,24 @@
 #pragma once
 
 
-///////////
-// Headers
-#include <wx/wxprec.h>
-#include "video_frame.h"
-#include "factory_manager.h"
-
-
-//////////////
-// Prototypes
-class AssFile;
+///////////////
+// STL Headers
+#include <vector>
+#include <string>
+#include <stdint.h>
 
 
 ////////////////////////////////
-// Subtitles provider interface
-class SubtitlesProvider {
-public:
-	virtual ~SubtitlesProvider();
+// Define types used by Aegisub
+namespace Aegisub {
+	// String type
+	typedef std::basic_string<wchar_t> String;
 
-	virtual bool CanRaster() { return false; }
-	virtual bool LockedToVideo() { return false; }
-
-	virtual void LoadSubtitles(AssFile *subs)=0;
-	virtual void DrawSubtitles(AegiVideoFrame &dst,double time) {}
-};
-
-
-///////////
-// Factory
-class SubtitlesProviderFactory {
-public:
-	virtual ~SubtitlesProviderFactory() {}
-	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
+	// String array
+	typedef std::vector<String> StringArray;
 };
 
 
 ///////////////////
-// Factory Manager
-class SubtitlesProviderFactoryManager : public FactoryManager<SubtitlesProviderFactory> {
-public:
-	static SubtitlesProvider *GetProvider();
-	static void RegisterProviders();
-	static bool ProviderAvailable();
-};
-
+// Aegisub headers
+//#include "video_frame.h"

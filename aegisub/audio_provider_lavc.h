@@ -57,7 +57,7 @@ extern "C" {
 }
 #include "mkv_wrap.h"
 #include "lavc_file.h"
-#include "audio_provider.h"
+#include "include/aegisub/audio_provider.h"
 #include "lavc_file.h"
 
 

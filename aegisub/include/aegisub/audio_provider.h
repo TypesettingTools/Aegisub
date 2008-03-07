@@ -39,40 +39,49 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include "factory_manager.h"
+#include "aegisub.h"
 
 
-///////////////////////////
-// Spellchecking interface
-class SpellChecker {
+//////////////
+// Prototypes
+class VideoProvider;
+
+
+////////////////////////
+// Audio provider class
+class AudioProvider {
+private:
+	char *raw;
+	int raw_len;
+
+protected:
+	int channels;
+	int64_t num_samples; // for one channel, ie. number of PCM frames
+	int sample_rate;
+	int bytes_per_sample;
+
+	wxString filename;
+
 public:
-	SpellChecker() {}
-	virtual ~SpellChecker() {}
+	AudioProvider();
+	virtual ~AudioProvider();
 
-	virtual void AddWord(wxString word) {}
-	virtual bool CanAddWord(wxString word) { return false; }
+	virtual wxString GetFilename();
+	virtual void GetAudio(void *buf, int64_t start, int64_t count)=0;
+	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume);
 
-	virtual bool CheckWord(wxString word)=0;
-	virtual wxArrayString GetSuggestions(wxString word)=0;
+	int64_t GetNumSamples();
+	int GetSampleRate();
+	int GetBytesPerSample();
+	int GetChannels();
 
-	virtual wxArrayString GetLanguageList()=0;
-	virtual void SetLanguage(wxString language)=0;
+	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
 
 
 ///////////
 // Factory
-class SpellCheckerFactory {
+class AudioProviderFactory {
 public:
-	virtual SpellChecker *CreateSpellChecker()=0;
-};
-
-
-///////////////////
-// Factory Manager
-class SpellCheckerFactoryManager : public FactoryManager<SpellCheckerFactory> {
-public:
-	static SpellChecker *GetSpellChecker();
-	static void RegisterProviders();
+	virtual AudioProvider *CreateProvider(wxString filename)=0;
 };

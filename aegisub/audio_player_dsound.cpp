@@ -39,8 +39,6 @@
 #ifdef WITH_DIRECTSOUND
 
 #include <wx/wxprec.h>
-#include "audio_player.h"
-#include "audio_provider.h"
 #include "utils.h"
 #include "main.h"
 #include "frame_main.h"

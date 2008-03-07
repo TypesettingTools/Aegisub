@@ -50,7 +50,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <initguid.h>
-#include "video_provider.h"
+#include "include/aegisub/video_provider.h"
 #include "videosink.h"
 
 

@@ -38,8 +38,8 @@
 // Headers
 #include "dialog_video_details.h"
 #include "video_context.h"
-#include "video_provider.h"
-#include "audio_provider.h"
+#include "video_provider_manager.h"
+#include "audio_provider_manager.h"
 #include "audio_box.h"
 #include "utils.h"
 

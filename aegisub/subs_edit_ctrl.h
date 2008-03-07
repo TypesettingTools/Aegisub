@@ -40,7 +40,7 @@
 ////////////
 // Includes
 #include <wx/wxprec.h>
-#include "spellchecker.h"
+#include "spellchecker_manager.h"
 #include "thesaurus.h"
 #include "scintilla_text_ctrl.h"
 

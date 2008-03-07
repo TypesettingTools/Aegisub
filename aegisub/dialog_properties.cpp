@@ -45,7 +45,7 @@
 #include "ass_file.h"
 #include "video_display.h"
 #include "validators.h"
-#include "video_provider.h"
+#include "video_provider_manager.h"
 #include "utils.h"
 #include "help_button.h"
 

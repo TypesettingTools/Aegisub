@@ -39,7 +39,7 @@
 #include <wx/wxprec.h>
 #ifdef WITH_AVISYNTH
 #include <Mmreg.h>
-#include "audio_provider.h"
+#include "include/aegisub/audio_provider.h"
 #include "avisynth_wrap.h"
 
 

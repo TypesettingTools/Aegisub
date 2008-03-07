@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Niels Martin Hansen
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,49 +30,27 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
-// The dummy video provider needs a header, since it needs to be created directly as a special case
 
-#ifndef _VIDEO_PROVIDER_DUMMY_H
-#define _VIDEO_PROVIDER_DUMMY_H
+#pragma once
 
 
 ///////////
 // Headers
-#include "include/aegisub/video_provider.h"
-#include <wx/colour.h>
+#include <wx/wxprec.h>
+#include "include/aegisub/subtitles_provider.h"
+#include "video_frame.h"
+#include "factory_manager.h"
 
 
-////////////////////////
-// Dummy video provider
-class DummyVideoProvider : public VideoProvider {
-private:
-	int lastFrame;
-	int framecount;
-	double fps;
-	int width;
-	int height;
-	AegiVideoFrame frame;
-
-	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
-
+///////////////////
+// Factory Manager
+class SubtitlesProviderFactoryManager : public FactoryManager<SubtitlesProviderFactory> {
 public:
-	DummyVideoProvider(wxString filename, double fps);
-	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
-	~DummyVideoProvider();
-
-	const AegiVideoFrame GetFrame(int n, int formatMask);
-	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
-
-	int GetPosition();
-	int GetFrameCount();
-
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-	wxString GetDecoderName();
+	static SubtitlesProvider *GetProvider();
+	static void RegisterProviders();
+	static bool ProviderAvailable();
 };
 
-#endif

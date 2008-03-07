@@ -51,7 +51,7 @@
 #include <wx/config.h>
 #include "utils.h"
 #include "video_display.h"
-#include "video_provider.h"
+#include "video_provider_manager.h"
 #include "vfr.h"
 #include "ass_file.h"
 #include "ass_time.h"

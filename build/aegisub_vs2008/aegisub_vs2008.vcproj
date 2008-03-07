@@ -56,7 +56,7 @@
 				WarningLevel="3"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h;config.h"
 			/>
@@ -490,10 +490,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\audio_player.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\audio_player_alsa.cpp"
 				>
 			</File>
@@ -507,6 +503,10 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\audio_player_dsound.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_manager.h"
 				>
 			</File>
 			<File
@@ -535,10 +535,6 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\audio_provider.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider.h"
 				>
 			</File>
 			<File
@@ -579,6 +575,10 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\audio_provider_lavc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_provider_manager.h"
 				>
 			</File>
 			<File
@@ -1594,14 +1594,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\video_provider.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\video_provider_avs.cpp"
 				>
 			</File>
@@ -1642,6 +1634,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\video_provider_manager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\video_provider_manager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\video_slider.cpp"
 				>
 			</File>
@@ -1658,15 +1658,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\spellchecker.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\spellchecker_hunspell.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\aegisub\spellchecker_hunspell.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\spellchecker_manager.h"
 				>
 			</File>
 			<File
@@ -1778,10 +1778,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\subtitles_provider.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\subtitles_provider_csri.cpp"
 				>
 			</File>
@@ -1795,6 +1791,10 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\subtitles_provider_libass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\subtitles_provider_manager.h"
 				>
 			</File>
 		</Filter>
@@ -1901,6 +1901,34 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Include"
+			>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\aegisub.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\audio_player.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\audio_provider.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\spellchecker.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\subtitles_provider.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\video_provider.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\..\aegisub\changelog.txt"

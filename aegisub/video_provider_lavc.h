@@ -47,7 +47,7 @@ extern "C" {
 #include <ffmpeg/avformat.h>
 #include <ffmpeg/swscale.h>
 }
-#include "video_provider.h"
+#include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
 #include "lavc_file.h"
 

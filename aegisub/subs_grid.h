@@ -45,7 +45,7 @@
 #include <list>
 #include "base_grid.h"
 #include "audio_display.h"
-#include "audio_provider.h"
+#include "audio_provider_manager.h"
 #include "audio_box.h"
 #include <iostream>
 #include <fstream>

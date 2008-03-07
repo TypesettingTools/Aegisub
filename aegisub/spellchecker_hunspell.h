@@ -39,7 +39,7 @@
 
 #ifdef WITH_HUNSPELL
 
-#include "spellchecker.h"
+#include "include/aegisub/spellchecker.h"
 #include <hunspell/hunspell.hxx>
 #include <wx/wxprec.h>
 

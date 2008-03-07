@@ -39,9 +39,8 @@
 
 //////////
 // Headers
-#include <wx/intl.h>
 #include "video_frame.h"
-#include "factory_manager.h"
+#include "aegisub.h"
 
 
 //////////////
@@ -89,13 +88,4 @@ public:
 class VideoProviderFactory {
 public:
 	virtual VideoProvider *CreateProvider(wxString video,double fps=0.0)=0;
-};
-
-
-///////////////////
-// Factory Manager
-class VideoProviderFactoryManager : public FactoryManager<VideoProviderFactory> {
-public:
-	static void RegisterProviders();
-	static VideoProvider *GetProvider(wxString video,double fps=0.0);
 };

@@ -39,8 +39,8 @@
 
 ///////////
 // Headers
-#include "audio_player.h"
-#include "audio_provider.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
 #include "utils.h"
 extern "C" {
 #include <portaudio.h>

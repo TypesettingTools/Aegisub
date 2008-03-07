@@ -41,7 +41,7 @@
 // Headers
 #include <list>
 #include <vector>
-#include "audio_provider.h"
+#include "include/aegisub/audio_provider.h"
 
 
 ////////////////////////

@@ -40,7 +40,7 @@
 #ifdef WITH_CSRI
 
 #include <wx/wxprec.h>
-#include "subtitles_provider.h"
+#include "include/aegisub/subtitles_provider.h"
 #ifdef WIN32
 #define CSRIAPI
 #endif

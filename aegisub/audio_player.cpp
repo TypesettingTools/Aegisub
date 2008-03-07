@@ -37,7 +37,7 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
-#include "audio_player.h"
+#include "audio_player_manager.h"
 #include "options.h"
 #ifdef WITH_ALSA
 #include "audio_player_alsa.h"

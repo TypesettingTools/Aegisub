@@ -49,7 +49,7 @@
 #include "toggle_bitmap.h"
 #include "options.h"
 #include "subs_grid.h"
-#include "video_provider.h"
+#include "video_provider_manager.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "vfr.h"

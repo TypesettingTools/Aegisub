@@ -147,7 +147,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="delayimp.lib strmbaseu.lib winmm.lib"
+				AdditionalDependencies="delayimp.lib winmm.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\lib"
 				ModuleDefinitionFile=".\vsfilter.def"

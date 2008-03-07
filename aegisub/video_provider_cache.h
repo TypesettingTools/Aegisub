@@ -40,7 +40,7 @@
 //////////
 // Headers
 #include <list>
-#include "video_provider.h"
+#include "include/aegisub/video_provider.h"
 
 
 ////////////////

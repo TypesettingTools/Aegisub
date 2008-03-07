@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
+// Copyright (c) 2006, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,81 +39,30 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <wx/event.h>
-#include <wx/timer.h>
-#include <wx/thread.h>
-#include <stdint.h>
-#include "factory_manager.h"
-
-
-//////////////
-// Prototypes
-class AudioProvider;
+#include "aegisub.h"
 
 
 ///////////////////////////
-// Audio Player base class
-class AudioPlayer : public wxEvtHandler {
-private:
-	void OnStopAudio(wxCommandEvent &event);
-
-protected:
-	AudioProvider *provider;
-	wxTimer *displayTimer;
-
+// Spellchecking interface
+class SpellChecker {
 public:
-	AudioPlayer();
-	virtual ~AudioPlayer();
+	SpellChecker() {}
+	virtual ~SpellChecker() {}
 
-	virtual void OpenStream() {}
-	virtual void CloseStream() {}
+	virtual void AddWord(wxString word) {}
+	virtual bool CanAddWord(wxString word) { return false; }
 
-	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
-	virtual void Stop(bool timerToo=true)=0;			// Stop playing
-	virtual void RequestStop();							// Request it to stop playing in a thread-safe way
-	virtual bool IsPlaying()=0;
+	virtual bool CheckWord(wxString word)=0;
+	virtual wxArrayString GetSuggestions(wxString word)=0;
 
-	virtual void SetVolume(double volume)=0;
-	virtual double GetVolume()=0;
-
-	virtual int64_t GetStartPosition()=0;
-	virtual int64_t GetEndPosition()=0;
-	virtual int64_t GetCurrentPosition()=0;
-	virtual void SetEndPosition(int64_t pos)=0;
-	virtual void SetCurrentPosition(int64_t pos)=0;
-
-	virtual wxMutex *GetMutex();
-
-	void SetProvider(AudioProvider *provider);
-	AudioProvider *GetProvider();
-
-	void SetDisplayTimer(wxTimer *timer);
-
-	DECLARE_EVENT_TABLE()
+	virtual wxArrayString GetLanguageList()=0;
+	virtual void SetLanguage(wxString language)=0;
 };
 
 
 ///////////
 // Factory
-class AudioPlayerFactory {
+class SpellCheckerFactory {
 public:
-	virtual AudioPlayer *CreatePlayer()=0;
+	virtual SpellChecker *CreateSpellChecker()=0;
 };
-
-
-///////////////////
-// Factory Manager
-class AudioPlayerFactoryManager : public FactoryManager<AudioPlayerFactory> {
-public:
-	static AudioPlayer *GetAudioPlayer();
-	static void RegisterProviders();
-};
-
-
-
-/////////
-// Event
-DECLARE_EVENT_TYPE(wxEVT_STOP_AUDIO, -1)
-
-

@@ -39,7 +39,7 @@
 
 #include <wx/wxprec.h>
 #include <stdint.h>
-#include "audio_provider.h"
+#include "audio_provider_manager.h"
 
 
 // Specified and implemented in cpp file, interface is private to spectrum code

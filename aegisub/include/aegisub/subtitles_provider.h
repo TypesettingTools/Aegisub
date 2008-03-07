@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Niels Martin Hansen
+// Copyright (c) 2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,49 +30,42 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
-// The dummy video provider needs a header, since it needs to be created directly as a special case
 
-#ifndef _VIDEO_PROVIDER_DUMMY_H
-#define _VIDEO_PROVIDER_DUMMY_H
+#pragma once
 
 
 ///////////
 // Headers
-#include "include/aegisub/video_provider.h"
-#include <wx/colour.h>
+#include "aegisub.h"
+#include "video_frame.h"
 
 
-////////////////////////
-// Dummy video provider
-class DummyVideoProvider : public VideoProvider {
-private:
-	int lastFrame;
-	int framecount;
-	double fps;
-	int width;
-	int height;
-	AegiVideoFrame frame;
+//////////////
+// Prototypes
+class AssFile;
 
-	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
+////////////////////////////////
+// Subtitles provider interface
+class SubtitlesProvider {
 public:
-	DummyVideoProvider(wxString filename, double fps);
-	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
-	~DummyVideoProvider();
+	virtual ~SubtitlesProvider();
 
-	const AegiVideoFrame GetFrame(int n, int formatMask);
-	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
+	virtual bool CanRaster() { return false; }
+	virtual bool LockedToVideo() { return false; }
 
-	int GetPosition();
-	int GetFrameCount();
-
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-	wxString GetDecoderName();
+	virtual void LoadSubtitles(AssFile *subs)=0;
+	virtual void DrawSubtitles(AegiVideoFrame &dst,double time) {}
 };
 
-#endif
+
+///////////
+// Factory
+class SubtitlesProviderFactory {
+public:
+	virtual ~SubtitlesProviderFactory() {}
+	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
+};

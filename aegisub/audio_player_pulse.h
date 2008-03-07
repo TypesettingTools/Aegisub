@@ -41,8 +41,8 @@
 // Headers
 #include <wx/wxprec.h>
 #include <stdio.h>
-#include "audio_player.h"
-#include "audio_provider.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
 #include "utils.h"
 #include "options.h"
 #include <pulse/pulseaudio.h>

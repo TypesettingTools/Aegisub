@@ -42,7 +42,7 @@
 #include "ass_style.h"
 #include "subs_preview.h"
 #include "video_provider_dummy.h"
-#include "subtitles_provider.h"
+#include "subtitles_provider_manager.h"
 #include "ass_file.h"
 
 

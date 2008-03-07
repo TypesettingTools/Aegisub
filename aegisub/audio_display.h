@@ -44,8 +44,8 @@
 #include <wx/window.h>
 #include <wx/bitmap.h>
 #include <stdint.h>
-#include "audio_provider.h"
-#include "audio_player.h"
+#include "audio_provider_manager.h"
+#include "audio_player_manager.h"
 #include "audio_spectrum.h"
 
 

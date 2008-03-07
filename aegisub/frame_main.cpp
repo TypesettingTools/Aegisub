@@ -50,7 +50,7 @@
 #include "avisynth_wrap.h"
 #endif
 #include "video_display.h"
-#include "video_provider.h"
+#include "video_provider_manager.h"
 #include "video_slider.h"
 #include "ass_file.h"
 #include "dialog_search_replace.h"

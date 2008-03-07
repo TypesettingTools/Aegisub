@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,60 +40,31 @@
 ///////////
 // Headers
 #include <wx/wxprec.h>
+#include <wx/event.h>
+#include <wx/timer.h>
+#include <wx/thread.h>
 #include <stdint.h>
 #include "factory_manager.h"
+#include "include/aegisub/audio_player.h"
 
 
 //////////////
 // Prototypes
-class AudioDisplay;
-class VideoProvider;
-
-
-////////////////////////
-// Audio provider class
-class AudioProvider {
-private:
-	char *raw;
-	int raw_len;
-
-protected:
-	int channels;
-	int64_t num_samples; // for one channel, ie. number of PCM frames
-	int sample_rate;
-	int bytes_per_sample;
-
-	wxString filename;
-
-public:
-	AudioProvider();
-	virtual ~AudioProvider();
-
-	virtual wxString GetFilename();
-	virtual void GetAudio(void *buf, int64_t start, int64_t count)=0;
-	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume);
-
-	int64_t GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-	int GetChannels();
-
-	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
-};
-
-
-///////////
-// Factory
-class AudioProviderFactory {
-public:
-	virtual AudioProvider *CreateProvider(wxString filename)=0;
-};
+class AudioProvider;
 
 
 ///////////////////
 // Factory Manager
-class AudioProviderFactoryManager : public FactoryManager<AudioProviderFactory> {
+class AudioPlayerFactoryManager : public FactoryManager<AudioPlayerFactory> {
 public:
+	static AudioPlayer *GetAudioPlayer();
 	static void RegisterProviders();
-	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
 };
+
+
+
+/////////
+// Event
+DECLARE_EVENT_TYPE(wxEVT_STOP_AUDIO, -1)
+
+

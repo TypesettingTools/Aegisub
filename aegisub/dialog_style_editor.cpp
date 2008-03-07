@@ -51,7 +51,7 @@
 #include "colour_button.h"
 #include "subs_preview.h"
 #include "options.h"
-#include "subtitles_provider.h"
+#include "subtitles_provider_manager.h"
 #include "ass_style_storage.h"
 #include "help_button.h"
 

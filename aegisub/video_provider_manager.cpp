@@ -36,7 +36,7 @@
 
 ///////////
 // Headers
-#include "video_provider.h"
+#include "video_provider_manager.h"
 #include "video_provider_dummy.h"
 #include "options.h"
 #include "vfr.h"

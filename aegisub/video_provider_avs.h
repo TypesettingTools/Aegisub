@@ -39,8 +39,8 @@
 #include <wx/wxprec.h>
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
-#include "video_provider.h"
-#include "subtitles_provider.h"
+#include "include/aegisub/video_provider.h"
+#include "include/aegisub/subtitles_provider.h"
 
 
 ////////////
