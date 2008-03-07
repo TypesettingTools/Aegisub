@@ -297,6 +297,7 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 			// update bounding polygon
 			if (rectbound2upd > -1)
 			{
+				if (!dragAnchor_left) dragAnchor_left = new wxPoint(mouse_point);
 				wxPoint diff = mouse_point - *dragAnchor_left;
 				wxRealPoint rdiff(diff.x, diff.y);
 				switch(draw_mode)

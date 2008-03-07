@@ -33,8 +33,8 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppRevision "r1847"
-#define MyAppVer "2.1.0a Release Preview"
+#define MyAppRevision "r1952"
+#define MyAppVer "2.1.1 Release Preview"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -43,7 +43,7 @@
 ; Only intended for testing.
 #define IncludeSpeller 1
 #define IncludeThesaurus 1
-#define IncludePerl 1
+#define IncludePerl 0
 #define IncludeFfmpeg 0
 
 
@@ -197,7 +197,7 @@ Source: ..\po\wxstd-ca.mo; DestDir: {app}\locale\ca; DestName: wxstd.mo; Flags: 
 Source: ..\po\pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/pt_BR
 Source: ..\po\wxstd-pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/pt_BR
 ; documentation
-Source: ..\docs\output\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: "*svn"
+Source: ..\docs\output\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: *svn
 ; ASSDraw3
 Source: ..\bin\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion nocompression; Components: assdraw
 Source: ..\bin\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw
@@ -206,7 +206,7 @@ Source: ..\bin\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: a
 Name: {commonprograms}\Aegisub\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Aegisub subtitle editor
 Name: {commonprograms}\Aegisub\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Flags: createonlyiffileexists; Comment: Aegisub subtitle editor
 Name: {commonprograms}\Aegisub\Uninstall; Filename: {app}\unins000.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Uninstall Aegisub
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\Aegisub.exe"; WorkingDir: {app}; IconIndex: 0; Components: main/qcklnch; Comment: Aegisub subtitle editor
+Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filename: {app}\Aegisub.exe; WorkingDir: {app}; IconIndex: 0; Components: main/qcklnch; Comment: Aegisub subtitle editor
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
@@ -224,8 +224,8 @@ Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages: 
 Name: auto/lua/samples; Description: Lua sample scripts; Types: full
 #if IncludePerl != 0
-Name: auto/perl; Description: Perl (requires a Perl 5.10 distribution); Types: compact full; Flags: checkablealone; Languages:
-Name: auto/perl/samples; Description: Perl sample scripts; Types: compact full; Flags: checkablealone; Languages:
+Name: auto/perl; Description: Perl (requires a Perl 5.10 distribution); Types: compact full; Flags: checkablealone; Languages: 
+Name: auto/perl/samples; Description: Perl sample scripts; Types: compact full; Flags: checkablealone; Languages: 
 #endif
 Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
 Name: docs; Description: Documentation files; Types: custom compact full
@@ -289,10 +289,10 @@ begin
 		  temp2 := SetupMessage(msgInstallingLabel);
 		  StringChangeEx(temp2,'[name]','{#MyAppName}',False);
 		  CustomPage := CreateOutputProgressPage(SetupMessage(msgWizardInstalling),temp2);
-		  CustomPage.SetText('Installing Visual C++ 2005 SP1 Runtimes... This might take a few minutes.','');
+		  CustomPage.SetText('Installing Visual C++ Runtimes... This might take a few minutes.','');
 		  CustomPage.Show();
 			ExtractTemporaryFile('vcredist_x86.exe');
-			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/q:a /c:"VCREDI~3.EXE /q:a /c:""msiexec /i vcredist.msi /qn"" "', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
+			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/qn', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
 			begin
 				MsgBox('Installation of runtime libraries failed. Aegisub will probably not work. The error was: ' + SysErrorMessage(ExecResult), mbInformation, MB_OK);
 			end;

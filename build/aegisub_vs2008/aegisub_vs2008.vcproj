@@ -226,7 +226,7 @@
 				WarningLevel="3"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h;config.h"
 			/>
