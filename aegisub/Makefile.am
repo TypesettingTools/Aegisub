@@ -272,6 +272,7 @@ aegisub_SOURCES = \
 	video_frame.cpp \
 	video_provider.cpp \
 	video_provider_dummy.cpp \
+	video_provider_cache.cpp \
 	video_slider.cpp \
 	visual_feature.cpp \
 	visual_tool.cpp \
