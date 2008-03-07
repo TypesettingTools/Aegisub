@@ -83,27 +83,27 @@ void FFT::DoTransform (size_t n_samples,float *input,float *output_r,float *outp
 		float cm2 = cos (-2 * delta_angle);
 		float cm1 = cos (-delta_angle);
 		float w = 2 * cm1;
-		float ar[3], ai[3];
+		float ar0, ar1, ar2, ai0, ai1, ai2;
 
 		// Apply for every sample
 		for(i=0;i<n_samples;i+=BlockSize) {
-			ar[1] = cm1;
-			ar[2] = cm2;
-			ai[1] = sm1;
-			ai[2] = sm2;
+			ar1 = cm1;
+			ar2 = cm2;
+			ai1 = sm1;
+			ai2 = sm2;
 
 			for (j=i,n=0;n<BlockEnd;j++,n++) {
 				k = j + BlockEnd;
 
-				ar[0] = w*ar[1] - ar[2];
-				ai[0] = w*ai[1] - ai[2];
-				ar[2] = ar[1];
-				ai[2] = ai[1];
-				ar[1] = ar[0];
-				ai[1] = ai[0];
+				ar0 = w*ar1 - ar2;
+				ai0 = w*ai1 - ai2;
+				ar2 = ar1;
+				ai2 = ai1;
+				ar1 = ar0;
+				ai1 = ai0;
 
-				tr = ar[0]*output_r[k] - ai[0]*output_i[k];
-				ti = ar[0]*output_i[k] + ai[0]*output_r[k];
+				tr = ar0*output_r[k] - ai0*output_i[k];
+				ti = ar0*output_i[k] + ai0*output_r[k];
 
 				output_r[k] = output_r[j] - tr;
 				output_i[k] = output_i[j] - ti;

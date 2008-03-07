@@ -415,7 +415,7 @@ int DirectShowVideoProvider::NextFrame(DF &df,int &_fn) {
 
 /////////////
 // Get frame
-const AegiVideoFrame DirectShowVideoProvider::DoGetFrame(int n) {
+const AegiVideoFrame DirectShowVideoProvider::GetFrame(int n,int formatMask) {
 	// Normalize frame number
 	if (n >= (signed) num_frames) n = num_frames-1;
 	if (n < 0) n = 0;
