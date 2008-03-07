@@ -41,11 +41,8 @@
 #include <string>
 #include "text_file_reader.h"
 
-
-#ifdef __WINDOWS__
 #ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
-#endif
 #endif
 
 
