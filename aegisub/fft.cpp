@@ -93,15 +93,15 @@ void FFT::DoTransform (size_t n_samples,float *input,float *output_r,float *outp
 			ai[2] = sm2;
 
 			for (j=i,n=0;n<BlockEnd;j++,n++) {
-				ar[0] = w*ar[1] - ar[2];
-				ar[2] = ar[1];
-				ar[1] = ar[0];
+				k = j + BlockEnd;
 
+				ar[0] = w*ar[1] - ar[2];
 				ai[0] = w*ai[1] - ai[2];
+				ar[2] = ar[1];
 				ai[2] = ai[1];
+				ar[1] = ar[0];
 				ai[1] = ai[0];
 
-				k = j + BlockEnd;
 				tr = ar[0]*output_r[k] - ai[0]*output_i[k];
 				ti = ar[0]*output_i[k] + ai[0]*output_r[k];
 
@@ -119,10 +119,10 @@ void FFT::DoTransform (size_t n_samples,float *input,float *output_r,float *outp
 
 	// Divide everything by number of samples if it's an inverse transform
 	if (inverse) {
-		float denom = (float)n_samples;
+		float denom = 1.0f/(float)n_samples;
 		for (i=0;i<n_samples;i++) {
-			output_r[i] /= denom;
-			output_i[i] /= denom;
+			output_r[i] *= denom;
+			output_i[i] *= denom;
 		}
 	}
 }
