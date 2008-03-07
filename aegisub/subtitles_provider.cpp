@@ -51,6 +51,7 @@
 SubtitlesProvider::~SubtitlesProvider() {
 }
 
+
 ////////////////////////////////////////////////////////////////
 // Check if provider available (doesn't verify provider works!)
 bool SubtitlesProviderFactory::ProviderAvailable() {

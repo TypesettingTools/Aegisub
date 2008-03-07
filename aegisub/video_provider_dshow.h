@@ -76,7 +76,7 @@ private:
 	unsigned int height;
 	unsigned int num_frames;
 	double fps;
-	int64_t defd;
+	__int64 defd;
 
 	HRESULT OpenVideo(wxString _filename);
 	void CloseVideo();
@@ -127,4 +127,5 @@ public:
 	DirectShowVideoProviderFactory() : VideoProviderFactory(_T("dshow")) {}
 };
 
+#endif
 #endif
