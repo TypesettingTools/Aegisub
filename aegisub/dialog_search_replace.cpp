@@ -477,12 +477,24 @@ void SearchReplaceEngine::ReplaceAll() {
 				count += reps;
 			}
 		}
-
 		// Normal replace
 		else {
-			if (Text->Contains(LookFor)) {
-				count += Text->Replace(LookFor,ReplaceWith);
-				replaced = true;
+			if (!Search.matchCase) {
+				wxString Left, Right;
+				int pos;
+				while(Text->Lower().Contains(LookFor.Lower())) {
+					pos = Text->Lower().Find(LookFor.Lower());
+					Left = pos ? Text->Left(pos) : _T("");
+					Right = Text->Mid(pos+LookFor.Len());
+					*Text = Left + ReplaceWith + Right;
+					count++;
+				}
+			}
+			else {
+				if(Text->Contains(LookFor)) {
+					count += Text->Replace(LookFor, ReplaceWith);
+					replaced = true;
+				}
 			}
 		}
 
