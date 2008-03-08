@@ -89,7 +89,7 @@ private:
 	int buffer2Size;
 
 	bool GetNextFrame();
-	void LoadVideo(wxString filename, double fps);
+	void LoadVideo(Aegisub::String filename, double fps);
 	void Close();
 
 protected:
@@ -117,7 +117,7 @@ public:
 // Factory
 class LAVCVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new LAVCVideoProvider(video,fps); }
+	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new LAVCVideoProvider(video,fps); }
 };
 
 #endif

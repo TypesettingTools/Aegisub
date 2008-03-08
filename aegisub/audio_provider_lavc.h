@@ -78,7 +78,7 @@ private:
 	void Destroy();
 
 public:
-	LAVCAudioProvider(wxString _filename);
+	LAVCAudioProvider(Aegisub::String _filename);
 	virtual ~LAVCAudioProvider();
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 };
@@ -88,7 +88,7 @@ public:
 // Factory
 class LAVCAudioProviderFactory : public AudioProviderFactory {
 public:
-	AudioProvider *CreateProvider(wxString file) { return new LAVCAudioProvider(file); }
+	AudioProvider *CreateProvider(Aegisub::String file) { return new LAVCAudioProvider(file); }
 };
 
 #endif

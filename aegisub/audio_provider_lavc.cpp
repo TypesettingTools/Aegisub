@@ -65,7 +65,7 @@ extern "C" {
 
 ///////////////
 // Constructor
-LAVCAudioProvider::LAVCAudioProvider(wxString _filename)
+LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	: lavcfile(NULL), codecContext(NULL), rsct(NULL), buffer(NULL)
 {
 	try {

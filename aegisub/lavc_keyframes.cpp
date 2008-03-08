@@ -43,7 +43,7 @@
 
 ///////////////
 // Constructor
-LAVCKeyFrames::LAVCKeyFrames(const wxString& filename) 
+LAVCKeyFrames::LAVCKeyFrames(const Aegisub::String& filename) 
  : file(0), codecContext(0), codec(0), stream(0), frame(0), 
    streamN(-1) {
 	// Open LAVCFile
