@@ -191,7 +191,7 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 
 ////////////////
 // Get provider
-AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, int cache) {
+AudioProvider *AudioProviderFactoryManager::GetAudioProvider(Aegisub::String filename, int cache) {
 	// Prepare provider
 	AudioProvider *provider = NULL;
 

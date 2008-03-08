@@ -824,7 +824,7 @@ void AudioDisplay::SetScale(float _scale) {
 
 //////////////////
 // Load from file
-void AudioDisplay::SetFile(wxString file) {
+void AudioDisplay::SetFile(Aegisub::String file) {
 	wxLogDebug(_T("AudioDisplay::SetFile(file=%s)"), file.c_str());
 	// Unload
 	if (file.IsEmpty()) try {
