@@ -60,6 +60,6 @@ libuniversalchardet_a_SOURCES += \
 EXTRA_DIST = \
 	Big5Freq.tab \
 	EUCKRFreq.tab \
-	EUCTWFreq.tab \ 
+	EUCTWFreq.tab \
 	GB2312Freq.tab \
 	JISFreq.tab
