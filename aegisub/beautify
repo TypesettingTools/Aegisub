@@ -1,3 +1,0 @@
-#!/bin/sh
-
-sed -e 's%\t\(if $(\(CXX\|\)COMPILE)\)%\t@echo -e "\\033[32;1m$@\\033[m";\1%' -i.orig Makefile
