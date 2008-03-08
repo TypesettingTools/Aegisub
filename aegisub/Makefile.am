@@ -295,4 +295,6 @@ noinst_HEADERS = \
 	mythes.hxx \
 	auto4_perldata.inc
 
-EXTRA_DIST = $(srcdir)/*.h beautify
+EXTRA_DIST = \
+	$(srcdir)/*.h \
+	$(srcdir)/include/aegisub/*.h
