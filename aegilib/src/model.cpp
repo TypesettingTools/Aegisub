@@ -86,26 +86,34 @@ Manipulator Model::CreateAntiManipulator(const Manipulator &src)
 
 ///////////////
 // Load a file
-void Model::LoadFile(FileReader &file,Format *format)
+void Model::LoadFile(wxInputStream &input,const Format *format,const String encoding)
 {
-	// Detect format
+	// Autodetect format
 	if (format == NULL) {
 		// TODO
+
+		// No format found
+		throw Exception(Exception::No_Format_Handler);
 	}
 
-	// No format found
-	throw Exception(Exception::No_Format_Handler);
+	// Get handler
+	FormatHandler *handler = format->GetHandler(*this);
+	if (!handler) throw Exception(Exception::No_Format_Handler);
 
 	// Load
-	(void) file;
+	handler->Load(input,encoding);
+
+	// Clean up
+	delete handler;
 }
 
 
 //////////////////
 // Save to a file
-void Model::SaveFile(FileWriter &file,Format *format)
+void Model::SaveFile(wxOutputStream &output,const Format *format,const String encoding)
 {
-	(void) file;
+	(void) output;
 	(void) format;
+	(void) encoding;
 	// TODO
 }

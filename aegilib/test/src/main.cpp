@@ -34,6 +34,7 @@
 //
 
 #include <aegilib/aegilib.h>
+#include <wx/wfstream.h>
 #include <iostream>
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -44,20 +45,33 @@ int main () {
 
 	cout << "Aegilib test program by amz.\n\n";
 
-	// Subtitles model
-	Model subs;
+	try {
+		// Set up the lib
+		FormatManager::InitializeFormats();
 
-	// Load subtitles
-	cout << "Loading file... ";
-	subs.LoadFile(TextFileReader(L"subs_in.ass"));
-	cout << "Done.\n";
+		// Subtitles model
+		Model subs;
 
-	// Modify subtitles
-	cout << "Modifying file...";
-	cout << "Done.\n";
+		// Load subtitles
+		cout << "Loading file... ";
+		String filename = L"subs_in.ass";
+		const Format *handler = FormatManager::GetFormatFromFilename(filename);
+		subs.LoadFile(wxFileInputStream(filename),handler);
+		cout << "Done.\n";
 
-	// Save subtitles
-	cout << "Saving file... ";
-	subs.SaveFile(TextFileWriter(L"subs_out.ass"));
-	cout << "Done.\n";
+		// Modify subtitles
+		cout << "Modifying file...";
+		cout << "Done.\n";
+
+		// Save subtitles
+		cout << "Saving file... ";
+		filename = L"subs_out.ass";
+		handler = FormatManager::GetFormatFromFilename(filename);
+		subs.SaveFile(wxFileOutputStream(filename),handler);
+		cout << "Done.\n";
+	}
+
+	catch (Exception &e) {
+		cout << "\n\nException: " << e.GetMessage().mb_str(wxConvUTF8) << endl << endl;
+	}
 }

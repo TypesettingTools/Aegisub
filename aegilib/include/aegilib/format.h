@@ -39,15 +39,16 @@
 namespace Aegilib {
 	// Prototypes
 	class FormatHandler;
+	class Model;
 
 	// Format interface
 	class Format {
 	public:
-		virtual ~Format();
+		virtual ~Format() {}
 
 		virtual String GetName() const = 0;
-		virtual String GetExtensionWildcard() const = 0;
-		virtual const FormatHandler& GetHandler() const = 0;
+		virtual String GetExtension() const = 0;
+		virtual FormatHandler* GetHandler(const Model &model) const = 0;
 
 		virtual bool CanStoreText() const { return false; }
 		virtual bool CanStoreImages() const { return false; }

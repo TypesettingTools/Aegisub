@@ -34,13 +34,36 @@
 //
 
 #pragma once
-
-#include <wx/string.h>
+#include "format.h"
+#include "format_handler.h"
 
 namespace Aegilib {
 
-	// Define the string type used throughout this library
-	//typedef std::basic_string<wchar_t> String;
-	typedef wxString String;
+	// Prototypes
+	class Model;
+
+	// Advanced Substation Alpha format handler
+	class FormatHandlerASS : public FormatHandler {
+	public:
+		FormatHandlerASS(const Model &model);
+		~FormatHandlerASS();
+
+		void Load(wxInputStream &file,const String encoding);
+	};
+
+	// Advanced Substation Alpha format
+	class FormatASS : public Format {
+	public:
+		String GetName() const { return L"Advanced Substation Alpha"; }
+		String GetExtension() const { return L".ass"; }
+		FormatHandler* GetHandler(const Model &model) const { return new FormatHandlerASS(model); }
+
+		bool CanStoreText() const { return true; }
+		bool CanUseTime() const { return true; }
+
+		bool HasStyles() const { return true; }
+		bool HasMargins() const { return true; }
+		bool HasActors() const { return true; }
+	};
 
 };

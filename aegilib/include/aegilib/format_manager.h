@@ -34,13 +34,25 @@
 //
 
 #pragma once
-
-#include <wx/string.h>
+#include "format.h"
 
 namespace Aegilib {
 
-	// Define the string type used throughout this library
-	//typedef std::basic_string<wchar_t> String;
-	typedef wxString String;
+	// Format manager class
+	class FormatManager {
+	private:
+		static std::vector<const Format*> formats;
+		FormatManager() {}
+
+	public:
+		static void AddFormat(const Format *format);
+		static void InitializeFormats();
+		static void ClearFormats();
+
+		static int GetFormatCount();
+		static const Format* GetFormatByIndex(const int index);
+		static const Format* GetFormatFromFilename(const String &filename);
+		static const Format* GetFormatFromName(const String &name);
+	};
 
 };

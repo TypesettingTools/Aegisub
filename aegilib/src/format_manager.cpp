@@ -33,14 +33,82 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
-
+#include "format_manager.h"
+#include "formats/format_ass.h"
 #include <wx/string.h>
+using namespace Aegilib;
 
-namespace Aegilib {
 
-	// Define the string type used throughout this library
-	//typedef std::basic_string<wchar_t> String;
-	typedef wxString String;
+////////
+// List
+std::vector<const Format*> FormatManager::formats;
 
-};
+
+////////////////
+// Add a format
+void FormatManager::AddFormat(const Format *format)
+{
+	formats.push_back(format);
+}
+
+
+///////////////////////////////////
+// Initialzie all built-in formats
+void FormatManager::InitializeFormats()
+{
+	formats.push_back(new FormatASS);
+}
+
+
+///////////////////////
+// Removes all formats
+void FormatManager::ClearFormats()
+{
+	formats.clear();
+}
+
+
+/////////////////////
+// Number of formats
+int FormatManager::GetFormatCount()
+{
+	return (int) formats.size();
+}
+
+
+////////////
+// By index
+const Format* FormatManager::GetFormatByIndex(const int index)
+{
+	try {
+		return formats.at(index);
+	}
+	catch (...) {
+		return NULL;
+	}
+}
+
+
+///////////////
+// By filename
+const Format* FormatManager::GetFormatFromFilename(const String &filename)
+{
+	size_t len = formats.size();
+	for (size_t i=0;i<len;i++) {
+		if (filename.EndsWith(formats[i]->GetExtension())) return formats[i];
+	}
+	return NULL;
+}
+
+
+//////////////////
+// By format name
+const Format* FormatManager::GetFormatFromName(const String &name)
+{
+	size_t len = formats.size();
+	for (size_t i=0;i<len;i++) {
+		if (name == formats[i]->GetName()) return formats[i];
+	}
+	return NULL;
+}
+

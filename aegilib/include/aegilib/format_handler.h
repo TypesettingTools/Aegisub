@@ -34,13 +34,16 @@
 //
 
 #pragma once
-
-#include <wx/string.h>
+#include "aegistring.h"
 
 namespace Aegilib {
 
-	// Define the string type used throughout this library
-	//typedef std::basic_string<wchar_t> String;
-	typedef wxString String;
+	// Format handler interface
+	class FormatHandler {
+	public:
+		virtual ~FormatHandler() {}
+
+		virtual void Load(wxInputStream &file,const String encoding) = 0;
+	};
 
 };

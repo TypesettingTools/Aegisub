@@ -33,14 +33,30 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
+#include "model.h"
+#include "format_ass.h"
+using namespace Aegilib;
 
-#include <wx/string.h>
 
-namespace Aegilib {
+///////////////
+// Constructor
+FormatHandlerASS::FormatHandlerASS(const Model &model)
+{
+	(void) model;
+}
 
-	// Define the string type used throughout this library
-	//typedef std::basic_string<wchar_t> String;
-	typedef wxString String;
 
-};
+//////////////
+// Destructor
+FormatHandlerASS::~FormatHandlerASS()
+{
+}
+
+
+///////////////
+// Load a file
+void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
+{
+	(void) file;
+	(void) encoding;
+}

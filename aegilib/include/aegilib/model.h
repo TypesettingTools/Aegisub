@@ -35,6 +35,7 @@
 
 #pragma once
 #include <list>
+#include <wx/stream.h>
 #include "manipulator.h"
 #include "file.h"
 
@@ -65,13 +66,13 @@ namespace Aegilib {
 		const Format& GetFormat() const;
 		void AddListener(View *listener);
 
-		void LoadFile(FileReader &file,Format *format=NULL);
-		void SaveFile(FileWriter &file,Format *format=NULL);
+		void LoadFile(wxInputStream &input,const Format *format=NULL,const String encoding=L"");
+		void SaveFile(wxOutputStream &output,const Format *format=NULL,const String encoding=L"UTF-8");
 
-		bool CanUndo(String owner=L"") const;
-		bool CanRedo(String owner=L"") const;
-		bool Undo(String owner=L"");
-		bool Redo(String owner=L"");
+		bool CanUndo(const String owner=L"") const;
+		bool CanRedo(const String owner=L"") const;
+		bool Undo(const String owner=L"");
+		bool Redo(const String owner=L"");
 	};
 
 };

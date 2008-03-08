@@ -184,6 +184,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\format_handler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\format_manager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\manipulator.h"
 				>
 			</File>
@@ -236,6 +244,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\format_manager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\prec.cpp"
 				>
 				<FileConfiguration
@@ -258,6 +270,18 @@
 			</File>
 			<File
 				RelativePath=".\src\prec.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Formats"
+			>
+			<File
+				RelativePath=".\src\formats\format_ass.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\formats\format_ass.h"
 				>
 			</File>
 		</Filter>

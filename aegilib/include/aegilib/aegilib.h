@@ -40,5 +40,7 @@
 #include "notification.h"
 #include "aegistring.h"
 #include "format.h"
+#include "format_handler.h"
+#include "format_manager.h"
 #include "manipulator.h"
 #include "exception.h"
