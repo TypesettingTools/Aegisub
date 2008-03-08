@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,51 +27,44 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB
 //
-// Website: http://www.aegisub.net
-// Contact: mailto:amz@aegisub.net
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
 //
+
 
 #pragma once
-#include <list>
+
+
+// Headers
+#include "aegilib.h"
 #include <wx/stream.h>
-#include "manipulator.h"
+
 
 namespace Aegilib {
-	// Prototypes
-	class View;
-	class Notification;
-	class Format;
-	
-	// Model class
-	// Stores the subtitle data
-	class Model {
-		friend class Manipulator;
-		typedef std::list<View*> ViewList;
-		typedef std::list<const Manipulator> ActionStack;
-
+	class TextFileReader {
 	private:
-		ActionStack undoStack;
-		ActionStack redoStack;
-		ViewList listeners;
-		bool readOnly;
-		
-		void ProcessActionList(const Manipulator &actionList,bool insertInStack);
-		Manipulator CreateAntiManipulator(const Manipulator &manipulator);
-		void DispatchNotifications(const Notification &notification) const;
+		wxString encoding;
+		wxInputStream &file;
+		wxMBConv *conv;
+		bool Is16;
+		bool swap;
+		bool customConv;
+		bool trim;
+
+		void SetEncodingConfiguration();
 
 	public:
-		const Format& GetFormat() const;
-		void AddListener(View *listener);
+		TextFileReader(wxInputStream &stream,String encoding=_T(""),bool trim=true);
+		~TextFileReader();
 
-		void LoadFile(wxInputStream &input,const Format *format=NULL,const String encoding=L"");
-		void SaveFile(wxOutputStream &output,const Format *format=NULL,const String encoding=L"UTF-8");
+		String ReadLineFromFile();
+		bool HasMoreLines();
 
-		bool CanUndo(const String owner=L"") const;
-		bool CanRedo(const String owner=L"") const;
-		bool Undo(const String owner=L"");
-		bool Redo(const String owner=L"");
+		static void EnsureValid(const String encoding);
+		String GetCurrentEncoding();
+		static String GetEncoding(const String filename);
 	};
+}
 
-};

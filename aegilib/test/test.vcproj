@@ -182,28 +182,12 @@
 				RelativePath=".\src\main.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\src\text_file_reader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\text_file_writer.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\src\text_file_reader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\text_file_writer.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

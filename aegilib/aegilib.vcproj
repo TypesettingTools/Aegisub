@@ -176,10 +176,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\file.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\aegilib\format.h"
 				>
 			</File>
@@ -270,6 +266,14 @@
 			</File>
 			<File
 				RelativePath=".\src\prec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_file_reader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_file_reader.h"
 				>
 			</File>
 		</Filter>

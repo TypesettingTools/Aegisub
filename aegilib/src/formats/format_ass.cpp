@@ -35,6 +35,8 @@
 
 #include "model.h"
 #include "format_ass.h"
+#include "../text_file_reader.h"
+#include <iostream>
 using namespace Aegilib;
 
 
@@ -57,6 +59,13 @@ FormatHandlerASS::~FormatHandlerASS()
 // Load a file
 void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 {
-	(void) file;
-	(void) encoding;
+	// Make text file reader
+	TextFileReader reader(file,encoding);
+	
+	using namespace std;
+	cout << endl << "Dumping file:" << endl;
+	while (reader.HasMoreLines()) {
+		wxString cur = reader.ReadLineFromFile();
+		cout << cur.mb_str(wxConvUTF8) << endl;
+	}
 }
