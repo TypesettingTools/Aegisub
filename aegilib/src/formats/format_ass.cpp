@@ -138,7 +138,8 @@ SectionEntry *FormatHandlerASS::MakeEntry(String data,String group,int version)
 			final = diag;
 
 			// Debug
-			std::cout << "[" << group.mb_str(wxConvUTF8) << "] " << diag->GetText().mb_str(wxConvUTF8) << std::endl;
+			wxString out = diag->GetStartTime().GetString(2,1) + _T(",") + diag->GetEndTime().GetString(2,1) + _T(",") + diag->GetText();
+			std::cout << out.mb_str(wxConvUTF8) << std::endl;
 		}
 
 		// Format lines
@@ -295,11 +296,11 @@ bool DialogueASS::Parse(wxString rawData, int version)
 
 	// Get start time
 	if (!tkn.HasMoreTokens()) return false;
-	start = ParseTime(tkn.GetNextToken());
+	start.Parse(tkn.GetNextToken());
 
 	// Get end time
 	if (!tkn.HasMoreTokens()) return false;
-	end = ParseTime(tkn.GetNextToken());
+	end.Parse(tkn.GetNextToken());
 
 	// Get style
 	if (!tkn.HasMoreTokens()) return false;
@@ -352,13 +353,4 @@ bool DialogueASS::Parse(wxString rawData, int version)
 	text = rawData.Mid(pos+tkn.GetPosition());
 
 	return true;
-}
-
-
-/////////////////////
-// Parse time string
-Time DialogueASS::ParseTime(String time)
-{
-	(void) time;
-	return 0;
 }

@@ -87,7 +87,6 @@ namespace Aegilib {
 		bool comment;
 
 		bool Parse(String data,int version);
-		Time ParseTime(String data);
 
 	public:
 		// Constructors

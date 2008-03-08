@@ -36,8 +36,8 @@
 
 #pragma once
 #include "exception.h"
-#include "section_entry.h"
 #include "time.h"
+#include "section_entry.h"
 
 
 namespace Aegilib {

@@ -33,25 +33,77 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
-#include "aegistring.h"
+#include "aegilib.h"
+using namespace Aegilib;
 
-namespace Aegilib {
 
-	// Time class
-	class Time {
-	private:
-		int ms;
+//////////////////////
+// Generates a string
+String Time::GetString(int ms_precision,int h_precision)
+{
+	// Enforce sanity
+	ms_precision = MID(0,ms_precision,3);
+	h_precision = MID(0,h_precision,2);
 
-	public:
-		Time() { ms = 0; }
-		Time(int ms) { (void)ms; }
+	// Generate values
+	int _ms = ms;
+	int h = _ms / 3600000;
+	_ms -= h*3600000;
+	int min = _ms / 60000;
+	_ms -= min*60000;
+	int s = _ms / 1000;
+	_ms -= s*1000;
 
-		void SetMS(int milliseconds) { ms = milliseconds; }
-		int GetMS() { return ms; }
+	// Cap hour value
+	if (h > 9 && h_precision == 1) {
+		h = 9;
+		min = 59;
+		s = 59;
+		_ms = 999;
+	}
 
-		String GetString(int ms_precision,int h_precision);
-		void Parse(String data);
-	};
+	// Modify ms to account for precision
+	if (ms_precision == 2) _ms /= 10;
+	else if (ms_precision == 1) _ms /= 100;
+	else if (ms_precision == 0) _ms = 0;
 
-};
+	// Generate mask string
+	wxString mask = wxString::Format(_T("%%0%ii:%%0%ii:%%0%ii.%%0%ii"),h_precision,2,2,ms_precision);
+
+	// Generate final string
+	wxString final = wxString::Format(mask,h,min,s,_ms);
+
+	// Done
+	return final;
+}
+
+
+///////////////////
+// Parses a string
+void Time::Parse(String data)
+{
+	// Break into an array of values
+	std::vector<double> values;
+	values.reserve(4);
+	size_t last = 0;
+	data += _T(":");
+	size_t len = data.Length();
+	for (size_t i=0;i<len;i++) {
+		if (data[i] == ':' || data[i] == ';') {
+			wxString temp = data.Mid(last,i-last);
+			last = i+1;
+			double tempd;
+			temp.ToDouble(&tempd);
+			values.push_back(tempd);
+		}
+	}
+
+	// Turn into milliseconds
+	ms = 0;
+	double mult = 1000.0;
+	int len2 = (int) values.size();
+	for (int i=len2;--i>=0;) {
+		ms += (int)(values[i] * mult);
+		mult *= 60.0;
+	}
+}

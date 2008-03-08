@@ -296,6 +296,10 @@
 				RelativePath=".\src\text_file_reader.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\time.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Formats"
