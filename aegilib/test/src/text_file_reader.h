@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,41 +27,61 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB
 //
-// Website: http://www.aegisub.net
-// Contact: mailto:amz@aegisub.net
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
 //
+
 
 #pragma once
-#include "aegistring.h"
 
-namespace Aegilib {
-	// Prototypes
-	class FormatHandler;
 
-	// Format interface
-	class Format {
-	public:
-		virtual ~Format();
+///////////
+// Headers
+#include <aegilib/file.h>
+#include <wx/wxprec.h>
+#include <wx/dynarray.h>
+#include <wx/string.h>
+#ifdef TEXT_READER_USE_STDIO
+#include <stdio.h>
+#else
+#include <fstream>
+#endif
 
-		virtual String GetName() const = 0;
-		virtual String GetExtensionWildcard() const = 0;
-		virtual const FormatHandler& GetHandler() const = 0;
 
-		virtual bool CanStoreText() const { return false; }
-		virtual bool CanStoreImages() const { return false; }
-		virtual bool CanUseTime() const { return false; }
-		virtual bool CanUseFrames() const { return false; }
+/////////
+// Class
+class TextFileReader : public Aegilib::FileReader {
+private:
+	wxString filename;
+	wxString encoding;
+#ifdef TEXT_READER_USE_STDIO
+	FILE *file;
+#else
+	std::ifstream file;
+#endif
+	wxMBConv *conv;
+	bool Is16;
+	bool swap;
+	bool open;
+	bool customConv;
+	bool trim;
 
-		virtual bool HasStyles() const { return false; }
-		virtual bool HasMargins() const { return false; }
-		virtual bool HasActors() const { return false; }
-		virtual bool HasUserField() const { return false; }
-		virtual String GetUserFieldName() const { return L""; }
+	void Open();
+	void Close();
+	void SetEncodingConfiguration();
 
-		virtual int GetTimingPrecision() const { return 10; }	// In milliseconds
-		virtual int GetMaxTime() const { return 36000000-10; }	// In milliseconds, default 9h 59min 59.99s
-	};
+public:
+	TextFileReader(Aegilib::String filename,Aegilib::String encoding=_T(""),bool trim=true);
+	~TextFileReader();
 
+	Aegilib::String ReadLineFromFile();
+	bool HasMoreLines();
+
+	static void EnsureValid(const Aegilib::String encoding);
+	Aegilib::String GetCurrentEncoding();
+	static Aegilib::String GetEncoding(const Aegilib::String filename);
 };
+
+

@@ -65,13 +65,13 @@ namespace Aegilib {
 		const Format& GetFormat() const;
 		void AddListener(View *listener);
 
-		void LoadFile(FileReader &file);
-		void SaveFile(FileWriter &file);
+		void LoadFile(FileReader &file,Format *format=NULL);
+		void SaveFile(FileWriter &file,Format *format=NULL);
 
-		bool CanUndo(String owner=_T("")) const;
-		bool CanRedo(String owner=_T("")) const;
-		bool Undo(String owner=_T(""));
-		bool Redo(String owner=_T(""));
+		bool CanUndo(String owner=L"") const;
+		bool CanRedo(String owner=L"") const;
+		bool Undo(String owner=L"");
+		bool Redo(String owner=L"");
 	};
 
 };

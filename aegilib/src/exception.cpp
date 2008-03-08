@@ -33,35 +33,34 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
-#include "aegistring.h"
+#include "exception.h"
+using namespace Aegilib;
 
-namespace Aegilib {
-	// Prototypes
-	class FormatHandler;
 
-	// Format interface
-	class Format {
-	public:
-		virtual ~Format();
+///////////////
+// Constructor
+Exception::Exception(ExceptionList _code)
+{
+	code = _code;
+}
 
-		virtual String GetName() const = 0;
-		virtual String GetExtensionWildcard() const = 0;
-		virtual const FormatHandler& GetHandler() const = 0;
 
-		virtual bool CanStoreText() const { return false; }
-		virtual bool CanStoreImages() const { return false; }
-		virtual bool CanUseTime() const { return false; }
-		virtual bool CanUseFrames() const { return false; }
+//////////////////////
+// Get message string
+String Exception::GetMessage()
+{
+	switch (code) {
+		case Unknown: return L"Unknown.";
+		case No_Format_Handler: return L"Could not find a suitable format handler.";
+		case Invalid_Manipulator: return L"Invalid manipulator.";
+	}
+	return L"Invalid code.";
+}
 
-		virtual bool HasStyles() const { return false; }
-		virtual bool HasMargins() const { return false; }
-		virtual bool HasActors() const { return false; }
-		virtual bool HasUserField() const { return false; }
-		virtual String GetUserFieldName() const { return L""; }
 
-		virtual int GetTimingPrecision() const { return 10; }	// In milliseconds
-		virtual int GetMaxTime() const { return 36000000-10; }	// In milliseconds, default 9h 59min 59.99s
-	};
-
-};
+////////////
+// Get code
+int Exception::GetCode()
+{
+	return code;
+}

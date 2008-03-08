@@ -59,7 +59,7 @@ Manipulator::~Manipulator()
 // Add an action to the queue
 void Manipulator::AddAction(const Action &action)
 {
-	if (!valid) throw 0;	// TODO
+	if (!valid) throw Exception(Exception::Invalid_Manipulator);
 	actions.push_back(action);
 }
 

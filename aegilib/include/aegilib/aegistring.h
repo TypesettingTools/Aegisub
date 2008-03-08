@@ -38,6 +38,6 @@
 namespace Aegilib {
 
 	// Define the string type used throughout this library
-	typedef wxString String;
+	typedef std::basic_string<wchar_t> String;
 
 };

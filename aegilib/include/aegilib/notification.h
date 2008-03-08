@@ -34,6 +34,7 @@
 //
 
 #pragma once
+#include <vector>
 #include "model.h"
 #include "notification.h"
 

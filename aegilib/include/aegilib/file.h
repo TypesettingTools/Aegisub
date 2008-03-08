@@ -41,6 +41,8 @@ namespace Aegilib {
 	// File reader interface
 	class FileReader {
 	public:
+		virtual ~FileReader() {}
+
 		virtual String ReadLineFromFile() = 0;
 		virtual bool HasMoreLines() = 0;
 		virtual String GetCurrentEncoding() = 0;
@@ -49,6 +51,8 @@ namespace Aegilib {
 	// File writer interface
 	class FileWriter {
 	public:
+		virtual ~FileWriter() {}
+
 		virtual void WriteLineToFile(String line,bool addLineBreak=true) = 0;
 	};
 

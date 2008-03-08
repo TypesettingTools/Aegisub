@@ -33,35 +33,31 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
-#include "aegistring.h"
+#include <aegilib/aegilib.h>
+#include <iostream>
+#include "text_file_reader.h"
+#include "text_file_writer.h"
 
-namespace Aegilib {
-	// Prototypes
-	class FormatHandler;
+int main () {
+	using namespace std;
+	using namespace Aegilib;
 
-	// Format interface
-	class Format {
-	public:
-		virtual ~Format();
+	cout << "Aegilib test program by amz.\n\n";
 
-		virtual String GetName() const = 0;
-		virtual String GetExtensionWildcard() const = 0;
-		virtual const FormatHandler& GetHandler() const = 0;
+	// Subtitles model
+	Model subs;
 
-		virtual bool CanStoreText() const { return false; }
-		virtual bool CanStoreImages() const { return false; }
-		virtual bool CanUseTime() const { return false; }
-		virtual bool CanUseFrames() const { return false; }
+	// Load subtitles
+	cout << "Loading file... ";
+	subs.LoadFile(TextFileReader(L"subs_in.ass"));
+	cout << "Done.\n";
 
-		virtual bool HasStyles() const { return false; }
-		virtual bool HasMargins() const { return false; }
-		virtual bool HasActors() const { return false; }
-		virtual bool HasUserField() const { return false; }
-		virtual String GetUserFieldName() const { return L""; }
+	// Modify subtitles
+	cout << "Modifying file...";
+	cout << "Done.\n";
 
-		virtual int GetTimingPrecision() const { return 10; }	// In milliseconds
-		virtual int GetMaxTime() const { return 36000000-10; }	// In milliseconds, default 9h 59min 59.99s
-	};
-
-};
+	// Save subtitles
+	cout << "Saving file... ";
+	subs.SaveFile(TextFileWriter(L"subs_out.ass"));
+	cout << "Done.\n";
+}

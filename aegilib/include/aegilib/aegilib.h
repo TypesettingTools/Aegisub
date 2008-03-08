@@ -41,3 +41,4 @@
 #include "aegistring.h"
 #include "format.h"
 #include "manipulator.h"
+#include "exception.h"

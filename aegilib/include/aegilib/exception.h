@@ -34,34 +34,27 @@
 //
 
 #pragma once
-#include "aegistring.h"
+
+#include "aegilib.h"
 
 namespace Aegilib {
-	// Prototypes
-	class FormatHandler;
 
-	// Format interface
-	class Format {
+	// Exception class
+	class Exception {
 	public:
-		virtual ~Format();
+		enum ExceptionList {
+			Unknown,
+			No_Format_Handler,
+			Invalid_Manipulator
+		};
 
-		virtual String GetName() const = 0;
-		virtual String GetExtensionWildcard() const = 0;
-		virtual const FormatHandler& GetHandler() const = 0;
+		Exception(ExceptionList code);
 
-		virtual bool CanStoreText() const { return false; }
-		virtual bool CanStoreImages() const { return false; }
-		virtual bool CanUseTime() const { return false; }
-		virtual bool CanUseFrames() const { return false; }
+		String GetMessage();
+		int GetCode();
 
-		virtual bool HasStyles() const { return false; }
-		virtual bool HasMargins() const { return false; }
-		virtual bool HasActors() const { return false; }
-		virtual bool HasUserField() const { return false; }
-		virtual String GetUserFieldName() const { return L""; }
-
-		virtual int GetTimingPrecision() const { return 10; }	// In milliseconds
-		virtual int GetMaxTime() const { return 36000000-10; }	// In milliseconds, default 9h 59min 59.99s
+	private:
+		ExceptionList code;
 	};
 
 };

@@ -82,3 +82,30 @@ Manipulator Model::CreateAntiManipulator(const Manipulator &src)
 	// TODO
 	return dst;
 }
+
+
+///////////////
+// Load a file
+void Model::LoadFile(FileReader &file,Format *format)
+{
+	// Detect format
+	if (format == NULL) {
+		// TODO
+	}
+
+	// No format found
+	throw Exception(Exception::No_Format_Handler);
+
+	// Load
+	(void) file;
+}
+
+
+//////////////////
+// Save to a file
+void Model::SaveFile(FileWriter &file,Format *format)
+{
+	(void) file;
+	(void) format;
+	// TODO
+}

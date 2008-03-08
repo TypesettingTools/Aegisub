@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,41 +27,50 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB
 //
-// Website: http://www.aegisub.net
-// Contact: mailto:amz@aegisub.net
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
-#pragma once
-#include "aegistring.h"
 
-namespace Aegilib {
-	// Prototypes
-	class FormatHandler;
+#ifndef TEXT_FILE_WRITER_H
+#define TEXT_FILE_WRITER_H
 
-	// Format interface
-	class Format {
-	public:
-		virtual ~Format();
 
-		virtual String GetName() const = 0;
-		virtual String GetExtensionWildcard() const = 0;
-		virtual const FormatHandler& GetHandler() const = 0;
+///////////
+// Headers
+#include <aegilib/file.h>
+#include <wx/wxprec.h>
+#include <wx/string.h>
+#include <fstream>
 
-		virtual bool CanStoreText() const { return false; }
-		virtual bool CanStoreImages() const { return false; }
-		virtual bool CanUseTime() const { return false; }
-		virtual bool CanUseFrames() const { return false; }
 
-		virtual bool HasStyles() const { return false; }
-		virtual bool HasMargins() const { return false; }
-		virtual bool HasActors() const { return false; }
-		virtual bool HasUserField() const { return false; }
-		virtual String GetUserFieldName() const { return L""; }
+/////////
+// Class
+class TextFileWriter : public Aegilib::FileWriter {
+private:
+	wxString filename;
+	wxString encoding;
+	std::ofstream file;
 
-		virtual int GetTimingPrecision() const { return 10; }	// In milliseconds
-		virtual int GetMaxTime() const { return 36000000-10; }	// In milliseconds, default 9h 59min 59.99s
-	};
+	wxMBConv *conv;
+	bool customConv;
+	bool open;
+	bool Is16;
+	bool IsFirst;
+	bool IsUnicode;
 
+	void Open();
+	void Close();
+	void SetEncoding();
+
+public:
+	TextFileWriter(Aegilib::String filename,Aegilib::String encoding=_T(""));
+	~TextFileWriter();
+
+	void WriteLineToFile(Aegilib::String line,bool addLineBreak=true);
 };
+
+
+#endif

@@ -1436,6 +1436,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\plugin_manager.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\setup.cpp"
 				>
 			</File>
@@ -1576,10 +1580,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\video_provider.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\video_provider.h"
 				>
 			</File>
@@ -1609,6 +1609,10 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\video_provider_lavc.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\video_provider_manager.cpp"
 				>
 			</File>
 			<File

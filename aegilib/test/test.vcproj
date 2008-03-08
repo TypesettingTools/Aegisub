@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="aegilib"
-	ProjectGUID="{A805B34D-B7BE-41E9-9BB8-3FA3A494304A}"
-	RootNamespace="aegilib"
+	Name="aegilib_test"
+	ProjectGUID="{5A278743-375B-4FBE-AA7F-0C3BDCF8F96C}"
+	RootNamespace="test"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -19,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -40,19 +40,16 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="include/aegilib"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				AdditionalIncludeDirectories="../include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="prec.h"
-				WarningLevel="4"
-				WarnAsError="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
-				ForcedIncludeFiles="prec.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -64,10 +61,17 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
+				LinkIncremental="2"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -79,6 +83,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -86,7 +96,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -107,18 +117,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="include/aegilib"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS"
+				AdditionalIncludeDirectories="../include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="prec.h"
-				WarningLevel="4"
-				WarnAsError="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4996"
-				ForcedIncludeFiles="prec.h"
-				EnablePREfast="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -130,10 +136,19 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -145,6 +160,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -153,113 +174,42 @@
 	</References>
 	<Files>
 		<Filter
-			Name="API"
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\include\aegilib\action.h"
+				RelativePath=".\src\main.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\aegilib.h"
+				RelativePath=".\src\text_file_reader.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\aegistring.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\controller.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\exception.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\file.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\format.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\manipulator.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\model.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\notification.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\view.h"
+				RelativePath=".\src\text_file_writer.cpp"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="MVC"
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\action.cpp"
+				RelativePath=".\src\text_file_reader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\manipulator.cpp"
+				RelativePath=".\src\text_file_writer.h"
 				>
-			</File>
-			<File
-				RelativePath=".\src\model.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\view.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="prec.h"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
-			Name="Misc"
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath=".\src\exception.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\prec.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="prec.h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\src\prec.h"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
