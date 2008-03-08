@@ -50,5 +50,5 @@
 class AudioProviderFactoryManager : public FactoryManager<AudioProviderFactory> {
 public:
 	static void RegisterProviders();
-	static AudioProvider *GetAudioProvider(Aegisub::String filename, int cache=-1);
+	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
 };

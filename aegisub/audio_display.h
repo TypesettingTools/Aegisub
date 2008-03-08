@@ -165,7 +165,7 @@ public:
 	void CommitChanges(bool nextLine=false);
 	void AddLead(bool in,bool out);
 
-	void SetFile(Aegisub::String file);
+	void SetFile(wxString file);
 	void SetFromVideo();
 	void Reload();
 
