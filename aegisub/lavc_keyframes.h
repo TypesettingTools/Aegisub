@@ -48,7 +48,7 @@ class LAVCKeyFrames {
 
 		int streamN;					// Stream index
 	public:
-		LAVCKeyFrames(const Aegisub::String& filename);
+		LAVCKeyFrames(const Aegisub::String filename);
 		~LAVCKeyFrames();
 		wxArrayInt GetKeyFrames();
 };
