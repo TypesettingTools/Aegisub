@@ -33,38 +33,39 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "exception.h"
-using namespace Aegilib;
+#pragma once
 
+namespace Aegilib {
 
-///////////////
-// Constructor
-Exception::Exception(ExceptionList _code)
-{
-	code = _code;
-}
+	// Types
+	enum SectionEntryType {
+		SECTION_ENTRY_PLAIN,
+		SECTION_ENTRY_DIALOGUE,
+		SECTION_ENTRY_STYLE,
+		SECTION_ENTRY_FILE,
+		SECTION_ENTRY_RAW
+	};
 
+	// Prototypes
+	class SectionEntryPlain;
+	class SectionEntryDialogue;
+	class SectionEntryStyle;
+	class SectionEntryFile;
+	class SectionEntryRaw;
 
-//////////////////////
-// Get message string
-String Exception::GetMessage()
-{
-	switch (code) {
-		case Unknown: return L"Unknown.";
-		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_Manipulator: return L"Invalid manipulator.";
-		case Section_Already_Exists: return L"The specified section already exists in this model.";
-		case Unknown_Format: return L"The specified file format is unknown.";
-		case Parse_Error: return L"Parse error.";
-		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
-	}
-	return L"Invalid code.";
-}
+	// Section entry class
+	class SectionEntry {
+	private:
 
+	public:
+		virtual ~SectionEntry() {}
 
-////////////
-// Get code
-int Exception::GetCode()
-{
-	return code;
-}
+		virtual SectionEntryType GetType() const =0;
+		virtual SectionEntryPlain *GetAsPlain() { return NULL; }
+		virtual SectionEntryDialogue *GetAsDialogue() { return NULL; }
+		virtual SectionEntryStyle *GetAsStyle() { return NULL; }
+		virtual SectionEntryFile *GetAsFile() { return NULL; }
+		virtual SectionEntryRaw *GetAsRaw() { return NULL; }
+	};
+
+};

@@ -47,8 +47,9 @@ namespace Aegilib {
 		virtual ~Format() {}
 
 		virtual String GetName() const = 0;
-		virtual String GetExtension() const = 0;
-		virtual FormatHandler* GetHandler(const Model &model) const = 0;
+		virtual StringArray GetReadExtensions() const = 0;
+		virtual StringArray GetWriteExtensions() const = 0;
+		virtual FormatHandler* GetHandler(Model &model) const = 0;
 
 		virtual bool CanStoreText() const { return false; }
 		virtual bool CanStoreImages() const { return false; }

@@ -35,7 +35,7 @@
 
 #pragma once
 
-#include "aegilib.h"
+#include "aegistring.h"
 
 namespace Aegilib {
 
@@ -45,7 +45,11 @@ namespace Aegilib {
 		enum ExceptionList {
 			Unknown,
 			No_Format_Handler,
-			Invalid_Manipulator
+			Invalid_Manipulator,
+			Section_Already_Exists,
+			Unknown_Format,
+			Parse_Error,
+			Unsupported_Format_Feature
 		};
 
 		Exception(ExceptionList code);

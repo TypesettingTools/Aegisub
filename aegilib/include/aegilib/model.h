@@ -37,8 +37,10 @@
 #include <list>
 #include <wx/stream.h>
 #include "manipulator.h"
+#include "section.h"
 
 namespace Aegilib {
+
 	// Prototypes
 	class View;
 	class Notification;
@@ -52,6 +54,7 @@ namespace Aegilib {
 		typedef std::list<const Manipulator> ActionStack;
 
 	private:
+		std::list<Section*> sections;
 		ActionStack undoStack;
 		ActionStack redoStack;
 		ViewList listeners;
@@ -67,6 +70,9 @@ namespace Aegilib {
 
 		void LoadFile(wxInputStream &input,const Format *format=NULL,const String encoding=L"");
 		void SaveFile(wxOutputStream &output,const Format *format=NULL,const String encoding=L"UTF-8");
+
+		Section* GetSection(String name) const;
+		void AddSection(String name);
 
 		bool CanUndo(const String owner=L"") const;
 		bool CanRedo(const String owner=L"") const;

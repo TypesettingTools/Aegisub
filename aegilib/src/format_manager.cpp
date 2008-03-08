@@ -91,11 +91,17 @@ const Format* FormatManager::GetFormatByIndex(const int index)
 
 ///////////////
 // By filename
-const Format* FormatManager::GetFormatFromFilename(const String &filename)
+const Format* FormatManager::GetFormatFromFilename(const String &filename,bool read)
 {
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
-		if (filename.EndsWith(formats[i]->GetExtension())) return formats[i];
+		StringArray exts;
+		if (read) exts = formats[i]->GetReadExtensions();
+		else exts = formats[i]->GetWriteExtensions();
+		size_t extn = exts.size();
+		for (size_t j=0;j<extn;j++) {
+			if (filename.EndsWith(exts[j])) return formats[i];
+		}
 	}
 	return NULL;
 }

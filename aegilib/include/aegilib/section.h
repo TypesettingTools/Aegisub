@@ -33,38 +33,27 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "exception.h"
-using namespace Aegilib;
+#pragma once
+#include "aegistring.h"
+#include "section_entry.h"
+#include <list>
 
+namespace Aegilib {
 
-///////////////
-// Constructor
-Exception::Exception(ExceptionList _code)
-{
-	code = _code;
-}
+	// Section class
+	class Section {
+	private:
+		std::list<SectionEntry*> entries;
+		String name;
 
+	public:
+		Section(String name);
+		~Section();
 
-//////////////////////
-// Get message string
-String Exception::GetMessage()
-{
-	switch (code) {
-		case Unknown: return L"Unknown.";
-		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_Manipulator: return L"Invalid manipulator.";
-		case Section_Already_Exists: return L"The specified section already exists in this model.";
-		case Unknown_Format: return L"The specified file format is unknown.";
-		case Parse_Error: return L"Parse error.";
-		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
-	}
-	return L"Invalid code.";
-}
+		String GetName() const { return name; }
+		String SetName(String newName) { name = newName; }
 
+		void AddEntry(SectionEntry *entry);
+	};
 
-////////////
-// Get code
-int Exception::GetCode()
-{
-	return code;
-}
+};

@@ -117,3 +117,25 @@ void Model::SaveFile(wxOutputStream &output,const Format *format,const String en
 	(void) encoding;
 	// TODO
 }
+
+
+//////////////////
+// Gets a section
+Section* Model::GetSection(String name) const
+{
+	std::list<Section*>::const_iterator cur;
+	for (cur=sections.begin();cur!=sections.end();cur++) {
+		if ((*cur)->GetName() == name) return *cur;
+	}
+	return NULL;
+}
+
+
+/////////////////////////
+// Inserts a new section
+void Model::AddSection(String name)
+{
+	Section *prev = GetSection(name);
+	if (prev) throw Exception(Exception::Section_Already_Exists);
+	sections.push_back(new Section(name));
+}

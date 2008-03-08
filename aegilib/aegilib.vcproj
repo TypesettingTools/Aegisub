@@ -200,6 +200,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\section.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\section_entry.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\section_entry_dialogue.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\time.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\view.h"
 				>
 			</File>
@@ -266,6 +282,10 @@
 			</File>
 			<File
 				RelativePath=".\src\prec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\section.cpp"
 				>
 			</File>
 			<File

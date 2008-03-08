@@ -34,6 +34,7 @@
 //
 
 #pragma once
+#include "exception.h"
 #include "model.h"
 #include "view.h"
 #include "controller.h"
@@ -43,4 +44,5 @@
 #include "format_handler.h"
 #include "format_manager.h"
 #include "manipulator.h"
-#include "exception.h"
+#include "section.h"
+#include "section_entry_dialogue.h"

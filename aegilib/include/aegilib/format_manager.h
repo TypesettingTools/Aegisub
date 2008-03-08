@@ -51,7 +51,7 @@ namespace Aegilib {
 
 		static int GetFormatCount();
 		static const Format* GetFormatByIndex(const int index);
-		static const Format* GetFormatFromFilename(const String &filename);
+		static const Format* GetFormatFromFilename(const String &filename,bool read);
 		static const Format* GetFormatFromName(const String &name);
 	};
 

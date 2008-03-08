@@ -36,11 +36,13 @@
 #pragma once
 
 #include <wx/string.h>
+#include <vector>
 
 namespace Aegilib {
 
 	// Define the string type used throughout this library
 	//typedef std::basic_string<wchar_t> String;
 	typedef wxString String;
+	typedef std::vector<String> StringArray;
 
 };

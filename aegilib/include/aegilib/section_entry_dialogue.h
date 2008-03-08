@@ -33,82 +33,49 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+
 #pragma once
-#include "format.h"
-#include "format_handler.h"
-#include "section.h"
-#include "section_entry_dialogue.h"
+#include "exception.h"
+#include "section_entry.h"
+#include "time.h"
+
 
 namespace Aegilib {
 
-	// Prototypes
-	class Model;
-
-	// Advanced Substation Alpha format handler
-	class FormatHandlerASS : public FormatHandler {
+	// Dialogue class
+	class SectionEntryDialogue : public SectionEntry {
 	private:
-		SectionEntry *MakeEntry(String data,String group,int version);
-		void ProcessGroup(String cur,String &curGroup,int &version);
-		Model &model;
+		void ThrowUnsupported() const { throw Exception(Exception::Unsupported_Format_Feature); }
 
 	public:
-		FormatHandlerASS(Model &model);
-		~FormatHandlerASS();
+		// Destructor
+		virtual ~SectionEntryDialogue() {}
 
-		void Load(wxInputStream &file,const String encoding);
-	};
-
-	// Advanced Substation Alpha format
-	class FormatASS : public Format {
-	public:
-		String GetName() const { return L"Advanced Substation Alpha"; }
-		StringArray GetReadExtensions() const;
-		StringArray GetWriteExtensions() const;
-		FormatHandler* GetHandler(Model &model) const { return new FormatHandlerASS(model); }
-
-		bool CanStoreText() const { return true; }
-		bool CanUseTime() const { return true; }
-
-		bool HasStyles() const { return true; }
-		bool HasMargins() const { return true; }
-		bool HasActors() const { return true; }
-	};
-
-	// Dialogue
-	class DialogueASS : public SectionEntryDialogue {
-	private:
-		String text;
-		String style;
-		String effect;
-		String actor;
-		Time start,end;
-		int margin[4];
-		int layer;
-		bool comment;
-
-		bool Parse(String data,int version);
-		Time ParseTime(String data);
-
-	public:
-		// Constructors
-		DialogueASS() {}
-		DialogueASS(String data,int version);
+		// Type
+		SectionEntryType GetType() const { return SECTION_ENTRY_DIALOGUE; }
+		SectionEntryDialogue *GetAsDialogue() { return this; }
 
 		// Capabilities
-		bool HasText() const { return true; }
-		bool HasTime() const { return true; }
-		bool HasStyle() const { return true; }
-		bool HasMargins() const { return true; }
+		virtual bool HasText() const { return false; }
+		virtual bool HasImage() const { return false; }
+		virtual bool HasTime() const { return false; }
+		virtual bool HasFrame() const { return false; }
+		virtual bool HasStyle() const { return false; }
+		virtual bool HasMargins() const { return false; }
 
 		// Read accessors
-		String GetText() const { return text; }
-		Time GetStartTime() const { return start; }
-		Time GetEndTime() const { return end; }
+		virtual String GetText() const { ThrowUnsupported(); return L""; }
+		virtual Time GetStartTime() const { ThrowUnsupported(); return 0; }
+		virtual Time GetEndTime() const { ThrowUnsupported(); return 0; }
+		virtual int GetStartFrame() const { ThrowUnsupported(); return 0; }
+		virtual int GetEndFrame() const { ThrowUnsupported(); return 0; }
 
 		// Write acessors
-		void SetText(String setText) { text = setText; }
-		void SetStartTime(Time setStart) { start = setStart; }
-		void SetEndTime(Time setEnd) { end = setEnd; }
+		virtual void SetText(String text) { (void) text; ThrowUnsupported(); }
+		virtual void SetStartTime(Time start) { (void) start; ThrowUnsupported(); }
+		virtual void SetEndTime(Time end) { (void) end; ThrowUnsupported(); }
+		virtual void SetStartFrame(int start) { (void) start; ThrowUnsupported(); }
+		virtual void SetEndFrame(int end) { (void) end; ThrowUnsupported(); }
 	};
 
 };

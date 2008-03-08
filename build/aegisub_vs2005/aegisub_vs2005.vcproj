@@ -488,122 +488,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\audio_player.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_alsa.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_alsa.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_dsound.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_dsound.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_manager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_openal.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_openal.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_portaudio.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_portaudio.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_pulse.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_player_pulse.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_avs.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_avs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_convert.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_convert.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_dummy.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_dummy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_hd.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_hd.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_lavc.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_lavc.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_pcm.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_pcm.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_ram.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_ram.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_stream.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\audio_provider_stream.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\audio_spectrum.cpp"
 				>
 			</File>
@@ -611,6 +495,130 @@
 				RelativePath="..\..\aegisub\audio_spectrum.h"
 				>
 			</File>
+			<Filter
+				Name="Providers"
+				>
+				<File
+					RelativePath="..\..\aegisub\audio_provider.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_avs.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_avs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_convert.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_convert.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_dummy.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_dummy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_hd.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_hd.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_lavc.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_lavc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_pcm.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_pcm.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_ram.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_ram.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_stream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_provider_stream.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Players"
+				>
+				<File
+					RelativePath="..\..\aegisub\audio_player.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_alsa.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_alsa.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_dsound.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_dsound.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_manager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_openal.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_openal.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_portaudio.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_portaudio.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_pulse.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_pulse.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Automation"
@@ -1604,42 +1612,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\video_provider.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider_avs.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider_cache.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider_cache.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider_dshow.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider_dummy.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider_dummy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider_lavc.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\video_provider_manager.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\video_slider.cpp"
 				>
 			</File>
@@ -1647,6 +1619,54 @@
 				RelativePath="..\..\aegisub\video_slider.h"
 				>
 			</File>
+			<Filter
+				Name="Providers"
+				>
+				<File
+					RelativePath="..\..\aegisub\video_provider_avs.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_avs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_cache.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_cache.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_dshow.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_dummy.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_dummy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_lavc.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_lavc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_manager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\video_provider_manager.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Spellchecking"
@@ -1656,11 +1676,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\spellchecker.h"
+				RelativePath="..\..\aegisub\spellchecker_hunspell.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\spellchecker_hunspell.cpp"
+				RelativePath="..\..\aegisub\spellchecker_hunspell.h"
 				>
 			</File>
 			<File
@@ -1772,15 +1792,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\subtitles_provider.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\subtitles_provider_csri.cpp"
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\subtitles_provider_csri.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\subtitles_provider_libass.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\subtitles_provider_libass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\subtitles_provider_manager.h"
 				>
 			</File>
 		</Filter>
