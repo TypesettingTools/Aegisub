@@ -297,7 +297,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 				keyFramesLoaded = true;
 #else
 #ifdef WITH_FFMPEG
-				LAVCKeyFrames k(filename);
+				LAVCKeyFrames k(filename.c_str());
 				KeyFrames = k.GetKeyFrames();
 				keyFramesLoaded = true;
 #endif
