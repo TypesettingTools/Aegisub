@@ -294,6 +294,9 @@ AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_old_hunspell" != "no"])
 if test "$with_old_hunspell" = "yes"; then
   AC_DEFINE(WITH_OLD_HUNSPELL, 1, [Enable Older Hunspell support.])
   HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS -DWITH_OLD_HUNSPELL"
+  with_hunspell="yes (old hunspell)"
+else
+  with_hunspell="no"
 fi
 
 
