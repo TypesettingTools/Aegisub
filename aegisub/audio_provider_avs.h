@@ -56,7 +56,7 @@ private:
 	void Unload();
 
 public:
-	AvisynthAudioProvider(wxString _filename);
+	AvisynthAudioProvider(Aegisub::String _filename);
 	~AvisynthAudioProvider();
 
 	wxString GetFilename();
@@ -70,7 +70,7 @@ public:
 // Factory
 class AvisynthAudioProviderFactory : public AudioProviderFactory {
 public:
-	AudioProvider *CreateProvider(wxString file) { return new AvisynthAudioProvider(file); }
+	AudioProvider *CreateProvider(Aegisub::String file) { return new AvisynthAudioProvider(file); }
 };
 
 #endif

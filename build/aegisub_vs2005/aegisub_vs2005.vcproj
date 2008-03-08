@@ -492,11 +492,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\audio_player.h"
+				RelativePath="..\..\aegisub\audio_player_alsa.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\audio_player_alsa.cpp"
+				RelativePath="..\..\aegisub\audio_player_alsa.h"
 				>
 			</File>
 			<File
@@ -504,7 +504,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_player_dsound.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_manager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_player_openal.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_openal.h"
 				>
 			</File>
 			<File
@@ -512,7 +524,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_player_portaudio.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_player_pulse.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_pulse.h"
 				>
 			</File>
 			<File
@@ -520,11 +540,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\audio_provider.h"
+				RelativePath="..\..\aegisub\audio_provider_avs.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\aegisub\audio_provider_avs.cpp"
+				RelativePath="..\..\aegisub\audio_provider_avs.h"
 				>
 			</File>
 			<File
@@ -553,6 +573,10 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\audio_provider_lavc.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_provider_lavc.h"
 				>
 			</File>
 			<File
@@ -1863,6 +1887,34 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Include"
+			>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\aegisub.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\audio_player.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\audio_provider.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\spellchecker.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\subtitles_provider.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\include\aegisub\video_provider.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\..\aegisub\changelog.txt"

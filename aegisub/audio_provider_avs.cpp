@@ -49,8 +49,8 @@
 
 //////////////
 // Constructor
-AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
-	filename = _filename;
+AvisynthAudioProvider::AvisynthAudioProvider(Aegisub::String _filename) {
+	filename = _filename.c_str();
 
 	try {
 		OpenAVSAudio();

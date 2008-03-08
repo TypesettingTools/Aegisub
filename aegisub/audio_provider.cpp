@@ -212,7 +212,7 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 	wxString error;
 	for (unsigned int i=0;i<list.Count();i++) {
 		try {
-			AudioProvider *prov = GetFactory(list[i])->CreateProvider(filename);
+			AudioProvider *prov = GetFactory(list[i])->CreateProvider(filename.c_str());
 			if (prov) {
 				provider = prov;
 				break;
