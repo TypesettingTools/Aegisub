@@ -38,7 +38,7 @@
 
 #ifdef WITH_LIBASS
 
-#include "subtitles_provider.h"
+#include "subtitles_provider_manager.h"
 extern "C" {
 #ifdef __VISUALC__
 #include "stdint.h"
