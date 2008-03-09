@@ -69,7 +69,7 @@ namespace Automation4 {
 	struct LuaStackcheck {
 		lua_State *L;
 		int startstack;
-		void check(int additional)
+		void check_stack(int additional)
 		{
 			int top = lua_gettop(L);
 			if (top - additional != startstack) {
@@ -95,11 +95,11 @@ namespace Automation4 {
 			wxLogDebug(_T("--- end dump"));
 		}
 		LuaStackcheck(lua_State *_L) : L(_L) { startstack = lua_gettop(L); }
-		~LuaStackcheck() { check(0); }
+		~LuaStackcheck() { check_stack(0); }
 	};
 #else
 	struct LuaStackcheck {
-		void check(int additional) { }
+		void check_stack(int additional) { }
 		void dump() { }
 		LuaStackcheck(lua_State *L) { }
 		~LuaStackcheck() { }
@@ -140,7 +140,7 @@ namespace Automation4 {
 			lua_pushcfunction(L, luaopen_math); lua_call(L, 0, 0);
 			lua_pushcfunction(L, luaopen_io); lua_call(L, 0, 0);
 			lua_pushcfunction(L, luaopen_os); lua_call(L, 0, 0);
-			_stackcheck.check(0);
+			_stackcheck.check_stack(0);
 			// dofile and loadfile are replaced with include
 			lua_pushnil(L);
 			lua_setglobal(L, "dofile");
@@ -157,7 +157,7 @@ namespace Automation4 {
 			// integer indexed, using same indexes as "features" vector in the base Script class
 			lua_newtable(L);
 			lua_setfield(L, LUA_REGISTRYINDEX, "features");
-			_stackcheck.check(0);
+			_stackcheck.check_stack(0);
 
 			// make "aegisub" table
 			lua_pushstring(L, "aegisub");
@@ -181,7 +181,7 @@ namespace Automation4 {
 			lua_setfield(L, -2, "lua_automation_version");
 			// store aegisub table to globals
 			lua_settable(L, LUA_GLOBALSINDEX);
-			_stackcheck.check(0);
+			_stackcheck.check_stack(0);
 
 			// load user script
 			LuaScriptReader script_reader(GetFilename());
@@ -190,7 +190,7 @@ namespace Automation4 {
 				err->Prepend(_T("Error loading Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
 				throw err->c_str();
 			}
-			_stackcheck.check(1);
+			_stackcheck.check_stack(1);
 			// and execute it
 			// this is where features are registered
 			// don't thread this, as there's no point in it and it seems to break on wx 2.8.3, for some reason
@@ -200,7 +200,7 @@ namespace Automation4 {
 				err->Prepend(_T("Error initialising Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
 				throw err->c_str();
 			}
-			_stackcheck.check(0);
+			_stackcheck.check_stack(0);
 			lua_getglobal(L, "version");
 			if (lua_isnumber(L, -1)) {
 				if (lua_tointeger(L, -1) == 3) {
@@ -230,7 +230,7 @@ namespace Automation4 {
 			}
 			lua_pop(L, 5);
 			// if we got this far, the script should be ready
-			_stackcheck.check(0);
+			_stackcheck.check_stack(0);
 
 		}
 		catch (const char *e) {
@@ -652,13 +652,13 @@ namespace Automation4 {
 
 		GetFeatureFunction(1); // 1 = processing function
 		assert(lua_isfunction(L, -1));
-		stackcheck.check(1);
+		stackcheck.check_stack(1);
 
 		// prepare function call
 		// subtitles (undo doesn't make sense in exported subs, in fact it'll totally break the undo system)
 		LuaAssFile *subsobj = new LuaAssFile(L, subs, true/*allow modifications*/, false/*disallow undo*/);
 		assert(lua_isuserdata(L, -1));
-		stackcheck.check(2);
+		stackcheck.check_stack(2);
 		// config
 		if (has_config && config_dialog) {
 			int results_produced = config_dialog->LuaReadBack(L);
@@ -669,11 +669,11 @@ namespace Automation4 {
 			lua_newtable(L);
 		}
 		assert(lua_istable(L, -1));
-		stackcheck.check(3);
+		stackcheck.check_stack(3);
 
 		LuaProgressSink *ps = new LuaProgressSink(L, export_dialog, false);
 		ps->SetTitle(GetName());
-		stackcheck.check(3);
+		stackcheck.check_stack(3);
 
 		// do call
 		LuaThreadedCall call(L, 2, 0);
@@ -683,7 +683,7 @@ namespace Automation4 {
 		(void) code;
 		//if (code) ThrowError();
 
-		stackcheck.check(0);
+		stackcheck.check_stack(0);
 
 		// Just ensure that subsobj survives until here
 		(void) subsobj;
