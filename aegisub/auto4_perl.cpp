@@ -547,6 +547,16 @@ namespace Automation4 {
 	    PERL_SYS_TERM();
 	  }
 	}
+
+	Script* PerlScriptFactory::Produce(const wxString &filename) const
+	{
+	  if(filename.EndsWith(_T(PERL_SCRIPT_EXTENSION))) {
+		return new PerlScript(filename);
+	  }
+	  else {
+		return 0;
+	  }
+	}
 };
 
 

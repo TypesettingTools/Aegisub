@@ -252,17 +252,8 @@ namespace Automation4 {
 	PerlScriptFactory();
 	~PerlScriptFactory();
 	
-	virtual Script* Produce(const wxString &filename) const
-	{
-	  if(filename.EndsWith(_T(PERL_SCRIPT_EXTENSION))) {
-		return new PerlScript(filename);
-	  }
-	  else {
-		return 0;
-	  }
-	}
+	Script* Produce(const wxString &filename) const;
   };
-
 };
 
 
