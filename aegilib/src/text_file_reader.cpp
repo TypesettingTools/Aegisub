@@ -148,14 +148,14 @@ Aegilib::String TextFileReader::ReadLineFromFile() {
 		//wxbuffer.Clear();
 		//if (buffer.length()) wxbuffer = wxString(buffer.c_str(),*conv);
 		char temp = 0;
-		std::string buffer;
+		std::string buff;
 		while (temp != '\n' && !file.Eof()) {
 			file.Read(&temp,1);
 			if (temp != '\r') {
-				buffer += temp;
+				buff += temp;
 			}
 		}
-		if (buffer.size()) wxbuffer = wxString(buffer.c_str(),*conv);
+		if (buff.size()) wxbuffer = wxString(buff.c_str(),*conv);
 	}
 
 	// Remove line breaks

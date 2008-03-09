@@ -289,10 +289,10 @@ begin
 		  temp2 := SetupMessage(msgInstallingLabel);
 		  StringChangeEx(temp2,'[name]','{#MyAppName}',False);
 		  CustomPage := CreateOutputProgressPage(SetupMessage(msgWizardInstalling),temp2);
-		  CustomPage.SetText('Installing Visual C++ Runtimes... This might take a few minutes.','');
+		  CustomPage.SetText('Installing Visual C++ 2005 SP1 Runtimes... This might take a few minutes.','');
 		  CustomPage.Show();
 			ExtractTemporaryFile('vcredist_x86.exe');
-			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/qn', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
+			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/q:a /c:"VCREDI~3.EXE /q:a /c:""msiexec /i vcredist.msi /qn"" "', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
 			begin
 				MsgBox('Installation of runtime libraries failed. Aegisub will probably not work. The error was: ' + SysErrorMessage(ExecResult), mbInformation, MB_OK);
 			end;
