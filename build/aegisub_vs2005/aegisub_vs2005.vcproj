@@ -651,6 +651,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\aegisub\auto4_lua_factory.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\aegisub\auto4_lua_scriptreader.cpp"
 					>
 				</File>

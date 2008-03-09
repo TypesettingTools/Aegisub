@@ -36,6 +36,7 @@
 #ifdef WITH_AUTO4_LUA
 
 #include "auto4_lua.h"
+#include "auto4_lua_factory.h"
 #include "auto4_lua_scriptreader.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
@@ -896,6 +897,28 @@ namespace Automation4 {
 
 		// more magic: puts two values on stack: button pushed and table with control results
 		return dlg.LuaReadBack(L);
+	}
+
+	// Factory methods
+	LuaScriptFactory::LuaScriptFactory() {}
+	LuaScriptFactory::~LuaScriptFactory() {}
+
+	void LuaScriptFactory::RegisterFactory ()
+	{
+		engine_name = _T("Lua");
+		filename_pattern = _T("*.lua");
+		Register(this);
+	}
+
+	Script* LuaScriptFactory::Produce(const wxString &filename) const
+	{
+		// Just check if file extension is .lua
+		// Reject anything else
+		if (filename.Right(4).Lower() == _T(".lua")) {
+			return new LuaScript(filename);
+		} else {
+			return 0;
+		}
 	}
 
 };
