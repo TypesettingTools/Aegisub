@@ -41,17 +41,8 @@ namespace Automation4 {
 	// Factory class for Ruby scripts
 	class RubyScriptFactory : public ScriptFactory {
 	public:
-		RubyScriptFactory()
-		{
-			engine_name = _T("Ruby");
-			filename_pattern = _T("*.rb");
-			Register(this);
-		}
-
-		~RubyScriptFactory() 
-		{ 
-		}
-
+		RubyScriptFactory();
+		~RubyScriptFactory();
 		Script* Produce(const wxString &filename) const;
 	};
 };

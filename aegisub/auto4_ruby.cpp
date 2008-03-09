@@ -690,6 +690,17 @@ namespace Automation4 {
 		return backtr;
 	}
 
+	RubyScriptFactory::RubyScriptFactory()
+	{
+		engine_name = _T("Ruby");
+		filename_pattern = _T("*.rb");
+		Register(this);
+	}
+
+	RubyScriptFactory::~RubyScriptFactory() 
+	{ 
+	}
+
 	Script* RubyScriptFactory::Produce(const wxString &filename) const
 	{
 		// Just check if file extension is .rb
