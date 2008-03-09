@@ -168,6 +168,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\aegitime.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\controller.h"
 				>
 			</File>
@@ -209,10 +213,6 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\section_entry_dialogue.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\time.h"
 				>
 			</File>
 			<File

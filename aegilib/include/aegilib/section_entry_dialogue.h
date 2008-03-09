@@ -36,7 +36,7 @@
 
 #pragma once
 #include "exception.h"
-#include "time.h"
+#include "aegitime.h"
 #include "section_entry.h"
 
 
@@ -45,7 +45,8 @@ namespace Aegilib {
 	// Dialogue class
 	class SectionEntryDialogue : public SectionEntry {
 	private:
-		void ThrowUnsupported() const { throw Exception(Exception::Unsupported_Format_Feature); }
+		const static bool dodgeWarning = true;
+		void ThrowUnsupported() const { if (dodgeWarning) throw Exception(Exception::Unsupported_Format_Feature); }
 
 	public:
 		// Destructor
@@ -64,11 +65,11 @@ namespace Aegilib {
 		virtual bool HasMargins() const { return false; }
 
 		// Read accessors
-		virtual String GetText() const { ThrowUnsupported(); }
-		virtual Time GetStartTime() const { ThrowUnsupported(); }
-		virtual Time GetEndTime() const { ThrowUnsupported(); }
-		virtual int GetStartFrame() const { ThrowUnsupported(); }
-		virtual int GetEndFrame() const { ThrowUnsupported(); }
+		virtual String GetText() const { ThrowUnsupported(); return L""; }
+		virtual Time GetStartTime() const { ThrowUnsupported(); return 0; }
+		virtual Time GetEndTime() const { ThrowUnsupported(); return 0; }
+		virtual int GetStartFrame() const { ThrowUnsupported(); return 0; }
+		virtual int GetEndFrame() const { ThrowUnsupported(); return 0; }
 
 		// Write acessors
 		virtual void SetText(String text) { (void) text; ThrowUnsupported(); }
