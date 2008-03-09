@@ -9,6 +9,8 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef __WXMAC__
+
 #ifndef _WX_BEVEL_BUTTON_H_
 #define _WX_BEVEL_BUTTON_H_
 
@@ -46,3 +48,5 @@ virtual wxSize DoGetBestSize() const ;
 
 #endif
 // _WX_BUTTON_H_
+
+#endif // __WXMAC__

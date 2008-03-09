@@ -9,6 +9,8 @@
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef __WXMAC__
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "button.h"
 #endif
@@ -67,3 +69,5 @@ wxSize wxBevelButton::DoGetBestSize() const
 	
     return wxSize ( wBtn , hBtn ) ;
 }
+
+#endif // __WXMAC__

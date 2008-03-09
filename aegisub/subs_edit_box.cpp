@@ -60,6 +60,7 @@
 #include "idle_field_event.h"
 #include "float_spin.h"
 #include "tooltip_manager.h"
+#include "macosx/bevelButton.h"
 
 
 ///////////////
@@ -132,7 +133,11 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	Color3->SetToolTip(_("Outline color"));
 	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBITMAP(button_color_four),wxDefaultPosition,wxSize(30,20));
 	Color4->SetToolTip(_("Shadow color"));
+#ifdef __WXMAC__
+	CommitButton = new wxBevelButton(this,BUTTON_COMMIT,_("Commit"),wxDefaultPosition,wxDefaultSize);
+#else
 	CommitButton = new wxButton(this,BUTTON_COMMIT,_("Commit"),wxDefaultPosition,wxDefaultSize);
+#endif
 	ToolTipManager::Bind(CommitButton,_("Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."),_T("Edit Box Commit"));
 	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));
