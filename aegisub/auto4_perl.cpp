@@ -510,7 +510,10 @@ namespace Automation4 {
 	  loaded = false;
 	  engine_name = _T("Perl");
 	  filename_pattern = _T("*") _T(PERL_SCRIPT_EXTENSION);
+	}
 
+	void PerlScriptFactory::RegisterFactory()
+	{
 	  // On Visual Studio, first check if the dll is available
 	  // This needs to be done because it is set to delay loading of this dll
 #ifdef __VISUALC__

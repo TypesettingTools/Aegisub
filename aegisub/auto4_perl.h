@@ -251,6 +251,8 @@ namespace Automation4 {
   public:
 	PerlScriptFactory();
 	~PerlScriptFactory();
+
+	void RegisterFactory();
 	
 	Script* Produce(const wxString &filename) const;
   };

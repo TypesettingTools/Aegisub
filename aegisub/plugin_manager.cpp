@@ -85,7 +85,8 @@ void PluginManager::RegisterBuiltInPlugins() {
 		new Automation4::LuaScriptFactory();
 #endif
 #ifdef WITH_PERL
-		new Automation4::PerlScriptFactory();
+		Automation4::PerlScriptFactory *perl = new Automation4::PerlScriptFactory();
+		perl->RegisterFactory();
 #endif
 #ifdef WITH_AUTO3
 		new Automation4::Auto3ScriptFactory();
