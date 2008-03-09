@@ -736,31 +736,6 @@ namespace Automation4 {
 		Create();
 	}
 
-
-	// Auto3ScriptFactory
-
-	class Auto3ScriptFactory : public ScriptFactory {
-	public:
-		Auto3ScriptFactory()
-		{
-			engine_name = _T("Legacy Automation 3");
-			filename_pattern = _T("*.auto3");
-			Register(this);
-		}
-
-		~Auto3ScriptFactory() { }
-
-		virtual Script* Produce(const wxString &filename) const
-		{
-			if (filename.Right(6).Lower() == _T(".auto3")) {
-				return new Auto3Script(filename);
-			} else {
-				return 0;
-			}
-		}
-	};
-	Auto3ScriptFactory _auto3_script_factory;
-
 };
 
 #endif // WITH_AUTO3

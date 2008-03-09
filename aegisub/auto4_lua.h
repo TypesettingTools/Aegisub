@@ -252,6 +252,30 @@ namespace Automation4 {
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	};
 
+	// Factory class for Lua scripts
+	class LuaScriptFactory : public ScriptFactory {
+	public:
+		LuaScriptFactory()
+		{
+			engine_name = _T("Lua");
+			filename_pattern = _T("*.lua");
+			Register(this);
+		}
+
+		~LuaScriptFactory() { }
+
+		virtual Script* Produce(const wxString &filename) const
+		{
+			// Just check if file extension is .lua
+			// Reject anything else
+			if (filename.Right(4).Lower() == _T(".lua")) {
+				return new LuaScript(filename);
+			} else {
+				return 0;
+			}
+		}
+	};
+
 };
 
 #endif

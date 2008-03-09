@@ -499,16 +499,7 @@ namespace Automation4 {
   }
 
 
-///////////////////////
-// PerlScriptFactory
-//
-  class PerlScriptFactory : public ScriptFactory {
-  private:
-	PerlInterpreter *parser;
-	bool loaded;
-
-  public:
-	PerlScriptFactory()
+    PerlScriptFactory::PerlScriptFactory()
 	{
 #ifdef WXTRACE_AUTOPERL
 	  // Add tracing of perl engine operations
@@ -547,7 +538,7 @@ namespace Automation4 {
 	  loaded = true;
 	}
 	
-	~PerlScriptFactory()
+	PerlScriptFactory::~PerlScriptFactory()
 	{
 	  // Perl interpreter deinitialization
       if (loaded) {
@@ -556,21 +547,6 @@ namespace Automation4 {
 	    PERL_SYS_TERM();
 	  }
 	}
-	
-	virtual Script* Produce(const wxString &filename) const
-	{
-	  if(filename.EndsWith(_T(PERL_SCRIPT_EXTENSION))) {
-		return new PerlScript(filename);
-	  }
-	  else {
-		return 0;
-	  }
-	}
-  };
-
-  // The one and only (thank goodness ¬.¬) perl engine!!!
-  PerlScriptFactory _perl_script_factory;
-
 };
 
 

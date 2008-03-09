@@ -624,14 +624,6 @@
 			Name="Automation"
 			>
 			<File
-				RelativePath="..\..\aegisub\auto4_auto3.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\auto4_auto3.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\aegisub\auto4_base.cpp"
 				>
 			</File>
@@ -720,6 +712,18 @@
 				</File>
 				<File
 					RelativePath="..\..\aegisub\auto4_perldata.inc"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Auto 3"
+				>
+				<File
+					RelativePath="..\..\aegisub\auto4_auto3.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_auto3.h"
 					>
 				</File>
 			</Filter>

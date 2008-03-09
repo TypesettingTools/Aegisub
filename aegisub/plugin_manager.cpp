@@ -42,6 +42,15 @@
 #include "audio_player_manager.h"
 #include "subtitles_provider_manager.h"
 #include "spellchecker_manager.h"
+#ifdef WITH_AUTO4_LUA
+#include "auto4_lua.h"
+#endif
+#ifdef WITH_PERL
+#include "auto4_perl.h"
+#endif
+#ifdef WITH_AUTO3
+#include "auto4_auto3.h"
+#endif
 
 
 ///////////////
@@ -61,11 +70,23 @@ PluginManager::~PluginManager() {
 // Registers all built-in plugins
 void PluginManager::RegisterBuiltInPlugins() {
 	if (!init) {
+		// Managers
 		VideoProviderFactoryManager::RegisterProviders();
 		AudioProviderFactoryManager::RegisterProviders();
 		AudioPlayerFactoryManager::RegisterProviders();
 		SubtitlesProviderFactoryManager::RegisterProviders();
 		SpellCheckerFactoryManager::RegisterProviders();
+
+		// Automation languages
+#ifdef WITH_AUTO4_LUA
+		new Automation4::LuaScriptFactory();
+#endif
+#ifdef WITH_PERL
+		new Automation4::PerlScriptFactory();
+#endif
+#ifdef WITH_AUTO3
+		new Automation4::Auto3ScriptFactory();
+#endif
 	}
 
 	// Done

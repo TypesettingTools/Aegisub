@@ -898,34 +898,6 @@ namespace Automation4 {
 		return dlg.LuaReadBack(L);
 	}
 
-
-	// Factory class for Lua scripts
-	// Not declared in header, since it doesn't need to be accessed from outside
-	// except through polymorphism
-	class LuaScriptFactory : public ScriptFactory {
-	public:
-		LuaScriptFactory()
-		{
-			engine_name = _T("Lua");
-			filename_pattern = _T("*.lua");
-			Register(this);
-		}
-
-		~LuaScriptFactory() { }
-
-		virtual Script* Produce(const wxString &filename) const
-		{
-			// Just check if file extension is .lua
-			// Reject anything else
-			if (filename.Right(4).Lower() == _T(".lua")) {
-				return new LuaScript(filename);
-			} else {
-				return 0;
-			}
-		}
-	};
-	LuaScriptFactory _lua_script_factory;
-
 };
 
 #endif // WITH_AUTO4_LUA
