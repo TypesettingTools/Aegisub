@@ -68,7 +68,7 @@ void AssTransformFramerateFilter::Init() {
 void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	// Transform frame rate
 	if (Input->IsLoaded() && Output->IsLoaded()) {
-		if (Output->GetFrameRateType() == VFR || Output->GetAverage() != Input->GetAverage()) {
+		if (Input->GetFrameRateType() == VFR || Output->GetFrameRateType() == VFR || Output->GetAverage() != Input->GetAverage()) {
 			TransformFrameRate(subs);
 		}
 	}
@@ -115,6 +115,9 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	OutputSizerBottom->Add(OutputFramerate,0,wxEXPAND | wxLEFT,5);
 	OutputSizerBottom->AddStretchSpacer(1);
 
+	// Reverse checkbox
+	Reverse = new wxCheckBox(base,-1,_("Reverse transformation"));
+
 	// Output final
 	OutputSizer->Add(OutputSizerTop,0,wxLEFT,5);
 	OutputSizer->Add(OutputSizerBottom,0,wxLEFT,5);
@@ -125,6 +128,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	MainSizer->Add(InputSizer,0,wxEXPAND,0);
 	MainSizer->Add(new wxStaticText(base,-1,_("Output: ")),0,wxALIGN_CENTER_VERTICAL,0);
 	MainSizer->Add(OutputSizer,0,wxEXPAND,0);
+	MainSizer->Add(Reverse,0,wxTOP|wxEXPAND,5);
 
 	// Window
 	base->SetSizerAndFit(MainSizer);
@@ -150,6 +154,13 @@ void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
 			Output = &t2;
 		}
 		else Output = &VFR_Output;
+
+		// Reverse
+		if (Reverse->IsChecked()) {
+			FrameRate *temp = Output;
+			Output = Input;
+			Input = temp;
+		}
 	}
 }
 

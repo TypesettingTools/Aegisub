@@ -33,8 +33,8 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppRevision "r1952"
-#define MyAppVer "2.1.1 Release Preview"
+#define MyAppRevision "r1987"
+#define MyAppVer "2.1.2 Release Preview"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -42,7 +42,7 @@
 ; Set these to 0 to make building the installer faster.
 ; Only intended for testing.
 #define IncludeSpeller 1
-#define IncludeThesaurus 1
+#define IncludeThesaurus 0
 #define IncludePerl 0
 #define IncludeFfmpeg 0
 

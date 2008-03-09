@@ -67,6 +67,7 @@ private:
 	wxTextCtrl *OutputFramerate;
 	wxRadioButton *RadioOutputCFR;
 	wxRadioButton *RadioOutputVFR;
+	wxCheckBox *Reverse;
 
 	AssTransformFramerateFilter();
 	void TransformFrameRate(AssFile *subs);
