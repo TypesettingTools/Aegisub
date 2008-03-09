@@ -161,19 +161,21 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 
 	// Middle-bottom sizer
 	MiddleBotSizer = new wxBoxSizer(wxHORIZONTAL);
-	MiddleBotSizer->Add(Bold,0,wxALIGN_CENTER,0);
-	MiddleBotSizer->Add(Italics,0,wxALIGN_CENTER,0);
-	MiddleBotSizer->Add(Underline,0,wxALIGN_CENTER,0);
-	MiddleBotSizer->Add(Strikeout,0,wxALIGN_CENTER,0);
-	MiddleBotSizer->Add(FontName,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->Add(Bold,0,wxALIGN_CENTER|wxEXPAND,0);
+	MiddleBotSizer->Add(Italics,0,wxALIGN_CENTER|wxEXPAND,0);
+	MiddleBotSizer->Add(Underline,0,wxALIGN_CENTER|wxEXPAND,0);
+	MiddleBotSizer->Add(Strikeout,0,wxALIGN_CENTER|wxEXPAND,0);
+	MiddleBotSizer->Add(FontName,0,wxALIGN_CENTER|wxEXPAND,0);
 	MiddleBotSizer->AddSpacer(5);
-	MiddleBotSizer->Add(Color1,0,wxALIGN_CENTER,0);
-	MiddleBotSizer->Add(Color2,0,wxALIGN_CENTER,0);
-	MiddleBotSizer->Add(Color3,0,wxALIGN_CENTER,0);
-	MiddleBotSizer->Add(Color4,0,wxRIGHT|wxALIGN_CENTER,5);
-	MiddleBotSizer->Add(CommitButton,0,wxRIGHT|wxALIGN_CENTER,10);
-	MiddleBotSizer->Add(ByTime,0,wxRIGHT | wxALIGN_CENTER,5);
-	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER,5);
+	MiddleBotSizer->Add(Color1,0,wxALIGN_CENTER|wxEXPAND,0);
+	MiddleBotSizer->Add(Color2,0,wxALIGN_CENTER|wxEXPAND,0);
+	MiddleBotSizer->Add(Color3,0,wxALIGN_CENTER|wxEXPAND,0);
+	MiddleBotSizer->Add(Color4,0,wxALIGN_CENTER|wxEXPAND,0);
+	MiddleBotSizer->AddSpacer(5);
+	MiddleBotSizer->Add(CommitButton,0,wxALIGN_CENTER,0);
+	MiddleBotSizer->AddSpacer(10);
+	MiddleBotSizer->Add(ByTime,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,5);
+	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,5);
 
 	// Text editor
 	TextEdit = new SubsTextEditCtrl(this,EDIT_BOX,_T(""),wxDefaultPosition,wxSize(300,50));
@@ -184,7 +186,7 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 
 	// Main sizer
 	MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TopSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,3);
+	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,3);
 	MainSizer->Add(MiddleSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 	MainSizer->Add(MiddleBotSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 	MainSizer->Add(BottomSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
@@ -219,7 +221,7 @@ void SubsEditBox::SetSplitLineMode(wxSize newSize) {
 
 		if (topWidth >= midMin + botMin) {
 			MainSizer->Detach(MiddleBotSizer);
-			MiddleSizer->Add(MiddleBotSizer);
+			MiddleSizer->Add(MiddleBotSizer,0,wxALIGN_CENTER_VERTICAL);
 			Layout();
 			splitLineMode = false;
 		}
