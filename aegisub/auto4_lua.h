@@ -255,14 +255,16 @@ namespace Automation4 {
 	// Factory class for Lua scripts
 	class LuaScriptFactory : public ScriptFactory {
 	public:
-		LuaScriptFactory()
+		LuaScriptFactory() { }
+
+		~LuaScriptFactory() { }
+
+		void RegisterFactory ()
 		{
 			engine_name = _T("Lua");
 			filename_pattern = _T("*.lua");
 			Register(this);
 		}
-
-		~LuaScriptFactory() { }
 
 		virtual Script* Produce(const wxString &filename) const
 		{
