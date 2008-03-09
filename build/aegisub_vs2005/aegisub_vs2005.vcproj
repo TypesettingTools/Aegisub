@@ -678,6 +678,10 @@
 					RelativePath="..\..\aegisub\auto4_ruby_dialog.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_ruby_factory.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Perl"

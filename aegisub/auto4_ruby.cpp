@@ -34,7 +34,13 @@
 //
 
 #ifdef WITH_RUBY
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4003)
+#endif
+
 #include "auto4_ruby.h"
+#include "auto4_ruby_factory.h"
 #include "auto4_auto3.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
@@ -625,36 +631,6 @@ namespace Automation4 {
 		return dlg.RubyReadBack();
 	}
 
-
-	// Factory class for Ruby scripts
-	// Not declared in header, since it doesn't need to be accessed from outside
-	// except through polymorphism
-	class RubyScriptFactory : public ScriptFactory {
-	public:
-		RubyScriptFactory()
-		{
-			engine_name = _T("Ruby");
-			filename_pattern = _T("*.rb");
-			Register(this);
-		}
-
-		~RubyScriptFactory() 
-		{ 
-		}
-
-		virtual Script* Produce(const wxString &filename) const
-		{
-			// Just check if file extension is .rb
-			// Reject anything else
-			if (filename.Right(3).Lower() == _T(".rb")) {
-				return new RubyScript(filename);
-			} else {
-				return 0;
-			}
-		}
-	};
-	RubyScriptFactory _ruby_script_factory;
-
 	RubyObjects::RubyObjects()
 	{
 		objects = rb_ary_new();
@@ -712,6 +688,17 @@ namespace Automation4 {
 			backtrace.Append(line + _T("\n"));
 		}
 		return backtr;
+	}
+
+	Script* RubyScriptFactory::Produce(const wxString &filename) const
+	{
+		// Just check if file extension is .rb
+		// Reject anything else
+		if (filename.Right(3).Lower() == _T(".rb")) {
+			return new RubyScript(filename);
+		} else {
+			return 0;
+		}
 	}
 };
 

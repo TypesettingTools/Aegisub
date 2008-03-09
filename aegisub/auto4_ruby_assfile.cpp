@@ -34,6 +34,11 @@
 //
 
 #ifdef WITH_RUBY
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4003)
+#endif
+
 #include "auto4_ruby.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"

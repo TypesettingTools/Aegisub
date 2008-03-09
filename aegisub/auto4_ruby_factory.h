@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Patryk Pomykalski
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,71 +30,28 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Contact: mailto:pomyk@go2.pl
 //
 
+#pragma once
 
-///////////
-// Headers
-#include "plugin_manager.h"
-#include "video_provider_manager.h"
-#include "audio_provider_manager.h"
-#include "audio_player_manager.h"
-#include "subtitles_provider_manager.h"
-#include "spellchecker_manager.h"
-#ifdef WITH_AUTO4_LUA
-#include "auto4_lua.h"
-#endif
-#ifdef WITH_PERL
-#include "auto4_perl.h"
-#endif
-#ifdef WITH_AUTO3
-#include "auto4_auto3.h"
-#endif
-#ifdef WITH_RUBY
-#include "auto4_ruby_factory.h"
-#endif
+#include "auto4_base.h"
 
+namespace Automation4 {
+	// Factory class for Ruby scripts
+	class RubyScriptFactory : public ScriptFactory {
+	public:
+		RubyScriptFactory()
+		{
+			engine_name = _T("Ruby");
+			filename_pattern = _T("*.rb");
+			Register(this);
+		}
 
-///////////////
-// Constructor
-PluginManager::PluginManager() {
-	init = false;
-}
+		~RubyScriptFactory() 
+		{ 
+		}
 
-
-//////////////
-// Destructor
-PluginManager::~PluginManager() {
-}
-
-
-//////////////////////////////////
-// Registers all built-in plugins
-void PluginManager::RegisterBuiltInPlugins() {
-	if (!init) {
-		// Managers
-		VideoProviderFactoryManager::RegisterProviders();
-		AudioProviderFactoryManager::RegisterProviders();
-		AudioPlayerFactoryManager::RegisterProviders();
-		SubtitlesProviderFactoryManager::RegisterProviders();
-		SpellCheckerFactoryManager::RegisterProviders();
-
-		// Automation languages
-#ifdef WITH_AUTO4_LUA
-		new Automation4::LuaScriptFactory();
-#endif
-#ifdef WITH_PERL
-		new Automation4::PerlScriptFactory();
-#endif
-#ifdef WITH_AUTO3
-		new Automation4::Auto3ScriptFactory();
-#endif
-#ifdef WITH_RUBY
-		new Automation4::RubyScriptFactory();
-#endif
-	}
-
-	// Done
-	init = true;
-}
+		Script* Produce(const wxString &filename) const;
+	};
+};

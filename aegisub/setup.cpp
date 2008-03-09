@@ -147,7 +147,7 @@
 // Ruby
 #ifdef WITH_RUBY
 #pragma comment(lib,"ws2_32.lib")
-#pragma comment(lib,"msvcr80-ruby19-static.lib")
+#pragma comment(lib,"msvcrt-ruby18-static.lib")
 #endif
 
 
