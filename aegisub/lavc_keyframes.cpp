@@ -52,6 +52,7 @@ LAVCKeyFrames::LAVCKeyFrames(const Aegisub::String filename)
 	// Find video stream
 	for (unsigned int i = 0; i < file->fctx->nb_streams; ++i) {
 		codecContext = file->fctx->streams[i]->codec;
+		if (!codecContext) continue;
 		codecContext->skip_frame = AVDISCARD_NONKEY;
 		codecContext->workaround_bugs = FF_BUG_AUTODETECT;
 		if (codecContext->codec_type == CODEC_TYPE_VIDEO) {
