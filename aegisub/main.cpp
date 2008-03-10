@@ -44,6 +44,7 @@
 #include <wx/utils.h>
 #include <wx/stdpaths.h>
 #include <wx/filefn.h>
+#include <wx/datetime.h>
 
 #include "main.h"
 #include "frame_main.h"
@@ -283,7 +284,7 @@ void AegisubApp::OnFatalException() {
 
 	// Stack walk
 #if wxUSE_STACKWALKER == 1
-	StackWalker walker;
+	StackWalker walker(_T("Fatal exception"));
 	walker.WalkFromException();
 #endif
 
@@ -297,25 +298,35 @@ void AegisubApp::OnFatalException() {
 // Stack walker
 #if wxUSE_STACKWALKER == 1
 void StackWalker::OnStackFrame(const wxStackFrame &frame) {
-	wxString dst = wxString::Format(_T("%03i - 0x%08X: "),frame.GetLevel(),frame.GetAddress()) + frame.GetName() + _T(" on ") + frame.GetFileName() + wxString::Format(_T(":%i"),frame.GetLine());
-	char temp[2048];
+	wxString dst = wxString::Format(_T("%03i - 0x%08X: "),frame.GetLevel(),frame.GetAddress()) + frame.GetName();
+	if (frame.HasSourceLocation()) dst += _T(" on ") + frame.GetFileName() + wxString::Format(_T(":%i"),frame.GetLine());
 	if (file.is_open()) {
-		strcpy(temp,dst.mb_str());
-		file << temp << std::endl;
+		file << dst.mb_str() << std::endl;
 	}
 	else wxLogMessage(dst);
 }
 
-StackWalker::StackWalker() {
+StackWalker::StackWalker(wxString cause) {
 	file.open(wxString(StandardPaths::DecodePath(_T("?user/crashlog.txt"))).mb_str(),std::ios::out | std::ios::app);
 	if (file.is_open()) {
-		file << std::endl << "Begining stack dump:\n";
+		wxDateTime time = wxDateTime::Now();
+		wxString timeStr = _T("---") + time.FormatISODate() + _T(" ") + time.FormatISOTime() + _T("------------------");
+		formatLen = timeStr.Length();
+		file << std::endl << timeStr.mb_str(wxConvLocal);
+		file << "\nVER - " << GetAegisubLongVersionString().mb_str(wxConvUTF8);
+		file << "\nFTL - Begining stack dump for \"" << cause.mb_str(wxConvUTF8) <<"\":\n";
 	}
 }
 
 StackWalker::~StackWalker() {
 	if (file.is_open()) {
-		file << "End of stack dump.\n\n";
+		char dashes[1024];
+		int i = 0;
+		for (i=0;i<formatLen;i++) dashes[i] = '-';
+		dashes[i] = 0;
+		file << "End of stack dump.\n";
+		file << dashes;
+		file << "\n";
 		file.close();
 	}
 }
@@ -326,25 +337,41 @@ StackWalker::~StackWalker() {
 //////////////////
 // Call main loop
 int AegisubApp::OnRun() {
+	wxString error;
+
+	// Run program
 	try {
 		if (m_exitOnFrameDelete == Later) m_exitOnFrameDelete = Yes;
 		return MainLoop();
 	}
 
-	catch (wxString err) {
-		wxMessageBox(err, _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
-	}
+	// Catch errors
+	catch (wxString &err) { error = err; }
+	catch (wxChar *err) { error = err; }
+	catch (std::exception &e) {	error = wxString(_T("std::exception: ")) + wxString(e.what(),wxConvUTF8); }
+	catch (...) { error = _T("Program terminated in error."); }
 
-	catch (wxChar *error) {
-		wxMessageBox(error, _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
-	}
+	// Report errors
+	if (!error.IsEmpty()) {
+		std::ofstream file;
+		file.open(wxString(StandardPaths::DecodePath(_T("?user/crashlog.txt"))).mb_str(),std::ios::out | std::ios::app);
+		if (file.is_open()) {
+			wxDateTime time = wxDateTime::Now();
+			wxString timeStr = _T("---") + time.FormatISODate() + _T(" ") + time.FormatISOTime() + _T("------------------");
+			file << std::endl << timeStr.mb_str(wxConvLocal);
+			file << "\nVER - " << GetAegisubLongVersionString().mb_str(wxConvUTF8);
+			file << "\nEXC - Aegisub has crashed with unhandled exception \"" << error.mb_str(wxConvLocal) <<"\".\n";
+			int formatLen = timeStr.Length();
+			char dashes[1024];
+			int i = 0;
+			for (i=0;i<formatLen;i++) dashes[i] = '-';
+			dashes[i] = 0;
+			file << dashes;
+			file << "\n";
+			file.close();
+		}
 
-	catch (std::exception e) {
-		wxMessageBox(wxString(_T("std::exception: ")) + wxString(e.what(),wxConvUTF8), _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
-	}
-
-	catch (...) {
-		wxMessageBox(_T("Program terminated in error."), _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
+		OnUnhandledException();
 	}
 
 	ExitMainLoop();

@@ -104,9 +104,10 @@ DECLARE_APP(AegisubApp)
 class StackWalker: public wxStackWalker {
 private:
 	std::ofstream file;
+	int formatLen;
 
 public:
-	StackWalker();
+	StackWalker(wxString cause);
 	~StackWalker();
 	void OnStackFrame(const wxStackFrame& frame);
 };

@@ -109,8 +109,7 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 
 		// Create and insert line
 		SectionEntry *entry = MakeEntry(cur,curGroup,version);
-		//if (!entry) throw Exception(Exception::Parse_Error);
-		section->AddEntry(entry);
+		if (entry) section->AddEntry(entry);
 	}
 
 	// Debug
@@ -172,6 +171,9 @@ SectionEntry *FormatHandlerASS::MakeEntry(String data,String group,int version)
 
 	// Script info
 	else if (group == _T("Script Info")) {
+		// Discard comments
+		if (data.Left(1) == _T(";")) return NULL;
+
 		// TODO
 	}
 
