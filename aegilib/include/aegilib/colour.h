@@ -33,39 +33,36 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "exception.h"
-using namespace Aegilib;
+#pragma once
+#include "aegistring.h"
 
+namespace Aegilib {
 
-///////////////
-// Constructor
-Exception::Exception(ExceptionList _code)
-{
-	code = _code;
-}
+	// Colour class
+	class Colour {
+	private:
+		unsigned char r, g, b, a;
 
+	public:
+		Colour ();
+		Colour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha=0);
+		Colour (int red,int green,int blue,int alpha=0);
 
-//////////////////////
-// Get message string
-String Exception::GetMessage()
-{
-	switch (code) {
-		case Unknown: return L"Unknown.";
-		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_Manipulator: return L"Invalid manipulator.";
-		case Section_Already_Exists: return L"The specified section already exists in this model.";
-		case Unknown_Format: return L"The specified file format is unknown.";
-		case Parse_Error: return L"Parse error.";
-		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
-		case Invalid_Token: return L"Invalid type for this token.";
-	}
-	return L"Invalid code.";
-}
+		void SetRed(unsigned char red) { r = red; }
+		void SetGreen(unsigned char green) { g = green; }
+		void SetBlue(unsigned char blue) { b = blue; }
+		void SetAlpha(unsigned char alpha) { a = alpha; }
+		void SetRed(int red);
+		void SetGreen(int green);
+		void SetBlue(int blue);
+		void SetAlpha(int alpha);
 
+		unsigned char GetRed() const { return r; }
+		unsigned char GetGreen() const { return g; }
+		unsigned char GetBlue() const { return b; }
+		unsigned char GetAlpha() const { return a; }
 
-////////////
-// Get code
-int Exception::GetCode()
-{
-	return code;
-}
+		void Parse(String str,bool reverse);
+	};
+
+};

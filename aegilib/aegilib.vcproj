@@ -172,6 +172,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\colour.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\controller.h"
 				>
 			</File>
@@ -216,6 +220,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\section_entry_style.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\tokenizer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\view.h"
 				>
 			</File>
@@ -251,6 +263,10 @@
 		<Filter
 			Name="Misc"
 			>
+			<File
+				RelativePath=".\src\colour.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\src\exception.cpp"
 				>
@@ -300,6 +316,10 @@
 				RelativePath=".\src\time.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\tokenizer.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Formats"
@@ -310,6 +330,14 @@
 			</File>
 			<File
 				RelativePath=".\src\formats\format_ass.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\formats\format_ass_dialogue.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\formats\format_ass_style.cpp"
 				>
 			</File>
 		</Filter>

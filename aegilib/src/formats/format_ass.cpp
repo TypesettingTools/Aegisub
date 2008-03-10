@@ -156,7 +156,18 @@ SectionEntry *FormatHandlerASS::MakeEntry(String data,String group,int version)
 
 	// Styles
 	else if (group == _T("V4+ Styles")) {
-		// TODO
+		if (data.Left(6) == _T("Style:")) {
+			StyleASS *style = new StyleASS(data,version);
+			final = style;
+
+			// Debug
+			wxString out = style->GetName() + _T(": ") + style->GetFontName() + _T(", ") + wxString::Format(_T("(%i,%i,%i)"),style->GetColour(0).GetRed(),style->GetColour(0).GetGreen(),style->GetColour(0).GetBlue());
+			std::cout << out.mb_str(wxConvUTF8) << std::endl;
+		}
+		if (data.Left(7) == _T("Format:")) {
+			// TODO
+			//entry = new AssEntry(_T("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"));
+		}
 	}
 
 	// Script info
@@ -243,114 +254,4 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 			}
 		}
 	}
-}
-
-
-////////////////////////////
-// ASS dialogue constructor
-DialogueASS::DialogueASS(String data,int version)
-{
-	// Try parsing with all different versions
-	bool valid = false;
-	for (int count=0;!valid && count < 3;count++) {
-		valid = Parse(data,version);
-		version++;
-		if (version > 2) version = 0;
-	}
-}
-
-
-//////////////////
-// Parse ASS Data
-bool DialogueASS::Parse(wxString rawData, int version)
-{
-	size_t pos = 0;
-	wxString temp;
-
-	// Get type
-	if (rawData.StartsWith(_T("Dialogue:"))) {
-		comment = false;
-		pos = 10;
-	}
-	else if (rawData.StartsWith(_T("Comment:"))) {
-		comment = true;
-		pos = 9;
-	}
-	else return false;
-
-	wxStringTokenizer tkn(rawData.Mid(pos),_T(","),wxTOKEN_RET_EMPTY_ALL);
-	if (!tkn.HasMoreTokens()) return false;
-
-	// Get first token and see if it has "Marked=" in it
-	temp = tkn.GetNextToken().Trim(false).Trim(true);
-	if (temp.Lower().StartsWith(_T("marked="))) version = 0;
-	else if (version == 0) version = 1;
-
-	// Get layer number
-	if (version == 0) layer = 0;
-	else {
-		long templ;
-		temp.ToLong(&templ);
-		layer = templ;
-	}
-
-	// Get start time
-	if (!tkn.HasMoreTokens()) return false;
-	start.Parse(tkn.GetNextToken());
-
-	// Get end time
-	if (!tkn.HasMoreTokens()) return false;
-	end.Parse(tkn.GetNextToken());
-
-	// Get style
-	if (!tkn.HasMoreTokens()) return false;
-	style = tkn.GetNextToken();
-	style.Trim(true);
-	style.Trim(false);
-
-	// Get actor
-	if (!tkn.HasMoreTokens()) return false;
-	actor = tkn.GetNextToken();
-	actor.Trim(true);
-	actor.Trim(false);
-
-	// Get margins
-	for (int i=0;i<3;i++) {
-		if (!tkn.HasMoreTokens()) return false;
-		long templ;
-		tkn.GetNextToken().Trim(false).Trim(true).ToLong(&templ);
-		margin[i] = templ;
-	}
-
-	// Get bottom margin
-	if (version == 1) margin[3] = margin[2];
-	bool rollBack = false;
-	if (version == 2) {
-		if (!tkn.HasMoreTokens()) return false;
-		wxString oldTemp = temp;
-		temp = tkn.GetNextToken().Trim(false).Trim(true);
-		if (!temp.IsNumber()) {
-			version = 1;
-			rollBack = true;
-		}
-		else {
-			long templ;
-			temp.ToLong(&templ);
-			margin[3] = templ;
-		}
-	}
-
-	// Get effect
-	if (!rollBack) {
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-	}
-	effect = temp;
-	effect.Trim(true);
-	effect.Trim(false);
-
-	// Get text
-	text = rawData.Mid(pos+tkn.GetPosition());
-
-	return true;
 }

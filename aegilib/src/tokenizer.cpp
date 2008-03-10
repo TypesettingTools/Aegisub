@@ -33,39 +33,77 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+#include "tokenizer.h"
 #include "exception.h"
+#include <wx/tokenzr.h>
 using namespace Aegilib;
-
 
 ///////////////
 // Constructor
-Exception::Exception(ExceptionList _code)
+Tokenizer::Tokenizer(String string,String token)
 {
-	code = _code;
+	tkn = new wxStringTokenizer(string,token,wxTOKEN_RET_EMPTY_ALL);
 }
-
-
-//////////////////////
-// Get message string
-String Exception::GetMessage()
+Tokenizer::~Tokenizer()
 {
-	switch (code) {
-		case Unknown: return L"Unknown.";
-		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_Manipulator: return L"Invalid manipulator.";
-		case Section_Already_Exists: return L"The specified section already exists in this model.";
-		case Unknown_Format: return L"The specified file format is unknown.";
-		case Parse_Error: return L"Parse error.";
-		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
-		case Invalid_Token: return L"Invalid type for this token.";
-	}
-	return L"Invalid code.";
+	delete tkn;
 }
 
 
 ////////////
-// Get code
-int Exception::GetCode()
+// Has more
+bool Tokenizer::HasMore()
 {
-	return code;
+	return tkn->HasMoreTokens();
+}
+
+
+////////////////
+// Get position
+int Tokenizer::GetPosition()
+{
+	return (int)tkn->GetPosition();
+}
+
+
+/////////////
+// Get token
+String Tokenizer::GetString()
+{
+	return tkn->GetNextToken();
+}
+int Tokenizer::GetInt()
+{
+	long value;
+	wxString temp = tkn->GetNextToken();
+	temp.ToLong(&value);
+	return (int) value;
+}
+long Tokenizer::GetLong()
+{
+	long value;
+	wxString temp = tkn->GetNextToken();
+	temp.ToLong(&value);
+	return value;
+}
+float Tokenizer::GetFloat()
+{
+	double value;
+	wxString temp = tkn->GetNextToken();
+	temp.ToDouble(&value);
+	return (float) value;
+}
+double Tokenizer::GetDouble()
+{
+	double value;
+	wxString temp = tkn->GetNextToken();
+	temp.ToDouble(&value);
+	return value;
+}
+bool Tokenizer::GetBool()
+{
+	long value;
+	wxString temp = tkn->GetNextToken();
+	temp.ToLong(&value);
+	return value != 0;
 }

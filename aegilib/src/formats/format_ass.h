@@ -38,6 +38,7 @@
 #include "format_handler.h"
 #include "section.h"
 #include "section_entry_dialogue.h"
+#include "section_entry_style.h"
 
 namespace Aegilib {
 
@@ -84,13 +85,13 @@ namespace Aegilib {
 		Time start,end;
 		int margin[4];
 		int layer;
-		bool comment;
+		bool isComment;
 
 		bool Parse(String data,int version);
 
 	public:
 		// Constructors
-		DialogueASS() {}
+		DialogueASS();
 		DialogueASS(String data,int version);
 
 		// Capabilities
@@ -103,11 +104,64 @@ namespace Aegilib {
 		String GetText() const { return text; }
 		Time GetStartTime() const { return start; }
 		Time GetEndTime() const { return end; }
+		bool IsComment() const { return isComment; }
+		int GetLayer() const { return layer; }
+		int GetMargin(int n) const { return margin[n]; }
+		String GetStyle() const { return style; }
+		String GetActor() const { return actor; }
+		String GetUserField() const { return effect; }
 
 		// Write acessors
 		void SetText(String setText) { text = setText; }
 		void SetStartTime(Time setStart) { start = setStart; }
 		void SetEndTime(Time setEnd) { end = setEnd; }
+		void SetComment(bool _isComment) { isComment = _isComment; }
+		void SetLayer(int _layer) { layer = _layer; }
+		void SetMargin(int _margin,int value) { margin[_margin] = value; }
+		void SetStyle(String _style) { style = _style; }
+		void SetUserField(String userField) { effect = userField; }
+	};
+
+	// Style
+	class StyleASS : public SectionEntryStyle {
+	private:
+		String name;
+		String font;
+		float fontSize;
+
+		Colour colour[5];	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
+		int margin[4];
+
+		bool bold;
+		bool italic;
+		bool underline;
+		bool strikeout;
+
+		int borderStyle;
+		int alignment;
+		int encoding;
+		int relativeTo;
+
+		float scalex;
+		float scaley;
+		float spacing;
+		float angle;
+		float outline_w;
+		float shadow_w;
+
+		bool Parse(String data,int version);
+
+	public:
+		// Constructors
+		StyleASS();
+		StyleASS(String data,int version);
+
+		// Read accessors
+		String GetName() const { return name; }
+		String GetFontName() const { return font; }
+		float GetFontSize() const { return fontSize; }
+		Colour GetColour(int n) const { return colour[n]; }
+		int GetMargin(int n) const { return margin[n]; }
 	};
 
 };

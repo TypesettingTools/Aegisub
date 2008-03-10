@@ -62,6 +62,7 @@ namespace Aegilib {
 		virtual bool HasTime() const { return false; }
 		virtual bool HasFrame() const { return false; }
 		virtual bool HasStyle() const { return false; }
+		virtual bool HasActor() const { return false; }
 		virtual bool HasMargins() const { return false; }
 
 		// Read accessors
@@ -70,6 +71,12 @@ namespace Aegilib {
 		virtual Time GetEndTime() const { ThrowUnsupported(); return 0; }
 		virtual int GetStartFrame() const { ThrowUnsupported(); return 0; }
 		virtual int GetEndFrame() const { ThrowUnsupported(); return 0; }
+		virtual bool IsComment() const { ThrowUnsupported(); return false; }
+		virtual int GetLayer() const { ThrowUnsupported(); return 0; }
+		virtual int GetMargin(int n) const { ThrowUnsupported(); return n; }
+		virtual String GetStyle() const { ThrowUnsupported(); return L""; }
+		virtual String GetActor() const { ThrowUnsupported(); return L""; }
+		virtual String GetUserField() const { ThrowUnsupported(); return L""; }
 
 		// Write acessors
 		virtual void SetText(String text) { (void) text; ThrowUnsupported(); }
@@ -77,6 +84,12 @@ namespace Aegilib {
 		virtual void SetEndTime(Time end) { (void) end; ThrowUnsupported(); }
 		virtual void SetStartFrame(int start) { (void) start; ThrowUnsupported(); }
 		virtual void SetEndFrame(int end) { (void) end; ThrowUnsupported(); }
+		virtual void SetComment(bool isComment) { (void) isComment; ThrowUnsupported(); }
+		virtual void SetLayer(int layer) { (void) layer; ThrowUnsupported(); }
+		virtual void SetMargin(int margin,int value) { (void) margin; (void) value; ThrowUnsupported(); }
+		virtual void SetStyle(String style) { (void) style; ThrowUnsupported(); }
+		virtual void SetActor(String actor) { (void) actor; ThrowUnsupported(); }
+		virtual void SetUserField(String userField) { (void) userField; ThrowUnsupported(); }
 	};
 
 };

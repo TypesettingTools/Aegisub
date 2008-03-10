@@ -33,39 +33,35 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+
+#pragma once
 #include "exception.h"
-using namespace Aegilib;
+#include "colour.h"
+#include "section_entry.h"
 
 
-///////////////
-// Constructor
-Exception::Exception(ExceptionList _code)
-{
-	code = _code;
-}
+namespace Aegilib {
 
+	// Style class
+	class SectionEntryStyle : public SectionEntry {
+	private:
+		const static bool dodgeWarning = true;
+		void ThrowUnsupported() const { if (dodgeWarning) throw Exception(Exception::Unsupported_Format_Feature); }
 
-//////////////////////
-// Get message string
-String Exception::GetMessage()
-{
-	switch (code) {
-		case Unknown: return L"Unknown.";
-		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_Manipulator: return L"Invalid manipulator.";
-		case Section_Already_Exists: return L"The specified section already exists in this model.";
-		case Unknown_Format: return L"The specified file format is unknown.";
-		case Parse_Error: return L"Parse error.";
-		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
-		case Invalid_Token: return L"Invalid type for this token.";
-	}
-	return L"Invalid code.";
-}
+	public:
+		// Destructor
+		virtual ~SectionEntryStyle() {}
 
+		// Type
+		SectionEntryType GetType() const { return SECTION_ENTRY_STYLE; }
+		SectionEntryStyle *GetAsStyle() { return this; }
 
-////////////
-// Get code
-int Exception::GetCode()
-{
-	return code;
-}
+		// Read accessors
+		virtual String GetName() const=0;
+		virtual String GetFontName() const { ThrowUnsupported(); return L""; }
+		virtual float GetFontSize() const { ThrowUnsupported(); return 0.0f; }
+		virtual Colour GetColour(int n) const { (void) n; ThrowUnsupported(); return Colour(); }
+		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); return 0; }
+	};
+
+};

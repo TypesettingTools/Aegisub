@@ -49,7 +49,8 @@ namespace Aegilib {
 			Section_Already_Exists,
 			Unknown_Format,
 			Parse_Error,
-			Unsupported_Format_Feature
+			Unsupported_Format_Feature,
+			Invalid_Token
 		};
 
 		Exception(ExceptionList code);

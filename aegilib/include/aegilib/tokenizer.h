@@ -33,39 +33,32 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "exception.h"
-using namespace Aegilib;
+#pragma once
+#include "aegistring.h"
 
+// Prototypes
+class wxStringTokenizer;
 
-///////////////
-// Constructor
-Exception::Exception(ExceptionList _code)
-{
-	code = _code;
-}
+namespace Aegilib {
+	
+	// Tokenizer class
+	class Tokenizer {
+	private:
+		wxStringTokenizer *tkn;
 
+	public:
+		Tokenizer(String string,String token);
+		~Tokenizer();
 
-//////////////////////
-// Get message string
-String Exception::GetMessage()
-{
-	switch (code) {
-		case Unknown: return L"Unknown.";
-		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_Manipulator: return L"Invalid manipulator.";
-		case Section_Already_Exists: return L"The specified section already exists in this model.";
-		case Unknown_Format: return L"The specified file format is unknown.";
-		case Parse_Error: return L"Parse error.";
-		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
-		case Invalid_Token: return L"Invalid type for this token.";
-	}
-	return L"Invalid code.";
-}
+		bool HasMore();
+		int GetPosition();
 
+		String GetString();
+		int GetInt();
+		long GetLong();
+		float GetFloat();
+		double GetDouble();
+		bool GetBool();
+	};
 
-////////////
-// Get code
-int Exception::GetCode()
-{
-	return code;
-}
+};

@@ -33,39 +33,76 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "exception.h"
+
+#include "aegilib.h"
 using namespace Aegilib;
 
 
-///////////////
-// Constructor
-Exception::Exception(ExceptionList _code)
+////////////////
+// Constructors
+Colour::Colour ()
 {
-	code = _code;
+	r = g = b = a = 0;
+}
+Colour::Colour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha)
+{
+	r = red;
+	g = green;
+	b = blue;
+	a = alpha;
+}
+Colour::Colour (int red,int green,int blue,int alpha)
+{
+	SetRed(red);
+	SetGreen(green);
+	SetBlue(blue);
+	SetAlpha(alpha);
 }
 
 
-//////////////////////
-// Get message string
-String Exception::GetMessage()
+////////////////////////
+// Set colour component
+void Colour::SetRed(int red) { r = (unsigned char) MID(0,red,255); }
+void Colour::SetGreen(int green) { g = (unsigned char) MID(0,green,255); }
+void Colour::SetBlue(int blue) { b = (unsigned char) MID(0,blue,255); }
+void Colour::SetAlpha(int alpha) { a = (unsigned char) MID(0,alpha,255); }
+
+
+//////////////
+// Parse text
+void Colour::Parse(String value,bool reverse)
 {
-	switch (code) {
-		case Unknown: return L"Unknown.";
-		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_Manipulator: return L"Invalid manipulator.";
-		case Section_Already_Exists: return L"The specified section already exists in this model.";
-		case Unknown_Format: return L"The specified file format is unknown.";
-		case Parse_Error: return L"Parse error.";
-		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
-		case Invalid_Token: return L"Invalid type for this token.";
+	// Prepare
+	unsigned char c;
+	char ostr[12];
+	ostr[11]=0;
+	unsigned long outval;
+	int oindex=11;
+	bool ishex=false;
+
+	// Determines whether it is hexadecimal or decimal
+	for(int i=(int)value.Len()-1;i>=0&&oindex>=0;i--) {
+		c=(char) value[i];
+		if (isxdigit(c) || c=='-') {
+			ostr[--oindex] = c;
+			if (c>='A') ishex = true;
+		}
+		else if (c == 'H' || c == 'h') ishex = true;
 	}
-	return L"Invalid code.";
-}
 
+	// Convert to decimal
+	outval=strtoul(ostr+oindex,0,ishex?16:10);
 
-////////////
-// Get code
-int Exception::GetCode()
-{
-	return code;
+	// Split components
+	b = (unsigned char)(outval		& 0xFF);
+	g = (unsigned char)((outval>>8)	& 0xFF);
+	r = (unsigned char)((outval>>16)& 0xFF);
+	a = (unsigned char)((outval>>24)& 0xFF);
+
+	// Reverse
+	if (reverse) {
+		unsigned char aux = r;
+		r = b;
+		b = aux;
+	}
 }

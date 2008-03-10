@@ -46,7 +46,9 @@
 #include "manipulator.h"
 #include "section.h"
 #include "section_entry_dialogue.h"
+#include "section_entry_style.h"
 #include "aegitime.h"
+#include "colour.h"
 
 
 //////////
