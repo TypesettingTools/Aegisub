@@ -254,7 +254,7 @@ if test $ffmpeg_mp3_broken = "yes"; then
 ***********************************************************************
 * Your installation of FFMPEG does not have LAME support compiled in.
 * This will result in _broken_ mp3 decoding, either recompile FFMPEG
-* with LAME support, or supply --with-broken-mp3 (With this you will have
+* with LAME support, or supply --enable-broken-mp3 (With this you will have
 * to demux the audio, convert to wav and load the audio/wav seperately.)
 *   * LAME can be found at: http://lame.sourceforge.net/index.php
 ***********************************************************************
