@@ -504,6 +504,7 @@ fi
 
 if test "$lua50_lib" = "yes" && test "$lua50_include" = "yes"; then
   with_auto3="yes"
+  with_automation="yes"
   AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
 else
   with_auto3="no"
@@ -517,7 +518,7 @@ if test "$with_automation" = "yes"; then
   AC_DEFINE(WITH_AUTOMATION, 1, [Enable Automation support, requires any automation language.])
 fi  
 
-AM_CONDITIONAL([HAVE_AUTOMATION], [test "$with_auto3" = "yes"])
+AM_CONDITIONAL([HAVE_AUTOMATION], [test "$with_automation" = "yes"])
 
 
 ################
