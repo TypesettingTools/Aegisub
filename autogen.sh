@@ -258,9 +258,7 @@ fi
 touch ${srcdir}/aegisub/posix/config.h
 
 # bmp -> xmp via the res.rc
-if [ ! -f ${srcdir}/aegisub/bitmaps/Makefile.bitmaps ]; then
-	cat ${srcdir}/aegisub/res.rc | ${AWK_BIN} -f ${srcdir}/aegisub/bitmaps/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
-fi
+cat ${srcdir}/aegisub/res.rc | ${AWK_BIN} -f ${srcdir}/aegisub/bitmaps/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
 cd ${srcdir}/aegisub/bitmaps
 make -f Makefile.bitmaps
 cd ${srcdir}
