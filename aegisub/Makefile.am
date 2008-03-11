@@ -90,6 +90,12 @@ AUTO3_LUA = auto4_auto3.cpp
 aegisub_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3
 endif
 
+if HAVE_AUTOMATION
+noinst_LIBRARIES += libmisc_automanager.a
+libmisc_automanager_a_SOURCES = plugin_manager.cpp
+aegisub_LDADD += libmisc_automanager.a
+libmisc_automanager_a_CPPFLAGS = @PERL_CFLAGS@ @RUBY_CFLAGS@ @LUA50_CPPFLAGS@ @LUA_CPPFLAGS@
+endif
 
 if HAVE_HUNSPELL
 noinst_LIBRARIES += libmisc_hunspell.a
@@ -230,7 +236,6 @@ aegisub_SOURCES = \
 	mkv_wrap.cpp \
 	mythes.cxx \
 	options.cpp \
-	plugin_manager.cpp \
 	scintilla_text_ctrl.cpp \
 	spellchecker.cpp \
 	spline.cpp \
