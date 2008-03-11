@@ -33,41 +33,15 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
-#include "aegistring.h"
 
-namespace Aegilib {
+#include "section_entry.h"
+using namespace Aegilib;
 
-	// Types
-	enum SectionEntryType {
-		SECTION_ENTRY_PLAIN,
-		SECTION_ENTRY_DIALOGUE,
-		SECTION_ENTRY_STYLE,
-		SECTION_ENTRY_FILE,
-		SECTION_ENTRY_RAW
-	};
 
-	// Prototypes
-	class SectionEntryPlain;
-	class SectionEntryDialogue;
-	class SectionEntryStyle;
-	class SectionEntryFile;
-	class SectionEntryRaw;
-
-	// Section entry class
-	class SectionEntry {
-	protected:
-		const String& EmptyString() const;
-
-	public:
-		virtual ~SectionEntry() {}
-
-		virtual SectionEntryType GetType() const =0;
-		virtual SectionEntryPlain *GetAsPlain() { return NULL; }
-		virtual SectionEntryDialogue *GetAsDialogue() { return NULL; }
-		virtual SectionEntryStyle *GetAsStyle() { return NULL; }
-		virtual SectionEntryFile *GetAsFile() { return NULL; }
-		virtual SectionEntryRaw *GetAsRaw() { return NULL; }
-	};
-
-};
+/////////////////////////////////
+// Returns a static empty string
+const String& SectionEntry::EmptyString() const
+{
+	static const String str = _T("");
+	return str;
+}

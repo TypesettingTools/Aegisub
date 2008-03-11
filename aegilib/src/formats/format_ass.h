@@ -101,25 +101,25 @@ namespace Aegilib {
 		bool HasMargins() const { return true; }
 
 		// Read accessors
-		String GetText() const { return text; }
+		const String& GetText() const { return text; }
 		Time GetStartTime() const { return start; }
 		Time GetEndTime() const { return end; }
 		bool IsComment() const { return isComment; }
 		int GetLayer() const { return layer; }
 		int GetMargin(int n) const { return margin[n]; }
-		String GetStyle() const { return style; }
-		String GetActor() const { return actor; }
-		String GetUserField() const { return effect; }
+		const String& GetStyle() const { return style; }
+		const String& GetActor() const { return actor; }
+		const String& GetUserField() const { return effect; }
 
 		// Write acessors
-		void SetText(String setText) { text = setText; }
+		void SetText(const String &setText) { text = setText; }
 		void SetStartTime(Time setStart) { start = setStart; }
 		void SetEndTime(Time setEnd) { end = setEnd; }
 		void SetComment(bool _isComment) { isComment = _isComment; }
 		void SetLayer(int _layer) { layer = _layer; }
 		void SetMargin(int _margin,int value) { margin[_margin] = value; }
-		void SetStyle(String _style) { style = _style; }
-		void SetUserField(String userField) { effect = userField; }
+		void SetStyle(const String &_style) { style = _style; }
+		void SetUserField(const String &userField) { effect = userField; }
 	};
 
 	// Style

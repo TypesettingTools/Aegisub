@@ -305,6 +305,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\section_entry.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\text_file_reader.cpp"
 				>
 			</File>

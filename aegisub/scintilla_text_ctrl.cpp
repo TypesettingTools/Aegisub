@@ -45,7 +45,7 @@
 ScintillaTextCtrl::ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name)
 : wxStyledTextCtrl(parent, id, pos, size, 0, value)
 {
-	SetWindowStyle(style);
+	//SetWindowStyle(style);
 }
 
 

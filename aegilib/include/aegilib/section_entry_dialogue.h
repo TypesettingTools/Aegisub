@@ -66,7 +66,7 @@ namespace Aegilib {
 		virtual bool HasMargins() const { return false; }
 
 		// Read accessors
-		virtual String GetText() const { ThrowUnsupported(); return L""; }
+		virtual const String& GetText() const { ThrowUnsupported(); return EmptyString(); }
 		virtual Time GetStartTime() const { ThrowUnsupported(); return 0; }
 		virtual Time GetEndTime() const { ThrowUnsupported(); return 0; }
 		virtual int GetStartFrame() const { ThrowUnsupported(); return 0; }
@@ -74,12 +74,12 @@ namespace Aegilib {
 		virtual bool IsComment() const { ThrowUnsupported(); return false; }
 		virtual int GetLayer() const { ThrowUnsupported(); return 0; }
 		virtual int GetMargin(int n) const { ThrowUnsupported(); return n; }
-		virtual String GetStyle() const { ThrowUnsupported(); return L""; }
-		virtual String GetActor() const { ThrowUnsupported(); return L""; }
-		virtual String GetUserField() const { ThrowUnsupported(); return L""; }
+		virtual const String& GetStyle() const { ThrowUnsupported(); return EmptyString(); }
+		virtual const String& GetActor() const { ThrowUnsupported(); return EmptyString(); }
+		virtual const String& GetUserField() const { ThrowUnsupported(); return EmptyString(); }
 
 		// Write acessors
-		virtual void SetText(String text) { (void) text; ThrowUnsupported(); }
+		virtual void SetText(const String& text) { (void) text; ThrowUnsupported(); }
 		virtual void SetStartTime(Time start) { (void) start; ThrowUnsupported(); }
 		virtual void SetEndTime(Time end) { (void) end; ThrowUnsupported(); }
 		virtual void SetStartFrame(int start) { (void) start; ThrowUnsupported(); }
@@ -87,9 +87,9 @@ namespace Aegilib {
 		virtual void SetComment(bool isComment) { (void) isComment; ThrowUnsupported(); }
 		virtual void SetLayer(int layer) { (void) layer; ThrowUnsupported(); }
 		virtual void SetMargin(int margin,int value) { (void) margin; (void) value; ThrowUnsupported(); }
-		virtual void SetStyle(String style) { (void) style; ThrowUnsupported(); }
-		virtual void SetActor(String actor) { (void) actor; ThrowUnsupported(); }
-		virtual void SetUserField(String userField) { (void) userField; ThrowUnsupported(); }
+		virtual void SetStyle(const String& style) { (void) style; ThrowUnsupported(); }
+		virtual void SetActor(const String& actor) { (void) actor; ThrowUnsupported(); }
+		virtual void SetUserField(const String& userField) { (void) userField; ThrowUnsupported(); }
 	};
 
 };
