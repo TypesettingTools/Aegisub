@@ -183,7 +183,17 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,5);
 
 	// Text editor
-	TextEdit = new SubsTextEditCtrl(this,EDIT_BOX,_T(""),wxDefaultPosition,wxSize(300,50),wxSUNKEN_BORDER);
+	int textStyle = 0;
+#if wxCHECK_VERSION(2,9,0)
+	textStyle = wxBORDER_SUNKEN;
+#else
+#ifdef _WIN32
+	textStyle = wxWindow::GetThemedBorderStyle();
+#else
+	textStyle = wxBORDER_SUNKEN;
+#endif
+#endif
+	TextEdit = new SubsTextEditCtrl(this,EDIT_BOX,_T(""),wxDefaultPosition,wxSize(300,50),textStyle);
 	TextEdit->PushEventHandler(new SubsEditBoxEvent(this));
 	TextEdit->control = this;
 	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
