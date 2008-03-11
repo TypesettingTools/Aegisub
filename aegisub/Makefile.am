@@ -61,13 +61,6 @@ aegisub_LDFLAGS += @LIBASS_LIBS@
 aegisub_LDADD += libsubtitle_ass.a
 endif
 
-if HAVE_AUTOMATION
-noinst_LIBRARIES += libmisc_automanager.a
-libmisc_automanager_a_SOURCES = plugin_manager.cpp
-aegisub_LDADD += libmisc_automanager.a
-libmisc_automanager_a_CPPFLAGS = @PERL_CFLAGS@ @RUBY_CFLAGS@ @LUA50_CPPFLAGS@ @LUA_CPPFLAGS@
-endif
-
 if HAVE_AUTO4_LUA
 noinst_LIBRARIES += libauto4_lua.a
 libauto4_lua_a_SOURCES = auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_scriptreader.cpp
@@ -236,6 +229,7 @@ aegisub_SOURCES = \
 	mkv_wrap.cpp \
 	mythes.cxx \
 	options.cpp \
+	plugin_manager.cpp \
 	scintilla_text_ctrl.cpp \
 	spellchecker.cpp \
 	spline.cpp \
