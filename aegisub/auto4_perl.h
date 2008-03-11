@@ -239,23 +239,6 @@ namespace Automation4 {
 	static AssFile *MakeAssLines(AssFile *ass, AV *lines);
   };
 
-
-///////////////////////
-// PerlScriptFactory
-//
-  class PerlScriptFactory : public ScriptFactory {
-  private:
-	PerlInterpreter *parser;
-	bool loaded;
-
-  public:
-	PerlScriptFactory();
-	~PerlScriptFactory();
-
-	void RegisterFactory();
-	
-	Script* Produce(const wxString &filename) const;
-  };
 };
 
 

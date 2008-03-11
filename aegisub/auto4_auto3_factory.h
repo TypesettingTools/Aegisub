@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Rodrigo Braz Monteiro
+// Copyright (c) 2007, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,73 +30,28 @@
 // AEGISUB
 //
 // Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Contact: mailto:jiifurusu@gmail.com
 //
 
+// Scripting engine for legacy Automation 3 compatibility
 
-///////////
-// Headers
-#include "plugin_manager.h"
-#include "video_provider_manager.h"
-#include "audio_provider_manager.h"
-#include "audio_player_manager.h"
-#include "subtitles_provider_manager.h"
-#include "spellchecker_manager.h"
-#ifdef WITH_AUTO4_LUA
-#include "auto4_lua_factory.h"
+#pragma once
+
+#ifndef _AUTO4_AUTO3_FACTORY_H
+#define _AUTO4_AUTO3_FACTORY_H
+
+#include "auto4_base.h"
+
+namespace Automation4 {
+
+	// Auto3ScriptFactory
+	class Auto3ScriptFactory : public ScriptFactory {
+	public:
+		Auto3ScriptFactory();
+		~Auto3ScriptFactory();
+		Script* Produce(const wxString &filename) const;
+	};
+
+};
+
 #endif
-#ifdef WITH_PERL
-#include "auto4_perl_factory.h"
-#endif
-#ifdef WITH_AUTO3
-#include "auto4_auto3_factory.h"
-#endif
-#ifdef WITH_RUBY
-#include "auto4_ruby_factory.h"
-#endif
-
-
-///////////////
-// Constructor
-PluginManager::PluginManager() {
-	init = false;
-}
-
-
-//////////////
-// Destructor
-PluginManager::~PluginManager() {
-}
-
-
-//////////////////////////////////
-// Registers all built-in plugins
-void PluginManager::RegisterBuiltInPlugins() {
-	if (!init) {
-		// Managers
-		VideoProviderFactoryManager::RegisterProviders();
-		AudioProviderFactoryManager::RegisterProviders();
-		AudioPlayerFactoryManager::RegisterProviders();
-		SubtitlesProviderFactoryManager::RegisterProviders();
-		SpellCheckerFactoryManager::RegisterProviders();
-
-		// Automation languages
-#ifdef WITH_AUTO4_LUA
-		Automation4::LuaScriptFactory *lua = new Automation4::LuaScriptFactory();
-		lua->RegisterFactory();
-#endif
-#ifdef WITH_PERL
-		Automation4::PerlScriptFactory *perl = new Automation4::PerlScriptFactory();
-		perl->RegisterFactory();
-#endif
-#ifdef WITH_AUTO3
-		new Automation4::Auto3ScriptFactory();
-#endif
-#ifdef WITH_RUBY
-		new Automation4::RubyScriptFactory();
-#endif
-	}
-
-	// Done
-	init = true;
-}

@@ -44,6 +44,7 @@
 #include <wx/spinctrl.h>
 #include <wx/tokenzr.h>
 #include "auto4_auto3.h"
+#include "auto4_auto3_factory.h"
 #include "../auto3/auto3.h"
 #include "options.h"
 #include "string_codec.h"
@@ -735,6 +736,25 @@ namespace Automation4 {
 		Destroy();
 		Create();
 	}
+
+	Auto3ScriptFactory::Auto3ScriptFactory()
+	{
+		engine_name = _T("Legacy Automation 3");
+		filename_pattern = _T("*.auto3");
+		Register(this);
+	}
+
+	Auto3ScriptFactory::~Auto3ScriptFactory() { }
+
+	Script* Auto3ScriptFactory::Produce(const wxString &filename) const
+	{
+		if (filename.Right(6).Lower() == _T(".auto3")) {
+			return new Auto3Script(filename);
+		} else {
+			return 0;
+		}
+	}
+
 
 };
 

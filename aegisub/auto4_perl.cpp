@@ -39,6 +39,7 @@
 
 #include "auto4_perl.h"
 #include "auto4_perl_console.h"
+#include "auto4_perl_factory.h"
 #include "options.h"
 #include "ass_style.h"
 

@@ -715,6 +715,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\aegisub\auto4_perl_factory.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\aegisub\auto4_perl_script.cpp"
 					>
 				</File>
@@ -732,6 +736,10 @@
 				</File>
 				<File
 					RelativePath="..\..\aegisub\auto4_auto3.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\auto4_auto3_factory.h"
 					>
 				</File>
 			</Filter>
