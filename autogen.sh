@@ -21,7 +21,9 @@ AUTOMAKE_REQUIRED_VERSION=1.9
 INTLTOOL_REQUIRED_VERSION=0.31
 LIBTOOL_REQUIRED_VERSION=1.5
 
-PROJECT="aegsub http://aegisub.net/"
+REQUIRED_M4="fontutil.m4 wxwin28.m4 glib-gettext.m4 intltool.m4 intl.m4 pkg.m4 iconv.m4"
+
+PROJECT="aegisub http://aegisub.net/"
 TEST_TYPE=-d
 FILE=aegisub
 
@@ -29,7 +31,6 @@ srcdir=`pwd`
 test -z "$srcdir" && srcdir=.
 ORIGDIR=`pwd`
 cd $srcdir
-AWK_BIN=awk
 
 test $TEST_TYPE $FILE || {
     echo
@@ -37,27 +38,6 @@ test $TEST_TYPE $FILE || {
     echo
     exit 1
 }
-
-# XXX: This is a kludge until I sort out the config/includes situation.
-touch ${srcdir}/aegisub/posix/config.h
-
-# bmp -> xmp via the res.rc
-if [ ! -f ${srcdir}/aegisub/bitmaps/Makefile.bitmaps ]; then
-	cat ${srcdir}/aegisub/res.rc | ${AWK_BIN} -f ${srcdir}/aegisub/bitmaps/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
-fi
-cd ${srcdir}/aegisub/bitmaps
-make -f Makefile.bitmaps
-cd ${srcdir}
-
-awk '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST= \\\n	wxicon_xpm.xpm"); for (v in image) printf(" \\\n	%s_xpm.xpm", image[v])}' \
-  ${srcdir}/aegisub/res.rc \
-  > ${srcdir}/aegisub/bitmaps/Makefile.am
-
-cd ${srcdir}/aegisub/posix
-sh genres.sh ${srcdir}/aegisub/res.rc
-cd ${srcdir}
-
-
 
 check_version ()
 {
@@ -98,13 +78,17 @@ check_version ()
     fi
 }
 
-echo
-echo "I am testing that you have the tools required to build the"
-echo "$PROJECT from Subversion. This test is not foolproof,"
-echo "so if anything goes wrong, see the file HACKING for more information..."
-echo
-
 DIE=0
+
+
+echo
+echo "***********************************************************************"
+echo "*"
+echo "* Please note that the SVN version of Aegisub is NOT SUPPORTED, you must"
+echo "* download an official distfile in order to receive support."
+echo "*"
+echo "***********************************************************************"
+echo
 
 
 echo -n "checking for libtool >= $LIBTOOL_REQUIRED_VERSION ... "
@@ -197,12 +181,39 @@ else
     DIE=1
 fi
 
+WHICH_CONVERT=`which convert`
+echo -n "checking for ImageMagick 'convert' utility ... "
+if test -x "$WHICH_CONVERT"; then
+  BIN_CONVERT=$WHICH_CONVERT
+  echo $BIN_CONVERT
+else
+    echo
+    echo "  You must have 'convert' installed from the"
+    echo "  ImageMagick project."
+    echo
+    DIE=1
+fi
+
+WHICH_AWK=`which awk`
+echo -n "checking for AWK ... "
+if test -x "$WHICH_AWK"; then
+  BIN_AWK=$WHICH_AWK
+  echo $BIN_AWK
+else
+    echo
+    echo "  You must have 'convert' installed from the"
+    echo "  ImageMagick project."
+    echo
+    DIE=1
+fi
+
 if test "$DIE" -eq 1; then
     echo
     echo "Please install/upgrade the missing tools and call me again."
     echo	
     exit 1
 fi
+
 
 
 
@@ -220,10 +231,11 @@ if test -z "$*"; then
 fi
 
 
+
 if test -z "$ACLOCAL_FLAGS"; then
 
     acdir=`$ACLOCAL --print-ac-dir`
-    m4list="glib-2.0.m4 glib-gettext.m4 gtk-2.0.m4 intltool.m4 pkg.m4"
+    m4list=$REQUIRED_M4
 
     for file in $m4list
     do
@@ -239,6 +251,27 @@ if test -z "$ACLOCAL_FLAGS"; then
         fi
     done
 fi
+
+
+
+# XXX: This is a kludge until I sort out the config/includes situation.
+touch ${srcdir}/aegisub/posix/config.h
+
+# bmp -> xmp via the res.rc
+if [ ! -f ${srcdir}/aegisub/bitmaps/Makefile.bitmaps ]; then
+	cat ${srcdir}/aegisub/res.rc | ${AWK_BIN} -f ${srcdir}/aegisub/bitmaps/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
+fi
+cd ${srcdir}/aegisub/bitmaps
+make -f Makefile.bitmaps
+cd ${srcdir}
+
+awk '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST= \\\n	wxicon_xpm.xpm"); for (v in image) printf(" \\\n	%s_xpm.xpm", image[v])}' \
+  ${srcdir}/aegisub/res.rc \
+  > ${srcdir}/aegisub/bitmaps/Makefile.am
+
+cd ${srcdir}/aegisub/posix
+sh genres.sh ${srcdir}/aegisub/res.rc
+cd ${srcdir}
 
 rm -rf autom4te.cache
 
@@ -263,13 +296,13 @@ intltoolize --force --automake || exit $?
 
 cd $ORIGDIR
 
-#$srcdir/configure --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS "$@"
-#RC=$?
-#if test $RC -ne 0; then
-#  echo
-#  echo "Configure failed or did not finish!"
-#  exit $RC
-#fi
+$srcdir/configure --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS "$@"
+RC=$?
+if test $RC -ne 0; then
+  echo
+  echo "Configure failed or did not finish!"
+  exit $RC
+fi
 
-#echo
-#echo "Now type 'make' to compile the $PROJECT."
+echo
+echo "Now type 'make' to compile the $PROJECT."
