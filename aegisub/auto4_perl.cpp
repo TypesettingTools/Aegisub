@@ -53,7 +53,8 @@
 
 namespace Automation4 {
 
-  
+  static PerlInterpreter *perl_interpreter = NULL;  
+
 ///////////////////////////////////
 // Perl -> C++ interface (XSUBS)
 //
@@ -474,6 +475,7 @@ namespace Automation4 {
 	  // ...wait for it to have inited
 	}
 
+	PERL_SET_CONTEXT(perl_interpreter);
 	ExitCode ec = NULL;
 	switch(type) {
 	case CALL:
@@ -499,6 +501,10 @@ namespace Automation4 {
 	return ec;
   }
 
+
+///////////////////////
+// PerlScriptFactory
+//
 
     PerlScriptFactory::PerlScriptFactory()
 	{
@@ -538,6 +544,7 @@ namespace Automation4 {
 	  // (That was pretty magic o_O)
 
 	  // Let's register the perl script factory \o/
+	  perl_interpreter = parser;
 	  Register(this);
 	  loaded = true;
 	}
