@@ -73,7 +73,7 @@ if HAVE_AUTO4_PERL
 noinst_LIBRARIES += libauto4_perl.a
 libauto4_perl_a_SOURCES = auto4_perl.cpp auto4_perl_script.cpp auto4_perl_dialogs.cpp auto4_perl_ass.cpp auto4_perl_console.cpp auto4_perl.h auto4_perl_console.h
 libauto4_perl_a_CPPFLAGS = @PERL_CFLAGS@
-aegisub_LDFLAGS += @PERL_LDFLAGS@
+LIBS += @PERL_LDFLAGS@
 aegisub_LDADD += libauto4_perl.a
 endif
 
