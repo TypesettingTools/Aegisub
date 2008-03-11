@@ -23,16 +23,14 @@ LIBTOOL_REQUIRED_VERSION=1.5
 
 REQUIRED_M4="fontutil.m4 wxwin28.m4 glib-gettext.m4 intltool.m4 intl.m4 pkg.m4 iconv.m4"
 
-PROJECT="aegisub http://aegisub.net/"
-TEST_TYPE=-d
-FILE=aegisub
+PROJECT="aegisub"
 
 srcdir=`pwd`
 test -z "$srcdir" && srcdir=.
 ORIGDIR=`pwd`
 cd $srcdir
 
-test $TEST_TYPE $FILE || {
+test -d aegisub || {
     echo
     echo "You must run this script in the top-level $PROJECT directory."
     echo
@@ -79,16 +77,6 @@ check_version ()
 }
 
 DIE=0
-
-
-echo
-echo "***********************************************************************"
-echo "*"
-echo "* Please note that the SVN version of Aegisub is NOT SUPPORTED, you must"
-echo "* download an official distfile in order to receive support."
-echo "*"
-echo "***********************************************************************"
-echo
 
 
 echo -n "checking for libtool >= $LIBTOOL_REQUIRED_VERSION ... "
@@ -215,8 +203,6 @@ if test "$DIE" -eq 1; then
 fi
 
 
-
-
 echo
 echo "I am going to run ./configure with the following arguments:"
 echo
@@ -231,13 +217,11 @@ if test -z "$*"; then
 fi
 
 
-
 if test -z "$ACLOCAL_FLAGS"; then
-
     acdir=`$ACLOCAL --print-ac-dir`
     m4list=$REQUIRED_M4
 
-    for file in $m4list
+    for file in $m4list;
     do
 	if [ ! -f "$acdir/$file" ]; then
 	    echo
@@ -257,8 +241,8 @@ fi
 # XXX: This is a kludge until I sort out the config/includes situation.
 touch ${srcdir}/aegisub/posix/config.h
 
-# bmp -> xmp via the res.rc
-cat ${srcdir}/aegisub/res.rc | ${AWK_BIN} -f ${srcdir}/aegisub/bitmaps/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
+# BMP -> XPM via src/res.rc
+cat ${srcdir}/aegisub/res.rc | ${BIN_AWK} -f ${srcdir}/aegisub/bitmaps/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
 cd ${srcdir}/aegisub/bitmaps
 make -f Makefile.bitmaps
 cd ${srcdir}
@@ -267,12 +251,14 @@ awk '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST= \\\n	wxico
   ${srcdir}/aegisub/res.rc \
   > ${srcdir}/aegisub/bitmaps/Makefile.am
 
+# XXX: This needs replacing.
 cd ${srcdir}/aegisub/posix
 sh genres.sh ${srcdir}/aegisub/res.rc
 cd ${srcdir}
 
 rm -rf autom4te.cache
 
+echo "--- $ACLOCAL ---"
 $ACLOCAL $ACLOCAL_FLAGS
 RC=$?
 if test $RC -ne 0; then
@@ -280,20 +266,27 @@ if test $RC -ne 0; then
    exit $RC
 fi
 
+echo "--- $LIBTOOLIZE ---"
 $LIBTOOLIZE --force || exit $?
 
-# optionally feature autoheader
-($AUTOHEADER --version)  < /dev/null > /dev/null 2>&1 && $AUTOHEADER || exit 1
+echo "--- $AUTOHEADER ---"
+$AUTOHEADER || exit $?
 
+echo "--- $AUTOMAKE ---"
 $AUTOMAKE --add-missing || exit $?
+
+echo "--- $AUTOCONF ---"
 $AUTOCONF || exit $?
 
+echo "--- glib-gettextizeL ---"
 glib-gettextize --force || exit $?
-intltoolize --force --automake || exit $?
 
+echo "--- intltoolize ---"
+intltoolize --force --automake || exit $?
 
 cd $ORIGDIR
 
+echo "--- $srcdir/configure ---"
 $srcdir/configure --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS "$@"
 RC=$?
 if test $RC -ne 0; then
@@ -303,4 +296,13 @@ if test $RC -ne 0; then
 fi
 
 echo
+echo
+echo "***********************************************************************"
+echo "*"
+echo "* Please do not ask for support when using the SVN verison of aegisub,
+echo "* download an official distfile in order to receive support."
+echo "*"
+echo "***********************************************************************"
+echo
 echo "Now type 'make' to compile the $PROJECT."
+
