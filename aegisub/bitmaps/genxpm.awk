@@ -6,9 +6,9 @@
 
 END {
   printf(" \
-all: bmp2xpm wxicon_xpm.xpm \
-.PHONY: all bmp2xpm \
-CONVERT ?= convert \
+all: bmp2xpm wxicon_xpm.xpm \n \
+.PHONY: all bmp2xpm \n \
+CONVERT ?= convert \n \
 ")
 
   printf("wxicon_xpm.xpm: icon.ico\n	$(CONVERT) 'icon.ico[2]' wxicon_xpm.xpm\n");
