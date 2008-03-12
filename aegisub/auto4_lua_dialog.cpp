@@ -713,10 +713,15 @@ badcontrol:
 				lua_pushboolean(L, 0);
 			} else {
 				wxLogDebug(_T("nonzero, something else: %d"), btn);
-				if (buttons.size() > 0) {
-					wxLogDebug(_T("user button: %s"), buttons[btn-1].c_str());
+
+				// If it got out of bounds, then it must be a colour button - don't do anything.
+				if (btn < 0 || btn >= (int)buttons.size()) {
+					wxLogDebug(_T("colour button"));
+				}
+				else if (buttons.size() > 0) {
+					wxLogDebug(_T("user button: %s"), buttons.at(btn-1).c_str());
 					// button_pushed is index+1 to reserve 0 for Cancel
-					lua_pushstring(L, buttons[btn-1].mb_str(wxConvUTF8));
+					lua_pushstring(L, buttons.at(btn-1).mb_str(wxConvUTF8));
 				} else {
 					wxLogDebug(_T("default button, must be Ok"));
 					// Cancel case already covered, must be Ok then
@@ -802,7 +807,12 @@ badcontrol:
 			wxLogDebug(_T("was user button"));
 			// Therefore, when buttons are numbered from 1001 to 1000+n, make sure to set it to i+1
 			*button_pushed = evt.GetId() - 1000;
-			evt.SetId(wxID_OK); // hack to make sure the dialog will be closed
+
+			// hack to make sure the dialog will be closed
+			// only do this for non-colour buttons
+			ColourButton *button = dynamic_cast<ColourButton*> (evt.GetEventObject());
+			if (button) return;
+			evt.SetId(wxID_OK);
 		}
 		wxLogDebug(_T("button_pushed set to %d"), *button_pushed);
 		evt.Skip();
