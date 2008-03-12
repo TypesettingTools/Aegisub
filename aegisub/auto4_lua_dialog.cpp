@@ -55,6 +55,7 @@
 #include <wx/validate.h>
 #include <wx/tokenzr.h>
 #include <assert.h>
+#include "colour_button.h"
 
 namespace Automation4 {
 
@@ -207,6 +208,56 @@ namespace Automation4 {
 			}
 
 		};
+
+
+		class Color : public LuaConfigDialogControl {
+		public:
+			wxString text;
+
+			Color(lua_State *L)
+				: LuaConfigDialogControl(L)
+			{
+				lua_getfield(L, -1, "value");
+				text = wxString(lua_tostring(L, -1), wxConvUTF8);
+				lua_pop(L, 1);
+			}
+
+			virtual ~Color() { }
+
+			bool CanSerialiseValue()
+			{
+				return true;
+			}
+
+			wxString SerialiseValue()
+			{
+				return inline_string_encode(text);
+			}
+
+			void UnserialiseValue(const wxString &serialised)
+			{
+				text = inline_string_decode(serialised);
+			}
+
+			wxControl *Create(wxWindow *parent)
+			{
+				cw = new ColourButton(parent, -1, wxSize(50*width,10*height), wxColour(text));
+				cw->SetToolTip(hint);
+				return cw;
+			}
+
+			void ControlReadBack()
+			{
+				text = ((ColourButton*)cw)->GetColour().GetAsString(wxC2S_HTML_SYNTAX);
+			}
+
+			void LuaReadBack(lua_State *L)
+			{
+				lua_pushstring(L, text.mb_str(wxConvUTF8));
+			}
+
+		};
+
 
 		
 		// Multiline edit
@@ -573,8 +624,7 @@ skipbuttons:
 				} else if (controlclass == _T("checkbox")) {
 					ctl = new LuaControl::Checkbox(L);
 				} else if (controlclass == _T("color")) {
-					// FIXME
-					ctl = new LuaControl::Edit(L);
+					ctl = new LuaControl::Color(L);
 				} else if (controlclass == _T("coloralpha")) {
 					// FIXME
 					ctl = new LuaControl::Edit(L);
