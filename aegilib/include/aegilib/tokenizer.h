@@ -53,7 +53,7 @@ namespace Aegilib {
 		bool HasMore();
 		int GetPosition();
 
-		String GetString();
+		String GetString(bool trim=false);
 		int GetInt();
 		long GetLong();
 		float GetFloat();

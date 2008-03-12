@@ -68,9 +68,13 @@ int Tokenizer::GetPosition()
 
 /////////////
 // Get token
-String Tokenizer::GetString()
+String Tokenizer::GetString(bool trim)
 {
-	return tkn->GetNextToken();
+	wxString str = tkn->GetNextToken();
+	if (trim) {
+		str.Trim(true).Trim(false);
+	}
+	return str;
 }
 int Tokenizer::GetInt()
 {

@@ -84,9 +84,9 @@ Manipulator Model::CreateAntiManipulator(const Manipulator &src)
 }
 
 
-///////////////
-// Load a file
-void Model::LoadFile(wxInputStream &input,const Format *format,const String encoding)
+//////////////////
+// Load subtitles
+void Model::Load(wxInputStream &input,const Format *format,const String encoding)
 {
 	// Autodetect format
 	if (format == NULL) {
@@ -109,13 +109,33 @@ void Model::LoadFile(wxInputStream &input,const Format *format,const String enco
 
 
 //////////////////
-// Save to a file
-void Model::SaveFile(wxOutputStream &output,const Format *format,const String encoding)
+// Save subtitles
+void Model::Save(wxOutputStream &output,const Format *format,const String encoding)
 {
 	(void) output;
 	(void) format;
 	(void) encoding;
 	// TODO
+}
+
+
+///////////////
+// Load a file
+void Model::LoadFile(const String filename,const String encoding)
+{
+	const Format *handler = FormatManager::GetFormatFromFilename(filename,true);
+	wxFileInputStream stream(filename);
+	Load(stream,handler,encoding);
+}
+
+
+///////////////
+// Save a file
+void Model::SaveFile(const String filename,const String encoding)
+{
+	const Format *handler = FormatManager::GetFormatFromFilename(filename,true);
+	wxFileOutputStream stream(filename);
+	Save(stream,handler,encoding);
 }
 
 

@@ -81,13 +81,15 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		Tokenizer tkn(rawData.Mid(pos),_T(","));
 
 		// Get first token and see if it has "Marked=" in it
-		temp = tkn.GetString().Trim(false).Trim(true);
-		if (temp.Lower().StartsWith(_T("marked="))) version = 0;
-		else if (version == 0) version = 1;
+		temp = tkn.GetString(true);
+		if (temp.Lower().StartsWith(_T("marked="))) {
+			version = 0;
+			layer = 0;
+		}
 
-		// Get layer number
-		if (version == 0) layer = 0;
+		// Not SSA, so read layer number
 		else {
+			if (version == 0) version = 1;	// Only do it for SSA, not ASS2
 			long templ;
 			temp.ToLong(&templ);
 			layer = templ;
@@ -97,15 +99,9 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		start.Parse(tkn.GetString());
 		end.Parse(tkn.GetString());
 
-		// Get style
-		style = tkn.GetString();
-		style.Trim(true);
-		style.Trim(false);
-
-		// Get actor
-		actor = tkn.GetString();
-		actor.Trim(true);
-		actor.Trim(false);
+		// Get style and actor
+		style = tkn.GetString(true);
+		actor = tkn.GetString(true);
 
 		// Get margins
 		for (int i=0;i<3;i++) margin[i] = tkn.GetInt();

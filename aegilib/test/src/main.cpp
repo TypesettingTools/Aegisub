@@ -54,9 +54,7 @@ int main () {
 
 		// Load subtitles
 		cout << "Loading file... ";
-		String filename = L"subs_in.ass";
-		const Format *handler = FormatManager::GetFormatFromFilename(filename,true);
-		subs.LoadFile(wxFileInputStream(filename),handler,L"UTF-8");
+		subs.LoadFile(L"subs_in.ass",L"UTF-8");
 		cout << "Done.\n";
 
 		// Modify subtitles
@@ -65,9 +63,7 @@ int main () {
 
 		// Save subtitles
 		cout << "Saving file... ";
-		filename = L"subs_out.ass";
-		handler = FormatManager::GetFormatFromFilename(filename,false);
-		subs.SaveFile(wxFileOutputStream(filename),handler);
+		subs.SaveFile(L"subs_out.ass",L"UTF-8");
 		cout << "Done.\n";
 	}
 

@@ -35,7 +35,7 @@
 
 #pragma once
 #include <list>
-#include <wx/stream.h>
+#include <wx/wfstream.h>
 #include "manipulator.h"
 #include "section.h"
 
@@ -68,8 +68,10 @@ namespace Aegilib {
 		const Format& GetFormat() const;
 		void AddListener(View *listener);
 
-		void LoadFile(wxInputStream &input,const Format *format=NULL,const String encoding=L"");
-		void SaveFile(wxOutputStream &output,const Format *format=NULL,const String encoding=L"UTF-8");
+		void Load(wxInputStream &input,const Format *format=NULL,const String encoding=L"");
+		void Save(wxOutputStream &output,const Format *format=NULL,const String encoding=L"UTF-8");
+		void LoadFile(const String filename,const String encoding=L"");
+		void SaveFile(const String filename,const String encoding=L"UTF-8");
 
 		Section* GetSection(String name) const;
 		void AddSection(String name);

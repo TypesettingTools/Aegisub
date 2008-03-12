@@ -150,6 +150,8 @@ namespace Aegilib {
 		float shadow_w;
 
 		bool Parse(String data,int version);
+		int AlignSSAtoASS(int ssaAlignment);
+		int AlignASStoSSA(int assAlignment);
 
 	public:
 		// Constructors

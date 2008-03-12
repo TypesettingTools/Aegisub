@@ -65,23 +65,15 @@ bool StyleASS::Parse(String data,int version)
 		wxString temp;
 		Tokenizer tkn(data.Trim(false).Mid(6),_T(","));
 
-		// Read name
-		name = tkn.GetString();
-		name.Trim(true);
-		name.Trim(false);
-
-		// Read font name and size
-		font = tkn.GetString();
-		font.Trim(true);
-		font.Trim(false);
+		// Read name, font name and size
+		name = tkn.GetString(true);
+		font = tkn.GetString(true);
 		fontSize = tkn.GetFloat();
 
 		// Read colours
 		for (int i=0;i<5;i++) {
 			if ((i == 4 && version == 0) || (i == 2 && version != 0)) colour[i] = colour[i-1];
-			else {
-				colour[i].Parse(tkn.GetString(),true);
-			}
+			else colour[i].Parse(tkn.GetString(),true);
 		}
 
 		// Read bold and italics
@@ -115,43 +107,24 @@ bool StyleASS::Parse(String data,int version)
 		shadow_w = tkn.GetFloat();
 
 		// Read alignment
-		int align = tkn.GetInt();
-		if (version == 0) {
-			switch(align) {
-				case 1: alignment = 1; break;
-				case 2: alignment = 2; break;
-				case 3: alignment = 3; break;
-				case 5: alignment = 7; break;
-				case 6: alignment = 8; break;
-				case 7: alignment = 9; break;
-				case 9: alignment = 4; break;
-				case 10: alignment = 5; break;
-				case 11: alignment = 6; break;
-				default: alignment = 2; break;
-			}
-		}
-		else alignment = align;
+		alignment = tkn.GetInt();
+		if (version == 0) alignment = AlignSSAtoASS(alignment);
 
 		// Read margins
 		for (int i=0;i<4;i++) {
 			if (i == 3 && version < 2) margin[i] = margin[i-1];
-			else {
-				margin[i] = tkn.GetInt();
-			}
+			else margin[i] = tkn.GetInt();
 		}
 
-		// Read and discard alpha level
-		if (version == 0) {
-			tkn.GetString();
-		}
+		// Read and discard alpha level on SSA
+		// TODO: do something with this?
+		if (version == 0) tkn.GetString();
 
 		// Read encoding
 		encoding = tkn.GetInt();
 
 		// Read relative to
-		if (version == 2) {
-			relativeTo = tkn.GetInt();
-		}
+		if (version == 2) relativeTo = tkn.GetInt();
 
 		// End
 		if (tkn.HasMore()) return false;
@@ -161,4 +134,32 @@ bool StyleASS::Parse(String data,int version)
 	catch (...) {
 		return false;
 	}
+}
+
+
+////////////////////////////////
+// Convert SSA alignment to ASS
+int StyleASS::AlignSSAtoASS(int align)
+{
+	switch(align) {
+		case 1: return 1;
+		case 2: return 2;
+		case 3: return 3;
+		case 5: return 7;
+		case 6: return 8;
+		case 7: return 9;
+		case 9: return 4;
+		case 10: return 5;
+		case 11: return 6;
+		default: return 2;
+	}
+}
+
+
+////////////////////////////////
+// Convert ASS alignment to SSA
+int StyleASS::AlignASStoSSA(int assAlignment)
+{
+	// TODO
+	return assAlignment;
 }
