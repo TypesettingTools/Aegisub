@@ -299,7 +299,7 @@ echo
 echo
 echo "***********************************************************************"
 echo "*"
-echo "* Please do not ask for support when using the SVN verison of aegisub,
+echo "* Please do not ask for support when using the SVN verison of aegisub,"
 echo "* download an official distfile in order to receive support."
 echo "*"
 echo "***********************************************************************"
