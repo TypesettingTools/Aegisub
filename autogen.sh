@@ -217,15 +217,15 @@ if test -z "$*"; then
 fi
 
 
+
 if test -z "$ACLOCAL_FLAGS"; then
     acdir=`$ACLOCAL --print-ac-dir`
-    m4list=$REQUIRED_M4
 
-    for file in $m4list;
+    for file in $REQUIRED_M4;
     do
 	if [ ! -f "$acdir/$file" ]; then
-	    echo
-	    echo "WARNING: aclocal's directory is $acdir, but..."
+            echo
+            echo "WARNING: aclocal's directory is $acdir, but..."
             echo "         no file $acdir/$file"
             echo "         You may see fatal macro warnings below."
             echo "         If these files are installed in /some/dir, set the "
