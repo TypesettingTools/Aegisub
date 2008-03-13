@@ -338,6 +338,8 @@ AM_CONDITIONAL([HAVE_UNIVCHARDET], [test "$with_univchardet" != "no"])
 ############
 ## Auto4 LUA
 ############
+ 
+
 AC_ARG_WITH(lua,
 [  --without-lua           build without lua 5.1 (auto4)], [lua_disabled="(disabled)"])
 
@@ -350,7 +352,6 @@ AC_ARG_WITH(lua-include,
 
 if test "$with_lua" != no; then
   aegisub_save_LDFLAGS="$LDFLAGS"
-  
   LDFLAGS="$LDFLAGS $lua_lib_dir"
   AC_CHECK_LIB([lua], [lua_call], [LUA_LDFLAGS="$lua_lib_dir -llua"; with_lua_lib="yes"])
   LDFLAGS="$aegisub_save_LDFLAGS"
@@ -361,7 +362,7 @@ if test "$with_lua" != no; then
   CPPFLAGS="$aegisub_save_CPPFLAGS"
 fi
 
-if test "$with_lua_lib" = "yes" && ! test "$have_lua_include" = "yes" && test "$with_lua" != "no"; then
+if test "$with_lua_lib" = "yes" && test "$with_lua_include" = "yes" && test "$with_lua" != "no"; then
   with_auto4="yes"
   with_automation="yes"
   AC_DEFINE(WITH_AUTO4_LUA, 1, [Enable Automation (auto4), requires lua])
