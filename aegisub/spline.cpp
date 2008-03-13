@@ -128,8 +128,8 @@ void Spline::DecodeFromASS(wxString str) {
 				curve.p2.x = stack[0];
 				curve.p2.y = stack[1];
 				curve.type = CURVE_LINE;
-				x = curve.p2.x;
-				y = curve.p2.y;
+				x = (int)curve.p2.x;
+				y = (int)curve.p2.y;
 				stack.clear();
 				AppendCurve(curve);
 			}
@@ -146,8 +146,8 @@ void Spline::DecodeFromASS(wxString str) {
 				curve.p4.x = stack[4];
 				curve.p4.y = stack[5];
 				curve.type = CURVE_BICUBIC;
-				x = curve.p4.x;
-				y = curve.p4.y;
+				x = (int)curve.p4.x;
+				y = (int)curve.p4.y;
 				stack.clear();
 				AppendCurve(curve);
 			}
@@ -300,7 +300,7 @@ void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointC
 			Vector2D p4 = cur->p4;
 
 			// Find number of steps
-			int len = (p2-p1).Len() + (p3-p2).Len() + (p4-p3).Len();
+			int len = (int)((p2-p1).Len() + (p3-p2).Len() + (p4-p3).Len());
 			int steps = len/8;
 
 			// Render curve

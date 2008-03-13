@@ -745,62 +745,6 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Wrappers"
-			>
-			<File
-				RelativePath="..\..\aegisub\avisynth.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\avisynth_wrap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\avisynth_wrap.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\gl_text.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\gl_text.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\gl_wrap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\gl_wrap.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\lavc_file.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\lavc_file.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\mkv_wrap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\mkv_wrap.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\vfw_wrap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\aegisub\vfw_wrap.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Controls"
 			>
 			<File
@@ -1200,6 +1144,62 @@
 				</File>
 				<File
 					RelativePath="..\..\aegisub\vector2d.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Wrappers"
+				>
+				<File
+					RelativePath="..\..\aegisub\avisynth.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\avisynth_wrap.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\avisynth_wrap.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\gl_text.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\gl_text.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\gl_wrap.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\gl_wrap.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\lavc_file.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\lavc_file.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\mkv_wrap.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\mkv_wrap.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\vfw_wrap.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\vfw_wrap.h"
 					>
 				</File>
 			</Filter>

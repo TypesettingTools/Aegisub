@@ -100,7 +100,7 @@ void OpenGLWrapper::DrawLine(float x1,float y1,float x2,float y2) {
 // Draw line
 void OpenGLWrapper::DrawDashedLine(float x1,float y1,float x2,float y2,float step) {
 	float dist = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
-	int steps = (dist-20)/step;
+	int steps = (int)((dist-20)/step);
 	double stepx = double(x2-x1)/steps;
 	double stepy = double(y2-y1)/steps;
 	for (int i=0;i<steps;i++) {
