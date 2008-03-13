@@ -40,6 +40,7 @@ using namespace Aegilib;
 ///////////////
 // Constructor
 Exception::Exception(ExceptionList _code)
+: std::exception(GetMessage(_code).mb_str(wxConvLocal))
 {
 	code = _code;
 }
@@ -47,7 +48,7 @@ Exception::Exception(ExceptionList _code)
 
 //////////////////////
 // Get message string
-String Exception::GetMessage()
+String Exception::GetMessage(int code)
 {
 	switch (code) {
 		case Unknown: return L"Unknown.";

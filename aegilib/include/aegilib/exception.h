@@ -36,11 +36,12 @@
 #pragma once
 
 #include "aegistring.h"
+#include <exception>
 
 namespace Aegilib {
 
 	// Exception class
-	class Exception {
+	class Exception : public std::exception {
 	public:
 		enum ExceptionList {
 			Unknown,
@@ -55,10 +56,11 @@ namespace Aegilib {
 
 		Exception(ExceptionList code);
 
-		String GetMessage();
+		String GetMessage() const { return GetMessage(code); }
 		int GetCode();
 
 	private:
+		static String GetMessage(int code);
 		ExceptionList code;
 	};
 

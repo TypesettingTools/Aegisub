@@ -60,6 +60,7 @@ int main () {
 
 		// Modify subtitles
 		cout << "Modifying file...";
+		// TODO
 		cout << "Done.\n";
 
 		// Save subtitles
@@ -68,7 +69,7 @@ int main () {
 		cout << "Done.\n";
 	}
 
-	catch (Exception &e) {
-		cout << "\n\nException: " << e.GetMessage().mb_str(wxConvUTF8) << endl << endl;
+	catch (std::exception &e) {
+		cout << "\n\nException: " << e.what() << endl << endl;
 	}
 }
