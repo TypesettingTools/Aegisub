@@ -138,7 +138,9 @@ AC_SUBST(OPENMP_CXXFLAGS)
 #################
 # Audio Providers
 #################
-
+#######
+## ALSA
+#######
 AC_ARG_WITH(alsa, [  --without-alsa          build without ALSA audio provider. (default: auto)], alsa_disabled="(disabled)")
 if test "x$with_alsa" != xno; then
   AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound"; found_audio=yes; with_alsa=yes], [with_alsa=no])
@@ -150,6 +152,9 @@ fi
 AC_SUBST(ALSA_LDFLAGS)
 AM_CONDITIONAL([HAVE_ALSA], [test "$with_alsa" != "no"])
 
+############
+## PortAudio
+############
 AC_ARG_WITH(portaudio,[  --without-portaudio     build without PortAudio audio provider.
                           (default: auto)], portaudio_disabled="(disabled)")
 
@@ -174,6 +179,10 @@ fi
 AC_SUBST(PORTAUDIO_LDFLAGS)
 AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
 
+#############
+## PulseAudio
+#############
+
 AC_ARG_WITH(pulseaudio,[  --without-pulseaudio    build without PulseAudio audio provider.
                           (default: auto)], pulseaudio_disabled="(disabled)")
 if test "x$with_pulseaudio" != xno; then
@@ -184,6 +193,9 @@ if test "$with_pulseaudio" = "yes"; then
   AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
 fi
 
+#########
+## OpenAL
+#########
 AC_ARG_WITH(openal,[  --without-openal        build without OpenAL audio provider.
                           (default: auto)], openal_disabled="(disabled)")
 if test "x$with_openal" != xno; then
@@ -279,6 +291,7 @@ AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])
 ###################
 # Subtitle Provider
 ###################
+
 AC_ARG_WITH(libass, [  --without-libass        disable libass (default=autodetect)],libass_disabled="(disabled)")
 
 if test "x$with_libass" != xno; then
@@ -302,7 +315,6 @@ fi
 
 AC_SUBST(LIBASS_LIBS)
 AC_SUBST(LIBASS_CFLAGS)
-
 AM_CONDITIONAL([HAVE_LIBASS], [test "$with_libass" != "no" ])
 
 
@@ -329,6 +341,9 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
 
 
 
+###########
+## Hunspell
+###########
 AC_ARG_WITH(hunspell, [  --without-hunspell      build without hunspell support (default: auto)], hunspell_disabled="(disabled)")
 if test "x$with_hunspell" != xno; then
   PKG_CHECK_MODULES(HUNSPELL, hunspell <= 1.1.10, [with_old_hunspell=yes], [with_old_hunspell=no])
@@ -343,7 +358,9 @@ else
 fi
 
 
-
+######################
+## universalchardetect
+######################
 AC_ARG_ENABLE(univchardet, [  --enable-univchardet    enable universalchardet support.], univchardet_disabled="(disabled)")
 if test "$with_univchardet" = "yes"; then
   with_univchardet="yes"
@@ -356,10 +373,12 @@ AM_CONDITIONAL([HAVE_UNIVCHARDET], [test "$with_univchardet" != "no"])
 
 
 
-
-
 ############
 # Automation
+############
+
+############
+## Auto4 LUA
 ############
 AC_ARG_WITH(lua,
 [  --without-lua           build without lua 5.1 (auto3)], [lua_disabled="(disabled)"])
@@ -398,6 +417,43 @@ AC_SUBST(LUA_LDFLAGS)
 AM_CONDITIONAL([HAVE_AUTO4_LUA], [test "$with_auto4" != "no"])
 
 
+
+##################
+## Auto3 (LUA 5.0)
+##################
+#if test -z "$lua50-lib-dir"; then
+#  AC_MSG_WARN([You must supply both --with-lua50-lib AND --with-lua50-include.])
+#fi
+
+if ! test -z "$lua50_lib_dir" && ! test -z "$lua50_include_dir"; then
+  aegisub_save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$lua50_lib_dir -llua"
+  AC_CHECK_LIB([lualib], [luaopen_base], [LUA50_LDFLAGS="$lua50_lib_dir -llua -llualib"; lua50_lib="yes"], [lua50_lib="no"])
+  LDFLAGS="$aegisub_save_LDFLAGS"
+
+  aegisub_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$lua50_include_dir"
+  AC_CHECK_HEADER([lua.h],[LUA50_CPPFLAGS="$lua50_include_dir"; lua50_include="yes"],[lua50_include="no"])
+  CPPFLAGS="$aegisub_save_CPPFLAGS"
+fi
+
+if test "$lua50_lib" = "yes" && test "$lua50_include" = "yes"; then
+  with_auto3="yes"
+  with_automation="yes"
+  AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
+else
+  with_auto3="no"
+fi
+
+AM_CONDITIONAL([HAVE_AUTO3_LUA], [test "$with_auto3" != "no"])
+AC_SUBST(LUA50_CPPFLAGS)
+AC_SUBST(LUA50_LDFLAGS)
+
+
+
+#############
+## Auto4 PERL
+#############
 AC_ARG_WITH(perl, [  --without-perl          build without PERL Automation. (default: auto)], perl_disabled="(disabled)")
 AC_ARG_WITH(perl-bin, [  --with-perl-bin=PATH    location of PERL binary.. (default: $PATH)], [WITH_PERL_BIN="$withval"])
 
@@ -439,6 +495,10 @@ AC_SUBST(PERL_LDFLAGS)
 AM_CONDITIONAL([HAVE_AUTO4_PERL], [test "$with_perl" != "no"])
 
 
+
+#############
+## Auto4 Ruby
+#############
 AC_ARG_WITH(ruby, [  --without-ruby          build without Ruby Automation. (default: auto)], ruby_disabled="(disabled)")
 AC_ARG_WITH(ruby-bin, [  --with-ruby-bin=PATH    location of RUBY binary.. (default: $PATH)], [WITH_RUBY_BIN="$withval"])
 
@@ -485,40 +545,12 @@ AC_ARG_WITH(lua50-include,
                           PATH location of lua 5.0 includes
                           (required for auto3 support)], [lua50_include_dir="-I$withval"])
 
-
-#if test -z "$lua50-lib-dir"; then
-#  AC_MSG_WARN([You must supply both --with-lua50-lib AND --with-lua50-include.])
-#fi
-
-if ! test -z "$lua50_lib_dir" && ! test -z "$lua50_include_dir"; then
-  aegisub_save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$lua50_lib_dir -llua"
-  AC_CHECK_LIB([lualib], [luaopen_base], [LUA50_LDFLAGS="$lua50_lib_dir -llua -llualib"; lua50_lib="yes"], [lua50_lib="no"])
-  LDFLAGS="$aegisub_save_LDFLAGS"
-
-  aegisub_save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$lua50_include_dir"
-  AC_CHECK_HEADER([lua.h],[LUA50_CPPFLAGS="$lua50_include_dir"; lua50_include="yes"],[lua50_include="no"])
-  CPPFLAGS="$aegisub_save_CPPFLAGS"
-fi
-
-if test "$lua50_lib" = "yes" && test "$lua50_include" = "yes"; then
-  with_auto3="yes"
-  with_automation="yes"
-  AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
-else
-  with_auto3="no"
-fi
-
-AM_CONDITIONAL([HAVE_AUTO3_LUA], [test "$with_auto3" != "no"])
-AC_SUBST(LUA50_CPPFLAGS)
-AC_SUBST(LUA50_LDFLAGS)
-
+# Automation setup
 if test "$with_automation" = "yes"; then
   AC_DEFINE(WITH_AUTOMATION, 1, [Enable Automation support, requires any automation language.])
 fi  
-
 AM_CONDITIONAL([HAVE_AUTOMATION], [test "$with_automation" = "yes"])
+
 
 
 ################
