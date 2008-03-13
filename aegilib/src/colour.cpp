@@ -62,10 +62,10 @@ Colour::Colour (int red,int green,int blue,int alpha)
 
 ////////////////////////
 // Set colour component
-void Colour::SetRed(int red) { r = (unsigned char) MID(0,red,255); }
-void Colour::SetGreen(int green) { g = (unsigned char) MID(0,green,255); }
-void Colour::SetBlue(int blue) { b = (unsigned char) MID(0,blue,255); }
-void Colour::SetAlpha(int alpha) { a = (unsigned char) MID(0,alpha,255); }
+void Colour::SetRed(int red) { r = (unsigned char) Mid(0,red,255); }
+void Colour::SetGreen(int green) { g = (unsigned char) Mid(0,green,255); }
+void Colour::SetBlue(int blue) { b = (unsigned char) Mid(0,blue,255); }
+void Colour::SetAlpha(int alpha) { a = (unsigned char) Mid(0,alpha,255); }
 
 
 //////////////

@@ -42,8 +42,8 @@ using namespace Aegilib;
 String Time::GetString(int ms_precision,int h_precision)
 {
 	// Enforce sanity
-	ms_precision = MID(0,ms_precision,3);
-	h_precision = MID(0,h_precision,2);
+	ms_precision = Mid(0,ms_precision,3);
+	h_precision = Mid(0,h_precision,2);
 
 	// Generate values
 	int _ms = ms;

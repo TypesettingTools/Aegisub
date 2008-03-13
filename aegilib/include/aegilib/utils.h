@@ -34,83 +34,42 @@
 //
 
 
-#include "section.h"
-using namespace Aegilib;
+#pragma once
+#include "aegilib.h"
 
 
-///////////////
-// Constructor
-Section::Section(String _name)
+/////////////
+// Templates
+
+// Returns the largest of two values
+template <typename T>
+T Max(T a,T b)
 {
-	name = _name;
+	if (b < a) return a;
+	return b;
+}
+
+// Returns the smallest of two values
+template <typename T>
+T Min(T a,T b)
+{
+	if (a < b) return a;
+	return b;
+}
+
+// Returns b, but limiting it to the interval [a,c]
+template <typename T>
+T Mid(T a,T b,T c)
+{
+	return Min(Max(a,b),c);
 }
 
 
-//////////////
-// Destructor
-Section::~Section()
-{
-}
+////////////////////
+// Helper functions
+namespace Aegilib {
 
+	// Convert a string to an integer
+	int StringToInt(const String &str);
 
-///////////////////
-// Append an entry
-void Section::AddEntry(SectionEntry *entry)
-{
-	entries.push_back(entry);
-}
-
-
-//////////////////
-// Set a property
-void Section::SetProperty(const String &key,const String &value)
-{
-	properties[key] = value;
-}
-
-
-//////////////////////
-// Removes a property
-void Section::UnsetProperty(const String &key)
-{
-	std::map<String,String>::iterator iter = properties.find(key);
-	if (iter != properties.end()) properties.erase(iter);
-}
-
-
-//////////////////////////
-// Get a property's value
-String Section::GetProperty(const String &key) const
-{
-	std::map<String,String>::const_iterator iter = properties.find(key);
-	if (iter != properties.end()) return iter->second;
-	else return L"";
-}
-
-
-///////////////////////////////
-// Checks if it has a property
-bool Section::HasProperty(const String &key) const
-{
-	return properties.find(key) != properties.end();
-}
-
-
-//////////////////////
-// Get property count
-size_t Section::PropertyCount() const
-{
-	return properties.size();
-}
-
-
-///////////////////////////////////
-// Get name of a property by index
-String Section::GetPropertyName(size_t index) const
-{
-	std::map<String,String>::const_iterator iter=properties.begin();
-	for (size_t i=0 ; iter!=properties.end() ; iter++,i++) {
-		if (i == index) return iter->first;
-	}
-	return L"";
-}
+};

@@ -37,6 +37,7 @@
 #include "aegistring.h"
 #include "section_entry.h"
 #include <list>
+#include <map>
 
 namespace Aegilib {
 
@@ -44,14 +45,22 @@ namespace Aegilib {
 	class Section {
 	private:
 		std::list<SectionEntry*> entries;
+		std::map<String,String> properties;
 		String name;
 
 	public:
 		Section(String name);
 		~Section();
 
-		String GetName() const { return name; }
-		String SetName(String newName) { name = newName; }
+		const String& GetName() const { return name; }
+		String SetName(const String& newName) { name = newName; }
+		
+		void SetProperty(const String &key,const String &value);
+		void UnsetProperty(const String &key);
+		String GetProperty(const String &key) const;
+		bool HasProperty(const String &key) const;
+		size_t PropertyCount() const;
+		String GetPropertyName(size_t index) const;
 
 		void AddEntry(SectionEntry *entry);
 	};

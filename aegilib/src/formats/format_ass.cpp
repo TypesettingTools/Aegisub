@@ -108,20 +108,29 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 		if (cur[0] == L'[') continue;
 
 		// Create and insert line
-		SectionEntry *entry = MakeEntry(cur,curGroup,version);
+		SectionEntry *entry = MakeEntry(cur,section,version);
 		if (entry) section->AddEntry(entry);
 	}
 
 	// Debug
-	cout << "\nFinished reading file with version=" << version << ".\n\n";
+	cout << "\nFinished reading file with version=" << version << ".\n";
+	cout << "Dumping properties:\n";
+	section = model.GetSection(_T("Script Info"));
+	size_t n = section->PropertyCount();
+	for (size_t i=0;i<n;i++) {
+		wxString name = section->GetPropertyName(i);
+		cout << name.mb_str(wxConvUTF8) << "=" << section->GetProperty(name).mb_str(wxConvUTF8) << endl;
+	}
+	cout << "Done.\n" << endl;
 }
 
 
 ///////////////
 // Create line
-SectionEntry *FormatHandlerASS::MakeEntry(String data,String group,int version)
+SectionEntry *FormatHandlerASS::MakeEntry(const String &data,Section *section,int version)
 {
 	// Variables
+	const String group = section->GetName();
 	SectionEntry *final = NULL;
 
 	// Attachments
@@ -143,8 +152,7 @@ SectionEntry *FormatHandlerASS::MakeEntry(String data,String group,int version)
 
 		// Format lines
 		else if (data.Left(7) == _T("Format:")) {
-			// TODO
-			//entry = new AssEntry(_T("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"));
+			section->SetProperty(_T("Format"),data.Mid(7).Trim(true).Trim(false));
 		}
 
 		// Garbage
@@ -164,8 +172,7 @@ SectionEntry *FormatHandlerASS::MakeEntry(String data,String group,int version)
 			std::cout << out.mb_str(wxConvUTF8) << std::endl;
 		}
 		if (data.Left(7) == _T("Format:")) {
-			// TODO
-			//entry = new AssEntry(_T("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"));
+			section->SetProperty(_T("Format"),data.Mid(7).Trim(true).Trim(false));
 		}
 	}
 
@@ -174,7 +181,15 @@ SectionEntry *FormatHandlerASS::MakeEntry(String data,String group,int version)
 		// Discard comments
 		if (data.Left(1) == _T(";")) return NULL;
 
-		// TODO
+		// Parse property
+		size_t pos = data.Find(_T(':'));
+		if (pos == wxNOT_FOUND) return NULL;
+		wxString key = data.Left(pos).Trim(true).Trim(false);
+		wxString value = data.Mid(pos+1).Trim(true).Trim(false);
+
+		// Insert property
+		section->SetProperty(key,value);
+		return NULL;
 	}
 
 	// Return entry

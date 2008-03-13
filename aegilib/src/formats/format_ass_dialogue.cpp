@@ -35,6 +35,7 @@
 
 #include "format_ass.h"
 #include "tokenizer.h"
+#include "utils.h"
 using namespace Aegilib;
 
 
@@ -90,9 +91,7 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		// Not SSA, so read layer number
 		else {
 			if (version == 0) version = 1;	// Only do it for SSA, not ASS2
-			long templ;
-			temp.ToLong(&templ);
-			layer = templ;
+			layer = StringToInt(temp);
 		}
 
 		// Get times
@@ -105,29 +104,25 @@ bool DialogueASS::Parse(wxString rawData, int version)
 
 		// Get margins
 		for (int i=0;i<3;i++) margin[i] = tkn.GetInt();
+		margin[3] = margin[2];
+
+		// Read next string, which is either bottom margin or effect
+		temp = tkn.GetString(true);
 
 		// Get bottom margin
-		if (version == 1) margin[3] = margin[2];
-		bool rollBack = false;
 		if (version == 2) {
-			wxString oldTemp = temp;
-			temp = tkn.GetString().Trim(false).Trim(true);
-			if (!temp.IsNumber()) {
-				version = 1;
-				rollBack = true;
+			if (temp.IsNumber()) {
+				// Got margin
+				margin[3] = StringToInt(temp);
+
+				// Read effect
+				temp = tkn.GetString(true);
 			}
-			else {
-				long templ;
-				temp.ToLong(&templ);
-				margin[3] = templ;
-			}
+			else version = 1;
 		}
 
 		// Get effect
-		if (!rollBack) temp = tkn.GetString();
 		effect = temp;
-		effect.Trim(true);
-		effect.Trim(false);
 
 		// Get text
 		text = rawData.Mid(pos+tkn.GetPosition());

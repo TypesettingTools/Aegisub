@@ -48,7 +48,7 @@ namespace Aegilib {
 	// Advanced Substation Alpha format handler
 	class FormatHandlerASS : public FormatHandler {
 	private:
-		SectionEntry *MakeEntry(String data,String group,int version);
+		SectionEntry *MakeEntry(const String &data,Section *section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
 		Model &model;
 

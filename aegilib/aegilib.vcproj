@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\utils.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\view.h"
 				>
 			</File>
@@ -322,6 +326,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tokenizer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\utils.cpp"
 				>
 			</File>
 		</Filter>

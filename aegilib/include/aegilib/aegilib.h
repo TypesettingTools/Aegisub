@@ -49,16 +49,4 @@
 #include "section_entry_style.h"
 #include "aegitime.h"
 #include "colour.h"
-
-
-//////////
-// Macros
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MID
-#define MID(a,b,c) MIN(MAX((a),(b)),(c))
-#endif
+#include "utils.h"

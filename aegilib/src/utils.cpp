@@ -34,83 +34,16 @@
 //
 
 
-#include "section.h"
+#include "utils.h"
 using namespace Aegilib;
 
 
-///////////////
-// Constructor
-Section::Section(String _name)
+//////////////////////////////////
+// Convert a string to an integer
+int Aegilib::StringToInt(const String &str)
 {
-	name = _name;
-}
-
-
-//////////////
-// Destructor
-Section::~Section()
-{
-}
-
-
-///////////////////
-// Append an entry
-void Section::AddEntry(SectionEntry *entry)
-{
-	entries.push_back(entry);
-}
-
-
-//////////////////
-// Set a property
-void Section::SetProperty(const String &key,const String &value)
-{
-	properties[key] = value;
-}
-
-
-//////////////////////
-// Removes a property
-void Section::UnsetProperty(const String &key)
-{
-	std::map<String,String>::iterator iter = properties.find(key);
-	if (iter != properties.end()) properties.erase(iter);
-}
-
-
-//////////////////////////
-// Get a property's value
-String Section::GetProperty(const String &key) const
-{
-	std::map<String,String>::const_iterator iter = properties.find(key);
-	if (iter != properties.end()) return iter->second;
-	else return L"";
-}
-
-
-///////////////////////////////
-// Checks if it has a property
-bool Section::HasProperty(const String &key) const
-{
-	return properties.find(key) != properties.end();
-}
-
-
-//////////////////////
-// Get property count
-size_t Section::PropertyCount() const
-{
-	return properties.size();
-}
-
-
-///////////////////////////////////
-// Get name of a property by index
-String Section::GetPropertyName(size_t index) const
-{
-	std::map<String,String>::const_iterator iter=properties.begin();
-	for (size_t i=0 ; iter!=properties.end() ; iter++,i++) {
-		if (i == index) return iter->first;
-	}
-	return L"";
+	if (!str.IsNumber()) return 0;
+	long temp;
+	str.ToLong(&temp);
+	return (int) temp;
 }
