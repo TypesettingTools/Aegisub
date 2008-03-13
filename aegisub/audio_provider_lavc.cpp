@@ -166,7 +166,7 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 	while (_count > 0 && av_read_frame(lavcfile->fctx, &packet) >= 0) {
 		while (packet.stream_index == audStream) {
 			int bytesout = 0, samples; /* why is the output buffer size 0? */
-			if (avcodec_decode_audio2(codecContext, buffer, &bytesout, packet.data, packet.size) < 0)
+			if (avcodec_decode_audio2(codecContext, buffer, &bytesout, packet.data, packet.size) <= 0)
 				throw _T("Failed to decode audio");
 			if (bytesout == 0)
 				break;
