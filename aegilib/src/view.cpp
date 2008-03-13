@@ -38,5 +38,7 @@ using namespace Aegilib;
 
 void View::Register(Model &model)
 {
-	model.AddListener(this);
+	(void) model;
+	// TODO: change this
+	//model.AddListener(this);
 }

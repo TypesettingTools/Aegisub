@@ -53,7 +53,6 @@ TextFileReader::TextFileReader(wxInputStream &stream,Aegilib::String enc,bool _t
 : file(stream)
 {
 	// Setup
-	customConv = false;
 	trim = _trim;
 
 	// Set encoding
@@ -66,8 +65,6 @@ TextFileReader::TextFileReader(wxInputStream &stream,Aegilib::String enc,bool _t
 //////////////
 // Destructor
 TextFileReader::~TextFileReader() {
-	// Clean up conversion
-	if (customConv) delete conv;
 }
 
 
@@ -77,11 +74,9 @@ void TextFileReader::SetEncodingConfiguration() {
 	// Set encoding configuration
 	swap = false;
 	Is16 = false;
-	customConv = false;
-	conv = NULL;
+	conv = shared_ptr<wxMBConv>();
 	if (encoding == _T("UTF-8")) {
-		conv = new wxMBConvUTF8;
-		customConv = true;
+		conv = shared_ptr<wxMBConv> (new wxMBConvUTF8);
 	}
 	else if (encoding == _T("UTF-16LE")) {
 		Is16 = true;
@@ -91,15 +86,13 @@ void TextFileReader::SetEncodingConfiguration() {
 		swap = true;
 	}
 	else if (encoding == _T("UTF-7")) {
-		conv = new wxCSConv(encoding);
-		customConv = true;
+		conv = shared_ptr<wxMBConv>(new wxCSConv(encoding));
 	}
 	else if (encoding == _T("Local")) {
-		conv = wxConvCurrent;
+		conv = shared_ptr<wxMBConv> (wxConvCurrent,NullDeleter());
 	}
 	else {
-		conv = new wxCSConv(encoding);
-		customConv = true;
+		conv = shared_ptr<wxMBConv> (new wxCSConv(encoding));
 	}
 }
 

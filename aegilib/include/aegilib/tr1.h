@@ -33,80 +33,25 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "tokenizer.h"
-#include "exception.h"
-#include <wx/tokenzr.h>
-using namespace Aegilib;
+#pragma once
 
-///////////////
-// Constructor
-Tokenizer::Tokenizer(String string,String token)
-{
-	tkn = shared_ptr<wxStringTokenizer> (new wxStringTokenizer(string,token,wxTOKEN_RET_EMPTY_ALL));
-}
-Tokenizer::~Tokenizer()
-{
-}
+//////////////////////////////////////////
+// Include the Technical Report 1 headers
+// This is necessary because some compilers put them on different places
 
+#include <tr1/memory>
+#include <tr1/array>
 
-////////////
-// Has more
-bool Tokenizer::HasMore()
-{
-	return tkn->HasMoreTokens();
-}
+namespace Aegilib {
+	using std::tr1::shared_ptr;
+	using std::tr1::weak_ptr;
+	using std::tr1::array;
+	using std::tr1::dynamic_pointer_cast;
+	using std::tr1::static_pointer_cast;
 
-
-////////////////
-// Get position
-int Tokenizer::GetPosition()
-{
-	return (int)tkn->GetPosition();
-}
-
-
-/////////////
-// Get token
-String Tokenizer::GetString(bool trim)
-{
-	wxString str = tkn->GetNextToken();
-	if (trim) {
-		str.Trim(true).Trim(false);
-	}
-	return str;
-}
-int Tokenizer::GetInt()
-{
-	long value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToLong(&value);
-	return (int) value;
-}
-long Tokenizer::GetLong()
-{
-	long value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToLong(&value);
-	return value;
-}
-float Tokenizer::GetFloat()
-{
-	double value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToDouble(&value);
-	return (float) value;
-}
-double Tokenizer::GetDouble()
-{
-	double value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToDouble(&value);
-	return value;
-}
-bool Tokenizer::GetBool()
-{
-	long value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToLong(&value);
-	return value != 0;
-}
+	// Null deleter for use with shared_ptr
+	class NullDeleter {
+	public:
+		void operator()(void const *) const	{ }
+	};
+};

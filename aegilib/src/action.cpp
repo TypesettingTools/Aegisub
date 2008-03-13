@@ -46,7 +46,7 @@ Action::Action()
 
 //////////////////////////////
 // Initialization constructor
-Action::Action(ActionType _type,void* _data,int _par1)
+Action::Action(ActionType _type,shared_ptr<void> _data,int _par1)
 {
 	type = _type;
 	data = _data;

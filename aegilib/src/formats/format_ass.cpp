@@ -86,7 +86,7 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 	int version = 1;
 	wxString curGroup = L"-";
 	wxString prevGroup = L"-";
-	Section *section = NULL;
+	SectionPtr section = SectionPtr();
 
 	// Read file
 	while (reader.HasMoreLines()) {
@@ -108,7 +108,7 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 		if (cur[0] == L'[') continue;
 
 		// Create and insert line
-		SectionEntry *entry = MakeEntry(cur,section,version);
+		SectionEntryPtr entry = MakeEntry(cur,section,version);
 		if (entry) section->AddEntry(entry);
 	}
 
@@ -127,11 +127,11 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 
 ///////////////
 // Create line
-SectionEntry *FormatHandlerASS::MakeEntry(const String &data,Section *section,int version)
+SectionEntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr section,int version)
 {
 	// Variables
 	const String group = section->GetName();
-	SectionEntry *final = NULL;
+	SectionEntryPtr final;
 
 	// Attachments
 	if (group == _T("Fonts") || group == _T("Graphics")) {
@@ -142,12 +142,8 @@ SectionEntry *FormatHandlerASS::MakeEntry(const String &data,Section *section,in
 	else if (group == _T("Events")) {
 		// Dialogue lines
 		if ((data.Left(9) == _T("Dialogue:") || data.Left(8) == _T("Comment:"))) {
-			DialogueASS *diag = new DialogueASS(data,version);
+			shared_ptr<DialogueASS> diag (new DialogueASS(data,version));
 			final = diag;
-
-			// Debug
-			wxString out = diag->GetStartTime().GetString(2,1) + _T(",") + diag->GetEndTime().GetString(2,1) + _T(",") + diag->GetText();
-			std::cout << out.mb_str(wxConvUTF8) << std::endl;
 		}
 
 		// Format lines
@@ -155,7 +151,7 @@ SectionEntry *FormatHandlerASS::MakeEntry(const String &data,Section *section,in
 			section->SetProperty(_T("Format"),data.Mid(7).Trim(true).Trim(false));
 		}
 
-		// Garbage
+		// Garbage/hard comments
 		else {
 			// TODO
 		}
@@ -164,12 +160,8 @@ SectionEntry *FormatHandlerASS::MakeEntry(const String &data,Section *section,in
 	// Styles
 	else if (group == _T("V4+ Styles")) {
 		if (data.Left(6) == _T("Style:")) {
-			StyleASS *style = new StyleASS(data,version);
+			shared_ptr<StyleASS> style (new StyleASS(data,version));
 			final = style;
-
-			// Debug
-			wxString out = style->GetName() + _T(": ") + style->GetFontName() + _T(", ") + wxString::Format(_T("(%i,%i,%i)"),style->GetColour(0).GetRed(),style->GetColour(0).GetGreen(),style->GetColour(0).GetBlue());
-			std::cout << out.mb_str(wxConvUTF8) << std::endl;
 		}
 		if (data.Left(7) == _T("Format:")) {
 			section->SetProperty(_T("Format"),data.Mid(7).Trim(true).Trim(false));
@@ -179,17 +171,17 @@ SectionEntry *FormatHandlerASS::MakeEntry(const String &data,Section *section,in
 	// Script info
 	else if (group == _T("Script Info")) {
 		// Discard comments
-		if (data.Left(1) == _T(";")) return NULL;
+		if (data.Left(1) == _T(";")) return SectionEntryPtr();
 
 		// Parse property
 		size_t pos = data.Find(_T(':'));
-		if (pos == wxNOT_FOUND) return NULL;
+		if (pos == wxNOT_FOUND) return SectionEntryPtr();
 		wxString key = data.Left(pos).Trim(true).Trim(false);
 		wxString value = data.Mid(pos+1).Trim(true).Trim(false);
 
 		// Insert property
 		section->SetProperty(key,value);
-		return NULL;
+		return SectionEntryPtr();
 	}
 
 	// Return entry

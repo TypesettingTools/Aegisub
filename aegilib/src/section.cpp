@@ -46,16 +46,9 @@ Section::Section(String _name)
 }
 
 
-//////////////
-// Destructor
-Section::~Section()
-{
-}
-
-
 ///////////////////
 // Append an entry
-void Section::AddEntry(SectionEntry *entry)
+void Section::AddEntry(SectionEntryPtr entry)
 {
 	entries.push_back(entry);
 }

@@ -43,6 +43,7 @@ namespace Aegilib {
 
 	// Prototypes
 	class View;
+	typedef shared_ptr<View> ViewPtr;
 	class Notification;
 	class Format;
 	
@@ -50,11 +51,12 @@ namespace Aegilib {
 	// Stores the subtitle data
 	class Model {
 		friend class Manipulator;
-		typedef std::list<View*> ViewList;
+		typedef std::list<ViewPtr> ViewList;
 		typedef std::list<const Manipulator> ActionStack;
+		typedef shared_ptr<Format> FormatPtr;
 
 	private:
-		std::list<Section*> sections;
+		std::list<SectionPtr> sections;
 		ActionStack undoStack;
 		ActionStack redoStack;
 		ViewList listeners;
@@ -66,14 +68,14 @@ namespace Aegilib {
 
 	public:
 		const Format& GetFormat() const;
-		void AddListener(View *listener);
+		void AddListener(ViewPtr listener);
 
-		void Load(wxInputStream &input,const Format *format=NULL,const String encoding=L"");
-		void Save(wxOutputStream &output,const Format *format=NULL,const String encoding=L"UTF-8");
+		void Load(wxInputStream &input,const FormatPtr format=FormatPtr(),const String encoding=L"");
+		void Save(wxOutputStream &output,const FormatPtr format=FormatPtr(),const String encoding=L"UTF-8");
 		void LoadFile(const String filename,const String encoding=L"");
 		void SaveFile(const String filename,const String encoding=L"UTF-8");
 
-		Section* GetSection(String name) const;
+		SectionPtr GetSection(String name) const;
 		void AddSection(String name);
 
 		bool CanUndo(const String owner=L"") const;

@@ -47,15 +47,15 @@ namespace Aegilib {
 	class Action {
 	private:
 		ActionType type;
-		void* data;
+		shared_ptr<void> data;
 		int par1;
 
 	public:
 		Action();
-		Action(ActionType type,void* data,int par1);
+		Action(ActionType type,shared_ptr<void> data,int par1);
 
 		ActionType GetType() { return type; }
-		void* GetData() { return data; }
+		shared_ptr<void> GetData() { return data; }
 		int GetLineNumber() { return par1; }
 	};
 };

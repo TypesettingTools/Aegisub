@@ -34,6 +34,7 @@
 //
 
 #pragma once
+#include "tr1.h"
 #include "exception.h"
 #include "model.h"
 #include "view.h"

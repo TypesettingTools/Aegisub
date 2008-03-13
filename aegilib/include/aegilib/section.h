@@ -36,6 +36,7 @@
 #pragma once
 #include "aegistring.h"
 #include "section_entry.h"
+#include "tr1.h"
 #include <list>
 #include <map>
 
@@ -43,14 +44,15 @@ namespace Aegilib {
 
 	// Section class
 	class Section {
+		friend class shared_ptr<Section>;
 	private:
-		std::list<SectionEntry*> entries;
+		std::list<SectionEntryPtr> entries;
 		std::map<String,String> properties;
 		String name;
 
 	public:
 		Section(String name);
-		~Section();
+		~Section() {}
 
 		const String& GetName() const { return name; }
 		String SetName(const String& newName) { name = newName; }
@@ -62,7 +64,8 @@ namespace Aegilib {
 		size_t PropertyCount() const;
 		String GetPropertyName(size_t index) const;
 
-		void AddEntry(SectionEntry *entry);
+		void AddEntry(SectionEntryPtr entry);
 	};
+	typedef shared_ptr<Section> SectionPtr;
 
 };

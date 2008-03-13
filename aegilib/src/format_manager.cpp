@@ -41,12 +41,12 @@ using namespace Aegilib;
 
 ////////
 // List
-std::vector<const Format*> FormatManager::formats;
+std::vector<const FormatPtr> FormatManager::formats;
 
 
 ////////////////
 // Add a format
-void FormatManager::AddFormat(const Format *format)
+void FormatManager::AddFormat(const FormatPtr format)
 {
 	formats.push_back(format);
 }
@@ -56,7 +56,7 @@ void FormatManager::AddFormat(const Format *format)
 // Initialzie all built-in formats
 void FormatManager::InitializeFormats()
 {
-	formats.push_back(new FormatASS);
+	formats.push_back(FormatPtr(new FormatASS));
 }
 
 
@@ -78,20 +78,20 @@ int FormatManager::GetFormatCount()
 
 ////////////
 // By index
-const Format* FormatManager::GetFormatByIndex(const int index)
+const FormatPtr FormatManager::GetFormatByIndex(const int index)
 {
 	try {
 		return formats.at(index);
 	}
 	catch (...) {
-		return NULL;
+		return FormatPtr();
 	}
 }
 
 
 ///////////////
 // By filename
-const Format* FormatManager::GetFormatFromFilename(const String &filename,bool read)
+const FormatPtr FormatManager::GetFormatFromFilename(const String &filename,bool read)
 {
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
@@ -103,18 +103,18 @@ const Format* FormatManager::GetFormatFromFilename(const String &filename,bool r
 			if (filename.EndsWith(exts[j])) return formats[i];
 		}
 	}
-	return NULL;
+	return FormatPtr();
 }
 
 
 //////////////////
 // By format name
-const Format* FormatManager::GetFormatFromName(const String &name)
+const FormatPtr FormatManager::GetFormatFromName(const String &name)
 {
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
 		if (name == formats[i]->GetName()) return formats[i];
 	}
-	return NULL;
+	return FormatPtr();
 }
 

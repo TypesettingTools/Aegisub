@@ -35,6 +35,7 @@
 
 #pragma once
 #include "aegistring.h"
+#include "tr1.h"
 
 // Prototypes
 class wxStringTokenizer;
@@ -44,7 +45,7 @@ namespace Aegilib {
 	// Tokenizer class
 	class Tokenizer {
 	private:
-		wxStringTokenizer *tkn;
+		shared_ptr<wxStringTokenizer> tkn;
 
 	public:
 		Tokenizer(String string,String token);

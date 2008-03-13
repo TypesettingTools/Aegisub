@@ -35,6 +35,7 @@
 
 #pragma once
 #include "aegistring.h"
+#include "tr1.h"
 
 namespace Aegilib {
 
@@ -49,25 +50,31 @@ namespace Aegilib {
 
 	// Prototypes
 	class SectionEntryPlain;
+	typedef shared_ptr<SectionEntryPlain> SectionEntryPlainPtr;
 	class SectionEntryDialogue;
+	typedef shared_ptr<SectionEntryDialogue> SectionEntryDialoguePtr;
 	class SectionEntryStyle;
+	typedef shared_ptr<SectionEntryStyle> SectionEntryStylePtr;
 	class SectionEntryFile;
+	typedef shared_ptr<SectionEntryFile> SectionEntryFilePtr;
 	class SectionEntryRaw;
+	typedef shared_ptr<SectionEntryRaw> SectionEntryRawPtr;
+	class SectionEntry;
+	typedef shared_ptr<SectionEntry> SectionEntryPtr;
 
 	// Section entry class
 	class SectionEntry {
 	protected:
+		virtual ~SectionEntry() {}
 		const String& EmptyString() const;
 
 	public:
-		virtual ~SectionEntry() {}
-
 		virtual SectionEntryType GetType() const =0;
-		virtual SectionEntryPlain *GetAsPlain() { return NULL; }
-		virtual SectionEntryDialogue *GetAsDialogue() { return NULL; }
-		virtual SectionEntryStyle *GetAsStyle() { return NULL; }
-		virtual SectionEntryFile *GetAsFile() { return NULL; }
-		virtual SectionEntryRaw *GetAsRaw() { return NULL; }
+		static const SectionEntryPlainPtr GetAsPlain(const SectionEntryPtr &ptr);
+		static const SectionEntryDialoguePtr GetAsDialogue(const SectionEntryPtr &ptr);
+		static const SectionEntryStylePtr GetAsStyle(const SectionEntryPtr &ptr);
+		static const SectionEntryFilePtr GetAsFile(const SectionEntryPtr &ptr);
+		static const SectionEntryRawPtr GetAsRaw(const SectionEntryPtr &ptr);
 	};
 
 };

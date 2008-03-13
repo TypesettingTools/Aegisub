@@ -35,6 +35,8 @@
 
 
 #include "section_entry.h"
+#include "section_entry_dialogue.h"
+#include "section_entry_style.h"
 using namespace Aegilib;
 
 
@@ -44,4 +46,26 @@ const String& SectionEntry::EmptyString() const
 {
 	static const String str = _T("");
 	return str;
+}
+
+
+const SectionEntryPlainPtr SectionEntry::GetAsPlain(const SectionEntryPtr &ptr)
+{
+	(void) ptr; return SectionEntryPlainPtr();
+}
+const SectionEntryDialoguePtr SectionEntry::GetAsDialogue(const SectionEntryPtr &ptr)
+{
+	return dynamic_pointer_cast<SectionEntryDialogue>(ptr);
+}
+const SectionEntryStylePtr SectionEntry::GetAsStyle(const SectionEntryPtr &ptr)
+{
+	return dynamic_pointer_cast<SectionEntryStyle>(ptr);
+}
+const SectionEntryFilePtr SectionEntry::GetAsFile(const SectionEntryPtr &ptr)
+{
+	(void) ptr; return SectionEntryFilePtr();
+}
+const SectionEntryRawPtr SectionEntry::GetAsRaw(const SectionEntryPtr &ptr)
+{
+	(void) ptr; return SectionEntryRawPtr();
 }

@@ -48,7 +48,7 @@ namespace Aegilib {
 	// Advanced Substation Alpha format handler
 	class FormatHandlerASS : public FormatHandler {
 	private:
-		SectionEntry *MakeEntry(const String &data,Section *section,int version);
+		SectionEntryPtr MakeEntry(const String &data,SectionPtr section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
 		Model &model;
 
@@ -65,7 +65,7 @@ namespace Aegilib {
 		String GetName() const { return L"Advanced Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
-		FormatHandler* GetHandler(Model &model) const { return new FormatHandlerASS(model); }
+		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model)); }
 
 		bool CanStoreText() const { return true; }
 		bool CanUseTime() const { return true; }

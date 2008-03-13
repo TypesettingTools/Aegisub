@@ -47,10 +47,9 @@ namespace Aegilib {
 	private:
 		wxString encoding;
 		wxInputStream &file;
-		wxMBConv *conv;
+		shared_ptr<wxMBConv> conv;
 		bool Is16;
 		bool swap;
-		bool customConv;
 		bool trim;
 
 		void SetEncodingConfiguration();

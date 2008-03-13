@@ -35,6 +35,7 @@
 
 #pragma once
 #include "aegistring.h"
+#include "tr1.h"
 
 namespace Aegilib {
 	// Prototypes
@@ -49,7 +50,7 @@ namespace Aegilib {
 		virtual String GetName() const = 0;
 		virtual StringArray GetReadExtensions() const = 0;
 		virtual StringArray GetWriteExtensions() const = 0;
-		virtual FormatHandler* GetHandler(Model &model) const = 0;
+		virtual shared_ptr<FormatHandler> GetHandler(Model &model) const = 0;
 
 		virtual bool CanStoreText() const { return false; }
 		virtual bool CanStoreImages() const { return false; }
@@ -65,5 +66,6 @@ namespace Aegilib {
 		virtual int GetTimingPrecision() const { return 10; }	// In milliseconds
 		virtual int GetMaxTime() const { return 36000000-10; }	// In milliseconds, default 9h 59min 59.99s
 	};
+	typedef shared_ptr<Format> FormatPtr;
 
 };

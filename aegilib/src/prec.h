@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include "tr1.h"
 
 // wxWidgets
 #ifdef _MSC_VER

@@ -41,18 +41,18 @@ namespace Aegilib {
 	// Format manager class
 	class FormatManager {
 	private:
-		static std::vector<const Format*> formats;
+		static std::vector<const FormatPtr> formats;
 		FormatManager() {}
 
 	public:
-		static void AddFormat(const Format *format);
+		static void AddFormat(const FormatPtr format);
 		static void InitializeFormats();
 		static void ClearFormats();
 
 		static int GetFormatCount();
-		static const Format* GetFormatByIndex(const int index);
-		static const Format* GetFormatFromFilename(const String &filename,bool read);
-		static const Format* GetFormatFromName(const String &name);
+		static const FormatPtr GetFormatByIndex(const int index);
+		static const FormatPtr GetFormatFromFilename(const String &filename,bool read);
+		static const FormatPtr GetFormatFromName(const String &name);
 	};
 
 };

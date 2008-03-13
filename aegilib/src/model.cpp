@@ -39,7 +39,7 @@ using namespace Aegilib;
 
 /////////////////////////////////////////////////////////
 // Adds a listener to be notified whenever things change
-void Model::AddListener(View *listener)
+void Model::AddListener(ViewPtr listener)
 {
 	wxASSERT(listener);
 	listeners.push_back(listener);
@@ -86,7 +86,7 @@ Manipulator Model::CreateAntiManipulator(const Manipulator &src)
 
 //////////////////
 // Load subtitles
-void Model::Load(wxInputStream &input,const Format *format,const String encoding)
+void Model::Load(wxInputStream &input,const FormatPtr format,const String encoding)
 {
 	// Autodetect format
 	if (format == NULL) {
@@ -97,20 +97,17 @@ void Model::Load(wxInputStream &input,const Format *format,const String encoding
 	}
 
 	// Get handler
-	FormatHandler *handler = format->GetHandler(*this);
+	FormatHandlerPtr handler = format->GetHandler(*this);
 	if (!handler) throw Exception(Exception::No_Format_Handler);
 
 	// Load
 	handler->Load(input,encoding);
-
-	// Clean up
-	delete handler;
 }
 
 
 //////////////////
 // Save subtitles
-void Model::Save(wxOutputStream &output,const Format *format,const String encoding)
+void Model::Save(wxOutputStream &output,const FormatPtr format,const String encoding)
 {
 	(void) output;
 	(void) format;
@@ -123,7 +120,7 @@ void Model::Save(wxOutputStream &output,const Format *format,const String encodi
 // Load a file
 void Model::LoadFile(const String filename,const String encoding)
 {
-	const Format *handler = FormatManager::GetFormatFromFilename(filename,true);
+	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
 	wxFileInputStream stream(filename);
 	Load(stream,handler,encoding);
 }
@@ -133,7 +130,7 @@ void Model::LoadFile(const String filename,const String encoding)
 // Save a file
 void Model::SaveFile(const String filename,const String encoding)
 {
-	const Format *handler = FormatManager::GetFormatFromFilename(filename,true);
+	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
 	wxFileOutputStream stream(filename);
 	Save(stream,handler,encoding);
 }
@@ -141,13 +138,13 @@ void Model::SaveFile(const String filename,const String encoding)
 
 //////////////////
 // Gets a section
-Section* Model::GetSection(String name) const
+SectionPtr Model::GetSection(String name) const
 {
-	std::list<Section*>::const_iterator cur;
+	std::list<SectionPtr>::const_iterator cur;
 	for (cur=sections.begin();cur!=sections.end();cur++) {
 		if ((*cur)->GetName() == name) return *cur;
 	}
-	return NULL;
+	return SectionPtr();
 }
 
 
@@ -155,7 +152,7 @@ Section* Model::GetSection(String name) const
 // Inserts a new section
 void Model::AddSection(String name)
 {
-	Section *prev = GetSection(name);
+	SectionPtr prev = GetSection(name);
 	if (prev) throw Exception(Exception::Section_Already_Exists);
-	sections.push_back(new Section(name));
+	sections.push_back(SectionPtr(new Section(name)));
 }

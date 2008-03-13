@@ -35,15 +35,18 @@
 
 #pragma once
 #include "aegistring.h"
+#include "tr1.h"
 
 namespace Aegilib {
 
 	// Format handler interface
 	class FormatHandler {
-	public:
+	protected:
 		virtual ~FormatHandler() {}
 
+	public:
 		virtual void Load(wxInputStream &file,const String encoding) = 0;
 	};
+	typedef shared_ptr<FormatHandler> FormatHandlerPtr;
 
 };

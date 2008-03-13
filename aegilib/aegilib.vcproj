@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\tr1.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\utils.h"
 				>
 			</File>
