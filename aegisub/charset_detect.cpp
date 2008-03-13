@@ -101,7 +101,6 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 		results.sort();
 
 		// Get choice from user
-		int n = results.size();
 		wxArrayString choices;
 		wxArrayString picked;
 		int i = 0;

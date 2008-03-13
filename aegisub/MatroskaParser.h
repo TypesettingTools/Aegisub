@@ -32,6 +32,10 @@
 #ifndef MATROSKA_PARSER_H
 #define	MATROSKA_PARSER_H
 
+#ifdef _MSC_VER
+#pragma warning(disable: 4201)
+#endif
+
 /* Random notes:
  *
  * The parser does not process frame data in any way and does not read it into
@@ -394,5 +398,9 @@ X const char	  *cs_GetLastError(CompressedStream *cs);
 #endif
 
 #undef X
+
+#ifdef _MSC_VER
+#pragma warning(default: 4201)
+#endif
 
 #endif

@@ -52,11 +52,11 @@
 				OpenMP="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
-				WarningLevel="3"
+				WarningLevel="4"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
-				DisableSpecificWarnings="4267"
+				DisableSpecificWarnings="4267,4100,4428"
 				ForcedIncludeFiles="stdwx.h;config.h"
 			/>
 			<Tool
@@ -223,11 +223,11 @@
 				OpenMP="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
-				WarningLevel="3"
+				WarningLevel="4"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267"
+				DisableSpecificWarnings="4267,4100,4428"
 				ForcedIncludeFiles="stdwx.h;config.h"
 			/>
 			<Tool

@@ -35,6 +35,10 @@
 #include <string.h>
 #include <setjmp.h>
 
+#ifdef _MSC_VER
+#pragma warning(disable: 4701)
+#endif
+
 #ifdef _WIN32
 // MS names some functions differently
 #define	alloca	  _alloca

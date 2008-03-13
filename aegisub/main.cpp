@@ -117,7 +117,7 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 // Gets called when application starts, creates MainFrame
 bool AegisubApp::OnInit() {
 #ifdef __VISUALC__
-	SetThreadName(-1,"AegiMain");
+	SetThreadName((DWORD) -1,"AegiMain");
 #endif
 
 	StartupLog(_T("Inside OnInit"));

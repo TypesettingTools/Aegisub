@@ -653,7 +653,7 @@ void AudioKaraoke::EndSplit(bool commit) {
 	wxLogDebug(_T("AudioKaraoke::EndSplit(commit=%d)"), commit?1:0);
 	splitting = false;
 	bool hasSplit = false;
-	size_t first_sel = ~0;
+	size_t first_sel = ~0U;
 	for (size_t i = 0; i < syllables.size(); i ++) {
 		if (syllables[i].pending_splits.size() > 0) {
 			if (commit) {

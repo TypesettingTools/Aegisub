@@ -43,6 +43,10 @@
 #include "options.h"
 #include "ass_style.h"
 
+#ifdef __VISUALC__
+#pragma warning(disable: 4800)
+#pragma warning(disable: 4706)
+#endif
 
 #define COLLECT_PV(buf, s, e) \
 	buf = wxString(SvPV_nolen(ST(s)), pl2wx);\

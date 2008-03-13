@@ -40,6 +40,7 @@
 #ifdef WITH_DIRECTSHOW
 
 #pragma warning(disable: 4995)
+#pragma warning(disable: 4238)
 #include <wx/wxprec.h>
 #ifdef __WINDOWS__
 #include <wx/image.h>

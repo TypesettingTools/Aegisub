@@ -664,6 +664,7 @@ namespace Automation4 {
 		if (has_config && config_dialog) {
 			int results_produced = config_dialog->LuaReadBack(L);
 			assert(results_produced == 1);
+			(void) results_produced;	// avoid warning on release builds
 			// TODO, write back stored options here
 		} else {
 			// no config so put an empty table instead
