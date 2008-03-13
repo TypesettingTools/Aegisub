@@ -285,13 +285,13 @@ void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int 
 /////////////////////
 // String to integer
 // wxString::ToLong() is slow and not as flexible
-int StringToInt(const wxString &str,size_t start,size_t end) {
+int StringToInt(const wxString &str,int start,int end) {
 	// Initialize to zero and get length if end set to -1
 	int sign = 1;
 	int value = 0;
 	if (end == -1) end = str.Length();
 
-	for (size_t pos=start;pos<end;pos++) {
+	for (int pos=start;pos<end;pos++) {
 		// Get value and check if it's a number
 		int val = (int)(str[pos]);
 		if (val == _T(' ') || val == _T('\t')) continue;
@@ -309,7 +309,7 @@ int StringToInt(const wxString &str,size_t start,size_t end) {
 
 /////////////////////////
 // String to fixed point
-int StringToFix(const wxString &str,size_t decimalPlaces,size_t start,size_t end) {
+int StringToFix(const wxString &str,size_t decimalPlaces,int start,int end) {
 	// Parts of the number
 	int sign = 1;
 	int major = 0;
@@ -319,7 +319,7 @@ int StringToFix(const wxString &str,size_t decimalPlaces,size_t start,size_t end
 	int *dst = &major;
 	size_t mCount = 0;
 
-	for (size_t pos=start;pos<end;pos++) {
+	for (int pos=start;pos<end;pos++) {
 		// Get value and check if it's a number
 		int val = (int)(str[pos]);
 		if (val == _T(' ') || val == _T('\t')) continue;

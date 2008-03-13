@@ -208,8 +208,8 @@ void VisualToolVectorClip::PopulateFeatureList() {
 		// First point
 		if (isFirst) {
 			isFirst = false;
-			feat.x = cur->p1.x;
-			feat.y = cur->p1.y;
+			feat.x = (int)cur->p1.x;
+			feat.y = (int)cur->p1.y;
 			feat.type = DRAG_SMALL_CIRCLE;
 			feat.value = i;
 			feat.value2 = 0;
@@ -218,8 +218,8 @@ void VisualToolVectorClip::PopulateFeatureList() {
 
 		// Line
 		if (cur->type == CURVE_LINE) {
-			feat.x = cur->p2.x;
-			feat.y = cur->p2.y;
+			feat.x = (int)cur->p2.x;
+			feat.y = (int)cur->p2.y;
 			feat.type = DRAG_SMALL_CIRCLE;
 			feat.value = i;
 			feat.value2 = 1;
@@ -232,22 +232,22 @@ void VisualToolVectorClip::PopulateFeatureList() {
 			int size = features.size();
 
 			// Control points
-			feat.x = cur->p2.x;
-			feat.y = cur->p2.y;
+			feat.x = (int)cur->p2.x;
+			feat.y = (int)cur->p2.y;
 			feat.value = i;
 			feat.value2 = 1;
 			feat.brother[0] = size-1;
 			feat.type = DRAG_SMALL_SQUARE;
 			features.push_back(feat);
-			feat.x = cur->p3.x;
-			feat.y = cur->p3.y;
+			feat.x = (int)cur->p3.x;
+			feat.y = (int)cur->p3.y;
 			feat.value2 = 2;
 			feat.brother[0] = size+2;
 			features.push_back(feat);
 
 			// End point
-			feat.x = cur->p4.x;
-			feat.y = cur->p4.y;
+			feat.x = (int)cur->p4.x;
+			feat.y = (int)cur->p4.y;
 			feat.type = DRAG_SMALL_CIRCLE;
 			feat.value2 = 3;
 			features.push_back(feat);

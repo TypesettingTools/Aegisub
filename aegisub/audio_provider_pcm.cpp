@@ -119,7 +119,7 @@ public:
 		// Read header
 		file.Seek(0);
 		RIFFChunk header;
-		if (file.Read(&header, sizeof(header)) < sizeof(header)) throw _T("RIFF PCM WAV audio provider: file is too small to contain a RIFF header");
+		if (file.Read(&header, sizeof(header)) < (ssize_t) sizeof(header)) throw _T("RIFF PCM WAV audio provider: file is too small to contain a RIFF header");
 
 		// Check that it's good
 		if (strncmp(header.ch.type, "RIFF", 4)) throw _T("RIFF PCM WAV audio provider: File is not a RIFF file");
@@ -141,7 +141,7 @@ public:
 		while (data_left) {
 			file.Seek(filepos);
 			ChunkHeader ch;
-			if (file.Read(&ch, sizeof(ch)) < sizeof(ch)) break;
+			if (file.Read(&ch, sizeof(ch)) < (ssize_t) sizeof(ch)) break;
 
 			// Update counters
 			data_left -= sizeof(ch);
@@ -152,7 +152,7 @@ public:
 				got_fmt_header = true;
 
 				fmtChunk fmt;
-				if (file.Read(&fmt, sizeof(fmt)) < sizeof(fmt)) throw _T("RIFF PCM WAV audio provider: File ended before end of 'fmt ' chunk");
+				if (file.Read(&fmt, sizeof(fmt)) < (ssize_t) sizeof(fmt)) throw _T("RIFF PCM WAV audio provider: File ended before end of 'fmt ' chunk");
 
 				if (fmt.compression != 1) throw _T("RIFF PCM WAV audio provider: Can't use file, not PCM encoding");
 

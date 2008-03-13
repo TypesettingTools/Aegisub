@@ -238,7 +238,7 @@ void DialogDummyVideo::OnLengthChange(wxCommandEvent &evt)
 void DialogDummyVideo::UpdateLengthDisplay()
 {
 	double fpsval;
-	int lengthval;
+	int lengthval = 0;
 	if (!length_display) return;
 	if ((fps->GetValue().ToDouble(&fpsval)) && (lengthval = length->GetValue()) && fpsval > 0 && lengthval > 0) {
 		int tt = int(lengthval / fpsval * 1000); // frames / (frames/seconds) * 1000 = milliseconds

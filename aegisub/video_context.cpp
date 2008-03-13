@@ -308,7 +308,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 			bool isAllKeyFrames = true;
 			for (unsigned int i=1; i<KeyFrames.GetCount(); i++) {
 				// Is the last keyframe not this keyframe -1?
-				if (KeyFrames[i-1] != (i-1)) {
+				if (KeyFrames[i-1] != (int)(i-1)) {
 					// It's not all keyframes, go ahead
 					isAllKeyFrames = false;
 					break;

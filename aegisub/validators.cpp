@@ -64,7 +64,9 @@ NumValidator::NumValidator(wxString* _valPtr,bool isfloat,bool issigned) {
 
 ////////////////////
 // Copy constructor
-NumValidator::NumValidator(const NumValidator &from) {
+NumValidator::NumValidator(const NumValidator &from)
+: wxValidator()
+{
 	valPtr = from.valPtr;
 	isFloat = from.isFloat;
 	isSigned = from.isSigned;

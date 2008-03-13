@@ -34,9 +34,6 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #include "subtitle_format_dvd.h"
@@ -102,7 +99,9 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 
 	// Write lines
 	int i;
+#ifdef _OPENMP
 	#pragma omp parallel for shared(diags,pics,provider) private(i)
+#endif
 	for (i=0;i<count;i++) {
 		// Dialogue
 		AssDialogue *current = diags[i];
@@ -111,7 +110,9 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 		AegiVideoFrame dst;
 		dst.CopyFrom(srcFrame);
 		double time = (current->Start.GetMS()/1000.0 + current->End.GetMS()/1000.0)/2.0;
+#ifdef _OPENMP
 		#pragma omp critical
+#endif
 		{
 			provider->DrawSubtitles(dst,time);
 		}
@@ -132,7 +133,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 		for (int y=h;--y>=0;) {
 			bool hasData = false;
 			int lineStartX = 0;
-			int lineEndX;
+			int lineEndX = 0;
 
 			// Scan line
 			for (int x=w;--x>=0;) {

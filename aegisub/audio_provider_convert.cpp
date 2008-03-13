@@ -34,9 +34,6 @@
 //
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #include "audio_provider_convert.h"

@@ -157,13 +157,6 @@ public:
 
 		unsigned int overlap_offset = line_length / overlaps * 2; // FIXME: the result seems weird/wrong without this factor 2, but why?
 
-		// Raw sample data
-		short *raw_sample_data = NULL;
-		float *sample_data = NULL;
-		// Real and imaginary components of the output
-		float *out_r = NULL;
-		float *out_i = NULL;
-
 		FFT fft; // Use FFTW instead? A wavelet?
 
 		for (unsigned int overlap = 0; overlap < overlaps; ++overlap) {

@@ -38,7 +38,9 @@
 #ifndef _AUTO4_RUBY_H
 #define _AUTO4_RUBY_H
 
+#ifdef _MSC_VER
 #pragma warning(disable: 4311 4312)
+#endif
 
 #include "auto4_base.h"
 #include <wx/thread.h>
