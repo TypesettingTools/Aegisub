@@ -53,6 +53,7 @@
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
 				ForcedIncludeFiles="prec.h"
+				EnablePREfast="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

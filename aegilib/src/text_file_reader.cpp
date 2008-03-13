@@ -74,7 +74,7 @@ void TextFileReader::SetEncodingConfiguration() {
 	// Set encoding configuration
 	swap = false;
 	Is16 = false;
-	conv = shared_ptr<wxMBConv>();
+	//conv = shared_ptr<wxMBConv>();
 	if (encoding == _T("UTF-8")) {
 		conv = shared_ptr<wxMBConv> (new wxMBConvUTF8);
 	}

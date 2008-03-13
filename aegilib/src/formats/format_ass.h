@@ -39,6 +39,7 @@
 #include "section.h"
 #include "section_entry_dialogue.h"
 #include "section_entry_style.h"
+#include "tr1.h"
 
 namespace Aegilib {
 
@@ -119,7 +120,7 @@ namespace Aegilib {
 		String effect;
 		String actor;
 		Time start,end;
-		int margin[4];
+		array<int,4> margin;
 		int layer;
 		bool isComment;
 
@@ -143,7 +144,7 @@ namespace Aegilib {
 		Time GetEndTime() const { return end; }
 		bool IsComment() const { return isComment; }
 		int GetLayer() const { return layer; }
-		int GetMargin(int n) const { return margin[n]; }
+		int GetMargin(int n) const { return margin.at(n); }
 		const String& GetStyle() const { return style; }
 		const String& GetActor() const { return actor; }
 		const String& GetUserField() const { return effect; }
@@ -154,7 +155,7 @@ namespace Aegilib {
 		void SetEndTime(Time setEnd) { end = setEnd; }
 		void SetComment(bool _isComment) { isComment = _isComment; }
 		void SetLayer(int _layer) { layer = _layer; }
-		void SetMargin(int _margin,int value) { margin[_margin] = value; }
+		void SetMargin(int _margin,int value) { margin.at(_margin) = value; }
 		void SetStyle(const String &_style) { style = _style; }
 		void SetUserField(const String &userField) { effect = userField; }
 	};
@@ -166,8 +167,8 @@ namespace Aegilib {
 		String font;
 		float fontSize;
 
-		Colour colour[5];	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
-		int margin[4];
+		array<Colour,5> colour;	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
+		array<int,4> margin;
 
 		bool bold;
 		bool italic;
@@ -200,8 +201,8 @@ namespace Aegilib {
 		String GetName() const { return name; }
 		String GetFontName() const { return font; }
 		float GetFontSize() const { return fontSize; }
-		Colour GetColour(int n) const { return colour[n]; }
-		int GetMargin(int n) const { return margin[n]; }
+		Colour GetColour(int n) const { return colour.at(n); }
+		int GetMargin(int n) const { return margin.at(n); }
 	};
 
 };

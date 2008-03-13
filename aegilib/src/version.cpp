@@ -35,7 +35,7 @@
 
 
 #include "version.h"
-#include "tr1.h"
+#include "aegistring.h"
 using namespace Aegilib;
 
 
@@ -57,17 +57,17 @@ String Aegilib::GetLibraryURL()
 
 /////////////////////////
 // Host application data
-static shared_ptr<String> hostName;
-static shared_ptr<String> hostURL;
+static String* hostName = NULL;
+static String* hostURL = NULL;
 
 void Aegilib::SetHostApplicationName(const String name)
 {
-	if (!hostName) hostName = shared_ptr<String> (new String());
+	if (!hostName) hostName = new String();
 	*hostName = name;
 }
 void Aegilib::SetHostApplicationURL(const String url)
 {
-	if (!hostURL) hostName = shared_ptr<String> (new String());
+	if (!hostURL) hostURL = new String();
 	*hostURL = url;
 }
 String Aegilib::GetHostApplicationName()

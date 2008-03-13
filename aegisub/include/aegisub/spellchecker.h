@@ -64,5 +64,6 @@ public:
 // Factory
 class SpellCheckerFactory {
 public:
+	virtual ~SpellCheckerFactory() {}
 	virtual SpellChecker *CreateSpellChecker()=0;
 };

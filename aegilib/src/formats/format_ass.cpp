@@ -342,8 +342,8 @@ void FormatHandlerASS::WriteSection(TextFileWriter &writer,SectionPtr section)
 	// Write properties
 	size_t props = section->GetPropertyCount();
 	for (size_t i=0;i<props;i++) {
-		String name = section->GetPropertyName(i);
-		writer.WriteLineToFile(name + _T(": ") + section->GetProperty(name));
+		String propName = section->GetPropertyName(i);
+		writer.WriteLineToFile(propName + _T(": ") + section->GetProperty(name));
 	}
 
 	// Write contents

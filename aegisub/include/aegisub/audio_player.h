@@ -97,5 +97,6 @@ public:
 // Factory
 class AudioPlayerFactory {
 public:
+	virtual ~AudioPlayerFactory() {}
 	virtual AudioPlayer *CreatePlayer()=0;
 };

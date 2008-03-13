@@ -87,5 +87,6 @@ public:
 // Factory
 class VideoProviderFactory {
 public:
+	virtual ~VideoProviderFactory() {}
 	virtual VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0)=0;
 };
