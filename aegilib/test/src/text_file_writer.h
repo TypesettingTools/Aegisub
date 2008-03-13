@@ -40,7 +40,6 @@
 
 ///////////
 // Headers
-#include <aegilib/file.h>
 #include <wx/wxprec.h>
 #include <wx/string.h>
 #include <fstream>
@@ -48,7 +47,7 @@
 
 /////////
 // Class
-class TextFileWriter : public Aegilib::FileWriter {
+class TextFileWriter {
 private:
 	wxString filename;
 	wxString encoding;
@@ -66,10 +65,10 @@ private:
 	void SetEncoding();
 
 public:
-	TextFileWriter(Aegilib::String filename,Aegilib::String encoding=_T(""));
+	TextFileWriter(Gorgonsub::String filename,Gorgonsub::String encoding=_T(""));
 	~TextFileWriter();
 
-	void WriteLineToFile(Aegilib::String line,bool addLineBreak=true);
+	void WriteLineToFile(Gorgonsub::String line,bool addLineBreak=true);
 };
 
 

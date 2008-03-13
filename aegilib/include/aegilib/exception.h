@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,10 +35,10 @@
 
 #pragma once
 
-#include "aegistring.h"
+#include "gorgonstring.h"
 #include <exception>
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Exception class
 	class Exception : public std::exception {

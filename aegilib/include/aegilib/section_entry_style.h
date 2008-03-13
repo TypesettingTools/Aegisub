@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -40,7 +40,7 @@
 #include "section_entry.h"
 
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Style class
 	class SectionEntryStyle : public SectionEntry {

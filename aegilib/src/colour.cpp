@@ -27,15 +27,15 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 
-#include "aegilib.h"
-using namespace Aegilib;
+#include "Gorgonsub.h"
+using namespace Gorgonsub;
 
 
 ////////////////

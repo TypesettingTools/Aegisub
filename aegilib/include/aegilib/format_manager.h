@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,7 +36,7 @@
 #pragma once
 #include "format.h"
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Format manager class
 	class FormatManager {

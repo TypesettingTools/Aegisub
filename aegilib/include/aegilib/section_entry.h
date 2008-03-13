@@ -27,17 +27,17 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-#include "aegistring.h"
+#include "gorgonstring.h"
 #include "tr1.h"
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Types
 	enum SectionEntryType {
@@ -82,6 +82,15 @@ namespace Aegilib {
 		static const SectionEntryStylePtr GetAsStyle(const SectionEntryPtr &ptr);
 		static const SectionEntryFilePtr GetAsFile(const SectionEntryPtr &ptr);
 		static const SectionEntryRawPtr GetAsRaw(const SectionEntryPtr &ptr);
+	};
+
+	// Section plain-text entry
+	class SectionEntryPlain : public SectionEntry {
+	public:
+		SectionEntryType GetType() const { return SECTION_ENTRY_PLAIN; }
+		virtual ~SectionEntryPlain() {}
+		virtual String GetText() const =0;
+		virtual void SetText(const String &_data) =0;
 	};
 
 };

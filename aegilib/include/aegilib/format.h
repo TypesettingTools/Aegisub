@@ -27,17 +27,17 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-#include "aegistring.h"
+#include "gorgonstring.h"
 #include "tr1.h"
 
-namespace Aegilib {
+namespace Gorgonsub {
 	// Prototypes
 	class FormatHandler;
 	class Model;

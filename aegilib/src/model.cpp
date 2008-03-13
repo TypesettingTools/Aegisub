@@ -27,14 +27,14 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "aegilib.h"
-using namespace Aegilib;
+#include "Gorgonsub.h"
+using namespace Gorgonsub;
 
 
 /////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ Manipulator Model::CreateAntiManipulator(const Manipulator &src)
 void Model::Load(wxInputStream &input,const FormatPtr format,const String encoding)
 {
 	// Autodetect format
-	if (format == NULL) {
+	if (!format) {
 		// TODO
 
 		// No format found
@@ -99,6 +99,9 @@ void Model::Load(wxInputStream &input,const FormatPtr format,const String encodi
 	// Get handler
 	FormatHandlerPtr handler = format->GetHandler(*this);
 	if (!handler) throw Exception(Exception::No_Format_Handler);
+
+	// Clear the model first
+	Clear();
 
 	// Load
 	handler->Load(input,encoding);
@@ -110,7 +113,7 @@ void Model::Load(wxInputStream &input,const FormatPtr format,const String encodi
 void Model::Save(wxOutputStream &output,const FormatPtr format,const String encoding)
 {
 	// Autodetect format
-	if (format == NULL) {
+	if (!format) {
 		// TODO
 
 		// No format found
@@ -181,4 +184,14 @@ SectionPtr Model::GetSectionByIndex(size_t index) const
 size_t Model::GetSectionCount() const
 {
 	return sections.size();
+}
+
+
+//////////
+// Clear
+void Model::Clear()
+{
+	sections.clear();
+	undoStack.clear();
+	redoStack.clear();
 }

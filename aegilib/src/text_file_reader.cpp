@@ -40,7 +40,7 @@
 #include <string>
 #include <wx/wfstream.h>
 #include "text_file_reader.h"
-using namespace Aegilib;
+using namespace Gorgonsub;
 
 #ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
@@ -49,7 +49,7 @@ using namespace Aegilib;
 
 ///////////////
 // Constructor
-TextFileReader::TextFileReader(wxInputStream &stream,Aegilib::String enc,bool _trim)
+TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool _trim)
 : file(stream)
 {
 	// Setup
@@ -99,7 +99,7 @@ void TextFileReader::SetEncodingConfiguration() {
 
 //////////////////////////
 // Reads a line from file
-Aegilib::String TextFileReader::ReadLineFromFile() {
+Gorgonsub::String TextFileReader::ReadLineFromFile() {
 	wxString wxbuffer;
 	size_t bufAlloc = 1024;
 	wxbuffer.Alloc(bufAlloc);
@@ -169,7 +169,7 @@ Aegilib::String TextFileReader::ReadLineFromFile() {
 		wxbuffer.Trim(true);
 		wxbuffer.Trim(false);
 	}
-	return Aegilib::String(wxbuffer.c_str());
+	return Gorgonsub::String(wxbuffer.c_str());
 }
 
 
@@ -182,7 +182,7 @@ bool TextFileReader::HasMoreLines() {
 
 ////////////////////////////////
 // Ensure that charset is valid
-void TextFileReader::EnsureValid(Aegilib::String enc) {
+void TextFileReader::EnsureValid(Gorgonsub::String enc) {
 	if (enc == _T("unknown") || enc == _T("UTF-32BE") || enc == _T("UTF-32LE")) {
 		wxString error = _T("Character set ");
 		error += enc;
@@ -194,6 +194,6 @@ void TextFileReader::EnsureValid(Aegilib::String enc) {
 
 ///////////////////////////
 // Get encoding being used
-Aegilib::String TextFileReader::GetCurrentEncoding() {
+Gorgonsub::String TextFileReader::GetCurrentEncoding() {
 	return encoding.c_str();
 }

@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -40,7 +40,7 @@
 #include "manipulator.h"
 #include "section.h"
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Prototypes
 	class View;
@@ -71,6 +71,7 @@ namespace Aegilib {
 		const Format& GetFormat() const;
 		void AddListener(ViewPtr listener);
 
+		void Clear();
 		void Load(wxInputStream &input,const FormatPtr format=FormatPtr(),const String encoding=L"");
 		void Save(wxOutputStream &output,const FormatPtr format=FormatPtr(),const String encoding=L"UTF-8");
 		void LoadFile(const String filename,const String encoding=L"");

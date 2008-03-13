@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,21 +35,21 @@
 
 
 #include "version.h"
-#include "aegistring.h"
-using namespace Aegilib;
+#include "gorgonstring.h"
+using namespace Gorgonsub;
 
 
 ////////////////
 // Library data
-String Aegilib::GetLibraryName()
+String Gorgonsub::GetLibraryName()
 {
-	return _T("Aegilib");
+	return _T("Gorgonsub");
 }
-String Aegilib::GetLibraryVersionString()
+String Gorgonsub::GetLibraryVersionString()
 {
-	return _T("Aegilib v0.x - EXPERIMENTAL");
+	return _T("Gorgonsub v0.x - EXPERIMENTAL");
 }
-String Aegilib::GetLibraryURL()
+String Gorgonsub::GetLibraryURL()
 {
 	return _T("http://www.aegisub.net");
 }
@@ -60,22 +60,22 @@ String Aegilib::GetLibraryURL()
 static String* hostName = NULL;
 static String* hostURL = NULL;
 
-void Aegilib::SetHostApplicationName(const String name)
+void Gorgonsub::SetHostApplicationName(const String name)
 {
 	if (!hostName) hostName = new String();
 	*hostName = name;
 }
-void Aegilib::SetHostApplicationURL(const String url)
+void Gorgonsub::SetHostApplicationURL(const String url)
 {
 	if (!hostURL) hostURL = new String();
 	*hostURL = url;
 }
-String Aegilib::GetHostApplicationName()
+String Gorgonsub::GetHostApplicationName()
 {
 	if (hostName) return *hostName;
 	return L"unknown application";
 }
-String Aegilib::GetHostApplicationURL()
+String Gorgonsub::GetHostApplicationURL()
 {
 	if (hostURL) return *hostURL;
 	return L"";

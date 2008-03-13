@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -41,7 +41,7 @@
 #include "../text_file_writer.h"
 #include <iostream>
 #include <wx/tokenzr.h>
-using namespace Aegilib;
+using namespace Gorgonsub;
 
 
 ///////
@@ -118,6 +118,7 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 	while (reader.HasMoreLines()) {
 		// Read a line
 		wxString cur = reader.ReadLineFromFile();
+		if (cur.IsEmpty()) continue;
 
 		// Process group
 		prevGroup = curGroup;
@@ -188,7 +189,7 @@ SectionEntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr sectio
 
 	// Attachments
 	if (group == _T("Fonts") || group == _T("Graphics")) {
-		// TODO
+		final = shared_ptr<PlainASS>(new PlainASS(data));
 	}
 
 	// Events
@@ -206,7 +207,7 @@ SectionEntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr sectio
 
 		// Garbage/hard comments
 		else {
-			// TODO
+			final = shared_ptr<PlainASS>(new PlainASS(data));
 		}
 	}
 
@@ -235,6 +236,11 @@ SectionEntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr sectio
 		// Insert property
 		section->SetProperty(key,value);
 		return SectionEntryPtr();
+	}
+
+	// Unknown group, just leave it intact
+	else {
+		final = shared_ptr<PlainASS>(new PlainASS(data));
 	}
 
 	// Return entry

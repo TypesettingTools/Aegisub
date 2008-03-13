@@ -38,11 +38,11 @@
 
 
 // Headers
-#include "aegilib.h"
+#include "Gorgonsub.h"
 #include <wx/stream.h>
 
 
-namespace Aegilib {
+namespace Gorgonsub {
 	class TextFileReader {
 	private:
 		wxString encoding;

@@ -27,22 +27,28 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-
-#include <wx/string.h>
-#include <vector>
-
-namespace Aegilib {
-
-	// Define the string type used throughout this library
-	//typedef std::basic_string<wchar_t> String;
-	typedef wxString String;
-	typedef std::vector<String> StringArray;
-
-};
+#include "tr1.h"
+#include "exception.h"
+#include "model.h"
+#include "view.h"
+#include "controller.h"
+#include "notification.h"
+#include "gorgonstring.h"
+#include "format.h"
+#include "format_handler.h"
+#include "format_manager.h"
+#include "manipulator.h"
+#include "section.h"
+#include "section_entry_dialogue.h"
+#include "section_entry_style.h"
+#include "gorgontime.h"
+#include "colour.h"
+#include "utils.h"
+#include "version.h"

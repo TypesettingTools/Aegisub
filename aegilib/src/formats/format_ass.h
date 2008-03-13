@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -41,7 +41,7 @@
 #include "section_entry_style.h"
 #include "tr1.h"
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Prototypes
 	class Model;
@@ -203,6 +203,20 @@ namespace Aegilib {
 		float GetFontSize() const { return fontSize; }
 		Colour GetColour(int n) const { return colour.at(n); }
 		int GetMargin(int n) const { return margin.at(n); }
+	};
+
+	// Raw line
+	class PlainASS : public SectionEntryPlain, public SerializeText {
+	private:
+		String data;
+		String ToText(int param) const { (void)param; return data; }
+
+	public:
+		PlainASS();
+		PlainASS(String _data) : data(_data) {}
+
+		String GetText() const { return data; }
+		void SetText(const String &_data) { data = _data; }
 	};
 
 };

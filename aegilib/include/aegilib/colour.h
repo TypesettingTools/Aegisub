@@ -27,16 +27,16 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-#include "aegistring.h"
+#include "gorgonstring.h"
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Colour class
 	class Colour {

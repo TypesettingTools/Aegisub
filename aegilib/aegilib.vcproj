@@ -161,18 +161,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\aegilib.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\aegistring.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\aegitime.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\aegilib\colour.h"
 				>
 			</File>
@@ -194,6 +182,18 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\format_manager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\gorgonstring.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\gorgonsub.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\gorgontime.h"
 				>
 			</File>
 			<File

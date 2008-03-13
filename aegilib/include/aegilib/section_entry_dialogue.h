@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,11 +36,11 @@
 
 #pragma once
 #include "exception.h"
-#include "aegitime.h"
+#include "gorgontime.h"
 #include "section_entry.h"
 
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Dialogue class
 	class SectionEntryDialogue : public SectionEntry {

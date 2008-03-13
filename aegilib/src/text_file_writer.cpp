@@ -38,7 +38,7 @@
 // Headers
 #include <fstream>
 #include "text_file_writer.h"
-using namespace Aegilib;
+using namespace Gorgonsub;
 
 
 ///////////////
@@ -60,7 +60,7 @@ TextFileWriter::~TextFileWriter() {
 
 /////////////////
 // Write to file
-void TextFileWriter::WriteLineToFile(Aegilib::String line,bool addLineBreak) {
+void TextFileWriter::WriteLineToFile(Gorgonsub::String line,bool addLineBreak) {
 	// Add line break
 	wxString temp = line;
 	if (addLineBreak) temp += _T("\r\n");

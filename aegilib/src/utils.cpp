@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,12 +35,12 @@
 
 
 #include "utils.h"
-using namespace Aegilib;
+using namespace Gorgonsub;
 
 
 //////////////////////////////////
 // Convert a string to an integer
-int Aegilib::StringToInt(const String &str)
+int Gorgonsub::StringToInt(const String &str)
 {
 	if (!str.IsNumber()) return 0;
 	long temp;
@@ -51,7 +51,7 @@ int Aegilib::StringToInt(const String &str)
 
 ////////////////
 // Pretty float
-String Aegilib::PrettyFloat(String src) {
+String Gorgonsub::PrettyFloat(String src) {
 	if (src.Contains(_T("."))) {
 		size_t len = src.Length();
 		while (src.Right(1) == _T("0")) {
@@ -66,19 +66,19 @@ String Aegilib::PrettyFloat(String src) {
 	return src;
 }
 
-String Aegilib::PrettyFloatF(float src) { return Aegilib::PrettyFloat(wxString::Format(_T("%f"),src)); }
-String Aegilib::PrettyFloatD(double src) { return Aegilib::PrettyFloat(wxString::Format(_T("%f"),src)); }
+String Gorgonsub::PrettyFloatF(float src) { return Gorgonsub::PrettyFloat(wxString::Format(_T("%f"),src)); }
+String Gorgonsub::PrettyFloatD(double src) { return Gorgonsub::PrettyFloat(wxString::Format(_T("%f"),src)); }
 
 
 ///////////////////
 // Float to string
-String Aegilib::FloatToString(double value) {
+String Gorgonsub::FloatToString(double value) {
 	return PrettyFloat(wxString::Format(_T("%f"),value));
 }
 
 
 /////////////////
 // Int to string
-String Aegilib::IntegerToString(int value) {
+String Gorgonsub::IntegerToString(int value) {
 	return wxString::Format(_T("%i"),value);
 }

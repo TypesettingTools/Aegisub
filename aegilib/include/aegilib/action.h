@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,7 +35,7 @@
 
 #pragma once
 
-namespace Aegilib {
+namespace Gorgonsub {
 	// The different types of actions available
 	enum ActionType {
 		ACTION_INSERT,

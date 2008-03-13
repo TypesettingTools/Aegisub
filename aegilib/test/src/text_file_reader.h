@@ -39,7 +39,6 @@
 
 ///////////
 // Headers
-#include <aegilib/file.h>
 #include <wx/wxprec.h>
 #include <wx/dynarray.h>
 #include <wx/string.h>
@@ -52,7 +51,7 @@
 
 /////////
 // Class
-class TextFileReader : public Aegilib::FileReader {
+class TextFileReader {
 private:
 	wxString filename;
 	wxString encoding;
@@ -73,15 +72,15 @@ private:
 	void SetEncodingConfiguration();
 
 public:
-	TextFileReader(Aegilib::String filename,Aegilib::String encoding=_T(""),bool trim=true);
+	TextFileReader(Gorgonsub::String filename,Gorgonsub::String encoding=_T(""),bool trim=true);
 	~TextFileReader();
 
-	Aegilib::String ReadLineFromFile();
+	Gorgonsub::String ReadLineFromFile();
 	bool HasMoreLines();
 
-	static void EnsureValid(const Aegilib::String encoding);
-	Aegilib::String GetCurrentEncoding();
-	static Aegilib::String GetEncoding(const Aegilib::String filename);
+	static void EnsureValid(const Gorgonsub::String encoding);
+	Gorgonsub::String GetCurrentEncoding();
+	static Gorgonsub::String GetEncoding(const Gorgonsub::String filename);
 };
 
 

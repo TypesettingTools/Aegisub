@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -42,7 +42,7 @@
 #include <tr1/memory>
 #include <tr1/array>
 
-namespace Aegilib {
+namespace Gorgonsub {
 	using std::tr1::shared_ptr;
 	using std::tr1::weak_ptr;
 	using std::tr1::array;

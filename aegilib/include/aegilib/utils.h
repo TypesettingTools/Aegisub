@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,7 +35,7 @@
 
 
 #pragma once
-#include "aegilib.h"
+#include "Gorgonsub.h"
 
 
 /////////////
@@ -67,7 +67,7 @@ T Mid(T a,T b,T c)
 
 ////////////////////
 // Helper functions
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Convert a string to an integer
 	int StringToInt(const String &str);

@@ -35,11 +35,11 @@
 
 
 #pragma once
-#include "aegilib.h"
+#include "Gorgonsub.h"
 #include <wx/stream.h>
 
 
-namespace Aegilib {
+namespace Gorgonsub {
 	class TextFileWriter {
 	private:
 		wxString encoding;
@@ -56,6 +56,6 @@ namespace Aegilib {
 		TextFileWriter(wxOutputStream &stream,String encoding=_T(""));
 		~TextFileWriter();
 
-		void WriteLineToFile(Aegilib::String line,bool addLineBreak=true);
+		void WriteLineToFile(Gorgonsub::String line,bool addLineBreak=true);
 	};
 };

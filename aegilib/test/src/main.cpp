@@ -33,7 +33,7 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include <aegilib/aegilib.h>
+#include <aegilib/gorgonsub.h>
 #include <wx/wfstream.h>
 #include <iostream>
 #include "text_file_reader.h"
@@ -41,14 +41,14 @@
 
 int main () {
 	using namespace std;
-	using namespace Aegilib;
+	using namespace Gorgonsub;
 
-	cout << "Aegilib test program by amz.\n\n";
+	cout << "Gorgonsub test program by amz.\n\n";
 
 	try {
 		// Set up the lib
 		FormatManager::InitializeFormats();
-		Aegilib::SetHostApplicationName(L"Aegilib test program");
+		Gorgonsub::SetHostApplicationName(L"Aegilib test program");
 
 		// Subtitles model
 		Model subs;

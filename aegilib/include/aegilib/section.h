@@ -27,20 +27,20 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-#include "aegistring.h"
+#include "gorgonstring.h"
 #include "section_entry.h"
 #include "tr1.h"
 #include <list>
 #include <map>
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Section class
 	class Section {

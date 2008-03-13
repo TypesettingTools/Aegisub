@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,9 +36,9 @@
 #pragma once
 #include <list>
 #include "action.h"
-#include "aegistring.h"
+#include "gorgonstring.h"
 
-namespace Aegilib {
+namespace Gorgonsub {
 
 	// Manipulator class
 	class Manipulator {

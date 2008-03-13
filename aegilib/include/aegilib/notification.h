@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/AEGILIB
+// AEGISUB/GORGONSUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -38,7 +38,7 @@
 #include "model.h"
 #include "notification.h"
 
-namespace Aegilib {
+namespace Gorgonsub {
 	
 	// Notification class
 	class Notification {
