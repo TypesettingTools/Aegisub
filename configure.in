@@ -421,9 +421,13 @@ AM_CONDITIONAL([HAVE_AUTO4_LUA], [test "$with_auto4" != "no"])
 ##################
 ## Auto3 (LUA 5.0)
 ##################
-#if test -z "$lua50-lib-dir"; then
-#  AC_MSG_WARN([You must supply both --with-lua50-lib AND --with-lua50-include.])
-#fi
+AC_ARG_WITH(lua50-lib,
+[  --with-lua50-lib=PREFIX PATH location of lua 5.0 library
+                          (required for auto3 support)], [lua50_lib_dir="-L$withval"])
+AC_ARG_WITH(lua50-include,
+[  --with-lua50-include=PREFIX
+                          PATH location of lua 5.0 includes
+                          (required for auto3 support)], [lua50_include_dir="-I$withval"])
 
 if ! test -z "$lua50_lib_dir" && ! test -z "$lua50_include_dir"; then
   aegisub_save_LDFLAGS="$LDFLAGS"
@@ -536,14 +540,6 @@ AC_SUBST(RUBY_CFLAGS)
 AC_SUBST(RUBY_LDFLAGS)
 AM_CONDITIONAL([HAVE_AUTO4_RUBY], [test "$with_ruby" != "no"])
 
-
-AC_ARG_WITH(lua50-lib,
-[  --with-lua50-lib=PREFIX PATH location of lua 5.0 library
-                          (required for auto3 support)], [lua50_lib_dir="-L$withval"])
-AC_ARG_WITH(lua50-include,
-[  --with-lua50-include=PREFIX
-                          PATH location of lua 5.0 includes
-                          (required for auto3 support)], [lua50_include_dir="-I$withval"])
 
 # Automation setup
 if test "$with_automation" = "yes"; then
