@@ -50,7 +50,7 @@ namespace Aegilib {
 		bool IsFirst;
 		bool IsUnicode;
 
-		void SetEncoding();
+		void SetEncoding(String encoding);
 
 	public:
 		TextFileWriter(wxOutputStream &stream,String encoding=_T(""));

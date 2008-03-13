@@ -47,3 +47,38 @@ int Aegilib::StringToInt(const String &str)
 	str.ToLong(&temp);
 	return (int) temp;
 }
+
+
+////////////////
+// Pretty float
+String Aegilib::PrettyFloat(String src) {
+	if (src.Contains(_T("."))) {
+		size_t len = src.Length();
+		while (src.Right(1) == _T("0")) {
+			len--;
+			src.Truncate(len);
+		}
+		if (src.Right(1) == _T(".")) {
+			len--;
+			src.Truncate(len);
+		}
+	}
+	return src;
+}
+
+String Aegilib::PrettyFloatF(float src) { return Aegilib::PrettyFloat(wxString::Format(_T("%f"),src)); }
+String Aegilib::PrettyFloatD(double src) { return Aegilib::PrettyFloat(wxString::Format(_T("%f"),src)); }
+
+
+///////////////////
+// Float to string
+String Aegilib::FloatToString(double value) {
+	return PrettyFloat(wxString::Format(_T("%f"),value));
+}
+
+
+/////////////////
+// Int to string
+String Aegilib::IntegerToString(int value) {
+	return wxString::Format(_T("%i"),value);
+}

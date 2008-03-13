@@ -33,25 +33,50 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
-#include "aegistring.h"
 
-namespace Aegilib {
+#include "version.h"
+#include "tr1.h"
+using namespace Aegilib;
 
-	// Time class
-	class Time {
-	private:
-		int ms;
 
-	public:
-		Time() { ms = 0; }
-		Time(int ms) { (void)ms; }
+////////////////
+// Library data
+String Aegilib::GetLibraryName()
+{
+	return _T("Aegilib");
+}
+String Aegilib::GetLibraryVersionString()
+{
+	return _T("Aegilib v0.x - EXPERIMENTAL");
+}
+String Aegilib::GetLibraryURL()
+{
+	return _T("http://www.aegisub.net");
+}
 
-		void SetMS(int milliseconds) { ms = milliseconds; }
-		int GetMS() const { return ms; }
 
-		String GetString(int ms_precision,int h_precision) const;
-		void Parse(String data);
-	};
+/////////////////////////
+// Host application data
+static shared_ptr<String> hostName;
+static shared_ptr<String> hostURL;
 
-};
+void Aegilib::SetHostApplicationName(const String name)
+{
+	if (!hostName) hostName = shared_ptr<String> (new String());
+	*hostName = name;
+}
+void Aegilib::SetHostApplicationURL(const String url)
+{
+	if (!hostURL) hostName = shared_ptr<String> (new String());
+	*hostURL = url;
+}
+String Aegilib::GetHostApplicationName()
+{
+	if (hostName) return *hostName;
+	return L"unknown application";
+}
+String Aegilib::GetHostApplicationURL()
+{
+	if (hostURL) return *hostURL;
+	return L"";
+}

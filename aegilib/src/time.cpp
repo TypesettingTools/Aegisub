@@ -39,7 +39,7 @@ using namespace Aegilib;
 
 //////////////////////
 // Generates a string
-String Time::GetString(int ms_precision,int h_precision)
+String Time::GetString(int ms_precision,int h_precision) const
 {
 	// Enforce sanity
 	ms_precision = Mid(0,ms_precision,3);

@@ -236,6 +236,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\version.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\view.h"
 				>
 			</File>
@@ -342,6 +346,10 @@
 			</File>
 			<File
 				RelativePath=".\src\utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\version.cpp"
 				>
 			</File>
 		</Filter>

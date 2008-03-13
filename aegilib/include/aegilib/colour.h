@@ -63,6 +63,7 @@ namespace Aegilib {
 		unsigned char GetAlpha() const { return a; }
 
 		void Parse(String str,bool reverse);
+		String GetVBHex(bool withAlpha=false,bool withHeader=true,bool withFooter=true) const;
 	};
 
 };

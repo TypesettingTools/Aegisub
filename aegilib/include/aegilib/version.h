@@ -33,25 +33,23 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+
 #pragma once
 #include "aegistring.h"
 
+////////////////////
+// Helper functions
 namespace Aegilib {
 
-	// Time class
-	class Time {
-	private:
-		int ms;
+	// Version
+	String GetLibraryName();
+	String GetLibraryVersionString();
+	String GetLibraryURL();
 
-	public:
-		Time() { ms = 0; }
-		Time(int ms) { (void)ms; }
-
-		void SetMS(int milliseconds) { ms = milliseconds; }
-		int GetMS() const { return ms; }
-
-		String GetString(int ms_precision,int h_precision) const;
-		void Parse(String data);
-	};
+	// Host application
+	void SetHostApplicationName(const String name);
+	void SetHostApplicationURL(const String name);
+	String GetHostApplicationName();
+	String GetHostApplicationURL();
 
 };

@@ -48,6 +48,7 @@ int main () {
 	try {
 		// Set up the lib
 		FormatManager::InitializeFormats();
+		Aegilib::SetHostApplicationName(L"Aegilib test program");
 
 		// Subtitles model
 		Model subs;

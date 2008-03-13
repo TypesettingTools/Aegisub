@@ -57,6 +57,8 @@ void FormatManager::AddFormat(const FormatPtr format)
 void FormatManager::InitializeFormats()
 {
 	formats.push_back(FormatPtr(new FormatASS));
+	formats.push_back(FormatPtr(new FormatSSA));
+	formats.push_back(FormatPtr(new FormatASS2));
 }
 
 

@@ -138,8 +138,33 @@ bool DialogueASS::Parse(wxString rawData, int version)
 
 /////////////
 // Serialize
-String DialogueASS::ToText() const
+String DialogueASS::ToText(int version) const
 {
-	String final = L"Dialogue";
+	// Prepare
+	wxString final = _T("");
+
+	// Write comment or dialogue
+	if (isComment) final = _T("Comment: ");
+	else final = _T("Dialogue: ");
+
+	// Write layer or marked
+	if (version >= 1) final += wxString::Format(_T("%01i,"),layer);
+	else final += _T("Marked=0,");
+
+	// Write times, style and actor
+	final += start.GetString(2,1) + _T(",") + end.GetString(2,1) + _T(",") + style + _T(",") + actor + _T(",");
+
+	// Write margins
+	if (version <= 1) final += wxString::Format(_T("%04i,%04i,%04i,"),margin[0],margin[1],margin[2]);
+	else final += wxString::Format(_T("%04i,%04i,%04i,%04i,"),margin[0],margin[1],margin[2],margin[3]);
+
+	// Write effect and text
+	final += effect + _T(",") + text;
+
+	// Make sure that final has no line breaks
+	final.Replace(_T("\n"),_T(""));
+	final.Replace(_T("\r"),_T(""));
+
+	// Return final
 	return final;
 }

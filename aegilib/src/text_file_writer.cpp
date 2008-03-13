@@ -48,16 +48,7 @@ TextFileWriter::TextFileWriter(wxOutputStream &stream,String enc)
 {
 	// Setup
 	IsFirst = true;
-
-	// Set encoding
-	encoding = enc;
-	if (encoding == _T("Local")) conv = shared_ptr<wxMBConv> (wxConvCurrent,NullDeleter());
-	else {
-		if (encoding.IsEmpty()) encoding = _T("UTF-8");
-		if (encoding == _T("US-ASCII")) encoding = _T("ISO-8859-1");
-		conv = shared_ptr<wxMBConv> (new wxCSConv(encoding));
-		IsUnicode = encoding.Left(3) == _T("UTF");
-	}
+	SetEncoding(enc);
 }
 
 
@@ -103,12 +94,20 @@ void TextFileWriter::WriteLineToFile(Aegilib::String line,bool addLineBreak) {
 
 ////////////////
 // Set encoding
-void TextFileWriter::SetEncoding() {
+void TextFileWriter::SetEncoding(String enc) {
 	// Prepare
 	Is16 = false;
 
-	// UTF-16
-	if (encoding.Left(6) == _T("UTF-16")) {
-		Is16 = true;
+	// Set encoding
+	encoding = enc;
+	if (encoding == _T("Local")) conv = shared_ptr<wxMBConv> (wxConvCurrent,NullDeleter());
+	else {
+		if (encoding.IsEmpty()) encoding = _T("UTF-8");
+		if (encoding == _T("US-ASCII")) encoding = _T("ISO-8859-1");
+		conv = shared_ptr<wxMBConv> (new wxCSConv(encoding));
+		IsUnicode = encoding.Left(3) == _T("UTF");
+		if (encoding.Left(6) == _T("UTF-16")) {
+			Is16 = true;
+		}
 	}
 }

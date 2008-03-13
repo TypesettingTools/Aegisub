@@ -46,36 +46,35 @@ namespace Aegilib {
 	class Model;
 	class TextFileWriter;
 
+	// Interface to serialize classes
 	class SerializeText {
 	public:
 		virtual ~SerializeText(){}
-		virtual String ToText() const=0;
+		virtual String ToText(int param) const=0;
 	};
 
 	// Advanced Substation Alpha format handler
 	class FormatHandlerASS : public FormatHandler {
 	private:
 		Model &model;
+		int formatVersion;
 
 		SectionEntryPtr MakeEntry(const String &data,SectionPtr section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
 		void WriteSection(TextFileWriter &writer,SectionPtr section);
 
 	public:
-		FormatHandlerASS(Model &model);
+		FormatHandlerASS(Model &model,int version);
 		~FormatHandlerASS();
 
 		void Load(wxInputStream &file,const String encoding);
 		void Save(wxOutputStream &file,const String encoding);
 	};
 
-	// Advanced Substation Alpha format
-	class FormatASS : public Format {
+	// Advanced Substation Alpha format base class
+	class FormatASSFamily : public Format {
 	public:
-		String GetName() const { return L"Advanced Substation Alpha"; }
-		StringArray GetReadExtensions() const;
-		StringArray GetWriteExtensions() const;
-		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model)); }
+		virtual ~FormatASSFamily() {}
 
 		bool CanStoreText() const { return true; }
 		bool CanUseTime() const { return true; }
@@ -83,6 +82,33 @@ namespace Aegilib {
 		bool HasStyles() const { return true; }
 		bool HasMargins() const { return true; }
 		bool HasActors() const { return true; }
+	};
+
+	// Substation Alpha
+	class FormatSSA : public FormatASSFamily {
+	public:
+		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,0)); }
+		String GetName() const { return L"Substation Alpha"; }
+		StringArray GetReadExtensions() const;
+		StringArray GetWriteExtensions() const;
+	};
+
+	// Advanced Substation Alpha
+	class FormatASS : public FormatASSFamily {
+	public:
+		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,1)); }
+		String GetName() const { return L"Advanced Substation Alpha"; }
+		StringArray GetReadExtensions() const;
+		StringArray GetWriteExtensions() const;
+	};
+
+	// Advanced Substation Alpha 2
+	class FormatASS2 : public FormatASSFamily {
+	public:
+		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,2)); }
+		String GetName() const { return L"Advanced Substation Alpha 2"; }
+		StringArray GetReadExtensions() const;
+		StringArray GetWriteExtensions() const;
 	};
 
 	// Dialogue
@@ -98,7 +124,7 @@ namespace Aegilib {
 		bool isComment;
 
 		bool Parse(String data,int version);
-		String ToText() const;
+		String ToText(int param) const;
 
 	public:
 		// Constructors
@@ -161,9 +187,9 @@ namespace Aegilib {
 		float shadow_w;
 
 		bool Parse(String data,int version);
-		int AlignSSAtoASS(int ssaAlignment);
-		int AlignASStoSSA(int assAlignment);
-		String ToText() const;
+		int AlignSSAtoASS(int ssaAlignment) const;
+		int AlignASStoSSA(int assAlignment) const;
+		String ToText(int param) const;
 
 	public:
 		// Constructors

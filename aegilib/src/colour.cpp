@@ -106,3 +106,16 @@ void Colour::Parse(String value,bool reverse)
 		b = aux;
 	}
 }
+
+
+/////////////////////////////
+// Generate Visual Basic hex
+String Colour::GetVBHex(bool withAlpha,bool withHeader,bool withFooter) const
+{
+	wxString work;
+	if (withHeader) work += _T("&H");
+	if (withAlpha) work += wxString::Format(_T("%02X"),a);
+	work += wxString::Format(_T("%02X%02X%02X"),b,g,r);
+	if (withFooter) work += _T("&");
+	return work;
+}

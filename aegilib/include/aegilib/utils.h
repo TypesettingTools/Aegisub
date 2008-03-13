@@ -72,4 +72,12 @@ namespace Aegilib {
 	// Convert a string to an integer
 	int StringToInt(const String &str);
 
+	// Number to string functions
+	String PrettyFloat(String src);
+	String PrettyFloatF(float src);
+	String PrettyFloatD(double src);
+	String FloatToString(double value);
+	String IntegerToString(int value);
+	String PrettySize(int bytes);
+
 };

@@ -51,3 +51,4 @@
 #include "aegitime.h"
 #include "colour.h"
 #include "utils.h"
+#include "version.h"
