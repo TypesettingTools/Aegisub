@@ -53,6 +53,32 @@ void Section::AddEntry(SectionEntryPtr entry)
 	entries.push_back(entry);
 }
 
+void Section::RemoveEntryByIndex(size_t index)
+{
+	entries.erase(entries.begin()+index);
+}
+
+void Section::RemoveEntry(SectionEntryPtr entry)
+{
+	size_t len = entries.size();
+	for (size_t i=0;i<len;i++) {
+		if (entries[i] == entry) {
+			entries.erase(entries.begin()+i);
+			return;
+		}
+	}
+}
+
+SectionEntryConstPtr Section::GetEntry(size_t index) const
+{
+	return entries[index];
+}
+
+size_t Section::GetEntryCount() const
+{
+	return entries.size();
+}
+
 
 //////////////////
 // Set a property
@@ -91,7 +117,7 @@ bool Section::HasProperty(const String &key) const
 
 //////////////////////
 // Get property count
-size_t Section::PropertyCount() const
+size_t Section::GetPropertyCount() const
 {
 	return properties.size();
 }

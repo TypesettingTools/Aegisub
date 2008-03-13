@@ -33,9 +33,11 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+#include "section.h"
 #include "model.h"
 #include "format_ass.h"
 #include "../text_file_reader.h"
+#include "../text_file_writer.h"
 #include <iostream>
 #include <wx/tokenzr.h>
 using namespace Aegilib;
@@ -78,10 +80,6 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 	// Make text file reader
 	TextFileReader reader(file,encoding);
 
-	// Debug
-	using namespace std;
-	cout << endl << "Dumping file:" << endl;
-
 	// Variables
 	int version = 1;
 	wxString curGroup = L"-";
@@ -111,17 +109,44 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 		SectionEntryPtr entry = MakeEntry(cur,section,version);
 		if (entry) section->AddEntry(entry);
 	}
+}
 
-	// Debug
-	cout << "\nFinished reading file with version=" << version << ".\n";
-	cout << "Dumping properties:\n";
-	section = model.GetSection(_T("Script Info"));
-	size_t n = section->PropertyCount();
-	for (size_t i=0;i<n;i++) {
-		wxString name = section->GetPropertyName(i);
-		cout << name.mb_str(wxConvUTF8) << "=" << section->GetProperty(name).mb_str(wxConvUTF8) << endl;
+
+/////////////////////
+// Save file to disc
+void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
+{
+	// Make text file writer
+	TextFileWriter writer(file,encoding);
+
+	// Set up list of sections to write
+	wxArrayString sections;
+	sections.Add(L"Script Info");
+	sections.Add(L"V4+ Styles");
+	sections.Add(L"Events");
+	sections.Add(L"Fonts");
+	sections.Add(L"Graphics");
+
+	// Look for remaining sections
+	size_t totalSections = model.GetSectionCount();
+	for (size_t i=0;i<totalSections;i++) {
+		String name = model.GetSectionByIndex(i)->GetName();
+		if (sections.Index(name,false,false) == wxNOT_FOUND) sections.Add(name);
 	}
-	cout << "Done.\n" << endl;
+
+	// Write sections
+	size_t len = sections.size();
+	for (size_t i=0;i<len;i++) {
+		// See if it exists
+		SectionPtr section = model.GetSection(sections[i]);
+		if (section) {
+			// Add a spacer
+			if (i != 0) writer.WriteLineToFile(_T(""));
+
+			// Write the section
+			WriteSection(writer,section);
+		}
+	}
 }
 
 
@@ -262,5 +287,29 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 				version = trueVersion;
 			}
 		}
+	}
+}
+
+
+///////////////////////////////
+// Write a section to the file
+void FormatHandlerASS::WriteSection(TextFileWriter &writer,SectionPtr section)
+{
+	// Write name
+	writer.WriteLineToFile(_T("[") + section->GetName() + _T("]"));
+
+	// Write properties
+	size_t props = section->GetPropertyCount();
+	for (size_t i=0;i<props;i++) {
+		String name = section->GetPropertyName(i);
+		writer.WriteLineToFile(name + _T(": ") + section->GetProperty(name));
+	}
+
+	// Write contents
+	size_t entries = section->GetEntryCount();
+	for (size_t i=0;i<entries;i++) {
+		SectionEntryConstPtr entry = section->GetEntry(i);
+		shared_ptr<const SerializeText> serial = dynamic_pointer_cast<const SerializeText>(entry);
+		writer.WriteLineToFile(serial->ToText());
 	}
 }

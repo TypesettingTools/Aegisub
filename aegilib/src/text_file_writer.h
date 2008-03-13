@@ -34,42 +34,28 @@
 //
 
 
-#ifndef TEXT_FILE_WRITER_H
-#define TEXT_FILE_WRITER_H
+#pragma once
+#include "aegilib.h"
+#include <wx/stream.h>
 
 
-///////////
-// Headers
-#include <wx/wxprec.h>
-#include <wx/string.h>
-#include <fstream>
+namespace Aegilib {
+	class TextFileWriter {
+	private:
+		wxString encoding;
+		wxOutputStream &file;
 
+		shared_ptr<wxMBConv> conv;
+		bool Is16;
+		bool IsFirst;
+		bool IsUnicode;
 
-/////////
-// Class
-class TextFileWriter {
-private:
-	wxString filename;
-	wxString encoding;
-	std::ofstream file;
+		void SetEncoding();
 
-	wxMBConv *conv;
-	bool customConv;
-	bool open;
-	bool Is16;
-	bool IsFirst;
-	bool IsUnicode;
+	public:
+		TextFileWriter(wxOutputStream &stream,String encoding=_T(""));
+		~TextFileWriter();
 
-	void Open();
-	void Close();
-	void SetEncoding();
-
-public:
-	TextFileWriter(Aegilib::String filename,Aegilib::String encoding=_T(""));
-	~TextFileWriter();
-
-	void WriteLineToFile(Aegilib::String line,bool addLineBreak=true);
+		void WriteLineToFile(Aegilib::String line,bool addLineBreak=true);
+	};
 };
-
-
-#endif

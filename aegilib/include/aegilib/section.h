@@ -44,9 +44,8 @@ namespace Aegilib {
 
 	// Section class
 	class Section {
-		friend class shared_ptr<Section>;
 	private:
-		std::list<SectionEntryPtr> entries;
+		std::vector<SectionEntryPtr> entries;
 		std::map<String,String> properties;
 		String name;
 
@@ -54,17 +53,24 @@ namespace Aegilib {
 		Section(String name);
 		~Section() {}
 
-		const String& GetName() const { return name; }
+		// Section name
 		String SetName(const String& newName) { name = newName; }
+		const String& GetName() const { return name; }
 		
+		// Script properties
 		void SetProperty(const String &key,const String &value);
 		void UnsetProperty(const String &key);
 		String GetProperty(const String &key) const;
 		bool HasProperty(const String &key) const;
-		size_t PropertyCount() const;
+		size_t GetPropertyCount() const;
 		String GetPropertyName(size_t index) const;
 
+		// Entries
 		void AddEntry(SectionEntryPtr entry);
+		void RemoveEntryByIndex(size_t index);
+		void RemoveEntry(SectionEntryPtr entry);
+		SectionEntryConstPtr GetEntry(size_t index) const;
+		size_t GetEntryCount() const;
 	};
 	typedef shared_ptr<Section> SectionPtr;
 

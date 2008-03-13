@@ -134,3 +134,12 @@ bool DialogueASS::Parse(wxString rawData, int version)
 
 	return true;
 }
+
+
+/////////////
+// Serialize
+String DialogueASS::ToText() const
+{
+	String final = L"Dialogue";
+	return final;
+}

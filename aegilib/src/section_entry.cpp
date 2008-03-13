@@ -57,6 +57,10 @@ const SectionEntryDialoguePtr SectionEntry::GetAsDialogue(const SectionEntryPtr 
 {
 	return dynamic_pointer_cast<SectionEntryDialogue>(ptr);
 }
+const SectionEntryDialogueConstPtr SectionEntry::GetAsDialogue(const SectionEntryConstPtr &ptr)
+{
+	return dynamic_pointer_cast<const SectionEntryDialogue>(ptr);
+}
 const SectionEntryStylePtr SectionEntry::GetAsStyle(const SectionEntryPtr &ptr)
 {
 	return dynamic_pointer_cast<SectionEntryStyle>(ptr);

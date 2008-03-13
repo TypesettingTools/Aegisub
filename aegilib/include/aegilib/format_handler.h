@@ -46,6 +46,7 @@ namespace Aegilib {
 
 	public:
 		virtual void Load(wxInputStream &file,const String encoding) = 0;
+		virtual void Save(wxOutputStream &file,const String encoding) = 0;
 	};
 	typedef shared_ptr<FormatHandler> FormatHandlerPtr;
 

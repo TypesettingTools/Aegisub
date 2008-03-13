@@ -163,3 +163,12 @@ int StyleASS::AlignASStoSSA(int assAlignment)
 	// TODO
 	return assAlignment;
 }
+
+
+/////////////
+// Serialize
+String StyleASS::ToText() const
+{
+	String final = L"Style";
+	return final;
+}

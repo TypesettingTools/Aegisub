@@ -109,10 +109,20 @@ void Model::Load(wxInputStream &input,const FormatPtr format,const String encodi
 // Save subtitles
 void Model::Save(wxOutputStream &output,const FormatPtr format,const String encoding)
 {
-	(void) output;
-	(void) format;
-	(void) encoding;
-	// TODO
+	// Autodetect format
+	if (format == NULL) {
+		// TODO
+
+		// No format found
+		throw Exception(Exception::No_Format_Handler);
+	}
+
+	// Get handler
+	FormatHandlerPtr handler = format->GetHandler(*this);
+	if (!handler) throw Exception(Exception::No_Format_Handler);
+
+	// Load
+	handler->Save(output,encoding);
 }
 
 
@@ -136,18 +146,6 @@ void Model::SaveFile(const String filename,const String encoding)
 }
 
 
-//////////////////
-// Gets a section
-SectionPtr Model::GetSection(String name) const
-{
-	std::list<SectionPtr>::const_iterator cur;
-	for (cur=sections.begin();cur!=sections.end();cur++) {
-		if ((*cur)->GetName() == name) return *cur;
-	}
-	return SectionPtr();
-}
-
-
 /////////////////////////
 // Inserts a new section
 void Model::AddSection(String name)
@@ -155,4 +153,32 @@ void Model::AddSection(String name)
 	SectionPtr prev = GetSection(name);
 	if (prev) throw Exception(Exception::Section_Already_Exists);
 	sections.push_back(SectionPtr(new Section(name)));
+}
+
+
+//////////////////
+// Gets a section
+SectionPtr Model::GetSection(String name) const
+{
+	size_t len = sections.size();
+	for (size_t i=0;i<len;i++) {
+		if (sections[i]->GetName() == name) return sections[i];
+	}
+	return SectionPtr();
+}
+
+
+////////////////////////
+// Get section by index
+SectionPtr Model::GetSectionByIndex(size_t index) const
+{
+	return sections.at(index);
+}
+
+
+/////////////////////
+// Get section count
+size_t Model::GetSectionCount() const
+{
+	return sections.size();
 }

@@ -325,6 +325,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\text_file_writer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_file_writer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\time.cpp"
 				>
 			</File>

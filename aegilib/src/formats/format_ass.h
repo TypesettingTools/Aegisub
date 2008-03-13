@@ -44,19 +44,29 @@ namespace Aegilib {
 
 	// Prototypes
 	class Model;
+	class TextFileWriter;
+
+	class SerializeText {
+	public:
+		virtual ~SerializeText(){}
+		virtual String ToText() const=0;
+	};
 
 	// Advanced Substation Alpha format handler
 	class FormatHandlerASS : public FormatHandler {
 	private:
+		Model &model;
+
 		SectionEntryPtr MakeEntry(const String &data,SectionPtr section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
-		Model &model;
+		void WriteSection(TextFileWriter &writer,SectionPtr section);
 
 	public:
 		FormatHandlerASS(Model &model);
 		~FormatHandlerASS();
 
 		void Load(wxInputStream &file,const String encoding);
+		void Save(wxOutputStream &file,const String encoding);
 	};
 
 	// Advanced Substation Alpha format
@@ -76,7 +86,7 @@ namespace Aegilib {
 	};
 
 	// Dialogue
-	class DialogueASS : public SectionEntryDialogue {
+	class DialogueASS : public SectionEntryDialogue, public SerializeText {
 	private:
 		String text;
 		String style;
@@ -88,6 +98,7 @@ namespace Aegilib {
 		bool isComment;
 
 		bool Parse(String data,int version);
+		String ToText() const;
 
 	public:
 		// Constructors
@@ -123,7 +134,7 @@ namespace Aegilib {
 	};
 
 	// Style
-	class StyleASS : public SectionEntryStyle {
+	class StyleASS : public SectionEntryStyle, public SerializeText {
 	private:
 		String name;
 		String font;
@@ -152,6 +163,7 @@ namespace Aegilib {
 		bool Parse(String data,int version);
 		int AlignSSAtoASS(int ssaAlignment);
 		int AlignASStoSSA(int assAlignment);
+		String ToText() const;
 
 	public:
 		// Constructors

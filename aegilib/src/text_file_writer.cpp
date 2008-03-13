@@ -38,76 +38,38 @@
 // Headers
 #include <fstream>
 #include "text_file_writer.h"
+using namespace Aegilib;
 
 
 ///////////////
 // Constructor
-TextFileWriter::TextFileWriter(Aegilib::String _filename,Aegilib::String enc) {
+TextFileWriter::TextFileWriter(wxOutputStream &stream,String enc)
+: file(stream)
+{
 	// Setup
-	open = false;
-	customConv = false;
 	IsFirst = true;
-	filename = _filename;
 
 	// Set encoding
 	encoding = enc;
-	if (encoding == _T("Local")) conv = &wxConvLocal;
+	if (encoding == _T("Local")) conv = shared_ptr<wxMBConv> (wxConvCurrent,NullDeleter());
 	else {
 		if (encoding.IsEmpty()) encoding = _T("UTF-8");
 		if (encoding == _T("US-ASCII")) encoding = _T("ISO-8859-1");
-		conv = new wxCSConv(encoding);
-		customConv = true;
+		conv = shared_ptr<wxMBConv> (new wxCSConv(encoding));
 		IsUnicode = encoding.Left(3) == _T("UTF");
 	}
-
-	// Open file
-	Open();
 }
 
 
 //////////////
 // Destructor
 TextFileWriter::~TextFileWriter() {
-	Close();
-}
-
-
-/////////////
-// Open file
-void TextFileWriter::Open() {
-	// Open file
-	if (open) return;
-#ifdef WIN32
-	file.open(filename.wc_str(),std::ios::out | std::ios::binary | std::ios::trunc);
-#else
-	file.open(wxFNCONV(filename),std::ios::out | std::ios::binary | std::ios::trunc);
-#endif
-	if (!file.is_open()) {
-		throw _T("Failed opening file for writing.");
-	}
-	open = true;
-
-	// Set encoding
-	SetEncoding();
-}
-
-
-//////////////
-// Close file
-void TextFileWriter::Close() {
-	if (!open) return;
-	file.close();
-	open = false;
-	if (customConv) delete conv;
 }
 
 
 /////////////////
 // Write to file
 void TextFileWriter::WriteLineToFile(Aegilib::String line,bool addLineBreak) {
-	// Make sure it's loaded
-	if (!open) Open();
-
 	// Add line break
 	wxString temp = line;
 	if (addLineBreak) temp += _T("\r\n");
@@ -125,7 +87,7 @@ void TextFileWriter::WriteLineToFile(Aegilib::String line,bool addLineBreak) {
 		if (!buf.data())
 			return;
 		size_t len = wcslen(buf.data());
-		file.write((const char*)buf.data(),(std::streamsize)len*sizeof(wchar_t));
+		file.Write((const char*)buf.data(),(std::streamsize)len*sizeof(wchar_t));
 	}
 
 	// 8-bit
@@ -134,7 +96,7 @@ void TextFileWriter::WriteLineToFile(Aegilib::String line,bool addLineBreak) {
 		if (!buf.data())
 			return;
 		size_t len = strlen(buf.data());
-		file.write(buf.data(),(std::streamsize)len);
+		file.Write(buf.data(),(std::streamsize)len);
 	}
 }
 

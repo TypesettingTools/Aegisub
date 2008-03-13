@@ -49,18 +49,24 @@ namespace Aegilib {
 	};
 
 	// Prototypes
-	class SectionEntryPlain;
-	typedef shared_ptr<SectionEntryPlain> SectionEntryPlainPtr;
-	class SectionEntryDialogue;
-	typedef shared_ptr<SectionEntryDialogue> SectionEntryDialoguePtr;
-	class SectionEntryStyle;
-	typedef shared_ptr<SectionEntryStyle> SectionEntryStylePtr;
-	class SectionEntryFile;
-	typedef shared_ptr<SectionEntryFile> SectionEntryFilePtr;
-	class SectionEntryRaw;
-	typedef shared_ptr<SectionEntryRaw> SectionEntryRawPtr;
 	class SectionEntry;
+	class SectionEntryPlain;
+	class SectionEntryDialogue;
+	class SectionEntryStyle;
+	class SectionEntryFile;
+	class SectionEntryRaw;
 	typedef shared_ptr<SectionEntry> SectionEntryPtr;
+	typedef shared_ptr<SectionEntryPlain> SectionEntryPlainPtr;
+	typedef shared_ptr<SectionEntryDialogue> SectionEntryDialoguePtr;
+	typedef shared_ptr<SectionEntryStyle> SectionEntryStylePtr;
+	typedef shared_ptr<SectionEntryFile> SectionEntryFilePtr;
+	typedef shared_ptr<SectionEntryRaw> SectionEntryRawPtr;
+	typedef shared_ptr<const SectionEntry> SectionEntryConstPtr;
+	typedef shared_ptr<const SectionEntryPlain> SectionEntryPlainConstPtr;
+	typedef shared_ptr<const SectionEntryDialogue> SectionEntryDialogueConstPtr;
+	typedef shared_ptr<const SectionEntryStyle> SectionEntryStyleConstPtr;
+	typedef shared_ptr<const SectionEntryFile> SectionEntryFileConstPtr;
+	typedef shared_ptr<const SectionEntryRaw> SectionEntryRawConstPtr;
 
 	// Section entry class
 	class SectionEntry {
@@ -72,6 +78,7 @@ namespace Aegilib {
 		virtual SectionEntryType GetType() const =0;
 		static const SectionEntryPlainPtr GetAsPlain(const SectionEntryPtr &ptr);
 		static const SectionEntryDialoguePtr GetAsDialogue(const SectionEntryPtr &ptr);
+		static const SectionEntryDialogueConstPtr GetAsDialogue(const SectionEntryConstPtr &ptr);
 		static const SectionEntryStylePtr GetAsStyle(const SectionEntryPtr &ptr);
 		static const SectionEntryFilePtr GetAsFile(const SectionEntryPtr &ptr);
 		static const SectionEntryRawPtr GetAsRaw(const SectionEntryPtr &ptr);

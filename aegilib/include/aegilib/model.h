@@ -35,6 +35,7 @@
 
 #pragma once
 #include <list>
+#include <vector>
 #include <wx/wfstream.h>
 #include "manipulator.h"
 #include "section.h"
@@ -56,7 +57,7 @@ namespace Aegilib {
 		typedef shared_ptr<Format> FormatPtr;
 
 	private:
-		std::list<SectionPtr> sections;
+		std::vector<SectionPtr> sections;
 		ActionStack undoStack;
 		ActionStack redoStack;
 		ViewList listeners;
@@ -75,8 +76,10 @@ namespace Aegilib {
 		void LoadFile(const String filename,const String encoding=L"");
 		void SaveFile(const String filename,const String encoding=L"UTF-8");
 
-		SectionPtr GetSection(String name) const;
 		void AddSection(String name);
+		SectionPtr GetSection(String name) const;
+		SectionPtr GetSectionByIndex(size_t index) const;
+		size_t GetSectionCount() const;
 
 		bool CanUndo(const String owner=L"") const;
 		bool CanRedo(const String owner=L"") const;
