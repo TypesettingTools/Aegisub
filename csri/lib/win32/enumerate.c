@@ -38,7 +38,7 @@ static const char *get_errstr()
 		NULL, err, 0, msg, sizeof(msg), NULL))
 		strcpy(msg, "Unknown Error");
 	else {
-		int msglen = strlen(msg) - 1;
+		size_t msglen = strlen(msg) - 1;
 		if (msg[msglen] == '\n')
 			msg[msglen] = '\0';
 	}
