@@ -62,6 +62,7 @@ int main () {
 		control.LoadFile(L"subs_in.ass",L"UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << "ms.\n";
+		system("pause");
 
 		// Create line to be inserted
 		cout << "Creating data... ";

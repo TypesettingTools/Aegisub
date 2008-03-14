@@ -49,11 +49,13 @@ using namespace Gorgonsub;
 
 ///////////////
 // Constructor
-TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool _trim)
+TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool _trim,bool prefetch)
 : file(stream)
 {
 	// Setup
 	trim = _trim;
+	threaded = prefetch;
+	thread = NULL;
 
 	// Set encoding
 	encoding = enc.c_str();
@@ -64,13 +66,15 @@ TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool 
 
 //////////////
 // Destructor
-TextFileReader::~TextFileReader() {
+TextFileReader::~TextFileReader()
+{
 }
 
 
 //////////////////////////////
 // Set encoding configuration
-void TextFileReader::SetEncodingConfiguration() {
+void TextFileReader::SetEncodingConfiguration()
+{
 	// Set encoding configuration
 	swap = false;
 	Is16 = false;
@@ -99,7 +103,8 @@ void TextFileReader::SetEncodingConfiguration() {
 
 //////////////////////////
 // Reads a line from file
-Gorgonsub::String TextFileReader::ReadLineFromFile() {
+Gorgonsub::String TextFileReader::ActuallyReadLine()
+{
 	wxString wxbuffer;
 	size_t bufAlloc = 1024;
 	wxbuffer.Alloc(bufAlloc);
@@ -175,14 +180,17 @@ Gorgonsub::String TextFileReader::ReadLineFromFile() {
 
 //////////////////////////////////
 // Checks if there's more to read
-bool TextFileReader::HasMoreLines() {
+bool TextFileReader::HasMoreLines()
+{
+	wxCriticalSectionLocker locker(mutex);
 	return (!file.Eof());
 }
 
 
 ////////////////////////////////
 // Ensure that charset is valid
-void TextFileReader::EnsureValid(Gorgonsub::String enc) {
+void TextFileReader::EnsureValid(Gorgonsub::String enc)
+{
 	if (enc == _T("unknown") || enc == _T("UTF-32BE") || enc == _T("UTF-32LE")) {
 		wxString error = _T("Character set ");
 		error += enc;
@@ -194,6 +202,72 @@ void TextFileReader::EnsureValid(Gorgonsub::String enc) {
 
 ///////////////////////////
 // Get encoding being used
-Gorgonsub::String TextFileReader::GetCurrentEncoding() {
+String TextFileReader::GetCurrentEncoding()
+{
 	return encoding.c_str();
+}
+
+
+///////////////////////////
+// Reads a line from cache
+String TextFileReader::ReadLineFromFile()
+{
+	// Not threaded, just return it
+	if (!threaded) return ActuallyReadLine();
+
+	// Load into cache if needed
+	String final;
+	if (cache.size() == 0) {
+		wxCriticalSectionLocker locker(mutex);
+		cache.push_back(ActuallyReadLine());
+	}
+
+	bool startThread = false;
+	{
+		// Retrieve from cache
+		wxCriticalSectionLocker locker(mutex);
+		if (cache.size()) {
+			final = cache.front();
+			cache.pop_front();
+		}
+
+		// Start the thread to prefetch more
+		if (cache.size() < 3 && thread == NULL) {
+			thread = new PrefetchThread(this);
+			startThread = true;
+		}
+	}
+
+	// Starts the thread
+	if (startThread) {
+		thread->Create();
+		thread->Run();
+	}
+
+	return final;
+}
+
+
+////////////////
+// Thread entry
+wxThread::ExitCode PrefetchThread::Entry()
+{
+	// Lock
+	wxCriticalSectionLocker locker(parent->mutex);
+	while (parent->cache.size() < 3 && !parent->file.Eof()) {
+		// So I need to do this for whatever reason
+		if (TestDestroy()) {
+			parent->thread = NULL;
+			return 0;
+		}
+
+		// Get line
+		parent->cache.push_back(parent->ActuallyReadLine());
+	}
+
+	// Die
+	//wxCriticalSectionLocker locker(parent->mutex);
+	parent->thread = NULL;
+	Delete();
+	return 0;
 }

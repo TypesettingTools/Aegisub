@@ -43,19 +43,28 @@
 
 
 namespace Gorgonsub {
+
+	// Text file reader
 	class TextFileReader {
+		friend class PrefetchThread;
 	private:
+		wxCriticalSection mutex;
+
+		std::list<String> cache;
 		wxString encoding;
 		wxInputStream &file;
 		shared_ptr<wxMBConv> conv;
 		bool Is16;
 		bool swap;
 		bool trim;
+		bool threaded;
+		wxThread *thread;
 
 		void SetEncodingConfiguration();
+		String ActuallyReadLine();
 
 	public:
-		TextFileReader(wxInputStream &stream,String encoding=_T(""),bool trim=true);
+		TextFileReader(wxInputStream &stream,String encoding=_T(""),bool trim=true,bool prefetch=false);
 		~TextFileReader();
 
 		String ReadLineFromFile();
@@ -65,5 +74,16 @@ namespace Gorgonsub {
 		String GetCurrentEncoding();
 		static String GetEncoding(const String filename);
 	};
+
+	// Prefetch thread
+	class PrefetchThread : public wxThread {
+	private:
+		TextFileReader *parent;
+
+	public:
+		wxThread::ExitCode Entry();
+		PrefetchThread(TextFileReader *_parent) : parent(_parent) {}
+	};
+
 }
 
