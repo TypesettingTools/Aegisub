@@ -46,8 +46,7 @@
 #include "../lua51/src/lua.h"
 #include "../lua51/src/lauxlib.h"
 #else
-#include "lua.h"
-#include "lauxlib.h"
+#include "lua.hpp"
 #endif
 
 class wxWindow;

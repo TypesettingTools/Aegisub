@@ -39,7 +39,7 @@
 #ifdef __WINDOWS__
 #include "../lua51/src/lua.h"
 #else
-#include "lua.h"
+#include "lua.hpp"
 #endif
 
 namespace Automation4 {
@@ -56,5 +56,6 @@ namespace Automation4 {
 	};
 
 };
+
 
 
