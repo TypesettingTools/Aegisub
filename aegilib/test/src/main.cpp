@@ -36,6 +36,7 @@
 #include <aegilib/gorgonsub.h>
 #include <wx/wfstream.h>
 #include <iostream>
+#include <wx/stopwatch.h>
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
@@ -53,11 +54,14 @@ int main () {
 		// Subtitles model
 		Model subs;
 		Controller control(subs);
+		wxStopWatch timer;
 
 		// Load subtitles
 		cout << "Loading file... ";
+		timer.Start();
 		control.LoadFile(L"subs_in.ass",L"UTF-8");
-		cout << "Done.\n";
+		timer.Pause();
+		cout << "Done in " << timer.Time() << "ms.\n";
 
 		// Create line to be inserted
 		cout << "Creating data... ";
@@ -67,11 +71,13 @@ int main () {
 
 		// Create action list
 		cout << "Processing actions... ";
+		timer.Start();
 		ActionListPtr actions = control.CreateActionList(L"Insert line");
 		actions->InsertLine(line,2);
 		actions->RemoveLine(3,L"Events");
 		actions->Finish();
-		cout << "Done.\n";
+		timer.Pause();
+		cout << "Done in " << timer.Time() << "ms.\n";
 
 		// Save subtitles
 		cout << "Saving file... ";
@@ -95,8 +101,10 @@ int main () {
 
 		// Save subtitles
 		cout << "Saving file... ";
+		timer.Start();
 		control.SaveFile(L"subs_out.ass",L"UTF-8");
-		cout << "Done.\n";
+		timer.Pause();
+		cout << "Done in " << timer.Time() << "ms.\n";
 	}
 
 	catch (std::exception &e) {

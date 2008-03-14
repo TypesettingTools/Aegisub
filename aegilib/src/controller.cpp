@@ -59,8 +59,9 @@ ActionListPtr Controller::CreateActionList(const String title,const String owner
 void Controller::LoadFile(const String filename,const String encoding)
 {
 	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
-	wxFileInputStream stream(filename);
-	model.Load(stream,handler,encoding);
+	wxFFileInputStream stream(filename);
+	wxBufferedInputStream buffer(stream);
+	model.Load(buffer,handler,encoding);
 }
 
 
@@ -69,8 +70,9 @@ void Controller::LoadFile(const String filename,const String encoding)
 void Controller::SaveFile(const String filename,const String encoding)
 {
 	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
-	wxFileOutputStream stream(filename);
-	model.Save(stream,handler,encoding);
+	wxFFileOutputStream stream(filename);
+	wxBufferedOutputStream buffer(stream);
+	model.Save(buffer,handler,encoding);
 }
 
 
