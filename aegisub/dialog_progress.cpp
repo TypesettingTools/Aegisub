@@ -63,7 +63,7 @@ DialogProgress::DialogProgress(wxWindow *parent,wxString title,volatile bool *ca
 	if (cancel) MainSizer->Add(cancelButton,0,wxALIGN_CENTER | wxLEFT | wxRIGHT | wxBOTTOM,5);
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
-	Center();
+	CenterOnParent();
 }
 
 
