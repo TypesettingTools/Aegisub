@@ -69,7 +69,7 @@ namespace Gorgonsub {
 		void AddEntry(SectionEntryPtr entry,int pos=-1);
 		void RemoveEntryByIndex(size_t index);
 		void RemoveEntry(SectionEntryPtr entry);
-		SectionEntryConstPtr GetEntry(size_t index) const;
+		SectionEntryPtr GetEntry(size_t index) const;
 		size_t GetEntryCount() const;
 	};
 	typedef shared_ptr<Section> SectionPtr;

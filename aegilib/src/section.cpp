@@ -70,7 +70,7 @@ void Section::RemoveEntry(SectionEntryPtr entry)
 	}
 }
 
-SectionEntryConstPtr Section::GetEntry(size_t index) const
+SectionEntryPtr Section::GetEntry(size_t index) const
 {
 	return entries[index];
 }

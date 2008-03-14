@@ -58,19 +58,28 @@ void Model::DispatchNotifications(const Notification &notification) const
 
 ////////////////////////////
 // Processes an action list
-void Model::ProcessActionList(const ActionList &_actionList,bool insertInStack)
+void Model::ProcessActionList(const ActionList &_actionList)
 {
 	// Copy the list
 	ActionListPtr actions = ActionListPtr(new ActionList(_actionList));
 
 	// Inserts the opposite into the undo stack
-	if (insertInStack) {
-		undoStack.push_back(CreateAntiActionList(actions));
-		redoStack.clear();
+	if (actions->undoAble) {
+		undoStack.push(CreateAntiActionList(actions));
+		redoStack = ActionStack();
 	}
 
-	// Do actions
-	std::list<Action>::iterator cur;
+	// Execute list
+	DoActionList(actions);
+}
+
+
+//////////////////////////
+// Execute an action list
+void Model::DoActionList(const ActionListPtr actions)
+{
+	// Do each action
+	std::list<Action>::const_iterator cur;
 	for (cur=actions->actions.begin();cur!=actions->actions.end();cur++) {
 		DoAction(*cur);
 	}
@@ -85,7 +94,8 @@ void Model::ProcessActionList(const ActionList &_actionList,bool insertInStack)
 void Model::DoAction(const Action &action)
 {
 	switch (action.GetType()) {
-		case ACTION_INSERT:	{
+		// Insert a line
+		case ACTION_INSERT: {
 			// Get the line
 			SectionEntryPtr entry = static_pointer_cast<SectionEntry>(action.GetData());
 
@@ -96,6 +106,19 @@ void Model::DoAction(const Action &action)
 
 			// Insert the line
 			section->AddEntry(entry,action.GetLineNumber());
+			return;
+		}
+
+		// Delete a line
+		case ACTION_REMOVE: {
+			// Find the section to remote it from
+			String sectionName = action.GetSection();
+			if (sectionName.IsEmpty()) throw Exception(Exception::TODO); // TODO
+			SectionPtr section = GetSection(sectionName);
+
+			// Remove the line
+			section->RemoveEntryByIndex(action.GetLineNumber());
+			return;
 		}
 	}
 }
@@ -105,9 +128,49 @@ void Model::DoAction(const Action &action)
 // Create an anti-actionlist to undo the actions made by a actionlist
 ActionListPtr Model::CreateAntiActionList(const ActionListPtr &src)
 {
-	ActionListPtr dst(new ActionList(*this,src->actionName));
-	// TODO
+	// Create list
+	ActionListPtr dst(new ActionList(*this,src->actionName,src->owner,false));
+
+	// Insert anti-actions
+	std::list<Action>::const_reverse_iterator cur;
+	for (cur=src->actions.rbegin();cur!=src->actions.rend();cur++) {
+	//std::list<Action>::const_iterator cur;
+	//for (cur=src->actions.begin();cur!=src->actions.end();cur++) {
+		dst->AddAction(GetAntiAction(*cur));
+	}
+
+	// Return
 	return dst;
+}
+
+
+///////////////////////////////////////////
+// Create the action opposite to the input
+Action Model::GetAntiAction(const Action &action)
+{
+	switch (action.GetType()) {
+		// Create a remove
+		case ACTION_INSERT: {
+			// Find the section to insert it on
+			String section = action.GetSection();
+			if (section.IsEmpty()) {
+				SectionEntryPtr entry = static_pointer_cast<SectionEntry>(action.GetData());
+				section = entry->GetDefaultGroup();
+			}
+
+			return Action(ACTION_REMOVE,SectionEntryPtr(),section,action.GetLineNumber());
+		}
+
+		// Create an insert
+		case ACTION_REMOVE: {
+			int line = action.GetLineNumber();
+			const String &sName = action.GetSection();
+			SectionPtr section = GetSection(sName);
+			return Action(ACTION_INSERT,section->GetEntry(line),sName,line);
+		}
+	}
+
+	throw Exception(Exception::Invalid_ActionList);
 }
 
 
@@ -200,6 +263,54 @@ size_t Model::GetSectionCount() const
 void Model::Clear()
 {
 	sections.clear();
-	undoStack.clear();
-	redoStack.clear();
+	undoStack = ActionStack();
+	redoStack = ActionStack();
+}
+
+
+//////////////////
+// Can undo/redo?
+bool Model::CanUndo(const String owner) const
+{
+	(void) owner;
+	return undoStack.size() > 0;
+}
+bool Model::CanRedo(const String owner) const
+{
+	(void) owner;
+	return redoStack.size() > 0;
+}
+
+
+///////////////////
+// Perform an undo
+void Model::Undo(const String owner)
+{
+	ActivateStack(undoStack,redoStack,owner);
+}
+
+
+//////////////////
+// Perform a redo
+void Model::Redo(const String owner)
+{
+	ActivateStack(redoStack,undoStack,owner);
+}
+
+
+/////////////////////
+// Perform undo/redo
+void Model::ActivateStack(ActionStack &from,ActionStack &to,const String &owner)
+{
+	// TODO: do something with this
+	(void) owner;
+
+	// Create opposite
+	to.push(CreateAntiActionList(from.top()));
+
+	// Process list
+	DoActionList(from.top());
+
+	// Pop original
+	from.pop();
 }

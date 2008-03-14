@@ -69,7 +69,28 @@ int main () {
 		cout << "Processing actions... ";
 		ActionListPtr actions = control.CreateActionList(L"Insert line");
 		actions->InsertLine(line,2);
+		actions->RemoveLine(3,L"Events");
 		actions->Finish();
+		cout << "Done.\n";
+
+		// Save subtitles
+		cout << "Saving file... ";
+		control.SaveFile(L"subs_out_mid1.ass",L"UTF-8");
+		cout << "Done.\n";
+
+		// Undo
+		cout << "Undoing... (can undo=" << (control.CanUndo()?"true":"false") << ") ";
+		control.Undo();
+		cout << "Done.\n";
+
+		// Save subtitles
+		cout << "Saving file... ";
+		control.SaveFile(L"subs_out_mid2.ass",L"UTF-8");
+		cout << "Done.\n";
+
+		// Redo
+		cout << "Undoing... (can redo=" << (control.CanRedo()?"true":"false") << ") ";
+		control.Redo();
 		cout << "Done.\n";
 
 		// Save subtitles

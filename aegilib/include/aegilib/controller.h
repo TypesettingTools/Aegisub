@@ -52,10 +52,15 @@ namespace Gorgonsub {
 
 	public:
 		Controller (Model &model);
-		ActionListPtr CreateActionList(const String title);
+		ActionListPtr CreateActionList(const String title,const String owner=L"",bool undoAble=true);
 
 		void LoadFile(const String filename,const String encoding=L"");
 		void SaveFile(const String filename,const String encoding=L"UTF-8");
+
+		bool CanUndo(const String owner=L"") const;
+		bool CanRedo(const String owner=L"") const;
+		void Undo(const String owner=L"");
+		void Redo(const String owner=L"");
 
 		SectionEntryDialoguePtr CreateDialogue();
 		SectionEntryStylePtr CreateStyle();

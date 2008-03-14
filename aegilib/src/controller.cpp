@@ -33,6 +33,7 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+#include "controller.h"
 #include "Gorgonsub.h"
 using namespace Gorgonsub;
 
@@ -47,9 +48,9 @@ Controller::Controller(Model &_model)
 
 /////////////////////////
 // Create an action list
-ActionListPtr Controller::CreateActionList(const String title)
+ActionListPtr Controller::CreateActionList(const String title,const String owner,bool undoAble)
 {
-	return ActionListPtr (new ActionList(model,title));
+	return ActionListPtr (new ActionList(model,title,owner,undoAble));
 }
 
 
@@ -90,4 +91,24 @@ SectionEntryDialoguePtr Controller::CreateDialogue()
 SectionEntryStylePtr Controller::CreateStyle()
 {
 	return GetFormat()->CreateStyle();
+}
+
+
+////////
+// Undo
+bool Controller::CanUndo(const String owner) const
+{
+	return model.CanUndo(owner);
+}
+bool Controller::CanRedo(const String owner) const
+{
+	return model.CanRedo(owner);
+}
+void Controller::Undo(const String owner)
+{
+	model.Undo(owner);
+}
+void Controller::Redo(const String owner)
+{
+	model.Redo(owner);
 }

@@ -36,6 +36,7 @@
 #pragma once
 #include <list>
 #include <vector>
+#include <stack>
 #include <wx/wfstream.h>
 #include "actionlist.h"
 #include "section.h"
@@ -56,7 +57,7 @@ namespace Gorgonsub {
 		friend class Controller;
 
 		typedef std::list<ViewPtr> ViewList;
-		typedef std::list<ActionListPtr> ActionStack;
+		typedef std::stack<ActionListPtr,std::list<ActionListPtr> > ActionStack;
 		typedef shared_ptr<Format> FormatPtr;
 
 	private:
@@ -66,15 +67,19 @@ namespace Gorgonsub {
 		ViewList listeners;
 		bool readOnly;
 		FormatPtr format;
-		
-		void ProcessActionList(const ActionList &actionList,bool insertInStack);
+
+		void ProcessActionList(const ActionList &actionList);
+		void DoActionList(const ActionListPtr list);
 		void DoAction(const Action &action);
+
 		ActionListPtr CreateAntiActionList(const ActionListPtr &manipulator);
+		Action GetAntiAction(const Action &action);
 
 		bool CanUndo(const String owner=L"") const;
 		bool CanRedo(const String owner=L"") const;
-		bool Undo(const String owner=L"");
-		bool Redo(const String owner=L"");
+		void Undo(const String owner=L"");
+		void Redo(const String owner=L"");
+		void ActivateStack(ActionStack &from,ActionStack &to,const String &owner);
 
 		void DispatchNotifications(const Notification &notification) const;
 

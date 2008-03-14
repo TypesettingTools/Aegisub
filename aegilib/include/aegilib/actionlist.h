@@ -51,21 +51,22 @@ namespace Gorgonsub {
 
 	private:
 		String actionName;
+		String owner;
 		Model &model;
 		std::list<Action> actions;
 		bool valid;
+		bool undoAble;
 
-		ActionList();
-		ActionList(Model &model,const String actionName);
+		ActionList(Model &model,const String actionName,const String owner,bool undoAble);
 		void Start(const String actionName);
+		void AddAction(const Action &action);
 
 	public:
 		~ActionList();
 
-		void AddAction(const Action &action);
 		void Finish();
-
 		void InsertLine(SectionEntryPtr line,int position=-1,const String section=L"");
+		void RemoveLine(int position,const String section);
 	};
 	typedef shared_ptr<ActionList> ActionListPtr;
 

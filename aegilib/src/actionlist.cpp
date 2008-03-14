@@ -39,8 +39,8 @@ using namespace Gorgonsub;
 
 ///////////////
 // Constructor
-ActionList::ActionList(Model &_model,String _actionName)
-: model(_model)
+ActionList::ActionList(Model &_model,String _actionName,const String _owner,bool _undoAble)
+: model(_model), owner(_owner), undoAble(_undoAble)
 {
 	Start(_actionName);
 }
@@ -77,7 +77,7 @@ void ActionList::Start(const String name)
 void ActionList::Finish()
 {
 	if (valid) {
-		model.ProcessActionList(*this,false);
+		model.ProcessActionList(*this);
 		actions.clear();
 		valid = false;
 	}
@@ -89,5 +89,14 @@ void ActionList::Finish()
 void ActionList::InsertLine(SectionEntryPtr line,int position,const String section)
 {
 	Action action = Action(ACTION_INSERT,line,section,position);
+	AddAction(action);
+}
+
+
+/////////////////////////////////
+// Create a "remove line" action
+void ActionList::RemoveLine(int position,const String section)
+{
+	Action action = Action(ACTION_REMOVE,SectionEntryPtr(),section,position);
 	AddAction(action);
 }
