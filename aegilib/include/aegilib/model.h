@@ -37,7 +37,7 @@
 #include <list>
 #include <vector>
 #include <wx/wfstream.h>
-#include "manipulator.h"
+#include "actionlist.h"
 #include "section.h"
 
 namespace Gorgonsub {
@@ -51,9 +51,12 @@ namespace Gorgonsub {
 	// Model class
 	// Stores the subtitle data
 	class Model {
-		friend class Manipulator;
+		friend class FormatHandler;
+		friend class ActionList;
+		friend class Controller;
+
 		typedef std::list<ViewPtr> ViewList;
-		typedef std::list<const Manipulator> ActionStack;
+		typedef std::list<ActionListPtr> ActionStack;
 		typedef shared_ptr<Format> FormatPtr;
 
 	private:
@@ -62,30 +65,31 @@ namespace Gorgonsub {
 		ActionStack redoStack;
 		ViewList listeners;
 		bool readOnly;
+		FormatPtr format;
 		
-		void ProcessActionList(const Manipulator &actionList,bool insertInStack);
-		Manipulator CreateAntiManipulator(const Manipulator &manipulator);
+		void ProcessActionList(const ActionList &actionList,bool insertInStack);
+		void DoAction(const Action &action);
+		ActionListPtr CreateAntiActionList(const ActionListPtr &manipulator);
+
+		bool CanUndo(const String owner=L"") const;
+		bool CanRedo(const String owner=L"") const;
+		bool Undo(const String owner=L"");
+		bool Redo(const String owner=L"");
+
 		void DispatchNotifications(const Notification &notification) const;
-
-	public:
-		const Format& GetFormat() const;
-		void AddListener(ViewPtr listener);
-
-		void Clear();
-		void Load(wxInputStream &input,const FormatPtr format=FormatPtr(),const String encoding=L"");
-		void Save(wxOutputStream &output,const FormatPtr format=FormatPtr(),const String encoding=L"UTF-8");
-		void LoadFile(const String filename,const String encoding=L"");
-		void SaveFile(const String filename,const String encoding=L"UTF-8");
 
 		void AddSection(String name);
 		SectionPtr GetSection(String name) const;
 		SectionPtr GetSectionByIndex(size_t index) const;
 		size_t GetSectionCount() const;
 
-		bool CanUndo(const String owner=L"") const;
-		bool CanRedo(const String owner=L"") const;
-		bool Undo(const String owner=L"");
-		bool Redo(const String owner=L"");
+		void Clear();
+		void Load(wxInputStream &input,const FormatPtr format=FormatPtr(),const String encoding=L"");
+		void Save(wxOutputStream &output,const FormatPtr format=FormatPtr(),const String encoding=L"UTF-8");
+
+	public:
+		const FormatPtr GetFormat() const { return format; }
+		void AddListener(ViewPtr listener);
 	};
 
 };

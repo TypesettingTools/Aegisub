@@ -34,6 +34,7 @@
 //
 
 #pragma once
+#include "gorgonstring.h"
 
 namespace Gorgonsub {
 	// The different types of actions available
@@ -48,14 +49,16 @@ namespace Gorgonsub {
 	private:
 		ActionType type;
 		shared_ptr<void> data;
+		String section;
 		int par1;
 
 	public:
 		Action();
-		Action(ActionType type,shared_ptr<void> data,int par1);
+		Action(ActionType type,shared_ptr<void> data,const String &section,int par1);
 
-		ActionType GetType() { return type; }
-		shared_ptr<void> GetData() { return data; }
-		int GetLineNumber() { return par1; }
+		ActionType GetType() const { return type; }
+		shared_ptr<void> GetData() const { return data; }
+		int GetLineNumber() const { return par1; }
+		String GetSection() const { return section; }
 	};
 };

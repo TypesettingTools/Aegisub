@@ -58,27 +58,54 @@ void Model::DispatchNotifications(const Notification &notification) const
 
 ////////////////////////////
 // Processes an action list
-void Model::ProcessActionList(const Manipulator &actionList,bool insertInStack)
+void Model::ProcessActionList(const ActionList &_actionList,bool insertInStack)
 {
+	// Copy the list
+	ActionListPtr actions = ActionListPtr(new ActionList(_actionList));
+
 	// Inserts the opposite into the undo stack
 	if (insertInStack) {
-		undoStack.push_back(CreateAntiManipulator(actionList));
+		undoStack.push_back(CreateAntiActionList(actions));
 		redoStack.clear();
 	}
 
-	// Do action
-	// TODO
+	// Do actions
+	std::list<Action>::iterator cur;
+	for (cur=actions->actions.begin();cur!=actions->actions.end();cur++) {
+		DoAction(*cur);
+	}
 
 	// Notify listeners
 	DispatchNotifications(Notification());
 }
 
 
-////////////////////////////////////////////////////////////////////////
-// Create an anti-manipulator to undo the actions made by a manipulator
-Manipulator Model::CreateAntiManipulator(const Manipulator &src)
+/////////////////////
+// Execute an action
+void Model::DoAction(const Action &action)
 {
-	Manipulator dst(*this,src.actionName);
+	switch (action.GetType()) {
+		case ACTION_INSERT:	{
+			// Get the line
+			SectionEntryPtr entry = static_pointer_cast<SectionEntry>(action.GetData());
+
+			// Find the section to insert it on
+			String sectionName = action.GetSection();
+			if (sectionName.IsEmpty()) sectionName = entry->GetDefaultGroup();
+			SectionPtr section = GetSection(sectionName);
+
+			// Insert the line
+			section->AddEntry(entry,action.GetLineNumber());
+		}
+	}
+}
+
+
+//////////////////////////////////////////////////////////////////////
+// Create an anti-actionlist to undo the actions made by a actionlist
+ActionListPtr Model::CreateAntiActionList(const ActionListPtr &src)
+{
+	ActionListPtr dst(new ActionList(*this,src->actionName));
 	// TODO
 	return dst;
 }
@@ -86,10 +113,10 @@ Manipulator Model::CreateAntiManipulator(const Manipulator &src)
 
 //////////////////
 // Load subtitles
-void Model::Load(wxInputStream &input,const FormatPtr format,const String encoding)
+void Model::Load(wxInputStream &input,const FormatPtr _format,const String encoding)
 {
 	// Autodetect format
-	if (!format) {
+	if (!_format) {
 		// TODO
 
 		// No format found
@@ -97,7 +124,7 @@ void Model::Load(wxInputStream &input,const FormatPtr format,const String encodi
 	}
 
 	// Get handler
-	FormatHandlerPtr handler = format->GetHandler(*this);
+	FormatHandlerPtr handler = _format->GetHandler(*this);
 	if (!handler) throw Exception(Exception::No_Format_Handler);
 
 	// Clear the model first
@@ -105,19 +132,20 @@ void Model::Load(wxInputStream &input,const FormatPtr format,const String encodi
 
 	// Load
 	handler->Load(input,encoding);
+
+	// Set the format
+	format = _format;
 }
 
 
 //////////////////
 // Save subtitles
-void Model::Save(wxOutputStream &output,const FormatPtr format,const String encoding)
+void Model::Save(wxOutputStream &output,const FormatPtr _format,const String encoding)
 {
-	// Autodetect format
-	if (!format) {
+	// Use another format
+	if (_format && _format != format) {
 		// TODO
-
-		// No format found
-		throw Exception(Exception::No_Format_Handler);
+		throw Exception(Exception::TODO);
 	}
 
 	// Get handler
@@ -126,26 +154,6 @@ void Model::Save(wxOutputStream &output,const FormatPtr format,const String enco
 
 	// Load
 	handler->Save(output,encoding);
-}
-
-
-///////////////
-// Load a file
-void Model::LoadFile(const String filename,const String encoding)
-{
-	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
-	wxFileInputStream stream(filename);
-	Load(stream,handler,encoding);
-}
-
-
-///////////////
-// Save a file
-void Model::SaveFile(const String filename,const String encoding)
-{
-	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
-	wxFileOutputStream stream(filename);
-	Save(stream,handler,encoding);
 }
 
 

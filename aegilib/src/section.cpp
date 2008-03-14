@@ -48,9 +48,10 @@ Section::Section(String _name)
 
 ///////////////////
 // Append an entry
-void Section::AddEntry(SectionEntryPtr entry)
+void Section::AddEntry(SectionEntryPtr entry,int pos)
 {
-	entries.push_back(entry);
+	if (pos == -1) entries.push_back(entry);
+	else entries.insert(entries.begin()+pos,entry);
 }
 
 void Section::RemoveEntryByIndex(size_t index)

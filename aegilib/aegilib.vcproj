@@ -161,6 +161,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\actionlist.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\colour.h"
 				>
 			</File>
@@ -194,10 +198,6 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\gorgontime.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\manipulator.h"
 				>
 			</File>
 			<File
@@ -253,7 +253,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\manipulator.cpp"
+				RelativePath=".\src\actionlist.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\controller.cpp"
 				>
 			</File>
 			<File

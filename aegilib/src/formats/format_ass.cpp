@@ -89,7 +89,7 @@ StringArray FormatASS2::GetWriteExtensions() const
 ///////////////
 // Constructor
 FormatHandlerASS::FormatHandlerASS(Model &_model,int version)
-: model(_model), formatVersion(version)
+: FormatHandler(_model), formatVersion(version)
 {
 }
 
@@ -125,10 +125,10 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 		ProcessGroup(cur,curGroup,version);
 
 		// Insert group if it doesn't already exist
-		if (prevGroup != curGroup) section = model.GetSection(curGroup);
+		if (prevGroup != curGroup) section = GetSection(curGroup);
 		if (!section) {
-			model.AddSection(curGroup);
-			section = model.GetSection(curGroup);
+			AddSection(curGroup);
+			section = GetSection(curGroup);
 		}
 
 		// Skip [] lines
@@ -157,9 +157,9 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 	sections.Add(L"Graphics");
 
 	// Look for remaining sections
-	size_t totalSections = model.GetSectionCount();
+	size_t totalSections = GetSectionCount();
 	for (size_t i=0;i<totalSections;i++) {
-		String name = model.GetSectionByIndex(i)->GetName();
+		String name = GetSectionByIndex(i)->GetName();
 		if (sections.Index(name,false,false) == wxNOT_FOUND) sections.Add(name);
 	}
 
@@ -167,7 +167,7 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 	size_t len = sections.size();
 	for (size_t i=0;i<len;i++) {
 		// See if it exists
-		SectionPtr section = model.GetSection(sections[i]);
+		SectionPtr section = GetSection(sections[i]);
 		if (section) {
 			// Add a spacer
 			if (i != 0) writer.WriteLineToFile(_T(""));

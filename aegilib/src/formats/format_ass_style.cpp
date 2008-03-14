@@ -43,7 +43,9 @@ using namespace Gorgonsub;
 // Constructors
 StyleASS::StyleASS()
 {
+	formatVersion = 1;
 }
+
 StyleASS::StyleASS(String data,int version)
 {
 	// Try parsing with all different versions
@@ -128,8 +130,11 @@ bool StyleASS::Parse(String data,int version)
 		relativeTo = 0;
 		if (version == 2) relativeTo = tkn.GetInt();
 
-		// End
+		// Read it all?
 		if (tkn.HasMore()) return false;
+
+		// Done
+		formatVersion = version;
 		return true;
 	}
 
@@ -225,4 +230,16 @@ String StyleASS::ToText(int version) const
 
 	// Done
 	return final;
+}
+
+
+/////////////////////
+// Get default group
+String StyleASS::GetDefaultGroup() const
+{
+	switch (formatVersion) {
+		case 0: return L"V4 Events";
+		case 1: return L"V4+ Events";
+		default: return L"V4++ Events";
+	}
 }

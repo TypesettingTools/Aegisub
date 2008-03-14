@@ -35,16 +35,29 @@
 
 #pragma once
 #include "gorgonstring.h"
+#include "model.h"
 #include "tr1.h"
 
 namespace Gorgonsub {
 
 	// Format handler interface
 	class FormatHandler {
+	private:
+		Model &model;
+
 	protected:
 		virtual ~FormatHandler() {}
 
+		Model &GetModel() const { return model; }
+
+		void AddSection(String name) { model.AddSection(name); }
+		SectionPtr GetSection(String name) const { return model.GetSection(name); }
+		SectionPtr GetSectionByIndex(size_t index) const { return model.GetSectionByIndex(index); }
+		size_t GetSectionCount() const { return model.GetSectionCount(); }
+
 	public:
+		FormatHandler(Model &_model) : model(_model) {}
+
 		virtual void Load(wxInputStream &file,const String encoding) = 0;
 		virtual void Save(wxOutputStream &file,const String encoding) = 0;
 	};

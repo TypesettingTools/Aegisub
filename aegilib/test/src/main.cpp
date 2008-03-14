@@ -52,20 +52,29 @@ int main () {
 
 		// Subtitles model
 		Model subs;
+		Controller control(subs);
 
 		// Load subtitles
 		cout << "Loading file... ";
-		subs.LoadFile(L"subs_in.ass",L"UTF-8");
+		control.LoadFile(L"subs_in.ass",L"UTF-8");
 		cout << "Done.\n";
 
-		// Modify subtitles
-		cout << "Modifying file...";
-		// TODO
+		// Create line to be inserted
+		cout << "Creating data... ";
+		SectionEntryDialoguePtr line = control.CreateDialogue();
+		line->SetText(L"Hi, testing insertion of lines!");
+		cout << "Done.\n";
+
+		// Create action list
+		cout << "Processing actions... ";
+		ActionListPtr actions = control.CreateActionList(L"Insert line");
+		actions->InsertLine(line,2);
+		actions->Finish();
 		cout << "Done.\n";
 
 		// Save subtitles
 		cout << "Saving file... ";
-		subs.SaveFile(L"subs_out.ass",L"UTF-8");
+		control.SaveFile(L"subs_out.ass",L"UTF-8");
 		cout << "Done.\n";
 	}
 

@@ -34,21 +34,39 @@
 //
 
 #pragma once
-#include "tr1.h"
-#include "exception.h"
-#include "model.h"
-#include "view.h"
-#include "controller.h"
-#include "notification.h"
+#include <list>
+#include "action.h"
 #include "gorgonstring.h"
-#include "format.h"
-#include "format_handler.h"
-#include "format_manager.h"
-#include "actionlist.h"
-#include "section.h"
-#include "section_entry_dialogue.h"
-#include "section_entry_style.h"
-#include "gorgontime.h"
-#include "colour.h"
-#include "utils.h"
-#include "version.h"
+#include "section_entry.h"
+
+namespace Gorgonsub {
+
+	// Prototypes
+	class Controller;
+
+	// ActionList class
+	class ActionList {
+		friend class Model;
+		friend class Controller;
+
+	private:
+		String actionName;
+		Model &model;
+		std::list<Action> actions;
+		bool valid;
+
+		ActionList();
+		ActionList(Model &model,const String actionName);
+		void Start(const String actionName);
+
+	public:
+		~ActionList();
+
+		void AddAction(const Action &action);
+		void Finish();
+
+		void InsertLine(SectionEntryPtr line,int position=-1,const String section=L"");
+	};
+	typedef shared_ptr<ActionList> ActionListPtr;
+
+};

@@ -53,12 +53,13 @@ String Exception::GetMessage(int code)
 	switch (code) {
 		case Unknown: return L"Unknown.";
 		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_Manipulator: return L"Invalid manipulator.";
+		case Invalid_ActionList: return L"Invalid manipulator.";
 		case Section_Already_Exists: return L"The specified section already exists in this model.";
 		case Unknown_Format: return L"The specified file format is unknown.";
 		case Parse_Error: return L"Parse error.";
 		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
 		case Invalid_Token: return L"Invalid type for this token.";
+		case TODO: return L"TODO";
 	}
 	return L"Invalid code.";
 }

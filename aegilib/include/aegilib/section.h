@@ -66,7 +66,7 @@ namespace Gorgonsub {
 		String GetPropertyName(size_t index) const;
 
 		// Entries
-		void AddEntry(SectionEntryPtr entry);
+		void AddEntry(SectionEntryPtr entry,int pos=-1);
 		void RemoveEntryByIndex(size_t index);
 		void RemoveEntry(SectionEntryPtr entry);
 		SectionEntryConstPtr GetEntry(size_t index) const;

@@ -46,12 +46,13 @@ namespace Gorgonsub {
 		enum ExceptionList {
 			Unknown,
 			No_Format_Handler,
-			Invalid_Manipulator,
+			Invalid_ActionList,
 			Section_Already_Exists,
 			Unknown_Format,
 			Parse_Error,
 			Unsupported_Format_Feature,
-			Invalid_Token
+			Invalid_Token,
+			TODO
 		};
 
 		Exception(ExceptionList code);

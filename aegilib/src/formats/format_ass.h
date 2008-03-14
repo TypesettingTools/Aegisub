@@ -57,7 +57,6 @@ namespace Gorgonsub {
 	// Advanced Substation Alpha format handler
 	class FormatHandlerASS : public FormatHandler {
 	private:
-		Model &model;
 		int formatVersion;
 
 		SectionEntryPtr MakeEntry(const String &data,SectionPtr section,int version);
@@ -72,46 +71,6 @@ namespace Gorgonsub {
 		void Save(wxOutputStream &file,const String encoding);
 	};
 
-	// Advanced Substation Alpha format base class
-	class FormatASSFamily : public Format {
-	public:
-		virtual ~FormatASSFamily() {}
-
-		bool CanStoreText() const { return true; }
-		bool CanUseTime() const { return true; }
-
-		bool HasStyles() const { return true; }
-		bool HasMargins() const { return true; }
-		bool HasActors() const { return true; }
-	};
-
-	// Substation Alpha
-	class FormatSSA : public FormatASSFamily {
-	public:
-		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,0)); }
-		String GetName() const { return L"Substation Alpha"; }
-		StringArray GetReadExtensions() const;
-		StringArray GetWriteExtensions() const;
-	};
-
-	// Advanced Substation Alpha
-	class FormatASS : public FormatASSFamily {
-	public:
-		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,1)); }
-		String GetName() const { return L"Advanced Substation Alpha"; }
-		StringArray GetReadExtensions() const;
-		StringArray GetWriteExtensions() const;
-	};
-
-	// Advanced Substation Alpha 2
-	class FormatASS2 : public FormatASSFamily {
-	public:
-		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,2)); }
-		String GetName() const { return L"Advanced Substation Alpha 2"; }
-		StringArray GetReadExtensions() const;
-		StringArray GetWriteExtensions() const;
-	};
-
 	// Dialogue
 	class DialogueASS : public SectionEntryDialogue, public SerializeText {
 	private:
@@ -120,7 +79,7 @@ namespace Gorgonsub {
 		String effect;
 		String actor;
 		Time start,end;
-		array<int,4> margin;
+		array<short,4> margin;
 		int layer;
 		bool isComment;
 
@@ -137,6 +96,7 @@ namespace Gorgonsub {
 		bool HasTime() const { return true; }
 		bool HasStyle() const { return true; }
 		bool HasMargins() const { return true; }
+		String GetDefaultGroup() const { return L"Events"; }
 
 		// Read accessors
 		const String& GetText() const { return text; }
@@ -166,6 +126,7 @@ namespace Gorgonsub {
 		String name;
 		String font;
 		float fontSize;
+		int formatVersion;
 
 		array<Colour,5> colour;	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
 		array<int,4> margin;
@@ -203,6 +164,8 @@ namespace Gorgonsub {
 		float GetFontSize() const { return fontSize; }
 		Colour GetColour(int n) const { return colour.at(n); }
 		int GetMargin(int n) const { return margin.at(n); }
+
+		String GetDefaultGroup() const;
 	};
 
 	// Raw line
@@ -217,6 +180,50 @@ namespace Gorgonsub {
 
 		String GetText() const { return data; }
 		void SetText(const String &_data) { data = _data; }
+		String GetDefaultGroup() const { return L"Events"; }
+	};
+
+	// Advanced Substation Alpha format base class
+	class FormatASSFamily : public Format {
+	public:
+		virtual ~FormatASSFamily() {}
+
+		bool CanStoreText() const { return true; }
+		bool CanUseTime() const { return true; }
+
+		bool HasStyles() const { return true; }
+		bool HasMargins() const { return true; }
+		bool HasActors() const { return true; }
+
+		SectionEntryDialoguePtr CreateDialogue() const { return SectionEntryDialoguePtr(new DialogueASS()); }
+		SectionEntryStylePtr CreateStyle() const { return SectionEntryStylePtr(new StyleASS()); }
+	};
+
+	// Substation Alpha
+	class FormatSSA : public FormatASSFamily {
+	public:
+		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,0)); }
+		String GetName() const { return L"Substation Alpha"; }
+		StringArray GetReadExtensions() const;
+		StringArray GetWriteExtensions() const;
+	};
+
+	// Advanced Substation Alpha
+	class FormatASS : public FormatASSFamily {
+	public:
+		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,1)); }
+		String GetName() const { return L"Advanced Substation Alpha"; }
+		StringArray GetReadExtensions() const;
+		StringArray GetWriteExtensions() const;
+	};
+
+	// Advanced Substation Alpha 2
+	class FormatASS2 : public FormatASSFamily {
+	public:
+		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,2)); }
+		String GetName() const { return L"Advanced Substation Alpha 2"; }
+		StringArray GetReadExtensions() const;
+		StringArray GetWriteExtensions() const;
 	};
 
 };

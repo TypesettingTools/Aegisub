@@ -33,32 +33,61 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
-#include <list>
-#include "action.h"
-#include "gorgonstring.h"
+#include "Gorgonsub.h"
+using namespace Gorgonsub;
 
-namespace Gorgonsub {
 
-	// Manipulator class
-	class Manipulator {
-		friend class Model;
-		friend class std::list<Manipulator>;
+///////////////
+// Constructor
+Controller::Controller(Model &_model)
+: model(_model)
+{
+}
 
-	private:
-		String actionName;
-		Model &model;
-		std::list<Action> actions;
-		bool valid;
 
-		Manipulator();
+/////////////////////////
+// Create an action list
+ActionListPtr Controller::CreateActionList(const String title)
+{
+	return ActionListPtr (new ActionList(model,title));
+}
 
-	public:
-		Manipulator(Model &model,String actionName);
-		~Manipulator();
 
-		void AddAction(const Action &action);
-		void Flush();
-	};
+///////////////
+// Load a file
+void Controller::LoadFile(const String filename,const String encoding)
+{
+	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
+	wxFileInputStream stream(filename);
+	model.Load(stream,handler,encoding);
+}
 
-};
+
+///////////////
+// Save a file
+void Controller::SaveFile(const String filename,const String encoding)
+{
+	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
+	wxFileOutputStream stream(filename);
+	model.Save(stream,handler,encoding);
+}
+
+
+//////////////
+// Get format
+const FormatPtr Controller::GetFormat() const
+{
+	return model.GetFormat();
+}
+
+
+//////////////////
+// Create entries
+SectionEntryDialoguePtr Controller::CreateDialogue()
+{
+	return GetFormat()->CreateDialogue();
+}
+SectionEntryStylePtr Controller::CreateStyle()
+{
+	return GetFormat()->CreateStyle();
+}

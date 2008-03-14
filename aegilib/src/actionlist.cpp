@@ -39,38 +39,55 @@ using namespace Gorgonsub;
 
 ///////////////
 // Constructor
-Manipulator::Manipulator(Model &_model,String _actionName)
+ActionList::ActionList(Model &_model,String _actionName)
 : model(_model)
 {
-	actionName = _actionName;
-	valid = true;
+	Start(_actionName);
 }
 
 
 //////////////
 // Destructor
-Manipulator::~Manipulator()
+ActionList::~ActionList()
 {
-	Flush();
 }
 
 
 //////////////////////////////
 // Add an action to the queue
-void Manipulator::AddAction(const Action &action)
+void ActionList::AddAction(const Action &action)
 {
-	if (!valid) throw Exception(Exception::Invalid_Manipulator);
+	if (!valid) throw Exception(Exception::Invalid_ActionList);
 	actions.push_back(action);
 }
 
 
-////////////////////////////////
-// Flush the queue to the model
-void Manipulator::Flush()
+/////////////////////////////
+// Starts performing actions
+void ActionList::Start(const String name)
+{
+	if (valid) Finish();
+	actionName = name;
+	valid = true;
+}
+
+
+////////////////////////
+// Ends the action list
+void ActionList::Finish()
 {
 	if (valid) {
 		model.ProcessActionList(*this,false);
 		actions.clear();
 		valid = false;
 	}
+}
+
+
+//////////////////////////////////
+// Create an "insert line" action
+void ActionList::InsertLine(SectionEntryPtr line,int position,const String section)
+{
+	Action action = Action(ACTION_INSERT,line,section,position);
+	AddAction(action);
 }
