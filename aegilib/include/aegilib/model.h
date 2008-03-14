@@ -68,18 +68,15 @@ namespace Gorgonsub {
 		bool readOnly;
 		FormatPtr format;
 
-		void ProcessActionList(const ActionList &actionList);
-		void DoActionList(const ActionListPtr list);
+		void ProcessActionList(const ActionList &actionList,int type=0);
 		void DoAction(const Action &action);
-
-		ActionListPtr CreateAntiActionList(const ActionListPtr &manipulator);
 		Action GetAntiAction(const Action &action);
 
 		bool CanUndo(const String owner=L"") const;
 		bool CanRedo(const String owner=L"") const;
 		void Undo(const String owner=L"");
 		void Redo(const String owner=L"");
-		void ActivateStack(ActionStack &from,ActionStack &to,const String &owner);
+		void ActivateStack(ActionStack &stack,bool isUndo,const String &owner);
 
 		void DispatchNotifications(const Notification &notification) const;
 

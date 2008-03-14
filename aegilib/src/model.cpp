@@ -58,30 +58,31 @@ void Model::DispatchNotifications(const Notification &notification) const
 
 ////////////////////////////
 // Processes an action list
-void Model::ProcessActionList(const ActionList &_actionList)
+void Model::ProcessActionList(const ActionList &_actionList,int type)
 {
 	// Copy the list
 	ActionListPtr actions = ActionListPtr(new ActionList(_actionList));
 
-	// Inserts the opposite into the undo stack
-	if (actions->undoAble) {
-		undoStack.push(CreateAntiActionList(actions));
-		redoStack = ActionStack();
-	}
+	// Setup undo
+	ActionListPtr undo = ActionListPtr(new ActionList(actions->model,actions->actionName,actions->owner,actions->undoAble));
+	ActionStack *stack;
+	if (type == 1) stack = &redoStack;
+	else stack = &undoStack;
 
-	// Execute list
-	DoActionList(actions);
-}
-
-
-//////////////////////////
-// Execute an action list
-void Model::DoActionList(const ActionListPtr actions)
-{
-	// Do each action
+	// Execute actions
 	std::list<Action>::const_iterator cur;
 	for (cur=actions->actions.begin();cur!=actions->actions.end();cur++) {
+		// Inserts the opposite into the undo action first
+		if (actions->undoAble) undo->AddActionStart(GetAntiAction(*cur));
+		
+		// Execute the action itself
 		DoAction(*cur);
+	}
+
+	// Insert into undo stack
+	if (actions->undoAble) {
+		stack->push(undo);
+		if (type == 0) redoStack = ActionStack();
 	}
 
 	// Notify listeners
@@ -121,26 +122,6 @@ void Model::DoAction(const Action &action)
 			return;
 		}
 	}
-}
-
-
-//////////////////////////////////////////////////////////////////////
-// Create an anti-actionlist to undo the actions made by a actionlist
-ActionListPtr Model::CreateAntiActionList(const ActionListPtr &src)
-{
-	// Create list
-	ActionListPtr dst(new ActionList(*this,src->actionName,src->owner,false));
-
-	// Insert anti-actions
-	std::list<Action>::const_reverse_iterator cur;
-	for (cur=src->actions.rbegin();cur!=src->actions.rend();cur++) {
-	//std::list<Action>::const_iterator cur;
-	//for (cur=src->actions.begin();cur!=src->actions.end();cur++) {
-		dst->AddAction(GetAntiAction(*cur));
-	}
-
-	// Return
-	return dst;
 }
 
 
@@ -286,7 +267,7 @@ bool Model::CanRedo(const String owner) const
 // Perform an undo
 void Model::Undo(const String owner)
 {
-	ActivateStack(undoStack,redoStack,owner);
+	ActivateStack(undoStack,true,owner);
 }
 
 
@@ -294,23 +275,20 @@ void Model::Undo(const String owner)
 // Perform a redo
 void Model::Redo(const String owner)
 {
-	ActivateStack(redoStack,undoStack,owner);
+	ActivateStack(redoStack,false,owner);
 }
 
 
 /////////////////////
 // Perform undo/redo
-void Model::ActivateStack(ActionStack &from,ActionStack &to,const String &owner)
+void Model::ActivateStack(ActionStack &stack,bool isUndo,const String &owner)
 {
 	// TODO: do something with this
 	(void) owner;
 
-	// Create opposite
-	to.push(CreateAntiActionList(from.top()));
-
 	// Process list
-	DoActionList(from.top());
+	ProcessActionList(*stack.top(),isUndo?1:2);
 
 	// Pop original
-	from.pop();
+	stack.pop();
 }

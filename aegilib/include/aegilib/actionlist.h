@@ -60,6 +60,7 @@ namespace Gorgonsub {
 		ActionList(Model &model,const String actionName,const String owner,bool undoAble);
 		void Start(const String actionName);
 		void AddAction(const Action &action);
+		void AddActionStart(const Action &action);
 
 	public:
 		~ActionList();

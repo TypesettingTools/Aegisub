@@ -42,6 +42,7 @@ using namespace Gorgonsub;
 ActionList::ActionList(Model &_model,String _actionName,const String _owner,bool _undoAble)
 : model(_model), owner(_owner), undoAble(_undoAble)
 {
+	valid = false;
 	Start(_actionName);
 }
 
@@ -59,6 +60,23 @@ void ActionList::AddAction(const Action &action)
 {
 	if (!valid) throw Exception(Exception::Invalid_ActionList);
 	actions.push_back(action);
+	if (actions.size() > 2) {
+		int a = 0;
+		a++;
+	}
+}
+
+
+///////////////////////////////////////////
+// Add an action to the start of the queue
+void ActionList::AddActionStart(const Action &action)
+{
+	if (!valid) throw Exception(Exception::Invalid_ActionList);
+	actions.push_front(action);
+	if (actions.size() > 2) {
+		int a = 0;
+		a++;
+	}
 }
 
 
