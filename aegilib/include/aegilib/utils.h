@@ -71,6 +71,7 @@ namespace Gorgonsub {
 
 	// Convert a string to an integer
 	int StringToInt(const String &str);
+	int SubStringToInteger(const String &str,size_t start,size_t end);
 
 	// Number to string functions
 	String PrettyFloat(String src);

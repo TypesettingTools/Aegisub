@@ -42,10 +42,25 @@ using namespace Gorgonsub;
 // Convert a string to an integer
 int Gorgonsub::StringToInt(const String &str)
 {
+	// TODO: optimize
 	if (!str.IsNumber()) return 0;
 	long temp;
 	str.ToLong(&temp);
 	return (int) temp;
+}
+
+
+//////////////////////////////////////
+// Converts a substring to an integer
+int Gorgonsub::SubStringToInteger(const String &str,size_t start,size_t end)
+{
+	int value = 0;
+	int chr;
+	for (size_t i=start;i<end;i++) {
+		chr = (int)str[i]-(int)'0';
+		if (chr >= 0 && chr <= 9) value = 10*value+chr;
+	}
+	return value;
 }
 
 

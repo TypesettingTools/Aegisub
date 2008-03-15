@@ -51,7 +51,7 @@ namespace Gorgonsub {
 		int GetMS() const { return ms; }
 
 		String GetString(int ms_precision,int h_precision) const;
-		void Parse(String data);
+		void Parse(const String &data);
 	};
 
 };

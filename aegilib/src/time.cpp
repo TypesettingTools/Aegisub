@@ -109,30 +109,34 @@ String Time::GetString(int ms_precision,int h_precision) const
 
 ///////////////////
 // Parses a string
-void Time::Parse(String data)
+void Time::Parse(const String &data)
 {
 	// Break into an array of values
-	std::vector<double> values;
-	values.reserve(4);
+	std::vector<size_t> values(4);
 	size_t last = 0;
-	data += _T(":");
 	size_t len = data.Length();
+	size_t curIndex = 0;
+	wxChar cur = 0;
 	for (size_t i=0;i<len;i++) {
-		if (data[i] == ':' || data[i] == ';') {
-			wxString temp = data.Mid(last,i-last);
+		cur = data[i];
+		if (cur == ':' || cur == '.' || cur == ',' || cur == ';') {
+			values.at(curIndex++) = SubStringToInteger(data,last,i);
 			last = i+1;
-			double tempd;
-			temp.ToDouble(&tempd);
-			values.push_back(tempd);
+		}
+		if (i == len-1) {
+			int value = SubStringToInteger(data,last,len);
+			size_t digits = len - last;
+			if (digits == 2) value *= 10;
+			if (digits == 1) value *= 100;
+			values.at(curIndex++) = value;
 		}
 	}
 
 	// Turn into milliseconds
-	ms = 0;
-	double mult = 1000.0;
-	int len2 = (int) values.size();
-	for (int i=len2;--i>=0;) {
-		ms += (int)(values[i] * mult);
-		mult *= 60.0;
+	size_t mult[] = { 0, 1, 1000, 60000, 3600000 };
+	size_t accum = 0;
+	for (int i=(int)curIndex;--i>=0;) {
+		accum += values[i] * mult[curIndex-i];
 	}
+	ms = (int)accum;
 }
