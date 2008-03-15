@@ -56,6 +56,7 @@ TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool 
 	trim = _trim;
 	threaded = prefetch && false;
 	thread = NULL;
+	_buffer.Alloc(4096);
 
 	// Set encoding
 	encoding = enc.c_str();
@@ -107,9 +108,9 @@ void TextFileReader::SetEncodingConfiguration()
 // Reads a line from file
 Gorgonsub::String TextFileReader::ActuallyReadLine()
 {
-	wxString wxbuffer;
+	wxString stringBuffer;
 	size_t bufAlloc = 1024;
-	wxbuffer.Alloc(bufAlloc);
+	stringBuffer.Alloc(bufAlloc);
 	std::string buffer = "";
 
 	// Read UTF-16 line from file
@@ -135,48 +136,68 @@ Gorgonsub::String TextFileReader::ActuallyReadLine()
 			ch = *((wchar_t*)charbuffer);
 			if (len >= bufAlloc - 1) {
 				bufAlloc *= 2;
-				wxbuffer.Alloc(bufAlloc);
+				stringBuffer.Alloc(bufAlloc);
 			}
-			wxbuffer += ch;
+			stringBuffer += ch;
 			len++;
+		}
+
+		// Remove line breaks
+		len = stringBuffer.Length();
+		for (size_t i=0;i<len;i++) {
+			if (stringBuffer[i] == _T('\r') || stringBuffer[i] == _T('\n')) stringBuffer[i] = _T(' ');
 		}
 	}
 
 	// Read ASCII/UTF-8 line from file
 	else {
-		//getline(file,buffer);
-		//wxbuffer.Clear();
-		//if (buffer.length()) wxbuffer = wxString(buffer.c_str(),*conv);
-		char temp = 0;
-		std::string buff;
-		while (temp != '\n' && !file.Eof()) {
-			file.Read(&temp,1);
-			if (temp != '\r') {
-				buff += temp;
-			}
-		}
-		if (buff.size()) wxbuffer = wxString(buff.c_str(),*conv);
-	}
+		// Look for a new line
+		int newLinePos = -1;
+		char newLineChar = 0;
+		size_t size = _buffer.GetSize();
 
-	// Remove line breaks
-	//wxbuffer.Replace(_T("\r"),_T("\0"));
-	//wxbuffer.Replace(_T("\n"),_T("\0"));
-	size_t len=wxbuffer.Length();
-	for (size_t i=0;i<len;i++) {
-		if (wxbuffer[i] == _T('\r') || wxbuffer[i] == _T('\n')) wxbuffer[i] = _T(' ');
+		// Find first line break
+		if (size) _buffer.FindLineBreak(0,size,newLinePos,newLineChar);
+
+		// If no line breaks were found, load more data into file
+		while (newLinePos == -1) {
+			// Read 2048 bytes
+			const size_t read = 2048;
+			size_t oldSize = _buffer.GetSize();
+			char *ptr = _buffer.GetWritePtr(read);
+			file.Read(ptr,read);
+			size_t lastRead = file.LastRead();
+			_buffer.AssumeSize(_buffer.GetSize()+lastRead-read);
+
+			// Find line break
+			_buffer.FindLineBreak(oldSize,lastRead+oldSize,newLinePos,newLineChar);
+
+			// End of file, force a line break
+			if (file.Eof() && newLinePos == -1) newLinePos = (int) _buffer.GetSize();
+		}
+
+		// Found newline
+		if (newLinePos != -1) {
+			// Replace newline with null character and convert to proper charset
+			char *read = _buffer.GetMutableReadPtr();
+			if (newLinePos) {
+				read[newLinePos] = 0;
+				stringBuffer = wxString(read,*conv);
+			}
+
+			// Remove an extra character if the new is the complement of \n,\r (13^7=10, 10^7=13)
+			if (read[newLinePos+1] == (newLineChar ^ 7)) newLinePos++;
+			_buffer.ShiftLeft(newLinePos+1);
+		}
 	}
 
 	// Remove BOM
-	if (wxbuffer.Length() > 0 && wxbuffer[0] == 0xFEFF) {
-		wxbuffer = wxbuffer.Mid(1);
-	}
+	size_t startPos = 0;
+	if (stringBuffer.Length() > 0 && stringBuffer[0] == 0xFEFF) startPos = 1;
 
 	// Trim
-	if (trim) {
-		wxbuffer.Trim(true);
-		wxbuffer.Trim(false);
-	}
-	return Gorgonsub::String(wxbuffer.c_str());
+	if (trim) return String(StringTrim(stringBuffer,startPos));
+	return String(stringBuffer.c_str() + startPos);
 }
 
 
@@ -186,7 +207,7 @@ bool TextFileReader::HasMoreLines()
 {
 	if (cache.size()) return true;
 	wxCriticalSectionLocker locker(mutex);
-	return (!file.Eof());
+	return (!file.Eof() || _buffer.GetSize());
 }
 
 

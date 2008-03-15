@@ -177,6 +177,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\fastbuffer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\format.h"
 				>
 			</File>

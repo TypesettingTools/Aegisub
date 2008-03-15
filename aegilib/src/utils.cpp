@@ -112,3 +112,33 @@ void Gorgonsub::WriteNumber(wxChar *&dst,wxChar *temp,int number,int pad,size_t 
 		pos++;
 	}
 }
+
+
+/////////////////
+// Trim a string
+const wxChar *Gorgonsub::StringTrim(wxString &str,size_t startPos)
+{
+	size_t len = str.Length();
+	size_t start = startPos;
+	size_t end = len;
+	bool isStart = true;
+	bool isEnd = false;
+	wxChar cur;
+	for (size_t i=start;i<len;i++) {
+		cur = str[i];
+		if (isStart)
+			if (cur == ' ') start++;
+			else isStart = false;
+		if (isEnd)
+			if (cur != ' ') isEnd = false;
+		else {
+			if (cur == ' ') {
+				isEnd = true;
+				end = i;
+			}
+		}
+	}
+	startPos = start;
+	if (isEnd) str[end] = 0;
+	return str.c_str() + startPos;
+}

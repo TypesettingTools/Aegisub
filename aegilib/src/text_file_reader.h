@@ -39,6 +39,7 @@
 
 // Headers
 #include "Gorgonsub.h"
+#include "fastbuffer.h"
 #include <wx/stream.h>
 
 
@@ -51,6 +52,8 @@ namespace Gorgonsub {
 		wxCriticalSection mutex;
 
 		std::list<String> cache;
+		FastBuffer<char> _buffer;
+
 		wxString encoding;
 		wxInputStream &file;
 		shared_ptr<wxMBConv> conv;

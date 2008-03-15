@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Rodrigo Braz Monteiro
+// Copyright (c) 2005, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,70 +27,78 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB
 //
-// Website: http://www.aegisub.net
-// Contact: mailto:amz@aegisub.net
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
 
 #pragma once
-#include "Gorgonsub.h"
+#include <vector>
+#include "utils.h"
 
 
-/////////////
-// Templates
-
-// Returns the largest of two values
-template <typename T>
-T Max(T a,T b)
-{
-	if (b < a) return a;
-	return b;
-}
-
-// Returns the smallest of two values
-template <typename T>
-T Min(T a,T b)
-{
-	if (a < b) return a;
-	return b;
-}
-
-// Returns b, but limiting it to the interval [a,c]
-template <typename T>
-T Mid(T a,T b,T c)
-{
-	return Min(Max(a,b),c);
-}
-
-
-////////////////////
-// Helper functions
 namespace Gorgonsub {
+	// Fast buffer class
+	template <typename T>
+	class FastBuffer {
+	private:
+		std::vector<T> buffer;
+		size_t _size;
 
-	// Convert a string to an integer
-	int StringToInt(const String &str);
+	public:
+		// Constructor
+		FastBuffer() { _size = 0; }
 
-	// Number to string functions
-	String PrettyFloat(String src);
-	String PrettyFloatF(float src);
-	String PrettyFloatD(double src);
-	String FloatToString(double value);
-	String IntegerToString(int value);
-	String PrettySize(int bytes);
+		// Gets the stored size
+		size_t GetSize() const { return _size; }
 
-	// Fast string functions
-	inline void WriteText(wxChar *&dst,const wxChar *src,size_t len,size_t &pos) {
-		memcpy(dst,src,len*sizeof(wxChar));
-		dst += len;
-		pos += len;
-	}
-	inline void WriteChar(wxChar *&dst,const wxChar &src,size_t &pos) {
-		*dst = src;
-		dst++;
-		pos++;
-	}
-	void WriteNumber(wxChar *&dst,wxChar *temp,int number,int pad,size_t &pos);
-	const wxChar *StringTrim(wxString &str,size_t start);
+		// Shifts all the buffer left, destroying steps entries
+		void ShiftLeft(size_t steps) {
+			steps = Min(_size,steps);
+			memcpy(&buffer[0],&buffer[steps],_size-steps);
+			_size -= steps;
+		}
+
+		// Get a read pointer
+		const T* GetReadPtr() const { return &buffer[0]; }
+
+		// Get a non-const read pointer
+		T* GetMutableReadPtr() { return &buffer[0]; }
+
+		// Get a write pointer to a new area of the specified size
+		T* GetWritePtr(size_t size) {
+			size_t oldSize = _size;
+			_size += size;
+			if (buffer.size() < _size+4) buffer.resize(_size+4);
+			return &buffer[oldSize];
+		}
+
+		// Assume that has a certain size, discarding anything beyond it
+		void AssumeSize(size_t size) {
+			_size = Min(size,_size);
+		}
+
+		// Pre-Allocates memory
+		void Alloc(size_t size) {
+			buffer.resize(size);
+		}
+
+		// Finds a line break
+		void FindLineBreak(size_t start,size_t end,int &pos,T &character) {
+			pos = -1;
+			character = 0;
+			T c1 = '\n';
+			T c2 = '\r';
+			for (size_t i=start;i<end;i++) {
+				T chr = buffer[i];
+				if (chr == c1 || chr == c2) {
+					pos = (int)i;
+					character = chr;
+					return;
+				}
+			}
+		}
+	};
 };
