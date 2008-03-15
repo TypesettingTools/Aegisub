@@ -52,7 +52,8 @@ namespace Gorgonsub {
 		wxCriticalSection mutex;
 
 		std::list<String> cache;
-		FastBuffer<char> _buffer;
+		FastBuffer<char> buffer1;
+		FastBuffer<wchar_t> buffer2;
 
 		wxString encoding;
 		wxInputStream &file;

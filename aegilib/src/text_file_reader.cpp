@@ -56,7 +56,6 @@ TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool 
 	trim = _trim;
 	threaded = prefetch && false;
 	thread = NULL;
-	_buffer.Alloc(4096);
 
 	// Set encoding
 	encoding = enc.c_str();
@@ -101,6 +100,78 @@ void TextFileReader::SetEncodingConfiguration()
 	else {
 		conv = shared_ptr<wxMBConv> (new wxCSConv(encoding));
 	}
+
+	// Allocate buffer
+	if (!Is16) buffer1.Alloc(4096);
+	else buffer2.Alloc(4096);
+}
+
+
+////////////////////
+// Helper functions
+wxString GetString(char *read,shared_ptr<wxMBConv> conv) { return wxString(read,*conv); }
+wxString GetString(wchar_t *read,shared_ptr<wxMBConv> conv) { (void)conv; return wxString(read); }
+inline void Swap(wchar_t &a) {
+	char *c = (char*) &a;
+	char aux = c[0];
+	c[0] = c[1];
+	c[1] = aux;
+}
+inline void Swap(char &a) { (void) a; }
+
+
+////////////////
+// Parse a line
+template <typename T>
+void ParseLine(FastBuffer<T> &_buffer,wxInputStream &file,wxString &stringBuffer,shared_ptr<wxMBConv> conv,bool swap)
+{
+	// Look for a new line
+	int newLinePos = -1;
+	T newLineChar = 0;
+	size_t size = _buffer.GetSize();
+
+	// Find first line break
+	if (size) _buffer.FindLineBreak(0,size,newLinePos,newLineChar);
+
+	// If no line breaks were found, load more data into file
+	while (newLinePos == -1) {
+		// Read 2048 bytes
+		const size_t readBytes = 2048;
+		const size_t read = readBytes/sizeof(T);
+		size_t oldSize = _buffer.GetSize();
+		T *ptr = _buffer.GetWritePtr(read);
+		file.Read(ptr,readBytes);
+		size_t lastRead = file.LastRead()/sizeof(T);
+		_buffer.AssumeSize(_buffer.GetSize()+lastRead-read);
+
+		// Swap
+		if (swap) {
+			T* ptr2 = ptr;
+			for (size_t i=0;i<lastRead;i++) {
+				Swap(*ptr2++);
+			}
+		}
+
+		// Find line break
+		_buffer.FindLineBreak(oldSize,lastRead+oldSize,newLinePos,newLineChar);
+
+		// End of file, force a line break
+		if (file.Eof() && newLinePos == -1) newLinePos = (int) _buffer.GetSize();
+	}
+
+	// Found newline
+	if (newLinePos != -1) {
+		T *read = _buffer.GetMutableReadPtr();
+		// Replace newline with null character and convert to proper charset
+		if (newLinePos) {
+			read[newLinePos] = 0;
+			stringBuffer = GetString(read,conv);
+		}
+
+		// Remove an extra character if the new is the complement of \n,\r (13^7=10, 10^7=13)
+		if (read[newLinePos+1] == (newLineChar ^ 7)) newLinePos++;
+		_buffer.ShiftLeft(newLinePos+1);
+	}
 }
 
 
@@ -114,82 +185,10 @@ Gorgonsub::String TextFileReader::ActuallyReadLine()
 	std::string buffer = "";
 
 	// Read UTF-16 line from file
-	if (Is16) {
-		char charbuffer[3];
-		charbuffer[2] = 0;
-		wchar_t ch = 0;
-		size_t len = 0;
-		while (ch != L'\n' && !file.Eof()) {
-			// Read two chars from file
-			charbuffer[0] = 0;
-			charbuffer[1] = 0;
-			file.Read(charbuffer,2);
-
-			// Swap bytes for big endian
-			if (swap) {
-				register char aux = charbuffer[0];
-				charbuffer[0] = charbuffer[1];
-				charbuffer[1] = aux;
-			}
-
-			// Convert two chars into a widechar and append to string
-			ch = *((wchar_t*)charbuffer);
-			if (len >= bufAlloc - 1) {
-				bufAlloc *= 2;
-				stringBuffer.Alloc(bufAlloc);
-			}
-			stringBuffer += ch;
-			len++;
-		}
-
-		// Remove line breaks
-		len = stringBuffer.Length();
-		for (size_t i=0;i<len;i++) {
-			if (stringBuffer[i] == _T('\r') || stringBuffer[i] == _T('\n')) stringBuffer[i] = _T(' ');
-		}
-	}
+	if (Is16) ParseLine<wchar_t>(buffer2,file,stringBuffer,conv,swap);
 
 	// Read ASCII/UTF-8 line from file
-	else {
-		// Look for a new line
-		int newLinePos = -1;
-		char newLineChar = 0;
-		size_t size = _buffer.GetSize();
-
-		// Find first line break
-		if (size) _buffer.FindLineBreak(0,size,newLinePos,newLineChar);
-
-		// If no line breaks were found, load more data into file
-		while (newLinePos == -1) {
-			// Read 2048 bytes
-			const size_t read = 2048;
-			size_t oldSize = _buffer.GetSize();
-			char *ptr = _buffer.GetWritePtr(read);
-			file.Read(ptr,read);
-			size_t lastRead = file.LastRead();
-			_buffer.AssumeSize(_buffer.GetSize()+lastRead-read);
-
-			// Find line break
-			_buffer.FindLineBreak(oldSize,lastRead+oldSize,newLinePos,newLineChar);
-
-			// End of file, force a line break
-			if (file.Eof() && newLinePos == -1) newLinePos = (int) _buffer.GetSize();
-		}
-
-		// Found newline
-		if (newLinePos != -1) {
-			// Replace newline with null character and convert to proper charset
-			char *read = _buffer.GetMutableReadPtr();
-			if (newLinePos) {
-				read[newLinePos] = 0;
-				stringBuffer = wxString(read,*conv);
-			}
-
-			// Remove an extra character if the new is the complement of \n,\r (13^7=10, 10^7=13)
-			if (read[newLinePos+1] == (newLineChar ^ 7)) newLinePos++;
-			_buffer.ShiftLeft(newLinePos+1);
-		}
-	}
+	else ParseLine<char>(buffer1,file,stringBuffer,conv,false);
 
 	// Remove BOM
 	size_t startPos = 0;
@@ -208,7 +207,7 @@ bool TextFileReader::HasMoreLines()
 {
 	if (cache.size()) return true;
 	wxCriticalSectionLocker locker(mutex);
-	return (!file.Eof() || _buffer.GetSize());
+	return (!file.Eof() || buffer1.GetSize() || buffer2.GetSize());
 }
 
 

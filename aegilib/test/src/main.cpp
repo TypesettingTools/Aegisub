@@ -60,10 +60,17 @@ int main() {
 		// Load subtitles
 		cout << "Loading file... ";
 		timer.Start();
-		control.LoadFile(L"subs_in.ass",L"UTF-8");
+		control.LoadFile(L"subs_in.ass",L"UTF-16LE");
 		timer.Pause();
-		cout << "Done in " << timer.Time() << "ms.\n";
-		system("pause");
+		cout << "Done in " << timer.Time() << " ms.\n";
+		//system("pause");
+
+		// Save subtitles
+		cout << "Saving file... ";
+		timer.Start();
+		control.SaveFile(L"subs_out.ass",L"UTF-8");
+		timer.Pause();
+		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Create line to be inserted
 		cout << "Creating data... ";
@@ -79,34 +86,17 @@ int main() {
 		actions->RemoveLine(3,L"Events");
 		actions->Finish();
 		timer.Pause();
-		cout << "Done in " << timer.Time() << "ms.\n";
-
-		// Save subtitles
-		cout << "Saving file... ";
-		//control.SaveFile(L"subs_out_mid1.ass",L"UTF-8");
-		cout << "Done.\n";
+		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Undo
-		cout << "Undoing... (can undo=" << (control.CanUndo()?"true":"false") << ") ";
-		control.Undo();
-		cout << "Done.\n";
-
-		// Save subtitles
-		cout << "Saving file... ";
-		control.SaveFile(L"subs_out_mid2.ass",L"UTF-8");
-		cout << "Done.\n";
-
-		// Redo
-		cout << "Undoing... (can redo=" << (control.CanRedo()?"true":"false") << ") ";
-		control.Redo();
-		cout << "Done.\n";
-
-		// Save subtitles
-		cout << "Saving file... ";
+		cout << "Undoing and redoing 1000 times... ";
 		timer.Start();
-		//control.SaveFile(L"subs_out.ass",L"UTF-8");
+		for (size_t i=0;i<1000;i++) {
+			control.Undo();
+			control.Redo();
+		}
 		timer.Pause();
-		cout << "Done in " << timer.Time() << "ms.\n";
+		cout << "Done in " << timer.Time() << " ms.\n";
 	}
 
 	catch (std::exception &e) {

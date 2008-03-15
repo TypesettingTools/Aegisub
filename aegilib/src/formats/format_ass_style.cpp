@@ -55,7 +55,7 @@ StyleASS::StyleASS(String data,int version)
 		version++;
 		if (version > 2) version = 0;
 	}
-	if (!valid) throw Exception(Exception::Parse_Error);
+	if (!valid) THROW_GORGON_EXCEPTION(Exception::Parse_Error);
 }
 
 

@@ -57,7 +57,7 @@ namespace Gorgonsub {
 		// Shifts all the buffer left, destroying steps entries
 		void ShiftLeft(size_t steps) {
 			steps = Min(_size,steps);
-			memcpy(&buffer[0],&buffer[steps],_size-steps);
+			memcpy(&buffer[0],&buffer[steps],(_size-steps)*sizeof(T));
 			_size -= steps;
 		}
 

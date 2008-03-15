@@ -37,10 +37,16 @@
 using namespace Gorgonsub;
 
 
-///////////////
-// Constructor
+////////////////
+// Constructors
 Exception::Exception(ExceptionList _code)
 : std::exception(GetMessage(_code).mb_str(wxConvLocal))
+{
+	code = _code;
+}
+
+Exception::Exception(ExceptionList _code,const char *file,const long line)
+: std::exception(GetMessageFile(_code,file,line).mb_str(wxConvLocal))
 {
 	code = _code;
 }
@@ -62,6 +68,14 @@ String Exception::GetMessage(int code)
 		case TODO: return L"TODO";
 	}
 	return L"Invalid code.";
+}
+
+
+///////////////////////////////////
+// Insert file and line on message
+String Exception::GetMessageFile(int code,const char *file,long line)
+{
+	return GetMessage(code) + _T(" (") + wxString(file,wxConvLocal) + wxString::Format(_T(":%i)."),line);
 }
 
 
