@@ -97,6 +97,7 @@ int main() {
 		}
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
+		control.SaveFile(L"subs_out2.ass",L"UTF-8");
 	}
 
 	catch (std::exception &e) {

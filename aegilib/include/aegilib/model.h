@@ -55,6 +55,7 @@ namespace Gorgonsub {
 		friend class FormatHandler;
 		friend class ActionList;
 		friend class Controller;
+		friend class Action;
 
 		typedef std::list<ViewPtr> ViewList;
 		typedef std::stack<ActionListPtr,std::list<ActionListPtr> > ActionStack;
@@ -69,8 +70,6 @@ namespace Gorgonsub {
 		FormatPtr format;
 
 		void ProcessActionList(const ActionList &actionList,int type=0);
-		void DoAction(const Action &action);
-		Action GetAntiAction(const Action &action);
 
 		bool CanUndo(const String owner=L"") const;
 		bool CanRedo(const String owner=L"") const;

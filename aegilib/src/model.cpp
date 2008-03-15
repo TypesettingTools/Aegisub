@@ -70,13 +70,13 @@ void Model::ProcessActionList(const ActionList &_actionList,int type)
 	else stack = &undoStack;
 
 	// Execute actions
-	std::list<Action>::const_iterator cur;
+	std::list<ActionPtr>::const_iterator cur;
 	for (cur=actions->actions.begin();cur!=actions->actions.end();cur++) {
 		// Inserts the opposite into the undo action first
-		if (actions->undoAble) undo->AddActionStart(GetAntiAction(*cur));
+		if (actions->undoAble) undo->AddActionStart((*cur)->GetAntiAction(*this));
 		
 		// Execute the action itself
-		DoAction(*cur);
+		(*cur)->Execute(*this);
 	}
 
 	// Insert into undo stack
@@ -87,71 +87,6 @@ void Model::ProcessActionList(const ActionList &_actionList,int type)
 
 	// Notify listeners
 	DispatchNotifications(Notification());
-}
-
-
-/////////////////////
-// Execute an action
-void Model::DoAction(const Action &action)
-{
-	switch (action.GetType()) {
-		// Insert a line
-		case ACTION_INSERT: {
-			// Get the line
-			SectionEntryPtr entry = static_pointer_cast<SectionEntry>(action.GetData());
-
-			// Find the section to insert it on
-			String sectionName = action.GetSection();
-			if (sectionName.IsEmpty()) sectionName = entry->GetDefaultGroup();
-			SectionPtr section = GetSection(sectionName);
-
-			// Insert the line
-			section->AddEntry(entry,action.GetLineNumber());
-			return;
-		}
-
-		// Delete a line
-		case ACTION_REMOVE: {
-			// Find the section to remote it from
-			String sectionName = action.GetSection();
-			if (sectionName.IsEmpty()) throw Exception(Exception::TODO); // TODO
-			SectionPtr section = GetSection(sectionName);
-
-			// Remove the line
-			section->RemoveEntryByIndex(action.GetLineNumber());
-			return;
-		}
-	}
-}
-
-
-///////////////////////////////////////////
-// Create the action opposite to the input
-Action Model::GetAntiAction(const Action &action)
-{
-	switch (action.GetType()) {
-		// Create a remove
-		case ACTION_INSERT: {
-			// Find the section to insert it on
-			String section = action.GetSection();
-			if (section.IsEmpty()) {
-				SectionEntryPtr entry = static_pointer_cast<SectionEntry>(action.GetData());
-				section = entry->GetDefaultGroup();
-			}
-
-			return Action(ACTION_REMOVE,SectionEntryPtr(),section,action.GetLineNumber());
-		}
-
-		// Create an insert
-		case ACTION_REMOVE: {
-			int line = action.GetLineNumber();
-			const String &sName = action.GetSection();
-			SectionPtr section = GetSection(sName);
-			return Action(ACTION_INSERT,section->GetEntry(line),sName,line);
-		}
-	}
-
-	throw Exception(Exception::Invalid_ActionList);
 }
 
 

@@ -154,42 +154,10 @@
 	</References>
 	<Files>
 		<Filter
-			Name="API"
+			Name="Include"
 			>
 			<File
-				RelativePath=".\include\aegilib\action.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\actionlist.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\colour.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\controller.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\exception.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\aegilib\fastbuffer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\format.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\format_handler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\format_manager.h"
 				>
 			</File>
 			<File
@@ -201,7 +169,23 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\gorgontime.h"
+				RelativePath=".\include\aegilib\tr1.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="MVC"
+			>
+			<File
+				RelativePath=".\src\controller.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\controller.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\model.cpp"
 				>
 			</File>
 			<File
@@ -210,62 +194,6 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\notification.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\section.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\section_entry.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\section_entry_dialogue.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\section_entry_style.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\tokenizer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\tr1.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\utils.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\version.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\view.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="MVC"
-			>
-			<File
-				RelativePath=".\src\action.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\actionlist.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\controller.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\model.cpp"
 				>
 			</File>
 			<File
@@ -280,6 +208,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\include\aegilib\view.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Misc"
@@ -289,11 +221,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\colour.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\exception.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\format_manager.cpp"
+				RelativePath=".\include\aegilib\exception.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\gorgontime.h"
 				>
 			</File>
 			<File
@@ -322,14 +262,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\section.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\section_entry.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\text_file_reader.cpp"
 				>
 			</File>
@@ -354,17 +286,33 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\tokenizer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\utils.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\version.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\include\aegilib\version.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Formats"
 			>
+			<File
+				RelativePath=".\include\aegilib\format.h"
+				>
+			</File>
 			<File
 				RelativePath=".\src\formats\format_ass.cpp"
 				>
@@ -379,6 +327,66 @@
 			</File>
 			<File
 				RelativePath=".\src\formats\format_ass_style.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\format_handler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\format_manager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\format_manager.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Actions"
+			>
+			<File
+				RelativePath=".\src\action.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\action.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\actionlist.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\actionlist.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Sections"
+			>
+			<File
+				RelativePath=".\src\section.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\section.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\section_entry.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\section_entry.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\section_entry_dialogue.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\section_entry_style.h"
 				>
 			</File>
 		</Filter>

@@ -37,28 +37,51 @@
 #include "gorgonstring.h"
 
 namespace Gorgonsub {
-	// The different types of actions available
-	enum ActionType {
-		ACTION_INSERT,
-		ACTION_REMOVE
-	};
+	// Prototypes
+	class Model;
+	class SectionEntry;
+	class Action;
+	class Section;
+	typedef shared_ptr<Action> ActionPtr;
+	typedef shared_ptr<Section> SectionPtr;
 
-	// Action class
-	// This is a modification event
+	// Action interface
 	class Action {
-	private:
-		ActionType type;
-		shared_ptr<void> data;
-		String section;
-		int par1;
+	protected:
+		SectionPtr GetSection(const Model &model,const String &name) const;
 
 	public:
-		Action();
-		Action(ActionType type,shared_ptr<void> data,const String &section,int par1);
+		virtual ~Action() {}
+		virtual ActionPtr GetAntiAction(const Model &model) const =0;
+		virtual void Execute(Model &model) =0;
+	};
 
-		ActionType GetType() const { return type; }
-		shared_ptr<void> GetData() const { return data; }
-		int GetLineNumber() const { return par1; }
-		String GetSection() const { return section; }
+	// Insert line
+	class ActionInsert : public Action {
+	private:
+		shared_ptr<SectionEntry> entry;
+		const String section;
+		int lineNumber;
+
+	public:
+		ActionInsert(shared_ptr<SectionEntry> entry,int line,const String &section);
+		virtual ~ActionInsert() {}
+
+		ActionPtr GetAntiAction(const Model &model) const;
+		void Execute(Model &model);
+	};
+
+	// Remove line
+	class ActionRemove : public Action {
+	private:
+		const String section;
+		int lineNumber;
+
+	public:
+		ActionRemove(int line,const String &section);
+		virtual ~ActionRemove() {}
+
+		ActionPtr GetAntiAction(const Model &model) const;
+		void Execute(Model &model);
 	};
 };

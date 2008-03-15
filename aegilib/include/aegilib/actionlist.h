@@ -53,14 +53,14 @@ namespace Gorgonsub {
 		String actionName;
 		String owner;
 		Model &model;
-		std::list<Action> actions;
+		std::list<ActionPtr> actions;
 		bool valid;
 		bool undoAble;
 
 		ActionList(Model &model,const String actionName,const String owner,bool undoAble);
 		void Start(const String actionName);
-		void AddAction(const Action &action);
-		void AddActionStart(const Action &action);
+		void AddAction(const ActionPtr action);
+		void AddActionStart(const ActionPtr action);
 
 	public:
 		~ActionList();

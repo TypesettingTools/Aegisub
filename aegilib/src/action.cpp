@@ -33,23 +33,80 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "action.h"
+#include "gorgonsub.h"
 using namespace Gorgonsub;
 
 
-///////////////////////
-// Default constructor
-Action::Action()
+////////////////////////////////
+// Get a section from the model
+SectionPtr Action::GetSection(const Model &model,const String &name) const
 {
+	return model.GetSection(name);
 }
 
 
-//////////////////////////////
-// Initialization constructor
-Action::Action(ActionType _type,shared_ptr<void> _data,const String &_section,int _par1)
+/////////////////// Insert line /////////////////////////////
+
+///////////////
+// Constructor
+ActionInsert::ActionInsert(shared_ptr<SectionEntry> data,int line,const String &sName)
+: entry(data), lineNumber(line), section(sName) {}
+
+
+/////////////////////////////////
+// Create anti-action for insert
+ActionPtr ActionInsert::GetAntiAction(const Model &model) const
 {
-	type = _type;
-	data = _data;
-	par1 = _par1;
-	section = _section;
+	(void) model;
+	String sect = section;
+	if (section.IsEmpty()) sect = entry->GetDefaultGroup();
+	return ActionPtr(new ActionRemove(lineNumber,sect));
+}
+
+
+/////////////////////
+// Execute insertion
+void ActionInsert::Execute(Model &model)
+{
+	// Find the section to insert it on
+	String sectionName = section;
+	if (sectionName.IsEmpty()) sectionName = entry->GetDefaultGroup();
+	SectionPtr sect = GetSection(model,sectionName);
+
+	// Insert the line
+	sect->AddEntry(entry,lineNumber);
+}
+
+
+
+/////////////////// Remove line /////////////////////////////
+
+
+///////////////
+// Constructor
+ActionRemove::ActionRemove(int line,const String &sName)
+: lineNumber(line), section(sName) {}
+
+
+/////////////////////////////////
+// Create anti-action for remove
+ActionPtr ActionRemove::GetAntiAction(const Model &model) const
+{
+	SectionPtr sect = GetSection(model,section);
+	SectionEntryPtr entry = sect->GetEntry(lineNumber);
+	return ActionPtr(new ActionInsert(entry,lineNumber,section));
+}
+
+
+///////////////////
+// Execute removal
+void ActionRemove::Execute(Model &model)
+{
+	// Find the section to remote it from
+	String sect = section;
+	if (sect.IsEmpty()) throw Exception(Exception::TODO); // TODO
+	SectionPtr section = GetSection(model,sect);
+
+	// Remove the line
+	section->RemoveEntryByIndex(lineNumber);
 }

@@ -56,7 +56,7 @@ ActionList::~ActionList()
 
 //////////////////////////////
 // Add an action to the queue
-void ActionList::AddAction(const Action &action)
+void ActionList::AddAction(const ActionPtr action)
 {
 	if (!valid) throw Exception(Exception::Invalid_ActionList);
 	actions.push_back(action);
@@ -69,7 +69,7 @@ void ActionList::AddAction(const Action &action)
 
 ///////////////////////////////////////////
 // Add an action to the start of the queue
-void ActionList::AddActionStart(const Action &action)
+void ActionList::AddActionStart(const ActionPtr action)
 {
 	if (!valid) throw Exception(Exception::Invalid_ActionList);
 	actions.push_front(action);
@@ -106,7 +106,7 @@ void ActionList::Finish()
 // Create an "insert line" action
 void ActionList::InsertLine(SectionEntryPtr line,int position,const String section)
 {
-	Action action = Action(ACTION_INSERT,line,section,position);
+	ActionPtr action = ActionPtr (new ActionInsert(line,position,section));
 	AddAction(action);
 }
 
@@ -115,6 +115,6 @@ void ActionList::InsertLine(SectionEntryPtr line,int position,const String secti
 // Create a "remove line" action
 void ActionList::RemoveLine(int position,const String section)
 {
-	Action action = Action(ACTION_REMOVE,SectionEntryPtr(),section,position);
+	ActionPtr action = ActionPtr (new ActionRemove(position,section));
 	AddAction(action);
 }
