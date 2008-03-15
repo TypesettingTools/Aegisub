@@ -85,6 +85,7 @@ Please visit http://aegisub.net to download latest version
   o Alpha and margin edit boxes were replaced with spin controls. (amz)
   o Hitting enter will now "OK" it. (amz)
   o Default secondary colour is now red. (amz)
+  o Default font encoding is now 1 "Default", which makes many fonts behave more sensibly (jfs)
 - Changes to subtitle reading/writing:
   o Instead of falling back to your local charset, Aegisub will now use the "universalchardet" library (the one used by the Mozilla project) to autodetect the character set of non-Unicode files. (amz)
   o Support reading SSA/ASS files with intermixed V4 and V4+ Styles sections. (jfs)

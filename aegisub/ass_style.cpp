@@ -175,7 +175,7 @@ AssStyle::AssStyle() {
 	Margin[1] = 10;
 	Margin[2] = 10;
 	Margin[3] = 10;
-	encoding = 0;
+	encoding = 1;
 	relativeTo = 1;
 
 	UpdateData();
