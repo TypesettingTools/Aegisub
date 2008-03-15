@@ -89,7 +89,7 @@ namespace Gorgonsub {
 	public:
 		// Constructors
 		DialogueASS();
-		DialogueASS(String data,int version);
+		DialogueASS(const String &data,int version);
 
 		// Capabilities
 		bool HasText() const { return true; }

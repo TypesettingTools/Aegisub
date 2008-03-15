@@ -89,13 +89,14 @@ namespace Gorgonsub {
 		void FindLineBreak(size_t start,size_t end,int &pos,T &character) {
 			pos = -1;
 			character = 0;
-			T c1 = '\n';
-			T c2 = '\r';
+			size_t c1 = '\n';
+			size_t c2 = '\r';
+			size_t chr;
 			for (size_t i=start;i<end;i++) {
-				T chr = buffer[i];
+				chr = buffer[i];
 				if (chr == c1 || chr == c2) {
 					pos = (int)i;
-					character = chr;
+					character = (T)chr;
 					return;
 				}
 			}

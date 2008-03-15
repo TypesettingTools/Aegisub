@@ -42,11 +42,14 @@ using namespace Gorgonsub;
 // Convert a string to an integer
 int Gorgonsub::StringToInt(const String &str)
 {
-	// TODO: optimize
-	if (!str.IsNumber()) return 0;
-	long temp;
-	str.ToLong(&temp);
-	return (int) temp;
+	size_t len = str.Length();
+	int value = 0;
+	int chr;
+	for (size_t i=0;i<len;i++) {
+		chr = (int)str[i]-(int)'0';
+		if (chr >= 0 && chr <= 9) value = 10*value+chr;
+	}
+	return value;
 }
 
 
@@ -131,29 +134,69 @@ void Gorgonsub::WriteNumber(wxChar *&dst,wxChar *temp,int number,int pad,size_t 
 
 /////////////////
 // Trim a string
-const wxChar *Gorgonsub::StringTrim(wxString &str,size_t startPos)
+const wxChar *Gorgonsub::StringPtrTrim(wxChar *chr,size_t len,size_t startPos)
 {
-	size_t len = str.Length();
+	// String metrics
+	wxChar *read = chr;
 	size_t start = startPos;
 	size_t end = len;
 	bool isStart = true;
 	bool isEnd = false;
 	wxChar cur;
+
+	// Search for spaces
 	for (size_t i=start;i<len;i++) {
-		cur = str[i];
-		if (isStart)
-			if (cur == ' ') start++;
+		cur = read[i];
+		bool isSpace = (cur == ' ');
+		if (isStart) {
+			if (isSpace) start++;
 			else isStart = false;
-		if (isEnd)
-			if (cur != ' ') isEnd = false;
+		}
+		if (isEnd) {
+			if (!isSpace) isEnd = false;
+		}
 		else {
-			if (cur == ' ') {
+			if (isSpace) {
 				isEnd = true;
 				end = i;
 			}
 		}
 	}
-	startPos = start;
-	if (isEnd) str[end] = 0;
-	return str.c_str() + startPos;
+
+	// Apply changes to pointer
+	if (isEnd) chr[end] = 0;
+	return chr + start;
+}
+
+const wxChar *Gorgonsub::StringTrim(wxString &str,size_t startPos)
+{
+	// Get a pointer to the string data
+	wxChar *chr = const_cast<wxChar*> (str.c_str());
+	return StringPtrTrim(chr,str.Length(),startPos);
+}
+
+
+//////////////////////////////////////////////////
+// Compares a string to a constant, ignoring case
+bool Gorgonsub::AsciiStringCompareNoCase(const wxString &str1,const wxChar *str2)
+{
+	const wxChar *src = str1.c_str();
+	wxChar c1,c2;
+	wxChar mask = 0xFFDF;
+	size_t len = str1.Length();
+	for (size_t i=0;i<len;i++) {
+		// Abort on end of string 2
+		c2 = str2[i];
+		if (!c2) return false;
+
+		// Upper case both, this ONLY WORKS FOR ASCII
+		c1 = src[i] & mask;
+		c2 = c2 & mask;
+
+		// Check them
+		if (c1 != c2) return false;
+	}
+
+	// Equal strings
+	return true;
 }

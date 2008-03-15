@@ -47,7 +47,7 @@ DialogueASS::DialogueASS()
 	layer = 0;
 	isComment = false;
 }
-DialogueASS::DialogueASS(String data,int version)
+DialogueASS::DialogueASS(const String &data,int version)
 {
 	// Try parsing with all different versions
 	bool valid = false;
@@ -79,11 +79,11 @@ bool DialogueASS::Parse(wxString rawData, int version)
 	else return false;
 
 	try {
-		Tokenizer tkn(rawData.Mid(pos),_T(","));
+		Tokenizer tkn(rawData,_T(','),pos);
 
 		// Get first token and see if it has "Marked=" in it
 		temp = tkn.GetString(true);
-		if (temp.Lower().StartsWith(_T("marked="))) {
+		if (AsciiStringCompareNoCase(temp,_T("marked="))) {
 			version = 0;
 			layer = 0;
 		}
@@ -125,7 +125,7 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		effect = temp;
 
 		// Get text
-		text = rawData.Mid(pos+tkn.GetPosition());
+		text = tkn.GetTheRest();
 	}
 
 	catch (...) {

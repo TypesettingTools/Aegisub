@@ -197,7 +197,8 @@ Gorgonsub::String TextFileReader::ActuallyReadLine()
 
 	// Trim
 	if (trim) return String(StringTrim(stringBuffer,startPos));
-	return String(stringBuffer.c_str() + startPos);
+	if (startPos) return String(stringBuffer.c_str() + startPos);
+	return stringBuffer;
 }
 
 

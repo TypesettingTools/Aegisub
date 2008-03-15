@@ -35,14 +35,16 @@
 
 #include "tokenizer.h"
 #include "exception.h"
+#include "utils.h"
 #include <wx/tokenzr.h>
 using namespace Gorgonsub;
 
 ///////////////
 // Constructor
-Tokenizer::Tokenizer(String string,String token)
+Tokenizer::Tokenizer(const String &_string,wxChar _token,size_t start)
+: string(_string), pos(start), token(_token)
 {
-	tkn = shared_ptr<wxStringTokenizer> (new wxStringTokenizer(string,token,wxTOKEN_RET_EMPTY_ALL));
+	str = const_cast<wxChar*> (string.c_str());
 }
 Tokenizer::~Tokenizer()
 {
@@ -51,9 +53,9 @@ Tokenizer::~Tokenizer()
 
 ////////////
 // Has more
-bool Tokenizer::HasMore()
+bool Tokenizer::HasMoreTokens()
 {
-	return tkn->HasMoreTokens();
+	return pos < string.Length();
 }
 
 
@@ -61,7 +63,7 @@ bool Tokenizer::HasMore()
 // Get position
 int Tokenizer::GetPosition()
 {
-	return (int)tkn->GetPosition();
+	return (int) pos;
 }
 
 
@@ -69,44 +71,67 @@ int Tokenizer::GetPosition()
 // Get token
 String Tokenizer::GetString(bool trim)
 {
-	wxString str = tkn->GetNextToken();
-	if (trim) {
-		str.Trim(true).Trim(false);
+	// Has any more?
+	if (!HasMoreTokens()) throw Exception(Exception::Invalid_Token);
+
+	// Find token
+	size_t len = string.Length();
+	size_t oldPos = pos;
+	bool found = false;
+	for (size_t i=pos;i<len;i++) {
+		if (str[i] == token) {
+			found = true;
+			str[i] = 0;
+			pos = i+1;
+			break;
+		}
 	}
-	return str;
+	if (!found) pos = len;
+
+	// Trimmed
+	if (trim) {
+		return StringPtrTrim(str+oldPos,pos-oldPos-1,0);
+	}
+
+	// Untrimmed
+	return wxString(str+oldPos,pos-oldPos-1);
 }
+
+
+//////////////////
+// Get as integer
 int Tokenizer::GetInt()
 {
-	long value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToLong(&value);
-	return (int) value;
+	return StringToInt(GetString());
 }
-long Tokenizer::GetLong()
-{
-	long value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToLong(&value);
-	return value;
-}
+
+
+////////////////
+// Get as float
 float Tokenizer::GetFloat()
 {
 	double value;
-	wxString temp = tkn->GetNextToken();
+	wxString temp = GetString();
 	temp.ToDouble(&value);
 	return (float) value;
 }
-double Tokenizer::GetDouble()
-{
-	double value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToDouble(&value);
-	return value;
-}
+
+
+//////////////////
+// Get as boolean
 bool Tokenizer::GetBool()
 {
-	long value;
-	wxString temp = tkn->GetNextToken();
-	temp.ToLong(&value);
-	return value != 0;
+	return GetInt() != 0;
+}
+
+
+//////////////////////////////////
+// Gets all remaining string data
+String Tokenizer::GetTheRest()
+{
+	// Make string
+	size_t size = string.Length()-pos;
+	size_t oldPos = pos;
+	pos += size;
+	return String(str+oldPos,size);
 }

@@ -66,7 +66,7 @@ bool StyleASS::Parse(String data,int version)
 	try {
 		// Tokenize
 		wxString temp;
-		Tokenizer tkn(data.Trim(false).Mid(6),_T(","));
+		Tokenizer tkn(data,_T(','),6);
 
 		// Read name, font name and size
 		name = tkn.GetString(true);
@@ -131,7 +131,7 @@ bool StyleASS::Parse(String data,int version)
 		if (version == 2) relativeTo = tkn.GetInt();
 
 		// Read it all?
-		if (tkn.HasMore()) return false;
+		if (tkn.HasMoreTokens()) return false;
 
 		// Done
 		formatVersion = version;

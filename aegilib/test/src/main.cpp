@@ -83,7 +83,7 @@ int main() {
 
 		// Save subtitles
 		cout << "Saving file... ";
-		control.SaveFile(L"subs_out_mid1.ass",L"UTF-8");
+		//control.SaveFile(L"subs_out_mid1.ass",L"UTF-8");
 		cout << "Done.\n";
 
 		// Undo
@@ -104,7 +104,7 @@ int main() {
 		// Save subtitles
 		cout << "Saving file... ";
 		timer.Start();
-		control.SaveFile(L"subs_out.ass",L"UTF-8");
+		//control.SaveFile(L"subs_out.ass",L"UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << "ms.\n";
 	}

@@ -37,28 +37,27 @@
 #include "gorgonstring.h"
 #include "tr1.h"
 
-// Prototypes
-class wxStringTokenizer;
-
 namespace Gorgonsub {
 	
 	// Tokenizer class
 	class Tokenizer {
 	private:
-		shared_ptr<wxStringTokenizer> tkn;
+		wxChar *str;
+		const String &string;
+		const wxChar token;
+		size_t pos;
 
 	public:
-		Tokenizer(String string,String token);
+		Tokenizer(const String &string,wxChar token,size_t start=0);
 		~Tokenizer();
 
-		bool HasMore();
+		bool HasMoreTokens();
 		int GetPosition();
 
+		String GetTheRest();
 		String GetString(bool trim=false);
 		int GetInt();
-		long GetLong();
 		float GetFloat();
-		double GetDouble();
 		bool GetBool();
 	};
 

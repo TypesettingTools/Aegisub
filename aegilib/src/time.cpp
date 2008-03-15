@@ -112,7 +112,7 @@ String Time::GetString(int ms_precision,int h_precision) const
 void Time::Parse(const String &data)
 {
 	// Break into an array of values
-	std::vector<size_t> values(4);
+	array<size_t,4> values;
 	size_t last = 0;
 	size_t len = data.Length();
 	size_t curIndex = 0;
