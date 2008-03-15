@@ -82,3 +82,33 @@ String Gorgonsub::FloatToString(double value) {
 String Gorgonsub::IntegerToString(int value) {
 	return wxString::Format(_T("%i"),value);
 }
+
+
+////////////////////////////
+// Fast writing to a string
+void Gorgonsub::WriteNumber(wxChar *&dst,wxChar *temp,int number,int pad,size_t &pos) {
+	// Write number backwards first
+	int div, value;
+	size_t len;
+	for (len=0;true;len++) {
+		div = number / 10;
+		value = number - (div*10);
+		temp[len] = (wxChar) (value + '0');
+		if (!div) break;
+		number = div;
+	}
+	len++;
+
+	// Pad with zeroes
+	pad -= (int)len;
+	for (int i=0;i<pad;i++) {
+		*dst++ = (wxChar) '0';
+		pos++;
+	}
+
+	// Write number
+	for (size_t i=0;i<len;i++) {
+		*dst++ = temp[len-i-1];
+		pos++;
+	}
+}

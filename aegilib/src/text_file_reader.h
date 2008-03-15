@@ -64,7 +64,7 @@ namespace Gorgonsub {
 		String ActuallyReadLine();
 
 	public:
-		TextFileReader(wxInputStream &stream,String encoding=_T(""),bool trim=true,bool prefetch=false);
+		TextFileReader(wxInputStream &stream,String encoding=_T(""),bool trim=true,bool prefetch=true);
 		~TextFileReader();
 
 		String ReadLineFromFile();

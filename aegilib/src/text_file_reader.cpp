@@ -54,7 +54,7 @@ TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool 
 {
 	// Setup
 	trim = _trim;
-	threaded = prefetch;
+	threaded = prefetch && false;
 	thread = NULL;
 
 	// Set encoding
@@ -68,6 +68,8 @@ TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool 
 // Destructor
 TextFileReader::~TextFileReader()
 {
+	wxCriticalSectionLocker locker(mutex);
+	if (thread) thread->Delete();
 }
 
 
@@ -182,6 +184,7 @@ Gorgonsub::String TextFileReader::ActuallyReadLine()
 // Checks if there's more to read
 bool TextFileReader::HasMoreLines()
 {
+	if (cache.size()) return true;
 	wxCriticalSectionLocker locker(mutex);
 	return (!file.Eof());
 }
@@ -217,12 +220,13 @@ String TextFileReader::ReadLineFromFile()
 
 	// Load into cache if needed
 	String final;
-	if (cache.size() == 0) {
+	{
 		wxCriticalSectionLocker locker(mutex);
-		cache.push_back(ActuallyReadLine());
+		if (cache.size() == 0) {
+			cache.push_back(ActuallyReadLine());
+		}
 	}
 
-	bool startThread = false;
 	{
 		// Retrieve from cache
 		wxCriticalSectionLocker locker(mutex);
@@ -234,14 +238,9 @@ String TextFileReader::ReadLineFromFile()
 		// Start the thread to prefetch more
 		if (cache.size() < 3 && thread == NULL) {
 			thread = new PrefetchThread(this);
-			startThread = true;
+			thread->Create();
+			thread->Run();
 		}
-	}
-
-	// Starts the thread
-	if (startThread) {
-		thread->Create();
-		thread->Run();
 	}
 
 	return final;
@@ -253,21 +252,27 @@ String TextFileReader::ReadLineFromFile()
 wxThread::ExitCode PrefetchThread::Entry()
 {
 	// Lock
-	wxCriticalSectionLocker locker(parent->mutex);
-	while (parent->cache.size() < 3 && !parent->file.Eof()) {
-		// So I need to do this for whatever reason
+	bool run = true;
+	while (run) {
 		if (TestDestroy()) {
 			parent->thread = NULL;
 			return 0;
 		}
-
-		// Get line
-		parent->cache.push_back(parent->ActuallyReadLine());
+		{
+			wxCriticalSectionLocker locker(parent->mutex);
+			if (parent->cache.size() < 6) {
+				if (!parent->file.Eof()) {
+					// Get line
+					parent->cache.push_back(parent->ActuallyReadLine());
+				}
+				else run = false;
+			}
+		}
+		Sleep(50);
 	}
 
 	// Die
-	//wxCriticalSectionLocker locker(parent->mutex);
+	wxCriticalSectionLocker locker(parent->mutex);
 	parent->thread = NULL;
-	Delete();
 	return 0;
 }

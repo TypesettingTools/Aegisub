@@ -80,4 +80,16 @@ namespace Gorgonsub {
 	String IntegerToString(int value);
 	String PrettySize(int bytes);
 
+	// Fast string write
+	inline void WriteText(wxChar *&dst,const wxChar *src,size_t len,size_t &pos) {
+		memcpy(dst,src,len*sizeof(wxChar));
+		dst += len;
+		pos += len;
+	}
+	inline void WriteChar(wxChar *&dst,const wxChar &src,size_t &pos) {
+		*dst = src;
+		dst++;
+		pos++;
+	}
+	void WriteNumber(wxChar *&dst,wxChar *temp,int number,int pad,size_t &pos);
 };

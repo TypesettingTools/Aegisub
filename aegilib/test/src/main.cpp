@@ -40,7 +40,8 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
-int main () {
+
+int main() {
 	using namespace std;
 	using namespace Gorgonsub;
 
@@ -111,4 +112,6 @@ int main () {
 	catch (std::exception &e) {
 		cout << "\n\nException: " << e.what() << endl << endl;
 	}
+
+	return true;
 }
