@@ -81,8 +81,8 @@ void Model::ProcessActionList(const ActionList &_actionList,int type)
 
 	// Insert into undo stack
 	if (actions->undoAble) {
-		stack->push(undo);
-		if (type == 0) redoStack = ActionStack();
+		stack->push_back(undo);
+		if (type == 0) redoStack.clear();
 	}
 
 	// Notify listeners
@@ -179,8 +179,8 @@ size_t Model::GetSectionCount() const
 void Model::Clear()
 {
 	sections.clear();
-	undoStack = ActionStack();
-	redoStack = ActionStack();
+	undoStack.clear();
+	redoStack.clear();
 }
 
 
@@ -222,8 +222,24 @@ void Model::ActivateStack(ActionStack &stack,bool isUndo,const String &owner)
 	(void) owner;
 
 	// Process list
-	ProcessActionList(*stack.top(),isUndo?1:2);
+	ProcessActionList(*stack.back(),isUndo?1:2);
 
 	// Pop original
-	stack.pop();
+	stack.pop_back();
+}
+
+
+//////////////////////////
+// Get undo/redo messages
+String Model::GetUndoMessage(const String owner) const
+{
+	(void) owner;
+	if (CanUndo()) return undoStack.back()->GetName();
+	return L"";
+}
+String Model::GetRedoMessage(const String owner) const
+{
+	(void) owner;
+	if (CanRedo()) return redoStack.back()->GetName();
+	return L"";
 }

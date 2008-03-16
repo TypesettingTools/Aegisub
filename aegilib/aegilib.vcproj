@@ -225,6 +225,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\deltacoder.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\exception.cpp"
 				>
 			</File>
@@ -318,34 +322,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\formats\format_ass.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\formats\format_ass.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\formats\format_ass_dialogue.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\formats\format_ass_dialogue.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\formats\format_ass_plain.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\formats\format_ass_style.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\formats\format_ass_style.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\aegilib\format_handler.h"
 				>
 			</File>
@@ -357,6 +333,46 @@
 				RelativePath=".\include\aegilib\format_manager.h"
 				>
 			</File>
+			<Filter
+				Name="ASS"
+				>
+				<File
+					RelativePath=".\src\formats\format_ass.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\formats\format_ass.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\formats\format_ass_dialogue.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\formats\format_ass_dialogue.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\formats\format_ass_dialogue_delta.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\formats\format_ass_dialogue_delta.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\formats\format_ass_plain.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\formats\format_ass_style.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\formats\format_ass_style.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Actions"

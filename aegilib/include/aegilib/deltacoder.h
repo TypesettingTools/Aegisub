@@ -34,46 +34,21 @@
 //
 
 #pragma once
-#include <list>
-#include "action.h"
-#include "gorgonstring.h"
-#include "section_entry.h"
+#include "tr1.h"
 
 namespace Gorgonsub {
 
-	// Prototypes
-	class Controller;
+	// Void pointer prototyle
+	typedef shared_ptr<void> VoidPtr;
 
-	// ActionList class
-	class ActionList {
-		friend class Model;
-		friend class Controller;
-
-	private:
-		String actionName;
-		String owner;
-		Model &model;
-		std::list<ActionPtr> actions;
-		bool valid;
-		bool undoAble;
-
-		ActionList(Model &model,const String actionName,const String owner,bool undoAble);
-		void Start(const String actionName);
-		void AddActionStart(const ActionPtr action);
-
+	// Deltacoder interface
+	class DeltaCoder {
 	public:
-		~ActionList();
-
-		String GetName() const { return actionName; }
-		String GetOwner() const { return owner; }
-
-		void AddAction(const ActionPtr action);
-		void Finish();
-
-		void InsertLine(SectionEntryPtr line,int position=-1,const String section=L"");
-		void RemoveLine(int position,const String section);
-		SectionEntryPtr ModifyLine(int position,const String section);
+		virtual ~DeltaCoder() {}
+		virtual VoidPtr EncodeDelta(VoidPtr from,VoidPtr to) const = 0;
+		virtual VoidPtr EncodeReverseDelta(VoidPtr delta,VoidPtr object) const = 0;
+		virtual void ApplyDelta(VoidPtr delta,VoidPtr object) const = 0;
 	};
-	typedef shared_ptr<ActionList> ActionListPtr;
+	typedef shared_ptr<DeltaCoder> DeltaCoderPtr;
 
 };

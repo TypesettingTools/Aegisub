@@ -36,6 +36,7 @@
 #pragma once
 #include "gorgonstring.h"
 #include "tr1.h"
+#include "deltacoder.h"
 
 namespace Gorgonsub {
 
@@ -78,6 +79,8 @@ namespace Gorgonsub {
 		virtual SectionEntryType GetType() const =0;
 		virtual String GetDefaultGroup() const =0;
 		virtual SectionEntryPtr Clone() const =0;
+
+		virtual DeltaCoderPtr GetDeltaCoder() const { return DeltaCoderPtr(); }
 
 		static const SectionEntryPlainPtr GetAsPlain(const SectionEntryPtr &ptr);
 		static const SectionEntryDialoguePtr GetAsDialogue(const SectionEntryPtr &ptr);

@@ -36,18 +36,18 @@
 #pragma once
 #include "gorgonstring.h"
 #include "section_entry_dialogue.h"
+#include "format_ass_dialogue_delta.h"
 #include "serialize.h"
 
 namespace Gorgonsub {
 
 	// Dialogue
 	class DialogueASS : public SectionEntryDialogue, public SerializeText {
+		friend class DialogueASSDeltaCoder;
+
 	private:
-		String text;
-		String style;
-		String effect;
-		String actor;
-		Time start,end;
+		array<Time,2> time;
+		array<String,4> text;	// 0 = text, 1 = style, 2 = actor, 3 = effect
 		array<short,4> margin;
 		int layer;
 		bool isComment;
@@ -63,6 +63,7 @@ namespace Gorgonsub {
 		// Basic features
 		String GetDefaultGroup() const { return L"Events"; }
 		SectionEntryPtr Clone() const { return SectionEntryPtr(new DialogueASS(*this)); }
+		DeltaCoderPtr GetDeltaCoder() const { return DeltaCoderPtr(new DialogueASSDeltaCoder()); }
 
 		// Capabilities
 		bool HasText() const { return true; }
@@ -71,25 +72,26 @@ namespace Gorgonsub {
 		bool HasMargins() const { return true; }
 
 		// Read accessors
-		const String& GetText() const { return text; }
-		Time GetStartTime() const { return start; }
-		Time GetEndTime() const { return end; }
+		Time GetStartTime() const { return time[0]; }
+		Time GetEndTime() const { return time[1]; }
 		bool IsComment() const { return isComment; }
 		int GetLayer() const { return layer; }
 		int GetMargin(int n) const { return margin.at(n); }
-		const String& GetStyle() const { return style; }
-		const String& GetActor() const { return actor; }
-		const String& GetUserField() const { return effect; }
+		const String& GetText() const { return text[0]; }
+		const String& GetStyle() const { return text[1]; }
+		const String& GetActor() const { return text[2]; }
+		const String& GetUserField() const { return text[3]; }
 
 		// Write acessors
-		void SetText(const String &setText) { text = setText; }
-		void SetStartTime(Time setStart) { start = setStart; }
-		void SetEndTime(Time setEnd) { end = setEnd; }
+		void SetStartTime(Time setStart) { time[0] = setStart; }
+		void SetEndTime(Time setEnd) { time[1] = setEnd; }
 		void SetComment(bool _isComment) { isComment = _isComment; }
 		void SetLayer(int _layer) { layer = _layer; }
 		void SetMargin(int _margin,int value) { margin.at(_margin) = value; }
-		void SetStyle(const String &_style) { style = _style; }
-		void SetUserField(const String &userField) { effect = userField; }
+		void SetText(const String &setText) { text[0] = setText; }
+		void SetStyle(const String &style) { text[1] = style; }
+		void SetActor(const String &actor) { text[2] = actor; }
+		void SetUserField(const String &userField) { text[3] = userField; }
 	};
 
 };

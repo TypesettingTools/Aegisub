@@ -114,19 +114,36 @@ void ActionRemove::Execute(Model &model)
 
 ///////////////////////////// Modify line /////////////////////////////
 
-///////////////
-// Constructor
+////////////////
+// Constructors
 ActionModify::ActionModify(shared_ptr<SectionEntry> data,int line,const String &sName)
 : entry(data), lineNumber(line), section(sName) {}
+
+ActionModify::ActionModify(shared_ptr<void> _delta,int line,const String &sName)
+: delta(_delta), lineNumber(line), section(sName) {}
 
 
 /////////////////////////////////
 // Create anti-action for insert
 ActionPtr ActionModify::GetAntiAction(const Model &model) const
 {
+	// Get section and original line
 	SectionPtr sect = GetSection(model,section);
-	SectionEntryPtr entry = sect->GetEntry(lineNumber);
-	return ActionPtr(new ActionModify(entry,lineNumber,section));
+	SectionEntryPtr oldEntry = sect->GetEntry(lineNumber);
+
+	// Try to get a delta
+	DeltaCoderPtr deltaCoder = oldEntry->GetDeltaCoder();
+	if (deltaCoder) {
+		VoidPtr _delta;
+		if (entry) _delta = deltaCoder->EncodeDelta(entry,oldEntry);
+		else _delta = deltaCoder->EncodeReverseDelta(delta,oldEntry);
+		return ActionPtr(new ActionModify(_delta,lineNumber,section));
+	}
+
+	// Store the whole original line
+	else {
+		return ActionPtr(new ActionModify(oldEntry,lineNumber,section));
+	}
 }
 
 
@@ -140,5 +157,9 @@ void ActionModify::Execute(Model &model)
 	SectionPtr sect = GetSection(model,sectionName);
 
 	// Modify the line
-	sect->GetEntryRef(lineNumber) = entry;
+	if (delta) {
+		SectionEntryPtr &ref = sect->GetEntryRef(lineNumber);
+		ref->GetDeltaCoder()->ApplyDelta(delta,ref);
+	}
+	else sect->GetEntryRef(lineNumber) = entry;
 }

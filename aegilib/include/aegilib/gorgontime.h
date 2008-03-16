@@ -52,6 +52,13 @@ namespace Gorgonsub {
 
 		String GetString(int ms_precision,int h_precision) const;
 		void Parse(const String &data);
+
+		bool operator == (const Time &par) const { return ms == par.ms; }
+		bool operator != (const Time &par) const { return ms != par.ms; }
+		bool operator < (const Time &par) const { return ms < par.ms; }
+		bool operator > (const Time &par) const { return ms > par.ms; }
+		bool operator <= (const Time &par) const { return ms <= par.ms; }
+		bool operator >= (const Time &par) const { return ms >= par.ms; }
 	};
 
 };

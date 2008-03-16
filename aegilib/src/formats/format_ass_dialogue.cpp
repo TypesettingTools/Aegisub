@@ -97,12 +97,12 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		}
 
 		// Get times
-		start.Parse(tkn.GetString());
-		end.Parse(tkn.GetString());
+		time[0].Parse(tkn.GetString());
+		time[1].Parse(tkn.GetString());
 
 		// Get style and actor
-		style = tkn.GetString(true);
-		actor = tkn.GetString(true);
+		text[1] = tkn.GetString(true);
+		text[2] = tkn.GetString(true);
 
 		// Get margins
 		for (int i=0;i<3;i++) margin[i] = tkn.GetInt();
@@ -124,10 +124,10 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		}
 
 		// Get effect
-		effect = temp;
+		text[3] = temp;
 
 		// Get text
-		text = tkn.GetTheRest();
+		text[0] = tkn.GetTheRest();
 	}
 
 	catch (...) {
@@ -156,14 +156,14 @@ String DialogueASS::ToText(int version) const
 		else final += _T("Marked=0,");
 
 		// Write times, style and actor
-		final += start.GetString(2,1) + _T(",") + end.GetString(2,1) + _T(",") + style + _T(",") + actor + _T(",");
+		final += time[0].GetString(2,1) + _T(",") + time[1].GetString(2,1) + _T(",") + text[1] + _T(",") + text[2] + _T(",");
 
 		// Write margins
 		if (version <= 1) final += wxString::Format(_T("%04i,%04i,%04i,"),margin[0],margin[1],margin[2]);
 		else final += wxString::Format(_T("%04i,%04i,%04i,%04i,"),margin[0],margin[1],margin[2],margin[3]);
 
 		// Write effect and text
-		final += effect + _T(",") + text;
+		final += text[3] + _T(",") + text[0];
 
 		// Return final
 		return final;
@@ -177,7 +177,7 @@ String DialogueASS::ToText(int version) const
 		if (!isComment) size++;				// Comment->Dialogue
 		if (version == 0) size += 8;		// "Marked=0"
 		else if (version == 2) size += 5;	// Fourth margin
-		size += style.Length() + actor.Length() + effect.Length() + text.Length();
+		for (size_t i=0;i<4;i++) size += text[i].Length();
 
 		// Allocate string
 		wxString final;
@@ -197,17 +197,16 @@ String DialogueASS::ToText(int version) const
 		else WriteText(buffer,_T("Marked=0,"),9,pos);
 
 		// Write times
-		wxString tempStr = start.GetString(2,1);
-		WriteText(buffer,&tempStr[0],10,pos);
-		WriteChar(buffer,_T(','),pos);
-		tempStr = end.GetString(2,1);
-		WriteText(buffer,&tempStr[0],10,pos);
-		WriteChar(buffer,_T(','),pos);
+		for (size_t i=0;i<2;i++) {
+			wxString tempStr = time[i].GetString(2,1);
+			WriteText(buffer,&tempStr[0],10,pos);
+			WriteChar(buffer,_T(','),pos);
+		}
 
 		// Write style and actor
-		WriteText(buffer,&style[0],style.Length(),pos);
+		WriteText(buffer,&text[1][0],text[1].Length(),pos);
 		WriteChar(buffer,_T(','),pos);
-		WriteText(buffer,&actor[0],actor.Length(),pos);
+		WriteText(buffer,&text[2][0],text[2].Length(),pos);
 		WriteChar(buffer,_T(','),pos);
 
 		// Write margins
@@ -219,9 +218,9 @@ String DialogueASS::ToText(int version) const
 		}
 
 		// Write effect and text
-		WriteText(buffer,&effect[0],effect.Length(),pos);
+		WriteText(buffer,&text[3][0],text[3].Length(),pos);
 		WriteChar(buffer,_T(','),pos);
-		WriteText(buffer,&text[0],text.Length(),pos);
+		WriteText(buffer,&text[0][0],text[0].Length(),pos);
 
 		// Write terminator
 		WriteText(buffer,_T("\0"),1,pos);
