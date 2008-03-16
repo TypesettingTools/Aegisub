@@ -102,7 +102,6 @@ int main()
 		control.SaveFile(L"subs_out2.ass",L"UTF-8");
 		control.Undo();
 		control.SaveFile(L"subs_out3.ass",L"UTF-8");
-		system("pause");
 	}
 
 	catch (std::exception &e) {
