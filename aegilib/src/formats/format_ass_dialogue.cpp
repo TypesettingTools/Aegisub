@@ -33,7 +33,7 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "format_ass.h"
+#include "format_ass_dialogue.h"
 #include "tokenizer.h"
 #include "utils.h"
 using namespace Gorgonsub;

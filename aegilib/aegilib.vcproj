@@ -262,6 +262,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\aegilib\serialize.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\text_file_reader.cpp"
 				>
 			</File>
@@ -326,7 +330,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\formats\format_ass_dialogue.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\formats\format_ass_plain.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\formats\format_ass_style.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\formats\format_ass_style.h"
 				>
 			</File>
 			<File

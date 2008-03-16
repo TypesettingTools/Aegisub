@@ -36,6 +36,7 @@
 #include "section.h"
 #include "model.h"
 #include "format_ass.h"
+#include "format_ass_plain.h"
 #include "version.h"
 #include "../text_file_reader.h"
 #include "../text_file_writer.h"

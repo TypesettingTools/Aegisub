@@ -139,6 +139,6 @@ void ActionModify::Execute(Model &model)
 	if (sectionName.IsEmpty()) sectionName = entry->GetDefaultGroup();
 	SectionPtr sect = GetSection(model,sectionName);
 
-	// Insert the line
+	// Modify the line
 	sect->GetEntryRef(lineNumber) = entry;
 }

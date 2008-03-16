@@ -34,43 +34,62 @@
 //
 
 #pragma once
-#include <list>
-#include "action.h"
 #include "gorgonstring.h"
-#include "section_entry.h"
+#include "section_entry_dialogue.h"
+#include "serialize.h"
 
 namespace Gorgonsub {
 
-	// Prototypes
-	class Controller;
-
-	// ActionList class
-	class ActionList {
-		friend class Model;
-		friend class Controller;
-
+	// Dialogue
+	class DialogueASS : public SectionEntryDialogue, public SerializeText {
 	private:
-		String actionName;
-		String owner;
-		Model &model;
-		std::list<ActionPtr> actions;
-		bool valid;
-		bool undoAble;
+		String text;
+		String style;
+		String effect;
+		String actor;
+		Time start,end;
+		array<short,4> margin;
+		int layer;
+		bool isComment;
 
-		ActionList(Model &model,const String actionName,const String owner,bool undoAble);
-		void Start(const String actionName);
-		void AddActionStart(const ActionPtr action);
+		bool Parse(String data,int version);
+		String ToText(int param) const;
 
 	public:
-		~ActionList();
+		// Constructors
+		DialogueASS();
+		DialogueASS(const String &data,int version);
 
-		void AddAction(const ActionPtr action);
-		void Finish();
+		// Basic features
+		String GetDefaultGroup() const { return L"Events"; }
+		SectionEntryPtr Clone() const { return SectionEntryPtr(new DialogueASS(*this)); }
 
-		void InsertLine(SectionEntryPtr line,int position=-1,const String section=L"");
-		void RemoveLine(int position,const String section);
-		SectionEntryPtr ModifyLine(int position,const String section);
+		// Capabilities
+		bool HasText() const { return true; }
+		bool HasTime() const { return true; }
+		bool HasStyle() const { return true; }
+		bool HasMargins() const { return true; }
+
+		// Read accessors
+		const String& GetText() const { return text; }
+		Time GetStartTime() const { return start; }
+		Time GetEndTime() const { return end; }
+		bool IsComment() const { return isComment; }
+		int GetLayer() const { return layer; }
+		int GetMargin(int n) const { return margin.at(n); }
+		const String& GetStyle() const { return style; }
+		const String& GetActor() const { return actor; }
+		const String& GetUserField() const { return effect; }
+
+		// Write acessors
+		void SetText(const String &setText) { text = setText; }
+		void SetStartTime(Time setStart) { start = setStart; }
+		void SetEndTime(Time setEnd) { end = setEnd; }
+		void SetComment(bool _isComment) { isComment = _isComment; }
+		void SetLayer(int _layer) { layer = _layer; }
+		void SetMargin(int _margin,int value) { margin.at(_margin) = value; }
+		void SetStyle(const String &_style) { style = _style; }
+		void SetUserField(const String &userField) { effect = userField; }
 	};
-	typedef shared_ptr<ActionList> ActionListPtr;
 
 };

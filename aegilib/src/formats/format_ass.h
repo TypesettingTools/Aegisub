@@ -36,6 +36,8 @@
 #pragma once
 #include "format.h"
 #include "format_handler.h"
+#include "format_ass_dialogue.h"
+#include "format_ass_style.h"
 #include "section.h"
 #include "section_entry_dialogue.h"
 #include "section_entry_style.h"
@@ -46,13 +48,6 @@ namespace Gorgonsub {
 	// Prototypes
 	class Model;
 	class TextFileWriter;
-
-	// Interface to serialize classes
-	class SerializeText {
-	public:
-		virtual ~SerializeText(){}
-		virtual String ToText(int param) const=0;
-	};
 
 	// Advanced Substation Alpha format handler
 	class FormatHandlerASS : public FormatHandler {
@@ -69,126 +64,6 @@ namespace Gorgonsub {
 
 		void Load(wxInputStream &file,const String encoding);
 		void Save(wxOutputStream &file,const String encoding);
-	};
-
-	// Dialogue
-	class DialogueASS : public SectionEntryDialogue, public SerializeText {
-	private:
-		String text;
-		String style;
-		String effect;
-		String actor;
-		Time start,end;
-		array<short,4> margin;
-		int layer;
-		bool isComment;
-
-		bool Parse(String data,int version);
-		String ToText(int param) const;
-
-	public:
-		// Constructors
-		DialogueASS();
-		DialogueASS(const String &data,int version);
-
-		// Basic features
-		String GetDefaultGroup() const { return L"Events"; }
-		SectionEntryPtr Clone() const { return SectionEntryPtr(new DialogueASS(*this)); }
-
-		// Capabilities
-		bool HasText() const { return true; }
-		bool HasTime() const { return true; }
-		bool HasStyle() const { return true; }
-		bool HasMargins() const { return true; }
-
-		// Read accessors
-		const String& GetText() const { return text; }
-		Time GetStartTime() const { return start; }
-		Time GetEndTime() const { return end; }
-		bool IsComment() const { return isComment; }
-		int GetLayer() const { return layer; }
-		int GetMargin(int n) const { return margin.at(n); }
-		const String& GetStyle() const { return style; }
-		const String& GetActor() const { return actor; }
-		const String& GetUserField() const { return effect; }
-
-		// Write acessors
-		void SetText(const String &setText) { text = setText; }
-		void SetStartTime(Time setStart) { start = setStart; }
-		void SetEndTime(Time setEnd) { end = setEnd; }
-		void SetComment(bool _isComment) { isComment = _isComment; }
-		void SetLayer(int _layer) { layer = _layer; }
-		void SetMargin(int _margin,int value) { margin.at(_margin) = value; }
-		void SetStyle(const String &_style) { style = _style; }
-		void SetUserField(const String &userField) { effect = userField; }
-	};
-
-	// Style
-	class StyleASS : public SectionEntryStyle, public SerializeText {
-	private:
-		String name;
-		String font;
-		float fontSize;
-		int formatVersion;
-
-		array<Colour,5> colour;	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
-		array<int,4> margin;
-
-		bool bold;
-		bool italic;
-		bool underline;
-		bool strikeout;
-
-		int borderStyle;
-		int alignment;
-		int encoding;
-		int relativeTo;
-
-		float scalex;
-		float scaley;
-		float spacing;
-		float angle;
-		float outline_w;
-		float shadow_w;
-
-		bool Parse(String data,int version);
-		int AlignSSAtoASS(int ssaAlignment) const;
-		int AlignASStoSSA(int assAlignment) const;
-		String ToText(int param) const;
-
-	public:
-		// Constructors
-		StyleASS();
-		StyleASS(String data,int version);
-
-		// Basic features
-		String GetDefaultGroup() const;
-		SectionEntryPtr Clone() const { return SectionEntryPtr(new StyleASS(*this)); }
-
-		// Read accessors
-		String GetName() const { return name; }
-		String GetFontName() const { return font; }
-		float GetFontSize() const { return fontSize; }
-		Colour GetColour(int n) const { return colour.at(n); }
-		int GetMargin(int n) const { return margin.at(n); }
-	};
-
-	// Raw line
-	class PlainASS : public SectionEntryPlain, public SerializeText {
-	private:
-		String data;
-		String ToText(int param) const { (void)param; return data; }
-
-	public:
-		PlainASS();
-		PlainASS(String _data) : data(_data) {}
-
-		// Basic features
-		String GetDefaultGroup() const { return L"Events"; }
-		SectionEntryPtr Clone() const { return SectionEntryPtr(new PlainASS(*this)); }
-
-		String GetText() const { return data; }
-		void SetText(const String &_data) { data = _data; }
 	};
 
 	// Advanced Substation Alpha format base class

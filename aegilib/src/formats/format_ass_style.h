@@ -34,43 +34,60 @@
 //
 
 #pragma once
-#include <list>
-#include "action.h"
-#include "gorgonstring.h"
-#include "section_entry.h"
+#include "section_entry_style.h"
+#include "serialize.h"
+#include "tr1.h"
 
 namespace Gorgonsub {
 
-	// Prototypes
-	class Controller;
-
-	// ActionList class
-	class ActionList {
-		friend class Model;
-		friend class Controller;
-
+	// Style
+	class StyleASS : public SectionEntryStyle, public SerializeText {
 	private:
-		String actionName;
-		String owner;
-		Model &model;
-		std::list<ActionPtr> actions;
-		bool valid;
-		bool undoAble;
+		String name;
+		String font;
+		float fontSize;
+		int formatVersion;
 
-		ActionList(Model &model,const String actionName,const String owner,bool undoAble);
-		void Start(const String actionName);
-		void AddActionStart(const ActionPtr action);
+		array<Colour,5> colour;	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
+		array<int,4> margin;
+
+		bool bold;
+		bool italic;
+		bool underline;
+		bool strikeout;
+
+		int borderStyle;
+		int alignment;
+		int encoding;
+		int relativeTo;
+
+		float scalex;
+		float scaley;
+		float spacing;
+		float angle;
+		float outline_w;
+		float shadow_w;
+
+		bool Parse(String data,int version);
+		int AlignSSAtoASS(int ssaAlignment) const;
+		int AlignASStoSSA(int assAlignment) const;
+		String ToText(int param) const;
 
 	public:
-		~ActionList();
+		// Constructors
+		StyleASS();
+		StyleASS(String data,int version);
 
-		void AddAction(const ActionPtr action);
-		void Finish();
+		// Basic features
+		String GetDefaultGroup() const;
+		SectionEntryPtr Clone() const { return SectionEntryPtr(new StyleASS(*this)); }
 
-		void InsertLine(SectionEntryPtr line,int position=-1,const String section=L"");
-		void RemoveLine(int position,const String section);
-		SectionEntryPtr ModifyLine(int position,const String section);
+		// Read accessors
+		String GetName() const { return name; }
+		String GetFontName() const { return font; }
+		float GetFontSize() const { return fontSize; }
+		Colour GetColour(int n) const { return colour.at(n); }
+		int GetMargin(int n) const { return margin.at(n); }
 	};
-	typedef shared_ptr<ActionList> ActionListPtr;
 
 };

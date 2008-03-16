@@ -34,43 +34,13 @@
 //
 
 #pragma once
-#include <list>
-#include "action.h"
 #include "gorgonstring.h"
-#include "section_entry.h"
 
 namespace Gorgonsub {
-
-	// Prototypes
-	class Controller;
-
-	// ActionList class
-	class ActionList {
-		friend class Model;
-		friend class Controller;
-
-	private:
-		String actionName;
-		String owner;
-		Model &model;
-		std::list<ActionPtr> actions;
-		bool valid;
-		bool undoAble;
-
-		ActionList(Model &model,const String actionName,const String owner,bool undoAble);
-		void Start(const String actionName);
-		void AddActionStart(const ActionPtr action);
-
+	// Interface to serialize classes
+	class SerializeText {
 	public:
-		~ActionList();
-
-		void AddAction(const ActionPtr action);
-		void Finish();
-
-		void InsertLine(SectionEntryPtr line,int position=-1,const String section=L"");
-		void RemoveLine(int position,const String section);
-		SectionEntryPtr ModifyLine(int position,const String section);
+		virtual ~SerializeText(){}
+		virtual String ToText(int param) const=0;
 	};
-	typedef shared_ptr<ActionList> ActionListPtr;
-
 };
