@@ -40,8 +40,8 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
-
-int main() {
+int main()
+{
 	using namespace std;
 	using namespace Gorgonsub;
 
@@ -60,7 +60,7 @@ int main() {
 		// Load subtitles
 		cout << "Loading file... ";
 		timer.Start();
-		control.LoadFile(L"subs_in.ass",L"UTF-16LE");
+		control.LoadFile(L"subs_in.ass",L"UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
 		//system("pause");
