@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
-	Name="aegilib"
+	Version="9.00"
+	Name="aegilib_2008"
 	ProjectGUID="{A805B34D-B7BE-41E9-9BB8-3FA3A494304A}"
 	RootNamespace="aegilib"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -49,7 +50,7 @@
 				PrecompiledHeaderThrough="prec.h"
 				WarningLevel="4"
 				WarnAsError="true"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
 				ForcedIncludeFiles="prec.h"
@@ -108,15 +109,19 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="false"
 				AdditionalIncludeDirectories="include/aegilib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS"
 				RuntimeLibrary="2"
-				OpenMP="true"
+				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="prec.h"
 				WarningLevel="4"
 				WarnAsError="true"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4996"
 				ForcedIncludeFiles="prec.h"
@@ -133,6 +138,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				LinkLibraryDependencies="false"
 			/>
 			<Tool
 				Name="VCALinkTool"

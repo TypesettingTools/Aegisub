@@ -45,7 +45,7 @@ namespace Gorgonsub {
 	// Style class
 	class SectionEntryStyle : public SectionEntry {
 	private:
-		const static bool dodgeWarning = true;
+		static const bool dodgeWarning = true;
 		void ThrowUnsupported() const { if (dodgeWarning) throw Exception(Exception::Unsupported_Format_Feature); }
 
 	public:
@@ -64,4 +64,4 @@ namespace Gorgonsub {
 		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); return 0; }
 	};
 
-};
+}

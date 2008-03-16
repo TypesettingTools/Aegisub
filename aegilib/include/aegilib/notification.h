@@ -46,4 +46,4 @@ namespace Gorgonsub {
 		std::vector<int> lines;
 	};
 
-};
+}

@@ -51,4 +51,4 @@ namespace Gorgonsub {
 		void Register(Model &model);
 		virtual void Notify(const Notification &notification) = 0;
 	};
-};
+}

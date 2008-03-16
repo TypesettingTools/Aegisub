@@ -109,4 +109,4 @@ namespace Gorgonsub {
 		StringArray GetWriteExtensions() const;
 	};
 
-};
+}

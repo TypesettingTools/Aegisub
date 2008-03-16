@@ -43,7 +43,6 @@
 
 using namespace Gorgonsub;
 
-
 ////////////////////////////////////
 // Encode delta between two entries
 VoidPtr DialogueASSDeltaCoder::EncodeDelta(VoidPtr _from,VoidPtr _to) const
@@ -69,10 +68,10 @@ VoidPtr DialogueASSDeltaCoder::EncodeDelta(VoidPtr _from,VoidPtr _to) const
 		if (mask & (0x0010 << i)) size += 2;
 		if (mask & (0x0100 << i)) size += (to->text[i].Length()+1)*2;
 	}
-	shared_ptr<std::vector<char> > delta (new std::vector<char>(size));
+	shared_ptr<char> delta (new char[size],ArrayDeleter());
 
 	// Write data
-	char *final = &delta->front();
+	char *final = delta.get();
 	GetDelta(mask,final,to);
 
 	// Return delta
@@ -85,7 +84,7 @@ VoidPtr DialogueASSDeltaCoder::EncodeDelta(VoidPtr _from,VoidPtr _to) const
 VoidPtr DialogueASSDeltaCoder::EncodeReverseDelta(VoidPtr _delta,VoidPtr object) const
 {
 	// Get mask
-	char *data = &(static_pointer_cast<std::vector<char> > (_delta))->front();
+	char *data = (static_pointer_cast<char> (_delta)).get();
 	int mask = *((short*) data);
 	shared_ptr<DialogueASS> to = static_pointer_cast<DialogueASS> (object);
 
@@ -94,10 +93,10 @@ VoidPtr DialogueASSDeltaCoder::EncodeReverseDelta(VoidPtr _delta,VoidPtr object)
 	for (size_t i=0;i<4;i++) {
 		size += (mask & (0x0010 << i)) * 2 + (mask & (0x0100 << i)) * (to->text[i].Length()+1)*2;
 	}
-	shared_ptr<std::vector<char> > delta (new std::vector<char>(size));
+	shared_ptr<char> delta (new char[size],ArrayDeleter());
 
 	// Write data
-	char *final = &delta->front();
+	char *final = delta.get();
 	GetDelta(mask,final,to);
 	return delta;
 }
@@ -109,7 +108,7 @@ VoidPtr DialogueASSDeltaCoder::EncodeReverseDelta(VoidPtr _delta,VoidPtr object)
 void DialogueASSDeltaCoder::ApplyDelta(VoidPtr _delta,VoidPtr object) const
 {
 	// Process parameters
-	char *data = &(static_pointer_cast<std::vector<char> > (_delta))->front();
+	char *data = (static_pointer_cast<char> (_delta)).get();
 	shared_ptr<DialogueASS> to = static_pointer_cast<DialogueASS> (object);
 
 	// Read mask

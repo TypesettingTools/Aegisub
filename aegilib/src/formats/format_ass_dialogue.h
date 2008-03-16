@@ -94,4 +94,4 @@ namespace Gorgonsub {
 		void SetUserField(const String &userField) { text[3] = userField; }
 	};
 
-};
+}

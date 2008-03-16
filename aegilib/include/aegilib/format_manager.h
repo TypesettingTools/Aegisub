@@ -55,4 +55,4 @@ namespace Gorgonsub {
 		static const FormatPtr GetFormatFromName(const String &name);
 	};
 
-};
+}

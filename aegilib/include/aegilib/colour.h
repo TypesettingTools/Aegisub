@@ -66,4 +66,4 @@ namespace Gorgonsub {
 		String GetVBHex(bool withAlpha=false,bool withHeader=true,bool withFooter=true) const;
 	};
 
-};
+}

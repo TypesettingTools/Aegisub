@@ -94,4 +94,4 @@ namespace Gorgonsub {
 		void AddListener(ViewPtr listener);
 	};
 
-};
+}

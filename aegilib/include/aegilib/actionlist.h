@@ -76,4 +76,4 @@ namespace Gorgonsub {
 	};
 	typedef shared_ptr<ActionList> ActionListPtr;
 
-};
+}

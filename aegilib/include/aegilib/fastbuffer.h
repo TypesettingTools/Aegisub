@@ -102,4 +102,4 @@ namespace Gorgonsub {
 			}
 		}
 	};
-};
+}

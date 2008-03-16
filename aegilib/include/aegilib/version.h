@@ -52,4 +52,4 @@ namespace Gorgonsub {
 	String GetHostApplicationName();
 	String GetHostApplicationURL();
 
-};
+}

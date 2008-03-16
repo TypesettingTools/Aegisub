@@ -58,16 +58,16 @@ namespace Gorgonsub {
 		Exception(ExceptionList code);
 		Exception(ExceptionList code,const char* file,const long line);
 
-		String GetMessage() const { return wxString(what(),wxConvLocal); }
+		String GetMessageString() const { return wxString(what(),wxConvLocal); }
 		int GetCode();
 
 	private:
-		static String GetMessage(int code);
-		static String GetMessageFile(int code,const char *file,long line);
+		static const char* GetMessageChar(int code);
+		static const char* GetMessageFile(int code,const char *file,long line);
 		ExceptionList code;
 	};
 
-};
+}
 
 #ifdef _MSC_VER
 #define THROW_GORGON_EXCEPTION(code) throw Gorgonsub::Exception(code,__FILE__,__LINE__)

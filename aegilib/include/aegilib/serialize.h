@@ -43,4 +43,4 @@ namespace Gorgonsub {
 		virtual ~SerializeText(){}
 		virtual String ToText(int param) const=0;
 	};
-};
+}

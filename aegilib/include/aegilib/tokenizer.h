@@ -61,4 +61,4 @@ namespace Gorgonsub {
 		bool GetBool();
 	};
 
-};
+}

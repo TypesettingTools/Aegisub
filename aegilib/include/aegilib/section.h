@@ -54,7 +54,7 @@ namespace Gorgonsub {
 		~Section() {}
 
 		// Section name
-		String SetName(const String& newName) { name = newName; }
+		void SetName(const String& newName) { name = newName; }
 		const String& GetName() const { return name; }
 		
 		// Script properties
@@ -75,4 +75,4 @@ namespace Gorgonsub {
 	};
 	typedef shared_ptr<Section> SectionPtr;
 
-};
+}

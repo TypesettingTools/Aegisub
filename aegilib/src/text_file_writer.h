@@ -58,4 +58,4 @@ namespace Gorgonsub {
 
 		void WriteLineToFile(Gorgonsub::String line,bool addLineBreak=true);
 	};
-};
+}

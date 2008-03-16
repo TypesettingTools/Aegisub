@@ -50,4 +50,4 @@ namespace Gorgonsub {
 		void ApplyDelta(VoidPtr delta,VoidPtr object) const;
 	};
 
-};
+}

@@ -51,4 +51,4 @@ namespace Gorgonsub {
 	};
 	typedef shared_ptr<DeltaCoder> DeltaCoderPtr;
 
-};
+}

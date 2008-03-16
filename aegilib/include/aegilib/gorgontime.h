@@ -61,4 +61,4 @@ namespace Gorgonsub {
 		bool operator >= (const Time &par) const { return ms >= par.ms; }
 	};
 
-};
+}

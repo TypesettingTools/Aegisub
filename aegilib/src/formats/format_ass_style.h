@@ -90,4 +90,4 @@ namespace Gorgonsub {
 		int GetMargin(int n) const { return margin.at(n); }
 	};
 
-};
+}

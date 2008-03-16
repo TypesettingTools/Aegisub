@@ -40,13 +40,13 @@ using namespace Gorgonsub;
 ////////////////
 // Constructors
 Exception::Exception(ExceptionList _code)
-: std::exception(GetMessage(_code).mb_str(wxConvLocal))
+: std::exception(GetMessageChar(_code))
 {
 	code = _code;
 }
 
 Exception::Exception(ExceptionList _code,const char *file,const long line)
-: std::exception(GetMessageFile(_code,file,line).mb_str(wxConvLocal))
+: std::exception(GetMessageFile(_code,file,line))
 {
 	code = _code;
 }
@@ -54,28 +54,33 @@ Exception::Exception(ExceptionList _code,const char *file,const long line)
 
 //////////////////////
 // Get message string
-String Exception::GetMessage(int code)
+const char* Exception::GetMessageChar(int code)
 {
 	switch (code) {
-		case Unknown: return L"Unknown.";
-		case No_Format_Handler: return L"Could not find a suitable format handler.";
-		case Invalid_ActionList: return L"Invalid manipulator.";
-		case Section_Already_Exists: return L"The specified section already exists in this model.";
-		case Unknown_Format: return L"The specified file format is unknown.";
-		case Parse_Error: return L"Parse error.";
-		case Unsupported_Format_Feature: return L"This feature is not supported by this format.";
-		case Invalid_Token: return L"Invalid type for this token.";
-		case TODO: return L"TODO";
+		case Unknown: return "Unknown.";
+		case No_Format_Handler: return "Could not find a suitable format handler.";
+		case Invalid_ActionList: return "Invalid manipulator.";
+		case Section_Already_Exists: return "The specified section already exists in this model.";
+		case Unknown_Format: return "The specified file format is unknown.";
+		case Parse_Error: return "Parse error.";
+		case Unsupported_Format_Feature: return "This feature is not supported by this format.";
+		case Invalid_Token: return "Invalid type for this token.";
+		case TODO: return "TODO";
 	}
-	return L"Invalid code.";
+	return "Invalid code.";
 }
 
 
 ///////////////////////////////////
 // Insert file and line on message
-String Exception::GetMessageFile(int code,const char *file,long line)
+const char* Exception::GetMessageFile(int code,const char *file,long line)
 {
-	return GetMessage(code) + _T(" (") + wxString(file,wxConvLocal) + wxString::Format(_T(":%i)."),line);
+	static std::string str = GetMessageChar(code);
+	str = str + " (" + file + ":";
+	char buffer[16];
+	_itoa_s(line,buffer,10);
+	str = str + buffer + ")";
+	return str.c_str();
 }
 
 

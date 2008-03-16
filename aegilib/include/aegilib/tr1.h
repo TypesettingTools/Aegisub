@@ -54,4 +54,10 @@ namespace Gorgonsub {
 	public:
 		void operator()(void const *) const	{ }
 	};
-};
+
+	// Array deleter for use with shared_ptr and new[]
+	class ArrayDeleter {
+	public:
+		void operator()(void const *p) const { delete[] p; }
+	};
+}

@@ -63,4 +63,4 @@ namespace Gorgonsub {
 	};
 	typedef shared_ptr<FormatHandler> FormatHandlerPtr;
 
-};
+}

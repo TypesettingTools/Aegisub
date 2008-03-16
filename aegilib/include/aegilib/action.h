@@ -101,4 +101,4 @@ namespace Gorgonsub {
 		ActionPtr GetAntiAction(const Model &model) const;
 		void Execute(Model &model);
 	};
-};
+}

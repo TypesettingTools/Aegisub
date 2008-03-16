@@ -45,4 +45,4 @@ namespace Gorgonsub {
 	typedef wxString String;
 	typedef std::vector<String> StringArray;
 
-};
+}

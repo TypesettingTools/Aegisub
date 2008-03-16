@@ -57,4 +57,4 @@ namespace Gorgonsub {
 		void SetText(const String &_data) { data = _data; }
 	};
 
-};
+}

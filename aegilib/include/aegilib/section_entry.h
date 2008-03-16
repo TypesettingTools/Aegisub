@@ -99,4 +99,4 @@ namespace Gorgonsub {
 		virtual void SetText(const String &_data) =0;
 	};
 
-};
+}

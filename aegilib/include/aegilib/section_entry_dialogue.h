@@ -45,7 +45,7 @@ namespace Gorgonsub {
 	// Dialogue class
 	class SectionEntryDialogue : public SectionEntry {
 	private:
-		const static bool dodgeWarning = true;
+		static const bool dodgeWarning = true;
 		void ThrowUnsupported() const { if (dodgeWarning) throw Exception(Exception::Unsupported_Format_Feature); }
 
 	public:
@@ -92,4 +92,4 @@ namespace Gorgonsub {
 		virtual void SetUserField(const String& userField) { (void) userField; ThrowUnsupported(); }
 	};
 
-};
+}

@@ -68,4 +68,4 @@ namespace Gorgonsub {
 		const FormatPtr GetFormat() const;
 	};
 
-};
+}
