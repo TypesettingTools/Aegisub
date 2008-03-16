@@ -84,6 +84,8 @@ int main()
 		ActionListPtr actions = control.CreateActionList(L"Insert line");
 		actions->InsertLine(line,2);
 		actions->RemoveLine(3,L"Events");
+		SectionEntryDialoguePtr diag = dynamic_pointer_cast<SectionEntryDialogue> (actions->ModifyLine(10,L"Events"));
+		diag->SetText(L"Hay guise sup");
 		actions->Finish();
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
@@ -98,6 +100,8 @@ int main()
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
 		control.SaveFile(L"subs_out2.ass",L"UTF-8");
+		control.Undo();
+		control.SaveFile(L"subs_out3.ass",L"UTF-8");
 	}
 
 	catch (std::exception &e) {

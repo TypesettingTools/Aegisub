@@ -91,12 +91,15 @@ namespace Gorgonsub {
 		DialogueASS();
 		DialogueASS(const String &data,int version);
 
+		// Basic features
+		String GetDefaultGroup() const { return L"Events"; }
+		SectionEntryPtr Clone() const { return SectionEntryPtr(new DialogueASS(*this)); }
+
 		// Capabilities
 		bool HasText() const { return true; }
 		bool HasTime() const { return true; }
 		bool HasStyle() const { return true; }
 		bool HasMargins() const { return true; }
-		String GetDefaultGroup() const { return L"Events"; }
 
 		// Read accessors
 		const String& GetText() const { return text; }
@@ -158,14 +161,16 @@ namespace Gorgonsub {
 		StyleASS();
 		StyleASS(String data,int version);
 
+		// Basic features
+		String GetDefaultGroup() const;
+		SectionEntryPtr Clone() const { return SectionEntryPtr(new StyleASS(*this)); }
+
 		// Read accessors
 		String GetName() const { return name; }
 		String GetFontName() const { return font; }
 		float GetFontSize() const { return fontSize; }
 		Colour GetColour(int n) const { return colour.at(n); }
 		int GetMargin(int n) const { return margin.at(n); }
-
-		String GetDefaultGroup() const;
 	};
 
 	// Raw line
@@ -178,9 +183,12 @@ namespace Gorgonsub {
 		PlainASS();
 		PlainASS(String _data) : data(_data) {}
 
+		// Basic features
+		String GetDefaultGroup() const { return L"Events"; }
+		SectionEntryPtr Clone() const { return SectionEntryPtr(new PlainASS(*this)); }
+
 		String GetText() const { return data; }
 		void SetText(const String &_data) { data = _data; }
-		String GetDefaultGroup() const { return L"Events"; }
 	};
 
 	// Advanced Substation Alpha format base class

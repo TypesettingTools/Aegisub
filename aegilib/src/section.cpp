@@ -75,6 +75,11 @@ SectionEntryPtr Section::GetEntry(size_t index) const
 	return entries[index];
 }
 
+SectionEntryPtr& Section::GetEntryRef(size_t index)
+{
+	return entries[index];
+}
+
 size_t Section::GetEntryCount() const
 {
 	return entries.size();

@@ -77,6 +77,7 @@ namespace Gorgonsub {
 	public:
 		virtual SectionEntryType GetType() const =0;
 		virtual String GetDefaultGroup() const =0;
+		virtual SectionEntryPtr Clone() const =0;
 
 		static const SectionEntryPlainPtr GetAsPlain(const SectionEntryPtr &ptr);
 		static const SectionEntryDialoguePtr GetAsDialogue(const SectionEntryPtr &ptr);

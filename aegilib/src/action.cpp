@@ -45,7 +45,7 @@ SectionPtr Action::GetSection(const Model &model,const String &name) const
 }
 
 
-/////////////////// Insert line /////////////////////////////
+///////////////////////////// Insert line /////////////////////////////
 
 ///////////////
 // Constructor
@@ -79,7 +79,7 @@ void ActionInsert::Execute(Model &model)
 
 
 
-/////////////////// Remove line /////////////////////////////
+///////////////////////////// Remove line /////////////////////////////
 
 
 ///////////////
@@ -109,4 +109,36 @@ void ActionRemove::Execute(Model &model)
 
 	// Remove the line
 	section->RemoveEntryByIndex(lineNumber);
+}
+
+
+///////////////////////////// Modify line /////////////////////////////
+
+///////////////
+// Constructor
+ActionModify::ActionModify(shared_ptr<SectionEntry> data,int line,const String &sName)
+: entry(data), lineNumber(line), section(sName) {}
+
+
+/////////////////////////////////
+// Create anti-action for insert
+ActionPtr ActionModify::GetAntiAction(const Model &model) const
+{
+	SectionPtr sect = GetSection(model,section);
+	SectionEntryPtr entry = sect->GetEntry(lineNumber);
+	return ActionPtr(new ActionModify(entry,lineNumber,section));
+}
+
+
+/////////////////////
+// Execute insertion
+void ActionModify::Execute(Model &model)
+{
+	// Find the section to insert it on
+	String sectionName = section;
+	if (sectionName.IsEmpty()) sectionName = entry->GetDefaultGroup();
+	SectionPtr sect = GetSection(model,sectionName);
+
+	// Insert the line
+	sect->GetEntryRef(lineNumber) = entry;
 }

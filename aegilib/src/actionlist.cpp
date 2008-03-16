@@ -118,3 +118,15 @@ void ActionList::RemoveLine(int position,const String section)
 	ActionPtr action = ActionPtr (new ActionRemove(position,section));
 	AddAction(action);
 }
+
+
+/////////////////////////////////
+// Insert a "modify line" action
+SectionEntryPtr ActionList::ModifyLine(int position,const String section)
+{
+	SectionPtr sect = model.GetSection(section);
+	SectionEntryPtr entry = sect->GetEntry(position)->Clone();
+	ActionPtr action = ActionPtr (new ActionModify(entry,position,section));
+	AddAction(action);
+	return entry;
+}

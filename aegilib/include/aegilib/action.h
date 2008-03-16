@@ -84,4 +84,19 @@ namespace Gorgonsub {
 		ActionPtr GetAntiAction(const Model &model) const;
 		void Execute(Model &model);
 	};
+
+	// Modify line
+	class ActionModify : public Action {
+	private:
+		shared_ptr<SectionEntry> entry;
+		const String section;
+		int lineNumber;
+
+	public:
+		ActionModify(shared_ptr<SectionEntry> entry,int line,const String &section);
+		virtual ~ActionModify() {}
+
+		ActionPtr GetAntiAction(const Model &model) const;
+		void Execute(Model &model);
+	};
 };

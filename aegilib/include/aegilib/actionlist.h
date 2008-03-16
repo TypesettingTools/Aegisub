@@ -68,6 +68,7 @@ namespace Gorgonsub {
 		void Finish();
 		void InsertLine(SectionEntryPtr line,int position=-1,const String section=L"");
 		void RemoveLine(int position,const String section);
+		SectionEntryPtr ModifyLine(int position,const String section);
 	};
 	typedef shared_ptr<ActionList> ActionListPtr;
 
