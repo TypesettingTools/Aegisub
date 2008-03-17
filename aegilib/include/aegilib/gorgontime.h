@@ -35,6 +35,7 @@
 
 #pragma once
 #include "gorgonstring.h"
+#include "utils.h"
 
 namespace Gorgonsub {
 
@@ -45,7 +46,7 @@ namespace Gorgonsub {
 
 	public:
 		Time() { ms = 0; }
-		Time(int ms) { (void)ms; }
+		Time(int _ms) { ms = _ms; }
 
 		void SetMS(int milliseconds) { ms = milliseconds; }
 		int GetMS() const { return ms; }
@@ -53,6 +54,8 @@ namespace Gorgonsub {
 		String GetString(int ms_precision,int h_precision) const;
 		void Parse(const String &data);
 
+		Time operator + (const int &par) const { return Max<int>(0,ms+par); }
+		Time operator - (const int &par) const { return Max<int>(0,ms-par); }
 		bool operator == (const Time &par) const { return ms == par.ms; }
 		bool operator != (const Time &par) const { return ms != par.ms; }
 		bool operator < (const Time &par) const { return ms < par.ms; }

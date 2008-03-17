@@ -63,7 +63,7 @@ namespace Gorgonsub {
 		// Basic features
 		String GetDefaultGroup() const { return L"Events"; }
 		SectionEntryPtr Clone() const { return SectionEntryPtr(new DialogueASS(*this)); }
-		DeltaCoderPtr GetDeltaCoder() const { return DeltaCoderPtr(new DialogueASSDeltaCoder()); }
+		//DeltaCoderPtr GetDeltaCoder() const { return DeltaCoderPtr(new DialogueASSDeltaCoder()); }
 
 		// Capabilities
 		bool HasText() const { return true; }

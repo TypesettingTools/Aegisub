@@ -71,18 +71,36 @@ int main()
 		control.SaveFile(L"subs_out.ass",L"UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
-
-		// Create line to be inserted
-		cout << "Creating data... ";
-		SectionEntryDialoguePtr line = control.CreateDialogue();
-		line->SetText(L"Hi, testing insertion of lines!");
-		cout << "Done.\n";
+		system("pause");
 
 		// Issue an action
-		ActionListPtr actions = control.CreateActionList(L"Test");
-		SectionEntryDialoguePtr diag = dynamic_pointer_cast<SectionEntryDialogue> (actions->ModifyLine(10,L"Events"));
-		diag->SetText(L"Hay guise sup");
-		actions->Finish();
+		cout << "Executing action 100 times... ";
+		timer.Start();
+		for (size_t i=0;i<100;i++) {
+			ActionListPtr actions = control.CreateActionList(L"Test");
+			Selection selection;
+			selection.AddRange(Range(0,5000));
+			selection.AddRange(Range(4500,5500));
+			selection.AddRange(Range(9000,9100));
+			std::vector<SectionEntryPtr> entries = actions->ModifyLines(selection,L"Events");
+			size_t len = entries.size();
+			for (size_t i=0;i<len;i++) {
+				SectionEntryDialoguePtr diag = dynamic_pointer_cast<SectionEntryDialogue> (entries[i]);
+				diag->SetStartTime(diag->GetStartTime() - 55555);
+				diag->SetEndTime(diag->GetEndTime() + 5555);
+			}
+			actions->Finish();
+		}
+		timer.Pause();
+		cout << "Done in " << timer.Time() << " ms.\n";
+		system("pause");
+
+		// Rollback
+		cout << "Undoing 99 times... ";
+		for (size_t i=0;i<99;i++) {
+			control.Undo();
+		}
+		cout << "Done.\n";
 
 		// Undo
 		cout << "Undoing and redoing 1000 times... ";

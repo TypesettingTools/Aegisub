@@ -35,6 +35,7 @@
 
 #pragma once
 #include "gorgonstring.h"
+#include "selection.h"
 
 namespace Gorgonsub {
 	// Prototypes
@@ -108,13 +109,12 @@ namespace Gorgonsub {
 	private:
 		std::vector<shared_ptr<SectionEntry> > entries;
 		std::vector<shared_ptr<void> > deltas;
-		std::vector<int> lines;
+		Selection selection;
 		const String section;
 		bool noTextFields;
 
 	public:
-		ActionModifyBatch(shared_ptr<SectionEntry> entry,int line,const String &section,bool noTextFields);
-		ActionModifyBatch(shared_ptr<void> delta,int line,const String &section);
+		ActionModifyBatch(std::vector<shared_ptr<SectionEntry> > entries,std::vector<shared_ptr<void> > deltas,Selection selection,const String &section,bool noTextFields);
 		~ActionModifyBatch() {}
 
 		ActionPtr GetAntiAction(const Model &model) const;

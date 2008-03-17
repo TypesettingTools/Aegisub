@@ -33,7 +33,7 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "selection.h"
+#include "gorgonsub.h"
 using namespace Gorgonsub;
 
 
@@ -49,8 +49,8 @@ Selection::Selection()
 // Adds a range
 void Selection::AddRange(const Range &range)
 {
-	// TODO
-	(void) range;
+	ranges.push_back(range);
+	UpdateCount();
 }
 
 
@@ -60,6 +60,53 @@ void Selection::RemoveRange(const Range &range)
 {
 	// TODO
 	(void) range;
+	THROW_GORGON_EXCEPTION(Exception::TODO);
+}
+
+
+////////////////////////////////////////////////////////////////////
+// Normalizes all ranges, that is, gets rid of overlaps and whatnot
+void Selection::NormalizeRanges()
+{
+	// Has anything to do?
+	if (ranges.size() == 0) return;
+
+	// Find largest value
+	size_t max = 0;
+	size_t len = ranges.size();
+	for (size_t i=0;i<len;i++) {
+		if (ranges[i].GetEnd() > max) max = ranges[i].GetEnd();
+	}
+
+	// Allocate a vector of that size
+	std::vector<bool> selected(max);
+	for (size_t i=0;i<len;i++) {
+		for (size_t j=ranges[i].GetStart();j<ranges[i].GetEnd();j++) {
+			selected[j] = true;
+		}
+	}
+
+	// Clear ranges and re-build them
+	ranges.clear();
+	size_t start = 0;
+	bool inside = false;
+	for (size_t i=0;i<max;i++) {
+		// Enter
+		if (!inside && selected[i]) {
+			start = i;
+			inside = true;
+		}
+
+		// Exit
+		else if (inside && !selected[i]) {
+			ranges.push_back(Range(start,i));
+			inside = false;
+		}
+	}
+	if (inside) ranges.push_back(Range(start,max));
+
+	// Update count
+	UpdateCount();
 }
 
 
@@ -71,8 +118,9 @@ size_t Selection::GetLine(size_t n) const
 	size_t cur = 0;
 	size_t len = ranges.size();
 	for (size_t i=0;i<len;i++) {
-		cur += ranges[i].GetSize();
-		if (cur > n) return ranges[i].GetLine(n-ranges[i].GetStart());
+		size_t curLen = ranges[i].GetSize();
+		if (cur+curLen > n) return ranges[i].GetLine(n-cur);
+		cur += curLen;
 	}
 	return ~0UL;
 }
@@ -86,6 +134,18 @@ void Selection::AddSelection (const Selection &param)
 }
 
 
+////////////////
+// Update count
+void Selection::UpdateCount()
+{
+	count = 0;
+	size_t len = ranges.size();
+	for (size_t i=0;i<len;i++) {
+		count += ranges[i].GetSize();
+	}
+}
+
+
 //////////////////////////////
 // Subtract another selection
 void Selection::RemoveSelection (const Selection &param)
@@ -93,3 +153,11 @@ void Selection::RemoveSelection (const Selection &param)
 	(void) param;
 }
 
+
+/////////////////////
+// Get line in range
+size_t Range::GetLine(size_t n) const
+{
+	if (start+n < end) return start+n;
+	else THROW_GORGON_EXCEPTION(Exception::Out_Of_Range);
+}

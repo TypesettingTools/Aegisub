@@ -130,3 +130,28 @@ SectionEntryPtr ActionList::ModifyLine(int position,const String section)
 	AddAction(action);
 	return entry;
 }
+
+
+////////////////////////////////////////
+// Insert a "modify lines" batch action
+std::vector<SectionEntryPtr> ActionList::ModifyLines(Selection selection,const String section)
+{
+	// Get section
+	SectionPtr sect = model.GetSection(section);
+
+	// Generate entries
+	std::vector<SectionEntryPtr> entries(selection.GetCount());
+	size_t len = selection.GetRanges();
+	size_t n = 0;
+	for (size_t i=0;i<len;i++) {
+		size_t rLen = selection.GetLinesInRange(i);
+		for (size_t j=0;j<rLen;j++) {
+			entries[n++] = sect->GetEntry(selection.GetLineInRange(j,i))->Clone();
+		}
+	}
+
+	// Generate the action
+	ActionPtr action = ActionPtr (new ActionModifyBatch(entries,std::vector<VoidPtr>(),selection,section,false));
+	AddAction(action);
+	return entries;
+}

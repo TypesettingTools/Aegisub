@@ -14,7 +14,9 @@ x = done
 [x] Text file reader/writer
 [ ] Automatic character set detection
 [ ] Conversion between subtitle formats
+[ ] Override tag support
 [:] ASS format support
+[ ] ASS override tags
 [ ] Simple subtitles (srt, microdvd, encore, etc) format support
 [ ] Matroska-embedded subtitles support
 [ ] DVD subtitles support (*)

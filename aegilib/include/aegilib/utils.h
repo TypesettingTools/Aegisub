@@ -35,7 +35,7 @@
 
 
 #pragma once
-#include "Gorgonsub.h"
+#include "gorgonstring.h"
 
 
 /////////////

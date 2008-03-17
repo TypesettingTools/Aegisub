@@ -58,6 +58,7 @@ namespace Gorgonsub {
 	private:
 		std::vector<Range> ranges;
 		size_t count;
+		void UpdateCount();
 
 	public:
 		Selection();
@@ -68,11 +69,13 @@ namespace Gorgonsub {
 		void RemoveRange(const Range &range);
 		void AddSelection (const Selection &param);
 		void RemoveSelection (const Selection &param);
+		void NormalizeRanges ();
 
 		size_t GetCount() const { return count; }
 		size_t GetRanges() const { return ranges.size(); }
 		size_t GetLine(size_t n) const;
 		size_t GetLineInRange(size_t n,size_t range) const { return ranges.at(range).GetLine(n); }
+		size_t GetLinesInRange(size_t range) const { return ranges.at(range).GetSize(); }
 		bool IsContiguous() const { return GetRanges() <= 1; }
 
 	};

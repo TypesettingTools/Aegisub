@@ -52,6 +52,7 @@ namespace Gorgonsub {
 			Parse_Error,
 			Unsupported_Format_Feature,
 			Invalid_Token,
+			Out_Of_Range,
 			TODO
 		};
 
