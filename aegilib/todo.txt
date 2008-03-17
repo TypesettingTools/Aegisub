@@ -1,0 +1,37 @@
+Todo for Gorgonsub:
+
+-------------------
+x = done
+: = mostly done
+. = partially done
+  = not done
+
+* = not necessary
+-------------------
+
+
+[x] Basic subtitles reading/writing interface
+[x] Text file reader/writer
+[ ] Automatic character set detection
+[ ] Conversion between subtitle formats
+[:] ASS format support
+[ ] Simple subtitles (srt, microdvd, encore, etc) format support
+[ ] Matroska-embedded subtitles support
+[ ] DVD subtitles support (*)
+[ ] Blu-Ray subtitles support (*)
+
+[:] Time helper class
+[:] Colour helper class
+[x] Tokenizer helper class
+[x] Exception class
+
+[x] Basic manipulation system
+[:] Undo/redo stack
+[ ] Owner-based undo/redo operations
+[x] Delta coded undo/redo
+[.] Multi-line manipulation via selections
+[ ] Reading subtitles data from model
+
+[x] Basic MVC structure
+[.] Controller
+[ ] Notifications for views
