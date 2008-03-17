@@ -60,8 +60,8 @@ void Controller::LoadFile(const String filename,const String encoding)
 {
 	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
 	wxFFileInputStream stream(filename);
-	wxBufferedInputStream buffer(stream);
-	model.Load(buffer,handler,encoding);
+	//wxBufferedInputStream buffer(stream);
+	model.Load(stream,handler,encoding);
 }
 
 

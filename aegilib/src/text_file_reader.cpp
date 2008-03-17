@@ -136,7 +136,7 @@ void ParseLine(FastBuffer<T> &_buffer,wxInputStream &file,wxString &stringBuffer
 	// If no line breaks were found, load more data into file
 	while (newLinePos == -1) {
 		// Read 2048 bytes
-		const size_t readBytes = 2048;
+		const size_t readBytes = 1024;
 		const size_t read = readBytes/sizeof(T);
 		size_t oldSize = _buffer.GetSize();
 		T *ptr = _buffer.GetWritePtr(read);
