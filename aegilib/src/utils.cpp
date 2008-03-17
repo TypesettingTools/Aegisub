@@ -239,7 +239,7 @@ size_t Gorgonsub::UTF16toUTF8(const wchar_t *utf16,char *utf8)
 	wchar_t curChar = 1;
 	size_t value;
 	size_t written = 0;
-	for (size_t i=0;curChar;i++) {
+	for (size_t i=0;;i++) {
 		// Get next
 		curChar = utf16[i];
 

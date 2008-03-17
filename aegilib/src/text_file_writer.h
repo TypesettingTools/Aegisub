@@ -45,6 +45,7 @@ namespace Gorgonsub {
 		wxString encoding;
 		wxOutputStream &file;
 		std::vector<char> buffer;
+		size_t bufferPos;
 
 		shared_ptr<wxMBConv> conv;
 		bool Is16;

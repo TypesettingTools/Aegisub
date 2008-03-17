@@ -71,8 +71,8 @@ void Controller::SaveFile(const String filename,const String encoding)
 {
 	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
 	wxFFileOutputStream stream(filename);
-	wxBufferedOutputStream buffer(stream);
-	model.Save(buffer,handler,encoding);
+	//wxBufferedOutputStream buffer(stream);
+	model.Save(stream,handler,encoding);
 }
 
 

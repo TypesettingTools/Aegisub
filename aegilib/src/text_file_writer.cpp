@@ -49,6 +49,8 @@ TextFileWriter::TextFileWriter(wxOutputStream &stream,String enc)
 {
 	// Setup
 	IsFirst = true;
+	buffer.resize(16384);
+	bufferPos = 0;
 	SetEncoding(enc);
 }
 
@@ -56,6 +58,8 @@ TextFileWriter::TextFileWriter(wxOutputStream &stream,String enc)
 //////////////
 // Destructor
 TextFileWriter::~TextFileWriter() {
+	// Flush
+	if (bufferPos) file.Write(&buffer[0],(std::streamsize)bufferPos);
 }
 
 
@@ -64,7 +68,7 @@ TextFileWriter::~TextFileWriter() {
 void TextFileWriter::WriteLineToFile(Gorgonsub::String line,bool addLineBreak) {
 	// Add line break
 	wxString temp = line;
-	if (addLineBreak) temp += _T("\r\n");
+	if (addLineBreak && Is16) temp += _T("\r\n");
 
 	// Add BOM if it's the first line and the target format is Unicode
 	if (IsFirst && IsUnicode) {
@@ -76,8 +80,7 @@ void TextFileWriter::WriteLineToFile(Gorgonsub::String line,bool addLineBreak) {
 	// 16-bit
 	if (Is16) {
 		wxWCharBuffer buf = temp.wc_str(*conv);
-		if (!buf.data())
-			return;
+		if (!buf.data()) return;
 		size_t len = wcslen(buf.data());
 		file.Write((const char*)buf.data(),(std::streamsize)len*sizeof(wchar_t));
 	}
@@ -85,12 +88,25 @@ void TextFileWriter::WriteLineToFile(Gorgonsub::String line,bool addLineBreak) {
 	// 8-bit
 	else {
 		if (encoding == _T("UTF-8")) {
+			// Calculate metrics
 			const wchar_t* src = temp.c_str();
-			//size_t len = GetUTF8Len(src);
 			size_t len = temp.Length() * 2 + 2;
-			if (buffer.size() < len) buffer.resize(len);
-			size_t toWrite = UTF16toUTF8(src,&buffer[0]);
-			file.Write(&buffer[0],(std::streamsize)toWrite);
+			if (addLineBreak) len += 2;
+			if (buffer.size()-bufferPos < len) {
+				// Flush
+				file.Write(&buffer[0],(std::streamsize)bufferPos);
+				bufferPos = 0;
+
+				// Resize if it still doesn't fit
+				if (buffer.size() < len) buffer.resize(len);
+			}
+
+			// Convert to UTF-8
+			bufferPos += UTF16toUTF8(src,&buffer[bufferPos]);
+			if (addLineBreak) {
+				buffer[bufferPos++] = '\r';
+				buffer[bufferPos++] = '\n';
+			}
 		}
 		else {
 			wxCharBuffer buf = temp.mb_str(*conv);
