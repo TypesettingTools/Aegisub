@@ -96,4 +96,8 @@ namespace Gorgonsub {
 	const wxChar *StringPtrTrim(wxChar *str,size_t len,size_t start);
 	const wxChar *StringTrim(wxString &str,size_t start);
 	bool AsciiStringCompareNoCase(const wxString &str1,const wxChar *str2);
+
+	// Unicode routines
+	size_t GetUTF8Len(const wchar_t *utf16);
+	size_t UTF16toUTF8(const wchar_t *utf16,char *utf8);
 }

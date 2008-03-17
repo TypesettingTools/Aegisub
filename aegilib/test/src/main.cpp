@@ -78,17 +78,11 @@ int main()
 		line->SetText(L"Hi, testing insertion of lines!");
 		cout << "Done.\n";
 
-		// Create action list
-		cout << "Processing actions... ";
-		timer.Start();
-		ActionListPtr actions = control.CreateActionList(L"Insert line");
-		//actions->InsertLine(line,2);
-		//actions->RemoveLine(3,L"Events");
+		// Issue an action
+		ActionListPtr actions = control.CreateActionList(L"Test");
 		SectionEntryDialoguePtr diag = dynamic_pointer_cast<SectionEntryDialogue> (actions->ModifyLine(10,L"Events"));
 		diag->SetText(L"Hay guise sup");
 		actions->Finish();
-		timer.Pause();
-		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Undo
 		cout << "Undoing and redoing 1000 times... ";
@@ -108,5 +102,15 @@ int main()
 		cout << "\n\nException: " << e.what() << endl << endl;
 	}
 
+	if (false) {
+		wchar_t myArray[] = { 0xD834, 0xDD1E, 0 };
+		String str = wxString(myArray);
+		cout << "Length: " << str.Length() << ". Contents: " << str[0] << "," << str[1] << endl;
+		wxCharBuffer buf = str.mb_str(wxConvUTF8);
+		unsigned char *chr = (unsigned char *) buf.data();
+		cout << "UTF-8 Length: " << strlen(buf) << ". Contents: " << (size_t)chr[0] << "," << (size_t)chr[1] << "," << (size_t)chr[2] << "," << (size_t)chr[3] << endl;
+		str = wxString(buf,wxConvUTF8);
+		cout << "Length: " << str.Length() << ". Contents: " << str[0] << "," << str[1] << endl;
+	}
 	return true;
 }

@@ -126,7 +126,7 @@ SectionEntryPtr ActionList::ModifyLine(int position,const String section)
 {
 	SectionPtr sect = model.GetSection(section);
 	SectionEntryPtr entry = sect->GetEntry(position)->Clone();
-	ActionPtr action = ActionPtr (new ActionModify(entry,position,section));
+	ActionPtr action = ActionPtr (new ActionModify(entry,position,section,false));
 	AddAction(action);
 	return entry;
 }

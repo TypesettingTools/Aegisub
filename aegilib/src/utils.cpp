@@ -200,3 +200,86 @@ bool Gorgonsub::AsciiStringCompareNoCase(const wxString &str1,const wxChar *str2
 	// Equal strings
 	return true;
 }
+
+
+///////////////////////////////////////////////
+// Get the UTF-8 length out of a UTF-16 string
+size_t Gorgonsub::GetUTF8Len(const wchar_t *utf16)
+{
+	size_t len = 0;
+	wchar_t curChar = utf16[0];
+	for (size_t i=0;curChar;i++) {
+		// 1 byte
+		if ((curChar & 0xFF80) == 0) len++;
+
+		// Surrogate pair UTF-16, 4 bytes
+		else if ((curChar & 0xFC00) == 0xD800) {
+			len += 4;
+			i++;
+		}
+		
+		// 3 bytes
+		else if (curChar & 0xF800) len += 3;
+		
+		// 2 bytes
+		else if (curChar & 0xFF80) len += 2;
+
+		// Get next
+		curChar = utf16[i];
+	}
+
+	return len;
+}
+
+
+///////////////////////////
+// Convert UTF-16 to UTF-8
+size_t Gorgonsub::UTF16toUTF8(const wchar_t *utf16,char *utf8)
+{
+	wchar_t curChar = 1;
+	size_t value;
+	size_t written = 0;
+	for (size_t i=0;curChar;i++) {
+		// Get next
+		curChar = utf16[i];
+
+		// 1 byte
+		if ((curChar & 0xFF80) == 0) {
+			*utf8++ = char(curChar);
+			if (curChar == 0) break;
+			written++;
+		}
+
+		// 2 bytes
+		else if ((curChar & 0xF800) == 0) {
+			*utf8++ = char(((curChar & 0x07C0) >> 6)  | 0xC0);
+			*utf8++ = char((curChar & 0x003F)         | 0x80);
+			written += 2;
+		}
+
+		// Surrogate pair UTF-16
+		else if ((curChar & 0xFC00) == 0xD800) {
+			// Read
+			value = (curChar - 0xD800) << 10;
+			i++;
+			value |= utf16[i] & 0x3FF;
+
+			// Write
+			*utf8++ = char(((value & 0x1C0000) >> 18) | 0xF0);
+			*utf8++ = char(((value & 0x03F000) >> 12) | 0x80);
+			*utf8++ = char(((value & 0x000FC0) >> 6)  | 0x80);
+			*utf8++ = char((value & 0x00003F)         | 0x80);
+			written += 4;
+		}
+
+		// 3 bytes
+		else if (curChar & 0xF800) {
+			*utf8++ = char(((curChar & 0xF000) >> 12) | 0xE0);
+			*utf8++ = char(((curChar & 0x0FC0) >> 6)  | 0x80);
+			*utf8++ = char((curChar & 0x003F)         | 0x80);
+			written += 3;
+		}
+	}
+	return written;
+}
+

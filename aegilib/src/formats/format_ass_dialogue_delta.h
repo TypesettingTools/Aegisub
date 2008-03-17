@@ -45,7 +45,7 @@ namespace Gorgonsub {
 		void GetDelta(int mask,char *dst,shared_ptr<DialogueASS> to) const;
 
 	public:
-		VoidPtr EncodeDelta(VoidPtr from,VoidPtr to) const;
+		VoidPtr EncodeDelta(VoidPtr from,VoidPtr to,bool withTextFields=true) const;
 		VoidPtr EncodeReverseDelta(VoidPtr from,VoidPtr to) const;
 		void ApplyDelta(VoidPtr delta,VoidPtr object) const;
 	};

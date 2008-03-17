@@ -38,6 +38,7 @@
 // Headers
 #include <fstream>
 #include "text_file_writer.h"
+#include "utils.h"
 using namespace Gorgonsub;
 
 
@@ -83,11 +84,20 @@ void TextFileWriter::WriteLineToFile(Gorgonsub::String line,bool addLineBreak) {
 
 	// 8-bit
 	else {
-		wxCharBuffer buf = temp.mb_str(*conv);
-		if (!buf.data())
-			return;
-		size_t len = strlen(buf.data());
-		file.Write(buf.data(),(std::streamsize)len);
+		if (encoding == _T("UTF-8")) {
+			const wchar_t* src = temp.c_str();
+			//size_t len = GetUTF8Len(src);
+			size_t len = temp.Length() * 2 + 2;
+			if (buffer.size() < len) buffer.resize(len);
+			size_t toWrite = UTF16toUTF8(src,&buffer[0]);
+			file.Write(&buffer[0],(std::streamsize)toWrite);
+		}
+		else {
+			wxCharBuffer buf = temp.mb_str(*conv);
+			if (!buf.data()) return;
+			size_t len = strlen(buf.data());
+			file.Write(buf.data(),(std::streamsize)len);
+		}
 	}
 }
 

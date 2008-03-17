@@ -394,6 +394,14 @@
 				RelativePath=".\include\aegilib\actionlist.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\selection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\selection.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Sections"

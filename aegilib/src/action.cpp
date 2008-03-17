@@ -116,11 +116,11 @@ void ActionRemove::Execute(Model &model)
 
 ////////////////
 // Constructors
-ActionModify::ActionModify(shared_ptr<SectionEntry> data,int line,const String &sName)
-: entry(data), lineNumber(line), section(sName) {}
+ActionModify::ActionModify(shared_ptr<SectionEntry> data,int line,const String &sName,bool _noTextFields)
+: entry(data), lineNumber(line), section(sName), noTextFields(_noTextFields) {}
 
 ActionModify::ActionModify(shared_ptr<void> _delta,int line,const String &sName)
-: delta(_delta), lineNumber(line), section(sName) {}
+: delta(_delta), lineNumber(line), section(sName), noTextFields(false) {}
 
 
 /////////////////////////////////
@@ -135,7 +135,7 @@ ActionPtr ActionModify::GetAntiAction(const Model &model) const
 	DeltaCoderPtr deltaCoder = oldEntry->GetDeltaCoder();
 	if (deltaCoder) {
 		VoidPtr _delta;
-		if (entry) _delta = deltaCoder->EncodeDelta(entry,oldEntry);
+		if (entry) _delta = deltaCoder->EncodeDelta(entry,oldEntry,!noTextFields);
 		else _delta = deltaCoder->EncodeReverseDelta(delta,oldEntry);
 		return ActionPtr(new ActionModify(_delta,lineNumber,section));
 	}

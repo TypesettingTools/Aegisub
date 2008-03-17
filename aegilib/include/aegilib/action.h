@@ -65,7 +65,7 @@ namespace Gorgonsub {
 
 	public:
 		ActionInsert(shared_ptr<SectionEntry> entry,int line,const String &section);
-		virtual ~ActionInsert() {}
+		~ActionInsert() {}
 
 		ActionPtr GetAntiAction(const Model &model) const;
 		void Execute(Model &model);
@@ -79,7 +79,7 @@ namespace Gorgonsub {
 
 	public:
 		ActionRemove(int line,const String &section);
-		virtual ~ActionRemove() {}
+		~ActionRemove() {}
 
 		ActionPtr GetAntiAction(const Model &model) const;
 		void Execute(Model &model);
@@ -92,11 +92,30 @@ namespace Gorgonsub {
 		shared_ptr<void> delta;
 		const String section;
 		int lineNumber;
+		bool noTextFields;
 
 	public:
-		ActionModify(shared_ptr<SectionEntry> entry,int line,const String &section);
+		ActionModify(shared_ptr<SectionEntry> entry,int line,const String &section,bool noTextFields);
 		ActionModify(shared_ptr<void> delta,int line,const String &section);
-		virtual ~ActionModify() {}
+		~ActionModify() {}
+
+		ActionPtr GetAntiAction(const Model &model) const;
+		void Execute(Model &model);
+	};
+
+	// Modify several line
+	class ActionModifyBatch : public Action {
+	private:
+		std::vector<shared_ptr<SectionEntry> > entries;
+		std::vector<shared_ptr<void> > deltas;
+		std::vector<int> lines;
+		const String section;
+		bool noTextFields;
+
+	public:
+		ActionModifyBatch(shared_ptr<SectionEntry> entry,int line,const String &section,bool noTextFields);
+		ActionModifyBatch(shared_ptr<void> delta,int line,const String &section);
+		~ActionModifyBatch() {}
 
 		ActionPtr GetAntiAction(const Model &model) const;
 		void Execute(Model &model);

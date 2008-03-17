@@ -45,7 +45,7 @@ using namespace Gorgonsub;
 
 ////////////////////////////////////
 // Encode delta between two entries
-VoidPtr DialogueASSDeltaCoder::EncodeDelta(VoidPtr _from,VoidPtr _to) const
+VoidPtr DialogueASSDeltaCoder::EncodeDelta(VoidPtr _from,VoidPtr _to,bool withTextFields) const
 {
 	// Cast pointers
 	shared_ptr<DialogueASS> from = static_pointer_cast<DialogueASS> (_from);
@@ -59,7 +59,7 @@ VoidPtr DialogueASSDeltaCoder::EncodeDelta(VoidPtr _from,VoidPtr _to) const
 	if (from->time[1] != to->time[1]) mask |= 0x0008;
 	for (size_t i=0;i<4;i++) {
 		if (from->margin[i] != to->margin[i]) mask |= 0x0010 << i;
-		if (from->text[i] != to->text[i]) mask |= 0x0100 << i;
+		if (withTextFields && from->text[i] != to->text[i]) mask |= 0x0100 << i;
 	}
 
 	// Calculate final size and allocate
