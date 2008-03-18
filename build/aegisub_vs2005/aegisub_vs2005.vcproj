@@ -1750,6 +1750,14 @@
 			<File
 				RelativePath="..\..\aegisub\subtitle_format_dvd.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="E:\Projects\tesseract;E:\Projects\tesseract\ccmain;E:\Projects\tesseract\ccutil"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\aegisub\subtitle_format_dvd.h"
