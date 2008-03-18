@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,10 +35,10 @@
 
 #pragma once
 
-#include "gorgonstring.h"
+#include "athenastring.h"
 #include <exception>
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Exception class
 	class Exception : public std::exception {
@@ -54,6 +54,7 @@ namespace Gorgonsub {
 			Invalid_Token,
 			Out_Of_Range,
 			Invalid_Section,
+			Internal_Error,
 			TODO
 		};
 
@@ -72,7 +73,7 @@ namespace Gorgonsub {
 }
 
 #ifdef _MSC_VER
-#define THROW_GORGON_EXCEPTION(code) throw Gorgonsub::Exception(code,__FILE__,__LINE__)
+#define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code,__FILE__,__LINE__)
 #else
-#define THROW_GORGON_EXCEPTION(code) throw Gorgonsub::Exception(code)
+#define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code)
 #endif

@@ -27,14 +27,14 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "Gorgonsub.h"
-using namespace Gorgonsub;
+#include "Athenasub.h"
+using namespace Athenasub;
 
 
 //////////////////////

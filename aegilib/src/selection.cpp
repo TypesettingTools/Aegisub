@@ -27,14 +27,14 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "gorgonsub.h"
-using namespace Gorgonsub;
+#include "athenasub.h"
+using namespace Athenasub;
 
 
 ///////////////
@@ -60,7 +60,7 @@ void Selection::RemoveRange(const Range &range)
 {
 	// TODO
 	(void) range;
-	THROW_GORGON_EXCEPTION(Exception::TODO);
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
 }
 
 
@@ -159,5 +159,5 @@ void Selection::RemoveSelection (const Selection &param)
 size_t Range::GetLine(size_t n) const
 {
 	if (start+n < end) return start+n;
-	else THROW_GORGON_EXCEPTION(Exception::Out_Of_Range);
+	else THROW_ATHENA_EXCEPTION(Exception::Out_Of_Range);
 }

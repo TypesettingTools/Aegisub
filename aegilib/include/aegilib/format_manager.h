@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,7 +36,7 @@
 #pragma once
 #include "format.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Format manager class
 	class FormatManager {

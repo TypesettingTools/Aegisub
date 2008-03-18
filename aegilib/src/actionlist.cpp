@@ -27,14 +27,14 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "Gorgonsub.h"
-using namespace Gorgonsub;
+#include "Athenasub.h"
+using namespace Athenasub;
 
 
 ///////////////
@@ -58,7 +58,7 @@ ActionList::~ActionList()
 // Add an action to the queue
 void ActionList::AddAction(const ActionPtr action)
 {
-	if (!valid) THROW_GORGON_EXCEPTION(Exception::Invalid_ActionList);
+	if (!valid) THROW_ATHENA_EXCEPTION(Exception::Invalid_ActionList);
 	actions.push_back(action);
 	if (actions.size() > 2) {
 		int a = 0;
@@ -71,7 +71,7 @@ void ActionList::AddAction(const ActionPtr action)
 // Add an action to the start of the queue
 void ActionList::AddActionStart(const ActionPtr action)
 {
-	if (!valid) THROW_GORGON_EXCEPTION(Exception::Invalid_ActionList);
+	if (!valid) THROW_ATHENA_EXCEPTION(Exception::Invalid_ActionList);
 	actions.push_front(action);
 	if (actions.size() > 2) {
 		int a = 0;

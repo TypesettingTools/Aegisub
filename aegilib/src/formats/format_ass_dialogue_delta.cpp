@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -41,7 +41,7 @@
 #include <stdint.h>
 #endif
 
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 ////////////////////////////////////
 // Encode delta between two entries

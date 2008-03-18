@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -37,7 +37,7 @@
 #include "exception.h"
 #include "utils.h"
 #include <wx/tokenzr.h>
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 ///////////////
 // Constructor
@@ -72,7 +72,7 @@ int Tokenizer::GetPosition()
 String Tokenizer::GetString(bool trim)
 {
 	// Has any more?
-	if (!HasMoreTokens()) THROW_GORGON_EXCEPTION(Exception::Invalid_Token);
+	if (!HasMoreTokens()) THROW_ATHENA_EXCEPTION(Exception::Invalid_Token);
 
 	// Find token
 	size_t len = string.Length();

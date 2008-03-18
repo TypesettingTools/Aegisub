@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,12 +35,12 @@
 
 
 #include "utils.h"
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 
 //////////////////////////////////
 // Convert a string to an integer
-int Gorgonsub::StringToInt(const String &str)
+int Athenasub::StringToInt(const String &str)
 {
 	size_t len = str.Length();
 	int value = 0;
@@ -55,7 +55,7 @@ int Gorgonsub::StringToInt(const String &str)
 
 //////////////////////////////////////
 // Converts a substring to an integer
-int Gorgonsub::SubStringToInteger(const String &str,size_t start,size_t end)
+int Athenasub::SubStringToInteger(const String &str,size_t start,size_t end)
 {
 	int value = 0;
 	int chr;
@@ -69,7 +69,7 @@ int Gorgonsub::SubStringToInteger(const String &str,size_t start,size_t end)
 
 ////////////////
 // Pretty float
-String Gorgonsub::PrettyFloat(String src) {
+String Athenasub::PrettyFloat(String src) {
 	if (src.Contains(_T("."))) {
 		size_t len = src.Length();
 		while (src.Right(1) == _T("0")) {
@@ -84,27 +84,27 @@ String Gorgonsub::PrettyFloat(String src) {
 	return src;
 }
 
-String Gorgonsub::PrettyFloatF(float src) { return Gorgonsub::PrettyFloat(wxString::Format(_T("%f"),src)); }
-String Gorgonsub::PrettyFloatD(double src) { return Gorgonsub::PrettyFloat(wxString::Format(_T("%f"),src)); }
+String Athenasub::PrettyFloatF(float src) { return Athenasub::PrettyFloat(wxString::Format(_T("%f"),src)); }
+String Athenasub::PrettyFloatD(double src) { return Athenasub::PrettyFloat(wxString::Format(_T("%f"),src)); }
 
 
 ///////////////////
 // Float to string
-String Gorgonsub::FloatToString(double value) {
+String Athenasub::FloatToString(double value) {
 	return PrettyFloat(wxString::Format(_T("%f"),value));
 }
 
 
 /////////////////
 // Int to string
-String Gorgonsub::IntegerToString(int value) {
+String Athenasub::IntegerToString(int value) {
 	return wxString::Format(_T("%i"),value);
 }
 
 
 ////////////////////////////
 // Fast writing to a string
-void Gorgonsub::WriteNumber(wxChar *&dst,wxChar *temp,int number,int pad,size_t &pos) {
+void Athenasub::WriteNumber(wxChar *&dst,wxChar *temp,int number,int pad,size_t &pos) {
 	// Write number backwards first
 	int div, value;
 	size_t len;
@@ -134,7 +134,7 @@ void Gorgonsub::WriteNumber(wxChar *&dst,wxChar *temp,int number,int pad,size_t 
 
 /////////////////
 // Trim a string
-const wxChar *Gorgonsub::StringPtrTrim(wxChar *chr,size_t len,size_t startPos)
+const wxChar *Athenasub::StringPtrTrim(wxChar *chr,size_t len,size_t startPos)
 {
 	// String metrics
 	wxChar *read = chr;
@@ -168,7 +168,7 @@ const wxChar *Gorgonsub::StringPtrTrim(wxChar *chr,size_t len,size_t startPos)
 	return chr + start;
 }
 
-const wxChar *Gorgonsub::StringTrim(wxString &str,size_t startPos)
+const wxChar *Athenasub::StringTrim(wxString &str,size_t startPos)
 {
 	// Get a pointer to the string data
 	wxChar *chr = const_cast<wxChar*> (str.c_str());
@@ -178,7 +178,7 @@ const wxChar *Gorgonsub::StringTrim(wxString &str,size_t startPos)
 
 //////////////////////////////////////////////////
 // Compares a string to a constant, ignoring case
-bool Gorgonsub::AsciiStringCompareNoCase(const wxString &str1,const wxChar *str2)
+bool Athenasub::AsciiStringCompareNoCase(const wxString &str1,const wxChar *str2)
 {
 	const wxChar *src = str1.c_str();
 	wxChar c1,c2;
@@ -204,7 +204,7 @@ bool Gorgonsub::AsciiStringCompareNoCase(const wxString &str1,const wxChar *str2
 
 ///////////////////////////////////////////////
 // Get the UTF-8 length out of a UTF-16 string
-size_t Gorgonsub::GetUTF8Len(const wchar_t *utf16)
+size_t Athenasub::GetUTF8Len(const wchar_t *utf16)
 {
 	size_t len = 0;
 	wchar_t curChar = utf16[0];
@@ -234,7 +234,7 @@ size_t Gorgonsub::GetUTF8Len(const wchar_t *utf16)
 
 ///////////////////////////
 // Convert UTF-16 to UTF-8
-size_t Gorgonsub::UTF16toUTF8(const wchar_t *utf16,char *utf8)
+size_t Athenasub::UTF16toUTF8(const wchar_t *utf16,char *utf8)
 {
 	wchar_t curChar = 1;
 	size_t value;

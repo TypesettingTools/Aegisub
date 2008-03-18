@@ -27,19 +27,19 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-#include "gorgonstring.h"
+#include "athenastring.h"
 #include "section_entry_dialogue.h"
 #include "format_ass_dialogue_delta.h"
 #include "serialize.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Dialogue
 	class DialogueASS : public Dialogue, public SerializeText {

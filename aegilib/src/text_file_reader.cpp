@@ -40,7 +40,7 @@
 #include <string>
 #include <wx/wfstream.h>
 #include "text_file_reader.h"
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 #ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
@@ -49,7 +49,7 @@ using namespace Gorgonsub;
 
 ///////////////
 // Constructor
-TextFileReader::TextFileReader(wxInputStream &stream,Gorgonsub::String enc,bool _trim,bool prefetch)
+TextFileReader::TextFileReader(wxInputStream &stream,Athenasub::String enc,bool _trim,bool prefetch)
 : file(stream)
 {
 	// Setup
@@ -177,7 +177,7 @@ void ParseLine(FastBuffer<T> &_buffer,wxInputStream &file,wxString &stringBuffer
 
 //////////////////////////
 // Reads a line from file
-Gorgonsub::String TextFileReader::ActuallyReadLine()
+Athenasub::String TextFileReader::ActuallyReadLine()
 {
 	wxString stringBuffer;
 	size_t bufAlloc = 1024;
@@ -213,7 +213,7 @@ bool TextFileReader::HasMoreLines()
 
 ////////////////////////////////
 // Ensure that charset is valid
-void TextFileReader::EnsureValid(Gorgonsub::String enc)
+void TextFileReader::EnsureValid(Athenasub::String enc)
 {
 	if (enc == _T("unknown") || enc == _T("UTF-32BE") || enc == _T("UTF-32LE")) {
 		wxString error = _T("Character set ");

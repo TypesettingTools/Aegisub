@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,17 +36,17 @@
 
 #pragma once
 #include "exception.h"
-#include "gorgontime.h"
+#include "athenatime.h"
 #include "section_entry.h"
 
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Dialogue class
 	class Dialogue : public Entry {
 	private:
 		static const bool dodgeWarning = true;
-		void ThrowUnsupported() const { if (dodgeWarning) THROW_GORGON_EXCEPTION(Exception::Unsupported_Format_Feature); }
+		void ThrowUnsupported() const { if (dodgeWarning) THROW_ATHENA_EXCEPTION(Exception::Unsupported_Format_Feature); }
 
 	public:
 		// Destructor

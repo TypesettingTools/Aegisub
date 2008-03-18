@@ -27,15 +27,15 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #include "controller.h"
-#include "Gorgonsub.h"
-using namespace Gorgonsub;
+#include "Athenasub.h"
+using namespace Athenasub;
 
 
 ///////////////
@@ -60,7 +60,6 @@ void Controller::LoadFile(const String filename,const String encoding)
 {
 	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
 	wxFFileInputStream stream(filename);
-	//wxBufferedInputStream buffer(stream);
 	model.Load(stream,handler,encoding);
 }
 
@@ -71,7 +70,6 @@ void Controller::SaveFile(const String filename,const String encoding)
 {
 	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
 	wxFFileOutputStream stream(filename);
-	//wxBufferedOutputStream buffer(stream);
 	model.Save(stream,handler,encoding);
 }
 
@@ -122,7 +120,7 @@ DialogueConstPtr Controller::GetDialogue(size_t n) const
 {
 	// TODO
 	(void) n;
-	THROW_GORGON_EXCEPTION(Exception::TODO);
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
 }
 
 
@@ -132,7 +130,7 @@ DialogueConstPtr Controller::GetStyle(size_t n) const
 {
 	// TODO
 	(void) n;
-	THROW_GORGON_EXCEPTION(Exception::TODO);
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
 }
 
 
@@ -144,7 +142,7 @@ StyleConstPtr Controller::GetStyle(String name) const
 	StylePtr dummy = CreateStyle();
 	String section = dummy->GetDefaultGroup();
 	SectionPtr sect = model.GetSection(section);
-	if (!sect) THROW_GORGON_EXCEPTION(Exception::Invalid_Section);
+	if (!sect) THROW_ATHENA_EXCEPTION(Exception::Invalid_Section);
 
 	// Return from index
 	return dynamic_pointer_cast<const Style> (sect->GetFromIndex(name));
@@ -156,6 +154,6 @@ StyleConstPtr Controller::GetStyle(String name) const
 EntryConstPtr Controller::GetEntry(size_t n,String section) const
 {
 	SectionPtr sect = model.GetSection(section);
-	if (!sect) THROW_GORGON_EXCEPTION(Exception::Invalid_Section);
+	if (!sect) THROW_ATHENA_EXCEPTION(Exception::Invalid_Section);
 	return sect->GetEntry(n);
 }

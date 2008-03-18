@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,7 +36,7 @@
 #pragma once
 #include <vector>
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Range class
 	class Range {

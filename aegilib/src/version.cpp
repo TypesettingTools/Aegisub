@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,21 +35,21 @@
 
 
 #include "version.h"
-#include "gorgonstring.h"
-using namespace Gorgonsub;
+#include "athenastring.h"
+using namespace Athenasub;
 
 
 ////////////////
 // Library data
-String Gorgonsub::GetLibraryName()
+String Athenasub::GetLibraryName()
 {
-	return _T("Gorgonsub");
+	return _T("Athenasub");
 }
-String Gorgonsub::GetLibraryVersionString()
+String Athenasub::GetLibraryVersionString()
 {
-	return _T("Gorgonsub v0.x - EXPERIMENTAL");
+	return _T("Athenasub v0.x - EXPERIMENTAL");
 }
-String Gorgonsub::GetLibraryURL()
+String Athenasub::GetLibraryURL()
 {
 	return _T("http://www.aegisub.net");
 }
@@ -60,22 +60,22 @@ String Gorgonsub::GetLibraryURL()
 static String* hostName = NULL;
 static String* hostURL = NULL;
 
-void Gorgonsub::SetHostApplicationName(const String name)
+void Athenasub::SetHostApplicationName(const String name)
 {
 	if (!hostName) hostName = new String();
 	*hostName = name;
 }
-void Gorgonsub::SetHostApplicationURL(const String url)
+void Athenasub::SetHostApplicationURL(const String url)
 {
 	if (!hostURL) hostURL = new String();
 	*hostURL = url;
 }
-String Gorgonsub::GetHostApplicationName()
+String Athenasub::GetHostApplicationName()
 {
 	if (hostName) return *hostName;
 	return L"unknown application";
 }
-String Gorgonsub::GetHostApplicationURL()
+String Athenasub::GetHostApplicationURL()
 {
 	if (hostURL) return *hostURL;
 	return L"";

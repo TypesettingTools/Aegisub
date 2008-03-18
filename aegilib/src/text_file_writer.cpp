@@ -39,7 +39,7 @@
 #include <fstream>
 #include "text_file_writer.h"
 #include "utils.h"
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 
 ///////////////
@@ -65,7 +65,7 @@ TextFileWriter::~TextFileWriter() {
 
 /////////////////
 // Write to file
-void TextFileWriter::WriteLineToFile(Gorgonsub::String line,bool addLineBreak) {
+void TextFileWriter::WriteLineToFile(Athenasub::String line,bool addLineBreak) {
 	// Add line break
 	wxString temp = line;
 	if (addLineBreak && Is16) temp += _T("\r\n");

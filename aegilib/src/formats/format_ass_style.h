@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -38,7 +38,7 @@
 #include "serialize.h"
 #include "tr1.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Style
 	class StyleASS : public Style, public SerializeText {

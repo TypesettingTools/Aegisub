@@ -27,17 +27,17 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-#include "gorgonstring.h"
+#include "athenastring.h"
 #include "utils.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Time class
 	class Time {

@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,7 +36,7 @@
 #pragma once
 #include "tr1.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Void pointer prototyle
 	typedef shared_ptr<void> VoidPtr;

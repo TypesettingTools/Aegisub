@@ -38,12 +38,12 @@
 
 
 // Headers
-#include "Gorgonsub.h"
+#include "Athenasub.h"
 #include "fastbuffer.h"
 #include <wx/stream.h>
 
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Text file reader
 	class TextFileReader {

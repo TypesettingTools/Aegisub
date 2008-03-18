@@ -27,14 +27,14 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "Gorgonsub.h"
-using namespace Gorgonsub;
+#include "Athenasub.h"
+using namespace Athenasub;
 
 
 /////////////////////////////////////////////////////////
@@ -99,12 +99,12 @@ void Model::Load(wxInputStream &input,const FormatPtr _format,const String encod
 		// TODO
 
 		// No format found
-		THROW_GORGON_EXCEPTION(Exception::No_Format_Handler);
+		THROW_ATHENA_EXCEPTION(Exception::No_Format_Handler);
 	}
 
 	// Get handler
 	FormatHandlerPtr handler = _format->GetHandler(*this);
-	if (!handler) THROW_GORGON_EXCEPTION(Exception::No_Format_Handler);
+	if (!handler) THROW_ATHENA_EXCEPTION(Exception::No_Format_Handler);
 
 	// Clear the model first
 	Clear();
@@ -124,12 +124,12 @@ void Model::Save(wxOutputStream &output,const FormatPtr _format,const String enc
 	// Use another format
 	if (_format && _format != format) {
 		// TODO
-		THROW_GORGON_EXCEPTION(Exception::TODO);
+		THROW_ATHENA_EXCEPTION(Exception::TODO);
 	}
 
 	// Get handler
 	FormatHandlerPtr handler = format->GetHandler(*this);
-	if (!handler) THROW_GORGON_EXCEPTION(Exception::No_Format_Handler);
+	if (!handler) THROW_ATHENA_EXCEPTION(Exception::No_Format_Handler);
 
 	// Load
 	handler->Save(output,encoding);
@@ -141,7 +141,7 @@ void Model::Save(wxOutputStream &output,const FormatPtr _format,const String enc
 void Model::AddSection(String name)
 {
 	SectionPtr prev = GetSection(name);
-	if (prev) THROW_GORGON_EXCEPTION(Exception::Section_Already_Exists);
+	if (prev) THROW_ATHENA_EXCEPTION(Exception::Section_Already_Exists);
 	sections.push_back(SectionPtr(new Section(name)));
 }
 

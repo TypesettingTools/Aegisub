@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,11 +36,11 @@
 #pragma once
 #include <list>
 #include "action.h"
-#include "gorgonstring.h"
+#include "athenastring.h"
 #include "section_entry.h"
 #include "selection.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Prototypes
 	class Controller;

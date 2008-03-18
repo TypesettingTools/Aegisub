@@ -35,11 +35,11 @@
 
 
 #pragma once
-#include "Gorgonsub.h"
+#include "Athenasub.h"
 #include <wx/stream.h>
 
 
-namespace Gorgonsub {
+namespace Athenasub {
 	class TextFileWriter {
 	private:
 		wxString encoding;
@@ -58,6 +58,6 @@ namespace Gorgonsub {
 		TextFileWriter(wxOutputStream &stream,String encoding=_T(""));
 		~TextFileWriter();
 
-		void WriteLineToFile(Gorgonsub::String line,bool addLineBreak=true);
+		void WriteLineToFile(Athenasub::String line,bool addLineBreak=true);
 	};
 }

@@ -27,14 +27,14 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #include "exception.h"
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 
 ////////////////
@@ -67,6 +67,7 @@ const char* Exception::GetMessageChar(int code)
 		case Invalid_Token: return "Invalid type for this token.";
 		case Out_Of_Range: return "Out of range.";
 		case Invalid_Section: return "Invalid section.";
+		case Internal_Error: return "Internal error.";
 		case TODO: return "TODO";
 	}
 	return "Invalid code.";

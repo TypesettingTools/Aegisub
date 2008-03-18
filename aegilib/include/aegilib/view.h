@@ -27,17 +27,17 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-#include "gorgonstring.h"
+#include "athenastring.h"
 #include <list>
 
-namespace Gorgonsub {
+namespace Athenasub {
 	// Prototypes
 	class Model;
 	class Notification;

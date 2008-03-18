@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,7 +36,7 @@
 #pragma once
 #include "deltacoder.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Delta coder
 	class DialogueASS;

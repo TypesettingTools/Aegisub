@@ -1,4 +1,4 @@
-Todo for Gorgonsub:
+Todo for Athenasub:
 
 -------------------
 x = done
@@ -6,7 +6,8 @@ x = done
 . = partially done
   = not done
 
-* = not necessary
+* = features not present in current Aegisub, therefore have low priority
+    (which doesn't mean that they won't be implemented before the others... >_>)
 -------------------
 
 
@@ -14,7 +15,7 @@ x = done
 [x] Text file reader/writer
 [ ] Automatic character set detection
 [ ] Conversion between subtitle formats
-[ ] Format comformity checks
+[x] Format comformity checks
 [ ] Override tag support
 [:] ASS format support
 [ ] ASS override tags
@@ -23,6 +24,7 @@ x = done
 [ ] DVD subtitles support (*)
 [ ] Blu-Ray subtitles support (*)
 [ ] OCR support (through Tesseract) (*)
+[ ] Logging system
 
 [:] Time helper class
 [:] Colour helper class

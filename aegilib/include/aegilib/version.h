@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -35,11 +35,11 @@
 
 
 #pragma once
-#include "gorgonstring.h"
+#include "athenastring.h"
 
 ////////////////////
 // Helper functions
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Version
 	String GetLibraryName();

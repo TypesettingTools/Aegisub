@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,7 +36,7 @@
 #include "format_ass_style.h"
 #include "tokenizer.h"
 #include "utils.h"
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 
 ////////////////
@@ -55,7 +55,7 @@ StyleASS::StyleASS(String data,int version)
 		version++;
 		if (version > 2) version = 0;
 	}
-	if (!valid) THROW_GORGON_EXCEPTION(Exception::Parse_Error);
+	if (!valid) THROW_ATHENA_EXCEPTION(Exception::Parse_Error);
 }
 
 

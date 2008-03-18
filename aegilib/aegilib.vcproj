@@ -158,15 +158,15 @@
 			Name="Include"
 			>
 			<File
+				RelativePath=".\include\aegilib\athenastring.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\athenasub.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\fastbuffer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\gorgonstring.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\gorgonsub.h"
 				>
 			</File>
 			<File
@@ -218,6 +218,10 @@
 			Name="Misc"
 			>
 			<File
+				RelativePath=".\include\aegilib\athenatime.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\colour.cpp"
 				>
 			</File>
@@ -235,10 +239,6 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\exception.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\gorgontime.h"
 				>
 			</File>
 			<File
@@ -431,6 +431,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\todo.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

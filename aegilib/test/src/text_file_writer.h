@@ -65,10 +65,10 @@ private:
 	void SetEncoding();
 
 public:
-	TextFileWriter(Gorgonsub::String filename,Gorgonsub::String encoding=_T(""));
+	TextFileWriter(Athenasub::String filename,Athenasub::String encoding=_T(""));
 	~TextFileWriter();
 
-	void WriteLineToFile(Gorgonsub::String line,bool addLineBreak=true);
+	void WriteLineToFile(Athenasub::String line,bool addLineBreak=true);
 };
 
 

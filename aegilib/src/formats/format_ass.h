@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -43,7 +43,7 @@
 #include "section_entry_style.h"
 #include "tr1.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Prototypes
 	class Model;
@@ -57,6 +57,7 @@ namespace Gorgonsub {
 		EntryPtr MakeEntry(const String &data,SectionPtr section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
 		void WriteSection(TextFileWriter &writer,SectionPtr section);
+		void MakeValid();
 
 	public:
 		FormatHandlerASS(Model &model,int version);

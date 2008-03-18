@@ -27,18 +27,18 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
 #pragma once
-#include "gorgonstring.h"
+#include "athenastring.h"
 #include "model.h"
 #include "tr1.h"
 
-namespace Gorgonsub {
+namespace Athenasub {
 
 	// Format handler interface
 	class FormatHandler {

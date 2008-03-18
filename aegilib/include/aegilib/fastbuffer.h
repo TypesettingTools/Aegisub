@@ -39,7 +39,7 @@
 #include "utils.h"
 
 
-namespace Gorgonsub {
+namespace Athenasub {
 	// Fast buffer class
 	template <typename T>
 	class FastBuffer {

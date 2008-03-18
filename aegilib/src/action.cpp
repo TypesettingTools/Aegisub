@@ -27,14 +27,14 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "gorgonsub.h"
-using namespace Gorgonsub;
+#include "athenasub.h"
+using namespace Athenasub;
 
 
 ////////////////////////////////
@@ -104,7 +104,7 @@ void ActionRemove::Execute(Model &model)
 {
 	// Find the section to remote it from
 	String sect = section;
-	if (sect.IsEmpty()) THROW_GORGON_EXCEPTION(Exception::TODO); // TODO
+	if (sect.IsEmpty()) THROW_ATHENA_EXCEPTION(Exception::TODO); // TODO
 	SectionPtr section = GetSection(model,sect);
 
 	// Remove the line

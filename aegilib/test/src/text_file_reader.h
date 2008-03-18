@@ -72,15 +72,15 @@ private:
 	void SetEncodingConfiguration();
 
 public:
-	TextFileReader(Gorgonsub::String filename,Gorgonsub::String encoding=_T(""),bool trim=true);
+	TextFileReader(Athenasub::String filename,Athenasub::String encoding=_T(""),bool trim=true);
 	~TextFileReader();
 
-	Gorgonsub::String ReadLineFromFile();
+	Athenasub::String ReadLineFromFile();
 	bool HasMoreLines();
 
-	static void EnsureValid(const Gorgonsub::String encoding);
-	Gorgonsub::String GetCurrentEncoding();
-	static Gorgonsub::String GetEncoding(const Gorgonsub::String filename);
+	static void EnsureValid(const Athenasub::String encoding);
+	Athenasub::String GetCurrentEncoding();
+	static Athenasub::String GetEncoding(const Athenasub::String filename);
 };
 
 

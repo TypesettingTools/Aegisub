@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -36,7 +36,7 @@
 #include "format_manager.h"
 #include "formats/format_ass.h"
 #include <wx/string.h>
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 
 ////////

@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/GORGONSUB
+// AEGISUB/ATHENASUB
 //
 // Website: http://www.aegisub.net
 // Contact: mailto:amz@aegisub.net
@@ -42,7 +42,7 @@
 #include "../text_file_writer.h"
 #include <iostream>
 #include <wx/tokenzr.h>
-using namespace Gorgonsub;
+using namespace Athenasub;
 
 
 ///////
@@ -139,6 +139,9 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 		EntryPtr entry = MakeEntry(cur,section,version);
 		if (entry) section->AddEntry(entry);
 	}
+
+	// Ensure validity
+	MakeValid();
 }
 
 
@@ -316,7 +319,7 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 			if (versionString == _T("v4.00")) trueVersion = 0;
 			else if (versionString == _T("v4.00+")) trueVersion = 1;
 			else if (versionString == _T("v4.00++")) trueVersion = 2;
-			else THROW_GORGON_EXCEPTION(Exception::Unknown_Format);
+			else THROW_ATHENA_EXCEPTION(Exception::Unknown_Format);
 			if (trueVersion != version) {
 				// TODO: issue warning?
 				version = trueVersion;
@@ -360,4 +363,38 @@ void FormatHandlerASS::WriteSection(TextFileWriter &writer,SectionPtr section)
 		shared_ptr<const SerializeText> serial = dynamic_pointer_cast<const SerializeText>(entry);
 		writer.WriteLineToFile(serial->ToText(formatVersion));
 	}
+}
+
+
+///////////////////////
+// Validate the format
+void FormatHandlerASS::MakeValid()
+{
+	// Only ASS supported right now
+	if (formatVersion != 1) THROW_ATHENA_EXCEPTION(Exception::TODO);
+
+	// Check for [Script Info]
+	SectionPtr section = GetSection(L"Script Info");
+	if (!section) AddSection(L"Script Info");
+	section = GetSection(L"Script Info");
+	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
+
+	// Check if necessary variables are available
+	if (section->GetProperty(L"PlayResX").IsEmpty()) section->SetProperty(L"PlayResX",L"384");	// These two mystical values come from Substation Alpha
+	if (section->GetProperty(L"PlayResY").IsEmpty()) section->SetProperty(L"PlayResY",L"288");	// 288 is half of 576, the PAL resolution, and 384 makes it 4:3
+	section->SetProperty(L"ScriptType",L"v4.00+");
+
+	// Get [V4+ Styles]
+	section = GetSection(L"V4+ Styles");
+	if (!section) AddSection(L"V4+ Styles");
+	section = GetSection(L"V4+ Styles");
+	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
+	section->SetProperty(L"Format",L"Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding");
+
+	// Get [Events]
+	section = GetSection(L"Events");
+	if (!section) AddSection(L"Events");
+	section = GetSection(L"Events");
+	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
+	section->SetProperty(L"Format",L"Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text");
 }
