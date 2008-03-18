@@ -363,8 +363,8 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		unsigned char delay_b2 = delay & 0xFF;
 		int sx = pics[i].x;
 		int sy = pics[i].y;
-		int ex = pics[i].w + sx;
-		int ey = pics[i].h + sy;
+		int ex = pics[i].w + sx - 1;
+		int ey = pics[i].h + sy - 1;
 		unsigned char dispx_b1 = (sx & 0xFF0) >> 4;
 		unsigned char dispx_b2 = ((sx & 0x0F) << 4) | ((ex & 0xF00) >> 8);
 		unsigned char dispx_b3 = (ex & 0xFF);
@@ -376,11 +376,11 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		unsigned char control[] = {
 			0x00, 0x00,			// Delay
 			comm2_b1, comm2_b2,	// Next command
-			0x01,				// Start display
 			0x03, 0x01, 0x23,	// Set colours
 			0x04, 0x0F, 0xFF,	// Alpha blend
 			0x05, dispx_b1, dispx_b2, dispx_b3, dispy_b1, dispy_b2, dispy_b3, // Display area
 			0x06, pix0_b1, pix0_b2, pix1_b1, pix1_b2, // Pixel pointers
+			0x01,				// Start display
 			0xFF,				// End block 1
 			delay_b1, delay_b2,	// Delay
 			comm2_b1, comm2_b2,	// This command

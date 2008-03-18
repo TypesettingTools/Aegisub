@@ -238,19 +238,26 @@ void DialogDummyVideo::OnLengthChange(wxCommandEvent &evt)
 void DialogDummyVideo::UpdateLengthDisplay()
 {
 	double fpsval;
-	int lengthval = length->GetValue();
+	int lengthval = 0;
 	if (!length_display) return;
-	if ((fps->GetValue().ToDouble(&fpsval)) && fpsval > 0 && lengthval > 0) {
-		int tt = int(lengthval / fpsval * 1000); // frames / (frames/seconds) * 1000 = milliseconds
-		// 32 bit signed int can hold almost 600 positive hours when counting milliseconds, ASS allows at most just below 10 hours, so we're safe
-		int ms, s, m, h;
-		ms = tt % 1000; tt /= 1000;
-		s = tt % 60; tt /= 60;
-		m = tt % 60; tt /= 60;
-		h = tt;
-		length_display->SetLabel(wxString::Format(_("Resulting duration: %d:%02d:%02d.%03d"), h, m, s, ms));
-		ok_button->Enable();
-	} else {
+	bool valid = false;
+	if (fps->GetValue().ToDouble(&fpsval)) {
+		lengthval = length->GetValue();
+		if (lengthval && fpsval > 0 && lengthval > 0) {
+			valid = true;
+			int tt = int(lengthval / fpsval * 1000); // frames / (frames/seconds) * 1000 = milliseconds
+			// 32 bit signed int can hold almost 600 positive hours when counting milliseconds, ASS allows at most just below 10 hours, so we're safe
+			int ms, s, m, h;
+			ms = tt % 1000; tt /= 1000;
+			s = tt % 60; tt /= 60;
+			m = tt % 60; tt /= 60;
+			h = tt;
+			length_display->SetLabel(wxString::Format(_("Resulting duration: %d:%02d:%02d.%03d"), h, m, s, ms));
+			ok_button->Enable();
+		}
+	}
+	
+	if (!valid) {
 		length_display->SetLabel(_("Invalid fps or length value"));
 		ok_button->Disable();
 	}
