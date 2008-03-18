@@ -40,7 +40,7 @@
 namespace Gorgonsub {
 	// Prototypes
 	class Model;
-	class SectionEntry;
+	class Entry;
 	class Action;
 	class Section;
 	typedef shared_ptr<Action> ActionPtr;
@@ -60,12 +60,12 @@ namespace Gorgonsub {
 	// Insert line
 	class ActionInsert : public Action {
 	private:
-		shared_ptr<SectionEntry> entry;
+		shared_ptr<Entry> entry;
 		const String section;
 		int lineNumber;
 
 	public:
-		ActionInsert(shared_ptr<SectionEntry> entry,int line,const String &section);
+		ActionInsert(shared_ptr<Entry> entry,int line,const String &section);
 		~ActionInsert() {}
 
 		ActionPtr GetAntiAction(const Model &model) const;
@@ -89,14 +89,14 @@ namespace Gorgonsub {
 	// Modify line
 	class ActionModify : public Action {
 	private:
-		shared_ptr<SectionEntry> entry;
+		shared_ptr<Entry> entry;
 		shared_ptr<void> delta;
 		const String section;
 		int lineNumber;
 		bool noTextFields;
 
 	public:
-		ActionModify(shared_ptr<SectionEntry> entry,int line,const String &section,bool noTextFields);
+		ActionModify(shared_ptr<Entry> entry,int line,const String &section,bool noTextFields);
 		ActionModify(shared_ptr<void> delta,int line,const String &section);
 		~ActionModify() {}
 
@@ -107,14 +107,14 @@ namespace Gorgonsub {
 	// Modify several line
 	class ActionModifyBatch : public Action {
 	private:
-		std::vector<shared_ptr<SectionEntry> > entries;
+		std::vector<shared_ptr<Entry> > entries;
 		std::vector<shared_ptr<void> > deltas;
 		Selection selection;
 		const String section;
 		bool noTextFields;
 
 	public:
-		ActionModifyBatch(std::vector<shared_ptr<SectionEntry> > entries,std::vector<shared_ptr<void> > deltas,Selection selection,const String &section,bool noTextFields);
+		ActionModifyBatch(std::vector<shared_ptr<Entry> > entries,std::vector<shared_ptr<void> > deltas,Selection selection,const String &section,bool noTextFields);
 		~ActionModifyBatch() {}
 
 		ActionPtr GetAntiAction(const Model &model) const;

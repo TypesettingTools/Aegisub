@@ -45,8 +45,9 @@ namespace Gorgonsub {
 	// Section class
 	class Section {
 	private:
-		std::vector<SectionEntryPtr> entries;
+		std::vector<EntryPtr> entries;
 		std::map<String,String> properties;
+		std::map<String,EntryPtr> index;
 		String name;
 
 	public:
@@ -65,12 +66,15 @@ namespace Gorgonsub {
 		size_t GetPropertyCount() const;
 		String GetPropertyName(size_t index) const;
 
+		// Indexed
+		EntryPtr GetFromIndex(String key) const;
+
 		// Entries
-		void AddEntry(SectionEntryPtr entry,int pos=-1);
+		void AddEntry(EntryPtr entry,int pos=-1);
 		void RemoveEntryByIndex(size_t index);
-		void RemoveEntry(SectionEntryPtr entry);
-		SectionEntryPtr GetEntry(size_t index) const;
-		SectionEntryPtr& GetEntryRef(size_t index);
+		void RemoveEntry(EntryPtr entry);
+		EntryPtr GetEntry(size_t index) const;
+		EntryPtr& GetEntryRef(size_t index);
 		size_t GetEntryCount() const;
 	};
 	typedef shared_ptr<Section> SectionPtr;

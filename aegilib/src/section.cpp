@@ -48,38 +48,65 @@ Section::Section(String _name)
 
 ///////////////////
 // Append an entry
-void Section::AddEntry(SectionEntryPtr entry,int pos)
+void Section::AddEntry(EntryPtr entry,int pos)
 {
+	// Insert to entry list
 	if (pos == -1) entries.push_back(entry);
 	else entries.insert(entries.begin()+pos,entry);
+
+	// Add to index too if it's indexable
+	if (entry->IsIndexable()) {
+		index[entry->GetIndexName()] = entry;
+	}
 }
 
-void Section::RemoveEntryByIndex(size_t index)
+
+/////////////////////////
+// Removes the nth entry
+void Section::RemoveEntryByIndex(size_t i)
 {
-	entries.erase(entries.begin()+index);
+	// Get entry iterator and erase
+	std::vector<EntryPtr>::iterator entry = entries.begin()+i;
+	entries.erase(entry);
+
+	// If it's indexable, remove it from index as well
+	if ((*entry)->IsIndexable()) index.erase((*entry)->GetIndexName());
 }
 
-void Section::RemoveEntry(SectionEntryPtr entry)
+
+/////////////////////////////////
+// Removes an entry by its value
+void Section::RemoveEntry(EntryPtr entry)
 {
 	size_t len = entries.size();
 	for (size_t i=0;i<len;i++) {
 		if (entries[i] == entry) {
 			entries.erase(entries.begin()+i);
+			if (entry->IsIndexable()) index.erase(entry->GetIndexName());
 			return;
 		}
 	}
 }
 
-SectionEntryPtr Section::GetEntry(size_t index) const
+
+////////////////////////////
+// Retrieves entry by index
+EntryPtr Section::GetEntry(size_t i) const
 {
-	return entries[index];
+	return entries[i];
 }
 
-SectionEntryPtr& Section::GetEntryRef(size_t index)
+
+/////////////////////////////////////
+// Retrieves a reference to an entry
+EntryPtr& Section::GetEntryRef(size_t i)
 {
-	return entries[index];
+	return entries[i];
 }
 
+
+/////////////////////////
+// Get number of entries
 size_t Section::GetEntryCount() const
 {
 	return entries.size();
@@ -131,11 +158,21 @@ size_t Section::GetPropertyCount() const
 
 ///////////////////////////////////
 // Get name of a property by index
-String Section::GetPropertyName(size_t index) const
+String Section::GetPropertyName(size_t n) const
 {
 	std::map<String,String>::const_iterator iter=properties.begin();
 	for (size_t i=0 ; iter!=properties.end() ; iter++,i++) {
-		if (i == index) return iter->first;
+		if (i == n) return iter->first;
 	}
 	return L"";
+}
+
+
+///////////////////////
+// Retrieve from index
+EntryPtr Section::GetFromIndex(String key) const
+{
+	std::map<String,EntryPtr>::const_iterator result = index.find(key);
+	if (result != index.end()) return result->second;
+	return EntryPtr();
 }

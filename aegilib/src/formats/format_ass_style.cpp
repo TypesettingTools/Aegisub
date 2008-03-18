@@ -238,8 +238,8 @@ String StyleASS::ToText(int version) const
 String StyleASS::GetDefaultGroup() const
 {
 	switch (formatVersion) {
-		case 0: return L"V4 Events";
-		case 1: return L"V4+ Events";
-		default: return L"V4++ Events";
+		case 0: return L"V4 Styles";
+		case 1: return L"V4+ Styles";
+		default: return L"V4++ Styles";
 	}
 }

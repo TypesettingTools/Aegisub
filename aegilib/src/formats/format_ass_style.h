@@ -41,7 +41,7 @@
 namespace Gorgonsub {
 
 	// Style
-	class StyleASS : public SectionEntryStyle, public SerializeText {
+	class StyleASS : public Style, public SerializeText {
 	private:
 		String name;
 		String font;
@@ -80,7 +80,11 @@ namespace Gorgonsub {
 
 		// Basic features
 		String GetDefaultGroup() const;
-		SectionEntryPtr Clone() const { return SectionEntryPtr(new StyleASS(*this)); }
+		EntryPtr Clone() const { return EntryPtr(new StyleASS(*this)); }
+
+		// Indexing
+		virtual bool IsIndexable() const { return true; }
+		virtual String GetIndexName() const { return GetName(); }
 
 		// Read accessors
 		String GetName() const { return name; }

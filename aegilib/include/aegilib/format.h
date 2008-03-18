@@ -67,8 +67,8 @@ namespace Gorgonsub {
 		virtual int GetTimingPrecision() const { return 10; }	// In milliseconds
 		virtual int GetMaxTime() const { return 36000000-10; }	// In milliseconds, default 9h 59min 59.99s
 
-		virtual SectionEntryDialoguePtr CreateDialogue() const = 0;
-		virtual SectionEntryStylePtr CreateStyle() const = 0;
+		virtual DialoguePtr CreateDialogue() const = 0;
+		virtual StylePtr CreateStyle() const = 0;
 	};
 	typedef shared_ptr<Format> FormatPtr;
 

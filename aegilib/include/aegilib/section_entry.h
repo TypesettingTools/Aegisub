@@ -50,51 +50,53 @@ namespace Gorgonsub {
 	};
 
 	// Prototypes
-	class SectionEntry;
-	class SectionEntryPlain;
-	class SectionEntryDialogue;
-	class SectionEntryStyle;
-	class SectionEntryFile;
-	class SectionEntryRaw;
-	typedef shared_ptr<SectionEntry> SectionEntryPtr;
-	typedef shared_ptr<SectionEntryPlain> SectionEntryPlainPtr;
-	typedef shared_ptr<SectionEntryDialogue> SectionEntryDialoguePtr;
-	typedef shared_ptr<SectionEntryStyle> SectionEntryStylePtr;
-	typedef shared_ptr<SectionEntryFile> SectionEntryFilePtr;
-	typedef shared_ptr<SectionEntryRaw> SectionEntryRawPtr;
-	typedef shared_ptr<const SectionEntry> SectionEntryConstPtr;
-	typedef shared_ptr<const SectionEntryPlain> SectionEntryPlainConstPtr;
-	typedef shared_ptr<const SectionEntryDialogue> SectionEntryDialogueConstPtr;
-	typedef shared_ptr<const SectionEntryStyle> SectionEntryStyleConstPtr;
-	typedef shared_ptr<const SectionEntryFile> SectionEntryFileConstPtr;
-	typedef shared_ptr<const SectionEntryRaw> SectionEntryRawConstPtr;
+	class Entry;
+	class PlainText;
+	class Dialogue;
+	class Style;
+	class Attachment;
+	class RawEntry;
+	typedef shared_ptr<Entry> EntryPtr;
+	typedef shared_ptr<PlainText> PlainTextPtr;
+	typedef shared_ptr<Dialogue> DialoguePtr;
+	typedef shared_ptr<Style> StylePtr;
+	typedef shared_ptr<Attachment> AttachmentPtr;
+	typedef shared_ptr<RawEntry> RawEntryPtr;
+	typedef shared_ptr<const Entry> EntryConstPtr;
+	typedef shared_ptr<const PlainText> PlainTextConstPtr;
+	typedef shared_ptr<const Dialogue> DialogueConstPtr;
+	typedef shared_ptr<const Style> StyleConstPtr;
+	typedef shared_ptr<const Attachment> AttachmentConstPtr;
+	typedef shared_ptr<const RawEntry> RawEntryConstPtr;
 
 	// Section entry class
-	class SectionEntry {
+	class Entry {
 	protected:
-		virtual ~SectionEntry() {}
+		virtual ~Entry() {}
 		const String& EmptyString() const;
 
 	public:
 		virtual SectionEntryType GetType() const =0;
 		virtual String GetDefaultGroup() const =0;
-		virtual SectionEntryPtr Clone() const =0;
+		virtual EntryPtr Clone() const =0;
 
 		virtual DeltaCoderPtr GetDeltaCoder() const { return DeltaCoderPtr(); }
+		virtual bool IsIndexable() const { return false; }
+		virtual String GetIndexName() const { return L""; }
 
-		static const SectionEntryPlainPtr GetAsPlain(const SectionEntryPtr &ptr);
-		static const SectionEntryDialoguePtr GetAsDialogue(const SectionEntryPtr &ptr);
-		static const SectionEntryDialogueConstPtr GetAsDialogue(const SectionEntryConstPtr &ptr);
-		static const SectionEntryStylePtr GetAsStyle(const SectionEntryPtr &ptr);
-		static const SectionEntryFilePtr GetAsFile(const SectionEntryPtr &ptr);
-		static const SectionEntryRawPtr GetAsRaw(const SectionEntryPtr &ptr);
+		static const PlainTextPtr GetAsPlain(const EntryPtr &ptr);
+		static const DialoguePtr GetAsDialogue(const EntryPtr &ptr);
+		static const DialogueConstPtr GetAsDialogue(const EntryConstPtr &ptr);
+		static const StylePtr GetAsStyle(const EntryPtr &ptr);
+		static const AttachmentPtr GetAsFile(const EntryPtr &ptr);
+		static const RawEntryPtr GetAsRaw(const EntryPtr &ptr);
 	};
 
 	// Section plain-text entry
-	class SectionEntryPlain : public SectionEntry {
+	class PlainText : public Entry {
 	public:
 		SectionEntryType GetType() const { return SECTION_ENTRY_PLAIN; }
-		virtual ~SectionEntryPlain() {}
+		virtual ~PlainText() {}
 		virtual String GetText() const =0;
 		virtual void SetText(const String &_data) =0;
 	};

@@ -99,12 +99,12 @@ void Model::Load(wxInputStream &input,const FormatPtr _format,const String encod
 		// TODO
 
 		// No format found
-		throw Exception(Exception::No_Format_Handler);
+		THROW_GORGON_EXCEPTION(Exception::No_Format_Handler);
 	}
 
 	// Get handler
 	FormatHandlerPtr handler = _format->GetHandler(*this);
-	if (!handler) throw Exception(Exception::No_Format_Handler);
+	if (!handler) THROW_GORGON_EXCEPTION(Exception::No_Format_Handler);
 
 	// Clear the model first
 	Clear();
@@ -124,12 +124,12 @@ void Model::Save(wxOutputStream &output,const FormatPtr _format,const String enc
 	// Use another format
 	if (_format && _format != format) {
 		// TODO
-		throw Exception(Exception::TODO);
+		THROW_GORGON_EXCEPTION(Exception::TODO);
 	}
 
 	// Get handler
 	FormatHandlerPtr handler = format->GetHandler(*this);
-	if (!handler) throw Exception(Exception::No_Format_Handler);
+	if (!handler) THROW_GORGON_EXCEPTION(Exception::No_Format_Handler);
 
 	// Load
 	handler->Save(output,encoding);
@@ -141,7 +141,7 @@ void Model::Save(wxOutputStream &output,const FormatPtr _format,const String enc
 void Model::AddSection(String name)
 {
 	SectionPtr prev = GetSection(name);
-	if (prev) throw Exception(Exception::Section_Already_Exists);
+	if (prev) THROW_GORGON_EXCEPTION(Exception::Section_Already_Exists);
 	sections.push_back(SectionPtr(new Section(name)));
 }
 

@@ -54,7 +54,7 @@ namespace Gorgonsub {
 	private:
 		int formatVersion;
 
-		SectionEntryPtr MakeEntry(const String &data,SectionPtr section,int version);
+		EntryPtr MakeEntry(const String &data,SectionPtr section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
 		void WriteSection(TextFileWriter &writer,SectionPtr section);
 
@@ -78,8 +78,8 @@ namespace Gorgonsub {
 		bool HasMargins() const { return true; }
 		bool HasActors() const { return true; }
 
-		SectionEntryDialoguePtr CreateDialogue() const { return SectionEntryDialoguePtr(new DialogueASS()); }
-		SectionEntryStylePtr CreateStyle() const { return SectionEntryStylePtr(new StyleASS()); }
+		DialoguePtr CreateDialogue() const { return DialoguePtr(new DialogueASS()); }
+		StylePtr CreateStyle() const { return StylePtr(new StyleASS()); }
 	};
 
 	// Substation Alpha

@@ -71,10 +71,10 @@ namespace Gorgonsub {
 		void AddAction(const ActionPtr action);
 		void Finish();
 
-		void InsertLine(SectionEntryPtr line,int position=-1,const String section=L"");
+		void InsertLine(EntryPtr line,int position=-1,const String section=L"");
 		void RemoveLine(int position,const String section);
-		SectionEntryPtr ModifyLine(int position,const String section);
-		std::vector<SectionEntryPtr> ModifyLines(Selection selection,const String section);
+		EntryPtr ModifyLine(int position,const String section);
+		std::vector<EntryPtr> ModifyLines(Selection selection,const String section);
 	};
 	typedef shared_ptr<ActionList> ActionListPtr;
 

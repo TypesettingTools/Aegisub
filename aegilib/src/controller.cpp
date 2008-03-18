@@ -86,11 +86,11 @@ const FormatPtr Controller::GetFormat() const
 
 //////////////////
 // Create entries
-SectionEntryDialoguePtr Controller::CreateDialogue()
+DialoguePtr Controller::CreateDialogue() const
 {
 	return GetFormat()->CreateDialogue();
 }
-SectionEntryStylePtr Controller::CreateStyle()
+StylePtr Controller::CreateStyle() const
 {
 	return GetFormat()->CreateStyle();
 }
@@ -113,4 +113,49 @@ void Controller::Undo(const String owner)
 void Controller::Redo(const String owner)
 {
 	model.Redo(owner);
+}
+
+
+////////////////////////
+// Get the nth dialogue
+DialogueConstPtr Controller::GetDialogue(size_t n) const
+{
+	// TODO
+	(void) n;
+	THROW_GORGON_EXCEPTION(Exception::TODO);
+}
+
+
+/////////////////////
+// Get the nth style
+DialogueConstPtr Controller::GetStyle(size_t n) const
+{
+	// TODO
+	(void) n;
+	THROW_GORGON_EXCEPTION(Exception::TODO);
+}
+
+
+///////////////////////
+// Get a style by name
+StyleConstPtr Controller::GetStyle(String name) const
+{
+	// Get section
+	StylePtr dummy = CreateStyle();
+	String section = dummy->GetDefaultGroup();
+	SectionPtr sect = model.GetSection(section);
+	if (!sect) THROW_GORGON_EXCEPTION(Exception::Invalid_Section);
+
+	// Return from index
+	return dynamic_pointer_cast<const Style> (sect->GetFromIndex(name));
+}
+
+
+////////////////
+// Get an entry
+EntryConstPtr Controller::GetEntry(size_t n,String section) const
+{
+	SectionPtr sect = model.GetSection(section);
+	if (!sect) THROW_GORGON_EXCEPTION(Exception::Invalid_Section);
+	return sect->GetEntry(n);
 }

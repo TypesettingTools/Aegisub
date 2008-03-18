@@ -71,21 +71,25 @@ int main()
 		control.SaveFile(L"subs_out.ass",L"UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
-		system("pause");
 
 		// Issue an action
-		cout << "Executing action 100 times... ";
+#ifdef WXDEBUG
+		const int n = 1;
+#else
+		const int n = 100;
+#endif
+		cout << "Executing action " << n << " times... ";
 		timer.Start();
-		for (size_t i=0;i<100;i++) {
+		for (size_t i=0;i<n;i++) {
 			ActionListPtr actions = control.CreateActionList(L"Test");
 			Selection selection;
 			selection.AddRange(Range(0,5000));
 			selection.AddRange(Range(4500,5500));
 			selection.AddRange(Range(9000,9100));
-			std::vector<SectionEntryPtr> entries = actions->ModifyLines(selection,L"Events");
+			std::vector<EntryPtr> entries = actions->ModifyLines(selection,L"Events");
 			size_t len = entries.size();
 			for (size_t i=0;i<len;i++) {
-				SectionEntryDialoguePtr diag = dynamic_pointer_cast<SectionEntryDialogue> (entries[i]);
+				DialoguePtr diag = dynamic_pointer_cast<Dialogue> (entries[i]);
 				diag->SetStartTime(diag->GetStartTime() - 55555);
 				diag->SetEndTime(diag->GetEndTime() + 5555);
 			}
@@ -93,24 +97,29 @@ int main()
 		}
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
-		system("pause");
 
 		// Rollback
-		cout << "Undoing 99 times... ";
-		for (size_t i=0;i<99;i++) {
+		cout << "Undoing " << n << " times... ";
+		for (size_t i=0;i<n-1;i++) {
 			control.Undo();
 		}
 		cout << "Done.\n";
 
 		// Undo
-		cout << "Undoing and redoing 1000 times... ";
+		cout << "Undoing and redoing " << n*10 << " times... ";
 		timer.Start();
-		for (size_t i=0;i<1000;i++) {
+		for (size_t i=0;i<n*10;i++) {
 			control.Undo();
 			control.Redo();
 		}
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
+
+		// Get style test
+		StyleConstPtr style = control.GetStyle(L"japro1_star");
+		cout << "Style " << style->GetName().mb_str() << " font is " << style->GetFontName().mb_str() << " " << style->GetFontSize() << ".\n";
+
+		// Save a few more
 		control.SaveFile(L"subs_out2.ass",L"UTF-8");
 		control.Undo();
 		control.SaveFile(L"subs_out3.ass",L"UTF-8");

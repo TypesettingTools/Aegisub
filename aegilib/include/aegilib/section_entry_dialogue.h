@@ -43,18 +43,18 @@
 namespace Gorgonsub {
 
 	// Dialogue class
-	class SectionEntryDialogue : public SectionEntry {
+	class Dialogue : public Entry {
 	private:
 		static const bool dodgeWarning = true;
-		void ThrowUnsupported() const { if (dodgeWarning) throw Exception(Exception::Unsupported_Format_Feature); }
+		void ThrowUnsupported() const { if (dodgeWarning) THROW_GORGON_EXCEPTION(Exception::Unsupported_Format_Feature); }
 
 	public:
 		// Destructor
-		virtual ~SectionEntryDialogue() {}
+		virtual ~Dialogue() {}
 
 		// Type
 		SectionEntryType GetType() const { return SECTION_ENTRY_DIALOGUE; }
-		SectionEntryDialogue *GetAsDialogue() { return this; }
+		Dialogue *GetAsDialogue() { return this; }
 
 		// Capabilities
 		virtual bool HasText() const { return false; }

@@ -136,7 +136,7 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 		if (cur[0] == L'[') continue;
 
 		// Create and insert line
-		SectionEntryPtr entry = MakeEntry(cur,section,version);
+		EntryPtr entry = MakeEntry(cur,section,version);
 		if (entry) section->AddEntry(entry);
 	}
 }
@@ -182,11 +182,11 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 
 ///////////////
 // Create line
-SectionEntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr section,int version)
+EntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr section,int version)
 {
 	// Variables
 	const String group = section->GetName();
-	SectionEntryPtr final;
+	EntryPtr final;
 
 	// Attachments
 	if (group == _T("Fonts") || group == _T("Graphics")) {
@@ -226,17 +226,17 @@ SectionEntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr sectio
 	// Script info
 	else if (group == _T("Script Info")) {
 		// Discard comments
-		if (data.Left(1) == _T(";")) return SectionEntryPtr();
+		if (data.Left(1) == _T(";")) return EntryPtr();
 
 		// Parse property
 		size_t pos = data.Find(_T(':'));
-		if (pos == wxNOT_FOUND) return SectionEntryPtr();
+		if (pos == wxNOT_FOUND) return EntryPtr();
 		wxString key = data.Left(pos).Trim(true).Trim(false);
 		wxString value = data.Mid(pos+1).Trim(true).Trim(false);
 
 		// Insert property
 		section->SetProperty(key,value);
-		return SectionEntryPtr();
+		return EntryPtr();
 	}
 
 	// Unknown group, just leave it intact
@@ -316,7 +316,7 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 			if (versionString == _T("v4.00")) trueVersion = 0;
 			else if (versionString == _T("v4.00+")) trueVersion = 1;
 			else if (versionString == _T("v4.00++")) trueVersion = 2;
-			else throw Exception(Exception::Unknown_Format);
+			else THROW_GORGON_EXCEPTION(Exception::Unknown_Format);
 			if (trueVersion != version) {
 				// TODO: issue warning?
 				version = trueVersion;
@@ -356,7 +356,7 @@ void FormatHandlerASS::WriteSection(TextFileWriter &writer,SectionPtr section)
 	// Write contents
 	size_t entries = section->GetEntryCount();
 	for (size_t i=0;i<entries;i++) {
-		SectionEntryConstPtr entry = section->GetEntry(i);
+		EntryConstPtr entry = section->GetEntry(i);
 		shared_ptr<const SerializeText> serial = dynamic_pointer_cast<const SerializeText>(entry);
 		writer.WriteLineToFile(serial->ToText(formatVersion));
 	}

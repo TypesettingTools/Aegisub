@@ -58,7 +58,7 @@ ActionList::~ActionList()
 // Add an action to the queue
 void ActionList::AddAction(const ActionPtr action)
 {
-	if (!valid) throw Exception(Exception::Invalid_ActionList);
+	if (!valid) THROW_GORGON_EXCEPTION(Exception::Invalid_ActionList);
 	actions.push_back(action);
 	if (actions.size() > 2) {
 		int a = 0;
@@ -71,7 +71,7 @@ void ActionList::AddAction(const ActionPtr action)
 // Add an action to the start of the queue
 void ActionList::AddActionStart(const ActionPtr action)
 {
-	if (!valid) throw Exception(Exception::Invalid_ActionList);
+	if (!valid) THROW_GORGON_EXCEPTION(Exception::Invalid_ActionList);
 	actions.push_front(action);
 	if (actions.size() > 2) {
 		int a = 0;
@@ -104,7 +104,7 @@ void ActionList::Finish()
 
 //////////////////////////////////
 // Create an "insert line" action
-void ActionList::InsertLine(SectionEntryPtr line,int position,const String section)
+void ActionList::InsertLine(EntryPtr line,int position,const String section)
 {
 	ActionPtr action = ActionPtr (new ActionInsert(line,position,section));
 	AddAction(action);
@@ -122,10 +122,10 @@ void ActionList::RemoveLine(int position,const String section)
 
 /////////////////////////////////
 // Insert a "modify line" action
-SectionEntryPtr ActionList::ModifyLine(int position,const String section)
+EntryPtr ActionList::ModifyLine(int position,const String section)
 {
 	SectionPtr sect = model.GetSection(section);
-	SectionEntryPtr entry = sect->GetEntry(position)->Clone();
+	EntryPtr entry = sect->GetEntry(position)->Clone();
 	ActionPtr action = ActionPtr (new ActionModify(entry,position,section,false));
 	AddAction(action);
 	return entry;
@@ -134,13 +134,13 @@ SectionEntryPtr ActionList::ModifyLine(int position,const String section)
 
 ////////////////////////////////////////
 // Insert a "modify lines" batch action
-std::vector<SectionEntryPtr> ActionList::ModifyLines(Selection selection,const String section)
+std::vector<EntryPtr> ActionList::ModifyLines(Selection selection,const String section)
 {
 	// Get section
 	SectionPtr sect = model.GetSection(section);
 
 	// Generate entries
-	std::vector<SectionEntryPtr> entries(selection.GetCount());
+	std::vector<EntryPtr> entries(selection.GetCount());
 	size_t len = selection.GetRanges();
 	size_t n = 0;
 	for (size_t i=0;i<len;i++) {

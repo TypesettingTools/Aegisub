@@ -42,7 +42,7 @@
 namespace Gorgonsub {
 
 	// Dialogue
-	class DialogueASS : public SectionEntryDialogue, public SerializeText {
+	class DialogueASS : public Dialogue, public SerializeText {
 		friend class DialogueASSDeltaCoder;
 
 	private:
@@ -62,7 +62,7 @@ namespace Gorgonsub {
 
 		// Basic features
 		String GetDefaultGroup() const { return L"Events"; }
-		SectionEntryPtr Clone() const { return SectionEntryPtr(new DialogueASS(*this)); }
+		EntryPtr Clone() const { return EntryPtr(new DialogueASS(*this)); }
 		//DeltaCoderPtr GetDeltaCoder() const { return DeltaCoderPtr(new DialogueASSDeltaCoder()); }
 
 		// Capabilities

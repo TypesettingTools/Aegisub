@@ -43,18 +43,18 @@
 namespace Gorgonsub {
 
 	// Style class
-	class SectionEntryStyle : public SectionEntry {
+	class Style : public Entry {
 	private:
 		static const bool dodgeWarning = true;
-		void ThrowUnsupported() const { if (dodgeWarning) throw Exception(Exception::Unsupported_Format_Feature); }
+		void ThrowUnsupported() const { if (dodgeWarning) THROW_GORGON_EXCEPTION(Exception::Unsupported_Format_Feature); }
 
 	public:
 		// Destructor
-		virtual ~SectionEntryStyle() {}
+		virtual ~Style() {}
 
 		// Type
 		SectionEntryType GetType() const { return SECTION_ENTRY_STYLE; }
-		SectionEntryStyle *GetAsStyle() { return this; }
+		Style *GetAsStyle() { return this; }
 
 		// Read accessors
 		virtual String GetName() const=0;

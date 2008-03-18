@@ -72,7 +72,7 @@ int Tokenizer::GetPosition()
 String Tokenizer::GetString(bool trim)
 {
 	// Has any more?
-	if (!HasMoreTokens()) throw Exception(Exception::Invalid_Token);
+	if (!HasMoreTokens()) THROW_GORGON_EXCEPTION(Exception::Invalid_Token);
 
 	// Find token
 	size_t len = string.Length();

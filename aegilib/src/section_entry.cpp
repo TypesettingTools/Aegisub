@@ -42,34 +42,34 @@ using namespace Gorgonsub;
 
 /////////////////////////////////
 // Returns a static empty string
-const String& SectionEntry::EmptyString() const
+const String& Entry::EmptyString() const
 {
 	static const String str = _T("");
 	return str;
 }
 
 
-const SectionEntryPlainPtr SectionEntry::GetAsPlain(const SectionEntryPtr &ptr)
+const PlainTextPtr Entry::GetAsPlain(const EntryPtr &ptr)
 {
-	(void) ptr; return SectionEntryPlainPtr();
+	(void) ptr; return PlainTextPtr();
 }
-const SectionEntryDialoguePtr SectionEntry::GetAsDialogue(const SectionEntryPtr &ptr)
+const DialoguePtr Entry::GetAsDialogue(const EntryPtr &ptr)
 {
-	return dynamic_pointer_cast<SectionEntryDialogue>(ptr);
+	return dynamic_pointer_cast<Dialogue>(ptr);
 }
-const SectionEntryDialogueConstPtr SectionEntry::GetAsDialogue(const SectionEntryConstPtr &ptr)
+const DialogueConstPtr Entry::GetAsDialogue(const EntryConstPtr &ptr)
 {
-	return dynamic_pointer_cast<const SectionEntryDialogue>(ptr);
+	return dynamic_pointer_cast<const Dialogue>(ptr);
 }
-const SectionEntryStylePtr SectionEntry::GetAsStyle(const SectionEntryPtr &ptr)
+const StylePtr Entry::GetAsStyle(const EntryPtr &ptr)
 {
-	return dynamic_pointer_cast<SectionEntryStyle>(ptr);
+	return dynamic_pointer_cast<Style>(ptr);
 }
-const SectionEntryFilePtr SectionEntry::GetAsFile(const SectionEntryPtr &ptr)
+const AttachmentPtr Entry::GetAsFile(const EntryPtr &ptr)
 {
-	(void) ptr; return SectionEntryFilePtr();
+	(void) ptr; return AttachmentPtr();
 }
-const SectionEntryRawPtr SectionEntry::GetAsRaw(const SectionEntryPtr &ptr)
+const RawEntryPtr Entry::GetAsRaw(const EntryPtr &ptr)
 {
-	(void) ptr; return SectionEntryRawPtr();
+	(void) ptr; return RawEntryPtr();
 }

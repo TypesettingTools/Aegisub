@@ -40,7 +40,7 @@
 namespace Gorgonsub {
 
 	// Raw line
-	class PlainASS : public SectionEntryPlain, public SerializeText {
+	class PlainASS : public PlainText, public SerializeText {
 	private:
 		String data;
 		String ToText(int param) const { (void)param; return data; }
@@ -51,7 +51,7 @@ namespace Gorgonsub {
 
 		// Basic features
 		String GetDefaultGroup() const { return L"Events"; }
-		SectionEntryPtr Clone() const { return SectionEntryPtr(new PlainASS(*this)); }
+		EntryPtr Clone() const { return EntryPtr(new PlainASS(*this)); }
 
 		String GetText() const { return data; }
 		void SetText(const String &_data) { data = _data; }

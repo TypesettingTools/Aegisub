@@ -62,8 +62,13 @@ namespace Gorgonsub {
 		void Undo(const String owner=L"");
 		void Redo(const String owner=L"");
 
-		SectionEntryDialoguePtr CreateDialogue();
-		SectionEntryStylePtr CreateStyle();
+		DialoguePtr CreateDialogue() const;
+		StylePtr CreateStyle() const;
+
+		DialogueConstPtr GetDialogue(size_t n) const;
+		DialogueConstPtr GetStyle(size_t n) const;
+		StyleConstPtr GetStyle(String name) const;
+		EntryConstPtr GetEntry(size_t n,String section) const;
 
 		const FormatPtr GetFormat() const;
 	};

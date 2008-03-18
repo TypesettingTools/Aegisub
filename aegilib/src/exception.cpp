@@ -66,6 +66,7 @@ const char* Exception::GetMessageChar(int code)
 		case Unsupported_Format_Feature: return "This feature is not supported by this format.";
 		case Invalid_Token: return "Invalid type for this token.";
 		case Out_Of_Range: return "Out of range.";
+		case Invalid_Section: return "Invalid section.";
 		case TODO: return "TODO";
 	}
 	return "Invalid code.";

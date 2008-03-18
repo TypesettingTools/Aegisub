@@ -14,6 +14,7 @@ x = done
 [x] Text file reader/writer
 [ ] Automatic character set detection
 [ ] Conversion between subtitle formats
+[ ] Format comformity checks
 [ ] Override tag support
 [:] ASS format support
 [ ] ASS override tags
@@ -21,6 +22,7 @@ x = done
 [ ] Matroska-embedded subtitles support
 [ ] DVD subtitles support (*)
 [ ] Blu-Ray subtitles support (*)
+[ ] OCR support (through Tesseract) (*)
 
 [:] Time helper class
 [:] Colour helper class
@@ -28,11 +30,12 @@ x = done
 [x] Exception class
 
 [x] Basic manipulation system
+[.] Reading subtitles data from model
+[x] Inserting/removing/modifying lines
+[.] Multi-line manipulation via selections
 [:] Undo/redo stack
 [ ] Owner-based undo/redo operations
 [x] Delta coded undo/redo
-[.] Multi-line manipulation via selections
-[ ] Reading subtitles data from model
 
 [x] Basic MVC structure
 [.] Controller

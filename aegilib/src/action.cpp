@@ -49,7 +49,7 @@ SectionPtr Action::GetSection(const Model &model,const String &name) const
 
 ///////////////
 // Constructor
-ActionInsert::ActionInsert(shared_ptr<SectionEntry> data,int line,const String &sName)
+ActionInsert::ActionInsert(shared_ptr<Entry> data,int line,const String &sName)
 : entry(data), lineNumber(line), section(sName) {}
 
 
@@ -93,7 +93,7 @@ ActionRemove::ActionRemove(int line,const String &sName)
 ActionPtr ActionRemove::GetAntiAction(const Model &model) const
 {
 	SectionPtr sect = GetSection(model,section);
-	SectionEntryPtr entry = sect->GetEntry(lineNumber);
+	EntryPtr entry = sect->GetEntry(lineNumber);
 	return ActionPtr(new ActionInsert(entry,lineNumber,section));
 }
 
@@ -104,7 +104,7 @@ void ActionRemove::Execute(Model &model)
 {
 	// Find the section to remote it from
 	String sect = section;
-	if (sect.IsEmpty()) throw Exception(Exception::TODO); // TODO
+	if (sect.IsEmpty()) THROW_GORGON_EXCEPTION(Exception::TODO); // TODO
 	SectionPtr section = GetSection(model,sect);
 
 	// Remove the line
@@ -116,7 +116,7 @@ void ActionRemove::Execute(Model &model)
 
 ////////////////
 // Constructors
-ActionModify::ActionModify(shared_ptr<SectionEntry> data,int line,const String &sName,bool _noTextFields)
+ActionModify::ActionModify(shared_ptr<Entry> data,int line,const String &sName,bool _noTextFields)
 : entry(data), lineNumber(line), section(sName), noTextFields(_noTextFields) {}
 
 ActionModify::ActionModify(shared_ptr<void> _delta,int line,const String &sName)
@@ -129,7 +129,7 @@ ActionPtr ActionModify::GetAntiAction(const Model &model) const
 {
 	// Get section and original line
 	SectionPtr sect = GetSection(model,section);
-	SectionEntryPtr oldEntry = sect->GetEntry(lineNumber);
+	EntryPtr oldEntry = sect->GetEntry(lineNumber);
 
 	// Try to get a delta
 	DeltaCoderPtr deltaCoder = oldEntry->GetDeltaCoder();
@@ -158,7 +158,7 @@ void ActionModify::Execute(Model &model)
 
 	// Modify the line
 	if (delta) {
-		SectionEntryPtr &ref = sect->GetEntryRef(lineNumber);
+		EntryPtr &ref = sect->GetEntryRef(lineNumber);
 		ref->GetDeltaCoder()->ApplyDelta(delta,ref);
 	}
 	else sect->GetEntryRef(lineNumber) = entry;
@@ -167,7 +167,7 @@ void ActionModify::Execute(Model &model)
 
 ////////////////////////// Batch Modify line //////////////////////////
 
-ActionModifyBatch::ActionModifyBatch(std::vector<shared_ptr<SectionEntry> > _entries, std::vector<shared_ptr<void> > _deltas, Selection _selection,const String &_section,bool _noTextFields)
+ActionModifyBatch::ActionModifyBatch(std::vector<shared_ptr<Entry> > _entries, std::vector<shared_ptr<void> > _deltas, Selection _selection,const String &_section,bool _noTextFields)
 : entries(_entries), deltas(_deltas), selection(_selection), section(_section), noTextFields(_noTextFields) {}
 
 ActionPtr ActionModifyBatch::GetAntiAction(const Model &model) const
@@ -176,12 +176,12 @@ ActionPtr ActionModifyBatch::GetAntiAction(const Model &model) const
 	SectionPtr sect = GetSection(model,section);
 	size_t len = selection.GetCount();
 	std::vector<VoidPtr> _deltas(len);
-	std::vector<SectionEntryPtr> oldEntries(len);
+	std::vector<EntryPtr> oldEntries(len);
 
 	// For each line...
 	for (size_t i=0;i<len;i++) {
 		// Get old entry
-		SectionEntryPtr oldEntry = sect->GetEntry(selection.GetLine(i));
+		EntryPtr oldEntry = sect->GetEntry(selection.GetLine(i));
 
 		// Try to get a delta
 		DeltaCoderPtr deltaCoder = oldEntry->GetDeltaCoder();
@@ -208,7 +208,7 @@ void ActionModifyBatch::Execute(Model &model)
 	// For each line...
 	for (size_t i=0;i<len;i++) {
 		if (i < deltas.size() && deltas[i]) {
-			SectionEntryPtr &ref = sect->GetEntryRef(selection.GetLine(i));
+			EntryPtr &ref = sect->GetEntryRef(selection.GetLine(i));
 			ref->GetDeltaCoder()->ApplyDelta(deltas[i],ref);
 		}
 		else sect->GetEntryRef(selection.GetLine(i)) = entries[i];
