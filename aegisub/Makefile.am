@@ -64,8 +64,8 @@ endif
 if HAVE_AUTO4_LUA
 noinst_LIBRARIES += libauto4_lua.a
 libauto4_lua_a_SOURCES = auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_scriptreader.cpp
-libauto4_lua_a_CPPFLAGS = @LUA_CPPFLAGS@
-aegisub_LDFLAGS += @LUA_LDFLAGS@
+libauto4_lua_a_CPPFLAGS = @LUA_CFLAGS@
+LIBS += @LUA_LDFLAGS@
 aegisub_LDADD += libauto4_lua.a
 endif
 

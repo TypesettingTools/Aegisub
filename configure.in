@@ -338,78 +338,121 @@ AM_CONDITIONAL([HAVE_UNIVCHARDET], [test "$with_univchardet" != "no"])
 ############
 ## Auto4 LUA
 ############
- 
+
+AC_ARG_VAR([LUA_CFLAGS], [CFLAGS to use for LUA 5.1 (default: CPPFLAGS)])
+AC_ARG_VAR([LUA_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: -llua)])
+if test -z "$LUA_LDFLAGS"; then
+  LUA_LDFLAGS="-llua";
+fi
 
 AC_ARG_WITH(lua,
 [  --without-lua           build without lua 5.1 (auto4)], [lua_disabled="(disabled)"])
 
-AC_ARG_WITH(lua-lib,
-[  --with-lua-lib=PREFIX   PATH location of lua 5.1 library (auto4)], [lua_lib_dir="-L$withval"])
-
-AC_ARG_WITH(lua-include,
-[  --with-lua-include=PREFIX
-                          PATH location of lua 5.1 includes], [lua_include_dir="-I$withval"])
-
 if test "$with_lua" != no; then
-  aegisub_save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$LDFLAGS $lua_lib_dir"
-  AC_CHECK_LIB([lua], [lua_call], [LUA_LDFLAGS="$lua_lib_dir -llua"; with_lua_lib="yes"])
-  LDFLAGS="$aegisub_save_LDFLAGS"
 
   aegisub_save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$CPPFLAGS $lua_include_dir"
-  AC_CHECK_HEADER([lua.h],[LUA_CPPFLAGS="$lua_include_dir"; with_lua_include="yes"])
+  aegisub_save_LDFLAGS="$LDFLAGS"
+
+  CPPFLAGS="$CPPFLAGS $LUA_CFLAGS"
+  LDFLAGS="$LDFLAGS $LUA_LDFLAGS"
+
+      AC_CACHE_CHECK(
+        [whether LUA 5.1 works], [with_lua],
+        [AC_COMPILE_IFELSE([
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+}
+
+int main () {
+  lua_State *L = luaL_newstate();
+  lua_pushstring(L, "test");
+  int res = lua_objlen(L, -1) == 4;
+  lua_close(L);
+  return !res;
+}],
+        [with_lua="yes"],
+        [with_lua="no"])
+        ])
+
   CPPFLAGS="$aegisub_save_CPPFLAGS"
+  LDFLAGS="$aegisub_save_LDFLAGS"
 fi
 
-if test "$with_lua_lib" = "yes" && test "$with_lua_include" = "yes" && test "$with_lua" != "no"; then
+if test "$with_lua" != "no"; then
   with_auto4="yes"
   with_automation="yes"
   AC_DEFINE(WITH_AUTO4_LUA, 1, [Enable Automation (auto4), requires lua])
 else
   with_auto4="no"
+  LUA_CFLAGS=""
+  LUA_LDFLAGS=""
 fi
 
-AC_SUBST(LUA_CPPFLAGS)
-AC_SUBST(LUA_LDFLAGS)
 AM_CONDITIONAL([HAVE_AUTO4_LUA], [test "$with_auto4" != "no"])
-
+AC_SUBST(LUA50_CFLAGS)
+AC_SUBST(LUA50_LDFLAGS)
 
 
 ##################
 ## Auto3 (LUA 5.0)
 ##################
-AC_ARG_WITH(lua50-lib,
-[  --with-lua50-lib=PREFIX PATH location of lua 5.0 library
-                          (required for auto3 support)], [lua50_lib_dir="-L$withval"])
-AC_ARG_WITH(lua50-include,
-[  --with-lua50-include=PREFIX
-                          PATH location of lua 5.0 includes
-                          (required for auto3 support)], [lua50_include_dir="-I$withval"])
 
-if ! test -z "$lua50_lib_dir" && ! test -z "$lua50_include_dir"; then
-  aegisub_save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$lua50_lib_dir -llua"
-  AC_CHECK_LIB([lualib], [luaopen_base], [LUA50_LDFLAGS="$lua50_lib_dir -llua -llualib"; lua50_lib="yes"], [lua50_lib="no"])
-  LDFLAGS="$aegisub_save_LDFLAGS"
-
-  aegisub_save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$lua50_include_dir"
-  AC_CHECK_HEADER([lua.h],[LUA50_CPPFLAGS="$lua50_include_dir"; lua50_include="yes"],[lua50_include="no"])
-  CPPFLAGS="$aegisub_save_CPPFLAGS"
+AC_ARG_VAR([LUA50_CFLAGS], [CFLAGS to use for LUA 5.0 (default: CPPFLAGS)])
+AC_ARG_VAR([LUA50_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: -llua -llualib)])
+if test -z "$LUA50_LDFLAGS"; then
+  LUA50_LDFLAGS="-llua -llualib";
 fi
 
-if test "$lua50_lib" = "yes" && test "$lua50_include" = "yes"; then
+AC_ARG_WITH(lua50,
+[  --without-lua50           build without lua 5.0 (auto3)], [lua_disabled="(disabled)"])
+
+if test "$with_lua50" != no; then
+
+  aegisub_save_CPPFLAGS="$CPPFLAGS"
+  aegisub_save_LDFLAGS="$LDFLAGS"
+
+  CPPFLAGS="$CPPFLAGS $LUA50_CFLAGS"
+  LDFLAGS="$LDFLAGS $LUA50_LDFLAGS"
+
+      AC_CACHE_CHECK(
+        [whether LUA 5.0 works], [with_lua50],
+        [AC_COMPILE_IFELSE([
+extern "C" {
+#include "lua.h"
+#include "lauxlib.h"
+}
+#ifdef lua_open
+#error This is not Lua 5.0
+#endif
+int main() {
+  lua_State *L = lua_open();
+  if (!L) return 1;
+  luaL_newmetatable(L, "test");
+  lua_close(L);
+}],
+        [with_lua50="yes"],
+        [with_lua50="no"])
+        ])
+
+  CPPFLAGS="$aegisub_save_CPPFLAGS"
+  LDFLAGS="$aegisub_save_LDFLAGS"
+fi
+
+
+
+if test "$with_lua50" != "no"; then
   with_auto3="yes"
   with_automation="yes"
   AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
 else
   with_auto3="no"
+  LUA50_CFLAGS=""
+  LUA50_LDFLAGS=""
 fi
 
-
 AM_CONDITIONAL([HAVE_AUTO3_LUA], [test "$with_auto3" != "no"])
-AC_SUBST(LUA50_CPPFLAGS)
+AC_SUBST(LUA50_CFLAGS)
 AC_SUBST(LUA50_LDFLAGS)
 
 
