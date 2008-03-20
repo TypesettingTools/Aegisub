@@ -100,7 +100,7 @@ endif
 if HAVE_UNIVCHARDET
 noinst_LIBRARIES += libmisc_universalchardet.a
 libmisc_universalchardet_a_SOURCES = charset_detect.cpp text_file_reader.cpp
-libmisc_universalchardet_a_CPPFLAGS = -D_X86_ -DTEXT_READER_USE_STDIO
+libmisc_universalchardet_a_CPPFLAGS = -D_X86_
 aegisub_LDADD += libmisc_universalchardet.a ../universalchardet/libuniversalchardet.a
 else
 UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
