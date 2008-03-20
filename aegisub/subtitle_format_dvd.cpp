@@ -41,10 +41,16 @@
 #include "subtitles_provider_manager.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#undef _OPENMP
 #ifdef _OPENMP
 #include <omp.h>
 #endif
 #include <wx/file.h>
+
+//#undef MAX_PATH
+//#include <tessdll.h>
+//
+//#pragma comment(lib, "tessdll.lib")
 
 
 ///////////////
@@ -96,9 +102,10 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 	SubtitlesProvider *provider = NULL;
 	provider = SubtitlesProviderFactoryManager::GetProvider();
 	provider->LoadSubtitles(GetAssFile());
+	//TessDllAPI tess;
 
 	// Write lines
-	int i;
+	int i=0;
 #ifdef _OPENMP
 	#pragma omp parallel for shared(diags,pics,provider) private(i)
 #endif
@@ -117,7 +124,35 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 			provider->DrawSubtitles(dst,time);
 		}
 		wxImage img = dst.GetImage();
+		img.SaveFile(_T("test.bmp"));
 		dst.Clear();
+
+		// Tesseract test
+		/*
+		tess.BeginPageUpright(img.GetWidth(),img.GetHeight(),img.GetData(),24);
+		ETEXT_DESC *output = tess.Recognize_all_Words();
+		wxString blah;
+		int j;
+		for (int cur = 0; cur < output->count; cur = j) {
+			const EANYCODE_CHAR* ch = &output->text[cur];
+			unsigned char unistr[8];
+
+			for (int b = 0; b < ch->blanks; ++b) blah += _T(" ");
+
+			for (j = cur; j < output->count; j++)	{
+				const EANYCODE_CHAR* unich = &output->text[j];
+
+				if (ch->left != unich->left || ch->right != unich->right ||
+					ch->top != unich->top || ch->bottom != unich->bottom)
+					break;
+				unistr[j - cur] = static_cast<unsigned char>(unich->char_code);
+			}
+			unistr[j - cur] = '\0';
+			blah += wxString((char*)unistr,wxConvUTF8);
+			if (ch->formatting & 64) blah += _T("\n");
+		}
+		wxLogMessage(blah);
+		*/
 
 		// Perform colour reduction on image
 		unsigned char r,g,b;
@@ -351,7 +386,7 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		pos += fp.Write(&pics[i].data[1][0],pics[i].data[1].size());
 
 		// Control group data
-		size_t comm2add = packetLen - 4;
+		size_t comm2add = packetLen - 6;
 		unsigned char comm2_b1 = (comm2add & 0xFF00) >> 8;
 		unsigned char comm2_b2 = comm2add & 0xFF;
 		unsigned char pix0_b1 = (line0pos & 0xFF00) >> 8;
@@ -376,11 +411,11 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		unsigned char control[] = {
 			0x00, 0x00,			// Delay
 			comm2_b1, comm2_b2,	// Next command
-			0x03, 0x01, 0x23,	// Set colours
-			0x04, 0x0F, 0xFF,	// Alpha blend
+			0x01,				// Start display
+			0x03, 0x82, 0x30,	// Set colours
+			0x04, 0xFF, 0xF0,	// Alpha blend
 			0x05, dispx_b1, dispx_b2, dispx_b3, dispy_b1, dispy_b2, dispy_b3, // Display area
 			0x06, pix0_b1, pix0_b2, pix1_b1, pix1_b2, // Pixel pointers
-			0x01,				// Start display
 			0xFF,				// End block 1
 			delay_b1, delay_b2,	// Delay
 			comm2_b1, comm2_b2,	// This command

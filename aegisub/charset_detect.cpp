@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #ifdef WITH_UNIVCHARDET
+#include <wx/prec.h>
 #include "charset_detect.h"
 #include "text_file_reader.h"
 #include "../universalchardet/nsCharSetProber.h"
