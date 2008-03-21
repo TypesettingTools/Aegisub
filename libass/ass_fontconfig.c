@@ -40,7 +40,7 @@
 #include <fontconfig/fcfreetype.h>
 #endif
 
-extern int font_fontconfig;
+int font_fontconfig = 1;
 
 struct fc_instance_s {
 #ifdef HAVE_FONTCONFIG
