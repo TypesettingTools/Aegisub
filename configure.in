@@ -563,10 +563,6 @@ wxWidgets detection failed, please set --with-wx* or add
 the libraries to your LDFLAGS, CXX/CFLAGS.
   ])
 fi
-#CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
-#CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
-#CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
-
 
 aegisub_save_CPPLAGS="$CPPLAGS"
 CPPFLAGS="$WX_CFLAGS"
