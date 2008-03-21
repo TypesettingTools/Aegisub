@@ -178,7 +178,7 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 				int temp_output_buffer_size = AVCODEC_MAX_AUDIO_FRAME_SIZE; /* see constructor, it malloc()'s buffer to this */
 				int retval, decoded_samples;
 			
-				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, data, size)
+				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, data, size);
 				if (retval <= 0)
 					throw _T("Failed to decode audio");
 				if (temp_output_buffer_size == 0) /* sanity checking, shouldn't ever happen */
