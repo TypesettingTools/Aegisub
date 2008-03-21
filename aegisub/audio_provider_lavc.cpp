@@ -169,37 +169,46 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 
 	AVPacket packet;
 	while (samples_to_decode > 0 && av_read_frame(lavcfile->fctx, &packet) >= 0) {
-		while (packet.stream_index == audStream) {
-			int temp_output_buffer_size = AVCODEC_MAX_AUDIO_FRAME_SIZE; /* see constructor, it malloc()'s buffer to this */
-			int decoded_samples;
+		/* we're not dealing with video packets in this here provider */
+		if (packet.stream_index == audStream) {
+			int size = packet.size;
+			uint8_t *data = packet.data;
 
-			if (avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, packet.data, packet.size) <= 0)
-				throw _T("Failed to decode audio");
-			if (temp_output_buffer_size == 0) /* gets changed to number of bytes actually output, so this is sanity checking */
-				break;
+			while (size > 0) {
+				int temp_output_buffer_size = AVCODEC_MAX_AUDIO_FRAME_SIZE; /* see constructor, it malloc()'s buffer to this */
+				int retval, decoded_samples;
+			
+				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, data, size)
+				if (retval <= 0)
+					throw _T("Failed to decode audio");
+				if (temp_output_buffer_size == 0) /* sanity checking, shouldn't ever happen */
+					break;
 
-			decoded_samples = temp_output_buffer_size / 2;
-			/* do we need to resample? */
-			if (rsct) {
-				if ((int64_t)(decoded_samples * resample_ratio / codecContext->channels) > samples_to_decode)
-					decoded_samples = (int64_t)(samples_to_decode / resample_ratio * codecContext->channels);
-				decoded_samples = audio_resample(rsct, _buf, buffer, decoded_samples / codecContext->channels);
+				decoded_samples = temp_output_buffer_size / 2;
+				size -= retval;
+				data += retval;
 
-				/* make sure we somehow didn't end up with more samples than we wanted */
-				assert(decoded_samples <= samples_to_decode);
-			} else {
-				/* no resampling needed, just copy to the buffer */
-				/* if (decoded_samples > samples_to_decode)
-					decoded_samples = samples_to_decode; */
-				/* I do not understand the point of the above, changed to a more reasonable assertation instead -Fluff */
-				assert(decoded_samples <= samples_to_decode);
+				/* do we need to resample? */
+				if (rsct) {
+					if ((int64_t)(decoded_samples * resample_ratio / codecContext->channels) > samples_to_decode)
+						decoded_samples = (int64_t)(samples_to_decode / resample_ratio * codecContext->channels);
+					decoded_samples = audio_resample(rsct, _buf, buffer, decoded_samples / codecContext->channels);
 
-				memcpy(_buf, buffer, temp_output_buffer_size);
+					/* make sure we somehow didn't end up with more samples than we wanted */
+					assert(decoded_samples <= samples_to_decode);
+				} else {
+					/* no resampling needed, just copy to the buffer */
+					/* if (decoded_samples > samples_to_decode)
+						decoded_samples = samples_to_decode; */
+					/* I do not understand the point of the above, changed to a more reasonable assertation instead -Fluff */
+					assert(decoded_samples <= samples_to_decode);
+
+					memcpy(_buf, buffer, temp_output_buffer_size);
+				}
+
+				_buf += decoded_samples;
+				samples_to_decode -= decoded_samples;
 			}
-
-			_buf += decoded_samples;
-			samples_to_decode -= decoded_samples;
-			/* break; */ /* why did this loop need to be broken manually? */ 
 		}
 
 		av_free_packet(&packet);
