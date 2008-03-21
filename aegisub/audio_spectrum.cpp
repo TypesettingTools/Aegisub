@@ -168,7 +168,7 @@ public:
 
 			long len = length;
 #ifdef _OPENMP
-#pragma omp parallel shared(overlap,len,line_length)
+#pragma omp parallel shared(overlap,len)
 #endif
 			{
 				short *raw_sample_data = new short[line_length*2];
