@@ -18,9 +18,10 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#ifndef __ASS_H__
-#define __ASS_H__
+#ifndef LIBASS_ASS_H
+#define LIBASS_ASS_H
 
+#include <stdio.h>
 #include "ass_types.h"
 
 /// Libass renderer object. Contents are private.
@@ -85,6 +86,7 @@ void ass_set_use_margins(ass_renderer_t* priv, int use);
 void ass_set_aspect_ratio(ass_renderer_t* priv, double ar);
 void ass_set_font_scale(ass_renderer_t* priv, double font_scale);
 void ass_set_hinting(ass_renderer_t* priv, ass_hinting_t ht);
+void ass_set_line_spacing(ass_renderer_t* priv, double line_spacing);
 
 /**
  * \brief set font lookup defaults
@@ -145,7 +147,7 @@ void ass_free_style(ass_track_t* track, int sid);
 void ass_free_event(ass_track_t* track, int eid);
 
 /**
- * \brief Process Codec Private section of subtitle stream
+ * \brief Parse Codec Private section of subtitle stream
  * \param track target track
  * \param data string to parse
  * \param size length of data
@@ -153,7 +155,7 @@ void ass_free_event(ass_track_t* track, int eid);
 void ass_process_codec_private(ass_track_t* track, char *data, int size);
 
 /**
- * \brief Process a chunk of subtitle stream data. In matroska, this containes exactly 1 event (or a commentary)
+ * \brief Parse a chunk of subtitle stream data. In Matroska, this contains exactly 1 event (or a commentary).
  * \param track track
  * \param data string to parse
  * \param size length of data
@@ -161,6 +163,8 @@ void ass_process_codec_private(ass_track_t* track, char *data, int size);
  * \param duration duration of the event (milliseconds)
 */
 void ass_process_chunk(ass_track_t* track, char *data, int size, long long timecode, long long duration);
+
+char* read_file_recode(char* fname, char* codepage, int* size);
 
 /**
  * \brief Read subtitles from file.
@@ -193,6 +197,11 @@ int ass_read_styles(ass_track_t* track, char* fname, char* codepage);
 void ass_add_font(ass_library_t* library, char* name, char* data, int data_size);
 
 /**
+ * \brief Remove all fonts stored in ass_library object
+ */
+void ass_clear_fonts(ass_library_t* library);
+
+/**
  * \brief Calculates timeshift from now to the start of some other subtitle event, depending on movement parameter
  * \param track subtitle track
  * \param now current time, ms
@@ -202,5 +211,4 @@ void ass_add_font(ass_library_t* library, char* name, char* data, int data_size)
  */
 long long ass_step_sub(ass_track_t* track, long long now, int movement);
 
-#endif
-
+#endif /* LIBASS_ASS_H */

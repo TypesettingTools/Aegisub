@@ -184,6 +184,8 @@ typedef struct frame_context_s {
 	int width, height; // screen dimensions
 	int orig_height; // frame height ( = screen height - margins )
 	int orig_width; // frame width ( = screen width - margins )
+	int orig_height_nocrop; // frame height ( = screen height - margins + cropheight)
+	int orig_width_nocrop; // frame width ( = screen width - margins + cropwidth)
 	ass_track_t* track;
 	long long time; // frame's timestamp, ms
 	double font_scale;
@@ -229,6 +231,7 @@ ass_renderer_t* ass_renderer_init(ass_library_t* library)
 	int error;
 	FT_Library ft;
 	ass_renderer_t* priv = 0;
+	int vmajor, vminor, vpatch;
 	
 	memset(&render_context, 0, sizeof(render_context));
 	memset(&frame_context, 0, sizeof(frame_context));
@@ -239,6 +242,12 @@ ass_renderer_t* ass_renderer_init(ass_library_t* library)
 		mp_msg(MSGT_ASS, MSGL_FATAL, MSGTR_LIBASS_FT_Init_FreeTypeFailed);
 		goto ass_init_exit;
 	}
+
+	FT_Library_Version(ft, &vmajor, &vminor, &vpatch);
+	mp_msg(MSGT_ASS, MSGL_V, "FreeType library version: %d.%d.%d\n",
+	       vmajor, vminor, vpatch);
+	mp_msg(MSGT_ASS, MSGL_V, "FreeType headers version: %d.%d.%d\n",
+	       FREETYPE_MAJOR, FREETYPE_MINOR, FREETYPE_PATCH);
 
 	priv = calloc(1, sizeof(ass_renderer_t));
 	if (!priv) {
@@ -446,28 +455,33 @@ static ass_image_t* render_text(text_info_t* text_info, int dst_x, int dst_y)
  * \brief Mapping between script and screen coordinates
  */
 static int x2scr(int x) {
-	return x*frame_context.orig_width / frame_context.track->PlayResX + global_settings->left_margin;
+	return x*frame_context.orig_width_nocrop / frame_context.track->PlayResX +
+		FFMAX(global_settings->left_margin, 0);
 }
 /**
  * \brief Mapping between script and screen coordinates
  */
 static int y2scr(int y) {
-	return y * frame_context.orig_height / frame_context.track->PlayResY + global_settings->top_margin;
+	return y * frame_context.orig_height_nocrop / frame_context.track->PlayResY +
+		FFMAX(global_settings->top_margin, 0);
 }
 // the same for toptitles
 static int y2scr_top(int y) {
 	if (global_settings->use_margins)
-		return y * frame_context.orig_height / frame_context.track->PlayResY;
+		return y * frame_context.orig_height_nocrop / frame_context.track->PlayResY;
 	else
-		return y * frame_context.orig_height / frame_context.track->PlayResY + global_settings->top_margin;
+		return y * frame_context.orig_height_nocrop / frame_context.track->PlayResY +
+			FFMAX(global_settings->top_margin, 0);
 }
 // the same for subtitles
 static int y2scr_sub(int y) {
 	if (global_settings->use_margins)
-		return y * frame_context.orig_height / frame_context.track->PlayResY +
-		       global_settings->top_margin + global_settings->bottom_margin;
+		return y * frame_context.orig_height_nocrop / frame_context.track->PlayResY +
+			FFMAX(global_settings->top_margin, 0) +
+			FFMAX(global_settings->bottom_margin, 0);
 	else
-		return y * frame_context.orig_height / frame_context.track->PlayResY + global_settings->top_margin;
+		return y * frame_context.orig_height_nocrop / frame_context.track->PlayResY +
+			FFMAX(global_settings->top_margin, 0);
 }
 
 static void compute_string_bbox( text_info_t* info, FT_BBox *abbox ) {
@@ -497,7 +511,7 @@ static void compute_string_bbox( text_info_t* info, FT_BBox *abbox ) {
 /**
  * \brief Check if starting part of (*p) matches sample. If true, shift p to the first symbol after the matching part.
  */
-static int mystrcmp(char** p, const char* sample) {
+static inline int mystrcmp(char** p, const char* sample) {
 	int len = strlen(sample);
 	if (strncmp(*p, sample, len) == 0) {
 		(*p) += len;
@@ -1317,7 +1331,6 @@ static void get_bitmap_glyph(glyph_info_t* info)
 /**
  * This function goes through text_info and calculates text parameters.
  * The following text_info fields are filled:
- *   n_lines
  *   height
  *   lines[].height
  *   lines[].asc
@@ -1344,6 +1357,7 @@ static void measure_text(void)
 				max_desc = cur->desc;
 		}
 	}
+	text_info.height += (text_info.n_lines - 1) * double_to_d6(global_settings->line_spacing);
 }
 
 /**
@@ -1474,7 +1488,7 @@ static void wrap_lines_smart(int max_text_width)
 			int height = text_info.lines[cur_line - 1].desc + text_info.lines[cur_line].asc;
 			cur_line ++;
 			pen_shift_x = - cur->pos.x;
-			pen_shift_y += d6_to_int(height) + global_settings->line_spacing;
+			pen_shift_y += d6_to_int(height + double_to_d6(global_settings->line_spacing));
 			mp_msg(MSGT_ASS, MSGL_DBG2, "shifting from %d to %d by (%d, %d)\n", i, text_info.length - 1, pen_shift_x, pen_shift_y);
 		}
 		cur->pos.x += pen_shift_x;
@@ -1592,7 +1606,7 @@ static void get_base_point(FT_BBox bbox, int alignment, int* bx, int* by)
  * \param b out: 4-vector
  * Calculates a * m and stores result in b
  */
-static void transform_point_3d(double *a, double *m, double *b)
+static inline void transform_point_3d(double *a, double *m, double *b)
 {
 	b[0] = a[0] * m[0] + a[1] * m[4] + a[2] * m[8] +  a[3] * m[12];
 	b[1] = a[0] * m[1] + a[1] * m[5] + a[2] * m[9] +  a[3] * m[13];
@@ -1607,8 +1621,9 @@ static void transform_point_3d(double *a, double *m, double *b)
  * Transforms v by m, projects the result back to the screen plane
  * Result is returned in v.
  */
-static void transform_vector_3d(FT_Vector* v, double *m) {
+static inline void transform_vector_3d(FT_Vector* v, double *m) {
 	const double camera = 2500 * frame_context.border_scale; // camera distance
+	const double cutoff_z = 10.;
 	double a[4], b[4];
 	a[0] = d6_to_double(v->x);
 	a[1] = d6_to_double(v->y);
@@ -1627,8 +1642,8 @@ static void transform_vector_3d(FT_Vector* v, double *m) {
 	b[0] *= camera;
 	b[1] *= camera;
 	b[3] = 8 * b[2] + camera;
-	if (b[3] < 0.001 && b[3] > -0.001)
-		b[3] = b[3] < 0. ? -0.001 : 0.001;
+	if (b[3] < cutoff_z)
+		b[3] = cutoff_z;
 	v->x = double_to_d6(b[0] / b[3]);
 	v->y = double_to_d6(b[1] / b[3]);
 }
@@ -1640,7 +1655,7 @@ static void transform_vector_3d(FT_Vector* v, double *m) {
  * Transforms glyph by m, projects the result back to the screen plane
  * Result is returned in glyph.
  */
-static void transform_glyph_3d(FT_Glyph glyph, double *m, FT_Vector shift) {
+static inline void transform_glyph_3d(FT_Glyph glyph, double *m, FT_Vector shift) {
 	int i;
 	FT_Outline* outline = &((FT_OutlineGlyph)glyph)->outline;
 	FT_Vector* p = outline->points;
@@ -2063,6 +2078,11 @@ void ass_set_hinting(ass_renderer_t* priv, ass_hinting_t ht)
 	}
 }
 
+void ass_set_line_spacing(ass_renderer_t* priv, double line_spacing)
+{
+	priv->settings.line_spacing = line_spacing;
+}
+
 int ass_set_fonts(ass_renderer_t* priv, const char* default_font, const char* default_family)
 {
 	if (priv->settings.default_font)
@@ -2090,12 +2110,21 @@ static int ass_start_frame(ass_renderer_t *priv, ass_track_t* track, long long n
 
 	if (!priv->settings.frame_width && !priv->settings.frame_height)
 		return 1; // library not initialized
+
+	if (track->n_events == 0)
+		return 1; // nothing to do
 	
 	frame_context.ass_priv = priv;
 	frame_context.width = global_settings->frame_width;
 	frame_context.height = global_settings->frame_height;
 	frame_context.orig_width = global_settings->frame_width - global_settings->left_margin - global_settings->right_margin;
 	frame_context.orig_height = global_settings->frame_height - global_settings->top_margin - global_settings->bottom_margin;
+	frame_context.orig_width_nocrop = global_settings->frame_width -
+		FFMAX(global_settings->left_margin, 0) -
+		FFMAX(global_settings->right_margin, 0);
+	frame_context.orig_height_nocrop = global_settings->frame_height -
+		FFMAX(global_settings->top_margin, 0) -
+		FFMAX(global_settings->bottom_margin, 0);
 	frame_context.track = track;
 	frame_context.time = now;
 

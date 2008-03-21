@@ -57,7 +57,7 @@ struct hashmap_s {
 
 #define FNV1_32A_INIT (unsigned)0x811c9dc5
 
-static unsigned fnv_32a_buf(void* buf, size_t len, unsigned hval)
+static inline unsigned fnv_32a_buf(void* buf, size_t len, unsigned hval)
 {
 	unsigned char *bp = buf;
 	unsigned char *be = bp + len;
@@ -67,7 +67,7 @@ static unsigned fnv_32a_buf(void* buf, size_t len, unsigned hval)
 	}
 	return hval;
 }
-static unsigned fnv_32a_str(char* str, unsigned hval)
+static inline unsigned fnv_32a_str(char* str, unsigned hval)
 {
 	unsigned char* s = (unsigned char*)str;
 	while (*s) {
