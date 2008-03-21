@@ -105,20 +105,23 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	if (avcodec_open(codecContext, codec) < 0)
 		throw _T("Failed to open audio decoder");
 
-	/* aegisub currently supports mono only, so always resample */
-
 	sample_rate = Options.AsInt(_T("Audio Sample Rate"));
 	if (!sample_rate)
 		sample_rate = codecContext->sample_rate;
 
 	channels = 1;
-	bytes_per_sample = 2;
+	/* FIXME: this entire provider always assumes 16-bit audio. Currently that isn't a problem since
+	ffmpeg always converts everything to 16-bit, but in the future it might become one. */
+	bytes_per_sample = 2; 
 
-	rsct = audio_resample_init(1, codecContext->channels, sample_rate, codecContext->sample_rate);
-	if (!rsct)
-		throw _T("Failed to initialize resampling");
+	/* aegisub currently supports mono only, so always resample unless it's mono with the desired samplerate */
+	if ((sample_rate != codecContext->sample_rate) || (codecContext->channels > 1)) {
+		rsct = audio_resample_init(1, codecContext->channels, sample_rate, codecContext->sample_rate);
+		if (!rsct)
+			throw _T("Failed to initialize resampling");
 
-	resample_ratio = (float)sample_rate / (float)codecContext->sample_rate;
+		resample_ratio = (float)sample_rate / (float)codecContext->sample_rate;
+	}
 
 	double length = (double)stream->duration * av_q2d(stream->time_base);
 	num_samples = (int64_t)(length * sample_rate);
@@ -154,42 +157,49 @@ void LAVCAudioProvider::Destroy()
 void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 {
 	int16_t *_buf = (int16_t *)buf;
-	int64_t _count = num_samples - start;
-	if (count < _count)
-		_count = count;
-	if (_count < 0)
-		_count = 0;
+	int64_t samples_to_decode = num_samples - start; /* samples left to the end of the stream */
+	if (count < samples_to_decode) /* haven't reached the end yet, so just decode the requested number of samples */
+		samples_to_decode = count;
+	if (samples_to_decode < 0) /* requested beyond the end of the stream */
+		samples_to_decode = 0;
 
-	memset(_buf + _count, 0, (count - _count) << 1);
+	/* if we got asked for more samples than there are left in the stream, add zeros to the decoding buffer until
+	we have enough to fill the request */
+	memset(_buf + samples_to_decode, 0, (count - samples_to_decode) * 2); 
 
 	AVPacket packet;
-	while (_count > 0 && av_read_frame(lavcfile->fctx, &packet) >= 0) {
+	while (samples_to_decode > 0 && av_read_frame(lavcfile->fctx, &packet) >= 0) {
 		while (packet.stream_index == audStream) {
-			int bytesout = AVCODEC_MAX_AUDIO_FRAME_SIZE; /* see constructor, it malloc()'s buffer to this */
-			int samples;
-			/* returns negative if error, 0 if no frame decoded, number of bytes used on success */
-			if (avcodec_decode_audio2(codecContext, buffer, &bytesout, packet.data, packet.size) <= 0)
+			int temp_output_buffer_size = AVCODEC_MAX_AUDIO_FRAME_SIZE; /* see constructor, it malloc()'s buffer to this */
+			int decoded_samples;
+
+			if (avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, packet.data, packet.size) <= 0)
 				throw _T("Failed to decode audio");
-			if (bytesout == 0) /* sanity checking */
+			if (temp_output_buffer_size == 0) /* gets changed to number of bytes actually output, so this is sanity checking */
 				break;
 
-			samples = bytesout >> 1;
+			decoded_samples = temp_output_buffer_size / 2;
+			/* do we need to resample? */
 			if (rsct) {
-				if ((int64_t)(samples * resample_ratio / codecContext->channels) > _count)
-					samples = (int64_t)(_count / resample_ratio * codecContext->channels);
-				samples = audio_resample(rsct, _buf, buffer, samples / codecContext->channels);
+				if ((int64_t)(decoded_samples * resample_ratio / codecContext->channels) > samples_to_decode)
+					decoded_samples = (int64_t)(samples_to_decode / resample_ratio * codecContext->channels);
+				decoded_samples = audio_resample(rsct, _buf, buffer, decoded_samples / codecContext->channels);
 
-				assert(samples <= _count);
+				/* make sure we somehow didn't end up with more samples than we wanted */
+				assert(decoded_samples <= samples_to_decode);
 			} else {
-				/* currently dead code, rsct != NULL because we're resampling for mono */
-				if (samples > _count)
-					samples = _count;
-				memcpy(_buf, buffer, samples << 1);
+				/* no resampling needed, just copy to the buffer */
+				/* if (decoded_samples > samples_to_decode)
+					decoded_samples = samples_to_decode; */
+				/* I do not understand the point of the above, changed to a more reasonable assertation instead -Fluff */
+				assert(decoded_samples <= samples_to_decode);
+
+				memcpy(_buf, buffer, temp_output_buffer_size);
 			}
 
-			_buf += samples;
-			_count -= samples;
-			break;
+			_buf += decoded_samples;
+			samples_to_decode -= decoded_samples;
+			/* break; */ /* why did this loop need to be broken manually? */ 
 		}
 
 		av_free_packet(&packet);
