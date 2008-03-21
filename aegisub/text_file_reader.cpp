@@ -110,7 +110,7 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	CloseHandle(ifile);
 #else
 	ifstream ifile;
-#ifdef WIN32
+#ifdef __WINDOWS__
 	ifile.open(_filename.wc_str());
 #else
 	ifile.open(wxFNCONV(_filename));
@@ -295,7 +295,7 @@ void TextFileReader::Open() {
 		throw _T("Failed opening file for reading.");
 	}
 #else
-#ifdef WIN32
+#ifdef __WINDOWS__
 	file.open(filename.wc_str(),std::ios::in | std::ios::binary);
 #else
 	file.open(wxFNCONV(filename),std::ios::in | std::ios::binary);
