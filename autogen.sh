@@ -310,11 +310,6 @@ cd $ORIGDIR
 echo "--- $srcdir/configure ---"
 $srcdir/configure --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS "$@"
 RC=$?
-if test $RC -ne 0; then
-  echo
-  echo "Configure failed or did not finish!"
-  exit $RC
-fi
 
 echo
 echo
@@ -325,5 +320,11 @@ echo "* download an official distfile in order to receive support."
 echo "*"
 echo "***********************************************************************"
 echo
-echo "Now type 'make' to compile the $PROJECT."
 
+if test $RC -ne 0; then
+  echo
+  echo "Configure failed or did not finish!"
+  exit $RC
+fi
+
+echo "Now type 'make' to compile the $PROJECT."
