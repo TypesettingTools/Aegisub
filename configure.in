@@ -328,8 +328,8 @@ fi
 
 AC_SUBST(LIBASS_LIBS)
 AC_SUBST(LIBASS_CFLAGS)
-AM_CONDITIONAL([WITH_INTERNAL_LIBASS], [test "$with_libass" != "no" ])
-AM_CONDITIONAL([HAVE_LIBASS], [test "$with_libass" != "no" ])
+AM_CONDITIONAL([WITH_INTERNAL_LIBASS], [test "$with_libass" = "yes" || test "$with_internal_libass" = "yes"])
+AM_CONDITIONAL([HAVE_LIBASS], [test "$with_libass" = "yes" || test "$with_internal_libass" = "yes"])
 
 
 
