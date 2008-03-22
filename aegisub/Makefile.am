@@ -120,15 +120,14 @@ EXTRA_aegisub_SOURCES = \
 	audio_player_pulse.cpp \
 	audio_provider_avs.cpp \
 	audio_provider_lavc.cpp \
+	auto4_auto3.cpp \
 	auto4_lua.cpp \
 	auto4_lua_assfile.cpp \
 	auto4_lua_dialog.cpp \
 	auto4_lua_scriptreader.cpp \
-	auto4_auto3.cpp \
 	auto4_ruby.cpp \
 	auto4_ruby_assfile.cpp \
 	auto4_ruby_dialog.cpp \
-	avisynth.h \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
 	lavc_file.cpp \
@@ -136,24 +135,19 @@ EXTRA_aegisub_SOURCES = \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
 	stdwx.cpp \
-	stdwx.h \
 	subtitle_format_prs.cpp \
 	subtitles_provider_libass.cpp \
 	video_provider_avs.cpp \
 	video_provider_dshow.cpp \
-	video_provider_lavc.cpp \
-	boost/*.hpp \
-	gl/*.h \
-	win32/stdint.h
+	video_provider_lavc.cpp
 
 aegisub_SOURCES = \
+	$(AUTO3_LUA) \
+	$(FFMPEG) \
 	$(HUNSPELL) \
 	$(LIBASS) \
-	$(FFMPEG) \
-	$(AUTO3_LUA) \
 	$(UNIVCHARSET) \
-	auto4_base.cpp \
-	audio_player.cpp \
+	MatroskaParser.c \
 	aegisublocale.cpp \
 	ass_attachment.cpp \
 	ass_dialogue.cpp \
@@ -169,13 +163,15 @@ aegisub_SOURCES = \
 	audio_box.cpp \
 	audio_display.cpp \
 	audio_karaoke.cpp \
+	audio_player.cpp \
 	audio_provider.cpp \
 	audio_provider_convert.cpp \
 	audio_provider_hd.cpp \
-	audio_provider_ram.cpp \
 	audio_provider_pcm.cpp \
+	audio_provider_ram.cpp \
 	audio_provider_stream.cpp \
 	audio_spectrum.cpp \
+	auto4_base.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
 	browse_button.cpp \
@@ -228,6 +224,7 @@ aegisub_SOURCES = \
 	idle_field_event.cpp \
 	kana_table.cpp \
 	keyframe.cpp \
+	macosx/bevelButton.cpp \
 	main.cpp \
 	md5.c \
 	mkv_wrap.cpp \
@@ -252,8 +249,8 @@ aegisub_SOURCES = \
 	subtitle_format_microdvd.cpp \
 	subtitle_format_mkv.cpp \
 	subtitle_format_srt.cpp \
-	subtitle_format_txt.cpp \
 	subtitle_format_ttxt.cpp \
+	subtitle_format_txt.cpp \
 	subtitles_provider.cpp \
 	subtitles_provider_csri.cpp \
 	text_file_writer.cpp \
@@ -272,9 +269,9 @@ aegisub_SOURCES = \
 	video_context.cpp \
 	video_display.cpp \
 	video_frame.cpp \
+	video_provider_cache.cpp \
 	video_provider_dummy.cpp \
 	video_provider_manager.cpp \
-	video_provider_cache.cpp \
 	video_slider.cpp \
 	visual_feature.cpp \
 	visual_tool.cpp \
@@ -284,21 +281,18 @@ aegisub_SOURCES = \
 	visual_tool_rotatexy.cpp \
 	visual_tool_rotatez.cpp \
 	visual_tool_scale.cpp \
-	visual_tool_vector_clip.cpp \
-	MatroskaParser.c \
-	macosx/bevelButton.cpp
+	visual_tool_vector_clip.cpp
 
-noinst_HEADERS = \
-	boost/assert.hpp \
-	boost/checked_delete.hpp \
-	boost/shared_count.hpp \
-	boost/shared_ptr.hpp \
-	boost/throw_exception.hpp \
-	boost/workaround.hpp \
-	gl/glext.h \
-	mythes.hxx \
-	auto4_perldata.inc
 
-EXTRA_DIST = \
+aegisub_SOURCES += \
 	$(srcdir)/*.h \
 	$(srcdir)/include/aegisub/*.h
+
+noinst_HEADERS = \
+	$(srcdir)/boost/*.hpp \
+	gl/glext.h \
+	$(srcdir)/*.hxx
+
+EXTRA_DIST = \
+	auto4_perldata.inc \
+	win32/stdint.h
