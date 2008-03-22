@@ -150,12 +150,7 @@ AC_SUBST(GL_LIBS)
 
 #XXX: This needs to be fixed for OSX.
 AC_AGI_COMPILE([OpenGL], [opengl], [$GL_CFLAGS], [$GL_LIBS],[
-#include <GL/gl.h>
-#include <X11/Xlib.h>
-#include <GL/glx.h>
 int main(void) {
-  glXCreateContext(NULL, NULL, NULL, True);
-  glFinish();
   return 0;
 }])
 
@@ -166,6 +161,20 @@ fi
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.7.0,
   AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
   [AC_MSG_FAILURE([aegisub requires >= FreeType2 2.1.9])])
+
+AC_AGI_COMPILE([Freetype], [freetype], [$FREETYPE_CFLAGS], [$FREETYPE_LIBS],[
+#include <ft2build.h>
+#include FT_FREETYPE_H
+int main(void) {
+  FT_Library ft;
+  if (FT_Init_FreeType(&ft)) { return 1; }
+  return;
+}])
+
+if test "$agi_with_freetype" = "no"; then
+    AC_MSG_FAILURE([Please install a working Freetype library.])
+fi
+
 
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
   AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.]),

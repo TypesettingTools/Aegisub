@@ -5,7 +5,7 @@ AC_DEFUN([AC_AGI_COMPILE],[
   LDFLAGS="$4"
       AC_CACHE_CHECK(
         [wether $1 works], [agi_with_$2],
-        [AC_COMPILE_IFELSE([$5],
+        [AC_RUN_IFELSE([$5],
         [eval agi_with_$2="yes"],
         [eval agi_with_$2="no"])
         ])
