@@ -22,6 +22,7 @@ INTLTOOL_REQUIRED_VERSION=0.31
 LIBTOOL_REQUIRED_VERSION=1.5
 
 REQUIRED_M4="fontutil.m4 wxwin28.m4 glib-gettext.m4 intltool.m4 intl.m4 pkg.m4 iconv.m4"
+REQUIRED_M4_WX="wxwin.m4 wxwin28.m4"
 
 PROJECT="aegisub"
 
@@ -218,22 +219,42 @@ fi
 
 
 
+echo "--- Checking for required M4 files ---"
+
 if test -z "$ACLOCAL_FLAGS"; then
     acdir=`$ACLOCAL --print-ac-dir`
 
-    for file in $REQUIRED_M4;
-    do
-	if [ ! -f "$acdir/$file" ]; then
-            echo
-            echo "WARNING: aclocal's directory is $acdir, but..."
-            echo "         no file $acdir/$file"
-            echo "         You may see fatal macro warnings below."
-            echo "         If these files are installed in /some/dir, set the "
-            echo "         ACLOCAL_FLAGS environment variable to \"-I /some/dir\""
-            echo "         or install $acdir/$file."
-            echo
+    for file in $REQUIRED_M4; do
+	    if [ ! -f "$acdir/$file" ]; then
+             echo
+             echo "WARNING: aclocal's directory is $acdir, but..."
+             echo "         no file $acdir/$file"
+             echo "         You may see fatal macro warnings below."
+             echo "         If these files are installed in /some/dir, set the "
+             echo "         ACLOCAL_FLAGS environment variable to \"-I /some/dir\""
+             echo "         or install $acdir/$file."
+             echo
         fi
     done
+
+
+    for file in $REQUIRED_M4_WX; do
+	    if [ -f "$acdir/$file" ]; then
+           FOUND_M4_WX="yes"
+        fi
+    done
+
+    if test -z "$FOUND_M4_WX"; then
+        echo
+        echo "WARNING: aclocal's directory is $acdir, but..."
+        echo "         none of: \"$REQUIRED_M4_WX\" were found."
+        echo "         You may see fatal macro warnings below."
+        echo "         If these files are installed in /some/dir, set the "
+        echo "         ACLOCAL_FLAGS environment variable to \"-I /some/dir\""
+        echo "         or install ONE OF: \"$REQUIRED_M4_WX\" in $acdir."
+        echo "NOTE:    These are the same files under different names."
+        echo
+    fi
 fi
 
 
