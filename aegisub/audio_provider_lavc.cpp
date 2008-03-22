@@ -181,17 +181,19 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, data, size);
 				if (retval <= 0)
 					throw _T("Failed to decode audio");
-				if (temp_output_buffer_size == 0) /* sanity checking, shouldn't ever happen */
-					break;
+				if (temp_output_buffer_size <= 0) /* sanity checking, shouldn't ever happen */
+					throw _T("Audio decoder lied about output size! This can't happen and you didn't see this error message. Move along.");
 
-				decoded_samples = temp_output_buffer_size / 2;
+				decoded_samples = temp_output_buffer_size / 2; /* 2 bytes per sample */
 				size -= retval;
 				data += retval;
 
 				/* do we need to resample? */
 				if (rsct) {
-					if ((int64_t)(decoded_samples * resample_ratio / codecContext->channels) > samples_to_decode)
-						decoded_samples = (int64_t)(samples_to_decode / resample_ratio * codecContext->channels);
+					/* if ((int64_t)(decoded_samples * resample_ratio / codecContext->channels) > samples_to_decode)
+						decoded_samples = (int64_t)(samples_to_decode / resample_ratio * codecContext->channels); */
+					/* what is the point of the above? if we ended up with more samples than we wanted,
+					we should do something about it, not pretend that everything's OK. -Fluff */
 					decoded_samples = audio_resample(rsct, _buf, buffer, decoded_samples / codecContext->channels);
 
 					/* make sure we somehow didn't end up with more samples than we wanted */
