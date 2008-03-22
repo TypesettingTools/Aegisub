@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-27 20:07-0200\n"
+"POT-Creation-Date: 2008-03-22 07:03-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -270,12 +270,12 @@ msgid "Script completed"
 msgstr ""
 
 #: auto4_base.cpp:752
-#, possible-c-format
+#, c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
 msgstr ""
 
 #: auto4_base.cpp:765
-#, possible-c-format
+#, c-format
 msgid "The file was not recognised as an Automation script: %s"
 msgstr ""
 
@@ -283,33 +283,37 @@ msgstr ""
 msgid "File was not recognized as a script"
 msgstr ""
 
-#: auto4_perl.cpp:289
+#: auto4_perl.cpp:109
+msgid "Not enough parameters for Aegisub::text_extents()"
+msgstr ""
+
+#: auto4_perl.cpp:296
 msgid ""
 "Tried to register PerlConsole, but support for it was disabled in this "
 "version."
 msgstr ""
 
-#: auto4_perl.cpp:356
+#: auto4_perl.cpp:363
 msgid "Fatal error: "
 msgstr ""
 
-#: auto4_perl.cpp:358
+#: auto4_perl.cpp:365
 msgid "Error: "
 msgstr ""
 
-#: auto4_perl.cpp:360
+#: auto4_perl.cpp:367
 msgid "Warning: "
 msgstr ""
 
-#: auto4_perl.cpp:362
+#: auto4_perl.cpp:369
 msgid "Hint: "
 msgstr ""
 
-#: auto4_perl.cpp:364
+#: auto4_perl.cpp:371
 msgid "Debug: "
 msgstr ""
 
-#: auto4_perl.cpp:366
+#: auto4_perl.cpp:373
 msgid "Trace: "
 msgstr ""
 
@@ -317,19 +321,23 @@ msgstr ""
 msgid "Executing "
 msgstr ""
 
-#: auto4_perl_script.cpp:96
+#: auto4_perl_script.cpp:97
 msgid "Perl script"
 msgstr ""
 
-#: auto4_perl_script.cpp:171
-#, possible-c-format
-msgid "Reloading %s because the file on disk (%s) changed"
-msgstr ""
-
-#: auto4_perl_script.cpp:200
+#: auto4_perl_script.cpp:186
 msgid ""
 "Unable to add the automation include path(s) to @INC: the script's code may "
 "not compile or execute properly."
+msgstr ""
+
+#: auto4_perl_script.cpp:227
+#, c-format
+msgid "Reloading %s because the file on disk (%s) changed."
+msgstr ""
+
+#: auto4_perl_script.cpp:449
+msgid "Saving changes"
 msgstr ""
 
 #: base_grid.cpp:410
@@ -355,12 +363,12 @@ msgid "Style"
 msgstr ""
 
 #: base_grid.cpp:415 dialog_paste_over.cpp:67 dialog_search_replace.cpp:95
-#: dialog_selection.cpp:75 subs_edit_box.cpp:88 subs_grid.cpp:120
+#: dialog_selection.cpp:75 subs_edit_box.cpp:89 subs_grid.cpp:120
 msgid "Actor"
 msgstr ""
 
 #: base_grid.cpp:416 dialog_paste_over.cpp:77 dialog_selection.cpp:76
-#: subs_edit_box.cpp:91 subs_grid.cpp:121
+#: subs_edit_box.cpp:92 subs_grid.cpp:121
 msgid "Effect"
 msgstr ""
 
@@ -390,13 +398,13 @@ msgstr ""
 msgid "Please choose the folder:"
 msgstr ""
 
-#: charset_detect.cpp:105
+#: charset_detect.cpp:126
 msgid ""
 "Aegisub could not narrow down the character set to a single one.\n"
 "Please pick one below:"
 msgstr ""
 
-#: charset_detect.cpp:105
+#: charset_detect.cpp:126
 msgid "Choose character set"
 msgstr ""
 
@@ -439,7 +447,7 @@ msgid ""
 msgstr ""
 
 #: dialog_about.cpp:130
-#, possible-c-format
+#, c-format
 msgid "Built by %s on %s."
 msgstr ""
 
@@ -546,7 +554,7 @@ msgid "Add Automation script"
 msgstr ""
 
 #: dialog_automation.cpp:279
-#, possible-c-format
+#, c-format
 msgid ""
 "Total scripts loaded: %d\n"
 "Global scripts loaded: %d\n"
@@ -559,7 +567,7 @@ msgid "Scripting engines installed:\n"
 msgstr ""
 
 #: dialog_automation.cpp:291
-#, possible-c-format
+#, c-format
 msgid ""
 "\n"
 "Script info:\n"
@@ -674,7 +682,7 @@ msgid "Colour Picker"
 msgstr ""
 
 #: dialog_detached_video.cpp:69
-#, possible-c-format
+#, c-format
 msgid "Video: %s"
 msgstr ""
 
@@ -702,12 +710,12 @@ msgstr ""
 msgid "Duration (frames):"
 msgstr ""
 
-#: dialog_dummy_video.cpp:251
-#, possible-c-format
+#: dialog_dummy_video.cpp:255
+#, c-format
 msgid "Resulting duration: %d:%02d:%02d.%03d"
 msgstr ""
 
-#: dialog_dummy_video.cpp:254
+#: dialog_dummy_video.cpp:261
 msgid "Invalid fps or length value"
 msgstr ""
 
@@ -802,7 +810,7 @@ msgstr ""
 #: dialog_kanji_timer.cpp:211 dialog_kanji_timer.cpp:244
 #: dialog_kanji_timer.cpp:328 dialog_kanji_timer.cpp:360
 #: dialog_kanji_timer.cpp:362 dialog_options.cpp:238 dialog_resample.cpp:215
-#: dialog_resample.cpp:219 options.cpp:433 subs_grid.cpp:676 subs_grid.cpp:680
+#: dialog_resample.cpp:219 options.cpp:439 subs_grid.cpp:676 subs_grid.cpp:680
 #: subs_grid.cpp:726
 msgid "Error"
 msgstr ""
@@ -873,7 +881,7 @@ msgid "Attaching fonts to file...\n"
 msgstr ""
 
 #: dialog_fonts_collector.cpp:460
-#, possible-c-format
+#, c-format
 msgid ""
 "\n"
 "Finished writing to %s.\n"
@@ -908,32 +916,32 @@ msgid "Found.\n"
 msgstr ""
 
 #: dialog_fonts_collector.cpp:523
-#, possible-c-format
+#, c-format
 msgid "* Copied %s.\n"
 msgstr ""
 
 #: dialog_fonts_collector.cpp:527
-#, possible-c-format
+#, c-format
 msgid "* %s already exists on destination.\n"
 msgstr ""
 
 #: dialog_fonts_collector.cpp:530
-#, possible-c-format
+#, c-format
 msgid "* Failed to copy %s.\n"
 msgstr ""
 
 #: dialog_fonts_collector.cpp:603
-#, possible-c-format
+#, c-format
 msgid "\"%s\" found on style \"%s\".\n"
 msgstr ""
 
 #: dialog_fonts_collector.cpp:604
-#, possible-c-format
+#, c-format
 msgid "\"%s\" found on dialogue line \"%d\".\n"
 msgstr ""
 
 #: dialog_fonts_collector.cpp:605
-#, possible-c-format
+#, c-format
 msgid "\"%s\" found.\n"
 msgstr ""
 
@@ -1710,12 +1718,12 @@ msgid "Press Key"
 msgstr ""
 
 #: dialog_options.cpp:1114
-#, possible-c-format
+#, c-format
 msgid "Press key to bind to \"%s\" or Esc to cancel."
 msgstr ""
 
 #: dialog_options.cpp:1165
-#, possible-c-format
+#, c-format
 msgid ""
 "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be "
 "cleared. Proceed?"
@@ -1948,25 +1956,25 @@ msgstr ""
 msgid "Replace all"
 msgstr ""
 
-#: dialog_search_replace.cpp:406 dialog_search_replace.cpp:497
+#: dialog_search_replace.cpp:408 dialog_search_replace.cpp:511
 msgid "replace"
 msgstr ""
 
-#: dialog_search_replace.cpp:500
-#, possible-c-format
+#: dialog_search_replace.cpp:514
+#, c-format
 msgid "%i matches were replaced."
 msgstr ""
 
-#: dialog_search_replace.cpp:505
+#: dialog_search_replace.cpp:519
 msgid "No matches found."
 msgstr ""
 
-#: dialog_search_replace.cpp:540 dialog_spellchecker.cpp:120 hotkeys.cpp:341
+#: dialog_search_replace.cpp:554 dialog_spellchecker.cpp:120 hotkeys.cpp:341
 #: hotkeys.cpp:344
 msgid "Replace"
 msgstr ""
 
-#: dialog_search_replace.cpp:540 hotkeys.cpp:338
+#: dialog_search_replace.cpp:554 hotkeys.cpp:338
 msgid "Find"
 msgstr ""
 
@@ -2031,7 +2039,7 @@ msgid "Action"
 msgstr ""
 
 #: dialog_selection.cpp:265
-#, possible-c-format
+#, c-format
 msgid "Selection was set to %i lines"
 msgstr ""
 
@@ -2040,12 +2048,12 @@ msgid "Selection"
 msgstr ""
 
 #: dialog_selection.cpp:266
-#, possible-c-format
+#, c-format
 msgid "%i lines were added to selection"
 msgstr ""
 
 #: dialog_selection.cpp:267
-#, possible-c-format
+#, c-format
 msgid "%i lines were removed from selection"
 msgstr ""
 
@@ -2158,7 +2166,7 @@ msgid "all"
 msgstr ""
 
 #: dialog_shift_times.cpp:260
-#, possible-c-format
+#, c-format
 msgid "from %i onward"
 msgstr ""
 
@@ -2250,7 +2258,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: dialog_style_editor.cpp:149 subs_edit_box.cpp:118
+#: dialog_style_editor.cpp:149 subs_edit_box.cpp:119
 msgid "Bold"
 msgstr ""
 
@@ -2258,11 +2266,11 @@ msgstr ""
 msgid "Italic"
 msgstr ""
 
-#: dialog_style_editor.cpp:151 subs_edit_box.cpp:122
+#: dialog_style_editor.cpp:151 subs_edit_box.cpp:123
 msgid "Underline"
 msgstr ""
 
-#: dialog_style_editor.cpp:152 subs_edit_box.cpp:124
+#: dialog_style_editor.cpp:152 subs_edit_box.cpp:125
 msgid "Strikeout"
 msgstr ""
 
@@ -2429,7 +2437,7 @@ msgstr ""
 msgid "Update script?"
 msgstr ""
 
-#: dialog_style_editor.cpp:506 subs_edit_box.cpp:561
+#: dialog_style_editor.cpp:506 subs_edit_box.cpp:578
 msgid "style change"
 msgstr ""
 
@@ -2529,7 +2537,7 @@ msgid "Catalog name conflict"
 msgstr ""
 
 #: dialog_style_manager.cpp:434
-#, possible-c-format
+#, c-format
 msgid ""
 "The specified catalog name contains one or more illegal characters. They "
 "have been replaced with underscores instead.\n"
@@ -2541,7 +2549,7 @@ msgid "Invalid characters"
 msgstr ""
 
 #: dialog_style_manager.cpp:463
-#, possible-c-format
+#, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
 msgstr ""
 
@@ -2838,7 +2846,7 @@ msgid ""
 msgstr ""
 
 #: dialog_timing_processor.cpp:320
-#, possible-c-format
+#, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
 msgstr ""
 
@@ -2977,7 +2985,7 @@ msgid "Enable preview"
 msgstr ""
 
 #: dialog_translation.cpp:186
-#, possible-c-format
+#, c-format
 msgid "Current line: %i/%i"
 msgstr ""
 
@@ -2994,7 +3002,7 @@ msgid "Could not open Internet File system. Aborting.\n"
 msgstr ""
 
 #: dialog_version_check.cpp:183
-#, possible-c-format
+#, c-format
 msgid "Attempting to open \"%s\"..."
 msgstr ""
 
@@ -3011,7 +3019,7 @@ msgid "New version found!\n"
 msgstr ""
 
 #: dialog_version_check.cpp:265
-#, possible-c-format
+#, c-format
 msgid "Please go to the following URL to download it: %s\n"
 msgstr ""
 
@@ -3087,11 +3095,15 @@ msgstr ""
 msgid "Constant: "
 msgstr ""
 
-#: export_framerate.cpp:124
+#: export_framerate.cpp:119
+msgid "Reverse transformation"
+msgstr ""
+
+#: export_framerate.cpp:127
 msgid "Input framerate: "
 msgstr ""
 
-#: export_framerate.cpp:126
+#: export_framerate.cpp:129
 msgid "Output: "
 msgstr ""
 
@@ -4074,7 +4086,7 @@ msgid "Unload timecodes?"
 msgstr ""
 
 #: frame_main.cpp:1069
-#, possible-c-format
+#, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
 "subtitles don't match.\n"
@@ -4208,7 +4220,7 @@ msgstr ""
 msgid "hide tags."
 msgstr ""
 
-#: frame_main_events.cpp:1629 subs_edit_box.cpp:894
+#: frame_main_events.cpp:1629 subs_edit_box.cpp:911
 msgid "editing"
 msgstr ""
 
@@ -4524,11 +4536,11 @@ msgstr ""
 msgid "Styling Assistant Preview"
 msgstr ""
 
-#: lavc_keyframes.cpp:96
+#: lavc_keyframes.cpp:97
 msgid "Load keyframes"
 msgstr ""
 
-#: lavc_keyframes.cpp:96
+#: lavc_keyframes.cpp:97
 msgid "Reading keyframes from video"
 msgstr ""
 
@@ -4544,141 +4556,141 @@ msgstr ""
 msgid "Reading subtitles from Matroska file."
 msgstr ""
 
-#: options.cpp:433
+#: options.cpp:439
 msgid ""
 "Configuration file is either invalid or corrupt. The current file will be "
 "backed up and replaced with a default file."
 msgstr ""
 
-#: subs_edit_box.cpp:82
+#: subs_edit_box.cpp:83
 msgid "Comment"
 msgstr ""
 
-#: subs_edit_box.cpp:83
+#: subs_edit_box.cpp:84
 msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr ""
 
-#: subs_edit_box.cpp:85
+#: subs_edit_box.cpp:86
 msgid "Style for this line."
 msgstr ""
 
-#: subs_edit_box.cpp:87
+#: subs_edit_box.cpp:88
 msgid ""
 "Actor name for this speech. This is only for reference, and is mainly "
 "useless."
 msgstr ""
 
-#: subs_edit_box.cpp:90
+#: subs_edit_box.cpp:91
 msgid ""
 "Effect for this line. This can be used to store extra information for "
 "karaoke scripts, or for the effects supported by the renderer."
 msgstr ""
 
-#: subs_edit_box.cpp:95
+#: subs_edit_box.cpp:96
 msgid "Layer number"
 msgstr ""
 
-#: subs_edit_box.cpp:97
+#: subs_edit_box.cpp:98
 msgid "Start time"
 msgstr ""
 
-#: subs_edit_box.cpp:100
+#: subs_edit_box.cpp:101
 msgid "End time"
 msgstr ""
 
-#: subs_edit_box.cpp:104
+#: subs_edit_box.cpp:105
 msgid "Line duration"
 msgstr ""
 
-#: subs_edit_box.cpp:107
+#: subs_edit_box.cpp:108
 msgid "Left Margin (0 = default)"
 msgstr ""
 
-#: subs_edit_box.cpp:110
+#: subs_edit_box.cpp:111
 msgid "Right Margin (0 = default)"
 msgstr ""
 
-#: subs_edit_box.cpp:113
+#: subs_edit_box.cpp:114
 msgid "Vertical Margin (0 = default)"
 msgstr ""
 
-#: subs_edit_box.cpp:120
+#: subs_edit_box.cpp:121
 msgid "Italics"
 msgstr ""
 
-#: subs_edit_box.cpp:126
+#: subs_edit_box.cpp:127
 msgid "Font Face Name"
 msgstr ""
 
-#: subs_edit_box.cpp:128
+#: subs_edit_box.cpp:129
 msgid "Primary color"
 msgstr ""
 
-#: subs_edit_box.cpp:130
+#: subs_edit_box.cpp:131
 msgid "Secondary color"
 msgstr ""
 
-#: subs_edit_box.cpp:132
+#: subs_edit_box.cpp:133
 msgid "Outline color"
 msgstr ""
 
-#: subs_edit_box.cpp:134
+#: subs_edit_box.cpp:135
 msgid "Shadow color"
 msgstr ""
 
-#: subs_edit_box.cpp:135
+#: subs_edit_box.cpp:137 subs_edit_box.cpp:139
 msgid "Commit"
 msgstr ""
 
-#: subs_edit_box.cpp:136
+#: subs_edit_box.cpp:141
 msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
 msgstr ""
 
-#: subs_edit_box.cpp:137
+#: subs_edit_box.cpp:142
 msgid "Time"
 msgstr ""
 
-#: subs_edit_box.cpp:138
+#: subs_edit_box.cpp:143
 msgid "Time by h:mm:ss.cs"
 msgstr ""
 
-#: subs_edit_box.cpp:139
+#: subs_edit_box.cpp:144
 msgid "Frame"
 msgstr ""
 
-#: subs_edit_box.cpp:140
+#: subs_edit_box.cpp:145
 msgid "Time by frame number"
 msgstr ""
 
-#: subs_edit_box.cpp:592
+#: subs_edit_box.cpp:609
 msgid "actor change"
 msgstr ""
 
-#: subs_edit_box.cpp:619 subs_edit_box.cpp:645
+#: subs_edit_box.cpp:636 subs_edit_box.cpp:662
 msgid "layer change"
 msgstr ""
 
-#: subs_edit_box.cpp:714
+#: subs_edit_box.cpp:731
 msgid "modify times"
 msgstr ""
 
-#: subs_edit_box.cpp:738
+#: subs_edit_box.cpp:755
 msgid "MarginL change"
 msgstr ""
 
-#: subs_edit_box.cpp:760
+#: subs_edit_box.cpp:777
 msgid "MarginR change"
 msgstr ""
 
-#: subs_edit_box.cpp:783
+#: subs_edit_box.cpp:800
 msgid "MarginV change"
 msgstr ""
 
-#: subs_edit_box.cpp:804
+#: subs_edit_box.cpp:821
 msgid "effect change"
 msgstr ""
 
-#: subs_edit_box.cpp:824
+#: subs_edit_box.cpp:841
 msgid "comment change"
 msgstr ""
 
@@ -4687,7 +4699,7 @@ msgid "No correction suggestions"
 msgstr ""
 
 #: subs_edit_ctrl.cpp:790
-#, possible-c-format
+#, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr ""
 
@@ -4696,7 +4708,7 @@ msgid "No spell checker suggestions"
 msgstr ""
 
 #: subs_edit_ctrl.cpp:803
-#, possible-c-format
+#, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr ""
 
@@ -4709,7 +4721,7 @@ msgid "Spell checker language"
 msgstr ""
 
 #: subs_edit_ctrl.cpp:887
-#, possible-c-format
+#, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr ""
 
@@ -4875,15 +4887,15 @@ msgstr ""
 msgid "delete"
 msgstr ""
 
-#: subs_grid.cpp:1121
+#: subs_grid.cpp:1129
 msgid "adjoin"
 msgstr ""
 
-#: subs_grid.cpp:1291
+#: subs_grid.cpp:1299
 msgid "split"
 msgstr ""
 
-#: subs_grid.cpp:1452
+#: subs_grid.cpp:1460
 msgid "timing"
 msgstr ""
 
@@ -5061,43 +5073,28 @@ msgstr ""
 msgid "Video Screenshot Path"
 msgstr ""
 
-#: video_display.cpp:468
+#: video_display.cpp:472
 msgid "Save PNG snapshot"
 msgstr ""
 
-#: video_display.cpp:469
+#: video_display.cpp:473
 msgid "Copy image to Clipboard"
 msgstr ""
 
-#: video_display.cpp:472
+#: video_display.cpp:476
 msgid "Save PNG snapshot (no subtitles)"
 msgstr ""
 
-#: video_display.cpp:473
+#: video_display.cpp:477
 msgid "Copy image to Clipboard (no subtitles)"
 msgstr ""
 
-#: video_display.cpp:475
+#: video_display.cpp:479
 msgid "Copy coordinates to Clipboard"
 msgstr ""
 
-#: video_provider_avs.cpp:172 video_provider.h:100
+#: video_provider_avs.cpp:108
 msgid "Unknown"
-msgstr ""
-
-#: video_provider_avs.cpp:595
-msgid ""
-"Warning! The file is being opened using Avisynth's DirectShowSource, which "
-"has unreliable seeking. Frame numbers might not match the real number. "
-"PROCEED AT YOUR OWN RISK!"
-msgstr ""
-
-#: video_provider_dshow.cpp:118
-msgid "DirectShow"
-msgstr ""
-
-#: video_provider_dummy.cpp:250
-msgid "Dummy Video Provider"
 msgstr ""
 
 #: visual_tool.cpp:280 visual_tool_drag.cpp:115
