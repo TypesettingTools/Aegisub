@@ -320,7 +320,11 @@ if test "$with_libass" != "no"; then
     with_libass="no"
   fi
 
+else
+    with_internal_libass="no"
+    with_libass="no"
 fi
+
 
 if test "$with_libass" = "yes" || test "$with_internal_libass" = "yes"; then
   AC_DEFINE(WITH_LIBASS, 1, [Enable libass Subtitle Provider])
