@@ -148,6 +148,21 @@ fi
 AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
 
+#XXX: This needs to be fixed for OSX.
+AC_AGI_COMPILE([OpenGL], [opengl], [$GL_CFLAGS], [$GL_LIBS],[
+#include <GL/gl.h>
+#include <X11/Xlib.h>
+#include <GL/glx.h>
+int main(void) {
+  glXCreateContext(NULL, NULL, NULL, True);
+  glFinish();
+  return 0;
+}])
+
+if test "$agi_with_opengl" = "no"; then
+	AC_MSG_FAILURE([Please install a working OpenGL library.])
+fi
+
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.7.0,
   AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
   [AC_MSG_FAILURE([aegisub requires >= FreeType2 2.1.9])])
