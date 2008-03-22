@@ -299,7 +299,7 @@ $AUTOMAKE --add-missing || exit $?
 echo "--- $AUTOCONF ---"
 $AUTOCONF || exit $?
 
-echo "--- glib-gettextizeL ---"
+echo "--- glib-gettextize ---"
 glib-gettextize --force || exit $?
 
 echo "--- intltoolize ---"
