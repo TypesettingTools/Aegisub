@@ -277,8 +277,6 @@ if test "$agi_with_pulseaudio" = "no" && test "$with_pulseaudio" = "yes"; then
   with_pulseaudio="no"
 fi
 
-
-
 AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
 if test "$with_pulseaudio" = "yes"; then
   AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
@@ -292,11 +290,32 @@ AC_ARG_WITH(openal,[  --without-openal        build without OpenAL audio provide
 if test "x$with_openal" != xno; then
   PKG_CHECK_MODULES(OPENAL, openal >= 0.0.8, [found_audio=yes; with_openal=yes], [with_openal=no])
 fi
+
+AC_AGI_COMPILE([OpenAL], [openal], [$OPENAL_CFLAGS], [$OPENAL_LIBS],[
+#if defined(__APPLE__)
+#include <OpenAL/AL.h>
+#include <OpenAL/ALC.h>
+#else
+#include <AL/al.h>
+#include <AL/alc.h>
+#endif
+int main(void) {
+  ALCdevice *device = alcOpenDevice(0);
+  if (!device) return 1;
+  ALCcontext *context = alcCreateContext(device, 0);
+  if (!context) return 1;
+  return 0;
+}])
+
+if test "$agi_with_openal" = "no" && test "$with_openal" = "yes"; then
+  AC_MSG_WARN([OpenAL detected, but it doesn't work..])
+  with_openal="no"
+fi
+
 AM_CONDITIONAL([HAVE_OPENAL], [test "$with_openal" != "no"])
 if test "$with_openal" = "yes"; then
   AC_DEFINE(WITH_OPENAL, 1, [Enable OpenAL support])
 fi
-
 
 
 
