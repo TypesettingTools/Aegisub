@@ -49,16 +49,13 @@ aegisub_LDFLAGS += @AVFORMAT_LDFLAGS@ @AVCODEC_LDFLAGS@ @SWSCALE_LDFLAGS@
 aegisub_LDADD += libaudiovideo_ffmpeg.a
 endif
 
-if WITH_INTERNAL_LIBASS
-aegisub_LDFLAGS += @FONTCONFIG_LIBS@
-endif
-
-if HAVE_LIBASS
+if WITH_LIBASS
 noinst_LIBRARIES += libsubtitle_ass.a
 libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
 libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@
 LIBS += @LIBASS_LIBS@
 aegisub_LDADD += libsubtitle_ass.a
+aegisub_LDFLAGS += @FONTCONFIG_LIBS@
 endif
 
 if HAVE_AUTO4_LUA

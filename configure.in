@@ -16,7 +16,6 @@ m4_define([portaudio_required_version], [1])
 m4_define([pulseaudio_required_version], [1])
 
 m4_define([pkgconfig_required_version], [0.20])
-m4_define([libass_required_version], [0.9.1])
 m4_define([freetype_required_version], [9.7.0])
 m4_define([fontconfig_required_version], [2.4])
 m4_define([perl_required_version], [5.004])
@@ -326,8 +325,7 @@ AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])
 # Subtitle Provider
 ###################
 
-AC_ARG_WITH(libass, [  --without-libass        disable libass (default=enable)],libass_disabled="(disabled)")
-AC_ARG_ENABLE(libass, [  --disable-libass        disable internal libass support (default=enabled)],libass_internal_disabled="(disabled)")
+AC_ARG_ENABLE(libass, [  --disable-libass        disable libass support (default=enabled)],libass_disabled="(disabled)")
 
 AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv (default: CPPFLAGS)])
 AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv (default: LDFLAGS -liconv)])
@@ -336,55 +334,31 @@ if test -z "ICONV_LDFLAGS"; then
   ICONV_LDFLAGS="-liconv";
 fi
 
-if test "$with_libass" != "no"; then
+if test "$enable_libass" != "no"; then
+  AC_CHECK_HEADER(iconv.h, [ICONV_CFLAGS="$ICONV_CFLAGS"; with_iconv="yes"], with_iconv="no")
+  aegisub_save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$LDFLAGS $ICONV_LDFLAGS"
+  AC_CHECK_LIB([iconv], [iconv_open],[ICONV_LDFLAGS="$ICONV_LIBS"; with_iconv="yes"], with_iconv="no")
+  LDFLAGS="$aegisub_save_LDFLAGS"
 
-  if test "$enable_libass" != "no"; then
-    AC_CHECK_HEADER(iconv.h, [ICONV_CFLAGS="$ICONV_CFLAGS"; with_iconv="yes"], with_iconv="no")
-    aegisub_save_LDFLAGS="$LDFLAGS"
-    LDFLAGS="$LDFLAGS $ICONV_LDFLAGS"
-    AC_CHECK_LIB([iconv], [iconv_open],[ICONV_LDFLAGS="$ICONV_LIBS"; with_iconv="yes"], with_iconv="no")
-    LDFLAGS="$aegisub_save_LDFLAGS"
-
-    if test "$with_iconv" = "yes"; then
-      LIBASS_LIBS="-L../libass -lass_aegisub"
-      LIBASS_CFLAGS="-I../libass"
-      with_internal_libass="yes"
-    else
-      with_internal_libass="no"
-    fi
-  fi
-
-  if test "$with_internal_libass" != "yes"; then
-    PKG_CHECK_MODULES(LIBASS, libass >= 0.9.1)
-
-    aegisub_save_LDFLAGS="$LDFLAGS"
-    LDFLAGS="$LIBASS_LIBS"
-    AC_CHECK_LIB([ass], [ass_read_styles],[LIBASS_LIBS="$LIBASS_LIBS"; with_libass="yes"], with_libass=no)
-    LDFLAGS="$aegisub_save_LDFLAGS"
-
-    aegisub_save_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$LIBASS_CFLAGS"
-    AC_CHECK_HEADER([ass/ass.h], [LIBASS_CFLAGS="$LIBASS_CFLAGS"; with_libass="yes"], with_libass="no")
-    CPPFLAGS="$aegisub_save_CPPFLAGS"
-    with_internal_libass="no"
+  if test "$with_iconv" = "yes"; then
+    LIBASS_LIBS="-L../libass -lass_aegisub"
+    LIBASS_CFLAGS="-I../libass"
+    with_libass="yes"
   else
+    AC_MSG_WARN([libiconv is required for libass support.])
     with_libass="no"
   fi
-
-else
-    with_internal_libass="no"
-    with_libass="no"
 fi
 
 
-if test "$with_libass" = "yes" || test "$with_internal_libass" = "yes"; then
+if test "$with_libass" = "yes"; then
   AC_DEFINE(WITH_LIBASS, 1, [Enable libass Subtitle Provider])
 fi
 
 AC_SUBST(LIBASS_LIBS)
 AC_SUBST(LIBASS_CFLAGS)
-AM_CONDITIONAL([WITH_INTERNAL_LIBASS], [test "$with_libass" = "yes" || test "$with_internal_libass" = "yes"])
-AM_CONDITIONAL([HAVE_LIBASS], [test "$with_libass" = "yes" || test "$with_internal_libass" = "yes"])
+AM_CONDITIONAL([WITH_LIBASS], [test "$with_libass" = "yes"])
 
 
 
@@ -787,8 +761,8 @@ Video Providers
 
 Subtitle Providers:
   asa:                   $with_asa
-  libass (external):     $with_libass $libass_disabled
-  libass (internal)      $with_internal_libass (requires iconv, fontconfig) $libass_internal_disabled
+  libass                 $with_libass (requires iconv, fontconfig) $libass_disabled
+
 Misc Packages:
   hunspell:              $with_hunspell $with_hunspell_version $hunspell_disabled
   universalchardet:      $with_univchardet $univchardet_disabled

@@ -9,7 +9,7 @@ if HAVE_AUTO3_LUA
 auto3 = auto3
 endif
 
-if WITH_INTERNAL_LIBASS
+if WITH_LIBASS
 libass = libass
 endif
 
