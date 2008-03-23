@@ -448,7 +448,7 @@ if test "$with_lua" != no; then
   LDFLAGS="$LDFLAGS $LUA_LDFLAGS"
 
       AC_CACHE_CHECK(
-        [whether LUA 5.1 works], [with_lua],
+        [whether Lua 5.1 works], [with_lua],
         [AC_COMPILE_IFELSE([
 extern "C" {
 #include <lua.h>
@@ -507,7 +507,7 @@ if test "$with_lua50" != no; then
   LDFLAGS="$LDFLAGS $LUA50_LDFLAGS"
 
       AC_CACHE_CHECK(
-        [whether LUA 5.0 works], [with_lua50],
+        [whether Lua 5.0 works], [with_lua50],
         [AC_COMPILE_IFELSE([
 extern "C" {
 #include "lua.h"
