@@ -182,6 +182,19 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
 AC_SUBST(FONTCONFIG_CFLAGS)
 AC_SUBST(FONTCONFIG_LIBS)
 
+AC_AGI_COMPILE([FontConfig], [fontconfig], [$FONTCONFIG_CFLAGS], [$FONTCONFIG_LIBS],[
+#include <fontconfig/fontconfig.h>
+int main(void) {
+  int fc = FcInit();
+  FcConfig* config;
+  config = FcConfigGetCurrent();
+  if ((!config) || (!fc)) { return 1;}
+  return 0;
+}])
+
+if test "$agi_with_fontconfig" = "no"; then
+    AC_MSG_FAILURE([Please install a working Fontconfig library.])
+fi
 
 
 #################
