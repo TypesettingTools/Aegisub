@@ -234,12 +234,26 @@ if test "x$with_portaudio" != xno; then
 CPPFLAGS="$aegisub_save_CPPFLAGS"
 fi
 
+AC_AGI_COMPILE([PortAudio], [portaudio], [$CFLAGS $PTHREAD_CFLAGS], [$LDFLAGS $PORTAUDIO_LDFLAGS],[
+#include <portaudio.h>
+int main(void) {
+  PaError err = Pa_Initialize();
+  if (err != paNoError) return 1;
+  return 0;
+}])
+
+if test "$agi_with_portaudio" = "no" && test "$with_portaudio" = "yes"; then
+  AC_MSG_WARN([PortAudio detected, but it doesn't work..])
+  with_portaudio="no"
+fi
+
 if test "$with_portaudio" = "yes"; then
   AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio Audio Provider])
 fi
 
 AC_SUBST(PORTAUDIO_LDFLAGS)
 AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
+
 
 #############
 ## PulseAudio
