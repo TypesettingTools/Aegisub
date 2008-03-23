@@ -198,14 +198,14 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 
 					/* make some noise if we somehow ended up with more samples than we wanted (will cause audio skew) */
 					if (decoded_samples > samples_to_decode)
-						wxLogMessage(wxString::Format(_T("Warning: decoder output more samples than requested, audio skew highly likely! (Wanted %d, got %d)"), samples_to_decode, decoded_samples));
+						wxLogMessage(wxString::Format(_T("Warning: decoder output more samples than requested, audio skew highly likely! (Wanted %d, got %d)"), (int)samples_to_decode, decoded_samples));
 				} else {
 					/* no resampling needed, just copy to the buffer */
 					/* if (decoded_samples > samples_to_decode)
 						decoded_samples = samples_to_decode; */
 					/* I do not understand the point of the above -Fluff */
 					if (decoded_samples > samples_to_decode)
-						wxLogMessage(wxString::Format(_T("Warning: decoder output more samples than requested, audio skew highly likely! (Wanted %d, got %d)"), samples_to_decode, decoded_samples));
+						wxLogMessage(wxString::Format(_T("Warning: decoder output more samples than requested, audio skew highly likely! (Wanted %d, got %d)"), (int)samples_to_decode, decoded_samples));
 
 					memcpy(_buf, buffer, temp_output_buffer_size);
 				}
