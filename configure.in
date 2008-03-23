@@ -263,6 +263,22 @@ AC_ARG_WITH(pulseaudio,[  --without-pulseaudio    build without PulseAudio audio
 if test "x$with_pulseaudio" != xno; then
   PKG_CHECK_MODULES(LIBPULSE, libpulse >= 0.5, [found_audio=yes; with_pulseaudio=yes], [with_pulseaudio=no])
 fi
+
+AC_AGI_COMPILE([PuleseAudio], [pulseaudio], [$CFLAGS $LIBPULSE_CFLAGS], [$LIBPULSE_LIBS],[
+#include <pulse/pulseaudio.h>
+int main(void) {
+  pa_threaded_mainloop *mainloop = pa_threaded_mainloop_new();
+  if (!mainloop) return 1;
+  return 0;
+}])
+
+if test "$agi_with_pulseaudio" = "no" && test "$with_pulseaudio" = "yes"; then
+  AC_MSG_WARN([PulseAudio detected, but it doesn't work..])
+  with_pulseaudio="no"
+fi
+
+
+
 AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
 if test "$with_pulseaudio" = "yes"; then
   AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
