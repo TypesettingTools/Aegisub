@@ -376,6 +376,9 @@ if test "$enable_libass" != "no"; then
   AC_CHECK_LIB([iconv], [iconv_open],[ICONV_LDFLAGS="$ICONV_LIBS"; with_iconv="yes"], with_iconv="no")
   LDFLAGS="$aegisub_save_LDFLAGS"
 
+
+
+
   if test "$with_iconv" = "yes"; then
     LIBASS_LIBS="-L../libass -lass_aegisub"
     LIBASS_CFLAGS="-I../libass"
@@ -585,30 +588,30 @@ if test -z "$perl_disabled"; then
     PERL_BIN="$WITH_PERL_BIN"
   fi
 
-# XXX: add a --with-perlconsole flag.
-# AC_DEFINE(WITH_PERLCONSOLE, 1, [Enable PERL Console support (for debugging purposes)])
+  # XXX: add a --with-perlconsole flag.
+  # AC_DEFINE(WITH_PERLCONSOLE, 1, [Enable PERL Console support (for debugging purposes)])
 
   if test "$PERL_BIN" != "no"; then
-    AC_MSG_CHECKING([checking for perl version >= 5.004])
-    if $PERL_BIN -e 'require 5.004'; then
-      AC_MSG_RESULT([yes])
-      with_perl=yes
+
+    AC_CACHE_CHECK(
+      [checking for perl version >= 5.004], [with_perl],
+      [if $PERL_BIN -e 'require 5.004'; then with_perl="yes"; else with_perl="no"; fi])
+
+    if test "$with_perl" = "yes"; then
       with_automation="yes"
       AC_DEFINE(WITH_PERL, 1, [Enable PERL support.])
-      AC_MSG_CHECKING([checking $PERL_BIN clfags])
+
+      AC_MSG_CHECKING([$PERL_BIN cflags])
       PERL_CFLAGS=`$PERL_BIN -MExtUtils::Embed -eccflags -eperl_inc`
       AC_MSG_RESULT([$PERL_CFLAGS])
 
-      AC_MSG_CHECKING([checking $PERL_BIN libs])
+      AC_MSG_CHECKING([$PERL_BIN libs])
       PERL_LDFLAGS=`$PERL_BIN -MExtUtils::Embed -eldopts`
       AC_MSG_RESULT([$PERL_LDFLAGS])
-
-    else
-      AC_MSG_RESULT([no])
-      with_perl=no
     fi
   fi
 fi
+
 
 AC_SUBST(PERL_CFLAGS)
 AC_SUBST(PERL_LDFLAGS)
