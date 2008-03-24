@@ -126,8 +126,11 @@
 
 
 // Enable FFmpeg video and audio decoders
-// Requires: libavcodec and libavformat
-//#define WITH_FFMPEG
+// Requires: libavcodec, libavformat, libswscale, libavutil
+// If you compiled static libraries (yes, by default), uncomment the second line as well,
+// and remember to add the correct .a files to the linker's additional dependencies.
+// #define WITH_FFMPEG
+// #define WITH_STATIC_FFMPEG
 
 
 // Enable Ruby support for Automation
