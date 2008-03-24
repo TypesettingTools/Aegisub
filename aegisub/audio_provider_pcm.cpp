@@ -89,7 +89,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 
 #else
 
-	file_handle = open(filename.mb_str(wxConvFilename), O_RDONLY);
+	file_handle = open(filename.mb_str(*wxConvFileName), O_RDONLY);
 
 	if (file_handle == -1) {
 		throw _T("PCM audio provider: Could not open audio file for reading");
