@@ -98,7 +98,7 @@ void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 		// Find video stream
 		vidStream = -1;
 		codecContext = NULL;
-		for (int i=0;i<lavcfile->fctx->nb_streams;i++) {
+		for (int i=0; i < (int)lavcfile->fctx->nb_streams; i++) {
 			codecContext = lavcfile->fctx->streams[i]->codec;
 			if (codecContext->codec_type == CODEC_TYPE_VIDEO) {
 				stream = lavcfile->fctx->streams[i];
