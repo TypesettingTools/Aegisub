@@ -597,9 +597,6 @@ if test -z "$perl_disabled"; then
       [if $PERL_BIN -e 'require 5.004'; then with_perl="yes"; else with_perl="no"; fi])
 
     if test "$with_perl" = "yes"; then
-      with_automation="yes"
-      AC_DEFINE(WITH_PERL, 1, [Enable PERL support.])
-
       AC_MSG_CHECKING([$PERL_BIN cflags])
       PERL_CFLAGS=`$PERL_BIN -MExtUtils::Embed -eccflags -eperl_inc`
       AC_MSG_RESULT([$PERL_CFLAGS])
@@ -626,6 +623,11 @@ fi
 if test "$agi_with_perl" = "no" && test "$with_perl" = "yes"; then
   AC_MSG_WARN([Perl detected, but it doesn't work..])
   with_perl="no"
+fi
+
+if test "$with_perl" = "yes"; then
+  with_automation="yes"
+  AC_DEFINE(WITH_PERL, 1, [Enable PERL support.])
 fi
 
 AC_SUBST(PERL_CFLAGS)
