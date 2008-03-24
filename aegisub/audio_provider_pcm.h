@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Niels Martin Hansen
+// Copyright (c) 2007-2008, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,13 +44,37 @@
 #include <wx/thread.h>
 #include <vector>
 
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
 
 /////////////////////////////
 // Audio provider base class
 class PCMAudioProvider : public AudioProvider {
+private:
+#ifdef _WINDOWS
+	// File handle and file mapping handle from Win32
+	HANDLE file_handle;
+	HANDLE file_mapping;
+	// Pointer to current area mapped into memory
+	void *current_mapping;
+	// Byte indices in the file that the current mapping covers
+	int64_t mapping_start;
+	size_t mapping_length;
+#else
+	int file_handle;
+	void *current_mapping;
+	off_t mapping_start;
+	size_t mapping_length;
+#endif
+
 protected:
-	wxMutex filemutex;
-	wxFile file;
+	PCMAudioProvider(const wxString &filename); // Create base object and open the file mapping
+	virtual ~PCMAudioProvider(); // Closes the file mapping
+	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length); // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
+
+	int64_t file_size; // Size of the opened file
 
 	// Hold data for an index point,
 	// to support files where audio data are
