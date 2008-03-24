@@ -154,9 +154,11 @@
 //////////
 // FFMPEG
 #ifdef WITH_FFMPEG
+#ifndef WITH_STATIC_FFMPEG
 #pragma comment(lib, "avcodec-51.lib")
 #pragma comment(lib, "avformat-51.lib")
 #pragma comment(lib, "avutil-49.lib")
+#endif
 #endif
 
 
