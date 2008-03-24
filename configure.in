@@ -619,7 +619,6 @@ int main(int argc, char **argv) {
   fi
 fi
 
-
 if test "$agi_with_perl" = "no" && test "$with_perl" = "yes"; then
   AC_MSG_WARN([Perl detected, but it doesn't work..])
   with_perl="no"
@@ -665,8 +664,22 @@ if test -z "$ruby_disabled"; then
       AC_MSG_CHECKING([checking $RUBY_BIN rbconfig libs])
       RUBY_LDFLAGS=`$RUBY_BIN -r rbconfig -e "print Config::CONFIG@<:@'LIBRUBYARG'@:>@"`
       AC_MSG_RESULT([$RUBY_LDFLAGS])
+
+      AC_AGI_COMPILE([Ruby], [ruby], [$RUBY_CFLAGS], [$RUBY_LDFLAGS],[
+#include <ruby.h>
+int main(void) {
+  /* These supposidly call exit if they fail. */   
+  ruby_init();
+  ruby_init_loadpath();
+  return 0;
+}])
     fi
   fi
+fi
+
+if test "$agi_with_ruby" = "no" && test "$with_ruby" = "yes"; then
+  AC_MSG_WARN([Ruby detected, but it doesn't work..])
+  with_ruby="no"
 fi
 
 if test "$with_ruby" = "yes"; then
