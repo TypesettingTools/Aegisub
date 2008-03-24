@@ -608,10 +608,26 @@ if test -z "$perl_disabled"; then
       AC_MSG_CHECKING([$PERL_BIN libs])
       PERL_LDFLAGS=`$PERL_BIN -MExtUtils::Embed -eldopts`
       AC_MSG_RESULT([$PERL_LDFLAGS])
+
+      AC_AGI_COMPILE([Perl], [perl], [$PERL_CFLAGS], [$PERL_LDFLAGS],[
+#include <EXTERN.h>
+#include <perl.h>
+int main(int argc, char **argv) {
+  static PerlInterpreter *my_perl;
+  PERL_SYS_INIT3(&argc,&argv,&env);
+  my_perl = perl_alloc();
+  if (!my_perl) return 1;
+  return 0;
+}])
     fi
   fi
 fi
 
+
+if test "$agi_with_perl" = "no" && test "$with_perl" = "yes"; then
+  AC_MSG_WARN([Perl detected, but it doesn't work..])
+  with_perl="no"
+fi
 
 AC_SUBST(PERL_CFLAGS)
 AC_SUBST(PERL_LDFLAGS)
