@@ -366,17 +366,24 @@ AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv (default: CPPFLAGS)])
 AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv (default: LDFLAGS -liconv)])
 
 if test -z "ICONV_LDFLAGS"; then
-  ICONV_LDFLAGS="-liconv";
+  ICONV_LDFLAGS="$LDFLAGS -liconv";
 fi
 
+if test -z "ICONV_CFLAGS"; then
+  ICONV_CFLAGS="$CPPFLAGS";
+fi
+
+
 if test "$enable_libass" != "no"; then
+  aegisub_save_CPPFLAGS="$CPPFLAGS"
+  CFLAGS="$ICONV_CFLAGS"
   AC_CHECK_HEADER(iconv.h, [ICONV_CFLAGS="$ICONV_CFLAGS"; with_iconv="yes"], with_iconv="no")
+  CPPFLAGS="$aegisub_save_CPPFLAGS"
+
   aegisub_save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$LDFLAGS $ICONV_LDFLAGS"
+  LDFLAGS="$ICONV_LDFLAGS"
   AC_CHECK_LIB([iconv], [iconv_open],[ICONV_LDFLAGS="$ICONV_LIBS"; with_iconv="yes"], with_iconv="no")
   LDFLAGS="$aegisub_save_LDFLAGS"
-
-
 
 
   if test "$with_iconv" = "yes"; then
