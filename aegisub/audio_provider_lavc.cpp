@@ -80,7 +80,7 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	} else {
 #endif
 		lavcfile = LAVCFile::Create(_filename);
-		filename = _filename;
+		filename = _filename.c_str();
 #if 0
 	}
 #endif
