@@ -63,7 +63,7 @@
 #include "subs_grid.h"
 #include "vfw_wrap.h"
 
-#if !defined(__WINDOWS__) && !defined(__APPLE__)
+#if !defined(__WINDOWS__)
 #ifdef WITH_FFMPEG
 #include "lavc_keyframes.h"
 #endif
@@ -365,7 +365,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 			Refresh(true,true);
 
 			// Show warning
-			wxString warning = provider->GetWarning();
+			wxString warning = provider->GetWarning().c_str();
 			if (!warning.IsEmpty()) wxMessageBox(warning,_T("Warning"),wxICON_WARNING | wxOK);
 		}
 		
