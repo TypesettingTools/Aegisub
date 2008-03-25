@@ -41,16 +41,11 @@
 #include "config.h"
 #include "../build/svn-revision.h"
 #else
-#ifdef __APPLE__
-#include "macosx/config.h"
-#include "../build/svn-revision.h"
-
-#else
 
 #ifndef BUILD_SVN_REVISION
 #define BUILD_SVN_REVISION 0
 #endif
-#endif
+
 #endif
 
 #define _T_rec(X) _T(X)
