@@ -64,7 +64,7 @@ DialogVideoDetails::DialogVideoDetails(wxWindow *parent)
 	wxTextCtrl *fps_text = new wxTextCtrl(this, -1, wxString::Format(_T("%.3f"), fps), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 	wxTextCtrl *resolution_text = new wxTextCtrl(this, -1, wxString::Format(_T("%dx%d (%s)"), width, height, PrettyAR(width, height).c_str()), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 	wxTextCtrl *length_text = new wxTextCtrl(this, -1, wxString::Format(_T("%d frames (%s)"), framecount, PrettyTimeStamp(framecount, fps).c_str()), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-	wxTextCtrl *decoder_text = new wxTextCtrl(this, -1, vprovider->GetDecoderName(), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+	wxTextCtrl *decoder_text = new wxTextCtrl(this, -1, vprovider->GetDecoderName().c_str(), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 
 	fg->Add(new wxStaticText(this, -1, _("File name:")), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
 	fg->Add(fname_text, 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
