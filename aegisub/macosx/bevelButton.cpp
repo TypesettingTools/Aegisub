@@ -12,7 +12,7 @@
 #ifdef __WXMAC__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "button.h"
+#pragma implementation "bevelButton.h"
 #endif
 
 #include "wx/wxprec.h"
@@ -24,7 +24,6 @@
 IMPLEMENT_DYNAMIC_CLASS(wxBevelButton, wxControl)
 
 #include "wx/mac/uma.h"
-#include "bevelButton.h"
 // Button
 
 static const int kMacOSXHorizontalBorder = 2 ;

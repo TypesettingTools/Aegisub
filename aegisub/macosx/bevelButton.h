@@ -17,7 +17,7 @@
 #include "wx/control.h"
 #include "wx/gdicmn.h"
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxButtonNameStr;
+//WXDLLEXPORT_DATA(extern const wxChar*) wxButtonNameStr;
 
 // Pushbutton
 class WXDLLEXPORT wxBevelButton: public wxButton
