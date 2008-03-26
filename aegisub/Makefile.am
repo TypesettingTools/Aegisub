@@ -103,11 +103,18 @@ else
 UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
 endif
 
+if BUILD_DARWIN
+  font_lister = font_file_lister_freetype.cpp
+else
+  font_lister = font_file_lister_fontconfig.cpp
+endif
 
 
 ## These aren't built, but are listed here so 'make dist' can always find all the sources
 ## This should also list all Win32 specific files
 EXTRA_aegisub_SOURCES = \
+	font_file_lister.cpp \
+	$(font_lister) \
 	audio_player_dsound.cpp \
 	audio_player_portaudio.cpp \
 	audio_player_pulse.cpp \
@@ -205,8 +212,6 @@ aegisub_SOURCES = \
 	export_framerate.cpp \
 	export_visible_lines.cpp \
 	fft.cpp \
-	font_file_lister.cpp \
-	font_file_lister_fontconfig.cpp \
 	frame_main.cpp \
 	frame_main_events.cpp \
 	gl_text.cpp \

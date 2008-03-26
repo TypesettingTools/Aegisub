@@ -34,6 +34,30 @@ AC_CONFIG_HEADER([aegisub/posix/acconf.h])
 AC_GNU_SOURCE
 AC_CANONICAL_HOST
 
+###########################
+# Check target architecture
+###########################
+
+AC_MSG_CHECKING([for target architecture])
+case x"$target" in
+  xNONE | x)
+    target_or_host="$host" ;;
+  *)
+    target_or_host="$target" ;;
+esac
+AC_MSG_RESULT([$target_or_host])
+
+case "$target_or_host" in
+  *-*-darwin*)
+    build_darwin="yes"
+  ;;
+
+  *)
+    ;;
+esac
+
+AM_CONDITIONAL([BUILD_DARWIN], [test "$build_darwin" = "yes"])
+
 
 ########################
 # Configurable variables
