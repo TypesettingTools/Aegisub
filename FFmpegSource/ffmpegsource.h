@@ -1,4 +1,4 @@
-//  Copyright (c) 2007 Fredrik Mellbin
+//  Copyright (c) 2007-2008 Fredrik Mellbin
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
 #ifndef FFMPEGSOURCE_H
 #define FFMPEGSOURCE_H
 
-#ifndef NO_FLAC_CACHE
-//#define FLAC_CACHE
-#endif
-
 #include <windows.h>
 #include <stdio.h>
 #include <vector>
@@ -35,16 +31,11 @@
 #include <fcntl.h>
 #include <io.h>
 
-#ifdef FLAC_CACHE
-#include <stream_decoder.h>
-#include <stream_encoder.h>
-#endif // FLAC_CACHE
-
 extern "C" {
-#include <ffmpeg\avformat.h>
-#include <ffmpeg\avcodec.h>
-#include <ffmpeg\swscale.h>
-#include <postproc\postprocess.h>
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#include <libpostproc/postprocess.h>
 
 #include "stdiostream.h"
 }
@@ -52,7 +43,7 @@ extern "C" {
 #include "MatroskaParser.h"
 #include "avisynth.h"
 
-enum AudioCacheFormat {acNone, acRaw, acFLAC};
+enum AudioCacheFormat {acNone, acRaw};
 
 struct FrameInfo {
 	int64_t DTS;
@@ -111,11 +102,6 @@ protected:
 	int LastFrameNum;
 	uint8_t *DecodingBuffer;
 
-#ifdef FLAC_CACHE
-	FLAC__StreamDecoder *FLACAudioCache;
-	FLAC__int32 *FLACBuffer;
-#endif // FLAC_CACHE
-
 	FrameInfoVector Frames;
 
 	int FindClosestKeyFrame(int AFrame);
@@ -126,10 +112,6 @@ protected:
 	bool SaveTimecodesToFile(const char *ATimecodeFile, int64_t ScaleD, int64_t ScaleN);
 
 	bool OpenAudioCache(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env);
-#ifdef FLAC_CACHE
-	FLAC__StreamEncoder *FFBase::NewFLACCacheWriter(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, int ACompression, IScriptEnvironment *Env);
-	void FFBase::CloseFLACCacheWriter(FLAC__StreamEncoder *AFSE);
-#endif // FLAC_CACHE
 	FILE *FFBase::NewRawCacheWriter(const char *AAudioCacheFile, const char *ASource, int AAudioTrack, IScriptEnvironment *Env);
 	void FFBase::CloseRawCacheWriter(FILE *ARawCache);
 
@@ -137,11 +119,6 @@ protected:
 	void SetOutputFormat(int ACurrentFormat, IScriptEnvironment *Env);
 	PVideoFrame OutputFrame(AVFrame *AFrame, IScriptEnvironment *Env);
 public:
-	// FLAC decoder variables, have to be public
-	FILE *FCFile;
-	__int64 FCCount;
-	void *FCBuffer;
-	bool FCError;
 
 	FFBase();
 	~FFBase();
@@ -164,7 +141,7 @@ private:
 	int GetTrackIndex(int Index, CodecType ATrackType, IScriptEnvironment *Env);
 	int DecodeNextFrame(AVFrame *Frame, int64_t *DTS);
 public:
-	FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString, int AQuality, int ASeekMode, IScriptEnvironment *Env, FrameInfoVector *AFrames);
+	FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString, int AQuality, int AThreads, int ASeekMode, IScriptEnvironment *Env, FrameInfoVector *AFrames);
 	~FFmpegSource();
 	PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment *Env);
 };
@@ -185,7 +162,7 @@ private:
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, IScriptEnvironment* Env);
 	int GetTrackIndex(int Index, unsigned char ATrackType, IScriptEnvironment *Env);
 public:
-	FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString, int AQuality, IScriptEnvironment *Env, FrameInfoVector *AFrames);
+	FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString, int AQuality, int AThreads, IScriptEnvironment *Env, FrameInfoVector *AFrames);
 	~FFMatroskaSource();
     PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment *Env);
 };

@@ -1,4 +1,4 @@
-//  Copyright (c) 2007 Fredrik Mellbin
+//  Copyright (c) 2007-2008 Fredrik Mellbin
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -135,9 +135,9 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 			case MAKEFOURCC('M', 'S', 'Z', 'H'):
 				return CODEC_ID_MSZH;
 			case MAKEFOURCC('Z', 'L', 'I', 'B'):
-				return CODEC_ID_FLV1;
-			case MAKEFOURCC('F', 'L', 'V', '1'):
 				return CODEC_ID_ZLIB;
+			case MAKEFOURCC('F', 'L', 'V', '1'):
+				return CODEC_ID_FLV1;
 /*
 			case MAKEFOURCC('P', 'N', 'G', '1'):
 				return CODEC_ID_COREPNG;
@@ -199,18 +199,33 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 			default:
 				return CODEC_ID_NONE;
 		}
+
 	} else if (!strcmp(Codec, "V_MPEG4/ISO/AVC"))
 		return CODEC_ID_H264;
+	else if (!strcmp(Codec, "V_MPEG4/ISO/AP"))
+		return CODEC_ID_MPEG4;
 	else if (!strcmp(Codec, "V_MPEG4/ISO/ASP"))
 		return CODEC_ID_MPEG4;
+	else if (!strcmp(Codec, "V_MPEG4/ISO/SP"))
+		return CODEC_ID_MPEG4;
+	else if (!strcmp(Codec, "V_MPEG4/MS/V3"))
+		return CODEC_ID_MSMPEG4V3;
 	else if (!strcmp(Codec, "V_MPEG2"))
 		return CODEC_ID_MPEG2VIDEO;
 	else if (!strcmp(Codec, "V_MPEG1"))
 		return CODEC_ID_MPEG2VIDEO; // still not a typo
+	else if (!strcmp(Codec, "V_VC1"))
+		return CODEC_ID_VC1;
 	else if (!strcmp(Codec, "V_SNOW"))
 		return CODEC_ID_SNOW;
 	else if (!strcmp(Codec, "V_THEORA"))
 		return CODEC_ID_THEORA;
+	else if (!strcmp(Codec, "V_UNCOMPRESSED"))
+		return CODEC_ID_NONE; // bleh
+	else if (!strcmp(Codec, "V_QUICKTIME"))
+		return CODEC_ID_SVQ3;
+	else if (!strcmp(Codec, "V_CIPC"))
+		return CODEC_ID_NONE; // don't know, don't care
 	else if (!strncmp(Codec, "V_REAL/RV", 9)) {
 		switch (Codec[9]) {
 			case '1': 
@@ -226,6 +241,8 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 		}
 /* Audio Codecs */
 	} else if (!strcmp(Codec, "A_AC3"))
+		return CODEC_ID_AC3;
+	else if (!strcmp(Codec, "A_EAC3"))
 		return CODEC_ID_AC3;
 	else if (!strcmp(Codec, "A_MPEG/L3"))
 		return CODEC_ID_MP3;
@@ -243,8 +260,20 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 			case 32: return CODEC_ID_PCM_S32LE;
 			default: return CODEC_ID_NONE;
 		}
+	} else if (!strcmp(Codec, "A_PCM/INT/BIG")) {
+		switch (TI->AV.Audio.BitDepth) {
+			case 8: return CODEC_ID_PCM_S8;
+			case 16: return CODEC_ID_PCM_S16BE;
+			case 24: return CODEC_ID_PCM_S24BE;
+			case 32: return CODEC_ID_PCM_S32BE;
+			default: return CODEC_ID_NONE;
+		}
 	} else if (!strcmp(Codec, "A_PCM/FLOAT/IEEE"))
 		return CODEC_ID_NONE; // no float codec id?
+	else if (!strcmp(Codec, "A_FLAC"))
+		return CODEC_ID_FLAC;
+	else if (!strcmp(Codec, "A_MPC"))
+		return CODEC_ID_MUSEPACK8;
 	else if (!strcmp(Codec, "A_TTA1"))
 		return CODEC_ID_TTA;
 	else if (!strcmp(Codec, "A_WAVPACK4"))
@@ -263,6 +292,10 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 		return CODEC_ID_ATRAC3;
 	else if (!strncmp(Codec, "A_AAC", 5))
 		return CODEC_ID_AAC;
+	else if (!strcmp(Codec, "A_SPEEX"))
+		return CODEC_ID_SPEEX;
+	else if (!strcmp(Codec, "A_QUICKTIME"))
+		return CODEC_ID_NONE; // no
 	else if (!strcmp(Codec, "A_MS/ACM")) {
 		// nothing useful here anyway?
 		//#include "Mmreg.h"

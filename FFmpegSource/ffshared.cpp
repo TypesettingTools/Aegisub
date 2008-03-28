@@ -1,4 +1,4 @@
-//  Copyright (c) 2007 Fredrik Mellbin
+//  Copyright (c) 2007-2008 Fredrik Mellbin
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -64,9 +64,9 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	bool VCache = Args[4].AsBool(true);
 	const char *VCacheFile = Args[5].AsString("");
 	const char *ACacheFile = Args[6].AsString("");
-	int ACCompression = Args[7].AsInt(-1);
-	const char *PPString = Args[8].AsString("");
-	int PPQuality = Args[9].AsInt(PP_QUALITY_MAX);
+	const char *PPString = Args[7].AsString("");
+	int PPQuality = Args[8].AsInt(PP_QUALITY_MAX);
+	int Threads = Args[9].AsInt(1);
 	int SeekMode = Args[10].AsInt(1);
 
 	if (VTrack <= -2 && ATrack <= -2)
@@ -75,13 +75,8 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	if (SeekMode < -1 || SeekMode > 3)
 		Env->ThrowError("FFmpegSource: Invalid seekmode selected");
 
-#ifdef FLAC_CACHE
-	if (ACCompression < -1 || ACCompression > 8)
-#else
-	if (ACCompression != -1)
-#endif // FLAC_CACHE
-		Env->ThrowError("FFmpegSource: Invalid audio cache compression selected");
-
+	if (Threads < 1)
+		Env->ThrowError("FFmpegSource: Invalid thread count");
 
 	AVFormatContext *FormatContext;
 
@@ -93,12 +88,12 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	FrameInfoVector Frames;
 
 	if (IsMatroska) {
-		return new FFMatroskaSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, Env, &Frames);
+		return new FFMatroskaSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, Env, &Frames);
 	} else {
 		// Do a separate indexing pass, enjoy the constructor sideeffects
 		if (SeekMode == -1)
-			delete new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, -2, Env, &Frames);
-		return new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, ACCompression, PPString, PPQuality, SeekMode, Env, &Frames);
+			delete new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, -2, Env, &Frames);
+		return new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, SeekMode, Env, &Frames);
 	}
 }
 
@@ -138,7 +133,7 @@ AVSValue __cdecl CreateFFPP(AVSValue Args, void* UserData, IScriptEnvironment* E
 }
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
-    Env->AddFunction("FFmpegSource", "[source]s[vtrack]i[atrack]i[timecodes]s[vcache]b[vcachefile]s[acachefile]s[accompression]i[pp]s[ppquality]i[seekmode]i", CreateFFmpegSource, 0);
+    Env->AddFunction("FFmpegSource", "[source]s[vtrack]i[atrack]i[timecodes]s[vcache]b[vcachefile]s[acachefile]s[pp]s[ppquality]i[threads]i[seekmode]i", CreateFFmpegSource, 0);
     Env->AddFunction("FFAudioSource", "[source]s[atrack]i[acachefile]s[ademuxedfile]s", CreateFFAudioSource, 0);
 	Env->AddFunction("FFPP", "c[pp]s[ppquality]i", CreateFFPP, 0);
     return "FFmpegSource";

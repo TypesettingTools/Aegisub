@@ -1,4 +1,4 @@
-//  Copyright (c) 2007 Fredrik Mellbin
+//  Copyright (c) 2007-2008 Fredrik Mellbin
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -45,8 +45,8 @@ int FFMatroskaSource::GetTrackIndex(int Index, unsigned char ATrackType, IScript
 }
 
 FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes,
-	bool AVCache, const char *AVideoCache, const char *AAudioCache, int AACCompression, const char *APPString,
-	int AQuality, IScriptEnvironment* Env, FrameInfoVector *AFrames) {
+	bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString,
+	int AQuality, int AThreads, IScriptEnvironment* Env, FrameInfoVector *AFrames) {
 
 	AFrames = &Frames;
 	CurrentFrame = 0;
@@ -105,6 +105,7 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 		VideoCodecContext = avcodec_alloc_context();
 		VideoCodecContext->extradata = (uint8_t *)VideoTI->CodecPrivate;
 		VideoCodecContext->extradata_size = VideoTI->CodecPrivateSize;
+		VideoCodecContext->thread_count = AThreads;
 
 		VideoCodec = avcodec_find_decoder(MatroskaToFFCodecID(VideoTI));
 		if (VideoCodec == NULL)
@@ -184,11 +185,11 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 		VI.audio_samples_per_second = AudioCodecContext->sample_rate;
 
 		switch (AudioCodecContext->sample_fmt) {
-			case SAMPLE_FMT_U8: VI.sample_type = SAMPLE_INT8; AACCompression = -1; break;
+			case SAMPLE_FMT_U8: VI.sample_type = SAMPLE_INT8; break;
 			case SAMPLE_FMT_S16: VI.sample_type = SAMPLE_INT16; break;
-			case SAMPLE_FMT_S24: VI.sample_type = SAMPLE_INT24; AACCompression = -1; break;
-			case SAMPLE_FMT_S32: VI.sample_type = SAMPLE_INT32; AACCompression = -1; break;
-			case SAMPLE_FMT_FLT: VI.sample_type = SAMPLE_FLOAT; AACCompression = -1; break;
+			case SAMPLE_FMT_S24: VI.sample_type = SAMPLE_INT24; break;
+			case SAMPLE_FMT_S32: VI.sample_type = SAMPLE_INT32; break;
+			case SAMPLE_FMT_FLT: VI.sample_type = SAMPLE_FLOAT; break;
 			default:
 				Env->ThrowError("FFmpegSource: Unsupported/unknown sample format");
 		}
@@ -202,20 +203,11 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 
 	// Needs to be indexed?
 	if (!ACacheIsValid || !VCacheIsValid) {
-#ifdef FLAC_CACHE
-		FLAC__StreamEncoder *FSE = NULL;
-#endif // FLAC_CACHE
 		FILE *RawCache = NULL;
 		if (!ACacheIsValid)
-			if (AACCompression >= 0)
-				AudioCacheType = acFLAC;
-			else
-				AudioCacheType = acRaw;	
+			AudioCacheType = acRaw;	
 
 		switch (AudioCacheType) {
-#ifdef FLAC_CACHE
-			case acFLAC: FSE = NewFLACCacheWriter(AAudioCache, ASource, AudioTrack, AACCompression, Env); break;
-#endif // FLAC_CACHE
 			case acRaw: RawCache = NewRawCacheWriter(AAudioCache, ASource, AudioTrack, Env); break;
 		}
 
@@ -244,21 +236,12 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 
 					if (AudioCacheType == acRaw) {
 						fwrite(DecodingBuffer, 1, TempOutputBufSize, RawCache);
-#ifdef FLAC_CACHE
-					} else if (AudioCacheType == acFLAC) {
-						for (int i = 0; i < DecodedSamples * VI.nchannels; i++)
-							FLACBuffer[i] = ((int16_t *)DecodingBuffer)[i];
-						FLAC__stream_encoder_process_interleaved(FSE, FLACBuffer, DecodedSamples);
-#endif // FLAC_CACHE
 					}
 				}
 			}
 
 		if (!ACacheIsValid) {
 			switch (AudioCacheType) {
-#ifdef FLAC_CACHE
-				case acFLAC: CloseFLACCacheWriter(FSE); break;
-#endif // FLAC_CACHE
 				case acRaw: CloseRawCacheWriter(RawCache); break;
 			}
 

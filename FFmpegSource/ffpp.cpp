@@ -1,4 +1,4 @@
-//  Copyright (c) 2007 Fredrik Mellbin
+//  Copyright (c) 2007-2008 Fredrik Mellbin
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ PVideoFrame FFPP::GetFrame(int n, IScriptEnvironment* Env) {
 	PVideoFrame Dst = Env->NewVideoFrame(vi);
 
 	if (vi.IsYV12()) {
-		uint8_t *SrcData[3] = {(uint8_t *)Src->GetReadPtr(PLANAR_Y), (uint8_t *)Src->GetReadPtr(PLANAR_U), (uint8_t *)Src->GetReadPtr(PLANAR_V)};
+		const uint8_t *SrcData[3] = {(uint8_t *)Src->GetReadPtr(PLANAR_Y), (uint8_t *)Src->GetReadPtr(PLANAR_U), (uint8_t *)Src->GetReadPtr(PLANAR_V)};
 		int SrcStride[3] = {Src->GetPitch(PLANAR_Y), Src->GetPitch(PLANAR_U), Src->GetPitch(PLANAR_V)};
 		uint8_t *DstData[3] = {Dst->GetWritePtr(PLANAR_Y), Dst->GetWritePtr(PLANAR_U), Dst->GetWritePtr(PLANAR_V)};
 		int DstStride[3] = {Dst->GetPitch(PLANAR_Y), Dst->GetPitch(PLANAR_U), Dst->GetPitch(PLANAR_V)};
@@ -86,7 +86,7 @@ PVideoFrame FFPP::GetFrame(int n, IScriptEnvironment* Env) {
 		int SrcStride[1] = {Src->GetPitch()};
 		sws_scale(SWSTo422P, SrcData, SrcStride, 0, vi.height, InputPicture.data, InputPicture.linesize);
 		
-		pp_postprocess(InputPicture.data, InputPicture.linesize, OutputPicture.data, OutputPicture.linesize, vi.width, vi.height, NULL, 0, PPMode, PPContext, 0);
+		pp_postprocess(const_cast<const uint8_t **>(InputPicture.data), InputPicture.linesize, OutputPicture.data, OutputPicture.linesize, vi.width, vi.height, NULL, 0, PPMode, PPContext, 0);
 
 		uint8_t *DstData[1] = {Dst->GetWritePtr()};
 		int DstStride[1] = {Dst->GetPitch()};

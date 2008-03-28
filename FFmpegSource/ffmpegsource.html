@@ -28,7 +28,7 @@ Loads video files without sucking
 
 <h2>Usage</h2>
 <p>
-<b>FFmpegSource(string source, int vtrack = -1, int atrack = -2, string timecodes, bool vcache = true, string vcachefile, string acachefile, int accompression = -1, string pp, int ppquality = 6, int seekmode = 1)</b><br />
+<b>FFmpegSource(string source, int vtrack = -1, int atrack = -2, string timecodes, bool vcache = true, string vcachefile, string acachefile, string pp, int ppquality = 6, int threads = 1, int seekmode = 1)</b><br />
 </p>
 
 <p>
@@ -45,7 +45,7 @@ Experimental, may or may not be accurate enough for real usage.
 
 <p>
 <b>FFPP(clip, string pp, int ppquality = 6)</b><br />
-Separate postprocessing which also seems to include a few simple deinterlacers
+  Separate postprocessing which also seems to include a few simple deinterlacers
 </p>
 
 <p>
@@ -80,18 +80,18 @@ Separate postprocessing which also seems to include a few simple deinterlacers
 </p>
 
 <p>
-<b>accompression:</b>
-  Audio cache compression, -1 means raw audio and 0-8 uses FLAC with that compression level.
-</p>
-
-<p>
 <b>pp:</b>
- See the table below for a full description, an empty string means no processing. It is recommended to avoid the autoq option since it's currently unknown what effect it will have on the processing.
+  See the table below for a full description, an empty string means no processing. It is recommended to avoid the autoq option since it's currently unknown what effect it will have on the processing.
 </p>
 
 <p>
 <b>ppquality:</b>
   The quality to use for the specified postprocessing. Valid values are 0-6 where 0 usually means that no actual processing is done.
+</p>
+
+<p>
+<b>threads:</b>
+  Sets the number of decoder threads used, ignored if the used decoder doesn't implement it.
 </p>
 
 <p>
@@ -154,16 +154,32 @@ tn:64:128:256
 
 <p><b>FFmpeg svn</b> from http://ffmpeg.mplayerhq.hu/</p>
 
-<p><b>FLAC (optional)</b> from http://flac.sourceforge.net/ (static library seems to be broken)</p>
-
 <p><b>Required FFmpeg Configuration:</b>
-./configure --enable-shared --disable-static --enable-memalign-hack --enable-gpl --enable-swscaler</p>
+./configure --enable-memalign-hack --enable-gpl --enable-swscale --enable-postproc
 
 <p><b>Suggested Additional Options:</b>
---disable-encoders --disable-muxers --enable-small</p>
+--enable-w32threads --disable-encoders --disable-muxers --enable-small --enable-libfaad --disable-debug</p>
+<p>
+Note that --enable-w32threads is required for multithreaded decoding to work.
+</p>
 
 <h2>Changes</h2>
 <ul>
+<li>1.17<ul>
+<li>Updated FFmpeg to rev X</li>
+</ul></li>
+
+<li>1.16<ul>
+<li>Added many new and missing matroska codec ids</li>
+<li>Added threads argument to set the number of decoding threads used</li>
+<li>Completely removed FLAC cache</li>
+<li>Updated FFmpeg to rev 12382</li>
+</ul></li>
+
+<li>1.15<ul>
+<li>Updated FFmpeg to rev 11518</li>
+</ul></li>
+
 <li>1.14<ul>
 <li>If the output colorspace is YV12 or YUY2 the width and height may be automatically cropped by one pixel to make it an even number</li>
 <li>FLAC cache is disabled because the static FLAC lib doesn't want to link</li>
@@ -172,8 +188,6 @@ tn:64:128:256
 <li>Updated FFmpeg to rev 11413</li>
 </ul></li>
 
-<h2>Changes</h2>
-<ul>
 <li>1.13<ul>
 <li>Now always sorts the output timecodes so native avc in mkv won't have out of order values</li>
 <li>Fixed the missing '# timecode format v2' line in saved timecode files</li>
