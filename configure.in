@@ -615,6 +615,9 @@ AC_SUBST(LUA50_LDFLAGS)
 AC_ARG_WITH(perl, [  --without-perl          build without PERL Automation. (default: auto)], perl_disabled="(disabled)")
 AC_ARG_WITH(perl-bin, [  --with-perl-bin=PATH    location of PERL binary.. (default: $PATH)], [WITH_PERL_BIN="$withval"])
 
+AC_ARG_VAR([PERL_CFLAGS], [CFLAGS to use for Perl (default: -MExtUtils::Embed -eccflags -eperl_inc)])
+AC_ARG_VAR([PERL_LDFLAGS], [LDFLAGS to use for Perl (default: -MExtUtils::Embed -eldopts)])
+
 if test -z "$perl_disabled"; then
   if test -z "$WITH_PERL_BIN"; then
     AC_PATH_PROG([PERL_BIN],perl,no)
@@ -632,11 +635,15 @@ if test -z "$perl_disabled"; then
 
     if test "$with_perl" = "yes"; then
       AC_MSG_CHECKING([$PERL_BIN cflags])
-      PERL_CFLAGS=`$PERL_BIN -MExtUtils::Embed -eccflags -eperl_inc`
+      if test -z "$PERL_CFLAGS"; then
+        PERL_CFLAGS=`$PERL_BIN -MExtUtils::Embed -eccflags -eperl_inc`
+      fi
       AC_MSG_RESULT([$PERL_CFLAGS])
 
       AC_MSG_CHECKING([$PERL_BIN libs])
-      PERL_LDFLAGS=`$PERL_BIN -MExtUtils::Embed -eldopts`
+      if test -z "$PERL_LDFLAGS"; then
+        PERL_LDFLAGS=`$PERL_BIN -MExtUtils::Embed -eldopts`
+      fi
       AC_MSG_RESULT([$PERL_LDFLAGS])
 
       AC_AGI_COMPILE([Perl], [perl], [$PERL_CFLAGS], [$PERL_LDFLAGS],[
@@ -676,6 +683,9 @@ AM_CONDITIONAL([HAVE_AUTO4_PERL], [test "$with_perl" != "no"])
 AC_ARG_WITH(ruby, [  --without-ruby          build without Ruby Automation. (default: auto)], ruby_disabled="(disabled)")
 AC_ARG_WITH(ruby-bin, [  --with-ruby-bin=PATH    location of RUBY binary.. (default: $PATH)], [WITH_RUBY_BIN="$withval"])
 
+AC_ARG_VAR([RUBY_CFLAGS], [CFLAGS to use for Ruby (default: Config::CONFIG archdir + CFLAGS)])
+AC_ARG_VAR([RUBY_LDFLAGS], [LDFLAGS to use for Ruby (default: Cofig::CONFIG LIBRUBYARG)])
+
 if test -z "$ruby_disabled"; then
   if test -z "$WITH_RUBY_BIN"; then
     AC_PATH_PROG([RUBY_BIN],ruby,no)
@@ -692,11 +702,15 @@ if test -z "$ruby_disabled"; then
 
     if test "$with_ruby" = "yes"; then
       AC_MSG_CHECKING([checking $RUBY_BIN -r rbconfig archdir, cflags])
-      RUBY_CFLAGS=`$RUBY_BIN -r rbconfig -e "printf(\"-I%s %s\", Config::CONFIG@<:@'archdir'@:>@, Config::CONFIG@<:@'CFLAGS'@:>@)"`
+      if test -z "$RUBY_CFLAGS"; then
+        RUBY_CFLAGS=`$RUBY_BIN -r rbconfig -e "printf(\"-I%s %s\", Config::CONFIG@<:@'archdir'@:>@, Config::CONFIG@<:@'CFLAGS'@:>@)"`
+      fi
       AC_MSG_RESULT([$RUBY_CFLAGS])
 
       AC_MSG_CHECKING([checking $RUBY_BIN rbconfig libs])
-      RUBY_LDFLAGS=`$RUBY_BIN -r rbconfig -e "print Config::CONFIG@<:@'LIBRUBYARG'@:>@"`
+      if test -z "$RUBY_LDFLAGS"; then
+        RUBY_LDFLAGS=`$RUBY_BIN -r rbconfig -e "print Config::CONFIG@<:@'LIBRUBYARG'@:>@"`
+      fi
       AC_MSG_RESULT([$RUBY_LDFLAGS])
 
       AC_AGI_COMPILE([Ruby], [ruby], [$RUBY_CFLAGS], [$RUBY_LDFLAGS],[
