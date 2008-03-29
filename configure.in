@@ -53,10 +53,13 @@ case "$target_or_host" in
   ;;
 
   *)
+    build_default="yes"
     ;;
 esac
 
 AM_CONDITIONAL([BUILD_DARWIN], [test "$build_darwin" = "yes"])
+AM_CONDITIONAL([BUILD_DEFAULT], [test "$build_default" = "yes"])
+
 
 
 ########################

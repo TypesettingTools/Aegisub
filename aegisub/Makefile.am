@@ -104,9 +104,12 @@ UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
 endif
 
 if BUILD_DARWIN
-  font_lister = font_file_lister_freetype.cpp
-else
-  font_lister = font_file_lister_fontconfig.cpp
+  FONT_LISTER = font_file_lister_freetype.cpp
+  BEVEL_BUTTON = macosx/bevelButton.cpp
+endif
+
+if BUILD_DEFAULT
+  FONT_LISTER = font_file_lister_fontconfig.cpp
 endif
 
 
@@ -114,7 +117,7 @@ endif
 ## This should also list all Win32 specific files
 EXTRA_aegisub_SOURCES = \
 	font_file_lister.cpp \
-	$(font_lister) \
+	$(FONT_LISTER) \
 	audio_player_dsound.cpp \
 	audio_player_portaudio.cpp \
 	audio_player_pulse.cpp \
@@ -132,6 +135,7 @@ EXTRA_aegisub_SOURCES = \
 	dialog_associations.cpp \
 	lavc_file.cpp \
 	lavc_keyframes.cpp \
+	macosx/bevelButton.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
 	stdwx.cpp \
@@ -141,12 +145,16 @@ EXTRA_aegisub_SOURCES = \
 	video_provider_dshow.cpp \
 	video_provider_lavc.cpp
 
+
 aegisub_SOURCES = \
 	$(AUTO3_LUA) \
 	$(FFMPEG) \
 	$(HUNSPELL) \
 	$(LIBASS) \
 	$(UNIVCHARSET) \
+	$(BEVEL_BUTTON) \
+	font_file_lister.cpp \
+	$(FONT_LISTER) \
 	MatroskaParser.c \
 	aegisublocale.cpp \
 	ass_attachment.cpp \
@@ -222,7 +230,6 @@ aegisub_SOURCES = \
 	idle_field_event.cpp \
 	kana_table.cpp \
 	keyframe.cpp \
-	macosx/bevelButton.cpp \
 	main.cpp \
 	md5.c \
 	mkv_wrap.cpp \
@@ -289,7 +296,8 @@ aegisub_SOURCES += \
 noinst_HEADERS = \
 	$(srcdir)/boost/*.hpp \
 	gl/glext.h \
-	$(srcdir)/*.hxx
+	$(srcdir)/*.hxx \
+	macosx/bevelButton.h
 
 EXTRA_DIST = \
 	auto4_perldata.inc \
