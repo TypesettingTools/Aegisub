@@ -405,7 +405,6 @@ if test -z "$ICONV_CFLAGS"; then
   ICONV_CFLAGS="$CPPFLAGS";
 fi
 
-
 if test "$enable_libass" != "no"; then
   aegisub_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$ICONV_CFLAGS"
@@ -414,9 +413,8 @@ if test "$enable_libass" != "no"; then
 
   aegisub_save_LDFLAGS="$LDFLAGS"
   LDFLAGS="$ICONV_LDFLAGS"
-  AC_CHECK_LIB([iconv], [iconv_open],[ICONV_LDFLAGS="$ICONV_LIBS"; with_iconv="yes"], with_iconv="no")
+  AC_CHECK_LIB([iconv], [iconv_open],[ICONV_LDFLAGS="$ICONV_LDFLAGS"; with_iconv="yes"], with_iconv="no")
   LDFLAGS="$aegisub_save_LDFLAGS"
-
 
   if test "$with_iconv" = "yes"; then
     LIBASS_LIBS="-L../libass -lass_aegisub"
@@ -428,11 +426,12 @@ if test "$enable_libass" != "no"; then
   fi
 fi
 
-
 if test "$with_libass" = "yes"; then
   AC_DEFINE(WITH_LIBASS, 1, [Enable libass Subtitle Provider])
 fi
 
+AC_SUBST(ICONV_LDFLAGS)
+AC_SUBST(ICONV_CFLAGS)
 AC_SUBST(LIBASS_LIBS)
 AC_SUBST(LIBASS_CFLAGS)
 AM_CONDITIONAL([WITH_LIBASS], [test "$with_libass" = "yes"])

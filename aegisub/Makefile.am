@@ -9,7 +9,7 @@ AM_CXXFLAGS = -DAEGISUB -Iposix -include posix/defines.h -Iinclude @WX_CPPFLAGS@
 bin_PROGRAMS = aegisub
 aegisub_LDADD = posix/libposix.a
 aegisub_CPPFLAGS = @FREETYPE_CFLAGS@
-aegisub_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@
+aegisub_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@
 
 if BUILD_DARWIN
@@ -56,7 +56,7 @@ endif
 if WITH_LIBASS
 noinst_LIBRARIES += libsubtitle_ass.a
 libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
-libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@
+libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@ @ICONV_CFLAGS@
 LIBS += @LIBASS_LIBS@
 aegisub_LDADD += libsubtitle_ass.a
 aegisub_LDFLAGS += @FONTCONFIG_LIBS@
