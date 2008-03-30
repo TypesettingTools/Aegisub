@@ -237,10 +237,13 @@ int FFmpegSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime) {
 
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
         if (Packet.stream_index == VideoTrack) {
-			Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, Packet.data, Packet.size);
-
 			if (*AStartTime < 0)
 				*AStartTime = Packet.dts;
+
+			Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, Packet.data, Packet.size);
+
+			if (Ret < 0)
+				goto Error;
         }
 
         av_free_packet(&Packet);
@@ -249,10 +252,15 @@ int FFmpegSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime) {
 			goto Done;
 	}
 
-	// Flush the last frame
-	if (CurrentFrame == VI.num_frames - 1  && VideoCodecContext->has_b_frames)
+	// Flush the last frames
+	if (VideoCodecContext->has_b_frames)
 		Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, NULL, 0);
 
+	if (!FrameFinished || Ret < 0)
+		goto Error;
+
+// Ignore errors for now
+Error:
 Done:
 	return Ret;
 }

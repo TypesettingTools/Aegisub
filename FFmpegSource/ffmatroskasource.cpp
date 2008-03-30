@@ -357,19 +357,26 @@ int FFMatroskaSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime,
 	unsigned int Track, FrameFlags, FrameSize;
 	
 	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
-		FrameSize = ReadFrame(FilePos, FrameSize, VideoCS, Env);
 		if (*AFirstStartTime < 0)
 			*AFirstStartTime = StartTime;
+		FrameSize = ReadFrame(FilePos, FrameSize, VideoCS, Env);
 		Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, Buffer, FrameSize);
+
+		if (Ret < 0)
+			goto Error;
 
 		if (FrameFinished)
 			goto Done;
 	}
 
-	// Flush the last frame
-	if (CurrentFrame == VI.num_frames - 1 && VideoCodecContext->has_b_frames)
+	// Flush the last frames
+	if (VideoCodecContext->has_b_frames)
 		Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, NULL, 0);
 
+	if (!FrameFinished || Ret < 0)
+		goto Error;
+
+Error:
 Done:
 	return Ret;
 }

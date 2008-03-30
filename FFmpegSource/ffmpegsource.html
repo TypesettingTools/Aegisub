@@ -166,6 +166,8 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 <h2>Changes</h2>
 <ul>
 <li>1.17<ul>
+<li>Changed error handling slightly in video decoding (most errors are still ignored)</li>
+<li>Fixed a bug where the last frame(s) wouldn't be returned properly in h264 with b-frames+pyramid</li>
 <li>Updated FFmpeg to rev X</li>
 </ul></li>
 
