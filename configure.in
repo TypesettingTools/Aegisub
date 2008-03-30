@@ -355,8 +355,12 @@ AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provid
 if test "$with_ffmpeg" != "no"; then
   AC_CHECK_LIB([avcodec], [avcodec_init],AVCODEC_LDFLAGS="-lavcodec", [with_ffmpeg=no])
   AC_CHECK_LIB([avformat], [av_read_frame],AVFORMAT_LDFLAGS="-lavformat", [with_ffmpeg=no])
-  AC_CHECK_LIB([avformat], [sws_scale],[with_swscale="yes"], [with_swscale="no"])
 
+  if test "$build_darwin" = "yes"; then
+    AC_CHECK_LIB([avutil], [av_free],[AVUTIL_LDFLAGS="-lavutil"], [with_ffmpeg="no"])
+  fi
+
+  AC_CHECK_LIB([avformat], [sws_scale],[with_swscale="yes"], [with_swscale="no"])
   if test "$with_swscale" = "no"; then
     AC_CHECK_LIB([swscale], [sws_scale],[SWSCALE_LDFLAGS="-lswscale"; with_swscale_lib="yes"], [with_swscale_lib="no"])
   fi
@@ -378,6 +382,7 @@ fi
 AC_SUBST(SWSCALE_LDFLAGS)
 AC_SUBST(AVCODEC_LDFLAGS)
 AC_SUBST(AVFORMAT_LDFLAGS)
+AC_SUBST(AVUTIL_LDFLAGS)
 AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])
 
 

@@ -12,6 +12,10 @@ aegisub_CPPFLAGS = @FREETYPE_CFLAGS@
 aegisub_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@
 
+ifdef BUILD_DARWIN
+aegisub_LDFLAGS += @AVUTIL_FFMPEG@
+endif
+
 if HAVE_ALSA
 noinst_LIBRARIES += libaudio_alsa.a
 libaudio_alsa_a_SOURCES = audio_player_alsa.cpp
