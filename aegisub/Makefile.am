@@ -13,7 +13,7 @@ aegisub_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@
 
 if BUILD_DARWIN
-aegisub_LDFLAGS += @AVUTIL_LDFLAGS@
+aegisub_LDFLAGS += @AVUTIL_LDFLAGS@ -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
 endif
 
 if HAVE_ALSA
