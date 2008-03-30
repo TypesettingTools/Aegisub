@@ -475,7 +475,7 @@ fi
 ######################
 ## universalchardetect
 ######################
-AC_ARG_ENABLE(univchardet, [  --disable-univchardet    diable universalchardet support.], univchardet_disabled="(disabled)")
+AC_ARG_ENABLE(univchardet, [  --disable-univchardet   disble universalchardet support.], univchardet_disabled="(disabled)")
 if test "$enable_univchardet" != "no"; then
   with_univchardet="yes"
   AC_DEFINE(WITH_UNIVCHARDET, 1, [Enable universalchardet support])
@@ -561,7 +561,7 @@ if test -z "$LUA50_LDFLAGS"; then
 fi
 
 AC_ARG_WITH(lua50,
-[  --without-lua50           build without lua 5.0 (auto3)], [lua_disabled="(disabled)"])
+[  --without-lua50          build without lua 5.0 (auto3)], [lua_disabled="(disabled)"])
 
 if test "$with_lua50" != no; then
 
