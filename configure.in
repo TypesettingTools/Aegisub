@@ -546,8 +546,8 @@ else
 fi
 
 AM_CONDITIONAL([HAVE_AUTO4_LUA], [test "$with_auto4" != "no"])
-AC_SUBST(LUA50_CFLAGS)
-AC_SUBST(LUA50_LDFLAGS)
+AC_SUBST(LUA_CFLAGS)
+AC_SUBST(LUA_LDFLAGS)
 
 
 ##################
