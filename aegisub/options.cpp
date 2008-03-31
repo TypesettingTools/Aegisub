@@ -204,7 +204,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetText(_T("Audio Provider"),_T("FFMPEG"),1945);
 	#endif
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"),1700);
-	SetText(_T("Audio Alsa Device"), _T("plughw:0,0"));
+	SetText(_T("Audio Alsa Device"), _T("default:0"));
 	SetText(_T("Audio HD Cache Location"),_T("default"),1700);
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"),1700);
 	// Technically these can do with just the spectrum object being re-created
