@@ -406,17 +406,16 @@ if test -z "$ICONV_CFLAGS"; then
 fi
 
 if test "$enable_libass" != "no"; then
-  aegisub_save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$ICONV_CFLAGS"
-  AC_CHECK_HEADER(iconv.h, [ICONV_CFLAGS="$ICONV_CFLAGS"; with_iconv="yes"], with_iconv="no")
-  CPPFLAGS="$aegisub_save_CPPFLAGS"
+  AC_AGI_COMPILE([iconv], [iconv], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
+#include <iconv.h>
+int main(void) {
+  iconv_t ic;
+  ic = iconv_open ("UTF-8", "UTF-8");
+  if (!ic) return 1;
+  return 0;
+} ])
 
-  aegisub_save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ICONV_LDFLAGS"
-  AC_CHECK_LIB([iconv], [iconv_open],[ICONV_LDFLAGS="$ICONV_LDFLAGS"; with_iconv="yes"], with_iconv="no")
-  LDFLAGS="$aegisub_save_LDFLAGS"
-
-  if test "$with_iconv" = "yes"; then
+  if test "$agi_with_iconv" = "yes"; then
     LIBASS_LIBS="-L../libass -lass_aegisub"
     LIBASS_CFLAGS="-I../libass"
     with_libass="yes"
@@ -428,6 +427,8 @@ fi
 
 if test "$with_libass" = "yes"; then
   AC_DEFINE(WITH_LIBASS, 1, [Enable libass Subtitle Provider])
+else
+  with_libass="no"
 fi
 
 AC_SUBST(ICONV_LDFLAGS)
@@ -435,7 +436,6 @@ AC_SUBST(ICONV_CFLAGS)
 AC_SUBST(LIBASS_LIBS)
 AC_SUBST(LIBASS_CFLAGS)
 AM_CONDITIONAL([WITH_LIBASS], [test "$with_libass" = "yes"])
-
 
 
 
