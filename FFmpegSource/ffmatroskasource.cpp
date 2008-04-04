@@ -281,6 +281,14 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 
 		if (!SaveTimecodesToFile(ATimecodes, mkv_TruncFloat(VideoTI->TimecodeScale), 1000000))
 			Env->ThrowError("FFmpegSource: Failed to write timecodes");
+
+		// Set AR variables
+		int ffsar_num = VideoTI->AV.Video.DisplayWidth * VideoTI->AV.Video.PixelHeight;
+		int ffsar_den = VideoTI->AV.Video.DisplayHeight * VideoTI->AV.Video.PixelWidth;
+		Env->SetVar("FFSAR_NUM", ffsar_num);
+		Env->SetVar("FFSAR_DEN", ffsar_den);
+		Env->SetVar("FFSAR", ffsar_num / (double)ffsar_den);
+
 	}
 }
 

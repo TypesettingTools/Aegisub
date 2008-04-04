@@ -219,6 +219,11 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 			unsigned int DTSDiff = (unsigned int)FFMAX(Frames[1].DTS - Frames[0].DTS, 1);
 			VI.fps_denominator *= DTSDiff;
 		}
+
+		// Set AR variables
+		Env->SetVar("FFSAR_NUM", VideoCodecContext->sample_aspect_ratio.num);
+		Env->SetVar("FFSAR_DEN", VideoCodecContext->sample_aspect_ratio.den);
+		Env->SetVar("FFSAR", av_q2d(VideoCodecContext->sample_aspect_ratio));
 	}
 }
 
