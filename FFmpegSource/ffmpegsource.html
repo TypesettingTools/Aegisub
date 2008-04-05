@@ -165,6 +165,10 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 
 <h2>Changes</h2>
 <ul>
+<li>1.18<ul>
+<li>Reverted error handling because it broke vc1</li>
+</ul></li>
+
 <li>1.17<ul>
 <li>Now sets the video SAR (if any) in the variables FFSAR, FFSAR_NUM and FFSAR_DEN when being invoked</li>
 <li>Changed error handling slightly in video decoding (most errors are still ignored)</li>

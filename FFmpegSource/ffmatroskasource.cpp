@@ -370,9 +370,6 @@ int FFMatroskaSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime,
 		FrameSize = ReadFrame(FilePos, FrameSize, VideoCS, Env);
 		Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, Buffer, FrameSize);
 
-		if (Ret < 0)
-			goto Error;
-
 		if (FrameFinished)
 			goto Done;
 	}
@@ -381,7 +378,7 @@ int FFMatroskaSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime,
 	if (VideoCodecContext->has_b_frames)
 		Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, NULL, 0);
 
-	if (!FrameFinished || Ret < 0)
+	if (!FrameFinished)
 		goto Error;
 
 Error:

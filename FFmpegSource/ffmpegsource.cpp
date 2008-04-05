@@ -246,9 +246,6 @@ int FFmpegSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime) {
 				*AStartTime = Packet.dts;
 
 			Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, Packet.data, Packet.size);
-
-			if (Ret < 0)
-				goto Error;
         }
 
         av_free_packet(&Packet);
@@ -261,7 +258,7 @@ int FFmpegSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime) {
 	if (VideoCodecContext->has_b_frames)
 		Ret = avcodec_decode_video(VideoCodecContext, AFrame, &FrameFinished, NULL, 0);
 
-	if (!FrameFinished || Ret < 0)
+	if (!FrameFinished)
 		goto Error;
 
 // Ignore errors for now
