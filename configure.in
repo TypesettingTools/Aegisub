@@ -454,6 +454,7 @@ int main(void) {
   hunspell = new Hunspell(NULL,NULL);
   if (!hunspell) return 1;
   return 0;
+}
 ])
 
 if test "$agi_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
