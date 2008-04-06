@@ -44,13 +44,7 @@ extern "C" {
 #include "stdint.h"
 #endif
 
-#ifdef __WINDOWS__
 #include "../libass/ass.h"
-#else
-#include "ass/ass.h"
-#endif
-}
-
 
 ///////////////////
 // libass provider
