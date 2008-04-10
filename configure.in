@@ -52,6 +52,10 @@ case "$target_or_host" in
     build_darwin="yes"
   ;;
 
+  *-*-linux*)
+    build_linux="yes"
+  ;;
+
   *)
     build_default="yes"
     ;;
@@ -398,7 +402,11 @@ AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv (default: CPPFLAGS)])
 AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv (default: LDFLAGS -liconv)])
 
 if test -z "$ICONV_LDFLAGS"; then
-  ICONV_LDFLAGS="$LDFLAGS -liconv";
+  if "$build_linux" = "yes"; then
+    ICONV_LDFLAGS="$LDFLAGS"
+  else
+    ICONV_LDFLAGS="$LDFLAGS -liconv";
+  fi
 fi
 
 if test -z "$ICONV_CFLAGS"; then
