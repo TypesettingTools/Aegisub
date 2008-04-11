@@ -248,7 +248,7 @@ AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv (default: CPPFLAGS)])
 AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv (default: LDFLAGS -liconv)])
 
 if test -z "$ICONV_LDFLAGS"; then
-  if "$build_linux" = "yes"; then
+  if test "$build_linux" = "yes"; then
     ICONV_LDFLAGS="$LDFLAGS"
   else
     ICONV_LDFLAGS="$LDFLAGS -liconv";
