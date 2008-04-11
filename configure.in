@@ -169,8 +169,15 @@ AC_SUBST(OPENMP_CXXFLAGS)
 ##############################
 # Program Support and Features
 ##############################
+#################
+## Wide Character
+#################
 AC_CHECK_HEADER([wchar.h],,[AC_MSG_FAILURE([aegisub requires wide character support])])
 
+
+#########
+## OpenGL
+#########
 AX_CHECK_GL
 if test ! "$GL_LIBS"; then
 	AC_MSG_FAILURE([aegisub requires GL support.])
@@ -188,6 +195,10 @@ if test "$agi_with_opengl" = "no"; then
 	AC_MSG_FAILURE([Please install a working OpenGL library.])
 fi
 
+
+###########
+## Freetype
+###########
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.7.0,
   AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
   [AC_MSG_FAILURE([aegisub requires >= FreeType2 2.1.9])])
@@ -206,6 +217,9 @@ if test "$agi_with_freetype" = "no"; then
 fi
 
 
+#############
+## Fontconfig
+#############
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
   AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.]),
   [AC_MSG_FAILURE([aegisub requires >= fontconfig >= 2.4])])
@@ -225,6 +239,38 @@ int main(void) {
 if test "$agi_with_fontconfig" = "no"; then
     AC_MSG_FAILURE([Please install a working Fontconfig library.])
 fi
+
+
+########
+## iconv
+########
+AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv (default: CPPFLAGS)])
+AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv (default: LDFLAGS -liconv)])
+
+if test -z "$ICONV_LDFLAGS"; then
+  if "$build_linux" = "yes"; then
+    ICONV_LDFLAGS="$LDFLAGS"
+  else
+    ICONV_LDFLAGS="$LDFLAGS -liconv";
+  fi
+fi
+
+if test -z "$ICONV_CFLAGS"; then
+  ICONV_CFLAGS="$CPPFLAGS";
+fi
+
+  AC_AGI_COMPILE([iconv], [iconv], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
+#include <iconv.h>
+int main(void) {
+  iconv_t ic;
+  ic = iconv_open ("UTF-8", "UTF-8");
+  if (!ic) return 1;
+  return 0;
+} ])
+
+AC_SUBST(ICONV_LDFLAGS)
+AC_SUBST(ICONV_CFLAGS)
+
 
 
 #################
@@ -398,31 +444,7 @@ AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" != "no"])
 
 AC_ARG_ENABLE(libass, [  --disable-libass        disable libass support (default=enabled)],libass_disabled="(disabled)")
 
-AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv (default: CPPFLAGS)])
-AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv (default: LDFLAGS -liconv)])
-
-if test -z "$ICONV_LDFLAGS"; then
-  if "$build_linux" = "yes"; then
-    ICONV_LDFLAGS="$LDFLAGS"
-  else
-    ICONV_LDFLAGS="$LDFLAGS -liconv";
-  fi
-fi
-
-if test -z "$ICONV_CFLAGS"; then
-  ICONV_CFLAGS="$CPPFLAGS";
-fi
-
 if test "$enable_libass" != "no"; then
-  AC_AGI_COMPILE([iconv], [iconv], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
-#include <iconv.h>
-int main(void) {
-  iconv_t ic;
-  ic = iconv_open ("UTF-8", "UTF-8");
-  if (!ic) return 1;
-  return 0;
-} ])
-
   if test "$agi_with_iconv" = "yes"; then
     LIBASS_LIBS="-L../libass -lass_aegisub"
     LIBASS_CFLAGS="-I../libass"
@@ -439,8 +461,6 @@ else
   with_libass="no"
 fi
 
-AC_SUBST(ICONV_LDFLAGS)
-AC_SUBST(ICONV_CFLAGS)
 AC_SUBST(LIBASS_LIBS)
 AC_SUBST(LIBASS_CFLAGS)
 AM_CONDITIONAL([WITH_LIBASS], [test "$with_libass" = "yes"])
