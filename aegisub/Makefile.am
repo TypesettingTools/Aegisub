@@ -122,11 +122,14 @@ UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
 endif
 
 if BUILD_DARWIN
-  FONT_LISTER = font_file_lister_freetype.cpp
   BEVEL_BUTTON = macosx/bevelButton.cpp
 endif
 
-if BUILD_DEFAULT
+if FONTLISTER_FREETYPE
+  FONT_LISTER = font_file_lister_freetype.cpp
+endif
+
+if FONTLISTER_FONTCONFIG
   FONT_LISTER = font_file_lister_fontconfig.cpp
 endif
 

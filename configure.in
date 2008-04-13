@@ -64,6 +64,8 @@ esac
 AM_CONDITIONAL([BUILD_DARWIN], [test "$build_darwin" = "yes"])
 AM_CONDITIONAL([BUILD_DEFAULT], [test "$build_default" = "yes"])
 
+AM_CONDITIONAL([FONTLISTER_FONTCONFIG], [test "$build_darwin" != "yes"])
+AM_CONDITIONAL([FONTLISTER_FREETYPE], [test "$build_darwin" = "yes"])
 
 
 ########################
