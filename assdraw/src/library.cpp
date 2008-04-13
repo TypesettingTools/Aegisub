@@ -30,6 +30,10 @@
 
 #include <wx/clipbrd.h>
 
+#if !defined(__WINDOWS__)
+#include "xpm/res.h"
+#endif
+
 BEGIN_EVENT_TABLE(ASSDrawShapePreview, ASSDrawEngine)
     EVT_SIZE(ASSDrawShapePreview::OnSize)
 END_EVENT_TABLE()
@@ -153,9 +157,11 @@ void ASSDrawShapeLibrary::OnMouseRightClick(wxMouseEvent &event)
 		activepreview = prev;
 		wxMenu *menu = new wxMenu;
 		wxMenuItem *menuload = new wxMenuItem(menu, MENU_LOAD, _T("Load to canvas"));
+#ifdef __WINDOWS__
 		wxFont f = menuload->GetFont();
 		f.SetWeight(wxFONTWEIGHT_BOLD);
 		menuload->SetFont(f);
+#endif
 		menu->Append(menuload);
 		//menu->Append(MENU_LOAD, _T("Load to canvas"))->GetFont().SetWeight(wxFONTWEIGHT_BOLD);
 		menu->Append(MENU_COPYCLIPBOARD, _T("Copy commands to clipboard"));

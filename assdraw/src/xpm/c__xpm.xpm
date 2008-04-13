@@ -1,0 +1,24 @@
+/* XPM */
+static char *c__xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 3 1",
+"  c gray20",
+". c #12120000FFFF",
+"X c None",
+/* pixels */
+"XX.XXXXXXXXXXXXX",
+"XX.XXXXXXXXXXXXX",
+".....XXXXXXXXXXX",
+"XX.XXXXXXXXXXXXX",
+"XX.XXXX    XXXXX",
+"XXXXXX      XXXX",
+"XXXXX   XX   XXX",
+"XXXXX  XXXX XXXX",
+"XXXXX  XXXXXXXXX",
+"XXXXX  XXXXXXXXX",
+"XXXXX  XXXX XXXX",
+"XXXXX   XX   XXX",
+"XXXXXX      XXXX",
+"XXXXXXX    XXXXX",
+"XXXXXXXXXXXXXXXX"
+};

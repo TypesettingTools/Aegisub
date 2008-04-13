@@ -875,9 +875,11 @@ void ASSDrawCanvas::OnMouseRightDClick(wxMouseEvent& event)
 		dblclicked_point_right = pointedAt_point;
 		pointedAt_point = NULL;
 		wxMenuItem *cmdmenuitem = new wxMenuItem(menu, MENU_DUMMY, dblclicked_point_right->cmd_main->ToString());
+#ifdef __WINDOWS__
 		wxFont f = cmdmenuitem->GetFont();
 		f.SetWeight(wxFONTWEIGHT_BOLD);
 		cmdmenuitem->SetFont(f);
+#endif
 		menu->Append(cmdmenuitem); 
 		menu->Enable(MENU_DUMMY, false);
 		switch (dblclicked_point_right->cmd_main->type)

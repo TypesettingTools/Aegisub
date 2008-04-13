@@ -43,6 +43,9 @@
 #include <wx/dynlib.h>
 #include <wx/stdpaths.h>
 
+#if !defined(__WINDOWS__)
+#include "xpm/res.h"
+#endif
 
 /////////////
 // Libraries

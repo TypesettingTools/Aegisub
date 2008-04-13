@@ -35,6 +35,10 @@
 
 #include "assdraw.hpp"
 
+#if !defined(__WINDOWS__)
+#include "xpm/res.h"
+#endif
+
 BEGIN_EVENT_TABLE(ASSDrawSrcTxtCtrl, wxTextCtrl)
 	EVT_CHAR(ASSDrawSrcTxtCtrl::CustomOnChar)
 	EVT_TEXT(wxID_ANY, ASSDrawSrcTxtCtrl::CustomOnText)

@@ -1,0 +1,26 @@
+/* XPM */
+static char *uncheck_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 5 1",
+"  c gray25",
+". c #808080808080",
+"X c #D4D4D0D0C8C8",
+"o c gray100",
+"O c None",
+/* pixels */
+"OOOOOOOOOOOOOOOO",
+"OO............OO",
+"OO.          XOO",
+"OO. oooooooooXOO",
+"OO. oooooooooXOO",
+"OO. oooooooooXOO",
+"OO. oooooooooXOO",
+"OO. oooooooooXOO",
+"OO. oooooooooXOO",
+"OO. oooooooooXOO",
+"OO. oooooooooXOO",
+"OO. oooooooooXOO",
+"OO.XXXXXXXXXXXOO",
+"OOOOOOOOOOOOOOOO",
+"OOOOOOOOOOOOOOOO"
+};

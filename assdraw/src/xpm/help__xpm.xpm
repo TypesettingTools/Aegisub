@@ -1,0 +1,32 @@
+/* XPM */
+static char *help__xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 11 1",
+"  c #46464B4B5C5C",
+". c #FFFFCCCC0000",
+"X c #FAFAF3F30000",
+"o c #FBFBE2E24949",
+"O c #4C4C2D2D9B9B",
+"+ c #7A7A7E7E8D8D",
+"@ c #59594F4FBFBF",
+"# c #65655B5BEFEF",
+"$ c #FFFFFFFFABAB",
+"% c #82829494F7F7",
+"& c None",
+/* pixels */
+"&&&&++++++++&&&&",
+"&&++XXXXXXXo  &&",
+"&+XX$$@@@@$$X. &",
+"&+X$$@@%#@@$$X +",
+"+X$$$@#$$@@$$$o ",
+"+X$$$$$$%@O$$$X ",
+"+X$$$$$%@O$$$$X ",
+"+X$$$$$@O$$$$$o ",
+"+X$$$$$$$$$$$Xo ",
+"+oX$$$$@@$$$$X. ",
+"&+XX$$$@@$$XX. &",
+"&& oXX$$$$Xo. &&",
+"&&&   oXXXo  &&&",
+"&&&&&&     &&&&&",
+"&&&&&&&&&&&&&&&&"
+};

@@ -1,0 +1,27 @@
+/* XPM */
+static char *check_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 6 1",
+"  c black",
+". c gray25",
+"X c #808080808080",
+"o c #D4D4D0D0C8C8",
+"O c gray100",
+"+ c None",
+/* pixels */
+"++++++++++++++++",
+"++XXXXXXXXXXXX++",
+"++X..........o++",
+"++X.OOOOOOOOOo++",
+"++X.OOOOOOO Oo++",
+"++X.OOOOOO  Oo++",
+"++X.O OOO   Oo++",
+"++X.O  O   OOo++",
+"++X.O     OOOo++",
+"++X.OO   OOOOo++",
+"++X.OOO OOOOOo++",
+"++X.OOOOOOOOOo++",
+"++Xooooooooooo++",
+"++++++++++++++++",
+"++++++++++++++++"
+};
