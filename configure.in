@@ -471,7 +471,7 @@ AC_ARG_ENABLE(csri, [  --disable-csri          disable CSRI (ASA) support (defau
 
 if test "$enable_csri" != "no"; then
   PKG_CHECK_MODULES(CSRI, csri >= 0.1.0, with_csri="yes", with_csri="no")
-  if test "$with_csri"="yes"; then
+  if test "$with_csri" = "yes"; then
     AC_DEFINE(WITH_CSRI, 1, [Enable CSRI (ASA) Subtitle Provider])
   fi
 else
