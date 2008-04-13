@@ -45,6 +45,7 @@ extern "C" {
 #endif
 
 #include "../libass/ass.h"
+}
 
 ///////////////////
 // libass provider
