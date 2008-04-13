@@ -53,12 +53,26 @@ aegisub_LDFLAGS += @AVFORMAT_LDFLAGS@ @AVCODEC_LDFLAGS@ @SWSCALE_LDFLAGS@
 aegisub_LDADD += libaudiovideo_ffmpeg.a
 endif
 
+noinst_LIBRARIES += libsubtitle_provider.a
+libsubtitle_provider_a_SOURCES = subtitles_provider.cpp
+libsubtitle_provider_a_CPPFLAGS = @CSRI_CFLAGS@
+aegisub_LDADD += libsubtitle_provider.a
+
 if WITH_LIBASS
 noinst_LIBRARIES += libsubtitle_ass.a
 libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
 libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@ @ICONV_CFLAGS@
 LIBS += @LIBASS_LIBS@
 aegisub_LDADD += libsubtitle_ass.a
+aegisub_LDFLAGS += @FONTCONFIG_LIBS@
+endif
+
+if WITH_CSRI
+noinst_LIBRARIES += libsubtitle_csri.a
+libsubtitle_csri_a_SOURCES = subtitles_provider_csri.cpp
+libsubtitle_csri_a_CPPFLAGS = @ICONV_CFLAGS@ @CSRI_CFLAGS@
+LIBS += @CSRI_LIBS@
+aegisub_LDADD += libsubtitle_csri.a
 aegisub_LDFLAGS += @FONTCONFIG_LIBS@
 endif
 
@@ -144,6 +158,7 @@ EXTRA_aegisub_SOURCES = \
 	spellchecker_hunspell.cpp \
 	stdwx.cpp \
 	subtitle_format_prs.cpp \
+	subtitles_provider_csri.cpp \
 	subtitles_provider_libass.cpp \
 	video_provider_avs.cpp \
 	video_provider_dshow.cpp \
@@ -260,8 +275,6 @@ aegisub_SOURCES = \
 	subtitle_format_srt.cpp \
 	subtitle_format_ttxt.cpp \
 	subtitle_format_txt.cpp \
-	subtitles_provider.cpp \
-	subtitles_provider_csri.cpp \
 	text_file_writer.cpp \
 	thesaurus.cpp \
 	thesaurus_myspell.cpp \
