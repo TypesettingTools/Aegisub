@@ -211,7 +211,7 @@ AC_AGI_COMPILE([Freetype], [freetype], [$FREETYPE_CFLAGS], [$FREETYPE_LIBS],[
 int main(void) {
   FT_Library ft;
   if (FT_Init_FreeType(&ft)) { return 1; }
-  return;
+  return 0;
 }])
 
 if test "$agi_with_freetype" = "no"; then
