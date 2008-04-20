@@ -321,7 +321,7 @@ int main(void) {
 }])
 
 if test "$agi_with_portaudio" = "no" && test "$with_portaudio" = "yes"; then
-  AC_MSG_WARN([PortAudio detected, but it doesn't work..])
+  AC_MSG_WARN([PortAudio detected, but it doesn't work...])
   with_portaudio="no"
 fi
 
@@ -352,7 +352,7 @@ int main(void) {
 }])
 
 if test "$agi_with_pulseaudio" = "no" && test "$with_pulseaudio" = "yes"; then
-  AC_MSG_WARN([PulseAudio detected, but it doesn't work..])
+  AC_MSG_WARN([PulseAudio detected, but it doesn't work...])
   with_pulseaudio="no"
 fi
 
@@ -387,7 +387,7 @@ int main(void) {
 }])
 
 if test "$agi_with_openal" = "no" && test "$with_openal" = "yes"; then
-  AC_MSG_WARN([OpenAL detected, but it doesn't work..])
+  AC_MSG_WARN([OpenAL detected, but it doesn't work...])
   with_openal="no"
 fi
 
@@ -402,7 +402,7 @@ fi
 # Video Providers
 #################
 
-AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provider.. (default: auto)], ffmpeg_disabled="(disabled)")
+AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provider. (default: auto)], ffmpeg_disabled="(disabled)")
 
 if test "$with_ffmpeg" != "no"; then
   AC_CHECK_LIB([avcodec], [avcodec_init],AVCODEC_LDFLAGS="-lavcodec", [with_ffmpeg=no])
@@ -505,7 +505,7 @@ int main(void) {
 ])
 
 if test "$agi_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
-  AC_MSG_WARN([Hunspell detected, but it doesn't work..])
+  AC_MSG_WARN([Hunspell detected, but it doesn't work...])
   with_old_hunspell="no"
 else
   AC_DEFINE(WITH_HUNSPELL, 1, [Enable Hunspell support.])
@@ -643,7 +643,7 @@ AC_SUBST(LUA50_LDFLAGS)
 ## Auto4 PERL
 #############
 AC_ARG_WITH(perl, [  --without-perl          build without PERL Automation. (default: auto)], perl_disabled="(disabled)")
-AC_ARG_WITH(perl-bin, [  --with-perl-bin=PATH    location of PERL binary.. (default: $PATH)], [WITH_PERL_BIN="$withval"])
+AC_ARG_WITH(perl-bin, [  --with-perl-bin=PATH    location of PERL binary. (default: $PATH)], [WITH_PERL_BIN="$withval"])
 
 AC_ARG_VAR([PERL_CFLAGS], [CFLAGS to use for Perl (default: -MExtUtils::Embed -eccflags -eperl_inc)])
 AC_ARG_VAR([PERL_LDFLAGS], [LDFLAGS to use for Perl (default: -MExtUtils::Embed -eldopts)])
@@ -691,7 +691,7 @@ int main(int argc, char **argv) {
 fi
 
 if test "$agi_with_perl" = "no" && test "$with_perl" = "yes"; then
-  AC_MSG_WARN([Perl detected, but it doesn't work..])
+  AC_MSG_WARN([Perl detected, but it doesn't work...])
   with_perl="no"
 fi
 
@@ -711,7 +711,7 @@ AM_CONDITIONAL([HAVE_AUTO4_PERL], [test "$with_perl" != "no"])
 ## Auto4 Ruby
 #############
 AC_ARG_WITH(ruby, [  --without-ruby          build without Ruby Automation. (default: auto)], ruby_disabled="(disabled)")
-AC_ARG_WITH(ruby-bin, [  --with-ruby-bin=PATH    location of RUBY binary.. (default: $PATH)], [WITH_RUBY_BIN="$withval"])
+AC_ARG_WITH(ruby-bin, [  --with-ruby-bin=PATH    location of RUBY binary. (default: $PATH)], [WITH_RUBY_BIN="$withval"])
 
 AC_ARG_VAR([RUBY_CFLAGS], [CFLAGS to use for Ruby (default: Config::CONFIG archdir + CFLAGS)])
 AC_ARG_VAR([RUBY_LDFLAGS], [LDFLAGS to use for Ruby (default: Cofig::CONFIG LIBRUBYARG)])
@@ -756,7 +756,7 @@ int main(void) {
 fi
 
 if test "$agi_with_ruby" = "no" && test "$with_ruby" = "yes"; then
-  AC_MSG_WARN([Ruby detected, but it doesn't work..])
+  AC_MSG_WARN([Ruby detected, but it doesn't work...])
   with_ruby="no"
 fi
 
