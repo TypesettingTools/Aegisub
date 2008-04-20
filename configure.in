@@ -507,6 +507,8 @@ int main(void) {
 if test "$agi_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
   AC_MSG_WARN([Hunspell detected, but it doesn't work..])
   with_old_hunspell="no"
+else
+  AC_DEFINE(WITH_HUNSPELL, 1, [Enable Hunspell support.])
 fi
 
 AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_old_hunspell" != "no"])
