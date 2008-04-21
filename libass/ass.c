@@ -647,17 +647,17 @@ static int process_fonts_line(ass_track_t* track, char *str)
 */ 
 static int process_line(ass_track_t* track, char *str)
 {
-	if (strstr(str, "[Script Info]")) { // FIXME: strstr to skip possible BOM at the beginning of the script
+	if (!strncasecmp(str, "[Script Info]", 13)) {
 		track->parser_priv->state = PST_INFO;
-	} else if (!strncmp(str, "[V4 Styles]", 11)) {
+	} else if (!strncasecmp(str, "[V4 Styles]", 11)) {
 		track->parser_priv->state = PST_STYLES;
 		track->track_type = TRACK_TYPE_SSA;
-	} else if (!strncmp(str, "[V4+ Styles]", 12)) {
+	} else if (!strncasecmp(str, "[V4+ Styles]", 12)) {
 		track->parser_priv->state = PST_STYLES;
 		track->track_type = TRACK_TYPE_ASS;
-	} else if (!strncmp(str, "[Events]", 8)) {
+	} else if (!strncasecmp(str, "[Events]", 8)) {
 		track->parser_priv->state = PST_EVENTS;
-	} else if (!strncmp(str, "[Fonts]", 7)) {
+	} else if (!strncasecmp(str, "[Fonts]", 7)) {
 		track->parser_priv->state = PST_FONTS;
 	} else {
 		switch (track->parser_priv->state) {
@@ -690,7 +690,11 @@ static int process_text(ass_track_t* track, char* str)
 	char* p = str;
 	while(1) {
 		char* q;
-		for (;((*p=='\r')||(*p=='\n'));++p) {}
+		while (1) {
+			if ((*p=='\r')||(*p=='\n')) ++p;
+			else if (p[0]=='\xef' && p[1]=='\xbb' && p[2]=='\xbf') p+=3; // U+FFFE (BOM)
+			else break;
+		}
 		for (q=p; ((*q!='\0')&&(*q!='\r')&&(*q!='\n')); ++q) {};
 		if (q==p)
 			break;
