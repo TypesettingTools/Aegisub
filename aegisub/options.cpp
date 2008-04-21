@@ -290,6 +290,9 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetColour(_T("Audio Background"),wxColour(0,0,0));
 	SetModificationType(MOD_OFF);
 
+	// RGB Adjust tool
+	SetBool(_T("RGBAdjust Tool"),false);
+
 
 	// Only defaults?
 	if (!onlyDefaults) {

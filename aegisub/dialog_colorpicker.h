@@ -93,6 +93,7 @@ public:
 	void LoadFromString(const wxString &recent_string);
 	wxString StoreToString();
 	void AddColor(wxColour color);
+	wxColour GetColor(int n) { return colors.at(n); }
 
 	DECLARE_EVENT_TABLE()
 };
@@ -188,6 +189,7 @@ private:
 	void OnSpectrumChange(wxCommandEvent &evt);
 	void OnSliderChange(wxCommandEvent &evt);
 	void OnRecentSelect(wxCommandEvent &evt); // also handles dropper pick
+	void OnRGBAdjust(wxCommandEvent &evt);
 	void OnDropperMouse(wxMouseEvent &evt);
 
 	static int lastx, lasty;
@@ -221,6 +223,7 @@ enum {
 	SELECTOR_RECENT,
 	SELECTOR_DROPPER,
 	SELECTOR_DROPPER_PICK,
+	BUTTON_RGBADJUST
 };
 
 

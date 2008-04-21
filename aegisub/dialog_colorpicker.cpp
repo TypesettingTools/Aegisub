@@ -44,11 +44,13 @@
 #include <wx/dcmemory.h>
 #include <wx/dcscreen.h>
 #include <wx/settings.h>
+#include <wx/clipbrd.h>
 #include "dialog_colorpicker.h"
 #include "colorspace.h"
 #include "ass_style.h"
 #include "options.h"
 #include "help_button.h"
+#include "utils.h"
 
 
 #ifdef WIN32
@@ -557,12 +559,16 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	hsx_sizer->AddSpacer(5);
 	hsx_sizer->Add(hsv_box);
 
+	wxSizer *recent_sizer = new wxBoxSizer(wxVERTICAL);
+	recent_sizer->Add(recent_box, 1, wxEXPAND);
+	if (Options.AsBool(_T("RGBAdjust Tool"))) recent_sizer->Add(new wxButton(this,BUTTON_RGBADJUST,_T("rgbadjust()")), 0, wxEXPAND);
+
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
 	picker_sizer->AddStretchSpacer();
 	picker_sizer->Add(screen_dropper_icon, 0, wxALIGN_CENTER|wxRIGHT, 5);
 	picker_sizer->Add(screen_dropper, 0, wxALIGN_CENTER);
 	picker_sizer->AddStretchSpacer();
-	picker_sizer->Add(recent_box, 0, wxALIGN_CENTER);
+	picker_sizer->Add(recent_sizer, 0, wxALIGN_CENTER);
 	picker_sizer->AddStretchSpacer();
 
 	wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer();
@@ -999,6 +1005,7 @@ BEGIN_EVENT_TABLE(DialogColorPicker, wxDialog)
 	EVT_COMMAND(SELECTOR_SLIDER, wxSPECTRUM_CHANGE, DialogColorPicker::OnSliderChange)
 	EVT_COMMAND(SELECTOR_RECENT, wxRECENT_SELECT, DialogColorPicker::OnRecentSelect)
 	EVT_COMMAND(SELECTOR_DROPPER_PICK, wxDROPPER_SELECT, DialogColorPicker::OnRecentSelect)
+	EVT_BUTTON(BUTTON_RGBADJUST, DialogColorPicker::OnRGBAdjust)
 END_EVENT_TABLE()
 
 
@@ -1188,6 +1195,23 @@ void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt)
 	if (screen_dropper_icon->HasCapture()) {
 		wxPoint scrpos = screen_dropper_icon->ClientToScreen(evt.GetPosition());
 		screen_dropper->DropFromScreenXY(scrpos.x, scrpos.y);
+	}
+}
+
+
+// rgbadjust() tool
+void DialogColorPicker::OnRGBAdjust(wxCommandEvent &evt)
+{
+	wxColour cur = cur_color;
+	wxColour old = recent_box->GetColor(0);
+	double r = double(cur.Red()) / double(old.Red());
+	double g = double(cur.Green()) / double(old.Green());
+	double b = double(cur.Blue()) / double(old.Blue());
+	wxString data = wxString(_T("rgbadjust(")) + PrettyFloatD(r) + _T(",") + PrettyFloatD(g) + _T(",") + PrettyFloatD(b) + _T(")");
+
+	if (wxTheClipboard->Open())	{
+		wxTheClipboard->SetData(new wxTextDataObject(data));
+		wxTheClipboard->Close();
 	}
 }
 
