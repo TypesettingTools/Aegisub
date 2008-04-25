@@ -497,7 +497,7 @@ if test "$with_hunspell" != "no"; then
 #include <hunspell.hxx>
 int main(void) {
   Hunspell *hunspell;
-  hunspell = new Hunspell(NULL,NULL);
+  hunspell = new Hunspell(".", ".");
   if (!hunspell) return 1;
   return 0;
 }  ])
