@@ -492,7 +492,7 @@ PKG_CHECK_MODULES(ASA, asa >= 0.3.2, with_asa="yes", with_asa="no")
 AC_ARG_WITH(hunspell, [  --without-hunspell      build without hunspell support (default: auto)], hunspell_disabled="(disabled)")
 
 if test "$with_hunspell" != "no"; then
-  PKG_CHECK_MODULES(HUNSPELL, hunspell <= 1.1.10, [with_old_hunspell=yes], [with_old_hunspell=no])
+  PKG_CHECK_MODULES(HUNSPELL, hunspell >= 1.2.0, [with_hunspell=yes], [with_hunspell=no])
   AC_AGI_COMPILE([Hunspell], [hunspell], [$HUNSPELL_CFLAGS], [$HUNSPELL_LIBS],[
 #include <hunspell.hxx>
 int main(void) {
@@ -505,7 +505,6 @@ fi
 
 if test "$agi_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
   AC_MSG_WARN([Hunspell detected, but it doesn't work...])
-  with_old_hunspell="no"
 fi
 
 if test "$with_hunspell" = "yes"; then
@@ -514,14 +513,6 @@ fi
 
 AM_CONDITIONAL([HAVE_HUNSPELL], [test "$with_hunspell" != "no"])
 
-if test "$with_old_hunspell" = "yes"; then
-  AC_DEFINE(WITH_OLD_HUNSPELL, 1, [Enable Older Hunspell support.])
-  HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS -DWITH_OLD_HUNSPELL"
-  with_hunspell="yes"
-  with_hunspell_version="(old hunspell)"
-else
-  with_hunspell="no"
-fi
 
 
 ######################
