@@ -423,14 +423,16 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Audio Medusa Previous"),_T("KP_0"));
 	SetHotkey(_("Audio Medusa Enter"),_T("KP_Enter"));
 
-	SetHotkey(_("Translation Assistant Play"),_T("End"));
+	SetHotkey(_("Translation Assistant Play Audio"),_T("End"));
+	SetHotkey(_("Translation Assistant Play Video"),_T("Home"));
 	SetHotkey(_("Translation Assistant Next"),_T("PgDn"));
 	SetHotkey(_("Translation Assistant Prev"),_T("PgUp"));
 	SetHotkey(_("Translation Assistant Accept"),_T("Enter"));
 	SetHotkey(_("Translation Assistant Preview"),_T("F8"));
 	SetHotkey(_("Translation Assistant Insert Original"),_T("Insert"));
 
-	SetHotkey(_("Styling Assistant Play"),_T("End"));
+	SetHotkey(_("Styling Assistant Play Audio"),_T("End"));
+	SetHotkey(_("Styling Assistant Play Video"),_T("Home"));
 	SetHotkey(_("Styling Assistant Next"),_T("PgDn"));
 	SetHotkey(_("Styling Assistant Prev"),_T("PgUp"));
 	SetHotkey(_("Styling Assistant Accept"),_T("Enter"));
