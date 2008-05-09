@@ -43,6 +43,7 @@
 #include "ass_file.h"
 #include "subs_grid.h"
 #include "video_display.h"
+#include "video_context.h"
 #include "subs_edit_box.h"
 #include "options.h"
 #include "audio_display.h"
@@ -66,15 +67,16 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	subs = _subs;
 	grid = _grid;
 	audio = VideoContext::Get()->audio;
+	video = video->Get();
 
 	// Translation controls
-	OrigText = new ScintillaTextCtrl(this,TEXT_ORIGINAL,_T(""),wxDefaultPosition,wxSize(300,80));
+	OrigText = new ScintillaTextCtrl(this,TEXT_ORIGINAL,_T(""),wxDefaultPosition,wxSize(320,80));
 	OrigText->SetWrapMode(wxSTC_WRAP_WORD);
 	OrigText->SetMarginWidth(1,0);
 	OrigText->StyleSetForeground(1,wxColour(10,60,200));
 	OrigText->SetReadOnly(true);
 	//OrigText->PushEventHandler(new DialogTranslationEvent(this));
-	TransText = new ScintillaTextCtrl(this,TEXT_TRANS,_T(""),wxDefaultPosition,wxSize(300,80));
+	TransText = new ScintillaTextCtrl(this,TEXT_TRANS,_T(""),wxDefaultPosition,wxSize(320,80));
 	TransText->SetWrapMode(wxSTC_WRAP_WORD);
 	TransText->SetMarginWidth(1,0);
 	TransText->PushEventHandler(new DialogTranslationEvent(this));
@@ -104,28 +106,40 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Next line")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Insert Original")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Insert original")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play")) + _T(": ")));
+	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play Video")) + _T(": ")));
+	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Video")));
+	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play Audio")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Audio")));
 	PreviewCheck = new wxCheckBox(this,PREVIEW_CHECK,_("Enable preview"));
 	PreviewCheck->SetValue(preview);
 	PreviewCheck->SetEventHandler(new DialogTranslationEvent(this));
 	KeysSizer->Add(KeysInnerSizer,0,wxEXPAND,0);
 	KeysSizer->Add(PreviewCheck,0,wxTOP,5);
+	
+	// Tool sizer
+	wxStaticBoxSizer *ToolSizer = new wxStaticBoxSizer(wxVERTICAL,this, _("Actions"));
+	wxButton *PlayVideoButton = new wxButton(this,BUTTON_TRANS_PLAY_VIDEO,_("Play Video"));
+	wxButton *PlayAudioButton = new wxButton(this,BUTTON_TRANS_PLAY_AUDIO,_("Play Audio"));
+	PlayVideoButton->Enable(video->IsLoaded());
+	PlayAudioButton->Enable(audio->loaded);
+	ToolSizer->Add(PlayAudioButton,0,wxALL,5);
+	ToolSizer->Add(PlayVideoButton,0,wxLEFT | wxRIGHT | wxBOTTOM,5);
+
+	// Hotkeys + Tool sizer
+	wxBoxSizer *HTSizer = new wxBoxSizer(wxHORIZONTAL);
+	HTSizer->Add(KeysSizer,1,wxRIGHT | wxEXPAND,5);
+	HTSizer->Add(ToolSizer,0);
 
 	// Button sizer
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	wxButton *PlayButton = new wxButton(this,BUTTON_TRANS_PLAY,_("Play Audio"));
-	PlayButton->Enable(audio->loaded);
-	ButtonSizer->AddButton(PlayButton);
 	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
 	ButtonSizer->AddButton(new HelpButton(this,_T("Translation Assistant")));
-	ButtonSizer->SetAffirmativeButton(PlayButton);
 	ButtonSizer->Realize();
 
 	// General layout
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TranslationSizer,1,wxALL | wxEXPAND,5);
-	MainSizer->Add(KeysSizer,0,wxLEFT | wxBOTTOM | wxRIGHT | wxEXPAND,5);
+	MainSizer->Add(HTSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 	MainSizer->Add(ButtonSizer,0,wxALIGN_RIGHT | wxLEFT | wxBOTTOM | wxRIGHT,5);
 
 	// Set sizer
@@ -235,21 +249,12 @@ void DialogTranslation::UpdatePreview () {
 	}
 }
 
-
-//////////////
-// Play audio
-void DialogTranslation::Play() {
-	if (audio->loaded) {
-		audio->Play(current->Start.GetMS(),current->End.GetMS());
-	}
-}
-
-
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogTranslation, wxDialog)
 	EVT_BUTTON(wxID_CLOSE,DialogTranslation::OnClose)
-	EVT_BUTTON(BUTTON_TRANS_PLAY,DialogTranslation::OnPlayButton)
+	EVT_BUTTON(BUTTON_TRANS_PLAY_VIDEO,DialogTranslation::OnPlayVideoButton)
+	EVT_BUTTON(BUTTON_TRANS_PLAY_AUDIO,DialogTranslation::OnPlayAudioButton)
 END_EVENT_TABLE()
 
 
@@ -357,9 +362,21 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		return;
 	}
 
+	// Play video
+	if (Hotkeys.IsPressed(_T("Translation Assistant Play Video"))) {
+		if (video->IsLoaded()) {
+			video->PlayLine();
+			TransText->SetFocus();
+		}
+		return;
+	}
+
 	// Play audio
-	if (Hotkeys.IsPressed(_T("Translation Assistant Play"))) {
-		Play();
+	if (Hotkeys.IsPressed(_T("Translation Assistant Play Audio"))) {
+		if (audio->loaded) {
+			audio->Play(current->Start.GetMS(),current->End.GetMS());
+			TransText->SetFocus();
+		}
 		return;
 	}
 
@@ -374,10 +391,18 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 }
 
 
-///////////////
-// Play button
-void DialogTranslation::OnPlayButton(wxCommandEvent &event) {
-	Play();
+/////////////////////
+// Play video button
+void DialogTranslation::OnPlayVideoButton(wxCommandEvent &event) {
+	video->PlayLine();
+	TransText->SetFocus();
+}
+
+
+/////////////////////
+// Play audio button
+void DialogTranslation::OnPlayAudioButton(wxCommandEvent &event) {
+	audio->Play(current->Start.GetMS(),current->End.GetMS());
 	TransText->SetFocus();
 }
 

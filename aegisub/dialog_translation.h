@@ -50,13 +50,14 @@ class AssFile;
 class AssDialogue;
 class SubtitlesGrid;
 class AudioDisplay;
-
+class VideoContext;
 
 /////////
 // Class
 class DialogTranslation : public wxDialog {
 private:
 	AudioDisplay *audio;
+	VideoContext *video;
 	AssFile *subs;
 	SubtitlesGrid *grid;
 	AssDialogue *current;
@@ -70,7 +71,8 @@ private:
 	wxCheckBox *PreviewCheck;
 
 	void OnMinimize(wxIconizeEvent &event);
-	void OnPlayButton(wxCommandEvent &event);
+	void OnPlayAudioButton(wxCommandEvent &event);
+	void OnPlayVideoButton(wxCommandEvent &event);
 	void OnClose(wxCommandEvent &event);
 
 	bool JumpToLine(int n,int block);
@@ -82,7 +84,6 @@ public:
 	bool enablePreview;
 	DialogTranslation (wxWindow *parent,AssFile *subs,SubtitlesGrid *grid,int startrow=0,bool preview=false);
 
-	void Play();
 	void OnTransBoxKey(wxKeyEvent &event);
 
 	DECLARE_EVENT_TABLE()
@@ -110,7 +111,8 @@ enum {
 	TEXT_ORIGINAL = 1100,
 	TEXT_TRANS,
 	PREVIEW_CHECK,
-	BUTTON_TRANS_PLAY
+	BUTTON_TRANS_PLAY_AUDIO,
+	BUTTON_TRANS_PLAY_VIDEO
 };
 
 
