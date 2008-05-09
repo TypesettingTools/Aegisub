@@ -55,6 +55,7 @@ class AssDialogue;
 class SubtitlesGrid;
 class DialogStyling;
 class AudioDisplay;
+class VideoContext;
 
 
 /////////////////
@@ -90,7 +91,8 @@ private:
 	void OnStyleBoxEnter (wxCommandEvent &event);
 	void OnListClicked (wxCommandEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
-	void OnPlayButton(wxCommandEvent &event);
+	void OnPlayVideoButton(wxCommandEvent &event);
+	void OnPlayAudioButton(wxCommandEvent &event);
 
 	void SetStyle (wxString curName,bool jump=true);
 
@@ -100,6 +102,7 @@ public:
 	int linen;
 	AssDialogue *line;
 	AudioDisplay *audio;
+	VideoContext *video;
 
 	DialogStyling (wxWindow *parent,SubtitlesGrid *grid);
 	~DialogStyling ();
@@ -115,7 +118,8 @@ public:
 enum {
 	ENTER_STYLE_BOX,
 	STYLE_LIST,
-	BUTTON_PLAY
+	BUTTON_PLAY_VIDEO,
+	BUTTON_PLAY_AUDIO
 };
 
 

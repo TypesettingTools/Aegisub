@@ -43,6 +43,7 @@
 #include "ass_style.h"
 #include "ass_dialogue.h"
 #include "video_display.h"
+#include "video_context.h"
 #include "vfr.h"
 #include "frame_main.h"
 #include "audio_display.h"
@@ -50,6 +51,7 @@
 #include "hotkeys.h"
 #include "utils.h"
 #include "help_button.h"
+#include "subs_edit_box.h"
 
 
 ///////////////
@@ -63,6 +65,7 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 	// Variables
 	grid = _grid;
 	audio = VideoContext::Get()->audio->box->audioDisplay;
+	video = video->Get();
 	needCommit = false;
 	linen = -1;
 
@@ -79,7 +82,8 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 	// Right sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
 	wxSizer *RightTop = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Set style"));
-	wxSizer *RightBottom = new wxStaticBoxSizer(wxVERTICAL,this,_("Keys"));
+	wxSizer *RightMiddle = new wxStaticBoxSizer(wxVERTICAL,this,_("Keys"));
+	wxSizer *RightBottom = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Actions"));
 	TypeBox = new StyleEditBox(this);
 	RightTop->Add(TypeBox,1,wxEXPAND);
 
@@ -94,19 +98,33 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Previous line")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Next")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Next line")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play")) + _T(": ")));
+	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play Video")) + _T(": ")));
+	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Video")));
+	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play Audio")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Audio")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Click on list:")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Select style")));
 
-	// Rest of right sizer
+	// Right Middle
 	PreviewCheck = new wxCheckBox(this,-1,_("Enable preview (slow)"));
 	PreviewCheck->SetValue(true);
-	RightBottom->Add(KeysInnerSizer,0,wxEXPAND | wxBOTTOM,5);
-	RightBottom->Add(PreviewCheck,0,0,0);
+	RightMiddle->Add(KeysInnerSizer,0,wxEXPAND | wxBOTTOM,5);
+	RightMiddle->Add(PreviewCheck,0,0,0);
+	RightMiddle->AddStretchSpacer(1);
+
+	// Rest of right sizer
+	wxButton *PlayVideoButton = new wxButton(this,BUTTON_PLAY_VIDEO,_("Play Video"));
+	wxButton *PlayAudioButton = new wxButton(this,BUTTON_PLAY_AUDIO,_("Play Audio"));
+	PlayVideoButton->Enable(video->IsLoaded());
+	PlayAudioButton->Enable(audio->loaded);
 	RightBottom->AddStretchSpacer(1);
+	RightBottom->Add(PlayAudioButton,0,wxLEFT | wxRIGHT | wxBOTTOM,5);
+	RightBottom->Add(PlayVideoButton,0,wxBOTTOM | wxRIGHT,5);
+	RightBottom->AddStretchSpacer(1);
+
 	RightSizer->Add(RightTop,0,wxEXPAND | wxBOTTOM,5);
-	RightSizer->Add(RightBottom,1,wxEXPAND | wxBOTTOM,0);
+	RightSizer->Add(RightMiddle,0,wxEXPAND | wxBOTTOM,5);
+	RightSizer->Add(RightBottom,0,wxEXPAND,5);
 
 	// Bottom sizer
 	wxSizer *BottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -115,12 +133,8 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 
 	// Button sizer
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	wxButton *PlayButton = new wxButton(this,BUTTON_PLAY,_("Play Audio"));
-	PlayButton->Enable(audio->loaded);
-	ButtonSizer->AddButton(PlayButton);
 	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
 	ButtonSizer->AddButton(new HelpButton(this,_T("Styling Assistant")));
-	ButtonSizer->SetAffirmativeButton(PlayButton);
 	ButtonSizer->Realize();
 
 	// Main sizer
@@ -185,6 +199,7 @@ void DialogStyling::JumpToLine(int n) {
 	// Update grid
 	grid->SelectRow(linen,false);
 	grid->MakeCellVisible(linen,0);
+	grid->editBox->SetToLine(linen);
 
 	// Update display
 	if (PreviewCheck->IsChecked()) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(line->Start.GetMS(),true));
@@ -217,7 +232,8 @@ void DialogStyling::SetStyle (wxString curName, bool jump) {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogStyling,wxDialog)
-	EVT_BUTTON(BUTTON_PLAY, DialogStyling::OnPlayButton)
+	EVT_BUTTON(BUTTON_PLAY_VIDEO, DialogStyling::OnPlayVideoButton)
+	EVT_BUTTON(BUTTON_PLAY_AUDIO, DialogStyling::OnPlayAudioButton)
 	//EVT_TEXT_ENTER(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxEnter)
 	EVT_TEXT(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxModified)
 	EVT_LISTBOX(STYLE_LIST, DialogStyling::OnListClicked)
@@ -302,10 +318,16 @@ void DialogStyling::OnListClicked(wxCommandEvent &event) {
 	TypeBox->SetFocus();
 }
 
+/////////////////////
+// Play video button
+void DialogStyling::OnPlayVideoButton(wxCommandEvent &event) {
+	video->PlayLine();
+	TypeBox->SetFocus();
+}
 
-///////////////
-// Play button
-void DialogStyling::OnPlayButton(wxCommandEvent &event) {
+/////////////////////
+// Play audio button
+void DialogStyling::OnPlayAudioButton(wxCommandEvent &event) {
 	audio->Play(line->Start.GetMS(),line->End.GetMS());
 	TypeBox->SetFocus();
 }
@@ -360,8 +382,16 @@ void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
 		return;
 	}
 
+	// Play video
+	if (Hotkeys.IsPressed(_T("Styling Assistant Play Video"))) {
+		if (diag->video->IsLoaded()) {
+			diag->video->PlayLine();
+		}
+		return;
+	}
+
 	// Play audio
-	if (Hotkeys.IsPressed(_T("Styling Assistant Play"))) {
+	if (Hotkeys.IsPressed(_T("Styling Assistant Play Audio"))) {
 		if (diag->audio->loaded) {
 			diag->audio->Play(diag->line->Start.GetMS(),diag->line->End.GetMS());
 		}
