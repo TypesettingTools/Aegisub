@@ -405,11 +405,11 @@ fi
 AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provider. (default: auto)], ffmpeg_disabled="(disabled)")
 
 if test "$with_ffmpeg" != "no"; then
-  AC_CHECK_LIB([avcodec], [avcodec_init],AVCODEC_LDFLAGS="-lavcodec", [with_ffmpeg=no])
-  AC_CHECK_LIB([avformat], [av_read_frame],AVFORMAT_LDFLAGS="-lavformat", [with_ffmpeg=no])
+  AC_CHECK_LIB([avcodec], [avcodec_init],[AVCODEC_LDFLAGS="-lavcodec"; with_ffmpeg="yes"], [with_ffmpeg="no"])
+  AC_CHECK_LIB([avformat], [av_read_frame],[AVFORMAT_LDFLAGS="-lavformat"; with_ffmpeg="yes"], [with_ffmpeg="no"])
 
   if test "$build_darwin" = "yes"; then
-    AC_CHECK_LIB([avutil], [av_free],[AVUTIL_LDFLAGS="-lavutil"], [with_ffmpeg="no"])
+    AC_CHECK_LIB([avutil], [av_free],[AVUTIL_LDFLAGS="-lavutil"; with_ffmpeg="yes"], [with_ffmpeg="no"])
   fi
 
   AC_CHECK_LIB([avformat], [sws_scale],[with_swscale="yes"], [with_swscale="no"])
@@ -417,15 +417,12 @@ if test "$with_ffmpeg" != "no"; then
     AC_CHECK_LIB([swscale], [sws_scale],[SWSCALE_LDFLAGS="-lswscale"; with_swscale_lib="yes"], [with_swscale_lib="no"])
   fi
 
-  if test "$with_swscale" = "yes" || test "$with_swscale_lib" = "yes"; then
-    with_ffmpeg="yes";
-  else 
+  if test "$with_swscale" = "no" && test "$with_swscale_lib" = "no"; then
     with_ffmpeg="no";
   fi
 
   if test "$with_ffmpeg" = "yes"; then
-    found_video_provider=yes
-    with_ffmpeg="yes"
+    found_video_provider="yes"
     AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
   fi
 fi
