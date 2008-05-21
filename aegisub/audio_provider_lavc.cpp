@@ -122,8 +122,15 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 
 		resample_ratio = (float)sample_rate / (float)codecContext->sample_rate;
 	}
-
-	double length = (double)stream->duration * av_q2d(stream->time_base);
+	
+	/* libavcodec seems to give back invalid stream length values for Matroska files.
+	 * As a workaround, we can use the overall file length.
+	 */
+	double length;
+	if(stream->duration == AV_NOPTS_VALUE)
+		length = (double)lavcfile->fctx->duration / AV_TIME_BASE;
+	else
+		length = (double)stream->duration * av_q2d(stream->time_base);
 	num_samples = (int64_t)(length * sample_rate);
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
