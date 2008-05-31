@@ -46,9 +46,8 @@ int FFMatroskaSource::GetTrackIndex(int Index, unsigned char ATrackType, IScript
 
 FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes,
 	bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString,
-	int AQuality, int AThreads, IScriptEnvironment* Env, FrameInfoVector *AFrames) {
+	int AQuality, int AThreads, IScriptEnvironment* Env) {
 
-	AFrames = &Frames;
 	CurrentFrame = 0;
 	int VideoTrack;
 	int AudioTrack;
@@ -289,6 +288,11 @@ FFMatroskaSource::FFMatroskaSource(const char *ASource, int AVideoTrack, int AAu
 		Env->SetVar("FFSAR_DEN", ffsar_den);
 		Env->SetVar("FFSAR", ffsar_num / (double)ffsar_den);
 
+		// Set crop variables
+		Env->SetVar("FFCROP_LEFT", (int)VideoTI->AV.Video.CropL);
+		Env->SetVar("FFCROP_RIGHT", (int)VideoTI->AV.Video.CropR);
+		Env->SetVar("FFCROP_TOP", (int)VideoTI->AV.Video.CropT);
+		Env->SetVar("FFCROP_BOTTOM", (int)VideoTI->AV.Video.CropB);
 	}
 }
 

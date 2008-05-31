@@ -42,23 +42,23 @@ int FFmpegAudioSource::GetTrackIndex(int Index, CodecType ATrackType, IScriptEnv
 	return Index;
 }
 
-bool FFmpegAudioSource::LoadSampleInfoFromFile(const char *AAudioCacheFile, const char *ADemuxedAudioFile, const char *ASource, int AAudioTrack) {
+bool FFmpegAudioSource::LoadSampleInfoFromFile(const char *AAudioCacheFile, const char *AAudioCacheFile2, const char *ASource, int AAudioTrack) {
 	if (!FFAudioBase::LoadSampleInfoFromFile(AAudioCacheFile, ASource, AAudioTrack))
 		return false;
 
 	char DefaultCacheFilename[1024];
 	sprintf(DefaultCacheFilename, "%s.ffasd%dcache", ASource, AAudioTrack);
-	if (!strcmp(ADemuxedAudioFile, ""))
-		ADemuxedAudioFile = DefaultCacheFilename;
+	if (!strcmp(AAudioCacheFile2, ""))
+		AAudioCacheFile2 = DefaultCacheFilename;
 
-	RawCache = fopen(ADemuxedAudioFile, "rb");
+	RawCache = fopen(AAudioCacheFile2, "rb");
 	if (!RawCache)
 		return false;
 
 	return true;
 }
 
-FFmpegAudioSource::FFmpegAudioSource(const char *ASource, int AAudioTrack, const char *AAudioCache, const char *ADemuxedAudioFile, IScriptEnvironment *Env) {
+FFmpegAudioSource::FFmpegAudioSource(const char *ASource, int AAudioTrack, const char *AAudioCache, const char *AAudioCache2, IScriptEnvironment *Env) {
 	BufferSize = 0;
 	Buffer = NULL;
 	RawCache = NULL;
@@ -97,14 +97,14 @@ FFmpegAudioSource::FFmpegAudioSource(const char *ASource, int AAudioTrack, const
 	}
 
 	//load cache
-	bool ACacheIsValid = LoadSampleInfoFromFile(AAudioCache, ADemuxedAudioFile, ASource, AudioTrack);
+	bool ACacheIsValid = LoadSampleInfoFromFile(AAudioCache, AAudioCache2, ASource, AudioTrack);
 
 	char DefaultCacheFilename[1024];
 	sprintf(DefaultCacheFilename, "%s.ffasd%dcache", ASource, AudioTrack);
-	if (!strcmp(ADemuxedAudioFile, ""))
-		ADemuxedAudioFile = DefaultCacheFilename;
+	if (!strcmp(AAudioCache2, ""))
+		AAudioCache2 = DefaultCacheFilename;
 	if (!RawCache)
-		RawCache = fopen(ADemuxedAudioFile, "wb+");
+		RawCache = fopen(AAudioCache2, "wb+");
 
 	// Needs to be indexed?
 	if (!ACacheIsValid) {

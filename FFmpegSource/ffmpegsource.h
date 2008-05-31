@@ -43,6 +43,8 @@ extern "C" {
 #include "MatroskaParser.h"
 #include "avisynth.h"
 
+#define strcmpi _strcmpi
+
 enum AudioCacheFormat {acNone, acRaw};
 
 struct FrameInfo {
@@ -70,6 +72,9 @@ typedef std::vector<SampleInfo> SampleInfoVector;
 
 int GetPPCPUFlags(IScriptEnvironment *Env);
 int GetSWSCPUFlags(IScriptEnvironment *Env);
+int CSNameToPIXFMT(const char * ACSName, int ADefault);
+int ResizerNameToSWSResizer(const char *AResizerName);
+int GetNumberOfLogicalCPUs();
 CodecID MatroskaToFFCodecID(TrackInfo *TI);
 
 class FFPP : public GenericVideoFilter {
@@ -84,6 +89,18 @@ public:
 	FFPP(PClip AChild, const char *APPString, int AQuality, IScriptEnvironment *Env);
 	~FFPP();
 	PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* Env);
+};
+
+class SWScale : public GenericVideoFilter {
+private:
+	SwsContext *Context;
+	int OrigWidth;
+	int OrigHeight;
+	bool FlipOutput;
+public:
+	SWScale(PClip AChild, int AResizeToWidth, int AResizeToHeight, const char *AResizer, const char *AConvertToFormat, IScriptEnvironment *Env);
+	~SWScale();
+    PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment *Env);
 };
 
 class FFBase : public IClip{
@@ -141,7 +158,7 @@ private:
 	int GetTrackIndex(int Index, CodecType ATrackType, IScriptEnvironment *Env);
 	int DecodeNextFrame(AVFrame *Frame, int64_t *DTS);
 public:
-	FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString, int AQuality, int AThreads, int ASeekMode, IScriptEnvironment *Env, FrameInfoVector *AFrames);
+	FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString, int AQuality, int AThreads, int ASeekMode, IScriptEnvironment *Env);
 	~FFmpegSource();
 	PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment *Env);
 };
@@ -162,7 +179,7 @@ private:
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, IScriptEnvironment* Env);
 	int GetTrackIndex(int Index, unsigned char ATrackType, IScriptEnvironment *Env);
 public:
-	FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString, int AQuality, int AThreads, IScriptEnvironment *Env, FrameInfoVector *AFrames);
+	FFMatroskaSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes, bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString, int AQuality, int AThreads, IScriptEnvironment *Env);
 	~FFMatroskaSource();
     PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment *Env);
 };
@@ -196,11 +213,11 @@ private:
     unsigned int BufferSize;
     uint8_t *Buffer;
 
-	bool LoadSampleInfoFromFile(const char *AAudioCacheFile, const char *ADemuxedAudioFile, const char *ASource, int AAudioTrack);
+	bool LoadSampleInfoFromFile(const char *AAudioCacheFile, const char *AAudioCacheFile2, const char *ASource, int AAudioTrack);
 	int DecodeNextAudioBlock(uint8_t *ABuf, int64_t *ACount, uint64_t AFilePos, unsigned int AFrameSize, IScriptEnvironment *Env);
 	int GetTrackIndex(int Index, CodecType ATrackType, IScriptEnvironment *Env);
 public:
-	FFmpegAudioSource(const char *ASource, int AAudioTrack, const char *AAudioCache, const char *ADemuxedAudioFile, IScriptEnvironment *Env);
+	FFmpegAudioSource(const char *ASource, int AAudioTrack, const char *AAudioCache, const char *AAudioCacheFile2, IScriptEnvironment *Env);
 	~FFmpegAudioSource();
 
 	void __stdcall GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment *Env);

@@ -108,8 +108,9 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 			case MAKEFOURCC('P', 'D', 'V', 'C'):
 				return CODEC_ID_DVVIDEO;
 			case MAKEFOURCC('H', 'F', 'Y', 'U'):
-			case MAKEFOURCC('F', 'F', 'V', 'H'):
 				return CODEC_ID_HUFFYUV;
+			case MAKEFOURCC('F', 'F', 'V', 'H'):
+				return CODEC_ID_FFVHUFF;
 			case MAKEFOURCC('C', 'Y', 'U', 'V'):
 				return CODEC_ID_CYUV;
 			case MAKEFOURCC('A', 'S', 'V', '1'):

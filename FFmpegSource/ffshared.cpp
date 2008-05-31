@@ -48,6 +48,52 @@ int GetSWSCPUFlags(IScriptEnvironment *Env) {
 	return Flags;
 }
 
+int CSNameToPIXFMT(const char * ACSName, int ADefault) {
+	if (!strcmpi(ACSName, ""))
+		return ADefault;
+	if (!strcmpi(ACSName, "YV12"))
+		return PIX_FMT_YUV420P;
+	if (!strcmpi(ACSName, "YUY2"))
+		return PIX_FMT_YUYV422;
+	if (!strcmpi(ACSName, "RGB24"))
+		return PIX_FMT_BGR24;
+	if (!strcmpi(ACSName, "RGB32"))
+		return PIX_FMT_RGB32;
+	return PIX_FMT_NONE;
+}
+
+int ResizerNameToSWSResizer(const char *AResizerName) {
+	if (!strcmpi(AResizerName, "FAST_BILINEAR"))
+		return SWS_FAST_BILINEAR;
+	if (!strcmpi(AResizerName, "BILINEAR"))
+		return SWS_BILINEAR;
+	if (!strcmpi(AResizerName, "BICUBIC"))
+		return SWS_BICUBIC;
+	if (!strcmpi(AResizerName, "X"))
+		return SWS_X;
+	if (!strcmpi(AResizerName, "POINT"))
+		return SWS_POINT;
+	if (!strcmpi(AResizerName, "AREA"))
+		return SWS_AREA;
+	if (!strcmpi(AResizerName, "BICUBLIN"))
+		return SWS_BICUBLIN;
+	if (!strcmpi(AResizerName, "GAUSS"))
+		return SWS_GAUSS;
+	if (!strcmpi(AResizerName, "SINC"))
+		return SWS_SINC;
+	if (!strcmpi(AResizerName, "LANCZOS"))
+		return SWS_LANCZOS;
+	if (!strcmpi(AResizerName, "SPLINE"))
+		return SWS_SPLINE;
+	return 0;
+}
+
+int GetNumberOfLogicalCPUs() {
+	SYSTEM_INFO SI;
+	GetSystemInfo(&SI);
+	return SI.dwNumberOfProcessors;
+}
+
 AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	if (!UserData) {
 		av_register_all();
@@ -66,7 +112,7 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	const char *ACacheFile = Args[6].AsString("");
 	const char *PPString = Args[7].AsString("");
 	int PPQuality = Args[8].AsInt(PP_QUALITY_MAX);
-	int Threads = Args[9].AsInt(1);
+	int Threads = Args[9].AsInt(-1);
 	int SeekMode = Args[10].AsInt(1);
 
 	if (VTrack <= -2 && ATrack <= -2)
@@ -75,6 +121,8 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	if (SeekMode < -1 || SeekMode > 3)
 		Env->ThrowError("FFmpegSource: Invalid seekmode selected");
 
+	if (Threads <= 0) 
+		Threads = GetNumberOfLogicalCPUs();
 	if (Threads < 1)
 		Env->ThrowError("FFmpegSource: Invalid thread count");
 
@@ -85,22 +133,20 @@ AVSValue __cdecl CreateFFmpegSource(AVSValue Args, void* UserData, IScriptEnviro
 	bool IsMatroska = !strcmp(FormatContext->iformat->name, "matroska");
 	av_close_input_file(FormatContext);
 
-	FrameInfoVector Frames;
-
 	if (IsMatroska) {
-		return new FFMatroskaSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, Env, &Frames);
+		return new FFMatroskaSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, Env);
 	} else {
 		// Do a separate indexing pass, enjoy the constructor sideeffects
 		if (SeekMode == -1)
-			delete new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, -2, Env, &Frames);
-		return new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, SeekMode, Env, &Frames);
+			delete new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, -2, Env);
+		return new FFmpegSource(Source, VTrack, ATrack, Timecodes, VCache, VCacheFile, ACacheFile, PPString, PPQuality, Threads, SeekMode, Env);
 	}
 }
 
 AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	if (!UserData) {
 		av_register_all();
-		UserData = (void *)-1;
+		UserData = (void *)1;
 	}
 
 	if (!Args[0].Defined())
@@ -132,9 +178,14 @@ AVSValue __cdecl CreateFFPP(AVSValue Args, void* UserData, IScriptEnvironment* E
 	return new FFPP(Args[0].AsClip(), Args[1].AsString(""), Args[2].AsInt(PP_QUALITY_MAX), Env);
 }
 
+AVSValue __cdecl CreateSWScale(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+	return new SWScale(Args[0].AsClip(), Args[1].AsInt(0), Args[2].AsInt(0), Args[3].AsString("BICUBIC"), Args[4].AsString(""), Env);
+}
+
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
     Env->AddFunction("FFmpegSource", "[source]s[vtrack]i[atrack]i[timecodes]s[vcache]b[vcachefile]s[acachefile]s[pp]s[ppquality]i[threads]i[seekmode]i", CreateFFmpegSource, 0);
-    Env->AddFunction("FFAudioSource", "[source]s[atrack]i[acachefile]s[ademuxedfile]s", CreateFFAudioSource, 0);
+    Env->AddFunction("FFAudioSource", "[source]s[atrack]i[acachefile]s[acachefile2]s", CreateFFAudioSource, 0);
 	Env->AddFunction("FFPP", "c[pp]s[ppquality]i", CreateFFPP, 0);
+	Env->AddFunction("SWScale", "c[width]i[height]i[resizer]s[colorspace]s", CreateSWScale, 0);
     return "FFmpegSource";
 };

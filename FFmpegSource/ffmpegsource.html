@@ -7,7 +7,7 @@ FFmpegSource Documentation
 <body>
 <h1>FFmpegSource Documentation</h1>
 <p>
-Loads video files without sucking
+Opens files using ffmpeg and nothing else. May be frame accurate on good days. The source is BSD licensed and can be obtained from https://spaceboyz.net/svn/aegisub/trunk/FFmpegSource. The precompiled binary is GPL licensed.
 </p>
 
 <h2>Compatibility - Video</h2>
@@ -17,18 +17,19 @@ Loads video files without sucking
 <li>OGM: Messed up first frame and seeking produces smearing with seekmode=3, incredibly slow seeking without, remux to mkv or avi</li>
 <li>VOB: No rff flags applied, frame accurate?</li>
 <li>MPG: Seeking seems to be off by one or two frames now and then</li>
-<li>TS: don't bother</li>
+<li>M2TS, TS: Linear access only (seekmode=-1)</li>
 <li>Image files: most formats can be opened if seekmode=-1 is set</li>
 </ul>
 
 <h2>Compatibility - Audio</h2>
 <ul>
 <li>Should be sample accurate in all containers with audio cache</li>
+<li>Can produce very bad distortions when caching is not used for certain formats like aac</li>
 </ul>
 
 <h2>Usage</h2>
 <p>
-<b>FFmpegSource(string source, int vtrack = -1, int atrack = -2, string timecodes, bool vcache = true, string vcachefile, string acachefile, string pp, int ppquality = 6, int threads = 1, int seekmode = 1)</b><br />
+<b>FFmpegSource(string source, int vtrack = -1, int atrack = -2, string timecodes, bool vcache = true, string vcachefile, string acachefile, string pp, int ppquality = 6, int threads = -1, int seekmode = 1)</b><br />
 </p>
 
 <p>
@@ -36,7 +37,7 @@ Note that the audio cache will always be created when opening files with audio a
 </p>
 
 <p>
-<b>FFAudioSource(string source, int atrack = -1, string acachefile, string ademuxedfile)</b><br />
+<b>FFAudioSource(string source, int atrack = -1, string acachefile, string acachefile2)</b><br />
 </p>
 
 <p>
@@ -45,6 +46,11 @@ Experimental, may or may not be accurate enough for real usage.
 
 <p>
 <b>FFPP(clip, string pp, int ppquality = 6)</b><br />
+  Separate postprocessing which also seems to include a few simple deinterlacers
+</p>
+
+<p>
+<b>SWScale(clip, width = -1, height = -1, resizer = "BICUBIC", colorspace = "")</b><br />
   Separate postprocessing which also seems to include a few simple deinterlacers
 </p>
 
@@ -70,13 +76,8 @@ Experimental, may or may not be accurate enough for real usage.
 </p>
 
 <p>
-<b>vcachefile &amp; acachefile:</b>
-  Specifies the file to store the index information or raw audio in, if nothing is specified (source).ffv(tracknumber)cache is used for video and (source).ffa(d if FFAudioSource is used)(tracknumber)cache for audio.
-</p>
-
-<p>
-<b>ademuxedfile:</b>
-  Specifies the file to store the demuxed audio stream in. Only used by FFAudioSource if the stream isn't matroska. If nothing is specified (source).ffasd(tracknumber)cache is used.
+<b>vcachefile, acachefile &amp; acachefile2:</b>
+  Specifies the file to store the index information or raw audio in, if nothing is specified (source).ffv(tracknumber)cache is used for video and (source).ffa(d if FFAudioSource is used)(tracknumber)cache for audio. The second audio cache file is only required/created when not opening matroska files.
 </p>
 
 <p>
@@ -91,7 +92,7 @@ Experimental, may or may not be accurate enough for real usage.
 
 <p>
 <b>threads:</b>
-  Sets the number of decoder threads used, ignored if the used decoder doesn't implement it.
+  Sets the number of decoder threads used. Defaults to the number of cpus reported by windows. Ignored by lavc if the used decoder doesn't implement it.
 </p>
 
 <p>
@@ -103,6 +104,24 @@ Experimental, may or may not be accurate enough for real usage.
     <b>2:</b> unsafe normal, same as 1 but no error will be thrown if the exact destination has to be guessed<br />
     <b>3:</b> aggressive, seek in the forward direction even if no closer keyframe is known to exist, only useful for testing and containers where avformat doesn't report keyframes properly
 </p>
+
+<p>
+<b>width &amp; height:</b>
+  Width and height to resize to. Value below or equal to 0 is the same as specifying the input dimensions.
+</p>
+
+<p>
+<b>resizer:</b>
+  Selects the resizer used for resampling the chroma planes and normal resizing. The available methods are: FAST_BILINEAR, BILINEAR, BICUBIC, X, POINT, AREA, BICUBLIN, GAUSS, SINC, LANCZOS and SPLINE.
+</p>
+
+<p>
+<b>colorspace:</b>
+  The colorspace to convert to. The names are YV12, YUY2, RGB24, RGB32 and the empty string for same as input.
+</p>
+
+
+
 
 <h2>PP string format</h2>
 <pre>
@@ -165,6 +184,13 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 
 <h2>Changes</h2>
 <ul>
+<li>1.19<ul>
+<li>Now automatically detects the number of cpus and uses it as the default for the number of decoding threads</li>
+<li>Added SWScale filter which can perform colorspace conversions and resizing and has many different resizers to choose from</li>
+<li>Now exports the stored cropping values in mkv files in the variables FFCROP_LEFT, FFCROP_RIGHT, FFCROP_TOP and FFCROP_BOTTOM</li>
+<li>Updated FFmpeg to rev 13572</li>
+</ul></li>
+
 <li>1.18<ul>
 <li>Reverted error handling because it broke vc1</li>
 </ul></li>

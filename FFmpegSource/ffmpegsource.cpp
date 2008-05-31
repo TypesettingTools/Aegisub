@@ -46,9 +46,8 @@ int FFmpegSource::GetTrackIndex(int Index, CodecType ATrackType, IScriptEnvironm
 
 FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack, const char *ATimecodes,
 	bool AVCache, const char *AVideoCache, const char *AAudioCache, const char *APPString,
-	int AQuality, int AThreads, int ASeekMode, IScriptEnvironment *Env, FrameInfoVector *AFrames) {
+	int AQuality, int AThreads, int ASeekMode, IScriptEnvironment *Env) {
 
-	AFrames = &Frames;
 	CurrentFrame = 0;
 	SeekMode = ASeekMode;
 
@@ -224,6 +223,12 @@ FFmpegSource::FFmpegSource(const char *ASource, int AVideoTrack, int AAudioTrack
 		Env->SetVar("FFSAR_NUM", VideoCodecContext->sample_aspect_ratio.num);
 		Env->SetVar("FFSAR_DEN", VideoCodecContext->sample_aspect_ratio.den);
 		Env->SetVar("FFSAR", av_q2d(VideoCodecContext->sample_aspect_ratio));
+
+		// Set crop variables
+		Env->SetVar("FFCROP_LEFT", (int)0);
+		Env->SetVar("FFCROP_RIGHT", (int)0);
+		Env->SetVar("FFCROP_TOP", (int)0);
+		Env->SetVar("FFCROP_BOTTOM", (int)0);
 	}
 }
 
