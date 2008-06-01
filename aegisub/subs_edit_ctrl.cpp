@@ -691,6 +691,11 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 			SetUnicodeStyling(s,e-s,32);
 		}
 	}
+	
+	// It seems like wxStyledTextCtrl wants you to finish styling at the end of the text.
+	// I don't really understand why, it's not documented anywhere I can find, but this fixes bug #595.
+	StartUnicodeStyling(text.Length(), 0);
+	SetUnicodeStyling(text.Length(), 0, 0);
 }
 
 

@@ -237,6 +237,7 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	if (language.IsEmpty()) return;
 
 	// Get dir name
+	//FIXME: this should use ?user instead of ?data; however, since it apparently works already on win32, I'm not gonna mess with it right now :p
 	wxString path = DecodeRelativePath(Options.AsText(_T("Dictionaries path")),StandardPaths::DecodePath(_T("?data/"))) + _T("/");
 	wxString userPath = StandardPaths::DecodePath(_T("?user/dictionaries/user_"));
 
@@ -244,6 +245,8 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	affpath = path + language + _T(".aff");
 	dicpath = path + language + _T(".dic");
 	usrdicpath = userPath + language + _T(".dic");
+
+	printf("Using dictionary %ls for spellchecking\n", dicpath.c_str());
 
 	// Check if language is available
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;
