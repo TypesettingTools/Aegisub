@@ -59,7 +59,20 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	long hr = AVIFileOpen(&pfile, filename.wc_str(), OF_SHARE_DENY_WRITE, 0); 
 	if (hr != 0) {
 		AVIFileExit();
-		throw _T("Unable to open AVI file for reading keyframes.");
+		switch (hr) {
+			case AVIERR_BADFORMAT:
+				throw _T("Unable to open AVI file for reading keyframes:\nThe file is corrupted, incomplete or has an otherwise bad format.");
+			case AVIERR_MEMORY:
+				throw _T("Unable to open AVI file for reading keyframes:\nThe file could not be opened because of insufficient memory.");
+			case AVIERR_FILEREAD:
+				throw _T("Unable to open AVI file for reading keyframes:\nAn error occurred reading the file. There might be a problem with the storage media.");
+			case AVIERR_FILEOPEN:
+				throw _T("Unable to open AVI file for reading keyframes:\nThe file could not be opened. It might be in use by another application, or you do not have permission to access it.");
+			case REGDB_E_CLASSNOTREG:
+				throw _T("Unable to open AVI file for reading keyframes:\nThere is no handler installed for the file extension. This might indicate a fundameltal problem in your Video for Windows installation, and can be caused by extremely stripped Windows installations.");
+			default:
+				throw _T("Unable to open AVI file for reading keyframes:\nUnknown error.");
+		}
     }
 
 	// Open stream
@@ -68,12 +81,26 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	if (hr != 0) {
 		AVIFileRelease(pfile);
 		AVIFileExit();
-		throw _T("Unable to open AVI stream for reading keyframes.");
+		switch (hr) {
+			case AVIERR_NODATA:
+				throw _T("Unable to open AVI video stream for reading keyframes:\nThe file does not contain a usable video stream.");
+			case AVIERR_MEMORY:
+				throw _T("Unable to open AVI video stream for reading keyframes:\nNot enough memory.");
+			default:
+				throw _T("Unable to open AVI video stream for reading keyframes:\nUnknown error.");
+		}
+		
 	}
 
 	// Get stream data
 	AVISTREAMINFO avis;
-	AVIStreamInfo(ppavi,&avis,sizeof(avis));
+	hr = AVIStreamInfo(ppavi,&avis,sizeof(avis));
+	if (hr != 0) {
+		AVIStreamRelease(ppavi);
+		AVIFileRelease(pfile);
+		AVIFileExit();
+		throw _T("Unable to read keyframes from AVI file:\nCould not get stream information.");
+	}
 	size_t frame_c = avis.dwLength;
 
 	// Loop through stream
@@ -84,6 +111,7 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	}
 
 	// Clean up
+	AVIStreamRelease(ppavi);
 	AVIFileRelease(pfile);
 	AVIFileExit();
 #endif
