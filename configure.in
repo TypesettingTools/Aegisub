@@ -71,7 +71,7 @@ AM_CONDITIONAL([FONTLISTER_FREETYPE], [test "$build_darwin" = "yes"])
 ########################
 # Configurable variables
 ########################
-aegisubdatadir="$datadir/aegisub/2.1"
+aegisubdatadir="$datadir/aegisub"
 AC_SUBST(aegisubdatadir)
 
 
