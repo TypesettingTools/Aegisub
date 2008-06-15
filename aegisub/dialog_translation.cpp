@@ -335,7 +335,13 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 
 		// Next
 		if (Hotkeys.IsPressed(_T("Translation Assistant Accept"))) {
-			JumpToLine(curline,curblock+1);
+			// JumpToLine() returns false if the requested line doesn't exist.
+			// Assume that means we were on the last line.
+			if (!JumpToLine(curline,curblock+1)) {
+				wxMessageBox(_("No more lines to translate."));
+				EndModal(1);
+				return;
+			}
 			TransText->ClearAll();
 			TransText->SetFocus();
 		}
