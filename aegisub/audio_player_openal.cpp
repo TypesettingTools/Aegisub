@@ -231,7 +231,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 	ALuint bufid = buf_first_free;
 	while (count > 0) {
 		ALsizei fill_len = buffer_length;
-		if (fill_len > end_frame - cur_frame) fill_len = end_frame - cur_frame;
+		if (fill_len > (ALsizei)(end_frame - cur_frame)) fill_len = (ALsizei)(end_frame - cur_frame);
 		wxLogDebug(_T("buffer_length=%d, fill_len=%d, end_frame-cur_frame=%d"), buffer_length, fill_len, end_frame-cur_frame);
 
 		if (fill_len > 0)
@@ -330,7 +330,7 @@ int64_t OpenALPlayer::GetEndPosition()
 int64_t OpenALPlayer::GetCurrentPosition()
 {
 	// FIXME: this should be based on not duration played but actual sample being heard
-	// (during vidoeo playback, cur_frame might get changed to resync)
+	// (during video playback, cur_frame might get changed to resync)
 	long extra = playback_segment_timer.Time();
 	return buffers_played * buffer_length + start_frame + extra * samplerate / 1000;
 }
