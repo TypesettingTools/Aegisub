@@ -940,11 +940,17 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 			curdata.Trim(false);
 			AssDialogue *curdiag;
 			try { 
+				// Try to interpret the line as an ASS line
 				curdiag = new AssDialogue(curdata);
 			}
 			catch (...) {
+				// Line didn't parse correcly, assume it's plain text that
+				// should be pasted in the Text field only
 				curdiag = new AssDialogue();
 				curdiag->Text = curdata;
+				// Make sure pasted plain-text lines always are blank-timed
+				curdiag->Start.SetMS(0);
+				curdiag->End.SetMS(0);
 			}
 
 			// Paste over
