@@ -480,14 +480,22 @@ void SearchReplaceEngine::ReplaceAll() {
 		// Normal replace
 		else {
 			if (!Search.matchCase) {
-				wxString Left, Right;
-				int pos;
-				while(Text->Lower().Contains(LookFor.Lower())) {
-					pos = Text->Lower().Find(LookFor.Lower());
-					Left = pos ? Text->Left(pos) : _T("");
-					Right = Text->Mid(pos+LookFor.Len());
-					*Text = Left + ReplaceWith + Right;
-					count++;
+				wxString Left, Right = *Text;
+				int pos = 0;
+				while (pos <= (int)(Right.Len() - LookFor.Len())) {
+					if (Right.Mid(pos, LookFor.Len()).CmpNoCase(LookFor) == 0) {
+						Left.Append(Right.Mid(0,pos)).Append(ReplaceWith);
+						Right = Right.Mid(pos+LookFor.Len());
+						count++;
+						replaced = true;
+						pos = 0;
+					}
+					else {
+						pos++;
+					}
+				}
+				if (replaced) {
+					*Text = Left;
 				}
 			}
 			else {
@@ -502,7 +510,6 @@ void SearchReplaceEngine::ReplaceAll() {
 		if (replaced) {
 			AssDialogue *cur = grid->GetDialogue(i);
 			cur->UpdateData();
-			//cur->ParseASSTags();
 		}
 	}
 
