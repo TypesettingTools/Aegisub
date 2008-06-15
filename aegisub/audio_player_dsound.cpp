@@ -276,7 +276,8 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	if (thread) {
 		if (thread->IsAlive()) {
 			thread->Stop();
-			thread->Wait();
+			// The thread is detached so it kills/deletes itself after being stopped
+			//thread->Wait();
 		}
 		thread = NULL;
 	}
@@ -330,7 +331,7 @@ int64_t DirectSoundPlayer::GetCurrentPosition() {
 
 //////////////////////
 // Thread constructor
-DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
+DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_DETACHED) {
 	parent = par;
 	stopnotify = CreateEvent(NULL, true, false, NULL);
 }
@@ -346,6 +347,7 @@ DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 //////////////////////
 // Thread entry point
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
+	// Every thread that uses COM must initialise it
 	CoInitialize(0);
 
 	// Wake up thread every half second to fill buffer as needed
@@ -388,6 +390,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	parent->playing = false;
 	parent->buffer->Stop();
 
+	// And un-init COM since we inited it
 	CoUninitialize();
 	return 0;
 }
