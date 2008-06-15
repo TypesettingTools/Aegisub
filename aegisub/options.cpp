@@ -189,6 +189,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetModificationType(MOD_AUDIO);
 	SetInt(_T("Audio Inactive Lines Display Mode"),1);
 	SetBool(_T("Disable Dragging Times"), false);
+	SetInt(_T("Audio Start Drag Sensitivity"), 2);
 
 	// Audio Advanced
 	SetModificationType(MOD_AUDIO_RELOAD);

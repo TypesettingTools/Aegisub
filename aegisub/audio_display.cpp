@@ -1591,7 +1591,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						updated = true;
 						diagUpdated = true;
 
-						if (leftIsDown && x != lastX) {
+						if (leftIsDown && abs((long)(x-lastX)) > Options.AsInt(_T("Audio Start Drag Sensitivity"))) {
 							selStart = lastX;
 							selEnd = x;
 							curStartMS = GetBoundarySnap(GetMSAtX(lastX),10,event.ShiftDown(),true);
