@@ -536,7 +536,7 @@ AM_CONDITIONAL([HAVE_UNIVCHARDET], [test "$with_univchardet" != "no"])
 ############
 
 AC_ARG_WITH(lua,
-[  --without-lua           build without lua 5.1 (auto4)], [lua_disabled="(disabled)"])
+[  --without-lua           build without lua 5.1 (auto4)], [lua51_disabled="(disabled)"])
 
 AC_ARG_VAR([LUA_CFLAGS], [CFLAGS to use for LUA 5.1 (default: CPPFLAGS)])
 AC_ARG_VAR([LUA_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: -llua)])
@@ -596,7 +596,7 @@ if test -z "$LUA50_CFLAGS"; then
 fi
 
 AC_ARG_WITH(lua50,
-[  --without-lua50         build without lua 5.0 (auto3)], [lua_disabled="(disabled)"])
+[  --without-lua50         build without lua 5.0 (auto3)], [lua50_disabled="(disabled)"])
 
 if test "$with_lua50" != no; then
   AC_AGI_COMPILE([Lua 5.0 (auto3)], [lua50], [$LUA50_CFLAGS], [$LUA50_LDFLAGS],[
@@ -880,7 +880,7 @@ AC_MSG_RESULT([
 Scripting Engines:
   auto4 Perl:            $with_perl $perl_disabled
   auto3:                 $with_auto3 $lua50_disabled
-  auto4:                 $with_auto4 $lua_disabled
+  auto4:                 $with_auto4 $lua51_disabled
   auto4 Ruby:            $with_ruby $ruby_disabled
 
 Audio Providers:
