@@ -88,7 +88,11 @@ data_auto4_ruby = \
 	include/karaoke.rb \
 	include/utils.rb
 
-nobase_automation_DATA = $(data_general)
+nobase_automation_DATA =
+
+if HAVE_AUTOMATION
+nobase_automation_DATA += $(data_general)
+endif
 
 if HAVE_AUTO4_LUA
 nobase_automation_DATA += $(data_auto4_lua)
