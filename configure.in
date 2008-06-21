@@ -197,6 +197,16 @@ if test "$agi_with_opengl" = "no"; then
 	AC_MSG_FAILURE([Please install a working OpenGL library.])
 fi
 
+AC_AGI_COMPILE([OpenGLU], [openglu], [$GL_CFLAGS], [$GL_LIBS -lGLU],[
+#include <GL/glu.h>
+int main(void) {
+  return 0;
+}])
+
+if test "$agi_with_openglu" = "no"; then
+	AC_MSG_FAILURE([Please install a working OpenGL GLU library.])
+fi
+
 
 ###########
 ## Freetype
