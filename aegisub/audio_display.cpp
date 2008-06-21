@@ -1431,6 +1431,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				int max = w - tw - 4;
 				if (dx > max) dx = max;
 				int dy = 4;
+				if (karMode) dy += th;
 
 				// Draw text
 				dc.SetTextForeground(wxColour(64,64,64));
