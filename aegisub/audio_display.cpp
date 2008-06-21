@@ -1212,6 +1212,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 		blockUpdate = true;
 		wxArrayInt sel = grid->GetSelection();
 		int sels = (int)sel.Count();
+		bool textNeedsCommit = grid->GetDialogue(sel[0])->Text != grid->editBox->TextEdit->GetText();
 		AssDialogue *curDiag;
 		for (int i=-1;i<sels;i++) {
 			if (i == -1) curDiag = dialogue;
@@ -1222,7 +1223,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 
 			curDiag->Start.SetMS(curStartMS);
 			curDiag->End.SetMS(curEndMS);
-			if (!karaoke->enabled) {
+			if (!karaoke->enabled && textNeedsCommit) {
 				// If user was editing karaoke stuff, that should take precedence of manual changes in the editbox,
 				// so only update from editbox when not in kara mode
 				curDiag->Text = grid->editBox->TextEdit->GetText();
