@@ -633,6 +633,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 				wxString cur = testSubs.ReadLineFromFile();
 				if (cur.Left(10) == _T("# timecode")) {
 					LoadVFR(filename);
+					Options.SetText(_T("Last open timecodes path"), fileCheck.GetPath());
 					return;
 				}
 			}
@@ -646,6 +647,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			SubsBox->LoadFromAss(AssFile::top,false,true);
 			wxFileName fn(filename);
 			StandardPaths::SetPathValue(_T("?script"),fn.GetPath());
+			Options.SetText(_T("Last open subtitles path"), fn.GetPath());
 		}
 		else {
 			SubsBox->LoadDefault(AssFile::top);
