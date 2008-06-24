@@ -93,6 +93,7 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 	field.Add(_("Text"));
 	field.Add(_("Style"));
 	field.Add(_("Actor"));
+	field.Add(_("Effect"));
 	wxArrayString affect;
 	affect.Add(_("All rows"));
 	affect.Add(_("Selected rows"));
@@ -587,6 +588,7 @@ wxString *SearchReplaceEngine::GetText(int n,int field) {
 	if (field == 0) return &cur->Text;
 	else if (field == 1) return &cur->Style;
 	else if (field == 2) return &cur->Actor;
+	else if (field == 3) return &cur->Effect;
 	else throw wxString(_T("Invalid field"));
 }
 
