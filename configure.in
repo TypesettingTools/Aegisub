@@ -285,9 +285,9 @@ AC_SUBST(ICONV_CFLAGS)
 
 
 
-#################
-# Audio Providers
-#################
+###############
+# Audio Players
+###############
 #######
 ## ALSA
 #######
@@ -893,7 +893,7 @@ Scripting Engines:
   auto4:                 $with_auto4 $lua51_disabled
   auto4 Ruby:            $with_ruby $ruby_disabled
 
-Audio Providers:
+Audio Players:
   ALSA:                  $with_alsa $alsa_disabled
   OpenAL:                $with_openal $openal_disabled
   PortAudio:             $with_portaudio $portaudio_disabled
