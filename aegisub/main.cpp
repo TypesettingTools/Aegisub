@@ -247,6 +247,11 @@ int AegisubApp::OnExit() {
 
 
 #ifndef _DEBUG
+/////////////////////////////////////////////
+// Message displayed on unhandled exceptions
+const static wxChar unhandled_exception_message[] = _T("Oops, Aegisub has crashed!\n\nWe have tried to emergency-save a copy of your file, and a crash log file has been generated.\n\nYou can find the emergency-saved file in:\n%s\n\nIf you submit the crash log to the Aegisub team, we will investigate the problem and attempt to fix it. You can find the crashlog in:\n%s\n\nAegisub will now close.");
+const static wxChar unhandled_exception_message_nocrashlog[] = _T("Oops, Aegisub has crashed!\n\nWe have tried to emergency-save a copy of your file.\n\nYou can find the emergency-saved file in:\n%s\n\nAegisub will now close.");
+
 ///////////////////////
 // Unhandled exception
 void AegisubApp::OnUnhandledException() {
@@ -263,7 +268,7 @@ void AegisubApp::OnUnhandledException() {
 	AssFile::top->Save(filename,false,false);
 
 	// Inform user of crash
-	wxMessageBox(_T("Aegisub has encountered an unhandled exception error and will terminate now. The subtitles you were working on were saved to \"") + filename + _T("\", but they might be corrupt."), _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
+	wxMessageBox(wxString::Format(unhandled_exception_message, filename.c_str(), StandardPaths::DecodePath(_T("?user/crashlog.txt")).c_str()), _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
 }
 
 
@@ -282,14 +287,17 @@ void AegisubApp::OnFatalException() {
 	wxString filename = path + origfile.GetName() + _T(".RECOVER.ass");
 	AssFile::top->Save(filename,false,false);
 
-	// Stack walk
 #if wxUSE_STACKWALKER == 1
+	// Stack walk
 	StackWalker walker(_T("Fatal exception"));
 	walker.WalkFromException();
-#endif
 
 	// Inform user of crash
-	wxMessageBox(_T("Aegisub has encountered a fatal error and will terminate now. The subtitles you were working on were saved to \"") + filename + _T("\", but they might be corrupt."), _T("Fatal error"), wxOK | wxICON_ERROR, NULL);
+	wxMessageBox(wxString::Format(unhandled_exception_message, filename.c_str(), StandardPaths::DecodePath(_T("?user/crashlog.txt")).c_str()), _T("Fatal exception"), wxOK | wxICON_ERROR, NULL);
+#else
+	// Inform user of crash
+	wxMessageBox(wxString::Format(unhandled_exception_message_nocrashlog, filename.c_str()), _T("Fatal exception"), wxOK | wxICON_ERROR, NULL);
+#endif
 }
 #endif
 
