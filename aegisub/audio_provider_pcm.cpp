@@ -38,6 +38,7 @@
 #include <wx/file.h>
 #include "audio_provider_pcm.h"
 #include "utils.h"
+#include "endian.h"
 #include <stdint.h>
 
 #ifndef _WINDOWS
@@ -240,7 +241,7 @@ class  RiffWavPCMAudioProvider : public PCMAudioProvider {
 private:
 	struct ChunkHeader {
 		char type[4];
-		uint32_t size; // XXX: Assume we're compiling on little endian
+		uint32_t size;
 	};
 	struct RIFFChunk {
 		ChunkHeader ch;
@@ -248,7 +249,7 @@ private:
 	};
 	struct fmtChunk {
 		// Skip the chunk header here, it's processed separately
-		uint16_t compression; // compression format used -- 0x01 = PCM
+		uint16_t compression; // compression format used -- 0x0001 = PCM
 		uint16_t channels;
 		uint32_t samplerate;
 		uint32_t avg_bytes_sec; // can't always be trusted
@@ -276,7 +277,7 @@ public:
 
 		// Count how much more data we can have in the entire file
 		// The first 4 bytes are already eaten by the header.format field
-		uint32_t data_left = header.ch.size - 4;
+		uint32_t data_left = Endian::LittleToMachine(header.ch.size) - 4;
 		// How far into the file we have processed.
 		// Must be incremented by the riff chunk size fields.
 		uint32_t filepos = sizeof(header);
@@ -300,19 +301,21 @@ public:
 
 				fmtChunk &fmt = *(fmtChunk*)EnsureRangeAccessible(filepos, sizeof(fmtChunk));
 
-				if (fmt.compression != 1) throw _T("RIFF PCM WAV audio provider: Can't use file, not PCM encoding");
+				if (Endian::LittleToMachine(fmt.compression) != 1) throw _T("RIFF PCM WAV audio provider: Can't use file, not PCM encoding");
 
 				// Set stuff inherited from the AudioProvider class
-				sample_rate = fmt.samplerate;
-				channels = fmt.channels;
-				bytes_per_sample = (fmt.significant_bits_sample + 7) / 8; // round up to nearest whole byte
+				sample_rate = Endian::LittleToMachine(fmt.samplerate);
+				channels = Endian::LittleToMachine(fmt.channels);
+				bytes_per_sample = (Endian::LittleToMachine(fmt.significant_bits_sample) + 7) / 8; // round up to nearest whole byte
 			}
 
 			else if (strncmp(ch.type, "data", 4) == 0) {
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
-				int64_t samples = ch.size / bytes_per_sample;
+				if (!got_fmt_header) throw _T("RIFF PCM WAV audio provider: Found 'data' chunk before 'fmt ' chunk, file is invalid.");
+
+				int64_t samples = Endian::LittleToMachine(ch.size) / bytes_per_sample;
 				int64_t frames = samples / channels;
 
 				IndexPoint ip;
@@ -328,8 +331,8 @@ public:
 
 			// Update counters
 			// Make sure they're word aligned
-			data_left -= (ch.size + 1) & ~1;
-			filepos += (ch.size + 1) & ~1;
+			data_left -= (Endian::LittleToMachine(ch.size) + 1) & ~1;
+			filepos += (Endian::LittleToMachine(ch.size) + 1) & ~1;
 		}
 	}
 };
@@ -388,6 +391,7 @@ public:
 
 		// Now downmix
 		// Just average the samples over the channels (really bad if they're out of phase!)
+		// XXX: Assuming here that sample data are in machine endian, an upstream provider should ensure that
 		if (bytes_per_sample == 1) {
 			uint8_t *src = (uint8_t *)tmp;
 			uint8_t *dst = (uint8_t *)buf;
@@ -424,7 +428,6 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 	AudioProvider *provider = 0;
 
 	// Try Microsoft/IBM RIFF WAV first
-	// XXX: This is going to blow up if built on big endian archs
 	try {
 		provider = new RiffWavPCMAudioProvider(filename);
 	}
