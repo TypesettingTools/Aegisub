@@ -194,8 +194,6 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, data, size);
 				if (retval <= 0)
 					throw _T("Failed to decode audio");
-				if (temp_output_buffer_size <= 0) /* sanity checking, shouldn't ever happen */
-					throw _T("Audio decoder lied about output size! This can't happen and you didn't see this error message. Move along.");
 
 				decoded_samples = temp_output_buffer_size / 2; /* 2 bytes per sample */
 				size -= retval;
