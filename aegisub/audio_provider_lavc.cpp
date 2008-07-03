@@ -45,11 +45,17 @@
 
 /* avcodec.h uses INT64_C in a *single* place. This prolly breaks on Win32,
  * but, well. Let's at least fix it for Linux.
- *
+ */
+/* Update: this used to be commented out but is now needed on Windows. 
+ * Not sure about Linux, so it's wrapped in an ifdef. 
+ */
+#ifdef WIN32
 #define __STDC_CONSTANT_MACROS 1
 #include <stdint.h>
- * - done in posix/defines.h
+#endif /* WIN32 */
+/* - done in posix/defines.h
  */
+
 
 extern "C" {
 #include <libavcodec/avcodec.h>
