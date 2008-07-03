@@ -299,14 +299,14 @@ namespace Endian {
 		bytes64 pack;
 		pack.word = val;
 		return
-			(uint32_t(pack.byte[0]) << 56) |
-			(uint32_t(pack.byte[1]) << 48) |
-			(uint32_t(pack.byte[2]) << 40) |
-			(uint32_t(pack.byte[3]) << 32) |
-			(uint32_t(pack.byte[4]) << 24) |
-			(uint32_t(pack.byte[5]) << 16) |
-			(uint32_t(pack.byte[6]) <<  8) |
-			 uint32_t(pack.byte[7]);
+			(uint64_t(pack.byte[0]) << 56) |
+			(uint64_t(pack.byte[1]) << 48) |
+			(uint64_t(pack.byte[2]) << 40) |
+			(uint64_t(pack.byte[3]) << 32) |
+			(uint64_t(pack.byte[4]) << 24) |
+			(uint64_t(pack.byte[5]) << 16) |
+			(uint64_t(pack.byte[6]) <<  8) |
+			 uint64_t(pack.byte[7]);
 	}
 
 	uint64_t LittleToMachine(uint64_t val)
@@ -314,14 +314,14 @@ namespace Endian {
 		bytes64 pack;
 		pack.word = val;
 		return
-			(uint32_t(pack.byte[7]) << 56) |
-			(uint32_t(pack.byte[6]) << 48) |
-			(uint32_t(pack.byte[5]) << 40) |
-			(uint32_t(pack.byte[4]) << 32) |
-			(uint32_t(pack.byte[3]) << 24) |
-			(uint32_t(pack.byte[2]) << 16) |
-			(uint32_t(pack.byte[1]) <<  8) |
-			 uint32_t(pack.byte[0]);
+			(uint64_t(pack.byte[7]) << 56) |
+			(uint64_t(pack.byte[6]) << 48) |
+			(uint64_t(pack.byte[5]) << 40) |
+			(uint64_t(pack.byte[4]) << 32) |
+			(uint64_t(pack.byte[3]) << 24) |
+			(uint64_t(pack.byte[2]) << 16) |
+			(uint64_t(pack.byte[1]) <<  8) |
+			 uint64_t(pack.byte[0]);
 	}
 
 
