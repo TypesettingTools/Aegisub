@@ -43,6 +43,11 @@
 #endif
 
 
+// Endianness: We don't support any Windows version that runs on big endian
+#define HAVE_LITTLE_ENDIAN
+#undef HAVE_BIG_ENDIAN
+
+
 ////////////// HIGH PRIORITY /////////////
 
 // Enable Automation
