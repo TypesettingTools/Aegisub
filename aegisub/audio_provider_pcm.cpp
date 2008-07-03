@@ -38,7 +38,7 @@
 #include <wx/file.h>
 #include "audio_provider_pcm.h"
 #include "utils.h"
-#include "endian.h"
+#include "aegisub_endian.h"
 #include <stdint.h>
 
 #ifndef _WINDOWS
