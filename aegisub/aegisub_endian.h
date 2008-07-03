@@ -149,7 +149,7 @@ namespace Endian {
 	}
 
 
-#else
+#else // HAVE_DYNAMIC_ENDIAN
 
 
 	// Dynamic endianness handling
@@ -180,7 +180,7 @@ namespace Endian {
 
 	// 16 bit words
 
-	uint16_t MachineToBig(uint16_t val)
+	inline uint16_t MachineToBig(uint16_t val)
 	{
 		bytes16 pack;
 		// Store the bytes into the correct positions in the word
@@ -190,7 +190,7 @@ namespace Endian {
 		return pack.word;
 	}
 
-	uint16_t MachineToLittle(uint16_t val)
+	inline uint16_t MachineToLittle(uint16_t val)
 	{
 		bytes16 pack;
 		// Store the bytes into the correct positions in the word
@@ -200,7 +200,7 @@ namespace Endian {
 		return pack.word;
 	}
 
-	uint16_t BigToMachine(uint16_t val)
+	inline uint16_t BigToMachine(uint16_t val)
 	{
 		bytes16 pack;
 		// Put our word into the pack
@@ -209,7 +209,7 @@ namespace Endian {
 		return uint16_t(pack.byte[1]) | (uint16_t(pack.byte[0]) << 8);
 	}
 
-	uint16_t LittleToMachine(uint16_t val)
+	inline uint16_t LittleToMachine(uint16_t val)
 	{
 		bytes16 pack;
 		// Put our word into the pack
@@ -221,7 +221,7 @@ namespace Endian {
 
 	// 32 bit words
 
-	uint32_t MachineToBig(uint32_t val)
+	inline uint32_t MachineToBig(uint32_t val)
 	{
 		bytes32 pack;
 		pack.byte[0] = (val & 0xFF000000) >> 24;
@@ -231,7 +231,7 @@ namespace Endian {
 		return pack.word;
 	}
 
-	uint32_t MachineToLittle(uint32_t val)
+	inline uint32_t MachineToLittle(uint32_t val)
 	{
 		bytes32 pack;
 		pack.byte[0] =  val & 0x000000FF       ;
@@ -241,7 +241,7 @@ namespace Endian {
 		return pack.word;
 	}
 
-	uint32_t BigToMachine(uint32_t val)
+	inline uint32_t BigToMachine(uint32_t val)
 	{
 		bytes32 pack;
 		pack.word = val;
@@ -252,7 +252,7 @@ namespace Endian {
 			 uint32_t(pack.byte[3]);
 	}
 
-	uint32_t LittleToMachine(uint32_t val)
+	inline uint32_t LittleToMachine(uint32_t val)
 	{
 		bytes32 pack;
 		pack.word = val;
@@ -266,7 +266,7 @@ namespace Endian {
 
 	// 64 bit words
 
-	uint64_t MachineToBig(uint64_t val)
+	inline uint64_t MachineToBig(uint64_t val)
 	{
 		bytes64 pack;
 		pack.byte[0] = (val & 0xFF00000000000000) >> 56;
@@ -280,7 +280,7 @@ namespace Endian {
 		return pack.word;
 	}
 
-	uint64_t MachineToLittle(uint64_t val)
+	inline uint64_t MachineToLittle(uint64_t val)
 	{
 		bytes64 pack;
 		pack.byte[0] =  val & 0x00000000000000FF       ;
@@ -294,7 +294,7 @@ namespace Endian {
 		return pack.word;
 	}
 
-	uint64_t BigToMachine(uint64_t val)
+	inline uint64_t BigToMachine(uint64_t val)
 	{
 		bytes64 pack;
 		pack.word = val;
@@ -309,7 +309,7 @@ namespace Endian {
 			 uint64_t(pack.byte[7]);
 	}
 
-	uint64_t LittleToMachine(uint64_t val)
+	inline uint64_t LittleToMachine(uint64_t val)
 	{
 		bytes64 pack;
 		pack.word = val;
