@@ -644,7 +644,7 @@ void OptionsManager::AddToRecentList (wxString entry,wxString list) {
 	int recentMax = AsInt(list + _T(" max"));
 	int n = 0;
 	for (int i=0;i<recentMax;i++) {
-		wxString key = list + _T(" #") + wxString::Format(_T("%i"),i+1);
+		wxString key = wxString::Format(_T("%s #%i"), list.c_str(), i+1);
 		if (IsDefined(key)) {
 			cur = AsText(key);
 			if (cur != entry) {
@@ -659,8 +659,40 @@ void OptionsManager::AddToRecentList (wxString entry,wxString list) {
 	SetText(list + _T(" #1"),entry);
 	if (n > recentMax-1) n = recentMax-1;
 	for (int i=0;i<n;i++) {
-		wxString key = list + _T(" #") + wxString::Format(_T("%i"),i+2);
+		wxString key = wxString::Format(_T("%s #%i"), list.c_str(), i+2);
 		SetText(key,orig[i]);
+	}
+
+	// Save options
+	Save();
+}
+
+
+///////////////////////////////////////////////////////////////
+// Removes an item from a list of recents, if it's in the list
+void OptionsManager::RemoveFromRecentList (wxString entry,wxString list) {
+	// Find strings already in recent list
+	wxArrayString cleaned;
+	wxString cur;
+	int recentMax = AsInt(list + _T(" max"));
+	int n = 0;
+	for (int i=0;i<recentMax;i++) {
+		wxString key = wxString::Format(_T("%s #%i"), list.c_str(), i+1);
+		if (IsDefined(key)) {
+			cur = AsText(key);
+			if (cur != entry) {
+				cleaned.Add(cur);
+				n++;
+			}
+		}
+		else break;
+	}
+
+	// Write back to options
+	if (n > recentMax-1) n = recentMax-1;
+	for (int i=0;i<n;i++) {
+		wxString key = wxString::Format(_T("%s #%i"), list.c_str(), i+1);
+		SetText(key,cleaned[i]);
 	}
 
 	// Save options
@@ -674,8 +706,7 @@ wxArrayString OptionsManager::GetRecentList (wxString list) {
 	wxArrayString work;
 	int recentMax = AsInt(list + _T(" max"));
 	for (int i=0;i<recentMax;i++) {
-		wxString n = wxString::Format(_T("%i"),i+1);
-		wxString key = list + _T(" #") + n;
+		wxString key = wxString::Format(_T("%s #%i"), list.c_str(), i+1);
 		if (IsDefined(key)) {
 			work.Add(Options.AsText(key));
 		}
