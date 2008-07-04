@@ -97,7 +97,8 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 		throw _T("PCM audio provider: Could not open audio file for reading");
 	}
 
-	struct stat filestats = {0};
+	struct stat filestats;
+	memset(&filestats, sizeof(filestats), 0);
 	if (fstat(file_handle, &filestats)) {
 		close(file_handle);
 		throw _T("PCM audio provider: Could not stat file to get size");
@@ -140,7 +141,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 	}
 
 	// Check whether the requested range is already visible
-	if (range_start < mapping_start || range_start+range_length > mapping_start+mapping_length) {
+	if (range_start < mapping_start || range_start+range_length > mapping_start+(int64_t)mapping_length) {
 
 		// It's not visible, change the current mapping
 		
@@ -168,14 +169,14 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 		mapping_length = 0x10000000;
 #endif
 		// Make sure to always make a mapping at least as large as the requested range
-		if (mapping_length < range_length) {
+		if ((int64_t)mapping_length < range_length) {
 			if (range_length > (int64_t)(~(size_t)0))
 				throw _T("PCM audio provider: Requested range larger than max size_t, cannot create view of file");
 			else
 				mapping_length = range_length;
 		}
 		// But also make sure we don't try to make a mapping larger than the file
-		if (mapping_length > file_size)
+		if ((int64_t)mapping_length > file_size)
 			mapping_length = (size_t)(file_size - mapping_start);
 		// We already checked that the requested range doesn't extend over the end of the file
 		// Hopefully this should ensure that small files are always mapped in their entirety
@@ -276,7 +277,7 @@ private:
 		// either way, as the fields can depend on the compression.
 	};
 
-	static bool CheckFourcc(char *str1, char *str2)
+	static bool CheckFourcc(const char str1[], const char str2[])
 	{
 		assert(str1);
 		assert(str2);
