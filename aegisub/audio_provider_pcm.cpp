@@ -168,8 +168,12 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 		mapping_length = 0x10000000;
 #endif
 		// Make sure to always make a mapping at least as large as the requested range
-		if (mapping_length < range_length)
-			mapping_length = range_length;
+		if (mapping_length < range_length) {
+			if (range_length > (int64_t)(~(size_t)0))
+				throw _T("PCM audio provider: Requested range larger than max size_t, cannot create view of file");
+			else
+				mapping_length = range_length;
+		}
 		// But also make sure we don't try to make a mapping larger than the file
 		if (mapping_length > file_size)
 			mapping_length = (size_t)(file_size - mapping_start);
@@ -290,14 +294,16 @@ public:
 		filename = _filename;
 
 		// Read header
-		// Assume we won't get files smaller than 256 bytes
+		// This should throw an exception if the mapping fails
 		void *filestart = EnsureRangeAccessible(0, sizeof(RIFFChunk));
 		assert(filestart);
 		RIFFChunk &header = *(RIFFChunk*)filestart;
 
-		// Check that it's good
-		if (!CheckFourcc(header.ch.type, "RIFF")) throw _T("RIFF PCM WAV audio provider: File is not a RIFF file");
-		if (!CheckFourcc(header.format, "WAVE")) throw _T("RIFF PCM WAV audio provider: File is not a RIFF WAV file");
+		// Check magic values
+		if (!CheckFourcc(header.ch.type, "RIFF"))
+			throw _T("RIFF PCM WAV audio provider: File is not a RIFF file");
+		if (!CheckFourcc(header.format, "WAVE"))
+			throw _T("RIFF PCM WAV audio provider: File is not a RIFF WAV file");
 
 		// Count how much more data we can have in the entire file
 		// The first 4 bytes are already eaten by the header.format field
@@ -454,6 +460,10 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 	// Try Microsoft/IBM RIFF WAV first
 	try {
 		provider = new RiffWavPCMAudioProvider(filename);
+	}
+	catch (const wxChar *msg) {
+		provider = 0;
+		wxLogDebug(_T("Creating PCM WAV reader failed with message: %s\nProceeding to try other providers."), msg);
 	}
 	catch (...) {
 		provider = 0;
