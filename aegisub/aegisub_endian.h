@@ -34,8 +34,8 @@
 
 #pragma once
 
-#ifndef _ENDIAN_H
-#define _ENDIAN_H
+#ifndef _AEGISUB_ENDIAN_H
+#define _AEGISUB_ENDIAN_H
 
 
 // Sanity check
