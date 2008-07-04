@@ -89,12 +89,12 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	hasLeadIn->SetToolTip(_("Enable adding of lead-ins to lines."));
 	hasLeadIn->SetValue(Options.AsBool(_T("Timing processor Enable lead-in")));
 	leadIn = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(80,-1),0,NumValidator(&leadInTime));
-	leadIn->SetToolTip(_("Lead in to be added, in miliseconds."));
+	leadIn->SetToolTip(_("Lead in to be added, in milliseconds."));
 	hasLeadOut = new wxCheckBox(this,CHECK_ENABLE_LEADOUT,_("Add lead out:"));
 	hasLeadOut->SetToolTip(_("Enable adding of lead-outs to lines."));
 	hasLeadOut->SetValue(Options.AsBool(_T("Timing processor Enable lead-out")));
 	leadOut = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(80,-1),0,NumValidator(&leadOutTime));
-	leadOut->SetToolTip(_("Lead out to be added, in miliseconds."));
+	leadOut->SetToolTip(_("Lead out to be added, in milliseconds."));
 	LeadSizer->Add(hasLeadIn,0,wxRIGHT|wxEXPAND,5);
 	LeadSizer->Add(leadIn,0,wxRIGHT|wxEXPAND,5);
 	LeadSizer->Add(hasLeadOut,0,wxRIGHT|wxEXPAND,5);
@@ -108,7 +108,7 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	adjsEnable->SetValue(Options.AsBool(_T("Timing processor Enable adjacent")));
 	wxStaticText *adjsThresText = new wxStaticText(this,-1,_("Threshold:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
 	adjacentThres = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&adjsThresTime));
-	adjacentThres->SetToolTip(_("Maximum difference between start and end time for two subtitles to be made continuous, in miliseconds."));
+	adjacentThres->SetToolTip(_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."));
 	adjacentBias = new wxSlider(this,-1,MID(0,int(Options.AsFloat(_T("Timing processor adjacent bias"))*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
 	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."));
 	AdjacentSizer->Add(adjsEnable,0,wxRIGHT|wxEXPAND,10);
