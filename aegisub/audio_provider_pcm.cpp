@@ -167,15 +167,24 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 		// 256 MB
 		mapping_length = 0x10000000;
 #endif
-		if (mapping_length > file_size) mapping_length = (size_t)(file_size - mapping_start);
+		// Make sure to always make a mapping at least as large as the requested range
+		if (mapping_length < range_length)
+			mapping_length = range_length;
+		// But also make sure we don't try to make a mapping larger than the file
+		if (mapping_length > file_size)
+			mapping_length = (size_t)(file_size - mapping_start);
+		// We already checked that the requested range doesn't extend over the end of the file
 		// Hopefully this should ensure that small files are always mapped in their entirety
 
 #ifdef _WINDOWS
+		LARGE_INTEGER mapping_start_li;
+		mapping_start_li.QuadPart = mapping_start;
 		current_mapping = MapViewOfFile(
-			file_mapping,
-			FILE_MAP_READ,
-			mapping_start >> 32, mapping_start & 0xFFFFFFFF,
-			mapping_length);
+			file_mapping,	// Mapping handle
+			FILE_MAP_READ,	// Access type
+			mapping_start_li.HighPart,	// Offset high-part
+			mapping_start_li.LowPart,	// Offset low-part
+			mapping_length);	// Length of view
 #else
 		current_mapping = mmap(0, mapping_length, PROT_READ, MAP_PRIVATE, file_handle, mapping_start);
 #endif
@@ -188,8 +197,10 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 
 	assert(range_start >= mapping_start);
 
+	// Difference between actual current mapping start and requested range start
 	ptrdiff_t rel_ofs = (ptrdiff_t)(range_start - mapping_start);
 
+	// Calculate a pointer into current mapping for the requested range
 	return ((char*)current_mapping) + rel_ofs;
 }
 
