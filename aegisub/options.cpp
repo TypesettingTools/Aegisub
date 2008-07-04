@@ -208,6 +208,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetText(_T("Audio Alsa Device"), _T("default:0"));
 	SetText(_T("Audio HD Cache Location"),_T("default"),1700);
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"),1700);
+	SetBool(_T("Audio Disable PCM Provider"), false);
 	// Technically these can do with just the spectrum object being re-created
 	SetInt(_T("Audio Spectrum Cutoff"),0);
 	SetInt(_T("Audio Spectrum Quality"),1);

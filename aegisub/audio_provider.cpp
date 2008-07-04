@@ -195,11 +195,13 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 	// Prepare provider
 	AudioProvider *provider = NULL;
 
-	// Try a PCM provider first
-	provider = CreatePCMAudioProvider(filename);
-	if (provider) {
-		if (provider->GetBytesPerSample() == 2 && provider->GetSampleRate() >= 32000) return provider;
-		return new ConvertAudioProvider(provider);
+	if (!Options.AsBool(_T("Audio Disable PCM Provider"))) {
+		// Try a PCM provider first
+		provider = CreatePCMAudioProvider(filename);
+		if (provider) {
+			if (provider->GetBytesPerSample() == 2 && provider->GetSampleRate() >= 32000) return provider;
+			return new ConvertAudioProvider(provider);
+		}
 	}
 
 	// List of providers
