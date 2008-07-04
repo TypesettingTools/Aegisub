@@ -40,6 +40,7 @@
 #include "utils.h"
 #include "aegisub_endian.h"
 #include <stdint.h>
+#include <assert.h>
 
 #ifndef _WINDOWS
 #include <sys/mman.h>
@@ -260,6 +261,17 @@ private:
 		// either way, as the fields can depend on the compression.
 	};
 
+	static bool CheckFourcc(char *str1, char *str2)
+	{
+		assert(str1);
+		assert(str2);
+		return
+			(str1[0] == str2[0]) &&
+			(str1[1] == str2[1]) &&
+			(str1[2] == str2[2]) &&
+			(str1[3] == str2[3]);
+	}
+
 public:
 	RiffWavPCMAudioProvider(const wxString &_filename)
 		: PCMAudioProvider(_filename)
@@ -269,11 +281,12 @@ public:
 		// Read header
 		// Assume we won't get files smaller than 256 bytes
 		void *filestart = EnsureRangeAccessible(0, sizeof(RIFFChunk));
+		assert(filestart);
 		RIFFChunk &header = *(RIFFChunk*)filestart;
 
 		// Check that it's good
-		if (strncmp(header.ch.type, "RIFF", 4)) throw _T("RIFF PCM WAV audio provider: File is not a RIFF file");
-		if (strncmp(header.format, "WAVE", 4)) throw _T("RIFF PCM WAV audio provider: File is not a RIFF WAV file");
+		if (!CheckFourcc(header.ch.type, "RIFF")) throw _T("RIFF PCM WAV audio provider: File is not a RIFF file");
+		if (!CheckFourcc(header.format, "WAVE")) throw _T("RIFF PCM WAV audio provider: File is not a RIFF WAV file");
 
 		// Count how much more data we can have in the entire file
 		// The first 4 bytes are already eaten by the header.format field
@@ -295,7 +308,7 @@ public:
 			data_left -= sizeof(ch);
 			filepos += sizeof(ch);
 
-			if (strncmp(ch.type, "fmt ", 4) == 0) {
+			if (CheckFourcc(ch.type, "fmt ")) {
 				if (got_fmt_header) throw _T("RIFF PCM WAV audio provider: Invalid file, multiple 'fmt ' chunks");
 				got_fmt_header = true;
 
@@ -309,7 +322,7 @@ public:
 				bytes_per_sample = (Endian::LittleToMachine(fmt.significant_bits_sample) + 7) / 8; // round up to nearest whole byte
 			}
 
-			else if (strncmp(ch.type, "data", 4) == 0) {
+			else if (CheckFourcc(ch.type, "data")) {
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
