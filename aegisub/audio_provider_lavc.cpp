@@ -58,8 +58,8 @@
 
 
 extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
 }
 #include "mkv_wrap.h"
 #include "lavc_file.h"
@@ -141,7 +141,9 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
-		throw _T("Out of memory");
+		throw _T("Failed to allocate %d bytes for audio decoding buffer, out of memory?", AVCODEC_MAX_AUDIO_FRAME_SIZE);
+
+	leftover_samples = 0;
 
 	} catch (...) {
 		Destroy();
@@ -204,9 +206,10 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 					/* do the actual resampling */
 					decoded_samples = audio_resample(rsct, _buf, buffer, decoded_samples / codecContext->channels);
 
-					/* make some noise if we somehow ended up with more samples than we wanted (will cause audio skew) */
-					if (decoded_samples > samples_to_decode)
+					if (decoded_samples > samples_to_decode) {
 						wxLogMessage(wxString::Format(_T("Warning: decoder output more samples than requested, audio skew highly likely! (Wanted %d, got %d)"), (int)samples_to_decode, decoded_samples));
+					}
+						
 				} else {
 					/* no resampling needed, just copy to the buffer, but first make noise if we got an overflow */
 					if (decoded_samples > samples_to_decode)

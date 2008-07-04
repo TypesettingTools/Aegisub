@@ -52,13 +52,14 @@
  */
 
 extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
 }
 #include "mkv_wrap.h"
 #include "lavc_file.h"
 #include "include/aegisub/audio_provider.h"
 #include "lavc_file.h"
+#include <vector>
 
 
 ///////////////////////
@@ -74,6 +75,9 @@ private:
 	int audStream;
 
 	int16_t *buffer;
+	std::vector<int16_t> overshoot_buffer;
+
+	int leftover_samples;
 
 	void Destroy();
 
