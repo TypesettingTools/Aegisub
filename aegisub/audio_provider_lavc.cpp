@@ -101,15 +101,15 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	}
 	if (audStream == -1) {
 		codecContext = NULL;
-		throw _T("Could not find an audio stream");
+		throw _T("ffmpeg audio provider: Could not find an audio stream");
 	}
 	AVCodec *codec = avcodec_find_decoder(codecContext->codec_id);
 	if (!codec) {
 		codecContext = NULL;
-		throw _T("Could not find a suitable audio decoder");
+		throw _T("ffmpeg audio provider: Could not find a suitable audio decoder");
 	}
 	if (avcodec_open(codecContext, codec) < 0)
-		throw _T("Failed to open audio decoder");
+		throw _T("ffmpeg audio provider: Failed to open audio decoder");
 
 	sample_rate = Options.AsInt(_T("Audio Sample Rate"));
 	if (!sample_rate)
@@ -124,7 +124,7 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	if ((sample_rate != codecContext->sample_rate) || (codecContext->channels > 1)) {
 		rsct = audio_resample_init(1, codecContext->channels, sample_rate, codecContext->sample_rate);
 		if (!rsct)
-			throw _T("Failed to initialize resampling");
+			throw _T("ffmpeg audio provider: Failed to initialize resampling");
 
 		resample_ratio = (float)sample_rate / (float)codecContext->sample_rate;
 	}
@@ -141,7 +141,7 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
-		throw _T("Failed to allocate %d bytes for audio decoding buffer, out of memory?", AVCODEC_MAX_AUDIO_FRAME_SIZE);
+		throw _T("ffmpeg audio provider: Failed to allocate audio decoding buffer, out of memory?");
 
 	leftover_samples = 0;
 
@@ -172,6 +172,7 @@ void LAVCAudioProvider::Destroy()
 void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 {
 	int16_t *_buf = (int16_t *)buf;
+
 	int64_t samples_to_decode = num_samples - start; /* samples left to the end of the stream */
 	if (count < samples_to_decode) /* haven't reached the end yet, so just decode the requested number of samples */
 		samples_to_decode = count;
@@ -180,51 +181,90 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 
 	/* if we got asked for more samples than there are left in the stream, add zeros to the decoding buffer until
 	we have enough to fill the request */
-	memset(_buf + samples_to_decode, 0, (count - samples_to_decode) * 2); 
+	memset(_buf + samples_to_decode, 0, (count - samples_to_decode) * 2);
+
+	/* do we have leftover samples from last time we were called? */
+	if (leftover_samples > 0) {
+		/* put them in the output buffer */
+		samples_to_decode -= leftover_samples;
+		for (std::vector<int16_t>::iterator i = overshoot_buffer.begin(); i != overshoot_buffer.end(); i++) {
+			*(_buf++) = *i;
+		}
+		/* none left */
+		leftover_samples = 0;
+		overshoot_buffer.clear();
+	}
 
 	AVPacket packet;
 	while (samples_to_decode > 0 && av_read_frame(lavcfile->fctx, &packet) >= 0) {
 		/* we're not dealing with video packets in this here provider */
 		if (packet.stream_index == audStream) {
 			int size = packet.size;
-			uint8_t *data = packet.data;
 
 			while (size > 0) {
 				int temp_output_buffer_size = AVCODEC_MAX_AUDIO_FRAME_SIZE; /* see constructor, it malloc()'s buffer to this */
-				int retval, decoded_samples;
+				int retval, decoded_bytes, decoded_samples;
 			
-				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, data, size);
+				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, packet.data, size);
 				if (retval <= 0)
-					throw _T("Failed to decode audio");
+					throw _T("ffmpeg audio provider: failed to decode audio");
+				/* decoding succeeded but the output buffer is empty, go to next packet */
+				if (temp_output_buffer_size == 0)
+					continue;
 
-				decoded_samples = temp_output_buffer_size / 2; /* 2 bytes per sample */
-				size -= retval;
-				data += retval;
+				decoded_bytes	= temp_output_buffer_size;
+				decoded_samples = decoded_bytes / 2; /* 2 bytes per sample */
+				size -= decoded_bytes;
 
 				/* do we need to resample? */
 				if (rsct) {
+					/* allocate some memory to save the resampled data in */
+					int16_t *temp_output_buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
+					if (!temp_output_buffer)
+						throw _T("ffmpeg audio provider: Failed to allocate audio resampling buffer, out of memory?");
+
 					/* do the actual resampling */
-					decoded_samples = audio_resample(rsct, _buf, buffer, decoded_samples / codecContext->channels);
+					decoded_samples = audio_resample(rsct, temp_output_buffer, buffer, decoded_samples / codecContext->channels);
 
+					/* did we end up with more samples than we were asked for? */
 					if (decoded_samples > samples_to_decode) {
-						wxLogMessage(wxString::Format(_T("Warning: decoder output more samples than requested, audio skew highly likely! (Wanted %d, got %d)"), (int)samples_to_decode, decoded_samples));
+						/* in that case, count them */
+						leftover_samples = decoded_samples - samples_to_decode;
+						/* and put them aside for later */
+						overshoot_buffer = std::vector<int16_t>(&temp_output_buffer[samples_to_decode+1], &temp_output_buffer[decoded_samples+1]);
+						/* output the other samples that didn't overflow */
+						memcpy(_buf, temp_output_buffer, samples_to_decode * 2);
+						_buf += samples_to_decode;
+					} else {
+						memcpy(_buf, temp_output_buffer, decoded_samples * 2);
+						_buf += decoded_samples;
 					}
-						
-				} else {
-					/* no resampling needed, just copy to the buffer, but first make noise if we got an overflow */
-					if (decoded_samples > samples_to_decode)
-						wxLogMessage(wxString::Format(_T("Warning: decoder output more samples than requested, audio skew highly likely! (Wanted %d, got %d)"), (int)samples_to_decode, decoded_samples));
-
-					memcpy(_buf, buffer, temp_output_buffer_size);
+					
+					free(temp_output_buffer);
+				} else {	/* no resampling needed */
+					/* overflow? (as above) */
+					if (decoded_samples > samples_to_decode) {
+						/* count sheep^H^H^H^H^Hsamples */
+						leftover_samples = decoded_samples - samples_to_decode;
+						/* and put them aside for later (mm, lamb chops) */
+						overshoot_buffer = std::vector<int16_t>(&buffer[samples_to_decode+1], &buffer[decoded_samples+1]);
+						/* output the other samples that didn't overflow */
+						memcpy(_buf, buffer, samples_to_decode * 2);
+						_buf += samples_to_decode;
+					} else {
+						/* just do a straight copy to buffer */
+						memcpy(_buf, buffer, decoded_bytes);
+						_buf += decoded_samples;
+					}
 				}
 
-				_buf += decoded_samples;
 				samples_to_decode -= decoded_samples;
 			}
 		}
 
 		av_free_packet(&packet);
 	}
+	
 }
 
 #endif
