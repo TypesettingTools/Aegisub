@@ -41,17 +41,31 @@
 // Sanity check
 
 #ifndef HAVE_LITTLE_ENDIAN
-#ifndef HAVE_BIG_ENDIAN
-#ifndef HAVE_DYNAMIC_ENDIAN
-#define HAVE_DYNAMIC_ENDIAN
-#endif
-#endif
-#endif
+# ifndef HAVE_BIG_ENDIAN
+// We neither have big nor little endian from configuration
+#  ifdef HAVE_UNIVERSAL_ENDIAN
+// But this is an OS X system building a universal binary
+// Apple's GCC defines _BIG_ENDIAN when building for PPC
+#   ifdef _BIG_ENDIAN
+#    define HAVE_BIG_ENDIAN
+#   else
+#    define HAVE_LITTLE_ENDIAN
+#   endif
+#   undef HAVE_DYNAMIC_ENDIAN
+#  else // !HAVE_UNIVERSAL_ENDIAN
+// We aren't building an OS X universal binary
+// Use the dynamic endian code
+#   ifndef HAVE_DYNAMIC_ENDIAN
+#    define HAVE_DYNAMIC_ENDIAN
+#   endif
+#  endif //HAVE_UNIVERSAL_ENDIAN
+# endif // HAVE_BIG_ENDIAN
+#endif // HAVE_LITTLE_ENDIAN
 
 #ifdef HAVE_LITTLE_ENDIAN
-#ifdef HAVE_BIG_ENDIAN
-#error You cannot have both HAVE_LITTLE_ENDIAN and HAVE_BIG_ENDIAN defined at the same time
-#endif
+# ifdef HAVE_BIG_ENDIAN
+#  error You cannot have both HAVE_LITTLE_ENDIAN and HAVE_BIG_ENDIAN defined at the same time
+# endif
 #endif
 
 
