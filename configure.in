@@ -210,7 +210,7 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_with_openglu" = "no"; then
+if test "$agi_with_openglu" = "no" || test "$build_darwin" != "yes"; then
 	AC_MSG_FAILURE([Please install a working OpenGL GLU library.])
 fi
 
