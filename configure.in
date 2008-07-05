@@ -71,7 +71,7 @@ AC_C_BIGENDIAN(
     AC_DEFINE([HAVE_BIG_ENDIAN], [1], [Big Endian]),
     AC_DEFINE([HAVE_LITTLE_ENDIAN], [1], [Little Endian]),
     AC_DEFINE([HAVE_DYNAMIC_ENDIAN], [1], [Unknown endian]),
-    AC_DEFINE([HAVE_UNIVERSAL_ENDIAN], [1], [Universal Endian (MAC Universal PPC/Intel Binaries, uses HAVE_DYNAMIC_ENDIAN)])
+    AC_DEFINE([HAVE_UNIVERSAL_ENDIAN], [1], [Universal Endian (MAC Universal PPC/Intel Binaries, detecting correct during build)])
 )
 
 
@@ -204,15 +204,19 @@ if test "$agi_with_opengl" = "no"; then
 	AC_MSG_FAILURE([Please install a working OpenGL library.])
 fi
 
-AC_AGI_COMPILE([OpenGLU], [openglu], [$GL_CFLAGS], [$GL_LIBS -lGLU],[
-#include <GL/glu.h>
-int main(void) {
-  return 0;
-}])
-
-if test "$agi_with_openglu" = "no"; then
-	AC_MSG_FAILURE([Please install a working OpenGL GLU library.])
-fi
+#AC_AGI_COMPILE([OpenGLU], [openglu], [$GL_CFLAGS], [$GL_LIBS -lGLU],[
+##ifdef __APPLE__
+##include <OpenGL/glu.h>
+##else
+##include <GL/glu.h>
+##endif
+#int main(void) {
+#  return 0;
+#}])
+#
+#if test "$agi_with_openglu" = "no"; then
+#	AC_MSG_FAILURE([Please install a working OpenGL GLU library.])
+#fi
 
 
 ###########

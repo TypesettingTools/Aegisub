@@ -141,7 +141,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 	}
 
 	// Check whether the requested range is already visible
-	if (range_start < mapping_start || range_start+range_length > mapping_start+(int64_t)mapping_length) {
+	if (!current_mapping || range_start < mapping_start || range_start+range_length > mapping_start+(int64_t)mapping_length) {
 
 		// It's not visible, change the current mapping
 		
@@ -200,6 +200,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 
 	}
 
+	assert(current_mapping);
 	assert(range_start >= mapping_start);
 
 	// Difference between actual current mapping start and requested range start
