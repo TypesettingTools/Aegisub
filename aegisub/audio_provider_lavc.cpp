@@ -122,6 +122,10 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 
 	/* aegisub currently supports mono only, so always resample unless it's mono with the desired samplerate */
 	if ((sample_rate != codecContext->sample_rate) || (codecContext->channels > 1)) {
+		// FIXME: ffmpeg currently doesn't support downmixing audio with more than two channels,
+		// remove the following line when it does.
+		if (codecContext->channels > 2)
+			throw _T("ffmpeg audio provider: Downmixing audio with more than two channels is currently not supported by ffmpeg");
 		rsct = audio_resample_init(1, codecContext->channels, sample_rate, codecContext->sample_rate);
 		if (!rsct)
 			throw _T("ffmpeg audio provider: Failed to initialize resampling");
