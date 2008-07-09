@@ -49,4 +49,6 @@ public:
 private:
 	static void OpenAegiKeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
 	static void OpenXviDKeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
+	static void OpenDivXKeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
+	static void Openx264KeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
 };

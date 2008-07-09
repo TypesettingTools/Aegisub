@@ -55,10 +55,12 @@ void KeyFrameFile::Load(wxString filename) {
 		TextFileReader file(filename,_T("ASCII"));
 
 		wxString cur = file.ReadLineFromFile();
-		// Detect type
+		// Detect type (Only Xvid, DivX, x264 and Aegisub's keyframe files are currently supported)
 		if (cur == _T("# keyframe format v1")) { OpenAegiKeyFrames(file, keyFrames); }
 		else if (cur.StartsWith(_T("# XviD 2pass stat file"))) { OpenXviDKeyFrames(file, keyFrames); }
-		else { throw(_T("Invalid keyframes file.")); }
+		else if (cur.StartsWith(_T("##map version"))) { OpenDivXKeyFrames(file, keyFrames); }
+		else if (cur.StartsWith(_T("#options:"))) { Openx264KeyFrames(file, keyFrames); }
+		else { throw(_T("Invalid or unsupported keyframes file.")); }
 
 		// Set keyframes
 		VideoContext::Get()->SetOverKeyFrames(keyFrames);
@@ -136,7 +138,7 @@ void KeyFrameFile::OpenAegiKeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 void KeyFrameFile::OpenXviDKeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
 {
 	wxString cur = file.ReadLineFromFile();
-	int count = 0;
+	unsigned int count = 0;
 
 	// Read lines
 	while (file.HasMoreLines()) {
@@ -145,6 +147,50 @@ void KeyFrameFile::OpenXviDKeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 			count++;
 		}
 		else if (cur.StartsWith(_T("p")) || cur.StartsWith(_T("b"))) {
+			count++;
+		}
+		cur = file.ReadLineFromFile();
+	}
+}
+
+///////////////////
+// DivX stats file
+void KeyFrameFile::OpenDivXKeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
+{
+	wxString cur = file.ReadLineFromFile();
+	unsigned int count = 0;
+
+	// Read lines
+	while (file.HasMoreLines())
+	{
+		if (cur.Contains(_T("I"))) {
+			keyFrames.Add(count);
+			count++;
+		}
+		else if (cur.Contains(_T("P")) || cur.Contains(_T("B"))) {
+			count++;
+		}
+		cur = file.ReadLineFromFile();
+	}
+}
+
+///////////////////
+// x264 stats file
+void KeyFrameFile::Openx264KeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
+{
+	wxString cur = file.ReadLineFromFile();
+	unsigned int count = 0;
+	size_t pos;
+
+	// Read lines
+	while (file.HasMoreLines())
+	{
+		pos = cur.Find(_T("type:"));
+		if (cur.Mid(pos,6).Right(1).Lower() == (_T("i"))) {
+			keyFrames.Add(count);
+			count++;
+		}
+		else if (cur.Mid(pos,6).Right(1).Lower() == (_T("p")) || cur.Mid(pos,6).Right(1).Lower() == (_T("b"))) {
 			count++;
 		}
 		cur = file.ReadLineFromFile();
