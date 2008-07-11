@@ -1,0 +1,62 @@
+Documentation for the fonts interface provided in OverLua
+=========================================================
+
+OverLua provides a simplified interface to create and manage Fontconfig
+in-memory configurations, create FreeType font face objects from those
+and basic manipulation of these font face objects.
+
+It is possible to create cairo font face objects from the FreeType font
+face objects, so the fonts can be used in cairo rendering. This is the
+preferred way to produce text in OverLua.
+
+This interface does not provide means to have Fontconfig load and use
+configuration files, neither system-wide, per-user nor private ones.
+The only way to load and use fonts is to explicitly name the font files
+and load these. The purpose of this is to let OverLua scripts produce
+predictable results, as the same font will always be selected regardless
+of the system the script is running on.
+
+
+See also:
+
+Fontconfig documentation: <http://fontconfig.org/fontconfig-devel/>
+
+FreeType 2 documentation: <http://www.freetype.org/freetype2/docs/reference/ft2-toc.html>
+
+
+Font configuration object
+-------------------------
+
+OverLua keeps one global Fontconfig configuration object, which is
+implicitly used for all operations. It is accessed through the global
+'fonts' object.
+
+The following operations are supported:
+
+
+success = fonts.add_file(filename)
+
+Attempts to load the specified font file and add all fonts in it to the
+Fontconfig configuration. This uses the FcConfigAppFontAddFile C function
+to perform the work.
+
+On return, 'success' is a boolean which is 'true' on success and 'false'
+otherwise.
+
+
+cairofont = fonts.select(pattern, cairofo)
+
+Select the font best matching the pattern given, and return an object
+representing that font.
+
+The pattern is a Lua table of key=value pairs, with the keys being the
+properties Fontconfig understands, and the values the value you want
+for that property.
+
+'cairofo' is a cairo font options object. This parameter is optional.
+
+You can see a list of known properties on: <http://fontconfig.org/fontconfig-user.html>
+
+This function returns a cairo FreeType font object that can be selected
+into a cairo context for rendering with.
+
