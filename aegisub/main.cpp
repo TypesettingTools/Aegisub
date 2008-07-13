@@ -264,7 +264,7 @@ void AegisubApp::OnUnhandledException() {
 	path += _T("/");
 	dstpath.Assign(path);
 	if (!dstpath.DirExists()) wxMkdir(path);
-	wxString filename = StandardPaths::DecodePath(_T("?user/")) + origfile.GetName() + _T(".RECOVER.ass");
+	wxString filename = path + origfile.GetName() + _T(".RECOVER.ass");
 	AssFile::top->Save(filename,false,false);
 
 	// Inform user of crash
