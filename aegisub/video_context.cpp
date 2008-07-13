@@ -63,11 +63,14 @@
 #include "subs_grid.h"
 #include "vfw_wrap.h"
 
-#if !defined(__WINDOWS__)
 #ifdef WITH_FFMPEG
+#ifdef WIN32
+#define __STDC_CONSTANT_MACROS 1
+#include <stdint.h>
+#endif /* WIN32 */
 #include "lavc_keyframes.h"
 #endif
-#endif
+
 #include "mkv_wrap.h"
 #include "options.h"
 #include "subs_edit_box.h"
@@ -288,22 +291,28 @@ void VideoContext::SetVideo(const wxString &filename) {
 				// Close mkv
 				MatroskaWrapper::wrapper.Close();
 			}
-
-			else if (ext == _T(".avi")) {
+// do we have ffmpeg? if so try to load keyframes with it
+#ifdef WITH_FFMPEG
+			else {
 				keyFramesLoaded = false;
 				KeyFrames.Clear();
-#ifdef __WINDOWS__
-				KeyFrames = VFWWrapper::GetKeyFrames(filename);
-				keyFramesLoaded = true;
-#else
-#ifdef WITH_FFMPEG
 				LAVCKeyFrames k(filename.c_str());
 				KeyFrames = k.GetKeyFrames();
 				keyFramesLoaded = true;
-#endif
-#endif
 			}
-			
+#else
+// no ffmpeg, check if we have windows, if so we can load keyframes
+// from AVI files using VFW
+#ifdef __WINDOWS__
+			else if (ext == _T(".avi")) {
+				keyFramesLoaded = false;
+				KeyFrames.Clear();
+				KeyFrames = VFWWrapper::GetKeyFrames(filename);
+				keyFramesLoaded = true;
+			}
+#endif
+#endif
+
 			// Check if the file is all keyframes
 			bool isAllKeyFrames = true;
 			for (unsigned int i=1; i<KeyFrames.GetCount(); i++) {

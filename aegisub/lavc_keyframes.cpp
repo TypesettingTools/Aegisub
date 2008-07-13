@@ -38,49 +38,36 @@
 // Headers
 #include "config.h"
 #ifdef WITH_FFMPEG
+
+#ifdef WIN32
+#define __STDC_CONSTANT_MACROS 1
+#include <stdint.h>
+#endif /* WIN32 */
+
 #include "dialog_progress.h"
 #include "lavc_keyframes.h"
 
 ///////////////
 // Constructor
 LAVCKeyFrames::LAVCKeyFrames(const Aegisub::String filename) 
- : file(0), codecContext(0), codec(0), stream(0), frame(0), 
-   streamN(-1) {
+ : file(0), stream(0), streamN(-1) {
 	// Open LAVCFile
 	file = LAVCFile::Create(filename);
 
 	// Find video stream
 	for (unsigned int i = 0; i < file->fctx->nb_streams; ++i) {
-		codecContext = file->fctx->streams[i]->codec;
-		if (!codecContext) continue;
-		codecContext->skip_frame = AVDISCARD_NONKEY;
-		codecContext->workaround_bugs = FF_BUG_AUTODETECT;
-		if (codecContext->codec_type == CODEC_TYPE_VIDEO) {
+		if (file->fctx->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO) {
 			stream = file->fctx->streams[i];
-			stream->discard = AVDISCARD_NONKEY;
 			streamN = i;
 			break;
 		}
 	}
 	if (streamN == -1) throw _T("Could not find a video stream");
-
-	// Find codec
-	codec = avcodec_find_decoder(codecContext->codec_id);
-	if (!codec) throw _T("Could not find suitable video decoder");
-
-	// Open codec
-	int result = avcodec_open(codecContext, codec);
-	if (result < 0) throw _T("Failed to open video decoder");
-
-	// Allocate frame
-	frame = avcodec_alloc_frame();
 }
 
 //////////////
 // Destructor
 LAVCKeyFrames::~LAVCKeyFrames() {
-	if (frame) av_free((void*) frame);
-	if (codec && codecContext) avcodec_close(codecContext);
 	if (file) file->Release();
 }
 
@@ -90,7 +77,10 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 	wxArrayInt keyframes;
 	
 	AVPacket packet;
-	int total_frames = stream->duration;
+	// sanity check stream duration
+	if (stream->duration == AV_NOPTS_VALUE) 
+		throw _T("ffmpeg keyframes reader: demuxer returned invalid stream length");
+	int total_frames = stream->duration;	// FIXME: this will most likely NOT WORK for VFR files!
 	register unsigned int frameN = 0;		// Number of parsed frames
 
 	volatile bool canceled = false;
@@ -110,21 +100,12 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 			if ((frameN & (1024 - 1)) == 0)
 				progress->SetProgress(frameN,total_frames);
 
-			// Decode frame
-			int frameFinished;
-			avcodec_decode_video(codecContext, frame, &frameFinished, packet.data, packet.size);
-
-			// Success?
-			if(frameFinished) {
-				if (frame->key_frame)
-					// Aegisub starts counting at frame 0, so the result must be
-					// parsed frames - 1
-					keyframes.Add(frameN - 1);
-				
-				// Free packet
-				av_free_packet(&packet);
-			}
+			// Aegisub starts counting at frame 0, so the result must be
+			// parsed frames - 1
+			if (packet.flags == PKT_FLAG_KEY)
+				keyframes.Add(frameN - 1);
 		}
+		av_free_packet(&packet);
 	}
  	
 	// Clean up progress

@@ -41,10 +41,7 @@
 class LAVCKeyFrames {
 	private:
 		LAVCFile* file;					// Video file
-		AVCodecContext* codecContext;	// Codec context
-		AVCodec* codec;					// Used codec
 		AVStream* stream;				// Used stream
-		AVFrame* frame;					// Frame buffer
 
 		int streamN;					// Stream index
 	public:
