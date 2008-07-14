@@ -62,7 +62,7 @@ LAVCKeyFrames::LAVCKeyFrames(const Aegisub::String filename)
 			break;
 		}
 	}
-	if (streamN == -1) throw _T("Could not find a video stream");
+	if (streamN == -1) throw _T("ffmpeg keyframes reader: Could not find a video stream");
 }
 
 //////////////
@@ -88,22 +88,22 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
         progress->Show();
 	progress->SetProgress(0,1);
 
-	while (av_read_frame(file->fctx, &packet) >= 0 && !canceled) {
+	while (av_read_frame(file->fctx, &packet) == 0 && !canceled) {
 		// Check if packet is part of video stream
 		if (packet.stream_index == streamN) {
+			// Check if the packet contains a keyframe
+			if (packet.flags & PKT_FLAG_KEY)
+				// note: frame numbers start from 0, watch out for the fencepost error
+				keyframes.Add(frameN);
+
 			// Increment number of passed frames
-			++frameN;
-			
+			frameN++;
+
 			/* Might need some adjustments here, to make it
 			appear as fluid as wanted. Just copied 2points thingy,
 			and reduced it a bit */
 			if ((frameN & (1024 - 1)) == 0)
 				progress->SetProgress(frameN,total_frames);
-
-			// Aegisub starts counting at frame 0, so the result must be
-			// parsed frames - 1
-			if (packet.flags == PKT_FLAG_KEY)
-				keyframes.Add(frameN - 1);
 		}
 		av_free_packet(&packet);
 	}
