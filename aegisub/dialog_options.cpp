@@ -143,7 +143,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *fileSizer2 = new wxBoxSizer(wxHORIZONTAL);
 		wxSizer *fileSizer3 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("File paths"));
 		wxFlexGridSizer *fileSizer4 = new wxFlexGridSizer(3,3,5,5);
-		wxSizer *fileSizer5 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("Miscelanea"));
+		wxSizer *fileSizer5 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("Miscellanea"));
 		wxFlexGridSizer *fileSizer6 = new wxFlexGridSizer(3,2,5,5);
 
 		// First static box
