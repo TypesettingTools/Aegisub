@@ -1562,6 +1562,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\lavc_keyframes.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\lavc_keyframes.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\video_box.cpp"
 				>
 			</File>
