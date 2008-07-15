@@ -37,6 +37,7 @@
 #include <wx/filename.h>
 #include <wx/file.h>
 #include "audio_provider_pcm.h"
+#include "audio_provider_downmix.h"
 #include "utils.h"
 #include "aegisub_endian.h"
 #include <stdint.h>
@@ -366,91 +367,6 @@ public:
 			data_left -= (Endian::LittleToMachine(ch.size) + 1) & ~1;
 			filepos += (Endian::LittleToMachine(ch.size) + 1) & ~1;
 		}
-	}
-};
-
-
-// Mix down any number of channels to mono
-
-class DownmixingAudioProvider : public AudioProvider {
-private:
-	AudioProvider *provider;
-	int src_channels;
-
-public:
-	DownmixingAudioProvider(AudioProvider *source)
-	{
-		filename = source->GetFilename();
-		channels = 1; // target
-		src_channels = source->GetChannels();
-		num_samples = source->GetNumSamples();
-		bytes_per_sample = source->GetBytesPerSample();
-		sample_rate = source->GetSampleRate();
-
-		// We now own this
-		provider = source;
-
-		if (!(bytes_per_sample == 1 || bytes_per_sample == 2)) throw _T("Downmixing Audio Provider: Can only downmix 8 and 16 bit audio");
-	}
-
-	~DownmixingAudioProvider()
-	{
-		delete provider;
-	}
-
-	void GetAudio(void *buf, int64_t start, int64_t count)
-	{
-		if (count == 0) return;
-
-		// We can do this ourselves
-		if (start >= num_samples) {
-			if (bytes_per_sample == 1)
-				// 8 bit formats are usually unsigned with bias 127
-				memset(buf, 127, count);
-			else
-				// While everything else is signed
-				memset(buf, 0, count*bytes_per_sample);
-
-			return;
-		}
-
-		// So alloc some temporary memory for this
-		// Depending on use, this might be made faster by using
-		// a pre-allocced block of memory...?
-		char *tmp = new char[count*bytes_per_sample*src_channels];
-
-		provider->GetAudio(tmp, start, count);
-
-		// Now downmix
-		// Just average the samples over the channels (really bad if they're out of phase!)
-		// XXX: Assuming here that sample data are in machine endian, an upstream provider should ensure that
-		if (bytes_per_sample == 1) {
-			uint8_t *src = (uint8_t *)tmp;
-			uint8_t *dst = (uint8_t *)buf;
-
-			while (count > 0) {
-				int sum = 0;
-				for (int c = 0; c < src_channels; c++)
-					sum += *(src++);
-				*(dst++) = (uint8_t)(sum / src_channels);
-				count--;
-			}
-		}
-		else if (bytes_per_sample == 2) {
-			int16_t *src = (int16_t *)tmp;
-			int16_t *dst = (int16_t *)buf;
-
-			while (count > 0) {
-				int sum = 0;
-				for (int c = 0; c < src_channels; c++)
-					sum += *(src++);
-				*(dst++) = (int16_t)(sum / src_channels);
-				count--;
-			}
-		}
-
-		// Done downmixing, free the work buffer
-		delete[] tmp;
 	}
 };
 
