@@ -126,7 +126,7 @@ VideoBox::VideoBox(wxWindow *parent)
 	wxSizer *topTopSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
 	visualSubToolBar->Show(false);
-	topTopSizer->Add(visualToolBar,0,wxEXPAND,0);
+	topTopSizer->Add(visualToolBar,0,0,0);
 	topTopSizer->Add(videoDisplay,1,wxEXPAND,0);
 	topSizer->Add(topTopSizer,1,wxEXPAND,0);
 	topSizer->Add(visualSubToolBar,0,wxEXPAND | wxBOTTOM,4);
