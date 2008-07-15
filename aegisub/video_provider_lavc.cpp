@@ -331,18 +331,8 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 	if (frameNumber < 0)
 		frameNumber = 0;
 
-	// Following frame, just get it
-	/* if (n == frameNumber+1) {
-		int64_t temp = -1;
-		GetNextFrame(&temp);
-	} */
-
-	// Needs to seek
-	// else {
-		// Prepare seek
-		// int64_t seekTo;
-		// int result = 0;
-		int closestKeyFrame = FindClosestKeyframe(n);
+	// Find closest keyframe to the frame we want
+	int closestKeyFrame = FindClosestKeyframe(n);
 
 #if 0
 		// Get time to seek to
@@ -380,58 +370,42 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 		// Constant frame rate
 		else {
 #endif
-			// seekTo = closestKeyFrame;
-			bool hasSeeked = false;
+	bool hasSeeked = false;
 
-			// do we really need to seek?
-			// 10 frames is used as a margin to prevent excessive seeking since the predicted best keyframe isn't always selected by avformat
-			if (n < frameNumber || closestKeyFrame > frameNumber+10) {
-				// do it
-				av_seek_frame(lavcfile->fctx, vidStream, framesData[closestKeyFrame].DTS, AVSEEK_FLAG_BACKWARD);
-				avcodec_flush_buffers(codecContext);
-				hasSeeked = true;
+	// do we really need to seek?
+	// 10 frames is used as a margin to prevent excessive seeking since the predicted best keyframe isn't always selected by avformat
+	if (n < frameNumber || closestKeyFrame > frameNumber+10) {
+		// turns out we did need it, just do it
+		av_seek_frame(lavcfile->fctx, vidStream, framesData[closestKeyFrame].DTS, AVSEEK_FLAG_BACKWARD);
+		avcodec_flush_buffers(codecContext);
+		hasSeeked = true;
+	}
+
+	// regardless of whether we sekeed or not, decode frames until we have the one we want
+	do {
+		int64_t startTime;
+		GetNextFrame(&startTime);
+
+		if (hasSeeked) {
+			hasSeeked = false;
+
+			// is the seek destination known? does it belong to a frame?
+			if (startTime < 0 || (frameNumber = FrameFromDTS(startTime)) < 0) {
+				// guessing destination, may be unsafe
+				if (allowUnsafeSeeking)
+					frameNumber = ClosestFrameFromDTS(startTime);
+				else
+					throw _T("ffmpeg video provider: frame accurate seeking failed");
 			}
 
-			// decode frames until we have the one we want
-			do {
-				int64_t startTime;
-				GetNextFrame(&startTime);
+		}
 
-				if (hasSeeked) {
-					hasSeeked = false;
+		frameNumber++;
+	} while (frameNumber <= n);
 
-					// is the seek destination known? does it belong to a frame?
-					if (startTime < 0 || (frameNumber = FrameFromDTS(startTime)) < 0) {
-						if (allowUnsafeSeeking)
-							frameNumber = ClosestFrameFromDTS(startTime);
-						else
-							throw _T("ffmpeg video provider: frame accurate seeking failed");
-					}
-						
-				}
-
-				frameNumber++;
-			} while (frameNumber <= n);
-
-			// Seek to keyframe
-			/* if (result == 0) {
-				avcodec_flush_buffers(codecContext);
-
-				// Seek until final frame
-				bool ok = true;
-				do {
-					ok = GetNextFrame();
-				} while (lastDecodeTime <= n && ok);
-			}
-
-			// Failed seeking
-			else {
-				GetNextFrame();
-			}*/
 #if 0
 		}
 #endif
-	//}
 	
 	
 	// Get aegisub frame
