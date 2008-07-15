@@ -57,6 +57,7 @@
 #include "ass_file.h"
 #include "lavc_keyframes.h"
 #include "video_context.h"
+#include "options.h"
 
 
 ///////////////
@@ -154,6 +155,8 @@ void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 		// Set frame
 		frameNumber = -1;
 		lastFrameNumber = -1;
+
+		allowUnsafeSeeking = Options.AsBool(_T("FFmpeg allow unsafe seeking"));
 	}
 
 	// Catch errors
@@ -398,9 +401,13 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 					hasSeeked = false;
 
 					// is the seek destination known? does it belong to a frame?
-					if (startTime < 0 || (frameNumber = FrameFromDTS(startTime)) < 0)
-						throw _T("ffmpeg video provider: frame accurate seeking failed");
-						//frameNumber = ClosestFrameFromDTS(startTime);
+					if (startTime < 0 || (frameNumber = FrameFromDTS(startTime)) < 0) {
+						if (allowUnsafeSeeking)
+							frameNumber = ClosestFrameFromDTS(startTime);
+						else
+							throw _T("ffmpeg video provider: frame accurate seeking failed");
+					}
+						
 				}
 
 				frameNumber++;

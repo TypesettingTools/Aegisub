@@ -82,6 +82,7 @@ private:
 
 	wxArrayInt bytePos;
 
+	bool allowUnsafeSeeking;
 	bool isMkv;
 	int64_t lastDecodeTime;
 	int frameNumber;
