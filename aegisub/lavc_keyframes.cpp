@@ -47,10 +47,11 @@
 #include "dialog_progress.h"
 #include "lavc_keyframes.h"
 
+
 ///////////////
 // Constructor
 LAVCKeyFrames::LAVCKeyFrames(const Aegisub::String filename) 
- : file(0), stream(0), streamN(-1) {
+ : file(0), stream(0), streamN(-1), numFrames(0) {
 	// Open LAVCFile
 	file = LAVCFile::Create(filename);
 
@@ -63,6 +64,7 @@ LAVCKeyFrames::LAVCKeyFrames(const Aegisub::String filename)
 		}
 	}
 	if (streamN == -1) throw _T("ffmpeg keyframes reader: Could not find a video stream");
+
 }
 
 //////////////
@@ -77,11 +79,18 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 	wxArrayInt keyframes;
 	
 	AVPacket packet;
-	// sanity check stream duration
-	if (stream->duration == AV_NOPTS_VALUE) 
-		throw _T("ffmpeg keyframes reader: demuxer returned invalid stream length");
-	int total_frames = stream->duration;	// FIXME: this will most likely NOT WORK for VFR files!
+	int total_frames;
+	// check if the stream duration is bogus (will happen for MKV files)
+	if (stream->duration == AV_NOPTS_VALUE) {
+		// throw _T("ffmpeg keyframes reader: demuxer returned invalid stream length");
+		// FIXME: find some less dumb way to do this
+		total_frames = 123456; // random suitably big number
+	}
+	else {
+		total_frames = stream->duration;
+	}
 	register unsigned int frameN = 0;		// Number of parsed frames
+	numFrames = 0;
 
 	volatile bool canceled = false;
         DialogProgress *progress = new DialogProgress(NULL,_("Load keyframes"),&canceled,_("Reading keyframes from video"),0,total_frames);
@@ -91,6 +100,8 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 	while (av_read_frame(file->fctx, &packet) == 0 && !canceled) {
 		// Check if packet is part of video stream
 		if (packet.stream_index == streamN) {
+			framesData.push_back(FrameInfo(packet.dts, (packet.flags & PKT_FLAG_KEY) ? 1 : 0));
+
 			// Check if the packet contains a keyframe
 			if (packet.flags & PKT_FLAG_KEY)
 				// note: frame numbers start from 0, watch out for the fencepost error
@@ -108,11 +119,23 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 		av_free_packet(&packet);
 	}
  	
+	numFrames = frameN;
+
 	// Clean up progress
         if (!canceled) progress->Destroy();
         else throw wxString(_T("Keyframe loading cancelled by user"));
 	
 	return keyframes;
+}
+
+// returns the video duration in frames
+int LAVCKeyFrames::GetNumFrames() {
+	return numFrames;
+}
+
+// returns the frame metadata vector
+FrameInfoVector LAVCKeyFrames::GetFrameData() {
+	return framesData;
 }
 
 #endif // WITH_FFMPEG

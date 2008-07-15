@@ -43,6 +43,7 @@
 // Headers
 #include "include/aegisub/video_provider.h"
 #include <wx/colour.h>
+#include "vfr.h"
 
 
 ////////////////////////
@@ -72,6 +73,12 @@ public:
 	int GetWidth();
 	int GetHeight();
 	double GetFPS();
+
+	bool AreKeyFramesLoaded() { return false; };
+	wxArrayInt GetKeyFrames() { return wxArrayInt(); };
+	bool IsVFR() { return false; };
+	FrameRate GetTrueFrameRate() { return FrameRate(); };
+
 	Aegisub::String GetDecoderName();
 };
 

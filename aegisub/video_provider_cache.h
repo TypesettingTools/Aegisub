@@ -41,6 +41,7 @@
 // Headers
 #include <list>
 #include "include/aegisub/video_provider.h"
+#include "vfr.h"
 
 
 ////////////////
@@ -86,6 +87,10 @@ public:
 	virtual int GetWidth();					// Returns the video width in pixels
 	virtual int GetHeight();				// Returns the video height in pixels
 	virtual double GetFPS();				// Get framerate in frames per second
+	virtual bool AreKeyFramesLoaded();
+	virtual bool IsVFR();
+	virtual wxArrayInt GetKeyFrames();
+	virtual FrameRate GetTrueFrameRate();
 	virtual void OverrideFrameTimeList(Aegisub::IntArray list);	// Override the list with the provided one, for VFR handling
 	virtual bool IsNativelyByFrames();
 	virtual Aegisub::String GetWarning();

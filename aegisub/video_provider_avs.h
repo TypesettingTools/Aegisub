@@ -61,6 +61,11 @@ private:
 	wxArrayInt frameTime;
 	bool byFrame;
 
+	wxArrayInt KeyFrames;
+	bool keyFramesLoaded;
+	bool isVfr;
+	FrameRate trueFrameRate;
+
 	PClip RGB32Video;
 	PClip SubtitledVideo;
 
@@ -88,6 +93,10 @@ public:
 	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
 	int GetWidth() { return vi.width; };
 	int GetHeight() { return vi.height; };
+	bool AreKeyFramesLoaded() { return keyFramesLoaded; };
+	wxArrayInt GetKeyFrames() { return KeyFrames; };
+	bool IsVFR() { return isVfr; };
+	FrameRate GetTrueFrameRate() { return isVfr? trueFrameRate: FrameRate(); };
 
 	void OverrideFrameTimeList(wxArrayInt list);
 	bool IsNativelyByFrames() { return byFrame; }

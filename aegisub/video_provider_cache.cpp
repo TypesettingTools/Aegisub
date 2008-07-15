@@ -162,6 +162,18 @@ int VideoProviderCache::GetHeight() {
 double VideoProviderCache::GetFPS() {
 	return master->GetFPS();
 }
+bool VideoProviderCache::IsVFR() {
+	return master->IsVFR();
+}
+bool VideoProviderCache::AreKeyFramesLoaded() {
+	return master->AreKeyFramesLoaded();
+}
+wxArrayInt VideoProviderCache::GetKeyFrames() {
+	return master->GetKeyFrames();
+}
+FrameRate VideoProviderCache::GetTrueFrameRate() {
+	return master->GetTrueFrameRate();
+}
 void VideoProviderCache::OverrideFrameTimeList(Aegisub::IntArray list) {
 	master->OverrideFrameTimeList(list);
 }

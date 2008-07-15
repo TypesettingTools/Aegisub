@@ -39,8 +39,10 @@
 
 //////////
 // Headers
+#include <wx/wxprec.h>
 #include "video_frame.h"
 #include "aegisub.h"
+#include "vfr.h"
 
 
 //////////////
@@ -64,6 +66,10 @@ public:
 	virtual int GetWidth()=0;					// Returns the video width in pixels
 	virtual int GetHeight()=0;					// Returns the video height in pixels
 	virtual double GetFPS()=0;					// Get framerate in frames per second
+	virtual bool AreKeyFramesLoaded()=0;		// Returns true if keyframe info is loaded, false otherwise
+	virtual bool IsVFR()=0;						// Returns true if video is VFR
+	virtual wxArrayInt GetKeyFrames()=0;		// Returns list of keyframes
+	virtual FrameRate GetTrueFrameRate()=0;		// Returns magic VFR stuff
 
 	// Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
 	virtual Aegisub::String GetWarning() { return L""; }

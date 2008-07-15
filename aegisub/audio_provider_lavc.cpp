@@ -213,8 +213,10 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 				if (retval <= 0)
 					throw _T("ffmpeg audio provider: failed to decode audio");
 				/* decoding succeeded but the output buffer is empty, go to next packet */
-				if (temp_output_buffer_size == 0)
+				if (temp_output_buffer_size == 0) {
+					av_free_packet(&packet);
 					continue;
+				}
 
 				decoded_bytes	= temp_output_buffer_size;
 				decoded_samples = decoded_bytes / 2; /* 2 bytes per sample */

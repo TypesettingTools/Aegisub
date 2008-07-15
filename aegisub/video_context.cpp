@@ -61,17 +61,6 @@
 #include "ass_dialogue.h"
 #include "ass_style.h"
 #include "subs_grid.h"
-#include "vfw_wrap.h"
-
-#ifdef WITH_FFMPEG
-#ifdef WIN32
-#define __STDC_CONSTANT_MACROS 1
-#include <stdint.h>
-#endif /* WIN32 */
-#include "lavc_keyframes.h"
-#endif
-
-#include "mkv_wrap.h"
 #include "options.h"
 #include "subs_edit_box.h"
 #include "audio_display.h"
@@ -254,81 +243,13 @@ void VideoContext::SetVideo(const wxString &filename) {
 	if (!filename.IsEmpty()) {
 		try {
 			grid->CommitChanges(true);
-			bool isVfr = false;
-			double overFps = 0;
+			// double overFps = 0;
 			FrameRate temp;
 
 			// Unload timecodes
 			//int unload = wxYES;
 			//if (VFR_Output.IsLoaded()) unload = wxMessageBox(_("Do you want to unload timecodes, too?"),_("Unload timecodes?"),wxYES_NO | wxICON_QUESTION);
 			//if (unload == wxYES) VFR_Output.Unload();
-
-			// Read extra data from file
-			bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
-			wxString ext = filename.Right(4).Lower();
-			KeyFrames.Clear();
-			if (ext == _T(".mkv") || mkvOpen) {
-				// Parse mkv
-				if (!mkvOpen) MatroskaWrapper::wrapper.Open(filename);
-
-				// Get keyframes
-				KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
-				keyFramesLoaded = true;
-
-				// Ask to override timecodes
-				int override = wxYES;
-				if (VFR_Output.IsLoaded()) override = wxMessageBox(_("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
-				if (override == wxYES) {
-					MatroskaWrapper::wrapper.SetToTimecodes(temp);
-					isVfr = temp.GetFrameRateType() == VFR;
-					if (isVfr) {
-						overFps = temp.GetCommonFPS();
-						MatroskaWrapper::wrapper.SetToTimecodes(VFR_Input);
-	 					MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
-					}
-				}
-
-				// Close mkv
-				MatroskaWrapper::wrapper.Close();
-			}
-// do we have ffmpeg? if so try to load keyframes with it
-#ifdef WITH_FFMPEG
-			else {
-				keyFramesLoaded = false;
-				KeyFrames.Clear();
-				LAVCKeyFrames k(filename.c_str());
-				KeyFrames = k.GetKeyFrames();
-				keyFramesLoaded = true;
-			}
-#else
-// no ffmpeg, check if we have windows, if so we can load keyframes
-// from AVI files using VFW
-#ifdef __WINDOWS__
-			else if (ext == _T(".avi")) {
-				keyFramesLoaded = false;
-				KeyFrames.Clear();
-				KeyFrames = VFWWrapper::GetKeyFrames(filename);
-				keyFramesLoaded = true;
-			}
-#endif
-#endif
-
-			// Check if the file is all keyframes
-			bool isAllKeyFrames = true;
-			for (unsigned int i=1; i<KeyFrames.GetCount(); i++) {
-				// Is the last keyframe not this keyframe -1?
-				if (KeyFrames[i-1] != (int)(i-1)) {
-					// It's not all keyframes, go ahead
-					isAllKeyFrames = false;
-					break;
-				}
-			}
-
-			// If it is all keyframes, discard the keyframe info as it is useless
-			if (isAllKeyFrames) {
-				KeyFrames.Clear();
-				keyFramesLoaded = false;
-			}
 
 			// Set GL context
 #ifdef __WXMAC__
@@ -338,7 +259,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 #endif
 
 			// Choose a provider
-			provider = VideoProviderFactoryManager::GetProvider(filename,overFps);
+			provider = VideoProviderFactoryManager::GetProvider(filename, 0);
 			loaded = provider != NULL;
 
 			// Get subtitles provider
@@ -349,13 +270,28 @@ void VideoContext::SetVideo(const wxString &filename) {
 			catch (wxString err) { wxMessageBox(_T("Error while loading subtitles provider: ") + err,_T("Subtitles provider"));	}
 			catch (const wchar_t *err) { wxMessageBox(_T("Error while loading subtitles provider: ") + wxString(err),_T("Subtitles provider"));	}
 
+			KeyFrames.Clear();
+			// load keyframes if available
+			if (provider->AreKeyFramesLoaded()) {
+				KeyFrames = provider->GetKeyFrames();
+				keyFramesLoaded = true;
+			}
+			else {
+				keyFramesLoaded = false;
+			}
+
+			bool isVfr = provider->IsVFR();
+			
 			// Set frame rate
 			fps = provider->GetFPS();
 			if (!isVfr || provider->IsNativelyByFrames()) {
 				VFR_Input.SetCFR(fps);
 				if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
 			}
-			else provider->OverrideFrameTimeList(temp.GetFrameTimeList());
+			else {
+				FrameRate temp = provider->GetTrueFrameRate();
+				provider->OverrideFrameTimeList(temp.GetFrameTimeList());
+			}
 
 			// Gather video parameters
 			length = provider->GetFrameCount();

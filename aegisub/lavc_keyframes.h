@@ -37,15 +37,28 @@
 
 #include <wx/wxprec.h>
 #include "lavc_file.h"
+#include <vector>
+
+struct FrameInfo {
+	int64_t DTS;
+	bool isKeyFrame;
+	FrameInfo(int64_t ADTS, bool isAKeyFrame) : DTS(ADTS), isKeyFrame(isAKeyFrame) {};
+};
+
+typedef std::vector<FrameInfo> FrameInfoVector;
 
 class LAVCKeyFrames {
 	private:
 		LAVCFile* file;					// Video file
 		AVStream* stream;				// Used stream
-
 		int streamN;					// Stream index
+		int numFrames;					// number of frames in the video
+	protected:
+		FrameInfoVector framesData;
 	public:
 		LAVCKeyFrames(const Aegisub::String filename);
 		~LAVCKeyFrames();
 		wxArrayInt GetKeyFrames();
+		int GetNumFrames();
+		FrameInfoVector GetFrameData();
 };

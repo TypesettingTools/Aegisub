@@ -41,16 +41,22 @@
 
 #ifdef WIN32
 #define EMULATE_INTTYPES
-#endif
+#define __STDC_CONSTANT_MACROS 1
+#include <stdint.h>
+#endif /* WIN32 */
+
 #include <wx/wxprec.h>
 #include <wx/image.h>
 #include <algorithm>
+#include <vector>
 #include "video_provider_lavc.h"
 #include "mkv_wrap.h"
 #include "lavc_file.h"
 #include "utils.h"
 #include "vfr.h"
 #include "ass_file.h"
+#include "lavc_keyframes.h"
+#include "video_context.h"
 
 
 ///////////////
@@ -71,6 +77,7 @@ LAVCVideoProvider::LAVCVideoProvider(Aegisub::String filename,double fps) {
 	buffer2Size = 0;
 	vidStream = -1;
 	validFrame = false;
+	framesData.clear();
 
 	// Load
 	LoadVideo(filename,fps);
@@ -119,8 +126,13 @@ void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 		result = avcodec_open(codecContext,codec);
 		if (result < 0) throw _T("Failed to open video decoder");
 
-		// Check length
-		length = stream->duration;
+		// Parse file for keyframes and other useful stuff
+		LAVCKeyFrames LAVCFrameData(filename);
+		KeyFramesList = LAVCFrameData.GetKeyFrames();
+		keyFramesLoaded = true;
+		// set length etc.
+		length = LAVCFrameData.GetNumFrames();
+		framesData = LAVCFrameData.GetFrameData();
 #if 0
 		isMkv = false;
 		length = stream->duration;
@@ -141,6 +153,7 @@ void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 
 		// Set frame
 		frameNumber = -1;
+		lastFrameNumber = -1;
 	}
 
 	// Catch errors
@@ -196,14 +209,19 @@ void LAVCVideoProvider::Close() {
 
 //////////////////
 // Get next frame
-bool LAVCVideoProvider::GetNextFrame() {
-	// Read packet
+bool LAVCVideoProvider::GetNextFrame(int64_t *startDTS) {
 	AVPacket packet;
+	*startDTS = -1; // magic
+	
+	// Read packet
 	while (av_read_frame(lavcfile->fctx, &packet)>=0) {
 		// Check if packet is part of video stream
 		if(packet.stream_index == vidStream) {
 			// Decode frame
 			int frameFinished;
+			if (*startDTS < 0)
+				*startDTS = packet.dts;
+
 			avcodec_decode_video(codecContext, frame, &frameFinished, packet.data, packet.size);
 
 			// Success?
@@ -211,11 +229,13 @@ bool LAVCVideoProvider::GetNextFrame() {
 				// Set time
 				lastDecodeTime = packet.dts;
 
-				// Free packet
+				// Free packet and return
 				av_free_packet(&packet);
 				return true;
 			}
 		}
+		// free packet
+		av_free_packet(&packet);
     }
 
 	// No more packets
@@ -299,22 +319,27 @@ wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
 // Get frame
 const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 	// Return stored frame
-	n = MID(0,n,GetFrameCount()-1);
-	if (n == frameNumber) {
+	// n = MID(0,n,GetFrameCount()-1);
+	if (n == lastFrameNumber) {
 		if (!validFrame) validFrame = true;
 		return curFrame;
 	}
 
+	if (frameNumber < 0)
+		frameNumber = 0;
+
 	// Following frame, just get it
-	if (n == frameNumber+1) {
-		GetNextFrame();
-	}
+	/* if (n == frameNumber+1) {
+		int64_t temp = -1;
+		GetNextFrame(&temp);
+	} */
 
 	// Needs to seek
-	else {
+	// else {
 		// Prepare seek
-		int64_t seekTo;
-		int result = 0;
+		// int64_t seekTo;
+		// int result = 0;
+		int closestKeyFrame = FindClosestKeyframe(n);
 
 #if 0
 		// Get time to seek to
@@ -352,11 +377,37 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 		// Constant frame rate
 		else {
 #endif
-			seekTo = n;
-			result = av_seek_frame(lavcfile->fctx,vidStream,seekTo,AVSEEK_FLAG_BACKWARD);
+			// seekTo = closestKeyFrame;
+			bool hasSeeked = false;
+
+			// do we really need to seek?
+			// 10 frames is used as a margin to prevent excessive seeking since the predicted best keyframe isn't always selected by avformat
+			if (n < frameNumber || closestKeyFrame > frameNumber+10) {
+				// do it
+				av_seek_frame(lavcfile->fctx, vidStream, framesData[closestKeyFrame].DTS, AVSEEK_FLAG_BACKWARD);
+				avcodec_flush_buffers(codecContext);
+				hasSeeked = true;
+			}
+
+			// decode frames until we have the one we want
+			do {
+				int64_t startTime;
+				GetNextFrame(&startTime);
+
+				if (hasSeeked) {
+					hasSeeked = false;
+
+					// is the seek destination known? does it belong to a frame?
+					if (startTime < 0 || (frameNumber = FrameFromDTS(startTime)) < 0)
+						throw _T("ffmpeg video provider: frame accurate seeking failed");
+						//frameNumber = ClosestFrameFromDTS(startTime);
+				}
+
+				frameNumber++;
+			} while (frameNumber <= n);
 
 			// Seek to keyframe
-			if (result == 0) {
+			/* if (result == 0) {
 				avcodec_flush_buffers(codecContext);
 
 				// Seek until final frame
@@ -369,11 +420,11 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 			// Failed seeking
 			else {
 				GetNextFrame();
-			}
+			}*/
 #if 0
 		}
 #endif
-	}
+	//}
 	
 	
 	// Get aegisub frame
@@ -418,7 +469,7 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 
 	// Set current frame
 	validFrame = true;
-	frameNumber = n;
+	lastFrameNumber = n;
 
 	// Return
 	return final;
@@ -457,6 +508,39 @@ int LAVCVideoProvider::GetWidth() {
 // Get original height
 int LAVCVideoProvider::GetHeight() {
 	return codecContext->height;
+}
+
+//////////////////////
+// Find the keyframe we should seek to if we want to seek to a given frame N
+int LAVCVideoProvider::FindClosestKeyframe(int frameN) {
+	for (int i = frameN; i > 0; i--)
+		if (framesData[i].isKeyFrame)
+			return i;
+	return 0;
+}
+
+//////////////////////
+// Convert a DTS into a frame number
+int LAVCVideoProvider::FrameFromDTS(int64_t ADTS) {
+	for (int i = 0; i < (int)framesData.size(); i++)
+		if (framesData[i].DTS == ADTS)
+			return i;
+	return -1;
+}
+
+//////////////////////
+// Find closest frame to the given DTS
+int LAVCVideoProvider::ClosestFrameFromDTS(int64_t ADTS) {
+	int n = 0; 
+	int64_t bestDiff = 0xFFFFFFFFFFFFFFLL; // big number
+	for (int i = 0; i < (int)framesData.size(); i++) {
+		int64_t currentDiff = FFABS(framesData[i].DTS - ADTS);
+		if (currentDiff < bestDiff) {
+			bestDiff = currentDiff;
+			n = i;
+		}
+	}
+	return n;
 }
 
 #endif // WITH_FFMPEG

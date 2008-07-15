@@ -48,6 +48,8 @@
 #include "vfr.h"
 #include "ass_file.h"
 #include "gl_wrap.h"
+#include "mkv_wrap.h"
+#include "vfw_wrap.h"
 
 
 ///////////////
@@ -61,6 +63,9 @@ AvisynthVideoProvider::AvisynthVideoProvider(Aegisub::String _filename, double _
 	num_frames = 0;
 	last_fnum = -1;
 	byFrame = false;
+	KeyFrames.Clear();
+	keyFramesLoaded = false;
+	isVfr = false;
 
 	AVSTRACE(_T("AvisynthVideoProvider: Loading Subtitles Renderer"));
 	LoadRenderer();
@@ -283,6 +288,64 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 	if (!script.IsClip() || !script.AsClip()->GetVideoInfo().HasVideo()) {
 		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: No suitable video found"));
 		throw _T("Avisynth: No usable video found in ") + _filename;
+	}
+
+	// Read keyframes and timecodes from MKV file
+	isVfr = false;
+	FrameRate temp;
+	double overFps = 0;
+	bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
+	KeyFrames.Clear();
+	if (extension == _T(".mkv") || mkvOpen) {
+		// Parse mkv
+		if (!mkvOpen) MatroskaWrapper::wrapper.Open(_filename);
+		
+		// Get keyframes
+		KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
+		keyFramesLoaded = true;
+		
+		// Ask to override timecodes
+		int override = wxYES;
+		if (VFR_Output.IsLoaded()) override = wxMessageBox(_("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
+		if (override == wxYES) {
+			MatroskaWrapper::wrapper.SetToTimecodes(temp);
+			isVfr = temp.GetFrameRateType() == VFR;
+			if (isVfr) {
+				overFps = temp.GetCommonFPS();
+				MatroskaWrapper::wrapper.SetToTimecodes(VFR_Input);
+				MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
+				trueFrameRate = temp;
+			}
+		}
+
+		// Close mkv
+		MatroskaWrapper::wrapper.Close();
+	}
+// check if we have windows, if so we can load keyframes from AVI files using VFW
+#ifdef __WINDOWS__
+	else if (extension == _T(".avi")) {
+		keyFramesLoaded = false;
+		KeyFrames.Clear();
+		KeyFrames = VFWWrapper::GetKeyFrames(_filename);
+		keyFramesLoaded = true;
+	}
+#endif /* __WINDOWS__ */
+
+	// Check if the file is all keyframes
+	bool isAllKeyFrames = true;
+	for (unsigned int i=1; i<KeyFrames.GetCount(); i++) {
+		// Is the last keyframe not this keyframe -1?
+		if (KeyFrames[i-1] != (int)(i-1)) {
+			// It's not all keyframes, go ahead
+			isAllKeyFrames = false;
+			break;
+		}
+	}
+
+	// If it is all keyframes, discard the keyframe info as it is useless
+	if (isAllKeyFrames) {
+		KeyFrames.Clear();
+		keyFramesLoaded = false;
 	}
 
 	// Convert to RGB32

@@ -42,6 +42,7 @@
 #ifdef WIN32
 #define EMULATE_INTTYPES
 #endif
+#include <vector>
 extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
@@ -51,6 +52,7 @@ extern "C" {
 #include "include/aegisub/aegisub.h"
 #include "mkv_wrap.h"
 #include "lavc_file.h"
+#include "lavc_keyframes.h"
 
 
 ///////////////////////
@@ -70,6 +72,10 @@ private:
 	AVFrame *frameRGB;
 	uint8_t *bufferRGB;
 	SwsContext *sws_context;
+
+	wxArrayInt KeyFramesList;
+	bool keyFramesLoaded;
+	// bool isVfr; // currently unused
 	
 	int display_w;
 	int display_h;
@@ -79,16 +85,21 @@ private:
 	bool isMkv;
 	int64_t lastDecodeTime;
 	int frameNumber;
+	int lastFrameNumber;
 	int length;
 	AegiVideoFrame curFrame;
 	bool validFrame;
+	FrameInfoVector framesData;
 
 	uint8_t *buffer1;
 	uint8_t *buffer2;
 	int buffer1Size;
 	int buffer2Size;
 
-	bool GetNextFrame();
+	int FindClosestKeyframe(int frameN);
+	int FrameFromDTS(int64_t ADTS);
+	int ClosestFrameFromDTS(int64_t ADTS);
+	bool GetNextFrame(int64_t *DTS);
 	void LoadVideo(Aegisub::String filename, double fps);
 	void Close();
 
@@ -105,6 +116,10 @@ public:
 	int GetWidth();
 	int GetHeight();
 	double GetFPS();
+	bool AreKeyFramesLoaded() { return keyFramesLoaded; };
+	wxArrayInt GetKeyFrames() { return KeyFramesList; };
+	bool IsVFR() { return false; }; // FIXME: bork?
+	FrameRate GetTrueFrameRate() { return FrameRate(); }; // nothing useful here
 	Aegisub::String GetDecoderName() { return L"FFMpeg/libavcodec"; }
 	bool IsNativelyByFrames() { return true; }
 	int GetDesiredCacheSize() { return 8; }

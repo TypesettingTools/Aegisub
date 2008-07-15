@@ -52,6 +52,7 @@
 #include <initguid.h>
 #include "include/aegisub/video_provider.h"
 #include "videosink.h"
+#include "vfr.h"
 
 
 ///////////////////////////////////
@@ -77,6 +78,10 @@ private:
 	unsigned int num_frames;
 	double fps;
 	__int64 defd;
+
+	wxArrayInt KeyFrames;
+	bool keyFramesLoaded;
+	bool isVfr;
 
 	HRESULT OpenVideo(wxString _filename);
 	void CloseVideo();
@@ -110,6 +115,11 @@ public:
 	double GetFPS() { return fps; };
 	int GetWidth() { return width; };
 	int GetHeight() { return height; };
+	bool AreKeyFramesLoaded() { return keyFramesLoaded; };
+	wxArrayInt GetKeyFrames() { return KeyFrames; };
+	bool IsVFR() { return isVfr; };
+	FrameRate GetTrueFrameRate() { return isVfr? trueFrameRate: FrameRate() };
+
 	Aegisub::String GetDecoderName() { return L"DirectShow"; }
 	bool IsNativelyByFrames() { return false; }
 
