@@ -154,11 +154,11 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	colorButton[1] = new ColourButton(this,BUTTON_COLOR_2,wxSize(55,16),style->secondary.GetWXColor());
 	colorButton[2] = new ColourButton(this,BUTTON_COLOR_3,wxSize(55,16),style->outline.GetWXColor());
 	colorButton[3] = new ColourButton(this,BUTTON_COLOR_4,wxSize(55,16),style->shadow.GetWXColor());
-	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->primary.a);
-	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->secondary.a);
-	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->outline.a);
-	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->shadow.a);
-	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,_T(""),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
+	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,FloatToString(style->primary.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->primary.a);
+	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,FloatToString(style->secondary.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->secondary.a);
+	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,FloatToString(style->outline.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->outline.a);
+	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,FloatToString(style->shadow.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->shadow.a);
+	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,FloatToString(style->Margin[i]),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
 	margin[3] = 0;
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&OutlineValue,true,false));
