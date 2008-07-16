@@ -52,6 +52,8 @@
 #include "help_button.h"
 #include "utils.h"
 
+#include <stdio.h>
+
 
 #ifdef WIN32
 #define STATIC_BORDER_FLAG wxSTATIC_BORDER
@@ -168,6 +170,8 @@ ColorPickerRecent::ColorPickerRecent(wxWindow *parent, wxWindowID id, int _cols,
 , cols(_cols)
 , cellsize(_cellsize)
 , internal_control_offset(0,0)
+, background_valid(false)
+, background()
 {
 	LoadFromString(wxEmptyString);
 	SetClientSize(cols*cellsize, rows*cellsize);
@@ -183,12 +187,14 @@ void ColorPickerRecent::LoadFromString(const wxString &recent_string)
 	while (toker.HasMoreTokens()) {
 		AssColor color;
 		color.Parse(toker.NextToken());
-		color.a = 0;
+		color.a = wxALPHA_OPAQUE;
 		colors.push_back(color.GetWXColor());
 	}
 	while ((int)colors.size() < rows*cols) {
 		colors.push_back(*wxBLACK);
 	}
+	
+	background_valid = false;
 }
 
 wxString ColorPickerRecent::StoreToString()
@@ -210,7 +216,11 @@ void ColorPickerRecent::AddColor(wxColour color)
 			break;
 		}
 	}
+	
 	colors.insert(colors.begin(), color);
+	
+	background_valid = false;
+	
 	Refresh(false);
 }
 
@@ -240,30 +250,41 @@ void ColorPickerRecent::OnClick(wxMouseEvent &evt)
 
 void ColorPickerRecent::OnPaint(wxPaintEvent &evt)
 {
-	wxPaintDC dc(this);
-	wxBrush brush;
-	wxSize cs = GetClientSize();
+	wxPaintDC pdc(this);
+	PrepareDC(pdc);
 
-	int i = 0;
-	dc.SetPen(*wxTRANSPARENT_PEN);
-
-	for (int cy = 0; cy < rows; cy++) {
-		for (int cx = 0; cx < cols; cx++) {
-			int x, y;
-			x = cx * cellsize + internal_control_offset.x;
-			y = cy * cellsize + internal_control_offset.y;
-
-			dc.SetBrush(wxBrush(colors[i]));
-			dc.DrawRectangle(x, y, x+cellsize, y+cellsize);
-
-			i++;
+	if (!background_valid) {
+		wxSize sz = pdc.GetSize();
+	
+		background = wxBitmap(sz.x, sz.y);
+		wxMemoryDC dc(background);
+		
+		int i = 0;
+		dc.SetPen(*wxTRANSPARENT_PEN);
+	
+		for (int cy = 0; cy < rows; cy++) {
+			for (int cx = 0; cx < cols; cx++) {
+				int x, y;
+				x = cx * cellsize + internal_control_offset.x;
+				y = cy * cellsize + internal_control_offset.y;
+	
+				dc.SetBrush(wxBrush(colors[i]));
+				dc.DrawRectangle(x, y, x+cellsize, y+cellsize);
+	
+				i++;
+			}
 		}
+		
+		background_valid = true;
 	}
+	
+	pdc.DrawBitmap(background, 0, 0, false);
 }
 
 void ColorPickerRecent::OnSize(wxSizeEvent &evt)
 {
 	wxSize size = GetClientSize();
+	background_valid = false;
 	//internal_control_offset.x = (size.GetWidth() - cellsize * cols) / 2;
 	//internal_control_offset.y = (size.GetHeight() - cellsize * rows) / 2;
 	Refresh();

@@ -81,7 +81,11 @@ private:
 	int rows, cols;
 	int cellsize;
 	wxPoint internal_control_offset;
+	
 	std::vector<wxColour> colors;
+	
+	bool background_valid;
+	wxBitmap background;
 
 	void OnClick(wxMouseEvent &evt);
 	void OnPaint(wxPaintEvent &evt);
