@@ -85,7 +85,7 @@ void AssColor::Parse(const wxString value) {
 ///////////////////
 // Gets a wxColour
 wxColour AssColor::GetWXColor() {
-	return wxColour(r,g,b,a);
+	return wxColour(r,g,b,255-a);
 }
 
 
