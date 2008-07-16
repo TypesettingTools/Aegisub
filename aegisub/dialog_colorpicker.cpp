@@ -694,7 +694,7 @@ void DialogColorPicker::UpdateFromRGB()
 	hsv_input[0]->SetValue(h2);
 	hsv_input[1]->SetValue(s2);
 	hsv_input[2]->SetValue(v2);
-	cur_color = wxColour(r, g, b, 0);
+	cur_color = wxColour(r, g, b, wxALPHA_OPAQUE);
 	ass_input->SetValue(AssColor(cur_color).GetASSFormatted(false, false, false));
 	html_input->SetValue(color_to_html(cur_color));
 	UpdateSpectrumDisplay();
@@ -721,7 +721,7 @@ void DialogColorPicker::UpdateFromHSL()
 	hsv_input[0]->SetValue(h2);
 	hsv_input[1]->SetValue(s2);
 	hsv_input[2]->SetValue(v2);
-	cur_color = wxColour(r, g, b, 0);
+	cur_color = wxColour(r, g, b, wxALPHA_OPAQUE);
 	ass_input->SetValue(AssColor(cur_color).GetASSFormatted(false, false, false));
 	html_input->SetValue(color_to_html(cur_color));
 	UpdateSpectrumDisplay();
@@ -748,7 +748,7 @@ void DialogColorPicker::UpdateFromHSV()
 	hsl_input[0]->SetValue(h);
 	hsl_input[1]->SetValue(s);
 	hsl_input[2]->SetValue(l);
-	cur_color = wxColour(r, g, b, 0);
+	cur_color = wxColour(r, g, b, wxALPHA_OPAQUE);
 	ass_input->SetValue(AssColor(cur_color).GetASSFormatted(false, false, false));
 	html_input->SetValue(color_to_html(cur_color));
 	UpdateSpectrumDisplay();
@@ -780,7 +780,7 @@ void DialogColorPicker::UpdateFromASS()
 	hsv_input[0]->SetValue(h2);
 	hsv_input[1]->SetValue(s2);
 	hsv_input[2]->SetValue(v2);
-	cur_color = wxColour(r, g, b, 0);
+	cur_color = wxColour(r, g, b, wxALPHA_OPAQUE);
 	html_input->SetValue(color_to_html(cur_color));
 	UpdateSpectrumDisplay();
 
@@ -809,7 +809,7 @@ void DialogColorPicker::UpdateFromHTML()
 	hsv_input[0]->SetValue(h2);
 	hsv_input[1]->SetValue(s2);
 	hsv_input[2]->SetValue(v2);
-	cur_color = wxColour(r, g, b, 0);
+	cur_color = wxColour(r, g, b, wxALPHA_OPAQUE);
 	ass_input->SetValue(AssColor(cur_color).GetASSFormatted(false, false, false));
 	UpdateSpectrumDisplay();
 
