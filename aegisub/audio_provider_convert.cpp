@@ -37,13 +37,14 @@
 ///////////
 // Headers
 #include "audio_provider_convert.h"
+#include "audio_provider_downmix.h"
 
 
 ///////////////
 // Constructor
 ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) {
 	source = src;
-	channels = 1;
+	channels = source->GetChannels();
 	num_samples = source->GetNumSamples();
 	sample_rate = source->GetSampleRate();
 	bytes_per_sample = 2;
@@ -158,4 +159,16 @@ void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t co
 		delete [] buffer1;
 		delete [] buffer2;
 	}
+}
+
+// See if we need to downmix the number of channels
+AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
+	AudioProvider *provider = source_provider;
+	if (provider->GetBytesPerSample() != 2 || provider->GetSampleRate() < 32000)
+		provider = new ConvertAudioProvider(source_provider);
+
+	if (provider->GetChannels() != 1)
+		provider = new DownmixingAudioProvider(provider);
+
+	return provider;
 }

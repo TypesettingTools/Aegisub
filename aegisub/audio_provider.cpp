@@ -199,8 +199,12 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 		// Try a PCM provider first
 		provider = CreatePCMAudioProvider(filename);
 		if (provider) {
-			if (provider->GetBytesPerSample() == 2 && provider->GetSampleRate() >= 32000) return provider;
-			return new ConvertAudioProvider(provider);
+			if (provider->GetBytesPerSample() == 2 && provider->GetSampleRate() >= 32000 && provider->GetChannels() == 1)
+				return provider;
+			else {
+				provider = CreateConvertAudioProvider(provider);
+				return provider;
+			}
 		}
 	}
 
@@ -229,7 +233,8 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 	if (!provider) throw error;
 
 	// Give it a conversor if needed
-	if (provider->GetBytesPerSample() != 2 || provider->GetSampleRate() < 32000) provider = new ConvertAudioProvider(provider);
+	if (provider->GetBytesPerSample() != 2 || provider->GetSampleRate() < 32000 || provider->GetChannels() != 1)
+		provider = CreateConvertAudioProvider(provider);
 
 	// Change provider to RAM/HD cache if needed
 	if (cache == -1) cache = Options.AsInt(_T("Audio Cache"));

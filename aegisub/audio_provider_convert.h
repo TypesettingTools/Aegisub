@@ -59,3 +59,5 @@ public:
 	void GetAudio(void *buf, int64_t start, int64_t count);
 	wxString GetFilename() { return source->GetFilename(); }
 };
+
+AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider);

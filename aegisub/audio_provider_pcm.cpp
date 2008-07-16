@@ -37,7 +37,6 @@
 #include <wx/filename.h>
 #include <wx/file.h>
 #include "audio_provider_pcm.h"
-#include "audio_provider_downmix.h"
 #include "utils.h"
 #include "aegisub_endian.h"
 #include <stdint.h>
@@ -382,21 +381,6 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 	catch (const wxChar *msg) {
 		provider = 0;
 		wxLogDebug(_T("Creating PCM WAV reader failed with message: %s\nProceeding to try other providers."), msg);
-	}
-	catch (...) {
-		provider = 0;
-	}
-
-	if (provider && provider->GetChannels() > 1) {
-		// Can't feed non-mono audio to the rest of the program.
-		// Create a downmixing proxy and if it fails, don't provide PCM.
-		try {
-			provider = new DownmixingAudioProvider(provider);
-		}
-		catch (...) {
-			delete provider;
-			provider = 0;
-		}
 	}
 
 	return provider;

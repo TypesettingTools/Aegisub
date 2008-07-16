@@ -115,21 +115,17 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	if (!sample_rate)
 		sample_rate = codecContext->sample_rate;
 
-	channels = 1;
+	/* rely on the downmixing audio provider to do downmixing for us later */
+	channels = codecContext->channels;
 	/* FIXME: this entire provider always assumes 16-bit audio. Currently that isn't a problem since
 	ffmpeg always converts everything to 16-bit, but in the future it might become one. */
 	bytes_per_sample = 2; 
 
 	/* aegisub currently supports mono only, so always resample unless it's mono with the desired samplerate */
-	if ((sample_rate != codecContext->sample_rate) || (codecContext->channels > 1)) {
-		// FIXME: ffmpeg currently doesn't support downmixing audio with more than two channels,
-		// remove the following line when it does.
-		if (codecContext->channels > 2)
-			throw _T("ffmpeg audio provider: Downmixing audio with more than two channels is currently not supported by ffmpeg");
-		rsct = audio_resample_init(1, codecContext->channels, sample_rate, codecContext->sample_rate);
+	if (sample_rate != codecContext->sample_rate) {
+		rsct = audio_resample_init(channels, channels, sample_rate, codecContext->sample_rate);
 		if (!rsct)
 			throw _T("ffmpeg audio provider: Failed to initialize resampling");
-
 		resample_ratio = (float)sample_rate / (float)codecContext->sample_rate;
 	}
 	
@@ -141,7 +137,7 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 		length = (double)lavcfile->fctx->duration / AV_TIME_BASE;
 	else
 		length = (double)stream->duration * av_q2d(stream->time_base);
-	num_samples = (int64_t)(length * sample_rate);
+	num_samples = (int64_t)(length * sample_rate); // number of samples per channel
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
@@ -177,15 +173,15 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 {
 	int16_t *_buf = (int16_t *)buf;
 
-	int64_t samples_to_decode = num_samples - start; /* samples left to the end of the stream */
+	int64_t samples_to_decode = (num_samples - start) * channels; /* samples left to the end of the stream */
 	if (count < samples_to_decode) /* haven't reached the end yet, so just decode the requested number of samples */
-		samples_to_decode = count;
+		samples_to_decode = count * channels; /* times the number of channels */
 	if (samples_to_decode < 0) /* requested beyond the end of the stream */
 		samples_to_decode = 0;
 
 	/* if we got asked for more samples than there are left in the stream, add zeros to the decoding buffer until
 	we have enough to fill the request */
-	memset(_buf + samples_to_decode, 0, (count - samples_to_decode) * 2);
+	memset(_buf + samples_to_decode, 0, ((count * channels) - samples_to_decode) * 2);
 
 	/* do we have leftover samples from last time we were called? */
 	if (leftover_samples > 0) {
@@ -220,7 +216,7 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 
 				decoded_bytes	= temp_output_buffer_size;
 				decoded_samples = decoded_bytes / 2; /* 2 bytes per sample */
-				size -= decoded_bytes;
+				size -= retval;
 
 				/* do we need to resample? */
 				if (rsct) {
