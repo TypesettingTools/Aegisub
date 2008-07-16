@@ -205,6 +205,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	for (size_t i = 0; i < fontList.size(); i++) {
 		FontName->Append(fontList[i]);
 	}
+	FontName->SetValue(style->font);
 	FontName->Thaw();
 	wxLogDebug(_T("Time to fill font face listbox: %d"), performance_timer.Time());
 
