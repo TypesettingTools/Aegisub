@@ -246,7 +246,7 @@ wxString AssTime::GetSRTFormated () {
 // SMPTE formatted
 wxString AssTime::GetSMPTE(double fps)
 {
-	int f = int(GetTimeMiliseconds() * fps / 1000.0 + 0.5);
+	int f = int(GetTimeMiliseconds() * fps / 1000.0);
 	return wxString::Format(_T("%02i:%02i:%02i:%02i"),GetTimeHours(),GetTimeMinutes(),GetTimeSeconds(),f);
 }
 
