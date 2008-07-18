@@ -347,7 +347,9 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Prepare subtitles
 	CreateCopy();
 	SortLines();
-	Merge(true,true,true,false);
+	StripComments();
+	RecombineOverlaps();
+	MergeIdentical();
 
 	// Get subpictures
 	std::vector<SubPicture> pics;

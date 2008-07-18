@@ -77,7 +77,9 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Convert to encore
 	CreateCopy();
 	SortLines();
-	Merge(true,true,true,false);
+	StripComments();
+	RecombineOverlaps();
+	MergeIdentical();
 	ConvertTags(1,_T("\r\n"));
 
 	// Write lines

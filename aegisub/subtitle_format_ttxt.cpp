@@ -322,7 +322,9 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
 void TTXTSubtitleFormat::ConvertToTTXT () {
 	// Convert
 	SortLines();
-	Merge(true,true,true,false);
+	StripComments();
+	RecombineOverlaps();
+	MergeIdentical();
 	ConvertTags(1,_T("\r\n"));
 
 	// Find last line

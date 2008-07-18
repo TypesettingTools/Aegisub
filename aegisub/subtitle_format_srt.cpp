@@ -182,7 +182,9 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Convert to SRT
 	CreateCopy();
 	SortLines();
-	Merge(true,true,true,false);
+	StripComments();
+	RecombineOverlaps();
+	MergeIdentical();
 	ConvertTags(2,_T("\r\n"));
 
 	// Write lines

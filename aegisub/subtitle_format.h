@@ -71,7 +71,11 @@ protected:
 	void ClearCopy();
 	void SortLines();
 	void ConvertTags(int format,wxString lineEnd);
-	void Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue);
+	//void Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue);
+	void StripComments();
+	void StripNonDialogue();
+	void RecombineOverlaps();
+	void MergeIdentical();
 
 	void Clear();
 	void LoadDefault(bool defline=true);

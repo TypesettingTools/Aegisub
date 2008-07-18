@@ -365,9 +365,172 @@ void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
 }
 
 
+////////////////////////////
+// Remove all comment lines
+void SubtitleFormat::StripComments() {
+	using std::list;
+	list<AssEntry*>::iterator next;
+	
+	for (list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); cur = next) {
+		next = cur;
+		next++;
+		
+		AssDialogue *dlg = AssEntry::GetAsDialogue(*cur);
+		if (dlg && (dlg->Comment || dlg->Text.IsEmpty())) {
+			delete *cur;
+			Line->erase(cur);
+		}
+	}
+}
+
+
+/////////////////////////////////
+// Remove all non-dialogue lines
+void SubtitleFormat::StripNonDialogue() {
+	using std::list;
+	list<AssEntry*>::iterator next;
+	
+	for (list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); cur = next) {
+		next = cur;
+		next++;
+		
+		if (!AssEntry::GetAsDialogue(*cur)) {
+			delete *cur;
+			Line->erase(cur);
+		}
+	}
+}
+
+
+///////////////////////////////////////////
+// Helper function for RecombineOverlaps()
+static void InsertLineSortedIntoList(std::list<AssEntry*> &list, std::list<AssEntry*>::iterator next, AssDialogue *newdlg) {
+	std::list<AssEntry*>::iterator insertpos = next;
+	bool inserted = false;
+	while (insertpos != list.end()) {
+		AssDialogue *candidate = AssEntry::GetAsDialogue(*insertpos);
+		if (candidate && candidate->Start >= newdlg->Start) {
+			list.insert(insertpos, newdlg);
+			inserted = true;
+			break;
+		}
+		insertpos++;
+	}
+	if (!inserted) {
+		list.push_back(newdlg);
+	}
+}
+
+///////////////////////////////////////////////////////////
+// Split and merge lines so there are no overlapping lines
+// http://malakith.net/aegiwiki/Split-merge_algorithm_for_converting_to_simple_subtitle_formats
+void SubtitleFormat::RecombineOverlaps() {
+	using std::list;
+	list<AssEntry*>::iterator next;
+	
+	for (list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); cur = next) {
+		next = cur;
+		next++;
+		
+		if (next == Line->end()) break;
+		
+		AssDialogue *prevdlg = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *curdlg = AssEntry::GetAsDialogue(*next);
+		
+		if (curdlg && prevdlg && prevdlg->End > curdlg->Start) {
+			// Use names like in the algorithm description and prepare for erasing
+			// old dialogues from the list
+			list<AssEntry*>::iterator prev = cur;
+			cur = next;
+			next++;
+			
+			// std::list::insert() inserts items before the given iterator, so
+			// we need 'next' for inserting. 'prev' and 'cur' can safely be erased
+			// from the list now.
+			Line->erase(prev);
+			Line->erase(cur);
+			
+			//Is there an A part before the overlap?
+			if (curdlg->Start > prevdlg->Start) {
+				// Produce new entry with correct values
+				AssDialogue *newdlg = AssEntry::GetAsDialogue(prevdlg->Clone());
+				newdlg->Start = prevdlg->Start;
+				newdlg->End = curdlg->Start;
+				newdlg->Text = prevdlg->Text;
+				
+				InsertLineSortedIntoList(*Line, next, newdlg);
+			}
+			
+			// Overlapping A+B part
+			{
+				AssDialogue *newdlg = AssEntry::GetAsDialogue(prevdlg->Clone());
+				newdlg->Start = curdlg->Start;
+				newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
+				// Put an ASS format hard linewrap between lines
+				newdlg->Text = curdlg->Text + _T("\\N") + prevdlg->Text;
+				
+				InsertLineSortedIntoList(*Line, next, newdlg);
+			}
+			
+			// Is there an A part after the overlap?
+			if (prevdlg->End > curdlg->End) {
+				// Produce new entry with correct values
+				AssDialogue *newdlg = AssEntry::GetAsDialogue(prevdlg->Clone());
+				newdlg->Start = curdlg->End;
+				newdlg->End = prevdlg->End;
+				newdlg->Text = prevdlg->Text;
+				
+				InsertLineSortedIntoList(*Line, next, newdlg);
+			}
+			
+			// Is there a B part after the overlap?
+			if (curdlg->End > prevdlg->End) {
+				// Produce new entry with correct values
+				AssDialogue *newdlg = AssEntry::GetAsDialogue(prevdlg->Clone());
+				newdlg->Start = prevdlg->End;
+				newdlg->End = curdlg->End;
+				newdlg->Text = curdlg->Text;
+				
+				InsertLineSortedIntoList(*Line, next, newdlg);
+			}
+			
+			next--;
+		}
+	}
+}
+
+
+////////////////////////////////////////////////
+// Merge identical lines that follow each other
+void SubtitleFormat::MergeIdentical() {
+	using std::list;
+	list<AssEntry*>::iterator next;
+	
+	for (list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); cur = next) {
+		next = cur;
+		next++;
+		
+		if (next == Line->end()) break;
+		
+		AssDialogue *curdlg = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *nextdlg = AssEntry::GetAsDialogue(*next);
+		
+		if (curdlg && nextdlg && curdlg->Text == nextdlg->Text) {
+			// Merge timing
+			nextdlg->Start = (nextdlg->Start < curdlg->Start ? nextdlg->Start : curdlg->Start);
+			nextdlg->End = (nextdlg->End > curdlg->End ? nextdlg->End : curdlg->End);
+			
+			// Remove duplicate line
+			delete *cur;
+			Line->erase(cur);
+		}
+	}
+}
+
+
 ////////////////////////////////////////////
 // Merge identical and/or overlapping lines
-void SubtitleFormat::Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue) {
+/*void SubtitleFormat::Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue) {
 	using std::list;
 	list<AssEntry*>::iterator next;
 	list<AssEntry*>::iterator prev = Line->end();
@@ -389,15 +552,103 @@ void SubtitleFormat::Merge(bool identical,bool overlaps,bool stripComments,bool 
 
 			// Proper line
 			else {
-				// Check for duplication
 				if (previous != NULL) {
-					if (previous->Text == current->Text) {
+					// Check for duplication
+					if (identical && previous->Text == current->Text) {
 						if (abs(current->Start.GetMS() - previous->End.GetMS()) < 20) {
 							current->Start = (current->Start < previous->Start ? current->Start : previous->Start);
 							current->End = (current->End > previous->End ? current->End : previous->End);
 							delete *prev;
 							Line->erase(prev);
 						}
+					}
+					
+					// Check for overlap
+					// 
+					if (overlaps && previous->End.GetMS() > current->Start.GetMS()) {
+						// Grab the data
+						int prev_s = previous->Start.GetMS();
+						int prev_e = previous->End.GetMS();
+						int cur_s = current->Start.GetMS();
+						int cur_e = current->End.GetMS();
+						wxString prev_t = previous->Text;
+						wxString cur_t = current->Text;
+						
+						// Make sure cur points to the line before those we're working with
+						--cur;
+						// Remove 'cur' and 'prev' from list
+						Line->erase(prev);
+						Line->erase(prev);
+						// Now make sure that 'cur' points to the item after the old 'current'
+						++cur;
+						
+						// A-only part
+						if (prev_s < cur_s) {
+							// Actually lines generated from this one never move
+							// So we can assume it can just be inserted at cur
+							AssDialogue *part = AssEntry::GetAsDialogue(previous->Clone());
+							part->End.SetMS(prev_s);
+							// Nothing to do about start-time or text, they are already correct
+							
+							// Insert into list
+							Line->insert(cur, part);
+							// 'cur' now points to one past newly inserted item
+						}
+						
+						// A+B part
+						{
+							// These lines never move either, so just insert
+							AssDialogue *part = AssEntry::GetAsDialogue(current->Clone());
+							// Fix values
+							part->Start.SetMS(cur_s);
+							part->End.SetMS(prev_e);
+							// Inserting an ASS hard linebreak
+							part->Text = cur_t + _T("\\N") + prev_t;
+							
+							// Insert into list
+							Line->insert(cur, part);
+							// 'cur' now points to one past newly inserted item
+						}
+						
+						// B-only part
+						if (cur_e > prev_e) {
+							// We need to seek for the right position here
+							AssDialogue *part = AssEntry::GetAsDialogue(current->Clone());
+							// Fix values
+							part->Start.SetMS(prev_e);
+							part->End.SetMS(cur_e);
+							part->Text = cur_t;
+							
+							list<AssEntry*>::iterator newpos = cur;
+							
+							// Insert into list
+							// Make sure 'cur' never moves during this
+							if (newpos == Line->end()) {
+								Line->push_back(part);
+							}
+							else {
+								while (newpos != Line->end()) {
+									AssDialogue *newline = AssEntry::GetAsDialogue(*newpos);
+									if (newline && part->Start.GetMS() <= newline->Start.GetMS()) {
+										// Suitable position
+										Line->insert(newpos, part);
+										break;
+									}
+									++newpos;
+								}
+							}
+						}
+						
+						// Now 'cur' has moved around a lot so make sure everything is correct
+						// 'cur' currently points to one past the last inserted item
+						// It should really point to the last inserted item (that wasn't
+						// inserted at a later position) so we need to move it one back.
+						// In fact, 'next' should have that value.
+						next = cur--;
+						// 'prev' should already be correct
+						// And update the rest too
+						previous = AssEntry::GetAsDialogue(*prev);
+						current = AssEntry::GetAsDialogue(*cur);
 					}
 				}
 
@@ -415,4 +666,4 @@ void SubtitleFormat::Merge(bool identical,bool overlaps,bool stripComments,bool 
 			}
 		}
 	}
-}
+}*/

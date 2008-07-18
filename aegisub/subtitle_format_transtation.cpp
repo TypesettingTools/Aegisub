@@ -79,7 +79,9 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 	// Convert to TranStation
 	CreateCopy();
 	SortLines();
-	Merge(true,true,true,false);
+	StripComments();
+	RecombineOverlaps();
+	MergeIdentical();
 
 	// Write lines
 	using std::list;
