@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,40 +39,15 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include <wx/string.h>
+#include "subtitle_format.h"
 
 
-/////////////////////////////
-// Class for Ass format time
-class AssTime {
-private:
-	int time;		// Miliseconds
-
+//////////////////////
+// TranStation writer
+class TranStationSubtitleFormat : public SubtitleFormat {
 public:
-	static bool UseMSPrecision;
-
-	AssTime();
-
-	int GetTimeHours();
-	int GetTimeMinutes();
-	int GetTimeSeconds();
-	int GetTimeMiliseconds();
-	int GetTimeCentiseconds();
-
-	int GetMS();						// Returns miliseconds
-	void SetMS(int ms);					// Sets values to miliseconds
-	void ParseASS(const wxString text);	// Sets value to text-form time, in ASS format
-	void ParseSRT(const wxString text);	// Sets value to text-form time, in SRT format
-	wxString GetASSFormated(bool ms=false); // Returns the ASS representation of time
-	wxString GetSRTFormated();			// Returns the SRT representation of time
-	wxString GetSMPTE(double fps);		// Returns the SMPTE timecodes for the given frame rate
+	wxString GetName();
+	wxArrayString GetWriteWildcards();
+	bool CanWriteFile(wxString filename);
+	void WriteFile(wxString filename,wxString encoding);
 };
-
-// Comparison operators
-bool operator == (AssTime &t1, AssTime &t2);
-bool operator != (AssTime &t1, AssTime &t2);
-bool operator < (AssTime &t1, AssTime &t2);
-bool operator > (AssTime &t1, AssTime &t2);
-bool operator <= (AssTime &t1, AssTime &t2);
-bool operator >= (AssTime &t1, AssTime &t2);

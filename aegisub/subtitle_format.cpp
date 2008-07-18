@@ -46,6 +46,7 @@
 #include "subtitle_format_mkv.h"
 #include "subtitle_format_microdvd.h"
 #include "subtitle_format_encore.h"
+#include "subtitle_format_transtation.h"
 #include "subtitle_format_dvd.h"
 #include "ass_file.h"
 #include "vfr.h"
@@ -134,6 +135,7 @@ void SubtitleFormat::LoadFormats () {
 		new MicroDVDSubtitleFormat();
 		new MKVSubtitleFormat();
 		new EncoreSubtitleFormat();
+		new TranStationSubtitleFormat();
 #ifdef __WXDEBUG__
 		new DVDSubtitleFormat();
 #endif

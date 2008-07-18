@@ -277,6 +277,7 @@ aegisub_SOURCES = \
 	subtitle_format_microdvd.cpp \
 	subtitle_format_mkv.cpp \
 	subtitle_format_srt.cpp \
+	subtitle_format_transtation.cpp \
 	subtitle_format_ttxt.cpp \
 	subtitle_format_txt.cpp \
 	text_file_writer.cpp \

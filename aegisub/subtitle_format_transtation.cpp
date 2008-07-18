@@ -37,36 +37,38 @@
 ///////////
 // Headers
 #include "ass_dialogue.h"
-#include "subtitle_format_encore.h"
+#include "ass_file.h"
+#include "ass_style.h"
+#include "subtitle_format_transtation.h"
 #include "text_file_writer.h"
 
 
 ////////
 // Name
-wxString EncoreSubtitleFormat::GetName() {
-	return _T("Adobe Encore");
+wxString TranStationSubtitleFormat::GetName() {
+	return _T("TranStation");
 }
 
 
 /////////////
 // Wildcards
-wxArrayString EncoreSubtitleFormat::GetWriteWildcards() {
+wxArrayString TranStationSubtitleFormat::GetWriteWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("encore.txt"));
+	formats.Add(_T("transtation.txt"));
 	return formats;
 }
 
 
 ///////////////////
 // Can write file?
-bool EncoreSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(11).Lower() == _T(".encore.txt"));
+bool TranStationSubtitleFormat::CanWriteFile(wxString filename) {
+	return (filename.Right(16).Lower() == _T(".transtation.txt"));
 }
 
 
 //////////////
 // Write file
-void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
+void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Get FPS
 	double fps = AskForFPS(true);
 	if (fps <= 0.0) return;
@@ -74,26 +76,41 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Open file
 	TextFileWriter file(_filename,encoding);
 
-	// Convert to encore
+	// Convert to TranStation
 	CreateCopy();
 	SortLines();
 	Merge(true,true,true,false);
-	ConvertTags(1,_T("\r\n"));
 
 	// Write lines
 	using std::list;
-	int i = 0;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
 		if (current && !current->Comment) {
-			// Time stamps
-			wxString timeStamps = wxString::Format(_T("%i "),++i) + current->Start.GetSMPTE(fps) + _T(" ") + current->End.GetSMPTE(fps);
+			// Get line data
+			AssStyle *style = GetAssFile()->GetStyle(current->Style);
+			int align = 0;
+			wxString type = _T("N");
+			if (style) {
+				if (style->alignment >= 4) align = 4;
+				if (style->alignment >= 7) align = 9;
+				if (style->italic) type = _T("I");
+			}
 
-			// Convert : to ; if it's NTSC
-			if (fps > 26.0) timeStamps.Replace(_T(":"),_T(";"));
+			// Write header
+			wxString header = wxString::Format(_T("SUB [%i %s "),align,type.c_str()) + current->Start.GetSMPTE(fps) + _T(">") + current->End.GetSMPTE(fps) + _T("]");
+			file.WriteLineToFile(header);
 
-			// Write
-			file.WriteLineToFile(timeStamps + current->Text);
+			// Process text
+			wxString lineEnd = _T("\r\n");
+			current->StripTags();
+			current->Text.Replace(_T("\\h"),_T(" "),true);
+			current->Text.Replace(_T("\\n"),lineEnd,true);
+			current->Text.Replace(_T("\\N"),lineEnd,true);
+			while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true));
+
+			// Write text
+			file.WriteLineToFile(current->Text);
+			file.WriteLineToFile(_T(""));
 		}
 	}
 
