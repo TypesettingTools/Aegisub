@@ -41,6 +41,7 @@
 #include "ass_style.h"
 #include "subtitle_format_transtation.h"
 #include "text_file_writer.h"
+#include <stdio.h>
 
 
 ////////
@@ -90,16 +91,27 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 		if (current && !current->Comment) {
 			// Get line data
 			AssStyle *style = GetAssFile()->GetStyle(current->Style);
-			int align = 0;
-			wxString type = _T("N");
+			int valign = 0;
+			wxChar *halign = _T("C");
+			wxChar *type = _T("N");
 			if (style) {
-				if (style->alignment >= 4) align = 4;
-				if (style->alignment >= 7) align = 9;
+				if (style->alignment >= 4) valign = 4;
+				if (style->alignment >= 7) valign = 9;
+				if (style->alignment == 1 || style->alignment == 4 || style->alignment == 7) halign = _T("L");
+				if (style->alignment == 3 || style->alignment == 6 || style->alignment == 9) halign = _T("R");
 				if (style->italic) type = _T("I");
 			}
 
 			// Write header
-			wxString header = wxString::Format(_T("SUB [%i %s "),align,type.c_str()) + current->Start.GetSMPTE(fps) + _T(">") + current->End.GetSMPTE(fps) + _T("]");
+			AssTime start = current->Start;
+			AssTime end = current->End;
+			// Subtract one frame duration from end time, since it is inclusive
+			// and we otherwise run the risk of having two lines overlap in a
+			// frame, when they should run right into each other.
+			printf("Before adjusting end: %d   fps=%f   to subtract=%d\n", end.GetMS(), fps, (int)(500.0/fps));
+			end.SetMS(end.GetMS() - (int)(500.0/fps));
+			printf("After adjusting end: %d\n", end.GetMS());
+			wxString header = wxString::Format(_T("SUB[ %i%s%s "),valign,halign,type) + start.GetSMPTE(fps) + _T(">") + end.GetSMPTE(fps) + _T("]");
 			file.WriteLineToFile(header);
 
 			// Process text
