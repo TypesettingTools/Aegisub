@@ -104,7 +104,7 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 
 			// Hack: If an italics-tag (\i1) appears anywhere in the line,
 			// make it all italics
-			if (current->Text.Find(_T("\i1")) != wxNOT_FOUND)type = _T("I");
+			if (current->Text.Find(_T("\\i1")) != wxNOT_FOUND)type = _T("I");
 
 			// Write header
 			AssTime start = current->Start;
