@@ -92,8 +92,8 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 			// Get line data
 			AssStyle *style = GetAssFile()->GetStyle(current->Style);
 			int valign = 0;
-			wxChar *halign = _T("C");
-			wxChar *type = _T("N");
+			wxChar *halign = _T(" "); // default is centered
+			wxChar *type = _T("N"); // no special style
 			if (style) {
 				if (style->alignment >= 4) valign = 4;
 				if (style->alignment >= 7) valign = 9;
@@ -102,16 +102,18 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 				if (style->italic) type = _T("I");
 			}
 
+			// Hack: If an italics-tag (\i1) appears anywhere in the line,
+			// make it all italics
+			if (current->Text.Find(_T("\i1")) != wxNOT_FOUND)type = _T("I");
+
 			// Write header
 			AssTime start = current->Start;
 			AssTime end = current->End;
-			// Subtract one frame duration from end time, since it is inclusive
+			// Subtract half a frame duration from end time, since it is inclusive
 			// and we otherwise run the risk of having two lines overlap in a
 			// frame, when they should run right into each other.
-			printf("Before adjusting end: %d   fps=%f   to subtract=%d\n", end.GetMS(), fps, (int)(500.0/fps));
 			end.SetMS(end.GetMS() - (int)(500.0/fps));
-			printf("After adjusting end: %d\n", end.GetMS());
-			wxString header = wxString::Format(_T("SUB[ %i%s%s "),valign,halign,type) + start.GetSMPTE(fps) + _T(">") + end.GetSMPTE(fps) + _T("]");
+			wxString header = wxString::Format(_T("SUB[%i%s%s "),valign,halign,type) + start.GetSMPTE(fps) + _T(">") + end.GetSMPTE(fps) + _T("]");
 			file.WriteLineToFile(header);
 
 			// Process text
@@ -127,6 +129,9 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 			file.WriteLineToFile(_T(""));
 		}
 	}
+
+	// Every file must end with this line
+	file.WriteLineToFile(_T("SUB["));
 
 	// Clean up
 	ClearCopy();

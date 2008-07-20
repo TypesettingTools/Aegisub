@@ -4,6 +4,7 @@ Please visit http://aegisub.net to download latest version
 = 2.2.0 - 2008.xx.xx ===========================
 
 - New Aegisub logo. (amz)
+- Icon redrawn and new high-resolution versions produced. (jfs)
 - The Automation 4 system has been introduced. This means lots of changes. (jfs)
   o The Lua engine is now based on Lua 5.1, which means a few new language features.
   o A Ruby 1.9-based scripting engine has been added (Pomyk)
@@ -98,6 +99,7 @@ Please visit http://aegisub.net to download latest version
   o Added very basic reading support for MPEG-4 Streaming Text (TTXT) subtitles. (amz)
   o Added full read-write support for MicroDVD subtitles (the most common .sub format). (amz)
   o Added support for writing Adobe Encore subtitles, both PAL and NTSC. (amz)
+  o Added support for writing TranStation subtitle format. (amz/jfs)
 - Changes to main menu:
   o There are now new options, and most were moved around to have better organization. (amz/jfs)
   o General tweaks changes, such as better icons, and fixing of flickering and slowness. (amz)
