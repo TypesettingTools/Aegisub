@@ -111,7 +111,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		AddCheckBox(generalPage,genSizer4,_("Show Splash Screen"),_T("Show splash"));
 		AddCheckBox(generalPage,genSizer4,_("Show Tip of the Day"),_T("Tips enabled"));
+#ifdef __WXMSW__
 		AddCheckBox(generalPage,genSizer4,_("Auto Check for Updates"),_T("Auto check for updates"));
+#endif
 		AddCheckBox(generalPage,genSizer4,_("Save config.dat locally"),_T("Local config"));
 		genSizer4->AddGrowableCol(0,1);
 

@@ -172,6 +172,8 @@ FrameMain::FrameMain (wxArrayString args)
 	LoadList(args);
 
 	// Version checker
+	// Fails on non-Windows platforms with a crash
+#ifdef __WXMSW__
 	int option = Options.AsInt(_T("Auto check for updates"));
 	if (option == -1) {
 		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"),wxYES_NO);
@@ -184,6 +186,7 @@ FrameMain::FrameMain (wxArrayString args)
 		DialogVersionCheck *checker = new DialogVersionCheck (this,true);
 		(void)checker;
 	}
+#endif
 
 	//ShowFullScreen(true,wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
 }
@@ -504,8 +507,12 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"),wxBITMAP(forums_button));
 	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug Tracker..."), _("Visit Aegisub's bug tracker to report bugs and request new features"),wxBITMAP(bugtracker_button));
 	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC Channel..."), _("Visit Aegisub's official IRC channel"), wxBITMAP(irc_button));
+#ifndef __WXMAC__
 	helpMenu->AppendSeparator();
+#endif
+#ifdef __WXMSW__
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),wxBITMAP(blank_button));
+#endif
 	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),wxBITMAP(about_button));
 	MenuBar->Append(helpMenu, _("&Help"));
 
