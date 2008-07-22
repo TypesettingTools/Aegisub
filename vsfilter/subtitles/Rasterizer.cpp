@@ -528,7 +528,7 @@ bool Rasterizer::ScanConvert()
 
 using namespace std;
 
-// Overlap the subtitle with itself displaces (dx,dy) and (-dx,dy) pixels, conceptually.
+// Overlap the subtitle with itself displaced (dx,dy) and (-dx,dy) pixels, conceptually.
 // Actually, mark in the widened region buffer such that the normal region
 // translated dy in the Y axis has its spans extended by dx pixels in both directions.
 // If any spans overlap after this extension, they are merged.
@@ -846,6 +846,13 @@ static __forceinline void pixmix2_sse2(DWORD* dst, DWORD color, DWORD shapealpha
 	*dst = (DWORD)_mm_cvtsi128_si32(r);
 }
 
+// Calculate a-b but without risk of underflow
+template<class T>
+static __forceinline T safe_subtract(T a, T b)
+{
+	return (b > a) ? 0 : a - b;
+}
+
 // For CPUID usage in Rasterizer::Draw
 #include "../dsutil/vd.h"
 
@@ -950,10 +957,10 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 							// created by CreateWidenedRegion, and thus contains
 							// both the fill and the border, so subtracting the fill
 							// from that is always safe.
-							pixmix_sse2(&dst[wt], color, src[wt*2+1] - src[wt*2]);
+							pixmix_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
 					else
 						for(int wt=0; wt<w; ++wt)
-							pixmix(&dst[wt], color, src[wt*2+1] - src[wt*2]);
+							pixmix(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
 				}
 			}
 			// not (switchpts[1] == 0xffffffff)
@@ -987,13 +994,13 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 					for(int wt=0; wt<w; ++wt)
 					{
 						if(wt+xo >= sw[1]) {while(wt+xo >= sw[1]) sw += 2; color = sw[-2];} 
-						pixmix_sse2(&dst[wt], color, src[wt*2+1] - src[wt*2]);
+						pixmix_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
 					}
 					else
 					for(int wt=0; wt<w; ++wt)
 					{
 						if(wt+xo >= sw[1]) {while(wt+xo >= sw[1]) sw += 2; color = sw[-2];} 
-						pixmix(&dst[wt], color, src[wt*2+1] - src[wt*2]);
+						pixmix(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
 					}
 				}
 			}
@@ -1021,10 +1028,10 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 				{
 					if(fSSE2)
 						for(int wt=0; wt<w; ++wt)
-							pixmix2_sse2(&dst[wt], color, src[wt*2+1] - src[wt*2], am[wt]);
+							pixmix2_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
 					else
 						for(int wt=0; wt<w; ++wt)
-							pixmix2(&dst[wt], color, src[wt*2+1] - src[wt*2], am[wt]);
+							pixmix2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
 				}
 			}
 			else
@@ -1061,7 +1068,7 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 							while(wt+xo >= sw[1])
 								sw += 2; color = sw[-2];
 						} 
-						pixmix2_sse2(&dst[wt], color, src[wt*2+1] - src[wt*2], am[wt]);
+						pixmix2_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
 					}
 					else
 					for(int wt=0; wt<w; ++wt)
@@ -1070,7 +1077,7 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 							while(wt+xo >= sw[1])
 								sw += 2; color = sw[-2];
 						} 
-						pixmix2(&dst[wt], color, src[wt*2+1] - src[wt*2], am[wt]);
+						pixmix2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
 					}
 				}
 			}
