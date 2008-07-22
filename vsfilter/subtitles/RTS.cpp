@@ -702,11 +702,11 @@ CRect CLine::PaintOutline(SubPicDesc& spd, CRect& clipRect, BYTE* pAlphaMask, CP
 
 			if(w->m_style.borderStyle == 0)
 			{
-				bbox |= w->Draw(spd, clipRect, pAlphaMask, x, y, sw, !w->m_style.alpha[0] && !w->m_style.alpha[1], true);
+				bbox |= w->Draw(spd, clipRect, pAlphaMask, x, y, sw, false, true);
 			}
 			else if(w->m_style.borderStyle == 1 && w->m_pOpaqueBox)
 			{
-				bbox |= w->m_pOpaqueBox->Draw(spd, clipRect, pAlphaMask, x, y, sw, true/*!w->m_style.alpha[0] && !w->m_style.alpha[1]*/, false);
+				bbox |= w->m_pOpaqueBox->Draw(spd, clipRect, pAlphaMask, x, y, sw, true, false);
 			}
 		}
 
