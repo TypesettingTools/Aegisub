@@ -679,7 +679,7 @@ void Rasterizer::DeleteOutlines()
 	mOutline.clear();
 }
 
-bool Rasterizer::Rasterize(int xsub, int ysub, bool fBlur)
+bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur)
 {
 	_TrashOverlay();
 
@@ -700,16 +700,17 @@ bool Rasterizer::Rasterize(int xsub, int ysub, bool fBlur)
 
 	mWideBorder = (mWideBorder+7)&~7;
 
-	if(!mWideOutline.empty())
+	if(!mWideOutline.empty() || fBlur)
 	{
-		width += 2*mWideBorder;
-		height += 2*mWideBorder;
+		// Expand the buffer a bit when we're blurring, since that can also widen the borders a bit
+		width += 2*mWideBorder + (fBlur ? 16 : 0);
+		height += 2*mWideBorder + (fBlur ? 16 : 0);
 
-		xsub += mWideBorder;
-		ysub += mWideBorder;
+		xsub += mWideBorder + (fBlur ? 8 : 0);
+		ysub += mWideBorder + (fBlur ? 8 : 0);
 
-		mOffsetX -= mWideBorder;
-		mOffsetY -= mWideBorder;
+		mOffsetX -= mWideBorder + (fBlur ? 8 : 0);
+		mOffsetY -= mWideBorder + (fBlur ? 8 : 0);
 	}
 
 	mOverlayWidth = ((width+7)>>3) + 1;
@@ -760,32 +761,35 @@ bool Rasterizer::Rasterize(int xsub, int ysub, bool fBlur)
 
 	// If we're blurring, do a 3x3 box blur
 	// Can't do it on subpictures smaller than 3x3 pixels
-	if(fBlur && mOverlayWidth >= 3 && mOverlayHeight >= 3)
+	for (int pass = 0; pass < fBlur; pass++)
 	{
-		int pitch = mOverlayWidth*2;
-
-		byte* tmp = new byte[pitch*mOverlayHeight];
-		if(!tmp) return(false);
-
-		memcpy(tmp, mpOverlayBuffer, pitch*mOverlayHeight);
-
-		int border = !mWideOutline.empty() ? 1 : 0;
-
-		// This could be done in a separated way and win some speed
-		for(int j = 1; j < mOverlayHeight-1; j++)
+		if(mOverlayWidth >= 3 && mOverlayHeight >= 3)
 		{
-			byte* src = tmp + pitch*j + 2 + border;
-			byte* dst = mpOverlayBuffer + pitch*j + 2 + border;
+			int pitch = mOverlayWidth*2;
 
-			for(int i = 1; i < mOverlayWidth-1; i++, src+=2, dst+=2)
+			byte* tmp = new byte[pitch*mOverlayHeight];
+			if(!tmp) return(false);
+
+			memcpy(tmp, mpOverlayBuffer, pitch*mOverlayHeight);
+
+			int border = !mWideOutline.empty() ? 1 : 0;
+
+			// This could be done in a separated way and win some speed
+			for(int j = 1; j < mOverlayHeight-1; j++)
 			{
-				*dst = (src[-2-pitch] + (src[-pitch]<<1) + src[+2-pitch]
-					+ (src[-2]<<1) + (src[0]<<2) + (src[+2]<<1)
-					+ src[-2+pitch] + (src[+pitch]<<1) + src[+2+pitch]) >> 4;
-			}
-		}
+				byte* src = tmp + pitch*j + 2 + border;
+				byte* dst = mpOverlayBuffer + pitch*j + 2 + border;
 
-		delete [] tmp;
+				for(int i = 1; i < mOverlayWidth-1; i++, src+=2, dst+=2)
+				{
+					*dst = (src[-2-pitch] + (src[-pitch]<<1) + src[+2-pitch]
+						+ (src[-2]<<1) + (src[0]<<2) + (src[+2]<<1)
+						+ src[-2+pitch] + (src[+pitch]<<1) + src[+2+pitch]) >> 4;
+				}
+			}
+
+			delete [] tmp;
+		}
 	}
 
 	return true;

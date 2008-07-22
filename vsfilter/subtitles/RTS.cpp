@@ -1550,9 +1550,9 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 		}
 		else if(cmd == L"be")
 		{
-			int n = wcstol(p, NULL, 10);
+			int n = (int)(CalcAnimation(wcstol(p, NULL, 10), style.fBlur, fAnimate)+0.5);
 			style.fBlur = !p.IsEmpty()
-				? (n == 0 ? false : n == 1 ? true : org.fBlur)
+				? n
 				: org.fBlur;
 		}
 		else if(cmd == L"b")

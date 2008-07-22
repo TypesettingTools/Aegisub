@@ -85,7 +85,7 @@ public:
 	bool ScanConvert();
 	bool CreateWidenedRegion(int borderX, int borderY);
 	void DeleteOutlines();
-	bool Rasterize(int xsub, int ysub, bool fBlur);
+	bool Rasterize(int xsub, int ysub, int fBlur);
 	CRect Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int xsub, int ysub, const long* switchpts, bool fBody, bool fBorder);
 };
 
