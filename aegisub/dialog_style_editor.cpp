@@ -135,7 +135,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	wxSizer *ColorsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Colors"));
 	wxSizer *MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Margins"));
 	wxSizer *OutlineBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Outline"));
-	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Miscelaneous"));
+	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Miscellaneous"));
 	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL,this,_("Preview"));
 
 	// Create controls
