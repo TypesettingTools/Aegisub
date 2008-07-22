@@ -116,9 +116,9 @@ void CWord::Paint(CPoint p, CPoint org)
 
 		if(!ScanConvert()) return;
 
-		if(m_style.borderStyle == 0 && m_style.outlineWidth > 0)
+		if(m_style.borderStyle == 0 && (m_style.outlineWidthX+m_style.outlineWidthY > 0))
 		{
-			if(!CreateWidenedRegion((int)(m_style.outlineWidth+0.5))) return;
+			if(!CreateWidenedRegion((int)(m_style.outlineWidthX+0.5), (int)(m_style.outlineWidthY+0.5))) return;
 		}
 		else if(m_style.borderStyle == 1)
 		{
@@ -188,18 +188,19 @@ bool CWord::CreateOpaqueBox()
 
 	STSStyle style = m_style;
 	style.borderStyle = 0;
-	style.outlineWidth = 0;
+	style.outlineWidthX = style.outlineWidthY = 0;
 	style.colors[0] = m_style.colors[2];
 	style.alpha[0] = m_style.alpha[2];
 
-	int w = (int)(m_style.outlineWidth + 0.5);
+	int w = (int)(m_style.outlineWidthX + 0.5);
+	int h = (int)(m_style.outlineWidthY + 0.5);
 
 	CStringW str;
 	str.Format(L"m %d %d l %d %d %d %d %d %d", 
-		-w, -w, 
-		m_width+w, -w, 
-		m_width+w, m_ascent+m_descent+w, 
-		-w, m_ascent+m_descent+w);
+		-w, -h, 
+		m_width+w, -h, 
+		m_width+w, m_ascent+m_descent+h, 
+		-w, m_ascent+m_descent+h);
 
 	m_pOpaqueBox = new CPolygon(style, str, 0, 0, 0, 1.0/8, 1.0/8, 0);
 
@@ -622,7 +623,7 @@ void CLine::Compact()
 			AddTail(last = w->Copy());
 	}
 
-	m_ascent = m_descent = m_border = 0;
+	m_ascent = m_descent = m_borderX = m_borderY = 0;
 
 	pos = GetHeadPosition();
 	while(pos)
@@ -631,7 +632,8 @@ void CLine::Compact()
 
 		if(m_ascent < w->m_ascent) m_ascent = w->m_ascent;
 		if(m_descent < w->m_descent) m_descent = w->m_descent;
-		if(m_border < w->m_style.outlineWidth) m_border = (int)(w->m_style.outlineWidth+0.5);
+		if(m_borderX < w->m_style.outlineWidthX) m_borderX = (int)(w->m_style.outlineWidthX+0.5);
+		if(m_borderY < w->m_style.outlineWidthY) m_borderY = (int)(w->m_style.outlineWidthY+0.5);
 	}
 }
 
@@ -646,10 +648,10 @@ CRect CLine::PaintShadow(SubPicDesc& spd, CRect& clipRect, BYTE* pAlphaMask, CPo
 
 		if(w->m_fLineBreak) return(bbox); // should not happen since this class is just a line of text without any breaks
 
-		if(w->m_style.shadowDepth > 0)
+		if(w->m_style.shadowDepthX != 0 || w->m_style.shadowDepthY != 0)
 		{
-			int x = p.x + (int)(w->m_style.shadowDepth+0.5);
-			int y = p.y + m_ascent - w->m_ascent + (int)(w->m_style.shadowDepth+0.5);
+			int x = p.x + (int)(w->m_style.shadowDepthX+0.5);
+			int y = p.y + m_ascent - w->m_ascent + (int)(w->m_style.shadowDepthY+0.5);
 
 			DWORD a = 0xff - w->m_style.alpha[3];
 			if(alpha > 0) a = MulDiv(a, 0xff - alpha, 0xff);
@@ -662,7 +664,7 @@ CRect CLine::PaintShadow(SubPicDesc& spd, CRect& clipRect, BYTE* pAlphaMask, CPo
 			{
 				bbox |= w->Draw(spd, clipRect, pAlphaMask, x, y, sw, 
 					w->m_ktype > 0 || w->m_style.alpha[0] < 0xff, 
-					w->m_style.outlineWidth > 0 && !(w->m_ktype == 2 && time < w->m_kstart));
+					(w->m_style.outlineWidthX+w->m_style.outlineWidthY > 0) && !(w->m_ktype == 2 && time < w->m_kstart));
 			}
 			else if(w->m_style.borderStyle == 1 && w->m_pOpaqueBox)
 			{
@@ -687,8 +689,7 @@ CRect CLine::PaintOutline(SubPicDesc& spd, CRect& clipRect, BYTE* pAlphaMask, CP
 
 		if(w->m_fLineBreak) return(bbox); // should not happen since this class is just a line of text without any breaks
 
-//		if((w->m_style.outlineWidth > 0 || w->m_style.borderStyle == 1 && w->m_style.outlineWidth == 0) && !(w->m_ktype == 2 && time < w->m_kstart))
-		if(w->m_style.outlineWidth > 0 && !(w->m_ktype == 2 && time < w->m_kstart))
+		if(w->m_style.outlineWidthX+w->m_style.outlineWidthY > 0 && !(w->m_ktype == 2 && time < w->m_kstart))
 		{
 			int x = p.x;
 			int y = p.y + m_ascent - w->m_ascent;
@@ -772,7 +773,7 @@ CRect CLine::PaintBody(SubPicDesc& spd, CRect& clipRect, BYTE* pAlphaMask, CPoin
 			sw[1] = 0xffffffff;
 		}
 
-		sw[3] = (int)(w->m_style.outlineWidth + t*w->m_width) >> 3;
+		sw[3] = (int)(w->m_style.outlineWidthX + t*w->m_width) >> 3;
 		sw[4] = sw[2];
 		sw[5] = 0x00ffffff;
 
@@ -884,7 +885,7 @@ CLine* CSubtitle::GetNextLine(POSITION& pos, int maxwidth)
 	CLine* ret = new CLine();
 	if(!ret) return(NULL);
 
-	ret->m_width = ret->m_ascent = ret->m_descent = ret->m_border = 0;
+	ret->m_width = ret->m_ascent = ret->m_descent = ret->m_borderX = ret->m_borderY = 0;
 
 	maxwidth = GetWrapWidth(pos, maxwidth);
 
@@ -896,11 +897,12 @@ CLine* CSubtitle::GetNextLine(POSITION& pos, int maxwidth)
 
 		if(ret->m_ascent < w->m_ascent) ret->m_ascent = w->m_ascent;
 		if(ret->m_descent < w->m_descent) ret->m_descent = w->m_descent;
-		if(ret->m_border < w->m_style.outlineWidth) ret->m_border = (int)(w->m_style.outlineWidth+0.5);
+		if(ret->m_borderX < w->m_style.outlineWidthX) ret->m_borderX = (int)(w->m_style.outlineWidthX+0.5);
+		if(ret->m_borderY < w->m_style.outlineWidthY) ret->m_borderY = (int)(w->m_style.outlineWidthY+0.5);
 
 		if(w->m_fLineBreak) 
 		{
-			if(fEmptyLine) {ret->m_ascent /= 2; ret->m_descent /= 2; ret->m_border = 0;}
+			if(fEmptyLine) {ret->m_ascent /= 2; ret->m_descent /= 2; ret->m_borderX = ret->m_borderY = 0;}
 
 			ret->Compact();
 
@@ -1061,15 +1063,15 @@ void CSubtitle::MakeLines(CSize size, CRect marginRect)
 		l = GetNextLine(pos, size.cx - marginRect.left - marginRect.right);
 		if(!l) break;
 
-		if(fFirstLine) {m_topborder = l->m_border; fFirstLine = false;}
+		if(fFirstLine) {m_topborder = l->m_borderY; fFirstLine = false;}
 
-		spaceNeeded.cx = max(l->m_width, spaceNeeded.cx);
+		spaceNeeded.cx = max(l->m_width+l->m_borderX, spaceNeeded.cx);
 		spaceNeeded.cy += l->m_ascent + l->m_descent;
 
 		AddTail(l);
 	}
 
-	if(l) m_bottomborder = l->m_border;
+	if(l) m_bottomborder = l->m_borderY;
 
 	m_rect = CRect(
 		CPoint((m_scrAlignment%3) == 1 ? marginRect.left
@@ -1477,6 +1479,14 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 			;
 		else if(!cmd.Find(L"u"))
 			params.Add(cmd.Mid(1)), cmd = cmd.Left(1);
+		else if(!cmd.Find(L"xbord"))
+			params.Add(cmd.Mid(5)), cmd = cmd.Left(5);
+		else if(!cmd.Find(L"xshad"))
+			params.Add(cmd.Mid(5)), cmd = cmd.Left(5);
+		else if(!cmd.Find(L"ybord"))
+			params.Add(cmd.Mid(5)), cmd = cmd.Left(5);
+		else if(!cmd.Find(L"yshad"))
+			params.Add(cmd.Mid(5)), cmd = cmd.Left(5);
 		else
 			nUnrecognizedTags++;
 
@@ -1528,10 +1538,15 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 		}
 		else if(cmd == L"bord")
 		{
-			double n = CalcAnimation(wcstod(p, NULL), style.outlineWidth, fAnimate);
-			style.outlineWidth = !p.IsEmpty()
-				? (n < 0 ? 0 : n)
-				: org.outlineWidth;
+			double dst = wcstod(p, NULL);
+			double nx = CalcAnimation(dst, style.outlineWidthX, fAnimate);
+			style.outlineWidthX = !p.IsEmpty()
+				? (nx < 0 ? 0 : nx)
+				: org.outlineWidthX;
+			double ny = CalcAnimation(dst, style.outlineWidthY, fAnimate);
+			style.outlineWidthY = !p.IsEmpty()
+				? (ny < 0 ? 0 : ny)
+				: org.outlineWidthY;
 		}
 		else if(cmd == L"be")
 		{
@@ -1819,10 +1834,15 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 		}
 		else if(cmd == L"shad")
 		{
-			double n = CalcAnimation(wcstod(p, NULL), style.shadowDepth, fAnimate);
-			style.shadowDepth = !p.IsEmpty()
-				? (n < 0 ? 0 : n)
-				: org.shadowDepth;
+			double dst = wcstod(p, NULL);
+			double nx = CalcAnimation(dst, style.shadowDepthX, fAnimate);
+			style.shadowDepthX = !p.IsEmpty()
+				? (nx < 0 ? 0 : nx)
+				: org.shadowDepthX;
+			double ny = CalcAnimation(dst, style.shadowDepthY, fAnimate);
+			style.shadowDepthY = !p.IsEmpty()
+				? (ny < 0 ? 0 : ny)
+				: org.shadowDepthY;
 		}
 		else if(cmd == L"s")
 		{
@@ -1871,6 +1891,38 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 			style.fUnderline = !p.IsEmpty()
 				? (n == 0 ? false : n == 1 ? true : org.fUnderline)
 				: org.fUnderline;
+		}
+		else if(cmd == L"xbord")
+		{
+			double dst = wcstod(p, NULL);
+			double nx = CalcAnimation(dst, style.outlineWidthX, fAnimate);
+			style.outlineWidthX = !p.IsEmpty()
+				? (nx < 0 ? 0 : nx)
+				: org.outlineWidthX;
+		}
+		else if(cmd == L"xshad")
+		{
+			double dst = wcstod(p, NULL);
+			double nx = CalcAnimation(dst, style.shadowDepthX, fAnimate);
+			style.shadowDepthX = !p.IsEmpty()
+				? nx
+				: org.shadowDepthX;
+		}
+		else if(cmd == L"ybord")
+		{
+			double dst = wcstod(p, NULL);
+			double ny = CalcAnimation(dst, style.outlineWidthY, fAnimate);
+			style.outlineWidthY = !p.IsEmpty()
+				? (ny < 0 ? 0 : ny)
+				: org.outlineWidthY;
+		}
+		else if(cmd == L"yshad")
+		{
+			double dst = wcstod(p, NULL);
+			double ny = CalcAnimation(dst, style.shadowDepthY, fAnimate);
+			style.shadowDepthY = !p.IsEmpty()
+				? ny
+				: org.shadowDepthY;
 		}
 	}
 
@@ -1949,7 +2001,7 @@ bool CRenderedTextSubtitle::ParseHtmlTag(CSubtitle* sub, CStringW str, STSStyle&
 				}
 				else if(attribs[i] == L"outline-level")
 				{
-					style.outlineWidth = wcstol(params[i], NULL, 10);
+					style.outlineWidthX = style.outlineWidthY = wcstol(params[i], NULL, 10);
 				}
 				else if(attribs[i] == L"shadow-color")
 				{
@@ -1957,7 +2009,7 @@ bool CRenderedTextSubtitle::ParseHtmlTag(CSubtitle* sub, CStringW str, STSStyle&
 				}
 				else if(attribs[i] == L"shadow-level")
 				{
-					style.shadowDepth = wcstol(params[i], NULL, 10);
+					style.shadowDepthX = style.shadowDepthY = wcstol(params[i], NULL, 10);
 				}
 
 				if(nColor >= 0 && nColor < 4)
@@ -2079,8 +2131,10 @@ CSubtitle* CRenderedTextSubtitle::GetSubtitle(int entry)
 
 		tmp.fontSize = sub->m_scaley*tmp.fontSize*64;
 		tmp.fontSpacing = sub->m_scalex*tmp.fontSpacing*64;
-		tmp.outlineWidth *= (m_fScaledBAS ? ((sub->m_scalex+sub->m_scaley)/2) : 1) * 8;
-		tmp.shadowDepth *= (m_fScaledBAS ? ((sub->m_scalex+sub->m_scaley)/2) : 1) * 8;
+		tmp.outlineWidthX *= (m_fScaledBAS ? sub->m_scalex : 1) * 8;
+		tmp.outlineWidthY *= (m_fScaledBAS ? sub->m_scaley : 1) * 8;
+		tmp.shadowDepthX *= (m_fScaledBAS ? sub->m_scalex : 1) * 8;
+		tmp.shadowDepthY *= (m_fScaledBAS ? sub->m_scaley : 1) * 8;
 
 		if(m_nPolygon)
 		{

@@ -83,7 +83,7 @@ public:
 	bool PartialBeginPath(HDC hdc, bool bClearPath);
 	bool PartialEndPath(HDC hdc, long dx, long dy);
 	bool ScanConvert();
-	bool CreateWidenedRegion(int border);
+	bool CreateWidenedRegion(int borderX, int borderY);
 	void DeleteOutlines();
 	bool Rasterize(int xsub, int ysub, bool fBlur);
 	CRect Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int xsub, int ysub, const long* switchpts, bool fBody, bool fBorder);

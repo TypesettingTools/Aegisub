@@ -246,8 +246,8 @@ STDMETHODIMP CDirectVobSub::get_TextSettings(void* lf, int lflen, COLORREF* colo
 	}
 
 	if(color) *color = m_defStyle.colors[0];
-	if(fShadow) *fShadow = m_defStyle.shadowDepth>0;
-	if(fOutline) *fOutline = m_defStyle.outlineWidth>0;
+	if(fShadow) *fShadow = (m_defStyle.shadowDepthX+m_defStyle.shadowDepthY)>0;
+	if(fOutline) *fOutline = (m_defStyle.outlineWidthX+m_defStyle.outlineWidthY)>0;
 	if(fAdvancedRenderer) *fAdvancedRenderer = m_fAdvancedRenderer;
 
 	return S_OK;
@@ -283,8 +283,8 @@ STDMETHODIMP CDirectVobSub::put_TextSettings(void* lf, int lflen, COLORREF color
 	}
 
 	m_defStyle.colors[0] = color;
-	m_defStyle.shadowDepth = fShadow?2:0;
-	m_defStyle.outlineWidth = fOutline?2:0;
+	m_defStyle.shadowDepthX = m_defStyle.shadowDepthY = fShadow?2:0;
+	m_defStyle.outlineWidthX = m_defStyle.outlineWidthY = fOutline?2:0;
 
 	return S_OK;
 

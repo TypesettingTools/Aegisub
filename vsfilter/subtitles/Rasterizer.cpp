@@ -644,20 +644,31 @@ void Rasterizer::_OverlapRegion(tSpanBuffer& dst, tSpanBuffer& src, int dx, int 
 	}
 }
 
-bool Rasterizer::CreateWidenedRegion(int r)
+bool Rasterizer::CreateWidenedRegion(int rx, int ry)
 {
-	if(r < 0) r = 0;
+	if(rx < 0) rx = 0;
+	if(ry < 0) ry = 0;
 
-	// Do a half circle.
-	// _OverlapRegion mirrors this so both halves are done.
-	for(int y = -r; y <= r; ++y)
+	if (ry > 0 && rx > 0)
 	{
-		int x = (int)(0.5 + sqrt(float(r*r - y*y)));
+		// Do a half circle.
+		// _OverlapRegion mirrors this so both halves are done.
+		for(int y = -ry; y <= ry; ++y)
+		{
+			int x = (int)(0.5 + sqrt(float(ry*ry - y*y)) * float(rx)/float(ry));
 
-		_OverlapRegion(mWideOutline, mOutline, x, y);
+			// If x=0 nothing will be drawn for this overlap, not sure why
+			_OverlapRegion(mWideOutline, mOutline, max(x,1), y);
+		}
+	}
+	else if (ry == 0 && rx > 0)
+	{
+		// There are artifacts if we don't make at least two overlaps of the line, even at same Y coord
+		_OverlapRegion(mWideOutline, mOutline, rx, 0);
+		_OverlapRegion(mWideOutline, mOutline, rx, 0);
 	}
 
-	mWideBorder = r;
+	mWideBorder = max(rx,ry);
 
 	return true;
 }

@@ -186,12 +186,13 @@ CSRIAPI void *csri_query_ext(csri_rend *rend, csri_ext_id extname)
 // Get info for renderer
 static struct csri_info csri_vsfilter_info = {
 	"vsfilter_textsub", // name
-	"2.38-0611-3", // version (assumed version number, svn revision, patchlevel)
+	"2.38-0611-4", // version (assumed version number, svn revision, patchlevel)
 	// 2.38-0611 is base svn 611
 	// 2.38-0611-1 is with clipfix and fax/fay patch
 	// 2.38-0611-2 adds CSRI
 	// 2.38-0611-3 fixes a bug in CSRI and adds fontcrash-fix and float-pos
-	"VSFilter/TextSub (SVN 611 + patches for clipfix, fax/fay, fontcrash-fix, float-pos and CSRI)", // longname
+	// 2.38-0611-4 fixes be1-dots and ugly-fade bugs and adds xbord/ybord/xshad/yshad tags
+	"VSFilter/TextSub (SVN 611 + aegisub patches)", // longname
 	"Gabest", // author
 	"Copyright (c) 2004-2007 by Gabest and others" // copyright
 };

@@ -121,7 +121,7 @@ public:
 class CLine : public CAtlList<CWord*>
 {
 public:
-	int m_width, m_ascent, m_descent, m_border;
+	int m_width, m_ascent, m_descent, m_borderX, m_borderY;
 
 	virtual ~CLine();
 

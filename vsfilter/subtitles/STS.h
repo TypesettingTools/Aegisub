@@ -34,8 +34,10 @@ public:
 	CRect	marginRect; // measured from the sides
 	int		scrAlignment; // 1 - 9: as on the numpad, 0: default
 	int		borderStyle; // 0: outline, 1: opaque box
-	double	outlineWidth;
-	double	shadowDepth;
+	double	outlineWidthX;
+	double	outlineWidthY;
+	double	shadowDepthX;
+	double	shadowDepthY;
 	COLORREF colors[4]; // usually: {primary, secondary, outline/background, shadow}
 	BYTE	alpha[4];
     int		charSet;
