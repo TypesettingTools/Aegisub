@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="vsfilter"
 	ProjectGUID="{7A3950FD-A235-459A-ACA2-5170863CD32C}"
 	RootNamespace="vsfilter"
@@ -96,6 +96,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copy to Aegisub build CSRI directory"
+				CommandLine="copy $(TargetPath) $(ProjectDir)..\bin\csri\$(TargetName)-debug.$(TargetExt)"
 			/>
 		</Configuration>
 		<Configuration
@@ -180,6 +182,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copy to Aegisub build CSRI directory"
+				CommandLine="copy $(TargetPath) $(ProjectDir)..\bin\csri\$(TargetFileName)"
 			/>
 		</Configuration>
 	</Configurations>
