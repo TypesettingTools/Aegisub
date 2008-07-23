@@ -481,8 +481,9 @@ void SearchReplaceEngine::ReplaceAll() {
 		// Normal replace
 		else {
 			if (!Search.matchCase) {
-				wxString Left, Right = *Text;
+				wxString Left = _T(""), Right = *Text;
 				int pos = 0;
+				Left.Alloc(Right.Len());
 				while (pos <= (int)(Right.Len() - LookFor.Len())) {
 					if (Right.Mid(pos, LookFor.Len()).CmpNoCase(LookFor) == 0) {
 						Left.Append(Right.Mid(0,pos)).Append(ReplaceWith);
@@ -496,7 +497,7 @@ void SearchReplaceEngine::ReplaceAll() {
 					}
 				}
 				if (replaced) {
-					*Text = Left;
+					*Text = Left + Right;
 				}
 			}
 			else {
