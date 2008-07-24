@@ -861,11 +861,18 @@ static __forceinline void pixmix2_sse2(DWORD* dst, DWORD color, DWORD shapealpha
 	*dst = (DWORD)_mm_cvtsi128_si32(r);
 }
 
+#include <mmintrin.h>
+
 // Calculate a-b but without risk of underflow
-template<class T>
-static __forceinline T safe_subtract(T a, T b)
+static __forceinline DWORD safe_subtract(DWORD a, DWORD b)
 {
-	return (b > a) ? 0 : a - b;
+	// What a waste of bits...
+	__m64 ap = _mm_cvtsi32_si64(a);
+	__m64 bp = _mm_cvtsi32_si64(b);
+	__m64 rp = _mm_subs_pu16(ap, bp);
+	return (DWORD)_mm_cvtsi64_si32(rp);
+	// Don't need an EMMS because nothing in Draw() depends on FPU
+	// and we EMMS at the end of Draw().
 }
 
 // For CPUID usage in Rasterizer::Draw
@@ -959,19 +966,19 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 						for(int wt=0; wt<w; ++wt)
 							pixmix(&dst[wt], color, s[wt*2]);
 				}
-				// Not body, ie. something else (border, shadow, I guess)
+				// Not painting body, ie. painting border without fill in it
 				else
 				{
 					if(fSSE2)
 						for(int wt=0; wt<w; ++wt)
-							// It would seems src (not s here?) contains two different
-							// bitmaps interlaced per pixel.
-							// So here's using the difference between those two.
-							// What if the difference underflows??
-							// I guess src[wt*2+1] is the widened region for border
-							// created by CreateWidenedRegion, and thus contains
-							// both the fill and the border, so subtracting the fill
-							// from that is always safe.
+							// src contains two different bitmaps, interlaced per pixel.
+							// The first stored is the fill, the second is the widened
+							// fill region created by CreateWidenedRegion().
+							// Since we're drawing only the border, we must otain that
+							// by subtracting the fill from the widened region. The
+							// subtraction must be saturating since the widened region
+							// pixel value can be smaller than the fill value.
+							// This happens when blur edges is used.
 							pixmix_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
 					else
 						for(int wt=0; wt<w; ++wt)
@@ -1104,6 +1111,10 @@ CRect Rasterizer::Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int x
 		am += spd.w;
 		dst = (unsigned long *)((char *)dst + spd.pitch);
 	}
+
+	// Remember to EMMS!
+	// Rendering fails in funny ways if we don't do this.
+	_mm_empty();
 
 	return bbox;
 }
