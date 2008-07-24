@@ -127,11 +127,11 @@ void CWord::Paint(CPoint p, CPoint org)
 
 		m_fDrawn = true;
 
-		if(!Rasterize(p.x&7, p.y&7, m_style.fBlur)) return;
+		if(!Rasterize(p.x&7, p.y&7, m_style.fBlur, m_style.fGaussianBlur)) return;
 	}
 	else if((m_p.x&7) != (p.x&7) || (m_p.y&7) != (p.y&7))
 	{
-		Rasterize(p.x&7, p.y&7, m_style.fBlur);
+		Rasterize(p.x&7, p.y&7, m_style.fBlur, m_style.fGaussianBlur);
 	}
 
 	m_p = p;
@@ -1421,6 +1421,8 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 			params.Add(cmd.Mid(2)), cmd = cmd.Left(2);
 		else if(!cmd.Find(L"a"))
 			params.Add(cmd.Mid(1)), cmd = cmd.Left(1);
+		else if(!cmd.Find(L"blur"))
+			params.Add(cmd.Mid(4)), cmd = cmd.Left(4);
 		else if(!cmd.Find(L"bord"))
 			params.Add(cmd.Mid(4)), cmd = cmd.Left(4);
 		else if(!cmd.Find(L"be"))
@@ -1535,6 +1537,13 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 			int n = wcstol(p, NULL, 10);
 			if(sub->m_scrAlignment < 0)
                 sub->m_scrAlignment = (n > 0 && n < 12) ? ((((n-1)&3)+1)+((n&4)?6:0)+((n&8)?3:0)) : org.scrAlignment;
+		}
+		else if(cmd == L"blur")
+		{
+			double n = CalcAnimation(wcstod(p, NULL), style.fGaussianBlur, fAnimate);
+			style.fGaussianBlur = !p.IsEmpty()
+				? (n < 0 ? 0 : n)
+				: org.fGaussianBlur;
 		}
 		else if(cmd == L"bord")
 		{

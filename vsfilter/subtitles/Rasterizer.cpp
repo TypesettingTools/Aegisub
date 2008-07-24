@@ -25,6 +25,7 @@
 #include <vector>
 #include <algorithm>
 #include "Rasterizer.h"
+#include "SeparableFilter.h"
 
 Rasterizer::Rasterizer() : mpPathTypes(NULL), mpPathPoints(NULL), mPathPoints(0), mpOverlayBuffer(NULL)
 {
@@ -679,7 +680,7 @@ void Rasterizer::DeleteOutlines()
 	mOutline.clear();
 }
 
-bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur)
+bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur, double fGaussianBlur)
 {
 	_TrashOverlay();
 
@@ -700,17 +701,25 @@ bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur)
 
 	mWideBorder = (mWideBorder+7)&~7;
 
-	if(!mWideOutline.empty() || fBlur)
+	if(!mWideOutline.empty() || fBlur || fGaussianBlur > 0)
 	{
+		int bluradjust = 0;
+		if (fGaussianBlur > 0)
+			mWideBorder += (int)(fGaussianBlur*3*8 + 0.5) | 1;
+		if (fBlur)
+			mWideBorder += 8;
+
+		mWideBorder = (mWideBorder+7)&~7;
+
 		// Expand the buffer a bit when we're blurring, since that can also widen the borders a bit
-		width += 2*mWideBorder + (fBlur ? 16 : 0);
-		height += 2*mWideBorder + (fBlur ? 16 : 0);
+		width += 2*mWideBorder + bluradjust*2;
+		height += 2*mWideBorder + bluradjust*2;
 
-		xsub += mWideBorder + (fBlur ? 8 : 0);
-		ysub += mWideBorder + (fBlur ? 8 : 0);
+		xsub += mWideBorder + bluradjust;
+		ysub += mWideBorder + bluradjust;
 
-		mOffsetX -= mWideBorder + (fBlur ? 8 : 0);
-		mOffsetY -= mWideBorder + (fBlur ? 8 : 0);
+		mOffsetX -= mWideBorder + bluradjust;
+		mOffsetY -= mWideBorder + bluradjust;
 	}
 
 	mOverlayWidth = ((width+7)>>3) + 1;
@@ -756,6 +765,28 @@ bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur)
 					*dst += x2 - (last<<3);
 				}
 			}
+		}
+	}
+
+	// Do some gaussian blur magic
+	if (fGaussianBlur > 0)
+	{
+		GaussianKernel filter(fGaussianBlur);
+		if (mOverlayWidth >= filter.width && mOverlayHeight >= filter.width)
+		{
+			int pitch = mOverlayWidth*2;
+
+			byte *tmp = new byte[pitch*mOverlayHeight];
+			if(!tmp) return(false);
+
+			int border = !mWideOutline.empty() ? 1 : 0;
+
+			byte *src = mpOverlayBuffer + border;
+
+			SeparableFilterX<2>(src, tmp, mOverlayWidth, mOverlayHeight, pitch, filter.kernel, filter.width, filter.divisor);
+			SeparableFilterY<2>(tmp, src, mOverlayWidth, mOverlayHeight, pitch, filter.kernel, filter.width, filter.divisor);
+
+			delete[] tmp;
 		}
 	}
 
@@ -870,9 +901,9 @@ static __forceinline DWORD safe_subtract(DWORD a, DWORD b)
 	__m64 ap = _mm_cvtsi32_si64(a);
 	__m64 bp = _mm_cvtsi32_si64(b);
 	__m64 rp = _mm_subs_pu16(ap, bp);
-	return (DWORD)_mm_cvtsi64_si32(rp);
-	// Don't need an EMMS because nothing in Draw() depends on FPU
-	// and we EMMS at the end of Draw().
+	DWORD r = (DWORD)_mm_cvtsi64_si32(rp);
+	_mm_empty();
+	return r;
 }
 
 // For CPUID usage in Rasterizer::Draw

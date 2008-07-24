@@ -241,6 +241,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SeparableFilter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SSF.h"
 				>
 			</File>
