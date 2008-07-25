@@ -519,7 +519,7 @@ bool CPolygon::CreatePath()
 
 // CClipper
 
-CClipper::CClipper(CStringW str, CSize size, double scalex, double scaley) 
+CClipper::CClipper(CStringW str, CSize size, double scalex, double scaley, bool inverse) 
 	: CPolygon(STSStyle(), str, 0, 0, 0, scalex, scaley, 0)
 {
 	m_size.cx = m_size.cy = 0;
@@ -528,6 +528,7 @@ CClipper::CClipper(CStringW str, CSize size, double scalex, double scaley)
 	if(size.cx < 0 || size.cy < 0 || !(m_pAlphaMask = new BYTE[size.cx*size.cy])) return;
 
 	m_size = size;
+	m_inverse = inverse;
 
 	memset(m_pAlphaMask, 0, size.cx*size.cy);
 
@@ -556,6 +557,13 @@ CClipper::CClipper(CStringW str, CSize size, double scalex, double scaley)
 		src += 2*mOverlayWidth;
 		dst += m_size.cx;
 	}
+
+	if(inverse)
+	{
+		BYTE* dst = m_pAlphaMask;
+		for(int i = size.cx*size.cy; i>0; --i, ++dst)
+			*dst = 0x40 - *dst; // mask is 6 bit
+	}
 }
 
 CClipper::~CClipper()
@@ -566,7 +574,7 @@ CClipper::~CClipper()
 
 CWord* CClipper::Copy()
 {
-	return(new CClipper(m_str, m_size, m_scalex, m_scaley));
+	return(new CClipper(m_str, m_size, m_scalex, m_scaley, m_inverse));
 }
 
 bool CClipper::Append(CWord* w)
@@ -969,7 +977,7 @@ void CSubtitle::CreateClippers(CSize size)
 		{
 			CStringW str;
 			str.Format(L"m %d %d l %d %d %d %d %d %d", 0, 0, w, 0, w, h, 0, h);
-			m_pClipper = new CClipper(str, size, 1, 1);
+			m_pClipper = new CClipper(str, size, 1, 1, false);
 			if(!m_pClipper) return;
 		}
 
@@ -1003,7 +1011,7 @@ void CSubtitle::CreateClippers(CSize size)
 		{
 			CStringW str;
 			str.Format(L"m %d %d l %d %d %d %d %d %d", 0, 0, w, 0, w, h, 0, h);
-			m_pClipper = new CClipper(str, size, 1, 1);
+			m_pClipper = new CClipper(str, size, 1, 1, false);
 			if(!m_pClipper) return;
 		}
 
@@ -1578,21 +1586,22 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 		}
 		else if(cmd == L"clip" || cmd == L"iclip")
 		{
+			bool invert = (cmd == L"iclip");
+
 			if(params.GetCount() == 1 && !sub->m_pClipper)
 			{
-				sub->m_pClipper = new CClipper(params[0], CSize(m_size.cx>>3, m_size.cy>>3), sub->m_scalex, sub->m_scaley);
+				sub->m_pClipper = new CClipper(params[0], CSize(m_size.cx>>3, m_size.cy>>3), sub->m_scalex, sub->m_scaley, invert);
 			}
 			else if(params.GetCount() == 2 && !sub->m_pClipper)
 			{
 				int scale = max(wcstol(p, NULL, 10), 1);
-				sub->m_pClipper = new CClipper(params[1], CSize(m_size.cx>>3, m_size.cy>>3), sub->m_scalex/(1<<(scale-1)), sub->m_scaley/(1<<(scale-1)));
+				sub->m_pClipper = new CClipper(params[1], CSize(m_size.cx>>3, m_size.cy>>3), sub->m_scalex/(1<<(scale-1)), sub->m_scaley/(1<<(scale-1)), invert);
 			}
 			else if(params.GetCount() == 4)
 			{
 				CRect r;
 
-				if(cmd == L"iclip") // TODO: Also support inverse vector clips?
-					sub->m_clipInverse = true;
+				sub->m_clipInverse = invert;
 
 				r.SetRect(
 					wcstol(params[0], NULL, 10),
