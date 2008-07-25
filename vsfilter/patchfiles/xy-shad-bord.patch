@@ -1,0 +1,548 @@
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/StyleEditorDialog.cpp
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/StyleEditorDialog.cpp	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/StyleEditorDialog.cpp	(revision 2278)
+@@ -115,8 +115,8 @@
+ 		m_stss.fontScaleY = m_scaley;
+ 
+ 		m_stss.borderStyle = m_borderstyle;
+-		m_stss.outlineWidth = m_borderwidth;
+-		m_stss.shadowDepth = m_shadowdepth;
++		m_stss.outlineWidthX = m_stss.outlineWidthY = m_borderwidth;
++		m_stss.shadowDepthX = m_stss.shadowDepthY = m_shadowdepth;
+ 
+ 		m_stss.scrAlignment = m_screenalignment+1;
+ 		m_stss.marginRect = m_margin;
+@@ -147,9 +147,9 @@
+ 		m_scaleyspin.SetRange32(-10000, 10000);
+ 
+ 		m_borderstyle = m_stss.borderStyle;
+-		m_borderwidth = m_stss.outlineWidth;
++		m_borderwidth = min(m_stss.outlineWidthX, m_stss.outlineWidthY);
+ 		m_borderwidthspin.SetRange32(0, 10000);
+-		m_shadowdepth = m_stss.shadowDepth;
++		m_shadowdepth = min(m_stss.shadowDepthX, m_stss.shadowDepthY);
+ 		m_shadowdepthspin.SetRange32(0, 10000);
+ 
+ 		m_screenalignment = m_stss.scrAlignment-1;
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/DirectVobSub.cpp
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/DirectVobSub.cpp	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/DirectVobSub.cpp	(revision 2278)
+@@ -246,8 +246,8 @@
+ 	}
+ 
+ 	if(color) *color = m_defStyle.colors[0];
+-	if(fShadow) *fShadow = m_defStyle.shadowDepth>0;
+-	if(fOutline) *fOutline = m_defStyle.outlineWidth>0;
++	if(fShadow) *fShadow = (m_defStyle.shadowDepthX+m_defStyle.shadowDepthY)>0;
++	if(fOutline) *fOutline = (m_defStyle.outlineWidthX+m_defStyle.outlineWidthY)>0;
+ 	if(fAdvancedRenderer) *fAdvancedRenderer = m_fAdvancedRenderer;
+ 
+ 	return S_OK;
+@@ -283,8 +283,8 @@
+ 	}
+ 
+ 	m_defStyle.colors[0] = color;
+-	m_defStyle.shadowDepth = fShadow?2:0;
+-	m_defStyle.outlineWidth = fOutline?2:0;
++	m_defStyle.shadowDepthX = m_defStyle.shadowDepthY = fShadow?2:0;
++	m_defStyle.outlineWidthX = m_defStyle.outlineWidthY = fOutline?2:0;
+ 
+ 	return S_OK;
+ 
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/Rasterizer.h
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/Rasterizer.h	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/Rasterizer.h	(revision 2278)
+@@ -83,7 +83,7 @@
+ 	bool PartialBeginPath(HDC hdc, bool bClearPath);
+ 	bool PartialEndPath(HDC hdc, long dx, long dy);
+ 	bool ScanConvert();
+-	bool CreateWidenedRegion(int border);
++	bool CreateWidenedRegion(int borderX, int borderY);
+ 	void DeleteOutlines();
+ 	bool Rasterize(int xsub, int ysub, bool fBlur);
+ 	CRect Draw(SubPicDesc& spd, CRect& clipRect, byte* pAlphaMask, int xsub, int ysub, const long* switchpts, bool fBody, bool fBorder);
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/RTS.cpp
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/RTS.cpp	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/RTS.cpp	(revision 2278)
+@@ -116,9 +116,9 @@
+ 
+ 		if(!ScanConvert()) return;
+ 
+-		if(m_style.borderStyle == 0 && m_style.outlineWidth > 0)
++		if(m_style.borderStyle == 0 && (m_style.outlineWidthX+m_style.outlineWidthY > 0))
+ 		{
+-			if(!CreateWidenedRegion((int)(m_style.outlineWidth+0.5))) return;
++			if(!CreateWidenedRegion((int)(m_style.outlineWidthX+0.5), (int)(m_style.outlineWidthY+0.5))) return;
+ 		}
+ 		else if(m_style.borderStyle == 1)
+ 		{
+@@ -188,18 +188,19 @@
+ 
+ 	STSStyle style = m_style;
+ 	style.borderStyle = 0;
+-	style.outlineWidth = 0;
++	style.outlineWidthX = style.outlineWidthY = 0;
+ 	style.colors[0] = m_style.colors[2];
+ 	style.alpha[0] = m_style.alpha[2];
+ 
+-	int w = (int)(m_style.outlineWidth + 0.5);
++	int w = (int)(m_style.outlineWidthX + 0.5);
++	int h = (int)(m_style.outlineWidthY + 0.5);
+ 
+ 	CStringW str;
+ 	str.Format(L"m %d %d l %d %d %d %d %d %d", 
+-		-w, -w, 
+-		m_width+w, -w, 
+-		m_width+w, m_ascent+m_descent+w, 
+-		-w, m_ascent+m_descent+w);
++		-w, -h, 
++		m_width+w, -h, 
++		m_width+w, m_ascent+m_descent+h, 
++		-w, m_ascent+m_descent+h);
+ 
+ 	m_pOpaqueBox = new CPolygon(style, str, 0, 0, 0, 1.0/8, 1.0/8, 0);
+ 
+@@ -622,7 +623,7 @@
+ 			AddTail(last = w->Copy());
+ 	}
+ 
+-	m_ascent = m_descent = m_border = 0;
++	m_ascent = m_descent = m_borderX = m_borderY = 0;
+ 
+ 	pos = GetHeadPosition();
+ 	while(pos)
+@@ -631,7 +632,8 @@
+ 
+ 		if(m_ascent < w->m_ascent) m_ascent = w->m_ascent;
+ 		if(m_descent < w->m_descent) m_descent = w->m_descent;
+-		if(m_border < w->m_style.outlineWidth) m_border = (int)(w->m_style.outlineWidth+0.5);
++		if(m_borderX < w->m_style.outlineWidthX) m_borderX = (int)(w->m_style.outlineWidthX+0.5);
++		if(m_borderY < w->m_style.outlineWidthY) m_borderY = (int)(w->m_style.outlineWidthY+0.5);
+ 	}
+ }
+ 
+@@ -646,10 +648,10 @@
+ 
+ 		if(w->m_fLineBreak) return(bbox); // should not happen since this class is just a line of text without any breaks
+ 
+-		if(w->m_style.shadowDepth > 0)
++		if(w->m_style.shadowDepthX != 0 || w->m_style.shadowDepthY != 0)
+ 		{
+-			int x = p.x + (int)(w->m_style.shadowDepth+0.5);
+-			int y = p.y + m_ascent - w->m_ascent + (int)(w->m_style.shadowDepth+0.5);
++			int x = p.x + (int)(w->m_style.shadowDepthX+0.5);
++			int y = p.y + m_ascent - w->m_ascent + (int)(w->m_style.shadowDepthY+0.5);
+ 
+ 			DWORD a = 0xff - w->m_style.alpha[3];
+ 			if(alpha > 0) a = MulDiv(a, 0xff - alpha, 0xff);
+@@ -662,7 +664,7 @@
+ 			{
+ 				bbox |= w->Draw(spd, clipRect, pAlphaMask, x, y, sw, 
+ 					w->m_ktype > 0 || w->m_style.alpha[0] < 0xff, 
+-					w->m_style.outlineWidth > 0 && !(w->m_ktype == 2 && time < w->m_kstart));
++					(w->m_style.outlineWidthX+w->m_style.outlineWidthY > 0) && !(w->m_ktype == 2 && time < w->m_kstart));
+ 			}
+ 			else if(w->m_style.borderStyle == 1 && w->m_pOpaqueBox)
+ 			{
+@@ -687,8 +689,7 @@
+ 
+ 		if(w->m_fLineBreak) return(bbox); // should not happen since this class is just a line of text without any breaks
+ 
+-//		if((w->m_style.outlineWidth > 0 || w->m_style.borderStyle == 1 && w->m_style.outlineWidth == 0) && !(w->m_ktype == 2 && time < w->m_kstart))
+-		if(w->m_style.outlineWidth > 0 && !(w->m_ktype == 2 && time < w->m_kstart))
++		if(w->m_style.outlineWidthX+w->m_style.outlineWidthY > 0 && !(w->m_ktype == 2 && time < w->m_kstart))
+ 		{
+ 			int x = p.x;
+ 			int y = p.y + m_ascent - w->m_ascent;
+@@ -772,7 +773,7 @@
+ 			sw[1] = 0xffffffff;
+ 		}
+ 
+-		sw[3] = (int)(w->m_style.outlineWidth + t*w->m_width) >> 3;
++		sw[3] = (int)(w->m_style.outlineWidthX + t*w->m_width) >> 3;
+ 		sw[4] = sw[2];
+ 		sw[5] = 0x00ffffff;
+ 
+@@ -884,7 +885,7 @@
+ 	CLine* ret = new CLine();
+ 	if(!ret) return(NULL);
+ 
+-	ret->m_width = ret->m_ascent = ret->m_descent = ret->m_border = 0;
++	ret->m_width = ret->m_ascent = ret->m_descent = ret->m_borderX = ret->m_borderY = 0;
+ 
+ 	maxwidth = GetWrapWidth(pos, maxwidth);
+ 
+@@ -896,11 +897,12 @@
+ 
+ 		if(ret->m_ascent < w->m_ascent) ret->m_ascent = w->m_ascent;
+ 		if(ret->m_descent < w->m_descent) ret->m_descent = w->m_descent;
+-		if(ret->m_border < w->m_style.outlineWidth) ret->m_border = (int)(w->m_style.outlineWidth+0.5);
++		if(ret->m_borderX < w->m_style.outlineWidthX) ret->m_borderX = (int)(w->m_style.outlineWidthX+0.5);
++		if(ret->m_borderY < w->m_style.outlineWidthY) ret->m_borderY = (int)(w->m_style.outlineWidthY+0.5);
+ 
+ 		if(w->m_fLineBreak) 
+ 		{
+-			if(fEmptyLine) {ret->m_ascent /= 2; ret->m_descent /= 2; ret->m_border = 0;}
++			if(fEmptyLine) {ret->m_ascent /= 2; ret->m_descent /= 2; ret->m_borderX = ret->m_borderY = 0;}
+ 
+ 			ret->Compact();
+ 
+@@ -1061,15 +1063,15 @@
+ 		l = GetNextLine(pos, size.cx - marginRect.left - marginRect.right);
+ 		if(!l) break;
+ 
+-		if(fFirstLine) {m_topborder = l->m_border; fFirstLine = false;}
++		if(fFirstLine) {m_topborder = l->m_borderY; fFirstLine = false;}
+ 
+-		spaceNeeded.cx = max(l->m_width, spaceNeeded.cx);
++		spaceNeeded.cx = max(l->m_width+l->m_borderX, spaceNeeded.cx);
+ 		spaceNeeded.cy += l->m_ascent + l->m_descent;
+ 
+ 		AddTail(l);
+ 	}
+ 
+-	if(l) m_bottomborder = l->m_border;
++	if(l) m_bottomborder = l->m_borderY;
+ 
+ 	m_rect = CRect(
+ 		CPoint((m_scrAlignment%3) == 1 ? marginRect.left
+@@ -1477,6 +1479,14 @@
+ 			;
+ 		else if(!cmd.Find(L"u"))
+ 			params.Add(cmd.Mid(1)), cmd = cmd.Left(1);
++		else if(!cmd.Find(L"xbord"))
++			params.Add(cmd.Mid(5)), cmd = cmd.Left(5);
++		else if(!cmd.Find(L"xshad"))
++			params.Add(cmd.Mid(5)), cmd = cmd.Left(5);
++		else if(!cmd.Find(L"ybord"))
++			params.Add(cmd.Mid(5)), cmd = cmd.Left(5);
++		else if(!cmd.Find(L"yshad"))
++			params.Add(cmd.Mid(5)), cmd = cmd.Left(5);
+ 		else
+ 			nUnrecognizedTags++;
+ 
+@@ -1528,10 +1538,15 @@
+ 		}
+ 		else if(cmd == L"bord")
+ 		{
+-			double n = CalcAnimation(wcstod(p, NULL), style.outlineWidth, fAnimate);
+-			style.outlineWidth = !p.IsEmpty()
+-				? (n < 0 ? 0 : n)
+-				: org.outlineWidth;
++			double dst = wcstod(p, NULL);
++			double nx = CalcAnimation(dst, style.outlineWidthX, fAnimate);
++			style.outlineWidthX = !p.IsEmpty()
++				? (nx < 0 ? 0 : nx)
++				: org.outlineWidthX;
++			double ny = CalcAnimation(dst, style.outlineWidthY, fAnimate);
++			style.outlineWidthY = !p.IsEmpty()
++				? (ny < 0 ? 0 : ny)
++				: org.outlineWidthY;
+ 		}
+ 		else if(cmd == L"be")
+ 		{
+@@ -1819,10 +1834,15 @@
+ 		}
+ 		else if(cmd == L"shad")
+ 		{
+-			double n = CalcAnimation(wcstod(p, NULL), style.shadowDepth, fAnimate);
+-			style.shadowDepth = !p.IsEmpty()
+-				? (n < 0 ? 0 : n)
+-				: org.shadowDepth;
++			double dst = wcstod(p, NULL);
++			double nx = CalcAnimation(dst, style.shadowDepthX, fAnimate);
++			style.shadowDepthX = !p.IsEmpty()
++				? (nx < 0 ? 0 : nx)
++				: org.shadowDepthX;
++			double ny = CalcAnimation(dst, style.shadowDepthY, fAnimate);
++			style.shadowDepthY = !p.IsEmpty()
++				? (ny < 0 ? 0 : ny)
++				: org.shadowDepthY;
+ 		}
+ 		else if(cmd == L"s")
+ 		{
+@@ -1872,6 +1892,38 @@
+ 				? (n == 0 ? false : n == 1 ? true : org.fUnderline)
+ 				: org.fUnderline;
+ 		}
++		else if(cmd == L"xbord")
++		{
++			double dst = wcstod(p, NULL);
++			double nx = CalcAnimation(dst, style.outlineWidthX, fAnimate);
++			style.outlineWidthX = !p.IsEmpty()
++				? (nx < 0 ? 0 : nx)
++				: org.outlineWidthX;
++		}
++		else if(cmd == L"xshad")
++		{
++			double dst = wcstod(p, NULL);
++			double nx = CalcAnimation(dst, style.shadowDepthX, fAnimate);
++			style.shadowDepthX = !p.IsEmpty()
++				? nx
++				: org.shadowDepthX;
++		}
++		else if(cmd == L"ybord")
++		{
++			double dst = wcstod(p, NULL);
++			double ny = CalcAnimation(dst, style.outlineWidthY, fAnimate);
++			style.outlineWidthY = !p.IsEmpty()
++				? (ny < 0 ? 0 : ny)
++				: org.outlineWidthY;
++		}
++		else if(cmd == L"yshad")
++		{
++			double dst = wcstod(p, NULL);
++			double ny = CalcAnimation(dst, style.shadowDepthY, fAnimate);
++			style.shadowDepthY = !p.IsEmpty()
++				? ny
++				: org.shadowDepthY;
++		}
+ 	}
+ 
+ //	return(nUnrecognizedTags < nTags);
+@@ -1949,7 +2001,7 @@
+ 				}
+ 				else if(attribs[i] == L"outline-level")
+ 				{
+-					style.outlineWidth = wcstol(params[i], NULL, 10);
++					style.outlineWidthX = style.outlineWidthY = wcstol(params[i], NULL, 10);
+ 				}
+ 				else if(attribs[i] == L"shadow-color")
+ 				{
+@@ -1957,7 +2009,7 @@
+ 				}
+ 				else if(attribs[i] == L"shadow-level")
+ 				{
+-					style.shadowDepth = wcstol(params[i], NULL, 10);
++					style.shadowDepthX = style.shadowDepthY = wcstol(params[i], NULL, 10);
+ 				}
+ 
+ 				if(nColor >= 0 && nColor < 4)
+@@ -2079,8 +2131,10 @@
+ 
+ 		tmp.fontSize = sub->m_scaley*tmp.fontSize*64;
+ 		tmp.fontSpacing = sub->m_scalex*tmp.fontSpacing*64;
+-		tmp.outlineWidth *= (m_fScaledBAS ? ((sub->m_scalex+sub->m_scaley)/2) : 1) * 8;
+-		tmp.shadowDepth *= (m_fScaledBAS ? ((sub->m_scalex+sub->m_scaley)/2) : 1) * 8;
++		tmp.outlineWidthX *= (m_fScaledBAS ? sub->m_scalex : 1) * 8;
++		tmp.outlineWidthY *= (m_fScaledBAS ? sub->m_scaley : 1) * 8;
++		tmp.shadowDepthX *= (m_fScaledBAS ? sub->m_scalex : 1) * 8;
++		tmp.shadowDepthY *= (m_fScaledBAS ? sub->m_scaley : 1) * 8;
+ 
+ 		if(m_nPolygon)
+ 		{
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/STS.cpp
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/STS.cpp	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/STS.cpp	(revision 2278)
+@@ -1413,8 +1413,8 @@
+ if(sver >= 5)	style->fontSpacing = GetFloat(buff);
+ if(sver >= 5)	style->fontAngleZ = GetFloat(buff);
+ if(sver >= 4)	style->borderStyle = GetInt(buff);
+-				style->outlineWidth = GetFloat(buff);
+-				style->shadowDepth = GetFloat(buff);
++				style->outlineWidthX = style->outlineWidthY = GetFloat(buff);
++				style->shadowDepthX = style->shadowDepthY = GetFloat(buff);
+ 				style->scrAlignment = GetInt(buff);
+ 				style->marginRect.left = GetInt(buff);
+ 				style->marginRect.right = GetInt(buff);
+@@ -1433,8 +1433,10 @@
+ if(sver >= 5)	style->fontSpacing = max(style->fontSpacing, 0);
+ 				style->fontAngleX = style->fontAngleY = 0;
+ 				style->borderStyle = style->borderStyle == 1 ? 0 : style->borderStyle == 3 ? 1 : 0;
+-				style->outlineWidth = max(style->outlineWidth, 0);
+-				style->shadowDepth = max(style->shadowDepth, 0);
++				style->outlineWidthX = max(style->outlineWidthX, 0);
++				style->outlineWidthY = max(style->outlineWidthY, 0);
++				style->shadowDepthX = max(style->shadowDepthX, 0);
++				style->shadowDepthY = max(style->shadowDepthY, 0);
+ if(sver <= 4)	style->scrAlignment = (style->scrAlignment&4) ? ((style->scrAlignment&3)+6) // top
+ 										: (style->scrAlignment&8) ? ((style->scrAlignment&3)+3) // mid
+ 										: (style->scrAlignment&3); // bottom
+@@ -1584,8 +1586,8 @@
+ 				style->fontAngleY = GetFloat(buff);
+ 				style->fontAngleZ = GetFloat(buff);
+ 				style->borderStyle = GetInt(buff);
+-				style->outlineWidth = GetFloat(buff);
+-				style->shadowDepth = GetFloat(buff);
++				style->outlineWidthX = style->outlineWidthY = GetFloat(buff);
++				style->shadowDepthX = style->shadowDepthY = GetFloat(buff);
+ 				style->scrAlignment = GetInt(buff);
+ 				style->marginRect.left = GetInt(buff);
+ 				style->marginRect.right = GetInt(buff);
+@@ -1596,8 +1598,10 @@
+ 				style->fontScaleY = max(style->fontScaleY, 0);
+ 				style->fontSpacing = max(style->fontSpacing, 0);
+ 				style->borderStyle = style->borderStyle == 1 ? 0 : style->borderStyle == 3 ? 1 : 0;
+-				style->outlineWidth = max(style->outlineWidth, 0);
+-				style->shadowDepth = max(style->shadowDepth, 0);
++				style->outlineWidthX = max(style->outlineWidthX, 0);
++				style->outlineWidthY = max(style->outlineWidthY, 0);
++				style->shadowDepthX = max(style->shadowDepthX, 0);
++				style->shadowDepthY = max(style->shadowDepthY, 0);
+ 				
+ 				ret.AddStyle(StyleName, style);
+ 			}
+@@ -2707,7 +2711,7 @@
+ 					s->colors[3]&0xffffff, 
+ 					s->fontWeight > FW_NORMAL ? -1 : 0, s->fItalic ? -1 : 0,
+ 					s->borderStyle == 0 ? 1 : s->borderStyle == 1 ? 3 : 0, 
+-					(int)s->outlineWidth, (int)s->shadowDepth, 
++					(int)s->outlineWidthY, (int)s->shadowDepthY, 
+ 					s->scrAlignment <= 3 ? s->scrAlignment : s->scrAlignment <= 6 ? ((s->scrAlignment-3)|8) : s->scrAlignment <= 9 ? ((s->scrAlignment-6)|4) : 2,
+ 					s->marginRect.left, s->marginRect.right, (s->marginRect.top + s->marginRect.bottom) / 2,
+ 					s->alpha[0],
+@@ -2728,7 +2732,7 @@
+ 					(int)s->fontScaleX, (int)s->fontScaleY,
+ 					(int)s->fontSpacing, (float)s->fontAngleZ,
+ 					s->borderStyle == 0 ? 1 : s->borderStyle == 1 ? 3 : 0, 
+-					(int)s->outlineWidth, (int)s->shadowDepth, 
++					(int)s->outlineWidthY, (int)s->shadowDepthY, 
+ 					s->scrAlignment,
+ 					s->marginRect.left, s->marginRect.right, (s->marginRect.top + s->marginRect.bottom) / 2,
+ 					s->charSet);
+@@ -2861,7 +2865,7 @@
+ 			(int)s->fontScaleX, (int)s->fontScaleY,
+ 			(int)s->fontSpacing, (float)s->fontAngleZ,
+ 			s->borderStyle == 0 ? 1 : s->borderStyle == 1 ? 3 : 0, 
+-			(int)s->outlineWidth, (int)s->shadowDepth, 
++			(int)s->outlineWidthY, (int)s->shadowDepthY, 
+ 			s->scrAlignment,
+ 			s->marginRect.left, s->marginRect.right, (s->marginRect.top + s->marginRect.bottom) / 2,
+ 			s->charSet);
+@@ -2883,8 +2887,8 @@
+ 	marginRect = CRect(20, 20, 20, 20);
+ 	scrAlignment = 2;
+ 	borderStyle = 0;
+-	outlineWidth = 2;
+-	shadowDepth = 3;
++	outlineWidthX = outlineWidthY = 2;
++	shadowDepthX = shadowDepthY = 3;
+ 	colors[0] = 0x00ffffff;
+ 	colors[1] = 0x0000ffff;
+ 	colors[2] = 0x00000000;
+@@ -2912,8 +2916,10 @@
+ 	return(marginRect == s.marginRect 
+ 		&& scrAlignment == s.scrAlignment
+ 		&& borderStyle == s.borderStyle
+-		&& outlineWidth == s.outlineWidth
+-		&& shadowDepth == s.shadowDepth 
++		&& outlineWidthX == s.outlineWidthX
++		&& outlineWidthY == s.outlineWidthY
++		&& shadowDepthX == s.shadowDepthX
++		&& shadowDepthY == s.shadowDepthY
+ 		&& *((int*)&colors[0]) == *((int*)&s.colors[0])
+ 		&& *((int*)&colors[1]) == *((int*)&s.colors[1])
+ 		&& *((int*)&colors[2]) == *((int*)&s.colors[2])
+@@ -2994,7 +3000,7 @@
+ {
+ 	style.Format(_T("%d,%d,%d,%d,%d,%d,%f,%f,0x%06x,0x%06x,0x%06x,0x%06x,0x%02x,0x%02x,0x%02x,0x%02x,%d,%s,%f,%f,%f,%f,%d,%d,%d,%d,%d,%f,%f,%f,%d"),
+ 		s.marginRect.left,s.marginRect.right,s.marginRect.top,s.marginRect.bottom,
+-		s.scrAlignment, s.borderStyle, s.outlineWidth, s.shadowDepth,
++		s.scrAlignment, s.borderStyle, s.outlineWidthY, s.shadowDepthY,
+ 		s.colors[0], s.colors[1], s.colors[2], s.colors[3], s.alpha[0], s.alpha[1], s.alpha[2], s.alpha[3],
+ 		s.charSet,
+ 		s.fontName, s.fontSize, s.fontScaleX, s.fontScaleY, s.fontSpacing, s.fontWeight,
+@@ -3013,7 +3019,8 @@
+ 	{
+ 		CStringW str = TToW(style);
+ 		s.marginRect.left = GetInt(str); s.marginRect.right = GetInt(str); s.marginRect.top = GetInt(str); s.marginRect.bottom = GetInt(str);
+-		s.scrAlignment = GetInt(str); s.borderStyle = GetInt(str); s.outlineWidth = GetFloat(str); s.shadowDepth = GetFloat(str);
++		s.scrAlignment = GetInt(str); s.borderStyle = GetInt(str);
++		s.outlineWidthX = s.outlineWidthY = GetFloat(str); s.shadowDepthX = s.shadowDepthY = GetFloat(str);
+ 		for(int i = 0; i < 4; i++) s.colors[i] = (COLORREF)GetInt(str);
+ 		for(int i = 0; i < 4; i++) s.alpha[i] = GetInt(str);
+ 		s.charSet = GetInt(str);
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/RTS.h
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/RTS.h	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/RTS.h	(revision 2278)
+@@ -121,7 +121,7 @@
+ class CLine : public CAtlList<CWord*>
+ {
+ public:
+-	int m_width, m_ascent, m_descent, m_border;
++	int m_width, m_ascent, m_descent, m_borderX, m_borderY;
+ 
+ 	virtual ~CLine();
+ 
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/STS.h
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/STS.h	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/STS.h	(revision 2278)
+@@ -34,8 +34,10 @@
+ 	CRect	marginRect; // measured from the sides
+ 	int		scrAlignment; // 1 - 9: as on the numpad, 0: default
+ 	int		borderStyle; // 0: outline, 1: opaque box
+-	double	outlineWidth;
+-	double	shadowDepth;
++	double	outlineWidthX;
++	double	outlineWidthY;
++	double	shadowDepthX;
++	double	shadowDepthY;
+ 	COLORREF colors[4]; // usually: {primary, secondary, outline/background, shadow}
+ 	BYTE	alpha[4];
+     int		charSet;
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/Rasterizer.cpp
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/Rasterizer.cpp	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/Rasterizer.cpp	(revision 2278)
+@@ -644,20 +644,31 @@
+ 	}
+ }
+ 
+-bool Rasterizer::CreateWidenedRegion(int r)
++bool Rasterizer::CreateWidenedRegion(int rx, int ry)
+ {
+-	if(r < 0) r = 0;
++	if(rx < 0) rx = 0;
++	if(ry < 0) ry = 0;
+ 
+-	// Do a half circle.
+-	// _OverlapRegion mirrors this so both halves are done.
+-	for(int y = -r; y <= r; ++y)
++	if (ry > 0 && rx > 0)
+ 	{
+-		int x = (int)(0.5 + sqrt(float(r*r - y*y)));
++		// Do a half circle.
++		// _OverlapRegion mirrors this so both halves are done.
++		for(int y = -ry; y <= ry; ++y)
++		{
++			int x = (int)(0.5 + sqrt(float(ry*ry - y*y)) * float(rx)/float(ry));
+ 
+-		_OverlapRegion(mWideOutline, mOutline, x, y);
++			// If x=0 nothing will be drawn for this overlap, not sure why
++			_OverlapRegion(mWideOutline, mOutline, max(x,1), y);
++		}
+ 	}
++	else if (ry == 0 && rx > 0)
++	{
++		// There are artifacts if we don't make at least two overlaps of the line, even at same Y coord
++		_OverlapRegion(mWideOutline, mOutline, rx, 0);
++		_OverlapRegion(mWideOutline, mOutline, rx, 0);
++	}
+ 
+-	mWideBorder = r;
++	mWideBorder = max(rx,ry);
+ 
+ 	return true;
+ }
+Index: C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/USFSubtitles.cpp
+===================================================================
+--- C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/USFSubtitles.cpp	(revision 2277)
++++ C:/Users/jfs/Dev/Aegisub/vsfilter/subtitles/USFSubtitles.cpp	(revision 2278)
+@@ -286,8 +286,8 @@
+ 			0;
+ 
+ 		stss->borderStyle = 0;
+-		if(!s->fontstyle.outline.IsEmpty()) stss->outlineWidth = wcstol(s->fontstyle.outline, NULL, 10);
+-		if(!s->fontstyle.shadow.IsEmpty()) stss->shadowDepth = wcstol(s->fontstyle.shadow, NULL, 10);
++		if(!s->fontstyle.outline.IsEmpty()) stss->outlineWidthX = stss->outlineWidthY = wcstol(s->fontstyle.outline, NULL, 10);
++		if(!s->fontstyle.shadow.IsEmpty()) stss->shadowDepthX = stss->shadowDepthY = wcstol(s->fontstyle.shadow, NULL, 10);
+ 
+ 		for(int i = 0; i < 4; i++)
+ 		{
