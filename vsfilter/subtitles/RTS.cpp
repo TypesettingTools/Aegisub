@@ -796,6 +796,7 @@ CSubtitle::CSubtitle()
 {
 	memset(m_effects, 0, sizeof(Effect*)*EF_NUMBEROFEFFECTS);
 	m_pClipper = NULL;
+	m_clipInverse = false;
 	m_scalex = m_scaley = 1;
 }
 
@@ -1455,6 +1456,8 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 			params.Add(cmd.Mid(3)), cmd = cmd.Left(3);
 		else if(!cmd.Find(L"fs"))
 			params.Add(cmd.Mid(2)), cmd = cmd.Left(2);
+		else if(!cmd.Find(L"iclip"))
+			;
 		else if(!cmd.Find(L"i"))
 			params.Add(cmd.Mid(1)), cmd = cmd.Left(1);
 		else if(!cmd.Find(L"kt") || !cmd.Find(L"kf") || !cmd.Find(L"ko"))
@@ -1573,7 +1576,7 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 				? (n == 0 ? FW_NORMAL : n == 1 ? FW_BOLD : n >= 100 ? n : org.fontWeight)
 				: org.fontWeight;
 		}
-		else if(cmd == L"clip")
+		else if(cmd == L"clip" || cmd == L"iclip")
 		{
 			if(params.GetCount() == 1 && !sub->m_pClipper)
 			{
@@ -1587,6 +1590,9 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStringW str, STSStyle& 
 			else if(params.GetCount() == 4)
 			{
 				CRect r;
+
+				if(cmd == L"iclip") // TODO: Also support inverse vector clips?
+					sub->m_clipInverse = true;
 
 				r.SetRect(
 					wcstol(params[0], NULL, 10),
@@ -2458,6 +2464,13 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
 
 		p = p2;
 
+		// Rectangles for inverse clip
+		CRect iclipRect[4];
+		iclipRect[0] = CRect(0, 0, spd.w, clipRect.top);
+		iclipRect[1] = CRect(0, clipRect.top, clipRect.left, clipRect.bottom);
+		iclipRect[2] = CRect(clipRect.right, clipRect.top, spd.w, clipRect.bottom);
+		iclipRect[3] = CRect(0, clipRect.bottom, spd.w, spd.h);
+
 		pos = s->GetHeadPosition();
 		while(pos) 
 		{
@@ -2467,7 +2480,17 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
 				: (s->m_scrAlignment%3) == 0 ? org.x - l->m_width
 				:							   org.x - (l->m_width/2);
 
-			bbox2 |= l->PaintShadow(spd, clipRect, pAlphaMask, p, org2, m_time, alpha);
+			if (s->m_clipInverse)
+			{
+				bbox2 |= l->PaintShadow(spd, iclipRect[0], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintShadow(spd, iclipRect[1], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintShadow(spd, iclipRect[2], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintShadow(spd, iclipRect[3], pAlphaMask, p, org2, m_time, alpha);
+			}
+			else
+			{
+				bbox2 |= l->PaintShadow(spd, clipRect, pAlphaMask, p, org2, m_time, alpha);
+			}
 
 			p.y += l->m_ascent + l->m_descent;
 		}
@@ -2483,7 +2506,17 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
 				: (s->m_scrAlignment%3) == 0 ? org.x - l->m_width
 				:							   org.x - (l->m_width/2);
 
-			bbox2 |= l->PaintOutline(spd, clipRect, pAlphaMask, p, org2, m_time, alpha);
+			if (s->m_clipInverse)
+			{
+				bbox2 |= l->PaintOutline(spd, iclipRect[0], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintOutline(spd, iclipRect[1], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintOutline(spd, iclipRect[2], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintOutline(spd, iclipRect[3], pAlphaMask, p, org2, m_time, alpha);
+			}
+			else
+			{
+				bbox2 |= l->PaintOutline(spd, clipRect, pAlphaMask, p, org2, m_time, alpha);
+			}
 
 			p.y += l->m_ascent + l->m_descent;
 		}
@@ -2499,7 +2532,17 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
 				: (s->m_scrAlignment%3) == 0 ? org.x - l->m_width
 				:							   org.x - (l->m_width/2);
 
-			bbox2 |= l->PaintBody(spd, clipRect, pAlphaMask, p, org2, m_time, alpha);
+			if (s->m_clipInverse)
+			{
+				bbox2 |= l->PaintBody(spd, iclipRect[0], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintBody(spd, iclipRect[1], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintBody(spd, iclipRect[2], pAlphaMask, p, org2, m_time, alpha);
+				bbox2 |= l->PaintBody(spd, iclipRect[3], pAlphaMask, p, org2, m_time, alpha);
+			}
+			else
+			{
+				bbox2 |= l->PaintBody(spd, clipRect, pAlphaMask, p, org2, m_time, alpha);
+			}
 
 			p.y += l->m_ascent + l->m_descent;
 		}

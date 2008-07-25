@@ -172,6 +172,7 @@ public:
 
 	CRect m_rect, m_clip;
 	int m_topborder, m_bottomborder;
+	bool m_clipInverse;
 
 	double m_scalex, m_scaley;
 
