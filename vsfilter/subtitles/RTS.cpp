@@ -703,7 +703,9 @@ CRect CLine::PaintOutline(SubPicDesc& spd, CRect& clipRect, BYTE* pAlphaMask, CP
 
 			if(w->m_style.borderStyle == 0)
 			{
-				bbox |= w->Draw(spd, clipRect, pAlphaMask, x, y, sw, false, true);
+				// Always draw border part of widened region
+				// Draw fill part of widened region only if there isn't a chance the real fill is transculent
+				bbox |= w->Draw(spd, clipRect, pAlphaMask, x, y, sw, !(w->m_style.alpha[0]||w->m_style.alpha[1]||alpha), true);
 			}
 			else if(w->m_style.borderStyle == 1 && w->m_pOpaqueBox)
 			{
