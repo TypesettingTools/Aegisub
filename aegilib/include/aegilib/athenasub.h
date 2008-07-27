@@ -41,6 +41,7 @@
 
 #include "tr1.h"
 #include "exception.h"
+#include "libathenasub.h"
 #include "model.h"
 #include "view.h"
 #include "controller.h"

@@ -164,15 +164,27 @@
 			Name="Include"
 			>
 			<File
+				RelativePath=".\include\aegilib\api.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\athenastring.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\athenasub.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\athenatime.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\aegilib\fastbuffer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\gorgonstring.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\gorgonsub.h"
+				RelativePath=".\include\aegilib\selection.h"
 				>
 			</File>
 			<File
@@ -426,6 +438,26 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\section_entry_style.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\selection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\stdint.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Lib"
+			>
+			<File
+				RelativePath=".\src\libathenasub.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\libathenasub.h"
 				>
 			</File>
 		</Filter>

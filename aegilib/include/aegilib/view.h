@@ -35,6 +35,7 @@
 
 #pragma once
 #include "athenastring.h"
+#include "api.h"
 #include <list>
 
 namespace Athenasub {

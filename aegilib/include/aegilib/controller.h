@@ -37,6 +37,7 @@
 #include "athenastring.h"
 #include "tr1.h"
 #include "format.h"
+#include "api.h"
 
 namespace Athenasub {
 	
@@ -72,5 +73,7 @@ namespace Athenasub {
 
 		const FormatPtr GetFormat() const;
 	};
+
+	typedef shared_ptr<Controller> ControllerPtr;
 
 }

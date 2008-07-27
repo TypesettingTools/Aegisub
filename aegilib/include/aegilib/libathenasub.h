@@ -33,24 +33,22 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-
 #pragma once
-#include "athenastring.h"
-#include "api.h"
 
-////////////////////
-// Helper functions
+#include "tr1.h"
+
 namespace Athenasub {
 
-	// Version
-	String GetLibraryName();
-	String GetLibraryVersionString();
-	String GetLibraryURL();
+	class Model;
+	typedef shared_ptr<Model> ModelPtr;
 
-	// Host application
-	void SetHostApplicationName(const String name);
-	void SetHostApplicationURL(const String name);
-	String GetHostApplicationName();
-	String GetHostApplicationURL();
+	class LibAthenaSub {
+	public:
+		LibAthenaSub(const char* hostName);
+
+		ModelPtr CreateModel();
+	};
 
 }
+
+extern "C" Athenasub::LibAthenaSub* CreateLibAthenasub(const char* hostName);

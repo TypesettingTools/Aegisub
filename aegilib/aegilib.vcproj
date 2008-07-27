@@ -121,7 +121,7 @@
 				EnableFiberSafeOptimizations="false"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="include/aegilib"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS;ATHENA_DLL;ATHENA_EXPORTS"
 				RuntimeLibrary="2"
 				OpenMP="false"
 				UsePrecompiledHeader="2"
@@ -180,6 +180,10 @@
 		<Filter
 			Name="Include"
 			>
+			<File
+				RelativePath=".\include\aegilib\api.h"
+				>
+			</File>
 			<File
 				RelativePath=".\include\aegilib\athenastring.h"
 				>

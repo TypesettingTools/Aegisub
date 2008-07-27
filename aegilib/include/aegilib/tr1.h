@@ -39,8 +39,8 @@
 // Include the Technical Report 1 headers
 // This is necessary because some compilers put them on different places
 
-#include <tr1/memory>
-#include <tr1/array>
+#include <memory>
+#include <array>
 
 namespace Athenasub {
 	using std::tr1::shared_ptr;

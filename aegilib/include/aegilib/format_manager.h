@@ -35,6 +35,7 @@
 
 #pragma once
 #include "format.h"
+#include "api.h"
 
 namespace Athenasub {
 

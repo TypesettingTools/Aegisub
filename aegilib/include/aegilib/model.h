@@ -39,6 +39,7 @@
 #include <wx/wfstream.h>
 #include "actionlist.h"
 #include "section.h"
+#include "api.h"
 
 namespace Athenasub {
 
@@ -59,6 +60,7 @@ namespace Athenasub {
 		typedef std::list<ViewPtr> ViewList;
 		typedef std::list<ActionListPtr> ActionStack;
 		typedef shared_ptr<Format> FormatPtr;
+		typedef shared_ptr<Controller> ControllerPtr;
 
 	private:
 		std::vector<SectionPtr> sections;
@@ -90,8 +92,12 @@ namespace Athenasub {
 		void Save(wxOutputStream &output,const FormatPtr format=FormatPtr(),const String encoding=L"UTF-8");
 
 	public:
+		ControllerPtr CreateController();
+
 		const FormatPtr GetFormat() const { return format; }
 		void AddListener(ViewPtr listener);
 	};
+
+	typedef shared_ptr<Model> ModelPtr;
 
 }

@@ -243,3 +243,11 @@ String Model::GetRedoMessage(const String owner) const
 	if (CanRedo()) return redoStack.back()->GetName();
 	return L"";
 }
+
+
+//////////////////////////////////////
+// Create a controller for this model
+ControllerPtr Athenasub::Model::CreateController()
+{
+	return ControllerPtr(new Controller(*this));
+}

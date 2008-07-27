@@ -39,6 +39,7 @@
 #include "athenastring.h"
 #include "section_entry.h"
 #include "selection.h"
+#include "api.h"
 
 namespace Athenasub {
 

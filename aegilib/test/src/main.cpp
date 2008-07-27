@@ -33,6 +33,7 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+#define ATHENA_DLL
 #include <aegilib/athenasub.h>
 #include <wx/wfstream.h>
 #include <iostream>
@@ -49,26 +50,26 @@ int main()
 
 	try {
 		// Set up the lib
-		FormatManager::InitializeFormats();
-		Athenasub::SetHostApplicationName(L"Aegilib test program");
+		//FormatManager::InitializeFormats();
+		//Athenasub::SetHostApplicationName(L"Aegilib test program");
+		LibAthenaSub* lib = CreateLibAthenasub("Aegisub test program");
 
 		// Subtitles model
-		Model subs;
-		Controller control(subs);
+		ModelPtr subs = lib->CreateModel();
+		ControllerPtr control = subs->CreateController();
 		wxStopWatch timer;
 
 		// Load subtitles
 		cout << "Loading file... ";
 		timer.Start();
-		control.LoadFile(L"subs_in.ass",L"UTF-8");
+		control->LoadFile(L"subs_in.ass",L"UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
-		//system("pause");
 
 		// Save subtitles
 		cout << "Saving file... ";
 		timer.Start();
-		control.SaveFile(L"subs_out.ass",L"UTF-8");
+		control->SaveFile(L"subs_out.ass",L"UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
 
@@ -81,7 +82,7 @@ int main()
 		cout << "Executing action " << n << " times... ";
 		timer.Start();
 		for (size_t i=0;i<n;i++) {
-			ActionListPtr actions = control.CreateActionList(L"Test");
+			ActionListPtr actions = control->CreateActionList(L"Test");
 			Selection selection;
 			selection.AddRange(Range(0,5000));
 			selection.AddRange(Range(4500,5500));
@@ -101,7 +102,7 @@ int main()
 		// Rollback
 		cout << "Undoing " << n << " times... ";
 		for (size_t i=0;i<n-1;i++) {
-			control.Undo();
+			control->Undo();
 		}
 		cout << "Done.\n";
 
@@ -109,20 +110,20 @@ int main()
 		cout << "Undoing and redoing " << n*10 << " times... ";
 		timer.Start();
 		for (size_t i=0;i<n*10;i++) {
-			control.Undo();
-			control.Redo();
+			control->Undo();
+			control->Redo();
 		}
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Get style test
-		StyleConstPtr style = control.GetStyle(L"japro1_star");
+		StyleConstPtr style = control->GetStyle(L"japro1_star");
 		cout << "Style " << style->GetName().mb_str() << " font is " << style->GetFontName().mb_str() << " " << style->GetFontSize() << ".\n";
 
 		// Save a few more
-		control.SaveFile(L"subs_out2.ass",L"UTF-8");
-		control.Undo();
-		control.SaveFile(L"subs_out3.ass",L"UTF-8");
+		control->SaveFile(L"subs_out2.ass",L"UTF-8");
+		control->Undo();
+		control->SaveFile(L"subs_out3.ass",L"UTF-8");
 	}
 
 	catch (std::exception &e) {

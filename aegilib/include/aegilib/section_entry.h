@@ -37,6 +37,7 @@
 #include "athenastring.h"
 #include "tr1.h"
 #include "deltacoder.h"
+#include "api.h"
 
 namespace Athenasub {
 

@@ -104,7 +104,7 @@ namespace Athenasub {
 		void Execute(Model &model);
 	};
 
-	// Modify several line
+	// Modify several lines
 	class ActionModifyBatch : public Action {
 	private:
 		std::vector<shared_ptr<Entry> > entries;

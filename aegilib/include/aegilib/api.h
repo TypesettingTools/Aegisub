@@ -33,24 +33,14 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+#ifdef ATHENA_DLL
+#ifdef ATHENA_EXPORTS
+#define ATHENA_API __declspec(dllexport)
+#else
+#define ATHENA_API __declspec(dllimport)
+#endif
+#else
+#define ATHENA_API
+#endif
 
-#pragma once
-#include "athenastring.h"
-#include "api.h"
-
-////////////////////
-// Helper functions
-namespace Athenasub {
-
-	// Version
-	String GetLibraryName();
-	String GetLibraryVersionString();
-	String GetLibraryURL();
-
-	// Host application
-	void SetHostApplicationName(const String name);
-	void SetHostApplicationURL(const String name);
-	String GetHostApplicationName();
-	String GetHostApplicationURL();
-
-}
+#pragma warning(disable: 4251)

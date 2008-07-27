@@ -37,6 +37,7 @@
 #include "athenastring.h"
 #include "section_entry.h"
 #include "tr1.h"
+#include "api.h"
 #include <list>
 #include <map>
 
