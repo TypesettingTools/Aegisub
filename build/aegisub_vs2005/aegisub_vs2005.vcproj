@@ -519,6 +519,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\aegisub\audio_provider_downmix.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\aegisub\audio_provider_dummy.cpp"
 					>
 				</File>
@@ -1801,6 +1805,14 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\subtitle_format_srt.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\subtitle_format_transtation.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\subtitle_format_transtation.h"
 				>
 			</File>
 			<File
