@@ -34,36 +34,25 @@
 //
 
 #pragma once
-#include <vector>
-#include "range.h"
+#include "exception.h"
 
 namespace Athenasub {
 
-	// Selection class
-	class Selection {
+	// Range class
+	class Range {
 	private:
-		std::vector<Range> ranges;
-		size_t count;
-		void UpdateCount();
+		size_t start,end;
 
 	public:
-		Selection();
+		Range() : start(0), end(0) {}
+		Range(size_t _start,size_t _end) : start(_start), end(_end) {}
 
-		void AddLine(size_t line) { AddRange(Range(line,line+1)); }
-		void AddRange(const Range &range);
-		void RemoveLine(size_t line) { RemoveRange(Range(line,line+1)); }
-		void RemoveRange(const Range &range);
-		void AddSelection (const Selection &param);
-		void RemoveSelection (const Selection &param);
-		void NormalizeRanges ();
-
-		size_t GetCount() const { return count; }
-		size_t GetRanges() const { return ranges.size(); }
-		size_t GetLine(size_t n) const;
-		size_t GetLineInRange(size_t n,size_t range) const { return ranges.at(range).GetLine(n); }
-		size_t GetLinesInRange(size_t range) const { return ranges.at(range).GetSize(); }
-		bool IsContiguous() const { return GetRanges() <= 1; }
-
+		size_t GetLine(size_t n) const {
+			if (start+n < end) return start+n;
+			else THROW_ATHENA_EXCEPTION(Exception::Out_Of_Range);
+		}
+		size_t GetSize() const { return end-start; }
+		size_t GetStart() const { return start; }
+		size_t GetEnd() const { return end; }
 	};
-
 }

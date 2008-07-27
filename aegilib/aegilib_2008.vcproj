@@ -40,6 +40,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="include/aegilib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
@@ -109,6 +110,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
@@ -181,6 +183,10 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\fastbuffer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\range.h"
 				>
 			</File>
 			<File

@@ -152,12 +152,3 @@ void Selection::RemoveSelection (const Selection &param)
 {
 	(void) param;
 }
-
-
-/////////////////////
-// Get line in range
-size_t Range::GetLine(size_t n) const
-{
-	if (start+n < end) return start+n;
-	else THROW_ATHENA_EXCEPTION(Exception::Out_Of_Range);
-}
