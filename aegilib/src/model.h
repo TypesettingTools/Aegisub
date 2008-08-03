@@ -34,42 +34,60 @@
 //
 
 #pragma once
-#include "athenastring.h"
-#include "tr1.h"
-#include "section_entry.h"
+#include <list>
+#include <vector>
+#include <wx/wfstream.h>
+#include "athenasub.h"
+#include "actionlist.h"
+#include "section.h"
+#include "api.h"
 
 namespace Athenasub {
-	// Prototypes
-	class FormatHandler;
-	class Model;
 
-	// Format interface
-	class Format {
+	// Model class
+	// Stores the subtitle data
+	class CModel : public IModel {
+		friend class CFormatHandler;
+		friend class CActionList;
+		friend class CController;
+		friend class CAction;
+
+	private:
+		std::vector<CSection> sections;
+		ActionStack undoStack;
+		ActionStack redoStack;
+		ViewList listeners;
+		bool readOnly;
+		Format format;
+
+		void ProcessActionList(ActionList actionList,int type=0);
+
+		String GetUndoMessage(const String owner=L"") const;
+		String GetRedoMessage(const String owner=L"") const;
+		bool CanUndo(const String owner=L"") const;
+		bool CanRedo(const String owner=L"") const;
+		void Undo(const String owner=L"");
+		void Redo(const String owner=L"");
+		void ActivateStack(ActionStack stack,bool isUndo,const String &owner);
+
+		void DispatchNotifications(Notification notification) const;
+
+		void Clear();
+		void Load(wxInputStream &input,Format format=Format(),const String encoding=L"");
+		void Save(wxOutputStream &output,Format format=Format(),const String encoding=L"UTF-8");
+
+	protected:
+		void AddSection(String name);
+		Section GetSection(String name) const;
+		Section GetSectionByIndex(size_t index) const;
+		size_t GetSectionCount() const;
+
 	public:
-		virtual ~Format() {}
-
-		virtual String GetName() const = 0;
-		virtual StringArray GetReadExtensions() const = 0;
-		virtual StringArray GetWriteExtensions() const = 0;
-		virtual shared_ptr<FormatHandler> GetHandler(Model &model) const = 0;
-
-		virtual bool CanStoreText() const { return false; }
-		virtual bool CanStoreImages() const { return false; }
-		virtual bool CanUseTime() const { return false; }
-		virtual bool CanUseFrames() const { return false; }
-
-		virtual bool HasStyles() const { return false; }
-		virtual bool HasMargins() const { return false; }
-		virtual bool HasActors() const { return false; }
-		virtual bool HasUserField() const { return false; }
-		virtual String GetUserFieldName() const { return L""; }
-
-		virtual int GetTimingPrecision() const { return 10; }	// In milliseconds
-		virtual int GetMaxTime() const { return 36000000-10; }	// In milliseconds, default 9h 59min 59.99s
-
-		virtual DialoguePtr CreateDialogue() const = 0;
-		virtual StylePtr CreateStyle() const = 0;
+		Controller CreateController();
+		Format GetFormat() const { return format; }
+		void AddListener(View listener);
 	};
-	typedef shared_ptr<Format> FormatPtr;
+
+	typedef shared_ptr<CModel> ModelPtr;
 
 }

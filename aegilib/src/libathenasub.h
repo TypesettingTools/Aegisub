@@ -33,35 +33,18 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-
 #pragma once
-#include "exception.h"
-#include "colour.h"
-#include "section_entry.h"
 
+#include "tr1.h"
+#include "interfaces.h"
 
 namespace Athenasub {
 
-	// Style class
-	class Style : public Entry {
-	private:
-		static const bool dodgeWarning = true;
-		void ThrowUnsupported() const { if (dodgeWarning) THROW_ATHENA_EXCEPTION(Exception::Unsupported_Format_Feature); }
-
+	class CLibAthenaSub : public ILibAthenaSub {
 	public:
-		// Destructor
-		virtual ~Style() {}
+		CLibAthenaSub(const char* hostName);
 
-		// Type
-		SectionEntryType GetType() const { return SECTION_ENTRY_STYLE; }
-		Style *GetAsStyle() { return this; }
-
-		// Read accessors
-		virtual String GetName() const=0;
-		virtual String GetFontName() const { ThrowUnsupported(); return L""; }
-		virtual float GetFontSize() const { ThrowUnsupported(); return 0.0f; }
-		virtual Colour GetColour(int n) const { (void) n; ThrowUnsupported(); return Colour(); }
-		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); return 0; }
+		Model CreateModel();
 	};
 
 }

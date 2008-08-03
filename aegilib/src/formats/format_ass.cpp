@@ -89,8 +89,8 @@ StringArray FormatASS2::GetWriteExtensions() const
 
 ///////////////
 // Constructor
-FormatHandlerASS::FormatHandlerASS(Model &_model,int version)
-: FormatHandler(_model), formatVersion(version)
+FormatHandlerASS::FormatHandlerASS(CModel &_model,int version)
+: CFormatHandler(_model), formatVersion(version)
 {
 }
 

@@ -33,27 +33,34 @@
 // Contact: mailto:amz@aegisub.net
 //
 
+
 #pragma once
-#include "format.h"
-#include "api.h"
+#include "athenasub.h"
+#include "colour.h"
+
 
 namespace Athenasub {
 
-	// Format manager class
-	class FormatManager {
+	// Style class
+	class CStyle : public IStyle {
 	private:
-		static std::vector<const FormatPtr> formats;
-		FormatManager() {}
+		static const bool dodgeWarning = true;
+		void ThrowUnsupported() const { if (dodgeWarning) THROW_ATHENA_EXCEPTION(Exception::Unsupported_Format_Feature); }
 
 	public:
-		static void AddFormat(const FormatPtr format);
-		static void InitializeFormats();
-		static void ClearFormats();
+		// Destructor
+		virtual ~CStyle() {}
 
-		static int GetFormatCount();
-		static const FormatPtr GetFormatByIndex(const int index);
-		static const FormatPtr GetFormatFromFilename(const String &filename,bool read);
-		static const FormatPtr GetFormatFromName(const String &name);
+		// Type
+		SectionEntryType GetType() const { return SECTION_ENTRY_STYLE; }
+		Style GetAsStyle() { return Style(this); }
+
+		// Read accessors
+		virtual String GetName() const=0;
+		virtual String GetFontName() const { ThrowUnsupported(); return L""; }
+		virtual float GetFontSize() const { ThrowUnsupported(); return 0.0f; }
+		//virtual IColour& GetColour(int n) const { (void) n; ThrowUnsupported(); return Colour(); }
+		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); return 0; }
 	};
 
 }

@@ -34,7 +34,6 @@
 //
 
 #pragma once
-#include "format.h"
 #include "format_handler.h"
 #include "format_ass_dialogue.h"
 #include "format_ass_style.h"
@@ -46,21 +45,21 @@
 namespace Athenasub {
 
 	// Prototypes
-	class Model;
+	class CModel;
 	class TextFileWriter;
 
 	// Advanced Substation Alpha format handler
-	class FormatHandlerASS : public FormatHandler {
+	class FormatHandlerASS : public CFormatHandler {
 	private:
 		int formatVersion;
 
-		EntryPtr MakeEntry(const String &data,SectionPtr section,int version);
+		Entry MakeEntry(const String &data,SectionPtr section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
 		void WriteSection(TextFileWriter &writer,SectionPtr section);
 		void MakeValid();
 
 	public:
-		FormatHandlerASS(Model &model,int version);
+		FormatHandlerASS(CModel &model,int version);
 		~FormatHandlerASS();
 
 		void Load(wxInputStream &file,const String encoding);
@@ -79,14 +78,14 @@ namespace Athenasub {
 		bool HasMargins() const { return true; }
 		bool HasActors() const { return true; }
 
-		DialoguePtr CreateDialogue() const { return DialoguePtr(new DialogueASS()); }
-		StylePtr CreateStyle() const { return StylePtr(new StyleASS()); }
+		Dialogue CreateDialogue() const { return Dialogue(new DialogueASS()); }
+		Style CreateStyle() const { return Style(new StyleASS()); }
 	};
 
 	// Substation Alpha
 	class FormatSSA : public FormatASSFamily {
 	public:
-		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,0)); }
+		FormatHandler GetHandler(CModel &model) const { return FormatHandler(new FormatHandlerASS(model,0)); }
 		String GetName() const { return L"Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
@@ -95,7 +94,7 @@ namespace Athenasub {
 	// Advanced Substation Alpha
 	class FormatASS : public FormatASSFamily {
 	public:
-		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,1)); }
+		FormatHandler GetHandler(CModel &model) const { return FormatHandler(new FormatHandlerASS(model,1)); }
 		String GetName() const { return L"Advanced Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
@@ -104,7 +103,7 @@ namespace Athenasub {
 	// Advanced Substation Alpha 2
 	class FormatASS2 : public FormatASSFamily {
 	public:
-		FormatHandlerPtr GetHandler(Model &model) const { return FormatHandlerPtr(new FormatHandlerASS(model,2)); }
+		FormatHandler GetHandler(CModel &model) const { return FormatHandler(new FormatHandlerASS(model,2)); }
 		String GetName() const { return L"Advanced Substation Alpha 2"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;

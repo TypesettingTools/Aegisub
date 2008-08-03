@@ -34,8 +34,8 @@
 //
 
 #define ATHENA_DLL
-#include <aegilib/athenasub.h>
 #include <wx/wfstream.h>
+#include <athenasub/athenawin.h>
 #include <iostream>
 #include <wx/stopwatch.h>
 #include "text_file_reader.h"
@@ -50,13 +50,16 @@ int main()
 
 	try {
 		// Set up the lib
-		//FormatManager::InitializeFormats();
-		//Athenasub::SetHostApplicationName(L"Aegilib test program");
-		LibAthenaSub* lib = CreateLibAthenasub("Aegisub test program");
+		HMODULE module = LoadLibrary(_T("athenasub.dll"));
+		if (!module) {
+			cout << "Failed to load library, aborting.\n";
+			return 1;
+		}
+		LibAthenaSub lib = Athenasub::Create(module,"Aegilib test program");
 
 		// Subtitles model
-		ModelPtr subs = lib->CreateModel();
-		ControllerPtr control = subs->CreateController();
+		Model subs = lib->CreateModel();
+		Controller control = subs->CreateController();
 		wxStopWatch timer;
 
 		// Load subtitles
@@ -82,15 +85,15 @@ int main()
 		cout << "Executing action " << n << " times... ";
 		timer.Start();
 		for (size_t i=0;i<n;i++) {
-			ActionListPtr actions = control->CreateActionList(L"Test");
-			Selection selection;
-			selection.AddRange(Range(0,5000));
-			selection.AddRange(Range(4500,5500));
-			selection.AddRange(Range(9000,9100));
-			std::vector<EntryPtr> entries = actions->ModifyLines(selection,L"Events");
+			ActionList actions = control->CreateActionList(L"Test");
+			Selection selection = control->CreateSelection();
+			selection->AddRange(Range(0,5000));
+			selection->AddRange(Range(4500,5500));
+			selection->AddRange(Range(9000,9100));
+			std::vector<Entry> entries = actions->ModifyLines(selection,L"Events");
 			size_t len = entries.size();
 			for (size_t i=0;i<len;i++) {
-				DialoguePtr diag = dynamic_pointer_cast<Dialogue> (entries[i]);
+				Dialogue diag = dynamic_pointer_cast<IDialogue> (entries[i]);
 				diag->SetStartTime(diag->GetStartTime() - 55555);
 				diag->SetEndTime(diag->GetEndTime() + 5555);
 			}
@@ -117,7 +120,7 @@ int main()
 		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Get style test
-		StyleConstPtr style = control->GetStyle(L"japro1_star");
+		ConstStyle style = control->GetStyle(L"japro1_star");
 		cout << "Style " << style->GetName().mb_str() << " font is " << style->GetFontName().mb_str() << " " << style->GetFontSize() << ".\n";
 
 		// Save a few more
@@ -130,15 +133,5 @@ int main()
 		cout << "\n\nException: " << e.what() << endl << endl;
 	}
 
-	if (false) {
-		wchar_t myArray[] = { 0xD834, 0xDD1E, 0 };
-		String str = wxString(myArray);
-		cout << "Length: " << str.Length() << ". Contents: " << str[0] << "," << str[1] << endl;
-		wxCharBuffer buf = str.mb_str(wxConvUTF8);
-		unsigned char *chr = (unsigned char *) buf.data();
-		cout << "UTF-8 Length: " << strlen(buf) << ". Contents: " << (size_t)chr[0] << "," << (size_t)chr[1] << "," << (size_t)chr[2] << "," << (size_t)chr[3] << endl;
-		str = wxString(buf,wxConvUTF8);
-		cout << "Length: " << str.Length() << ". Contents: " << str[0] << "," << str[1] << endl;
-	}
 	return true;
 }

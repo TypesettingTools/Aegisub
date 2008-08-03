@@ -33,22 +33,24 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "athenasub.h"
+#include "libathenasub.h"
+#include "format_handler.h"
+#include "format_manager.h"
 using namespace Athenasub;
 
 
-extern "C" LibAthenaSub* CreateLibAthenasub(const char* hostName) {
-	return new LibAthenaSub(hostName);
+extern "C" ILibAthenaSub* CreateLibAthenasub(const char* hostName) {
+	return new CLibAthenaSub(hostName);
 }
 
 
-LibAthenaSub::LibAthenaSub(const char* hostName) {
+CLibAthenaSub::CLibAthenaSub(const char* hostName) {
 	(void) hostName;
-	Athenasub::SetHostApplicationName(String(hostName,wxConvUTF8));
+	//Athenasub::SetHostApplicationName(String(hostName,wxConvUTF8));
 	FormatManager::InitializeFormats();
 }
 
 
-ModelPtr LibAthenaSub::CreateModel() {
-	return ModelPtr(new Model());
+Model CLibAthenaSub::CreateModel() {
+	return Model(new CModel());
 }

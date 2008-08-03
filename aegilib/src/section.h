@@ -34,27 +34,48 @@
 //
 
 #pragma once
+#include "athenasub.h"
+#include "section_entry.h"
+#include <list>
+#include <map>
 
-#ifndef UNICODE
-#error "This library requires unicode support."
-#endif
+namespace Athenasub {
 
-#include "tr1.h"
-#include "exception.h"
-#include "libathenasub.h"
-#include "model.h"
-#include "view.h"
-#include "controller.h"
-#include "notification.h"
-#include "athenastring.h"
-#include "format.h"
-#include "format_handler.h"
-#include "format_manager.h"
-#include "actionlist.h"
-#include "section.h"
-#include "section_entry_dialogue.h"
-#include "section_entry_style.h"
-#include "athenatime.h"
-#include "colour.h"
-#include "utils.h"
-#include "version.h"
+	// Section class
+	class CSection : public ISection {
+	private:
+		std::vector<Entry> entries;
+		std::map<String,String> properties;
+		std::map<String,Entry> index;
+		String name;
+
+	public:
+		CSection(String name);
+		~CSection() {}
+
+		// Section name
+		void SetName(const String& newName) { name = newName; }
+		const String& GetName() const { return name; }
+		
+		// Script properties
+		void SetProperty(const String &key,const String &value);
+		void UnsetProperty(const String &key);
+		String GetProperty(const String &key) const;
+		bool HasProperty(const String &key) const;
+		size_t GetPropertyCount() const;
+		String GetPropertyName(size_t index) const;
+
+		// Indexed
+		Entry GetFromIndex(String key) const;
+
+		// Entries
+		void AddEntry(Entry entry,int pos=-1);
+		void RemoveEntryByIndex(size_t index);
+		void RemoveEntry(Entry entry);
+		Entry GetEntry(size_t index) const;
+		Entry& GetEntryRef(size_t index) const;
+		size_t GetEntryCount() const;
+	};
+	typedef shared_ptr<CSection> SectionPtr;
+
+}

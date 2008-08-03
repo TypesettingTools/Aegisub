@@ -35,23 +35,25 @@
 
 
 #include "Athenasub.h"
+#include "colour.h"
+#include "utils.h"
 using namespace Athenasub;
 
 
 ////////////////
 // Constructors
-Colour::Colour ()
+CColour::CColour ()
 {
 	r = g = b = a = 0;
 }
-Colour::Colour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha)
+CColour::CColour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha)
 {
 	r = red;
 	g = green;
 	b = blue;
 	a = alpha;
 }
-Colour::Colour (int red,int green,int blue,int alpha)
+CColour::CColour (int red,int green,int blue,int alpha)
 {
 	SetRed(red);
 	SetGreen(green);
@@ -62,15 +64,15 @@ Colour::Colour (int red,int green,int blue,int alpha)
 
 ////////////////////////
 // Set colour component
-void Colour::SetRed(int red) { r = (unsigned char) Mid(0,red,255); }
-void Colour::SetGreen(int green) { g = (unsigned char) Mid(0,green,255); }
-void Colour::SetBlue(int blue) { b = (unsigned char) Mid(0,blue,255); }
-void Colour::SetAlpha(int alpha) { a = (unsigned char) Mid(0,alpha,255); }
+void CColour::SetRed(int red) { r = (unsigned char) Mid(0,red,255); }
+void CColour::SetGreen(int green) { g = (unsigned char) Mid(0,green,255); }
+void CColour::SetBlue(int blue) { b = (unsigned char) Mid(0,blue,255); }
+void CColour::SetAlpha(int alpha) { a = (unsigned char) Mid(0,alpha,255); }
 
 
 //////////////
 // Parse text
-void Colour::Parse(String value,bool reverse)
+void CColour::Parse(String value,bool reverse)
 {
 	// Prepare
 	unsigned char c;
@@ -110,7 +112,7 @@ void Colour::Parse(String value,bool reverse)
 
 /////////////////////////////
 // Generate Visual Basic hex
-String Colour::GetVBHex(bool withAlpha,bool withHeader,bool withFooter) const
+String CColour::GetVBHex(bool withAlpha,bool withHeader,bool withFooter) const
 {
 	wxString work;
 	if (withHeader) work += _T("&H");

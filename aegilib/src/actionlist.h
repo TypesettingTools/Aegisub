@@ -34,33 +34,50 @@
 //
 
 #pragma once
+#include <list>
+#include "action.h"
 #include "athenastring.h"
+#include "section_entry.h"
+#include "selection.h"
+#include "api.h"
 #include "model.h"
-#include "tr1.h"
+#include "interfaces.h"
 
 namespace Athenasub {
 
-	// Format handler interface
-	class FormatHandler {
+	// Prototypes
+	class CController;
+
+	// ActionList class
+	class CActionList : public IActionList {
+		friend class CModel;
+		friend class CController;
+
 	private:
-		Model &model;
+		String actionName;
+		String owner;
+		Model model;
+		std::list<Action> actions;
+		bool valid;
+		bool undoAble;
 
-	protected:
-		virtual ~FormatHandler() {}
-
-		Model &GetModel() const { return model; }
-
-		void AddSection(String name) { model.AddSection(name); }
-		SectionPtr GetSection(String name) const { return model.GetSection(name); }
-		SectionPtr GetSectionByIndex(size_t index) const { return model.GetSectionByIndex(index); }
-		size_t GetSectionCount() const { return model.GetSectionCount(); }
+		CActionList(Model model,const String actionName,const String owner,bool undoAble);
+		void Start(const String actionName);
+		void AddActionStart(const Action action);
 
 	public:
-		FormatHandler(Model &_model) : model(_model) {}
+		virtual ~CActionList();
 
-		virtual void Load(wxInputStream &file,const String encoding) = 0;
-		virtual void Save(wxOutputStream &file,const String encoding) = 0;
+		virtual String GetName() const { return actionName; }
+		virtual String GetOwner() const { return owner; }
+
+		virtual void AddAction(const Action action);
+		virtual void Finish();
+
+		virtual void InsertLine(Entry line,int position=-1,const String section=L"");
+		virtual void RemoveLine(int position,const String section);
+		virtual Entry ModifyLine(int position,const String section);
+		virtual std::vector<Entry> ModifyLines(Selection selection,const String section);
 	};
-	typedef shared_ptr<FormatHandler> FormatHandlerPtr;
 
 }

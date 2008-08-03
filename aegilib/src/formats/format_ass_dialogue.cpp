@@ -97,8 +97,8 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		}
 
 		// Get times
-		time[0].Parse(tkn.GetString());
-		time[1].Parse(tkn.GetString());
+		time[0].ParseString(tkn.GetString());
+		time[1].ParseString(tkn.GetString());
 
 		// Get style and actor
 		text[1] = tkn.GetString(true);

@@ -34,13 +34,13 @@
 //
 
 #pragma once
-#include "deltacoder.h"
+#include "interfaces.h"
 
 namespace Athenasub {
 
 	// Delta coder
 	class DialogueASS;
-	class DialogueASSDeltaCoder : public DeltaCoder {
+	class DialogueASSDeltaCoder : public IDeltaCoder {
 	private:
 		void GetDelta(int mask,char *dst,shared_ptr<DialogueASS> to) const;
 

@@ -40,7 +40,7 @@ using namespace Athenasub;
 
 ///////////////
 // Constructor
-Section::Section(String _name)
+CSection::CSection(String _name)
 {
 	name = _name;
 }
@@ -48,7 +48,7 @@ Section::Section(String _name)
 
 ///////////////////
 // Append an entry
-void Section::AddEntry(EntryPtr entry,int pos)
+void CSection::AddEntry(Entry entry,int pos)
 {
 	// Insert to entry list
 	if (pos == -1) entries.push_back(entry);
@@ -63,10 +63,10 @@ void Section::AddEntry(EntryPtr entry,int pos)
 
 /////////////////////////
 // Removes the nth entry
-void Section::RemoveEntryByIndex(size_t i)
+void CSection::RemoveEntryByIndex(size_t i)
 {
 	// Get entry iterator and erase
-	std::vector<EntryPtr>::iterator entry = entries.begin()+i;
+	std::vector<Entry>::iterator entry = entries.begin()+i;
 	entries.erase(entry);
 
 	// If it's indexable, remove it from index as well
@@ -76,7 +76,7 @@ void Section::RemoveEntryByIndex(size_t i)
 
 /////////////////////////////////
 // Removes an entry by its value
-void Section::RemoveEntry(EntryPtr entry)
+void CSection::RemoveEntry(Entry entry)
 {
 	size_t len = entries.size();
 	for (size_t i=0;i<len;i++) {
@@ -91,15 +91,7 @@ void Section::RemoveEntry(EntryPtr entry)
 
 ////////////////////////////
 // Retrieves entry by index
-EntryPtr Section::GetEntry(size_t i) const
-{
-	return entries[i];
-}
-
-
-/////////////////////////////////////
-// Retrieves a reference to an entry
-EntryPtr& Section::GetEntryRef(size_t i)
+Entry CSection::GetEntry(size_t i) const
 {
 	return entries[i];
 }
@@ -107,7 +99,7 @@ EntryPtr& Section::GetEntryRef(size_t i)
 
 /////////////////////////
 // Get number of entries
-size_t Section::GetEntryCount() const
+size_t CSection::GetEntryCount() const
 {
 	return entries.size();
 }
@@ -115,7 +107,7 @@ size_t Section::GetEntryCount() const
 
 //////////////////
 // Set a property
-void Section::SetProperty(const String &key,const String &value)
+void CSection::SetProperty(const String &key,const String &value)
 {
 	properties[key] = value;
 }
@@ -123,7 +115,7 @@ void Section::SetProperty(const String &key,const String &value)
 
 //////////////////////
 // Removes a property
-void Section::UnsetProperty(const String &key)
+void CSection::UnsetProperty(const String &key)
 {
 	std::map<String,String>::iterator iter = properties.find(key);
 	if (iter != properties.end()) properties.erase(iter);
@@ -132,7 +124,7 @@ void Section::UnsetProperty(const String &key)
 
 //////////////////////////
 // Get a property's value
-String Section::GetProperty(const String &key) const
+String CSection::GetProperty(const String &key) const
 {
 	std::map<String,String>::const_iterator iter = properties.find(key);
 	if (iter != properties.end()) return iter->second;
@@ -142,7 +134,7 @@ String Section::GetProperty(const String &key) const
 
 ///////////////////////////////
 // Checks if it has a property
-bool Section::HasProperty(const String &key) const
+bool CSection::HasProperty(const String &key) const
 {
 	return properties.find(key) != properties.end();
 }
@@ -150,7 +142,7 @@ bool Section::HasProperty(const String &key) const
 
 //////////////////////
 // Get property count
-size_t Section::GetPropertyCount() const
+size_t CSection::GetPropertyCount() const
 {
 	return properties.size();
 }
@@ -158,7 +150,7 @@ size_t Section::GetPropertyCount() const
 
 ///////////////////////////////////
 // Get name of a property by index
-String Section::GetPropertyName(size_t n) const
+String CSection::GetPropertyName(size_t n) const
 {
 	std::map<String,String>::const_iterator iter=properties.begin();
 	for (size_t i=0 ; iter!=properties.end() ; iter++,i++) {
@@ -170,9 +162,9 @@ String Section::GetPropertyName(size_t n) const
 
 ///////////////////////
 // Retrieve from index
-EntryPtr Section::GetFromIndex(String key) const
+Entry CSection::GetFromIndex(String key) const
 {
-	std::map<String,EntryPtr>::const_iterator result = index.find(key);
+	std::map<String,Entry>::const_iterator result = index.find(key);
 	if (result != index.end()) return result->second;
-	return EntryPtr();
+	return Entry();
 }

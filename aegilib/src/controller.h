@@ -34,36 +34,39 @@
 //
 
 #pragma once
-#include <vector>
-#include "range.h"
+#include "athenasub.h"
 
 namespace Athenasub {
+	
+	// Controller class
+	class CController : public IController {
+		friend class CModel;
 
-	// Selection class
-	class Selection {
 	private:
-		std::vector<Range> ranges;
-		size_t count;
-		void UpdateCount();
+		Model model;
+		CController (Model model);
 
 	public:
-		Selection();
+		virtual ActionList CreateActionList(const String title,const String owner=L"",bool undoAble=true);
+		virtual Selection CreateSelection();
 
-		void AddLine(size_t line) { AddRange(Range(line,line+1)); }
-		void AddRange(const Range &range);
-		void RemoveLine(size_t line) { RemoveRange(Range(line,line+1)); }
-		void RemoveRange(const Range &range);
-		void AddSelection (const Selection &param);
-		void RemoveSelection (const Selection &param);
-		void NormalizeRanges ();
+		virtual void LoadFile(const String filename,const String encoding=L"");
+		virtual void SaveFile(const String filename,const String encoding=L"UTF-8");
 
-		size_t GetCount() const { return count; }
-		size_t GetRanges() const { return ranges.size(); }
-		size_t GetLine(size_t n) const;
-		size_t GetLineInRange(size_t n,size_t range) const { return ranges.at(range).GetLine(n); }
-		size_t GetLinesInRange(size_t range) const { return ranges.at(range).GetSize(); }
-		bool IsContiguous() const { return GetRanges() <= 1; }
+		virtual bool CanUndo(const String owner=L"") const;
+		virtual bool CanRedo(const String owner=L"") const;
+		virtual void Undo(const String owner=L"");
+		virtual void Redo(const String owner=L"");
 
+		virtual Dialogue CreateDialogue() const;
+		virtual Style CreateStyle() const;
+
+		virtual ConstDialogue GetDialogue(size_t n) const;
+		virtual ConstStyle GetStyle(size_t n) const;
+		virtual ConstStyle GetStyle(String name) const;
+		virtual ConstEntry GetEntry(size_t n,String section) const;
+
+		virtual const Format GetFormat() const;
 	};
 
 }

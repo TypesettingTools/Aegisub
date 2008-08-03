@@ -55,8 +55,8 @@ VoidPtr DialogueASSDeltaCoder::EncodeDelta(VoidPtr _from,VoidPtr _to,bool withTe
 	unsigned short mask = 0;
 	if (from->isComment != to->isComment) mask |= 0x0001;
 	if (from->layer != to->layer) mask |= 0x0002;
-	if (from->time[0] != to->time[0]) mask |= 0x0004;
-	if (from->time[1] != to->time[1]) mask |= 0x0008;
+	if (from->time[0].GetMS() != to->time[0].GetMS()) mask |= 0x0004;
+	if (from->time[1].GetMS() != to->time[1].GetMS()) mask |= 0x0008;
 	for (size_t i=0;i<4;i++) {
 		if (from->margin[i] != to->margin[i]) mask |= 0x0010 << i;
 		if (withTextFields && from->text[i] != to->text[i]) mask |= 0x0100 << i;

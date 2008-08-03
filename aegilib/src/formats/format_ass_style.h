@@ -34,21 +34,21 @@
 //
 
 #pragma once
-#include "section_entry_style.h"
-#include "serialize.h"
+#include "../section_entry_style.h"
+#include "../serialize.h"
 #include "tr1.h"
 
 namespace Athenasub {
 
 	// Style
-	class StyleASS : public Style, public SerializeText {
+	class StyleASS : public CStyle, public SerializeText {
 	private:
 		String name;
 		String font;
 		float fontSize;
 		int formatVersion;
 
-		array<Colour,5> colour;	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
+		array<CColour,5> colour;	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
 		array<int,4> margin;
 
 		bool bold;
@@ -80,7 +80,7 @@ namespace Athenasub {
 
 		// Basic features
 		String GetDefaultGroup() const;
-		EntryPtr Clone() const { return EntryPtr(new StyleASS(*this)); }
+		Entry Clone() const { return Entry(new StyleASS(*this)); }
 
 		// Indexing
 		virtual bool IsIndexable() const { return true; }
@@ -90,7 +90,7 @@ namespace Athenasub {
 		String GetName() const { return name; }
 		String GetFontName() const { return font; }
 		float GetFontSize() const { return fontSize; }
-		Colour GetColour(int n) const { return colour.at(n); }
+		const IColour& GetColour(int n) const { return colour.at(n); }
 		int GetMargin(int n) const { return margin.at(n); }
 	};
 

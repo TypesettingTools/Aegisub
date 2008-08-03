@@ -34,12 +34,13 @@
 //
 
 #include "Athenasub.h"
+#include "athenatime.h"
 using namespace Athenasub;
 
 
 //////////////////////
 // Generates a string
-String Time::GetString(int ms_precision,int h_precision) const
+String CTime::GetString(int ms_precision,int h_precision) const
 {
 	// Enforce sanity
 	ms_precision = Mid(0,ms_precision,3);
@@ -109,7 +110,7 @@ String Time::GetString(int ms_precision,int h_precision) const
 
 ///////////////////
 // Parses a string
-void Time::Parse(const String &data)
+void CTime::ParseString(const String &data)
 {
 	// Break into an array of values
 	array<size_t,4> values;

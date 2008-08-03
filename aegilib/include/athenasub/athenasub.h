@@ -34,22 +34,12 @@
 //
 
 #pragma once
-#include "athenastring.h"
+
 #include "api.h"
-#include <list>
+#include "tr1.h"
+#include "exception.h"
+#include "interfaces.h"
+#include "range.h"
 
-namespace Athenasub {
-	// Prototypes
-	class Model;
-	class Notification;
-	
-	// View interface
-	// Implement this to listen to modifications in a model
-	class View {
-	public:
-		virtual ~View();
 
-		void Register(Model &model);
-		virtual void Notify(const Notification &notification) = 0;
-	};
-}
+extern "C" Athenasub::ILibAthenaSub* CreateLibAthenasub(const char* hostName);

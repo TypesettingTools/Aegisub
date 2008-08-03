@@ -34,70 +34,25 @@
 //
 
 #pragma once
-#include <list>
-#include <vector>
-#include <wx/wfstream.h>
-#include "actionlist.h"
-#include "section.h"
-#include "api.h"
+#include "athenasub.h"
 
 namespace Athenasub {
 
-	// Prototypes
-	class View;
-	typedef shared_ptr<View> ViewPtr;
-	class Notification;
-	class Format;
-	
-	// Model class
-	// Stores the subtitle data
-	class Model {
-		friend class FormatHandler;
-		friend class ActionList;
-		friend class Controller;
-		friend class Action;
-
-		typedef std::list<ViewPtr> ViewList;
-		typedef std::list<ActionListPtr> ActionStack;
-		typedef shared_ptr<Format> FormatPtr;
-		typedef shared_ptr<Controller> ControllerPtr;
-
+	// Format manager class
+	class FormatManager {
 	private:
-		std::vector<SectionPtr> sections;
-		ActionStack undoStack;
-		ActionStack redoStack;
-		ViewList listeners;
-		bool readOnly;
-		FormatPtr format;
-
-		void ProcessActionList(const ActionList &actionList,int type=0);
-
-		String GetUndoMessage(const String owner=L"") const;
-		String GetRedoMessage(const String owner=L"") const;
-		bool CanUndo(const String owner=L"") const;
-		bool CanRedo(const String owner=L"") const;
-		void Undo(const String owner=L"");
-		void Redo(const String owner=L"");
-		void ActivateStack(ActionStack &stack,bool isUndo,const String &owner);
-
-		void DispatchNotifications(const Notification &notification) const;
-
-		void AddSection(String name);
-		SectionPtr GetSection(String name) const;
-		SectionPtr GetSectionByIndex(size_t index) const;
-		size_t GetSectionCount() const;
-
-		void Clear();
-		void Load(wxInputStream &input,const FormatPtr format=FormatPtr(),const String encoding=L"");
-		void Save(wxOutputStream &output,const FormatPtr format=FormatPtr(),const String encoding=L"UTF-8");
+		static std::vector<Format> formats;
+		FormatManager() {}
 
 	public:
-		ControllerPtr CreateController();
+		static void AddFormat(Format format);
+		static void InitializeFormats();
+		static void ClearFormats();
 
-		const FormatPtr GetFormat() const { return format; }
-		void AddListener(ViewPtr listener);
+		static int GetFormatCount();
+		static const Format GetFormatByIndex(const int index);
+		static const Format GetFormatFromFilename(const String &filename,bool read);
+		static const Format GetFormatFromName(const String &name);
 	};
-
-	typedef shared_ptr<Model> ModelPtr;
 
 }

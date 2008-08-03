@@ -33,13 +33,14 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "Athenasub.h"
+#include "actionlist.h"
+#include "model.h"
 using namespace Athenasub;
 
 
 ///////////////
 // Constructor
-ActionList::ActionList(Model &_model,String _actionName,const String _owner,bool _undoAble)
+CActionList::CActionList(Model _model,String _actionName,const String _owner,bool _undoAble)
 : model(_model), owner(_owner), undoAble(_undoAble)
 {
 	valid = false;
@@ -49,14 +50,14 @@ ActionList::ActionList(Model &_model,String _actionName,const String _owner,bool
 
 //////////////
 // Destructor
-ActionList::~ActionList()
+CActionList::~CActionList()
 {
 }
 
 
 //////////////////////////////
 // Add an action to the queue
-void ActionList::AddAction(const ActionPtr action)
+void CActionList::AddAction(const Action action)
 {
 	if (!valid) THROW_ATHENA_EXCEPTION(Exception::Invalid_ActionList);
 	actions.push_back(action);
@@ -69,7 +70,7 @@ void ActionList::AddAction(const ActionPtr action)
 
 ///////////////////////////////////////////
 // Add an action to the start of the queue
-void ActionList::AddActionStart(const ActionPtr action)
+void CActionList::AddActionStart(const Action action)
 {
 	if (!valid) THROW_ATHENA_EXCEPTION(Exception::Invalid_ActionList);
 	actions.push_front(action);
@@ -82,7 +83,7 @@ void ActionList::AddActionStart(const ActionPtr action)
 
 /////////////////////////////
 // Starts performing actions
-void ActionList::Start(const String name)
+void CActionList::Start(const String name)
 {
 	if (valid) Finish();
 	actionName = name;
@@ -92,10 +93,10 @@ void ActionList::Start(const String name)
 
 ////////////////////////
 // Ends the action list
-void ActionList::Finish()
+void CActionList::Finish()
 {
 	if (valid) {
-		model.ProcessActionList(*this);
+		model->ProcessActionList(ActionList(this));
 		actions.clear();
 		valid = false;
 	}
@@ -104,29 +105,29 @@ void ActionList::Finish()
 
 //////////////////////////////////
 // Create an "insert line" action
-void ActionList::InsertLine(EntryPtr line,int position,const String section)
+void CActionList::InsertLine(Entry line,int position,const String section)
 {
-	ActionPtr action = ActionPtr (new ActionInsert(line,position,section));
+	Action action = Action (new ActionInsert(line,position,section));
 	AddAction(action);
 }
 
 
 /////////////////////////////////
 // Create a "remove line" action
-void ActionList::RemoveLine(int position,const String section)
+void CActionList::RemoveLine(int position,const String section)
 {
-	ActionPtr action = ActionPtr (new ActionRemove(position,section));
+	Action action = Action (new ActionRemove(position,section));
 	AddAction(action);
 }
 
 
 /////////////////////////////////
 // Insert a "modify line" action
-EntryPtr ActionList::ModifyLine(int position,const String section)
+Entry CActionList::ModifyLine(int position,const String section)
 {
-	SectionPtr sect = model.GetSection(section);
-	EntryPtr entry = sect->GetEntry(position)->Clone();
-	ActionPtr action = ActionPtr (new ActionModify(entry,position,section,false));
+	Section sect = model->GetSection(section);
+	Entry entry = sect->GetEntry(position)->Clone();
+	Action action = Action (new ActionModify(entry,position,section,false));
 	AddAction(action);
 	return entry;
 }
@@ -134,24 +135,24 @@ EntryPtr ActionList::ModifyLine(int position,const String section)
 
 ////////////////////////////////////////
 // Insert a "modify lines" batch action
-std::vector<EntryPtr> ActionList::ModifyLines(Selection selection,const String section)
+std::vector<Entry> CActionList::ModifyLines(Selection selection,const String section)
 {
 	// Get section
-	SectionPtr sect = model.GetSection(section);
+	Section sect = model->GetSection(section);
 
 	// Generate entries
-	std::vector<EntryPtr> entries(selection.GetCount());
-	size_t len = selection.GetRanges();
+	std::vector<Entry> entries(selection->GetCount());
+	size_t len = selection->GetRanges();
 	size_t n = 0;
 	for (size_t i=0;i<len;i++) {
-		size_t rLen = selection.GetLinesInRange(i);
+		size_t rLen = selection->GetLinesInRange(i);
 		for (size_t j=0;j<rLen;j++) {
-			entries[n++] = sect->GetEntry(selection.GetLineInRange(j,i))->Clone();
+			entries[n++] = sect->GetEntry(selection->GetLineInRange(j,i))->Clone();
 		}
 	}
 
 	// Generate the action
-	ActionPtr action = ActionPtr (new ActionModifyBatch(entries,std::vector<VoidPtr>(),selection,section,false));
+	Action action = Action (new ActionModifyBatch(entries,std::vector<VoidPtr>(),selection,section,false));
 	AddAction(action);
 	return entries;
 }

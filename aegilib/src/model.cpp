@@ -34,12 +34,13 @@
 //
 
 #include "Athenasub.h"
+#include "model.h"
 using namespace Athenasub;
 
 
 /////////////////////////////////////////////////////////
 // Adds a listener to be notified whenever things change
-void Model::AddListener(ViewPtr listener)
+void CModel::AddListener(View listener)
 {
 	wxASSERT(listener);
 	listeners.push_back(listener);
@@ -48,29 +49,29 @@ void Model::AddListener(ViewPtr listener)
 
 ////////////////////////
 // Notify all listeners
-void Model::DispatchNotifications(const Notification &notification) const
+void CModel::DispatchNotifications(Notification notification) const
 {
 	for (ViewList::const_iterator cur=listeners.begin();cur!=listeners.end();cur++) {
-		(*cur)->Notify(notification);
+		//(*cur)->Notify(notification);
 	}
 }
 
 
 ////////////////////////////
 // Processes an action list
-void Model::ProcessActionList(const ActionList &_actionList,int type)
+void CModel::ProcessActionList(ActionList _actionList,int type)
 {
 	// Copy the list
-	ActionListPtr actions = ActionListPtr(new ActionList(_actionList));
+	ActionList actions = ActionList(new CActionList(_actionList));
 
 	// Setup undo
-	ActionListPtr undo = ActionListPtr(new ActionList(actions->model,actions->actionName,actions->owner,actions->undoAble));
+	ActionList undo = ActionList(new CActionList(actions->model,actions->actionName,actions->owner,actions->undoAble));
 	ActionStack *stack;
 	if (type == 1) stack = &redoStack;
 	else stack = &undoStack;
 
 	// Execute actions
-	std::list<ActionPtr>::const_iterator cur;
+	std::list<Action>::const_iterator cur;
 	for (cur=actions->actions.begin();cur!=actions->actions.end();cur++) {
 		// Inserts the opposite into the undo action first
 		if (actions->undoAble) undo->AddActionStart((*cur)->GetAntiAction(*this));
@@ -92,7 +93,7 @@ void Model::ProcessActionList(const ActionList &_actionList,int type)
 
 //////////////////
 // Load subtitles
-void Model::Load(wxInputStream &input,const FormatPtr _format,const String encoding)
+void CModel::Load(wxInputStream &input,const FormatPtr _format,const String encoding)
 {
 	// Autodetect format
 	if (!_format) {
@@ -119,7 +120,7 @@ void Model::Load(wxInputStream &input,const FormatPtr _format,const String encod
 
 //////////////////
 // Save subtitles
-void Model::Save(wxOutputStream &output,const FormatPtr _format,const String encoding)
+void CModel::Save(wxOutputStream &output,const FormatPtr _format,const String encoding)
 {
 	// Use another format
 	if (_format && _format != format) {
@@ -138,17 +139,17 @@ void Model::Save(wxOutputStream &output,const FormatPtr _format,const String enc
 
 /////////////////////////
 // Inserts a new section
-void Model::AddSection(String name)
+void CModel::AddSection(String name)
 {
 	SectionPtr prev = GetSection(name);
 	if (prev) THROW_ATHENA_EXCEPTION(Exception::Section_Already_Exists);
-	sections.push_back(SectionPtr(new Section(name)));
+	sections.push_back(SectionPtr(new CSection(name)));
 }
 
 
 //////////////////
 // Gets a section
-SectionPtr Model::GetSection(String name) const
+SectionPtr CModel::GetSection(String name) const
 {
 	size_t len = sections.size();
 	for (size_t i=0;i<len;i++) {
@@ -160,7 +161,7 @@ SectionPtr Model::GetSection(String name) const
 
 ////////////////////////
 // Get section by index
-SectionPtr Model::GetSectionByIndex(size_t index) const
+SectionPtr CModel::GetSectionByIndex(size_t index) const
 {
 	return sections.at(index);
 }
@@ -168,7 +169,7 @@ SectionPtr Model::GetSectionByIndex(size_t index) const
 
 /////////////////////
 // Get section count
-size_t Model::GetSectionCount() const
+size_t CModel::GetSectionCount() const
 {
 	return sections.size();
 }
@@ -176,7 +177,7 @@ size_t Model::GetSectionCount() const
 
 //////////
 // Clear
-void Model::Clear()
+void CModel::Clear()
 {
 	sections.clear();
 	undoStack.clear();
@@ -186,12 +187,12 @@ void Model::Clear()
 
 //////////////////
 // Can undo/redo?
-bool Model::CanUndo(const String owner) const
+bool CModel::CanUndo(const String owner) const
 {
 	(void) owner;
 	return undoStack.size() > 0;
 }
-bool Model::CanRedo(const String owner) const
+bool CModel::CanRedo(const String owner) const
 {
 	(void) owner;
 	return redoStack.size() > 0;
@@ -200,7 +201,7 @@ bool Model::CanRedo(const String owner) const
 
 ///////////////////
 // Perform an undo
-void Model::Undo(const String owner)
+void CModel::Undo(const String owner)
 {
 	ActivateStack(undoStack,true,owner);
 }
@@ -208,7 +209,7 @@ void Model::Undo(const String owner)
 
 //////////////////
 // Perform a redo
-void Model::Redo(const String owner)
+void CModel::Redo(const String owner)
 {
 	ActivateStack(redoStack,false,owner);
 }
@@ -216,7 +217,7 @@ void Model::Redo(const String owner)
 
 /////////////////////
 // Perform undo/redo
-void Model::ActivateStack(ActionStack &stack,bool isUndo,const String &owner)
+void CModel::ActivateStack(ActionStack &stack,bool isUndo,const String &owner)
 {
 	// TODO: do something with this
 	(void) owner;
@@ -231,13 +232,13 @@ void Model::ActivateStack(ActionStack &stack,bool isUndo,const String &owner)
 
 //////////////////////////
 // Get undo/redo messages
-String Model::GetUndoMessage(const String owner) const
+String CModel::GetUndoMessage(const String owner) const
 {
 	(void) owner;
 	if (CanUndo()) return undoStack.back()->GetName();
 	return L"";
 }
-String Model::GetRedoMessage(const String owner) const
+String CModel::GetRedoMessage(const String owner) const
 {
 	(void) owner;
 	if (CanRedo()) return redoStack.back()->GetName();
@@ -247,7 +248,7 @@ String Model::GetRedoMessage(const String owner) const
 
 //////////////////////////////////////
 // Create a controller for this model
-ControllerPtr Athenasub::Model::CreateController()
+ControllerPtr Athenasub::CModel::CreateController()
 {
-	return ControllerPtr(new Controller(*this));
+	return ControllerPtr(new CController(*this));
 }

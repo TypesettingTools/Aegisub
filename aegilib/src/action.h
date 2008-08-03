@@ -36,44 +36,27 @@
 #pragma once
 #include "athenastring.h"
 #include "selection.h"
+#include "interfaces.h"
 
 namespace Athenasub {
-	// Prototypes
-	class Model;
-	class Entry;
-	class Action;
-	class Section;
-	typedef shared_ptr<Action> ActionPtr;
-	typedef shared_ptr<Section> SectionPtr;
-
-	// Action interface
-	class Action {
-	protected:
-		SectionPtr GetSection(const Model &model,const String &name) const;
-
-	public:
-		virtual ~Action() {}
-		virtual ActionPtr GetAntiAction(const Model &model) const =0;
-		virtual void Execute(Model &model) =0;
-	};
 
 	// Insert line
-	class ActionInsert : public Action {
+	class ActionInsert : public IAction {
 	private:
-		shared_ptr<Entry> entry;
+		Entry entry;
 		const String section;
 		int lineNumber;
 
 	public:
-		ActionInsert(shared_ptr<Entry> entry,int line,const String &section);
+		ActionInsert(Entry entry,int line,const String &section);
 		~ActionInsert() {}
 
-		ActionPtr GetAntiAction(const Model &model) const;
-		void Execute(Model &model);
+		Action GetAntiAction(ConstModel model) const;
+		void Execute(Model model);
 	};
 
 	// Remove line
-	class ActionRemove : public Action {
+	class ActionRemove : public IAction {
 	private:
 		const String section;
 		int lineNumber;
@@ -82,42 +65,42 @@ namespace Athenasub {
 		ActionRemove(int line,const String &section);
 		~ActionRemove() {}
 
-		ActionPtr GetAntiAction(const Model &model) const;
-		void Execute(Model &model);
+		Action GetAntiAction(ConstModel model) const;
+		void Execute(Model model);
 	};
 
 	// Modify line
-	class ActionModify : public Action {
+	class ActionModify : public IAction {
 	private:
-		shared_ptr<Entry> entry;
-		shared_ptr<void> delta;
+		Entry entry;
+		VoidPtr delta;
 		const String section;
 		int lineNumber;
 		bool noTextFields;
 
 	public:
-		ActionModify(shared_ptr<Entry> entry,int line,const String &section,bool noTextFields);
+		ActionModify(Entry entry,int line,const String &section,bool noTextFields);
 		ActionModify(shared_ptr<void> delta,int line,const String &section);
 		~ActionModify() {}
 
-		ActionPtr GetAntiAction(const Model &model) const;
-		void Execute(Model &model);
+		Action GetAntiAction(ConstModel model) const;
+		void Execute(Model model);
 	};
 
 	// Modify several lines
-	class ActionModifyBatch : public Action {
+	class ActionModifyBatch : public IAction {
 	private:
-		std::vector<shared_ptr<Entry> > entries;
-		std::vector<shared_ptr<void> > deltas;
+		std::vector<Entry> entries;
+		std::vector<VoidPtr> deltas;
 		Selection selection;
 		const String section;
 		bool noTextFields;
 
 	public:
-		ActionModifyBatch(std::vector<shared_ptr<Entry> > entries,std::vector<shared_ptr<void> > deltas,Selection selection,const String &section,bool noTextFields);
+		ActionModifyBatch(std::vector<Entry> entries,std::vector<VoidPtr> deltas,Selection selection,const String &section,bool noTextFields);
 		~ActionModifyBatch() {}
 
-		ActionPtr GetAntiAction(const Model &model) const;
-		void Execute(Model &model);
+		Action GetAntiAction(ConstModel model) const;
+		void Execute(Model model);
 	};
 }

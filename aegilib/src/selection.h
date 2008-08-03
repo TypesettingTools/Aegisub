@@ -34,25 +34,37 @@
 //
 
 #pragma once
-#include "exception.h"
+#include <vector>
+#include "athenasub.h"
 
 namespace Athenasub {
 
-	// Range class
-	class Range {
+	// Selection class
+	class CSelection : public ISelection {
 	private:
-		size_t start,end;
+		std::vector<Range> ranges;
+		size_t count;
+		void UpdateCount();
+		CSelection();
 
 	public:
-		Range() : start(0), end(0) {}
-		Range(size_t _start,size_t _end) : start(_start), end(_end) {}
+		virtual ~CSelection() {}
 
-		size_t GetLine(size_t n) const {
-			if (start+n < end) return start+n;
-			else THROW_ATHENA_EXCEPTION(Exception::Out_Of_Range);
-		}
-		size_t GetSize() const { return end-start; }
-		size_t GetStart() const { return start; }
-		size_t GetEnd() const { return end; }
+		virtual void AddLine(size_t line) { AddRange(Range(line,line+1)); }
+		virtual void AddRange(const Range &range);
+		virtual void RemoveLine(size_t line) { RemoveRange(Range(line,line+1)); }
+		virtual void RemoveRange(const Range &range);
+		virtual void AddSelection (const Selection &param);
+		virtual void RemoveSelection (const Selection &param);
+		virtual void NormalizeRanges ();
+
+		virtual size_t GetCount() const { return count; }
+		virtual size_t GetRanges() const { return ranges.size(); }
+		virtual size_t GetLine(size_t n) const;
+		virtual size_t GetLineInRange(size_t n,size_t range) const { return ranges.at(range).GetLine(n); }
+		virtual size_t GetLinesInRange(size_t range) const { return ranges.at(range).GetSize(); }
+		virtual bool IsContiguous() const { return GetRanges() <= 1; }
+
 	};
+
 }

@@ -34,8 +34,8 @@
 //
 
 #include "format_ass_style.h"
-#include "tokenizer.h"
-#include "utils.h"
+#include "../tokenizer.h"
+#include "../utils.h"
 using namespace Athenasub;
 
 

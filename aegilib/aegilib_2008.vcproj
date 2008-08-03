@@ -115,7 +115,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
-				AdditionalIncludeDirectories="include/aegilib"
+				AdditionalIncludeDirectories="include/athenasub;src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="0"
@@ -166,35 +166,23 @@
 			Name="Include"
 			>
 			<File
-				RelativePath=".\include\aegilib\api.h"
+				RelativePath=".\include\athenasub\api.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\athenastring.h"
+				RelativePath=".\include\athenasub\athenasub.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\athenasub.h"
+				RelativePath=".\include\athenasub\athenawin.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\athenatime.h"
+				RelativePath=".\include\athenasub\interfaces.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\fastbuffer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\range.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\selection.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\tr1.h"
+				RelativePath=".\include\athenasub\tr1.h"
 				>
 			</File>
 		</Filter>
@@ -206,7 +194,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\controller.h"
+				RelativePath=".\src\controller.h"
 				>
 			</File>
 			<File
@@ -214,27 +202,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\model.h"
+				RelativePath=".\src\model.h"
 				>
 			</File>
 			<File
 				RelativePath=".\include\aegilib\notification.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\view.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="prec.h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\view.h"
 				>
 			</File>
 		</Filter>
@@ -250,15 +222,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\deltacoder.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\exception.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\include\aegilib\exception.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\fastbuffer.h"
 				>
 			</File>
 			<File
@@ -288,6 +260,14 @@
 			</File>
 			<File
 				RelativePath=".\src\prec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\range.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\aegilib\selection.h"
 				>
 			</File>
 			<File
@@ -327,7 +307,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\utils.h"
+				RelativePath=".\src\utils.h"
 				>
 			</File>
 			<File
@@ -342,10 +322,6 @@
 		<Filter
 			Name="Formats"
 			>
-			<File
-				RelativePath=".\include\aegilib\format.h"
-				>
-			</File>
 			<File
 				RelativePath=".\include\aegilib\format_handler.h"
 				>
@@ -415,7 +391,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\actionlist.h"
+				RelativePath=".\src\actionlist.h"
 				>
 			</File>
 		</Filter>
@@ -424,10 +400,6 @@
 			>
 			<File
 				RelativePath=".\src\section.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\section.h"
 				>
 			</File>
 			<File
@@ -463,7 +435,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\libathenasub.h"
+				RelativePath=".\src\libathenasub.h"
 				>
 			</File>
 		</Filter>

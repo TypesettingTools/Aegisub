@@ -34,49 +34,27 @@
 //
 
 #pragma once
-#include <list>
-#include "action.h"
-#include "athenastring.h"
-#include "section_entry.h"
-#include "selection.h"
-#include "api.h"
+#include "athenasub.h"
+#include "utils.h"
 
 namespace Athenasub {
 
-	// Prototypes
-	class Controller;
-
-	// ActionList class
-	class ActionList {
-		friend class Model;
-		friend class Controller;
-
+	// Time class
+	class CTime : public ITime {
 	private:
-		String actionName;
-		String owner;
-		Model &model;
-		std::list<ActionPtr> actions;
-		bool valid;
-		bool undoAble;
-
-		ActionList(Model &model,const String actionName,const String owner,bool undoAble);
-		void Start(const String actionName);
-		void AddActionStart(const ActionPtr action);
+		int ms;
 
 	public:
-		~ActionList();
+		CTime() { ms = 0; }
+		CTime(int _ms) { ms = _ms; }
 
-		String GetName() const { return actionName; }
-		String GetOwner() const { return owner; }
+		void SetMS(int milliseconds) { ms = milliseconds; }
+		int GetMS() const { return ms; }
 
-		void AddAction(const ActionPtr action);
-		void Finish();
+		String GetString(int ms_precision,int h_precision) const;
+		void ParseString(const String &data);
 
-		void InsertLine(EntryPtr line,int position=-1,const String section=L"");
-		void RemoveLine(int position,const String section);
-		EntryPtr ModifyLine(int position,const String section);
-		std::vector<EntryPtr> ModifyLines(Selection selection,const String section);
+		Time Clone() const { return Time(new CTime(*this)); }
 	};
-	typedef shared_ptr<ActionList> ActionListPtr;
 
 }

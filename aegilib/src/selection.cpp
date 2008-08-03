@@ -33,13 +33,13 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "athenasub.h"
+#include "selection.h"
 using namespace Athenasub;
 
 
 ///////////////
 // Constructor
-Selection::Selection()
+CSelection::CSelection()
 : count(0)
 {
 }
@@ -47,7 +47,7 @@ Selection::Selection()
 
 ////////////////
 // Adds a range
-void Selection::AddRange(const Range &range)
+void CSelection::AddRange(const Range &range)
 {
 	ranges.push_back(range);
 	UpdateCount();
@@ -56,7 +56,7 @@ void Selection::AddRange(const Range &range)
 
 ///////////////////
 // Removes a range
-void Selection::RemoveRange(const Range &range)
+void CSelection::RemoveRange(const Range &range)
 {
 	// TODO
 	(void) range;
@@ -66,7 +66,7 @@ void Selection::RemoveRange(const Range &range)
 
 ////////////////////////////////////////////////////////////////////
 // Normalizes all ranges, that is, gets rid of overlaps and whatnot
-void Selection::NormalizeRanges()
+void CSelection::NormalizeRanges()
 {
 	// Has anything to do?
 	if (ranges.size() == 0) return;
@@ -112,7 +112,7 @@ void Selection::NormalizeRanges()
 
 //////////////////
 // Get a specific
-size_t Selection::GetLine(size_t n) const
+size_t CSelection::GetLine(size_t n) const
 {
 	// Find the nth line
 	size_t cur = 0;
@@ -127,8 +127,8 @@ size_t Selection::GetLine(size_t n) const
 
 
 ////////////////////////////
-// Append another selection
-void Selection::AddSelection (const Selection &param)
+// Append another CSelection
+void CSelection::AddSelection (const Selection &param)
 {
 	(void) param;
 }
@@ -136,7 +136,7 @@ void Selection::AddSelection (const Selection &param)
 
 ////////////////
 // Update count
-void Selection::UpdateCount()
+void CSelection::UpdateCount()
 {
 	count = 0;
 	size_t len = ranges.size();
@@ -147,8 +147,8 @@ void Selection::UpdateCount()
 
 
 //////////////////////////////
-// Subtract another selection
-void Selection::RemoveSelection (const Selection &param)
+// Subtract another CSelection
+void CSelection::RemoveSelection (const Selection &param)
 {
 	(void) param;
 }

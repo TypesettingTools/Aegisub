@@ -34,50 +34,32 @@
 //
 
 #pragma once
-#include "athenastring.h"
-#include "section_entry.h"
+#include "athenasub.h"
+#include "model.h"
 #include "tr1.h"
-#include "api.h"
-#include <list>
-#include <map>
 
 namespace Athenasub {
 
-	// Section class
-	class Section {
+	// Format handler interface
+	class CFormatHandler : public IFormatHandler {
 	private:
-		std::vector<EntryPtr> entries;
-		std::map<String,String> properties;
-		std::map<String,EntryPtr> index;
-		String name;
+		Model model;
+
+	protected:
+		virtual ~CFormatHandler() {}
+
+		Model GetModel() const { return model; }
+
+		void AddSection(String name) { model->AddSection(name); }
+		Section GetSection(String name) const { return model->GetSection(name); }
+		Section GetSectionByIndex(size_t index) const { return model->GetSectionByIndex(index); }
+		size_t GetSectionCount() const { return model->GetSectionCount(); }
 
 	public:
-		Section(String name);
-		~Section() {}
+		CFormatHandler(Model _model) : model(_model) {}
 
-		// Section name
-		void SetName(const String& newName) { name = newName; }
-		const String& GetName() const { return name; }
-		
-		// Script properties
-		void SetProperty(const String &key,const String &value);
-		void UnsetProperty(const String &key);
-		String GetProperty(const String &key) const;
-		bool HasProperty(const String &key) const;
-		size_t GetPropertyCount() const;
-		String GetPropertyName(size_t index) const;
-
-		// Indexed
-		EntryPtr GetFromIndex(String key) const;
-
-		// Entries
-		void AddEntry(EntryPtr entry,int pos=-1);
-		void RemoveEntryByIndex(size_t index);
-		void RemoveEntry(EntryPtr entry);
-		EntryPtr GetEntry(size_t index) const;
-		EntryPtr& GetEntryRef(size_t index);
-		size_t GetEntryCount() const;
+		virtual void Load(wxInputStream &file,const String encoding) = 0;
+		virtual void Save(wxOutputStream &file,const String encoding) = 0;
 	};
-	typedef shared_ptr<Section> SectionPtr;
 
 }

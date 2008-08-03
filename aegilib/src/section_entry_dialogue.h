@@ -35,26 +35,26 @@
 
 
 #pragma once
-#include "exception.h"
-#include "athenatime.h"
+#include "athenasub.h"
 #include "section_entry.h"
 
 
 namespace Athenasub {
 
 	// Dialogue class
-	class Dialogue : public Entry {
+	class CDialogue : public IDialogue {
 	private:
 		static const bool dodgeWarning = true;
 		void ThrowUnsupported() const { if (dodgeWarning) THROW_ATHENA_EXCEPTION(Exception::Unsupported_Format_Feature); }
+		static const String& EmptyString();
 
 	public:
 		// Destructor
-		virtual ~Dialogue() {}
+		virtual ~CDialogue() {}
 
 		// Type
 		SectionEntryType GetType() const { return SECTION_ENTRY_DIALOGUE; }
-		Dialogue *GetAsDialogue() { return this; }
+		Dialogue GetAsDialogue() { return Dialogue(this); }
 
 		// Capabilities
 		virtual bool HasText() const { return false; }
@@ -67,8 +67,8 @@ namespace Athenasub {
 
 		// Read accessors
 		virtual const String& GetText() const { ThrowUnsupported(); return EmptyString(); }
-		virtual Time GetStartTime() const { ThrowUnsupported(); return 0; }
-		virtual Time GetEndTime() const { ThrowUnsupported(); return 0; }
+//		virtual ITime& GetStartTime() const { ThrowUnsupported(); return Time(); }
+//		virtual ITime& GetEndTime() const { ThrowUnsupported(); return Time(); }
 		virtual int GetStartFrame() const { ThrowUnsupported(); return 0; }
 		virtual int GetEndFrame() const { ThrowUnsupported(); return 0; }
 		virtual bool IsComment() const { ThrowUnsupported(); return false; }
@@ -78,7 +78,7 @@ namespace Athenasub {
 		virtual const String& GetActor() const { ThrowUnsupported(); return EmptyString(); }
 		virtual const String& GetUserField() const { ThrowUnsupported(); return EmptyString(); }
 
-		// Write acessors
+		// Write accessors
 		virtual void SetText(const String& text) { (void) text; ThrowUnsupported(); }
 		virtual void SetStartTime(Time start) { (void) start; ThrowUnsupported(); }
 		virtual void SetEndTime(Time end) { (void) end; ThrowUnsupported(); }

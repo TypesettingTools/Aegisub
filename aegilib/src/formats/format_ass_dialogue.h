@@ -38,15 +38,16 @@
 #include "section_entry_dialogue.h"
 #include "format_ass_dialogue_delta.h"
 #include "serialize.h"
+#include "athenatime.h"
 
 namespace Athenasub {
 
 	// Dialogue
-	class DialogueASS : public Dialogue, public SerializeText {
+	class DialogueASS : public CDialogue, public SerializeText {
 		friend class DialogueASSDeltaCoder;
 
 	private:
-		array<Time,2> time;
+		array<CTime,2> time;
 		array<String,4> text;	// 0 = text, 1 = style, 2 = actor, 3 = effect
 		array<short,4> margin;
 		int layer;
@@ -62,7 +63,7 @@ namespace Athenasub {
 
 		// Basic features
 		String GetDefaultGroup() const { return L"Events"; }
-		EntryPtr Clone() const { return EntryPtr(new DialogueASS(*this)); }
+		Entry Clone() const { return Entry(new DialogueASS(*this)); }
 		//DeltaCoderPtr GetDeltaCoder() const { return DeltaCoderPtr(new DialogueASSDeltaCoder()); }
 
 		// Capabilities
@@ -72,8 +73,8 @@ namespace Athenasub {
 		bool HasMargins() const { return true; }
 
 		// Read accessors
-		Time GetStartTime() const { return time[0]; }
-		Time GetEndTime() const { return time[1]; }
+		const ITime& GetStartTime() const { return time[0]; }
+		const ITime& GetEndTime() const { return time[1]; }
 		bool IsComment() const { return isComment; }
 		int GetLayer() const { return layer; }
 		int GetMargin(int n) const { return margin.at(n); }
@@ -83,8 +84,8 @@ namespace Athenasub {
 		const String& GetUserField() const { return text[3]; }
 
 		// Write acessors
-		void SetStartTime(Time setStart) { time[0] = setStart; }
-		void SetEndTime(Time setEnd) { time[1] = setEnd; }
+		void SetStartTime(Time setStart) { time[0].SetMS(setStart->GetMS()); }
+		void SetEndTime(Time setEnd) { time[1].SetMS(setEnd->GetMS()); }
 		void SetComment(bool _isComment) { isComment = _isComment; }
 		void SetLayer(int _layer) { layer = _layer; }
 		void SetMargin(int _margin,int value) { margin.at(_margin) = value; }

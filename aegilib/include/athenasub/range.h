@@ -34,36 +34,28 @@
 //
 
 #pragma once
-#include "athenastring.h"
+//#include "exception.h"
+#include "interfaces.h"
 
 namespace Athenasub {
 
-	// Colour class
-	class Colour {
+	// Range class
+	class Range {
 	private:
-		unsigned char r, g, b, a;
+		size_t start,end;
 
 	public:
-		Colour ();
-		Colour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha=0);
-		Colour (int red,int green,int blue,int alpha=0);
+		Range() : start(0), end(0) {}
+		Range(size_t _start,size_t _end) : start(_start), end(_end) {}
 
-		void SetRed(unsigned char red) { r = red; }
-		void SetGreen(unsigned char green) { g = green; }
-		void SetBlue(unsigned char blue) { b = blue; }
-		void SetAlpha(unsigned char alpha) { a = alpha; }
-		void SetRed(int red);
-		void SetGreen(int green);
-		void SetBlue(int blue);
-		void SetAlpha(int alpha);
-
-		unsigned char GetRed() const { return r; }
-		unsigned char GetGreen() const { return g; }
-		unsigned char GetBlue() const { return b; }
-		unsigned char GetAlpha() const { return a; }
-
-		void Parse(String str,bool reverse);
-		String GetVBHex(bool withAlpha=false,bool withHeader=true,bool withFooter=true) const;
+		size_t GetLine(size_t n) const {
+			if (start+n < end) return start+n;
+			//else THROW_ATHENA_EXCEPTION(Exception::Out_Of_Range);
+			// TODO: fixme
+			throw 0;
+		}
+		size_t GetSize() const { return end-start; }
+		size_t GetStart() const { return start; }
+		size_t GetEnd() const { return end; }
 	};
-
 }

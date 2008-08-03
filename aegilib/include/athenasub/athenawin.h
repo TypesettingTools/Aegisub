@@ -34,21 +34,15 @@
 //
 
 #pragma once
-#include "tr1.h"
+
+#include "athenasub.h"
+#include <windows.h>
+
+typedef Athenasub::ILibAthenaSub* (__stdcall *CreateLibAthenasubPtr)(const char*);
 
 namespace Athenasub {
-
-	// Void pointer prototyle
-	typedef shared_ptr<void> VoidPtr;
-
-	// Deltacoder interface
-	class DeltaCoder {
-	public:
-		virtual ~DeltaCoder() {}
-		virtual VoidPtr EncodeDelta(VoidPtr from,VoidPtr to,bool withTextFields=true) const = 0;
-		virtual VoidPtr EncodeReverseDelta(VoidPtr delta,VoidPtr object) const = 0;
-		virtual void ApplyDelta(VoidPtr delta,VoidPtr object) const = 0;
-	};
-	typedef shared_ptr<DeltaCoder> DeltaCoderPtr;
-
+	inline LibAthenaSub Create(HMODULE module,const char* hostName) {
+		CreateLibAthenasubPtr CreateLib = (CreateLibAthenasubPtr)GetProcAddress(module,"CreateLibAthenaSub");
+		return LibAthenaSub(CreateLib(hostName));
+	}
 }

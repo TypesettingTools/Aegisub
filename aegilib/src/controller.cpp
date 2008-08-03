@@ -34,13 +34,15 @@
 //
 
 #include "controller.h"
-#include "Athenasub.h"
+#include "athenasub.h"
+#include "actionlist.h"
+#include "format_manager.h"
 using namespace Athenasub;
 
 
 ///////////////
 // Constructor
-Controller::Controller(Model &_model)
+CController::CController(Model _model)
 : model(_model)
 {
 }
@@ -48,47 +50,47 @@ Controller::Controller(Model &_model)
 
 /////////////////////////
 // Create an action list
-ActionListPtr Controller::CreateActionList(const String title,const String owner,bool undoAble)
+ActionList CController::CreateActionList(const String title,const String owner,bool undoAble)
 {
-	return ActionListPtr (new ActionList(model,title,owner,undoAble));
+	return ActionList (new CActionList(model,title,owner,undoAble));
 }
 
 
 ///////////////
 // Load a file
-void Controller::LoadFile(const String filename,const String encoding)
+void CController::LoadFile(const String filename,const String encoding)
 {
-	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
+	const Format handler = FormatManager::GetFormatFromFilename(filename,true);
 	wxFFileInputStream stream(filename);
-	model.Load(stream,handler,encoding);
+	model->Load(stream,handler,encoding);
 }
 
 
 ///////////////
 // Save a file
-void Controller::SaveFile(const String filename,const String encoding)
+void CController::SaveFile(const String filename,const String encoding)
 {
-	const FormatPtr handler = FormatManager::GetFormatFromFilename(filename,true);
+	const Format handler = FormatManager::GetFormatFromFilename(filename,true);
 	wxFFileOutputStream stream(filename);
-	model.Save(stream,handler,encoding);
+	model->Save(stream,handler,encoding);
 }
 
 
 //////////////
 // Get format
-const FormatPtr Controller::GetFormat() const
+const Format CController::GetFormat() const
 {
-	return model.GetFormat();
+	return model->GetFormat();
 }
 
 
 //////////////////
 // Create entries
-DialoguePtr Controller::CreateDialogue() const
+Dialogue CController::CreateDialogue() const
 {
 	return GetFormat()->CreateDialogue();
 }
-StylePtr Controller::CreateStyle() const
+Style CController::CreateStyle() const
 {
 	return GetFormat()->CreateStyle();
 }
@@ -96,27 +98,27 @@ StylePtr Controller::CreateStyle() const
 
 ////////
 // Undo
-bool Controller::CanUndo(const String owner) const
+bool CController::CanUndo(const String owner) const
 {
-	return model.CanUndo(owner);
+	return model->CanUndo(owner);
 }
-bool Controller::CanRedo(const String owner) const
+bool CController::CanRedo(const String owner) const
 {
-	return model.CanRedo(owner);
+	return model->CanRedo(owner);
 }
-void Controller::Undo(const String owner)
+void CController::Undo(const String owner)
 {
-	model.Undo(owner);
+	model->Undo(owner);
 }
-void Controller::Redo(const String owner)
+void CController::Redo(const String owner)
 {
-	model.Redo(owner);
+	model->Redo(owner);
 }
 
 
 ////////////////////////
 // Get the nth dialogue
-DialogueConstPtr Controller::GetDialogue(size_t n) const
+ConstDialogue CController::GetDialogue(size_t n) const
 {
 	// TODO
 	(void) n;
@@ -126,7 +128,7 @@ DialogueConstPtr Controller::GetDialogue(size_t n) const
 
 /////////////////////
 // Get the nth style
-DialogueConstPtr Controller::GetStyle(size_t n) const
+ConstStyle CController::GetStyle(size_t n) const
 {
 	// TODO
 	(void) n;
@@ -136,24 +138,24 @@ DialogueConstPtr Controller::GetStyle(size_t n) const
 
 ///////////////////////
 // Get a style by name
-StyleConstPtr Controller::GetStyle(String name) const
+ConstStyle CController::GetStyle(String name) const
 {
 	// Get section
-	StylePtr dummy = CreateStyle();
+	Style dummy = CreateStyle();
 	String section = dummy->GetDefaultGroup();
-	SectionPtr sect = model.GetSection(section);
+	Section sect = model->GetSection(section);
 	if (!sect) THROW_ATHENA_EXCEPTION(Exception::Invalid_Section);
 
 	// Return from index
-	return dynamic_pointer_cast<const Style> (sect->GetFromIndex(name));
+	return dynamic_pointer_cast<const IStyle> (sect->GetFromIndex(name));
 }
 
 
 ////////////////
 // Get an entry
-EntryConstPtr Controller::GetEntry(size_t n,String section) const
+ConstEntry CController::GetEntry(size_t n,String section) const
 {
-	SectionPtr sect = model.GetSection(section);
+	Section sect = model->GetSection(section);
 	if (!sect) THROW_ATHENA_EXCEPTION(Exception::Invalid_Section);
 	return sect->GetEntry(n);
 }

@@ -34,46 +34,36 @@
 //
 
 #pragma once
-
-#include "athenastring.h"
-#include <exception>
+#include "athenasub.h"
 
 namespace Athenasub {
 
-	// Exception class
-	class Exception : public std::exception {
-	public:
-		enum ExceptionList {
-			Unknown,
-			No_Format_Handler,
-			Invalid_ActionList,
-			Section_Already_Exists,
-			Unknown_Format,
-			Parse_Error,
-			Unsupported_Format_Feature,
-			Invalid_Token,
-			Out_Of_Range,
-			Invalid_Section,
-			Internal_Error,
-			TODO
-		};
-
-		Exception(ExceptionList code);
-		Exception(ExceptionList code,const char* file,const long line);
-
-		String GetMessageString() const { return wxString(what(),wxConvLocal); }
-		int GetCode();
-
+	// Colour class
+	class CColour : public IColour {
 	private:
-		static const char* GetMessageChar(int code);
-		static const char* GetMessageFile(int code,const char *file,long line);
-		ExceptionList code;
+		unsigned char r, g, b, a;
+
+	public:
+		CColour ();
+		CColour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha=0);
+		CColour (int red,int green,int blue,int alpha=0);
+
+		void SetRed(unsigned char red) { r = red; }
+		void SetGreen(unsigned char green) { g = green; }
+		void SetBlue(unsigned char blue) { b = blue; }
+		void SetAlpha(unsigned char alpha) { a = alpha; }
+		void SetRed(int red);
+		void SetGreen(int green);
+		void SetBlue(int blue);
+		void SetAlpha(int alpha);
+
+		int GetRed() const { return r; }
+		int GetGreen() const { return g; }
+		int GetBlue() const { return b; }
+		int GetAlpha() const { return a; }
+
+		void Parse(String str,bool reverse);
+		String GetVBHex(bool withAlpha=false,bool withHeader=true,bool withFooter=true) const;
 	};
 
 }
-
-#ifdef _MSC_VER
-#define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code,__FILE__,__LINE__)
-#else
-#define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code)
-#endif

@@ -34,34 +34,18 @@
 //
 
 #pragma once
-#include "athenastring.h"
-#include "utils.h"
+#include "athenasub.h"
+
 
 namespace Athenasub {
 
-	// Time class
-	class Time {
-	private:
-		int ms;
-
+	// Section plain-text entry
+	class CPlainText : public IEntry {
 	public:
-		Time() { ms = 0; }
-		Time(int _ms) { ms = _ms; }
-
-		void SetMS(int milliseconds) { ms = milliseconds; }
-		int GetMS() const { return ms; }
-
-		String GetString(int ms_precision,int h_precision) const;
-		void Parse(const String &data);
-
-		Time operator + (const int &par) const { return Max<int>(0,ms+par); }
-		Time operator - (const int &par) const { return Max<int>(0,ms-par); }
-		bool operator == (const Time &par) const { return ms == par.ms; }
-		bool operator != (const Time &par) const { return ms != par.ms; }
-		bool operator < (const Time &par) const { return ms < par.ms; }
-		bool operator > (const Time &par) const { return ms > par.ms; }
-		bool operator <= (const Time &par) const { return ms <= par.ms; }
-		bool operator >= (const Time &par) const { return ms >= par.ms; }
+		SectionEntryType GetType() const { return SECTION_ENTRY_PLAIN; }
+		virtual ~CPlainText() {}
+		virtual String GetText() const =0;
+		virtual void SetText(const String &_data) =0;
 	};
 
 }

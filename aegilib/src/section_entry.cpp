@@ -42,34 +42,8 @@ using namespace Athenasub;
 
 /////////////////////////////////
 // Returns a static empty string
-const String& Entry::EmptyString() const
+const String& CDialogue::EmptyString()
 {
 	static const String str = _T("");
 	return str;
-}
-
-
-const PlainTextPtr Entry::GetAsPlain(const EntryPtr &ptr)
-{
-	(void) ptr; return PlainTextPtr();
-}
-const DialoguePtr Entry::GetAsDialogue(const EntryPtr &ptr)
-{
-	return dynamic_pointer_cast<Dialogue>(ptr);
-}
-const DialogueConstPtr Entry::GetAsDialogue(const EntryConstPtr &ptr)
-{
-	return dynamic_pointer_cast<const Dialogue>(ptr);
-}
-const StylePtr Entry::GetAsStyle(const EntryPtr &ptr)
-{
-	return dynamic_pointer_cast<Style>(ptr);
-}
-const AttachmentPtr Entry::GetAsFile(const EntryPtr &ptr)
-{
-	(void) ptr; return AttachmentPtr();
-}
-const RawEntryPtr Entry::GetAsRaw(const EntryPtr &ptr)
-{
-	(void) ptr; return RawEntryPtr();
 }
