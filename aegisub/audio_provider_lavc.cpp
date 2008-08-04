@@ -112,16 +112,25 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 		throw _T("ffmpeg audio provider: Failed to open audio decoder");
 
 	sample_rate = Options.AsInt(_T("Audio Sample Rate"));
-	if (!sample_rate)
-		sample_rate = codecContext->sample_rate;
+	if (!sample_rate) {
+		/* aegisub wants audio with sample rate higher than 32khz */
+		if (codecContext->sample_rate < 32000)
+			sample_rate = 48000;
+		else
+			sample_rate = codecContext->sample_rate;
+	}
 
-	/* rely on the downmixing audio provider to do downmixing for us later */
+	/* we rely on the intermediate audio provider to do downmixing for us later if necessary */
 	channels = codecContext->channels;
-	/* FIXME: this entire provider always assumes 16-bit audio. Currently that isn't a problem since
-	ffmpeg always converts everything to 16-bit, but in the future it might become one. */
-	bytes_per_sample = 2; 
 
-	/* aegisub currently supports mono only, so always resample unless it's mono with the desired samplerate */
+	/* FIXME: we need support for more audio types than just 16-bit int */
+	switch (codecContext->sample_fmt) {
+		case SAMPLE_FMT_S16: bytes_per_sample = 2; break;
+		default: 
+			throw _T("ffmpeg audio provider: Only 16-bit audio is supported");
+	}
+
+	/* initiate resampling if necessary */
 	if (sample_rate != codecContext->sample_rate) {
 		rsct = audio_resample_init(channels, channels, sample_rate, codecContext->sample_rate);
 		if (!rsct)
@@ -137,7 +146,7 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 		length = (double)lavcfile->fctx->duration / AV_TIME_BASE;
 	else
 		length = (double)stream->duration * av_q2d(stream->time_base);
-	num_samples = (int64_t)(length * sample_rate); // number of samples per channel
+	num_samples = (int64_t)(length * sample_rate); /* number of samples per channel */
 
 	buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
 	if (!buffer)
@@ -200,12 +209,13 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 		/* we're not dealing with video packets in this here provider */
 		if (packet.stream_index == audStream) {
 			int size = packet.size;
+			uint8_t *data = packet.data;
 
 			while (size > 0) {
 				int temp_output_buffer_size = AVCODEC_MAX_AUDIO_FRAME_SIZE; /* see constructor, it malloc()'s buffer to this */
 				int retval, decoded_bytes, decoded_samples;
 			
-				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, packet.data, size);
+				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, data, size);
 				if (retval <= 0)
 					throw _T("ffmpeg audio provider: failed to decode audio");
 				/* decoding succeeded but the output buffer is empty, go to next packet */
@@ -215,8 +225,9 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 				}
 
 				decoded_bytes	= temp_output_buffer_size;
-				decoded_samples = decoded_bytes / 2; /* 2 bytes per sample */
+				decoded_samples = decoded_bytes / 2; /* FIXME: stop assuming everything is 16-bit! */
 				size -= retval;
+				data += retval;
 
 				/* do we need to resample? */
 				if (rsct) {
