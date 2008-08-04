@@ -190,7 +190,7 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 
 	/* if we got asked for more samples than there are left in the stream, add zeros to the decoding buffer until
 	we have enough to fill the request */
-	memset(_buf + samples_to_decode, 0, ((count * channels) - samples_to_decode) * 2);
+	memset(_buf + samples_to_decode, 0, ((count * channels) - samples_to_decode) * bytes_per_sample);
 
 	/* do we have leftover samples from last time we were called? */
 	if (leftover_samples > 0) {
@@ -225,7 +225,7 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 				}
 
 				decoded_bytes	= temp_output_buffer_size;
-				decoded_samples = decoded_bytes / 2; /* FIXME: stop assuming everything is 16-bit! */
+				decoded_samples = decoded_bytes / bytes_per_sample; /* FIXME: stop assuming everything is 16-bit! */
 				size -= retval;
 				data += retval;
 
@@ -246,10 +246,11 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 						/* and put them aside for later */
 						overshoot_buffer = std::vector<int16_t>(&temp_output_buffer[samples_to_decode+1], &temp_output_buffer[decoded_samples+1]);
 						/* output the other samples that didn't overflow */
-						memcpy(_buf, temp_output_buffer, samples_to_decode * 2);
+						memcpy(_buf, temp_output_buffer, samples_to_decode * bytes_per_sample);
 						_buf += samples_to_decode;
 					} else {
-						memcpy(_buf, temp_output_buffer, decoded_samples * 2);
+						memcpy(_buf, temp_output_buffer, decoded_samples * bytes_per_sample);
+
 						_buf += decoded_samples;
 					}
 					
@@ -262,11 +263,13 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 						/* and put them aside for later (mm, lamb chops) */
 						overshoot_buffer = std::vector<int16_t>(&buffer[samples_to_decode+1], &buffer[decoded_samples+1]);
 						/* output the other samples that didn't overflow */
-						memcpy(_buf, buffer, samples_to_decode * 2);
+						memcpy(_buf, buffer, samples_to_decode * bytes_per_sample);
+
 						_buf += samples_to_decode;
 					} else {
 						/* just do a straight copy to buffer */
 						memcpy(_buf, buffer, decoded_bytes);
+
 						_buf += decoded_samples;
 					}
 				}
