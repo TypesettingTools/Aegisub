@@ -37,6 +37,7 @@
 #include "athenasub.h"
 #include "actionlist.h"
 #include "format_manager.h"
+#include "selection.h"
 using namespace Athenasub;
 
 
@@ -158,4 +159,11 @@ ConstEntry CController::GetEntry(size_t n,String section) const
 	Section sect = model->GetSection(section);
 	if (!sect) THROW_ATHENA_EXCEPTION(Exception::Invalid_Section);
 	return sect->GetEntry(n);
+}
+
+
+//////////////////////
+// Create a selection
+Selection CController::CreateSelection() {
+	return Selection(new CSelection());
 }

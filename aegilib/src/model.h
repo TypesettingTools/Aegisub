@@ -53,7 +53,9 @@ namespace Athenasub {
 		friend class CAction;
 
 	private:
-		std::vector<CSection> sections;
+		weak_ptr<IModel> weakThis;
+
+		std::vector<Section> sections;
 		ActionStack undoStack;
 		ActionStack redoStack;
 		ViewList listeners;
@@ -86,6 +88,8 @@ namespace Athenasub {
 		Controller CreateController();
 		Format GetFormat() const { return format; }
 		void AddListener(View listener);
+
+		void SetWeakPtr(weak_ptr<IModel> ptr) { weakThis = ptr; }
 	};
 
 	typedef shared_ptr<CModel> ModelPtr;

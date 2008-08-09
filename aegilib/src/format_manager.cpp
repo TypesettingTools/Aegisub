@@ -41,24 +41,24 @@ using namespace Athenasub;
 
 ////////
 // List
-std::vector<const FormatPtr> FormatManager::formats;
+std::vector<Format> FormatManager::formats;
 
 
 ////////////////
 // Add a format
-void FormatManager::AddFormat(const FormatPtr format)
+void FormatManager::AddFormat(const Format format)
 {
 	formats.push_back(format);
 }
 
 
 ///////////////////////////////////
-// Initialzie all built-in formats
+// Initialize all built-in formats
 void FormatManager::InitializeFormats()
 {
-	formats.push_back(FormatPtr(new FormatASS));
-	formats.push_back(FormatPtr(new FormatSSA));
-	formats.push_back(FormatPtr(new FormatASS2));
+	formats.push_back(Format(new FormatASS()));
+	formats.push_back(Format(new FormatSSA()));
+	formats.push_back(Format(new FormatASS2()));
 }
 
 
@@ -80,20 +80,20 @@ int FormatManager::GetFormatCount()
 
 ////////////
 // By index
-const FormatPtr FormatManager::GetFormatByIndex(const int index)
+const Format FormatManager::GetFormatByIndex(const int index)
 {
 	try {
 		return formats.at(index);
 	}
 	catch (...) {
-		return FormatPtr();
+		return Format();
 	}
 }
 
 
 ///////////////
 // By filename
-const FormatPtr FormatManager::GetFormatFromFilename(const String &filename,bool read)
+const Format FormatManager::GetFormatFromFilename(const String &filename,bool read)
 {
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
@@ -105,18 +105,18 @@ const FormatPtr FormatManager::GetFormatFromFilename(const String &filename,bool
 			if (filename.EndsWith(exts[j])) return formats[i];
 		}
 	}
-	return FormatPtr();
+	return Format();
 }
 
 
 //////////////////
 // By format name
-const FormatPtr FormatManager::GetFormatFromName(const String &name)
+const Format FormatManager::GetFormatFromName(const String &name)
 {
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
 		if (name == formats[i]->GetName()) return formats[i];
 	}
-	return FormatPtr();
+	return Format();
 }
 

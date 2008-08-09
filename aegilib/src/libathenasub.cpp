@@ -52,5 +52,7 @@ CLibAthenaSub::CLibAthenaSub(const char* hostName) {
 
 
 Model CLibAthenaSub::CreateModel() {
-	return Model(new CModel());
+	shared_ptr<CModel> model(new CModel());
+	model->SetWeakPtr(model);
+	return model;
 }

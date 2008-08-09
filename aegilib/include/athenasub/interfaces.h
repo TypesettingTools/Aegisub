@@ -128,7 +128,7 @@ namespace Athenasub {
 		virtual size_t GetSectionCount() const = 0;
 
 	public:
-		virtual ~IModel();
+		virtual ~IModel() {}
 
 		virtual Controller CreateController()=0;
 		virtual Format GetFormat() const=0;
@@ -338,7 +338,7 @@ namespace Athenasub {
 		virtual String GetName() const = 0;
 		virtual StringArray GetReadExtensions() const = 0;
 		virtual StringArray GetWriteExtensions() const = 0;
-		//virtual FormatHandler GetHandler(Model &model) const = 0;
+		virtual FormatHandler GetHandler(IModel &model) const = 0;
 
 		virtual bool CanStoreText() const = 0;
 		virtual bool CanStoreImages() const = 0;
@@ -363,6 +363,9 @@ namespace Athenasub {
 	class IFormatHandler {
 	public:
 		virtual ~IFormatHandler() {}
+
+		virtual void Load(wxInputStream &file,const String encoding) = 0;
+		virtual void Save(wxOutputStream &file,const String encoding) = 0;
 	};
 
 
@@ -372,10 +375,10 @@ namespace Athenasub {
 	class IAction {
 	public:
 		virtual ~IAction() {}
-		virtual Action GetAntiAction(ConstModel model) const = 0;
-		virtual void Execute(Model model) = 0;
+		virtual Action GetAntiAction(const IModel& model) const = 0;
+		virtual void Execute(IModel& model) = 0;
 
-		Section GetSection(Model model,const String &name) const { return model->GetSection(name); }
+		Section GetSection(const IModel& model,const String &name) const { return model.GetSection(name); }
 	};
 
 
@@ -387,7 +390,7 @@ namespace Athenasub {
 		virtual String GetName() const = 0;
 		virtual String GetOwner() const = 0;
 
-		virtual void AddAction(const Action action) = 0;
+		virtual void AddAction(Action action) = 0;
 		virtual void Finish() = 0;
 
 		virtual void InsertLine(Entry line,int position=-1,const String section=L"") = 0;
@@ -422,7 +425,7 @@ namespace Athenasub {
 		virtual void RemoveEntryByIndex(size_t index) = 0;
 		virtual void RemoveEntry(Entry entry) = 0;
 		virtual Entry GetEntry(size_t index) const = 0;
-		virtual Entry& GetEntryRef(size_t index) const = 0;
+		virtual Entry& GetEntryRef(size_t index) = 0;
 		virtual size_t GetEntryCount() const = 0;
 	};
 
@@ -448,8 +451,8 @@ namespace Athenasub {
 
 
 	// Operators
-	Time operator+(const ITime& p1,int p2) { Time res = p1.Clone(); res->SetMS(res->GetMS()+p2); return res; }
-	Time operator-(const ITime& p1,int p2) { Time res = p1.Clone(); res->SetMS(res->GetMS()-p2); return res; }
-	bool operator==(const ITime& p1,const ITime& p2) { return p1.GetMS() == p2.GetMS(); }
+	inline Time operator+(const ITime& p1,int p2) { Time res = p1.Clone(); res->SetMS(res->GetMS()+p2); return res; }
+	inline Time operator-(const ITime& p1,int p2) { Time res = p1.Clone(); res->SetMS(res->GetMS()-p2); return res; }
+	inline bool operator==(const ITime& p1,const ITime& p2) { return p1.GetMS() == p2.GetMS(); }
 
 }

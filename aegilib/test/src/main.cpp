@@ -50,15 +50,21 @@ int main()
 
 	try {
 		// Set up the lib
+		cout << "Loading library... ";
 		HMODULE module = LoadLibrary(_T("athenasub.dll"));
 		if (!module) {
 			cout << "Failed to load library, aborting.\n";
+			system("pause");
 			return 1;
 		}
+		cout << "Done.\nCreating library...";
 		LibAthenaSub lib = Athenasub::Create(module,"Aegilib test program");
+		cout << "Done.\n";
 
 		// Subtitles model
+		cout << "Creating model... ";
 		Model subs = lib->CreateModel();
+		cout << "Creating controller...\n";
 		Controller control = subs->CreateController();
 		wxStopWatch timer;
 

@@ -97,6 +97,14 @@ Entry CSection::GetEntry(size_t i) const
 }
 
 
+//////////////////////////////////////
+// Retrieves entry reference by index
+Entry& CSection::GetEntryRef(size_t i)
+{
+	return entries[i];
+}
+
+
 /////////////////////////
 // Get number of entries
 size_t CSection::GetEntryCount() const

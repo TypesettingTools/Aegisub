@@ -73,7 +73,7 @@ namespace Athenasub {
 		void RemoveEntryByIndex(size_t index);
 		void RemoveEntry(Entry entry);
 		Entry GetEntry(size_t index) const;
-		Entry& GetEntryRef(size_t index) const;
+		Entry& GetEntryRef(size_t index);
 		size_t GetEntryCount() const;
 	};
 	typedef shared_ptr<CSection> SectionPtr;

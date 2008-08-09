@@ -51,8 +51,8 @@ namespace Athenasub {
 		ActionInsert(Entry entry,int line,const String &section);
 		~ActionInsert() {}
 
-		Action GetAntiAction(ConstModel model) const;
-		void Execute(Model model);
+		Action GetAntiAction(const IModel& model) const;
+		void Execute(IModel& model);
 	};
 
 	// Remove line
@@ -65,8 +65,8 @@ namespace Athenasub {
 		ActionRemove(int line,const String &section);
 		~ActionRemove() {}
 
-		Action GetAntiAction(ConstModel model) const;
-		void Execute(Model model);
+		Action GetAntiAction(const IModel& model) const;
+		void Execute(IModel& model);
 	};
 
 	// Modify line
@@ -83,8 +83,8 @@ namespace Athenasub {
 		ActionModify(shared_ptr<void> delta,int line,const String &section);
 		~ActionModify() {}
 
-		Action GetAntiAction(ConstModel model) const;
-		void Execute(Model model);
+		Action GetAntiAction(const IModel& model) const;
+		void Execute(IModel& model);
 	};
 
 	// Modify several lines
@@ -100,7 +100,7 @@ namespace Athenasub {
 		ActionModifyBatch(std::vector<Entry> entries,std::vector<VoidPtr> deltas,Selection selection,const String &section,bool noTextFields);
 		~ActionModifyBatch() {}
 
-		Action GetAntiAction(ConstModel model) const;
-		void Execute(Model model);
+		Action GetAntiAction(const IModel& model) const;
+		void Execute(IModel& model);
 	};
 }

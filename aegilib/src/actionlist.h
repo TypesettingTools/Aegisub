@@ -71,7 +71,7 @@ namespace Athenasub {
 		virtual String GetName() const { return actionName; }
 		virtual String GetOwner() const { return owner; }
 
-		virtual void AddAction(const Action action);
+		virtual void AddAction(Action action);
 		virtual void Finish();
 
 		virtual void InsertLine(Entry line,int position=-1,const String section=L"");

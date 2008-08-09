@@ -41,6 +41,8 @@ namespace Athenasub {
 
 	// Selection class
 	class CSelection : public ISelection {
+		friend class CController;
+
 	private:
 		std::vector<Range> ranges;
 		size_t count;

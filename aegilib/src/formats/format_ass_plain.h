@@ -40,7 +40,7 @@
 namespace Athenasub {
 
 	// Raw line
-	class PlainASS : public PlainText, public SerializeText {
+	class PlainASS : public CPlainText, public SerializeText {
 	private:
 		String data;
 		String ToText(int param) const { (void)param; return data; }
@@ -51,7 +51,7 @@ namespace Athenasub {
 
 		// Basic features
 		String GetDefaultGroup() const { return L"Events"; }
-		EntryPtr Clone() const { return EntryPtr(new PlainASS(*this)); }
+		Entry Clone() const { return Entry(new PlainASS(*this)); }
 
 		String GetText() const { return data; }
 		void SetText(const String &_data) { data = _data; }

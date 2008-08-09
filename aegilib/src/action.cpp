@@ -48,7 +48,7 @@ ActionInsert::ActionInsert(Entry data,int line,const String &sName)
 
 /////////////////////////////////
 // Create anti-action for insert
-Action ActionInsert::GetAntiAction(ConstModel model) const
+Action ActionInsert::GetAntiAction(const IModel& model) const
 {
 	(void) model;
 	String sect = section;
@@ -59,7 +59,7 @@ Action ActionInsert::GetAntiAction(ConstModel model) const
 
 /////////////////////
 // Execute insertion
-void ActionInsert::Execute(Model model)
+void ActionInsert::Execute(IModel& model)
 {
 	// Find the section to insert it on
 	String sectionName = section;
@@ -83,9 +83,9 @@ ActionRemove::ActionRemove(int line,const String &sName)
 
 /////////////////////////////////
 // Create anti-action for remove
-Action ActionRemove::GetAntiAction(ConstModel model) const
+Action ActionRemove::GetAntiAction(const IModel& model) const
 {
-	SectionPtr sect = GetSection(model,section);
+	Section sect = GetSection(model,section);
 	Entry entry = sect->GetEntry(lineNumber);
 	return Action(new ActionInsert(entry,lineNumber,section));
 }
@@ -93,12 +93,12 @@ Action ActionRemove::GetAntiAction(ConstModel model) const
 
 ///////////////////
 // Execute removal
-void ActionRemove::Execute(Model model)
+void ActionRemove::Execute(IModel& model)
 {
 	// Find the section to remote it from
 	String sect = section;
 	if (sect.IsEmpty()) THROW_ATHENA_EXCEPTION(Exception::TODO); // TODO
-	SectionPtr section = GetSection(model,sect);
+	Section section = GetSection(model,sect);
 
 	// Remove the line
 	section->RemoveEntryByIndex(lineNumber);
@@ -118,7 +118,7 @@ ActionModify::ActionModify(shared_ptr<void> _delta,int line,const String &sName)
 
 /////////////////////////////////
 // Create anti-action for insert
-Action ActionModify::GetAntiAction(ConstModel model) const
+Action ActionModify::GetAntiAction(const IModel& model) const
 {
 	// Get section and original line
 	Section sect = GetSection(model,section);
@@ -142,7 +142,7 @@ Action ActionModify::GetAntiAction(ConstModel model) const
 
 /////////////////////
 // Execute insertion
-void ActionModify::Execute(Model model)
+void ActionModify::Execute(IModel& model)
 {
 	// Find the section to modify
 	String sectionName = section;
@@ -163,10 +163,10 @@ void ActionModify::Execute(Model model)
 ActionModifyBatch::ActionModifyBatch(std::vector<Entry> _entries, std::vector<shared_ptr<void> > _deltas, Selection _selection,const String &_section,bool _noTextFields)
 : entries(_entries), deltas(_deltas), selection(_selection), section(_section), noTextFields(_noTextFields) {}
 
-Action ActionModifyBatch::GetAntiAction(ConstModel model) const
+Action ActionModifyBatch::GetAntiAction(const IModel& model) const
 {
 	// Get section
-	SectionPtr sect = GetSection(model,section);
+	Section sect = GetSection(model,section);
 	size_t len = selection->GetCount();
 	std::vector<VoidPtr> _deltas(len);
 	std::vector<Entry> oldEntries(len);
@@ -190,7 +190,7 @@ Action ActionModifyBatch::GetAntiAction(ConstModel model) const
 	return Action(new ActionModifyBatch(oldEntries,_deltas,selection,section,noTextFields));
 }
 
-void ActionModifyBatch::Execute(Model model)
+void ActionModifyBatch::Execute(IModel& model)
 {
 	// Find the section to modify
 	size_t len = selection->GetCount();

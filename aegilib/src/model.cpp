@@ -35,6 +35,7 @@
 
 #include "Athenasub.h"
 #include "model.h"
+#include "controller.h"
 using namespace Athenasub;
 
 
@@ -62,10 +63,10 @@ void CModel::DispatchNotifications(Notification notification) const
 void CModel::ProcessActionList(ActionList _actionList,int type)
 {
 	// Copy the list
-	ActionList actions = ActionList(new CActionList(_actionList));
+	shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(*static_pointer_cast<CActionList>(_actionList)));
 
 	// Setup undo
-	ActionList undo = ActionList(new CActionList(actions->model,actions->actionName,actions->owner,actions->undoAble));
+	shared_ptr<CActionList> undo = shared_ptr<CActionList>(new CActionList(actions->model,actions->actionName,actions->owner,actions->undoAble));
 	ActionStack *stack;
 	if (type == 1) stack = &redoStack;
 	else stack = &undoStack;
@@ -93,7 +94,7 @@ void CModel::ProcessActionList(ActionList _actionList,int type)
 
 //////////////////
 // Load subtitles
-void CModel::Load(wxInputStream &input,const FormatPtr _format,const String encoding)
+void CModel::Load(wxInputStream &input,const Format _format,const String encoding)
 {
 	// Autodetect format
 	if (!_format) {
@@ -104,7 +105,7 @@ void CModel::Load(wxInputStream &input,const FormatPtr _format,const String enco
 	}
 
 	// Get handler
-	FormatHandlerPtr handler = _format->GetHandler(*this);
+	FormatHandler handler = _format->GetHandler(*this);
 	if (!handler) THROW_ATHENA_EXCEPTION(Exception::No_Format_Handler);
 
 	// Clear the model first
@@ -120,7 +121,7 @@ void CModel::Load(wxInputStream &input,const FormatPtr _format,const String enco
 
 //////////////////
 // Save subtitles
-void CModel::Save(wxOutputStream &output,const FormatPtr _format,const String encoding)
+void CModel::Save(wxOutputStream &output,const Format _format,const String encoding)
 {
 	// Use another format
 	if (_format && _format != format) {
@@ -129,7 +130,7 @@ void CModel::Save(wxOutputStream &output,const FormatPtr _format,const String en
 	}
 
 	// Get handler
-	FormatHandlerPtr handler = format->GetHandler(*this);
+	FormatHandler handler = format->GetHandler(*this);
 	if (!handler) THROW_ATHENA_EXCEPTION(Exception::No_Format_Handler);
 
 	// Load
@@ -141,15 +142,15 @@ void CModel::Save(wxOutputStream &output,const FormatPtr _format,const String en
 // Inserts a new section
 void CModel::AddSection(String name)
 {
-	SectionPtr prev = GetSection(name);
+	Section prev = GetSection(name);
 	if (prev) THROW_ATHENA_EXCEPTION(Exception::Section_Already_Exists);
-	sections.push_back(SectionPtr(new CSection(name)));
+	sections.push_back(Section(new CSection(name)));
 }
 
 
 //////////////////
 // Gets a section
-SectionPtr CModel::GetSection(String name) const
+Section CModel::GetSection(String name) const
 {
 	size_t len = sections.size();
 	for (size_t i=0;i<len;i++) {
@@ -161,7 +162,7 @@ SectionPtr CModel::GetSection(String name) const
 
 ////////////////////////
 // Get section by index
-SectionPtr CModel::GetSectionByIndex(size_t index) const
+Section CModel::GetSectionByIndex(size_t index) const
 {
 	return sections.at(index);
 }
@@ -217,13 +218,13 @@ void CModel::Redo(const String owner)
 
 /////////////////////
 // Perform undo/redo
-void CModel::ActivateStack(ActionStack &stack,bool isUndo,const String &owner)
+void CModel::ActivateStack(ActionStack stack,bool isUndo,const String &owner)
 {
 	// TODO: do something with this
 	(void) owner;
 
 	// Process list
-	ProcessActionList(*stack.back(),isUndo?1:2);
+	ProcessActionList(stack.back(),isUndo?1:2);
 
 	// Pop original
 	stack.pop_back();
@@ -246,9 +247,8 @@ String CModel::GetRedoMessage(const String owner) const
 }
 
 
-//////////////////////////////////////
-// Create a controller for this model
-ControllerPtr Athenasub::CModel::CreateController()
-{
-	return ControllerPtr(new CController(*this));
+/////////////////////
+// Create controller
+Controller CModel::CreateController() {
+	return Controller(new CController(Model(weakThis)));
 }

@@ -43,20 +43,20 @@ namespace Athenasub {
 	// Format handler interface
 	class CFormatHandler : public IFormatHandler {
 	private:
-		Model model;
+		IModel& model;
 
 	protected:
 		virtual ~CFormatHandler() {}
 
-		Model GetModel() const { return model; }
+		IModel& GetModel() const { return model; }
 
-		void AddSection(String name) { model->AddSection(name); }
-		Section GetSection(String name) const { return model->GetSection(name); }
-		Section GetSectionByIndex(size_t index) const { return model->GetSectionByIndex(index); }
-		size_t GetSectionCount() const { return model->GetSectionCount(); }
+		void AddSection(String name) { model.AddSection(name); }
+		Section GetSection(String name) const { return model.GetSection(name); }
+		Section GetSectionByIndex(size_t index) const { return model.GetSectionByIndex(index); }
+		size_t GetSectionCount() const { return model.GetSectionCount(); }
 
 	public:
-		CFormatHandler(Model _model) : model(_model) {}
+		CFormatHandler(IModel& _model) : model(_model) {}
 
 		virtual void Load(wxInputStream &file,const String encoding) = 0;
 		virtual void Save(wxOutputStream &file,const String encoding) = 0;

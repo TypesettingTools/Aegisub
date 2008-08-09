@@ -113,7 +113,7 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 	int version = 1;
 	wxString curGroup = L"-";
 	wxString prevGroup = L"-";
-	SectionPtr section = SectionPtr();
+	Section section = Section();
 
 	// Read file
 	while (reader.HasMoreLines()) {
@@ -136,7 +136,7 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 		if (cur[0] == L'[') continue;
 
 		// Create and insert line
-		EntryPtr entry = MakeEntry(cur,section,version);
+		Entry entry = MakeEntry(cur,section,version);
 		if (entry) section->AddEntry(entry);
 	}
 
@@ -171,7 +171,7 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 	size_t len = sections.size();
 	for (size_t i=0;i<len;i++) {
 		// See if it exists
-		SectionPtr section = GetSection(sections[i]);
+		Section section = GetSection(sections[i]);
 		if (section) {
 			// Add a spacer
 			if (i != 0) writer.WriteLineToFile(_T(""));
@@ -185,11 +185,11 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 
 ///////////////
 // Create line
-EntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr section,int version)
+Entry FormatHandlerASS::MakeEntry(const String &data,Section section,int version)
 {
 	// Variables
 	const String group = section->GetName();
-	EntryPtr final;
+	Entry final;
 
 	// Attachments
 	if (group == _T("Fonts") || group == _T("Graphics")) {
@@ -229,17 +229,17 @@ EntryPtr FormatHandlerASS::MakeEntry(const String &data,SectionPtr section,int v
 	// Script info
 	else if (group == _T("Script Info")) {
 		// Discard comments
-		if (data.Left(1) == _T(";")) return EntryPtr();
+		if (data.Left(1) == _T(";")) return Entry();
 
 		// Parse property
 		size_t pos = data.Find(_T(':'));
-		if (pos == wxNOT_FOUND) return EntryPtr();
+		if (pos == wxNOT_FOUND) return Entry();
 		wxString key = data.Left(pos).Trim(true).Trim(false);
 		wxString value = data.Mid(pos+1).Trim(true).Trim(false);
 
 		// Insert property
 		section->SetProperty(key,value);
-		return EntryPtr();
+		return Entry();
 	}
 
 	// Unknown group, just leave it intact
@@ -331,7 +331,7 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 
 ///////////////////////////////
 // Write a section to the file
-void FormatHandlerASS::WriteSection(TextFileWriter &writer,SectionPtr section)
+void FormatHandlerASS::WriteSection(TextFileWriter &writer,Section section)
 {
 	// Write name
 	wxString name = section->GetName();
@@ -359,7 +359,7 @@ void FormatHandlerASS::WriteSection(TextFileWriter &writer,SectionPtr section)
 	// Write contents
 	size_t entries = section->GetEntryCount();
 	for (size_t i=0;i<entries;i++) {
-		EntryConstPtr entry = section->GetEntry(i);
+		ConstEntry entry = section->GetEntry(i);
 		shared_ptr<const SerializeText> serial = dynamic_pointer_cast<const SerializeText>(entry);
 		writer.WriteLineToFile(serial->ToText(formatVersion));
 	}
@@ -374,7 +374,7 @@ void FormatHandlerASS::MakeValid()
 	if (formatVersion != 1) THROW_ATHENA_EXCEPTION(Exception::TODO);
 
 	// Check for [Script Info]
-	SectionPtr section = GetSection(L"Script Info");
+	Section section = GetSection(L"Script Info");
 	if (!section) AddSection(L"Script Info");
 	section = GetSection(L"Script Info");
 	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);

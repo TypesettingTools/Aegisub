@@ -37,12 +37,14 @@
 
 #include "athenasub.h"
 #include <windows.h>
+#include <stdio.h>
 
 typedef Athenasub::ILibAthenaSub* (__stdcall *CreateLibAthenasubPtr)(const char*);
 
 namespace Athenasub {
 	inline LibAthenaSub Create(HMODULE module,const char* hostName) {
-		CreateLibAthenasubPtr CreateLib = (CreateLibAthenasubPtr)GetProcAddress(module,"CreateLibAthenaSub");
+		CreateLibAthenasubPtr CreateLib = (CreateLibAthenasubPtr)GetProcAddress(module,"CreateLibAthenasub");
+		printf("Pointer at %x.\n",CreateLib);
 		return LibAthenaSub(CreateLib(hostName));
 	}
 }
