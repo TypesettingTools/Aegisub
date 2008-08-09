@@ -39,7 +39,7 @@
 using namespace Athenasub;
 
 
-extern "C" ILibAthenaSub* CreateLibAthenasub(const char* hostName) {
+extern "C" ATHENA_API ILibAthenaSub* CreateLibAthenasub(const char* hostName) {
 	return new CLibAthenaSub(hostName);
 }
 

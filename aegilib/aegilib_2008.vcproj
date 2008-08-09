@@ -116,7 +116,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				AdditionalIncludeDirectories="include/athenasub;src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS;ATHENA_EXPORTS"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"

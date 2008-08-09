@@ -42,4 +42,4 @@
 #include "range.h"
 
 
-extern "C" Athenasub::ILibAthenaSub* CreateLibAthenasub(const char* hostName);
+extern "C" ATHENA_API Athenasub::ILibAthenaSub* CreateLibAthenasub(const char* hostName);
