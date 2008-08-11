@@ -523,6 +523,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\aegisub\audio_provider_downmix.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\aegisub\audio_provider_dummy.cpp"
 					>
 				</File>
@@ -859,6 +863,10 @@
 		<Filter
 			Name="Utilities"
 			>
+			<File
+				RelativePath="..\..\aegisub\aegisub_endian.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\aegisub\factory.h"
 				>
