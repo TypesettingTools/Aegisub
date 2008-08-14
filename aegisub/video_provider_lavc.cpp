@@ -114,18 +114,18 @@ void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 				break;
 			}
 		}
-		if (vidStream == -1) throw _T("Could not find a video stream");
+		if (vidStream == -1) throw _T("ffmpeg video provider: Could not find a video stream");
 
 		// Find codec
 		codec = avcodec_find_decoder(codecContext->codec_id);
-		if (!codec) throw _T("Could not find suitable video decoder");
+		if (!codec) throw _T("ffmpeg video provider: Could not find suitable video decoder");
 
 		// Enable truncation
 		//if (codec->capabilities & CODEC_CAP_TRUNCATED) codecContext->flags |= CODEC_FLAG_TRUNCATED;
 
 		// Open codec
 		result = avcodec_open(codecContext,codec);
-		if (result < 0) throw _T("Failed to open video decoder");
+		if (result < 0) throw _T("ffmpeg video provider: Failed to open video decoder");
 
 		// Parse file for keyframes and other useful stuff
 		LAVCKeyFrames LAVCFrameData(filename);
