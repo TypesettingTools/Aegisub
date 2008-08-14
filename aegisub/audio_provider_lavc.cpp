@@ -152,6 +152,10 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	if (!buffer)
 		throw _T("ffmpeg audio provider: Failed to allocate audio decoding buffer, out of memory?");
 
+	overshoot_buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
+	if (!overshoot_buffer)
+		throw _T("ffmpeg audio provider: Failed to allocate audio decoding buffer, out of memory?");
+
 	leftover_samples = 0;
 
 	} catch (...) {
@@ -170,6 +174,8 @@ void LAVCAudioProvider::Destroy()
 {
 	if (buffer)
 		free(buffer);
+	if (overshoot_buffer)
+		free(overshoot_buffer);
 	if (rsct)
 		audio_resample_close(rsct);
 	if (codecContext)
@@ -193,15 +199,18 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 	memset(_buf + samples_to_decode, 0, ((count * channels) - samples_to_decode) * bytes_per_sample);
 
 	/* do we have leftover samples from last time we were called? */
+	/* FIXME: this assumes that requests are always linear! attempts at random access give bogus results! */
 	if (leftover_samples > 0) {
+		int length = (samples_to_decode > leftover_samples) ? leftover_samples : samples_to_decode;
+		samples_to_decode -= length;
+		leftover_samples -= length;
+		
 		/* put them in the output buffer */
 		samples_to_decode -= leftover_samples;
-		for (std::vector<int16_t>::iterator i = overshoot_buffer.begin(); i != overshoot_buffer.end(); i++) {
-			*(_buf++) = *i;
+		while (length > 0) {
+			*(_buf++) = *(overshoot_buffer++);
+			length--;
 		}
-		/* none left */
-		leftover_samples = 0;
-		overshoot_buffer.clear();
 	}
 
 	AVPacket packet;
@@ -244,7 +253,8 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 						/* in that case, count them */
 						leftover_samples = decoded_samples - samples_to_decode;
 						/* and put them aside for later */
-						overshoot_buffer = std::vector<int16_t>(&temp_output_buffer[samples_to_decode+1], &temp_output_buffer[decoded_samples+1]);
+						memcpy(buffer, &temp_output_buffer[samples_to_decode+1], leftover_samples * bytes_per_sample);
+						overshoot_buffer = buffer;
 						/* output the other samples that didn't overflow */
 						memcpy(_buf, temp_output_buffer, samples_to_decode * bytes_per_sample);
 						_buf += samples_to_decode;
@@ -261,7 +271,7 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 						/* count sheep^H^H^H^H^Hsamples */
 						leftover_samples = decoded_samples - samples_to_decode;
 						/* and put them aside for later (mm, lamb chops) */
-						overshoot_buffer = std::vector<int16_t>(&buffer[samples_to_decode+1], &buffer[decoded_samples+1]);
+						overshoot_buffer = &buffer[samples_to_decode+1];
 						/* output the other samples that didn't overflow */
 						memcpy(_buf, buffer, samples_to_decode * bytes_per_sample);
 

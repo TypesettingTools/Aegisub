@@ -59,7 +59,6 @@ extern "C" {
 #include "lavc_file.h"
 #include "include/aegisub/audio_provider.h"
 #include "lavc_file.h"
-#include <vector>
 
 
 ///////////////////////
@@ -75,7 +74,7 @@ private:
 	int audStream;
 
 	int16_t *buffer;
-	std::vector<int16_t> overshoot_buffer;
+	int16_t *overshoot_buffer;
 
 	int leftover_samples;
 
