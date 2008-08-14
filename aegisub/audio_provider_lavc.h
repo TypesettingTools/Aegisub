@@ -76,6 +76,8 @@ private:
 	int16_t *buffer;
 	int16_t *overshoot_buffer;
 
+	int64_t last_output_sample;
+
 	int leftover_samples;
 
 	void Destroy();

@@ -152,11 +152,8 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	if (!buffer)
 		throw _T("ffmpeg audio provider: Failed to allocate audio decoding buffer, out of memory?");
 
-	overshoot_buffer = (int16_t *)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
-	if (!overshoot_buffer)
-		throw _T("ffmpeg audio provider: Failed to allocate audio decoding buffer, out of memory?");
-
-	leftover_samples = 0;
+	leftover_samples	= 0;
+	last_output_sample	= -1;
 
 	} catch (...) {
 		Destroy();
@@ -174,8 +171,6 @@ void LAVCAudioProvider::Destroy()
 {
 	if (buffer)
 		free(buffer);
-	if (overshoot_buffer)
-		free(overshoot_buffer);
 	if (rsct)
 		audio_resample_close(rsct);
 	if (codecContext)
@@ -187,6 +182,12 @@ void LAVCAudioProvider::Destroy()
 void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 {
 	int16_t *_buf = (int16_t *)buf;
+
+	/* this exception disabled for now */
+	/* if (last_output_sample != start-1)
+		 throw _T("ffmpeg audio provider: nonlinear access attempted, try loading audio to RAM or HD cache"); */
+
+	last_output_sample += count;
 
 	int64_t samples_to_decode = (num_samples - start) * channels; /* samples left to the end of the stream */
 	if (count < samples_to_decode) /* haven't reached the end yet, so just decode the requested number of samples */
@@ -284,7 +285,7 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 					}
 				}
 
-				samples_to_decode -= decoded_samples;
+				samples_to_decode	-= decoded_samples;
 			}
 		}
 
