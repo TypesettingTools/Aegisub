@@ -22,6 +22,13 @@
 #include "ffvideosource.h"
 #include "indexing.h"
 
+FFMS_API(void) FFMS_Init() {
+	static bool InitDone = false;
+	if (!InitDone)
+		av_register_all();
+	InitDone = true;
+}
+
 FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
 	switch (TrackIndices->Decoder) {
 		case 0: return new FFVideoSource(SourceFile, Track, TrackIndices, PP, Threads, SeekMode, ErrorMsg, MsgSize);

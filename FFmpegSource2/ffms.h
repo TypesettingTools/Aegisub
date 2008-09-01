@@ -81,6 +81,7 @@ public:
 	int CropRight;
 };
 
+FFMS_API(void) FFMS_Init();
 FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(void) FFMS_DestroyVideoSource(VideoBase *VB);
 FFMS_API(int) FFMS_GetVSTrack(VideoBase *VB);

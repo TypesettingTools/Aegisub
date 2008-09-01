@@ -26,11 +26,6 @@
 #include "utils.h"
 
 AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
-	if (!UserData) {
-		av_register_all();
-		UserData = (void *)-1;
-	}
-
 	char ErrorMsg[1024];
 	unsigned MsgSize = sizeof(ErrorMsg);
 
@@ -75,11 +70,6 @@ AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment
 }
 
 AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
-	if (!UserData) {
-		av_register_all();
-		UserData = (void *)-1;
-	}
-
 	char ErrorMsg[1024];
 	unsigned MsgSize = sizeof(ErrorMsg);
 

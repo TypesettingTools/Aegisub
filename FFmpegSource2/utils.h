@@ -21,17 +21,14 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <windows.h>
-
 extern "C" {
-#include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
 #include <libpostproc/postprocess.h>
-
 #include "MatroskaParser.h"
 }
 
+#include <windows.h>
 #include "avisynth.h"
 #include "stdiostream.h"
 
