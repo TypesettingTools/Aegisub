@@ -91,7 +91,7 @@ int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, 
 	return 0;
 }
 
-static int MakeMatroskaIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, char *ErrorMsg, unsigned MsgSize) {
+static int MakeMatroskaIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, IndexProgress *IP, char *ErrorMsg, unsigned MsgSize) {
 	TrackIndices->Decoder = 1;
 
 	MatroskaFile *MF;
@@ -213,7 +213,7 @@ static int MakeMatroskaIndex(const char *SourceFile, FrameIndex *TrackIndices, i
 	return 0;
 }
 
-int MakeIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, char *ErrorMsg, unsigned MsgSize) {
+int MakeIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, IndexProgress *IP, char *ErrorMsg, unsigned MsgSize) {
 	TrackIndices->Decoder = 0;
 	TrackIndices->clear();
 
@@ -227,7 +227,7 @@ int MakeIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMa
 	// Do matroska indexing instead?
 	if (!strcmp(FormatContext->iformat->name, "matroska")) {
 		av_close_input_file(FormatContext);
-		return MakeMatroskaIndex(SourceFile, TrackIndices, AudioTrackMask, AudioFile, ErrorMsg, MsgSize);
+		return MakeMatroskaIndex(SourceFile, TrackIndices, AudioTrackMask, AudioFile, IP, ErrorMsg, MsgSize);
 	}
 	
 	if (av_find_stream_info(FormatContext) < 0) {

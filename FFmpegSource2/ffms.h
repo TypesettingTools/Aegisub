@@ -41,6 +41,8 @@ class VideoBase;
 class FrameIndex;
 class FrameInfoVector;
 
+typedef int (*IndexProgress)(int64_t, int);
+
 // This is a subset of the original AVFrame only containing the most used parts.
 // Even if it might seem like a good idea to cast it back to a full AVFrame to
 // access a few more values you really shouldn't do that. Only the values present
@@ -90,6 +92,7 @@ FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg
 FFMS_API(FrameIndex *) FFMS_CreateFrameIndex();
 FFMS_API(void) FFMS_DestroyFrameIndex(FrameIndex *FI);
 FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(const FrameInfo *) FFMS_GetFrameInfo(FrameInfoVector *FIV, int Frame, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(FrameInfoVector *) FFMS_GetTITrackIndex(FrameIndex *TrackIndices, int Track, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(FrameInfoVector *) FFMS_GetVSTrackIndex(VideoBase *VB, char *ErrorMsg, unsigned MsgSize);
@@ -98,7 +101,7 @@ FFMS_API(int) FFMS_FrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMs
 FFMS_API(int) FFMS_ClosestFrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(const TrackTimeBase *) FFMS_GetTimeBase(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteTimecodes(FrameInfoVector *FIV, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_MakeIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_MakeIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, IndexProgress *IP, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_ReadIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 
