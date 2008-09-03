@@ -81,7 +81,6 @@ private:
     CompressedStream *CS;
 	MatroskaFile *MF;
 	char ErrorMessage[256];
-    uint8_t *Buffer;
 	MatroskaReaderContext MC;
 
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);

@@ -208,6 +208,7 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 			case MAKEFOURCC('D', 'I', 'V', 'X'):
 			case MAKEFOURCC('D', 'X', '5', '0'):
 			case MAKEFOURCC('M', 'P', '4', 'V'):
+			case MAKEFOURCC('m', 'p', '4', 'v'): // This one may be my fault
 			case MAKEFOURCC('3', 'I', 'V', 'X'):
 			case MAKEFOURCC('W', 'V', '1', 'F'):
 			case MAKEFOURCC('F', 'M', 'P', '4'):

@@ -451,7 +451,6 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 }
 
 MatroskaVideoSource::~MatroskaVideoSource() {
-	free(Buffer);
 	mkv_Close(MF);
 	fclose(MC.ST.fp);
 	if (CodecContext)
