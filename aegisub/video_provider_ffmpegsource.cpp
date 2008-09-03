@@ -35,13 +35,8 @@
 
 #ifdef WITH_FFMPEGSOURCE
 
-#ifdef WIN32
-#define EMULATE_INTTYPES
-#endif /* WIN32 */
-
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include "video_provider_ffmpegsource.h"
 #include <ffms.h>
 #include "vfr.h"
@@ -121,29 +116,48 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	VideoInfo = FFMS_GetVideoProperties(VideoSource);
 
 	// get frame info data
-	// disabled until Myrsloik answers some questions
-#if 0
-	FrameInfoVector FrameData = FFMS_GetTITrackIndex(Index, -1, FFMSErrorMessage, MessageSize);
+	FrameInfoVector *FrameData = FFMS_GetVSTrackIndex(VideoSource, FFMSErrorMessage, MessageSize);
 	if (FrameData == NULL) {
 		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
 		throw ErrorMsg;
 	}
-	FrameInfo CurFrameData;
+	const TrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData, FFMSErrorMessage, MessageSize);
+	if (TimeBase == NULL) {
+		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
+		throw ErrorMsg;
+	}
 
-	// build list of keyframes
+	const FrameInfo *CurFrameData;
+
+	// build list of keyframes and timecodes
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
 		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum, FFMSErrorMessage, MessageSize);
 		if (CurFrameData == NULL) {
 			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
 			throw ErrorMsg;
 		}
-		if (CurFrameData.KeyFrame)
+
+		// keyframe?
+		if (CurFrameData->KeyFrame)
 			KeyFramesList.Add(CurFrameNum);
+
+		// calculate timestamp and add to timecodes vector
+		int64_t Timestamp = (int64_t)((CurFrameData->DTS * TimeBase->Num) / (double)TimeBase->Den);
+		// dumb to cast this to an int but the vfr functions all want it as that
+		TimecodesVector.push_back(int(Timestamp));
 	}
 	KeyFramesLoaded = true;
-#endif
 
-	// TODO: VFR handling
+	// override already loaded timecodes?
+	Timecodes.SetVFR(TimecodesVector);
+	int OverrideTC = wxYES;
+	if (VFR_Output.IsLoaded()) {
+		OverrideTC = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"), _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
+		if (OverrideTC == wxYES) {
+			VFR_Input.SetVFR(TimecodesVector);
+			VFR_Output.SetVFR(TimecodesVector);
+		}
+	}
 
 	// we don't need this anymore
 	FFMS_DestroyFrameIndex(Index);
@@ -168,6 +182,7 @@ void FFmpegSourceVideoProvider::Close() {
 
 	KeyFramesLoaded = false;
 	KeyFramesList.clear();
+	TimecodesVector.clear();
 	FrameNumber = -1;
 }
 
@@ -191,9 +206,10 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n, int FormatType) 
 	PixelFormat DstFormat;
 
 	switch (FormatType) {
-		case FORMAT_RGB32: DstFormat = PIX_FMT_RGB32; break;
-		case FORMAT_RGB24: DstFormat = PIX_FMT_RGB24; break;
-		// TODO: add YV12?
+		case FORMAT_RGB32:	DstFormat = PIX_FMT_RGB32; break;
+		case FORMAT_RGB24:	DstFormat = PIX_FMT_RGB24; break;
+		case FORMAT_YV12:	DstFormat = PIX_FMT_YUV420P; break; // may or may not work
+		case FORMAT_YUY2:	DstFormat = PIX_FMT_YUYV422; break;
 		default: throw _T("FFmpegSource video provider: upstream provider requested unknown or unsupported pixel format");
 	}
 
@@ -217,9 +233,12 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n, int FormatType) 
 	// set some properties
 	DstFrame.w = w;
 	DstFrame.h = h;
-	// only rgb supported for now
 	DstFrame.flipped = false;
-	DstFrame.invertChannels = true;
+	if (FormatType == FORMAT_RGB32 || FormatType == FORMAT_RGB24) {
+		DstFrame.invertChannels = true;
+	} else {
+		DstFrame.invertChannels = false;
+	}
 	DstFrame.format = (VideoFrameFormat)FormatType;
 
 	// allocate destination frame

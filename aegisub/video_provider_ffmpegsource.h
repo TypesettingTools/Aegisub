@@ -63,6 +63,8 @@ private:
 	int FrameNumber;
 	wxArrayInt KeyFramesList;
 	bool KeyFramesLoaded;
+	std::vector<int> TimecodesVector;
+	FrameRate Timecodes;
 
 	AVPicture FrameRGB;
 	bool FrameAllocated;
@@ -91,8 +93,8 @@ public:
 	double GetFPS();
 	bool AreKeyFramesLoaded() { return KeyFramesLoaded; };
 	wxArrayInt GetKeyFrames() { return KeyFramesList; };
-	bool IsVFR() { return false; }; // FIXME: might want to talk to Myrsloik about this
-	FrameRate GetTrueFrameRate() { return FrameRate(); }; // FIXME: try to remember what this actually means
+	bool IsVFR() { return true; };
+	FrameRate GetTrueFrameRate() { return FrameRate(); };
 	Aegisub::String GetDecoderName() { return L"FFmpegSource"; }
 	bool IsNativelyByFrames() { return true; }
 	int GetDesiredCacheSize() { return 8; }
