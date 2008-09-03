@@ -425,6 +425,7 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 			bufferRGB = new uint8_t[dstSize];
 			
 			sws_context = sws_getContext(w, h, srcFormat, w, h, dstFormat, SWS_PRINT_INFO | SWS_BICUBIC, NULL, NULL, NULL);
+			// sws_getContext() always returns NULL if context creation failed
 			if (sws_context == NULL)
 				throw _T("ffmpeg video provider: failed to initialize SwScaler colorspace conversion");
 		}

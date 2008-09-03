@@ -49,6 +49,9 @@
 #ifdef WITH_FFMPEG
 #include "video_provider_lavc.h"
 #endif
+#ifdef WITH_FFMPEGSOURCE
+#include "video_provider_ffmpegsource.h"
+#endif
 #include "video_provider_dummy.h"
 #include "video_provider_cache.h"
 
@@ -102,6 +105,9 @@ void VideoProviderFactoryManager::RegisterProviders() {
 #endif
 #ifdef WITH_FFMPEG
 	RegisterFactory(new LAVCVideoProviderFactory(),_T("FFMPEG"));
+#endif
+#ifdef WITH_FFMPEGSOURCE
+	RegisterFactory(new FFmpegSourceVideoProviderFactory(),_T("FFmpegSource"));
 #endif
 }
 

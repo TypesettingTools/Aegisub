@@ -39,13 +39,13 @@
 #include "lavc_file.h"
 #include <vector>
 
-struct FrameInfo {
+struct LAVCFrameInfo {
 	int64_t DTS;
 	bool isKeyFrame;
-	FrameInfo(int64_t ADTS, bool isAKeyFrame) : DTS(ADTS), isKeyFrame(isAKeyFrame) {};
+	LAVCFrameInfo(int64_t ADTS, bool isAKeyFrame) : DTS(ADTS), isKeyFrame(isAKeyFrame) {};
 };
 
-typedef std::vector<FrameInfo> FrameInfoVector;
+typedef std::vector<LAVCFrameInfo> LAVCFrameInfoVector;
 
 class LAVCKeyFrames {
 	private:
@@ -54,11 +54,11 @@ class LAVCKeyFrames {
 		int streamN;					// Stream index
 		int numFrames;					// number of frames in the video
 	protected:
-		FrameInfoVector framesData;
+		LAVCFrameInfoVector framesData;
 	public:
 		LAVCKeyFrames(const Aegisub::String filename);
 		~LAVCKeyFrames();
 		wxArrayInt GetKeyFrames();
 		int GetNumFrames();
-		FrameInfoVector GetFrameData();
+		LAVCFrameInfoVector GetFrameData();
 };

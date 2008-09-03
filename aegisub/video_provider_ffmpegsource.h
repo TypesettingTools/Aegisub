@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Karl Blomster
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,37 +33,77 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-
-#pragma once
-
+///////////
+// Headers
+#include <wx/wxprec.h>
+#ifdef WITH_FFMPEGSOURCE
 #ifdef WIN32
 #define EMULATE_INTTYPES
-#endif
-#include <wx/filename.h>
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-}
+#endif /* WIN32 */
+#include "include/aegisub/video_provider.h"
 #include "include/aegisub/aegisub.h"
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+}
+#include <vector>
+#include <ffms.h>
 
 
-class LAVCFile {
+
+///////////////////////
+// FFmpegSource provider
+class FFmpegSourceVideoProvider : public VideoProvider {
 private:
-	unsigned refs;
+	VideoBase *VideoSource;
+	const VideoProperties *VideoInfo;
+	SwsContext *SWSContext;
 
-	LAVCFile(Aegisub::String filename);
-	~LAVCFile();
+	int FrameNumber;
+	wxArrayInt KeyFramesList;
+	bool KeyFramesLoaded;
 
-	class Initializer {
-	public:
-		Initializer();
-	};
-	static Initializer init;
+	AVPicture FrameRGB;
+	bool FrameAllocated;
+	uint8_t *BufferRGB;
+	AegiVideoFrame CurFrame;
+
+	char FFMSErrorMessage[1024];
+	unsigned MessageSize;
+	wxString ErrorMsg;
+
+	void LoadVideo(Aegisub::String filename, double fps);
+	void Close();
+
+protected:
 
 public:
-	AVFormatContext *fctx;
-	
-	static LAVCFile *Create(Aegisub::String filename) { return new LAVCFile(filename); }
-	LAVCFile *AddRef() { refs++; return this; };
-	void Release() { if (!--refs) delete this; };
+	FFmpegSourceVideoProvider(Aegisub::String filename, double fps);
+	~FFmpegSourceVideoProvider();
+
+	const AegiVideoFrame GetFrame(int n, int formatType);
+	int GetPosition();
+	int GetFrameCount();
+
+	int GetWidth();
+	int GetHeight();
+	double GetFPS();
+	bool AreKeyFramesLoaded() { return KeyFramesLoaded; };
+	wxArrayInt GetKeyFrames() { return KeyFramesList; };
+	bool IsVFR() { return false; }; // FIXME: might want to talk to Myrsloik about this
+	FrameRate GetTrueFrameRate() { return FrameRate(); }; // FIXME: try to remember what this actually means
+	Aegisub::String GetDecoderName() { return L"FFmpegSource"; }
+	bool IsNativelyByFrames() { return true; }
+	int GetDesiredCacheSize() { return 8; }
 };
+
+
+///////////
+// Factory
+class FFmpegSourceVideoProviderFactory : public VideoProviderFactory {
+public:
+	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new FFmpegSourceVideoProvider(video,fps); }
+};
+
+#endif /* WITH_FFMPEGSOURCE */

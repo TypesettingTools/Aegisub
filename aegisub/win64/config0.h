@@ -138,6 +138,11 @@
 // #define WITH_STATIC_FFMPEG
 
 
+// Enable ffmpegsource video and audio providers
+// Requires: ffmpegsource version 2
+// #define WITH_FFMPEGSOURCE
+
+
 // Enable Ruby support for Automation
 // Requires: Ruby 1.9
 //#define WITH_RUBY

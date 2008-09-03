@@ -100,7 +100,7 @@ wxArrayInt LAVCKeyFrames::GetKeyFrames() {
 	while (av_read_frame(file->fctx, &packet) == 0 && !canceled) {
 		// Check if packet is part of video stream
 		if (packet.stream_index == streamN) {
-			framesData.push_back(FrameInfo(packet.dts, (packet.flags & PKT_FLAG_KEY) ? 1 : 0));
+			framesData.push_back(LAVCFrameInfo(packet.dts, (packet.flags & PKT_FLAG_KEY) ? 1 : 0));
 
 			// Check if the packet contains a keyframe
 			if (packet.flags & PKT_FLAG_KEY)
@@ -134,7 +134,7 @@ int LAVCKeyFrames::GetNumFrames() {
 }
 
 // returns the frame metadata vector
-FrameInfoVector LAVCKeyFrames::GetFrameData() {
+LAVCFrameInfoVector LAVCKeyFrames::GetFrameData() {
 	return framesData;
 }
 
