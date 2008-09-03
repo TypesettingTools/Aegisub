@@ -157,6 +157,9 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 			VFR_Input.SetVFR(TimecodesVector);
 			VFR_Output.SetVFR(TimecodesVector);
 		}
+	} else { // no timecodes loaded, go ahead and apply
+		VFR_Input.SetVFR(TimecodesVector);
+		VFR_Output.SetVFR(TimecodesVector);
 	}
 
 	// we don't need this anymore
@@ -188,15 +191,21 @@ void FFmpegSourceVideoProvider::Close() {
 
 ///////////////
 // Get frame
-const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n, int FormatType) {
+const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType) {
+	// don't try to seek to insane places
+	int n = _n;
+	if (n < 0)
+		n = 0;
+	if (n >= GetFrameCount())
+		n = GetFrameCount()-1;
+	// set position
+	FrameNumber = n;
+
 	const AVFrameLite *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
 	if (SrcFrame == NULL) {
 		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
 		throw ErrorMsg;
 	}
-
-	// set position
-	FrameNumber = n;
 
 	AVPicture *SrcPicture = reinterpret_cast<AVPicture *>(const_cast<AVFrameLite *>(SrcFrame));
 
