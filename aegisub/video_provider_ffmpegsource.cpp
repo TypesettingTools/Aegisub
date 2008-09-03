@@ -41,7 +41,7 @@
 #include <ffms.h>
 #include "vfr.h"
 #include "video_context.h"
-// #include "options.h" // for later use
+#include "options.h" // for later use
 
 
 ///////////////
@@ -97,13 +97,18 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		}
 	}
 
-	// TODO: make this user-configurable
-	int Threads = 1;
+	// set thread count
+	int Threads = Options.AsInt(_T("FFmpegSource decoding threads"));
 	if (Threads < 1)
 		throw _T("FFmpegSource video provider: invalid decoding thread count");
 
-	// TODO: tie this to the option "ffmpeg allow unsafe seeking"
-	int SeekMode = 1;
+	// set seekmode
+	// TODO: give this its own option?
+	int SeekMode;
+	if (Options.AsBool(_T("FFmpeg allow unsafe seeking")))
+		SeekMode = 2;
+	else 
+		SeekMode = 1;
 
 	// finally create the actual video source
 	VideoSource = FFMS_CreateVideoSource(FileNameWX.char_str(), -1, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
