@@ -61,8 +61,8 @@ public:
 	int Decoder;
 };
 
-int MakeIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, IndexProgress *IP, char *ErrorMsg, unsigned MsgSize);
-int ReadIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
+FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback *IP, void *Private, char *ErrorMsg, unsigned MsgSize);
+FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
 int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 
 #endif

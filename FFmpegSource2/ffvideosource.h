@@ -77,11 +77,10 @@ public:
 
 class MatroskaVideoSource : public VideoBase {
 private:
-    unsigned int BufferSize;
-    CompressedStream *CS;
 	MatroskaFile *MF;
-	char ErrorMessage[256];
 	MatroskaReaderContext MC;
+    CompressedStream *CS;
+	char ErrorMessage[256];
 
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);

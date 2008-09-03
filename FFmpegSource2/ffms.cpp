@@ -53,10 +53,6 @@ FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg
 	return (AVFrameLite *)VB->GetFrame(n, ErrorMsg, MsgSize);
 }
 
-FFMS_API(FrameIndex *) FFMS_CreateFrameIndex() {
-	return new FrameIndex();
-}
-
 FFMS_API(void) FFMS_DestroyFrameIndex(FrameIndex *FI) {
 	delete FI;
 }
@@ -116,12 +112,12 @@ FFMS_API(int) FFMS_WriteTimecodes(FrameInfoVector *FIV, const char *TimecodeFile
 	return FIV->WriteTimecodes(TimecodeFile, ErrorMsg, MsgSize);
 }
 
-FFMS_API(int) FFMS_MakeIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, IndexProgress *IP, char *ErrorMsg, unsigned MsgSize) {
-	return MakeIndex(SourceFile, TrackIndices, AudioTrackMask, AudioFile, IP, ErrorMsg, MsgSize);
+FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback *IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+	return MakeIndex(SourceFile, AudioTrackMask, AudioFile, IP, Private, ErrorMsg, MsgSize);
 }
 
-FFMS_API(int) FFMS_ReadIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
-	return ReadIndex(IndexFile, TrackIndices, ErrorMsg, MsgSize);
+FFMS_API(FrameIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
+	return ReadIndex(IndexFile, ErrorMsg, MsgSize);
 }
 
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {

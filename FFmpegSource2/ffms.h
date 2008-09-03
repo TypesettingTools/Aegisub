@@ -31,17 +31,19 @@
 #  define EXTERN_C
 #endif
 
+#define FFMS_CC __stdcall
+
 #ifdef FFMS_EXPORTS
-#  define FFMS_API(ret) EXTERN_C __declspec(dllexport) ret __stdcall
+#  define FFMS_API(ret) EXTERN_C __declspec(dllexport) ret FFMS_CC
 #else
-#  define FFMS_API(ret) EXTERN_C __declspec(dllimport) ret __stdcall
+#  define FFMS_API(ret) EXTERN_C __declspec(dllimport) ret FFMS_CC
 #endif
 
 class VideoBase;
 class FrameIndex;
 class FrameInfoVector;
 
-typedef int (*IndexProgress)(int64_t, int);
+typedef int (*IndexCallback)(int State, int64_t Current, int64_t Total, void *Private);
 
 // This is a subset of the original AVFrame only containing the most used parts.
 // Even if it might seem like a good idea to cast it back to a full AVFrame to
@@ -89,7 +91,6 @@ FFMS_API(void) FFMS_DestroyVideoSource(VideoBase *VB);
 FFMS_API(int) FFMS_GetVSTrack(VideoBase *VB);
 FFMS_API(const VideoProperties *) FFMS_GetVideoProperties(VideoBase *VB);
 FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(FrameIndex *) FFMS_CreateFrameIndex();
 FFMS_API(void) FFMS_DestroyFrameIndex(FrameIndex *FI);
 FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize);
@@ -101,8 +102,8 @@ FFMS_API(int) FFMS_FrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMs
 FFMS_API(int) FFMS_ClosestFrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(const TrackTimeBase *) FFMS_GetTimeBase(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteTimecodes(FrameInfoVector *FIV, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_MakeIndex(const char *SourceFile, FrameIndex *TrackIndices, int AudioTrackMask, const char *AudioFile, IndexProgress *IP, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_ReadIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback *IP, void *Private, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FrameIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 
 #endif

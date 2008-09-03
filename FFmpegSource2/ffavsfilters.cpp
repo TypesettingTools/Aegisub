@@ -54,12 +54,14 @@ AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment
 	// 1: Index generated
 	// 2: Index forced to be overwritten
 
-	FrameIndex *Index = FFMS_CreateFrameIndex();
-	if (OverWrite || FFMS_ReadIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
-		if (FFMS_MakeIndex(Source, Index, TrackMask, AudioFile, NULL, ErrorMsg, MsgSize))
+	FrameIndex *Index;
+	if (OverWrite || !(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
+		if (!(Index = FFMS_MakeIndex(Source, TrackMask, AudioFile, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFIndex: %s", ErrorMsg);
-		if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize))
+		if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
+			FFMS_DestroyFrameIndex(Index);
 			Env->ThrowError("FFIndex: %s", ErrorMsg);
+		}
 		FFMS_DestroyFrameIndex(Index);
 		if (!OverWrite)
 			return AVSValue(1);
@@ -100,28 +102,44 @@ AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvir
 	if (Threads < 1)
 		Env->ThrowError("FFVideoSource: Invalid thread count");
 
+	if (!_stricmp(Source, Timecodes))
+		Env->ThrowError("FFVideoSource: Timecodes will overwrite the source");
+
 	std::string DefaultCache(Source);
 	DefaultCache.append(".ffindex");
 	if (!strcmp(CacheFile, ""))
 		CacheFile = DefaultCache.c_str();
 
-	FrameIndex *Index = FFMS_CreateFrameIndex();
+	FrameIndex *Index;
 	if (Cache) {
-		if (FFMS_ReadIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
-			if (FFMS_MakeIndex(Source, Index, 0, NULL, NULL, ErrorMsg, MsgSize))
+		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
+			if (!(Index = FFMS_MakeIndex(Source, 0, NULL, NULL, NULL, ErrorMsg, MsgSize)))
 				Env->ThrowError("FFVideoSource: %s", ErrorMsg);
 
 			if (Cache)
-				if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize))
+				if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
+					FFMS_DestroyFrameIndex(Index);
 					Env->ThrowError("FFVideoSource: %s", ErrorMsg);
+				}
 		}
 	}
 
-	AvisynthVideoSource *Filter = new AvisynthVideoSource(Source, Track, Index, PP, Threads, SeekMode, Env, ErrorMsg, MsgSize);
+	AvisynthVideoSource *Filter;
 
-	if (strcmp(Timecodes, ""))
-		if (FFMS_WriteTimecodes(FFMS_GetTITrackIndex(Index, Filter->GetTrack(), ErrorMsg, MsgSize), Timecodes, ErrorMsg, MsgSize))
+	try {
+		Filter = new AvisynthVideoSource(Source, Track, Index, PP, Threads, SeekMode, Env, ErrorMsg, MsgSize);
+	} catch (...) {
+		FFMS_DestroyFrameIndex(Index);	
+		throw;
+	}
+
+	if (strcmp(Timecodes, "")) {
+		if (FFMS_WriteTimecodes(FFMS_GetTITrackIndex(Index, Filter->GetTrack(), ErrorMsg, MsgSize), Timecodes, ErrorMsg, MsgSize)) {
+			FFMS_DestroyFrameIndex(Index);
+			delete Filter;
 			Env->ThrowError("FFVideoSource: %s", ErrorMsg);
+		}
+	}
 
 	return Filter;
 }

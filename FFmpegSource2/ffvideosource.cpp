@@ -21,7 +21,7 @@
 #include "ffvideosource.h"
 
 int VideoBase::InitPP(const char *PP, int PixelFormat, char *ErrorMsg, unsigned MsgSize) {
-	if (!strcmp(PP, ""))
+	if (PP == NULL || !strcmp(PP, ""))
 		return 0;
 
 	PPMode = pp_get_mode_by_name_and_quality(PP, PP_QUALITY_MAX);
