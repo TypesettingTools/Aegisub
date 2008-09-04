@@ -125,7 +125,7 @@ int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, 
 	return 0;
 }
 
-static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback *IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	MatroskaFile *MF;
 	char ErrorMessage[256];
 	MatroskaReaderContext MC;
@@ -257,7 +257,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 	return TrackIndices;
 }
 
-FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback *IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	AVFormatContext *FormatContext = NULL;
 
 	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0) {

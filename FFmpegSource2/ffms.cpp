@@ -112,7 +112,7 @@ FFMS_API(int) FFMS_WriteTimecodes(FrameInfoVector *FIV, const char *TimecodeFile
 	return FIV->WriteTimecodes(TimecodeFile, ErrorMsg, MsgSize);
 }
 
-FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback *IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	return MakeIndex(SourceFile, AudioTrackMask, AudioFile, IP, Private, ErrorMsg, MsgSize);
 }
 
