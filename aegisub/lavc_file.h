@@ -41,8 +41,8 @@
 #endif
 #include <wx/filename.h>
 extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
 }
 #include "include/aegisub/aegisub.h"
 

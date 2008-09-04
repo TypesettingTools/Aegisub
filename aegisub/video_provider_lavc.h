@@ -44,9 +44,9 @@
 #endif
 #include <vector>
 extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libswscale/swscale.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
+#include <ffmpeg/swscale.h>
 }
 #include "include/aegisub/video_provider.h"
 #include "include/aegisub/aegisub.h"
