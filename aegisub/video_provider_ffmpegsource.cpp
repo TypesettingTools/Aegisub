@@ -39,9 +39,8 @@
 // Headers
 #include "video_provider_ffmpegsource.h"
 #include <ffms.h>
-#include "vfr.h"
 #include "video_context.h"
-#include "options.h" // for later use
+#include "options.h"
 
 
 ///////////////
@@ -81,15 +80,25 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	wxString CacheName(filename.c_str());
 	CacheName.append(_T(".ffindex"));
 
-	// initialize index object
-	FrameIndex *Index = FFMS_CreateFrameIndex();
-	// try to read index (these index functions all return 0 on success)
-	if (FFMS_ReadIndex(CacheName.char_str(), Index, FFMSErrorMessage, MessageSize)) {
+	FrameIndex *Index;
+
+	// try to read index
+	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
+	if (Index == NULL) {
 		// reading failed, create index
-		if (FFMS_MakeIndex(FileNameWX.char_str(), Index, 0, NULL, NULL, FFMSErrorMessage, MessageSize)) {
+		// prepare stuff for callback
+		IndexingProgressDialog Progress;
+		Progress.IndexingCanceled = false;
+		Progress.ProgressDialog = new DialogProgress(NULL, _("Indexing"), &Progress.IndexingCanceled, _("Reading keyframes and timecodes from video"), 0, 1);
+		Progress.ProgressDialog->Show();
+		Progress.ProgressDialog->SetProgress(0,1);
+
+		Index = FFMS_MakeIndex(FileNameWX.char_str(), 0, "", FFmpegSourceVideoProvider::UpdateIndexingProgress, &Progress, FFMSErrorMessage, MessageSize);
+		if (Index == NULL) {
 			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
 			throw ErrorMsg;
 		}
+		Progress.ProgressDialog->Destroy();
 		// write it to disk
 		if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrorMessage, MessageSize)) {
 			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
@@ -195,6 +204,20 @@ void FFmpegSourceVideoProvider::Close() {
 }
 
 ///////////////
+// Update indexing progress
+int __stdcall FFmpegSourceVideoProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private) {
+	IndexingProgressDialog *Progress = (IndexingProgressDialog *)Private;
+	Progress->ProgressDialog->SetProgress(int(Current), int(Total));
+
+	if (Progress->IndexingCanceled) {
+		// Close();
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+///////////////
 // Get frame
 const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType) {
 	// don't try to seek to insane places
@@ -287,6 +310,8 @@ int FFmpegSourceVideoProvider::GetPosition() {
 double FFmpegSourceVideoProvider::GetFPS() {
 	return double(VideoInfo->FPSNumerator) / double(VideoInfo->FPSDenominator);
 }
+
+
 
 
 #endif /* WITH_FFMPEGSOURCE */

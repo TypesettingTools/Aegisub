@@ -42,6 +42,8 @@
 #endif /* WIN32 */
 #include "include/aegisub/video_provider.h"
 #include "include/aegisub/aegisub.h"
+#include "dialog_progress.h"
+#include "vfr.h"
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -75,8 +77,15 @@ private:
 	unsigned MessageSize;
 	wxString ErrorMsg;
 
+	struct IndexingProgressDialog {
+		volatile bool IndexingCanceled;
+		DialogProgress *ProgressDialog;
+	};
+
 	void LoadVideo(Aegisub::String filename, double fps);
 	void Close();
+
+	static int __stdcall FFmpegSourceVideoProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
 
 protected:
 
@@ -107,5 +116,6 @@ class FFmpegSourceVideoProviderFactory : public VideoProviderFactory {
 public:
 	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new FFmpegSourceVideoProvider(video,fps); }
 };
+
 
 #endif /* WITH_FFMPEGSOURCE */
