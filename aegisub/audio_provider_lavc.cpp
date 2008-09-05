@@ -56,14 +56,9 @@
 /* - done in posix/defines.h
  */
 
-
-extern "C" {
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-}
+#include "audio_provider_lavc.h"
 #include "mkv_wrap.h"
 #include "lavc_file.h"
-#include "audio_provider_lavc.h"
 #include "lavc_file.h"
 #include "utils.h"
 #include "options.h"
@@ -123,11 +118,13 @@ LAVCAudioProvider::LAVCAudioProvider(Aegisub::String _filename)
 	/* we rely on the intermediate audio provider to do downmixing for us later if necessary */
 	channels = codecContext->channels;
 
-	/* FIXME: we need support for more audio types than just 16-bit int */
+	/* TODO: test if anything but S16 actually works! */
 	switch (codecContext->sample_fmt) {
-		case SAMPLE_FMT_S16: bytes_per_sample = 2; break;
+		case SAMPLE_FMT_U8:		bytes_per_sample = 1; break;
+		case SAMPLE_FMT_S16:	bytes_per_sample = 2; break;
+		case SAMPLE_FMT_S32:	bytes_per_sample = 4; break; /* downmixing provider doesn't support this, will definitely not work */
 		default: 
-			throw _T("ffmpeg audio provider: Only 16-bit audio is supported");
+			throw _T("ffmpeg audio provider: Unknown or unsupported sample format");
 	}
 
 	/* initiate resampling if necessary */
