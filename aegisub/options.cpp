@@ -166,6 +166,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetText(_T("Video Provider"),_T("FFMPEG"),1945);
 	#endif
 	SetBool(_T("FFmpeg allow unsafe seeking"),false);
+	SetInt(_T("FFmpegSource decoding threads"),1);
 	SetBool(_T("Allow Ancient Avisynth"),false,1700);
 	SetText(_T("Avisynth subs renderer"),_T("vsfilter"),1700);
 	SetBool(_T("Avisynth render own subs"),true,1700);
