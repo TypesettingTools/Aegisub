@@ -165,7 +165,8 @@ EXTRA_aegisub_SOURCES = \
 	subtitles_provider_libass.cpp \
 	video_provider_avs.cpp \
 	video_provider_dshow.cpp \
-	video_provider_lavc.cpp
+	video_provider_lavc.cpp \
+	video_provider_ffmpegsource.cpp
 
 
 aegisub_SOURCES = \
