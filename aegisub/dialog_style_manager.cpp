@@ -266,7 +266,7 @@ void DialogStyleManager::LoadCatalog () {
 	StorageActions(false);
 	wxString pickStyle = AssFile::top->GetScriptInfo(_T("Last Style Storage"));
 	if (pickStyle.IsEmpty()) pickStyle = _T("Default");
-	int opt = CatalogList->FindString(pickStyle);
+	int opt = CatalogList->FindString(pickStyle, false);
 	if (opt != wxNOT_FOUND) {
 		CatalogList->SetSelection(opt);
 		wxCommandEvent dummy;
@@ -423,8 +423,8 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 			}
 		}
 
-		// Make sure that there is no storage with the same name
-		if (CatalogList->FindString(name) != wxNOT_FOUND) {
+		// Make sure that there is no storage with the same name (case insensitive search since Windows filenames are case insensitive)
+		if (CatalogList->FindString(name, false) != wxNOT_FOUND) {
 			wxMessageBox(_("A catalog with that name already exists."),_("Catalog name conflict"),wxICON_ERROR);
 			return;
 		}
@@ -555,7 +555,7 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &event) {
 	int n = CurrentList->GetSelections(selections);
 	AssStyle *temp;
 	for (int i=0;i<n;i++) {
-		int test = StorageList->FindString(CurrentList->GetString(selections[i]));
+		int test = StorageList->FindString(CurrentList->GetString(selections[i]), true);
 		if (test == wxNOT_FOUND) {
 			temp = new AssStyle;
 			*temp = *styleMap.at(selections[i]);
@@ -589,14 +589,18 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 	AssStyle *temp;
 	for (int i=0;i<n;i++) {
 		// Check if there is already a style with that name
-		int test = CurrentList->FindString(StorageList->GetString(selections[i]));
-		bool proceed = test==-1;
+		int test = CurrentList->FindString(StorageList->GetString(selections[i]), false);
+		bool proceed = false;
+		if (test == wxNOT_FOUND)
+			proceed = true;
 		if (!proceed) {
 			int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed anyway?"),StorageList->GetString(selections[i]).c_str()),_T("Style name collision."),wxYES_NO);
 			if (answer == wxYES) proceed = true;
 		}
 
 		// Copy
+		// FIXME: this doesn't overwrite the old style like most of the rest of the style copying functions do,
+		// it just inserts a new one with the same name. Bad usability.
 		if (proceed) {
 			temp = new AssStyle;
 			*temp = *styleStorageMap.at(selections[i]);
@@ -895,13 +899,16 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
 			// Loop through selection
 			for (unsigned int i=0;i<selections.Count();i++) {
 				// Check if there is already a style with that name
-				int test = CurrentList->FindString(styles[selections[i]]);
+				int test = CurrentList->FindString(styles[selections[i]], false);
 				if (test != wxNOT_FOUND) {
 					int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Overwrite?"),styles[selections[i]].c_str()),_T("Style name collision."),wxYES_NO);
 					if (answer == wxYES) {
 						// Overwrite
 						modified = true;
-						*(AssFile::top->GetStyle(styles[selections[i]])) = *temp.GetStyle(styles[selections[i]]);
+						// The GetString->FindString mess is a silly workaround for the fact that to vsfilter
+						// (and the duplicate check a few lines above), style names aren't case sensitive, but to the
+						// rest of Aegisub they are.
+						*(AssFile::top->GetStyle(CurrentList->GetString(CurrentList->FindString(styles[selections[i]], false)))) = *temp.GetStyle(styles[selections[i]]);
 					}
 					continue;
 				}
