@@ -603,7 +603,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 // Save snapshot
 void VideoContext::SaveSnapshot(bool raw) {
 	// Get folder
-	wxString option = Options.AsText(_("Video Screenshot Path"));
+	wxString option = Options.AsText(_T("Video Screenshot Path"));
 	wxFileName videoFile(videoName);
 	wxString basepath;
 	// Is it a path specifier and not an actual fixed path?
