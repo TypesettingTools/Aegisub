@@ -95,7 +95,7 @@ VideoBase::~VideoBase() {
 }
 
 AVFrame *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
-
+	// FIXME
 	//Frames.ClosestFrameFromDTS();
 	//return GetFrame(, ErrorMsg, MsgSize);
 	return NULL;
@@ -129,6 +129,14 @@ int FFVideoSource::GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize) {
 	return 0;
 }
 
+void FFVideoSource::Free(bool CloseCodec) {
+	if (CloseCodec)
+		avcodec_close(CodecContext);
+	av_close_input_file(FormatContext);
+	// FIXME
+	//av_free(FormatContext);
+}
+
 FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices,
 	const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
 
@@ -142,22 +150,27 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	}
 	
 	if (av_find_stream_info(FormatContext) < 0) {
+		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Couldn't find stream information");
 		throw ErrorMsg;
 	}
 
 	VideoTrack = Track;
-	if (GetTrackIndex(VideoTrack, ErrorMsg, MsgSize))
+	if (GetTrackIndex(VideoTrack, ErrorMsg, MsgSize)) {
+		Free(false);
 		throw ErrorMsg;
+	}
 
 	Frames = (*TrackIndices)[VideoTrack];
 
 	if (Frames.size() == 0) {
+		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
 		throw ErrorMsg;
 	}
 
 	if (SeekMode >= 0 && av_seek_frame(FormatContext, VideoTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD) < 0) {
+		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Video track is unseekable");
 		throw ErrorMsg;
 	}
@@ -167,19 +180,23 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 
 	Codec = avcodec_find_decoder(CodecContext->codec_id);
 	if (Codec == NULL) {
+		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Video codec not found");
 		throw ErrorMsg;
 	}
 
 	if (avcodec_open(CodecContext, Codec) < 0) {
+		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Could not open video codec");
 		throw ErrorMsg;
 	}
 
 	// Always try to decode a frame to make sure all required parameters are known
 	int64_t Dummy;
-	if (DecodeNextFrame(DecodeFrame, &Dummy, ErrorMsg, MsgSize))
+	if (DecodeNextFrame(DecodeFrame, &Dummy, ErrorMsg, MsgSize)) {
+		Free(true);
 		throw ErrorMsg;
+	}
 
 	//VP.image_type = VideoInfo::IT_TFF;
 	VP.Width = CodecContext->width;
@@ -190,6 +207,7 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	VP.PixelFormat = CodecContext->pix_fmt;
 
 	if (VP.Width <= 0 || VP.Height <= 0) {
+		Free(true);
 		_snprintf(ErrorMsg, MsgSize, "Codec returned zero size video");
 		throw ErrorMsg;
 	}
@@ -213,16 +231,13 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	OutputFrame(DecodeFrame);
 	LastFrameNum = 0;
 
-
 	// Set AR variables
 	VP.SARNum = CodecContext->sample_aspect_ratio.num;
 	VP.SARDen = CodecContext->sample_aspect_ratio.den;
 }
 
 FFVideoSource::~FFVideoSource() {
-	if (VideoTrack >= 0)
-		avcodec_close(CodecContext);
-	av_close_input_file(FormatContext);
+	Free(true);
 }
 
 int FFVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *ErrorMsg, unsigned MsgSize) {
@@ -347,12 +362,25 @@ int MatroskaVideoSource::GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgS
 	return 0;
 }
 
+void MatroskaVideoSource::Free(bool CloseCodec) {
+	if (CS)
+		cs_Destroy(CS);
+	if (MC.ST.fp) {
+		mkv_Close(MF);
+		fclose(MC.ST.fp);
+	}
+	if (CloseCodec)
+		avcodec_close(CodecContext);
+	av_free(CodecContext);
+}
+
 MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	FrameIndex *TrackIndices, const char *PP,
 	int Threads, char *ErrorMsg, unsigned MsgSize) {
 
 	unsigned int TrackMask = ~0;
 	AVCodec *Codec = NULL;
+	CodecContext = NULL;
 	TrackInfo *TI = NULL;
 	CS = NULL;
 
@@ -372,12 +400,15 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	}
 
 	VideoTrack = Track;
-	if (GetTrackIndex(VideoTrack, ErrorMsg, MsgSize))
+	if (GetTrackIndex(VideoTrack, ErrorMsg, MsgSize)) {
+		Free(false);
 		throw ErrorMsg;
+	}
 
 	Frames = (*TrackIndices)[VideoTrack];
 
 	if (Frames.size() == 0) {
+		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
 		throw ErrorMsg;
 	}
@@ -388,6 +419,7 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 		if (TI->CompEnabled) {
 			CS = cs_Create(MF, VideoTrack, ErrorMessage, sizeof(ErrorMessage));
 			if (CS == NULL) {
+				Free(false);
 				_snprintf(ErrorMsg, MsgSize, "Can't create decompressor: %s", ErrorMessage);
 				throw ErrorMsg;
 			}
@@ -400,19 +432,23 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 
 	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI));
 	if (Codec == NULL) {
+		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Video codec not found");
 		throw ErrorMsg;
 	}
 
 	if (avcodec_open(CodecContext, Codec) < 0) {
+		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Could not open video codec");
 		throw ErrorMsg;
 	}
 
 	// Always try to decode a frame to make sure all required parameters are known
 	int64_t Dummy;
-	if (DecodeNextFrame(DecodeFrame, &Dummy, ErrorMsg, MsgSize))
+	if (DecodeNextFrame(DecodeFrame, &Dummy, ErrorMsg, MsgSize)) {
+		Free(true);
 		throw ErrorMsg;
+	}
 
 	VP.Width = CodecContext->width;
 	VP.Height = CodecContext->height;;
@@ -422,6 +458,7 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	VP.PixelFormat = CodecContext->pix_fmt;
 
 	if (VP.Width <= 0 || VP.Height <= 0) {
+		Free(true);
 		_snprintf(ErrorMsg, MsgSize, "Codec returned zero size video");
 		throw ErrorMsg;
 	}
@@ -451,11 +488,7 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 }
 
 MatroskaVideoSource::~MatroskaVideoSource() {
-	mkv_Close(MF);
-	fclose(MC.ST.fp);
-	if (CodecContext)
-		avcodec_close(CodecContext);
-	av_free(CodecContext);
+	Free(true);
 }
 
 int MatroskaVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {

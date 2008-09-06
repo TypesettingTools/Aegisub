@@ -65,8 +65,9 @@ public:
 class FFVideoSource : public VideoBase {
 private:
 	AVFormatContext *FormatContext;
-
 	int SeekMode;
+
+	void Free(bool CloseCodec);
 	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);
 	int DecodeNextFrame(AVFrame *Frame, int64_t *DTS, char *ErrorMsg, unsigned MsgSize);
 public:
@@ -82,6 +83,7 @@ private:
     CompressedStream *CS;
 	char ErrorMessage[256];
 
+	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);
 public:
