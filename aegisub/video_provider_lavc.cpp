@@ -274,10 +274,6 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 
 		frameNumber++;
 	} while (frameNumber <= n);
-
-#if 0
-		}
-#endif
 	
 	
 	// Get aegisub frame
