@@ -134,20 +134,6 @@ void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 		// set length etc.
 		length = LAVCFrameData.GetNumFrames();
 		framesData = LAVCFrameData.GetFrameData();
-#if 0
-		isMkv = false;
-		length = stream->duration;
-		if (length <= 0) {
-			if (strcmp(formatContext->iformat->name,"matroska") == 0) {
-				//throw _T("FFmpeg fails at seeking Matroska. If you have any idea on how to fix it, Aegisub is open source.");
-				mkv.Open(filename);
-				length = mkv.GetFrameCount();
-				bytePos = mkv.GetBytePositions();
-				isMkv = true;
-			}
-			if (length <= 0) throw _T("Returned invalid stream length");
-		}
-#endif
 
 		// Allocate frame
 		frame = avcodec_alloc_frame();
@@ -170,11 +156,6 @@ void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 ///////////////
 // Close video
 void LAVCVideoProvider::Close() {
-	// Close mkv
-#if 0
-	if (isMkv) mkv.Close();
-#endif
-
 	// Clean buffers
 	if (buffer1) delete buffer1;
 	if (buffer2) delete buffer2;
@@ -245,79 +226,6 @@ bool LAVCVideoProvider::GetNextFrame(int64_t *startDTS) {
 	return false;
 }
 
-
-/////////////////////////////////
-//// Convert AVFrame to wxBitmap
-/*
-wxBitmap LAVCVideoProvider::AVFrameToWX(AVFrame *source, int n) {
-	// Get sizes
-	int w = codecContext->width;
-	int h = codecContext->height;
-//#ifdef __WINDOWS__
-//	PixelFormat format = PIX_FMT_RGBA32;
-//#else
-	PixelFormat format = PIX_FMT_RGB24;
-//#endif
-	unsigned int size1 = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
-	unsigned int size2 = avpicture_get_size(format,display_w,display_h);
-
-	// Prepare buffers
-	if (!buffer1 || buffer1Size != size1) {
-		if (buffer1) delete buffer1;
-		buffer1 = new uint8_t[size1];
-		buffer1Size = size1;
-	}
-	if (!buffer2 || buffer2Size != size2) {
-		if (buffer2) delete buffer2;
-		buffer2 = new uint8_t[size2];
-		buffer2Size = size2;
-	}
-
-	// Resize
-	AVFrame *resized;
-	bool resize = w != display_w || h != display_h;
-	if (resize) {
-		// Allocate
-		unsigned int resSize = avpicture_get_size(codecContext->pix_fmt,display_w,display_h);
-		resized = avcodec_alloc_frame();
-		avpicture_fill((AVPicture*) resized, buffer1, codecContext->pix_fmt, display_w, display_h);
-
-		// Resize
-		ImgReSampleContext *resampleContext = img_resample_init(display_w,display_h,w,h);
-		img_resample(resampleContext,(AVPicture*) resized,(AVPicture*) source);
-		img_resample_close(resampleContext);
-
-		// Set new w/h
-		w = display_w;
-		h = display_h;
-	}
-	else resized = source;
-
-	// Allocate RGB32 buffer
-	AVFrame *frameRGB = avcodec_alloc_frame();
-	avpicture_fill((AVPicture*) frameRGB, buffer2, format, w, h);
-
-	// Convert to RGB32
-	img_convert((AVPicture*) frameRGB, format, (AVPicture*) resized, codecContext->pix_fmt, w, h);
-
-	// Convert to wxBitmap
-	wxImage img(w, h, false);
-	unsigned char *data = (unsigned char *)malloc(w * h * 3);
-	memcpy(data, frameRGB->data[0], w * h * 3);
-	img.SetData(data);
-	if (overlay)
-		overlay->Render(img, VFR_Input.GetTimeAtFrame(n));
-
-	wxBitmap bmp(img);
-
-	av_free(frameRGB);
-	if (resized != source)
-		av_free(resized);
-	return bmp;
-}
-*/
-
-
 /////////////
 // Get frame
 const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
@@ -334,42 +242,6 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 	// Find closest keyframe to the frame we want
 	int closestKeyFrame = FindClosestKeyframe(n);
 
-#if 0
-		// Get time to seek to
-		if (isMkv) {
-			//int64_t base = AV_TIME_BASE;
-			//int64_t time = VFR_Output.GetTimeAtFrame(n,true) * base / 1000000;
-			//seekTo = av_rescale(time,stream->time_base.den,AV_TIME_BASE * int64_t(stream->time_base.num));
-			//seekTo = int64_t(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
-			//seekTo = bytePos[n];
-
-			//result = av_seek_frame(formatContext,vidStream,seekTo,AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_BYTE);
-
-			// Prepare mkv seek
-			ulonglong startTime, endTime, filePos;
-			unsigned int rt, frameSize, frameFlags;
-			ulonglong targetTime = (int64_t)(VFR_Output.GetTimeAtFrame(n,true,true))*1000000;
-			//ulonglong targetTime = (int64_t)(n) * 1000 * stream->r_frame_rate.den / stream->r_frame_rate.num;
-			//ulonglong targetTime = mkv.rawFrames[n].time * 1000000;
-			mkv_Seek(mkv.file,targetTime,MKVF_SEEK_TO_PREV_KEYFRAME);
-
-			// Seek
-			if (mkv_ReadFrame(mkv.file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
-				result = av_seek_frame(formatContext,vidStream,filePos,AVSEEK_FLAG_BYTE | AVSEEK_FLAG_BACKWARD);
-				int curpos = 0;
-				for (unsigned int i=0;i<mkv.rawFrames.size();i++) {
-					if (mkv.rawFrames[i].time == startTime / 1000000.0) curpos = i;
-				}
-				int seek = n - curpos;
-				for (int i=0;i<seek;i++) {
-					GetNextFrame();
-				}
-			}
-		}
-
-		// Constant frame rate
-		else {
-#endif
 	bool hasSeeked = false;
 
 	// do we really need to seek?
