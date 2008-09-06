@@ -157,8 +157,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 
 		// calculate timestamp and add to timecodes vector
 		int64_t Timestamp = (int64_t)((CurFrameData->DTS * TimeBase->Num) / (double)TimeBase->Den);
-		// dumb to cast this to an int but the vfr functions all want it as that
-		TimecodesVector.push_back(int(Timestamp));
+		TimecodesVector.push_back(Timestamp);
 	}
 	KeyFramesLoaded = true;
 
