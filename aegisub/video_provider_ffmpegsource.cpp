@@ -207,7 +207,7 @@ void FFmpegSourceVideoProvider::Close() {
 // Update indexing progress
 int __stdcall FFmpegSourceVideoProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private) {
 	IndexingProgressDialog *Progress = (IndexingProgressDialog *)Private;
-	Progress->ProgressDialog->SetProgress(int(Current), int(Total));
+	Progress->ProgressDialog->SetProgress(Current, Total);
 
 	if (Progress->IndexingCanceled) {
 		// Close();
@@ -310,8 +310,6 @@ int FFmpegSourceVideoProvider::GetPosition() {
 double FFmpegSourceVideoProvider::GetFPS() {
 	return double(VideoInfo->FPSNumerator) / double(VideoInfo->FPSDenominator);
 }
-
-
 
 
 #endif /* WITH_FFMPEGSOURCE */
