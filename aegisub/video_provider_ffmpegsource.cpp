@@ -190,8 +190,9 @@ void FFmpegSourceVideoProvider::Close() {
 	if (VideoSource)
 		FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
-	if (FrameAllocated)
-		avpicture_free(&FrameRGB);
+	// this seems to cause a heap corruption in debug mode
+	/* if (FrameAllocated)
+		avpicture_free(&FrameRGB); */
 	FrameAllocated = false;
 	if (BufferRGB)
 		delete BufferRGB;
@@ -206,14 +207,14 @@ void FFmpegSourceVideoProvider::Close() {
 // Update indexing progress
 int __stdcall FFmpegSourceVideoProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private) {
 	IndexingProgressDialog *Progress = (IndexingProgressDialog *)Private;
-	Progress->ProgressDialog->SetProgress(Current, Total);
 
-	if (Progress->IndexingCanceled) {
-		// Close();
+	if (Progress->IndexingCanceled)
 		return 1;
-	} else {
-		return 0;
-	}
+
+	// noone cares about a little bit of a rounding error here anyway
+	Progress->ProgressDialog->SetProgress((1000*Current)/Total, 1000);
+	
+	return 0;
 }
 
 ///////////////
