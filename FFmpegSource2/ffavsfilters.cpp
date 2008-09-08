@@ -23,7 +23,12 @@
 #include "ffavisynth.h"
 #include "ffswscale.h"
 #include "ffpp.h"
-#include "utils.h"
+
+int GetNumberOfLogicalCPUs() {
+	SYSTEM_INFO SI;
+	GetSystemInfo(&SI);
+	return SI.dwNumberOfProcessors;
+}
 
 AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	FFMS_Init();

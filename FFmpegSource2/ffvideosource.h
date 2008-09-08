@@ -28,10 +28,7 @@ extern "C" {
 #include <libpostproc/postprocess.h>
 }
 
-#include <windows.h>
 #include <vector>
-
-#include "avisynth.h"
 #include "indexing.h"
 #include "utils.h"
 #include "ffms.h"

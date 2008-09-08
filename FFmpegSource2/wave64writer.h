@@ -21,21 +21,30 @@
 #ifndef WAVE64WRITER_H
 #define	WAVE64WRITER_H
 
-#include <windows.h>
-#include <vfw.h>
 #include <stdint.h>
 #include <iostream>
 #include <fstream>
 
-class Wave64Writer : std::ofstream {
+// this is to avoid depending on windows.h etc.
+typedef struct FFMS_WAVEFORMATEX { 
+	uint16_t wFormatTag; 
+	uint16_t nChannels; 
+	uint32_t nSamplesPerSec; 
+	uint32_t nAvgBytesPerSec; 
+	uint16_t nBlockAlign; 
+	uint16_t wBitsPerSample; 
+	uint16_t cbSize; 
+} FFMS_WAVEFORMATEX;
+
+class Wave64Writer : private std::ofstream {
 public:
-	Wave64Writer(const char *Filename, WORD BitsPerSample, WORD Channels, DWORD SamplesPerSec, bool IsFloat);
+	Wave64Writer(const char *Filename, uint16_t BitsPerSample, uint16_t Channels, uint32_t SamplesPerSec, bool IsFloat);
 	~Wave64Writer();
 	void WriteData(void *Data, std::streamsize Length);
 private:
-	WORD BitsPerSample;
-	WORD Channels;
-	DWORD SamplesPerSec;
+	int32_t BitsPerSample;
+	int32_t Channels;
+	uint32_t SamplesPerSec;
 	uint64_t BytesWritten;
 	uint32_t HeaderSize;
 	bool IsFloat;

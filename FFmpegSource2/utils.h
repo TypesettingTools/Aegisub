@@ -28,8 +28,6 @@ extern "C" {
 #include "MatroskaParser.h"
 }
 
-#include <windows.h>
-#include "avisynth.h"
 #include "stdiostream.h"
 
 struct MatroskaReaderContext {
@@ -52,7 +50,6 @@ public:
 int GetCPUFlags();
 int CSNameToPIXFMT(const char * ACSName, int ADefault);
 int ResizerNameToSWSResizer(const char *AResizerName);
-int GetNumberOfLogicalCPUs();
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize);
 bool AudioFMTIsFloat(SampleFormat FMT);
 CodecID MatroskaToFFCodecID(TrackInfo *TI);

@@ -308,8 +308,8 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 	TrackIndices->Decoder = 0;
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++)
-		TrackIndices->push_back(FrameInfoVector(FormatContext->streams[i]->time_base.den, 
-		FormatContext->streams[i]->time_base.num * 1000));
+		TrackIndices->push_back(FrameInfoVector(FormatContext->streams[i]->time_base.num * 1000, 
+		FormatContext->streams[i]->time_base.den));
 
 	AVPacket Packet;
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
@@ -437,10 +437,10 @@ int FrameInfoVector::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, un
 		return 1;
 	}
 
-	Timecodes << "# timecode format v2\r\n";
+	Timecodes << "# timecode format v2\n";
 
 	for (iterator Cur=begin(); Cur!=end(); Cur++)
-		Timecodes << (int64_t)((Cur->DTS * TB.Num) / (double)TB.Den) << "\r\n";
+		Timecodes << (int64_t)((Cur->DTS * TB.Num) / (double)TB.Den) << "\n";
 
 	return 0;
 }

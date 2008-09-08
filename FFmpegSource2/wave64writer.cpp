@@ -20,6 +20,9 @@
 
 #include "wave64writer.h"
 
+#define WAVE_FORMAT_IEEE_FLOAT 0x0003
+#define WAVE_FORMAT_PCM 1
+
 static const uint8_t GuidRIFF[16]={
 	// {66666972-912E-11CF-A5D6-28DB04C10000}
 	0x72, 0x69, 0x66, 0x66, 0x2E, 0x91, 0xCF, 0x11, 0xA5, 0xD6, 0x28, 0xDB, 0x04, 0xC1, 0x00, 0x00
@@ -40,7 +43,7 @@ static const uint8_t Guiddata[16]={
 	0x64, 0x61, 0x74, 0x61, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 };
 
-Wave64Writer::Wave64Writer(const char *Filename, WORD BitsPerSample, WORD Channels, DWORD SamplesPerSec, bool IsFloat) : std::ofstream(Filename, std::ios::out | std::ios::binary | std::ios::trunc) {
+Wave64Writer::Wave64Writer(const char *Filename, uint16_t BitsPerSample, uint16_t Channels, uint32_t SamplesPerSec, bool IsFloat) : std::ofstream(Filename, std::ios::out | std::ios::binary | std::ios::trunc) {
 	BytesWritten = 0;
 	this->BitsPerSample = BitsPerSample;
 	this->Channels = Channels;
@@ -48,7 +51,7 @@ Wave64Writer::Wave64Writer(const char *Filename, WORD BitsPerSample, WORD Channe
 	this->IsFloat = IsFloat;
 
 	if (!is_open())
-		throw "Blerror";
+		throw "Failed to open destination file for writing";
 
 	WriteHeader(true, IsFloat);
 }
@@ -59,7 +62,7 @@ Wave64Writer::~Wave64Writer() {
 }
 
 void Wave64Writer::WriteHeader(bool Initial, bool IsFloat) {
-	WAVEFORMATEX WFEX;
+	FFMS_WAVEFORMATEX WFEX;
 	if (IsFloat)
 		WFEX.wFormatTag = WAVE_FORMAT_IEEE_FLOAT;
 	else
