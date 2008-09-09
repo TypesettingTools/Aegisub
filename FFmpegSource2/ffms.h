@@ -138,6 +138,8 @@ FFMS_API(void) FFMS_DestroyVideoSource(VideoBase *VB);
 FFMS_API(int) FFMS_GetVSTrack(VideoBase *VB);
 FFMS_API(const VideoProperties *) FFMS_GetVideoProperties(VideoBase *VB);
 FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormats, int Width, int Height);
+FFMS_API(void) FFMS_ResetOutputFormat(VideoBase *VB);
 FFMS_API(void) FFMS_DestroyFrameIndex(FrameIndex *FI);
 FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize);

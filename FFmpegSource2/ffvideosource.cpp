@@ -50,9 +50,13 @@ int VideoBase::InitPP(const char *PP, int PixelFormat, char *ErrorMsg, unsigned 
 	}
 
 	if (avpicture_alloc((AVPicture *)PPFrame, PixelFormat, VP.Width, VP.Height) < 0) {
+		av_free(PPFrame);
+		PPFrame = NULL;
 		_snprintf(ErrorMsg, MsgSize, "Failed to allocate picture");
 		return 4;
 	}
+
+	FinalFrame = PPFrame;
 
 	return 0;
 }
@@ -62,35 +66,45 @@ AVFrameLite *VideoBase::OutputFrame(AVFrame *Frame) {
 		pp_postprocess(const_cast<const uint8_t **>(Frame->data), Frame->linesize, PPFrame->data, PPFrame->linesize, VP.Width, VP.Height, Frame->qscale_table, Frame->qstride, PPMode, PPContext, Frame->pict_type | (Frame->qscale_type ? PP_PICT_TYPE_QP2 : 0));
 		PPFrame->key_frame = Frame->key_frame;
 		PPFrame->pict_type = Frame->pict_type;
-		return reinterpret_cast<AVFrameLite *>(PPFrame);
-	} else {
-		return reinterpret_cast<AVFrameLite *>(Frame);
 	}
+
+	if (SWS) {
+		sws_scale(SWS, PPFrame->data, PPFrame->linesize, 0, VP.Height, FinalFrame->data, FinalFrame->linesize);
+		FinalFrame->key_frame = PPFrame->key_frame;
+		FinalFrame->pict_type = PPFrame->pict_type;
+	}
+
+	return reinterpret_cast<AVFrameLite *>(FinalFrame);
 }
 
 VideoBase::VideoBase() {
 	memset(&VP, 0, sizeof(VP));
 	PPContext = NULL;
 	PPMode = NULL;
+	SWS = NULL;
 	LastFrameNum = -1;
 	CurrentFrame = 0;
 	CodecContext = NULL;
 	DecodeFrame = avcodec_alloc_frame();
 	PPFrame = DecodeFrame;
+	FinalFrame = PPFrame;
 }
 
 VideoBase::~VideoBase() {
 	if (PPMode)
 		pp_free_mode(PPMode);
-
 	if (PPContext)
 		pp_free_context(PPContext);
-
+	if (SWS)
+		sws_freeContext(SWS);
+	if (FinalFrame != PPFrame) {
+		avpicture_free((AVPicture *)FinalFrame);
+		av_free(FinalFrame);
+	}
 	if (PPFrame != DecodeFrame) {
 		avpicture_free((AVPicture *)PPFrame);
 		av_free(PPFrame);
 	}
-
 	av_free(DecodeFrame);
 }
 
@@ -99,6 +113,55 @@ AVFrame *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
 	//Frames.ClosestFrameFromDTS();
 	//return GetFrame(, ErrorMsg, MsgSize);
 	return NULL;
+}
+
+int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height) {
+	int Loss;
+	int OutputFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P)
+		| (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32)
+		| (1 << PIX_FMT_BGR24), CodecContext->pix_fmt, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+	if (OutputFormat == -1)
+		return -1;
+
+	SwsContext *NewSWS = NULL;
+	if (CodecContext->pix_fmt != OutputFormat || Width != CodecContext->width || Height != CodecContext->height) {
+		NewSWS = sws_getContext(CodecContext->width, CodecContext->height, CodecContext->pix_fmt, Width, Height,
+			OutputFormat, GetCPUFlags() | SWS_BICUBIC, NULL, NULL, NULL);
+		if (NewSWS == NULL)
+			return 1;
+	}
+
+	if (SWS)
+		sws_freeContext(SWS);
+	SWS = NewSWS;
+
+	VP.Height = Height;
+	VP.Width = Width;
+	VP.PixelFormat = OutputFormat;
+
+	// FIXME: In theory the allocations in this part could fail just like in InitPP but whatever
+	if (FinalFrame != PPFrame) {
+		avpicture_free((AVPicture *)FinalFrame);
+		av_free(FinalFrame);
+	}
+
+	if (SWS) {
+		FinalFrame = avcodec_alloc_frame();
+		avpicture_alloc((AVPicture *)FinalFrame, VP.PixelFormat, VP.Width, VP.Height);
+	} else {
+		FinalFrame = PPFrame;
+	}
+
+	return 0;
+}
+
+void VideoBase::ResetOutputFormat() {
+	if (SWS)
+		sws_freeContext(SWS);
+	SWS = NULL;
+	VP.Height = CodecContext->height;
+	VP.Width = CodecContext->width;
+	VP.PixelFormat = CodecContext->pix_fmt;
 }
 
 int FFVideoSource::GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize) {
@@ -133,7 +196,7 @@ void FFVideoSource::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
 	av_close_input_file(FormatContext);
-	// FIXME
+	// how was it allocated? how was it deallocate? nobody knows
 	//av_free(FormatContext);
 }
 
@@ -218,7 +281,10 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 		VP.FPSNumerator = 30;
 	}
 
-	InitPP(PP, CodecContext->pix_fmt, ErrorMsg, MsgSize);
+	if (InitPP(PP, CodecContext->pix_fmt, ErrorMsg, MsgSize)) {
+			Free(true);
+			throw ErrorMsg;
+	}
 
 	// Adjust framerate to match the duration of the first frame
 	if (Frames.size() >= 2) {
@@ -275,7 +341,7 @@ Done:
 AVFrameLite *FFVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	// PPFrame always holds frame LastFrameNum even if no PP is applied
 	if (LastFrameNum == n)
-		return reinterpret_cast<AVFrameLite *>(PPFrame);
+		return OutputFrame(DecodeFrame);
 
 	bool HasSeeked = false;
 
@@ -463,7 +529,10 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 		throw ErrorMsg;
 	}
 
-	InitPP(PP, CodecContext->pix_fmt, ErrorMsg, MsgSize);
+	if (InitPP(PP, CodecContext->pix_fmt, ErrorMsg, MsgSize)) {
+		Free(true);
+		throw ErrorMsg;
+	}
 
 	// Calculate the average framerate
 	if (Frames.size() >= 2) {
@@ -526,7 +595,7 @@ Done:
 AVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	// PPFrame always holds frame LastFrameNum even if no PP is applied
 	if (LastFrameNum == n)
-		return reinterpret_cast<AVFrameLite *>(PPFrame);
+		return OutputFrame(DecodeFrame);
 
 	bool HasSeeked = false;
 

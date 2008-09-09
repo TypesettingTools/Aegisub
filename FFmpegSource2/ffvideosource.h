@@ -37,10 +37,12 @@ class VideoBase {
 private:
 	pp_context_t *PPContext;
 	pp_mode_t *PPMode;
+	SwsContext *SWS;
 protected:
 	VideoProperties VP;
-	AVFrame *PPFrame;
 	AVFrame *DecodeFrame;
+	AVFrame *PPFrame;
+	AVFrame *FinalFrame;
 	int LastFrameNum;
 	FrameInfoVector Frames;
 	int VideoTrack;
@@ -55,8 +57,10 @@ public:
 	const VideoProperties& __stdcall GetVideoProperties() { return VP; }
 	int GetTrack() { return VideoTrack; }
 	FrameInfoVector *GetFrameInfoVector() { return &Frames; }
-	virtual AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;;
+	virtual AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
 	AVFrameLite *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
+	int SetOutputFormat(int TargetFormats, int Width, int Height);
+	void ResetOutputFormat();
 };
 
 class FFVideoSource : public VideoBase {
