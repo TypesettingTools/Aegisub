@@ -117,9 +117,8 @@ AVFrame *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
 
 int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height) {
 	int Loss;
-	int OutputFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P)
-		| (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32)
-		| (1 << PIX_FMT_BGR24), CodecContext->pix_fmt, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+	int OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
+		CodecContext->pix_fmt, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
 	if (OutputFormat == -1)
 		return -1;
 
