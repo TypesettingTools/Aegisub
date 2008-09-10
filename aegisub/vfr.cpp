@@ -151,6 +151,9 @@ void FrameRate::Load(wxString filename) {
 				if (!temp.ToDouble(&lfps) || lfps <= 0)
 					throw _T("Timecode parsing error, invalid fps format found");
 
+				if (lstart <= lposition)
+					throw _T("Timecode parsing error, out of order or overlapping timecode range found"); 
+
 
 				for (int i = 0; i <= lstart - lposition - 2; i++)
 					AddFrame((int)(floor(currenttime+(i*1000) / AverageFrameRate)));
