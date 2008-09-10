@@ -116,11 +116,14 @@ AVFrame *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
 }
 
 int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height) {
-	int Loss;
-	int OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
-		CodecContext->pix_fmt, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
-	if (OutputFormat == -1)
-		return -1;
+//  FIXME: investigate the possible bug in avcodec_find_best_pix_fmt
+//	int Loss;
+//	int OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
+//		CodecContext->pix_fmt, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+//	if (OutputFormat == -1)
+//		return -1;
+
+	int OutputFormat = TargetFormats;
 
 	SwsContext *NewSWS = NULL;
 	if (CodecContext->pix_fmt != OutputFormat || Width != CodecContext->width || Height != CodecContext->height) {

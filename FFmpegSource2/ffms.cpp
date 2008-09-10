@@ -53,8 +53,8 @@ FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg
 	return (AVFrameLite *)VB->GetFrame(n, ErrorMsg, MsgSize);
 }
 
-FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormats, int Width, int Height) {
-	return VB->SetOutputFormat(TargetFormats, Width, Height);
+FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormat, int Width, int Height) {
+	return VB->SetOutputFormat(TargetFormat, Width, Height);
 }
 
 FFMS_API(void) FFMS_ResetOutputFormat(VideoBase *VB) {
