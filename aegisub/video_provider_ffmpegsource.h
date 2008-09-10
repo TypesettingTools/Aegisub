@@ -37,18 +37,10 @@
 // Headers
 #include <wx/wxprec.h>
 #ifdef WITH_FFMPEGSOURCE
-#ifdef WIN32
-#define EMULATE_INTTYPES
-#endif /* WIN32 */
 #include "include/aegisub/video_provider.h"
 #include "include/aegisub/aegisub.h"
 #include "dialog_progress.h"
 #include "vfr.h"
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
-}
 #include <vector>
 #include <ffms.h>
 
@@ -60,7 +52,6 @@ class FFmpegSourceVideoProvider : public VideoProvider {
 private:
 	VideoBase *VideoSource;
 	const VideoProperties *VideoInfo;
-	SwsContext *SWSContext;
 
 	int FrameNumber;
 	wxArrayInt KeyFramesList;
@@ -68,9 +59,8 @@ private:
 	std::vector<int> TimecodesVector;
 	FrameRate Timecodes;
 
-	AVPicture FrameRGB;
-	bool FrameAllocated;
-	uint8_t *BufferRGB;
+	FFMS_PixelFormat DstFormat;
+	FFMS_PixelFormat LastDstFormat;
 	AegiVideoFrame CurFrame;
 
 	char FFMSErrorMessage[1024];

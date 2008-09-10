@@ -51,10 +51,9 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 
 	// clean up variables
 	VideoSource = NULL;
-	SWSContext = NULL;
-	BufferRGB = NULL;
+	DstFormat = FFMS_PIX_FMT_NONE;
+	LastDstFormat = FFMS_PIX_FMT_NONE;
 	KeyFramesLoaded = false;
-	FrameAllocated = false;
 	FrameNumber = -1;
 	MessageSize = sizeof(FFMSErrorMessage);
 
@@ -184,19 +183,12 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 ///////////////
 // Close video
 void FFmpegSourceVideoProvider::Close() {
-	if (SWSContext)
-		sws_freeContext(SWSContext);
-	SWSContext = NULL;
 	if (VideoSource)
 		FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
-	// this seems to cause a heap corruption in debug mode
-	/* if (FrameAllocated)
-		avpicture_free(&FrameRGB); */
-	FrameAllocated = false;
-	if (BufferRGB)
-		delete BufferRGB;
 
+	DstFormat = FFMS_PIX_FMT_NONE;
+	LastDstFormat = FFMS_PIX_FMT_NONE;
 	KeyFramesLoaded = false;
 	KeyFramesList.clear();
 	TimecodesVector.clear();
@@ -228,62 +220,63 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 		n = GetFrameCount()-1;
 	// set position
 	FrameNumber = n;
+	
+	// these are for convenience
+	int w = VideoInfo->Width;
+	int h = VideoInfo->Height;
 
+	// this is what we'll return eventually
+	AegiVideoFrame &DstFrame = CurFrame;
+
+	// choose output format
+	if (FormatType & FORMAT_RGB32) {
+		DstFormat		= FFMS_PIX_FMT_RGB32; // FIXME: should be RGB32
+		DstFrame.format	= FORMAT_RGB32;
+	} else if (FormatType & FORMAT_RGB24) {
+		DstFormat		= FFMS_PIX_FMT_RGB24;
+		DstFrame.format	= FORMAT_RGB24;
+	} else if (FormatType & FORMAT_YV12) {
+		DstFormat		= FFMS_PIX_FMT_YUV420P; // may or may not work
+		DstFrame.format	= FORMAT_YV12;
+	} else if (FormatType & FORMAT_YUY2) {
+		DstFormat		= FFMS_PIX_FMT_YUYV422;
+		DstFrame.format	= FORMAT_YUY2;
+	} else 
+		throw _T("FFmpegSource video provider: upstream provider requested unknown or unsupported pixel format");
+
+	// requested format was changed since last time we were called, (re)set output format
+	if (LastDstFormat != DstFormat) {
+		if (FFMS_SetOutputFormat(VideoSource, DstFormat, w, h))
+			throw _T("FFmpegSource video provider: failed to set desired output format");
+		LastDstFormat = DstFormat;
+	}
+
+	// decode frame
 	const AVFrameLite *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
 	if (SrcFrame == NULL) {
 		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
 		throw ErrorMsg;
 	}
 
-	AVPicture *SrcPicture = reinterpret_cast<AVPicture *>(const_cast<AVFrameLite *>(SrcFrame));
-
-	// prepare stuff for conversion to RGB32
-	int w = VideoInfo->Width;
-	int h = VideoInfo->Height;
-	PixelFormat DstFormat;
-
-	switch (FormatType) {
-		case FORMAT_RGB32:	DstFormat = PIX_FMT_RGB32; break;
-		case FORMAT_RGB24:	DstFormat = PIX_FMT_RGB24; break;
-		case FORMAT_YV12:	DstFormat = PIX_FMT_YUV420P; break; // may or may not work
-		case FORMAT_YUY2:	DstFormat = PIX_FMT_YUYV422; break;
-		default: throw _T("FFmpegSource video provider: upstream provider requested unknown or unsupported pixel format");
-	}
-
-	if (!SWSContext) {
-		if (avpicture_alloc(&FrameRGB, DstFormat, w, h) != 0)
-			throw _T("FFmpegSource video provider: could not allocate output picture buffer");
-		FrameAllocated = true;
-		unsigned int DstSize = avpicture_get_size(DstFormat,w,h);
-		BufferRGB = new uint8_t[DstSize];
-
-		// initialize swscaler context
-		SWSContext = sws_getContext(w, h, VideoInfo->PixelFormat, w, h, DstFormat, SWS_BICUBIC, NULL, NULL, NULL);
-		if (SWSContext == NULL)
-			throw _T("FFmpegSource video provider: failed to initialize SWScale colorspace conversion");
-	}
-	avpicture_fill(&FrameRGB, BufferRGB, DstFormat, w, h);
-
-	// this is what we'll return eventually
-	AegiVideoFrame &DstFrame = CurFrame;
-
 	// set some properties
 	DstFrame.w = w;
 	DstFrame.h = h;
 	DstFrame.flipped = false;
-	if (FormatType == FORMAT_RGB32 || FormatType == FORMAT_RGB24) {
+	if (DstFrame.format == FORMAT_RGB32 || DstFrame.format == FORMAT_RGB24)
 		DstFrame.invertChannels = true;
-	} else {
+	else
 		DstFrame.invertChannels = false;
-	}
-	DstFrame.format = (VideoFrameFormat)FormatType;
 
-	// allocate destination frame
-	for (int i=0;i<4;i++) DstFrame.pitch[i] = FrameRGB.linesize[i];
+	// allocate destination
+	for (int i = 0; i < 4; i++)
+		DstFrame.pitch[i] = SrcFrame->Linesize[i];
 	DstFrame.Allocate();
 
-	// let swscale do the conversion to RGB and write directly to the output frame
-	sws_scale(SWSContext, SrcPicture->data, SrcPicture->linesize, 0, h, DstFrame.data, FrameRGB.linesize);
+	// copy data to destination, skipping planes with no data in them
+	for (int j = 0; j < 4; j++) {
+		if (SrcFrame->Linesize[j] > 0)
+			memcpy(DstFrame.data[j], SrcFrame->Data[j], DstFrame.pitch[j] * DstFrame.h);
+	}
 
 	return DstFrame;
 }
