@@ -194,6 +194,7 @@ namespace Automation4 {
 		static int LuaInclude(lua_State *L);
 		static int LuaFrameFromMs(lua_State *L);
 		static int LuaMsFromFrame(lua_State *L);
+		static int LuaVideoSize(lua_State *L);
 
 	public:
 		LuaScript(const wxString &filename);

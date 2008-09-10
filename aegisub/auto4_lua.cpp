@@ -44,7 +44,9 @@
 #include "ass_override.h"
 #include "text_file_reader.h"
 #include "options.h"
+
 #include "vfr.h"
+#include "video_context.h"
 
 #ifdef __WINDOWS__
 #include "../lua51/src/lualib.h"
@@ -177,6 +179,8 @@ namespace Automation4 {
 			lua_setfield(L, -2, "frame_from_ms");
 			lua_pushcfunction(L, LuaMsFromFrame);
 			lua_setfield(L, -2, "ms_from_frame");
+			lua_pushcfunction(L, LuaVideoSize);
+			lua_setfield(L, -2, "video_size");
 			// aegisub.lua_automation_version
 			lua_pushinteger(L, 4);
 			lua_setfield(L, -2, "lua_automation_version");
@@ -387,6 +391,21 @@ namespace Automation4 {
 		if (VFR_Output.IsLoaded()) {
 			lua_pushnumber(L, VFR_Output.GetTimeAtFrame(frame, true));
 			return 1;
+		} else {
+			lua_pushnil(L);
+			return 1;
+		}
+	}
+
+	int LuaScript::LuaVideoSize(lua_State *L)
+	{
+		VideoContext *ctx = VideoContext::Get();
+		if (ctx->IsLoaded()) {
+			lua_pushnumber(L, ctx->GetWidth());
+			lua_pushnumber(L, ctx->GetHeight());
+			lua_pushnumber(L, ctx->GetAspectRatioValue());
+			lua_pushnumber(L, ctx->GetAspectRatioType());
+			return 4;
 		} else {
 			lua_pushnil(L);
 			return 1;
