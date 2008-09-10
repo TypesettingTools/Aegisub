@@ -98,9 +98,9 @@ public:
 	~AssOverrideTag();
 
 	bool IsValid();
-	void ParseParameters(wxString text);
+	void ParseParameters(const wxString &text);
 	void Clear();
-	void SetText(wxString text);
+	void SetText(const wxString &text);
 	wxString ToString();
 };
 

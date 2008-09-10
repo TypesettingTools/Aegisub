@@ -123,6 +123,7 @@ void VisualToolVectorClip::Draw() {
 	spline.GetPointList(points,pointCurve);
 
 	// Draw stencil mask
+	// FIXME: This should understand inverse clips too
 	glEnable(GL_STENCIL_TEST);
 	glColorMask(0,0,0,0);
 	glStencilFunc(GL_NEVER,1,1);
@@ -273,7 +274,10 @@ void VisualToolVectorClip::UpdateDrag(VisualDraggableFeature &feature) {
 //////////
 // Commit
 void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
-	SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+	if (inverse)
+		SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
+	else
+		SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
 }
 
 
@@ -294,7 +298,10 @@ void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 
 				// Erase and save changes
 				spline.curves.erase(cur);
-				SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+				if (inverse)
+					SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
+				else
+					SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
 				curFeature = -1;
 				Commit(true);
 				return;
@@ -389,7 +396,10 @@ void VisualToolVectorClip::InitializeHold() {
 		}
 
 		// Commit
-		SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+		if (inverse)
+			SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
+		else
+			SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
 		Commit(true);
 	}
 
@@ -460,7 +470,12 @@ void VisualToolVectorClip::CommitHold() {
 	if (!holding && mode == 7) spline.Smooth();
 
 	// Save it
-	if (mode != 3 && mode != 4) SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+	if (mode != 3 && mode != 4) {
+		if (inverse)
+			SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
+		else
+			SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+	}
 
 	// End freedraw
 	if (!holding && (mode == 6 || mode == 7)) SetMode(0);
@@ -478,7 +493,7 @@ void VisualToolVectorClip::DoRefresh() {
 		// Get clip vector
 		wxString vect;
 		int scale;
-		vect = GetLineVectorClip(line,scale);
+		vect = GetLineVectorClip(line,scale,inverse);
 		//if (!vect.IsEmpty()) return;
 		spline.DecodeFromASS(vect);
 		PopulateFeatureList();

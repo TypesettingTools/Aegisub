@@ -52,6 +52,7 @@ private:
 	wxToolBar *toolBar;
 	int mode;
 	int lastX,lastY;
+	bool inverse;
 
 	void SetMode(int mode);
 	

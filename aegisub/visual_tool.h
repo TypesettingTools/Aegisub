@@ -107,8 +107,8 @@ protected:
 	void GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2);
 	void GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz);
 	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
-	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2);
-	wxString GetLineVectorClip(AssDialogue *diag,int &scale);
+	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse);
+	wxString GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse);
 	void FillPositionData();
 	void SetOverride(wxString tag,wxString value);
 

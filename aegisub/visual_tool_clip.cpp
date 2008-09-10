@@ -55,8 +55,9 @@ VisualToolClip::VisualToolClip(VideoDisplay *_parent)
 	curX1 = curY1 = 0;
 	curX2 = sw;
 	curY2 = sh;
+	inverse = false;
 	AssDialogue *line = GetActiveDialogueLine();
-	if (line) GetLineClip(line,curX1,curY1,curX2,curY2);
+	if (line) GetLineClip(line,curX1,curY1,curX2,curY2,inverse);
 }
 
 
@@ -76,7 +77,7 @@ void VisualToolClip::Draw() {
 	if (!line) return;
 
 	// Get position
-	if (!dragging && !holding) GetLineClip(line,curX1,curY1,curX2,curY2);
+	if (!dragging && !holding) GetLineClip(line,curX1,curY1,curX2,curY2,inverse);
 	int dx1 = curX1;
 	int dy1 = curY1;
 	int dx2 = curX2;
@@ -90,10 +91,15 @@ void VisualToolClip::Draw() {
 	// Draw outside area
 	SetLineColour(colour[3],0.0f);
 	SetFillColour(wxColour(0,0,0),0.5f);
-	DrawRectangle(0,0,sw,dy1);
-	DrawRectangle(0,dy2,sw,sh);
-	DrawRectangle(0,dy1,dx1,dy2);
-	DrawRectangle(dx2,dy1,sw,dy2);
+	if (inverse) {
+		DrawRectangle(dx1,dy1,dx2,dy2);
+	}
+	else {
+		DrawRectangle(0,0,sw,dy1);
+		DrawRectangle(0,dy2,sw,sh);
+		DrawRectangle(0,dy1,dx1,dy2);
+		DrawRectangle(dx2,dy1,sw,dy2);
+	}
 
 	// Draw circles
 	SetLineColour(colour[0]);
@@ -114,6 +120,7 @@ void VisualToolClip::InitializeHold() {
 	startX = mouseX;
 	startY = mouseY;
 	curDiag->StripTag(_T("\\clip"));
+	curDiag->StripTag(_T("\\iclip"));
 }
 
 
@@ -144,7 +151,10 @@ void VisualToolClip::UpdateHold() {
 ///////////////
 // Commit hold
 void VisualToolClip::CommitHold() {
-	SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2));
+	if (inverse)
+		SetOverride(_T("\\iclip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2));
+	else
+		SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2));
 }
 
 
@@ -201,6 +211,7 @@ void VisualToolClip::PopulateFeatureList() {
 void VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
 	curDiag = GetActiveDialogueLine();
 	curDiag->StripTag(_T("\\clip"));
+	curDiag->StripTag(_T("\\iclip"));
 }
 
 

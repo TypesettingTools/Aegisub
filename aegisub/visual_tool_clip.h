@@ -47,6 +47,7 @@
 class VisualToolClip : public VisualTool {
 private:
 	int startX,startY,curX1,curY1,curX2,curY2;
+	bool inverse;
 
 	bool CanHold() { return true; }
 	void InitializeHold();

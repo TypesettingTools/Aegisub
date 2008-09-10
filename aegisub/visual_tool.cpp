@@ -584,13 +584,14 @@ void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 
 ///////////////////
 // Get line's clip
-void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) {
+void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse) {
 	// Default values
 	x1 = y1 = 0;
 	int sw,sh;
 	VideoContext::Get()->GetScriptSize(sw,sh);
 	x2 = sw-1;
 	y2 = sh-1;
+	inverse = false;
 
 	// Prepare overrides
 	diag->ParseASSTags();
@@ -612,6 +613,14 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) 
 				y1 = tag->Params[1]->AsInt();
 				x2 = tag->Params[2]->AsInt();
 				y2 = tag->Params[3]->AsInt();
+				inverse = false;
+			}
+			else if (tag->Name == _T("\\iclip") && tag->Params.size() == 4) {
+				x1 = tag->Params[0]->AsInt();
+				y1 = tag->Params[1]->AsInt();
+				x2 = tag->Params[2]->AsInt();
+				y2 = tag->Params[3]->AsInt();
+				inverse = true;
 			}
 		}
 	}
@@ -621,10 +630,11 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2) 
 
 //////////////////////////////////////
 // Get line vector clip, if it exists
-wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale) {
+wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse) {
 	// Prepare overrides
 	wxString result;
 	scale = 1;
+	inverse = false;
 	diag->ParseASSTags();
 	AssDialogueBlockOverride *override;
 	AssOverrideTag *tag;
@@ -639,14 +649,22 @@ wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale) {
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
-			if (tag->Name == _T("\\clip")) {
+			if (tag->Name == _T("\\clip") || tag->Name == _T("\\iclip")) {
 				if (tag->Params.size() == 1) {
 					result = tag->Params[0]->AsText();
 				}
-				if (tag->Params.size() == 2) {
+				else if (tag->Params.size() == 2) {
 					scale = tag->Params[0]->AsInt();
 					result = tag->Params[1]->AsText();
 				}
+				else if (tag->Params.size() == 4) {
+					int x1 = tag->Params[0]->AsInt(),
+						y1 = tag->Params[1]->AsInt(),
+						x2 = tag->Params[2]->AsInt(),
+						y2 = tag->Params[3]->AsInt();
+					result = wxString::Format(_T("m %d %d l %d %d %d %d %d %d"), x1, y1, x2, y1, x2, y2, x1, y2);
+				}
+				inverse = tag->Name == _T("\\iclip");
 			}
 		}
 	}

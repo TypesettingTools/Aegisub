@@ -232,9 +232,29 @@ void AssOverrideTagProto::LoadProtos () {
 	proto.back().name = _T("\\bord");
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
 
+	// \xbord<depth>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\xbord");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
+
+	// \ybord<depth>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\ybord");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
+
 	// \shad<depth>
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\shad");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
+
+	// \xshad<depth>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\xshad");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
+
+	// \yshad<depth>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\yshad");
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
 
 	// \fade(<a1>,<a2>,<a3>,<t1>,<t2>,<t3>,<t4>)
@@ -251,10 +271,10 @@ void AssOverrideTagProto::LoadProtos () {
 	// \move(<x1>,<y1>,<x2>,<y2>[,<t1>,<t2>])
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\move");
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_6,PARCLASS_RELATIVE_TIME_START));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_6,PARCLASS_RELATIVE_TIME_START));
 
@@ -272,6 +292,20 @@ void AssOverrideTagProto::LoadProtos () {
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_2,PARCLASS_NORMAL));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_TEXT,NOT_OPTIONAL,PARCLASS_DRAWING));
 
+	// \iclip(<x1>,<y1>,<x2>,<y2>)
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\iclip");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
+
+	// \iclip([<scale>,]<some drawings>)
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\iclip");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_2,PARCLASS_NORMAL));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_TEXT,NOT_OPTIONAL,PARCLASS_DRAWING));
+
 	// \fscx<percent>
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\fscx");
@@ -285,8 +319,8 @@ void AssOverrideTagProto::LoadProtos () {
 	// \pos(<x>,<y>)
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\pos");
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
 
 	// \org(<x>,<y>)
 	proto.push_back(AssOverrideTagProto());
@@ -328,6 +362,16 @@ void AssOverrideTagProto::LoadProtos () {
 	// \fr<degrees>
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\fr");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_NORMAL));
+
+	// \fax<factor>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\fax");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_NORMAL));
+
+	// \fay<factor>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\fay");
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_NORMAL));
 
 	// \1c&H<bbggrr>&
@@ -385,10 +429,15 @@ void AssOverrideTagProto::LoadProtos () {
 	proto.back().name = _T("\\kf");
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_KARAOKE));
 
-	// \be<0/1>
+	// \be<strength>
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\be");
-	proto.back().params.push_back(AssOverrideParamProto(VARDATA_BOOL,NOT_OPTIONAL,PARCLASS_NORMAL));
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,NOT_OPTIONAL,PARCLASS_NORMAL));
+
+	// \blur<strength>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\blur");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_NORMAL));
 
 	// \fn<name>
 	proto.push_back(AssOverrideTagProto());
@@ -502,7 +551,7 @@ void AssOverrideTag::Clear() {
 
 ////////////////////////////
 // Parses text and sets tag
-void AssOverrideTag::SetText (wxString text) {
+void AssOverrideTag::SetText (const wxString &text) {
 	// Determine name
 	Name = _T("");
 	AssOverrideTagProto *proto;
@@ -537,7 +586,7 @@ bool AssOverrideTag::IsValid() {
 
 /////////////////////
 // Parses parameters
-void AssOverrideTag::ParseParameters(wxString text) {
+void AssOverrideTag::ParseParameters(const wxString &text) {
 	// Clear first
 	Clear();
 
@@ -551,7 +600,8 @@ void AssOverrideTag::ParseParameters(wxString text) {
 		if (text.IsEmpty() || text[0] != _T('(')) {
 			// There's just one (or none at all) parameter (because there's no parantheses)
 			// This means text is all our parameters
-			paramList.Add(text.Trim(true).Trim(false));
+			wxString param(text);
+			paramList.Add(param.Trim(true).Trim(false));
 			// Only using goto here to avoid yet another nested block (keeps the code cleaner!)
 			goto end_tokenizing;
 		}
@@ -613,12 +663,16 @@ end_tokenizing:
 	}
 
 	// Find prototype
-	bool clipOnce = true;
+	bool clipOnce = true, iclipOnce = true;
 	AssOverrideTagProto *proto = NULL;
 	for (std::list<AssOverrideTagProto>::iterator cur=AssOverrideTagProto::proto.begin();cur!=AssOverrideTagProto::proto.end();cur++) {
 		if (Name == (*cur).name) {
 			if (Name == _T("\\clip") && totalPars != 4 && clipOnce) {
 				clipOnce = false;
+				continue;
+			}
+			if (Name == _T("\\iclip") && totalPars != 4 && iclipOnce) {
+				iclipOnce = false;
 				continue;
 			}
 			proto = &(*cur);
@@ -731,7 +785,14 @@ wxString AssOverrideTag::ToString() {
 
 	// Determine if it needs parentheses
 	bool parenthesis = false;
-	if (Name == _T("\\t") || Name == _T("\\pos") || Name == _T("\\fad") || Name == _T("\\org") || Name == _T("\\clip") || Name == _T("\\move") || Name == _T("\\fade")) parenthesis = true;
+	if (Name == _T("\\t") ||
+	    Name == _T("\\pos") ||
+	    Name == _T("\\fad") ||
+	    Name == _T("\\org") ||
+	    Name == _T("\\clip") ||
+	    Name == _T("\\iclip") ||
+	    Name == _T("\\move") ||
+	    Name == _T("\\fade")) parenthesis = true;
 	if (parenthesis) result += _T("(");
 
 	// Add parameters
