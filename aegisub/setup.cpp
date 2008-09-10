@@ -123,6 +123,13 @@
 #pragma comment(lib, "opengl32.lib")
 
 
+////////////////
+// FFMpegSource
+#ifdef WITH_FFMPEGSOURCE
+#pragma comment(lib, "ffmpegsource2.lib")
+#endif
+
+
 //////////////
 // DirectShow
 #ifdef WITH_DIRECTSHOW

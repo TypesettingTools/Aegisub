@@ -1645,6 +1645,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\video_provider_ffmpegsource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\video_provider_ffmpegsource.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\video_provider_lavc.cpp"
 				>
 			</File>

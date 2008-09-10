@@ -38,7 +38,7 @@
 ///////////
 // Headers
 #include "video_provider_ffmpegsource.h"
-#include <ffms.h>
+#include "../FFmpegSource2/ffms.h"
 #include "video_context.h"
 #include "options.h"
 
@@ -230,7 +230,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 
 	// choose output format
 	if (FormatType & FORMAT_RGB32) {
-		DstFormat		= FFMS_PIX_FMT_RGB32; // FIXME: should be RGB32
+		DstFormat		= FFMS_PIX_FMT_RGB32;
 		DstFrame.format	= FORMAT_RGB32;
 	} else if (FormatType & FORMAT_RGB24) {
 		DstFormat		= FFMS_PIX_FMT_RGB24;

@@ -42,7 +42,7 @@
 #include "dialog_progress.h"
 #include "vfr.h"
 #include <vector>
-#include <ffms.h>
+#include "../FFmpegSource2/ffms.h"
 
 
 
