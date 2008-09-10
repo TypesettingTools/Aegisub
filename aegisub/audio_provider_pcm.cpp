@@ -370,17 +370,169 @@ public:
 };
 
 
+
+// Sony Wave64 audio provider
+// Specs obtained at: <http://www.vcs.de/fileadmin/user_upload/MBS/PDF/Whitepaper/Informations_about_Sony_Wave64.pdf>
+
+static const uint8_t w64GuidRIFF[16] = {
+	// {66666972-912E-11CF-A5D6-28DB04C10000}
+	0x72, 0x69, 0x66, 0x66, 0x2E, 0x91, 0xCF, 0x11, 0xA5, 0xD6, 0x28, 0xDB, 0x04, 0xC1, 0x00, 0x00
+};
+
+static const uint8_t w64GuidWAVE[16] = {
+	// {65766177-ACF3-11D3-8CD1-00C04F8EDB8A}
+	0x77, 0x61, 0x76, 0x65, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
+};
+
+static const uint8_t w64Guidfmt[16] = {
+	// {20746D66-ACF3-11D3-8CD1-00C04F8EDB8A}
+	0x66, 0x6D, 0x74, 0x20, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
+};
+
+static const uint8_t w64Guiddata[16] = {
+	// {61746164-ACF3-11D3-8CD1-00C04F8EDB8A}
+	0x64, 0x61, 0x74, 0x61, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
+};
+
+class Wave64AudioProvider : public PCMAudioProvider {
+private:
+	// Here's some copy-paste from the FFmpegSource2 code
+
+	struct WaveFormatEx { 
+		uint16_t wFormatTag; 
+		uint16_t nChannels; 
+		uint32_t nSamplesPerSec; 
+		uint32_t nAvgBytesPerSec; 
+		uint16_t nBlockAlign; 
+		uint16_t wBitsPerSample; 
+		uint16_t cbSize; 
+	};
+
+	struct RiffChunk {
+		uint8_t riff_guid[16];
+		uint64_t file_size;
+		uint8_t format_guid[16];
+	};
+
+	struct FormatChunk {
+		uint8_t chunk_guid[16];
+		uint64_t chunk_size;
+		WaveFormatEx format;
+		uint8_t padding[6];
+	};
+
+	struct DataChunk {
+		uint8_t chunk_guid[16];
+		uint64_t chunk_size;
+	};
+
+	inline bool CheckGuid(const uint8_t *guid1, const uint8_t *guid2)
+	{
+		return memcmp(guid1, guid2, 16) == 0;
+	}
+
+public:
+	Wave64AudioProvider(const wxString &_filename)
+		: PCMAudioProvider(_filename)
+	{
+		filename = _filename;
+
+		int64_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
+
+		if (file_size < smallest_possible_file)
+			throw _T("Wave64 audio provider: File is too small to be a Wave64 file");
+
+		// Read header
+		// This should throw an exception if the mapping fails
+		void *filestart = EnsureRangeAccessible(0, sizeof(RiffChunk));
+		assert(filestart);
+		RiffChunk &header = *(RiffChunk*)filestart;
+
+		// Check magic values
+		if (!CheckGuid(header.riff_guid, w64GuidRIFF))
+			throw _T("Wave64 audio provider: File is not a Wave64 RIFF file");
+		if (!CheckGuid(header.format_guid, w64GuidWAVE))
+			throw _T("Wave64 audio provider: File is not a Wave64 WAVE file");
+
+		// Count how much more data we can have in the entire file
+		uint64_t data_left = Endian::LittleToMachine(header.file_size) - sizeof(RiffChunk);
+		// How far into the file we have processed.
+		// Must be incremented by the riff chunk size fields.
+		uint64_t filepos = sizeof(header);
+
+		bool got_fmt_header = false;
+
+		// Inherited from AudioProvider
+		num_samples = 0;
+
+		// Continue reading chunks until out of data
+		while (data_left) {
+			uint8_t *chunk_guid = (uint8_t*)EnsureRangeAccessible(filepos, 16);
+			uint64_t chunk_size = Endian::LittleToMachine(*(uint64_t*)EnsureRangeAccessible(filepos+16, sizeof(uint64_t)));
+
+			if (CheckGuid(chunk_guid, w64Guidfmt)) {
+				if (got_fmt_header)
+					throw _T("Wave64 audio provider: Bad file, found more than one 'fmt' chunk");
+
+				FormatChunk &fmt = *(FormatChunk*)EnsureRangeAccessible(filepos, sizeof(FormatChunk));
+				got_fmt_header = true;
+
+				if (Endian::LittleToMachine(fmt.format.wFormatTag) == 3)
+					throw _T("Wave64 audio provider: File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.");
+				if (Endian::LittleToMachine(fmt.format.wFormatTag) != 1)
+					throw _T("Wave64 audio provider: Can't use file, not PCM encoding");
+
+				// Set stuff inherited from the AudioProvider class
+				sample_rate = Endian::LittleToMachine(fmt.format.nSamplesPerSec);
+				channels = Endian::LittleToMachine(fmt.format.nChannels);
+				bytes_per_sample = (Endian::LittleToMachine(fmt.format.wBitsPerSample) + 7) / 8; // round up to nearest whole byte
+			}
+
+			else if (CheckGuid(chunk_guid, w64Guiddata)) {
+				if (!got_fmt_header)
+					throw _T("Wave64 audio provider: Found 'data' chunk before 'fmt ' chunk, file is invalid.");
+
+				int64_t samples = chunk_size / bytes_per_sample;
+				int64_t frames = samples / channels;
+
+				IndexPoint ip;
+				ip.start_sample = num_samples;
+				ip.num_samples = frames;
+				ip.start_byte = filepos;
+				index_points.push_back(ip);
+
+				num_samples += frames;
+			}
+
+			// Update counters
+			// Make sure they're 64 bit aligned
+			data_left -= (chunk_size + 7) & ~7;
+			filepos += (chunk_size + 7) & ~7;
+		}
+	}
+};
+
+
 AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 {
 	AudioProvider *provider = 0;
 
-	// Try Microsoft/IBM RIFF WAV first
+	// Try Microsoft/IBM RIFF WAV
 	try {
 		provider = new RiffWavPCMAudioProvider(filename);
 	}
 	catch (const wxChar *msg) {
 		provider = 0;
 		wxLogDebug(_T("Creating PCM WAV reader failed with message: %s\nProceeding to try other providers."), msg);
+	}
+
+	// Try Sony Wave64
+	try {
+		provider = new Wave64AudioProvider(filename);
+	}
+	catch (const wxChar *msg) {
+		provider = 0;
+		wxLogDebug(_T("Creating Wave64 reader failed with message: %s\nProceeding to try other providers."), msg);
 	}
 
 	return provider;
