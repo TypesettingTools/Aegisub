@@ -418,7 +418,7 @@ nospin:
 			typedef wxValidator FloatTextValidator;
 			wxControl *Create(wxWindow *parent)
 			{
-				cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0); //, FloatTextValidator());
+				cw = new wxTextCtrl(parent, -1, PrettyFloatF(value), wxDefaultPosition, wxDefaultSize, 0); //, FloatTextValidator());
 				cw->SetToolTip(hint);
 				return cw;
 			}
@@ -543,6 +543,7 @@ nospin:
 			{
 				cw = new wxCheckBox(parent, -1, label);
 				cw->SetToolTip(hint);
+				static_cast<wxCheckBox*>(cw)->SetValue(value);
 				return cw;
 			}
 
