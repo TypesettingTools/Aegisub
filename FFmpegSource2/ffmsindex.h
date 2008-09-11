@@ -22,7 +22,7 @@
 
 #include <iostream> 
 #include <string>
-#include "../FFmpegSource2/ffms.h"
+#include "ffms.h"
 
 struct IndexingOptions {
 	int TrackMask;

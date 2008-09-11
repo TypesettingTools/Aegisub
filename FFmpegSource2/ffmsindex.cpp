@@ -131,6 +131,8 @@ int FFMSIndexApp::DoIndexing (IndexingOptions *Options) {
 			return 1;
 		}
 
+		FFMS_DestroyFrameIndex(Index);
+
 		std::cout << "done." << std::endl;
 	} else {
 		std::cout << "Error: index file already exists, use -f if you are sure you want to overwrite it." << std::endl;
