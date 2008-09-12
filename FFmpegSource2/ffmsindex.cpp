@@ -45,6 +45,10 @@ int main(int argc, char *argv[]) {
 		std::cout << Error << std::endl;
 		delete App;
 		return 1;
+	} catch (...) {
+		std::cout << std::endl << "Unknown error" << std::endl;
+		delete App;
+		return 1;
 	}
 
 	delete App;
