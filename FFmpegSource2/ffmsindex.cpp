@@ -107,7 +107,6 @@ FFMSIndexApp::FFMSIndexApp (int argc, char *argv[]) {
 
 FFMSIndexApp::~FFMSIndexApp () {
 	FFMS_DestroyFrameIndex(Index);
-
 }
 
 
@@ -138,7 +137,10 @@ void FFMSIndexApp::DoIndexing () {
 			throw Err;
 		}
 
-		std::cout << "\b\b\b100%" << std::endl << "Writing index... ";
+		if (Progress != 100)
+			std::cout << "\b\b\b100%";
+		
+		std::cout << std::endl << "Writing index... ";
 
 		if (FFMS_WriteIndex(CacheFile.c_str(), Index, FFMSErrMsg, MsgSize)) {
 			std::string Err = "Error writing index: ";
