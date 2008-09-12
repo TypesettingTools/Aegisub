@@ -24,20 +24,22 @@
 #include <string>
 #include "ffms.h"
 
-struct IndexingOptions {
-	int TrackMask;
-	std::string InputFile;
-	std::string CacheFile;
-	std::string AudioFile;
-	bool Overwrite;
-};
 
 class FFMSIndexApp {
 private:
+	int TrackMask;
+	bool Overwrite;
+	std::string InputFile;
+	std::string CacheFile;
+	std::string AudioFile;
+
+	FrameIndex *Index;
+
+	void PrintUsage();
 
 public:
-	static IndexingOptions *ParseCMDLine(int argc, char *argv[]);
-	static void PrintUsage();
-	static int DoIndexing(IndexingOptions *Options);
+	FFMSIndexApp(int argc, char *argv[]);
+	~FFMSIndexApp();
+	void DoIndexing();
 	static int __stdcall UpdateProgress(int State, int64_t Current, int64_t Total, void *Private);
 };

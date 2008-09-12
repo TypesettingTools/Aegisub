@@ -22,32 +22,48 @@
 #include "ffmsindex.h"
 
 int main(int argc, char *argv[]) {
-	IndexingOptions *Options = FFMSIndexApp::ParseCMDLine(argc, argv);
-	if (!Options)
+	FFMSIndexApp *App;
+
+	try {
+		App = new FFMSIndexApp(argc, argv);
+	} catch (const char *Error) {
+		std::cout << std::endl << Error << std::endl;
 		return 1;
+	} catch (std::string Error) {
+		std::cout << std::endl << Error << std::endl;
+		return 1;
+	} catch (...) {
+		std::cout << std::endl << "Unknown error" << std::endl;
+		return 1;
+	}
 
 	FFMS_Init();
 
-	if (FFMSIndexApp::DoIndexing(Options))
+	try {
+		App->DoIndexing();
+	} catch (const char *Error) {
+		std::cout << Error << std::endl;
+		delete App;
 		return 1;
-	else
-		return 0;
+	}
+
+	delete App;
+	return 0;
 }
 
 
-IndexingOptions *FFMSIndexApp::ParseCMDLine (int argc, char *argv[]) {
+FFMSIndexApp::FFMSIndexApp (int argc, char *argv[]) {
 	if (argc <= 1) {
 		PrintUsage();
-		return NULL;
+		throw "";
 	}
 
 	// defaults
-	IndexingOptions *Options = new IndexingOptions();
-	Options->InputFile = "";
-	Options->CacheFile = "";
-	Options->AudioFile = "";
-	Options->TrackMask = 0;
-	Options->Overwrite = false;
+	InputFile = "";
+	CacheFile = "";
+	AudioFile = "";
+	TrackMask = 0;
+	Overwrite = false;
 
 	// argv[0] = name of program
 	int i = 1;
@@ -59,17 +75,17 @@ IndexingOptions *FFMSIndexApp::ParseCMDLine (int argc, char *argv[]) {
 			OptionArg = argv[i+1];
 
 		if (!Option.compare("-f")) {
-			Options->Overwrite = true;
+			Overwrite = true;
 		} else if (!Option.compare("-t")) {
-			Options->TrackMask = atoi(OptionArg.c_str());
+			TrackMask = atoi(OptionArg.c_str());
 			i++;
 		} else if (!Option.compare("-a")) {
-			Options->AudioFile = OptionArg;
+			AudioFile = OptionArg;
 			i++;
-		} else if (!Options->InputFile.compare("")) {
-			Options->InputFile = argv[i];
-		} else if (!Options->CacheFile.compare("")) {
-			Options->CacheFile = argv[i];
+		} else if (InputFile.empty()) {
+			InputFile = argv[i];
+		} else if (CacheFile.empty()) {
+			CacheFile = argv[i];
 		} else {
 			std::cout << "Warning: ignoring unknown option " << argv[i] << std::endl;
 		}
@@ -77,19 +93,21 @@ IndexingOptions *FFMSIndexApp::ParseCMDLine (int argc, char *argv[]) {
 		i++;
 	}
 
-	if (!Options->InputFile.compare("")) {
-		std::cout << "Error: no input file specified" << std::endl;
-		return NULL;
+	if (InputFile.empty()) {
+		throw "Error: no input file specified";
 	}
-	if (!Options->CacheFile.compare("")) {
-		Options->CacheFile = Options->InputFile;
-		Options->CacheFile.append(".ffindex");
+	if (CacheFile.empty()) {
+		CacheFile = InputFile;
+		CacheFile.append(".ffindex");
 	}
-	if (!Options->AudioFile.compare("")) {
-		Options->AudioFile = Options->InputFile;
+	if (AudioFile.empty()) {
+		AudioFile = InputFile;
 	}
+}
 
-	return Options;
+FFMSIndexApp::~FFMSIndexApp () {
+	FFMS_DestroyFrameIndex(Index);
+
 }
 
 
@@ -101,45 +119,37 @@ void FFMSIndexApp::PrintUsage () {
 		<< "Options:" << endl
 		<< "-f        Overwrite existing index file if it exists (default: no)" << endl
 		<< "-t N      Set the audio trackmask to N (-1 means decode all tracks, 0 means decode none; default: 0)" << endl
-		<< "-a NAME   Set the audio output base filename to NAME (default: input filename)" << endl;
+		<< "-a NAME   Set the audio output base filename to NAME (default: input filename)" << endl << endl;
 }
 
 
-int FFMSIndexApp::DoIndexing (IndexingOptions *Options) {
-	FrameIndex *Index;
+void FFMSIndexApp::DoIndexing () {
 	char FFMSErrMsg[1024];
 	int MsgSize = sizeof(FFMSErrMsg);
-	int TrackMask = Options->TrackMask;
-	std::string InputFileName = Options->InputFile;
-	std::string CacheFileName = Options->CacheFile;
-	std::string AudioFileName = Options->AudioFile;
 	int Progress = 0;
 
-	Index = FFMS_ReadIndex(CacheFileName.c_str(), FFMSErrMsg, MsgSize);
-	if (Options->Overwrite || Index == NULL) {
+	Index = FFMS_ReadIndex(CacheFile.c_str(), FFMSErrMsg, MsgSize);
+	if (Overwrite || Index == NULL) {
 		std::cout << "Indexing, please wait...  0%";
-		Index = FFMS_MakeIndex(InputFileName.c_str(), TrackMask, AudioFileName.c_str(), FFMSIndexApp::UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
+		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, AudioFile.c_str(), FFMSIndexApp::UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
 		if (Index == NULL) {
-			std::cout << std::endl << "Indexing error: " << FFMSErrMsg << std::endl;
-			return 1;
+			std::string Err = "Indexing error: ";
+			Err.append(FFMSErrMsg);
+			throw Err;
 		}
 
 		std::cout << "\b\b\b100%" << std::endl << "Writing index... ";
 
-		if (FFMS_WriteIndex(CacheFileName.c_str(), Index, FFMSErrMsg, MsgSize)) {
-			std::cout << std::endl << "Error writing index: " << FFMSErrMsg << std::endl;
-			return 1;
+		if (FFMS_WriteIndex(CacheFile.c_str(), Index, FFMSErrMsg, MsgSize)) {
+			std::string Err = "Error writing index: ";
+			Err.append(FFMSErrMsg);
+			throw Err;
 		}
-
-		FFMS_DestroyFrameIndex(Index);
 
 		std::cout << "done." << std::endl;
 	} else {
-		std::cout << "Error: index file already exists, use -f if you are sure you want to overwrite it." << std::endl;
-		return 1;
+		throw "Error: index file already exists, use -f if you are sure you want to overwrite it.";
 	}
-
-	return 0;
 }
 
 int FFMSIndexApp::UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
