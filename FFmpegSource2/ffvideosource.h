@@ -54,7 +54,7 @@ protected:
 	AVFrameLite *OutputFrame(AVFrame *Frame);
 public:
 	virtual ~VideoBase();
-	const VideoProperties& __stdcall GetVideoProperties() { return VP; }
+	const VideoProperties& GetVideoProperties() { return VP; }
 	int GetTrack() { return VideoTrack; }
 	FrameInfoVector *GetFrameInfoVector() { return &Frames; }
 	virtual AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
