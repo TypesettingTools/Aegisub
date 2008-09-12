@@ -19,40 +19,29 @@
 //  THE SOFTWARE.
 
 
-#include "ffmsindex.h"
+#include <iostream> 
+#include <string>
+#include "ffms.h"
 
-int main(int argc, char *argv[]) {
-	try {
-		ParseCMDLine(argc, argv);
-	} catch (const char *Error) {
-		std::cout << std::endl << Error << std::endl;
-		return 1;
-	} catch (std::string Error) {
-		std::cout << std::endl << Error << std::endl;
-		return 1;
-	} catch (...) {
-		std::cout << std::endl << "Unknown error" << std::endl;
-		return 1;
-	}
+int TrackMask;
+bool Overwrite;
+std::string InputFile;
+std::string CacheFile;
+std::string AudioFile;
 
-	FFMS_Init();
+FrameIndex *Index;
 
-	try {
-		DoIndexing();
-	} catch (const char *Error) {
-		std::cout << Error << std::endl;
-		FFMS_DestroyFrameIndex(Index);
-		return 1;
-	} catch (...) {
-		std::cout << std::endl << "Unknown error" << std::endl;
-		FFMS_DestroyFrameIndex(Index);
-		return 1;
-	}
 
-	FFMS_DestroyFrameIndex(Index);
-	return 0;
+void PrintUsage () {
+	using namespace std;
+	cout << "FFmpegSource2 indexing app" << endl
+		<< "Usage: ffmsindex [options] inputfile [outputfile]" << endl
+		<< "If no output filename is specified, inputfile.ffindex will be used." << endl << endl
+		<< "Options:" << endl
+		<< "-f        Overwrite existing index file if it exists (default: no)" << endl
+		<< "-t N      Set the audio trackmask to N (-1 means decode all tracks, 0 means decode none; default: 0)" << endl
+		<< "-a NAME   Set the audio output base filename to NAME (default: input filename)";
 }
-
 
 void ParseCMDLine (int argc, char *argv[]) {
 	if (argc <= 1) {
@@ -108,16 +97,24 @@ void ParseCMDLine (int argc, char *argv[]) {
 }
 
 
-
-void PrintUsage () {
+static int __stdcall UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
 	using namespace std;
-	cout << "FFmpegSource2 indexing app" << endl
-		<< "Usage: ffmsindex [options] inputfile [outputfile]" << endl
-		<< "If no output filename is specified, inputfile.ffindex will be used." << endl << endl
-		<< "Options:" << endl
-		<< "-f        Overwrite existing index file if it exists (default: no)" << endl
-		<< "-t N      Set the audio trackmask to N (-1 means decode all tracks, 0 means decode none; default: 0)" << endl
-		<< "-a NAME   Set the audio output base filename to NAME (default: input filename)";
+	int *LastPercentage = (int *)Private;
+	int Percentage = int((double(Current)/double(Total)) * 100);
+
+	if (Percentage <= *LastPercentage)
+		return 0;
+
+	*LastPercentage = Percentage;
+
+	if (Percentage < 10)
+		cout << "\b\b";
+	else
+		cout << "\b\b\b";
+
+	cout << Percentage << "%";
+	
+	return 0;
 }
 
 
@@ -154,22 +151,34 @@ void DoIndexing () {
 }
 
 
-static int __stdcall UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
-	using namespace std;
-	int *LastPercentage = (int *)Private;
-	int Percentage = int((double(Current)/double(Total)) * 100);
+int main(int argc, char *argv[]) {
+	try {
+		ParseCMDLine(argc, argv);
+	} catch (const char *Error) {
+		std::cout << std::endl << Error << std::endl;
+		return 1;
+	} catch (std::string Error) {
+		std::cout << std::endl << Error << std::endl;
+		return 1;
+	} catch (...) {
+		std::cout << std::endl << "Unknown error" << std::endl;
+		return 1;
+	}
 
-	if (Percentage <= *LastPercentage)
-		return 0;
+	FFMS_Init();
 
-	*LastPercentage = Percentage;
+	try {
+		DoIndexing();
+	} catch (const char *Error) {
+		std::cout << Error << std::endl;
+		FFMS_DestroyFrameIndex(Index);
+		return 1;
+	} catch (...) {
+		std::cout << std::endl << "Unknown error" << std::endl;
+		FFMS_DestroyFrameIndex(Index);
+		return 1;
+	}
 
-	if (Percentage < 10)
-		cout << "\b\b";
-	else
-		cout << "\b\b\b";
-
-	cout << Percentage << "%";
-	
+	FFMS_DestroyFrameIndex(Index);
 	return 0;
 }
