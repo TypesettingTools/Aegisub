@@ -22,10 +22,8 @@
 #include "ffmsindex.h"
 
 int main(int argc, char *argv[]) {
-	FFMSIndexApp *App;
-
 	try {
-		App = new FFMSIndexApp(argc, argv);
+		ParseCMDLine(argc, argv);
 	} catch (const char *Error) {
 		std::cout << std::endl << Error << std::endl;
 		return 1;
@@ -40,23 +38,23 @@ int main(int argc, char *argv[]) {
 	FFMS_Init();
 
 	try {
-		App->DoIndexing();
+		DoIndexing();
 	} catch (const char *Error) {
 		std::cout << Error << std::endl;
-		delete App;
+		FFMS_DestroyFrameIndex(Index);
 		return 1;
 	} catch (...) {
 		std::cout << std::endl << "Unknown error" << std::endl;
-		delete App;
+		FFMS_DestroyFrameIndex(Index);
 		return 1;
 	}
 
-	delete App;
+	FFMS_DestroyFrameIndex(Index);
 	return 0;
 }
 
 
-FFMSIndexApp::FFMSIndexApp (int argc, char *argv[]) {
+void ParseCMDLine (int argc, char *argv[]) {
 	if (argc <= 1) {
 		PrintUsage();
 		throw "";
@@ -109,12 +107,9 @@ FFMSIndexApp::FFMSIndexApp (int argc, char *argv[]) {
 	}
 }
 
-FFMSIndexApp::~FFMSIndexApp () {
-	FFMS_DestroyFrameIndex(Index);
-}
 
 
-void FFMSIndexApp::PrintUsage () {
+void PrintUsage () {
 	using namespace std;
 	cout << "FFmpegSource2 indexing app" << endl
 		<< "Usage: ffmsindex [options] inputfile [outputfile]" << endl
@@ -122,11 +117,11 @@ void FFMSIndexApp::PrintUsage () {
 		<< "Options:" << endl
 		<< "-f        Overwrite existing index file if it exists (default: no)" << endl
 		<< "-t N      Set the audio trackmask to N (-1 means decode all tracks, 0 means decode none; default: 0)" << endl
-		<< "-a NAME   Set the audio output base filename to NAME (default: input filename)" << endl << endl;
+		<< "-a NAME   Set the audio output base filename to NAME (default: input filename)";
 }
 
 
-void FFMSIndexApp::DoIndexing () {
+void DoIndexing () {
 	char FFMSErrMsg[1024];
 	int MsgSize = sizeof(FFMSErrMsg);
 	int Progress = 0;
@@ -134,7 +129,7 @@ void FFMSIndexApp::DoIndexing () {
 	Index = FFMS_ReadIndex(CacheFile.c_str(), FFMSErrMsg, MsgSize);
 	if (Overwrite || Index == NULL) {
 		std::cout << "Indexing, please wait...  0%";
-		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, AudioFile.c_str(), FFMSIndexApp::UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
+		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, AudioFile.c_str(), UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
 		if (Index == NULL) {
 			std::string Err = "Indexing error: ";
 			Err.append(FFMSErrMsg);
@@ -158,7 +153,8 @@ void FFMSIndexApp::DoIndexing () {
 	}
 }
 
-int FFMSIndexApp::UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
+
+static int __stdcall UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
 	using namespace std;
 	int *LastPercentage = (int *)Private;
 	int Percentage = int((double(Current)/double(Total)) * 100);

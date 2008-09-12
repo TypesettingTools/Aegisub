@@ -25,21 +25,16 @@
 #include "ffms.h"
 
 
-class FFMSIndexApp {
-private:
-	int TrackMask;
-	bool Overwrite;
-	std::string InputFile;
-	std::string CacheFile;
-	std::string AudioFile;
+int TrackMask;
+bool Overwrite;
+std::string InputFile;
+std::string CacheFile;
+std::string AudioFile;
 
-	FrameIndex *Index;
+FrameIndex *Index;
 
-	void PrintUsage();
+void PrintUsage();
+void ParseCMDLine(int argc, char *argv[]);
+void DoIndexing();
 
-public:
-	FFMSIndexApp(int argc, char *argv[]);
-	~FFMSIndexApp();
-	void DoIndexing();
-	static int __stdcall UpdateProgress(int State, int64_t Current, int64_t Total, void *Private);
-};
+static int __stdcall UpdateProgress(int State, int64_t Current, int64_t Total, void *Private);
