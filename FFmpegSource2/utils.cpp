@@ -21,24 +21,25 @@
 #include "utils.h"
 #include <string.h>
 #include <errno.h>
-
 #ifdef _MSC_VER
 #	include <intrin.h>
-#else
-#	include <xmmintrin.h>
 #endif
 
 int GetCPUFlags() {
+// FIXME Add proper feature detection when msvc isn't used
+	int Flags = PP_CPU_CAPS_MMX | PP_CPU_CAPS_MMX2;
+
+#ifdef _MSC_VER
+	Flags = 0;
 	int CPUInfo[4];
 	__cpuid(CPUInfo, 0);
-
-	int Flags = 0;
 
 	// PP and SWS defines have the same values for their defines so this actually works
 	if (CPUInfo[3] & (1 << 23))
 		Flags |= PP_CPU_CAPS_MMX;
 	if (CPUInfo[3] & (1 << 25))
 		Flags |= PP_CPU_CAPS_MMX2;
+#endif
 
 	return Flags;
 }
