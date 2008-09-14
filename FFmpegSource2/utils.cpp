@@ -20,6 +20,7 @@
 
 #include "utils.h"
 #include <string.h>
+#include <errno.h>
 #include <intrin.h>
 
 int GetCPUFlags() {
