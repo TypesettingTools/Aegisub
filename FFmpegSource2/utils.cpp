@@ -21,7 +21,12 @@
 #include "utils.h"
 #include <string.h>
 #include <errno.h>
-#include <intrin.h>
+
+#ifdef _MSC_VER
+#	include <intrin.h>
+#else
+#	include <xmmintrin.h>
+#endif
 
 int GetCPUFlags() {
 	int CPUInfo[4];
