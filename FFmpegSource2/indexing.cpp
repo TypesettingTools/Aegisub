@@ -23,6 +23,7 @@
 #include <set>
 #include <algorithm>
 #include <memory>
+#include <errno.h>
 #include "indexing.h"
 #include "wave64writer.h"
 

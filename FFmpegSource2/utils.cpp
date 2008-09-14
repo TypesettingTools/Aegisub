@@ -19,51 +19,19 @@
 //  THE SOFTWARE.
 
 #include "utils.h"
+#include <string.h>
+#include <intrin.h>
 
 int GetCPUFlags() {
-	bool hasmmx, hassse, hasisse = false;
-	
-	__asm {
-		mov eax, 1 // CPU feature detection
- 		CPUID
-
-		shr edx, 23 // MMX
-		mov eax, edx
-		and eax, 1
-		mov [hasmmx], al
-
-		shr edx, 2 // SSE
-		mov eax, edx
-		and eax, 1
-		mov [hassse], al
-		jnz End // End if SSE detected, else...
-
-
-		//Athlon TBird Detection, since it has iSSE but not SSE
-		xor eax, eax // CPU Vendor detection (eax=0)
-		CPUID // call CPU identification function
-
-		cmp ebx, 'htuA'
-		jne End
-		cmp edx, 'itne'
-		jne End
-		cmp ebx, 'DMAc'
-		jne End
-
-		//detect Athlon Tbird, which has iSSE but not SSE
-		sub eax, 0x460000 //Find Family 6, Model 4 = Athlon Tbird
-		cmp eax, 0
-		sete [hasisse]
-
-End:
-	}
+	int CPUInfo[4];
+	__cpuid(CPUInfo, 0);
 
 	int Flags = 0;
 
 	// PP and SWS defines have the same values for their defines so this actually works
-	if (hasmmx)
+	if (CPUInfo[3] & (1 << 23))
 		Flags |= PP_CPU_CAPS_MMX;
-	if (hasisse)
+	if (CPUInfo[3] & (1 << 25))
 		Flags |= PP_CPU_CAPS_MMX2;
 
 	return Flags;

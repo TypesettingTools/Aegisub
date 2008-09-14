@@ -19,6 +19,7 @@
 //  THE SOFTWARE.
 
 #include "ffvideosource.h"
+#include <errno.h>
 
 int VideoBase::InitPP(const char *PP, int PixelFormat, char *ErrorMsg, unsigned MsgSize) {
 	if (PP == NULL || !strcmp(PP, ""))
