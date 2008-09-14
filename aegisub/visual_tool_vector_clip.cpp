@@ -135,14 +135,10 @@ void VisualToolVectorClip::Draw() {
 		glEnd();
 	}
 
-	// Invert stencil
-	if (inverse) {
-		DrawRectangle(0,0,sw,sh);
-	}
-
 	// Draw "outside clip" mask
 	glColorMask(1,1,1,1);
-	glStencilFunc(GL_EQUAL, 0, 1);
+	if (inverse) glStencilFunc(GL_EQUAL, 1, 1);
+	else glStencilFunc(GL_EQUAL, 0, 1);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	SetLineColour(colour[3],0.0f);
 	SetFillColour(wxColour(0,0,0),0.5f);

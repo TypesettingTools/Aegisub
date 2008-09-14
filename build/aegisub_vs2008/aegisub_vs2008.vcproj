@@ -248,7 +248,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../lib"
 				GenerateManifest="true"
-				DelayLoadDLLs="perl510.dll"
+				DelayLoadDLLs="perl510.dll;FFMpegSource2.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
