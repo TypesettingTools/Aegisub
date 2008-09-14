@@ -19,6 +19,7 @@
 //  THE SOFTWARE.
 
 #include "wave64writer.h"
+#include <string.h>
 
 #define WAVE_FORMAT_IEEE_FLOAT 0x0003
 #define WAVE_FORMAT_PCM 1
@@ -80,7 +81,7 @@ void Wave64Writer::WriteHeader(bool Initial, bool IsFloat) {
 
 	memcpy(Header + 0, GuidRIFF, 16);
 	if (Initial) {
-		Header[2] = 0x7F00000000000000;
+		Header[2] = 0x7F00000000000000ull;
 	} else {
 		Header[2] = BytesWritten + sizeof(Header);
 	}
@@ -95,7 +96,7 @@ void Wave64Writer::WriteHeader(bool Initial, bool IsFloat) {
 	memcpy(Header + 11, Guiddata, 16);
 
 	if (Initial)
-		Header[13] = 0x7E00000000000000;
+		Header[13] = 0x7E00000000000000ull;
 	else
 		Header[13] = BytesWritten + 24;
 

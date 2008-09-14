@@ -20,6 +20,11 @@
 
 #include "stdiostream.h"
 
+#ifndef WIN32
+#	define _ftelli64 ftello
+#	define _fseeki64 fseeko
+#endif
+
 /* StdIoStream methods */
 
 /* read count bytes into buffer starting at file position pos

@@ -22,6 +22,11 @@
 #include <string.h>
 #include <intrin.h>
 
+#ifndef WIN32
+#	define _ftelli64 ftello
+#	define _fseeki64 fseeko
+#endif
+
 int GetCPUFlags() {
 	int CPUInfo[4];
 	__cpuid(CPUInfo, 0);
@@ -35,46 +40,6 @@ int GetCPUFlags() {
 		Flags |= PP_CPU_CAPS_MMX2;
 
 	return Flags;
-}
-
-int CSNameToPIXFMT(const char * ACSName, int ADefault) {
-	if (!_strcmpi(ACSName, ""))
-		return ADefault;
-	if (!_strcmpi(ACSName, "YV12"))
-		return PIX_FMT_YUV420P;
-	if (!_strcmpi(ACSName, "YUY2"))
-		return PIX_FMT_YUYV422;
-	if (!_strcmpi(ACSName, "RGB24"))
-		return PIX_FMT_BGR24;
-	if (!_strcmpi(ACSName, "RGB32"))
-		return PIX_FMT_RGB32;
-	return PIX_FMT_NONE;
-}
-
-int ResizerNameToSWSResizer(const char *AResizerName) {
-	if (!_strcmpi(AResizerName, "FAST_BILINEAR"))
-		return SWS_FAST_BILINEAR;
-	if (!_strcmpi(AResizerName, "BILINEAR"))
-		return SWS_BILINEAR;
-	if (!_strcmpi(AResizerName, "BICUBIC"))
-		return SWS_BICUBIC;
-	if (!_strcmpi(AResizerName, "X"))
-		return SWS_X;
-	if (!_strcmpi(AResizerName, "POINT"))
-		return SWS_POINT;
-	if (!_strcmpi(AResizerName, "AREA"))
-		return SWS_AREA;
-	if (!_strcmpi(AResizerName, "BICUBLIN"))
-		return SWS_BICUBLIN;
-	if (!_strcmpi(AResizerName, "GAUSS"))
-		return SWS_GAUSS;
-	if (!_strcmpi(AResizerName, "SINC"))
-		return SWS_SINC;
-	if (!_strcmpi(AResizerName, "LANCZOS"))
-		return SWS_LANCZOS;
-	if (!_strcmpi(AResizerName, "SPLINE"))
-		return SWS_SPLINE;
-	return 0;
 }
 
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize) {

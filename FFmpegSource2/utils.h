@@ -48,8 +48,6 @@ public:
 };
 
 int GetCPUFlags();
-int CSNameToPIXFMT(const char * ACSName, int ADefault);
-int ResizerNameToSWSResizer(const char *AResizerName);
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize);
 bool AudioFMTIsFloat(SampleFormat FMT);
 CodecID MatroskaToFFCodecID(TrackInfo *TI);

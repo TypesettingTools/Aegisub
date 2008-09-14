@@ -27,6 +27,11 @@
 #include "indexing.h"
 #include "wave64writer.h"
 
+#ifndef WIN32
+#	define _ftelli64 ftello
+#	define _fseeki64 fseeko
+#endif
+
 class AudioContext {
 public:
 	Wave64Writer *W64W;

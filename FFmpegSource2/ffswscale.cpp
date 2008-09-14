@@ -21,6 +21,46 @@
 #include "ffswscale.h"
 #include "utils.h"
 
+int CSNameToPIXFMT(const char * ACSName, int ADefault) {
+	if (!_stricmp(ACSName, ""))
+		return ADefault;
+	if (!_stricmp(ACSName, "YV12"))
+		return PIX_FMT_YUV420P;
+	if (!_stricmp(ACSName, "YUY2"))
+		return PIX_FMT_YUYV422;
+	if (!_stricmp(ACSName, "RGB24"))
+		return PIX_FMT_BGR24;
+	if (!_stricmp(ACSName, "RGB32"))
+		return PIX_FMT_RGB32;
+	return PIX_FMT_NONE;
+}
+
+int ResizerNameToSWSResizer(const char *AResizerName) {
+	if (!_stricmp(AResizerName, "FAST_BILINEAR"))
+		return SWS_FAST_BILINEAR;
+	if (!_stricmp(AResizerName, "BILINEAR"))
+		return SWS_BILINEAR;
+	if (!_stricmp(AResizerName, "BICUBIC"))
+		return SWS_BICUBIC;
+	if (!_stricmp(AResizerName, "X"))
+		return SWS_X;
+	if (!_stricmp(AResizerName, "POINT"))
+		return SWS_POINT;
+	if (!_stricmp(AResizerName, "AREA"))
+		return SWS_AREA;
+	if (!_stricmp(AResizerName, "BICUBLIN"))
+		return SWS_BICUBLIN;
+	if (!_stricmp(AResizerName, "GAUSS"))
+		return SWS_GAUSS;
+	if (!_stricmp(AResizerName, "SINC"))
+		return SWS_SINC;
+	if (!_stricmp(AResizerName, "LANCZOS"))
+		return SWS_LANCZOS;
+	if (!_stricmp(AResizerName, "SPLINE"))
+		return SWS_SPLINE;
+	return 0;
+}
+
 SWScale::SWScale(PClip Child, int ResizeToWidth, int ResizeToHeight, const char *ResizerName, const char *ConvertToFormatName, IScriptEnvironment *Env) : GenericVideoFilter(Child) {
 	Context = NULL;
 	OrigWidth = vi.width;
