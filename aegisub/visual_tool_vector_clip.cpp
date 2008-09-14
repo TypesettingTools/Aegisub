@@ -123,7 +123,6 @@ void VisualToolVectorClip::Draw() {
 	spline.GetPointList(points,pointCurve);
 
 	// Draw stencil mask
-	// FIXME: This should understand inverse clips too
 	glEnable(GL_STENCIL_TEST);
 	glColorMask(0,0,0,0);
 	glStencilFunc(GL_NEVER,1,1);
@@ -134,6 +133,11 @@ void VisualToolVectorClip::Draw() {
 			glVertex2f(points[i-1].x,points[i-1].y);
 			glVertex2f(points[i].x,points[i].y);
 		glEnd();
+	}
+
+	// Invert stencil
+	if (inverse) {
+		DrawRectangle(0,0,sw,sh);
 	}
 
 	// Draw "outside clip" mask
