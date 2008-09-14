@@ -22,11 +22,6 @@
 #include <string.h>
 #include <intrin.h>
 
-#ifndef WIN32
-#	define _ftelli64 ftello
-#	define _fseeki64 fseeko
-#endif
-
 int GetCPUFlags() {
 	int CPUInfo[4];
 	__cpuid(CPUInfo, 0);
