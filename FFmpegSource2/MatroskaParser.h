@@ -41,7 +41,7 @@
  * system
  */
 
-#include <stdint.h>
+#include <stddef.h>
 
 #ifdef MPDLLBUILD
 #define	X __declspec(dllexport)
