@@ -19,6 +19,7 @@
 //  THE SOFTWARE.
 
 #include "stdiostream.h"
+#include <errno.h>
 
 /* StdIoStream methods */
 
