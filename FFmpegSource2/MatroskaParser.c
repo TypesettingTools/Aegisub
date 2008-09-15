@@ -96,7 +96,7 @@ static char  *mystrdup(struct InputStream *is,const char *src) {
   return dst;
 }
 
-#ifdef _WIN32
+#ifndef HAVE_STRLCPY
 static void  strlcpy(char *dst,const char *src,unsigned size) {
   unsigned  i;
 
