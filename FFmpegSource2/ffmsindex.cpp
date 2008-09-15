@@ -21,6 +21,7 @@
 
 #include <iostream> 
 #include <string>
+#include <stdlib.h>
 #include "ffms.h"
 
 int TrackMask;
@@ -97,7 +98,7 @@ void ParseCMDLine (int argc, char *argv[]) {
 }
 
 
-static int __stdcall UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
+static int FFMS_CC UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
 	using namespace std;
 	int *LastPercentage = (int *)Private;
 	int Percentage = int((double(Current)/double(Total)) * 100);
