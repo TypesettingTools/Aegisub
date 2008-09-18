@@ -232,6 +232,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 	while (count > 0) {
 		ALsizei fill_len = buffer_length;
 		if (fill_len > (ALsizei)(end_frame - cur_frame)) fill_len = (ALsizei)(end_frame - cur_frame);
+		if (fill_len < 0) fill_len = 0;
 		wxLogDebug(_T("buffer_length=%d, fill_len=%d, end_frame-cur_frame=%d"), buffer_length, fill_len, end_frame-cur_frame);
 
 		if (fill_len > 0)
