@@ -22,11 +22,14 @@
 #include "utils.h"
 
 AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize) {
+	memset(&VI, 0, sizeof(VI));
 	SWS = NULL;
 	ConvertToFormat = PIX_FMT_NONE;
 
 	try {
 		VS = FFMS_CreateVideoSource(SourceFile, Track, TrackIndices, PP, Threads, SeekMode, ErrorMsg, MsgSize);
+		if (!VS)
+			throw ErrorMsg;
 	} catch (...) {
 		Env->ThrowError(ErrorMsg);
 	}
@@ -136,4 +139,48 @@ PVideoFrame AvisynthVideoSource::GetFrame(int n, IScriptEnvironment *Env) {
 
 	Env->SetVar("FFPICT_TYPE", Frame->PictType);
 	return OutputFrame(Frame, Env);
+}
+
+
+AvisynthAudioSource::AvisynthAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize) {
+	memset(&VI, 0, sizeof(VI));
+
+	try {
+		AS = FFMS_CreateAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
+		if (!AS)
+			throw ErrorMsg;
+	} catch (...) {
+		Env->ThrowError(ErrorMsg);
+	}
+
+	const AudioProperties AP = *FFMS_GetAudioProperties(AS);
+
+
+	VI.nchannels = AP.Channels;
+	VI.num_audio_samples = AP.NumSamples;
+	VI.audio_samples_per_second = AP.SampleRate;
+
+	if (AP.Float && AP.BitsPerSample == 32) {
+		VI.sample_type = SAMPLE_FLOAT;
+	} else {
+		switch (AP.BitsPerSample) {
+			case 8: VI.sample_type = SAMPLE_INT8; break;
+			case 16: VI.sample_type = SAMPLE_INT16; break;
+			case 24: VI.sample_type = SAMPLE_INT24; break;
+			case 32: VI.sample_type = SAMPLE_INT32; break;
+			default:;
+				// FIXME error here
+		}
+	}
+}
+
+AvisynthAudioSource::~AvisynthAudioSource() {
+	FFMS_DestroyAudioSource(AS);
+}
+
+void AvisynthAudioSource::GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment *Env) {
+	char ErrorMsg[1024];
+	unsigned MsgSize = sizeof(ErrorMsg);
+	if (FFMS_GetAudio(AS, Buf, Start, Count, ErrorMsg, MsgSize))
+		Env->ThrowError(ErrorMsg);
 }

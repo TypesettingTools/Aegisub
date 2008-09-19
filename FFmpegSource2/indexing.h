@@ -33,7 +33,7 @@ extern "C" {
 #include "utils.h"
 #include "ffms.h"
 
-#define INDEXVERSION 4
+#define INDEXVERSION 5
 #define INDEXID 0x53920873
 
 struct IndexHeader {

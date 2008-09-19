@@ -485,14 +485,14 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	mkv_SetTrackMask(MF, ~(1 << VideoTrack));
 	TI = mkv_GetTrackInfo(MF, VideoTrack);
 
-		if (TI->CompEnabled) {
-			CS = cs_Create(MF, VideoTrack, ErrorMessage, sizeof(ErrorMessage));
-			if (CS == NULL) {
-				Free(false);
-				_snprintf(ErrorMsg, MsgSize, "Can't create decompressor: %s", ErrorMessage);
-				throw ErrorMsg;
-			}
+	if (TI->CompEnabled) {
+		CS = cs_Create(MF, VideoTrack, ErrorMessage, sizeof(ErrorMessage));
+		if (CS == NULL) {
+			Free(false);
+			_snprintf(ErrorMsg, MsgSize, "Can't create decompressor: %s", ErrorMessage);
+			throw ErrorMsg;
 		}
+	}
 
 	CodecContext = avcodec_alloc_context();
 	CodecContext->extradata = (uint8_t *)TI->CodecPrivate;

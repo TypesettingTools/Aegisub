@@ -48,6 +48,7 @@
 #endif
 
 class VideoBase;
+class AudioBase;
 class FrameIndex;
 class FrameInfoVector;
 
@@ -120,9 +121,15 @@ struct TrackTimeBase {
 
 class FrameInfo {
 public:
-	int64_t DTS;
+	union {
+		int64_t DTS;
+		int64_t SampleStart;
+	};
+	int64_t FilePos;
+	unsigned int FrameSize;
 	bool KeyFrame;
 	FrameInfo(int64_t DTS, bool KeyFrame);
+	FrameInfo(int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame);
 };
 
 struct VideoProperties {
@@ -140,12 +147,25 @@ struct VideoProperties {
 	int CropRight;
 };
 
+struct AudioProperties {
+	int SampleRate;
+	int Channels;
+	int BitsPerSample;
+	bool Float;
+	int64_t NumSamples;
+};
+
 FFMS_API(void) FFMS_Init();
 FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(AudioBase *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(void) FFMS_DestroyVideoSource(VideoBase *VB);
+FFMS_API(void) FFMS_DestroyAudioSource(AudioBase *AB);
 FFMS_API(int) FFMS_GetVSTrack(VideoBase *VB);
+FFMS_API(int) FFMS_GetASTrack(AudioBase *AB);
 FFMS_API(const VideoProperties *) FFMS_GetVideoProperties(VideoBase *VB);
+FFMS_API(const AudioProperties *) FFMS_GetAudioProperties(AudioBase *AB);
 FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_GetAudio(AudioBase *AB, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormat, int Width, int Height);
 FFMS_API(void) FFMS_ResetOutputFormat(VideoBase *VB);
 FFMS_API(void) FFMS_DestroyFrameIndex(FrameIndex *FI);
@@ -154,6 +174,7 @@ FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV, char *ErrorMsg, unsigned M
 FFMS_API(const FrameInfo *) FFMS_GetFrameInfo(FrameInfoVector *FIV, int Frame, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(FrameInfoVector *) FFMS_GetTITrackIndex(FrameIndex *TrackIndices, int Track, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(FrameInfoVector *) FFMS_GetVSTrackIndex(VideoBase *VB, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FrameInfoVector *) FFMS_GetASTrackIndex(AudioBase *AB, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_FindClosestKeyFrame(FrameInfoVector *FIV, int Frame, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_FrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_ClosestFrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMsg, unsigned MsgSize);

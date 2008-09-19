@@ -20,6 +20,7 @@
 
 #include "ffms.h"
 #include "ffvideosource.h"
+#include "ffaudiosource.h"
 #include "indexing.h"
 
 FFMS_API(void) FFMS_Init() {
@@ -37,20 +38,46 @@ FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, 
 	}
 }
 
+FFMS_API(AudioBase *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
+	switch (TrackIndices->Decoder) {
+		//case 0: return new FFVideoSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
+		case 1: return new MatroskaAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
+		default: return NULL;
+	}
+}
+
 FFMS_API(void) FFMS_DestroyVideoSource(VideoBase *VB) {
 	delete VB;
+}
+
+FFMS_API(void) FFMS_DestroyAudioSource(AudioBase *AB) {
+	delete AB;
 }
 
 FFMS_API(int) FFMS_GetVSTrack(VideoBase *VB) {
 	return VB->GetTrack();
 }
 
+FFMS_API(int) FFMS_GetASTrack(AudioBase *AB) {
+	// FIXME
+	// return AB->GetTrack();
+	return 0;
+}
+
 FFMS_API(const VideoProperties *) FFMS_GetVideoProperties(VideoBase *VB) {
 	return &VB->GetVideoProperties();
 }
 
+FFMS_API(const AudioProperties *) FFMS_GetAudioProperties(AudioBase *AB) {
+	return &AB->GetAudioProperties();
+}
+
 FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg, unsigned MsgSize) {
 	return (AVFrameLite *)VB->GetFrame(n, ErrorMsg, MsgSize);
+}
+
+FFMS_API(int) FFMS_GetAudio(AudioBase *AB, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
+	return AB->GetAudio(Buf, Start, Count, ErrorMsg, MsgSize);
 }
 
 FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormat, int Width, int Height) {

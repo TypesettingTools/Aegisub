@@ -146,6 +146,56 @@ AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvir
 		}
 	}
 
+	FFMS_DestroyFrameIndex(Index);
+	return Filter;
+}
+
+AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+	FFMS_Init();
+
+	char ErrorMsg[1024];
+	unsigned MsgSize = sizeof(ErrorMsg);
+
+	if (!Args[0].Defined())
+    	Env->ThrowError("FFAudioSource: No source specified");
+
+	const char *Source = Args[0].AsString();
+	int Track = Args[1].AsInt(-1);
+	bool Cache = Args[2].AsBool(true);
+	const char *CacheFile = Args[3].AsString("");
+
+	if (Track <= -2)
+		Env->ThrowError("FFAudioSource: No video track selected");
+
+	std::string DefaultCache(Source);
+	DefaultCache.append(".ffindex");
+	if (!strcmp(CacheFile, ""))
+		CacheFile = DefaultCache.c_str();
+
+	FrameIndex *Index;
+	if (Cache) {
+		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
+			if (!(Index = FFMS_MakeIndex(Source, -1, NULL, NULL, NULL, ErrorMsg, MsgSize)))
+				Env->ThrowError("FFAudioSource: %s", ErrorMsg);
+
+			if (Cache)
+				if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
+					FFMS_DestroyFrameIndex(Index);
+					Env->ThrowError("FFAudioSource: %s", ErrorMsg);
+				}
+		}
+	}
+
+	AvisynthAudioSource *Filter;
+
+	try {
+		Filter = new AvisynthAudioSource(Source, Track, Index, Env, ErrorMsg, MsgSize);
+	} catch (...) {
+		FFMS_DestroyFrameIndex(Index);	
+		throw;
+	}
+
+	FFMS_DestroyFrameIndex(Index);
 	return Filter;
 }
 
@@ -160,6 +210,7 @@ AVSValue __cdecl CreateSWScale(AVSValue Args, void* UserData, IScriptEnvironment
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
     Env->AddFunction("FFIndex", "[source]s[cachefile]s[trackmask]i[audiofile]s[overwrite]b", CreateFFIndex, 0);
     Env->AddFunction("FFVideoSource", "[source]s[track]i[cache]b[cachefile]s[pp]s[threads]i[timecodes]s[seekmode]i", CreateFFVideoSource, 0);
+    Env->AddFunction("FFAudioSource", "[source]s[track]i[cache]b[cachefile]s", CreateFFAudioSource, 0);
 	Env->AddFunction("FFPP", "c[pp]s", CreateFFPP, 0);
 	Env->AddFunction("SWScale", "c[width]i[height]i[resizer]s[colorspace]s", CreateSWScale, 0);
 

@@ -32,11 +32,13 @@ public:
 	Wave64Writer *W64W;
 	AVCodecContext *CTX;
 	CompressedStream *CS;
+	int64_t CurrentSample;
 
 	AudioContext() {
 		W64W = NULL;
 		CTX = NULL;
 		CS = NULL;
+		CurrentSample = 0;
 	}
 
 	~AudioContext() {
@@ -208,6 +210,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 		if (IP) {
 			if ((*IP)(0, _ftelli64(MC.ST.fp), SourceSize, Private)) {
 				_snprintf(ErrorMsg, MsgSize, "Cancelled by user");
+				delete TrackIndices;
 				return NULL;
 			}
 		}
@@ -218,6 +221,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 
 		if (AudioTrackMask & (1 << Track)) {
 			ReadFrame(FilePos, FrameSize, AudioContexts[Track].CS, MC, ErrorMsg, MsgSize);
+			(*TrackIndices)[Track].push_back(FrameInfo(AudioContexts[Track].CurrentSample, FilePos, FrameSize, (FrameFlags & FRAME_KF) != 0));
 
 			int Size = FrameSize;
 			uint8_t *Data = MC.Buffer;		
@@ -228,6 +232,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 				int Ret = avcodec_decode_audio2(AudioCodecContext, db, &dbsize, Data, Size);
 				if (Ret < 0) {
 					_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
+					delete TrackIndices;
 					return NULL;
 				}
 
@@ -248,6 +253,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 							AudioCodecContext->channels, AudioCodecContext->sample_rate, AudioFMTIsFloat(AudioCodecContext->sample_fmt));
 					}
 
+					AudioContexts[Track].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
 					AudioContexts[Track].W64W->WriteData(db, dbsize);
 				}
 			}
@@ -318,6 +324,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 		if (IP) {
 			if ((*IP)(0, FormatContext->pb->pos, FormatContext->file_size, Private)) {
 				_snprintf(ErrorMsg, MsgSize, "Cancelled by user");
+				delete TrackIndices;
 				return NULL;
 			}
 		}
@@ -336,6 +343,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 					int Ret = avcodec_decode_audio2(AudioCodecContext, db, &dbsize, Data, Size);
 					if (Ret < 0) {
 						_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
+						delete TrackIndices;
 						return NULL;
 					}
 
@@ -427,6 +435,15 @@ FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 
 FrameInfo::FrameInfo(int64_t DTS, bool KeyFrame) {
 	this->DTS = DTS;
+	this->FilePos = 0;
+	this->FrameSize = 0;
+	this->KeyFrame = KeyFrame;
+}
+
+FrameInfo::FrameInfo(int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame) {
+	this->SampleStart = SampleStart;
+	this->FilePos = FilePos;
+	this->FrameSize = FrameSize;
 	this->KeyFrame = KeyFrame;
 }
 

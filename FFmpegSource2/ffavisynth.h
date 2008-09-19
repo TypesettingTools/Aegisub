@@ -52,4 +52,19 @@ public:
 	PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment *Env);
 };
 
+class AvisynthAudioSource : public IClip {
+private:
+	VideoInfo VI;
+	AudioBase *AS;
+public:
+	AvisynthAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
+	~AvisynthAudioSource();
+	int GetTrack() { return FFMS_GetASTrack(AS); }
+	bool __stdcall GetParity(int n) { return false; }
+	void __stdcall SetCacheHints(int cachehints, int frame_range) { }
+	const VideoInfo& __stdcall GetVideoInfo() { return VI; }
+	void __stdcall GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment *Env);
+	PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment *Env) { return NULL; };
+};
+
 #endif
