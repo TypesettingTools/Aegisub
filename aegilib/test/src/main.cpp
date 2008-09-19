@@ -50,15 +50,23 @@ int main()
 
 	try {
 		// Set up the lib
-		cout << "Loading library... ";
-		HMODULE module = LoadLibrary(_T("athenasub.dll"));
-		if (!module) {
-			cout << "Failed to load library, aborting.\n";
-			system("pause");
-			return 1;
+		if (false) {
+			cout << "Loading library... ";
+	#ifdef WXDEBUG
+			HMODULE module = LoadLibrary(_T("athenasub_d.dll"));
+	#else
+			HMODULE module = LoadLibrary(_T("athenasub.dll"));
+	#endif
+			if (!module) {
+				cout << "Failed to load library, aborting.\n";
+				system("pause");
+				return 1;
+			}
+			cout << "Done.\nCreating library...";
 		}
-		cout << "Done.\nCreating library...";
-		LibAthenaSub lib = Athenasub::Create(module,"Aegilib test program");
+
+		//LibAthenaSub lib = Athenasub::Create(module,"Aegilib test program");
+		LibAthenaSub lib = Athenasub::Create("Aegilib test program");
 		cout << "Done.\n";
 
 		// Subtitles model
@@ -133,6 +141,8 @@ int main()
 		control->SaveFile(L"subs_out2.ass",L"UTF-8");
 		control->Undo();
 		control->SaveFile(L"subs_out3.ass",L"UTF-8");
+
+		system("pause");
 	}
 
 	catch (std::exception &e) {

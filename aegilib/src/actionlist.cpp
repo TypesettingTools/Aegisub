@@ -96,7 +96,7 @@ void CActionList::Start(const String name)
 void CActionList::Finish()
 {
 	if (valid) {
-		model->ProcessActionList(ActionList(this));
+		model->ProcessActionList(*this);
 		actions.clear();
 		valid = false;
 	}

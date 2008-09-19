@@ -106,7 +106,7 @@ namespace Athenasub {
 		friend class IAction;
 
 	protected:
-		virtual void ProcessActionList(ActionList actionList,int type=0) = 0;
+		virtual void ProcessActionList(CActionList &actionList,int type=0) = 0;
 
 		virtual String GetUndoMessage(const String owner=L"") const = 0;
 		virtual String GetRedoMessage(const String owner=L"") const = 0;
@@ -255,12 +255,12 @@ namespace Athenasub {
 		virtual Entry Clone() const = 0;
 
 		/*
-		static PlainTextPtr GetAsPlain(EntryPtr ptr);
-		static DialoguePtr GetAsDialogue(EntryPtr ptr);
-		static DialogueConstPtr GetAsDialogue(EntryConstPtr ptr);
-		static StylePtr GetAsStyle(EntryPtr ptr);
-		static AttachmentPtr GetAsFile(EntryPtr ptr);
-		static RawEntryPtr GetAsRaw(EntryPtr ptr);
+		static PlainText GetAsPlain(Entry ptr);
+		static Dialogue GetAsDialogue(Entry ptr);
+		static DialogueConst GetAsDialogue(EntryConst ptr);
+		static Style GetAsStyle(Entry ptr);
+		static Attachment GetAsFile(Entry ptr);
+		static RawEntry GetAsRaw(Entry ptr);
 		*/
 	};
 
@@ -273,7 +273,6 @@ namespace Athenasub {
 
 		// Type
 		SectionEntryType GetType() const { return SECTION_ENTRY_DIALOGUE; }
-		Dialogue GetAsDialogue() { return Dialogue(this); }
 
 		// Capabilities
 		virtual bool HasText() const { return false; }
@@ -319,7 +318,6 @@ namespace Athenasub {
 
 		// Type
 		SectionEntryType GetType() const { return SECTION_ENTRY_STYLE; }
-		Style GetAsStyle() { return Style(this); }
 
 		// Read accessors
 		virtual String GetName() const = 0;

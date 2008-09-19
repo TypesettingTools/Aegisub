@@ -60,10 +60,11 @@ void CModel::DispatchNotifications(Notification notification) const
 
 ////////////////////////////
 // Processes an action list
-void CModel::ProcessActionList(ActionList _actionList,int type)
+void CModel::ProcessActionList(CActionList &_actionList,int type)
 {
 	// Copy the list
-	shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(*static_pointer_cast<CActionList>(_actionList)));
+	//shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(*static_pointer_cast<CActionList>(_actionList)));
+	shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(_actionList));
 
 	// Setup undo
 	shared_ptr<CActionList> undo = shared_ptr<CActionList>(new CActionList(actions->model,actions->actionName,actions->owner,actions->undoAble));
@@ -224,7 +225,8 @@ void CModel::ActivateStack(ActionStack stack,bool isUndo,const String &owner)
 	(void) owner;
 
 	// Process list
-	ProcessActionList(stack.back(),isUndo?1:2);
+	//ProcessActionList(stack.back(),isUndo?1:2);
+	ProcessActionList(*static_pointer_cast<CActionList>(stack.back()),isUndo?1:2);
 
 	// Pop original
 	stack.pop_back();

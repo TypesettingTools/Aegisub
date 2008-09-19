@@ -48,4 +48,8 @@ namespace Athenasub {
 		return LibAthenaSub(CreateLib(hostName));
 		//return LibAthenaSub(CreateLibAthenasub(hostName));
 	}
+
+	inline LibAthenaSub Create(const char* hostName) {
+		return LibAthenaSub(CreateLibAthenasub(hostName));
+	}
 }

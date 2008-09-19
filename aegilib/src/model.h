@@ -62,7 +62,7 @@ namespace Athenasub {
 		bool readOnly;
 		Format format;
 
-		void ProcessActionList(ActionList actionList,int type=0);
+		void ProcessActionList(CActionList &actionList,int type=0);
 
 		String GetUndoMessage(const String owner=L"") const;
 		String GetRedoMessage(const String owner=L"") const;
