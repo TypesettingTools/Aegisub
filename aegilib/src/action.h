@@ -49,7 +49,6 @@ namespace Athenasub {
 
 	public:
 		ActionInsert(Entry entry,int line,const String &section);
-		~ActionInsert() {}
 
 		Action GetAntiAction(const IModel& model) const;
 		void Execute(IModel& model);
@@ -63,7 +62,6 @@ namespace Athenasub {
 
 	public:
 		ActionRemove(int line,const String &section);
-		~ActionRemove() {}
 
 		Action GetAntiAction(const IModel& model) const;
 		void Execute(IModel& model);
@@ -81,7 +79,6 @@ namespace Athenasub {
 	public:
 		ActionModify(Entry entry,int line,const String &section,bool noTextFields);
 		ActionModify(shared_ptr<void> delta,int line,const String &section);
-		~ActionModify() {}
 
 		Action GetAntiAction(const IModel& model) const;
 		void Execute(IModel& model);
@@ -98,7 +95,6 @@ namespace Athenasub {
 
 	public:
 		ActionModifyBatch(std::vector<Entry> entries,std::vector<VoidPtr> deltas,Selection selection,const String &section,bool noTextFields);
-		~ActionModifyBatch() {}
 
 		Action GetAntiAction(const IModel& model) const;
 		void Execute(IModel& model);

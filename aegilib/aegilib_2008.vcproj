@@ -96,7 +96,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -119,6 +119,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="2"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
@@ -146,14 +147,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				OutputFile="../bin/aegilib.dll"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -163,9 +160,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -277,10 +271,6 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\range.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\selection.h"
 				>
 			</File>
 			<File
@@ -396,7 +386,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\action.h"
+				RelativePath=".\src\action.h"
 				>
 			</File>
 			<File
@@ -416,23 +406,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\section.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\section_entry.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\section_entry.h"
+				RelativePath=".\src\section_entry.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\section_entry_dialogue.h"
+				RelativePath=".\src\section_entry_dialogue.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\section_entry_style.h"
+				RelativePath=".\src\section_entry_style.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\selection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\selection.h"
 				>
 			</File>
 			<File

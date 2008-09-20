@@ -33,7 +33,7 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#define ATHENA_DLL
+//#define ATHENA_DLL
 #ifdef ATHENA_DLL
 #ifdef ATHENA_EXPORTS
 #define ATHENA_API __declspec(dllexport)

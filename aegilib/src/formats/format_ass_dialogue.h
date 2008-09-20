@@ -47,8 +47,8 @@ namespace Athenasub {
 		friend class DialogueASSDeltaCoder;
 
 	private:
-		array<CTime,2> time;
 		array<String,4> text;	// 0 = text, 1 = style, 2 = actor, 3 = effect
+		array<CTime,2> time;
 		array<short,4> margin;
 		int layer;
 		bool isComment;
@@ -84,8 +84,8 @@ namespace Athenasub {
 		const String& GetUserField() const { return text[3]; }
 
 		// Write acessors
-		void SetStartTime(Time setStart) { time[0].SetMS(setStart->GetMS()); }
-		void SetEndTime(Time setEnd) { time[1].SetMS(setEnd->GetMS()); }
+		void SetStartTime(const ITime &setStart) { time[0].SetMS(setStart.GetMS()); }
+		void SetEndTime(const ITime &setEnd) { time[1].SetMS(setEnd.GetMS()); }
 		void SetComment(bool _isComment) { isComment = _isComment; }
 		void SetLayer(int _layer) { layer = _layer; }
 		void SetMargin(int _margin,int value) { margin.at(_margin) = value; }

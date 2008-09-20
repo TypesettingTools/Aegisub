@@ -80,8 +80,8 @@ namespace Athenasub {
 
 		// Write accessors
 		virtual void SetText(const String& text) { (void) text; ThrowUnsupported(); }
-		virtual void SetStartTime(Time start) { (void) start; ThrowUnsupported(); }
-		virtual void SetEndTime(Time end) { (void) end; ThrowUnsupported(); }
+		virtual void SetStartTime(const ITime& start) { (void) start; ThrowUnsupported(); }
+		virtual void SetEndTime(const ITime& end) { (void) end; ThrowUnsupported(); }
 		virtual void SetStartFrame(int start) { (void) start; ThrowUnsupported(); }
 		virtual void SetEndFrame(int end) { (void) end; ThrowUnsupported(); }
 		virtual void SetComment(bool isComment) { (void) isComment; ThrowUnsupported(); }

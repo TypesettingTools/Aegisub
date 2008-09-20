@@ -56,12 +56,12 @@ namespace Athenasub {
 	private:
 		String actionName;
 		String owner;
-		Model model;
+		weak_ptr<IModel> model;
 		std::list<Action> actions;
 		bool valid;
 		bool undoAble;
 
-		CActionList(Model model,const String actionName,const String owner,bool undoAble);
+		CActionList(weak_ptr<IModel>,const String actionName,const String owner,bool undoAble);
 		void Start(const String actionName);
 		void AddActionStart(const Action action);
 

@@ -142,91 +142,61 @@ bool DialogueASS::Parse(wxString rawData, int version)
 // Serialize
 String DialogueASS::ToText(int version) const
 {
-	// Old, slow code
-	if (false) {
-		// Prepare
-		wxString final;
+	// Calculate size
+	size_t size = 9+9+20+12+12;			// 9 for "comment: " (+1 for dialogue below), 9 for commas,
+										// 20 for times, 12 for margins, 12 just to be sure that layer fits
+	if (!isComment) size++;				// Comment->Dialogue
+	if (version == 0) size += 8;		// "Marked=0"
+	else if (version == 2) size += 5;	// Fourth margin
+	for (size_t i=0;i<4;i++) size += text[i].Length();
 
-		// Write comment or dialogue
-		if (isComment) final = _T("Comment: ");
-		else final = _T("Dialogue: ");
+	// Allocate string
+	wxString final;
+	wxChar *buffer = final.GetWriteBuf(size);
+	wxChar temp[16];
 
-		// Write layer or marked
-		if (version >= 1) final += wxString::Format(_T("%01i,"),layer);
-		else final += _T("Marked=0,");
+	// Write comment/dialogue
+	size_t pos = 0;
+	if (isComment) WriteText(buffer,_T("Comment: "),9,pos);
+	else WriteText(buffer,_T("Dialogue: "),10,pos);
 
-		// Write times, style and actor
-		final += time[0].GetString(2,1) + _T(",") + time[1].GetString(2,1) + _T(",") + text[1] + _T(",") + text[2] + _T(",");
+	// Write layer or marked
+	if (version >= 1) {
+		WriteNumber(buffer,temp,layer,0,pos);
+		WriteChar(buffer,_T(','),pos);
+	}
+	else WriteText(buffer,_T("Marked=0,"),9,pos);
 
-		// Write margins
-		if (version <= 1) final += wxString::Format(_T("%04i,%04i,%04i,"),margin[0],margin[1],margin[2]);
-		else final += wxString::Format(_T("%04i,%04i,%04i,%04i,"),margin[0],margin[1],margin[2],margin[3]);
-
-		// Write effect and text
-		final += text[3] + _T(",") + text[0];
-
-		// Return final
-		return final;
+	// Write times
+	for (size_t i=0;i<2;i++) {
+		wxString tempStr = time[i].GetString(2,1);
+		WriteText(buffer,&tempStr[0],10,pos);
+		WriteChar(buffer,_T(','),pos);
 	}
 
-	// New, faster code
-	else {
-		// Calculate size
-		size_t size = 9+9+20+12+12;			// 9 for "comment: " (+1 for dialogue below), 9 for commas,
-											// 20 for times, 12 for margins, 12 just to be sure that layer fits
-		if (!isComment) size++;				// Comment->Dialogue
-		if (version == 0) size += 8;		// "Marked=0"
-		else if (version == 2) size += 5;	// Fourth margin
-		for (size_t i=0;i<4;i++) size += text[i].Length();
+	// Write style and actor
+	WriteText(buffer,&text[1][0],text[1].Length(),pos);
+	WriteChar(buffer,_T(','),pos);
+	WriteText(buffer,&text[2][0],text[2].Length(),pos);
+	WriteChar(buffer,_T(','),pos);
 
-		// Allocate string
-		wxString final;
-		wxChar *buffer = final.GetWriteBuf(size);
-		wxChar temp[16];
-
-		// Write comment/dialogue
-		size_t pos = 0;
-		if (isComment) WriteText(buffer,_T("Comment: "),9,pos);
-		else WriteText(buffer,_T("Dialogue: "),10,pos);
-
-		// Write layer or marked
-		if (version >= 1) {
-			WriteNumber(buffer,temp,layer,0,pos);
-			WriteChar(buffer,_T(','),pos);
-		}
-		else WriteText(buffer,_T("Marked=0,"),9,pos);
-
-		// Write times
-		for (size_t i=0;i<2;i++) {
-			wxString tempStr = time[i].GetString(2,1);
-			WriteText(buffer,&tempStr[0],10,pos);
-			WriteChar(buffer,_T(','),pos);
-		}
-
-		// Write style and actor
-		WriteText(buffer,&text[1][0],text[1].Length(),pos);
+	// Write margins
+	size_t marCount = 3;
+	if (version == 2) marCount++;
+	for (size_t i=0;i<marCount;i++) {
+		WriteNumber(buffer,temp,margin[i],4,pos);
 		WriteChar(buffer,_T(','),pos);
-		WriteText(buffer,&text[2][0],text[2].Length(),pos);
-		WriteChar(buffer,_T(','),pos);
-
-		// Write margins
-		size_t marCount = 3;
-		if (version == 2) marCount++;
-		for (size_t i=0;i<marCount;i++) {
-			WriteNumber(buffer,temp,margin[i],4,pos);
-			WriteChar(buffer,_T(','),pos);
-		}
-
-		// Write effect and text
-		WriteText(buffer,&text[3][0],text[3].Length(),pos);
-		WriteChar(buffer,_T(','),pos);
-		WriteText(buffer,&text[0][0],text[0].Length(),pos);
-
-		// Write terminator
-		WriteText(buffer,_T("\0"),1,pos);
-
-		// Restore string's state
-		final.UngetWriteBuf(pos-1);
-		return final;
 	}
+
+	// Write effect and text
+	WriteText(buffer,&text[3][0],text[3].Length(),pos);
+	WriteChar(buffer,_T(','),pos);
+	WriteText(buffer,&text[0][0],text[0].Length(),pos);
+
+	// Write terminator
+	WriteText(buffer,_T("\0"),1,pos);
+
+	// Restore string's state
+	final.UngetWriteBuf(pos-1);
+	return final;
 }

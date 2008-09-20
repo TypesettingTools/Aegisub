@@ -253,15 +253,6 @@ namespace Athenasub {
 		virtual String GetDefaultGroup() const = 0;
 
 		virtual Entry Clone() const = 0;
-
-		/*
-		static PlainText GetAsPlain(Entry ptr);
-		static Dialogue GetAsDialogue(Entry ptr);
-		static DialogueConst GetAsDialogue(EntryConst ptr);
-		static Style GetAsStyle(Entry ptr);
-		static Attachment GetAsFile(Entry ptr);
-		static RawEntry GetAsRaw(Entry ptr);
-		*/
 	};
 
 
@@ -298,8 +289,8 @@ namespace Athenasub {
 
 		// Write accessors
 		virtual void SetText(const String& text) = 0;
-		virtual void SetStartTime(Time start) = 0;
-		virtual void SetEndTime(Time end) = 0;
+		virtual void SetStartTime(const ITime& start) = 0;
+		virtual void SetEndTime(const ITime& end) = 0;
 		virtual void SetStartFrame(int start) = 0;
 		virtual void SetEndFrame(int end) = 0;
 		virtual void SetComment(bool isComment) = 0;

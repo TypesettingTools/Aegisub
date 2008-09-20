@@ -48,8 +48,8 @@ namespace Athenasub {
 		CTime() { ms = 0; }
 		CTime(int _ms) { ms = _ms; }
 
-		void SetMS(int milliseconds) { ms = milliseconds; }
-		int GetMS() const { return ms; }
+		inline void SetMS(int milliseconds) { ms = milliseconds; }
+		inline int GetMS() const { return ms; }
 
 		String GetString(int ms_precision,int h_precision) const;
 		void ParseString(const String &data);

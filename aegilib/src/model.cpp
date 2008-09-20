@@ -67,7 +67,7 @@ void CModel::ProcessActionList(CActionList &_actionList,int type)
 	shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(_actionList));
 
 	// Setup undo
-	shared_ptr<CActionList> undo = shared_ptr<CActionList>(new CActionList(actions->model,actions->actionName,actions->owner,actions->undoAble));
+	shared_ptr<CActionList> undo = shared_ptr<CActionList>(new CActionList(Model(actions->model),actions->actionName,actions->owner,actions->undoAble));
 	ActionStack *stack;
 	if (type == 1) stack = &redoStack;
 	else stack = &undoStack;

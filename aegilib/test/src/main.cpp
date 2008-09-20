@@ -33,7 +33,7 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#define ATHENA_DLL
+//#define ATHENA_DLL
 #include <wx/wfstream.h>
 #include <athenasub/athenawin.h>
 #include <iostream>
@@ -92,13 +92,13 @@ int main()
 
 		// Issue an action
 #ifdef WXDEBUG
-		const int n = 1;
+		int n = 1;
 #else
-		const int n = 100;
+		int n = 100;
 #endif
 		cout << "Executing action " << n << " times... ";
 		timer.Start();
-		for (size_t i=0;i<n;i++) {
+		for (int i=0;i<n;i++) {
 			ActionList actions = control->CreateActionList(L"Test");
 			Selection selection = control->CreateSelection();
 			selection->AddRange(Range(0,5000));
@@ -108,8 +108,8 @@ int main()
 			size_t len = entries.size();
 			for (size_t i=0;i<len;i++) {
 				Dialogue diag = dynamic_pointer_cast<IDialogue> (entries[i]);
-				diag->SetStartTime(diag->GetStartTime() - 55555);
-				diag->SetEndTime(diag->GetEndTime() + 5555);
+				diag->SetStartTime(*(diag->GetStartTime() - 55555));
+				diag->SetEndTime(*(diag->GetEndTime() + 5555));
 			}
 			actions->Finish();
 		}
@@ -117,16 +117,19 @@ int main()
 		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Rollback
-		cout << "Undoing " << n << " times... ";
-		for (size_t i=0;i<n-1;i++) {
+		cout << "Undoing " << n-1 << " times... ";
+		timer.Start();
+		for (int i=0;i<n-1;i++) {
 			control->Undo();
 		}
-		cout << "Done.\n";
+		timer.Pause();
+		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Undo
-		cout << "Undoing and redoing " << n*10 << " times... ";
+		n = 100;
+		cout << "Undoing and redoing " << n << " times... ";
 		timer.Start();
-		for (size_t i=0;i<n*10;i++) {
+		for (int i=0;i<n;i++) {
 			control->Undo();
 			control->Redo();
 		}
@@ -148,6 +151,8 @@ int main()
 	catch (std::exception &e) {
 		cout << "\n\nException: " << e.what() << endl << endl;
 	}
+
+	system("pause");
 
 	return true;
 }

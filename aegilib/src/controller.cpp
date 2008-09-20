@@ -109,11 +109,15 @@ bool CController::CanRedo(const String owner) const
 }
 void CController::Undo(const String owner)
 {
-	model->Undo(owner);
+	if (CanUndo(owner)) {
+		model->Undo(owner);
+	}
 }
 void CController::Redo(const String owner)
 {
-	model->Redo(owner);
+	if (CanRedo(owner)) {
+		model->Redo(owner);
+	}
 }
 
 
