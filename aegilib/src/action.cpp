@@ -163,31 +163,71 @@ void ActionModify::Execute(IModel& model)
 ActionModifyBatch::ActionModifyBatch(std::vector<Entry> _entries, std::vector<shared_ptr<void> > _deltas, Selection _selection,const String &_section,bool _noTextFields)
 : entries(_entries), deltas(_deltas), selection(_selection), section(_section), noTextFields(_noTextFields) {}
 
+ActionModifyBatch::ActionModifyBatch(Selection _selection,const String &_section,bool _noTextFields)
+: selection(_selection), section(_section), noTextFields(_noTextFields) {}
+
 Action ActionModifyBatch::GetAntiAction(const IModel& model) const
 {
-	// Get section
-	Section sect = GetSection(model,section);
-	size_t len = selection->GetCount();
-	std::vector<VoidPtr> _deltas(len);
-	std::vector<Entry> oldEntries(len);
+	// Old, slow method
+	if (false) {
+		// Get section
+		Section sect = GetSection(model,section);
+		size_t len = selection->GetCount();
+		std::vector<VoidPtr> _deltas(len);
+		std::vector<Entry> oldEntries(len);
 
-	// For each line...
-	for (size_t i=0;i<len;i++) {
-		// Get old entry
-		Entry oldEntry = sect->GetEntry(selection->GetLine(i));
+		// For each line...
+		for (size_t i=0;i<len;i++) {
+			// Get old entry
+			Entry oldEntry = sect->GetEntry(selection->GetLine(i));
 
-		// Try to get a delta
-		DeltaCoder deltaCoder = oldEntry->GetDeltaCoder();
-		if (deltaCoder) {
-			if (i < deltas.size() && deltas[i]) _deltas[i] = deltaCoder->EncodeReverseDelta(deltas[i],oldEntry);
-			_deltas[i] = deltaCoder->EncodeDelta(entries[i],oldEntry,!noTextFields);
+			// Try to get a delta
+			DeltaCoder deltaCoder = oldEntry->GetDeltaCoder();
+			if (deltaCoder) {
+				if (i < deltas.size() && deltas[i]) _deltas[i] = deltaCoder->EncodeReverseDelta(deltas[i],oldEntry);
+				_deltas[i] = deltaCoder->EncodeDelta(entries[i],oldEntry,!noTextFields);
+			}
+
+			// Store the whole original line
+			else oldEntries[i] = oldEntry;
 		}
 
-		// Store the whole original line
-		else oldEntries[i] = oldEntry;
+		return Action(new ActionModifyBatch(oldEntries,_deltas,selection,section,noTextFields));
 	}
 
-	return Action(new ActionModifyBatch(oldEntries,_deltas,selection,section,noTextFields));
+	else {
+		// Get section
+		Section sect = GetSection(model,section);
+		size_t len = selection->GetCount();
+
+		// OK, this block warrants some explanation:
+		// Copying smart pointers around all the time is quite slow, so I just create them once and
+		// access the final copies.
+		ActionModifyBatch* antiPtr = new ActionModifyBatch(selection,section,noTextFields);
+		Action anti = Action(antiPtr);
+		std::vector<VoidPtr>& _deltas = antiPtr->deltas;
+		std::vector<Entry>& oldEntries = antiPtr->entries;
+		_deltas.resize(len);
+		oldEntries.resize(len);
+
+		// For each line...
+		for (size_t i=0;i<len;i++) {
+			// Get old entry
+			Entry oldEntry = sect->GetEntry(selection->GetLine(i));
+
+			// Try to get a delta
+			DeltaCoder deltaCoder = oldEntry->GetDeltaCoder();
+			if (deltaCoder) {
+				if (i < deltas.size() && deltas[i]) _deltas[i] = deltaCoder->EncodeReverseDelta(deltas[i],oldEntry);
+				_deltas[i] = deltaCoder->EncodeDelta(entries[i],oldEntry,!noTextFields);
+			}
+
+			// Store the whole original line
+			else oldEntries[i] = oldEntry;
+		}
+
+		return anti;
+	}
 }
 
 void ActionModifyBatch::Execute(IModel& model)

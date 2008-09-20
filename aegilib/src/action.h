@@ -93,6 +93,8 @@ namespace Athenasub {
 		const String section;
 		bool noTextFields;
 
+		ActionModifyBatch(Selection selection,const String &section,bool noTextFields);
+
 	public:
 		ActionModifyBatch(std::vector<Entry> entries,std::vector<VoidPtr> deltas,Selection selection,const String &section,bool noTextFields);
 
