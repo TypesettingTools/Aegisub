@@ -447,7 +447,6 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	FrameIndex *TrackIndices, const char *PP,
 	int Threads, char *ErrorMsg, unsigned MsgSize) {
 
-	unsigned int TrackMask = ~0;
 	AVCodec *Codec = NULL;
 	CodecContext = NULL;
 	TrackInfo *TI = NULL;
@@ -567,7 +566,7 @@ int MatroskaVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTi
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 
-	uint64_t StartTime, EndTime, FilePos;
+	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
 	
 	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {

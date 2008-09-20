@@ -202,7 +202,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++)
 		TrackIndices->push_back(FrameInfoVector(mkv_TruncFloat(mkv_GetTrackInfo(MF, i)->TimecodeScale), 1000000));
 
-	uint64_t StartTime, EndTime, FilePos;
+	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
 
 	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
