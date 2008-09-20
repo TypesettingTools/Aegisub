@@ -147,12 +147,11 @@ std::vector<Entry> CActionList::ModifyLines(Selection selection,const String sec
 	for (size_t i=0;i<len;i++) {
 		size_t rLen = selection->GetLinesInRange(i);
 		for (size_t j=0;j<rLen;j++) {
-			entries[n++] = sect->GetEntry(selection->GetLineInRange(j,i))->Clone();
+			entries[n++] = sect->GetEntryRef(selection->GetLineInRange(j,i))->Clone();
 		}
 	}
 
 	// Generate the action
-	Action action = Action (new ActionModifyBatch(entries,std::vector<VoidPtr>(),selection,section,false));
-	AddAction(action);
+	AddAction(Action(new ActionModifyBatch(entries,std::vector<VoidPtr>(),selection,section,false)));
 	return entries;
 }

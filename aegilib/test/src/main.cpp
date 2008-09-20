@@ -94,7 +94,7 @@ int main()
 #ifdef WXDEBUG
 		int n = 1;
 #else
-		int n = 100;
+		int n = 1000;
 #endif
 		cout << "Executing action " << n << " times... ";
 		timer.Start();

@@ -179,7 +179,7 @@ Action ActionModifyBatch::GetAntiAction(const IModel& model) const
 		// For each line...
 		for (size_t i=0;i<len;i++) {
 			// Get old entry
-			Entry oldEntry = sect->GetEntry(selection->GetLine(i));
+			Entry& oldEntry = sect->GetEntryRef(selection->GetLine(i));
 
 			// Try to get a delta
 			DeltaCoder deltaCoder = oldEntry->GetDeltaCoder();
@@ -213,7 +213,7 @@ Action ActionModifyBatch::GetAntiAction(const IModel& model) const
 		// For each line...
 		for (size_t i=0;i<len;i++) {
 			// Get old entry
-			Entry oldEntry = sect->GetEntry(selection->GetLine(i));
+			Entry& oldEntry = sect->GetEntryRef(selection->GetLine(i));
 
 			// Try to get a delta
 			DeltaCoder deltaCoder = oldEntry->GetDeltaCoder();

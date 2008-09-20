@@ -126,6 +126,7 @@
 				AdditionalIncludeDirectories="include/athenasub;src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS;ATHENA_EXPORTS"
 				RuntimeLibrary="2"
+				StructMemberAlignment="0"
 				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="prec.h"
