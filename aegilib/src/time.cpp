@@ -35,9 +35,11 @@
 
 #include "Athenasub.h"
 #include "athenatime.h"
+#include "utils.h"
 using namespace Athenasub;
 
 
+#if 0
 //////////////////////
 // Generates a string
 String CTime::GetString(int ms_precision,int h_precision) const
@@ -68,43 +70,28 @@ String CTime::GetString(int ms_precision,int h_precision) const
 	else if (ms_precision == 1) _ms /= 100;
 	else if (ms_precision == 0) _ms = 0;
 
-	// Old code
-	if (false) {
-		// Generate mask string
-		wxString mask = wxString::Format(_T("%%0%ii:%%0%ii:%%0%ii.%%0%ii"),h_precision,2,2,ms_precision);
+	// Get write buffer
+	String final;
+	size_t size = 7+h_precision+ms_precision;
+	size_t pos = 0;
+	wxChar *buffer = final.GetWriteBuf(size);
+	wxChar temp[16];
 
-		// Generate final string
-		wxString final = wxString::Format(mask,h,min,s,_ms);
+	// Write time
+	WriteNumber(buffer,temp,h,h_precision,pos);
+	WriteChar(buffer,_T(':'),pos);
+	WriteNumber(buffer,temp,min,2,pos);
+	WriteChar(buffer,_T(':'),pos);
+	WriteNumber(buffer,temp,s,2,pos);
+	WriteChar(buffer,_T('.'),pos);
+	WriteNumber(buffer,temp,_ms,ms_precision,pos);
 
-		// Done
-		return final;
-	}
+	// Write terminator
+	WriteText(buffer,_T("\0"),1,pos);
 
-	// New code
-	else {
-		// Get write buffer
-		wxString final;
-		size_t size = 7+h_precision+ms_precision;
-		size_t pos = 0;
-		wxChar *buffer = final.GetWriteBuf(size);
-		wxChar temp[16];
-
-		// Write time
-		WriteNumber(buffer,temp,h,h_precision,pos);
-		WriteChar(buffer,_T(':'),pos);
-		WriteNumber(buffer,temp,min,2,pos);
-		WriteChar(buffer,_T(':'),pos);
-		WriteNumber(buffer,temp,s,2,pos);
-		WriteChar(buffer,_T('.'),pos);
-		WriteNumber(buffer,temp,_ms,ms_precision,pos);
-
-		// Write terminator
-		WriteText(buffer,_T("\0"),1,pos);
-
-		// Restore string's state and return
-		final.UngetWriteBuf(pos-1);
-		return final;
-	}
+	// Restore string's state and return
+	final.UngetWriteBuf(pos-1);
+	return final;
 }
 
 
@@ -141,3 +128,5 @@ void CTime::ParseString(const String &data)
 	}
 	ms = (int)accum;
 }
+
+#endif

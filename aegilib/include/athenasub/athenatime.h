@@ -34,27 +34,29 @@
 //
 
 #pragma once
-#include "athenasub.h"
-#include "utils.h"
 
 namespace Athenasub {
 
 	// Time class
-	class CTime : public ITime {
+	class Time {
 	private:
-		int ms;
+		int ms;	// Time in milliseconds
 
 	public:
-		CTime() { ms = 0; }
-		CTime(int _ms) { ms = _ms; }
+		Time() { ms = 0; }
+		Time(int milliseconds) { ms = milliseconds; }
 
 		inline void SetMS(int milliseconds) { ms = milliseconds; }
 		inline int GetMS() const { return ms; }
-
-		String GetString(int ms_precision,int h_precision) const;
-		void ParseString(const String &data);
-
-		Time Clone() const { return Time(new CTime(*this)); }
 	};
 
+	// Operators
+	inline Time operator+  (const Time& p1,int p2)         { return Time(p1.GetMS()+p2); }
+	inline Time operator-  (const Time& p1,int p2)         { return Time(p1.GetMS()-p2); }
+	inline bool operator== (const Time& p1,const Time& p2) { return p1.GetMS() == p2.GetMS(); }
+	inline bool operator!= (const Time& p1,const Time& p2) { return p1.GetMS() != p2.GetMS(); }
+	inline bool operator<= (const Time& p1,const Time& p2) { return p1.GetMS() <= p2.GetMS(); }
+	inline bool operator>= (const Time& p1,const Time& p2) { return p1.GetMS() >= p2.GetMS(); }
+	inline bool operator<  (const Time& p1,const Time& p2) { return p1.GetMS() <  p2.GetMS(); }
+	inline bool operator>  (const Time& p1,const Time& p2) { return p1.GetMS() >  p2.GetMS(); }
 }

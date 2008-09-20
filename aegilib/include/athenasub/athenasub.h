@@ -38,6 +38,8 @@
 #include "api.h"
 #include "tr1.h"
 #include "exception.h"
+#include "athenastring.h"
+#include "athenatime.h"
 #include "interfaces.h"
 #include "range.h"
 

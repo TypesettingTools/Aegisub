@@ -108,8 +108,8 @@ int main()
 			size_t len = entries.size();
 			for (size_t i=0;i<len;i++) {
 				Dialogue diag = dynamic_pointer_cast<IDialogue> (entries[i]);
-				diag->SetStartTime(*(diag->GetStartTime() - 55555));
-				diag->SetEndTime(*(diag->GetEndTime() + 5555));
+				diag->SetStartTime(diag->GetStartTime() - 55555);
+				diag->SetEndTime(diag->GetEndTime() + 5555);
 			}
 			actions->Finish();
 		}

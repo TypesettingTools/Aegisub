@@ -36,6 +36,7 @@
 #pragma once
 
 #include "tr1.h"
+#include "athenatime.h"
 #include <wx/string.h>
 #include <vector>
 #include <list>
@@ -53,7 +54,6 @@ namespace Athenasub {
 	class IController;
 	class IView;
 	class IFormatHandler;
-	class ITime;
 	class IColour;
 	class IEntry;
 	class IDialogue;
@@ -73,7 +73,6 @@ namespace Athenasub {
 	typedef shared_ptr<IController> Controller;
 	typedef shared_ptr<IView> View;
 	typedef shared_ptr<IFormatHandler> FormatHandler;
-	typedef shared_ptr<ITime> Time;
 	typedef shared_ptr<IColour> Colour;
 	typedef shared_ptr<IEntry> Entry;
 	typedef shared_ptr<IDialogue> Dialogue;
@@ -196,21 +195,6 @@ namespace Athenasub {
 	};
 
 
-	// Time
-	class ITime {
-	public:
-		virtual ~ITime() {}
-
-		virtual void SetMS(int milliseconds) = 0;
-		virtual int GetMS() const = 0;
-
-		virtual String GetString(int ms_precision,int h_precision) const = 0;
-		virtual void ParseString(const String &data) = 0;
-
-		virtual Time Clone() const = 0;
-	};
-	
-
 	// Color
 	class IColour {
 	public:
@@ -276,8 +260,8 @@ namespace Athenasub {
 
 		// Read accessors
 		virtual const String& GetText() const = 0;
-		virtual const ITime& GetStartTime() const = 0;
-		virtual const ITime& GetEndTime() const = 0;
+		virtual const Time& GetStartTime() const = 0;
+		virtual const Time& GetEndTime() const = 0;
 		virtual int GetStartFrame() const = 0;
 		virtual int GetEndFrame() const = 0;
 		virtual bool IsComment() const = 0;
@@ -289,8 +273,8 @@ namespace Athenasub {
 
 		// Write accessors
 		virtual void SetText(const String& text) = 0;
-		virtual void SetStartTime(const ITime& start) = 0;
-		virtual void SetEndTime(const ITime& end) = 0;
+		virtual void SetStartTime(const Time& start) = 0;
+		virtual void SetEndTime(const Time& end) = 0;
 		virtual void SetStartFrame(int start) = 0;
 		virtual void SetEndFrame(int end) = 0;
 		virtual void SetComment(bool isComment) = 0;
@@ -437,11 +421,4 @@ namespace Athenasub {
 		virtual Model CreateModel()=0;
 	};
 	typedef shared_ptr<ILibAthenaSub> LibAthenaSub;
-
-
-	// Operators
-	inline Time operator+(const ITime& p1,int p2) { Time res = p1.Clone(); res->SetMS(res->GetMS()+p2); return res; }
-	inline Time operator-(const ITime& p1,int p2) { Time res = p1.Clone(); res->SetMS(res->GetMS()-p2); return res; }
-	inline bool operator==(const ITime& p1,const ITime& p2) { return p1.GetMS() == p2.GetMS(); }
-
 }

@@ -131,7 +131,6 @@
 				PrecompiledHeaderThrough="prec.h"
 				WarningLevel="4"
 				WarnAsError="true"
-				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4996"
 				ForcedIncludeFiles="prec.h"

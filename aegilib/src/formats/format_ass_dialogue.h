@@ -48,7 +48,7 @@ namespace Athenasub {
 
 	private:
 		array<String,4> text;	// 0 = text, 1 = style, 2 = actor, 3 = effect
-		array<CTime,2> time;
+		array<Time,2> time;
 		array<short,4> margin;
 		int layer;
 		bool isComment;
@@ -73,8 +73,8 @@ namespace Athenasub {
 		bool HasMargins() const { return true; }
 
 		// Read accessors
-		const ITime& GetStartTime() const { return time[0]; }
-		const ITime& GetEndTime() const { return time[1]; }
+		const Time& GetStartTime() const { return time[0]; }
+		const Time& GetEndTime() const { return time[1]; }
 		bool IsComment() const { return isComment; }
 		int GetLayer() const { return layer; }
 		int GetMargin(int n) const { return margin.at(n); }
@@ -84,8 +84,8 @@ namespace Athenasub {
 		const String& GetUserField() const { return text[3]; }
 
 		// Write acessors
-		void SetStartTime(const ITime &setStart) { time[0].SetMS(setStart.GetMS()); }
-		void SetEndTime(const ITime &setEnd) { time[1].SetMS(setEnd.GetMS()); }
+		void SetStartTime(const Time &setStart) { time[0].SetMS(setStart.GetMS()); }
+		void SetEndTime(const Time &setEnd) { time[1].SetMS(setEnd.GetMS()); }
 		void SetComment(bool _isComment) { isComment = _isComment; }
 		void SetLayer(int _layer) { layer = _layer; }
 		void SetMargin(int _margin,int value) { margin.at(_margin) = value; }
