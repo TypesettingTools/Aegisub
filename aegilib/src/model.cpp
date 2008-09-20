@@ -39,6 +39,14 @@
 using namespace Athenasub;
 
 
+///////////////
+// Constructor
+CModel::CModel()
+: undoLimit(20), readOnly(false)
+{
+}
+
+
 /////////////////////////////////////////////////////////
 // Adds a listener to be notified whenever things change
 void CModel::AddListener(View listener)
@@ -60,6 +68,9 @@ void CModel::DispatchNotifications(Notification notification) const
 
 ////////////////////////////
 // Processes an action list
+// type == 0 : direct action
+// type == 1 : undo
+// type == 2 : redo
 void CModel::ProcessActionList(CActionList &_actionList,int type)
 {
 	// Copy the list
@@ -85,6 +96,7 @@ void CModel::ProcessActionList(CActionList &_actionList,int type)
 	// Insert into undo stack
 	if (actions->undoAble) {
 		stack->push_back(undo);
+		if (stack->size() > undoLimit) stack->pop_front();
 		if (type == 0) redoStack.clear();
 	}
 
@@ -253,4 +265,15 @@ String CModel::GetRedoMessage(const String owner) const
 // Create controller
 Controller CModel::CreateController() {
 	return Controller(new CController(Model(weakThis)));
+}
+
+
+//////////////////////////////////////////
+// Sets the maximum number of undo levels
+void CModel::SetUndoLimit(size_t levels)
+{
+	undoLimit = levels;
+	while (undoStack.size() > undoLimit) {
+		undoStack.pop_front();
+	}
 }

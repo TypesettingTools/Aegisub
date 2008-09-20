@@ -116,6 +116,8 @@ int main()
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
 
+		system("pause");
+
 		// Rollback
 		cout << "Undoing " << n-1 << " times... ";
 		timer.Start();
@@ -125,8 +127,10 @@ int main()
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
 
+		system("pause");
+
 		// Undo
-		n = 100;
+		n = 1000;
 		cout << "Undoing and redoing " << n << " times... ";
 		timer.Start();
 		for (int i=0;i<n;i++) {

@@ -59,8 +59,9 @@ namespace Athenasub {
 		ActionStack undoStack;
 		ActionStack redoStack;
 		ViewList listeners;
-		bool readOnly;
 		Format format;
+		bool readOnly;
+		size_t undoLimit;
 
 		void ProcessActionList(CActionList &actionList,int type=0);
 
@@ -71,6 +72,9 @@ namespace Athenasub {
 		void Undo(const String owner=L"");
 		void Redo(const String owner=L"");
 		void ActivateStack(ActionStack stack,bool isUndo,const String &owner);
+
+		void SetUndoLimit(size_t levels);
+		size_t GetUndoLimit() const { return undoLimit; }
 
 		void DispatchNotifications(Notification notification) const;
 
@@ -85,6 +89,7 @@ namespace Athenasub {
 		size_t GetSectionCount() const;
 
 	public:
+		CModel();
 		Controller CreateController();
 		Format GetFormat() const { return format; }
 		void AddListener(View listener);
