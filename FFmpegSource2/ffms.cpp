@@ -35,7 +35,9 @@ FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, 
 		switch (TrackIndices->Decoder) {
 			case 0: return new FFVideoSource(SourceFile, Track, TrackIndices, PP, Threads, SeekMode, ErrorMsg, MsgSize);
 			case 1: return new MatroskaVideoSource(SourceFile, Track, TrackIndices, PP, Threads, ErrorMsg, MsgSize);
-			default: return NULL;
+			default: 
+				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
+				return NULL;
 		}
 	} catch (...) {
 		return NULL;
@@ -47,7 +49,9 @@ FFMS_API(AudioBase *) FFMS_CreateAudioSource(const char *SourceFile, int Track, 
 		switch (TrackIndices->Decoder) {
 			//case 0: return new FFVideoSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
 			case 1: return new MatroskaAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
-			default: return NULL;
+			default: 
+				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
+				return NULL;
 		}
 	} catch (...) {
 		return NULL;
