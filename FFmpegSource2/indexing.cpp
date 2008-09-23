@@ -242,6 +242,10 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 					Size -= Ret;
 					Data += Ret;
 				}
+
+				if (dbsize > 0)
+					AudioContexts[Track].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
+
 				if (dbsize > 0 && (DumpMask & (1 << Track))) {
 					// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
 					if (!AudioContexts[Track].W64W) {
@@ -255,7 +259,6 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 							AudioCodecContext->channels, AudioCodecContext->sample_rate, AudioFMTIsFloat(AudioCodecContext->sample_fmt));
 					}
 
-					AudioContexts[Track].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
 					AudioContexts[Track].W64W->WriteData(db, dbsize);
 				}
 			}
@@ -356,6 +359,10 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 						Size -= Ret;
 						Data += Ret;
 					}
+
+					// FIXME currentsample calculation here
+					if (dbsize > 0)
+						dbsize = dbsize;
 
 					if (dbsize > 0 && (DumpMask & (1 << Packet.stream_index))) {
 						// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
