@@ -38,7 +38,6 @@
 ///////////
 // Headers
 #include "video_provider_ffmpegsource.h"
-#include "../FFmpegSource2/ffms.h"
 #include "video_context.h"
 #include "options.h"
 
@@ -51,6 +50,7 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 
 	// clean up variables
 	VideoSource = NULL;
+	Index = NULL;
 	DstFormat = FFMS_PIX_FMT_NONE;
 	LastDstFormat = FFMS_PIX_FMT_NONE;
 	KeyFramesLoaded = false;
@@ -84,8 +84,6 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	wxString CacheName(filename.c_str());
 	CacheName.append(_T(".ffindex"));
 
-	FrameIndex *Index;
-
 	// try to read index
 	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
 	if (Index == NULL) {
@@ -97,7 +95,8 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		Progress.ProgressDialog->Show();
 		Progress.ProgressDialog->SetProgress(0,1);
 
-		Index = FFMS_MakeIndex(FileNameWX.char_str(), 1, NULL, FFmpegSourceVideoProvider::UpdateIndexingProgress, &Progress, FFMSErrorMessage, MessageSize);
+		// set trackmask to -1 (all) here but don't output any audio file, this allows the audio provider to reuse the index later
+		Index = FFMS_MakeIndex(FileNameWX.char_str(), FFMSTrackMaskAll, CacheName.char_str(), FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrorMessage, MessageSize);
 		if (Index == NULL) {
 			Progress.ProgressDialog->Destroy();
 			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
@@ -125,8 +124,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	else 
 		SeekMode = 1;
 
-	// finally create the actual video source
-	VideoSource = FFMS_CreateVideoSource(FileNameWX.char_str(), -1, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
+	VideoSource = FFMS_CreateVideoSource(FileNameWX.char_str(), FFMSFirstSuitableTrack, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
 	if (VideoSource == NULL) {
 		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
 		throw ErrorMsg;
@@ -181,9 +179,6 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		VFR_Output.SetVFR(TimecodesVector);
 	}
 
-	// we don't need this anymore
-	FFMS_DestroyFrameIndex(Index);
-
 	FrameNumber = 0;
 }
 
@@ -193,6 +188,8 @@ void FFmpegSourceVideoProvider::Close() {
 	if (VideoSource)
 		FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
+	if (Index)
+		FFMS_DestroyFrameIndex(Index);
 
 	DstFormat = FFMS_PIX_FMT_NONE;
 	LastDstFormat = FFMS_PIX_FMT_NONE;
@@ -202,19 +199,6 @@ void FFmpegSourceVideoProvider::Close() {
 	FrameNumber = -1;
 }
 
-///////////////
-// Update indexing progress
-int __stdcall FFmpegSourceVideoProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private) {
-	IndexingProgressDialog *Progress = (IndexingProgressDialog *)Private;
-
-	if (Progress->IndexingCanceled)
-		return 1;
-
-	// noone cares about a little bit of a rounding error here anyway
-	Progress->ProgressDialog->SetProgress((1000*Current)/Total, 1000);
-	
-	return 0;
-}
 
 ///////////////
 // Get frame

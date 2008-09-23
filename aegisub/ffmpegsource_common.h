@@ -33,70 +33,28 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#pragma once
+#ifdef WITH_FFMPEGSOURCE
+
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#ifdef WITH_FFMPEGSOURCE
-#include "include/aegisub/video_provider.h"
-#include "ffmpegsource_common.h"
-#include "vfr.h"
-#include <vector>
+#include "include/aegisub/aegisub.h"
+#include "../FFmpegSource2/ffms.h"
+#include "dialog_progress.h"
 
 
-///////////////////////
-// FFmpegSource video provider
-class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
-private:
-	VideoBase *VideoSource;
-	const VideoProperties *VideoInfo;
-	FrameIndex *Index;
-
-	int FrameNumber;
-	wxArrayInt KeyFramesList;
-	bool KeyFramesLoaded;
-	std::vector<int> TimecodesVector;
-	FrameRate Timecodes;
-
-	FFMS_PixelFormat DstFormat;
-	FFMS_PixelFormat LastDstFormat;
-	AegiVideoFrame CurFrame;
-
-	char FFMSErrorMessage[1024];
-	unsigned MessageSize;
-	wxString ErrorMsg;
-
-	void LoadVideo(Aegisub::String filename, double fps);
-	void Close();
-
-protected:
-
+class FFmpegSourceProvider {
 public:
-	FFmpegSourceVideoProvider(Aegisub::String filename, double fps);
-	~FFmpegSourceVideoProvider();
+	static const int FFMSTrackMaskAll		= -1;
+	static const int FFMSTrackMaskNone		= 0;
+	static const int FFMSFirstSuitableTrack	= -1;
 
-	const AegiVideoFrame GetFrame(int n, int formatType);
-	int GetPosition();
-	int GetFrameCount();
+	struct IndexingProgressDialog {
+		volatile bool IndexingCanceled;
+		DialogProgress *ProgressDialog;
+	};
 
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-	bool AreKeyFramesLoaded() { return KeyFramesLoaded; };
-	wxArrayInt GetKeyFrames() { return KeyFramesList; };
-	bool IsVFR() { return true; };
-	FrameRate GetTrueFrameRate() { return Timecodes; };
-	Aegisub::String GetDecoderName() { return L"FFmpegSource"; }
-	bool IsNativelyByFrames() { return true; }
-	int GetDesiredCacheSize() { return 8; }
+	static int __stdcall FFmpegSourceProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
 };
-
-
-///////////
-// Factory
-class FFmpegSourceVideoProviderFactory : public VideoProviderFactory {
-public:
-	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new FFmpegSourceVideoProvider(video,fps); }
-};
-
 
 #endif /* WITH_FFMPEGSOURCE */
