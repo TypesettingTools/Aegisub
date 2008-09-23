@@ -89,8 +89,7 @@ void Wave64Writer::WriteHeader(bool Initial, bool IsFloat) {
 	memcpy(Header + 3, GuidWAVE, 16);
 	memcpy(Header + 5, Guidfmt, 16);
 
-	// sizeof(WFEX) = 18
-	Header[7] = sizeof(WFEX) + 24;
+	Header[7] = 48;
 
 	memcpy(Header + 8, &WFEX, sizeof(WFEX));
 	memcpy(Header + 11, Guiddata, 16);
