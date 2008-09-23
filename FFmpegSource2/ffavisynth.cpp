@@ -26,13 +26,9 @@ AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, Fram
 	SWS = NULL;
 	ConvertToFormat = PIX_FMT_NONE;
 
-	try {
-		VS = FFMS_CreateVideoSource(SourceFile, Track, TrackIndices, PP, Threads, SeekMode, ErrorMsg, MsgSize);
-		if (!VS)
-			throw ErrorMsg;
-	} catch (...) {
+	VS = FFMS_CreateVideoSource(SourceFile, Track, TrackIndices, PP, Threads, SeekMode, ErrorMsg, MsgSize);
+	if (!VS)
 		Env->ThrowError(ErrorMsg);
-	}
 
 	const VideoProperties VP = *FFMS_GetVideoProperties(VS);
 
@@ -145,13 +141,9 @@ PVideoFrame AvisynthVideoSource::GetFrame(int n, IScriptEnvironment *Env) {
 AvisynthAudioSource::AvisynthAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize) {
 	memset(&VI, 0, sizeof(VI));
 
-	try {
-		AS = FFMS_CreateAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
-		if (!AS)
-			throw ErrorMsg;
-	} catch (...) {
+	AS = FFMS_CreateAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
+	if (!AS)
 		Env->ThrowError(ErrorMsg);
-	}
 
 	const AudioProperties AP = *FFMS_GetAudioProperties(AS);
 
