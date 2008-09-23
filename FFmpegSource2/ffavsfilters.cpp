@@ -165,7 +165,7 @@ AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvir
 	const char *CacheFile = Args[3].AsString("");
 
 	if (Track <= -2)
-		Env->ThrowError("FFAudioSource: No video track selected");
+		Env->ThrowError("FFAudioSource: No audio track selected");
 
 	std::string DefaultCache(Source);
 	DefaultCache.append(".ffindex");
@@ -175,7 +175,7 @@ AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvir
 	FrameIndex *Index;
 	if (Cache) {
 		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-			if (!(Index = FFMS_MakeIndex(Source, -1, NULL, NULL, NULL, ErrorMsg, MsgSize)))
+			if (!(Index = FFMS_MakeIndex(Source, -1, CacheFile, NULL, NULL, ErrorMsg, MsgSize)))
 				Env->ThrowError("FFAudioSource: %s", ErrorMsg);
 
 			if (Cache)

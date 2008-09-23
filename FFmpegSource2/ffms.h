@@ -31,19 +31,15 @@
 #	define EXTERN_C
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #	define FFMS_CC __stdcall
-#else
-#	define FFMS_CC
-#endif
-
-#ifdef WIN32
 #	ifdef FFMS_EXPORTS
 #		define FFMS_API(ret) EXTERN_C __declspec(dllexport) ret FFMS_CC
 #	else
 #		define FFMS_API(ret) EXTERN_C __declspec(dllimport) ret FFMS_CC
 #	endif
 #else
+#	define FFMS_CC
 #	define FFMS_API(ret) EXTERN_C ret FFMS_CC
 #endif
 
