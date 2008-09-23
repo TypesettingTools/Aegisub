@@ -53,4 +53,39 @@ int __stdcall FFmpegSourceProvider::UpdateIndexingProgress(int State, int64_t Cu
 	return 0;
 }
 
+
+///////////
+// Do indexing
+FrameIndex *FFmpegSourceProvider::DoIndexing(FrameIndex *Index, wxString FileNameWX, wxString CacheName, int Trackmask) {
+	char FFMSErrMsg[1024];
+	unsigned MsgSize = sizeof(FFMSErrMsg);
+	wxString MsgString;
+
+	// set up progress dialog callback
+	IndexingProgressDialog Progress;
+	Progress.IndexingCanceled = false;
+	Progress.ProgressDialog = new DialogProgress(NULL, _("Indexing"), &Progress.IndexingCanceled, _("Indexing timecodes and frame/sample data"), 0, 1);
+	Progress.ProgressDialog->Show();
+	Progress.ProgressDialog->SetProgress(0,1);
+
+	// index all audio tracks
+	Index = FFMS_MakeIndex(FileNameWX.char_str(), Trackmask, FFMSTrackMaskNone, NULL, FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrMsg, MsgSize);
+	if (!Index) {
+		Progress.ProgressDialog->Destroy();
+		wxString temp(FFMSErrMsg, wxConvUTF8);
+		MsgString << _T("failed to index: ") << temp;
+		throw MsgString;
+	}
+	Progress.ProgressDialog->Destroy();
+
+	// write index to disk for later use
+	if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
+		wxString temp(FFMSErrMsg, wxConvUTF8);
+		MsgString << _T("failed to write index: ") << temp;
+		throw MsgString;
+	}
+
+	return Index;
+}
+
 #endif WITH_FFMPEGSOURCE

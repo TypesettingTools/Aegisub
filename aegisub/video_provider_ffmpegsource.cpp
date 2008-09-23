@@ -88,29 +88,14 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// try to read index
 	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
 	if (Index == NULL) {
-		// reading failed, create index
-		// prepare stuff for callback
-		IndexingProgressDialog Progress;
-		Progress.IndexingCanceled = false;
-		Progress.ProgressDialog = new DialogProgress(NULL, _("Indexing"), &Progress.IndexingCanceled, _("Reading keyframes and timecodes from video"), 0, 1);
-		Progress.ProgressDialog->Show();
-		Progress.ProgressDialog->SetProgress(0,1);
-
-		// set trackmask to -1 (all) here but don't output any audio file, this allows the audio provider to reuse the index later
-		Index = FFMS_MakeIndex(FileNameWX.char_str(), FFMSTrackMaskAll, CacheName.char_str(), FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrorMessage, MessageSize);
-		if (Index == NULL) {
-			Progress.ProgressDialog->Destroy();
-			wxString temp(FFMSErrorMessage, wxConvUTF8);
-			ErrorMsg << _T("failed to index: ") << temp;
+		// index didn't exist or was invalid, we'll have to (re)create it
+		try {
+			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll);
+		} catch (wxString temp) {
+			ErrorMsg << temp;
 			throw ErrorMsg;
-		}
-		Progress.ProgressDialog->Destroy();
-
-		// write it to disk
-		if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrorMessage, MessageSize)) {
-			wxString temp(FFMSErrorMessage, wxConvUTF8);
-			ErrorMsg << _T("failed to write index: ") << temp;
-			throw ErrorMsg;
+		} catch (...) {
+			throw;
 		}
 	}
 

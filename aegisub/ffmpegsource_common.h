@@ -54,7 +54,8 @@ public:
 		DialogProgress *ProgressDialog;
 	};
 
-	static int __stdcall FFmpegSourceProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
+	static int __stdcall UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
+	FrameIndex *DoIndexing(FrameIndex *Index, wxString Filename, wxString Cachename, int Trackmask);
 };
 
 #endif /* WITH_FFMPEGSOURCE */
