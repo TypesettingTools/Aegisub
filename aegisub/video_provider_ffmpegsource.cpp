@@ -58,7 +58,12 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 	MessageSize = sizeof(FFMSErrorMessage);
 
 	// and here we go
-	LoadVideo(filename, fps);
+	try {
+		LoadVideo(filename, fps);
+	} catch (...) {
+		Close();
+		throw;
+	}
 }
 
 ///////////////
@@ -92,12 +97,14 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		Progress.ProgressDialog->Show();
 		Progress.ProgressDialog->SetProgress(0,1);
 
-		Index = FFMS_MakeIndex(FileNameWX.char_str(), 0, "", FFmpegSourceVideoProvider::UpdateIndexingProgress, &Progress, FFMSErrorMessage, MessageSize);
+		Index = FFMS_MakeIndex(FileNameWX.char_str(), 1, NULL, FFmpegSourceVideoProvider::UpdateIndexingProgress, &Progress, FFMSErrorMessage, MessageSize);
 		if (Index == NULL) {
+			Progress.ProgressDialog->Destroy();
 			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
 			throw ErrorMsg;
 		}
 		Progress.ProgressDialog->Destroy();
+
 		// write it to disk
 		if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrorMessage, MessageSize)) {
 			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
