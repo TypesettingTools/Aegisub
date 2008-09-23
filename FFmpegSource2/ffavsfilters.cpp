@@ -42,9 +42,10 @@ AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment
 
 	const char *Source = Args[0].AsString();
 	const char *CacheFile = Args[1].AsString("");
-	int TrackMask = Args[2].AsInt(0);
-	const char *AudioFile = Args[3].AsString("");
-	bool OverWrite = Args[4].AsBool(false);
+	int IndexMask = Args[2].AsInt(0);
+	int DumpMask = Args[3].AsInt(0);
+	const char *AudioFile = Args[4].AsString("");
+	bool OverWrite = Args[5].AsBool(false);
 
 	std::string DefaultCache(Source);
 	DefaultCache.append(".ffindex");
@@ -61,7 +62,7 @@ AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment
 
 	FrameIndex *Index;
 	if (OverWrite || !(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-		if (!(Index = FFMS_MakeIndex(Source, TrackMask, AudioFile, NULL, NULL, ErrorMsg, MsgSize)))
+		if (!(Index = FFMS_MakeIndex(Source, IndexMask, DumpMask, AudioFile, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFIndex: %s", ErrorMsg);
 		if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
 			FFMS_DestroyFrameIndex(Index);
@@ -118,7 +119,7 @@ AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvir
 	FrameIndex *Index;
 	if (Cache) {
 		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-			if (!(Index = FFMS_MakeIndex(Source, 0, NULL, NULL, NULL, ErrorMsg, MsgSize)))
+			if (!(Index = FFMS_MakeIndex(Source, 0, 0, NULL, NULL, NULL, ErrorMsg, MsgSize)))
 				Env->ThrowError("FFVideoSource: %s", ErrorMsg);
 
 			if (Cache)
@@ -175,7 +176,7 @@ AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvir
 	FrameIndex *Index;
 	if (Cache) {
 		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-			if (!(Index = FFMS_MakeIndex(Source, -1, CacheFile, NULL, NULL, ErrorMsg, MsgSize)))
+			if (!(Index = FFMS_MakeIndex(Source, -1, 0, CacheFile, NULL, NULL, ErrorMsg, MsgSize)))
 				Env->ThrowError("FFAudioSource: %s", ErrorMsg);
 
 			if (Cache)
@@ -208,7 +209,7 @@ AVSValue __cdecl CreateSWScale(AVSValue Args, void* UserData, IScriptEnvironment
 }
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
-    Env->AddFunction("FFIndex", "[source]s[cachefile]s[trackmask]i[audiofile]s[overwrite]b", CreateFFIndex, 0);
+    Env->AddFunction("FFIndex", "[source]s[cachefile]s[indexmask]i[dumpmask]i[audiofile]s[overwrite]b", CreateFFIndex, 0);
     Env->AddFunction("FFVideoSource", "[source]s[track]i[cache]b[cachefile]s[pp]s[threads]i[timecodes]s[seekmode]i", CreateFFVideoSource, 0);
     Env->AddFunction("FFAudioSource", "[source]s[track]i[cache]b[cachefile]s", CreateFFAudioSource, 0);
 	Env->AddFunction("FFPP", "c[pp]s", CreateFFPP, 0);

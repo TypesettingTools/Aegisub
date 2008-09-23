@@ -129,7 +129,7 @@ int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, 
 	return 0;
 }
 
-static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	MatroskaFile *MF;
 	char ErrorMessage[256];
 	MatroskaReaderContext MC;
@@ -161,7 +161,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 	IndexMemory IM = IndexMemory(mkv_GetNumTracks(MF), db, AudioContexts);
 
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++) {
-		if (AudioTrackMask & (1 << i) && mkv_GetTrackInfo(MF, i)->Type == TT_AUDIO) {
+		if (IndexMask & (1 << i) && mkv_GetTrackInfo(MF, i)->Type == TT_AUDIO) {
 			AVCodecContext *AudioCodecContext = avcodec_alloc_context();
 			AudioCodecContext->extradata = (uint8_t *)mkv_GetTrackInfo(MF, i)->CodecPrivate;
 			AudioCodecContext->extradata_size = mkv_GetTrackInfo(MF, i)->CodecPrivateSize;
@@ -186,7 +186,8 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 					return NULL;
 			}
 		} else {
-			AudioTrackMask &= ~(1 << i);
+			IndexMask &= ~(1 << i);
+			DumpMask &= ~(1 << i);
 		}
 	}
 
@@ -220,7 +221,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 		if (mkv_GetTrackInfo(MF, Track)->Type == TT_VIDEO)
 			(*TrackIndices)[Track].push_back(FrameInfo(StartTime, (FrameFlags & FRAME_KF) != 0));
 
-		if (AudioTrackMask & (1 << Track)) {
+		if (IndexMask & (1 << Track)) {
 			ReadFrame(FilePos, FrameSize, AudioContexts[Track].CS, MC, ErrorMsg, MsgSize);
 			(*TrackIndices)[Track].push_back(FrameInfo(AudioContexts[Track].CurrentSample, FilePos, FrameSize, (FrameFlags & FRAME_KF) != 0));
 
@@ -241,7 +242,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 					Size -= Ret;
 					Data += Ret;
 				}
-				if (dbsize > 0) {
+				if (dbsize > 0 && (DumpMask & (1 << Track))) {
 					// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
 					if (!AudioContexts[Track].W64W) {
 						char ABuf[50];
@@ -265,8 +266,9 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 	return TrackIndices;
 }
 
-FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	AVFormatContext *FormatContext = NULL;
+	IndexMask |= DumpMask;
 
 	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0) {
 		_snprintf(ErrorMsg, MsgSize, "Can't open '%s'", SourceFile);
@@ -276,7 +278,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 	// Do matroska indexing instead?
 	if (!strcmp(FormatContext->iformat->name, "matroska")) {
 		av_close_input_file(FormatContext);
-		return MakeMatroskaIndex(SourceFile, AudioTrackMask, AudioFile, IP, Private, ErrorMsg, MsgSize);
+		return MakeMatroskaIndex(SourceFile, IndexMask, DumpMask, AudioFile, IP, Private, ErrorMsg, MsgSize);
 	}
 	
 	if (av_find_stream_info(FormatContext) < 0) {
@@ -292,7 +294,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 	IndexMemory IM = IndexMemory(FormatContext->nb_streams, db, AudioContexts);
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++) {
-		if (AudioTrackMask & (1 << i) && FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
+		if (IndexMask & (1 << i) && FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
 			AVCodecContext *AudioCodecContext = FormatContext->streams[i]->codec;
 
 			AVCodec *AudioCodec = avcodec_find_decoder(AudioCodecContext->codec_id);
@@ -306,7 +308,8 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 				return NULL;
 			}
 		} else {
-			AudioTrackMask &= ~(1 << i);
+			IndexMask &= ~(1 << i);
+			DumpMask &= ~(1 << i);
 		}
 	}
 
@@ -335,7 +338,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 		if (FormatContext->streams[Packet.stream_index]->codec->codec_type == CODEC_TYPE_VIDEO)
 			(*TrackIndices)[Packet.stream_index].push_back(FrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
 
-		if (AudioTrackMask & (1 << Packet.stream_index)) {
+		if (IndexMask & (1 << Packet.stream_index)) {
 				AVCodecContext *AudioCodecContext = FormatContext->streams[Packet.stream_index]->codec;
 				int Size = Packet.size;
 				uint8_t *Data = Packet.data;
@@ -354,7 +357,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 						Data += Ret;
 					}
 
-					if (dbsize > 0) {
+					if (dbsize > 0 && (DumpMask & (1 << Packet.stream_index))) {
 						// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
 						if (!AudioContexts[Packet.stream_index].W64W) {
 							char ABuf[50];

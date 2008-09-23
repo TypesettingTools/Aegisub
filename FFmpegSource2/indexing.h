@@ -62,7 +62,7 @@ public:
 	int Decoder;
 };
 
-FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
+FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
 FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
 int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 

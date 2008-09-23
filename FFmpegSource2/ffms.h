@@ -182,7 +182,7 @@ FFMS_API(int) FFMS_FrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMs
 FFMS_API(int) FFMS_ClosestFrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(const TrackTimeBase *) FFMS_GetTimeBase(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteTimecodes(FrameInfoVector *FIV, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int AudioTrackMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(FrameIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 
