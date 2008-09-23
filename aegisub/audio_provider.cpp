@@ -48,6 +48,9 @@
 #ifdef WITH_FFMPEG
 #include "audio_provider_lavc.h"
 #endif
+#ifdef WITH_FFMPEGSOURCE
+#include "audio_provider_ffmpegsource.h"
+#endif
 #include "options.h"
 #include "audio_display.h"
 
@@ -267,6 +270,9 @@ void AudioProviderFactoryManager::RegisterProviders() {
 #endif
 #ifdef WITH_FFMPEG
 	RegisterFactory(new LAVCAudioProviderFactory(),_T("FFMPEG"));
+#endif
+#ifdef WITH_FFMPEGSOURCE
+	RegisterFactory(new FFmpegSourceAudioProviderFactory(),_T("FFmpegSource"));
 #endif
 }
 
