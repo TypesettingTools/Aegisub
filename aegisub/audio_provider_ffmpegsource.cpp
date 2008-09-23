@@ -46,6 +46,7 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
 	FFMS_Init();
 
 	MsgSize = sizeof(FFMSErrMsg);
+	MsgString = _T("FFmpegSource audio provider: ");
 
 	AudioSource = NULL;
 	Index = NULL;
@@ -85,14 +86,16 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		Index = FFMS_MakeIndex(FileNameWX.char_str(), FFMSTrackMaskAll, CacheName.char_str(), FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrMsg, MsgSize);
 		if (Index == NULL) {
 			Progress.ProgressDialog->Destroy();
-			MsgString.Printf(_T("FFmpegSource audio provider: %s"), FFMSErrMsg);
+			wxString temp(FFMSErrMsg, wxConvUTF8);
+			MsgString << _T("failed to index: ") << temp;
 			throw MsgString;
 		}
 		Progress.ProgressDialog->Destroy();
 
 		// write index to disk for later use
 		if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
-			MsgString.Printf(_T("FFmpegSource audio provider: %s"), FFMSErrMsg);
+			wxString temp(FFMSErrMsg, wxConvUTF8);
+			MsgString << _T("failed to write index: ") << temp;
 			throw MsgString;
 		}
 	} 
@@ -100,7 +103,8 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	// FIXME: provide a way to choose which audio track to load?
 	AudioSource = FFMS_CreateAudioSource(FileNameWX.char_str(), FFMSFirstSuitableTrack, Index, FFMSErrMsg, MsgSize);
 	if (!AudioSource) {
-			MsgString.Printf(_T("FFmpegSource audio provider: %s"), FFMSErrMsg);
+			wxString temp(FFMSErrMsg, wxConvUTF8);
+			MsgString << _T("failed to open audio track: ") << temp;
 			throw MsgString;
 	}
 		
@@ -149,7 +153,8 @@ void FFmpegSourceAudioProvider::Close() {
 // Get audio
 void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, FFMSErrMsg, MsgSize)) {
-		MsgString.Printf(_T("FFmpegSource audio provider: %s"), FFMSErrMsg);
+		wxString temp(FFMSErrMsg, wxConvUTF8);
+		MsgString << _T("failed to get audio samples: ") << temp;
 		throw MsgString;
 	}
 }

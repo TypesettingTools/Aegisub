@@ -56,6 +56,7 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 	KeyFramesLoaded = false;
 	FrameNumber = -1;
 	MessageSize = sizeof(FFMSErrorMessage);
+	ErrorMsg = _T("FFmpegSource video provider: ");
 
 	// and here we go
 	try {
@@ -99,14 +100,16 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		Index = FFMS_MakeIndex(FileNameWX.char_str(), FFMSTrackMaskAll, CacheName.char_str(), FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrorMessage, MessageSize);
 		if (Index == NULL) {
 			Progress.ProgressDialog->Destroy();
-			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
+			wxString temp(FFMSErrorMessage, wxConvUTF8);
+			ErrorMsg << _T("failed to index: ") << temp;
 			throw ErrorMsg;
 		}
 		Progress.ProgressDialog->Destroy();
 
 		// write it to disk
 		if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrorMessage, MessageSize)) {
-			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
+			wxString temp(FFMSErrorMessage, wxConvUTF8);
+			ErrorMsg << _T("failed to write index: ") << temp;
 			throw ErrorMsg;
 		}
 	}
@@ -126,7 +129,8 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 
 	VideoSource = FFMS_CreateVideoSource(FileNameWX.char_str(), FFMSFirstSuitableTrack, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
 	if (VideoSource == NULL) {
-		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
+		wxString temp(FFMSErrorMessage, wxConvUTF8);
+		ErrorMsg << _T("failed to open video track: ") << temp;
 		throw ErrorMsg;
 	}
 
@@ -136,12 +140,14 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// get frame info data
 	FrameInfoVector *FrameData = FFMS_GetVSTrackIndex(VideoSource, FFMSErrorMessage, MessageSize);
 	if (FrameData == NULL) {
-		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
+		wxString temp(FFMSErrorMessage, wxConvUTF8);
+		ErrorMsg << _T("couldn't get track data: ") << temp;
 		throw ErrorMsg;
 	}
 	const TrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData, FFMSErrorMessage, MessageSize);
 	if (TimeBase == NULL) {
-		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
+		wxString temp(FFMSErrorMessage, wxConvUTF8);
+		ErrorMsg << _T("couldn't get track time base: ") << temp;
 		throw ErrorMsg;
 	}
 
@@ -151,7 +157,8 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
 		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum, FFMSErrorMessage, MessageSize);
 		if (CurFrameData == NULL) {
-			ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
+			wxString temp(FFMSErrorMessage, wxConvUTF8);
+			ErrorMsg << _T("couldn't get framedata for frame ") << CurFrameNum << _T(": ") << temp;
 			throw ErrorMsg;
 		}
 
@@ -245,7 +252,8 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	// decode frame
 	const AVFrameLite *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
 	if (SrcFrame == NULL) {
-		ErrorMsg.Printf(_T("FFmpegSource video provider: %s"), FFMSErrorMessage);
+		wxString temp(FFMSErrorMessage, wxConvUTF8);
+		ErrorMsg << _T("failed to retrieve frame: ") << temp;
 		throw ErrorMsg;
 	}
 
