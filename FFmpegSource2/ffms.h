@@ -50,6 +50,11 @@ class FrameInfoVector;
 
 typedef int (FFMS_CC *IndexCallback)(int State, int64_t Current, int64_t Total, void *Private);
 
+enum TrackType {
+	FFMS_TYPE_VIDEO = 0,
+    FFMS_TYPE_AUDIO = 1,
+};
+
 // PixelFormat declarations from avutil.h so external libraries don't necessarily have to include and ffmpeg headers
 enum FFMS_PixelFormat {
     FFMS_PIX_FMT_NONE= -1,
@@ -166,6 +171,7 @@ FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormat, int Width, i
 FFMS_API(void) FFMS_ResetOutputFormat(VideoBase *VB);
 FFMS_API(void) FFMS_DestroyFrameIndex(FrameIndex *FI);
 FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_GetTrackType(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(const FrameInfo *) FFMS_GetFrameInfo(FrameInfoVector *FIV, int Frame, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(FrameInfoVector *) FFMS_GetTITrackIndex(FrameIndex *TrackIndices, int Track, char *ErrorMsg, unsigned MsgSize);

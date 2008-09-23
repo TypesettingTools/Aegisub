@@ -113,13 +113,14 @@ int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, 
 	Index.write(reinterpret_cast<char *>(&IH), sizeof(IH));
 	
 	for (unsigned int i = 0; i < IH.Tracks; i++) {
-		// Write how many records belong to the current stream
-		size_t Frames = (*TrackIndices)[i].size();
-		Index.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
+		int TT = (*TrackIndices)[i].TT;
+		Index.write(reinterpret_cast<char *>(&TT), sizeof(TT));
 		int Num = (*TrackIndices)[i].TB.Num;
 		Index.write(reinterpret_cast<char *>(&Num), sizeof(Num));
 		int Den = (*TrackIndices)[i].TB.Den;
 		Index.write(reinterpret_cast<char *>(&Den), sizeof(Den));
+		size_t Frames = (*TrackIndices)[i].size();
+		Index.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
 
 		for (size_t j = 0; j < Frames; j++)
 			Index.write(reinterpret_cast<char *>(&(TrackIndices->at(i)[j])), sizeof(FrameInfo));
@@ -200,7 +201,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int AudioTrackMask,
 	TrackIndices->Decoder = 1;
 
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++)
-		TrackIndices->push_back(FrameInfoVector(mkv_TruncFloat(mkv_GetTrackInfo(MF, i)->TimecodeScale), 1000000));
+		TrackIndices->push_back(FrameInfoVector(mkv_TruncFloat(mkv_GetTrackInfo(MF, i)->TimecodeScale), 1000000, mkv_GetTrackInfo(MF, i)->Type - 1));
 
 	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
@@ -316,7 +317,8 @@ FrameIndex *MakeIndex(const char *SourceFile, int AudioTrackMask, const char *Au
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++)
 		TrackIndices->push_back(FrameInfoVector(FormatContext->streams[i]->time_base.num * 1000, 
-		FormatContext->streams[i]->time_base.den));
+		FormatContext->streams[i]->time_base.den,
+		FormatContext->streams[i]->codec->codec_type));
 
 	AVPacket Packet;
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
@@ -409,13 +411,15 @@ FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 
 		for (unsigned int i = 0; i < IH.Tracks; i++) {
 			// Read how many records belong to the current stream
-			size_t Frames;
-			Index.read(reinterpret_cast<char *>(&Frames), sizeof(Frames));
+			int TT;
+			Index.read(reinterpret_cast<char *>(&TT), sizeof(TT));
 			int Num;
 			Index.read(reinterpret_cast<char *>(&Num), sizeof(Num));
 			int Den;
 			Index.read(reinterpret_cast<char *>(&Den), sizeof(Den));
-			TrackIndices->push_back(FrameInfoVector(Num, Den));
+			size_t Frames;
+			Index.read(reinterpret_cast<char *>(&Frames), sizeof(Frames));
+			TrackIndices->push_back(FrameInfoVector(Num, Den, TT));
 
 			FrameInfo FI(0, false);
 			for (size_t j = 0; j < Frames; j++) {
@@ -492,11 +496,13 @@ int FrameInfoVector::FindClosestKeyFrame(int Frame) {
 }
 
 FrameInfoVector::FrameInfoVector() {
+	TT = 0;
 	TB.Num = 0; 
 	TB.Den = 0;
 }
 
-FrameInfoVector::FrameInfoVector(int Num, int Den) {
+FrameInfoVector::FrameInfoVector(int Num, int Den, int TT) {
+	this->TT = TT;
 	TB.Num = Num; 
 	TB.Den = Den;
 }

@@ -108,6 +108,10 @@ FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices, char *ErrorMsg, unsign
 	return TrackIndices->size();
 }
 
+FFMS_API(int) FFMS_GetTrackType(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize) {
+	return FIV->TT;
+}
+
 FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize) {
 	return FIV->size();
 }

@@ -33,7 +33,7 @@ extern "C" {
 #include "utils.h"
 #include "ffms.h"
 
-#define INDEXVERSION 5
+#define INDEXVERSION 6
 #define INDEXID 0x53920873
 
 struct IndexHeader {
@@ -45,6 +45,7 @@ struct IndexHeader {
 
 class FrameInfoVector : public std::vector<FrameInfo> {
 public:
+	int TT;
 	TrackTimeBase TB;
 
 	int FindClosestKeyFrame(int Frame);
@@ -53,7 +54,7 @@ public:
 	int WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
 
 	FrameInfoVector();
-	FrameInfoVector(int Num, int Den);
+	FrameInfoVector(int Num, int Den, int TT);
 };
 
 class FrameIndex : public std::vector<FrameInfoVector> {
