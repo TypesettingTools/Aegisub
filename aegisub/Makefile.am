@@ -144,6 +144,7 @@ EXTRA_aegisub_SOURCES = \
 	audio_player_pulse.cpp \
 	audio_provider_avs.cpp \
 	audio_provider_lavc.cpp \
+	audio_provider_ffmpegsource.cpp \
 	auto4_auto3.cpp \
 	auto4_lua.cpp \
 	auto4_lua_assfile.cpp \
@@ -154,6 +155,7 @@ EXTRA_aegisub_SOURCES = \
 	auto4_ruby_dialog.cpp \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
+	ffmpegsource_common.cpp \
 	lavc_file.cpp \
 	lavc_keyframes.cpp \
 	macosx/bevelButton.cpp \
