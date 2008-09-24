@@ -62,7 +62,7 @@ AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment
 
 	FrameIndex *Index;
 	if (OverWrite || !(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-		if (!(Index = FFMS_MakeIndex(Source, IndexMask, DumpMask, AudioFile, NULL, NULL, ErrorMsg, MsgSize)))
+		if (!(Index = FFMS_MakeIndex(Source, IndexMask, DumpMask, AudioFile, true, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFIndex: %s", ErrorMsg);
 		if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
 			FFMS_DestroyFrameIndex(Index);
@@ -119,7 +119,7 @@ AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvir
 	FrameIndex *Index;
 	if (Cache) {
 		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-			if (!(Index = FFMS_MakeIndex(Source, 0, 0, NULL, NULL, NULL, ErrorMsg, MsgSize)))
+			if (!(Index = FFMS_MakeIndex(Source, 0, 0, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
 				Env->ThrowError("FFVideoSource: %s", ErrorMsg);
 
 			if (Cache)
@@ -176,7 +176,7 @@ AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvir
 	FrameIndex *Index;
 	if (Cache) {
 		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-			if (!(Index = FFMS_MakeIndex(Source, -1, 0, CacheFile, NULL, NULL, ErrorMsg, MsgSize)))
+			if (!(Index = FFMS_MakeIndex(Source, -1, 0, CacheFile, true, NULL, NULL, ErrorMsg, MsgSize)))
 				Env->ThrowError("FFAudioSource: %s", ErrorMsg);
 
 			if (Cache)

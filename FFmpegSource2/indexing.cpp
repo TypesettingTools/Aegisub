@@ -129,7 +129,7 @@ int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, 
 	return 0;
 }
 
-static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	MatroskaFile *MF;
 	char ErrorMessage[256];
 	MatroskaReaderContext MC;
@@ -187,7 +187,6 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 			}
 		} else {
 			IndexMask &= ~(1 << i);
-			DumpMask &= ~(1 << i);
 		}
 	}
 
@@ -233,9 +232,15 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
 				int Ret = avcodec_decode_audio2(AudioCodecContext, db, &dbsize, Data, Size);
 				if (Ret < 0) {
-					_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
-					delete TrackIndices;
-					return NULL;
+					if (IgnoreDecodeErrors) {
+						(*TrackIndices)[Track].clear();
+						IndexMask &= ~(1 << Track);					
+						break;
+					} else {
+						_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
+						delete TrackIndices;
+						return NULL;
+					}
 				}
 
 				if (Ret > 0) {
@@ -269,7 +274,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 	return TrackIndices;
 }
 
-FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	AVFormatContext *FormatContext = NULL;
 	IndexMask |= DumpMask;
 
@@ -281,7 +286,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 	// Do matroska indexing instead?
 	if (!strcmp(FormatContext->iformat->name, "matroska")) {
 		av_close_input_file(FormatContext);
-		return MakeMatroskaIndex(SourceFile, IndexMask, DumpMask, AudioFile, IP, Private, ErrorMsg, MsgSize);
+		return MakeMatroskaIndex(SourceFile, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, IP, Private, ErrorMsg, MsgSize);
 	}
 	
 	if (av_find_stream_info(FormatContext) < 0) {
@@ -312,7 +317,6 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 			}
 		} else {
 			IndexMask &= ~(1 << i);
-			DumpMask &= ~(1 << i);
 		}
 	}
 
@@ -350,9 +354,15 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 					int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
 					int Ret = avcodec_decode_audio2(AudioCodecContext, db, &dbsize, Data, Size);
 					if (Ret < 0) {
-						_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
-						delete TrackIndices;
-						return NULL;
+						if (IgnoreDecodeErrors) {
+							(*TrackIndices)[Packet.stream_index].clear();
+							IndexMask &= ~(1 << Packet.stream_index);					
+							break;
+						} else {
+							_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
+							delete TrackIndices;
+							return NULL;
+						}
 					}
 
 					if (Ret > 0) {

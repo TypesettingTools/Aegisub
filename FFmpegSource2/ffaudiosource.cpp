@@ -19,6 +19,8 @@
 //  THE SOFTWARE.
 
 #include "ffaudiosource.h"
+#include <errno.h>
+
 
 
 AudioBase::AudioBase() {
