@@ -29,7 +29,7 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
 
 <h2>Usage</h2>
 <p>
-<b>FFIndex("string source, string cachefile = source + ".ffindex", int trackmask = 0, string audiofile = source, bool overwrite = false)</b><br />
+<b>FFIndex("string source, string cachefile = source + ".ffindex", int indexmask = 0, int dumpmask = 0, string audiofile = source, bool overwrite = false)</b><br />
  Used to invoke indexing separately and to write audio tracks to disk as wave64 files
 </p>
 
@@ -54,8 +54,8 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
 </p>
 
 <p>
-<b>trackmask:</b>
-  Which audio tracks to write to disk. It is a binary mask meaning that 7 corresponds to writing tracks 1-3. Non-audio tracks are ignored. -1 writes all tracks.
+<b>indexmask &amp; dumpmask:</b>
+  Which audio tracks to index/write to disk. Dumping a track also implies indexing since the same work has to be done anyway. It is a binary mask meaning that 7 corresponds to writing tracks 1-3. Non-audio tracks are ignored. -1 writes all tracks.
 </p>
 
 <p>
@@ -186,6 +186,14 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 
 <h2>Changes</h2>
 <ul>
+<li>2.00 beta 2<ul>
+<ll>More API changes (and more are likely to come)</li>
+<li>Includes a simple CLI indexing application</li>
+<li>FFIndex now takes a few more arguments</li>
+<li>Readded FFAudioSource (only matroska supported for now)</li>
+<li>Updated FFmpeg to rev 15396</li>
+</ul></li>
+
 <li>2.00 beta 1<ul>
 <li>Can now be used as a stand alone library for making indices and retrieving frames</li>
 <li>Rewrote most things</li>
