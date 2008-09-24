@@ -25,7 +25,9 @@
 #include "ffms.h"
 
 int TrackMask;
+int DumpMask;
 bool Overwrite;
+bool IgnoreErrors;
 std::string InputFile;
 std::string CacheFile;
 std::string AudioFile;
@@ -39,10 +41,13 @@ void PrintUsage () {
 		<< "Usage: ffmsindex [options] inputfile [outputfile]" << endl
 		<< "If no output filename is specified, inputfile.ffindex will be used." << endl << endl
 		<< "Options:" << endl
-		<< "-f        Overwrite existing index file if it exists (default: no)" << endl
-		<< "-t N      Set the audio trackmask to N (-1 means decode all tracks, 0 means decode none; default: 0)" << endl
+		<< "-f        Force overwriting of existing index file, if any (default: no)" << endl
+		<< "-s        Silently skip indexing of audio tracks that cannot be read (default: no)" << endl
+		<< "-t N      Set the audio indexing mask to N (-1 means index all tracks, 0 means index none, default: 0)" << endl
+		<< "-d N      Set the audio decoding mask to N (mask syntax same as -t, default: 0)" << endl
 		<< "-a NAME   Set the audio output base filename to NAME (default: input filename)";
 }
+
 
 void ParseCMDLine (int argc, char *argv[]) {
 	if (argc <= 1) {
@@ -55,7 +60,9 @@ void ParseCMDLine (int argc, char *argv[]) {
 	CacheFile = "";
 	AudioFile = "";
 	TrackMask = 0;
+	DumpMask  = 0;
 	Overwrite = false;
+	IgnoreErrors = false;
 
 	// argv[0] = name of program
 	int i = 1;
@@ -68,8 +75,13 @@ void ParseCMDLine (int argc, char *argv[]) {
 
 		if (!Option.compare("-f")) {
 			Overwrite = true;
+		} else if (!Option.compare("-s")) {
+			IgnoreErrors = true;
 		} else if (!Option.compare("-t")) {
 			TrackMask = atoi(OptionArg.c_str());
+			i++;
+		} else if (!Option.compare("-d")) {
+			DumpMask = atoi(OptionArg.c_str());
 			i++;
 		} else if (!Option.compare("-a")) {
 			AudioFile = OptionArg;
@@ -127,7 +139,7 @@ void DoIndexing () {
 	Index = FFMS_ReadIndex(CacheFile.c_str(), FFMSErrMsg, MsgSize);
 	if (Overwrite || Index == NULL) {
 		std::cout << "Indexing, please wait...  0%";
-		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, AudioFile.c_str(), UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
+		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, DumpMask, AudioFile.c_str(), IgnoreErrors, UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
 		if (Index == NULL) {
 			std::string Err = "Indexing error: ";
 			Err.append(FFMSErrMsg);
@@ -172,6 +184,10 @@ int main(int argc, char *argv[]) {
 		DoIndexing();
 	} catch (const char *Error) {
 		std::cout << Error << std::endl;
+		FFMS_DestroyFrameIndex(Index);
+		return 1;
+	} catch (std::string Error) {
+		std::cout << std::endl << Error << std::endl;
 		FFMS_DestroyFrameIndex(Index);
 		return 1;
 	} catch (...) {
