@@ -53,7 +53,6 @@ private:
 	int AudioTrack;
 
 	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize);
-	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);
 	void Free(bool CloseCodec);
 public:
 	FFAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
@@ -70,7 +69,6 @@ private:
 	char ErrorMessage[256];
 
 	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint64_t FilePos, unsigned int FrameSize, char *ErrorMsg, unsigned MsgSize);
-	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);
 	void Free(bool CloseCodec);
 public:
 	MatroskaAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);

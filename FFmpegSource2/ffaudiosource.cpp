@@ -41,34 +41,6 @@ size_t AudioBase::FindClosestAudioKeyFrame(int64_t Sample) {
 	return Frames.size() - 1;
 }
 
-int FFAudioSource::GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize) {
-	if (Index < 0) {
-		Index = -1;
-		for (unsigned int i = 0; i < FormatContext->nb_streams; i++)
-			if (FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
-				Index = i;
-				break;
-			}
-	}
-
-	if (Index < 0) {
-		_snprintf(ErrorMsg, MsgSize, "No audio track found");
-		return 1;
-	}
-
-	if (Index >= (int)FormatContext->nb_streams) {
-		_snprintf(ErrorMsg, MsgSize, "Invalid audio track number");
-		return 2;
-	}
-
-	if (FormatContext->streams[Index]->codec->codec_type != CODEC_TYPE_AUDIO) {
-		_snprintf(ErrorMsg, MsgSize, "Selected track is not audio");
-		return 3;
-	}
-
-	return 0;
-}
-
 void FFAudioSource::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
@@ -76,9 +48,16 @@ void FFAudioSource::Free(bool CloseCodec) {
 }
 
 FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
-
 	FormatContext = NULL;
 	AVCodec *Codec = NULL;
+	AudioTrack = Track;
+	Frames = (*TrackIndices)[AudioTrack];
+
+	if (Frames.size() == 0) {
+		Free(false);
+		_snprintf(ErrorMsg, MsgSize, "Audio track contains no frames");
+		throw ErrorMsg;
+	}
 
 	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0) {
 		_snprintf(ErrorMsg, MsgSize, "Couldn't open '%s'", SourceFile);
@@ -88,20 +67,6 @@ FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FrameIndex *Trac
 	if (av_find_stream_info(FormatContext) < 0) {
 		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Couldn't find stream information");
-		throw ErrorMsg;
-	}
-
-	AudioTrack = Track;
-	if (GetTrackIndex(AudioTrack, ErrorMsg, MsgSize)) {
-		Free(false);
-		throw ErrorMsg;
-	}
-
-	Frames = (*TrackIndices)[AudioTrack];
-
-	if (Frames.size() == 0) {
-		Free(false);
-		_snprintf(ErrorMsg, MsgSize, "Audio track contains no frames");
 		throw ErrorMsg;
 	}
 
@@ -243,34 +208,6 @@ FFAudioSource::~FFAudioSource() {
 	Free(true);
 }
 
-int MatroskaAudioSource::GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize) {
-	if (Index < 0) {
-		Index = -1;
-		for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++)
-			if (mkv_GetTrackInfo(MF, i)->Type == TT_AUDIO) {
-				Index = i;
-				break;
-			}
-	}
-
-	if (Index < 0) {
-		_snprintf(ErrorMsg, MsgSize, "No audio track found");
-		return 1;
-	}
-
-	if (Index >= (int)mkv_GetNumTracks(MF)) {
-		_snprintf(ErrorMsg, MsgSize, "Invalid audio track number");
-		return 2;
-	}
-
-	if (mkv_GetTrackInfo(MF, Index)->Type != TT_AUDIO) {
-		_snprintf(ErrorMsg, MsgSize, "Selected track is not audio");
-		return 3;
-	}
-
-	return 0;
-}
-
 void MatroskaAudioSource::Free(bool CloseCodec) {
 	if (CS)
 		cs_Destroy(CS);
@@ -288,6 +225,13 @@ MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, Fram
 	AVCodec *Codec = NULL;
 	TrackInfo *TI = NULL;
 	CS = NULL;
+	Frames = (*TrackIndices)[Track];
+
+	if (Frames.size() == 0) {
+		Free(false);
+		_snprintf(ErrorMsg, MsgSize, "Audio track contains no frames");
+		throw ErrorMsg;
+	}
 
 	MC.ST.fp = fopen(SourceFile, "rb");
 	if (MC.ST.fp == NULL) {
@@ -301,19 +245,6 @@ MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, Fram
 	if (MF == NULL) {
 		fclose(MC.ST.fp);
 		_snprintf(ErrorMsg, MsgSize, "Can't parse Matroska file: %s", ErrorMessage);
-		throw ErrorMsg;
-	}
-
-	if (GetTrackIndex(Track, ErrorMsg, MsgSize)) {
-		Free(false);
-		throw ErrorMsg;
-	}
-
-	Frames = (*TrackIndices)[Track];
-
-	if (Frames.size() == 0) {
-		Free(false);
-		_snprintf(ErrorMsg, MsgSize, "Audio track contains no frames");
 		throw ErrorMsg;
 	}
 
