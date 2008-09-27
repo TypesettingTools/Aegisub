@@ -90,16 +90,6 @@ FFMS_API(void) FFMS_DestroyAudioSource(AudioBase *AB) {
 	delete AB;
 }
 
-FFMS_API(int) FFMS_GetVSTrack(VideoBase *VB) {
-	return VB->GetTrack();
-}
-
-FFMS_API(int) FFMS_GetASTrack(AudioBase *AB) {
-	// FIXME
-	// return AB->GetTrack();
-	return 0;
-}
-
 FFMS_API(const VideoProperties *) FFMS_GetVideoProperties(VideoBase *VB) {
 	return &VB->GetVideoProperties();
 }
@@ -130,6 +120,14 @@ FFMS_API(void) FFMS_ResetOutputFormat(VideoBase *VB) {
 
 FFMS_API(void) FFMS_DestroyFrameIndex(FrameIndex *FI) {
 	delete FI;
+}
+
+FFMS_API(int) FFMS_GetFirstTrackOfType(FrameIndex *TrackIndices, int TrackType, char *ErrorMsg, unsigned MsgSize) {
+	for (int i = 0; i < TrackIndices->size(); i++)
+		if ((*TrackIndices)[i].TT == TrackType)
+			return i;
+	_snprintf(ErrorMsg, MsgSize, "No suitable track found");
+	return -1;
 }
 
 FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {

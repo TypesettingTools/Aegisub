@@ -130,6 +130,18 @@ AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvir
 		}
 	}
 
+	if (Track == -1)
+		Track = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, ErrorMsg, MsgSize);
+	if (Track < 0)
+		Env->ThrowError("FFVideoSource: No video track found");
+
+	if (strcmp(Timecodes, "")) {
+		if (FFMS_WriteTimecodes(FFMS_GetTITrackIndex(Index, Track, ErrorMsg, MsgSize), Timecodes, ErrorMsg, MsgSize)) {
+			FFMS_DestroyFrameIndex(Index);
+			Env->ThrowError("FFVideoSource: %s", ErrorMsg);
+		}
+	}
+
 	AvisynthVideoSource *Filter;
 
 	try {
@@ -137,14 +149,6 @@ AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvir
 	} catch (...) {
 		FFMS_DestroyFrameIndex(Index);	
 		throw;
-	}
-
-	if (strcmp(Timecodes, "")) {
-		if (FFMS_WriteTimecodes(FFMS_GetTITrackIndex(Index, Filter->GetTrack(), ErrorMsg, MsgSize), Timecodes, ErrorMsg, MsgSize)) {
-			FFMS_DestroyFrameIndex(Index);
-			delete Filter;
-			Env->ThrowError("FFVideoSource: %s", ErrorMsg);
-		}
 	}
 
 	FFMS_DestroyFrameIndex(Index);
@@ -186,6 +190,11 @@ AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvir
 				}
 		}
 	}
+
+	if (Track == -1)
+		Track = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, ErrorMsg, MsgSize);
+	if (Track < 0)
+		Env->ThrowError("FFAudioSource: No audio track found");
 
 	AvisynthAudioSource *Filter;
 

@@ -44,7 +44,6 @@ private:
 public:
 	AvisynthVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
 	~AvisynthVideoSource();
-	int GetTrack() { return FFMS_GetVSTrack(VS); }
 	bool __stdcall GetParity(int n) { return false; }
 	void __stdcall SetCacheHints(int cachehints, int frame_range) { }
 	const VideoInfo& __stdcall GetVideoInfo() { return VI; }
@@ -59,7 +58,6 @@ private:
 public:
 	AvisynthAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
 	~AvisynthAudioSource();
-	int GetTrack() { return FFMS_GetASTrack(AS); }
 	bool __stdcall GetParity(int n) { return false; }
 	void __stdcall SetCacheHints(int cachehints, int frame_range) { }
 	const VideoInfo& __stdcall GetVideoInfo() { return VI; }

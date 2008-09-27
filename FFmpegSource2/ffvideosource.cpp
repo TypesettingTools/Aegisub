@@ -165,34 +165,6 @@ void VideoBase::ResetOutputFormat() {
 	VP.PixelFormat = CodecContext->pix_fmt;
 }
 
-int FFVideoSource::GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize) {
-	if (Index < 0) {
-		Index = -1;
-		for (unsigned int i = 0; i < FormatContext->nb_streams; i++)
-			if (FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO) {
-				Index = i;
-				break;
-			}
-	}
-
-	if (Index < 0) {
-		_snprintf(ErrorMsg, MsgSize, "No video track found");
-		return 1;
-	}
-
-	if (Index >= (int)FormatContext->nb_streams) {
-		_snprintf(ErrorMsg, MsgSize, "Invalid video track number");
-		return 2;
-	}
-
-	if (FormatContext->streams[Index]->codec->codec_type != CODEC_TYPE_VIDEO) {
-		_snprintf(ErrorMsg, MsgSize, "Selected track is not video");
-		return 3;
-	}
-
-	return 0;
-}
-
 void FFVideoSource::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
@@ -207,6 +179,13 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	FormatContext = NULL;
 	AVCodec *Codec = NULL;
 	this->SeekMode = SeekMode;
+	VideoTrack = Track;
+	Frames = (*TrackIndices)[VideoTrack];
+
+	if (Frames.size() == 0) {
+		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
+		throw ErrorMsg;
+	}
 
 	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0) {
 		_snprintf(ErrorMsg, MsgSize, "Couldn't open '%s'", SourceFile);
@@ -216,20 +195,6 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	if (av_find_stream_info(FormatContext) < 0) {
 		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Couldn't find stream information");
-		throw ErrorMsg;
-	}
-
-	VideoTrack = Track;
-	if (GetTrackIndex(VideoTrack, ErrorMsg, MsgSize)) {
-		Free(false);
-		throw ErrorMsg;
-	}
-
-	Frames = (*TrackIndices)[VideoTrack];
-
-	if (Frames.size() == 0) {
-		Free(false);
-		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
 		throw ErrorMsg;
 	}
 
@@ -400,35 +365,6 @@ AVFrameLite *FFVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	return OutputFrame(DecodeFrame);
 }
 
-
-int MatroskaVideoSource::GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize) {
-	if (Index < 0) {
-		Index = -1;
-		for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++)
-			if (mkv_GetTrackInfo(MF, i)->Type == TT_VIDEO) {
-				Index = i;
-				break;
-			}
-	}
-
-	if (Index < 0) {
-		_snprintf(ErrorMsg, MsgSize, "No video track found");
-		return 1;
-	}
-
-	if (Index >= (int)mkv_GetNumTracks(MF)) {
-		_snprintf(ErrorMsg, MsgSize, "Invalid video track number");
-		return 2;
-	}
-
-	if (mkv_GetTrackInfo(MF, Index)->Type != TT_VIDEO) {
-		_snprintf(ErrorMsg, MsgSize, "Selected track is not video");
-		return 3;
-	}
-
-	return 0;
-}
-
 void MatroskaVideoSource::Free(bool CloseCodec) {
 	if (CS)
 		cs_Destroy(CS);
@@ -449,6 +385,13 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	CodecContext = NULL;
 	TrackInfo *TI = NULL;
 	CS = NULL;
+	VideoTrack = Track;
+	Frames = (*TrackIndices)[VideoTrack];
+
+	if (Frames.size() == 0) {
+		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
+		throw ErrorMsg;
+	}
 
 	MC.ST.fp = fopen(SourceFile, "rb");
 	if (MC.ST.fp == NULL) {
@@ -462,20 +405,6 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	if (MF == NULL) {
 		fclose(MC.ST.fp);
 		_snprintf(ErrorMsg, MsgSize, "Can't parse Matroska file: %s", ErrorMessage);
-		throw ErrorMsg;
-	}
-
-	VideoTrack = Track;
-	if (GetTrackIndex(VideoTrack, ErrorMsg, MsgSize)) {
-		Free(false);
-		throw ErrorMsg;
-	}
-
-	Frames = (*TrackIndices)[VideoTrack];
-
-	if (Frames.size() == 0) {
-		Free(false);
-		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
 		throw ErrorMsg;
 	}
 

@@ -55,7 +55,6 @@ protected:
 public:
 	virtual ~VideoBase();
 	const VideoProperties& GetVideoProperties() { return VP; }
-	int GetTrack() { return VideoTrack; }
 	FrameInfoVector *GetFrameInfoVector() { return &Frames; }
 	virtual AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
 	AVFrameLite *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
@@ -69,7 +68,6 @@ private:
 	int SeekMode;
 
 	void Free(bool CloseCodec);
-	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);
 	int DecodeNextFrame(AVFrame *Frame, int64_t *DTS, char *ErrorMsg, unsigned MsgSize);
 public:
 	FFVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
@@ -86,7 +84,6 @@ private:
 
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
-	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);
 public:
 	MatroskaVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
 	~MatroskaVideoSource();
