@@ -109,11 +109,9 @@ VideoBase::~VideoBase() {
 	av_free(DecodeFrame);
 }
 
-AVFrame *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
-	// FIXME
-	//Frames.ClosestFrameFromDTS();
-	//return GetFrame(, ErrorMsg, MsgSize);
-	return NULL;
+AVFrameLite *VideoBase::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
+	int Frame = Frames.ClosestFrameFromDTS(Time * Frames.TB.Den / Frames.TB.Num);
+	return GetFrame(Frame, ErrorMsg, MsgSize);
 }
 
 int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height) {

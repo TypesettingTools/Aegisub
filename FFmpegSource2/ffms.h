@@ -122,14 +122,13 @@ struct TrackTimeBase {
 
 class FrameInfo {
 public:
-	union {
-		int64_t DTS;
-		int64_t SampleStart;
-	};
+	int64_t DTS;
+	int64_t SampleStart;
 	int64_t FilePos;
 	unsigned int FrameSize;
 	bool KeyFrame;
 	FrameInfo(int64_t DTS, bool KeyFrame);
+	FrameInfo(int64_t DTS, int64_t SampleStart, bool KeyFrame);
 	FrameInfo(int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame);
 };
 
@@ -166,6 +165,7 @@ FFMS_API(int) FFMS_GetASTrack(AudioBase *AB);
 FFMS_API(const VideoProperties *) FFMS_GetVideoProperties(VideoBase *VB);
 FFMS_API(const AudioProperties *) FFMS_GetAudioProperties(AudioBase *AB);
 FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(const AVFrameLite *) FFMS_GetFrameByTime(VideoBase *VB, double Time, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetAudio(AudioBase *AB, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormat, int Width, int Height);
 FFMS_API(void) FFMS_ResetOutputFormat(VideoBase *VB);

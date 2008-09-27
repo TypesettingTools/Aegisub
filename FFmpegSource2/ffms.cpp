@@ -23,6 +23,30 @@
 #include "ffaudiosource.h"
 #include "indexing.h"
 
+FrameInfo::FrameInfo(int64_t DTS, bool KeyFrame) {
+	this->DTS = DTS;
+	this->SampleStart = 0;
+	this->FilePos = 0;
+	this->FrameSize = 0;
+	this->KeyFrame = KeyFrame;
+}
+
+FrameInfo::FrameInfo(int64_t DTS, int64_t SampleStart, bool KeyFrame) {
+	this->DTS = DTS;
+	this->SampleStart = SampleStart;
+	this->FilePos = 0;
+	this->FrameSize = 0;
+	this->KeyFrame = KeyFrame;
+}
+
+FrameInfo::FrameInfo(int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame) {
+	this->DTS = 0;
+	this->SampleStart = SampleStart;
+	this->FilePos = FilePos;
+	this->FrameSize = FrameSize;
+	this->KeyFrame = KeyFrame;
+}
+
 FFMS_API(void) FFMS_Init() {
 	static bool InitDone = false;
 	if (!InitDone)
@@ -47,7 +71,7 @@ FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, 
 FFMS_API(AudioBase *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
 	try {
 		switch (TrackIndices->Decoder) {
-			//case 0: return new FFVideoSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
+			case 0: return new FFAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
 			case 1: return new MatroskaAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
 			default: 
 				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
@@ -86,6 +110,10 @@ FFMS_API(const AudioProperties *) FFMS_GetAudioProperties(AudioBase *AB) {
 
 FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg, unsigned MsgSize) {
 	return (AVFrameLite *)VB->GetFrame(n, ErrorMsg, MsgSize);
+}
+
+FFMS_API(const AVFrameLite *) FFMS_GetFrameByTime(VideoBase *VB, double Time, char *ErrorMsg, unsigned MsgSize) {
+	return (AVFrameLite *)VB->GetFrameByTime(Time, ErrorMsg, MsgSize);
 }
 
 FFMS_API(int) FFMS_GetAudio(AudioBase *AB, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {

@@ -47,27 +47,20 @@ public:
 	virtual int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) = 0;
 };
 
-/*
-class FFmpegAudioSource : public FFAudioBase {
+class FFAudioSource : public AudioBase {
 private:
 	AVFormatContext *FormatContext;
-	AVCodecContext *AudioCodecContext;
-
 	int AudioTrack;
-	FILE *RawCache;
-    unsigned int BufferSize;
-    uint8_t *Buffer;
 
-	bool LoadSampleInfoFromFile(const char *AAudioCacheFile, const char *AAudioCacheFile2, const char *ASource, int AAudioTrack);
-	int DecodeNextAudioBlock(uint8_t *ABuf, int64_t *ACount, uint64_t AFilePos, unsigned int AFrameSize, IScriptEnvironment *Env);
-	int GetTrackIndex(int Index, CodecType ATrackType, IScriptEnvironment *Env);
+	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize);
+	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);
+	void Free(bool CloseCodec);
 public:
-	FFmpegAudioSource(const char *ASource, int AAudioTrack, const char *AAudioCache, const char *AAudioCacheFile2, IScriptEnvironment *Env);
-	~FFmpegAudioSource();
+	FFAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
+	~FFAudioSource();
 
-	void __stdcall GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment *Env);
+	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 };
-*/
 
 class MatroskaAudioSource : public AudioBase {
 private:
@@ -78,7 +71,7 @@ private:
 
 	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint64_t FilePos, unsigned int FrameSize, char *ErrorMsg, unsigned MsgSize);
 	int GetTrackIndex(int &Index, char *ErrorMsg, unsigned MsgSize);
-	void Free(bool CloseAudio);
+	void Free(bool CloseCodec);
 public:
 	MatroskaAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 	~MatroskaAudioSource();

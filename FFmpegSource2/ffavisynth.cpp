@@ -160,8 +160,7 @@ AvisynthAudioSource::AvisynthAudioSource(const char *SourceFile, int Track, Fram
 			case 16: VI.sample_type = SAMPLE_INT16; break;
 			case 24: VI.sample_type = SAMPLE_INT24; break;
 			case 32: VI.sample_type = SAMPLE_INT32; break;
-			default:;
-				// FIXME error here
+			default: Env->ThrowError("FFAudioSource: Bad audio format");
 		}
 	}
 }
