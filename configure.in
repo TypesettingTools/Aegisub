@@ -123,7 +123,7 @@ fi
 
 AC_ARG_ENABLE(old-ffmpeg, [  --enable-old-ffmpeg     use ancient ffmpeg header locations (default=no)])
 if test "$enable_ancient_ffmpeg" = "yes"; then
-  AC_DEFINE([WITH_ANCIENT_FFMPEG], [], [buttes])
+  AC_DEFINE([WITH_ANCIENT_FFMPEG], [1], [Using ancient ffmpeg header locations])
 fi
 
 
