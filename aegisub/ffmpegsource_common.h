@@ -47,7 +47,6 @@ class FFmpegSourceProvider {
 public:
 	static const int FFMSTrackMaskAll		= -1;
 	static const int FFMSTrackMaskNone		= 0;
-	static const int FFMSFirstSuitableTrack	= -1;
 
 	struct IndexingProgressDialog {
 		volatile bool IndexingCanceled;
@@ -55,7 +54,7 @@ public:
 	};
 
 	static int __stdcall UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
-	FrameIndex *DoIndexing(FrameIndex *Index, wxString Filename, wxString Cachename, int Trackmask);
+	FrameIndex *DoIndexing(FrameIndex *Index, wxString Filename, wxString Cachename, int Trackmask, bool IgnoreDecodeErrors);
 };
 
 #endif /* WITH_FFMPEGSOURCE */

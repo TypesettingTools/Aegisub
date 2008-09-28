@@ -77,7 +77,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	if (Index == NULL) {
 		// index didn't exist or was invalid, we'll have to (re)create it
 		try {
-			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll);
+			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
 		} catch (wxString temp) {
 			MsgString << temp;
 			throw MsgString;
@@ -102,7 +102,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			if (FFMS_GetNumFrames(FrameData, FFMSErrMsg, MsgSize) <= 0 && (FFMS_GetTrackType(FrameData, FFMSErrMsg, MsgSize) == FFMS_TYPE_AUDIO)) {
 				// found an unindexed audio track, we'll need to reindex
 				try {
-					Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll);
+					Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
 				} catch (wxString temp) {
 					MsgString << temp;
 					throw MsgString;
@@ -117,7 +117,14 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	}
 
 	// FIXME: provide a way to choose which audio track to load?
-	AudioSource = FFMS_CreateAudioSource(FileNameWX.char_str(), FFMSFirstSuitableTrack, Index, FFMSErrMsg, MsgSize);
+	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
+	if (TrackNumber < 0) {
+		wxString temp(FFMSErrMsg, wxConvUTF8);
+		MsgString << _T("couldn't find any audio tracks: ") << temp;
+		throw MsgString;
+	}
+
+	AudioSource = FFMS_CreateAudioSource(FileNameWX.char_str(), TrackNumber, Index, FFMSErrMsg, MsgSize);
 	if (!AudioSource) {
 			wxString temp(FFMSErrMsg, wxConvUTF8);
 			MsgString << _T("failed to open audio track: ") << temp;

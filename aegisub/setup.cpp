@@ -126,7 +126,7 @@
 ////////////////
 // FFMpegSource
 #ifdef WITH_FFMPEGSOURCE
-#pragma comment(lib, "ffmpegsource2.lib")
+#pragma comment(lib, "ffms2.lib")
 #endif
 
 

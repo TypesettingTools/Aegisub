@@ -90,7 +90,8 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	if (Index == NULL) {
 		// index didn't exist or was invalid, we'll have to (re)create it
 		try {
-			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll);
+			// ignore audio decoding errors here, we don't care right now
+			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, true);
 		} catch (wxString temp) {
 			ErrorMsg << temp;
 			throw ErrorMsg;
@@ -112,7 +113,15 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	else 
 		SeekMode = 1;
 
-	VideoSource = FFMS_CreateVideoSource(FileNameWX.char_str(), FFMSFirstSuitableTrack, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
+	// FIXME: provide a way to choose which audio track to load?
+	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrorMessage, MessageSize);
+	if (TrackNumber < 0) {
+		wxString temp(FFMSErrorMessage, wxConvUTF8);
+		ErrorMsg << _T("couldn't find any video tracks: ") << temp;
+		throw ErrorMsg;
+	}
+
+	VideoSource = FFMS_CreateVideoSource(FileNameWX.char_str(), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
 	if (VideoSource == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
 		ErrorMsg << _T("failed to open video track: ") << temp;
