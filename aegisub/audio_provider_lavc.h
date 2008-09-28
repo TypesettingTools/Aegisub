@@ -52,8 +52,13 @@
  */
 
 extern "C" {
+#ifdef WITH_ANCIENT_FFMPEG
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
+#else
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#endif /* WITH_ANCIENT_FFMPEG */
 }
 #include "mkv_wrap.h"
 #include "lavc_file.h"

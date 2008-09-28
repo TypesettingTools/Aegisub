@@ -44,9 +44,15 @@
 #endif
 #include <vector>
 extern "C" {
+#ifdef WITH_ANCIENT_FFMPEG
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 #include <ffmpeg/swscale.h>
+#else
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
+#endif /* WITH_ANCIENT_FFMPEG */
 }
 #include "include/aegisub/video_provider.h"
 #include "include/aegisub/aegisub.h"
