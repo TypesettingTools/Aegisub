@@ -41,7 +41,7 @@
 
 ///////////////
 // Update indexing progress
-int __stdcall FFmpegSourceProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private) {
+int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private) {
 	IndexingProgressDialog *Progress = (IndexingProgressDialog *)Private;
 
 	if (Progress->IndexingCanceled)

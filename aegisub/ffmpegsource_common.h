@@ -53,7 +53,7 @@ public:
 		DialogProgress *ProgressDialog;
 	};
 
-	static int __stdcall UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
+	static int FFMS_CC UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
 	FrameIndex *DoIndexing(FrameIndex *Index, wxString Filename, wxString Cachename, int Trackmask, bool IgnoreDecodeErrors);
 };
 
