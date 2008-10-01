@@ -110,8 +110,8 @@ FFMS_API(int) FFMS_GetAudio(AudioBase *AB, void *Buf, int64_t Start, int64_t Cou
 	return AB->GetAudio(Buf, Start, Count, ErrorMsg, MsgSize);
 }
 
-FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormat, int Width, int Height) {
-	return VB->SetOutputFormat(TargetFormat, Width, Height);
+FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
+	return VB->SetOutputFormat(TargetFormat, Width, Height, ErrorMsg, MsgSize);
 }
 
 FFMS_API(void) FFMS_ResetOutputFormat(VideoBase *VB) {
@@ -130,15 +130,15 @@ FFMS_API(int) FFMS_GetFirstTrackOfType(FrameIndex *TrackIndices, int TrackType, 
 	return -1;
 }
 
-FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices) {
 	return TrackIndices->size();
 }
 
-FFMS_API(int) FFMS_GetTrackType(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(int) FFMS_GetTrackType(FrameInfoVector *FIV) {
 	return FIV->TT;
 }
 
-FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV) {
 	return FIV->size();
 }
 
@@ -160,7 +160,7 @@ FFMS_API(FrameInfoVector *) FFMS_GetTITrackIndex(FrameIndex *TrackIndices, int T
 	}	
 }
 
-FFMS_API(FrameInfoVector *) FFMS_GetVSTrackIndex(VideoBase *VB, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(FrameInfoVector *) FFMS_GetVSTrackIndex(VideoBase *VB) {
 	return VB->GetFrameInfoVector();
 }
 
@@ -173,15 +173,15 @@ FFMS_API(int) FFMS_FindClosestKeyFrame(FrameInfoVector *FIV, int Frame, char *Er
 	}
 }
 
-FFMS_API(int) FFMS_FrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(int) FFMS_FrameFromDTS(FrameInfoVector *FIV, int64_t DTS) {
 	return FIV->FrameFromDTS(DTS);
 }
 
-FFMS_API(int) FFMS_ClosestFrameFromDTS(FrameInfoVector *FIV, int64_t DTS, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(int) FFMS_ClosestFrameFromDTS(FrameInfoVector *FIV, int64_t DTS) {
 	return FIV->ClosestFrameFromDTS(DTS);
 }
 
-FFMS_API(const TrackTimeBase *) FFMS_GetTimeBase(FrameInfoVector *FIV, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(const TrackTimeBase *) FFMS_GetTimeBase(FrameInfoVector *FIV) {
 	return &FIV->TB;
 }
 

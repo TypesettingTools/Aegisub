@@ -110,11 +110,11 @@ VideoBase::~VideoBase() {
 }
 
 AVFrameLite *VideoBase::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
-	int Frame = Frames.ClosestFrameFromDTS(Time * Frames.TB.Den / Frames.TB.Num);
+	int Frame = Frames.ClosestFrameFromDTS((Time * Frames.TB.Num) / Frames.TB.Den);
 	return GetFrame(Frame, ErrorMsg, MsgSize);
 }
 
-int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height) {
+int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
 //  FIXME: investigate the possible bug in avcodec_find_best_pix_fmt
 //	int Loss;
 //	int OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
@@ -128,8 +128,10 @@ int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height) {
 	if (CodecContext->pix_fmt != OutputFormat || Width != CodecContext->width || Height != CodecContext->height) {
 		NewSWS = sws_getContext(CodecContext->width, CodecContext->height, CodecContext->pix_fmt, Width, Height,
 			OutputFormat, GetCPUFlags() | SWS_BICUBIC, NULL, NULL, NULL);
-		if (NewSWS == NULL)
+		if (NewSWS == NULL) {
+			_snprintf(ErrorMsg, MsgSize, "Failed to allocate SWScale context");
 			return 1;
+		}
 	}
 
 	if (SWS)
@@ -234,6 +236,8 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	VP.FPSNumerator = FormatContext->streams[VideoTrack]->time_base.den;
 	VP.NumFrames = Frames.size();
 	VP.PixelFormat = CodecContext->pix_fmt;
+	VP.FirstTime = (Frames.front().DTS * Frames.TB.Den) / (double)Frames.TB.Num;
+	VP.LastTime = (Frames.back().DTS * Frames.TB.Den) / (double)Frames.TB.Num;
 
 	if (VP.Width <= 0 || VP.Height <= 0) {
 		Free(true);
@@ -451,6 +455,8 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	VP.FPSNumerator = 30;
 	VP.NumFrames = Frames.size();
 	VP.PixelFormat = CodecContext->pix_fmt;
+	VP.FirstTime = (Frames.front().DTS * Frames.TB.Den) / (double)Frames.TB.Num;
+	VP.LastTime = (Frames.back().DTS * Frames.TB.Den) / (double)Frames.TB.Num;
 
 	if (VP.Width <= 0 || VP.Height <= 0) {
 		Free(true);

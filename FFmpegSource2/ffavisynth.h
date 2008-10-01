@@ -38,11 +38,13 @@ private:
 	VideoBase *VS;
 	SwsContext *SWS;
 	int ConvertToFormat;
+	int FPSNum;
+	int FPSDen;
 
 	void InitOutputFormat(int CurrentFormat, IScriptEnvironment *Env);
 	PVideoFrame OutputFrame(const AVFrameLite *SrcPicture, IScriptEnvironment *Env);
 public:
-	AvisynthVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
+	AvisynthVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, int FPSNum, int FPSDen, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
 	~AvisynthVideoSource();
 	bool __stdcall GetParity(int n) { return false; }
 	void __stdcall SetCacheHints(int cachehints, int frame_range) { }

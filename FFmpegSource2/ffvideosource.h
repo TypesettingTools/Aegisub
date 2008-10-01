@@ -58,7 +58,7 @@ public:
 	FrameInfoVector *GetFrameInfoVector() { return &Frames; }
 	virtual AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
 	AVFrameLite *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
-	int SetOutputFormat(int TargetFormats, int Width, int Height);
+	int SetOutputFormat(int TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize);
 	void ResetOutputFormat();
 };
 
