@@ -117,14 +117,14 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrorMessage, MessageSize);
 	if (TrackNumber < 0) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
-		ErrorMsg << _T("couldn't find any video tracks: ") << temp;
+		ErrorMsg << _T("Couldn't find any video tracks: ") << temp;
 		throw ErrorMsg;
 	}
 
 	VideoSource = FFMS_CreateVideoSource(FileNameWX.char_str(), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
 	if (VideoSource == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
-		ErrorMsg << _T("failed to open video track: ") << temp;
+		ErrorMsg << _T("Failed to open video track: ") << temp;
 		throw ErrorMsg;
 	}
 
@@ -132,18 +132,12 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	VideoInfo = FFMS_GetVideoProperties(VideoSource);
 
 	// get frame info data
-	FrameInfoVector *FrameData = FFMS_GetVSTrackIndex(VideoSource, FFMSErrorMessage, MessageSize);
-	if (FrameData == NULL) {
-		wxString temp(FFMSErrorMessage, wxConvUTF8);
-		ErrorMsg << _T("couldn't get track data: ") << temp;
-		throw ErrorMsg;
-	}
-	const TrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData, FFMSErrorMessage, MessageSize);
-	if (TimeBase == NULL) {
-		wxString temp(FFMSErrorMessage, wxConvUTF8);
-		ErrorMsg << _T("couldn't get track time base: ") << temp;
-		throw ErrorMsg;
-	}
+	FrameInfoVector *FrameData = FFMS_GetVSTrackIndex(VideoSource);
+	if (FrameData == NULL)
+		throw _T("FFmpegSource video provider: failed to get frame data");
+	const TrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
+	if (TimeBase == NULL)
+		throw _T("FFmpegSource video provider: failed to get track time base");
 
 	const FrameInfo *CurFrameData;
 
@@ -152,7 +146,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum, FFMSErrorMessage, MessageSize);
 		if (CurFrameData == NULL) {
 			wxString temp(FFMSErrorMessage, wxConvUTF8);
-			ErrorMsg << _T("couldn't get framedata for frame ") << CurFrameNum << _T(": ") << temp;
+			ErrorMsg << _T("Couldn't get framedata for frame ") << CurFrameNum << _T(": ") << temp;
 			throw ErrorMsg;
 		}
 
@@ -238,8 +232,11 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 
 	// requested format was changed since last time we were called, (re)set output format
 	if (LastDstFormat != DstFormat) {
-		if (FFMS_SetOutputFormat(VideoSource, DstFormat, w, h))
-			throw _T("FFmpegSource video provider: failed to set desired output format");
+		if (FFMS_SetOutputFormat(VideoSource, DstFormat, w, h, FFMSErrorMessage, MessageSize)) {
+			wxString temp(FFMSErrorMessage, wxConvUTF8);
+			ErrorMsg << _T("Failed to set output format: ") << temp;
+			throw ErrorMsg;
+		}
 		LastDstFormat = DstFormat;
 	}
 
@@ -247,7 +244,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	const AVFrameLite *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
 	if (SrcFrame == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
-		ErrorMsg << _T("failed to retrieve frame: ") << temp;
+		ErrorMsg << _T("Failed to retrieve frame: ") << temp;
 		throw ErrorMsg;
 	}
 

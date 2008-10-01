@@ -64,7 +64,7 @@ FrameIndex *FFmpegSourceProvider::DoIndexing(FrameIndex *Index, wxString FileNam
 	// set up progress dialog callback
 	IndexingProgressDialog Progress;
 	Progress.IndexingCanceled = false;
-	Progress.ProgressDialog = new DialogProgress(NULL, _("Indexing"), &Progress.IndexingCanceled, _("Indexing timecodes and frame/sample data"), 0, 1);
+	Progress.ProgressDialog = new DialogProgress(NULL, _("Indexing"), &Progress.IndexingCanceled, _("Reading timecodes and frame/sample data"), 0, 1);
 	Progress.ProgressDialog->Show();
 	Progress.ProgressDialog->SetProgress(0,1);
 
@@ -73,7 +73,7 @@ FrameIndex *FFmpegSourceProvider::DoIndexing(FrameIndex *Index, wxString FileNam
 	if (!Index) {
 		Progress.ProgressDialog->Destroy();
 		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << _T("failed to index: ") << temp;
+		MsgString << _T("Failed to index: ") << temp;
 		throw MsgString;
 	}
 	Progress.ProgressDialog->Destroy();
@@ -81,7 +81,7 @@ FrameIndex *FFmpegSourceProvider::DoIndexing(FrameIndex *Index, wxString FileNam
 	// write index to disk for later use
 	if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
 		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << _T("failed to write index: ") << temp;
+		MsgString << _T("Failed to write index: ") << temp;
 		throw MsgString;
 	}
 

@@ -86,7 +86,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		}
 	} else {
 		// index exists, but does it have indexing info for the audio track(s)?
-		int NumTracks = FFMS_GetNumTracks(Index, FFMSErrMsg, MsgSize);
+		int NumTracks = FFMS_GetNumTracks(Index);
 		if (NumTracks <= 0)
 			throw _T("FFmpegSource audio provider: no tracks found in index file");
 
@@ -94,12 +94,12 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			FrameInfoVector *FrameData = FFMS_GetTITrackIndex(Index, i, FFMSErrMsg, MsgSize);
 			if (FrameData == NULL) {
 				wxString temp(FFMSErrMsg, wxConvUTF8);
-				MsgString << _T("couldn't get track data: ") << temp;
+				MsgString << _T("Couldn't get track data: ") << temp;
 				throw MsgString;
 			}
 
 			// does the track have any indexed frames?
-			if (FFMS_GetNumFrames(FrameData, FFMSErrMsg, MsgSize) <= 0 && (FFMS_GetTrackType(FrameData, FFMSErrMsg, MsgSize) == FFMS_TYPE_AUDIO)) {
+			if (FFMS_GetNumFrames(FrameData) <= 0 && (FFMS_GetTrackType(FrameData) == FFMS_TYPE_AUDIO)) {
 				// found an unindexed audio track, we'll need to reindex
 				try {
 					Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
@@ -120,14 +120,14 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
 	if (TrackNumber < 0) {
 		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << _T("couldn't find any audio tracks: ") << temp;
+		MsgString << _T("Couldn't find any audio tracks: ") << temp;
 		throw MsgString;
 	}
 
 	AudioSource = FFMS_CreateAudioSource(FileNameWX.char_str(), TrackNumber, Index, FFMSErrMsg, MsgSize);
 	if (!AudioSource) {
 			wxString temp(FFMSErrMsg, wxConvUTF8);
-			MsgString << _T("failed to open audio track: ") << temp;
+			MsgString << _T("Failed to open audio track: ") << temp;
 			throw MsgString;
 	}
 		
@@ -179,7 +179,7 @@ void FFmpegSourceAudioProvider::Close() {
 void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, FFMSErrMsg, MsgSize)) {
 		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << _T("failed to get audio samples: ") << temp;
+		MsgString << _T("Failed to get audio samples: ") << temp;
 		throw MsgString;
 	}
 }
