@@ -66,8 +66,9 @@ public:
 
 	~FFAudioContext() {
 		delete W64W;
-		if (CTX)
-			avcodec_close(CTX);
+//		FIXME, why is there an access violation here?
+//		if (CTX)
+//			avcodec_close(CTX);
 	}
 };
 

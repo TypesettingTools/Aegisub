@@ -60,7 +60,7 @@ AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment
 	// 1: Index generated
 	// 2: Index forced to be overwritten
 
-	FrameIndex *Index;
+	FrameIndex *Index = NULL;
 	if (OverWrite || !(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
 		if (!(Index = FFMS_MakeIndex(Source, IndexMask, DumpMask, AudioFile, true, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFIndex: %s", ErrorMsg);
