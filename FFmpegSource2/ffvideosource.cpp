@@ -110,7 +110,7 @@ VideoBase::~VideoBase() {
 }
 
 AVFrameLite *VideoBase::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
-	int Frame = Frames.ClosestFrameFromDTS((Time * Frames.TB.Num) / Frames.TB.Den + 0.5);
+	int Frame = Frames.ClosestFrameFromDTS((Time * 1000 * Frames.TB.Den) / Frames.TB.Num);
 	return GetFrame(Frame, ErrorMsg, MsgSize);
 }
 
@@ -236,8 +236,8 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	VP.FPSNumerator = FormatContext->streams[VideoTrack]->time_base.den;
 	VP.NumFrames = Frames.size();
 	VP.PixelFormat = CodecContext->pix_fmt;
-	VP.FirstTime = (Frames.front().DTS * Frames.TB.Den) / (double)Frames.TB.Num;
-	VP.LastTime = (Frames.back().DTS * Frames.TB.Den) / (double)Frames.TB.Num;
+	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
 	if (VP.Width <= 0 || VP.Height <= 0) {
 		Free(true);
@@ -455,8 +455,8 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	VP.FPSNumerator = 30;
 	VP.NumFrames = Frames.size();
 	VP.PixelFormat = CodecContext->pix_fmt;
-	VP.FirstTime = (Frames.front().DTS * Frames.TB.Den) / (double)Frames.TB.Num;
-	VP.LastTime = (Frames.back().DTS * Frames.TB.Den) / (double)Frames.TB.Num;
+	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
 	if (VP.Width <= 0 || VP.Height <= 0) {
 		Free(true);
