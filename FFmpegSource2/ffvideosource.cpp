@@ -110,7 +110,7 @@ VideoBase::~VideoBase() {
 }
 
 AVFrameLite *VideoBase::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
-	int Frame = Frames.ClosestFrameFromDTS((Time * Frames.TB.Num) / Frames.TB.Den);
+	int Frame = Frames.ClosestFrameFromDTS((Time * Frames.TB.Num) / Frames.TB.Den + 0.5);
 	return GetFrame(Frame, ErrorMsg, MsgSize);
 }
 

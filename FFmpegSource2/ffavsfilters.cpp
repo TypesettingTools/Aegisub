@@ -118,18 +118,18 @@ AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvir
 	if (!strcmp(CacheFile, ""))
 		CacheFile = DefaultCache.c_str();
 
-	FrameIndex *Index;
-	if (Cache) {
-		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-			if (!(Index = FFMS_MakeIndex(Source, 0, 0, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
-				Env->ThrowError("FFVideoSource: %s", ErrorMsg);
+	FrameIndex *Index = NULL;
+	if (Cache)
+		Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize);
+	if (!Index) {
+		if (!(Index = FFMS_MakeIndex(Source, 0, 0, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
+			Env->ThrowError("FFVideoSource: %s", ErrorMsg);
 
-			if (Cache)
-				if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
-					FFMS_DestroyFrameIndex(Index);
-					Env->ThrowError("FFVideoSource: %s", ErrorMsg);
-				}
-		}
+		if (Cache)
+			if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
+				FFMS_DestroyFrameIndex(Index);
+				Env->ThrowError("FFVideoSource: %s", ErrorMsg);
+			}
 	}
 
 	if (Track == -1)
@@ -179,18 +179,18 @@ AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvir
 	if (!strcmp(CacheFile, ""))
 		CacheFile = DefaultCache.c_str();
 
-	FrameIndex *Index;
-	if (Cache) {
-		if (!(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-			if (!(Index = FFMS_MakeIndex(Source, -1, 0, CacheFile, true, NULL, NULL, ErrorMsg, MsgSize)))
-				Env->ThrowError("FFAudioSource: %s", ErrorMsg);
+	FrameIndex *Index = NULL;
+	if (Cache)
+		Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize);
+	if (!Index) {
+		if (!(Index = FFMS_MakeIndex(Source, -1, 0, CacheFile, true, NULL, NULL, ErrorMsg, MsgSize)))
+			Env->ThrowError("FFAudioSource: %s", ErrorMsg);
 
-			if (Cache)
-				if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
-					FFMS_DestroyFrameIndex(Index);
-					Env->ThrowError("FFAudioSource: %s", ErrorMsg);
-				}
-		}
+		if (Cache)
+			if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
+				FFMS_DestroyFrameIndex(Index);
+				Env->ThrowError("FFAudioSource: %s", ErrorMsg);
+			}
 	}
 
 	if (Track == -1)

@@ -60,7 +60,7 @@ public:
 
 	FFAudioContext() {
 		W64W = NULL;
-		CTX = 0;
+		CTX = NULL;
 		CurrentSample = 0;
 	}
 
@@ -206,6 +206,8 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 			if (mkv_GetTrackInfo(MF, i)->CompEnabled) {
 				AudioContexts[i].CS = cs_Create(MF, i, ErrorMessage, sizeof(ErrorMessage));
 				if (AudioContexts[i].CS == NULL) {
+					av_free(AudioCodecContext);
+					AudioContexts[i].CTX = NULL;
 					_snprintf(ErrorMsg, MsgSize, "Can't create decompressor: %s", ErrorMessage);
 					return NULL;
 				}
@@ -213,13 +215,17 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 
 			AVCodec *AudioCodec = avcodec_find_decoder(MatroskaToFFCodecID(mkv_GetTrackInfo(MF, i)));
 			if (AudioCodec == NULL) {
-					_snprintf(ErrorMsg, MsgSize, "Audio codec not found");
-					return NULL;
+				av_free(AudioCodecContext);
+				AudioContexts[i].CTX = NULL;
+				_snprintf(ErrorMsg, MsgSize, "Audio codec not found");
+				return NULL;
 			}
 
 			if (avcodec_open(AudioCodecContext, AudioCodec) < 0) {
-					_snprintf(ErrorMsg, MsgSize, "Could not open audio codec");
-					return NULL;
+				av_free(AudioCodecContext);
+				AudioContexts[i].CTX = NULL;
+				_snprintf(ErrorMsg, MsgSize, "Could not open audio codec");
+				return NULL;
 			}
 		} else {
 			IndexMask &= ~(1 << i);
@@ -350,6 +356,8 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 				_snprintf(ErrorMsg, MsgSize, "Could not open audio codec");
 				return NULL;
 			}
+
+			AudioContexts[i].CTX = AudioCodecContext;
 		} else {
 			IndexMask &= ~(1 << i);
 		}
