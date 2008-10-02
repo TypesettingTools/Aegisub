@@ -66,9 +66,8 @@ public:
 
 	~FFAudioContext() {
 		delete W64W;
-//		FIXME, why is there an access violation here?
-//		if (CTX)
-//			avcodec_close(CTX);
+		if (CTX)
+			avcodec_close(CTX);
 	}
 };
 
@@ -76,17 +75,23 @@ class MatroskaIndexMemory {
 private:
 	int16_t *DecodingBuffer;
 	MatroskaAudioContext *AudioContexts;
+	MatroskaFile *MF;
+	MatroskaReaderContext *MC;
 public:
-	MatroskaIndexMemory(int Tracks, int16_t *&DecodingBuffer, MatroskaAudioContext *&AudioContexts) {
+	MatroskaIndexMemory(int Tracks, int16_t *&DecodingBuffer, MatroskaAudioContext *&AudioContexts, MatroskaFile *MF, MatroskaReaderContext *MC) {
 		DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE*10];
 		AudioContexts = new MatroskaAudioContext[Tracks];
 		this->DecodingBuffer = DecodingBuffer;
 		this->AudioContexts = AudioContexts;
+		this->MF = MF;
+		this->MC = MC;
 	}
 
 	~MatroskaIndexMemory() {
 		delete [] DecodingBuffer;
 		delete [] AudioContexts;
+		mkv_Close(MF);
+		fclose(MC->ST.fp);
 	}
 };
 
@@ -94,33 +99,20 @@ class FFIndexMemory {
 private:
 	int16_t *DecodingBuffer;
 	FFAudioContext *AudioContexts;
+	AVFormatContext *FormatContext;
 public:
-	FFIndexMemory(int Tracks, int16_t *&DecodingBuffer, FFAudioContext *&AudioContexts) {
+	FFIndexMemory(int Tracks, int16_t *&DecodingBuffer, FFAudioContext *&AudioContexts, AVFormatContext *&FormatContext) {
 		DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE*10];
 		AudioContexts = new FFAudioContext[Tracks];
 		this->DecodingBuffer = DecodingBuffer;
 		this->AudioContexts = AudioContexts;
+		this->FormatContext = FormatContext;
 	}
 
 	~FFIndexMemory() {
 		delete [] DecodingBuffer;
 		delete [] AudioContexts;
-	}
-};
-
-class MatroskaMemory {
-private:
-	MatroskaFile *MF;
-	MatroskaReaderContext *MC;
-public:
-	MatroskaMemory(MatroskaFile *MF, MatroskaReaderContext *MC) {
-		this->MF = MF;
-		this->MC = MC;
-	}
-
-	~MatroskaMemory() {
-		mkv_Close(MF);
-		fclose(MC->ST.fp);
+		av_close_input_file(FormatContext);
 	}
 };
 
@@ -189,13 +181,11 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 		return NULL;
 	}
 
-	MatroskaMemory MM = MatroskaMemory(MF, &MC);
-
 	// Audio stuff
 
 	int16_t *db;
 	MatroskaAudioContext *AudioContexts;
-	MatroskaIndexMemory IM = MatroskaIndexMemory(mkv_GetNumTracks(MF), db, AudioContexts);
+	MatroskaIndexMemory IM = MatroskaIndexMemory(mkv_GetNumTracks(MF), db, AudioContexts, MF, &MC);
 
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++) {
 		if (IndexMask & (1 << i) && mkv_GetTrackInfo(MF, i)->Type == TT_AUDIO) {
@@ -341,7 +331,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 
 	int16_t *db;
 	FFAudioContext *AudioContexts;
-	FFIndexMemory IM = FFIndexMemory(FormatContext->nb_streams, db, AudioContexts);
+	FFIndexMemory IM = FFIndexMemory(FormatContext->nb_streams, db, AudioContexts, FormatContext);
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++) {
 		if (IndexMask & (1 << i) && FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
@@ -438,8 +428,6 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 
 		av_free_packet(&Packet);
 	}
-
-	av_close_input_file(FormatContext);
 
 	SortTrackIndices(TrackIndices);
 	return TrackIndices;
