@@ -435,24 +435,6 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		ly = math.floor(line.y+0.5)
 	}
 	
-	-- Specific for whole-line processing
-	varctx["start"] = varctx.lstart
-	varctx["end"] = varctx.lend
-	varctx.dur = varctx.ldur
-	varctx.kdur = math.floor(varctx.dur / 10)
-	varctx.mid = varctx.lmid
-	varctx.i = varctx.li
-	varctx.left = varctx.lleft
-	varctx.center = varctx.lcenter
-	varctx.right = varctx.lright
-	varctx.width = varctx.lwidth
-	varctx.top = varctx.ltop
-	varctx.middle = varctx.lmiddle
-	varctx.bottom = varctx.lbottom
-	varctx.height = varctx.lheight
-	varctx.x = varctx.lx
-	varctx.y = varctx.ly
-	
 	tenv.orgline = line
 	tenv.line = nil
 	tenv.syl = nil
@@ -463,6 +445,25 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	for t in matching_templates(templates.line, line, tenv) do
 		tenv.j = 0
 		tenv.maxj = t.loops
+		
+		-- Set varctx for per-line variables
+		varctx["start"] = varctx.lstart
+		varctx["end"] = varctx.lend
+		varctx.dur = varctx.ldur
+		varctx.kdur = math.floor(varctx.dur / 10)
+		varctx.mid = varctx.lmid
+		varctx.i = varctx.li
+		varctx.left = varctx.lleft
+		varctx.center = varctx.lcenter
+		varctx.right = varctx.lright
+		varctx.width = varctx.lwidth
+		varctx.top = varctx.ltop
+		varctx.middle = varctx.lmiddle
+		varctx.bottom = varctx.lbottom
+		varctx.height = varctx.lheight
+		varctx.x = varctx.lx
+		varctx.y = varctx.ly
+		
 		while tenv.j < t.loops do
 			tenv.j = tenv.j + 1
 			if t.code then
