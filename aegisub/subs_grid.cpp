@@ -416,6 +416,10 @@ void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 		def->Start.SetMS(0);
 		def->End = GetDialogue(n)->Start;
 	}
+	else if (GetDialogue(n-1)->End.GetMS() > GetDialogue(n)->Start.GetMS()) {
+		def->Start.SetMS(GetDialogue(n)->Start.GetMS()-Options.AsInt(_T("Timing Default Duration")));
+		def->End = GetDialogue(n)->Start;
+	}
 	else {
 		def->Start = GetDialogue(n-1)->End;
 		def->End = GetDialogue(n)->Start;
