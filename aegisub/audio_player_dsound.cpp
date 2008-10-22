@@ -48,6 +48,7 @@
 ///////////////
 // Constructor
 DirectSoundPlayer::DirectSoundPlayer() {
+	playing = false;
 	volume = 1.0f;
 	playPos = 0;
 	startPos = 0;
@@ -260,6 +261,7 @@ void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 	// Play
 	buffer->SetCurrentPosition(0);
 	res = buffer->Play(0,0,play_flag);
+	if (SUCCEEDED(res)) playing = true;
 	startTime = GetTickCount();
 
 	// Update timer
@@ -274,15 +276,17 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	if (thread) {
 		if (thread->IsAlive()) {
 			thread->Stop();
+			thread->Wait();
 		}
 		thread = NULL;
 	}
-	// The thread should now stop filling the buffer soon enough that we can safely stop the buffer
-	// and possibly start having soomething else filling it soon.
+	// The thread is now guaranteed dead and there are no concurrency problems to worry about
 
-	if (buffer) buffer->Stop();
+	// Stop
+	if (buffer) buffer->Stop(); // the thread should have done this already
 
 	// Reset variables
+	playing = false;
 	playPos = 0;
 	startPos = 0;
 	endPos = 0;
@@ -298,7 +302,7 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 ///////////
 // Set end
 void DirectSoundPlayer::SetEndPosition(int64_t pos) {
-	if (IsPlaying()) endPos = pos;
+	if (playing) endPos = pos;
 }
 
 
@@ -313,8 +317,8 @@ void DirectSoundPlayer::SetCurrentPosition(int64_t pos) {
 ////////////////////////
 // Get current position
 int64_t DirectSoundPlayer::GetCurrentPosition() {
-	// Assume position 0 if we aren't playing currently
-	if (!IsPlaying()) return 0;
+	// Check if buffer is loaded
+	if (!buffer || !playing) return 0;
 
 	// FIXME: this should be based on not duration played but actual sample being heard
 	// (during vidoeo playback, cur_frame might get changed to resync)
@@ -324,23 +328,9 @@ int64_t DirectSoundPlayer::GetCurrentPosition() {
 }
 
 
-///////////////////////////////////////
-// Check whether the buffer is playing
-bool DirectSoundPlayer::IsPlaying() {
-	if (!buffer) return false;
-
-	DWORD status = 0;
-	if (SUCCEEDED(buffer->GetStatus(&status))) {
-		return !!(status & DSBSTATUS_PLAYING);
-	} else {
-		return false;
-	}
-}
-
-
 //////////////////////
 // Thread constructor
-DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_DETACHED) {
+DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
 	parent = par;
 	stopnotify = CreateEvent(NULL, true, false, NULL);
 }
@@ -356,12 +346,7 @@ DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 //////////////////////
 // Thread entry point
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
-	// Every thread that uses COM must initialise it
 	CoInitialize(0);
-
-	// Make sure we have the buffer available as long as we're alive
-	parent->buffer->AddRef();
-	IDirectSoundBuffer8 *buffer = parent->buffer;
 
 	// Wake up thread every half second to fill buffer as needed
 	// This more or less assumes the buffer is at least one second long
@@ -380,18 +365,18 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 		DWORD size1, size2;
 		DWORD playpos;
 		HRESULT res;
-		res = buffer->GetCurrentPosition(&playpos, NULL);
+		res = parent->buffer->GetCurrentPosition(&playpos, NULL);
 		if (FAILED(res)) break;
 		int toWrite = playpos - parent->offset;
 		while (toWrite < 0) toWrite += parent->bufSize;
-		res = buffer->Lock(parent->offset, toWrite, &buf1, &size1, &buf2, &size2, 0);
+		res = parent->buffer->Lock(parent->offset, toWrite, &buf1, &size1, &buf2, &size2, 0);
 		if (FAILED(res)) break;
 		if (size1) memset(buf1, 0, size1);
 		if (size2) memset(buf2, 0, size2);
 		if (size1) wxLogDebug(_T("DS blnk: %05ld -> %05ld"), (unsigned long)parent->playPos+bytesFilled, (unsigned long)parent->playPos+bytesFilled+size1);
 		if (size2) wxLogDebug(_T("DS blnk: %05ld => %05ld"), (unsigned long)parent->playPos+bytesFilled+size1, (unsigned long)parent->playPos+bytesFilled+size1+size2);
 		bytesFilled += size1 + size2;
-		buffer->Unlock(buf1, size1, buf2, size2);
+		parent->buffer->Unlock(buf1, size1, buf2, size2);
 		if (bytesFilled > parent->bufSize) break;
 		parent->offset = (parent->offset + size1 + size2) % parent->bufSize;
 	}
@@ -400,10 +385,9 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 
 	wxLogDebug(_T("DS thread dead"));
 
-	// Our owner is responsible for stopping the buffer
-	buffer->Release();
+	parent->playing = false;
+	parent->buffer->Stop();
 
-	// And un-init COM since we inited it
 	CoUninitialize();
 	return 0;
 }

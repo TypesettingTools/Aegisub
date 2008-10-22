@@ -90,6 +90,7 @@ class DirectSoundPlayer : public AudioPlayer {
 	friend class DirectSoundPlayerThread;
 
 private:
+	volatile bool playing;
 	float volume;
 	int offset;
 	DWORD bufSize;
@@ -115,7 +116,7 @@ public:
 
 	void Play(int64_t start,int64_t count);
 	void Stop(bool timerToo=true);
-	bool IsPlaying();
+	bool IsPlaying() { return playing; }
 
 	int64_t GetStartPosition() { return startPos; }
 	int64_t GetEndPosition() { return endPos; }
