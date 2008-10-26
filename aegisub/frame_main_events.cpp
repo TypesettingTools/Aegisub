@@ -605,8 +605,7 @@ void FrameMain::OnVideoPlay(wxCommandEvent &event) {
 // Open video
 void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open video path"));
-	wxString str = wxString(_("Recommended Formats")) + _T(" (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|")
-		         + _("Other supported formats") + _T(" (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|")
+	wxString str = wxString(_("Video Formats")) + _T(" (*.avi,*.mkv,*.mp4,*.avs,*.d2v,*.ogm,*.mpeg,*.mpg,*.vob)|*.avi;*.avs;*.d2v;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|")
 				 + _("All Files") + _T(" (*.*)|*.*");
 	wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
