@@ -248,7 +248,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../lib"
 				GenerateManifest="true"
-				DelayLoadDLLs="perl510.dll;FFMpegSource2.dll"
+				DelayLoadDLLs="perl510.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -573,6 +573,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_provider_ffmpegsource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_provider_ffmpegsource.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_provider_hd.cpp"
 				>
 			</File>
@@ -742,6 +750,14 @@
 			</File>
 			<File
 				RelativePath="..\..\aegisub\avisynth_wrap.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\ffmpegsource_common.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\ffmpegsource_common.h"
 				>
 			</File>
 			<File
