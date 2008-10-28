@@ -79,18 +79,23 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// make sure we don't have anything messy lying around
 	Close();
 
-	wxString FileNameWX(filename.c_str(), wxConvFile);
+	wxString FileNameWX = wxFileName(wxString(filename.c_str(), wxConvFile)).GetShortPath();
 
 	// generate a name for the cache file
-	wxString CacheName = wxString(GetCacheFilename(filename).c_str(),wxConvFile);
+	wxString CacheName = GetCacheFilename(filename);
 
 	// try to read index
 	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
 	if (Index == NULL) {
 		// index didn't exist or was invalid, we'll have to (re)create it
 		try {
-			// ignore audio decoding errors here, we don't care right now
-			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, true);
+			try {
+				// ignore audio decoding errors here, we don't care right now
+				Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, true);
+			} catch (...) {
+				// Try without audio
+				Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskNone, true);
+			}
 		} catch (wxString temp) {
 			ErrorMsg << temp;
 			throw ErrorMsg;
