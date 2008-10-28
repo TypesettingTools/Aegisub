@@ -53,6 +53,13 @@ aegisub_LDFLAGS += @AVFORMAT_LDFLAGS@ @AVCODEC_LDFLAGS@ @SWSCALE_LDFLAGS@
 aegisub_LDADD += libaudiovideo_ffmpeg.a
 endif
 
+if HAVE_FFMPEGSOURCE
+noinst_LIBRARIES += libaudiovideo_ffmpegsource.a
+libaudiovideo_ffmpegsource_a_SOURCES = audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
+aegisub_LDFLAGS += @AVFORMAT_LDFLAGS@ @AVCODEC_LDFLAGS@ @SWSCALE_LDFLAGS@ @POSTPROC_LDFLAGS@
+aegisub_LDADD += libaudiovideo_ffmpegsource.a ../FFmpegSource2/libffmpegsource2_aegisub.a
+endif
+
 noinst_LIBRARIES += libsubtitle_provider.a
 libsubtitle_provider_a_SOURCES = subtitles_provider.cpp
 libsubtitle_provider_a_CPPFLAGS = @CSRI_CFLAGS@
@@ -144,7 +151,6 @@ EXTRA_aegisub_SOURCES = \
 	audio_player_pulse.cpp \
 	audio_provider_avs.cpp \
 	audio_provider_lavc.cpp \
-	audio_provider_ffmpegsource.cpp \
 	auto4_auto3.cpp \
 	auto4_lua.cpp \
 	auto4_lua_assfile.cpp \
@@ -155,7 +161,6 @@ EXTRA_aegisub_SOURCES = \
 	auto4_ruby_dialog.cpp \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
-	ffmpegsource_common.cpp \
 	lavc_file.cpp \
 	lavc_keyframes.cpp \
 	macosx/bevelButton.cpp \
@@ -167,8 +172,7 @@ EXTRA_aegisub_SOURCES = \
 	subtitles_provider_libass.cpp \
 	video_provider_avs.cpp \
 	video_provider_dshow.cpp \
-	video_provider_lavc.cpp \
-	video_provider_ffmpegsource.cpp
+	video_provider_lavc.cpp
 
 
 aegisub_SOURCES = \

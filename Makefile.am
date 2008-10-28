@@ -13,11 +13,15 @@ if WITH_LIBASS
 libass = libass
 endif
 
+if HAVE_FFMPEGSOURCE
+ffmpegsource = FFmpegSource2
+endif
 
 SUBDIRS = \
 	$(univchardet) \
 	$(auto3) \
     $(libass) \
+	$(ffmpegsource) \
 	aegisub \
 	automation \
 	po \

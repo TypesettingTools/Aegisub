@@ -164,6 +164,13 @@ AC_C_CONST
 AC_C_INLINE
 AC_C_VOLATILE
 AC_CHECK_LIB([m], [main])
+
+AC_CHECK_FUNC([strlcpy], [
+	AC_DEFINE([HAVE_STRLCPY], [1], [strlcpy() exists in the c library.])
+], [])
+
+
+
 AC_LIBTOOL_DLOPEN_SELF
 AC_MSG_CHECKING([[whether preprocessor supports #pragma once]])
 AC_PREPROC_IFELSE(
@@ -420,9 +427,9 @@ fi
 
 
 
-#################
-# Video Providers
-#################
+#########################
+# Video / Audio Providers
+#########################
 
 AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG video provider. (default: auto)], ffmpeg_disabled="(disabled)")
 
@@ -449,13 +456,29 @@ if test "$with_ffmpeg" != "no"; then
   fi
 fi
 
-
 AC_SUBST(SWSCALE_LDFLAGS)
 AC_SUBST(AVCODEC_LDFLAGS)
 AC_SUBST(AVFORMAT_LDFLAGS)
 AC_SUBST(AVUTIL_LDFLAGS)
+
 AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" = "yes"])
 
+
+AC_ARG_WITH(ffmpegsource, [  --without-ffmpegsource        build without FFmpegSource video provider. (default: auto)], ffmpegsource_disabled="(disabled)")
+
+if test "$with_ffmpegsource" != "no"; then
+  AC_CHECK_LIB([postproc], [pp_postprocess],[POSTPROC_LDFLAGS="-lpostproc"; with_postproc="yes"], [with_postproc="no"])
+
+  if test "$with_postproc" = "yes"; then
+    found_video_provider="yes"
+    with_ffmpegsource="yes"
+    AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFmpegSource2 Video Provider])
+  fi
+fi
+
+AC_SUBST(POSTPROC_LDFLAGS)
+
+AM_CONDITIONAL([HAVE_FFMPEGSOURCE], [test "$with_ffmpegsource" = "yes"])
 
 
 
@@ -856,6 +879,7 @@ aegisub/Makefile
 aegisub/bitmaps/Makefile
 aegisub/posix/Makefile
 universalchardet/Makefile
+FFmpegSource2/Makefile
 auto3/Makefile
 libass/Makefile
 automation/Makefile
@@ -914,6 +938,7 @@ Audio Players:
 
 Video Providers
   ffmpeg:                $with_ffmpeg $ffmpeg_disabled
+  ffmpegsource:          $with_ffmpegsource $ffmpegsource_disabled
 
 Subtitle Providers:
   csri (asa):            $with_csri (requires iconv, fontconfig) $csri_disabled
