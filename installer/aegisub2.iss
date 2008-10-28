@@ -33,8 +33,8 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppRevision "r1987"
-#define MyAppVer "2.1.2 Release Preview"
+#define MyAppRevision "r2420"
+#define MyAppVer "2.1.3 Release Preview"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -42,8 +42,8 @@
 ; Set these to 0 to make building the installer faster.
 ; Only intended for testing.
 #define IncludeSpeller 1
-#define IncludeThesaurus 0
-#define IncludePerl 0
+#define IncludeThesaurus 1
+#define IncludePerl 1
 #define IncludeFfmpeg 0
 
 
@@ -97,8 +97,8 @@ DestDir: {app}; Source: ..\bin\devil.dll; Flags: ignoreversion; Components: code
 DestDir: {app}; Source: ..\bin\avisynth.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\bin\DirectShowSource.dll; Flags: ignoreversion; Components: codec
 ; ffmpegsource
-DestDir: {app}; Source: ..\bin\FFMpegSource.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: ..\bin\ffmpegsource.html; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\FFMS2.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\bin\ffms2.html; Flags: ignoreversion; Components: codec
 #if IncludeFfmpeg != 0
 DestDir: {app}; Source: ..\bin\avcodec-51.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\bin\avformat-51.dll; Flags: ignoreversion; Components: codec
@@ -196,6 +196,8 @@ Source: ..\po\ca.mo; DestDir: {app}\locale\ca; DestName: aegisub.mo; Flags: igno
 Source: ..\po\wxstd-ca.mo; DestDir: {app}\locale\ca; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/ca
 Source: ..\po\pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/pt_BR
 Source: ..\po\wxstd-pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/pt_BR
+Source: ..\po\es.mo; DestDir: {app}\locale\es; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/es
+Source: ..\po\wxstd-es.mo; DestDir: {app}\locale\es; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/es
 ; documentation
 Source: ..\docs\output\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: *svn
 ; ASSDraw3
@@ -233,6 +235,7 @@ Name: i18n; Description: Languages; Types: full custom compact; Flags: fixed
 Name: i18n/english; Description: English (built in); Flags: fixed; Types: compact full custom
 Name: i18n/pt_BR; Description: Brazilian Portuguese; Types: full
 Name: i18n/ca; Description: Catalan; Types: full
+Name: i18n/es; Description: Spanish; Types: full
 #if IncludeSpeller != 0
 Name: dic; Description: Spell checker; Types: full
 Name: dic/en_GB; Description: British English dictionary; Types: full
@@ -243,12 +246,12 @@ Name: dic/fr_FR; Description: French dictionary; Types: full
 Name: dic/de_DE; Description: German dictionary; Types: full
 Name: dic/de_AT; Description: Austrian German dictionary; Types: full
 Name: dic/it_IT; Description: Italian dictionary; Types: full
-Name: dic/es_ES; Description: Estonian dictionary; Types: full
 Name: dic/pl_PL; Description: Polish dictionary; Types: full
 Name: dic/pt_PT; Description: Portuguese dictionary; Types: full
 Name: dic/pt_BR; Description: Brazilian Portuguese dictionary; Types: full
 Name: dic/sk_SK; Description: Slovak dictionary; Types: full
 Name: dic/sl_SI; Description: Slovenian dictionary; Types: full
+Name: dic/es_ES; Description: Spanish dictionary; Types: full
 Name: dic/sv_SE; Description: Swedish dictionary; Types: full
 #endif
 #endif
@@ -256,10 +259,10 @@ Name: dic/sv_SE; Description: Swedish dictionary; Types: full
 #ifndef Lite
 Name: th; Description: Thesaurus; Types: full
 Name: th/en_US; Description: American English thesaurus; Types: full
-Name: th/es_ES; Description: Estonian thesaurus; Types: full
 Name: th/fr_FR; Description: French thesaurus; Types: full
 Name: th/de_DE; Description: German thesaurus; Types: full
 Name: th/it_IT; Description: Italian thesaurus; Types: full
+Name: th/es_ES; Description: Spanish thesaurus; Types: full
 #endif
 #endif
 Name: assdraw; Description: ai-chan's ASSDraw3 for ASS vector drawing; Types: full
@@ -289,7 +292,7 @@ begin
 		  temp2 := SetupMessage(msgInstallingLabel);
 		  StringChangeEx(temp2,'[name]','{#MyAppName}',False);
 		  CustomPage := CreateOutputProgressPage(SetupMessage(msgWizardInstalling),temp2);
-		  CustomPage.SetText('Installing Visual C++ 2005 SP1 Runtimes... This might take a few minutes.','');
+		  CustomPage.SetText('Installing Visual C++ 2008 SP1 Runtimes... This might take a few minutes.','');
 		  CustomPage.Show();
 			ExtractTemporaryFile('vcredist_x86.exe');
 			if not Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/q:a /c:"VCREDI~3.EXE /q:a /c:""msiexec /i vcredist.msi /qn"" "', '', SW_SHOW, ewWaitUntilTerminated, ExecResult) then
