@@ -161,7 +161,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetInt(_T("Avisynth MemoryMax"),64,1700);
 	SetBool(_T("Threaded Video"),false,1700);
 	#ifdef __WINDOWS__
-	SetText(_T("Video Provider"),_T("Avisynth"),1700);
+	SetText(_T("Video Provider"),_T("ffmpegsource"),2416);
 	#else
 	SetText(_T("Video Provider"),_T("FFMPEG"),1945);
 	#endif
@@ -198,7 +198,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetInt(_T("Audio Cache"),1,1700);
 	#if defined(__WINDOWS__)
 	SetText(_T("Audio Player"),_T("DirectSound"),1945);
-	SetText(_T("Audio Provider"),_T("avisynth"),1700);
+	SetText(_T("Audio Provider"),_T("ffmpegsource"),2416);
 	#elif defined(__APPLE__)
 	SetText(_T("Audio Player"), _T("openal"));
 	SetText(_T("Audio Provider"),_T("FFMPEG"),1945);

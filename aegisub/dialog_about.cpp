@@ -79,6 +79,12 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += _T("    PortAudio - Copyright (c) 1999-2000 Ross Bencina, Phil Burk;\n");
 #endif
 #ifdef WITH_FFMPEG
+#define _FFMPEG_ANY
+#endif
+#ifdef WITH_FFMPEGSOURCE
+#define _FFMPEG_ANY
+#endif
+#ifdef _FFMPEG_ANY
 	libString += _T("    FFmpeg - Copyright (c) 2001 Fabrice Bellard,;\n");
 #endif
 #ifdef WITH_AVISYNTH
@@ -121,7 +127,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _("Forum and wiki hosting by:");
 	aboutString += _T(" Sigurd Tao Lyngse.\n");
 	aboutString += _("SVN hosting by:");
-	aboutString += _T(" David Lamparter, BerliOS, Mentar.\n");
+	aboutString += _T(" DeathWolf, David Lamparter, BerliOS, Mentar.\n");
 	aboutString += _("Bug tracker hosting by:");
 	aboutString += _T(" Niels Martin Hansen.\n");
 	aboutString += translatorCredit;
