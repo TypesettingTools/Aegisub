@@ -63,7 +63,7 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 		LoadVideo(filename, fps);
 	} catch (...) {
 		Close();
-		throw;
+		//throw;
 	}
 }
 
@@ -82,8 +82,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	wxString FileNameWX(filename.c_str(), wxConvFile);
 
 	// generate a name for the cache file
-	wxString CacheName(filename.c_str(), wxConvFile);
-	CacheName.append(_T(".ffindex"));
+	wxString CacheName = GetCacheFilename(filename);
 
 	// try to read index
 	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);

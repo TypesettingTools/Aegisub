@@ -50,9 +50,14 @@
 // Progress dialog class
 class DialogProgress : public wxDialog {
 private:
+	volatile int count;
+	int virtualMax;
+	wxMutex mutex;
+
 	wxGauge *gauge;
 	wxStaticText *text;
 	void OnCancel(wxCommandEvent &event);
+	void OnUpdateProgress(wxCommandEvent &event);
 
 public:
 	volatile bool *canceled;

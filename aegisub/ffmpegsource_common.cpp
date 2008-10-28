@@ -38,6 +38,10 @@
 ///////////
 // Headers
 #include "ffmpegsource_common.h"
+#include "md5.h"
+#include "standard_paths.h"
+#include "main.h"
+#include "frame_main.h"
 
 ///////////////
 // Update indexing progress
@@ -64,7 +68,7 @@ FrameIndex *FFmpegSourceProvider::DoIndexing(FrameIndex *Index, wxString FileNam
 	// set up progress dialog callback
 	IndexingProgressDialog Progress;
 	Progress.IndexingCanceled = false;
-	Progress.ProgressDialog = new DialogProgress(NULL, _("Indexing"), &Progress.IndexingCanceled, _("Reading timecodes and frame/sample data"), 0, 1);
+	Progress.ProgressDialog = new DialogProgress(AegisubApp::Get()->frame, _("Indexing"), &Progress.IndexingCanceled, _("Reading timecodes and frame/sample data"), 0, 1);
 	Progress.ProgressDialog->Show();
 	Progress.ProgressDialog->SetProgress(0,1);
 
@@ -88,6 +92,44 @@ FrameIndex *FFmpegSourceProvider::DoIndexing(FrameIndex *Index, wxString FileNam
 	} */
 
 	return Index;
+}
+
+/////////////////////
+// Creates a name for the ffmpegsource2 index and prepares the folder if it doesn't exist
+// method by amz
+wxString FFmpegSourceProvider::GetCacheFilename(const wxString& filename)
+{
+	// Get the size of the file to be hashed
+	wxFileOffset len = 0;
+	{
+		wxFile file(filename,wxFile::read);
+		if (file.IsOpened()) len = file.Length();
+	}
+
+	// Generate string to be hashed
+	wxString toHash = filename + wxString::Format(_T(":%i"),len);
+
+	// Get the MD5 digest of the string
+	md5_state_t state;
+	md5_byte_t digest[16];
+	md5_init(&state);
+	md5_append(&state,(md5_byte_t*)toHash.c_str(),toHash.Length()*sizeof(wxChar));
+	md5_finish(&state,digest);
+
+	// Generate the filename
+	unsigned int *md5 = (unsigned int*) digest;
+	wxString result = wxString::Format(_T("?user/ffms2cache/%08X%08X%08X%08X.ffindex"),md5[0],md5[1],md5[2],md5[3]);
+	result = StandardPaths::DecodePath(result);
+
+	// Ensure that folder exists
+	wxFileName fn(result);
+	wxString dir = fn.GetPath();
+	if (!wxFileName::DirExists(dir)) {
+		wxFileName::Mkdir(dir);
+	}
+
+	wxFileName dirfn(dir);
+	return dirfn.GetShortPath() + _T("/") + fn.GetFullName();
 }
 
 #endif WITH_FFMPEGSOURCE

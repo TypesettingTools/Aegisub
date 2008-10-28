@@ -41,6 +41,9 @@
 #include "dialog_progress.h"
 
 
+DEFINE_EVENT_TYPE(wxEVT_PROGRESS_UPDATE)
+
+
 ///////////////
 // Constructor
 DialogProgress::DialogProgress(wxWindow *parent,wxString title,volatile bool *cancel,wxString message,int cur,int max)
@@ -49,9 +52,10 @@ DialogProgress::DialogProgress(wxWindow *parent,wxString title,volatile bool *ca
 	// Variables
 	canceled = cancel;
 	if (cancel) *canceled = false;
+	virtualMax = max;
 
 	// Gauge
-	gauge = new wxGauge(this, -1, max, wxDefaultPosition, wxSize(300,20), wxGA_HORIZONTAL);
+	gauge = new wxGauge(this, -1, 100, wxDefaultPosition, wxSize(300,20), wxGA_HORIZONTAL);
 	wxButton *cancelButton = NULL;
 	if (cancel) cancelButton = new wxButton(this,wxID_CANCEL);
 	text = new wxStaticText(this, -1, message, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE | wxST_NO_AUTORESIZE);
@@ -64,23 +68,46 @@ DialogProgress::DialogProgress(wxWindow *parent,wxString title,volatile bool *ca
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 	CenterOnParent();
+	Connect(0,wxEVT_PROGRESS_UPDATE,wxCommandEventHandler(DialogProgress::OnUpdateProgress));
 }
 
 
 ////////////////
 // Set progress
 void DialogProgress::SetProgress(int cur,int max) {
-	// Lock
-	bool isMain = wxIsMainThread();
-	if (!isMain) wxMutexGuiEnter();
+	// Return if there's nothing to do
+	int value = cur*100/virtualMax;
+	if (gauge->GetValue() == value && virtualMax == max) return;
+	virtualMax = max;
 
-	// Update
-	gauge->SetRange(max);
-	gauge->SetValue(cur);
-	wxSafeYield(this);
+	// Check if it's the main thread, if so, just process it now
+	if (wxIsMainThread()) {
+		gauge->SetValue(value);
+		wxYield();
+		return;
+	}
 
-	// Unlock
-	if (!isMain) wxMutexGuiLeave();
+	// Otherwise, go on
+	{
+		wxMutexLocker locker(mutex);
+		if (count >= 2) return;
+		else count++;
+	}
+
+	wxCommandEvent* evt = new wxCommandEvent(wxEVT_PROGRESS_UPDATE,0);
+	evt->SetInt(value);
+	AddPendingEvent(*evt);
+}
+
+
+///////////////////
+// Update progress
+void DialogProgress::OnUpdateProgress(wxCommandEvent &event)
+{
+	int value = event.GetInt();
+	if (gauge->GetValue() != value) gauge->SetValue(value);
+	wxMutexLocker locker(mutex);
+	count--;
 }
 
 
@@ -116,7 +143,6 @@ void DialogProgress::OnCancel(wxCommandEvent &event) {
 	Destroy();
 	if (!isMain) wxMutexGuiLeave();
 }
-
 
 //////////////////////
 // Thread constructor

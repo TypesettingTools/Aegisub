@@ -69,8 +69,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	wxString FileNameWX(filename.c_str(), wxConvFile);
 
 	// generate a default name for the cache file
-	wxString CacheName(filename.c_str(), wxConvFile);
-	CacheName.append(_T(".ffindex"));
+	wxString CacheName = GetCacheFilename(filename);
 
 	FrameIndex *Index;
 	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrMsg, MsgSize);

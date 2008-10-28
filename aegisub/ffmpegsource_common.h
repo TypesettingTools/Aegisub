@@ -55,6 +55,7 @@ public:
 
 	static int FFMS_CC UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
 	FrameIndex *DoIndexing(FrameIndex *Index, wxString Filename, wxString Cachename, int Trackmask, bool IgnoreDecodeErrors);
+	wxString GetCacheFilename(const wxString& filename);
 };
 
 #endif /* WITH_FFMPEGSOURCE */
