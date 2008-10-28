@@ -79,11 +79,13 @@ FrameIndex *FFmpegSourceProvider::DoIndexing(FrameIndex *Index, wxString FileNam
 	Progress.ProgressDialog->Destroy();
 
 	// write index to disk for later use
-	if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
+	// ignore write errors for now
+	FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize);
+	/*if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
 		wxString temp(FFMSErrMsg, wxConvUTF8);
 		MsgString << _T("Failed to write index: ") << temp;
 		throw MsgString;
-	}
+	} */
 
 	return Index;
 }
