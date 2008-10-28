@@ -4,9 +4,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ca\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-26 15:38+0200\n"
-"PO-Revision-Date: 2008-09-24 22:43+0100\n"
-"Last-Translator: Eduard Ereza Martínez <ereza@catsub.net>\n"
+"POT-Creation-Date: 2008-10-27 22:39-0200\n"
+"PO-Revision-Date: 2008-10-27 22:50-0300\n"
+"Last-Translator: amz <amz@aegisub.net>\n"
 "Language-Team: Catalan <ubuntu-l10n-ca@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +19,7 @@ msgid "ANSI"
 msgstr "ANSI"
 
 #: ass_style.cpp:568
-#: dialog_options.cpp:615
+#: dialog_options.cpp:617
 msgid "Default"
 msgstr "Predefinit"
 
@@ -356,9 +356,9 @@ msgid "End"
 msgstr "Fi"
 
 #: base_grid.cpp:414
-#: dialog_options.cpp:213
-#: dialog_options.cpp:285
-#: dialog_options.cpp:480
+#: dialog_options.cpp:215
+#: dialog_options.cpp:287
+#: dialog_options.cpp:482
 #: dialog_paste_over.cpp:66
 #: dialog_search_replace.cpp:94
 #: dialog_selection.cpp:74
@@ -432,7 +432,7 @@ msgid "Choose character set"
 msgstr "Escolliu la codificació"
 
 #: dialog_about.cpp:51
-#: frame_main.cpp:509
+#: frame_main.cpp:516
 msgid "About Aegisub"
 msgstr "Quant a l'Aegisub"
 
@@ -440,31 +440,31 @@ msgstr "Quant a l'Aegisub"
 msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 msgstr "Aquesta compilació de l'Aegisub utilitza les següents biblioteques de C/C++:\n"
 
-#: dialog_about.cpp:109
+#: dialog_about.cpp:115
 msgid "Translated into LANGUAGE by PERSON\n"
 msgstr "Traduït al català per Eduard Ereza Martínez.\n"
 
-#: dialog_about.cpp:114
+#: dialog_about.cpp:120
 msgid "Programmers:"
 msgstr "Programadors:"
 
-#: dialog_about.cpp:119
+#: dialog_about.cpp:125
 msgid "Manual by:"
 msgstr "Manual per:"
 
-#: dialog_about.cpp:121
+#: dialog_about.cpp:127
 msgid "Forum and wiki hosting by:"
 msgstr "Allotjament del fòrum i del wiki per:"
 
-#: dialog_about.cpp:123
+#: dialog_about.cpp:129
 msgid "SVN hosting by:"
 msgstr "Allotjament de l'SVN per:"
 
-#: dialog_about.cpp:125
+#: dialog_about.cpp:131
 msgid "Bug tracker hosting by:"
 msgstr "Allotjament del sistema de seguiment d'errors per:"
 
-#: dialog_about.cpp:129
+#: dialog_about.cpp:135
 msgid ""
 "\n"
 "See the help file for full credits.\n"
@@ -472,7 +472,7 @@ msgstr ""
 "\n"
 "Vegeu el fitxer d'ajuda per als crèdits complets.\n"
 
-#: dialog_about.cpp:130
+#: dialog_about.cpp:136
 #, c-format
 msgid "Built by %s on %s."
 msgstr "Muntat per %s el %s."
@@ -727,7 +727,7 @@ msgstr "Valor:"
 msgid "Colour Picker"
 msgstr "Selector de color"
 
-#: dialog_detached_video.cpp:69
+#: dialog_detached_video.cpp:70
 #, c-format
 msgid "Video: %s"
 msgstr "Vídeo: %s"
@@ -802,7 +802,7 @@ msgid "Export subtitles file"
 msgstr "Exporta el fitxer de subtítols"
 
 #: dialog_fonts_collector.cpp:77
-#: frame_main.cpp:244
+#: frame_main.cpp:247
 msgid "Fonts Collector"
 msgstr "Col·lector de tipus de lletra"
 
@@ -865,13 +865,13 @@ msgstr "Destinació invàlida."
 #: dialog_kanji_timer.cpp:328
 #: dialog_kanji_timer.cpp:360
 #: dialog_kanji_timer.cpp:362
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 #: dialog_resample.cpp:215
 #: dialog_resample.cpp:219
-#: options.cpp:445
-#: subs_grid.cpp:676
+#: options.cpp:446
 #: subs_grid.cpp:680
-#: subs_grid.cpp:726
+#: subs_grid.cpp:684
+#: subs_grid.cpp:730
 msgid "Error"
 msgstr "Error"
 
@@ -1150,15 +1150,15 @@ msgid "Group all of the source text."
 msgstr "Agrupa tot el text d'origen."
 
 #: dialog_options.cpp:84
-#: dialog_options.cpp:210
-#: dialog_options.cpp:284
-#: dialog_options.cpp:353
-#: dialog_options.cpp:437
-#: dialog_options.cpp:479
-#: dialog_options.cpp:567
+#: dialog_options.cpp:212
+#: dialog_options.cpp:286
+#: dialog_options.cpp:355
+#: dialog_options.cpp:439
+#: dialog_options.cpp:481
+#: dialog_options.cpp:569
 #: dialog_properties.cpp:117
 #: dialog_timing_processor.cpp:81
-#: frame_main.cpp:268
+#: frame_main.cpp:271
 #: hotkeys.cpp:323
 #: hotkeys.cpp:327
 msgid "Options"
@@ -1176,280 +1176,280 @@ msgstr "Mostra la pantalla d'inici"
 msgid "Show Tip of the Day"
 msgstr "Mostra el consell del dia"
 
-#: dialog_options.cpp:114
+#: dialog_options.cpp:115
 msgid "Auto Check for Updates"
 msgstr "Comprova automàticament si hi ha actualitzacions"
 
-#: dialog_options.cpp:115
+#: dialog_options.cpp:117
 msgid "Save config.dat locally"
 msgstr "Desa el config.dat localment"
 
-#: dialog_options.cpp:119
+#: dialog_options.cpp:121
 msgid "Limits for levels and recent files"
 msgstr "Límits per a nivells i fitxers recents"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum undo levels"
 msgstr "Nombre màxim de nivells per desfer"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent timecode files"
 msgstr "Nombre màxim de fitxers de codis de temps recents"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent keyframe files"
 msgstr "Nombre màxim de fitxers de marcs clau recents"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent subtitle files"
 msgstr "Nombre màxim de fitxers de subtítols recents"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent video files"
 msgstr "Nombre màxim de fitxers de vídeo recents"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent audio files"
 msgstr "Nombre màxim de fitxers d'àudio recents"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent find strings"
 msgstr "Nombre màxim de cadenes cercades recents"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent replace strings"
 msgstr "Nombre màxim de cadenes substituïdes recents"
 
-#: dialog_options.cpp:142
+#: dialog_options.cpp:144
 msgid "Auto-save"
 msgstr "Desa automàticament"
 
-#: dialog_options.cpp:144
+#: dialog_options.cpp:146
 msgid "File paths"
 msgstr "Camins dels fitxers"
 
-#: dialog_options.cpp:146
+#: dialog_options.cpp:148
 msgid "Miscellanea"
 msgstr "Miscel·lània"
 
-#: dialog_options.cpp:150
+#: dialog_options.cpp:152
 msgid "Auto-backup"
 msgstr "Crea una còpia de seguretat automàticament"
 
-#: dialog_options.cpp:156
+#: dialog_options.cpp:158
 msgid "Auto-save every"
 msgstr "Desa automàticament cada"
 
-#: dialog_options.cpp:158
+#: dialog_options.cpp:160
 msgid "seconds."
 msgstr "segons."
 
-#: dialog_options.cpp:161
+#: dialog_options.cpp:163
 msgid "Auto-save path:"
 msgstr "Camí per desar automàticament:"
 
-#: dialog_options.cpp:169
+#: dialog_options.cpp:171
 msgid "Auto-backup path:"
 msgstr "Camí per crear una còpia de seguretat automàticament:"
 
-#: dialog_options.cpp:177
+#: dialog_options.cpp:179
 msgid "Crash recovery path:"
 msgstr "Camí de recuperació de petades:"
 
-#: dialog_options.cpp:187
+#: dialog_options.cpp:189
 msgid "Auto-load linked files:"
 msgstr "Carrega automàticament els fitxers enllaçats:"
 
-#: dialog_options.cpp:188
-#: dialog_options.cpp:361
+#: dialog_options.cpp:190
+#: dialog_options.cpp:363
 msgid "Never"
 msgstr "Mai"
 
-#: dialog_options.cpp:188
-#: dialog_options.cpp:361
+#: dialog_options.cpp:190
+#: dialog_options.cpp:363
 msgid "Always"
 msgstr "Sempre"
 
-#: dialog_options.cpp:188
-#: dialog_options.cpp:361
+#: dialog_options.cpp:190
+#: dialog_options.cpp:363
 msgid "Ask"
 msgstr "Pregunta"
 
-#: dialog_options.cpp:218
+#: dialog_options.cpp:220
 msgid "Enable call tips"
 msgstr "Activa els consells de crida"
 
-#: dialog_options.cpp:218
+#: dialog_options.cpp:220
 msgid "Enable syntax highlighting"
 msgstr "Activa el ressaltat de sintaxi"
 
-#: dialog_options.cpp:218
+#: dialog_options.cpp:220
 msgid "Link commiting of times"
 msgstr "Enllaça l'aplicació dels temps"
 
-#: dialog_options.cpp:218
+#: dialog_options.cpp:220
 msgid "Overwrite-Insertion in time boxes"
 msgstr "Sobreescriptura-Inserció a les capses de temps"
 
-#: dialog_options.cpp:227
+#: dialog_options.cpp:229
 msgid "Path to dictionary files:"
 msgstr "Camí als fitxers de diccionari:"
 
-#: dialog_options.cpp:237
-#: dialog_options.cpp:575
+#: dialog_options.cpp:239
+#: dialog_options.cpp:577
 #: dialog_properties.cpp:131
 msgid "Normal"
 msgstr "Normal"
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:239
 msgid "Brackets"
 msgstr "Claudàtors"
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:239
 msgid "Slashes and Parentheses"
 msgstr "Barres i parèntesis"
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:239
 msgid "Tags"
 msgstr "Etiquetes"
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:239
 msgid "Parameters"
 msgstr "Paràmetres"
 
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 msgid "Error Background"
 msgstr "Fons d'error"
 
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 msgid "Line Break"
 msgstr "Salt de línia"
 
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 msgid "Karaoke templates"
 msgstr "Plantilles de karaoke"
 
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 msgid "Modified Background"
 msgstr "Fons modificat"
 
-#: dialog_options.cpp:245
+#: dialog_options.cpp:247
 msgid "Syntax highlighter - "
 msgstr "Ressaltador de sintaxi - "
 
-#: dialog_options.cpp:256
-#: dialog_options.cpp:320
+#: dialog_options.cpp:258
+#: dialog_options.cpp:322
 msgid "Font: "
 msgstr "Tipus de lletra:"
 
-#: dialog_options.cpp:291
+#: dialog_options.cpp:293
 msgid "Allow grid to take focus"
 msgstr "Permet que la graella prengui el focus"
 
-#: dialog_options.cpp:291
+#: dialog_options.cpp:293
 msgid "Highlight subtitles that are currently visible in video"
 msgstr "Ressalta els subtítols actualment visibles al vídeo"
 
-#: dialog_options.cpp:301
+#: dialog_options.cpp:303
 msgid "Standard foreground"
 msgstr "Frontal estàndard"
 
-#: dialog_options.cpp:301
+#: dialog_options.cpp:303
 msgid "Standard background"
 msgstr "Fons estàndard"
 
-#: dialog_options.cpp:301
+#: dialog_options.cpp:303
 msgid "Selection foreground"
 msgstr "Frontal seleccionat"
 
-#: dialog_options.cpp:302
-#: dialog_options.cpp:497
+#: dialog_options.cpp:304
+#: dialog_options.cpp:499
 msgid "Selection background"
 msgstr "Fons seleccionat"
 
-#: dialog_options.cpp:302
+#: dialog_options.cpp:304
 msgid "Comment background"
 msgstr "Fons dels comentaris"
 
-#: dialog_options.cpp:302
+#: dialog_options.cpp:304
 msgid "Selected comment background"
 msgstr "Fons seleccionat dels comentaris"
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:305
 msgid "Collision foreground"
 msgstr "Frontal de col·lisió"
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:305
 msgid "Line in frame background"
 msgstr "Fons de línia al marc"
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:305
 msgid "Header"
 msgstr "Capçalera"
 
-#: dialog_options.cpp:304
+#: dialog_options.cpp:306
 msgid "Left Column"
 msgstr "Columna esquerra"
 
-#: dialog_options.cpp:304
+#: dialog_options.cpp:306
 msgid "Active Line Border"
 msgstr "Vora de línia activa"
 
-#: dialog_options.cpp:304
+#: dialog_options.cpp:306
 msgid "Lines"
 msgstr "Línies"
 
-#: dialog_options.cpp:333
+#: dialog_options.cpp:335
 msgid "Replace override tags with: "
 msgstr "Substitueix les etiquetes per:"
 
-#: dialog_options.cpp:354
-#: dialog_options.cpp:531
+#: dialog_options.cpp:356
+#: dialog_options.cpp:533
 msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Avançades - NOMÉS USUARIS EXPERTS"
 
-#: dialog_options.cpp:360
+#: dialog_options.cpp:362
 msgid "Match video resolution on open: "
 msgstr "Encaixa la resolució del vídeo en obrir:"
 
-#: dialog_options.cpp:365
+#: dialog_options.cpp:367
 msgid "Default Zoom: "
 msgstr "Ampliació per defecte:"
 
-#: dialog_options.cpp:376
+#: dialog_options.cpp:378
 msgid "Fast jump step in frames: "
 msgstr "Pas de salt ràpid als marcs:"
 
-#: dialog_options.cpp:380
+#: dialog_options.cpp:382
 msgid "Screenshot save path: "
 msgstr "Camí per desar les captures de pantalla:"
 
-#: dialog_options.cpp:386
+#: dialog_options.cpp:388
 msgid "Show keyframes in slider"
 msgstr "Mostra els marcs clau a la barra de desplaçament"
 
-#: dialog_options.cpp:392
+#: dialog_options.cpp:394
 msgid "Video provider: "
 msgstr "Proveïdor del vídeo:"
 
-#: dialog_options.cpp:397
+#: dialog_options.cpp:399
 msgid "Subtitles provider: "
 msgstr "Proveïdor de subtítols"
 
-#: dialog_options.cpp:403
+#: dialog_options.cpp:405
 msgid "Avisynth memory limit: "
 msgstr "Límit de memòria de l'Aegisub:"
 
-#: dialog_options.cpp:413
+#: dialog_options.cpp:415
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Permet l'Avisynth anterior a 2.56a"
 
-#: dialog_options.cpp:417
+#: dialog_options.cpp:419
 msgid "Avisynth renders its own subs"
 msgstr "L'Avisynth renderitza els seus propis subtítols"
 
-#: dialog_options.cpp:424
-#: dialog_options.cpp:555
+#: dialog_options.cpp:426
+#: dialog_options.cpp:557
 msgid ""
 "WARNING: Changing these settings might result in bugs,\n"
 "crashes, glitches and/or movax.\n"
@@ -1459,373 +1459,373 @@ msgstr ""
 "petades, errors gràfics i/o movax.\n"
 "No ho toqueu si no sabeu què esteu fent."
 
-#: dialog_options.cpp:442
+#: dialog_options.cpp:444
 msgid "Grab times from line upon selection"
 msgstr "Agafa els temps des de la línia fins a la selecció"
 
-#: dialog_options.cpp:443
+#: dialog_options.cpp:445
 msgid "Default mouse wheel to zoom"
 msgstr "Roda del ratolí per defecte per ampliar"
 
-#: dialog_options.cpp:444
+#: dialog_options.cpp:446
 msgid "Lock scroll on Cursor"
 msgstr "Bloca el desplaçament si hi ha el cursor"
 
-#: dialog_options.cpp:445
+#: dialog_options.cpp:447
 msgid "Snap to keyframes"
 msgstr "Enganxa als marcs clau"
 
-#: dialog_options.cpp:446
+#: dialog_options.cpp:448
 msgid "Snap to adjacent lines"
 msgstr "Enganxa a les línies adjacents"
 
-#: dialog_options.cpp:447
+#: dialog_options.cpp:449
 msgid "Auto-focus on mouse over"
 msgstr "Focus automàtic en posar el ratolí a damunt"
 
-#: dialog_options.cpp:451
+#: dialog_options.cpp:453
 msgid "Don't show"
 msgstr "No mostris"
 
-#: dialog_options.cpp:451
+#: dialog_options.cpp:453
 msgid "Show previous"
 msgstr "Mostra l'anterior"
 
-#: dialog_options.cpp:451
+#: dialog_options.cpp:453
 msgid "Show all"
 msgstr "Mostra-ho tot"
 
-#: dialog_options.cpp:452
+#: dialog_options.cpp:454
 msgid "Default timing length"
 msgstr "Llargada per defecte del temps"
 
-#: dialog_options.cpp:453
+#: dialog_options.cpp:455
 msgid "Default lead-in length"
 msgstr "Llargada per defecte del temps d'entrada"
 
-#: dialog_options.cpp:454
+#: dialog_options.cpp:456
 msgid "Default lead-out length"
 msgstr "Llargada per defecte del temps de sortida"
 
-#: dialog_options.cpp:455
+#: dialog_options.cpp:457
 msgid "Show inactive lines"
 msgstr "Mostra les línies inactives"
 
-#: dialog_options.cpp:485
+#: dialog_options.cpp:487
 msgid "Draw secondary lines"
 msgstr "Dibuixa les línies secundàries"
 
-#: dialog_options.cpp:485
+#: dialog_options.cpp:487
 msgid "Draw selection background"
 msgstr "Dibuixa el fons de la selecció"
 
-#: dialog_options.cpp:485
+#: dialog_options.cpp:487
 msgid "Draw timeline"
 msgstr "Dibuixa la línia de temps"
 
-#: dialog_options.cpp:486
+#: dialog_options.cpp:488
 msgid "Draw cursor time"
 msgstr "Dibuixa el temps del cursor"
 
-#: dialog_options.cpp:486
+#: dialog_options.cpp:488
 msgid "Draw keyframes"
 msgstr "Mostra els marcs clau"
 
-#: dialog_options.cpp:486
+#: dialog_options.cpp:488
 msgid "Draw video position"
 msgstr "Mostra la posició del vídeo"
 
-#: dialog_options.cpp:497
+#: dialog_options.cpp:499
 msgid "Play cursor"
 msgstr "Reprodueix el cursor"
 
-#: dialog_options.cpp:497
+#: dialog_options.cpp:499
 msgid "Background"
 msgstr "Fons"
 
-#: dialog_options.cpp:498
+#: dialog_options.cpp:500
 msgid "Selection background - modified"
 msgstr "Fons de la selecció - modificat"
 
-#: dialog_options.cpp:498
+#: dialog_options.cpp:500
 msgid "Seconds boundary"
 msgstr "Límit de segons"
 
-#: dialog_options.cpp:498
+#: dialog_options.cpp:500
 msgid "Waveform"
 msgstr "Forma d'ona"
 
-#: dialog_options.cpp:499
+#: dialog_options.cpp:501
 msgid "Waveform - selection"
 msgstr "Forma d'ona - selecció"
 
-#: dialog_options.cpp:499
+#: dialog_options.cpp:501
 msgid "Waveform - modified"
 msgstr "Forma d'ona - modificat"
 
-#: dialog_options.cpp:499
+#: dialog_options.cpp:501
 msgid "Waveform - inactive"
 msgstr "Forma d'ona - inactiu"
 
-#: dialog_options.cpp:500
+#: dialog_options.cpp:502
 msgid "Boundary - start"
 msgstr "Límit - inici"
 
-#: dialog_options.cpp:500
+#: dialog_options.cpp:502
 msgid "Boundary - end"
 msgstr "Límit - final"
 
-#: dialog_options.cpp:500
+#: dialog_options.cpp:502
 msgid "Boundary - inactive"
 msgstr "Límit - inactiu"
 
-#: dialog_options.cpp:501
+#: dialog_options.cpp:503
 msgid "Syllable text"
 msgstr "Text d'una síl·laba"
 
-#: dialog_options.cpp:501
+#: dialog_options.cpp:503
 msgid "Syllable boundary"
 msgstr "Límit de la síl·laba"
 
-#: dialog_options.cpp:535
+#: dialog_options.cpp:537
 msgid "None (NOT RECOMMENDED)"
 msgstr "Cap (NO RECOMANAT)"
 
-#: dialog_options.cpp:535
+#: dialog_options.cpp:537
 msgid "RAM"
 msgstr "RAM"
 
-#: dialog_options.cpp:535
+#: dialog_options.cpp:537
 msgid "Hard Disk"
 msgstr "Disc dur"
 
-#: dialog_options.cpp:540
+#: dialog_options.cpp:542
 msgid "Audio provider"
 msgstr "Proveïdor d'àudio"
 
-#: dialog_options.cpp:541
+#: dialog_options.cpp:543
 msgid "Audio player"
 msgstr "Reproductor d'àudio"
 
-#: dialog_options.cpp:542
+#: dialog_options.cpp:544
 msgid "Cache type"
 msgstr "Tipus de memòria cau"
 
-#: dialog_options.cpp:544
+#: dialog_options.cpp:546
 msgid "Avisynth down-mixer"
 msgstr "Mesclador a la baixa de l'Avisynth"
 
-#: dialog_options.cpp:546
+#: dialog_options.cpp:548
 msgid "HD cache path"
 msgstr "Camí de la memòria cau del disc dur"
 
-#: dialog_options.cpp:547
+#: dialog_options.cpp:549
 msgid "HD cache name"
 msgstr "Nom de la memòria cau del disc"
 
-#: dialog_options.cpp:548
+#: dialog_options.cpp:550
 msgid "Spectrum cutoff"
 msgstr "Tall de l'espectre"
 
-#: dialog_options.cpp:549
+#: dialog_options.cpp:551
 msgid "0 - Regular quality"
 msgstr "0 - Qualitat regular"
 
-#: dialog_options.cpp:549
+#: dialog_options.cpp:551
 msgid "1 - Better quality"
 msgstr "1 - Millor qualitat"
 
-#: dialog_options.cpp:549
+#: dialog_options.cpp:551
 msgid "2 - High quality"
 msgstr "2 - Alta qualitat"
 
-#: dialog_options.cpp:549
+#: dialog_options.cpp:551
 msgid "3 - Insane quality"
 msgstr "3 - Qualitat exagerada"
 
-#: dialog_options.cpp:550
+#: dialog_options.cpp:552
 msgid "Spectrum quality"
 msgstr "Qualitat de l'espectre"
 
-#: dialog_options.cpp:551
+#: dialog_options.cpp:553
 msgid "Spectrum cache memory max (MB)"
 msgstr "Màxim de memòria cau per a l'espectre (MB)"
 
-#: dialog_options.cpp:571
+#: dialog_options.cpp:573
 msgid "Base path"
 msgstr "Camí base"
 
-#: dialog_options.cpp:572
+#: dialog_options.cpp:574
 msgid "Include path"
 msgstr "Camí d'inclusió"
 
-#: dialog_options.cpp:573
+#: dialog_options.cpp:575
 msgid "Auto-load path"
 msgstr "Camí de càrrega automàtica"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "0: Fatal"
 msgstr "0: Fatal"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "1: Error"
 msgstr "1: Error"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "2: Warning"
 msgstr "2: Advertència"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "3: Hint"
 msgstr "3: Pista"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "4: Debug"
 msgstr "4: Depuració"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "5: Trace"
 msgstr "5: Traça"
 
-#: dialog_options.cpp:575
+#: dialog_options.cpp:577
 msgid "Below Normal (recommended)"
 msgstr "Per sota del normal (recomanat)"
 
-#: dialog_options.cpp:575
+#: dialog_options.cpp:577
 msgid "Lowest"
 msgstr "El més baix"
 
-#: dialog_options.cpp:576
+#: dialog_options.cpp:578
 msgid "No scripts"
 msgstr "Sense 'scripts'"
 
-#: dialog_options.cpp:576
+#: dialog_options.cpp:578
 msgid "Subtitle-local scripts"
 msgstr "'Scripts' del subtítol local"
 
-#: dialog_options.cpp:576
+#: dialog_options.cpp:578
 msgid "Global autoload scripts"
 msgstr "'Scripts' globals de càrrega automàtica"
 
-#: dialog_options.cpp:576
+#: dialog_options.cpp:578
 msgid "All scripts"
 msgstr "Tots els 'scripts'"
 
-#: dialog_options.cpp:577
+#: dialog_options.cpp:579
 msgid "Trace level"
 msgstr "Nivell de traça"
 
-#: dialog_options.cpp:578
+#: dialog_options.cpp:580
 msgid "Thread priority"
 msgstr "Prioritat dels fils"
 
-#: dialog_options.cpp:579
+#: dialog_options.cpp:581
 msgid "Autoreload on Export"
 msgstr "Recarrega automàticament en exportar"
 
-#: dialog_options.cpp:598
-#: dialog_options.cpp:1095
+#: dialog_options.cpp:600
+#: dialog_options.cpp:1097
 msgid "Function"
 msgstr "Funció"
 
-#: dialog_options.cpp:599
-#: dialog_options.cpp:1096
+#: dialog_options.cpp:601
+#: dialog_options.cpp:1098
 msgid "Key"
 msgstr "Tecla"
 
-#: dialog_options.cpp:613
+#: dialog_options.cpp:615
 msgid "Set Hotkey..."
 msgstr "Defineix una drecera del teclat..."
 
-#: dialog_options.cpp:614
+#: dialog_options.cpp:616
 msgid "Clear Hotkey"
 msgstr "Elimina la drecera del teclat"
 
-#: dialog_options.cpp:616
+#: dialog_options.cpp:618
 msgid "Default All"
 msgstr "Tot per defecte"
 
-#: dialog_options.cpp:627
+#: dialog_options.cpp:629
 msgid "General"
 msgstr "General"
 
-#: dialog_options.cpp:628
+#: dialog_options.cpp:630
 msgid "File save/load"
 msgstr "Càrrega i desament de fitxers"
 
-#: dialog_options.cpp:629
+#: dialog_options.cpp:631
 msgid "Subtitles edit box"
 msgstr "Caixa d'edició dels subtítols"
 
-#: dialog_options.cpp:630
+#: dialog_options.cpp:632
 msgid "Subtitles grid"
 msgstr "Graella dels subtítols"
 
-#: dialog_options.cpp:631
+#: dialog_options.cpp:633
 #: dialog_video_details.cpp:55
 msgid "Video"
 msgstr "Vídeo"
 
-#: dialog_options.cpp:632
+#: dialog_options.cpp:634
 msgid "Audio"
 msgstr "Àudio"
 
-#: dialog_options.cpp:633
+#: dialog_options.cpp:635
 msgid "Display"
 msgstr "Visualització"
 
-#: dialog_options.cpp:634
+#: dialog_options.cpp:636
 msgid "Advanced"
 msgstr "Avançades"
 
-#: dialog_options.cpp:635
-#: frame_main.cpp:249
+#: dialog_options.cpp:637
+#: frame_main.cpp:252
 msgid "Automation"
 msgstr "Automatització"
 
-#: dialog_options.cpp:636
+#: dialog_options.cpp:638
 msgid "Hotkeys"
 msgstr "Dreceres del teclat"
 
-#: dialog_options.cpp:649
+#: dialog_options.cpp:651
 msgid "Restore Defaults"
 msgstr "Restableix els valors predefinits"
 
-#: dialog_options.cpp:740
-#: dialog_options.cpp:773
-#: dialog_options.cpp:916
+#: dialog_options.cpp:742
+#: dialog_options.cpp:775
+#: dialog_options.cpp:918
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
 msgstr "L'Aegisub s'ha de reiniciar perquè els canvis tinguin efecte. Voleu reiniciar-lo ara?"
 
-#: dialog_options.cpp:740
-#: dialog_options.cpp:773
-#: dialog_options.cpp:916
+#: dialog_options.cpp:742
+#: dialog_options.cpp:775
+#: dialog_options.cpp:918
 msgid "Restart Aegisub"
 msgstr "Reinicia l'Aegisub"
 
-#: dialog_options.cpp:788
+#: dialog_options.cpp:790
 msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
 msgstr "Esteu segur que voleu restaurar els valors predefinits? Tota la vostra configuració se sobreescriurà."
 
-#: dialog_options.cpp:788
+#: dialog_options.cpp:790
 msgid "Restore defaults?"
 msgstr "Restaurar els valors predefinits?"
 
-#: dialog_options.cpp:1115
+#: dialog_options.cpp:1117
 msgid "Press Key"
 msgstr "Premeu la tecla"
 
-#: dialog_options.cpp:1122
+#: dialog_options.cpp:1124
 #, c-format
 msgid "Press key to bind to \"%s\" or Esc to cancel."
 msgstr "Premeu la tecla que voleu assignar a \"%s\" o Esc per cancel·lar."
 
-#: dialog_options.cpp:1173
+#: dialog_options.cpp:1175
 #, c-format
 msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
 msgstr "La drecera del teclar %s ja està assignada a %s. Si continue, aquesta última drecera s'eliminarà. Voleu continuar?"
 
-#: dialog_options.cpp:1173
+#: dialog_options.cpp:1175
 msgid "Hotkey conflict"
 msgstr "Conflicte de drecera del teclat"
 
@@ -2065,27 +2065,27 @@ msgid "Replace all"
 msgstr "Substitueix-ho tot"
 
 #: dialog_search_replace.cpp:409
-#: dialog_search_replace.cpp:519
+#: dialog_search_replace.cpp:520
 msgid "replace"
 msgstr "substitució"
 
-#: dialog_search_replace.cpp:522
+#: dialog_search_replace.cpp:523
 #, c-format
 msgid "%i matches were replaced."
 msgstr "S'han substituït %i coincidències."
 
-#: dialog_search_replace.cpp:527
+#: dialog_search_replace.cpp:528
 msgid "No matches found."
 msgstr "No s'han trobat coincidències."
 
-#: dialog_search_replace.cpp:562
+#: dialog_search_replace.cpp:563
 #: dialog_spellchecker.cpp:120
 #: hotkeys.cpp:341
 #: hotkeys.cpp:344
 msgid "Replace"
 msgstr "Substitueix"
 
-#: dialog_search_replace.cpp:562
+#: dialog_search_replace.cpp:563
 #: hotkeys.cpp:338
 msgid "Find"
 msgstr "Cerca"
@@ -2172,7 +2172,7 @@ msgid "%i lines were removed from selection"
 msgstr "S'han tret %i línies de la selecció"
 
 #: dialog_shift_times.cpp:61
-#: frame_main.cpp:258
+#: frame_main.cpp:261
 #: hotkeys.cpp:337
 msgid "Shift Times"
 msgstr "Desplaça els temps"
@@ -2291,7 +2291,7 @@ msgid "shifting"
 msgstr "desplaçant"
 
 #: dialog_spellchecker.cpp:67
-#: frame_main.cpp:264
+#: frame_main.cpp:267
 msgid "Spell Checker"
 msgstr "Correcció ortogràfica"
 
@@ -2366,7 +2366,8 @@ msgid "Outline"
 msgstr "Vora"
 
 #: dialog_style_editor.cpp:138
-msgid "Miscelaneous"
+#, fuzzy
+msgid "Miscellaneous"
 msgstr "Miscel·lani"
 
 #: dialog_style_editor.cpp:139
@@ -2537,8 +2538,8 @@ msgid "No subtitle providers available. Cannot preview subs."
 msgstr "No hi ha cap proveïdor de subtítols disponible. No es podran previsualitzar els subtítols."
 
 #: dialog_style_editor.cpp:470
-#: dialog_style_manager.cpp:624
-#: dialog_style_manager.cpp:648
+#: dialog_style_manager.cpp:628
+#: dialog_style_manager.cpp:652
 msgid "Copy of "
 msgstr "Còpia de "
 
@@ -2570,7 +2571,7 @@ msgid "Warning"
 msgstr "Advertència"
 
 #: dialog_style_manager.cpp:60
-#: frame_main.cpp:241
+#: frame_main.cpp:244
 msgid "Styles Manager"
 msgstr "Gestor d'estils"
 
@@ -2581,7 +2582,7 @@ msgstr "Catàleg de magatzems disponibles"
 #: dialog_style_manager.cpp:71
 #: dialog_style_manager.cpp:84
 #: dialog_style_manager.cpp:129
-#: frame_main.cpp:210
+#: frame_main.cpp:213
 msgid "New"
 msgstr "Nou"
 
@@ -2686,84 +2687,84 @@ msgstr "Esteu segur que voleu suprimir el magatzem \"%s\" del catàleg?"
 msgid "Confirm delete"
 msgstr "Confirmeu la supressió"
 
-#: dialog_style_manager.cpp:610
-#: dialog_style_manager.cpp:661
+#: dialog_style_manager.cpp:614
+#: dialog_style_manager.cpp:665
 msgid "style copy"
 msgstr "còpia de l'estil"
 
-#: dialog_style_manager.cpp:713
+#: dialog_style_manager.cpp:717
 msgid "style paste"
 msgstr "enganxat de l'estil"
 
-#: dialog_style_manager.cpp:717
-#: dialog_style_manager.cpp:720
-#: dialog_style_manager.cpp:753
-#: dialog_style_manager.cpp:756
+#: dialog_style_manager.cpp:721
+#: dialog_style_manager.cpp:724
+#: dialog_style_manager.cpp:757
+#: dialog_style_manager.cpp:760
 msgid "Could not parse style"
 msgstr "No s'ha pogut analitzar l'estil"
 
-#: dialog_style_manager.cpp:802
-#: dialog_style_manager.cpp:836
+#: dialog_style_manager.cpp:806
+#: dialog_style_manager.cpp:840
 msgid "Are you sure you want to delete these "
 msgstr "Esteu segur que voleu suprimir aquests "
 
-#: dialog_style_manager.cpp:804
-#: dialog_style_manager.cpp:838
+#: dialog_style_manager.cpp:808
+#: dialog_style_manager.cpp:842
 msgid " styles?"
 msgstr " estils?"
 
-#: dialog_style_manager.cpp:806
-#: dialog_style_manager.cpp:840
+#: dialog_style_manager.cpp:810
+#: dialog_style_manager.cpp:844
 msgid "Are you sure you want to delete this style?"
 msgstr "Esteu segur que voleu suprimir aquest estil?"
 
-#: dialog_style_manager.cpp:807
+#: dialog_style_manager.cpp:811
 msgid "Confirm delete from storage"
 msgstr "Confirmeu la supressió del magatzem"
 
-#: dialog_style_manager.cpp:841
+#: dialog_style_manager.cpp:845
 msgid "Confirm delete from current"
 msgstr "Confirmeu la supressió de l'actual"
 
-#: dialog_style_manager.cpp:857
+#: dialog_style_manager.cpp:861
 msgid "style delete"
 msgstr "supressió de l'estil"
 
-#: dialog_style_manager.cpp:869
-#: frame_main_events.cpp:666
-#: frame_main_events.cpp:684
+#: dialog_style_manager.cpp:873
+#: frame_main_events.cpp:665
+#: frame_main_events.cpp:683
 msgid "Open subtitles file"
 msgstr "Obre un fitxer de subtítols"
 
-#: dialog_style_manager.cpp:885
+#: dialog_style_manager.cpp:889
 msgid "The selected file has no available styles."
 msgstr "El fitxer seleccionat no té cap estil disponible."
 
-#: dialog_style_manager.cpp:885
+#: dialog_style_manager.cpp:889
 msgid "Error Importing Styles"
 msgstr "S'ha produït un error en importar estils"
 
-#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:895
 msgid "Choose styles to import:"
 msgstr "Escolliu els estils per importar:"
 
-#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:895
 msgid "Import Styles"
 msgstr "Importa estils"
 
-#: dialog_style_manager.cpp:919
+#: dialog_style_manager.cpp:926
 msgid "style import"
 msgstr "importació d'estils"
 
-#: dialog_style_manager.cpp:1076
+#: dialog_style_manager.cpp:1083
 msgid "Are you sure? This cannot be undone!"
 msgstr "N'esteu segur? Això no es podrà desfer!"
 
-#: dialog_style_manager.cpp:1076
+#: dialog_style_manager.cpp:1083
 msgid "Sort styles"
 msgstr "Ordena els estils"
 
-#: dialog_style_manager.cpp:1128
+#: dialog_style_manager.cpp:1135
 msgid "style move"
 msgstr "moviment de l'estil"
 
@@ -2861,7 +2862,7 @@ msgid "Comment starter:"
 msgstr "Inici dels comentaris:"
 
 #: dialog_timing_processor.cpp:55
-#: frame_main.cpp:262
+#: frame_main.cpp:265
 msgid "Timing Post-Processor"
 msgstr "Post-processador de temps"
 
@@ -3064,7 +3065,7 @@ msgid "If anything goes wrong, blame movax."
 msgstr "Si alguna cosa va malament, culpeu-ne en movax."
 
 #: dialog_translation.cpp:59
-#: frame_main.cpp:260
+#: frame_main.cpp:263
 msgid "Translation Assistant"
 msgstr "Ajudant de traducció"
 
@@ -3207,1012 +3208,1020 @@ msgstr "Marcs d'entrada:"
 msgid "Output: "
 msgstr "Sortida:"
 
-#: frame_main.cpp:177
+#: ffmpegsource_common.cpp:67
+msgid "Indexing"
+msgstr ""
+
+#: ffmpegsource_common.cpp:67
+msgid "Reading timecodes and frame/sample data"
+msgstr ""
+
+#: frame_main.cpp:179
 msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
 msgstr "Voleu que l'Aegisub comprovi si hi ha actualitzacions cada cop que s'iniciï? Podreu fer-ho manualment des del menú d'Ajuda."
 
-#: frame_main.cpp:177
+#: frame_main.cpp:179
 msgid "Check for updates?"
 msgstr "Comprovar si hi ha actualitzacions?"
 
-#: frame_main.cpp:210
-#: frame_main.cpp:308
+#: frame_main.cpp:213
+#: frame_main.cpp:311
 #: hotkeys.cpp:317
 msgid "New subtitles"
 msgstr "Nous subtítols"
 
-#: frame_main.cpp:211
+#: frame_main.cpp:214
 msgid "Open"
 msgstr "Obre"
 
-#: frame_main.cpp:211
+#: frame_main.cpp:214
 #: hotkeys.cpp:318
 msgid "Open subtitles"
 msgstr "Obre els subtítols"
 
-#: frame_main.cpp:212
+#: frame_main.cpp:215
 msgid "Save"
 msgstr "Desa"
 
-#: frame_main.cpp:212
+#: frame_main.cpp:215
 #: hotkeys.cpp:319
 msgid "Save subtitles"
 msgstr "Desa els subtítols"
 
-#: frame_main.cpp:216
+#: frame_main.cpp:219
 msgid "Jump To..."
 msgstr "Salta a..."
 
-#: frame_main.cpp:216
+#: frame_main.cpp:219
 msgid "Jump video to time/frame"
 msgstr "Salta al temps/marc del vídeo"
 
-#: frame_main.cpp:217
+#: frame_main.cpp:220
 msgid "Zoom in"
 msgstr "Amplia"
 
-#: frame_main.cpp:217
+#: frame_main.cpp:220
 msgid "Zoom video in"
 msgstr "Amplia el vídeo"
 
-#: frame_main.cpp:218
+#: frame_main.cpp:221
 msgid "Zoom out"
 msgstr "Redueix"
 
-#: frame_main.cpp:218
+#: frame_main.cpp:221
 msgid "Zoom video out"
 msgstr "Redueix el vídeo"
 
-#: frame_main.cpp:231
+#: frame_main.cpp:234
 msgid "Jump video to start"
 msgstr "Posa el vídeo a l'inici"
 
-#: frame_main.cpp:231
-#: frame_main.cpp:456
+#: frame_main.cpp:234
+#: frame_main.cpp:459
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr "Posa el vídeo al marc d'inici del subtítol actual"
 
-#: frame_main.cpp:232
+#: frame_main.cpp:235
 msgid "Jump video to end"
 msgstr "Posa el vídeo al final"
 
-#: frame_main.cpp:232
-#: frame_main.cpp:457
+#: frame_main.cpp:235
+#: frame_main.cpp:460
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr "Posa el vídeo al marc final del subtítol actual"
 
-#: frame_main.cpp:233
+#: frame_main.cpp:236
 msgid "Snap start to video"
 msgstr "Enganxa l'inici al vídeo"
 
-#: frame_main.cpp:233
-#: frame_main.cpp:396
+#: frame_main.cpp:236
+#: frame_main.cpp:399
 msgid "Set start of selected subtitles to current video frame"
 msgstr "Posa l'inici dels subtítols seleccionats al marc actual del vídeo"
 
-#: frame_main.cpp:234
+#: frame_main.cpp:237
 msgid "Snap end to video"
 msgstr "Enganxa el final al vídeo"
 
-#: frame_main.cpp:234
-#: frame_main.cpp:397
+#: frame_main.cpp:237
+#: frame_main.cpp:400
 msgid "Set end of selected subtitles to current video frame"
 msgstr "Posa el final dels subtítols al marc actual del vídeo"
 
-#: frame_main.cpp:235
+#: frame_main.cpp:238
 msgid "Select visible"
 msgstr "Selecciona els visibles"
 
-#: frame_main.cpp:235
+#: frame_main.cpp:238
 msgid "Selects all lines that are currently visible on video frame"
 msgstr "Selecciona totes les línies actualment visibles al marc del vídeo"
 
-#: frame_main.cpp:236
+#: frame_main.cpp:239
 msgid "Snap subtitles to scene"
 msgstr "Enganxa els subtítols a l'escena"
 
-#: frame_main.cpp:236
+#: frame_main.cpp:239
 msgid "Snap selected subtitles so they match current scene start/end"
 msgstr "Canvia el temps dels subtítols seleccionats perquè coincideixin amb l'inici i final de l'escena actual"
 
-#: frame_main.cpp:237
+#: frame_main.cpp:240
 msgid "Shift subtitles to frame"
 msgstr "Desplaça els subtítols al marc"
 
-#: frame_main.cpp:237
+#: frame_main.cpp:240
 msgid "Shift selected subtitles so first selected starts at this frame"
 msgstr "Desplaça els subtítols seleccionats de manera que el primer seleccionat comenci en aquest marc"
 
-#: frame_main.cpp:241
+#: frame_main.cpp:244
 msgid "Open Styles Manager"
 msgstr "Obre el gestor d'estils"
 
-#: frame_main.cpp:242
+#: frame_main.cpp:245
 msgid "Properties"
 msgstr "Propietats"
 
-#: frame_main.cpp:242
+#: frame_main.cpp:245
 msgid "Open Properties"
 msgstr "Obre les propietats"
 
-#: frame_main.cpp:243
+#: frame_main.cpp:246
 msgid "Attachments"
 msgstr "Adjuncions"
 
-#: frame_main.cpp:243
+#: frame_main.cpp:246
 msgid "Open Attachment List"
 msgstr " Obre la llista d'adjuncions"
 
-#: frame_main.cpp:244
+#: frame_main.cpp:247
 msgid "Open Fonts Collector"
 msgstr "Obre el col·lector de tipus de lletra"
 
-#: frame_main.cpp:249
+#: frame_main.cpp:252
 msgid "Open Automation manager"
 msgstr "Obre el gestor de l'automatització"
 
-#: frame_main.cpp:255
-#: frame_main.cpp:361
+#: frame_main.cpp:258
+#: frame_main.cpp:364
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
 msgstr "Engega l'eina \"ASSDraw3\" de l'ai-chan per dibuixar vectorialment."
 
-#: frame_main.cpp:258
+#: frame_main.cpp:261
 msgid "Open Shift Times Dialogue"
 msgstr "Obre el diàleg de desplaçament de temps"
 
-#: frame_main.cpp:259
+#: frame_main.cpp:262
 msgid "Styling Assistant"
 msgstr "Auxiliar d'estils"
 
-#: frame_main.cpp:259
+#: frame_main.cpp:262
 msgid "Open Styling Assistant"
 msgstr "Obre l'auxiliar d'estils"
 
-#: frame_main.cpp:260
+#: frame_main.cpp:263
 msgid "Open Translation Assistant"
 msgstr "Obre l'auxiliar de traducció"
 
-#: frame_main.cpp:261
+#: frame_main.cpp:264
 msgid "Resample"
 msgstr "Reajusta"
 
-#: frame_main.cpp:261
+#: frame_main.cpp:264
 msgid "Resample Script Resolution"
 msgstr "Reajusta la resolució de l''script'"
 
-#: frame_main.cpp:262
+#: frame_main.cpp:265
 msgid "Open Timing Post-processor dialog"
 msgstr "Obre el diàleg del post-processador de temps"
 
-#: frame_main.cpp:263
+#: frame_main.cpp:266
 msgid "Kanji Timer"
 msgstr "Creador de temps per a kanjis"
 
-#: frame_main.cpp:263
+#: frame_main.cpp:266
 msgid "Open Kanji Timer dialog"
 msgstr "Obre el diàleg del creador de temps per a kanjis"
 
-#: frame_main.cpp:264
+#: frame_main.cpp:267
 msgid "Open Spell checker"
 msgstr "Obre la correcció ortogràfica"
 
-#: frame_main.cpp:268
-#: frame_main.cpp:485
+#: frame_main.cpp:271
+#: frame_main.cpp:488
 msgid "Configure Aegisub"
 msgstr "Configura l'Aegisub"
 
-#: frame_main.cpp:269
+#: frame_main.cpp:272
 msgid "Cycle Tag Hidding Mode"
 msgstr "Canvia el mode d'amagat de les etiquetes"
 
-#: frame_main.cpp:269
+#: frame_main.cpp:272
 msgid "Cycle through tag-hiding modes"
 msgstr "Canvia els modes d'amagat de les etiquetes"
 
-#: frame_main.cpp:293
-#: frame_main.cpp:510
+#: frame_main.cpp:296
+#: frame_main.cpp:517
 msgid "&Help"
 msgstr "A&juda"
 
-#: frame_main.cpp:308
+#: frame_main.cpp:311
 msgid "&New Subtitles"
 msgstr "&Nous subtítols"
 
-#: frame_main.cpp:309
+#: frame_main.cpp:312
 msgid "&Open Subtitles..."
 msgstr "&Obre els subtítols..."
 
-#: frame_main.cpp:309
+#: frame_main.cpp:312
 msgid "Opens a subtitles file"
 msgstr "Obre un fitxer de subtítols"
 
-#: frame_main.cpp:310
+#: frame_main.cpp:313
 msgid "&Open Subtitles with Charset..."
 msgstr "&Obre els subtítols amb codificació..."
 
-#: frame_main.cpp:310
+#: frame_main.cpp:313
 msgid "Opens a subtitles file with a specific charset"
 msgstr "Obre un fitxer de subtítols amb una codificació específica"
 
-#: frame_main.cpp:311
+#: frame_main.cpp:314
 msgid "&Save Subtitles"
 msgstr "De&sa els subtítols"
 
-#: frame_main.cpp:311
+#: frame_main.cpp:314
 msgid "Saves subtitles"
 msgstr "Desa els subtítols"
 
-#: frame_main.cpp:312
+#: frame_main.cpp:315
 msgid "Save Subtitles as..."
 msgstr "Anomena i desa els subtítols..."
 
-#: frame_main.cpp:312
+#: frame_main.cpp:315
 msgid "Saves subtitles with another name"
 msgstr "Desa els subtítols amb un altre nom"
 
-#: frame_main.cpp:313
+#: frame_main.cpp:316
 msgid "Export Subtitles..."
 msgstr "Exporta els subtítols..."
 
-#: frame_main.cpp:313
+#: frame_main.cpp:316
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr "Desa una còpia dels subtítols aplicant-hi uns processos."
 
-#: frame_main.cpp:314
-#: frame_main.cpp:415
-#: frame_main.cpp:423
-#: frame_main.cpp:429
-#: frame_main.cpp:465
+#: frame_main.cpp:317
+#: frame_main.cpp:418
+#: frame_main.cpp:426
+#: frame_main.cpp:432
+#: frame_main.cpp:468
 msgid "Recent"
 msgstr "Recents"
 
-#: frame_main.cpp:320
+#: frame_main.cpp:323
 msgid "&Properties..."
 msgstr "&Propietats..."
 
-#: frame_main.cpp:320
+#: frame_main.cpp:323
 msgid "Open script properties window"
 msgstr "Obre la finestra de propietats de l''script'"
 
-#: frame_main.cpp:321
+#: frame_main.cpp:324
 msgid "&Attachments..."
 msgstr "&Adjuncions..."
 
-#: frame_main.cpp:321
+#: frame_main.cpp:324
 msgid "Open the attachment list"
 msgstr "Obre la llista d'adjuncions"
 
-#: frame_main.cpp:322
+#: frame_main.cpp:325
 msgid "&Fonts Collector..."
 msgstr "Col·lector de tipus de &lletra..."
 
-#: frame_main.cpp:322
+#: frame_main.cpp:325
 msgid "Open fonts collector"
 msgstr "Obre el col·lector de tipus de lletra"
 
-#: frame_main.cpp:326
+#: frame_main.cpp:329
 msgid "New Window"
 msgstr "Finestra nova"
 
-#: frame_main.cpp:326
+#: frame_main.cpp:329
 msgid "Open a new application window"
 msgstr "Obre una nova finestra d'aplicació"
 
-#: frame_main.cpp:328
+#: frame_main.cpp:331
 msgid "E&xit"
 msgstr "S&urt"
 
-#: frame_main.cpp:328
+#: frame_main.cpp:331
 msgid "Exit the application"
 msgstr "Surt de l'aplicació"
 
-#: frame_main.cpp:329
+#: frame_main.cpp:332
 msgid "&File"
 msgstr "&Fitxer"
 
-#: frame_main.cpp:334
+#: frame_main.cpp:337
 #: frame_main_events.cpp:418
 #: subs_edit_ctrl.cpp:929
 msgid "&Undo"
 msgstr "&Desfés"
 
-#: frame_main.cpp:334
+#: frame_main.cpp:337
 #: frame_main_events.cpp:418
 msgid "Undoes last action"
 msgstr "Desfà l'última acció"
 
-#: frame_main.cpp:335
+#: frame_main.cpp:338
 #: frame_main_events.cpp:419
 msgid "&Redo"
 msgstr "&Refés"
 
-#: frame_main.cpp:335
+#: frame_main.cpp:338
 #: frame_main_events.cpp:419
 msgid "Redoes last action"
 msgstr "Refà l'última acció"
 
-#: frame_main.cpp:337
+#: frame_main.cpp:340
 msgid "Cut Lines"
 msgstr "Retalla les línies"
 
-#: frame_main.cpp:337
+#: frame_main.cpp:340
 msgid "Cut subtitles"
 msgstr "Retalla els subtítols"
 
-#: frame_main.cpp:338
+#: frame_main.cpp:341
 msgid "Copy Lines"
 msgstr "Copia les línies"
 
-#: frame_main.cpp:338
+#: frame_main.cpp:341
 msgid "Copy subtitles"
 msgstr "Copia els subtítols"
 
-#: frame_main.cpp:339
+#: frame_main.cpp:342
 msgid "Paste Lines"
 msgstr "Enganxa les línies"
 
-#: frame_main.cpp:339
+#: frame_main.cpp:342
 msgid "Paste subtitles"
 msgstr "Enganxa els subtítols"
 
-#: frame_main.cpp:340
+#: frame_main.cpp:343
 msgid "Paste Lines Over..."
 msgstr "Enganxa les línies sobre..."
 
-#: frame_main.cpp:340
+#: frame_main.cpp:343
 msgid "Paste subtitles over others"
 msgstr "Enganxa els subtítols damunt dels altres"
 
-#: frame_main.cpp:342
+#: frame_main.cpp:345
 msgid "&Find..."
 msgstr "C&erca..."
 
-#: frame_main.cpp:342
+#: frame_main.cpp:345
 msgid "Find words in subtitles"
 msgstr "Cerca paraules als subtítols"
 
-#: frame_main.cpp:343
+#: frame_main.cpp:346
 #: hotkeys.cpp:340
 #: hotkeys.cpp:343
 msgid "Find Next"
 msgstr "Cerca el següent"
 
-#: frame_main.cpp:343
+#: frame_main.cpp:346
 msgid "Find next match of last word"
 msgstr "Cerca la següent coincidència de l'última paraula"
 
-#: frame_main.cpp:344
+#: frame_main.cpp:347
 msgid "Search and &Replace..."
 msgstr "Cerca i substituei&x..."
 
-#: frame_main.cpp:344
+#: frame_main.cpp:347
 msgid "Find and replace words in subtitles"
 msgstr "Cerca i substitueix paraules als subtítols"
 
-#: frame_main.cpp:345
+#: frame_main.cpp:348
 msgid "&Edit"
 msgstr "&Edita"
 
-#: frame_main.cpp:350
+#: frame_main.cpp:353
 msgid "&Insert Lines"
 msgstr "&Insereix línies"
 
-#: frame_main.cpp:354
+#: frame_main.cpp:357
 msgid "&Styles Manager..."
 msgstr "Ge&stor d'estils..."
 
-#: frame_main.cpp:354
+#: frame_main.cpp:357
 msgid "Open styles manager"
 msgstr "Obre el gestor d'estils"
 
-#: frame_main.cpp:355
+#: frame_main.cpp:358
 msgid "St&yling Assistant..."
 msgstr "Au&xiliar d'estils..."
 
-#: frame_main.cpp:355
+#: frame_main.cpp:358
 msgid "Open styling assistant"
 msgstr "Obre l'auxiliar d'estils"
 
-#: frame_main.cpp:356
+#: frame_main.cpp:359
 msgid "&Translation Assistant..."
 msgstr "Auxiliar de &traducció..."
 
-#: frame_main.cpp:356
+#: frame_main.cpp:359
 msgid "Open translation assistant"
 msgstr "Obre l'auxiliar de traducció"
 
-#: frame_main.cpp:357
+#: frame_main.cpp:360
 msgid "Resample Resolution..."
 msgstr "Reajusta la resolució..."
 
-#: frame_main.cpp:357
+#: frame_main.cpp:360
 msgid "Changes resolution and modifies subtitles to conform to change"
 msgstr "Canvia la resolució i modifica els subtítols perquè s'adaptin al canvi"
 
-#: frame_main.cpp:358
+#: frame_main.cpp:361
 msgid "Spe&ll Checker..."
 msgstr "Correcció &ortogràfica..."
 
-#: frame_main.cpp:358
+#: frame_main.cpp:361
 msgid "Open spell checker"
 msgstr "Obre la correcció ortogràfica"
 
-#: frame_main.cpp:364
+#: frame_main.cpp:367
 msgid "&Before Current"
 msgstr "A&bans de l'actual"
 
-#: frame_main.cpp:364
+#: frame_main.cpp:367
 msgid "Inserts a line before current"
 msgstr "Insereix una línia abans de l'actual"
 
-#: frame_main.cpp:365
+#: frame_main.cpp:368
 msgid "&After Current"
 msgstr "Després de l'&actual"
 
-#: frame_main.cpp:365
+#: frame_main.cpp:368
 msgid "Inserts a line after current"
 msgstr "Insereix una línia després de l'actual"
 
-#: frame_main.cpp:366
+#: frame_main.cpp:369
 msgid "Before Current, at Video Time"
 msgstr "Abans de l'actual, al temps del vídeo"
 
-#: frame_main.cpp:366
+#: frame_main.cpp:369
 msgid "Inserts a line before current, starting at video time"
 msgstr "Insereix una línia abans de l'actual, començant al temps del vídeo"
 
-#: frame_main.cpp:367
+#: frame_main.cpp:370
 msgid "After Current, at Video Time"
 msgstr "Després de l'actual, al temps del vídeo"
 
-#: frame_main.cpp:367
+#: frame_main.cpp:370
 msgid "Inserts a line after current, starting at video time"
 msgstr "Insereix una línia després de l'actual, començant al temps del vídeo"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:372
 msgid "&Duplicate Lines"
 msgstr "&Duplica les línies"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:372
 #: subs_grid.cpp:164
 msgid "Duplicate the selected lines"
 msgstr "Duplica les línies seleccionades"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:373
 msgid "&Duplicate and Shift by 1 Frame"
 msgstr "&Duplica i desplaça un marc"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:373
 #: subs_grid.cpp:165
 msgid "Duplicate lines and shift by one frame"
 msgstr "Duplica les línies i desplaça-les un marc"
 
-#: frame_main.cpp:371
+#: frame_main.cpp:374
 msgid "Delete Lines"
 msgstr "Suprimeix les línies"
 
-#: frame_main.cpp:371
+#: frame_main.cpp:374
 #: subs_grid.cpp:201
 msgid "Delete currently selected lines"
 msgstr "Suprimeix les línies seleccionades"
 
-#: frame_main.cpp:374
+#: frame_main.cpp:377
 msgid "Join Lines"
 msgstr "Uneix les línies"
 
-#: frame_main.cpp:378
+#: frame_main.cpp:381
 msgid "&Concatenate"
 msgstr "&Concatena"
 
-#: frame_main.cpp:378
+#: frame_main.cpp:381
 #: subs_grid.cpp:174
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr "Uneix les línies seleccionades en una de sola, concatenant-ne el text"
 
-#: frame_main.cpp:379
+#: frame_main.cpp:382
 msgid "Keep &First"
 msgstr "&Mantingues la primera"
 
-#: frame_main.cpp:379
+#: frame_main.cpp:382
 #: subs_grid.cpp:175
 msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
 msgstr "Uneix les línies seleccionades en una de sola, mantenint el text de la primera i descartant el de la resta"
 
-#: frame_main.cpp:380
+#: frame_main.cpp:383
 msgid "As &Karaoke"
 msgstr "Com a &karaoke"
 
-#: frame_main.cpp:380
+#: frame_main.cpp:383
 msgid "Joins selected lines in a single one, as karaoke"
 msgstr "Uneix les línies seleccionades en una de sola, com a karaoke"
 
-#: frame_main.cpp:382
+#: frame_main.cpp:385
 #: subs_grid.cpp:185
 msgid "Recombine Lines"
 msgstr "Recombina les línies"
 
-#: frame_main.cpp:382
+#: frame_main.cpp:385
 #: subs_grid.cpp:185
 msgid "Recombine subtitles when they have been split and merged"
 msgstr "Recombina els subtítols quan s'han dividit i unit"
 
-#: frame_main.cpp:383
+#: frame_main.cpp:386
 msgid "Split Lines (by karaoke)"
 msgstr "Divideix les línies (per karaoke)"
 
-#: frame_main.cpp:383
+#: frame_main.cpp:386
 #: subs_grid.cpp:166
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr "Utilitza els temps del karaoke per dividir la línia en múltiples línies més petites"
 
-#: frame_main.cpp:385
+#: frame_main.cpp:388
 msgid "Swap Lines"
 msgstr "Intercanvia les línies"
 
-#: frame_main.cpp:385
+#: frame_main.cpp:388
 #: subs_grid.cpp:170
 msgid "Swaps the two selected lines"
 msgstr "Intercanvia les dues línies seleccionades"
 
-#: frame_main.cpp:386
+#: frame_main.cpp:389
 msgid "Select Lines..."
 msgstr "Selecciona línies..."
 
-#: frame_main.cpp:386
+#: frame_main.cpp:389
 msgid "Selects lines based on defined criterea"
 msgstr "Selecciona les línies basant-se en un criteri definit"
 
-#: frame_main.cpp:387
+#: frame_main.cpp:390
 msgid "&Subtitles"
 msgstr "&Subtítols"
 
-#: frame_main.cpp:391
+#: frame_main.cpp:394
 msgid "S&hift Times..."
 msgstr "Des&plaça els temps..."
 
-#: frame_main.cpp:391
+#: frame_main.cpp:394
 msgid "Shift subtitles by time or frames"
 msgstr "Desplaça els subtítols per temps o per marcs"
 
-#: frame_main.cpp:392
+#: frame_main.cpp:395
 msgid "Sort by Time"
 msgstr "Ordena per temps"
 
-#: frame_main.cpp:392
+#: frame_main.cpp:395
 msgid "Sort all subtitles by their start times"
 msgstr "Ordena tots els subtítols pel seu temps d'inici"
 
-#: frame_main.cpp:393
+#: frame_main.cpp:396
 msgid "Timing Post-Processor..."
 msgstr "Post-processador de temps..."
 
-#: frame_main.cpp:393
+#: frame_main.cpp:396
 msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
 msgstr "Executa un post-processador per al temps per tractar els temps d'entrada i de sortida, el temps de les escenes, etcètera."
 
-#: frame_main.cpp:394
+#: frame_main.cpp:397
 msgid "Kanji Timer..."
 msgstr "Creador de temps per a kanjis..."
 
-#: frame_main.cpp:394
+#: frame_main.cpp:397
 msgid "Open Kanji timer"
 msgstr "Obre el creador de temps per a kanjis"
 
-#: frame_main.cpp:396
+#: frame_main.cpp:399
 msgid "Snap Start to Video"
 msgstr "Enganxa l'inici al vídeo"
 
-#: frame_main.cpp:397
+#: frame_main.cpp:400
 msgid "Snap End to Video"
 msgstr "Enganxa el final al vídeo"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:401
 #: hotkeys.cpp:361
 msgid "Snap to Scene"
 msgstr "Enganxa a l'escena"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:401
 msgid "Set start and end of subtitles to the keyframes around current video frame"
 msgstr "Posa l'inici i el final dels subtítols als marcs clau al voltant del marc de vídeo actual"
 
-#: frame_main.cpp:399
+#: frame_main.cpp:402
 msgid "Shift to Current Frame"
 msgstr "Desplaça al marc actual"
 
-#: frame_main.cpp:399
+#: frame_main.cpp:402
 msgid "Shift selection so first selected line starts at current frame"
 msgstr "Desplaça la selecció de manera que la primera línia seleccionada comenci al marc actual"
 
-#: frame_main.cpp:402
+#: frame_main.cpp:405
 msgid "Make Times Continuous"
 msgstr "Fe&s els temps continus"
 
-#: frame_main.cpp:406
+#: frame_main.cpp:409
 msgid "Change &Start"
 msgstr "Canvia l'&inici"
 
-#: frame_main.cpp:406
+#: frame_main.cpp:409
 #: subs_grid.cpp:180
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr "Canvia els temps dels subtítols perquè els temps d'inici comencin al temps de final dels anteriors"
 
-#: frame_main.cpp:407
+#: frame_main.cpp:410
 msgid "Change &End"
 msgstr "Canvia &el final"
 
-#: frame_main.cpp:407
+#: frame_main.cpp:410
 #: subs_grid.cpp:181
 msgid "Changes times of subs so end times begin on next's start time"
 msgstr "Canvia els temps dels subtítols perquè els temps de final comencin al temps d'inici dels següents"
 
-#: frame_main.cpp:409
+#: frame_main.cpp:412
 msgid "&Timing"
 msgstr "&Temps"
 
-#: frame_main.cpp:413
+#: frame_main.cpp:416
 msgid "&Open Video..."
 msgstr "&Obre un vídeo..."
 
-#: frame_main.cpp:413
+#: frame_main.cpp:416
 msgid "Opens a video file"
 msgstr "Obre un fitxer de vídeo"
 
-#: frame_main.cpp:414
+#: frame_main.cpp:417
 msgid "&Close Video"
 msgstr "Tan&ca el vídeo"
 
-#: frame_main.cpp:414
+#: frame_main.cpp:417
 msgid "Closes the currently open video file"
 msgstr "Tanca el fitxer de vídeo obert actualment"
 
-#: frame_main.cpp:417
+#: frame_main.cpp:420
 msgid "Use Dummy Video..."
 msgstr "Utilitza un vídeo fictici..."
 
-#: frame_main.cpp:417
+#: frame_main.cpp:420
 msgid "Opens a video clip with solid colour"
 msgstr "Obre una peça de vídeo amb color sòlid"
 
-#: frame_main.cpp:418
+#: frame_main.cpp:421
 msgid "Show Video Details..."
 msgstr "Mostra els detalls del vídeo..."
 
-#: frame_main.cpp:418
+#: frame_main.cpp:421
 msgid "Shows video details"
 msgstr "Mostra detalls del vídeo"
 
-#: frame_main.cpp:420
+#: frame_main.cpp:423
 msgid "Open Timecodes File..."
 msgstr "Obre un fitxer de codis de temps..."
 
-#: frame_main.cpp:420
+#: frame_main.cpp:423
 msgid "Opens a VFR timecodes v1 or v2 file"
 msgstr "Obre un fitxer de codis de temps VFR (marcs variables) v1 o v2"
 
-#: frame_main.cpp:421
+#: frame_main.cpp:424
 msgid "Save Timecodes File..."
 msgstr "Desa el fitxer de codis de temps..."
 
-#: frame_main.cpp:421
+#: frame_main.cpp:424
 msgid "Saves a VFR timecodes v2 file"
 msgstr "Desa un fitxer de codis de temps VFR v2"
 
-#: frame_main.cpp:422
+#: frame_main.cpp:425
 msgid "Close Timecodes File"
 msgstr "Tanca el fitxer de codis de temps"
 
-#: frame_main.cpp:422
+#: frame_main.cpp:425
 msgid "Closes the currently open timecodes file"
 msgstr "Tanca el fitxer de codis de temps obert actualment"
 
-#: frame_main.cpp:426
+#: frame_main.cpp:429
 msgid "Open Keyframes..."
 msgstr "Obre els marcs clau..."
 
-#: frame_main.cpp:426
+#: frame_main.cpp:429
 msgid "Opens a keyframe list file"
 msgstr "Obre un fitxer d'una llista de marcs clau"
 
-#: frame_main.cpp:427
+#: frame_main.cpp:430
 msgid "Save Keyframes..."
 msgstr "Desa els marcs clau..."
 
-#: frame_main.cpp:427
+#: frame_main.cpp:430
 msgid "Saves the current keyframe list"
 msgstr "Desa la llista de marcs clau actual"
 
-#: frame_main.cpp:428
+#: frame_main.cpp:431
 msgid "Close Keyframes"
 msgstr "Tanca els marcs clau"
 
-#: frame_main.cpp:428
+#: frame_main.cpp:431
 msgid "Closes the currently open keyframes list"
 msgstr "Tanca la llista de marcs clau oberta"
 
-#: frame_main.cpp:432
+#: frame_main.cpp:435
 msgid "Detach Video"
 msgstr "Desancora el vídeo"
 
-#: frame_main.cpp:432
+#: frame_main.cpp:435
 msgid "Detach video, displaying it in a separate Window."
 msgstr "Desancora el vídeo, mostrant-lo en una finestra separada."
 
-#: frame_main.cpp:434
+#: frame_main.cpp:437
 msgid "Set Zoom"
 msgstr "Defineix l'ampliació"
 
-#: frame_main.cpp:438
+#: frame_main.cpp:441
 msgid "Set zoom to 50%"
 msgstr "Defineix l'ampliació al 50%"
 
-#: frame_main.cpp:439
+#: frame_main.cpp:442
 msgid "Set zoom to 100%"
 msgstr "Defineix l'ampliació al 100%"
 
-#: frame_main.cpp:440
+#: frame_main.cpp:443
 msgid "Set zoom to 200%"
 msgstr "Defineix l'ampliació al 200%"
 
-#: frame_main.cpp:443
+#: frame_main.cpp:446
 msgid "Override Aspect Ratio"
 msgstr "Ignora la relació d'aspecte"
 
-#: frame_main.cpp:447
+#: frame_main.cpp:450
 msgid "&Default"
 msgstr "Pre&definit"
 
-#: frame_main.cpp:447
+#: frame_main.cpp:450
 msgid "Leave video on original aspect ratio"
 msgstr "Deixa el vídeo amb la relació d'aspecte original"
 
-#: frame_main.cpp:448
+#: frame_main.cpp:451
 msgid "&Fullscreen (4:3)"
 msgstr "Panta&lla completa (4:3)"
 
-#: frame_main.cpp:448
+#: frame_main.cpp:451
 msgid "Forces video to 4:3 aspect ratio"
 msgstr "Força la relació d'aspecte del vídeo a 4:3"
 
-#: frame_main.cpp:449
+#: frame_main.cpp:452
 msgid "&Widescreen (16:9)"
 msgstr "Pantalla panorà&mica (16:9)"
 
-#: frame_main.cpp:449
+#: frame_main.cpp:452
 msgid "Forces video to 16:9 aspect ratio"
 msgstr "Força la relació d'aspecte del vídeo a 16:9"
 
-#: frame_main.cpp:450
+#: frame_main.cpp:453
 msgid "&Cinematic (2.35)"
 msgstr "&Pantalla cinemàtica (2.35)"
 
-#: frame_main.cpp:450
+#: frame_main.cpp:453
 msgid "Forces video to 2.35 aspect ratio"
 msgstr "Força la relació d'aspecte del vídeo a 2.35"
 
-#: frame_main.cpp:451
+#: frame_main.cpp:454
 msgid "Custom..."
 msgstr "Personalitzada..."
 
-#: frame_main.cpp:451
+#: frame_main.cpp:454
 msgid "Forces video to a custom aspect ratio"
 msgstr "Força la relació d'aspecte del vídeo a un valor personalitzat"
 
-#: frame_main.cpp:453
+#: frame_main.cpp:456
 msgid "Show Overscan Mask"
 msgstr "Mostra la màscara de sobreescaneig"
 
-#: frame_main.cpp:453
+#: frame_main.cpp:456
 msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
 msgstr "Mostra una masca sobre el vídeo, indicant les àres que poden ser retallades per sobreescaneig als televisors."
 
-#: frame_main.cpp:455
+#: frame_main.cpp:458
 msgid "&Jump to..."
 msgstr "&Salta a..."
 
-#: frame_main.cpp:455
+#: frame_main.cpp:458
 msgid "Jump to frame or time"
 msgstr "Salta a un marc o un temps"
 
-#: frame_main.cpp:456
+#: frame_main.cpp:459
 #: hotkeys.cpp:357
 msgid "Jump Video to Start"
 msgstr "Posa el vídeo a l'inici"
 
-#: frame_main.cpp:457
+#: frame_main.cpp:460
 #: hotkeys.cpp:358
 msgid "Jump Video to End"
 msgstr "Posa el vídeo al final"
 
-#: frame_main.cpp:458
+#: frame_main.cpp:461
 msgid "&Video"
 msgstr "&Vídeo"
 
-#: frame_main.cpp:462
+#: frame_main.cpp:465
 msgid "&Open Audio File..."
 msgstr "&Obre un fitxer d'àudio..."
 
-#: frame_main.cpp:462
+#: frame_main.cpp:465
 msgid "Opens an audio file"
 msgstr "Obre un fitxer d'àudio"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:466
 msgid "Open Audio from &Video"
 msgstr "Obre l'àudio del &vídeo"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:466
 msgid "Opens the audio from the current video file"
 msgstr "Obre l'àudio del fitxer de vídeo actual"
 
-#: frame_main.cpp:464
+#: frame_main.cpp:467
 msgid "&Close Audio"
 msgstr "Tan&ca l'àudio"
 
-#: frame_main.cpp:464
+#: frame_main.cpp:467
 msgid "Closes the currently open audio file"
 msgstr "Tanca el fitxer d'àudio obert actualment"
 
-#: frame_main.cpp:472
+#: frame_main.cpp:475
 msgid "&Audio"
 msgstr "À&udio"
 
-#: frame_main.cpp:477
+#: frame_main.cpp:480
 msgid "&Automation..."
 msgstr "&Automatització..."
 
-#: frame_main.cpp:477
+#: frame_main.cpp:480
 msgid "Open automation manager"
 msgstr "Obre el gestor de l'automatització"
 
-#: frame_main.cpp:479
+#: frame_main.cpp:482
 msgid "&Automation"
 msgstr "&Automatització"
 
-#: frame_main.cpp:484
+#: frame_main.cpp:487
 msgid "Select Aegisub interface language"
 msgstr "Seleccioneu l'idioma de la interfície de l'Aegisub"
 
-#: frame_main.cpp:485
+#: frame_main.cpp:488
 msgid "&Options..."
 msgstr "&Opcions..."
 
-#: frame_main.cpp:487
+#: frame_main.cpp:490
 msgid "&Associations..."
 msgstr "&Associacions..."
 
-#: frame_main.cpp:487
+#: frame_main.cpp:490
 msgid "Associate file types with Aegisub"
 msgstr "Associa tipus de fitxers amb l'Aegisub"
 
-#: frame_main.cpp:490
+#: frame_main.cpp:493
 msgid "Lo&g Window..."
 msgstr "Finestra del re&gistre..."
 
-#: frame_main.cpp:490
+#: frame_main.cpp:493
 msgid "Open log window"
 msgstr "Obre la finestra del registre"
 
-#: frame_main.cpp:493
+#: frame_main.cpp:496
 msgid "Subs Only View"
 msgstr "Vista només dels subtítols"
 
-#: frame_main.cpp:493
+#: frame_main.cpp:496
 msgid "Display subtitles only"
 msgstr "Mostra només els subtítols"
 
-#: frame_main.cpp:494
+#: frame_main.cpp:497
 msgid "Video+Subs View"
 msgstr "Vista dels vídeo i els subtítols"
 
-#: frame_main.cpp:494
+#: frame_main.cpp:497
 msgid "Display video and subtitles only"
 msgstr "Mostra només els subtítols i el vídeo"
 
-#: frame_main.cpp:495
+#: frame_main.cpp:498
 msgid "Audio+Subs View"
 msgstr "Vista de l'àudio i els subtítols"
 
-#: frame_main.cpp:495
+#: frame_main.cpp:498
 msgid "Display audio and subtitles only"
 msgstr "Mostra només els subtítols i l'àudio"
 
-#: frame_main.cpp:496
+#: frame_main.cpp:499
 msgid "Full view"
 msgstr "Vista completa"
 
-#: frame_main.cpp:496
+#: frame_main.cpp:499
 msgid "Display audio, video and subtitles"
 msgstr "Mostra els subtítols, l'àudio i el vídeo"
 
-#: frame_main.cpp:497
+#: frame_main.cpp:500
 msgid "Vie&w"
 msgstr "&Visualitza"
 
-#: frame_main.cpp:501
+#: frame_main.cpp:504
 msgid "&Contents..."
 msgstr "&Contingut..."
 
-#: frame_main.cpp:501
+#: frame_main.cpp:504
 msgid "Help topics"
 msgstr "Temes d'ajuda"
 
-#: frame_main.cpp:503
+#: frame_main.cpp:506
 msgid "&Website..."
 msgstr "Pàgina &web..."
 
-#: frame_main.cpp:503
+#: frame_main.cpp:506
 msgid "Visit Aegisub's official website"
 msgstr "Visita la pàgina web oficial de l'Aegisub"
 
-#: frame_main.cpp:504
+#: frame_main.cpp:507
 msgid "&Forums..."
 msgstr "&Fòrums..."
 
-#: frame_main.cpp:504
+#: frame_main.cpp:507
 msgid "Visit Aegisub's forums"
 msgstr "Visita els fòrums de l'Aegisub"
 
-#: frame_main.cpp:505
+#: frame_main.cpp:508
 msgid "&Bug Tracker..."
 msgstr "&Sistema de seguiment d'errors..."
 
-#: frame_main.cpp:505
+#: frame_main.cpp:508
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Visita el sistema de seguiment d'errors de l'Aegisub per avisar d'errades i demanar noves funcionalitats"
 
-#: frame_main.cpp:506
+#: frame_main.cpp:509
 msgid "&IRC Channel..."
 msgstr "Canal d'&IRC..."
 
-#: frame_main.cpp:506
+#: frame_main.cpp:509
 msgid "Visit Aegisub's official IRC channel"
 msgstr "Visita el canal d'IRC oficial de l'Aegisub"
 
-#: frame_main.cpp:508
+#: frame_main.cpp:514
 msgid "&Check for Updates..."
 msgstr "&Comprova si hi ha actualitzacions..."
 
-#: frame_main.cpp:508
+#: frame_main.cpp:514
 msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Comprova si hi ha una nova versió de l'Aegisub disponible"
 
-#: frame_main.cpp:509
+#: frame_main.cpp:516
 msgid "&About..."
 msgstr "&Quant a..."
 
-#: frame_main.cpp:703
+#: frame_main.cpp:710
 msgid "Save subtitles file"
 msgstr "Desa el fitxer de subtítols"
 
-#: frame_main.cpp:722
-#: frame_main_events.cpp:686
+#: frame_main.cpp:729
+#: frame_main_events.cpp:685
 msgid "Choose charset code:"
 msgstr "Escolliu el codi de la codificació:"
 
-#: frame_main.cpp:752
+#: frame_main.cpp:759
 msgid "Save before continuing?"
 msgstr "Voleu desar abans de continuar?"
 
-#: frame_main.cpp:752
+#: frame_main.cpp:759
 msgid "Unsaved changes"
 msgstr "Canvis no desats"
 
-#: frame_main.cpp:895
+#: frame_main.cpp:902
 msgid "Do you want to load/unload the associated files?"
 msgstr "Voleu carregar o descarregar els fitxers associats?"
 
-#: frame_main.cpp:895
+#: frame_main.cpp:902
 msgid "(Un)Load files?"
 msgstr "Càrrega de fitxers"
 
-#: frame_main.cpp:1040
+#: frame_main.cpp:1047
 msgid "You have timecodes loaded currently. Would you like to unload them?"
 msgstr "Ja teniu codis de temps carregats. Els voleu descarregar?"
 
-#: frame_main.cpp:1040
+#: frame_main.cpp:1047
 msgid "Unload timecodes?"
 msgstr "Descàrrega de codis de temps"
 
-#: frame_main.cpp:1071
+#: frame_main.cpp:1078
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
@@ -4229,11 +4238,11 @@ msgstr ""
 "\n"
 "Voleu canviar la resolució dels subtítols perquè coincideixi amb la del vídeo?"
 
-#: frame_main.cpp:1071
+#: frame_main.cpp:1078
 msgid "Resolution mismatch"
 msgstr "Resolució no coincident"
 
-#: frame_main.cpp:1078
+#: frame_main.cpp:1085
 msgid "Change script resolution"
 msgstr "Canvia la resolució de l''script'"
 
@@ -4246,113 +4255,106 @@ msgid "No Automation macros loaded"
 msgstr "No s'han carregat macros d'Automatització"
 
 #: frame_main_events.cpp:608
-msgid "Recommended Formats"
-msgstr "Formats recomanats"
+#: frame_main_events.cpp:631
+msgid "Video Formats"
+msgstr "Formats de vídeo"
 
 #: frame_main_events.cpp:609
-msgid "Other supported formats"
-msgstr "Altres formats suportats"
-
-#: frame_main_events.cpp:610
-#: frame_main_events.cpp:760
-#: frame_main_events.cpp:775
+#: frame_main_events.cpp:759
+#: frame_main_events.cpp:774
 msgid "All Files"
 msgstr "Tots els fitxers"
 
-#: frame_main_events.cpp:611
+#: frame_main_events.cpp:610
 msgid "Open video file"
 msgstr "Obre un fitxer de vídeo"
 
-#: frame_main_events.cpp:631
+#: frame_main_events.cpp:630
 msgid "Audio Formats"
 msgstr "Formats d'àudio"
 
 #: frame_main_events.cpp:632
-msgid "Video Formats"
-msgstr "Formats de vídeo"
-
-#: frame_main_events.cpp:633
 msgid "All files"
 msgstr "Tots els fitxers"
 
-#: frame_main_events.cpp:634
+#: frame_main_events.cpp:633
 msgid "Open audio file"
 msgstr "Obre un fitxer d'àudio"
 
-#: frame_main_events.cpp:686
+#: frame_main_events.cpp:685
 msgid "Charset"
 msgstr "Codificació"
 
-#: frame_main_events.cpp:759
-#: frame_main_events.cpp:774
+#: frame_main_events.cpp:758
+#: frame_main_events.cpp:773
 msgid "All Supported Types"
 msgstr "Tots els tipus suportats"
 
-#: frame_main_events.cpp:761
+#: frame_main_events.cpp:760
 msgid "Open timecodes file"
 msgstr "Obre un fitxer de codis de temps"
 
-#: frame_main_events.cpp:776
+#: frame_main_events.cpp:775
 msgid "Save timecodes file"
 msgstr "Desa el fitxer de codis de temps"
 
-#: frame_main_events.cpp:1068
+#: frame_main_events.cpp:1067
 msgid "Reloaded all Automation scripts"
 msgstr "S'han recarregat tots els 'scripts' d'Automatització"
 
-#: frame_main_events.cpp:1071
+#: frame_main_events.cpp:1070
 msgid "Reloaded autoload Automation scripts"
 msgstr "S'han recarregat els 'scripts' d'Automatització de càrrega automàtica"
 
-#: frame_main_events.cpp:1208
+#: frame_main_events.cpp:1207
 msgid "snap to scene"
 msgstr "enganxa a l'escena"
 
-#: frame_main_events.cpp:1239
+#: frame_main_events.cpp:1238
 msgid "shift to frame"
 msgstr "desplaça al marc"
 
-#: frame_main_events.cpp:1335
+#: frame_main_events.cpp:1334
 msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
 msgstr "Introduïu la relació d'aspecte de manera decimal (p. ex. 2.35) o fraccional (p. ex. 16:9). Introduïu un valor com ara 853x480 per definir una resolució específica."
 
-#: frame_main_events.cpp:1335
+#: frame_main_events.cpp:1334
 msgid "Enter aspect ratio"
 msgstr "Introduïu la relació d'aspecte"
 
-#: frame_main_events.cpp:1370
+#: frame_main_events.cpp:1369
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr "Valor invàlid! La relació d'aspecte ha d'estar entre 0.5 i 5.0."
 
-#: frame_main_events.cpp:1370
+#: frame_main_events.cpp:1369
 msgid "Invalid Aspect Ratio"
 msgstr "Relació d'aspecte invàlida"
 
-#: frame_main_events.cpp:1471
+#: frame_main_events.cpp:1470
 msgid "sort"
 msgstr "ordena"
 
-#: frame_main_events.cpp:1510
+#: frame_main_events.cpp:1509
 msgid "File backup saved as \""
 msgstr "S'ha desat una còpia de seguretat del fitxer com a \""
 
-#: frame_main_events.cpp:1604
+#: frame_main_events.cpp:1603
 msgid "ASS Override Tag mode set to "
 msgstr "El mode de visualització de les etiquetes ASS s'ha canviat a "
 
-#: frame_main_events.cpp:1605
+#: frame_main_events.cpp:1604
 msgid "show full tags."
 msgstr "mostrar les etiquetes completes."
 
-#: frame_main_events.cpp:1606
+#: frame_main_events.cpp:1605
 msgid "simplify tags."
 msgstr "simplificar les etiquetes."
 
-#: frame_main_events.cpp:1607
+#: frame_main_events.cpp:1606
 msgid "hide tags."
 msgstr "amagar les etiquetes."
 
-#: frame_main_events.cpp:1629
+#: frame_main_events.cpp:1628
 #: subs_edit_box.cpp:911
 msgid "editing"
 msgstr "edició"
@@ -4704,7 +4706,7 @@ msgstr "S'estan llegint els marcs clau i les dades dels codis de temps del fitxe
 msgid "Reading subtitles from Matroska file."
 msgstr "S'estan llegint els subtítols del fitxer Matroska."
 
-#: options.cpp:445
+#: options.cpp:446
 msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
 msgstr "El fitxer de configuració és invàlid o corrupte. Es farà una còpia de seguretat del fitxer actual i se substituirà per un fitxer amb valors predefinits."
 
@@ -4992,56 +4994,56 @@ msgstr "Enganxa les línies del porta-retalls"
 msgid "splitting"
 msgstr "divisió"
 
-#: subs_grid.cpp:645
+#: subs_grid.cpp:649
 msgid "combining"
 msgstr "combinació"
 
-#: subs_grid.cpp:676
+#: subs_grid.cpp:680
 msgid "The starting point is beyond the length of the audio loaded."
 msgstr "El punt d'inici és més enllà de la llargada de l'àudio carregat."
 
-#: subs_grid.cpp:680
+#: subs_grid.cpp:684
 msgid "There is no audio to save."
 msgstr "No hi ha cap àudio per desar."
 
-#: subs_grid.cpp:687
+#: subs_grid.cpp:691
 msgid "Save audio clip"
 msgstr "Desa peça d'àudio"
 
-#: subs_grid.cpp:726
+#: subs_grid.cpp:730
 msgid "Couldn't allocate memory."
 msgstr "No s'ha pogut obtenir la memòria."
 
-#: subs_grid.cpp:803
-#: subs_grid.cpp:804
+#: subs_grid.cpp:807
+#: subs_grid.cpp:808
 msgid "load"
 msgstr "carrega"
 
-#: subs_grid.cpp:845
+#: subs_grid.cpp:849
 msgid "swap lines"
 msgstr "intercanvia les línies"
 
-#: subs_grid.cpp:871
+#: subs_grid.cpp:875
 msgid "line insertion"
 msgstr "inserció de línia"
 
-#: subs_grid.cpp:999
+#: subs_grid.cpp:1003
 msgid "paste"
 msgstr "enganxa"
 
-#: subs_grid.cpp:1041
+#: subs_grid.cpp:1045
 msgid "delete"
 msgstr "suprimeix"
 
-#: subs_grid.cpp:1135
+#: subs_grid.cpp:1139
 msgid "adjoin"
 msgstr "ajunta"
 
-#: subs_grid.cpp:1305
+#: subs_grid.cpp:1309
 msgid "split"
 msgstr "divideix"
 
-#: subs_grid.cpp:1466
+#: subs_grid.cpp:1470
 msgid "timing"
 msgstr "temps"
 
@@ -5206,10 +5208,6 @@ msgstr "Modifica la visualització en temps real dels canvis."
 msgid "Open the manual page for Visual Typesetting."
 msgstr "Obre la pàgina del manual per a la definició d'estils visual."
 
-#: video_context.cpp:606
-msgid "Video Screenshot Path"
-msgstr "Camí de les captures de pantalla del vídeo"
-
 #: video_display.cpp:472
 msgid "Save PNG snapshot"
 msgstr "Desa una captura PNG"
@@ -5241,8 +5239,14 @@ msgstr "Ja teniu codis de temps carregats. Voleu substituir-los amb els codis de
 
 #: video_provider_avs.cpp:309
 #: video_provider_dshow.cpp:318
+#: video_provider_ffmpegsource.cpp:167
 msgid "Replace timecodes?"
 msgstr "Substitució de codis de temps"
+
+#: video_provider_ffmpegsource.cpp:167
+#, fuzzy
+msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
+msgstr "Ja teniu codis de temps carregats. Voleu substituir-los amb els codis de temps del fitxer Matroska?"
 
 #: visual_tool.cpp:280
 #: visual_tool_drag.cpp:115
@@ -5313,6 +5317,12 @@ msgstr "Mà alçada suavitzada"
 msgid "Draws a smoothed freehand shape."
 msgstr "Dibuixa una forma suavitzada a mà alçada"
 
+#~ msgid "Recommended Formats"
+#~ msgstr "Formats recomanats"
+#~ msgid "Other supported formats"
+#~ msgstr "Altres formats suportats"
+#~ msgid "Video Screenshot Path"
+#~ msgstr "Camí de les captures de pantalla del vídeo"
 #~ msgid " by ArchMage ZeratuL.\n"
 #~ msgstr " per ArchMage ZeratuL.\n"
 #~ msgid ""
