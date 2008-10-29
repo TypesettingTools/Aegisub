@@ -33,7 +33,7 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppRevision "r2420"
+#define MyAppRevision "r2429"
 #define MyAppVer "2.1.3 Release Preview"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
@@ -221,13 +221,13 @@ Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: ful
 Name: main/icons; Description: Programs menu icons; Types: custom compact full
 Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
-Name: codec/vsfilter; Description: VSFilter 2.38-aegisub; Types: compact full custom; Flags: fixed
+Name: codec/vsfilter; Description: VSFilter 2.39 MPC-HC; Types: compact full custom; Flags: fixed
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages: 
 Name: auto/lua/samples; Description: Lua sample scripts; Types: full
 #if IncludePerl != 0
 Name: auto/perl; Description: Perl (requires a Perl 5.10 distribution); Types: compact full; Flags: checkablealone; Languages: 
-Name: auto/perl/samples; Description: Perl sample scripts; Types: compact full; Flags: checkablealone; Languages: 
+Name: auto/perl/samples; Description: Perl sample scripts; Types: full; Flags: checkablealone; Languages:
 #endif
 Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
 Name: docs; Description: Documentation files; Types: custom compact full
