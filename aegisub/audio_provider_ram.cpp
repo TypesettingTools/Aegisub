@@ -39,6 +39,8 @@
 #include "dialog_progress.h"
 #include "audio_provider_ram.h"
 #include "utils.h"
+#include "frame_main.h"
+#include "main.h"
 
 
 ///////////
@@ -82,7 +84,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *source) {
 
 	// Start progress
 	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(NULL,_("Load audio"),&canceled,_("Reading into RAM"),0,source->GetNumSamples());
+	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_("Load audio"),&canceled,_("Reading into RAM"),0,source->GetNumSamples());
 	progress->Show();
 	progress->SetProgress(0,1);
 

@@ -44,6 +44,8 @@
 #include "standard_paths.h"
 #include "options.h"
 #include "utils.h"
+#include "frame_main.h"
+#include "main.h"
 
 
 ///////////////
@@ -72,7 +74,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 
 	// Start progress
 	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(NULL,_T("Load audio"),&canceled,_T("Reading to Hard Disk cache"),0,num_samples);
+	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_T("Load audio"),&canceled,_T("Reading to Hard Disk cache"),0,num_samples);
 	progress->Show();
 
 	// Write to disk

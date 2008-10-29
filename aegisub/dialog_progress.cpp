@@ -39,6 +39,7 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include "dialog_progress.h"
+#include "utils.h"
 
 
 DEFINE_EVENT_TYPE(wxEVT_PROGRESS_UPDATE)
@@ -82,7 +83,7 @@ void DialogProgress::SetProgress(int cur,int max) {
 
 	// Check if it's the main thread, if so, just process it now
 	if (wxIsMainThread()) {
-		gauge->SetValue(value);
+		gauge->SetValue(MID(0,value,100));
 		wxYield();
 		return;
 	}
@@ -105,7 +106,7 @@ void DialogProgress::SetProgress(int cur,int max) {
 void DialogProgress::OnUpdateProgress(wxCommandEvent &event)
 {
 	int value = event.GetInt();
-	if (gauge->GetValue() != value) gauge->SetValue(value);
+	if (gauge->GetValue() != value) gauge->SetValue(MID(0,value,100));
 	wxMutexLocker locker(mutex);
 	count--;
 }
