@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			CharacterSet="1"
 			>
 			<Tool
@@ -43,7 +43,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="include/athenasub;src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;ATHENA_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -67,14 +67,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				OutputFile="../bin/aegilib_d.dll"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -86,9 +82,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -97,6 +90,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
+			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -124,7 +118,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				AdditionalIncludeDirectories="include/athenasub;src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS;ATHENA_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS"
 				RuntimeLibrary="2"
 				StructMemberAlignment="0"
 				EnableEnhancedInstructionSet="0"
@@ -177,6 +171,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\athenasub\athenastring.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\athenasub\athenasub.h"
 				>
 			</File>
@@ -220,6 +218,10 @@
 		<Filter
 			Name="Misc"
 			>
+			<File
+				RelativePath=".\src\athenastring.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\src\colour.cpp"
 				>

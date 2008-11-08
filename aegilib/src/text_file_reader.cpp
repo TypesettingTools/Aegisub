@@ -58,7 +58,7 @@ TextFileReader::TextFileReader(wxInputStream &stream,Athenasub::String enc,bool 
 	thread = NULL;
 
 	// Set encoding
-	encoding = enc.c_str();
+	encoding = enc.GetWxString();
 	if (encoding == _T("binary")) return;
 	SetEncodingConfiguration();
 }
@@ -195,9 +195,10 @@ Athenasub::String TextFileReader::ActuallyReadLine()
 	if (stringBuffer.Length() > 0 && stringBuffer[0] == 0xFEFF) startPos = 1;
 
 	// Trim
-	if (trim) return String(StringTrim(stringBuffer,startPos));
-	if (startPos) return String(stringBuffer.c_str() + startPos);
-	return stringBuffer;
+	String str = String(stringBuffer);
+	if (trim) return String(String::StringTrim(str,startPos));
+	if (startPos) return String(str.c_str() + startPos);
+	return str;
 }
 
 
@@ -215,10 +216,10 @@ bool TextFileReader::HasMoreLines()
 // Ensure that charset is valid
 void TextFileReader::EnsureValid(Athenasub::String enc)
 {
-	if (enc == _T("unknown") || enc == _T("UTF-32BE") || enc == _T("UTF-32LE")) {
-		wxString error = _T("Character set ");
+	if (enc == "unknown" || enc == "UTF-32BE" || enc == "UTF-32LE") {
+		String error = "Character set ";
 		error += enc;
-		error += _T(" is not supported.");
+		error += " is not supported.";
 		throw error.c_str();
 	}
 }

@@ -37,16 +37,12 @@
 
 #include "tr1.h"
 #include "athenatime.h"
+#include "athenastring.h"
 #include <wx/string.h>
 #include <vector>
 #include <list>
 
 namespace Athenasub {
-
-	// Strings
-	typedef wxString String;
-	typedef std::vector<String> StringArray;
-
 
 	// Prototypes
 	class Range;
@@ -107,19 +103,19 @@ namespace Athenasub {
 	protected:
 		virtual void ProcessActionList(CActionList &actionList,int type=0) = 0;
 
-		virtual String GetUndoMessage(const String owner=L"") const = 0;
-		virtual String GetRedoMessage(const String owner=L"") const = 0;
-		virtual bool CanUndo(const String owner=L"") const = 0;
-		virtual bool CanRedo(const String owner=L"") const = 0;
-		virtual void Undo(const String owner=L"") = 0;
-		virtual void Redo(const String owner=L"") = 0;
+		virtual String GetUndoMessage(const String owner="") const = 0;
+		virtual String GetRedoMessage(const String owner="") const = 0;
+		virtual bool CanUndo(const String owner="") const = 0;
+		virtual bool CanRedo(const String owner="") const = 0;
+		virtual void Undo(const String owner="") = 0;
+		virtual void Redo(const String owner="") = 0;
 		virtual void ActivateStack(ActionStack stack,bool isUndo,const String &owner) = 0;
 
 		virtual void DispatchNotifications(Notification notification) const = 0;
 
 		virtual void Clear() = 0;
-		virtual void Load(wxInputStream &input,Format format=Format(),const String encoding=L"") = 0;
-		virtual void Save(wxOutputStream &output,Format format=Format(),const String encoding=L"UTF-8") = 0;
+		virtual void Load(wxInputStream &input,Format format=Format(),const String encoding="") = 0;
+		virtual void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8") = 0;
 
 		virtual void AddSection(String name) = 0;
 		virtual Section GetSection(String name) const = 0;
@@ -147,16 +143,16 @@ namespace Athenasub {
 	public:
 		virtual ~IController() {}
 
-		virtual ActionList CreateActionList(const String title,const String owner=L"",bool undoAble=true) = 0;
+		virtual ActionList CreateActionList(const String title,const String owner="",bool undoAble=true) = 0;
 		virtual Selection CreateSelection() = 0;
 
-		virtual void LoadFile(const String filename,const String encoding=L"") = 0;
-		virtual void SaveFile(const String filename,const String encoding=L"UTF-8") = 0;
+		virtual void LoadFile(const String filename,const String encoding="") = 0;
+		virtual void SaveFile(const String filename,const String encoding="UTF-8") = 0;
 
-		virtual bool CanUndo(const String owner=L"") const = 0;
-		virtual bool CanRedo(const String owner=L"") const = 0;
-		virtual void Undo(const String owner=L"") = 0;
-		virtual void Redo(const String owner=L"") = 0;
+		virtual bool CanUndo(const String owner="") const = 0;
+		virtual bool CanRedo(const String owner="") const = 0;
+		virtual void Undo(const String owner="") = 0;
+		virtual void Redo(const String owner="") = 0;
 
 		virtual Dialogue CreateDialogue() const = 0;
 		virtual Style CreateStyle() const = 0;
@@ -233,7 +229,7 @@ namespace Athenasub {
 		virtual DeltaCoder GetDeltaCoder() const { return DeltaCoder(); }
 
 		virtual bool IsIndexable() const { return false; }
-		virtual String GetIndexName() const { return L""; }
+		virtual String GetIndexName() const { return ""; }
 		virtual String GetDefaultGroup() const = 0;
 
 		virtual Entry Clone() const = 0;
@@ -366,7 +362,7 @@ namespace Athenasub {
 		virtual void AddAction(Action action) = 0;
 		virtual void Finish() = 0;
 
-		virtual void InsertLine(Entry line,int position=-1,const String section=L"") = 0;
+		virtual void InsertLine(Entry line,int position=-1,const String section="") = 0;
 		virtual void RemoveLine(int position,const String section) = 0;
 		virtual Entry ModifyLine(int position,const String section) = 0;
 		virtual std::vector<Entry> ModifyLines(Selection selection,const String section) = 0;

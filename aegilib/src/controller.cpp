@@ -62,7 +62,7 @@ ActionList CController::CreateActionList(const String title,const String owner,b
 void CController::LoadFile(const String filename,const String encoding)
 {
 	const Format handler = FormatManager::GetFormatFromFilename(filename,true);
-	wxFFileInputStream stream(filename);
+	wxFFileInputStream stream(filename.GetWxString());
 	model->Load(stream,handler,encoding);
 }
 
@@ -72,7 +72,7 @@ void CController::LoadFile(const String filename,const String encoding)
 void CController::SaveFile(const String filename,const String encoding)
 {
 	const Format handler = FormatManager::GetFormatFromFilename(filename,true);
-	wxFFileOutputStream stream(filename);
+	wxFFileOutputStream stream(filename.GetWxString());
 	model->Save(stream,handler,encoding);
 }
 

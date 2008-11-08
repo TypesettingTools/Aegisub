@@ -83,7 +83,7 @@ void CColour::Parse(String value,bool reverse)
 	bool ishex=false;
 
 	// Determines whether it is hexadecimal or decimal
-	for(int i=(int)value.Len()-1;i>=0&&oindex>=0;i--) {
+	for(int i=(int)value.Length()-1;i>=0&&oindex>=0;i--) {
 		c=(char) value[i];
 		if (isxdigit(c) || c=='-') {
 			ostr[--oindex] = c;
@@ -114,10 +114,10 @@ void CColour::Parse(String value,bool reverse)
 // Generate Visual Basic hex
 String CColour::GetVBHex(bool withAlpha,bool withHeader,bool withFooter) const
 {
-	wxString work;
-	if (withHeader) work += _T("&H");
+	String work;
+	if (withHeader) work += "&H";
 	if (withAlpha) work += wxString::Format(_T("%02X"),a);
 	work += wxString::Format(_T("%02X%02X%02X"),b,g,r);
-	if (withFooter) work += _T("&");
+	if (withFooter) work += "&";
 	return work;
 }

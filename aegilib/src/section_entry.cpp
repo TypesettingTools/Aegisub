@@ -44,6 +44,6 @@ using namespace Athenasub;
 // Returns a static empty string
 const String& CDialogue::EmptyString()
 {
-	static const String str = _T("");
+	static const String str = "";
 	return str;
 }

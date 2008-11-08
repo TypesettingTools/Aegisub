@@ -67,7 +67,7 @@ TextFileWriter::~TextFileWriter() {
 // Write to file
 void TextFileWriter::WriteLineToFile(Athenasub::String line,bool addLineBreak) {
 	// Add line break
-	wxString temp = line;
+	wxString temp = line.GetWxString();
 	if (addLineBreak && Is16) temp += _T("\r\n");
 
 	// Add BOM if it's the first line and the target format is Unicode
@@ -102,7 +102,7 @@ void TextFileWriter::WriteLineToFile(Athenasub::String line,bool addLineBreak) {
 			}
 
 			// Convert to UTF-8
-			bufferPos += UTF16toUTF8(src,&buffer[bufferPos]);
+			bufferPos += String::UTF16toUTF8(src,&buffer[bufferPos]);
 			if (addLineBreak) {
 				buffer[bufferPos++] = '\r';
 				buffer[bufferPos++] = '\n';
@@ -125,7 +125,7 @@ void TextFileWriter::SetEncoding(String enc) {
 	Is16 = false;
 
 	// Set encoding
-	encoding = enc;
+	encoding = enc.GetWxString();
 	if (encoding == _T("Local")) conv = shared_ptr<wxMBConv> (wxConvCurrent,NullDeleter());
 	else {
 		if (encoding.IsEmpty()) encoding = _T("UTF-8");

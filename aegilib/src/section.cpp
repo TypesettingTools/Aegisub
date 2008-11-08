@@ -136,7 +136,7 @@ String CSection::GetProperty(const String &key) const
 {
 	std::map<String,String>::const_iterator iter = properties.find(key);
 	if (iter != properties.end()) return iter->second;
-	else return L"";
+	else return "";
 }
 
 
@@ -164,7 +164,7 @@ String CSection::GetPropertyName(size_t n) const
 	for (size_t i=0 ; iter!=properties.end() ; iter++,i++) {
 		if (i == n) return iter->first;
 	}
-	return L"";
+	return "";
 }
 
 

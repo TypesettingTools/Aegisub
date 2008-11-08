@@ -44,7 +44,7 @@ typedef Athenasub::ILibAthenaSub* (__stdcall *CreateLibAthenasubPtr)(const char*
 namespace Athenasub {
 	inline LibAthenaSub Create(HMODULE module,const char* hostName) {
 		CreateLibAthenasubPtr CreateLib = (CreateLibAthenasubPtr)GetProcAddress(module,"CreateLibAthenasub");
-		printf("Pointer is %x. Last error is %i.\n",CreateLib,GetLastError());
+		printf("Pointer is %p. Last error is %i.\n",CreateLib,GetLastError());
 		return LibAthenaSub(CreateLib(hostName));
 		//return LibAthenaSub(CreateLibAthenasub(hostName));
 	}

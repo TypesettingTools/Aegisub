@@ -50,23 +50,23 @@ int main()
 
 	try {
 		// Set up the lib
-		if (false) {
-			cout << "Loading library... ";
-	#ifdef WXDEBUG
-			HMODULE module = LoadLibrary(_T("athenasub_d.dll"));
-	#else
-			HMODULE module = LoadLibrary(_T("athenasub.dll"));
-	#endif
-			if (!module) {
-				cout << "Failed to load library, aborting.\n";
-				system("pause");
-				return 1;
-			}
-			cout << "Done.\nCreating library...";
+		cout << "Loading library... ";
+		/*
+#ifdef WXDEBUG
+		HMODULE module = LoadLibrary(_T("athenasub_d.dll"));
+#else
+		HMODULE module = LoadLibrary(_T("athenasub.dll"));
+#endif
+		if (!module) {
+			cout << "Failed to load library, aborting.\n";
+			system("pause");
+			return 1;
 		}
+		*/
+		cout << "Done.\nCreating library...";
 
-		//LibAthenaSub lib = Athenasub::Create(module,"Aegilib test program");
 		LibAthenaSub lib = Athenasub::Create("Aegilib test program");
+		//LibAthenaSub lib = Athenasub::Create(module,"Aegilib test program");
 		cout << "Done.\n";
 
 		// Subtitles model
@@ -79,7 +79,7 @@ int main()
 		// Load subtitles
 		cout << "Loading file... ";
 		timer.Start();
-		control->LoadFile(L"subs_in.ass",L"UTF-8");
+		control->LoadFile("subs_in.ass","UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
 
@@ -89,6 +89,7 @@ int main()
 		control->SaveFile(L"subs_out.ass",L"UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
+		system("pause");
 
 		// Issue an action
 #ifdef WXDEBUG
@@ -104,7 +105,7 @@ int main()
 			selection->AddRange(Range(0,5000));
 			selection->AddRange(Range(4500,5500));
 			selection->AddRange(Range(9000,9100));
-			std::vector<Entry> entries = actions->ModifyLines(selection,L"Events");
+			std::vector<Entry> entries = actions->ModifyLines(selection,"Events");
 			size_t len = entries.size();
 			for (size_t i=0;i<len;i++) {
 				Dialogue diag = dynamic_pointer_cast<IDialogue> (entries[i]);
@@ -141,13 +142,13 @@ int main()
 		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Get style test
-		ConstStyle style = control->GetStyle(L"japro1_star");
-		cout << "Style " << style->GetName().mb_str() << " font is " << style->GetFontName().mb_str() << " " << style->GetFontSize() << ".\n";
+		ConstStyle style = control->GetStyle("japro1_star");
+		cout << "Style " << style->GetName().c_str() << " font is " << style->GetFontName().c_str() << " " << style->GetFontSize() << ".\n";
 
 		// Save a few more
-		control->SaveFile(L"subs_out2.ass",L"UTF-8");
+		control->SaveFile("subs_out2.ass","UTF-8");
 		control->Undo();
-		control->SaveFile(L"subs_out3.ass",L"UTF-8");
+		control->SaveFile("subs_out3.ass","UTF-8");
 
 		system("pause");
 	}

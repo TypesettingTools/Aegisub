@@ -47,16 +47,16 @@ namespace Athenasub {
 		CController (Model model);
 
 	public:
-		virtual ActionList CreateActionList(const String title,const String owner=L"",bool undoAble=true);
+		virtual ActionList CreateActionList(const String title,const String owner="",bool undoAble=true);
 		virtual Selection CreateSelection();
 
-		virtual void LoadFile(const String filename,const String encoding=L"");
-		virtual void SaveFile(const String filename,const String encoding=L"UTF-8");
+		virtual void LoadFile(const String filename,const String encoding="");
+		virtual void SaveFile(const String filename,const String encoding="UTF-8");
 
-		virtual bool CanUndo(const String owner=L"") const;
-		virtual bool CanRedo(const String owner=L"") const;
-		virtual void Undo(const String owner=L"");
-		virtual void Redo(const String owner=L"");
+		virtual bool CanUndo(const String owner="") const;
+		virtual bool CanRedo(const String owner="") const;
+		virtual void Undo(const String owner="");
+		virtual void Redo(const String owner="");
 
 		virtual Dialogue CreateDialogue() const;
 		virtual Style CreateStyle() const;

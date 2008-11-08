@@ -65,8 +65,8 @@ bool StyleASS::Parse(String data,int version)
 {
 	try {
 		// Tokenize
-		wxString temp;
-		Tokenizer tkn(data,_T(','),6);
+		String temp;
+		Tokenizer tkn(data,',',6);
 
 		// Read name, font name and size
 		name = tkn.GetString(true);
@@ -187,7 +187,7 @@ int StyleASS::AlignASStoSSA(int align) const
 String StyleASS::ToText(int version) const
 {
 	// Final string
-	wxString final;
+	String final;
 
 	// Calculate colour offset
 	int cOff = 0;
@@ -198,35 +198,68 @@ String StyleASS::ToText(int version) const
 	if (version == 0) align = AlignASStoSSA(align);
 	
 	// Name, font, fontsize, colours, bold, italics
-	final = wxString::Format(_T("Style: %s,%s,%s,%s,%s,%s,%s,%i,%i,"),
-				name.c_str(), font.c_str(), PrettyFloatD(fontSize).c_str(),
-				colour[0].GetVBHex(true,true,false).c_str(), colour[1].GetVBHex(true,true,false).c_str(),
-				colour[2+cOff].GetVBHex(true,true,false).c_str(), colour[3+cOff].GetVBHex(true,true,false).c_str(),
-				(bold? -1 : 0), (italic ? -1 : 0));
+	final += "Style: ";
+	final += name;
+	final += ",";
+	final += font;
+	final += ",";
+	final += fontSize;
+	final += ",";
+	for (int i=0;i<4;i++) {
+		final += colour[i + (i > 1? cOff : 0)].GetVBHex(true,true,false);
+		final += ",";
+	}
+	final += bold? -1 : 0;
+	final += ",";
+	final += italic? -1 : 0;
+	final += ",";
 
 	// ASS-only
-	final += wxString::Format(_T("%i,%i,%s,%s,%s,%s,"),
-				(underline?-1:0),(strikeout?-1:0),PrettyFloatD(scalex).c_str(),PrettyFloatD(scaley).c_str(),
-				PrettyFloatD(spacing).c_str(),PrettyFloatD(angle).c_str());
+	if (version >= 1) {
+		final += underline? -1 : 0;
+		final += ",";
+		final += strikeout? -1 : 0;
+		final += ",";
+		final += scalex;
+		final += ",";
+		final += scaley;
+		final += ",";
+		final += spacing;
+		final += ",";
+		final += angle;
+		final += ",";
+	}
 
-
-	// Borderstyle, outline width, shadow width, alignment, first three margins
-	final += wxString::Format(_T("%i,%s,%s,%i,%i,%i,%i,"),
-				borderStyle,PrettyFloatD(outline_w).c_str(),PrettyFloatD(shadow_w).c_str(),
-				align,margin[0],margin[1],margin[2]);
-
-	// Fourth margin for ASS2 only
-	if (version == 2) final += wxString::Format(_T("%i,"),margin[3]);
+	// Borderstyle, outline width, shadow width, alignment, margins
+	final += borderStyle;
+	final += ",";
+	final += outline_w;
+	final += ",";
+	final += shadow_w;
+	final += ",";
+	final += align;
+	final += ",";
+	for (int i=0;i<4;i++) {
+		if (i == 3 && version < 2) break;
+		final += margin[i];
+		final += ",";
+	}
 
 	// Alpha level for SSA only
 	// TODO: write something relevant?
-	if (version == 0) final += wxString::Format(_T("%i,"),0);
+	if (version == 0) {
+		final += 0;
+		final += ",";
+	}
 
 	// Encoding
-	final += wxString::Format(_T("%i"),encoding);
+	final += encoding;
 
 	// Relative-to for ASS2 only
-	if (version == 2) final += wxString::Format(_T(",%i"),relativeTo);
+	if (version == 2) {
+		final += ",";
+		final += relativeTo;
+	}
 
 	// Done
 	return final;
@@ -238,8 +271,8 @@ String StyleASS::ToText(int version) const
 String StyleASS::GetDefaultGroup() const
 {
 	switch (formatVersion) {
-		case 0: return L"V4 Styles";
-		case 1: return L"V4+ Styles";
-		default: return L"V4++ Styles";
+		case 0: return "V4 Styles";
+		case 1: return "V4+ Styles";
+		default: return "V4++ Styles";
 	}
 }

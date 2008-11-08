@@ -143,7 +143,7 @@ void DialogueASSDeltaCoder::ApplyDelta(VoidPtr _delta,VoidPtr object) const
 	// Read text fields
 	for (size_t i=0;i<4;i++) {
 		if (mask & (0x0100 << i)) {
-			to->text[i] = wxString((wchar_t*) data);
+			to->text[i] = String((wchar_t*) data);
 			data += (to->text[i].Length() + 1)*2;
 		}
 	}

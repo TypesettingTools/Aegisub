@@ -96,23 +96,24 @@ String GetTimeString(const Time& time,int ms_precision,int h_precision)
 	String final;
 	size_t size = 7+h_precision+ms_precision;
 	size_t pos = 0;
-	wxChar *buffer = final.GetWriteBuf(size);
-	wxChar temp[16];
+	//wxChar *buffer = final.GetWriteBuf(size);
+	Character temp[16];
+	final.resize(size);
 
 	// Write time
-	WriteNumber(buffer,temp,h,h_precision,pos);
-	WriteChar(buffer,_T(':'),pos);
-	WriteNumber(buffer,temp,min,2,pos);
-	WriteChar(buffer,_T(':'),pos);
-	WriteNumber(buffer,temp,s,2,pos);
-	WriteChar(buffer,_T('.'),pos);
-	WriteNumber(buffer,temp,_ms,ms_precision,pos);
+	final.WriteNumber(temp,h,h_precision,pos);
+	final.WriteChar(':',pos);
+	final.WriteNumber(temp,min,2,pos);
+	final.WriteChar(':',pos);
+	final.WriteNumber(temp,s,2,pos);
+	final.WriteChar('.',pos);
+	final.WriteNumber(temp,_ms,ms_precision,pos);
 
 	// Write terminator
-	WriteText(buffer,_T("\0"),1,pos);
+	final.WriteText("\0",1,pos);
 
 	// Restore string's state and return
-	final.UngetWriteBuf(pos-1);
+	final.SetSize(pos-1);
 	return final;
 }
 
@@ -126,15 +127,15 @@ Time ParseTimeString(const String &data)
 	size_t last = 0;
 	size_t len = data.Length();
 	size_t curIndex = 0;
-	wxChar cur = 0;
+	char cur = 0;
 	for (size_t i=0;i<len;i++) {
 		cur = data[i];
 		if (cur == ':' || cur == '.' || cur == ',' || cur == ';') {
-			values.at(curIndex++) = SubStringToInteger(data,last,i);
+			values.at(curIndex++) = data.SubToInteger(last,i);
 			last = i+1;
 		}
 		if (i == len-1) {
-			int value = SubStringToInteger(data,last,len);
+			int value = data.SubToInteger(last,len);
 			size_t digits = len - last;
 			if (digits == 2) value *= 10;
 			if (digits == 1) value *= 100;
@@ -154,28 +155,28 @@ Time ParseTimeString(const String &data)
 
 //////////////////
 // Parse ASS Data
-bool DialogueASS::Parse(wxString rawData, int version)
+bool DialogueASS::Parse(String rawData, int version)
 {
 	size_t pos = 0;
-	wxString temp;
+	String temp;
 
 	// Get type
-	if (rawData.StartsWith(_T("Dialogue:"))) {
+	if (rawData.StartsWith("Dialogue:")) {
 		isComment = false;
 		pos = 10;
 	}
-	else if (rawData.StartsWith(_T("Comment:"))) {
+	else if (rawData.StartsWith("Comment:")) {
 		isComment = true;
 		pos = 9;
 	}
 	else return false;
 
 	try {
-		Tokenizer tkn(rawData,_T(','),pos);
+		Tokenizer tkn(rawData,',',pos);
 
 		// Get first token and see if it has "Marked=" in it
 		temp = tkn.GetString(true);
-		if (AsciiStringCompareNoCase(temp,_T("marked="))) {
+		if (temp.AsciiCompareNoCase("marked=")) {
 			version = 0;
 			layer = 0;
 		}
@@ -183,7 +184,7 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		// Not SSA, so read layer number
 		else {
 			if (version == 0) version = 1;	// Only do it for SSA, not ASS2
-			layer = StringToInt(temp);
+			layer = temp.ToInteger();
 		}
 
 		// Get times
@@ -205,7 +206,7 @@ bool DialogueASS::Parse(wxString rawData, int version)
 		if (version == 2) {
 			if (temp.IsNumber()) {
 				// Got margin
-				margin[3] = StringToInt(temp);
+				margin[3] = temp.ToInteger();
 
 				// Read effect
 				temp = tkn.GetString(true);
@@ -241,52 +242,54 @@ String DialogueASS::ToText(int version) const
 	for (size_t i=0;i<4;i++) size += text[i].Length();
 
 	// Allocate string
-	wxString final;
-	wxChar *buffer = final.GetWriteBuf(size);
-	wxChar temp[16];
+	String buffer;
+	buffer.resize(size);
+	//Character *buffer = final.GetWriteBuf(size);
+	Character temp[16];
 
 	// Write comment/dialogue
 	size_t pos = 0;
-	if (isComment) WriteText(buffer,_T("Comment: "),9,pos);
-	else WriteText(buffer,_T("Dialogue: "),10,pos);
+	if (isComment) buffer.WriteText("Comment: ",9,pos);
+	else buffer.WriteText("Dialogue: ",10,pos);
 
 	// Write layer or marked
 	if (version >= 1) {
-		WriteNumber(buffer,temp,layer,0,pos);
-		WriteChar(buffer,_T(','),pos);
+		buffer.WriteNumber(temp,layer,0,pos);
+		buffer.WriteChar(',',pos);
 	}
-	else WriteText(buffer,_T("Marked=0,"),9,pos);
+	else buffer.WriteText("Marked=0,",9,pos);
 
 	// Write times
 	for (size_t i=0;i<2;i++) {
-		wxString tempStr = GetTimeString(time[i],2,1);
-		WriteText(buffer,&tempStr[0],10,pos);
-		WriteChar(buffer,_T(','),pos);
+		String tempStr = GetTimeString(time[i],2,1);
+		buffer.WriteText(&tempStr[0],10,pos);
+		buffer.WriteChar(',',pos);
 	}
 
 	// Write style and actor
-	WriteText(buffer,&text[1][0],text[1].Length(),pos);
-	WriteChar(buffer,_T(','),pos);
-	WriteText(buffer,&text[2][0],text[2].Length(),pos);
-	WriteChar(buffer,_T(','),pos);
+	buffer.WriteText(&text[1][0],text[1].Length(),pos);
+	buffer.WriteChar(',',pos);
+	buffer.WriteText(&text[2][0],text[2].Length(),pos);
+	buffer.WriteChar(',',pos);
 
 	// Write margins
 	size_t marCount = 3;
 	if (version == 2) marCount++;
 	for (size_t i=0;i<marCount;i++) {
-		WriteNumber(buffer,temp,margin[i],4,pos);
-		WriteChar(buffer,_T(','),pos);
+		buffer.WriteNumber(temp,margin[i],4,pos);
+		buffer.WriteChar(',',pos);
 	}
 
 	// Write effect and text
-	WriteText(buffer,&text[3][0],text[3].Length(),pos);
-	WriteChar(buffer,_T(','),pos);
-	WriteText(buffer,&text[0][0],text[0].Length(),pos);
+	buffer.WriteText(&text[3][0],text[3].Length(),pos);
+	buffer.WriteChar(',',pos);
+	buffer.WriteText(&text[0][0],text[0].Length(),pos);
 
 	// Write terminator
-	WriteText(buffer,_T("\0"),1,pos);
+	buffer.WriteText("\0",1,pos);
 
 	// Restore string's state
-	final.UngetWriteBuf(pos-1);
-	return final;
+	//final.UngetWriteBuf(pos-1);
+	buffer.SetSize(pos-1);
+	return buffer;
 }

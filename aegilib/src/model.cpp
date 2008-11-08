@@ -251,13 +251,13 @@ String CModel::GetUndoMessage(const String owner) const
 {
 	(void) owner;
 	if (CanUndo()) return undoStack.back()->GetName();
-	return L"";
+	return "";
 }
 String CModel::GetRedoMessage(const String owner) const
 {
 	(void) owner;
 	if (CanRedo()) return redoStack.back()->GetName();
-	return L"";
+	return "";
 }
 
 

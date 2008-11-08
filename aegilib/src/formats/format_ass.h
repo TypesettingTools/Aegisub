@@ -80,7 +80,7 @@ namespace Athenasub {
 		bool HasMargins() const { return true; }
 		bool HasActors() const { return true; }
 		virtual bool HasUserField() const { return false; }
-		virtual String GetUserFieldName() const { return _T(""); }
+		virtual String GetUserFieldName() const { return ""; }
 
 		virtual int GetTimingPrecision() const { return 10; }
 		virtual int GetMaxTime() const { return 35999990; }
@@ -93,7 +93,7 @@ namespace Athenasub {
 	class FormatSSA : public FormatASSFamily {
 	public:
 		FormatHandler GetHandler(IModel &model) const { return FormatHandler(new FormatHandlerASS((CModel&)model,0)); }
-		String GetName() const { return L"Substation Alpha"; }
+		String GetName() const { return "Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
 	};
@@ -102,7 +102,7 @@ namespace Athenasub {
 	class FormatASS : public FormatASSFamily {
 	public:
 		FormatHandler GetHandler(IModel &model) const { return FormatHandler(new FormatHandlerASS((CModel&)model,1)); }
-		String GetName() const { return L"Advanced Substation Alpha"; }
+		String GetName() const { return "Advanced Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
 	};
@@ -111,7 +111,7 @@ namespace Athenasub {
 	class FormatASS2 : public FormatASSFamily {
 	public:
 		FormatHandler GetHandler(IModel &model) const { return FormatHandler(new FormatHandlerASS((CModel&)model,2)); }
-		String GetName() const { return L"Advanced Substation Alpha 2"; }
+		String GetName() const { return "Advanced Substation Alpha 2"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
 	};

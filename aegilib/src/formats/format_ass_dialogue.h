@@ -62,7 +62,7 @@ namespace Athenasub {
 		DialogueASS(const String &data,int version);
 
 		// Basic features
-		String GetDefaultGroup() const { return L"Events"; }
+		String GetDefaultGroup() const { return "Events"; }
 		Entry Clone() const { return Entry(new DialogueASS(*this)); }
 		//DeltaCoderPtr GetDeltaCoder() const { return DeltaCoderPtr(new DialogueASSDeltaCoder()); }
 

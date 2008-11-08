@@ -41,10 +41,10 @@ using namespace Athenasub;
 
 ///////////////
 // Constructor
-Tokenizer::Tokenizer(const String &_string,wxChar _token,size_t start)
+Tokenizer::Tokenizer(String &_string,Character _token,size_t start)
 : string(_string), pos(start), token(_token)
 {
-	str = const_cast<wxChar*> (string.c_str());
+	str = const_cast<Character*> (string.c_str());
 }
 Tokenizer::~Tokenizer()
 {
@@ -90,11 +90,11 @@ String Tokenizer::GetString(bool trim)
 
 	// Trimmed
 	if (trim) {
-		return StringPtrTrim(str+oldPos,pos-oldPos-1,0);
+		return String::StringPtrTrim(str+oldPos,pos-oldPos-1,0);
 	}
 
 	// Untrimmed
-	return wxString(str+oldPos,pos-oldPos-1);
+	return String(str+oldPos,pos-oldPos-1);
 }
 
 
@@ -102,7 +102,7 @@ String Tokenizer::GetString(bool trim)
 // Get as integer
 int Tokenizer::GetInt()
 {
-	return StringToInt(GetString());
+	return GetString().ToInteger();
 }
 
 
@@ -111,8 +111,9 @@ int Tokenizer::GetInt()
 float Tokenizer::GetFloat()
 {
 	double value;
-	wxString temp = GetString();
-	temp.ToDouble(&value);
+	String temp = GetString();
+	//temp.ToDouble(&value);
+	value << temp;
 	return (float) value;
 }
 

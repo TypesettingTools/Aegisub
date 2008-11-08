@@ -42,13 +42,13 @@ namespace Athenasub {
 	// Tokenizer class
 	class Tokenizer {
 	private:
-		wxChar *str;
+		Character *str;
 		const String &string;
-		const wxChar token;
+		const Character token;
 		size_t pos;
 
 	public:
-		Tokenizer(const String &string,wxChar token,size_t start=0);
+		Tokenizer(String &string,Character token,size_t start=0);
 		~Tokenizer();
 
 		bool HasMoreTokens();

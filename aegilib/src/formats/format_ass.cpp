@@ -41,6 +41,7 @@
 #include "../text_file_reader.h"
 #include "../text_file_writer.h"
 #include <iostream>
+#include <algorithm>
 #include <wx/tokenzr.h>
 using namespace Athenasub;
 
@@ -50,7 +51,7 @@ using namespace Athenasub;
 StringArray FormatSSA::GetReadExtensions() const
 {
 	StringArray final;
-	final.push_back(L".ssa");
+	final.push_back(".ssa");
 	return final;
 }
 StringArray FormatSSA::GetWriteExtensions() const
@@ -64,7 +65,7 @@ StringArray FormatSSA::GetWriteExtensions() const
 StringArray FormatASS::GetReadExtensions() const
 {
 	StringArray final;
-	final.push_back(L".ass");
+	final.push_back(".ass");
 	return final;
 }
 StringArray FormatASS::GetWriteExtensions() const
@@ -78,7 +79,7 @@ StringArray FormatASS::GetWriteExtensions() const
 StringArray FormatASS2::GetReadExtensions() const
 {
 	StringArray final;
-	final.push_back(L".ass");
+	final.push_back(".ass");
 	return final;
 }
 StringArray FormatASS2::GetWriteExtensions() const
@@ -111,14 +112,14 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 
 	// Variables
 	int version = 1;
-	wxString curGroup = L"-";
-	wxString prevGroup = L"-";
+	String curGroup = "-";
+	String prevGroup = "-";
 	Section section = Section();
 
 	// Read file
 	while (reader.HasMoreLines()) {
 		// Read a line
-		wxString cur = reader.ReadLineFromFile();
+		String cur = reader.ReadLineFromFile();
 		if (cur.IsEmpty()) continue;
 
 		// Process group
@@ -153,18 +154,18 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 	TextFileWriter writer(file,encoding);
 
 	// Set up list of sections to write
-	wxArrayString sections;
-	sections.Add(L"Script Info");
-	sections.Add(L"V4+ Styles");
-	sections.Add(L"Events");
-	sections.Add(L"Fonts");
-	sections.Add(L"Graphics");
+	StringArray sections;
+	sections.push_back("Script Info");
+	sections.push_back("V4+ Styles");
+	sections.push_back("Events");
+	sections.push_back("Fonts");
+	sections.push_back("Graphics");
 
 	// Look for remaining sections
 	size_t totalSections = GetSectionCount();
 	for (size_t i=0;i<totalSections;i++) {
 		String name = GetSectionByIndex(i)->GetName();
-		if (sections.Index(name,false,false) == wxNOT_FOUND) sections.Add(name);
+		if (find(sections.begin(),sections.end(),name) != sections.end()) sections.push_back(name);
 	}
 
 	// Write sections
@@ -174,7 +175,7 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 		Section section = GetSection(sections[i]);
 		if (section) {
 			// Add a spacer
-			if (i != 0) writer.WriteLineToFile(_T(""));
+			if (i != 0) writer.WriteLineToFile("");
 
 			// Write the section
 			WriteSection(writer,section);
@@ -192,21 +193,21 @@ Entry FormatHandlerASS::MakeEntry(const String &data,Section section,int version
 	Entry final;
 
 	// Attachments
-	if (group == _T("Fonts") || group == _T("Graphics")) {
+	if (group == "Fonts" || group == "Graphics") {
 		final = shared_ptr<PlainASS>(new PlainASS(data));
 	}
 
 	// Events
-	else if (group == _T("Events")) {
+	else if (group == "Events") {
 		// Dialogue lines
-		if ((data.Left(9) == _T("Dialogue:") || data.Left(8) == _T("Comment:"))) {
+		if ((data.StartsWith("Dialogue:") || data.StartsWith("Comment:"))) {
 			shared_ptr<DialogueASS> diag (new DialogueASS(data,version));
 			final = diag;
 		}
 
 		// Format lines
-		else if (data.Left(7) == _T("Format:")) {
-			section->SetProperty(_T("Format"),data.Mid(7).Trim(true).Trim(false));
+		else if (data.StartsWith("Format:")) {
+			section->SetProperty("Format",data.Mid(7).TrimBoth());
 		}
 
 		// Garbage/hard comments
@@ -216,26 +217,26 @@ Entry FormatHandlerASS::MakeEntry(const String &data,Section section,int version
 	}
 
 	// Styles
-	else if (group == _T("V4+ Styles")) {
-		if (data.Left(6) == _T("Style:")) {
+	else if (group == "V4+ Styles" || group == "V4 Styles+") {
+		if (data.StartsWith("Style:")) {
 			shared_ptr<StyleASS> style (new StyleASS(data,version));
 			final = style;
 		}
-		if (data.Left(7) == _T("Format:")) {
-			section->SetProperty(_T("Format"),data.Mid(7).Trim(true).Trim(false));
+		if (data.StartsWith("Format:")) {
+			section->SetProperty("Format",data.Mid(7).TrimBoth());
 		}
 	}
 
 	// Script info
-	else if (group == _T("Script Info")) {
+	else if (group == "Script Info") {
 		// Discard comments
-		if (data.Left(1) == _T(";")) return Entry();
+		if (data.StartsWith(";")) return Entry();
 
 		// Parse property
-		size_t pos = data.Find(_T(':'));
-		if (pos == wxNOT_FOUND) return Entry();
-		wxString key = data.Left(pos).Trim(true).Trim(false);
-		wxString value = data.Mid(pos+1).Trim(true).Trim(false);
+		size_t pos = data.Find(':');
+		if (pos == String::npos) return Entry();
+		String key = data.Left(pos).TrimBoth();
+		String value = data.Mid(pos+1).TrimBoth();
 
 		// Insert property
 		section->SetProperty(key,value);
@@ -257,33 +258,33 @@ Entry FormatHandlerASS::MakeEntry(const String &data,Section section,int version
 void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 	// Style conversion
 	if (!cur.IsEmpty() && cur[0] == '[') {
-		wxString low = cur.Lower();
+		String low = cur.Lower();
 		bool changed = true;
 
 		// SSA file
-		if (low == _T("[v4 styles]")) {
-			cur = _T("[V4+ Styles]");
+		if (low == "[v4 styles]") {
+			cur = "[V4+ Styles]";
 			curGroup = cur;
 			version = 0;
 		}
 
 		// ASS file
-		else if (low == _T("[v4+ styles]")) {
+		else if (low == "[v4+ styles]") {
 			curGroup = cur;
 			version = 1;
 		}
 
 		// ASS2 file
-		else if (low == _T("[v4++ styles]")) {
-			cur = _T("[V4+ Styles]");
+		else if (low == "[v4++ styles]") {
+			cur = "[V4+ Styles]";
 			curGroup = cur;
 			version = 2;
 		}
 
 		// Other groups
 		else {
-			wxString temp = cur;
-			temp.Trim(true).Trim(false);
+			String temp = cur;
+			temp.TrimBoth();
 			if (temp[temp.Length()-1] == ']') curGroup = cur;
 			else changed = false;
 		}
@@ -295,7 +296,7 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 			
 			// Normalize case
 			curGroup.MakeLower();
-			wxString upper = curGroup.Upper();
+			String upper = curGroup.Upper();
 			bool raise = true;
 			size_t len = curGroup.Length();
 			for (size_t i=0;i<len;i++) {
@@ -309,16 +310,15 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 	}
 
 	// Update version with version line
-	if (curGroup == _T("Script Info")) {
-		if (cur.Left(11).Lower() == _T("scripttype:")) {
-			wxString versionString = cur.Mid(11);
-			versionString.Trim(true);
-			versionString.Trim(false);
+	if (curGroup == "Script Info") {
+		if (cur.StartsWith("scripttype:",false)) {
+			String versionString = cur.Mid(11);
+			versionString.TrimBoth();
 			versionString.MakeLower();
 			int trueVersion;
-			if (versionString == _T("v4.00")) trueVersion = 0;
-			else if (versionString == _T("v4.00+")) trueVersion = 1;
-			else if (versionString == _T("v4.00++")) trueVersion = 2;
+			if (versionString == "v4.00") trueVersion = 0;
+			else if (versionString == "v4.00+") trueVersion = 1;
+			else if (versionString == "v4.00++") trueVersion = 2;
 			else THROW_ATHENA_EXCEPTION(Exception::Unknown_Format);
 			if (trueVersion != version) {
 				// TODO: issue warning?
@@ -334,26 +334,26 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 void FormatHandlerASS::WriteSection(TextFileWriter &writer,Section section)
 {
 	// Write name
-	wxString name = section->GetName();
-	writer.WriteLineToFile(_T("[") + name + _T("]"));
+	String name = section->GetName();
+	writer.WriteLineToFile("[" + name + "]");
 
 	// Write program and library credits
-	if (name == _T("Script Info")) {
-		wxString programName = GetHostApplicationName();
-		wxString programURL = GetHostApplicationURL();
-		wxString libVersion = GetLibraryVersionString();
-		wxString libURL = GetLibraryURL();
-		writer.WriteLineToFile(_T("; Script generated by ") + programName);
-		if (!programURL.IsEmpty()) writer.WriteLineToFile(_T("; ") + programURL);
-		writer.WriteLineToFile(_T("; With ") + libVersion);
-		if (programURL != libURL) writer.WriteLineToFile(_T("; ") + libURL);
+	if (name == "Script Info") {
+		String programName = GetHostApplicationName();
+		String programURL = GetHostApplicationURL();
+		String libVersion = GetLibraryVersionString();
+		String libURL = GetLibraryURL();
+		writer.WriteLineToFile("; Script generated by " + programName);
+		if (!programURL.IsEmpty()) writer.WriteLineToFile("; " + programURL);
+		writer.WriteLineToFile("; With " + libVersion);
+		if (programURL != libURL) writer.WriteLineToFile("; " + libURL);
 	}
 
 	// Write properties
 	size_t props = section->GetPropertyCount();
 	for (size_t i=0;i<props;i++) {
 		String propName = section->GetPropertyName(i);
-		writer.WriteLineToFile(propName + _T(": ") + section->GetProperty(propName));
+		writer.WriteLineToFile(propName + ": " + section->GetProperty(propName));
 	}
 
 	// Write contents
@@ -374,27 +374,27 @@ void FormatHandlerASS::MakeValid()
 	if (formatVersion != 1) THROW_ATHENA_EXCEPTION(Exception::TODO);
 
 	// Check for [Script Info]
-	Section section = GetSection(L"Script Info");
-	if (!section) AddSection(L"Script Info");
-	section = GetSection(L"Script Info");
+	Section section = GetSection("Script Info");
+	if (!section) AddSection("Script Info");
+	section = GetSection("Script Info");
 	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
 
 	// Check if necessary variables are available
-	if (section->GetProperty(L"PlayResX").IsEmpty()) section->SetProperty(L"PlayResX",L"384");	// These two mystical values come from Substation Alpha
-	if (section->GetProperty(L"PlayResY").IsEmpty()) section->SetProperty(L"PlayResY",L"288");	// 288 is half of 576, the PAL resolution, and 384 makes it 4:3
-	section->SetProperty(L"ScriptType",L"v4.00+");
+	if (section->GetProperty("PlayResX").IsEmpty()) section->SetProperty("PlayResX","384");	// These two mystical values come from Substation Alpha
+	if (section->GetProperty("PlayResY").IsEmpty()) section->SetProperty("PlayResY","288");	// 288 is half of 576, the PAL resolution, and 384 makes it 4:3
+	section->SetProperty("ScriptType","v4.00+");
 
 	// Get [V4+ Styles]
-	section = GetSection(L"V4+ Styles");
-	if (!section) AddSection(L"V4+ Styles");
-	section = GetSection(L"V4+ Styles");
+	section = GetSection("V4+ Styles");
+	if (!section) AddSection("V4+ Styles");
+	section = GetSection("V4+ Styles");
 	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
-	section->SetProperty(L"Format",L"Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding");
+	section->SetProperty("Format","Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding");
 
 	// Get [Events]
-	section = GetSection(L"Events");
-	if (!section) AddSection(L"Events");
-	section = GetSection(L"Events");
+	section = GetSection("Events");
+	if (!section) AddSection("Events");
+	section = GetSection("Events");
 	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
-	section->SetProperty(L"Format",L"Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text");
+	section->SetProperty("Format","Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text");
 }

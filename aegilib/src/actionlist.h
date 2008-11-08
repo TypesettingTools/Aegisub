@@ -74,7 +74,7 @@ namespace Athenasub {
 		virtual void AddAction(Action action);
 		virtual void Finish();
 
-		virtual void InsertLine(Entry line,int position=-1,const String section=L"");
+		virtual void InsertLine(Entry line,int position=-1,const String section="");
 		virtual void RemoveLine(int position,const String section);
 		virtual Entry ModifyLine(int position,const String section);
 		virtual std::vector<Entry> ModifyLines(Selection selection,const String section);

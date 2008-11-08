@@ -43,15 +43,15 @@ using namespace Athenasub;
 // Library data
 String Athenasub::GetLibraryName()
 {
-	return _T("Athenasub");
+	return "Athenasub";
 }
 String Athenasub::GetLibraryVersionString()
 {
-	return _T("Athenasub v0.x - EXPERIMENTAL");
+	return "Athenasub v0.x - EXPERIMENTAL VERSION";
 }
 String Athenasub::GetLibraryURL()
 {
-	return _T("http://www.aegisub.net");
+	return "http://www.aegisub.net";
 }
 
 
@@ -73,10 +73,10 @@ void Athenasub::SetHostApplicationURL(const String url)
 String Athenasub::GetHostApplicationName()
 {
 	if (hostName) return *hostName;
-	return L"unknown application";
+	return "unknown application";
 }
 String Athenasub::GetHostApplicationURL()
 {
 	if (hostURL) return *hostURL;
-	return L"";
+	return "";
 }

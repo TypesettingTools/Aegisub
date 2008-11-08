@@ -50,7 +50,7 @@ namespace Athenasub {
 		PlainASS(String _data) : data(_data) {}
 
 		// Basic features
-		String GetDefaultGroup() const { return L"Events"; }
+		String GetDefaultGroup() const { return "Events"; }
 		Entry Clone() const { return Entry(new PlainASS(*this)); }
 
 		String GetText() const { return data; }

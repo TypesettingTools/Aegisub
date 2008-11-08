@@ -65,12 +65,12 @@ namespace Athenasub {
 
 		void ProcessActionList(CActionList &actionList,int type=0);
 
-		String GetUndoMessage(const String owner=L"") const;
-		String GetRedoMessage(const String owner=L"") const;
-		bool CanUndo(const String owner=L"") const;
-		bool CanRedo(const String owner=L"") const;
-		void Undo(const String owner=L"");
-		void Redo(const String owner=L"");
+		String GetUndoMessage(const String owner="") const;
+		String GetRedoMessage(const String owner="") const;
+		bool CanUndo(const String owner="") const;
+		bool CanRedo(const String owner="") const;
+		void Undo(const String owner="");
+		void Redo(const String owner="");
 		void ActivateStack(ActionStack stack,bool isUndo,const String &owner);
 
 		void SetUndoLimit(size_t levels);
@@ -79,8 +79,8 @@ namespace Athenasub {
 		void DispatchNotifications(Notification notification) const;
 
 		void Clear();
-		void Load(wxInputStream &input,Format format=Format(),const String encoding=L"");
-		void Save(wxOutputStream &output,Format format=Format(),const String encoding=L"UTF-8");
+		void Load(wxInputStream &input,Format format=Format(),const String encoding="");
+		void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8");
 
 	protected:
 		void AddSection(String name);
