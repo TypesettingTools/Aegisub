@@ -258,7 +258,7 @@ Entry FormatHandlerASS::MakeEntry(const String &data,Section section,int version
 void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 	// Style conversion
 	if (!cur.IsEmpty() && cur[0] == '[') {
-		String low = cur.Lower();
+		String low = cur.AsciiLower();
 		bool changed = true;
 
 		// SSA file
@@ -295,8 +295,8 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 			curGroup = curGroup.Mid(1,curGroup.Length()-2);
 			
 			// Normalize case
-			curGroup.MakeLower();
-			String upper = curGroup.Upper();
+			curGroup.AsciiMakeLower();
+			String upper = curGroup.AsciiUpper();
 			bool raise = true;
 			size_t len = curGroup.Length();
 			for (size_t i=0;i<len;i++) {
@@ -314,7 +314,7 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 		if (cur.StartsWith("scripttype:",false)) {
 			String versionString = cur.Mid(11);
 			versionString.TrimBoth();
-			versionString.MakeLower();
+			versionString.AsciiMakeLower();
 			int trueVersion;
 			if (versionString == "v4.00") trueVersion = 0;
 			else if (versionString == "v4.00+") trueVersion = 1;

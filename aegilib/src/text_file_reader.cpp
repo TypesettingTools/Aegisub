@@ -192,7 +192,7 @@ Athenasub::String TextFileReader::ActuallyReadLine()
 
 	// Remove BOM
 	size_t startPos = 0;
-	if (stringBuffer.Length() > 0 && stringBuffer[0] == 0xFEFF) startPos = 1;
+	if (stringBuffer.Length() > 0 && stringBuffer[0] == 0xFEFF) startPos = 3;
 
 	// Trim
 	String str = String(stringBuffer);

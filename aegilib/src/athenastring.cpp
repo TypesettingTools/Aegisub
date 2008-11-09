@@ -34,6 +34,8 @@
 //
 
 #include "athenastring.h"
+#include "exception.h"
+#include <wx/string.h>
 
 using namespace Athenasub;
 
@@ -155,8 +157,7 @@ size_t String::Length() const
 
 size_t String::UTF8Length() const 
 {
-	// TODO
-	return size();
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
 }
 
 
@@ -197,8 +198,7 @@ bool String::StartsWith(const String& string,bool caseSensitive) const
 		String tmp = substr(0,string.size());
 		return compare(0,string.size(),string) == 0;
 	} else {
-		// TODO
-		return false;
+		return AsciiLower().StartsWith(string.AsciiLower(),true);
 	}
 }
 
@@ -209,8 +209,7 @@ bool String::EndsWith(const String& string,bool caseSensitive) const
 		size_t strSize = string.size();
 		return compare(size() - strSize,strSize,string) == 0;
 	} else {
-		// TODO
-		return false;
+		return AsciiLower().EndsWith(string.AsciiLower(),true);
 	}
 }
 
@@ -287,7 +286,15 @@ bool String::AsciiCompareNoCase(const Character *src) const
 
 bool String::IsNumber() const
 {
-	return false;	// TODO
+	for (const char *chr = c_str();*chr;chr++) {
+		char cur = *chr;
+		if (cur < '0' || cur > '9') {
+			if (cur != '.' && cur != ',' && cur != '+' && cur != '-') {
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 
@@ -334,6 +341,7 @@ const Character* String::StringTrim(String &str,size_t startPos)
 	return StringPtrTrim(chr,str.Length(),startPos);
 }
 
+/*
 String String::Lower() const
 {
 	String tmp(*this);
@@ -349,12 +357,44 @@ String String::Upper() const {
 
 void String::MakeUpper()
 {
-	// TODO
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
 }
 
 void String::MakeLower() 
 {
-	// TODO
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
+}
+*/
+
+String String::AsciiLower() const
+{
+	String tmp(*this);
+	tmp.AsciiMakeLower();
+	return tmp;
+}
+
+String String::AsciiUpper() const {
+	String tmp(*this);
+	tmp.AsciiMakeUpper();
+	return tmp;
+}
+
+void String::AsciiMakeUpper()
+{
+	char* str = GetCharPointer(0);
+	for (int i=0; str[i]; str++) {
+		char cur = str[i];
+		if (cur >= 'a' && cur <= 'z') str[i] -= 32;
+	}
+}
+
+void String::AsciiMakeLower() 
+{
+	char* str = GetCharPointer(0);
+	for (int i=0; str[i]; str++) {
+		char cur = str[i];
+		if (cur >= 'A' && cur <= 'Z') str[i] += 32;
+	}
 }
 
 

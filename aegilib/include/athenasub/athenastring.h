@@ -36,8 +36,9 @@
 #pragma once
 
 #include "api.h"
-#include <wx/string.h>
 #include <vector>
+
+class wxString;
 
 namespace Athenasub {
 
@@ -83,13 +84,18 @@ namespace Athenasub {
 		void WriteChar(const Character &src,size_t &pos);
 		void WriteNumber(Character *temp,int number,int pad,size_t &pos);
 
-		bool AsciiCompareNoCase(const Character *src) const;
 		bool IsNumber() const;
 
-		String Lower() const;
-		String Upper() const;
-		void MakeUpper();
-		void MakeLower();
+		//String Lower() const;
+		//String Upper() const;
+		//void MakeUpper();
+		//void MakeLower();
+
+		String AsciiLower() const;
+		String AsciiUpper() const;
+		void AsciiMakeUpper();
+		void AsciiMakeLower();
+		bool AsciiCompareNoCase(const Character *src) const;
 
 		// Convert a string to an integer
 		int ToInteger() const;
