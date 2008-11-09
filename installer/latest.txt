@@ -1,3 +1,2 @@
-release;1.10-524;http://www.aegisub.net/;Aegisub 1.10
-
-svn;2429;http://www.malakith.net/amz/aegisub/;Aegisub 2.1.3 Release Preview r2429 build - New default audio/video provider, audio stability issues, several general fixes.
+release;2.1.3-2429;http://www.aegisub.net/2008/10/aegisub-213-released.html;Aegisub 2.1.3a Release Preview r2429 build - New default audio/video provider, audio stability issues, several general fixes.
+svn;2429;http://www.aegisub.net/2008/10/aegisub-213-released.html;Aegisub 2.1.3a Release Preview r2429 build - New default audio/video provider, audio stability issues, several general fixes.

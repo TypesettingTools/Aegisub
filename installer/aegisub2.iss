@@ -34,7 +34,7 @@
 
 #define MyAppName "Aegisub"
 #define MyAppRevision "r2429"
-#define MyAppVer "2.1.3 Release Preview"
+#define MyAppVer "2.1.3a Release Preview"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
