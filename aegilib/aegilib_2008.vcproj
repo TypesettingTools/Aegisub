@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\athenasub\athenatime.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\athenasub\athenawin.h"
 				>
 			</File>

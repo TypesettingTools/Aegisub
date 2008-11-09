@@ -92,6 +92,12 @@ String GetTimeString(const Time& time,int ms_precision,int h_precision)
 	else if (ms_precision == 1) _ms /= 100;
 	else if (ms_precision == 0) _ms = 0;
 
+	// Asserts
+	assert(h   >= 0 && h   <= 9);
+	assert(min >= 0 && min <= 59);
+	assert(s   >= 0 && s   <= 59);
+	assert(_ms >= 0 && _ms <= 999);
+
 	// Get write buffer
 	String final;
 	size_t size = 7+h_precision+ms_precision;
@@ -110,7 +116,7 @@ String GetTimeString(const Time& time,int ms_precision,int h_precision)
 	final.WriteNumber(temp,_ms,ms_precision,pos);
 
 	// Write terminator
-	final.WriteText("\0",1,pos);
+	//final.WriteText("\0",1,pos);
 
 	// Restore string's state and return
 	final.SetSize(pos-1);

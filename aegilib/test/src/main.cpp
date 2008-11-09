@@ -86,16 +86,15 @@ int main()
 		// Save subtitles
 		cout << "Saving file... ";
 		timer.Start();
-		control->SaveFile(L"subs_out.ass",L"UTF-8");
+		control->SaveFile("subs_out.ass","UTF-8");
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
-		system("pause");
 
 		// Issue an action
 #ifdef WXDEBUG
-		int n = 1;
-#else
 		int n = 1000;
+#else
+		int n = 1;
 #endif
 		cout << "Executing action " << n << " times... ";
 		timer.Start();
@@ -117,8 +116,6 @@ int main()
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
 
-		system("pause");
-
 		// Rollback
 		cout << "Undoing " << n-1 << " times... ";
 		timer.Start();
@@ -127,8 +124,6 @@ int main()
 		}
 		timer.Pause();
 		cout << "Done in " << timer.Time() << " ms.\n";
-
-		system("pause");
 
 		// Undo
 		n = 1000;
@@ -143,21 +138,17 @@ int main()
 
 		// Get style test
 		ConstStyle style = control->GetStyle("japro1_star");
-		cout << "Style " << style->GetName().c_str() << " font is " << style->GetFontName().c_str() << " " << style->GetFontSize() << ".\n";
+		cout << "Style " << style->GetName() << " font is " << style->GetFontName() << " " << style->GetFontSize() << ".\n";
 
 		// Save a few more
 		control->SaveFile("subs_out2.ass","UTF-8");
 		control->Undo();
 		control->SaveFile("subs_out3.ass","UTF-8");
-
-		system("pause");
 	}
 
 	catch (std::exception &e) {
 		cout << "\n\nException: " << e.what() << endl << endl;
 	}
-
-	system("pause");
 
 	return true;
 }

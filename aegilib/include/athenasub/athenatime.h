@@ -44,9 +44,9 @@ namespace Athenasub {
 
 	public:
 		Time() { ms = 0; }
-		Time(int milliseconds) { ms = milliseconds; }
+		Time(int milliseconds) { SetMS(milliseconds); }
 
-		inline void SetMS(int milliseconds) { ms = milliseconds; }
+		inline void SetMS(int milliseconds) { ms = milliseconds > 0 ? milliseconds : 0; }
 		inline int GetMS() const { return ms; }
 	};
 
