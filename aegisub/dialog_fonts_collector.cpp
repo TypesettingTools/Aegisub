@@ -54,6 +54,7 @@
 #include "font_file_lister.h"
 #include "utils.h"
 #include "help_button.h"
+#include "scintilla_text_ctrl.h"
 
 
 ///////
@@ -114,7 +115,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	CollectAction->SetSelection(lastAction);
 
 	// Log box
-	LogBox = new wxStyledTextCtrl(this,-1,wxDefaultPosition,wxSize(300,210),0,_T(""));
+	LogBox = new ScintillaTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(300,210));
 	LogBox->SetWrapMode(wxSTC_WRAP_WORD);
 	LogBox->SetMarginWidth(1,0);
 	LogBox->SetReadOnly(true);
@@ -334,11 +335,11 @@ void DialogFontsCollector::Update(int value) {
 void DialogFontsCollector::OnAddText(wxCommandEvent &event) {
 	ColourString *str = (ColourString*) event.GetClientData();
 	LogBox->SetReadOnly(false);
-	int pos = LogBox->GetLength();
+	int pos = LogBox->GetReverseUnicodePosition(LogBox->GetLength());
 	LogBox->AppendText(str->text);
 	if (str->colour) {
-		LogBox->StartStyling(pos,31);
-		LogBox->SetStyling(str->text.Length(),str->colour);
+		LogBox->StartUnicodeStyling(pos,31);
+		LogBox->SetUnicodeStyling(pos,str->text.Length(),str->colour);
 	}
 	delete str;
 	LogBox->GotoPos(pos);

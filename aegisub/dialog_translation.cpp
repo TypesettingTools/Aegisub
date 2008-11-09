@@ -216,7 +216,7 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 		curBlock = *cur;
 		if (curBlock->GetType() == BLOCK_PLAIN) {
 			pos++;
-			int curLen = OrigText->GetUnicodePosition(OrigText->GetLength());
+			int curLen = OrigText->GetReverseUnicodePosition(OrigText->GetLength());
 			OrigText->AppendText(curBlock->text);
 			if (pos == block) {
 				OrigText->StartUnicodeStyling(curLen);

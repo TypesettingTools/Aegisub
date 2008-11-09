@@ -50,6 +50,7 @@ class AssOverrideParameter;
 class DialogFontsCollector;
 class FrameMain;
 class wxZipOutputStream;
+class ScintillaTextCtrl;
 
 
 /////////////////
@@ -93,7 +94,7 @@ class DialogFontsCollector : public wxDialog {
 
 private:
 	wxTextCtrl *DestBox;
-	wxStyledTextCtrl *LogBox;
+	ScintillaTextCtrl *LogBox;
 	wxButton *BrowseButton;
 	wxButton *StartButton;
 	wxButton *CloseButton;
