@@ -408,6 +408,8 @@ void VideoDisplay::UpdateSize() {
 	// Layout
 	box->GetParent()->Layout();
 	SetClientSize(w,h);
+	GetSize(&_w,&_h);
+	SetMaxSize(wxSize(_w,_h));
 
 	// Refresh
 	locked = false;

@@ -144,9 +144,10 @@ VideoBox::VideoBox(wxWindow *parent)
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
-	VideoSizer->Add(topSizer,1,wxEXPAND,0);
+	VideoSizer->Add(topSizer,0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
 	VideoSizer->Add(videoBottomSizer,0,wxEXPAND,0);
+	VideoSizer->AddStretchSpacer(1);
 	SetSizer(VideoSizer);
 }
 
