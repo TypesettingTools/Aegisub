@@ -172,6 +172,18 @@
 				RelativePath=".\src\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\suites.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Athenasub"
+			>
+			<File
+				RelativePath=".\src\athenasub\test_time.cpp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

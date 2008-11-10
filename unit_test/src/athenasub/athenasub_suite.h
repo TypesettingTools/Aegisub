@@ -33,24 +33,7 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/ui/text/TestRunner.h>
-#include "athenasub/athenasub_suite.h"
-#include "suites.h"
-
-
-#ifdef _MSC_VER
-#pragma comment(lib,"cppunit.lib")
-#endif
-
-
-int main()
-{
-	CppUnit::TextUi::TestRunner runner;
-
-	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry(AegisubSuites::athenasub()).makeTest());
-	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-	bool result = runner.run("",false);
-	return result ? 0 : 1;
-}
+class AthenasubSuite : public CppUnit::TestSuite {
+public:
+	static std::string getName() { return "Athenasub"; }
+};

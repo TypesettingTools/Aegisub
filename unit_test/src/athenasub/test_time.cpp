@@ -33,24 +33,62 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/ui/text/TestRunner.h>
-#include "athenasub/athenasub_suite.h"
-#include "suites.h"
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include "../../../aegilib/include/athenasub/athenasub.h"
+#include "../suites.h"
+using namespace Athenasub;
 
 
-#ifdef _MSC_VER
-#pragma comment(lib,"cppunit.lib")
-#endif
+class AthenasubTimeTest : public CppUnit::TestFixture {
+	CPPUNIT_TEST_SUITE(AthenasubTimeTest);
+	CPPUNIT_TEST(testBounds);
+	CPPUNIT_TEST(testComparison);
+	CPPUNIT_TEST_SUITE_END();
 
+private:
+	Time a;
+	Time *b;
+	Time *c;
+	Time *d;
+	Time e;
 
-int main()
-{
-	CppUnit::TextUi::TestRunner runner;
+public:
+	void setUp()
+	{
+		a;
+		b = new Time(0);
+		c = new Time(5000);
+		d = new Time(-500);
+		e.SetMS(-1000);
+	}
 
-	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry(AegisubSuites::athenasub()).makeTest());
-	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+	void tearDown()
+	{
+		delete b;
+		delete c;
+	}
+	
+	void testComparison()
+	{
+		CPPUNIT_ASSERT(a == a);
+		CPPUNIT_ASSERT(a <= a);
+		CPPUNIT_ASSERT(a >= a);
+		CPPUNIT_ASSERT(a == *b);
+		CPPUNIT_ASSERT(a == *d);
+		CPPUNIT_ASSERT(a != *c);
+		CPPUNIT_ASSERT(*b != *c);
+		CPPUNIT_ASSERT(a < *c);
+		CPPUNIT_ASSERT(a <= *c);
+		CPPUNIT_ASSERT(*c > *b);
+		CPPUNIT_ASSERT(*c >= *b);
+	}
 
-	bool result = runner.run("",false);
-	return result ? 0 : 1;
-}
+	void testBounds()
+	{
+		CPPUNIT_ASSERT(d->GetMS() >= 0);
+		CPPUNIT_ASSERT(e.GetMS() >= 0);
+	}
+};
+
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(AthenasubTimeTest,AegisubSuites::athenasub());
