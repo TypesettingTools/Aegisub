@@ -132,11 +132,13 @@ void Time::ParseString(const String &data)
 {
 	// Break into an array of values
 	array<size_t,4> values;
-	size_t last = 0;
+	//size_t last = 0;
 	size_t len = data.Length();
 	size_t curIndex = 0;
 	char cur = 0;
 	bool gotDecimal = false;
+	int curValue = 0;
+	int nDigits = 0;
 	for (size_t i=0;i<len;i++) {
 		cur = data[i];
 
@@ -147,26 +149,36 @@ void Time::ParseString(const String &data)
 				if (gotDecimal) break;
 				gotDecimal = true;
 			}
-			values.at(curIndex++) = data.SubToInteger(last,i);
-			last = i+1;
+			//values.at(curIndex++) = data.SubToInteger(last,i);
+			//last = i+1;
+			values.at(curIndex++) = curValue;
+			curValue = 0;
+			nDigits = 0;
+		}
+
+		// Got a digit
+		else {
+			curValue = curValue * 10 + (int)(cur-'0');
+			nDigits++;
+
+			// Check if we're already done
+			if (gotDecimal && nDigits >= 3) {
+				values.at(curIndex++) = curValue;
+				break;
+			}
 		}
 
 		// Reached end of string
 		if (i == len-1) {
-			int value = data.SubToInteger(last,len);
-			size_t digits = len - last;
+			//int value = data.SubToInteger(last,len);
+			//size_t digits = len - last;
 
 			// Ended in decimal, so we gotta normalize it to 3 digits
 			if (gotDecimal) {
-				if (digits != 3) {
-					if (digits == 2) value *= 10;
-					else if (digits == 1) value *= 100;
-					else if (digits > 3) {
-						
-					}
-				}
+				if (nDigits == 2) curValue *= 10;
+				else if (nDigits == 1) curValue *= 100;
 			}
-			values.at(curIndex++) = value;
+			values.at(curIndex++) = curValue;
 		}
 	}
 

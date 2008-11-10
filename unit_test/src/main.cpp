@@ -40,7 +40,11 @@
 
 
 #ifdef _MSC_VER
+#ifdef _DEBUG
+#pragma comment(lib,"cppunitd.lib")
+#else
 #pragma comment(lib,"cppunit.lib")
+#endif
 #endif
 
 

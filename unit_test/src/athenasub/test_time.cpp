@@ -36,6 +36,7 @@
 #include "../suites.h"
 #if ATHENASUB_TEST == 1
 
+#include <iostream>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "../../../athenasub/include/athenasub/athenasub.h"
@@ -48,6 +49,7 @@ class AthenasubTimeTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testComparison);
 	CPPUNIT_TEST(testOperators);
 	CPPUNIT_TEST(testSetGet);
+	CPPUNIT_TEST(testParse);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -103,6 +105,49 @@ public:
 		CPPUNIT_ASSERT(a + 300 == Time(800));
 		CPPUNIT_ASSERT(a - 300 == Time(200));
 		CPPUNIT_ASSERT(a - 600 == Time(0));
+	}
+
+	void testParse()
+	{
+		Time a;
+		a.ParseString("0");
+		CPPUNIT_ASSERT(a.GetMS() == 0);
+		a.ParseString("5");
+		CPPUNIT_ASSERT(a.GetMS() == 5000);
+		a.ParseString("5.0");
+		CPPUNIT_ASSERT(a.GetMS() == 5000);
+		a.ParseString("5,0");
+		CPPUNIT_ASSERT(a.GetMS() == 5000);
+		a.ParseString("5.00");
+		CPPUNIT_ASSERT(a.GetMS() == 5000);
+		a.ParseString("5.000");
+		CPPUNIT_ASSERT(a.GetMS() == 5000);
+		a.ParseString("5.1");
+		CPPUNIT_ASSERT(a.GetMS() == 5100);
+		a.ParseString("5.12");
+		CPPUNIT_ASSERT(a.GetMS() == 5120);
+		a.ParseString("5.123");
+		CPPUNIT_ASSERT(a.GetMS() == 5123);
+		a.ParseString("5,123");
+		CPPUNIT_ASSERT(a.GetMS() == 5123);
+		a.ParseString("5,1234");
+		CPPUNIT_ASSERT(a.GetMS() == 5123);
+		a.ParseString("5,");
+		CPPUNIT_ASSERT(a.GetMS() == 5000);
+		a.ParseString("05.12");
+		CPPUNIT_ASSERT(a.GetMS() == 5120);
+		a.ParseString("0:05.12");
+		CPPUNIT_ASSERT(a.GetMS() == 5120);
+		a.ParseString("0:15.12");
+		CPPUNIT_ASSERT(a.GetMS() == 15120);
+		a.ParseString("1:15.12");
+		CPPUNIT_ASSERT(a.GetMS() == 75120);
+		a.ParseString("11:15.12");
+		CPPUNIT_ASSERT(a.GetMS() == 675120);
+		a.ParseString("2:11:15.12");
+		CPPUNIT_ASSERT(a.GetMS() == 675120+7200000);
+		a.ParseString("10:11:15.12");
+		CPPUNIT_ASSERT(a.GetMS() == 675120+36000000);
 	}
 };
 
