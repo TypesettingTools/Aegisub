@@ -50,6 +50,7 @@ class AthenasubTimeTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testOperators);
 	CPPUNIT_TEST(testSetGet);
 	CPPUNIT_TEST(testParse);
+	CPPUNIT_TEST(testToString);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -109,45 +110,45 @@ public:
 
 	void testParse()
 	{
-		Time a;
-		a.ParseString("0");
-		CPPUNIT_ASSERT(a.GetMS() == 0);
-		a.ParseString("5");
-		CPPUNIT_ASSERT(a.GetMS() == 5000);
-		a.ParseString("5.0");
-		CPPUNIT_ASSERT(a.GetMS() == 5000);
-		a.ParseString("5,0");
-		CPPUNIT_ASSERT(a.GetMS() == 5000);
-		a.ParseString("5.00");
-		CPPUNIT_ASSERT(a.GetMS() == 5000);
-		a.ParseString("5.000");
-		CPPUNIT_ASSERT(a.GetMS() == 5000);
-		a.ParseString("5.1");
-		CPPUNIT_ASSERT(a.GetMS() == 5100);
-		a.ParseString("5.12");
-		CPPUNIT_ASSERT(a.GetMS() == 5120);
-		a.ParseString("5.123");
-		CPPUNIT_ASSERT(a.GetMS() == 5123);
-		a.ParseString("5,123");
-		CPPUNIT_ASSERT(a.GetMS() == 5123);
-		a.ParseString("5,1234");
-		CPPUNIT_ASSERT(a.GetMS() == 5123);
-		a.ParseString("5,");
-		CPPUNIT_ASSERT(a.GetMS() == 5000);
-		a.ParseString("05.12");
-		CPPUNIT_ASSERT(a.GetMS() == 5120);
-		a.ParseString("0:05.12");
-		CPPUNIT_ASSERT(a.GetMS() == 5120);
-		a.ParseString("0:15.12");
-		CPPUNIT_ASSERT(a.GetMS() == 15120);
-		a.ParseString("1:15.12");
-		CPPUNIT_ASSERT(a.GetMS() == 75120);
-		a.ParseString("11:15.12");
-		CPPUNIT_ASSERT(a.GetMS() == 675120);
-		a.ParseString("2:11:15.12");
-		CPPUNIT_ASSERT(a.GetMS() == 675120+7200000);
-		a.ParseString("10:11:15.12");
-		CPPUNIT_ASSERT(a.GetMS() == 675120+36000000);
+		CPPUNIT_ASSERT(Time("0").GetMS() == 0);
+		CPPUNIT_ASSERT(Time("5").GetMS() == 5000);
+		CPPUNIT_ASSERT(Time("5.0").GetMS() == 5000);
+		CPPUNIT_ASSERT(Time("5,0").GetMS() == 5000);
+		CPPUNIT_ASSERT(Time("5.00").GetMS() == 5000);
+		CPPUNIT_ASSERT(Time("5.000").GetMS() == 5000);
+		CPPUNIT_ASSERT(Time("5.1").GetMS() == 5100);
+		CPPUNIT_ASSERT(Time("5.12").GetMS() == 5120);
+		CPPUNIT_ASSERT(Time("5.123").GetMS() == 5123);
+		CPPUNIT_ASSERT(Time("5,123").GetMS() == 5123);
+		CPPUNIT_ASSERT(Time("5,1234").GetMS() == 5123);
+		CPPUNIT_ASSERT(Time("5,").GetMS() == 5000);
+		CPPUNIT_ASSERT(Time("5.").GetMS() == 5000);
+		CPPUNIT_ASSERT(Time("05.12").GetMS() == 5120);
+		CPPUNIT_ASSERT(Time("0:05.12").GetMS() == 5120);
+		CPPUNIT_ASSERT(Time("0:15.12").GetMS() == 15120);
+		CPPUNIT_ASSERT(Time("1:15.12").GetMS() == 75120);
+		CPPUNIT_ASSERT(Time("11:15.12").GetMS() == 675120);
+		CPPUNIT_ASSERT(Time("2:11:15.12").GetMS() == 675120+7200000);
+		CPPUNIT_ASSERT(Time("10:11:15.12").GetMS() == 675120+36000000);
+		CPPUNIT_ASSERT(Time(" 10 : 11 : 15 . 12 ").GetMS() == 675120+36000000);
+		CPPUNIT_ASSERT_THROW(Time("10:1-1:15.12"),Athenasub::Exception);
+	}
+
+	void testToString()
+	{
+		Time a(1,23,45,678);
+		Time b(11,23,45,678);
+		Time c(111,23,45,678);
+		CPPUNIT_ASSERT(a.GetString() == "1:23:45.678");
+		CPPUNIT_ASSERT(a.GetString(2,1) == "1:23:45.67");
+		CPPUNIT_ASSERT(a.GetString(3,2) == "01:23:45.678");
+		CPPUNIT_ASSERT(a.GetString(0,1) == "1:23:45");
+		CPPUNIT_ASSERT(a.GetString(0,0) == "59:59");
+		CPPUNIT_ASSERT(b.GetString(3,2) == "11:23:45.678");
+		CPPUNIT_ASSERT(b.GetString() == "9:59:59.999");
+		CPPUNIT_ASSERT(b.GetString(2,1) == "9:59:59.99");
+		CPPUNIT_ASSERT(c.GetString(3,2) == "99:59:59.999");
+		CPPUNIT_ASSERT(c.GetString(3,3) == "111:23:45.678");
 	}
 };
 

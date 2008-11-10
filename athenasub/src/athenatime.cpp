@@ -35,6 +35,7 @@
 
 #include "athenatime.h"
 #include "utils.h"
+#include "exception.h"
 using namespace Athenasub;
 
 
@@ -48,6 +49,16 @@ Time::Time()
 Time::Time(int milliseconds)
 {
 	SetMS(milliseconds);
+}
+
+Time::Time(const String& timestamp)
+{
+	ParseString(timestamp);
+}
+
+Time::Time(int hours,int minutes,int seconds,int milliseconds)
+{
+	SetMS(hours*3600000 + minutes*60000 + seconds*1000 + milliseconds);
 }
 
 
@@ -70,7 +81,7 @@ String Time::GetString(int ms_precision,int h_precision) const
 {
 	// Enforce sanity
 	ms_precision = Mid(0,ms_precision,3);
-	h_precision = Mid(0,h_precision,2);
+	h_precision = Max(0,h_precision);
 
 	// Generate values
 	int _ms = GetMS();
@@ -81,9 +92,15 @@ String Time::GetString(int ms_precision,int h_precision) const
 	int s = _ms / 1000;
 	_ms -= s*1000;
 
+	// Find maximum hour value
+	int maxH = 0;
+	for (int i=0;i<h_precision;i++) {
+		maxH = maxH * 10 + 9;
+	}
+
 	// Cap hour value
-	if (h > 9 && h_precision == 1) {
-		h = 9;
+	if (h > maxH) {
+		h = maxH;
 		min = 59;
 		s = 59;
 		_ms = 999;
@@ -95,33 +112,37 @@ String Time::GetString(int ms_precision,int h_precision) const
 	else if (ms_precision == 0) _ms = 0;
 
 	// Asserts
-	assert(h   >= 0 && h   <= 9);
+	assert(h   >= 0 && h   <= maxH);
 	assert(min >= 0 && min <= 59);
 	assert(s   >= 0 && s   <= 59);
 	assert(_ms >= 0 && _ms <= 999);
 
 	// Get write buffer
 	String final;
-	size_t size = 7+h_precision+ms_precision;
+	size_t size = 5 + (h_precision > 0 ? h_precision+1 : 0) + (ms_precision > 0 ? ms_precision + 1 : 0);
 	size_t pos = 0;
 	//wxChar *buffer = final.GetWriteBuf(size);
 	Character temp[16];
 	final.resize(size);
 
 	// Write time
-	final.WriteNumber(temp,h,h_precision,pos);
-	final.WriteChar(':',pos);
+	if (h_precision > 0) {
+		final.WriteNumber(temp,h,h_precision,pos);
+		final.WriteChar(':',pos);
+	}
 	final.WriteNumber(temp,min,2,pos);
 	final.WriteChar(':',pos);
 	final.WriteNumber(temp,s,2,pos);
-	final.WriteChar('.',pos);
-	final.WriteNumber(temp,_ms,ms_precision,pos);
+	if (ms_precision > 0) {
+		final.WriteChar('.',pos);
+		final.WriteNumber(temp,_ms,ms_precision,pos);
+	}
 
 	// Write terminator
 	//final.WriteText("\0",1,pos);
 
 	// Restore string's state and return
-	final.SetSize(pos-1);
+	//final.SetSize(pos-1);
 	return final;
 }
 
@@ -157,7 +178,8 @@ void Time::ParseString(const String &data)
 		}
 
 		// Got a digit
-		else {
+		else if (cur != ' ') {
+			if (cur < '0' || cur > '9') THROW_ATHENA_EXCEPTION(Exception::Parse_Error);
 			curValue = curValue * 10 + (int)(cur-'0');
 			nDigits++;
 

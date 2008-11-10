@@ -47,9 +47,16 @@ namespace Athenasub {
 	public:
 		Time();
 		Time(int milliseconds);
+		Time(const String& timestamp);
+		Time(int hours,int minutes,int seconds,int milliseconds);
 
 		int GetMS() const;
 		void SetMS(int milliseconds);
+
+		int GetHoursComponent() const;
+		int GetMinutesComponent() const;
+		int GetSecondsComponent() const;
+		int GetMillisecondsComponent() const;
 
 		String GetString(int ms_precision=3,int h_precision=1) const;
 		void ParseString(const String &data);
