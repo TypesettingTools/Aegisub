@@ -48,7 +48,9 @@ int main()
 {
 	CppUnit::TextUi::TestRunner runner;
 
+#if ATHENASUB_TEST == 1
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry(AegisubSuites::athenasub()).makeTest());
+#endif
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
 	bool result = runner.run("",false);

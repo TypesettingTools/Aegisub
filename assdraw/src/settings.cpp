@@ -67,14 +67,14 @@ void ASSDrawSettingsDialog::Init()
 
     #define APPENDCOLOURPROP(pgid, label, color) pgid = propgrid->Append( wxColourProperty(label, wxPG_LABEL, color) );
     #define APPENDUINTPROP(pgid, label, uint) \
-		pgid = propgrid->Append( wxUIntProperty(label, wxPG_LABEL, uint) ); \
+		pgid = propgrid->Append(wxUIntProperty(label, wxPG_LABEL, uint) ); \
 		propgrid->SetPropertyValidator( pgid, validator );
     #define APPENDBOOLPROP(pgid, label, boolvar) \
-	    pgid = propgrid->Append( wxBoolProperty (label, wxPG_LABEL, boolvar ) ); \
+	    pgid = propgrid->Append(wxBoolProperty (label, wxPG_LABEL, boolvar ) ); \
     	propgrid->SetPropertyAttribute( pgid, wxPG_BOOL_USE_CHECKBOX, (long)1 );
 	wxLongPropertyValidator validator(0x0,0xFF);
     
-    propgrid->Append( wxPropertyCategory(_T("Appearance"),wxPG_LABEL) );
+    propgrid->Append(wxPropertyCategory(_T("Appearance"),wxPG_LABEL) );
 	APPENDCOLOURPROP(colors_canvas_bg_pgid, _T("Canvas"), m_frame->colors.canvas_bg)
 	APPENDCOLOURPROP(colors_canvas_shape_normal_pgid, _T("Drawing"), m_frame->colors.canvas_shape_normal)
 	APPENDUINTPROP(alphas_canvas_shape_normal_pgid, _T("Drawing @"), m_frame->alphas.canvas_shape_normal)
@@ -97,7 +97,7 @@ void ASSDrawSettingsDialog::Init()
 	APPENDCOLOURPROP(colors_ruler_h_pgid, _T("H ruler"), m_frame->colors.ruler_h)
 	APPENDCOLOURPROP(colors_ruler_v_pgid, _T("V ruler"), m_frame->colors.ruler_v)
 
-    propgrid->Append( wxPropertyCategory(_T("Behaviors"),wxPG_LABEL) );
+    propgrid->Append(wxPropertyCategory(_T("Behaviors"),wxPG_LABEL) );
 	APPENDBOOLPROP(behaviors_capitalizecmds_pgid, _T("Capitalize commands"), m_frame->behaviors.capitalizecmds);
 	APPENDBOOLPROP(behaviors_autoaskimgopac_pgid, _T("Ask for image opacity"), m_frame->behaviors.autoaskimgopac);
 	APPENDBOOLPROP(behaviors_parse_spc_pgid, _T("Parse S/P/C"), m_frame->behaviors.parse_spc);

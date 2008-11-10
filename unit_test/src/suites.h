@@ -33,6 +33,19 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include <string>
+
+
+//////////////////////////////
+// Enable/disable test suites
+#define ATHENASUB_TEST 1
+
+
+
+///////////////////////
+// Name of test suites
 namespace AegisubSuites {
-	static std::string athenasub() { return "athenasub"; }
+#if ATHENASUB_TEST == 1
+	inline std::string athenasub() { return "athenasub"; }
+#endif
 };

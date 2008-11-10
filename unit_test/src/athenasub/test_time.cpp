@@ -33,10 +33,12 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include "../suites.h"
+#if ATHENASUB_TEST == 1
+
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "../../../aegilib/include/athenasub/athenasub.h"
-#include "../suites.h"
+#include "../../../athenasub/include/athenasub/athenasub.h"
 using namespace Athenasub;
 
 
@@ -44,51 +46,66 @@ class AthenasubTimeTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(AthenasubTimeTest);
 	CPPUNIT_TEST(testBounds);
 	CPPUNIT_TEST(testComparison);
+	CPPUNIT_TEST(testOperators);
+	CPPUNIT_TEST(testSetGet);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
-	Time a;
-	Time *b;
-	Time *c;
-	Time *d;
-	Time e;
 
 public:
 	void setUp()
 	{
-		a;
-		b = new Time(0);
-		c = new Time(5000);
-		d = new Time(-500);
-		e.SetMS(-1000);
 	}
 
 	void tearDown()
 	{
-		delete b;
-		delete c;
 	}
 	
 	void testComparison()
 	{
+		Time a;
+		Time b(0);
+		Time c(5000);
+		Time d(-500);
+
 		CPPUNIT_ASSERT(a == a);
 		CPPUNIT_ASSERT(a <= a);
 		CPPUNIT_ASSERT(a >= a);
-		CPPUNIT_ASSERT(a == *b);
-		CPPUNIT_ASSERT(a == *d);
-		CPPUNIT_ASSERT(a != *c);
-		CPPUNIT_ASSERT(*b != *c);
-		CPPUNIT_ASSERT(a < *c);
-		CPPUNIT_ASSERT(a <= *c);
-		CPPUNIT_ASSERT(*c > *b);
-		CPPUNIT_ASSERT(*c >= *b);
+		CPPUNIT_ASSERT(a == b);
+		CPPUNIT_ASSERT(a == d);
+		CPPUNIT_ASSERT(a != c);
+		CPPUNIT_ASSERT(b != c);
+		CPPUNIT_ASSERT(a < c);
+		CPPUNIT_ASSERT(a <= c);
+		CPPUNIT_ASSERT(c > b);
+		CPPUNIT_ASSERT(c >= b);
 	}
 
 	void testBounds()
 	{
-		CPPUNIT_ASSERT(d->GetMS() >= 0);
-		CPPUNIT_ASSERT(e.GetMS() >= 0);
+		Time a(-500);
+		CPPUNIT_ASSERT(a.GetMS() >= 0);
+	}
+
+	void testSetGet()
+	{
+		Time a;
+		CPPUNIT_ASSERT(a.GetMS() == 0);
+		a.SetMS(5000);
+		CPPUNIT_ASSERT(a.GetMS() == 5000);
+		a.SetMS(-5000);
+		CPPUNIT_ASSERT(a.GetMS() == 0);
+	}
+
+	void testOperators()
+	{
+		Time a(500);
+		CPPUNIT_ASSERT(a + 300 == Time(800));
+		CPPUNIT_ASSERT(a - 300 == Time(200));
+		CPPUNIT_ASSERT(a - 600 == Time(0));
 	}
 };
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(AthenasubTimeTest,AegisubSuites::athenasub());
+
+#endif
