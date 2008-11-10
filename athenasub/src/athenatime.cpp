@@ -136,17 +136,36 @@ void Time::ParseString(const String &data)
 	size_t len = data.Length();
 	size_t curIndex = 0;
 	char cur = 0;
+	bool gotDecimal = false;
 	for (size_t i=0;i<len;i++) {
 		cur = data[i];
-		if (cur == ':' || cur == '.' || cur == ',' || cur == ';') {
+
+		// Got a separator
+		bool isDecimalSeparator = (cur == '.' || cur == ',');
+		if (isDecimalSeparator || cur == ':' || cur == ';') {
+			if (isDecimalSeparator) {
+				if (gotDecimal) break;
+				gotDecimal = true;
+			}
 			values.at(curIndex++) = data.SubToInteger(last,i);
 			last = i+1;
 		}
+
+		// Reached end of string
 		if (i == len-1) {
 			int value = data.SubToInteger(last,len);
 			size_t digits = len - last;
-			if (digits == 2) value *= 10;
-			if (digits == 1) value *= 100;
+
+			// Ended in decimal, so we gotta normalize it to 3 digits
+			if (gotDecimal) {
+				if (digits != 3) {
+					if (digits == 2) value *= 10;
+					else if (digits == 1) value *= 100;
+					else if (digits > 3) {
+						
+					}
+				}
+			}
 			values.at(curIndex++) = value;
 		}
 	}
@@ -154,8 +173,9 @@ void Time::ParseString(const String &data)
 	// Turn into milliseconds
 	size_t mult[] = { 0, 1, 1000, 60000, 3600000 };
 	size_t accum = 0;
+	size_t adjust = gotDecimal ? 0 : 1;
 	for (int i=(int)curIndex;--i>=0;) {
-		accum += values[i] * mult[curIndex-i];
+		accum += values[i] * mult[curIndex-i+adjust];
 	}
 	
 	// Set
