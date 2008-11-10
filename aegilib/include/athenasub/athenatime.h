@@ -37,17 +37,23 @@
 
 namespace Athenasub {
 
+	class String;
+
 	// Time class
 	class Time {
 	private:
 		int ms;	// Time in milliseconds
 
 	public:
-		Time() { ms = 0; }
-		Time(int milliseconds) { SetMS(milliseconds); }
+		Time();
+		Time(int milliseconds);
 
-		inline void SetMS(int milliseconds) { ms = milliseconds > 0 ? milliseconds : 0; }
-		inline int GetMS() const { return ms; }
+		int GetMS() const;
+		void SetMS(int milliseconds);
+
+		String GetString(int ms_precision=3,int h_precision=1) const;
+		void ParseString(const String &data);
+
 	};
 
 	// Operators

@@ -62,103 +62,6 @@ DialogueASS::DialogueASS(const String &data,int version)
 }
 
 
-//////////////////////////////////
-// Generates a string from a time
-String GetTimeString(const Time& time,int ms_precision,int h_precision)
-{
-	// Enforce sanity
-	ms_precision = Mid(0,ms_precision,3);
-	h_precision = Mid(0,h_precision,2);
-
-	// Generate values
-	int _ms = time.GetMS();
-	int h = _ms / 3600000;
-	_ms -= h*3600000;
-	int min = _ms / 60000;
-	_ms -= min*60000;
-	int s = _ms / 1000;
-	_ms -= s*1000;
-
-	// Cap hour value
-	if (h > 9 && h_precision == 1) {
-		h = 9;
-		min = 59;
-		s = 59;
-		_ms = 999;
-	}
-
-	// Modify ms to account for precision
-	if (ms_precision == 2) _ms /= 10;
-	else if (ms_precision == 1) _ms /= 100;
-	else if (ms_precision == 0) _ms = 0;
-
-	// Asserts
-	assert(h   >= 0 && h   <= 9);
-	assert(min >= 0 && min <= 59);
-	assert(s   >= 0 && s   <= 59);
-	assert(_ms >= 0 && _ms <= 999);
-
-	// Get write buffer
-	String final;
-	size_t size = 7+h_precision+ms_precision;
-	size_t pos = 0;
-	//wxChar *buffer = final.GetWriteBuf(size);
-	Character temp[16];
-	final.resize(size);
-
-	// Write time
-	final.WriteNumber(temp,h,h_precision,pos);
-	final.WriteChar(':',pos);
-	final.WriteNumber(temp,min,2,pos);
-	final.WriteChar(':',pos);
-	final.WriteNumber(temp,s,2,pos);
-	final.WriteChar('.',pos);
-	final.WriteNumber(temp,_ms,ms_precision,pos);
-
-	// Write terminator
-	//final.WriteText("\0",1,pos);
-
-	// Restore string's state and return
-	final.SetSize(pos-1);
-	return final;
-}
-
-
-///////////////////////////////
-// Parses a string into a time
-Time ParseTimeString(const String &data)
-{
-	// Break into an array of values
-	array<size_t,4> values;
-	size_t last = 0;
-	size_t len = data.Length();
-	size_t curIndex = 0;
-	char cur = 0;
-	for (size_t i=0;i<len;i++) {
-		cur = data[i];
-		if (cur == ':' || cur == '.' || cur == ',' || cur == ';') {
-			values.at(curIndex++) = data.SubToInteger(last,i);
-			last = i+1;
-		}
-		if (i == len-1) {
-			int value = data.SubToInteger(last,len);
-			size_t digits = len - last;
-			if (digits == 2) value *= 10;
-			if (digits == 1) value *= 100;
-			values.at(curIndex++) = value;
-		}
-	}
-
-	// Turn into milliseconds
-	size_t mult[] = { 0, 1, 1000, 60000, 3600000 };
-	size_t accum = 0;
-	for (int i=(int)curIndex;--i>=0;) {
-		accum += values[i] * mult[curIndex-i];
-	}
-	return Time((int)accum);
-}
-
-
 //////////////////
 // Parse ASS Data
 bool DialogueASS::Parse(String rawData, int version)
@@ -194,8 +97,8 @@ bool DialogueASS::Parse(String rawData, int version)
 		}
 
 		// Get times
-		time[0] = ParseTimeString(tkn.GetString());
-		time[1] = ParseTimeString(tkn.GetString());
+		time[0].ParseString(tkn.GetString());
+		time[1].ParseString(tkn.GetString());
 
 		// Get style and actor
 		text[1] = tkn.GetString(true);
@@ -267,7 +170,7 @@ String DialogueASS::ToText(int version) const
 
 	// Write times
 	for (size_t i=0;i<2;i++) {
-		String tempStr = GetTimeString(time[i],2,1);
+		String tempStr = time[i].GetString(2,1);
 		buffer.WriteText(&tempStr[0],10,pos);
 		buffer.WriteChar(',',pos);
 	}

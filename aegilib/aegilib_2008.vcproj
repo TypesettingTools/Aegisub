@@ -231,6 +231,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\athenatime.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\colour.cpp"
 				>
 			</File>

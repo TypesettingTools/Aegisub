@@ -42,6 +42,9 @@
 #include <vector>
 #include <list>
 
+class wxInputStream;
+class wxOutputStream;
+
 namespace Athenasub {
 
 	// Prototypes
