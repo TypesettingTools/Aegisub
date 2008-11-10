@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="aegilib_test_2008"
+	Name="athenasub_test_2008"
 	ProjectGUID="{5A278743-375B-4FBE-AA7F-0C3BDCF8F96C}"
 	RootNamespace="test"
 	Keyword="Win32Proj"
