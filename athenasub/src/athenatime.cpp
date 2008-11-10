@@ -80,8 +80,7 @@ int Time::GetMS() const
 String Time::GetString(int ms_precision,int h_precision) const
 {
 	// Enforce sanity
-	ms_precision = Mid(0,ms_precision,3);
-	h_precision = Max(0,h_precision);
+	if (ms_precision < 0 || ms_precision > 3 || h_precision < 0) THROW_ATHENA_EXCEPTION(Exception::Out_Of_Range);
 
 	// Generate values
 	int _ms = GetMS();
@@ -214,4 +213,42 @@ void Time::ParseString(const String &data)
 	
 	// Set
 	SetMS((int)accum);
+}
+
+
+//////////////////
+// Get components
+int Time::GetHoursComponent() const
+{
+	return ms / 3600000;
+}
+
+int Time::GetMinutesComponent() const
+{
+	int _ms = ms;
+	int h = _ms / 3600000;
+	_ms -= h*3600000;
+	return _ms / 60000;
+}
+
+int Time::GetSecondsComponent() const
+{
+	int _ms = ms;
+	int h = _ms / 3600000;
+	_ms -= h*3600000;
+	int min = _ms / 60000;
+	_ms -= min*60000;
+	return _ms / 1000;
+}
+
+int Time::GetMillisecondsComponent() const
+{
+	int _ms = ms;
+	int h = _ms / 3600000;
+	_ms -= h*3600000;
+	int min = _ms / 60000;
+	_ms -= min*60000;
+	int s = _ms / 1000;
+	_ms -= s*1000;
+	return _ms;
 }

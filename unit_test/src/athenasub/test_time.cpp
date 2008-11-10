@@ -51,6 +51,7 @@ class AthenasubTimeTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testSetGet);
 	CPPUNIT_TEST(testParse);
 	CPPUNIT_TEST(testToString);
+	CPPUNIT_TEST(testComponents);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -79,15 +80,17 @@ public:
 		CPPUNIT_ASSERT(a != c);
 		CPPUNIT_ASSERT(b != c);
 		CPPUNIT_ASSERT(a < c);
+		CPPUNIT_ASSERT((c < a) == false);
 		CPPUNIT_ASSERT(a <= c);
 		CPPUNIT_ASSERT(c > b);
+		CPPUNIT_ASSERT((b > c) == false);
 		CPPUNIT_ASSERT(c >= b);
 	}
 
 	void testBounds()
 	{
 		Time a(-500);
-		CPPUNIT_ASSERT(a.GetMS() >= 0);
+		CPPUNIT_ASSERT(a.GetMS() == 0);
 	}
 
 	void testSetGet()
@@ -106,6 +109,7 @@ public:
 		CPPUNIT_ASSERT(a + 300 == Time(800));
 		CPPUNIT_ASSERT(a - 300 == Time(200));
 		CPPUNIT_ASSERT(a - 600 == Time(0));
+		CPPUNIT_ASSERT(a + 500 - 500 == a);
 	}
 
 	void testParse()
@@ -149,6 +153,18 @@ public:
 		CPPUNIT_ASSERT(b.GetString(2,1) == "9:59:59.99");
 		CPPUNIT_ASSERT(c.GetString(3,2) == "99:59:59.999");
 		CPPUNIT_ASSERT(c.GetString(3,3) == "111:23:45.678");
+		CPPUNIT_ASSERT_THROW(a.GetString(-1),Athenasub::Exception);
+		CPPUNIT_ASSERT_THROW(a.GetString(4),Athenasub::Exception);
+		CPPUNIT_ASSERT_THROW(a.GetString(3,-1),Athenasub::Exception);
+	}
+
+	void testComponents()
+	{
+		Time a(1,23,45,678);
+		CPPUNIT_ASSERT(a.GetHoursComponent() == 1);
+		CPPUNIT_ASSERT(a.GetMinutesComponent() == 23);
+		CPPUNIT_ASSERT(a.GetSecondsComponent() == 45);
+		CPPUNIT_ASSERT(a.GetMillisecondsComponent() == 678);
 	}
 };
 

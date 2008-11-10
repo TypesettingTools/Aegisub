@@ -455,13 +455,23 @@ int String::ToInteger() const
 {
 	size_t len = Length();
 	int value = 0;
+	int mult = 1;
 	int chr;
+	bool firstChar = true;
 	const char *data = c_str();
 	for (size_t i=0;i<len;i++) {
+		if (data[i] == ' ') continue;
 		chr = (int)(data[i])-(int)'0';
 		if (chr >= 0 && chr <= 9) value = 10*value+chr;
+		else if (firstChar && data[i] == '-') mult = -1;
+		else if (firstChar && data[i] == '+') {
+			firstChar = false;
+			continue;
+		}
+		else THROW_ATHENA_EXCEPTION(Exception::Out_Of_Range);
+		firstChar = false;
 	}
-	return value;
+	return value * mult;
 }
 
 

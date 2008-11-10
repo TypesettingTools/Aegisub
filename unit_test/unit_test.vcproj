@@ -181,6 +181,10 @@
 			Name="Athenasub"
 			>
 			<File
+				RelativePath=".\src\athenasub\test_string.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\athenasub\test_time.cpp"
 				>
 			</File>
