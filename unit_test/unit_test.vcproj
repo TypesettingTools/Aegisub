@@ -176,10 +176,22 @@
 				RelativePath=".\src\suites.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\utils.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Athenasub"
 			>
+			<File
+				RelativePath=".\src\athenasub\test_file.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\src\athenasub\test_string.cpp"
 				>

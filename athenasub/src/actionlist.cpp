@@ -107,7 +107,7 @@ void CActionList::Finish()
 // Create an "insert line" action
 void CActionList::InsertLine(Entry line,int position,const String section)
 {
-	Action action = Action (new ActionInsert(line,position,section));
+	Action action = Action (new ActionInsert(model.lock(),line,position,section));
 	AddAction(action);
 }
 
@@ -116,7 +116,7 @@ void CActionList::InsertLine(Entry line,int position,const String section)
 // Create a "remove line" action
 void CActionList::RemoveLine(int position,const String section)
 {
-	Action action = Action (new ActionRemove(position,section));
+	Action action = Action (new ActionRemove(model.lock(),position,section));
 	AddAction(action);
 }
 
@@ -127,7 +127,7 @@ Entry CActionList::ModifyLine(int position,const String section)
 {
 	Section sect = Model(model)->GetSection(section);
 	Entry entry = sect->GetEntry(position)->Clone();
-	Action action = Action (new ActionModify(entry,position,section,false));
+	Action action = Action (new ActionModify(model.lock(),entry,position,section,false));
 	AddAction(action);
 	return entry;
 }
@@ -152,6 +152,6 @@ std::vector<Entry> CActionList::ModifyLines(Selection selection,const String sec
 	}
 
 	// Generate the action
-	AddAction(Action(new ActionModifyBatch(entries,std::vector<VoidPtr>(),selection,section,false)));
+	AddAction(Action(new ActionModifyBatch(model.lock(),entries,std::vector<VoidPtr>(),selection,section,false)));
 	return entries;
 }

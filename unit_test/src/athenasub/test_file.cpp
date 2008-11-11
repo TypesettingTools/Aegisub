@@ -34,6 +34,7 @@
 //
 
 #include "../suites.h"
+#include "../utils.h"
 #if ATHENASUB_TEST == 1
 
 #include <iostream>
@@ -43,94 +44,59 @@
 using namespace Athenasub;
 
 
-class AthenasubStringTest : public CppUnit::TestFixture {
-	CPPUNIT_TEST_SUITE(AthenasubStringTest);
-	CPPUNIT_TEST(testComparison);
-	CPPUNIT_TEST(testStartEnd);
-	CPPUNIT_TEST(testConcatenation);
-	CPPUNIT_TEST(testConversion);
+class AthenasubFileTest : public CppUnit::TestFixture {
+	CPPUNIT_TEST_SUITE(AthenasubFileTest);
+	CPPUNIT_TEST(testLoad);
+	CPPUNIT_TEST(testSave);
+	CPPUNIT_TEST(testStableRewrite);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
+	LibAthenaSub lib;
+	String fileFolder;
 
 public:
 	void setUp()
 	{
+		fileFolder = "test_files/";
+		lib = Athenasub::Create("AthenasubTest");
 	}
 
 	void tearDown()
 	{
 	}
 
-	void testComparison()
+	void testLoad()
 	{
-		String a;
-		String b = "";
-		String c = "Hello world!";
-		String d = "ABC";
-		String e = "abc";
-
-		CPPUNIT_ASSERT(a == "");
-		CPPUNIT_ASSERT((a == "lol") == false);
-		CPPUNIT_ASSERT(a == a);
-		CPPUNIT_ASSERT(a >= a);
-		CPPUNIT_ASSERT(a <= a);
-		CPPUNIT_ASSERT(a == b);
-		CPPUNIT_ASSERT(a != c);
-		CPPUNIT_ASSERT(d != e);
-		CPPUNIT_ASSERT(d < e);
-		CPPUNIT_ASSERT((e < d) == false);
-		CPPUNIT_ASSERT(d < c);
-		CPPUNIT_ASSERT((c < d) == false);
+		Model subs = lib->CreateModel();
+		Controller controller = subs->CreateController();
+		CPPUNIT_ASSERT_NO_THROW(controller->LoadFile(fileFolder+"in_test1.ass","UTF-8"));
+		ConstModel csubs = subs;
+		CPPUNIT_ASSERT(csubs->GetSectionCount() == 3);
+		ConstSection section;
+		CPPUNIT_ASSERT_NO_THROW(section = csubs->GetSection("Script Info"));
+		CPPUNIT_ASSERT(section->HasProperty("ScriptType"));
+		CPPUNIT_ASSERT(section->GetProperty("ScriptType") == "v4.00+");
 	}
 
-	void testStartEnd()
+	void testSave()
 	{
-		String a = "Hello world!";
-
-		CPPUNIT_ASSERT(a.StartsWith("Hello"));
-		CPPUNIT_ASSERT(a.StartsWith("hello") == false);
-		CPPUNIT_ASSERT(a.StartsWith("hello",false));
-		CPPUNIT_ASSERT(a.EndsWith("world!"));
-		CPPUNIT_ASSERT(a.EndsWith("World!") == false);
-		CPPUNIT_ASSERT(a.EndsWith("world!",false));
+		Model subs = lib->CreateModel();
+		Controller controller = subs->CreateController();
+		controller->LoadFile(fileFolder+"in_test1.ass","UTF-8");
+		CPPUNIT_ASSERT_NO_THROW(controller->SaveFile(fileFolder+"out_test1.ass","UTF-8"));
 	}
 
-	void testConcatenation()
+	void testStableRewrite()
 	{
-		String a;
-		CPPUNIT_ASSERT(a == "");
-		a += "Hello";
-		CPPUNIT_ASSERT(a == "Hello");
-		a += " world!";
-		CPPUNIT_ASSERT(a == "Hello world!");
-		a += 5;
-		CPPUNIT_ASSERT(a == "Hello world!5");
-		a = "";
-		a += 10.32f;
-		CPPUNIT_ASSERT(a == "10.32");
-		a = "";
-		a += 10.32;
-		CPPUNIT_ASSERT(a == "10.32");
-		a = "Hello ";
-		String b("world!");
-		CPPUNIT_ASSERT(a+b == "Hello world!");
-		a += b;
-		CPPUNIT_ASSERT(a == "Hello world!");
-	}
-
-	void testConversion()
-	{
-		CPPUNIT_ASSERT(String("312").ToInteger() == 312);
-		CPPUNIT_ASSERT(String("+312").ToInteger() == 312);
-		CPPUNIT_ASSERT(String("-312").ToInteger() == -312);
-		CPPUNIT_ASSERT(String("  31 2 ").ToInteger() == 312);
-		CPPUNIT_ASSERT_THROW(String("312a").ToInteger(),Athenasub::Exception);
-		CPPUNIT_ASSERT_THROW(String("3-12").ToInteger(),Athenasub::Exception);
-		CPPUNIT_ASSERT_THROW(String("3+12").ToInteger(),Athenasub::Exception);
+		Model subs = lib->CreateModel();
+		Controller controller = subs->CreateController();
+		controller->LoadFile(fileFolder+"out_test1.ass","UTF-8");
+		CPPUNIT_ASSERT_NO_THROW(controller->SaveFile(fileFolder+"out_test2.ass","UTF-8"));
+		CPPUNIT_ASSERT(AreFilesIdentical(fileFolder+"out_test1.ass",fileFolder+"out_test2.ass"));
 	}
 };
 
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(AthenasubStringTest,AegisubSuites::athenasub());
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(AthenasubFileTest,AegisubSuites::athenasub());
 
 #endif

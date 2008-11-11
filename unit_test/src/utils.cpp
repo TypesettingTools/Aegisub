@@ -27,57 +27,20 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/ATHENASUB
+// AEGISUB
 //
-// Website: http://www.aegisub.net
-// Contact: mailto:amz@aegisub.net
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
-#pragma once
+#include "utils.h"
 
-//#include "athenastring.h"
-#include <string>
-#include <exception>
 
-namespace Athenasub {
-
-	// Exception class
-	class Exception : public std::exception {
-	public:
-		enum ExceptionList {
-			Unknown,
-			No_Format_Handler,
-			Invalid_ActionList,
-			Section_Already_Exists,
-			Unknown_Format,
-			Parse_Error,
-			Unsupported_Format_Feature,
-			Invalid_Token,
-			Out_Of_Range,
-			Invalid_Section,
-			Internal_Error,
-			TODO
-		};
-
-		Exception(ExceptionList _code);
-		Exception(ExceptionList _code,const char* file,const long line);
-
-		//String GetMessageString() const { return String(what(),wxConvLocal); }
-		int GetCode() { return code; }
-
-	private:
-		static std::string GetMessageChar(int code);
-		static std::string GetMessageFile(int code,const char *file,long line);
-
-		ExceptionList code;
-	};
-
+bool AreFilesIdentical(std::string file1, std::string file2)
+{
+	return GetFileMD5(file1) == GetFileMD5(file2);
 }
 
-#ifndef THROW_ATHENA_EXCEPTION
-#ifdef _MSC_VER
-#define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code,__FILE__,__LINE__)
-#else
-#define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code)
-#endif
-#endif
+std::string GetFileMD5(std::string file) {
+	return "";
+}

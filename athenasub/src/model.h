@@ -82,10 +82,11 @@ namespace Athenasub {
 		void Load(wxInputStream &input,Format format=Format(),const String encoding="");
 		void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8");
 
-	protected:
 		void AddSection(String name);
-		Section GetSection(String name) const;
-		Section GetSectionByIndex(size_t index) const;
+		ConstSection GetSection(String name) const;
+		Section GetSection(String name);
+		ConstSection GetSectionByIndex(size_t index) const;
+		Section GetSectionByIndex(size_t index);
 		size_t GetSectionCount() const;
 
 	public:

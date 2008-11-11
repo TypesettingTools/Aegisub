@@ -43,5 +43,8 @@
 #include "interfaces.h"
 #include "range.h"
 
-
 extern "C" ATHENA_API Athenasub::ILibAthenaSub* CreateLibAthenasub(const char* hostName);
+
+#ifdef _WIN32
+#include "athenawin.h"
+#endif

@@ -165,7 +165,10 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 	size_t totalSections = GetSectionCount();
 	for (size_t i=0;i<totalSections;i++) {
 		String name = GetSectionByIndex(i)->GetName();
-		if (find(sections.begin(),sections.end(),name) != sections.end()) sections.push_back(name);
+		// If not found on the list, add to it
+		if (find(sections.begin(),sections.end(),name) == sections.end()) {
+			sections.push_back(name);
+		}
 	}
 
 	// Write sections

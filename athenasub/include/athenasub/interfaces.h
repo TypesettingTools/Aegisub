@@ -64,6 +64,7 @@ namespace Athenasub {
 	class ISection;
 	class IDeltaCoder;
 	class CController;
+	class CAction;
 
 
 	// Smart pointers
@@ -89,6 +90,7 @@ namespace Athenasub {
 	typedef shared_ptr<const IDialogue> ConstDialogue;
 	typedef shared_ptr<const IStyle> ConstStyle;
 	typedef shared_ptr<const IModel> ConstModel;
+	typedef shared_ptr<const ISection> ConstSection;
 
 
 	// Lists
@@ -101,7 +103,7 @@ namespace Athenasub {
 		friend class CFormatHandler;
 		friend class CActionList;
 		friend class CController;
-		friend class IAction;
+		friend class CAction;
 
 	protected:
 		virtual void ProcessActionList(CActionList &actionList,int type=0) = 0;
@@ -121,12 +123,15 @@ namespace Athenasub {
 		virtual void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8") = 0;
 
 		virtual void AddSection(String name) = 0;
-		virtual Section GetSection(String name) const = 0;
-		virtual Section GetSectionByIndex(size_t index) const = 0;
-		virtual size_t GetSectionCount() const = 0;
+		virtual Section GetSection(String name) = 0;
+		virtual Section GetSectionByIndex(size_t index) = 0;
 
 	public:
 		virtual ~IModel() {}
+
+		virtual ConstSection GetSection(String name) const = 0;
+		virtual ConstSection GetSectionByIndex(size_t index) const = 0;
+		virtual size_t GetSectionCount() const = 0;
 
 		virtual Controller CreateController()=0;
 		virtual Format GetFormat() const=0;
@@ -347,10 +352,10 @@ namespace Athenasub {
 	class IAction {
 	public:
 		virtual ~IAction() {}
-		virtual Action GetAntiAction(const IModel& model) const = 0;
-		virtual void Execute(IModel& model) = 0;
+		virtual Action GetAntiAction() const = 0;
+		virtual void Execute() = 0;
 
-		Section GetSection(const IModel& model,const String &name) const { return model.GetSection(name); }
+		//virtual Section GetSection(const String &name) const = 0;
 	};
 
 

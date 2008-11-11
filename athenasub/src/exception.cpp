@@ -40,13 +40,13 @@ using namespace Athenasub;
 ////////////////
 // Constructors
 Exception::Exception(ExceptionList _code)
-: std::exception(GetMessageChar(_code))
+: std::exception(GetMessageChar(_code).c_str())
 {
 	code = _code;
 }
 
 Exception::Exception(ExceptionList _code,const char* file,const long line)
-: std::exception(GetMessageFile(_code,file,line))
+: std::exception(GetMessageFile(_code,file,line).c_str())
 {
 	code = _code;
 }
@@ -54,21 +54,21 @@ Exception::Exception(ExceptionList _code,const char* file,const long line)
 
 //////////////////////
 // Get message string
-const char* Exception::GetMessageChar(int code)
+std::string Exception::GetMessageChar(int code)
 {
 	switch (code) {
-				case Unknown: return "Unknown.";
-				case No_Format_Handler: return "Could not find a suitable format handler.";
-				case Invalid_ActionList: return "Invalid manipulator.";
-				case Section_Already_Exists: return "The specified section already exists in this model.";
-				case Unknown_Format: return "The specified file format is unknown.";
-				case Parse_Error: return "Parse error.";
-				case Unsupported_Format_Feature: return "This feature is not supported by this format.";
-				case Invalid_Token: return "Invalid type for this token.";
-				case Out_Of_Range: return "Out of range.";
-				case Invalid_Section: return "Invalid section.";
-				case Internal_Error: return "Internal error.";
-				case TODO: return "TODO";
+		case Unknown: return "Unknown.";
+		case No_Format_Handler: return "Could not find a suitable format handler.";
+		case Invalid_ActionList: return "Invalid manipulator.";
+		case Section_Already_Exists: return "The specified section already exists in this model.";
+		case Unknown_Format: return "The specified file format is unknown.";
+		case Parse_Error: return "Parse error.";
+		case Unsupported_Format_Feature: return "This feature is not supported by this format.";
+		case Invalid_Token: return "Invalid type for this token.";
+		case Out_Of_Range: return "Out of range.";
+		case Invalid_Section: return "Invalid section.";
+		case Internal_Error: return "Internal error.";
+		case TODO: return "TODO";
 	}
 	return "Invalid code.";
 }
@@ -76,12 +76,12 @@ const char* Exception::GetMessageChar(int code)
 
 ///////////////////////////////////////////
 // Get the message string for the filename
-const char* Exception::GetMessageFile(int code,const char *file,long line)
+std::string Exception::GetMessageFile(int code,const char *file,long line)
 {
-	static std::string str = GetMessageChar(code);
+	std::string str = GetMessageChar(code);
 	str = str + " (" + file + ":";
 	char buffer[16];
 	_itoa_s(line,buffer,10);
 	str = str + buffer + ")";
-	return str.c_str();
+	return str;
 }

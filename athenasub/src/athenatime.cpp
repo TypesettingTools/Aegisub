@@ -178,7 +178,9 @@ void Time::ParseString(const String &data)
 
 		// Got a digit
 		else if (cur != ' ') {
-			if (cur < '0' || cur > '9') THROW_ATHENA_EXCEPTION(Exception::Parse_Error);
+			if (cur < '0' || cur > '9') {
+				THROW_ATHENA_EXCEPTION(Exception::Parse_Error);
+			}
 			curValue = curValue * 10 + (int)(cur-'0');
 			nDigits++;
 

@@ -87,10 +87,10 @@ void CModel::ProcessActionList(CActionList &_actionList,int type)
 	std::list<Action>::const_iterator cur;
 	for (cur=actions->actions.begin();cur!=actions->actions.end();cur++) {
 		// Inserts the opposite into the undo action first
-		if (actions->undoAble) undo->AddActionStart((*cur)->GetAntiAction(*this));
+		if (actions->undoAble) undo->AddActionStart((*cur)->GetAntiAction());
 		
 		// Execute the action itself
-		(*cur)->Execute(*this);
+		(*cur)->Execute();
 	}
 
 	// Insert into undo stack
@@ -163,7 +163,16 @@ void CModel::AddSection(String name)
 
 //////////////////
 // Gets a section
-Section CModel::GetSection(String name) const
+ConstSection CModel::GetSection(String name) const
+{
+	size_t len = sections.size();
+	for (size_t i=0;i<len;i++) {
+		if (sections[i]->GetName() == name) return sections[i];
+	}
+	return SectionPtr();
+}
+
+Section CModel::GetSection(String name)
 {
 	size_t len = sections.size();
 	for (size_t i=0;i<len;i++) {
@@ -175,7 +184,12 @@ Section CModel::GetSection(String name) const
 
 ////////////////////////
 // Get section by index
-Section CModel::GetSectionByIndex(size_t index) const
+ConstSection CModel::GetSectionByIndex(size_t index) const
+{
+	return sections.at(index);
+}
+
+Section CModel::GetSectionByIndex(size_t index)
 {
 	return sections.at(index);
 }

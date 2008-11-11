@@ -40,35 +40,47 @@
 
 namespace Athenasub {
 
+	// Action base class
+	class CAction : public IAction {
+	private:
+		mutable Model model;
+
+	protected:
+		CAction(Model _model) { model = model; }
+
+		Model GetModel() const { return model; }
+		Section GetSection(String name) const { return model->GetSection(name); }
+	};
+
 	// Insert line
-	class ActionInsert : public IAction {
+	class ActionInsert : public CAction {
 	private:
 		Entry entry;
 		const String section;
 		int lineNumber;
 
 	public:
-		ActionInsert(Entry entry,int line,const String &section);
+		ActionInsert(Model model,Entry entry,int line,const String &section);
 
-		Action GetAntiAction(const IModel& model) const;
-		void Execute(IModel& model);
+		Action GetAntiAction() const;
+		void Execute();
 	};
 
 	// Remove line
-	class ActionRemove : public IAction {
+	class ActionRemove : public CAction {
 	private:
 		const String section;
 		int lineNumber;
 
 	public:
-		ActionRemove(int line,const String &section);
+		ActionRemove(Model model,int line,const String &section);
 
-		Action GetAntiAction(const IModel& model) const;
-		void Execute(IModel& model);
+		Action GetAntiAction() const;
+		void Execute();
 	};
 
 	// Modify line
-	class ActionModify : public IAction {
+	class ActionModify : public CAction {
 	private:
 		Entry entry;
 		VoidPtr delta;
@@ -77,15 +89,15 @@ namespace Athenasub {
 		bool noTextFields;
 
 	public:
-		ActionModify(Entry entry,int line,const String &section,bool noTextFields);
-		ActionModify(shared_ptr<void> delta,int line,const String &section);
+		ActionModify(Model model,Entry entry,int line,const String &section,bool noTextFields);
+		ActionModify(Model model,shared_ptr<void> delta,int line,const String &section);
 
-		Action GetAntiAction(const IModel& model) const;
-		void Execute(IModel& model);
+		Action GetAntiAction() const;
+		void Execute();
 	};
 
 	// Modify several lines
-	class ActionModifyBatch : public IAction {
+	class ActionModifyBatch : public CAction {
 	private:
 		std::vector<Entry> entries;
 		std::vector<VoidPtr> deltas;
@@ -93,12 +105,12 @@ namespace Athenasub {
 		const String section;
 		bool noTextFields;
 
-		ActionModifyBatch(Selection selection,const String &section,bool noTextFields);
+		ActionModifyBatch(Model model,Selection selection,const String &section,bool noTextFields);
 
 	public:
-		ActionModifyBatch(std::vector<Entry> entries,std::vector<VoidPtr> deltas,Selection selection,const String &section,bool noTextFields);
+		ActionModifyBatch(Model model,std::vector<Entry> entries,std::vector<VoidPtr> deltas,Selection selection,const String &section,bool noTextFields);
 
-		Action GetAntiAction(const IModel& model) const;
-		void Execute(IModel& model);
+		Action GetAntiAction() const;
+		void Execute();
 	};
 }

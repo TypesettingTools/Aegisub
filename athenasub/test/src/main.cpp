@@ -35,7 +35,7 @@
 
 //#define ATHENA_DLL
 #include <wx/wfstream.h>
-#include <athenasub/athenawin.h>
+#include <athenasub/athenasub.h>
 #include <iostream>
 #include <wx/stopwatch.h>
 #include "text_file_reader.h"
