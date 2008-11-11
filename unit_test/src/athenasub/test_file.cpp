@@ -94,6 +94,7 @@ public:
 		controller->LoadFile(fileFolder+"out_test1.ass","UTF-8");
 		CPPUNIT_ASSERT_NO_THROW(controller->SaveFile(fileFolder+"out_test2.ass","UTF-8"));
 		CPPUNIT_ASSERT(AreFilesIdentical(fileFolder+"out_test1.ass",fileFolder+"out_test2.ass"));
+		CPPUNIT_ASSERT(AreFilesIdentical(fileFolder+"in_test1.ass",fileFolder+"out_test1.ass") == false);
 	}
 };
 

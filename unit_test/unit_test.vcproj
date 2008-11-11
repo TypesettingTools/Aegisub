@@ -176,14 +176,6 @@
 				RelativePath=".\src\suites.h"
 				>
 			</File>
-			<File
-				RelativePath=".\src\utils.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\utils.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Athenasub"
@@ -198,6 +190,26 @@
 			</File>
 			<File
 				RelativePath=".\src\athenasub\test_time.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Utils"
+			>
+			<File
+				RelativePath="..\aegisub\md5.c"
+				>
+			</File>
+			<File
+				RelativePath="..\aegisub\md5.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\utils.h"
 				>
 			</File>
 		</Filter>

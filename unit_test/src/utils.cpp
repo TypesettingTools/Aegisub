@@ -33,14 +33,42 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include <wx/wxprec.h>
+#include <fstream>
+#include <iostream>
 #include "utils.h"
+#include "../../aegisub/md5.h"
 
 
 bool AreFilesIdentical(std::string file1, std::string file2)
 {
-	return GetFileMD5(file1) == GetFileMD5(file2);
+	std::string f1 = GetFileMD5(file1);
+	std::string f2 = GetFileMD5(file2);
+	return f1 == f2;
 }
 
 std::string GetFileMD5(std::string file) {
-	return "";
+	md5_state_s md5;
+	md5_byte_t digest[16];
+	const size_t toRead = 512;
+	md5_byte_t data[toRead];
+
+	std::ifstream fp(file.c_str());
+	if (fp.is_open()) {
+		md5_init(&md5);
+
+		while (!fp.eof()) {
+			fp.read((char*)data,toRead);
+			size_t n = fp.gcount();
+			md5_append(&md5,data,n);
+		}
+
+		md5_finish(&md5,digest);
+		unsigned int *res = (unsigned int*) digest;
+		return std::string(wxString::Format(_T("%08X%08X%08X%08X"),res[0],res[1],res[2],res[3]).mb_str(wxConvUTF8));
+	}
+
+	else {
+		return "";
+	}
 }
