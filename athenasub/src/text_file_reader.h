@@ -59,6 +59,7 @@ namespace Athenasub {
 		wxInputStream &file;
 		shared_ptr<wxMBConv> conv;
 		bool Is16;
+		bool isUtf8;
 		bool swap;
 		bool trim;
 		bool threaded;

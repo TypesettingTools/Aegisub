@@ -80,9 +80,11 @@ void TextFileReader::SetEncodingConfiguration()
 	// Set encoding configuration
 	swap = false;
 	Is16 = false;
+	isUtf8 = false;
 	//conv = shared_ptr<wxMBConv>();
 	if (encoding == _T("UTF-8")) {
 		conv = shared_ptr<wxMBConv> (new wxMBConvUTF8);
+		isUtf8 = true;
 	}
 	else if (encoding == _T("UTF-16LE")) {
 		Is16 = true;
@@ -109,8 +111,20 @@ void TextFileReader::SetEncodingConfiguration()
 
 ////////////////////
 // Helper functions
-wxString GetString(char *read,shared_ptr<wxMBConv> conv) { return wxString(read,*conv); }
-wxString GetString(wchar_t *read,shared_ptr<wxMBConv> conv) { (void)conv; return wxString(read); }
+String GetString(char *read,shared_ptr<wxMBConv> conv,bool isUtf8)
+{ 
+	if (isUtf8) {
+		return String(read);
+	} else {
+		return wxString(read,*conv);
+	}
+}
+String GetString(wchar_t *read,shared_ptr<wxMBConv> conv,bool isUtf8)
+{
+	(void)conv;
+	(void)isUtf8;
+	return wxString(read);
+}
 inline void Swap(wchar_t &a) {
 	char *c = (char*) &a;
 	char aux = c[0];
@@ -123,7 +137,7 @@ inline void Swap(char &a) { (void) a; }
 ////////////////
 // Parse a line
 template <typename T>
-void ParseLine(FastBuffer<T> &_buffer,wxInputStream &file,wxString &stringBuffer,shared_ptr<wxMBConv> conv,bool swap)
+void ParseLine(FastBuffer<T> &_buffer,wxInputStream &file,String &stringBuffer,shared_ptr<wxMBConv> conv,bool swap,bool isUtf8)
 {
 	// Look for a new line
 	int newLinePos = -1;
@@ -165,7 +179,7 @@ void ParseLine(FastBuffer<T> &_buffer,wxInputStream &file,wxString &stringBuffer
 		// Replace newline with null character and convert to proper charset
 		if (newLinePos) {
 			read[newLinePos] = 0;
-			stringBuffer = GetString(read,conv);
+			stringBuffer = GetString(read,conv,isUtf8);
 		}
 
 		// Remove an extra character if the new is the complement of \n,\r (13^7=10, 10^7=13)
@@ -179,16 +193,16 @@ void ParseLine(FastBuffer<T> &_buffer,wxInputStream &file,wxString &stringBuffer
 // Reads a line from file
 Athenasub::String TextFileReader::ActuallyReadLine()
 {
-	wxString stringBuffer;
+	String stringBuffer;
 	size_t bufAlloc = 1024;
-	stringBuffer.Alloc(bufAlloc);
+	stringBuffer.reserve(bufAlloc);
 	std::string buffer = "";
 
 	// Read UTF-16 line from file
-	if (Is16) ParseLine<wchar_t>(buffer2,file,stringBuffer,conv,swap);
+	if (Is16) ParseLine<wchar_t>(buffer2,file,stringBuffer,conv,swap,false);
 
 	// Read ASCII/UTF-8 line from file
-	else ParseLine<char>(buffer1,file,stringBuffer,conv,false);
+	else ParseLine<char>(buffer1,file,stringBuffer,conv,false,isUtf8);
 
 	// Remove BOM
 	size_t startPos = 0;
