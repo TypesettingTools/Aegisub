@@ -38,6 +38,17 @@
 using namespace Athenasub;
 
 
+///////////////////////////// Base class ///////////////////////////////
+
+///////////////
+// Constructor
+CAction::CAction(Model _model)
+: model(_model)
+{
+	if (!model) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
+}
+
+
 ///////////////////////////// Insert line /////////////////////////////
 
 ///////////////

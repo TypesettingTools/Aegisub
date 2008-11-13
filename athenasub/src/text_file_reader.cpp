@@ -49,7 +49,7 @@ using namespace Athenasub;
 
 ///////////////
 // Constructor
-TextFileReader::TextFileReader(wxInputStream &stream,Athenasub::String enc,bool _trim,bool prefetch)
+TextFileReader::TextFileReader(wxInputStream &stream,String enc,bool _trim,bool prefetch)
 : file(stream)
 {
 	// Setup

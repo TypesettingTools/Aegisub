@@ -235,6 +235,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\athenatime.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\colour.cpp"
 				>
 			</File>
@@ -252,10 +256,6 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\fastbuffer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\gorgontime.h"
 				>
 			</File>
 			<File
@@ -289,26 +289,6 @@
 			</File>
 			<File
 				RelativePath=".\include\aegilib\serialize.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\text_file_reader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\text_file_reader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\text_file_writer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\text_file_writer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\time.cpp"
 				>
 			</File>
 			<File
@@ -461,6 +441,26 @@
 			</File>
 			<File
 				RelativePath=".\src\libathenasub.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="File IO"
+			>
+			<File
+				RelativePath=".\src\text_file_reader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_file_reader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_file_writer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_file_writer.h"
 				>
 			</File>
 		</Filter>

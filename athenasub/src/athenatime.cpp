@@ -42,8 +42,8 @@ using namespace Athenasub;
 ////////////////
 // Constructors
 Time::Time()
+: ms(0)
 {
-	ms = 0;
 }
 
 Time::Time(int milliseconds)

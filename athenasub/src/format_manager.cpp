@@ -84,8 +84,8 @@ const Format FormatManager::GetFormatByIndex(const int index)
 {
 	try {
 		return formats.at(index);
-	}
-	catch (...) {
+	} catch (std::out_of_range &e) {
+		(void) e;
 		return Format();
 	}
 }

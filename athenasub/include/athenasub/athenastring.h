@@ -116,6 +116,7 @@ namespace Athenasub {
 		// Unicode routines
 		static size_t GetUTF8Len(const wchar_t *utf16);
 		static size_t UTF16toUTF8(const wchar_t *utf16,char *utf8);
+		static size_t UTF8toUTF16(const char *utf8,wchar_t *utf16);
 
 		//////////
 

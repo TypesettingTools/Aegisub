@@ -46,7 +46,7 @@ namespace Athenasub {
 		mutable Model model;
 
 	protected:
-		CAction(Model _model) { model = model; }
+		CAction(Model model);
 
 		Model GetModel() const { return model; }
 		Section GetSection(String name) const { return model->GetSection(name); }

@@ -212,6 +212,10 @@
 				RelativePath=".\src\utils.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\vc_open_test.cpp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

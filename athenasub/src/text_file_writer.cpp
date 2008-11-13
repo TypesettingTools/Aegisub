@@ -65,21 +65,22 @@ TextFileWriter::~TextFileWriter() {
 
 /////////////////
 // Write to file
-void TextFileWriter::WriteLineToFile(Athenasub::String line,bool addLineBreak) {
+void TextFileWriter::WriteLineToFile(String line,bool addLineBreak) {
 	// Add line break
-	wxString temp = line.GetWxString();
+	String temp = line;//line.GetWxString();
 	if (addLineBreak && Is16) temp += _T("\r\n");
 
 	// Add BOM if it's the first line and the target format is Unicode
 	if (IsFirst && IsUnicode) {
 		wchar_t bom = 0xFEFF;
-		temp = wxString(bom) + temp;
+		temp = String(bom) + temp;
 	}
 	IsFirst = false;
 
 	// 16-bit
 	if (Is16) {
-		wxWCharBuffer buf = temp.wc_str(*conv);
+		wxString temp2 = temp.GetWxString();
+		wxWCharBuffer buf = temp2.wc_str(*conv);
 		if (!buf.data()) return;
 		size_t len = wcslen(buf.data());
 		file.Write((const char*)buf.data(),(std::streamsize)len*sizeof(wchar_t));
@@ -89,10 +90,12 @@ void TextFileWriter::WriteLineToFile(Athenasub::String line,bool addLineBreak) {
 	else {
 		if (encoding == _T("UTF-8")) {
 			// Calculate metrics
-			const wchar_t* src = temp.c_str();
-			size_t len = temp.Length() * 2 + 2;
+			const char* src = temp.c_str();
+			size_t len = temp.Length()+1;
 			if (addLineBreak) len += 2;
-			if (buffer.size()-bufferPos < len) {
+
+			// Resize buffer if it won't fit
+			if (buffer.size() < bufferPos+len) {
 				// Flush
 				file.Write(&buffer[0],(std::streamsize)bufferPos);
 				bufferPos = 0;
@@ -101,15 +104,18 @@ void TextFileWriter::WriteLineToFile(Athenasub::String line,bool addLineBreak) {
 				if (buffer.size() < len) buffer.resize(len);
 			}
 
-			// Convert to UTF-8
-			bufferPos += String::UTF16toUTF8(src,&buffer[bufferPos]);
+			// Write UTF-8
+			size_t toWrite = strlen(src);
+			memcpy(&buffer[bufferPos],src,toWrite);
+			bufferPos += toWrite;
 			if (addLineBreak) {
 				buffer[bufferPos++] = '\r';
 				buffer[bufferPos++] = '\n';
 			}
 		}
 		else {
-			wxCharBuffer buf = temp.mb_str(*conv);
+			wxString temp2 = temp.GetWxString();
+			wxCharBuffer buf = temp2.mb_str(*conv);
 			if (!buf.data()) return;
 			size_t len = strlen(buf.data());
 			file.Write(buf.data(),(std::streamsize)len);

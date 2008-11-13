@@ -90,6 +90,7 @@ Character* String::GetCharPointer(size_t pos)
 
 wxString String::GetWxString() const
 {
+	// TODO: optimize this to use UTF8ToUTF16()
 	return wxString(c_str(),wxConvUTF8);
 }
 
@@ -611,3 +612,9 @@ size_t String::UTF16toUTF8(const wchar_t *utf16,char *utf8)
 	return written;
 }
 
+size_t String::UTF8toUTF16(const char *utf8,wchar_t *utf16)
+{
+	(void) utf8;
+	(void) utf16;
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
+}
