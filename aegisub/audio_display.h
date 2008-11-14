@@ -84,6 +84,9 @@ private:
 	bool blockUpdate;
 	bool dontReadTimes;
 
+	bool needImageUpdate;
+	bool needImageUpdateWeak;
+
 	bool hasSel;
 	bool hasKaraoke;
 	bool diagUpdated;
@@ -130,6 +133,7 @@ private:
 	void UpdatePosition(int pos,bool IsSample=false);
 
 	int GetBoundarySnap(int x,int range,bool shiftHeld,bool start=true);
+	void DoUpdateImage();
 
 public:
 	AudioProvider *provider;

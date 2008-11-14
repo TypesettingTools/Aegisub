@@ -103,6 +103,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 	hold = 0;
 	samples = 0;
 	hasFocus = (wxWindow::FindFocus() == this);
+	needImageUpdate = false;
 
 	// Init
 	UpdateTimer.SetOwner(this,Audio_Update_Timer);
@@ -159,8 +160,22 @@ void AudioDisplay::Reset() {
 ////////////////
 // Update image
 void AudioDisplay::UpdateImage(bool weak) {
+	// Update samples
+	UpdateSamples();
+
+	// Set image as needing to be redrawn
+	needImageUpdate = true;
+	if (!needImageUpdateWeak) needImageUpdateWeak = weak;
+	Refresh(false);
+}
+
+void AudioDisplay::DoUpdateImage() {
 	// Loaded?
 	if (!loaded || !provider) return;
+
+	// Needs updating?
+	if (!needImageUpdate) return;
+	bool weak = needImageUpdateWeak;
 
 	// Prepare bitmap
 	int timelineHeight = Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
@@ -188,9 +203,6 @@ void AudioDisplay::UpdateImage(bool weak) {
 	if (provider && Options.AsBool(_T("Audio Spectrum"))) {
 		spectrum = true;
 	}
-
-	// Update samples
-	UpdateSamples();
 
 	// Draw image to be displayed
 	wxMemoryDC dc;
@@ -372,7 +384,8 @@ void AudioDisplay::UpdateImage(bool weak) {
 	}
 
 	// Done
-	Refresh(false);
+	needImageUpdate = false;
+	needImageUpdateWeak = false;
 }
 
 
@@ -1313,6 +1326,7 @@ END_EVENT_TABLE()
 // Paint
 void AudioDisplay::OnPaint(wxPaintEvent& event) {
 	if (w == 0 || h == 0) return;
+	DoUpdateImage();
 
 	wxPaintDC dc(this);
 	dc.DrawBitmap(*origImage,0,0);
@@ -1397,7 +1411,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Cursor drawing
-	if (!player->IsPlaying()) {
+	if (!player->IsPlaying() && origImage) {
 		// Draw bg
 		wxClientDC dc(this);
 		dc.DrawBitmap(*origImage,0,0);
