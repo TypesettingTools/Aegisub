@@ -72,7 +72,7 @@ private:
 	void SetEncodingConfiguration();
 
 public:
-	TextFileReader(Athenasub::String filename,Athenasub::String encoding=_T(""),bool trim=true);
+	TextFileReader(Athenasub::String filename,Athenasub::String encoding="",bool trim=true);
 	~TextFileReader();
 
 	Athenasub::String ReadLineFromFile();

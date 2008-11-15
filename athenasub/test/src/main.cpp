@@ -99,7 +99,7 @@ int main()
 		cout << "Executing action " << n << " times... ";
 		timer.Start();
 		for (int i=0;i<n;i++) {
-			ActionList actions = control->CreateActionList(L"Test");
+			ActionList actions = control->CreateActionList("Test");
 			Selection selection = control->CreateSelection();
 			selection->AddRange(Range(0,5000));
 			selection->AddRange(Range(4500,5500));

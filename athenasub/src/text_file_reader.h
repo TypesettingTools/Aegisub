@@ -69,7 +69,7 @@ namespace Athenasub {
 		String ActuallyReadLine();
 
 	public:
-		TextFileReader(wxInputStream &stream,String encoding=_T(""),bool trim=true,bool prefetch=true);
+		TextFileReader(wxInputStream &stream,String encoding="",bool trim=true,bool prefetch=true);
 		~TextFileReader();
 
 		String ReadLineFromFile();

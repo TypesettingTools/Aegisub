@@ -116,14 +116,14 @@ String GetString(char *read,shared_ptr<wxMBConv> conv,bool isUtf8)
 	if (isUtf8) {
 		return String(read);
 	} else {
-		return wxString(read,*conv);
+		return String(wxString(read,*conv));
 	}
 }
 String GetString(wchar_t *read,shared_ptr<wxMBConv> conv,bool isUtf8)
 {
 	(void)conv;
 	(void)isUtf8;
-	return wxString(read);
+	return String(read);
 }
 inline void Swap(wchar_t &a) {
 	char *c = (char*) &a;
@@ -204,9 +204,14 @@ Athenasub::String TextFileReader::ActuallyReadLine()
 	// Read ASCII/UTF-8 line from file
 	else ParseLine<char>(buffer1,file,stringBuffer,conv,false,isUtf8);
 
-	// Remove BOM
+	// Remove BOM (UTF-8 EF BB BF)
 	size_t startPos = 0;
-	if (stringBuffer.Length() > 0 && stringBuffer[0] == 0xFEFF) startPos = 3;
+	if (stringBuffer.Length() >= 3) {
+		int b1 = (unsigned char) stringBuffer[0];
+		int b2 = (unsigned char) stringBuffer[1];
+		int b3 = (unsigned char) stringBuffer[2];
+		if (b1 == 0xEF && b2 == 0xBB && b3 == 0xBF) startPos = 3;
+	}
 
 	// Trim
 	String str = String(stringBuffer);
@@ -243,7 +248,7 @@ void TextFileReader::EnsureValid(Athenasub::String enc)
 // Get encoding being used
 String TextFileReader::GetCurrentEncoding()
 {
-	return encoding.c_str();
+	return String(encoding.c_str());
 }
 
 

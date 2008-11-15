@@ -139,7 +139,7 @@ String& String::Trim(bool fromRight)
 		n = len - start;
 	}
 
-	*this = substr(start,n);
+	*this = String(substr(start,n));
 	return *this;
 }
 
@@ -176,27 +176,27 @@ size_t String::Find(Character c) const
 
 String String::Left(size_t n) const
 {
-	return substr(0,n);
+	return String(substr(0,n));
 }
 
 
 String String::Right(size_t n) const
 {
 	size_t len = size();
-	return substr(len-n,n);
+	return String(substr(len-n,n));
 }
 
 
 String String::Mid(size_t start,size_t count) const
 {
-	return substr(start,count);
+	return String(substr(start,count));
 }
 
 
 bool String::StartsWith(const String& string,bool caseSensitive) const
 {
 	if (caseSensitive) {
-		String tmp = substr(0,string.size());
+		String tmp = String(substr(0,string.size()));
 		return compare(0,string.size(),string) == 0;
 	} else {
 		return AsciiLower().StartsWith(string.AsciiLower(),true);
@@ -514,12 +514,12 @@ String String::PrettyFloat(String src)
 // Float to string
 String String::FloatToString(float src)
 {
-	return PrettyFloat(wxString::Format(_T("%f"),src));
+	return PrettyFloat(String(wxString::Format(_T("%f"),src)));
 }
 
 String String::FloatToString(double src)
 {
-	return PrettyFloat(wxString::Format(_T("%f"),src));
+	return PrettyFloat(String(wxString::Format(_T("%f"),src)));
 }
 
 
@@ -527,7 +527,7 @@ String String::FloatToString(double src)
 // Int to string
 String String::IntegerToString(int value)
 {
-	return wxString::Format(_T("%i"),value);
+	return String(wxString::Format(_T("%i"),value));
 }
 
 

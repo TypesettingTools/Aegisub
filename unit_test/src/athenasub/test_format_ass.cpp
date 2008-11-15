@@ -40,69 +40,35 @@
 #include <iostream>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "../../../athenasub/include/athenasub/athenasub.h"
+#include "athenasub/athenasub.h"
+#include "formats/format_ass.h"
 using namespace Athenasub;
 
 
-class AthenasubFileTest : public CppUnit::TestFixture {
-	CPPUNIT_TEST_SUITE(AthenasubFileTest);
-	CPPUNIT_TEST(testLoad);
-	CPPUNIT_TEST(testSave);
-	CPPUNIT_TEST(testStableRewrite);
+class AthenasubFormatASSTest : public CppUnit::TestFixture {
+	CPPUNIT_TEST_SUITE(AthenasubFormatASSTest);
+	CPPUNIT_TEST(testDialogueParse);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
-	LibAthenaSub lib;
-	String fileFolder;
-	Model subs;
-	Controller controller;
 
 public:
-	AthenasubFileTest()
-	{
-		fileFolder = "test_files/";
-		lib = Athenasub::Create("AthenasubTest");
-	}
-
 	void setUp()
 	{
-		subs = lib->CreateModel();
-		controller = subs->CreateController();
 	}
 
 	void tearDown()
 	{
-		subs = Model();
-		controller = Controller();
 	}
 
-	void testLoad()
+	void testDialogueParse()
 	{
-		CPPUNIT_ASSERT_NO_THROW(controller->LoadFile(fileFolder+"in_test1.ass","UTF-8"));
-		ConstModel csubs = subs;
-		CPPUNIT_ASSERT(csubs->GetSectionCount() == 3);
-		ConstSection section;
-		CPPUNIT_ASSERT_NO_THROW(section = csubs->GetSection("Script Info"));
-		CPPUNIT_ASSERT(section->HasProperty("ScriptType"));
-		CPPUNIT_ASSERT(section->GetProperty("ScriptType") == "v4.00+");
-	}
-
-	void testSave()
-	{
-		CPPUNIT_ASSERT_NO_THROW(controller->LoadFile(fileFolder+"in_test1.ass","UTF-8"));
-		CPPUNIT_ASSERT_NO_THROW(controller->SaveFile(fileFolder+"out_test1.ass","UTF-8"));
-	}
-
-	void testStableRewrite()
-	{
-		CPPUNIT_ASSERT_NO_THROW(controller->LoadFile(fileFolder+"out_test1.ass","UTF-8"));
-		CPPUNIT_ASSERT(subs->GetSectionCount() == 3);
-		CPPUNIT_ASSERT_NO_THROW(controller->SaveFile(fileFolder+"out_test2.ass","UTF-8"));
-		CPPUNIT_ASSERT(AreFilesIdentical(fileFolder+"out_test1.ass",fileFolder+"out_test2.ass"));
-		CPPUNIT_ASSERT(AreFilesIdentical(fileFolder+"in_test1.ass",fileFolder+"out_test1.ass") == false);
+		DialogueASS diag;
+		DialogueASS refDiag;
+		CPPUNIT_ASSERT_NO_THROW(refDiag = DialogueASS("Dialogue: 3,1:23:45.67,2:34:56.78,style name,actor name,0001,0020,3300,effect field,Text, why halo thar?",1));
 	}
 };
 
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(AthenasubFileTest,AegisubSuites::athenasub());
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(AthenasubFormatASSTest,AegisubSuites::athenasub());
 
 #endif

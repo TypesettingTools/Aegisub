@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../athenasub/include;../athenasub/include/athenasub;../athenasub/src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -114,6 +115,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="../athenasub/include;../athenasub/include/athenasub;../athenasub/src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -185,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\athenasub\test_format_ass.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\athenasub\test_string.cpp"
 				>
 			</File>
@@ -210,10 +216,6 @@
 			</File>
 			<File
 				RelativePath=".\src\utils.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\vc_open_test.cpp"
 				>
 			</File>
 		</Filter>

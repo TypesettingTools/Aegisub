@@ -55,7 +55,7 @@ namespace Athenasub {
 		void SetEncoding(String encoding);
 
 	public:
-		TextFileWriter(wxOutputStream &stream,String encoding=_T(""));
+		TextFileWriter(wxOutputStream &stream,String encoding="");
 		~TextFileWriter();
 
 		void WriteLineToFile(Athenasub::String line,bool addLineBreak=true);

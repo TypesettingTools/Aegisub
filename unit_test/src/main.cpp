@@ -48,9 +48,6 @@
 #endif
 
 
-bool visual_studio_open_file(char const * filename, unsigned int line);
-
-
 int main()
 {
 	CppUnit::TextUi::TestRunner runner;
@@ -60,7 +57,6 @@ int main()
 #endif
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-	visual_studio_open_file("e:\\Projects\\aegisub\\unit_test\\src\\main.cpp",63);
 	bool result = runner.run("",false);
 	return result ? 0 : 1;
 }

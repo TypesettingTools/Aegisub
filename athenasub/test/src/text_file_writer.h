@@ -65,7 +65,7 @@ private:
 	void SetEncoding();
 
 public:
-	TextFileWriter(Athenasub::String filename,Athenasub::String encoding=_T(""));
+	TextFileWriter(Athenasub::String filename,Athenasub::String encoding="");
 	~TextFileWriter();
 
 	void WriteLineToFile(Athenasub::String line,bool addLineBreak=true);
