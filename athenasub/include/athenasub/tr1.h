@@ -39,8 +39,15 @@
 // Include the Technical Report 1 headers
 // This is necessary because some compilers put them on different places
 
-#include <memory>
-#include <array>
+#ifdef _MSC_VER
+	// MSVC
+	#include <memory>
+	#include <array>
+#else
+	// Fix this if it breaks on non-MSVC
+	#include <tr1/memory>
+	#include <tr1/array>
+#endif
 
 namespace Athenasub {
 	using std::tr1::shared_ptr;

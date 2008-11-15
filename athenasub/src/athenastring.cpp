@@ -264,16 +264,16 @@ void String::WriteNumber(Character *temp,int number,int pad,size_t &pos)
 
 bool String::AsciiCompareNoCase(const Character *src) const
 {
-	const Character mask = -96; // 0xDF
-	Character c1,c2;
+	unsigned char mask = 0xDF; // 0xDF
+	unsigned char c1,c2;
 	size_t len = size();
 	for (size_t i=0;i<len;i++) {
 		// Abort on end of string 2
-		c2 = operator[](i);
+		c2 = (unsigned char) operator[](i);
 		if (!c2) return false;
 
 		// Upper case both, this ONLY WORKS FOR ASCII
-		c1 = src[i] & mask;
+		c1 = ((unsigned char)src[i]) & mask;
 		c2 = c2 & mask;
 
 		// Check them

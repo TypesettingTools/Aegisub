@@ -38,7 +38,7 @@
 
 
 // Headers
-#include "Athenasub.h"
+#include "athenasub.h"
 #include "fastbuffer.h"
 #include <wx/stream.h>
 

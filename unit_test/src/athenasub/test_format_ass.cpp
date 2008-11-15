@@ -63,10 +63,21 @@ public:
 
 	void testDialogueParse()
 	{
-		DialogueASS diag;
 		DialogueASS refDiag;
 		String refText = "Dialogue: 3,1:23:45.67,2:34:56.78,style name,actor name,0001,0020,3300,effect field,Text, why halo thar?";
 		CPPUNIT_ASSERT_NO_THROW(refDiag = DialogueASS(refText,1));
+		CPPUNIT_ASSERT(refDiag.GetLayer() == 3);
+		CPPUNIT_ASSERT(refDiag.GetStartTime() == Time(1,23,45,670));
+		CPPUNIT_ASSERT(refDiag.GetEndTime() == Time(2,34,56,780));
+		CPPUNIT_ASSERT(refDiag.GetStyle() == "style name");
+		CPPUNIT_ASSERT(refDiag.GetActor() == "actor name");
+		CPPUNIT_ASSERT(refDiag.GetMargin(0) == 1);
+		CPPUNIT_ASSERT(refDiag.GetMargin(1) == 20);
+		CPPUNIT_ASSERT(refDiag.GetMargin(2) == 3300);
+		CPPUNIT_ASSERT(refDiag.GetUserField() == "effect field");
+		CPPUNIT_ASSERT(refDiag.GetText() == "Text, why halo thar?");
+
+		DialogueASS diag;
 	}
 };
 

@@ -38,7 +38,6 @@
 #include "tr1.h"
 #include "athenatime.h"
 #include "athenastring.h"
-#include <wx/string.h>
 #include <vector>
 #include <list>
 
