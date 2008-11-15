@@ -65,7 +65,8 @@ public:
 	{
 		DialogueASS diag;
 		DialogueASS refDiag;
-		CPPUNIT_ASSERT_NO_THROW(refDiag = DialogueASS("Dialogue: 3,1:23:45.67,2:34:56.78,style name,actor name,0001,0020,3300,effect field,Text, why halo thar?",1));
+		String refText = "Dialogue: 3,1:23:45.67,2:34:56.78,style name,actor name,0001,0020,3300,effect field,Text, why halo thar?";
+		CPPUNIT_ASSERT_NO_THROW(refDiag = DialogueASS(refText,1));
 	}
 };
 
