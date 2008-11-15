@@ -33,8 +33,8 @@
 ;
 
 #define MyAppName "Aegisub"
-#define MyAppRevision "r2429"
-#define MyAppVer "2.1.3a Release Preview"
+#define MyAppRevision "r2455"
+#define MyAppVer "2.1.4 Release Preview"
 #define MyAppPublisher "Aegisub Team"
 #define MyAppURL "http://aegisub.net/"
 #define MyAppExeName "Aegisub.exe"
@@ -198,6 +198,8 @@ Source: ..\po\pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: aegisub.mo; Flags
 Source: ..\po\wxstd-pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/pt_BR
 Source: ..\po\es.mo; DestDir: {app}\locale\es; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/es
 Source: ..\po\wxstd-es.mo; DestDir: {app}\locale\es; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/es
+Source: ..\po\hu.mo; DestDir: {app}\locale\hu; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/hu
+Source: ..\po\wxstd-hu.mo; DestDir: {app}\locale\hu; DestName: wxstd.mo; Flags: ignoreversion; Components: i18n/hu
 ; documentation
 Source: ..\docs\output\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: *svn
 ; ASSDraw3
@@ -235,6 +237,7 @@ Name: i18n; Description: Languages; Types: full custom compact; Flags: fixed
 Name: i18n/english; Description: English (built in); Flags: fixed; Types: compact full custom
 Name: i18n/pt_BR; Description: Brazilian Portuguese; Types: full
 Name: i18n/ca; Description: Catalan; Types: full
+Name: i18n/hu; Description: Hungarian; Types: full
 Name: i18n/es; Description: Spanish; Types: full
 #if IncludeSpeller != 0
 Name: dic; Description: Spell checker; Types: full
