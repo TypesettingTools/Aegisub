@@ -55,15 +55,15 @@ namespace Athenasub {
 
 		Entry MakeEntry(const String &data,Section section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
-		void WriteSection(TextFileWriter &writer,Section section);
-		void MakeValid();
+		void WriteSection(TextFileWriter &writer,ConstSection section) const;
+		void MakeValid(IModel &model);
 
 	public:
-		FormatHandlerASS(CModel &model,int version);
+		FormatHandlerASS(int version);
 		~FormatHandlerASS();
 
-		void Load(wxInputStream &file,const String encoding);
-		void Save(wxOutputStream &file,const String encoding);
+		void Load(IModel &model,wxInputStream &file,const String encoding);
+		void Save(const IModel &model,wxOutputStream &file,const String encoding) const;
 	};
 
 	// Advanced Substation Alpha format base class
@@ -92,7 +92,7 @@ namespace Athenasub {
 	// Substation Alpha
 	class FormatSSA : public FormatASSFamily {
 	public:
-		FormatHandler GetHandler(IModel &model) const { return FormatHandler(new FormatHandlerASS((CModel&)model,0)); }
+		FormatHandler GetHandler() const { return FormatHandler(new FormatHandlerASS(0)); }
 		String GetName() const { return "Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
@@ -101,7 +101,7 @@ namespace Athenasub {
 	// Advanced Substation Alpha
 	class FormatASS : public FormatASSFamily {
 	public:
-		FormatHandler GetHandler(IModel &model) const { return FormatHandler(new FormatHandlerASS((CModel&)model,1)); }
+		FormatHandler GetHandler() const { return FormatHandler(new FormatHandlerASS(1)); }
 		String GetName() const { return "Advanced Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
@@ -110,7 +110,7 @@ namespace Athenasub {
 	// Advanced Substation Alpha 2
 	class FormatASS2 : public FormatASSFamily {
 	public:
-		FormatHandler GetHandler(IModel &model) const { return FormatHandler(new FormatHandlerASS((CModel&)model,2)); }
+		FormatHandler GetHandler() const { return FormatHandler(new FormatHandlerASS(2)); }
 		String GetName() const { return "Advanced Substation Alpha 2"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;

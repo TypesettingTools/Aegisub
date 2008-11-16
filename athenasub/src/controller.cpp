@@ -148,7 +148,7 @@ ConstStyle CController::GetStyle(String name) const
 	// Get section
 	Style dummy = CreateStyle();
 	String section = dummy->GetDefaultGroup();
-	Section sect = model->GetSection(section);
+	ConstSection sect = model->GetSection(section);
 	if (!sect) THROW_ATHENA_EXCEPTION(Exception::Invalid_Section);
 
 	// Return from index
@@ -160,7 +160,7 @@ ConstStyle CController::GetStyle(String name) const
 // Get an entry
 ConstEntry CController::GetEntry(size_t n,String section) const
 {
-	Section sect = model->GetSection(section);
+	ConstSection sect = model->GetSection(section);
 	if (!sect) THROW_ATHENA_EXCEPTION(Exception::Invalid_Section);
 	return sect->GetEntry(n);
 }

@@ -92,9 +92,9 @@ int main()
 
 		// Issue an action
 #ifdef WXDEBUG
-		int n = 1000;
-#else
 		int n = 1;
+#else
+		int n = 1000;
 #endif
 		cout << "Executing action " << n << " times... ";
 		timer.Start();
@@ -126,7 +126,7 @@ int main()
 		cout << "Done in " << timer.Time() << " ms.\n";
 
 		// Undo
-		n = 1000;
+		n = 10;
 		cout << "Undoing and redoing " << n << " times... ";
 		timer.Start();
 		for (int i=0;i<n;i++) {

@@ -78,6 +78,16 @@ public:
 		CPPUNIT_ASSERT(refDiag.GetText() == "Text, why halo thar?");
 
 		DialogueASS diag;
+		CPPUNIT_ASSERT(diag != refDiag);
+		diag = refDiag;
+		CPPUNIT_ASSERT(diag == refDiag);
+
+		String text = "Dialogue:   3  ,  1:23:45.67 , 2:34:56.78  , style name , actor name , 0001 , 0020 , 3300 , effect field ,Text, why halo thar?";
+		diag = DialogueASS(text,1);
+		CPPUNIT_ASSERT(diag == refDiag);
+		text = "Dialogue: 3,1:23:45.67,2:34:56.78,style name,actor name,1,20,3300,effect field,Text, why halo thar?";
+		diag = DialogueASS(text,1);
+		CPPUNIT_ASSERT(diag == refDiag);
 	}
 };
 

@@ -90,8 +90,8 @@ StringArray FormatASS2::GetWriteExtensions() const
 
 ///////////////
 // Constructor
-FormatHandlerASS::FormatHandlerASS(CModel &_model,int version)
-: CFormatHandler(_model), formatVersion(version)
+FormatHandlerASS::FormatHandlerASS(int version)
+: CFormatHandler(), formatVersion(version)
 {
 }
 
@@ -105,7 +105,7 @@ FormatHandlerASS::~FormatHandlerASS()
 
 ///////////////
 // Load a file
-void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
+void FormatHandlerASS::Load(IModel &model,wxInputStream &file,const String encoding)
 {
 	// Make text file reader
 	TextFileReader reader(file,encoding);
@@ -127,10 +127,10 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 		ProcessGroup(cur,curGroup,version);
 
 		// Insert group if it doesn't already exist
-		if (prevGroup != curGroup) section = GetSection(curGroup);
+		if (prevGroup != curGroup) section = GetSection(model,curGroup);
 		if (!section) {
-			AddSection(curGroup);
-			section = GetSection(curGroup);
+			AddSection(model,curGroup);
+			section = GetSection(model,curGroup);
 		}
 
 		// Skip [] lines
@@ -142,13 +142,13 @@ void FormatHandlerASS::Load(wxInputStream &file,const String encoding)
 	}
 
 	// Ensure validity
-	MakeValid();
+	MakeValid(model);
 }
 
 
 /////////////////////
 // Save file to disc
-void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
+void FormatHandlerASS::Save(const IModel& model,wxOutputStream &file,const String encoding) const
 {
 	// Make text file writer
 	TextFileWriter writer(file,encoding);
@@ -162,9 +162,9 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 	sections.push_back("Graphics");
 
 	// Look for remaining sections
-	size_t totalSections = GetSectionCount();
+	size_t totalSections = GetSectionCount(model);
 	for (size_t i=0;i<totalSections;i++) {
-		String name = GetSectionByIndex(i)->GetName();
+		String name = GetSectionByIndex(model,i)->GetName();
 		// If not found on the list, add to it
 		if (find(sections.begin(),sections.end(),name) == sections.end()) {
 			sections.push_back(name);
@@ -175,7 +175,7 @@ void FormatHandlerASS::Save(wxOutputStream &file,const String encoding)
 	size_t len = sections.size();
 	for (size_t i=0;i<len;i++) {
 		// See if it exists
-		Section section = GetSection(sections[i]);
+		ConstSection section = GetSection(model,sections[i]);
 		if (section) {
 			// Add a spacer
 			if (i != 0) writer.WriteLineToFile("");
@@ -334,7 +334,7 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 
 ///////////////////////////////
 // Write a section to the file
-void FormatHandlerASS::WriteSection(TextFileWriter &writer,Section section)
+void FormatHandlerASS::WriteSection(TextFileWriter &writer,ConstSection section) const
 {
 	// Write name
 	String name = section->GetName();
@@ -371,15 +371,15 @@ void FormatHandlerASS::WriteSection(TextFileWriter &writer,Section section)
 
 ///////////////////////
 // Validate the format
-void FormatHandlerASS::MakeValid()
+void FormatHandlerASS::MakeValid(IModel &model)
 {
 	// Only ASS supported right now
 	if (formatVersion != 1) THROW_ATHENA_EXCEPTION(Exception::TODO);
 
 	// Check for [Script Info]
-	Section section = GetSection("Script Info");
-	if (!section) AddSection("Script Info");
-	section = GetSection("Script Info");
+	Section section = GetSection(model,"Script Info");
+	if (!section) AddSection(model,"Script Info");
+	section = GetSection(model,"Script Info");
 	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
 
 	// Check if necessary variables are available
@@ -388,16 +388,16 @@ void FormatHandlerASS::MakeValid()
 	section->SetProperty("ScriptType","v4.00+");
 
 	// Get [V4+ Styles]
-	section = GetSection("V4+ Styles");
-	if (!section) AddSection("V4+ Styles");
-	section = GetSection("V4+ Styles");
+	section = GetSection(model,"V4+ Styles");
+	if (!section) AddSection(model,"V4+ Styles");
+	section = GetSection(model,"V4+ Styles");
 	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
 	section->SetProperty("Format","Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding");
 
 	// Get [Events]
-	section = GetSection("Events");
-	if (!section) AddSection("Events");
-	section = GetSection("Events");
+	section = GetSection(model,"Events");
+	if (!section) AddSection(model,"Events");
+	section = GetSection(model,"Events");
 	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
 	section->SetProperty("Format","Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text");
 }

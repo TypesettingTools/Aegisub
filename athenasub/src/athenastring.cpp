@@ -82,6 +82,39 @@ String::String(const wxString& wxstring)
 }
 
 
+String::String(char character)
+{
+	*this = std::string(character,1);
+}
+
+
+String::String(wchar_t character)
+{
+	wchar_t tmp[2];
+	tmp[0] = character;
+	tmp[1] = 0;
+	*this = String(tmp);
+}
+
+
+String::String(int integer)
+{
+	*this = IntegerToString(integer);
+}
+
+
+String::String(float number)
+{
+	*this = FloatToString(number);
+}
+
+
+String::String(double number)
+{
+	*this = FloatToString(number);
+}
+
+
 Character* String::GetCharPointer(size_t pos)
 {
 	return &operator[](pos);

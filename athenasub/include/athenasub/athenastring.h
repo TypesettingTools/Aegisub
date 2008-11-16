@@ -57,6 +57,11 @@ namespace Athenasub {
 		String(const basic_string<Character>& str);
 		explicit String(const wchar_t* utf16);
 		explicit String(const wxString& wxstring);
+		explicit String(char character);
+		explicit String(wchar_t character);
+		explicit String(int integer);
+		explicit String(float number);
+		explicit String(double number);
 
 		wxString GetWxString() const;
 

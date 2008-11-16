@@ -107,10 +107,6 @@ namespace Athenasub {
 	protected:
 		virtual void ProcessActionList(CActionList &actionList,int type=0) = 0;
 
-		virtual String GetUndoMessage(const String owner="") const = 0;
-		virtual String GetRedoMessage(const String owner="") const = 0;
-		virtual bool CanUndo(const String owner="") const = 0;
-		virtual bool CanRedo(const String owner="") const = 0;
 		virtual void Undo(const String owner="") = 0;
 		virtual void Redo(const String owner="") = 0;
 		virtual void ActivateStack(ActionStack stack,bool isUndo,const String &owner) = 0;
@@ -119,22 +115,29 @@ namespace Athenasub {
 
 		virtual void Clear() = 0;
 		virtual void Load(wxInputStream &input,Format format=Format(),const String encoding="") = 0;
-		virtual void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8") = 0;
 
 		virtual void AddSection(String name) = 0;
-		virtual Section GetSection(String name) = 0;
-		virtual Section GetSectionByIndex(size_t index) = 0;
+		virtual Section GetMutableSection(String name) = 0;
+		virtual Section GetMutableSectionByIndex(size_t index) = 0;
 
 	public:
 		virtual ~IModel() {}
+
+		virtual Controller CreateController() = 0;
+		virtual void AddListener(View listener) = 0;
+
+		virtual void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8") const = 0;
+
+		virtual String GetUndoMessage(const String owner="") const = 0;
+		virtual String GetRedoMessage(const String owner="") const = 0;
+		virtual bool CanUndo(const String owner="") const = 0;
+		virtual bool CanRedo(const String owner="") const = 0;
 
 		virtual ConstSection GetSection(String name) const = 0;
 		virtual ConstSection GetSectionByIndex(size_t index) const = 0;
 		virtual size_t GetSectionCount() const = 0;
 
-		virtual Controller CreateController()=0;
-		virtual Format GetFormat() const=0;
-		virtual void AddListener(View listener)=0;
+		virtual Format GetFormat() const = 0;
 	};
 
 
@@ -314,7 +317,7 @@ namespace Athenasub {
 		virtual String GetName() const = 0;
 		virtual StringArray GetReadExtensions() const = 0;
 		virtual StringArray GetWriteExtensions() const = 0;
-		virtual FormatHandler GetHandler(IModel &model) const = 0;
+		virtual FormatHandler GetHandler() const = 0;
 
 		virtual bool CanStoreText() const = 0;
 		virtual bool CanStoreImages() const = 0;
@@ -340,8 +343,8 @@ namespace Athenasub {
 	public:
 		virtual ~IFormatHandler() {}
 
-		virtual void Load(wxInputStream &file,const String encoding) = 0;
-		virtual void Save(wxOutputStream &file,const String encoding) = 0;
+		virtual void Load(IModel &model,wxInputStream &file,const String encoding) = 0;
+		virtual void Save(const IModel &model,wxOutputStream &file,const String encoding) const = 0;
 	};
 
 

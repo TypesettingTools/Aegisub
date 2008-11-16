@@ -93,6 +93,10 @@ namespace Athenasub {
 		void SetStyle(const String &style) { text[1] = style; }
 		void SetActor(const String &actor) { text[2] = actor; }
 		void SetUserField(const String &userField) { text[3] = userField; }
+
+		// Operator overloading
+		bool operator==(const DialogueASS& param) const;
+		bool operator!=(const DialogueASS& param) const;
 	};
 
 }

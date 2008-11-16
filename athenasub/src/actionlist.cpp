@@ -125,7 +125,7 @@ void CActionList::RemoveLine(int position,const String section)
 // Insert a "modify line" action
 Entry CActionList::ModifyLine(int position,const String section)
 {
-	Section sect = Model(model)->GetSection(section);
+	Section sect = Model(model)->GetMutableSection(section);
 	Entry entry = sect->GetEntry(position)->Clone();
 	Action action = Action (new ActionModify(model.lock(),entry,position,section,false));
 	AddAction(action);
@@ -138,7 +138,7 @@ Entry CActionList::ModifyLine(int position,const String section)
 std::vector<Entry> CActionList::ModifyLines(Selection selection,const String section)
 {
 	// Get section
-	Section sect = Model(model)->GetSection(section);
+	Section sect = Model(model)->GetMutableSection(section);
 
 	// Generate entries
 	std::vector<Entry> entries(selection->GetCount());

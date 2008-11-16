@@ -202,3 +202,22 @@ String DialogueASS::ToText(int version) const
 	buffer.SetSize(pos-1);
 	return buffer;
 }
+
+
+////////////////////////
+// Overloaded operators
+bool DialogueASS::operator==(const DialogueASS& param) const
+{
+	if (time != param.time) return false;
+	if (text != param.text) return false;
+	if (margin != param.margin) return false;
+	if (layer != param.layer) return false;
+	if (isComment != param.isComment) return false;
+	return true;
+}
+
+bool DialogueASS::operator!=(const DialogueASS& param) const
+{
+	return !(*this == param);
+}
+

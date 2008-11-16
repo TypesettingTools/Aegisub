@@ -42,24 +42,21 @@ namespace Athenasub {
 
 	// Format handler interface
 	class CFormatHandler : public IFormatHandler {
-	private:
-		IModel& model;
-
 	protected:
 		virtual ~CFormatHandler() {}
 
-		IModel& GetModel() const { return model; }
-
-		void AddSection(String name) { model.AddSection(name); }
-		Section GetSection(String name) const { return model.GetSection(name); }
-		Section GetSectionByIndex(size_t index) const { return model.GetSectionByIndex(index); }
-		size_t GetSectionCount() const { return model.GetSectionCount(); }
+		void AddSection(IModel &model,String name) const { model.AddSection(name); }
+		ConstSection GetSection(const IModel &model,String name) const { return model.GetSection(name); }
+		ConstSection GetSectionByIndex(const IModel &model,size_t index) const { return model.GetSectionByIndex(index); }
+		Section GetSection(IModel &model,String name) const { return model.GetMutableSection(name); }
+		Section GetSectionByIndex(IModel &model,size_t index) const { return model.GetMutableSectionByIndex(index); }
+		size_t GetSectionCount(const IModel &model) const { return model.GetSectionCount(); }
 
 	public:
-		CFormatHandler(IModel& _model) : model(_model) {}
+		//CFormatHandler(IModel& _model) : model(_model) {}
 
-		virtual void Load(wxInputStream &file,const String encoding) = 0;
-		virtual void Save(wxOutputStream &file,const String encoding) = 0;
+		virtual void Load(IModel &model,wxInputStream &file,const String encoding) = 0;
+		virtual void Save(const IModel &model,wxOutputStream &file,const String encoding) const = 0;
 	};
 
 }

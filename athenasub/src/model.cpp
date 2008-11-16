@@ -118,14 +118,14 @@ void CModel::Load(wxInputStream &input,const Format _format,const String encodin
 	}
 
 	// Get handler
-	FormatHandler handler = _format->GetHandler(*this);
+	FormatHandler handler = _format->GetHandler();
 	if (!handler) THROW_ATHENA_EXCEPTION(Exception::No_Format_Handler);
 
 	// Clear the model first
 	Clear();
 
 	// Load
-	handler->Load(input,encoding);
+	handler->Load(*this,input,encoding);
 
 	// Set the format
 	format = _format;
@@ -134,7 +134,7 @@ void CModel::Load(wxInputStream &input,const Format _format,const String encodin
 
 //////////////////
 // Save subtitles
-void CModel::Save(wxOutputStream &output,const Format _format,const String encoding)
+void CModel::Save(wxOutputStream &output,const Format _format,const String encoding) const
 {
 	// Use another format
 	if (_format && _format != format) {
@@ -143,11 +143,11 @@ void CModel::Save(wxOutputStream &output,const Format _format,const String encod
 	}
 
 	// Get handler
-	FormatHandler handler = format->GetHandler(*this);
+	FormatHandler handler = format->GetHandler();
 	if (!handler) THROW_ATHENA_EXCEPTION(Exception::No_Format_Handler);
 
 	// Load
-	handler->Save(output,encoding);
+	handler->Save(*this,output,encoding);
 }
 
 
@@ -155,7 +155,7 @@ void CModel::Save(wxOutputStream &output,const Format _format,const String encod
 // Inserts a new section
 void CModel::AddSection(String name)
 {
-	Section prev = GetSection(name);
+	ConstSection prev = GetSection(name);
 	if (prev) THROW_ATHENA_EXCEPTION(Exception::Section_Already_Exists);
 	sections.push_back(Section(new CSection(name)));
 }
@@ -172,7 +172,7 @@ ConstSection CModel::GetSection(String name) const
 	return SectionPtr();
 }
 
-Section CModel::GetSection(String name)
+Section CModel::GetMutableSection(String name)
 {
 	size_t len = sections.size();
 	for (size_t i=0;i<len;i++) {
@@ -189,7 +189,7 @@ ConstSection CModel::GetSectionByIndex(size_t index) const
 	return sections.at(index);
 }
 
-Section CModel::GetSectionByIndex(size_t index)
+Section CModel::GetMutableSectionByIndex(size_t index)
 {
 	return sections.at(index);
 }

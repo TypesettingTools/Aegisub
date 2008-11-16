@@ -82,6 +82,10 @@ public:
 		CPPUNIT_ASSERT((e < d) == false);
 		CPPUNIT_ASSERT(d < c);
 		CPPUNIT_ASSERT((c < d) == false);
+
+		CPPUNIT_ASSERT(c.AsciiCompareNoCase("hello world!"));
+		CPPUNIT_ASSERT(c.AsciiCompareNoCase("Hello world!"));
+		CPPUNIT_ASSERT(c.AsciiCompareNoCase("hello world") == false);
 	}
 
 	void testStartEnd()
@@ -128,6 +132,15 @@ public:
 		CPPUNIT_ASSERT_THROW(String("312a").ToInteger(),Athenasub::Exception);
 		CPPUNIT_ASSERT_THROW(String("3-12").ToInteger(),Athenasub::Exception);
 		CPPUNIT_ASSERT_THROW(String("3+12").ToInteger(),Athenasub::Exception);
+
+		CPPUNIT_ASSERT(String(312) == "312");
+		CPPUNIT_ASSERT(String(-312) == "-312");
+		CPPUNIT_ASSERT(String(312.0) == "312");
+		CPPUNIT_ASSERT(String(312.25) == "312.25");
+		CPPUNIT_ASSERT(String(-312.25) == "-312.25");
+		CPPUNIT_ASSERT(String(312.0f) == "312");
+		CPPUNIT_ASSERT(String(312.25f) == "312.25");
+		CPPUNIT_ASSERT(String(-312.25f) == "-312.25");
 	}
 };
 

@@ -51,6 +51,7 @@ namespace Athenasub {
 		friend class CActionList;
 		friend class CController;
 		friend class CAction;
+		friend class CLibAthenaSub;
 
 	private:
 		weak_ptr<IModel> weakThis;
@@ -80,22 +81,24 @@ namespace Athenasub {
 
 		void Clear();
 		void Load(wxInputStream &input,Format format=Format(),const String encoding="");
-		void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8");
 
 		void AddSection(String name);
-		ConstSection GetSection(String name) const;
-		Section GetSection(String name);
-		ConstSection GetSectionByIndex(size_t index) const;
-		Section GetSectionByIndex(size_t index);
-		size_t GetSectionCount() const;
+		Section GetMutableSection(String name);
+		Section GetMutableSectionByIndex(size_t index);
+
+		void SetWeakPtr(weak_ptr<IModel> ptr) { weakThis = ptr; }
 
 	public:
 		CModel();
 		Controller CreateController();
 		Format GetFormat() const { return format; }
-		void AddListener(View listener);
 
-		void SetWeakPtr(weak_ptr<IModel> ptr) { weakThis = ptr; }
+		void AddListener(View listener);
+		void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8") const;
+
+		ConstSection GetSection(String name) const;
+		ConstSection GetSectionByIndex(size_t index) const;
+		size_t GetSectionCount() const;
 	};
 
 	typedef shared_ptr<CModel> ModelPtr;

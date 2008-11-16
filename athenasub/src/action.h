@@ -49,7 +49,7 @@ namespace Athenasub {
 		CAction(Model model);
 
 		Model GetModel() const { return model; }
-		Section GetSection(String name) const { return model->GetSection(name); }
+		Section GetSection(String name) const { return model->GetMutableSection(name); }
 	};
 
 	// Insert line
