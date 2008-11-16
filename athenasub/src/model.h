@@ -82,7 +82,7 @@ namespace Athenasub {
 		void Clear();
 		void Load(wxInputStream &input,Format format=Format(),const String encoding="");
 
-		void AddSection(String name);
+		Section AddSection(String name);
 		Section GetMutableSection(String name);
 		Section GetMutableSectionByIndex(size_t index);
 

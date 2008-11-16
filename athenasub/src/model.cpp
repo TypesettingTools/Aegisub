@@ -153,11 +153,14 @@ void CModel::Save(wxOutputStream &output,const Format _format,const String encod
 
 /////////////////////////
 // Inserts a new section
-void CModel::AddSection(String name)
+Section CModel::AddSection(String name)
 {
 	ConstSection prev = GetSection(name);
 	if (prev) THROW_ATHENA_EXCEPTION(Exception::Section_Already_Exists);
-	sections.push_back(Section(new CSection(name)));
+
+	Section result = Section(new CSection(name));
+	sections.push_back(result);
+	return result;
 }
 
 

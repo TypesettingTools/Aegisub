@@ -45,7 +45,7 @@ namespace Athenasub {
 	protected:
 		virtual ~CFormatHandler() {}
 
-		void AddSection(IModel &model,String name) const { model.AddSection(name); }
+		Section AddSection(IModel &model,String name) const { return model.AddSection(name); }
 		ConstSection GetSection(const IModel &model,String name) const { return model.GetSection(name); }
 		ConstSection GetSectionByIndex(const IModel &model,size_t index) const { return model.GetSectionByIndex(index); }
 		Section GetSection(IModel &model,String name) const { return model.GetMutableSection(name); }

@@ -378,9 +378,7 @@ void FormatHandlerASS::MakeValid(IModel &model)
 
 	// Check for [Script Info]
 	Section section = GetSection(model,"Script Info");
-	if (!section) AddSection(model,"Script Info");
-	section = GetSection(model,"Script Info");
-	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
+	if (!section) section = AddSection(model,"Script Info");
 
 	// Check if necessary variables are available
 	if (section->GetProperty("PlayResX").IsEmpty()) section->SetProperty("PlayResX","384");	// These two mystical values come from Substation Alpha
@@ -389,15 +387,11 @@ void FormatHandlerASS::MakeValid(IModel &model)
 
 	// Get [V4+ Styles]
 	section = GetSection(model,"V4+ Styles");
-	if (!section) AddSection(model,"V4+ Styles");
-	section = GetSection(model,"V4+ Styles");
-	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
+	if (!section) section = AddSection(model,"V4+ Styles");
 	section->SetProperty("Format","Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding");
 
 	// Get [Events]
 	section = GetSection(model,"Events");
-	if (!section) AddSection(model,"Events");
-	section = GetSection(model,"Events");
-	if (!section) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
+	if (!section) section = AddSection(model,"Events");
 	section->SetProperty("Format","Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text");
 }

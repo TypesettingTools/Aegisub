@@ -116,7 +116,7 @@ namespace Athenasub {
 		virtual void Clear() = 0;
 		virtual void Load(wxInputStream &input,Format format=Format(),const String encoding="") = 0;
 
-		virtual void AddSection(String name) = 0;
+		virtual Section AddSection(String name) = 0;
 		virtual Section GetMutableSection(String name) = 0;
 		virtual Section GetMutableSectionByIndex(size_t index) = 0;
 
