@@ -50,8 +50,8 @@ namespace Athenasub {
 
 	// ActionList class
 	class CActionList : public IActionList {
-		friend class CModel;
 		friend class CController;
+		friend class CModel;
 
 	private:
 		String actionName;
@@ -63,13 +63,17 @@ namespace Athenasub {
 
 		CActionList(weak_ptr<IModel>,const String actionName,const String owner,bool undoAble);
 		void Start(const String actionName);
-		void AddActionStart(const Action action);
+		
+		virtual void AddActionStart(Action action);
+		virtual std::list<Action> GetActions() { return actions; }
 
 	public:
 		virtual ~CActionList();
 
 		virtual String GetName() const { return actionName; }
 		virtual String GetOwner() const { return owner; }
+		virtual Model GetModel() const { return Model(model); }
+		virtual bool CanUndo() const { return undoAble; }
 
 		virtual void AddAction(Action action);
 		virtual void Finish();

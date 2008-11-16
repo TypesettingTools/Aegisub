@@ -33,7 +33,7 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#include "Athenasub.h"
+#include "athenasub.h"
 #include "model.h"
 #include "controller.h"
 using namespace Athenasub;
@@ -74,27 +74,29 @@ void CModel::DispatchNotifications(Notification notification) const
 void CModel::ProcessActionList(CActionList &_actionList,int type)
 {
 	// Copy the list
-	//shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(*static_pointer_cast<CActionList>(_actionList)));
-	shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(_actionList));
+	//shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(_actionList));
+	ActionList actions = ActionList(new CActionList(_actionList));
+	bool canUndo = actions->CanUndo();
 
 	// Setup undo
-	shared_ptr<CActionList> undo = shared_ptr<CActionList>(new CActionList(Model(actions->model),actions->actionName,actions->owner,actions->undoAble));
+	ActionList undo = ActionList(new CActionList(actions->GetModel(),actions->GetName(),actions->GetOwner(),canUndo));
 	ActionStack *stack;
 	if (type == 1) stack = &redoStack;
 	else stack = &undoStack;
 
 	// Execute actions
 	std::list<Action>::const_iterator cur;
-	for (cur=actions->actions.begin();cur!=actions->actions.end();cur++) {
+	std::list<Action> acts = actions->GetActions();
+	for (cur=acts.begin();cur!=acts.end();cur++) {
 		// Inserts the opposite into the undo action first
-		if (actions->undoAble) undo->AddActionStart((*cur)->GetAntiAction());
+		if (canUndo) undo->AddActionStart((*cur)->GetAntiAction());
 		
 		// Execute the action itself
 		(*cur)->Execute();
 	}
 
 	// Insert into undo stack
-	if (actions->undoAble) {
+	if (canUndo) {
 		stack->push_back(undo);
 		if (stack->size() > undoLimit) stack->pop_front();
 		if (type == 0) redoStack.clear();

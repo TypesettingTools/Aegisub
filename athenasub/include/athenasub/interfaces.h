@@ -363,11 +363,19 @@ namespace Athenasub {
 
 	// Action list
 	class IActionList {
+		friend class CModel;
+
+	protected:
+		virtual std::list<Action> GetActions() = 0;
+		virtual void AddActionStart(Action action) = 0;
+
 	public:
 		virtual ~IActionList() {}
 
 		virtual String GetName() const = 0;
 		virtual String GetOwner() const = 0;
+		virtual Model GetModel() const = 0;
+		virtual bool CanUndo() const = 0;
 
 		virtual void AddAction(Action action) = 0;
 		virtual void Finish() = 0;

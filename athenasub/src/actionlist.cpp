@@ -57,7 +57,7 @@ CActionList::~CActionList()
 
 //////////////////////////////
 // Add an action to the queue
-void CActionList::AddAction(const Action action)
+void CActionList::AddAction(Action action)
 {
 	if (!valid) THROW_ATHENA_EXCEPTION(Exception::Invalid_ActionList);
 	actions.push_back(action);
