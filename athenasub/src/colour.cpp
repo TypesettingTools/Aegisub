@@ -42,18 +42,18 @@ using namespace Athenasub;
 
 ////////////////
 // Constructors
-CColour::CColour ()
+Colour::Colour ()
 {
 	r = g = b = a = 0;
 }
-CColour::CColour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha)
+Colour::Colour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha)
 {
 	r = red;
 	g = green;
 	b = blue;
 	a = alpha;
 }
-CColour::CColour (int red,int green,int blue,int alpha)
+Colour::Colour (int red,int green,int blue,int alpha)
 {
 	SetRed(red);
 	SetGreen(green);
@@ -64,15 +64,15 @@ CColour::CColour (int red,int green,int blue,int alpha)
 
 ////////////////////////
 // Set colour component
-void CColour::SetRed(int red) { r = (unsigned char) Mid(0,red,255); }
-void CColour::SetGreen(int green) { g = (unsigned char) Mid(0,green,255); }
-void CColour::SetBlue(int blue) { b = (unsigned char) Mid(0,blue,255); }
-void CColour::SetAlpha(int alpha) { a = (unsigned char) Mid(0,alpha,255); }
+void Colour::SetRed(int red) { r = (unsigned char) Mid(0,red,255); }
+void Colour::SetGreen(int green) { g = (unsigned char) Mid(0,green,255); }
+void Colour::SetBlue(int blue) { b = (unsigned char) Mid(0,blue,255); }
+void Colour::SetAlpha(int alpha) { a = (unsigned char) Mid(0,alpha,255); }
 
 
 //////////////
 // Parse text
-void CColour::Parse(String value,bool reverse)
+void Colour::Parse(String value,bool reverse)
 {
 	// Prepare
 	unsigned char c;
@@ -112,7 +112,7 @@ void CColour::Parse(String value,bool reverse)
 
 /////////////////////////////
 // Generate Visual Basic hex
-String CColour::GetVBHex(bool withAlpha,bool withHeader,bool withFooter) const
+String Colour::GetVBHex(bool withAlpha,bool withHeader,bool withFooter) const
 {
 	String work;
 	if (withHeader) work += "&H";

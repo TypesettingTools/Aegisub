@@ -187,11 +187,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\athenasub\colour.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\athenasub\exception.h"
 				>
 			</File>
 			<File
 				RelativePath=".\include\athenasub\interfaces.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\athenasub\range.h"
 				>
 			</File>
 			<File
@@ -240,10 +248,6 @@
 			</File>
 			<File
 				RelativePath=".\src\colour.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\include\aegilib\colour.h"
 				>
 			</File>
 			<File

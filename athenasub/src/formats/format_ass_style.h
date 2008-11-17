@@ -48,7 +48,7 @@ namespace Athenasub {
 		float fontSize;
 		int formatVersion;
 
-		array<CColour,5> colour;	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
+		array<Colour,5> colour;	// 0 = Primary, 1 = Secondary, 2 = Tertiary, 3 = Outline, 4 = Shadow
 		array<int,4> margin;
 
 		bool bold;
@@ -90,7 +90,7 @@ namespace Athenasub {
 		String GetName() const { return name; }
 		String GetFontName() const { return font; }
 		float GetFontSize() const { return fontSize; }
-		const IColour& GetColour(int n) const { return colour.at(n); }
+		const Colour& GetColour(int n) const { return colour.at(n); }
 		int GetMargin(int n) const { return margin.at(n); }
 	};
 

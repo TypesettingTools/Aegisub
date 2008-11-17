@@ -34,19 +34,20 @@
 //
 
 #pragma once
-#include "athenasub.h"
 
 namespace Athenasub {
 
+	class String;
+
 	// Colour class
-	class CColour : public IColour {
+	class Colour {
 	private:
 		unsigned char r, g, b, a;
 
 	public:
-		CColour ();
-		CColour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha=0);
-		CColour (int red,int green,int blue,int alpha=0);
+		Colour ();
+		Colour (unsigned char red,unsigned char green,unsigned char blue,unsigned char alpha=0);
+		Colour (int red,int green,int blue,int alpha=0);
 
 		void SetRed(unsigned char red) { r = red; }
 		void SetGreen(unsigned char green) { g = green; }

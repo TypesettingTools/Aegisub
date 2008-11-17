@@ -38,6 +38,7 @@
 #include "tr1.h"
 #include "athenatime.h"
 #include "athenastring.h"
+#include "colour.h"
 #include <vector>
 #include <list>
 
@@ -52,7 +53,6 @@ namespace Athenasub {
 	class IController;
 	class IView;
 	class IFormatHandler;
-	class IColour;
 	class IEntry;
 	class IDialogue;
 	class IStyle;
@@ -72,7 +72,6 @@ namespace Athenasub {
 	typedef shared_ptr<IController> Controller;
 	typedef shared_ptr<IView> View;
 	typedef shared_ptr<IFormatHandler> FormatHandler;
-	typedef shared_ptr<IColour> Colour;
 	typedef shared_ptr<IEntry> Entry;
 	typedef shared_ptr<IDialogue> Dialogue;
 	typedef shared_ptr<IStyle> Style;
@@ -145,6 +144,8 @@ namespace Athenasub {
 	class IView {
 	public:
 		virtual ~IView() {}
+
+		virtual void OnNotify(Notification notification) = 0;
 	};
 
 
@@ -198,26 +199,6 @@ namespace Athenasub {
 		virtual size_t GetLineInRange(size_t n,size_t range) const = 0;
 		virtual size_t GetLinesInRange(size_t range) const = 0;
 		virtual bool IsContiguous() const = 0;
-	};
-
-
-	// Color
-	class IColour {
-	public:
-		virtual ~IColour() {}
-
-		virtual void SetRed(int red) = 0;
-		virtual void SetGreen(int green) = 0;
-		virtual void SetBlue(int blue) = 0;
-		virtual void SetAlpha(int alpha) = 0;
-
-		virtual int GetRed() const = 0;
-		virtual int GetGreen() const = 0;
-		virtual int GetBlue() const = 0;
-		virtual int GetAlpha() const = 0;
-
-		virtual void Parse(String str,bool reverse) = 0;
-		virtual String GetVBHex(bool withAlpha=false,bool withHeader=true,bool withFooter=true) const = 0;
 	};
 
 
@@ -304,7 +285,7 @@ namespace Athenasub {
 		virtual String GetName() const = 0;
 		virtual String GetFontName() const = 0;
 		virtual float GetFontSize() const = 0;
-		virtual const IColour& GetColour(int n) const = 0;
+		virtual const Colour& GetColour(int n) const = 0;
 		virtual int GetMargin(int n) const = 0;
 	};
 
@@ -356,8 +337,6 @@ namespace Athenasub {
 		virtual ~IAction() {}
 		virtual Action GetAntiAction() const = 0;
 		virtual void Execute() = 0;
-
-		//virtual Section GetSection(const String &name) const = 0;
 	};
 
 
