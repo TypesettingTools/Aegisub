@@ -165,7 +165,7 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 	// Set image as needing to be redrawn
 	needImageUpdate = true;
-	if (!needImageUpdateWeak) needImageUpdateWeak = weak;
+	if (needImageUpdateWeak) needImageUpdateWeak = weak;
 	Refresh(false);
 }
 
