@@ -250,5 +250,5 @@ String TextFileReader::GetCurrentEncoding()
 // Rewind the file
 void TextFileReader::Rewind()
 {
-
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
 }

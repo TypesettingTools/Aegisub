@@ -476,6 +476,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\text_reader_cache.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_reader_cache.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\text_writer.cpp"
 				>
 			</File>

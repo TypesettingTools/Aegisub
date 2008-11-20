@@ -34,14 +34,31 @@
 //
 
 
-// Headers
-#include "text_reader.h"
-#include "text_file_reader.h"
-#include "text_reader_cache.h"
-using namespace Athenasub;
+#pragma once
 
-shared_ptr<TextReader> TextReader::GetReader(wxInputStream &stream,String encoding)
-{
-	shared_ptr<TextReader> fileReader = shared_ptr<TextReader>(new TextFileReader(stream,encoding));
-	return shared_ptr<TextReader>(new TextReaderCache(fileReader));
+
+// Headers
+#include "athenasub.h"
+#include "text_reader.h"
+
+
+namespace Athenasub {
+	class TextReaderCache : public TextReader {
+	private:
+		std::vector<String> buffer;
+		size_t bufferPos;
+
+		shared_ptr<TextReader> source;
+
+		void LoadMore(int n=1);
+		bool CanLoadMore();
+
+	public:
+		TextReaderCache(shared_ptr<TextReader> source);
+		virtual ~TextReaderCache() {}
+
+		virtual String ReadLineFromFile();
+		virtual bool HasMoreLines();
+		virtual void Rewind();
+	};
 }

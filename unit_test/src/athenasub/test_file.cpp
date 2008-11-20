@@ -40,7 +40,7 @@
 #include <iostream>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "../../../athenasub/include/athenasub/athenasub.h"
+#include "athenasub/athenasub.h"
 using namespace Athenasub;
 
 

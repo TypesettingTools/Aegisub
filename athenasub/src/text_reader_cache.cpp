@@ -35,13 +35,51 @@
 
 
 // Headers
-#include "text_reader.h"
-#include "text_file_reader.h"
 #include "text_reader_cache.h"
 using namespace Athenasub;
 
-shared_ptr<TextReader> TextReader::GetReader(wxInputStream &stream,String encoding)
+
+Athenasub::TextReaderCache::TextReaderCache(shared_ptr<TextReader> src)
+: source(src)
 {
-	shared_ptr<TextReader> fileReader = shared_ptr<TextReader>(new TextFileReader(stream,encoding));
-	return shared_ptr<TextReader>(new TextReaderCache(fileReader));
+	bufferPos = 0;
+}
+
+String TextReaderCache::ReadLineFromFile()
+{
+	if (bufferPos == buffer.size()) {
+		LoadMore(10);
+	}
+	if (bufferPos == buffer.size()) {
+		return "";
+	}
+	return buffer[bufferPos++];
+}
+
+bool TextReaderCache::HasMoreLines()
+{
+	if (bufferPos != buffer.size())
+		return true;
+	else
+		return CanLoadMore();
+}
+
+void TextReaderCache::Rewind()
+{
+	bufferPos = 0;
+}
+
+void Athenasub::TextReaderCache::LoadMore(int n)
+{
+	for (int i=0;i<n;i++) {
+		if (CanLoadMore())
+			buffer.push_back(source->ReadLineFromFile());
+		else
+			return;
+	}
+}
+
+bool Athenasub::TextReaderCache::CanLoadMore()
+{
+	return source->HasMoreLines();
 }
