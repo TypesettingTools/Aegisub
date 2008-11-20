@@ -42,6 +42,8 @@
 #include "ass_file.h"
 #include "video_context.h"
 #include "utils.h"
+#include "standard_paths.h"
+#include <wx/filefn.h>
 
 
 ///////////////
@@ -52,8 +54,13 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	if (first) {
 		ass_library = ass_library_init();
 		if (!ass_library) throw _T("ass_library_init failed");
-
-		ass_set_fonts_dir(ass_library, "");
+		
+		wxString fonts_dir = StandardPaths::DecodePath(_T("?user/libass_fonts/"));
+		if (!wxDirExists(fonts_dir))
+			// It's only one level below the user dir, and we assume the user dir already exists at this point.
+			wxMkdir(fonts_dir);
+		
+		ass_set_fonts_dir(ass_library, fonts_dir.mb_str(wxConvFile));
 		ass_set_extract_fonts(ass_library, 0);
 		ass_set_style_overrides(ass_library, NULL);
 		first = false;
