@@ -120,12 +120,12 @@ static int FFMS_CC UpdateProgress(int State, int64_t Current, int64_t Total, voi
 
 	*LastPercentage = Percentage;
 
-	if (Percentage < 10)
+	/*if (Percentage < 10)
 		cout << "\b\b";
 	else
-		cout << "\b\b\b";
+		cout << "\b\b\b"; */
 
-	cout << Percentage << "%";
+	cout << "Indexing, please wait... " << Percentage << "% \r";
 	
 	return 0;
 }
@@ -138,16 +138,16 @@ void DoIndexing () {
 
 	Index = FFMS_ReadIndex(CacheFile.c_str(), FFMSErrMsg, MsgSize);
 	if (Overwrite || Index == NULL) {
-		std::cout << "Indexing, please wait...  0%";
+		std::cout << "Indexing, please wait... 0% \r";
 		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, DumpMask, AudioFile.c_str(), IgnoreErrors, UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
 		if (Index == NULL) {
-			std::string Err = "Indexing error: ";
+			std::string Err = "\nIndexing error: ";
 			Err.append(FFMSErrMsg);
 			throw Err;
 		}
 
 		if (Progress != 100)
-			std::cout << "\b\b\b100%";
+			std::cout << "Indexing, please wait... 100% \r";
 		
 		std::cout << std::endl << "Writing index... ";
 
