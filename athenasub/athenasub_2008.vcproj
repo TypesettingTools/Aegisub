@@ -467,6 +467,22 @@
 				RelativePath=".\src\text_file_writer.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\text_reader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_reader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_writer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\text_writer.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

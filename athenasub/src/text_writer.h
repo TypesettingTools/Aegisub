@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,30 +35,19 @@
 
 
 #pragma once
+
+
+// Headers
 #include "athenasub.h"
-#include "text_writer.h"
-#include <wx/stream.h>
 
 
 namespace Athenasub {
-	class TextFileWriter : public TextWriter {
-	private:
-		wxString encoding;
-		wxOutputStream &file;
-		std::vector<char> buffer;
-		size_t bufferPos;
-
-		shared_ptr<wxMBConv> conv;
-		bool Is16;
-		bool IsFirst;
-		bool IsUnicode;
-
-		void SetEncoding(String encoding);
-
+	class TextWriter {
 	public:
-		TextFileWriter(wxOutputStream &stream,String encoding="");
-		~TextFileWriter();
+		virtual ~TextWriter() {}
 
-		void WriteLineToFile(Athenasub::String line,bool addLineBreak=true);
+		virtual void WriteLineToFile(String line,bool addLineBreak=true) = 0;
+
+		static shared_ptr<TextWriter> GetWriter(wxOutputStream &stream,String encoding);
 	};
 }

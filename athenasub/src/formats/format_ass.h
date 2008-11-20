@@ -46,7 +46,7 @@ namespace Athenasub {
 
 	// Prototypes
 	class CModel;
-	class TextFileWriter;
+	class TextWriter;
 
 	// Advanced Substation Alpha format handler
 	class FormatHandlerASS : public CFormatHandler {
@@ -55,7 +55,7 @@ namespace Athenasub {
 
 		Entry MakeEntry(const String &data,Section section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
-		void WriteSection(TextFileWriter &writer,ConstSection section) const;
+		void WriteSection(shared_ptr<TextWriter> writer,ConstSection section) const;
 		void MakeValid(IModel &model);
 
 	public:

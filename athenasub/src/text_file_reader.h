@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,19 +39,15 @@
 
 // Headers
 #include "athenasub.h"
+#include "text_reader.h"
 #include "fastbuffer.h"
-#include <wx/stream.h>
 
 
 namespace Athenasub {
 
 	// Text file reader
-	class TextFileReader {
-		friend class PrefetchThread;
+	class TextFileReader : public TextReader {
 	private:
-		wxCriticalSection mutex;
-
-		std::list<String> cache;
 		FastBuffer<char> buffer1;
 		FastBuffer<wchar_t> buffer2;
 
@@ -62,32 +58,20 @@ namespace Athenasub {
 		bool isUtf8;
 		bool swap;
 		bool trim;
-		bool threaded;
-		wxThread *thread;
 
 		void SetEncodingConfiguration();
-		String ActuallyReadLine();
 
 	public:
-		TextFileReader(wxInputStream &stream,String encoding="",bool trim=true,bool prefetch=true);
+		TextFileReader(wxInputStream &stream,String encoding="",bool trim=true);
 		~TextFileReader();
 
 		String ReadLineFromFile();
 		bool HasMoreLines();
+		void Rewind();
 
 		static void EnsureValid(const String encoding);
 		String GetCurrentEncoding();
 		static String GetEncoding(const String filename);
-	};
-
-	// Prefetch thread
-	class PrefetchThread : public wxThread {
-	private:
-		TextFileReader *parent;
-
-	public:
-		wxThread::ExitCode Entry();
-		PrefetchThread(TextFileReader *_parent) : parent(_parent) {}
 	};
 
 }

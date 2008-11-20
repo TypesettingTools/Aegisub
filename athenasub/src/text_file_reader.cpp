@@ -49,13 +49,11 @@ using namespace Athenasub;
 
 ///////////////
 // Constructor
-TextFileReader::TextFileReader(wxInputStream &stream,String enc,bool _trim,bool prefetch)
+TextFileReader::TextFileReader(wxInputStream &stream,String enc,bool _trim)
 : file(stream)
 {
 	// Setup
 	trim = _trim;
-	threaded = prefetch && false;
-	thread = NULL;
 
 	// Set encoding
 	encoding = enc.GetWxString();
@@ -68,8 +66,6 @@ TextFileReader::TextFileReader(wxInputStream &stream,String enc,bool _trim,bool 
 // Destructor
 TextFileReader::~TextFileReader()
 {
-	wxCriticalSectionLocker locker(mutex);
-	if (thread) thread->Delete();
 }
 
 
@@ -191,7 +187,7 @@ void ParseLine(FastBuffer<T> &_buffer,wxInputStream &file,String &stringBuffer,s
 
 //////////////////////////
 // Reads a line from file
-Athenasub::String TextFileReader::ActuallyReadLine()
+Athenasub::String TextFileReader::ReadLineFromFile()
 {
 	String stringBuffer;
 	size_t bufAlloc = 1024;
@@ -225,8 +221,6 @@ Athenasub::String TextFileReader::ActuallyReadLine()
 // Checks if there's more to read
 bool TextFileReader::HasMoreLines()
 {
-	if (cache.size()) return true;
-	wxCriticalSectionLocker locker(mutex);
 	return (!file.Eof() || buffer1.GetSize() || buffer2.GetSize());
 }
 
@@ -252,68 +246,9 @@ String TextFileReader::GetCurrentEncoding()
 }
 
 
-///////////////////////////
-// Reads a line from cache
-String TextFileReader::ReadLineFromFile()
+///////////////////
+// Rewind the file
+void TextFileReader::Rewind()
 {
-	// Not threaded, just return it
-	if (!threaded) return ActuallyReadLine();
 
-	// Load into cache if needed
-	String final;
-	{
-		wxCriticalSectionLocker locker(mutex);
-		if (cache.size() == 0) {
-			cache.push_back(ActuallyReadLine());
-		}
-	}
-
-	{
-		// Retrieve from cache
-		wxCriticalSectionLocker locker(mutex);
-		if (cache.size()) {
-			final = cache.front();
-			cache.pop_front();
-		}
-
-		// Start the thread to prefetch more
-		if (cache.size() < 3 && thread == NULL) {
-			thread = new PrefetchThread(this);
-			thread->Create();
-			thread->Run();
-		}
-	}
-
-	return final;
-}
-
-
-////////////////
-// Thread entry
-wxThread::ExitCode PrefetchThread::Entry()
-{
-	// Lock
-	bool run = true;
-	while (run) {
-		if (TestDestroy()) {
-			parent->thread = NULL;
-			return 0;
-		}
-		{
-			wxCriticalSectionLocker locker(parent->mutex);
-			if (parent->cache.size() < 6) {
-				if (!parent->file.Eof()) {
-					// Get line
-					parent->cache.push_back(parent->ActuallyReadLine());
-				}
-				else run = false;
-			}
-		}
-		Sleep(50);
-	}
-
-	// Die
-	wxCriticalSectionLocker locker(parent->mutex);
-	parent->thread = NULL;
-	return 0;
 }
