@@ -48,7 +48,7 @@ Athenasub::TextReaderCache::TextReaderCache(shared_ptr<TextReader> src)
 String TextReaderCache::ReadLineFromFile()
 {
 	if (bufferPos == buffer.size()) {
-		LoadMore(1);
+		LoadMore(1000000);
 	}
 	if (bufferPos == buffer.size()) {
 		return "";

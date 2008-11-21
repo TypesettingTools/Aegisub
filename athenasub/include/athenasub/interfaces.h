@@ -49,6 +49,8 @@ namespace Athenasub {
 
 	// Prototypes
 	class Range;
+	class Reader;
+	class Writer;
 	class ISelection;
 	class IController;
 	class IView;
@@ -113,7 +115,7 @@ namespace Athenasub {
 		virtual void DispatchNotifications(Notification notification) const = 0;
 
 		virtual void Clear() = 0;
-		virtual void Load(wxInputStream &input,Format format=Format(),const String encoding="") = 0;
+		virtual void Load(Reader &input,Format format=Format()) = 0;
 
 		virtual Section AddSection(String name) = 0;
 		virtual Section GetMutableSection(String name) = 0;
@@ -125,7 +127,7 @@ namespace Athenasub {
 		virtual Controller CreateController() = 0;
 		virtual void AddListener(View listener) = 0;
 
-		virtual void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8") const = 0;
+		virtual void Save(Writer &output,Format format=Format()) const = 0;
 
 		virtual String GetUndoMessage(const String owner="") const = 0;
 		virtual String GetRedoMessage(const String owner="") const = 0;
@@ -316,6 +318,9 @@ namespace Athenasub {
 
 		virtual Dialogue CreateDialogue() const = 0;
 		virtual Style CreateStyle() const = 0;
+
+		virtual bool IsBinary() const = 0;
+		virtual float CanReadFile(Reader &reader) const = 0;	// Should return a float from 0.0f to 1.0f indicating how certain it is that it can read it
 	};
 
 
@@ -324,8 +329,8 @@ namespace Athenasub {
 	public:
 		virtual ~IFormatHandler() {}
 
-		virtual void Load(IModel &model,wxInputStream &file,const String encoding) = 0;
-		virtual void Save(const IModel &model,wxOutputStream &file,const String encoding) const = 0;
+		virtual void Load(IModel &model,Reader &file) = 0;
+		virtual void Save(const IModel &model,Writer &file) const = 0;
 	};
 
 

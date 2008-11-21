@@ -62,8 +62,8 @@ namespace Athenasub {
 		FormatHandlerASS(int version);
 		~FormatHandlerASS();
 
-		void Load(IModel &model,wxInputStream &file,const String encoding);
-		void Save(const IModel &model,wxOutputStream &file,const String encoding) const;
+		void Load(IModel &model,Reader &file);
+		void Save(const IModel &model,Writer &file) const;
 	};
 
 	// Advanced Substation Alpha format base class
@@ -84,9 +84,11 @@ namespace Athenasub {
 
 		virtual int GetTimingPrecision() const { return 10; }
 		virtual int GetMaxTime() const { return 35999990; }
+		bool IsBinary() const { return false; }
 
 		Dialogue CreateDialogue() const { return Dialogue(new DialogueASS()); }
 		Style CreateStyle() const { return Style(new StyleASS()); }
+		float CanReadFile(Reader &reader) const;
 	};
 
 	// Substation Alpha

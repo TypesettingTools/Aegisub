@@ -27,39 +27,31 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/ATHENASUB
+// AEGISUB
 //
-// Website: http://www.aegisub.net
-// Contact: mailto:amz@aegisub.net
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
 
-#pragma once
-#include "athenasub.h"
-#include "colour.h"
+#include "reader.h"
+#include "text_reader.h"
+#include <wx/wfstream.h>
+using namespace Athenasub;
 
 
-namespace Athenasub {
+Reader::Reader(String filename,String encoding)
+{
+	stream = shared_ptr<wxFFileInputStream>(new wxFFileInputStream(filename.GetWxString()));
+	text = TextReader::GetReader(*stream,encoding);
+}
 
-	// Style class
-	class CStyle : public IStyle {
-	private:
-		#define ThrowUnsupported() THROW_ATHENA_EXCEPTION(Exception::Unsupported_Format_Feature)
+shared_ptr<TextReader> Athenasub::Reader::GetTextReader()
+{
+	return text;
+}
 
-	public:
-		// Destructor
-		virtual ~CStyle() {}
-
-		// Type
-		SectionEntryType GetType() const { return SECTION_ENTRY_STYLE; }
-		Style GetAsStyle() { return Style(this); }
-
-		// Read accessors
-		virtual String GetName() const=0;
-		virtual String GetFontName() const { ThrowUnsupported(); }
-		virtual float GetFontSize() const { ThrowUnsupported(); }
-		//virtual IColour& GetColour(int n) const { (void) n; ThrowUnsupported(); return Colour(); }
-		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); }
-	};
-
+void Reader::Rewind()
+{
+	text->Rewind();
 }

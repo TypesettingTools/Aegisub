@@ -109,7 +109,7 @@ void CModel::ProcessActionList(CActionList &_actionList,int type)
 
 //////////////////
 // Load subtitles
-void CModel::Load(wxInputStream &input,const Format _format,const String encoding)
+void CModel::Load(Reader &input,const Format _format)
 {
 	// Autodetect format
 	if (!_format) {
@@ -127,7 +127,7 @@ void CModel::Load(wxInputStream &input,const Format _format,const String encodin
 	Clear();
 
 	// Load
-	handler->Load(*this,input,encoding);
+	handler->Load(*this,input);
 
 	// Set the format
 	format = _format;
@@ -136,7 +136,7 @@ void CModel::Load(wxInputStream &input,const Format _format,const String encodin
 
 //////////////////
 // Save subtitles
-void CModel::Save(wxOutputStream &output,const Format _format,const String encoding) const
+void CModel::Save(Writer &output,const Format _format) const
 {
 	// Use another format
 	if (_format && _format != format) {
@@ -149,7 +149,7 @@ void CModel::Save(wxOutputStream &output,const Format _format,const String encod
 	if (!handler) THROW_ATHENA_EXCEPTION(Exception::No_Format_Handler);
 
 	// Load
-	handler->Save(*this,output,encoding);
+	handler->Save(*this,output);
 }
 
 

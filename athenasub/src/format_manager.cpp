@@ -35,6 +35,8 @@
 
 #include "format_manager.h"
 #include "formats/format_ass.h"
+#include "reader.h"
+#include "text_reader.h"
 #include <wx/string.h>
 using namespace Athenasub;
 
@@ -56,9 +58,9 @@ void FormatManager::AddFormat(const Format format)
 // Initialize all built-in formats
 void FormatManager::InitializeFormats()
 {
-	formats.push_back(Format(new FormatASS()));
-	formats.push_back(Format(new FormatSSA()));
-	formats.push_back(Format(new FormatASS2()));
+	AddFormat(Format(new FormatASS()));
+	AddFormat(Format(new FormatSSA()));
+	AddFormat(Format(new FormatASS2()));
 }
 
 
@@ -80,7 +82,7 @@ int FormatManager::GetFormatCount()
 
 ////////////
 // By index
-const Format FormatManager::GetFormatByIndex(const int index)
+Format FormatManager::GetFormatByIndex(const int index)
 {
 	try {
 		return formats.at(index);
@@ -93,7 +95,7 @@ const Format FormatManager::GetFormatByIndex(const int index)
 
 ///////////////
 // By filename
-const Format FormatManager::GetFormatFromFilename(const String &filename,bool read)
+Format FormatManager::GetFormatFromFilename(const String &filename,bool read)
 {
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
@@ -111,7 +113,7 @@ const Format FormatManager::GetFormatFromFilename(const String &filename,bool re
 
 //////////////////
 // By format name
-const Format FormatManager::GetFormatFromName(const String &name)
+Format FormatManager::GetFormatFromName(const String &name)
 {
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
@@ -120,3 +122,35 @@ const Format FormatManager::GetFormatFromName(const String &name)
 	return Format();
 }
 
+
+///////////////////////////////////////////////////////
+// Get a list of all formats compatible with this file
+std::vector<Format> FormatManager::GetCompatibleFormatList(Reader &reader)
+{
+	// Find all compatible formats and store them with their certainty
+	std::vector<std::pair<float,Format> > results;
+	size_t len = formats.size();
+	for (size_t i=0;i<len;i++) {
+		reader.Rewind();
+		float certainty = formats[i]->CanReadFile(reader);
+		if (certainty > 0.0f) {
+			results.push_back(std::pair<float,Format>(certainty,formats[i]));
+		}
+	}
+
+	// Functor to sort them
+	struct Comp {
+		bool operator() (const std::pair<float,Format> &p1,const std::pair<float,Format> &p2) {
+			return p1.first > p2.first;
+		}
+	};
+
+	// Sort results and store them
+	sort(results.begin(),results.end(),Comp());
+	len = results.size();
+	std::vector<Format> finalResults;
+	for (size_t i=0;i<len;i++) {
+		finalResults.push_back(results[i].second);
+	}
+	return finalResults;
+}

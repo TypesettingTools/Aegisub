@@ -39,7 +39,9 @@
 #include "format_ass_plain.h"
 #include "version.h"
 #include "../text_reader.h"
+#include "../reader.h"
 #include "../text_writer.h"
+#include "../writer.h"
 #include <iostream>
 #include <algorithm>
 #include <wx/tokenzr.h>
@@ -88,6 +90,19 @@ StringArray FormatASS2::GetWriteExtensions() const
 }
 
 
+
+//////////////////////////////////
+// Check if it can read this file
+float FormatASSFamily::CanReadFile(Reader &reader) const
+{
+	shared_ptr<TextReader> file = reader.GetTextReader();
+	if (!file->HasMoreLines()) return 0;
+	String line = file->ReadLineFromFile();
+	if (line == "[Script Info]") return 1;
+	return 0;
+}
+
+
 ///////////////
 // Constructor
 FormatHandlerASS::FormatHandlerASS(int version)
@@ -105,10 +120,10 @@ FormatHandlerASS::~FormatHandlerASS()
 
 ///////////////
 // Load a file
-void FormatHandlerASS::Load(IModel &model,wxInputStream &file,const String encoding)
+void FormatHandlerASS::Load(IModel &model,Reader &file)
 {
-	// Make text file reader
-	shared_ptr<TextReader> reader = TextReader::GetReader(file,encoding);
+	// Get text file reader
+	shared_ptr<TextReader> reader = file.GetTextReader();
 
 	// Variables
 	int version = 1;
@@ -148,10 +163,10 @@ void FormatHandlerASS::Load(IModel &model,wxInputStream &file,const String encod
 
 /////////////////////
 // Save file to disc
-void FormatHandlerASS::Save(const IModel& model,wxOutputStream &file,const String encoding) const
+void FormatHandlerASS::Save(const IModel& model,Writer &file) const
 {
 	// Make text file writer
-	shared_ptr<TextWriter> writer = TextWriter::GetWriter(file,encoding);
+	shared_ptr<TextWriter> writer = file.GetTextWriter();
 
 	// Set up list of sections to write
 	StringArray sections;

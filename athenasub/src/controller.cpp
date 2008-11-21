@@ -38,6 +38,8 @@
 #include "actionlist.h"
 #include "format_manager.h"
 #include "selection.h"
+#include "reader.h"
+#include "writer.h"
 using namespace Athenasub;
 
 
@@ -61,9 +63,24 @@ ActionList CController::CreateActionList(const String title,const String owner,b
 // Load a file
 void CController::LoadFile(const String filename,const String encoding)
 {
-	const Format handler = FormatManager::GetFormatFromFilename(filename,true);
-	wxFFileInputStream stream(filename.GetWxString());
-	model->Load(stream,handler,encoding);
+	Reader reader(filename,encoding);
+	std::vector<Format> handlers = FormatManager::GetCompatibleFormatList(reader);
+	size_t len = handlers.size();
+	bool success = false;
+	for (size_t i=0;i<len;i++) {
+		try {
+			model->Load(reader,handlers[i]);
+			success = true;
+			break;
+		} catch (Athenasub::Exception &e) {
+			// Ignore exception
+			(void) e;
+		}
+	}
+
+	if (!success) {
+		THROW_ATHENA_EXCEPTION_MSG(Exception::No_Format_Handler,"Could not locate a suitable format handler.");
+	}
 }
 
 
@@ -71,9 +88,9 @@ void CController::LoadFile(const String filename,const String encoding)
 // Save a file
 void CController::SaveFile(const String filename,const String encoding)
 {
-	const Format handler = FormatManager::GetFormatFromFilename(filename,true);
-	wxFFileOutputStream stream(filename.GetWxString());
-	model->Save(stream,handler,encoding);
+	Format handler = FormatManager::GetFormatFromFilename(filename,true);
+	Writer writer(filename,encoding);
+	model->Save(writer,handler);
 }
 
 

@@ -328,7 +328,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\format_manager.h"
+				RelativePath=".\src\format_manager.h"
 				>
 			</File>
 			<Filter
@@ -448,6 +448,14 @@
 			Name="File IO"
 			>
 			<File
+				RelativePath=".\src\reader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\reader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\text_file_reader.cpp"
 				>
 			</File>
@@ -485,6 +493,14 @@
 			</File>
 			<File
 				RelativePath=".\src\text_writer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\writer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\writer.h"
 				>
 			</File>
 		</Filter>

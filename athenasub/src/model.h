@@ -36,7 +36,6 @@
 #pragma once
 #include <list>
 #include <vector>
-#include <wx/wfstream.h>
 #include "athenasub.h"
 #include "actionlist.h"
 #include "section.h"
@@ -80,7 +79,7 @@ namespace Athenasub {
 		void DispatchNotifications(Notification notification) const;
 
 		void Clear();
-		void Load(wxInputStream &input,Format format=Format(),const String encoding="");
+		void Load(Reader &input,Format format=Format());
 
 		Section AddSection(String name);
 		Section GetMutableSection(String name);
@@ -94,7 +93,7 @@ namespace Athenasub {
 		Format GetFormat() const { return format; }
 
 		void AddListener(View listener);
-		void Save(wxOutputStream &output,Format format=Format(),const String encoding="UTF-8") const;
+		void Save(Writer &output,Format format=Format()) const;
 
 		ConstSection GetSection(String name) const;
 		ConstSection GetSectionByIndex(size_t index) const;

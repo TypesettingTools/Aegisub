@@ -44,8 +44,7 @@ namespace Athenasub {
 	// Dialogue class
 	class CDialogue : public IDialogue {
 	private:
-		static const bool dodgeWarning = true;
-		void ThrowUnsupported() const { if (dodgeWarning) THROW_ATHENA_EXCEPTION(Exception::Unsupported_Format_Feature); }
+#define ThrowUnsupported() THROW_ATHENA_EXCEPTION(Exception::Unsupported_Format_Feature)
 		static const String& EmptyString();
 
 	public:

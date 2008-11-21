@@ -27,39 +27,27 @@
 //
 // -----------------------------------------------------------------------------
 //
-// AEGISUB/ATHENASUB
+// AEGISUB
 //
-// Website: http://www.aegisub.net
-// Contact: mailto:amz@aegisub.net
+// Website: http://aegisub.cellosoft.com
+// Contact: mailto:zeratul@cellosoft.com
 //
 
 
-#pragma once
-#include "athenasub.h"
-#include "colour.h"
+#include "writer.h"
+#include "text_writer.h"
+#include <wx/wfstream.h>
+using namespace Athenasub;
 
 
-namespace Athenasub {
+Writer::Writer(String filename,String encoding)
+{
+	stream = shared_ptr<wxFFileOutputStream>(new wxFFileOutputStream(filename.GetWxString()));
+	text = TextWriter::GetWriter(*stream,encoding);
+}
 
-	// Style class
-	class CStyle : public IStyle {
-	private:
-		#define ThrowUnsupported() THROW_ATHENA_EXCEPTION(Exception::Unsupported_Format_Feature)
 
-	public:
-		// Destructor
-		virtual ~CStyle() {}
-
-		// Type
-		SectionEntryType GetType() const { return SECTION_ENTRY_STYLE; }
-		Style GetAsStyle() { return Style(this); }
-
-		// Read accessors
-		virtual String GetName() const=0;
-		virtual String GetFontName() const { ThrowUnsupported(); }
-		virtual float GetFontSize() const { ThrowUnsupported(); }
-		//virtual IColour& GetColour(int n) const { (void) n; ThrowUnsupported(); return Colour(); }
-		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); }
-	};
-
+shared_ptr<TextWriter> Writer::GetTextWriter()
+{
+	return text;
 }

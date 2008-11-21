@@ -38,6 +38,8 @@
 
 namespace Athenasub {
 
+	class Reader;
+
 	// Format manager class
 	class FormatManager {
 	private:
@@ -50,9 +52,10 @@ namespace Athenasub {
 		static void ClearFormats();
 
 		static int GetFormatCount();
-		static const Format GetFormatByIndex(const int index);
-		static const Format GetFormatFromFilename(const String &filename,bool read);
-		static const Format GetFormatFromName(const String &name);
+		static Format GetFormatByIndex(const int index);
+		static Format GetFormatFromFilename(const String &filename,bool read);
+		static Format GetFormatFromName(const String &name);
+		static std::vector<Format> GetCompatibleFormatList(Reader &reader);
 	};
 
 }
