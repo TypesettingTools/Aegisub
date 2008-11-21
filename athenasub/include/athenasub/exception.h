@@ -35,8 +35,7 @@
 
 #pragma once
 
-//#include "athenastring.h"
-#include <string>
+#include "athenastring.h"
 #include <exception>
 
 namespace Athenasub {
@@ -59,15 +58,13 @@ namespace Athenasub {
 			TODO
 		};
 
-		Exception(ExceptionList _code);
-		Exception(ExceptionList _code,const char* file,const long line);
+		Exception(ExceptionList code,String message="",const char* file=NULL,const long line=0);
 
-		//String GetMessageString() const { return String(what(),wxConvLocal); }
 		int GetCode() { return code; }
 
 	private:
 		static std::string GetMessageChar(int code);
-		static std::string GetMessageFile(int code,const char *file,long line);
+		static std::string GetExceptionMessage(int code,String message,const char *file,long line);
 
 		ExceptionList code;
 	};
@@ -76,8 +73,10 @@ namespace Athenasub {
 
 #ifndef THROW_ATHENA_EXCEPTION
 #ifdef _MSC_VER
-#define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code,__FILE__,__LINE__)
+#define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code,"",__FILE__,__LINE__)
+#define THROW_ATHENA_EXCEPTION_MSG(code,message) throw Athenasub::Exception(code,message,__FILE__,__LINE__)
 #else
 #define THROW_ATHENA_EXCEPTION(code) throw Athenasub::Exception(code)
+#define THROW_ATHENA_EXCEPTION_MSG(code,message) throw Athenasub::Exception(code,message)
 #endif
 #endif

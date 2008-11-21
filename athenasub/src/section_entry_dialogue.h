@@ -66,17 +66,17 @@ namespace Athenasub {
 		virtual bool HasMargins() const { return false; }
 
 		// Read accessors
-		virtual const String& GetText() const { ThrowUnsupported(); return EmptyString(); }
-		//virtual Time& GetStartTime() const { ThrowUnsupported(); return Time(); }
-		//virtual Time& GetEndTime() const { ThrowUnsupported(); return Time(); }
-		virtual int GetStartFrame() const { ThrowUnsupported(); return 0; }
-		virtual int GetEndFrame() const { ThrowUnsupported(); return 0; }
-		virtual bool IsComment() const { ThrowUnsupported(); return false; }
-		virtual int GetLayer() const { ThrowUnsupported(); return 0; }
-		virtual int GetMargin(int n) const { ThrowUnsupported(); return n; }
-		virtual const String& GetStyle() const { ThrowUnsupported(); return EmptyString(); }
-		virtual const String& GetActor() const { ThrowUnsupported(); return EmptyString(); }
-		virtual const String& GetUserField() const { ThrowUnsupported(); return EmptyString(); }
+		virtual const String& GetText() const { ThrowUnsupported(); }
+		//virtual Time& GetStartTime() const { ThrowUnsupported(); }
+		//virtual Time& GetEndTime() const { ThrowUnsupported(); }
+		virtual int GetStartFrame() const { ThrowUnsupported(); }
+		virtual int GetEndFrame() const { ThrowUnsupported(); }
+		virtual bool IsComment() const { ThrowUnsupported(); }
+		virtual int GetLayer() const { ThrowUnsupported(); }
+		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); }
+		virtual const String& GetStyle() const { ThrowUnsupported(); }
+		virtual const String& GetActor() const { ThrowUnsupported(); }
+		virtual const String& GetUserField() const { ThrowUnsupported(); }
 
 		// Write accessors
 		virtual void SetText(const String& text) { (void) text; ThrowUnsupported(); }

@@ -37,16 +37,32 @@
 using namespace Athenasub;
 
 
+///////////////////////
+// Stack walker helper
+#include <wx/stackwalk.h>
+#include <wx/filename.h>
+
+class Stack : public wxStackWalker {
+	std::string &str;
+public:
+	Stack(std::string &dest) : str(dest) {}
+
+	void OnStackFrame(const wxStackFrame& frame)
+	{
+		wxString line = wxString::Format(_T("\n\t%03i - "),frame.GetLevel()) + frame.GetName();
+		if (frame.HasSourceLocation()) {
+			wxFileName fn(frame.GetFileName());
+			line += _T(" (") + fn.GetFullName() + wxString::Format(_T(":%i)"),frame.GetLine());
+		}
+		str += line.mb_str(wxConvUTF8);
+	}
+};
+
+
 ////////////////
 // Constructors
-Exception::Exception(ExceptionList _code)
-: std::exception(GetMessageChar(_code).c_str())
-{
-	code = _code;
-}
-
-Exception::Exception(ExceptionList _code,const char* file,const long line)
-: std::exception(GetMessageFile(_code,file,line).c_str())
+Exception::Exception(ExceptionList _code,String message,const char* file,const long line)
+: std::exception(GetExceptionMessage(_code,message,file,line).c_str())
 {
 	code = _code;
 }
@@ -76,12 +92,21 @@ std::string Exception::GetMessageChar(int code)
 
 ///////////////////////////////////////////
 // Get the message string for the filename
-std::string Exception::GetMessageFile(int code,const char *file,long line)
+std::string Exception::GetExceptionMessage(int code,String message,const char *file,long line)
 {
 	std::string str = GetMessageChar(code);
-	str = str + " (" + file + ":";
-	char buffer[16];
-	_itoa_s(line,buffer,10);
-	str = str + buffer + ")";
+
+	// Append macro filename
+	if (file != NULL) {
+		str = str + " (" + file + ":";	// Yes, there's an actual reason why that's not += (operator overloading)
+		char buffer[16];
+		_itoa_s(line,buffer,10);
+		str = str + buffer + ")";
+	}
+
+	// Append stack trace
+	Stack stack(str);
+	stack.Walk(2);
+
 	return str;
 }

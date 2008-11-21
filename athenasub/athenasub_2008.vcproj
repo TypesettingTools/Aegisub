@@ -255,10 +255,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\aegilib\exception.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\aegilib\fastbuffer.h"
 				>
 			</File>

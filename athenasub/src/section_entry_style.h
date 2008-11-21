@@ -57,10 +57,10 @@ namespace Athenasub {
 
 		// Read accessors
 		virtual String GetName() const=0;
-		virtual String GetFontName() const { ThrowUnsupported(); return ""; }
-		virtual float GetFontSize() const { ThrowUnsupported(); return 0.0f; }
+		virtual String GetFontName() const { ThrowUnsupported(); }
+		virtual float GetFontSize() const { ThrowUnsupported(); }
 		//virtual IColour& GetColour(int n) const { (void) n; ThrowUnsupported(); return Colour(); }
-		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); return 0; }
+		virtual int GetMargin(int n) const { (void) n; ThrowUnsupported(); }
 	};
 
 }
