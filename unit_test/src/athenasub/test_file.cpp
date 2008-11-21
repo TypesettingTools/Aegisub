@@ -79,24 +79,34 @@ public:
 	void testLoad()
 	{
 		CPPUNIT_ASSERT_NO_THROW(controller->LoadFile(fileFolder+"in_test1.ass","UTF-8"));
-		ConstModel csubs = subs;
-		CPPUNIT_ASSERT(csubs->GetSectionCount() == 3);
+		CPPUNIT_ASSERT(subs->GetSectionCount() == 3);
 		ConstSection section;
-		CPPUNIT_ASSERT_NO_THROW(section = csubs->GetSection("Script Info"));
+		CPPUNIT_ASSERT_NO_THROW(section = subs->GetSection("Script Info"));
 		CPPUNIT_ASSERT(section->HasProperty("ScriptType"));
 		CPPUNIT_ASSERT(section->GetProperty("ScriptType") == "v4.00+");
+		CPPUNIT_ASSERT_NO_THROW(section = subs->GetSection("V4+ Styles"));
+		CPPUNIT_ASSERT(section->GetEntryCount() == 7);
+		CPPUNIT_ASSERT_NO_THROW(section = subs->GetSection("Events"));
+		CPPUNIT_ASSERT(section->GetEntryCount() == 362);
 	}
 
 	void testSave()
 	{
 		CPPUNIT_ASSERT_NO_THROW(controller->LoadFile(fileFolder+"in_test1.ass","UTF-8"));
 		CPPUNIT_ASSERT_NO_THROW(controller->SaveFile(fileFolder+"out_test1.ass","UTF-8"));
+
+		CPPUNIT_ASSERT_NO_THROW(controller->LoadFile(fileFolder+"out_test1.ass","UTF-8"));
+		CPPUNIT_ASSERT(subs->GetSectionCount() == 3);
+		ConstSection section;
+		CPPUNIT_ASSERT_NO_THROW(section = subs->GetSection("V4+ Styles"));
+		CPPUNIT_ASSERT(section->GetEntryCount() == 7);
+		CPPUNIT_ASSERT_NO_THROW(section = subs->GetSection("Events"));
+		CPPUNIT_ASSERT(section->GetEntryCount() == 362);
 	}
 
 	void testStableRewrite()
 	{
 		CPPUNIT_ASSERT_NO_THROW(controller->LoadFile(fileFolder+"out_test1.ass","UTF-8"));
-		CPPUNIT_ASSERT(subs->GetSectionCount() == 3);
 		CPPUNIT_ASSERT_NO_THROW(controller->SaveFile(fileFolder+"out_test2.ass","UTF-8"));
 		CPPUNIT_ASSERT(AreFilesIdentical(fileFolder+"out_test1.ass",fileFolder+"out_test2.ass"));
 		CPPUNIT_ASSERT(AreFilesIdentical(fileFolder+"in_test1.ass",fileFolder+"out_test1.ass") == false);
