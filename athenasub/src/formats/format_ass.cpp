@@ -96,10 +96,48 @@ StringArray FormatASS2::GetWriteExtensions() const
 float FormatASSFamily::CanReadFile(Reader &reader) const
 {
 	shared_ptr<TextReader> file = reader.GetTextReader();
-	if (!file->HasMoreLines()) return 0;
+
+	// Check header
+	if (!file->HasMoreLines()) return 0.0f;
 	String line = file->ReadLineFromFile();
-	if (line == "[Script Info]") return 1;
-	return 0;
+	line.AsciiMakeLower();
+	if (line != "[script info]") return 0.0f;
+
+	float version = 0.0f;
+	float sections = 0.25f;
+	String section = line;
+	while (file->HasMoreLines()) {
+		// Get line
+		line = file->ReadLineFromFile();
+		line.AsciiMakeLower();
+
+		// Set section
+		if (line[0] == '[' && line[line.Length()-1] == ']') section = line;
+
+		// Check version
+		if (section == "[script info]") {
+			if (line.StartsWith("ScriptType")) {
+				int formatVersion = GetVersion();
+				String expected = "";
+				switch (formatVersion) {
+					case 0: expected = "v4.00"; break;
+					case 1: expected = "v4.00+"; break;
+					case 2: expected = "v4.00++"; break;
+				}
+				if (line.EndsWith(expected)) version = 0.5f;
+				else version = 0.25f;
+			}
+		}
+
+		// Done when events begin
+		if (section == "[events]") {
+			sections += 0.25f;
+			break;
+		}
+	}
+
+	// OK
+	return sections+version;
 }
 
 

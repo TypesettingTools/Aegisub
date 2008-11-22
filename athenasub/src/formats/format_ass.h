@@ -68,6 +68,9 @@ namespace Athenasub {
 
 	// Advanced Substation Alpha format base class
 	class FormatASSFamily : public IFormat {
+	protected:
+		virtual int GetVersion() const = 0;
+
 	public:
 		virtual ~FormatASSFamily() {}
 
@@ -98,6 +101,7 @@ namespace Athenasub {
 		String GetName() const { return "Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
+		int GetVersion() const { return 0; }
 	};
 
 	// Advanced Substation Alpha
@@ -107,6 +111,7 @@ namespace Athenasub {
 		String GetName() const { return "Advanced Substation Alpha"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
+		int GetVersion() const { return 1; }
 	};
 
 	// Advanced Substation Alpha 2
@@ -116,6 +121,7 @@ namespace Athenasub {
 		String GetName() const { return "Advanced Substation Alpha 2"; }
 		StringArray GetReadExtensions() const;
 		StringArray GetWriteExtensions() const;
+		int GetVersion() const { return 2; }
 	};
 
 }
