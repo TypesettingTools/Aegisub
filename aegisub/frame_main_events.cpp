@@ -582,6 +582,17 @@ void FrameMain::OnForums(wxCommandEvent& WXUNUSED(event)) {
 ///////////////////
 // Open bugtracker
 void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
+	if (wxGetMouseState().CmdDown()) {
+		if (wxGetMouseState().ShiftDown()) {
+			wxMessageBox(_T("Now crashing with an access violation..."));
+			for (char *foo = (char*)0;;) *foo++ = 42;
+		}
+		else {
+			wxMessageBox(_T("Now crashing with an unhandled exception..."));
+			throw this;
+		}
+	}
+
 	AegisubApp::OpenURL(_T("http://bugs.aegisub.net/"));
 }
 
