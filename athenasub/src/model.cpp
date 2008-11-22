@@ -75,11 +75,11 @@ void CModel::ProcessActionList(CActionList &_actionList,int type)
 {
 	// Copy the list
 	//shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(_actionList));
-	ActionList actions = ActionList(new CActionList(_actionList));
+	shared_ptr<CActionList> actions = shared_ptr<CActionList>(new CActionList(_actionList));
 	bool canUndo = actions->CanUndo();
 
 	// Setup undo
-	ActionList undo = ActionList(new CActionList(actions->GetModel(),actions->GetName(),actions->GetOwner(),canUndo));
+	shared_ptr<CActionList> undo = shared_ptr<CActionList>(new CActionList(actions->GetModel(),actions->GetName(),actions->GetOwner(),canUndo));
 	ActionStack *stack;
 	if (type == 1) stack = &redoStack;
 	else stack = &undoStack;

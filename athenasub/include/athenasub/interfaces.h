@@ -47,7 +47,7 @@ class wxOutputStream;
 
 namespace Athenasub {
 
-	// Prototypes
+	// Forward references
 	class Range;
 	class Reader;
 	class Writer;
@@ -64,8 +64,6 @@ namespace Athenasub {
 	class INotification;
 	class ISection;
 	class IDeltaCoder;
-	class CController;
-	class CAction;
 	class IAction;
 
 
@@ -326,12 +324,6 @@ namespace Athenasub {
 
 	// Action list
 	class IActionList {
-		friend class CModel;
-
-	protected:
-		virtual std::list<Action> GetActions() = 0;
-		virtual void AddActionStart(Action action) = 0;
-
 	public:
 		virtual ~IActionList() {}
 
