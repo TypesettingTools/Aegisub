@@ -58,8 +58,8 @@ TextFileWriter::TextFileWriter(wxOutputStream &stream,String enc)
 //////////////
 // Destructor
 TextFileWriter::~TextFileWriter() {
-	// Flush
-	if (bufferPos) file.Write(&buffer[0],(std::streamsize)bufferPos);
+	Flush();
+	file.Close();
 }
 
 
@@ -96,9 +96,7 @@ void TextFileWriter::WriteLineToFile(String line,bool addLineBreak) {
 
 			// Resize buffer if it won't fit
 			if (buffer.size() < bufferPos+len) {
-				// Flush
-				file.Write(&buffer[0],(std::streamsize)bufferPos);
-				bufferPos = 0;
+				Flush();
 
 				// Resize if it still doesn't fit
 				if (buffer.size() < len) buffer.resize(len);
@@ -141,5 +139,15 @@ void TextFileWriter::SetEncoding(String enc) {
 		if (encoding.Left(6) == _T("UTF-16")) {
 			Is16 = true;
 		}
+	}
+}
+
+
+/////////
+// Flush
+void TextFileWriter::Flush() {
+	if (bufferPos) {
+		file.Write(&buffer[0],(std::streamsize)bufferPos);
+		bufferPos = 0;
 	}
 }

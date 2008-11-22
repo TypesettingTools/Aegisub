@@ -199,6 +199,8 @@ void FormatHandlerASS::Save(const IModel& model,Writer &file) const
 			WriteSection(writer,section);
 		}
 	}
+
+	writer->Flush();
 }
 
 

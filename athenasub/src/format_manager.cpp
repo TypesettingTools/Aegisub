@@ -38,6 +38,7 @@
 #include "reader.h"
 #include "text_reader.h"
 #include <wx/string.h>
+#include <algorithm>
 using namespace Athenasub;
 
 
@@ -48,8 +49,15 @@ std::vector<Format> FormatManager::formats;
 
 ////////////////
 // Add a format
-void FormatManager::AddFormat(const Format format)
+void FormatManager::AddFormat(Format format)
 {
+	// Abort if there is already a format with this name
+	String name = format->GetName();
+	for (size_t i=0;i<formats.size();i++) {
+		if (formats[i]->GetName() == name) return;
+	}
+
+	// Add
 	formats.push_back(format);
 }
 
@@ -131,8 +139,22 @@ std::vector<Format> FormatManager::GetCompatibleFormatList(Reader &reader)
 	std::vector<std::pair<float,Format> > results;
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
+		// Reset reader
 		reader.Rewind();
+
+		// Check how certain it is that it can read the format
 		float certainty = formats[i]->CanReadFile(reader);
+
+		// Compare to extension
+		StringArray exts = formats[i]->GetReadExtensions();
+		for (size_t j=0;j<exts.size();j++) {
+			if (reader.GetFileName().EndsWith(exts[j],false)) {
+				certainty *= 2.0f;
+				break;
+			}
+		}
+		
+		// If it thinks that it can read the format, add to list.
 		if (certainty > 0.0f) {
 			results.push_back(std::pair<float,Format>(certainty,formats[i]));
 		}
@@ -152,5 +174,8 @@ std::vector<Format> FormatManager::GetCompatibleFormatList(Reader &reader)
 	for (size_t i=0;i<len;i++) {
 		finalResults.push_back(results[i].second);
 	}
+
+	// Reset reader again and return results
+	reader.Rewind();
 	return finalResults;
 }

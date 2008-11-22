@@ -52,6 +52,7 @@ namespace Athenasub {
 
 	public:
 		Writer(String filename,String encoding="");
+		~Writer();
 
 		shared_ptr<TextWriter> GetTextWriter();
 	};

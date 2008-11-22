@@ -40,7 +40,8 @@
 using namespace Athenasub;
 
 
-Reader::Reader(String filename,String encoding)
+Reader::Reader(String fn,String encoding)
+: filename(fn)
 {
 	stream = shared_ptr<wxFFileInputStream>(new wxFFileInputStream(filename.GetWxString()));
 	text = TextReader::GetReader(*stream,encoding);
@@ -49,6 +50,17 @@ Reader::Reader(String filename,String encoding)
 shared_ptr<TextReader> Athenasub::Reader::GetTextReader()
 {
 	return text;
+}
+
+Athenasub::String Athenasub::Reader::GetFileName()
+{
+	return filename;
+}
+
+Athenasub::Reader::~Reader()
+{
+	text = shared_ptr<TextReader>();
+	stream = shared_ptr<wxFFileInputStream>();
 }
 
 void Reader::Rewind()

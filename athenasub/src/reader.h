@@ -52,6 +52,7 @@ namespace Athenasub {
 
 	public:
 		Reader(String filename,String encoding="");
+		~Reader();
 
 		shared_ptr<TextReader> GetTextReader();
 		String GetFileName();

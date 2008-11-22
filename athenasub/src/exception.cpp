@@ -108,5 +108,10 @@ std::string Exception::GetExceptionMessage(int code,String message,const char *f
 	Stack stack(str);
 	stack.Walk(2);
 
+	// Append extra message
+	if (!message.IsEmpty()) {
+		str = str + "\nExtra message: " + message;
+	}
+
 	return str;
 }

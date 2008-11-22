@@ -47,6 +47,7 @@ namespace Athenasub {
 		virtual ~TextWriter() {}
 
 		virtual void WriteLineToFile(String line,bool addLineBreak=true) = 0;
+		virtual void Flush() = 0;
 
 		static shared_ptr<TextWriter> GetWriter(wxOutputStream &stream,String encoding);
 	};

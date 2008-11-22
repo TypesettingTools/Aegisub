@@ -47,6 +47,13 @@ Writer::Writer(String filename,String encoding)
 }
 
 
+Writer::~Writer()
+{
+	text = shared_ptr<TextWriter>();
+	stream = shared_ptr<wxFFileOutputStream>();
+}
+
+
 shared_ptr<TextWriter> Writer::GetTextWriter()
 {
 	return text;

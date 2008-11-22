@@ -60,5 +60,6 @@ namespace Athenasub {
 		~TextFileWriter();
 
 		void WriteLineToFile(Athenasub::String line,bool addLineBreak=true);
+		void Flush();
 	};
 }
