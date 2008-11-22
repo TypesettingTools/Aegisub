@@ -44,7 +44,7 @@
 #include <wx/glcanvas.h>
 #include <wx/timer.h>
 #include <wx/stopwatch.h>
-#ifndef wxUSE_GLCANVAS
+#if ! wxUSE_GLCANVAS
 #error "Aegisub requires wxWidgets to be compiled with OpenGL support."
 #endif
 #include <list>
