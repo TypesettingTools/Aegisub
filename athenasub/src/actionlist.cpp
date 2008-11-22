@@ -41,7 +41,7 @@ using namespace Athenasub;
 ///////////////
 // Constructor
 CActionList::CActionList(weak_ptr<IModel> _model,String _actionName,const String _owner,bool _undoAble)
-: model(_model), owner(_owner), undoAble(_undoAble)
+: model(dynamic_pointer_cast<CModel>(Model(_model))), owner(_owner), undoAble(_undoAble)
 {
 	valid = false;
 	Start(_actionName);
@@ -96,7 +96,7 @@ void CActionList::Start(const String name)
 void CActionList::Finish()
 {
 	if (valid) {
-		Model(model)->ProcessActionList(*this);
+		shared_ptr<CModel>(model)->ProcessActionList(*this);
 		actions.clear();
 		valid = false;
 	}
@@ -125,7 +125,7 @@ void CActionList::RemoveLine(int position,const String section)
 // Insert a "modify line" action
 Entry CActionList::ModifyLine(int position,const String section)
 {
-	Section sect = Model(model)->GetMutableSection(section);
+	Section sect = shared_ptr<CModel>(model)->GetMutableSection(section);
 	Entry entry = sect->GetEntry(position)->Clone();
 	Action action = Action (new ActionModify(model.lock(),entry,position,section,false));
 	AddAction(action);
@@ -138,7 +138,7 @@ Entry CActionList::ModifyLine(int position,const String section)
 std::vector<Entry> CActionList::ModifyLines(Selection selection,const String section)
 {
 	// Get section
-	Section sect = Model(model)->GetMutableSection(section);
+	Section sect = shared_ptr<CModel>(model)->GetMutableSection(section);
 
 	// Generate entries
 	std::vector<Entry> entries(selection->GetCount());

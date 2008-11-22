@@ -320,6 +320,10 @@
 			Name="Formats"
 			>
 			<File
+				RelativePath=".\src\format_handler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\format_handler.h"
 				>
 			</File>

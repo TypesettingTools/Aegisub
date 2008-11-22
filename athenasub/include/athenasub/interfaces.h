@@ -66,6 +66,7 @@ namespace Athenasub {
 	class IDeltaCoder;
 	class CController;
 	class CAction;
+	class IAction;
 
 
 	// Smart pointers
@@ -83,6 +84,7 @@ namespace Athenasub {
 	typedef shared_ptr<INotification> Notification;
 	typedef shared_ptr<ISection> Section;
 	typedef shared_ptr<IDeltaCoder> DeltaCoder;
+	typedef shared_ptr<IAction> Action;
 
 
 	// Const smart pointers
@@ -100,27 +102,6 @@ namespace Athenasub {
 
 	// Model
 	class IModel {
-		friend class CFormatHandler;
-		friend class CActionList;
-		friend class CController;
-		friend class CAction;
-
-	protected:
-		virtual void ProcessActionList(CActionList &actionList,int type=0) = 0;
-
-		virtual void Undo(const String owner="") = 0;
-		virtual void Redo(const String owner="") = 0;
-		virtual void ActivateStack(ActionStack stack,bool isUndo,const String &owner) = 0;
-
-		virtual void DispatchNotifications(Notification notification) const = 0;
-
-		virtual void Clear() = 0;
-		virtual void Load(Reader &input,Format format=Format()) = 0;
-
-		virtual Section AddSection(String name) = 0;
-		virtual Section GetMutableSection(String name) = 0;
-		virtual Section GetMutableSectionByIndex(size_t index) = 0;
-
 	public:
 		virtual ~IModel() {}
 
@@ -335,8 +316,6 @@ namespace Athenasub {
 
 
 	// Action interface
-	class IAction;
-	typedef shared_ptr<IAction> Action;
 	class IAction {
 	public:
 		virtual ~IAction() {}
@@ -415,7 +394,6 @@ namespace Athenasub {
 	class ILibAthenaSub {
 	public:
 		virtual ~ILibAthenaSub() {}
-
 		virtual Model CreateModel()=0;
 	};
 	typedef shared_ptr<ILibAthenaSub> LibAthenaSub;

@@ -33,30 +33,36 @@
 // Contact: mailto:amz@aegisub.net
 //
 
-#pragma once
-#include "athenasub.h"
+#include "format_handler.h"
 #include "model.h"
-#include "tr1.h"
+using namespace Athenasub;
 
-namespace Athenasub {
 
-	// Format handler interface
-	class CFormatHandler : public IFormatHandler {
-	protected:
-		virtual ~CFormatHandler() {}
+Section CFormatHandler::AddSection(IModel &model,String name) const
+{
+	return (dynamic_cast<CModel*>(&model))->AddSection(name);
+}
 
-		Section AddSection(IModel &model,String name) const;
-		ConstSection GetSection(const IModel &model,String name) const;
-		ConstSection GetSectionByIndex(const IModel &model,size_t index) const;
-		Section GetSection(IModel &model,String name) const;
-		Section GetSectionByIndex(IModel &model,size_t index) const;
-		size_t GetSectionCount(const IModel &model) const;
+ConstSection CFormatHandler::GetSection(const IModel &model,String name) const
+{
+	return model.GetSection(name);
+}
 
-	public:
-		//CFormatHandler(IModel& _model) : model(_model) {}
+ConstSection CFormatHandler::GetSectionByIndex(const IModel &model,size_t index) const
+{
+	return model.GetSectionByIndex(index);
+}
 
-		virtual void Load(IModel &model,Reader &file) = 0;
-		virtual void Save(const IModel &model,Writer &file) const = 0;
-	};
+Section CFormatHandler::GetSection(IModel &model,String name) const
+{
+	return (dynamic_cast<CModel*>(&model))->GetMutableSection(name); 
+}
 
+Section CFormatHandler::GetSectionByIndex(IModel &model,size_t index) const
+{
+	return (dynamic_cast<CModel*>(&model))->GetMutableSectionByIndex(index);
+}
+
+size_t CFormatHandler::GetSectionCount(const IModel &model) const {
+	return model.GetSectionCount();
 }

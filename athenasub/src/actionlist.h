@@ -56,7 +56,7 @@ namespace Athenasub {
 	private:
 		String actionName;
 		String owner;
-		weak_ptr<IModel> model;
+		weak_ptr<CModel> model;
 		std::list<Action> actions;
 		bool valid;
 		bool undoAble;

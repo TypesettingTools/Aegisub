@@ -43,7 +43,7 @@ namespace Athenasub {
 		friend class CModel;
 
 	private:
-		Model model;
+		shared_ptr<CModel> model;
 		CController (Model model);
 
 	public:

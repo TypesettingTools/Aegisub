@@ -48,6 +48,16 @@ CAction::CAction(Model _model)
 	if (!model) THROW_ATHENA_EXCEPTION(Exception::Internal_Error);
 }
 
+Model CAction::GetModel() const
+{
+	return model;
+}
+
+Section CAction::GetSection(String name) const
+{
+	return static_pointer_cast<CModel>(model)->GetMutableSection(name);
+}
+
 
 ///////////////////////////// Insert line /////////////////////////////
 

@@ -46,7 +46,7 @@ using namespace Athenasub;
 ///////////////
 // Constructor
 CController::CController(Model _model)
-: model(_model)
+: model(dynamic_pointer_cast<CModel>(_model))
 {
 }
 

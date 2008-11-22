@@ -43,13 +43,13 @@ namespace Athenasub {
 	// Action base class
 	class CAction : public IAction {
 	private:
-		mutable Model model;
+		Model model;
 
 	protected:
 		CAction(Model model);
 
-		Model GetModel() const { return model; }
-		Section GetSection(String name) const { return model->GetMutableSection(name); }
+		Model GetModel() const;
+		Section GetSection(String name) const;
 	};
 
 	// Insert line
