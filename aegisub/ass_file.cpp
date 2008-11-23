@@ -329,7 +329,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 		}
 
 		// Is the filename line?
-		bool isFilename = (data.Left(10) == _T("fontname: ") && lowGroup == _T("[fonts]")) || (data.Left(10) == _T("filename: ") && lowGroup == _T("[graphics]"));
+		bool isFilename = (data.Left(10) == _T("fontname: ") || data.Left(10) == _T("filename: "));
 
 		// The attachment file is static, since it is built through several calls to this
 		// After it's done building, it's reset to NULL
@@ -355,7 +355,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 		}
 
 		// Valid data?
-		if (validData) {
+		if (attach && validData) {
 			// Insert data
 			attach->AddData(data);
 
