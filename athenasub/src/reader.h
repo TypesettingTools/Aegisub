@@ -44,18 +44,20 @@ class wxFFileInputStream;
 namespace Athenasub {
 	class TextReader;
 
-	class Reader {
+	class CReader : public IReader {
 	private:
 		shared_ptr<TextReader> text;
 		String filename;
 		shared_ptr<wxFFileInputStream> stream;
 
 	public:
-		Reader(String filename,String encoding="");
-		~Reader();
+		CReader(String filename,String encoding="");
+		~CReader();
 
-		shared_ptr<TextReader> GetTextReader();
-		String GetFileName();
-		void Rewind();
+		virtual String GetFileName();
+		virtual void Rewind();
+		virtual bool HasMoreLines();
+		virtual String ReadLineFromFile();
+		virtual String GetCurrentEncoding();
 	};
 }

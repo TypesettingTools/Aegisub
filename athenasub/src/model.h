@@ -93,7 +93,7 @@ namespace Athenasub {
 		Format GetFormat() const { return format; }
 
 		void AddListener(View listener);
-		void Save(Writer &output,Format format=Format()) const;
+		void Save(Writer output,Format format=Format()) const;
 
 		ConstSection GetSection(String name) const;
 		ConstSection GetSectionByIndex(size_t index) const;

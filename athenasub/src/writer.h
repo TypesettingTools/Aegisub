@@ -45,15 +45,16 @@ class wxFFileOutputStream;
 namespace Athenasub {
 	class TextWriter;
 
-	class Writer {
+	class CWriter : public IWriter {
 	private:
 		shared_ptr<TextWriter> text;
 		shared_ptr<wxFFileOutputStream> stream;
 
 	public:
-		Writer(String filename,String encoding="");
-		~Writer();
+		CWriter(String filename,String encoding="");
+		~CWriter();
 
-		shared_ptr<TextWriter> GetTextWriter();
+		void WriteLineToFile(String line,bool addLineBreak=true);
+		void Flush();
 	};
 }

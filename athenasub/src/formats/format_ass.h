@@ -55,15 +55,15 @@ namespace Athenasub {
 
 		Entry MakeEntry(const String &data,Section section,int version);
 		void ProcessGroup(String cur,String &curGroup,int &version);
-		void WriteSection(shared_ptr<TextWriter> writer,ConstSection section) const;
+		void WriteSection(Writer writer,ConstSection section) const;
 		void MakeValid(IModel &model);
 
 	public:
 		FormatHandlerASS(int version);
 		~FormatHandlerASS();
 
-		void Load(IModel &model,Reader &file);
-		void Save(const IModel &model,Writer &file) const;
+		void Load(IModel &model,Reader file);
+		void Save(const IModel &model,Writer file) const;
 	};
 
 	// Advanced Substation Alpha format base class

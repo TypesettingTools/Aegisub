@@ -49,8 +49,6 @@ namespace Athenasub {
 
 	// Forward references
 	class Range;
-	class Reader;
-	class Writer;
 	class ISelection;
 	class IController;
 	class IView;
@@ -65,6 +63,8 @@ namespace Athenasub {
 	class ISection;
 	class IDeltaCoder;
 	class IAction;
+	class IReader;
+	class IWriter;
 
 
 	// Smart pointers
@@ -83,6 +83,8 @@ namespace Athenasub {
 	typedef shared_ptr<ISection> Section;
 	typedef shared_ptr<IDeltaCoder> DeltaCoder;
 	typedef shared_ptr<IAction> Action;
+	typedef shared_ptr<IReader> Reader;
+	typedef shared_ptr<IWriter> Writer;
 
 
 	// Const smart pointers
@@ -106,7 +108,7 @@ namespace Athenasub {
 		virtual Controller CreateController() = 0;
 		virtual void AddListener(View listener) = 0;
 
-		virtual void Save(Writer &output,Format format=Format()) const = 0;
+		virtual void Save(Writer output,Format format=Format()) const = 0;
 
 		virtual String GetUndoMessage(const String owner="") const = 0;
 		virtual String GetRedoMessage(const String owner="") const = 0;
@@ -118,15 +120,6 @@ namespace Athenasub {
 		virtual size_t GetSectionCount() const = 0;
 
 		virtual Format GetFormat() const = 0;
-	};
-
-
-	// View
-	class IView {
-	public:
-		virtual ~IView() {}
-
-		virtual void OnNotify(Notification notification) = 0;
 	};
 
 
@@ -155,6 +148,15 @@ namespace Athenasub {
 		virtual ConstEntry GetEntry(size_t n,String section) const = 0;
 
 		virtual const Format GetFormat() const = 0;
+	};
+
+
+	// View
+	class IView {
+	public:
+		virtual ~IView() {}
+
+		virtual void OnNotify(Notification notification) = 0;
 	};
 
 
@@ -308,8 +310,8 @@ namespace Athenasub {
 	public:
 		virtual ~IFormatHandler() {}
 
-		virtual void Load(IModel &model,Reader &file) = 0;
-		virtual void Save(const IModel &model,Writer &file) const = 0;
+		virtual void Load(IModel &model,Reader file) = 0;
+		virtual void Save(const IModel &model,Writer file) const = 0;
 	};
 
 
@@ -379,6 +381,29 @@ namespace Athenasub {
 		virtual VoidPtr EncodeDelta(VoidPtr from,VoidPtr to,bool withTextFields=true) const = 0;
 		virtual VoidPtr EncodeReverseDelta(VoidPtr delta,VoidPtr object) const = 0;
 		virtual void ApplyDelta(VoidPtr delta,VoidPtr object) const = 0;
+	};
+
+
+	// File reader
+	class IReader {
+	public:
+		virtual ~IReader() {}
+
+		virtual String GetFileName() = 0;
+		virtual void Rewind() = 0;
+
+		virtual bool HasMoreLines() = 0;
+		virtual String ReadLineFromFile() = 0;
+		virtual String GetCurrentEncoding() = 0;
+	};
+
+
+	// File writer
+	class IWriter {
+	public:
+		virtual ~IWriter() {}
+		virtual void WriteLineToFile(String line,bool addLineBreak=true) = 0;
+		virtual void Flush() = 0;
 	};
 
 

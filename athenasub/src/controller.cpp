@@ -63,7 +63,7 @@ ActionList CController::CreateActionList(const String title,const String owner,b
 // Load a file
 void CController::LoadFile(const String filename,const String encoding)
 {
-	Reader reader(filename,encoding);
+	Reader reader(new CReader(filename,encoding));
 	std::vector<Format> handlers = FormatManager::GetCompatibleFormatList(reader);
 	size_t len = handlers.size();
 	bool success = false;
@@ -89,7 +89,7 @@ void CController::LoadFile(const String filename,const String encoding)
 void CController::SaveFile(const String filename,const String encoding)
 {
 	Format handler = FormatManager::GetFormatFromFilename(filename,true);
-	Writer writer(filename,encoding);
+	Writer writer(new CWriter(filename,encoding));
 	model->Save(writer,handler);
 }
 

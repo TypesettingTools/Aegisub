@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\athenasub\test_formats.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\athenasub\test_string.cpp"
 				>
 			</File>

@@ -42,9 +42,10 @@
 using namespace Athenasub;
 
 
-////////
-// List
+///////////
+// Statics
 std::vector<Format> FormatManager::formats;
+bool FormatManager::formatsInitialized = false;
 
 
 ////////////////
@@ -66,9 +67,13 @@ void FormatManager::AddFormat(Format format)
 // Initialize all built-in formats
 void FormatManager::InitializeFormats()
 {
-	AddFormat(Format(new FormatASS()));
-	AddFormat(Format(new FormatSSA()));
-	AddFormat(Format(new FormatASS2()));
+	if (!formatsInitialized) {
+		AddFormat(Format(new FormatASS()));
+		AddFormat(Format(new FormatSSA()));
+		AddFormat(Format(new FormatASS2()));
+
+		formatsInitialized = true;
+	}
 }
 
 
@@ -77,6 +82,7 @@ void FormatManager::InitializeFormats()
 void FormatManager::ClearFormats()
 {
 	formats.clear();
+	formatsInitialized = false;
 }
 
 
@@ -133,14 +139,14 @@ Format FormatManager::GetFormatFromName(const String &name)
 
 ///////////////////////////////////////////////////////
 // Get a list of all formats compatible with this file
-std::vector<Format> FormatManager::GetCompatibleFormatList(Reader &reader)
+std::vector<Format> FormatManager::GetCompatibleFormatList(Reader reader)
 {
 	// Find all compatible formats and store them with their certainty
 	std::vector<std::pair<float,Format> > results;
 	size_t len = formats.size();
 	for (size_t i=0;i<len;i++) {
 		// Reset reader
-		reader.Rewind();
+		reader->Rewind();
 
 		// Check how certain it is that it can read the format
 		float certainty = formats[i]->CanReadFile(reader);
@@ -148,7 +154,7 @@ std::vector<Format> FormatManager::GetCompatibleFormatList(Reader &reader)
 		// Compare to extension
 		StringArray exts = formats[i]->GetReadExtensions();
 		for (size_t j=0;j<exts.size();j++) {
-			if (reader.GetFileName().EndsWith(exts[j],false)) {
+			if (reader->GetFileName().EndsWith(exts[j],false)) {
 				certainty *= 2.0f;
 				break;
 			}
@@ -176,6 +182,14 @@ std::vector<Format> FormatManager::GetCompatibleFormatList(Reader &reader)
 	}
 
 	// Reset reader again and return results
-	reader.Rewind();
+	reader->Rewind();
 	return finalResults;
+}
+
+
+//////////////////////////////////////
+// Same as above, but from a filename
+std::vector<Format> FormatManager::GetCompatibleFormatList(const String &filename,const String &encoding)
+{
+	return GetCompatibleFormatList(Reader(new CReader(filename,encoding)));
 }

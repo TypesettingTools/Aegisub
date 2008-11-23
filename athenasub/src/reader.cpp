@@ -40,30 +40,40 @@
 using namespace Athenasub;
 
 
-Reader::Reader(String fn,String encoding)
+CReader::CReader(String fn,String encoding)
 : filename(fn)
 {
 	stream = shared_ptr<wxFFileInputStream>(new wxFFileInputStream(filename.GetWxString()));
 	text = TextReader::GetReader(*stream,encoding);
 }
 
-shared_ptr<TextReader> Athenasub::Reader::GetTextReader()
-{
-	return text;
-}
-
-Athenasub::String Athenasub::Reader::GetFileName()
+String CReader::GetFileName()
 {
 	return filename;
 }
 
-Athenasub::Reader::~Reader()
+CReader::~CReader()
 {
 	text = shared_ptr<TextReader>();
 	stream = shared_ptr<wxFFileInputStream>();
 }
 
-void Reader::Rewind()
+void CReader::Rewind()
 {
 	text->Rewind();
+}
+
+bool CReader::HasMoreLines()
+{
+	return text->HasMoreLines();
+}
+
+String CReader::ReadLineFromFile()
+{
+	return text->ReadLineFromFile();
+}
+
+String CReader::GetCurrentEncoding()
+{
+	THROW_ATHENA_EXCEPTION(Exception::TODO);
 }

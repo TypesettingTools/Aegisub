@@ -93,10 +93,8 @@ StringArray FormatASS2::GetWriteExtensions() const
 
 //////////////////////////////////
 // Check if it can read this file
-float FormatASSFamily::CanReadFile(Reader &reader) const
+float FormatASSFamily::CanReadFile(Reader &file) const
 {
-	shared_ptr<TextReader> file = reader.GetTextReader();
-
 	// Check header
 	if (!file->HasMoreLines()) return 0.0f;
 	String line = file->ReadLineFromFile();
@@ -106,7 +104,7 @@ float FormatASSFamily::CanReadFile(Reader &reader) const
 	float version = 0.0f;
 	float sections = 0.25f;
 	String section = line;
-	while (file->HasMoreLines()) {
+	for (int i=0; i < 100 && file->HasMoreLines(); i++) {
 		// Get line
 		line = file->ReadLineFromFile();
 		line.AsciiMakeLower();
@@ -116,7 +114,7 @@ float FormatASSFamily::CanReadFile(Reader &reader) const
 
 		// Check version
 		if (section == "[script info]") {
-			if (line.StartsWith("ScriptType")) {
+			if (line.StartsWith("scripttype")) {
 				int formatVersion = GetVersion();
 				String expected = "";
 				switch (formatVersion) {
@@ -158,11 +156,8 @@ FormatHandlerASS::~FormatHandlerASS()
 
 ///////////////
 // Load a file
-void FormatHandlerASS::Load(IModel &model,Reader &file)
+void FormatHandlerASS::Load(IModel &model,Reader reader)
 {
-	// Get text file reader
-	shared_ptr<TextReader> reader = file.GetTextReader();
-
 	// Variables
 	int version = 1;
 	String curGroup = "-";
@@ -201,11 +196,8 @@ void FormatHandlerASS::Load(IModel &model,Reader &file)
 
 /////////////////////
 // Save file to disc
-void FormatHandlerASS::Save(const IModel& model,Writer &file) const
+void FormatHandlerASS::Save(const IModel& model,Writer writer) const
 {
-	// Make text file writer
-	shared_ptr<TextWriter> writer = file.GetTextWriter();
-
 	// Set up list of sections to write
 	StringArray sections;
 	sections.push_back("Script Info");
@@ -389,7 +381,7 @@ void FormatHandlerASS::ProcessGroup(String cur,String &curGroup,int &version) {
 
 ///////////////////////////////
 // Write a section to the file
-void FormatHandlerASS::WriteSection(shared_ptr<TextWriter> writer,ConstSection section) const
+void FormatHandlerASS::WriteSection(Writer writer,ConstSection section) const
 {
 	// Write name
 	String name = section->GetName();

@@ -55,8 +55,8 @@ namespace Athenasub {
 	public:
 		//CFormatHandler(IModel& _model) : model(_model) {}
 
-		virtual void Load(IModel &model,Reader &file) = 0;
-		virtual void Save(const IModel &model,Writer &file) const = 0;
+		virtual void Load(IModel &model,Reader file) = 0;
+		virtual void Save(const IModel &model,Writer file) const = 0;
 	};
 
 }

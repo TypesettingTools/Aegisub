@@ -33,32 +33,53 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include "../suites.h"
+#include "../utils.h"
+#if ATHENASUB_TEST == 1
 
-#include "writer.h"
-#include "text_writer.h"
-#include <wx/wfstream.h>
+#include <iostream>
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include "athenasub/athenasub.h"
+#include "format_manager.h"
 using namespace Athenasub;
 
 
-CWriter::CWriter(String filename,String encoding)
-{
-	stream = shared_ptr<wxFFileOutputStream>(new wxFFileOutputStream(filename.GetWxString()));
-	text = TextWriter::GetWriter(*stream,encoding);
-}
+class AthenasubFormatsTest : public CppUnit::TestFixture {
+	CPPUNIT_TEST_SUITE(AthenasubFormatsTest);
+	CPPUNIT_TEST(testIdentifyFormat);
+	CPPUNIT_TEST_SUITE_END();
 
+private:
+	String getFormatName(String file)
+	{
+		String fileFolder = "test_files/";
+		std::vector<Format> formats = FormatManager::GetCompatibleFormatList(fileFolder+file,"UTF-8");
+		if (formats.size() == 0) return "";
+		return formats[0]->GetName();
+	}
 
-CWriter::~CWriter()
-{
-	text = shared_ptr<TextWriter>();
-	stream = shared_ptr<wxFFileOutputStream>();
-}
+public:
+	void setUp()
+	{
+	}
 
-void CWriter::WriteLineToFile(String line,bool addLineBreak)
-{
-	text->WriteLineToFile(line,addLineBreak);
-}
+	void tearDown()
+	{
+	}
 
-void CWriter::Flush()
-{
-	text->Flush();
-}
+	void testIdentifyFormat()
+	{
+		std::vector<Format> formats;
+		CPPUNIT_ASSERT_NO_THROW(FormatManager::InitializeFormats());
+
+		CPPUNIT_ASSERT(getFormatName("format_ssa.ssa") == "Substation Alpha");
+		CPPUNIT_ASSERT(getFormatName("format_ass.ass") == "Advanced Substation Alpha");
+		CPPUNIT_ASSERT(getFormatName("format_ass2.ass") == "Advanced Substation Alpha 2");
+		//CPPUNIT_ASSERT(getFormatName("format_srt.srt") == "SubRip Text");
+	}
+};
+
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(AthenasubFormatsTest,AegisubSuites::athenasub());
+
+#endif

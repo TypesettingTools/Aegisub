@@ -136,7 +136,7 @@ void CModel::Load(Reader &input,const Format _format)
 
 //////////////////
 // Save subtitles
-void CModel::Save(Writer &output,const Format _format) const
+void CModel::Save(Writer output,const Format _format) const
 {
 	// Use another format
 	if (_format && _format != format) {
