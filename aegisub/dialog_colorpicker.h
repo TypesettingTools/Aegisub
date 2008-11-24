@@ -64,7 +64,7 @@ private:
 	void OnMouse(wxMouseEvent &evt);
 
 public:
-	ColorPickerSpectrum(wxWindow *parent, wxWindowID id, wxBitmap *_background, int xx, int yy, PickerDirection _direction);
+	ColorPickerSpectrum(wxWindow *parent, wxWindowID id, wxBitmap *_background, int xx, int yy, PickerDirection _direction, wxSize _size);
 
 	void GetXY(int &xx, int &yy);
 	void SetXY(int xx, int yy);
