@@ -104,6 +104,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 	samples = 0;
 	hasFocus = (wxWindow::FindFocus() == this);
 	needImageUpdate = false;
+	needImageUpdateWeak = true;
 
 	// Init
 	UpdateTimer.SetOwner(this,Audio_Update_Timer);
@@ -165,7 +166,9 @@ void AudioDisplay::UpdateImage(bool weak) {
 
 	// Set image as needing to be redrawn
 	needImageUpdate = true;
-	if (needImageUpdateWeak) needImageUpdateWeak = weak;
+	if (weak == false && needImageUpdateWeak == true) {
+		needImageUpdateWeak = false;
+	}
 	Refresh(false);
 }
 
@@ -385,7 +388,7 @@ void AudioDisplay::DoUpdateImage() {
 
 	// Done
 	needImageUpdate = false;
-	needImageUpdateWeak = false;
+	needImageUpdateWeak = true;
 }
 
 
