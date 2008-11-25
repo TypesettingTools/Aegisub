@@ -102,6 +102,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 	player = NULL;
 	hold = 0;
 	samples = 0;
+	samplesPercent = 100;
 	hasFocus = (wxWindow::FindFocus() == this);
 	needImageUpdate = false;
 	needImageUpdateWeak = true;
