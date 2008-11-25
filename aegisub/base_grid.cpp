@@ -62,6 +62,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	extendRow = -1;
 	bmp = NULL;
 	holding = false;
+	byFrame = false;
 
 	// Set scrollbar
 	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);

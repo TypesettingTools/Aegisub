@@ -53,6 +53,9 @@
 VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 : wxWindow (parent,id,wxDefaultPosition,wxDefaultSize,wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
 {
+	val = 0;
+	min = 0;
+	max = 1;
 	Display = NULL;
 	SetClientSize(20,25);
 	locked = false;
