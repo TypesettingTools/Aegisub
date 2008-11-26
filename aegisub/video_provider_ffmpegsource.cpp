@@ -219,7 +219,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	// this is what we'll return eventually
 	AegiVideoFrame &DstFrame = CurFrame;
 	
-	bool big_endian = Endian::BigToMachine((int)1)==(int)1;
+	bool big_endian = Endian::BigToMachine((unsigned int)1)==(unsigned int)1;
 
 	// choose output format
 	if (FormatType & FORMAT_RGB32 && big_endian) {
