@@ -40,6 +40,7 @@
 #include "video_provider_ffmpegsource.h"
 #include "video_context.h"
 #include "options.h"
+#include "aegisub_endian.h"
 
 
 ///////////////
@@ -217,13 +218,18 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 
 	// this is what we'll return eventually
 	AegiVideoFrame &DstFrame = CurFrame;
+	
+	bool big_endian = Endian::BigToMachine((int)1)==(int)1;
 
 	// choose output format
-	if (FormatType & FORMAT_RGB32) {
+	if (FormatType & FORMAT_RGB32 && big_endian) {
+		DstFormat		= FFMS_PIX_FMT_BGR32_1;
+		DstFrame.format	= FORMAT_RGB32;
+	} else if (FormatType & FORMAT_RGB32 && !big_endian) {
 		DstFormat		= FFMS_PIX_FMT_RGB32;
 		DstFrame.format	= FORMAT_RGB32;
 	} else if (FormatType & FORMAT_RGB24) {
-		DstFormat		= FFMS_PIX_FMT_RGB24;
+		DstFormat		= FFMS_PIX_FMT_BGR24;
 		DstFrame.format	= FORMAT_RGB24;
 	} else if (FormatType & FORMAT_YV12) {
 		DstFormat		= FFMS_PIX_FMT_YUV420P; // may or may not work

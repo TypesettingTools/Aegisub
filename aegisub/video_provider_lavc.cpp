@@ -283,7 +283,7 @@ const AegiVideoFrame LAVCVideoProvider::GetFrame(int n,int formatType) {
 		int w = codecContext->width;
 		int h = codecContext->height;
 		PixelFormat srcFormat = codecContext->pix_fmt;
-		PixelFormat dstFormat = PIX_FMT_RGB32;
+		PixelFormat dstFormat = PIX_FMT_BGRA;
 
 		// Allocate RGB32 buffer
 		if(!sws_context) //first frame
