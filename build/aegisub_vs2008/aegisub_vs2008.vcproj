@@ -511,6 +511,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\aegisub\audio_player_dsound2.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\audio_player_dsound2.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\aegisub\audio_player_manager.h"
 				>
 			</File>

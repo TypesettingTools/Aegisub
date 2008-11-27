@@ -147,6 +147,7 @@ EXTRA_aegisub_SOURCES = \
 	font_file_lister.cpp \
 	$(FONT_LISTER) \
 	audio_player_dsound.cpp \
+	audio_player_dsound2.cpp \
 	audio_player_portaudio.cpp \
 	audio_player_pulse.cpp \
 	audio_provider_avs.cpp \

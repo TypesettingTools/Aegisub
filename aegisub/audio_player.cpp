@@ -44,6 +44,7 @@
 #endif
 #ifdef WITH_DIRECTSOUND
 #include "audio_player_dsound.h"
+#include "audio_player_dsound2.h"
 #endif
 #ifdef WITH_OPENAL
 #include "audio_player_openal.h"
@@ -157,7 +158,8 @@ void AudioPlayerFactoryManager::RegisterProviders() {
 	RegisterFactory(new AlsaPlayerFactory(),_T("ALSA"));
 #endif
 #ifdef WITH_DIRECTSOUND
-	RegisterFactory(new DirectSoundPlayerFactory(),_T("DirectSound"));
+	RegisterFactory(new DirectSoundPlayerFactory(),_T("DirectSound-old"));
+	RegisterFactory(new DirectSoundPlayer2Factory(),_T("DirectSound"));
 #endif
 #ifdef WITH_OPENAL
 	RegisterFactory(new OpenALPlayerFactory(),_T("OpenAL"));

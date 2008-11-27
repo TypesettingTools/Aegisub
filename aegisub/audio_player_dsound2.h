@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2007, Rodrigo Braz Monteiro
+// Copyright (c) 2008, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,74 +29,49 @@
 //
 // AEGISUB
 //
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Website: http://www.aegisub.net/
+// Contact: mailto:jiifurusu@gmail.com
 //
 
 
-#pragma once
+#ifdef WITH_DIRECTSOUND
 
-
-///////////
-// Headers
 #include <wx/wxprec.h>
-#include <wx/event.h>
-#include <wx/timer.h>
-#include <wx/thread.h>
-#include "aegisub.h"
+#include "include/aegisub/audio_player.h"
 
 
-//////////////
-// Prototypes
-class AudioProvider;
+class DirectSoundPlayer2Thread;
 
-
-///////////////////////////
-// Audio Player base class
-class AudioPlayer : public wxEvtHandler {
-private:
-	void OnStopAudio(wxCommandEvent &event);
-
-protected:
-	AudioProvider *provider;
-	wxTimer *displayTimer;
+class DirectSoundPlayer2 : public AudioPlayer {
+	DirectSoundPlayer2Thread *thread;
 
 public:
-	AudioPlayer();
-	virtual ~AudioPlayer();
+	DirectSoundPlayer2();
+	~DirectSoundPlayer2();
 
-	virtual void OpenStream() {}
-	virtual void CloseStream() {}
+	void OpenStream();
+	void CloseStream();
 
-	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
-	virtual void Stop(bool timerToo=true)=0;			// Stop playing
-	virtual void RequestStop();							// Request it to stop playing in a thread-safe way
-	virtual bool IsPlaying()=0;
+	void SetProvider(AudioProvider *provider);
 
-	virtual void SetVolume(double volume)=0;
-	virtual double GetVolume()=0;
+	void Play(int64_t start,int64_t count);
+	void Stop(bool timerToo=true);
+	bool IsPlaying();
 
-	virtual int64_t GetStartPosition()=0;
-	virtual int64_t GetEndPosition()=0;
-	virtual int64_t GetCurrentPosition()=0;
-	virtual void SetEndPosition(int64_t pos)=0;
-	virtual void SetCurrentPosition(int64_t pos)=0;
+	int64_t GetStartPosition();
+	int64_t GetEndPosition();
+	int64_t GetCurrentPosition();
+	void SetEndPosition(int64_t pos);
+	void SetCurrentPosition(int64_t pos);
 
-	virtual wxMutex *GetMutex();
-
-	virtual void SetProvider(AudioProvider *provider);
-	AudioProvider *GetProvider();
-
-	void SetDisplayTimer(wxTimer *timer);
-
-	DECLARE_EVENT_TABLE()
+	void SetVolume(double vol);
+	double GetVolume();
 };
 
 
-///////////
-// Factory
-class AudioPlayerFactory {
+class DirectSoundPlayer2Factory : public AudioPlayerFactory {
 public:
-	virtual ~AudioPlayerFactory() {}
-	virtual AudioPlayer *CreatePlayer()=0;
+	AudioPlayer *CreatePlayer() { return new DirectSoundPlayer2(); }
 };
+
+#endif
