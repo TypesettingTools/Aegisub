@@ -207,7 +207,7 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_with_opengl" = "no"; then
+if test "$agi_cv_with_opengl" = "no"; then
 	AC_MSG_FAILURE([Please install a working OpenGL library.])
 fi
 
@@ -217,7 +217,7 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_with_openglu" = "no" && test "$build_darwin" != "yes"; then
+if test "$agi_cv_with_openglu" = "no" && test "$build_darwin" != "yes"; then
 	AC_MSG_FAILURE([Please install a working OpenGL GLU library.])
 fi
 
@@ -238,7 +238,7 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_with_freetype" = "no"; then
+if test "$agi_cv_with_freetype" = "no"; then
     AC_MSG_FAILURE([Please install a working Freetype library.])
 fi
 
@@ -262,7 +262,7 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_with_fontconfig" = "no"; then
+if test "$agi_cv_with_fontconfig" = "no"; then
     AC_MSG_FAILURE([Please install a working Fontconfig library.])
 fi
 
@@ -344,7 +344,7 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_with_portaudio" = "no" && test "$with_portaudio" = "yes"; then
+if test "$agi_cv_with_portaudio" = "no" && test "$with_portaudio" = "yes"; then
   AC_MSG_WARN([PortAudio detected, but it doesn't work...])
   with_portaudio="no"
 fi
@@ -375,7 +375,7 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_with_pulseaudio" = "no" && test "$with_pulseaudio" = "yes"; then
+if test "$agi_cv_with_pulseaudio" = "no" && test "$with_pulseaudio" = "yes"; then
   AC_MSG_WARN([PulseAudio detected, but it doesn't work...])
   with_pulseaudio="no"
 fi
@@ -410,7 +410,7 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_with_openal" = "no" && test "$with_openal" = "yes"; then
+if test "$agi_cv_with_openal" = "no" && test "$with_openal" = "yes"; then
   AC_MSG_WARN([OpenAL detected, but it doesn't work...])
   with_openal="no"
 fi
@@ -499,7 +499,7 @@ AM_CONDITIONAL([HAVE_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"]
 AC_ARG_ENABLE(libass, [  --disable-libass        disable libass support (default=enabled)],libass_disabled="(disabled)")
 
 if test "$enable_libass" != "no"; then
-  if test "$agi_with_iconv" = "yes"; then
+  if test "$agi_cv_with_iconv" = "yes"; then
     LIBASS_LIBS="-L../libass -lass_aegisub"
     LIBASS_CFLAGS="-I../libass"
     with_libass="yes"
@@ -555,7 +555,7 @@ int main(void) {
 }  ])
 fi
 
-if test "$agi_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
+if test "$agi_cv_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
   AC_MSG_WARN([Hunspell detected, but it doesn't work...])
 fi
 
@@ -623,7 +623,7 @@ int main () {
 fi
 LIBS="$aegisub_save_LIBS"
 
-if test "$agi_with_lua" = "yes"; then
+if test "$agi_cv_with_lua" = "yes"; then
   with_auto4="yes"
   with_automation="yes"
   AC_DEFINE(WITH_AUTO4_LUA, 1, [Enable Automation (auto4), requires lua])
@@ -670,7 +670,7 @@ int main() {
 }])
 fi
 
-if test "$agi_with_lua50" = "yes"; then
+if test "$agi_cv_with_lua50" = "yes"; then
   with_auto3="yes"
   with_automation="yes"
   AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
@@ -705,10 +705,10 @@ if test -z "$perl_disabled"; then
 
   if test "$PERL_BIN" != "no"; then
     AC_CACHE_CHECK(
-      [checking for perl version >= 5.004], [with_perl],
-      [if $PERL_BIN -e 'require 5.004'; then with_perl="yes"; else with_perl="no"; fi])
+      [checking for perl version >= 5.004], [with_cv_perl],
+      [if $PERL_BIN -e 'require 5.004'; then with_cv_perl="yes"; else with_cv_perl="no"; fi])
 
-    if test "$with_perl" = "yes"; then
+    if test "$with_cv_perl" = "yes"; then
       AC_MSG_CHECKING([$PERL_BIN cflags])
       if test -z "$PERL_CFLAGS"; then
         PERL_CFLAGS=`$PERL_BIN -MExtUtils::Embed -eccflags -eperl_inc`
@@ -735,12 +735,12 @@ int main(int argc, char **argv) {
   fi
 fi
 
-if test "$agi_with_perl" = "no" && test "$with_perl" = "yes"; then
+if test "$agi_cv_with_cv_perl" = "no" && test "$with_cv_perl" = "yes"; then
   AC_MSG_WARN([Perl detected, but it doesn't work...])
-  with_perl="no"
+  with_cv_perl="no"
 fi
 
-if test "$with_perl" = "yes"; then
+if test "$with_cv_perl" = "yes"; then
   with_automation="yes"
   AC_DEFINE(WITH_PERL, 1, [Enable PERL support.])
 fi
@@ -748,7 +748,7 @@ fi
 AC_SUBST(PERL_CFLAGS)
 AC_SUBST(PERL_LDFLAGS)
 
-AM_CONDITIONAL([HAVE_AUTO4_PERL], [test "$with_perl" != "no"])
+AM_CONDITIONAL([HAVE_AUTO4_PERL], [test "$with_cv_perl" != "no"])
 
 
 
@@ -771,11 +771,11 @@ if test -z "$ruby_disabled"; then
 
   if test "$RUBY_BIN" != "no"; then
     AC_CACHE_CHECK(
-      [checking for ruby version >= 1.8], [with_ruby],
+      [checking for ruby version >= 1.8], [with_cv_ruby],
       [if $RUBY_BIN -r rbconfig -e 'if Config::CONFIG@<:@"ruby_version"@:>@.to_f >= 1.8  then exit(0) else exit(1) end'; then
-        with_ruby="yes"; else with_ruby="no"; fi])
+        with_cv_ruby="yes"; else with_cv_ruby="no"; fi])
 
-    if test "$with_ruby" = "yes"; then
+    if test "$with_cv_ruby" = "yes"; then
       AC_MSG_CHECKING([checking $RUBY_BIN -r rbconfig archdir, cflags])
       if test -z "$RUBY_CFLAGS"; then
         RUBY_CFLAGS=`$RUBY_BIN -r rbconfig -e "printf(\"-I%s %s\", Config::CONFIG@<:@'archdir'@:>@, Config::CONFIG@<:@'CFLAGS'@:>@)"`
@@ -800,19 +800,19 @@ int main(void) {
   fi
 fi
 
-if test "$agi_with_ruby" = "no" && test "$with_ruby" = "yes"; then
+if test "$agi_cv_with_cv_ruby" = "no" && test "$with_cv_ruby" = "yes"; then
   AC_MSG_WARN([Ruby detected, but it doesn't work...])
-  with_ruby="no"
+  with_cv_ruby="no"
 fi
 
-if test "$with_ruby" = "yes"; then
+if test "$with_cv_ruby" = "yes"; then
   with_automation="yes"
   AC_DEFINE(WITH_RUBY, 1, [Enable RUBY Automation.])
 fi
 
 AC_SUBST(RUBY_CFLAGS)
 AC_SUBST(RUBY_LDFLAGS)
-AM_CONDITIONAL([HAVE_AUTO4_RUBY], [test "$with_ruby" != "no"])
+AM_CONDITIONAL([HAVE_AUTO4_RUBY], [test "$with_cv_ruby" != "no"])
 
 
 # Automation setup
@@ -850,7 +850,7 @@ int main(void) {
 } ])
 fi
 
-if test "$with_agi_wxopengl" = "no" || test "$enable_check-wx-opengl" = "no"; then
+if test "$with_agi_cv_wxopengl" = "no" || test "$enable_check-wx-opengl" = "no"; then
   AC_MSG_FAILURE([wxWidgets OpenGL support missing])
 fi
 
@@ -866,7 +866,7 @@ int main(void) {
 } ])
 fi
 
-if test "$with_agi_wxstc" = "no" || test "$enable_check-wx-stc" = "yes"; then
+if test "$with_agi_cv_wxstc" = "no" || test "$enable_check-wx-stc" = "yes"; then
   AC_MSG_FAILURE([wxWidgets StyledTextCtrl support missing])
 fi
 
@@ -937,8 +937,8 @@ AC_MSG_RESULT([
 Scripting Engines:
   auto3 Lua:             $with_auto3 $lua50_disabled
   auto4 Lua:             $with_auto4 $lua51_disabled
-  auto4 Perl:            $with_perl $perl_disabled
-  auto4 Ruby:            $with_ruby $ruby_disabled
+  auto4 Perl:            $with_cv_perl $perl_disabled
+  auto4 Ruby:            $with_cv_ruby $ruby_disabled
 
 Audio Players:
   ALSA:                  $with_alsa $alsa_disabled
