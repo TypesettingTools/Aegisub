@@ -3,9 +3,10 @@ AC_PREREQ(2.57)
 ######################
 # aegisub version info
 ######################
-m4_define([aegisub_major_version], [2])
-m4_define([aegisub_minor_version], [1])
-m4_define([aegisub_version], [aegisub_major_version.aegisub_minor_version-dev])
+m4_define([aegisub_version_major], [2])
+m4_define([aegisub_version_minor], [1])
+m4_define([aegisub_version_revision], [6])
+m4_define([aegisub_version], [aegisub_version_major.aegisub_version_minor.aegisub_version_revision-dev])
 
 
 ###################
