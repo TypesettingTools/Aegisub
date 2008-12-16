@@ -451,11 +451,6 @@ if test "$with_ffmpeg" != "no"; then
   if test "$with_swscale" = "no" && test "$with_swscale_lib" = "no"; then
     with_ffmpeg="no";
   fi
-
-  if test "$with_ffmpeg" = "yes"; then
-    found_video_provider="yes"
-    AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
-  fi
 fi
 
 AC_SUBST(SWSCALE_LDFLAGS)
@@ -466,7 +461,11 @@ AC_SUBST(AVUTIL_LDFLAGS)
 
 AC_ARG_WITH(provider-ffmpeg, [  --without-provider-ffmpeg        build without FFMPEG A/V provider. (default: auto)], ffmpeg_provider_disabled="(disabled)")
 
-AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
+if test "$with_ffmpeg" = "yes"; then
+  found_video_provider="yes"
+  with_provider_ffmpeg="yes"
+  AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
+fi
 
 if test "$with_ffmpeg" = "no"; then
   with_provider_ffmpegsource="no"
@@ -474,6 +473,8 @@ if test "$with_ffmpeg" = "no"; then
   ffmpegsource_provider_disabled="(disabled, requires FFMPEG)"
   ffmpeg_provider_disabled="(disabled, requires FFMPEG)"
 fi
+
+AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
 
 AC_ARG_WITH(provider-ffmpegsource, [  --without-provider-ffmpegsource        build without FFmpegSource A/V provider. (default: auto)], ffmpegsource_provider_disabled="(disabled)")
 
