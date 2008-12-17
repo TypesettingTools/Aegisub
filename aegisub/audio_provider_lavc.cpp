@@ -223,18 +223,19 @@ void LAVCAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 				int retval, decoded_bytes, decoded_samples;
 			
 				retval = avcodec_decode_audio2(codecContext, buffer, &temp_output_buffer_size, data, size);
-				if (retval <= 0)
-					throw _T("ffmpeg audio provider: failed to decode audio");
-				/* decoding succeeded but the output buffer is empty, go to next packet */
-				if (temp_output_buffer_size == 0) {
-					av_free_packet(&packet);
+				/* decoding failed, skip this packet and hope next one doesn't fail too */
+				if (retval < 0)
+					break;
+					/* throw _T("ffmpeg audio provider: failed to decode audio"); */
+
+				size -= retval;
+				data += retval;
+				/* decoding succeeded but this audio frame is empty, continue to next frame */
+				if (temp_output_buffer_size <= 0)
 					continue;
-				}
 
 				decoded_bytes	= temp_output_buffer_size;
 				decoded_samples = decoded_bytes / bytes_per_sample; /* FIXME: stop assuming everything is 16-bit! */
-				size -= retval;
-				data += retval;
 
 				/* do we need to resample? */
 				if (rsct) {
