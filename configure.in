@@ -62,6 +62,8 @@ case "$target_or_host" in
     ;;
 esac
 
+AC_AGI_MDCPUCFG($target_or_host)
+
 AM_CONDITIONAL([BUILD_DARWIN], [test "$build_darwin" = "yes"])
 AM_CONDITIONAL([BUILD_DEFAULT], [test "$build_default" = "yes"])
 
