@@ -805,7 +805,7 @@ void FrameMain::OnCloseVFR(wxCommandEvent &event) {
 void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 	// Pick file
 	wxString path = Options.AsText(_T("Last open keyframes path"));
-	wxString filename = wxFileSelector(_T("Select the keyframes file to open"),path,_T(""),_T(".txt"),_T("All supported formats (*.txt, *.pass, *.log)|*.txt;*.pass;*.log|All files (*.*)|*.*"),wxFD_FILE_MUST_EXIST | wxFD_OPEN);
+	wxString filename = wxFileSelector(_T("Select the keyframes file to open"),path,_T(""),_T(".txt"),_T("All supported formats (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|All files (*.*)|*.*"),wxFD_FILE_MUST_EXIST | wxFD_OPEN);
 	if (filename.IsEmpty()) return;
 	Options.SetText(_T("Last open keyframes path"),filename);
 	Options.Save();
