@@ -92,6 +92,7 @@ DestDir: {app}; Source: ..\bin\Aegisub.pdb; Flags: ignoreversion; Components: ma
 DestDir: {app}; Source: ..\aegisub\changelog.txt; Flags: ignoreversion; Tasks: ; Components: main
 DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
 DestDir: {app}; Source: ..\bin\aegisub-auto3.dll; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: ..\bin\OpenAL32.dll; Flags: ignoreversion; Components: main
 ; avisynth
 DestDir: {app}; Source: ..\bin\devil.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\bin\avisynth.dll; Flags: ignoreversion; Components: codec
