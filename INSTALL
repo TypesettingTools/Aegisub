@@ -1,7 +1,2 @@
-* The autogen.sh script is basic and might not work.
-* There are many relative #include lines that need to be wrapped still,
-  you should edit the files by hand and remove the paths.
-* If auto4 doesn't get picked up supply the --with-lua* flags.
-* Read the README file.
-* This is incomplete (just like this documentation!)
+* To be written.
 
