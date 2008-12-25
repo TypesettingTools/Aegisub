@@ -262,6 +262,7 @@ fi
 # XXX: This is a kludge until I sort out the config/includes situation.
 touch ${srcdir}/aegisub/posix/config.h
 
+echo "--- Converting BMP resource files -> XPM ---"
 # BMP -> XPM via src/res.rc
 cat ${srcdir}/aegisub/res.rc | ${BIN_AWK} -f ${srcdir}/aegisub/bitmaps/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
 cd ${srcdir}/aegisub/bitmaps
@@ -272,6 +273,7 @@ awk '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST= \\\n	wxico
   ${srcdir}/aegisub/res.rc \
   > ${srcdir}/aegisub/bitmaps/Makefile.am
 
+echo "--- Generating res.cpp / res.h from res.rc ---"
 # XXX: This needs replacing.
 cd ${srcdir}/aegisub/posix
 sh genres.sh ${srcdir}/aegisub/res.rc
@@ -327,4 +329,4 @@ if test $RC -ne 0; then
   exit $RC
 fi
 
-echo "Now type 'make' to compile the $PROJECT."
+echo "Now type 'make' to compile $PROJECT."
