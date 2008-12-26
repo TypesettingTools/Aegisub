@@ -5,6 +5,8 @@
 ####
 # Usage: unicodereplace.pl infile outfile
 #############################
+# oneliner version:
+# perl -C7 -ne'print map {$c=ord; ($c < 127 or $c == 0xFEFF or $c == 0xFFFE) ? $_ : sprintf "\\u%04x", $c} split //;' infile > outfile
 
 use warnings;
 use strict;
