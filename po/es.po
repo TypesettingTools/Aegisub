@@ -1229,9 +1229,8 @@ msgid "File paths"
 msgstr "Rutas de archivo"
 
 #: dialog_options.cpp:148
-#, fuzzy
 msgid "Miscellanea"
-msgstr "Miscelaneos"
+msgstr "Misceláneos"
 
 #: dialog_options.cpp:152
 msgid "Auto-backup"
@@ -2367,9 +2366,8 @@ msgid "Outline"
 msgstr "Contorno"
 
 #: dialog_style_editor.cpp:138
-#, fuzzy
 msgid "Miscellaneous"
-msgstr "Miscelaneos"
+msgstr "Misceláneos"
 
 #: dialog_style_editor.cpp:139
 msgid "Preview"
@@ -2793,9 +2791,8 @@ msgstr "Teclas"
 
 #: dialog_styling_assistant.cpp:86
 #: dialog_translation.cpp:120
-#, fuzzy
 msgid "Actions"
-msgstr "Acción"
+msgstr "Acciones"
 
 #: dialog_styling_assistant.cpp:94
 #: dialog_translation.cpp:100
@@ -2821,9 +2818,8 @@ msgstr "Línea siguiente"
 #: dialog_styling_assistant.cpp:116
 #: dialog_translation.cpp:110
 #: dialog_translation.cpp:121
-#, fuzzy
 msgid "Play Video"
-msgstr "Reproducir audio"
+msgstr "Reproducir video"
 
 #: dialog_styling_assistant.cpp:104
 #: dialog_styling_assistant.cpp:117
@@ -2902,7 +2898,6 @@ msgid "Enable adding of lead-ins to lines."
 msgstr "Activar adición de introducciones a las líneas."
 
 #: dialog_timing_processor.cpp:92
-#, fuzzy
 msgid "Lead in to be added, in milliseconds."
 msgstr "Introducción a ser añadida, en milisegundos."
 
@@ -2915,9 +2910,8 @@ msgid "Enable adding of lead-outs to lines."
 msgstr "Activar añadido de cierres a las líneas."
 
 #: dialog_timing_processor.cpp:97
-#, fuzzy
 msgid "Lead out to be added, in milliseconds."
-msgstr "Cierre a ser aladido, en milisegundos."
+msgstr "Cierre a ser añadido, en milisegundos."
 
 #: dialog_timing_processor.cpp:105
 msgid "Make adjacent subtitles continuous"
@@ -2937,7 +2931,6 @@ msgid "Threshold:"
 msgstr "Umbral:"
 
 #: dialog_timing_processor.cpp:111
-#, fuzzy
 msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
 msgstr "Diferencia máxima entre el tiempo de inicio y cierre de dos subtítulos para que sean continuos, en milisegundos."
 
@@ -3106,7 +3099,7 @@ msgstr "asistente de traducción"
 
 #: dialog_translation.cpp:341
 msgid "No more lines to translate."
-msgstr ""
+msgstr "No hay mas líneas que traducir."
 
 #: dialog_version_check.cpp:58
 msgid "Version Checker"
@@ -3216,11 +3209,11 @@ msgstr "Salida:"
 
 #: ffmpegsource_common.cpp:67
 msgid "Indexing"
-msgstr ""
+msgstr "Indexando"
 
 #: ffmpegsource_common.cpp:67
 msgid "Reading timecodes and frame/sample data"
-msgstr ""
+msgstr "Leyendo códigos de tiempo y datos de cuadro/muestra"
 
 #: frame_main.cpp:179
 msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
@@ -4640,14 +4633,12 @@ msgid "Audio Medusa Enter"
 msgstr "Audio Medusa - Entrar"
 
 #: hotkeys.cpp:426
-#, fuzzy
 msgid "Translation Assistant Play Audio"
-msgstr "Asistente de traducción - Reproducir"
+msgstr "Asistente de traducción - Reproducir audio"
 
 #: hotkeys.cpp:427
-#, fuzzy
 msgid "Translation Assistant Play Video"
-msgstr "Asistente de traducción - Reproducir"
+msgstr "Asistente de traducción - Reproducir video"
 
 #: hotkeys.cpp:428
 msgid "Translation Assistant Next"
@@ -4670,14 +4661,12 @@ msgid "Translation Assistant Insert Original"
 msgstr "Asistente de traducción - Insertar original"
 
 #: hotkeys.cpp:434
-#, fuzzy
 msgid "Styling Assistant Play Audio"
-msgstr "Asistente de estilizado - Reproducir"
+msgstr "Asistente de estilizado - Reproducir audio"
 
 #: hotkeys.cpp:435
-#, fuzzy
 msgid "Styling Assistant Play Video"
-msgstr "Asistente de estilizado - Reproducir"
+msgstr "Asistente de estilizado - Reproducir video"
 
 #: hotkeys.cpp:436
 msgid "Styling Assistant Next"
@@ -5254,9 +5243,8 @@ msgid "Replace timecodes?"
 msgstr "¿Reemplazar códigos de tiempo?"
 
 #: video_provider_ffmpegsource.cpp:167
-#, fuzzy
 msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
-msgstr "Ya has cargado códigos de tiempo. ¿Deseas reemplazarlos con los códigos de tiempo del archivo Matroska?"
+msgstr "Ya has cargado códigos de tiempo. ¿Deseas reemplazarlos con los códigos de tiempo del archivo de video?"
 
 #: visual_tool.cpp:280
 #: visual_tool_drag.cpp:115
