@@ -170,27 +170,37 @@ else
     DIE=1
 fi
 
-WHICH_CONVERT=`which convert`
+
+if test -z "$BIN_CONVERT"; then
+  BIN_CONVERT=`which convert`
+fi
+
 echo -n "checking for ImageMagick 'convert' utility ... "
-if test -x "$WHICH_CONVERT"; then
-  BIN_CONVERT=$WHICH_CONVERT
+if test -x "$BIN_CONVERT"; then
   echo $BIN_CONVERT
 else
+    echo "not found"
     echo
     echo "  You must have 'convert' installed from the"
-    echo "  ImageMagick project."
+    echo "  ImageMagick project.  Please set BIN_CONVERT or"
+    echo "  Add 'convert' to your PATH"
     echo
     DIE=1
 fi
 
-WHICH_AWK=`which awk`
+
+if test -z "$BIN_AWK"; then
+  BIN_AWK=`which awk`
+fi
+
 echo -n "checking for AWK ... "
-if test -x "$WHICH_AWK"; then
-  BIN_AWK=$WHICH_AWK
+if test -x "$BIN_AWK"; then
   echo $BIN_AWK
 else
+    echo "not found"
     echo
-    echo "  You must have 'awk' installed"
+    echo "  You must have 'awk' installed.  Please set"
+    echo "  BIN_AWK or add it to your PATH."
     echo
     DIE=1
 fi
