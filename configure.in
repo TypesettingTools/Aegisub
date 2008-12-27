@@ -698,7 +698,7 @@ AC_ARG_WITH(perl-bin, [  --with-perl-bin=PATH    location of PERL binary. (defau
 AC_ARG_VAR([PERL_CFLAGS], [CFLAGS to use for Perl (default: -MExtUtils::Embed -eccflags -eperl_inc)])
 AC_ARG_VAR([PERL_LDFLAGS], [LDFLAGS to use for Perl (default: -MExtUtils::Embed -eldopts)])
 
-if test -z "$perl_disabled"; then
+if test "$with_perl" != "no"; then
   if test -z "$WITH_PERL_BIN"; then
     AC_PATH_PROG([PERL_BIN],perl,no)
   else
@@ -768,7 +768,7 @@ AC_ARG_WITH(ruby-bin, [  --with-ruby-bin=PATH    location of RUBY binary. (defau
 AC_ARG_VAR([RUBY_CFLAGS], [CFLAGS to use for Ruby (default: Config::CONFIG archdir + CFLAGS)])
 AC_ARG_VAR([RUBY_LDFLAGS], [LDFLAGS to use for Ruby (default: Cofig::CONFIG LIBRUBYARG)])
 
-if test -z "$ruby_disabled"; then
+if test "$with_ruby" != "no"; then
   if test -z "$WITH_RUBY_BIN"; then
     AC_PATH_PROG([RUBY_BIN],ruby,no)
   else
