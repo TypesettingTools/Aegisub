@@ -488,7 +488,10 @@ if test "$with_ffmpegsource" != "no"; then
     found_video_provider="yes"
     with_provider_ffmpegsource="yes"
     AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFmpegSource2 Video Provider])
+  else
+    with_provider_ffmpegsource="no"
   fi
+
 fi
 
 AC_SUBST(POSTPROC_LDFLAGS)
