@@ -748,6 +748,8 @@ fi
 if test "$with_cv_perl" = "yes"; then
   with_automation="yes"
   AC_DEFINE(WITH_PERL, 1, [Enable PERL support.])
+else
+  with_cv_perl="no"
 fi
 
 AC_SUBST(PERL_CFLAGS)
@@ -813,6 +815,8 @@ fi
 if test "$with_cv_ruby" = "yes"; then
   with_automation="yes"
   AC_DEFINE(WITH_RUBY, 1, [Enable RUBY Automation.])
+else
+  with_cv_ruby="no"
 fi
 
 AC_SUBST(RUBY_CFLAGS)
