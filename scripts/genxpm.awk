@@ -8,8 +8,8 @@ END {
   printf(" \
 all: bmp2xpm wxicon_xpm.xpm \n \
 .PHONY: all bmp2xpm \n \
-CONVERT ?= convert \n \
-")
+CONVERT ?= %s \n \
+", BIN_CONVERT)
 
   printf("wxicon_xpm.xpm: icon.ico\n	$(CONVERT) 'icon.ico[2]' wxicon_xpm.xpm\n");
 

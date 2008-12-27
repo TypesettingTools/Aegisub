@@ -273,7 +273,7 @@ touch ${srcdir}/aegisub/posix/config.h
 
 echo "--- Converting BMP resource files -> XPM ---"
 # BMP -> XPM via src/res.rc
-cat ${srcdir}/aegisub/res.rc | ${BIN_AWK} -f ${srcdir}/scripts/genxpm.awk > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
+cat ${srcdir}/aegisub/res.rc | ${BIN_AWK} -f ${srcdir}/scripts/genxpm.awk BIN_CONVERT="$BIN_CONVERT" > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
 cd ${srcdir}/aegisub/bitmaps
 make -f Makefile.bitmaps
 cd ${srcdir}
