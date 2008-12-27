@@ -12,17 +12,18 @@ m4_define([aegisub_version], [aegisub_version_major.aegisub_version_minor.aegisu
 ###################
 # Required packages
 ###################
+# XXX: These need to be fixed to check against the required version
 m4_define([ffmpeg_required_version], [1])
+m4_define([lua_auto3_required_version], [5.0])
+m4_define([lua_auto4_required_version], [5.1])
 m4_define([portaudio_required_version], [1])
 m4_define([pulseaudio_required_version], [1])
 
-m4_define([pkgconfig_required_version], [0.20])
-m4_define([freetype_required_version], [9.7.0])
 m4_define([fontconfig_required_version], [2.4])
+m4_define([freetype_required_version], [9.7.0])
 m4_define([perl_required_version], [5.004])
+m4_define([pkgconfig_required_version], [0.20])
 m4_define([ruby_required_version], [1.8])
-m4_define([lua_auto4_required_version], [5.1])
-m4_define([lua_auto3_required_version], [5.0])
 
 
 #######
@@ -94,7 +95,7 @@ AC_PROG_CXX
 AC_LANG(C++)
 AC_PROG_LIBTOOL
 AC_PROG_INSTALL
-PKG_PROG_PKG_CONFIG([0.20])
+PKG_PROG_PKG_CONFIG([pkgconfig_required_version])
 
 
 #################
@@ -228,9 +229,9 @@ fi
 ###########
 ## Freetype
 ###########
-PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.7.0,
+PKG_CHECK_MODULES(FREETYPE, freetype2 >= freetype_required_version,
   AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
-  [AC_MSG_FAILURE([aegisub requires >= FreeType2 2.1.9])])
+  [AC_MSG_FAILURE([aegisub requires >= FreeType2 freetype_required_version])])
 
 AC_AGI_COMPILE([Freetype], [freetype], [$FREETYPE_CFLAGS], [$FREETYPE_LIBS],[
 #include <ft2build.h>
@@ -249,9 +250,9 @@ fi
 #############
 ## Fontconfig
 #############
-PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.4,
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
   AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.]),
-  [AC_MSG_FAILURE([aegisub requires >= fontconfig >= 2.4])])
+  [AC_MSG_FAILURE([aegisub requires >= fontconfig >= fontconfig_required_version])])
 AC_SUBST(FONTCONFIG_CFLAGS)
 AC_SUBST(FONTCONFIG_LIBS)
 
@@ -709,8 +710,8 @@ if test -z "$perl_disabled"; then
 
   if test "$PERL_BIN" != "no"; then
     AC_CACHE_CHECK(
-      [checking for perl version >= 5.004], [with_cv_perl],
-      [if $PERL_BIN -e 'require 5.004'; then with_cv_perl="yes"; else with_cv_perl="no"; fi])
+      [checking for perl version >= perl_required_version], [with_cv_perl],
+      [if $PERL_BIN -e 'require perl_required_version'; then with_cv_perl="yes"; else with_cv_perl="no"; fi])
 
     if test "$with_cv_perl" = "yes"; then
       AC_MSG_CHECKING([$PERL_BIN cflags])
@@ -775,8 +776,8 @@ if test -z "$ruby_disabled"; then
 
   if test "$RUBY_BIN" != "no"; then
     AC_CACHE_CHECK(
-      [checking for ruby version >= 1.8], [with_cv_ruby],
-      [if $RUBY_BIN -r rbconfig -e 'if Config::CONFIG@<:@"ruby_version"@:>@.to_f >= 1.8  then exit(0) else exit(1) end'; then
+      [checking for ruby version >= ruby_required_version], [with_cv_ruby],
+      [if $RUBY_BIN -r rbconfig -e 'if Config::CONFIG@<:@"ruby_version"@:>@.to_f >= ruby_required_version  then exit(0) else exit(1) end'; then
         with_cv_ruby="yes"; else with_cv_ruby="no"; fi])
 
     if test "$with_cv_ruby" = "yes"; then
