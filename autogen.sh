@@ -278,7 +278,7 @@ cd ${srcdir}/aegisub/bitmaps
 make -f Makefile.bitmaps
 cd ${srcdir}
 
-awk '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST= \\\n	wxicon_xpm.xpm"); for (v in image) printf(" \\\n	%s_xpm.xpm", image[v])}' \
+$BIN_AWK '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST= \\\n	wxicon_xpm.xpm"); for (v in image) printf(" \\\n	%s_xpm.xpm", image[v])}' \
   ${srcdir}/aegisub/res.rc \
   > ${srcdir}/aegisub/bitmaps/Makefile.am
 
