@@ -190,8 +190,7 @@ if test -x "$WHICH_AWK"; then
   echo $BIN_AWK
 else
     echo
-    echo "  You must have 'convert' installed from the"
-    echo "  ImageMagick project."
+    echo "  You must have 'awk' installed
     echo
     DIE=1
 fi
