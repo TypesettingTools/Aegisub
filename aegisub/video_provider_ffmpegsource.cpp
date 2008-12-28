@@ -37,6 +37,7 @@
 
 ///////////
 // Headers
+#include "include/aegisub/aegisub.h"
 #include "video_provider_ffmpegsource.h"
 #include "video_context.h"
 #include "options.h"
@@ -83,7 +84,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	wxString FileNameWX = wxFileName(wxString(filename.c_str(), wxConvFile)).GetShortPath();
 
 	// generate a name for the cache file
-	wxString CacheName = GetCacheFilename(filename);
+	wxString CacheName = GetCacheFilename(filename.c_str());
 
 	// try to read index
 	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);

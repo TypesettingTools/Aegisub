@@ -37,6 +37,7 @@
 
 ///////////
 // Headers
+#include "include/aegisub/aegisub.h"
 #include "audio_provider_ffmpegsource.h"
 
 
@@ -69,7 +70,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	wxString FileNameWX(filename.c_str(), wxConvFile);
 
 	// generate a default name for the cache file
-	wxString CacheName = GetCacheFilename(filename);
+	wxString CacheName = GetCacheFilename(filename.c_str());
 
 	FrameIndex *Index;
 	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrMsg, MsgSize);
