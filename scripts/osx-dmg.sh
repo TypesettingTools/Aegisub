@@ -33,6 +33,7 @@ ln -vsf /Applications "${TMP_DMG}"
 mkdir -v ${TMP_DMG}/.background
 cp -v packages/osx_dmg/dmg_background.png ${TMP_DMG}/.background/background.png
 cp -v packages/osx_dmg/DS_Store ${TMP_DMG}/.DS_Store
+cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns ${TMP_DMG}/.VolumeIcon.icns
 
 echo
 echo "---- Creating image ----"
@@ -46,6 +47,10 @@ echo "Device name: ${DEV_NAME}"
 echo
 echo "---- Setting bless -openfolder \"/Volumes/${PKG_NAME_VOLUME}\" ----"
 bless -openfolder "/Volumes/${PKG_NAME_VOLUME}"
+
+echo
+echo "---- Setting root icon using SetFile ----"
+/usr/bin/SetFile -a C "/Volumes/${PKG_NAME_VOLUME}"
 
 echo
 echo "---- Detaching ----"
