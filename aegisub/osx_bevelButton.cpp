@@ -12,12 +12,12 @@
 #ifdef __WXMAC__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "bevelButton.h"
+#pragma implementation "osx_bevelButton.h"
 #endif
 
 #include "wx/wxprec.h"
 
-#include "bevelButton.h"
+#include "osx_bevelButton.h"
 #include "wx/panel.h"
 #include "wx/stockitem.h"
 

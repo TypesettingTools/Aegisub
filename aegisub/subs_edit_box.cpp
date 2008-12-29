@@ -60,7 +60,7 @@
 #include "idle_field_event.h"
 #include "float_spin.h"
 #include "tooltip_manager.h"
-#include "macosx/bevelButton.h"
+#include "osx_bevelButton.h"
 
 
 ///////////////

@@ -129,7 +129,7 @@ UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
 endif
 
 if BUILD_DARWIN
-  BEVEL_BUTTON = macosx/bevelButton.cpp
+  BEVEL_BUTTON = osx_bevelButton.cpp
 endif
 
 if FONTLISTER_FREETYPE
@@ -164,7 +164,7 @@ EXTRA_aegisub_SOURCES = \
 	dialog_associations.cpp \
 	lavc_file.cpp \
 	lavc_keyframes.cpp \
-	macosx/bevelButton.cpp \
+	osx_bevelButton.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
 	stdwx.cpp \
@@ -327,7 +327,7 @@ noinst_HEADERS = \
 	$(srcdir)/boost/*.hpp \
 	gl/glext.h \
 	$(srcdir)/*.hxx \
-	macosx/bevelButton.h
+	osx_bevelButton.h
 
 EXTRA_DIST = \
 	auto4_perldata.inc \
