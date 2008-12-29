@@ -10,10 +10,13 @@
 # directly.
 
 ACLOCAL=${ACLOCAL-aclocal-1.9}
-AUTOCONF=${AUTOCONF-autoconf}
+LIBTOOLIZE=${LIBTOOLIZE-libtoolize}
 AUTOHEADER=${AUTOHEADER-autoheader}
 AUTOMAKE=${AUTOMAKE-automake-1.9}
-LIBTOOLIZE=${LIBTOOLIZE-libtoolize}
+AUTOCONF=${AUTOCONF-autoconf}
+GETTEXTIZE=${GETTEXTIZE-glib-gettextize}
+INTLTOOLIZE=${INTLTOOLIZE-intltoolize}
+
 
 GLIB_REQUIRED_VERSION=2.10.0
 AUTOCONF_REQUIRED_VERSION=2.54
@@ -141,9 +144,9 @@ if test x$AUTOMAKE != x; then
 fi
 
 
-echo -n "checking for glib-gettextize ... "
-if (glib-gettextize --version) < /dev/null > /dev/null 2>&1; then
-    VER=`glib-gettextize --version \
+echo -n "checking for $GETTEXTIZE ... "
+if ($GETTEXTIZE --version) < /dev/null > /dev/null 2>&1; then
+    VER=`$GETTEXTIZE --version \
          | grep glib-gettextize | sed "s/.* \([0-9.]*\)/\1/"`
     check_version $VER $GLIB_REQUIRED_VERSION
 else
@@ -156,9 +159,9 @@ else
 fi
 
 
-echo -n "checking for intltool >= $INTLTOOL_REQUIRED_VERSION ... "
+echo -n "checking for $INTLTOOLIZE >= $INTLTOOL_REQUIRED_VERSION ... "
 if (intltoolize --version) < /dev/null > /dev/null 2>&1; then
-    VER=`intltoolize --version \
+    VER=`$INTLTOOLIZE --version \
          | grep intltoolize | sed "s/.* \([0-9.]*\)/\1/"`
     check_version $VER $INTLTOOL_REQUIRED_VERSION
 else
@@ -310,11 +313,11 @@ $AUTOMAKE --add-missing || exit $?
 echo "--- $AUTOCONF ---"
 $AUTOCONF || exit $?
 
-echo "--- glib-gettextize ---"
-glib-gettextize --force || exit $?
+echo "--- $GETTEXTIZE ---"
+$GETTEXTIZE --force || exit $?
 
-echo "--- intltoolize ---"
-intltoolize --force --automake || exit $?
+echo "--- $INTTOOLIZE ---"
+$INTLTOOLIZE --force --automake || exit $?
 
 cd $ORIGDIR
 
