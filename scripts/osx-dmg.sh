@@ -11,10 +11,15 @@
 # Released under GNU GPL, read the file 'COPYING' for more information
 
 TMP_DMG="temp_dmg"
-PKG_DIR="${1}"
+PKG_DIR="${1}.app"
 PKG_NAME="${2}"
 PKG_NAME_RW="${1}_rw.dmg"
 PKG_NAME_VOLUME="${2}"
+
+if ! test -d "${PKG_DIR}"; then
+  echo "${PKG_DIR} does not exist, please run 'make osx-bundle'"
+  exit 1;
+fi
 
 mkdir -v ${TMP_DMG}
 echo
