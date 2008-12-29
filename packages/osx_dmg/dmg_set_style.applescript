@@ -11,7 +11,7 @@ disk image in which Inkscape is bundled on MacOS X
 
 
 tell application "Finder"
-	tell disk "Inkscape"
+	tell disk "@PKG_NAME@"
 		open
 		tell container window
 			set current view to icon view
