@@ -27,6 +27,10 @@ SUBDIRS = \
 	po \
 	m4macros
 
+osx-bundle:
+	/bin/sh scripts/osx-bundle.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@
+
+
 EXTRA_DIST = \
 	intltool-extract.in \
 	intltool-merge.in   \
