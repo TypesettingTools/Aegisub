@@ -1,6 +1,6 @@
 #!/bin/bash
 
-test -f aegisub/aegisub && test -x aegisub/aegisub || ( exit "Make sure you're in the right dir"; exit 1 )
+test -f aegisub/.libs/aegisub && test -x aegisub/.libs/aegisub || ( exit "Make sure you're in the right dir"; exit 1 )
 test -e $1 && ( echo "$1 already exists, will not overwrite."; exit 1 )
 
 echo "Making directory structure..."
@@ -9,7 +9,7 @@ mkdir $1/Contents $1/Contents/MacOS $1/Contents/Resources
 
 echo "Copying files into package..."
 cp aegisub/macosx/Info.plist $1/Contents
-cp aegisub/aegisub $1/Contents/MacOS
+cp aegisub/.libs/aegisub $1/Contents/MacOS
 cp aegisub/macosx/*.icns $1/Contents/Resources
 
 echo "Now about to collect and fix up shared libraries..."
