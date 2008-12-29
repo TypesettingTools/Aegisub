@@ -1,19 +1,35 @@
 #!/bin/bash
 
-test -f aegisub/.libs/aegisub && test -x aegisub/.libs/aegisub || ( exit "Make sure you're in the right dir"; exit 1 )
-test -e $1 && ( echo "$1 already exists, will not overwrite."; exit 1 )
+PKG_DIR=${1}.app
+SKEL_DIR="packages/osx_bundle"
 
-echo "Making directory structure..."
-mkdir $1 || ( echo "Failed creating directory $1"; exit 1 )
-mkdir $1/Contents $1/Contents/MacOS $1/Contents/Resources
+if ! test -d packages/osx_bundle; then
+  echo "Make sure you're in the toplevel source directory"
+  exit 1;
+fi
 
-echo "Copying files into package..."
-cp aegisub/macosx/Info.plist $1/Contents
-cp aegisub/.libs/aegisub $1/Contents/MacOS
-cp aegisub/macosx/*.icns $1/Contents/Resources
+echo "Removing ${PKG_DIR}"
+rm -rf ${PKG_DIR}
 
-echo "Now about to collect and fix up shared libraries..."
+echo
+echo "---- Directory Structure ----"
+mkdir -v ${PKG_DIR}
+mkdir -v ${PKG_DIR}/Contents
+mkdir -v ${PKG_DIR}/Contents/MacOS
+mkdir -v ${PKG_DIR}/Contents/Resources
 
-python scripts/osx-fix-libs.py "$1/Contents/MacOS/aegisub"
+echo
+echo "---- Copying Skel Files ----"
+cp -v ${SKEL_DIR}/Contents/Resources/* ${PKG_DIR}/Contents/Resources
+cp -v ${SKEL_DIR}/Contents/Info.plist ${PKG_DIR}/Contents
 
-echo "Done creating $1!"
+echo
+echo "---- Binaries ----"
+cp -v aegisub/.libs/aegisub ${PKG_DIR}/Contents/MacOS
+
+echo
+echo "---- Libraries ----"
+python scripts/osx-fix-libs.py "${PKG_DIR}/Contents/MacOS/aegisub"
+
+echo
+echo "Done Creating ${PKG_DIR}"

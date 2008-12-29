@@ -8,6 +8,7 @@ import shutil
 is_bad_lib = re.compile(r'(/usr/local|/opt)').match
 is_sys_lib = re.compile(r'(/usr|/System)').match
 otool_libname_extract = re.compile(r'\s+(/.*?)[\(\s:]').search
+goodlist = []
 
 def otool(cmdline):
 	pipe = os.popen("otool " + cmdline, 'r')
@@ -16,6 +17,7 @@ def otool(cmdline):
 	return output
 
 def collectlibs(lib, masterlist, targetdir):
+	global goodlist
 	liblist = otool("-L " + lib)
 	locallist = []
 	for l in liblist:
@@ -26,9 +28,11 @@ def collectlibs(lib, masterlist, targetdir):
 			sys.exit("Linking with library in blacklisted location: " + l)
 		if not is_sys_lib(l) and not l in masterlist:
 			locallist.append(l)
-			print " ...found ", l,
+			print "found ", l,
 			shutil.copy(l, targetdir)
 			print " ...copied to target"
+		elif not l in goodlist and not l in masterlist:
+			goodlist.append(l)
 	masterlist.extend(locallist)
 	for l in locallist:
 		collectlibs(l, masterlist, targetdir)
@@ -39,7 +43,15 @@ print "Searching for libraries in ", binname, "..."
 libs = [binname]
 collectlibs(sys.argv[1], libs, targetdir)
 
-print " ...done. Will now fix up library install names..."
+print
+print "System libraries used..."
+goodlist.sort()
+for l in goodlist:
+	print l
+
+
+print
+print "Fixing library install names..."
 in_tool_cmdline = "install_name_tool "
 for lib in libs:
 	libbase = os.path.basename(lib)
@@ -47,7 +59,8 @@ for lib in libs:
 for lib in libs:
 	libbase = os.path.basename(lib)
 	os.system("%s -id @executable_path/%s '%s/%s'" % (in_tool_cmdline, libbase, targetdir, libbase))
-	print libbase,
+	print lib, "-> @executable_path/" + libbase
 	sys.stdout.flush()
+
 print
 print "All done!"
