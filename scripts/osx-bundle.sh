@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
