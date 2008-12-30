@@ -22,13 +22,14 @@
 #define UTILS_H
 
 extern "C" {
+#include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
 #include <libpostproc/postprocess.h>
+#include <libavutil/sha1.h>
 #include "MatroskaParser.h"
-}
-
 #include "stdiostream.h"
+}
 
 struct MatroskaReaderContext {
 public:
@@ -50,6 +51,6 @@ public:
 int GetCPUFlags();
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize);
 bool AudioFMTIsFloat(SampleFormat FMT);
-CodecID MatroskaToFFCodecID(TrackInfo *TI);
+CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate);
 
 #endif

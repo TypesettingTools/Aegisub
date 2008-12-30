@@ -144,12 +144,11 @@ typedef struct BITMAPINFOHEADER {
 	((uint32_t)(uint8_t)(ch0) | ((uint32_t)(uint8_t)(ch1) << 8) |\
 	((uint32_t)(uint8_t)(ch2) << 16) | ((uint32_t)(uint8_t)(ch3) << 24 ))
 
-CodecID MatroskaToFFCodecID(TrackInfo *TI) {
-	char *Codec = TI->CodecID;
+CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate) {
 /* Video Codecs */
 	if (!strcmp(Codec, "V_MS/VFW/FOURCC")) {
 		// fourcc list from ffdshow
-		switch (((BITMAPINFOHEADER *)TI->CodecPrivate)->biCompression) {
+		switch (((BITMAPINFOHEADER *)CodecPrivate)->biCompression) {
 			case MAKEFOURCC('F', 'F', 'D', 'S'):
 			case MAKEFOURCC('F', 'V', 'F', 'W'):
 			case MAKEFOURCC('X', 'V', 'I', 'D'):
@@ -379,6 +378,7 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 	else if (!strcmp(Codec, "A_DTS"))
 		return CODEC_ID_DTS;
 	else if (!strcmp(Codec, "A_PCM/INT/LIT")) {
+/* FIXME
 		switch (TI->AV.Audio.BitDepth) {
 			case 8: return CODEC_ID_PCM_S8;
 			case 16: return CODEC_ID_PCM_S16LE;
@@ -386,7 +386,10 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 			case 32: return CODEC_ID_PCM_S32LE;
 			default: return CODEC_ID_NONE;
 		}
+*/
+		return CODEC_ID_NONE;
 	} else if (!strcmp(Codec, "A_PCM/INT/BIG")) {
+/* FIXME
 		switch (TI->AV.Audio.BitDepth) {
 			case 8: return CODEC_ID_PCM_S8;
 			case 16: return CODEC_ID_PCM_S16BE;
@@ -394,6 +397,8 @@ CodecID MatroskaToFFCodecID(TrackInfo *TI) {
 			case 32: return CODEC_ID_PCM_S32BE;
 			default: return CODEC_ID_NONE;
 		}
+*/
+		return CODEC_ID_NONE;
 	} else if (!strcmp(Codec, "A_PCM/FLOAT/IEEE"))
 		return CODEC_ID_PCM_F32LE; // only a most likely guess, may do bad things
 	else if (!strcmp(Codec, "A_FLAC"))

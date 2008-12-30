@@ -55,7 +55,7 @@ enum TrackType {
     FFMS_TYPE_AUDIO = 1,
 };
 
-// PixelFormat declarations from avutil.h so external libraries don't necessarily have to include and ffmpeg headers
+// PixelFormat declarations from avutil.h so external libraries don't necessarily have to include ffmpeg headers
 enum FFMS_PixelFormat {
     FFMS_PIX_FMT_NONE= -1,
     FFMS_PIX_FMT_YUV420P,   ///< Planar YUV 4:2:0, 12bpp, (1 Cr & Cb sample per 2x2 Y samples)

@@ -327,7 +327,7 @@ AVFrameLite *FFVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 		} else {
 			// 10 frames is used as a margin to prevent excessive seeking since the predicted best keyframe isn't always selected by avformat
 			if (n < CurrentFrame || ClosestKF > CurrentFrame + 10 || (SeekMode == 3 && n > CurrentFrame + 10)) {
-				av_seek_frame(FormatContext, VideoTrack, (SeekMode == 3) ? Frames[n].DTS : Frames[ClosestKF].DTS, AVSEEK_FLAG_BACKWARD);
+				av_seek_frame(FormatContext, VideoTrack, (SeekMode == 3) ? Frames[n].DTS : Frames[FFMAX(ClosestKF - 20, 0)].DTS, AVSEEK_FLAG_BACKWARD);
 				avcodec_flush_buffers(CodecContext);
 				HasSeeked = true;
 			}
@@ -429,7 +429,7 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	CodecContext->extradata_size = TI->CodecPrivateSize;
 	CodecContext->thread_count = Threads;
 
-	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI));
+	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
 	if (Codec == NULL) {
 		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Video codec not found");
@@ -550,6 +550,235 @@ AVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSi
 
 			if (StartTime < 0 || (CurrentFrame = Frames.FrameFromDTS(StartTime)) < 0) {
 				_snprintf(ErrorMsg, MsgSize, "Frame accurate seeking is not possible in this file");
+				return NULL;
+			}
+		}
+
+		CurrentFrame++;
+	} while (CurrentFrame <= n);
+
+	LastFrameNum = n;
+	return OutputFrame(DecodeFrame);
+}
+
+void HaaliTSVideoSource::Free(bool CloseCodec) {
+	if (CloseCodec)
+		avcodec_close(CodecContext);
+	av_free(CodecContext);
+}
+
+HaaliTSVideoSource::HaaliTSVideoSource(const char *SourceFile, int Track,
+	FrameIndex *TrackIndices, const char *PP,
+	int Threads, char *ErrorMsg, unsigned MsgSize) {
+
+	AVCodec *Codec = NULL;
+	CodecContext = NULL;
+	VideoTrack = Track;
+	Frames = (*TrackIndices)[VideoTrack];
+
+	if (Frames.size() == 0) {
+		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
+		throw ErrorMsg;
+	}
+
+	::CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
+	CLSID clsid = Haali_TS_Parser;
+
+	if (FAILED(pMMC.CoCreateInstance(clsid))) {
+		_snprintf(ErrorMsg, MsgSize, "Can't create parser");
+		throw ErrorMsg;
+	}
+
+	CComPtr<IMemAlloc>    pMA;
+	if (FAILED(pMA.CoCreateInstance(CLSID_MemAlloc))) {
+		_snprintf(ErrorMsg, MsgSize, "Can't create memory allocator");
+		throw ErrorMsg;
+	}
+
+	CComPtr<IMMStream>    pMS;
+	if (FAILED(pMS.CoCreateInstance(CLSID_DiskFile))) {
+		_snprintf(ErrorMsg, MsgSize, "Can't create disk file reader");
+		throw ErrorMsg;
+	}
+
+	WCHAR WSourceFile[2048];
+	mbstowcs(WSourceFile, SourceFile, 2000);
+	CComQIPtr<IMMStreamOpen> pMSO(pMS);
+	if (FAILED(pMSO->Open(WSourceFile))) {
+		_snprintf(ErrorMsg, MsgSize, "Can't open file");
+		throw ErrorMsg;
+	}
+
+	if (FAILED(pMMC->Open(pMS, 0, NULL, pMA))) {
+		_snprintf(ErrorMsg, MsgSize, "Can't parse file");
+		throw ErrorMsg;
+	}
+
+	BSTR CodecID = NULL;
+	uint8_t * CodecPrivate = NULL;
+	int CodecPrivateSize = 0;
+	int CurrentTrack = 0;
+	CComPtr<IEnumUnknown> pEU;
+	if (SUCCEEDED(pMMC->EnumTracks(&pEU))) {
+		CComPtr<IUnknown> pU;
+		while (pEU->Next(1, &pU, NULL) == S_OK) {
+			if (CurrentTrack++ == Track) {
+				CComQIPtr<IPropertyBag> pBag = pU;
+				if (pBag) {
+					VARIANT pV;
+
+					pV.vt = VT_EMPTY;
+					if (pBag->Read(L"CodecID", &pV, NULL) == S_OK)
+						CodecID = pV.bstrVal;
+
+					pV.vt = VT_EMPTY;
+					if (pBag->Read(L"CodecPrivate", &pV, NULL) == S_OK) {
+						CodecPrivate = (uint8_t *)pV.parray->pvData;
+						CodecPrivateSize = pV.parray->cbElements;
+					}
+				}
+			}
+			pU = NULL;
+		}
+	}
+
+	CodecContext = avcodec_alloc_context();
+	CodecContext->extradata = CodecPrivate;
+	CodecContext->extradata_size = CodecPrivateSize;
+	CodecContext->thread_count = Threads;
+
+	char ACodecID[2048];
+	wcstombs(ACodecID, CodecID, 2000);
+	Codec = avcodec_find_decoder(MatroskaToFFCodecID(ACodecID, CodecPrivate));
+	if (Codec == NULL) {
+		Free(false);
+		_snprintf(ErrorMsg, MsgSize, "Video codec not found");
+		throw ErrorMsg;
+	}
+
+	if (avcodec_open(CodecContext, Codec) < 0) {
+		Free(false);
+		_snprintf(ErrorMsg, MsgSize, "Could not open video codec");
+		throw ErrorMsg;
+	}
+
+	// Always try to decode a frame to make sure all required parameters are known
+	int64_t Dummy;
+	if (DecodeNextFrame(DecodeFrame, &Dummy, ErrorMsg, MsgSize)) {
+		Free(true);
+		throw ErrorMsg;
+	}
+
+	VP.Width = CodecContext->width;
+	VP.Height = CodecContext->height;;
+	VP.FPSDenominator = 1;
+	VP.FPSNumerator = 30;
+	VP.NumFrames = Frames.size();
+	VP.PixelFormat = CodecContext->pix_fmt;
+	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+
+	if (VP.Width <= 0 || VP.Height <= 0) {
+		Free(true);
+		_snprintf(ErrorMsg, MsgSize, "Codec returned zero size video");
+		throw ErrorMsg;
+	}
+
+	if (InitPP(PP, CodecContext->pix_fmt, ErrorMsg, MsgSize)) {
+		Free(true);
+		throw ErrorMsg;
+	}
+
+	// Calculate the average framerate
+	if (Frames.size() >= 2) {
+		double DTSDiff = (double)(Frames.back().DTS - Frames.front().DTS);
+		// FIXME
+		VP.FPSDenominator = (unsigned int)((DTSDiff * 1000000000) / (double)1000 / (double)(VP.NumFrames - 1) + 0.5);
+		VP.FPSNumerator = 1000000; 
+	}
+
+	// Output the already decoded frame so it isn't wasted
+	OutputFrame(DecodeFrame);
+	LastFrameNum = 0;
+
+	// Set AR variables
+//	VP.SARNum = TI->AV.Video.DisplayWidth * TI->AV.Video.PixelHeight;
+//	VP.SARDen = TI->AV.Video.DisplayHeight * TI->AV.Video.PixelWidth;
+
+	// Set crop variables
+//	VP.CropLeft = TI->AV.Video.CropL;
+//	VP.CropRight = TI->AV.Video.CropR;
+//	VP.CropTop = TI->AV.Video.CropT;
+//	VP.CropBottom = TI->AV.Video.CropB;
+}
+
+HaaliTSVideoSource::~HaaliTSVideoSource() {
+	Free(true);
+}
+
+int HaaliTSVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
+	int FrameFinished = 0;
+	*AFirstStartTime = -1;
+
+	for (;;) {
+		CComPtr<IMMFrame> pMMF;
+		if (pMMC->ReadFrame(NULL, &pMMF) != S_OK)
+			break;
+
+		REFERENCE_TIME  Ts, Te;
+		if (*AFirstStartTime < 0 && SUCCEEDED(pMMF->GetTime(&Ts, &Te)))
+			*AFirstStartTime = Ts;
+
+		if (pMMF->GetTrack() == VideoTrack) {
+			BYTE *Data = NULL;
+			if (FAILED(pMMF->GetPointer(&Data)))
+				goto Error;
+
+			avcodec_decode_video(CodecContext, AFrame, &FrameFinished, Data, pMMF->GetActualDataLength());
+
+			if (FrameFinished)
+				goto Done;
+		}
+	}
+
+	// Flush the last frames
+	if (CodecContext->has_b_frames)
+		 avcodec_decode_video(CodecContext, AFrame, &FrameFinished, NULL, 0);
+
+	if (!FrameFinished)
+		goto Error;
+
+Error:
+Done:
+	return 0;
+}
+
+AVFrameLite *HaaliTSVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
+	// PPFrame always holds frame LastFrameNum even if no PP is applied
+	if (LastFrameNum == n)
+		return OutputFrame(DecodeFrame);
+
+	bool HasSeeked = false;
+
+	if (n < CurrentFrame || Frames.FindClosestKeyFrame(n) > CurrentFrame) {
+		int64_t dtsp = Frames[n].DTS;
+		pMMC->Seek(Frames[n].DTS, MMSF_PREV_KF);
+		// FIXME for some reason required to make it seek properly
+		//avcodec_flush_buffers(CodecContext);
+		HasSeeked = true;
+	}
+
+	do {
+		int64_t StartTime;
+		if (DecodeNextFrame(DecodeFrame, &StartTime, ErrorMsg, MsgSize))
+				return NULL;
+
+		if (HasSeeked) {
+			HasSeeked = false;
+
+			if (StartTime < 0 || (CurrentFrame = Frames.FrameFromDTS(StartTime)) < 0) {
+				_snprintf(ErrorMsg, MsgSize, "Frame accurate seeking is not possible in this file\n");
 				return NULL;
 			}
 		}

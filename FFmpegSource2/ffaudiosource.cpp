@@ -264,7 +264,7 @@ MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, Fram
 	CodecContext->extradata = (uint8_t *)TI->CodecPrivate;
 	CodecContext->extradata_size = TI->CodecPrivateSize;
 
-	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI));
+	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
 	if (Codec == NULL) {
 		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Video codec not found");

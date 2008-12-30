@@ -219,12 +219,18 @@ AVSValue __cdecl CreateSWScale(AVSValue Args, void* UserData, IScriptEnvironment
 	return new SWScale(Args[0].AsClip(), Args[1].AsInt(0), Args[2].AsInt(0), Args[3].AsString("BICUBIC"), Args[4].AsString(""), Env);
 }
 
+AVSValue __cdecl FFNoLog(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+	av_log_set_level(AV_LOG_QUIET);
+	return 0;
+}
+
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
     Env->AddFunction("FFIndex", "[source]s[cachefile]s[indexmask]i[dumpmask]i[audiofile]s[overwrite]b", CreateFFIndex, 0);
 	Env->AddFunction("FFVideoSource", "[source]s[track]i[cache]b[cachefile]s[fpsnum]i[fpsden]i[pp]s[threads]i[timecodes]s[seekmode]i", CreateFFVideoSource, 0);
     Env->AddFunction("FFAudioSource", "[source]s[track]i[cache]b[cachefile]s", CreateFFAudioSource, 0);
 	Env->AddFunction("FFPP", "c[pp]s", CreateFFPP, 0);
 	Env->AddFunction("SWScale", "c[width]i[height]i[resizer]s[colorspace]s", CreateSWScale, 0);
+	Env->AddFunction("FFNoLog", "", FFNoLog, 0);
 
     return "FFmpegSource - The Second Coming";
 }

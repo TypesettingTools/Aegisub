@@ -29,13 +29,18 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
 
 <h2>Usage</h2>
 <p>
-<b>FFIndex("string source, string cachefile = source + ".ffindex", int indexmask = 0, int dumpmask = 0, string audiofile = source, bool overwrite = false)</b><br />
+<b>FFIndex(string source, string cachefile = source + ".ffindex", int indexmask = 0, int dumpmask = 0, string audiofile = source, bool overwrite = false)</b><br />
  Used to invoke indexing separately and to write audio tracks to disk as wave64 files
 </p>
 
 <p>
 <b>FFVideoSource(string source, int track, bool cache = true, string cachefile = source + ".ffindex", int fpsnum = -1, int fpsden = 1, string pp, int threads = -1, string timecodes, int seekmode = 1)</b><br />
  Opens video, will invoke indexing with the defaults if no preexisting index is found
+</p>
+
+<p>
+<b>FFAudioSource(string source, int track, bool cache = true, string cachefile = source + ".ffindex")</b><br />
+ Opens audio, <b>if an index already exists it needs to contain a suitable audio index or empty audio will be returned</b>, will invoke indexing with the defaults if no preexisting index is found
 </p>
 
 <p>
@@ -47,6 +52,11 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
 <b>SWScale(clip, width = -1, height = -1, resizer = "BICUBIC", colorspace = "")</b><br />
   Separate postprocessing which also seems to include a few simple deinterlacers
 </p>
+
+<b>FFNoLog()</b><br />
+  Disable all logging output from FFmpeg
+</p>
+
 
 <p>
 <b>source:</b>
@@ -191,13 +201,19 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 
 <h2>Changes</h2>
 <ul>
+<li>2.00 beta 4<ul>
+<li>Added the function FFNoLog which suppresses all messages from ffmpeg</li>
+<li>Experimental new TS parsing using Haali's splitter (with bugs)</li>
+<li>Everything is now compiled with VS2008 and GCC 4.3.2</li>
+<li>Updated FFmpeg to rev 16383 (no libfaad2 this time)</li>
+</ul></li>
 
 <li>2.00 beta 3<ul>
 <li>Compiled with libfaad2 again (has anyone seen a single aac file lavc can open right now?)</li>
 <li>More API changes (and even more are likely to come)</li>
 <li>Several access violations and memory leaks on opening and indexing files fixed</li>
 <li>Added a VFR to CFR mode</li>
-<li>Readded FFAudioSource support for other containers (glitches still present now and then but no separate raw cache is required and possibly less buggy</li>
+<li>Readded FFAudioSource support for other containers (glitches still present now and then but no separate raw cache is required and possibly less buggy)</li>
 <li>Renamed the dll to FFMS2.dll, FFMS2 is now the official short name of the project</li>
 <li>Updated FFmpeg to rev 15522</li>
 </ul></li>
@@ -220,4 +236,3 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 
 </body>
 </html>
-

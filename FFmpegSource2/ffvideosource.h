@@ -33,6 +33,17 @@ extern "C" {
 #include "utils.h"
 #include "ffms.h"
 
+#ifdef _WIN32
+#	define _WIN32_DCOM
+#	include <windows.h>
+#	include <tchar.h>
+#	include <atlbase.h>
+#	include <dshow.h>
+#	include "CoParser.h"
+#	include <initguid.h>
+#	include "guids.h"
+#endif
+
 class VideoBase {
 private:
 	pp_context_t *PPContext;
@@ -87,6 +98,18 @@ private:
 public:
 	MatroskaVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
 	~MatroskaVideoSource();
+    AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+};
+
+class HaaliTSVideoSource : public VideoBase {
+private:
+	CComPtr<IMMContainer> pMMC;
+
+	void Free(bool CloseCodec);
+	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
+public:
+	HaaliTSVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
+	~HaaliTSVideoSource();
     AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 

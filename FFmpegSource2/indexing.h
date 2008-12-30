@@ -21,19 +21,11 @@
 #ifndef INDEXING_H
 #define	INDEXING_H
 
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-
-#include "MatroskaParser.h"
-#include "stdiostream.h"
-}
-
 #include <vector>
 #include "utils.h"
 #include "ffms.h"
 
-#define INDEXVERSION 8
+#define INDEXVERSION 11
 #define INDEXID 0x53920873
 
 struct IndexHeader {
