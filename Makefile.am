@@ -28,10 +28,10 @@ SUBDIRS = \
 	m4macros
 
 osx-bundle:
-	/bin/sh scripts/osx-bundle.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@
+	@SHELL@ scripts/osx-bundle.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@
 
 osx-dmg:
-	/bin/sh scripts/osx-dmg.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@ "@PACKAGE_TARNAME@ @PACKAGE_VERSION@"
+	@SHELL@ scripts/osx-dmg.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@ "@PACKAGE_TARNAME@ @PACKAGE_VERSION@"
 
 EXTRA_DIST = \
 	intltool-extract.in \
