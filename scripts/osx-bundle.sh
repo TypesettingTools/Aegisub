@@ -4,12 +4,14 @@ PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
 
 if ! test -d packages/osx_bundle; then
+  echo
   echo "Make sure you're in the toplevel source directory"
   exit 1;
 fi
 
-echo "Removing ${PKG_DIR}"
-rm -rf ${PKG_DIR}
+if test -d ${PKG_DIR}; then
+  echo "**** USING OLD ${PKG_DIR} ****"
+fi
 
 echo
 echo "---- Directory Structure ----"
