@@ -32,7 +32,6 @@ echo "---- Setting up ----"
 ln -vsf /Applications "${TMP_DMG}"
 mkdir -v ${TMP_DMG}/.background
 cp -v packages/osx_dmg/dmg_background.png ${TMP_DMG}/.background/background.png
-cp -v packages/osx_dmg/DS_Store ${TMP_DMG}/.DS_Store
 cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns ${TMP_DMG}/.VolumeIcon.icns
 
 echo
@@ -45,12 +44,16 @@ DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_R
 echo "Device name: ${DEV_NAME}"
 
 echo
-echo "---- Setting bless -openfolder \"/Volumes/${PKG_NAME_VOLUME}\" ----"
+echo "---- Setting bless -openfolder ----"
 bless -openfolder "/Volumes/${PKG_NAME_VOLUME}"
 
 echo
 echo "---- Setting root icon using SetFile ----"
 /usr/bin/SetFile -a C "/Volumes/${PKG_NAME_VOLUME}"
+
+echo
+echo "--- Generating /Volumes/${PKG_NAME_VOLUME}/.DS_Store ----"
+/usr/bin/perl scripts/osx-dmg-dsstore.pl "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" "${PKG_DIR}" "/Volumes/${PKG_NAME_VOLUME}/.background/background.png"
 
 echo
 echo "---- Detaching ----"
