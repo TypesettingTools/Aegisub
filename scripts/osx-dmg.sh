@@ -21,7 +21,7 @@ if ! test -d "${PKG_DIR}"; then
   exit 1;
 fi
 
-rm -rf ${TMP_DMG}
+rm -rf ${TMP_DMG} "${PKG_NAME}.dmg"
 mkdir -v ${TMP_DMG}
 echo
 echo "---- Copying ${1} into ${TMP_DMG}/ ----"
