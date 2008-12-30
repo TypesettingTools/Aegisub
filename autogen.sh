@@ -41,6 +41,15 @@ test -d aegisub || {
     exit 1
 }
 
+# The internal echo for /bin/sh on darwin doesn't support -n
+# therefore we have to use /bin/echo.
+if test `uname -s` = "Darwin"; then
+    ECHO_N="/bin/echo -n";
+else
+    ECHO_N="echo -n";
+fi
+
+
 check_version ()
 {
     VERSION_A=$1
@@ -83,7 +92,7 @@ check_version ()
 DIE=0
 
 
-echo -n "checking for libtool >= $LIBTOOL_REQUIRED_VERSION ... "
+$ECHO_N "checking for libtool >= $LIBTOOL_REQUIRED_VERSION ... "
 if ($LIBTOOLIZE --version) < /dev/null > /dev/null 2>&1; then
    LIBTOOLIZE=$LIBTOOLIZE
 elif (glibtoolize --version) < /dev/null > /dev/null 2>&1; then
@@ -103,7 +112,7 @@ if test x$LIBTOOLIZE != x; then
     check_version $VER $LIBTOOL_REQUIRED_VERSION
 fi
 
-echo -n "checking for autoconf >= $AUTOCONF_REQUIRED_VERSION ... "
+$ECHO_N "checking for autoconf >= $AUTOCONF_REQUIRED_VERSION ... "
 if ($AUTOCONF --version) < /dev/null > /dev/null 2>&1; then
     VER=`$AUTOCONF --version | head -n 1 \
          | grep -iw autoconf | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
@@ -118,7 +127,7 @@ else
 fi
 
 
-echo -n "checking for automake >= $AUTOMAKE_REQUIRED_VERSION ... "
+$ECHO_N "checking for automake >= $AUTOMAKE_REQUIRED_VERSION ... "
 if ($AUTOMAKE --version) < /dev/null > /dev/null 2>&1; then
    AUTOMAKE=$AUTOMAKE
    ACLOCAL=$ACLOCAL
@@ -144,7 +153,7 @@ if test x$AUTOMAKE != x; then
 fi
 
 
-echo -n "checking for $GETTEXTIZE ... "
+$ECHO_N "checking for $GETTEXTIZE ... "
 if ($GETTEXTIZE --version) < /dev/null > /dev/null 2>&1; then
     VER=`$GETTEXTIZE --version \
          | grep glib-gettextize | sed "s/.* \([0-9.]*\)/\1/"`
@@ -159,7 +168,7 @@ else
 fi
 
 
-echo -n "checking for $INTLTOOLIZE >= $INTLTOOL_REQUIRED_VERSION ... "
+$ECHO_N "checking for $INTLTOOLIZE >= $INTLTOOL_REQUIRED_VERSION ... "
 if (intltoolize --version) < /dev/null > /dev/null 2>&1; then
     VER=`$INTLTOOLIZE --version \
          | grep intltoolize | sed "s/.* \([0-9.]*\)/\1/"`
@@ -178,7 +187,7 @@ if test -z "$BIN_CONVERT"; then
   BIN_CONVERT=`which convert`
 fi
 
-echo -n "checking for ImageMagick 'convert' utility ... "
+$ECHO_N "checking for ImageMagick 'convert' utility ... "
 if test -x "$BIN_CONVERT"; then
   echo $BIN_CONVERT
 else
@@ -196,7 +205,7 @@ if test -z "$BIN_AWK"; then
   BIN_AWK=`which awk`
 fi
 
-echo -n "checking for AWK ... "
+$ECHO_N "checking for AWK ... "
 if test -x "$BIN_AWK"; then
   echo $BIN_AWK
 else
