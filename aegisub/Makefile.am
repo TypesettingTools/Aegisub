@@ -2,14 +2,20 @@ AUTOMAKE_OPTIONS = foreign
 SUFFIXES = .c .cpp .rc
 noinst_LIBRARIES= 
 
-SUBDIRS = bitmaps posix
+if BUILD_DARWIN
+libosxutil_subdir = libosxutil
+libosxutil_lib = libosxutil/libosxutil.a
+libosxutil_ldflags = -framwork CoreFoundation
+endif
+
+SUBDIRS = bitmaps posix $(libosxutil_subdir)
 
 AM_CXXFLAGS = -DAEGISUB -Iposix -include posix/defines.h -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@
 
 bin_PROGRAMS = aegisub
-aegisub_LDADD = posix/libposix.a
+aegisub_LDADD = posix/libposix.a $(libosxutil_lib)
 aegisub_CPPFLAGS = @FREETYPE_CFLAGS@
-aegisub_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@
+aegisub_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags)
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@
 
 if BUILD_DARWIN
