@@ -73,7 +73,6 @@ struct VersionInfoStruct {
 		wxString SCMStr, VersionStr;
 
 		// Update this whenever a new version is released
-		VersionNumber = _T("v2.1.6");
 #ifdef _DEBUG
 		IsDebug = true;
 #else
@@ -103,8 +102,10 @@ struct VersionInfoStruct {
 		}
 
 #ifdef FINAL_RELEASE
+		VersionNumber = _T("v2.2.0");
 		IsRelease = true;
 #else
+		VersionNumber = _T("v2.1.6");
 		IsRelease = false;
 #endif
 		VersionStr = wxString::Format(_T("%s%s"), VersionNumber, IsRelease ? _T("") : _T(" RELEASE PREVIEW"));
