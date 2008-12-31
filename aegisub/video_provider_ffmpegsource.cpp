@@ -127,7 +127,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		throw ErrorMsg;
 	}
 
-	VideoSource = FFMS_CreateVideoSource(FileNameWX.char_str(), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
+	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
 	if (VideoSource == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
 		ErrorMsg << _T("Failed to open video track: ") << temp;

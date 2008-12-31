@@ -124,7 +124,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		throw MsgString;
 	}
 
-	AudioSource = FFMS_CreateAudioSource(FileNameWX.char_str(), TrackNumber, Index, FFMSErrMsg, MsgSize);
+	AudioSource = FFMS_CreateAudioSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, FFMSErrMsg, MsgSize);
 	if (!AudioSource) {
 			wxString temp(FFMSErrMsg, wxConvUTF8);
 			MsgString << _T("Failed to open audio track: ") << temp;
