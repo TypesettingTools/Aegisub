@@ -5,7 +5,7 @@ noinst_LIBRARIES=
 if BUILD_DARWIN
 libosxutil_subdir = libosxutil
 libosxutil_lib = libosxutil/libosxutil.a
-libosxutil_ldflags = -framwork CoreFoundation
+libosxutil_ldflags = -framework CoreFoundation
 endif
 
 SUBDIRS = bitmaps posix $(libosxutil_subdir)
