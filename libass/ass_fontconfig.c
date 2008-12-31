@@ -28,6 +28,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/param.h>
 #include <inttypes.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -36,6 +37,10 @@
 #include "ass.h"
 #include "ass_library.h"
 #include "ass_fontconfig.h"
+
+#ifdef BUILD_DARWIN
+#include "../aegisub/libosxutil/libosxutil.h"
+#endif
 
 #ifdef CONFIG_FONTCONFIG
 #include <fontconfig/fontconfig.h>
@@ -402,6 +407,10 @@ fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, con
 	int rc;
 	fc_instance_t* priv = calloc(1, sizeof(fc_instance_t));
 	const char* dir = library->fonts_dir;
+#ifdef BUILD_DARWIN
+	char config_path[MAXPATHLEN];
+	char *config_dir;
+#endif
 	int i;
 	
 	if (!fc) {
@@ -410,11 +419,25 @@ fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, con
 		goto exit;
 	}
 
+#ifdef BUILD_DARWIN
+	config_dir = OSX_GetBundleResourcesDirectory();
+	snprintf(config_path, MAXPATHLEN, "%s/etc/fonts/fonts.conf", config_dir);
+	free(config_dir);
+	priv->config = FcConfigCreate();
+	rc = FcConfigParseAndLoad(priv->config, config_path, FcTrue);
+    FcConfigBuildFonts(priv->config);
+    FcConfigSetCurrent(priv->config);
+
+	if (!rc) {
+#else
 	rc = FcInit();
 	assert(rc);
 
 	priv->config = FcConfigGetCurrent();
+
 	if (!priv->config) {
+#endif
+
 		mp_msg(MSGT_ASS, MSGL_FATAL, MSGTR_LIBASS_FcInitLoadConfigAndFontsFailed);
 		goto exit;
 	}
