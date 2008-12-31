@@ -33,7 +33,7 @@ extern "C" {
 #include "utils.h"
 #include "ffms.h"
 
-#ifdef _WIN32
+#ifdef HAALITS
 #	define _WIN32_DCOM
 #	include <windows.h>
 #	include <tchar.h>
@@ -101,6 +101,8 @@ public:
     AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
+#ifdef HAALITS
+
 class HaaliTSVideoSource : public VideoBase {
 private:
 	CComPtr<IMMContainer> pMMC;
@@ -112,5 +114,7 @@ public:
 	~HaaliTSVideoSource();
     AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
+
+#endif // HAALITS
 
 #endif

@@ -561,6 +561,8 @@ AVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSi
 	return OutputFrame(DecodeFrame);
 }
 
+#ifdef HAALITS
+
 void HaaliTSVideoSource::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
@@ -789,3 +791,5 @@ AVFrameLite *HaaliTSVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSiz
 	LastFrameNum = n;
 	return OutputFrame(DecodeFrame);
 }
+
+#endif // HAALITS
