@@ -19,6 +19,8 @@ mkdir -v ${PKG_DIR}
 mkdir -v ${PKG_DIR}/Contents
 mkdir -v ${PKG_DIR}/Contents/MacOS
 mkdir -v ${PKG_DIR}/Contents/Resources
+mkdir -v ${PKG_DIR}/Contents/SharedSupport
+mkdir -v ${PKG_DIR}/Contents/SharedSupport/dictionaries
 
 echo
 echo "---- Copying Skel Files ----"
