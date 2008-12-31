@@ -36,6 +36,7 @@ AC_CONFIG_HEADER([aegisub/posix/acconf.h])
 AC_GNU_SOURCE
 AC_CANONICAL_HOST
 
+
 ###########################
 # Check target architecture
 ###########################
@@ -119,11 +120,29 @@ fi
 
 AC_ARG_ENABLE(build-dist)
 if test "$enable_build_dist" = "yes"; then
-  SVN_VERSION=`svnversion .`
-  PACKAGE_STRING="${PACKAGE_STRING}-r$SVN_VERSION"
-  PACKAGE_VERSION="${PACKAGE_VERSION}-r$SVN_VERSION"
-  VERSION="${VERSION}-r$SVN_VERSION"
+  `svnversion > $srcdir/svn_version`
 fi
+
+AC_MSG_CHECKING([for svn version])
+if test -d "$srcdir/.svn"; then
+  SVN_VERSION=`svnversion $srcdir`
+  AC_MSG_RESULT([$SVN_VERSION from "svnversion $srcdir"])
+elif test -f "$srcdir/svn_version"; then
+  SVN_VERSION=`cat $srcdir/svn_version`
+  AC_MSG_RESULT([$SVN_VERSION from "$srcdir/svn_version"])
+else
+  SVN_VERSION="_unknown"
+  AC_MSG_RESULT([not found])
+fi
+
+PACKAGE_STRING="${PACKAGE_STRING}-r$SVN_VERSION"
+PACKAGE_VERSION="${PACKAGE_VERSION}-r$SVN_VERSION"
+VERSION="${VERSION}-r$SVN_VERSION"
+
+AC_MSG_CHECKING([for build date])
+BUILD_DATE=`date "+%Y-%m-%d %H:%M %Z"`
+AC_MSG_RESULT($BUILD_DATE)
+
 
 
 ###################################################
