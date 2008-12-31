@@ -2,30 +2,55 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+
+    <!-- General settings -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
-
 	<key>CFBundleExecutable</key>
 	<string>aegisub</string>
 	<key>CFBundleIconFile</key>
 	<string>Aegisub</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.aegisub.aegisub</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>Aegisub</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>agsu</string>
+
+    <!-- Bundle version -->
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
+
+    <!-- aegisub version -->
+    <key>CFBundleShortVersionString</key>
+    <string>@VERSION@</string>
+
+    <key>CFBundleLongVersionString</key>
+    <string>@VERSION@, Copyright 2003-2005, aegisub http://www.aegisub.net/</string>
+
+    <!-- Values: i386, ppc, x86_65, ppc64 -->
+    <key>LSArchitecturePriority</key>
+    <string>i386</string>
+
+    <key>CFBundleGetInfoString</key>
+    <string>@BUILD_DATE@ @SVN_REVSION@ @VERSION@</string>
+
+    <!-- Whether to allow multiple instances across user logins -->
+    <key>LSMultipleInstancesProhibited</key>
+    <false/>
+
+    <!-- Map resource files to memory -->
 	<key>CSResourcesFileMapped</key>
 	<true/>
 
+    <!-- Supported document types -->
 	<key>CFBundleDocumentTypes</key>
 	<array>
+        <!-- .ass -->
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
@@ -40,8 +65,12 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSPersistentStoreTypeKey</key>
-			<string>XML</string>
+			<string>Binary</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
 		</dict>
+
+        <!-- .ssa -->
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
@@ -56,8 +85,12 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSPersistentStoreTypeKey</key>
-			<string>XML</string>
+			<string>Binary</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
 		</dict>
+
+        <!-- .srt -->
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
@@ -72,8 +105,12 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSPersistentStoreTypeKey</key>
-			<string>XML</string>
+			<string>Binary</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
 		</dict>
+
+        <!-- .txt -->
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
@@ -88,7 +125,9 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSPersistentStoreTypeKey</key>
-			<string>XML</string>
+			<string>binary</string>
+            <key>LSHandlerRank</key>
+            <string>None</string>
 		</dict>
 	</array>
 
