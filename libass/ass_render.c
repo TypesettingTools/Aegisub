@@ -241,12 +241,6 @@ ass_renderer_t* ass_renderer_init(ass_library_t* library)
 	memset(&text_info, 0, sizeof(text_info));
 
 	error = FT_Init_FreeType( &ft );
-
-char path[4096];
-*path='\0';
-getcwd(path,4096);
-printf("PATH: (%s)\n", path);
-
 	if ( error ) { 
 		mp_msg(MSGT_ASS, MSGL_FATAL, MSGTR_LIBASS_FT_Init_FreeTypeFailed);
 		goto ass_init_exit;
