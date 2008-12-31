@@ -22,16 +22,16 @@
 	<string>agsu</string>
 
     <!-- Bundle version -->
-    <!-- This should be bumped on any major changes --->
+    <!-- This should be bumped on any major changes -->
 	<key>CFBundleVersion</key>
 	<string>1</string>
 
     <!-- aegisub version -->
     <key>CFBundleShortVersionString</key>
-    <string>@VERSION@</string>
+    <string>@PLIST_VERSION@</string>
 
     <key>CFBundleLongVersionString</key>
-    <string>@VERSION@ (@SVN_REVISION@), Copyright 2005-2009, aegisub http://www.aegisub.net/</string>
+    <string>@PLIST_VERSION@ (@PLIST_SVN_REVISION@), Copyright 2005-2009, aegisub http://www.aegisub.net/</string>
 
     <!-- Values: i386, ppc, x86_65, ppc64 -->
     <key>LSArchitecturePriority</key>
@@ -39,7 +39,7 @@
 
     <!-- Displayed in the 'Get Info' context menu dialogue -->
     <key>CFBundleGetInfoString</key>
-    <string>aegisub version @VERSION@ (@SVN_REVISION) built on @BUILD_DATE@ http://www.aegisub.net/</string>
+    <string>aegisub version @PLIST_VERSION@ (@PLIST_SVN_REVISION@) built on @PLIST_BUILD_DATE@ http://www.aegisub.net/</string>
 
     <!-- Whether to allow multiple instances across user logins -->
     <key>LSMultipleInstancesProhibited</key>

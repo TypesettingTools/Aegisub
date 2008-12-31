@@ -23,7 +23,7 @@ mkdir -v ${PKG_DIR}/Contents/Resources
 echo
 echo "---- Copying Skel Files ----"
 cp -v ${SKEL_DIR}/Contents/Resources/* ${PKG_DIR}/Contents/Resources
-cp -v ${SKEL_DIR}/Contents/Info.plist ${PKG_DIR}/Contents
+cat ${SKEL_DIR}/Contents/Info.plist |sed -f scripts/osx-bundle.sed > ${PKG_DIR}/Contents/Info.plist
 
 echo
 echo "---- Binaries ----"
