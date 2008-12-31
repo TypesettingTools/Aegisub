@@ -4,6 +4,26 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+
+	<key>CFBundleExecutable</key>
+	<string>aegisub</string>
+	<key>CFBundleIconFile</key>
+	<string>Aegisub</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.aegisub.aegisub</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Aegisub</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>agsu</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -71,23 +91,6 @@
 			<string>XML</string>
 		</dict>
 	</array>
-	<key>CFBundleExecutable</key>
-	<string>aegisub</string>
-	<key>CFBundleIconFile</key>
-	<string>Aegisub</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.aegisub.aegisub</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>Aegisub</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleSignature</key>
-	<string>agsu</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-	<key>CSResourcesFileMapped</key>
-	<true/>
+
 </dict>
 </plist>
