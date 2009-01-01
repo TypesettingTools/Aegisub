@@ -104,20 +104,6 @@ PKG_PROG_PKG_CONFIG([pkgconfig_required_version])
 #################
 AM_MAINTAINER_MODE
 
-AC_ARG_VAR([DEBUG_FLAGS], [Debug flag to use with --enable debug (default: -g)])
-if test -z "$DEBUG_FLAGS"; then
-  DEBUG_FLAGS="-g";
-fi
-
-AC_MSG_CHECKING([whether to turn on debugging])
-AC_ARG_ENABLE(debug, [  --enable-debug          turn on debugging (default=no)])
-if test "$enable_debug" = "yes"; then
-  AC_MSG_RESULT([yes ($DEBUG_FLAGS)])
-  CPPFLAGS="$DEBUG_FLAGS $CPPFLAGS"
-else
-  AC_MSG_RESULT([no])
-fi
-
 AC_ARG_ENABLE(build-dist)
 if test "$enable_build_dist" = "yes"; then
   `svnversion > $srcdir/svn_revision`
@@ -902,6 +888,28 @@ fi
 if test "$with_agi_cv_wxstc" = "no" || test "$enable_check_wx_stc:" = "no"; then
   AC_MSG_FAILURE([wxWidgets StyledTextCtrl support missing])
 fi
+
+
+######################################################
+# Debugging support
+# This is added last so it doesn't slow down configure
+# If you want it earlier add it to your CXXFLAGS.
+######################################################
+
+AC_ARG_VAR([DEBUG_FLAGS], [Debug flag to use with --enable debug (default: -g)])
+if test -z "$DEBUG_FLAGS"; then
+  DEBUG_FLAGS="-g";
+fi
+
+AC_MSG_CHECKING([whether to turn on debugging])
+AC_ARG_ENABLE(debug, [  --enable-debug          turn on debugging (default=no)])
+if test "$enable_debug" = "yes"; then
+  AC_MSG_RESULT([yes ($DEBUG_FLAGS)])
+  CPPFLAGS="$DEBUG_FLAGS $CPPFLAGS"
+else
+  AC_MSG_RESULT([no])
+fi
+
 
 
 ################################################
