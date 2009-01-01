@@ -52,14 +52,20 @@ StandardPaths *StandardPaths::GetInstance() {
 ///////////////
 // Constructor
 StandardPaths::StandardPaths() {
+   wxStandardPathsBase &paths = wxStandardPaths::Get();
+
+#ifdef __UNIX__
+   // Relocation support, this is required to set the prefix to all
+   // wx StandardPaths.
+   static_cast<wxStandardPaths&>(paths).SetInstallPrefix(wxT(INSTALL_PREFIX));
+#endif
+
 	// Get paths
-	//wxFileName dataDir(wxStandardPaths::Get().GetDataDir());
-	wxString dataDir = wxStandardPaths::Get().GetDataDir();
-	wxString userDir = wxStandardPaths::Get().GetUserDataDir();
-	wxString tempDir = wxStandardPaths::Get().GetTempDir();
+	wxString dataDir = paths.GetDataDir();
+	wxString userDir = paths.GetUserDataDir();
+	wxString tempDir = paths.GetTempDir();
 
 	// Set paths
-	//DoSetPathValue(_T("?data"),dataDir.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE));
 	DoSetPathValue(_T("?data"),dataDir);
 	DoSetPathValue(_T("?user"),userDir);
 	DoSetPathValue(_T("?temp"),tempDir);
@@ -67,10 +73,6 @@ StandardPaths::StandardPaths() {
 	// Create paths if they don't exist
 	wxFileName folder(userDir + _T("/"));
 	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
-	//folder.Assign(dataDir + _T("/"));
-	//if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
-	//folder.Assign(tempDir + _T("/"));
-	//if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
 }
 
 
