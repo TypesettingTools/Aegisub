@@ -902,7 +902,7 @@ int main(void) {
 } ])
 fi
 
-if test "$with_agi_cv_wxstc" = "no" || test "$enable_check_wx_stc:" != "no"; then
+if test "$with_agi_cv_wxstc" = "no" || test "$enable_check_wx_stc:" = "no"; then
   AC_MSG_FAILURE([wxWidgets StyledTextCtrl support missing])
 fi
 
