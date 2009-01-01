@@ -86,6 +86,8 @@ AC_C_BIGENDIAN(
 aegisubdatadir="$datadir/aegisub"
 AC_SUBST(aegisubdatadir)
 
+# Install prefix used by wxStandardPaths::SetInstallPrefix.
+AC_DEFINE_UNQUOTED([INSTALL_PREFIX], ["$prefix"], [Default install prefix, or --prefix.])
 
 ####################
 # Check for programs
