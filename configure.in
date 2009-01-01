@@ -891,9 +891,9 @@ if test "$with_agi_cv_wxopengl" = "no" || test "$enable_check-wx-opengl" = "no";
 fi
 
 
-AC_ARG_ENABLE(wx-stc, [  --disable-check--wx-stc Force wxwidgets StyledTextCtrl support.])
+AC_ARG_ENABLE(check-wx-stc, [  --disable-check-wx-stc Force wxwidgets StyledTextCtrl support.])
 
-if test "$enable_check-wx-stc" = "yes"; then
+if test "$enable_check_wx_stc:" != "no"; then
   AC_AGI_LINK([wxWidgets StyledTextCtrl support], [wxstc], [wx/stc/stc.h], [$WX_CFLAGS], [$WX_LIBS],[
 #include <wx/stc/stc.h>
 int main(void) {
@@ -902,7 +902,7 @@ int main(void) {
 } ])
 fi
 
-if test "$with_agi_cv_wxstc" = "no" || test "$enable_check-wx-stc" = "yes"; then
+if test "$with_agi_cv_wxstc" = "no" || test "$enable_check_wx_stc:" != "no"; then
   AC_MSG_FAILURE([wxWidgets StyledTextCtrl support missing])
 fi
 
