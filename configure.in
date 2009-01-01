@@ -870,8 +870,8 @@ if test "$have_wxconfig" != 1; then
 the libraries to your LDFLAGS, CXX/CFLAGS.])
 fi
 
-aegisub_save_CPPLAGS="$CPPLAGS"
-CPPFLAGS="$WX_CFLAGS"
+#aegisub_save_CPPFLAGS="$CPPFLAGS"
+#CPPFLAGS="$WX_CFLAGS"
 
 AC_ARG_ENABLE(check-wx-opengl, [--disable-check-wx-opengl
                         Force wxwidgets OpenGL support. ])
