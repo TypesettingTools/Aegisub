@@ -54,7 +54,7 @@ StandardPaths *StandardPaths::GetInstance() {
 StandardPaths::StandardPaths() {
    wxStandardPathsBase &paths = wxStandardPaths::Get();
 
-#ifdef __UNIX__
+#if defined(__UNIX__) && !defined(__APPLE__)
    // Relocation support, this is required to set the prefix to all
    // wx StandardPaths.
    static_cast<wxStandardPaths&>(paths).SetInstallPrefix(wxT(INSTALL_PREFIX));
