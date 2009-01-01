@@ -112,6 +112,8 @@ int AegisubLocale::PickLanguage() {
 // Get list of available languages
 wxArrayInt AegisubLocale::GetAvailableLanguages() {
 	wxArrayInt final;
+
+#ifdef __WINDOWS__
 	wxString temp1;
 
 	// Open directory
@@ -131,5 +133,16 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 			}
 		}
 	}
+
+#else
+
+	wxString langs[] = { _T("en"), _T("pt_BR") }; // TODO: fill me
+	for (size_t i=0; i<sizeof(langs); i++) {
+		const wxLanguageInfo *lang = wxLocale::FindLanguageInfo(langs[i]);
+		if (lang) final.Add(lang->Language);
+	}
+
+#endif
+
 	return final;
 }
