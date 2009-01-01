@@ -87,7 +87,7 @@ struct VersionInfoStruct {
 #ifdef BUILD_CREDIT
 		BuildCredit = _T_rec(BUILD_CREDIT);
 #else
-		BuildCredit = _T("anonymous");
+		BuildCredit = _T("(unknown)");
 #endif
 
 		if (SvnRev > 0) {
@@ -110,7 +110,11 @@ struct VersionInfoStruct {
 #endif
 		VersionStr = wxString::Format(_T("%s%s"), VersionNumber, IsRelease ? _T("") : _T(" RELEASE PREVIEW"));
 
+#ifdef BUILD_CREDIT
 		LongVersionString = wxString::Format(_T("%s (%s%s, %s)"), VersionStr.c_str(), IsDebug ? _T("debug, ") : _T(""), SCMStr.c_str(), BuildCredit);
+#else
+		LongVersionString = wxString::Format(_T("%s (%s%s)"), VersionStr.c_str(), IsDebug ? _T("debug, ") : _T(""), SCMStr.c_str());
+#endif
 		ShortVersionString = wxString::Format(_T("%s %s%s"), VersionStr.c_str(), SCMStr.c_str(), IsDebug ? _T(" debug") : _T(""));
 
 		if (IsRelease && !IsDebug)
