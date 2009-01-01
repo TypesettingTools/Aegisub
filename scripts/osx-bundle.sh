@@ -19,12 +19,18 @@ mkdir -v ${PKG_DIR}
 mkdir -v ${PKG_DIR}/Contents
 mkdir -v ${PKG_DIR}/Contents/MacOS
 mkdir -v ${PKG_DIR}/Contents/Resources
+mkdir -v ${PKG_DIR}/Contents/Resources/etc
+mkdir -v ${PKG_DIR}/Contents/Resources/etc/fonts
+mkdir -v ${PKG_DIR}/Contents/Resources/etc/fonts/conf.d
 mkdir -v ${PKG_DIR}/Contents/SharedSupport
 mkdir -v ${PKG_DIR}/Contents/SharedSupport/dictionaries
 
 echo
 echo "---- Copying Skel Files ----"
-cp -v ${SKEL_DIR}/Contents/Resources/* ${PKG_DIR}/Contents/Resources
+find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
+cp ${SKEL_DIR}/Contents/Resources/*.icns ${PKG_DIR}/Contents/Resources
+cp ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.* ${PKG_DIR}/Contents/Resources/etc/fonts
+cp ${SKEL_DIR}/Contents/Resources/etc/fonts/conf.d/*.conf ${PKG_DIR}/Contents/Resources/etc/fonts/conf.d
 cat ${SKEL_DIR}/Contents/Info.plist |sed -f scripts/osx-bundle.sed > ${PKG_DIR}/Contents/Info.plist
 
 echo
