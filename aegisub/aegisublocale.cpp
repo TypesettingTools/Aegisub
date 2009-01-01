@@ -136,8 +136,22 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 
 #else
 
-	wxString langs[] = { _T("en"), _T("pt_BR") }; // TODO: fill me
-	for (size_t i=0; i<sizeof(langs); i++) {
+	wchar_t* langs[] = {
+		_T("ca"),
+		_T("da"),
+		_T("de"),
+		_T("es"),
+		_T("fr_FR"),
+		_T("hu"),
+		_T("it"),
+		_T("ko"),
+		_T("ru"),
+		_T("pt_BR"),
+		_T("zh_TW")
+	};
+
+	size_t len = sizeof(langs)/sizeof(wchar_t*);
+	for (size_t i=0; i<len; i++) {
 		const wxLanguageInfo *lang = wxLocale::FindLanguageInfo(langs[i]);
 		if (lang) final.Add(lang->Language);
 	}
