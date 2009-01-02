@@ -174,8 +174,6 @@ bool AegisubApp::OnInit() {
 
 		// Set locale
 		int lang = Options.AsInt(_T("Locale Code"));
-printf("lang: %d\n", lang);
-
 		if (lang == -1) {
 			lang = locale.PickLanguage();
 			Options.SetInt(_T("Locale Code"),lang);
