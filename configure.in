@@ -108,20 +108,24 @@ AM_MAINTAINER_MODE
 
 AC_ARG_ENABLE(build-dist)
 if test "$enable_build_dist" = "yes"; then
-  `svnversion > $srcdir/svn_revision`
+  `svnversion $srcdir | sed "s/\(^@<:@0-9@:>@*\).*/\1/" > $srcdir/svn_revision`
 fi
 
+# XXX: This needs to be fixed to handle mixed revisions properly
+#      There is probably a better way to handle it as well.
 AC_MSG_CHECKING([for svn version])
 if test -d "$srcdir/.svn"; then
-  SVN_REVISION=`svnversion $srcdir`
+  SVN_REVISION=`svnversion $srcdir | sed "s/\(^@<:@0-9@:>@*\).*/\1/"`
   AC_MSG_RESULT([$SVN_REVISION from "svnversion $srcdir"])
 elif test -f "$srcdir/svn_revision"; then
   SVN_REVISION=`cat $srcdir/svn_revision`
   AC_MSG_RESULT([$SVN_REVISION from "$srcdir/svn_revision"])
 else
-  SVN_REVISION="_unknown"
   AC_MSG_RESULT([not found])
+  AC_MSG_FAILURE([unable to get SVN Revision from svn_version (file) or 'svnversion $srcdir'])
 fi
+
+AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, used for config.dat and verison.cpp])
 
 PACKAGE_STRING="${PACKAGE_STRING}-r$SVN_REVISION"
 PACKAGE_VERSION="${PACKAGE_VERSION}-r$SVN_REVISION"
