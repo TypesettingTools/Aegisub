@@ -89,6 +89,21 @@ AC_SUBST(aegisubdatadir)
 # Install prefix used by wxStandardPaths::SetInstallPrefix.
 AC_DEFINE_UNQUOTED([INSTALL_PREFIX], ["$prefix"], [Default install prefix, or --prefix.])
 
+AC_ARG_WITH(build-credit, [--with-build-credit=NAME  Build credit shown in the program title.], [use_build_credit="yes"])
+
+AC_MSG_CHECKING([whether BUILD_CREDIT has been set])
+if test "$use_build_credit" = "yes"; then
+  if test "$with_build_credit" = "yes" || test -z "$with_build_credit"; then
+    AC_MSG_FAILURE([You must set a value eg --with-build-credit=<username>])
+  else
+    AC_MSG_RESULT([yes ($with_build_credit)])
+    AC_DEFINE_UNQUOTED([BUILD_CREDIT], ["$with_build_credit"], [Build credit supplied in application title using --with-build-credit=])
+  fi
+else
+  AC_MSG_RESULT([no])
+fi
+
+
 ####################
 # Check for programs
 ####################
