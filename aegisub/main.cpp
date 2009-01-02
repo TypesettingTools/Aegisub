@@ -171,18 +171,17 @@ bool AegisubApp::OnInit() {
 		Hotkeys.Load();
 
 		StartupLog(_T("Initialize final locale"));
-#ifdef __WINDOWS__
+
 		// Set locale
 		int lang = Options.AsInt(_T("Locale Code"));
+printf("lang: %d\n", lang);
+
 		if (lang == -1) {
 			lang = locale.PickLanguage();
 			Options.SetInt(_T("Locale Code"),lang);
 			Options.Save();
 		}
 		locale.Init(lang);
-#else
-		locale.Init(wxLANGUAGE_DEFAULT);
-#endif
 
 		// Load plugins
 		plugins = new PluginManager();
