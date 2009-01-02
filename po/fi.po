@@ -91,15 +91,15 @@ msgstr "OEM"
 
 #: audio_box.cpp:69
 msgid "Seek bar"
-msgstr "Kuvaselain"
+msgstr "Ääninäkymäselain"
 
 #: audio_box.cpp:87
 msgid "Horizontal zoom"
-msgstr "Leveystarkennin"
+msgstr "Aallokon leveys"
 
 #: audio_box.cpp:90
 msgid "Vertical zoom"
-msgstr "Korkeustarkennin"
+msgstr "Aallokon korkeus"
 
 #: audio_box.cpp:93
 msgid "Audio Volume"
@@ -107,7 +107,7 @@ msgstr "Äänenvoimakkuus"
 
 #: audio_box.cpp:100
 msgid "Link vertical zoom and volume sliders"
-msgstr "Kytke aallonkorkeus- ja volyymisäätimet yhteen"
+msgstr "Kytke korkeus- ja äänenvoimakkuusvetimet yhteen"
 
 #: audio_box.cpp:127
 msgid "Previous line or syllable (%KEY%/%KEY%)"
@@ -131,11 +131,11 @@ msgstr "Pysäytä (%KEY%)"
 
 #: audio_box.cpp:143
 msgid "Play 500 ms before selection (%KEY%)"
-msgstr "Toista 500ms valinnan lopun jälkeen (%KEY%)"
+msgstr "Toista 500ms valinnan jälkeen (%KEY%)"
 
 #: audio_box.cpp:146
 msgid "Play 500 ms after selection (%KEY%)"
-msgstr "Toista 500ms ennen valinnan alkua (%KEY%)"
+msgstr "Toista 500ms ennen valintaa (%KEY%)"
 
 #: audio_box.cpp:149
 msgid "Play first 500ms of selection (%KEY%)"
@@ -151,11 +151,11 @@ msgstr "Toista valinnan alusta 500ms (%KEY%)"
 
 #: audio_box.cpp:159
 msgid "Add lead in (%KEY%)"
-msgstr "Lisää alkuun (%KEY%)"
+msgstr "Lisää etuaikaa (%KEY%)"
 
 #: audio_box.cpp:162
 msgid "Add lead out (%KEY%)"
-msgstr "Lisää lopetusta (%KEY%)"
+msgstr "Lisää jälkiaikaa (%KEY%)"
 
 #: audio_box.cpp:166
 msgid "Commit changes (%KEY%/%KEY%)"
@@ -167,11 +167,11 @@ msgstr "Siirry valintaan"
 
 #: audio_box.cpp:173
 msgid "Automatically commit all changes"
-msgstr "Hyväksy automaattisesti kaikki muutokset"
+msgstr "Hyväksyy automaattisesti kaikki muutokset"
 
 #: audio_box.cpp:177
 msgid "Auto goes to next line on commit"
-msgstr "Siirry automaattisesti seuraavalle riville hyväksynnässä"
+msgstr "Kun hyväksytään, siirry automaattisesti seuraavalle riville"
 
 #: audio_box.cpp:181
 msgid "Auto scrolls audio display to selected line"
@@ -183,7 +183,7 @@ msgstr "Aallokon analysointitapa"
 
 #: audio_box.cpp:189
 msgid "Enable Medusa-Style Timing Shortcuts"
-msgstr "Ota käyttöön Medusan tyyliset ajoitus pikanapit"
+msgstr "Ota käyttöön Medusa -tyyliset ajoituspikanäppäimet"
 
 #: audio_box.cpp:200
 msgid "Karaoke"
@@ -191,23 +191,23 @@ msgstr "Karaoke"
 
 #: audio_box.cpp:201
 msgid "Toggle karaoke mode"
-msgstr "Vaihda karaoke tilaa"
+msgstr "Vaihda karaoke ajoitustila päälle/pois"
 
 #: audio_box.cpp:553
 msgid "Cancel Split"
-msgstr "Peruuta erotus"
+msgstr "Peruuta"
 
 #: audio_box.cpp:554
 msgid "Discard all splits and leave split-mode"
-msgstr "Hylkää kaikki erotukset ja sulje erotustila"
+msgstr "Peruuta tavutukset ja poistu tavutustilasta"
 
 #: audio_box.cpp:555
 msgid "Accept Split"
-msgstr "Hyväksy erotus"
+msgstr "Hyväksy"
 
 #: audio_box.cpp:556
 msgid "Commit splits and leave split-mode"
-msgstr "Hyväksy erotukset ja poisti erotustilasta"
+msgstr "Hyväksy tavutukset ja poistu tavutustilasta"
 
 #: audio_box.cpp:558
 msgid "Join"
@@ -215,15 +215,15 @@ msgstr "Yhdistä"
 
 #: audio_box.cpp:559
 msgid "Join selected syllables"
-msgstr "Yhdistä valitut tavut"
+msgstr "Yhdistää valitut tavut"
 
 #: audio_box.cpp:560
 msgid "Split"
-msgstr "Erota"
+msgstr "Tavuta"
 
 #: audio_box.cpp:561
 msgid "Enter split-mode"
-msgstr "Valitse eroitustila"
+msgstr "Tavuta lausetta lisää"
 
 #: audio_display.cpp:2233
 #: audio_display.cpp:2288
@@ -571,7 +571,7 @@ msgstr "Nimi"
 
 #: dialog_automation.cpp:72
 msgid "Filename"
-msgstr "Tiedoston nimi"
+msgstr "Nimi"
 
 #: dialog_automation.cpp:73
 msgid "Description"
@@ -748,7 +748,7 @@ msgstr "Väri:"
 
 #: dialog_dummy_video.cpp:148
 msgid "Frame rate (fps):"
-msgstr "Kuvataajuus (fps):"
+msgstr "Kuvaa/s:"
 
 #: dialog_dummy_video.cpp:150
 msgid "Duration (frames):"
@@ -761,7 +761,7 @@ msgstr "Kokonaiskesto: %d:%02d:%02d.%03d"
 
 #: dialog_dummy_video.cpp:261
 msgid "Invalid fps or length value"
-msgstr "Laiton fps tai kesto"
+msgstr "Laiton kuvaa/s tai kesto"
 
 #: dialog_export.cpp:54
 msgid "Export"
@@ -1261,7 +1261,7 @@ msgstr "Avaa automaattisesti käytetyt video/ääniraita tiedostot:"
 #: dialog_options.cpp:188
 #: dialog_options.cpp:361
 msgid "Never"
-msgstr "Koskaan"
+msgstr "Ei koskaan"
 
 #: dialog_options.cpp:188
 #: dialog_options.cpp:361
@@ -1350,32 +1350,32 @@ msgstr "Korosta tekstitysrivi, joka näkyy videossa"
 
 #: dialog_options.cpp:301
 msgid "Standard foreground"
-msgstr "Fontin väri"
+msgstr "Fontti"
 
 #: dialog_options.cpp:301
 msgid "Standard background"
-msgstr "Taustan väri"
+msgstr "Normaali tausta"
 
 #: dialog_options.cpp:301
 msgid "Selection foreground"
-msgstr "Valitun rivin fontin väri"
+msgstr "Valitun rivin fontti"
 
 #: dialog_options.cpp:302
 #: dialog_options.cpp:497
 msgid "Selection background"
-msgstr "Valitun rivin tausta väri"
+msgstr "Valitun rivin tausta"
 
 #: dialog_options.cpp:302
 msgid "Comment background"
-msgstr "Kommentoidun rivin taustan väri"
+msgstr "Kommentoidun rivin tausta"
 
 #: dialog_options.cpp:302
 msgid "Selected comment background"
-msgstr "Valitun ja kommentoidun rivin taustan väri"
+msgstr "Valitun ja kommentoidun rivin tausta"
 
 #: dialog_options.cpp:303
 msgid "Collision foreground"
-msgstr "Törmäävien rivien fontin väri"
+msgstr "Törmäävien rivien fontti"
 
 #: dialog_options.cpp:303
 msgid "Line in frame background"
@@ -1416,7 +1416,7 @@ msgstr "Oletus kuvakoko:"
 
 #: dialog_options.cpp:376
 msgid "Fast jump step in frames: "
-msgstr "Hyppyaskel videossa, kuinka monta kuvaa/hyppy: "
+msgstr "Kuinka monta kuvaa/hyppyaskel: "
 
 #: dialog_options.cpp:380
 msgid "Screenshot save path: "
@@ -1424,7 +1424,7 @@ msgstr "Kuvankaappausten tallennuspolku: "
 
 #: dialog_options.cpp:386
 msgid "Show keyframes in slider"
-msgstr "Näytä avainkuvat videovetimessä"
+msgstr "Näytä avainkuvat kuvaselaimessa"
 
 #: dialog_options.cpp:392
 msgid "Video provider: "
@@ -1546,7 +1546,7 @@ msgstr "Valinnan tausta - muutettu väri"
 
 #: dialog_options.cpp:498
 msgid "Seconds boundary"
-msgstr "Alalaidan sekuntimäärien väri"
+msgstr "Sekuntien katkoviivan väri"
 
 #: dialog_options.cpp:498
 msgid "Waveform"
@@ -3142,7 +3142,7 @@ msgstr "Tiedoston nimi:"
 
 #: dialog_video_details.cpp:71
 msgid "FPS:"
-msgstr "FPS:"
+msgstr "Kuvaa/s:"
 
 #: dialog_video_details.cpp:73
 msgid "Resolution:"
@@ -3154,7 +3154,7 @@ msgstr "Pituus:"
 
 #: dialog_video_details.cpp:77
 msgid "Decoder:"
-msgstr "Purkaaja:"
+msgstr "Purkukodeekki:"
 
 #: export_clean_info.cpp:58
 msgid "Clean Script Info"
@@ -4803,7 +4803,7 @@ msgstr "Kuva"
 
 #: subs_edit_box.cpp:145
 msgid "Time by frame number"
-msgstr "Aika kuvanumeron mukaan"
+msgstr "Ajoita kuvalukuina"
 
 #: subs_edit_box.cpp:609
 msgid "actor change"
@@ -5047,55 +5047,55 @@ msgstr "ajoitus"
 
 #: subtitle_format.cpp:271
 msgid "All Supported Formats"
-msgstr "Kaikki tuetut formaatit"
+msgstr "Kaikki tuetut"
 
 #: subtitle_format.cpp:294
 msgid "15.000 FPS"
-msgstr "15.000 FPS"
+msgstr "15.000 kuvaa/s"
 
 #: subtitle_format.cpp:295
 msgid "23.976 FPS (Decimated NTSC)"
-msgstr "23.976 FPS (Decimated NTSC)"
+msgstr "23.976 kuvaa/s (Supistettu NTSC)"
 
 #: subtitle_format.cpp:296
 msgid "24.000 FPS (FILM)"
-msgstr "24.000 FPS (FILM)"
+msgstr "24.000 kuvaa/s (Elokuva)"
 
 #: subtitle_format.cpp:298
 msgid "25.000 FPS (PAL)"
-msgstr "25.000 FPS (PAL)"
+msgstr "25.000 kuvaa/s (PAL)"
 
 #: subtitle_format.cpp:299
 msgid "29.970 FPS (NTSC)"
-msgstr "29.970 FPS (NTSC)"
+msgstr "29.970 kuvaa/s (NTSC)"
 
 #: subtitle_format.cpp:301
 msgid "30.000 FPS"
-msgstr "30.000 FPS"
+msgstr "30.000 kuvaa/s"
 
 #: subtitle_format.cpp:302
 msgid "59.940 FPS (NTSC x2)"
-msgstr "59.940 FPS (NTSC x2)"
+msgstr "59.940 kuvaa/s (NTSC x2)"
 
 #: subtitle_format.cpp:303
 msgid "60.000 FPS"
-msgstr "60.000 FPS"
+msgstr "60.000 kuvaa/s"
 
 #: subtitle_format.cpp:304
 msgid "119.880 FPS (NTSC x4)"
-msgstr "119.880 FPS (NTSC x4)"
+msgstr "119.880 kuvaa/s (NTSC x4)"
 
 #: subtitle_format.cpp:305
 msgid "120.000 FPS"
-msgstr "120.000 FPS"
+msgstr "120.000 kuvaa/s"
 
 #: subtitle_format.cpp:309
 msgid "Please choose the appropriate FPS for the subtitles:"
-msgstr "Valitse sopiva FPS tekstitystiedostolle:"
+msgstr "Valitse sopiva kuvaa/s tekstitystiedostolle:"
 
 #: subtitle_format.cpp:309
 msgid "FPS"
-msgstr "FPS"
+msgstr "Kuvaa/s"
 
 #: subtitle_format_prs.cpp:143
 msgid "Exporting PRS"
@@ -5103,7 +5103,7 @@ msgstr "Viedään PRS "
 
 #: subtitle_format_prs.cpp:143
 msgid "Writing file"
-msgstr "Kirejoitetaan tiedostoa"
+msgstr "Kirjoitetaan tiedostoa"
 
 #: vfr.cpp:66
 msgid "No timecodes to average"
@@ -5111,39 +5111,39 @@ msgstr "Ei aikakoodeja vertaamiseen"
 
 #: video_box.cpp:77
 msgid "Play video starting on this position"
-msgstr "Toista video alkaen tästä sijainnista"
+msgstr "Toista video"
 
 #: video_box.cpp:79
 msgid "Play current line"
-msgstr "Toista nykyinen rivi"
+msgstr "Toista valittu rivi"
 
 #: video_box.cpp:81
 msgid "Stop video playback"
-msgstr "Pysäytä videon toisto"
+msgstr "Pysäytä video"
 
 #: video_box.cpp:83
 msgid "Toggle autoscroll of video"
-msgstr "Valitsin selataanko automaattisesti videota tekstitysrivien valintojen mukaan"
+msgstr "Välitön kuvaselaus valitun tekstirivin mukaan"
 
 #: video_box.cpp:88
 msgid "Seek video."
-msgstr "Selaa videota."
+msgstr "Kuvaselain"
 
 #: video_box.cpp:92
 msgid "Current frame time and number."
-msgstr "Nykyisen kuvan aika ja numero."
+msgstr "Nykyisen kuvan aika ja numero"
 
 #: video_box.cpp:96
 msgid "Time of this frame relative to start and end of current subs."
-msgstr "Ajoita tästä kuvasta, realtiivinen valitun rivin alulle ja lopulle."
+msgstr "Etäisyydet valitun rivin alkuajasta ja loppuajasta"
 
 #: video_box.cpp:112
 msgid "Standard"
-msgstr "Yleinen"
+msgstr "Sijainti"
 
 #: video_box.cpp:112
 msgid "Standard mode, double click sets position."
-msgstr "Yleisesti käytössä, kaksoisnäpäytys asettaa sijainnin"
+msgstr "Kaksoisnäpäytys asettaa tekstin sijainnin"
 
 #: video_box.cpp:113
 #: visual_tool_vector_clip.cpp:68
@@ -5152,7 +5152,7 @@ msgstr "Raahaa"
 
 #: video_box.cpp:113
 msgid "Drag subtitles."
-msgstr "Raahaa rivejä."
+msgstr "Raahaa tekstiä"
 
 #: video_box.cpp:114
 msgid "Rotate Z"
@@ -5160,7 +5160,7 @@ msgstr "Pyöritä Z"
 
 #: video_box.cpp:114
 msgid "Rotate subtitles on their Z axis."
-msgstr "Pyörittää tekstiä Z akselilla ympäri"
+msgstr "Pyöritä tekstiä Z akselilla ympäri"
 
 #: video_box.cpp:115
 msgid "Rotate XY"
@@ -5168,7 +5168,7 @@ msgstr "Pyöritä XY"
 
 #: video_box.cpp:115
 msgid "Rotate subtitles on their X and Y axes."
-msgstr "Pyörittää tekstiä  X ja Y akseleilla ympäri."
+msgstr "Pyöritä tekstiä X ja Y akseleilla ympäri"
 
 #: video_box.cpp:116
 msgid "Scale"
@@ -5176,7 +5176,7 @@ msgstr "Skaalaa"
 
 #: video_box.cpp:116
 msgid "Scale subtitles on X and Y axes."
-msgstr "Skaalaa tekstiä X ja Y akselilla."
+msgstr "Skaalaa tekstiä X ja Y akselilla"
 
 #: video_box.cpp:117
 msgid "Clip"
@@ -5184,7 +5184,7 @@ msgstr "Klippaa"
 
 #: video_box.cpp:117
 msgid "Clip subtitles to a rectangle."
-msgstr "Klippaa tekstistä näkymään vain nelikulmainen alue."
+msgstr "Piirrä tekstistä näkymään vain nelikulmainen alue"
 
 #: video_box.cpp:118
 msgid "Vector Clip"
@@ -5192,19 +5192,19 @@ msgstr "Vektori klippaus"
 
 #: video_box.cpp:118
 msgid "Clip subtitles to a vectorial area."
-msgstr "Klippaa tekstistä näkymään vain vektoreilla piirretyn alueen"
+msgstr "Piirrä vektoreilla näkymään tekstistä määrätty alue"
 
 #: video_box.cpp:120
 msgid "Realtime"
-msgstr "Oikea aika"
+msgstr "Välitön"
 
 #: video_box.cpp:120
 msgid "Toggle realtime display of changes."
-msgstr "Valitsin samanaikainen ruudun päivitys rivejä muutettaessa."
+msgstr "Välitön ruudunpäivitys rivejä muokatessa"
 
 #: video_box.cpp:122
 msgid "Open the manual page for Visual Typesetting."
-msgstr "Avaa ohjekirjasta artikkelin Näkyvä Tekstinasettelu."
+msgstr "Ohjekirjan artikkeli: Näkyvä tekstinasettelu"
 
 #: video_context.cpp:606
 msgid "Video Screenshot Path"
@@ -5212,23 +5212,23 @@ msgstr "Kuvankaappauspolku"
 
 #: video_display.cpp:472
 msgid "Save PNG snapshot"
-msgstr "Tallenna PNG kuvankaappaus"
+msgstr "PNG kuvankaappaus"
 
 #: video_display.cpp:473
 msgid "Copy image to Clipboard"
-msgstr "Kopioi kuva leikepöydälle"
+msgstr "Kopioi"
 
 #: video_display.cpp:476
 msgid "Save PNG snapshot (no subtitles)"
-msgstr "Tallenna PNG kuvankaappaus (ei tekstityksiä)"
+msgstr "PNG kuvankaappaus (ei tekstityksiä)"
 
 #: video_display.cpp:477
 msgid "Copy image to Clipboard (no subtitles)"
-msgstr "Kopioi kuva (ei tekstityksiä)"
+msgstr "Kopioi (ei tekstityksiä)"
 
 #: video_display.cpp:479
 msgid "Copy coordinates to Clipboard"
-msgstr "Kopioi koordinaatit leikepöydälle"
+msgstr "Kopioi koordinaatit"
 
 #: video_provider_avs.cpp:113
 msgid "Unknown"
@@ -5263,7 +5263,7 @@ msgstr "Viiva"
 
 #: visual_tool_vector_clip.cpp:69
 msgid "Appends a line."
-msgstr "Kaartaa viivaa."
+msgstr "Kaartaa viivaa"
 
 #: visual_tool_vector_clip.cpp:70
 msgid "Bicubic"
@@ -5271,7 +5271,7 @@ msgstr "Kolmiokäyrä"
 
 #: visual_tool_vector_clip.cpp:70
 msgid "Appends a bezier bicubic curve."
-msgstr "Muodostaa kolmion kahden pisteen välille Bézier-käyrän."
+msgstr "Muodostaa kolmion kahden pisteen välille Bézier-käyrän"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Convert"
@@ -5279,7 +5279,7 @@ msgstr "Muunna"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Converts a segment between line and bicubic."
-msgstr "Muuntaa vivan ja bicubic välisen alueen."
+msgstr "Muotoilee kahden pisteen välistä viivaa"
 
 #: visual_tool_vector_clip.cpp:73
 msgid "Insert"
@@ -5287,7 +5287,7 @@ msgstr "Lisää"
 
 #: visual_tool_vector_clip.cpp:73
 msgid "Inserts a control point."
-msgstr "Lisää hallintapisteen."
+msgstr "Lisää hallintapisteen"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Remove"
@@ -5295,21 +5295,21 @@ msgstr "Poista"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Removes a control point."
-msgstr "Poistaa hallintapisteen."
+msgstr "Poistaa hallintapisteen"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Freehand"
-msgstr "Vapaa käsi"
+msgstr "Vapaalla kädellä"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Draws a freehand shape."
-msgstr "Vapaalla kädällä piirtäen muoto."
+msgstr "Vapaalla kädällä piirtäen kulmikas muoto"
 
 #: visual_tool_vector_clip.cpp:77
 msgid "Freehand smooth"
-msgstr "Vapaakäsi pehmeä"
+msgstr "Vapaalla kädellä pyöristetty"
 
 #: visual_tool_vector_clip.cpp:77
 msgid "Draws a smoothed freehand shape."
-msgstr "Vapaalla kädellä piirros pehmeytettynä."
+msgstr "Vapaalla kädellä piirtäen pyöristetty muoto"
 
