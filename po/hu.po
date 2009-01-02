@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Aegisub Hungarian translation\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-27 22:39-0200\n"
-"PO-Revision-Date: 2008-10-29 14:49+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2009-01-02 07:52+0100\n"
+"Last-Translator: Niels Martin Hansen <jiifurusu@gmail.com>\n"
 "Language-Team: Yuri <yurielvtars@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1978,9 +1978,7 @@ msgstr "Körvonal és árnyék méretezése"
 
 #: dialog_properties.cpp:140
 msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
-msgstr ""
-"A körvonalat és az árnyékot is méretezze a felirat/render felbontásával.\n"
-"Ha nem jelöli be, akkor a körvonal és az árnyék relatív mérete a renderertől fog függeni."
+msgstr "A körvonalat és az árnyékot is méretezze a felirat/render felbontásával. Ha nem jelöli be, akkor a körvonal és az árnyék relatív mérete a renderertől fog függeni."
 
 #: dialog_properties.cpp:202
 msgid "property changes"
@@ -2449,9 +2447,7 @@ msgstr "Távolság az alsó/felső széltől, pixelekben"
 
 #: dialog_style_editor.cpp:185
 msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr ""
-"Jelölje be, ha körvonal helyett teljesen\n"
-"kitöltött hátteret szeretne látni."
+msgstr "Jelölje be, ha körvonal helyett teljesen kitöltött hátteret szeretne látni."
 
 #: dialog_style_editor.cpp:186
 msgid "Outline width, in pixels."
@@ -2475,9 +2471,7 @@ msgstr "Forgatás a Z tengely mentén, fokokban"
 
 #: dialog_style_editor.cpp:191
 msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr ""
-"A kódolás beállítása csak akkor használatos, ha a megadott\n"
-"betűtípusnak nincs megfelelő unicode leképezése."
+msgstr "A kódolás beállítása csak akkor használatos, ha a megadott betűtípusnak nincs megfelelő unicode leképezése."
 
 #: dialog_style_editor.cpp:192
 msgid "Character spacing, in pixels."
@@ -2878,9 +2872,7 @@ msgstr "Stílusokra alkalmaz"
 
 #: dialog_timing_processor.cpp:74
 msgid "Select styles to process. Unchecked ones will be ignored."
-msgstr ""
-"Válassza ki a feldolgozni kívánt stílusokat.\n"
-" A jelöletleneket nem veszi figyelembe."
+msgstr "Válassza ki a feldolgozni kívánt stílusokat.  A jelöletleneket nem veszi figyelembe."
 
 #: dialog_timing_processor.cpp:76
 msgid "Select all styles."
@@ -2941,9 +2933,7 @@ msgstr "Határérték:"
 
 #: dialog_timing_processor.cpp:111
 msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr ""
-"Maximális távolság két feliratsor (első vége, második eleje) között,\n"
-"ezredmásodpercben megadva."
+msgstr "Maximális távolság két feliratsor (első vége, második eleje) között, ezredmásodpercben megadva."
 
 #: dialog_timing_processor.cpp:113
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2963,9 +2953,7 @@ msgstr "Kulcskockához igazítás"
 
 #: dialog_timing_processor.cpp:125
 msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr ""
-"Hozzáilleszti a feliratsort a legközelebbi kulcskockához, ha az\n"
-"benne van a megadott határértéken belül."
+msgstr "Hozzáilleszti a feliratsort a legközelebbi kulcskockához, ha az benne van a megadott határértéken belül."
 
 #: dialog_timing_processor.cpp:127
 msgid "Starts before thres.:"
@@ -2973,9 +2961,7 @@ msgstr "Kezdet levágása:"
 
 #: dialog_timing_processor.cpp:129
 msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
-msgstr ""
-"Ha ezen számon belülre esik a sor kezdetének képkocka értéke,\n"
-"akkor az levágásra kerül, hogy elérje a legközelebbi kulcskockát."
+msgstr "Ha ezen számon belülre esik a sor kezdetének képkocka értéke, akkor az levágásra kerül, hogy elérje a legközelebbi kulcskockát."
 
 #: dialog_timing_processor.cpp:130
 msgid "Starts after thres.:"
@@ -2983,9 +2969,7 @@ msgstr "Kezdet növelése:"
 
 #: dialog_timing_processor.cpp:132
 msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
-msgstr ""
-"Ha ezen számon belülre esik a sor kezdetének képkocka értéke,\n"
-"akkor az növelésre kerül, hogy elérje a legközelebbi kulcskockát."
+msgstr "Ha ezen számon belülre esik a sor kezdetének képkocka értéke, akkor az növelésre kerül, hogy elérje a legközelebbi kulcskockát."
 
 #: dialog_timing_processor.cpp:133
 msgid "Ends before thres.:"
@@ -2993,9 +2977,7 @@ msgstr "Vége levágása:"
 
 #: dialog_timing_processor.cpp:135
 msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
-msgstr ""
-"Ha ezen számon belülre esik a sor végének képkocka értéke,\n"
-"akkor az levágásra kerül, hogy elérje a legközelebbi kulcskockát."
+msgstr "Ha ezen számon belülre esik a sor végének képkocka értéke, akkor az levágásra kerül, hogy elérje a legközelebbi kulcskockát."
 
 #: dialog_timing_processor.cpp:136
 msgid "Ends after thres.:"
@@ -3003,9 +2985,7 @@ msgstr "Vége növelése:"
 
 #: dialog_timing_processor.cpp:138
 msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
-msgstr ""
-"Ha ezen számon belülre esik a sor végének képkocka értéke,\n"
-"akkor az növelésre kerül, hogy elérje a legközelebbi kulcskockát."
+msgstr "Ha ezen számon belülre esik a sor végének képkocka értéke, akkor az növelésre kerül, hogy elérje a legközelebbi kulcskockát."
 
 #: dialog_timing_processor.cpp:320
 #, c-format
@@ -3344,9 +3324,7 @@ msgstr "Illesztés a jelenethez"
 
 #: frame_main.cpp:239
 msgid "Snap selected subtitles so they match current scene start/end"
-msgstr ""
-"A kijelölt feliratsorok kezdetét és végét az aktuális\n"
-"jelenet kulcskocka határaihoz illeszti."
+msgstr "A kijelölt feliratsorok kezdetét és végét az aktuális jelenet kulcskocka határaihoz illeszti."
 
 #: frame_main.cpp:240
 msgid "Shift subtitles to frame"
@@ -3354,9 +3332,7 @@ msgstr "Sorokat a képkockához tolja"
 
 #: frame_main.cpp:240
 msgid "Shift selected subtitles so first selected starts at this frame"
-msgstr ""
-"A kijelölt feliratsorokat eltolja úgy, hogy az első kezdetét\n"
-"az aktuális képkockával indítja."
+msgstr "A kijelölt feliratsorokat eltolja úgy, hogy az első kezdetét az aktuális képkockával indítja."
 
 #: frame_main.cpp:244
 msgid "Open Styles Manager"
@@ -4744,9 +4720,7 @@ msgstr "Megjegyzés"
 
 #: subs_edit_box.cpp:84
 msgid "Comment this line out. Commented lines don't show up on screen."
-msgstr ""
-"Megjegyzés hozzáfűzése a sorhoz.\n"
-"A megjegyzések nem jelennek meg a képernyőn."
+msgstr "Megjegyzés hozzáfűzése a sorhoz. A megjegyzések nem jelennek meg a képernyőn."
 
 #: subs_edit_box.cpp:86
 msgid "Style for this line."
@@ -4754,15 +4728,11 @@ msgstr "Stílus beállítása a sorhoz."
 
 #: subs_edit_box.cpp:88
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
-msgstr ""
-"A sorohoz tartozó szereplő.\n"
-"Csak jelzésértéke van, fölösleges kitölteni."
+msgstr "A sorohoz tartozó szereplő. Csak jelzésértéke van, fölösleges kitölteni."
 
 #: subs_edit_box.cpp:91
 msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
-msgstr ""
-"A sorhoz tartozó effekt. Extra adatokat tárol\n"
-"a karaoke scripteknek vagy a felirat megjelenítőnek."
+msgstr "A sorhoz tartozó effekt. Extra adatokat tárol a karaoke scripteknek vagy a felirat megjelenítőnek."
 
 #: subs_edit_box.cpp:96
 msgid "Layer number"
@@ -4823,9 +4793,7 @@ msgstr "Elfogad"
 
 #: subs_edit_box.cpp:141
 msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
-msgstr ""
-"Változások elfogadása (Enter).\n"
-"A Ctrl lenyomásakor a sorban marad (%KEY%)."
+msgstr "Változások elfogadása (Enter). A Ctrl lenyomásakor a sorban marad (%KEY%)."
 
 #: subs_edit_box.cpp:142
 msgid "Time"
@@ -5173,9 +5141,7 @@ msgstr "Aktuális idő és képkocka szám"
 
 #: video_box.cpp:96
 msgid "Time of this frame relative to start and end of current subs."
-msgstr ""
-"Az aktuális képkocka relatív távolsága\n"
-"a kijelölt feliratsor kezdeti- és végidőpontjától."
+msgstr "Az aktuális képkocka relatív távolsága a kijelölt feliratsor kezdeti- és végidőpontjától."
 
 #: video_box.cpp:112
 msgid "Standard"
