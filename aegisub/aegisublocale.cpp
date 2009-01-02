@@ -45,7 +45,6 @@
 #include "aegisublocale.h"
 #include "standard_paths.h"
 
-#include <wx/stdpaths.h>
 
 ///////////////
 // Constructor
@@ -68,33 +67,6 @@ void AegisubLocale::Init(int language) {
 #ifdef __WINDOWS__
 	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath(_T("?data/locale/")));
 #endif
-
-//#define INSTALL_PREFIX "/mnt/free/aegisub/i"
-
-//wxStandardPaths stdpaths; 
-//stdpaths.SetInstallPrefix(wxT(INSTALL_PREFIX));
-
-    wxString dataDir = wxStandardPaths::Get().GetDataDir();
-    wxString userDir = wxStandardPaths::Get().GetUserDataDir();
-    wxString tempDir = wxStandardPaths::Get().GetTempDir();
-    wxString resDir = wxStandardPaths::Get().GetResourcesDir();
-
-        const wxLanguageInfo *lang = wxLocale::GetLanguageInfo(language);
-
-    wxString locDir = wxStandardPaths::Get().GetLocalizedResourcesDir(lang->CanonicalName, wxStandardPathsBase::ResourceCat_Messages);
-
-
-printf("dataDir: %s\n", dataDir.mb_str(wxConvUTF8).data());
-printf("userDir: %s\n", userDir.mb_str(wxConvUTF8).data());
-printf("tempDir: %s\n", tempDir.mb_str(wxConvUTF8).data());
-printf("resDir: %s\n", resDir.mb_str(wxConvUTF8).data());
-printf("locDir: %s\n", locDir.mb_str(wxConvUTF8).data());
-
-
-//printf("GetResourcesDir: %s\n", StandardPaths::GetResourcesDir().mb_str(wxConvUTF8));
-
-//printf("StandardPaths::DecodePath: %s", StandardPaths::DecodePath("?data/locale/").mb_str(wxConvUTF8));
-
 	locale->AddCatalog(_T("aegisub"));
 	locale->AddCatalog(_T("wxstd"));
 	setlocale(LC_NUMERIC, "C");
