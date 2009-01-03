@@ -160,6 +160,7 @@ struct AudioProperties {
 // Most functions return 0 on success
 // Functions without error message output can be assumed to never fail
 FFMS_API(void) FFMS_Init();
+FFMS_API(void) FFMS_NoLog();
 FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(AudioBase *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(void) FFMS_DestroyVideoSource(VideoBase *VB);

@@ -220,7 +220,7 @@ AVSValue __cdecl CreateSWScale(AVSValue Args, void* UserData, IScriptEnvironment
 }
 
 AVSValue __cdecl FFNoLog(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
-	av_log_set_level(AV_LOG_QUIET);
+	FFMS_NoLog();
 	return 0;
 }
 

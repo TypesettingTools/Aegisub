@@ -54,6 +54,10 @@ FFMS_API(void) FFMS_Init() {
 	InitDone = true;
 }
 
+FFMS_API(void) FFMS_NoLog() {
+	av_log_set_level(AV_LOG_QUIET);
+}
+
 FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
 	try {
 		switch (TrackIndices->Decoder) {
