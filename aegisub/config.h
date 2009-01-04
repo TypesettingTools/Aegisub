@@ -10,6 +10,6 @@
 
 // Unix specific settings and defines.
 #include "config/config_unix.h"
-#include "posix/res.h"
+#include "libresrc/libresrc.h"
 
 #endif // __WINDOWS__

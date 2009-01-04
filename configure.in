@@ -958,7 +958,7 @@ AC_CONFIG_FILES([
 Makefile
 aegisub/Makefile
 aegisub/bitmaps/Makefile
-aegisub/posix/Makefile
+aegisub/libresrc/Makefile
 aegisub/libosxutil/Makefile
 universalchardet/Makefile
 FFmpegSource2/Makefile

@@ -8,12 +8,12 @@ libosxutil_lib = libosxutil/libosxutil.a
 libosxutil_ldflags = -framework CoreFoundation
 endif
 
-SUBDIRS = bitmaps posix $(libosxutil_subdir)
+SUBDIRS = bitmaps libresrc $(libosxutil_subdir)
 
-AM_CXXFLAGS = -DAEGISUB -Iposix -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@
+AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@
 
 bin_PROGRAMS = aegisub
-aegisub_LDADD = posix/libposix.a $(libosxutil_lib)
+aegisub_LDADD = libresrc/libresrc.a $(libosxutil_lib)
 aegisub_CPPFLAGS = @FREETYPE_CFLAGS@
 aegisub_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags)
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@

@@ -294,11 +294,10 @@ $BIN_AWK '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST= \\\n	
   ${srcdir}/aegisub/res.rc \
   > ${srcdir}/aegisub/bitmaps/Makefile.am
 
-echo "--- Generating res.cpp / res.h from res.rc ---"
-# XXX: This needs replacing.
-cd ${srcdir}/aegisub/posix
-sh genres.sh ${srcdir}/aegisub/res.rc
-cd ${srcdir}
+echo "--- Generating libresrc/resrc.cpp, libresrc/resrc.h from res.rc ---"
+$BIN_AWK -f scripts/unix-gen-res.awk ${srcdir}/aegisub/res.rc \
+  RESRC_CPP="${srcdir}/aegisub/libresrc/resrc.cpp" \
+  RESRC_H="${srcdir}/aegisub/libresrc/resrc.h"
 
 rm -rf autom4te.cache
 
