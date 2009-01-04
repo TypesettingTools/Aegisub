@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2008 Niels Martin Hansen
+  Copyright (c) 2008-2009 Niels Martin Hansen
   
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
@@ -58,6 +58,11 @@ static char * GetDir(GetURLFunc GetURL)
 		return NULL;
 	else
 		return strdup(res_dir_str);
+}
+
+char * OSX_GetBundlePath()
+{
+	return GetDir(CFBundleCopyBundleURL);
 }
 
 char * OSX_GetBundleResourcesDirectory()

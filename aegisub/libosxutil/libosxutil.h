@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2008 Niels Martin Hansen
+  Copyright (c) 2008-2009 Niels Martin Hansen
   
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
@@ -44,6 +44,10 @@
   the responsibility of the caller to free() them.
   All of the functions may return NULL on error.
  */
+
+/* Get the full name of the bundle itself. May return NULL if the current
+   executable is not inside a bundle. */
+char * OSX_GetBundlePath();
 
 /* Get the resources directory, mainly for user interface elements
    such as graphics and strings */
