@@ -18,14 +18,6 @@
 
 #include <stdwx.h>
 
-#ifdef WITH_FFMPEGSOURCE
-/* FIXME: For FFMPEGSource2, this needs to be fixed but should be
-          harmless for the rest of aegisub. */
-#define _snprintf snprintf
-#define _ftelli64 ftello
-#define _fseeki64 fseeko
-#endif
-
 // These shouldn't be needed any longer, if there are
 // any occurrences of __int64 replace them with long long.
 //typedef int64_t __int64;
