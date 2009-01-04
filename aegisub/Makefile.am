@@ -10,7 +10,7 @@ endif
 
 SUBDIRS = bitmaps posix $(libosxutil_subdir)
 
-AM_CXXFLAGS = -DAEGISUB -Iposix -include posix/defines.h -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@
+AM_CXXFLAGS = -DAEGISUB -Iposix -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@
 
 bin_PROGRAMS = aegisub
 aegisub_LDADD = posix/libposix.a $(libosxutil_lib)
