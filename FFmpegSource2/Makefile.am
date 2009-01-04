@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libffmpegsource2_aegisub.a
 
-AM_CPPFLAGS = -I../aegisub @WX_CPPFLAGS@
+AM_CPPFLAGS = -I../aegisub -D__UNIX__ @WX_CPPFLAGS@
 
 libffmpegsource2_aegisub_a_SOURCES = \
 	ffaudiosource.cpp \
