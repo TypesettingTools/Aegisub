@@ -745,8 +745,9 @@ void DialogOptions::OnOK(wxCommandEvent &event) {
 		if (answer == wxYES) {
 			FrameMain *frame = (FrameMain*) GetParent();
 			if (frame->Close()) {
-				wxStandardPaths stand;
-				wxExecute(stand.GetExecutablePath());
+				RestartAegisub();
+				//wxStandardPaths stand;
+				//wxExecute(stand.GetExecutablePath());
 			}
 		}
 	}
@@ -778,8 +779,9 @@ void DialogOptions::OnCancel(wxCommandEvent &event) {
 		if (answer == wxYES) {
 			FrameMain *frame = (FrameMain*) GetParent();
 			if (frame->Close()) {
-				wxStandardPaths stand;
-				wxExecute(stand.GetExecutablePath());
+				RestartAegisub();
+				//wxStandardPaths stand;
+				//wxExecute(stand.GetExecutablePath());
 			}
 		}
 	}
@@ -921,8 +923,9 @@ void DialogOptions::WriteToOptions(bool justApply) {
 			if (answer == wxYES) {
 				FrameMain *frame = (FrameMain*) GetParent();
 				if (frame->Close()) {
-					wxStandardPaths stand;
-					wxExecute(stand.GetExecutablePath());
+					RestartAegisub();
+					//wxStandardPaths stand;
+					//wxExecute(stand.GetExecutablePath());
 				}
 			}
 		}

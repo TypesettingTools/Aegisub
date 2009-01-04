@@ -42,9 +42,13 @@
 #include <wx/filename.h>
 #include <wx/menu.h>
 #include <wx/dcmemory.h>
+#include <wx/stdpaths.h>
 #include "utils.h"
 #ifdef __UNIX__
 #include <unistd.h>
+#endif
+#ifdef __APPLE__
+#include "libosxutil/libosxutil.h"
 #endif
 
 
@@ -378,4 +382,22 @@ wxIcon BitmapToIcon(wxBitmap iconBmp) {
 	bmp.SetMask(mask);
 	ico.CopyFromBitmap(bmp);
 	return ico;
+}
+
+///////////////////////
+// Start Aegisub again
+// It is assumed that something has prepared closing the current instance
+// just before this is called.
+void RestartAegisub() {
+#if defined(__WXMSW__)
+	wxStandardPaths stand;
+	wxExecute(_T("\"") + stand.GetExecutablePath() + _T("\""));
+#elif defined(__WXMAC__)
+	char *bundle_path = OSX_GetBundlePath();
+	if (!bundle_path) return; // oops
+	wxExecute(wxString::Format(_T("/usr/bin/open \"%s\""), wxString(bundle_path, wxConvUTF8)));
+	free(bundle_path);
+#else
+	// someone fix this
+#endif
 }

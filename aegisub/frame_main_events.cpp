@@ -532,8 +532,9 @@ void FrameMain::OnOpenRecentAudio(wxCommandEvent &event) {
 ///////////////////
 // Open new Window
 void FrameMain::OnNewWindow(wxCommandEvent& WXUNUSED(event)) {
-	wxStandardPaths stand;
-	wxExecute(stand.GetExecutablePath());
+	RestartAegisub();
+	//wxStandardPaths stand;
+	//wxExecute(stand.GetExecutablePath());
 }
 
 
@@ -1675,8 +1676,9 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 			if (result == wxYES) {
 				// Restart Aegisub
 				if (Close()) {
-					wxStandardPaths stand;
-					wxExecute(_T("\"") + stand.GetExecutablePath() + _T("\""));
+					RestartAegisub();
+					//wxStandardPaths stand;
+					//wxExecute(_T("\"") + stand.GetExecutablePath() + _T("\""));
 				}
 			}
 		}

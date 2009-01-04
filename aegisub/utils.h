@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2005-2009, Rodrigo Braz Monteiro, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -71,6 +71,7 @@ void GetWordBoundaries(const wxString text,IntPairVector &results,int start=0,in
 int StringToInt(const wxString &str,int start=0,int end=-1);
 int StringToFix(const wxString &str,size_t decimalPlaces,int start=0,int end=-1);
 wxIcon BitmapToIcon(wxBitmap bmp);
+void RestartAegisub();
 
 
 //////////
