@@ -933,7 +933,9 @@ AC_ARG_ENABLE(debug, [  --enable-debug          turn on debugging (default=no)])
 if test "$enable_debug" = "yes"; then
   AC_MSG_RESULT([yes ($DEBUG_FLAGS)])
   CPPFLAGS="$DEBUG_FLAGS $CPPFLAGS"
+  msg_debug="($DEBUG_FLAGS)"
 else
+  enable_debug="no"
   AC_MSG_RESULT([no])
 fi
 
@@ -1008,8 +1010,14 @@ if test -z "$found_video_provider"; then
   ])
 fi
 
-
 AC_MSG_RESULT([
+Configure settings:
+  Install prefix:        $prefix
+  SVN Revision:          $SVN_REVISION
+  Debug                  $enable_debug $msg_debug
+  CPPFLAGS               $CPPFLAGS
+  LDFLAGS                $LDFLAGS
+
 Scripting Engines:
   auto3 Lua:             $with_auto3 $lua50_disabled
   auto4 Lua:             $with_auto4 $lua51_disabled
