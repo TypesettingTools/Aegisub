@@ -35,10 +35,14 @@ cat ${SKEL_DIR}/Contents/Info.plist |sed -f scripts/osx-bundle.sed > ${PKG_DIR}/
 
 echo
 echo "---- Copying locale files ----"
+# Let Aqua know that aegisub supports english.  English strings are
+# internal so we don't need an aegisub.mo file.
+mkdir -v ${PKG_DIR}/Contents/Resources/en.lproj
+
 for i in `cat po/LINGUAS`; do
   if test -f "po/${i}.gmo"; then
     mkdir -v ${PKG_DIR}/Contents/Resources/${i}.lproj;
-    cp -v po/${i}.gmo ${PKG_DIR}/Contents/Resources//${i}.lproj/aegisub.po;
+    cp -v po/${i}.gmo ${PKG_DIR}/Contents/Resources/${i}.lproj/aegisub.mo;
   else
     echo "${i}.gmo not found!"
   fi
