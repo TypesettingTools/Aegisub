@@ -86,6 +86,10 @@ AC_C_BIGENDIAN(
 aegisubdatadir="$datadir/aegisub"
 AC_SUBST(aegisubdatadir)
 
+if test "$prefix" = "NONE"; then
+	prefix="$ac_default_prefix"
+fi
+
 # Install prefix used by wxStandardPaths::SetInstallPrefix.
 AC_DEFINE_UNQUOTED([INSTALL_PREFIX], ["$prefix"], [Default install prefix, or --prefix.])
 
