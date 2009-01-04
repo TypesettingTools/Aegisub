@@ -120,8 +120,8 @@ DestDir: {app}\automation\autoload; Source: ..\automation\autoload\kara-template
 ; auto4 samples
 DestDir: {app}\automation\demos; Source: ..\automation\demos\future-windy-blur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 DestDir: {app}\automation\demos; Source: ..\automation\tests\kara-templater-retime.ass; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: ..\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 ; perl
 #if IncludePerl != 0
@@ -131,7 +131,7 @@ DestDir: {app}\automation\include; Source: ..\automation\include\Auto4Utils.pm; 
 DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\PerlConsole.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
 DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\Script.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
 DestDir: {app}\automation\include\Aegisub; Source: ..\automation\include\Aegisub\Progress.pm; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\automation\demos\macro-1p-edgeblur.pl; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\automation\autoload\macro-1p-edgeblur.pl; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl/samples; Attribs: readonly
 DestDir: {app}\automation\demos; Source: ..\automation\demos\perl-console.pl; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/perl/samples; Attribs: readonly
 #endif
 ; auto3
