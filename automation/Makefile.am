@@ -60,7 +60,6 @@ data_auto4_lua_doc = \
 	demos/raytracer.lua
 
 data_auto3_lua_doc = \
-	auto3/readme.txt \
 	demos/auto3/readme.txt \
 	demos/auto3/1-minimal.lua \
 	demos/auto3/10-furigana.ass \
