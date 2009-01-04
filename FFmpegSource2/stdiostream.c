@@ -21,6 +21,12 @@
 #include "stdiostream.h"
 #include <errno.h>
 
+#ifdef __UNIX__
+#define _fseeki64 fseeko
+#define _ftelli64 ftello
+#endif
+
+
 /* StdIoStream methods */
 
 /* read count bytes into buffer starting at file position pos
