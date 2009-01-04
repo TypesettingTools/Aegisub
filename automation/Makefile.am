@@ -22,9 +22,9 @@ data_auto4_lua = \
 	autoload/cleantags-autoload.lua \
 	autoload/kara-templater.lua \
 	autoload/karaoke-auto-leadin.lua \
+	autoload/macro-1-edgeblur.lua \
+	autoload/macro-2-mkfullwitdh.lua \
 	demos/future-windy-blur.lua \
-	demos/macro-1-edgeblur.lua \
-	demos/macro-2-mkfullwitdh.lua \
 	demos/raytracer.lua \
 	include/cleantags.lua \
 	include/karaskel-adv.lua \
@@ -58,7 +58,7 @@ data_auto3_lua = \
 	include/utils.auto3
 
 data_auto4_perl = \
-	demos/macro-1p-edgeblur.pl \
+	autoload/macro-1p-edgeblur.pl \
 	demos/perl-console.pl \
 	include/Aegisub/PerlConsole.pm \
 	v4-docs/perl-api.txt
