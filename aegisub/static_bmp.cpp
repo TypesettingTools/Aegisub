@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/dcclient.h>
 #include "static_bmp.h"
 

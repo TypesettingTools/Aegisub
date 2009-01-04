@@ -21,6 +21,10 @@
 #include "ffvideosource.h"
 #include <errno.h>
 
+#ifdef __UNIX__
+#define _snprintf snprintf
+#endif
+
 int VideoBase::InitPP(const char *PP, int PixelFormat, char *ErrorMsg, unsigned MsgSize) {
 	if (PP == NULL || !strcmp(PP, ""))
 		return 0;

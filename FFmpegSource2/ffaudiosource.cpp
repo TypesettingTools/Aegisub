@@ -21,7 +21,9 @@
 #include "ffaudiosource.h"
 #include <errno.h>
 
-
+#ifdef __UNIX__
+#define _snprintf snprintf
+#endif
 
 AudioBase::AudioBase() {
 	DecodingBuffer = new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE * 10];

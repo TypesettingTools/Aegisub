@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "visual_tool_drag.h"
 #include "subs_grid.h"
 #include "subs_edit_box.h"

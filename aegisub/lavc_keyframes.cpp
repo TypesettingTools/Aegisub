@@ -37,6 +37,7 @@
 ///////////
 // Headers
 #include "config.h"
+
 #ifdef WITH_FFMPEG
 
 #ifdef WIN32

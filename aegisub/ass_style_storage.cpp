@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <fstream>
 #include "ass_style_storage.h"
 #include "ass_style.h"

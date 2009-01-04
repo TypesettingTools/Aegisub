@@ -42,6 +42,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "fft.h"
 #include <math.h>
 

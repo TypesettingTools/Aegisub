@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include "dialog_progress.h"

@@ -33,6 +33,8 @@
 // Contact: mailto:pomyk@go2.pl
 //
 
+#include "config.h"
+
 #ifdef WITH_RUBY
 
 #ifdef _MSC_VER

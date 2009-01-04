@@ -9,6 +9,8 @@
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#include "config.h"
+
 #ifdef __WXMAC__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "video_provider_manager.h"
 #include "video_provider_dummy.h"
 #include "options.h"

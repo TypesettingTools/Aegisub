@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/recguard.h>
 #include "dialog_styling_assistant.h"
 #include "subs_grid.h"

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/filename.h>
 #include <wx/file.h>
 #include <wx/filefn.h>

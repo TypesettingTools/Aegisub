@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <algorithm>
 #include <errno.h>
 #include <stdint.h>

@@ -33,6 +33,8 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include "config.h"
+
 #ifdef WITH_FFMPEGSOURCE
 
 ///////////

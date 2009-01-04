@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "dialog_options.h"
 #if wxUSE_TREEBOOK && !__WXMAC__
 #include <wx/treebook.h>

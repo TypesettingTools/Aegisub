@@ -45,4 +45,6 @@
 // MatroskaParser.c, as well as any possible future .c files.
 //
 
+#include "config.h"
+
 #include "stdwx.h"

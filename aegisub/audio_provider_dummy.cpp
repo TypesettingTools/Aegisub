@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "audio_provider_dummy.h"
 #include "utils.h"
 

@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/wxprec.h>
 #include <wx/config.h>
 #include <wx/filename.h>

@@ -27,6 +27,12 @@
 #include "indexing.h"
 #include "wave64writer.h"
 
+#ifdef __UNIX__
+#define _fseeki64 fseeko
+#define _ftelli64 ftello
+#define _snprintf snprintf
+#endif
+
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>

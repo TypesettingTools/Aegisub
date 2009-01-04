@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <fstream>
 #include "text_file_writer.h"
 #include "options.h"

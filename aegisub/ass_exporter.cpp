@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "ass_exporter.h"
 #include "ass_export_filter.h"
 #include "ass_file.h"

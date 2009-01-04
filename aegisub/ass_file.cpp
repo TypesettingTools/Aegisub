@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <list>
 #include <fstream>
 #include <wx/filename.h>

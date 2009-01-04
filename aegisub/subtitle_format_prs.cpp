@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #if USE_PRS == 1
 #include <wx/image.h>
 #include <wx/mstream.h>

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <math.h>
 #include <wx/tglbtn.h>
 #include <wx/statline.h>

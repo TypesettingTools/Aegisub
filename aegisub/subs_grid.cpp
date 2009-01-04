@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <algorithm>
 #include <wx/clipbrd.h>
 #include <wx/tokenzr.h>

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
 #include <wx/fontdlg.h>

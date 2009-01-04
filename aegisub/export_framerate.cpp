@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "export_framerate.h"
 #include "vfr.h"
 #include "ass_file.h"

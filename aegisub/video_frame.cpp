@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "video_frame.h"
 #include "utils.h"
 

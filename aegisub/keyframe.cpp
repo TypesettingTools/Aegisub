@@ -35,6 +35,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/msgdlg.h>
 #include "video_context.h"
 #include "keyframe.h"

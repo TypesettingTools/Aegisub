@@ -33,6 +33,8 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include "config.h"
+
 #include "colorspace.h"
 #include "utils.h"
 

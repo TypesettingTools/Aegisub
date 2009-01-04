@@ -35,6 +35,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/tokenzr.h>
 #include <wx/intl.h>
 #include "ass_style.h"

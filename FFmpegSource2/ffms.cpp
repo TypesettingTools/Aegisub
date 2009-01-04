@@ -23,6 +23,10 @@
 #include "ffaudiosource.h"
 #include "indexing.h"
 
+#ifdef __UNIX__
+#define _snprintf snprintf
+#endif
+
 FrameInfo::FrameInfo(int64_t DTS, bool KeyFrame) {
 	this->DTS = DTS;
 	this->SampleStart = 0;

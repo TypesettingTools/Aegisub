@@ -37,8 +37,9 @@
 ////////////
 // Includes
 
-#ifdef WITH_FREETYPE2
+#include "config.h"
 
+#ifdef WITH_FREETYPE2
 #include "font_file_lister_freetype.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H

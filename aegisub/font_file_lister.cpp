@@ -37,6 +37,8 @@
 ////////////
 // Includes
 
+#include "config.h"
+
 #include <wx/tokenzr.h>
 #include "font_file_lister.h"
 #include "text_file_writer.h"

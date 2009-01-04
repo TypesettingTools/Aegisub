@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/filename.h>
 #include <wx/filedlg.h>
 #include <wx/choicdlg.h>

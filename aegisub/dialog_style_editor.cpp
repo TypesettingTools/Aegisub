@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/fontdlg.h>
 #include <wx/colordlg.h>
 #include <wx/fontenum.h>

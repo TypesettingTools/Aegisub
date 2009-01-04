@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "ass_dialogue.h"
 #include "subtitle_format_encore.h"
 #include "text_file_writer.h"

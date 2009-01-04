@@ -32,7 +32,7 @@ m4_define([ruby_required_version], [1.8])
 AC_INIT([Aegisub], [aegisub_version],, [aegisub])
 AC_CONFIG_SRCDIR([aegisub/main.cpp])
 AM_INIT_AUTOMAKE
-AC_CONFIG_HEADER([aegisub/posix/acconf.h])
+AC_CONFIG_HEADER([acconf.h])
 AC_GNU_SOURCE
 AC_CANONICAL_HOST
 

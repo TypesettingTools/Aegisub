@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/clipbrd.h>
 #include <wx/valtext.h>
 #include <wx/menu.h>

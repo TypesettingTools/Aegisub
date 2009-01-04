@@ -34,6 +34,8 @@
 //
 
 
+#include "config.h"
+
 #include <wx/filename.h>
 #include <wx/file.h>
 #include "audio_provider_pcm.h"

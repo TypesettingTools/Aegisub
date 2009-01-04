@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "export_clean_info.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"

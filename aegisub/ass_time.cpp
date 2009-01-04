@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <fstream>
 #include <algorithm>
 #include "ass_time.h"

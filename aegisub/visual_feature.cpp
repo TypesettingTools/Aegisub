@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "visual_feature.h"
 #include "gl_wrap.h"
 

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "idle_field_event.h"
 #include <wx/event.h>
 #include <wx/settings.h>

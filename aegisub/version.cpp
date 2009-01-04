@@ -33,12 +33,13 @@
 // Contact: mailto:jiifurusu@gmail.com
 //
 
+#include "config.h"
+
 #include <wx/string.h>
 #include <wx/datetime.h>
 #include "version.h"
 
 #ifdef __WINDOWS__
-#include "config.h"
 #include "../build/svn-revision.h"
 #else
 

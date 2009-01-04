@@ -35,6 +35,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include "dialog_timing_processor.h"
 #include "subs_grid.h"
 #include "ass_file.h"

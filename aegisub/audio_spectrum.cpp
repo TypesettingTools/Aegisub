@@ -34,6 +34,8 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include "config.h"
+
 #include <assert.h>
 #include <vector>
 #include <list>

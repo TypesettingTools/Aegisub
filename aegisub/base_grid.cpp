@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include "base_grid.h"
 #include "utils.h"
 #include "ass_file.h"

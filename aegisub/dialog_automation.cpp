@@ -34,6 +34,8 @@
 //
 
 
+#include "config.h"
+
 #ifdef WITH_AUTOMATION
 
 #include "main.h"

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "subtitle_format_mkv.h"
 #include "ass_dialogue.h"
 #include "mkv_wrap.h"

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "dialog_progress.h"
 #include "audio_provider_ram.h"
 #include "utils.h"

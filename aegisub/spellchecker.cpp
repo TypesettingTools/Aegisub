@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "spellchecker_manager.h"
 #ifdef WITH_HUNSPELL
 #include "spellchecker_hunspell.h"

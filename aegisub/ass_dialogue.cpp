@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <fstream>
 #include <wx/tokenzr.h>
 #include <wx/regex.h>

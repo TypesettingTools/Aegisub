@@ -35,6 +35,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 
 #ifdef WITH_LIBASS
 

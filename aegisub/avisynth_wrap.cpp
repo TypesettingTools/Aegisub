@@ -37,6 +37,8 @@
 ////////////
 // Includes
 
+#include "config.h"
+
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
 #include "options.h"

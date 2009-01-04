@@ -25,6 +25,12 @@
 #	include <intrin.h>
 #endif
 
+#ifdef __UNIX__
+#define _fseeki64 fseeko
+#define _ftelli64 ftello
+#define _snprintf snprintf
+#endif
+
 int GetCPUFlags() {
 // FIXME Add proper feature detection when msvc isn't used
 	int Flags = PP_CPU_CAPS_MMX | PP_CPU_CAPS_MMX2;

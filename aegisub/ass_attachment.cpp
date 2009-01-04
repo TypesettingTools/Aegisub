@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/wfstream.h>
 #include <wx/filename.h>
 #include "ass_attachment.h"

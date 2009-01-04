@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "dialog_text_import.h"
 #include <wx/sizer.h>
 #include <wx/stattext.h>

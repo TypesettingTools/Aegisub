@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "subtitle_format_dvd.h"
 #include "video_provider_dummy.h"
 #include "subtitles_provider_manager.h"

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "drop.h"
 #include "frame_main.h"
 #include <wx/filename.h>

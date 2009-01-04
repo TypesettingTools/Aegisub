@@ -34,6 +34,8 @@
 //
 
 
+#include "config.h"
+
 #ifdef WITH_PERL
 #ifdef WITH_PERLCONSOLE
 

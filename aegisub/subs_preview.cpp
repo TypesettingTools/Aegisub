@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/msgdlg.h>
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>

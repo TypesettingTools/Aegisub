@@ -35,6 +35,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/intl.h>
 #include "dialog_spellchecker.h"
 #include "spellchecker_manager.h"

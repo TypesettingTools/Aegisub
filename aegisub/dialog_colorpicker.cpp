@@ -33,6 +33,8 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include "config.h"
+
 #include <wx/image.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>

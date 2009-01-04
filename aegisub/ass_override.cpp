@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include "ass_dialogue.h"
 #include "ass_override.h"
 #include <wx/tokenzr.h>

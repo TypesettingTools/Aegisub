@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "ass_dialogue.h"
 #include "ass_style.h"
 #include "ass_attachment.h"

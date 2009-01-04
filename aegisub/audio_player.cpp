@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/wxprec.h>
 #include "audio_player_manager.h"
 #include "options.h"

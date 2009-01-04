@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "spline_curve.h"
 #include "utils.h"
 

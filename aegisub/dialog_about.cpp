@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/sizer.h>

@@ -6,6 +6,8 @@
  */
 
 
+#include "config.h"
+
 #ifdef WITH_DIRECTSHOW
 #include <windows.h>
 #ifdef __WXDEBUG__

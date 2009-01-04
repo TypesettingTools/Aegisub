@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/config.h>
 #include <wx/stattext.h>
 #include <wx/sizer.h>

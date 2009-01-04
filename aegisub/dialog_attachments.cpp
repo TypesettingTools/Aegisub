@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/listctrl.h>
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>

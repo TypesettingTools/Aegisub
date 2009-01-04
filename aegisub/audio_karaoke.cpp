@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "audio_karaoke.h"
 #include "audio_display.h"
 #include "audio_box.h"

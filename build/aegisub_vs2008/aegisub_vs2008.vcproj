@@ -28,7 +28,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\aegisub\win32\config.h&quot; (copy &quot;..\..\aegisub\win32\config0.h&quot; &quot;..\..\aegisub\win32\config.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
+				CommandLine="if not exist &quot;..\..\aegisub\config\config_windows.h&quot; (copy &quot;..\..\aegisub\config\config_windows0.h&quot; &quot;..\..\aegisub\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../aegisub/win32;../../hunspell/src"
+				AdditionalIncludeDirectories="../../hunspell/src;../../aegisub/msvc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -59,7 +59,7 @@
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h;config.h"
+				ForcedIncludeFiles="stdwx.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -114,7 +114,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\aegisub\win64\config.h&quot; (copy &quot;..\..\aegisub\win64\config0.h&quot; &quot;..\..\aegisub\win64\config.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
+				CommandLine="if not exist &quot;..\..\aegisub\config\config_windows.h&quot; (copy &quot;..\..\aegisub\config\config_windows0.h&quot; &quot;..\..\aegisub\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -132,7 +132,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../aegisub/win64;../../hunspell/src"
+				AdditionalIncludeDirectories="../../hunspell/src"
 				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -145,7 +145,7 @@
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h;config.h"
+				ForcedIncludeFiles="stdwx.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -201,7 +201,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\aegisub\win32\config.h&quot; (copy &quot;..\..\aegisub\win32\config0.h&quot; &quot;..\..\aegisub\win32\config.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
+				CommandLine="if not exist &quot;..\..\aegisub\config\config_windows.h&quot; (copy &quot;..\..\aegisub\config\config_windows0.h&quot; &quot;..\..\aegisub\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -219,7 +219,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="../../aegisub/win32;../../hunspell/src"
+				AdditionalIncludeDirectories="../../hunspell/src;../../aegisub/msvc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				OpenMP="true"
@@ -231,7 +231,7 @@
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h;config.h"
+				ForcedIncludeFiles="stdwx.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -291,7 +291,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\aegisub\win64\config.h&quot; (copy &quot;..\..\aegisub\win64\config0.h&quot; &quot;..\..\aegisub\win64\config.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
+				CommandLine="if not exist &quot;..\..\aegisub\config\config_windows.h&quot; (copy &quot;..\..\aegisub\config\config_windows0.h&quot; &quot;..\..\aegisub\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\aegisub&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -308,7 +308,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../aegisub/win64;../../hunspell/src"
+				AdditionalIncludeDirectories="../../hunspell/src"
 				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				OpenMP="true"
@@ -319,7 +319,7 @@
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h;config.h"
+				ForcedIncludeFiles="stdwx.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

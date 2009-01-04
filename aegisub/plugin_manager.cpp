@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "plugin_manager.h"
 #include "video_provider_manager.h"
 #include "audio_provider_manager.h"

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "visual_tool_cross.h"
 #include "gl_text.h"
 #include "subs_grid.h"

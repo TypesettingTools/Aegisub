@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include "variable_data.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"

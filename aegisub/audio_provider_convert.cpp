@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "audio_provider_convert.h"
 #include "audio_provider_downmix.h"
 

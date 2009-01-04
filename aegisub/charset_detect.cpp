@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #ifdef WITH_UNIVCHARDET
 #include <wx/wxprec.h>
 #include "text_file_reader.h"

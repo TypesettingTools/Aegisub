@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/tokenzr.h>
 #include <wx/button.h>
 #include <wx/stattext.h>

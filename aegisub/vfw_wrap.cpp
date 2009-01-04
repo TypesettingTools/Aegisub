@@ -39,6 +39,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "vfw_wrap.h"
 #ifdef __WINDOWS__
 #include <vfw.h>

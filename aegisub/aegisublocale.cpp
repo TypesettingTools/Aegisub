@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/wxprec.h>
 #include <wx/intl.h>
 #include <locale.h>

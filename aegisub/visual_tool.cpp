@@ -36,6 +36,8 @@
 
 //////////////
 // Headers
+#include "config.h"
+
 #include <wx/glcanvas.h>
 #ifdef __APPLE__
 #include <OpenGL/GL.h>

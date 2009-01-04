@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "subtitles_provider_manager.h"
 #ifdef WITH_CSRI
 #include "subtitles_provider_csri.h"

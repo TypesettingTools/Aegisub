@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "hotkeys.h"
 #include <fstream>
 #include "text_file_reader.h"

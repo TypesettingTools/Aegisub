@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "subtitle_format_microdvd.h"
 #include "ass_dialogue.h"
 #include "ass_time.h"

@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include "toggle_bitmap.h"
 #include <wx/wxprec.h>
 #include <wx/tglbtn.h>

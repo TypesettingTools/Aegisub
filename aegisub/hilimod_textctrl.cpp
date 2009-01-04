@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include "hilimod_textctrl.h"
 #include "options.h"
 

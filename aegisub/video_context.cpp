@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>

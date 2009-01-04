@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/filename.h>
 #include "options.h"
 #include "vfr.h"

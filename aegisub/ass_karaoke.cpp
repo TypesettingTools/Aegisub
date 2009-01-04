@@ -34,6 +34,8 @@
 //
 
 
+#include "config.h"
+
 #include "ass_karaoke.h"
 #include "ass_override.h"
 

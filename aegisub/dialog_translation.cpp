@@ -36,6 +36,8 @@
 
 ///////////
 // Headers
+#include "config.h"
+
 #include <wx/wxprec.h>
 #include <wx/settings.h>
 #include "dialog_translation.h"

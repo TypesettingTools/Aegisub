@@ -36,6 +36,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #include <wx/wxprec.h>
 #include <wx/intl.h>
 #include "subs_edit_ctrl.h"
