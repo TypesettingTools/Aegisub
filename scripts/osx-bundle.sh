@@ -34,6 +34,17 @@ cp ${SKEL_DIR}/Contents/Resources/etc/fonts/conf.d/*.conf ${PKG_DIR}/Contents/Re
 cat ${SKEL_DIR}/Contents/Info.plist |sed -f scripts/osx-bundle.sed > ${PKG_DIR}/Contents/Info.plist
 
 echo
+echo "---- Copying locale files ----"
+for i in `cat po/LINGUAS`; do
+  if test -f "po/${i}.gmo"; then
+    mkdir -v ${PKG_DIR}/Contents/Resources/${i}.lproj;
+    cp -v po/${i}.gmo ${PKG_DIR}/Contents/Resources//${i}.lproj/aegisub.po;
+  else
+    echo "${i}.gmo not found!"
+  fi
+done
+
+echo
 echo "---- Binaries ----"
 cp -v aegisub/.libs/aegisub ${PKG_DIR}/Contents/MacOS
 
