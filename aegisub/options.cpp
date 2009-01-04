@@ -87,7 +87,13 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	
 	// General
 	SetModificationType(MOD_AUTOMATIC);
+
+// Broken on OS X during startup only.
+#ifdef __APPLE__
+	SetBool(_T("Tips enabled"),false);
+#else
 	SetBool(_T("Tips enabled"),true);
+#endif
 	SetBool(_T("Show splash"),true);
 	SetBool(_T("Local config"),false);
 	SetInt(_T("Undo levels"),8);
@@ -312,7 +318,12 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		SetInt(_T("Video Dummy Last Length"), 40000);
 		SetBool(_T("Video Dummy Pattern"), false);
 
+// Broken on OS X during startup, so default to en_US
+#ifdef __APPLE__
+		SetInt(_T("Locale Code"),56,1700);
+#else
 		SetInt(_T("Locale Code"),-1,1700);
+#endif
 		SetBool(_T("Sync video with subs"),true);
 		SetText(_T("Spell checker language"),_T("en_US"));
 		SetText(_T("Thesaurus language"),_T("en_US"));
