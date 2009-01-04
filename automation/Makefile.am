@@ -8,8 +8,6 @@ data_general= \
 	include/Aegisub/Script.pm \
 	include/Auto4Utils.pm \
 	include/readme.txt \
-	tests/furi-test.ass \
-	tests/kara-templater-retime.ass \
 	v4-docs/basic-function-interface.txt \
 	v4-docs/configuration-dialogs.txt \
 	v4-docs/file-streams.txt \
@@ -35,22 +33,7 @@ data_auto4_lua = \
 	include/karaskel.lua \
 	include/unicode.lua \
 	include/utils-auto4.lua \
-	include/utils.lua \
-	tests/basic-export-test.lua \
-	tests/basic-tests.lua \
-	tests/config-dialog-test.lua \
-	tests/gen-absurd-t-line.lua \
-	tests/hello-world.lua \
-	tests/karaoke-parse-test.lua \
-	tests/progress-reporting-test.lua \
-	tests/selection-set-test.lua \
-	tests/test-filter-name-clash.lua \
-	tests/test-furi.lua \
-	tests/test-text_extents.lua \
-	tests/text-extents-test.lua \
-	tests/trace-level-test.lua \
-	tests/unicode-test.lua
-
+	include/utils.lua
 
 data_auto3_lua = \
 	auto3/readme.txt \
@@ -72,9 +55,7 @@ data_auto3_lua = \
 	include/karaskel-adv.auto3 \
 	include/karaskel-base.auto3 \
 	include/karaskel.auto3 \
-	include/utils.auto3 \
-	tests/test-auto3-parsing.auto3
-
+	include/utils.auto3
 
 data_auto4_perl = \
 	demos/macro-1p-edgeblur.pl \
