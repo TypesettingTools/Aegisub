@@ -1939,30 +1939,18 @@
 		<Filter
 			Name="Config"
 			>
-			<Filter
-				Name="win32"
+			<File
+				RelativePath="..\..\aegisub\config\config_unix.h"
 				>
-				<File
-					RelativePath="..\..\aegisub\win32\config.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\aegisub\win32\config0.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="win64"
+			</File>
+			<File
+				RelativePath="..\..\aegisub\config\config_windows.h"
 				>
-				<File
-					RelativePath="..\..\aegisub\win64\config.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\aegisub\win64\config0.h"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath="..\..\aegisub\config\config_windows0.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Include"

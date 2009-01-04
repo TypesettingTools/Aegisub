@@ -52,17 +52,17 @@
 
 // Enable Automation
 // Requires: Nothing
-//#define WITH_AUTOMATION
+#define WITH_AUTOMATION
 
 
 // Enable Automation 4 Lua
 // Requires: Lua 5.1 (in repository)
-//#define WITH_AUTO4_LUA
+#define WITH_AUTO4_LUA
 
 
 // Enable Automation 3
 // Requires: auto3 dll (in repository), Lua (in repository)
-//#define WITH_AUTO3
+#define WITH_AUTO3
 
 
 // Enable DirectSound audio player
@@ -72,7 +72,7 @@
 
 // Enable Avisynth
 // Requires: nothing (just the avisynth dlls)
-//#define WITH_AVISYNTH
+#define WITH_AVISYNTH
 
 
 
@@ -88,7 +88,7 @@
 
 // Enable CSRI, required for styles previews in the style editor and some video providers
 // Requires: csri (in repository)
-//#define WITH_CSRI
+#define WITH_CSRI
 
 
 // Enable universal charset detector, so Aegisub can automatically detect the encoding of non-unicode subtitles
@@ -144,7 +144,7 @@
 
 // Enable ffmpegsource video and audio providers
 // Requires: ffmpegsource version 2
-#define WITH_FFMPEGSOURCE
+//#define WITH_FFMPEGSOURCE
 
 
 // Enable Ruby support for Automation

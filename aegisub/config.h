@@ -1,4 +1,4 @@
-#ifdef __WINDOWS__
+#ifdef _WIN32
 
 // Windows specific settings
 #include "config/config_windows.h"
