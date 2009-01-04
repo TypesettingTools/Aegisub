@@ -24,7 +24,5 @@
 //typedef uint64_t __uint64;
 #define abs64 llabs
 
-#include "res.h"
-
 #endif /* _DEFINES_H */
 
