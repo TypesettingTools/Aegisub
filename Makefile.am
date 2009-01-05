@@ -24,8 +24,7 @@ SUBDIRS = \
 	$(ffmpegsource) \
 	aegisub \
 	automation \
-	po \
-	m4macros
+	po
 
 osx-bundle:
 	@SHELL@ scripts/osx-bundle.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@
@@ -46,3 +45,14 @@ EXTRA_DIST = \
 	mkinstalldirs \
 	INSTALL \
 	README
+
+# m4macros/
+EXTRA_DIST += \
+	m4macros/check_gnu_make.m4 \
+	m4macros/acx_pthread.m4 \
+	m4macros/ac_agi.m4 \
+	m4macros/ax_lang_compiler_ms.m4 \
+	m4macros/ac_agi_mdcpucfg.m4 \
+	m4macros/ax_openmp.m4 \
+	m4macros/ax_check_gl.m4 \
+	m4macros/ac_flag.m4

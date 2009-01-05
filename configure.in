@@ -1038,7 +1038,6 @@ auto3/Makefile
 libass/Makefile
 automation/Makefile
 po/Makefile.in
-m4macros/Makefile
 ])
 
 # Files that need substitution.
