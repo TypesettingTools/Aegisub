@@ -54,7 +54,7 @@ cp -v aegisub/.libs/aegisub ${PKG_DIR}/Contents/MacOS
 
 echo
 echo "---- Libraries ----"
-python scripts/osx-fix-libs.py "${PKG_DIR}/Contents/MacOS/aegisub"
+python scripts/osx-fix-libs.py "${PKG_DIR}/Contents/MacOS/Aegisub"
 
 echo
 echo "Done Creating ${PKG_DIR}"

@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>aegisub</string>
+	<string>Aegisub</string>
 	<key>CFBundleIconFile</key>
 	<string>Aegisub</string>
 	<key>CFBundleIdentifier</key>
@@ -48,6 +48,23 @@
     <!-- Map resource files to memory -->
 	<key>CSResourcesFileMapped</key>
 	<true/>
+
+    <!-- Localizations supported -->
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>ca</string>
+        <string>da</string>
+        <string>de</string>
+        <string>en</string>
+        <string>es</string>
+        <string>fr_FR</string>
+        <string>hu</string>
+        <string>it</string>
+        <string>ko</string>
+        <string>ru</string>
+        <string>pt_BR</string>
+        <string>zh_TW</string>
+    </array>
 
     <!-- Supported document types -->
 	<key>CFBundleDocumentTypes</key>
