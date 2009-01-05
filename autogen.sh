@@ -296,7 +296,6 @@ $BIN_AWK -f scripts/unix-gen-res.awk ${srcdir}/aegisub/res.rc \
   RESRC_CPP="${srcdir}/aegisub/libresrc/resrc.cpp" \
   RESRC_H="${srcdir}/aegisub/libresrc/libresrc.h"
 
-exit;
 rm -rf autom4te.cache
 
 echo "--- $ACLOCAL ---"
