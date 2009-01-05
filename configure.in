@@ -93,7 +93,7 @@ fi
 # Install prefix used by wxStandardPaths::SetInstallPrefix.
 AC_DEFINE_UNQUOTED([INSTALL_PREFIX], ["$prefix"], [Default install prefix, or --prefix.])
 
-AC_ARG_WITH(build-credit, [--with-build-credit=NAME  Build credit shown in the program title.], [use_build_credit="yes"])
+AC_ARG_WITH(build-credit, [  --with-build-credit=NAME  Build credit shown in the program title.], [use_build_credit="yes"])
 
 AC_MSG_CHECKING([whether BUILD_CREDIT has been set])
 if test "$use_build_credit" = "yes"; then
@@ -468,7 +468,8 @@ if test "$enable_old_ffmpeg" = "yes"; then
 fi
 
 AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG support.
-                          Disables FFMPEG and FFmpegSource A/V providers. (default: auto)], ffmpeg_disabled="(disabled)")
+                          Disables FFMPEG and FFmpegSource A/V providers.
+                          (default: auto)], ffmpeg_disabled="(disabled)")
 
 if test "$with_ffmpeg" != "no"; then
   AC_CHECK_LIB([avcodec], [avcodec_init],[AVCODEC_LDFLAGS="-lavcodec"; with_ffmpeg="yes"], [with_ffmpeg="no"])
@@ -513,7 +514,8 @@ fi
 AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
 
 AC_ARG_WITH(provider-ffmpegsource, [  --without-provider-ffmpegsource
-                          build without FFmpegSource A/V provider. (default: auto)], ffmpegsource_provider_disabled="(disabled)")
+                          build without FFmpegSource A/V provider.
+                          (default: auto)], ffmpegsource_provider_disabled="(disabled)")
 
 if test "$with_ffmpegsource" != "no"; then
   AC_CHECK_LIB([postproc], [pp_postprocess],[POSTPROC_LDFLAGS="-lpostproc"; with_postproc="yes"], [with_postproc="no"])
@@ -941,9 +943,9 @@ fi
 
 
 
-################################################
-# Internationalisation support (keep this last!)
-################################################
+##############################
+# Internationalisation support
+##############################
 AC_PROG_INTLTOOL
 AM_GLIB_GNU_GETTEXT
 
@@ -951,6 +953,76 @@ GETTEXT_PACKAGE=aegisub
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The prefix for our gettext translation domains.])
+
+
+####################################################################
+# Default settings for Providers/Players
+# * This is done at the end to preserve sanity rather than littering
+*   it above.
+####################################################################
+
+AC_ARG_WITH(provider-video, [  --with-provider-video=(ffmpegsource|ffmpeg)
+                          Default Video Provider. (default: ffmpegsource)])
+AC_ARG_WITH(provider-audio, [  --with-provider-audio=(ffmpegsource|ffmpeg)
+                          Default Audio Provider. (default: ffmpegsource)])
+AC_ARG_WITH(player-audio, [  --with-player-audio=(alsa|openal|portaudio|pulseaudio)
+                          Default Audio Player (default: Linux/ALSA,
+                          Darwin/OpenAL, */PortAudio.])
+
+# Default Video Provider.
+if !test -z "$with_provider_video"; then
+    default_provider_video="$with_provider_video"
+else
+  if test "$with_provider_ffmpegsource" = "yes"; then
+    default_provider_video="ffmpegsource"
+  elif test "$with_provider_ffmpeg" = "yes"; then
+    default_provider_video="ffmpeg"
+  fi
+fi
+AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_VIDEO], ["$default_provider_video"], [Default Video Provider.])
+
+
+# Default Audio Provider.
+if !test -z "$with_provider_audio"; then
+    default_provider_audio="$with_provider_audio"
+else
+  if test "$with_provider_ffmpegsource" = "yes"; then
+    default_provider_audio="ffmpegsource"
+  elif test "$with_provider_ffmpeg" = "yes"; then
+    default_provider_audio="ffmpeg"
+  fi
+fi
+AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_AUDIO], ["$default_provider_audio"], [Default Video Provider.])
+
+
+# Default Subtitle Provider.
+if !test -z "$with_provider_subtitle"; then
+    default_provider_subtitle="$with_provider_subtitle"
+else
+  if test "$with_libass" = "yes"; then
+    default_provider_subtitle="libass"
+  elif test "$with_csri" = "yes"; then
+    default_provider_subtitle="csri"
+  fi
+fi
+AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_SUBTITLE], ["$default_provider_subtitle"], [Default Subtitle Provider.])
+
+
+# Default audio player.
+if !test -z "$with_player_audio"; then
+    default_player_audio="$with_player_audio"
+else
+  if test "$build_linux" = "yes" && test "$with_alsa" = "yes"; then
+    default_player_audio="alsa"
+  elif test "$build_darwin" = "yes" && test "$with_openal" = "yes"; then
+    default_player_audio="openal"
+  elif test "$with_portaudio" = "yes"; then
+    default_player_audio="portaudio"
+  elif test "$with_pulseaudio" = "yes"; then
+    default_player_audio="pulseaudio"
+  fi
+fi
+AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default audio player.])
 
 
 # Makefiles
@@ -1011,20 +1083,26 @@ if test -z "$found_video_provider"; then
 fi
 
 AC_MSG_RESULT([
-Configure settings:
+Configure settings
   Install prefix:        $prefix
   SVN Revision:          $SVN_REVISION
   Debug                  $enable_debug $msg_debug
   CPPFLAGS               $CPPFLAGS
   LDFLAGS                $LDFLAGS
 
-Scripting Engines:
+Default Settings
+  Video Provider:        $default_provider_video
+  Audio Provider:        $default_provider_audio
+  Subtitle Provider:     $default_provider_subtitle
+  Audio Player:          $default_player_audio
+
+Scripting Engines
   auto3 Lua:             $with_auto3 $lua50_disabled
   auto4 Lua:             $with_auto4 $lua51_disabled
   auto4 Perl:            $with_cv_perl $perl_disabled
   auto4 Ruby:            $with_cv_ruby $ruby_disabled
 
-Audio Players:
+Audio Players
   ALSA:                  $with_alsa $alsa_disabled
   OpenAL:                $with_openal $openal_disabled
   PortAudio:             $with_portaudio $portaudio_disabled
@@ -1039,11 +1117,11 @@ Video Providers
   FFmpegSource:          $with_provider_ffmpegsource $ffmpegsource_provider_disabled
 
 Subtitle Providers:
-  CSRI (ASA):            $with_csri $csri_disabled
-  libASS                 $with_libass $libass_disabled
+  CSRI (ASA):            $with_csri $csri_disabled $csri_default
+  libASS                 $with_libass $libass_disabled $libass_default
                          (both require iconv and fontconfig)
 
-Misc Packages:
+Misc Packages
   Hunspell:              $with_hunspell $with_hunspell_version $hunspell_disabled
   universalchardet:      $with_univchardet $univchardet_disabled
 ]);

@@ -171,7 +171,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	#ifdef __WINDOWS__
 	SetText(_T("Video Provider"),_T("ffmpegsource"),2416);
 	#else
-	SetText(_T("Video Provider"),_T("FFMPEG"),1945);
+	SetText(_T("Video Provider"),_T(DEFAULT_PROVIDER_VIDEO),1945);
 	#endif
 	SetBool(_T("FFmpeg allow unsafe seeking"),false);
 	SetInt(_T("FFmpegSource decoding threads"),1);
@@ -181,7 +181,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	#ifdef __WINDOWS__
 	SetText(_T("Subtitles Provider"),_T("csri/vsfilter_textsub"),1700);
 	#else
-	SetText(_T("Subtitles Provider"),_T("csri/asa"));
+	SetText(_T("Subtitles Provider"),_T(DEFAULT_PROVIDER_SUBTITLE));
 	#endif
 	SetBool(_T("Video Use Pixel Shaders"),false,1700);
 
@@ -207,12 +207,9 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	#if defined(__WINDOWS__)
 	SetText(_T("Audio Player"),_T("DirectSound"),1945);
 	SetText(_T("Audio Provider"),_T("ffmpegsource"),2416);
-	#elif defined(__APPLE__)
-	SetText(_T("Audio Player"), _T("openal"));
-	SetText(_T("Audio Provider"),_T("FFMPEG"),1945);
 	#else
-	SetText(_T("Audio Player"),_T("portaudio")); // FIXME: should this be something else? perhaps alsa on linux and portaudio on everything else?
-	SetText(_T("Audio Provider"),_T("FFMPEG"),1945);
+	SetText(_T("Audio Player"),_T(DEFAULT_PLAYER_AUDIO));
+	SetText(_T("Audio Provider"),_T(DEFAULT_PROVIDER_AUDIO),1945);
 	#endif
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"),1700);
 	SetText(_T("Audio Alsa Device"), _T("default:0"));
