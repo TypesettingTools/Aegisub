@@ -4,9 +4,6 @@ libosxutil_a_SOURCES = bundledirs.c
 
 noinst_HEADERS = libosxutil.h
 
-EXTRA_DIST= callables.c
-
-
 if BUILD_DARWIN
 CLEANFILES = bundledirs-test
 bundledirs-test: libosxutil.a
