@@ -327,7 +327,8 @@ aegisub_SOURCES = \
 
 aegisub_SOURCES += \
 	$(srcdir)/*.h \
-	$(srcdir)/include/aegisub/*.h
+	$(srcdir)/include/aegisub/*.h \
+    $(srcdir)/config/*.h
 
 noinst_HEADERS = \
 	$(srcdir)/boost/*.hpp \
@@ -336,5 +337,4 @@ noinst_HEADERS = \
 	osx_bevelButton.h
 
 EXTRA_DIST = \
-	auto4_perldata.inc \
-	win32/stdint.h
+	auto4_perldata.inc
