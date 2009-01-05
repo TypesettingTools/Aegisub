@@ -970,7 +970,7 @@ AC_ARG_WITH(player-audio, [  --with-player-audio=(alsa|openal|portaudio|pulseaud
                           Darwin/OpenAL, */PortAudio.])
 
 # Default Video Provider.
-if !test -z "$with_provider_video"; then
+if ! test -z "$with_provider_video"; then
     default_provider_video="$with_provider_video"
 else
   if test "$with_provider_ffmpegsource" = "yes"; then
@@ -983,7 +983,7 @@ AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_VIDEO], ["$default_provider_video"], [Defau
 
 
 # Default Audio Provider.
-if !test -z "$with_provider_audio"; then
+if ! test -z "$with_provider_audio"; then
     default_provider_audio="$with_provider_audio"
 else
   if test "$with_provider_ffmpegsource" = "yes"; then
@@ -996,7 +996,7 @@ AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_AUDIO], ["$default_provider_audio"], [Defau
 
 
 # Default Subtitle Provider.
-if !test -z "$with_provider_subtitle"; then
+if ! test -z "$with_provider_subtitle"; then
     default_provider_subtitle="$with_provider_subtitle"
 else
   if test "$with_libass" = "yes"; then
@@ -1009,7 +1009,7 @@ AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_SUBTITLE], ["$default_provider_subtitle"], 
 
 
 # Default audio player.
-if !test -z "$with_player_audio"; then
+if ! test -z "$with_player_audio"; then
     default_player_audio="$with_player_audio"
 else
   if test "$build_linux" = "yes" && test "$with_alsa" = "yes"; then
