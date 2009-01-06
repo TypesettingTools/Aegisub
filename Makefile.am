@@ -13,7 +13,7 @@ if WITH_LIBASS
 libass = libass
 endif
 
-if HAVE_FFMPEGSOURCE
+if HAVE_PROVIDER_FFMPEGSOURCE
 ffmpegsource = FFmpegSource2
 endif
 

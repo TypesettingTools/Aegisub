@@ -99,12 +99,11 @@ AC_DEFINE_UNQUOTED(AEGISUB_VERSION_DATA, ["$AEGISUB_VERSION_DATA"], [Data path s
 
 aegisubdatadir="$datadir/$PACKAGE/aegisub_version_data"
 aegisubdocdir="$datadir/doc/$PACKAGE/aegisub_version_data"
-AEGISUB_COMMAND="aegisub-aegisub_version_data"
+AEGISUB_COMMAND="aegisub-$AEGISUB_VERSION_MAJOR.AEGISUB_VERSION_MINOR"
 
 AC_SUBST(aegisubdatadir)
 AC_SUBST(aegisubdocdir)
 AC_SUBST(AEGISUB_COMMAND)
-
 
 AC_ARG_WITH(desktop-dir, [  --with-desktop-dir=PATH desktop file locations (default: PREFIX/share)])
   if test -z "$with_desktop_dir" ; then
@@ -504,6 +503,14 @@ AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG support.
                           Disables FFMPEG and FFmpegSource A/V providers.
                           (default: auto)], ffmpeg_disabled="(disabled)")
 
+AC_ARG_VAR([FFMPEG_LDFLAGS], [LDFLAGS to use for FFMPEG (default: LDFLAGS)])
+AC_ARG_VAR([FFMPEG_CFLAGS], [CFLAGS to use for FFMPEG (default: CPPFLAGS)])
+
+aegisub_save_CPPFLAGS="$CPPFLAGS"
+aegisub_save_LDFLAGS="$LDFLAGS"
+CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
+LDFLAGS="$LDFLAGS $FFMPEG_LDFLAGS"
+
 if test "$with_ffmpeg" != "no"; then
   AC_CHECK_LIB([avcodec], [avcodec_init],[AVCODEC_LDFLAGS="-lavcodec"; with_ffmpeg="yes"], [with_ffmpeg="no"])
   AC_CHECK_LIB([avformat], [av_read_frame],[AVFORMAT_LDFLAGS="-lavformat"; with_ffmpeg="yes"], [with_ffmpeg="no"])
@@ -521,12 +528,15 @@ if test "$with_ffmpeg" != "no"; then
     with_ffmpeg="no";
   fi
 fi
+CPPFLAGS="$aegisub_save_CPPFLAGS"
+LDFLAGS="$aegisub_save_LDFLAGS"
 
 AC_SUBST(SWSCALE_LDFLAGS)
 AC_SUBST(AVCODEC_LDFLAGS)
 AC_SUBST(AVFORMAT_LDFLAGS)
 AC_SUBST(AVUTIL_LDFLAGS)
 
+AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" = "yes"])
 
 AC_ARG_WITH(provider-ffmpeg, [  --without-provider-ffmpeg
                           build without FFMPEG A/V provider. (default: auto)], ffmpeg_provider_disabled="(disabled)")
@@ -544,7 +554,7 @@ if test "$with_ffmpeg" = "no"; then
   ffmpeg_provider_disabled="(disabled, requires FFMPEG)"
 fi
 
-AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
+AM_CONDITIONAL([HAVE_PROVIDER_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
 
 AC_ARG_WITH(provider-ffmpegsource, [  --without-provider-ffmpegsource
                           build without FFmpegSource A/V provider.
@@ -564,8 +574,7 @@ if test "$with_ffmpegsource" != "no"; then
 fi
 
 AC_SUBST(POSTPROC_LDFLAGS)
-
-AM_CONDITIONAL([HAVE_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"])
+AM_CONDITIONAL([HAVE_PROVIDER_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"])
 
 
 
