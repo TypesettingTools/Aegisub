@@ -1,6 +1,8 @@
 noinst_LIBRARIES = libffmpegsource2_aegisub.a
 
-AM_CPPFLAGS = -I../aegisub -D__UNIX__ -DHAVE_STRLCPY
+AM_CPPFLAGS = -I../aegisub -D__UNIX__ -DHAVE_STRLCPY @FFMPEG_CFLAGS@
+libffmpegsource2_aegisub_a_LDFLAGS= @FFMPEG_LDFLAGS@
+
 
 libffmpegsource2_aegisub_a_SOURCES = \
 	ffaudiosource.cpp \
