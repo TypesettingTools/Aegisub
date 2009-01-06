@@ -64,7 +64,12 @@ StandardPaths::StandardPaths() {
 
 	// Get paths
 	wxString dataDir = paths.GetDataDir();
+#ifdef __WINDOWS__
 	wxString userDir = paths.GetUserDataDir();
+#else
+	wxString userDir = paths.GetUserDataDir() + _T("-") + _T(AEGISUB_VERSION_DATA);
+//	wxString userDir = wxString::Format(_T("%s-%s"), paths.GetUserDataDir(), AEGISUB_VERSION_DATA);
+#endif
 	wxString tempDir = paths.GetTempDir();
 
 	// Set paths

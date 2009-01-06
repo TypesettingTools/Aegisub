@@ -66,10 +66,14 @@ void AegisubLocale::Init(int language) {
 	if (locale) delete locale;
 	curCode = language;
 	locale = new wxLocale(language);
+
 #ifdef __WINDOWS__
 	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath(_T("?data/locale/")));
-#endif
 	locale->AddCatalog(_T("aegisub"));
+#else
+	locale->AddCatalog(_T(GETTEXT_PACKAGE));
+#endif
+
 	locale->AddCatalog(_T("wxstd"));
 	setlocale(LC_NUMERIC, "C");
 	setlocale(LC_CTYPE, "C");

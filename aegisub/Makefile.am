@@ -115,7 +115,7 @@ endif
 
 if HAVE_AUTO3_LUA
 AUTO3_LUA = auto4_auto3.cpp
-aegisub_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3
+aegisub_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3-2.1
 endif
 
 if HAVE_HUNSPELL

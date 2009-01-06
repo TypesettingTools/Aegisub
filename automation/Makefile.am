@@ -1,5 +1,5 @@
 automationdir = $(aegisubdatadir)/automation
-share_docdir = $(docdir)
+share_docdir = $(aegisubdocdir)
 
 # share/
 data_general= \
