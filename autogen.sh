@@ -14,7 +14,7 @@ LIBTOOLIZE=${LIBTOOLIZE-libtoolize}
 AUTOHEADER=${AUTOHEADER-autoheader}
 AUTOMAKE=${AUTOMAKE-automake-1.9}
 AUTOCONF=${AUTOCONF-autoconf}
-#GETTEXTIZE=${GETTEXTIZE-glib-gettextize}
+GETTEXTIZE=${GETTEXTIZE-glib-gettextize}
 INTLTOOLIZE=${INTLTOOLIZE-intltoolize}
 
 
@@ -153,19 +153,19 @@ if test x$AUTOMAKE != x; then
 fi
 
 
-#$ECHO_N "checking for $GETTEXTIZE ... "
-#if ($GETTEXTIZE --version) < /dev/null > /dev/null 2>&1; then
-#    VER=`$GETTEXTIZE --version \
-#         | grep glib-gettextize | sed "s/.* \([0-9.]*\)/\1/"`
-#    check_version $VER $GLIB_REQUIRED_VERSION
-#else
-#    echo
-#    echo "  You must have glib-gettextize installed to compile $PROJECT."
-#    echo "  glib-gettextize is part of glib-2.0, so you should already"
-#    echo "  have it. Make sure it is in your PATH."
-#    echo
-#    DIE=1
-#fi
+$ECHO_N "checking for $GETTEXTIZE ... "
+if ($GETTEXTIZE --version) < /dev/null > /dev/null 2>&1; then
+    VER=`$GETTEXTIZE --version \
+         | grep glib-gettextize | sed "s/.* \([0-9.]*\)/\1/"`
+    check_version $VER $GLIB_REQUIRED_VERSION
+else
+    echo
+    echo "  You must have glib-gettextize installed to compile $PROJECT."
+    echo "  glib-gettextize is part of glib-2.0, so you should already"
+    echo "  have it. Make sure it is in your PATH."
+    echo
+    DIE=1
+fi
 
 
 $ECHO_N "checking for $INTLTOOLIZE >= $INTLTOOL_REQUIRED_VERSION ... "
@@ -318,8 +318,8 @@ $AUTOMAKE --add-missing || exit $?
 echo "--- $AUTOCONF ---"
 $AUTOCONF || exit $?
 
-#echo "--- $GETTEXTIZE ---"
-#$GETTEXTIZE --force || exit $?
+echo "--- $GETTEXTIZE ---"
+$GETTEXTIZE --force || exit $?
 
 echo "--- $INTTOOLIZE ---"
 $INTLTOOLIZE --force --automake || exit $?
