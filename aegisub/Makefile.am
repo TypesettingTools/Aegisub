@@ -12,7 +12,7 @@ SUBDIRS = bitmaps libresrc $(libosxutil_subdir)
 
 AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@
 
-bin_PROGRAMS = aegisub
+bin_PROGRAMS = aegisub-2.1
 aegisub_LDADD = libresrc/libresrc.a $(libosxutil_lib)
 aegisub_CPPFLAGS = @FREETYPE_CFLAGS@
 aegisub_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags)
