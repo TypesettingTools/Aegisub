@@ -958,7 +958,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
 ####################################################################
 # Default settings for Providers/Players
 # * This is done at the end to preserve sanity rather than littering
-*   it above.
+#   it above.
 ####################################################################
 
 AC_ARG_WITH(provider-video, [  --with-provider-video=(ffmpegsource|ffmpeg)
