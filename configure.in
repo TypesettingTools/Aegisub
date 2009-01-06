@@ -673,10 +673,6 @@ AC_ARG_WITH(lua,
 AC_ARG_VAR([LUA_CFLAGS], [CFLAGS to use for LUA 5.1 (default: CPPFLAGS)])
 AC_ARG_VAR([LUA_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: -llua)])
 
-if test -z "$LUA_CFLAGS"; then
-  LUA_CFLAGS="$CPPFLAGS";
-fi
-
 if test -z "$LUA_LDFLAGS"; then
   LUA_LDFLAGS="-llua";
 fi
@@ -721,10 +717,6 @@ AC_ARG_VAR([LUA50_CFLAGS], [CFLAGS to use for LUA 5.0 (default: CPPFLAGS)])
 AC_ARG_VAR([LUA50_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: -llua -llualib)])
 if test -z "$LUA50_LDFLAGS"; then
   LUA50_LDFLAGS="-llua -llualib";
-fi
-
-if test -z "$LUA50_CFLAGS"; then
-  LUA50_CFLAGS="$CPPFLAGS";
 fi
 
 AC_ARG_WITH(lua50,
