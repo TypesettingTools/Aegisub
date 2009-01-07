@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Aegisub
+GenericName=Subtitle Editor
+Comment=Create and edit subtitles for film and videos.
+Exec=@AEGISUB_COMMAND@ %f
+TryExec=@AEGISUB_COMMAND@
+Icon=aegisub
+Terminal=false
+Categories=AudioVideo;AudioVideoEditing;
+MimeType=application/x-srt;text/plain;text/x-ass;text/x-microdvd;text/x-ssa;

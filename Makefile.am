@@ -24,7 +24,8 @@ SUBDIRS = \
 	$(ffmpegsource) \
 	aegisub \
 	automation \
-	po
+	po \
+	desktop
 
 osx-bundle:
 	@SHELL@ scripts/osx-bundle.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@

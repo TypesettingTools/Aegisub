@@ -99,14 +99,15 @@ AC_DEFINE_UNQUOTED(AEGISUB_VERSION_DATA, ["$AEGISUB_VERSION_DATA"], [Data path s
 
 aegisubdatadir="$datadir/$PACKAGE/aegisub_version_data"
 aegisubdocdir="$datadir/doc/$PACKAGE/aegisub_version_data"
-AEGISUB_COMMAND="aegisub-$AEGISUB_VERSION_MAJOR.AEGISUB_VERSION_MINOR"
+AEGISUB_COMMAND="aegisub-$AEGISUB_VERSION_MAJOR.$AEGISUB_VERSION_MINOR"
 
 AC_SUBST(aegisubdatadir)
 AC_SUBST(aegisubdocdir)
 AC_SUBST(AEGISUB_COMMAND)
 
 AC_ARG_WITH(desktop-dir, [  --with-desktop-dir=PATH desktop file locations (default: PREFIX/share)])
-  if test -z "$with_desktop_dir" ; then
+
+if ! test -z "$with_desktop_dir" ; then
   DESKTOP_DATADIR=$with_desktop_dir
 else
   DESKTOP_DATADIR="$datadir"
@@ -1073,10 +1074,12 @@ auto3/Makefile
 libass/Makefile
 automation/Makefile
 po/Makefile.in
+desktop/Makefile
 ])
 
 # Files that need substitution.
 AC_CONFIG_FILES([
+desktop/aegisub.desktop
 scripts/osx-bundle.sed
 ])
 
