@@ -3,6 +3,7 @@
 PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
 AEGISUB_VERSION_DATA="${2}"
+SRCDIR=`pwd`
 
 if ! test -d packages/osx_bundle; then
   echo
@@ -33,6 +34,15 @@ cp ${SKEL_DIR}/Contents/Resources/*.icns ${PKG_DIR}/Contents/Resources
 cp ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.* ${PKG_DIR}/Contents/Resources/etc/fonts
 cp ${SKEL_DIR}/Contents/Resources/etc/fonts/conf.d/*.conf ${PKG_DIR}/Contents/Resources/etc/fonts/conf.d
 cat ${SKEL_DIR}/Contents/Info.plist |sed -f scripts/osx-bundle.sed > ${PKG_DIR}/Contents/Info.plist
+
+echo
+echo "---- Copying automation/ files ----"
+cd automation
+make install \
+	aegisubdatadir=../${PKG_DIR}/Contents/SharedSupport \
+	aegisubdocdir=../${PKG_DIR}/Contents/SharedSupport/doc
+cd ${SRCDIR}
+
 
 echo
 echo "---- Copying locale files ----"
