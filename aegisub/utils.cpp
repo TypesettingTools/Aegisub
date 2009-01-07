@@ -48,7 +48,9 @@
 #include <unistd.h>
 #endif
 #ifdef __APPLE__
+extern "C" {
 #include "libosxutil/libosxutil.h"
+}
 #endif
 
 
