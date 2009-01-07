@@ -28,7 +28,7 @@ SUBDIRS = \
 	desktop
 
 osx-bundle:
-	@SHELL@ scripts/osx-bundle.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@
+	@SHELL@ scripts/osx-bundle.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@ @AEGISUB_VERSION_DATA@
 
 osx-dmg:
 	@SHELL@ scripts/osx-dmg.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@ "@PACKAGE_TARNAME@ @PACKAGE_VERSION@"

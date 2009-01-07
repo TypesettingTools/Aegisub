@@ -2,6 +2,7 @@
 
 PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
+AEGISUB_VERSION_DATA="${2}"
 
 if ! test -d packages/osx_bundle; then
   echo
@@ -50,7 +51,7 @@ done
 
 echo
 echo "---- Binaries ----"
-cp -v aegisub/.libs/aegisub ${PKG_DIR}/Contents/MacOS
+cp -v aegisub/.libs/aegisub-${AEGISUB_VERSION_DATA} ${PKG_DIR}/Contents/MacOS/aegisub
 
 echo
 echo "---- Libraries ----"

@@ -95,7 +95,7 @@ AEGISUB_VERSION=aegisub_version
 AEGISUB_VERSION_DATA=aegisub_version_data
 
 AC_DEFINE_UNQUOTED(AEGISUB_VERSION_DATA, ["$AEGISUB_VERSION_DATA"], [Data path suffix.])
-
+AC_SUBST(AEGISUB_VERSION_DATA)
 
 aegisubdatadir="$datadir/$PACKAGE/aegisub_version_data"
 aegisubdocdir="$datadir/doc/$PACKAGE/aegisub_version_data"
