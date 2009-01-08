@@ -55,3 +55,8 @@ EXTRA_DIST += \
 	m4macros/ax_openmp.m4 \
 	m4macros/ax_check_gl.m4 \
 	m4macros/ac_flag.m4
+
+CLEANFILES= \
+	intltool-extract \
+	intltool-merge \
+	intltool-update
