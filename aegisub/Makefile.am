@@ -118,7 +118,10 @@ endif
 
 if HAVE_AUTO3_LUA
 AUTO3_LUA = auto4_auto3.cpp
-aegisub_2_1_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3-2.1
+# This is a workaround top stop libtool from binging in dependency_libs which
+# causes many link errors due to auto4 (lua 5.1) support.
+#aegisub_2_1_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3-2.1
+aegisub_2_1_LDADD += ../auto3/.libs/libaegisub-auto3-2.1.so
 endif
 
 if HAVE_HUNSPELL
