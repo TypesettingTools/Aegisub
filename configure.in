@@ -806,7 +806,7 @@ if test "$with_perl" != "no"; then
       AC_AGI_COMPILE([Perl], [perl], [$PERL_CFLAGS], [$PERL_LDFLAGS],[
 #include <EXTERN.h>
 #include <perl.h>
-int main(int argc, char **argv) {
+int main(int argc, char **argv, char **env) {
   static PerlInterpreter *my_perl;
   PERL_SYS_INIT3(&argc,&argv,&env);
   my_perl = perl_alloc();
