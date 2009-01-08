@@ -66,6 +66,9 @@ StandardPaths::StandardPaths() {
 #ifdef __WINDOWS__
 	wxString dataDir = paths.GetDataDir();
 	wxString userDir = paths.GetUserDataDir();
+#elif defined(__APPLE__)
+	wxString dataDir = paths.GetDataDir();
+	wxString userDir = paths.GetUserDataDir() + _T("-") + _T(AEGISUB_VERSION_DATA);
 #else
 	wxString dataDir = paths.GetDataDir() + _T("/") + _T(AEGISUB_VERSION_DATA);
 	wxString userDir = paths.GetUserDataDir() + _T("-") + _T(AEGISUB_VERSION_DATA);
