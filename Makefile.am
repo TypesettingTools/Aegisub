@@ -43,7 +43,8 @@ EXTRA_DIST = \
 	install-sh \
 	missing \
 	INSTALL \
-	README
+	README \
+	svn_revision
 
 # m4macros/
 EXTRA_DIST += \
