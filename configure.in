@@ -817,7 +817,7 @@ int main(int argc, char **argv) {
   fi
 fi
 
-if test "$agi_cv_with_cv_perl" = "no" && test "$with_cv_perl" = "yes"; then
+if test "$agi_cv_with_perl" = "no" && test "$with_cv_perl" = "yes"; then
   AC_MSG_WARN([Perl detected, but it doesn't work...])
   with_cv_perl="no"
 fi
@@ -884,7 +884,7 @@ int main(void) {
   fi
 fi
 
-if test "$agi_cv_with_cv_ruby" = "no" && test "$with_cv_ruby" = "yes"; then
+if test "$agi_cv_with_ruby" = "no" && test "$with_cv_ruby" = "yes"; then
   AC_MSG_WARN([Ruby detected, but it doesn't work...])
   with_cv_ruby="no"
 fi
