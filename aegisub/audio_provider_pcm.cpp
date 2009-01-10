@@ -522,6 +522,8 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 	// Try Microsoft/IBM RIFF WAV
 	try {
 		provider = new RiffWavPCMAudioProvider(filename);
+		// don't bother trying with anything else if this works
+		return provider;
 	}
 	catch (const wxChar *msg) {
 		provider = 0;
@@ -531,11 +533,13 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 	// Try Sony Wave64
 	try {
 		provider = new Wave64AudioProvider(filename);
+		return provider;
 	}
 	catch (const wxChar *msg) {
 		provider = 0;
 		wxLogDebug(_T("Creating Wave64 reader failed with message: %s\nProceeding to try other providers."), msg);
 	}
 
-	return provider;
+	// no providers could be created
+	return NULL;
 }
