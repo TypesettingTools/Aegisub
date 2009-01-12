@@ -32,6 +32,7 @@ endif
 if HAVE_PORTAUDIO
 noinst_LIBRARIES += libaudio_portaudio.a
 libaudio_portaudio_a_SOURCES = audio_player_portaudio.cpp
+libaudio_portaudio_a_CPPFLAGS = @PORTAUDIO_CFLAGS@
 aegisub_2_1_LDFLAGS += @PORTAUDIO_LDFLAGS@
 aegisub_2_1_LDADD += libaudio_portaudio.a
 endif
