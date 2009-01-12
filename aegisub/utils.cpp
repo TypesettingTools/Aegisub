@@ -400,6 +400,7 @@ void RestartAegisub() {
 	wxExecute(wxString::Format(_T("/usr/bin/open \"%s\""), wxString(bundle_path, wxConvUTF8)));
 	free(bundle_path);
 #else
-	// someone fix this
+	wxStandardPaths stand;
+	wxExecute(stand.GetExecutablePath());
 #endif
 }
