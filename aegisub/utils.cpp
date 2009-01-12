@@ -396,9 +396,11 @@ void RestartAegisub() {
 	wxExecute(_T("\"") + stand.GetExecutablePath() + _T("\""));
 #elif defined(__WXMAC__)
 	char *bundle_path = OSX_GetBundlePath();
-	if (!bundle_path) return; // oops
-	wxExecute(wxString::Format(_T("/usr/bin/open \"%s\""), wxString(bundle_path, wxConvUTF8)));
-	free(bundle_path);
+	char *support_path = OSX_GetBundleSupportFilesDirectory();
+	if (!bundle_path || !support_path) return; // oops
+	wxExecute(wxString::Format(_T("%s/MacOS/restart-helper /usr/bin/open \"%s\""), wxString(support_path, wxConvUTF8).c_str(), wxString(bundle_path, wxConvUTF8).c_str()));
+	free(bundle_path);  
+	free(support_path);
 #else
 	wxStandardPaths stand;
 	wxExecute(stand.GetExecutablePath());

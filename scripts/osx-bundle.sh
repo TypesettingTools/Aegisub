@@ -4,6 +4,7 @@ PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
 AEGISUB_VERSION_DATA="${2}"
 SRCDIR=`pwd`
+CC?=cc
 
 if ! test -d packages/osx_bundle; then
   echo
@@ -62,6 +63,8 @@ done
 echo
 echo "---- Binaries ----"
 cp -v aegisub/.libs/aegisub-${AEGISUB_VERSION_DATA} ${PKG_DIR}/Contents/MacOS/aegisub
+echo cc -o ${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c
+${CC} -o ${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c
 
 echo
 echo "---- Libraries ----"
