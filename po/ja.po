@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-27 22:39-0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: amz <amz@aegisub.net>\n"
+"Last-Translator: Hiroshi Haga <h-h23@edogawa.home.ne.jp>\n"
 "Language-Team: G-MARK <h-h23@edogawa.home.ne.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -193,7 +193,7 @@ msgstr "Karaoke"
 
 #: audio_box.cpp:201
 msgid "Toggle karaoke mode"
-msgstr "Karaoke モード"
+msgstr "カラオケモードのON/OFF"
 
 #: audio_box.cpp:553
 msgid "Cancel Split"
@@ -201,23 +201,23 @@ msgstr "キャンセル"
 
 #: audio_box.cpp:554
 msgid "Discard all splits and leave split-mode"
-msgstr "キャンセル"
+msgstr "分割/結合をキャンセル"
 
 #: audio_box.cpp:555
 msgid "Accept Split"
-msgstr "分割する"
+msgstr "分割します"
 
 #: audio_box.cpp:556
 msgid "Commit splits and leave split-mode"
-msgstr "分割します"
+msgstr "分割を決定します"
 
 #: audio_box.cpp:558
 msgid "Join"
-msgstr "結合する"
+msgstr "結合"
 
 #: audio_box.cpp:559
 msgid "Join selected syllables"
-msgstr "結合します"
+msgstr "結合を決定します"
 
 #: audio_box.cpp:560
 msgid "Split"
@@ -239,19 +239,19 @@ msgstr ""
 
 #: audio_karaoke.cpp:810
 msgid "Karaoke tag"
-msgstr "Karaoke タグ選択"
+msgstr "カラオケ タグ選択"
 
 #: audio_karaoke.cpp:814
 msgid "Change karaoke tag to \\k"
-msgstr "Karaoke タグ変更 \\k"
+msgstr "カラオケ タグ変更 \\k"
 
 #: audio_karaoke.cpp:815
 msgid "Change karaoke tag to \\kf"
-msgstr "Karaoke タグ変更 \\kf"
+msgstr "カラオケ タグ変更 \\kf"
 
 #: audio_karaoke.cpp:816
 msgid "Change karaoke tag to \\ko"
-msgstr "Karaoke タグ変更 \\ko"
+msgstr "カラオケ タグ変更 \\ko"
 
 #: audio_provider_ram.cpp:85
 msgid "Load audio"
@@ -3742,7 +3742,7 @@ msgstr "Karaoke モード連結 (&K)"
 
 #: frame_main.cpp:383
 msgid "Joins selected lines in a single one, as karaoke"
-msgstr "選択した複数の字幕行を、Karaoke タグを付加してひとつの字幕行に連結します"
+msgstr "選択した複数の字幕行を、カラオケ タグを付加してひとつの字幕行に連結します"
 
 #: frame_main.cpp:385
 #: subs_grid.cpp:185
@@ -3761,7 +3761,7 @@ msgstr "Karaoke 字幕行の分割"
 #: frame_main.cpp:386
 #: subs_grid.cpp:166
 msgid "Uses karaoke timing to split line into multiple smaller lines"
-msgstr "選択した字幕行を、Karaoke タグのタイミングを元にして複数行に分割します"
+msgstr "選択した字幕行を、カラオケ タグのタイミングを元にして複数行に分割します"
 
 #: frame_main.cpp:388
 msgid "Swap Lines"
@@ -4208,10 +4208,7 @@ msgstr "文字コードを選択 :"
 
 #: frame_main.cpp:759
 msgid "Save before continuing?"
-msgstr ""
-"あなたが選択した動作には、現在作業している字幕の保存が必要です、保存して動作を続けますか？\n"
-"\n"
-"変更された字幕を保存する場合は「はい」を、保存しない場合は「いいえ」を、選択した動作をキャンセルする場合は「キャンセル」を押してください"
+msgstr "現在作業している字幕を保存しますか？"
 
 #: frame_main.cpp:759
 msgid "Unsaved changes"
@@ -4750,7 +4747,7 @@ msgstr ""
 #: subs_edit_box.cpp:91
 msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
 msgstr ""
-"Karaokeやスクロールなど一部の「エフェクト」情報を指定する場所です\n"
+"カラオケやスクロールなど一部の「エフェクト」情報を指定する場所です\n"
 "しかし、この場所で指定するエフェクトはレンダリングエンジンによっては動作がサポートされていません"
 
 #: subs_edit_box.cpp:96
