@@ -612,7 +612,7 @@ if test "$enable_libass" != "no"; then
   fi
 fi
 
-if test "$with_libass" = "yes"; then
+if test "$with_libass" = "yes" || test "$enable_libass" != "no"; then
   AC_DEFINE(WITH_LIBASS, 1, [Enable libass Subtitle Provider])
 else
   with_libass="no"
