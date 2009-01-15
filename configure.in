@@ -842,13 +842,13 @@ fi
 
 if test "$with_cv_perl" = "yes"; then
   with_automation="yes"
+  AC_SUBST(PERL_CFLAGS)
+  AC_SUBST(PERL_LDFLAGS)
   AC_DEFINE(WITH_PERL, 1, [Enable PERL support.])
 else
   with_cv_perl="no"
 fi
 
-AC_SUBST(PERL_CFLAGS)
-AC_SUBST(PERL_LDFLAGS)
 
 AM_CONDITIONAL([HAVE_AUTO4_PERL], [test "$with_cv_perl" != "no"])
 
@@ -909,13 +909,13 @@ fi
 
 if test "$with_cv_ruby" = "yes"; then
   with_automation="yes"
+  AC_SUBST(RUBY_CFLAGS)
+  AC_SUBST(RUBY_LDFLAGS)
   AC_DEFINE(WITH_RUBY, 1, [Enable RUBY Automation.])
 else
   with_cv_ruby="no"
 fi
 
-AC_SUBST(RUBY_CFLAGS)
-AC_SUBST(RUBY_LDFLAGS)
 AM_CONDITIONAL([HAVE_AUTO4_RUBY], [test "$with_cv_ruby" != "no"])
 
 
