@@ -375,15 +375,18 @@ AC_SUBST(ICONV_CFLAGS)
 ## ALSA
 #######
 AC_ARG_WITH(alsa, [  --without-alsa          build without ALSA audio provider. (default: auto)], alsa_disabled="(disabled)")
-if test "x$with_alsa" != xno; then
-  AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound"; found_audio=yes; with_alsa=yes], [with_alsa=no])
-fi
-if test "$with_alsa" = "yes"; then
-  AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support])
+if test "$with_alsa" != "no"; then
+  AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound"; with_alsa="yes"], [with_alsa="no"])
 fi
 
-AC_SUBST(ALSA_LDFLAGS)
+if test "$with_alsa" != "no"; then
+  AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support])
+  AC_SUBST(ALSA_LDFLAGS)
+  found_audio="yes"
+fi
+
 AM_CONDITIONAL([HAVE_ALSA], [test "$with_alsa" != "no"])
+
 
 ############
 ## PortAudio
