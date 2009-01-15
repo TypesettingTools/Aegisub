@@ -648,7 +648,7 @@ AM_CONDITIONAL([WITH_CSRI], [test "$with_csri" = "yes"])
 AC_ARG_WITH(hunspell, [  --without-hunspell      build without hunspell support (default: auto)], hunspell_disabled="(disabled)")
 
 if test "$with_hunspell" != "no"; then
-  PKG_CHECK_MODULES(HUNSPELL, hunspell >= 1.2.0, [with_hunspell=yes], [with_hunspell=no])
+  PKG_CHECK_MODULES(HUNSPELL, hunspell >= 1.2.0, [with_hunspell="yes"], [with_hunspell="no"])
   AC_AGI_COMPILE([Hunspell], [hunspell], [$HUNSPELL_CFLAGS], [$HUNSPELL_LIBS],[
 #include <hunspell.hxx>
 int main(void) {
@@ -661,6 +661,7 @@ fi
 
 if test "$agi_cv_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
   AC_MSG_WARN([Hunspell detected, but it doesn't work...])
+  with_hunspell="no"
 fi
 
 if test "$with_hunspell" = "yes"; then
