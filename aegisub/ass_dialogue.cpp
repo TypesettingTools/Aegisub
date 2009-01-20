@@ -781,7 +781,6 @@ AssEntry *AssDialogue::Clone() {
 
 	// Copy data
 	final->group = group;
-	final->StartMS = StartMS;
 	final->Valid = Valid;
 	final->Actor = Actor;
 	final->Comment = Comment;
@@ -790,7 +789,7 @@ AssEntry *AssDialogue::Clone() {
 	final->Layer = Layer;
 	for (int i=0;i<4;i++) final->Margin[i] = Margin[i];
 	final->Start = Start;
-	final->StartMS = final->StartMS;
+	final->StartMS = Start.GetMS(); // Assume that StartMS might not be valid, because something altered Start without altering StartMS
 	final->Style = Style;
 	final->Text = Text;
 	//final->SetEntryData(GetEntryData());
