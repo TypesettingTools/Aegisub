@@ -16,16 +16,16 @@ msgstr ""
 
 #: ass_style.cpp:567
 msgid "ANSI"
-msgstr "ANSI"
+msgstr "欧文 (ANSI)"
 
 #: ass_style.cpp:568
 #: dialog_options.cpp:617
 msgid "Default"
-msgstr "デフォルト"
+msgstr "デフォルト (既定文字セット)"
 
 #: ass_style.cpp:569
 msgid "Symbol"
-msgstr "標準記号"
+msgstr "シンボル (記号文字)"
 
 #: ass_style.cpp:570
 msgid "Mac"
@@ -33,63 +33,63 @@ msgstr "Mac"
 
 #: ass_style.cpp:571
 msgid "Shift_JIS"
-msgstr "日本"
+msgstr "日本語 (Shift_JIS)"
 
 #: ass_style.cpp:572
 msgid "Hangeul"
-msgstr "ハングル"
+msgstr "ハングル語"
 
 #: ass_style.cpp:573
 msgid "Johab"
-msgstr "ハングル (音節)"
+msgstr "ハングル語 (音節)"
 
 #: ass_style.cpp:574
 msgid "GB2312"
-msgstr "簡体字 (中国)"
+msgstr "簡体字中国語 (中国)"
 
 #: ass_style.cpp:575
 msgid "Chinese BIG5"
-msgstr "繁体字 (台湾)"
+msgstr "繁体字中国語 (台湾)"
 
 #: ass_style.cpp:576
 msgid "Greek"
-msgstr "ギリシャ"
+msgstr "ギリシャ語"
 
 #: ass_style.cpp:577
 msgid "Turkish"
-msgstr "トルコ"
+msgstr "トルコ語"
 
 #: ass_style.cpp:578
 msgid "Vietnamese"
-msgstr "ベトナム"
+msgstr "ベトナム語"
 
 #: ass_style.cpp:579
 msgid "Hebrew"
-msgstr "ヘブライ"
+msgstr "ヘブライ語"
 
 #: ass_style.cpp:580
 msgid "Arabic"
-msgstr "アラビア"
+msgstr "アラビア語"
 
 #: ass_style.cpp:581
 msgid "Baltic"
-msgstr "バルト"
+msgstr "バルト言語"
 
 #: ass_style.cpp:582
 msgid "Russian"
-msgstr "ロシア"
+msgstr "キリル言語"
 
 #: ass_style.cpp:583
 msgid "Thai"
-msgstr "タイ"
+msgstr "タイ語"
 
 #: ass_style.cpp:584
 msgid "East European"
-msgstr "西ヨーロッパ"
+msgstr "中央ヨーロッパ言語"
 
 #: ass_style.cpp:585
 msgid "OEM"
-msgstr "OEM"
+msgstr "OEM/DOS"
 
 #: audio_box.cpp:69
 msgid "Seek bar"
@@ -231,11 +231,13 @@ msgstr "分割モード"
 #: audio_display.cpp:2288
 msgid "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr ""
+"変更をコミットしますか？\n"
+"「いいえ」を選択すれば変更が破棄されます"
 
 #: audio_display.cpp:2233
 #: audio_display.cpp:2288
 msgid "Commit?"
-msgstr ""
+msgstr "Commit しますか？"
 
 #: audio_karaoke.cpp:810
 msgid "Karaoke tag"
@@ -274,23 +276,25 @@ msgstr "字幕修正を完了しました"
 #, c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
 msgstr ""
+"オートメーションのスクリプトの読み込みに失敗しました\n"
+"ファイル名 : '%s', エラーレポート :"
 
 #: auto4_base.cpp:765
 #, c-format
 msgid "The file was not recognised as an Automation script: %s"
-msgstr ""
+msgstr "このファイルはオートメーション・スクリプトとして認識できません : %s"
 
 #: auto4_base.cpp:801
 msgid "File was not recognized as a script"
-msgstr ""
+msgstr "ファイルはスクリプトとして認識できません"
 
 #: auto4_perl.cpp:109
 msgid "Not enough parameters for Aegisub::text_extents()"
-msgstr ""
+msgstr "Aegisubに十分なパラメーターではありません ::text_extents()"
 
 #: auto4_perl.cpp:296
 msgid "Tried to register PerlConsole, but support for it was disabled in this version."
-msgstr ""
+msgstr "PerlConsole の登録を試みましたが、このバージョンでのサポートは無効です"
 
 #: auto4_perl.cpp:363
 msgid "Fatal error: "
@@ -318,7 +322,7 @@ msgstr "トレース : "
 
 #: auto4_perl_dialogs.cpp:58
 msgid "Executing "
-msgstr ""
+msgstr "実行中"
 
 #: auto4_perl_script.cpp:97
 msgid "Perl script"
@@ -326,12 +330,12 @@ msgstr "Perl スクリプト"
 
 #: auto4_perl_script.cpp:186
 msgid "Unable to add the automation include path(s) to @INC: the script's code may not compile or execute properly."
-msgstr ""
+msgstr "オートメーションに追加できません、パス @INC を含んでいるためです : スクリプトのコンパイル及び実行はできません"
 
 #: auto4_perl_script.cpp:227
 #, c-format
 msgid "Reloading %s because the file on disk (%s) changed."
-msgstr ""
+msgstr "ディスク上のファイル (%s) が変更されたので、 %s をリロード(再読込)します"
 
 #: auto4_perl_script.cpp:449
 msgid "Saving changes"
@@ -589,10 +593,14 @@ msgid ""
 "Local scripts loaded: %d\n"
 "\n"
 msgstr ""
+"Total スクリプト 読み込み : %d\n"
+"Global スクリプト 読み込み : %d\n"
+"Local スクリプト 読み込み : %d\n"
+"\n"
 
 #: dialog_automation.cpp:284
 msgid "Scripting engines installed:\n"
-msgstr ""
+msgstr "インストール済みのスクリプト エンジン :\n"
 
 #: dialog_automation.cpp:291
 #, c-format
@@ -608,14 +616,24 @@ msgid ""
 "\n"
 "Features provided by script:\n"
 msgstr ""
+"\n"
+"スクリプト インフォメーション :\n"
+"名前 : %s\n"
+"記述 : %s\n"
+"作者 : %s\n"
+"バージョン : %s\n"
+"フルパス : %s\n"
+"状態 : %s\n"
+"\n"
+"スクリプトで提供された特徴 :\n"
 
 #: dialog_automation.cpp:297
 msgid "Correctly loaded"
-msgstr ""
+msgstr "正常に読み込まれました"
 
 #: dialog_automation.cpp:297
 msgid "Failed to load"
-msgstr ""
+msgstr "読み込みに失敗しました"
 
 #: dialog_automation.cpp:301
 msgid "    Macro: "
@@ -623,11 +641,11 @@ msgstr "    マクロ : "
 
 #: dialog_automation.cpp:303
 msgid "    Export filter: "
-msgstr ""
+msgstr "    エクスポートフィルター : "
 
 #: dialog_automation.cpp:305
 msgid "    Subtitle format handler: "
-msgstr ""
+msgstr "    字幕形式ハンドラー : "
 
 #: dialog_automation.cpp:313
 msgid "Automation Script Info"
@@ -639,7 +657,7 @@ msgstr "カラーパレット"
 
 #: dialog_colorpicker.cpp:485
 msgid "Colour spectrum"
-msgstr "カラーミキサー"
+msgstr "カラースペクトラム"
 
 #: dialog_colorpicker.cpp:492
 msgid "RGB/R"
@@ -1040,14 +1058,22 @@ msgid ""
 "Enter: Link, accept line when done\n"
 "Backspace: Unlink last"
 msgstr ""
+"テキストボックスのフォーカスを変更するには以下のキーを使用してください\n"
+"\n"
+"→右矢印 : 日本語の選択文字を増やす\n"
+"←左矢印 : 日本語の選択文字を減らす\n"
+"↑上矢印 : ローマ字の選択文字を増やす\n"
+"↓下矢印 : ローマ字の選択文字を減らす\n"
+"Enter : 決定\n"
+"Backspace : ひとつ前の決定を取り消します"
 
 #: dialog_kanji_timer.cpp:90
 msgid "Source Style"
-msgstr ""
+msgstr "ローマ字のスタイル"
 
 #: dialog_kanji_timer.cpp:92
 msgid "Dest Style"
-msgstr ""
+msgstr "日本語のスタイル"
 
 #: dialog_kanji_timer.cpp:99
 msgid "Start!"
@@ -1055,39 +1081,39 @@ msgstr "スタート"
 
 #: dialog_kanji_timer.cpp:100
 msgid "Link"
-msgstr ""
+msgstr "決定"
 
 #: dialog_kanji_timer.cpp:101
 msgid "Unlink"
-msgstr ""
+msgstr "決定の取り消し"
 
 #: dialog_kanji_timer.cpp:102
 msgid "Skip Source Line"
-msgstr ""
+msgstr "ローマ字行をスキップ"
 
 #: dialog_kanji_timer.cpp:103
 msgid "Skip Dest Line"
-msgstr ""
+msgstr "日本語行をスキップ"
 
 #: dialog_kanji_timer.cpp:104
 msgid "Go Back a Line"
-msgstr ""
+msgstr "ひとつ前の行へ"
 
 #: dialog_kanji_timer.cpp:105
 msgid "Accept Line"
-msgstr ""
+msgstr "現在行の決定"
 
 #: dialog_kanji_timer.cpp:109
 msgid "Attempt to interpolate kanji."
-msgstr ""
+msgstr "日本語(漢字)の補間をする"
 
 #: dialog_kanji_timer.cpp:113
 msgid "Source: "
-msgstr "ソース : "
+msgstr "ローマ字 : "
 
 #: dialog_kanji_timer.cpp:114
 msgid "Dest: "
-msgstr ""
+msgstr "日本語 : "
 
 #: dialog_kanji_timer.cpp:198
 msgid "kanji timing"
@@ -1095,15 +1121,15 @@ msgstr "漢字タイマー"
 
 #: dialog_kanji_timer.cpp:209
 msgid "Select source and destination styles first."
-msgstr ""
+msgstr "始めにローマ字と日本語のスタイルを選びます"
 
 #: dialog_kanji_timer.cpp:211
 msgid "The source and destination styles must be different."
-msgstr ""
+msgstr "ローマ字と日本語のスタイルは異なります"
 
 #: dialog_kanji_timer.cpp:244
 msgid "Select source text first."
-msgstr ""
+msgstr "ローマ字テキストを選んでください"
 
 #: dialog_kanji_timer.cpp:313
 msgid ""
@@ -1111,6 +1137,9 @@ msgid ""
 "Do you want to carry it over to the destination?\n"
 "It will be ignored otherwise."
 msgstr ""
+"ローマ字行は最初のカラオケ・ブロックの前にテキストを含んでいます\n"
+"次へそれを繰り越しますか？\n"
+"そうでなければ無視されます"
 
 #: dialog_kanji_timer.cpp:314
 msgid "Kanji timer"
@@ -1118,15 +1147,15 @@ msgstr "漢字タイマー"
 
 #: dialog_kanji_timer.cpp:328
 msgid "Possible error parsing source line"
-msgstr ""
+msgstr "ローマ字行のエラー"
 
 #: dialog_kanji_timer.cpp:360
 msgid "Group some text first."
-msgstr ""
+msgstr "始めにテキストをグループ化してください"
 
 #: dialog_kanji_timer.cpp:362
 msgid "Group all of the source text."
-msgstr ""
+msgstr "ローマ字テキストをすべてグループ化してください"
 
 #: dialog_options.cpp:84
 #: dialog_options.cpp:212
@@ -1676,15 +1705,15 @@ msgstr "最低"
 
 #: dialog_options.cpp:578
 msgid "No scripts"
-msgstr ""
+msgstr "読み込まない"
 
 #: dialog_options.cpp:578
 msgid "Subtitle-local scripts"
-msgstr ""
+msgstr "ローカル字幕スクリプト"
 
 #: dialog_options.cpp:578
 msgid "Global autoload scripts"
-msgstr ""
+msgstr "オートロードスクリプト"
 
 #: dialog_options.cpp:578
 msgid "All scripts"
@@ -1700,7 +1729,7 @@ msgstr "スレッドの優先度"
 
 #: dialog_options.cpp:581
 msgid "Autoreload on Export"
-msgstr ""
+msgstr "エクスポート時のオートロード"
 
 #: dialog_options.cpp:600
 #: dialog_options.cpp:1097
@@ -1734,11 +1763,11 @@ msgstr "オートセーブ/ロード"
 
 #: dialog_options.cpp:631
 msgid "Subtitles edit box"
-msgstr "字幕テキストエリア"
+msgstr "編集ボックス"
 
 #: dialog_options.cpp:632
 msgid "Subtitles grid"
-msgstr "字幕ビューエリア"
+msgstr "字幕グリッド"
 
 #: dialog_options.cpp:633
 #: dialog_video_details.cpp:55
@@ -1751,7 +1780,7 @@ msgstr "音声"
 
 #: dialog_options.cpp:635
 msgid "Display"
-msgstr "音声ビュー"
+msgstr "音声ディスプレイ"
 
 #: dialog_options.cpp:636
 msgid "Advanced"
@@ -2022,7 +2051,7 @@ msgstr "正規表現を使用する"
 
 #: dialog_search_replace.cpp:81
 msgid "Update Video (slow)"
-msgstr ""
+msgstr "映像を表示する (処理が遅い)"
 
 #: dialog_search_replace.cpp:98
 #: dialog_shift_times.cpp:106
@@ -2063,11 +2092,11 @@ msgstr "置換"
 #: dialog_search_replace.cpp:523
 #, c-format
 msgid "%i matches were replaced."
-msgstr ""
+msgstr "%i ヶ所を置換しました"
 
 #: dialog_search_replace.cpp:528
 msgid "No matches found."
-msgstr ""
+msgstr "見つかりませんでした"
 
 #: dialog_search_replace.cpp:563
 #: dialog_spellchecker.cpp:120
@@ -2462,7 +2491,7 @@ msgstr "角度を指定"
 #: dialog_style_editor.cpp:191
 msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
 msgstr ""
-"キャラクタセット：通常は自国言語の場合「1 - デフォルト」を選択、\n"
+"キャラクタ(文字)セット : 通常は自国言語の場合「1 - デフォルト」を選択、\n"
 "不具合がある場合は他のキャラクタセットを選択します"
 
 #: dialog_style_editor.cpp:192
@@ -3035,7 +3064,7 @@ msgstr "Aegisubには、あなたのプロジェクトが失敗しないため�
 
 #: dialog_tip.cpp:57
 msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
-msgstr "スタイルアシスタントは各行にスタイルを設定する便利な機能です。各話者ごとに異なったスタイルを割り当ててください。"
+msgstr "スタイリングアシスタントは各行にスタイルを設定する便利な機能です。各話者ごとに異なったスタイルを割り当ててください。"
 
 #: dialog_tip.cpp:58
 msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
@@ -3217,7 +3246,7 @@ msgstr "出力フレームレート :"
 
 #: ffmpegsource_common.cpp:67
 msgid "Indexing"
-msgstr ""
+msgstr "インデックス化しています"
 
 #: ffmpegsource_common.cpp:67
 msgid "Reading timecodes and frame/sample data"
@@ -3319,7 +3348,7 @@ msgstr "選択字幕行の表示終了時間を現在の映像に指定"
 
 #: frame_main.cpp:238
 msgid "Select visible"
-msgstr ""
+msgstr "見ながら選択してください"
 
 #: frame_main.cpp:238
 msgid "Selects all lines that are currently visible on video frame"
@@ -3806,7 +3835,7 @@ msgstr "タイミング ポストプロセッサー"
 
 #: frame_main.cpp:396
 msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "表示タイミングをリードイン・リードアウト・シーンなどで調節するタイミング ポストプロセッサーを開きます"
+msgstr "タイミングをリードイン・リードアウト・シーンなどで調節するタイミング ポストプロセッサーを開きます"
 
 #: frame_main.cpp:397
 msgid "Kanji Timer..."
@@ -3814,7 +3843,7 @@ msgstr "漢字タイマー"
 
 #: frame_main.cpp:397
 msgid "Open Kanji timer"
-msgstr "漢字タイマーを開きます"
+msgstr "ローマ字カラオケ字幕を日本語カラオケ字幕に適用する漢字タイマーを開きます"
 
 #: frame_main.cpp:399
 msgid "Snap Start to Video"
@@ -4075,7 +4104,7 @@ msgstr "音声 (&A)"
 
 #: frame_main.cpp:480
 msgid "&Automation..."
-msgstr "オートメーション (&A)"
+msgstr "オートメーションマネージャー (&A)"
 
 #: frame_main.cpp:480
 msgid "Open automation manager"
@@ -4264,7 +4293,7 @@ msgstr "空"
 
 #: frame_main_events.cpp:449
 msgid "No Automation macros loaded"
-msgstr ""
+msgstr "オートメーション用マクロは読み込みできません"
 
 #: frame_main_events.cpp:608
 #: frame_main_events.cpp:631
@@ -4324,7 +4353,7 @@ msgstr "シーンに位置指定"
 
 #: frame_main_events.cpp:1238
 msgid "shift to frame"
-msgstr ""
+msgstr "現在のフレームにシフト"
 
 #: frame_main_events.cpp:1334
 msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
@@ -4980,7 +5009,7 @@ msgstr "Karaoke モード連結"
 
 #: subs_grid.cpp:176
 msgid "Joins selected lines in a single one, making each line into a karaoke syllable"
-msgstr ""
+msgstr "各字幕行を音節としてカラオケタグを付加して連結します"
 
 #: subs_grid.cpp:180
 msgid "&Make times continuous (change start)"
@@ -5061,7 +5090,7 @@ msgstr "削除"
 
 #: subs_grid.cpp:1139
 msgid "adjoin"
-msgstr ""
+msgstr "連結"
 
 #: subs_grid.cpp:1309
 msgid "split"
