@@ -129,8 +129,8 @@ void VideoProviderCache::Cache(int n,const AegiVideoFrame frame) {
 	}
 
 	// Cache
-	cache.front().n = n;
-	cache.front().frame.CopyFrom(frame);
+	cache.back().n = n;
+	cache.back().frame.CopyFrom(frame);
 }
 
 
