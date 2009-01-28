@@ -468,7 +468,9 @@ fi
 if test "$agi_cv_with_pulseaudio" = "no" && test "$with_pulseaudio" = "yes"; then
   AC_MSG_WARN([PulseAudio detected, but it doesn't work...])
   with_pulseaudio="no"
-else
+fi
+
+if test "$agi_cv_with_pulseaudio" = "yes" && test "$with_pulseaudio" = "yes"; then
   AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
   found_audio="yes"
 fi
@@ -506,7 +508,9 @@ fi
 if test "$agi_cv_with_openal" = "no" && test "$with_openal" = "yes"; then
   AC_MSG_WARN([OpenAL detected, but it doesn't work...])
   with_openal="no"
-else
+fi
+
+if test "$agi_cv_with_openal" = "yes" && test "$with_openal" = "yes"; then
   found_audio="yes"
   AC_DEFINE(WITH_OPENAL, 1, [Enable OpenAL support])
 fi
@@ -574,24 +578,30 @@ int main (void) {
 } ])
 fi
 
-AC_SUBST(LIBAVFORMAT_LIBS)
-AC_SUBST(LIBAVFORMAT_CFLAGS)
-AC_SUBST(LIBAVCODEC_LIBS)
-AC_SUBST(LIBAVCODEC_CFLAGS)
-AC_SUBST(LIBSWSCALE_LIBS)
-AC_SUBST(LIBSWSCALE_CFLAGS)
-AC_SUBST(LIBAVUTIL_LIBS)
-AC_SUBST(LIBAVUTIL_CFLAGS)
+if test "$agi_cv_with_ffmpeg" = "no" && test "$with_ffmpeg" = "yes"; then
+  AC_MSG_WARN([FFMPEG detected, but it doesn't work...])
+  with_ffmpeg="no"
+fi
 
-AM_CONDITIONAL([HAVE_FFMPEG], [test "$agi_cv_with_ffmpeg" = "yes"])
+if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_ffmpeg" = "yes"; then
+  AC_SUBST(LIBAVFORMAT_LIBS)
+  AC_SUBST(LIBAVFORMAT_CFLAGS)
+  AC_SUBST(LIBAVCODEC_LIBS)
+  AC_SUBST(LIBAVCODEC_CFLAGS)
+  AC_SUBST(LIBSWSCALE_LIBS)
+  AC_SUBST(LIBSWSCALE_CFLAGS)
+  AC_SUBST(LIBAVUTIL_LIBS)
+  AC_SUBST(LIBAVUTIL_CFLAGS)
+  with_ffmpeg="yes"
+fi
 
 if test "$agi_cv_with_ffmpeg" = "no" || test "$with_ffmpeg" = "no"; then
   ffmpegsource_provider_disabled="(disabled, requires FFMPEG)"
   ffmpeg_provider_disabled="(disabled, requires FFMPEG)"
   with_ffmpeg="no"
-else
-  with_ffmpeg="yes"
 fi
+
+AM_CONDITIONAL([HAVE_FFMPEG], [test "$agi_cv_with_ffmpeg" = "yes"])
 
 AC_ARG_WITH(provider-ffmpeg, [  --without-provider-ffmpeg
                           build without FFMPEG A/V provider. (default: auto)], ffmpeg_provider_disabled="(disabled)", with_provider_ffmpeg="yes")
@@ -708,7 +718,7 @@ if test "$agi_cv_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
   with_hunspell="no"
 fi
 
-if test "$with_hunspell" = "yes"; then
+if test "$agi_cv_with_hunspell" = "yes" && test "$with_hunspell" = "yes"; then
   AC_DEFINE(WITH_HUNSPELL, 1, [Enable Hunspell support.])
 fi
 
@@ -884,7 +894,7 @@ if test "$agi_cv_with_perl" = "no" && test "$with_cv_perl" = "yes"; then
   with_cv_perl="no"
 fi
 
-if test "$with_cv_perl" = "yes"; then
+if test "$agi_cv_with_perl" = "yes" && test "$with_cv_perl" = "yes"; then
   with_automation="yes"
   AC_SUBST(PERL_CFLAGS)
   AC_SUBST(PERL_LDFLAGS)
@@ -951,7 +961,7 @@ if test "$agi_cv_with_ruby" = "no" && test "$with_cv_ruby" = "yes"; then
   with_cv_ruby="no"
 fi
 
-if test "$with_cv_ruby" = "yes"; then
+if test "$agi_cv_with_ruby" = "yes" && test "$with_cv_ruby" = "yes"; then
   with_automation="yes"
   AC_SUBST(RUBY_CFLAGS)
   AC_SUBST(RUBY_LDFLAGS)
