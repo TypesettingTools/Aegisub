@@ -4,7 +4,9 @@ PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
 AEGISUB_VERSION_DATA="${2}"
 SRCDIR=`pwd`
-CC?=cc
+if test -z "${CC}"; then
+  CC="cc"
+fi
 
 if ! test -d packages/osx_bundle; then
   echo
