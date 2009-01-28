@@ -10,7 +10,7 @@ endif
 
 SUBDIRS = bitmaps libresrc $(libosxutil_subdir)
 
-AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @FFMPEG_CFLAGS@
+AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
 
 bin_PROGRAMS = aegisub-2.1
 aegisub_2_1_LDADD = libresrc/libresrc.a $(libosxutil_lib)
@@ -54,20 +54,22 @@ aegisub_2_1_LDADD += libaudio_openal.a
 endif
 
 if HAVE_FFMPEG
-aegisub_2_1_LDFLAGS += @AVFORMAT_LDFLAGS@ @AVCODEC_LDFLAGS@ @SWSCALE_LDFLAGS@ @FFMPEG_LDFLAGS@
+aegisub_2_1_LDFLAGS += @LIBAVFORMAT_LIBS@ @LIBAVCODEC_LIBS@ @LIBSWSCALE_LIBS@ @LIBAVUTIL_LIBS@
 endif
 
 if HAVE_PROVIDER_FFMPEG
 noinst_LIBRARIES += libaudiovideo_ffmpeg.a
 libaudiovideo_ffmpeg_a_SOURCES = audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp lavc_keyframes.cpp
-aegisub_2_1_LDFLAGS += @POSTPROC_LDFLAGS@
+libaudiovideo_ffmpeg_a_CPPFLAGS = @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
 aegisub_2_1_LDADD += libaudiovideo_ffmpeg.a
 endif
 
 if HAVE_PROVIDER_FFMPEGSOURCE
 noinst_LIBRARIES += libaudiovideo_ffmpegsource.a
 libaudiovideo_ffmpegsource_a_SOURCES = audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
+libaudiovideo_ffmpegsource_a_CPPFLAGS = @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ @LIBPOSTPROC_CFLAGS@
 aegisub_2_1_LDADD += libaudiovideo_ffmpegsource.a ../FFmpegSource2/libffmpegsource2_aegisub.a
+aegisub_2_1_LDFLAGS += @LIBPOSTPROC_LIBS@
 endif
 
 noinst_LIBRARIES += libsubtitle_provider.a

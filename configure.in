@@ -12,12 +12,16 @@ m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
 ###################
 # Required packages
 ###################
-# XXX: These need to be fixed to check against the required version
-m4_define([ffmpeg_required_version], [1])
+m4_define([libavcodec_required_version], [51.61.0])
+m4_define([libavformat_required_version], [52.18.0])
+m4_define([libavutil_required_version], [49.7.0])
+m4_define([libswscale_required_version], [0.5.1])
+m4_define([libpostproc_required_version], [51.1.0])
+
 m4_define([lua_auto3_required_version], [5.0])
 m4_define([lua_auto4_required_version], [5.1])
 m4_define([portaudio_required_version], [1])
-m4_define([pulseaudio_required_version], [1])
+m4_define([pulseaudio_required_version], [0.5])
 
 m4_define([fontconfig_required_version], [2.4])
 m4_define([freetype_required_version], [9.7.0])
@@ -448,7 +452,7 @@ AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
 AC_ARG_WITH(pulseaudio,[  --without-pulseaudio    build without PulseAudio audio provider.
                           (default: auto)], pulseaudio_disabled="(disabled)")
 if test "$with_pulseaudio" != "no"; then
-  PKG_CHECK_MODULES(LIBPULSE, libpulse >= 0.5, [with_pulseaudio="yes"], [with_pulseaudio="no"])
+  PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])
 fi
 
 if test "$with_pulseaudio" != "no"; then
@@ -521,79 +525,119 @@ fi
 
 AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG support.
                           Disables FFMPEG and FFmpegSource A/V providers.
-                          (default: auto)], ffmpeg_disabled="(disabled)")
-
-AC_ARG_VAR([FFMPEG_LDFLAGS], [LDFLAGS to use for FFMPEG (default: LDFLAGS)])
-AC_ARG_VAR([FFMPEG_CFLAGS], [CFLAGS to use for FFMPEG (default: CPPFLAGS)])
-
-aegisub_save_CPPFLAGS="$CPPFLAGS"
-aegisub_save_LDFLAGS="$LDFLAGS"
-CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
-LDFLAGS="$LDFLAGS $FFMPEG_LDFLAGS"
+                          (default: auto)], ffmpeg_disabled="(disabled)", with_ffmpeg="yes")
 
 if test "$with_ffmpeg" != "no"; then
-  AC_CHECK_LIB([avcodec], [avcodec_init],[AVCODEC_LDFLAGS="-lavcodec"; with_ffmpeg="yes"], [with_ffmpeg="no"])
-  AC_CHECK_LIB([avformat], [av_read_frame],[AVFORMAT_LDFLAGS="-lavformat"; with_ffmpeg="yes"], [with_ffmpeg="no"])
+  PKG_CHECK_MODULES(LIBAVCODEC,  libavcodec >= libavcodec_required_version, [], [with_ffmpeg="no"])
+  PKG_CHECK_MODULES(LIBAVFORMAT, libavformat >= libavformat_required_version, [], [with_ffmpeg="no"])
+  PKG_CHECK_MODULES(LIBSWSCALE,  libswscale >=  libswscale_required_version, [], [with_ffmpeg="no"])
 
   if test "$build_darwin" = "yes"; then
-    AC_CHECK_LIB([avutil], [av_free],[AVUTIL_LDFLAGS="-lavutil"; with_ffmpeg="yes"], [with_ffmpeg="no"])
-  fi
-
-  AC_CHECK_LIB([avformat], [sws_scale],[with_swscale="yes"], [with_swscale="no"])
-  if test "$with_swscale" = "no"; then
-    AC_CHECK_LIB([swscale], [sws_scale],[SWSCALE_LDFLAGS="-lswscale"; with_swscale_lib="yes"], [with_swscale_lib="no"])
-  fi
-
-  if test "$with_swscale" = "no" && test "$with_swscale_lib" = "no"; then
-    with_ffmpeg="no";
+    PKG_CHECK_MODULES(LIBAVUTIL,  libavutil >= libavutil_required_version, [], [with_ffmpeg="no"])
   fi
 fi
-CPPFLAGS="$aegisub_save_CPPFLAGS"
-LDFLAGS="$aegisub_save_LDFLAGS"
 
-AC_SUBST(SWSCALE_LDFLAGS)
-AC_SUBST(AVCODEC_LDFLAGS)
-AC_SUBST(AVFORMAT_LDFLAGS)
-AC_SUBST(AVUTIL_LDFLAGS)
+if test "$with_ffmpeg" != "no" && test "$enable_old_ffmpeg" != "yes"; then
+  AC_AGI_COMPILE([FFMPEG], [ffmpeg], [$LIBSWSCALE_CFLAGS $LIBAVCODEC_CFLAGS $LIBAVFORMAT_CFLAGS], [$LIBSWSCALE_LIBS $LIBAVCODEC_LIBS $LIBAVFORMAT_LIBS],[
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+}
 
-AM_CONDITIONAL([HAVE_FFMPEG], [test "$with_ffmpeg" = "yes"])
+int main (void) {
+  AVFormatContext *fc = NULL;
+  AVCodec *c = NULL;
+  SwsContext *swsc = NULL;
 
-AC_ARG_WITH(provider-ffmpeg, [  --without-provider-ffmpeg
-                          build without FFMPEG A/V provider. (default: auto)], ffmpeg_provider_disabled="(disabled)")
+  av_register_all();
+  fc = av_alloc_format_context();
+  if (fc == NULL) {
+    printf("avformat failure\n");
+    return 1;
+  }
+  av_free(fc);
+                               
+  avcodec_init();
+  avcodec_register_all();
+  c = avcodec_find_decoder(CODEC_ID_PCM_S16LE);
+  if (c == NULL) {
+    printf("avcodec failure\n");
+    return 1;
+  }
 
-if test "$with_ffmpeg" = "yes"; then
-  found_video_provider="yes"
-  with_provider_ffmpeg="yes"
-  AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
+  swsc = sws_getContext(704, 480, PIX_FMT_RGB32, 704, 480, PIX_FMT_YUV420P, SWS_BILINEAR, NULL, NULL, NULL);
+  if (swsc == NULL) {
+    printf("swscale failure\n");
+    return 1;
+  }
+  sws_freeContext(swsc);
+
+  return 0;
+} ])
 fi
 
-if test "$with_ffmpeg" = "no"; then
-  with_provider_ffmpegsource="no"
-  with_provider_ffmpeg="no"
+AC_SUBST(LIBAVFORMAT_LIBS)
+AC_SUBST(LIBAVFORMAT_CFLAGS)
+AC_SUBST(LIBAVCODEC_LIBS)
+AC_SUBST(LIBAVCODEC_CFLAGS)
+AC_SUBST(LIBSWSCALE_LIBS)
+AC_SUBST(LIBSWSCALE_CFLAGS)
+AC_SUBST(LIBAVUTIL_LIBS)
+AC_SUBST(LIBAVUTIL_CFLAGS)
+
+AM_CONDITIONAL([HAVE_FFMPEG], [test "$agi_cv_with_ffmpeg" = "yes"])
+
+if test "$agi_cv_$with_ffmpeg" = "no" || test "$with_ffmpeg" = "no"; then
   ffmpegsource_provider_disabled="(disabled, requires FFMPEG)"
   ffmpeg_provider_disabled="(disabled, requires FFMPEG)"
 fi
 
+AC_ARG_WITH(provider-ffmpeg, [  --without-provider-ffmpeg
+                          build without FFMPEG A/V provider. (default: auto)], ffmpeg_provider_disabled="(disabled)", with_provider_ffmpeg="yes")
+
+if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_ffmpeg" = "yes"; then
+  found_video_provider="yes"
+  AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
+else
+  with_provider_ffmpeg="no"
+fi
+
 AM_CONDITIONAL([HAVE_PROVIDER_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
+
 
 AC_ARG_WITH(provider-ffmpegsource, [  --without-provider-ffmpegsource
                           build without FFmpegSource A/V provider.
-                          (default: auto)], ffmpegsource_provider_disabled="(disabled)")
+                          (default: auto)], ffmpegsource_provider_disabled="(disabled)", with_provider_ffmpegsource="yes")
 
-if test "$with_ffmpegsource" != "no"; then
-  AC_CHECK_LIB([postproc], [pp_postprocess],[POSTPROC_LDFLAGS="-lpostproc"; with_postproc="yes"], [with_postproc="no"])
+if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_ffmpegsource" = "yes"; then
+  PKG_CHECK_MODULES(LIBPOSTPROC,  libpostproc >= libpostproc_required_version, [], [with_libpostproc="no"])
 
-  if test "$with_postproc" = "yes"; then
+  AC_AGI_COMPILE([postproc], [postproc], [$LIBPOSTPROC_CFLAGS], [$LIBPOSTPROC_LIBS],[
+extern "C" {
+#include <libpostproc/postprocess.h>
+}
+
+int main (void) {
+  pp_context_t *PPContext = pp_get_context(704,480, 0);
+
+  if (!PPContext) return 1;
+  pp_free_context(PPContext);
+  return 0;
+} ])
+
+  if test "$agi_cv_with_postproc" = "yes"; then
     found_video_provider="yes"
-    with_provider_ffmpegsource="yes"
     AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFmpegSource2 Video Provider])
   else
     with_provider_ffmpegsource="no"
   fi
-
+else
+  with_provider_ffmpegsource="no"
 fi
 
-AC_SUBST(POSTPROC_LDFLAGS)
+AC_SUBST(LIBPOSTPROC_LIBS)
+AC_SUBST(LIBPOSTPROC_CFLAGS)
 AM_CONDITIONAL([HAVE_PROVIDER_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"])
 
 
