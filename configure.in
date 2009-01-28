@@ -578,12 +578,12 @@ int main (void) {
 } ])
 fi
 
-if test "$agi_cv_with_ffmpeg" = "no" && test "$with_ffmpeg" = "yes"; then
+if test "$agi_cv_with_ffmpeg" = "no" && test "$with_ffmpeg" != "no"; then
   AC_MSG_WARN([FFMPEG detected, but it doesn't work...])
   with_ffmpeg="no"
 fi
 
-if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_ffmpeg" = "yes"; then
+if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_ffmpeg" != "no"; then
   AC_SUBST(LIBAVFORMAT_LIBS)
   AC_SUBST(LIBAVFORMAT_CFLAGS)
   AC_SUBST(LIBAVCODEC_LIBS)
