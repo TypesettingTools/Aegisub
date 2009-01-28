@@ -525,20 +525,17 @@ fi
 
 AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG support.
                           Disables FFMPEG and FFmpegSource A/V providers.
-                          (default: auto)], ffmpeg_disabled="(disabled)", with_ffmpeg="yes")
+                          (default: auto)], [ffmpeg_disabled="(disabled)"; with_ffmpeg="no"])
 
 if test "$with_ffmpeg" != "no"; then
   PKG_CHECK_MODULES(LIBAVCODEC,  libavcodec >= libavcodec_required_version, [], [with_ffmpeg="no"])
   PKG_CHECK_MODULES(LIBAVFORMAT, libavformat >= libavformat_required_version, [], [with_ffmpeg="no"])
   PKG_CHECK_MODULES(LIBSWSCALE,  libswscale >=  libswscale_required_version, [], [with_ffmpeg="no"])
-
-  if test "$build_darwin" = "yes"; then
-    PKG_CHECK_MODULES(LIBAVUTIL,  libavutil >= libavutil_required_version, [], [with_ffmpeg="no"])
-  fi
+  PKG_CHECK_MODULES(LIBAVUTIL,  libavutil >= libavutil_required_version, [], [with_ffmpeg="no"])
 fi
 
 if test "$with_ffmpeg" != "no" && test "$enable_old_ffmpeg" != "yes"; then
-  AC_AGI_COMPILE([FFMPEG], [ffmpeg], [$LIBSWSCALE_CFLAGS $LIBAVCODEC_CFLAGS $LIBAVFORMAT_CFLAGS], [$LIBSWSCALE_LIBS $LIBAVCODEC_LIBS $LIBAVFORMAT_LIBS],[
+  AC_AGI_COMPILE([FFMPEG], [ffmpeg], [$LIBSWSCALE_CFLAGS $LIBAVCODEC_CFLAGS $LIBAVFORMAT_CFLAGS $LIBAVUTIL_CFLAGS], [$LIBSWSCALE_LIBS $LIBAVCODEC_LIBS $LIBAVFORMAT_LIBS $LIBAVUTIL_LIBS],[
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -588,9 +585,12 @@ AC_SUBST(LIBAVUTIL_CFLAGS)
 
 AM_CONDITIONAL([HAVE_FFMPEG], [test "$agi_cv_with_ffmpeg" = "yes"])
 
-if test "$agi_cv_$with_ffmpeg" = "no" || test "$with_ffmpeg" = "no"; then
+if test "$agi_cv_with_ffmpeg" = "no" || test "$with_ffmpeg" = "no"; then
   ffmpegsource_provider_disabled="(disabled, requires FFMPEG)"
   ffmpeg_provider_disabled="(disabled, requires FFMPEG)"
+  with_ffmpeg="no"
+else
+  with_ffmpeg="yes"
 fi
 
 AC_ARG_WITH(provider-ffmpeg, [  --without-provider-ffmpeg
