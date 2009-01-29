@@ -1025,7 +1025,7 @@ fi
 # If you want it earlier add it to your CXXFLAGS.
 ######################################################
 
-AC_ARG_VAR([DEBUG_FLAGS], [Debug flag to use with --enable debug (default: -g)])
+AC_ARG_VAR([DEBUG_FLAGS], [Debug flag to use with --enable-debug (default: -g)])
 if test -z "$DEBUG_FLAGS"; then
   DEBUG_FLAGS="-g";
 fi
@@ -1038,6 +1038,26 @@ if test "$enable_debug" = "yes"; then
   msg_debug="($DEBUG_FLAGS)"
 else
   enable_debug="no"
+  AC_MSG_RESULT([no])
+fi
+
+
+###########
+# Profiling
+###########
+
+AC_ARG_VAR([PROFILE_FLAGS], [Profile flag(s) to use with --enable-profiling (default: -pg)])
+if test -z "$PROFILE_FLAGS"; then
+  PROFILE_FLAGS="-pg";
+fi
+
+AC_MSG_CHECKING([whether to turn on profiling])
+AC_ARG_ENABLE(debug, [  --enable-profile        turn on profiling (default=no)])
+if test "$enable_prifile" = "yes"; then
+  AC_MSG_RESULT([yes ($PROFILE_FLAGS)])
+  CPPFLAGS="$PROFILE_FLAGS $CPPFLAGS"
+else
+  enable_profile="no"
   AC_MSG_RESULT([no])
 fi
 
