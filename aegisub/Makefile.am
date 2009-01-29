@@ -15,7 +15,7 @@ AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_C
 bin_PROGRAMS = aegisub-2.1
 aegisub_2_1_LDADD = libresrc/libresrc.a $(libosxutil_lib)
 aegisub_2_1_CPPFLAGS = @FREETYPE_CFLAGS@
-aegisub_2_1_LDFLAGS = @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags)
+aegisub_2_1_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags)
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@
 
 if BUILD_DARWIN

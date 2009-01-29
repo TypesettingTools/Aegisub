@@ -8,10 +8,6 @@ m4_define([aegisub_version_minor], [1])
 m4_define([aegisub_version_revision], [6])
 m4_define([aegisub_version], [aegisub_version_major.aegisub_version_minor.aegisub_version_revision-dev])
 m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
-AEGISUB_VERSION_MAJOR=aegisub_version_major
-AEGISUB_VERSION_MINOR=aegisub_version_minor
-AEGISUB_VERSION=aegisub_version
-AEGISUB_VERSION_DATA=aegisub_version_data
 
 
 ###################
@@ -92,6 +88,12 @@ AC_C_BIGENDIAN(
 ########################
 # Configurable variables
 ########################
+
+# These cannot be set before AC_INIT()
+AEGISUB_VERSION_MAJOR=aegisub_version_major
+AEGISUB_VERSION_MINOR=aegisub_version_minor
+AEGISUB_VERSION=aegisub_version
+AEGISUB_VERSION_DATA=aegisub_version_data
 
 # Suffix used for data paths.
 AC_DEFINE_UNQUOTED(AEGISUB_VERSION_DATA, ["$AEGISUB_VERSION_DATA"], [Data path suffix.])
@@ -1036,6 +1038,7 @@ if test "$enable_debug" = "yes"; then
   AC_MSG_RESULT([yes ($DEBUG_FLAGS)])
   CPPFLAGS="$DEBUG_FLAGS $CPPFLAGS"
   msg_debug="($DEBUG_FLAGS)"
+  AC_SUBST(DEBUG_FLAGS)
 else
   enable_debug="no"
   AC_MSG_RESULT([no])
@@ -1056,11 +1059,11 @@ AC_ARG_ENABLE(profile, [  --enable-profile        turn on profiling (default=no)
 if test "$enable_profile" = "yes"; then
   AC_MSG_RESULT([yes ($PROFILE_FLAGS)])
   CPPFLAGS="$PROFILE_FLAGS $CPPFLAGS"
+  AC_SUBST(PROFILE_FLAGS)
 else
   enable_profile="no"
   AC_MSG_RESULT([no])
 fi
-
 
 
 ##############################
