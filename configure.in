@@ -1213,6 +1213,7 @@ Configure settings
   Install prefix:        $prefix
   SVN Revision:          $SVN_REVISION
   Debug                  $enable_debug $msg_debug
+  CXXFLAGS               $CXXFLAGS
   CPPFLAGS               $CPPFLAGS
   LDFLAGS                $LDFLAGS
 
