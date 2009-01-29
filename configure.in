@@ -1046,14 +1046,14 @@ fi
 # Profiling
 ###########
 
-AC_ARG_VAR([PROFILE_FLAGS], [Profile flag(s) to use with --enable-profiling (default: -pg)])
+AC_ARG_VAR([PROFILE_FLAGS], [Profile flag(s) to use with --enable-profile (default: -pg)])
 if test -z "$PROFILE_FLAGS"; then
   PROFILE_FLAGS="-pg";
 fi
 
 AC_MSG_CHECKING([whether to turn on profiling])
-AC_ARG_ENABLE(debug, [  --enable-profile        turn on profiling (default=no)])
-if test "$enable_prifile" = "yes"; then
+AC_ARG_ENABLE(profile, [  --enable-profile        turn on profiling (default=no)])
+if test "$enable_profile" = "yes"; then
   AC_MSG_RESULT([yes ($PROFILE_FLAGS)])
   CPPFLAGS="$PROFILE_FLAGS $CPPFLAGS"
 else
