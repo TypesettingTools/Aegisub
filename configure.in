@@ -313,11 +313,7 @@ fi
 #############
 ## Fontconfig
 #############
-PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
-  AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.]),
-  [AC_MSG_FAILURE([aegisub requires >= fontconfig >= fontconfig_required_version])])
-AC_SUBST(FONTCONFIG_CFLAGS)
-AC_SUBST(FONTCONFIG_LIBS)
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version)
 
 AC_AGI_COMPILE([FontConfig], [fontconfig], [$FONTCONFIG_CFLAGS], [$FONTCONFIG_LIBS],[
 #include <fontconfig/fontconfig.h>
@@ -332,6 +328,11 @@ int main(void) {
 if test "$agi_cv_with_fontconfig" = "no"; then
     AC_MSG_FAILURE([Please install a working Fontconfig library.])
 fi
+
+AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.]),
+AC_SUBST(FONTCONFIG_CFLAGS)
+AC_SUBST(FONTCONFIG_LIBS)
+
 
 
 ########
