@@ -8,6 +8,11 @@ m4_define([aegisub_version_minor], [1])
 m4_define([aegisub_version_revision], [6])
 m4_define([aegisub_version], [aegisub_version_major.aegisub_version_minor.aegisub_version_revision-dev])
 m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
+AEGISUB_VERSION_MAJOR=aegisub_version_major
+AEGISUB_VERSION_MINOR=aegisub_version_minor
+AEGISUB_VERSION=aegisub_version
+AEGISUB_VERSION_DATA=aegisub_version_data
+
 
 ###################
 # Required packages
@@ -87,50 +92,43 @@ AC_C_BIGENDIAN(
 ########################
 # Configurable variables
 ########################
-m4_define([aegisub_version_major], [2])
-m4_define([aegisub_version_minor], [1])
-m4_define([aegisub_version_revision], [6])
-m4_define([aegisub_version], [aegisub_version_major.aegisub_version_minor.aegisub_version_revision-dev])
-m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
 
-AEGISUB_VERSION_MAJOR=aegisub_version_major
-AEGISUB_VERSION_MINOR=aegisub_version_minor
-AEGISUB_VERSION=aegisub_version
-AEGISUB_VERSION_DATA=aegisub_version_data
-
+# Suffix used for data paths.
 AC_DEFINE_UNQUOTED(AEGISUB_VERSION_DATA, ["$AEGISUB_VERSION_DATA"], [Data path suffix.])
 AC_SUBST(AEGISUB_VERSION_DATA)
 
+# Shared data and Documents location.
 aegisubdatadir="$datadir/$PACKAGE/aegisub_version_data"
-aegisubdocdir="$datadir/doc/$PACKAGE/aegisub_version_data"
-AEGISUB_COMMAND="aegisub-$AEGISUB_VERSION_MAJOR.$AEGISUB_VERSION_MINOR"
-
 AC_SUBST(aegisubdatadir)
+aegisubdocdir="$datadir/doc/$PACKAGE/aegisub_version_data"
 AC_SUBST(aegisubdocdir)
+
+# Name of aegisub binary.
+AEGISUB_COMMAND="aegisub-$AEGISUB_VERSION_MAJOR.$AEGISUB_VERSION_MINOR"
 AC_SUBST(AEGISUB_COMMAND)
 
+# Handle location of desktop files: http://freedesktop.org/wiki/Specifications/desktop-entry-spec
 AC_ARG_WITH(desktop-dir, [  --with-desktop-dir=PATH desktop file locations (default: PREFIX/share)])
-
 if ! test -z "$with_desktop_dir" ; then
   DESKTOP_DATADIR=$with_desktop_dir
 else
   DESKTOP_DATADIR="$datadir"
 fi
-
 AM_CONDITIONAL(DESKTOP_DATADIR, test "$with_desktop_dir" != "no")
 AC_SUBST(DESKTOP_DATADIR)
 
 
+# Install prefix
 # If a user doesn't supply --prefix then it is set to NONE so we
 # set it to $ac_default_prefix if it hasn't been supplied.
 if test "$prefix" = "NONE"; then
 	prefix="$ac_default_prefix"
 fi
 
-
 # Install prefix used by wxStandardPaths::SetInstallPrefix.
 AC_DEFINE_UNQUOTED([INSTALL_PREFIX], ["$prefix"], [Default install prefix, or --prefix.])
 
+# Build credit
 AC_ARG_WITH(build-credit, [  --with-build-credit=NAME  Build credit shown in the program title.], [use_build_credit="yes"])
 AC_MSG_CHECKING([whether BUILD_CREDIT has been set])
 if test "$use_build_credit" = "yes"; then
