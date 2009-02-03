@@ -331,7 +331,7 @@ if test "$agi_cv_with_fontconfig" = "no"; then
     AC_MSG_FAILURE([Please install a working Fontconfig library.])
 fi
 
-AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.]),
+AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.])
 AC_SUBST(FONTCONFIG_CFLAGS)
 AC_SUBST(FONTCONFIG_LIBS)
 
