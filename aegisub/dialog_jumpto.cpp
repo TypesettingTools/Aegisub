@@ -68,7 +68,7 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	// Set initial values
 	ready = false;
 	jumpframe = VideoContext::Get()->GetFrameN();
-	jumptime.SetMS(VFR_Output.GetTimeAtFrame(jumpframe));
+	jumptime.SetMS(VFR_Output.GetTimeAtFrame(jumpframe,true,true));
 
 	// Times
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
@@ -147,6 +147,7 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &event) {
 
 		// Update frame
 		long newframe = VFR_Output.GetFrameAtTime(JumpTime->time.GetMS());
+		if (newframe > VideoContext::Get()->GetLength()-1) newframe = VideoContext::Get()->GetLength()-1;
 		if (jumpframe != newframe) {
 			jumpframe = newframe;
 			JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));
@@ -166,10 +167,11 @@ void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 
 		// Update frame
 		JumpFrame->GetValue().ToLong(&jumpframe);
+		if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
 		JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));
 
 		// Update time
-		int newtime = VFR_Output.GetTimeAtFrame(jumpframe);
+		int newtime = VFR_Output.GetTimeAtFrame(jumpframe,true,true);
 		if (jumptime.GetMS() != newtime) {
 			jumptime.SetMS(newtime);
 			JumpTime->SetValue(jumptime.GetASSFormated());

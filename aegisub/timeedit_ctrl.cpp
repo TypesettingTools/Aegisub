@@ -71,7 +71,7 @@ wxTextCtrl(parent,id,value,pos,size,wxTE_CENTRE | style,validator,name)
 	SetValidator(val);
 
 	// Other stuff
-	SetValue(time.GetASSFormated());
+	if (!value) SetValue(time.GetASSFormated());
 	ready = true;
 	byFrame = false;
 	isEnd = false;
