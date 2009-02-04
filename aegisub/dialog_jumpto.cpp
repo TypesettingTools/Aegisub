@@ -127,6 +127,7 @@ void DialogJumpTo::OnOK (wxCommandEvent &event) { OnClose(true); }
 // On Key pressed
 void DialogJumpTo::OnKey(wxCommandEvent &event) {
 	EndModal(0);
+	if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
 	VideoContext::Get()->JumpToFrame(jumpframe);
 }
 
@@ -135,6 +136,7 @@ void DialogJumpTo::OnKey(wxCommandEvent &event) {
 // On OK button pressed
 void DialogJumpTo::OnClose(bool ok) {
 	EndModal(0);
+	if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
 	if (ok)	VideoContext::Get()->JumpToFrame(jumpframe);
 }
 
@@ -147,7 +149,6 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &event) {
 
 		// Update frame
 		long newframe = VFR_Output.GetFrameAtTime(JumpTime->time.GetMS());
-		if (newframe > VideoContext::Get()->GetLength()-1) newframe = VideoContext::Get()->GetLength()-1;
 		if (jumpframe != newframe) {
 			jumpframe = newframe;
 			JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));
@@ -167,7 +168,7 @@ void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 
 		// Update frame
 		JumpFrame->GetValue().ToLong(&jumpframe);
-		if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
+
 		JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));
 
 		// Update time
