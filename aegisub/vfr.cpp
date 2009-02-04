@@ -170,8 +170,9 @@ void FrameRate::Load(wxString filename) {
 				lposition = lend;
 			}
 
+			AddFrame(currenttime);
 			last_time = currenttime;
-			last_frame = (int)Frame.size();
+			last_frame = (int)Frame.size() - 1;
 		}
 
 		// V2
@@ -202,7 +203,7 @@ void FrameRate::Load(wxString filename) {
 			}
 
 			last_time = cftime;
-			last_frame = (int)Frame.size();
+			last_frame = (int)Frame.size() - 1;
 
 			CalcAverage();
 
@@ -305,7 +306,7 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 		trueLast = Frame[Frame.size()-1];
 
 		// Inside VFR range
-		if (ms < trueLast) {
+		if (ms <= trueLast) {
 			// Prepare binary search
 			size_t start = 0;
 			size_t end = last_frame;
