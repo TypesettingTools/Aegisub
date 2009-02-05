@@ -69,11 +69,13 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	ready = false;
 	jumpframe = VideoContext::Get()->GetFrameN();
 	jumptime.SetMS(VFR_Output.GetTimeAtFrame(jumpframe,true,true));
+	wxString maxLength = wxString::Format(_T("%i"),VideoContext::Get()->GetLength()-1);
 
 	// Times
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
 	JumpFrame = new wxTextCtrl(this,TEXT_JUMP_FRAME,wxString::Format(_T("%i"),jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
+	JumpFrame->SetMaxLength(maxLength.Len());
 	JumpTime = new TimeEdit(this,TEXT_JUMP_TIME,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
