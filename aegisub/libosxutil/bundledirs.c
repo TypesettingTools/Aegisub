@@ -48,7 +48,7 @@ static char * GetDir(GetURLFunc GetURL)
 	if (!bundle) return NULL;
 
 	res_dir_url = (*GetURL)(bundle);
-	// we do not own 'bundle' so don't release it
+	/* we do not own 'bundle' so don't release it */
 	if (!res_dir_url) return NULL;
 
 	res = CFURLGetFileSystemRepresentation(res_dir_url, true, (UInt8*)res_dir_str, MAXPATHLEN);
