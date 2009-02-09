@@ -1,7 +1,7 @@
-// ISO C9x  compliant stdint.h for Miscrosoft Visual Studio
+// ISO C9x  compliant stdint.h for Microsoft Visual Studio
 // Based on ISO/IEC 9899:TC2 Committee draft (May 6, 2005) WG14/N1124 
 // 
-//  Copyright (c) 2006 Alexander Chemeris
+//  Copyright (c) 2006-2008 Alexander Chemeris
 // 
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,9 @@
 // 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef _MSC_VER
+#ifndef _MSC_VER // [
+#error "Use this header only with Microsoft Visual C++ compilers!"
+#endif // _MSC_VER ]
 
 #ifndef _MSC_STDINT_H_ // [
 #define _MSC_STDINT_H_
@@ -50,6 +52,16 @@
 #if (_MSC_VER < 1300) && defined(__cplusplus)
    }
 #endif
+
+// Define _W64 macros to mark types changing their size, like intptr_t.
+#ifndef _W64
+#  if !defined(__midl) && (defined(_X86_) || defined(_M_IX86)) && _MSC_VER >= 1300
+#     define _W64 __w64
+#  else
+#     define _W64
+#  endif
+#endif
+
 
 // 7.18.1 Integer types
 
@@ -88,8 +100,8 @@ typedef uint64_t  uint_fast64_t;
    typedef __int64           intptr_t;
    typedef unsigned __int64  uintptr_t;
 #else // _WIN64 ][
-   typedef int               intptr_t;
-   typedef unsigned int      uintptr_t;
+   typedef _W64 int               intptr_t;
+   typedef _W64 unsigned int      uintptr_t;
 #endif // _WIN64 ]
 
 // 7.18.1.5 Greatest-width integer types
@@ -102,13 +114,13 @@ typedef uint64_t  uintmax_t;
 #if !defined(__cplusplus) || defined(__STDC_LIMIT_MACROS) // [   See footnote 220 at page 257 and footnote 221 at page 259
 
 // 7.18.2.1 Limits of exact-width integer types
-#define INT8_MIN     _I8_MIN
+#define INT8_MIN     ((int8_t)_I8_MIN)
 #define INT8_MAX     _I8_MAX
-#define INT16_MIN    _I16_MIN
+#define INT16_MIN    ((int16_t)_I16_MIN)
 #define INT16_MAX    _I16_MAX
-#define INT32_MIN    _I32_MIN
+#define INT32_MIN    ((int32_t)_I32_MIN)
 #define INT32_MAX    _I32_MAX
-#define INT64_MIN    _I64_MIN
+#define INT64_MIN    ((int64_t)_I64_MIN)
 #define INT64_MAX    _I64_MAX
 #define UINT8_MAX    _UI8_MAX
 #define UINT16_MAX   _UI16_MAX
@@ -200,15 +212,15 @@ typedef uint64_t  uintmax_t;
 
 // 7.18.4.1 Macros for minimum-width integer constants
 
-#define INT8_C(val)  val
-#define INT16_C(val) val
-#define INT32_C(val) val##L
+#define INT8_C(val)  val##i8
+#define INT16_C(val) val##i16
+#define INT32_C(val) val##i32
 #define INT64_C(val) val##i64
 
-#define UINT8_C(val)  val
-#define UINT16_C(val) val
-#define UINT32_C(val) val##UL
-#define UINT64_C(val) val##Ui64
+#define UINT8_C(val)  val##ui8
+#define UINT16_C(val) val##ui16
+#define UINT32_C(val) val##ui32
+#define UINT64_C(val) val##ui64
 
 // 7.18.4.2 Macros for greatest-width integer constants
 #define INTMAX_C   INT64_C
@@ -218,4 +230,3 @@ typedef uint64_t  uintmax_t;
 
 
 #endif // _MSC_STDINT_H_ ]
-#endif // _MSC_VER ]
