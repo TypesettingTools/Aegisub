@@ -203,20 +203,24 @@ CC="$PTHREAD_CC";
 ######################
 # Check compiler flags
 ######################
-AC_C_FLAG([-Wall])
-AC_C_FLAG([-O2])
-AC_C_FLAG([-Wextra],[AC_C_FLAG([-W])])
-AC_C_FLAG([-Wno-unused-parameter])
-AC_C_FLAG([-std=gnu99])
-AC_CXX_FLAG([-Wall])
-AC_CXX_FLAG([-Wextra],[AC_CXX_FLAG([-W])])
-AC_CXX_FLAG([-Wno-unused-parameter])
-AC_CXX_FLAG([-Wno-long-long])
-AC_CXX_FLAG([-O2])
-AC_CXX_FLAG([-fpermissive])
-AC_CXX_FLAG([-fno-strict-aliasing])
-AC_CXX_FLAG([-std=c++98])
+AC_ARG_ENABLE(compiler-flags, [  --disable-compiler-flags
+                          Disable *all* additional compiler flags. (default=no)])
 
+if test "$enable_compiler_flags" != "no"; then
+  AC_C_FLAG([-Wall])
+  AC_C_FLAG([-O2])
+  AC_C_FLAG([-Wextra],[AC_C_FLAG([-W])])
+  AC_C_FLAG([-Wno-unused-parameter])
+  AC_C_FLAG([-std=gnu99])
+  AC_CXX_FLAG([-Wall])
+  AC_CXX_FLAG([-Wextra],[AC_CXX_FLAG([-W])])
+  AC_CXX_FLAG([-Wno-unused-parameter])
+  AC_CXX_FLAG([-Wno-long-long])
+  AC_CXX_FLAG([-O2])
+  AC_CXX_FLAG([-fpermissive])
+  AC_CXX_FLAG([-fno-strict-aliasing])
+  AC_CXX_FLAG([-std=c++98])
+fi
 
 ######################################
 # Check Headers / Features / Libraries
