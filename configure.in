@@ -69,14 +69,18 @@ case "$target_or_host" in
     ;;
 esac
 
+# Used for universalchardet.
 AC_AGI_MDCPUCFG($target_or_host)
 
+# For conditional file building and options in Makefile(s).
 AM_CONDITIONAL([BUILD_DARWIN], [test "$build_darwin" = "yes"])
 AM_CONDITIONAL([BUILD_DEFAULT], [test "$build_default" = "yes"])
 
+# FontConfig is used on Darwin for the fontlister, freetype for !Windows case.
 AM_CONDITIONAL([FONTLISTER_FONTCONFIG], [test "$build_darwin" != "yes"])
 AM_CONDITIONAL([FONTLISTER_FREETYPE], [test "$build_darwin" = "yes"])
 
+# Handle endianess.
 AC_C_BIGENDIAN(
     AC_DEFINE([HAVE_BIG_ENDIAN], [1], [Big Endian]),
     AC_DEFINE([HAVE_LITTLE_ENDIAN], [1], [Little Endian]),
