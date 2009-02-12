@@ -97,6 +97,7 @@ AC_C_BIGENDIAN(
 AEGISUB_VERSION_MAJOR=aegisub_version_major
 AEGISUB_VERSION_MINOR=aegisub_version_minor
 AEGISUB_VERSION=aegisub_version
+# Used for gettext.
 AEGISUB_VERSION_DATA=aegisub_version_data
 
 # Suffix used for data paths.
@@ -181,12 +182,15 @@ else
   AC_MSG_FAILURE([unable to get SVN Revision from svn_version (file) or 'svnversion $srcdir'])
 fi
 
+# This is required in order for the config file to work correctly.
 AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, used for config.dat and verison.cpp])
 
+# Used on OSX and Unix for packing building.
 PACKAGE_STRING="${PACKAGE_STRING}-r$SVN_REVISION"
 PACKAGE_VERSION="${PACKAGE_VERSION}-r$SVN_REVISION"
 VERSION="${VERSION}-r$SVN_REVISION"
 
+# Used in version.cpp
 AC_MSG_CHECKING([for build date])
 BUILD_DATE=`date "+%Y-%m-%d %H:%M %Z"`
 AC_MSG_RESULT($BUILD_DATE)
@@ -243,8 +247,6 @@ AC_CHECK_LIB([m], [main])
 AC_CHECK_FUNC([strlcpy], [
 	AC_DEFINE([HAVE_STRLCPY], [1], [strlcpy() exists in the c library.])
 ], [])
-
-
 
 AC_LIBTOOL_DLOPEN_SELF
 AC_MSG_CHECKING([[whether preprocessor supports #pragma once]])
