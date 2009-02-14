@@ -39,8 +39,13 @@ struct ass_synth_priv_s {
 
 	unsigned *g;
 	unsigned *gt2;
-	
+
 	double radius;
+};
+
+struct ass_be_priv_s {
+	int size;
+	unsigned char *buf;
 };
 
 static const unsigned int maxcolor = 255;
@@ -52,11 +57,14 @@ static int generate_tables(ass_synth_priv_t* priv, double radius)
 	int mx, i;
 	double volume_diff, volume_factor = 0;
 	unsigned volume;
-	
+
 	if (priv->radius == radius)
 		return 0;
-	else
+	else {
 		priv->radius = radius;
+		if (priv->g) free(priv->g);
+		if (priv->gt2) free(priv->gt2);
+	}
 
 	priv->g_r = ceil(radius);
 	priv->g_w = 2*priv->g_r+1;
@@ -115,6 +123,7 @@ static void resize_tmp(ass_synth_priv_t* priv, int w, int h)
 ass_synth_priv_t* ass_synth_init(double radius)
 {
 	ass_synth_priv_t* priv = calloc(1, sizeof(ass_synth_priv_t));
+	priv->g = priv->gt2 = 0;
 	generate_tables(priv, radius);
 	return priv;
 }
@@ -130,7 +139,7 @@ void ass_synth_done(ass_synth_priv_t* priv)
 	free(priv);
 }
 
-static bitmap_t* alloc_bitmap(int w, int h)
+bitmap_t* alloc_bitmap(int w, int h)
 {
 	bitmap_t* bm;
 	bm = calloc(1, sizeof(bitmap_t));
@@ -242,7 +251,7 @@ static bitmap_t* fix_outline_and_shadow(bitmap_t* bm_g, bitmap_t* bm_o)
 			unsigned char c_g, c_o;
 			c_g = g[x];
 			c_o = o[x];
-			o[x] = (c_o > c_g) ? c_o - c_g : 0;
+			o[x] = (c_o > c_g) ? c_o - c_g/2 : 0;
 			s[x] = (c_o < 0xFF - c_g) ? c_o + c_g : 0xFF;
 		}
 		g += bm_g->w;
@@ -254,12 +263,86 @@ static bitmap_t* fix_outline_and_shadow(bitmap_t* bm_g, bitmap_t* bm_o)
 	return bm_s;
 }
 
+// \be blur with [1,2,1] matrix
+static void be_blur(unsigned char *buf, ass_be_priv_t* priv, int w, int h) {
+	unsigned int x, y;
+	unsigned int p;
+	unsigned char *tmp_buf = priv->buf;
+	const int wh = w*h;
+	
+	if (priv->size < wh) {
+		priv->buf = realloc(priv->buf, wh);
+		priv->size = wh;
+		tmp_buf = priv->buf;
+		printf("resized priv to %d bytes\n", wh);
+	}
+	memset(tmp_buf, 0, wh);
+	
+	for (y=0; y<h; y++)
+		for (x=1; x<w-1; x++) {
+			p = buf[y*w+x-1];
+			p += 2 * buf[y*w+x];
+			p += buf[y*w+x+1];
+			p = p >> 2;
+			tmp_buf[y*w+x] = p;
+		}
+
+	for (x=0; x<w; x++)
+		for (y=1; y<h-1; y++) {
+			p = tmp_buf[((y-1)*w+x)];
+			p += 2 * tmp_buf[y*w+x];
+			p += tmp_buf[((y+1)*w+x)];
+			p = p >> 2;
+			buf[y*w+x] = p;
+		}
+		
+	//free(tmp_buf);
+}
+
+/*
+static void get_overlap(bitmap_t* a, bitmap_t* b) {
+	int left, top, bottom, right;
+	int old_left, old_top, old_w, old_h;
+	int cur_left, cur_top, cur_w, cur_h;
+	
+	// Calculate overlap as coordinates
+	left = (a->left > b->left) ? a->left : b-> left;
+	top = (a->top > b->top) ? a->top : b->top;
+	right = ((a->left+a->w) < (b->left+b->w)) ? 
+		(a->left+a->w) : (b->left+b->w);
+	bottom = ((a->top+a->h) < (b->top+b->h)) ? 
+		(a->top+a->h) : (b->top+b->h);
+	// Check whether overlap rect is valid
+	// Just return if it isn't...
+	if ((right <= left) || (bottom <= top))
+		return;
+	printf("coord overlap %dx%d+%dx%d\n", left, top, right, bottom);
+	
+	// Translate into coordinates+width/height for each bitmap
+	old_left = left-(a->left);
+	old_top = top-(a->top);
+	old_w = right-left;
+	old_h = bottom-top;
+	printf("bitmap overlap %dx%d+%dx%d\n", old_left, old_top, old_w, old_h);
+}
+*/
+
+ass_be_priv_t* ass_be_init(void) {
+	ass_be_priv_t* priv;
+	priv = malloc(sizeof(ass_be_priv_t));
+	priv->size = 64*64;
+	priv->buf = malloc(64*64);
+	
+	return priv;
+}
+
 int glyph_to_bitmap(ass_synth_priv_t* priv, ass_synth_priv_t* priv_blur,
 		FT_Glyph glyph, FT_Glyph outline_glyph, bitmap_t** bm_g,
-		bitmap_t** bm_o, bitmap_t** bm_s, int be, double blur_radius)
+		bitmap_t** bm_o, bitmap_t** bm_s, int be, double blur_radius, ass_be_priv_t* be_priv, bitmap_t** bm_oo)
 {
-	int bord = be ? (be+1) : 0;
-	bord = (blur_radius > 0.0) ? blur_radius : bord;
+	int bord = be ? (be/4+1) : 0;
+	blur_radius *= 2;
+	bord = (blur_radius > 0.0) ? (int)(blur_radius+3) : (int) bord;
 
 	assert(bm_g && bm_o && bm_s);
 
@@ -278,28 +361,34 @@ int glyph_to_bitmap(ass_synth_priv_t* priv, ass_synth_priv_t* priv_blur,
 		}
 	}
 	if (*bm_o) {
-		resize_tmp(priv, (*bm_o)->w, (*bm_o)->h);
+		//resize_tmp(priv, (*bm_o)->w, (*bm_o)->h);
 		resize_tmp(priv_blur, (*bm_o)->w, (*bm_o)->h);
 	}
-	resize_tmp(priv, (*bm_g)->w, (*bm_g)->h);
+	//resize_tmp(priv, (*bm_g)->w, (*bm_g)->h);
 	resize_tmp(priv_blur, (*bm_g)->w, (*bm_g)->h);
 	
 	if (be) {
 		while (be--) {
-			if (*bm_o)
-				blur((*bm_o)->buffer, priv->tmp, (*bm_o)->w, (*bm_o)->h, (*bm_o)->w, (int*)priv->gt2, priv->g_r, priv->g_w);
-			else
-				blur((*bm_g)->buffer, priv->tmp, (*bm_g)->w, (*bm_g)->h, (*bm_g)->w, (int*)priv->gt2, priv->g_r, priv->g_w);
+			if (*bm_o) {
+				//blur((*bm_o)->buffer, priv->tmp, (*bm_o)->w, (*bm_o)->h, (*bm_o)->w, (int*)priv->gt2, priv->g_r, priv->g_w);
+				be_blur((*bm_o)->buffer, be_priv, (*bm_o)->w, (*bm_o)->h);
+				//(*bm_o)->top--;
+				//(*bm_o)->left--;
+			} else
+				//blur((*bm_g)->buffer, priv->tmp, (*bm_g)->w, (*bm_g)->h, (*bm_g)->w, (int*)priv->gt2, priv->g_r, priv->g_w);
+				be_blur((*bm_g)->buffer, be_priv, (*bm_g)->w, (*bm_g)->h);
 		}
-	} else
+	} else {
 		if (blur_radius > 0.0) {
 			generate_tables(priv_blur, blur_radius);
 			if (*bm_o)
 				blur((*bm_o)->buffer, priv_blur->tmp, (*bm_o)->w, (*bm_o)->h, (*bm_o)->w, (int*)priv_blur->gt2, priv_blur->g_r, priv_blur->g_w);
+				
 			else
 				blur((*bm_g)->buffer, priv_blur->tmp, (*bm_g)->w, (*bm_g)->h, (*bm_g)->w, (int*)priv_blur->gt2, priv_blur->g_r, priv_blur->g_w);
 		}
-		
+	}
+
 	if (*bm_o)
 		*bm_s = fix_outline_and_shadow(*bm_g, *bm_o);
 	else

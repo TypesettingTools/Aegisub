@@ -23,11 +23,15 @@
 #ifndef LIBASS_BITMAP_H
 #define LIBASS_BITMAP_H
 
+#define MAX_BOXBLUR 50
+
 #include <ft2build.h>
 #include FT_GLYPH_H
 
 typedef struct ass_synth_priv_s ass_synth_priv_t;
+typedef struct ass_be_priv_s ass_be_priv_t;
 
+ass_be_priv_t* ass_be_init(void);
 ass_synth_priv_t* ass_synth_init(double);
 void ass_synth_done(ass_synth_priv_t* priv);
 
@@ -46,8 +50,10 @@ typedef struct bitmap_s {
  * \param bm_g out: pointer to the bitmap of glyph shadow is returned here
  * \param be 1 = produces blurred bitmaps, 0 = normal bitmaps
  */
-int glyph_to_bitmap(ass_synth_priv_t* priv, ass_synth_priv_t* priv_blur, FT_Glyph glyph, FT_Glyph outline_glyph, bitmap_t** bm_g, bitmap_t** bm_o, bitmap_t** bm_s, int be, double blur_radius);
+int glyph_to_bitmap(ass_synth_priv_t* priv, ass_synth_priv_t* priv_blur, FT_Glyph glyph, FT_Glyph outline_glyph, bitmap_t** bm_g, bitmap_t** bm_o, bitmap_t** bm_s, int be, double blur_radius, ass_be_priv_t* be_priv, bitmap_t** bm_oo);
 
 void ass_free_bitmap(bitmap_t* bm);
+
+bitmap_t* alloc_bitmap(int w, int h);
 
 #endif /* LIBASS_BITMAP_H */
