@@ -219,6 +219,7 @@ if test "$enable_compiler_flags" != "no"; then
   AC_C_FLAG([-Wextra],[AC_C_FLAG([-W])])
   AC_C_FLAG([-Wno-unused-parameter])
   AC_C_FLAG([-std=gnu99])
+  AC_C_FLAG([-pipe])
   AC_CXX_FLAG([-Wall])
   AC_CXX_FLAG([-Wextra],[AC_CXX_FLAG([-W])])
   AC_CXX_FLAG([-Wno-unused-parameter])
@@ -226,6 +227,7 @@ if test "$enable_compiler_flags" != "no"; then
   AC_CXX_FLAG([-fpermissive])
   AC_CXX_FLAG([-fno-strict-aliasing])
   AC_CXX_FLAG([-std=c++98])
+  AC_CXX_FLAG([-pipe])
 
   # -O* messes with debugging.
   if test "$enable_debug" != "yes"; then
