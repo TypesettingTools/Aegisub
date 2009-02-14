@@ -226,11 +226,12 @@ if test "$enable_compiler_flags" != "no"; then
   AC_CXX_FLAG([-fpermissive])
   AC_CXX_FLAG([-fno-strict-aliasing])
   AC_CXX_FLAG([-std=c++98])
-fi
 
-if test "$enable_compiler_flags" != "no" || test "$enable_debug" != "yes"; then
-  AC_C_FLAG([-O2])
-  AC_CXX_FLAG([-O2])
+  # -O* messes with debugging.
+  if test "$enable_debug" != "yes"; then
+    AC_C_FLAG([-O2])
+    AC_CXX_FLAG([-O2])
+  fi
 fi
 
 ######################################
