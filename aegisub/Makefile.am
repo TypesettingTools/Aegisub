@@ -267,6 +267,7 @@ aegisub_2_1_SOURCES = \
 	dialog_version_check.cpp \
 	dialog_video_details.cpp \
 	drop.cpp \
+	audio_provider_dummy.cpp \
 	export_clean_info.cpp \
 	export_fixstyle.cpp \
 	export_framerate.cpp \
