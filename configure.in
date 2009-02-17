@@ -69,6 +69,7 @@ case "$target_or_host" in
     ;;
 esac
 
+
 # Used for universalchardet.
 AC_AGI_MDCPUCFG($target_or_host)
 
@@ -1060,6 +1061,11 @@ if test "$enable_debug" = "yes"; then
 else
   enable_debug="no"
   AC_MSG_RESULT([no])
+fi
+
+if test "$enable_debug" = "yes"; then
+  PACKAGE_DEBUG="-debug"
+  AC_SUBST(PACKAGE_DEBUG)
 fi
 
 
