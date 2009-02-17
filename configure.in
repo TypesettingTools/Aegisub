@@ -29,6 +29,7 @@ m4_define([freetype_required_version], [9.7.0])
 m4_define([perl_required_version], [5.004])
 m4_define([pkgconfig_required_version], [0.20])
 m4_define([ruby_required_version], [1.8])
+m4_define([wx_required_version], [2.8.1])
 
 
 #######
@@ -998,7 +999,7 @@ AM_CONDITIONAL([HAVE_AUTOMATION], [test "$with_automation" = "yes"])
 # Widget support
 ################
 AM_OPTIONS_WXCONFIG
-AM_PATH_WXCONFIG(2.8.1, [have_wxconfig="yes"], [have_wxconfig="no"], [std,gl,stc])
+AM_PATH_WXCONFIG(wx_required_version, [have_wxconfig="yes"], [have_wxconfig="no"], [std,gl,stc], [--unicode])
 
 if test "$have_wxconfig" = "no"; then
   AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LDFLAGS, CXX/CFLAGS.])
@@ -1056,8 +1057,12 @@ if test "$enable_debug" = "yes"; then
   CPPFLAGS="$DEBUG_FLAGS $CPPFLAGS"
   msg_debug="($DEBUG_FLAGS)"
   AC_SUBST(DEBUG_FLAGS)
+
   # This turns on some internal (to aegisub) debugging features.
-  AC_CXX_FLAG([-D_DEBUG])
+  # A debug version of wxWidgets is required.
+  if $WX_CONFIG_PATH --debug; then
+    AC_CXX_FLAG([-D_DEBUG])
+  fi
 else
   enable_debug="no"
   AC_MSG_RESULT([no])
