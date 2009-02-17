@@ -1055,6 +1055,8 @@ if test "$enable_debug" = "yes"; then
   CPPFLAGS="$DEBUG_FLAGS $CPPFLAGS"
   msg_debug="($DEBUG_FLAGS)"
   AC_SUBST(DEBUG_FLAGS)
+  # This turns on some internal (to aegisub) debugging features.
+  AC_CXX_FLAG([-D_DEBUG])
 else
   enable_debug="no"
   AC_MSG_RESULT([no])
