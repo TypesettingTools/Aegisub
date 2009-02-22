@@ -1051,7 +1051,7 @@ if test -z "$DEBUG_FLAGS"; then
 fi
 
 AC_MSG_CHECKING([whether to turn on debugging])
-AC_ARG_ENABLE(debug, [  --enable-debug          turn on debugging (default=no)])
+AC_ARG_ENABLE(debug, [  --enable-debug          enable debugging (default=no)])
 if test "$enable_debug" = "yes"; then
   AC_MSG_RESULT([yes ($DEBUG_FLAGS)])
   CPPFLAGS="$DEBUG_FLAGS $CPPFLAGS"
@@ -1084,7 +1084,7 @@ if test -z "$PROFILE_FLAGS"; then
 fi
 
 AC_MSG_CHECKING([whether to turn on profiling])
-AC_ARG_ENABLE(profile, [  --enable-profile        turn on profiling (default=no)])
+AC_ARG_ENABLE(profile, [  --enable-profile        enable profiling (default=no)])
 if test "$enable_profile" = "yes"; then
   AC_MSG_RESULT([yes ($PROFILE_FLAGS)])
   CPPFLAGS="$PROFILE_FLAGS $CPPFLAGS"
@@ -1093,6 +1093,80 @@ else
   enable_profile="no"
   AC_MSG_RESULT([no])
 fi
+
+
+######
+# gcov
+######
+
+AC_ARG_VAR([GCOV_FLAGS], [gcov flag(s) to use with --enable-gcov (default: -ftest-coverage -fprofile-arcs)])
+if test -z "$GCOV_FLAGS"; then
+  GCOV_FLAGS="-fprofile-arcs -ftest-coverage";
+fi
+
+AC_MSG_CHECKING([whether to turn on gcov])
+AC_ARG_ENABLE(profile, [  --enable-gcov           enable gcov (default=no)])
+if test "$enable_gcov" = "yes"; then
+  AC_MSG_RESULT([yes ($GCOV_FLAGS)])
+  CPPFLAGS="$GCOV_FLAGS $CPPFLAGS"
+  AC_SUBST(GCOV_FLAGS)
+else
+  enable_gcov="no"
+  AC_MSG_RESULT([no])
+fi
+
+
+
+################
+# Electric Fence
+################
+
+AC_ARG_VAR([EFENCE_LDFLAGS], [Electric Fence ldflag(s) to use with --enable-profile (default: -lefence)])
+if test -z "EFENCE_LDFLAGS"; then
+  EFENCE_LDFLAGS="-pg -fprofile-arcs -ftest-coverage";
+fi
+
+AC_MSG_CHECKING([whether turn on Electric Fence])
+AC_ARG_ENABLE(profile, [  --enable-efence         enable Electric Fence (default=no)])
+if test "$enable_efence" = "yes"; then
+  AC_MSG_RESULT([yes ($EFENCE_LDFLAGS)])
+  CPPFLAGS="$EFENCE_LDFLAGS $CPPFLAGS"
+  AC_SUBST(EFENCE_LDFLAGS)
+else
+  enable_efence="no"
+  AC_MSG_RESULT([no])
+fi
+
+##########
+# ccmalloc
+##########
+
+AC_ARG_VAR([CCMALLOC_LIBS], [ccmalloc libs(s) to use with --enable-ccmalloc (default: $prefix/lib/ccmalloc-c++.o)])
+AC_ARG_VAR([CCMALLOC_LDFLAGS], [ccmalloc ldflag(s) to use with --enable-ccmalloc (default: -lccmalloc)])
+
+if test -z "$CCMALLOC_LIBS"; then
+  CCMALLOC_LIBS="$prefix/lib/ccmalloc-c++.o";
+fi
+
+if test -z "$CCMALLOC_LIBS"; then
+  CCMALLOC_LDFLAGS="-lccmalloc";
+fi
+
+AC_MSG_CHECKING([whether to turn on ccmalloc])
+AC_ARG_ENABLE(profile, [  --enable-ccmalloc       enable ccmalloc (default=no)])
+if test "$enable_ccmalloc" = "yes"; then
+  AC_MSG_RESULT([yes ($CCMALLOC_LIBS $CCMALLOC_LDFLAGS)])
+  CPPFLAGS="$CCMALLOC_LIBS $CCMALLOC_LDFLAGS $CPPFLAGS"
+  AC_SUBST(CCMALLOC_LDFLAGS)
+  AC_SUBST(CCMALLOC_LIBS)
+else
+  enable_ccmalloc="no"
+  AC_MSG_RESULT([no])
+fi
+
+if test "$enable_efence" = "yes" && test "$enable_ccmalloc" = "yes"; then
+  AC_MSG_FAILURE([Please enable Electric Fence _or_ ccmalloc otherwise strange things will happen.])
+fi  
 
 
 ##############################
