@@ -8,7 +8,7 @@ writing) @ http://www.malakith.net/aegiwiki
 mechanism works. Even so, I am not resposible if it damages your subtitles permanently, so please 
 back up your subtitle file before applying the cleaning up
 
-Copyright (c) 2007 ai-chan (Aegisub's forum member and registered nick holder of Rizon irc network)
+Copyright (c) 2007-2009 Muhammad Lukman Nasaruddin (aka ai-chan, Aegisub's forum member)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
 associated documentation files (the "Software"), to deal in the Software without restriction, 
@@ -28,9 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 script_name = "Clean Tags"
 script_description = "Clean subtitle lines by re-arranging ASS tags and override blocks within the lines"
-script_author = "ai-chan"
-script_version = "1.150"
-script_modified = "12 September 2007"
+script_author = "Muhammad Lukman Nasaruddin (ai-chan)"
+script_version = "1.20"
+script_modified = "25 February 2009"
 
 include("cleantags.lua")
 
@@ -38,11 +38,11 @@ function cleantags_subs(subtitles)
 	local linescleaned = 0
 	for i = 1, #subtitles do
 		aegisub.progress.set(i * 100 / #subtitles)
-		if subtitles[i].class == "dialogue" and subtitles[i].text ~= "" then
+		if subtitles[i].class == "dialogue" and not subtitles[i].comment and subtitles[i].text ~= "" then
 			ntext = cleantags(subtitles[i].text)
 			local nline = subtitles[i]
 			nline.text = ntext
-			subtitles[i] = nline -- I don't understand why we need these steps to incorporate new text
+			subtitles[i] = nline
 			linescleaned = linescleaned + 1
 			aegisub.progress.task(linescleaned .. " lines cleaned")
 		end
