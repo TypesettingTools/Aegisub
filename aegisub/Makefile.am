@@ -1,356 +1,87 @@
 AUTOMAKE_OPTIONS = foreign
-SUFFIXES = .c .cpp .rc
-noinst_LIBRARIES= 
 
-if BUILD_DARWIN
-libosxutil_subdir = libosxutil
-libosxutil_lib = libosxutil/libosxutil.a
-libosxutil_ldflags = -framework CoreFoundation
-endif
 
-SUBDIRS = bitmaps libresrc $(libosxutil_subdir)
-
-AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
-
-bin_PROGRAMS = aegisub-2.1
-aegisub_2_1_LDADD = libresrc/libresrc.a $(libosxutil_lib)
-aegisub_2_1_CPPFLAGS = @FREETYPE_CFLAGS@
-aegisub_2_1_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags) @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
-LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@ @CCMALLOC_LIBS@
-
-if BUILD_DARWIN
-aegisub_2_1_LDFLAGS += -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
-endif
-
-if HAVE_ALSA
-noinst_LIBRARIES += libaudio_alsa.a
-libaudio_alsa_a_SOURCES = audio_player_alsa.cpp
-aegisub_2_1_LDFLAGS += @ALSA_LDFLAGS@
-aegisub_2_1_LDADD += libaudio_alsa.a
-endif
-
-if HAVE_PORTAUDIO
-noinst_LIBRARIES += libaudio_portaudio.a
-libaudio_portaudio_a_SOURCES = audio_player_portaudio.cpp
-libaudio_portaudio_a_CPPFLAGS = @PORTAUDIO_CFLAGS@
-aegisub_2_1_LDFLAGS += @PORTAUDIO_LDFLAGS@
-aegisub_2_1_LDADD += libaudio_portaudio.a
-endif
-
-if HAVE_PULSEAUDIO
-noinst_LIBRARIES += libaudio_pulseaudio.a
-libaudio_pulseaudio_a_SOURCES = audio_player_pulse.cpp
-libaudio_pulseaudio_a_CPPFLAGS = @LIBPULSE_CFLAGS@
-aegisub_2_1_LDFLAGS += @LIBPULSE_LIBS@
-aegisub_2_1_LDADD += libaudio_pulseaudio.a
-endif
-
-if HAVE_OPENAL
-noinst_LIBRARIES += libaudio_openal.a
-libaudio_openal_a_SOURCES = audio_player_openal.cpp
-libaudio_openal_a_CPPFLAGS = @OPENAL_CFLAGS@
-aegisub_2_1_LDFLAGS += @OPENAL_LIBS@
-aegisub_2_1_LDADD += libaudio_openal.a
-endif
-
-if HAVE_FFMPEG
-aegisub_2_1_LDFLAGS += @LIBAVFORMAT_LIBS@ @LIBAVCODEC_LIBS@ @LIBSWSCALE_LIBS@ @LIBAVUTIL_LIBS@
-endif
-
-if HAVE_PROVIDER_FFMPEG
-noinst_LIBRARIES += libaudiovideo_ffmpeg.a
-libaudiovideo_ffmpeg_a_SOURCES = audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp lavc_keyframes.cpp
-libaudiovideo_ffmpeg_a_CPPFLAGS = @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
-aegisub_2_1_LDADD += libaudiovideo_ffmpeg.a
-endif
-
-if HAVE_PROVIDER_FFMPEGSOURCE
-noinst_LIBRARIES += libaudiovideo_ffmpegsource.a
-libaudiovideo_ffmpegsource_a_SOURCES = audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
-libaudiovideo_ffmpegsource_a_CPPFLAGS = @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ @LIBPOSTPROC_CFLAGS@
-aegisub_2_1_LDADD += libaudiovideo_ffmpegsource.a ../FFmpegSource2/libffmpegsource2_aegisub.a
-aegisub_2_1_LDFLAGS += @LIBPOSTPROC_LIBS@
-endif
-
-noinst_LIBRARIES += libsubtitle_provider.a
-libsubtitle_provider_a_SOURCES = subtitles_provider.cpp
-libsubtitle_provider_a_CPPFLAGS = @CSRI_CFLAGS@
-aegisub_2_1_LDADD += libsubtitle_provider.a
-
-if WITH_LIBASS
-noinst_LIBRARIES += libsubtitle_ass.a
-libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
-libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@ @ICONV_CFLAGS@
-LIBS += @LIBASS_LIBS@
-aegisub_2_1_LDADD += libsubtitle_ass.a
-aegisub_2_1_LDFLAGS += @FONTCONFIG_LIBS@
-endif
-
-if WITH_CSRI
-noinst_LIBRARIES += libsubtitle_csri.a
-libsubtitle_csri_a_SOURCES = subtitles_provider_csri.cpp
-libsubtitle_csri_a_CPPFLAGS = @ICONV_CFLAGS@ @CSRI_CFLAGS@
-LIBS += @CSRI_LIBS@
-aegisub_2_1_LDADD += libsubtitle_csri.a
-aegisub_2_1_LDFLAGS += @FONTCONFIG_LIBS@
-endif
-
-if HAVE_AUTO4_LUA
-noinst_LIBRARIES += libauto4_lua.a
-libauto4_lua_a_SOURCES = auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_scriptreader.cpp
-libauto4_lua_a_CPPFLAGS = @LUA_CFLAGS@
-LIBS += @LUA_LDFLAGS@
-aegisub_2_1_LDADD += libauto4_lua.a
-endif
-
-if HAVE_AUTO4_PERL
-noinst_LIBRARIES += libauto4_perl.a
-libauto4_perl_a_SOURCES = auto4_perl.cpp auto4_perl_script.cpp auto4_perl_dialogs.cpp auto4_perl_ass.cpp auto4_perl_console.cpp auto4_perl.h auto4_perl_console.h
-libauto4_perl_a_CPPFLAGS = @PERL_CFLAGS@
-LIBS += @PERL_LDFLAGS@
-aegisub_2_1_LDADD += libauto4_perl.a
-endif
-
-if HAVE_AUTO4_RUBY
-noinst_LIBRARIES += libauto4_ruby.a
-libauto4_ruby_a_SOURCES = auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
-libauto4_ruby_a_CPPFLAGS = @RUBY_CFLAGS@
-aegisub_2_1_LDFLAGS += @RUBY_LDFLAGS@
-aegisub_2_1_LDADD += libauto4_ruby.a
-endif
-
-if BUILD_DARWIN
-AUTO3_LIB = ../auto3/.libs/libaegisub-auto3-2.1.0.dylib
-else
-AUTO3_LIB = ../auto3/.libs/libaegisub-auto3-2.1.so
+if HAVE_UNIVCHARDET
+univchardet = universalchardet
 endif
 
 if HAVE_AUTO3_LUA
-AUTO3_LUA = auto4_auto3.cpp
-# This is a workaround top stop libtool from binging in dependency_libs which
-# causes many link errors due to auto4 (lua 5.1) support.
-#aegisub_2_1_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3-2.1
-aegisub_2_1_LDADD += ${AUTO3_LIB}
+auto3 = auto3
 endif
 
-if HAVE_HUNSPELL
-noinst_LIBRARIES += libmisc_hunspell.a
-libmisc_hunspell_a_SOURCES = spellchecker_hunspell.cpp
-aegisub_2_1_LDFLAGS += @HUNSPELL_LIBS@
-aegisub_2_1_LDADD += libmisc_hunspell.a
+if WITH_LIBASS
+libass = libass
 endif
 
-if HAVE_UNIVCHARDET
-noinst_LIBRARIES += libmisc_universalchardet.a
-libmisc_universalchardet_a_SOURCES = charset_detect.cpp text_file_reader.cpp
-libmisc_universalchardet_a_CPPFLAGS = -D_X86_
-aegisub_2_1_LDADD += libmisc_universalchardet.a ../universalchardet/libuniversalchardet.a
-else
-UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
+if HAVE_PROVIDER_FFMPEGSOURCE
+ffmpegsource = FFmpegSource2
 endif
 
-if BUILD_DARWIN
-  BEVEL_BUTTON = osx_bevelButton.cpp
-endif
+SUBDIRS = \
+	$(univchardet) \
+	$(auto3) \
+    $(libass) \
+	$(ffmpegsource) \
+	aegisub \
+	automation \
+	po \
+	desktop
 
-if FONTLISTER_FREETYPE
-  FONT_LISTER = font_file_lister_freetype.cpp
-endif
+osx-bundle:
+	@SHELL@ scripts/osx-bundle.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@@PACKAGE_DEBUG@ @AEGISUB_VERSION_DATA@ DICT_DIR=$(DICT_DIR)
 
-if FONTLISTER_FONTCONFIG
-  FONT_LISTER = font_file_lister_fontconfig.cpp
-endif
-
-
-## These aren't built, but are listed here so 'make dist' can always find all the sources
-## This should also list all Win32 specific files
-EXTRA_aegisub_2_1_SOURCES = \
-	font_file_lister.cpp \
-	$(FONT_LISTER) \
-	audio_player_dsound.cpp \
-	audio_player_dsound2.cpp \
-	audio_player_portaudio.cpp \
-	audio_player_pulse.cpp \
-	audio_provider_avs.cpp \
-	audio_provider_lavc.cpp \
-	auto4_auto3.cpp \
-	auto4_lua.cpp \
-	auto4_lua_assfile.cpp \
-	auto4_lua_dialog.cpp \
-	auto4_lua_scriptreader.cpp \
-	auto4_ruby.cpp \
-	auto4_ruby_assfile.cpp \
-	auto4_ruby_dialog.cpp \
-	avisynth_wrap.cpp \
-	dialog_associations.cpp \
-	lavc_file.cpp \
-	lavc_keyframes.cpp \
-	osx_bevelButton.cpp \
-	setup.cpp \
-	spellchecker_hunspell.cpp \
-	stdwx.cpp \
-	subtitle_format_prs.cpp \
-	subtitles_provider_csri.cpp \
-	subtitles_provider_libass.cpp \
-	video_provider_avs.cpp \
-	video_provider_dshow.cpp \
-	video_provider_lavc.cpp
-
-
-aegisub_2_1_SOURCES = \
-	$(AUTO3_LUA) \
-	$(FFMPEG) \
-	$(HUNSPELL) \
-	$(LIBASS) \
-	$(UNIVCHARSET) \
-	$(BEVEL_BUTTON) \
-	font_file_lister.cpp \
-	$(FONT_LISTER) \
-	MatroskaParser.c \
-	aegisublocale.cpp \
-	ass_attachment.cpp \
-	ass_dialogue.cpp \
-	ass_entry.cpp \
-	ass_export_filter.cpp \
-	ass_exporter.cpp \
-	ass_file.cpp \
-	ass_karaoke.cpp \
-	ass_override.cpp \
-	ass_style.cpp \
-	ass_style_storage.cpp \
-	ass_time.cpp \
-	audio_box.cpp \
-	audio_display.cpp \
-	audio_karaoke.cpp \
-	audio_player.cpp \
-	audio_provider.cpp \
-	audio_provider_convert.cpp \
-	audio_provider_downmix.cpp \
-	audio_provider_hd.cpp \
-	audio_provider_pcm.cpp \
-	audio_provider_ram.cpp \
-	audio_provider_stream.cpp \
-	audio_spectrum.cpp \
-	auto4_base.cpp \
-	avisynth_wrap.cpp \
-	base_grid.cpp \
-	browse_button.cpp \
-	colorspace.cpp \
-	colour_button.cpp \
-	dialog_about.cpp \
-	dialog_attachments.cpp \
-	dialog_automation.cpp \
-	dialog_colorpicker.cpp \
-	dialog_detached_video.cpp \
-	dialog_dummy_video.cpp \
-	dialog_export.cpp \
-	dialog_fonts_collector.cpp \
-	dialog_jumpto.cpp \
-	dialog_kanji_timer.cpp \
-	dialog_options.cpp \
-	dialog_paste_over.cpp \
-	dialog_progress.cpp \
-	dialog_properties.cpp \
-	dialog_resample.cpp \
-	dialog_search_replace.cpp \
-	dialog_selection.cpp \
-	dialog_shift_times.cpp \
-	dialog_spellchecker.cpp \
-	dialog_splash.cpp \
-	dialog_style_editor.cpp \
-	dialog_style_manager.cpp \
-	dialog_styling_assistant.cpp \
-	dialog_text_import.cpp \
-	dialog_timing_processor.cpp \
-	dialog_tip.cpp \
-	dialog_translation.cpp \
-	dialog_version_check.cpp \
-	dialog_video_details.cpp \
-	drop.cpp \
-	audio_provider_dummy.cpp \
-	export_clean_info.cpp \
-	export_fixstyle.cpp \
-	export_framerate.cpp \
-	export_visible_lines.cpp \
-	fft.cpp \
-	frame_main.cpp \
-	frame_main_events.cpp \
-	gl_text.cpp \
-	gl_wrap.cpp \
-	help_button.cpp \
-	hilimod_textctrl.cpp \
-	hotkeys.cpp \
-	idle_field_event.cpp \
-	kana_table.cpp \
-	keyframe.cpp \
-	main.cpp \
-	md5.c \
-	mkv_wrap.cpp \
-	mythes.cxx \
-	options.cpp \
-	plugin_manager.cpp \
-	scintilla_text_ctrl.cpp \
-	spellchecker.cpp \
-	spline.cpp \
-	spline_curve.cpp \
-	standard_paths.cpp \
-	static_bmp.cpp \
-	string_codec.cpp \
-	subs_edit_box.cpp \
-	subs_edit_ctrl.cpp \
-	subs_grid.cpp \
-	subs_preview.cpp \
-	subtitle_format.cpp \
-	subtitle_format_ass.cpp \
-	subtitle_format_dvd.cpp \
-	subtitle_format_encore.cpp \
-	subtitle_format_microdvd.cpp \
-	subtitle_format_mkv.cpp \
-	subtitle_format_srt.cpp \
-	subtitle_format_transtation.cpp \
-	subtitle_format_ttxt.cpp \
-	subtitle_format_txt.cpp \
-	text_file_writer.cpp \
-	thesaurus.cpp \
-	thesaurus_myspell.cpp \
-	timeedit_ctrl.cpp \
-	toggle_bitmap.cpp \
-	tooltip_manager.cpp \
-	utils.cpp \
-	validators.cpp \
-	variable_data.cpp \
-	vector2d.cpp \
-	version.cpp \
-	vfr.cpp \
-	video_box.cpp \
-	video_context.cpp \
-	video_display.cpp \
-	video_frame.cpp \
-	video_provider_cache.cpp \
-	video_provider_dummy.cpp \
-	video_provider_manager.cpp \
-	video_slider.cpp \
-	visual_feature.cpp \
-	visual_tool.cpp \
-	visual_tool_clip.cpp \
-	visual_tool_cross.cpp \
-	visual_tool_drag.cpp \
-	visual_tool_rotatexy.cpp \
-	visual_tool_rotatez.cpp \
-	visual_tool_scale.cpp \
-	visual_tool_vector_clip.cpp
-
-
-aegisub_2_1_SOURCES += \
-	$(srcdir)/*.h \
-	$(srcdir)/include/aegisub/*.h \
-    $(srcdir)/config/*.h
-
-noinst_HEADERS = \
-	$(srcdir)/boost/*.hpp \
-	gl/glext.h \
-	$(srcdir)/*.hxx \
-	osx_bevelButton.h
+osx-dmg:
+	@SHELL@ scripts/osx-dmg.sh @PACKAGE_TARNAME@-@PACKAGE_VERSION@@PACKAGE_DEBUG@ "@PACKAGE_TARNAME@-@PACKAGE_VERSION@"
 
 EXTRA_DIST = \
-	auto4_perldata.inc
+	intltool-extract.in \
+	intltool-merge.in   \
+	intltool-update.in  \
+	config.guess \
+	config.sub \
+	depcomp \
+	install-sh \
+	missing \
+	INSTALL \
+	README \
+	svn_revision
+
+# m4macros/
+EXTRA_DIST += \
+	m4macros/check_gnu_make.m4 \
+	m4macros/acx_pthread.m4 \
+	m4macros/ac_agi.m4 \
+	m4macros/ax_lang_compiler_ms.m4 \
+	m4macros/ac_agi_mdcpucfg.m4 \
+	m4macros/ax_openmp.m4 \
+	m4macros/ax_check_gl.m4 \
+	m4macros/ac_flag.m4
+
+# scripts/
+EXTRA_DIST += \
+	scripts/osx-bundle-restart-helper.c \
+	scripts/osx-bundle.sh \
+	scripts/osx-dmg-dsstore.pl \
+	scripts/osx-dmg.sh \
+	scripts/osx-fix-libs.py \
+	scripts/unix-gen-res.awk \
+	scripts/unix-gen-xpm.awk
+
+# packages/osx_bundle/
+EXTRA_DIST += \
+	packages/osx_bundle/Contents/Info.plist \
+	packages/osx_bundle/Contents/Resources/*.icns \
+	packages/osx_bundle/Contents/Resources/etc/fonts/fonts.conf \
+	packages/osx_bundle/Contents/Resources/etc/fonts/fonts.dtd \
+	packages/osx_bundle/Contents/Resources/etc/fonts/conf.d/*.conf
+
+# packages/osx_dmg/
+EXTRA_DIST += \
+	packages/osx_dmg/dmg_background.png \
+	packages/osx_dmg/dmg_set_style.applescript
+
+
+CLEANFILES= \
+	intltool-extract \
+	intltool-merge \
+	intltool-update
