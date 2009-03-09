@@ -22,7 +22,7 @@ SUBDIRS = \
 	$(auto3) \
     $(libass) \
 	$(ffmpegsource) \
-	aegisub \
+	src \
 	automation \
 	po \
 	desktop

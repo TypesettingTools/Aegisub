@@ -34,7 +34,7 @@ test -z "$srcdir" && srcdir=.
 ORIGDIR=`pwd`
 cd $srcdir
 
-test -d aegisub || {
+test -d src || {
     echo
     echo "You must run this script in the top-level $PROJECT directory."
     echo
@@ -282,19 +282,19 @@ fi
 
 echo "--- Converting BMP resource files -> XPM ---"
 # BMP -> XPM via src/res.rc
-cat ${srcdir}/aegisub/res.rc | ${BIN_AWK} -f ${srcdir}/scripts/unix-gen-xpm.awk BIN_CONVERT="$BIN_CONVERT" > ${srcdir}/aegisub/bitmaps/Makefile.bitmaps
-cd ${srcdir}/aegisub/bitmaps
+cat ${srcdir}/src/res.rc | ${BIN_AWK} -f ${srcdir}/scripts/unix-gen-xpm.awk BIN_CONVERT="$BIN_CONVERT" > ${srcdir}/src/bitmaps/Makefile.bitmaps
+cd ${srcdir}/src/bitmaps
 make -f Makefile.bitmaps
 cd ${srcdir}
 
 $BIN_AWK '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST="); for (v in image) printf(" \\\n	%s_xpm.xpm", image[v])}' \
-  ${srcdir}/aegisub/res.rc \
-  > ${srcdir}/aegisub/bitmaps/Makefile.am
+  ${srcdir}/src/res.rc \
+  > ${srcdir}/src/bitmaps/Makefile.am
 
 echo "--- Generating libresrc/resrc.cpp, libresrc/libresrc.h from res.rc ---"
-$BIN_AWK -f scripts/unix-gen-res.awk ${srcdir}/aegisub/res.rc \
-  RESRC_CPP="${srcdir}/aegisub/libresrc/resrc.cpp" \
-  RESRC_H="${srcdir}/aegisub/libresrc/libresrc.h"
+$BIN_AWK -f scripts/unix-gen-res.awk ${srcdir}/src/res.rc \
+  RESRC_CPP="${srcdir}/src/libresrc/resrc.cpp" \
+  RESRC_H="${srcdir}/src/libresrc/libresrc.h"
 
 rm -rf autom4te.cache
 
