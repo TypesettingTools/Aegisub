@@ -1260,10 +1260,10 @@ Makefile
 src/Makefile
 src/bitmaps/Makefile
 src/libresrc/Makefile
+src/libauto3/Makefile
 src/libosxutil/Makefile
 universalchardet/Makefile
 FFmpegSource2/Makefile
-auto3/Makefile
 libass/Makefile
 automation/Makefile
 po/Makefile.in
