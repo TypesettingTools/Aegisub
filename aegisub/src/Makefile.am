@@ -8,7 +8,15 @@ libosxutil_lib = libosxutil/libosxutil.a
 libosxutil_ldflags = -framework CoreFoundation
 endif
 
-SUBDIRS = bitmaps libresrc $(libosxutil_subdir)
+if HAVE_AUTO3_LUA
+libauto3 = libauto3
+endif
+
+SUBDIRS = \
+	bitmaps \
+	libresrc \
+	$(libauto3) \
+	$(libosxutil_subdir)
 
 AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
 

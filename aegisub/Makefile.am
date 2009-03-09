@@ -5,10 +5,6 @@ if HAVE_UNIVCHARDET
 univchardet = universalchardet
 endif
 
-if HAVE_AUTO3_LUA
-auto3 = auto3
-endif
-
 if WITH_LIBASS
 libass = libass
 endif
@@ -19,7 +15,6 @@ endif
 
 SUBDIRS = \
 	$(univchardet) \
-	$(auto3) \
     $(libass) \
 	$(ffmpegsource) \
 	src \
