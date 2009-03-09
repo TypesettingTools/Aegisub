@@ -36,7 +36,7 @@ m4_define([wx_required_version], [2.8.1])
 # Setup
 #######
 AC_INIT([Aegisub], [aegisub_version],, [aegisub])
-AC_CONFIG_SRCDIR([aegisub/main.cpp])
+AC_CONFIG_SRCDIR([src/main.cpp])
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADER([acconf.h])
 AC_GNU_SOURCE
@@ -1257,10 +1257,10 @@ AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default a
 # Makefiles
 AC_CONFIG_FILES([
 Makefile
-aegisub/Makefile
-aegisub/bitmaps/Makefile
-aegisub/libresrc/Makefile
-aegisub/libosxutil/Makefile
+src/Makefile
+src/bitmaps/Makefile
+src/libresrc/Makefile
+src/libosxutil/Makefile
 universalchardet/Makefile
 FFmpegSource2/Makefile
 auto3/Makefile
