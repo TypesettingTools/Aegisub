@@ -214,6 +214,7 @@ static bitmap_t* glyph_to_bitmap_internal(FT_Glyph glyph, int bord)
 		dst += bm->w;
 	}
 
+	FT_Done_Glyph(glyph);
 	return bm;
 }
 
@@ -255,56 +256,33 @@ static bitmap_t* fix_outline_and_shadow(bitmap_t* bm_g, bitmap_t* bm_o)
 }
 
 /**
- * \brief Blur with [1,2,1] kernel
- * This simple blur is exactly the same as the one employed by vsfilter.
- * In addition, it's slightly faster than gaussian blur.
+ * \brief Blur with [[1,2,1]. [2,4,2], [1,2,1]] kernel
+ * This blur is the same as the one employed by vsfilter.
  */
-static void be_blur(unsigned char *buf, ass_be_priv_t* priv, int w, int h) {
+static void be_blur(unsigned char *buf, int w, int h) {
 	unsigned int x, y;
-	unsigned int p;
-	unsigned char *tmp_buf = priv->buf;
-	const int wh = w*h;
+	unsigned int old_sum, new_sum;
 
-	if (priv->size < wh) {
-		priv->buf = realloc(priv->buf, wh);
-		priv->size = wh;
-		tmp_buf = priv->buf;
+	for (y=0; y<h; y++) {
+		old_sum = 2 * buf[y*w];
+		for (x=0; x<w-1; x++) {
+			new_sum = buf[y*w+x] + buf[y*w+x+1];
+			buf[y*w+x] = (old_sum + new_sum) >> 2;
+			old_sum = new_sum;
+		}
 	}
-	memset(tmp_buf, 0, wh);
 
-	for (y=0; y<h; y++)
-		for (x=1; x<w-1; x++) {
-			p = buf[y*w+x-1];
-			p += 2 * buf[y*w+x];
-			p += buf[y*w+x+1];
-			p = p >> 2;
-			tmp_buf[y*w+x] = p;
+	for (x=0; x<w; x++) {
+		old_sum = 2 * buf[x];
+		for (y=0; y<h-1; y++) {
+			new_sum = buf[y*w+x] + buf[(y+1)*w+x];
+			buf[y*w+x] = (old_sum + new_sum) >> 2;
+			old_sum = new_sum;
 		}
-
-	for (x=0; x<w; x++)
-		for (y=1; y<h-1; y++) {
-			p = tmp_buf[((y-1)*w+x)];
-			p += 2 * tmp_buf[y*w+x];
-			p += tmp_buf[((y+1)*w+x)];
-			p = p >> 2;
-			buf[y*w+x] = p;
-		}
+	}
 }
 
-ass_be_priv_t* ass_be_init(void) {
-	ass_be_priv_t* priv;
-	priv = calloc(1, sizeof(ass_be_priv_t));
-
-	return priv;
-}
-
-void ass_be_done(ass_be_priv_t* priv) {
-	if (priv->buf)
-		free(priv->buf);
-	free(priv);
-}
-
-int glyph_to_bitmap(ass_be_priv_t* priv_be, ass_synth_priv_t* priv_blur,
+int glyph_to_bitmap(ass_synth_priv_t* priv_blur,
 		FT_Glyph glyph, FT_Glyph outline_glyph, bitmap_t** bm_g,
 		bitmap_t** bm_o, bitmap_t** bm_s, int be, double blur_radius)
 {
@@ -335,9 +313,9 @@ int glyph_to_bitmap(ass_be_priv_t* priv_be, ass_synth_priv_t* priv_blur,
 	if (be) {
 		while (be--) {
 			if (*bm_o)
-				be_blur((*bm_o)->buffer, priv_be, (*bm_o)->w, (*bm_o)->h);
+				be_blur((*bm_o)->buffer, (*bm_o)->w, (*bm_o)->h);
 			else
-				be_blur((*bm_g)->buffer, priv_be, (*bm_g)->w, (*bm_g)->h);
+				be_blur((*bm_g)->buffer, (*bm_g)->w, (*bm_g)->h);
 		}
 	} else {
 		if (blur_radius > 0.0) {
