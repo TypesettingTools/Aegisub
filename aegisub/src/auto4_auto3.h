@@ -43,7 +43,7 @@
 #include <wx/thread.h>
 #include <wx/event.h>
 #include "auto4_base.h"
-#include "../auto3/auto3.h"
+#include "libauto3/auto3.h"
 #include "ass_file.h"
 #include "ass_entry.h"
 #include "ass_dialogue.h"
