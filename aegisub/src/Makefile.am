@@ -128,9 +128,9 @@ aegisub_2_1_LDADD += libauto4_ruby.a
 endif
 
 if BUILD_DARWIN
-AUTO3_LIB = ../auto3/.libs/libaegisub-auto3-2.1.0.dylib
+AUTO3_LIB = $(srcdir)/libauto3/.libs/libaegisub-auto3-2.1.0.dylib
 else
-AUTO3_LIB = ../auto3/.libs/libaegisub-auto3-2.1.so
+AUTO3_LIB = $(srcdir)/libauto3/.libs/libaegisub-auto3-2.1.so
 endif
 
 if HAVE_AUTO3_LUA

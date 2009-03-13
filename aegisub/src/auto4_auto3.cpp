@@ -47,7 +47,7 @@
 #include <wx/tokenzr.h>
 #include "auto4_auto3.h"
 #include "auto4_auto3_factory.h"
-#include "../auto3/auto3.h"
+#include "libauto3/auto3.h"
 #include "options.h"
 #include "string_codec.h"
 #include "vfr.h"
