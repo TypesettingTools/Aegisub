@@ -38,7 +38,8 @@
 #include "ass_fontconfig.h"
 
 #ifdef BUILD_DARWIN
-#include "../aegisub/libosxutil/libosxutil.h"
+#include "../src/libosxutil/libosxutil.h"
+#include <sys/param.h>
 #endif
 
 #ifdef CONFIG_FONTCONFIG
