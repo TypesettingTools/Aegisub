@@ -3,6 +3,7 @@
 PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
 AEGISUB_VERSION_DATA="${2}"
+AEGISUB_BIN="aegisub-${AEGISUB_VERSION_DATA}"
 SRCDIR=`pwd`
 HOME_DIR=`echo ~`
 
@@ -82,7 +83,20 @@ done
 
 echo
 echo "---- Binaries ----"
-cp -v aegisub/.libs/aegisub-${AEGISUB_VERSION_DATA} ${PKG_DIR}/Contents/MacOS/aegisub
+
+# XXX: Fix me
+# I'm not sure of the exact reason but libtool likes creating the binary in
+# either '.' or '.libs', the file in the parent is just a script that loads
+# the binary from .libs.  On ocassion it'll stop using the script and just
+# create the binary, this isn't the best way to check which one to copy but
+# it's a good enough hack until then.
+
+if test src/${AEGISUB_BIN} -nt src/.libs/${AEGISUB_BIN}; then
+  cp -v src/${AEGISUB_BIN} ${PKG_DIR}/Contents/MacOS/aegisub
+else
+  cp -v src/.libs/${AEGISUB_BIN} ${PKG_DIR}/Contents/MacOS/aegisub
+fi
+
 echo cc -o ${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c
 ${CC} -o ${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c
 
