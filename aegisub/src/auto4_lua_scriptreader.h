@@ -37,7 +37,7 @@
 
 #include <wx/wxprec.h>
 #ifdef __WINDOWS__
-#include "../lua51/src/lua.h"
+#include "../../contrib/lua51/src/lua.h"
 #else
 #include "lua.hpp"
 #endif

@@ -67,7 +67,7 @@
 
 // Enable DirectSound audio player
 // Requires: DirectX SDK
-//#define WITH_DIRECTSOUND
+#define WITH_DIRECTSOUND
 
 
 // Enable Avisynth
@@ -81,9 +81,9 @@
 // Enable FreeType2 font lister for the fonts collector
 // If you're on Visual Studio, also uncomment the library names and make sure they match the files that you have
 // Requires: FreeType2
-//#define WITH_FREETYPE2
-//#define FT2_LIB_RELEASE "freetype235.lib"
-//#define FT2_LIB_DEBUG "freetype235_D.lib"
+#define WITH_FREETYPE2
+#define FT2_LIB_RELEASE "freetype235.lib"
+#define FT2_LIB_DEBUG "freetype235_D.lib"
 
 
 // Enable CSRI, required for styles previews in the style editor and some video providers
@@ -93,14 +93,14 @@
 
 // Enable universal charset detector, so Aegisub can automatically detect the encoding of non-unicode subtitles
 // Requires: universalcharset (in repository)
-//#define WITH_UNIVCHARDET
+#define WITH_UNIVCHARDET
 
 
 // Enable Hunspell-based spellchecker
 // Requires: hunspell (in repository for Win32)
 // If you have an old version of Hunspell (that uses Hunspell::put_word() instead of Hunspell::add()),
 // uncomment the second line as well.
-//#define WITH_HUNSPELL
+#define WITH_HUNSPELL
 //#define WITH_OLD_HUNSPELL
 
 

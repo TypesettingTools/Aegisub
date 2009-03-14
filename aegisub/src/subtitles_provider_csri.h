@@ -46,7 +46,7 @@
 #endif
 
 #ifdef __WINDOWS__
-#include "../csri/include/csri/csri.h"
+#include "../../contrib/csri/include/csri/csri.h"
 #else
 #include "csri/csri.h"
 #endif

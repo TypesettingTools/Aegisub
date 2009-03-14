@@ -37,7 +37,7 @@
 #include <fstream>
 #include <iostream>
 #include "utils.h"
-#include "../../aegisub/md5.h"
+#include "../../../aegisub/src/md5.h"
 
 
 bool AreFilesIdentical(std::string file1, std::string file2)

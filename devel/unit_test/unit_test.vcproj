@@ -210,11 +210,11 @@
 			Name="Utils"
 			>
 			<File
-				RelativePath="..\aegisub\md5.c"
+				RelativePath="..\..\aegisub\src\md5.c"
 				>
 			</File>
 			<File
-				RelativePath="..\aegisub\md5.h"
+				RelativePath="..\..\aegisub\src\md5.h"
 				>
 			</File>
 			<File
