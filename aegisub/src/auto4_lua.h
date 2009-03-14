@@ -43,8 +43,8 @@
 #include <wx/event.h>
 
 #ifdef __WINDOWS__
-#include "../lua51/src/lua.h"
-#include "../lua51/src/lauxlib.h"
+#include "../../contrib/lua51/src/lua.h"
+#include "../../contrib/lua51/src/lauxlib.h"
 #else
 #include "lua.hpp"
 #endif

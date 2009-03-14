@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../contrib/hunspell/src;../../src/msvc"
+				AdditionalIncludeDirectories="../../../contrib/hunspell/src;../../../aegisub/src/msvc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

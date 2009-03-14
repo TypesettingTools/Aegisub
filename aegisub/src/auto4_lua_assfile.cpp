@@ -44,8 +44,8 @@
 #include "ass_override.h"
 
 #ifdef __WINDOWS__
-#include "../lua51/src/lualib.h"
-#include "../lua51/src/lauxlib.h"
+#include "../../contrib/lua51/src/lualib.h"
+#include "../../contrib/lua51/src/lauxlib.h"
 #else
 #include "lualib.h"
 #include "lauxlib.h"
