@@ -25,7 +25,7 @@
 #include "utils.h"
 #include "ffms.h"
 
-#define INDEXVERSION 11
+#define INDEXVERSION 12
 #define INDEXID 0x53920873
 
 struct IndexHeader {

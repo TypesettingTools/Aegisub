@@ -23,8 +23,6 @@
 
 #include <stdint.h>
 
-#define FFMS_EXPORTS
-
 #ifdef __cplusplus
 #	define EXTERN_C extern "C"
 #else

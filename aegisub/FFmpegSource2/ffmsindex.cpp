@@ -125,7 +125,7 @@ static int FFMS_CC UpdateProgress(int State, int64_t Current, int64_t Total, voi
 	else
 		cout << "\b\b\b"; */
 
-	cout << "Indexing, please wait... " << Percentage << "% \r";
+	cout << "Indexing, please wait... " << Percentage << "% \r" << flush;
 	
 	return 0;
 }
@@ -138,7 +138,7 @@ void DoIndexing () {
 
 	Index = FFMS_ReadIndex(CacheFile.c_str(), FFMSErrMsg, MsgSize);
 	if (Overwrite || Index == NULL) {
-		std::cout << "Indexing, please wait... 0% \r";
+		std::cout << "Indexing, please wait... 0% \r" << std::flush;
 		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, DumpMask, AudioFile.c_str(), IgnoreErrors, UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
 		if (Index == NULL) {
 			std::string Err = "\nIndexing error: ";
@@ -147,7 +147,7 @@ void DoIndexing () {
 		}
 
 		if (Progress != 100)
-			std::cout << "Indexing, please wait... 100% \r";
+			std::cout << "Indexing, please wait... 100% \r" << std::flush;
 		
 		std::cout << std::endl << "Writing index... ";
 
@@ -157,7 +157,7 @@ void DoIndexing () {
 			throw Err;
 		}
 
-		std::cout << "done." << std::endl;
+		std::cout << "done." << std::endl << std::flush;
 	} else {
 		throw "Error: index file already exists, use -f if you are sure you want to overwrite it.";
 	}
