@@ -83,8 +83,13 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	proto.Add(_T("move(x1,y1,x2,y2,startTime,endTime)"));
 	proto.Add(_T("fn;FontName"));
 	proto.Add(_T("bord;Width"));
+	proto.Add(_T("xbord;Width"));
+	proto.Add(_T("ybord;Width"));
 	proto.Add(_T("shad;Depth"));
-	proto.Add(_T("be;1/0"));
+	proto.Add(_T("xshad;Depth"));
+	proto.Add(_T("yshad;Depth"));
+	proto.Add(_T("be;Strength"));
+	proto.Add(_T("blur;Strength"));
 	proto.Add(_T("fscx;Scale"));
 	proto.Add(_T("fscy;Scale"));
 	proto.Add(_T("fsp;Spacing"));
@@ -98,6 +103,9 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	proto.Add(_T("clip(command)"));
 	proto.Add(_T("clip(scale,command)"));
 	proto.Add(_T("clip(x1,y1,x2,y2)"));
+	proto.Add(_T("iclip(command)"));
+	proto.Add(_T("iclip(scale,command)"));
+	proto.Add(_T("iclip(x1,y1,x2,y2)"));
 	proto.Add(_T("t(acceleration,tags)"));
 	proto.Add(_T("t(startTime,endTime,tags)"));
 	proto.Add(_T("t(startTime,endTime,acceleration,tags)"));
@@ -126,8 +134,10 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	proto.Add(_T("ko;Duration"));
 	proto.Add(_T("k;Duration"));
 	proto.Add(_T("K;Duration"));
-	proto.Add(_T("q;WarpStyle"));
+	proto.Add(_T("q;WrapStyle"));
 	proto.Add(_T("r;Style"));
+	proto.Add(_T("fax;Factor"));
+	proto.Add(_T("fay;Factor"));
 }
 
 
