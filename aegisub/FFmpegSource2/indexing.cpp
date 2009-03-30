@@ -749,7 +749,7 @@ int FrameInfoVector::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, un
 	Timecodes << "# timecode format v2\n";
 
 	for (iterator Cur=begin(); Cur!=end(); Cur++)
-		Timecodes << (int64_t)((Cur->DTS * TB.Num) / (double)TB.Den) << "\n";
+		Timecodes << ((Cur->DTS * TB.Num) / (double)TB.Den) << "\n";
 
 	return 0;
 }
@@ -772,8 +772,6 @@ int FrameInfoVector::ClosestFrameFromDTS(int64_t DTS) {
 		}
 	}
 
-	//int64_t tmp = at(2).DTS -  at(1).DTS;
-	//ATLASSERT(BestDiff == 0);
 	return Frame;
 }
 
