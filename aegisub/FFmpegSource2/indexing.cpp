@@ -1,4 +1,4 @@
-//  Copyright (c) 2007-2008 Fredrik Mellbin
+//  Copyright (c) 2007-2009 Fredrik Mellbin
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -188,9 +188,9 @@ int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, 
 	for (unsigned int i = 0; i < IH.Tracks; i++) {
 		int TT = (*TrackIndices)[i].TT;
 		Index.write(reinterpret_cast<char *>(&TT), sizeof(TT));
-		int Num = (*TrackIndices)[i].TB.Num;
+		int64_t Num = (*TrackIndices)[i].TB.Num;
 		Index.write(reinterpret_cast<char *>(&Num), sizeof(Num));
-		int Den = (*TrackIndices)[i].TB.Den;
+		int64_t Den = (*TrackIndices)[i].TB.Den;
 		Index.write(reinterpret_cast<char *>(&Den), sizeof(Den));
 		size_t Frames = (*TrackIndices)[i].size();
 		Index.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
@@ -610,7 +610,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 	TrackIndices->Decoder = 0;
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++)
-		TrackIndices->push_back(FrameInfoVector(FormatContext->streams[i]->time_base.num * 1000, 
+		TrackIndices->push_back(FrameInfoVector((int64_t)FormatContext->streams[i]->time_base.num * 1000, 
 		FormatContext->streams[i]->time_base.den,
 		FormatContext->streams[i]->codec->codec_type));
 
@@ -714,9 +714,9 @@ FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 			// Read how many records belong to the current stream
 			int TT;
 			Index.read(reinterpret_cast<char *>(&TT), sizeof(TT));
-			int Num;
+			int64_t Num;
 			Index.read(reinterpret_cast<char *>(&Num), sizeof(Num));
-			int Den;
+			int64_t Den;
 			Index.read(reinterpret_cast<char *>(&Den), sizeof(Den));
 			size_t Frames;
 			Index.read(reinterpret_cast<char *>(&Frames), sizeof(Frames));
@@ -789,7 +789,7 @@ FrameInfoVector::FrameInfoVector() {
 	this->TB.Den = 0;
 }
 
-FrameInfoVector::FrameInfoVector(int Num, int Den, int TT) {
+FrameInfoVector::FrameInfoVector(int64_t Num, int64_t Den, int TT) {
 	this->TT = TT;
 	this->TB.Num = Num; 
 	this->TB.Den = Den;

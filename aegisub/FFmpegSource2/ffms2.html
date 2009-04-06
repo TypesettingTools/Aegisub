@@ -7,7 +7,7 @@ FFmpegSource2 Documentation
 <body>
 <h1>FFmpegSource2 Documentation</h1>
 <p>
-Opens files using ffmpeg and nothing else. May be frame accurate on good days. The source is MIT licensed and can be obtained from https://spaceboyz.net/svn/aegisub/trunk/FFmpegSource2. The precompiled binary is GPL licensed. If you are religious you may consider this the second coming.
+Opens files using ffmpeg and nothing else. May be frame accurate on good days. The source is MIT licensed and can be obtained from "http://svn.aegisub.net/trunk/aegisub/FFmpegSource2/". The precompiled binary is GPL licensed. If you are religious you may consider this the second coming.
 </p>
 
 <h2>Compatibility - Video</h2>
@@ -226,6 +226,11 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 
 <h2>Changes</h2>
 <ul>
+<li>2.00 beta 6<ul>
+<li>Negative timecodes and other bugs caused by an integer overflow fixed</li>
+<li>Updated FFmpeg to rev X</li>
+</ul></li>
+
 <li>2.00 beta 5<ul>
 <li>FFMSIndex should now print the progress properly when another application reads its output</li>
 <li>Added missing variables and explanations to the manual</li>
@@ -233,7 +238,6 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 <li>Fixed the missing decimals in saved timecode files</li>
 <li>Updated FFmpeg to rev 18249</li>
 </ul></li>
-
 
 <li>2.00 beta 4<ul>
 <li>Added the function FFNoLog which suppresses all messages from ffmpeg</li>
