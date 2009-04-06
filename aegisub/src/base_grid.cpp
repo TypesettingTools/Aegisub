@@ -102,7 +102,7 @@ void BaseGrid::UpdateStyle() {
 	}
 
 	// Set column widths
-	for (int i=0;i<10;i++) showCol[i] = Options.AsBool(_T("Grid show column ") + IntegerToString(i));
+	for (int i=0;i<10;i++) showCol[i] = Options.AsBool(_T("Grid show column ") + AegiIntegerToString(i));
 	SetColumnWidths();
 
 	// Update

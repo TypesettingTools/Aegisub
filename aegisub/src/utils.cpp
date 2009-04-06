@@ -144,14 +144,14 @@ wxString PrettyFloatD(double src) { return PrettyFloat(wxString::Format(_T("%f")
 
 ///////////////////
 // Float to string
-wxString FloatToString(double value) {
+wxString AegiFloatToString(double value) {
 	return PrettyFloat(wxString::Format(_T("%f"),value));
 }
 
 
 /////////////////
 // Int to string
-wxString IntegerToString(int value) {
+wxString AegiIntegerToString(int value) {
 	return wxString::Format(_T("%i"),value);
 }
 
@@ -293,7 +293,7 @@ void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int 
 /////////////////////
 // String to integer
 // wxString::ToLong() is slow and not as flexible
-int StringToInt(const wxString &str,int start,int end) {
+int AegiStringToInt(const wxString &str,int start,int end) {
 	// Initialize to zero and get length if end set to -1
 	int sign = 1;
 	int value = 0;
@@ -317,7 +317,7 @@ int StringToInt(const wxString &str,int start,int end) {
 
 /////////////////////////
 // String to fixed point
-int StringToFix(const wxString &str,size_t decimalPlaces,int start,int end) {
+int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) {
 	// Parts of the number
 	int sign = 1;
 	int major = 0;

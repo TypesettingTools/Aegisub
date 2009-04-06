@@ -349,7 +349,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		SetInt(_T("Find Field"),0);
 
 		SetInt(_T("Grid hide overrides"),1);
-		for (int i=0;i<10;i++) SetBool(_T("Grid show column ") + IntegerToString(i),true);
+		for (int i=0;i<10;i++) SetBool(_T("Grid show column ") + AegiIntegerToString(i),true);
 
 		for (int i=0;i<9;i++) SetBool(wxString::Format(_T("Paste Over #%i"),i),false);
 		SetBool(_T("Paste Over #9"),true);

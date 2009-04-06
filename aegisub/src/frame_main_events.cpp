@@ -1345,7 +1345,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Get text
 	VideoContext::Get()->Stop();
 	
-	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),FloatToString(VideoContext::Get()->GetAspectRatioValue()));
+	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),AegiFloatToString(VideoContext::Get()->GetAspectRatioValue()));
 	if (value.IsEmpty()) return;
 
 	value.MakeLower();

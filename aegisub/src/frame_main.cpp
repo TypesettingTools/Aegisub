@@ -983,7 +983,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			zoom = wxString::Format(_T("%i"),videoBox->videoDisplay->zoomBox->GetSelection()+1);
 
 			int arType = VideoContext::Get()->GetAspectRatioType();
-			if (arType == 4) ar = wxString(_T("c")) + FloatToString(VideoContext::Get()->GetAspectRatioValue());
+			if (arType == 4) ar = wxString(_T("c")) + AegiFloatToString(VideoContext::Get()->GetAspectRatioValue());
 			else ar = wxString::Format(_T("%i"),arType);
 		}
 		

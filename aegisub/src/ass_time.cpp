@@ -85,20 +85,20 @@ void AssTime::ParseASS (const wxString text) {
 		// Hours
 		if (colons == 2) {
 			while (text[end++] != _T(':'));
-			th = StringToInt(text,pos,end);
+			th = AegiStringToInt(text,pos,end);
 			pos = end;
 		}
 
 		// Minutes
 		if (colons >= 1) {
 			while (text[end++] != _T(':'));
-			tm = StringToInt(text,pos,end);
+			tm = AegiStringToInt(text,pos,end);
 			pos = end;
 		}
 
 		// Miliseconds (includes seconds)
 		end = text.Length();
-		tms = StringToFix(text,3,pos,end);
+		tms = AegiStringToFix(text,3,pos,end);
 	}
 
 	// Something went wrong, don't change anything
