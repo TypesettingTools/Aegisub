@@ -61,7 +61,7 @@ protected:
 	AVCodecContext *CodecContext;
 
 	VideoBase();
-	int InitPP(const char *PP, int PixelFormat, char *ErrorMsg, unsigned MsgSize);
+	int InitPP(const char *PP, PixelFormat PixelFormat, char *ErrorMsg, unsigned MsgSize);
 	AVFrameLite *OutputFrame(AVFrame *Frame);
 public:
 	virtual ~VideoBase();

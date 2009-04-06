@@ -43,8 +43,8 @@ FFPP::FFPP(PClip AChild, const char *PP, IScriptEnvironment *Env) : GenericVideo
 		Flags |= PP_FORMAT_420;
 	} else if (vi.IsYUY2()) {
 		Flags |= PP_FORMAT_422;
-		SWSTo422P = sws_getContext(vi.width, vi.height, PIX_FMT_YUV422, vi.width, vi.height, PIX_FMT_YUV422P, GetCPUFlags() | SWS_BICUBIC, NULL, NULL, NULL);
-		SWSFrom422P = sws_getContext(vi.width, vi.height, PIX_FMT_YUV422P, vi.width, vi.height, PIX_FMT_YUV422, GetCPUFlags() | SWS_BICUBIC, NULL, NULL, NULL);
+		SWSTo422P = sws_getContext(vi.width, vi.height, PIX_FMT_YUYV422, vi.width, vi.height, PIX_FMT_YUV422P, GetCPUFlags() | SWS_BICUBIC, NULL, NULL, NULL);
+		SWSFrom422P = sws_getContext(vi.width, vi.height, PIX_FMT_YUV422P, vi.width, vi.height, PIX_FMT_YUYV422, GetCPUFlags() | SWS_BICUBIC, NULL, NULL, NULL);
 		avpicture_alloc(&InputPicture, PIX_FMT_YUV422P, vi.width, vi.height);
 		avpicture_alloc(&OutputPicture, PIX_FMT_YUV422P, vi.width, vi.height);
 	} else {

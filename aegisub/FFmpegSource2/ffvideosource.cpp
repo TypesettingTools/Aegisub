@@ -25,7 +25,7 @@
 #define _snprintf snprintf
 #endif
 
-int VideoBase::InitPP(const char *PP, int PixelFormat, char *ErrorMsg, unsigned MsgSize) {
+int VideoBase::InitPP(const char *PP, PixelFormat PixelFormat, char *ErrorMsg, unsigned MsgSize) {
 	if (PP == NULL || !strcmp(PP, ""))
 		return 0;
 
@@ -126,7 +126,7 @@ int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height, char *E
 //	if (OutputFormat == -1)
 //		return -1;
 
-	int OutputFormat = TargetFormats;
+	PixelFormat OutputFormat = static_cast<PixelFormat>(TargetFormats);
 
 	SwsContext *NewSWS = NULL;
 	if (CodecContext->pix_fmt != OutputFormat || Width != CodecContext->width || Height != CodecContext->height) {
@@ -144,7 +144,7 @@ int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height, char *E
 
 	VP.Height = Height;
 	VP.Width = Width;
-	VP.PixelFormat = OutputFormat;
+	VP.VPixelFormat = OutputFormat;
 
 	// FIXME: In theory the allocations in this part could fail just like in InitPP but whatever
 	if (FinalFrame != PPFrame) {
@@ -154,7 +154,7 @@ int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height, char *E
 
 	if (SWS) {
 		FinalFrame = avcodec_alloc_frame();
-		avpicture_alloc((AVPicture *)FinalFrame, VP.PixelFormat, VP.Width, VP.Height);
+		avpicture_alloc((AVPicture *)FinalFrame, VP.VPixelFormat, VP.Width, VP.Height);
 	} else {
 		FinalFrame = PPFrame;
 	}
@@ -168,7 +168,7 @@ void VideoBase::ResetOutputFormat() {
 	SWS = NULL;
 	VP.Height = CodecContext->height;
 	VP.Width = CodecContext->width;
-	VP.PixelFormat = CodecContext->pix_fmt;
+	VP.VPixelFormat = CodecContext->pix_fmt;
 }
 
 void FFVideoSource::Free(bool CloseCodec) {
@@ -239,7 +239,7 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	VP.FPSDenominator = FormatContext->streams[VideoTrack]->time_base.num;
 	VP.FPSNumerator = FormatContext->streams[VideoTrack]->time_base.den;
 	VP.NumFrames = Frames.size();
-	VP.PixelFormat = CodecContext->pix_fmt;
+	VP.VPixelFormat = CodecContext->pix_fmt;
 	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
@@ -458,7 +458,7 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	VP.FPSDenominator = 1;
 	VP.FPSNumerator = 30;
 	VP.NumFrames = Frames.size();
-	VP.PixelFormat = CodecContext->pix_fmt;
+	VP.VPixelFormat = CodecContext->pix_fmt;
 	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
@@ -681,7 +681,7 @@ HaaliTSVideoSource::HaaliTSVideoSource(const char *SourceFile, int Track,
 	VP.FPSDenominator = 1;
 	VP.FPSNumerator = 30;
 	VP.NumFrames = Frames.size();
-	VP.PixelFormat = CodecContext->pix_fmt;
+	VP.VPixelFormat = CodecContext->pix_fmt;
 	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
