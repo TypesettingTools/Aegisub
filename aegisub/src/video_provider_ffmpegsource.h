@@ -57,8 +57,8 @@ private:
 	std::vector<int> TimecodesVector;
 	FrameRate Timecodes;
 
-	FFMS_PixelFormat DstFormat;
-	FFMS_PixelFormat LastDstFormat;
+	PixelFormat DstFormat;
+	PixelFormat LastDstFormat;
 	AegiVideoFrame CurFrame;
 
 	char FFMSErrorMessage[1024];
