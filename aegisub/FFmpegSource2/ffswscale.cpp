@@ -21,7 +21,7 @@
 #include "ffswscale.h"
 #include "utils.h"
 
-int CSNameToPIXFMT(const char * ACSName, int ADefault) {
+PixelFormat CSNameToPIXFMT(const char * ACSName, PixelFormat ADefault) {
 	if (!_stricmp(ACSName, ""))
 		return ADefault;
 	if (!_stricmp(ACSName, "YV12"))
@@ -67,7 +67,7 @@ SWScale::SWScale(PClip Child, int ResizeToWidth, int ResizeToHeight, const char 
 	OrigHeight = vi.height;
 	FlipOutput = vi.IsYUV();
 	
-	int ConvertFromFormat = PIX_FMT_NONE;
+	PixelFormat ConvertFromFormat = PIX_FMT_NONE;
 	if (vi.IsYV12())
 		ConvertFromFormat = PIX_FMT_YUV420P;
 	if (vi.IsYUY2())
@@ -87,7 +87,7 @@ SWScale::SWScale(PClip Child, int ResizeToWidth, int ResizeToHeight, const char 
 	else
 		vi.width = ResizeToWidth;
 
-	int ConvertToFormat = CSNameToPIXFMT(ConvertToFormatName, ConvertFromFormat);
+	PixelFormat ConvertToFormat = CSNameToPIXFMT(ConvertToFormatName, ConvertFromFormat);
 	if (ConvertToFormat == PIX_FMT_NONE)
 		Env->ThrowError("SWScale: Invalid colorspace specified (%s)", ConvertToFormatName);
 

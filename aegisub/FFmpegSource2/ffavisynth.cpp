@@ -49,7 +49,7 @@ AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, Fram
 	}
 
 	try {
-		InitOutputFormat(VP.PixelFormat, Env);
+		InitOutputFormat(VP.VPixelFormat, Env);
 	} catch (AvisynthError &) {
 		FFMS_DestroyVideoSource(VS);
 		throw;
@@ -73,9 +73,9 @@ AvisynthVideoSource::~AvisynthVideoSource() {
 	FFMS_DestroyVideoSource(VS);
 }
 
-void AvisynthVideoSource::InitOutputFormat(int CurrentFormat, IScriptEnvironment *Env) {
+void AvisynthVideoSource::InitOutputFormat(PixelFormat CurrentFormat, IScriptEnvironment *Env) {
 	int Loss;
-	int BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), CurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+	PixelFormat BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), CurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
 
 	switch (BestFormat) {
 		case PIX_FMT_YUVJ420P: // stupid yv12 distinctions, also inexplicably completely undeniably incompatible with all other supported output formats
