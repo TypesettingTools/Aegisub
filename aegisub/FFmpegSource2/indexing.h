@@ -1,4 +1,4 @@
-//  Copyright (c) 2007-2008 Fredrik Mellbin
+//  Copyright (c) 2007-2009 Fredrik Mellbin
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 #include "utils.h"
 #include "ffms.h"
 
-#define INDEXVERSION 12
+#define INDEXVERSION 15
 #define INDEXID 0x53920873
 
 struct IndexHeader {
@@ -46,7 +46,7 @@ public:
 	int WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
 
 	FrameInfoVector();
-	FrameInfoVector(int Num, int Den, int TT);
+	FrameInfoVector(int64_t Num, int64_t Den, int TT);
 };
 
 class FrameIndex : public std::vector<FrameInfoVector> {

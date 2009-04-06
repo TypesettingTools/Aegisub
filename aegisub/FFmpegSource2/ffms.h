@@ -1,4 +1,4 @@
-//  Copyright (c) 2007-2008 Fredrik Mellbin
+//  Copyright (c) 2007-2009 Fredrik Mellbin
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -114,8 +114,8 @@ struct AVFrameLite {
 };
 
 struct TrackTimeBase {
-	int Num;
-	int Den;
+	int64_t Num;
+	int64_t Den;
 };
 
 class FrameInfo {
