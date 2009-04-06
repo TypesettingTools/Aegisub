@@ -113,14 +113,14 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	*work = *style;
 
 	// Prepare control values
-	FontSizeValue = FloatToString(style->fontsize);
-	OutlineValue = FloatToString(style->outline_w);
-	ShadowValue = FloatToString(style->shadow_w);
-	ScaleXValue = FloatToString(style->scalex);
-	ScaleYValue = FloatToString(style->scaley);
-	AngleValue = FloatToString(style->angle);
-	EncodingValue = IntegerToString(style->encoding);
-	SpacingValue = FloatToString(style->spacing);
+	FontSizeValue = AegiFloatToString(style->fontsize);
+	OutlineValue = AegiFloatToString(style->outline_w);
+	ShadowValue = AegiFloatToString(style->shadow_w);
+	ScaleXValue = AegiFloatToString(style->scalex);
+	ScaleYValue = AegiFloatToString(style->scaley);
+	AngleValue = AegiFloatToString(style->angle);
+	EncodingValue = AegiIntegerToString(style->encoding);
+	SpacingValue = AegiFloatToString(style->spacing);
 	wxString alignValues[9] = { _T("7"),_T("8"),_T("9"),_T("4"),_T("5"),_T("6"),_T("1"),_T("2"),_T("3") };
 	performance_timer.Start();
 	wxArrayString fontList = wxFontEnumerator::GetFacenames();
@@ -156,11 +156,11 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	colorButton[1] = new ColourButton(this,BUTTON_COLOR_2,wxSize(55,16),style->secondary.GetWXColor());
 	colorButton[2] = new ColourButton(this,BUTTON_COLOR_3,wxSize(55,16),style->outline.GetWXColor());
 	colorButton[3] = new ColourButton(this,BUTTON_COLOR_4,wxSize(55,16),style->shadow.GetWXColor());
-	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,FloatToString(style->primary.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->primary.a);
-	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,FloatToString(style->secondary.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->secondary.a);
-	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,FloatToString(style->outline.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->outline.a);
-	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,FloatToString(style->shadow.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->shadow.a);
-	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,FloatToString(style->Margin[i]),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
+	colorAlpha[0] = new wxSpinCtrl(this,TEXT_ALPHA_1,AegiFloatToString(style->primary.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->primary.a);
+	colorAlpha[1] = new wxSpinCtrl(this,TEXT_ALPHA_2,AegiFloatToString(style->secondary.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->secondary.a);
+	colorAlpha[2] = new wxSpinCtrl(this,TEXT_ALPHA_3,AegiFloatToString(style->outline.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->outline.a);
+	colorAlpha[3] = new wxSpinCtrl(this,TEXT_ALPHA_4,AegiFloatToString(style->shadow.a),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,255,style->shadow.a);
+	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,AegiFloatToString(style->Margin[i]),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
 	margin[3] = 0;
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&OutlineValue,true,false));

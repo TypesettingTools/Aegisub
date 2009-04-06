@@ -215,7 +215,7 @@ void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
 	showCol[item] = !showCol[item];
 
 	// Save options
-	Options.SetBool(_T("Grid show column ") + IntegerToString(item),showCol[item]);
+	Options.SetBool(_T("Grid show column ") + AegiIntegerToString(item),showCol[item]);
 	Options.Save();
 
 	// Update
