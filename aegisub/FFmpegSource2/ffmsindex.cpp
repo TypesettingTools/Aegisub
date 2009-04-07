@@ -28,6 +28,7 @@ int TrackMask;
 int DumpMask;
 bool Overwrite;
 bool IgnoreErrors;
+bool Verbose;
 std::string InputFile;
 std::string CacheFile;
 std::string AudioFile;
@@ -43,6 +44,7 @@ void PrintUsage () {
 		<< "Options:" << endl
 		<< "-f        Force overwriting of existing index file, if any (default: no)" << endl
 		<< "-s        Silently skip indexing of audio tracks that cannot be read (default: no)" << endl
+		<< "-v        Be verbose; i.e. print FFmpeg warnings/diagnostics, if any (default: no)" << endl
 		<< "-t N      Set the audio indexing mask to N (-1 means index all tracks, 0 means index none, default: 0)" << endl
 		<< "-d N      Set the audio decoding mask to N (mask syntax same as -t, default: 0)" << endl
 		<< "-a NAME   Set the audio output base filename to NAME (default: input filename)";
@@ -63,6 +65,7 @@ void ParseCMDLine (int argc, char *argv[]) {
 	DumpMask  = 0;
 	Overwrite = false;
 	IgnoreErrors = false;
+	Verbose = false;
 
 	// argv[0] = name of program
 	int i = 1;
@@ -77,6 +80,8 @@ void ParseCMDLine (int argc, char *argv[]) {
 			Overwrite = true;
 		} else if (!Option.compare("-s")) {
 			IgnoreErrors = true;
+		} else if (!Option.compare("-v")) {
+			Verbose = true;
 		} else if (!Option.compare("-t")) {
 			TrackMask = atoi(OptionArg.c_str());
 			i++;
@@ -179,6 +184,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	FFMS_Init();
+
+	if (!Verbose)
+		FFMS_NoLog();
 
 	try {
 		DoIndexing();
