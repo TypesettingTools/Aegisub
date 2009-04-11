@@ -33,7 +33,7 @@ extern "C" {
 #include "utils.h"
 #include "ffms.h"
 
-#ifdef HAALITS
+#ifdef HAALISOURCE
 #	define _WIN32_DCOM
 #	include <windows.h>
 #	include <tchar.h>
@@ -101,20 +101,20 @@ public:
     AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
-#ifdef HAALITS
+#ifdef HAALISOURCE
 
-class HaaliTSVideoSource : public VideoBase {
+class HaaliVideoSource : public VideoBase {
 private:
 	CComPtr<IMMContainer> pMMC;
 
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	HaaliTSVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
-	~HaaliTSVideoSource();
+	HaaliVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
+	~HaaliVideoSource();
     AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
-#endif // HAALITS
+#endif // HAALISOURCE
 
 #endif

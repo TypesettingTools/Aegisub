@@ -10,14 +10,21 @@ FFmpegSource2 Documentation
 Opens files using ffmpeg and nothing else. May be frame accurate on good days. The source is MIT licensed and can be obtained from "http://svn.aegisub.net/trunk/aegisub/FFmpegSource2/". The precompiled binary is GPL licensed. If you are religious you may consider this the second coming.
 </p>
 
+<h2>Known issues</h2>
+<ul>
+<li>Requires <a href='http://haali.cs.msu.ru/mkv/'>Haali's Media Splitter</a> if ogm or mpeg ps/ts is to be opened.</li>
+<li>Avi files with NVOPs (rarely occurs in xvid and such) will desync when these frames are encountered. Remux to mkv/mp4 before opening to solve it for now.</li>
+<li>The audio sources still aren't sample accurate and sometimes exhibit many interesting issues. Dumping the audio during indexing is the only workaround.
+</ul>
+
 <h2>Compatibility - Video</h2>
 <ul>
 <li>AVI, MKV, MP4, FLV: Frame accurate</li>
 <li>WMV: Frame accurate(?) but avformat seems to pick keyframes relatively far away</li>
-<li>OGM: Messed up first frame and seeking produces smearing with seekmode=3, incredibly slow seeking without, remux to mkv or avi</li>
+<li>OGM: Frame accurate(?)</li>
 <li>VOB: No rff flags applied, frame accurate?</li>
 <li>MPG: Seeking seems to be off by one or two frames now and then</li>
-<li>M2TS, TS: Linear access only (seekmode=-1)</li>
+<li>M2TS, TS: Seeking seems to be off a few frames here and there</li>
 <li>Image files: Most formats can be opened if seekmode=-1 is set</li>
 </ul>
 
@@ -227,8 +234,11 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 <h2>Changes</h2>
 <ul>
 <li>2.00 beta 6<ul>
+<li>Haali's splitters have been improved for video and now have audio dumping during indexing implemented</li>
+<li>SeekMode=1 has improved logic which will make it go back and decode more frames if necessary to figure out where it is, in theory SeekMode=0 should now be mostly obsolete</li>
+<li>Haali's splitters are now used to open mpeg ps and ogm in addition to mpeg ts, only ogm is frame accurate at this time</li>
 <li>Negative timecodes and other bugs caused by an integer overflow fixed</li>
-<li>Updated FFmpeg to rev X (once again compilation fixes for the changes)</li>
+<li>Updated FFmpeg to rev 18442 (once again compilation fixes for the changes)</li>
 </ul></li>
 
 <li>2.00 beta 5<ul>

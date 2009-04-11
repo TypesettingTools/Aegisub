@@ -67,8 +67,9 @@ FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, 
 		switch (TrackIndices->Decoder) {
 			case 0: return new FFVideoSource(SourceFile, Track, TrackIndices, PP, Threads, SeekMode, ErrorMsg, MsgSize);
 			case 1: return new MatroskaVideoSource(SourceFile, Track, TrackIndices, PP, Threads, ErrorMsg, MsgSize);
-#ifdef HAALITS
-			case 2: return new HaaliTSVideoSource(SourceFile, Track, TrackIndices, PP, Threads, ErrorMsg, MsgSize);
+#ifdef HAALISOURCE
+			case 2: return new HaaliVideoSource(SourceFile, Track, TrackIndices, PP, Threads, 0, ErrorMsg, MsgSize);
+			case 3: return new HaaliVideoSource(SourceFile, Track, TrackIndices, PP, Threads, 1, ErrorMsg, MsgSize);
 #endif
 			default: 
 				_snprintf(ErrorMsg, MsgSize, "Unsupported format");

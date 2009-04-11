@@ -58,7 +58,8 @@ AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, Fram
 	// Set AR variables
 	Env->SetVar("FFSAR_NUM", VP.SARNum);
 	Env->SetVar("FFSAR_DEN", VP.SARDen);
-	Env->SetVar("FFSAR", VP.SARNum / (double)VP.SARDen);
+	if (VP.SARNum > 0 && VP.SARDen > 0)
+		Env->SetVar("FFSAR", VP.SARNum / (double)VP.SARDen);
 
 	// Set crop variables
 	Env->SetVar("FFCROP_LEFT", VP.CropLeft);
