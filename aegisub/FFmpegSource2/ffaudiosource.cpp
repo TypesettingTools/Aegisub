@@ -111,16 +111,18 @@ int FFAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *Erro
 	const size_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	int Ret = -1;
 	*Count = 0;
-	AVPacket Packet;
+	AVPacket Packet, TempPacket;
+	av_init_packet(&Packet);
+	av_init_packet(&TempPacket);
 
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
         if (Packet.stream_index == AudioTrack) {
-			uint8_t *Data = Packet.data;
-			int Size = Packet.size;
+			TempPacket.data = Packet.data;
+			TempPacket.size = Packet.size;
 
-			while (Size > 0) {
+			while (TempPacket.size > 0) {
 				int TempOutputBufSize = AVCODEC_MAX_AUDIO_FRAME_SIZE * 10;
-				Ret = avcodec_decode_audio2(CodecContext, (int16_t *)Buf, &TempOutputBufSize, Data, Size);
+				Ret = avcodec_decode_audio3(CodecContext, (int16_t *)Buf, &TempOutputBufSize, &TempPacket);
 
 				if (Ret < 0) {// throw error or something?
 					av_free_packet(&Packet);
@@ -128,8 +130,8 @@ int FFAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *Erro
 				}
 
 				if (Ret > 0) {
-					Size -= Ret;
-					Data += Ret;
+					TempPacket.size -= Ret;
+					TempPacket.data += Ret;
 					Buf += TempOutputBufSize;
 					if (SizeConst)
 						*Count += TempOutputBufSize / SizeConst;
@@ -341,22 +343,24 @@ int MatroskaAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint
 	const size_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	int Ret = -1;
 	*Count = 0;
+	AVPacket TempPacket;
+	av_init_packet(&TempPacket);
 
 	// FIXME check return
 	ReadFrame(FilePos, FrameSize, CS, MC, ErrorMsg, MsgSize);
-	int Size = FrameSize;
-	uint8_t *Data = MC.Buffer;
+	TempPacket.size = FrameSize;
+	TempPacket.data = MC.Buffer;
 
-	while (Size > 0) {
+	while (TempPacket.size > 0) {
 		int TempOutputBufSize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
-		Ret = avcodec_decode_audio2(CodecContext, (int16_t *)Buf, &TempOutputBufSize, Data, Size);
+		Ret = avcodec_decode_audio3(CodecContext, (int16_t *)Buf, &TempOutputBufSize, &TempPacket);
 
 		if (Ret < 0) // throw error or something?
 			goto Done;
 
 		if (Ret > 0) {
-			Size -= Ret;
-			Data += Ret;
+			TempPacket.size -= Ret;
+			TempPacket.data += Ret;
 			Buf += TempOutputBufSize;
 			if (SizeConst)
 				*Count += TempOutputBufSize / SizeConst;

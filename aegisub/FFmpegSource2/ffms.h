@@ -49,7 +49,15 @@ class FrameInfoVector;
 
 typedef int (FFMS_CC *IndexCallback)(int State, int64_t Current, int64_t Total, void *Private);
 
-enum TrackType {
+enum FFMS_SeekMode {
+	FFMS_SEEK_LINEAR_NO_RW  = -1,
+	FFMS_SEEK_LINEAR = 0,
+	FFMS_SEEK_NORMAL = 1,
+	FFMS_SEEK_UNSAFE = 2,
+	FFMS_SEEK_AGGRESSIVE = 3,
+};
+
+enum FFMS_TrackType {
 	FFMS_TYPE_VIDEO = 0,
     FFMS_TYPE_AUDIO = 1,
 };

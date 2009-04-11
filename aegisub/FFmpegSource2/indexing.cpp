@@ -95,20 +95,20 @@ public:
 	}
 };
 
-#ifdef HAALITS
-class HaaliTSIndexMemory {
+#ifdef HAALISOURCE
+class HaaliIndexMemory {
 private:
 	int16_t *DecodingBuffer;
 	MatroskaAudioContext *AudioContexts;
 public:
-	HaaliTSIndexMemory(int Tracks, int16_t *&DecodingBuffer, MatroskaAudioContext *&AudioContexts) {
+	HaaliIndexMemory(int Tracks, int16_t *&DecodingBuffer, MatroskaAudioContext *&AudioContexts) {
 		DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE*10];
 		AudioContexts = new MatroskaAudioContext[Tracks];
 		this->DecodingBuffer = DecodingBuffer;
 		this->AudioContexts = AudioContexts;
 	}
 
-	~HaaliTSIndexMemory() {
+	~HaaliIndexMemory() {
 		delete [] DecodingBuffer;
 		delete [] AudioContexts;
 	}
@@ -202,11 +202,13 @@ int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, 
 	return 0;
 }
 
-#ifdef HAALITS
-static FrameIndex *MakeHaaliTSIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+#ifdef HAALISOURCE
+static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, int SourceMode, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-	CLSID clsid = Haali_TS_Parser;
+	CLSID clsid = HAALI_TS_Parser;
+	if (SourceMode == 1)
+		clsid = HAALI_OGM_Parser;
 
 	CComPtr<IMMContainer> pMMC;
 	if (FAILED(pMMC.CoCreateInstance(clsid))) {
@@ -253,10 +255,12 @@ static FrameIndex *MakeHaaliTSIndex(const char *SourceFile, int IndexMask, int D
 
 	int16_t *db;
 	MatroskaAudioContext *AudioContexts;
-	HaaliTSIndexMemory IM = HaaliTSIndexMemory(NumTracks, db, AudioContexts);
+	HaaliIndexMemory IM = HaaliIndexMemory(NumTracks, db, AudioContexts);
 
 	FrameIndex *TrackIndices = new FrameIndex();
 	TrackIndices->Decoder = 2;
+	if (SourceMode == 1)
+		TrackIndices->Decoder = 3;
 
 	int TrackTypes[32];
 	int CurrentTrack = 0;
@@ -322,6 +326,9 @@ static FrameIndex *MakeHaaliTSIndex(const char *SourceFile, int IndexMask, int D
 	}
 //
 
+	AVPacket TempPacket;
+	av_init_packet(&TempPacket);
+
 	for (;;) {
 		if (IP) {
 			if ((*IP)(0, 0, 1, Private)) {
@@ -344,20 +351,18 @@ static FrameIndex *MakeHaaliTSIndex(const char *SourceFile, int IndexMask, int D
 		if (TrackTypes[CurrentTrack] == TT_VIDEO) {
 			(*TrackIndices)[CurrentTrack].push_back(FrameInfo(Ts, pMMF->IsSyncPoint() == S_OK));
 		} else if (TrackTypes[CurrentTrack] == TT_AUDIO && (IndexMask & (1 << CurrentTrack))) {
-/*			(*TrackIndices)[Track].push_back(FrameInfo(AudioContexts[Track].CurrentSample, FilePos, FrameSize, (FrameFlags & FRAME_KF) != 0));
-			ReadFrame(FilePos, FrameSize, AudioContexts[Track].CS, MC, ErrorMsg, MsgSize);
+			(*TrackIndices)[CurrentTrack].push_back(FrameInfo(AudioContexts[CurrentTrack].CurrentSample, 0 /* FIXME? */, pMMF->GetActualDataLength(), pMMF->IsSyncPoint() == S_OK));
+			AVCodecContext *AudioCodecContext = AudioContexts[CurrentTrack].CTX;
+			pMMF->GetPointer(&TempPacket.data);
+			TempPacket.size = pMMF->GetActualDataLength();
 
-			int Size = FrameSize;
-			uint8_t *Data = MC.Buffer;		
-			AVCodecContext *AudioCodecContext = AudioContexts[Track].CTX;
-
-			while (Size > 0) {
+			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
-				int Ret = avcodec_decode_audio2(AudioCodecContext, db, &dbsize, Data, Size);
+				int Ret = avcodec_decode_audio3(AudioCodecContext, db, &dbsize, &TempPacket);
 				if (Ret < 0) {
 					if (IgnoreDecodeErrors) {
-						(*TrackIndices)[Track].clear();
-						IndexMask &= ~(1 << Track);					
+						(*TrackIndices)[CurrentTrack].clear();
+						IndexMask &= ~(1 << CurrentTrack);					
 						break;
 					} else {
 						_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
@@ -367,30 +372,28 @@ static FrameIndex *MakeHaaliTSIndex(const char *SourceFile, int IndexMask, int D
 				}
 
 				if (Ret > 0) {
-					Size -= Ret;
-					Data += Ret;
+					TempPacket.size -= Ret;
+					TempPacket.data += Ret;
 				}
 
 				if (dbsize > 0)
-					AudioContexts[Track].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
+					AudioContexts[CurrentTrack].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
 
-				if (dbsize > 0 && (DumpMask & (1 << Track))) {
+				if (dbsize > 0 && (DumpMask & (1 << CurrentTrack))) {
 					// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
-					if (!AudioContexts[Track].W64W) {
+					if (!AudioContexts[CurrentTrack].W64W) {
 						char ABuf[50];
 						std::string WN(AudioFile);
-						int Offset = StartTime * mkv_TruncFloat(mkv_GetTrackInfo(MF, Track)->TimecodeScale) / (double)1000000;
-						_snprintf(ABuf, sizeof(ABuf), ".%02d.delay.%d.w64", Track, Offset);
+						_snprintf(ABuf, sizeof(ABuf), ".%02d.delay.%d.w64", CurrentTrack, 0);
 						WN += ABuf;
 						
-						AudioContexts[Track].W64W = new Wave64Writer(WN.c_str(), av_get_bits_per_sample_format(AudioCodecContext->sample_fmt),
+						AudioContexts[CurrentTrack].W64W = new Wave64Writer(WN.c_str(), av_get_bits_per_sample_format(AudioCodecContext->sample_fmt),
 							AudioCodecContext->channels, AudioCodecContext->sample_rate, AudioFMTIsFloat(AudioCodecContext->sample_fmt));
 					}
 
-					AudioContexts[Track].W64W->WriteData(db, dbsize);
+					AudioContexts[CurrentTrack].W64W->WriteData(db, dbsize);
 				}
 			}
-			*/
 		}
 	}
 
@@ -480,6 +483,8 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 
 	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
+	AVPacket TempPacket;
+	av_init_packet(&TempPacket);
 
 	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
 		// Update progress
@@ -497,14 +502,13 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 		} else if (mkv_GetTrackInfo(MF, Track)->Type == TT_AUDIO && (IndexMask & (1 << Track))) {
 			(*TrackIndices)[Track].push_back(FrameInfo(AudioContexts[Track].CurrentSample, FilePos, FrameSize, (FrameFlags & FRAME_KF) != 0));
 			ReadFrame(FilePos, FrameSize, AudioContexts[Track].CS, MC, ErrorMsg, MsgSize);
-
-			int Size = FrameSize;
-			uint8_t *Data = MC.Buffer;		
 			AVCodecContext *AudioCodecContext = AudioContexts[Track].CTX;
+			TempPacket.data = MC.Buffer;
+			TempPacket.size = FrameSize;
 
-			while (Size > 0) {
+			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
-				int Ret = avcodec_decode_audio2(AudioCodecContext, db, &dbsize, Data, Size);
+				int Ret = avcodec_decode_audio3(AudioCodecContext, db, &dbsize, &TempPacket);
 				if (Ret < 0) {
 					if (IgnoreDecodeErrors) {
 						(*TrackIndices)[Track].clear();
@@ -518,8 +522,8 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 				}
 
 				if (Ret > 0) {
-					Size -= Ret;
-					Data += Ret;
+					TempPacket.size -= Ret;
+					TempPacket.data += Ret;
 				}
 
 				if (dbsize > 0)
@@ -563,11 +567,16 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 		return MakeMatroskaIndex(SourceFile, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, IP, Private, ErrorMsg, MsgSize);
 	}
 
-#ifdef HAALITS
+#ifdef HAALISOURCE
 	// Do haali ts indexing instead?
-	if (!strcmp(FormatContext->iformat->name, "mpegts")) {
+	if (!strcmp(FormatContext->iformat->name, "mpeg") || !strcmp(FormatContext->iformat->name, "mpegts")) {
 		av_close_input_file(FormatContext);
-		return MakeHaaliTSIndex(SourceFile, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, IP, Private, ErrorMsg, MsgSize);
+		return MakeHaaliIndex(SourceFile, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, 0, IP, Private, ErrorMsg, MsgSize);
+	}
+
+	if (!strcmp(FormatContext->iformat->name, "ogg")) {
+		av_close_input_file(FormatContext);
+		return MakeHaaliIndex(SourceFile, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, 1, IP, Private, ErrorMsg, MsgSize);
 	}
 #endif
 	
@@ -614,7 +623,9 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 		FormatContext->streams[i]->time_base.den,
 		FormatContext->streams[i]->codec->codec_type));
 
-	AVPacket Packet;
+	AVPacket Packet, TempPacket;
+	av_init_packet(&Packet);
+	av_init_packet(&TempPacket);
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
 		// Update progress
 		if (IP) {
@@ -631,12 +642,12 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 		} else if (FormatContext->streams[Packet.stream_index]->codec->codec_type == CODEC_TYPE_AUDIO && (IndexMask & (1 << Packet.stream_index))) {
 			(*TrackIndices)[Packet.stream_index].push_back(FrameInfo(Packet.dts, AudioContexts[Packet.stream_index].CurrentSample, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
 			AVCodecContext *AudioCodecContext = FormatContext->streams[Packet.stream_index]->codec;
-			int Size = Packet.size;
-			uint8_t *Data = Packet.data;
+			TempPacket.data = Packet.data;
+			TempPacket.size = Packet.size;
 
-			while (Size > 0) {
+			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
-				int Ret = avcodec_decode_audio2(AudioCodecContext, db, &dbsize, Data, Size);
+				int Ret = avcodec_decode_audio3(AudioCodecContext, db, &dbsize, &TempPacket);
 				if (Ret < 0) {
 					if (IgnoreDecodeErrors) {
 						(*TrackIndices)[Packet.stream_index].clear();
@@ -650,8 +661,8 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 				}
 
 				if (Ret > 0) {
-					Size -= Ret;
-					Data += Ret;
+					TempPacket.size -= Ret;
+					TempPacket.data += Ret;
 				}
 
 				if (dbsize > 0)

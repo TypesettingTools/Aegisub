@@ -31,6 +31,17 @@ extern "C" {
 #include "utils.h"
 #include "ffms.h"
 
+#ifdef HAALISOURCE
+#	define _WIN32_DCOM
+#	include <windows.h>
+#	include <tchar.h>
+#	include <atlbase.h>
+#	include <dshow.h>
+#	include "CoParser.h"
+#	include <initguid.h>
+#	include "guids.h"
+#endif
+
 class AudioBase {
 protected:
 	uint8_t *DecodingBuffer;
@@ -76,5 +87,22 @@ public:
 
 	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 };
+
+#ifdef HAALISOURCE
+
+class HaaliAudioSource : public AudioBase {
+private:
+	CComPtr<IMMContainer> pMMC;
+
+	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize);
+	void Free(bool CloseCodec);
+public:
+	HaaliAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
+	~HaaliAudioSource();
+
+	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
+};
+
+#endif // HAALISOURCE
 
 #endif
