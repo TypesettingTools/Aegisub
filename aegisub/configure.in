@@ -661,9 +661,13 @@ else
   with_provider_ffmpegsource="no"
 fi
 
-AM_CONDITIONAL([HAVE_PROVIDER_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"])
 AC_SUBST(LIBPOSTPROC_LIBS)
 AC_SUBST(LIBPOSTPROC_CFLAGS)
+
+# XXX: Fix this to be a proper check.
+AC_CHECK_HEADER([libavutil/pixfmt.h],,[AC_MSG_WARN([FFmpegSource2 requires FFMPEG r18129 or newer]); with_provider_ffmpegsource="no"])
+
+AM_CONDITIONAL([HAVE_PROVIDER_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"])
 
 
 
@@ -1345,7 +1349,7 @@ A/V Support
 
 Video Providers
   FFMPEG:                $with_provider_ffmpeg $ffmpeg_provider_disabled
-  FFmpegSource:          $with_provider_ffmpegsource $ffmpegsource_provider_disabled
+  FFmpegSource:          $with_provider_ffmpegsource $ffmpegsource_provider_disabled (requires FFMPEG r18129 or newer)
 
 Subtitle Providers:
   CSRI (ASA):            $with_csri $csri_disabled $csri_default
