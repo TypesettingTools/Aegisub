@@ -165,11 +165,13 @@ static char* _select_font(fc_instance_t* priv, const char* family, int treat_fam
 		goto error;
 
 #if (FC_VERSION >= 20297)
-	// Remove all extra family names from original pattern.
-	// After this, FcFontRenderPrepare will select the most relevant family
-	// name in case there are more than one of them.
-	for (; family_cnt > 1; --family_cnt)
-		FcPatternRemove(pat, FC_FAMILY, family_cnt - 1);
+	if (!treat_family_as_pattern) {
+		// Remove all extra family names from original pattern.
+		// After this, FcFontRenderPrepare will select the most relevant family
+		// name in case there are more than one of them.
+		for (; family_cnt > 1; --family_cnt)
+			FcPatternRemove(pat, FC_FAMILY, family_cnt - 1);
+	}
 #endif
 
 	rpat = FcFontRenderPrepare(priv->config, pat, fset->fonts[curf]);
@@ -422,7 +424,6 @@ fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, con
 #endif
 	int i;
 
-
 	if (!fc) {
 		mp_msg(MSGT_ASS, MSGL_WARN,
 		       MSGTR_LIBASS_FontconfigDisabledDefaultFontWillBeUsed);
@@ -446,7 +447,6 @@ fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, con
 	priv->config = FcConfigGetCurrent();
 	if (!priv->config) {
 #endif
-
 		mp_msg(MSGT_ASS, MSGL_FATAL, MSGTR_LIBASS_FcInitLoadConfigAndFontsFailed);
 		goto exit;
 	}
