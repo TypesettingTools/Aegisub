@@ -45,11 +45,6 @@
 #include "audio_provider_manager.h"
 #include "utils.h"
 
-#ifdef HAVE_PA_GETSTREAMTIME
-#define Pa_StreamTime Pa_GetStreamTime	/* PortAudio v19 */
-#define PaTimestamp PaTime
-#endif
-
 
 ///////////
 // Library
@@ -94,13 +89,9 @@ PortAudioPlayer::~PortAudioPlayer() {
 
 //////////////////////
 // PortAudio callback
-#ifndef HAVE_PA_GETSTREAMTIME
-int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData) {
-#else
-int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
-	unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo *timei,
-	PaStreamCallbackFlags flags, void *userData) {
-#endif
+
+	int PortAudioPlayer::paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData) {
+
 	// Get provider
 	PortAudioPlayer *player = (PortAudioPlayer *) userData;
 	AudioProvider *provider = player->GetProvider();
@@ -135,13 +126,10 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
 
 	// Set play position (and real one)
 	player->playPos += framesPerBuffer;
-#ifndef __APPLE__
-	player->realPlayPos = (int64_t)(Pa_StreamTime(player->stream) - player->paStart) + player->startPos;
-#else
-	// AudioDeviceGetCurrentTime(), used by Pa_StreamTime() on OS X, is buggered, so use playPos for now
-	player->realPlayPos = player->playPos;
-#endif
-	
+
+	const PaStreamInfo* streamInfo = Pa_GetStreamInfo(player->stream);
+	player->realPlayPos = (timeInfo->outputBufferDacTime * streamInfo->sampleRate) + player->startPos;
+
 	// Cap to start if lower
 	return end;
 }
@@ -167,7 +155,7 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 		}
 	}
 	playing = true;
-	paStart = Pa_StreamTime(stream);
+	paStart = Pa_GetStreamTime(stream);
 
 	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
@@ -195,11 +183,7 @@ void PortAudioPlayer::Stop(bool timerToo) {
 // Open stream
 void PortAudioPlayer::OpenStream() {
 	// Open stream
-	PaError err = Pa_OpenDefaultStream(&stream,0,provider->GetChannels(),paInt16,provider->GetSampleRate(),256,
-#ifndef HAVE_PA_GETSTREAMTIME
-		16,	/* Pa v19 doesn't have a numberOfBuffers parameter */
-#endif
-		paCallback,this);
+	PaError err = Pa_OpenDefaultStream(&stream,0,provider->GetChannels(),paInt16,provider->GetSampleRate(),256,paCallback,this);
 
 	if (err != paNoError) {
 		throw wxString(_T("Failed initializing PortAudio stream with error: ") + wxString(Pa_GetErrorText(err),wxConvLocal));

@@ -47,6 +47,7 @@ extern "C" {
 }
 
 
+
 ////////////////////
 // Portaudio player
 class PortAudioPlayer : public AudioPlayer {
@@ -62,17 +63,17 @@ private:
 	volatile int64_t startPos;
 	volatile int64_t endPos;
 	void *stream;
-	PaTimestamp paStart;
+	PaTime paStart;
 	volatile int64_t realPlayPos;
 
-#ifndef HAVE_PA_GETSTREAMTIME
-	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
-#else
+//	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTime outTime, void *userData);
+static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
+/*
 	static int paCallback(const void *inputBuffer, void *outputBuffer,
 		unsigned long framesPerBuffer,
 		const PaStreamCallbackTimeInfo *timei,
 		PaStreamCallbackFlags flags, void *userData);
-#endif
+*/
 
 public:
 	PortAudioPlayer();
