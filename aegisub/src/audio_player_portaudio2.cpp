@@ -36,7 +36,7 @@
 
 #include "config.h"
 
-#ifdef WITH_PORTAUDIO
+#ifdef WITH_PORTAUDIO2
 
 
 ///////////
