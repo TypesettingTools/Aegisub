@@ -324,8 +324,9 @@ AVFrameLite *FFVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	bool HasSeeked = false;
 	int SeekOffset = 0;
 
+	int ClosestKF = 0;
 	if (SeekMode >= 0) {
-		int ClosestKF = Frames.FindClosestKeyFrame(n);
+		ClosestKF = Frames.FindClosestKeyFrame(n);
 
 		if (SeekMode == 0) {
 			if (n < CurrentFrame) {
