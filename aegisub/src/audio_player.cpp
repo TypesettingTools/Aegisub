@@ -54,6 +54,9 @@
 #ifdef WITH_PORTAUDIO
 #include "audio_player_portaudio.h"
 #endif
+#ifdef WITH_PORTAUDIO2
+#include "audio_player_portaudio2.h"
+#endif
 #ifdef WITH_PULSEAUDIO
 #include "audio_player_pulse.h"
 #endif
@@ -168,6 +171,9 @@ void AudioPlayerFactoryManager::RegisterProviders() {
 #endif
 #ifdef WITH_PORTAUDIO
 	RegisterFactory(new PortAudioPlayerFactory(),_T("PortAudio"));
+#endif
+#ifdef WITH_PORTAUDIO2
+	RegisterFactory(new PortAudioPlayerFactory(),_T("PortAudio2"));
 #endif
 #ifdef WITH_PULSEAUDIO
 	RegisterFactory(new PulseAudioPlayerFactory(),_T("PulseAudio"));
