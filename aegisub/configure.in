@@ -181,7 +181,7 @@ elif test -f "$srcdir/svn_revision"; then
   AC_MSG_RESULT([$SVN_REVISION from "$srcdir/svn_revision"])
 else
   AC_MSG_RESULT([not found])
-  AC_MSG_FAILURE([unable to get SVN Revision from svn_version (file) or 'svnversion $srcdir'])
+  AC_MSG_FAILURE([unable to get SVN Revision from $srcdir/svn_version or 'svnversion $srcdir'])
 fi
 
 # This is required in order for the config file to work correctly.
