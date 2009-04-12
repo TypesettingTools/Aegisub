@@ -45,6 +45,14 @@ aegisub_2_1_LDFLAGS += @PORTAUDIO_LDFLAGS@
 aegisub_2_1_LDADD += libaudio_portaudio.a
 endif
 
+if HAVE_PORTAUDIO2
+noinst_LIBRARIES += libaudio_portaudio2.a
+libaudio_portaudio2_a_SOURCES = audio_player_portaudio2.cpp
+libaudio_portaudio2_a_CPPFLAGS = @PORTAUDIO2_CFLAGS@
+aegisub_2_1_LDFLAGS += @PORTAUDIO2_LIBS@
+aegisub_2_1_LDADD += libaudio_portaudio2.a
+endif
+
 if HAVE_PULSEAUDIO
 noinst_LIBRARIES += libaudio_pulseaudio.a
 libaudio_pulseaudio_a_SOURCES = audio_player_pulse.cpp
@@ -178,6 +186,7 @@ EXTRA_aegisub_2_1_SOURCES = \
 	audio_player_dsound.cpp \
 	audio_player_dsound2.cpp \
 	audio_player_portaudio.cpp \
+	audio_player_portaudio2.cpp \
 	audio_player_pulse.cpp \
 	audio_provider_avs.cpp \
 	audio_provider_lavc.cpp \
