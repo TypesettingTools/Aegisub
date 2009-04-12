@@ -30,6 +30,13 @@ if BUILD_DARWIN
 aegisub_2_1_LDFLAGS += -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
 endif
 
+if FOUND_AUDIO_PLAYER
+noinst_LIBRARIES += libaudio_player.a
+libaudio_player_a_SOURCES = audio_player.cpp
+libaudio_player_a_CPPFLAGS = @ALSA_CFLAGS@ @PORTAUDIO_CFLAGS@ @PORTAUDIO2_CFLAGS@ @LIBPULSE_CFLAGS@ @OPENAL_CFLAGS@
+aegisub_2_1_LDADD += libaudio_player.a
+endif
+
 if HAVE_ALSA
 noinst_LIBRARIES += libaudio_alsa.a
 libaudio_alsa_a_SOURCES = audio_player_alsa.cpp
@@ -67,12 +74,6 @@ libaudio_openal_a_SOURCES = audio_player_openal.cpp
 libaudio_openal_a_CPPFLAGS = @OPENAL_CFLAGS@
 aegisub_2_1_LDFLAGS += @OPENAL_LIBS@
 aegisub_2_1_LDADD += libaudio_openal.a
-endif
-
-if FOUND_AUDIO_PLAYER
-noinst_LIBRARIES += libaudio_player.a
-libaudio_player_a_SOURCES = audio_player.cpp
-libaudio_player_a_CPPFLAGS = @ALSA_CFLAGS@ @PORTAUDIO_CFLAGS@ @PORTAUDIO2_CFLAGS@ @LIBPULSE_CFLAGS@ @OPENAL_CFLAGS@
 endif
 
 if HAVE_FFMPEG
