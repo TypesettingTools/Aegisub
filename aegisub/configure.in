@@ -395,8 +395,23 @@ AC_SUBST(ICONV_CFLAGS)
 ## ALSA
 #######
 AC_ARG_WITH(alsa, [  --without-alsa          build without ALSA audio provider. (default: auto)], alsa_disabled="(disabled)")
+
+AC_ARG_VAR([ALSA_CFLAGS], [CFLAGS to use for ALSA (default: CPPFLAGS)])
+AC_ARG_VAR([ALSA_LDFLAGS], [LDFLAGS to use for ALSA (default: -lasound)])
+
+if test -z "$ALSA_LDFLAGS"; then
+  ALSA_LDFLAGS="-lasound";
+fi
+
+if test -z "$ALSA_CFLAGS"; then
+  ALSA_CFLAGS="$CPPFLAGS";
+fi
+
 if test "$with_alsa" != "no"; then
+  aegisub_save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$ALSA_LDFLAGS"
   AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound"; with_alsa="yes"], [with_alsa="no"])
+  LDFLAGS="$aegisub_save_LDFLAGS"
 fi
 
 if test "$with_alsa" != "no"; then
