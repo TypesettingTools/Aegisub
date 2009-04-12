@@ -41,7 +41,7 @@
 
 ///////////
 // Headers
-#include "audio_player_portaudio.h"
+#include "audio_player_portaudio2.h"
 #include "audio_provider_manager.h"
 #include "utils.h"
 
@@ -201,4 +201,4 @@ void PortAudioPlayer::CloseStream() {
 }
 
 
-#endif // WITH_PORTAUDIO
+#endif // WITH_PORTAUDIO2
