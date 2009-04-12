@@ -1310,6 +1310,14 @@ fi
 AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default audio player.])
 
 
+
+###############
+# Misc settings 
+###############
+AM_CONDITIONAL([FOUND_AUDIO_PLAYER], [test "$found_audio_player" = "yes"])
+AM_CONDITIONAL([FOUND_VIDEO_PROVIDER], [test "$found_video_provider" = "yes"])
+
+
 # Makefiles
 AC_CONFIG_FILES([
 Makefile
@@ -1334,7 +1342,6 @@ scripts/osx-bundle.sed
 
 AC_OUTPUT
 
-AM_CONDITIONAL([FOUND_AUDIO_PLAYER], [test -z "$found_audio_player"])
 if test -z "$found_audio_player"; then
   AC_MSG_NOTICE([
 
@@ -1352,7 +1359,6 @@ if test -z "$found_audio_player"; then
   ])
 fi
 
-AM_CONDITIONAL([FOUND_VIDEO_PROVIDER], [test -z "$found_video_provider"])
 if test -z "$found_video_provider"; then
   AC_MSG_NOTICE([
 
