@@ -401,7 +401,7 @@ fi
 
 if test "$with_alsa" != "no"; then
   AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support])
-  found_audio="yes"
+  found_audio_player="yes"
 fi
 
 AM_CONDITIONAL([HAVE_ALSA], [test "$with_alsa" != "no"])
@@ -435,7 +435,7 @@ fi
 
 if test "$agi_cv_with_portaudio2" = "yes" && test "$with_portaudio2" = "yes"; then
   AC_DEFINE(WITH_PORTAUDIO2, 1, [Enable PortAudio v19 support])
-  found_audio="yes"
+  found_audio_player="yes"
 fi
 
 AM_CONDITIONAL([HAVE_PORTAUDIO2], [test "$with_portaudio2" != "no"])
@@ -490,7 +490,7 @@ if test "$agi_cv_with_portaudio" = "no" && test "$with_portaudio" = "yes"; then
 fi
 
 if test "$with_portaudio" = "yes" && test "$agi_cv_with_portaudio" = "yes"; then
-  found_audio="yes"
+  found_audio_player="yes"
   AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio Audio Provider])
 fi
 
@@ -526,7 +526,7 @@ fi
 
 if test "$agi_cv_with_pulseaudio" = "yes" && test "$with_pulseaudio" = "yes"; then
   AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
-  found_audio="yes"
+  found_audio_player="yes"
 fi
 
 AM_CONDITIONAL([HAVE_PULSEAUDIO], [test "$with_pulseaudio" != "no"])
@@ -565,7 +565,7 @@ if test "$agi_cv_with_openal" = "no" && test "$with_openal" = "yes"; then
 fi
 
 if test "$agi_cv_with_openal" = "yes" && test "$with_openal" = "yes"; then
-  found_audio="yes"
+  found_audio_player="yes"
   AC_DEFINE(WITH_OPENAL, 1, [Enable OpenAL support])
 fi
 
@@ -1319,7 +1319,8 @@ scripts/osx-bundle.sed
 
 AC_OUTPUT
 
-if test -z "$found_audio"; then
+AM_CONDITIONAL([FOUND_AUDIO_PLAYER], [test -z "$found_audio_player"])
+if test -z "$found_audio_player"; then
   AC_MSG_NOTICE([
 
 ***********************************************************************
@@ -1336,6 +1337,7 @@ if test -z "$found_audio"; then
   ])
 fi
 
+AM_CONDITIONAL([FOUND_VIDEO_PROVIDER], [test -z "$found_video_provider"])
 if test -z "$found_video_provider"; then
   AC_MSG_NOTICE([
 
