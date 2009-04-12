@@ -69,6 +69,12 @@ aegisub_2_1_LDFLAGS += @OPENAL_LIBS@
 aegisub_2_1_LDADD += libaudio_openal.a
 endif
 
+if FOUND_AUDIO_PLAYER
+noinst_LIBRARIES += libaudio_player.a
+libaudio_player_a_SOURCES = audio_player.cpp
+libaudio_player_a_CPPFLAGS = @ALSA_CFLAGS@ @PORTAUDIO_CFLAGS@ @PORTAUDIO2_CFLAGS@ @LIBPULSE_CFLAGS@ @OPENAL_CFLAGS@
+endif
+
 if HAVE_FFMPEG
 aegisub_2_1_LDFLAGS += @LIBAVFORMAT_LIBS@ @LIBAVCODEC_LIBS@ @LIBSWSCALE_LIBS@ @LIBAVUTIL_LIBS@
 endif
@@ -239,7 +245,6 @@ aegisub_2_1_SOURCES = \
 	audio_box.cpp \
 	audio_display.cpp \
 	audio_karaoke.cpp \
-	audio_player.cpp \
 	audio_provider.cpp \
 	audio_provider_convert.cpp \
 	audio_provider_downmix.cpp \
