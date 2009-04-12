@@ -413,13 +413,13 @@ AC_SUBST(ALSA_LDFLAGS)
 ###################
 
 AC_ARG_WITH(portaudio2,[  --without-portaudio2    build without PortAudio v19 audio provider.
-                          (default: auto)], pulseaudio_disabled="(disabled)")
+                          (default: auto)], pulseaudio2_disabled="(disabled)")
 if test "$with_portaudio2" != "no"; then
   PKG_CHECK_MODULES(PORTAUDIO2, portaudio-2.0 >= portaudio2_required_version, [with_portaudio2="yes"], [with_portaudio2="no"])
 fi
 
 if test "$with_portaudio2" != "no"; then
-  AC_AGI_COMPILE([PortAudio2], [portaudio], [$LIBPORTAUDIO2_CFLAGS], [$LIBPORTAUDIO2_LIBS],[
+  AC_AGI_COMPILE([PortAudio2], [portaudio2], [$PORTAUDIO2_CFLAGS], [$PORTAUDIO2_LIBS],[
 #include <portaudio.h>
 int main(void) {
   PaError err = Pa_Initialize();
@@ -446,6 +446,11 @@ AM_CONDITIONAL([HAVE_PORTAUDIO2], [test "$with_portaudio2" != "no"])
 ############
 AC_ARG_WITH(portaudio,[  --without-portaudio     build without PortAudio audio provider.
                           (default: auto)], portaudio_disabled="(disabled)")
+
+if test "$with_portaudio2" = "yes"; then
+  with_portaudio="no"
+  portaudio_disabled="(disabled by v19)"
+fi
 
 if test -z "$PORTAUDIO_LDFLAGS"; then
   PORTAUDIO_LDFLAGS="$LDFLAGS -lportaudio"
@@ -1373,6 +1378,7 @@ Audio Players
   ALSA:                  $with_alsa $alsa_disabled
   OpenAL:                $with_openal $openal_disabled
   PortAudio:             $with_portaudio $portaudio_disabled
+  PortAudio2 (v19):      $with_portaudio2 $portaudio2_disabled
   PulseAudio:            $with_pulseaudio $pulseaudio_disabled
 
 A/V Support
