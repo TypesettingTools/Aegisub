@@ -95,7 +95,7 @@ public:
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
 
-	wxArrayString GetOutputDevices(wxString favorite=0);
+	wxArrayString GetOutputDevices(wxString favorite);
 	wxMutex *GetMutex() { return &PAMutex; }
 };
 
