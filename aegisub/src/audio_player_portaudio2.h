@@ -66,14 +66,15 @@ private:
 	PaTime paStart;
 	volatile int64_t realPlayPos;
 
-//	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTime outTime, void *userData);
-static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
-/*
-	static int paCallback(const void *inputBuffer, void *outputBuffer,
-		unsigned long framesPerBuffer,
-		const PaStreamCallbackTimeInfo *timei,
-		PaStreamCallbackFlags flags, void *userData);
-*/
+static int paCallback(
+	const void *inputBuffer,
+	void *outputBuffer,
+	unsigned long framesPerBuffer,
+	const PaStreamCallbackTimeInfo*
+	timeInfo,
+	PaStreamCallbackFlags
+	statusFlags,
+	void *userData);
 
 public:
 	PortAudioPlayer();
@@ -95,6 +96,7 @@ public:
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
 
+	wxArrayString GetOutputDevices(wxString favorite=0);
 	wxMutex *GetMutex() { return &PAMutex; }
 };
 
