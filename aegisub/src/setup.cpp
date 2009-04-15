@@ -131,6 +131,9 @@
 #pragma comment(lib, "ffms2.lib")
 #endif
 
+#ifdef WITH_PORTAUDIO2
+#pragma comment(lib,"portaudio_x86.lib")
+#endif
 
 //////////////
 // DirectShow

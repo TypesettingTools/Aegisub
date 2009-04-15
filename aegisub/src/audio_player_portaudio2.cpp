@@ -47,13 +47,6 @@
 #include "utils.h"
 
 
-///////////
-// Library
-#if __VISUALC__ >= 1200
-#pragma comment(lib,"portaudio.lib")
-#endif
-
-
 /////////////////////
 // Reference counter
 int PortAudioPlayer::pa_refcount = 0;
