@@ -64,7 +64,6 @@ private:
 	volatile int64_t endPos;
 	void *stream;
 	PaTime paStart;
-	volatile int64_t realPlayPos;
 
 static int paCallback(
 	const void *inputBuffer,
@@ -89,9 +88,9 @@ public:
 
 	int64_t GetStartPosition() { return startPos; }
 	int64_t GetEndPosition() { return endPos; }
-	int64_t GetCurrentPosition() { return realPlayPos; }
+	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos) { endPos = pos; }
-	void SetCurrentPosition(int64_t pos) { playPos = pos; realPlayPos = pos; }
+	void SetCurrentPosition(int64_t pos) { playPos = pos; }
 
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }

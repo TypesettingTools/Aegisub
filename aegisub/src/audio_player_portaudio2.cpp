@@ -130,7 +130,6 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 	player->playPos += framesPerBuffer;
 
 	const PaStreamInfo* streamInfo = Pa_GetStreamInfo(player->stream);
-	player->realPlayPos = (timeInfo->inputBufferAdcTime * streamInfo->sampleRate) + player->startPos;
 
 /*
 printf("playPos: %lld  startPos: %lld  paStart: %f  currentTime: %f  realPlayPos: %lld  Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f\n", 
@@ -152,7 +151,6 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 	// Set values
 	endPos = start + count;
 	playPos = start;
-	realPlayPos = start;
 	startPos = start;
 
 	// Start playing
@@ -234,6 +232,23 @@ void PortAudioPlayer::CloseStream() {
 		Pa_CloseStream(stream);
 	} catch (...) {}
 }
+
+////////////////////////
+/// Get current stream position.
+int64_t PortAudioPlayer::GetCurrentPosition()
+{
+
+	if (!playing) return 0;
+
+	const PaStreamInfo* streamInfo = Pa_GetStreamInfo(stream);
+/*
+int64_t real = ((Pa_GetStreamTime(stream) - paStart) * streamInfo->sampleRate) + startPos;
+printf("GetCurrentPosition Pa_GetStreamTime: %f  startPos: %lld  playPos: %lld  paStart: %f  real: %lld\n",
+Pa_GetStreamTime(stream), startPos, playPos, paStart, real);
+*/
+	return ((Pa_GetStreamTime(stream) - paStart) * streamInfo->sampleRate) + startPos;
+}
+
 
 
 ///////////////
