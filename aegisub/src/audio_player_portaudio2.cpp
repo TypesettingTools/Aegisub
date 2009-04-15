@@ -43,6 +43,7 @@
 // Headers
 #include "audio_player_portaudio2.h"
 #include "audio_provider_manager.h"
+#include "options.h"
 #include "utils.h"
 
 
@@ -192,7 +193,16 @@ void PortAudioPlayer::OpenStream() {
 	// Open stream
 	PaStreamParameters pa_output_p;
 
-	PaDeviceIndex pa_device = Pa_GetDefaultOutputDevice();
+	int pa_config_default = Options.AsInt(_T("Audio PortAudio Device"));
+	PaDeviceIndex pa_device;
+
+	if (pa_config_default < 0) {
+		pa_device = Pa_GetDefaultOutputDevice();
+		wxLogDebug(_T("PortAudioPlayer::OpenStream Using Default Output Device: %d"), pa_device);
+	} else {
+		pa_device = pa_config_default;
+		wxLogDebug(_T("PortAudioPlayer::OpenStream Using Config Device: %d"), pa_device);
+	}
 
 	pa_output_p.device = pa_device;
 	pa_output_p.channelCount = provider->GetChannels();
@@ -200,8 +210,8 @@ void PortAudioPlayer::OpenStream() {
 	pa_output_p.suggestedLatency = Pa_GetDeviceInfo(pa_device)->defaultLowOutputLatency;
 	pa_output_p.hostApiSpecificStreamInfo = NULL;
 
-	wxLogDebug(_T("PortAudioPlayer::OpenStream Output Device: %d, Output channels: %d, Latency: %f  Sample Rate: %ld\n"),
-	pa_device, pa_output_p.channelCount, pa_output_p.suggestedLatency, pa_output_p.sampleFormat);
+	wxLogDebug(_T("PortAudioPlayer::OpenStream Output channels: %d, Latency: %f  Sample Rate: %ld\n"),
+	pa_output_p.channelCount, pa_output_p.suggestedLatency, pa_output_p.sampleFormat);
 
 	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 256, paNoFlag, paCallback, this);
 
