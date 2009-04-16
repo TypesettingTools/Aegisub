@@ -46,6 +46,8 @@
 #include "options.h"
 #include "utils.h"
 
+// Uncomment to enable debug features.
+//#define PORTAUDIO2_DEBUG
 
 /////////////////////
 // Reference counter
@@ -122,14 +124,11 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 	// Set play position (and real one)
 	player->playPos += framesPerBuffer;
 
-	const PaStreamInfo* streamInfo = Pa_GetStreamInfo(player->stream);
-
-/*
-printf("playPos: %lld  startPos: %lld  paStart: %f  currentTime: %f  realPlayPos: %lld  Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f\n", 
-player->playPos, player->startPos, player->paStart, timeInfo->currentTime, player->realPlayPos, Pa_GetStreamTime(player->stream), 
-timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime);
-*/
-
+#ifdef PORTAUDIO2_DEBUG
+	printf("paCallBack: playPos: %lld  startPos: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f\n", 
+	player->playPos, player->startPos, player->paStart, Pa_GetStreamTime(player->stream), 
+	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime);
+#endif
 	// Cap to start if lower
 	return end;
 }
@@ -234,12 +233,18 @@ int64_t PortAudioPlayer::GetCurrentPosition()
 	if (!playing) return 0;
 
 	const PaStreamInfo* streamInfo = Pa_GetStreamInfo(stream);
-/*
-int64_t real = ((Pa_GetStreamTime(stream) - paStart) * streamInfo->sampleRate) + startPos;
-printf("GetCurrentPosition Pa_GetStreamTime: %f  startPos: %lld  playPos: %lld  paStart: %f  real: %lld\n",
-Pa_GetStreamTime(stream), startPos, playPos, paStart, real);
-*/
+
+#ifdef PORTAUDIO2_DEBUG
+	PaTime pa_getstream = Pa_GetStreamTime(stream);
+	int64_t real = ((pa_getstream - paStart) * streamInfo->sampleRate) + startPos;
+	printf("GetCurrentPosition: Pa_GetStreamTime: %f  startPos: %lld  playPos: %lld  paStart: %f  real: %lld  diff: %f\n",
+	pa_getstream, startPos, playPos, paStart, real, pa_getstream-paStart);
+
+	return real;
+#else
 	return ((Pa_GetStreamTime(stream) - paStart) * streamInfo->sampleRate) + startPos;
+#endif
+
 }
 
 
