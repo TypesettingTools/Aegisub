@@ -95,31 +95,12 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 	int end = 0;
 
 	// Calculate how much left
-	int64_t lenAvailable = player->endPos - player->playPos;
-	uint64_t avail = 0;
-	if (lenAvailable > 0) {
-		avail = lenAvailable;
-		if (avail > framesPerBuffer) {
-			lenAvailable = framesPerBuffer;
-			avail = lenAvailable;
-		}
-	}
-	else {
-		lenAvailable = 0;
-		avail = 0;
-	}
+	int64_t lenAvailable = (player->endPos - player->playPos) > 0 ? framesPerBuffer : 0;
 
 	// Play something
 	if (lenAvailable > 0) {
-		provider->GetAudio(outputBuffer,player->playPos,lenAvailable);
+		provider->GetAudioWithVolume(outputBuffer, player->playPos, lenAvailable, player->GetVolume());
 	}
-
-	// Set volume
-	short *output = (short*) outputBuffer;
-	for (unsigned int i=0;i<avail;i++) output[i] = MID(-(1<<15),int(output[i] * player->GetVolume()),(1<<15)-1);
-
-	// Fill rest with blank
-	for (unsigned int i=avail;i<framesPerBuffer;i++) output[i]=0;
 
 	// Set play position
 	player->playPos += framesPerBuffer;
