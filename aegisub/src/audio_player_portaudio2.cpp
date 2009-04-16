@@ -121,15 +121,20 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 	// Fill rest with blank
 	for (unsigned int i=avail;i<framesPerBuffer;i++) output[i]=0;
 
-	// Set play position (and real one)
+	// Set play position
 	player->playPos += framesPerBuffer;
 
 #ifdef PORTAUDIO2_DEBUG
-	printf("paCallBack: playPos: %lld  startPos: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f\n", 
+	printf("paCallBack: playPos: %lld  startPos: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f  CPU: %f\n", 
 	player->playPos, player->startPos, player->paStart, Pa_GetStreamTime(player->stream), 
-	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime);
+	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime,  Pa_GetStreamCpuLoad(player->stream));
 #endif
-	// Cap to start if lower
+
+	// Set the end position to be less then the current play position.
+	if (lenAvailable <= 0) {
+		player->endPos = player->endPos - (framesPerBuffer + 8192);
+		return paAbort;
+	}
 	return end;
 }
 
@@ -203,7 +208,7 @@ void PortAudioPlayer::OpenStream() {
 	wxLogDebug(_T("PortAudioPlayer::OpenStream Output channels: %d, Latency: %f  Sample Rate: %ld\n"),
 	pa_output_p.channelCount, pa_output_p.suggestedLatency, pa_output_p.sampleFormat);
 
-	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 256, paNoFlag, paCallback, this);
+	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 256, paClipOff, paCallback, this);
 
 	if (err != paNoError) {
 
