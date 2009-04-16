@@ -92,18 +92,6 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 	// Get provider
 	PortAudioPlayer *player = (PortAudioPlayer *) userData;
 	AudioProvider *provider = player->GetProvider();
-	int end = 0;
-
-	// Calculate how much left
-	int64_t lenAvailable = (player->endPos - player->playPos) > 0 ? framesPerBuffer : 0;
-
-	// Play something
-	if (lenAvailable > 0) {
-		provider->GetAudioWithVolume(outputBuffer, player->playPos, lenAvailable, player->GetVolume());
-	}
-
-	// Set play position
-	player->playPos += framesPerBuffer;
 
 #ifdef PORTAUDIO2_DEBUG
 	printf("paCallBack: playPos: %lld  startPos: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f  CPU: %f\n", 
@@ -111,12 +99,26 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime,  Pa_GetStreamCpuLoad(player->stream));
 #endif
 
-	// Set the end position to be less then the current play position.
-	if (lenAvailable <= 0) {
+	// Calculate how much left
+	int64_t lenAvailable = (player->endPos - player->playPos) > 0 ? framesPerBuffer : 0;
+
+	// Play something
+	if (lenAvailable > 0) {
+		provider->GetAudioWithVolume(outputBuffer, player->playPos, lenAvailable, player->GetVolume());
+
+		// Set play position
+		player->playPos += framesPerBuffer;
+
+		// Continue as normal
+		return 0;
+	}
+	else {
+		// Set the end position to be less then the current play position.
 		player->endPos = player->endPos - (framesPerBuffer + 8192);
+
+		// Abort stream and stop the callback.
 		return paAbort;
 	}
-	return end;
 }
 
 
