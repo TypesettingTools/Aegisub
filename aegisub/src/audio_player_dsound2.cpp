@@ -159,8 +159,8 @@ unsigned int __stdcall DirectSoundPlayer2Thread::ThreadProc(void *parameter)
 }
 
 
-#define WANTED_LATENCY 100
-#define BUFFER_LENGTH 5
+#define WANTED_LATENCY 80
+#define BUFFER_LENGTH 4
 // The buffer will hold BUFFER_LENGTH times WANTED_LATENCY milliseconds of audio
 
 
