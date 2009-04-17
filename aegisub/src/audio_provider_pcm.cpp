@@ -178,7 +178,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 				mapping_length = range_length;
 		}
 		// But also make sure we don't try to make a mapping larger than the file
-		if ((int64_t)mapping_length > file_size)
+		if (mapping_start + (int64_t)mapping_length > file_size)
 			mapping_length = (size_t)(file_size - mapping_start);
 		// We already checked that the requested range doesn't extend over the end of the file
 		// Hopefully this should ensure that small files are always mapped in their entirety
