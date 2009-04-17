@@ -764,7 +764,7 @@ static void MakeEventsTable(lua_State *L, struct Auto3Interpreter *script)
 
 	// Finally, make 'n' key in table
 	lua_pushstring(L, "n");
-	lua_pushnumber(L, n);
+	lua_pushnumber(L, n+1);
 	lua_settable(L, -3);
 }
 
