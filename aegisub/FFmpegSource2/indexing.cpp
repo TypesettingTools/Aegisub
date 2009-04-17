@@ -760,7 +760,7 @@ int FrameInfoVector::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, un
 	Timecodes << "# timecode format v2\n";
 
 	for (iterator Cur=begin(); Cur!=end(); Cur++)
-		Timecodes << ((Cur->DTS * TB.Num) / (double)TB.Den) << "\n";
+		Timecodes << std::fixed << ((Cur->DTS * TB.Num) / (double)TB.Den) << "\n";
 
 	return 0;
 }
