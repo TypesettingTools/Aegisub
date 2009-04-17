@@ -627,6 +627,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\aegisub\audio_player_portaudio2.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\aegisub\audio_player_portaudio2.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\aegisub\audio_player_pulse.cpp"
 					>
 				</File>
