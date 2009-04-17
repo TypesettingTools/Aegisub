@@ -6,8 +6,8 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="$(ProjectDir)../../contrib/lua50/include/"
-		PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS"
+		AdditionalIncludeDirectories="$(ProjectDir)../../../contrib/lua50/include/"
+		PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;AUTO3LIB"
 	/>
 	<Tool
 		Name="VCLinkerTool"
