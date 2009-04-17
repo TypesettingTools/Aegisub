@@ -137,12 +137,12 @@ static int Auto3LuaLoad(lua_State *L, filename_t filename, const char *prettynam
 	fclose(script_reader.f);
 
 	if (res) {
-		*error = strdup(lua_tostring(L, -1));
+		*error = Auto3Strdup(lua_tostring(L, -1));
 		return res;
 	}
 	if (script_reader.isfirst == -1) {
 		// Signals we got a bad UTF
-		*error = strdup(script_reader.databuf);
+		*error = Auto3Strdup(script_reader.databuf);
 		return -1;
 	}
 
@@ -222,7 +222,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 				lua_pushstring(L, "name");
 				lua_gettable(L, -2);
 				if (lua_isstring(L, -1)) {
-					opt->name = strdup(lua_tostring(L, -1));
+					opt->name = Auto3Strdup(lua_tostring(L, -1));
 				} else {
 					// name is required to be valid
 					opt->kind = COK_INVALID;
@@ -233,7 +233,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 				lua_pushstring(L, "label");
 				lua_gettable(L, -2);
 				if (lua_isstring(L, -1)) {
-					opt->label = strdup(lua_tostring(L, -1));
+					opt->label = Auto3Strdup(lua_tostring(L, -1));
 				} else {
 					// label is also required
 					opt->kind = COK_INVALID;
@@ -244,9 +244,9 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 				lua_pushstring(L, "hint");
 				lua_gettable(L, -2);
 				if (lua_isstring(L, -1)) {
-					opt->hint = strdup(lua_tostring(L, -1));
+					opt->hint = Auto3Strdup(lua_tostring(L, -1));
 				} else {
-					opt->hint = strdup("");
+					opt->hint = Auto3Strdup("");
 				}
 				lua_pop(L, 1);
 
@@ -286,8 +286,8 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 					case COK_COLOUR:
 						// expect it to be a string
 						if (lua_isstring(L, -1)) {
-							opt->default_val.stringval = strdup(lua_tostring(L, -1));
-							opt->value.stringval = strdup(opt->default_val.stringval);
+							opt->default_val.stringval = Auto3Strdup(lua_tostring(L, -1));
+							opt->value.stringval = Auto3Strdup(opt->default_val.stringval);
 						} else {
 							// not a string, baaaad scripter
 							opt->kind = COK_INVALID;
@@ -435,7 +435,7 @@ AUTO3_API struct Auto3Interpreter *CreateAuto3Script(const filename_t filename, 
 
 	// Execute the script
 	if (lua_pcall(L, 0, 0, 0)) {
-		*error = strdup(lua_tostring(L, -1));
+		*error = Auto3Strdup(lua_tostring(L, -1));
 		goto faillua;
 	}
 
@@ -443,28 +443,28 @@ AUTO3_API struct Auto3Interpreter *CreateAuto3Script(const filename_t filename, 
 	// Script has been run, stuff exists in the global environment
 	lua_getglobal(L, "version");
 	if (!lua_isnumber(L, -1)) {
-		*error = strdup("'version' value not found or not a number");
+		*error = Auto3Strdup("'version' value not found or not a number");
 		goto faillua;
 	}
 	if ((int)lua_tonumber(L, -1) != 3) {
 		// invalid version
-		*error = strdup("'version' must be 3 for Automation 3 scripts");
+		*error = Auto3Strdup("'version' must be 3 for Automation 3 scripts");
 		goto faillua;
 	}
 	// skip 'kind', it's useless
 	// name
 	lua_getglobal(L, "name");
 	if (!lua_isstring(L, -1)) {
-		script->name = strdup(prettyname);
+		script->name = Auto3Strdup(prettyname);
 	} else {
-		script->name = strdup(lua_tostring(L, -1));
+		script->name = Auto3Strdup(lua_tostring(L, -1));
 	}
 	// description (optional)
 	lua_getglobal(L, "description");
 	if (lua_isstring(L, -1)) {
-		script->description = strdup(lua_tostring(L, -1));
+		script->description = Auto3Strdup(lua_tostring(L, -1));
 	} else {
-		script->description = strdup("");
+		script->description = Auto3Strdup("");
 	}
 	lua_pop(L, 3);
 
@@ -528,7 +528,12 @@ AUTO3_API void *Auto3Malloc(size_t amount)
 // Convenience function, use this for duplicating strings this lib should own
 AUTO3_API char *Auto3Strdup(const char *str)
 {
+#if _MSC_VER >= 1400
+	// MS Visual C++ 2004 or newer
+	return _strdup(str);
+#else
 	return strdup(str);
+#endif
 }
 
 // Our "free" function, free generated error messages with this
