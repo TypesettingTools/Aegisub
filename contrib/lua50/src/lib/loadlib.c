@@ -96,7 +96,7 @@ static void pusherror(lua_State *L)
 {
  int error=GetLastError();
  char buffer[128];
- if (FormatMessage(FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_SYSTEM,
+ if (FormatMessageA(FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_SYSTEM,
 	0, error, 0, buffer, sizeof(buffer), 0))
   lua_pushstring(L,buffer);
  else
@@ -107,7 +107,7 @@ static int loadlib(lua_State *L)
 {
  const char *path=luaL_checkstring(L,1);
  const char *init=luaL_checkstring(L,2);
- HINSTANCE lib=LoadLibrary(path);
+ HINSTANCE lib=LoadLibraryA(path);
  if (lib!=NULL)
  {
   lua_CFunction f=(lua_CFunction) GetProcAddress(lib,init);
