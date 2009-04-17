@@ -65,15 +65,17 @@ private:
 	void *stream;
 	PaTime paStart;
 
-static int paCallback(
-	const void *inputBuffer,
-	void *outputBuffer,
-	unsigned long framesPerBuffer,
-	const PaStreamCallbackTimeInfo*
-	timeInfo,
-	PaStreamCallbackFlags
-	statusFlags,
-	void *userData);
+	static int paCallback(
+		const void *inputBuffer,
+		void *outputBuffer,
+		unsigned long framesPerBuffer,
+		const PaStreamCallbackTimeInfo*
+		timeInfo,
+		PaStreamCallbackFlags
+		statusFlags,
+		void *userData);
+
+	static void paStreamFinishedCallback(void *userData);
 
 public:
 	PortAudioPlayer();
