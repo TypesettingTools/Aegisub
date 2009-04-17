@@ -39,10 +39,6 @@
 #ifdef WITH_AUTOMATION
 #ifdef WITH_AUTO3
 
-#if __VISUALC__ >= 1200
-#pragma comment(lib,"aegisub-auto3.lib")
-#endif
-
 #include <wx/spinctrl.h>
 #include <wx/tokenzr.h>
 #include "auto4_auto3.h"

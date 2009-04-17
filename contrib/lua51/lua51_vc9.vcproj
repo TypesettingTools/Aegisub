@@ -21,11 +21,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectDir)..\lib\$(PlatformName)\"
-			IntermediateDirectory="$(ProjectDir)build_vc9\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
+			InheritedPropertySheets="..\..\aegisub\build\aegisub_vs2008\libraries_outdirs.vsprops"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -69,7 +67,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)lua51_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -89,11 +86,9 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(ProjectDir)..\lib\$(PlatformName)\"
-			IntermediateDirectory="$(ProjectDir)build_vc9\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
+			InheritedPropertySheets="..\..\aegisub\build\aegisub_vs2008\libraries_outdirs.vsprops"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -138,7 +133,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)lua51_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -158,11 +152,9 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ProjectDir)..\lib\$(PlatformName)\"
-			IntermediateDirectory="$(ProjectDir)build_vc9\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			InheritedPropertySheets="..\..\aegisub\build\aegisub_vs2008\libraries_outdirs.vsprops"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -200,7 +192,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)lua51.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -220,11 +211,9 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(ProjectDir)..\lib\$(PlatformName)\"
-			IntermediateDirectory="$(ProjectDir)build_vc9\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			InheritedPropertySheets="..\..\aegisub\build\aegisub_vs2008\libraries_outdirs.vsprops"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -263,7 +252,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)lua51.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

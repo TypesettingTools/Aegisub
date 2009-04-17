@@ -2,11 +2,11 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="universalcharset_2008"
-	ProjectGUID="{6B6028DA-8702-4853-8FF1-B55BEDD4C8DB}"
-	RootNamespace="universalcharset"
+	Name="lua50_vc9"
+	ProjectGUID="{9E046FFE-42C5-4FFA-991A-EA4A7F0E1E1E}"
+	RootNamespace="lua50_vc9"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
+	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -22,8 +22,8 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops"
-			CharacterSet="1"
+			InheritedPropertySheets="..\..\aegisub\build\aegisub_vs2008\libraries_outdirs.vsprops;.\includedirs.vsprops"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -49,70 +49,7 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			ConfigurationType="4"
-			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_LIB"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -145,8 +82,8 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops"
-			CharacterSet="1"
+			InheritedPropertySheets="..\..\aegisub\build\aegisub_vs2008\libraries_outdirs.vsprops;.\includedirs.vsprops"
+			CharacterSet="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -166,11 +103,74 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			ConfigurationType="4"
+			InheritedPropertySheets="..\..\aegisub\build\aegisub_vs2008\libraries_outdirs.vsprops;.\includedirs.vsprops"
+			CharacterSet="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -204,8 +204,8 @@
 		<Configuration
 			Name="Release|x64"
 			ConfigurationType="4"
-			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops"
-			CharacterSet="1"
+			InheritedPropertySheets="..\..\aegisub\build\aegisub_vs2008\libraries_outdirs.vsprops;.\includedirs.vsprops"
+			CharacterSet="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -226,11 +226,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_LIB"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -271,103 +273,111 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\CharDistribution.cpp"
+				RelativePath=".\src\lapi.c"
 				>
 			</File>
 			<File
-				RelativePath=".\JpCntx.cpp"
+				RelativePath=".\src\lib\lauxlib.c"
 				>
 			</File>
 			<File
-				RelativePath=".\LangBulgarianModel.cpp"
+				RelativePath=".\src\lib\lbaselib.c"
 				>
 			</File>
 			<File
-				RelativePath=".\LangCyrillicModel.cpp"
+				RelativePath=".\src\lcode.c"
 				>
 			</File>
 			<File
-				RelativePath=".\LangGreekModel.cpp"
+				RelativePath=".\src\lib\ldblib.c"
 				>
 			</File>
 			<File
-				RelativePath=".\LangHebrewModel.cpp"
+				RelativePath=".\src\ldebug.c"
 				>
 			</File>
 			<File
-				RelativePath=".\LangHungarianModel.cpp"
+				RelativePath=".\src\ldo.c"
 				>
 			</File>
 			<File
-				RelativePath=".\LangThaiModel.cpp"
+				RelativePath=".\src\ldump.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsBig5Prober.cpp"
+				RelativePath=".\src\lfunc.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsCharSetProber.cpp"
+				RelativePath=".\src\lgc.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEscCharsetProber.cpp"
+				RelativePath=".\src\lib\liolib.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEscSM.cpp"
+				RelativePath=".\src\llex.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEUCJPProber.cpp"
+				RelativePath=".\src\lib\lmathlib.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEUCKRProber.cpp"
+				RelativePath=".\src\lmem.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEUCTWProber.cpp"
+				RelativePath=".\src\lib\loadlib.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsGB2312Prober.cpp"
+				RelativePath=".\src\lobject.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsHebrewProber.cpp"
+				RelativePath=".\src\lopcodes.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsLatin1Prober.cpp"
+				RelativePath=".\src\lparser.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsMBCSGroupProber.cpp"
+				RelativePath=".\src\lstate.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsMBCSSM.cpp"
+				RelativePath=".\src\lstring.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsSBCharSetProber.cpp"
+				RelativePath=".\src\lib\lstrlib.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsSBCSGroupProber.cpp"
+				RelativePath=".\src\ltable.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsSJISProber.cpp"
+				RelativePath=".\src\lib\ltablib.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsUniversalDetector.cpp"
+				RelativePath=".\src\ltm.c"
 				>
 			</File>
 			<File
-				RelativePath=".\nsUTF8Prober.cpp"
+				RelativePath=".\src\lundump.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\lvm.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\lzio.c"
 				>
 			</File>
 		</Filter>
@@ -377,107 +387,91 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\CharDistribution.h"
+				RelativePath=".\src\lapi.h"
 				>
 			</File>
 			<File
-				RelativePath=".\JpCntx.h"
+				RelativePath=".\include\lauxlib.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsBig5Prober.h"
+				RelativePath=".\src\lcode.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsCharSetProber.h"
+				RelativePath=".\src\ldebug.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsCodingStateMachine.h"
+				RelativePath=".\src\ldo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nscore.h"
+				RelativePath=".\src\lfunc.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsError.h"
+				RelativePath=".\src\lgc.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEscCharsetProber.h"
+				RelativePath=".\src\llex.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEUCJPProber.h"
+				RelativePath=".\src\llimits.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEUCKRProber.h"
+				RelativePath=".\src\lmem.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsEUCTWProber.h"
+				RelativePath=".\src\lobject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsGB2312Prober.h"
+				RelativePath=".\src\lopcodes.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsHebrewProber.h"
+				RelativePath=".\src\lparser.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsLatin1Prober.h"
+				RelativePath=".\src\lstate.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsMBCSGroupProber.h"
+				RelativePath=".\src\lstring.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsPkgInt.h"
+				RelativePath=".\src\ltable.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsSBCharSetProber.h"
+				RelativePath=".\src\ltm.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsSBCSGroupProber.h"
+				RelativePath=".\include\lua.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsSJISProber.h"
+				RelativePath=".\include\lualib.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsUniversalDetector.h"
+				RelativePath=".\src\lundump.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsUTF8Prober.h"
+				RelativePath=".\src\lvm.h"
 				>
 			</File>
 			<File
-				RelativePath=".\prcpucfg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\prmem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\protypes.h"
-				>
-			</File>
-			<File
-				RelativePath=".\prtypes.h"
-				>
-			</File>
-			<File
-				RelativePath=".\xpcom-config.h"
+				RelativePath=".\src\lzio.h"
 				>
 			</File>
 		</Filter>
@@ -486,26 +480,6 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath=".\Big5Freq.tab"
-				>
-			</File>
-			<File
-				RelativePath=".\EUCKRFreq.tab"
-				>
-			</File>
-			<File
-				RelativePath=".\EUCTWFreq.tab"
-				>
-			</File>
-			<File
-				RelativePath=".\GB2312Freq.tab"
-				>
-			</File>
-			<File
-				RelativePath=".\JISFreq.tab"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

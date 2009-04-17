@@ -21,9 +21,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets=".\suffix_debug32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -46,7 +46,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../contrib/hunspell/src;../../../aegisub/src/msvc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -72,9 +71,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/aegisub_d.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../../lib"
 				GenerateManifest="true"
 				DelayLoadDLLs="perl510.dll;ffms2.dll"
 				GenerateDebugInformation="true"
@@ -107,9 +104,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets=".\suffix_debug64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -132,7 +128,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../contrib/hunspell/src"
 				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -158,9 +153,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/aegisub_d_x64.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../../lib"
 				GenerateManifest="true"
 				DelayLoadDLLs="perl510.dll"
 				GenerateDebugInformation="true"
@@ -193,9 +186,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets=".\suffix_release32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -218,8 +210,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
-				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="../../../contrib/hunspell/src;../../src/msvc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				OpenMP="true"
@@ -244,9 +234,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/aegisub.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="../../lib"
 				GenerateManifest="true"
 				DelayLoadDLLs="perl510.dll;ffms2.dll;openal32.dll"
 				GenerateDebugInformation="true"
@@ -283,9 +271,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets=".\suffix_release64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -308,7 +295,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../../contrib/hunspell/src"
 				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				OpenMP="true"
@@ -332,9 +318,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/aegisub_x64.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="../../lib"
 				GenerateManifest="true"
 				DelayLoadDLLs="perl510.dll"
 				GenerateDebugInformation="true"
