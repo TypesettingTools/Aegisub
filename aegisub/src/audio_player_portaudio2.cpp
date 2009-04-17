@@ -94,13 +94,14 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 	AudioProvider *provider = player->GetProvider();
 
 #ifdef PORTAUDIO2_DEBUG
-	printf("paCallBack: playPos: %lld  startPos: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f  CPU: %f\n", 
+	printf("paCallBack: playPos: %lld  startPos: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f  framesPerBuffer: %lu  CPU: %f\n", 
 	player->playPos, player->startPos, player->paStart, Pa_GetStreamTime(player->stream), 
-	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime,  Pa_GetStreamCpuLoad(player->stream));
+	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime,  framesPerBuffer, Pa_GetStreamCpuLoad(player->stream));
 #endif
 
 	// Calculate how much left
 	int64_t lenAvailable = (player->endPos - player->playPos) > 0 ? framesPerBuffer : 0;
+
 
 	// Play something
 	if (lenAvailable > 0) {
@@ -112,19 +113,17 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 		// Continue as normal
 		return 0;
 	}
-	else {
-		// Set the end position to be less then the current play position.
-		player->endPos = player->endPos - (framesPerBuffer + 8192);
 
-		// Abort stream and stop the callback.
-		return paAbort;
-	}
+	// Abort stream and stop the callback.
+	return paAbort;
 }
 
 
 ////////
 // Play
 void PortAudioPlayer::Play(int64_t start,int64_t count) {
+	PaError err;
+
 	// Stop if it's already playing
 	wxMutexLocker locker(PAMutex);
 
@@ -135,7 +134,16 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 
 	// Start playing
 	if (!playing) {
-		PaError err = Pa_StartStream(stream);
+
+		err = Pa_SetStreamFinishedCallback(stream, paStreamFinishedCallback);
+
+		if (err != paNoError) {
+			wxLogDebug(_T("PortAudioPlayer::Play Could not set FinishedCallback\n"));
+			return;
+		}
+
+		err = Pa_StartStream(stream);
+
 		if (err != paNoError) {
 			return;
 		}
@@ -162,6 +170,21 @@ void PortAudioPlayer::Stop(bool timerToo) {
 	if (timerToo && displayTimer) {
 		displayTimer->Stop();
 	}
+}
+
+//////////////////////////////////////////////
+// Called when the callback has finished.
+
+void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
+    PortAudioPlayer *player = (PortAudioPlayer *) userData;
+
+	player->playing = false;
+
+	if (player->displayTimer) {
+		player->displayTimer->Stop();
+	}
+
+	wxLogDebug(_T("PortAudioPlayer::paStreamFinishedCallback Stopping stream."));
 }
 
 
@@ -191,7 +214,7 @@ void PortAudioPlayer::OpenStream() {
 	wxLogDebug(_T("PortAudioPlayer::OpenStream Output channels: %d, Latency: %f  Sample Rate: %ld\n"),
 	pa_output_p.channelCount, pa_output_p.suggestedLatency, pa_output_p.sampleFormat);
 
-	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 256, paClipOff, paCallback, this);
+	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 256, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
 
 	if (err != paNoError) {
 
@@ -212,6 +235,7 @@ void PortAudioPlayer::CloseStream() {
 		Pa_CloseStream(stream);
 	} catch (...) {}
 }
+
 
 ////////////////////////
 /// Get current stream position.
