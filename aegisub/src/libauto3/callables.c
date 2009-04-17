@@ -34,6 +34,9 @@
 //
 
 // DO NOT compile this file separately! It's included as part of auto3.c
+#ifndef BUILDING_AUTO3_C
+# error callables.c can not be compiled separately. It is included as part of auto3.c.
+#endif
 
 
 static struct Auto3Interpreter* GetScriptObject(lua_State *L)

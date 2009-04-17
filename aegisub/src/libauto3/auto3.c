@@ -344,6 +344,7 @@ static int Auto3ParseConfigData(lua_State *L, struct Auto3Interpreter *script, c
 
 
 // Keeping this file a bit shorter: put all functions called from Lua into a separate file
+#define BUILDING_AUTO3_C
 #include "callables.c"
 
 
