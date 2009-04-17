@@ -157,6 +157,11 @@
 //#define WITH_PORTAUDIO
 
 
+// Enable PortAudio audio player version 2
+// Requires PortAudio release 19
+//#define WITH_PORTAUDIO2
+
+
 // Enable ALSA audio player
 // Requires Linux and libasound
 //#define WITH_ALSA

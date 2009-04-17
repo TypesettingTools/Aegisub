@@ -539,6 +539,14 @@
 				RelativePath="..\..\src\audio_player_portaudio.h"
 				>
 			</File>
+						<File
+				RelativePath="..\..\src\audio_player_portaudio2.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_player_portaudio2.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\src\audio_player_pulse.cpp"
 				>
