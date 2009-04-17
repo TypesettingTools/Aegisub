@@ -38,15 +38,9 @@
 #include <stdlib.h>
 #ifdef AUTO3LIB
 
-#ifdef __WINDOWS__
-#include "lua/include/lua.h"
-#include "lua/include/lualib.h"
-#include "lua/include/lauxlib.h"
-#else
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-#endif
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
 
 #endif
 
