@@ -89,11 +89,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetModificationType(MOD_AUTOMATIC);
 
 // Broken on OS X during startup only.
-#ifdef __APPLE__
 	SetBool(_T("Tips enabled"),false);
-#else
-	SetBool(_T("Tips enabled"),true);
-#endif
 	SetBool(_T("Show splash"),true);
 	SetBool(_T("Local config"),false);
 	SetInt(_T("Undo levels"),8);

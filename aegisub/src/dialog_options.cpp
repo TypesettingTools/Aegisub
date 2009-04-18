@@ -112,7 +112,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxFlexGridSizer *genSizer4 = new wxFlexGridSizer(2,2,5,5);
 
 		AddCheckBox(generalPage,genSizer4,_("Show Splash Screen"),_T("Show splash"));
-		AddCheckBox(generalPage,genSizer4,_("Show Tip of the Day"),_T("Tips enabled"));
 #ifdef __WXMSW__
 		AddCheckBox(generalPage,genSizer4,_("Auto Check for Updates"),_T("Auto check for updates"));
 #endif

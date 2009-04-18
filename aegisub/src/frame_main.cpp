@@ -147,12 +147,7 @@ FrameMain::FrameMain (wxArrayString args)
 	}
 	else
 #endif
-	{
-#if !_DEBUG
-		// Show tip of the day
-		TipOfTheDay::Show(this);
-#endif
-	}
+
 	wxSafeYield();
 
 	// Set autosave timer
