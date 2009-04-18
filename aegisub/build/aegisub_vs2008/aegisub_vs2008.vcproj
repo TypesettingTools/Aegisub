@@ -21,14 +21,12 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_debug32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops"
+			InheritedPropertySheets=".\suffix_debug32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\compiler_options_debug.vsprops;.\svn_rev_header_update.vsprops;.\delayload_ffms2_32.vsprops;.\delayload_perl_32.vsprops;.\delayload_portaudio_32.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\src\config\config_windows.h&quot; (copy &quot;..\..\src\config\config_windows0.h&quot; &quot;..\..\src\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\src&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -45,18 +43,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
-				Optimization="0"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				OpenMP="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
-				WarningLevel="3"
-				WarnAsError="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h"
 			/>
@@ -71,13 +61,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="2"
-				GenerateManifest="true"
-				DelayLoadDLLs="perl510.dll;ffms2.dll"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -105,12 +88,11 @@
 		<Configuration
 			Name="Debug|x64"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_debug64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops"
+			InheritedPropertySheets=".\suffix_debug64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\compiler_options_debug.vsprops;.\svn_rev_header_update.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\src\config\config_windows.h&quot; (copy &quot;..\..\src\config\config_windows0.h&quot; &quot;..\..\src\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\src&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -127,18 +109,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
 				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				OpenMP="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
-				WarningLevel="3"
-				WarnAsError="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h"
 			/>
@@ -153,13 +127,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="2"
-				GenerateManifest="true"
-				DelayLoadDLLs="perl510.dll"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -187,13 +154,12 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_release32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops"
+			InheritedPropertySheets=".\suffix_release32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\svn_rev_header_update.vsprops;.\delayload_ffms2_32.vsprops;.\delayload_perl_32.vsprops;.\delayload_portaudio_32.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\src\config\config_windows.h&quot; (copy &quot;..\..\src\config\config_windows0.h&quot; &quot;..\..\src\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\src&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -211,15 +177,9 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
-				RuntimeLibrary="2"
-				OpenMP="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
 				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
-				WarningLevel="3"
-				WarnAsError="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h"
 			/>
@@ -234,18 +194,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="1"
-				GenerateManifest="true"
-				DelayLoadDLLs="perl510.dll;ffms2.dll;openal32.dll"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
-				Profile="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -272,13 +223,12 @@
 		<Configuration
 			Name="Release|x64"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_release64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops"
+			InheritedPropertySheets=".\suffix_release64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\svn_rev_header_update.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist &quot;..\..\src\config\config_windows.h&quot; (copy &quot;..\..\src\config\config_windows0.h&quot; &quot;..\..\src\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\src&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -296,14 +246,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS"
-				RuntimeLibrary="2"
-				OpenMP="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
-				WarningLevel="3"
-				WarnAsError="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h"
 			/>
@@ -318,17 +262,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="1"
-				GenerateManifest="true"
-				DelayLoadDLLs="perl510.dll"
-				GenerateDebugInformation="true"
-				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="17"
-				Profile="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -523,7 +459,7 @@
 				RelativePath="..\..\src\audio_player_portaudio.h"
 				>
 			</File>
-						<File
+			<File
 				RelativePath="..\..\src\audio_player_portaudio2.cpp"
 				>
 			</File>

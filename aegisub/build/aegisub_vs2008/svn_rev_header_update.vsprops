@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="svn_rev_header_update"
+	>
+	<Tool
+		Name="VCPreBuildEventTool"
+		CommandLine="if not exist &quot;..\..\src\config\config_windows.h&quot; (copy &quot;..\..\src\config\config_windows0.h&quot; &quot;..\..\src\config\config_windows.h&quot;)&#x0D;&#x0A;SubWCRev.exe &quot;..\..\src&quot; &quot;..\svn-revision-base.h&quot; &quot;..\svn-revision.h&quot;&#x0D;&#x0A;"
+	/>
+</VisualStudioPropertySheet>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="delayload_ffms2_32"
+	>
+	<Tool
+		Name="VCLinkerTool"
+		DelayLoadDLLs="ffms2.dll"
+	/>
+</VisualStudioPropertySheet>
