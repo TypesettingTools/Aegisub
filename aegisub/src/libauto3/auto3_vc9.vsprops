@@ -11,6 +11,6 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(ExecutableOutDir)/aegisub-auto3lib_$(PlatformConfigSuffix).dll"
+		OutputFile="$(ExecutableOutDir)/libauto3_$(PlatformConfigSuffix).dll"
 	/>
 </VisualStudioPropertySheet>
