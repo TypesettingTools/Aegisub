@@ -69,7 +69,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	// clean up
 	Close();
 
-	wxString FileNameWX(filename.c_str(), wxConvFile);
+	wxString FileNameWX = wxFileName(wxString(filename.c_str(), wxConvFile)).GetShortPath();
 
 	// generate a default name for the cache file
 	wxString CacheName = GetCacheFilename(filename.c_str());
