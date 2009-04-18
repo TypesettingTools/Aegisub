@@ -158,18 +158,14 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 		// Align range start on a 1 MB boundary and go 16 MB back
 		mapping_start = (range_start & ~0xFFFFF) - 0x1000000;
 		if (mapping_start < 0) mapping_start = 0;
-#ifdef _WINDOWS
-# if defined(_M_X64) || defined(_M_IA64)
-		// Make 2 GB mappings by default on 64 bit archs
-		mapping_length = 0x80000000;
-# else
-		// Make 256 MB mappings by default on x86
-		mapping_length = 0x10000000;
-# endif
-#else
-		// 256 MB
-		mapping_length = 0x10000000;
-#endif
+
+		if (sizeof(void*) > 4)
+			// Large address space, use a 2 GB mapping
+			mapping_length = 0x80000000;
+		else
+			// Small (32 bit) address space, use a 256 MB mapping
+			mapping_length = 0x10000000;
+
 		// Make sure to always make a mapping at least as large as the requested range
 		if ((int64_t)mapping_length < range_length) {
 			if (range_length > (int64_t)(~(size_t)0))
