@@ -260,12 +260,12 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		editSizer5->Add(new wxStaticText(editPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		control = new wxTextCtrl(editPage,-1);
 		Bind(control,options2[10]);
+		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FONT);
+		browse->Bind((wxTextCtrl*)control);
 		editSizer5->Add(control,1,wxEXPAND | wxRIGHT,5);
 		control = new wxTextCtrl(editPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
 		Bind(control,options2[11]);
 		editSizer5->Add(control,0,wxEXPAND | wxRIGHT,5);
-		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FONT);
-		browse->Bind((wxTextCtrl*)control);
 		browse->Bind((wxTextCtrl*)control,1);
 		editSizer5->Add(browse,0,wxEXPAND);
 
@@ -324,11 +324,11 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		gridSizer4->Add(new wxStaticText(gridPage,-1,_("Font: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 		control = new wxTextCtrl(gridPage,-1);
 		Bind(control,_T("Grid font face"));
+		browse = new BrowseButton(gridPage,-1,_T(""),BROWSE_FONT);
+		browse->Bind((wxTextCtrl*)control);
 		gridSizer4->Add(control,1,wxEXPAND | wxRIGHT,5);
 		control = new wxTextCtrl(gridPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
 		Bind(control,_T("Grid font size"));
-		browse = new BrowseButton(gridPage,-1,_T(""),BROWSE_FONT);
-		browse->Bind((wxTextCtrl*)control);
 		browse->Bind((wxTextCtrl*)control,1);
 		gridSizer4->Add(control,0,wxEXPAND | wxRIGHT,5);
 		gridSizer4->Add(browse,0,wxEXPAND);
