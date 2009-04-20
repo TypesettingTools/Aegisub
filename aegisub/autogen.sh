@@ -225,19 +225,20 @@ if test "$DIE" -eq 1; then
 fi
 
 
-echo
-echo "I am going to run ./configure with the following arguments:"
-echo
-echo "  --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS $@"
-echo
+if ! test "$1" = "--skip-configure"; then
+  echo
+ echo "I am going to run ./configure with the following arguments:"
+ echo
+ echo "  --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS $@"
+ echo
 
-if test -z "$*"; then
-    echo "If you wish to pass additional arguments, please specify them "
-    echo "on the $0 command line or set the AUTOGEN_CONFIGURE_ARGS "
-    echo "environment variable."
-    echo
+ if test -z "$*"; then
+     echo "If you wish to pass additional arguments, please specify them "
+     echo "on the $0 command line or set the AUTOGEN_CONFIGURE_ARGS "
+     echo "environment variable."
+     echo
+ fi
 fi
-
 
 
 echo "--- Checking for required M4 files ---"
@@ -326,24 +327,27 @@ $INTLTOOLIZE --force --automake || exit $?
 
 cd $ORIGDIR
 
-echo "--- $srcdir/configure ---"
-$srcdir/configure --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS "$@"
-RC=$?
+if ! test "$1" = "--skip-configure"; then
+  echo "--- $srcdir/configure ---"
+  $srcdir/configure --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS "$@"
+  RC=$?
 
-echo
-echo
-echo "***********************************************************************"
-echo "*"
-echo "* Please do not ask for support when using the SVN verison of aegisub,"
-echo "* download an official distfile in order to receive support."
-echo "*"
-echo "***********************************************************************"
-echo
-
-if test $RC -ne 0; then
   echo
-  echo "Configure failed or did not finish!"
-  exit $RC
+  echo
+  echo "***********************************************************************"
+  echo "*"
+  echo "* Please do not ask for support when using the SVN verison of aegisub,"
+  echo "* download an official distfile in order to receive support."
+  echo "*"
+  echo "***********************************************************************"
+  echo
+
+  if test $RC -ne 0; then
+    echo
+    echo "Configure failed or did not finish!"
+    exit $RC
+  fi
+
+  echo "Now type 'make' to compile $PROJECT."
 fi
 
-echo "Now type 'make' to compile $PROJECT."
