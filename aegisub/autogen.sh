@@ -321,7 +321,7 @@ $AUTOCONF || exit $?
 echo "--- $GETTEXTIZE ---"
 $GETTEXTIZE --force || exit $?
 
-echo "--- $INTTOOLIZE ---"
+echo "--- $INTLTOOLIZE ---"
 $INTLTOOLIZE --force --automake || exit $?
 
 cd $ORIGDIR
