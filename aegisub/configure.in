@@ -171,7 +171,7 @@ PKG_PROG_PKG_CONFIG([pkgconfig_required_version])
 AM_MAINTAINER_MODE
 
 # XXX: This needs to be fixed to handle mixed revisions properly
-#      There is probably a better way to handle it as well.
+#      There is probably a better way to handle it as well...
 AC_MSG_CHECKING([for svn version])
 if test -d "$srcdir/.svn"; then
   SVN_REVISION=`svnversion $srcdir | sed "s/\(^@<:@0-9@:>@*\).*/\1/"`
