@@ -7,7 +7,12 @@ AC_DEFUN([AC_AGI_COMPILE],[
         [whether $1 works], [agi_cv_with_$2],
         [AC_RUN_IFELSE([$5],
         [eval agi_cv_with_$2="yes"],
-        [eval agi_cv_with_$2="no"])
+        [eval agi_cv_with_$2="no"],
+		[if test $? -ne 0; then
+			eval agi_cv_with_$2="no";
+		else
+			eval agi_cv_with_$2="yes";
+		fi])
         ])
   CPPFLAGS="$aegisub_save_CPPFLAGS"
   LDFLAGS="$aegisub_save_LDFLAGS"
