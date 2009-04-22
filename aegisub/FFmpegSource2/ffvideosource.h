@@ -106,7 +106,7 @@ public:
 class HaaliVideoSource : public VideoBase {
 private:
 	CComPtr<IMMContainer> pMMC;
-
+	uint8_t * CodecPrivate;
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
