@@ -233,6 +233,13 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 
 <h2>Changes</h2>
 <ul>
+<li>2.00 beta 7<ul>
+<li>Fixed the accessing of codecprivate data with Haali's splitters</li>
+<li>Timecode output should be fixed to include decimals AND not be in scientific format</li>
+<li>Fixed a memory leak when using Haali's splitters</li>
+<li>Updated FFmpeg to rev X</li>
+</ul></li>
+
 <li>2.00 beta 6<ul>
 <li>Haali's splitters have been improved for video and now have audio dumping during indexing implemented</li>
 <li>SeekMode=1 has improved logic which will make it go back and decode more frames if necessary to figure out where it is, in theory SeekMode=0 should now be mostly obsolete</li>

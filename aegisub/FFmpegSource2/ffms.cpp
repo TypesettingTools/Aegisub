@@ -185,14 +185,6 @@ FFMS_API(int) FFMS_FindClosestKeyFrame(FrameInfoVector *FIV, int Frame, char *Er
 	}
 }
 
-FFMS_API(int) FFMS_FrameFromDTS(FrameInfoVector *FIV, int64_t DTS) {
-	return FIV->FrameFromDTS(DTS);
-}
-
-FFMS_API(int) FFMS_ClosestFrameFromDTS(FrameInfoVector *FIV, int64_t DTS) {
-	return FIV->ClosestFrameFromDTS(DTS);
-}
-
 FFMS_API(const TrackTimeBase *) FFMS_GetTimeBase(FrameInfoVector *FIV) {
 	return &FIV->TB;
 }

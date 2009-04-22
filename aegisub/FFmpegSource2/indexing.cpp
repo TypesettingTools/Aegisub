@@ -275,17 +275,14 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 			int CodecPrivateSize = 0;
 
 			if (pBag) {
-				VARIANT pV;
+				CComVariant pV;
 
-				pV.vt = VT_EMPTY;
 				if (pBag->Read(L"CodecID", &pV, NULL) == S_OK)
 					CodecID = pV.bstrVal;
 
-				pV.vt = VT_EMPTY;
 				if (pBag->Read(L"Type", &pV, NULL) == S_OK)
 					TrackTypes[CurrentTrack] = pV.uintVal;
 
-				pV.vt = VT_EMPTY;
 				if (pBag->Read(L"CodecPrivate", &pV, NULL) == S_OK) {
 					CodecPrivate = (uint8_t *)pV.parray->pvData;
 					CodecPrivateSize = pV.parray->cbElements;

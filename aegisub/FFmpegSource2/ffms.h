@@ -142,8 +142,6 @@ FFMS_API(FrameInfoVector *) FFMS_GetTITrackIndex(FrameIndex *TrackIndices, int T
 FFMS_API(FrameInfoVector *) FFMS_GetVSTrackIndex(VideoBase *VB);
 FFMS_API(FrameInfoVector *) FFMS_GetASTrackIndex(AudioBase *AB);
 FFMS_API(int) FFMS_FindClosestKeyFrame(FrameInfoVector *FIV, int Frame, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_FrameFromDTS(FrameInfoVector *FIV, int64_t DTS);
-FFMS_API(int) FFMS_ClosestFrameFromDTS(FrameInfoVector *FIV, int64_t DTS);
 FFMS_API(const TrackTimeBase *) FFMS_GetTimeBase(FrameInfoVector *FIV);
 FFMS_API(int) FFMS_WriteTimecodes(FrameInfoVector *FIV, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
