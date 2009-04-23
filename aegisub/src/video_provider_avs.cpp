@@ -188,28 +188,28 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 			// Try loading FFMpegSource
 			directshowOpen:
 			bool ffsource = false;
-			if (env->FunctionExists("ffmpegsource")) ffsource = true;
+			if (env->FunctionExists("ffvideosource")) ffsource = true;
 			if (!ffsource) {
-				wxFileName ffsourcepath(StandardPaths::DecodePath(_T("?data/ffmpegsource.dll")));
+				wxFileName ffsourcepath(StandardPaths::DecodePath(_T("?data/ffms2.dll")));
 				if (ffsourcepath.FileExists()) {
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading FFMpegSource"));
+					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading FFMpegSource2"));
 					env->Invoke("LoadPlugin",env->SaveString(ffsourcepath.GetFullPath().mb_str(wxConvLocal)));
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded FFMpegSource"));
+					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded FFMpegSource2"));
 					byFrame = true;
 				}
 			}
 
 			// If FFMpegSource loaded properly, try using it
 			ffsource = false;
-			if (env->FunctionExists("ffmpegsource")) {
-				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking FFMpegSource"));
-				const char *argnames[2] = { "source", "vcache" };
+			if (env->FunctionExists("ffvideosource")) {
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking FFMpegSource2"));
+				const char *argnames[2] = { "source", "cache" };
 				AVSValue args[2] = { videoFilename, false };
-				script = env->Invoke("ffmpegsource", AVSValue(args,2), argnames);
+				script = env->Invoke("ffvideosource", AVSValue(args,2), argnames);
 				//script = env->Invoke("ffmpegsource", videoFilename);
-				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with FFMpegSource"));
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with FFMpegSource2"));
 				ffsource = true;
-				decoderName = _T("FFmpegSource");
+				decoderName = _T("FFmpegSource2");
 			}
 
 			// DirectShowSource
