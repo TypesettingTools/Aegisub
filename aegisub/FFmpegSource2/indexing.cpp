@@ -324,7 +324,7 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 //
 
 	AVPacket TempPacket;
-	av_init_packet(&TempPacket);
+	init_null_packet(&TempPacket);
 
 	for (;;) {
 		if (IP) {
@@ -481,7 +481,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
 	AVPacket TempPacket;
-	av_init_packet(&TempPacket);
+	init_null_packet(&TempPacket);
 
 	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
 		// Update progress
@@ -621,8 +621,8 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 		FormatContext->streams[i]->codec->codec_type));
 
 	AVPacket Packet, TempPacket;
-	av_init_packet(&Packet);
-	av_init_packet(&TempPacket);
+	init_null_packet(&Packet);
+	init_null_packet(&TempPacket);
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
 		// Update progress
 		if (IP) {

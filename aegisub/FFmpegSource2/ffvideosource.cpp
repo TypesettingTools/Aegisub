@@ -175,7 +175,7 @@ void FFVideoSource::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
 	av_close_input_file(FormatContext);
-	// how was it allocated? how was it deallocate? nobody knows
+	//FIXME how was it allocated? how was it deallocate? nobody knows
 	//av_free(FormatContext);
 }
 
@@ -282,7 +282,7 @@ FFVideoSource::~FFVideoSource() {
 
 int FFVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *ErrorMsg, unsigned MsgSize) {
 	AVPacket Packet;
-	av_init_packet(&Packet);
+	init_null_packet(&Packet);
 	int FrameFinished = 0;
 	*AStartTime = -1;
 
@@ -303,7 +303,7 @@ int FFVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *E
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		av_init_packet(&NullPacket);
+		init_null_packet(&NullPacket);
 		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
 	}
 
@@ -516,7 +516,7 @@ int MatroskaVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTi
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
-	av_init_packet(&Packet);
+	init_null_packet(&Packet);
 
 	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
@@ -543,7 +543,7 @@ int MatroskaVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTi
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		av_init_packet(&NullPacket);
+		init_null_packet(&NullPacket);
 		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
 	}
 
@@ -773,7 +773,7 @@ int HaaliVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime,
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
-	av_init_packet(&Packet);
+	init_null_packet(&Packet);
 
 	for (;;) {
 		CComPtr<IMMFrame> pMMF;
@@ -806,7 +806,7 @@ int HaaliVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime,
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		av_init_packet(&NullPacket);
+		init_null_packet(&NullPacket);
 		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
 	}
 

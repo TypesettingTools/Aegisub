@@ -112,8 +112,8 @@ int FFAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *Erro
 	int Ret = -1;
 	*Count = 0;
 	AVPacket Packet, TempPacket;
-	av_init_packet(&Packet);
-	av_init_packet(&TempPacket);
+	init_null_packet(&Packet);
+	init_null_packet(&TempPacket);
 
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
         if (Packet.stream_index == AudioTrack) {
@@ -344,7 +344,7 @@ int MatroskaAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint
 	int Ret = -1;
 	*Count = 0;
 	AVPacket TempPacket;
-	av_init_packet(&TempPacket);
+	init_null_packet(&TempPacket);
 
 	// FIXME check return
 	ReadFrame(FilePos, FrameSize, CS, MC, ErrorMsg, MsgSize);

@@ -234,6 +234,10 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 <h2>Changes</h2>
 <ul>
 <li>2.00 beta 7<ul>
+<li>Fix a crash bug at the end of files with b-frames in beta 6 caused by uninitialized null packets</li>
+<li>Includes TheFluff's wrapper function for 1.21 style syntax</li>
+<li>Added a simple regression test application to the source</li>
+<li>Removed a few pointless functions from the API</li>
 <li>Fixed the accessing of codecprivate data with Haali's splitters</li>
 <li>Timecode output should be fixed to include decimals AND not be in scientific format</li>
 <li>Fixed a memory leak when using Haali's splitters</li>
