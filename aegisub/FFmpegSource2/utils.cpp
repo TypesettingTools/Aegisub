@@ -131,6 +131,12 @@ bool AudioFMTIsFloat(SampleFormat FMT){
 	}
 }
 
+void init_null_packet(AVPacket *pkt) {
+	av_init_packet(pkt);
+	pkt->data = NULL;
+	pkt->size = 0;
+}
+
 // used for matroska<->ffmpeg codec ID mapping to avoid Win32 dependency
 typedef struct BITMAPINFOHEADER {
         uint32_t      biSize;
