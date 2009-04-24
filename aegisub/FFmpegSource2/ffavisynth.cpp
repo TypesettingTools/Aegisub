@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+#include <libavutil/pixfmt.h>
 #include "ffavisynth.h"
 #include "utils.h"
 
@@ -74,9 +75,9 @@ AvisynthVideoSource::~AvisynthVideoSource() {
 	FFMS_DestroyVideoSource(VS);
 }
 
-void AvisynthVideoSource::InitOutputFormat(PixelFormat CurrentFormat, IScriptEnvironment *Env) {
+void AvisynthVideoSource::InitOutputFormat(enum PixelFormat CurrentFormat, IScriptEnvironment *Env) {
 	int Loss;
-	PixelFormat BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), CurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+	enum PixelFormat BestFormat = avcodec_find_best_pix_fmt((1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUV420P) | (1 << PIX_FMT_YUYV422) | (1 << PIX_FMT_RGB32) | (1 << PIX_FMT_BGR24), CurrentFormat, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
 
 	switch (BestFormat) {
 		case PIX_FMT_YUVJ420P: // stupid yv12 distinctions, also inexplicably completely undeniably incompatible with all other supported output formats

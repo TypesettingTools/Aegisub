@@ -234,6 +234,7 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 <h2>Changes</h2>
 <ul>
 <li>2.00 beta 7<ul>
+<li>Using ffms2 as a library no longer requires an installed pixfmt.h from libavutil, it is however still required to compile ffms2 and the avisynth plugin part</li>
 <li>Fix a crash bug at the end of files with b-frames in beta 6 caused by uninitialized null packets</li>
 <li>Includes TheFluff's wrapper function for 1.21 style syntax</li>
 <li>Added a simple regression test application to the source</li>

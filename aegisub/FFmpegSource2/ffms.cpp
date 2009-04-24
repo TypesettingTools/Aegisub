@@ -18,6 +18,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
+
 #include "ffms.h"
 #include "ffvideosource.h"
 #include "ffaudiosource.h"
@@ -205,3 +209,6 @@ FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, c
 	return WriteIndex(IndexFile, TrackIndices, ErrorMsg, MsgSize);
 }
 
+FFMS_API(enum PixelFormat) FFMS_GetPixFmt(const char *Name) {
+	return avcodec_get_pix_fmt(Name);
+}
