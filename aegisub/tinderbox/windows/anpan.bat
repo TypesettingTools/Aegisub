@@ -21,4 +21,4 @@
 @set VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio 9.0
 @set WindowsSdkDir=C:\Program Files\Microsoft SDKs\Windows\v6.0A\
 
-msbuild trunk\aegisub\tinderbox\windows\aegisub_vs2008.sln /p:Configuration=%1 /p:Platform=%2 /v:d /nologo /t:rebuild
+msbuild aegisub\tinderbox\windows\aegisub_vs2008.sln /p:Configuration=%1 /p:Platform=%2 /v:d /nologo /t:rebuild
