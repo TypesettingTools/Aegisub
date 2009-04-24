@@ -28,7 +28,7 @@ extern "C" {
 
 using namespace std;
 
-//#define VERBOSE
+#define VERBOSE
 
 static int FFMS_CC UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
 
@@ -59,7 +59,11 @@ int main(int argc, char *argv[]) {
 #ifndef VERBOSE
 	FFMS_NoLog();
 #endif
-	
+
+	enum PixelFormat FMT_YV12A = FFMS_GetPixFmt("PIX_FMT_YUV420P)");
+	enum PixelFormat FMT_YV12B = FFMS_GetPixFmt("PIX_FMT_YUVJ420P");
+	enum PixelFormat FMT_YUY2 = FFMS_GetPixFmt("PIX_FMT_YUV422P");
+
 	av_md5_init(ctx);
 	FrameIndex *FI = FFMS_MakeIndex(argv[1], -1, 0, NULL, false, UpdateProgress, argv[1], ErrorMsg, sizeof(ErrorMsg));
 	if (!FI) {
@@ -103,32 +107,28 @@ int main(int argc, char *argv[]) {
 		Data[1] = AVF->Data[1];
 		Data[2] = AVF->Data[2];
 
-		switch (VP->VPixelFormat) {
-			case PIX_FMT_YUV420P:
-			case PIX_FMT_YUVJ420P:
-				for (int j = 0; j < VP->Height / 2; j++) {
-					av_md5_update(ctx, Data[0], VP->Width);
-					Data[0] += AVF->Linesize[0];
-					av_md5_update(ctx, Data[0], VP->Width);
-					Data[0] += AVF->Linesize[0];
-					av_md5_update(ctx, Data[1], VP->Width / 2);
-					Data[1] += AVF->Linesize[1];
-					av_md5_update(ctx, Data[2], VP->Width / 2);
-					Data[2] += AVF->Linesize[2];
-				}
-				break;
-			case PIX_FMT_YUV422P:
-				for (int j = 0; j < VP->Height / 2; j++) {
-					av_md5_update(ctx, Data[0], VP->Width);
-					Data[0] += AVF->Linesize[0];
-					av_md5_update(ctx, Data[0], VP->Width);
-					Data[0] += AVF->Linesize[0];
-					av_md5_update(ctx, Data[1], VP->Width / 2);
-					Data[1] += AVF->Linesize[1];
-					av_md5_update(ctx, Data[2], VP->Width / 2);
-					Data[2] += AVF->Linesize[2];
-				}
-				break;
+		if (VP->VPixelFormat == FMT_YV12A || VP->VPixelFormat == FMT_YV12B) {
+			for (int j = 0; j < VP->Height / 2; j++) {
+				av_md5_update(ctx, Data[0], VP->Width);
+				Data[0] += AVF->Linesize[0];
+				av_md5_update(ctx, Data[0], VP->Width);
+				Data[0] += AVF->Linesize[0];
+				av_md5_update(ctx, Data[1], VP->Width / 2);
+				Data[1] += AVF->Linesize[1];
+				av_md5_update(ctx, Data[2], VP->Width / 2);
+				Data[2] += AVF->Linesize[2];
+			}
+		} else if (VP->VPixelFormat == FMT_YUY2) {
+			for (int j = 0; j < VP->Height / 2; j++) {
+				av_md5_update(ctx, Data[0], VP->Width);
+				Data[0] += AVF->Linesize[0];
+				av_md5_update(ctx, Data[0], VP->Width);
+				Data[0] += AVF->Linesize[0];
+				av_md5_update(ctx, Data[1], VP->Width / 2);
+				Data[1] += AVF->Linesize[1];
+				av_md5_update(ctx, Data[2], VP->Width / 2);
+				Data[2] += AVF->Linesize[2];
+			}
 		}
 	}
 

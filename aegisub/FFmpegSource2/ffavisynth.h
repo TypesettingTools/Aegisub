@@ -41,7 +41,7 @@ private:
 	int FPSNum;
 	int FPSDen;
 
-	void InitOutputFormat(PixelFormat CurrentFormat, IScriptEnvironment *Env);
+	void InitOutputFormat(enum PixelFormat CurrentFormat, IScriptEnvironment *Env);
 	PVideoFrame OutputFrame(const AVFrameLite *SrcPicture, IScriptEnvironment *Env);
 public:
 	AvisynthVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, int FPSNum, int FPSDen, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
