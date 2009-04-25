@@ -22,10 +22,10 @@
 @set WindowsSdkDir=C:\Program Files\Microsoft SDKs\Windows\v6.0A\
 @set TEMP=C:\Users\Aegisub\AppData\Local\Temp
 @set TMP=C:\Users\Aegisub\AppData\Local\Temp
-@CommonProgramFiles=C:\Program Files\Common Files
-@CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
-@ProgramFiles=C:\Program Files
-@ProgramFiles(x86)=C:\Program Files (x86)
+@set CommonProgramFiles=C:\Program Files\Common Files
+@set CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+@set ProgramFiles=C:\Program Files
+@set ProgramFiles(x86)=C:\Program Files (x86)
 
 
 msbuild aegisub\tinderbox\windows\aegisub_vs2008.sln /p:Configuration=%1 /p:Platform=%2 /v:d /nologo /t:rebuild
