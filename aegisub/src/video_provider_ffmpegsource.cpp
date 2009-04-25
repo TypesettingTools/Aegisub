@@ -55,8 +55,8 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 	// clean up variables
 	VideoSource = NULL;
 	Index = NULL;
-	DstFormat = FFMS_GetPixFmt("PIX_FMT_NONE");
-	LastDstFormat = FFMS_GetPixFmt("PIX_FMT_NONE");
+	DstFormat = FFMS_GetPixFmt("none");
+	LastDstFormat = FFMS_GetPixFmt("none");
 	KeyFramesLoaded = false;
 	FrameNumber = -1;
 	MessageSize = sizeof(FFMSErrorMessage);
@@ -194,8 +194,8 @@ void FFmpegSourceVideoProvider::Close() {
 	if (Index)
 		FFMS_DestroyFrameIndex(Index);
 
-	DstFormat = FFMS_GetPixFmt("PIX_FMT_NONE");
-	LastDstFormat = FFMS_GetPixFmt("PIX_FMT_NONE");
+	DstFormat = FFMS_GetPixFmt("none");
+	LastDstFormat = FFMS_GetPixFmt("none");
 	KeyFramesLoaded = false;
 	KeyFramesList.clear();
 	TimecodesVector.clear();
@@ -225,20 +225,17 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	bool big_endian = Endian::BigToMachine((unsigned int)1)==(unsigned int)1;
 
 	// choose output format
-	if (FormatType & FORMAT_RGB32 && big_endian) {
-		DstFormat		= FFMS_GetPixFmt("PIX_FMT_BGR32_1");
-		DstFrame.format	= FORMAT_RGB32;
-	} else if (FormatType & FORMAT_RGB32 && !big_endian) {
-		DstFormat		= FFMS_GetPixFmt("PIX_FMT_RGB32");
+	if (FormatType & FORMAT_RGB32) {
+		DstFormat		= FFMS_GetPixFmt("bgra");
 		DstFrame.format	= FORMAT_RGB32;
 	} else if (FormatType & FORMAT_RGB24) {
-		DstFormat		= FFMS_GetPixFmt("PIX_FMT_BGR24");
+		DstFormat		= FFMS_GetPixFmt("bgr24");
 		DstFrame.format	= FORMAT_RGB24;
 	} else if (FormatType & FORMAT_YV12) {
-		DstFormat		= FFMS_GetPixFmt("PIX_FMT_YUV420P"); // may or may not work
+		DstFormat		= FFMS_GetPixFmt("yuv420p"); // may or may not work
 		DstFrame.format	= FORMAT_YV12;
 	} else if (FormatType & FORMAT_YUY2) {
-		DstFormat		= FFMS_GetPixFmt("PIX_FMT_YUYV422");
+		DstFormat		= FFMS_GetPixFmt("yuyv422");
 		DstFrame.format	= FORMAT_YUY2;
 	} else 
 		throw _T("FFmpegSource video provider: upstream provider requested unknown or unsupported pixel format");

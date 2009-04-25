@@ -60,9 +60,9 @@ int main(int argc, char *argv[]) {
 	FFMS_NoLog();
 #endif
 
-	int FMT_YV12A = FFMS_GetPixFmt("PIX_FMT_YUV420P)");
-	int FMT_YV12B = FFMS_GetPixFmt("PIX_FMT_YUVJ420P");
-	int FMT_YUY2 = FFMS_GetPixFmt("PIX_FMT_YUV422P");
+	int FMT_YV12A = FFMS_GetPixFmt("yuv420p");
+	int FMT_YV12B = FFMS_GetPixFmt("yuvj420p");
+	int FMT_YUY2 = FFMS_GetPixFmt("yuv422p");
 
 	av_md5_init(ctx);
 	FrameIndex *FI = FFMS_MakeIndex(argv[1], -1, 0, NULL, false, UpdateProgress, argv[1], ErrorMsg, sizeof(ErrorMsg));
