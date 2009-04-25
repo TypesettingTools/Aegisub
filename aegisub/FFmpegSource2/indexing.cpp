@@ -57,15 +57,18 @@ public:
 	AVCodecContext *CTX;
 	CompressedStream *CS;
 	int64_t CurrentSample;
+	uint8_t *CodecPrivate;
 
 	MatroskaAudioContext() {
 		W64W = NULL;
 		CTX = NULL;
 		CS = NULL;
 		CurrentSample = 0;
+		CodecPrivate = NULL;
 	}
 
 	~MatroskaAudioContext() {
+		delete[] CodecPrivate;
 		delete W64W;
 		if (CTX) {
 			avcodec_close(CTX);
@@ -216,13 +219,13 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 		return NULL;
 	}
 
-	CComPtr<IMemAlloc>    pMA;
+	CComPtr<IMemAlloc> pMA;
 	if (FAILED(pMA.CoCreateInstance(CLSID_MemAlloc))) {
 		_snprintf(ErrorMsg, MsgSize, "Can't create memory allocator");
 		return NULL;
 	}
 
-	CComPtr<IMMStream>    pMS;
+	CComPtr<IMMStream> pMS;
 	if (FAILED(pMS.CoCreateInstance(CLSID_DiskFile))) {
 		_snprintf(ErrorMsg, MsgSize, "Can't create disk file reader");
 		return NULL;
@@ -277,15 +280,16 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 			if (pBag) {
 				CComVariant pV;
 
-				if (pBag->Read(L"CodecID", &pV, NULL) == S_OK)
+				if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR)))
 					CodecID = pV.bstrVal;
 
-				if (pBag->Read(L"Type", &pV, NULL) == S_OK)
+				if (SUCCEEDED(pBag->Read(L"Type", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
 					TrackTypes[CurrentTrack] = pV.uintVal;
 
-				if (pBag->Read(L"CodecPrivate", &pV, NULL) == S_OK) {
-					CodecPrivate = (uint8_t *)pV.parray->pvData;
-					CodecPrivateSize = pV.parray->cbElements;
+				if (SUCCEEDED(pBag->Read(L"CodecPrivate", &pV, NULL))) {
+					CodecPrivateSize = vtSize(pV);
+					CodecPrivate = new uint8_t[CodecPrivateSize];
+					vtCopy(pV, CodecPrivate);
 				}
 			}
 
@@ -339,7 +343,7 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 		if (pMMC->ReadFrame(NULL, &pMMF) != S_OK)
 			break;
 
-		REFERENCE_TIME  Ts, Te;
+		REFERENCE_TIME Ts, Te;
 		HRESULT hr = pMMF->GetTime(&Ts, &Te);
 
 		unsigned int CurrentTrack = pMMF->GetTrack();

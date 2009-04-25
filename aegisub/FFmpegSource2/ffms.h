@@ -48,8 +48,6 @@ class FrameInfoVector;
 
 typedef int (FFMS_CC *IndexCallback)(int State, int64_t Current, int64_t Total, void *Private);
 
-enum PixelFormat;
-
 enum FFMS_SeekMode {
 	FFMS_SEEK_LINEAR_NO_RW  = -1,
 	FFMS_SEEK_LINEAR = 0,
@@ -148,5 +146,5 @@ FFMS_API(int) FFMS_WriteTimecodes(FrameInfoVector *FIV, const char *TimecodeFile
 FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(FrameIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(PixelFormat) FFMS_GetPixFmt(const char *Name);
+FFMS_API(int) FFMS_GetPixFmt(const char *Name);
 #endif

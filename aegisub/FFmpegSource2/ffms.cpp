@@ -209,6 +209,6 @@ FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, c
 	return WriteIndex(IndexFile, TrackIndices, ErrorMsg, MsgSize);
 }
 
-FFMS_API(enum PixelFormat) FFMS_GetPixFmt(const char *Name) {
+FFMS_API(int) FFMS_GetPixFmt(const char *Name) {
 	return avcodec_get_pix_fmt(Name);
 }

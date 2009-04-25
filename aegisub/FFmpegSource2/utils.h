@@ -31,6 +31,17 @@ extern "C" {
 #include "stdiostream.h"
 }
 
+#ifdef HAALISOURCE
+#	define _WIN32_DCOM
+#	include <windows.h>
+#	include <tchar.h>
+#	include <atlbase.h>
+#	include <dshow.h>
+#	include "CoParser.h"
+#	include <initguid.h>
+#	include "guids.h"
+#endif
+
 struct MatroskaReaderContext {
 public:
 	StdIoStream ST;
@@ -52,6 +63,10 @@ int GetCPUFlags();
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize);
 bool AudioFMTIsFloat(SampleFormat FMT);
 void init_null_packet(AVPacket *pkt);
+#ifdef HAALISOURCE
+unsigned vtSize(VARIANT &vt);
+void vtCopy(VARIANT& vt,void *dest);
+#endif
 CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate);
 
 #endif
