@@ -154,7 +154,7 @@ int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height, char *E
 
 	if (SWS) {
 		FinalFrame = avcodec_alloc_frame();
-		avpicture_alloc((AVPicture *)FinalFrame, VP.VPixelFormat, VP.Width, VP.Height);
+		avpicture_alloc((AVPicture *)FinalFrame, static_cast<PixelFormat>(VP.VPixelFormat), VP.Width, VP.Height);
 	} else {
 		FinalFrame = PPFrame;
 	}

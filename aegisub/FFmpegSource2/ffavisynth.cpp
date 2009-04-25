@@ -50,7 +50,7 @@ AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, Fram
 	}
 
 	try {
-		InitOutputFormat(VP.VPixelFormat, Env);
+		InitOutputFormat(static_cast<PixelFormat>(VP.VPixelFormat), Env);
 	} catch (AvisynthError &) {
 		FFMS_DestroyVideoSource(VS);
 		throw;
