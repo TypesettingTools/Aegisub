@@ -97,7 +97,7 @@ struct VideoProperties {
 	int FPSDenominator;
 	int FPSNumerator;
 	int NumFrames;
-	enum PixelFormat VPixelFormat;
+	int VPixelFormat;
 	int SARNum;
 	int SARDen;
 	int CropTop;
