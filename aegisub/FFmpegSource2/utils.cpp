@@ -137,6 +137,31 @@ void init_null_packet(AVPacket *pkt) {
 	pkt->size = 0;
 }
 
+#ifdef HAALISOURCE
+
+unsigned vtSize(VARIANT &vt) {
+	if (V_VT(&vt) != (VT_ARRAY | VT_UI1))
+		return 0;
+	long lb,ub;
+	if (FAILED(SafeArrayGetLBound(V_ARRAY(&vt),1,&lb)) ||
+		FAILED(SafeArrayGetUBound(V_ARRAY(&vt),1,&ub)))
+		return 0;
+	return ub - lb + 1;
+}
+
+void vtCopy(VARIANT& vt,void *dest) {
+	unsigned sz = vtSize(vt);
+	if (sz > 0) {
+		void  *vp;
+		if (SUCCEEDED(SafeArrayAccessData(V_ARRAY(&vt),&vp))) {
+			memcpy(dest,vp,sz);
+			SafeArrayUnaccessData(V_ARRAY(&vt));
+		}
+	}
+}
+
+#else
+
 // used for matroska<->ffmpeg codec ID mapping to avoid Win32 dependency
 typedef struct BITMAPINFOHEADER {
         uint32_t      biSize;
@@ -151,6 +176,8 @@ typedef struct BITMAPINFOHEADER {
         uint32_t      biClrUsed;
         uint32_t      biClrImportant;
 } BITMAPINFOHEADER;
+
+#endif
 
 #define MAKEFOURCC(ch0, ch1, ch2, ch3)\
 	((uint32_t)(uint8_t)(ch0) | ((uint32_t)(uint8_t)(ch1) << 8) |\

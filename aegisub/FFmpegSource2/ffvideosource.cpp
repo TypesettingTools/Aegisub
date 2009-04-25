@@ -591,32 +591,11 @@ AVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSi
 
 #ifdef HAALISOURCE
 
-static unsigned	vtSize(VARIANT &vt) {
-	if (V_VT(&vt) != (VT_ARRAY | VT_UI1))
-		return 0;
-	long lb,ub;
-	if (FAILED(SafeArrayGetLBound(V_ARRAY(&vt),1,&lb)) ||
-		FAILED(SafeArrayGetUBound(V_ARRAY(&vt),1,&ub)))
-		return 0;
-	return ub - lb + 1;
-}
-
-static void vtCopy(VARIANT& vt,void *dest) {
-	unsigned sz = vtSize(vt);
-	if (sz > 0) {
-		void  *vp;
-		if (SUCCEEDED(SafeArrayAccessData(V_ARRAY(&vt),&vp))) {
-			memcpy(dest,vp,sz);
-			SafeArrayUnaccessData(V_ARRAY(&vt));
-		}
-	}
-}
-
 void HaaliVideoSource::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
 	av_free(CodecContext);
-	free(CodecPrivate);
+	delete[] CodecPrivate;
 }
 
 HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
@@ -684,12 +663,12 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 				if (pBag) {
 					CComVariant pV;
 
-					if (pBag->Read(L"CodecID", &pV, NULL) == S_OK)
+					if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR)))
 						CodecID = pV.bstrVal;
 
-					if (pBag->Read(L"CodecPrivate", &pV, NULL) == S_OK) {
+					if (SUCCEEDED(pBag->Read(L"CodecPrivate", &pV, NULL))) {
 						CodecPrivateSize = vtSize(pV);
-						CodecPrivate = static_cast<uint8_t*>(malloc(CodecPrivateSize));
+						CodecPrivate = new uint8_t[CodecPrivateSize];
 						vtCopy(pV, CodecPrivate);
 					}
 				}
@@ -759,9 +738,9 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 
 	// Set AR variables
 	CComVariant pV;
-	if (pBag->Read(L"Video.DisplayWidth", &pV, NULL) == S_OK)
+	if (SUCCEEDED(pBag->Read(L"Video.DisplayWidth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
 		VP.SARNum  = pV.uiVal;
-	if (pBag->Read(L"Video.DisplayHeight", &pV, NULL) == S_OK)
+	if (SUCCEEDED(pBag->Read(L"Video.DisplayHeight", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
 		VP.SARDen = pV.uiVal;
 }
 
