@@ -117,9 +117,9 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// TODO: give this its own option?
 	int SeekMode;
 	if (Options.AsBool(_T("FFmpeg allow unsafe seeking")))
-		SeekMode = 2;
+		SeekMode = FFMS_SEEK_UNSAFE;
 	else 
-		SeekMode = 1;
+		SeekMode = FFMS_SEEK_NORMAL;
 
 	// FIXME: provide a way to choose which audio track to load?
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrorMessage, MessageSize);
@@ -222,7 +222,8 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	// this is what we'll return eventually
 	AegiVideoFrame &DstFrame = CurFrame;
 	
-	bool big_endian = Endian::BigToMachine((unsigned int)1)==(unsigned int)1;
+	// FIXME: find out how this actually works with ffmpeg 
+	//bool big_endian = Endian::BigToMachine((unsigned int)1)==(unsigned int)1;
 
 	// choose output format
 	if (FormatType & FORMAT_RGB32) {
