@@ -648,7 +648,6 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 		throw ErrorMsg;
 	}
 
-	BSTR CodecID = NULL;
 	CodecPrivate = NULL;
 	int CodecPrivateSize = 0;
 	int CurrentTrack = 0;
@@ -663,13 +662,18 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 				if (pBag) {
 					CComVariant pV;
 
-					if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR)))
-						CodecID = pV.bstrVal;
-
+					pV.Clear();
 					if (SUCCEEDED(pBag->Read(L"CodecPrivate", &pV, NULL))) {
 						CodecPrivateSize = vtSize(pV);
 						CodecPrivate = new uint8_t[CodecPrivateSize];
 						vtCopy(pV, CodecPrivate);
+					}
+
+					pV.Clear();
+					if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR))) {
+						char ACodecID[2048];
+						wcstombs(ACodecID, pV.bstrVal, 2000);
+						Codec = avcodec_find_decoder(MatroskaToFFCodecID(ACodecID, CodecPrivate));
 					}
 				}
 			}
@@ -682,9 +686,6 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 	CodecContext->extradata_size = CodecPrivateSize;
 	CodecContext->thread_count = Threads;
 
-	char ACodecID[2048];
-	wcstombs(ACodecID, CodecID, 2000);
-	Codec = avcodec_find_decoder(MatroskaToFFCodecID(ACodecID, CodecPrivate));
 	if (Codec == NULL) {
 		Free(false);
 		_snprintf(ErrorMsg, MsgSize, "Video codec not found");
@@ -738,8 +739,11 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 
 	// Set AR variables
 	CComVariant pV;
+
+	pV.Clear();
 	if (SUCCEEDED(pBag->Read(L"Video.DisplayWidth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
 		VP.SARNum  = pV.uiVal;
+	pV.Clear();
 	if (SUCCEEDED(pBag->Read(L"Video.DisplayHeight", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
 		VP.SARDen = pV.uiVal;
 }

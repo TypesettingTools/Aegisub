@@ -272,7 +272,7 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 		CComPtr<IUnknown> pU;
 		while (pEU->Next(1, &pU, NULL) == S_OK) {
 			CComQIPtr<IPropertyBag> pBag = pU;
-			BSTR CodecID = NULL;
+			AVCodec *CodecID = NULL;
 			TrackTypes[CurrentTrack] = -200;
 			uint8_t * CodecPrivate = NULL;
 			int CodecPrivateSize = 0;
@@ -280,16 +280,22 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 			if (pBag) {
 				CComVariant pV;
 
-				if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR)))
-					CodecID = pV.bstrVal;
-
+				pV.Clear();
 				if (SUCCEEDED(pBag->Read(L"Type", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
 					TrackTypes[CurrentTrack] = pV.uintVal;
 
+				pV.Clear();
 				if (SUCCEEDED(pBag->Read(L"CodecPrivate", &pV, NULL))) {
 					CodecPrivateSize = vtSize(pV);
 					CodecPrivate = new uint8_t[CodecPrivateSize];
 					vtCopy(pV, CodecPrivate);
+				}
+
+				pV.Clear();
+				if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR))) {
+					char ACodecID[2048];
+					wcstombs(ACodecID, pV.bstrVal, 2000);
+					CodecID = avcodec_find_decoder(MatroskaToFFCodecID(ACodecID, CodecPrivate));
 				}
 			}
 
@@ -301,9 +307,7 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 				AudioCodecContext->extradata_size = CodecPrivateSize;
 				AudioContexts[CurrentTrack].CTX = AudioCodecContext;
 
-				char ACodecID[2048];
-				wcstombs(ACodecID, CodecID, 2000);
-				AVCodec *AudioCodec = avcodec_find_decoder(MatroskaToFFCodecID(ACodecID, NULL));
+				AVCodec *AudioCodec = CodecID;
 				if (AudioCodec == NULL) {
 					av_free(AudioCodecContext);
 					AudioContexts[CurrentTrack].CTX = NULL;
