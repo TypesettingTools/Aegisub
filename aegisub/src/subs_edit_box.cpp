@@ -912,6 +912,10 @@ void SubsEditBox::Commit(bool stay) {
 
 	// Update file
 	if (!updated && textNeedsCommit) {
+		if (StartTime->HasBeenModified() || EndTime->HasBeenModified()) {
+			StartTime->Update();
+			EndTime->Update();
+		}
 		grid->ass->FlagAsModified(_("editing"));
 		grid->CommitChanges();
 	}
