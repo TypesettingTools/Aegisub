@@ -308,8 +308,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 			// Get frame
 			frame_n = 0;
-			//UpdateDisplays(true);
-			Refresh(true,true);
 
 			// Show warning
 			wxString warning = provider->GetWarning().c_str();
@@ -389,7 +387,11 @@ void VideoContext::Refresh (bool video, bool subtitles) {
 		// Re-export
 		AssExporter exporter(grid->ass);
 		exporter.AddAutoFilters();
-		subsProvider->LoadSubtitles(exporter.ExportTransform());
+		try {
+			subsProvider->LoadSubtitles(exporter.ExportTransform());
+		}
+		catch (wxString err) { wxMessageBox(_T("Error while invoking subtitles provider: ") + err,_T("Subtitles provider")); }
+		catch (const wchar_t *err) { wxMessageBox(_T("Error while invoking subtitles provider: ") + wxString(err),_T("Subtitles provider")); }
 	}
 
 	// Jump to frame
