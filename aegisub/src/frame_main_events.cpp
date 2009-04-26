@@ -1639,6 +1639,7 @@ void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
 	// Is the text edit
 	if (focus == EditBox->TextEdit) {
 		EditBox->Commit(true);
+		EditBox->Update(true);
 	}
 
 	// Other window
