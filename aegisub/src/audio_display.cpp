@@ -1197,6 +1197,9 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 	if (!loaded) return;
 
 	// Check validity
+	bool textNeedsCommit = grid->GetDialogue(line_n)->Text != grid->editBox->TextEdit->GetText();
+	bool timeNeedsCommit = grid->GetDialogue(line_n)->Start.GetMS() != curStartMS || grid->GetDialogue(line_n)->End.GetMS() != curEndMS;
+	if (timeNeedsCommit || textNeedsCommit) NeedCommit = true;
 	bool wasKaraSplitting = false;
 	bool validCommit = true;
 	if (!karaoke->enabled && !karaoke->splitting) {
@@ -1220,6 +1223,9 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 		wxLogDebug(_T("AudioDisplay::CommitChanges: karaSelStart=%d karaSelEnd=%d"), karaSelStart, karaSelEnd);
 	}
 	
+	// Get selected rows
+	wxArrayInt sel = grid->GetSelection();
+
 	// Commit ok?
 	if (validCommit) {
 		wxLogDebug(_T("AudioDisplay::CommitChanges: valid commit"));
@@ -1229,25 +1235,21 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 
 		// Update dialogues
 		blockUpdate = true;
-		wxArrayInt sel = grid->GetSelection();
-		int sels = (int)sel.Count();
-		bool textNeedsCommit = grid->GetDialogue(sel[0])->Text != grid->editBox->TextEdit->GetText();
 		AssDialogue *curDiag;
-		for (int i=-1;i<sels;i++) {
-			if (i == -1) curDiag = dialogue;
-			else {
-				curDiag = grid->GetDialogue(sel[i]);
-				if (curDiag == dialogue) continue;
+		for (size_t i=0;i<sel.GetCount();i++) {
+			if (grid->IsInSelection(line_n)) curDiag = grid->GetDialogue(sel[i]);
+			else curDiag = grid->GetDialogue(line_n);
+			if (timeNeedsCommit) {
+				curDiag->Start.SetMS(curStartMS);
+				curDiag->End.SetMS(curEndMS);
 			}
-
-			curDiag->Start.SetMS(curStartMS);
-			curDiag->End.SetMS(curEndMS);
 			if (!karaoke->enabled && textNeedsCommit) {
 				// If user was editing karaoke stuff, that should take precedence of manual changes in the editbox,
 				// so only update from editbox when not in kara mode
 				curDiag->Text = grid->editBox->TextEdit->GetText();
 			}
 			curDiag->UpdateData();
+			if (!grid->IsInSelection(line_n)) break;
 		}
 
 		// Update edit box
@@ -1278,15 +1280,22 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 			def->End.SetMS(def->End.GetMS()+Options.AsInt(_T("Timing Default Duration")));
 			def->Style = grid->GetDialogue(line_n)->Style;
 			grid->InsertLine(def,line_n,true);
+			curStartMS = curEndMS;
+			curEndMS = curStartMS + Options.AsInt(_T("Timing Default Duration"));
 		}
-
+		else if (grid->GetDialogue(line_n+1)->Start.GetMS() == 0 && grid->GetDialogue(line_n+1)->End.GetMS() == 0) {
+			curStartMS = curEndMS;
+			curEndMS = curStartMS + Options.AsInt(_T("Timing Default Duration"));
+		}
+		else {
+			curStartMS = grid->GetDialogue(line_n+1)->Start.GetMS();
+			curEndMS = grid->GetDialogue(line_n+1)->End.GetMS();
+		}
+		
 		// Go to next
 		dontReadTimes = true;
-		Next();
+		ChangeLine(1,sel.GetCount() > 1 ? true : false);
 		dontReadTimes = false;
-		curStartMS = curEndMS;
-		curEndMS = curStartMS + Options.AsInt(_T("Timing Default Duration"));
-		NeedCommit = true;
 	}
 
 	Update();
@@ -2208,12 +2217,15 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 
 ///////////////
 // Change line
-void AudioDisplay::ChangeLine(int delta) {
+void AudioDisplay::ChangeLine(int delta, bool block) {
 	wxLogDebug(_T("AudioDisplay::ChangeLine(delta=%d)"), delta);
 	if (dialogue) {
 		wxLogDebug(_T("AudioDisplay::ChangeLine: has dialogue"));
 		// Get next line number and make sure it's within bounds
-		int next = line_n+delta;
+		int next;
+		if (block && grid->IsInSelection(line_n)) next = grid->GetLastSelRow()+delta;
+		else next = line_n+delta;
+
 		if (next == -1) next = 0;
 		if (next == grid->GetRows()) next = grid->GetRows() - 1;
 		wxLogDebug(_T("AudioDisplay::ChangeLine: next=%i"), next);

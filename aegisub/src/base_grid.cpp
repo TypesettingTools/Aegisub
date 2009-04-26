@@ -140,6 +140,9 @@ void BaseGrid::EndBatch() {
 //////////////////////
 // Makes cell visible
 void BaseGrid::MakeCellVisible(int row, int col,bool center) {
+	// Update last row selection
+	lastRow = row;
+
 	// Get size
 	int w = 0;
 	int h = 0;
@@ -253,6 +256,17 @@ int BaseGrid::GetFirstSelRow() {
 		}
 	}
 	return -1;
+}
+
+
+/////////////////////////////////////////////////////
+// Gets last selected row from first block selection
+int BaseGrid::GetLastSelRow() {
+	int frow = GetFirstSelRow();
+	while (IsInSelection(frow)) {
+		frow++;
+	}
+	return frow-1;
 }
 
 
