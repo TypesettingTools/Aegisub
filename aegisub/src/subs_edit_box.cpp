@@ -267,8 +267,11 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 			int start = curdiag->Start.GetMS();
 			int end = curdiag->End.GetMS();
 			StartTime->SetTime(start);
+			StartTime->Update();
 			EndTime->SetTime(end);
+			EndTime->Update();
 			Duration->SetTime(end-start);
+			Duration->Update();
 			if (!timeOnly) {
 				TextEdit->SetTextTo(curdiag->Text);
 				Layer->SetValue(wxString::Format(_T("%i"),curdiag->Layer));
@@ -342,6 +345,8 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 		enabled = true;
 		if (n != linen) {
 			linen = n;
+			StartTime->Update();
+			EndTime->Update();
 			Duration->Update();
 		}
 	}
@@ -912,10 +917,6 @@ void SubsEditBox::Commit(bool stay) {
 
 	// Update file
 	if (!updated && textNeedsCommit) {
-		if (StartTime->HasBeenModified() || EndTime->HasBeenModified()) {
-			StartTime->Update();
-			EndTime->Update();
-		}
 		grid->ass->FlagAsModified(_("editing"));
 		grid->CommitChanges();
 	}
