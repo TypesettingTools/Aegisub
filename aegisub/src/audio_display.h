@@ -161,7 +161,7 @@ public:
 	void UpdateScrollbar();
 	void SetDialogue(SubtitlesGrid *_grid=NULL,AssDialogue *diag=NULL,int n=-1);
 	void MakeDialogueVisible(bool force=false);
-	void ChangeLine(int delta);
+	void ChangeLine(int delta, bool block=false);
 	void Next(bool play=true);
 	void Prev(bool play=true);
 

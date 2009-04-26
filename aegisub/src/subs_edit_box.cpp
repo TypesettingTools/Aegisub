@@ -342,8 +342,6 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 		enabled = true;
 		if (n != linen) {
 			linen = n;
-			StartTime->Update();
-			EndTime->Update();
 			Duration->Update();
 		}
 	}
@@ -714,7 +712,8 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart,bool commit) {
 
 	// Update lines
 	for (int i=0;i<n;i++) {
-		cur = grid->GetDialogue(sel[i]);
+		if (grid->IsInSelection(linen)) cur = grid->GetDialogue(sel[i]);
+		else cur = grid->GetDialogue(linen);
 		if (cur) {
 			// Set times
 			if (start) cur->Start = StartTime->time;
@@ -725,11 +724,15 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart,bool commit) {
 				if (fromStart) cur->End = cur->Start;
 				else cur->Start = cur->End;
 			}
+			if (!grid->IsInSelection(linen)) break;
 		}
 	}
 
 	// Commit
 	if (commit) {
+		StartTime->Update();
+		EndTime->Update();
+		Duration->Update();
 		grid->ass->FlagAsModified(_("modify times"));
 		grid->CommitChanges();
 		audio->SetDialogue(grid,grid->GetDialogue(sel[0]),sel[0]);
@@ -884,15 +887,43 @@ void SubsEditBox::DoKeyPress(wxKeyEvent &event) {
 //////////
 // Commit
 void SubsEditBox::Commit(bool stay) {
+	// Record pre-commit data
+	wxString oldText = grid->GetDialogue(linen)->Text;
+	int oldStart = grid->GetDialogue(linen)->Start.GetMS();
+	int oldEnd = grid->GetDialogue(linen)->End.GetMS();
 	// Update line
 	CommitText();
 
-	// Next line if control is not held down
+	// Change text/time if needed for all selected lines
 	bool updated = false;
+	bool textNeedsCommit = grid->GetDialogue(linen)->Text != oldText;
+	bool timeNeedsCommit = grid->GetDialogue(linen)->Start.GetMS() != oldStart || grid->GetDialogue(linen)->End.GetMS() != oldEnd;
+	int nrows = grid->GetRows();
+	wxArrayInt sel = grid->GetSelection();
+	if (grid->IsInSelection(linen)) {
+		for (size_t i=0;i<sel.GetCount();i++) {
+			if (textNeedsCommit) grid->GetDialogue(sel[i])->Text = TextEdit->GetText();
+			if (timeNeedsCommit) {
+				grid->GetDialogue(sel[i])->Start.SetMS(StartTime->time.GetMS());
+				grid->GetDialogue(sel[i])->End.SetMS(EndTime->time.GetMS());
+			}
+		}
+	}
+
+	// Update file
+	if (!updated && textNeedsCommit) {
+		grid->ass->FlagAsModified(_("editing"));
+		grid->CommitChanges();
+	}
+	else if (!updated && (StartTime->HasBeenModified() || EndTime->HasBeenModified())) 
+		CommitTimes(StartTime->HasBeenModified(),EndTime->HasBeenModified(),StartTime->HasBeenModified(),true);
+
+	// Get next line if ctrl was not held down
 	if (!stay) {
-		AssDialogue *cur = grid->GetDialogue(linen);
-		int nrows = grid->GetRows();
-		int next = linen+1;
+		int next;
+		if (!grid->IsInSelection(linen)) next = linen+1;
+		else next = grid->GetLastSelRow()+1;
+		AssDialogue *cur = grid->GetDialogue(next-1);
 		if (next >= nrows) {
 			AssDialogue *newline = new AssDialogue;
 			newline->Start = cur->End;
@@ -906,12 +937,6 @@ void SubsEditBox::Commit(bool stay) {
 		grid->MakeCellVisible(next,0);
 		SetToLine(next);
 		if (next >= nrows) return;
-	}
-
-	// Update file
-	if (!updated) {
-		grid->ass->FlagAsModified(_("editing"));
-		grid->CommitChanges();
 	}
 }
 
@@ -927,12 +952,14 @@ void SubsEditBox::CommitText(bool weak) {
 		cur->Text = TextEdit->GetText();
 
 		// Update times
-		cur->Start = StartTime->time;
-		cur->End = EndTime->time;
-		if (cur->Start > cur->End) cur->End = cur->Start;
-		StartTime->Update();
-		EndTime->Update();
-		Duration->Update();
+		if (grid->IsInSelection(linen)) {
+			cur->Start = StartTime->time;
+			cur->End = EndTime->time;
+			if (cur->Start > cur->End) {
+				cur->End = cur->Start;
+				EndTime->SetTime(cur->End.GetMS());
+			}
+		}
 
 		// Update audio
 		if (!weak) {

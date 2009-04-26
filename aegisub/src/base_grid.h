@@ -103,6 +103,7 @@ public:
 	bool IsDisplayed(AssDialogue *line);
 	int GetNumberSelection();
 	int GetFirstSelRow();
+	int GetLastSelRow();
 	void SelectVisible();
 	wxArrayInt GetSelection(bool *continuous=NULL);
 
