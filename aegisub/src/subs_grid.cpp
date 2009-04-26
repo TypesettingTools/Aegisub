@@ -1047,8 +1047,10 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target) {
 	ass->FlagAsModified(_("delete"));
 	CommitChanges();
 
-	// Update editbox
-	editBox->SetToLine(MID(0,editBox->linen,GetRows()-1));
+	// Update selected line
+	int newSelected = MID(0, editBox->linen,GetRows() - 1);
+	editBox->SetToLine(newSelected);
+	SelectRow(newSelected);
 }
 
 
