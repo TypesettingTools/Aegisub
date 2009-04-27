@@ -1,7 +1,7 @@
 AC_PREREQ(2.57)
 
 ######################
-# aegisub version info
+# aegisub version info 
 ######################
 m4_define([aegisub_version_major], [2])
 m4_define([aegisub_version_minor], [1])
@@ -288,6 +288,7 @@ if test ! "$GL_LIBS"; then
 fi
 AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
+
 
 #XXX: This needs to be fixed for OSX.
 AC_AGI_COMPILE([OpenGL], [opengl], [$GL_CFLAGS], [$GL_LIBS],[
