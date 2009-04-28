@@ -750,7 +750,7 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	if (nextFrame == frame_n) return;
 
 	// Next frame is before or over 2 frames ahead, so force audio resync
-	if (keepAudioSync && (nextFrame < frame_n || nextFrame > frame_n + 2)) audio->player->SetCurrentPosition(audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame)));
+	if (audio->player && keepAudioSync && (nextFrame < frame_n || nextFrame > frame_n + 2)) audio->player->SetCurrentPosition(audio->GetSampleAtMS(VFR_Output.GetTimeAtFrame(nextFrame)));
 
 	// Jump to next frame
 	playNextFrame = nextFrame;
