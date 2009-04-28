@@ -78,6 +78,7 @@ for i in `cat po/LINGUAS`; do
     cp -v po/${i}.gmo ${PKG_DIR}/Contents/Resources/${i}.lproj/aegisub.mo;
   else
     echo "${i}.gmo not found!"
+	exit 1
   fi
 done
 
@@ -98,11 +99,11 @@ else
 fi
 
 echo cc -o ${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c
-${CC} -o ${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c
+${CC} -o ${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c || exit $?
 
 echo
 echo "---- Libraries ----"
-python scripts/osx-fix-libs.py "${PKG_DIR}/Contents/MacOS/Aegisub"
+python scripts/osx-fix-libs.py "${PKG_DIR}/Contents/MacOS/Aegisub" || exit $?
 
 echo
 echo "Done Creating ${PKG_DIR}"
