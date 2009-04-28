@@ -17,4 +17,3 @@ use Mac::Files qw( NewAliasMinimal );
     &makeEntries("Applications", Iloc_xy => [ 133, 250 ]),
     &makeEntries("$ARGV[1]", Iloc_xy => [ 133, 55 ])
 );
-
