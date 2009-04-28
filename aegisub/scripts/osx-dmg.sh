@@ -25,7 +25,7 @@ if ! perl -e 'require Mac::Finder::DSStore' > /dev/null 2>&1; then
   echo
   echo "Perl Mac::Finder::DSStore is required to build a dmg."
   echo "Please get it from http://freehg.org/u/wiml/dsstore/"
-  exit;
+  exit 1;
 fi
 
 rm -rf ${TMP_DMG} "${PKG_NAME}.dmg"
