@@ -27,5 +27,4 @@
 @set ProgramFiles=C:\Program Files
 @set ProgramFiles(x86)=C:\Program Files (x86)
 
-
 msbuild aegisub\tinderbox\windows\aegisub_vs2008.sln /p:Configuration=%1 /p:Platform=%2 /v:d /nologo /t:rebuild
