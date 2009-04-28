@@ -43,36 +43,36 @@ cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns ${TMP_DMG}/.VolumeIcon
 
 echo
 echo "---- Creating image ----"
-/usr/bin/hdiutil create -srcfolder "${TMP_DMG}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${PKG_NAME_RW}"
+/usr/bin/hdiutil create -srcfolder "${TMP_DMG}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${PKG_NAME_RW}" || exit $?
 
 echo
 echo "---- Mounting image ----"
-DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_RW}" |awk '/Apple_partition_scheme/ {print $1}'`
+DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_RW}" |awk '/Apple_partition_scheme/ {print $1}'` || exit $?
 echo "Device name: ${DEV_NAME}"
 
 echo
 echo "---- Setting bless -openfolder ----"
-bless -openfolder "/Volumes/${PKG_NAME_VOLUME}"
+bless -openfolder "/Volumes/${PKG_NAME_VOLUME}" || exit $?
 
 echo
 echo "---- Setting root icon using SetFile ----"
-/usr/bin/SetFile -a C "/Volumes/${PKG_NAME_VOLUME}"
+/usr/bin/SetFile -a C "/Volumes/${PKG_NAME_VOLUME}" || exit $?
 
 echo
 echo "--- Generating /Volumes/${PKG_NAME_VOLUME}/.DS_Store ----"
-/usr/bin/perl scripts/osx-dmg-dsstore.pl "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" "${PKG_DIR}" "/Volumes/${PKG_NAME_VOLUME}/.background/background.png"
+/usr/bin/perl scripts/osx-dmg-dsstore.pl "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" "${PKG_DIR}" "/Volumes/${PKG_NAME_VOLUME}/.background/background.png" || exit $?
 
 echo
 echo "---- Detaching ----"
-/usr/bin/hdiutil detach "${DEV_NAME}"
+/usr/bin/hdiutil detach "${DEV_NAME}" || exit $?
 
 echo
 echo "---- Compressing ----"
-/usr/bin/hdiutil convert "${PKG_NAME_RW}" -format UDZO -imagekey zlib-level=9 -o "${PKG_NAME}.dmg"
+/usr/bin/hdiutil convert "${PKG_NAME_RW}" -format UDZO -imagekey zlib-level=9 -o "${PKG_NAME}.dmg" || exit $?
 
 echo
 echo "---- Removing ${TMP_DMG}, ${PKG_NAME_RW} ----"
-rm -rf ${TMP_DMG}  ${PKG_NAME_RW}
+rm -rf ${TMP_DMG}  ${PKG_NAME_RW} || exit $?
 
 echo
 echo "Done!"
