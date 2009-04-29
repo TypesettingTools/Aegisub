@@ -28,7 +28,7 @@ extern "C" {
 
 using namespace std;
 
-#define VERBOSE
+//#define VERBOSE
 
 static int FFMS_CC UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
 
@@ -141,6 +141,6 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < sizeof(md5sum); i++)
 		cout << static_cast<unsigned>(md5sum[i]);
 	cout << endl;
-//	cin >> argc;
+
 	return 0;
 }

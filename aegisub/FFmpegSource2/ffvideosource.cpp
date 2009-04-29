@@ -563,7 +563,7 @@ AVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSi
 	bool HasSeeked = false;
 
 	if (n < CurrentFrame || Frames.FindClosestKeyFrame(n) > CurrentFrame) {
-		mkv_Seek(MF, Frames[n].DTS, MKVF_SEEK_TO_PREV_KEYFRAME);
+		mkv_Seek(MF, Frames[n].DTS, MKVF_SEEK_TO_PREV_KEYFRAME_STRICT);
 		avcodec_flush_buffers(CodecContext);
 		HasSeeked = true;
 	}
