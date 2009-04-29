@@ -22,7 +22,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_debug32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\compiler_options_debug.vsprops;.\svn_rev_header_update.vsprops;.\delayload_ffms2_32.vsprops;.\delayload_perl_32.vsprops;.\delayload_portaudio_32.vsprops"
+			InheritedPropertySheets=".\suffix_debug32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\compiler_options_debug.vsprops;.\svn_rev_header_update.vsprops;.\delayload_ffms2_32.vsprops;.\delayload_perl_32.vsprops;.\delayload_portaudio_32.vsprops;.\delayload_openal_32.vsprops;.\delayload_libauto3.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -88,7 +88,7 @@
 		<Configuration
 			Name="Debug|x64"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_debug64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\compiler_options_debug.vsprops;.\svn_rev_header_update.vsprops"
+			InheritedPropertySheets=".\suffix_debug64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\compiler_options_debug.vsprops;.\svn_rev_header_update.vsprops;.\delayload_libauto3.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -154,7 +154,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_release32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\svn_rev_header_update.vsprops;.\delayload_ffms2_32.vsprops;.\delayload_perl_32.vsprops;.\delayload_portaudio_32.vsprops"
+			InheritedPropertySheets=".\suffix_release32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\svn_rev_header_update.vsprops;.\delayload_ffms2_32.vsprops;.\delayload_perl_32.vsprops;.\delayload_portaudio_32.vsprops;.\delayload_openal_32.vsprops;.\delayload_libauto3.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -223,7 +223,7 @@
 		<Configuration
 			Name="Release|x64"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_release64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\svn_rev_header_update.vsprops"
+			InheritedPropertySheets=".\suffix_release64.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\shipped_stub_libs_dir.vsprops;.\compiler_options.vsprops;.\svn_rev_header_update.vsprops;.\delayload_libauto3.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
