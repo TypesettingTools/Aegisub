@@ -175,7 +175,16 @@ void AudioProvider::GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int
 /////////////////////////
 // Get audio with volume
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) {
-	GetAudio(buf,start,count);
+	try {
+		GetAudio(buf,start,count);
+	}
+	catch (...) {
+		// FIXME: Poor error handling though better than none, to patch issue #800.
+		// Just return blank audio if real provider fails.
+		memset(buf, 0, count*bytes_per_sample);
+		return;
+	}
+
 	if (volume == 1.0) return;
 
 	if (bytes_per_sample == 2) {
