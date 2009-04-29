@@ -73,23 +73,26 @@ esac
 
 case "$target_or_host" in
   ppc-*-* | powerpc-*)
-   arch_ppc="yes"
+    arch_ppc="yes"
   ;;
 
   i*86-*-*)
-   arch_x86="yes"
+    arch_x86="yes"
   ;;
 
   x86_64-*-*)
-   arch_x86="yes"
-   arch_x86_64="yes"
+    arch_x86="yes"
+    arch_x86_64="yes"
+  ;;
+
+  *)
   ;;
 esac
 
 if test "$build_darwin" = "yes"; then
   if test "$arch_x86" = "yes"; then
     DARWIN_ARCH="intel"
-  elif "$arch_ppc" = "yes"; then
+  elif test "$arch_ppc" = "yes"; then
     DARWIN_ARCH="ppc"
   fi
   AC_SUBST(DARWIN_ARCH)
