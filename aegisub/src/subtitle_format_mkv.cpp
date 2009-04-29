@@ -47,7 +47,11 @@
 /////////////
 // Can read?
 bool MKVSubtitleFormat::CanReadFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".mkv"));
+	if (filename.Right(4).Lower() == _T(".mkv") || filename.Right(4).Lower() == _T(".mks")
+			|| filename.Right(4).Lower() == _T(".mka"))
+		return true;
+	else
+		return false;
 }
 
 
