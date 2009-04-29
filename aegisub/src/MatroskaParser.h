@@ -1,40 +1,10 @@
 /*
- * Copyright (c) 2004-2006 Mike Matsnev.  All Rights Reserved.
+ * Copyright (c) 2004-2009 Mike Matsnev.  All Rights Reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice immediately at the beginning of the file, without modification,
- *    this list of conditions, and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Absolutely no warranty of function or purpose is made by the author
- *    Mike Matsnev.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * $Id: MatroskaParser.h,v 1.18.2.6 2006/01/13 01:44:45 mike Exp $
- * 
  */
 
 #ifndef MATROSKA_PARSER_H
 #define	MATROSKA_PARSER_H
-
-#ifdef _MSC_VER
-#pragma warning(disable: 4201)
-#endif
 
 /* Random notes:
  *
@@ -132,13 +102,12 @@ struct TrackInfo {
   void		  *CompMethodPrivate;
   unsigned	  CompMethodPrivateSize;
   unsigned	  MaxBlockAdditionID;
-  struct {
-    unsigned int  Enabled:1;
-    unsigned int  Default:1;
-    unsigned int  Lacing:1;
-    unsigned int  DecodeAll:1;
-    unsigned int  CompEnabled:1;
-  };
+
+  unsigned int  Enabled:1;
+  unsigned int  Default:1;
+  unsigned int  Lacing:1;
+  unsigned int  DecodeAll:1;
+  unsigned int  CompEnabled:1;
 
   union {
     struct {
@@ -152,9 +121,8 @@ struct TrackInfo {
       unsigned int    CropL, CropT, CropR, CropB;
       unsigned int    ColourSpace;
       MKFLOAT	      GammaValue;
-      struct {
-	unsigned int  Interlaced:1;
-      };
+
+      unsigned int  Interlaced:1;
     } Video;
     struct {
       MKFLOAT	      SamplingFreq;
@@ -184,7 +152,8 @@ struct SegmentInfo {
   char			*WritingApp;
   ulonglong		TimecodeScale;
   ulonglong		Duration;
-  ulonglong		DateUTC;
+  longlong		DateUTC;
+  char			DateUTCValid;
 };
 
 typedef struct SegmentInfo SegmentInfo;
@@ -236,14 +205,12 @@ struct Chapter {
 
   char			SegmentUID[16];
 
-  struct {
-    unsigned int	Hidden:1;
-    unsigned int	Enabled:1;
+  unsigned int	Hidden:1;
+  unsigned int	Enabled:1;
 
-    // Editions
-    unsigned int	Default:1;
-    unsigned int	Ordered:1;
-  };
+  // Editions
+  unsigned int	Default:1;
+  unsigned int	Ordered:1;
 };
 
 typedef struct Chapter	Chapter;
@@ -322,7 +289,8 @@ X ulonglong   mkv_GetSegmentTop(MatroskaFile *mf);
  * all tracks are set to return EOF
  * on next read
  */
-#define	MKVF_SEEK_TO_PREV_KEYFRAME  1
+#define	MKVF_SEEK_TO_PREV_KEYFRAME          1
+#define	MKVF_SEEK_TO_PREV_KEYFRAME_STRICT   2
 
 X void	      mkv_Seek(/* in */ MatroskaFile *mf,
 		       /* in */	ulonglong timecode /* in ns */,
@@ -398,9 +366,5 @@ X const char	  *cs_GetLastError(CompressedStream *cs);
 #endif
 
 #undef X
-
-#ifdef _MSC_VER
-#pragma warning(default: 4201)
-#endif
 
 #endif

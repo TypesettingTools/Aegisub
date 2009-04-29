@@ -222,9 +222,6 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	// this is what we'll return eventually
 	AegiVideoFrame &DstFrame = CurFrame;
 	
-	// FIXME: find out how this actually works with ffmpeg 
-	//bool big_endian = Endian::BigToMachine((unsigned int)1)==(unsigned int)1;
-
 	// choose output format
 	if (FormatType & FORMAT_RGB32) {
 		DstFormat		= FFMS_GetPixFmt("bgra");
