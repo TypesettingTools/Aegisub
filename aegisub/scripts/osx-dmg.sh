@@ -56,7 +56,7 @@ bless -openfolder "/Volumes/${PKG_NAME_VOLUME}" || exit $?
 
 echo
 echo "---- Setting root icon using SetFile ----"
-/usr/bin/SetFile -a C "/Volumes/${PKG_NAME_VOLUME}" || exit $?
+SetFile -a C "/Volumes/${PKG_NAME_VOLUME}" || exit $?
 
 echo
 echo "--- Generating /Volumes/${PKG_NAME_VOLUME}/.DS_Store ----"
