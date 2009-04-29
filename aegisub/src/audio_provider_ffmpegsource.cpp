@@ -89,12 +89,17 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	} else {
 		// index exists, but does it have indexing info for the audio track(s)?
 		int NumTracks = FFMS_GetNumTracks(Index);
-		if (NumTracks <= 0)
+		if (NumTracks <= 0) {
+			FFMS_DestroyFrameIndex(Index);
+			Index = NULL;
 			throw _T("FFmpegSource audio provider: no tracks found in index file");
+		}
 
 		for (int i = 0; i < NumTracks; i++) {
 			FrameInfoVector *FrameData = FFMS_GetTITrackIndex(Index, i, FFMSErrMsg, MsgSize);
 			if (FrameData == NULL) {
+				FFMS_DestroyFrameIndex(Index);
+				Index = NULL;
 				wxString temp(FFMSErrMsg, wxConvUTF8);
 				MsgString << _T("Couldn't get track data: ") << temp;
 				throw MsgString;
@@ -104,6 +109,8 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			if (FFMS_GetNumFrames(FrameData) <= 0 && (FFMS_GetTrackType(FrameData) == FFMS_TYPE_AUDIO)) {
 				// found an unindexed audio track, we'll need to reindex
 				try {
+					FFMS_DestroyFrameIndex(Index);
+					Index = NULL;
 					Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
 				} catch (wxString temp) {
 					MsgString << temp;
@@ -121,12 +128,16 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	// FIXME: provide a way to choose which audio track to load?
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
 	if (TrackNumber < 0) {
+		FFMS_DestroyFrameIndex(Index);
+		Index = NULL;
 		wxString temp(FFMSErrMsg, wxConvUTF8);
 		MsgString << _T("Couldn't find any audio tracks: ") << temp;
 		throw MsgString;
 	}
 
 	AudioSource = FFMS_CreateAudioSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, FFMSErrMsg, MsgSize);
+	FFMS_DestroyFrameIndex(Index);
+	Index = NULL;
 	if (!AudioSource) {
 			wxString temp(FFMSErrMsg, wxConvUTF8);
 			MsgString << _T("Failed to open audio track: ") << temp;
@@ -166,13 +177,8 @@ FFmpegSourceAudioProvider::~FFmpegSourceAudioProvider() {
 ///////////
 // Clean up
 void FFmpegSourceAudioProvider::Close() {
-	if (AudioSource)
-		FFMS_DestroyAudioSource(AudioSource);
+	FFMS_DestroyAudioSource(AudioSource);
 	AudioSource = NULL;
-	if (Index)
-		FFMS_DestroyFrameIndex(Index);
-	Index = NULL;
-
 }
 
 

@@ -54,7 +54,6 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 
 	// clean up variables
 	VideoSource = NULL;
-	Index = NULL;
 	DstFormat = FFMS_GetPixFmt("none");
 	LastDstFormat = FFMS_GetPixFmt("none");
 	KeyFramesLoaded = false;
@@ -89,7 +88,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	wxString CacheName = GetCacheFilename(filename.c_str());
 
 	// try to read index
-	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
+	FrameIndex *Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
 	if (Index == NULL) {
 		// index didn't exist or was invalid, we'll have to (re)create it
 		try {
@@ -124,12 +123,16 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// FIXME: provide a way to choose which audio track to load?
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrorMessage, MessageSize);
 	if (TrackNumber < 0) {
+		FFMS_DestroyFrameIndex(Index);
+		Index = NULL;
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
 		ErrorMsg << _T("Couldn't find any video tracks: ") << temp;
 		throw ErrorMsg;
 	}
 
 	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
+	FFMS_DestroyFrameIndex(Index);
+	Index = NULL;
 	if (VideoSource == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
 		ErrorMsg << _T("Failed to open video track: ") << temp;
@@ -188,11 +191,8 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 ///////////////
 // Close video
 void FFmpegSourceVideoProvider::Close() {
-	if (VideoSource)
-		FFMS_DestroyVideoSource(VideoSource);
+	FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
-	if (Index)
-		FFMS_DestroyFrameIndex(Index);
 
 	DstFormat = FFMS_GetPixFmt("none");
 	LastDstFormat = FFMS_GetPixFmt("none");
