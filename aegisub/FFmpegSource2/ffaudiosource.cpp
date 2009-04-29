@@ -150,7 +150,7 @@ Done:
 }
 
 int FFAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
-	const size_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
+	const int64_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	size_t CurrentAudioBlock = FFMAX((int64_t)FindClosestAudioKeyFrame(Start) - 50, (int64_t)0);
 	memset(Buf, 0, SizeConst * Count);
 	AVPacket Packet;
@@ -306,7 +306,7 @@ MatroskaAudioSource::~MatroskaAudioSource() {
 }
 
 int MatroskaAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
-	const size_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
+	const int64_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	size_t CurrentAudioBlock = FFMAX((int64_t)FindClosestAudioKeyFrame(Start) - 10, (int64_t)0);
 	avcodec_flush_buffers(CodecContext);
 
