@@ -52,7 +52,6 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
 	MsgString = _T("FFmpegSource audio provider: ");
 
 	AudioSource = NULL;
-	Index = NULL;
 
 	try {
 		LoadAudio(filename);
