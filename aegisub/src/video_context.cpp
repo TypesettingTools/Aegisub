@@ -110,6 +110,8 @@ VideoContext::VideoContext() {
 	keyFramesLoaded = false;
 	overKeyFramesLoaded = false;
 	frame_n = 0;
+	length = 0;
+	fps = 0;
 	arType = 0;
 	arValue = 1.0;
 	isPlaying = false;
@@ -180,6 +182,8 @@ void VideoContext::Reset() {
 	// Remove video data
 	loaded = false;
 	frame_n = 0;
+	length = 0;
+	fps = 0;
 	keyFramesLoaded = false;
 	overKeyFramesLoaded = false;
 	isPlaying = false;
