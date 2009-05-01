@@ -98,6 +98,15 @@ int StdIoProgress(StdIoStream *st, ulonglong cur, ulonglong max) {
   return 1;
 }
 
+longlong StdIoGetFileSize(StdIoStream *st) {
+	longlong epos = 0;
+	longlong cpos = _ftelli64(st->fp);
+	_fseeki64(st->fp, 0, SEEK_END);
+	epos = _ftelli64(st->fp);
+	_fseeki64(st->fp, cpos, SEEK_SET);
+	return epos;
+}
+
 void InitStdIoStream(StdIoStream *st) {
 	memset(st,0,sizeof(st));
 	st->base.read = StdIoRead;
@@ -108,4 +117,5 @@ void InitStdIoStream(StdIoStream *st) {
 	st->base.memrealloc = StdIoRealloc;
 	st->base.memfree = StdIoFree;
 	st->base.progress = StdIoProgress;
+	st->base.getfilesize = StdIoGetFileSize;
 }
