@@ -36,9 +36,9 @@
  * source file
  */
 struct StdIoStream {
-  struct InputStream  base;
-  FILE		      *fp;
-  int		      error;
+  struct InputStream base;
+  FILE *fp;
+  int error;
 };
 
 typedef struct StdIoStream StdIoStream;
@@ -64,16 +64,18 @@ unsigned StdIoGetCacheSize(StdIoStream *st);
 const char *StdIoGetLastError(StdIoStream *st);
 
 /* memory allocation, this is done via stdlib */
-void  *StdIoMalloc(StdIoStream *st, size_t size);
+void *StdIoMalloc(StdIoStream *st, size_t size);
 
-void  *StdIoRealloc(StdIoStream *st, void *mem, size_t size);
+void *StdIoRealloc(StdIoStream *st, void *mem, size_t size);
 
-void  StdIoFree(StdIoStream *st, void *mem);
+void StdIoFree(StdIoStream *st, void *mem);
 
 /* progress report handler for lengthy operations
  * returns 0 to abort operation, nonzero to continue
  */
-int   StdIoProgress(StdIoStream *st, ulonglong cur, ulonglong max);
+int StdIoProgress(StdIoStream *st, ulonglong cur, ulonglong max);
+
+longlong StdIoGetFileSize(StdIoStream *st);
 
 void InitStdIoStream(StdIoStream *st);
 
