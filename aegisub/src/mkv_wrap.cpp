@@ -571,10 +571,10 @@ int   StdIoProgress(InputStream *_st, ulonglong cur, ulonglong max) {
 longlong StdIoGetFileSize(InputStream *_st) {
 	MkvStdIO *st = (MkvStdIO *) _st;
 	longlong epos = 0;
-	longlong cpos = _ftelli64(st->fp);
-	_fseeki64(st->fp, 0, SEEK_END);
-	epos = _ftelli64(st->fp);
-	_fseeki64(st->fp, cpos, SEEK_SET);
+	longlong cpos = std_ftell(st->fp);
+	std_fseek(st->fp, 0, SEEK_END);
+	epos = std_ftell(st->fp);
+	std_fseek(st->fp, cpos, SEEK_SET);
 	return epos;
 }
 
