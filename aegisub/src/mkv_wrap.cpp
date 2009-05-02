@@ -568,6 +568,16 @@ int   StdIoProgress(InputStream *_st, ulonglong cur, ulonglong max) {
   return 1;
 }
 
+longlong StdIoGetFileSize(InputStream *_st) {
+	MkvStdIO *st = (MkvStdIO *) _st;
+	longlong epos = 0;
+	longlong cpos = _ftelli64(st->fp);
+	_fseeki64(st->fp, 0, SEEK_END);
+	epos = _ftelli64(st->fp);
+	_fseeki64(st->fp, cpos, SEEK_SET);
+	return epos;
+}
+
 MkvStdIO::MkvStdIO(wxString filename) {
 	read = StdIoRead;
 	scan = StdIoScan;
@@ -577,6 +587,7 @@ MkvStdIO::MkvStdIO(wxString filename) {
 	memrealloc = StdIoRealloc;
 	memfree = StdIoFree;
 	progress = StdIoProgress;
+	getfilesize = StdIoGetFileSize;
 	wxFileName fname(filename);
 	fp = fopen(fname.GetShortPath().mb_str(wxConvUTF8),"rb");
 	if (fp) {
