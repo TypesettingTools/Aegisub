@@ -38,12 +38,15 @@
 
 ///////////
 // Headers
+#include <wx/wxprec.h>
+#include <wx/thread.h>
 #include "include/aegisub/aegisub.h"
 #include "../FFmpegSource2/ffms.h"
 #include "dialog_progress.h"
 
 
 class FFmpegSourceProvider {
+	friend class FFmpegSourceCacheCleaner;
 public:
 	static const int FFMSTrackMaskAll		= -1;
 	static const int FFMSTrackMaskNone		= 0;
@@ -53,9 +56,26 @@ public:
 		DialogProgress *ProgressDialog;
 	};
 
+	static wxMutex CleaningInProgress;
+	bool CleanCache();
+
 	static int FFMS_CC UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
 	FrameIndex *DoIndexing(FrameIndex *Index, wxString Filename, wxString Cachename, int Trackmask, bool IgnoreDecodeErrors);
 	wxString GetCacheFilename(const wxString& filename);
+
+	virtual FFmpegSourceProvider::~FFmpegSourceProvider() {}
 };
+
+
+class FFmpegSourceCacheCleaner : public wxThread {
+private:
+	FFmpegSourceProvider *parent;
+
+public:
+	FFmpegSourceCacheCleaner(FFmpegSourceProvider *par);
+	~FFmpegSourceCacheCleaner() {};
+	wxThread::ExitCode Entry();
+};
+
 
 #endif /* WITH_FFMPEGSOURCE */
