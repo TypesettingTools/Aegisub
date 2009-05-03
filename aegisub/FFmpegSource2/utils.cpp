@@ -131,7 +131,7 @@ bool AudioFMTIsFloat(SampleFormat FMT){
 	}
 }
 
-void init_null_packet(AVPacket *pkt) {
+void InitNullPacket(AVPacket *pkt) {
 	av_init_packet(pkt);
 	pkt->data = NULL;
 	pkt->size = 0;

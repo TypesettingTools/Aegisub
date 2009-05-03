@@ -62,7 +62,7 @@ public:
 int GetCPUFlags();
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize);
 bool AudioFMTIsFloat(SampleFormat FMT);
-void init_null_packet(AVPacket *pkt);
+void InitNullPacket(AVPacket *pkt);
 #ifdef HAALISOURCE
 unsigned vtSize(VARIANT &vt);
 void vtCopy(VARIANT& vt,void *dest);

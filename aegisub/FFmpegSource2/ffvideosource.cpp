@@ -87,8 +87,8 @@ VideoBase::VideoBase() {
 	PPContext = NULL;
 	PPMode = NULL;
 	SWS = NULL;
-	LastFrameNum = -1;
-	CurrentFrame = 0;
+	LastFrameNum = 0;
+	CurrentFrame = 1;
 	CodecContext = NULL;
 	DecodeFrame = avcodec_alloc_frame();
 	PPFrame = DecodeFrame;
@@ -269,7 +269,6 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *Trac
 	// Cannot "output" to PPFrame without doing all other initialization
 	// This is the additional mess required for seekmode=-1 to work in a reasonable way
 	OutputFrame(DecodeFrame);
-	LastFrameNum = 0;
 
 	// Set AR variables
 	VP.SARNum = CodecContext->sample_aspect_ratio.num;
@@ -282,7 +281,7 @@ FFVideoSource::~FFVideoSource() {
 
 int FFVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *ErrorMsg, unsigned MsgSize) {
 	AVPacket Packet;
-	init_null_packet(&Packet);
+	InitNullPacket(&Packet);
 	int FrameFinished = 0;
 	*AStartTime = -1;
 
@@ -303,7 +302,7 @@ int FFVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *E
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		init_null_packet(&NullPacket);
+		InitNullPacket(&NullPacket);
 		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
 	}
 
@@ -495,7 +494,6 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 
 	// Output the already decoded frame so it isn't wasted
 	OutputFrame(DecodeFrame);
-	LastFrameNum = 0;
 
 	// Set AR variables
 	VP.SARNum = TI->AV.Video.DisplayWidth * TI->AV.Video.PixelHeight;
@@ -516,7 +514,7 @@ int MatroskaVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTi
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
-	init_null_packet(&Packet);
+	InitNullPacket(&Packet);
 
 	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
@@ -543,7 +541,7 @@ int MatroskaVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTi
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		init_null_packet(&NullPacket);
+		InitNullPacket(&NullPacket);
 		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
 	}
 
@@ -735,7 +733,6 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 
 	// Output the already decoded frame so it isn't wasted
 	OutputFrame(DecodeFrame);
-	LastFrameNum = 0;
 
 	// Set AR variables
 	CComVariant pV;
@@ -756,7 +753,7 @@ int HaaliVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime,
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
-	init_null_packet(&Packet);
+	InitNullPacket(&Packet);
 
 	for (;;) {
 		CComPtr<IMMFrame> pMMF;
@@ -789,7 +786,7 @@ int HaaliVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime,
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		init_null_packet(&NullPacket);
+		InitNullPacket(&NullPacket);
 		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
 	}
 

@@ -27,6 +27,8 @@ extern "C" {
 }
 
 #include <vector>
+#include <list>
+#include <memory>
 #include "indexing.h"
 #include "utils.h"
 #include "ffms.h"
@@ -42,8 +44,33 @@ extern "C" {
 #	include "guids.h"
 #endif
 
+class TAudioBlock {
+public:
+	int64_t Start;
+	int64_t Samples;
+	uint8_t *Data;
+
+	TAudioBlock(int64_t Start, int64_t Samples, uint8_t *SrcData, int64_t SrcBytes);
+	~TAudioBlock();
+};
+
+class TAudioCache : protected std::list<TAudioBlock *> {
+private:
+	int MaxCacheBlocks;
+	int BytesPerSample;
+	static bool AudioBlockComp(TAudioBlock *A, TAudioBlock *B);
+public:
+	TAudioCache();
+	~TAudioCache();
+	void Initialize(int BytesPerSample, int MaxCacheBlocks);
+	void CacheBlock(int64_t Start, int64_t Samples, uint8_t *SrcData);
+	int64_t FillRequest(int64_t Start, int64_t Samples, uint8_t *Dst);
+};
+
 class AudioBase {
 protected:
+	TAudioCache AudioCache;
+	int64_t CurrentSample;
 	uint8_t *DecodingBuffer;
 	FrameInfoVector Frames;
 	AVCodecContext *CodecContext;

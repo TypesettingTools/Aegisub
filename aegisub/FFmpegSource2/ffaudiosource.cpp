@@ -25,7 +25,79 @@
 #define _snprintf snprintf
 #endif
 
+TAudioBlock::TAudioBlock(int64_t Start, int64_t Samples, uint8_t *SrcData, int64_t SrcBytes) {
+	this->Start = Start;
+	this->Samples = Samples;
+	Data = new uint8_t[SrcBytes];
+	memcpy(Data, SrcData, SrcBytes);
+}
+
+TAudioBlock::~TAudioBlock() {
+	delete[] Data;
+}
+
+TAudioCache::TAudioCache() {
+	MaxCacheBlocks = 0;
+	BytesPerSample = 0;
+}
+
+TAudioCache::~TAudioCache() {
+	for (TAudioCache::iterator it=begin(); it != end(); it++)
+		delete *it;
+}
+
+void TAudioCache::Initialize(int BytesPerSample, int MaxCacheBlocks) {
+	this->BytesPerSample = BytesPerSample;
+	this->MaxCacheBlocks = MaxCacheBlocks;
+}
+
+void TAudioCache::CacheBlock(int64_t Start, int64_t Samples, uint8_t *SrcData) {
+	if (BytesPerSample > 0) {
+		for (TAudioCache::iterator it=begin(); it != end(); it++) {
+			if ((*it)->Start == Start) {
+				delete *it;
+				erase(it);
+				break;
+			}
+		}
+
+		push_front(new TAudioBlock(Start, Samples, SrcData, Samples * BytesPerSample));
+		if (size() >= MaxCacheBlocks) {
+			delete back();
+			pop_back();
+		}
+	}
+}
+
+bool TAudioCache::AudioBlockComp(TAudioBlock *A, TAudioBlock *B) {
+	return A->Start < B->Start;
+}
+
+int64_t TAudioCache::FillRequest(int64_t Start, int64_t Samples, uint8_t *Dst) {
+	// May be better to move used blocks to the front
+	std::list<TAudioBlock *> UsedBlocks;
+	for (TAudioCache::iterator it=begin(); it != end(); it++) {
+		int64_t SrcOffset = FFMAX(0, Start - (*it)->Start);
+		int64_t DstOffset = FFMAX(0, (*it)->Start - Start);
+		int64_t CopySamples = FFMIN((*it)->Samples - SrcOffset, Samples - DstOffset);
+		if (CopySamples > 0) {
+			memcpy(Dst + DstOffset * BytesPerSample, (*it)->Data + SrcOffset * BytesPerSample, CopySamples * BytesPerSample);
+			UsedBlocks.push_back(*it);
+		}
+	}
+	UsedBlocks.sort(AudioBlockComp);
+	int64_t Ret = Start;
+	for (std::list<TAudioBlock *>::iterator it = UsedBlocks.begin(); it != UsedBlocks.end(); it++) {
+		if (it == UsedBlocks.begin() || Ret == (*it)->Start)
+			Ret = (*it)->Start + (*it)->Samples;
+		else
+			break;
+	}
+	return FFMIN(Ret, Start + Samples);
+}
+
 AudioBase::AudioBase() {
+	CurrentSample = 0;
 	DecodingBuffer = new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE * 10];
 };
 
@@ -88,11 +160,14 @@ FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FrameIndex *Trac
 	}
 
 	// Always try to decode a frame to make sure all required parameters are known
-	uint8_t DummyBuf[512];
-	if (GetAudio(DummyBuf, 0, 1, ErrorMsg, MsgSize)) {
+	int64_t Dummy;
+	if (DecodeNextAudioBlock(DecodingBuffer, &Dummy, ErrorMsg, MsgSize) < 0) {
 		Free(true);
 		throw ErrorMsg;
 	}
+	av_seek_frame(FormatContext, AudioTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD);
+	avcodec_flush_buffers(CodecContext);
+
 
 	AP.BitsPerSample = av_get_bits_per_sample_format(CodecContext->sample_fmt);
 	AP.Channels = CodecContext->channels;;
@@ -105,6 +180,8 @@ FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FrameIndex *Trac
 		_snprintf(ErrorMsg, MsgSize, "Codec returned zero size audio");
 		throw ErrorMsg;
 	}
+
+	AudioCache.Initialize((AP.Channels *AP.BitsPerSample) / 8, 50);
 }
 
 int FFAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize) {
@@ -112,8 +189,8 @@ int FFAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *Erro
 	int Ret = -1;
 	*Count = 0;
 	AVPacket Packet, TempPacket;
-	init_null_packet(&Packet);
-	init_null_packet(&TempPacket);
+	InitNullPacket(&Packet);
+	InitNullPacket(&TempPacket);
 
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
         if (Packet.stream_index == AudioTrack) {
@@ -151,59 +228,76 @@ Done:
 
 int FFAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
 	const int64_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
-	size_t CurrentAudioBlock = FFMAX((int64_t)FindClosestAudioKeyFrame(Start) - 50, (int64_t)0);
 	memset(Buf, 0, SizeConst * Count);
-	AVPacket Packet;
 
-	avcodec_flush_buffers(CodecContext);
-	av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD);
+	int PreDecBlocks = 0;
+	uint8_t *DstBuf = static_cast<uint8_t *>(Buf);
 
-	// Establish where we actually are
-	// Trigger on packet dts difference since groups can otherwise be indistinguishable
-	int64_t LastDTS = - 1;
-	while (av_read_frame(FormatContext, &Packet) >= 0) {
-        if (Packet.stream_index == AudioTrack) {
-			if (LastDTS < 0) {
-				LastDTS = Packet.dts;
-			} else if (LastDTS != Packet.dts) {
-				for (size_t i = 0; i < Frames.size(); i++)
-					if (Frames[i].DTS == Packet.dts) {
-						// The current match was consumed
-						CurrentAudioBlock = i + 1;
-						break;
-					}
+	// Fill with everything in the cache
+	int64_t CacheEnd = AudioCache.FillRequest(Start, Count, DstBuf);
+	// Was everything in the cache?
+	if (CacheEnd == Start + Count)
+		return 0;
 
-				av_free_packet(&Packet);
-				break;
+	size_t CurrentAudioBlock;
+	// Is seeking required to decode the requested samples?
+//	if (!(CurrentSample >= Start && CurrentSample <= CacheEnd)) {
+	if (CurrentSample != CacheEnd) {
+		PreDecBlocks = 15;
+		CurrentAudioBlock = FFMAX((int64_t)FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks - 20, (int64_t)0);
+		av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD);
+		avcodec_flush_buffers(CodecContext);
+
+		AVPacket Packet;
+		InitNullPacket(&Packet);
+
+		// Establish where we actually are
+		// Trigger on packet dts difference since groups can otherwise be indistinguishable
+		int64_t LastDTS = - 1;
+		while (av_read_frame(FormatContext, &Packet) >= 0) {
+			if (Packet.stream_index == AudioTrack) {
+				if (LastDTS < 0) {
+					LastDTS = Packet.dts;
+				} else if (LastDTS != Packet.dts) {
+					for (size_t i = 0; i < Frames.size(); i++)
+						if (Frames[i].DTS == Packet.dts) {
+							// The current match was consumed
+							CurrentAudioBlock = i + 1;
+							break;
+						}
+
+					av_free_packet(&Packet);
+					break;
+				}
 			}
-		}
 
-		av_free_packet(&Packet);
+			av_free_packet(&Packet);
+		}
+	} else {
+		CurrentAudioBlock = FindClosestAudioKeyFrame(CurrentSample);
 	}
 
-	uint8_t *DstBuf = (uint8_t *)Buf;
-	int64_t RemainingSamples = Count;
 	int64_t DecodeCount;
 
 	do {
-		int64_t DecodeStart = Frames[CurrentAudioBlock].SampleStart;
 		int Ret = DecodeNextAudioBlock(DecodingBuffer, &DecodeCount, ErrorMsg, MsgSize);
 		if (Ret < 0) {
 			// FIXME
 			//Env->ThrowError("Bleh, bad audio decoding");
 		}
+
+		// Cache the block if enough blocks before it have been decoded to avoid garbage
+		if (PreDecBlocks == 0) {
+			AudioCache.CacheBlock(Frames[CurrentAudioBlock].SampleStart, DecodeCount, DecodingBuffer);
+			CacheEnd = AudioCache.FillRequest(CacheEnd, Start + Count - CacheEnd, DstBuf + (CacheEnd - Start) * SizeConst);
+		} else {
+			PreDecBlocks--;
+		}
+
 		CurrentAudioBlock++;
-
-		int64_t OffsetBytes = SizeConst * FFMAX(0, Start - DecodeStart);
-		int64_t CopyBytes = FFMAX(0, SizeConst * FFMIN(RemainingSamples, DecodeCount - FFMAX(0, Start - DecodeStart)));
-
-		memcpy(DstBuf, DecodingBuffer + OffsetBytes, CopyBytes);
-		DstBuf += CopyBytes;
-
-		if (SizeConst)
-			RemainingSamples -= CopyBytes / SizeConst;
-
-	} while (RemainingSamples > 0 && CurrentAudioBlock < Frames.size());
+		if (CurrentAudioBlock < Frames.size())
+			CurrentSample = Frames[CurrentAudioBlock].SampleStart;
+	} while (Start + Count - CacheEnd > 0 && CurrentAudioBlock < Frames.size());
 
 	return 0;
 }
@@ -282,11 +376,12 @@ MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, Fram
 	}
 
 	// Always try to decode a frame to make sure all required parameters are known
-	uint8_t DummyBuf[512];
-	if (GetAudio(DummyBuf, 0, 1, ErrorMsg, MsgSize)) {
+	int64_t Dummy;
+	if (DecodeNextAudioBlock(DecodingBuffer, &Dummy, Frames[0].FilePos, Frames[0].FrameSize, ErrorMsg, MsgSize) < 0) {
 		Free(true);
 		throw ErrorMsg;
 	}
+	avcodec_flush_buffers(CodecContext);
 
 	AP.BitsPerSample = av_get_bits_per_sample_format(CodecContext->sample_fmt);
 	AP.Channels = CodecContext->channels;;
@@ -299,6 +394,8 @@ MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, Fram
 		_snprintf(ErrorMsg, MsgSize, "Codec returned zero size audio");
 		throw ErrorMsg;
 	}
+
+	AudioCache.Initialize((AP.Channels *AP.BitsPerSample) / 8, 50);
 }
 
 MatroskaAudioSource::~MatroskaAudioSource() {
@@ -307,34 +404,49 @@ MatroskaAudioSource::~MatroskaAudioSource() {
 
 int MatroskaAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
 	const int64_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
-	size_t CurrentAudioBlock = FFMAX((int64_t)FindClosestAudioKeyFrame(Start) - 10, (int64_t)0);
-	avcodec_flush_buffers(CodecContext);
-
 	memset(Buf, 0, SizeConst * Count);
 
-	uint8_t *DstBuf = (uint8_t *)Buf;
-	int64_t RemainingSamples = Count;
+	int PreDecBlocks = 0;
+	uint8_t *DstBuf = static_cast<uint8_t *>(Buf);
+
+	// Fill with everything in the cache
+	int64_t CacheEnd = AudioCache.FillRequest(Start, Count, DstBuf);
+	// Was everything in the cache?
+	if (CacheEnd == Start + Count)
+		return 0;
+
+	size_t CurrentAudioBlock;
+	// Is seeking required to decode the requested samples?
+//	if (!(CurrentSample >= Start && CurrentSample <= CacheEnd)) {
+	if (CurrentSample != CacheEnd) {
+		PreDecBlocks = 15;
+		CurrentAudioBlock = FFMAX((int64_t)FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks, (int64_t)0);
+		avcodec_flush_buffers(CodecContext);
+	} else {
+		CurrentAudioBlock = FindClosestAudioKeyFrame(CurrentSample);
+	}
+
 	int64_t DecodeCount;
 
 	do {
-		int64_t DecodeStart = Frames[CurrentAudioBlock].SampleStart;
 		int Ret = DecodeNextAudioBlock(DecodingBuffer, &DecodeCount, Frames[CurrentAudioBlock].FilePos, Frames[CurrentAudioBlock].FrameSize, ErrorMsg, MsgSize);
 		if (Ret < 0) {
 			// FIXME
 			//Env->ThrowError("Bleh, bad audio decoding");
 		}
+
+		// Cache the block if enough blocks before it have been decoded to avoid garbage
+		if (PreDecBlocks == 0) {
+			AudioCache.CacheBlock(Frames[CurrentAudioBlock].SampleStart, DecodeCount, DecodingBuffer);
+			CacheEnd = AudioCache.FillRequest(CacheEnd, Start + Count - CacheEnd, DstBuf + (CacheEnd - Start) * SizeConst);
+		} else {
+			PreDecBlocks--;
+		}
+
 		CurrentAudioBlock++;
-
-		int64_t OffsetBytes = SizeConst * FFMAX(0, Start - DecodeStart);
-		int64_t CopyBytes = FFMAX(0, SizeConst * FFMIN(RemainingSamples, DecodeCount - FFMAX(0, Start - DecodeStart)));
-
-		memcpy(DstBuf, DecodingBuffer + OffsetBytes, CopyBytes);
-		DstBuf += CopyBytes;
-
-		if (SizeConst)
-			RemainingSamples -= CopyBytes / SizeConst;
-
-	} while (RemainingSamples > 0 && CurrentAudioBlock < Frames.size());
+		if (CurrentAudioBlock < Frames.size())
+			CurrentSample = Frames[CurrentAudioBlock].SampleStart;
+	} while (Start + Count - CacheEnd > 0 && CurrentAudioBlock < Frames.size());
 
 	return 0;
 }
@@ -344,7 +456,7 @@ int MatroskaAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint
 	int Ret = -1;
 	*Count = 0;
 	AVPacket TempPacket;
-	init_null_packet(&TempPacket);
+	InitNullPacket(&TempPacket);
 
 	// FIXME check return
 	ReadFrame(FilePos, FrameSize, CS, MC, ErrorMsg, MsgSize);
