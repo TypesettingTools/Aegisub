@@ -39,6 +39,7 @@
 
 ///////////
 // Headers
+#include <wx/utils.h>
 #include "include/aegisub/aegisub.h"
 #include "video_provider_ffmpegsource.h"
 #include "video_context.h"
@@ -105,6 +106,14 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		} catch (...) {
 			throw;
 		}
+	}
+
+	// update access time of index file so it won't get cleaned away
+	wxFileName(CacheName).Touch();
+
+	// we have now read the index and may proceed with cleaning the index cache
+	if (!CleanCache()) {
+		//do something?
 	}
 
 	// set thread count
