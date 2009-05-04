@@ -1018,7 +1018,10 @@ static char* parse_tag(char* p, double pwr) {
 		mystrtod(&p, &v2);
 		skip(')');
 		mp_msg(MSGT_ASS, MSGL_DBG2, "pos(%f, %f)\n", v1, v2);
-		if (render_context.evt_type != EVENT_POSITIONED) {
+		if (render_context.evt_type == EVENT_POSITIONED) {
+			mp_msg(MSGT_ASS, MSGL_V, "Subtitle has a new \\pos "
+			       "after \\move or \\pos, ignoring\n");
+		} else {
 			render_context.evt_type = EVENT_POSITIONED;
 			render_context.detect_collisions = 0;
 			render_context.pos_x = v1;
@@ -1603,7 +1606,7 @@ static void wrap_lines_smart(int max_text_width)
 			mp_msg(MSGT_ASS, MSGL_DBG2, "forced line break at %d\n", break_at);
 		}
 		
-		if ((len >= max_text_width) && (frame_context.track->WrapStyle != 2)) {
+		if (len >= max_text_width) {
 			break_type = 1;
 			break_at = last_space;
 			if (break_at == -1)
@@ -2186,7 +2189,7 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
  * \brief deallocate image list
  * \param img list pointer
  */
-void ass_free_images(ass_image_t* img)
+static void ass_free_images(ass_image_t* img)
 {
 	while (img) {
 		ass_image_t* next = img->next;
@@ -2495,7 +2498,7 @@ static void fix_collisions(event_images_t* imgs, int cnt)
  * \param i2 second image
  * \return 0 if identical, 1 if different positions, 2 if different content
  */
-int ass_image_compare(ass_image_t *i1, ass_image_t *i2)
+static int ass_image_compare(ass_image_t *i1, ass_image_t *i2)
 {
 	if (i1->w != i2->w) return 2;
 	if (i1->h != i2->h) return 2;
@@ -2513,7 +2516,7 @@ int ass_image_compare(ass_image_t *i1, ass_image_t *i2)
  * \param priv library handle
  * \return 0 if identical, 1 if different positions, 2 if different content
  */
-int ass_detect_change(ass_renderer_t *priv)
+static int ass_detect_change(ass_renderer_t *priv)
 {
 	ass_image_t* img, *img2;
 	int diff;
