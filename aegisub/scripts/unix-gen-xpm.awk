@@ -13,7 +13,9 @@ CONVERT ?= %s \n \
 
   for (v in image) {
     printf("%s_xpm.xpm: %s\n", v, image[v])
-    printf("	$(CONVERT) -transparent \"#c0c0c0\" %s %s_xpm.xpm\n\n", image[v], v)
+    printf("	$(CONVERT) -transparent \"#c0c0c0\" %s xpm:- \\\
+	| sed \"2 s/^static char \\*xpm__\\[\\] =/const char \\*"v"_xpm\\[\\] =/\" \\\
+	> %s_xpm.xpm\n\n", image[v], v)
   }
 
   printf("bmp2xpm:")
