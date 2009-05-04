@@ -100,7 +100,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 	}
 
 	struct stat filestats;
-	memset(&filestats, sizeof(filestats), 0);
+	memset(&filestats, 0, sizeof(filestats));
 	if (fstat(file_handle, &filestats)) {
 		close(file_handle);
 		throw _T("PCM audio provider: Could not stat file to get size");
