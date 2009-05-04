@@ -1,5 +1,5 @@
 /* XPM */
-static char *wxicon_xpm[] = {
+const char *wxicon_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "48 48 245 2",
 "   c #020101",
