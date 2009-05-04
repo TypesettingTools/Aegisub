@@ -61,3 +61,4 @@ public:
 };
 
 AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider);
+
