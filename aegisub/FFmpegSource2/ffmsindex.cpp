@@ -24,6 +24,10 @@
 #include <stdlib.h>
 #include "ffms.h"
 
+#if _MSC_VER >= 1200
+#pragma comment(lib,"ffms2.lib")
+#endif /* _MSC_VER */
+
 int TrackMask;
 int DumpMask;
 bool Overwrite;
