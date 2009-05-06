@@ -54,7 +54,15 @@ TextFileWriter::TextFileWriter(wxString _filename,wxString enc) {
 
 	// Set encoding
 	encoding = enc;
-	if (encoding == _T("Local") || (encoding.IsEmpty() && Options.AsText(_T("Save Charset")).Lower() == _T("local"))) conv = &wxConvLocal;
+	if (encoding == _T("Local") || (encoding.IsEmpty() && Options.AsText(_T("Save Charset")).Lower() == _T("local"))) {
+		conv = &wxConvLocal;
+		wxFontEncoding sysenc = wxLocale::GetSystemEncoding();
+		if (sysenc == wxFONTENCODING_UTF8 || sysenc == wxFONTENCODING_UTF7 ||
+			sysenc == wxFONTENCODING_UNICODE) // that last one may be a bit questionable
+			IsUnicode = true;
+		else
+			IsUnicode = false;
+	}
 	else {
 		if (encoding.IsEmpty()) encoding = Options.AsText(_T("Save Charset"));
 		if (encoding == _T("US-ASCII")) encoding = _T("ISO-8859-1");
