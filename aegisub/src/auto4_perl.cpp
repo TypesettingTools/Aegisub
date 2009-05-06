@@ -212,6 +212,22 @@ namespace Automation4 {
 	XSRETURN_UNDEF;
   }
 
+  XS(perl_script_set_undo_point) 
+  {
+	wxTRACE_FUNC(Aegisub::Script::set_undo_point);
+	dXSARGS;
+
+	wxString desc;
+	if(items > 0)
+	  desc = wxString(SvPV_nolen(ST(0)), pl2wx);
+	else 
+	  desc = _T("Auto4Perl");
+
+	AssFile::top->FlagAsModified(desc);
+
+	XSRETURN_YES;
+  }
+
   /* Aegisub::Progress */
   XS(perl_progress_set)
   {
@@ -269,6 +285,7 @@ namespace Automation4 {
 	  XSRETURN_UNDEF;
 	}
   }
+
 
   /* Aegisub::PerlConsole */
   XS(perl_console_register)
@@ -343,6 +360,7 @@ namespace Automation4 {
 	newXS("Aegisub::text_extents", perl_text_extents, __FILE__);
 	newXS("Aegisub::Script::set_info", perl_script_set_info, __FILE__);
 	newXS("Aegisub::Script::register_macro", perl_script_register_macro, __FILE__);
+	newXS("Aegisub::Script::set_undo_point", perl_script_set_undo_point, __FILE__);
 	newXS("Aegisub::Progress::set_progress", perl_progress_set, __FILE__);
 	newXS("Aegisub::Progress::set_task", perl_progress_task, __FILE__);
 	newXS("Aegisub::Progress::set_title", perl_progress_title, __FILE__);
