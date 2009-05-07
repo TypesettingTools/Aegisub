@@ -1318,6 +1318,7 @@ void AudioDisplay::AddLead(bool in,bool out) {
 	}
 
 	// Set changes
+	UpdateTimeEditCtrls();
 	NeedCommit = true;
 	if (Options.AsBool(_T("Audio Autocommit"))) CommitChanges();
 	Update();
