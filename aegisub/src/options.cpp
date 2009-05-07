@@ -219,6 +219,9 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetInt(_T("Audio Spectrum Cutoff"),0);
 	SetInt(_T("Audio Spectrum Quality"),1);
 	SetInt(_T("Audio Spectrum Memory Max"),128); // megabytes
+	// and this one could do with just reiniting the audio player
+	SetInt(_T("Audio dsound buffer latency"), 100);
+	SetInt(_T("Audio dsound buffer length"), 5);
 
 	// Automation
 	// The path changes only take effect when a script is (re)loaded but Automatic should be good enough, it certainly doesn't warrart a restart
