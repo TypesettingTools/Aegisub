@@ -48,6 +48,7 @@
 #include "utils.h"
 #include "main.h"
 #include "frame_main.h"
+#include "options.h"
 #include "audio_player_dsound2.h"
 
 
@@ -131,12 +132,15 @@ class DirectSoundPlayer2Thread {
 	int64_t start_frame;
 	int64_t end_frame;
 
+	int wanted_latency;
+	int buffer_length;
+
 	DWORD last_playback_restart;
 
 	AudioProvider *provider;
 
 public:
-	DirectSoundPlayer2Thread(AudioProvider *provider);
+	DirectSoundPlayer2Thread(AudioProvider *provider, int WantedLatency, int BufferLength);
 	~DirectSoundPlayer2Thread();
 
 	void Play(int64_t start, int64_t count);
@@ -157,11 +161,6 @@ unsigned int __stdcall DirectSoundPlayer2Thread::ThreadProc(void *parameter)
 	static_cast<DirectSoundPlayer2Thread*>(parameter)->Run();
 	return 0;
 }
-
-
-#define WANTED_LATENCY 80
-#define BUFFER_LENGTH 4
-// The buffer will hold BUFFER_LENGTH times WANTED_LATENCY milliseconds of audio
 
 
 void DirectSoundPlayer2Thread::Run()
@@ -194,7 +193,7 @@ void DirectSoundPlayer2Thread::Run()
 	waveFormat.cbSize = sizeof(waveFormat);
 
 	// And the buffer itself
-	int aim = waveFormat.nAvgBytesPerSec * (WANTED_LATENCY*BUFFER_LENGTH)/1000;
+	int aim = waveFormat.nAvgBytesPerSec * (wanted_latency*buffer_length)/1000;
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
 	DWORD bufSize = MIN(MAX(min,aim),max); // size of entier playback buffer
@@ -239,7 +238,7 @@ void DirectSoundPlayer2Thread::Run()
 
 	while (running)
 	{
-		DWORD wait_result = WaitForMultipleObjects(sizeof(events_to_wait)/sizeof(HANDLE), events_to_wait, FALSE, WANTED_LATENCY);
+		DWORD wait_result = WaitForMultipleObjects(sizeof(events_to_wait)/sizeof(HANDLE), events_to_wait, FALSE, wanted_latency);
 
 		switch (wait_result)
 		{
@@ -475,7 +474,7 @@ void DirectSoundPlayer2Thread::CheckError()
 }
 
 
-DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider)
+DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int _WantedLatency, int _BufferLength)
 {
 	event_start_playback  = CreateEvent(0, FALSE, FALSE, 0);
 	event_stop_playback   = CreateEvent(0, FALSE, FALSE, 0);
@@ -491,6 +490,9 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider)
 	volume = 1.0;
 	start_frame = 0;
 	end_frame = 0;
+
+	wanted_latency	= _WantedLatency;
+	buffer_length	= _BufferLength;
 
 	this->provider = provider;
 
@@ -613,6 +615,16 @@ double DirectSoundPlayer2Thread::GetVolume()
 DirectSoundPlayer2::DirectSoundPlayer2()
 {
 	thread = 0;
+
+	// The buffer will hold BufferLength times WantedLatency milliseconds of audio
+	WantedLatency = Options.AsInt(_T("Audio dsound buffer latency"));
+	BufferLength = Options.AsInt(_T("Audio dsound buffer length"));
+
+	// sanity checking
+	if (WantedLatency <= 0)
+		WantedLatency = 100;
+	if (BufferLength <= 0)
+		BufferLength = 5;
 }
 
 
@@ -628,7 +640,7 @@ void DirectSoundPlayer2::OpenStream()
 
 	try
 	{
-		thread = new DirectSoundPlayer2Thread(GetProvider());
+		thread = new DirectSoundPlayer2Thread(GetProvider(), WantedLatency, BufferLength);
 	}
 	catch (const wxChar *msg)
 	{
@@ -661,7 +673,7 @@ void DirectSoundPlayer2::SetProvider(AudioProvider *provider)
 		if (thread && provider != GetProvider())
 		{
 			delete thread;
-			thread = new DirectSoundPlayer2Thread(provider);
+			thread = new DirectSoundPlayer2Thread(provider, WantedLatency, BufferLength);
 		}
 
 		AudioPlayer::SetProvider(provider);

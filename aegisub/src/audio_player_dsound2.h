@@ -45,6 +45,10 @@ class DirectSoundPlayer2Thread;
 class DirectSoundPlayer2 : public AudioPlayer {
 	DirectSoundPlayer2Thread *thread;
 
+protected:
+	int WantedLatency;
+	int BufferLength;
+
 public:
 	DirectSoundPlayer2();
 	~DirectSoundPlayer2();
