@@ -13,8 +13,8 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
 <h2>Known issues</h2>
 <ul>
 <li>Requires <a href='http://haali.cs.msu.ru/mkv/'>Haali's Media Splitter</a> if ogm or mpeg ps/ts is to be opened.</li>
-<li>Avi files with NVOPs (rarely occurs in xvid and such) will desync when these frames are encountered. Remux to mkv/mp4 before opening to solve it for now.</li>
-<li>The audio sources still aren't sample accurate and sometimes exhibit many interesting issues. Dumping the audio during indexing is the only workaround.
+<li>Avi files with NVOPs (sometimes occurs in xvid and such) will desync when these frames are encountered. Remux to mkv/mp4 before opening to solve it for now.</li>
+<li>The audio sources still aren't sample accurate and sometimes exhibit many interesting issues. This is however more likely to be an issues when not using a 32bit windows compile. Dumping the audio during indexing is the only workaround.
 </ul>
 
 <h2>Compatibility - Video</h2>
@@ -22,10 +22,10 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
 <li>AVI, MKV, MP4, FLV: Frame accurate</li>
 <li>WMV: Frame accurate(?) but avformat seems to pick keyframes relatively far away</li>
 <li>OGM: Frame accurate(?)</li>
-<li>VOB: No rff flags applied, frame accurate?</li>
+<li>VOB: No rff flags applied</li>
 <li>MPG: Seeking seems to be off by one or two frames now and then</li>
 <li>M2TS, TS: Seeking seems to be off a few frames here and there</li>
-<li>Image files: Most formats can be opened if seekmode=-1 is set</li>
+<li>Image files: Most formats can be opened if seekmode=-1 is set, no animation support</li>
 </ul>
 
 <h2>Compatibility - Audio</h2>
@@ -237,7 +237,7 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 <li>Improved the audio decoding quality a lot by adding a simple cache, no more seeking is done when playing a file linearly and pops and other artifacts should be much more uncommon</li>
 <li>Fixed a bug that would most of the time drop frame 0 and sometimes frame 1</li>
 <li>Updated Haali's matroska parser code to the latest version</li>
-<li>Updated FFmpeg to rev X</li>
+<li>Updated FFmpeg to rev 18774</li>
 </ul></li>
 
 
