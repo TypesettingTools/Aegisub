@@ -209,6 +209,7 @@ void FFmpegSourceVideoProvider::Close() {
 	KeyFramesList.clear();
 	TimecodesVector.clear();
 	FrameNumber = -1;
+	CurFrame.Clear();
 }
 
 
