@@ -41,6 +41,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include <wx/string.h>
+#include <stdint.h>
 
 
 /////////////////////////////
@@ -66,7 +67,6 @@ public:
 	void ParseSRT(const wxString text);	// Sets value to text-form time, in SRT format
 	wxString GetASSFormated(bool ms=false); // Returns the ASS representation of time
 	wxString GetSRTFormated();			// Returns the SRT representation of time
-	wxString GetSMPTE(double fps);		// Returns the SMPTE timecodes for the given frame rate
 };
 
 // Comparison operators
@@ -76,3 +76,24 @@ bool operator < (AssTime &t1, AssTime &t2);
 bool operator > (AssTime &t1, AssTime &t2);
 bool operator <= (AssTime &t1, AssTime &t2);
 bool operator >= (AssTime &t1, AssTime &t2);
+
+
+/////////////////////////////
+// Class for that annoying SMPTE format timecodes stuff
+class FractionalTime {
+private:
+	int64_t time; // milliseconds, like in AssTime
+	double num, den; // numerator/denominator
+	wxString sep; // separator; someone might have separators of more than one character :V
+
+public:
+	// dumb assumption? I give no fuck
+	FractionalTime(wxString separator, double numerator=30.0, double denominator=1.0);
+	~FractionalTime();
+
+	AssTime ToAssTime(wxString fractime);
+	int64_t ToMillisecs(wxString fractime);
+
+	wxString FromAssTime(AssTime time);
+	wxString FromMillisecs(int64_t msec);
+};

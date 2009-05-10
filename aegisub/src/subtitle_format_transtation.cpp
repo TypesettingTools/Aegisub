@@ -41,6 +41,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "ass_time.h"
 #include "subtitle_format_transtation.h"
 #include "text_file_writer.h"
 #include <stdio.h>
@@ -115,7 +116,8 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 			// and we otherwise run the risk of having two lines overlap in a
 			// frame, when they should run right into each other.
 			end.SetMS(end.GetMS() - (int)(500.0/fps));
-			wxString header = wxString::Format(_T("SUB[%i%s%s "),valign,halign,type) + start.GetSMPTE(fps) + _T(">") + end.GetSMPTE(fps) + _T("]");
+			FractionalTime ft(_T(":"),fps);
+			wxString header = wxString::Format(_T("SUB[%i%s%s "),valign,halign,type) + ft.FromAssTime(start) + _T(">") + ft.FromAssTime(end) + _T("]");
 			file.WriteLineToFile(header);
 
 			// Process text
