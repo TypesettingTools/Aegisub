@@ -38,6 +38,7 @@
 // Includes
 #include "config.h"
 
+#include <wx/regex.h>
 #include <fstream>
 #include <algorithm>
 #include "ass_time.h"
@@ -244,15 +245,6 @@ wxString AssTime::GetSRTFormated () {
 }
 
 
-///////////////////
-// SMPTE formatted
-wxString AssTime::GetSMPTE(double fps)
-{
-	int f = int(GetTimeMiliseconds() * fps / 1000.0);
-	return wxString::Format(_T("%02i:%02i:%02i:%02i"),GetTimeHours(),GetTimeMinutes(),GetTimeSeconds(),f);
-}
-
-
 //////////////////////
 // AssTime comparison
 bool operator < (AssTime &t1, AssTime &t2) {
@@ -292,3 +284,69 @@ int AssTime::GetTimeMinutes() { return (time % 3600000)/60000; }
 int AssTime::GetTimeSeconds() { return (time % 60000)/1000; }
 int AssTime::GetTimeMiliseconds() { return (time % 1000); }
 int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
+
+
+
+
+FractionalTime::FractionalTime (wxString separator, double numerator, double denominator) {
+	num = numerator;
+	den = denominator;
+	sep = separator;
+
+	// fractions < 1 are not welcome here
+	if ((num <= 0 || den <= 0) || (num < den))
+		throw _T("FractionalTime: nonsensical enumerator or denominator");
+	if (sep.IsEmpty())
+		throw _T("FractionalTime: no separator specified");
+}
+
+FractionalTime::~FractionalTime () {
+	sep.Clear();
+}
+
+int64_t FractionalTime::ToMillisecs (wxString _text) {
+	wxString text = _text;
+	wxString re_str = _T("");
+	wxString sep_e = _T("\\") + sep; // escape this just in case it may be a reserved regex character
+	text.Trim(false);
+	text.Trim(true);
+	long h=0,m=0,s=0,ms=0,f=0;
+
+	//           hour                    minute                  second                  fraction
+	re_str << _T("(\\d+)") << sep_e << _T("(\\d+)") << sep_e << _T("(\\d+)") << sep_e << _T("(\\d+)");
+
+	wxRegEx re(re_str, wxRE_ADVANCED);
+	if (!re.IsValid())
+		throw _T("FractionalTime: regex failure");
+	if (!re.Matches(text))
+		return 0; // FIXME: throw here too?
+	
+	re.GetMatch(text, 1).ToLong(&h);
+	re.GetMatch(text, 2).ToLong(&m);
+	re.GetMatch(text, 3).ToLong(&s);
+	re.GetMatch(text, 4).ToLong(&f);
+	// FIXME: find out how to do this in a sane way
+	//if ((double)f >= ((double)num/(double)den) // overflow?
+	//	f = (num/den - 1);
+	ms = long((1000.0 / (num/den)) * (double)f);
+
+	return (int64_t)((h * 3600000) + (m * 60000) + (s * 1000) + ms);
+}
+
+AssTime FractionalTime::ToAssTime (wxString _text) {
+	AssTime time;
+	time.SetMS((int)ToMillisecs(_text));
+	return time;
+}
+
+wxString FractionalTime::FromAssTime(AssTime time) {
+	return FromMillisecs((int64_t)time.GetMS());
+}
+
+wxString FractionalTime::FromMillisecs(int64_t msec) {
+	int h = msec / 3600000;
+	int m = (msec % 3600000)/60000;
+	int s = (msec % 60000)/1000;
+	int f = int((msec % 1000) * ((num/den) / 1000.0));
+	return wxString::Format(_T("%02i") + sep + _T("%02i") + sep + _T("%02i") + sep + _T("%02i"),h,m,s,f);
+}

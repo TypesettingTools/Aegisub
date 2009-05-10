@@ -87,14 +87,15 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Write lines
 	using std::list;
 	int i = 0;
+
+	// Encore wants ; instead of : if we're dealing with NTSC
+	FractionalTime fp(fps > 26.0 ? _T(";") : _T(":"), fps);
+
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
 		if (current && !current->Comment) {
 			// Time stamps
-			wxString timeStamps = wxString::Format(_T("%i "),++i) + current->Start.GetSMPTE(fps) + _T(" ") + current->End.GetSMPTE(fps);
-
-			// Convert : to ; if it's NTSC
-			if (fps > 26.0) timeStamps.Replace(_T(":"),_T(";"));
+			wxString timeStamps = wxString::Format(_T("%i "),++i) + fp.FromAssTime(current->Start) + _T(" ") + fp.FromAssTime(current->End);
 
 			// Write
 			file.WriteLineToFile(timeStamps + current->Text);
