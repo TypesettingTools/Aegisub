@@ -332,8 +332,11 @@ namespace Automation4 {
 nospin:
 				if (!hasspin) {
 					lua_pop(L, 1);
-					min = MININT;
-					max = MAXINT;
+					// Assuming we are using a binary machine with finite word length,
+					// that represents integers as two's complement, this will get us
+					// the largest and smallest values representable by the int type.
+					max = (int)((~(unsigned int)0) >> 1);
+					min = ~max;
 				}
 			}
 
