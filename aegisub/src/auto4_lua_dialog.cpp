@@ -332,6 +332,8 @@ namespace Automation4 {
 nospin:
 				if (!hasspin) {
 					lua_pop(L, 1);
+					min = MININT;
+					max = MAXINT;
 				}
 			}
 
@@ -354,32 +356,17 @@ nospin:
 					value = tmp;
 			}
 
-			typedef wxValidator IntTextValidator; // TODO
 			wxControl *Create(wxWindow *parent)
 			{
-				if (hasspin) {
-					wxSpinCtrl *scw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, min, max, value);
-					scw->SetRange(min, max);
-					scw->SetValue(value);
-					cw = scw;
-				} else {
-					cw = new wxTextCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, 0); //, IntTextValidator());
-				}
-				cw->SetToolTip(hint);
+				wxSpinCtrl *scw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value);
+				scw->SetToolTip(hint);
+				cw = scw;
 				return cw;
 			}
 
 			void ControlReadBack()
 			{
-				if (hasspin) {
-					value = ((wxSpinCtrl*)cw)->GetValue();
-				} else {
-					long newval;
-					text = ((wxTextCtrl*)cw)->GetValue();
-					if (text.ToLong(&newval)) {
-						value = newval;
-					}
-				}
+				value = ((wxSpinCtrl*)cw)->GetValue();
 			}
 
 			void LuaReadBack(lua_State *L)
