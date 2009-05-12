@@ -47,6 +47,7 @@ class FrameIndex;
 class FrameInfoVector;
 
 typedef int (FFMS_CC *IndexCallback)(int State, int64_t Current, int64_t Total, void *Private);
+typedef int (FFMS_CC *IndexCallback)(int State, int64_t Current, int64_t Total, void *Private);
 
 enum FFMS_SeekMode {
 	FFMS_SEEK_LINEAR_NO_RW  = -1,
@@ -112,6 +113,7 @@ struct AudioProperties {
 	int SampleRate;
 	int Channels;
 	int BitsPerSample;
+	int Delay;
 	bool Float;
 	int64_t NumSamples;
 };
@@ -119,7 +121,8 @@ struct AudioProperties {
 // Most functions return 0 on success
 // Functions without error message output can be assumed to never fail
 FFMS_API(void) FFMS_Init();
-FFMS_API(void) FFMS_NoLog();
+FFMS_API(int) FFMS_GetLogLevel();
+FFMS_API(void) FFMS_SetLogLevel(int Level);
 FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(AudioBase *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(void) FFMS_DestroyVideoSource(VideoBase *VB);
@@ -147,4 +150,5 @@ FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int
 FFMS_API(FrameIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetPixFmt(const char *Name);
+//FFMS_API(int) FFMS_DefaultAudioName(const char *SourceFile, int Track, const AudioProperties *AP, char *FileName, unsigned FNSize);
 #endif

@@ -19,6 +19,7 @@
 //  THE SOFTWARE.
 
 extern "C" {
+#include <libavutil/log.h>
 #include <libavutil/md5.h>
 }
 
@@ -56,8 +57,8 @@ int main(int argc, char *argv[]) {
 		return -1;
 
 	FFMS_Init();
-#ifndef VERBOSE
-	FFMS_NoLog();
+#ifdef VERBOSE
+	FFMS_SetLogLevel(AV_LOG_INFO);
 #endif
 
 	int FMT_YV12A = FFMS_GetPixFmt("yuv420p");
