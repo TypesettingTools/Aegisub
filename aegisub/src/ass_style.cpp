@@ -58,6 +58,12 @@ AssColor::AssColor (wxColour &color) {
 //////////////////
 // Parse from SSA/ASS
 void AssColor::Parse(const wxString value) {
+	if (value.Len() > 0 && value[0] == _T('#')) {
+		// HTML colour
+		SetWXColor(wxColor(value));
+		return;
+	}
+
 	// Prepare
 	char c,ostr[12];
 	unsigned long outval;
