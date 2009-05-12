@@ -265,6 +265,26 @@ function matching_templates(templates, line, tenv)
 	return test_next
 end
 
+-- Iterator function, run a loop using tenv.j and tenv.maxj as loop controllers
+function template_loop(tenv, initmaxj)
+	local oldmaxj = initmaxj
+	tenv.maxj = initmaxj
+	tenv.j = 0
+	local function itor()
+		if tenv.j >= tenv.maxj or aegisub.progress.is_cancelled() then
+			return nil
+		else
+			tenv.j = tenv.j + 1
+			if oldmaxj ~= tenv.maxj then
+				aegisub.debug.out(5, "Number of loop iterations changed from %d to %d\n", oldmaxj, tenv.maxj)
+				oldmaxj = tenv.maxj
+			end
+			return tenv.j, tenv.maxj
+		end
+	end
+	return itor
+end
+
 
 -- Apply the templates
 function apply_templates(meta, styles, subs, templates)
@@ -277,6 +297,8 @@ function apply_templates(meta, styles, subs, templates)
 		_G = _G
 	}
 	tenv.tenv = tenv
+	
+	-- Define helper functions in tenv
 	
 	tenv.retime = function(mode, addstart, addend)
 		local line, syl = tenv.line, tenv.syl
@@ -322,7 +344,30 @@ function apply_templates(meta, styles, subs, templates)
 		line.duration = newend - newstart
 		return ""
 	end
+	
 	tenv.fxgroup = {}
+	
+	tenv.relayer = function(layer)
+		line.layer = layer
+		return ""
+	end
+	
+	tenv.restyle = function(style)
+		line.style = style
+		line.styleref = styles[style]
+		return ""
+	end
+	
+	tenv.maxloop = function(newmaxj)
+		tenv.maxj = newmaxj
+		return ""
+	end
+	tenv.maxloops = tenv.maxloop
+	tenv.loopctl = function(newj, newmaxj)
+		tenv.j = newj
+		tenv.maxj = newmaxj
+		return ""
+	end
 	
 	-- run all run-once code snippets
 	for k, t in pairs(templates.once) do
@@ -443,8 +488,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	-- Apply all line templates
 	aegisub.debug.out(5, "Running line templates\n")
 	for t in matching_templates(templates.line, line, tenv) do
-		tenv.j = 0
-		tenv.maxj = t.loops
+		if aegisub.progress.is_cancelled() then break end
 		
 		-- Set varctx for per-line variables
 		varctx["start"] = varctx.lstart
@@ -464,11 +508,15 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		varctx.x = varctx.lx
 		varctx.y = varctx.ly
 		
-		while tenv.j < t.loops do
-			tenv.j = tenv.j + 1
+		for j, maxj in template_loop(tenv, t.loops) do
 			if t.code then
 				aegisub.debug.out(5, "Code template, %s\n", t.code)
 				tenv.line = line
+				-- Although run_code_template also performs template looping this works
+				-- by "luck", since by the time the first loop of this outer loop completes
+				-- the one run by run_code_template has already performed all iterations
+				-- and has tenv.j and tenv.maxj in a loop-ending state, causing the outer
+				-- loop to only ever run once.
 				run_code_template(t, tenv)
 			else
 				aegisub.debug.out(5, "Line template, pre = '%s', t = '%s'\n", t.pre, t.t)
@@ -512,6 +560,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	
 	-- Loop over syllables
 	for i = 0, line.kara.n do
+		if aegisub.progress.is_cancelled() then break end
 		local syl = line.kara[i]
 		
 		aegisub.debug.out(5, "Applying templates to syllable: %s\n", syl.text)
@@ -522,6 +571,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	
 	-- Loop over furigana
 	for i = 1, line.furi.n do
+		if aegisub.progress.is_cancelled() then break end
 		local furi = line.furi[i]
 		
 		aegisub.debug.out(5, "Applying templates to furigana: %s\n", furi.text)
@@ -540,9 +590,7 @@ function run_code_template(template, tenv)
 	else
 		local pcall = pcall
 		setfenv(f, tenv)
-		tenv.maxj = template.loops
-		for j = 1, template.loops do
-			tenv.j = j
+		for j, maxj in template_loop(tenv, template.loops) do
 			local res, err = pcall(f)
 			if not res then
 				aegisub.debug.out(2, "Runtime error in template code: %s\nCode producing error: %s\n\n", err, template.code)
@@ -604,6 +652,8 @@ function apply_syllable_templates(syl, line, templates, tenv, varctx, subs)
 	
 	-- Loop over all templates matching the line style
 	for t in matching_templates(templates, line, tenv) do
+		if aegisub.progress.is_cancelled() then break end
+		
 		tenv.syl = syl
 		tenv.basesyl = syl
 		set_ctx_syl(varctx, line, syl)
@@ -631,6 +681,7 @@ end
 
 function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, skip_perchar, skip_multi)
 	local t = template
+	if aegisub.progress.is_cancelled() then return false end
 	
 	aegisub.debug.out(5, "Applying template to one syllable with text: %s\n", syl.text)
 	
@@ -697,9 +748,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 		run_code_template(t, tenv)
 	else
 		aegisub.debug.out(5, "Running %d effect loops\n", t.loops)
-		tenv.maxj = t.loops
-		for j = 1, t.loops do
-			tenv.j = j
+		for j, maxj in template_loop(tenv, t.loops) do
 			local newline = table.copy(line)
 			newline.styleref = syl.style
 			newline.style = syl.style.name
