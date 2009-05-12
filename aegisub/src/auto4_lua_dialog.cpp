@@ -58,6 +58,7 @@
 #include <wx/tokenzr.h>
 #include <assert.h>
 #include "colour_button.h"
+#include "ass_style.h"
 
 namespace Automation4 {
 
@@ -170,7 +171,15 @@ namespace Automation4 {
 			Edit(lua_State *L)
 				: LuaConfigDialogControl(L)
 			{
-				lua_getfield(L, -1, "text");
+				// Undocumented behaviour, 'value' is also accepted as key for text,
+				// mostly so a text control can stand in for other things.
+				// This shouldn't be exploited and might change later.
+				lua_getfield(L, -1, "value");
+				if (lua_isnil(L, -1))
+				{
+					lua_pop(L, 1);
+					lua_getfield(L, -1, "text");
+				}
 				text = wxString(lua_tostring(L, -1), wxConvUTF8);
 				lua_pop(L, 1);
 			}
@@ -243,7 +252,9 @@ namespace Automation4 {
 
 			wxControl *Create(wxWindow *parent)
 			{
-				cw = new ColourButton(parent, -1, wxSize(50*width,10*height), wxColour(text));
+				AssColor colour;
+				colour.Parse(text);
+				cw = new ColourButton(parent, -1, wxSize(50*width,10*height), colour.GetWXColor());
 				cw->SetToolTip(hint);
 				return cw;
 			}
@@ -392,7 +403,7 @@ nospin:
 				: Edit(L)
 			{
 				lua_getfield(L, -1, "value");
-				value = lua_tointeger(L, -1);
+				value = (float)lua_tonumber(L, -1);
 				lua_pop(L, 1);
 
 				// TODO: spin button support
@@ -714,22 +725,13 @@ badcontrol:
 				wxLogDebug(_T("was zero, cancelled"));
 				// Always cancel/closed
 				lua_pushboolean(L, 0);
+			} else if (buttons.size() == 0 && btn == 1) {
+				wxLogDebug(_T("default buttons, button 1 pushed, Ok button"));
+				lua_pushboolean(L, 1);
 			} else {
-				wxLogDebug(_T("nonzero, something else: %d"), btn);
-
-				// If it got out of bounds, then it must be a colour button - don't do anything.
-				if (btn < 0 || btn >= (int)buttons.size()) {
-					wxLogDebug(_T("colour button"));
-				}
-				else if (buttons.size() > 0) {
-					wxLogDebug(_T("user button: %s"), buttons.at(btn-1).c_str());
-					// button_pushed is index+1 to reserve 0 for Cancel
-					lua_pushstring(L, buttons.at(btn-1).mb_str(wxConvUTF8));
-				} else {
-					wxLogDebug(_T("default button, must be Ok"));
-					// Cancel case already covered, must be Ok then
-					lua_pushboolean(L, 1);
-				}
+				wxLogDebug(_T("user button: %s"), buttons.at(btn-1).c_str());
+				// button_pushed is index+1 to reserve 0 for Cancel
+				lua_pushstring(L, buttons.at(btn-1).mb_str(wxConvUTF8));
 			}
 		}
 
