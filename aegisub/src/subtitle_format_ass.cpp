@@ -106,6 +106,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 				version = 0;
 			}
 			else if (low == _T("[v4+ styles]")) {
+				wxbuffer = _T("[V4+ Styles]");
 				curgroup = wxbuffer;
 				version = 1;
 			}
