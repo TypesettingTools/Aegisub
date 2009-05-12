@@ -18,6 +18,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+extern "C" {
+#include <libavutil/log.h>
+}
 
 #include <iostream> 
 #include <string>
@@ -185,8 +188,8 @@ int main(int argc, char *argv[]) {
 
 	FFMS_Init();
 
-	if (!Verbose)
-		FFMS_NoLog();
+	if (Verbose)
+		FFMS_SetLogLevel(AV_LOG_INFO);
 
 	try {
 		DoIndexing();

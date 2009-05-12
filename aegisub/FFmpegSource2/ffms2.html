@@ -60,10 +60,13 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
   Separate postprocessing which also seems to include a few simple deinterlacers
 </p>
 
-<b>FFNoLog()</b><br />
-  Disable all logging output from FFmpeg
+<b>FFSetLogLevel(int Level)</b><br />
+  Sets the log FFmpeg logging level, defaults to quiet (-8) and the FFmpeg default is 16, all different values can be found in avutil/log.h
 </p>
 
+<b>FFGetLogLevel()</b><br />
+  Returns the current level of logging as an int
+</p>
 
 <p>
 <b>source:</b>
@@ -233,6 +236,11 @@ Note that --enable-w32threads is required for multithreaded decoding to work.
 
 <h2>Changes</h2>
 <ul>
+<li>2.00 beta 9<ul>
+<li>Removed FFNoLog and replaced it with FFSetLogLevel and FFGetLogLevel, the default logging is now also set to quiet, the magical numbers to supply it can be found in avutil/log.h</li>
+<li>Updated FFmpeg to rev X</li>
+</ul></li>
+
 <li>2.00 beta 8<ul>
 <li>Improved the audio decoding quality a lot by adding a simple cache, no more seeking is done when playing a file linearly and pops and other artifacts should be much more uncommon</li>
 <li>Fixed a bug that would most of the time drop frame 0 and sometimes frame 1</li>

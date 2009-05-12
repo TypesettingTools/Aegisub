@@ -57,12 +57,18 @@ FrameInfo::FrameInfo(int64_t SampleStart, int64_t FilePos, unsigned int FrameSiz
 
 FFMS_API(void) FFMS_Init() {
 	static bool InitDone = false;
-	if (!InitDone)
+	if (!InitDone) {
 		av_register_all();
+		av_log_set_level(AV_LOG_QUIET);
+	}
 	InitDone = true;
 }
 
-FFMS_API(void) FFMS_NoLog() {
+FFMS_API(int) FFMS_GetLogLevel() {
+	return av_log_get_level();
+}
+
+FFMS_API(void) FFMS_SetLogLevel(int Level) {
 	av_log_set_level(AV_LOG_QUIET);
 }
 

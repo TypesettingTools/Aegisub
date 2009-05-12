@@ -219,9 +219,13 @@ AVSValue __cdecl CreateSWScale(AVSValue Args, void* UserData, IScriptEnvironment
 	return new SWScale(Args[0].AsClip(), Args[1].AsInt(0), Args[2].AsInt(0), Args[3].AsString("BICUBIC"), Args[4].AsString(""), Env);
 }
 
-AVSValue __cdecl FFNoLog(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
-	FFMS_NoLog();
-	return 0;
+AVSValue __cdecl FFGetLogLevel(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+	return FFMS_GetLogLevel();
+}
+
+AVSValue __cdecl FFSetLogLevel(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+	FFMS_SetLogLevel(Args[0].AsInt());
+	return FFMS_GetLogLevel();
 }
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScriptEnvironment* Env) {
@@ -230,7 +234,8 @@ extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit2(IScri
     Env->AddFunction("FFAudioSource", "[source]s[track]i[cache]b[cachefile]s", CreateFFAudioSource, 0);
 	Env->AddFunction("FFPP", "c[pp]s", CreateFFPP, 0);
 	Env->AddFunction("SWScale", "c[width]i[height]i[resizer]s[colorspace]s", CreateSWScale, 0);
-	Env->AddFunction("FFNoLog", "", FFNoLog, 0);
+	Env->AddFunction("FFGetLogLevel", "", FFGetLogLevel, 0);
+	Env->AddFunction("FFSetLogLevel", "i", FFSetLogLevel, 0);
 
     return "FFmpegSource - The Second Coming";
 }
