@@ -279,11 +279,13 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 
 /////////////////////////////////
 // Ask the user to enter the FPS
-double SubtitleFormat::AskForFPS(bool palNtscOnly) {
+SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	wxArrayString choices;
+	FPSRational fps_rat;
+	fps_rat.smpte_dropframe = false; // ensure it's false by default
 	
 	// Video FPS
-	bool vidLoaded = !palNtscOnly && VFR_Output.IsLoaded();
+	bool vidLoaded = VFR_Output.IsLoaded();
 	if (vidLoaded) {
 		wxString vidFPS;
 		if (VFR_Output.GetFrameRateType() == VFR) vidFPS = _T("VFR");
@@ -292,49 +294,73 @@ double SubtitleFormat::AskForFPS(bool palNtscOnly) {
 	}
 	
 	// Standard FPS values
-	if (!palNtscOnly) {
-		choices.Add(_("15.000 FPS"));
-		choices.Add(_("23.976 FPS (Decimated NTSC)"));
-		choices.Add(_("24.000 FPS (FILM)"));
-	}
+	choices.Add(_("15.000 FPS"));
+	choices.Add(_("23.976 FPS (Decimated NTSC)"));
+	choices.Add(_("24.000 FPS (FILM)"));
 	choices.Add(_("25.000 FPS (PAL)"));
 	choices.Add(_("29.970 FPS (NTSC)"));
-	if (!palNtscOnly) {
-		choices.Add(_("30.000 FPS"));
-		choices.Add(_("59.940 FPS (NTSC x2)"));
-		choices.Add(_("60.000 FPS"));
-		choices.Add(_("119.880 FPS (NTSC x4)"));
-		choices.Add(_("120.000 FPS"));
-	}
+	if (showSMPTE)
+		choices.Add(_("29.970 FPS (NTSC with SMPTE dropframe)"));
+	choices.Add(_("30.000 FPS"));
+	choices.Add(_("50.000 FPS (PAL x2)"));
+	choices.Add(_("59.940 FPS (NTSC x2)"));
+	choices.Add(_("60.000 FPS"));
+	choices.Add(_("119.880 FPS (NTSC x4)"));
+	choices.Add(_("120.000 FPS"));
 
 	// Ask
 	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"),_("FPS"),choices);
-	if (choice == -1) return 0.0;
+	if (choice == -1) {
+		fps_rat.num = 0;
+		fps_rat.den = 0;
 
-	// PAL/NTSC choice
-	if (palNtscOnly) {
-		if (choice == 0) return 25.0;
-		else return 30.0 / 1.001;
+		return fps_rat;
 	}
 
 	// Get FPS from choice
 	if (vidLoaded) choice--;
-	switch (choice) {
-		case -1: return -1.0; break; // VIDEO
-		case 0: return 15.0; break;
-		case 1: return 24.0 / 1.001; break;
-		case 2: return 24.0; break;
-		case 3: return 25.0; break;
-		case 4: return 30.0 / 1.001; break;
-		case 5: return 30.0; break;
-		case 6: return 60.0 / 1.001; break;
-		case 7: return 60.0; break;
-		case 8: return 120.0 / 1.001; break;
-		case 9: return 120.0; break;
+	// dropframe was displayed, that means all choices >4 are bumped up by 1
+	if (showSMPTE) {
+		switch (choice) {
+			case -1: fps_rat.num = -1;		fps_rat.den = 1;	break; // VIDEO
+			case 0: fps_rat.num = 15;		fps_rat.den = 1;	break;
+			case 1: fps_rat.num = 24000;	fps_rat.den = 1001;	break;
+			case 2: fps_rat.num = 24;		fps_rat.den = 1;	break;
+			case 3: fps_rat.num = 25;		fps_rat.den = 1;	break;
+			case 4: fps_rat.num = 30000;    fps_rat.den = 1001;	break;
+			case 5: fps_rat.num = 30000;    fps_rat.den = 1001; fps_rat.smpte_dropframe = true;	break;
+			case 6: fps_rat.num = 30;		fps_rat.den = 1;	break;
+			case 7: fps_rat.num = 50;		fps_rat.den = 1;	break;
+			case 8: fps_rat.num = 60000;	fps_rat.den = 1001;	break;
+			case 9: fps_rat.num = 60;		fps_rat.den = 1;	break;
+			case 10: fps_rat.num = 120000;	fps_rat.den = 1001;	break;
+			case 11: fps_rat.num = 120;		fps_rat.den = 1;	break;
+		}
+		return fps_rat;
+	} else {
+		// dropframe wasn't displayed
+		switch (choice) {
+			case -1: fps_rat.num = -1;		fps_rat.den = 1;	break; // VIDEO
+			case 0: fps_rat.num = 15;		fps_rat.den = 1;	break;
+			case 1: fps_rat.num = 24000;	fps_rat.den = 1001;	break;
+			case 2: fps_rat.num = 24;		fps_rat.den = 1;	break;
+			case 3: fps_rat.num = 25;		fps_rat.den = 1;	break;
+			case 4: fps_rat.num = 30000;    fps_rat.den = 1001;	break;
+			case 5: fps_rat.num = 30;		fps_rat.den = 1;	break;
+			case 6: fps_rat.num = 50;		fps_rat.den = 1;	break;
+			case 7: fps_rat.num = 60000;	fps_rat.den = 1001;	break;
+			case 8: fps_rat.num = 60;		fps_rat.den = 1;	break;
+			case 9: fps_rat.num = 120000;	fps_rat.den = 1001;	break;
+			case 10: fps_rat.num = 120;		fps_rat.den = 1;	break;
+		}
+		return fps_rat;
 	}
 
 	// fubar
-	return 0.0;
+	fps_rat.num = 0;
+	fps_rat.den = 0;
+
+	return fps_rat;
 }
 
 

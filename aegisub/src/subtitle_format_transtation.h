@@ -45,6 +45,9 @@
 //////////////////////
 // TranStation writer
 class TranStationSubtitleFormat : public SubtitleFormat {
+private:
+	wxString ConvertLine(AssDialogue *line, FPSRational *fps_rat, int nextl_start);
+
 public:
 	wxString GetName();
 	wxArrayString GetWriteWildcards();

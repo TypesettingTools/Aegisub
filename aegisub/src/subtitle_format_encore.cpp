@@ -70,8 +70,8 @@ bool EncoreSubtitleFormat::CanWriteFile(wxString filename) {
 // Write file
 void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Get FPS
-	double fps = AskForFPS(true);
-	if (fps <= 0.0) return;
+	FPSRational fps_rat = AskForFPS(true);
+	if (fps_rat.num <= 0 || fps_rat.den <= 0) return;
 
 	// Open file
 	TextFileWriter file(_filename,encoding);
@@ -88,14 +88,14 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	using std::list;
 	int i = 0;
 
-	// Encore wants ; instead of : if we're dealing with NTSC
-	FractionalTime fp(fps > 26.0 ? _T(";") : _T(":"), fps);
+	// Encore wants ; instead of : if we're dealing with NTSC dropframe stuff
+	FractionalTime ft(fps_rat.smpte_dropframe ? _T(";") : _T(":"), fps_rat.num, fps_rat.den, fps_rat.smpte_dropframe);
 
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
 		if (current && !current->Comment) {
 			// Time stamps
-			wxString timeStamps = wxString::Format(_T("%i "),++i) + fp.FromAssTime(current->Start) + _T(" ") + fp.FromAssTime(current->End);
+			wxString timeStamps = wxString::Format(_T("%i "),++i) + ft.FromAssTime(current->Start) + _T(" ") + ft.FromAssTime(current->End);
 
 			// Write
 			file.WriteLineToFile(timeStamps + current->Text);

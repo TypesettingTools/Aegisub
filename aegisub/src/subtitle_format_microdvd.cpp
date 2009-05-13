@@ -110,6 +110,7 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 
 	// Loop
 	bool isFirst = true;
+	FPSRational fps_rat;
 	double fps = 0.0;
 	while (file.HasMoreLines()) {
 		wxString line = file.ReadLineFromFile();
@@ -133,9 +134,9 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 
 				// If it wasn't an fps line, ask the user for it
 				if (fps <= 0.0) {
-					fps = AskForFPS();
-					if (fps == 0.0) return;
-					else if (fps > 0.0) cfr.SetCFR(fps);
+					fps_rat = AskForFPS();
+					if (fps_rat.num == 0) return;
+					else if (fps_rat.num > 0) cfr.SetCFR(double(fps_rat.num)/double(fps_rat.den));
 					else rate = &VFR_Output;
 				}
 				else {
@@ -172,9 +173,10 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Set FPS
 	FrameRate cfr;
 	FrameRate *rate = &cfr;
-	double fps = AskForFPS();
-	if (fps == 0.0) return;
-	else if (fps > 0.0) cfr.SetCFR(fps);
+	FPSRational fps_rat = AskForFPS();
+	if (fps_rat.num == 0 || fps_rat.den == 0) return;
+	double fps = double(fps_rat.num) / double(fps_rat.den);
+	if (fps > 0.0) cfr.SetCFR(fps);
 	else rate = &VFR_Output;
 
 	// Convert file
