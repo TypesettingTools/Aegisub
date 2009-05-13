@@ -39,6 +39,7 @@
 #include "config.h"
 
 #include <wx/regex.h>
+#include <math.h>
 #include <fstream>
 #include <algorithm>
 #include "ass_time.h"
@@ -288,9 +289,18 @@ int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
 
 
 
-FractionalTime::FractionalTime (wxString separator, double numerator, double denominator) {
-	num = numerator;
-	den = denominator;
+///////
+// Constructor
+FractionalTime::FractionalTime (wxString separator, int numerator, int denominator, bool dropframe) {
+	drop = dropframe;
+	if (drop) {
+		// no dropframe for any other framerates
+		num = 30000;
+		den = 1001;
+	} else {
+		num = numerator;
+		den = denominator;
+	}
 	sep = separator;
 
 	// fractions < 1 are not welcome here
@@ -300,20 +310,23 @@ FractionalTime::FractionalTime (wxString separator, double numerator, double den
 		throw _T("FractionalTime: no separator specified");
 }
 
+///////
+// Destructor
 FractionalTime::~FractionalTime () {
 	sep.Clear();
 }
 
-int64_t FractionalTime::ToMillisecs (wxString _text) {
+///////
+// SMPTE text string to milliseconds conversion
+int FractionalTime::ToMillisecs (wxString _text) {
 	wxString text = _text;
 	wxString re_str = _T("");
-	wxString sep_e = _T("\\") + sep; // escape this just in case it may be a reserved regex character
 	text.Trim(false);
 	text.Trim(true);
 	long h=0,m=0,s=0,ms=0,f=0;
 
-	//           hour                    minute                  second                  fraction
-	re_str << _T("(\\d+)") << sep_e << _T("(\\d+)") << sep_e << _T("(\\d+)") << sep_e << _T("(\\d+)");
+	//           hour                   minute                 second                 fraction
+	re_str << _T("(\\d+)") << sep << _T("(\\d+)") << sep << _T("(\\d+)") << sep << _T("(\\d+)");
 
 	wxRegEx re(re_str, wxRE_ADVANCED);
 	if (!re.IsValid())
@@ -321,32 +334,106 @@ int64_t FractionalTime::ToMillisecs (wxString _text) {
 	if (!re.Matches(text))
 		return 0; // FIXME: throw here too?
 	
-	re.GetMatch(text, 1).ToLong(&h);
-	re.GetMatch(text, 2).ToLong(&m);
-	re.GetMatch(text, 3).ToLong(&s);
-	re.GetMatch(text, 4).ToLong(&f);
-	// FIXME: find out how to do this in a sane way
-	//if ((double)f >= ((double)num/(double)den) // overflow?
-	//	f = (num/den - 1);
-	ms = long((1000.0 / (num/den)) * (double)f);
+	re.GetMatch(text,1).ToLong(&h);
+	re.GetMatch(text,2).ToLong(&m);
+	re.GetMatch(text,3).ToLong(&s);
+	re.GetMatch(text,4).ToLong(&f);
 
-	return (int64_t)((h * 3600000) + (m * 60000) + (s * 1000) + ms);
+	int msecs_f = 0;
+	int fn = 0;
+	// dropframe? do silly things
+	if (drop) {
+		fn += h * frames_per_period * 6;
+		fn += (m % 10) * frames_per_period;
+		
+		if (m > 0) {
+			fn += 1800;
+			m--;
+
+			fn += m * 1798; // two timestamps dropped per minute after the first
+			fn += s * 30 + f - 2;
+		}
+		else {				// minute is evenly divisible by 10, keep first two timestamps
+			fn += s * 30;
+			fn += f;
+		}
+
+		msecs_f = (fn * num) / den;
+	}
+	// no dropframe, may or may not sync with wallclock time
+	// (see comment in FromMillisecs for an explanation of why it's done like this)
+	else {
+		int fps_approx = floor((double(num)/double(den))+0.5);
+		fn += h * 3600 * fps_approx;
+		fn += m * 60 * fps_approx;
+		fn += s * fps_approx;
+		fn += f;
+
+		msecs_f = (fn * num) / den;
+	}
+
+	return msecs_f;
 }
 
+///////
+// SMPTE text string to AssTime conversion
 AssTime FractionalTime::ToAssTime (wxString _text) {
 	AssTime time;
 	time.SetMS((int)ToMillisecs(_text));
 	return time;
 }
 
+///////
+// AssTime to SMPTE text string conversion
 wxString FractionalTime::FromAssTime(AssTime time) {
-	return FromMillisecs((int64_t)time.GetMS());
+	return FromMillisecs(time.GetMS());
 }
 
+///////
+// Milliseconds to SMPTE text string conversion
 wxString FractionalTime::FromMillisecs(int64_t msec) {
-	int h = msec / 3600000;
-	int m = (msec % 3600000)/60000;
-	int s = (msec % 60000)/1000;
-	int f = int((msec % 1000) * ((num/den) / 1000.0));
+	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
+	int fn = (msec*(int64_t)num) / (1000*den); // frame number
+
+	// dropframe?
+	if (drop) {
+		fn += 2 * (fn / (30 * 60)) - 2 * (fn / (30 * 60 * 10));
+		h = fn / (30 * 60 * 60);
+		m = (fn / (30 * 60)) % 60;
+		s = (fn / 30) % 60;
+		f = fn % 30;
+	}
+	// no dropframe; h/m/s may or may not sync to wallclock time
+	else {
+		/*
+		This is truly the dumbest shit. What we're trying to ensure here
+		is that non-integer framerates are desynced from the wallclock
+		time by a correct amount of time. For example, in the
+		NTSC-without-dropframe case, 3600*num/den would be 107892
+		(when truncated to int), which is quite a good approximation of
+		how a long an hour is when counted in 30000/1001 frames per second.
+		Unfortunately, that's not what we want, since frame numbers will
+		still range from 00 to 29, meaning that we're really getting _30_
+		frames per second and not 29.97 and the full hour will be off by
+		almost 4 seconds (108000 frames versus 107892).
+
+		DEATH TO SMPTE
+		*/ 
+		int fps_approx = floor((double(num)/double(den))+0.5);
+		int frames_per_h = 3600*fps_approx;
+		int frames_per_m = 60*fps_approx;
+		int frames_per_s = fps_approx;
+		while (fn >= frames_per_h) {
+			h++; fn -= frames_per_h;
+		}
+		while (fn >= frames_per_m) {
+			m++; fn -= frames_per_m;
+		}
+		while (fn >= frames_per_s) {
+			s++; fn -= frames_per_s;
+		}
+		f = fn;
+	}
+
 	return wxString::Format(_T("%02i") + sep + _T("%02i") + sep + _T("%02i") + sep + _T("%02i"),h,m,s,f);
 }

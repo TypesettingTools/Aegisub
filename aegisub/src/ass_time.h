@@ -78,21 +78,28 @@ bool operator <= (AssTime &t1, AssTime &t2);
 bool operator >= (AssTime &t1, AssTime &t2);
 
 
+
 /////////////////////////////
 // Class for that annoying SMPTE format timecodes stuff
 class FractionalTime {
 private:
-	int64_t time; // milliseconds, like in AssTime
-	double num, den; // numerator/denominator
-	wxString sep; // separator; someone might have separators of more than one character :V
+	int time;		// milliseconds, like in AssTime
+	int num, den;	// numerator/denominator
+	bool drop;		// EVIL
+	wxString sep;	// separator; someone might have separators of more than one character :V
+
+	// A period is roughly 10 minutes and is used for the dropframe stuff;
+	// SMPTE dropframe timecodes drops 18 timestamps per 18000, hence the number 17982.
+	static const int frames_per_period = 17982;
 
 public:
 	// dumb assumption? I give no fuck
-	FractionalTime(wxString separator, double numerator=30.0, double denominator=1.0);
+	// NOTE: separator can be a regex! at least if you only plan on doing SMPTE->somethingelse.
+	FractionalTime(wxString separator, int numerator=30, int denominator=1, bool dropframe=false);
 	~FractionalTime();
 
 	AssTime ToAssTime(wxString fractime);
-	int64_t ToMillisecs(wxString fractime);
+	int ToMillisecs(wxString fractime);
 
 	wxString FromAssTime(AssTime time);
 	wxString FromMillisecs(int64_t msec);

@@ -65,6 +65,12 @@ private:
 	static bool loaded;
 
 protected:
+	struct FPSRational {
+		int num;
+		int den;
+		bool smpte_dropframe;
+	};
+
 	std::list<AssEntry*> *Line;
 
 	void CreateCopy();
@@ -81,7 +87,7 @@ protected:
 	void LoadDefault(bool defline=true);
 	AssFile *GetAssFile() { return assFile; }
 	int AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outgroup=NULL);
-	double AskForFPS(bool palNtscOnly=false);
+	FPSRational AskForFPS(bool showSMPTE=false);
 
 	virtual wxString GetName()=0;
 	virtual wxArrayString GetReadWildcards();
