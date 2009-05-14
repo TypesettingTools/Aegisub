@@ -76,6 +76,7 @@
 #include "standard_paths.h"
 #include "keyframe.h"
 #include "help_button.h"
+#include "dialog_styling_assistant.h"
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
@@ -133,6 +134,7 @@ FrameMain::FrameMain (wxArrayString args)
 	showVideo = true;
 	showAudio = true;
 	detachedVideo = NULL;
+	stylingAssistant = NULL;
 	InitContents();
 	Show();
 
@@ -578,6 +580,7 @@ void FrameMain::InitContents() {
 // Deinitialize controls
 void FrameMain::DeInitContents() {
 	if (detachedVideo) detachedVideo->Destroy();
+	if (stylingAssistant) stylingAssistant->Destroy();
 	AssFile::StackReset();
 	delete AssFile::top;
 	delete EditBox;
