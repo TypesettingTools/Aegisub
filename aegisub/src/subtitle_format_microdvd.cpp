@@ -157,9 +157,8 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 			AssDialogue *line = new AssDialogue();
 			line->group = _T("[Events]");
 			line->Style = _T("Default");
-			line->StartMS = start;
-			line->Start.SetMS(start);
-			line->End.SetMS(end);
+			line->SetStartMS(start);
+			line->SetEndMS(end);
 			line->Text = text;
 			Line->push_back(line);
 		}

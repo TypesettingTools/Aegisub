@@ -152,9 +152,8 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		}
 		line->Comment = isComment;
 		line->Text = value;
-		line->StartMS = 0;
-		line->Start.SetMS(0);
-		line->End.SetMS(0);
+		line->SetStartMS(0);
+		line->SetEndMS(0);
 		line->UpdateData();
 		//line->ParseASSTags();
 
@@ -168,9 +167,8 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		AssDialogue *line = new AssDialogue();
 		line->group = _T("[Events]");
 		line->Style = _T("Default");
-		line->StartMS = 0;
-		line->Start.SetMS(0);
-		line->End.SetMS(Options.AsInt(_T("Timing Default Duration")));
+		line->SetStartMS(0);
+		line->SetEndMS(Options.AsInt(_T("Timing Default Duration")));
 		Line->push_back(line);
 	}
 }

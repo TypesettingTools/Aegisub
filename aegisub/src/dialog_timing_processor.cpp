@@ -363,7 +363,7 @@ void DialogTimingProcessor::SortDialogues() {
 		tempDiag = grid->GetDialogue(i);
 		if (tempDiag && StyleOK(tempDiag->Style) && !tempDiag->Comment) {
 			if (!onlySelection->IsChecked() || grid->IsInSelection(i)) {
-				tempDiag->StartMS = tempDiag->Start.GetMS();
+				tempDiag->FixStartMS();
 				temp.push_back(tempDiag);
 			}
 		}

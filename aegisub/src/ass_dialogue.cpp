@@ -53,9 +53,8 @@ AssDialogue::AssDialogue() {
 	group = _T("[Events]");
 
 	Valid = true;
-	Start.SetMS(0);
-	End.SetMS(5000);
-	StartMS = 0;
+	SetStartMS(0);
+	SetEndMS(5000);
 	Layer = 0;
 	for (int i=0;i<4;i++) Margin[i] = 0;
 	Text = _T("");
@@ -153,7 +152,7 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	// Get start time
 	if (!tkn.HasMoreTokens()) return false;
 	Start.ParseASS(tkn.GetNextToken());
-	StartMS = Start.GetMS();
+	FixStartMS();
 
 	// Get end time
 	if (!tkn.HasMoreTokens()) return false;
@@ -785,11 +784,10 @@ AssEntry *AssDialogue::Clone() {
 	final->Actor = Actor;
 	final->Comment = Comment;
 	final->Effect = Effect;
-	final->End = End;
 	final->Layer = Layer;
 	for (int i=0;i<4;i++) final->Margin[i] = Margin[i];
-	final->Start = Start;
-	final->StartMS = Start.GetMS(); // Assume that StartMS might not be valid, because something altered Start without altering StartMS
+	final->SetStartMS(GetStartMS());
+	final->SetEndMS(GetEndMS());
 	final->Style = Style;
 	final->Text = Text;
 	//final->SetEntryData(GetEntryData());

@@ -127,9 +127,8 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 		AssDialogue *line = new AssDialogue();
 		line->group = _T("[Events]");
 		line->Style = _T("Default");
-		line->StartMS = 0;
-		line->Start.SetMS(0);
-		line->End.SetMS(5000);
+		line->SetStartMS(0);
+		line->SetEndMS(5000);
 		Line->push_back(line);
 	}
 }
@@ -156,12 +155,11 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 	if (!text.IsEmpty()) {
 		// Create dialogue
 		diag = new AssDialogue();
-		diag->Start = time;
-		diag->End.SetMS(36000000-10);
+		diag->SetStartMS(time.GetMS());
+		diag->SetEndMS(36000000-10);
 		diag->group = _T("[Events]");
 		diag->Style = _T("Default");
 		diag->Comment = false;
-		diag->StartMS = diag->Start.GetMS();
 
 		// Process text for 1.0
 		if (version == 0) {
@@ -341,11 +339,10 @@ void TTXTSubtitleFormat::ConvertToTTXT () {
 
 	// Insert blank line at the end
 	AssDialogue *diag = new AssDialogue();
-	diag->Start = lastTime;
-	diag->End.SetMS(lastTime.GetMS()+Options.AsInt(_T("Timing Default Duration")));
+	diag->SetStartMS(lastTime.GetMS());
+	diag->SetEndMS(lastTime.GetMS()+Options.AsInt(_T("Timing Default Duration")));
 	diag->group = _T("[Events]");
 	diag->Style = _T("Default");
 	diag->Comment = false;
-	diag->StartMS = diag->Start.GetMS();
 	Line->push_back(diag);
 }

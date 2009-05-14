@@ -350,7 +350,7 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 		// Create attachment if needed
 		if (isFilename) {
 			attach = new AssAttachment(data.Mid(10));
-			attach->StartMS = lasttime;
+			attach->SetStartMS(lasttime);
 			attach->group = group;
 			keepGroup = group;
 			return lasttime;
@@ -382,15 +382,15 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 	if (lowGroup == _T("[events]")) {
 		if ((data.Left(9) == _T("Dialogue:") || data.Left(8) == _T("Comment:"))) {
 			AssDialogue *diag = new AssDialogue(data,version);
-			lasttime = diag->Start.GetMS();
+			lasttime = diag->GetStartMS();
 			//diag->ParseASSTags();
 			entry = diag;
-			entry->StartMS = lasttime;
+			entry->SetStartMS(lasttime);
 			entry->group = group;
 		}
 		if (data.Left(7) == _T("Format:")) {
 			entry = new AssEntry(_T("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"));
-			entry->StartMS = lasttime;
+			entry->SetStartMS(lasttime);
 			entry->group = group;
 		}
 	}
@@ -400,12 +400,12 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 		if (data.Left(6) == _T("Style:")) {
 			AssStyle *style = new AssStyle(data,version);
 			entry = style;
-			entry->StartMS = lasttime;
+			entry->SetStartMS(lasttime);
 			entry->group = group;
 		}
 		if (data.Left(7) == _T("Format:")) {
 			entry = new AssEntry(_T("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"));
-			entry->StartMS = lasttime;
+			entry->SetStartMS(lasttime);
 			entry->group = group;
 		}
 	}
@@ -438,14 +438,14 @@ int AssFile::AddLine (wxString data,wxString group,int lasttime,int &version,wxS
 
 		// Everything
 		entry = new AssEntry(data);
-		entry->StartMS = lasttime;
+		entry->SetStartMS(lasttime);
 		entry->group = group;
 	}
 
 	// Common entry
 	if (entry == NULL) {
 		entry = new AssEntry(data);
-		entry->StartMS = lasttime;
+		entry->SetStartMS(lasttime);
 		entry->group = group;
 	}
 
@@ -536,7 +536,7 @@ void AssFile::InsertStyle (AssStyle *style) {
 		if (curEntry->GetType() == ENTRY_STYLE || (lastGroup == _T("[V4+ Styles]") && curEntry->GetEntryData().substr(0,7) == _T("Format:"))) {
 			lastStyle = cur;
 		}
-		lasttime = curEntry->StartMS;
+		lasttime = curEntry->GetStartMS();
 		lastGroup = curEntry->group;
 	}
 
@@ -545,24 +545,24 @@ void AssFile::InsertStyle (AssStyle *style) {
 		// Add space
 		curEntry = new AssEntry(_T(""));
 		curEntry->group = lastGroup;
-		curEntry->StartMS = lasttime;
+		curEntry->SetStartMS(lasttime);
 		Line.push_back(curEntry);
 
 		// Add header
 		curEntry = new AssEntry(_T("[V4+ Styles]"));
 		curEntry->group = _T("[V4+ Styles]");
-		curEntry->StartMS = lasttime;
+		curEntry->SetStartMS(lasttime);
 		Line.push_back(curEntry);
 
 		// Add format line
 		curEntry = new AssEntry(_T("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"));
 		curEntry->group = _T("[V4+ Styles]");
-		curEntry->StartMS = lasttime;
+		curEntry->SetStartMS(lasttime);
 		Line.push_back(curEntry);
 
 		// Add style
 		style->group = _T("[V4+ Styles]");
-		style->StartMS = lasttime;
+		style->SetStartMS(lasttime);
 		Line.push_back(style);
 	}
 
@@ -570,7 +570,7 @@ void AssFile::InsertStyle (AssStyle *style) {
 	else {
 		lastStyle++;
 		style->group = (*lastStyle)->group;
-		style->StartMS = lasttime;
+		style->SetStartMS(lasttime);
 		Line.insert(lastStyle,style);
 	}
 }
@@ -598,17 +598,17 @@ void AssFile::InsertAttachment (AssAttachment *attach) {
 	// Found point, insert there
 	if (insPoint != Line.end()) {
 		insPoint++;
-		attach->StartMS = (*insPoint)->StartMS;
+		attach->SetStartMS((*insPoint)->GetStartMS());
 		Line.insert(insPoint,attach);
 	}
 
 	// Otherwise, create the [Fonts] group and insert
 	else {
 		int version=1;
-		int StartMS = Line.back()->StartMS;
+		int StartMS = Line.back()->GetStartMS();
 		AddLine(_T(""),Line.back()->group,StartMS,version);
 		AddLine(attach->group,attach->group,StartMS,version);
-		attach->StartMS = StartMS;
+		attach->SetStartMS(StartMS);
 		Line.push_back(attach);
 		AddLine(_T(""),attach->group,StartMS,version);
 	}
@@ -735,7 +735,7 @@ void AssFile::SetScriptInfo(const wxString _key,const wxString value) {
 				result += value;
 				AssEntry *entry = new AssEntry(result);
 				entry->group = (*prev)->group;
-				entry->StartMS = (*prev)->StartMS;
+				entry->SetStartMS((*prev)->GetStartMS());
 				Line.insert(++prev,entry);
 			}
 			return;
@@ -805,7 +805,7 @@ void AssFile::AddComment(const wxString _comment) {
 			AssEntry *prev = *cur;
 			AssEntry *comm = new AssEntry(comment);
 			comm->group = prev->group;
-			comm->StartMS = prev->StartMS;
+			comm->SetStartMS(prev->GetStartMS());
 			Line.insert(cur,comm);
 			break;
 		}
