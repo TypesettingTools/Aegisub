@@ -1491,8 +1491,8 @@ void FrameMain::OnSort (wxCommandEvent &event) {
 // Open styling assistant
 void FrameMain::OnOpenStylingAssistant (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	DialogStyling styling(this,SubsBox);
-	styling.ShowModal();
+	if (!stylingAssistant) stylingAssistant = new DialogStyling(this,SubsBox);
+	stylingAssistant->Show(true);
 }
 
 

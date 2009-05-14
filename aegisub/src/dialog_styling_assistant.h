@@ -86,6 +86,8 @@ private:
 	wxListBox *Styles;
 	StyleEditBox *TypeBox;
 	wxCheckBox *PreviewCheck;
+	wxButton *PlayVideoButton;
+	wxButton *PlayAudioButton;
 
 	void OnStyleBoxModified (wxCommandEvent &event);
 	void OnStyleBoxEnter (wxCommandEvent &event);
@@ -93,6 +95,7 @@ private:
 	void OnKeyDown(wxKeyEvent &event);
 	void OnPlayVideoButton(wxCommandEvent &event);
 	void OnPlayAudioButton(wxCommandEvent &event);
+	void OnActivate(wxActivateEvent &event);
 
 	void SetStyle (wxString curName,bool jump=true);
 

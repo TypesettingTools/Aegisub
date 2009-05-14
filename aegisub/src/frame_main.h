@@ -62,6 +62,7 @@ class SubsEditBox;
 class AudioBox;
 class VideoBox;
 class DialogDetachedVideo;
+class DialogStyling;
 class AegisubFileDropTarget;
 namespace Automation4 { class FeatureMacro; class ScriptManager; };
 
@@ -268,6 +269,7 @@ public:
 	AudioBox *audioBox;
 	VideoBox *videoBox;
 	DialogDetachedVideo *detachedVideo;
+	DialogStyling *stylingAssistant;
 
 	wxBoxSizer *MainSizer;
 	wxBoxSizer *TopSizer;

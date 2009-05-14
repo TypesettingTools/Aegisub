@@ -59,7 +59,7 @@
 ///////////////
 // Constructor
 DialogStyling::DialogStyling (wxWindow *parent,SubtitlesGrid *_grid) :
-wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxRESIZE_BORDER)
+wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(wxBITMAP(styling_toolbutton)));
@@ -115,10 +115,8 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 	RightMiddle->AddStretchSpacer(1);
 
 	// Rest of right sizer
-	wxButton *PlayVideoButton = new wxButton(this,BUTTON_PLAY_VIDEO,_("Play Video"));
-	wxButton *PlayAudioButton = new wxButton(this,BUTTON_PLAY_AUDIO,_("Play Audio"));
-	PlayVideoButton->Enable(video->IsLoaded());
-	PlayAudioButton->Enable(audio->loaded);
+	PlayVideoButton = new wxButton(this,BUTTON_PLAY_VIDEO,_("Play Video"));
+	PlayAudioButton = new wxButton(this,BUTTON_PLAY_AUDIO,_("Play Audio"));
 	RightBottom->AddStretchSpacer(1);
 	RightBottom->Add(PlayAudioButton,0,wxLEFT | wxRIGHT | wxBOTTOM,5);
 	RightBottom->Add(PlayVideoButton,0,wxBOTTOM | wxRIGHT,5);
@@ -179,7 +177,6 @@ DialogStyling::~DialogStyling () {
 // Jump to line
 void DialogStyling::JumpToLine(int n) {
 	// Check stuff
-	if (linen == n) return;
 	if (n == -1) return;
 
 	// Get line
@@ -195,7 +192,14 @@ void DialogStyling::JumpToLine(int n) {
 
 	// Set focus
 	TypeBox->SetFocus();
-	if (TypeBox->GetValue().IsEmpty()) TypeBox->SetValue(Styles->GetString(0));
+	bool matched = false;
+	for (size_t i = 0; i < Styles->GetCount(); i++) {
+		if (TypeBox->GetValue().IsSameAs(Styles->GetString(i),true)) {
+			matched = true;
+			break;
+		}
+	}
+	if (!matched || TypeBox->GetValue().IsEmpty()) TypeBox->SetValue(Styles->GetString(0));
 	TypeBox->SetSelection(0,TypeBox->GetValue().Length());
 
 	// Update grid
@@ -234,6 +238,7 @@ void DialogStyling::SetStyle (wxString curName, bool jump) {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogStyling,wxDialog)
+	EVT_ACTIVATE(DialogStyling::OnActivate)
 	EVT_BUTTON(BUTTON_PLAY_VIDEO, DialogStyling::OnPlayVideoButton)
 	EVT_BUTTON(BUTTON_PLAY_AUDIO, DialogStyling::OnPlayAudioButton)
 	//EVT_TEXT_ENTER(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxEnter)
@@ -241,6 +246,31 @@ BEGIN_EVENT_TABLE(DialogStyling,wxDialog)
 	EVT_LISTBOX(STYLE_LIST, DialogStyling::OnListClicked)
 	EVT_KEY_DOWN(DialogStyling::OnKeyDown)
 END_EVENT_TABLE()
+
+
+///////////////////////////
+// Dialog was De/Activated
+void DialogStyling::OnActivate(wxActivateEvent &event) {
+	// Dialog lost focus
+	if (!event.GetActive()) {
+		if (!PreviewCheck->IsChecked()) {
+			grid->ass->FlagAsModified(_("styling assistant"));
+			grid->CommitChanges();
+		}
+		return;
+	}
+	// Enable/disable play video/audio buttons
+	PlayVideoButton->Enable(video->IsLoaded());
+	PlayAudioButton->Enable(audio->loaded);
+	// Update grid
+	if (grid->ass != AssFile::top)
+		grid->LoadFromAss(AssFile::top,false,true);
+	// Fix style list
+	Styles->Set(grid->ass->GetStyles());
+	// Fix line selection
+	linen = grid->GetFirstSelRow();
+	JumpToLine(linen);
+}
 
 
 ///////////////
