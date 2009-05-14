@@ -648,7 +648,7 @@ function run_text_template(template, tenv, varctx)
 end
 
 function apply_syllable_templates(syl, line, templates, tenv, varctx, subs)
-	local applied_templates = false
+	local applied = 0
 	
 	-- Loop over all templates matching the line style
 	for t in matching_templates(templates, line, tenv) do
@@ -658,12 +658,10 @@ function apply_syllable_templates(syl, line, templates, tenv, varctx, subs)
 		tenv.basesyl = syl
 		set_ctx_syl(varctx, line, syl)
 		
-		if apply_one_syllable_template(syl, line, t, tenv, varctx, subs, false, false) then
-			applied_templates = true
-		end
+		applied = applied + apply_one_syllable_template(syl, line, t, tenv, varctx, subs, false, false)
 	end
 	
-	return applied_templates
+	return applied > 0
 end
 
 function is_syl_blank(syl)
@@ -680,20 +678,21 @@ function is_syl_blank(syl)
 end
 
 function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, skip_perchar, skip_multi)
+	if aegisub.progress.is_cancelled() then return 0 end
 	local t = template
-	if aegisub.progress.is_cancelled() then return false end
+	local applied = 0
 	
 	aegisub.debug.out(5, "Applying template to one syllable with text: %s\n", syl.text)
 	
 	-- Check for right inline_fx
 	if t.fx and t.fx ~= syl.inline_fx then
 		aegisub.debug.out(5, "Syllable has wrong inline-fx (wanted '%s', got '%s'), skipping.\n", t.inline_fx, syl.inline_fx)
-		return false
+		return 0
 	end
 	
 	if t.noblank and is_syl_blank(syl) then
 		aegisub.debug.out(5, "Syllable is blank, skipping.\n")
-		return false
+		return 0
 	end
 	
 	-- Recurse to per-char if required
@@ -716,10 +715,10 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			left = left + width
 			set_ctx_syl(varctx, line, charsyl)
 			
-			apply_one_syllable_template(charsyl, line, t, tenv, varctx, subs, true, false)
+			applied = applied + apply_one_syllable_template(charsyl, line, t, tenv, varctx, subs, true, false)
 		end
 	
-		return true
+		return applied
 	end
 	
 	-- Recurse to multi-hl if required
@@ -735,10 +734,10 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			hlsyl.duration = hldata.duration
 			set_ctx_syl(varctx, line, hlsyl)
 			
-			apply_one_syllable_template(hlsyl, line, t, tenv, varctx, subs, true, true)
+			applied = applied + apply_one_syllable_template(hlsyl, line, t, tenv, varctx, subs, true, true)
 		end
 	
-		return true
+		return applied
 	end
 
 	-- Regular processing
@@ -763,10 +762,11 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			newline.effect = "fx"
 			aegisub.debug.out(5, "Generated line with text: %s\n", newline.text)
 			subs.append(newline)
+			applied = applied + 1
 		end
 	end
 	
-	return true
+	return applied
 end
 
 
