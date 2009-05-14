@@ -725,20 +725,22 @@ void AudioDisplay::RecreateImage() {
 void AudioDisplay::MakeDialogueVisible(bool force) {
 	wxLogDebug(_T("AudioDisplay::MakeDialogueVisible(force=%d)"), force?1:0);
 	// Variables
-	int temp1=0,temp2=0;
+	int startShow=0, endShow=0;
 	if (karaoke->enabled) {
-		// In karaoke mode the entire dialogue line should be visible instead of just the selected syllable
-		GetTimesDialogue(temp1, temp2);
+		// In karaoke mode the syllable and as much as possible towards the end of the line should be shown
+		int dummy = 0;
+		GetTimesSelection(startShow, dummy);
+		GetTimesDialogue(dummy, endShow);
 	} else {
-		GetTimesSelection(temp1,temp2);
+		GetTimesSelection(startShow,endShow);
 	}
-	int startPos = GetSampleAtMS(temp1);
-	int endPos = GetSampleAtMS(temp2);
-	int startX = GetXAtMS(temp1);
-	int endX = GetXAtMS(temp2);
+	int startPos = GetSampleAtMS(startShow);
+	int endPos = GetSampleAtMS(endShow);
+	int startX = GetXAtMS(startShow);
+	int endX = GetXAtMS(endShow);
 
 	if (force || startX < 50 || endX > w-50) {
-		if (startX < 50) {
+		if (startX < 50 || endX - startX >= w) {
 			// Make sure the left edge of the selection is at least 50 pixels from the edge of the display
 			UpdatePosition(startPos - 50*samples, true);
 		} else {
