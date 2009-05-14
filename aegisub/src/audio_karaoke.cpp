@@ -754,58 +754,6 @@ int AudioKaraoke::SplitSyl (unsigned int n) {
 }
 
 
-//////////////////////////////////
-// Apply delta length to syllable
-// FIXME: is this even used?
-bool AudioKaraoke::SyllableDelta(int n,int delta,int mode) {
-	wxLogDebug(_T("AudioKaraoke::SyllableDelta(n=%d, delta=%d, mode=%d)"), n, delta, mode);
-	// Get syllable and next
-	AudioKaraokeSyllable *curSyl=NULL,*nextSyl=NULL;
-	curSyl = &syllables.at(n);
-	int nkar = syllables.size();
-	if (n < nkar-1) {
-		nextSyl = &syllables.at(n+1);
-	}
-
-	// Get variables
-	int len = curSyl->duration;
-
-	// Cap delta
-	int minLen = 0;
-	if (len + delta < minLen) delta = minLen-len;
-	if (mode == 0 && nextSyl && (nextSyl->duration - delta) < minLen) delta = nextSyl->duration - minLen;
-
-	wxLogDebug(_T("AudioKaraoke::SyllableDelta: nkar=%d, len=%d, minLen=%d, delta=%d"), nkar, len, minLen, delta);
-
-	// Apply
-	if (delta != 0) {
-		wxLogDebug(_T("AudioKaraoke::SyllableDelta: delta != 0"));
-		curSyl->duration += delta;
-
-		// Normal mode
-		if (mode == 0 && nextSyl) {
-			wxLogDebug(_T("AudioKaraoke::SyllableDelta: normal mode"));
-			nextSyl->duration -= delta;
-			nextSyl->start_time += delta;
-		}
-
-		// Shift mode
-		if (mode == 1) {
-			wxLogDebug(_T("AudioKaraoke::SyllableDelta: shift mode"));
-			for (int i=n+1;i<nkar;i++) {
-				syllables.at(i).start_time += delta;
-			}
-		}
-
-		// Flag update
-		wxLogDebug(_T("AudioKaraoke::SyllableDelta: return true"));
-		return true;
-	}
-	wxLogDebug(_T("AudioKaraoke::SyllableDelta: return false"));
-	return false;
-}
-
-
 ////////////////////////////////
 // Karaoke tag menu constructor
 AudioKaraokeTagMenu::AudioKaraokeTagMenu(AudioKaraoke *_kara)

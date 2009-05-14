@@ -113,7 +113,6 @@ public:
 	void Commit();
 	void SetSyllable(int n);
 	void SetSelection(int start,int end=-1);
-	bool SyllableDelta(int n,int delta,int mode);
 
 	void Join();
 	void BeginSplit();
