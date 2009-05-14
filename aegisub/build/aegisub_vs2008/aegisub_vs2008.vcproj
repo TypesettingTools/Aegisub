@@ -820,6 +820,10 @@
 			Name="Utilities"
 			>
 			<File
+				RelativePath="..\..\src\aegisub_endian.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\aegisublocale.cpp"
 				>
 			</File>
