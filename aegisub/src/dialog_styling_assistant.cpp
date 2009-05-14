@@ -154,11 +154,6 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 
 	// h4x
 	origColour = TypeBox->GetBackgroundColour();
-
-	// Set selection
-	wxArrayInt sel = grid->GetSelection();
-	if (sel.Count() > 0) JumpToLine(sel[0]);
-	else JumpToLine(0);
 }
 
 
@@ -253,9 +248,10 @@ END_EVENT_TABLE()
 void DialogStyling::OnActivate(wxActivateEvent &event) {
 	// Dialog lost focus
 	if (!event.GetActive()) {
-		if (!PreviewCheck->IsChecked()) {
+		if (needCommit) {
 			grid->ass->FlagAsModified(_("styling assistant"));
 			grid->CommitChanges();
+			needCommit = false;
 		}
 		return;
 	}
@@ -268,8 +264,7 @@ void DialogStyling::OnActivate(wxActivateEvent &event) {
 	// Fix style list
 	Styles->Set(grid->ass->GetStyles());
 	// Fix line selection
-	linen = grid->GetFirstSelRow();
-	JumpToLine(linen);
+	JumpToLine(grid->GetFirstSelRow());
 }
 
 
