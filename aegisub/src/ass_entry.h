@@ -65,9 +65,9 @@ enum ASS_EntryType {
 class AssEntry {
 private:
 	wxString data;		// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
+	int StartMS;		// This is only stored for sorting issues, in order to keep non-dialogue lines aligned
 
 public:
-	int StartMS;		// This is only stored for sorting issues, in order to keep non-dialogue lines aligned
 	bool Valid;			// Flags as valid or not
 	wxString group;		// Group it belongs to, e.g. "[Events]"
 
@@ -76,6 +76,11 @@ public:
 	virtual ~AssEntry();
 
 	virtual AssEntry *Clone();
+
+	virtual int GetStartMS() const { return StartMS; }
+	virtual int GetEndMS() const { return StartMS; }
+	virtual void SetStartMS(const int newStart) { StartMS = newStart; }
+	virtual void SetEndMS(const int newEnd) { /* do nothing */ (void)newEnd; }
 
 	virtual ASS_EntryType GetType() { return ENTRY_BASE; }
 	virtual const wxString GetEntryData() { return data; }

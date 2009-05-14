@@ -185,6 +185,12 @@ public:
 	void SetEntryData(wxString newData);
 	void Clear();					// Wipes all data
 
+	virtual int GetStartMS() const { return Start.GetMS(); }
+	virtual int GetEndMS() const { return End.GetMS(); }
+	virtual void SetStartMS(const int newStart) { AssEntry::SetStartMS(newStart); Start.SetMS(newStart); }
+	virtual void SetEndMS(const int newEnd) { End.SetMS(newEnd); }
+	void FixStartMS() { AssEntry::SetStartMS(Start.GetMS()); } // Update StartMS in AssEntry from the Start value here
+
 	void SetMarginString(const wxString value,int which);	// Set string to a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	wxString GetMarginString(int which,bool pad=true);		// Returns the string of a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	wxString GetSSAText();

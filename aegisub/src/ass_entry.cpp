@@ -66,7 +66,7 @@ AssEntry::~AssEntry() {
 ///////////////////////////
 // Comparison for STL Sort
 bool operator < (const AssEntry &t1, const AssEntry &t2) {
-	return (t1.StartMS < t2.StartMS);
+	return (t1.GetStartMS() < t2.GetStartMS());
 }
 
 

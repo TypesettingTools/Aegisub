@@ -259,7 +259,7 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	AssDialogue *curDialogue;
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 		curEntry = *cur;
-		curEntry->StartMS = Input->GetTimeAtFrame(Output->GetFrameAtTime(curEntry->StartMS,true),true);
+		curEntry->SetStartMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curEntry->GetStartMS(),true),true));
 		curDialogue = AssEntry::GetAsDialogue(curEntry);
 
 		// Update dialogue entries
@@ -274,8 +274,8 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 			// Process stuff
 			curDialogue->ParseASSTags();
 			curDialogue->ProcessParameters(TransformTimeTags,&data);
-			curDialogue->Start.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->Start.GetMS(),true),true));
-			curDialogue->End.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->End.GetMS(),false),false));
+			curDialogue->SetStartMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->Start.GetMS(),true),true));
+			curDialogue->SetEndMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->End.GetMS(),false),false));
 			curDialogue->UpdateText();
 			curDialogue->UpdateData();
 			curDialogue->ClearBlocks();

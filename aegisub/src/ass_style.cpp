@@ -499,7 +499,7 @@ AssEntry *AssStyle::Clone() {
 
 	// Copy data
 	final->group = group;
-	final->StartMS = StartMS;
+	final->SetStartMS(GetStartMS());
 	final->Valid = Valid;
 	final->alignment = alignment;
 	final->angle = angle;

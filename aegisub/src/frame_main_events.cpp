@@ -1475,8 +1475,8 @@ void FrameMain::OnSort (wxCommandEvent &event) {
 	for (std::list<AssEntry*>::iterator cur = AssFile::top->Line.begin(); cur != AssFile::top->Line.end(); cur++) {
 		curEntry = *cur;
 		curDiag = AssEntry::GetAsDialogue(curEntry);
-		if (curDiag) startMS = curDiag->Start.GetMS();
-		curEntry->StartMS = startMS;
+		if (curDiag) startMS = curDiag->GetStartMS();
+		curEntry->SetStartMS(startMS);
 	}
 
 	// Sort
