@@ -360,7 +360,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			memcpy(privData,trackInfo->CodecPrivate,privSize);
 			privData[privSize] = 0;
 			wxString privString(privData,wxConvUTF8);
-			delete privData;
+			delete[] privData;
 
 			// Load into file
 			wxString group = _T("[Script Info]");
@@ -416,6 +416,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			fread(tmp,1,frameSize,input->fp);
 			tmp[frameSize] = 0;
 			wxString blockString(tmp,wxConvUTF8);
+			delete[] tmp;
 
 			// Get start and end times
 			//longlong timecodeScaleLow = timecodeScale / 100;
