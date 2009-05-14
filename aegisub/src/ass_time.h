@@ -61,7 +61,7 @@ public:
 	int GetTimeMiliseconds();
 	int GetTimeCentiseconds();
 
-	int GetMS();						// Returns miliseconds
+	int GetMS() const;					// Returns miliseconds
 	void SetMS(int ms);					// Sets values to miliseconds
 	void ParseASS(const wxString text);	// Sets value to text-form time, in ASS format
 	void ParseSRT(const wxString text);	// Sets value to text-form time, in SRT format
