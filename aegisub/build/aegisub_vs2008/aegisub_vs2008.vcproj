@@ -385,32 +385,8 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Audio"
+			Name="Audio backend"
 			>
-			<File
-				RelativePath="..\..\src\audio_box.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_box.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_display.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_display.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_karaoke.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_karaoke.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\src\audio_player.cpp"
 				>
@@ -561,14 +537,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\audio_provider_stream.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_spectrum.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_spectrum.h"
 				>
 			</File>
 		</Filter>
@@ -1905,6 +1873,42 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\aegisub\video_provider.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Audio UI"
+			>
+			<File
+				RelativePath="..\..\src\audio_box.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_box.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_display.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_display.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_karaoke.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_karaoke.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_spectrum.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_spectrum.h"
 				>
 			</File>
 		</Filter>
