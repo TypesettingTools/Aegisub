@@ -145,7 +145,7 @@ void AssTime::ParseSRT (const wxString _text) {
 
 //////////////////////////////////////////
 // AssTime conversion to/from miliseconds
-int AssTime::GetMS () {
+int AssTime::GetMS () const {
 	if (!UseMSPrecision) return time/10*10;
 	else return time;
 }
