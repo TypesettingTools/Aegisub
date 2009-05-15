@@ -393,6 +393,11 @@ wxString FractionalTime::FromAssTime(AssTime time) {
 // Milliseconds to SMPTE text string conversion
 wxString FractionalTime::FromMillisecs(int64_t msec) {
 	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
+
+	// return 00:00:00:00
+	if (msec <= 0)
+		goto RETURN;
+
 	int fn = (msec*(int64_t)num) / (1000*den); // frame number
 
 	// dropframe?
@@ -435,5 +440,6 @@ wxString FractionalTime::FromMillisecs(int64_t msec) {
 		f = fn;
 	}
 
+RETURN:
 	return wxString::Format(_T("%02i") + sep + _T("%02i") + sep + _T("%02i") + sep + _T("%02i"),h,m,s,f);
 }
