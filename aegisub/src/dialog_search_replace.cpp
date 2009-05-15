@@ -409,6 +409,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 			// Commit
 			grid->ass->FlagAsModified(_("replace"));
+			grid->CommitChanges();
 		}
 
 		else {
