@@ -78,9 +78,6 @@ public:
 	VideoProviderCache(VideoProvider *master);
 	virtual ~VideoProviderCache();
 
-	// Subtitles
-	virtual SubtitlesProvider *GetAsSubtitlesProvider();	// Get subtitles provider
-
 	// Override the following methods:
 	virtual int GetPosition();				// Get the number of the last frame loaded
 	virtual int GetFrameCount();			// Get total number of frames

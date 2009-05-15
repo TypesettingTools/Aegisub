@@ -172,8 +172,6 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetBool(_T("FFmpeg allow unsafe seeking"),false);
 	SetInt(_T("FFmpegSource decoding threads"),1);
 	SetBool(_T("Allow Ancient Avisynth"),false,1700);
-	SetText(_T("Avisynth subs renderer"),_T("vsfilter"),1700);
-	SetBool(_T("Avisynth render own subs"),true,1700);
 	#ifdef __WINDOWS__
 	SetText(_T("Subtitles Provider"),_T("csri/vsfilter_textsub"),1700);
 	#else

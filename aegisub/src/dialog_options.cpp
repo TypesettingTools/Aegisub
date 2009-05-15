@@ -417,9 +417,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		Bind(control,_T("Allow Ancient Avisynth"));
 		videoSizer4->Add(control,1,wxEXPAND);
 		videoSizer4->AddGrowableCol(1,1);
-		control = new wxCheckBox(videoPage,-1,_("Avisynth renders its own subs"));
-		Bind(control,_T("Avisynth render own subs"));
-		videoSizer4->Add(control,1,wxEXPAND);
 #endif
 
 		// Sizers

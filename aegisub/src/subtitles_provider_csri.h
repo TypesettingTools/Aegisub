@@ -62,8 +62,6 @@ public:
 	CSRISubtitlesProvider(wxString subType);
 	~CSRISubtitlesProvider();
 
-	bool CanRaster() { return true; }
-
 	void LoadSubtitles(AssFile *subs);
 	void DrawSubtitles(AegiVideoFrame &dst,double time);
 };

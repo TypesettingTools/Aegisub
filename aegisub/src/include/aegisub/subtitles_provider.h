@@ -54,9 +54,6 @@ class SubtitlesProvider {
 public:
 	virtual ~SubtitlesProvider();
 
-	virtual bool CanRaster() { return false; }
-	virtual bool LockedToVideo() { return false; }
-
 	virtual void LoadSubtitles(AssFile *subs)=0;
 	virtual void DrawSubtitles(AegiVideoFrame &dst,double time) {}
 };

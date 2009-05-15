@@ -40,12 +40,11 @@
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
 #include "include/aegisub/video_provider.h"
-#include "include/aegisub/subtitles_provider.h"
 
 
 ////////////
 // Provider
-class AvisynthVideoProvider: public VideoProvider, SubtitlesProvider, AviSynthWrapper {
+class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
 private:
 	VideoInfo vi;
 	AegiVideoFrame iframe;
@@ -67,22 +66,12 @@ private:
 	FrameRate trueFrameRate;
 
 	PClip RGB32Video;
-	PClip SubtitledVideo;
 
 	PClip OpenVideo(Aegisub::String _filename, bool mpeg2dec3_priority = true);
-	PClip ApplySubtitles(Aegisub::String _filename, PClip videosource);
-
-	void LoadVSFilter();
-	void LoadASA();
-	void LoadRenderer();
 
 public:
 	AvisynthVideoProvider(Aegisub::String _filename, double fps=0.0);
 	~AvisynthVideoProvider();
-
-	SubtitlesProvider *GetAsSubtitlesProvider();
-	void LoadSubtitles(AssFile *subs);
-	bool LockedToVideo() { return true; }
 
 	const AegiVideoFrame GetFrame(int n,int formatMask);
 	void GetFloatFrame(float* Buffer, int n);

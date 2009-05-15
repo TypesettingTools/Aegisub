@@ -476,9 +476,8 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT,_("Save PNG snapshot"));
 		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD,_("Copy image to Clipboard"));
 		menu.AppendSeparator();
-		bool canDoRaw = VideoContext::Get()->HasIndependentSubs();
-		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT_RAW,_("Save PNG snapshot (no subtitles)"))->Enable(canDoRaw);
-		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,_("Copy image to Clipboard (no subtitles)"))->Enable(canDoRaw);
+		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT_RAW,_("Save PNG snapshot (no subtitles)"));
+		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,_("Copy image to Clipboard (no subtitles)"));
 		menu.AppendSeparator();
 		menu.Append(VIDEO_MENU_COPY_COORDS,_("Copy coordinates to Clipboard"));
 
