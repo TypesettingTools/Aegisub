@@ -184,9 +184,15 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	CreateCopy();
 	SortLines();
 	StripComments();
+	// Tags must be converted in two passes
+	// First ASS style overrides are converted to SRT but linebreaks are kept
+	ConvertTags(2,_T("\\N"));
+	// Then we can recombine overlaps, this requires ASS style linebreaks
 	RecombineOverlaps();
 	MergeIdentical();
-	ConvertTags(2,_T("\r\n"));
+	// And finally convert linebreaks
+	ConvertTags(0,_T("\r\n"));
+	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
 
 	// Write lines
 	int i=1;
