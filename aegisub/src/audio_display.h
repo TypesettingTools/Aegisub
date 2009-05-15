@@ -83,6 +83,7 @@ private:
 	bool hasFocus;
 	bool blockUpdate;
 	bool dontReadTimes;
+	bool playingToEnd;
 
 	bool needImageUpdate;
 	bool needImageUpdateWeak;

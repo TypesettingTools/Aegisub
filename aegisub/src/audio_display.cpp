@@ -1068,6 +1068,7 @@ void AudioDisplay::Play(int start,int end) {
 
 	// Set defaults
 	wxLogDebug(_T("AudioDisplay::Play: initialising playback"));
+	playingToEnd = end < 0;
 	int64_t num_samples = provider->GetNumSamples();
 	start = GetSampleAtMS(start);
 	if (end != -1) end = GetSampleAtMS(end);
@@ -1076,7 +1077,6 @@ void AudioDisplay::Play(int start,int end) {
 	// Sanity checking
 	if (start < 0) start = 0;
 	if (start >= num_samples) start = num_samples-1;
-	if (end < 0) end = 0;
 	if (end >= num_samples) end = num_samples-1;
 	if (end < start) end = start;
 
@@ -1729,10 +1729,10 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		// Update stuff
 		if (updated) {
 			if (diagUpdated) NeedCommit = true;
-			if (karaoke->enabled) {
+			if (karaoke->enabled && !playingToEnd) {
 				AudioKaraokeSyllable &syl = karaoke->syllables[karaoke->curSyllable];
 				player->SetEndPosition(GetSampleAtMS(curStartMS + (syl.start_time+syl.duration)*10));
-			} else {
+			} else if (!playingToEnd) {
 				player->SetEndPosition(GetSampleAtX(selEnd));
 			}
 			if (hold != 0) {
