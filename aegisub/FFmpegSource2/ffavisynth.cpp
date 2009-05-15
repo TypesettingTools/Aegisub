@@ -22,18 +22,18 @@
 #include "ffavisynth.h"
 #include "utils.h"
 
-AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, int FPSNum, int FPSDen, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize) {
+AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, FFIndex *Index, int FPSNum, int FPSDen, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize) {
 	memset(&VI, 0, sizeof(VI));
 	SWS = NULL;
 	ConvertToFormat = PIX_FMT_NONE;
 	this->FPSNum = FPSNum;
 	this->FPSDen = FPSDen;
 
-	VS = FFMS_CreateVideoSource(SourceFile, Track, TrackIndices, PP, Threads, SeekMode, ErrorMsg, MsgSize);
-	if (!VS)
+	V = FFMS_CreateVideoSource(SourceFile, Track, Index, PP, Threads, SeekMode, ErrorMsg, MsgSize);
+	if (!V)
 		Env->ThrowError(ErrorMsg);
 
-	const VideoProperties VP = *FFMS_GetVideoProperties(VS);
+	const TVideoProperties VP = *FFMS_GetTVideoProperties(V);
 
 	VI.image_type = VideoInfo::IT_TFF;
 	VI.width = VP.Width;
@@ -42,7 +42,7 @@ AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, Fram
 	if (FPSNum > 0 && FPSDen > 0) {
 		VI.fps_denominator = FPSDen;
 		VI.fps_numerator = FPSNum;
-		VI.num_frames = ceil(((VP.LastTime - VP.FirstTime) * FPSNum) / FPSDen);
+		VI.num_frames = static_cast<int>(ceil(((VP.LastTime - VP.FirstTime) * FPSNum) / FPSDen));
 	} else {
 		VI.fps_denominator = VP.FPSDenominator;
 		VI.fps_numerator = VP.FPSNumerator;
@@ -52,7 +52,7 @@ AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, Fram
 	try {
 		InitOutputFormat(static_cast<PixelFormat>(VP.VPixelFormat), Env);
 	} catch (AvisynthError &) {
-		FFMS_DestroyVideoSource(VS);
+		FFMS_DestroyVideoSource(V);
 		throw;
 	}
 
@@ -72,7 +72,7 @@ AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, Fram
 AvisynthVideoSource::~AvisynthVideoSource() {
 	if (SWS)
 		sws_freeContext(SWS);
-	FFMS_DestroyVideoSource(VS);
+	FFMS_DestroyVideoSource(V);
 }
 
 void AvisynthVideoSource::InitOutputFormat(enum PixelFormat CurrentFormat, IScriptEnvironment *Env) {
@@ -104,9 +104,9 @@ void AvisynthVideoSource::InitOutputFormat(enum PixelFormat CurrentFormat, IScri
 	}
 }
 
-PVideoFrame AvisynthVideoSource::OutputFrame(const AVFrameLite *Frame, IScriptEnvironment *Env) {
+PVideoFrame AvisynthVideoSource::OutputFrame(const TAVFrameLite *Frame, IScriptEnvironment *Env) {
 	// Yes, this function is overly complex and could probably be simplified
-	AVPicture *SrcPicture = reinterpret_cast<AVPicture *>(const_cast<AVFrameLite *>(Frame));
+	AVPicture *SrcPicture = reinterpret_cast<AVPicture *>(const_cast<TAVFrameLite *>(Frame));
 	PVideoFrame Dst = Env->NewVideoFrame(VI);
 
 	if (ConvertToFormat != PIX_FMT_NONE && VI.pixel_type == VideoInfo::CS_I420) {
@@ -140,12 +140,12 @@ PVideoFrame AvisynthVideoSource::OutputFrame(const AVFrameLite *Frame, IScriptEn
 PVideoFrame AvisynthVideoSource::GetFrame(int n, IScriptEnvironment *Env) {
 	char ErrorMsg[1024];
 	unsigned MsgSize = sizeof(ErrorMsg);
-	const AVFrameLite *Frame;
+	const TAVFrameLite *Frame;
 
 	if (FPSNum > 0 && FPSDen > 0)
-		Frame = FFMS_GetFrameByTime(VS, FFMS_GetVideoProperties(VS)->FirstTime + (double)(n * (int64_t)FPSDen) / FPSNum, ErrorMsg, MsgSize);
+		Frame = FFMS_GetFrameByTime(V, FFMS_GetTVideoProperties(V)->FirstTime + (double)(n * (int64_t)FPSDen) / FPSNum, ErrorMsg, MsgSize);
 	else
-		Frame = FFMS_GetFrame(VS, n, ErrorMsg, MsgSize);
+		Frame = FFMS_GetFrame(V, n, ErrorMsg, MsgSize);
 
 	if (Frame == NULL)
 		Env->ThrowError("FFVideoSource: %s", ErrorMsg);
@@ -154,14 +154,14 @@ PVideoFrame AvisynthVideoSource::GetFrame(int n, IScriptEnvironment *Env) {
 	return OutputFrame(Frame, Env);
 }
 
-AvisynthAudioSource::AvisynthAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize) {
+AvisynthAudioSource::AvisynthAudioSource(const char *SourceFile, int Track, FFIndex *Index, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize) {
 	memset(&VI, 0, sizeof(VI));
 
-	AS = FFMS_CreateAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
-	if (!AS)
+	A = FFMS_CreateAudioSource(SourceFile, Track, Index, ErrorMsg, MsgSize);
+	if (!A)
 		Env->ThrowError(ErrorMsg);
 
-	const AudioProperties AP = *FFMS_GetAudioProperties(AS);
+	const TAudioProperties AP = *FFMS_GetTAudioProperties(A);
 
 	VI.nchannels = AP.Channels;
 	VI.num_audio_samples = AP.NumSamples;
@@ -181,12 +181,12 @@ AvisynthAudioSource::AvisynthAudioSource(const char *SourceFile, int Track, Fram
 }
 
 AvisynthAudioSource::~AvisynthAudioSource() {
-	FFMS_DestroyAudioSource(AS);
+	FFMS_DestroyAudioSource(A);
 }
 
 void AvisynthAudioSource::GetAudio(void* Buf, __int64 Start, __int64 Count, IScriptEnvironment *Env) {
 	char ErrorMsg[1024];
 	unsigned MsgSize = sizeof(ErrorMsg);
-	if (FFMS_GetAudio(AS, Buf, Start, Count, ErrorMsg, MsgSize))
+	if (FFMS_GetAudio(A, Buf, Start, Count, ErrorMsg, MsgSize))
 		Env->ThrowError(ErrorMsg);
 }

@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 	int FMT_YUY2 = FFMS_GetPixFmt("yuv422p");
 
 	av_md5_init(ctx);
-	FrameIndex *FI = FFMS_MakeIndex(argv[1], -1, 0, NULL, false, UpdateProgress, argv[1], ErrorMsg, sizeof(ErrorMsg));
+	FFIndex *FI = FFMS_MakeIndex(argv[1], -1, 0, NULL, false, UpdateProgress, argv[1], ErrorMsg, sizeof(ErrorMsg));
 	if (!FI) {
 		cout << "Indexing error: " << ErrorMsg << endl;
 		return 1;
@@ -78,16 +78,16 @@ int main(int argc, char *argv[]) {
 		return 2;
 	}
 
-	VideoBase *FV = FFMS_CreateVideoSource(argv[1], track, FI, "", 1, 1, ErrorMsg, sizeof(ErrorMsg));
-	FFMS_DestroyFrameIndex(FI);
-	if (!FV) {
+	FFVideo *V = FFMS_CreateVideoSource(argv[1], track, FI, "", 1, 1, ErrorMsg, sizeof(ErrorMsg));
+	FFMS_DestroyFFIndex(FI);
+	if (!V) {
 		cout << "Video source error: " << ErrorMsg << endl;
 		return 3;
 	}
 
-	const VideoProperties *VP = FFMS_GetVideoProperties(FV);
+	const TVideoProperties *VP = FFMS_GetTVideoProperties(V);
 	for (int i = 0; i < VP->NumFrames; i++) {
-		const AVFrameLite *AVF =  FFMS_GetFrame(FV, i, ErrorMsg, sizeof(ErrorMsg));
+		const TAVFrameLite *AVF =  FFMS_GetFrame(V, i, ErrorMsg, sizeof(ErrorMsg));
 		if (!AVF) {
 			cout << "Frame request error: " << ErrorMsg << " at frame " << i << endl;
 			return 4;
@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	FFMS_DestroyVideoSource(FV);
+	FFMS_DestroyVideoSource(V);
 	av_md5_final(ctx, md5sum);
 
 	delete[] reinterpret_cast<uint8_t *>(ctx);

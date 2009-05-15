@@ -19,6 +19,7 @@
 //  THE SOFTWARE.
 
 #include "utils.h"
+#include "indexing.h"
 #include <string.h>
 #include <errno.h>
 #ifdef _MSC_VER
@@ -135,6 +136,15 @@ void InitNullPacket(AVPacket *pkt) {
 	av_init_packet(pkt);
 	pkt->data = NULL;
 	pkt->size = 0;
+}
+
+void FillAP(TAudioProperties &AP, AVCodecContext *CTX, FFTrack &Frames) {
+	AP.BitsPerSample = av_get_bits_per_sample_format(CTX->sample_fmt);
+	AP.Channels = CTX->channels;;
+	AP.Float = AudioFMTIsFloat(CTX->sample_fmt);
+	AP.SampleRate = CTX->sample_rate;
+	AP.NumSamples = (Frames.back()).SampleStart;
+	AP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 }
 
 #ifdef HAALISOURCE

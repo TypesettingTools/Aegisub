@@ -36,7 +36,7 @@ std::string InputFile;
 std::string CacheFile;
 std::string AudioFile;
 
-FrameIndex *Index;
+FFIndex *Index;
 
 
 void PrintUsage () {
@@ -195,18 +195,18 @@ int main(int argc, char *argv[]) {
 		DoIndexing();
 	} catch (const char *Error) {
 		std::cout << Error << std::endl;
-		FFMS_DestroyFrameIndex(Index);
+		FFMS_DestroyFFIndex(Index);
 		return 1;
 	} catch (std::string Error) {
 		std::cout << std::endl << Error << std::endl;
-		FFMS_DestroyFrameIndex(Index);
+		FFMS_DestroyFFIndex(Index);
 		return 1;
 	} catch (...) {
 		std::cout << std::endl << "Unknown error" << std::endl;
-		FFMS_DestroyFrameIndex(Index);
+		FFMS_DestroyFFIndex(Index);
 		return 1;
 	}
 
-	FFMS_DestroyFrameIndex(Index);
+	FFMS_DestroyFFIndex(Index);
 	return 0;
 }

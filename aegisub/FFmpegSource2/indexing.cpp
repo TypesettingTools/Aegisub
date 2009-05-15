@@ -163,19 +163,19 @@ public:
 	}
 };
 
-static bool DTSComparison(FrameInfo FI1, FrameInfo FI2) {
+static bool DTSComparison(TFrameInfo FI1, TFrameInfo FI2) {
 	return FI1.DTS < FI2.DTS;
 }
 
-static void SortTrackIndices(FrameIndex *TrackIndices) {
-	for (FrameIndex::iterator Cur=TrackIndices->begin(); Cur!=TrackIndices->end(); Cur++)
+static void SortTrackIndices(FFIndex *Index) {
+	for (FFIndex::iterator Cur=Index->begin(); Cur!=Index->end(); Cur++)
 		std::sort(Cur->begin(), Cur->end(), DTSComparison);
 }
 
-int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
-	std::ofstream Index(IndexFile, std::ios::out | std::ios::binary | std::ios::trunc);
+int WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
+	std::ofstream IndexStream(IndexFile, std::ios::out | std::ios::binary | std::ios::trunc);
 
-	if (!Index.is_open()) {
+	if (!IndexStream.is_open()) {
 		_snprintf(ErrorMsg, MsgSize, "Failed to open '%s' for writing", IndexFile);
 		return 1;
 	}
@@ -184,29 +184,29 @@ int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, 
 	IndexHeader IH;
 	IH.Id = INDEXID;
 	IH.Version = INDEXVERSION;
-	IH.Tracks = TrackIndices->size();
-	IH.Decoder = TrackIndices->Decoder;
-	Index.write(reinterpret_cast<char *>(&IH), sizeof(IH));
+	IH.Tracks = Index->size();
+	IH.Decoder = Index->Decoder;
+	IndexStream.write(reinterpret_cast<char *>(&IH), sizeof(IH));
 	
 	for (unsigned int i = 0; i < IH.Tracks; i++) {
-		int TT = (*TrackIndices)[i].TT;
-		Index.write(reinterpret_cast<char *>(&TT), sizeof(TT));
-		int64_t Num = (*TrackIndices)[i].TB.Num;
-		Index.write(reinterpret_cast<char *>(&Num), sizeof(Num));
-		int64_t Den = (*TrackIndices)[i].TB.Den;
-		Index.write(reinterpret_cast<char *>(&Den), sizeof(Den));
-		size_t Frames = (*TrackIndices)[i].size();
-		Index.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
+		int TT = (*Index)[i].TT;
+		IndexStream.write(reinterpret_cast<char *>(&TT), sizeof(TT));
+		int64_t Num = (*Index)[i].TB.Num;
+		IndexStream.write(reinterpret_cast<char *>(&Num), sizeof(Num));
+		int64_t Den = (*Index)[i].TB.Den;
+		IndexStream.write(reinterpret_cast<char *>(&Den), sizeof(Den));
+		size_t Frames = (*Index)[i].size();
+		IndexStream.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
 
 		for (size_t j = 0; j < Frames; j++)
-			Index.write(reinterpret_cast<char *>(&(TrackIndices->at(i)[j])), sizeof(FrameInfo));
+			IndexStream.write(reinterpret_cast<char *>(&(Index->at(i)[j])), sizeof(TFrameInfo));
 	}
 
 	return 0;
 }
 
 #ifdef HAALISOURCE
-static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, int SourceMode, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+static FFIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, int SourceMode, TIndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	CLSID clsid = HAALI_TS_Parser;
@@ -260,7 +260,7 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 	MatroskaAudioContext *AudioContexts;
 	HaaliIndexMemory IM = HaaliIndexMemory(NumTracks, db, AudioContexts);
 
-	FrameIndex *TrackIndices = new FrameIndex();
+	FFIndex *TrackIndices = new FFIndex();
 	TrackIndices->Decoder = 2;
 	if (SourceMode == 1)
 		TrackIndices->Decoder = 3;
@@ -299,7 +299,7 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 				}
 			}
 
-			TrackIndices->push_back(FrameInfoVector(1, 1000000000, TrackTypes[CurrentTrack] - 1));
+			TrackIndices->push_back(FFTrack(1, 1000000000, TrackTypes[CurrentTrack] - 1));
 
 			if (IndexMask & (1 << CurrentTrack) && TrackTypes[CurrentTrack] == TT_AUDIO) {
 				AVCodecContext *AudioCodecContext = avcodec_alloc_context();
@@ -354,9 +354,9 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 
 		// Only create index entries for video for now to save space
 		if (TrackTypes[CurrentTrack] == TT_VIDEO) {
-			(*TrackIndices)[CurrentTrack].push_back(FrameInfo(Ts, pMMF->IsSyncPoint() == S_OK));
+			(*TrackIndices)[CurrentTrack].push_back(TFrameInfo(Ts, pMMF->IsSyncPoint() == S_OK));
 		} else if (TrackTypes[CurrentTrack] == TT_AUDIO && (IndexMask & (1 << CurrentTrack))) {
-			(*TrackIndices)[CurrentTrack].push_back(FrameInfo(AudioContexts[CurrentTrack].CurrentSample, 0 /* FIXME? */, pMMF->GetActualDataLength(), pMMF->IsSyncPoint() == S_OK));
+			(*TrackIndices)[CurrentTrack].push_back(TFrameInfo(AudioContexts[CurrentTrack].CurrentSample, 0 /* FIXME? */, pMMF->GetActualDataLength(), pMMF->IsSyncPoint() == S_OK));
 			AVCodecContext *AudioCodecContext = AudioContexts[CurrentTrack].CTX;
 			pMMF->GetPointer(&TempPacket.data);
 			TempPacket.size = pMMF->GetActualDataLength();
@@ -387,6 +387,9 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 				if (dbsize > 0 && (DumpMask & (1 << CurrentTrack))) {
 					// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
 					if (!AudioContexts[CurrentTrack].W64W) {
+						TAudioProperties AP;
+						AVCodecContext *CTX = AudioContexts[CurrentTrack].CTX;
+						AP.BitsPerSample = CTX->bits_per_coded_sample;
 						char ABuf[50];
 						std::string WN(AudioFile);
 						_snprintf(ABuf, sizeof(ABuf), ".%02d.delay.%d.w64", CurrentTrack, 0);
@@ -407,7 +410,7 @@ static FrameIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int Dum
 }
 #endif
 
-static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+static FFIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	MatroskaFile *MF;
 	char ErrorMessage[256];
 	MatroskaReaderContext MC;
@@ -480,11 +483,11 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 	int64_t SourceSize = _ftelli64(MC.ST.fp);
 	_fseeki64(MC.ST.fp, CurrentPos, SEEK_SET);
 
-	FrameIndex *TrackIndices = new FrameIndex();
+	FFIndex *TrackIndices = new FFIndex();
 	TrackIndices->Decoder = 1;
 
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++)
-		TrackIndices->push_back(FrameInfoVector(mkv_TruncFloat(mkv_GetTrackInfo(MF, i)->TimecodeScale), 1000000, mkv_GetTrackInfo(MF, i)->Type - 1));
+		TrackIndices->push_back(FFTrack(mkv_TruncFloat(mkv_GetTrackInfo(MF, i)->TimecodeScale), 1000000, mkv_GetTrackInfo(MF, i)->Type - 1));
 
 	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
@@ -503,9 +506,9 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 
 		// Only create index entries for video for now to save space
 		if (mkv_GetTrackInfo(MF, Track)->Type == TT_VIDEO) {
-			(*TrackIndices)[Track].push_back(FrameInfo(StartTime, (FrameFlags & FRAME_KF) != 0));
+			(*TrackIndices)[Track].push_back(TFrameInfo(StartTime, (FrameFlags & FRAME_KF) != 0));
 		} else if (mkv_GetTrackInfo(MF, Track)->Type == TT_AUDIO && (IndexMask & (1 << Track))) {
-			(*TrackIndices)[Track].push_back(FrameInfo(AudioContexts[Track].CurrentSample, FilePos, FrameSize, (FrameFlags & FRAME_KF) != 0));
+			(*TrackIndices)[Track].push_back(TFrameInfo(AudioContexts[Track].CurrentSample, FilePos, FrameSize, (FrameFlags & FRAME_KF) != 0));
 			ReadFrame(FilePos, FrameSize, AudioContexts[Track].CS, MC, ErrorMsg, MsgSize);
 			AVCodecContext *AudioCodecContext = AudioContexts[Track].CTX;
 			TempPacket.data = MC.Buffer;
@@ -557,7 +560,7 @@ static FrameIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int 
 	return TrackIndices;
 }
 
-FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+FFIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	AVFormatContext *FormatContext = NULL;
 	IndexMask |= DumpMask;
 
@@ -620,11 +623,11 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 
 	//
 
-	FrameIndex *TrackIndices = new FrameIndex();
+	FFIndex *TrackIndices = new FFIndex();
 	TrackIndices->Decoder = 0;
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++)
-		TrackIndices->push_back(FrameInfoVector((int64_t)FormatContext->streams[i]->time_base.num * 1000, 
+		TrackIndices->push_back(FFTrack((int64_t)FormatContext->streams[i]->time_base.num * 1000, 
 		FormatContext->streams[i]->time_base.den,
 		FormatContext->streams[i]->codec->codec_type));
 
@@ -643,9 +646,9 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 
 		// Only create index entries for video for now to save space
 		if (FormatContext->streams[Packet.stream_index]->codec->codec_type == CODEC_TYPE_VIDEO) {
-			(*TrackIndices)[Packet.stream_index].push_back(FrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
+			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
 		} else if (FormatContext->streams[Packet.stream_index]->codec->codec_type == CODEC_TYPE_AUDIO && (IndexMask & (1 << Packet.stream_index))) {
-			(*TrackIndices)[Packet.stream_index].push_back(FrameInfo(Packet.dts, AudioContexts[Packet.stream_index].CurrentSample, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
+			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo(Packet.dts, AudioContexts[Packet.stream_index].CurrentSample, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
 			AVCodecContext *AudioCodecContext = FormatContext->streams[Packet.stream_index]->codec;
 			TempPacket.data = Packet.data;
 			TempPacket.size = Packet.size;
@@ -699,7 +702,7 @@ FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const
 	return TrackIndices;
 }
 
-FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
+FFIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 	std::ifstream Index(IndexFile, std::ios::in | std::ios::binary);
 
 	if (!Index.is_open()) {
@@ -720,7 +723,7 @@ FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 		return NULL;
 	}
 
-	FrameIndex *TrackIndices = new FrameIndex();
+	FFIndex *TrackIndices = new FFIndex();
 
 	try {
 
@@ -736,11 +739,11 @@ FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 			Index.read(reinterpret_cast<char *>(&Den), sizeof(Den));
 			size_t Frames;
 			Index.read(reinterpret_cast<char *>(&Frames), sizeof(Frames));
-			TrackIndices->push_back(FrameInfoVector(Num, Den, TT));
+			TrackIndices->push_back(FFTrack(Num, Den, TT));
 
-			FrameInfo FI(0, false);
+			TFrameInfo FI(0, false);
 			for (size_t j = 0; j < Frames; j++) {
-				Index.read(reinterpret_cast<char *>(&FI), sizeof(FrameInfo));
+				Index.read(reinterpret_cast<char *>(&FI), sizeof(TFrameInfo));
 				TrackIndices->at(i).push_back(FI);
 			}
 		}
@@ -754,7 +757,7 @@ FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 	return TrackIndices;
 }
 
-int FrameInfoVector::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize) {
+int FFTrack::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize) {
 	std::ofstream Timecodes(TimecodeFile, std::ios::out | std::ios::trunc);
 
 	if (!Timecodes.is_open()) {
@@ -770,14 +773,14 @@ int FrameInfoVector::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, un
 	return 0;
 }
 
-int FrameInfoVector::FrameFromDTS(int64_t DTS) {
+int FFTrack::FrameFromDTS(int64_t DTS) {
 	for (int i = 0; i < static_cast<int>(size()); i++)
 		if (at(i).DTS == DTS)
 			return i;
 	return -1;
 }
 
-int FrameInfoVector::ClosestFrameFromDTS(int64_t DTS) {
+int FFTrack::ClosestFrameFromDTS(int64_t DTS) {
 	int Frame = 0; 
 	int64_t BestDiff = 0xFFFFFFFFFFFFFFLL; // big number
 	for (int i = 0; i < static_cast<int>(size()); i++) {
@@ -791,21 +794,21 @@ int FrameInfoVector::ClosestFrameFromDTS(int64_t DTS) {
 	return Frame;
 }
 
-int FrameInfoVector::FindClosestKeyFrame(int Frame) {
-	Frame = FFMIN(FFMAX(Frame, 0), size() - 1);
+int FFTrack::FindClosestKeyFrame(int Frame) {
+	Frame = FFMIN(FFMAX(Frame, 0), static_cast<int>(size()) - 1);
 	for (int i = Frame; i > 0; i--)
 		if (at(i).KeyFrame)
 			return i;
 	return 0;
 }
 
-FrameInfoVector::FrameInfoVector() {
+FFTrack::FFTrack() {
 	this->TT = 0;
 	this->TB.Num = 0; 
 	this->TB.Den = 0;
 }
 
-FrameInfoVector::FrameInfoVector(int64_t Num, int64_t Den, int TT) {
+FFTrack::FFTrack(int64_t Num, int64_t Den, int TT) {
 	this->TT = TT;
 	this->TB.Num = Num; 
 	this->TB.Den = Den;

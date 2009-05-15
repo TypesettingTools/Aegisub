@@ -44,36 +44,36 @@ extern "C" {
 #	include "guids.h"
 #endif
 
-class VideoBase {
+struct FFVideo {
 private:
 	pp_context_t *PPContext;
 	pp_mode_t *PPMode;
 	SwsContext *SWS;
 protected:
-	VideoProperties VP;
+	TVideoProperties VP;
 	AVFrame *DecodeFrame;
 	AVFrame *PPFrame;
 	AVFrame *FinalFrame;
 	int LastFrameNum;
-	FrameInfoVector Frames;
+	FFTrack Frames;
 	int VideoTrack;
 	int	CurrentFrame;
 	AVCodecContext *CodecContext;
 
-	VideoBase();
+	FFVideo();
 	int InitPP(const char *PP, PixelFormat PixelFormat, char *ErrorMsg, unsigned MsgSize);
-	AVFrameLite *OutputFrame(AVFrame *Frame);
+	TAVFrameLite *OutputFrame(AVFrame *Frame);
 public:
-	virtual ~VideoBase();
-	const VideoProperties& GetVideoProperties() { return VP; }
-	FrameInfoVector *GetFrameInfoVector() { return &Frames; }
-	virtual AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
-	AVFrameLite *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
+	virtual ~FFVideo();
+	const TVideoProperties& GetTVideoProperties() { return VP; }
+	FFTrack *GetFFTrack() { return &Frames; }
+	virtual TAVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
+	TAVFrameLite *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
 	int SetOutputFormat(int TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize);
 	void ResetOutputFormat();
 };
 
-class FFVideoSource : public VideoBase {
+class FFVideoSource : public FFVideo {
 private:
 	AVFormatContext *FormatContext;
 	int SeekMode;
@@ -81,12 +81,12 @@ private:
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *Frame, int64_t *DTS, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
+	FFVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
 	~FFVideoSource();
-	AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+	TAVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
-class MatroskaVideoSource : public VideoBase {
+class MatroskaVideoSource : public FFVideo {
 private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
@@ -96,23 +96,23 @@ private:
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	MatroskaVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
+	MatroskaVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
 	~MatroskaVideoSource();
-    AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+    TAVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
 #ifdef HAALISOURCE
 
-class HaaliVideoSource : public VideoBase {
+class HaaliVideoSource : public FFVideo {
 private:
 	CComPtr<IMMContainer> pMMC;
 	uint8_t * CodecPrivate;
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	HaaliVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
+	HaaliVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
 	~HaaliVideoSource();
-    AVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+    TAVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
 #endif // HAALISOURCE
