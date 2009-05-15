@@ -323,7 +323,7 @@ int FractionalTime::ToMillisecs (wxString _text) {
 	wxString re_str = _T("");
 	text.Trim(false);
 	text.Trim(true);
-	long h=0,m=0,s=0,ms=0,f=0;
+	long h=0,m=0,s=0,f=0;
 
 	//           hour                   minute                 second                 fraction
 	re_str << _T("(\\d+)") << sep << _T("(\\d+)") << sep << _T("(\\d+)") << sep << _T("(\\d+)");
@@ -393,12 +393,11 @@ wxString FractionalTime::FromAssTime(AssTime time) {
 // Milliseconds to SMPTE text string conversion
 wxString FractionalTime::FromMillisecs(int64_t msec) {
 	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
+	int fn = (msec*(int64_t)num) / (1000*den); // frame number
 
 	// return 00:00:00:00
 	if (msec <= 0)
 		goto RETURN;
-
-	int fn = (msec*(int64_t)num) / (1000*den); // frame number
 
 	// dropframe?
 	if (drop) {
