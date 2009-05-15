@@ -204,11 +204,10 @@ void VideoContext::Reset() {
 
 	// Remove provider
 	if (provider) {
-		if (subsProvider && !subsProvider->LockedToVideo()) delete subsProvider;
 		delete provider;
 		provider = NULL;
 	}
-	else delete subsProvider;
+	delete subsProvider;
 	subsProvider = NULL;
 }
 
@@ -270,8 +269,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 			// Get subtitles provider
 			try {
-				subsProvider = provider->GetAsSubtitlesProvider();
-				if (!subsProvider) subsProvider = SubtitlesProviderFactoryManager::GetProvider();
+				subsProvider = SubtitlesProviderFactoryManager::GetProvider();
 			}
 			catch (wxString err) { wxMessageBox(_T("Error while loading subtitles provider: ") + err,_T("Subtitles provider"));	}
 			catch (const wchar_t *err) { wxMessageBox(_T("Error while loading subtitles provider: ") + wxString(err),_T("Subtitles provider"));	}
@@ -483,7 +481,7 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 	AegiVideoFrame frame = provider->GetFrame(n,formats);
 
 	// Raster subtitles if available/necessary
-	if (!raw && subsProvider && subsProvider->CanRaster()) {
+	if (!raw && subsProvider) {
 		tempFrame.CopyFrom(frame);
 		subsProvider->DrawSubtitles(tempFrame,VFR_Input.GetTimeAtFrame(n,true,true)/1000.0);
 		return tempFrame;
@@ -860,13 +858,6 @@ void VideoContext::SetAspectRatio(int _type, double value) {
 // Enable or disable shader
 void VideoContext::SetShader(bool enabled) {
 	OpenGLWrapper::SetShader(enabled ? yv12shader : 0);
-}
-
-
-////////////////////////////////////////////////
-// Can draw subtitles independently from video?
-bool VideoContext::HasIndependentSubs() {
-	return subsProvider && subsProvider->CanRaster();
 }
 
 

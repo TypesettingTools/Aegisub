@@ -152,7 +152,7 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	}
 
 	// Provider OK
-	if (provider && provider->CanRaster()) {
+	if (provider) {
 		// Generate subtitles
 		AssFile *subs = new AssFile();
 		subs->LoadDefault();
@@ -169,8 +169,8 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 			provider->DrawSubtitles(frame,0.1);
 		}
 		catch (...) {}
+		delete provider;
 	}
-	if (provider) delete provider;
 
 	// Convert frame to bitmap
 	wxMemoryDC dc(*bmp);

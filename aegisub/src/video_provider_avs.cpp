@@ -48,7 +48,6 @@
 #include "options.h"
 #include "standard_paths.h"
 #include "vfr.h"
-#include "ass_file.h"
 #include "gl_wrap.h"
 #include "mkv_wrap.h"
 #include "vfw_wrap.h"
@@ -60,7 +59,6 @@ AvisynthVideoProvider::AvisynthVideoProvider(Aegisub::String _filename, double _
 	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
-	SubtitledVideo = NULL;
 	fps = _fps;
 	num_frames = 0;
 	last_fnum = -1;
@@ -69,18 +67,11 @@ AvisynthVideoProvider::AvisynthVideoProvider(Aegisub::String _filename, double _
 	keyFramesLoaded = false;
 	isVfr = false;
 
-	AVSTRACE(_T("AvisynthVideoProvider: Loading Subtitles Renderer"));
-	LoadRenderer();
-	AVSTRACE(_T("AvisynthVideoProvider: Subtitles Renderer loaded"));
-
 	AVSTRACE(_T("AvisynthVideoProvider: Opening video"));
 	RGB32Video = OpenVideo(_filename,mpeg2dec3_priority);
 	AVSTRACE(_T("AvisynthVideoProvider: Video opened"));
 
-	SubtitledVideo = RGB32Video;
-	AVSTRACE(_T("AvisynthVideoProvider: Applied subtitles"));
-
-	vi = SubtitledVideo->GetVideoInfo();
+	vi = RGB32Video->GetVideoInfo();
 	AVSTRACE(_T("AvisynthVideoProvider: Got video info"));
 	AVSTRACE(_T("AvisynthVideoProvider: Done creating AvisynthVideoProvider"));
 }
@@ -91,7 +82,6 @@ AvisynthVideoProvider::AvisynthVideoProvider(Aegisub::String _filename, double _
 AvisynthVideoProvider::~AvisynthVideoProvider() {
 	AVSTRACE(_T("AvisynthVideoProvider: Destroying AvisynthVideoProvider"));
 	RGB32Video = NULL;
-	SubtitledVideo = NULL;
 	AVSTRACE(_T("AvisynthVideoProvider: Destroying frame"));
 	iframe.Clear();
 	AVSTRACE(_T("AvisynthVideoProvider: AvisynthVideoProvider destroyed"));
@@ -351,9 +341,6 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 	}
 
 	// Convert to RGB32
-	// If "Avisynth renders its own subs" is enabled, this should always be done,
-	// regardless of shaders being enabled or not. (Since VSFilter will convert
-	// to RGB32 and back again itself either way.)
 	if (!OpenGLWrapper::UseShaders()) {
 		script = env->Invoke("ConvertToRGB32", script);
 		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
@@ -381,7 +368,7 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n,int formatMask) {
 	// Get avs frame
 	AVSTRACE(_T("AvisynthVideoProvider::GetFrame"));
 	wxMutexLocker lock(AviSynthMutex);
-	PVideoFrame frame = SubtitledVideo->GetFrame(n,env);
+	PVideoFrame frame = RGB32Video->GetFrame(n,env);
 	int Bpp = vi.BitsPerPixel() / 8;
 
 	// Aegisub's video frame
@@ -430,157 +417,6 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n,int formatMask) {
 	last_fnum = n;
 	return final;
 }
-
-
-////////////////////////////////////////////////////////
-// Apply VSFilter subtitles, or whatever is appropriate
-PClip AvisynthVideoProvider::ApplySubtitles(Aegisub::String _filename, PClip videosource) {
-	AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Applying subtitles"));
-	wxMutexLocker lock(AviSynthMutex);
-	AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Got AVS mutex"));
-
-	// Insert subs
-	AVSValue script;
-	char temp[512];
-	wxFileName fname(_filename);
-	strcpy(temp,fname.GetShortPath().mb_str(wxConvLocal));
-	AVSValue args[2] = { videosource, temp };
-
-	try {
-		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Now invoking ") + rendererCallString);
-		script = env->Invoke(wxString(rendererCallString.c_str()).mb_str(wxConvUTF8), AVSValue(args,2));
-		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Invoked successfully"));
-	}
-	catch (AvisynthError &err) {
-		AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Avisynth error: ") + wxString(err.msg,wxConvLocal));
-		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
-	}
-
-	// Cache
-	AVSTRACE(_T("AvisynthVideoProvider::ApplySutitles: Subtitles applied, AVS mutex will be released now"));
-	return (env->Invoke("Cache", script)).AsClip();
-}
-
-
-
-////////////////////////////////////// SUBTITLES PROVIDER //////////////////////////////////////
-
-
-/////////////////////////////
-// Get as subtitles provider
-SubtitlesProvider *AvisynthVideoProvider::GetAsSubtitlesProvider() {
-	if (Options.AsBool(_T("Avisynth render own subs"))) return this;
-	return NULL;
-}
-
-
-/////////////////////
-// Refresh subtitles
-void AvisynthVideoProvider::LoadSubtitles(AssFile *subs) {
-	// Reset
-	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Refreshing subtitles"));
-	SubtitledVideo = NULL;
-
-	// Dump subs to disk
-	wxString subfilename = VideoContext::Get()->GetTempWorkFile();
-	subs->Save(subfilename,false,false,_T("UTF-8"));
-	delete subs;
-
-	// Load subtitles
-	SubtitledVideo = ApplySubtitles(subfilename.c_str(), RGB32Video);
-	AVSTRACE(_T("AvisynthVideoProvider::RefreshSubtitles: Subtitles refreshed"));
-	vi = SubtitledVideo->GetVideoInfo();
-	AVSTRACE(_T("AvisynthVideoProvider: Got video info"));
-}
-
-
-/////////////////////////////
-// Load appropriate renderer
-void AvisynthVideoProvider::LoadRenderer() {
-	// Get prefferred
-	wxString prefferred = Options.AsText(_T("Avisynth subs renderer"));
-
-	// Load
-	if (prefferred.Lower() == _T("asa")) LoadASA();
-	else LoadVSFilter();
-}
-
-
-/////////////////
-// Load VSFilter
-void AvisynthVideoProvider::LoadVSFilter() {
-	AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loading VSFilter"));
-	// Loading an avisynth plugin multiple times does almost nothing
-
-	wxFileName vsfilterPath(StandardPaths::DecodePath(_T("?data/csri/vsfilter.dll")));
-	if (!vsfilterPath.FileExists())
-		vsfilterPath = wxFileName(StandardPaths::DecodePath(_T("?data/vsfilter.dll")));
-	rendererCallString = _T("TextSub");
-
-	if (vsfilterPath.FileExists()) {
-		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Invoking LoadPlugin"));
-		env->Invoke("LoadPlugin",env->SaveString(vsfilterPath.GetFullPath().mb_str(wxConvLocal)));
-		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loaded"));
-	}
-	else {
-		AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: VSFilter.dll not found in Aegisub dir, trying to locate registered DShow filter"));
-		wxRegKey reg(_T("HKEY_CLASSES_ROOT\\CLSID\\{9852A670-F845-491B-9BE6-EBD841B8A613}\\InprocServer32"));
-		if (reg.Exists()) {
-			wxString fn;
-			reg.QueryValue(_T(""),fn);
-			
-			vsfilterPath = fn;
-
-			if (vsfilterPath.FileExists()) {
-				AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Found as DShow filter, loading"));
-				env->Invoke("LoadPlugin",env->SaveString(vsfilterPath.GetFullPath().mb_str(wxConvLocal)));
-				AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loaded"));
-				return;
-			}
-			
-			vsfilterPath = _T("vsfilter.dll");
-		}
-		else if (vsfilterPath.FileExists()) {
-			AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Found on system path, loading"));
-			env->Invoke("LoadPlugin",env->SaveString(vsfilterPath.GetFullPath().mb_str(wxConvLocal)));
-			AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Loaded"));
-		}
-		else if (!env->FunctionExists("TextSub")) {
-			AVSTRACE(_T("AvisynthVideoProvider::LoadVSFilter: Couldn't locate VSFilter"));
-			throw _T("Couldn't locate VSFilter for Avisynth internal subtitle rendering");
-		}
-	}
-}
-
-
-////////////
-// Load asa
-void AvisynthVideoProvider::LoadASA() {
-	AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Loading asa"));
-	// Loading an avisynth plugin multiple times does almost nothing
-
-	wxFileName asaPath(StandardPaths::DecodePath(_T("?data/asa.dll")));
-	rendererCallString = _T("asa");
-
-	if (asaPath.FileExists()) {
-		AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Invoking LoadPlugin"));
-		env->Invoke("LoadPlugin",env->SaveString(asaPath.GetFullPath().mb_str(wxConvLocal)));
-		AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Loaded"));
-	}
-	else {
-		asaPath = _T("asa.dll");
-		if (asaPath.FileExists()) {
-			AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Invoking LoadPlugin"));
-			env->Invoke("LoadPlugin",env->SaveString(asaPath.GetFullPath().mb_str(wxConvLocal)));
-			AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Loaded"));
-		}
-		else if (!env->FunctionExists("asa")) {
-			AVSTRACE(_T("AvisynthVideoProvider::LoadASA: Couldn't locate asa"));
-			throw _T("Couldn't locate asa for Avisynth internal subtitle rendering");
-		}
-	}
-}
-
 
 ////////////////////////
 // Override frame times

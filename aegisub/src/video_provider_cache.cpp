@@ -146,9 +146,6 @@ void VideoProviderCache::ClearCache() {
 
 ///////////////////
 // Wrapper methods
-SubtitlesProvider *VideoProviderCache::GetAsSubtitlesProvider() {
-	return master->GetAsSubtitlesProvider();
-}
 int VideoProviderCache::GetPosition() {
 	return pos;
 }

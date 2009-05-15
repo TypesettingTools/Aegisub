@@ -44,12 +44,6 @@
 #include "aegisub.h"
 #include "vfr.h"
 
-
-//////////////
-// Prototypes
-class SubtitlesProvider;
-
-
 ////////////////////////////
 // Video Provider interface
 class VideoProvider {
@@ -83,9 +77,6 @@ public:
 	// For providers that are natively time-based (e.g. DirectShow)
 	virtual bool IsNativelyByFrames() { return true; }
 	virtual void OverrideFrameTimeList(Aegisub::IntArray list) {}	// Override the list with the provided one, for VFR handling
-
-	// If this video provider has a built-in subtitles provider, return that
-	virtual SubtitlesProvider *GetAsSubtitlesProvider() { return NULL; }
 };
 
 

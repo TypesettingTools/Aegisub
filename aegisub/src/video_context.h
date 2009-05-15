@@ -146,7 +146,6 @@ public:
 	VideoProvider *GetProvider() { return provider; }
 	AegiVideoFrame GetFrame(int n,bool raw=false);
 
-	bool HasIndependentSubs();
 	void SaveSnapshot(bool raw);
 
 	wxGLContext *GetGLContext(wxGLCanvas *canvas);
