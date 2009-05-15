@@ -135,17 +135,17 @@ void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t co
 		short *last = NULL;
 
 		// Read audio
-		buffer1 = new short[fullSize];
+		buffer1 = new short[fullSize * channels];
 		source->GetAudio(buffer1,start/sampleMult,srcCount);
 
 		// Convert from 8-bit to 16-bit
 		if (srcBps == 1) {
 			if (sampleMult == 1) {
-				Make16Bit((const char*)buffer1,(short*)destination,srcCount);
+				Make16Bit((const char*)buffer1,(short*)destination,srcCount * channels);
 			}
 			else {
-				buffer2 = new short[fullSize];
-				Make16Bit((const char*)buffer1,buffer2,srcCount);
+				buffer2 = new short[fullSize * channels];
+				Make16Bit((const char*)buffer1,buffer2,srcCount * channels);
 				last = buffer2;
 			}
 		}
@@ -155,7 +155,7 @@ void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t co
 
 		// Convert sample rate
 		if (sampleMult != 1) {
-			ChangeSampleRate(last,(short*)destination,count);
+			ChangeSampleRate(last,(short*)destination,count * channels);
 		}
 
 		delete [] buffer1;
@@ -167,7 +167,7 @@ void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t co
 AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 	AudioProvider *provider = source_provider;
 	if (provider->GetBytesPerSample() != 2 || provider->GetSampleRate() < 32000)
-		provider = new ConvertAudioProvider(source_provider);
+		provider = new ConvertAudioProvider(provider);
 
 	if (provider->GetChannels() != 1)
 		provider = new DownmixingAudioProvider(provider);
