@@ -671,6 +671,16 @@ void AssDialogue::ConvertTagsToSRT () {
 		}
 	}
 
+	// Ensure all tags are closed
+	if (isBold)
+		final += _T("</b>");
+	if (isItalic)
+		final += _T("</i>");
+	if (isUnder)
+		final += _T("</u>");
+	if (isStrike)
+		final += _T("</s>");
+
 	Text = final;
 	UpdateData();
 	ClearBlocks();
