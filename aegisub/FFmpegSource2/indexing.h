@@ -35,27 +35,25 @@ struct IndexHeader {
 	uint32_t Decoder;
 };
 
-class FrameInfoVector : public std::vector<FrameInfo> {
-public:
+struct FFTrack : public std::vector<TFrameInfo> {
 	int TT;
-	TrackTimeBase TB;
+	TTrackTimeBase TB;
 
 	int FindClosestKeyFrame(int Frame);
 	int FrameFromDTS(int64_t DTS);
 	int ClosestFrameFromDTS(int64_t DTS);
 	int WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
 
-	FrameInfoVector();
-	FrameInfoVector(int64_t Num, int64_t Den, int TT);
+	FFTrack();
+	FFTrack(int64_t Num, int64_t Den, int TT);
 };
 
-class FrameIndex : public std::vector<FrameInfoVector> {
-public:
+struct FFIndex : public std::vector<FFTrack> {
 	int Decoder;
 };
 
-FrameIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
-FrameIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
-int WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize);
+FFIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
+FFIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
+int WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
 
 #endif

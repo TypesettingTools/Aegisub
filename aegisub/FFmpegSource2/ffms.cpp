@@ -31,7 +31,7 @@ extern "C" {
 #define _snprintf snprintf
 #endif
 
-FrameInfo::FrameInfo(int64_t DTS, bool KeyFrame) {
+TFrameInfo::TFrameInfo(int64_t DTS, bool KeyFrame) {
 	this->DTS = DTS;
 	this->SampleStart = 0;
 	this->FilePos = 0;
@@ -39,7 +39,7 @@ FrameInfo::FrameInfo(int64_t DTS, bool KeyFrame) {
 	this->KeyFrame = KeyFrame;
 }
 
-FrameInfo::FrameInfo(int64_t DTS, int64_t SampleStart, bool KeyFrame) {
+TFrameInfo::TFrameInfo(int64_t DTS, int64_t SampleStart, bool KeyFrame) {
 	this->DTS = DTS;
 	this->SampleStart = SampleStart;
 	this->FilePos = 0;
@@ -47,7 +47,7 @@ FrameInfo::FrameInfo(int64_t DTS, int64_t SampleStart, bool KeyFrame) {
 	this->KeyFrame = KeyFrame;
 }
 
-FrameInfo::FrameInfo(int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame) {
+TFrameInfo::TFrameInfo(int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame) {
 	this->DTS = 0;
 	this->SampleStart = SampleStart;
 	this->FilePos = FilePos;
@@ -72,14 +72,14 @@ FFMS_API(void) FFMS_SetLogLevel(int Level) {
 	av_log_set_level(AV_LOG_QUIET);
 }
 
-FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(FFVideo *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
 	try {
-		switch (TrackIndices->Decoder) {
-			case 0: return new FFVideoSource(SourceFile, Track, TrackIndices, PP, Threads, SeekMode, ErrorMsg, MsgSize);
-			case 1: return new MatroskaVideoSource(SourceFile, Track, TrackIndices, PP, Threads, ErrorMsg, MsgSize);
+		switch (Index->Decoder) {
+			case 0: return new FFVideoSource(SourceFile, Track, Index, PP, Threads, SeekMode, ErrorMsg, MsgSize);
+			case 1: return new MatroskaVideoSource(SourceFile, Track, Index, PP, Threads, ErrorMsg, MsgSize);
 #ifdef HAALISOURCE
-			case 2: return new HaaliVideoSource(SourceFile, Track, TrackIndices, PP, Threads, 0, ErrorMsg, MsgSize);
-			case 3: return new HaaliVideoSource(SourceFile, Track, TrackIndices, PP, Threads, 1, ErrorMsg, MsgSize);
+			case 2: return new HaaliVideoSource(SourceFile, Track, Index, PP, Threads, 0, ErrorMsg, MsgSize);
+			case 3: return new HaaliVideoSource(SourceFile, Track, Index, PP, Threads, 1, ErrorMsg, MsgSize);
 #endif
 			default: 
 				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
@@ -90,11 +90,11 @@ FFMS_API(VideoBase *) FFMS_CreateVideoSource(const char *SourceFile, int Track, 
 	}
 }
 
-FFMS_API(AudioBase *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(FFAudio *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
 	try {
-		switch (TrackIndices->Decoder) {
-			case 0: return new FFAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
-			case 1: return new MatroskaAudioSource(SourceFile, Track, TrackIndices, ErrorMsg, MsgSize);
+		switch (Index->Decoder) {
+			case 0: return new FFAudioSource(SourceFile, Track, Index, ErrorMsg, MsgSize);
+			case 1: return new MatroskaAudioSource(SourceFile, Track, Index, ErrorMsg, MsgSize);
 			default: 
 				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
 				return NULL;
@@ -104,117 +104,122 @@ FFMS_API(AudioBase *) FFMS_CreateAudioSource(const char *SourceFile, int Track, 
 	}
 }
 
-FFMS_API(void) FFMS_DestroyVideoSource(VideoBase *VB) {
-	delete VB;
+FFMS_API(void) FFMS_DestroyVideoSource(FFVideo *V) {
+	delete V;
 }
 
-FFMS_API(void) FFMS_DestroyAudioSource(AudioBase *AB) {
-	delete AB;
+FFMS_API(void) FFMS_DestroyAudioSource(FFAudio *A) {
+	delete A;
 }
 
-FFMS_API(const VideoProperties *) FFMS_GetVideoProperties(VideoBase *VB) {
-	return &VB->GetVideoProperties();
+FFMS_API(const TVideoProperties *) FFMS_GetTVideoProperties(FFVideo *V) {
+	return &V->GetTVideoProperties();
 }
 
-FFMS_API(const AudioProperties *) FFMS_GetAudioProperties(AudioBase *AB) {
-	return &AB->GetAudioProperties();
+FFMS_API(const TAudioProperties *) FFMS_GetTAudioProperties(FFAudio *A) {
+	return &A->GetTAudioProperties();
 }
 
-FFMS_API(const AVFrameLite *) FFMS_GetFrame(VideoBase *VB, int n, char *ErrorMsg, unsigned MsgSize) {
-	return (AVFrameLite *)VB->GetFrame(n, ErrorMsg, MsgSize);
+FFMS_API(const TAVFrameLite *) FFMS_GetFrame(FFVideo *V, int n, char *ErrorMsg, unsigned MsgSize) {
+	return (TAVFrameLite *)V->GetFrame(n, ErrorMsg, MsgSize);
 }
 
-FFMS_API(const AVFrameLite *) FFMS_GetFrameByTime(VideoBase *VB, double Time, char *ErrorMsg, unsigned MsgSize) {
-	return (AVFrameLite *)VB->GetFrameByTime(Time, ErrorMsg, MsgSize);
+FFMS_API(const TAVFrameLite *) FFMS_GetFrameByTime(FFVideo *V, double Time, char *ErrorMsg, unsigned MsgSize) {
+	return (TAVFrameLite *)V->GetFrameByTime(Time, ErrorMsg, MsgSize);
 }
 
-FFMS_API(int) FFMS_GetAudio(AudioBase *AB, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
-	return AB->GetAudio(Buf, Start, Count, ErrorMsg, MsgSize);
+FFMS_API(int) FFMS_GetAudio(FFAudio *A, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
+	return A->GetAudio(Buf, Start, Count, ErrorMsg, MsgSize);
 }
 
-FFMS_API(int) FFMS_SetOutputFormat(VideoBase *VB, int TargetFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
-	return VB->SetOutputFormat(TargetFormat, Width, Height, ErrorMsg, MsgSize);
+FFMS_API(int) FFMS_SetOutputFormat(FFVideo *V, int TargetFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
+	return V->SetOutputFormat(TargetFormat, Width, Height, ErrorMsg, MsgSize);
 }
 
-FFMS_API(void) FFMS_ResetOutputFormat(VideoBase *VB) {
-	VB->ResetOutputFormat();
+FFMS_API(void) FFMS_ResetOutputFormat(FFVideo *V) {
+	V->ResetOutputFormat();
 }
 
-FFMS_API(void) FFMS_DestroyFrameIndex(FrameIndex *FI) {
-	delete FI;
+FFMS_API(void) FFMS_DestroyFFIndex(FFIndex *Index) {
+	delete Index;
 }
 
-FFMS_API(int) FFMS_GetFirstTrackOfType(FrameIndex *TrackIndices, int TrackType, char *ErrorMsg, unsigned MsgSize) {
-	for (int i = 0; i < TrackIndices->size(); i++)
-		if ((*TrackIndices)[i].TT == TrackType)
+FFMS_API(int) FFMS_GetFirstTrackOfType(FFIndex *Index, int TrackType, char *ErrorMsg, unsigned MsgSize) {
+	for (int i = 0; i < static_cast<int>(Index->size()); i++)
+		if ((*Index)[i].TT == TrackType)
 			return i;
 	_snprintf(ErrorMsg, MsgSize, "No suitable track found");
 	return -1;
 }
 
-FFMS_API(int) FFMS_GetNumTracks(FrameIndex *TrackIndices) {
-	return TrackIndices->size();
+FFMS_API(int) FFMS_GetNumTracks(FFIndex *Index) {
+	return Index->size();
 }
 
-FFMS_API(int) FFMS_GetTrackType(FrameInfoVector *FIV) {
-	return FIV->TT;
+FFMS_API(int) FFMS_GetTrackType(FFTrack *T) {
+	return T->TT;
 }
 
-FFMS_API(int) FFMS_GetNumFrames(FrameInfoVector *FIV) {
-	return FIV->size();
+FFMS_API(int) FFMS_GetNumFrames(FFTrack *T) {
+	return T->size();
 }
 
-FFMS_API(const FrameInfo *) FFMS_GetFrameInfo(FrameInfoVector *FIV, int Frame, char *ErrorMsg, unsigned MsgSize) {
-	if (Frame < 0 || Frame >= FIV->size()) {
+FFMS_API(const TFrameInfo *) FFMS_GetTFrameInfo(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
+	if (Frame < 0 || Frame >= static_cast<int>(T->size())) {
 		_snprintf(ErrorMsg, MsgSize, "Invalid frame specified");
 		return NULL;
 	} else {
-		return &(*FIV)[Frame];
+		return &(*T)[Frame];
 	}	
 }
 
-FFMS_API(FrameInfoVector *) FFMS_GetTITrackIndex(FrameIndex *TrackIndices, int Track, char *ErrorMsg, unsigned MsgSize) {
-	if (Track < 0 || Track >= TrackIndices->size()) {
+FFMS_API(FFTrack *) FFMS_GetTITrackIndex(FFIndex *Index, int Track, char *ErrorMsg, unsigned MsgSize) {
+	if (Track < 0 || Track >= static_cast<int>(Index->size())) {
 		_snprintf(ErrorMsg, MsgSize, "Invalid track specified");
 		return NULL;
 	} else {
-		return &(*TrackIndices)[Track];
+		return &(*Index)[Track];
 	}	
 }
 
-FFMS_API(FrameInfoVector *) FFMS_GetVSTrackIndex(VideoBase *VB) {
-	return VB->GetFrameInfoVector();
+FFMS_API(FFTrack *) FFMS_GetVSTrackIndex(FFVideo *V) {
+	return V->GetFFTrack();
 }
 
-FFMS_API(int) FFMS_FindClosestKeyFrame(FrameInfoVector *FIV, int Frame, char *ErrorMsg, unsigned MsgSize) {
-	if (Frame < 0 || Frame >= FIV->size()) {
+FFMS_API(int) FFMS_FindClosestKeyFrame(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
+	if (Frame < 0 || Frame >= static_cast<int>(T->size())) {
 		_snprintf(ErrorMsg, MsgSize, "Out of range frame specified");
 		return -1;
 	} else {
-		return FIV->FindClosestKeyFrame(Frame);
+		return T->FindClosestKeyFrame(Frame);
 	}
 }
 
-FFMS_API(const TrackTimeBase *) FFMS_GetTimeBase(FrameInfoVector *FIV) {
-	return &FIV->TB;
+FFMS_API(const TTrackTimeBase *) FFMS_GetTimeBase(FFTrack *T) {
+	return &T->TB;
 }
 
-FFMS_API(int) FFMS_WriteTimecodes(FrameInfoVector *FIV, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize) {
-	return FIV->WriteTimecodes(TimecodeFile, ErrorMsg, MsgSize);
+FFMS_API(int) FFMS_WriteTimecodes(FFTrack *T, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize) {
+	return T->WriteTimecodes(TimecodeFile, ErrorMsg, MsgSize);
 }
 
-FFMS_API(FrameIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, IndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
 	return MakeIndex(SourceFile, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, IP, Private, ErrorMsg, MsgSize);
 }
 
-FFMS_API(FrameIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(FFIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 	return ReadIndex(IndexFile, ErrorMsg, MsgSize);
 }
 
-FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
-	return WriteIndex(IndexFile, TrackIndices, ErrorMsg, MsgSize);
+FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
+	return WriteIndex(IndexFile, Index, ErrorMsg, MsgSize);
 }
 
 FFMS_API(int) FFMS_GetPixFmt(const char *Name) {
 	return avcodec_get_pix_fmt(Name);
+}
+
+FFMS_API(int) FFMS_DefaultAudioName(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, unsigned FNSize) {
+
+	return 0;
 }

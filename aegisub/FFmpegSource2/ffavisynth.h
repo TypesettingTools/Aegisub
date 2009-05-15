@@ -35,16 +35,16 @@ extern "C" {
 class AvisynthVideoSource : public IClip {
 private:
 	VideoInfo VI;
-	VideoBase *VS;
+	FFVideo *V;
 	SwsContext *SWS;
 	PixelFormat ConvertToFormat;
 	int FPSNum;
 	int FPSDen;
 
 	void InitOutputFormat(enum PixelFormat CurrentFormat, IScriptEnvironment *Env);
-	PVideoFrame OutputFrame(const AVFrameLite *SrcPicture, IScriptEnvironment *Env);
+	PVideoFrame OutputFrame(const TAVFrameLite *SrcPicture, IScriptEnvironment *Env);
 public:
-	AvisynthVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, int FPSNum, int FPSDen, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
+	AvisynthVideoSource(const char *SourceFile, int Track, FFIndex *Index, int FPSNum, int FPSDen, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
 	~AvisynthVideoSource();
 	bool __stdcall GetParity(int n) { return false; }
 	void __stdcall SetCacheHints(int cachehints, int frame_range) { }
@@ -56,9 +56,9 @@ public:
 class AvisynthAudioSource : public IClip {
 private:
 	VideoInfo VI;
-	AudioBase *AS;
+	FFAudio *A;
 public:
-	AvisynthAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
+	AvisynthAudioSource(const char *SourceFile, int Track, FFIndex *Index, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
 	~AvisynthAudioSource();
 	bool __stdcall GetParity(int n) { return false; }
 	void __stdcall SetCacheHints(int cachehints, int frame_range) { }

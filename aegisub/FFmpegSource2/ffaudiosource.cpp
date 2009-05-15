@@ -25,7 +25,7 @@
 #define _snprintf snprintf
 #endif
 
-TAudioBlock::TAudioBlock(int64_t Start, int64_t Samples, uint8_t *SrcData, int64_t SrcBytes) {
+TAudioBlock::TAudioBlock(int64_t Start, int64_t Samples, uint8_t *SrcData, size_t SrcBytes) {
 	this->Start = Start;
 	this->Samples = Samples;
 	Data = new uint8_t[SrcBytes];
@@ -96,16 +96,16 @@ int64_t TAudioCache::FillRequest(int64_t Start, int64_t Samples, uint8_t *Dst) {
 	return FFMIN(Ret, Start + Samples);
 }
 
-AudioBase::AudioBase() {
+FFAudio::FFAudio() {
 	CurrentSample = 0;
 	DecodingBuffer = new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE * 10];
 };
 
-AudioBase::~AudioBase() {
+FFAudio::~FFAudio() {
 	delete[] DecodingBuffer;
 };
 
-size_t AudioBase::FindClosestAudioKeyFrame(int64_t Sample) {
+size_t FFAudio::FindClosestAudioKeyFrame(int64_t Sample) {
 	for (size_t i = 0; i < Frames.size(); i++) {
 		if (Frames[i].SampleStart == Sample && Frames[i].KeyFrame)
 			return i;
@@ -121,15 +121,15 @@ void FFAudioSource::Free(bool CloseCodec) {
 	av_close_input_file(FormatContext);
 }
 
-FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
+FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
 	FormatContext = NULL;
 	AVCodec *Codec = NULL;
 	AudioTrack = Track;
-	Frames = (*TrackIndices)[AudioTrack];
+	Frames = (*Index)[AudioTrack];
 
 	if (Frames.size() == 0) {
 		Free(false);
-		_snprintf(ErrorMsg, MsgSize, "Audio track contains no frames");
+		_snprintf(ErrorMsg, MsgSize, "Audio track contains no frames, was it indexed properly?");
 		throw ErrorMsg;
 	}
 
@@ -168,12 +168,7 @@ FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FrameIndex *Trac
 	av_seek_frame(FormatContext, AudioTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD);
 	avcodec_flush_buffers(CodecContext);
 
-
-	AP.BitsPerSample = av_get_bits_per_sample_format(CodecContext->sample_fmt);
-	AP.Channels = CodecContext->channels;;
-	AP.Float = AudioFMTIsFloat(CodecContext->sample_fmt);
-	AP.SampleRate = CodecContext->sample_rate;
-	AP.NumSamples = (Frames.back()).SampleStart;
+	FillAP(AP, CodecContext, Frames);
 
 	if (AP.SampleRate <= 0 || AP.BitsPerSample <= 0) {
 		Free(true);
@@ -318,16 +313,16 @@ void MatroskaAudioSource::Free(bool CloseCodec) {
 	av_free(CodecContext);
 }
 	
-MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, FrameIndex *TrackIndices, char *ErrorMsg, unsigned MsgSize) {
+MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
 	CodecContext = NULL;
 	AVCodec *Codec = NULL;
 	TrackInfo *TI = NULL;
 	CS = NULL;
-	Frames = (*TrackIndices)[Track];
+	Frames = (*Index)[Track];
 
 	if (Frames.size() == 0) {
 		Free(false);
-		_snprintf(ErrorMsg, MsgSize, "Audio track contains no frames");
+		_snprintf(ErrorMsg, MsgSize, "Audio track contains no frames, was it indexed properly?");
 		throw ErrorMsg;
 	}
 
@@ -383,11 +378,7 @@ MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, Fram
 	}
 	avcodec_flush_buffers(CodecContext);
 
-	AP.BitsPerSample = av_get_bits_per_sample_format(CodecContext->sample_fmt);
-	AP.Channels = CodecContext->channels;;
-	AP.Float = AudioFMTIsFloat(CodecContext->sample_fmt);
-	AP.SampleRate = CodecContext->sample_rate;
-	AP.NumSamples = (Frames.back()).SampleStart;
+	FillAP(AP, CodecContext, Frames);
 
 	if (AP.SampleRate <= 0 || AP.BitsPerSample <= 0) {
 		Free(true);

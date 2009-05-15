@@ -25,7 +25,7 @@
 #define _snprintf snprintf
 #endif
 
-int VideoBase::InitPP(const char *PP, PixelFormat PixelFormat, char *ErrorMsg, unsigned MsgSize) {
+int FFVideo::InitPP(const char *PP, PixelFormat PixelFormat, char *ErrorMsg, unsigned MsgSize) {
 	if (PP == NULL || !strcmp(PP, ""))
 		return 0;
 
@@ -66,7 +66,7 @@ int VideoBase::InitPP(const char *PP, PixelFormat PixelFormat, char *ErrorMsg, u
 	return 0;
 }
 
-AVFrameLite *VideoBase::OutputFrame(AVFrame *Frame) {
+TAVFrameLite *FFVideo::OutputFrame(AVFrame *Frame) {
 	if (PPContext) {
 		pp_postprocess(const_cast<const uint8_t **>(Frame->data), Frame->linesize, PPFrame->data, PPFrame->linesize, VP.Width, VP.Height, Frame->qscale_table, Frame->qstride, PPMode, PPContext, Frame->pict_type | (Frame->qscale_type ? PP_PICT_TYPE_QP2 : 0));
 		PPFrame->key_frame = Frame->key_frame;
@@ -79,10 +79,10 @@ AVFrameLite *VideoBase::OutputFrame(AVFrame *Frame) {
 		FinalFrame->pict_type = PPFrame->pict_type;
 	}
 
-	return reinterpret_cast<AVFrameLite *>(FinalFrame);
+	return reinterpret_cast<TAVFrameLite *>(FinalFrame);
 }
 
-VideoBase::VideoBase() {
+FFVideo::FFVideo() {
 	memset(&VP, 0, sizeof(VP));
 	PPContext = NULL;
 	PPMode = NULL;
@@ -95,7 +95,7 @@ VideoBase::VideoBase() {
 	FinalFrame = PPFrame;
 }
 
-VideoBase::~VideoBase() {
+FFVideo::~FFVideo() {
 	if (PPMode)
 		pp_free_mode(PPMode);
 	if (PPContext)
@@ -113,12 +113,12 @@ VideoBase::~VideoBase() {
 	av_free(DecodeFrame);
 }
 
-AVFrameLite *VideoBase::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
+TAVFrameLite *FFVideo::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
 	int Frame = Frames.ClosestFrameFromDTS((Time * 1000 * Frames.TB.Den) / Frames.TB.Num);
 	return GetFrame(Frame, ErrorMsg, MsgSize);
 }
 
-int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
+int FFVideo::SetOutputFormat(int TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
 //  FIXME: investigate the possible bug in avcodec_find_best_pix_fmt
 //	int Loss;
 //	int OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
@@ -162,7 +162,7 @@ int VideoBase::SetOutputFormat(int TargetFormats, int Width, int Height, char *E
 	return 0;
 }
 
-void VideoBase::ResetOutputFormat() {
+void FFVideo::ResetOutputFormat() {
 	if (SWS)
 		sws_freeContext(SWS);
 	SWS = NULL;
@@ -179,14 +179,14 @@ void FFVideoSource::Free(bool CloseCodec) {
 	//av_free(FormatContext);
 }
 
-FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FrameIndex *TrackIndices,
+FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FFIndex *Index,
 	const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
 
 	FormatContext = NULL;
 	AVCodec *Codec = NULL;
 	this->SeekMode = SeekMode;
 	VideoTrack = Track;
-	Frames = (*TrackIndices)[VideoTrack];
+	Frames = (*Index)[VideoTrack];
 
 	if (Frames.size() == 0) {
 		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
@@ -315,7 +315,7 @@ Done:
 	return 0;
 }
 
-AVFrameLite *FFVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
+TAVFrameLite *FFVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	// PPFrame always holds frame LastFrameNum even if no PP is applied
 	if (LastFrameNum == n)
 		return OutputFrame(DecodeFrame);
@@ -398,7 +398,7 @@ void MatroskaVideoSource::Free(bool CloseCodec) {
 }
 
 MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
-	FrameIndex *TrackIndices, const char *PP,
+	FFIndex *Index, const char *PP,
 	int Threads, char *ErrorMsg, unsigned MsgSize) {
 
 	AVCodec *Codec = NULL;
@@ -406,7 +406,7 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	TrackInfo *TI = NULL;
 	CS = NULL;
 	VideoTrack = Track;
-	Frames = (*TrackIndices)[VideoTrack];
+	Frames = (*Index)[VideoTrack];
 
 	if (Frames.size() == 0) {
 		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
@@ -553,7 +553,7 @@ Done:
 	return 0;
 }
 
-AVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
+TAVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	// PPFrame always holds frame LastFrameNum even if no PP is applied
 	if (LastFrameNum == n)
 		return OutputFrame(DecodeFrame);
@@ -597,13 +597,13 @@ void HaaliVideoSource::Free(bool CloseCodec) {
 }
 
 HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
-	FrameIndex *TrackIndices, const char *PP,
+	FFIndex *Index, const char *PP,
 	int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize) {
 
 	AVCodec *Codec = NULL;
 	CodecContext = NULL;
 	VideoTrack = Track;
-	Frames = (*TrackIndices)[VideoTrack];
+	Frames = (*Index)[VideoTrack];
 
 	if (Frames.size() == 0) {
 		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
@@ -798,7 +798,7 @@ Done:
 	return 0;
 }
 
-AVFrameLite *HaaliVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
+TAVFrameLite *HaaliVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	// PPFrame always holds frame LastFrameNum even if no PP is applied
 	if (LastFrameNum == n)
 		return OutputFrame(DecodeFrame);

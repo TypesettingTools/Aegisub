@@ -108,7 +108,7 @@ longlong StdIoGetFileSize(StdIoStream *st) {
 }
 
 void InitStdIoStream(StdIoStream *st) {
-	memset(st,0,sizeof(st));
+	memset(st,0,sizeof(StdIoStream));
 	st->base.read = StdIoRead;
 	st->base.scan = StdIoScan;
 	st->base.getcachesize = StdIoGetCacheSize;

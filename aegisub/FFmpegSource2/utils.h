@@ -31,6 +31,8 @@ extern "C" {
 #include "stdiostream.h"
 }
 
+#include "ffms.h"
+
 #ifdef HAALISOURCE
 #	define _WIN32_DCOM
 #	include <windows.h>
@@ -63,6 +65,7 @@ int GetCPUFlags();
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize);
 bool AudioFMTIsFloat(SampleFormat FMT);
 void InitNullPacket(AVPacket *pkt);
+void FillAP(TAudioProperties &AP, AVCodecContext *CTX, FFTrack &Frames);
 #ifdef HAALISOURCE
 unsigned vtSize(VARIANT &vt);
 void vtCopy(VARIANT& vt,void *dest);
