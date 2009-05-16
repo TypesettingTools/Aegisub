@@ -89,7 +89,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	wxString CacheName = GetCacheFilename(filename.c_str());
 
 	// try to read index
-	FrameIndex *Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
+	FFIndex *Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
 	if (Index == NULL) {
 		// index didn't exist or was invalid, we'll have to (re)create it
 		try {
@@ -132,7 +132,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// FIXME: provide a way to choose which audio track to load?
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrorMessage, MessageSize);
 	if (TrackNumber < 0) {
-		FFMS_DestroyFrameIndex(Index);
+		FFMS_DestroyFFIndex(Index);
 		Index = NULL;
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
 		ErrorMsg << _T("Couldn't find any video tracks: ") << temp;
@@ -140,7 +140,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	}
 
 	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
-	FFMS_DestroyFrameIndex(Index);
+	FFMS_DestroyFFIndex(Index);
 	Index = NULL;
 	if (VideoSource == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
@@ -149,21 +149,21 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	}
 
 	// load video properties
-	VideoInfo = FFMS_GetVideoProperties(VideoSource);
+	VideoInfo = FFMS_GetTVideoProperties(VideoSource);
 
 	// get frame info data
-	FrameInfoVector *FrameData = FFMS_GetVSTrackIndex(VideoSource);
+	FFTrack *FrameData = FFMS_GetVSTrackIndex(VideoSource);
 	if (FrameData == NULL)
 		throw _T("FFmpegSource video provider: failed to get frame data");
-	const TrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
+	const TTrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
 	if (TimeBase == NULL)
 		throw _T("FFmpegSource video provider: failed to get track time base");
 
-	const FrameInfo *CurFrameData;
+	const TFrameInfo *CurFrameData;
 
 	// build list of keyframes and timecodes
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
-		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum, FFMSErrorMessage, MessageSize);
+		CurFrameData = FFMS_GetTFrameInfo(FrameData, CurFrameNum, FFMSErrorMessage, MessageSize);
 		if (CurFrameData == NULL) {
 			wxString temp(FFMSErrorMessage, wxConvUTF8);
 			ErrorMsg << _T("Couldn't get framedata for frame ") << CurFrameNum << _T(": ") << temp;
@@ -259,7 +259,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	}
 
 	// decode frame
-	const AVFrameLite *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
+	const TAVFrameLite *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
 	if (SrcFrame == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
 		ErrorMsg << _T("Failed to retrieve frame: ") << temp;

@@ -73,7 +73,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	// generate a default name for the cache file
 	wxString CacheName = GetCacheFilename(filename.c_str());
 
-	FrameIndex *Index;
+	FFIndex *Index;
 	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrMsg, MsgSize);
 	if (Index == NULL) {
 		// index didn't exist or was invalid, we'll have to (re)create it
@@ -89,15 +89,15 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		// index exists, but does it have indexing info for the audio track(s)?
 		int NumTracks = FFMS_GetNumTracks(Index);
 		if (NumTracks <= 0) {
-			FFMS_DestroyFrameIndex(Index);
+			FFMS_DestroyFFIndex(Index);
 			Index = NULL;
 			throw _T("FFmpegSource audio provider: no tracks found in index file");
 		}
 
 		for (int i = 0; i < NumTracks; i++) {
-			FrameInfoVector *FrameData = FFMS_GetTITrackIndex(Index, i, FFMSErrMsg, MsgSize);
+			FFTrack *FrameData = FFMS_GetTITrackIndex(Index, i, FFMSErrMsg, MsgSize);
 			if (FrameData == NULL) {
-				FFMS_DestroyFrameIndex(Index);
+				FFMS_DestroyFFIndex(Index);
 				Index = NULL;
 				wxString temp(FFMSErrMsg, wxConvUTF8);
 				MsgString << _T("Couldn't get track data: ") << temp;
@@ -108,7 +108,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			if (FFMS_GetNumFrames(FrameData) <= 0 && (FFMS_GetTrackType(FrameData) == FFMS_TYPE_AUDIO)) {
 				// found an unindexed audio track, we'll need to reindex
 				try {
-					FFMS_DestroyFrameIndex(Index);
+					FFMS_DestroyFFIndex(Index);
 					Index = NULL;
 					Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
 				} catch (wxString temp) {
@@ -130,7 +130,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	// FIXME: provide a way to choose which audio track to load?
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
 	if (TrackNumber < 0) {
-		FFMS_DestroyFrameIndex(Index);
+		FFMS_DestroyFFIndex(Index);
 		Index = NULL;
 		wxString temp(FFMSErrMsg, wxConvUTF8);
 		MsgString << _T("Couldn't find any audio tracks: ") << temp;
@@ -138,7 +138,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	}
 
 	AudioSource = FFMS_CreateAudioSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, FFMSErrMsg, MsgSize);
-	FFMS_DestroyFrameIndex(Index);
+	FFMS_DestroyFFIndex(Index);
 	Index = NULL;
 	if (!AudioSource) {
 			wxString temp(FFMSErrMsg, wxConvUTF8);
@@ -146,7 +146,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			throw MsgString;
 	}
 		
-	const AudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
+	const TAudioProperties AudioInfo = *FFMS_GetTAudioProperties(AudioSource);
 
 	if (AudioInfo.Float)
 		throw _T("FFmpegSource audio provider: I don't know what to do with floating point audio");

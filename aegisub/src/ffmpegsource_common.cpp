@@ -71,7 +71,7 @@ int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int State, int64_t Curr
 
 ///////////
 // Do indexing
-FrameIndex *FFmpegSourceProvider::DoIndexing(FrameIndex *Index, wxString FileNameWX, wxString CacheName, int Trackmask, bool IgnoreDecodeErrors) {
+FFIndex *FFmpegSourceProvider::DoIndexing(FFIndex *Index, wxString FileNameWX, wxString CacheName, int Trackmask, bool IgnoreDecodeErrors) {
 	char FFMSErrMsg[1024];
 	unsigned MsgSize = sizeof(FFMSErrMsg);
 	wxString MsgString;

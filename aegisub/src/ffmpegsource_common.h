@@ -60,7 +60,7 @@ public:
 	bool CleanCache();
 
 	static int FFMS_CC UpdateIndexingProgress(int State, int64_t Current, int64_t Total, void *Private);
-	FrameIndex *DoIndexing(FrameIndex *Index, wxString Filename, wxString Cachename, int Trackmask, bool IgnoreDecodeErrors);
+	FFIndex *DoIndexing(FFIndex *Index, wxString Filename, wxString Cachename, int Trackmask, bool IgnoreDecodeErrors);
 	wxString GetCacheFilename(const wxString& filename);
 
 	virtual FFmpegSourceProvider::~FFmpegSourceProvider() {}
