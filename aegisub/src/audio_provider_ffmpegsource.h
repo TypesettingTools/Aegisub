@@ -45,7 +45,7 @@
 // FFmpegSource audio provider
 class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 private:
-	AudioBase *AudioSource;
+	FFAudio *AudioSource;
 
 	char FFMSErrMsg[1024];
 	unsigned MsgSize;
