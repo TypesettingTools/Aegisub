@@ -1489,7 +1489,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Video"
+			Name="Video backend"
 			>
 			<File
 				RelativePath="..\..\src\keyframe.cpp"
@@ -1505,30 +1505,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\lavc_keyframes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_box.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_box.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_context.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_display.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_display.h"
 				>
 			</File>
 			<File
@@ -1593,14 +1569,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\video_provider_manager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_slider.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_slider.h"
 				>
 			</File>
 		</Filter>
@@ -1913,6 +1881,42 @@
 			</File>
 			<File
 				RelativePath="..\..\src\audio_spectrum.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Video UI"
+			>
+			<File
+				RelativePath="..\..\src\video_box.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_box.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_context.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_context.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_display.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_display.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_slider.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_slider.h"
 				>
 			</File>
 		</Filter>
