@@ -149,10 +149,10 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	}
 
 	// load video properties
-	VideoInfo = FFMS_GetTVideoProperties(VideoSource);
+	VideoInfo = FFMS_GetVideoProperties(VideoSource);
 
 	// get frame info data
-	FFTrack *FrameData = FFMS_GetVSTrackIndex(VideoSource);
+	FFTrack *FrameData = FFMS_GetTrackFromVideo(VideoSource);
 	if (FrameData == NULL)
 		throw _T("FFmpegSource video provider: failed to get frame data");
 	const TTrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
@@ -163,7 +163,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 
 	// build list of keyframes and timecodes
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
-		CurFrameData = FFMS_GetTFrameInfo(FrameData, CurFrameNum, FFMSErrorMessage, MessageSize);
+		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum, FFMSErrorMessage, MessageSize);
 		if (CurFrameData == NULL) {
 			wxString temp(FFMSErrorMessage, wxConvUTF8);
 			ErrorMsg << _T("Couldn't get framedata for frame ") << CurFrameNum << _T(": ") << temp;

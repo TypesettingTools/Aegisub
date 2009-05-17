@@ -95,7 +95,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		}
 
 		for (int i = 0; i < NumTracks; i++) {
-			FFTrack *FrameData = FFMS_GetTITrackIndex(Index, i, FFMSErrMsg, MsgSize);
+			FFTrack *FrameData = FFMS_GetTrackFromIndex(Index, i, FFMSErrMsg, MsgSize);
 			if (FrameData == NULL) {
 				FFMS_DestroyFFIndex(Index);
 				Index = NULL;
@@ -146,7 +146,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			throw MsgString;
 	}
 		
-	const TAudioProperties AudioInfo = *FFMS_GetTAudioProperties(AudioSource);
+	const TAudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
 
 	if (AudioInfo.Float)
 		throw _T("FFmpegSource audio provider: I don't know what to do with floating point audio");
