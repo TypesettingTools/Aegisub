@@ -224,6 +224,7 @@ void BaseGrid::ClearSelection() {
 /////////////////////////
 // Is cell in selection?
 bool BaseGrid::IsInSelection(int row, int col) const {
+	if (row >= GetRows() || row < 0) return false;
 	(void) col;
 	try {
 		return selMap.at(row);
