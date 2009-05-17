@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: 2008-10-27 22:39-0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Hiroshi Haga <h-h23@edogawa.home.ne.jp>\n"
-"Language-Team: G-MARK <h-h23@edogawa.home.ne.jp>\n"
+"Language-Team: G-MARK <http://g-mark.jpn.org/>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -625,7 +625,7 @@ msgstr ""
 "フルパス : %s\n"
 "状態 : %s\n"
 "\n"
-"スクリプトで提供された特徴 :\n"
+"スクリプトで提供される機能 :\n"
 
 #: dialog_automation.cpp:297
 msgid "Correctly loaded"
@@ -710,20 +710,20 @@ msgstr "Blue:"
 #: dialog_colorpicker.cpp:559
 #: dialog_colorpicker.cpp:569
 msgid "Hue:"
-msgstr "H 色相 :"
+msgstr "H 色相:"
 
 #: dialog_colorpicker.cpp:561
 #: dialog_colorpicker.cpp:571
 msgid "Sat.:"
-msgstr "S 彩度 :"
+msgstr "S 彩度:"
 
 #: dialog_colorpicker.cpp:563
 msgid "Lum.:"
-msgstr "L 輝度 :"
+msgstr "L 輝度:"
 
 #: dialog_colorpicker.cpp:573
 msgid "Value:"
-msgstr "V 明度 :"
+msgstr "V 明度:"
 
 #: dialog_colorpicker.cpp:598
 msgid "Colour Picker"
@@ -745,8 +745,7 @@ msgstr "チェック柄の映像を使う"
 #: dialog_dummy_video.cpp:136
 msgid "Video resolution:"
 msgstr ""
-"映像の解像度 :\n"
-"ドロップダウンリストから選ぶか\n"
+"映像の解像度をリストから選ぶか\n"
 "数値を入力し指定します"
 
 #: dialog_dummy_video.cpp:144
@@ -1356,7 +1355,7 @@ msgstr "字幕グリッドで矢印キーを有効にする"
 
 #: dialog_options.cpp:293
 msgid "Highlight subtitles that are currently visible in video"
-msgstr "映像表示フレーム行の背景色 表示を有効にする"
+msgstr "映像表示フレーム行の背景色を有効にする"
 
 #: dialog_options.cpp:303
 msgid "Standard foreground"
@@ -1438,7 +1437,7 @@ msgstr "スライドバーにキーフレームの表示をする"
 
 #: dialog_options.cpp:394
 msgid "Video provider: "
-msgstr "映像レンダリングエンジン : "
+msgstr "映像読み込みエンジン : "
 
 #: dialog_options.cpp:399
 msgid "Subtitles provider: "
@@ -1469,7 +1468,7 @@ msgstr ""
 
 #: dialog_options.cpp:444
 msgid "Grab times from line upon selection"
-msgstr "字幕行と音声ビュー選択エリアを同期"
+msgstr "字幕行と音声ボックス選択エリアを同期"
 
 #: dialog_options.cpp:445
 msgid "Default mouse wheel to zoom"
@@ -1477,7 +1476,7 @@ msgstr "マウスホイールでズームする"
 
 #: dialog_options.cpp:446
 msgid "Lock scroll on Cursor"
-msgstr "カーソルスクロールを固定"
+msgstr "再生カーソルにロックオン"
 
 #: dialog_options.cpp:447
 msgid "Snap to keyframes"
@@ -1609,7 +1608,7 @@ msgstr "ハードディスク"
 
 #: dialog_options.cpp:542
 msgid "Audio provider"
-msgstr "音声再生エンジン"
+msgstr "音声読み込みエンジン"
 
 #: dialog_options.cpp:543
 msgid "Audio player"
@@ -2112,7 +2111,7 @@ msgstr "検索"
 
 #: dialog_selection.cpp:52
 msgid "Select"
-msgstr "字幕行の選択"
+msgstr "字幕行の指定選択"
 
 #: dialog_selection.cpp:58
 msgid "Match"
@@ -2603,7 +2602,7 @@ msgstr "スタイルマネージャー"
 
 #: dialog_style_manager.cpp:69
 msgid "Catalog of available storages"
-msgstr "スタイルマネージャーから読み込むカタログ"
+msgstr "読み込み可能なカタログ"
 
 #: dialog_style_manager.cpp:71
 #: dialog_style_manager.cpp:84
@@ -2621,11 +2620,11 @@ msgstr "削除"
 
 #: dialog_style_manager.cpp:79
 msgid "Storage"
-msgstr "カタログとして保存されているスタイル"
+msgstr "カタログに保存されているスタイル"
 
 #: dialog_style_manager.cpp:83
 msgid "Copy to current script ->"
-msgstr "現在のスタイルに複製  -->"
+msgstr "現在の字幕に複製  -->"
 
 #: dialog_style_manager.cpp:85
 #: dialog_style_manager.cpp:130
@@ -2677,7 +2676,7 @@ msgstr "字幕ファイルから読み込み"
 
 #: dialog_style_manager.cpp:412
 msgid "New storage name:"
-msgstr "スタイルマネージャーに保存するカタログ名 :"
+msgstr "保存するカタログ名を入力してください :"
 
 #: dialog_style_manager.cpp:412
 msgid "New catalog entry"
@@ -3450,11 +3449,11 @@ msgstr "Aegisubの設定を開きます"
 
 #: frame_main.cpp:272
 msgid "Cycle Tag Hidding Mode"
-msgstr "字幕ビューでのタグ省略表示"
+msgstr "字幕グリッドでのタグ省略表示"
 
 #: frame_main.cpp:272
 msgid "Cycle through tag-hiding modes"
-msgstr "字幕ビューでのタグ省略表示切り替え"
+msgstr "字幕グリッドでのタグ省略表示切り替え"
 
 #: frame_main.cpp:296
 #: frame_main.cpp:517
@@ -3982,7 +3981,7 @@ msgstr "映像ビュー分離"
 
 #: frame_main.cpp:435
 msgid "Detach video, displaying it in a separate Window."
-msgstr "映像ビューを本体から分離します"
+msgstr "映像ボックスをAegisub本体から分離します"
 
 #: frame_main.cpp:437
 msgid "Set Zoom"
@@ -4144,7 +4143,7 @@ msgstr "字幕ビュー"
 
 #: frame_main.cpp:496
 msgid "Display subtitles only"
-msgstr "字幕ビューのみ表示します"
+msgstr "編集ボックスと字幕グリッドのみ表示します"
 
 #: frame_main.cpp:497
 msgid "Video+Subs View"
@@ -4152,7 +4151,7 @@ msgstr "字幕と映像ビュー"
 
 #: frame_main.cpp:497
 msgid "Display video and subtitles only"
-msgstr "字幕と映像ビューを表示します"
+msgstr "編集ボックス・字幕グリッドと映像ボックスを表示します"
 
 #: frame_main.cpp:498
 msgid "Audio+Subs View"
@@ -4160,7 +4159,7 @@ msgstr "字幕と音声ビュー"
 
 #: frame_main.cpp:498
 msgid "Display audio and subtitles only"
-msgstr "字幕と音声ビューを表示します"
+msgstr "編集ボックス・字幕グリッドと音声ボックスを表示します"
 
 #: frame_main.cpp:499
 msgid "Full view"
@@ -4168,7 +4167,7 @@ msgstr "すべてのビューを表示"
 
 #: frame_main.cpp:499
 msgid "Display audio, video and subtitles"
-msgstr "字幕と映像と音声ビューを表示します"
+msgstr "編集ボックス・字幕グリッド・映像ボックス・音声ボックスを表示します"
 
 #: frame_main.cpp:500
 msgid "Vie&w"
@@ -4761,29 +4760,23 @@ msgstr "コメント"
 
 #: subs_edit_box.cpp:84
 msgid "Comment this line out. Commented lines don't show up on screen."
-msgstr "コメントは字幕として表示されません"
+msgstr "コメントアウト"
 
 #: subs_edit_box.cpp:86
 msgid "Style for this line."
-msgstr "字幕の「スタイル」を指定する場所です"
+msgstr "スタイルネーム"
 
 #: subs_edit_box.cpp:88
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
-msgstr ""
-"誰が喋ったセリフか等の「話者」情報を指定する場所で、俳優名や役名など任意の文字列が使えます\n"
-"多くの場合は役に立ちませんが、長編映画など話者情報を元に字幕スタイルを一括して変更するなど役に立つこともあります"
+msgstr "話者情報"
 
 #: subs_edit_box.cpp:91
 msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
-msgstr ""
-"カラオケやスクロールなど一部の「エフェクト」情報を指定する場所です\n"
-"しかし、この場所で指定するエフェクトはレンダリングエンジンによっては動作がサポートされていません"
+msgstr "エフェクト指定"
 
 #: subs_edit_box.cpp:96
 msgid "Layer number"
-msgstr ""
-"レイヤー番号です、同タイム・同座標に複数の字幕行がある場合は、\n"
-"小さい番号の上に大きな番号の字幕行の字幕が重ねて描画されます"
+msgstr "レイヤー番号"
 
 #: subs_edit_box.cpp:98
 msgid "Start time"
@@ -4841,8 +4834,8 @@ msgstr "Commit"
 #: subs_edit_box.cpp:141
 msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
 msgstr ""
-"Commit (Enter 決定)は字幕の決定です\n"
-"通常は決定すると次の字幕行に移動しますが、(%KEY%) で次の字幕行へ移動しません"
+"Commit (Enter) は決定\n"
+"決定すると次の字幕行に移動、(%KEY%) で次へ移動しません"
 
 #: subs_edit_box.cpp:142
 msgid "Time"
@@ -4850,7 +4843,7 @@ msgstr "時間表示"
 
 #: subs_edit_box.cpp:143
 msgid "Time by h:mm:ss.cs"
-msgstr "字幕タイミングを時間の形式 h:mm:ss.cs で表示します"
+msgstr "タイミングを時間形式 h:mm:ss.cs で表示"
 
 #: subs_edit_box.cpp:144
 msgid "Frame"
@@ -4858,7 +4851,7 @@ msgstr "フレーム番号表示"
 
 #: subs_edit_box.cpp:145
 msgid "Time by frame number"
-msgstr "字幕タイミングを映像のフレーム番号で表示します"
+msgstr "タイミングを映像フレーム番号で表示"
 
 #: subs_edit_box.cpp:609
 msgid "actor change"
@@ -5259,7 +5252,7 @@ msgstr "字幕の変更を映像にリアルタイムに反映し描画します
 
 #: video_box.cpp:122
 msgid "Open the manual page for Visual Typesetting."
-msgstr "視覚効果についてのヘルプを開きます"
+msgstr "映像効果についてのヘルプを開きます"
 
 #: video_display.cpp:472
 msgid "Save PNG snapshot"
@@ -5307,7 +5300,7 @@ msgstr "移動/変形/図形モード"
 
 #: visual_tool_cross.cpp:72
 msgid "positioning"
-msgstr "ポジションタグ"
+msgstr "ポジション"
 
 #: visual_tool_vector_clip.cpp:68
 msgid "Drag control points."
@@ -5315,7 +5308,7 @@ msgstr "頂点をドラッグして移動します"
 
 #: visual_tool_vector_clip.cpp:69
 msgid "Line"
-msgstr "線"
+msgstr "直線"
 
 #: visual_tool_vector_clip.cpp:69
 msgid "Appends a line."
@@ -5323,11 +5316,11 @@ msgstr "直線を引きます"
 
 #: visual_tool_vector_clip.cpp:70
 msgid "Bicubic"
-msgstr "バイキュービック"
+msgstr "3次曲線"
 
 #: visual_tool_vector_clip.cpp:70
 msgid "Appends a bezier bicubic curve."
-msgstr "曲線を引きます"
+msgstr "3次曲線を引きます"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Convert"
@@ -5347,7 +5340,7 @@ msgstr "頂点を追加します"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Remove"
-msgstr "除去"
+msgstr "削除"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Removes a control point."
@@ -5355,7 +5348,7 @@ msgstr "頂点を削除します"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Freehand"
-msgstr "フリーハンドで直線"
+msgstr "フリーハンド - 直線"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Draws a freehand shape."
@@ -5363,7 +5356,7 @@ msgstr "フリーハンドで多角形を描きます"
 
 #: visual_tool_vector_clip.cpp:77
 msgid "Freehand smooth"
-msgstr "フリーハンドで曲線"
+msgstr "フリーハンド - 3次曲線"
 
 #: visual_tool_vector_clip.cpp:77
 msgid "Draws a smoothed freehand shape."
