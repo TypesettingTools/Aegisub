@@ -31,7 +31,7 @@ using namespace std;
 
 //#define VERBOSE
 
-static int FFMS_CC UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
+static int FFMS_CC UpdateProgress(int64_t Current, int64_t Total, void *Private) {
 
 	static int LastPercentage = -1;
 	int Percentage = int((double(Current)/double(Total)) * 100);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 		return 3;
 	}
 
-	const TVideoProperties *VP = FFMS_GetTVideoProperties(V);
+	const TVideoProperties *VP = FFMS_GetVideoProperties(V);
 	for (int i = 0; i < VP->NumFrames; i++) {
 		const TAVFrameLite *AVF =  FFMS_GetFrame(V, i, ErrorMsg, sizeof(ErrorMsg));
 		if (!AVF) {

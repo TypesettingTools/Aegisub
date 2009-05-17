@@ -172,7 +172,7 @@ static void SortTrackIndices(FFIndex *Index) {
 		std::sort(Cur->begin(), Cur->end(), DTSComparison);
 }
 
-int WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
+int FFIndex::WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 	std::ofstream IndexStream(IndexFile, std::ios::out | std::ios::binary | std::ios::trunc);
 
 	if (!IndexStream.is_open()) {
@@ -184,22 +184,28 @@ int WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned M
 	IndexHeader IH;
 	IH.Id = INDEXID;
 	IH.Version = INDEXVERSION;
-	IH.Tracks = Index->size();
-	IH.Decoder = Index->Decoder;
+	IH.Tracks = size();
+	IH.Decoder = Decoder;
+	IH.LAVUVersion = LIBAVUTIL_VERSION_INT;
+	IH.LAVFVersion = LIBAVFORMAT_VERSION_INT;
+	IH.LAVCVersion = LIBAVCODEC_VERSION_INT;
+	IH.LSWSVersion = LIBSWSCALE_VERSION_INT;
+	IH.LPPVersion = LIBPOSTPROC_VERSION_INT;
+
 	IndexStream.write(reinterpret_cast<char *>(&IH), sizeof(IH));
 	
 	for (unsigned int i = 0; i < IH.Tracks; i++) {
-		int TT = (*Index)[i].TT;
+		int TT = at(i).TT;
 		IndexStream.write(reinterpret_cast<char *>(&TT), sizeof(TT));
-		int64_t Num = (*Index)[i].TB.Num;
+		int64_t Num = at(i).TB.Num;
 		IndexStream.write(reinterpret_cast<char *>(&Num), sizeof(Num));
-		int64_t Den = (*Index)[i].TB.Den;
+		int64_t Den = at(i).TB.Den;
 		IndexStream.write(reinterpret_cast<char *>(&Den), sizeof(Den));
-		size_t Frames = (*Index)[i].size();
+		size_t Frames = at(i).size();
 		IndexStream.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
 
 		for (size_t j = 0; j < Frames; j++)
-			IndexStream.write(reinterpret_cast<char *>(&(Index->at(i)[j])), sizeof(TFrameInfo));
+			IndexStream.write(reinterpret_cast<char *>(&(at(i)[j])), sizeof(TFrameInfo));
 	}
 
 	return 0;
@@ -336,7 +342,7 @@ static FFIndex *MakeHaaliIndex(const char *SourceFile, int IndexMask, int DumpMa
 
 	for (;;) {
 		if (IP) {
-			if ((*IP)(0, 0, 1, Private)) {
+			if ((*IP)(0, 1, Private)) {
 				_snprintf(ErrorMsg, MsgSize, "Cancelled by user");
 				delete TrackIndices;
 				return NULL;
@@ -497,7 +503,7 @@ static FFIndex *MakeMatroskaIndex(const char *SourceFile, int IndexMask, int Dum
 	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
 		// Update progress
 		if (IP) {
-			if ((*IP)(0, _ftelli64(MC.ST.fp), SourceSize, Private)) {
+			if ((*IP)(_ftelli64(MC.ST.fp), SourceSize, Private)) {
 				_snprintf(ErrorMsg, MsgSize, "Cancelled by user");
 				delete TrackIndices;
 				return NULL;
@@ -637,7 +643,7 @@ FFIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const ch
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
 		// Update progress
 		if (IP) {
-			if ((*IP)(0, FormatContext->pb->pos, FormatContext->file_size, Private)) {
+			if ((*IP)(FormatContext->pb->pos, FormatContext->file_size, Private)) {
 				_snprintf(ErrorMsg, MsgSize, "Cancelled by user");
 				delete TrackIndices;
 				return NULL;
@@ -720,6 +726,13 @@ FFIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 
 	if (IH.Version != INDEXVERSION) {
 		_snprintf(ErrorMsg, MsgSize, "'%s' is not the expected index version", IndexFile);
+		return NULL;
+	}
+
+	if (IH.LAVUVersion != LIBAVUTIL_VERSION_INT || IH.LAVFVersion != LIBAVFORMAT_VERSION_INT ||
+		IH.LAVCVersion != LIBAVCODEC_VERSION_INT || IH.LSWSVersion != LIBSWSCALE_VERSION_INT ||
+		IH.LPPVersion != LIBPOSTPROC_VERSION_INT) {
+		_snprintf(ErrorMsg, MsgSize, "A different FFmpeg build was used to create this index", IndexFile);
 		return NULL;
 	}
 

@@ -118,7 +118,7 @@ void ParseCMDLine (int argc, char *argv[]) {
 }
 
 
-static int FFMS_CC UpdateProgress(int State, int64_t Current, int64_t Total, void *Private) {
+static int FFMS_CC UpdateProgress(int64_t Current, int64_t Total, void *Private) {
 	using namespace std;
 	int *LastPercentage = (int *)Private;
 	int Percentage = int((double(Current)/double(Total)) * 100);

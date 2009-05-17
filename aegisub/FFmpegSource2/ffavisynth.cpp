@@ -33,7 +33,7 @@ AvisynthVideoSource::AvisynthVideoSource(const char *SourceFile, int Track, FFIn
 	if (!V)
 		Env->ThrowError(ErrorMsg);
 
-	const TVideoProperties VP = *FFMS_GetTVideoProperties(V);
+	const TVideoProperties VP = *FFMS_GetVideoProperties(V);
 
 	VI.image_type = VideoInfo::IT_TFF;
 	VI.width = VP.Width;
@@ -143,7 +143,7 @@ PVideoFrame AvisynthVideoSource::GetFrame(int n, IScriptEnvironment *Env) {
 	const TAVFrameLite *Frame;
 
 	if (FPSNum > 0 && FPSDen > 0)
-		Frame = FFMS_GetFrameByTime(V, FFMS_GetTVideoProperties(V)->FirstTime + (double)(n * (int64_t)FPSDen) / FPSNum, ErrorMsg, MsgSize);
+		Frame = FFMS_GetFrameByTime(V, FFMS_GetVideoProperties(V)->FirstTime + (double)(n * (int64_t)FPSDen) / FPSNum, ErrorMsg, MsgSize);
 	else
 		Frame = FFMS_GetFrame(V, n, ErrorMsg, MsgSize);
 
@@ -161,7 +161,7 @@ AvisynthAudioSource::AvisynthAudioSource(const char *SourceFile, int Track, FFIn
 	if (!A)
 		Env->ThrowError(ErrorMsg);
 
-	const TAudioProperties AP = *FFMS_GetTAudioProperties(A);
+	const TAudioProperties AP = *FFMS_GetAudioProperties(A);
 
 	VI.nchannels = AP.Channels;
 	VI.num_audio_samples = AP.NumSamples;

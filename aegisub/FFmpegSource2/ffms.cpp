@@ -112,11 +112,11 @@ FFMS_API(void) FFMS_DestroyAudioSource(FFAudio *A) {
 	delete A;
 }
 
-FFMS_API(const TVideoProperties *) FFMS_GetTVideoProperties(FFVideo *V) {
+FFMS_API(const TVideoProperties *) FFMS_GetVideoProperties(FFVideo *V) {
 	return &V->GetTVideoProperties();
 }
 
-FFMS_API(const TAudioProperties *) FFMS_GetTAudioProperties(FFAudio *A) {
+FFMS_API(const TAudioProperties *) FFMS_GetAudioProperties(FFAudio *A) {
 	return &A->GetTAudioProperties();
 }
 
@@ -146,9 +146,9 @@ FFMS_API(void) FFMS_DestroyFFIndex(FFIndex *Index) {
 
 FFMS_API(int) FFMS_GetFirstTrackOfType(FFIndex *Index, int TrackType, char *ErrorMsg, unsigned MsgSize) {
 	for (int i = 0; i < static_cast<int>(Index->size()); i++)
-		if ((*Index)[i].TT == TrackType)
+		if ((*Index)[i].TT == TrackType && (*Index)[i].size() > 0)
 			return i;
-	_snprintf(ErrorMsg, MsgSize, "No suitable track found");
+	_snprintf(ErrorMsg, MsgSize, "No suitable, indexed track found");
 	return -1;
 }
 
@@ -164,7 +164,7 @@ FFMS_API(int) FFMS_GetNumFrames(FFTrack *T) {
 	return T->size();
 }
 
-FFMS_API(const TFrameInfo *) FFMS_GetTFrameInfo(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(const TFrameInfo *) FFMS_GetFrameInfo(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
 	if (Frame < 0 || Frame >= static_cast<int>(T->size())) {
 		_snprintf(ErrorMsg, MsgSize, "Invalid frame specified");
 		return NULL;
@@ -173,7 +173,7 @@ FFMS_API(const TFrameInfo *) FFMS_GetTFrameInfo(FFTrack *T, int Frame, char *Err
 	}	
 }
 
-FFMS_API(FFTrack *) FFMS_GetTITrackIndex(FFIndex *Index, int Track, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(FFTrack *) FFMS_GetTrackFromIndex(FFIndex *Index, int Track, char *ErrorMsg, unsigned MsgSize) {
 	if (Track < 0 || Track >= static_cast<int>(Index->size())) {
 		_snprintf(ErrorMsg, MsgSize, "Invalid track specified");
 		return NULL;
@@ -182,8 +182,12 @@ FFMS_API(FFTrack *) FFMS_GetTITrackIndex(FFIndex *Index, int Track, char *ErrorM
 	}	
 }
 
-FFMS_API(FFTrack *) FFMS_GetVSTrackIndex(FFVideo *V) {
+FFMS_API(FFTrack *) FFMS_GetTrackFromVideo(FFVideo *V) {
 	return V->GetFFTrack();
+}
+
+FFMS_API(FFTrack *) FFMS_GetTrackFromAudio(FFAudio *A) {
+	return A->GetFFTrack();
 }
 
 FFMS_API(int) FFMS_FindClosestKeyFrame(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
@@ -212,14 +216,9 @@ FFMS_API(FFIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsign
 }
 
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
-	return WriteIndex(IndexFile, Index, ErrorMsg, MsgSize);
+	return Index->WriteIndex(IndexFile, ErrorMsg, MsgSize);
 }
 
 FFMS_API(int) FFMS_GetPixFmt(const char *Name) {
 	return avcodec_get_pix_fmt(Name);
-}
-
-FFMS_API(int) FFMS_DefaultAudioName(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, unsigned FNSize) {
-
-	return 0;
 }

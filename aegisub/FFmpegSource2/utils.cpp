@@ -145,6 +145,7 @@ void FillAP(TAudioProperties &AP, AVCodecContext *CTX, FFTrack &Frames) {
 	AP.SampleRate = CTX->sample_rate;
 	AP.NumSamples = (Frames.back()).SampleStart;
 	AP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	AP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 }
 
 #ifdef HAALISOURCE
@@ -204,7 +205,7 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate) {
 			case MAKEFOURCC('D', 'I', 'V', 'X'):
 			case MAKEFOURCC('D', 'X', '5', '0'):
 			case MAKEFOURCC('M', 'P', '4', 'V'):
-			case MAKEFOURCC('m', 'p', '4', 'v'): // This one may be my fault
+			case MAKEFOURCC('m', 'p', '4', 'v'):
 			case MAKEFOURCC('3', 'I', 'V', 'X'):
 			case MAKEFOURCC('W', 'V', '1', 'F'):
 			case MAKEFOURCC('F', 'M', 'P', '4'):
@@ -268,7 +269,7 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate) {
 			case MAKEFOURCC('M', 'J', 'P', 'G'):
 			case MAKEFOURCC('L', 'J', 'P', 'G'):
 			case MAKEFOURCC('M', 'J', 'L', 'S'):
-			case MAKEFOURCC('J', 'P', 'E', 'G'): // questionable fourcc?
+			case MAKEFOURCC('J', 'P', 'E', 'G'):
 			case MAKEFOURCC('A', 'V', 'R', 'N'):
 			case MAKEFOURCC('M', 'J', 'P', 'A'):
 				return CODEC_ID_MJPEG;
@@ -312,10 +313,8 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate) {
 				return CODEC_ID_ZLIB;
 			case MAKEFOURCC('F', 'L', 'V', '1'):
 				return CODEC_ID_FLV1;
-/*
 			case MAKEFOURCC('P', 'N', 'G', '1'):
-				return CODEC_ID_COREPNG;
-*/
+				return CODEC_ID_PNG;
 			case MAKEFOURCC('M', 'P', 'N', 'G'):
 				return CODEC_ID_PNG;
 /*
@@ -395,7 +394,7 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate) {
 	else if (!strcmp(Codec, "V_THEORA"))
 		return CODEC_ID_THEORA;
 	else if (!strcmp(Codec, "V_UNCOMPRESSED"))
-		return CODEC_ID_NONE; // bleh
+		return CODEC_ID_NONE; // FIXME: bleh
 	else if (!strcmp(Codec, "V_QUICKTIME"))
 		return CODEC_ID_SVQ3; // no idea if this is right
 	else if (!strcmp(Codec, "V_CIPC"))
@@ -449,7 +448,7 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate) {
 */
 		return CODEC_ID_NONE;
 	} else if (!strcmp(Codec, "A_PCM/FLOAT/IEEE"))
-		return CODEC_ID_PCM_F32LE; // only a most likely guess, may do bad things
+		return CODEC_ID_PCM_F32LE; // FIXME: only a most likely guess, may do bad things
 	else if (!strcmp(Codec, "A_FLAC"))
 		return CODEC_ID_FLAC;
 	else if (!strcmp(Codec, "A_MPC"))
@@ -467,7 +466,7 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate) {
 	else if (!strcmp(Codec, "A_REAL/COOK"))
 		return CODEC_ID_COOK;
 	else if (!strcmp(Codec, "A_REAL/SIPR"))
-		return CODEC_ID_NONE; // no sipr codec id?
+		return CODEC_ID_SIPR;
 	else if (!strcmp(Codec, "A_REAL/ATRC"))
 		return CODEC_ID_ATRAC3;
 	else if (!strncmp(Codec, "A_AAC", 5))
