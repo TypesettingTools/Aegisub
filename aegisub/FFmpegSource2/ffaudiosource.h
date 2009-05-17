@@ -80,7 +80,7 @@ protected:
 public:
 	FFAudio();
 	~FFAudio();
-
+	FFTrack *GetFFTrack() { return &Frames; }
 	const TAudioProperties& GetTAudioProperties() { return AP; }
 	virtual int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) = 0;
 };

@@ -25,7 +25,7 @@
 #include "utils.h"
 #include "ffms.h"
 
-#define INDEXVERSION 20
+#define INDEXVERSION 21
 #define INDEXID 0x53920873
 
 struct IndexHeader {
@@ -33,9 +33,15 @@ struct IndexHeader {
 	uint32_t Version;
 	uint32_t Tracks;
 	uint32_t Decoder;
+	uint32_t LAVUVersion;
+	uint32_t LAVFVersion;
+	uint32_t LAVCVersion;
+	uint32_t LSWSVersion;
+	uint32_t LPPVersion;
 };
 
 struct FFTrack : public std::vector<TFrameInfo> {
+public:
 	int TT;
 	TTrackTimeBase TB;
 
@@ -49,11 +55,12 @@ struct FFTrack : public std::vector<TFrameInfo> {
 };
 
 struct FFIndex : public std::vector<FFTrack> {
+public:
 	int Decoder;
+	int WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
 };
 
 FFIndex *MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize);
 FFIndex *ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
-int WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
 
 #endif
