@@ -223,6 +223,15 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 }
 
 
+//////////////
+// Destructor
+SubsEditBox::~SubsEditBox() {
+	ActorBox->PopEventHandler(true);
+	Effect->PopEventHandler(true);
+	TextEdit->PopEventHandler(true);
+}
+
+
 /////////////////////////////////
 // Set split or single line mode
 void SubsEditBox::SetSplitLineMode(wxSize newSize) {

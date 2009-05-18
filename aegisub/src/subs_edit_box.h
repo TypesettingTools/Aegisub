@@ -149,6 +149,7 @@ public:
 	SubsTextEditCtrl *TextEdit;
 
 	SubsEditBox(wxWindow *parent,SubtitlesGrid *gridp);
+	~SubsEditBox();
 
 	void SetOverride (wxString tag,wxString preValue=_T(""),int pos=-1,bool getFocus=true);
 	void SetStyleFlag (wxString tag,wxString preValue=_T(""),int pos=-1);
