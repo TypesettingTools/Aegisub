@@ -45,8 +45,8 @@
 
 ////////////////
 // Get instance
-StandardPaths *StandardPaths::GetInstance() {
-	if (!instance) instance = new StandardPaths();
+StandardPaths &StandardPaths::GetInstance() {
+	static StandardPaths instance;
 	return instance;
 }
 
@@ -130,8 +130,3 @@ wxString StandardPaths::DoEncodePath(wxString path) {
 void StandardPaths::DoSetPathValue(wxString path,wxString value) {
 	paths[path] = value;
 }
-
-
-///////////////////
-// Static instance
-StandardPaths *StandardPaths::instance = NULL;

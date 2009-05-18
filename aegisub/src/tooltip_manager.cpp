@@ -84,9 +84,8 @@ void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxS
 
 ///////////////////
 // Static instance
-ToolTipManager *ToolTipManager::instance = NULL;
-ToolTipManager *ToolTipManager::GetInstance() {
-	if (!instance) instance = new ToolTipManager;
+ToolTipManager &ToolTipManager::GetInstance() {
+	static ToolTipManager instance;
 	return instance;
 }
 

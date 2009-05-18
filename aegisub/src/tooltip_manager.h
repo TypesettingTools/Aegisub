@@ -63,8 +63,11 @@ private:
 // Tooltip manager singleton
 class ToolTipManager {
 private:
-	static ToolTipManager *instance;
-	static ToolTipManager *GetInstance();
+	ToolTipManager() {};
+	ToolTipManager(ToolTipManager const&);
+	ToolTipManager& operator=(ToolTipManager const&);
+
+	static ToolTipManager &GetInstance();
 
 	std::list<ToolTipBinding> tips;
 
@@ -72,8 +75,8 @@ private:
 	void AddTips(wxWindow *window,wxString tooltip,wxArrayString hotkeys);
 
 public:
-	static void Update() { GetInstance()->DoUpdate(); }
-	static void Bind(wxWindow *window,wxString tooltip,wxArrayString hotkeys) { GetInstance()->AddTips(window,tooltip,hotkeys); }
+	static void Update() { GetInstance().DoUpdate(); }
+	static void Bind(wxWindow *window,wxString tooltip,wxArrayString hotkeys) { GetInstance().AddTips(window,tooltip,hotkeys); }
 	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey=_T(""));
 	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxString hotkey2);
 };
