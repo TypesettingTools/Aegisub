@@ -378,7 +378,7 @@ wxThread::ExitCode FontsCollectorThread::Entry() {
 	collector->Update();
 
 	// Return
-	if (IsDetached()) Delete();
+	if (IsDetached() && TestDestroy()) Delete();
 	return 0;
 }
 
