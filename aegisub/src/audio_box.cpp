@@ -228,6 +228,10 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 //////////////
 // Destructor
 AudioBox::~AudioBox() {
+	audioScroll->PopEventHandler(true);
+	HorizontalZoom->PopEventHandler(true);
+	VerticalZoom->PopEventHandler(true);
+	VolumeBar->PopEventHandler(true);
 }
 
 
