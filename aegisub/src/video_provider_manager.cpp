@@ -114,6 +114,13 @@ void VideoProviderFactoryManager::RegisterProviders() {
 }
 
 
+///////////////////////
+// Clear all providers
+void VideoProviderFactoryManager::ClearProviders() {
+	ClearFactories();
+}
+
+
 //////////
 // Static
 template <class VideoProviderFactory> std::map<wxString,VideoProviderFactory*>* FactoryManager<VideoProviderFactory>::factories=NULL;

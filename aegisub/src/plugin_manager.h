@@ -36,12 +36,38 @@
 
 #pragma once
 
+#ifdef WITH_AUTO4_LUA
+#include "auto4_lua_factory.h"
+#endif
+#ifdef WITH_PERL
+#include "auto4_perl_factory.h"
+#endif
+#ifdef WITH_AUTO3
+#include "auto4_auto3_factory.h"
+#endif
+#ifdef WITH_RUBY
+#include "auto4_ruby_factory.h"
+#endif
+
 
 ////////////////////////
 // Plugin manager class
 class PluginManager {
 private:
 	bool init;
+
+#ifdef WITH_AUTO4_LUA
+	Automation4::LuaScriptFactory *lua;
+#endif
+#ifdef WITH_PERL
+	Automation4::PerlScriptFactory *perl;
+#endif
+#ifdef WITH_AUTO3
+	Automation4::Auto3ScriptFactory *auto3;
+#endif
+#ifdef WITH_RUBY
+	Automation4::RubyScriptFactory *ruby;
+#endif
 
 public:
 	PluginManager();

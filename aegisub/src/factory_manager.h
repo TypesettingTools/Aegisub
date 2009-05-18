@@ -52,6 +52,17 @@ protected:
 	// Static map of all factories
 	static std::map<wxString,T*> *factories;
 
+	static void ClearFactories() { 
+		if (factories && !factories->empty()) {
+			typename std::map<wxString,T*>::iterator iter;
+			for (iter = factories->begin(); iter != factories->end(); iter++) {
+				delete iter->second;
+			}
+			factories->clear(); 
+		}
+		delete factories;
+	}
+
 	// Register one factory type (with possible subtypes)
 	static void RegisterFactory(T* factory,wxString name, wxArrayString subTypes=wxArrayString()) {
 		// Create factories if it doesn't exist
@@ -91,7 +102,9 @@ protected:
 
 public:
 	// Virtual destructor
-	virtual ~FactoryManager() {}
+	virtual ~FactoryManager() {
+		ClearFactories();
+	};
 
 	// Get list of all factories, with favourite as first
 	static wxArrayString GetFactoryList(wxString favourite=_T("")) {

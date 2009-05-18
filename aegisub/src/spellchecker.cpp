@@ -80,6 +80,13 @@ void SpellCheckerFactoryManager::RegisterProviders() {
 }
 
 
+///////////////////////
+// Clear all providers
+void SpellCheckerFactoryManager::ClearProviders() {
+	ClearFactories();
+}
+
+
 //////////
 // Static
 template <class SpellCheckerFactory> std::map<wxString,SpellCheckerFactory*>* FactoryManager<SpellCheckerFactory>::factories=NULL;

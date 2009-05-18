@@ -59,6 +59,7 @@ class AudioPlayerFactoryManager : public FactoryManager<AudioPlayerFactory> {
 public:
 	static AudioPlayer *GetAudioPlayer();
 	static void RegisterProviders();
+	static void ClearProviders();
 };
 
 

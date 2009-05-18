@@ -51,4 +51,5 @@ class VideoProviderFactoryManager : public FactoryManager<VideoProviderFactory> 
 public:
 	static void RegisterProviders();
 	static VideoProvider *GetProvider(wxString video,double fps=0.0);
+	static void ClearProviders();
 };

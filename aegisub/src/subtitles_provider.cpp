@@ -107,6 +107,13 @@ void SubtitlesProviderFactoryManager::RegisterProviders() {
 }
 
 
+///////////////////
+// Clear providers
+void SubtitlesProviderFactoryManager::ClearProviders() {
+	ClearFactories();
+}
+
+
 //////////
 // Static
 template <class SubtitlesProviderFactory> std::map<wxString,SubtitlesProviderFactory*>* FactoryManager<SubtitlesProviderFactory>::factories=NULL;

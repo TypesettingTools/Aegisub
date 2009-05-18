@@ -51,6 +51,7 @@ class SubtitlesProviderFactoryManager : public FactoryManager<SubtitlesProviderF
 public:
 	static SubtitlesProvider *GetProvider();
 	static void RegisterProviders();
+	static void ClearProviders();
 	static bool ProviderAvailable();
 };
 

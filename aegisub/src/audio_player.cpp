@@ -181,6 +181,13 @@ void AudioPlayerFactoryManager::RegisterProviders() {
 }
 
 
+///////////////////////
+// Clear all factories
+void AudioPlayerFactoryManager::ClearProviders() {
+	ClearFactories();
+}
+
+
 //////////
 // Static
 template <class AudioPlayerFactory> std::map<wxString,AudioPlayerFactory*>* FactoryManager<AudioPlayerFactory>::factories=NULL;
