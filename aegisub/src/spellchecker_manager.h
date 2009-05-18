@@ -50,4 +50,5 @@ class SpellCheckerFactoryManager : public FactoryManager<SpellCheckerFactory> {
 public:
 	static SpellChecker *GetSpellChecker();
 	static void RegisterProviders();
+	static void ClearProviders();
 };

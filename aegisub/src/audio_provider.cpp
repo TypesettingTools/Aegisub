@@ -288,6 +288,13 @@ void AudioProviderFactoryManager::RegisterProviders() {
 }
 
 
+///////////////////////
+// Clear all providers
+void AudioProviderFactoryManager::ClearProviders() {
+	ClearFactories();
+}
+
+
 //////////
 // Static
 template <class AudioProviderFactory> std::map<wxString,AudioProviderFactory*>* FactoryManager<AudioProviderFactory>::factories=NULL;

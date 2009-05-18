@@ -44,30 +44,66 @@
 #include "audio_player_manager.h"
 #include "subtitles_provider_manager.h"
 #include "spellchecker_manager.h"
-#ifdef WITH_AUTO4_LUA
-#include "auto4_lua_factory.h"
-#endif
-#ifdef WITH_PERL
-#include "auto4_perl_factory.h"
-#endif
-#ifdef WITH_AUTO3
-#include "auto4_auto3_factory.h"
-#endif
-#ifdef WITH_RUBY
-#include "auto4_ruby_factory.h"
-#endif
 
 
 ///////////////
 // Constructor
 PluginManager::PluginManager() {
 	init = false;
+
+#ifdef WITH_AUTO4_LUA
+	lua = NULL;
+#endif
+#ifdef WITH_PERL
+	perl = NULL;
+#endif
+#ifdef WITH_AUTO3
+	auto3 = NULL;
+#endif
+#ifdef WITH_RUBY
+	ruby = NULL;
+#endif
+	
 }
 
 
 //////////////
 // Destructor
 PluginManager::~PluginManager() {
+	VideoProviderFactoryManager::ClearProviders();
+	AudioProviderFactoryManager::ClearProviders();
+	AudioPlayerFactoryManager::ClearProviders();
+	SubtitlesProviderFactoryManager::ClearProviders();
+	SpellCheckerFactoryManager::ClearProviders();
+
+#ifdef WITH_AUTO4_LUA
+	if (lua) {
+		lua->Unregister(lua);
+		delete lua;
+		lua = NULL;
+	}
+#endif
+#ifdef WITH_PERL
+	if (perl) {
+		perl->Unregister(perl);
+		delete perl;
+		perl = NULL;
+	}
+#endif
+#ifdef WITH_AUTO3
+	if (auto3) {
+		auto3->Unregister(auto3);
+		delete auto3;
+		auto3 = NULL;
+	}
+#endif
+#ifdef WITH_RUBY
+	if (ruby) {
+		ruby->Unregister(ruby);
+		delete ruby;
+		ruby = NULL;
+	}
+#endif
 }
 
 
@@ -84,18 +120,18 @@ void PluginManager::RegisterBuiltInPlugins() {
 
 		// Automation languages
 #ifdef WITH_AUTO4_LUA
-		Automation4::LuaScriptFactory *lua = new Automation4::LuaScriptFactory();
+		lua = new Automation4::LuaScriptFactory();
 		lua->RegisterFactory();
 #endif
 #ifdef WITH_PERL
-		Automation4::PerlScriptFactory *perl = new Automation4::PerlScriptFactory();
+		perl = new Automation4::PerlScriptFactory();
 		perl->RegisterFactory();
 #endif
 #ifdef WITH_AUTO3
-		new Automation4::Auto3ScriptFactory();
+		auto3 = new Automation4::Auto3ScriptFactory();
 #endif
 #ifdef WITH_RUBY
-		new Automation4::RubyScriptFactory();
+		ruby = new Automation4::RubyScriptFactory();
 #endif
 	}
 
