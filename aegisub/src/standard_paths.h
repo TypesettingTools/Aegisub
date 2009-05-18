@@ -47,19 +47,20 @@
 // Standard path conversion class
 class StandardPaths {
 private:
-	static StandardPaths *instance;
-	static StandardPaths *GetInstance();
+	static StandardPaths &GetInstance();
 
 	std::map<wxString,wxString> paths;
 
 	StandardPaths();
+	StandardPaths(StandardPaths const&);
+	StandardPaths& operator=(StandardPaths const&);
 
 	wxString DoDecodePath(wxString path);
 	wxString DoEncodePath(wxString path);
 	void DoSetPathValue(wxString path,wxString value);
 
 public:
-	static wxString DecodePath(wxString path) { return GetInstance()->DoDecodePath(path); }
-	static wxString EncodePath(wxString path) { return GetInstance()->DoEncodePath(path); }
-	static void SetPathValue(wxString path,wxString value) { GetInstance()->DoSetPathValue(path,value); }
+	static wxString DecodePath(wxString path) { return GetInstance().DoDecodePath(path); }
+	static wxString EncodePath(wxString path) { return GetInstance().DoEncodePath(path); }
+	static void SetPathValue(wxString path,wxString value) { GetInstance().DoSetPathValue(path,value); }
 };

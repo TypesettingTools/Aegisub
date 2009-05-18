@@ -63,6 +63,8 @@ public:
 
 	void GetMetrics();
 	void Draw(int x,int y);
+
+	~OpenGLTextGlyph();
 };
 
 typedef std::map<int,OpenGLTextGlyph> glyphMap;
@@ -99,19 +101,19 @@ private:
 	wxString fontFace;
 	wxFont font;
 
-	static OpenGLText* instance;
-
 	glyphMap glyphs;
 	std::vector <OpenGLTextTexture*> textures;
 
 	OpenGLText();
 	~OpenGLText();
+	OpenGLText(OpenGLText const&);
+	OpenGLText& operator=(OpenGLText const&);
 
 	OpenGLTextGlyph GetGlyph(int i);
 	OpenGLTextGlyph CreateGlyph(int i);
 	void Reset();
 
-	static OpenGLText* GetInstance();
+	static OpenGLText& GetInstance();
 	void DoSetFont(wxString face,int size,bool bold,bool italics);
 	void DoSetColour(wxColour col,float alpha);
 	void DoPrint(wxString text,int x,int y);
@@ -119,9 +121,9 @@ private:
 	void DoGetExtent(wxString text,int &w,int &h);
 
 public:
-	static wxFont GetFont() { return GetInstance()->font; }
-	static void SetFont(wxString face=_T("Verdana"),int size=10,bool bold=true,bool italics=false) { GetInstance()->DoSetFont(face,size,bold,italics); }
-	static void SetColour(wxColour col,float alpha=1.0f) { GetInstance()->DoSetColour(col,alpha); }
-	static void Print(wxString text,int x,int y) { GetInstance()->DoPrint(text,x,y); }
-	static void GetExtent(wxString text,int &w,int &h) { GetInstance()->DoGetExtent(text,w,h); }
+	static wxFont GetFont() { return GetInstance().font; }
+	static void SetFont(wxString face=_T("Verdana"),int size=10,bool bold=true,bool italics=false) { GetInstance().DoSetFont(face,size,bold,italics); }
+	static void SetColour(wxColour col,float alpha=1.0f) { GetInstance().DoSetColour(col,alpha); }
+	static void Print(wxString text,int x,int y) { GetInstance().DoPrint(text,x,y); }
+	static void GetExtent(wxString text,int &w,int &h) { GetInstance().DoGetExtent(text,w,h); }
 };

@@ -44,11 +44,6 @@
 #include "utils.h"
 
 
-///////////////////
-// Static instance
-OpenGLText* OpenGLText::instance;
-
-
 ///////////////
 // Constructor
 OpenGLText::OpenGLText() {
@@ -74,9 +69,8 @@ void OpenGLText::Reset() {
 
 ////////////////
 // Get instance
-OpenGLText* OpenGLText::GetInstance() {
-	if (!instance) instance = new OpenGLText();
-	wxASSERT(instance);
+OpenGLText& OpenGLText::GetInstance() {
+	static OpenGLText instance;
 	return instance;
 }
 
@@ -389,6 +383,14 @@ void OpenGLTextGlyph::Draw(int x,int y) {
 
 	// Restore matrix
 	glPopMatrix();
+}
+
+
+////////////////////
+// Glyph Destructor
+OpenGLTextGlyph::~OpenGLTextGlyph() {
+	if (tempBmp) delete tempBmp;
+	tempBmp = NULL;
 }
 
 
