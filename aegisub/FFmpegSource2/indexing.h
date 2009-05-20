@@ -84,6 +84,8 @@ public:
 	const char *GetTrackCodec(int Track) { return mkv_GetTrackInfo(MF, Track)->CodecID; }
 };
 
+#ifdef HAALISOURCE
+
 class FFHaaliIndexer : public FFIndexer {
 private:
 	int SourceMode;
@@ -101,5 +103,7 @@ public:
 	FFMS_TrackType GetTrackType(int Track) { return TrackType[Track]; }
 	const char *GetTrackCodec(int Track) { if (Codec[Track]) return Codec[Track]->name; else return "Unsupported codec/Unknown codec name"; }
 };
+
+#endif // HAALISOURCE
 
 #endif
