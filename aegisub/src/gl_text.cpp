@@ -244,7 +244,7 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 // Texture constructor
 OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 	// Properties
-	x = y = 0;
+	x = y = nextY = 0;
 	width = SmallestPowerOf2(w);
 	height = SmallestPowerOf2(h);
 	tex = 0;
