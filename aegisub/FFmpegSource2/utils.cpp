@@ -177,7 +177,7 @@ int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) 
 
 	if (!Index.is_open()) {
 		_snprintf(ErrorMsg, MsgSize, "Failed to open '%s' for reading", IndexFile);
-		return NULL;
+		return 1;
 	}
 	
 	// Read the index file header
@@ -185,19 +185,19 @@ int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) 
 	Index.read(reinterpret_cast<char *>(&IH), sizeof(IH));
 	if (IH.Id != INDEXID) {
 		_snprintf(ErrorMsg, MsgSize, "'%s' is not a valid index file", IndexFile);
-		return NULL;
+		return 2;
 	}
 
 	if (IH.Version != INDEXVERSION) {
 		_snprintf(ErrorMsg, MsgSize, "'%s' is not the expected index version", IndexFile);
-		return NULL;
+		return 3;
 	}
 
 	if (IH.LAVUVersion != LIBAVUTIL_VERSION_INT || IH.LAVFVersion != LIBAVFORMAT_VERSION_INT ||
 		IH.LAVCVersion != LIBAVCODEC_VERSION_INT || IH.LSWSVersion != LIBSWSCALE_VERSION_INT ||
 		IH.LPPVersion != LIBPOSTPROC_VERSION_INT) {
 		_snprintf(ErrorMsg, MsgSize, "A different FFmpeg build was used to create this index", IndexFile);
-		return NULL;
+		return 4;
 	}
 
 	try {
@@ -224,8 +224,10 @@ int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) 
 
 	} catch (...) {
 		_snprintf(ErrorMsg, MsgSize, "Unknown error while reading index information in '%s'", IndexFile);	
-		return 1;
+		return 5;
 	}
+
+	return 0;
 }
 
 int GetCPUFlags() {
