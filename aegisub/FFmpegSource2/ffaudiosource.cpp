@@ -105,23 +105,13 @@ FFAudio::~FFAudio() {
 	delete[] DecodingBuffer;
 };
 
-size_t FFAudio::FindClosestAudioKeyFrame(int64_t Sample) {
-	for (size_t i = 0; i < Frames.size(); i++) {
-		if (Frames[i].SampleStart == Sample && Frames[i].KeyFrame)
-			return i;
-		else if (Frames[i].SampleStart > Sample && Frames[i].KeyFrame)
-			return i  - 1;
-	}
-	return Frames.size() - 1;
-}
-
-void FFAudioSource::Free(bool CloseCodec) {
+void FFLAVFAudio::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
 	av_close_input_file(FormatContext);
 }
 
-FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
+FFLAVFAudio::FFLAVFAudio(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
 	FormatContext = NULL;
 	AVCodec *Codec = NULL;
 	AudioTrack = Track;
@@ -176,10 +166,10 @@ FFAudioSource::FFAudioSource(const char *SourceFile, int Track, FFIndex *Index, 
 		throw ErrorMsg;
 	}
 
-	AudioCache.Initialize((AP.Channels *AP.BitsPerSample) / 8, 50);
+	AudioCache.Initialize((AP.Channels * AP.BitsPerSample) / 8, 50);
 }
 
-int FFAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize) {
+int FFLAVFAudio::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize) {
 	const size_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	int Ret = -1;
 	*Count = 0;
@@ -221,7 +211,7 @@ Done:
 	return Ret;
 }
 
-int FFAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
+int FFLAVFAudio::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
 	const int64_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	memset(Buf, 0, SizeConst * Count);
 
@@ -239,7 +229,7 @@ int FFAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *Error
 //	if (!(CurrentSample >= Start && CurrentSample <= CacheEnd)) {
 	if (CurrentSample != CacheEnd) {
 		PreDecBlocks = 15;
-		CurrentAudioBlock = FFMAX((int64_t)FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks - 20, (int64_t)0);
+		CurrentAudioBlock = FFMAX((int64_t)Frames.FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks - 20, (int64_t)0);
 		av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD);
 		avcodec_flush_buffers(CodecContext);
 
@@ -269,7 +259,7 @@ int FFAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *Error
 			av_free_packet(&Packet);
 		}
 	} else {
-		CurrentAudioBlock = FindClosestAudioKeyFrame(CurrentSample);
+		CurrentAudioBlock = Frames.FindClosestAudioKeyFrame(CurrentSample);
 	}
 
 	int64_t DecodeCount;
@@ -297,11 +287,11 @@ int FFAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *Error
 	return 0;
 }
 
-FFAudioSource::~FFAudioSource() {
+FFLAVFAudio::~FFLAVFAudio() {
 	Free(true);
 }
 
-void MatroskaAudioSource::Free(bool CloseCodec) {
+void FFMatroskaAudio::Free(bool CloseCodec) {
 	if (CS)
 		cs_Destroy(CS);
 	if (MC.ST.fp) {
@@ -313,7 +303,7 @@ void MatroskaAudioSource::Free(bool CloseCodec) {
 	av_free(CodecContext);
 }
 	
-MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
+FFMatroskaAudio::FFMatroskaAudio(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
 	CodecContext = NULL;
 	AVCodec *Codec = NULL;
 	TrackInfo *TI = NULL;
@@ -386,14 +376,14 @@ MatroskaAudioSource::MatroskaAudioSource(const char *SourceFile, int Track, FFIn
 		throw ErrorMsg;
 	}
 
-	AudioCache.Initialize((AP.Channels *AP.BitsPerSample) / 8, 50);
+	AudioCache.Initialize((AP.Channels * AP.BitsPerSample) / 8, 50);
 }
 
-MatroskaAudioSource::~MatroskaAudioSource() {
+FFMatroskaAudio::~FFMatroskaAudio() {
 	Free(true);
 }
 
-int MatroskaAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
+int FFMatroskaAudio::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) {
 	const int64_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	memset(Buf, 0, SizeConst * Count);
 
@@ -411,10 +401,10 @@ int MatroskaAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char 
 //	if (!(CurrentSample >= Start && CurrentSample <= CacheEnd)) {
 	if (CurrentSample != CacheEnd) {
 		PreDecBlocks = 15;
-		CurrentAudioBlock = FFMAX((int64_t)FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks, (int64_t)0);
+		CurrentAudioBlock = FFMAX((int64_t)Frames.FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks, (int64_t)0);
 		avcodec_flush_buffers(CodecContext);
 	} else {
-		CurrentAudioBlock = FindClosestAudioKeyFrame(CurrentSample);
+		CurrentAudioBlock = Frames.FindClosestAudioKeyFrame(CurrentSample);
 	}
 
 	int64_t DecodeCount;
@@ -442,7 +432,7 @@ int MatroskaAudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count, char 
 	return 0;
 }
 
-int MatroskaAudioSource::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint64_t FilePos, unsigned int FrameSize, char *ErrorMsg, unsigned MsgSize) {
+int FFMatroskaAudio::DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint64_t FilePos, unsigned int FrameSize, char *ErrorMsg, unsigned MsgSize) {
 	const size_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	int Ret = -1;
 	*Count = 0;

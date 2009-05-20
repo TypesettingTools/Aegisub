@@ -73,7 +73,7 @@ public:
 	void ResetOutputFormat();
 };
 
-class FFVideoSource : public FFVideo {
+class FFLAVFVideo : public FFVideo {
 private:
 	AVFormatContext *FormatContext;
 	int SeekMode;
@@ -81,12 +81,12 @@ private:
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *Frame, int64_t *DTS, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
-	~FFVideoSource();
+	FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
+	~FFLAVFVideo();
 	TAVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
-class MatroskaVideoSource : public FFVideo {
+class FFMatroskaVideo : public FFVideo {
 private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
@@ -96,22 +96,22 @@ private:
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	MatroskaVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
-	~MatroskaVideoSource();
+	FFMatroskaVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
+	~FFMatroskaVideo();
     TAVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
 #ifdef HAALISOURCE
 
-class HaaliVideoSource : public FFVideo {
+class FFHaaliVideo : public FFVideo {
 private:
 	CComPtr<IMMContainer> pMMC;
 	uint8_t * CodecPrivate;
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	HaaliVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
-	~HaaliVideoSource();
+	FFHaaliVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
+	~FFHaaliVideo();
     TAVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
