@@ -171,7 +171,7 @@ void FFVideo::ResetOutputFormat() {
 	VP.VPixelFormat = CodecContext->pix_fmt;
 }
 
-void FFVideoSource::Free(bool CloseCodec) {
+void FFLAVFVideo::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
 	av_close_input_file(FormatContext);
@@ -179,7 +179,7 @@ void FFVideoSource::Free(bool CloseCodec) {
 	//av_free(FormatContext);
 }
 
-FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FFIndex *Index,
+FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index,
 	const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
 
 	FormatContext = NULL;
@@ -275,11 +275,11 @@ FFVideoSource::FFVideoSource(const char *SourceFile, int Track, FFIndex *Index,
 	VP.SARDen = CodecContext->sample_aspect_ratio.den;
 }
 
-FFVideoSource::~FFVideoSource() {
+FFLAVFVideo::~FFLAVFVideo() {
 	Free(true);
 }
 
-int FFVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *ErrorMsg, unsigned MsgSize) {
+int FFLAVFVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *ErrorMsg, unsigned MsgSize) {
 	AVPacket Packet;
 	InitNullPacket(&Packet);
 	int FrameFinished = 0;
@@ -315,7 +315,7 @@ Done:
 	return 0;
 }
 
-TAVFrameLite *FFVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
+TAVFrameLite *FFLAVFVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	// PPFrame always holds frame LastFrameNum even if no PP is applied
 	if (LastFrameNum == n)
 		return OutputFrame(DecodeFrame);
@@ -325,7 +325,7 @@ TAVFrameLite *FFVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 
 	int ClosestKF = 0;
 	if (SeekMode >= 0) {
-		ClosestKF = Frames.FindClosestKeyFrame(n);
+		ClosestKF = Frames.FindClosestVideoKeyFrame(n);
 
 		if (SeekMode == 0) {
 			if (n < CurrentFrame) {
@@ -385,7 +385,7 @@ ReSeek:
 	return OutputFrame(DecodeFrame);
 }
 
-void MatroskaVideoSource::Free(bool CloseCodec) {
+void FFMatroskaVideo::Free(bool CloseCodec) {
 	if (CS)
 		cs_Destroy(CS);
 	if (MC.ST.fp) {
@@ -397,7 +397,7 @@ void MatroskaVideoSource::Free(bool CloseCodec) {
 	av_free(CodecContext);
 }
 
-MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
+FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	FFIndex *Index, const char *PP,
 	int Threads, char *ErrorMsg, unsigned MsgSize) {
 
@@ -506,11 +506,11 @@ MatroskaVideoSource::MatroskaVideoSource(const char *SourceFile, int Track,
 	VP.CropBottom = TI->AV.Video.CropB;
 }
 
-MatroskaVideoSource::~MatroskaVideoSource() {
+FFMatroskaVideo::~FFMatroskaVideo() {
 	Free(true);
 }
 
-int MatroskaVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
+int FFMatroskaVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
@@ -553,14 +553,14 @@ Done:
 	return 0;
 }
 
-TAVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
+TAVFrameLite *FFMatroskaVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	// PPFrame always holds frame LastFrameNum even if no PP is applied
 	if (LastFrameNum == n)
 		return OutputFrame(DecodeFrame);
 
 	bool HasSeeked = false;
 
-	if (n < CurrentFrame || Frames.FindClosestKeyFrame(n) > CurrentFrame) {
+	if (n < CurrentFrame || Frames.FindClosestVideoKeyFrame(n) > CurrentFrame) {
 		mkv_Seek(MF, Frames[n].DTS, MKVF_SEEK_TO_PREV_KEYFRAME_STRICT);
 		avcodec_flush_buffers(CodecContext);
 		HasSeeked = true;
@@ -589,14 +589,14 @@ TAVFrameLite *MatroskaVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgS
 
 #ifdef HAALISOURCE
 
-void HaaliVideoSource::Free(bool CloseCodec) {
+void FFHaaliVideo::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
 	av_free(CodecContext);
 	delete[] CodecPrivate;
 }
 
-HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
+FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 	FFIndex *Index, const char *PP,
 	int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize) {
 
@@ -723,14 +723,6 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 		throw ErrorMsg;
 	}
 
-	// Calculate the average framerate
-	if (Frames.size() >= 2) {
-		double DTSDiff = (double)(Frames.back().DTS - Frames.front().DTS);
-		// FIXME
-		VP.FPSDenominator = (unsigned int)((DTSDiff * 1000000) / (double)(VP.NumFrames - 1) + 0.5);
-		VP.FPSNumerator = 1000000; 
-	}
-
 	// Output the already decoded frame so it isn't wasted
 	OutputFrame(DecodeFrame);
 
@@ -745,11 +737,11 @@ HaaliVideoSource::HaaliVideoSource(const char *SourceFile, int Track,
 		VP.SARDen = pV.uiVal;
 }
 
-HaaliVideoSource::~HaaliVideoSource() {
+FFHaaliVideo::~FFHaaliVideo() {
 	Free(true);
 }
 
-int HaaliVideoSource::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
+int FFHaaliVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
@@ -798,7 +790,7 @@ Done:
 	return 0;
 }
 
-TAVFrameLite *HaaliVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
+TAVFrameLite *FFHaaliVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	// PPFrame always holds frame LastFrameNum even if no PP is applied
 	if (LastFrameNum == n)
 		return OutputFrame(DecodeFrame);
@@ -806,7 +798,7 @@ TAVFrameLite *HaaliVideoSource::GetFrame(int n, char *ErrorMsg, unsigned MsgSize
 	bool HasSeeked = false;
 	int SeekOffset = 0;
 
-	if (n < CurrentFrame || Frames.FindClosestKeyFrame(n) > CurrentFrame + 10) {
+	if (n < CurrentFrame || Frames.FindClosestVideoKeyFrame(n) > CurrentFrame + 10) {
 ReSeek:
 		pMMC->Seek(Frames[n + SeekOffset].DTS, MMSF_PREV_KF);
 		avcodec_flush_buffers(CodecContext);

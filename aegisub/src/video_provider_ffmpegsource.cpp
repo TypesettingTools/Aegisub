@@ -159,7 +159,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	if (TimeBase == NULL)
 		throw _T("FFmpegSource video provider: failed to get track time base");
 
-	const TFrameInfo *CurFrameData;
+	const FFFrameInfo *CurFrameData;
 
 	// build list of keyframes and timecodes
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {

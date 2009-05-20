@@ -31,30 +31,6 @@ extern "C" {
 #define _snprintf snprintf
 #endif
 
-TFrameInfo::TFrameInfo(int64_t DTS, bool KeyFrame) {
-	this->DTS = DTS;
-	this->SampleStart = 0;
-	this->FilePos = 0;
-	this->FrameSize = 0;
-	this->KeyFrame = KeyFrame;
-}
-
-TFrameInfo::TFrameInfo(int64_t DTS, int64_t SampleStart, bool KeyFrame) {
-	this->DTS = DTS;
-	this->SampleStart = SampleStart;
-	this->FilePos = 0;
-	this->FrameSize = 0;
-	this->KeyFrame = KeyFrame;
-}
-
-TFrameInfo::TFrameInfo(int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame) {
-	this->DTS = 0;
-	this->SampleStart = SampleStart;
-	this->FilePos = FilePos;
-	this->FrameSize = FrameSize;
-	this->KeyFrame = KeyFrame;
-}
-
 FFMS_API(void) FFMS_Init() {
 	static bool InitDone = false;
 	if (!InitDone) {
@@ -75,11 +51,11 @@ FFMS_API(void) FFMS_SetLogLevel(int Level) {
 FFMS_API(FFVideo *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
 	try {
 		switch (Index->Decoder) {
-			case 0: return new FFVideoSource(SourceFile, Track, Index, PP, Threads, SeekMode, ErrorMsg, MsgSize);
-			case 1: return new MatroskaVideoSource(SourceFile, Track, Index, PP, Threads, ErrorMsg, MsgSize);
+			case 0: return new FFLAVFVideo(SourceFile, Track, Index, PP, Threads, SeekMode, ErrorMsg, MsgSize);
+			case 1: return new FFMatroskaVideo(SourceFile, Track, Index, PP, Threads, ErrorMsg, MsgSize);
 #ifdef HAALISOURCE
-			case 2: return new HaaliVideoSource(SourceFile, Track, Index, PP, Threads, 0, ErrorMsg, MsgSize);
-			case 3: return new HaaliVideoSource(SourceFile, Track, Index, PP, Threads, 1, ErrorMsg, MsgSize);
+			case 2: return new FFHaaliVideo(SourceFile, Track, Index, PP, Threads, 0, ErrorMsg, MsgSize);
+			case 3: return new FFHaaliVideo(SourceFile, Track, Index, PP, Threads, 1, ErrorMsg, MsgSize);
 #endif
 			default: 
 				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
@@ -93,8 +69,8 @@ FFMS_API(FFVideo *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FF
 FFMS_API(FFAudio *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
 	try {
 		switch (Index->Decoder) {
-			case 0: return new FFAudioSource(SourceFile, Track, Index, ErrorMsg, MsgSize);
-			case 1: return new MatroskaAudioSource(SourceFile, Track, Index, ErrorMsg, MsgSize);
+			case 0: return new FFLAVFAudio(SourceFile, Track, Index, ErrorMsg, MsgSize);
+			case 1: return new FFMatroskaAudio(SourceFile, Track, Index, ErrorMsg, MsgSize);
 			default: 
 				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
 				return NULL;
@@ -146,6 +122,14 @@ FFMS_API(void) FFMS_DestroyFFIndex(FFIndex *Index) {
 
 FFMS_API(int) FFMS_GetFirstTrackOfType(FFIndex *Index, int TrackType, char *ErrorMsg, unsigned MsgSize) {
 	for (int i = 0; i < static_cast<int>(Index->size()); i++)
+		if ((*Index)[i].TT == TrackType)
+			return i;
+	_snprintf(ErrorMsg, MsgSize, "No suitable, indexed track found");
+	return -1;
+}
+
+FFMS_API(int) FFMS_GetFirstIndexedTrackOfType(FFIndex *Index, int TrackType, char *ErrorMsg, unsigned MsgSize) {
+	for (int i = 0; i < static_cast<int>(Index->size()); i++)
 		if ((*Index)[i].TT == TrackType && (*Index)[i].size() > 0)
 			return i;
 	_snprintf(ErrorMsg, MsgSize, "No suitable, indexed track found");
@@ -156,20 +140,28 @@ FFMS_API(int) FFMS_GetNumTracks(FFIndex *Index) {
 	return Index->size();
 }
 
-FFMS_API(int) FFMS_GetTrackType(FFTrack *T) {
+FFMS_API(int) FFMS_GetNumTracksI(FFIndexer *Indexer, int Track) {
+	return Indexer->GetNumberOfTracks();
+}
+
+FFMS_API(FFMS_TrackType) FFMS_GetTrackType(FFTrack *T) {
 	return T->TT;
+}
+
+FFMS_API(FFMS_TrackType) FFMS_GetTrackTypeI(FFIndexer *Indexer, int Track) {
+	return Indexer->GetTrackType(Track);
 }
 
 FFMS_API(int) FFMS_GetNumFrames(FFTrack *T) {
 	return T->size();
 }
 
-FFMS_API(const TFrameInfo *) FFMS_GetFrameInfo(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(const FFFrameInfo *) FFMS_GetFrameInfo(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
 	if (Frame < 0 || Frame >= static_cast<int>(T->size())) {
 		_snprintf(ErrorMsg, MsgSize, "Invalid frame specified");
 		return NULL;
 	} else {
-		return &(*T)[Frame];
+		return reinterpret_cast<FFFrameInfo *>(&(*T)[Frame]);
 	}	
 }
 
@@ -190,15 +182,6 @@ FFMS_API(FFTrack *) FFMS_GetTrackFromAudio(FFAudio *A) {
 	return A->GetFFTrack();
 }
 
-FFMS_API(int) FFMS_FindClosestKeyFrame(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
-	if (Frame < 0 || Frame >= static_cast<int>(T->size())) {
-		_snprintf(ErrorMsg, MsgSize, "Out of range frame specified");
-		return -1;
-	} else {
-		return T->FindClosestKeyFrame(Frame);
-	}
-}
-
 FFMS_API(const TTrackTimeBase *) FFMS_GetTimeBase(FFTrack *T) {
 	return &T->TB;
 }
@@ -207,12 +190,36 @@ FFMS_API(int) FFMS_WriteTimecodes(FFTrack *T, const char *TimecodeFile, char *Er
 	return T->WriteTimecodes(TimecodeFile, ErrorMsg, MsgSize);
 }
 
-FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IP, void *Private, char *ErrorMsg, unsigned MsgSize) {
-	return MakeIndex(SourceFile, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, IP, Private, ErrorMsg, MsgSize);
+FFMS_API(FFIndexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg, unsigned MsgSize) {
+	try {
+		return FFIndexer::CreateFFIndexer(SourceFile, ErrorMsg, MsgSize);
+	} catch (...) {
+		return NULL;
+	}
+}
+
+FFMS_API(FFIndex *) FFMS_DoIndexing(FFIndexer *Indexer, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IC, void *Private, char *ErrorMsg, unsigned MsgSize) {
+	Indexer->SetIndexMask(IndexMask);
+	Indexer->SetDumpMask(DumpMask);
+	Indexer->SetIgnoreDecodeErrors(IgnoreDecodeErrors);
+	Indexer->SetProgressCallback(IC, Private);
+	FFIndex *Index = Indexer->DoIndexing(AudioFile, ErrorMsg, MsgSize);
+	delete Indexer;
+	return Index;
+}
+
+FFMS_API(void) FFMS_CancelIndexing(FFIndexer *Indexer) {
+	delete Indexer;
 }
 
 FFMS_API(FFIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
-	return ReadIndex(IndexFile, ErrorMsg, MsgSize);
+	FFIndex *Index = new FFIndex();
+	if (Index->ReadIndex(IndexFile, ErrorMsg, MsgSize)) {
+		delete Index;
+		return NULL;
+	} else {
+		return Index;
+	}
 }
 
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
@@ -221,4 +228,11 @@ FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFIndex *Index, char *Error
 
 FFMS_API(int) FFMS_GetPixFmt(const char *Name) {
 	return avcodec_get_pix_fmt(Name);
+}
+
+FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IC, void *Private, char *ErrorMsg, unsigned MsgSize) {
+	FFIndexer *Indexer = FFMS_CreateIndexer(SourceFile, ErrorMsg, MsgSize);
+	if (!Indexer)
+		return NULL;
+	return FFMS_DoIndexing(Indexer, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, IC, Private, ErrorMsg, MsgSize);
 }

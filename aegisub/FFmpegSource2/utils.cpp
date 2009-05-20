@@ -22,6 +22,8 @@
 #include "indexing.h"
 #include <string.h>
 #include <errno.h>
+#include <iostream>
+#include <fstream>
 #ifdef _MSC_VER
 #	include <intrin.h>
 #endif
@@ -31,6 +33,200 @@
 #define _ftelli64 ftello
 #define _snprintf snprintf
 #endif
+
+TFrameInfo::TFrameInfo(int64_t DTS, bool KeyFrame) {
+	this->DTS = DTS;
+	this->KeyFrame = KeyFrame;
+	this->SampleStart = 0;
+	this->FilePos = 0;
+	this->FrameSize = 0;
+}
+
+TFrameInfo::TFrameInfo(int64_t DTS, int64_t FilePos, unsigned int FrameSize, bool KeyFrame) {
+	this->DTS = DTS;
+	this->KeyFrame = KeyFrame;
+	this->SampleStart = 0;
+	this->FilePos = FilePos;
+	this->FrameSize = FrameSize;
+}
+
+TFrameInfo::TFrameInfo(int64_t DTS, int64_t SampleStart, bool KeyFrame) {
+	this->DTS = DTS;
+	this->KeyFrame = KeyFrame;
+	this->SampleStart = SampleStart;
+	this->FilePos = 0;
+	this->FrameSize = 0;
+}
+
+TFrameInfo::TFrameInfo(int64_t DTS, int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame) {
+	this->DTS = DTS;
+	this->KeyFrame = KeyFrame;
+	this->SampleStart = SampleStart;
+	this->FilePos = FilePos;
+	this->FrameSize = FrameSize;
+}
+
+int FFTrack::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize) {
+	std::ofstream Timecodes(TimecodeFile, std::ios::out | std::ios::trunc);
+
+	if (!Timecodes.is_open()) {
+		_snprintf(ErrorMsg, MsgSize, "Failed to open '%s' for writing", TimecodeFile);
+		return 1;
+	}
+
+	Timecodes << "# timecode format v2\n";
+
+	for (iterator Cur=begin(); Cur!=end(); Cur++)
+		Timecodes << std::fixed << ((Cur->DTS * TB.Num) / (double)TB.Den) << "\n";
+
+	return 0;
+}
+
+int FFTrack::FrameFromDTS(int64_t DTS) {
+	for (int i = 0; i < static_cast<int>(size()); i++)
+		if (at(i).DTS == DTS)
+			return i;
+	return -1;
+}
+
+int FFTrack::ClosestFrameFromDTS(int64_t DTS) {
+	int Frame = 0; 
+	int64_t BestDiff = 0xFFFFFFFFFFFFFFLL; // big number
+	for (int i = 0; i < static_cast<int>(size()); i++) {
+		int64_t CurrentDiff = FFABS(at(i).DTS - DTS);
+		if (CurrentDiff < BestDiff) {
+			BestDiff = CurrentDiff;
+			Frame = i;
+		}
+	}
+
+	return Frame;
+}
+
+int FFTrack::FindClosestVideoKeyFrame(int Frame) {
+	Frame = FFMIN(FFMAX(Frame, 0), static_cast<int>(size()) - 1);
+	for (int i = Frame; i > 0; i--)
+		if (at(i).KeyFrame)
+			return i;
+	return 0;
+}
+
+int FFTrack::FindClosestAudioKeyFrame(int64_t Sample) {
+	for (size_t i = 0; i < size(); i++) {
+		if (at(i).SampleStart == Sample && at(i).KeyFrame)
+			return i;
+		else if (at(i).SampleStart > Sample && at(i).KeyFrame)
+			return i  - 1;
+	}
+	return size() - 1;
+}
+
+FFTrack::FFTrack() {
+	this->TT = FFMS_TYPE_UNKNOWN;
+	this->TB.Num = 0; 
+	this->TB.Den = 0;
+}
+
+FFTrack::FFTrack(int64_t Num, int64_t Den, FFMS_TrackType TT) {
+	this->TT = TT;
+	this->TB.Num = Num; 
+	this->TB.Den = Den;
+}
+
+int FFIndex::WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
+	std::ofstream IndexStream(IndexFile, std::ios::out | std::ios::binary | std::ios::trunc);
+
+	if (!IndexStream.is_open()) {
+		_snprintf(ErrorMsg, MsgSize, "Failed to open '%s' for writing", IndexFile);
+		return 1;
+	}
+
+	// Write the index file header
+	IndexHeader IH;
+	IH.Id = INDEXID;
+	IH.Version = INDEXVERSION;
+	IH.Tracks = size();
+	IH.Decoder = Decoder;
+	IH.LAVUVersion = LIBAVUTIL_VERSION_INT;
+	IH.LAVFVersion = LIBAVFORMAT_VERSION_INT;
+	IH.LAVCVersion = LIBAVCODEC_VERSION_INT;
+	IH.LSWSVersion = LIBSWSCALE_VERSION_INT;
+	IH.LPPVersion = LIBPOSTPROC_VERSION_INT;
+
+	IndexStream.write(reinterpret_cast<char *>(&IH), sizeof(IH));
+	
+	for (unsigned int i = 0; i < IH.Tracks; i++) {
+		int TT = at(i).TT;
+		IndexStream.write(reinterpret_cast<char *>(&TT), sizeof(TT));
+		int64_t Num = at(i).TB.Num;
+		IndexStream.write(reinterpret_cast<char *>(&Num), sizeof(Num));
+		int64_t Den = at(i).TB.Den;
+		IndexStream.write(reinterpret_cast<char *>(&Den), sizeof(Den));
+		size_t Frames = at(i).size();
+		IndexStream.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
+
+		for (size_t j = 0; j < Frames; j++)
+			IndexStream.write(reinterpret_cast<char *>(&(at(i)[j])), sizeof(TFrameInfo));
+	}
+
+	return 0;
+}
+
+int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
+	std::ifstream Index(IndexFile, std::ios::in | std::ios::binary);
+
+	if (!Index.is_open()) {
+		_snprintf(ErrorMsg, MsgSize, "Failed to open '%s' for reading", IndexFile);
+		return NULL;
+	}
+	
+	// Read the index file header
+	IndexHeader IH;
+	Index.read(reinterpret_cast<char *>(&IH), sizeof(IH));
+	if (IH.Id != INDEXID) {
+		_snprintf(ErrorMsg, MsgSize, "'%s' is not a valid index file", IndexFile);
+		return NULL;
+	}
+
+	if (IH.Version != INDEXVERSION) {
+		_snprintf(ErrorMsg, MsgSize, "'%s' is not the expected index version", IndexFile);
+		return NULL;
+	}
+
+	if (IH.LAVUVersion != LIBAVUTIL_VERSION_INT || IH.LAVFVersion != LIBAVFORMAT_VERSION_INT ||
+		IH.LAVCVersion != LIBAVCODEC_VERSION_INT || IH.LSWSVersion != LIBSWSCALE_VERSION_INT ||
+		IH.LPPVersion != LIBPOSTPROC_VERSION_INT) {
+		_snprintf(ErrorMsg, MsgSize, "A different FFmpeg build was used to create this index", IndexFile);
+		return NULL;
+	}
+
+	try {
+		Decoder = IH.Decoder;
+
+		for (unsigned int i = 0; i < IH.Tracks; i++) {
+			// Read how many records belong to the current stream
+			FFMS_TrackType TT;
+			Index.read(reinterpret_cast<char *>(&TT), sizeof(TT));
+			int64_t Num;
+			Index.read(reinterpret_cast<char *>(&Num), sizeof(Num));
+			int64_t Den;
+			Index.read(reinterpret_cast<char *>(&Den), sizeof(Den));
+			size_t Frames;
+			Index.read(reinterpret_cast<char *>(&Frames), sizeof(Frames));
+			push_back(FFTrack(Num, Den, TT));
+
+			TFrameInfo FI(0, false);
+			for (size_t j = 0; j < Frames; j++) {
+				Index.read(reinterpret_cast<char *>(&FI), sizeof(TFrameInfo));
+				at(i).push_back(FI);
+			}
+		}
+
+	} catch (...) {
+		_snprintf(ErrorMsg, MsgSize, "Unknown error while reading index information in '%s'", IndexFile);	
+		return 1;
+	}
+}
 
 int GetCPUFlags() {
 // FIXME Add proper feature detection when msvc isn't used
@@ -49,6 +245,15 @@ int GetCPUFlags() {
 #endif
 
 	return Flags;
+}
+
+FFMS_TrackType HaaliTrackTypeToFFTrackType(int TT) {
+	switch (TT) {
+		case TT_VIDEO: return FFMS_TYPE_VIDEO; break;
+		case TT_AUDIO: return FFMS_TYPE_AUDIO; break;
+		case TT_SUB: return FFMS_TYPE_SUBTITLE; break;
+		default: return FFMS_TYPE_UNKNOWN;
+	}
 }
 
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize) {

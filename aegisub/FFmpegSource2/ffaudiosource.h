@@ -75,8 +75,6 @@ protected:
 	FFTrack Frames;
 	AVCodecContext *CodecContext;
 	TAudioProperties AP;
-
-	size_t FindClosestAudioKeyFrame(int64_t Sample);
 public:
 	FFAudio();
 	~FFAudio();
@@ -85,7 +83,7 @@ public:
 	virtual int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) = 0;
 };
 
-class FFAudioSource : public FFAudio {
+class FFLAVFAudio : public FFAudio {
 private:
 	AVFormatContext *FormatContext;
 	int AudioTrack;
@@ -93,13 +91,13 @@ private:
 	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize);
 	void Free(bool CloseCodec);
 public:
-	FFAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
-	~FFAudioSource();
+	FFLAVFAudio(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
+	~FFLAVFAudio();
 
 	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 };
 
-class MatroskaAudioSource : public FFAudio {
+class FFMatroskaAudio : public FFAudio {
 private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
@@ -109,8 +107,8 @@ private:
 	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint64_t FilePos, unsigned int FrameSize, char *ErrorMsg, unsigned MsgSize);
 	void Free(bool CloseCodec);
 public:
-	MatroskaAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
-	~MatroskaAudioSource();
+	FFMatroskaAudio(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
+	~FFMatroskaAudio();
 
 	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 };

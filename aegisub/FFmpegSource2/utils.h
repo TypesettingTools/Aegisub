@@ -21,6 +21,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "ffms.h"
+#include <vector>
+
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -30,8 +33,6 @@ extern "C" {
 #include "MatroskaParser.h"
 #include "stdiostream.h"
 }
-
-#include "ffms.h"
 
 #ifdef HAALISOURCE
 #	define _WIN32_DCOM
@@ -43,6 +44,41 @@ extern "C" {
 #	include <initguid.h>
 #	include "guids.h"
 #endif
+
+struct TFrameInfo {
+	FFMS_FRAMEINFO_COMMON
+	int64_t SampleStart;
+	int64_t FilePos;
+	unsigned int FrameSize;
+#ifdef FFMS_EXPORTS
+	TFrameInfo(int64_t DTS, bool KeyFrame);
+	TFrameInfo(int64_t DTS, int64_t FilePos, unsigned int FrameSize, bool KeyFrame);
+	TFrameInfo(int64_t DTS, int64_t SampleStart, bool KeyFrame);
+	TFrameInfo(int64_t DTS, int64_t SampleStart, int64_t FilePos, unsigned int FrameSize, bool KeyFrame);
+#endif
+};
+
+struct FFTrack : public std::vector<TFrameInfo> {
+public:
+	FFMS_TrackType TT;
+	TTrackTimeBase TB;
+
+	int FindClosestVideoKeyFrame(int Frame);
+	int FindClosestAudioKeyFrame(int64_t Sample);
+	int FrameFromDTS(int64_t DTS);
+	int ClosestFrameFromDTS(int64_t DTS);
+	int WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
+
+	FFTrack();
+	FFTrack(int64_t Num, int64_t Den, FFMS_TrackType TT);
+};
+
+struct FFIndex : public std::vector<FFTrack> {
+public:
+	int Decoder;
+	int WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
+	int ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
+};
 
 struct MatroskaReaderContext {
 public:
@@ -62,6 +98,7 @@ public:
 };
 
 int GetCPUFlags();
+FFMS_TrackType HaaliTrackTypeToFFTrackType(int TT);
 int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize);
 bool AudioFMTIsFloat(SampleFormat FMT);
 void InitNullPacket(AVPacket *pkt);
