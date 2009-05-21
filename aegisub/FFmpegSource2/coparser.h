@@ -12,7 +12,7 @@
 
 // random access stream, this will be provided by
 // IMMContainer's client
-[uuid("8E192E9F-E536-4027-8D46-664CC7A102C5")]
+interface __declspec(uuid("8E192E9F-E536-4027-8D46-664CC7A102C5")) IMMStream;
 interface IMMStream : public IUnknown {
   // read count bytes starting at position
   STDMETHOD(Read)(	    unsigned long long position,
@@ -25,12 +25,12 @@ interface IMMStream : public IUnknown {
 		  	    unsigned int signature) = 0;
 };
 
-[uuid("A237C873-C6AD-422E-90DB-7CB4627DCFD9")]
+interface __declspec(uuid("A237C873-C6AD-422E-90DB-7CB4627DCFD9")) IMMStreamOpen;
 interface IMMStreamOpen : public IUnknown {
   STDMETHOD(Open)(LPCWSTR name) = 0;
 };
 
-[uuid("D8FF7213-6E09-4256-A2E5-5872C798B128")]
+interface __declspec(uuid("D8FF7213-6E09-4256-A2E5-5872C798B128")) IMMFrame;
 interface IMMFrame : public IMediaSample2 {
   // track number must be the same as returned by
   // IMMContainer->EnumTracks() iterator
@@ -41,13 +41,13 @@ interface IMMFrame : public IMediaSample2 {
   STDMETHOD(SetPre)(unsigned) = 0;
 };
 
-[uuid("B8324E2A-21A9-46A1-8922-70C55D06311A")]
+interface __declspec(uuid("B8324E2A-21A9-46A1-8922-70C55D06311A")) IMMErrorInfo;
 interface IMMErrorInfo : public IUnknown {
   STDMETHOD(LogError)(BSTR message) = 0;    // message is owned by the caller
   STDMETHOD(LogWarning)(BSTR message) = 0;
 };
 
-[uuid("C7120EDB-528C-4ebe-BB53-DA8E70E618EE")]
+interface __declspec(uuid("C7120EDB-528C-4ebe-BB53-DA8E70E618EE")) IMemAlloc;
 interface IMemAlloc : public IUnknown {
   STDMETHOD(GetBuffer)(HANDLE hAbortEvt, DWORD size, IMMFrame **pS) = 0;
 };
@@ -58,7 +58,7 @@ interface IMemAlloc : public IUnknown {
 // physical file it should return SegmentTop[UI8] property
 // that return the offset of the first byte after this
 // segment's end
-[uuid("A369001B-F292-45f7-A942-84F9C8C0718A")]
+interface __declspec(uuid("A369001B-F292-45f7-A942-84F9C8C0718A")) IMMContainer;
 interface IMMContainer : public IUnknown {
   STDMETHOD(Open)(	    IMMStream *stream,
 			    unsigned long long position,
