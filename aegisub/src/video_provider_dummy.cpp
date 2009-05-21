@@ -194,6 +194,7 @@ DummyVideoProvider::DummyVideoProvider(double _fps, int frames, int _width, int 
 //////////////
 // Destructor
 DummyVideoProvider::~DummyVideoProvider() {
+	frame.Clear();
 }
 
 
