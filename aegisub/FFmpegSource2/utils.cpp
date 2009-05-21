@@ -324,9 +324,6 @@ int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, M
 
 		return 0;
 	}
-
-	FrameSize = 0;
-	return 0;
 }
 
 bool AudioFMTIsFloat(SampleFormat FMT){

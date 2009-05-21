@@ -346,9 +346,7 @@ FFIndex *FFHaaliIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsig
 				if (dbsize > 0 && (DumpMask & (1 << CurrentTrack))) {
 					// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
 					if (!AudioContexts[CurrentTrack].W64W) {
-						TAudioProperties AP;
 						AVCodecContext *CTX = AudioContexts[CurrentTrack].CTX;
-						AP.BitsPerSample = CTX->bits_per_coded_sample;
 						char ABuf[50];
 						std::string WN(AudioFile);
 						_snprintf(ABuf, sizeof(ABuf), ".%02d.delay.%d.w64", CurrentTrack, 0);

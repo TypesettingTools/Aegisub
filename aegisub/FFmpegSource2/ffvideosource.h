@@ -44,7 +44,7 @@ extern "C" {
 #	include "guids.h"
 #endif
 
-struct FFVideo {
+class FFVideo {
 private:
 	pp_context_t *PPContext;
 	pp_mode_t *PPMode;

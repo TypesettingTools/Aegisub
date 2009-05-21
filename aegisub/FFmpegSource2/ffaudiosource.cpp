@@ -99,11 +99,11 @@ int64_t TAudioCache::FillRequest(int64_t Start, int64_t Samples, uint8_t *Dst) {
 FFAudio::FFAudio() {
 	CurrentSample = 0;
 	DecodingBuffer = new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE * 10];
-};
+}
 
 FFAudio::~FFAudio() {
 	delete[] DecodingBuffer;
-};
+}
 
 void FFLAVFAudio::Free(bool CloseCodec) {
 	if (CloseCodec)
