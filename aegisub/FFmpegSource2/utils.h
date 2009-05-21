@@ -58,7 +58,7 @@ struct TFrameInfo {
 #endif
 };
 
-struct FFTrack : public std::vector<TFrameInfo> {
+class FFTrack : public std::vector<TFrameInfo> {
 public:
 	FFMS_TrackType TT;
 	TTrackTimeBase TB;
@@ -73,7 +73,7 @@ public:
 	FFTrack(int64_t Num, int64_t Den, FFMS_TrackType TT);
 };
 
-struct FFIndex : public std::vector<FFTrack> {
+class FFIndex : public std::vector<FFTrack> {
 public:
 	int Decoder;
 	int WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);

@@ -24,13 +24,13 @@
 #include "ffswscale.h"
 #include "ffpp.h"
 
-int GetNumberOfLogicalCPUs() {
+static int GetNumberOfLogicalCPUs() {
 	SYSTEM_INFO SI;
 	GetSystemInfo(&SI);
 	return SI.dwNumberOfProcessors;
 }
 
-AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+static AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	FFMS_Init();
 
 	char ErrorMsg[1024];
@@ -79,7 +79,7 @@ AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment
 	}
 }
 
-AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+static AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	FFMS_Init();
 
 	char ErrorMsg[1024];
@@ -157,7 +157,7 @@ AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScriptEnvir
 	return Filter;
 }
 
-AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+static AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	FFMS_Init();
 
 	char ErrorMsg[1024];
@@ -211,19 +211,19 @@ AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScriptEnvir
 	return Filter;
 }
 
-AVSValue __cdecl CreateFFPP(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+static AVSValue __cdecl CreateFFPP(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	return new FFPP(Args[0].AsClip(), Args[1].AsString(""), Env);
 }
 
-AVSValue __cdecl CreateSWScale(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+static AVSValue __cdecl CreateSWScale(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	return new SWScale(Args[0].AsClip(), Args[1].AsInt(0), Args[2].AsInt(0), Args[3].AsString("BICUBIC"), Args[4].AsString(""), Env);
 }
 
-AVSValue __cdecl FFGetLogLevel(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+static AVSValue __cdecl FFGetLogLevel(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	return FFMS_GetLogLevel();
 }
 
-AVSValue __cdecl FFSetLogLevel(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
+static AVSValue __cdecl FFSetLogLevel(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
 	FFMS_SetLogLevel(Args[0].AsInt());
 	return FFMS_GetLogLevel();
 }

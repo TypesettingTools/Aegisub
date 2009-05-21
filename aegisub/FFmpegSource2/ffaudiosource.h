@@ -54,7 +54,7 @@ public:
 	~TAudioBlock();
 };
 
-class TAudioCache : protected std::list<TAudioBlock *> {
+class TAudioCache : private std::list<TAudioBlock *> {
 private:
 	int MaxCacheBlocks;
 	int BytesPerSample;
@@ -67,7 +67,7 @@ public:
 	int64_t FillRequest(int64_t Start, int64_t Samples, uint8_t *Dst);
 };
 
-struct FFAudio {
+class FFAudio {
 protected:
 	TAudioCache AudioCache;
 	int64_t CurrentSample;
@@ -77,7 +77,7 @@ protected:
 	TAudioProperties AP;
 public:
 	FFAudio();
-	~FFAudio();
+	virtual ~FFAudio();
 	FFTrack *GetFFTrack() { return &Frames; }
 	const TAudioProperties& GetTAudioProperties() { return AP; }
 	virtual int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) = 0;

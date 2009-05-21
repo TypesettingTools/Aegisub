@@ -21,7 +21,7 @@
 #include "ffswscale.h"
 #include "utils.h"
 
-PixelFormat CSNameToPIXFMT(const char * ACSName, PixelFormat ADefault) {
+static PixelFormat CSNameToPIXFMT(const char * ACSName, PixelFormat ADefault) {
 	if (!_stricmp(ACSName, ""))
 		return ADefault;
 	if (!_stricmp(ACSName, "YV12"))
@@ -35,7 +35,7 @@ PixelFormat CSNameToPIXFMT(const char * ACSName, PixelFormat ADefault) {
 	return PIX_FMT_NONE;
 }
 
-int ResizerNameToSWSResizer(const char *AResizerName) {
+static int ResizerNameToSWSResizer(const char *AResizerName) {
 	if (!_stricmp(AResizerName, "FAST_BILINEAR"))
 		return SWS_FAST_BILINEAR;
 	if (!_stricmp(AResizerName, "BILINEAR"))

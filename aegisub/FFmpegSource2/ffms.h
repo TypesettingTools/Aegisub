@@ -25,8 +25,10 @@
 
 #ifdef __cplusplus
 #	define EXTERN_C extern "C"
+#	define FFMS_CLASS_TYPE class
 #else
 #	define EXTERN_C
+#	define FFMS_CLASS_TYPE struct
 #endif
 
 #ifdef _WIN32
@@ -41,18 +43,18 @@
 #	define FFMS_API(ret) EXTERN_C ret FFMS_CC
 #endif
 
-struct FFVideo;
-struct FFAudio;
-struct FFIndexer;
-struct FFIndex;
-struct FFTrack;
+FFMS_CLASS_TYPE FFVideo;
+FFMS_CLASS_TYPE FFAudio;
+FFMS_CLASS_TYPE FFIndexer;
+FFMS_CLASS_TYPE FFIndex;
+FFMS_CLASS_TYPE FFTrack;
 
 enum FFMS_SeekMode {
 	FFMS_SEEK_LINEAR_NO_RW  = -1,
 	FFMS_SEEK_LINEAR = 0,
 	FFMS_SEEK_NORMAL = 1,
 	FFMS_SEEK_UNSAFE = 2,
-	FFMS_SEEK_AGGRESSIVE = 3,
+	FFMS_SEEK_AGGRESSIVE = 3
 };
 
 enum FFMS_TrackType {
@@ -61,7 +63,7 @@ enum FFMS_TrackType {
     FFMS_TYPE_AUDIO,
     FFMS_TYPE_DATA,
     FFMS_TYPE_SUBTITLE,
-    FFMS_TYPE_ATTACHMENT,
+    FFMS_TYPE_ATTACHMENT
 };
 
 // This is a subset of the original AVFrame only containing the most used parts.
