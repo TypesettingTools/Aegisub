@@ -228,6 +228,9 @@ DialogStyleManager::~DialogStyleManager() {
 	if (sel != wxNOT_FOUND) {
 		AssFile::top->SetScriptInfo(_T("Last Style Storage"),CatalogList->GetString(sel));
 	}
+	CatalogList->PopEventHandler(true);
+	StorageList->PopEventHandler(true);
+	CurrentList->PopEventHandler(true);
 }
 
 
