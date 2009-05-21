@@ -107,6 +107,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	else {
 		wxString subsFileName = VideoContext::Get()->GetTempWorkFile();
 		subs->Save(subsFileName,false,false,_T("UTF-8"));
+		delete subs;
 		instance = csri_open_file(renderer,subsFileName.mb_str(wxConvUTF8),NULL);
 	}
 }
