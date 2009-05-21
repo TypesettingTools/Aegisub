@@ -196,7 +196,7 @@ int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) 
 	if (IH.LAVUVersion != LIBAVUTIL_VERSION_INT || IH.LAVFVersion != LIBAVFORMAT_VERSION_INT ||
 		IH.LAVCVersion != LIBAVCODEC_VERSION_INT || IH.LSWSVersion != LIBSWSCALE_VERSION_INT ||
 		IH.LPPVersion != LIBPOSTPROC_VERSION_INT) {
-		_snprintf(ErrorMsg, MsgSize, "A different FFmpeg build was used to create this index", IndexFile);
+		_snprintf(ErrorMsg, MsgSize, "A different FFmpeg build was used to create '%s'", IndexFile);
 		return 4;
 	}
 
