@@ -83,6 +83,7 @@ private:
 public:
 	bool enablePreview;
 	DialogTranslation (wxWindow *parent,AssFile *subs,SubtitlesGrid *grid,int startrow=0,bool preview=false);
+	~DialogTranslation();
 
 	void OnTransBoxKey(wxKeyEvent &event);
 
