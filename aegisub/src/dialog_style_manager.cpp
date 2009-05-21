@@ -231,6 +231,7 @@ DialogStyleManager::~DialogStyleManager() {
 	CatalogList->PopEventHandler(true);
 	StorageList->PopEventHandler(true);
 	CurrentList->PopEventHandler(true);
+	Store.Clear();
 }
 
 
