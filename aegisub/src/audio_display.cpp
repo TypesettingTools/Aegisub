@@ -108,6 +108,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 	hasFocus = (wxWindow::FindFocus() == this);
 	needImageUpdate = false;
 	needImageUpdateWeak = true;
+	playingToEnd = false;
 
 	// Init
 	UpdateTimer.SetOwner(this,Audio_Update_Timer);
