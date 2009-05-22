@@ -29,6 +29,7 @@ extern "C" {
 
 #ifdef __UNIX__
 #define _snprintf snprintf
+#define _scprintf scprintf
 #endif
 
 static int InitCount = 0;
@@ -85,8 +86,10 @@ FFMS_API(FFAudio *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FF
 		switch (Index->Decoder) {
 			case 0: return new FFLAVFAudio(SourceFile, Track, Index, ErrorMsg, MsgSize);
 			case 1: return new FFMatroskaAudio(SourceFile, Track, Index, ErrorMsg, MsgSize);
+#ifdef HAALISOURCE
 			case 2: return new FFHaaliAudio(SourceFile, Track, Index, 0, ErrorMsg, MsgSize);
 			case 3: return new FFHaaliAudio(SourceFile, Track, Index, 1, ErrorMsg, MsgSize);
+#endif
 			default: 
 				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
 				return NULL;
