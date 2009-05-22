@@ -133,8 +133,8 @@ AudioDisplay::~AudioDisplay() {
 	delete spectrumRenderer;
 	delete spectrumDisplay;
 	delete spectrumDisplaySelected;
-	delete peak;
-	delete min;
+	delete[] peak;
+	delete[] min;
 	provider = NULL;
 	player = NULL;
 	origImage = NULL;
@@ -562,8 +562,8 @@ void AudioDisplay::DrawTimescale(wxDC &dc) {
 void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 	// Prepare Waveform
 	if (!weak || peak == NULL || min == NULL) {
-		if (peak) delete peak;
-		if (min) delete min;
+		if (peak) delete[] peak;
+		if (min) delete[] min;
 		peak = new int[w];
 		min = new int[w];
 	}
