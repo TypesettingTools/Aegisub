@@ -446,6 +446,8 @@ FFIndex *FFMatroskaIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 			AVCodecContext *AudioCodecContext = AudioContexts[Track].CTX;
 			TempPacket.data = MC.Buffer;
 			TempPacket.size = FrameSize;
+			if ((FrameFlags & FRAME_KF) != 0)
+				TempPacket.flags = PKT_FLAG_KEY;
 
 			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;

@@ -105,9 +105,10 @@ int main(int argc, char *argv[]) {
 	TestFiles1[3] = "pyramid-adaptive-10-bframes.mkv";
 	TestFiles1[4] = "negative-timecodes.avi";
 	TestFiles1[5] = "Zero1_ITV2_TS_Test.ts";
+	TestFiles1[6] = "zx.starship.operators.01.h264.mkv";
 
-	for (int i = 0; i < 5; i++)
-		TestFullDump1(TestFiles1[5], true);
+	for (int i = 0; i < 6; i++)
+		TestFullDump1(TestFiles1[i], true);
 /*
 	TestFullDump1(TestFiles1[5], false);
 
