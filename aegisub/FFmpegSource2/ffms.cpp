@@ -29,7 +29,6 @@ extern "C" {
 
 #ifdef __UNIX__
 #define _snprintf snprintf
-#define _scprintf scprintf
 #endif
 
 static int InitCount = 0;
@@ -219,9 +218,9 @@ FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int Du
 FFMS_API(int) FFMS_DefaultAudioFilename(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, void *Private) {
 	const char * FormatString = "%s.%d2.w64";
 	if (FileName == NULL)
-		return _scprintf(FormatString, SourceFile, Track) + 1;
+		return _snprintf(NULL, 0, FormatString, SourceFile, Track) + 1;
 	else
-		return sprintf(FileName, FormatString, SourceFile, Track) + 1;
+		return _snprintf(FileName, 999999, FormatString, SourceFile, Track) + 1;
 }
 
 FFMS_API(FFIndexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg, unsigned MsgSize) {

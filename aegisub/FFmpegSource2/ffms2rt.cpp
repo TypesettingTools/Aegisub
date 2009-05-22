@@ -34,13 +34,13 @@ using namespace std;
 
 static int FFMS_CC UpdateProgress(int64_t Current, int64_t Total, void *Private) {
 
-	int LastPercentage = (int)Private;
+	int *LastPercentage = (int *)Private;
 	int Percentage = int((double(Current)/double(Total)) * 100);
 
-	if (Percentage <= LastPercentage)
+	if (Percentage <= *LastPercentage)
 		return 0;
 
-	Private = (void *)Percentage;
+	*LastPercentage = Percentage;
 
 #ifdef VERBOSE
 	cout << "Indexing, please wait... " << Percentage << "% \r" << flush;
@@ -50,6 +50,7 @@ static int FFMS_CC UpdateProgress(int64_t Current, int64_t Total, void *Private)
 }
 
 void TestFullDump1(char *SrcFile, bool WithAudio) {
+	int Private;
 	char ErrorMsg[2000];
 	int ret = FFMS_Init();
 	assert(!ret);
@@ -60,7 +61,7 @@ void TestFullDump1(char *SrcFile, bool WithAudio) {
 	FIdx = FFMS_CreateIndexer(SrcFile, ErrorMsg, sizeof(ErrorMsg));
 	assert(FIdx);
 
-	FFIndex *FI = FFMS_DoIndexing(FIdx, -1, -1, FFMS_DefaultAudioFilename, NULL, false, UpdateProgress, NULL, ErrorMsg, sizeof(ErrorMsg));
+	FFIndex *FI = FFMS_DoIndexing(FIdx, -1, -1, FFMS_DefaultAudioFilename, NULL, false, UpdateProgress, &Private, ErrorMsg, sizeof(ErrorMsg));
 	assert(FI);
 
 	int vtrack = FFMS_GetFirstTrackOfType(FI, FFMS_TYPE_VIDEO, ErrorMsg, sizeof(ErrorMsg));
@@ -68,7 +69,7 @@ void TestFullDump1(char *SrcFile, bool WithAudio) {
 	int atrack = FFMS_GetFirstTrackOfType(FI, FFMS_TYPE_AUDIO, ErrorMsg, sizeof(ErrorMsg));
 	assert(atrack >= 0);
 
-	FFVideo *V = FFMS_CreateVideoSource(SrcFile, vtrack, FI, "", 1, 1, ErrorMsg, sizeof(ErrorMsg));
+	FFVideo *V = FFMS_CreateVideoSource(SrcFile, vtrack, FI, "", 2, 1, ErrorMsg, sizeof(ErrorMsg));
 	assert(V);
 
 	if (WithAudio) {
@@ -101,13 +102,13 @@ int main(int argc, char *argv[]) {
 	char *TestFiles1[10];
 	TestFiles1[0] = "[FLV1]_The_Melancholy_of_Haruhi_Suzumiya_-_Full_Clean_Ending.flv";
 	TestFiles1[1] = "jra_jupiter.avi";
-	TestFiles1[2] = "h264_16-bframes_16-references_pyramid_crash-indexing.mkv";
-	TestFiles1[3] = "pyramid-adaptive-10-bframes.mkv";
+	TestFiles1[2] = "Zero1_ITV2_TS_Test.ts";
+	TestFiles1[3] = "zx.starship.operators.01.h264.mkv";
 	TestFiles1[4] = "negative-timecodes.avi";
-	TestFiles1[5] = "Zero1_ITV2_TS_Test.ts";
-	TestFiles1[6] = "zx.starship.operators.01.h264.mkv";
+	TestFiles1[5] = "h264_16-bframes_16-references_pyramid_crash-indexing.mkv";
+	TestFiles1[6] = "pyramid-adaptive-10-bframes.mkv";
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 5; i++)
 		TestFullDump1(TestFiles1[i], true);
 /*
 	TestFullDump1(TestFiles1[5], false);
