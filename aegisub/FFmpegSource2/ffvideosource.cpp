@@ -228,7 +228,7 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index,
 
 	// Always try to decode a frame to make sure all required parameters are known
 	int64_t Dummy;
-	if (DecodeNextFrame(DecodeFrame, &Dummy, ErrorMsg, MsgSize)) {
+	if (DecodeNextFrame(&Dummy, ErrorMsg, MsgSize)) {
 		Free(true);
 		throw ErrorMsg;
 	}
@@ -279,7 +279,7 @@ FFLAVFVideo::~FFLAVFVideo() {
 	Free(true);
 }
 
-int FFLAVFVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *ErrorMsg, unsigned MsgSize) {
+int FFLAVFVideo::DecodeNextFrame(int64_t *AStartTime, char *ErrorMsg, unsigned MsgSize) {
 	AVPacket Packet;
 	InitNullPacket(&Packet);
 	int FrameFinished = 0;
@@ -290,7 +290,7 @@ int FFLAVFVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *Err
 			if (*AStartTime < 0)
 				*AStartTime = Packet.dts;
 
-			avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &Packet);
+			avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
         }
 
         av_free_packet(&Packet);
@@ -303,7 +303,7 @@ int FFLAVFVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AStartTime, char *Err
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
 		InitNullPacket(&NullPacket);
-		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
+		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &NullPacket);
 	}
 
 	if (!FrameFinished)
@@ -349,7 +349,7 @@ ReSeek:
 
 	do {
 		int64_t StartTime;
-		if (DecodeNextFrame(DecodeFrame, &StartTime, ErrorMsg, MsgSize))
+		if (DecodeNextFrame(&StartTime, ErrorMsg, MsgSize))
 			return NULL;
 
 		if (HasSeeked) {
@@ -460,7 +460,7 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 
 	// Always try to decode a frame to make sure all required parameters are known
 	int64_t Dummy;
-	if (DecodeNextFrame(DecodeFrame, &Dummy, ErrorMsg, MsgSize)) {
+	if (DecodeNextFrame(&Dummy, ErrorMsg, MsgSize)) {
 		Free(true);
 		throw ErrorMsg;
 	}
@@ -510,7 +510,7 @@ FFMatroskaVideo::~FFMatroskaVideo() {
 	Free(true);
 }
 
-int FFMatroskaVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
+int FFMatroskaVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
@@ -532,7 +532,7 @@ int FFMatroskaVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, 
 			Packet.flags = PKT_FLAG_KEY;
 		else
 			Packet.flags = 0;
-		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &Packet);
+		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
 
 		if (FrameFinished)
 			goto Done;
@@ -542,7 +542,7 @@ int FFMatroskaVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, 
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
 		InitNullPacket(&NullPacket);
-		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
+		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &NullPacket);
 	}
 
 	if (!FrameFinished)
@@ -568,7 +568,7 @@ TAVFrameLite *FFMatroskaVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize)
 
 	do {
 		int64_t StartTime;
-		if (DecodeNextFrame(DecodeFrame, &StartTime, ErrorMsg, MsgSize))
+		if (DecodeNextFrame(&StartTime, ErrorMsg, MsgSize))
 				return NULL;
 
 		if (HasSeeked) {
@@ -600,6 +600,7 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 	FFIndex *Index, const char *PP,
 	int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize) {
 
+	CodecPrivate = NULL;
 	AVCodec *Codec = NULL;
 	CodecContext = NULL;
 	VideoTrack = Track;
@@ -609,8 +610,6 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 		_snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
 		throw ErrorMsg;
 	}
-
-	::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	CLSID clsid = HAALI_TS_Parser;
 	if (SourceMode == 1)
@@ -646,7 +645,6 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 		throw ErrorMsg;
 	}
 
-	CodecPrivate = NULL;
 	int CodecPrivateSize = 0;
 	int CurrentTrack = 0;
 	CComPtr<IEnumUnknown> pEU;
@@ -698,7 +696,7 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 
 	// Always try to decode a frame to make sure all required parameters are known
 	int64_t Dummy;
-	if (DecodeNextFrame(DecodeFrame, &Dummy, ErrorMsg, MsgSize)) {
+	if (DecodeNextFrame(&Dummy, ErrorMsg, MsgSize)) {
 		Free(true);
 		throw ErrorMsg;
 	}
@@ -741,7 +739,7 @@ FFHaaliVideo::~FFHaaliVideo() {
 	Free(true);
 }
 
-int FFHaaliVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
+int FFHaaliVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
@@ -768,7 +766,7 @@ int FFHaaliVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, cha
 			else
 				Packet.flags = 0;
 
-			avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &Packet);
+			avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
 
 			if (FrameFinished)
 				goto Done;
@@ -779,7 +777,7 @@ int FFHaaliVideo::DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, cha
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
 		InitNullPacket(&NullPacket);
-		avcodec_decode_video2(CodecContext, AFrame, &FrameFinished, &NullPacket);
+		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &NullPacket);
 	}
 
 	if (!FrameFinished)
@@ -807,7 +805,7 @@ ReSeek:
 
 	do {
 		int64_t StartTime;
-		if (DecodeNextFrame(DecodeFrame, &StartTime, ErrorMsg, MsgSize))
+		if (DecodeNextFrame(&StartTime, ErrorMsg, MsgSize))
 				return NULL;
 
 		if (HasSeeked) {

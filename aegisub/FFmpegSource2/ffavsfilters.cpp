@@ -62,7 +62,7 @@ static AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvi
 
 	FFIndex *Index = NULL;
 	if (OverWrite || !(Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize))) {
-		if (!(Index = FFMS_MakeIndex(Source, IndexMask, DumpMask, AudioFile, true, NULL, NULL, ErrorMsg, MsgSize)))
+		if (!(Index = FFMS_MakeIndex(Source, IndexMask, DumpMask, FFMS_DefaultAudioFilename, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFIndex: %s", ErrorMsg);
 		if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
 			FFMS_DestroyFFIndex(Index);
@@ -122,7 +122,7 @@ static AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScri
 	if (Cache)
 		Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize);
 	if (!Index) {
-		if (!(Index = FFMS_MakeIndex(Source, 0, 0, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
+		if (!(Index = FFMS_MakeIndex(Source, 0, 0, NULL, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFVideoSource: %s", ErrorMsg);
 
 		if (Cache)
@@ -133,7 +133,7 @@ static AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScri
 	}
 
 	if (Track == -1)
-		Track = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, ErrorMsg, MsgSize);
+		Track = FFMS_GetFirstIndexedTrackOfType(Index, FFMS_TYPE_VIDEO, ErrorMsg, MsgSize);
 	if (Track < 0)
 		Env->ThrowError("FFVideoSource: No video track found");
 
@@ -183,7 +183,7 @@ static AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScri
 	if (Cache)
 		Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize);
 	if (!Index) {
-		if (!(Index = FFMS_MakeIndex(Source, -1, 0, CacheFile, true, NULL, NULL, ErrorMsg, MsgSize)))
+		if (!(Index = FFMS_MakeIndex(Source, -1, 0, NULL, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFAudioSource: %s", ErrorMsg);
 
 		if (Cache)
@@ -194,7 +194,7 @@ static AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScri
 	}
 
 	if (Track == -1)
-		Track = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, ErrorMsg, MsgSize);
+		Track = FFMS_GetFirstIndexedTrackOfType(Index, FFMS_TYPE_AUDIO, ErrorMsg, MsgSize);
 	if (Track < 0)
 		Env->ThrowError("FFAudioSource: No audio track found");
 

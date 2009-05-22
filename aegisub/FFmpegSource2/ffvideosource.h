@@ -79,7 +79,7 @@ private:
 	int SeekMode;
 
 	void Free(bool CloseCodec);
-	int DecodeNextFrame(AVFrame *Frame, int64_t *DTS, char *ErrorMsg, unsigned MsgSize);
+	int DecodeNextFrame(int64_t *DTS, char *ErrorMsg, unsigned MsgSize);
 public:
 	FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
 	~FFLAVFVideo();
@@ -94,7 +94,7 @@ private:
 	char ErrorMessage[256];
 
 	void Free(bool CloseCodec);
-	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
+	int DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
 	FFMatroskaVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
 	~FFMatroskaVideo();
@@ -107,8 +107,9 @@ class FFHaaliVideo : public FFVideo {
 private:
 	CComPtr<IMMContainer> pMMC;
 	uint8_t * CodecPrivate;
+
 	void Free(bool CloseCodec);
-	int DecodeNextFrame(AVFrame *AFrame, int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
+	int DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
 	FFHaaliVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
 	~FFHaaliVideo();

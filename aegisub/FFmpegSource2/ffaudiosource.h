@@ -74,6 +74,7 @@ protected:
 	uint8_t *DecodingBuffer;
 	FFTrack Frames;
 	AVCodecContext *CodecContext;
+	int AudioTrack;
 	TAudioProperties AP;
 public:
 	FFAudio();
@@ -86,14 +87,12 @@ public:
 class FFLAVFAudio : public FFAudio {
 private:
 	AVFormatContext *FormatContext;
-	int AudioTrack;
 
-	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize);
+	int DecodeNextAudioBlock(int64_t *Count, char *ErrorMsg, unsigned MsgSize);
 	void Free(bool CloseCodec);
 public:
 	FFLAVFAudio(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
 	~FFLAVFAudio();
-
 	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 };
 
@@ -104,27 +103,26 @@ private:
     CompressedStream *CS;
 	char ErrorMessage[256];
 
-	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, uint64_t FilePos, unsigned int FrameSize, char *ErrorMsg, unsigned MsgSize);
+	int DecodeNextAudioBlock(int64_t *Count, int AudioBlock, char *ErrorMsg, unsigned MsgSize);
 	void Free(bool CloseCodec);
 public:
 	FFMatroskaAudio(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
 	~FFMatroskaAudio();
-
 	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 };
 
 #ifdef HAALISOURCE
 
-class HaaliAudioSource : public FFAudio {
+class FFHaaliAudio : public FFAudio {
 private:
 	CComPtr<IMMContainer> pMMC;
+	uint8_t * CodecPrivate;
 
-	int DecodeNextAudioBlock(uint8_t *Buf, int64_t *Count, char *ErrorMsg, unsigned MsgSize);
 	void Free(bool CloseCodec);
+	int DecodeNextAudioBlock(int64_t *AFirstStartTime, int64_t *Count, char *ErrorMsg, unsigned MsgSize);
 public:
-	HaaliAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
-	~HaaliAudioSource();
-
+	FFHaaliAudio(const char *SourceFile, int Track, FFIndex *Index, int SourceMode, char *ErrorMsg, unsigned MsgSize);
+	~FFHaaliAudio();
 	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 };
 

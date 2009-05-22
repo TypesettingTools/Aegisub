@@ -25,7 +25,6 @@
 #include <memory>
 #include <errno.h>
 #include "indexing.h"
-#include "wave64writer.h"
 
 #ifdef __UNIX__
 #define _fseeki64 fseeko
@@ -51,48 +50,30 @@ extern "C" {
 #	include "guids.h"
 #endif
 
-class MatroskaAudioContext {
+class MatroskaAudioContext : public SharedAudioContext {
 public:
-	Wave64Writer *W64W;
-	AVCodecContext *CTX;
 	CompressedStream *CS;
-	int64_t CurrentSample;
 	uint8_t *CodecPrivate;
 
 	MatroskaAudioContext() {
-		W64W = NULL;
-		CTX = NULL;
 		CS = NULL;
-		CurrentSample = 0;
 		CodecPrivate = NULL;
 	}
 
 	~MatroskaAudioContext() {
-		delete[] CodecPrivate;
-		delete W64W;
 		if (CTX) {
 			avcodec_close(CTX);
 			av_free(CTX);
 		}
 		if (CS)
 			cs_Destroy(CS);
+		delete[] CodecPrivate;
 	}
 };
 
-class FFAudioContext {
+class FFAudioContext : public SharedAudioContext {
 public:
-	Wave64Writer *W64W;
-	AVCodecContext *CTX;
-	int64_t CurrentSample;
-
-	FFAudioContext() {
-		W64W = NULL;
-		CTX = NULL;
-		CurrentSample = 0;
-	}
-
 	~FFAudioContext() {
-		delete W64W;
 		if (CTX)
 			avcodec_close(CTX);
 	}
@@ -101,42 +82,34 @@ public:
 #ifdef HAALISOURCE
 class HaaliIndexMemory {
 private:
-	int16_t *DecodingBuffer;
 	MatroskaAudioContext *AudioContexts;
 public:
-	HaaliIndexMemory(int Tracks, int16_t *&DecodingBuffer, MatroskaAudioContext *&AudioContexts) {
-		DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE*10];
+	HaaliIndexMemory(int Tracks, MatroskaAudioContext *&AudioContexts) {
 		AudioContexts = new MatroskaAudioContext[Tracks];
-		this->DecodingBuffer = DecodingBuffer;
 		this->AudioContexts = AudioContexts;
 	}
 
 	~HaaliIndexMemory() {
-		delete [] DecodingBuffer;
-		delete [] AudioContexts;
+		delete[] AudioContexts;
 	}
 };
 #endif
 
 class MatroskaIndexMemory {
 private:
-	int16_t *DecodingBuffer;
 	MatroskaAudioContext *AudioContexts;
 	MatroskaFile *MF;
 	MatroskaReaderContext *MC;
 public:
-	MatroskaIndexMemory(int Tracks, int16_t *&DecodingBuffer, MatroskaAudioContext *&AudioContexts, MatroskaFile *MF, MatroskaReaderContext *MC) {
-		DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE*10];
+	MatroskaIndexMemory(int Tracks, MatroskaAudioContext *&AudioContexts, MatroskaFile *MF, MatroskaReaderContext *MC) {
 		AudioContexts = new MatroskaAudioContext[Tracks];
-		this->DecodingBuffer = DecodingBuffer;
 		this->AudioContexts = AudioContexts;
 		this->MF = MF;
 		this->MC = MC;
 	}
 
 	~MatroskaIndexMemory() {
-		delete [] DecodingBuffer;
-		delete [] AudioContexts;
+		delete[] AudioContexts;
 		mkv_Close(MF);
 		fclose(MC->ST.fp);
 	}
@@ -144,21 +117,17 @@ public:
 
 class FFIndexMemory {
 private:
-	int16_t *DecodingBuffer;
 	FFAudioContext *AudioContexts;
 	AVFormatContext *FormatContext;
 public:
-	FFIndexMemory(int Tracks, int16_t *&DecodingBuffer, FFAudioContext *&AudioContexts, AVFormatContext *&FormatContext) {
-		DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE*10];
+	FFIndexMemory(int Tracks, FFAudioContext *&AudioContexts, AVFormatContext *&FormatContext) {
 		AudioContexts = new FFAudioContext[Tracks];
-		this->DecodingBuffer = DecodingBuffer;
 		this->AudioContexts = AudioContexts;
 		this->FormatContext = FormatContext;
 	}
 
 	~FFIndexMemory() {
-		delete [] DecodingBuffer;
-		delete [] AudioContexts;
+		delete[] AudioContexts;
 		av_close_input_file(FormatContext);
 	}
 };
@@ -167,19 +136,44 @@ static bool DTSComparison(TFrameInfo FI1, TFrameInfo FI2) {
 	return FI1.DTS < FI2.DTS;
 }
 
-static void SortTrackIndices(FFIndex *Index) {
+static void SortTrackIndex(FFIndex *Index) {
 	for (FFIndex::iterator Cur=Index->begin(); Cur!=Index->end(); Cur++)
 		std::sort(Cur->begin(), Cur->end(), DTSComparison);
 }
 
+bool FFIndexer::WriteAudio(SharedAudioContext &AudioContext, FFIndex *Index, int Track, int DBSize, char *ErrorMsg, unsigned MsgSize) {
+	// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
+	if (DBSize > 0) {
+		if (!AudioContext.W64W) {
+			TAudioProperties AP;
+			FillAP(AP, AudioContext.CTX, (*Index)[Track]);
+			char *WName = new char[(*ANC)(SourceFile, Track, &AP, NULL, ANCPrivate)];
+			(*ANC)(SourceFile, Track, &AP, WName, ANCPrivate);
+			std::string WN(WName);
+			delete[] WName;
+			try {
+				AudioContext.W64W = new Wave64Writer(WN.c_str(), av_get_bits_per_sample_format(AudioContext.CTX->sample_fmt),
+					AudioContext.CTX->channels, AudioContext.CTX->sample_rate, AudioFMTIsFloat(AudioContext.CTX->sample_fmt));
+			} catch (...) {
+				_snprintf(ErrorMsg, MsgSize, "Failed to write wave data");
+				return false;
+			}
+		}
+
+		AudioContext.W64W->WriteData(DecodingBuffer, DBSize);
+	}
+
+	return true;
+}
+
 #ifdef HAALISOURCE
-FFHaaliIndexer::FFHaaliIndexer(const char *SourceFile, int SourceMode, char *ErrorMsg, unsigned MsgSize) {
+FFHaaliIndexer::FFHaaliIndexer(const char *Filename, int SourceMode, char *ErrorMsg, unsigned MsgSize) {
+	SourceFile = Filename;
 	this->SourceMode = SourceMode;
 	memset(TrackType, FFMS_TYPE_UNKNOWN, sizeof(TrackType));
 	memset(Codec, 0, sizeof(Codec));
 	memset(CodecPrivate, 0, sizeof(CodecPrivate));
 	memset(CodecPrivateSize, 0, sizeof(CodecPrivateSize));
-	::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	CLSID clsid = HAALI_TS_Parser;
 	if (SourceMode == 1)
@@ -250,13 +244,12 @@ FFHaaliIndexer::FFHaaliIndexer(const char *SourceFile, int SourceMode, char *Err
 	}
 }
 
-FFIndex *FFHaaliIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsigned MsgSize) {
+FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 	// Audio stuff
-	int16_t *db;
 	MatroskaAudioContext *AudioContexts;
-	HaaliIndexMemory IM = HaaliIndexMemory(NumTracks, db, AudioContexts);
+	HaaliIndexMemory IM = HaaliIndexMemory(NumTracks, AudioContexts);
 
-	FFIndex *TrackIndices = new FFIndex();
+	std::auto_ptr<FFIndex> TrackIndices(new FFIndex());
 	TrackIndices->Decoder = 2;
 	if (SourceMode == 1)
 		TrackIndices->Decoder = 3;
@@ -295,9 +288,8 @@ FFIndex *FFHaaliIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsig
 
 	for (;;) {
 		if (IC) {
-			if ((*IC)(0, 1, Private)) {
+			if ((*IC)(0, 1, ICPrivate)) {
 				_snprintf(ErrorMsg, MsgSize, "Cancelled by user");
-				delete TrackIndices;
 				return NULL;
 			}
 		}
@@ -309,28 +301,27 @@ FFIndex *FFHaaliIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsig
 		REFERENCE_TIME Ts, Te;
 		HRESULT hr = pMMF->GetTime(&Ts, &Te);
 
-		unsigned int CurrentTrack = pMMF->GetTrack();
+		unsigned int Track = pMMF->GetTrack();
 
 		// Only create index entries for video for now to save space
-		if (TrackType[CurrentTrack] == FFMS_TYPE_VIDEO) {
-			(*TrackIndices)[CurrentTrack].push_back(TFrameInfo(Ts, pMMF->IsSyncPoint() == S_OK));
-		} else if (TrackType[CurrentTrack] == FFMS_TYPE_AUDIO && (IndexMask & (1 << CurrentTrack))) {
-			(*TrackIndices)[CurrentTrack].push_back(TFrameInfo(Ts, AudioContexts[CurrentTrack].CurrentSample, 0 /* FIXME? */, pMMF->GetActualDataLength(), pMMF->IsSyncPoint() == S_OK));
-			AVCodecContext *AudioCodecContext = AudioContexts[CurrentTrack].CTX;
+		if (TrackType[Track] == FFMS_TYPE_VIDEO) {
+			(*TrackIndices)[Track].push_back(TFrameInfo(Ts, pMMF->IsSyncPoint() == S_OK));
+		} else if (TrackType[Track] == FFMS_TYPE_AUDIO && (IndexMask & (1 << Track))) {
+			(*TrackIndices)[Track].push_back(TFrameInfo(Ts, AudioContexts[Track].CurrentSample, 0 /* FIXME? */, pMMF->GetActualDataLength(), pMMF->IsSyncPoint() == S_OK));
+			AVCodecContext *AudioCodecContext = AudioContexts[Track].CTX;
 			pMMF->GetPointer(&TempPacket.data);
 			TempPacket.size = pMMF->GetActualDataLength();
 
 			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
-				int Ret = avcodec_decode_audio3(AudioCodecContext, db, &dbsize, &TempPacket);
+				int Ret = avcodec_decode_audio3(AudioCodecContext, DecodingBuffer, &dbsize, &TempPacket);
 				if (Ret < 0) {
 					if (IgnoreDecodeErrors) {
-						(*TrackIndices)[CurrentTrack].clear();
-						IndexMask &= ~(1 << CurrentTrack);					
+						(*TrackIndices)[Track].clear();
+						IndexMask &= ~(1 << Track);					
 						break;
 					} else {
 						_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
-						delete TrackIndices;
 						return NULL;
 					}
 				}
@@ -341,33 +332,21 @@ FFIndex *FFHaaliIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsig
 				}
 
 				if (dbsize > 0)
-					AudioContexts[CurrentTrack].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
+					AudioContexts[Track].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
 
-				if (dbsize > 0 && (DumpMask & (1 << CurrentTrack))) {
-					// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
-					if (!AudioContexts[CurrentTrack].W64W) {
-						AVCodecContext *CTX = AudioContexts[CurrentTrack].CTX;
-						char ABuf[50];
-						std::string WN(AudioFile);
-						_snprintf(ABuf, sizeof(ABuf), ".%02d.delay.%d.w64", CurrentTrack, 0);
-						WN += ABuf;
-						
-						AudioContexts[CurrentTrack].W64W = new Wave64Writer(WN.c_str(), av_get_bits_per_sample_format(AudioCodecContext->sample_fmt),
-							AudioCodecContext->channels, AudioCodecContext->sample_rate, AudioFMTIsFloat(AudioCodecContext->sample_fmt));
-					}
-
-					AudioContexts[CurrentTrack].W64W->WriteData(db, dbsize);
-				}
+				if (DumpMask & (1 << Track))
+					WriteAudio(AudioContexts[Track], TrackIndices.get(), Track, dbsize, ErrorMsg, MsgSize);
 			}
 		}
 	}
 
-	SortTrackIndices(TrackIndices);
-	return TrackIndices;
+	SortTrackIndex(TrackIndices.get());
+	return TrackIndices.release();
 }
 #endif
 
-FFMatroskaIndexer::FFMatroskaIndexer(const char *SourceFile, char *ErrorMsg, unsigned MsgSize) {
+FFMatroskaIndexer::FFMatroskaIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) {
+	SourceFile = Filename;
 	char ErrorMessage[256];
 
 	InitStdIoStream(&MC.ST);
@@ -387,13 +366,12 @@ FFMatroskaIndexer::FFMatroskaIndexer(const char *SourceFile, char *ErrorMsg, uns
 	}
 }
 
-FFIndex *FFMatroskaIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsigned MsgSize) {
+FFIndex *FFMatroskaIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 	char ErrorMessage[256];
 
 	// Audio stuff
-	int16_t *db;
 	MatroskaAudioContext *AudioContexts;
-	MatroskaIndexMemory IM = MatroskaIndexMemory(mkv_GetNumTracks(MF), db, AudioContexts, MF, &MC);
+	MatroskaIndexMemory IM = MatroskaIndexMemory(mkv_GetNumTracks(MF), AudioContexts, MF, &MC);
 
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++) {
 		TrackInfo *TI = mkv_GetTrackInfo(MF, i);
@@ -439,7 +417,7 @@ FFIndex *FFMatroskaIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, un
 	int64_t SourceSize = _ftelli64(MC.ST.fp);
 	_fseeki64(MC.ST.fp, CurrentPos, SEEK_SET);
 
-	FFIndex *TrackIndices = new FFIndex();
+	std::auto_ptr<FFIndex> TrackIndices(new FFIndex());
 	TrackIndices->Decoder = 1;
 
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++)
@@ -453,9 +431,8 @@ FFIndex *FFMatroskaIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, un
 	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
 		// Update progress
 		if (IC) {
-			if ((*IC)(_ftelli64(MC.ST.fp), SourceSize, Private)) {
+			if ((*IC)(_ftelli64(MC.ST.fp), SourceSize, ICPrivate)) {
 				_snprintf(ErrorMsg, MsgSize, "Cancelled by user");
-				delete TrackIndices;
 				return NULL;
 			}
 		}
@@ -472,7 +449,7 @@ FFIndex *FFMatroskaIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, un
 
 			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
-				int Ret = avcodec_decode_audio3(AudioCodecContext, db, &dbsize, &TempPacket);
+				int Ret = avcodec_decode_audio3(AudioCodecContext, DecodingBuffer, &dbsize, &TempPacket);
 				if (Ret < 0) {
 					if (IgnoreDecodeErrors) {
 						(*TrackIndices)[Track].clear();
@@ -480,7 +457,6 @@ FFIndex *FFMatroskaIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, un
 						break;
 					} else {
 						_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
-						delete TrackIndices;
 						return NULL;
 					}
 				}
@@ -493,27 +469,14 @@ FFIndex *FFMatroskaIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, un
 				if (dbsize > 0)
 					AudioContexts[Track].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
 
-				if (dbsize > 0 && (DumpMask & (1 << Track))) {
-					// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
-					if (!AudioContexts[Track].W64W) {
-						char ABuf[50];
-						std::string WN(AudioFile);
-						int Offset = StartTime * mkv_TruncFloat(mkv_GetTrackInfo(MF, Track)->TimecodeScale) / (double)1000000;
-						_snprintf(ABuf, sizeof(ABuf), ".%02d.delay.%d.w64", Track, Offset);
-						WN += ABuf;
-						
-						AudioContexts[Track].W64W = new Wave64Writer(WN.c_str(), av_get_bits_per_sample_format(AudioCodecContext->sample_fmt),
-							AudioCodecContext->channels, AudioCodecContext->sample_rate, AudioFMTIsFloat(AudioCodecContext->sample_fmt));
-					}
-
-					AudioContexts[Track].W64W->WriteData(db, dbsize);
-				}
+				if (DumpMask & (1 << Track))
+					WriteAudio(AudioContexts[Track], TrackIndices.get(), Track, dbsize, ErrorMsg, MsgSize);
 			}
 		}
 	}
 
-	SortTrackIndices(TrackIndices);
-	return TrackIndices;
+	SortTrackIndex(TrackIndices.get());
+	return TrackIndices.release();
 }
 
 FFIndexer *FFIndexer::CreateFFIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) {
@@ -543,12 +506,13 @@ FFIndexer *FFIndexer::CreateFFIndexer(const char *Filename, char *ErrorMsg, unsi
 	}
 #endif
 
-	return new FFLAVFIndexer(FormatContext, ErrorMsg, MsgSize);
+	return new FFLAVFIndexer(Filename, FormatContext, ErrorMsg, MsgSize);
 }
 
-FFLAVFIndexer::FFLAVFIndexer(AVFormatContext *FormatContext, char *ErrorMsg, unsigned MsgSize) {
-	IsIndexing = false;
+FFLAVFIndexer::FFLAVFIndexer(const char *Filename, AVFormatContext *FormatContext, char *ErrorMsg, unsigned MsgSize) {
+	SourceFile = Filename;
 	this->FormatContext = FormatContext;
+	IsIndexing = false;
 	
 	if (av_find_stream_info(FormatContext) < 0) {
 		av_close_input_file(FormatContext);
@@ -562,13 +526,12 @@ FFLAVFIndexer::~FFLAVFIndexer() {
 		av_close_input_file(FormatContext);
 }
 
-FFIndex *FFLAVFIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsigned MsgSize) {
+FFIndex *FFLAVFIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 	IsIndexing = true;
 
 	// Audio stuff
-	int16_t *db;
 	FFAudioContext *AudioContexts;
-	FFIndexMemory IM = FFIndexMemory(FormatContext->nb_streams, db, AudioContexts, FormatContext);
+	FFIndexMemory IM = FFIndexMemory(FormatContext->nb_streams, AudioContexts, FormatContext);
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++) {
 		if (IndexMask & (1 << i) && FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
@@ -593,7 +556,7 @@ FFIndex *FFLAVFIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsign
 
 	//
 
-	FFIndex *TrackIndices = new FFIndex();
+	std::auto_ptr<FFIndex> TrackIndices(new FFIndex());
 	TrackIndices->Decoder = 0;
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++)
@@ -607,9 +570,8 @@ FFIndex *FFLAVFIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsign
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
 		// Update progress
 		if (IC) {
-			if ((*IC)(FormatContext->pb->pos, FormatContext->file_size, Private)) {
+			if ((*IC)(FormatContext->pb->pos, FormatContext->file_size, ICPrivate)) {
 				_snprintf(ErrorMsg, MsgSize, "Cancelled by user");
-				delete TrackIndices;
 				return NULL;
 			}
 		}
@@ -625,7 +587,7 @@ FFIndex *FFLAVFIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsign
 
 			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
-				int Ret = avcodec_decode_audio3(AudioCodecContext, db, &dbsize, &TempPacket);
+				int Ret = avcodec_decode_audio3(AudioCodecContext, DecodingBuffer, &dbsize, &TempPacket);
 				if (Ret < 0) {
 					if (IgnoreDecodeErrors) {
 						(*TrackIndices)[Packet.stream_index].clear();
@@ -633,7 +595,6 @@ FFIndex *FFLAVFIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsign
 						break;
 					} else {
 						_snprintf(ErrorMsg, MsgSize, "Audio decoding error");
-						delete TrackIndices;
 						return NULL;
 					}
 				}
@@ -646,28 +607,14 @@ FFIndex *FFLAVFIndexer::DoIndexing(const char *AudioFile, char *ErrorMsg, unsign
 				if (dbsize > 0)
 					AudioContexts[Packet.stream_index].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
 
-				if (dbsize > 0 && (DumpMask & (1 << Packet.stream_index))) {
-					// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
-					if (!AudioContexts[Packet.stream_index].W64W) {
-						char ABuf[50];
-						std::string WN(AudioFile);
-						int Offset = (Packet.dts * FormatContext->streams[Packet.stream_index]->time_base.num)
-							/ (double)(FormatContext->streams[Packet.stream_index]->time_base.den * 1000);
-						_snprintf(ABuf, sizeof(ABuf), ".%02d.delay.%d.w64", Packet.stream_index, Offset);
-						WN += ABuf;
-						
-						AudioContexts[Packet.stream_index].W64W = new Wave64Writer(WN.c_str(), av_get_bits_per_sample_format(AudioCodecContext->sample_fmt),
-							AudioCodecContext->channels, AudioCodecContext->sample_rate, AudioFMTIsFloat(AudioCodecContext->sample_fmt));
-					}
-
-					AudioContexts[Packet.stream_index].W64W->WriteData(db, dbsize);
-				}
+				if (DumpMask & (1 << Packet.stream_index))
+					WriteAudio(AudioContexts[Packet.stream_index], TrackIndices.get(), Packet.stream_index, dbsize, ErrorMsg, MsgSize);
 			}
 		}
 
 		av_free_packet(&Packet);
 	}
 
-	SortTrackIndices(TrackIndices);
-	return TrackIndices;
+	SortTrackIndex(TrackIndices.get());
+	return TrackIndices.release();
 }
