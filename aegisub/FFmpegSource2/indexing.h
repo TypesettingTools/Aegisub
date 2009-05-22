@@ -66,12 +66,13 @@ protected:
 	TAudioNameCallback ANC;
 	void *ANCPrivate;
 	const char *SourceFile;
-	int16_t DecodingBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE * 5];
+	int16_t *DecodingBuffer; 
 
 	bool WriteAudio(SharedAudioContext &AudioContext, FFIndex *Index, int Track, int DBSize, char *ErrorMsg, unsigned MsgSize);
 public:
 	static FFIndexer *CreateFFIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize);
-	virtual ~FFIndexer() { }
+	FFIndexer() { DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE * 5]; }
+	virtual ~FFIndexer() { delete[] DecodingBuffer; }
 	void SetIndexMask(int IndexMask) { this->IndexMask = IndexMask; }
 	void SetDumpMask(int DumpMask) { this->DumpMask = DumpMask; }
 	void SetIgnoreDecodeErrors(bool IgnoreDecodeErrors) { this->IgnoreDecodeErrors = IgnoreDecodeErrors; }
