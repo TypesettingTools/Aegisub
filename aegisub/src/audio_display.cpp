@@ -1589,7 +1589,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 						pos = GetXAtMS(curStartMS+len+curpos);
 
 						// Grabbing syllable boundary
-						if (abs64 (x - pos) < 4) {
+						if (abs64 (x - pos) < 7) {
 							wxCursor cursor(wxCURSOR_SIZEWE);
 							SetCursor(cursor);
 							defCursor = false;
