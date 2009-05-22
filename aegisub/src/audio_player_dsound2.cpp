@@ -153,6 +153,7 @@ public:
 	int64_t GetCurrentFrame();
 	int64_t GetEndFrame();
 	double GetVolume();
+	bool IsDead();
 };
 
 
@@ -456,20 +457,29 @@ DWORD DirectSoundPlayer2Thread::FillAndUnlockBuffers(void *buf1, DWORD buf1sz, v
 
 void DirectSoundPlayer2Thread::CheckError()
 {
-	switch (WaitForSingleObject(error_happened, 0))
+	try
 	{
-	case WAIT_OBJECT_0:
-		throw error_message;
+		switch (WaitForSingleObject(error_happened, 0))
+		{
+		case WAIT_OBJECT_0:
+			throw error_message;
 
-	case WAIT_ABANDONED:
-		throw _T("The DirectShowPlayer2Thread error signal event was abandoned, somehow. This should not happen.");
+		case WAIT_ABANDONED:
+			throw _T("The DirectShowPlayer2Thread error signal event was abandoned, somehow. This should not happen.");
 
-	case WAIT_FAILED:
-		throw _T("Failed checking state of DirectShowPlayer2Thread error signal event.");
+		case WAIT_FAILED:
+			throw _T("Failed checking state of DirectShowPlayer2Thread error signal event.");
 
-	case WAIT_TIMEOUT:
-	default:
-		return;
+		case WAIT_TIMEOUT:
+		default:
+			return;
+		}
+	}
+	catch (...)
+	{
+		ResetEvent(is_playing);
+		ResetEvent(thread_running);
+		throw;
 	}
 }
 
@@ -484,7 +494,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 
 	thread_running        = CreateEvent(0,  TRUE, FALSE, 0);
 	is_playing            = CreateEvent(0,  TRUE, FALSE, 0);
-	error_happened        = CreateEvent(0,  TRUE, FALSE, 0);
+	error_happened        = CreateEvent(0, FALSE, FALSE, 0);
 
 	error_message = 0;
 	volume = 1.0;
@@ -610,6 +620,19 @@ double DirectSoundPlayer2Thread::GetVolume()
 }
 
 
+bool DirectSoundPlayer2Thread::IsDead()
+{
+	switch (WaitForSingleObject(thread_running, 0))
+	{
+	case WAIT_OBJECT_0:
+		return false;
+
+	default:
+		return true;
+	}
+}
+
+
 
 
 DirectSoundPlayer2::DirectSoundPlayer2()
@@ -634,9 +657,24 @@ DirectSoundPlayer2::~DirectSoundPlayer2()
 }
 
 
+bool DirectSoundPlayer2::IsThreadAlive()
+{
+	if (!thread) return false;
+	
+	if (thread->IsDead())
+	{
+		delete thread;
+		thread = 0;
+		return false;
+	}
+
+	return true;
+}
+
+
 void DirectSoundPlayer2::OpenStream()
 {
-	if (thread) return;
+	if (IsThreadAlive()) return;
 
 	try
 	{
@@ -652,7 +690,7 @@ void DirectSoundPlayer2::OpenStream()
 
 void DirectSoundPlayer2::CloseStream()
 {
-	if (!thread) return;
+	if (!IsThreadAlive()) return;
 
 	try
 	{
@@ -670,7 +708,7 @@ void DirectSoundPlayer2::SetProvider(AudioProvider *provider)
 {
 	try
 	{
-		if (thread && provider != GetProvider())
+		if (IsThreadAlive() && provider != GetProvider())
 		{
 			delete thread;
 			thread = new DirectSoundPlayer2Thread(provider, WantedLatency, BufferLength);
@@ -705,7 +743,7 @@ void DirectSoundPlayer2::Stop(bool timerToo)
 {
 	try
 	{
-		if (thread) thread->Stop();
+		if (IsThreadAlive()) thread->Stop();
 
 		if (timerToo && displayTimer) {
 			displayTimer->Stop();
@@ -722,7 +760,7 @@ bool DirectSoundPlayer2::IsPlaying()
 {
 	try
 	{
-		if (!thread) return false;
+		if (!IsThreadAlive()) return false;
 		return thread->IsPlaying();
 	}
 	catch (const wxChar *msg)
@@ -737,7 +775,7 @@ int64_t DirectSoundPlayer2::GetStartPosition()
 {
 	try
 	{
-		if (!thread) return 0;
+		if (!IsThreadAlive()) return 0;
 		return thread->GetStartFrame();
 	}
 	catch (const wxChar *msg)
@@ -752,7 +790,7 @@ int64_t DirectSoundPlayer2::GetEndPosition()
 {
 	try
 	{
-		if (!thread) return 0;
+		if (!IsThreadAlive()) return 0;
 		return thread->GetEndFrame();
 	}
 	catch (const wxChar *msg)
@@ -767,7 +805,7 @@ int64_t DirectSoundPlayer2::GetCurrentPosition()
 {
 	try
 	{
-		if (!thread) return 0;
+		if (!IsThreadAlive()) return 0;
 		return thread->GetCurrentFrame();
 	}
 	catch (const wxChar *msg)
@@ -782,7 +820,7 @@ void DirectSoundPlayer2::SetEndPosition(int64_t pos)
 {
 	try
 	{
-		if (thread) thread->SetEndFrame(pos);
+		if (IsThreadAlive()) thread->SetEndFrame(pos);
 	}
 	catch (const wxChar *msg)
 	{
@@ -795,7 +833,7 @@ void DirectSoundPlayer2::SetCurrentPosition(int64_t pos)
 {
 	try
 	{
-		if (thread) thread->Play(pos, thread->GetEndFrame()-pos);
+		if (IsThreadAlive()) thread->Play(pos, thread->GetEndFrame()-pos);
 	}
 	catch (const wxChar *msg)
 	{
@@ -808,7 +846,7 @@ void DirectSoundPlayer2::SetVolume(double vol)
 {
 	try
 	{
-		if (thread) thread->SetVolume(vol);
+		if (IsThreadAlive()) thread->SetVolume(vol);
 	}
 	catch (const wxChar *msg)
 	{
@@ -821,7 +859,7 @@ double DirectSoundPlayer2::GetVolume()
 {
 	try
 	{
-		if (!thread) return 0;
+		if (!IsThreadAlive()) return 0;
 		return thread->GetVolume();
 	}
 	catch (const wxChar *msg)

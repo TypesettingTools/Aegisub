@@ -49,6 +49,8 @@ protected:
 	int WantedLatency;
 	int BufferLength;
 
+	bool IsThreadAlive();
+
 public:
 	DirectSoundPlayer2();
 	~DirectSoundPlayer2();
