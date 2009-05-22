@@ -51,7 +51,10 @@
 // Constructor
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, double fps) {
 	// initialize ffmpegsource
-	FFMS_Init();
+	if (FFMS_Init()) {
+		FFMS_DeInit();
+		throw _T("FFmpegSource video provider: failed to initialize FFMS2");
+	}
 
 	// clean up variables
 	VideoSource = NULL;
@@ -202,6 +205,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 void FFmpegSourceVideoProvider::Close() {
 	FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
+	FFMS_DeInit();
 
 	DstFormat = FFMS_GetPixFmt("none");
 	LastDstFormat = FFMS_GetPixFmt("none");

@@ -46,7 +46,10 @@
 ///////////
 // Constructor
 FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
-	FFMS_Init();
+	if (FFMS_Init()) {
+		FFMS_DeInit();
+		throw _T("FFmpegSource audio provider: failed to initialize FFMS2");
+	}
 
 	MsgSize = sizeof(FFMSErrMsg);
 	MsgString = _T("FFmpegSource audio provider: ");
@@ -181,6 +184,7 @@ FFmpegSourceAudioProvider::~FFmpegSourceAudioProvider() {
 void FFmpegSourceAudioProvider::Close() {
 	FFMS_DestroyAudioSource(AudioSource);
 	AudioSource = NULL;
+	FFMS_DeInit();
 }
 
 
