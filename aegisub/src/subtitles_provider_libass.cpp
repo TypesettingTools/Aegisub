@@ -80,6 +80,9 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 //////////////
 // Destructor
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
+	ass_free_track(ass_track);
+	ass_renderer_done(ass_renderer);
+	ass_library_done(ass_library);
 }
 
 
