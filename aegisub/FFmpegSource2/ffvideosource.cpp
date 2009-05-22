@@ -721,6 +721,13 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 		throw ErrorMsg;
 	}
 
+	// Calculate the average framerate
+	if (Frames.size() >= 2) {
+		double DTSDiff = (double)(Frames.back().DTS - Frames.front().DTS);
+		VP.FPSDenominator = (unsigned int)(DTSDiff  / (double)1000 / (double)(VP.NumFrames - 1) + 0.5);
+		VP.FPSNumerator = 1000000; 
+	}
+
 	// Output the already decoded frame so it isn't wasted
 	OutputFrame(DecodeFrame);
 
