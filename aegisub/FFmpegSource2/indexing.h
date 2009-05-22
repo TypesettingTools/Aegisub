@@ -22,9 +22,9 @@
 #define	INDEXING_H
 
 #include "utils.h"
-#include "ffms.h"
+#include "wave64writer.h"
 
-#define INDEXVERSION 24
+#define INDEXVERSION 25
 #define INDEXID 0x53920873
 
 struct IndexHeader {
@@ -39,21 +39,45 @@ struct IndexHeader {
 	uint32_t LPPVersion;
 };
 
+class SharedAudioContext {
+public:
+	Wave64Writer *W64W;
+	AVCodecContext *CTX;
+	int64_t CurrentSample;
+
+	SharedAudioContext() {
+		W64W = NULL;
+		CTX = NULL;
+		CurrentSample = 0;
+	}
+
+	~SharedAudioContext() {
+		delete W64W;
+	}
+};
+
 class FFIndexer {
 protected:
 	int IndexMask;
 	int DumpMask;
 	bool IgnoreDecodeErrors;
 	TIndexCallback IC;
-	void *Private;
+	void *ICPrivate;
+	TAudioNameCallback ANC;
+	void *ANCPrivate;
+	const char *SourceFile;
+	int16_t DecodingBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE * 5];
+
+	bool WriteAudio(SharedAudioContext &AudioContext, FFIndex *Index, int Track, int DBSize, char *ErrorMsg, unsigned MsgSize);
 public:
 	static FFIndexer *CreateFFIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize);
 	virtual ~FFIndexer() { }
 	void SetIndexMask(int IndexMask) { this->IndexMask = IndexMask; }
 	void SetDumpMask(int DumpMask) { this->DumpMask = DumpMask; }
 	void SetIgnoreDecodeErrors(bool IgnoreDecodeErrors) { this->IgnoreDecodeErrors = IgnoreDecodeErrors; }
-	void SetProgressCallback(TIndexCallback IC, void *Private) { this->IC = IC; this->Private = Private; }
-	virtual FFIndex *DoIndexing(const char *AudioFile, char *ErrorMsg, unsigned MsgSize) = 0;
+	void SetProgressCallback(TIndexCallback IC, void *ICPrivate) { this->IC = IC; this->ICPrivate = ICPrivate; }
+	void SetAudioNameCallback(TAudioNameCallback ANC, void *ANCPrivate) { this->ANC = ANC; this->ANCPrivate = ANCPrivate; }
+	virtual FFIndex *DoIndexing(char *ErrorMsg, unsigned MsgSize) = 0;
 	virtual int GetNumberOfTracks() = 0;
 	virtual FFMS_TrackType GetTrackType(int Track) = 0;
 	virtual const char *GetTrackCodec(int Track) = 0;
@@ -64,9 +88,9 @@ private:
 	bool IsIndexing;
 	AVFormatContext *FormatContext;
 public:
-	FFLAVFIndexer(AVFormatContext *FormatContext, char *ErrorMsg, unsigned MsgSize);
+	FFLAVFIndexer(const char *Filename, AVFormatContext *FormatContext, char *ErrorMsg, unsigned MsgSize);
 	~FFLAVFIndexer();
-	FFIndex *DoIndexing(const char *AudioFile, char *ErrorMsg, unsigned MsgSize);
+	FFIndex *DoIndexing(char *ErrorMsg, unsigned MsgSize);
 	int GetNumberOfTracks() { return FormatContext->nb_streams; }
 	FFMS_TrackType GetTrackType(int Track) { return static_cast<FFMS_TrackType>(FormatContext->streams[Track]->codec->codec_type); }
 	const char *GetTrackCodec(int Track) { return FormatContext->streams[Track]->codec->codec_name; }
@@ -78,7 +102,7 @@ private:
 	MatroskaReaderContext MC;
 public:
 	FFMatroskaIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize);
-	FFIndex *DoIndexing(const char *AudioFile, char *ErrorMsg, unsigned MsgSize);
+	FFIndex *DoIndexing(char *ErrorMsg, unsigned MsgSize);
 	int GetNumberOfTracks() { return mkv_GetNumTracks(MF); }
 	FFMS_TrackType GetTrackType(int Track) { return HaaliTrackTypeToFFTrackType(mkv_GetTrackInfo(MF, Track)->Type); }
 	const char *GetTrackCodec(int Track) { return mkv_GetTrackInfo(MF, Track)->CodecID; }
@@ -98,7 +122,7 @@ private:
 public:
 	FFHaaliIndexer(const char *Filename, int SourceMode, char *ErrorMsg, unsigned MsgSize);
 	~FFHaaliIndexer() { for (int i = 0; i < 32; i++) delete[] CodecPrivate[i]; }
-	FFIndex *DoIndexing(const char *AudioFile, char *ErrorMsg, unsigned MsgSize);
+	FFIndex *DoIndexing(char *ErrorMsg, unsigned MsgSize);
 	int GetNumberOfTracks() { return NumTracks; }
 	FFMS_TrackType GetTrackType(int Track) { return TrackType[Track]; }
 	const char *GetTrackCodec(int Track) { if (Codec[Track]) return Codec[Track]->name; else return "Unsupported codec/Unknown codec name"; }

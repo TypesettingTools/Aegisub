@@ -117,12 +117,13 @@ struct TAudioProperties {
 	double LastTime;
 };
 
-typedef int (FFMS_CC *TIndexCallback)(int64_t Current, int64_t Total, void *Private);
-typedef int (FFMS_CC *TAudioNameCallback)(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, unsigned FNSize);
+typedef int (FFMS_CC *TIndexCallback)(int64_t Current, int64_t Total, void *ICPrivate);
+typedef int (FFMS_CC *TAudioNameCallback)(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, void *Private);
 
 // Most functions return 0 on success
 // Functions without error message output can be assumed to never fail
-FFMS_API(void) FFMS_Init();
+FFMS_API(int) FFMS_Init();
+FFMS_API(void) FFMS_DeInit();
 FFMS_API(int) FFMS_GetLogLevel();
 FFMS_API(void) FFMS_SetLogLevel(int Level);
 FFMS_API(FFVideo *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
@@ -151,14 +152,13 @@ FFMS_API(FFTrack *) FFMS_GetTrackFromVideo(FFVideo *V);
 FFMS_API(FFTrack *) FFMS_GetTrackFromAudio(FFAudio *A);
 FFMS_API(const TTrackTimeBase *) FFMS_GetTimeBase(FFTrack *T);
 FFMS_API(int) FFMS_WriteTimecodes(FFTrack *T, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_DefaultAudioFilename(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, void *Private);
 FFMS_API(FFIndexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(FFIndex *) FFMS_DoIndexing(FFIndexer *Indexer, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IC, void *Private, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FFIndex *) FFMS_DoIndexing(FFIndexer *Indexer, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(void) FFMS_CancelIndexing(FFIndexer *Indexer);
 FFMS_API(FFIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetPixFmt(const char *Name);
-
-// Deprecated, only provided for compatibility
-FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IC, void *Private, char *ErrorMsg, unsigned MsgSize);
 
 #endif

@@ -31,13 +31,27 @@ extern "C" {
 #define _snprintf snprintf
 #endif
 
-FFMS_API(void) FFMS_Init() {
-	static bool InitDone = false;
-	if (!InitDone) {
+static int InitCount = 0;
+
+FFMS_API(int) FFMS_Init() {
+	if (!InitCount++) {
 		av_register_all();
 		av_log_set_level(AV_LOG_QUIET);
+#ifdef HAALISOURCE
+		if (::CoInitializeEx(NULL, COINIT_MULTITHREADED) != S_OK)
+			return 1;
+#endif
 	}
-	InitDone = true;
+	return 0;
+}
+
+
+FFMS_API(void) FFMS_DeInit() {
+	if (!--InitCount) {
+#ifdef HAALISOURCE
+		::CoUninitialize();
+#endif
+	}
 }
 
 FFMS_API(int) FFMS_GetLogLevel() {
@@ -71,6 +85,8 @@ FFMS_API(FFAudio *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FF
 		switch (Index->Decoder) {
 			case 0: return new FFLAVFAudio(SourceFile, Track, Index, ErrorMsg, MsgSize);
 			case 1: return new FFMatroskaAudio(SourceFile, Track, Index, ErrorMsg, MsgSize);
+			case 2: return new FFHaaliAudio(SourceFile, Track, Index, 0, ErrorMsg, MsgSize);
+			case 3: return new FFHaaliAudio(SourceFile, Track, Index, 1, ErrorMsg, MsgSize);
 			default: 
 				_snprintf(ErrorMsg, MsgSize, "Unsupported format");
 				return NULL;
@@ -190,6 +206,21 @@ FFMS_API(int) FFMS_WriteTimecodes(FFTrack *T, const char *TimecodeFile, char *Er
 	return T->WriteTimecodes(TimecodeFile, ErrorMsg, MsgSize);
 }
 
+FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize) {
+	FFIndexer *Indexer = FFMS_CreateIndexer(SourceFile, ErrorMsg, MsgSize);
+	if (!Indexer)
+		return NULL;
+	return FFMS_DoIndexing(Indexer, IndexMask, DumpMask, ANC, ANCPrivate, IgnoreDecodeErrors, IC, ICPrivate, ErrorMsg, MsgSize);
+}
+
+FFMS_API(int) FFMS_DefaultAudioFilename(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, void *Private) {
+	const char * FormatString = "%s.%d2.w64";
+	if (FileName == NULL)
+		return _scprintf(FormatString, SourceFile, Track) + 1;
+	else
+		return sprintf(FileName, FormatString, SourceFile, Track) + 1;
+}
+
 FFMS_API(FFIndexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg, unsigned MsgSize) {
 	try {
 		return FFIndexer::CreateFFIndexer(SourceFile, ErrorMsg, MsgSize);
@@ -198,12 +229,13 @@ FFMS_API(FFIndexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg,
 	}
 }
 
-FFMS_API(FFIndex *) FFMS_DoIndexing(FFIndexer *Indexer, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IC, void *Private, char *ErrorMsg, unsigned MsgSize) {
+FFMS_API(FFIndex *) FFMS_DoIndexing(FFIndexer *Indexer, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize) {
 	Indexer->SetIndexMask(IndexMask);
 	Indexer->SetDumpMask(DumpMask);
 	Indexer->SetIgnoreDecodeErrors(IgnoreDecodeErrors);
-	Indexer->SetProgressCallback(IC, Private);
-	FFIndex *Index = Indexer->DoIndexing(AudioFile, ErrorMsg, MsgSize);
+	Indexer->SetProgressCallback(IC, ICPrivate);
+	Indexer->SetAudioNameCallback(ANC, ANCPrivate);
+	FFIndex *Index = Indexer->DoIndexing(ErrorMsg, MsgSize);
 	delete Indexer;
 	return Index;
 }
@@ -228,11 +260,4 @@ FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFIndex *Index, char *Error
 
 FFMS_API(int) FFMS_GetPixFmt(const char *Name) {
 	return avcodec_get_pix_fmt(Name);
-}
-
-FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, const char *AudioFile, bool IgnoreDecodeErrors, TIndexCallback IC, void *Private, char *ErrorMsg, unsigned MsgSize) {
-	FFIndexer *Indexer = FFMS_CreateIndexer(SourceFile, ErrorMsg, MsgSize);
-	if (!Indexer)
-		return NULL;
-	return FFMS_DoIndexing(Indexer, IndexMask, DumpMask, AudioFile, IgnoreDecodeErrors, IC, Private, ErrorMsg, MsgSize);
 }

@@ -23,125 +23,97 @@ extern "C" {
 #include <libavutil/md5.h>
 }
 
+#include <cassert>
 #include <iostream>
 #include <fstream>
 #include "ffms.h"
 
 using namespace std;
 
-//#define VERBOSE
+#define VERBOSE
 
 static int FFMS_CC UpdateProgress(int64_t Current, int64_t Total, void *Private) {
 
-	static int LastPercentage = -1;
+	int LastPercentage = (int)Private;
 	int Percentage = int((double(Current)/double(Total)) * 100);
 
 	if (Percentage <= LastPercentage)
 		return 0;
 
-	LastPercentage = Percentage;
+	Private = (void *)Percentage;
 
 #ifdef VERBOSE
-	cout << "Indexing " << static_cast<char *>(Private) << ", please wait... " << Percentage << "% \r" << flush;
+	cout << "Indexing, please wait... " << Percentage << "% \r" << flush;
 #endif
 
 	return 0;
 }
 
-int main(int argc, char *argv[]) {
+void TestFullDump1(char *SrcFile, bool WithAudio) {
 	char ErrorMsg[2000];
-	AVMD5 *ctx = reinterpret_cast<AVMD5 *>(new uint8_t[av_md5_size]);
-	uint8_t md5sum[16];
+	int ret = FFMS_Init();
+	assert(!ret);
 
-	if (argc != 2)
-		return -1;
+	FFIndexer *FIdx = FFMS_CreateIndexer(SrcFile, ErrorMsg, sizeof(ErrorMsg));
+	assert(FIdx);
+	FFMS_CancelIndexing(FIdx);
+	FIdx = FFMS_CreateIndexer(SrcFile, ErrorMsg, sizeof(ErrorMsg));
+	assert(FIdx);
 
-	FFMS_Init();
-#ifdef VERBOSE
-	FFMS_SetLogLevel(AV_LOG_INFO);
-#endif
+	FFIndex *FI = FFMS_DoIndexing(FIdx, -1, -1, FFMS_DefaultAudioFilename, NULL, false, UpdateProgress, NULL, ErrorMsg, sizeof(ErrorMsg));
+	assert(FI);
 
-	int FMT_YV12A = FFMS_GetPixFmt("yuv420p");
-	int FMT_YV12B = FFMS_GetPixFmt("yuvj420p");
-	int FMT_YUY2 = FFMS_GetPixFmt("yuv422p");
+	int vtrack = FFMS_GetFirstTrackOfType(FI, FFMS_TYPE_VIDEO, ErrorMsg, sizeof(ErrorMsg));
+	assert(vtrack >= 0);
+	int atrack = FFMS_GetFirstTrackOfType(FI, FFMS_TYPE_AUDIO, ErrorMsg, sizeof(ErrorMsg));
+	assert(atrack >= 0);
 
-	av_md5_init(ctx);
-	FFIndex *FI = FFMS_MakeIndex(argv[1], -1, 0, NULL, false, UpdateProgress, argv[1], ErrorMsg, sizeof(ErrorMsg));
-	if (!FI) {
-		cout << "Indexing error: " << ErrorMsg << endl;
-		return 1;
-	}
+	FFVideo *V = FFMS_CreateVideoSource(SrcFile, vtrack, FI, "", 1, 1, ErrorMsg, sizeof(ErrorMsg));
+	assert(V);
 
-	int track = FFMS_GetFirstTrackOfType(FI, FFMS_TYPE_VIDEO, ErrorMsg, sizeof(ErrorMsg));
-	if (track < 0) {
-		cout << "No usable track error: " << ErrorMsg << endl;
-		return 2;
-	}
+	if (WithAudio) {
+		uint8_t *DB = new uint8_t[100000];
+		FFAudio *A = FFMS_CreateAudioSource(SrcFile, atrack, FI, ErrorMsg, sizeof(ErrorMsg));
+		assert(A);
 
-	FFVideo *V = FFMS_CreateVideoSource(argv[1], track, FI, "", 1, 1, ErrorMsg, sizeof(ErrorMsg));
-	FFMS_DestroyFFIndex(FI);
-	if (!V) {
-		cout << "Video source error: " << ErrorMsg << endl;
-		return 3;
+		const TAudioProperties *AP = FFMS_GetAudioProperties(A);
+		for (int i = 0; i < AP->NumSamples / 1000; i++) {
+			ret = FFMS_GetAudio(A, DB, i * 1000, 1000, ErrorMsg, sizeof(ErrorMsg));
+			assert(!ret);
+		}
+
+		FFMS_DestroyAudioSource(A);
+		delete[] DB;
 	}
 
 	const TVideoProperties *VP = FFMS_GetVideoProperties(V);
 	for (int i = 0; i < VP->NumFrames; i++) {
 		const TAVFrameLite *AVF =  FFMS_GetFrame(V, i, ErrorMsg, sizeof(ErrorMsg));
-		if (!AVF) {
-			cout << "Frame request error: " << ErrorMsg << " at frame " << i << endl;
-			return 4;
-		}
-
-#ifdef VERBOSE
-	int LastPercentage = -1;
-	int Percentage = int((double(i)/double(VP->NumFrames)) * 100);
-
-	if (Percentage > LastPercentage) {
-		LastPercentage = Percentage;
-		cout << "Requesting frames " << argv[1] << ", please wait... " << Percentage << "% \r" << flush;
-	}
-#endif
-
-		uint8_t *Data[3];
-		Data[0] = AVF->Data[0];
-		Data[1] = AVF->Data[1];
-		Data[2] = AVF->Data[2];
-
-		if (VP->VPixelFormat == FMT_YV12A || VP->VPixelFormat == FMT_YV12B) {
-			for (int j = 0; j < VP->Height / 2; j++) {
-				av_md5_update(ctx, Data[0], VP->Width);
-				Data[0] += AVF->Linesize[0];
-				av_md5_update(ctx, Data[0], VP->Width);
-				Data[0] += AVF->Linesize[0];
-				av_md5_update(ctx, Data[1], VP->Width / 2);
-				Data[1] += AVF->Linesize[1];
-				av_md5_update(ctx, Data[2], VP->Width / 2);
-				Data[2] += AVF->Linesize[2];
-			}
-		} else if (VP->VPixelFormat == FMT_YUY2) {
-			for (int j = 0; j < VP->Height / 2; j++) {
-				av_md5_update(ctx, Data[0], VP->Width);
-				Data[0] += AVF->Linesize[0];
-				av_md5_update(ctx, Data[0], VP->Width);
-				Data[0] += AVF->Linesize[0];
-				av_md5_update(ctx, Data[1], VP->Width / 2);
-				Data[1] += AVF->Linesize[1];
-				av_md5_update(ctx, Data[2], VP->Width / 2);
-				Data[2] += AVF->Linesize[2];
-			}
-		}
+		assert(AVF);
 	}
 
+	FFMS_DestroyFFIndex(FI);
 	FFMS_DestroyVideoSource(V);
-	av_md5_final(ctx, md5sum);
+	FFMS_DeInit();
+}
 
-	delete[] reinterpret_cast<uint8_t *>(ctx);
+int main(int argc, char *argv[]) {
+	char *TestFiles1[10];
+	TestFiles1[0] = "[FLV1]_The_Melancholy_of_Haruhi_Suzumiya_-_Full_Clean_Ending.flv";
+	TestFiles1[1] = "jra_jupiter.avi";
+	TestFiles1[2] = "h264_16-bframes_16-references_pyramid_crash-indexing.mkv";
+	TestFiles1[3] = "pyramid-adaptive-10-bframes.mkv";
+	TestFiles1[4] = "negative-timecodes.avi";
+	TestFiles1[5] = "Zero1_ITV2_TS_Test.ts";
 
-	cout << "Test successful, MD5: " << hex;
-	for (int i = 0; i < sizeof(md5sum); i++)
-		cout << static_cast<unsigned>(md5sum[i]);
-	cout << endl;
+	for (int i = 0; i < 5; i++)
+		TestFullDump1(TestFiles1[5], true);
+/*
+	TestFullDump1(TestFiles1[5], false);
 
+	for (int i = 0; i < 5; i++)
+		TestFullDump1(TestFiles1[i], true);
+	TestFullDump1(TestFiles1[5], false);
+*/
 	return 0;
 }
