@@ -62,7 +62,7 @@ void TAudioCache::CacheBlock(int64_t Start, int64_t Samples, uint8_t *SrcData) {
 		}
 
 		push_front(new TAudioBlock(Start, Samples, SrcData, Samples * BytesPerSample));
-		if (size() >= MaxCacheBlocks) {
+		if (static_cast<int>(size()) >= MaxCacheBlocks) {
 			delete back();
 			pop_back();
 		}
@@ -427,9 +427,9 @@ int FFMatroskaAudio::GetAudio(void *Buf, int64_t Start, int64_t Count, char *Err
 		}
 
 		CurrentAudioBlock++;
-		if (CurrentAudioBlock < Frames.size())
+		if (CurrentAudioBlock < static_cast<int>(Frames.size()))
 			CurrentSample = Frames[CurrentAudioBlock].SampleStart;
-	} while (Start + Count - CacheEnd > 0 && CurrentAudioBlock < Frames.size());
+	} while (Start + Count - CacheEnd > 0 && CurrentAudioBlock < static_cast<int>(Frames.size()));
 
 	return 0;
 }
@@ -666,7 +666,7 @@ int FFHaaliAudio::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorM
 	if (CacheEnd == Start + Count)
 		return 0;
 
-	int64_t CurrentAudioBlock;
+	int CurrentAudioBlock;
 	// Is seeking required to decode the requested samples?
 //	if (!(CurrentSample >= Start && CurrentSample <= CacheEnd)) {
 	if (CurrentSample != CacheEnd) {
@@ -702,9 +702,9 @@ int FFHaaliAudio::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorM
 		}
 
 		CurrentAudioBlock++;
-		if (CurrentAudioBlock < Frames.size())
+		if (CurrentAudioBlock < static_cast<int>(Frames.size()))
 			CurrentSample = Frames[CurrentAudioBlock].SampleStart;
-	} while (Start + Count - CacheEnd > 0 && CurrentAudioBlock < Frames.size());
+	} while (Start + Count - CacheEnd > 0 && CurrentAudioBlock < static_cast<int>(Frames.size()));
 
 	return 0;
 }

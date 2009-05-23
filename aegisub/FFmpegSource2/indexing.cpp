@@ -511,6 +511,14 @@ FFIndexer *FFIndexer::CreateFFIndexer(const char *Filename, char *ErrorMsg, unsi
 	return new FFLAVFIndexer(Filename, FormatContext, ErrorMsg, MsgSize);
 }
 
+FFIndexer::FFIndexer() {
+	DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE * 5];
+}
+
+FFIndexer::~FFIndexer() {
+	delete[] DecodingBuffer;
+}
+
 FFLAVFIndexer::FFLAVFIndexer(const char *Filename, AVFormatContext *FormatContext, char *ErrorMsg, unsigned MsgSize) {
 	SourceFile = Filename;
 	this->FormatContext = FormatContext;

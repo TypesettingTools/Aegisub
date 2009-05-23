@@ -24,7 +24,7 @@
 #include "utils.h"
 #include "wave64writer.h"
 
-#define INDEXVERSION 25
+#define INDEXVERSION 26
 #define INDEXID 0x53920873
 
 struct IndexHeader {
@@ -71,8 +71,8 @@ protected:
 	bool WriteAudio(SharedAudioContext &AudioContext, FFIndex *Index, int Track, int DBSize, char *ErrorMsg, unsigned MsgSize);
 public:
 	static FFIndexer *CreateFFIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize);
-	FFIndexer() { DecodingBuffer = new int16_t[AVCODEC_MAX_AUDIO_FRAME_SIZE * 5]; }
-	virtual ~FFIndexer() { delete[] DecodingBuffer; }
+	FFIndexer();
+	virtual ~FFIndexer();
 	void SetIndexMask(int IndexMask) { this->IndexMask = IndexMask; }
 	void SetDumpMask(int DumpMask) { this->DumpMask = DumpMask; }
 	void SetIgnoreDecodeErrors(bool IgnoreDecodeErrors) { this->IgnoreDecodeErrors = IgnoreDecodeErrors; }

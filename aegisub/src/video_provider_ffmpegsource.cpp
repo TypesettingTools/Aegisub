@@ -166,7 +166,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 
 	// build list of keyframes and timecodes
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
-		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum, FFMSErrorMessage, MessageSize);
+		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
 		if (CurFrameData == NULL) {
 			wxString temp(FFMSErrorMessage, wxConvUTF8);
 			ErrorMsg << _T("Couldn't get framedata for frame ") << CurFrameNum << _T(": ") << temp;
@@ -254,7 +254,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 
 	// requested format was changed since last time we were called, (re)set output format
 	if (LastDstFormat != DstFormat) {
-		if (FFMS_SetOutputFormat(VideoSource, DstFormat, w, h, FFMSErrorMessage, MessageSize)) {
+		if (FFMS_SetOutputFormat(VideoSource, 1 << DstFormat, w, h, FFMSErrorMessage, MessageSize)) {
 			wxString temp(FFMSErrorMessage, wxConvUTF8);
 			ErrorMsg << _T("Failed to set output format: ") << temp;
 			throw ErrorMsg;

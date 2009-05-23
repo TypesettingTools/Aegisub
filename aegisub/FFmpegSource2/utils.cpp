@@ -156,17 +156,17 @@ int FFIndex::WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize)
 	IndexStream.write(reinterpret_cast<char *>(&IH), sizeof(IH));
 	
 	for (unsigned int i = 0; i < IH.Tracks; i++) {
-		int TT = at(i).TT;
+		FFMS_TrackType TT = at(i).TT;
 		IndexStream.write(reinterpret_cast<char *>(&TT), sizeof(TT));
 		int64_t Num = at(i).TB.Num;
 		IndexStream.write(reinterpret_cast<char *>(&Num), sizeof(Num));
 		int64_t Den = at(i).TB.Den;
 		IndexStream.write(reinterpret_cast<char *>(&Den), sizeof(Den));
-		size_t Frames = at(i).size();
+		int64_t Frames = at(i).size();
 		IndexStream.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
 
-		for (size_t j = 0; j < Frames; j++)
-			IndexStream.write(reinterpret_cast<char *>(&(at(i)[j])), sizeof(TFrameInfo));
+		for (FFTrack::iterator Cur=at(i).begin(); Cur!=at(i).end(); Cur++)
+			IndexStream.write(reinterpret_cast<char *>(&*Cur), sizeof(TFrameInfo));
 	}
 
 	return 0;
@@ -211,7 +211,7 @@ int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) 
 			Index.read(reinterpret_cast<char *>(&Num), sizeof(Num));
 			int64_t Den;
 			Index.read(reinterpret_cast<char *>(&Den), sizeof(Den));
-			size_t Frames;
+			int64_t Frames;
 			Index.read(reinterpret_cast<char *>(&Frames), sizeof(Frames));
 			push_back(FFTrack(Num, Den, TT));
 

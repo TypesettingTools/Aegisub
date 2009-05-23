@@ -21,13 +21,6 @@
 #ifndef FFAVISYNTH_H
 #define FFAVISYNTH_H
 
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
-#include <libpostproc/postprocess.h>
-}
-
 #include <windows.h>
 #include "avisynth.h"
 #include "ffms.h"
@@ -36,12 +29,10 @@ class AvisynthVideoSource : public IClip {
 private:
 	VideoInfo VI;
 	FFVideo *V;
-	SwsContext *SWS;
-	PixelFormat ConvertToFormat;
 	int FPSNum;
 	int FPSDen;
 
-	void InitOutputFormat(enum PixelFormat CurrentFormat, IScriptEnvironment *Env);
+	void InitOutputFormat(IScriptEnvironment *Env);
 	PVideoFrame OutputFrame(const TAVFrameLite *SrcPicture, IScriptEnvironment *Env);
 public:
 	AvisynthVideoSource(const char *SourceFile, int Track, FFIndex *Index, int FPSNum, int FPSDen, const char *PP, int Threads, int SeekMode, IScriptEnvironment* Env, char *ErrorMsg, unsigned MsgSize);
