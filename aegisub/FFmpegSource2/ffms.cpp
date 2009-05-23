@@ -158,7 +158,7 @@ FFMS_API(int) FFMS_GetNumTracks(FFIndex *Index) {
 	return Index->size();
 }
 
-FFMS_API(int) FFMS_GetNumTracksI(FFIndexer *Indexer, int Track) {
+FFMS_API(int) FFMS_GetNumTracksI(FFIndexer *Indexer) {
 	return Indexer->GetNumberOfTracks();
 }
 
@@ -168,6 +168,10 @@ FFMS_API(FFMS_TrackType) FFMS_GetTrackType(FFTrack *T) {
 
 FFMS_API(FFMS_TrackType) FFMS_GetTrackTypeI(FFIndexer *Indexer, int Track) {
 	return Indexer->GetTrackType(Track);
+}
+
+FFMS_API(const char *) FFMS_GetCodecNameI(FFIndexer *Indexer, int Track) {
+	return Indexer->GetTrackCodec(Track);
 }
 
 FFMS_API(int) FFMS_GetNumFrames(FFTrack *T) {

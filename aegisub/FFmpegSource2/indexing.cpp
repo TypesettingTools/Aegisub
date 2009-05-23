@@ -346,6 +346,7 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 #endif
 
 FFMatroskaIndexer::FFMatroskaIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) {
+	memset(Codec, 0, sizeof(Codec));
 	SourceFile = Filename;
 	char ErrorMessage[256];
 
@@ -363,6 +364,11 @@ FFMatroskaIndexer::FFMatroskaIndexer(const char *Filename, char *ErrorMsg, unsig
 		fclose(MC.ST.fp);
 		_snprintf(ErrorMsg, MsgSize, "Can't parse Matroska file: %s", ErrorMessage);
 		throw ErrorMsg;
+	}
+
+	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++) {
+		TrackInfo *TI = mkv_GetTrackInfo(MF, i);
+		Codec[i] = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
 	}
 }
 
@@ -391,7 +397,7 @@ FFIndex *FFMatroskaIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 				}
 			}
 
-			AVCodec *AudioCodec = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
+			AVCodec *AudioCodec = Codec[i];
 			if (AudioCodec == NULL) {
 				av_free(AudioCodecContext);
 				AudioContexts[i].CTX = NULL;

@@ -94,19 +94,22 @@ public:
 	FFIndex *DoIndexing(char *ErrorMsg, unsigned MsgSize);
 	int GetNumberOfTracks() { return FormatContext->nb_streams; }
 	FFMS_TrackType GetTrackType(int Track) { return static_cast<FFMS_TrackType>(FormatContext->streams[Track]->codec->codec_type); }
-	const char *GetTrackCodec(int Track) { return FormatContext->streams[Track]->codec->codec_name; }
+	const char *GetTrackCodec(int Track) { 
+		return (avcodec_find_decoder(FormatContext->streams[Track]->codec->codec_id))->long_name;
+	}
 };
 
 class FFMatroskaIndexer : public FFIndexer {
 private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
+	AVCodec *Codec[32];
 public:
 	FFMatroskaIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize);
 	FFIndex *DoIndexing(char *ErrorMsg, unsigned MsgSize);
 	int GetNumberOfTracks() { return mkv_GetNumTracks(MF); }
 	FFMS_TrackType GetTrackType(int Track) { return HaaliTrackTypeToFFTrackType(mkv_GetTrackInfo(MF, Track)->Type); }
-	const char *GetTrackCodec(int Track) { return mkv_GetTrackInfo(MF, Track)->CodecID; }
+	const char *GetTrackCodec(int Track) { if (Codec[Track]) return Codec[Track]->long_name; else return "Unsupported codec/Unknown codec name"; }
 };
 
 #ifdef HAALISOURCE
@@ -126,7 +129,7 @@ public:
 	FFIndex *DoIndexing(char *ErrorMsg, unsigned MsgSize);
 	int GetNumberOfTracks() { return NumTracks; }
 	FFMS_TrackType GetTrackType(int Track) { return TrackType[Track]; }
-	const char *GetTrackCodec(int Track) { if (Codec[Track]) return Codec[Track]->name; else return "Unsupported codec/Unknown codec name"; }
+	const char *GetTrackCodec(int Track) { if (Codec[Track]) return Codec[Track]->long_name; else return "Unsupported codec/Unknown codec name"; }
 };
 
 #endif // HAALISOURCE
