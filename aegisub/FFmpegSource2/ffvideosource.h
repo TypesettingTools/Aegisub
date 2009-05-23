@@ -69,7 +69,7 @@ public:
 	FFTrack *GetFFTrack() { return &Frames; }
 	virtual TAVFrameLite *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
 	TAVFrameLite *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
-	int SetOutputFormat(int TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize);
+	int SetOutputFormat(int64_t TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize);
 	void ResetOutputFormat();
 };
 

@@ -118,15 +118,14 @@ TAVFrameLite *FFVideo::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgS
 	return GetFrame(Frame, ErrorMsg, MsgSize);
 }
 
-int FFVideo::SetOutputFormat(int TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
-//  FIXME: investigate the possible bug in avcodec_find_best_pix_fmt
-//	int Loss;
-//	int OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
-//		CodecContext->pix_fmt, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
-//	if (OutputFormat == -1)
-//		return -1;
-
-	PixelFormat OutputFormat = static_cast<PixelFormat>(TargetFormats);
+int FFVideo::SetOutputFormat(int64_t TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
+	int Loss;
+	PixelFormat OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
+		CodecContext->pix_fmt, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
+	if (OutputFormat == PIX_FMT_NONE) {
+		_snprintf(ErrorMsg, MsgSize, "No suitable output format found");
+		return -1;
+	}
 
 	SwsContext *NewSWS = NULL;
 	if (CodecContext->pix_fmt != OutputFormat || Width != CodecContext->width || Height != CodecContext->height) {

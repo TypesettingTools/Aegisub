@@ -138,7 +138,7 @@ static AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScri
 		Env->ThrowError("FFVideoSource: No video track found");
 
 	if (strcmp(Timecodes, "")) {
-		if (FFMS_WriteTimecodes(FFMS_GetTrackFromIndex(Index, Track, ErrorMsg, MsgSize), Timecodes, ErrorMsg, MsgSize)) {
+		if (FFMS_WriteTimecodes(FFMS_GetTrackFromIndex(Index, Track), Timecodes, ErrorMsg, MsgSize)) {
 			FFMS_DestroyFFIndex(Index);
 			Env->ThrowError("FFVideoSource: %s", ErrorMsg);
 		}

@@ -98,7 +98,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		}
 
 		for (int i = 0; i < NumTracks; i++) {
-			FFTrack *FrameData = FFMS_GetTrackFromIndex(Index, i, FFMSErrMsg, MsgSize);
+			FFTrack *FrameData = FFMS_GetTrackFromIndex(Index, i);
 			if (FrameData == NULL) {
 				FFMS_DestroyFFIndex(Index);
 				Index = NULL;

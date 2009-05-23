@@ -126,8 +126,8 @@ FFMS_API(int) FFMS_GetAudio(FFAudio *A, void *Buf, int64_t Start, int64_t Count,
 	return A->GetAudio(Buf, Start, Count, ErrorMsg, MsgSize);
 }
 
-FFMS_API(int) FFMS_SetOutputFormat(FFVideo *V, int TargetFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
-	return V->SetOutputFormat(TargetFormat, Width, Height, ErrorMsg, MsgSize);
+FFMS_API(int) FFMS_SetOutputFormat(FFVideo *V, int64_t TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
+	return V->SetOutputFormat(TargetFormats, Width, Height, ErrorMsg, MsgSize);
 }
 
 FFMS_API(void) FFMS_ResetOutputFormat(FFVideo *V) {
@@ -174,22 +174,12 @@ FFMS_API(int) FFMS_GetNumFrames(FFTrack *T) {
 	return T->size();
 }
 
-FFMS_API(const FFFrameInfo *) FFMS_GetFrameInfo(FFTrack *T, int Frame, char *ErrorMsg, unsigned MsgSize) {
-	if (Frame < 0 || Frame >= static_cast<int>(T->size())) {
-		_snprintf(ErrorMsg, MsgSize, "Invalid frame specified");
-		return NULL;
-	} else {
-		return reinterpret_cast<FFFrameInfo *>(&(*T)[Frame]);
-	}	
+FFMS_API(const FFFrameInfo *) FFMS_GetFrameInfo(FFTrack *T, int Frame) {
+	return reinterpret_cast<FFFrameInfo *>(&(*T)[Frame]);
 }
 
-FFMS_API(FFTrack *) FFMS_GetTrackFromIndex(FFIndex *Index, int Track, char *ErrorMsg, unsigned MsgSize) {
-	if (Track < 0 || Track >= static_cast<int>(Index->size())) {
-		_snprintf(ErrorMsg, MsgSize, "Invalid track specified");
-		return NULL;
-	} else {
-		return &(*Index)[Track];
-	}	
+FFMS_API(FFTrack *) FFMS_GetTrackFromIndex(FFIndex *Index, int Track) {
+	return &(*Index)[Track];
 }
 
 FFMS_API(FFTrack *) FFMS_GetTrackFromVideo(FFVideo *V) {
