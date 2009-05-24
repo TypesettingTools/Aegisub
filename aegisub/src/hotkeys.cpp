@@ -274,7 +274,15 @@ void HotkeyManager::Load() {
 	using namespace std;
 	TextFileReader file(filename);
 	wxString header = file.ReadLineFromFile();
-	if (header != _T("[Hotkeys]")) throw _T("Invalid hotkeys file");
+	if (header != _T("[Hotkeys]")) {
+		wxFileName backupfn(filename);
+		backupfn.SetFullName(_T("hotkeys.bak"));
+		wxCopyFile(filename, backupfn.GetFullPath());
+		modified = true;
+		Save();
+		wxLogWarning(_T("Hotkeys file corrupted, defaults restored.\nA backup of the corrupted file was made."));
+		return;
+	}
 
 	// Get variables
 	wxString curLine;
