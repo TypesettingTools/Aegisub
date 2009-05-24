@@ -32,26 +32,32 @@ extern "C" {
 #endif
 
 static int InitCount = 0;
+static bool FFmpegInited = false;
 
 FFMS_API(int) FFMS_Init() {
-	if (!InitCount++) {
+	if (!FFmpegInited) {
 		av_register_all();
 		av_log_set_level(AV_LOG_QUIET);
+	}
+
+	if (!InitCount) {
 #ifdef HAALISOURCE
-		if (::CoInitializeEx(NULL, COINIT_MULTITHREADED) != S_OK)
-			return 1;
+		::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 #endif
 	}
-	return 0;
+
+	InitCount++;
+	return InitCount;
 }
 
-
-FFMS_API(void) FFMS_DeInit() {
-	if (!--InitCount) {
+FFMS_API(int) FFMS_DeInit() {
+	InitCount--;
+	if (!InitCount) {
 #ifdef HAALISOURCE
 		::CoUninitialize();
 #endif
 	}
+	return InitCount;
 }
 
 FFMS_API(int) FFMS_GetLogLevel() {
