@@ -51,15 +51,17 @@ static int FFMS_CC UpdateProgress(int64_t Current, int64_t Total, void *Private)
 
 void TestFullDump1(char *SrcFile, bool WithAudio) {
 	int Private;
+	int ret;
 	char ErrorMsg[2000];
-	int ret = FFMS_Init();
-	assert(!ret);
+	FFMS_Init();
 
 	FFIndexer *FIdx = FFMS_CreateIndexer(SrcFile, ErrorMsg, sizeof(ErrorMsg));
 	assert(FIdx);
 	FFMS_CancelIndexing(FIdx);
 	FIdx = FFMS_CreateIndexer(SrcFile, ErrorMsg, sizeof(ErrorMsg));
 	assert(FIdx);
+
+	const char *Name =  FFMS_GetCodecNameI(FIdx, 0);
 
 	FFIndex *FI = FFMS_DoIndexing(FIdx, -1, -1, FFMS_DefaultAudioFilename, NULL, false, UpdateProgress, &Private, ErrorMsg, sizeof(ErrorMsg));
 	assert(FI);
@@ -95,7 +97,6 @@ void TestFullDump1(char *SrcFile, bool WithAudio) {
 
 	FFMS_DestroyFFIndex(FI);
 	FFMS_DestroyVideoSource(V);
-	FFMS_DeInit();
 }
 
 int main(int argc, char *argv[]) {
@@ -109,7 +110,7 @@ int main(int argc, char *argv[]) {
 	TestFiles1[6] = "pyramid-adaptive-10-bframes.mkv";
 
 	for (int i = 0; i < 5; i++)
-		TestFullDump1(TestFiles1[i], true);
+		TestFullDump1(TestFiles1[3], true);
 /*
 	TestFullDump1(TestFiles1[5], false);
 

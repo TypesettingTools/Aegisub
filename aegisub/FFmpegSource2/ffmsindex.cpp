@@ -186,10 +186,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	if (FFMS_Init()) {
-		std::cout << std::endl << "Error: initialization failed" << std::endl;
-		return 1;
-	}
+	FFMS_Init();
 
 	if (Verbose)
 		FFMS_SetLogLevel(AV_LOG_INFO);
@@ -211,6 +208,5 @@ int main(int argc, char *argv[]) {
 	}
 
 	FFMS_DestroyFFIndex(Index);
-	FFMS_DeInit();
 	return 0;
 }
