@@ -202,7 +202,7 @@ int main(int argc, char *argv[]) {
 	}
 
 #ifdef _WIN32
-	if (!SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
+	if (FAILED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
 		std::cout << "COM initialization failure" << std::endl;
 		return 1;
 	}
@@ -230,6 +230,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	FFMS_DestroyFFIndex(Index);
+#ifdef _WIN32
 	CoUninitialize();
+#endif
 	return 0;
 }
