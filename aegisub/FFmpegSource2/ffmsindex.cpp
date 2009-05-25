@@ -26,6 +26,10 @@ extern "C" {
 #include <objbase.h>
 #endif
 
+#ifdef __UNIX__
+#define _snprintf snprintf
+#endif
+
 #include <iostream> 
 #include <string>
 #include <stdlib.h>
