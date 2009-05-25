@@ -64,6 +64,8 @@ private:
 	unsigned MessageSize;
 	wxString ErrorMsg;
 
+	bool COMInited;
+
 	void LoadVideo(Aegisub::String filename, double fps);
 	void Close();
 
