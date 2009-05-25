@@ -45,16 +45,21 @@
 #include "video_context.h"
 #include "options.h"
 #include "aegisub_endian.h"
+#ifdef WIN32
+#include <objbase.h>
+#endif
 
 
 ///////////////
 // Constructor
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, double fps) {
-	// initialize ffmpegsource
-	if (FFMS_Init()) {
-		FFMS_DeInit();
-		throw _T("FFmpegSource video provider: failed to initialize FFMS2");
+#ifdef WIN32
+	if (!SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
+		throw _T("FFmpegSource video provider: COM initialization failure");
 	}
+#endif
+	// initialize ffmpegsource
+	FFMS_Init();
 
 	// clean up variables
 	VideoSource = NULL;
@@ -78,6 +83,9 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 // Destructor
 FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 	Close();
+#ifdef WIN32
+	CoUninitialize();
+#endif
 }
 
 ///////////////
@@ -205,7 +213,6 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 void FFmpegSourceVideoProvider::Close() {
 	FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
-	FFMS_DeInit();
 
 	DstFormat = FFMS_GetPixFmt("none");
 	LastDstFormat = FFMS_GetPixFmt("none");

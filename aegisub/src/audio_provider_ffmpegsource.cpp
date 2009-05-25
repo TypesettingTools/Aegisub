@@ -41,15 +41,20 @@
 // Headers
 #include "include/aegisub/aegisub.h"
 #include "audio_provider_ffmpegsource.h"
+#ifdef WIN32
+#include <objbase.h>
+#endif
 
 
 ///////////
 // Constructor
 FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
-	if (FFMS_Init()) {
-		FFMS_DeInit();
-		throw _T("FFmpegSource audio provider: failed to initialize FFMS2");
+#ifdef WIN32
+	if (!SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
+		throw _T("FFmpegSource audio provider: COM initialization failure");
 	}
+#endif
+	FFMS_Init();
 
 	MsgSize = sizeof(FFMSErrMsg);
 	MsgString = _T("FFmpegSource audio provider: ");
@@ -176,6 +181,9 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 // Destructor
 FFmpegSourceAudioProvider::~FFmpegSourceAudioProvider() {
 	Close();
+#ifdef WIN32
+	CoUninitialize();
+#endif
 }
 
 
@@ -184,7 +192,6 @@ FFmpegSourceAudioProvider::~FFmpegSourceAudioProvider() {
 void FFmpegSourceAudioProvider::Close() {
 	FFMS_DestroyAudioSource(AudioSource);
 	AudioSource = NULL;
-	FFMS_DeInit();
 }
 
 
