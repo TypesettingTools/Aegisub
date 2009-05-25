@@ -31,33 +31,14 @@ extern "C" {
 #define _snprintf snprintf
 #endif
 
-static int InitCount = 0;
 static bool FFmpegInited = false;
 
-FFMS_API(int) FFMS_Init() {
+FFMS_API(void) FFMS_Init() {
 	if (!FFmpegInited) {
 		av_register_all();
 		av_log_set_level(AV_LOG_QUIET);
+		FFmpegInited = true;
 	}
-
-	if (!InitCount) {
-#ifdef HAALISOURCE
-		::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-#endif
-	}
-
-	InitCount++;
-	return InitCount;
-}
-
-FFMS_API(int) FFMS_DeInit() {
-	InitCount--;
-	if (!InitCount) {
-#ifdef HAALISOURCE
-		::CoUninitialize();
-#endif
-	}
-	return InitCount;
 }
 
 FFMS_API(int) FFMS_GetLogLevel() {
