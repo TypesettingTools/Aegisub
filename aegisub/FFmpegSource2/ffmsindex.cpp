@@ -22,6 +22,10 @@ extern "C" {
 #include <libavutil/log.h>
 }
 
+#ifdef _WIN32
+#include <objbase.h>
+#endif
+
 #include <iostream> 
 #include <string>
 #include <stdlib.h>
@@ -112,9 +116,7 @@ void ParseCMDLine (int argc, char *argv[]) {
 		CacheFile = InputFile;
 		CacheFile.append(".ffindex");
 	}
-	if (AudioFile.empty()) {
-		AudioFile = InputFile;
-	}
+	AudioFile.append("%s.%d2.w64");
 }
 
 
@@ -139,6 +141,15 @@ static int FFMS_CC UpdateProgress(int64_t Current, int64_t Total, void *Private)
 }
 
 
+static int FFMS_CC GenAudioFilename(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, void *Private) {
+	const char * FormatString = AudioFile.c_str();
+	if (FileName == NULL)
+		return _snprintf(NULL, 0, FormatString, SourceFile, Track) + 1;
+	else
+		return _snprintf(FileName, 999999, FormatString, SourceFile, Track) + 1;
+}
+
+
 void DoIndexing () {
 	char FFMSErrMsg[1024];
 	int MsgSize = sizeof(FFMSErrMsg);
@@ -147,7 +158,7 @@ void DoIndexing () {
 	Index = FFMS_ReadIndex(CacheFile.c_str(), FFMSErrMsg, MsgSize);
 	if (Overwrite || Index == NULL) {
 		std::cout << "Indexing, please wait... 0% \r" << std::flush;
-		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, DumpMask, AudioFile.c_str(), IgnoreErrors, UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
+		Index = FFMS_MakeIndex(InputFile.c_str(), TrackMask, DumpMask, &GenAudioFilename, NULL, IgnoreErrors, UpdateProgress, &Progress, FFMSErrMsg, MsgSize);
 		if (Index == NULL) {
 			std::string Err = "\nIndexing error: ";
 			Err.append(FFMSErrMsg);
@@ -186,6 +197,13 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
+#ifdef _WIN32
+	if (!SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
+		std::cout << "COM initialization failure" << std::endl;
+		return 1;
+	}
+#endif /* _WIN32 */
+
 	FFMS_Init();
 
 	if (Verbose)
@@ -208,5 +226,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	FFMS_DestroyFFIndex(Index);
+	CoUninitialize();
 	return 0;
 }
