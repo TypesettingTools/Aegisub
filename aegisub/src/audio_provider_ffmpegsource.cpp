@@ -49,10 +49,14 @@
 ///////////
 // Constructor
 FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
+	COMInited = false;
 #ifdef WIN32
-	if (!SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
-		throw _T("FFmpegSource audio provider: COM initialization failure");
-	}
+	HRESULT res;
+	res = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+	if (SUCCEEDED(res)) 
+		COMInited = true;
+	else if (res != RPC_E_CHANGED_MODE)
+		throw _T("FFmpegSource video provider: COM initialization failure");
 #endif
 	FFMS_Init();
 
@@ -182,7 +186,8 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 FFmpegSourceAudioProvider::~FFmpegSourceAudioProvider() {
 	Close();
 #ifdef WIN32
-	CoUninitialize();
+	if (COMInited)
+		CoUninitialize();
 #endif
 }
 

@@ -51,6 +51,8 @@ private:
 	unsigned MsgSize;
 	wxString MsgString;
 
+	bool COMInited;
+
 	void Close();
 	void LoadAudio(Aegisub::String filename);
 

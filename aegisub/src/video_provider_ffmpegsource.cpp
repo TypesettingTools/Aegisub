@@ -53,10 +53,14 @@
 ///////////////
 // Constructor
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, double fps) {
+	COMInited = false;
 #ifdef WIN32
-	if (!SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
+	HRESULT res;
+	res = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+	if (SUCCEEDED(res)) 
+		COMInited = true;
+	else if (res != RPC_E_CHANGED_MODE)
 		throw _T("FFmpegSource video provider: COM initialization failure");
-	}
 #endif
 	// initialize ffmpegsource
 	FFMS_Init();
@@ -84,7 +88,8 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 	Close();
 #ifdef WIN32
-	CoUninitialize();
+	if (COMInited)
+		CoUninitialize();
 #endif
 }
 
