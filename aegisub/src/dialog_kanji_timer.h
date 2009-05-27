@@ -91,7 +91,6 @@ private:
 
 public:
 	DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *grid);
-	~DialogKanjiTimer();
 	void OnKeyDown(wxKeyEvent &event);
 	inline void OnMouseEvent(wxMouseEvent &event);
 	DECLARE_EVENT_TABLE()

@@ -161,14 +161,6 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 }
 
 
-//////////////
-// Destructor
-DialogTranslation::~DialogTranslation() {
-	TransText->PopEventHandler(true);
-	PreviewCheck->PopEventHandler(true);
-}
-
-
 //////////////////////////
 // Jumps to line at block
 bool DialogTranslation::JumpToLine(int n,int block) {
