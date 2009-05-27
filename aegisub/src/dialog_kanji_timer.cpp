@@ -169,14 +169,6 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 }
 
 
-//////////////
-// Destructor
-DialogKanjiTimer::~DialogKanjiTimer() {
-	SourceText->PopEventHandler(true);
-	DestText->PopEventHandler(true);
-}
-
-
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
