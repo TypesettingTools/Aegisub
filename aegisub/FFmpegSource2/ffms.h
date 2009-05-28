@@ -136,7 +136,7 @@ FFMS_API(const TAVFrameLite *) FFMS_GetFrameByTime(FFVideo *V, double Time, char
 FFMS_API(int) FFMS_GetAudio(FFAudio *A, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_SetOutputFormat(FFVideo *V, int64_t TargetFormats, int Width, int Height, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(void) FFMS_ResetOutputFormat(FFVideo *V);
-FFMS_API(void) FFMS_DestroyFFIndex(FFIndex *Index);
+FFMS_API(void) FFMS_DestroyIndex(FFIndex *Index);
 FFMS_API(int) FFMS_GetFirstTrackOfType(FFIndex *Index, int TrackType, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetFirstIndexedTrackOfType(FFIndex *Index, int TrackType, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetNumTracks(FFIndex *Index);

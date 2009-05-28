@@ -93,18 +93,17 @@ void AvisynthVideoSource::InitOutputFormat(IScriptEnvironment *Env) {
 	VI.height = VP->Height;
 
 	// Crop to obey avisynth's even width/height requirements
-	if (VP->VPixelFormat == FFMS_GetPixFmt("yuvj420p") || VP->VPixelFormat == FFMS_GetPixFmt("yuv420p")) {
+	if (VI.pixel_type == VideoInfo::CS_I420) {
 		VI.height -= VI.height & 1;
 		VI.width -= VI.width & 1;
 	}
 
-	if (VP->VPixelFormat == FFMS_GetPixFmt("yuyv422")) {
+	if (VI.pixel_type == VideoInfo::CS_YUY2) {
 		VI.width -= VI.width & 1;
 	}
 }
 
 PVideoFrame AvisynthVideoSource::OutputFrame(const TAVFrameLite *Frame, IScriptEnvironment *Env) {
-	// Yes, this function is overly complex and could probably be simplified
 	TAVFrameLite *SrcPicture = const_cast<TAVFrameLite *>(Frame);
 	PVideoFrame Dst = Env->NewVideoFrame(VI);
 
@@ -114,7 +113,7 @@ PVideoFrame AvisynthVideoSource::OutputFrame(const TAVFrameLite *Frame, IScriptE
 		Env->BitBlt(Dst->GetWritePtr(PLANAR_V), Dst->GetPitch(PLANAR_V), SrcPicture->Data[2], SrcPicture->Linesize[2], Dst->GetRowSize(PLANAR_V), Dst->GetHeight(PLANAR_V)); 
 	} else if (VI.IsRGB()) {
 		Env->BitBlt(Dst->GetWritePtr() + Dst->GetPitch() * (Dst->GetHeight() - 1), -Dst->GetPitch(), SrcPicture->Data[0], SrcPicture->Linesize[0], Dst->GetRowSize(), Dst->GetHeight()); 
-	} else {
+	} else { // YUY2
 		Env->BitBlt(Dst->GetWritePtr(), Dst->GetPitch(), SrcPicture->Data[0], SrcPicture->Linesize[0], Dst->GetRowSize(), Dst->GetHeight()); 
 	}
 
