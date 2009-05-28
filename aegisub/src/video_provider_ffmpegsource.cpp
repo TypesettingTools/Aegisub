@@ -148,7 +148,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// FIXME: provide a way to choose which audio track to load?
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrorMessage, MessageSize);
 	if (TrackNumber < 0) {
-		FFMS_DestroyFFIndex(Index);
+		FFMS_DestroyIndex(Index);
 		Index = NULL;
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
 		ErrorMsg << _T("Couldn't find any video tracks: ") << temp;
@@ -156,7 +156,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	}
 
 	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
-	FFMS_DestroyFFIndex(Index);
+	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (VideoSource == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
