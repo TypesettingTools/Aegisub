@@ -101,7 +101,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		// index exists, but does it have indexing info for the audio track(s)?
 		int NumTracks = FFMS_GetNumTracks(Index);
 		if (NumTracks <= 0) {
-			FFMS_DestroyFFIndex(Index);
+			FFMS_DestroyIndex(Index);
 			Index = NULL;
 			throw _T("FFmpegSource audio provider: no tracks found in index file");
 		}
@@ -109,7 +109,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		for (int i = 0; i < NumTracks; i++) {
 			FFTrack *FrameData = FFMS_GetTrackFromIndex(Index, i);
 			if (FrameData == NULL) {
-				FFMS_DestroyFFIndex(Index);
+				FFMS_DestroyIndex(Index);
 				Index = NULL;
 				wxString temp(FFMSErrMsg, wxConvUTF8);
 				MsgString << _T("Couldn't get track data: ") << temp;
@@ -120,7 +120,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			if (FFMS_GetNumFrames(FrameData) <= 0 && (FFMS_GetTrackType(FrameData) == FFMS_TYPE_AUDIO)) {
 				// found an unindexed audio track, we'll need to reindex
 				try {
-					FFMS_DestroyFFIndex(Index);
+					FFMS_DestroyIndex(Index);
 					Index = NULL;
 					Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
 				} catch (wxString temp) {
@@ -142,7 +142,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	// FIXME: provide a way to choose which audio track to load?
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
 	if (TrackNumber < 0) {
-		FFMS_DestroyFFIndex(Index);
+		FFMS_DestroyIndex(Index);
 		Index = NULL;
 		wxString temp(FFMSErrMsg, wxConvUTF8);
 		MsgString << _T("Couldn't find any audio tracks: ") << temp;
@@ -150,7 +150,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	}
 
 	AudioSource = FFMS_CreateAudioSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, FFMSErrMsg, MsgSize);
-	FFMS_DestroyFFIndex(Index);
+	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (!AudioSource) {
 			wxString temp(FFMSErrMsg, wxConvUTF8);
