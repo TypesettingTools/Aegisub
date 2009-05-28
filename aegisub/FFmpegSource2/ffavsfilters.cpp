@@ -42,7 +42,7 @@ static AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvi
 
 	const char *Source = Args[0].AsString();
 	const char *CacheFile = Args[1].AsString("");
-	int IndexMask = Args[2].AsInt(0);
+	int IndexMask = Args[2].AsInt(-1);
 	int DumpMask = Args[3].AsInt(0);
 	const char *AudioFile = Args[4].AsString("");
 	bool OverWrite = Args[5].AsBool(false);
@@ -65,16 +65,16 @@ static AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvi
 		if (!(Index = FFMS_MakeIndex(Source, IndexMask, DumpMask, FFMS_DefaultAudioFilename, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFIndex: %s", ErrorMsg);
 		if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
-			FFMS_DestroyFFIndex(Index);
+			FFMS_DestroyIndex(Index);
 			Env->ThrowError("FFIndex: %s", ErrorMsg);
 		}
-		FFMS_DestroyFFIndex(Index);
+		FFMS_DestroyIndex(Index);
 		if (!OverWrite)
 			return AVSValue(1);
 		else
 			return AVSValue(2);
 	} else {
-		FFMS_DestroyFFIndex(Index);
+		FFMS_DestroyIndex(Index);
 		return AVSValue(0);
 	}
 }
@@ -127,7 +127,7 @@ static AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScri
 
 		if (Cache)
 			if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
-				FFMS_DestroyFFIndex(Index);
+				FFMS_DestroyIndex(Index);
 				Env->ThrowError("FFVideoSource: %s", ErrorMsg);
 			}
 	}
@@ -139,7 +139,7 @@ static AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScri
 
 	if (strcmp(Timecodes, "")) {
 		if (FFMS_WriteTimecodes(FFMS_GetTrackFromIndex(Index, Track), Timecodes, ErrorMsg, MsgSize)) {
-			FFMS_DestroyFFIndex(Index);
+			FFMS_DestroyIndex(Index);
 			Env->ThrowError("FFVideoSource: %s", ErrorMsg);
 		}
 	}
@@ -149,11 +149,11 @@ static AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScri
 	try {
 		Filter = new AvisynthVideoSource(Source, Track, Index, FPSNum, FPSDen, PP, Threads, SeekMode, Env, ErrorMsg, MsgSize);
 	} catch (...) {
-		FFMS_DestroyFFIndex(Index);	
+		FFMS_DestroyIndex(Index);	
 		throw;
 	}
 
-	FFMS_DestroyFFIndex(Index);
+	FFMS_DestroyIndex(Index);
 	return Filter;
 }
 
@@ -182,13 +182,34 @@ static AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScri
 	FFIndex *Index = NULL;
 	if (Cache)
 		Index = FFMS_ReadIndex(CacheFile, ErrorMsg, MsgSize);
+
+	// Index needs to be remade if it is an unindexed audio track
+	if (Index && Track >= 0 && Track < FFMS_GetNumTracks(Index)
+		&& FFMS_GetTrackType(FFMS_GetTrackFromIndex(Index, Track)) == FFMS_TYPE_AUDIO
+		&& FFMS_GetNumFrames(FFMS_GetTrackFromIndex(Index, Track)) == 0) {
+		FFMS_DestroyIndex(Index);
+		Index = NULL;
+	}
+
+	// More complicated for finding a default track, reindex the file if at least one audio track exists
+	if (Index && FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, ErrorMsg, MsgSize) >= 0
+		&& FFMS_GetFirstIndexedTrackOfType(Index, FFMS_TYPE_AUDIO, ErrorMsg, MsgSize) < 0) {
+		for (int i = 0; i < FFMS_GetNumTracks(Index); i++) {
+			if (FFMS_GetTrackType(FFMS_GetTrackFromIndex(Index, i)) == FFMS_TYPE_AUDIO) {
+				FFMS_DestroyIndex(Index);
+				Index = NULL;
+				break;
+			}
+		}
+	}
+
 	if (!Index) {
 		if (!(Index = FFMS_MakeIndex(Source, -1, 0, NULL, NULL, true, NULL, NULL, ErrorMsg, MsgSize)))
 			Env->ThrowError("FFAudioSource: %s", ErrorMsg);
 
 		if (Cache)
 			if (FFMS_WriteIndex(CacheFile, Index, ErrorMsg, MsgSize)) {
-				FFMS_DestroyFFIndex(Index);
+				FFMS_DestroyIndex(Index);
 				Env->ThrowError("FFAudioSource: %s", ErrorMsg);
 			}
 	}
@@ -203,11 +224,11 @@ static AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScri
 	try {
 		Filter = new AvisynthAudioSource(Source, Track, Index, Env, ErrorMsg, MsgSize);
 	} catch (...) {
-		FFMS_DestroyFFIndex(Index);	
+		FFMS_DestroyIndex(Index);	
 		throw;
 	}
 
-	FFMS_DestroyFFIndex(Index);
+	FFMS_DestroyIndex(Index);
 	return Filter;
 }
 

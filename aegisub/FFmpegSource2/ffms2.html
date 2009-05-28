@@ -12,9 +12,26 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
 
 <h2>Known issues</h2>
 <ul>
+<li>FFAudioSource() will have to remake any index implicitly created by FFVideoSource() and therefore code like
+<pre>
+AudioDub(FFVideoSource(X), FFAudioSource(X))
+</pre>
+will require two indexing passes. Apart from the time consumed this is harmless. To work around it open the audio first
+<pre>
+A = FFAudioSource(X)
+V = FFVideoSource(X)
+AudioDub(V, A)
+</pre>
+or use FFIndex().
+<pre>
+FFIndex(X)
+AudioDub(FFVideoSource(X), FFAudioSource(X))
+</pre>
+</li>
+<li>FFIndex() will silently ignore fatal decoding errors when indexing. This means that indexing a specific track may have failed even if FFIndex() succeeds.</li>
 <li>Requires <a href='http://haali.cs.msu.ru/mkv/'>Haali's Media Splitter</a> if ogm or mpeg ps/ts is to be opened.</li>
 <li>Avi files with NVOPs (sometimes occurs in xvid and such) will desync when these frames are encountered. Remux to mkv/mp4 before opening to solve it for now.</li>
-<li>The audio sources still aren't sample accurate and sometimes exhibit many interesting issues. This is however more likely to be an issues when not using a 32bit windows compile. Dumping the audio during indexing is the only workaround.
+<li>There are still some issues with FFAudioSource but it should be good enough for actual use in many cases now.</li>
 </ul>
 
 <h2>Compatibility - Video</h2>
@@ -36,7 +53,7 @@ Opens files using ffmpeg and nothing else. May be frame accurate on good days. T
 
 <h2>Usage</h2>
 <p>
-<b>FFIndex(string source, string cachefile = source + ".ffindex", int indexmask = 0, int dumpmask = 0, string audiofile = source, bool overwrite = false)</b><br />
+<b>FFIndex(string source, string cachefile = source + ".ffindex", int indexmask = -1, int dumpmask = 0, string audiofile = source, bool overwrite = false)</b><br />
  Used to invoke indexing separately and to write audio tracks to disk as wave64 files
 </p>
 
@@ -239,12 +256,16 @@ Note that --enable-w32threads or --enable-pthreads is required for multithreaded
 <h2>Changes</h2>
 <ul>
 <li>2.00 beta 9<ul>
+<li>Dumping audio now actually implies indexing too in FFIndex, previously nothing would be done if the index mask wasn't set as well</li>
+<li>FFAudioSource will now first load the index and returns the first indexed audio track with track=-1, if no audio tracks are indexed or the chosen track isn't indexed the equivalent of FFIndex(indexmask = -1, overwrite = cache) is executed first</li>
+<li>Codec lookup for non-lavf opened files now to a large part use the same lookup tables as lavf, this should improve the number of properly recognized codecs</li>
 <li>Now uses the average framerate for files opened with Haali's splitters, before it was always reported as 30 fps</li>
 <li>Implemented audio decoding using Haali's splitters, FFAudioSource now works on ts, ps and ogm</li>
 <li>Can now be compiled with ICL 10.1 (probably other versions too)</li>
 <li>How indexing works has been split internally so the track numbers and types are reported, this makes it possible to create an interactive GUI or ask which audio tracks are to be indexed</li>
 <li>Now has stricter index checking to detect when different FFmpeg versions were used to create an index of the same version</li>
 <li>Fixed memory leaks when audio sources were destroyed and when errors happened during indexing</li>
+<li>Fixed access violations occurring when a track of the wrong type was specified or didn't exist in FFVideoSource and FFAudioSource</li>
 <li>Fixed access violations occurring when unindexed or empty audio tracks in matroska/lavf read files were opened</li>
 <li>Less type conversion/signedness warnings</li>
 <li>When audio track dumping is performed a custom callback can now be supplied to name the tracks</li>

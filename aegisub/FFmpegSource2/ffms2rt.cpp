@@ -95,7 +95,7 @@ void TestFullDump1(char *SrcFile, bool WithAudio) {
 		assert(AVF);
 	}
 
-	FFMS_DestroyFFIndex(FI);
+	FFMS_DestroyIndex(FI);
 	FFMS_DestroyVideoSource(V);
 }
 

@@ -50,6 +50,16 @@ FFMS_API(void) FFMS_SetLogLevel(int Level) {
 }
 
 FFMS_API(FFVideo *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize) {
+	if (Track < 0 || Track >= Index->size()) {
+		_snprintf(ErrorMsg, MsgSize, "Out of bounds track index selected");
+		return NULL;
+	}
+
+	if (Index->at(Track).TT != FFMS_TYPE_VIDEO) {
+		_snprintf(ErrorMsg, MsgSize, "Not a video track");
+		return NULL;
+	}
+
 	try {
 		switch (Index->Decoder) {
 			case 0: return new FFLAVFVideo(SourceFile, Track, Index, PP, Threads, SeekMode, ErrorMsg, MsgSize);
@@ -68,6 +78,16 @@ FFMS_API(FFVideo *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FF
 }
 
 FFMS_API(FFAudio *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
+	if (Track < 0 || Track >= Index->size()) {
+		_snprintf(ErrorMsg, MsgSize, "Out of bounds track index selected");
+		return NULL;
+	}
+
+	if (Index->at(Track).TT != FFMS_TYPE_AUDIO) {
+		_snprintf(ErrorMsg, MsgSize, "Not an audio track");
+		return NULL;
+	}
+
 	try {
 		switch (Index->Decoder) {
 			case 0: return new FFLAVFAudio(SourceFile, Track, Index, ErrorMsg, MsgSize);
@@ -121,7 +141,7 @@ FFMS_API(void) FFMS_ResetOutputFormat(FFVideo *V) {
 	V->ResetOutputFormat();
 }
 
-FFMS_API(void) FFMS_DestroyFFIndex(FFIndex *Index) {
+FFMS_API(void) FFMS_DestroyIndex(FFIndex *Index) {
 	delete Index;
 }
 
@@ -197,11 +217,11 @@ FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int Du
 }
 
 FFMS_API(int) FFMS_DefaultAudioFilename(const char *SourceFile, int Track, const TAudioProperties *AP, char *FileName, void *Private) {
-	const char * FormatString = "%s.%d2.w64";
+	const char * FormatString = "%s.Track%d.delay%dms.w64";
 	if (FileName == NULL)
-		return _snprintf(NULL, 0, FormatString, SourceFile, Track) + 1;
+		return _snprintf(NULL, 0, FormatString, SourceFile, Track, (int)AP->FirstTime) + 1;
 	else
-		return _snprintf(FileName, 999999, FormatString, SourceFile, Track) + 1;
+		return _snprintf(FileName, 999999, FormatString, SourceFile, Track, (int)AP->FirstTime) + 1;
 }
 
 FFMS_API(FFIndexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg, unsigned MsgSize) {
@@ -213,7 +233,7 @@ FFMS_API(FFIndexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg,
 }
 
 FFMS_API(FFIndex *) FFMS_DoIndexing(FFIndexer *Indexer, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize) {
-	Indexer->SetIndexMask(IndexMask);
+	Indexer->SetIndexMask(IndexMask | DumpMask);
 	Indexer->SetDumpMask(DumpMask);
 	Indexer->SetIgnoreDecodeErrors(IgnoreDecodeErrors);
 	Indexer->SetProgressCallback(IC, ICPrivate);

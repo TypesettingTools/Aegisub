@@ -217,19 +217,19 @@ int main(int argc, char *argv[]) {
 		DoIndexing();
 	} catch (const char *Error) {
 		std::cout << Error << std::endl;
-		FFMS_DestroyFFIndex(Index);
+		FFMS_DestroyIndex(Index);
 		return 1;
 	} catch (std::string Error) {
 		std::cout << std::endl << Error << std::endl;
-		FFMS_DestroyFFIndex(Index);
+		FFMS_DestroyIndex(Index);
 		return 1;
 	} catch (...) {
 		std::cout << std::endl << "Unknown error" << std::endl;
-		FFMS_DestroyFFIndex(Index);
+		FFMS_DestroyIndex(Index);
 		return 1;
 	}
 
-	FFMS_DestroyFFIndex(Index);
+	FFMS_DestroyIndex(Index);
 #ifdef _WIN32
 	CoUninitialize();
 #endif
