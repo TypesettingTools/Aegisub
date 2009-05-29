@@ -156,7 +156,8 @@ FFLAVFAudio::FFLAVFAudio(const char *SourceFile, int Track, FFIndex *Index, char
 		Free(true);
 		throw ErrorMsg;
 	}
-	av_seek_frame(FormatContext, AudioTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD);
+	if (av_seek_frame(FormatContext, AudioTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD) < 0)
+		av_seek_frame(FormatContext, AudioTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
 	avcodec_flush_buffers(CodecContext);
 
 	FillAP(AP, CodecContext, Frames);
@@ -232,7 +233,11 @@ int FFLAVFAudio::GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMs
 	if (CurrentSample != CacheEnd) {
 		PreDecBlocks = 15;
 		CurrentAudioBlock = FFMAX((int64_t)Frames.FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks - 20, (int64_t)0);
-		av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD);
+
+		// Did the seeking fail?
+		if (av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD) < 0)
+			av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+
 		avcodec_flush_buffers(CodecContext);
 
 		AVPacket Packet;
