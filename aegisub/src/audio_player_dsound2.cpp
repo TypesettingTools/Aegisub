@@ -236,10 +236,12 @@ void DirectSoundPlayer2Thread::Run()
 	int64_t next_input_frame = 0;
 	DWORD buffer_offset = 0;
 	bool playback_should_be_running = false;
+	int current_latency = wanted_latency;
+	const DWORD wanted_latency_bytes = wanted_latency*waveFormat.nSamplesPerSec*provider->GetBytesPerSample()/1000;
 
 	while (running)
 	{
-		DWORD wait_result = WaitForMultipleObjects(sizeof(events_to_wait)/sizeof(HANDLE), events_to_wait, FALSE, wanted_latency);
+		DWORD wait_result = WaitForMultipleObjects(sizeof(events_to_wait)/sizeof(HANDLE), events_to_wait, FALSE, current_latency);
 
 		switch (wait_result)
 		{
@@ -254,6 +256,9 @@ void DirectSoundPlayer2Thread::Run()
 				DWORD buf_size; // size of buffer locked for filling
 				void *buf;
 				buffer_offset = 0;
+
+				if (FAILED(bfr->SetCurrentPosition(0)))
+					REPORT_ERROR("Could not reset playback buffer cursor before filling first buffer.")
 
 				HRESULT res = bfr->Lock(buffer_offset, 0, &buf, &buf_size, 0, 0, DSBLOCK_ENTIREBUFFER);
 				while (FAILED(res)) // yes, while, so I can break out of it without a goto!
@@ -274,14 +279,30 @@ void DirectSoundPlayer2Thread::Run()
 					REPORT_ERROR("Could not lock buffer for playback.")
 				}
 
-				buffer_offset += FillAndUnlockBuffers(buf, buf_size, 0, 0, next_input_frame, bfr.obj);
+				// Clear the buffer in case we can't fill it completely
+				memset(buf, 0, buf_size);
+
+				DWORD bytes_filled = FillAndUnlockBuffers(buf, buf_size, 0, 0, next_input_frame, bfr.obj);
+				buffer_offset += bytes_filled;
 				if (buffer_offset >= bufSize) buffer_offset -= bufSize;
 
 				if (FAILED(bfr->SetCurrentPosition(0)))
 					REPORT_ERROR("Could not reset playback buffer cursor before playback.")
 
-				if (FAILED(bfr->Play(0, 0, DSBPLAY_LOOPING)))
-					REPORT_ERROR("Could not start looping playback.")
+				if (bytes_filled < wanted_latency_bytes)
+				{
+					// Very short playback length, do without streaming playback
+					current_latency = (bytes_filled*1000) / (waveFormat.nSamplesPerSec*provider->GetBytesPerSample());
+					if (FAILED(bfr->Play(0, 0, 0)))
+						REPORT_ERROR("Could not start single-buffer playback.")
+				}
+				else
+				{
+					// We filled the entire buffer so there's reason to do streaming playback
+					current_latency = wanted_latency;
+					if (FAILED(bfr->Play(0, 0, DSBPLAY_LOOPING)))
+						REPORT_ERROR("Could not start looping playback.")
+				}
 
 				SetEvent(is_playing);
 				playback_should_be_running = true;
@@ -342,7 +363,8 @@ void DirectSoundPlayer2Thread::Run()
 
 				if (!(status & DSBSTATUS_LOOPING))
 				{
-					// Not really what we expected...
+					// Not looping playback...
+					// hopefully we only triggered timeout after being done with the buffer
 					bfr->Stop();
 					ResetEvent(is_playing);
 					playback_should_be_running = false;
@@ -380,8 +402,26 @@ void DirectSoundPlayer2Thread::Run()
 					REPORT_ERROR("Could not lock buffer for filling.")
 				}
 
-				buffer_offset += FillAndUnlockBuffers(buf1, buf1sz, buf2, buf2sz, next_input_frame, bfr.obj);
+				DWORD bytes_filled = FillAndUnlockBuffers(buf1, buf1sz, buf2, buf2sz, next_input_frame, bfr.obj);
+				buffer_offset += bytes_filled;
 				if (buffer_offset >= bufSize) buffer_offset -= bufSize;
+
+				if (bytes_filled < 1024)
+				{
+					// Arbitrary low number, we filled in very little so better get back to filling in the rest with silence
+					// really fast... set latency to zero in this case.
+					current_latency = 0;
+				}
+				else if (bytes_filled < wanted_latency_bytes)
+				{
+					// Didn't fill as much as we wanted to, let's get back to filling sooner than normal
+					current_latency = (bytes_filled*1000) / (waveFormat.nSamplesPerSec*provider->GetBytesPerSample());
+				}
+				else
+				{
+					// Plenty filled in, do regular latency
+					current_latency = wanted_latency;
+				}
 
 				break;
 			}
