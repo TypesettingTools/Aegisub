@@ -476,7 +476,7 @@ void SearchReplaceEngine::ReplaceAll() {
 		if (isReg) {
 			wxRegEx reg(LookFor,regFlags);
 			if (reg.IsValid()) {
-				size_t reps = reg.ReplaceAll(Text,ReplaceWith);
+				size_t reps = reg.Replace(Text,ReplaceWith,1000);
 				if (reps > 0) replaced = true;
 				count += reps;
 			}
