@@ -424,15 +424,32 @@ void VideoContext::JumpToFrame(int n) {
 
 	// Not threaded
 	else {
-		// Set frame number
-		frame_n = n;
-		GetFrameAsTexture(n);
+		try {
+			// Set frame number
+			frame_n = n;
+			GetFrameAsTexture(n);
 
-		// Display
-		UpdateDisplays(false);
+			// Display
+			UpdateDisplays(false);
 
-		// Update grid
-		if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
+			// Update grid
+			if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
+		}
+		catch (const wxChar *err) {
+			wxLogError(
+				_T("Failed seeking video. The video will be closed because of this.\n")
+				_T("If you get this error regardless of which video file you use, and also if you use dummy video, your OpenGL driver might not work with Aegisub.\n")
+				_T("Error message reported: %s"),
+				err);
+			Reset();
+		}
+		catch (...) {
+			wxLogError(
+				_T("Failed seeking video. The video will be closed because of this.\n")
+				_T("If you get this error regardless of which video file you use, and also if you use dummy video, your OpenGL driver might not work with Aegisub.\n")
+				_T("No further error message given."));
+			Reset();
+		}
 	}
 }
 
