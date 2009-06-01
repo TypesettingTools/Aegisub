@@ -168,7 +168,10 @@ void VideoDisplay::ShowCursor(bool show) {
 
 //////////
 // Render
-void VideoDisplay::Render() {
+void VideoDisplay::Render()
+// Yes it's legal C++ to replace the body of a function with one huge try..catch statement
+try {
+
 	// Is shown?
 	if (!IsShownOnScreen()) return;
 	if (!wxIsMainThread()) throw _T("Error: trying to render from non-primary thread");
@@ -306,6 +309,21 @@ void VideoDisplay::Render() {
 	glFinish();
 	//if (glGetError()) throw _T("Error finishing gl operation.");
 	SwapBuffers();
+}
+catch (const wxChar *err) {
+	wxLogError(
+		_T("An error occurred trying to render the video frame to screen.\n")
+		_T("If you get this error regardless of which video file you use, and also if you use dummy video, your OpenGL driver might not work with Aegisub.\n")
+		_T("Error message reported: %s"),
+		err);
+	VideoContext::Get()->Reset();
+}
+catch (...) {
+	wxLogError(
+		_T("An error occurred trying to render the video frame to screen.\n")
+		_T("If you get this error regardless of which video file you use, and also if you use dummy video, your OpenGL driver might not work with Aegisub.\n")
+		_T("No further error message given."));
+	VideoContext::Get()->Reset();
 }
 
 
