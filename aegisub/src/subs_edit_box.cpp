@@ -283,7 +283,7 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 			Duration->Update();
 			if (!timeOnly) {
 				TextEdit->SetTextTo(curdiag->Text);
-				Layer->SetValue(wxString::Format(_T("%i"),curdiag->Layer));
+				Layer->SetValue(curdiag->Layer);
 				MarginL->SetValue(curdiag->GetMarginString(0,false));
 				MarginR->SetValue(curdiag->GetMarginString(1,false));
 				MarginV->SetValue(curdiag->GetMarginString(2,false));
