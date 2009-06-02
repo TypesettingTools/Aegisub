@@ -1,5 +1,6 @@
 #!/bin/sh
 DIST_NAME="aegisub-snap-r${1}"
+UNAME_S=`uname -s`
 
 if test -z "${1}"; then
   echo "You must supply a revision number!"
@@ -7,7 +8,7 @@ if test -z "${1}"; then
 fi
 
 # On FreeBSD "make" is PMake, so we need to use 'gmake'
-if test `uname -s` = "FreeBSD"; then
+if test "${UNAME_S}" = "FreeBSD"; then
   BIN_MAKE="gmake"
   CONFIGURE_ARGS="--with-wx-config=/usr/local/bin/wxgtk2u-2.8-config"
 else
@@ -15,6 +16,9 @@ else
 fi
 
 ./autogen.sh ${CONFIGURE_ARGS} || exit $?
+
+# XXX: Work around ancient versions of intltool (cough DEBIAN)
+touch intltool-update.in intltool-merge.in intltool-extract.in
 
 ${BIN_MAKE} distdir distdir="${DIST_NAME}" || exit $?
 
