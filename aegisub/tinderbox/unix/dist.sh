@@ -9,11 +9,12 @@ fi
 # On FreeBSD "make" is PMake, so we need to use 'gmake'
 if test `uname -s` = "FreeBSD"; then
   BIN_MAKE="gmake"
+  CONFIGURE_ARGS="--with-wx-config=/usr/local/bin/wxgtk2u-2.8-config"
 else
   BIN_MAKE="make"
 fi
 
-./autogen.sh || exit $?
+./autogen.sh ${CONFIGURE_ARGS} || exit $?
 
 ${BIN_MAKE} distdir distdir="${DIST_NAME}" || exit $?
 
