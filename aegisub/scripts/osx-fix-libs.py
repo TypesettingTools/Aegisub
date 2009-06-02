@@ -18,7 +18,7 @@ def otool(cmdline):
 
 def collectlibs(lib, masterlist, targetdir):
 	global goodlist
-	liblist = otool("-L " + lib)
+	liblist = otool("-L '" + lib + "'")
 	locallist = []
 	for l in liblist:
 		lr = otool_libname_extract(l)
@@ -55,10 +55,10 @@ print "Fixing library install names..."
 in_tool_cmdline = "install_name_tool "
 for lib in libs:
 	libbase = os.path.basename(lib)
-	in_tool_cmdline = in_tool_cmdline + ("-change %s @executable_path/%s " % (lib, libbase))
+	in_tool_cmdline = in_tool_cmdline + ("-change '%s' '@executable_path/%s' " % (lib, libbase))
 for lib in libs:
 	libbase = os.path.basename(lib)
-	os.system("%s -id @executable_path/%s '%s/%s'" % (in_tool_cmdline, libbase, targetdir, libbase))
+	os.system("%s -id '@executable_path/%s' '%s/%s'" % (in_tool_cmdline, libbase, targetdir, libbase))
 	print lib, "-> @executable_path/" + libbase
 	sys.stdout.flush()
 
