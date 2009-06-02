@@ -17,7 +17,7 @@ PKG_NAME_RW="${1}_rw.dmg"
 PKG_NAME_VOLUME="${2}"
 
 if ! test -d "${PKG_DIR}"; then
-  echo "${PKG_DIR} does not exist, please run 'make osx-bundle'"
+  echo "\"${PKG_DIR}\" does not exist, please run 'make osx-bundle'"
   exit 1;
 fi
 
@@ -28,18 +28,18 @@ if ! /usr/bin/perl -e 'require Mac::Finder::DSStore' > /dev/null 2>&1; then
   exit 1;
 fi
 
-rm -rf ${TMP_DMG} "${PKG_NAME}.dmg"
-mkdir -v ${TMP_DMG}
+rm -rf "${TMP_DMG}" "${PKG_NAME}.dmg"
+mkdir -v "${TMP_DMG}"
 echo
 echo "---- Copying ${1} into ${TMP_DMG}/ ----"
-cp -R ${PKG_DIR} ${TMP_DMG}
+cp -R "${PKG_DIR}" "${TMP_DMG}"
 
 echo
 echo "---- Setting up ----"
 ln -vsf /Applications "${TMP_DMG}"
-mkdir -v ${TMP_DMG}/.background
-cp -v packages/osx_dmg/dmg_background.png ${TMP_DMG}/.background/background.png
-cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns ${TMP_DMG}/.VolumeIcon.icns
+mkdir -v "${TMP_DMG}/.background"
+cp -v packages/osx_dmg/dmg_background.png "${TMP_DMG}/.background/background.png"
+cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns "${TMP_DMG}/.VolumeIcon.icns"
 
 echo
 echo "---- Creating image ----"
@@ -71,8 +71,8 @@ echo "---- Compressing ----"
 /usr/bin/hdiutil convert "${PKG_NAME_RW}" -format UDZO -imagekey zlib-level=9 -o "${PKG_NAME}.dmg" || exit $?
 
 echo
-echo "---- Removing ${TMP_DMG}, ${PKG_NAME_RW} ----"
-rm -rf ${TMP_DMG}  ${PKG_NAME_RW} || exit $?
+echo "---- Removing \"${TMP_DMG}\", \"${PKG_NAME_RW}\" ----"
+rm -rf "${TMP_DMG}"  "${PKG_NAME_RW}" || exit $?
 
 echo
 echo "Done!"
