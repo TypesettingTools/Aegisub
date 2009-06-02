@@ -329,6 +329,8 @@ cd $ORIGDIR
 
 if ! test "$1" = "--skip-configure"; then
   echo "--- $srcdir/configure ---"
+  echo "Running '$srcdir/configure --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS "$@"'"
+  echo
   $srcdir/configure --enable-maintainer-mode $AUTOGEN_CONFIGURE_ARGS "$@"
   RC=$?
 
