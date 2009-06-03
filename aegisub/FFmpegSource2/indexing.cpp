@@ -311,6 +311,10 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 			AVCodecContext *AudioCodecContext = AudioContexts[Track].CTX;
 			pMMF->GetPointer(&TempPacket.data);
 			TempPacket.size = pMMF->GetActualDataLength();
+			if (pMMF->IsSyncPoint() == S_OK)
+				TempPacket.flags = AV_PKT_FLAG_KEY;
+			else
+				TempPacket.flags = 0;
 
 			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
@@ -453,7 +457,9 @@ FFIndex *FFMatroskaIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 			TempPacket.data = MC.Buffer;
 			TempPacket.size = FrameSize;
 			if ((FrameFlags & FRAME_KF) != 0)
-				TempPacket.flags = PKT_FLAG_KEY;
+				TempPacket.flags = AV_PKT_FLAG_KEY;
+			else
+				TempPacket.flags = 0;
 
 			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
@@ -594,9 +600,9 @@ FFIndex *FFLAVFIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 
 		// Only create index entries for video for now to save space
 		if (FormatContext->streams[Packet.stream_index]->codec->codec_type == CODEC_TYPE_VIDEO) {
-			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo(Packet.dts, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
+			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo(Packet.dts, (Packet.flags & AV_PKT_FLAG_KEY) ? 1 : 0));
 		} else if (FormatContext->streams[Packet.stream_index]->codec->codec_type == CODEC_TYPE_AUDIO && (IndexMask & (1 << Packet.stream_index))) {
-			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo(Packet.dts, AudioContexts[Packet.stream_index].CurrentSample, (Packet.flags & PKT_FLAG_KEY) ? 1 : 0));
+			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo(Packet.dts, AudioContexts[Packet.stream_index].CurrentSample, (Packet.flags & AV_PKT_FLAG_KEY) ? 1 : 0));
 			AVCodecContext *AudioCodecContext = FormatContext->streams[Packet.stream_index]->codec;
 			TempPacket.data = Packet.data;
 			TempPacket.size = Packet.size;
