@@ -147,11 +147,15 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	videoBottomSizer->Add(AutoScroll,0,wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,2);
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
+
+	// If we're detached we do want to fill out as much space we can.
+	// But if we're in the main window, the subs grid needs space more than us.
 	VideoSizer = new wxBoxSizer(wxVERTICAL);
-	VideoSizer->Add(topSizer,0,wxEXPAND,0);
+	VideoSizer->Add(topSizer,isDetached?1:0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
 	VideoSizer->Add(videoBottomSizer,0,wxEXPAND,0);
-	VideoSizer->AddStretchSpacer(1);
+	if (!isDetached)
+		VideoSizer->AddStretchSpacer(1);
 	SetSizer(VideoSizer);
 }
 
