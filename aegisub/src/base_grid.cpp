@@ -170,6 +170,10 @@ void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 ////////////////
 // Select a row
 void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
+	// Sanity checking
+	if (row >= GetRows()) row = GetRows()-1;
+	else if (row < 0) row = 0;
+
 	if (!addToSelected) ClearSelection();
 	try {
 		bool cur = selMap.at(row);
