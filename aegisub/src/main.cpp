@@ -153,13 +153,18 @@ bool AegisubApp::OnInit() {
 
 		// Set config file
 		StartupLog(_T("Load configuration"));
-		Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 		Options.LoadDefaults();
+#ifndef __WXMSW__
+		Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 		Options.Load();
-		if (!Options.AsBool(_T("Local config"))) {
+		if (!Options.AsBool(_T("Local config")))
+#endif
+		{
 			Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
 			Options.Load();
+#ifndef __WXMSW__
 			wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
+#endif
 		}
 		StartupLog(_T("Store options back"));
 		Options.SetInt(_T("Last Version"),GetSVNRevision());
