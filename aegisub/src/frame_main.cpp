@@ -535,7 +535,7 @@ void FrameMain::InitContents() {
 	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	// Video area;
-	videoBox = new VideoBox(Panel);
+	videoBox = new VideoBox(Panel, false);
 	TopSizer->Add(videoBox,0,wxEXPAND,0);
 	videoBox->videoDisplay->zoomBox = ZoomBox;
 

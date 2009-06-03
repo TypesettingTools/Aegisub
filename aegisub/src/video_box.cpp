@@ -65,7 +65,7 @@
 
 ///////////////
 // Constructor
-VideoBox::VideoBox(wxWindow *parent) 
+VideoBox::VideoBox(wxWindow *parent, bool isDetached) 
 : wxPanel (parent,-1)
 {
 	// Parent
@@ -125,11 +125,13 @@ VideoBox::VideoBox(wxWindow *parent)
 	visualToolBar->Realize();
 
 	// Top sizer
+	// Detached and attached video needs different flags, see bugs #742 and #853
+	int highSizerFlags = isDetached ? wxEXPAND : 0;
 	wxSizer *topTopSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
 	visualSubToolBar->Show(false);
-	topTopSizer->Add(visualToolBar,0,0,0);
-	topTopSizer->Add(videoDisplay,1,0,0);
+	topTopSizer->Add(visualToolBar,0,highSizerFlags,0);
+	topTopSizer->Add(videoDisplay,1,highSizerFlags,0);
 	topSizer->Add(topTopSizer,1,wxEXPAND,0);
 	topSizer->Add(visualSubToolBar,0,wxEXPAND | wxBOTTOM,4);
 	topSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND,0);
