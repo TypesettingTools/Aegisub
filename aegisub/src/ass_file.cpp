@@ -939,6 +939,7 @@ void AssFile::StackPop() {
 
 	if (StackModified) {
 		undodesc=UndoStack.back()->undodescription;
+		delete UndoStack.back();
 		UndoStack.pop_back();
 		StackModified = false;
 		addcopy = true;
@@ -968,6 +969,7 @@ void AssFile::StackRedo() {
 
 	bool addcopy = false;
 	if (StackModified) {
+		delete UndoStack.back();
 		UndoStack.pop_back();
 		StackModified = false;
 		addcopy = true;
