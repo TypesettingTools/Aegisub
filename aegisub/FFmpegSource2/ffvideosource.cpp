@@ -528,9 +528,10 @@ int FFMatroskaVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, u
 		Packet.data = MC.Buffer;
 		Packet.size = FrameSize;
 		if (FrameFlags & FRAME_KF)
-			Packet.flags = PKT_FLAG_KEY;
+			Packet.flags = AV_PKT_FLAG_KEY;
 		else
 			Packet.flags = 0;
+
 		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
 
 		if (FrameFinished)
@@ -768,7 +769,7 @@ int FFHaaliVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsi
 			Packet.data = Data;
 			Packet.size = pMMF->GetActualDataLength();
 			if (pMMF->IsSyncPoint() == S_OK)
-				Packet.flags = PKT_FLAG_KEY;
+				Packet.flags = AV_PKT_FLAG_KEY;
 			else
 				Packet.flags = 0;
 
