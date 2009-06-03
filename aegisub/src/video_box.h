@@ -83,7 +83,7 @@ public:
 	VideoDisplay *videoDisplay;
 	VideoSlider *videoSlider;
 
-	VideoBox (wxWindow *parent);
+	VideoBox (wxWindow *parent, bool isDetached);
 
 	DECLARE_EVENT_TABLE()
 };
