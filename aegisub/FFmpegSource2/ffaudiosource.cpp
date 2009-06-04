@@ -453,7 +453,7 @@ int FFMatroskaAudio::DecodeNextAudioBlock(int64_t *Count, int AudioBlock, char *
 	TempPacket.data = MC.Buffer;
 	TempPacket.size = FrameSize;
 	if (Frames[AudioBlock].KeyFrame)
-		TempPacket.flags = AV_PKT_FLAG_KEY;
+		TempPacket.flags = PKT_FLAG_KEY;
 	else
 		TempPacket.flags = 0;
 
@@ -512,7 +512,7 @@ int FFHaaliAudio::DecodeNextAudioBlock(int64_t *AFirstStartTime, int64_t *Count,
 			Packet.data = Data;
 			Packet.size = pMMF->GetActualDataLength();
 			if (pMMF->IsSyncPoint() == S_OK)
-				Packet.flags = AV_PKT_FLAG_KEY;
+				Packet.flags = PKT_FLAG_KEY;
 			else
 				Packet.flags = 0;
 
