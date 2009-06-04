@@ -55,6 +55,8 @@ DownmixingAudioProvider::DownmixingAudioProvider(AudioProvider *source) {
 
 	if (!(bytes_per_sample == 1 || bytes_per_sample == 2))
 		throw _T("Downmixing Audio Provider: Can only downmix 8 and 16 bit audio");
+	if (!source->AreSamplesNativeEndian())
+		throw _T("Downmixing Audio Provider: Source must have machine endian samples");
 }
 
 /////////////////

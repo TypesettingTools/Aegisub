@@ -52,5 +52,7 @@ public:
 	DummyAudioProvider(unsigned long dur_ms, bool _noise);
 	~DummyAudioProvider();
 
+	bool AreSamplesNativeEndian() { return true; }
+
 	void GetAudio(void *buf, int64_t start, int64_t count);
 };

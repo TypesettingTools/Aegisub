@@ -365,6 +365,16 @@ public:
 			filepos += (Endian::LittleToMachine(ch.size) + 1) & ~1;
 		}
 	}
+
+
+	bool AreSamplesNativeEndian()
+	{
+		// 8 bit samples don't consider endianness
+		if (bytes_per_sample < 2) return true;
+		// Otherwise test whether we're little endian
+		uint32_t testvalue = 0x008800ff;
+		return testvalue == Endian::LittleToMachine(testvalue);
+	}
 };
 
 
@@ -507,6 +517,16 @@ public:
 			data_left -= (chunk_size + 7) & ~7;
 			filepos += (chunk_size + 7) & ~7;
 		}
+	}
+
+
+	bool AreSamplesNativeEndian()
+	{
+		// 8 bit samples don't consider endianness
+		if (bytes_per_sample < 2) return true;
+		// Otherwise test whether we're little endian
+		uint32_t testvalue = 0x008800ff;
+		return testvalue == Endian::LittleToMachine(testvalue);
 	}
 };
 

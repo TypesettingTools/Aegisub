@@ -50,6 +50,7 @@ private:
 	wxMutex diskmutex;
 	wxFile file_cache;
 	wxString diskCacheFilename;
+	bool samples_native_endian;
 
 	static wxString DiskCachePath();
 	static wxString DiskCacheName();
@@ -57,6 +58,8 @@ private:
 public:
 	HDAudioProvider(AudioProvider *source);
 	~HDAudioProvider();
+
+	bool AreSamplesNativeEndian() { return samples_native_endian; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 };

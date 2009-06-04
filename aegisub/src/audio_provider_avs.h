@@ -61,6 +61,9 @@ public:
 
 	wxString GetFilename();
 
+	// Only exists for x86 Windows, always delivers machine (little) endian
+	bool AreSamplesNativeEndian() { return true; }
+
 	void GetAudio(void *buf, int64_t start, int64_t count);
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
