@@ -468,8 +468,14 @@ void VideoContext::JumpToTime(int ms,bool exact) {
 // Get GL context
 wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
 #ifdef __WXMAC__
-	// This is probably wrong...
-	if (!glContext) glContext = new wxGLContext(0, canvas, wxPalette(), 0);
+	// This code is written blindly, might be very broken
+	// What are the wxMac developers thinking? This is impossible to work with,
+	// having a different API on different platforms...
+	if (!glContext) {
+		GLint pfmtattribs[] = {AGL_WINDOW, AGL_BACKING_STORE, AGL_STENCIL_SIZE, 1, 0};
+		AGLPixelFormat pfmt = aglChoosePixelFormat(0, 0, pfmtattribs);
+		glContext = new wxGLContext(pfmt, canvas, wxPalette(), 0);
+	}
 #else
 	if (!glContext) glContext = new wxGLContext(canvas);
 #endif
