@@ -48,12 +48,15 @@ class RAMAudioProvider : public AudioProvider {
 private:
 	char** blockcache;
 	int blockcount;
+	bool samples_native_endian;
 
 	void Clear();
 
 public:
 	RAMAudioProvider(AudioProvider *source);
 	~RAMAudioProvider();
+
+	bool AreSamplesNativeEndian() { return samples_native_endian; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 };

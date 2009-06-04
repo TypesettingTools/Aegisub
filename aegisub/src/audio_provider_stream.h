@@ -68,6 +68,12 @@ public:
 	StreamAudioProvider();
 	~StreamAudioProvider();
 
+	// The AreSamplesNativeEndian() method is intentionally missing.
+	// This class was used with the experimental scrubbing code but never
+	// used outside that.
+	// The method is left out to make it break compilation in case it does
+	// get used again, so it can get a review and stuff.
+
 	void GetAudio(void *buf, int64_t start, int64_t count);
 	void Append(void *buf, int64_t count);
 	void SetParams(int channels,int rate,int bps);

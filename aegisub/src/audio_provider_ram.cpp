@@ -57,6 +57,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *source) {
 	// Init
 	blockcache = NULL;
 	blockcount = 0;
+	samples_native_endian = source->AreSamplesNativeEndian();
 
 	// Allocate cache
 	int64_t ssize = source->GetNumSamples() * source->GetBytesPerSample();

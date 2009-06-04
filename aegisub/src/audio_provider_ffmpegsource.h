@@ -60,6 +60,9 @@ public:
 	FFmpegSourceAudioProvider(Aegisub::String filename);
 	virtual ~FFmpegSourceAudioProvider();
 
+	// FFMS always delivers samples in machine endian
+	bool AreSamplesNativeEndian() { return true; }
+
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 
 };

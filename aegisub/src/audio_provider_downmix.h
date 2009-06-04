@@ -44,6 +44,9 @@ public:
 	DownmixingAudioProvider(AudioProvider *source);
 	~DownmixingAudioProvider();
 
+	// Downmixing requires samples to be native endian beforehand
+	bool AreSamplesNativeEndian() { return true; }
+
 	void GetAudio(void *buf, int64_t start, int64_t count);
 
 };

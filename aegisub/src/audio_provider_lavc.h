@@ -89,6 +89,10 @@ private:
 public:
 	LAVCAudioProvider(Aegisub::String _filename);
 	virtual ~LAVCAudioProvider();
+
+	// Supposedly lavc always returns machine endian samples
+	bool AreSamplesNativeEndian() { return true; }
+
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 };
 

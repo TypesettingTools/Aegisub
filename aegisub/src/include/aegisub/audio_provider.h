@@ -74,6 +74,7 @@ public:
 	int GetSampleRate();
 	int GetBytesPerSample();
 	int GetChannels();
+	virtual bool AreSamplesNativeEndian() = 0;
 
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };

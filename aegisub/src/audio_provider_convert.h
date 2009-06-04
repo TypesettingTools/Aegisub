@@ -50,11 +50,16 @@ private:
 
 	AudioProvider *source;
 	void Make16Bit(const char *src, short *dst, int64_t count);
-	void ChangeSampleRate(const short *src, short *dst, int64_t count);
+	template<class SampleConverter>
+	void ChangeSampleRate(const short *src, short *dst, int64_t count, const SampleConverter &converter);
 
 public:
 	ConvertAudioProvider(AudioProvider *source);
 	~ConvertAudioProvider();
+
+	// By its nature, the ConvertAudioProvider always delivers machine endian:
+	// That's one of the points of it!
+	bool AreSamplesNativeEndian() { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 	wxString GetFilename() { return source->GetFilename(); }

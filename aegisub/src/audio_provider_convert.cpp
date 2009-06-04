@@ -40,6 +40,7 @@
 
 #include "audio_provider_convert.h"
 #include "audio_provider_downmix.h"
+#include "aegisub_endian.h"
 
 
 ///////////////
@@ -70,7 +71,7 @@ ConvertAudioProvider::~ConvertAudioProvider() {
 // Convert to 16-bit
 void ConvertAudioProvider::Make16Bit(const char *src, short *dst, int64_t count) {
 	for (int64_t i=0;i<count;i++) {
-		dst[i] = (src[i]-128)*255;
+		dst[i] = (short(src[i])-128)*255;
 	}
 }
 
@@ -78,7 +79,9 @@ void ConvertAudioProvider::Make16Bit(const char *src, short *dst, int64_t count)
 //////////////////////
 // Change sample rate
 // This requres 16-bit input
-void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_t count) {
+// The SampleConverter is a class overloading operator() with a function from short to short
+template<class SampleConverter>
+void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_t count, const SampleConverter &converter) {
 	// Upsample by 2
 	if (sampleMult == 2) {
 		int64_t size = count/2;
@@ -86,7 +89,7 @@ void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_
 		short next = 0;
 		for (int64_t i=0;i<size;i++) {
 			cur = next;
-			next = *src++;
+			next = converter(*src++);
 			*(dst++) = cur;
 			*(dst++) = (cur+next)/2;
 		}
@@ -100,7 +103,7 @@ void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_
 		short next = 0;
 		for (int64_t i=0;i<size;i++) {
 			cur = next;
-			next = *(src++);
+			next = converter(*src++);
 			*(dst++) = cur;
 			*(dst++) = (cur*3+next)/4;
 			*(dst++) = (cur+next)/2;
@@ -109,9 +112,28 @@ void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_
 		for (int i=0;i<count%4;i++) *(dst++) = next;
 	}
 
-	// Nothing to do (shouldn't really get here, but...)
-	else if (sampleMult == 1) memcpy((void*)src,dst,count);
+	// Nothing much to do, just ensure correct endedness
+	else if (sampleMult == 1) {
+		while (count-- > 0) {
+			*dst++ = converter(*src++);
+		}
+	}
 }
+
+
+// Do-nothing sample converter for ChangeSampleRate
+struct NullSampleConverter {
+	inline short operator()(const short val) const {
+		return val;
+	}
+};
+
+// Endian-swapping sample converter for ChangeSampleRate
+struct EndianSwapSampleConverter {
+	inline short operator()(const short val) const {
+		return (short)Endian::Reverse((uint16_t)val);
+	};
+};
 
 
 /////////////
@@ -154,8 +176,11 @@ void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t co
 		else if (srcBps == 2) last = buffer1;
 
 		// Convert sample rate
-		if (sampleMult != 1) {
-			ChangeSampleRate(last,(short*)destination,count * channels);
+		if (sampleMult != 1 && source->AreSamplesNativeEndian()) {
+			ChangeSampleRate(last,(short*)destination,count * channels, NullSampleConverter());
+		}
+		else if (!source->AreSamplesNativeEndian()) {
+			ChangeSampleRate(last,(short*)destination,count * channels, EndianSwapSampleConverter());
 		}
 
 		delete [] buffer1;
@@ -166,11 +191,22 @@ void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t co
 // See if we need to downmix the number of channels
 AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 	AudioProvider *provider = source_provider;
-	if (provider->GetBytesPerSample() != 2 || provider->GetSampleRate() < 32000)
-		provider = new ConvertAudioProvider(provider);
 
+	// Aegisub requires 16 bit samples,
+	// some audio players break with low samplerates,
+	// everything breaks with wrong-ended samples.
+	if (provider->GetBytesPerSample() != 2 ||
+		provider->GetSampleRate() < 32000 ||
+		!provider->AreSamplesNativeEndian())
+	{
+		provider = new ConvertAudioProvider(provider);
+	}
+
+	// We also require mono audio for historical reasons
 	if (provider->GetChannels() != 1)
+	{
 		provider = new DownmixingAudioProvider(provider);
+	}
 
 	return provider;
 }

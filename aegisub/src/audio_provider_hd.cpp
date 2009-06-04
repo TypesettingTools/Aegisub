@@ -59,6 +59,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	channels = source->GetChannels();
 	sample_rate = source->GetSampleRate();
 	filename = source->GetFilename();
+	samples_native_endian = source->AreSamplesNativeEndian();
 
 	// Check free space
 	wxLongLong freespace;
