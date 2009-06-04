@@ -68,7 +68,8 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 
 	unsigned char h, s, l, lr, lg, lb; // light variants
 	rgb_to_hsl(r, g, b, &h, &s, &l);
-	l = 255 - (255 - l) / 2;
+	l += 24;
+	if (l < 24) l -= 48;
 	hsl_to_rgb(h, s, l, &lr, &lg, &lb);
 
 	if (pattern) {
