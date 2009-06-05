@@ -98,7 +98,6 @@ enum {
 DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid,bool local,AssStyleStorage *_store)
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
-	wxStopWatch performance_timer;
 	// Set icon
 	SetIcon(BitmapToIcon(wxBITMAP(style_toolbutton)));
 
@@ -122,10 +121,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	EncodingValue = AegiIntegerToString(style->encoding);
 	SpacingValue = AegiFloatToString(style->spacing);
 	wxString alignValues[9] = { _T("7"),_T("8"),_T("9"),_T("4"),_T("5"),_T("6"),_T("1"),_T("2"),_T("3") };
-	performance_timer.Start();
 	wxArrayString fontList = wxFontEnumerator::GetFacenames();
 	fontList.Sort();
-	wxLogDebug(_T("Time to get and sort font face names: %d"), performance_timer.Time());
 
 	// Encoding options
 	wxArrayString encodingStrings;
@@ -142,12 +139,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
-	performance_timer.Start();
-	//FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,-1),0,0,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,-1),0,0,wxCB_DROPDOWN);
-	wxLogDebug(_T("Time to create font face listbox: %d"), performance_timer.Time());
 	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(&FontSizeValue,true,false));
-	//wxButton *FontButton = new wxButton(this,BUTTON_STYLE_FONT,_("Choose"));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
 	BoxItalic = new wxCheckBox(this,CHECKBOX_STYLE_ITALIC,_("Italic"));
 	BoxUnderline = new wxCheckBox(this,CHECKBOX_STYLE_UNDERLINE,_("Underline"));
@@ -202,14 +195,12 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	OutlineType->SetValue(style->borderstyle == 3);
 	Alignment->SetSelection(AlignToControl(style->alignment));
 	// Fill font face list box
-	performance_timer.Start();
 	FontName->Freeze();
 	for (size_t i = 0; i < fontList.size(); i++) {
 		FontName->Append(fontList[i]);
 	}
 	FontName->SetValue(style->font);
 	FontName->Thaw();
-	wxLogDebug(_T("Time to fill font face listbox: %d"), performance_timer.Time());
 
 	// Set encoding value
 	bool found = false;
@@ -230,7 +221,6 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	wxSizer *FontSizerBottom = new wxBoxSizer(wxHORIZONTAL);
 	FontSizerTop->Add(FontName,1,wxALL,0);
 	FontSizerTop->Add(FontSize,0,wxLEFT,5);
-	//FontSizerTop->Add(FontButton,0,wxLEFT,5);
 	FontSizerBottom->AddStretchSpacer(1);
 	FontSizerBottom->Add(BoxBold,0,0,0);
 	FontSizerBottom->Add(BoxItalic,0,wxLEFT,5);
