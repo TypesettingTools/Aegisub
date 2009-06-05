@@ -221,6 +221,13 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	if (byTime) len = ShiftTime->time.GetMS();
 	else ShiftFrame->GetValue().ToLong(&len);
 
+	if (byTime && len == 0) {
+		// Shift zero milliseconds in time mode
+		// Equivalent to doing nothing at all, so just dismiss
+		EndModal(0);
+		return;
+	}
+
 	// If backwards, invert
 	if (backward) len = -len;
 
