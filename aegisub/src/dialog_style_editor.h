@@ -100,6 +100,11 @@ private:
 	ColourButton *previewButton;
 	wxSizer *MainSizer;
 
+	static wxRect saved_position;
+	static bool use_saved_position;
+	void SavePosition();
+	void LoadPosition();
+
 	void SetBitmapColor (int n,wxColour color);
 	int AlignToControl (int n);
 	int ControlToAlign (int n);

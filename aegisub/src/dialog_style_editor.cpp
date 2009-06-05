@@ -356,7 +356,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Set sizer
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
-	CenterOnParent();
+	LoadPosition();
 }
 
 
@@ -399,8 +399,8 @@ END_EVENT_TABLE()
 /////////////////////
 // Event redirectors
 void DialogStyleEditor::OnApply (wxCommandEvent &event) { Apply(true,false); }
-void DialogStyleEditor::OnOK (wxCommandEvent &event) { Apply(true,true); }
-void DialogStyleEditor::OnCancel (wxCommandEvent &event) { Apply(false,true); }
+void DialogStyleEditor::OnOK (wxCommandEvent &event) { SavePosition(); Apply(true,true); }
+void DialogStyleEditor::OnCancel (wxCommandEvent &event) { SavePosition(); Apply(false,true); }
 void DialogStyleEditor::OnSetColor1 (wxCommandEvent &event) { OnSetColor(1); }
 void DialogStyleEditor::OnSetColor2 (wxCommandEvent &event) { OnSetColor(2); }
 void DialogStyleEditor::OnSetColor3 (wxCommandEvent &event) { OnSetColor(3); }
@@ -687,3 +687,23 @@ int DialogStyleEditor::AlignToControl (int n) {
 		default: return 7;
 	}
 }
+
+
+/////////////////////////////////////////////////
+// Load and save window position for the session
+void DialogStyleEditor::SavePosition() {
+	use_saved_position = true;
+	saved_position = GetRect();
+}
+void DialogStyleEditor::LoadPosition() {
+	if (use_saved_position)
+		SetSize(saved_position);
+	else
+		CentreOnParent();
+}
+
+
+/////////////////////////////////////
+// Static class data saving position
+wxRect DialogStyleEditor::saved_position;
+bool DialogStyleEditor::use_saved_position = false;
