@@ -86,6 +86,11 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	panel->SetSizer(mainSizer);
 	mainSizer->SetSizeHints(this);
 
+	// Ensure we can grow smaller, without these the window is locked to at least the initial size
+	videoBox->videoDisplay->SetMinSize(wxSize(1,1));
+	videoBox->SetMinSize(wxSize(1,1));
+	SetMinSize(wxSize(1,1));
+
 	// Update
 	parent->SetDisplayMode(0,-1);
 	Options.SetBool(_T("Detached video"),true);
