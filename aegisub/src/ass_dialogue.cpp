@@ -771,7 +771,7 @@ bool AssDialogue::CollidesWith(AssDialogue *target) {
 
 ////////////////////////
 // Return just the text without any overrides
-wxString AssDialogue::GetStrippedText() {
+wxString AssDialogue::GetStrippedText() const {
 	wxString justtext = wxString(_T(""));
 	bool inCode = false;
 	
