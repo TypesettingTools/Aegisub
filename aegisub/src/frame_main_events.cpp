@@ -422,11 +422,18 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 		// Copy/cut/paste
 		wxArrayInt sels = SubsBox->GetSelection();
-		bool state = (sels.Count() > 0);
-		MenuBar->Enable(Menu_Edit_Cut,state);
-		MenuBar->Enable(Menu_Edit_Copy,state);
-		MenuBar->Enable(Menu_Edit_Paste,state);
-		MenuBar->Enable(Menu_Edit_Paste_Over,state);
+		bool can_copy = (sels.Count() > 0);
+		
+		bool can_paste = true;
+		if (wxTheClipboard->Open()) {
+			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
+			wxTheClipboard->Close();
+		}
+
+		MenuBar->Enable(Menu_Edit_Cut,can_copy);
+		MenuBar->Enable(Menu_Edit_Copy,can_copy);
+		MenuBar->Enable(Menu_Edit_Paste,can_paste);
+		MenuBar->Enable(Menu_Edit_Paste_Over,can_copy&&can_paste);
 	}
 
 	// Automation menu
