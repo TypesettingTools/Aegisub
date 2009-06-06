@@ -64,6 +64,11 @@ AegisubLocale::~AegisubLocale() {
 void AegisubLocale::Init(int language) {
 	if (language == -1) language = wxLANGUAGE_ENGLISH;
 	if (locale) delete locale;
+
+	if (!wxLocale::IsAvailable(language)) {
+		language = wxLANGUAGE_UNKNOWN;
+	}
+
 	curCode = language;
 	locale = new wxLocale(language);
 
