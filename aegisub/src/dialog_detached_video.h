@@ -58,7 +58,7 @@ private:
 	void OnMove(wxMoveEvent &event);
 
 public:
-	DialogDetachedVideo(FrameMain *parent);
+	DialogDetachedVideo(FrameMain *parent, const wxSize &initialDisplaySize);
 	~DialogDetachedVideo();
 
 	DECLARE_EVENT_TABLE()

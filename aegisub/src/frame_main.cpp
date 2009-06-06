@@ -1178,7 +1178,7 @@ void FrameMain::OpenHelp(wxString page) {
 void FrameMain::DetachVideo(bool detach) {
 	if (detach) {
 		if (!detachedVideo) {
-			detachedVideo = new DialogDetachedVideo(this);
+			detachedVideo = new DialogDetachedVideo(this, videoBox->videoDisplay->GetClientSize());
 			detachedVideo->Show();
 		}
 	}
