@@ -51,7 +51,7 @@
 
 ///////////////
 // Constructor
-DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
+DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDisplaySize)
 //: wxFrame(par,-1,_("Detached Video"))
 : wxDialog(par,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 {
@@ -77,6 +77,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par)
 	// Video area;
 	videoBox = new VideoBox(panel, true);
 	videoBox->videoDisplay->freeSize = true;
+	videoBox->videoDisplay->SetClientSize(initialDisplaySize);
 	videoBox->videoSlider->grid = par->SubsBox;
 
 	// Set sizer
