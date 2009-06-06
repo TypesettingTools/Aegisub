@@ -177,7 +177,7 @@ public:
 	void ConvertTagsToSRT();		// Converts tags to SRT format
 	void StripTags();				// Strips all tags from the text
 	void StripTag(wxString tagName);// Strips a specific tag from the text
-	wxString GetStrippedText();		// Gets text without tags
+	wxString GetStrippedText() const; // Gets text without tags
 
 	void UpdateData();				// Updates raw data from current values + text
 	void UpdateText();				// Generates text from the override tags
