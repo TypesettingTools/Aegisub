@@ -1081,6 +1081,10 @@ void AudioDisplay::Play(int start,int end) {
 	if (end >= num_samples) end = num_samples-1;
 	if (end < start) end = start;
 
+	// Redraw the image to avoid any junk left over from mouse movements etc
+	// See issue #598
+	UpdateImage(true);
+
 	// Call play
 	player->Play(start,end-start);
 	wxLogDebug(_T("AudioDisplay::Play: playback started, returning"));
@@ -1448,6 +1452,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 				wxString text = time.GetASSFormated();
 
 				// Calculate metrics
+				// FIXME: Hardcoded font name
 				wxFont font(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Verdana"));
 				dc.SetFont(font);
 				int tw,th;
