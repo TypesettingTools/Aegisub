@@ -220,6 +220,11 @@ KanaTable::KanaTable() {
 	Insert(L"",L"\u30c4\u30a9",L"tso");
 }
 
+KanaTable::~KanaTable()
+{
+	// Do nothing
+}
+
 
 //////////
 // Insert
