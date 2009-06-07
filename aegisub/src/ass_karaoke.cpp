@@ -48,7 +48,7 @@ AssKaraokeSyllable::AssKaraokeSyllable()
 	tag = 0;
 }
 
-void ParseAssKaraokeTags(AssDialogue *line, AssKaraokeVector &syls)
+void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls)
 {
 	// Assume line already has tags parsed
 	AssKaraokeSyllable syl;
