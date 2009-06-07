@@ -238,7 +238,7 @@ BEGIN_EVENT_TABLE(DialogStyling,wxDialog)
 	EVT_BUTTON(BUTTON_PLAY_AUDIO, DialogStyling::OnPlayAudioButton)
 	//EVT_TEXT_ENTER(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxEnter)
 	EVT_TEXT(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxModified)
-	EVT_LISTBOX(STYLE_LIST, DialogStyling::OnListClicked)
+	EVT_LISTBOX_DCLICK(STYLE_LIST, DialogStyling::OnListClicked)
 	EVT_KEY_DOWN(DialogStyling::OnKeyDown)
 END_EVENT_TABLE()
 
