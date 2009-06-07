@@ -44,6 +44,9 @@
 ///////////////
 // Constructor
 KanaTable::KanaTable() {
+
+	// Regular kana usage and combinations
+
 	Insert(L"\u3042",L"\u30a2",L"a");
 	Insert(L"\u3044",L"\u30a4",L"i");
 	Insert(L"\u3046",L"\u30a6",L"u");
@@ -100,8 +103,6 @@ KanaTable::KanaTable() {
 	Insert(L"\u3090",L"\u30f0",L"wi");
 	Insert(L"\u3091",L"\u30f1",L"we");
 	Insert(L"\u3092",L"\u30f2",L"wo");
-
-	Insert(L"\u3093",L"\u30f3",L"n");
 
 	Insert(L"\u304c",L"\u30ac",L"ga");
 	Insert(L"\u304e",L"\u30ae",L"gi");
@@ -181,43 +182,89 @@ KanaTable::KanaTable() {
 	Insert(L"\u3074\u3085",L"\u30d4\u30e5",L"pyu");
 	Insert(L"\u3074\u3087",L"\u30d4\u30e7",L"pyo");
 
+
+	// Specialty katakana usage for loan words
+
+	// Katakana fu + small vowel
 	Insert(L"",L"\u30d5\u30a1",L"fa");
 	Insert(L"",L"\u30d5\u30a3",L"fi");
 	Insert(L"",L"\u30d5\u30a7",L"fe");
 	Insert(L"",L"\u30d5\u30a9",L"fo");
 
+	// Katakana vu + small vowel
 	Insert(L"",L"\u30f4\u30a1",L"va");
 	Insert(L"",L"\u30f4\u30a3",L"vi");
 	Insert(L"",L"\u30f4",L"vu");
 	Insert(L"",L"\u30f4\u30a7",L"ve");
 	Insert(L"",L"\u30f4\u30a9",L"vo");
+
+	// Katakana fu + small yu
 	Insert(L"",L"\u30d5\u30e5",L"fyu");
 
+	// Katakana i + little e
 	Insert(L"",L"\u30a4\u30a7",L"ye");
+
+	// Katakana u + little vowels
 	Insert(L"",L"\u30a6\u30a3",L"wi");
 	Insert(L"",L"\u30a6\u30a7",L"we");
 	Insert(L"",L"\u30a6\u30a9",L"wo");
 
+	// Katakana vu + small ya-yu-yo
 	Insert(L"",L"\u30f4\u30e3",L"vya");
 	Insert(L"",L"\u30f4\u30e5",L"vyu");
 	Insert(L"",L"\u30f4\u30e7",L"vyo");
 
+	// Katakana shi-ji-chi + small e
 	Insert(L"",L"\u30b7\u30a7",L"she");
 	Insert(L"",L"\u30b8\u30a7",L"je");
 	Insert(L"",L"\u30c1\u30a7",L"che");
 
+	// Katakana de + small i-u-yu
 	Insert(L"",L"\u30c6\u30a3",L"ti");
 	Insert(L"",L"\u30c6\u30a5",L"tu");
 	Insert(L"",L"\u30c6\u30e5",L"tyu");
 
+	// Katakana de + small i-u-yu
 	Insert(L"",L"\u30c7\u30a3",L"di");
 	Insert(L"",L"\u30c7\u30a5",L"du");
 	Insert(L"",L"\u30c7\u30a5",L"dyu");
 
+	// Katakana tsu + small vowels
 	Insert(L"",L"\u30c4\u30a1",L"tsa");
 	Insert(L"",L"\u30c4\u30a3",L"tsi");
 	Insert(L"",L"\u30c4\u30a7",L"tse");
 	Insert(L"",L"\u30c4\u30a9",L"tso");
+
+
+	// Syllablic consonants
+
+	// Small tsu
+	Insert(L"\u3063",L"\u30c3",L"t");
+	Insert(L"\u3063",L"\u30c3",L"c");
+	Insert(L"\u3063",L"\u30c3",L"s");
+	Insert(L"\u3063",L"\u30c3",L"k");
+	Insert(L"\u3063",L"\u30c3",L"p");
+
+	// Syllabic n
+	Insert(L"\u3093",L"\u30f3",L"n");
+	Insert(L"\u3093",L"\u30f3",L"m");
+
+
+	// Other special usage
+
+	// Small vowels
+	Insert(L"\u3041",L"\u30a1",L"a");
+	Insert(L"\u3043",L"\u30a3",L"i");
+	Insert(L"\u3045",L"\u30a5",L"u");
+	Insert(L"\u3047",L"\u30a7",L"e");
+	Insert(L"\u3049",L"\u30a9",L"o");
+
+	// Long vowel mark (dash)
+	Insert(L"",L"\u30fc",L"a");
+	Insert(L"",L"\u30fc",L"i");
+	Insert(L"",L"\u30fc",L"u");
+	Insert(L"",L"\u30fc",L"e");
+	Insert(L"",L"\u30fc",L"o");
 }
 
 KanaTable::~KanaTable()
