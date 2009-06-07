@@ -105,7 +105,7 @@ public:
 	void SetMarginString(const wxString value,int which);	// Sets margin value from a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	static void GetEncodings(wxArrayString &encodingStrings);
 
-	AssEntry *Clone();
+	AssEntry *Clone() const;
 	bool IsEqualTo(AssStyle *style);
 
 	AssStyle();

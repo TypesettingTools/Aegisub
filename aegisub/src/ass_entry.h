@@ -75,7 +75,7 @@ public:
 	AssEntry(wxString data);
 	virtual ~AssEntry();
 
-	virtual AssEntry *Clone();
+	virtual AssEntry *Clone() const;
 
 	virtual int GetStartMS() const { return StartMS; }
 	virtual int GetEndMS() const { return StartMS; }

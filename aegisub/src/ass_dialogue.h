@@ -196,7 +196,7 @@ public:
 	wxString GetSSAText();
 	bool CollidesWith(AssDialogue *target);					// Checks if two lines collide
 
-	AssEntry *Clone();
+	AssEntry *Clone() const;
 
 	AssDialogue();
 	AssDialogue(wxString data,int version=1);
