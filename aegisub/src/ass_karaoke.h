@@ -50,4 +50,4 @@ struct AssKaraokeSyllable {
 
 typedef std::vector<AssKaraokeSyllable> AssKaraokeVector;
 
-void ParseAssKaraokeTags(AssDialogue *line, AssKaraokeVector &syls);
+void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls);
