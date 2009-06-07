@@ -493,7 +493,7 @@ wxString AssStyle::GetSSAText() {
 
 /////////
 // Clone
-AssEntry *AssStyle::Clone() {
+AssEntry *AssStyle::Clone() const {
 	// Create clone
 	AssStyle *final = new AssStyle();
 
@@ -526,7 +526,7 @@ AssEntry *AssStyle::Clone() {
 	final->strikeout = strikeout;
 	final->underline = underline;
 	final->relativeTo = relativeTo;
-	final->SetEntryData(GetEntryData());
+	final->SetEntryData(const_cast<AssStyle*>(this)->GetEntryData());
 
 	// Return
 	return final;

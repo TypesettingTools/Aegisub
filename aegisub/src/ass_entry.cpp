@@ -119,7 +119,7 @@ wxString AssEntry::GetSSAText() {
 
 /////////
 // Clone
-AssEntry *AssEntry::Clone() {
+AssEntry *AssEntry::Clone() const {
 	// Create clone
 	AssEntry *final = new AssEntry();
 

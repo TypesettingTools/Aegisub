@@ -784,7 +784,7 @@ wxString AssDialogue::GetStrippedText() const {
 }
 /////////
 // Clone
-AssEntry *AssDialogue::Clone() {
+AssEntry *AssDialogue::Clone() const {
 	// Create clone
 	AssDialogue *final = new AssDialogue();
 
