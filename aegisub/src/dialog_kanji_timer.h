@@ -1,4 +1,4 @@
-// Copyright (c) 2006-2007, Dan Donovan (Dansolo)
+// Copyright (c) 2006-2009, Dan Donovan (Dansolo), Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -49,31 +49,30 @@
 #include <vector>
 #include "options.h"
 #include "kana_table.h"
+#include "ass_file.h"
+#include "ass_entry.h"
 
 
 //////////////
 // Prototypes
 class SubtitlesGrid;
 class AssOverrideParameter;
+class KaraokeLineMatchDisplay;
 
 
 /////////
 // Class
 class DialogKanjiTimer : public wxDialog {
-private:
 	SubtitlesGrid *grid;
+	AssFile *subs;
 
-	wxTextCtrl		*SourceText, *DestText;
-	wxComboBox		*SourceStyle, *DestStyle;
-	wxListCtrl		*GroupsList;
-	wxCheckBox			*Interpolate;
+	KaraokeLineMatchDisplay *display;
+	wxComboBox *SourceStyle, *DestStyle;
+	wxCheckBox *Interpolate;
 
-	wxString TextBeforeKaraoke;
-	wxString *RegroupSourceText, *RegroupGroups;
-	std::vector<std::pair<int,wxString> > LinesToChange;
-	int *RegroupSourceKLengths;
-	int RegroupSourceSelected, RegroupTotalLen;
-	int SourceIndex, DestIndex;
+	std::vector<std::pair<entryIter,wxString> > LinesToChange;
+	entryIter currentSourceLine;
+	entryIter currentDestinationLine;
 
 	void OnClose(wxCommandEvent &event);
 	void OnStart(wxCommandEvent &event);
@@ -83,30 +82,17 @@ private:
 	void OnSkipDest(wxCommandEvent &event);
 	void OnGoBack(wxCommandEvent &event);
 	void OnAccept(wxCommandEvent &event);
-	int ListIndexFromStyleandIndex(wxString StyleName, int Occurance);
-	int GetSourceArrayPos(bool GoingDown);
 	inline void OnKeyEnter(wxCommandEvent &event);
-	inline void SetSelected();
 
+	void ResetForNewLine();
+	void TryAutoMatch();
+
+	entryIter FindNextStyleMatch(entryIter search_from, const wxString &search_style);
+	entryIter FindPrevStyleMatch(entryIter search_from, const wxString &search_style);
 
 public:
 	DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *grid);
 	void OnKeyDown(wxKeyEvent &event);
-	inline void OnMouseEvent(wxMouseEvent &event);
-	DECLARE_EVENT_TABLE()
-};
-
-
-/////////////////
-// Event handler
-class DialogKanjiTimerEvent : public wxEvtHandler {
-private:
-	DialogKanjiTimer *control;
-	void KeyHandler(wxKeyEvent &event);
-	void MouseHandler(wxMouseEvent &event);
-
-public:
-	DialogKanjiTimerEvent(DialogKanjiTimer *control);
 	DECLARE_EVENT_TABLE()
 };
 
@@ -114,7 +100,7 @@ public:
 ///////
 // IDs
 enum {
-	BUTTON_KTSTART,
+	BUTTON_KTSTART = 2500,
 	BUTTON_KTLINK,
 	BUTTON_KTUNLINK,
 	BUTTON_KTSKIPSOURCE,
