@@ -204,7 +204,7 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &event)
 
 	wxColour outer_text(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 	wxColour outer_back(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-	wxColour outer_frame(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
+	wxColour outer_frame(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 	wxColour inner_back(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 	wxColour inner_text(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
 	wxColour sel_back(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
