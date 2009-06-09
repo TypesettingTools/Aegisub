@@ -13,11 +13,11 @@ m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
 ###################
 # Required packages
 ###################
-m4_define([libavcodec_required_version], [51.61.0])
-m4_define([libavformat_required_version], [52.18.0])
-m4_define([libavutil_required_version], [49.7.0])
-m4_define([libswscale_required_version], [0.5.1])
-m4_define([libpostproc_required_version], [51.1.0])
+m4_define([libavcodec_required_version], [52.27.0])  # (r18642)
+m4_define([libavformat_required_version], [52.32.0]) # (r18642)
+m4_define([libavutil_required_version], [50.3.0])    # (r18642)
+m4_define([libpostproc_required_version], [51.2.0])  # (r18642)
+m4_define([libswscale_required_version], [0.7.1])    # (r18642)
 
 m4_define([lua_auto3_required_version], [5.0])
 m4_define([lua_auto4_required_version], [5.1])
@@ -715,9 +715,6 @@ AM_CONDITIONAL([HAVE_PROVIDER_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
 AC_ARG_WITH(provider-ffmpegsource, [  --without-provider-ffmpegsource
                           build without FFmpegSource A/V provider.
                           (default: auto)], ffmpegsource_provider_disabled="(disabled)", with_provider_ffmpegsource="yes")
-
-# XXX: Fix this to be a proper check.
-AC_CHECK_HEADER([libavutil/pixfmt.h],,[AC_MSG_WARN([FFmpegSource2 requires FFMPEG r18129 or newer]); with_provider_ffmpegsource="no"])
 
 if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_ffmpegsource" = "yes"; then
   PKG_CHECK_MODULES(LIBPOSTPROC,  libpostproc >= libpostproc_required_version, [], [with_libpostproc="no"])
