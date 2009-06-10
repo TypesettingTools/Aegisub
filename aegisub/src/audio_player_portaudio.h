@@ -47,6 +47,7 @@ extern "C" {
 }
 
 
+
 ////////////////////
 // Portaudio player
 class PortAudioPlayer : public AudioPlayer {
@@ -62,17 +63,19 @@ private:
 	volatile int64_t startPos;
 	volatile int64_t endPos;
 	void *stream;
-	PaTimestamp paStart;
-	volatile int64_t realPlayPos;
+	PaTime paStart;
 
-#ifndef HAVE_PA_GETSTREAMTIME
-	static int paCallback(void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, PaTimestamp outTime, void *userData);
-#else
-	static int paCallback(const void *inputBuffer, void *outputBuffer,
+	static int paCallback(
+		const void *inputBuffer,
+		void *outputBuffer,
 		unsigned long framesPerBuffer,
-		const PaStreamCallbackTimeInfo *timei,
-		PaStreamCallbackFlags flags, void *userData);
-#endif
+		const PaStreamCallbackTimeInfo*
+		timeInfo,
+		PaStreamCallbackFlags
+		statusFlags,
+		void *userData);
+
+	static void paStreamFinishedCallback(void *userData);
 
 public:
 	PortAudioPlayer();
@@ -87,13 +90,14 @@ public:
 
 	int64_t GetStartPosition() { return startPos; }
 	int64_t GetEndPosition() { return endPos; }
-	int64_t GetCurrentPosition() { return realPlayPos; }
+	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos) { endPos = pos; }
-	void SetCurrentPosition(int64_t pos) { playPos = pos; realPlayPos = pos; }
+	void SetCurrentPosition(int64_t pos) { playPos = pos; }
 
 	void SetVolume(double vol) { volume = vol; }
 	double GetVolume() { return volume; }
 
+	wxArrayString GetOutputDevices(wxString favorite);
 	wxMutex *GetMutex() { return &PAMutex; }
 };
 
@@ -105,4 +109,4 @@ public:
 	AudioPlayer *CreatePlayer() { return new PortAudioPlayer(); }
 };
 
-#endif
+#endif //ifdef WITH_PORTAUDIO

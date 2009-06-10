@@ -21,8 +21,7 @@ m4_define([libswscale_required_version], [0.7.1])    # (r18642)
 
 m4_define([lua_auto3_required_version], [5.0])
 m4_define([lua_auto4_required_version], [5.1])
-m4_define([portaudio_required_version], [1])
-m4_define([portaudio2_required_version], [19])
+m4_define([portaudio_required_version], [19])
 m4_define([pulseaudio_required_version], [0.5])
 
 m4_define([fontconfig_required_version], [2.4])
@@ -450,74 +449,18 @@ AM_CONDITIONAL([HAVE_ALSA], [test "$with_alsa" != "no"])
 AC_SUBST(ALSA_LDFLAGS)
 
 
-###################
-## PortAudio2 (v19)
-###################
-
-AC_ARG_WITH(portaudio2,[  --without-portaudio2    build without PortAudio v19 audio provider.
-                          (default: auto)], pulseaudio2_disabled="(disabled)")
-if test "$with_portaudio2" != "no"; then
-  PKG_CHECK_MODULES(PORTAUDIO2, portaudio-2.0 >= portaudio2_required_version, [with_portaudio2="yes"], [with_portaudio2="no"])
-fi
-
-if test "$with_portaudio2" != "no"; then
-  AC_AGI_COMPILE([PortAudio2], [portaudio2], [$PORTAUDIO2_CFLAGS], [$PORTAUDIO2_LIBS],[
-#include <portaudio.h>
-int main(void) {
-  PaError err = Pa_Initialize();
-  if (err != paNoError) return 1;
-  return 0;
-} ])
-fi
-
-if test "$agi_cv_with_portaudio2" = "no" && test "$with_portaudio2" = "yes"; then
-  AC_MSG_WARN([PortAudio2 detected, but it doesn't work...])
-  with_portaudio2="no"
-fi
-
-if test "$agi_cv_with_portaudio2" = "yes" && test "$with_portaudio2" = "yes"; then
-  AC_DEFINE(WITH_PORTAUDIO2, 1, [Enable PortAudio v19 support])
-  found_audio_player="yes"
-fi
-
-AM_CONDITIONAL([HAVE_PORTAUDIO2], [test "$with_portaudio2" != "no"])
-
-
 ############
 ## PortAudio
 ############
-AC_ARG_WITH(portaudio,[  --without-portaudio     build without PortAudio audio provider.
-                          (default: auto)], portaudio_disabled="(disabled)")
 
-if test "$with_portaudio2" = "yes"; then
-  with_portaudio="no"
-  portaudio_disabled="(disabled by v19)"
-fi
-
-if test -z "$PORTAUDIO_LDFLAGS"; then
-  PORTAUDIO_LDFLAGS="$LDFLAGS -lportaudio"
-fi
-
-if test -z "$PORTAUDIO_CFLAGS"; then
-  PORTAUDIO_CFLAGS="$PTHREAD_CFLAGS $PTHREAD_LIBS"
-fi
-
-
+AC_ARG_WITH(portaudio,[  --without-portaudio    build without PortAudio v19 audio provider.
+                          (default: auto)], pulseaudio_disabled="(disabled)")
 if test "$with_portaudio" != "no"; then
-  aegisub_save_CPPFLAGS="$CPPFLAGS"
-  aegisub_save_LDFLAGS="$LDFLAGS"
-  CPPFLAGS="$PORTAUDIO_CFLAGS"
-  LDFLAGS="$LDFLAGS $PORTAUDIO_LDFLAGS"
-  AC_CHECK_LIB([portaudio], [Pa_Initialize], [with_portaudio="yes"], [with_portaudio="no"])
-  AC_CHECK_LIB([portaudio], [Pa_GetStreamTime], [
-    AC_DEFINE(HAVE_PA_GETSTREAMTIME, 1, [Define to 1 if Pa_GetStreamTime is available in PortAudio])
-  ], [])
-  CPPFLAGS="$aegisub_save_CPPFLAGS"
-  LDFLAGS="$aegisub_save_LDFLAGS"
+  PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])
 fi
 
 if test "$with_portaudio" != "no"; then
-  AC_AGI_COMPILE([PortAudio], [portaudio], [$PORTAUDIO_CFLAGS], [$PORTAUDIO_LDFLAGS],[
+  AC_AGI_COMPILE([PortAudio], [portaudio], [$PORTAUDIO_CFLAGS], [$PORTAUDIO_LIBS],[
 #include <portaudio.h>
 int main(void) {
   PaError err = Pa_Initialize();
@@ -531,14 +474,12 @@ if test "$agi_cv_with_portaudio" = "no" && test "$with_portaudio" = "yes"; then
   with_portaudio="no"
 fi
 
-if test "$with_portaudio" = "yes" && test "$agi_cv_with_portaudio" = "yes"; then
+if test "$agi_cv_with_portaudio" = "yes" && test "$with_portaudio" = "yes"; then
+  AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio v19 support])
   found_audio_player="yes"
-  AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio Audio Provider])
 fi
 
 AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
-AC_SUBST(PORTAUDIO_LDFLAGS)
-AC_SUBST(PORTAUDIO_CFLAGS)
 
 
 #############
@@ -1420,7 +1361,6 @@ Audio Players
   ALSA:                  $with_alsa $alsa_disabled
   OpenAL:                $with_openal $openal_disabled
   PortAudio:             $with_portaudio $portaudio_disabled
-  PortAudio2 (v19):      $with_portaudio2 $portaudio2_disabled
   PulseAudio:            $with_pulseaudio $pulseaudio_disabled
 
 A/V Support
