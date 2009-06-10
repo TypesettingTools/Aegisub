@@ -188,7 +188,7 @@ if test -z "$BIN_CONVERT"; then
 fi
 
 $ECHO_N "checking for ImageMagick 'convert' utility ... "
-if test -x "$BIN_CONVERT"; then
+if test -x "$BIN_CONVERT" && $BIN_CONVERT --version |grep -c ImageMagick > /dev/null; then
   echo $BIN_CONVERT
 else
     echo "not found"
