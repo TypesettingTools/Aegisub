@@ -1255,6 +1255,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 			wxString name = override->Tags.at(i)->Name;
 			if (insertTags.Index(name) != wxNOT_FOUND || removeTag == name) {
 				shift -= override->Tags.at(i)->ToString().Length();
+				delete override->Tags.at(i);
 				override->Tags.erase(override->Tags.begin() + i);
 				i--;
 			}
