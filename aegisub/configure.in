@@ -1433,7 +1433,7 @@ A/V Support
                          (required for video providers)
 
 A/V Providers
-  FFMPEG:                $with_provider_ffmpeg (depreciated)
+  FFMPEG:                $with_provider_ffmpeg (deprecated)
   FFmpegSource:          $with_provider_ffmpegsource $ffmpegsource_provider_disabled
 
 Subtitle Providers:
