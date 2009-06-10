@@ -618,11 +618,6 @@ AM_CONDITIONAL([HAVE_OPENAL], [test "$with_openal" != "no"])
 # Video / Audio Providers
 #########################
 
-AC_ARG_ENABLE(old-ffmpeg, [  --enable-old-ffmpeg     Use old FFMPEG header locations (default=no)])
-if test "$enable_old_ffmpeg" = "yes"; then
-  AC_DEFINE([WITH_OLD_FFMPEG], [1], [Use old FFMPEG header locations])
-fi
-
 AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG support.
                           Disables FFMPEG and FFmpegSource A/V providers.
                           (default: auto)], [ffmpeg_disabled="(disabled)"; with_ffmpeg="no"])
