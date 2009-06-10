@@ -699,8 +699,8 @@ AC_SUBST(LIBSWSCALE_CFLAGS)
 AC_SUBST(LIBAVUTIL_LIBS)
 AC_SUBST(LIBAVUTIL_CFLAGS)
 
-AC_ARG_WITH(provider-ffmpeg, [  --without-provider-ffmpeg
-                          build without FFMPEG A/V provider. (default: auto)], ffmpeg_provider_disabled="(disabled)", with_provider_ffmpeg="yes")
+AC_ARG_WITH(provider-ffmpeg, [  --with-provider-ffmpeg
+                          build with FFMPEG A/V provider. (default: no)]", [with_provider_ffmpeg="yes"])
 
 if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_ffmpeg" = "yes"; then
   found_video_provider="yes"
@@ -709,8 +709,8 @@ else
   with_provider_ffmpeg="no"
 fi
 
-AM_CONDITIONAL([HAVE_PROVIDER_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
 
+AM_CONDITIONAL([HAVE_PROVIDER_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
 
 AC_ARG_WITH(provider-ffmpegsource, [  --without-provider-ffmpegsource
                           build without FFmpegSource A/V provider.
@@ -1432,9 +1432,9 @@ A/V Support
   FFMPEG:                $with_ffmpeg $ffmpeg_disabled
                          (required for video providers)
 
-Video Providers
-  FFMPEG:                $with_provider_ffmpeg $ffmpeg_provider_disabled
-  FFmpegSource:          $with_provider_ffmpegsource $ffmpegsource_provider_disabled (requires FFMPEG r18129 or newer)
+A/V Providers
+  FFMPEG:                $with_provider_ffmpeg (depreciated)
+  FFmpegSource:          $with_provider_ffmpegsource $ffmpegsource_provider_disabled
 
 Subtitle Providers:
   CSRI (ASA):            $with_csri $csri_disabled $csri_default
