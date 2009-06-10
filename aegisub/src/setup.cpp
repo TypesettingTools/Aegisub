@@ -131,7 +131,7 @@
 #pragma comment(lib, "ffms2.lib")
 #endif
 
-#ifdef WITH_PORTAUDIO2
+#ifdef WITH_PORTAUDIO
 #pragma comment(lib,"portaudio_x86.lib")
 #endif
 
