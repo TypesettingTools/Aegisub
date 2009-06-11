@@ -114,7 +114,7 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Audio")));
 	PreviewCheck = new wxCheckBox(this,PREVIEW_CHECK,_("Enable preview"));
 	PreviewCheck->SetValue(preview);
-	PreviewCheck->SetEventHandler(new DialogTranslationEvent(this));
+	PreviewCheck->PushEventHandler(new DialogTranslationEvent(this));
 	KeysSizer->Add(KeysInnerSizer,0,wxEXPAND,0);
 	KeysSizer->Add(PreviewCheck,0,wxTOP,5);
 	
