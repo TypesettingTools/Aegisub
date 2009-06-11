@@ -603,7 +603,7 @@ void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
 		}
 	}
 
-	AegisubApp::OpenURL(_T("http://bugs.aegisub.net/"));
+	AegisubApp::OpenURL(_T("http://devel.aegisub.org/"));
 }
 
 
