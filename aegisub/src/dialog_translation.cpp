@@ -254,7 +254,7 @@ void DialogTranslation::UpdatePreview () {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogTranslation, wxDialog)
-	EVT_BUTTON(wxID_CLOSE,DialogTranslation::OnClose)
+	EVT_BUTTON(wxID_CANCEL,DialogTranslation::OnClose)
 	EVT_BUTTON(BUTTON_TRANS_PLAY_VIDEO,DialogTranslation::OnPlayVideoButton)
 	EVT_BUTTON(BUTTON_TRANS_PLAY_AUDIO,DialogTranslation::OnPlayAudioButton)
 END_EVENT_TABLE()
@@ -419,7 +419,9 @@ void DialogTranslation::OnPlayAudioButton(wxCommandEvent &event) {
 // Close
 void DialogTranslation::OnClose (wxCommandEvent &event) {
 	GetPosition(&lastx, &lasty);
-	Close();
+	TransText->PopEventHandler(true);
+	PreviewCheck->PopEventHandler(true);
+	EndModal(0);
 }
 
 
