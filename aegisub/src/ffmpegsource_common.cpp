@@ -124,7 +124,11 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& filename)
 	md5_state_t state;
 	md5_byte_t digest[16];
 	md5_init(&state);
+#if wxCHECK_VERSION(2,9,0)
+	md5_append(&state,(md5_byte_t*)toHash.wc_str(),toHash.Length()*sizeof(wxChar));
+#else
 	md5_append(&state,(md5_byte_t*)toHash.c_str(),toHash.Length()*sizeof(wxChar));
+#endif
 	md5_finish(&state,digest);
 
 	// Generate the filename
