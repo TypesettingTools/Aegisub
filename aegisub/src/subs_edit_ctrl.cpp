@@ -756,7 +756,11 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	event.Skip();
+#if wxCHECK_VERSION(2,9,0)
+	GetParent()->GetEventHandler()->ProcessEvent(event);
+#else
 	GetParent()->AddPendingEvent(event);
+#endif
 }
 
 

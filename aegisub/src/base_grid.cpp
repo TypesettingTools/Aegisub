@@ -991,7 +991,11 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	if (key == WXK_LEFT || key == WXK_RIGHT) {
 		if (VideoContext::Get()->IsLoaded()) {
 			parentFrame->videoBox->videoSlider->SetFocus();
+#if wxCHECK_VERSION(2,9,0)
+			parentFrame->videoBox->videoSlider->GetEventHandler()->ProcessEvent(event);
+#else 
 			parentFrame->videoBox->videoSlider->AddPendingEvent(event);
+#endif
 			return;
 		}
 		event.Skip();
@@ -1082,7 +1086,11 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	// Other events, send to audio display
 	if (VideoContext::Get()->audio->loaded) {
+#if wxCHECK_VERSION(2,9,0)
+		VideoContext::Get()->audio->GetEventHandler()->ProcessEvent(event);
+#else
 		VideoContext::Get()->audio->AddPendingEvent(event);
+#endif
 	}
 	else event.Skip();
 }

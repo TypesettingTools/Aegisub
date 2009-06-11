@@ -120,7 +120,11 @@ END_EVENT_TABLE()
 void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
 	// Send to parent... except that it doesn't work
 	event.Skip();
+#if wxCHECK_VERSION(2,9,0)
+	GetParent()->GetEventHandler()->ProcessEvent(event);
+#else
 	GetParent()->AddPendingEvent(event);
+#endif
 }
 
 

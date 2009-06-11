@@ -234,7 +234,11 @@ END_EVENT_TABLE()
 ////////////////////////////////
 // Redirect grid events to grid
 void FrameMain::OnGridEvent (wxCommandEvent &event) {
+#if wxCHECK_VERSION(2,9,0)
+	SubsBox->GetEventHandler()->ProcessEvent(event);
+#else
 	SubsBox->AddPendingEvent(event);
+#endif
 }
 
 

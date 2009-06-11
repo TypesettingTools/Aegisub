@@ -67,6 +67,7 @@
 #pragma comment(lib, "wxmsw29ud_adv.lib")
 #pragma comment(lib, "wxmsw29ud_gl.lib")
 #pragma comment(lib, "wxmsw29ud_stc.lib")
+#pragma comment(lib, "wxscintillad.lib")
 #pragma comment(lib, "wxbase29ud_xml.lib")
 #pragma comment(lib, "wxexpatd.lib")
 #else
@@ -78,6 +79,7 @@
 #pragma comment(lib, "wxmsw29u_adv.lib")
 #pragma comment(lib, "wxmsw29u_gl.lib")
 #pragma comment(lib, "wxmsw29u_stc.lib")
+#pragma comment(lib, "wxscintilla.lib")
 #pragma comment(lib, "wxbase29u_xml.lib")
 #pragma comment(lib, "wxexpat.lib")
 #endif

@@ -370,7 +370,11 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 
 	// Forward up/down to grid
 	if (key == WXK_UP || key == WXK_DOWN) {
+#if wxCHECK_VERSION(2,9,0)
+		grid->GetEventHandler()->ProcessEvent(event);
+#else
 		grid->AddPendingEvent(event);
+#endif
 		grid->SetFocus();
 		return;
 	}
