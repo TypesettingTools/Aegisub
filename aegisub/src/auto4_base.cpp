@@ -736,6 +736,7 @@ namespace Automation4 {
 		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
 			if (*i == factory) {
 				factories->erase(i);
+				if (factories->empty()) delete factories;
 				return;
 			}
 		}
