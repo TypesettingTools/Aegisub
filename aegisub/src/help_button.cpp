@@ -125,3 +125,7 @@ void HelpButton::InitStatic() {
 		page[_T("Visual Typesetting")] = _T("Visual_Typesetting");
 	}
 }
+
+void HelpButton::ClearPages() {
+	if (pages) delete pages;
+}
