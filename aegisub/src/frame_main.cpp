@@ -585,6 +585,7 @@ void FrameMain::DeInitContents() {
 	delete AssFile::top;
 	delete EditBox;
 	delete videoBox;
+	HelpButton::ClearPages();
 }
 
 
