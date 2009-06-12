@@ -104,6 +104,12 @@
 //#define WITH_OLD_HUNSPELL
 
 
+// Enable "final release" mode
+// Displays different versions numbers in About box and title bar, and omits detailed version information from
+// the title bar. Only core developers should enable then, and only when making builds for mass consumption.
+//#define FINAL_RELEASE
+
+
 
 /////////////// LOW PRIORITY ////////////
 
@@ -175,3 +181,8 @@
 // Enable Pulse Audio audio player
 // Requires libpulse (and a *NIX compatible system and a running sound server to actually use)
 //#define WITH_PULSEAUDIO
+
+
+// Display trace-level diagnostic messages during startup
+// Only enable for making special builds for end users having trouble with starting Aegisub
+//#define WITH_STARTUPLOG
