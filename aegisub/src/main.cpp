@@ -76,16 +76,8 @@
 IMPLEMENT_APP(AegisubApp)
 
 
-#if 0
-void StartupLog(const wxString &msg) {
-	static wxStopWatch clock;
-	wxString nmsg = wxString::Format(_T("Startup: %d - %s\n"), clock.Time(), msg.c_str());
-#ifdef WIN32
-	OutputDebugStringW(nmsg.wc_str());
-#else
-	printf(nmsg.mb_str(wxConvLocal));
-#endif
-}
+#ifdef WITH_STARTUPLOG
+#define StartupLog(a) MessageBox(0, a, _T("Aegisub startup log"), 0)
 #else
 #define StartupLog(a)
 #endif

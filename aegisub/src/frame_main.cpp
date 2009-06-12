@@ -82,12 +82,20 @@
 #endif
 
 
+
+#ifdef WITH_STARTUPLOG
+#define StartupLog(a) MessageBox(0, a, _T("Aegisub startup log"), 0)
+#else
+#define StartupLog(a)
+#endif
+
 /////////////////////////
 // FrameMain constructor
 
 FrameMain::FrameMain (wxArrayString args)
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
+	StartupLog(_T("Entering FrameMain constructor"));
 #ifdef __WXGTK__
 /* XXX HACK XXX
  * Gtk just got initialized. And if we're using the SCIM IME,
@@ -102,6 +110,7 @@ FrameMain::FrameMain (wxArrayString args)
 	// Set application's frame
 	AegisubApp::Get()->frame = this;
 
+	StartupLog(_T("Create log window"));
 	LogWindow = new wxLogWindow(this, _T("Aegisub log window"), false);
 
 	// Initialize flags
@@ -110,24 +119,31 @@ FrameMain::FrameMain (wxArrayString args)
 	blockAudioLoad = false;
 	blockAudioLoad = false;
 
+	StartupLog(_T("Install PNG handler"));
 	// Create PNG handler
 	wxPNGHandler *png = new wxPNGHandler;
 	wxImage::AddHandler(png);
 
 	// Storage for subs-file-local scripts
 #ifdef WITH_AUTOMATION
+	StartupLog(_T("Create local Automation script manager"));
 	local_scripts = new Automation4::ScriptManager();
 #endif
 
 	// Create menu and tool bars
+	StartupLog(_T("Apply saved Maximized state"));
 	if (Options.AsBool(_T("Maximized"))) Maximize(true);
+	StartupLog(_T("Initialize toolbar"));
 	InitToolbar();
+	StartupLog(_T("Initialize menu bar"));
 	InitMenu();
 	
 	// Create status bar
+	StartupLog(_T("Create status bar"));
 	CreateStatusBar(2);
 
 	// Set icon
+	StartupLog(_T("Set icon"));
 	SetIcon(wxICON(wxicon));
 
 	// Contents
@@ -135,7 +151,9 @@ FrameMain::FrameMain (wxArrayString args)
 	showAudio = true;
 	detachedVideo = NULL;
 	stylingAssistant = NULL;
+	StartupLog(_T("Initialize inner main window controls"));
 	InitContents();
+	StartupLog(_T("Display main window"));
 	Show();
 
 	// Splash screen
@@ -153,6 +171,7 @@ FrameMain::FrameMain (wxArrayString args)
 	wxSafeYield();
 
 	// Set autosave timer
+	StartupLog(_T("Set up Auto Save"));
 	AutoSave.SetOwner(this,AutoSave_Timer);
 	int time = Options.AsInt(_T("Auto save every seconds"));
 	if (time > 0) {
@@ -160,19 +179,24 @@ FrameMain::FrameMain (wxArrayString args)
 	}
 
 	// Set accelerator keys
+	StartupLog(_T("Install hotkeys"));
 	PreviousFocus = NULL;
 	SetAccelerators();
 
 	// Set drop target
+	StartupLog(_T("Set up drag/drop target"));
 	SetDropTarget(new AegisubFileDropTarget(this));
 
 	// Parse arguments
+	StartupLog(_T("Initialize empty file"));
 	LoadSubtitles(_T(""));
+	StartupLog(_T("Load files specified on command line"));
 	LoadList(args);
 
 	// Version checker
 	// Fails on non-Windows platforms with a crash
 #ifdef __WXMSW__
+	StartupLog(_T("Possibly perform automatic updates check"));
 	int option = Options.AsInt(_T("Auto check for updates"));
 	if (option == -1) {
 		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"),wxYES_NO);
@@ -188,6 +212,7 @@ FrameMain::FrameMain (wxArrayString args)
 #endif
 
 	//ShowFullScreen(true,wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
+	StartupLog(_T("Leaving FrameMain constructor"));
 }
 
 
@@ -527,41 +552,51 @@ void FrameMain::InitMenu() {
 // Initialize contents
 void FrameMain::InitContents() {
 	// Set a background panel
+	StartupLog(_T("Create background panel"));
 	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	// Initialize sizers
+	StartupLog(_T("Create main sizers"));
 	MainSizer = new wxBoxSizer(wxVERTICAL);
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	// Video area;
+	StartupLog(_T("Create video box"));
 	videoBox = new VideoBox(Panel, false);
 	TopSizer->Add(videoBox,0,wxEXPAND,0);
 	videoBox->videoDisplay->zoomBox = ZoomBox;
 
 	// Subtitles area
+	StartupLog(_T("Create subtitles grid"));
 	SubsBox = new SubtitlesGrid(this,Panel,-1,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
 	BottomSizer->Add(SubsBox,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,0);
+	StartupLog(_T("Reset undo stack"));
 	AssFile::StackReset();
 	videoBox->videoSlider->grid = SubsBox;
 	VideoContext::Get()->grid = SubsBox;
+	StartupLog(_T("Reset video zoom"));
 	videoBox->videoDisplay->SetZoomPos(Options.AsInt(_T("Video Default Zoom")));
 	Search.grid = SubsBox;
 
 	// Audio area
+	StartupLog(_T("Create audio box"));
 	audioBox = new AudioBox(Panel);
 	audioBox->frameMain = this;
 	VideoContext::Get()->audio = audioBox->audioDisplay;
 
 	// Top sizer
+	StartupLog(_T("Create subtitle editing box"));
 	EditBox = new SubsEditBox(Panel,SubsBox);
 	EditBox->audio = audioBox->audioDisplay;
+	StartupLog(_T("Arrange controls in sizers"));
 	ToolSizer = new wxBoxSizer(wxVERTICAL);
 	ToolSizer->Add(audioBox,0,wxEXPAND | wxBOTTOM,5);
 	ToolSizer->Add(EditBox,1,wxEXPAND,5);
 	TopSizer->Add(ToolSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 
 	// Set sizers/hints
+	StartupLog(_T("Arrange main sizers"));
 	MainSizer->Add(new wxStaticLine(Panel),0,wxEXPAND | wxALL,0);
 	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,0);
 	MainSizer->Add(BottomSizer,1,wxEXPAND | wxALL,0);
@@ -570,9 +605,13 @@ void FrameMain::InitContents() {
 	//SetSizer(MainSizer);
 
 	// Set display
+	StartupLog(_T("Set display mode"));
 	SetDisplayMode(0,0);
+	StartupLog(_T("Perform layout"));
 	Layout();
+	StartupLog(_T("Set focus to edting box"));
 	EditBox->TextEdit->SetFocus();
+	StartupLog(_T("Leaving InitContents"));
 }
 
 
