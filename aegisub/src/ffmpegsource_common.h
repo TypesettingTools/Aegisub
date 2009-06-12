@@ -41,7 +41,7 @@
 #include <wx/wxprec.h>
 #include <wx/thread.h>
 #include "include/aegisub/aegisub.h"
-#include "../FFmpegSource2/ffms.h"
+#include <ffms.h>
 #include "dialog_progress.h"
 
 
