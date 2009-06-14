@@ -82,11 +82,11 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 
 	// Write to disk
 	int block = 4096;
-	char *temp = new char[block * channels * bytes_per_sample];
+	data = new char[block * channels * bytes_per_sample];
 	for (int64_t i=0;i<num_samples && !canceled; i+=block) {
 		if (block+i > num_samples) block = num_samples - i;
-		source->GetAudio(temp,i,block);
-		file_cache.Write(temp,block * channels * bytes_per_sample);
+		source->GetAudio(data,i,block);
+		file_cache.Write(data,block * channels * bytes_per_sample);
 		progress->SetProgress(i,num_samples);
 	}
 	file_cache.Seek(0);
@@ -97,6 +97,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	}
 	else {
 		file_cache.Close();
+		delete[] data;
 		throw wxString(_T("Audio loading cancelled by user"));
 	}
 }
@@ -107,6 +108,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 HDAudioProvider::~HDAudioProvider() {
 	file_cache.Close();
 	wxRemoveFile(diskCacheFilename);
+	delete[] data;
 }
 
 
