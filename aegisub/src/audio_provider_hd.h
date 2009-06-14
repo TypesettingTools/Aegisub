@@ -51,6 +51,7 @@ private:
 	wxFile file_cache;
 	wxString diskCacheFilename;
 	bool samples_native_endian;
+	char *data;
 
 	static wxString DiskCachePath();
 	static wxString DiskCacheName();
