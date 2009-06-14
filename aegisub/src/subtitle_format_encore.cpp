@@ -94,11 +94,8 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
 		if (current && !current->Comment) {
-			// Time stamps
-			wxString timeStamps = wxString::Format(_T("%i "),++i) + ft.FromAssTime(current->Start) + _T(" ") + ft.FromAssTime(current->End);
-
-			// Write
-			file.WriteLineToFile(timeStamps + current->Text);
+			++i;
+			file.WriteLineToFile(wxString::Format(_T("%i %s %s %s"), i, ft.FromAssTime(current->Start).c_str(), ft.FromAssTime(current->End).c_str(), current->Text.c_str()));
 		}
 	}
 
