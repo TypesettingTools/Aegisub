@@ -34,11 +34,14 @@
 
 
 [Setup]
+AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 AppName=Aegisub
 AppVerName=Aegisub 2.1.7
+AppVersion=2.1.7
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
+AppCopyright=© 2005-2009 The Aegisub Team
 DefaultDirName={pf}\Aegisub
 DefaultGroupName=Aegisub
 AllowNoIcons=true
@@ -51,26 +54,29 @@ ShowLanguageDialog=no
 LanguageDetectionMethod=none
 WizardImageFile=welcome.bmp
 WizardSmallImageFile=aegisub.bmp
-AppCopyright=© 2005-2009 The Aegisub Team
 PrivilegesRequired=poweruser
-DisableProgramGroupPage=true
-UsePreviousGroup=false
-AlwaysShowComponentsList=true
-AppVersion=2.1.7
-AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
+DisableProgramGroupPage=yes
+UsePreviousGroup=yes
+UsePreviousSetupType=no
+UsePreviousAppDir=yes
+UsePreviousTasks=no
 UninstallDisplayIcon={app}\aegisub32.exe
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
 
 [Files]
-; Legacy uninstall data
+; uninstall data
 DestDir: {tmp}; Flags: dontcopy; Source: legacy_filelist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: legacy_dirlist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: legacy_locales.txt
 DestDir: {tmp}; Flags: dontcopy; Source: legacy_shortcutlist.txt
+DestDir: {tmp}; Flags: dontcopy; Source: old_filelist.txt
+DestDir: {tmp}; Flags: dontcopy; Source: old_dirlist.txt
+DestDir: {tmp}; Flags: dontcopy; Source: old_locales.txt
+DestDir: {tmp}; Flags: dontcopy; Source: old_shortcutlist.txt
 ; redist
-DestDir: {tmp}; Source: src\vcredist_x86.exe; Flags: nocompression deleteafterinstall
+DestDir: {tmp}; Source: src\vcredist_x86.exe; Flags: nocompression deleteafterinstall; Check: RuntimesRequired
 ; main
 DestDir: {app}; Source: src\aegisub32.exe; Flags: ignoreversion; Components: main
 DestDir: {app}; Source: src\aegisub32.pdb; Flags: ignoreversion; Components: main/pdb
@@ -175,12 +181,12 @@ Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\aegisub
 
 [Run]
 Filename: {app}\aegisub32.exe; Description: {cm:LaunchProgram,Aegisub}; Flags: nowait postinstall skipifsilent
-Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Components: main/runtime; Parameters: "/q"
+Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Check: RuntimesRequired; Components: main/runtime; Parameters: "/q"
 
 [Components]
 ; Actual program
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
-Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
+Name: main/runtime; Description: Runtime libraries; Check: RuntimesRequired; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
 Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
 Name: main/icons; Description: Programs menu icons; Types: custom compact full
 Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
@@ -251,6 +257,22 @@ begin
     Result := LegacyInstallFolder
   else
     Result := ExpandConstant('{app}');
+end;
+
+
+function RuntimesRequired: Boolean;
+var
+  DisplayVersion: string;
+begin
+  // Check for uninstall entry for runtimes, don't bother installing if it can be uninstalled now
+  // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}
+  // Check: DisplayVersion = "9.0.30729"
+  DisplayVersion := '';
+  Result := RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}',
+      'DisplayVersion', DisplayVersion);
+  Result := Result and (DisplayVersion = '9.0.30729');
+  
+  Result := not Result;
 end;
 
 
@@ -331,11 +353,11 @@ var
 begin
   // Uninstall Aegisub 1.x
   Log('-- Uninstall legacy version --');
-  page := CreateOutputProgressPage('Uninstalling old version', Format('Your old installation of Aegisub %s is being removed', [LegacyVersionNumber]));
+  page := CreateOutputProgressPage('Uninstalling old version', 'Your old installation of Aegisub is being removed');
   try
     page.SetText('Preparing list of files', '');
     page.Show;
-    
+
     Log('Load file lists');
     ExtractTemporaryFile('legacy_shortcutlist.txt');
     ExtractTemporaryFile('legacy_filelist.txt');
@@ -352,7 +374,7 @@ begin
     itemsdone := 0;
     totalitems := file_list.Count + dir_list.Count + shortcut_list.Count + locale_list.Count + 3;
     // Two extra for the registry keys and one for Start menu folder
-    
+
     for i := 0 to shortcut_list.Count-1 do
     begin
       curname := LegacyStartMenuFolder + '\' + shortcut_list.Strings[i];
@@ -367,7 +389,7 @@ begin
     Log('Remove directory: ' + LegacyStartMenuFolder);
     if not RemoveDir(LegacyStartMenuFolder) then Log('* Directory deletion failed');
     itemsdone := itemsdone + 1;
-    
+
     for i := 0 to file_list.Count-1 do
     begin
       curname := LegacyInstallFolder + '\' + file_list.Strings[i];
@@ -377,17 +399,17 @@ begin
       if not DeleteFile(curname) then Log('* Deletion failed');
       itemsdone := itemsdone + 1;
     end;
-    
+
     for i := 0 to locale_list.Count-1 do
     begin
       curname := LegacyInstallFolder + '\' + locale_list.Strings[i];
-      page.SetText('Removing locales', curname);
+      page.SetText('Removing folders', curname);
       page.SetProgress(itemsdone, totalitems);
-      Log('Remove locale: ' + curname);
+      Log('Remove directory recursively: ' + curname);
       if not DelTree(curname, True, True, True) then Log('* Tree deletion failed');
       itemsdone := itemsdone + 1;
     end;
-    
+
     for i := 0 to dir_list.Count-1 do
     begin
       curname := LegacyInstallFolder + '\' + dir_list.Strings[i];
@@ -397,7 +419,7 @@ begin
       if not RemoveDir(curname) then Log('* Directory deletion failed');
       itemsdone := itemsdone + 1;
     end;
-    
+
     page.SetText('Removing registry entries', 'Installation data');
     page.SetProgress(itemsdone, totalitems);
     curname := 'SOFTWARE\Aegisub';
@@ -423,9 +445,102 @@ begin
 end;
 
 
+function SetFileAttributes(lpFileName: PChar; dwFileAttributes: Longint): Boolean;
+external 'SetFileAttributesA@kernel32.dll stdcall';
+
 procedure CleanUpOldVersion;
+var
+  StartMenuFolder, InstallFolder: string;
+  page: TOutputProgressWizardPage;
+  file_list: TStringList;
+  dir_list: TStringList;
+  shortcut_list: TStringList;
+  locale_list: TStringList;
+  itemsdone, totalitems, i: Integer;
+  curname: string;
 begin
-  Log('-- Cleaning up from old version --');
+  // Clean up from previous Aegisub 2.x installs
+  Log('-- Clean up old versions --');
+  page := CreateOutputProgressPage('Cleaning old versions', 'Cleaning up from older versions of Aegisub 2');
+  try
+    page.SetText('Preparing list of files', '');
+    page.Show;
+
+    Log('Load file lists');
+    ExtractTemporaryFile('old_shortcutlist.txt');
+    ExtractTemporaryFile('old_filelist.txt');
+    ExtractTemporaryFile('old_locales.txt');
+    ExtractTemporaryFile('old_dirlist.txt');
+    shortcut_list := TStringList.Create;
+    shortcut_list.LoadFromFile(ExpandConstant('{tmp}\old_shortcutlist.txt'));
+    file_list := TStringList.Create;
+    file_list.LoadFromFile(ExpandConstant('{tmp}\old_filelist.txt'));
+    locale_list := TStringList.Create;
+    locale_list.LoadFromFile(ExpandConstant('{tmp}\old_locales.txt'));
+    dir_list := TStringList.Create;
+    dir_list.LoadFromFile(ExpandConstant('{tmp}\old_dirlist.txt'));
+    itemsdone := 0;
+    totalitems := file_list.Count + dir_list.Count + shortcut_list.Count + locale_list.Count + 1;
+    // One extra for the start menu folder
+
+    StartMenuFolder := ExpandConstant('{commonprograms}\Aegisub\');
+    for i := 0 to shortcut_list.Count-1 do
+    begin
+      curname := StartMenuFolder + shortcut_list.Strings[i];
+      page.SetText('Removing shortcuts', curname);
+      page.SetProgress(itemsdone, totalitems);
+      Log('Remove shortcut: ' + curname);
+      if not DeleteFile(curname) then Log('* Deletion failed');
+      itemsdone := itemsdone + 1;
+    end;
+    page.SetText('Removing Start menu folder', StartMenuFolder);
+    page.SetProgress(itemsdone, totalitems);
+    Log('Remove directory: ' + StartMenuFolder);
+    if not RemoveDir(StartMenuFolder) then Log('* Directory deletion failed');
+    itemsdone := itemsdone + 1;
+
+    InstallFolder := ExpandConstant('{app}\');
+    for i := 0 to file_list.Count-1 do
+    begin
+      curname := InstallFolder + file_list.Strings[i];
+      page.SetText('Removing files', curname);
+      page.SetProgress(itemsdone, totalitems);
+      Log('Remove file: ' + curname);
+      SetFileAttributes(curname, 128); // 128 = FILE_ATTRIBUTE_NORMAL
+      if not DeleteFile(curname) then Log('* Deletion failed');
+      itemsdone := itemsdone + 1;
+    end;
+
+    for i := 0 to locale_list.Count-1 do
+    begin
+      curname := InstallFolder + locale_list.Strings[i];
+      page.SetText('Removing folders', curname);
+      page.SetProgress(itemsdone, totalitems);
+      Log('Remove directory recursively: ' + curname);
+      if not DelTree(curname, True, True, True) then Log('* Tree deletion failed');
+      itemsdone := itemsdone + 1;
+    end;
+
+    for i := 0 to dir_list.Count-1 do
+    begin
+      curname := InstallFolder + dir_list.Strings[i];
+      page.SetText('Removing folders', curname);
+      page.SetProgress(itemsdone, totalitems);
+      Log('Remove directory: ' + curname);
+      if not RemoveDir(curname) then Log('* Directory deletion failed');
+      itemsdone := itemsdone + 1;
+    end;
+
+    page.SetText('Uninstallation complete', '');
+    page.SetProgress(totalitems, totalitems);
+
+  finally
+    shortcut_list.Free;
+    file_list.Free;
+    locale_list.Free;
+    dir_list.Free;
+    page.Hide;
+  end;
 end;
 
 
@@ -438,10 +553,7 @@ begin
       MigrateStyleCatalogs;
       UninstallLegacyVersion;
     end
-    else
-    begin
-      CleanUpOldVersion;
-    end;
+    CleanUpOldVersion;
 	end;
 end;
 
