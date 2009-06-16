@@ -49,6 +49,8 @@ namespace Automation4 {
 #else
 		f = fopen(filename.fn_str(), "rb");
 #endif
+		if (!f)
+			throw _T("Could not open script file");
 		first = true;
 		databuf = new char[bufsize];
 	}
