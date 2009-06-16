@@ -1,0 +1,9 @@
+automation\factorybrew\
+automation\demos\
+automation\include\
+automation\
+locale\
+autosave\
+autoback\
+source\
+.

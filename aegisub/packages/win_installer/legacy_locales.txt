@@ -1,0 +1,9 @@
+locale\de
+locale\fr
+locale\pt_BR
+locale\ru
+locale\da
+locale\es
+locale\hu
+locale\it
+locale\ko
