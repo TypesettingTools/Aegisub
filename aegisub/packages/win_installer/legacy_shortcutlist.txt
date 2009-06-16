@@ -1,0 +1,6 @@
+Aegisub.lnk
+Aegisub Help.lnk
+Aegisub Site.lnk
+VSFilter Config.lnk
+Changelog.lnk
+Uninstall.lnk
