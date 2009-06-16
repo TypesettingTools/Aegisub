@@ -50,6 +50,8 @@
 #endif
 
 #define _T_rec(X) _T(X)
+#define _T_stringize(X) _T(#X)
+#define _T_int(X) _T_stringize(X)
 
 #define BUILD_TIMESTAMP _T_rec(__DATE__) _T(" ") _T_rec(__TIME__)
 
@@ -71,55 +73,62 @@ struct VersionInfoStruct {
 
 	// Generate the above data
 	VersionInfoStruct() {
-		wxString SCMStr, VersionStr;
+		wxString VersionStr;
 
-		// Update this whenever a new version is released
-#ifdef _DEBUG
-		IsDebug = true;
-#else
-		IsDebug = false;
-#endif
 		SvnRev = BUILD_SVN_REVISION;
+
 #ifdef BUILD_SVN_DATE
 		BuildTime = _T_rec(BUILD_SVN_DATE);
 #else
 		BuildTime = BUILD_TIMESTAMP;
 #endif
+
 #ifdef BUILD_CREDIT
-		BuildCredit = _T_rec(BUILD_CREDIT);
+		BuildCredit = _T(BUILD_CREDIT);
 #else
-		BuildCredit = _T("(unknown)");
+		BuildCredit = _T("");
 #endif
 
-		if (SvnRev > 0) {
-			SCMStr = wxString::Format(_T("SVN r%d"), SvnRev);
-#ifdef BUILD_SVN_LOCALMODS
-			SCMStr += BUILD_SVN_LOCALMODS ? _T("M") : _T("");
+#ifdef _DEBUG
+		IsDebug = true;
+#else
+		IsDebug = false;
 #endif
-#ifdef BUILD_DARCS
-		} else {
-			SCMStr = _T("darcs");
-#endif
-		}
 
 #ifdef FINAL_RELEASE
-		VersionNumber = _T("v2.2.0");
 		IsRelease = true;
+		VersionNumber = _T("2.1.7");
 #else
-		VersionNumber = _T("v2.1.6");
 		IsRelease = false;
+		VersionNumber = _T("r") _T_int(BUILD_SVN_REVISION)
+# ifdef BUILD_SVN_LOCALMODS
+			_T("M")
+# endif
+			;
 #endif
-		VersionStr = wxString::Format(_T("%s%s"), VersionNumber, IsRelease ? _T("") : _T(" RELEASE PREVIEW"));
 
+		if (IsRelease)
+		{
+			// Short is used in about box
+			ShortVersionString = wxString::Format(_T("%s (built from SVN revision %d)"), VersionNumber, SvnRev);
+			// Long is used in title bar
+			LongVersionString = VersionNumber;
+		}
+		else
+		{
+			wxString buildcred;
 #ifdef BUILD_CREDIT
-		LongVersionString = wxString::Format(_T("%s (%s%s, %s)"), VersionStr.c_str(), IsDebug ? _T("debug, ") : _T(""), SCMStr.c_str(), BuildCredit);
-#else
-		LongVersionString = wxString::Format(_T("%s (%s%s)"), VersionStr.c_str(), IsDebug ? _T("debug, ") : _T(""), SCMStr.c_str());
+			buildcred += _T(", "); buildcred += BuildCredit;
 #endif
-		ShortVersionString = wxString::Format(_T("%s %s%s"), VersionStr.c_str(), SCMStr.c_str(), IsDebug ? _T(" debug") : _T(""));
+			ShortVersionString = wxString::Format(_T("%s (development version%s)"), VersionNumber, buildcred.c_str());
+			LongVersionString = ShortVersionString;
+		}
 
-		if (IsRelease && !IsDebug)
-			ShortVersionString = LongVersionString = VersionStr;
+		if (IsDebug)
+		{
+			ShortVersionString += _T(" [DEBUG VERSION]");
+			LongVersionString += _T(" [DEBUG VERSION]");
+		}
 	}
 };
 
