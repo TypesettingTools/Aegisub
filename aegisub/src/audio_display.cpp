@@ -1372,6 +1372,11 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 		return;
 	}
 
+	if (!player || !provider) {
+		event.Skip();
+		return;
+	}
+
 	// Is inside?
 	bool inside = false;
 	bool onScale = false;
@@ -1434,7 +1439,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	// Cursor drawing
-	if (!player->IsPlaying() && origImage) {
+	if (player && !player->IsPlaying() && origImage) {
 		// Draw bg
 		wxClientDC dc(this);
 		dc.DrawBitmap(*origImage,0,0);
