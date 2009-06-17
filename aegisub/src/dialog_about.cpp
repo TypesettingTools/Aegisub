@@ -119,8 +119,8 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _T(".\n");
 	aboutString += _T("Copyright (c) 2005-2009 Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
 	aboutString += _T("Programmers:\n");
-	aboutString += _T("    Alysson Souza e Silva\n"); Amar Takhar
-	aboutString += _T("    Amar Takhar\n"); 
+	aboutString += _T("    Alysson Souza e Silva\n");
+	aboutString += _T("    Amar Takhar\n");
 	aboutString += _T("    Dan Donovan\n");
 	aboutString += _T("    Daniel Moscoviter\n");
 	aboutString += _T("    David Conrad\n");
