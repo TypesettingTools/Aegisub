@@ -83,7 +83,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #endif
 #ifdef WITH_FFMPEGSOURCE
 	libString += _T("    FFmpeg - Copyright (c) Fabrice Bellard;\n");
-	libString += _T("    FFmpegSource - Copyright (c) Frederik Melbin;\n");
+	libString += _T("    FFmpegSource - Copyright (c) Fredrik Mellbin;\n");
 #endif
 #ifdef WITH_AVISYNTH
 	libString += _T("    Avisynth 2.5 - Copyright (c) Ben Rudiak-Gould et al;\n");
