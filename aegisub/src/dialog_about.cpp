@@ -125,6 +125,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("    Daniel Moscoviter\n");
 	aboutString += _T("    David Conrad\n");
 	aboutString += _T("    David Lamparter\n");
+	aboutString += _T("    Eric Batalitzky\n");
 	aboutString += _T("    Evgeniy Stepanov\n");
 	aboutString += _T("    Fredrik Mellbin\n");
 	aboutString += _T("    Karl Blomster\n");
@@ -134,9 +135,8 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("    Patryk Pomykalski\n");
 	aboutString += _T("    Rodrigo Braz Monteiro\n");
 	aboutString += _T("    Simone Cociancich\n");
+	aboutString += _T("    Thomas Goyne\n");
 	aboutString += _T("    2points\n");
-	aboutString += _T("    Harukalover\n");
-	aboutString += _T("    Plorkyeran\n");
 	aboutString += _T("    p-static\n");
 	aboutString += _T("User manual written by:\n");
 	aboutString += _T("    Karl Blomster\n");
