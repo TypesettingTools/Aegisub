@@ -62,76 +62,91 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	PicSizer->Add(new BitmapControl(this,splash));
 
 	// Generate library string
-	wxString libString = _("This build of Aegisub uses the following C/C++ libraries:\n");
-	libString += _T("    wxWidgets - Copyright (c) 1998-2008 Julian Smart, Robert Roebling et al;\n");
-	libString += _T("    wxStyledTextCtrl - Copyright (c) 2004 wxCode;\n");
-#ifdef WITH_AUTOMATION
-	libString += _T("    Lua - Copyright (c) 1994-2008 Lua.org, PUC-Rio;\n");
+	wxString libString = _T("Aegisub includes portions from the following other projects:\n");
+	libString += _T("    wxWidgets - Copyright (c) Julian Smart, Robert Roebling et al;\n");
+	libString += _T("    wxStyledTextCtrl - Copyright (c) Robin Dunn, Neil Hodgson;\n");
+	libString += _T("    Scintilla - Copyright (c) Neil Hodgson;\n");
+#ifdef WITH_AUTO4_LUA
+	libString += _T("    Lua - Copyright (c) Lua.org, PUC-Rio;\n");
 #endif
 #ifdef WITH_PERL
-	libString += _T("    Perl - Copyright (c) 1987-2007 Larry Wall et al;\n");
+	libString += _T("    Perl - Copyright (c) Larry Wall et al;\n");
 #endif
 #ifdef WITH_RUBY
-	// Insert ruby string here
+	libString += _T("    Ruby - Copyright (c) Yukihiro Matsumoto et al;\n");
 #endif
 #ifdef WITH_HUNSPELL
 	libString += _T("    Hunspell - Copyright (c) Kevin Hendricks;\n");
 #endif
 #ifdef WITH_PORTAUDIO
-	libString += _T("    PortAudio - Copyright (c) 1999-2000 Ross Bencina, Phil Burk;\n");
-#endif
-#ifdef WITH_FFMPEG
-#define _FFMPEG_ANY
+	libString += _T("    PortAudio - Copyright (c) Ross Bencina, Phil Burk;\n");
 #endif
 #ifdef WITH_FFMPEGSOURCE
-#define _FFMPEG_ANY
-#endif
-#ifdef _FFMPEG_ANY
-	libString += _T("    FFmpeg - Copyright (c) 2001 Fabrice Bellard,;\n");
+	libString += _T("    FFmpeg - Copyright (c) Fabrice Bellard;\n");
+	libString += _T("    FFmpegSource - Copyright (c) Frederik Melbin;\n");
 #endif
 #ifdef WITH_AVISYNTH
-	libString += _T("    Avisynth 2.5 - Copyright 2002 Ben Rudiak-Gould et al;\n");
+	libString += _T("    Avisynth 2.5 - Copyright (c) Ben Rudiak-Gould et al;\n");
 #endif
 #ifdef WITH_CSRI
-	libString += _T("    csri - Copyright (c) 2004-2008 David Lamparter;\n");
-#endif
-#ifdef __WINDOWS__
+	libString += _T("    csri - Copyright (c) David Lamparter;\n");
+# ifdef __WINDOWS__
 	libString += _T("    vsfilter - Copyright (c) Gabest;\n");
+# endif
 #endif
 #ifdef WITH_LIBASS
-	libString += _T("    libass - Copyright (c) 2006-2008 Evgeniy Stepanov;\n");
+	libString += _T("    libass - Copyright (c) Evgeniy Stepanov, greg_;\n");
 #endif
 #ifdef WITH_UNIVCHARDET
-	libString += _T("    UniversalCharDet - Copyright (c) 1998 Netscape Communications Corp.;\n");
+	libString += _T("    UniversalCharDet - Copyright (c) Netscape Communications Corp.;\n");
 #endif
 #ifdef __WINDOWS__
-	libString += _T("    Matroska Parser and VideoSink - Copyright (c) 2004-2008 Mike Matsnev;\n");
+	libString += _T("    Matroska Parser - Copyright (c) Mike Matsnev;\n");
+#endif
+#ifdef WITH_DIRECTSHOW
+	libString += _T("    VideoSink - Copyright (c) Mike Matsnev;\n");
 #endif
 #ifdef WITH_FREETYPE2
-	libString += _T("    Freetype - Copyright (c) 1996-2001, 2006 David Turner, Robert Wilhelm,\n    and Werner Lemberg;\n");
+	libString += _T("    Freetype - Copyright (c) David Turner, Robert Wilhelm, Werner Lemberg;\n");
 #endif
-	libString += _T("    MyThes - Copyright (c) 2003 Kevin B. Hendricks, Stratford, Ontario, Canada.\n");
+	libString += _T("    MyThes - Copyright (c) Kevin B. Hendricks, Stratford, Ontario, Canada.\n");
+
+	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
+	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
 
 	// Generate about string
 	wxString aboutString;
-	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
-	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
 	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _T(".\n");
-	aboutString += _T("Copyright (c) 2005-2008 Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
-	aboutString += _T("Automation - Copyright (c) 2005-2008 Niels Martin Hansen.\n");
-	aboutString += _("Programmers:");
-	aboutString += _T(" Rodrigo Braz Monteiro, Niels Martin Hansen, David Lamparter,\n");
-	aboutString += _T("    Dan Donovan, Alysson Souza e Silva, Karl Blomster, Simone Cociancich,\n");
-	aboutString += _T("    Fredrik Mellbin, Patryk Pomykalski, ai-chan, Evgeniy Stepanov,\n");
-	aboutString += _T("    Mike Matsnev, 2points, p-static, David Conrad, Daniel Moscoviter.\n");
-	aboutString += _("Manual by:");
-	aboutString += _T(" Karl Blomster, Niels Martin Hansen, Rodrigo Braz Monteiro.\n");
-	aboutString += _("Forum and wiki hosting by:");
-	aboutString += _T(" Sigurd Tao Lyngse.\n");
-	aboutString += _("SVN hosting by:");
-	aboutString += _T(" DeathWolf, David Lamparter, BerliOS, Mentar.\n");
-	aboutString += _("Bug tracker hosting by:");
-	aboutString += _T(" Niels Martin Hansen.\n");
+	aboutString += _T("Copyright (c) 2005-2009 Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
+	aboutString += _T("Programmers:\n");
+	aboutString += _T("    Alysson Souza e Silva\n"); Amar Takhar
+	aboutString += _T("    Amar Takhar\n"); 
+	aboutString += _T("    Dan Donovan\n");
+	aboutString += _T("    Daniel Moscoviter\n");
+	aboutString += _T("    David Conrad\n");
+	aboutString += _T("    David Lamparter\n");
+	aboutString += _T("    Evgeniy Stepanov\n");
+	aboutString += _T("    Fredrik Mellbin\n");
+	aboutString += _T("    Karl Blomster\n");
+	aboutString += _T("    Mike Matsnev\n");
+	aboutString += _T("    Muhammad Lukman Nasaruddin\n");
+	aboutString += _T("    Niels Martin Hansen\n");
+	aboutString += _T("    Patryk Pomykalski\n");
+	aboutString += _T("    Rodrigo Braz Monteiro\n");
+	aboutString += _T("    Simone Cociancich\n");
+	aboutString += _T("    2points\n");
+	aboutString += _T("    Harukalover\n");
+	aboutString += _T("    Plorkyeran\n");
+	aboutString += _T("    p-static\n");
+	aboutString += _T("User manual written by:\n");
+	aboutString += _T("    Karl Blomster\n");
+	aboutString += _T("    Niels Martin Hansen\n");
+	aboutString += _T("    Rodrigo Braz Monteiro\n");
+	aboutString += _T("Additional thanks to:\n");
+	aboutString += _T("    Mentar\n");
+	aboutString += _T("    Sigurd Tao Lyngse\n");
+	aboutString += _T("    Everyone in the Aegisub IRC channel\n");
+	aboutString += _T("    Everyone who ever reported a bug\n");
 	aboutString += translatorCredit;
 	aboutString += _T("\n") + libString;
 	aboutString += _("\nSee the help file for full credits.\n");
