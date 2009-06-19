@@ -1262,6 +1262,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 		// Commit
 		SubsBox->ass->FlagAsModified(_("shift to frame"));
 		SubsBox->CommitChanges();
+		SubsBox->editBox->Update(true,false);
 	}
 }
 
