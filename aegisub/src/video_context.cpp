@@ -288,13 +288,16 @@ void VideoContext::SetVideo(const wxString &filename) {
 			
 			// Set frame rate
 			fps = provider->GetFPS();
-			if (!isVfr || provider->IsNativelyByFrames()) {
-				VFR_Input.SetCFR(fps);
-				if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
-			}
-			else {
+			// if the source is vfr and the provider isn't frame-based (i.e. is dshow),
+			// we need to jump through some hoops to make VFR work properly.
+			if (!provider->IsNativelyByFrames() && isVfr) {
 				FrameRate temp = provider->GetTrueFrameRate();
 				provider->OverrideFrameTimeList(temp.GetFrameTimeList());
+			}
+			// source not VFR? set as CFR
+			else if (!isVfr) {
+				VFR_Input.SetCFR(fps);
+				if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
 			}
 
 			// Gather video parameters
