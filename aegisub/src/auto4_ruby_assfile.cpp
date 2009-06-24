@@ -46,6 +46,7 @@
 #include "ass_style.h"
 #include "ass_file.h"
 #include "ass_override.h"
+#include "utils.h"
 #include <assert.h>
 #include <algorithm>
 #include <ruby.h>
@@ -67,7 +68,7 @@ namespace Automation4 {
 			rb_hash_aset(ass_entry, STR2SYM("raw"), rb_str_new2(e->GetEntryData().mb_str(wxConvUTF8)));
 		VALUE entry_class;
 
-		if (raw.Trim().IsEmpty()) {
+		if (StringEmptyOrWhitespace(raw)) {
 			entry_class = STR2SYM("clear");
 
 		} else if (raw[0] == _T(';')) {

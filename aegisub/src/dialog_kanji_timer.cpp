@@ -64,11 +64,11 @@ class KaraokeLineMatchDisplay : public wxControl {
 	struct MatchSyllable {
 		int dur;
 		wxString text;
-		MatchSyllable() : dur(0) { }
+		MatchSyllable(int _dur, const wxString &_text) : dur(_dur), text(_text) { }
 	};
 	struct MatchGroup {
-		std::vector<MatchSyllable> src;
-		typedef std::vector<MatchSyllable>::iterator SrcIterator;
+		std::vector<const MatchSyllable> src;
+		typedef std::vector<const MatchSyllable>::iterator SrcIterator;
 		wxString dst;
 		int duration;
 		int last_render_width;
@@ -79,8 +79,8 @@ class KaraokeLineMatchDisplay : public wxControl {
 	std::vector<MatchGroup> matched_groups;
 	typedef std::vector<MatchGroup>::iterator MatchedGroupIterator;
 	// Unmatched source syllables
-	std::deque<MatchSyllable> unmatched_source;
-	typedef std::deque<MatchSyllable>::iterator UnmatchedSourceIterator;
+	std::deque<const MatchSyllable> unmatched_source;
+	typedef std::deque<const MatchSyllable>::iterator UnmatchedSourceIterator;
 	// Unmatched destination text
 	wxString unmatched_destination;
 
@@ -374,10 +374,7 @@ void KaraokeLineMatchDisplay::SetInputData(const AssDialogue *src, const AssDial
 		// Start from 1 instead of 0: The first syllable is actually everything before the first
 		for (size_t i = 1; i < kara.size(); ++i)
 		{
-			MatchSyllable syl;
-			syl.text = kara[i].text;
-			syl.dur = kara[i].duration;
-			unmatched_source.push_back(syl);
+			unmatched_source.push_back(MatchSyllable(kara[i].duration, kara[i].text));
 		}
 		delete varsrc;
 	}
@@ -521,7 +518,7 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 
 	// Now the source syllable might consist of just whitespace.
 	// Eat all whitespace at the start of the destination.
-	if (src.Trim().size() == 0)
+	if (StringEmptyOrWhitespace(src))
 	{
 trycatchingmorespaces:
 		// ASCII space
@@ -594,7 +591,7 @@ trycatchingmorespaces:
 				// Yay! Time to interpolate.
 				// Special case: If the last source syllable before the matching one is
 				// empty or contains just whitespace, don't include that one.
-				if (src_lookahead_pos > 1 && unmatched_source[src_lookahead_pos-2].text.Trim().size() == 0)
+				if (src_lookahead_pos > 1 && StringEmptyOrWhitespace(unmatched_source[src_lookahead_pos-2].text))
 					src_lookahead_pos -= 1;
 				// Special case: Just one source syllable matching, pick all destination found
 				if (src_lookahead_pos == 2)

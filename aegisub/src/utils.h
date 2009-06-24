@@ -68,6 +68,8 @@ wxString PrettySize(int bytes);
 wxMenuItem *AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp,int pos=-1);
 int SmallestPowerOf2(int x);
 void GetWordBoundaries(const wxString text,IntPairVector &results,int start=0,int end=-1);
+bool IsWhitespace(wchar_t c);
+bool StringEmptyOrWhitespace(const wxString &str);
 int AegiStringToInt(const wxString &str,int start=0,int end=-1);
 int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start=0,int end=-1);
 wxIcon BitmapToIcon(wxBitmap bmp);
