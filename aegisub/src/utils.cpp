@@ -303,6 +303,39 @@ void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int 
 }
 
 
+/////////////////////////////////////////////////////////
+// Determine whether wchar 'c' is a whitespace character
+bool IsWhitespace(wchar_t c)
+{
+	const wchar_t whitespaces[] = {
+		// http://en.wikipedia.org/wiki/Space_(punctuation)#Table_of_spaces
+		0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x0085, 0x00A0,
+		0x1680, 0x180E, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005,
+		0x2006, 0x2007, 0x2008, 0x2009, 0x200A, 0x2028, 0x2029, 0x202F,
+		0x025F, 0x3000, 0xFEFF
+	};
+	const size_t num_chars = sizeof(whitespaces) / sizeof(whitespaces[0]);
+
+	for (size_t i = 0; i < num_chars; ++i)
+		if (whitespaces[i] == c)
+			return true;
+
+	return false;
+}
+
+
+///////////////////////////////////////////////////////////////
+// Returns true if str is empty of consists of only whitespace
+bool StringEmptyOrWhitespace(const wxString &str)
+{
+	for (size_t i = 0; i < str.size(); ++i)
+		if (!IsWhitespace(str[i]))
+			return false;
+
+	return true;
+}
+
+
 /////////////////////
 // String to integer
 // wxString::ToLong() is slow and not as flexible

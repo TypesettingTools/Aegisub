@@ -42,6 +42,7 @@
 #include "ass_style.h"
 #include "ass_file.h"
 #include "ass_override.h"
+#include "utils.h"
 
 #ifdef __WINDOWS__
 #include "../../contrib/lua51/src/lualib.h"
@@ -78,7 +79,7 @@ namespace Automation4 {
 		lua_pushstring(L, raw.mb_str(wxConvUTF8));
 		lua_setfield(L, -2, "raw");
 
-		if (raw.Trim().IsEmpty()) {
+		if (StringEmptyOrWhitespace(raw)) {
 			lua_pushstring(L, "clear");
 
 		} else if (raw[0] == _T(';')) {
