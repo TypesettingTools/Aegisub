@@ -91,6 +91,7 @@ private:
 	AegiVideoFrame curFrame;
 	bool validFrame;
 	LAVCFrameInfoVector framesData;
+	FrameRate timecodes;
 
 	uint8_t *buffer1;
 	uint8_t *buffer2;
@@ -119,8 +120,8 @@ public:
 	double GetFPS();
 	bool AreKeyFramesLoaded() { return keyFramesLoaded; };
 	wxArrayInt GetKeyFrames() { return KeyFramesList; };
-	bool IsVFR() { return false; }; // FIXME: bork?
-	FrameRate GetTrueFrameRate() { return FrameRate(); }; // nothing useful here
+	bool IsVFR() { return true; };
+	FrameRate GetTrueFrameRate() { return timecodes; };
 	Aegisub::String GetDecoderName() { return L"FFMpeg/libavcodec"; }
 	bool IsNativelyByFrames() { return true; }
 	int GetDesiredCacheSize() { return 8; }

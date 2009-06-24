@@ -137,6 +137,25 @@ void LAVCVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
 		length = LAVCFrameData.GetNumFrames();
 		framesData = LAVCFrameData.GetFrameData();
 
+		std::vector<int> timecodesVector;
+		for (int i = 0; i < length; i++) {
+			int timestamp = (int)((framesData[i].DTS * (int64_t)lavcfile->fctx->streams[vidStream]->time_base.num * 1000)
+							/ (int64_t)lavcfile->fctx->streams[vidStream]->time_base.den);
+			timecodesVector.push_back(timestamp);
+		}
+		timecodes.SetVFR(timecodesVector);
+		int OverrideTC = wxYES;
+		if (VFR_Output.IsLoaded()) {
+			OverrideTC = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"), _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
+			if (OverrideTC == wxYES) {
+				VFR_Input.SetVFR(timecodesVector);
+				VFR_Output.SetVFR(timecodesVector);
+			}
+		} else { // no timecodes loaded, go ahead and apply
+			VFR_Input.SetVFR(timecodesVector);
+			VFR_Output.SetVFR(timecodesVector);
+		}
+
 		// Allocate frame
 		frame = avcodec_alloc_frame();
 
