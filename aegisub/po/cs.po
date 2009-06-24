@@ -4,9 +4,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-26 15:38+0200\n"
-"PO-Revision-Date: 2008-08-03 21:05+0100\n"
-"Last-Translator: Jan Horgoš <hintzu@totan.cz>\n"
+"POT-Creation-Date: 2008-10-27 22:39-0200\n"
+"PO-Revision-Date: 2009-06-24 17:45+0100\n"
+"Last-Translator: Karl Blomster <thefluff@mod16.org>\n"
 "Language-Team:  <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +19,7 @@ msgid "ANSI"
 msgstr "ANSI"
 
 #: ass_style.cpp:568
-#: dialog_options.cpp:615
+#: dialog_options.cpp:617
 msgid "Default"
 msgstr "Default"
 
@@ -149,7 +149,7 @@ msgstr "Přehrát posledních 500 ms výběru (%KEY%)"
 
 #: audio_box.cpp:155
 msgid "Play from selection start to end of file (%KEY%)"
-msgstr "Přehrát od počátku výběra do konce souboru (%KEY%)"
+msgstr "Přehrát od počátku výběru do konce souboru (%KEY%)"
 
 #: audio_box.cpp:159
 msgid "Add lead in (%KEY%)"
@@ -271,12 +271,12 @@ msgid "Script completed"
 msgstr "Skript zkompletován"
 
 #: auto4_base.cpp:752
-#, possible-c-format
+#, c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
 msgstr "Skript Automatizace se nepovedlo načíst. Jméno souboru '%s', nahlášená chyba:"
 
 #: auto4_base.cpp:765
-#, possible-c-format
+#, c-format
 msgid "The file was not recognised as an Automation script: %s"
 msgstr "Soubor nebyl rozpoznán jako skript Automatizace: %s"
 
@@ -329,7 +329,7 @@ msgid "Unable to add the automation include path(s) to @INC: the script's code m
 msgstr "Nemůžu najít cestu k součástem automatizace @INC: kód skriptu se nemusí sestavit či provést správně."
 
 #: auto4_perl_script.cpp:227
-#, possible-c-format
+#, c-format
 msgid "Reloading %s because the file on disk (%s) changed."
 msgstr "Znovunačítání %s z důvodu změny souboru (%s) na disku."
 
@@ -356,9 +356,9 @@ msgid "End"
 msgstr "Konec"
 
 #: base_grid.cpp:414
-#: dialog_options.cpp:213
-#: dialog_options.cpp:285
-#: dialog_options.cpp:480
+#: dialog_options.cpp:215
+#: dialog_options.cpp:287
+#: dialog_options.cpp:482
 #: dialog_paste_over.cpp:66
 #: dialog_search_replace.cpp:94
 #: dialog_selection.cpp:74
@@ -432,7 +432,7 @@ msgid "Choose character set"
 msgstr "Vyberte znakovou sadu"
 
 #: dialog_about.cpp:51
-#: frame_main.cpp:509
+#: frame_main.cpp:516
 msgid "About Aegisub"
 msgstr "O aplikaci Aegisub"
 
@@ -440,40 +440,40 @@ msgstr "O aplikaci Aegisub"
 msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 msgstr "Tento build Aegisubu používá následující C/C++ knihovny:\n"
 
-#: dialog_about.cpp:109
+#: dialog_about.cpp:115
 msgid "Translated into LANGUAGE by PERSON\n"
 msgstr "Překlad do četšiny: ToTan Translations, jmenovitě hintzu, Jarník a Christof\n"
 
-#: dialog_about.cpp:114
+#: dialog_about.cpp:120
 msgid "Programmers:"
 msgstr "Programátoři:"
 
-#: dialog_about.cpp:119
+#: dialog_about.cpp:125
 msgid "Manual by:"
-msgstr "Autor manuálu:"
+msgstr "Tvůrci manuálu:"
 
-#: dialog_about.cpp:121
+#: dialog_about.cpp:127
 msgid "Forum and wiki hosting by:"
 msgstr "Hosting fóra a wiki:"
 
-#: dialog_about.cpp:123
+#: dialog_about.cpp:129
 msgid "SVN hosting by:"
 msgstr "Hosting SVN:"
 
-#: dialog_about.cpp:125
+#: dialog_about.cpp:131
 msgid "Bug tracker hosting by:"
 msgstr "Hosting bug trackeru:"
 
-#: dialog_about.cpp:129
+#: dialog_about.cpp:135
 msgid ""
 "\n"
 "See the help file for full credits.\n"
 msgstr ""
 "\n"
-"Kompletní credits najdete v nápovědě.\n"
+"Kompletní seznam spolupracovníků najdete v nápověde.\n"
 
-#: dialog_about.cpp:130
-#, possible-c-format
+#: dialog_about.cpp:136
+#, c-format
 msgid "Built by %s on %s."
 msgstr "Autor aktuální kompilace: %s Dne: %s."
 
@@ -582,7 +582,7 @@ msgid "Add Automation script"
 msgstr "Přidat skript Automatizace"
 
 #: dialog_automation.cpp:279
-#, possible-c-format
+#, c-format
 msgid ""
 "Total scripts loaded: %d\n"
 "Global scripts loaded: %d\n"
@@ -599,7 +599,7 @@ msgid "Scripting engines installed:\n"
 msgstr "Instalované skriptovací nástroje:\n"
 
 #: dialog_automation.cpp:291
-#, possible-c-format
+#, c-format
 msgid ""
 "\n"
 "Script info:\n"
@@ -618,7 +618,7 @@ msgstr ""
 "Popis: %s\n"
 "Autor: %s\n"
 "Verze: %s\n"
-"Cesta: %s\n"
+"Umístění: %s\n"
 "Stav: %s\n"
 "\n"
 "Funkce skriptu: \n"
@@ -725,8 +725,8 @@ msgstr "Jas"
 msgid "Colour Picker"
 msgstr "Kapátko"
 
-#: dialog_detached_video.cpp:69
-#, possible-c-format
+#: dialog_detached_video.cpp:70
+#, c-format
 msgid "Video: %s"
 msgstr "Video: %s"
 
@@ -755,7 +755,7 @@ msgid "Duration (frames):"
 msgstr "Trvání (snímky):"
 
 #: dialog_dummy_video.cpp:255
-#, possible-c-format
+#, c-format
 msgid "Resulting duration: %d:%02d:%02d.%03d"
 msgstr "Výsledná doba trvání: %d:%02d:%02d.%03d"
 
@@ -800,13 +800,13 @@ msgid "Export subtitles file"
 msgstr "Export titulků"
 
 #: dialog_fonts_collector.cpp:77
-#: frame_main.cpp:244
+#: frame_main.cpp:247
 msgid "Fonts Collector"
 msgstr "Sběrač fontů"
 
 #: dialog_fonts_collector.cpp:93
 msgid "&Browse..."
-msgstr "Procházet... (&B)"
+msgstr "&Procházet..."
 
 #: dialog_fonts_collector.cpp:95
 #: dialog_fonts_collector.cpp:306
@@ -863,13 +863,13 @@ msgstr "Neplatný cíl."
 #: dialog_kanji_timer.cpp:328
 #: dialog_kanji_timer.cpp:360
 #: dialog_kanji_timer.cpp:362
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 #: dialog_resample.cpp:215
 #: dialog_resample.cpp:219
-#: options.cpp:445
-#: subs_grid.cpp:676
+#: options.cpp:446
 #: subs_grid.cpp:680
-#: subs_grid.cpp:726
+#: subs_grid.cpp:684
+#: subs_grid.cpp:730
 msgid "Error"
 msgstr "Chyba"
 
@@ -879,7 +879,7 @@ msgstr "Nelze vytvořit cílový adresář."
 
 #: dialog_fonts_collector.cpp:210
 msgid "Invalid path for .zip file."
-msgstr "Neplatná cesta pro soubor .zip."
+msgstr "Neplatné umístění souboru .zip."
 
 #: dialog_fonts_collector.cpp:256
 msgid "Select archive file name"
@@ -938,7 +938,7 @@ msgid "Attaching fonts to file...\n"
 msgstr "Připojuji fonty k souboru... \n"
 
 #: dialog_fonts_collector.cpp:460
-#, possible-c-format
+#, c-format
 msgid ""
 "\n"
 "Finished writing to %s.\n"
@@ -975,32 +975,32 @@ msgid "Found.\n"
 msgstr "Nalezeno.\n"
 
 #: dialog_fonts_collector.cpp:523
-#, possible-c-format
+#, c-format
 msgid "* Copied %s.\n"
 msgstr "* Zkopírován %s.\n"
 
 #: dialog_fonts_collector.cpp:527
-#, possible-c-format
+#, c-format
 msgid "* %s already exists on destination.\n"
 msgstr "* %s již existuje.\n"
 
 #: dialog_fonts_collector.cpp:530
-#, possible-c-format
+#, c-format
 msgid "* Failed to copy %s.\n"
 msgstr "* Chyba při kopírování %s.\n"
 
 #: dialog_fonts_collector.cpp:603
-#, possible-c-format
+#, c-format
 msgid "\"%s\" found on style \"%s\".\n"
 msgstr "\"%s\" nalezen ve stylu \"%s\".\n"
 
 #: dialog_fonts_collector.cpp:604
-#, possible-c-format
+#, c-format
 msgid "\"%s\" found on dialogue line \"%d\".\n"
 msgstr "\"%s\" nalezen na řádku \"%d\".\n"
 
 #: dialog_fonts_collector.cpp:605
-#, possible-c-format
+#, c-format
 msgid "\"%s\" found.\n"
 msgstr "\"%s\" nalezen.\n"
 
@@ -1019,7 +1019,7 @@ msgstr "Čas:"
 
 #: dialog_kanji_timer.cpp:62
 msgid "Kanji timing"
-msgstr "Časování Kanji"
+msgstr "Časovač Kanji"
 
 #: dialog_kanji_timer.cpp:74
 msgid "Shortcut Keys"
@@ -1054,8 +1054,8 @@ msgstr ""
 "Šipka vlevo: Ubere rozsah výsledného výběru\n"
 "Šipka nahoru: Přidá rozsah původního výběru\n"
 "Šipka dolu: Ubere rozsah  původního výběru\n"
-"Enter: Propojit, potvrdit řádek\n"
-"Backspace: Odpojit poslední"
+"Enter: Propojí, potvrdí řádek\n"
+"Backspace: Odpojí poslední"
 
 #: dialog_kanji_timer.cpp:90
 msgid "Source Style"
@@ -1148,15 +1148,15 @@ msgid "Group all of the source text."
 msgstr "Seskupte veškerý zdrojový text."
 
 #: dialog_options.cpp:84
-#: dialog_options.cpp:210
-#: dialog_options.cpp:284
-#: dialog_options.cpp:353
-#: dialog_options.cpp:437
-#: dialog_options.cpp:479
-#: dialog_options.cpp:567
+#: dialog_options.cpp:212
+#: dialog_options.cpp:286
+#: dialog_options.cpp:355
+#: dialog_options.cpp:439
+#: dialog_options.cpp:481
+#: dialog_options.cpp:569
 #: dialog_properties.cpp:117
 #: dialog_timing_processor.cpp:81
-#: frame_main.cpp:268
+#: frame_main.cpp:271
 #: hotkeys.cpp:323
 #: hotkeys.cpp:327
 msgid "Options"
@@ -1174,280 +1174,280 @@ msgstr "Zobrazovat uvítací obrazovku"
 msgid "Show Tip of the Day"
 msgstr "Zobrazovat tipy dne"
 
-#: dialog_options.cpp:114
+#: dialog_options.cpp:115
 msgid "Auto Check for Updates"
 msgstr "Automaticky kontrolovat aktualizace"
 
-#: dialog_options.cpp:115
+#: dialog_options.cpp:117
 msgid "Save config.dat locally"
 msgstr "Ukládat config.dat lokálně"
 
-#: dialog_options.cpp:119
+#: dialog_options.cpp:121
 msgid "Limits for levels and recent files"
 msgstr "Limity pro kroky a naposledy otevřené soubory"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum undo levels"
 msgstr "Maximální počet vratných kroků"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent timecode files"
 msgstr "Počet naposledy otevřených souborů s časovým kódem"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent keyframe files"
-msgstr "Počet naposledy otevřených souborů s s klíčovými snímky"
+msgstr "Počet naposledy otevřených souborů s klíčovými snímky"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent subtitle files"
 msgstr "Počet naposledy otevřených titulků"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent video files"
 msgstr "Počet naposledy otevřených video souborů"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent audio files"
 msgstr "Počet naposledy otevřených audio souborů"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent find strings"
 msgstr "Poslední hledané řetězce"
 
-#: dialog_options.cpp:122
+#: dialog_options.cpp:124
 msgid "Maximum recent replace strings"
 msgstr "Poslední řetězce nahrazení"
 
-#: dialog_options.cpp:142
+#: dialog_options.cpp:144
 msgid "Auto-save"
 msgstr "Automatické ukládání"
 
-#: dialog_options.cpp:144
+#: dialog_options.cpp:146
 msgid "File paths"
 msgstr "Cesty souborů"
 
-#: dialog_options.cpp:146
+#: dialog_options.cpp:148
 msgid "Miscellanea"
 msgstr "Různé"
 
-#: dialog_options.cpp:150
+#: dialog_options.cpp:152
 msgid "Auto-backup"
 msgstr "Automatické zálohování"
 
-#: dialog_options.cpp:156
+#: dialog_options.cpp:158
 msgid "Auto-save every"
 msgstr "Automaticky ukládat po"
 
-#: dialog_options.cpp:158
+#: dialog_options.cpp:160
 msgid "seconds."
 msgstr "sekundách."
 
-#: dialog_options.cpp:161
+#: dialog_options.cpp:163
 msgid "Auto-save path:"
-msgstr "Cesta pro automatické ukládání:"
+msgstr "Umístění souborů automatického ukládání:"
 
-#: dialog_options.cpp:169
+#: dialog_options.cpp:171
 msgid "Auto-backup path:"
-msgstr "Cesta pro automatické zálohování:"
+msgstr "Umístění souborů automatického zálohování:"
 
-#: dialog_options.cpp:177
+#: dialog_options.cpp:179
 msgid "Crash recovery path:"
-msgstr "Cesta pro automatické obnovení po pádu:"
+msgstr "Umístění souborů automatického obnovení po pádu:"
 
-#: dialog_options.cpp:187
+#: dialog_options.cpp:189
 msgid "Auto-load linked files:"
 msgstr "Automaticky načítat odkazované soubory:"
 
-#: dialog_options.cpp:188
-#: dialog_options.cpp:361
+#: dialog_options.cpp:190
+#: dialog_options.cpp:363
 msgid "Never"
 msgstr "Nikdy"
 
-#: dialog_options.cpp:188
-#: dialog_options.cpp:361
+#: dialog_options.cpp:190
+#: dialog_options.cpp:363
 msgid "Always"
 msgstr "Vždy"
 
-#: dialog_options.cpp:188
-#: dialog_options.cpp:361
+#: dialog_options.cpp:190
+#: dialog_options.cpp:363
 msgid "Ask"
 msgstr "Ptát se"
 
-#: dialog_options.cpp:218
+#: dialog_options.cpp:220
 msgid "Enable call tips"
 msgstr "Povolit vyskakovací nápovědu"
 
-#: dialog_options.cpp:218
+#: dialog_options.cpp:220
 msgid "Enable syntax highlighting"
 msgstr "Povolit zvýrazňování syntaxe"
 
-#: dialog_options.cpp:218
+#: dialog_options.cpp:220
 msgid "Link commiting of times"
 msgstr "Propojit odesílání časování"
 
-#: dialog_options.cpp:218
+#: dialog_options.cpp:220
 msgid "Overwrite-Insertion in time boxes"
-msgstr "Přepisování-vkládání v časových boxech"
+msgstr "Přepisování-vkládání v časových polích"
 
-#: dialog_options.cpp:227
+#: dialog_options.cpp:229
 msgid "Path to dictionary files:"
-msgstr "Cesta ke slovníkům:"
+msgstr "Umístění slovníků:"
 
-#: dialog_options.cpp:237
-#: dialog_options.cpp:575
+#: dialog_options.cpp:239
+#: dialog_options.cpp:577
 #: dialog_properties.cpp:131
 msgid "Normal"
 msgstr "Normální"
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:239
 msgid "Brackets"
 msgstr "Složené závorky"
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:239
 msgid "Slashes and Parentheses"
 msgstr "Lomítka a závorky"
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:239
 msgid "Tags"
 msgstr "Lomené závorky"
 
-#: dialog_options.cpp:237
+#: dialog_options.cpp:239
 msgid "Parameters"
 msgstr "Parametrické značky"
 
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 msgid "Error Background"
 msgstr "Chybové pozadí"
 
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 msgid "Line Break"
 msgstr "Zalomení řádku"
 
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 msgid "Karaoke templates"
 msgstr "Šablona karaoke"
 
-#: dialog_options.cpp:238
+#: dialog_options.cpp:240
 msgid "Modified Background"
 msgstr "Pozadí změny"
 
-#: dialog_options.cpp:245
+#: dialog_options.cpp:247
 msgid "Syntax highlighter - "
 msgstr "Zvýrazňovač syntaxí -"
 
-#: dialog_options.cpp:256
-#: dialog_options.cpp:320
+#: dialog_options.cpp:258
+#: dialog_options.cpp:322
 msgid "Font: "
 msgstr "Font: "
 
-#: dialog_options.cpp:291
+#: dialog_options.cpp:293
 msgid "Allow grid to take focus"
-msgstr "Povolit mřížce vystředění"
+msgstr "Povolit poli vystředění"
 
-#: dialog_options.cpp:291
+#: dialog_options.cpp:293
 msgid "Highlight subtitles that are currently visible in video"
 msgstr "Zvýrazňovat titulky, které jsou aktuálně zobrazené ve videu"
 
-#: dialog_options.cpp:301
+#: dialog_options.cpp:303
 msgid "Standard foreground"
 msgstr "Písmo běžné"
 
-#: dialog_options.cpp:301
+#: dialog_options.cpp:303
 msgid "Standard background"
 msgstr "Pozadí běžné"
 
-#: dialog_options.cpp:301
+#: dialog_options.cpp:303
 msgid "Selection foreground"
 msgstr "Písmo výběru"
 
-#: dialog_options.cpp:302
-#: dialog_options.cpp:497
+#: dialog_options.cpp:304
+#: dialog_options.cpp:499
 msgid "Selection background"
 msgstr "Pozadí výběru"
 
-#: dialog_options.cpp:302
+#: dialog_options.cpp:304
 msgid "Comment background"
 msgstr "Pozadí komentáře"
 
-#: dialog_options.cpp:302
+#: dialog_options.cpp:304
 msgid "Selected comment background"
 msgstr "Pozadí označeného komentáře"
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:305
 msgid "Collision foreground"
 msgstr "Písmo kolizí"
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:305
 msgid "Line in frame background"
 msgstr "Pozadí řádku v aktuálním snímku"
 
-#: dialog_options.cpp:303
+#: dialog_options.cpp:305
 msgid "Header"
 msgstr "Hlavička"
 
-#: dialog_options.cpp:304
+#: dialog_options.cpp:306
 msgid "Left Column"
 msgstr "Levý sloupec"
 
-#: dialog_options.cpp:304
+#: dialog_options.cpp:306
 msgid "Active Line Border"
 msgstr "Ohraničení aktivní oblasti"
 
-#: dialog_options.cpp:304
+#: dialog_options.cpp:306
 msgid "Lines"
 msgstr "Řádky"
 
-#: dialog_options.cpp:333
+#: dialog_options.cpp:335
 msgid "Replace override tags with: "
 msgstr "Tímto nahradit prioritní tagy:"
 
-#: dialog_options.cpp:354
-#: dialog_options.cpp:531
+#: dialog_options.cpp:356
+#: dialog_options.cpp:533
 msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Pokročilé nastavení - POUZE PRO EXPERTY"
 
-#: dialog_options.cpp:360
+#: dialog_options.cpp:362
 msgid "Match video resolution on open: "
 msgstr "Při načtení srovnat rozlišení videa na:"
 
-#: dialog_options.cpp:365
+#: dialog_options.cpp:367
 msgid "Default Zoom: "
 msgstr "Výchozí zoom"
 
-#: dialog_options.cpp:376
+#: dialog_options.cpp:378
 msgid "Fast jump step in frames: "
 msgstr "Rychlé skoky ve snímcích:"
 
-#: dialog_options.cpp:380
+#: dialog_options.cpp:382
 msgid "Screenshot save path: "
-msgstr "Cesta pro úložiště snímků obrazovky"
+msgstr "Umístění úložiště snímků obrazovky"
 
-#: dialog_options.cpp:386
+#: dialog_options.cpp:388
 msgid "Show keyframes in slider"
 msgstr "Zobrazovat klíčové snímky na posuvné liště"
 
-#: dialog_options.cpp:392
+#: dialog_options.cpp:394
 msgid "Video provider: "
 msgstr "Načtení videa:"
 
-#: dialog_options.cpp:397
+#: dialog_options.cpp:399
 msgid "Subtitles provider: "
 msgstr "Načtení titulků:"
 
-#: dialog_options.cpp:403
+#: dialog_options.cpp:405
 msgid "Avisynth memory limit: "
 msgstr "Limit paměti pro Avisynth:"
 
-#: dialog_options.cpp:413
+#: dialog_options.cpp:415
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Povolit starší verze Avisynthu než 2.56a"
 
-#: dialog_options.cpp:417
+#: dialog_options.cpp:419
 msgid "Avisynth renders its own subs"
 msgstr "Povolit vykreslování vlastních titulků Avisynthem"
 
-#: dialog_options.cpp:424
-#: dialog_options.cpp:555
+#: dialog_options.cpp:426
+#: dialog_options.cpp:557
 msgid ""
 "WARNING: Changing these settings might result in bugs,\n"
 "crashes, glitches and/or movax.\n"
@@ -1457,373 +1457,373 @@ msgstr ""
 "závady či pády aplikace.\n"
 "Pokud si nejste jisti, nesahejte na ně."
 
-#: dialog_options.cpp:442
+#: dialog_options.cpp:444
 msgid "Grab times from line upon selection"
 msgstr "Převzít časy z výběru"
 
-#: dialog_options.cpp:443
+#: dialog_options.cpp:445
 msgid "Default mouse wheel to zoom"
 msgstr "Pro zoomování použít kolečko myši"
 
-#: dialog_options.cpp:444
+#: dialog_options.cpp:446
 msgid "Lock scroll on Cursor"
 msgstr "Omezit posun na kurzor"
 
-#: dialog_options.cpp:445
+#: dialog_options.cpp:447
 msgid "Snap to keyframes"
 msgstr "Přichytávat na klíčové snímky"
 
-#: dialog_options.cpp:446
+#: dialog_options.cpp:448
 msgid "Snap to adjacent lines"
 msgstr "Přichytávat na sousední řádky"
 
-#: dialog_options.cpp:447
+#: dialog_options.cpp:449
 msgid "Auto-focus on mouse over"
 msgstr "Automaticky přepnout při najetí myši"
 
-#: dialog_options.cpp:451
+#: dialog_options.cpp:453
 msgid "Don't show"
 msgstr "Nezobrazovat"
 
-#: dialog_options.cpp:451
+#: dialog_options.cpp:453
 msgid "Show previous"
 msgstr "Zobrazit předchozí"
 
-#: dialog_options.cpp:451
+#: dialog_options.cpp:453
 msgid "Show all"
 msgstr "Zobrazit vše"
 
-#: dialog_options.cpp:452
+#: dialog_options.cpp:454
 msgid "Default timing length"
 msgstr "Výchozí délka úseku časování"
 
-#: dialog_options.cpp:453
+#: dialog_options.cpp:455
 msgid "Default lead-in length"
 msgstr "Výchozí délka nástupu"
 
-#: dialog_options.cpp:454
+#: dialog_options.cpp:456
 msgid "Default lead-out length"
 msgstr "Výchozí délka zakončení"
 
-#: dialog_options.cpp:455
+#: dialog_options.cpp:457
 msgid "Show inactive lines"
 msgstr "Zobrazit neaktivní řádky"
 
-#: dialog_options.cpp:485
+#: dialog_options.cpp:487
 msgid "Draw secondary lines"
 msgstr "Vykreslit druhotné řádky"
 
-#: dialog_options.cpp:485
+#: dialog_options.cpp:487
 msgid "Draw selection background"
 msgstr "Vykreslit pozadí výběru"
 
-#: dialog_options.cpp:485
+#: dialog_options.cpp:487
 msgid "Draw timeline"
 msgstr "Vykreslit časovou osu"
 
-#: dialog_options.cpp:486
+#: dialog_options.cpp:488
 msgid "Draw cursor time"
 msgstr "Vykreslit čas na pozici kurzoru"
 
-#: dialog_options.cpp:486
+#: dialog_options.cpp:488
 msgid "Draw keyframes"
 msgstr "Vykreslit klíčové snímky"
 
-#: dialog_options.cpp:486
+#: dialog_options.cpp:488
 msgid "Draw video position"
 msgstr "Vykreslit pozici videa"
 
-#: dialog_options.cpp:497
+#: dialog_options.cpp:499
 msgid "Play cursor"
 msgstr "Barva přehrávacího kurzoru"
 
-#: dialog_options.cpp:497
+#: dialog_options.cpp:499
 msgid "Background"
 msgstr "Pozadí"
 
-#: dialog_options.cpp:498
+#: dialog_options.cpp:500
 msgid "Selection background - modified"
 msgstr "Pozadí změněného výběru"
 
-#: dialog_options.cpp:498
+#: dialog_options.cpp:500
 msgid "Seconds boundary"
 msgstr "Meze sekund"
 
-#: dialog_options.cpp:498
+#: dialog_options.cpp:500
 msgid "Waveform"
 msgstr "Zvuková vlna"
 
-#: dialog_options.cpp:499
+#: dialog_options.cpp:501
 msgid "Waveform - selection"
 msgstr "Zvuková vlna - výběr"
 
-#: dialog_options.cpp:499
+#: dialog_options.cpp:501
 msgid "Waveform - modified"
 msgstr "Zvuková vlna - změněná"
 
-#: dialog_options.cpp:499
+#: dialog_options.cpp:501
 msgid "Waveform - inactive"
-msgstr "Zvuková vlna - Předchozí řádek"
+msgstr "Zvuková vlna - předchozí řádek"
 
-#: dialog_options.cpp:500
+#: dialog_options.cpp:502
 msgid "Boundary - start"
 msgstr "Počáteční mez výběru"
 
-#: dialog_options.cpp:500
+#: dialog_options.cpp:502
 msgid "Boundary - end"
 msgstr "Koncová mez výběru"
 
-#: dialog_options.cpp:500
+#: dialog_options.cpp:502
 msgid "Boundary - inactive"
 msgstr "Meze - neaktivní"
 
-#: dialog_options.cpp:501
+#: dialog_options.cpp:503
 msgid "Syllable text"
 msgstr "Text slabiky"
 
-#: dialog_options.cpp:501
+#: dialog_options.cpp:503
 msgid "Syllable boundary"
 msgstr "Meze slabiky"
 
-#: dialog_options.cpp:535
+#: dialog_options.cpp:537
 msgid "None (NOT RECOMMENDED)"
 msgstr "Žádný (NEDOPORUČUJE SE)"
 
-#: dialog_options.cpp:535
+#: dialog_options.cpp:537
 msgid "RAM"
 msgstr "RAM"
 
-#: dialog_options.cpp:535
+#: dialog_options.cpp:537
 msgid "Hard Disk"
 msgstr "Pevný disk"
 
-#: dialog_options.cpp:540
+#: dialog_options.cpp:542
 msgid "Audio provider"
-msgstr "Načtení audia:"
+msgstr "Načtení audia"
 
-#: dialog_options.cpp:541
+#: dialog_options.cpp:543
 msgid "Audio player"
 msgstr "Přehrávání audia"
 
-#: dialog_options.cpp:542
+#: dialog_options.cpp:544
 msgid "Cache type"
 msgstr "Typ vyrovnávací paměti"
 
-#: dialog_options.cpp:544
+#: dialog_options.cpp:546
 msgid "Avisynth down-mixer"
 msgstr "Směšovač Avisynthu"
 
-#: dialog_options.cpp:546
+#: dialog_options.cpp:548
 msgid "HD cache path"
-msgstr "Cesta k vyrovnávací paměti na disku"
+msgstr "Umístění vyrovnávací paměti na disku"
 
-#: dialog_options.cpp:547
+#: dialog_options.cpp:549
 msgid "HD cache name"
 msgstr "Jméno vyrovnávací paměti na disku"
 
-#: dialog_options.cpp:548
+#: dialog_options.cpp:550
 msgid "Spectrum cutoff"
 msgstr "Oříznutí zvukového rozsahu"
 
-#: dialog_options.cpp:549
+#: dialog_options.cpp:551
 msgid "0 - Regular quality"
 msgstr "0 - Běžná kvalita"
 
-#: dialog_options.cpp:549
+#: dialog_options.cpp:551
 msgid "1 - Better quality"
 msgstr "1 - Vyšší kvalita"
 
-#: dialog_options.cpp:549
+#: dialog_options.cpp:551
 msgid "2 - High quality"
 msgstr "2 - Vysoká kvalita"
 
-#: dialog_options.cpp:549
+#: dialog_options.cpp:551
 msgid "3 - Insane quality"
 msgstr "3 - Nejvyšší kvalita"
 
-#: dialog_options.cpp:550
+#: dialog_options.cpp:552
 msgid "Spectrum quality"
 msgstr "Kvalita zvukového spektra"
 
-#: dialog_options.cpp:551
+#: dialog_options.cpp:553
 msgid "Spectrum cache memory max (MB)"
 msgstr "Maximální velikost vyrovnávací paměti zvukového spektra (MB)"
 
-#: dialog_options.cpp:571
-msgid "Base path"
-msgstr "Základní cesta"
-
-#: dialog_options.cpp:572
-msgid "Include path"
-msgstr "Cesta součástí"
-
 #: dialog_options.cpp:573
-msgid "Auto-load path"
-msgstr "Cesta automaticky načítaných"
+msgid "Base path"
+msgstr "Základní umístění"
 
 #: dialog_options.cpp:574
+msgid "Include path"
+msgstr "Umístnění součástí"
+
+#: dialog_options.cpp:575
+msgid "Auto-load path"
+msgstr "Umístění automaticky načítaných"
+
+#: dialog_options.cpp:576
 msgid "0: Fatal"
 msgstr "0: Fatální chyba"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "1: Error"
 msgstr "1: Chyba"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "2: Warning"
 msgstr "2: Varování"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "3: Hint"
 msgstr "3: Tip"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "4: Debug"
 msgstr "4: Debug"
 
-#: dialog_options.cpp:574
+#: dialog_options.cpp:576
 msgid "5: Trace"
 msgstr "5: Trace"
 
-#: dialog_options.cpp:575
+#: dialog_options.cpp:577
 msgid "Below Normal (recommended)"
 msgstr "Podprůměrná (doporučeno)"
 
-#: dialog_options.cpp:575
+#: dialog_options.cpp:577
 msgid "Lowest"
 msgstr "Nízká"
 
-#: dialog_options.cpp:576
+#: dialog_options.cpp:578
 msgid "No scripts"
 msgstr "Bez skriptů"
 
-#: dialog_options.cpp:576
+#: dialog_options.cpp:578
 msgid "Subtitle-local scripts"
 msgstr "Lokální titulkové skripty"
 
-#: dialog_options.cpp:576
+#: dialog_options.cpp:578
 msgid "Global autoload scripts"
 msgstr "Globální automaticky načítané skripty"
 
-#: dialog_options.cpp:576
+#: dialog_options.cpp:578
 msgid "All scripts"
 msgstr "Všechny skripty"
 
-#: dialog_options.cpp:577
+#: dialog_options.cpp:579
 msgid "Trace level"
 msgstr "Trace level"
 
-#: dialog_options.cpp:578
+#: dialog_options.cpp:580
 msgid "Thread priority"
 msgstr "Priorita vlákna"
 
-#: dialog_options.cpp:579
+#: dialog_options.cpp:581
 msgid "Autoreload on Export"
 msgstr "Znovunačtení při exportu"
 
-#: dialog_options.cpp:598
-#: dialog_options.cpp:1095
+#: dialog_options.cpp:600
+#: dialog_options.cpp:1097
 msgid "Function"
 msgstr "Funkce"
 
-#: dialog_options.cpp:599
-#: dialog_options.cpp:1096
+#: dialog_options.cpp:601
+#: dialog_options.cpp:1098
 msgid "Key"
 msgstr "Klávesa"
 
-#: dialog_options.cpp:613
+#: dialog_options.cpp:615
 msgid "Set Hotkey..."
 msgstr "Zvolit zkratku..."
 
-#: dialog_options.cpp:614
+#: dialog_options.cpp:616
 msgid "Clear Hotkey"
 msgstr "Smazat zkratku"
 
-#: dialog_options.cpp:616
+#: dialog_options.cpp:618
 msgid "Default All"
 msgstr "Vše na výchozí"
 
-#: dialog_options.cpp:627
+#: dialog_options.cpp:629
 msgid "General"
 msgstr "Obecné"
 
-#: dialog_options.cpp:628
+#: dialog_options.cpp:630
 msgid "File save/load"
 msgstr "Uložit/načíst soubor"
 
-#: dialog_options.cpp:629
-msgid "Subtitles edit box"
-msgstr "Editační okno titulků"
-
-#: dialog_options.cpp:630
-msgid "Subtitles grid"
-msgstr "Mřížka titulků"
-
 #: dialog_options.cpp:631
+msgid "Subtitles edit box"
+msgstr "Editační pole titulků"
+
+#: dialog_options.cpp:632
+msgid "Subtitles grid"
+msgstr "Titulkové pole"
+
+#: dialog_options.cpp:633
 #: dialog_video_details.cpp:55
 msgid "Video"
 msgstr "Video"
 
-#: dialog_options.cpp:632
+#: dialog_options.cpp:634
 msgid "Audio"
 msgstr "Audio"
 
-#: dialog_options.cpp:633
+#: dialog_options.cpp:635
 msgid "Display"
 msgstr "Zobrazit"
 
-#: dialog_options.cpp:634
+#: dialog_options.cpp:636
 msgid "Advanced"
 msgstr "Pokročilé"
 
-#: dialog_options.cpp:635
-#: frame_main.cpp:249
+#: dialog_options.cpp:637
+#: frame_main.cpp:252
 msgid "Automation"
 msgstr "Automatizace"
 
-#: dialog_options.cpp:636
+#: dialog_options.cpp:638
 msgid "Hotkeys"
 msgstr "Klávesové zkratky"
 
-#: dialog_options.cpp:649
+#: dialog_options.cpp:651
 msgid "Restore Defaults"
 msgstr "Obnovit výchozí"
 
-#: dialog_options.cpp:740
-#: dialog_options.cpp:773
-#: dialog_options.cpp:916
+#: dialog_options.cpp:742
+#: dialog_options.cpp:775
+#: dialog_options.cpp:918
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
 msgstr "Aby se změny projevily, je nutno Aegisub restartovat. Chcete restartovat ihned?"
 
-#: dialog_options.cpp:740
-#: dialog_options.cpp:773
-#: dialog_options.cpp:916
+#: dialog_options.cpp:742
+#: dialog_options.cpp:775
+#: dialog_options.cpp:918
 msgid "Restart Aegisub"
 msgstr "Restartovat Aegisub"
 
-#: dialog_options.cpp:788
+#: dialog_options.cpp:790
 msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
 msgstr "Skutečně chcete obnovit výchozí nastavení? Všechny vaše úpravy budou přepsány."
 
-#: dialog_options.cpp:788
+#: dialog_options.cpp:790
 msgid "Restore defaults?"
 msgstr "Obnovit výchozí?"
 
-#: dialog_options.cpp:1115
+#: dialog_options.cpp:1117
 msgid "Press Key"
 msgstr "Stiskněte klávesu"
 
-#: dialog_options.cpp:1122
-#, possible-c-format
+#: dialog_options.cpp:1124
+#, c-format
 msgid "Press key to bind to \"%s\" or Esc to cancel."
 msgstr "Stiskněte klávesu pro její přiřazení k  \"%s\" nebo stiskněte Esc pro zrušení volby."
 
-#: dialog_options.cpp:1173
-#, possible-c-format
+#: dialog_options.cpp:1175
+#, c-format
 msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
 msgstr "Klávesa %s je již namapována na %s. Pokud potvrdíte volbu, předchozí mapování bude nahrazeno. Potvrdit?"
 
-#: dialog_options.cpp:1173
+#: dialog_options.cpp:1175
 msgid "Hotkey conflict"
 msgstr "Konflikt zkratek"
 
@@ -2063,27 +2063,27 @@ msgid "Replace all"
 msgstr "Nahradit vše"
 
 #: dialog_search_replace.cpp:409
-#: dialog_search_replace.cpp:519
+#: dialog_search_replace.cpp:520
 msgid "replace"
 msgstr "nahradit"
 
-#: dialog_search_replace.cpp:522
-#, possible-c-format
+#: dialog_search_replace.cpp:523
+#, c-format
 msgid "%i matches were replaced."
 msgstr "Bylo provedeno %i nahrazení."
 
-#: dialog_search_replace.cpp:527
+#: dialog_search_replace.cpp:528
 msgid "No matches found."
 msgstr "Hledaný výraz nebyl nalezen."
 
-#: dialog_search_replace.cpp:562
+#: dialog_search_replace.cpp:563
 #: dialog_spellchecker.cpp:120
 #: hotkeys.cpp:341
 #: hotkeys.cpp:344
 msgid "Replace"
 msgstr "Nahradit"
 
-#: dialog_search_replace.cpp:562
+#: dialog_search_replace.cpp:563
 #: hotkeys.cpp:338
 msgid "Find"
 msgstr "Najít"
@@ -2149,7 +2149,7 @@ msgid "Action"
 msgstr "Akce"
 
 #: dialog_selection.cpp:265
-#, possible-c-format
+#, c-format
 msgid "Selection was set to %i lines"
 msgstr "Výběr nastaven na %i řádků"
 
@@ -2160,17 +2160,17 @@ msgid "Selection"
 msgstr "Výběr"
 
 #: dialog_selection.cpp:266
-#, possible-c-format
+#, c-format
 msgid "%i lines were added to selection"
 msgstr "%i řádků bylo přidáno k výběru"
 
 #: dialog_selection.cpp:267
-#, possible-c-format
+#, c-format
 msgid "%i lines were removed from selection"
 msgstr "%i řádků bylo odebráno z výběru"
 
 #: dialog_shift_times.cpp:61
-#: frame_main.cpp:258
+#: frame_main.cpp:261
 #: hotkeys.cpp:337
 msgid "Shift Times"
 msgstr "Posun časování"
@@ -2189,7 +2189,7 @@ msgstr "Snímky:"
 
 #: dialog_shift_times.cpp:80
 msgid "Enter time in h:mm:ss.cs notation"
-msgstr "Zadejte čas ve formátu  h:mm:ss.ms"
+msgstr "Zadejte čas ve formátu  h:mm:ss.cs"
 
 #: dialog_shift_times.cpp:81
 msgid "Shift by time"
@@ -2276,7 +2276,7 @@ msgid "all"
 msgstr "vše"
 
 #: dialog_shift_times.cpp:260
-#, possible-c-format
+#, c-format
 msgid "from %i onward"
 msgstr "od %i  dál"
 
@@ -2289,7 +2289,7 @@ msgid "shifting"
 msgstr "posun"
 
 #: dialog_spellchecker.cpp:67
-#: frame_main.cpp:264
+#: frame_main.cpp:267
 msgid "Spell Checker"
 msgstr "Kontrola pravopisu"
 
@@ -2364,7 +2364,7 @@ msgid "Outline"
 msgstr "Obrys"
 
 #: dialog_style_editor.cpp:138
-msgid "Miscelaneous"
+msgid "Miscellaneous"
 msgstr "Různé"
 
 #: dialog_style_editor.cpp:139
@@ -2535,8 +2535,8 @@ msgid "No subtitle providers available. Cannot preview subs."
 msgstr "Nenalezena aplikace pro zpracování titulků, nelze zobrazit náhled."
 
 #: dialog_style_editor.cpp:470
-#: dialog_style_manager.cpp:624
-#: dialog_style_manager.cpp:648
+#: dialog_style_manager.cpp:628
+#: dialog_style_manager.cpp:652
 msgid "Copy of "
 msgstr "Kopie"
 
@@ -2569,7 +2569,7 @@ msgid "Warning"
 msgstr "Varování"
 
 #: dialog_style_manager.cpp:60
-#: frame_main.cpp:241
+#: frame_main.cpp:244
 msgid "Styles Manager"
 msgstr "Správce stylů"
 
@@ -2580,7 +2580,7 @@ msgstr "Katalog dostupných úložišť"
 #: dialog_style_manager.cpp:71
 #: dialog_style_manager.cpp:84
 #: dialog_style_manager.cpp:129
-#: frame_main.cpp:210
+#: frame_main.cpp:213
 msgid "New"
 msgstr "Vytvořit"
 
@@ -2664,7 +2664,7 @@ msgid "Catalog name conflict"
 msgstr "Konflikt jmen katalogů"
 
 #: dialog_style_manager.cpp:434
-#, possible-c-format
+#, c-format
 msgid ""
 "The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
@@ -2677,7 +2677,7 @@ msgid "Invalid characters"
 msgstr "Zakázané znaky"
 
 #: dialog_style_manager.cpp:463
-#, possible-c-format
+#, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
 msgstr "Opravdu chcete smazat úložiště \"%s\" z katalogu?"
 
@@ -2685,84 +2685,84 @@ msgstr "Opravdu chcete smazat úložiště \"%s\" z katalogu?"
 msgid "Confirm delete"
 msgstr "Potvrdit smazání"
 
-#: dialog_style_manager.cpp:610
-#: dialog_style_manager.cpp:661
+#: dialog_style_manager.cpp:614
+#: dialog_style_manager.cpp:665
 msgid "style copy"
 msgstr "kopie stylu"
 
-#: dialog_style_manager.cpp:713
+#: dialog_style_manager.cpp:717
 msgid "style paste"
 msgstr "vložení stylu"
 
-#: dialog_style_manager.cpp:717
-#: dialog_style_manager.cpp:720
-#: dialog_style_manager.cpp:753
-#: dialog_style_manager.cpp:756
+#: dialog_style_manager.cpp:721
+#: dialog_style_manager.cpp:724
+#: dialog_style_manager.cpp:757
+#: dialog_style_manager.cpp:760
 msgid "Could not parse style"
 msgstr "Nepodařilo se provést rozbor stylu"
 
-#: dialog_style_manager.cpp:802
-#: dialog_style_manager.cpp:836
+#: dialog_style_manager.cpp:806
+#: dialog_style_manager.cpp:840
 msgid "Are you sure you want to delete these "
 msgstr "Opravdu chcete odstranit tyto"
 
-#: dialog_style_manager.cpp:804
-#: dialog_style_manager.cpp:838
+#: dialog_style_manager.cpp:808
+#: dialog_style_manager.cpp:842
 msgid " styles?"
 msgstr "styly?"
 
-#: dialog_style_manager.cpp:806
-#: dialog_style_manager.cpp:840
+#: dialog_style_manager.cpp:810
+#: dialog_style_manager.cpp:844
 msgid "Are you sure you want to delete this style?"
 msgstr "Opravdu chcete odstranit tento styl?"
 
-#: dialog_style_manager.cpp:807
+#: dialog_style_manager.cpp:811
 msgid "Confirm delete from storage"
 msgstr "Potvrdit smazání z úložiště"
 
-#: dialog_style_manager.cpp:841
+#: dialog_style_manager.cpp:845
 msgid "Confirm delete from current"
 msgstr "Potvrdit smazání z aktuálního"
 
-#: dialog_style_manager.cpp:857
+#: dialog_style_manager.cpp:861
 msgid "style delete"
 msgstr "smazání stylu"
 
-#: dialog_style_manager.cpp:869
-#: frame_main_events.cpp:666
-#: frame_main_events.cpp:684
+#: dialog_style_manager.cpp:873
+#: frame_main_events.cpp:665
+#: frame_main_events.cpp:683
 msgid "Open subtitles file"
 msgstr "Otevřít titulky"
 
-#: dialog_style_manager.cpp:885
+#: dialog_style_manager.cpp:889
 msgid "The selected file has no available styles."
 msgstr "Zvolený soubor neobsahuje styly."
 
-#: dialog_style_manager.cpp:885
+#: dialog_style_manager.cpp:889
 msgid "Error Importing Styles"
 msgstr "Chyba při importu stylů"
 
-#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:895
 msgid "Choose styles to import:"
 msgstr "Zvolte styly k importu:"
 
-#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:895
 msgid "Import Styles"
 msgstr "Importovat styly"
 
-#: dialog_style_manager.cpp:919
+#: dialog_style_manager.cpp:926
 msgid "style import"
 msgstr "Importovat styl"
 
-#: dialog_style_manager.cpp:1076
+#: dialog_style_manager.cpp:1083
 msgid "Are you sure? This cannot be undone!"
 msgstr "Opravdu? Tato operace nepůjde vrátit."
 
-#: dialog_style_manager.cpp:1076
+#: dialog_style_manager.cpp:1083
 msgid "Sort styles"
 msgstr "Seřadit styly"
 
-#: dialog_style_manager.cpp:1128
+#: dialog_style_manager.cpp:1135
 msgid "style move"
 msgstr "posunout styly"
 
@@ -2860,7 +2860,7 @@ msgid "Comment starter:"
 msgstr "Začátek komentáře:"
 
 #: dialog_timing_processor.cpp:55
-#: frame_main.cpp:262
+#: frame_main.cpp:265
 msgid "Timing Post-Processor"
 msgstr "Dodatečné zpracování časování"
 
@@ -2986,7 +2986,7 @@ msgid "Threshold for 'after end' distance, that is, how many frames a subtitle m
 msgstr "O kolik framů po klíčovém snímku musí titulek přesahovat, aby bylo možno k němu navázat."
 
 #: dialog_timing_processor.cpp:320
-#, possible-c-format
+#, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
 msgstr "Jeden z řádků souboru (%i) má zápornou dobu trvání. Přerušuji."
 
@@ -3063,7 +3063,7 @@ msgid "If anything goes wrong, blame movax."
 msgstr "Když se něco podělá, sveďte to na movaxe!"
 
 #: dialog_translation.cpp:59
-#: frame_main.cpp:260
+#: frame_main.cpp:263
 msgid "Translation Assistant"
 msgstr "Překladatelův pomocník"
 
@@ -3088,7 +3088,7 @@ msgid "Enable preview"
 msgstr "Povolit náhled"
 
 #: dialog_translation.cpp:200
-#, possible-c-format
+#, c-format
 msgid "Current line: %i/%i"
 msgstr "Aktuální řádek: %i/%i"
 
@@ -3109,7 +3109,7 @@ msgid "Could not open Internet File system. Aborting.\n"
 msgstr "Nepodařilo se otevřít Souborový systém Internetu. To je konec :(\n"
 
 #: dialog_version_check.cpp:183
-#, possible-c-format
+#, c-format
 msgid "Attempting to open \"%s\"..."
 msgstr "Zkouším otevřít \"%s\"..."
 
@@ -3126,7 +3126,7 @@ msgid "New version found!\n"
 msgstr "Nalezena nová verze!\n"
 
 #: dialog_version_check.cpp:265
-#, possible-c-format
+#, c-format
 msgid "Please go to the following URL to download it: %s\n"
 msgstr "Prosím otevřete následující URL a stáhněte si ji: %s\n"
 
@@ -3206,1013 +3206,1021 @@ msgstr "Vstupní snímková frekvence:"
 msgid "Output: "
 msgstr "Výstupní:"
 
-#: frame_main.cpp:177
+#: ffmpegsource_common.cpp:67
+msgid "Indexing"
+msgstr "Indexace"
+
+#: ffmpegsource_common.cpp:67
+msgid "Reading timecodes and frame/sample data"
+msgstr "Načítám časové kódy a snímková/vzorková data"
+
+#: frame_main.cpp:179
 msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
 msgstr "Chcete, aby Aegisub při spuštění kontroloval dostupnost nové verze? (Můžete to udělat i manuálně přes položku v menu Nápověda.)"
 
-#: frame_main.cpp:177
+#: frame_main.cpp:179
 msgid "Check for updates?"
 msgstr "Zkontrolovat aktualizace?"
 
-#: frame_main.cpp:210
-#: frame_main.cpp:308
+#: frame_main.cpp:213
+#: frame_main.cpp:311
 #: hotkeys.cpp:317
 msgid "New subtitles"
-msgstr "Uložit titulky"
+msgstr "Nové titulky"
 
-#: frame_main.cpp:211
+#: frame_main.cpp:214
 msgid "Open"
 msgstr "Otevřít"
 
-#: frame_main.cpp:211
+#: frame_main.cpp:214
 #: hotkeys.cpp:318
 msgid "Open subtitles"
 msgstr "Otevřít titulky"
 
-#: frame_main.cpp:212
+#: frame_main.cpp:215
 msgid "Save"
 msgstr "Uložit"
 
-#: frame_main.cpp:212
+#: frame_main.cpp:215
 #: hotkeys.cpp:319
 msgid "Save subtitles"
 msgstr "Uložit titulky"
 
-#: frame_main.cpp:216
+#: frame_main.cpp:219
 msgid "Jump To..."
 msgstr "Přejít na..."
 
-#: frame_main.cpp:216
+#: frame_main.cpp:219
 msgid "Jump video to time/frame"
 msgstr "Přesunout se ve videu na určený čas/snímek"
 
-#: frame_main.cpp:217
+#: frame_main.cpp:220
 msgid "Zoom in"
 msgstr "Zvětšit"
 
-#: frame_main.cpp:217
+#: frame_main.cpp:220
 msgid "Zoom video in"
 msgstr "Zvětšit video"
 
-#: frame_main.cpp:218
+#: frame_main.cpp:221
 msgid "Zoom out"
 msgstr "Zmenšit"
 
-#: frame_main.cpp:218
+#: frame_main.cpp:221
 msgid "Zoom video out"
 msgstr "Zmenšit video"
 
-#: frame_main.cpp:231
+#: frame_main.cpp:234
 msgid "Jump video to start"
 msgstr "Přesunout se ve videu na start"
 
-#: frame_main.cpp:231
-#: frame_main.cpp:456
+#: frame_main.cpp:234
+#: frame_main.cpp:459
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr "Přesunout se ve videu na první snímek aktuálního titulku"
 
-#: frame_main.cpp:232
+#: frame_main.cpp:235
 msgid "Jump video to end"
 msgstr "Přesunout se ve videu na konec"
 
-#: frame_main.cpp:232
-#: frame_main.cpp:457
+#: frame_main.cpp:235
+#: frame_main.cpp:460
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr "Přesunout se ve videu na první snímek aktuálního titulku"
 
-#: frame_main.cpp:233
+#: frame_main.cpp:236
 msgid "Snap start to video"
 msgstr "Přichytit začátek k videu"
 
-#: frame_main.cpp:233
-#: frame_main.cpp:396
+#: frame_main.cpp:236
+#: frame_main.cpp:399
 msgid "Set start of selected subtitles to current video frame"
 msgstr "Nastaví počátek titulku na aktuální snímek videa"
 
-#: frame_main.cpp:234
+#: frame_main.cpp:237
 msgid "Snap end to video"
 msgstr "Přichytit konec k videu"
 
-#: frame_main.cpp:234
-#: frame_main.cpp:397
+#: frame_main.cpp:237
+#: frame_main.cpp:400
 msgid "Set end of selected subtitles to current video frame"
 msgstr "Nastaví konec titulku na aktuální snímek videa"
 
-#: frame_main.cpp:235
+#: frame_main.cpp:238
 msgid "Select visible"
 msgstr "Vyber viditelné"
 
-#: frame_main.cpp:235
+#: frame_main.cpp:238
 msgid "Selects all lines that are currently visible on video frame"
 msgstr "Vybere všechny řádky, které jsou aktuálně zobrazeny ve snímku"
 
-#: frame_main.cpp:236
+#: frame_main.cpp:239
 msgid "Snap subtitles to scene"
 msgstr "Přichytit titulek ke scéně"
 
-#: frame_main.cpp:236
+#: frame_main.cpp:239
 msgid "Snap selected subtitles so they match current scene start/end"
 msgstr "Nastaví počátek a konec daného titulku tak, aby odpovídal zvolené scéně videa"
 
-#: frame_main.cpp:237
+#: frame_main.cpp:240
 msgid "Shift subtitles to frame"
 msgstr "Posunout titulky na snímek"
 
-#: frame_main.cpp:237
+#: frame_main.cpp:240
 msgid "Shift selected subtitles so first selected starts at this frame"
 msgstr "Posune vybrané titulky tak, aby první z nich začínal na zvoleném snímku videa"
 
-#: frame_main.cpp:241
+#: frame_main.cpp:244
 msgid "Open Styles Manager"
 msgstr "Otevřít Správce stylů"
 
-#: frame_main.cpp:242
+#: frame_main.cpp:245
 msgid "Properties"
 msgstr "Vlastnosti"
 
-#: frame_main.cpp:242
+#: frame_main.cpp:245
 msgid "Open Properties"
-msgstr "Orevřít Vlastnosti"
+msgstr "Otevřít Vlastnosti"
 
-#: frame_main.cpp:243
+#: frame_main.cpp:246
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: frame_main.cpp:243
+#: frame_main.cpp:246
 msgid "Open Attachment List"
 msgstr "Otevře Seznam příloh"
 
-#: frame_main.cpp:244
+#: frame_main.cpp:247
 msgid "Open Fonts Collector"
 msgstr "Otevře Sběrač fontů"
 
-#: frame_main.cpp:249
+#: frame_main.cpp:252
 msgid "Open Automation manager"
 msgstr "Otevře správce Automatizace"
 
-#: frame_main.cpp:255
-#: frame_main.cpp:361
+#: frame_main.cpp:258
+#: frame_main.cpp:364
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
 msgstr "Spustí nástroj pro vektorové kreslení \"ASSDraw3\" od ai-chan."
 
-#: frame_main.cpp:258
+#: frame_main.cpp:261
 msgid "Open Shift Times Dialogue"
 msgstr "Otevře nabídku Posunu časování"
 
-#: frame_main.cpp:259
+#: frame_main.cpp:262
 msgid "Styling Assistant"
 msgstr "Pomocník pro aplikaci stylů"
 
-#: frame_main.cpp:259
+#: frame_main.cpp:262
 msgid "Open Styling Assistant"
 msgstr "Otevře Pomocníka pro aplikaci stylů"
 
-#: frame_main.cpp:260
+#: frame_main.cpp:263
 msgid "Open Translation Assistant"
 msgstr "Otevře Překladatelova pomocníka"
 
-#: frame_main.cpp:261
+#: frame_main.cpp:264
 msgid "Resample"
 msgstr "Znovunačtení"
 
-#: frame_main.cpp:261
+#: frame_main.cpp:264
 msgid "Resample Script Resolution"
 msgstr "Znovu načíst rozlišení skriptu"
 
-#: frame_main.cpp:262
+#: frame_main.cpp:265
 msgid "Open Timing Post-processor dialog"
 msgstr "Otevřít nabídku Dodatečného zpracování časování."
 
-#: frame_main.cpp:263
+#: frame_main.cpp:266
 msgid "Kanji Timer"
 msgstr "Časovač Kanji"
 
-#: frame_main.cpp:263
+#: frame_main.cpp:266
 msgid "Open Kanji Timer dialog"
 msgstr "Otevře nabídku Časovače Kanji"
 
-#: frame_main.cpp:264
+#: frame_main.cpp:267
 msgid "Open Spell checker"
 msgstr "Otevře Kontrolu pravopisu"
 
-#: frame_main.cpp:268
-#: frame_main.cpp:485
+#: frame_main.cpp:271
+#: frame_main.cpp:488
 msgid "Configure Aegisub"
 msgstr "Otevře nabídku možností Aegisubu"
 
-#: frame_main.cpp:269
+#: frame_main.cpp:272
 msgid "Cycle Tag Hidding Mode"
 msgstr "Přepínač módů zobrazení Tagů"
 
-#: frame_main.cpp:269
+#: frame_main.cpp:272
 msgid "Cycle through tag-hiding modes"
 msgstr "Přepíná mezi jednotlivými módy pro zobrazení Tagů"
 
-#: frame_main.cpp:293
-#: frame_main.cpp:510
+#: frame_main.cpp:296
+#: frame_main.cpp:517
 msgid "&Help"
 msgstr "Nápověda"
 
-#: frame_main.cpp:308
+#: frame_main.cpp:311
 msgid "&New Subtitles"
 msgstr "&Nové titulky"
 
-#: frame_main.cpp:309
+#: frame_main.cpp:312
 msgid "&Open Subtitles..."
-msgstr "&Otevřít titulky"
+msgstr "&Otevřít titulky..."
 
-#: frame_main.cpp:309
+#: frame_main.cpp:312
 msgid "Opens a subtitles file"
 msgstr "Otevře titulky"
 
-#: frame_main.cpp:310
+#: frame_main.cpp:313
 msgid "&Open Subtitles with Charset..."
-msgstr "&Otevřít titulky se specifickou znakovou sadou"
+msgstr "&Otevřít titulky se specifickou znakovou sadou..."
 
-#: frame_main.cpp:310
+#: frame_main.cpp:313
 msgid "Opens a subtitles file with a specific charset"
 msgstr "Otevře titulky se specifickou znakovou sadou"
 
-#: frame_main.cpp:311
+#: frame_main.cpp:314
 msgid "&Save Subtitles"
 msgstr "Uložit titulky (&S)"
 
-#: frame_main.cpp:311
+#: frame_main.cpp:314
 msgid "Saves subtitles"
 msgstr "Uloží titulky"
 
-#: frame_main.cpp:312
+#: frame_main.cpp:315
 msgid "Save Subtitles as..."
 msgstr "Uložit titulky jako..."
 
-#: frame_main.cpp:312
+#: frame_main.cpp:315
 msgid "Saves subtitles with another name"
 msgstr "Uloží titulky pod jiným názvem"
 
-#: frame_main.cpp:313
+#: frame_main.cpp:316
 msgid "Export Subtitles..."
 msgstr "Export titulků..."
 
-#: frame_main.cpp:313
+#: frame_main.cpp:316
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr "Uloží kopii titulků, která se upraví pomocí filtrů."
 
-#: frame_main.cpp:314
-#: frame_main.cpp:415
-#: frame_main.cpp:423
-#: frame_main.cpp:429
-#: frame_main.cpp:465
+#: frame_main.cpp:317
+#: frame_main.cpp:418
+#: frame_main.cpp:426
+#: frame_main.cpp:432
+#: frame_main.cpp:468
 msgid "Recent"
 msgstr "Naposledy otevřené"
 
-#: frame_main.cpp:320
+#: frame_main.cpp:323
 msgid "&Properties..."
-msgstr "Vlastnosti (&P)"
+msgstr "&Vlastnosti..."
 
-#: frame_main.cpp:320
+#: frame_main.cpp:323
 msgid "Open script properties window"
 msgstr "Otevře okno s vlastnostmi ASS skriptu"
 
-#: frame_main.cpp:321
+#: frame_main.cpp:324
 msgid "&Attachments..."
-msgstr "Přílohy (&A)"
+msgstr "&Přílohy..."
 
-#: frame_main.cpp:321
+#: frame_main.cpp:324
 msgid "Open the attachment list"
 msgstr "Otevře seznam příloh"
 
-#: frame_main.cpp:322
+#: frame_main.cpp:325
 msgid "&Fonts Collector..."
-msgstr "Sběrač &fontů"
+msgstr "Sběrač &fontů..."
 
-#: frame_main.cpp:322
+#: frame_main.cpp:325
 msgid "Open fonts collector"
 msgstr "Otevře sběrač fontů"
 
-#: frame_main.cpp:326
+#: frame_main.cpp:329
 msgid "New Window"
 msgstr "Nové okno"
 
-#: frame_main.cpp:326
+#: frame_main.cpp:329
 msgid "Open a new application window"
 msgstr "Otevře nové okno aplikace"
 
-#: frame_main.cpp:328
+#: frame_main.cpp:331
 msgid "E&xit"
 msgstr "&Konec"
 
-#: frame_main.cpp:328
+#: frame_main.cpp:331
 msgid "Exit the application"
 msgstr "Ukončí aplikaci"
 
-#: frame_main.cpp:329
+#: frame_main.cpp:332
 msgid "&File"
 msgstr "&Soubor"
 
-#: frame_main.cpp:334
+#: frame_main.cpp:337
 #: frame_main_events.cpp:418
 #: subs_edit_ctrl.cpp:929
 msgid "&Undo"
 msgstr "&Zpět"
 
-#: frame_main.cpp:334
+#: frame_main.cpp:337
 #: frame_main_events.cpp:418
 msgid "Undoes last action"
 msgstr "Vrátí poslední akci"
 
-#: frame_main.cpp:335
+#: frame_main.cpp:338
 #: frame_main_events.cpp:419
 msgid "&Redo"
 msgstr "Zn&ovu"
 
-#: frame_main.cpp:335
+#: frame_main.cpp:338
 #: frame_main_events.cpp:419
 msgid "Redoes last action"
 msgstr "Zopakuje vyřazenou akci"
 
-#: frame_main.cpp:337
+#: frame_main.cpp:340
 msgid "Cut Lines"
 msgstr "Vyjmout řádky"
 
-#: frame_main.cpp:337
+#: frame_main.cpp:340
 msgid "Cut subtitles"
 msgstr "Vyjmout titulky"
 
-#: frame_main.cpp:338
+#: frame_main.cpp:341
 msgid "Copy Lines"
 msgstr "Kopírovat řádky"
 
-#: frame_main.cpp:338
+#: frame_main.cpp:341
 msgid "Copy subtitles"
 msgstr "Kopírovat titulky"
 
-#: frame_main.cpp:339
+#: frame_main.cpp:342
 msgid "Paste Lines"
 msgstr "Vložit řádky"
 
-#: frame_main.cpp:339
+#: frame_main.cpp:342
 msgid "Paste subtitles"
 msgstr "Vložit titulky"
 
-#: frame_main.cpp:340
+#: frame_main.cpp:343
 msgid "Paste Lines Over..."
 msgstr "Překopírovat titulky..."
 
-#: frame_main.cpp:340
+#: frame_main.cpp:343
 msgid "Paste subtitles over others"
 msgstr "Překopíruje titulky přes ostatní"
 
-#: frame_main.cpp:342
+#: frame_main.cpp:345
 msgid "&Find..."
 msgstr "&Najít..."
 
-#: frame_main.cpp:342
+#: frame_main.cpp:345
 msgid "Find words in subtitles"
 msgstr "Najde slova v titulcích"
 
-#: frame_main.cpp:343
+#: frame_main.cpp:346
 #: hotkeys.cpp:340
 #: hotkeys.cpp:343
 msgid "Find Next"
 msgstr "Najít další"
 
-#: frame_main.cpp:343
+#: frame_main.cpp:346
 msgid "Find next match of last word"
 msgstr "Najde následující slovo odpovídající poslednímu zadání"
 
-#: frame_main.cpp:344
+#: frame_main.cpp:347
 msgid "Search and &Replace..."
 msgstr "Najít a Nah&radit..."
 
-#: frame_main.cpp:344
+#: frame_main.cpp:347
 msgid "Find and replace words in subtitles"
 msgstr "Najde a nahradí slova v titulcích"
 
-#: frame_main.cpp:345
+#: frame_main.cpp:348
 msgid "&Edit"
 msgstr "Úpr&avy"
 
-#: frame_main.cpp:350
+#: frame_main.cpp:353
 msgid "&Insert Lines"
 msgstr "Vlož&it řádky"
 
-#: frame_main.cpp:354
+#: frame_main.cpp:357
 msgid "&Styles Manager..."
-msgstr "&Správce stylů"
+msgstr "&Správce stylů..."
 
-#: frame_main.cpp:354
+#: frame_main.cpp:357
 msgid "Open styles manager"
 msgstr "Otevře Správce stylů"
 
-#: frame_main.cpp:355
+#: frame_main.cpp:358
 msgid "St&yling Assistant..."
 msgstr "Pomocník pro aplikaci st&ylů..."
 
-#: frame_main.cpp:355
+#: frame_main.cpp:358
 msgid "Open styling assistant"
 msgstr "Otevře Pomocníka pro aplikaci stylů"
 
-#: frame_main.cpp:356
+#: frame_main.cpp:359
 msgid "&Translation Assistant..."
-msgstr "Překladatelův pomocník"
+msgstr "Překladatelův pomocník..."
 
-#: frame_main.cpp:356
+#: frame_main.cpp:359
 msgid "Open translation assistant"
 msgstr "Otevře překladatelova pomocníka"
 
-#: frame_main.cpp:357
+#: frame_main.cpp:360
 msgid "Resample Resolution..."
 msgstr "Znovunačíst rozlišení..."
 
-#: frame_main.cpp:357
+#: frame_main.cpp:360
 msgid "Changes resolution and modifies subtitles to conform to change"
 msgstr "Změní rozlišení a upraví titulky tak, aby reflektovaly změnu"
 
-#: frame_main.cpp:358
+#: frame_main.cpp:361
 msgid "Spe&ll Checker..."
-msgstr "Kontro&la pravopisu"
+msgstr "Kontro&la pravopisu..."
 
-#: frame_main.cpp:358
+#: frame_main.cpp:361
 msgid "Open spell checker"
 msgstr "Otevře kontrolu pravopisu"
 
-#: frame_main.cpp:364
+#: frame_main.cpp:367
 msgid "&Before Current"
 msgstr "Před aktuální"
 
-#: frame_main.cpp:364
+#: frame_main.cpp:367
 msgid "Inserts a line before current"
 msgstr "Vloží řádek před aktuální"
 
-#: frame_main.cpp:365
+#: frame_main.cpp:368
 msgid "&After Current"
 msgstr "Za &aktuální"
 
-#: frame_main.cpp:365
+#: frame_main.cpp:368
 msgid "Inserts a line after current"
 msgstr "Vloží řádek za aktuální"
 
-#: frame_main.cpp:366
+#: frame_main.cpp:369
 msgid "Before Current, at Video Time"
 msgstr "Před aktuální, čas z videa"
 
-#: frame_main.cpp:366
+#: frame_main.cpp:369
 msgid "Inserts a line before current, starting at video time"
 msgstr "Vloží řádek před aktuální, počátek bude v aktuálním čase videa"
 
-#: frame_main.cpp:367
+#: frame_main.cpp:370
 msgid "After Current, at Video Time"
 msgstr "Za aktuální, čas z videa"
 
-#: frame_main.cpp:367
+#: frame_main.cpp:370
 msgid "Inserts a line after current, starting at video time"
 msgstr "Vloží řádek za aktuální, počátek bude v aktuálním čase videa"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:372
 msgid "&Duplicate Lines"
 msgstr "Z&dvojit řádky"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:372
 #: subs_grid.cpp:164
 msgid "Duplicate the selected lines"
 msgstr "Zdvojí zvolené řádky"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:373
 msgid "&Duplicate and Shift by 1 Frame"
 msgstr "Z&dvojit a posunout o jeden snímek"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:373
 #: subs_grid.cpp:165
 msgid "Duplicate lines and shift by one frame"
 msgstr "Zdvojí vybrané řádky a posune je o jeden snímek"
 
-#: frame_main.cpp:371
+#: frame_main.cpp:374
 msgid "Delete Lines"
 msgstr "Smazat řádky"
 
-#: frame_main.cpp:371
+#: frame_main.cpp:374
 #: subs_grid.cpp:201
 msgid "Delete currently selected lines"
 msgstr "Smaže zvolené řádky"
 
-#: frame_main.cpp:374
+#: frame_main.cpp:377
 msgid "Join Lines"
 msgstr "Spojit řádky"
 
-#: frame_main.cpp:378
+#: frame_main.cpp:381
 msgid "&Concatenate"
 msgstr "Zřetězit"
 
-#: frame_main.cpp:378
+#: frame_main.cpp:381
 #: subs_grid.cpp:174
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr "Spojí zvolené řádky do jednoho, zachová text obou"
 
-#: frame_main.cpp:379
+#: frame_main.cpp:382
 msgid "Keep &First"
 msgstr "Zachovat první"
 
-#: frame_main.cpp:379
+#: frame_main.cpp:382
 #: subs_grid.cpp:175
 msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
 msgstr "Spojí zvolené řádky do jednoho, zachová text prvního"
 
-#: frame_main.cpp:380
+#: frame_main.cpp:383
 msgid "As &Karaoke"
 msgstr "Jako &karaoke"
 
-#: frame_main.cpp:380
+#: frame_main.cpp:383
 msgid "Joins selected lines in a single one, as karaoke"
 msgstr "Spojí zvolené řádky do jednoho, zachová text jako v karaoke módu."
 
-#: frame_main.cpp:382
+#: frame_main.cpp:385
 #: subs_grid.cpp:185
 msgid "Recombine Lines"
 msgstr "Zkombinovat řádky"
 
-#: frame_main.cpp:382
+#: frame_main.cpp:385
 #: subs_grid.cpp:185
 msgid "Recombine subtitles when they have been split and merged"
 msgstr "Zkombinuje řádky, pokud byly rozděleny a sloučeny"
 
-#: frame_main.cpp:383
+#: frame_main.cpp:386
 msgid "Split Lines (by karaoke)"
 msgstr "Rozdělit řádky (pomocí karaoke)"
 
-#: frame_main.cpp:383
+#: frame_main.cpp:386
 #: subs_grid.cpp:166
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr "Použije časování karaoke na rozlámání řádků na menší"
 
-#: frame_main.cpp:385
+#: frame_main.cpp:388
 msgid "Swap Lines"
 msgstr "Zaměnit řádky"
 
-#: frame_main.cpp:385
+#: frame_main.cpp:388
 #: subs_grid.cpp:170
 msgid "Swaps the two selected lines"
 msgstr "Zamění dva zvolené řádky"
 
-#: frame_main.cpp:386
+#: frame_main.cpp:389
 msgid "Select Lines..."
 msgstr "Zvolte řádky..."
 
-#: frame_main.cpp:386
+#: frame_main.cpp:389
 msgid "Selects lines based on defined criterea"
 msgstr "Zvolí řádky na základě zadaných parametrů"
 
-#: frame_main.cpp:387
+#: frame_main.cpp:390
 msgid "&Subtitles"
 msgstr "&Titulky"
 
-#: frame_main.cpp:391
+#: frame_main.cpp:394
 msgid "S&hift Times..."
-msgstr "Posunout časování"
+msgstr "Posunout časování..."
 
-#: frame_main.cpp:391
+#: frame_main.cpp:394
 msgid "Shift subtitles by time or frames"
 msgstr "Posune časování podle času či snímků"
 
-#: frame_main.cpp:392
+#: frame_main.cpp:395
 msgid "Sort by Time"
 msgstr "Seřadit podle časové osy"
 
-#: frame_main.cpp:392
+#: frame_main.cpp:395
 msgid "Sort all subtitles by their start times"
 msgstr "Seřadí titulky podle času jejich počátků"
 
-#: frame_main.cpp:393
+#: frame_main.cpp:396
 msgid "Timing Post-Processor..."
 msgstr "Dodatečné zpracování časování..."
 
-#: frame_main.cpp:393
+#: frame_main.cpp:396
 msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
 msgstr "Spustí Dodatečné zpracování časování"
 
-#: frame_main.cpp:394
+#: frame_main.cpp:397
 msgid "Kanji Timer..."
-msgstr "Časovač kanji"
+msgstr "Časovač kanji..."
 
-#: frame_main.cpp:394
+#: frame_main.cpp:397
 msgid "Open Kanji timer"
 msgstr "Otevře časovač kanji"
 
-#: frame_main.cpp:396
+#: frame_main.cpp:399
 msgid "Snap Start to Video"
 msgstr "Navázat počátek na video"
 
-#: frame_main.cpp:397
+#: frame_main.cpp:400
 msgid "Snap End to Video"
 msgstr "Navázat konec na video"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:401
 #: hotkeys.cpp:361
 msgid "Snap to Scene"
 msgstr "Navázat na scénu"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:401
 msgid "Set start and end of subtitles to the keyframes around current video frame"
 msgstr "Navázat počátek a konec titulku na klíčové snímky kolem aktuáního snímku"
 
-#: frame_main.cpp:399
+#: frame_main.cpp:402
 msgid "Shift to Current Frame"
 msgstr "Posunout na aktuální snímek"
 
-#: frame_main.cpp:399
+#: frame_main.cpp:402
 msgid "Shift selection so first selected line starts at current frame"
 msgstr "Posunout vybrané řádky tak, aby počátek prvního odpovídal aktuálnímu snímku."
 
-#: frame_main.cpp:402
+#: frame_main.cpp:405
 msgid "Make Times Continuous"
 msgstr "Navazovat titulky"
 
-#: frame_main.cpp:406
+#: frame_main.cpp:409
 msgid "Change &Start"
 msgstr "Změnit počátek"
 
-#: frame_main.cpp:406
+#: frame_main.cpp:409
 #: subs_grid.cpp:180
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr "Změní časování titulků, takže počátky začínají tam, kde předchozí titulek končí"
 
-#: frame_main.cpp:407
+#: frame_main.cpp:410
 msgid "Change &End"
 msgstr "Změnit konec"
 
-#: frame_main.cpp:407
+#: frame_main.cpp:410
 #: subs_grid.cpp:181
 msgid "Changes times of subs so end times begin on next's start time"
 msgstr "Změní časování titulků, takže počátky začínají tam, kde předchozí titulek končí"
 
-#: frame_main.cpp:409
+#: frame_main.cpp:412
 msgid "&Timing"
 msgstr "Časo&vání"
 
-#: frame_main.cpp:413
+#: frame_main.cpp:416
 msgid "&Open Video..."
 msgstr "Otevřít video..."
 
-#: frame_main.cpp:413
+#: frame_main.cpp:416
 msgid "Opens a video file"
 msgstr "Otevře video"
 
-#: frame_main.cpp:414
+#: frame_main.cpp:417
 msgid "&Close Video"
 msgstr "Zavřít video"
 
-#: frame_main.cpp:414
+#: frame_main.cpp:417
 msgid "Closes the currently open video file"
 msgstr "Zavře aktuálně načtené video"
 
-#: frame_main.cpp:417
+#: frame_main.cpp:420
 msgid "Use Dummy Video..."
 msgstr "Použít náhradní video..."
 
-#: frame_main.cpp:417
+#: frame_main.cpp:420
 msgid "Opens a video clip with solid colour"
 msgstr "Otevře videoklip tvořený jednolitou neprůhlednou barvou"
 
-#: frame_main.cpp:418
+#: frame_main.cpp:421
 msgid "Show Video Details..."
-msgstr "Zobrazit informace o videu"
+msgstr "Zobrazit informace o videu..."
 
-#: frame_main.cpp:418
+#: frame_main.cpp:421
 msgid "Shows video details"
 msgstr "Zobrazí informace o videu"
 
-#: frame_main.cpp:420
+#: frame_main.cpp:423
 msgid "Open Timecodes File..."
 msgstr "Načíst časový kód..."
 
-#: frame_main.cpp:420
+#: frame_main.cpp:423
 msgid "Opens a VFR timecodes v1 or v2 file"
 msgstr "Otevře soubor s VFR časovým kódem verze 1 nebo 2"
 
-#: frame_main.cpp:421
+#: frame_main.cpp:424
 msgid "Save Timecodes File..."
-msgstr "Uložit časový kód"
+msgstr "Uložit časový kód..."
 
-#: frame_main.cpp:421
+#: frame_main.cpp:424
 msgid "Saves a VFR timecodes v2 file"
 msgstr "Uloží časový kód pro VFr verze 2"
 
-#: frame_main.cpp:422
+#: frame_main.cpp:425
 msgid "Close Timecodes File"
 msgstr "Zavřít časový kód"
 
-#: frame_main.cpp:422
+#: frame_main.cpp:425
 msgid "Closes the currently open timecodes file"
 msgstr "Zavře aktuálně načtený časový kód"
 
-#: frame_main.cpp:426
+#: frame_main.cpp:429
 msgid "Open Keyframes..."
 msgstr "Načíst klíčové snímky..."
 
-#: frame_main.cpp:426
+#: frame_main.cpp:429
 msgid "Opens a keyframe list file"
 msgstr "Načte soubor s klíčovými snímky"
 
-#: frame_main.cpp:427
+#: frame_main.cpp:430
 msgid "Save Keyframes..."
 msgstr "Uložit klíčové snímky..."
 
-#: frame_main.cpp:427
+#: frame_main.cpp:430
 msgid "Saves the current keyframe list"
 msgstr "Uloží aktuální klíčové snímky"
 
-#: frame_main.cpp:428
+#: frame_main.cpp:431
 msgid "Close Keyframes"
 msgstr "Zavřít klíčové snímky"
 
-#: frame_main.cpp:428
+#: frame_main.cpp:431
 msgid "Closes the currently open keyframes list"
 msgstr "Zavře aktuální soubor s časovými snímky"
 
-#: frame_main.cpp:432
+#: frame_main.cpp:435
 msgid "Detach Video"
 msgstr "Oddělit video"
 
-#: frame_main.cpp:432
+#: frame_main.cpp:435
 msgid "Detach video, displaying it in a separate Window."
 msgstr "Oddělí video a zobrazí je v samostatném okně."
 
-#: frame_main.cpp:434
+#: frame_main.cpp:437
 msgid "Set Zoom"
 msgstr "Nastavit zoom"
 
-#: frame_main.cpp:438
+#: frame_main.cpp:441
 msgid "Set zoom to 50%"
 msgstr "Nastavit zoom na 50%"
 
-#: frame_main.cpp:439
+#: frame_main.cpp:442
 msgid "Set zoom to 100%"
 msgstr "Nastavit zoom na 100%"
 
-#: frame_main.cpp:440
+#: frame_main.cpp:443
 msgid "Set zoom to 200%"
 msgstr "Nastavit zoom na 200%"
 
-#: frame_main.cpp:443
+#: frame_main.cpp:446
 msgid "Override Aspect Ratio"
 msgstr "Nastavit poměr stran"
 
-#: frame_main.cpp:447
+#: frame_main.cpp:450
 msgid "&Default"
 msgstr "&Výchozí"
 
-#: frame_main.cpp:447
+#: frame_main.cpp:450
 msgid "Leave video on original aspect ratio"
 msgstr "Ponechá video v původním rozlišení"
 
-#: frame_main.cpp:448
+#: frame_main.cpp:451
 msgid "&Fullscreen (4:3)"
-msgstr "&Fullscreen (4:3)"
+msgstr "&Obrazovka (4:3)"
 
-#: frame_main.cpp:448
+#: frame_main.cpp:451
 msgid "Forces video to 4:3 aspect ratio"
 msgstr "Nastaví poměr stran videa na 4:3"
 
-#: frame_main.cpp:449
+#: frame_main.cpp:452
 msgid "&Widescreen (16:9)"
 msgstr "Širokoúhlé (16:9)"
 
-#: frame_main.cpp:449
+#: frame_main.cpp:452
 msgid "Forces video to 16:9 aspect ratio"
 msgstr "Nastaví poměr stran videa na 16:9"
 
-#: frame_main.cpp:450
+#: frame_main.cpp:453
 msgid "&Cinematic (2.35)"
 msgstr "Filmový pás (2.35)"
 
-#: frame_main.cpp:450
+#: frame_main.cpp:453
 msgid "Forces video to 2.35 aspect ratio"
 msgstr "Nastaví poměr stran videa na 2.35"
 
-#: frame_main.cpp:451
+#: frame_main.cpp:454
 msgid "Custom..."
 msgstr "Vlastní..."
 
-#: frame_main.cpp:451
+#: frame_main.cpp:454
 msgid "Forces video to a custom aspect ratio"
 msgstr "Nastaví vlastní poměr stran videa"
 
-#: frame_main.cpp:453
+#: frame_main.cpp:456
 msgid "Show Overscan Mask"
 msgstr "Televizní maska"
 
-#: frame_main.cpp:453
+#: frame_main.cpp:456
 msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
 msgstr "Zobrazí masku označující oblasti, které by mohly být oříznuty při zobrazení na televizi."
 
-#: frame_main.cpp:455
+#: frame_main.cpp:458
 msgid "&Jump to..."
 msgstr "Pře&jít na..."
 
-#: frame_main.cpp:455
+#: frame_main.cpp:458
 msgid "Jump to frame or time"
 msgstr "Přejde na zvolený snímek nebo čas"
 
-#: frame_main.cpp:456
+#: frame_main.cpp:459
 #: hotkeys.cpp:357
 msgid "Jump Video to Start"
 msgstr "Přejít na začátek videa"
 
-#: frame_main.cpp:457
+#: frame_main.cpp:460
 #: hotkeys.cpp:358
 msgid "Jump Video to End"
 msgstr "Přejít na konec videa"
 
-#: frame_main.cpp:458
+#: frame_main.cpp:461
 msgid "&Video"
 msgstr "&Video"
 
-#: frame_main.cpp:462
+#: frame_main.cpp:465
 msgid "&Open Audio File..."
-msgstr "&Otevřít audio"
+msgstr "&Otevřít audio..."
 
-#: frame_main.cpp:462
+#: frame_main.cpp:465
 msgid "Opens an audio file"
 msgstr "Načte soubor s audiem"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:466
 msgid "Open Audio from &Video"
 msgstr "Načíst audio z &videa"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:466
 msgid "Opens the audio from the current video file"
 msgstr "Načte audio z aktuálního video souboru"
 
-#: frame_main.cpp:464
+#: frame_main.cpp:467
 msgid "&Close Audio"
 msgstr "Zavřít audio"
 
-#: frame_main.cpp:464
+#: frame_main.cpp:467
 msgid "Closes the currently open audio file"
 msgstr "Zavře aktuálně načtený audio soubor"
 
-#: frame_main.cpp:472
+#: frame_main.cpp:475
 msgid "&Audio"
 msgstr "&Audio"
 
-#: frame_main.cpp:477
+#: frame_main.cpp:480
 msgid "&Automation..."
 msgstr "&Automatizace..."
 
-#: frame_main.cpp:477
+#: frame_main.cpp:480
 msgid "Open automation manager"
 msgstr "Otevřít správce Automatizace"
 
-#: frame_main.cpp:479
+#: frame_main.cpp:482
 msgid "&Automation"
 msgstr "&Automatizace"
 
-#: frame_main.cpp:484
+#: frame_main.cpp:487
 msgid "Select Aegisub interface language"
 msgstr "Zvolit jazyk pro rozhraní Aegisubu"
 
-#: frame_main.cpp:485
+#: frame_main.cpp:488
 msgid "&Options..."
 msgstr "M&ožnosti..."
 
-#: frame_main.cpp:487
+#: frame_main.cpp:490
 msgid "&Associations..."
 msgstr "&Asociace..."
 
-#: frame_main.cpp:487
+#: frame_main.cpp:490
 msgid "Associate file types with Aegisub"
 msgstr "Asociuje s Aegisubem zvolené typy souborů "
 
-#: frame_main.cpp:490
+#: frame_main.cpp:493
 msgid "Lo&g Window..."
 msgstr "Okno lo&gování..."
 
-#: frame_main.cpp:490
+#: frame_main.cpp:493
 msgid "Open log window"
 msgstr "Otevře okno logování"
 
-#: frame_main.cpp:493
+#: frame_main.cpp:496
 msgid "Subs Only View"
 msgstr "Zobrazení samostatných titulků"
 
-#: frame_main.cpp:493
+#: frame_main.cpp:496
 msgid "Display subtitles only"
 msgstr "Zobrazí pouze okno s titulky"
 
-#: frame_main.cpp:494
+#: frame_main.cpp:497
 msgid "Video+Subs View"
 msgstr "Zobrazení videa s titulky"
 
-#: frame_main.cpp:494
+#: frame_main.cpp:497
 msgid "Display video and subtitles only"
 msgstr "Zobrazí pouze okna videa a titulků"
 
-#: frame_main.cpp:495
+#: frame_main.cpp:498
 msgid "Audio+Subs View"
 msgstr "Zobrazení audia s titulky"
 
-#: frame_main.cpp:495
+#: frame_main.cpp:498
 msgid "Display audio and subtitles only"
 msgstr "Zobrazí pouze okna audia a titulků"
 
-#: frame_main.cpp:496
+#: frame_main.cpp:499
 msgid "Full view"
 msgstr "Plné zobrazení"
 
-#: frame_main.cpp:496
+#: frame_main.cpp:499
 msgid "Display audio, video and subtitles"
 msgstr "Zobrazí okna videa, audia i titulků"
 
-#: frame_main.cpp:497
+#: frame_main.cpp:500
 msgid "Vie&w"
 msgstr "Zobra&zit"
 
-#: frame_main.cpp:501
+#: frame_main.cpp:504
 msgid "&Contents..."
-msgstr "Obsah"
+msgstr "Obsah..."
 
-#: frame_main.cpp:501
+#: frame_main.cpp:504
 msgid "Help topics"
 msgstr "Témata nápovědy"
 
-#: frame_main.cpp:503
+#: frame_main.cpp:506
 msgid "&Website..."
 msgstr "Web Aegisubu..."
 
-#: frame_main.cpp:503
+#: frame_main.cpp:506
 msgid "Visit Aegisub's official website"
 msgstr "Otevře oficiální stránky Aegisubu"
 
-#: frame_main.cpp:504
+#: frame_main.cpp:507
 msgid "&Forums..."
 msgstr "&Fóra..."
 
-#: frame_main.cpp:504
+#: frame_main.cpp:507
 msgid "Visit Aegisub's forums"
 msgstr "Otevře fóra Aegisubu"
 
-#: frame_main.cpp:505
+#: frame_main.cpp:508
 msgid "&Bug Tracker..."
 msgstr "&Bug Tracker..."
 
-#: frame_main.cpp:505
+#: frame_main.cpp:508
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Otevře Bug Tracker Aegisubu - pro hlášení chyb a žádosti o nové funkce"
 
-#: frame_main.cpp:506
+#: frame_main.cpp:509
 msgid "&IRC Channel..."
 msgstr "&IRC kanál..."
 
-#: frame_main.cpp:506
+#: frame_main.cpp:509
 msgid "Visit Aegisub's official IRC channel"
 msgstr "Otevře oficiální IRC (internet relay chat) kanál Aegisubu"
 
-#: frame_main.cpp:508
+#: frame_main.cpp:514
 msgid "&Check for Updates..."
-msgstr "Zkontrolovat aktualizace"
+msgstr "Zkontrolovat aktualizace..."
 
-#: frame_main.cpp:508
+#: frame_main.cpp:514
 msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Zkontroluje dostupnost nové verze Aegisubu"
 
-#: frame_main.cpp:509
+#: frame_main.cpp:516
 msgid "&About..."
 msgstr "O aplikaci..."
 
-#: frame_main.cpp:703
+#: frame_main.cpp:710
 msgid "Save subtitles file"
 msgstr "Uložit titulky"
 
-#: frame_main.cpp:722
-#: frame_main_events.cpp:686
+#: frame_main.cpp:729
+#: frame_main_events.cpp:685
 msgid "Choose charset code:"
 msgstr "Vyberte znakovou sadu:"
 
-#: frame_main.cpp:752
+#: frame_main.cpp:759
 msgid "Save before continuing?"
 msgstr "Před pokračováním uložit?"
 
-#: frame_main.cpp:752
+#: frame_main.cpp:759
 msgid "Unsaved changes"
 msgstr "Neuložené změny"
 
-#: frame_main.cpp:895
+#: frame_main.cpp:902
 msgid "Do you want to load/unload the associated files?"
 msgstr "Přejete si načíst/zavřít navázané soubory?"
 
-#: frame_main.cpp:895
+#: frame_main.cpp:902
 msgid "(Un)Load files?"
 msgstr "Načíst(Zavřít) soubory?"
 
-#: frame_main.cpp:1040
+#: frame_main.cpp:1047
 msgid "You have timecodes loaded currently. Would you like to unload them?"
 msgstr "Časové kódy jsou již načteny. Přejete si je zavřít?"
 
-#: frame_main.cpp:1040
+#: frame_main.cpp:1047
 msgid "Unload timecodes?"
 msgstr "Zavřít časové kódy?"
 
-#: frame_main.cpp:1071
-#, possible-c-format
+#: frame_main.cpp:1078
+#, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
 "\n"
@@ -4228,11 +4236,11 @@ msgstr ""
 "\n"
 "Přejete si změnit rozlišení titulků, aby odpovídalo videu?"
 
-#: frame_main.cpp:1071
+#: frame_main.cpp:1078
 msgid "Resolution mismatch"
 msgstr "Konflikt rozlišení"
 
-#: frame_main.cpp:1078
+#: frame_main.cpp:1085
 msgid "Change script resolution"
 msgstr "Změnit rozlišení skriptu"
 
@@ -4245,113 +4253,106 @@ msgid "No Automation macros loaded"
 msgstr "Žádná makra Automatizace nebyla načtena"
 
 #: frame_main_events.cpp:608
-msgid "Recommended Formats"
-msgstr "Doporučené formáty"
+#: frame_main_events.cpp:631
+msgid "Video Formats"
+msgstr "Formáty videa"
 
 #: frame_main_events.cpp:609
-msgid "Other supported formats"
-msgstr "Další podporované formáty"
-
-#: frame_main_events.cpp:610
-#: frame_main_events.cpp:760
-#: frame_main_events.cpp:775
+#: frame_main_events.cpp:759
+#: frame_main_events.cpp:774
 msgid "All Files"
 msgstr "Všechny soubory"
 
-#: frame_main_events.cpp:611
+#: frame_main_events.cpp:610
 msgid "Open video file"
 msgstr "Otevřít video"
 
-#: frame_main_events.cpp:631
+#: frame_main_events.cpp:630
 msgid "Audio Formats"
 msgstr "Formáty audia"
 
 #: frame_main_events.cpp:632
-msgid "Video Formats"
-msgstr "Formáty videa"
-
-#: frame_main_events.cpp:633
 msgid "All files"
 msgstr "Všechny soubory"
 
-#: frame_main_events.cpp:634
+#: frame_main_events.cpp:633
 msgid "Open audio file"
 msgstr "Otevřít audio"
 
-#: frame_main_events.cpp:686
+#: frame_main_events.cpp:685
 msgid "Charset"
 msgstr "Znaková sada"
 
-#: frame_main_events.cpp:759
-#: frame_main_events.cpp:774
+#: frame_main_events.cpp:758
+#: frame_main_events.cpp:773
 msgid "All Supported Types"
 msgstr "Další podporované typy"
 
-#: frame_main_events.cpp:761
+#: frame_main_events.cpp:760
 msgid "Open timecodes file"
 msgstr "Načíst časový kód"
 
-#: frame_main_events.cpp:776
+#: frame_main_events.cpp:775
 msgid "Save timecodes file"
 msgstr "Uložit časový kód"
 
-#: frame_main_events.cpp:1068
+#: frame_main_events.cpp:1067
 msgid "Reloaded all Automation scripts"
 msgstr "Znovu načíst všechny skripty Automatizace"
 
-#: frame_main_events.cpp:1071
+#: frame_main_events.cpp:1070
 msgid "Reloaded autoload Automation scripts"
 msgstr "Znovu načíst automaticky načítané skripty Automatizace"
 
-#: frame_main_events.cpp:1208
+#: frame_main_events.cpp:1207
 msgid "snap to scene"
 msgstr "Přichytnout na scénu"
 
-#: frame_main_events.cpp:1239
+#: frame_main_events.cpp:1238
 msgid "shift to frame"
 msgstr "posunout na snímek"
 
-#: frame_main_events.cpp:1335
+#: frame_main_events.cpp:1334
 msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
 msgstr "Vložte poměr stran v desetinné (např. 2.35) nebo zlomkové (např. 16:9) podobě. Pro nastavení přesného rozlišení zadejte např. 853x480."
 
-#: frame_main_events.cpp:1335
+#: frame_main_events.cpp:1334
 msgid "Enter aspect ratio"
 msgstr "Vložit poměr stran"
 
-#: frame_main_events.cpp:1370
+#: frame_main_events.cpp:1369
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr "Neplatná hodnota! Poměr stran musí být mezi 0.5 a 5.0."
 
-#: frame_main_events.cpp:1370
+#: frame_main_events.cpp:1369
 msgid "Invalid Aspect Ratio"
 msgstr "Neplatný poměr stran"
 
-#: frame_main_events.cpp:1471
+#: frame_main_events.cpp:1470
 msgid "sort"
 msgstr "seřazení"
 
-#: frame_main_events.cpp:1510
+#: frame_main_events.cpp:1509
 msgid "File backup saved as \""
 msgstr "Záloha souboru byla uložena pod jménem  \""
 
-#: frame_main_events.cpp:1604
+#: frame_main_events.cpp:1603
 msgid "ASS Override Tag mode set to "
-msgstr "Nastavit mód prioritních ASS tagů na"
+msgstr "Nastavit mód prioritních ASS tagů na "
 
-#: frame_main_events.cpp:1605
+#: frame_main_events.cpp:1604
 msgid "show full tags."
 msgstr "Plné zobrazení"
 
-#: frame_main_events.cpp:1606
+#: frame_main_events.cpp:1605
 msgid "simplify tags."
 msgstr "Zjednodušené zobrazení"
 
-#: frame_main_events.cpp:1607
+#: frame_main_events.cpp:1606
 msgid "hide tags."
 msgstr "Bez zobrazení"
 
-#: frame_main_events.cpp:1629
+#: frame_main_events.cpp:1628
 #: subs_edit_box.cpp:911
 msgid "editing"
 msgstr "editace"
@@ -4369,7 +4370,7 @@ msgstr "Nápověda"
 
 #: hotkeys.cpp:330
 msgid "Edit Box Commit"
-msgstr "Potvrzení editačního okna"
+msgstr "Potvrzení editačního pole"
 
 #: hotkeys.cpp:331
 msgid "Undo"
@@ -4443,11 +4444,11 @@ msgstr "Přehrávání videa"
 
 #: hotkeys.cpp:371
 msgid "Grid global prev line"
-msgstr "Mřížka titulků - předchozí řádek"
+msgstr "Titulkové pole - předchozí řádek"
 
 #: hotkeys.cpp:372
 msgid "Grid global next line"
-msgstr "Mřížka titulků - následující řádek"
+msgstr "Titulkové pole - následující řádek"
 
 #: hotkeys.cpp:373
 msgid "Save Subtitles Alt"
@@ -4463,24 +4464,24 @@ msgstr "Video odzoomovat"
 
 #: hotkeys.cpp:377
 msgid "Grid move row down"
-msgstr "Mřížka titulků - posunout řádek dolů"
+msgstr "Titulkové pole - posunout řádek dolů"
 
 #: hotkeys.cpp:378
 msgid "Grid move row up"
-msgstr "Mřížka titulků - posunout řádek nahoru"
+msgstr "Titulkové pole - posunout řádek nahoru"
 
 #: hotkeys.cpp:380
 #: hotkeys.cpp:382
 msgid "Grid delete rows"
-msgstr "Mřížka titulků - smazat řádek"
+msgstr "Titulkové pole - smazat řádek"
 
 #: hotkeys.cpp:384
 msgid "Grid duplicate rows"
-msgstr "Mřížka titulků - zdvojit řádek"
+msgstr "Titulkové pole - zdvojit řádek"
 
 #: hotkeys.cpp:385
 msgid "Grid duplicate and shift one frame"
-msgstr "Mřížka titulků - zdvojit a posunout o 1 snímek"
+msgstr "Titulkové pole - zdvojit a posunout o 1 snímek"
 
 #: hotkeys.cpp:387
 msgid "Audio Commit Alt"
@@ -4616,7 +4617,7 @@ msgstr "Audio - Medusa - Přehrát úsek před počátkem"
 
 #: hotkeys.cpp:421
 msgid "Audio Medusa Play After"
-msgstr "Audio - Medusa - Přehrát úsek po konci"
+msgstr "Audio - Medusa - Přehrát úsek za koncem"
 
 #: hotkeys.cpp:422
 msgid "Audio Medusa Next"
@@ -4703,7 +4704,7 @@ msgstr "Načítám klíčové snímky a časový kód z Matroska kontejneru."
 msgid "Reading subtitles from Matroska file."
 msgstr "Načítám titulky z Matroska kontejneru."
 
-#: options.cpp:445
+#: options.cpp:446
 msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
 msgstr "Nastavení tohoto souboru je buď neplatné nebo porušené. Aktuální soubor bude zazálohován a nahrazen výchozím."
 
@@ -4794,7 +4795,7 @@ msgstr "Časový režim"
 
 #: subs_edit_box.cpp:143
 msgid "Time by h:mm:ss.cs"
-msgstr "Čas v h:mm:ss.ms"
+msgstr "Čas v h:mm:ss.cs"
 
 #: subs_edit_box.cpp:144
 msgid "Frame"
@@ -4842,7 +4843,7 @@ msgid "No correction suggestions"
 msgstr "Žádné návrhy na opravu"
 
 #: subs_edit_ctrl.cpp:795
-#, possible-c-format
+#, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr "Přidat \"%s\"  do slovníku"
 
@@ -4851,7 +4852,7 @@ msgid "No spell checker suggestions"
 msgstr "Žádné návrhy kontroly pravopisu"
 
 #: subs_edit_ctrl.cpp:808
-#, possible-c-format
+#, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr "Návrhy kontroly pravopisu pro  \"%s\""
 
@@ -4865,7 +4866,7 @@ msgid "Spell checker language"
 msgstr "Jazyk kontroly pravopisu"
 
 #: subs_edit_ctrl.cpp:892
-#, possible-c-format
+#, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr "Návrhy slovníku synonym pro  \"%s\""
 
@@ -4991,56 +4992,56 @@ msgstr "Vloží řádky ze schránky"
 msgid "splitting"
 msgstr "Rozděluji"
 
-#: subs_grid.cpp:645
+#: subs_grid.cpp:649
 msgid "combining"
 msgstr "Spojuji"
 
-#: subs_grid.cpp:676
+#: subs_grid.cpp:680
 msgid "The starting point is beyond the length of the audio loaded."
 msgstr "Počátek je nastaven nad rámec rozsahu načteného audia."
 
-#: subs_grid.cpp:680
+#: subs_grid.cpp:684
 msgid "There is no audio to save."
 msgstr "Žádné audio k uložení"
 
-#: subs_grid.cpp:687
+#: subs_grid.cpp:691
 msgid "Save audio clip"
 msgstr "Uložit audio klip"
 
-#: subs_grid.cpp:726
+#: subs_grid.cpp:730
 msgid "Couldn't allocate memory."
 msgstr "Nelze přiřadit paměť."
 
-#: subs_grid.cpp:803
-#: subs_grid.cpp:804
+#: subs_grid.cpp:807
+#: subs_grid.cpp:808
 msgid "load"
 msgstr "Načíst"
 
-#: subs_grid.cpp:845
+#: subs_grid.cpp:849
 msgid "swap lines"
 msgstr "Zaměnit řádky"
 
-#: subs_grid.cpp:871
+#: subs_grid.cpp:875
 msgid "line insertion"
 msgstr "Vložit řádky"
 
-#: subs_grid.cpp:999
+#: subs_grid.cpp:1003
 msgid "paste"
 msgstr "vložit"
 
-#: subs_grid.cpp:1041
+#: subs_grid.cpp:1045
 msgid "delete"
 msgstr "smazat"
 
-#: subs_grid.cpp:1135
+#: subs_grid.cpp:1139
 msgid "adjoin"
 msgstr "spojit"
 
-#: subs_grid.cpp:1305
+#: subs_grid.cpp:1309
 msgid "split"
 msgstr "rozdělit"
 
-#: subs_grid.cpp:1466
+#: subs_grid.cpp:1470
 msgid "timing"
 msgstr "časování"
 
@@ -5205,10 +5206,6 @@ msgstr "Zapne zobrazování změn v reálném čase."
 msgid "Open the manual page for Visual Typesetting."
 msgstr "Otevřít manuál na stránce s Grafickou sazbou."
 
-#: video_context.cpp:606
-msgid "Video Screenshot Path"
-msgstr "Cesta pro ukládání snímků plochy."
-
 #: video_display.cpp:472
 msgid "Save PNG snapshot"
 msgstr "Uložit PNG snímek"
@@ -5240,8 +5237,13 @@ msgstr "Již máte načteny časové kódy. Chcete je nahradit těmi z Martoska 
 
 #: video_provider_avs.cpp:309
 #: video_provider_dshow.cpp:318
+#: video_provider_ffmpegsource.cpp:167
 msgid "Replace timecodes?"
 msgstr "Nahradit časové kódy?"
+
+#: video_provider_ffmpegsource.cpp:167
+msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
+msgstr "Již máte načteny časové kódy. Chcete je nahradit těmi z videa?"
 
 #: visual_tool.cpp:280
 #: visual_tool_drag.cpp:115
@@ -5311,4 +5313,11 @@ msgstr "Vyhlazená kresba"
 #: visual_tool_vector_clip.cpp:77
 msgid "Draws a smoothed freehand shape."
 msgstr "Nakreslí vyhlazený tvar."
+
+#~ msgid "Recommended Formats"
+#~ msgstr "Doporučené formáty"
+#~ msgid "Other supported formats"
+#~ msgstr "Další podporované formáty"
+#~ msgid "Video Screenshot Path"
+#~ msgstr "Video Screenshot Path"
 
