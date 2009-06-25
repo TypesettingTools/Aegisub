@@ -1522,8 +1522,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			if (syl != -1) {
 				int start = karaoke->syllables.at(syl).start_time * 10 + dialogue->Start.GetMS();
 				int count = karaoke->syllables.at(syl).duration * 10;
-				player->Play(GetSampleAtMS(start),GetSampleAtMS(count));
-				//return;
+				Play(start, start+count);
 			}
 		}
 	}
