@@ -67,8 +67,8 @@ class KaraokeLineMatchDisplay : public wxControl {
 		MatchSyllable(int _dur, const wxString &_text) : dur(_dur), text(_text) { }
 	};
 	struct MatchGroup {
-		std::vector<const MatchSyllable> src;
-		typedef std::vector<const MatchSyllable>::iterator SrcIterator;
+		std::vector<MatchSyllable> src;
+		typedef std::vector<MatchSyllable>::iterator SrcIterator;
 		wxString dst;
 		int duration;
 		int last_render_width;
@@ -79,8 +79,8 @@ class KaraokeLineMatchDisplay : public wxControl {
 	std::vector<MatchGroup> matched_groups;
 	typedef std::vector<MatchGroup>::iterator MatchedGroupIterator;
 	// Unmatched source syllables
-	std::deque<const MatchSyllable> unmatched_source;
-	typedef std::deque<const MatchSyllable>::iterator UnmatchedSourceIterator;
+	std::deque<MatchSyllable> unmatched_source;
+	typedef std::deque<MatchSyllable>::iterator UnmatchedSourceIterator;
 	// Unmatched destination text
 	wxString unmatched_destination;
 
