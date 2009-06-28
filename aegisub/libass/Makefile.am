@@ -28,3 +28,6 @@ libass_aegisub_a_SOURCES = \
 	libass_msvc.patch \
 	mputils.h \
 	msvc.h
+
+EXTRA_DIST= \
+	ass_cache_template.c
