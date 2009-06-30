@@ -268,10 +268,8 @@ OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 //////////////////////
 // Texture destructor
 OpenGLTextTexture::~OpenGLTextTexture() {
-	if (tex) {
+	if (tex)
 		glDeleteTextures(1,&tex);
-		tex = 0;
-	}
 }
 
 
