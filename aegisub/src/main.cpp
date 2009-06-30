@@ -146,15 +146,19 @@ bool AegisubApp::OnInit() {
 		// Set config file
 		StartupLog(_T("Load configuration"));
 		Options.LoadDefaults();
-#ifndef __WXMSW__
-		Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
+#ifdef __WXMSW__
+		// TODO: Display a messagebox about permission being needed to write to local config once the string freeze is over with
+		if (wxFileName::IsFileWritable(StandardPaths::DecodePath(_T("?data/config.dat"))))
+			Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
+		else 
+			Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
 		Options.Load();
-		if (!Options.AsBool(_T("Local config")))
+		if (!Options.AsBool(_T("Local config")) && Options.GetFile() != StandardPaths::DecodePath(_T("?user/config.dat")))
 #endif
 		{
 			Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
 			Options.Load();
-#ifndef __WXMSW__
+#ifdef __WXMSW__
 			wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 #endif
 		}

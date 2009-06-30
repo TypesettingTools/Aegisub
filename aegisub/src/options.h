@@ -79,6 +79,7 @@ public:
 
 	void Clear();
 	void SetFile(wxString file);
+	wxString GetFile() const;
 	void Save();
 	void Load();
 	void LoadDefaults(bool onlyDefaults=false,bool versionOverride=false);

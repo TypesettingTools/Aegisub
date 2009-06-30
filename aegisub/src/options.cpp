@@ -419,6 +419,14 @@ void OptionsManager::SetFile(wxString file) {
 }
 
 
+////////////////
+// Get filename
+wxString OptionsManager::GetFile() const
+{
+	return filename;
+}
+
+
 ////////
 // Save
 void OptionsManager::Save() {
