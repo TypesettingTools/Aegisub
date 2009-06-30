@@ -58,7 +58,7 @@ namespace Automation4 {
 	LuaScriptReader::~LuaScriptReader()
 	{
 		if (databuf)
-			delete databuf;
+			delete[] databuf;
 		fclose(f);
 	}
 
