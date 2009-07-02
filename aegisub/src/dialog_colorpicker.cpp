@@ -1190,21 +1190,36 @@ void DialogColorPicker::OnSliderChange(wxCommandEvent &evt)
 	slider->GetXY(x, y);
 	switch (i) {
 		// setting the value of a component input automatically invalidates the spectrum
-		// and calls the according UpdateFromXXX() function
+		// and calls the according UpdateFromXXX() function in wxMSW and wxMac, wxGTK must be manually updated 
 		case 0:
 			rgb_input[0]->SetValue(y);
+#ifdef __WXGTK__
+			UpdateFromRGB();
+#endif
 			break;
 		case 1:
 			rgb_input[1]->SetValue(y);
+#ifdef __WXGTK__
+			UpdateFromRGB();
+#endif
 			break;
 		case 2:
 			rgb_input[2]->SetValue(y);
+#ifdef __WXGTK__
+			UpdateFromRGB();
+#endif
 			break;
 		case 3:
 			hsl_input[2]->SetValue(y);
+#ifdef __WXGTK__
+			UpdateFromHSL();
+#endif
 			break;
 		case 4:
 			hsv_input[0]->SetValue(y);
+#ifdef __WXGTK__
+			UpdateFromHSV();
+#endif
 			break;
 	}
 }
