@@ -123,11 +123,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetText(_T("Spell Checker"),_T("hunspell"));
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Link time boxes commit"),true);
-#ifdef WIN32
 	SetBool(_T("Insert mode on time boxes"),true);
-#else
-	SetBool(_T("Insert mode on time boxes"),false);
-#endif
 	SetModificationType(MOD_EDIT_BOX);
 	SetBool(_T("Call tips enabled"),false,1700);
 	SetBool(_T("Syntax highlight enabled"),true);

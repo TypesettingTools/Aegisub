@@ -46,11 +46,17 @@
 #include "vfr.h"
 #include "options.h"
 
+// Use the multiline style only on wxGTK to workaround some wxGTK bugs with the default singleline style
+#ifdef __WXGTK__
+#define TimeEditWindowStyle wxTE_MULTILINE | wxTE_CENTRE
+#else
+#define TimeEditWindowStyle wxTE_CENTRE
+#endif
 
 ///////////////
 // Constructor
 TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name) :
-wxTextCtrl(parent,id,value,pos,size,wxTE_CENTRE | style,validator,name)
+wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 {
 	// Set validator
 	wxTextValidator val(wxFILTER_INCLUDE_CHAR_LIST);
@@ -72,6 +78,14 @@ wxTextCtrl(parent,id,value,pos,size,wxTE_CENTRE | style,validator,name)
 
 	// Other stuff
 	if (!value) SetValue(time.GetASSFormated());
+	// This is a multiline control on wxGTK so we need to size it manually there
+#ifdef __WXGTK__ 
+	int w, h;
+	GetTextExtent(GetValue(),&w,&h);
+	w += 20;
+	h += 5;
+	SetSizeHints(w,h,w,h);
+#endif
 	ready = true;
 	byFrame = false;
 	isEnd = false;
