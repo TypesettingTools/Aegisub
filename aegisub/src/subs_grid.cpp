@@ -1473,7 +1473,7 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 	if (modified) {
 		ass->FlagAsModified(_("timing"));
 		CommitChanges();
-		editBox->Update();
+		editBox->Update(true);
 	}
 }
 
