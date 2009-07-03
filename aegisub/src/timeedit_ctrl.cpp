@@ -82,8 +82,8 @@ wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 #ifdef __WXGTK__ 
 	int w, h;
 	GetTextExtent(GetValue(),&w,&h);
-	w += 20;
-	h += 5;
+	w += 30;
+	h += 8;
 	SetSizeHints(w,h,w,h);
 #endif
 	ready = true;
