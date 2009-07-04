@@ -304,6 +304,8 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 			// Video
 			VideoContext::Get()->curLine = curdiag;
 			VideoContext::Get()->UpdateDisplays(false);
+
+			TextEdit->EmptyUndoBuffer();
 		}
 		else enabled = false;
 	}
@@ -375,6 +377,8 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 			if (cur) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
 		}
 	}
+
+	TextEdit->EmptyUndoBuffer();
 }
 
 
