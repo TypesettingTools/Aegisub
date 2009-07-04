@@ -30,12 +30,10 @@ if BUILD_DARWIN
 aegisub_2_1_LDFLAGS += -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
 endif
 
-if FOUND_AUDIO_PLAYER
 noinst_LIBRARIES += libaudio_player.a
 libaudio_player_a_SOURCES = audio_player.cpp
 libaudio_player_a_CPPFLAGS = @ALSA_CFLAGS@ @PORTAUDIO_CFLAGS@ @LIBPULSE_CFLAGS@ @OPENAL_CFLAGS@
 aegisub_2_1_LDADD += libaudio_player.a
-endif
 
 if HAVE_ALSA
 noinst_LIBRARIES += libaudio_alsa.a
