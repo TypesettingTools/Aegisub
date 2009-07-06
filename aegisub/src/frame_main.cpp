@@ -310,6 +310,7 @@ void FrameMain::InitMenu() {
 	// Deinit menu if needed
 	if (menuCreated) {
 		SetMenuBar(NULL);
+		MenuBar->Destroy();
 	}
 	
 #ifdef __WXMAC__
