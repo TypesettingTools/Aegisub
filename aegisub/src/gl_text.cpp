@@ -61,7 +61,6 @@ OpenGLText::~OpenGLText() {
 /////////
 // Reset
 void OpenGLText::Reset() {
-	for (unsigned int i=0;i<textures.size();i++) delete textures[i];
 	textures.clear();
 	glyphs.clear();
 }
@@ -268,8 +267,10 @@ OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 //////////////////////
 // Texture destructor
 OpenGLTextTexture::~OpenGLTextTexture() {
-	if (tex)
+	if (tex) {
 		glDeleteTextures(1,&tex);
+		tex = 0;
+	}
 }
 
 
