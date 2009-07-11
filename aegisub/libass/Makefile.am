@@ -15,8 +15,7 @@ libass_aegisub_a_SOURCES = \
 	ass_fontconfig.c \
 	ass_library.c \
 	ass_render.c \
-	ass_utils.c \
-	mputils.c
+	ass_utils.c
 
 libass_aegisub_a_SOURCES += \
 	*.h
