@@ -47,6 +47,11 @@
 #include "standard_paths.h"
 #include <wx/filefn.h>
 
+#ifdef BUILD_DARWIN
+#include "libosxutil/libosxutil.h"
+#include <sys/param.h>
+#endif
+
 
 ///////////////
 // Constructor
@@ -73,7 +78,19 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	ass_renderer = ass_renderer_init(ass_library);
 	if (!ass_renderer) throw _T("ass_renderer_init failed");
 	ass_set_font_scale(ass_renderer, 1.);
-	ass_set_fonts(ass_renderer, NULL, "Sans", 1, NULL);
+
+#ifdef BUILD_DARWIN
+	char config_path[MAXPATHLEN];
+	char *config_dir;
+
+	config_dir = OSX_GetBundleResourcesDirectory();
+	snprintf(config_path, MAXPATHLEN, "%s/etc/fonts/fonts.conf", config_dir);
+	free(config_dir);
+#else
+	char config_path = NULL;
+#endif
+
+	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path);
 }
 
 
