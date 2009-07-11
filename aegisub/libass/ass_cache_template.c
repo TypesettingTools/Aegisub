@@ -6,6 +6,8 @@
         type member;
 #define FTVECTOR(member) \
         FT_Vector member;
+#define BITMAPHASHKEY(member) \
+        bitmap_hash_key_t member;
 #define END(typedefnamename) \
     } typedefnamename;
 
@@ -21,6 +23,8 @@
             a->member == b->member &&
 #define FTVECTOR(member) \
             a->member.x == b->member.x && a->member.y == b->member.y &&
+#define BITMAPHASHKEY(member) \
+            bitmap_compare(&a->member, &b->member, sizeof(a->member)) &&
 #define END(typedefname) \
             1; \
     }
@@ -35,6 +39,10 @@
 #define GENERIC(type, member) \
         hval = fnv_32a_buf(&p->member, sizeof(p->member), hval);
 #define FTVECTOR(member) GENERIC(, member.x); GENERIC(, member.y);
+#define BITMAPHASHKEY(member) { \
+        unsigned temp = bitmap_hash(&p->member, sizeof(p->member)); \
+        hval = fnv_32a_buf(&temp, sizeof(temp), hval); \
+        }
 #define END(typedefname) \
         return hval; \
     }
@@ -51,7 +59,7 @@ START(bitmap, bipmap_hash_key_s)
     GENERIC(ass_font_t *, font)
     GENERIC(double, size) // font size
     GENERIC(uint32_t, ch) // character code
-    GENERIC(unsigned, outline) // border width, 16.16 fixed point value
+    FTVECTOR(outline) // border width, 16.16 fixed point value
     GENERIC(int, bold)
     GENERIC(int, italic)
     GENERIC(char, be) // blur edges
@@ -61,12 +69,16 @@ START(bitmap, bipmap_hash_key_s)
     GENERIC(int, frx) // signed 16.16
     GENERIC(int, fry) // signed 16.16
     GENERIC(int, frz) // signed 16.16
+    GENERIC(int, fax) // signed 16.16
+    GENERIC(int, fay) // signed 16.16
     // shift vector that was added to glyph before applying rotation
     // = 0, if frx = fry = frx = 0
     // = (glyph base point) - (rotation origin), otherwise
     GENERIC(int, shift_x)
     GENERIC(int, shift_y)
     FTVECTOR(advance) // subpixel shift vector
+    FTVECTOR(shadow_offset) // shadow subpixel shift
+    GENERIC(unsigned, drawing_hash) // hashcode of a drawing
 END(bitmap_hash_key_t)
 
 // describes an outline glyph
@@ -79,10 +91,28 @@ START(glyph, glyph_hash_key_s)
     GENERIC(unsigned, scale_x) // 16.16
     GENERIC(unsigned, scale_y) // 16.16
     FTVECTOR(advance) // subpixel shift vector
-    GENERIC(unsigned, outline) // border width, 16.16
+    FTVECTOR(outline) // border width, 16.16
+    GENERIC(unsigned, drawing_hash) // hashcode of a drawing
+    GENERIC(unsigned, flags)    // glyph decoration flags
 END(glyph_hash_key_t)
+
+// Cache for composited bitmaps
+START(composite, composite_hash_key_s)
+    GENERIC(int, aw)
+    GENERIC(int, ah)
+    GENERIC(int, bw)
+    GENERIC(int, bh)
+    GENERIC(int, ax)
+    GENERIC(int, ay)
+    GENERIC(int, bx)
+    GENERIC(int, by)
+    BITMAPHASHKEY(a)
+    BITMAPHASHKEY(b)
+END(composite_hash_key_t)
+
 
 #undef START
 #undef GENERIC
 #undef FTVECTOR
+#undef BITMAPHASHKEY
 #undef END

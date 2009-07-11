@@ -2,6 +2,7 @@
 #define __LIBASS_HELP_MP_H__
 #define MSGTR_LIBASS_FT_Glyph_To_BitmapError "[ass] FT_Glyph_To_Bitmap error %d \n"
 #define MSGTR_LIBASS_UnsupportedPixelMode "[ass] Unsupported pixel mode: %d\n"
+#define MSGTR_LIBASS_GlyphBBoxTooLarge "[ass] Glyph bounding box too large: %dx%dpx\n"
 #define MSGTR_LIBASS_NoStyleNamedXFoundUsingY "[ass] [%p] Warning: no style named '%s' found, using '%s'\n"
 #define MSGTR_LIBASS_BadTimestamp "[ass] bad timestamp\n"
 #define MSGTR_LIBASS_BadEncodedDataSize "[ass] bad encoded data size\n"
@@ -19,7 +20,7 @@
 #define MSGTR_LIBASS_NotADirectory "[ass] Not a directory: %s\n"
 #define MSGTR_LIBASS_TooManyFonts "[ass] Too many fonts\n"
 #define MSGTR_LIBASS_ErrorOpeningFont "[ass] Error opening font: %s, %d\n"
-#define MSGTR_LIBASS_SelectedFontFamilyIsNotTheRequestedOne "[ass] fontconfig: Selected font family is not the requested one: '%s' != '%s'\n"
+#define MSGTR_LIBASS_SelectedFontFamilyIsNotTheRequestedOne "[ass] fontconfig: Selected font is not the requested one: '%s' != '%s'\n"
 #define MSGTR_LIBASS_UsingDefaultFontFamily "[ass] fontconfig_select: Using default font family: (%s, %d, %d) -> %s, %d\n"
 #define MSGTR_LIBASS_UsingDefaultFont "[ass] fontconfig_select: Using default font: (%s, %d, %d) -> %s, %d\n"
 #define MSGTR_LIBASS_UsingArialFontFamily "[ass] fontconfig_select: Using 'Arial' font family: (%s, %d, %d) -> %s, %d\n"
@@ -46,11 +47,9 @@
 #define MSGTR_LIBASS_EmptyEvent "[ass] Empty event!\n"
 #define MSGTR_LIBASS_MAX_GLYPHS_Reached "[ass] MAX_GLYPHS reached: event %d, start = %llu, duration = %llu\n Text = %s\n"
 #define MSGTR_LIBASS_EventHeightHasChanged "[ass] Warning! Event height has changed!  \n"
-#define MSGTR_LIBASS_GlyphNotFoundReselectingFont "[ass] Glyph 0x%X not found, reselecting font for (%s, %d, %d)\n"
+#define MSGTR_LIBASS_GlyphNotFoundReselectingFont "[ass] Glyph 0x%X not found, selecting one more font for (%s, %d, %d)\n"
 #define MSGTR_LIBASS_GlyphNotFound "[ass] Glyph 0x%X not found in font for (%s, %d, %d)\n"
 #define MSGTR_LIBASS_ErrorOpeningMemoryFont "[ass] Error opening memory font: %s\n"
 #define MSGTR_LIBASS_NoCharmaps "[ass] font face with no charmaps\n"
 #define MSGTR_LIBASS_NoCharmapAutodetected "[ass] no charmap autodetected, trying the first one\n"
-#define MSGTR_LIBASS_GlyphBBoxTooLarge "[ass] Glyph bounding box too large: %dx%dpx\n"
 #endif
-
