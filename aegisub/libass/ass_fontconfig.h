@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -34,8 +32,12 @@
 
 typedef struct fc_instance_s fc_instance_t;
 
-fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, const char* family, const char* path, int fc);
-char* fontconfig_select(fc_instance_t* priv, const char* family, int treat_family_as_pattern, unsigned bold, unsigned italic, int* index, uint32_t code);
-void fontconfig_done(fc_instance_t* priv);
+fc_instance_t *fontconfig_init(ass_library_t *library,
+                               FT_Library ftlibrary, const char *family,
+                               const char *path, int fc, const char *config);
+char *fontconfig_select(fc_instance_t *priv, const char *family,
+                        int treat_family_as_pattern, unsigned bold,
+                        unsigned italic, int *index, uint32_t code);
+void fontconfig_done(fc_instance_t *priv);
 
-#endif /* LIBASS_FONTCONFIG_H */
+#endif                          /* LIBASS_FONTCONFIG_H */
