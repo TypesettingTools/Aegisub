@@ -160,7 +160,10 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 			if (curFeature != -1) {
 				// Initialize drag
 				InitializeDrag(features[curFeature]);
-				if (features[curFeature].lineN != -1) VideoContext::Get()->grid->editBox->SetToLine(features[curFeature].lineN,true);
+				if (features[curFeature].lineN != -1) {
+					VideoContext::Get()->grid->editBox->SetToLine(features[curFeature].lineN,true);
+					VideoContext::Get()->grid->SelectRow(features[curFeature].lineN);
+				}
 
 				// Set start value
 				dragStartX = mx;
