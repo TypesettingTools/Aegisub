@@ -47,7 +47,7 @@
 #include "standard_paths.h"
 #include <wx/filefn.h>
 
-#ifdef BUILD_DARWIN
+#ifdef __APPLE__
 #include "libosxutil/libosxutil.h"
 #include <sys/param.h>
 #endif
@@ -79,7 +79,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	if (!ass_renderer) throw _T("ass_renderer_init failed");
 	ass_set_font_scale(ass_renderer, 1.);
 
-#ifdef BUILD_DARWIN
+#ifdef __APPLE__
 	char config_path[MAXPATHLEN];
 	char *config_dir;
 
@@ -87,7 +87,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	snprintf(config_path, MAXPATHLEN, "%s/etc/fonts/fonts.conf", config_dir);
 	free(config_dir);
 #else
-	char config_path = NULL;
+	const char *config_path = NULL;
 #endif
 
 	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path);
