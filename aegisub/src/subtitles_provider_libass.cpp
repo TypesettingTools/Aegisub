@@ -48,10 +48,11 @@
 #include <wx/filefn.h>
 
 #ifdef __APPLE__
+extern "C" {
 #include "libosxutil/libosxutil.h"
 #include <sys/param.h>
 #endif
-
+}
 
 ///////////////
 // Constructor
