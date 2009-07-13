@@ -94,6 +94,7 @@ DestDir: {app}; Source: src\avisynth.dll; Flags: ignoreversion; Components: code
 DestDir: {app}; Source: src\DirectShowSource.dll; Flags: ignoreversion; Components: codec
 ; ffmpegsource
 DestDir: {app}; Source: src\ffms2.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: src\ffms2.pdb; Flags: ignoreversion; Components: codec and main/pdb
 ; vsfilter
 DestDir: {app}\csri; Source: src\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
 ; auto4 main
@@ -196,11 +197,11 @@ Source: ..\..\po\wxstd-ru.mo;    DestDir: {app}\locale\ru;    DestName: wxstd.mo
 Source: src\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs solidbreak; Components: docs; Excludes: *svn
 ; ASSDraw3
 Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion nocompression solidbreak; Components: assdraw
-Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw
+Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw and docs
 
 [Icons]
 Name: {commonprograms}\Aegisub; Filename: {app}\aegisub32.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Create and edit subtitle files
-Name: {commonprograms}\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Flags: createonlyiffileexists; Comment: Create vector drawings for ASS-format subtitles
+Name: {commonprograms}\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons and assdraw; Flags: createonlyiffileexists; Comment: Create vector drawings for ASS-format subtitles
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Aegisub; Filename: {app}\aegisub32.exe; WorkingDir: {app}; IconIndex: 0; Components: main/qcklnch; Comment: Create and edit subtitle files
 
 [Registry]
@@ -217,7 +218,7 @@ Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Ch
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
 Name: main/runtime; Description: Runtime libraries; Check: RuntimesRequired; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
 Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
-Name: main/icons; Description: Programs menu icons; Types: custom compact full
+Name: main/icons; Description: Start menu icon; Types: custom compact full
 Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
 Name: codec/vsfilter; Description: VSFilter 2.39 MPC-HC; Types: compact full custom; Flags: fixed
