@@ -46,7 +46,7 @@ DefaultDirName={pf}\Aegisub
 DefaultGroupName=Aegisub
 AllowNoIcons=true
 OutputDir=output
-OutputBaseFilename=aegisub-2.1.7-setup
+OutputBaseFilename=Aegisub-2.1.7-setup
 Compression=lzma/ultra64
 SolidCompression=true
 MinVersion=0,5.0
@@ -121,13 +121,13 @@ DestDir: {app}\automation\auto3; Source: src\automation\auto3\multi-template.aut
 DestDir: {app}\automation\auto3; Source: src\automation\auto3\simple-k-replacer.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 DestDir: {app}\automation\docs; Source: src\automation\docs\automation3.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 ; dictionaries
-Source: src\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
+Source: src\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak;Components: dic/en_GB
 Source: src\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
-Source: src\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: dic/de_AT
-Source: src\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
-Source: src\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
 Source: src\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
 Source: src\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
+Source: src\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_AT
+Source: src\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
+Source: src\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
 Source: src\dictionaries\es_ES.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
 Source: src\dictionaries\es_ES.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
 Source: src\dictionaries\fr_FR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
@@ -149,10 +149,10 @@ Source: src\dictionaries\sl_SI.dic; DestDir: {app}\dictionaries; Flags: ignoreve
 Source: src\dictionaries\sv_SE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
 Source: src\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
 ; thesauri
-Source: src\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/de_DE
-Source: src\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
-Source: src\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
+Source: src\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/en_US
 Source: src\dictionaries\th_en_US.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
+Source: src\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
+Source: src\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
 Source: src\dictionaries\th_es_ES.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
 Source: src\dictionaries\th_es_ES.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
 Source: src\dictionaries\th_fr_FR.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
@@ -225,7 +225,7 @@ Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
 ; Docs
 Name: docs; Description: User manual; Types: custom compact full
 ; Translations (commented out ones are out of date)
-Name: i18n; Description: Languages; Types: full custom compact; Flags: fixed
+Name: i18n;       Description: Languages; Types: full custom compact; Flags: fixed
 Name: i18n/en;    Description: English (built in); Flags: fixed; Types: compact full custom
 Name: i18n/pt_BR; Description: Brazilian Portuguese; Types: full
 Name: i18n/ca;    Description: Catalan; Types: full
@@ -242,7 +242,7 @@ Name: i18n/ja;    Description: Japanese; Types: full
 Name: i18n/ru;    Description: Russian; Types: full
 Name: i18n/es;    Description: Spanish; Types: full
 ; Languages support
-Name: dic; Description: Spell checker; Types: full
+Name: dic;       Description: Spell checker; Types: full
 Name: dic/en_GB; Description: British English dictionary; Types: full
 Name: dic/en_US; Description: American English dictionary; Types: full
 Name: dic/nl_NL; Description: Dutch dictionary; Types: full
@@ -257,7 +257,7 @@ Name: dic/sk_SK; Description: Slovak dictionary; Types: full
 Name: dic/sl_SI; Description: Slovenian dictionary; Types: full
 Name: dic/es_ES; Description: Spanish dictionary; Types: full
 Name: dic/sv_SE; Description: Swedish dictionary; Types: full
-Name: th; Description: Thesaurus; Types: full
+Name: th;       Description: Thesaurus; Types: full
 Name: th/en_US; Description: American English thesaurus; Types: full
 Name: th/fr_FR; Description: French thesaurus; Types: full
 Name: th/de_DE; Description: German thesaurus; Types: full
