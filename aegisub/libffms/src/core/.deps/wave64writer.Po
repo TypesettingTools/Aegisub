@@ -1,0 +1,383 @@
+src/core/wave64writer.o: src/core/wave64writer.cpp \
+  src/core/wave64writer.h /usr/include/stdint.h /usr/include/sys/cdefs.h \
+  /usr/include/sys/_types.h /usr/include/machine/_types.h \
+  /usr/include/machine/_stdint.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/iostream \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/c++config.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/os_defines.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/cpu_defines.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/ostream \
+  /usr/local/lib/gcc-4.3.4/include/c++/ios \
+  /usr/local/lib/gcc-4.3.4/include/c++/iosfwd \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stringfwd.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/postypes.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/cwchar \
+  /usr/local/lib/gcc-4.3.4/include/c++/cstddef \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include/stddef.h \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/wchar.h \
+  /usr/include/sys/_null.h /usr/include/machine/_limits.h \
+  /usr/include/_ctype.h /usr/include/runetype.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/exception \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/char_traits.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_algobase.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/functexcept.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/exception_defines.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/cpp_type_traits.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/ext/type_traits.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/ext/numeric_traits.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_pair.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_move.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/concept_check.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_iterator_base_types.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_iterator_base_funcs.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_iterator.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/debug/debug.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/cstdio \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/stdio.h \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include/stdarg.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/localefwd.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/c++locale.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/clocale /usr/include/locale.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/cctype /usr/include/ctype.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/ios_base.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/ext/atomicity.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/gthr.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/gthr-default.h \
+  /usr/include/pthread.h /usr/include/sys/_pthreadtypes.h \
+  /usr/include/sys/_sigset.h /usr/include/sched.h /usr/include/time.h \
+  /usr/include/sys/timespec.h \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/unistd.h \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/sys/types.h \
+  /usr/include/machine/endian.h /usr/include/sys/select.h \
+  /usr/include/sys/_timeval.h /usr/include/sys/unistd.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/atomic_word.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/locale_classes.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/string \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/allocator.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/c++allocator.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/ext/new_allocator.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/new \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/ostream_insert.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/cxxabi-forced.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_function.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/backward/binders.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/basic_string.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/basic_string.tcc \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/locale_classes.tcc \
+  /usr/local/lib/gcc-4.3.4/include/c++/streambuf \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/streambuf.tcc \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/basic_ios.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/locale_facets.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/cwctype /usr/include/wctype.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/ctype_base.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/streambuf_iterator.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/ctype_inline.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/locale_facets.tcc \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/basic_ios.tcc \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/ostream.tcc \
+  /usr/local/lib/gcc-4.3.4/include/c++/istream \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/istream.tcc \
+  /usr/local/lib/gcc-4.3.4/include/c++/fstream \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/codecvt.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/basic_file.h \
+  /usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/c++io.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/fstream.tcc src/core/utils.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/vector \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_construct.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_uninitialized.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_vector.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/stl_bvector.h \
+  /usr/local/lib/gcc-4.3.4/include/c++/bits/vector.tcc include/ffms.h \
+  src/core/matroskaparser.h src/core/stdiostream.h \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/stdlib.h \
+  /usr/include/string.h /usr/include/strings.h \
+  /usr/local/include/libavformat/avformat.h \
+  /usr/local/include/libavcodec/avcodec.h /usr/include/errno.h \
+  /usr/local/include/libavutil/avutil.h \
+  /usr/local/include/libavutil/common.h /usr/include/inttypes.h \
+  /usr/include/machine/_inttypes.h /usr/include/sys/stdint.h \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/limits.h \
+  /usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/syslimits.h \
+  /usr/include/limits.h /usr/include/sys/limits.h \
+  /usr/include/sys/syslimits.h /usr/include/math.h \
+  /usr/local/include/libavutil/mem.h \
+  /usr/local/include/libavutil/mathematics.h \
+  /usr/local/include/libavutil/rational.h \
+  /usr/local/include/libavutil/intfloat_readwrite.h \
+  /usr/local/include/libavutil/log.h \
+  /usr/local/include/libavutil/avutil.h \
+  /usr/local/include/libavutil/pixfmt.h \
+  /usr/local/include/libavformat/avio.h \
+  /usr/local/include/libavutil/common.h \
+  /usr/local/include/libswscale/swscale.h \
+  /usr/local/include/libpostproc/postprocess.h include/ffmscompat.h
+
+src/core/wave64writer.h:
+
+/usr/include/stdint.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/sys/_types.h:
+
+/usr/include/machine/_types.h:
+
+/usr/include/machine/_stdint.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/iostream:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/c++config.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/os_defines.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/cpu_defines.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/ostream:
+
+/usr/local/lib/gcc-4.3.4/include/c++/ios:
+
+/usr/local/lib/gcc-4.3.4/include/c++/iosfwd:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stringfwd.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/postypes.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/cwchar:
+
+/usr/local/lib/gcc-4.3.4/include/c++/cstddef:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include/stddef.h:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/wchar.h:
+
+/usr/include/sys/_null.h:
+
+/usr/include/machine/_limits.h:
+
+/usr/include/_ctype.h:
+
+/usr/include/runetype.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/exception:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/char_traits.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_algobase.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/functexcept.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/exception_defines.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/cpp_type_traits.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/ext/type_traits.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/ext/numeric_traits.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_pair.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_move.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/concept_check.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_iterator_base_types.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_iterator_base_funcs.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_iterator.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/debug/debug.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/cstdio:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/stdio.h:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include/stdarg.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/localefwd.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/c++locale.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/clocale:
+
+/usr/include/locale.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/cctype:
+
+/usr/include/ctype.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/ios_base.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/ext/atomicity.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/gthr.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/gthr-default.h:
+
+/usr/include/pthread.h:
+
+/usr/include/sys/_pthreadtypes.h:
+
+/usr/include/sys/_sigset.h:
+
+/usr/include/sched.h:
+
+/usr/include/time.h:
+
+/usr/include/sys/timespec.h:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/unistd.h:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/sys/types.h:
+
+/usr/include/machine/endian.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/sys/_timeval.h:
+
+/usr/include/sys/unistd.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/atomic_word.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/locale_classes.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/string:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/allocator.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/c++allocator.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/ext/new_allocator.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/new:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/ostream_insert.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/cxxabi-forced.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_function.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/backward/binders.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/basic_string.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/basic_string.tcc:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/locale_classes.tcc:
+
+/usr/local/lib/gcc-4.3.4/include/c++/streambuf:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/streambuf.tcc:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/basic_ios.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/locale_facets.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/cwctype:
+
+/usr/include/wctype.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/ctype_base.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/streambuf_iterator.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/ctype_inline.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/locale_facets.tcc:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/basic_ios.tcc:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/ostream.tcc:
+
+/usr/local/lib/gcc-4.3.4/include/c++/istream:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/istream.tcc:
+
+/usr/local/lib/gcc-4.3.4/include/c++/fstream:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/codecvt.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/basic_file.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++//i386-portbld-freebsd8.0/bits/c++io.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/fstream.tcc:
+
+src/core/utils.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/vector:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_construct.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_uninitialized.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_vector.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/stl_bvector.h:
+
+/usr/local/lib/gcc-4.3.4/include/c++/bits/vector.tcc:
+
+include/ffms.h:
+
+src/core/matroskaparser.h:
+
+src/core/stdiostream.h:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/stdlib.h:
+
+/usr/include/string.h:
+
+/usr/include/strings.h:
+
+/usr/local/include/libavformat/avformat.h:
+
+/usr/local/include/libavcodec/avcodec.h:
+
+/usr/include/errno.h:
+
+/usr/local/include/libavutil/avutil.h:
+
+/usr/local/include/libavutil/common.h:
+
+/usr/include/inttypes.h:
+
+/usr/include/machine/_inttypes.h:
+
+/usr/include/sys/stdint.h:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/limits.h:
+
+/usr/local/lib/gcc-4.3.4/gcc/i386-portbld-freebsd8.0/4.3.4/include-fixed/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/sys/limits.h:
+
+/usr/include/sys/syslimits.h:
+
+/usr/include/math.h:
+
+/usr/local/include/libavutil/mem.h:
+
+/usr/local/include/libavutil/mathematics.h:
+
+/usr/local/include/libavutil/rational.h:
+
+/usr/local/include/libavutil/intfloat_readwrite.h:
+
+/usr/local/include/libavutil/log.h:
+
+/usr/local/include/libavutil/avutil.h:
+
+/usr/local/include/libavutil/pixfmt.h:
+
+/usr/local/include/libavformat/avio.h:
+
+/usr/local/include/libavutil/common.h:
+
+/usr/local/include/libswscale/swscale.h:
+
+/usr/local/include/libpostproc/postprocess.h:
+
+include/ffmscompat.h:
