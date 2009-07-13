@@ -49,9 +49,11 @@ typedef struct hashmap_s {
     int hit_count;
     int miss_count;
     int count;
+    ass_library_t *library;
 } hashmap_t;
 
-hashmap_t *hashmap_init(size_t key_size, size_t value_size, int nbuckets,
+hashmap_t *hashmap_init(ass_library_t *library, size_t key_size,
+                        size_t value_size, int nbuckets,
                         hashmap_item_dtor_t item_dtor,
                         hashmap_key_compare_t key_compare,
                         hashmap_hash_t hash);
@@ -59,14 +61,14 @@ void hashmap_done(hashmap_t *map);
 void *hashmap_insert(hashmap_t *map, void *key, void *value);
 void *hashmap_find(hashmap_t *map, void *key);
 
-hashmap_t *ass_font_cache_init(void);
+hashmap_t *ass_font_cache_init(ass_library_t *library);
 ass_font_t *ass_font_cache_find(hashmap_t *, ass_font_desc_t *desc);
 void *ass_font_cache_add(hashmap_t *, ass_font_t *font);
 void ass_font_cache_done(hashmap_t *);
 
 // Create definitions for bitmap_hash_key and glyph_hash_key
 #define CREATE_STRUCT_DEFINITIONS
-#include "ass_cache_template.c"
+#include "ass_cache_template.h"
 
 typedef struct bitmap_hash_val_s {
     bitmap_t *bm;               // the actual bitmaps
@@ -74,7 +76,7 @@ typedef struct bitmap_hash_val_s {
     bitmap_t *bm_s;
 } bitmap_hash_val_t;
 
-hashmap_t *ass_bitmap_cache_init(void);
+hashmap_t *ass_bitmap_cache_init(ass_library_t *library);
 void *cache_add_bitmap(hashmap_t *, bitmap_hash_key_t *key,
                        bitmap_hash_val_t *val);
 bitmap_hash_val_t *cache_find_bitmap(hashmap_t *bitmap_cache,
@@ -88,7 +90,7 @@ typedef struct composite_hash_val_s {
     unsigned char *b;
 } composite_hash_val_t;
 
-hashmap_t *ass_composite_cache_init(void);
+hashmap_t *ass_composite_cache_init(ass_library_t *library);
 void *cache_add_composite(hashmap_t *, composite_hash_key_t *key,
                           composite_hash_val_t *val);
 composite_hash_val_t *cache_find_composite(hashmap_t *composite_cache,
@@ -105,7 +107,7 @@ typedef struct glyph_hash_val_s {
     int asc, desc;              // ascender/descender of a drawing
 } glyph_hash_val_t;
 
-hashmap_t *ass_glyph_cache_init(void);
+hashmap_t *ass_glyph_cache_init(ass_library_t *library);
 void *cache_add_glyph(hashmap_t *, glyph_hash_key_t *key,
                       glyph_hash_val_t *val);
 glyph_hash_val_t *cache_find_glyph(hashmap_t *glyph_cache,

@@ -21,6 +21,8 @@
 #ifndef LIBASS_LIBRARY_H
 #define LIBASS_LIBRARY_H
 
+#include <stdarg.h>
+
 typedef struct ass_fontdata_s {
     char *name;
     char *data;
@@ -34,6 +36,8 @@ struct ass_library_s {
 
     ass_fontdata_t *fontdata;
     int num_fontdata;
+    void (*msg_callback)(int, char *, va_list *, void *);
+    void *msg_callback_data;
 };
 
 #endif                          /* LIBASS_LIBRARY_H */

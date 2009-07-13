@@ -22,14 +22,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "ass.h"
 #include "ass_library.h"
+#include "ass_utils.h"
 
+static void ass_msg_handler(int level, char *fmt, va_list *va, void *data)
+{
+    if (level > MSGL_INFO)
+        return;
+    fprintf(stderr, "[ass] ");
+    vfprintf(stderr, fmt, *va);
+    fprintf(stderr, "\n");
+}
 
 ass_library_t *ass_library_init(void)
 {
-    return calloc(1, sizeof(ass_library_t));
+    ass_library_t* lib = calloc(1, sizeof(ass_library_t));
+    lib->msg_callback = ass_msg_handler;
+
+    return lib;
 }
 
 void ass_library_done(ass_library_t *priv)
@@ -114,3 +127,22 @@ void ass_clear_fonts(ass_library_t *priv)
     priv->fontdata = NULL;
     priv->num_fontdata = 0;
 }
+
+/*
+ * Register a message callback function with libass.  Without setting one,
+ * a default handler is used which prints everything with MSGL_INFO or
+ * higher to the standard output.
+ *
+ * \param msg_cb the callback function
+ * \param data additional data that will be passed to the callback
+ */
+void ass_set_message_cb(ass_library_t *priv,
+                        void (*msg_cb)(int, char *, va_list *, void *),
+                        void *data)
+{
+    if (msg_cb) {
+        priv->msg_callback = msg_cb;
+        priv->msg_callback_data = data;
+    }
+}
+

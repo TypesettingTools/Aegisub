@@ -22,6 +22,7 @@
 #define LIBASS_ASS_H
 
 #include <stdio.h>
+#include <stdarg.h>
 #include "ass_types.h"
 
 /// Libass renderer object. Contents are private.
@@ -68,6 +69,10 @@ void ass_set_extract_fonts(ass_library_t *priv, int extract);
 void ass_set_style_overrides(ass_library_t *priv, char **list);
 
 void ass_process_force_style(ass_track_t *track);
+
+void ass_set_message_cb(ass_library_t *priv,
+                        void (*msg_cb)(int, char *, va_list *, void *),
+                        void *data);
 
 /**
  * \brief initialize the renderer

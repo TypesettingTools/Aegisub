@@ -21,15 +21,17 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <inttypes.h>
 #include <ft2build.h>
 #include FT_GLYPH_H
 
+#include "ass_library.h"
+#include "ass.h"
 #include "ass_utils.h"
 
 int mystrtoi(char **p, int *res)
 {
-    // NOTE: base argument is ignored, but not used in libass anyway
     double temp_res;
     char *start = *p;
     temp_res = strtod(*p, p);
@@ -72,7 +74,7 @@ int mystrtod(char **p, double *res)
         return 0;
 }
 
-int strtocolor(char **q, uint32_t *res)
+int strtocolor(ass_library_t *library, char **q, uint32_t *res)
 {
     uint32_t color = 0;
     int result;
@@ -81,7 +83,7 @@ int strtocolor(char **q, uint32_t *res)
     if (*p == '&')
         ++p;
     else
-        ass_msg(MSGL_DBG2, "suspicious color format: \"%s\"\n", p);
+        ass_msg(library, MSGL_DBG2, "suspicious color format: \"%s\"\n", p);
 
     if (*p == 'H' || *p == 'h') {
         ++p;
@@ -120,13 +122,11 @@ char parse_bool(char *str)
     return 0;
 }
 
-void ass_msg(int lvl, char *fmt, ...)
+void ass_msg(ass_library_t *priv, int lvl, char *fmt, ...)
 {
     va_list va;
-    if (lvl > MSGL_INFO)
-        return;
     va_start(va, fmt);
-    vprintf(fmt, va);
+    priv->msg_callback(lvl, fmt, &va, priv->msg_callback_data);
     va_end(va);
 }
 
@@ -160,128 +160,10 @@ unsigned ass_utf8_get_char(char **str)
     return c;
 }
 
-// gaussian blur
-void ass_gauss_blur(unsigned char *buffer,
-          unsigned short *tmp2,
-          int width, int height, int stride, int *m2, int r, int mwidth)
-{
-
-    int x, y;
-
-    unsigned char *s = buffer;
-    unsigned short *t = tmp2 + 1;
-    for (y = 0; y < height; y++) {
-        memset(t - 1, 0, (width + 1) * sizeof(short));
-
-        for (x = 0; x < r; x++) {
-            const int src = s[x];
-            if (src) {
-                register unsigned short *dstp = t + x - r;
-                int mx;
-                unsigned *m3 = (unsigned *) (m2 + src * mwidth);
-                for (mx = r - x; mx < mwidth; mx++) {
-                    dstp[mx] += m3[mx];
-                }
-            }
-        }
-
-        for (; x < width - r; x++) {
-            const int src = s[x];
-            if (src) {
-                register unsigned short *dstp = t + x - r;
-                int mx;
-                unsigned *m3 = (unsigned *) (m2 + src * mwidth);
-                for (mx = 0; mx < mwidth; mx++) {
-                    dstp[mx] += m3[mx];
-                }
-            }
-        }
-
-        for (; x < width; x++) {
-            const int src = s[x];
-            if (src) {
-                register unsigned short *dstp = t + x - r;
-                int mx;
-                const int x2 = r + width - x;
-                unsigned *m3 = (unsigned *) (m2 + src * mwidth);
-                for (mx = 0; mx < x2; mx++) {
-                    dstp[mx] += m3[mx];
-                }
-            }
-        }
-
-        s += stride;
-        t += width + 1;
-    }
-
-    t = tmp2;
-    for (x = 0; x < width; x++) {
-        for (y = 0; y < r; y++) {
-            unsigned short *srcp = t + y * (width + 1) + 1;
-            int src = *srcp;
-            if (src) {
-                register unsigned short *dstp = srcp - 1 + width + 1;
-                const int src2 = (src + 128) >> 8;
-                unsigned *m3 = (unsigned *) (m2 + src2 * mwidth);
-
-                int mx;
-                *srcp = 128;
-                for (mx = r - 1; mx < mwidth; mx++) {
-                    *dstp += m3[mx];
-                    dstp += width + 1;
-                }
-            }
-        }
-        for (; y < height - r; y++) {
-            unsigned short *srcp = t + y * (width + 1) + 1;
-            int src = *srcp;
-            if (src) {
-                register unsigned short *dstp = srcp - 1 - r * (width + 1);
-                const int src2 = (src + 128) >> 8;
-                unsigned *m3 = (unsigned *) (m2 + src2 * mwidth);
-
-                int mx;
-                *srcp = 128;
-                for (mx = 0; mx < mwidth; mx++) {
-                    *dstp += m3[mx];
-                    dstp += width + 1;
-                }
-            }
-        }
-        for (; y < height; y++) {
-            unsigned short *srcp = t + y * (width + 1) + 1;
-            int src = *srcp;
-            if (src) {
-                const int y2 = r + height - y;
-                register unsigned short *dstp = srcp - 1 - r * (width + 1);
-                const int src2 = (src + 128) >> 8;
-                unsigned *m3 = (unsigned *) (m2 + src2 * mwidth);
-
-                int mx;
-                *srcp = 128;
-                for (mx = 0; mx < y2; mx++) {
-                    *dstp += m3[mx];
-                    dstp += width + 1;
-                }
-            }
-        }
-        t++;
-    }
-
-    t = tmp2;
-    s = buffer;
-    for (y = 0; y < height; y++) {
-        for (x = 0; x < width; x++) {
-            s[x] = t[x] >> 8;
-        }
-        s += stride;
-        t += width + 1;
-    }
-}
-
 #ifdef CONFIG_ENCA
-void *ass_guess_buffer_cp(unsigned char *buffer, int buflen,
-                      char *preferred_language, char *fallback)
+void *ass_guess_buffer_cp(ass_library_t *library, unsigned char *buffer,
+                          int buflen, char *preferred_language,
+                          char *fallback)
 {
     const char **languages;
     size_t langcnt;
@@ -291,11 +173,10 @@ void *ass_guess_buffer_cp(unsigned char *buffer, int buflen,
     int i;
 
     languages = enca_get_languages(&langcnt);
-    ass_msg(MSGL_V, "ENCA supported languages: ");
+    ass_msg(library, MSGL_V, "ENCA supported languages");
     for (i = 0; i < langcnt; i++) {
-        ass_msg(MSGL_V, "%s ", languages[i]);
+        ass_msg(library, MSGL_V, "lang %s", languages[i]);
     }
-    ass_msg(MSGL_V, "\n");
 
     for (i = 0; i < langcnt; i++) {
         const char *tmp;
@@ -307,7 +188,7 @@ void *ass_guess_buffer_cp(unsigned char *buffer, int buflen,
         tmp = enca_charset_name(encoding.charset, ENCA_NAME_STYLE_ICONV);
         if (tmp && encoding.charset != ENCA_CS_UNKNOWN) {
             detected_sub_cp = strdup(tmp);
-            ass_msg(MSGL_INFO, "ENCA detected charset: %s\n", tmp);
+            ass_msg(library, MSGL_INFO, "ENCA detected charset: %s", tmp);
         }
         enca_analyser_free(analyser);
     }
@@ -316,8 +197,8 @@ void *ass_guess_buffer_cp(unsigned char *buffer, int buflen,
 
     if (!detected_sub_cp) {
         detected_sub_cp = strdup(fallback);
-        ass_msg(MSGL_INFO,
-               "ENCA detection failed: fallback to %s\n", fallback);
+        ass_msg(library, MSGL_INFO,
+               "ENCA detection failed: fallback to %s", fallback);
     }
 
     return detected_sub_cp;

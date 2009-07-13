@@ -32,7 +32,7 @@
 #include <enca.h>
 #endif
 
-#include "help_mp.h"
+#include "ass.h"
 
 #define MSGL_FATAL 0
 #define MSGL_ERR 1
@@ -48,15 +48,15 @@ int mystrtoi(char **p, int *res);
 int mystrtoll(char **p, long long *res);
 int mystrtou32(char **p, int base, uint32_t *res);
 int mystrtod(char **p, double *res);
-int strtocolor(char **q, uint32_t *res);
+int strtocolor(ass_library_t *library, char **q, uint32_t *res);
 char parse_bool(char *str);
 unsigned ass_utf8_get_char(char **str);
-void ass_msg(int lvl, char *fmt, ...);
-void ass_gauss_blur(unsigned char *buffer, unsigned short *tmp2,
-                    int width, int height, int stride, int *m2,
-                    int r, int mwidth);
-void *ass_guess_buffer_cp(unsigned char *buffer, int buflen,
-                          char *preferred_language, char *fallback);
+void ass_msg(ass_library_t *priv, int lvl, char *fmt, ...);
+#ifdef CONFIG_ENCA
+void *ass_guess_buffer_cp(ass_library_t *library, unsigned char *buffer,
+                          int buflen, char *preferred_language,
+                          char *fallback);
+#endif
 
 static inline int d6_to_int(int x)
 {
