@@ -121,50 +121,50 @@ DestDir: {app}\automation\auto3; Source: src\automation\auto3\multi-template.aut
 DestDir: {app}\automation\auto3; Source: src\automation\auto3\simple-k-replacer.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 DestDir: {app}\automation\docs; Source: src\automation\docs\automation3.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 ; dictionaries
-Source: src\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak;Components: dic/en_GB
-Source: src\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_GB
-Source: src\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
-Source: src\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/en_US
-Source: src\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_AT
-Source: src\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
-Source: src\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/de_DE
-Source: src\dictionaries\es_ES.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
-Source: src\dictionaries\es_ES.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/es_ES
-Source: src\dictionaries\fr_FR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
-Source: src\dictionaries\fr_FR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/fr_FR
-Source: src\dictionaries\it_IT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/it_IT
-Source: src\dictionaries\it_IT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/it_IT
-Source: src\dictionaries\nl_NL.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/nl_NL
-Source: src\dictionaries\nl_NL.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/nl_NL
-Source: src\dictionaries\pl_PL.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pl_PL
-Source: src\dictionaries\pl_PL.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pl_PL
-Source: src\dictionaries\pt_BR.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
-Source: src\dictionaries\pt_BR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
-Source: src\dictionaries\pt_PT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
-Source: src\dictionaries\pt_PT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
-Source: src\dictionaries\ru_RU.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/ru_RU
-Source: src\dictionaries\ru_RU.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/ru_RU
-Source: src\dictionaries\sk_SK.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
-Source: src\dictionaries\sk_SK.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
-Source: src\dictionaries\sl_SI.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
-Source: src\dictionaries\sl_SI.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
-Source: src\dictionaries\sv_SE.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
-Source: src\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sv_SE
+Source: src\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion solidbreak; Components: dic/en_GB
+Source: src\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/en_GB
+Source: src\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/en_US
+Source: src\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/en_US
+Source: src\dictionaries\de_AT.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion solidbreak; Components: dic/de_AT
+Source: src\dictionaries\de_DE.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/de_DE
+Source: src\dictionaries\de_DE.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/de_DE
+Source: src\dictionaries\es_ES.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/es_ES
+Source: src\dictionaries\es_ES.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/es_ES
+Source: src\dictionaries\fr_FR.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/fr_FR
+Source: src\dictionaries\fr_FR.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/fr_FR
+Source: src\dictionaries\it_IT.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/it_IT
+Source: src\dictionaries\it_IT.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/it_IT
+Source: src\dictionaries\nl_NL.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/nl_NL
+Source: src\dictionaries\nl_NL.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/nl_NL
+Source: src\dictionaries\pl_PL.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/pl_PL
+Source: src\dictionaries\pl_PL.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/pl_PL
+Source: src\dictionaries\pt_BR.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/pt_BR
+Source: src\dictionaries\pt_BR.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/pt_BR
+Source: src\dictionaries\pt_PT.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/pt_PT
+Source: src\dictionaries\pt_PT.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/pt_PT
+Source: src\dictionaries\ru_RU.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/ru_RU
+Source: src\dictionaries\ru_RU.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/ru_RU
+Source: src\dictionaries\sk_SK.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/sk_SK
+Source: src\dictionaries\sk_SK.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/sk_SK
+Source: src\dictionaries\sl_SI.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/sl_SI
+Source: src\dictionaries\sl_SI.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/sl_SI
+Source: src\dictionaries\sv_SE.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/sv_SE
+Source: src\dictionaries\sv_SE.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/sv_SE
 ; thesauri
-Source: src\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/en_US
-Source: src\dictionaries\th_en_US.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/en_US
-Source: src\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
-Source: src\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/de_DE
-Source: src\dictionaries\th_es_ES.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
-Source: src\dictionaries\th_es_ES.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/es_ES
-Source: src\dictionaries\th_fr_FR.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
-Source: src\dictionaries\th_fr_FR.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
-Source: src\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
-Source: src\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
-Source: src\dictionaries\th_ru_RU.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/ru_RU
-Source: src\dictionaries\th_ru_RU.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/ru_RU
+Source: src\dictionaries\th_en_US.dat; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion solidbreak; Components: th/en_US
+Source: src\dictionaries\th_en_US.idx; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/en_US
+Source: src\dictionaries\th_de_DE.dat; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion solidbreak; Components: th/de_DE
+Source: src\dictionaries\th_de_DE.idx; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/de_DE
+Source: src\dictionaries\th_es_ES.dat; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/es_ES
+Source: src\dictionaries\th_es_ES.idx; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/es_ES
+Source: src\dictionaries\th_fr_FR.dat; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/fr_FR
+Source: src\dictionaries\th_fr_FR.idx; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/fr_FR
+Source: src\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/it_IT
+Source: src\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/it_IT
+Source: src\dictionaries\th_ru_RU.dat; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/ru_RU
+Source: src\dictionaries\th_ru_RU.idx; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: th/ru_RU
 ; localization (commented out ones are out of date; some don't have wxstd.mo)
-Source: ..\..\po\ca.mo;          DestDir: {app}\locale\ca;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/ca
+Source: ..\..\po\ca.mo;          DestDir: {app}\locale\ca;    DestName: aegisub.mo; Flags: ignoreversion solidbreak; Components: i18n/ca
 Source: ..\..\po\wxstd-ca.mo;    DestDir: {app}\locale\ca;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/ca
 Source: ..\..\po\cs.mo;          DestDir: {app}\locale\cs;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/cs
 ;Source: ..\..\po\wxstd-cs.mo;    DestDir: {app}\locale\cs;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/cs
@@ -193,9 +193,9 @@ Source: ..\..\po\wxstd-ru.mo;    DestDir: {app}\locale\ru;    DestName: wxstd.mo
 ;Source: ..\..\po\zh_TW.mo;       DestDir: {app}\locale\zh_TW; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/zh_TW
 ;Source: ..\..\po\wxstd-zh_TW.mo; DestDir: {app}\locale\zh_TW; DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/zh_TW
 ; documentation
-Source: src\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Components: docs; Excludes: *svn
+Source: src\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs solidbreak; Components: docs; Excludes: *svn
 ; ASSDraw3
-Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion nocompression; Components: assdraw
+Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion nocompression solidbreak; Components: assdraw
 Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw
 
 [Icons]
