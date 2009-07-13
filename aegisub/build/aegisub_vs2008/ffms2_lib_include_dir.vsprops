@@ -5,11 +5,11 @@
 	Name="ffms2_lib_include_dir"
 	>
 	<Tool
-		Name="VCLinkerTool"
-		AdditionalLibraryDirectories="$(ProjectDir)../../FFmpegSource2/"
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="&quot;$(ProjectDir)../../libffms/include/&quot;;"
 	/>
 	<Tool
-		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="&quot;$(ProjectDir)../../FFmpegSource2/&quot;;"
+		Name="VCLinkerTool"
+		AdditionalLibraryDirectories="$(ProjectDir)../../FFmpegSource2/"
 	/>
 </VisualStudioPropertySheet>
