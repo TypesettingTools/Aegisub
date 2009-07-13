@@ -142,6 +142,8 @@ Source: src\dictionaries\pt_BR.aff; DestDir: {app}\dictionaries; Flags: ignoreve
 Source: src\dictionaries\pt_BR.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_BR
 Source: src\dictionaries\pt_PT.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
 Source: src\dictionaries\pt_PT.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/pt_PT
+Source: src\dictionaries\ru_RU.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/ru_RU
+Source: src\dictionaries\ru_RU.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/ru_RU
 Source: src\dictionaries\sk_SK.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
 Source: src\dictionaries\sk_SK.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sk_SK
 Source: src\dictionaries\sl_SI.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/sl_SI
@@ -159,6 +161,8 @@ Source: src\dictionaries\th_fr_FR.dat; DestDir: {app}\dictionaries; Flags: ignor
 Source: src\dictionaries\th_fr_FR.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/fr_FR
 Source: src\dictionaries\th_it_IT.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
 Source: src\dictionaries\th_it_IT.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/it_IT
+Source: src\dictionaries\th_ru_RU.dat; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/ru_RU
+Source: src\dictionaries\th_ru_RU.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/ru_RU
 ; localization (commented out ones are out of date; some don't have wxstd.mo)
 Source: ..\..\po\ca.mo;          DestDir: {app}\locale\ca;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/ca
 Source: ..\..\po\wxstd-ca.mo;    DestDir: {app}\locale\ca;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/ca
@@ -255,6 +259,7 @@ Name: dic/pt_PT; Description: Portuguese dictionary; Types: full
 Name: dic/pt_BR; Description: Brazilian Portuguese dictionary; Types: full
 Name: dic/sk_SK; Description: Slovak dictionary; Types: full
 Name: dic/sl_SI; Description: Slovenian dictionary; Types: full
+Name: dic/ru_RU; Description: Russian dictionary; Types: full
 Name: dic/es_ES; Description: Spanish dictionary; Types: full
 Name: dic/sv_SE; Description: Swedish dictionary; Types: full
 Name: th;       Description: Thesaurus; Types: full
@@ -262,6 +267,7 @@ Name: th/en_US; Description: American English thesaurus; Types: full
 Name: th/fr_FR; Description: French thesaurus; Types: full
 Name: th/de_DE; Description: German thesaurus; Types: full
 Name: th/it_IT; Description: Italian thesaurus; Types: full
+Name: th/ru_RU; Description: Russian thesaurus; Types: full
 Name: th/es_ES; Description: Spanish thesaurus; Types: full
 ; AssDraw
 Name: assdraw; Description: ai-chan's ASSDraw3 for ASS vector drawing; Types: full
