@@ -63,7 +63,8 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 		throw _T("FFmpegSource video provider: COM initialization failure");
 #endif
 	// initialize ffmpegsource
-	FFMS_Init();
+	// FIXME: CPU detection?
+	FFMS_Init(0);
 
 	// clean up variables
 	VideoSource = NULL;
@@ -99,15 +100,26 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// make sure we don't have anything messy lying around
 	Close();
 
-	wxString FileNameWX = wxFileName(wxString(filename.c_str(), wxConvFile)).GetShortPath();
+	wxString FileNameWX = wxFileName(wxString(filename.c_str(), wxConvFile)).GetShortPath(); 
 
 	// generate a name for the cache file
 	wxString CacheName = GetCacheFilename(filename.c_str());
 
 	// try to read index
-	FFIndex *Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrorMessage, MessageSize);
+	FFIndex *Index = NULL;
+	Index = FFMS_ReadIndex(CacheName.mb_str(wxConvUTF8), FFMSErrorMessage, MessageSize);
+	bool ReIndex = false;
 	if (Index == NULL) {
-		// index didn't exist or was invalid, we'll have to (re)create it
+		ReIndex = true;
+	}
+	else if (FFMS_IndexBelongsToFile(Index, FileNameWX.mb_str(wxConvUTF8), FFMSErrorMessage, MessageSize)) {
+		FFMS_DestroyIndex(Index);
+		Index = NULL;
+		ReIndex = true;
+	}
+
+	// index didn't exist or was invalid, we'll have to (re)create it
+	if (ReIndex) {
 		try {
 			try {
 				// ignore audio decoding errors here, we don't care right now
@@ -155,7 +167,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		throw ErrorMsg;
 	}
 
-	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
+	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvUTF8), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (VideoSource == NULL) {
@@ -171,7 +183,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	FFTrack *FrameData = FFMS_GetTrackFromVideo(VideoSource);
 	if (FrameData == NULL)
 		throw _T("FFmpegSource video provider: failed to get frame data");
-	const TTrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
+	const FFTrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
 	if (TimeBase == NULL)
 		throw _T("FFmpegSource video provider: failed to get track time base");
 
@@ -191,7 +203,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 			KeyFramesList.Add(CurFrameNum);
 
 		// calculate timestamp and add to timecodes vector
-		int64_t Timestamp = (int64_t)((CurFrameData->DTS * TimeBase->Num) / (double)TimeBase->Den);
+		int Timestamp = (int)((CurFrameData->DTS * TimeBase->Num) / TimeBase->Den);
 		TimecodesVector.push_back(Timestamp);
 	}
 	KeyFramesLoaded = true;
@@ -266,7 +278,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 
 	// requested format was changed since last time we were called, (re)set output format
 	if (LastDstFormat != DstFormat) {
-		if (FFMS_SetOutputFormat(VideoSource, 1 << DstFormat, w, h, FFMSErrorMessage, MessageSize)) {
+		if (FFMS_SetOutputFormatV(VideoSource, 1 << DstFormat, w, h, FFMS_RESIZER_BICUBIC, FFMSErrorMessage, MessageSize)) {
 			wxString temp(FFMSErrorMessage, wxConvUTF8);
 			ErrorMsg << _T("Failed to set output format: ") << temp;
 			throw ErrorMsg;
@@ -275,7 +287,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	}
 
 	// decode frame
-	const TAVFrameLite *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
+	const FFAVFrame *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
 	if (SrcFrame == NULL) {
 		wxString temp(FFMSErrorMessage, wxConvUTF8);
 		ErrorMsg << _T("Failed to retrieve frame: ") << temp;

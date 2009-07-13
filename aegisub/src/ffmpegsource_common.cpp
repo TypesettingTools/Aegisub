@@ -84,7 +84,7 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndex *Index, wxString FileNameWX, w
 	Progress.ProgressDialog->SetProgress(0,1);
 
 	// index all audio tracks
-	Index = FFMS_MakeIndex(FileNameWX.mb_str(wxConvLocal), Trackmask, FFMSTrackMaskNone, NULL, NULL, IgnoreDecodeErrors, FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrMsg, MsgSize);
+	Index = FFMS_MakeIndex(FileNameWX.mb_str(wxConvUTF8), Trackmask, FFMSTrackMaskNone, NULL, NULL, IgnoreDecodeErrors, FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrMsg, MsgSize);
 	if (!Index) {
 		Progress.ProgressDialog->Destroy();
 		wxString temp(FFMSErrMsg, wxConvUTF8);
@@ -239,7 +239,7 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 
 	if (numfiles <= maxfiles && cursize <= maxsize) {
 		wxLogDebug(_T("FFmpegSourceCacheCleaner: cache does not need cleaning (maxsize=%d, cursize=%d; maxfiles=%d, numfiles=%d), exiting"),
-			maxsize, cursize, maxfiles, numfiles);
+			(int)maxsize, (int)cursize, maxfiles, numfiles);
 		return (wxThread::ExitCode)0;
 	}
 

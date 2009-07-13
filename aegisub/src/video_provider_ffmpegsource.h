@@ -48,7 +48,7 @@
 class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 private:
 	FFVideo *VideoSource;
-	const TVideoProperties *VideoInfo;
+	const FFVideoProperties *VideoInfo;
 
 	int FrameNumber;
 	wxArrayInt KeyFramesList;

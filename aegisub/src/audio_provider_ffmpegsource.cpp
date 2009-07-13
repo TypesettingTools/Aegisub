@@ -58,7 +58,7 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
 	else if (res != RPC_E_CHANGED_MODE)
 		throw _T("FFmpegSource video provider: COM initialization failure");
 #endif
-	FFMS_Init();
+	FFMS_Init(0);
 
 	MsgSize = sizeof(FFMSErrMsg);
 	MsgString = _T("FFmpegSource audio provider: ");
@@ -85,21 +85,22 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	// generate a default name for the cache file
 	wxString CacheName = GetCacheFilename(filename.c_str());
 
-	FFIndex *Index;
-	Index = FFMS_ReadIndex(CacheName.char_str(), FFMSErrMsg, MsgSize);
+	FFIndex *Index = NULL;
+	bool ReIndex = false;
+	Index = FFMS_ReadIndex(CacheName.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
 	if (Index == NULL) {
-		// index didn't exist or was invalid, we'll have to (re)create it
-		try {
-			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
-		} catch (wxString temp) {
-			MsgString << temp;
-			throw MsgString;
-		} catch (...) {
-			throw;
-		}
-	} else {
-		// index exists, but does it have indexing info for the audio track(s)?
+		ReIndex = true;
+	}
+	// index exists, but is it the index we think it is?
+	else if (FFMS_IndexBelongsToFile(Index, FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize)) {
+		FFMS_DestroyIndex(Index);
+		Index = NULL;
+		ReIndex = true;
+	}
+	// it is, but does it have indexing info for the audio track(s)?
+	else {
 		int NumTracks = FFMS_GetNumTracks(Index);
+		// sanity check
 		if (NumTracks <= 0) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
@@ -107,8 +108,9 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		}
 
 		for (int i = 0; i < NumTracks; i++) {
-			FFTrack *FrameData = FFMS_GetTrackFromIndex(Index, i);
-			if (FrameData == NULL) {
+			FFTrack *TrackData = FFMS_GetTrackFromIndex(Index, i);
+			// more sanity checking
+			if (TrackData == NULL) {
 				FFMS_DestroyIndex(Index);
 				Index = NULL;
 				wxString temp(FFMSErrMsg, wxConvUTF8);
@@ -117,22 +119,25 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			}
 
 			// does the track have any indexed frames?
-			if (FFMS_GetNumFrames(FrameData) <= 0 && (FFMS_GetTrackType(FrameData) == FFMS_TYPE_AUDIO)) {
+			if (FFMS_GetNumFrames(TrackData) <= 0 && (FFMS_GetTrackType(TrackData) == FFMS_TYPE_AUDIO)) {
 				// found an unindexed audio track, we'll need to reindex
-				try {
-					FFMS_DestroyIndex(Index);
-					Index = NULL;
-					Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
-				} catch (wxString temp) {
-					MsgString << temp;
-					throw MsgString;
-				} catch (...) {
-					throw;
-				}
-
-				// don't reindex more than once
+				FFMS_DestroyIndex(Index);
+				Index = NULL;
+				ReIndex = true;
 				break;
 			}
+		}
+	}
+	
+	// index didn't exist or was invalid, we'll have to (re)create it
+	if (ReIndex) {
+		try {
+			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
+		} catch (wxString temp) {
+			MsgString << temp;
+			throw MsgString;
+		} catch (...) {
+			throw;
 		}
 	}
 
@@ -149,7 +154,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		throw MsgString;
 	}
 
-	AudioSource = FFMS_CreateAudioSource(FileNameWX.mb_str(wxConvLocal), TrackNumber, Index, FFMSErrMsg, MsgSize);
+	AudioSource = FFMS_CreateAudioSource(FileNameWX.mb_str(wxConvUTF8), TrackNumber, Index, FFMSErrMsg, MsgSize);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (!AudioSource) {
@@ -158,10 +163,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 			throw MsgString;
 	}
 		
-	const TAudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
-
-	if (AudioInfo.Float)
-		throw _T("FFmpegSource audio provider: I don't know what to do with floating point audio");
+	const FFAudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
 
 	channels	= AudioInfo.Channels;
 	sample_rate	= AudioInfo.SampleRate;
@@ -169,6 +171,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0)
 		throw _T("FFmpegSource audio provider: sanity check failed, consult your local psychiatrist");
 
+	// FIXME: use 
 	// why not just bits_per_sample/8? maybe there's some oddball format with half bytes out there somewhere...
 	switch (AudioInfo.BitsPerSample) {
 		case 8:		bytes_per_sample = 1; break;
