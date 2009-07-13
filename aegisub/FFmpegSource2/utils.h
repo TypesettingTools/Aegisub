@@ -45,6 +45,16 @@ extern "C" {
 #	include "guids.h"
 #endif
 
+
+// Compatibility with older/newer ffmpegs
+#if (LIBAVFORMAT_VERSION_INT) > (AV_VERSION_INT(52,34,0)) 
+#define codec_bmp_tags ff_codec_bmp_tags 
+#endif
+#ifndef AV_PKT_FLAG_KEY
+#define AV_PKT_FLAG_KEY PKT_FLAG_KEY
+#endif
+
+
 struct TFrameInfo {
 	FFMS_FRAMEINFO_COMMON
 	int64_t SampleStart;
