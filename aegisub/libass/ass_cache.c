@@ -51,12 +51,14 @@ static void hashmap_item_dtor(void *key, size_t key_size, void *value,
     free(value);
 }
 
-hashmap_t *hashmap_init(size_t key_size, size_t value_size, int nbuckets,
+hashmap_t *hashmap_init(ass_library_t *library, size_t key_size,
+                        size_t value_size, int nbuckets,
                         hashmap_item_dtor_t item_dtor,
                         hashmap_key_compare_t key_compare,
                         hashmap_hash_t hash)
 {
     hashmap_t *map = calloc(1, sizeof(hashmap_t));
+    map->library = library;
     map->nbuckets = nbuckets;
     map->key_size = key_size;
     map->value_size = value_size;
@@ -72,8 +74,9 @@ void hashmap_done(hashmap_t *map)
     int i;
     // print stats
     if (map->count > 0 || map->hit_count + map->miss_count > 0)
-        ass_msg(MSGL_V,
-               "cache statistics: \n  total accesses: %d\n  hits: %d\n  misses: %d\n  object count: %d\n",
+        ass_msg(map->library, MSGL_V,
+               "cache statistics: \n  total accesses: %d\n  hits: %d\n  "
+               "misses: %d\n  object count: %d",
                map->hit_count + map->miss_count, map->hit_count,
                map->miss_count, map->count);
 
@@ -178,10 +181,10 @@ void *ass_font_cache_add(hashmap_t *font_cache, ass_font_t *font)
     return hashmap_insert(font_cache, &(font->desc), font);
 }
 
-hashmap_t *ass_font_cache_init(void)
+hashmap_t *ass_font_cache_init(ass_library_t *library)
 {
     hashmap_t *font_cache;
-    font_cache = hashmap_init(sizeof(ass_font_desc_t),
+    font_cache = hashmap_init(library, sizeof(ass_font_desc_t),
                               sizeof(ass_font_t),
                               1000,
                               font_hash_dtor, font_compare, font_desc_hash);
@@ -196,9 +199,9 @@ void ass_font_cache_done(hashmap_t *font_cache)
 
 // Create hash/compare functions for bitmap and glyph
 #define CREATE_HASH_FUNCTIONS
-#include "ass_cache_template.c"
+#include "ass_cache_template.h"
 #define CREATE_COMPARISON_FUNCTIONS
-#include "ass_cache_template.c"
+#include "ass_cache_template.h"
 
 //---------------------------------
 // bitmap cache
@@ -234,10 +237,11 @@ bitmap_hash_val_t *cache_find_bitmap(hashmap_t *bitmap_cache,
     return hashmap_find(bitmap_cache, key);
 }
 
-hashmap_t *ass_bitmap_cache_init(void)
+hashmap_t *ass_bitmap_cache_init(ass_library_t *library)
 {
     hashmap_t *bitmap_cache;
-    bitmap_cache = hashmap_init(sizeof(bitmap_hash_key_t),
+    bitmap_cache = hashmap_init(library,
+                                sizeof(bitmap_hash_key_t),
                                 sizeof(bitmap_hash_val_t),
                                 0xFFFF + 13,
                                 bitmap_hash_dtor, bitmap_compare,
@@ -252,8 +256,10 @@ void ass_bitmap_cache_done(hashmap_t *bitmap_cache)
 
 hashmap_t *ass_bitmap_cache_reset(hashmap_t *bitmap_cache)
 {
+    ass_library_t *lib = bitmap_cache->library;
+
     ass_bitmap_cache_done(bitmap_cache);
-    return ass_bitmap_cache_init();
+    return ass_bitmap_cache_init(lib);
 }
 
 //---------------------------------
@@ -288,10 +294,10 @@ glyph_hash_val_t *cache_find_glyph(hashmap_t *glyph_cache,
     return hashmap_find(glyph_cache, key);
 }
 
-hashmap_t *ass_glyph_cache_init(void)
+hashmap_t *ass_glyph_cache_init(ass_library_t *library)
 {
     hashmap_t *glyph_cache;
-    glyph_cache = hashmap_init(sizeof(glyph_hash_key_t),
+    glyph_cache = hashmap_init(library, sizeof(glyph_hash_key_t),
                                sizeof(glyph_hash_val_t),
                                0xFFFF + 13,
                                glyph_hash_dtor, glyph_compare, glyph_hash);
@@ -305,8 +311,10 @@ void ass_glyph_cache_done(hashmap_t *glyph_cache)
 
 hashmap_t *ass_glyph_cache_reset(hashmap_t *glyph_cache)
 {
+    ass_library_t *lib = glyph_cache->library;
+
     ass_glyph_cache_done(glyph_cache);
-    return ass_glyph_cache_init();
+    return ass_glyph_cache_init(lib);
 }
 
 
@@ -341,10 +349,10 @@ composite_hash_val_t *cache_find_composite(hashmap_t *composite_cache,
     return hashmap_find(composite_cache, key);
 }
 
-hashmap_t *ass_composite_cache_init(void)
+hashmap_t *ass_composite_cache_init(ass_library_t *library)
 {
     hashmap_t *composite_cache;
-    composite_cache = hashmap_init(sizeof(composite_hash_key_t),
+    composite_cache = hashmap_init(library, sizeof(composite_hash_key_t),
                                    sizeof(composite_hash_val_t),
                                    0xFFFF + 13,
                                    composite_hash_dtor, composite_compare,
@@ -359,6 +367,8 @@ void ass_composite_cache_done(hashmap_t *composite_cache)
 
 hashmap_t *ass_composite_cache_reset(hashmap_t *composite_cache)
 {
+    ass_library_t *lib = composite_cache->library;
+
     ass_composite_cache_done(composite_cache);
-    return ass_composite_cache_init();
+    return ass_composite_cache_init(lib);
 }

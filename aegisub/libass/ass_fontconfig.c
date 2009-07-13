@@ -71,9 +71,10 @@ struct fc_instance_s {
  * \param code: the character that should be present in the font, can be 0
  * \return font file path
 */
-static char *_select_font(fc_instance_t *priv, const char *family,
-                          int treat_family_as_pattern, unsigned bold,
-                          unsigned italic, int *index, uint32_t code)
+static char *_select_font(ass_library_t *library, fc_instance_t *priv,
+                          const char *family, int treat_family_as_pattern,
+                          unsigned bold, unsigned italic, int *index,
+                          uint32_t code)
 {
     FcBool rc;
     FcResult result;
@@ -193,8 +194,9 @@ static char *_select_font(fc_instance_t *priv, const char *family,
     if (!treat_family_as_pattern &&
         !(r_family && strcasecmp((const char *) r_family, family) == 0) &&
         !(r_fullname && strcasecmp((const char *) r_fullname, family) == 0))
-        ass_msg(MSGL_WARN,
-               MSGTR_LIBASS_SelectedFontFamilyIsNotTheRequestedOne,
+        ass_msg(library, MSGL_WARN,
+               "fontconfig: Selected font is not the requested one: "
+               "'%s' != '%s'",
                (const char *) (r_fullname ? r_fullname : r_family), family);
 
     result = FcPatternGetString(rpat, FC_STYLE, 0, &r_style);
@@ -213,9 +215,9 @@ static char *_select_font(fc_instance_t *priv, const char *family,
     if (result != FcResultMatch)
         r_embolden = 0;
 
-    ass_msg(MSGL_V,
-           "[ass] Font info: family '%s', style '%s', fullname '%s',"
-           " slant %d, weight %d%s\n", (const char *) r_family,
+    ass_msg(library, MSGL_V,
+           "Font info: family '%s', style '%s', fullname '%s',"
+           " slant %d, weight %d%s", (const char *) r_family,
            (const char *) r_style, (const char *) r_fullname, r_slant,
            r_weight, r_embolden ? ", embolden" : "");
 
@@ -240,9 +242,10 @@ static char *_select_font(fc_instance_t *priv, const char *family,
  * \param code: the character that should be present in the font, can be 0
  * \return font file path
 */
-char *fontconfig_select(fc_instance_t *priv, const char *family,
-                        int treat_family_as_pattern, unsigned bold,
-                        unsigned italic, int *index, uint32_t code)
+char *fontconfig_select(ass_library_t *library, fc_instance_t *priv,
+                        const char *family, int treat_family_as_pattern,
+                        unsigned bold, unsigned italic, int *index,
+                        uint32_t code)
 {
     char *res = 0;
     if (!priv->config) {
@@ -251,32 +254,36 @@ char *fontconfig_select(fc_instance_t *priv, const char *family,
     }
     if (family && *family)
         res =
-            _select_font(priv, family, treat_family_as_pattern, bold,
-                         italic, index, code);
+            _select_font(library, priv, family, treat_family_as_pattern,
+                         bold, italic, index, code);
     if (!res && priv->family_default) {
         res =
-            _select_font(priv, priv->family_default, 0, bold, italic, index,
-                         code);
+            _select_font(library, priv, priv->family_default, 0, bold,
+                         italic, index, code);
         if (res)
-            ass_msg(MSGL_WARN, MSGTR_LIBASS_UsingDefaultFontFamily,
-                   family, bold, italic, res, *index);
+            ass_msg(library, MSGL_WARN, "fontconfig_select: Using default "
+                    "font family: (%s, %d, %d) -> %s, %d",
+                    family, bold, italic, res, *index);
     }
     if (!res && priv->path_default) {
         res = priv->path_default;
         *index = priv->index_default;
-        ass_msg(MSGL_WARN, MSGTR_LIBASS_UsingDefaultFont,
-               family, bold, italic, res, *index);
+        ass_msg(library, MSGL_WARN, "fontconfig_select: Using default font: "
+                "(%s, %d, %d) -> %s, %d", family, bold, italic,
+                res, *index);
     }
     if (!res) {
-        res = _select_font(priv, "Arial", 0, bold, italic, index, code);
+        res = _select_font(library, priv, "Arial", 0, bold, italic,
+                           index, code);
         if (res)
-            ass_msg(MSGL_WARN, MSGTR_LIBASS_UsingArialFontFamily,
-                   family, bold, italic, res, *index);
+            ass_msg(library, MSGL_WARN, "fontconfig_select: Using 'Arial' "
+                    "font family: (%s, %d, %d) -> %s, %d", family, bold,
+                    italic, res, *index);
     }
     if (res)
-        ass_msg(MSGL_V,
-               "fontconfig_select: (%s, %d, %d) -> %s, %d\n", family, bold,
-               italic, res, *index);
+        ass_msg(library, MSGL_V,
+                "fontconfig_select: (%s, %d, %d) -> %s, %d", family, bold,
+                italic, res, *index);
     return res;
 }
 
@@ -350,11 +357,11 @@ static void process_fontdata(fc_instance_t *priv, ass_library_t *library,
         res = mkdir(fonts_dir);
 #endif
         if (res) {
-            ass_msg(MSGL_WARN,
-                   MSGTR_LIBASS_FailedToCreateDirectory, fonts_dir);
+            ass_msg(library, MSGL_WARN, "Failed to create directory '%s'",
+                    fonts_dir);
         }
     } else if (!S_ISDIR(st.st_mode)) {
-        ass_msg(MSGL_WARN, MSGTR_LIBASS_NotADirectory, fonts_dir);
+        ass_msg(library, MSGL_WARN, "Not a directory: '%s'", fonts_dir);
     }
 
     fname = validate_fname((char *) name);
@@ -380,7 +387,7 @@ static void process_fontdata(fc_instance_t *priv, ass_library_t *library,
         rc = FT_New_Memory_Face(ftlibrary, (unsigned char *) data,
                                 data_size, face_index, &face);
         if (rc) {
-            ass_msg(MSGL_WARN, MSGTR_LIBASS_ErrorOpeningMemoryFont,
+            ass_msg(library, MSGL_WARN, "Error opening memory font: %s",
                    name);
             return;
         }
@@ -390,24 +397,21 @@ static void process_fontdata(fc_instance_t *priv, ass_library_t *library,
             FcFreeTypeQueryFace(face, (unsigned char *) name, 0,
                                 FcConfigGetBlanks(priv->config));
         if (!pattern) {
-            ass_msg(MSGL_WARN, MSGTR_LIBASS_FunctionCallFailed,
-                   "FcFreeTypeQueryFace");
+            ass_msg(library, MSGL_WARN, "%s failed", "FcFreeTypeQueryFace");
             FT_Done_Face(face);
             return;
         }
 
         fset = FcConfigGetFonts(priv->config, FcSetSystem);     // somehow it failes when asked for FcSetApplication
         if (!fset) {
-            ass_msg(MSGL_WARN, MSGTR_LIBASS_FunctionCallFailed,
-                   "FcConfigGetFonts");
+            ass_msg(library, MSGL_WARN, "%s failed", "FcConfigGetFonts");
             FT_Done_Face(face);
             return;
         }
 
         res = FcFontSetAdd(fset, pattern);
         if (!res) {
-            ass_msg(MSGL_WARN, MSGTR_LIBASS_FunctionCallFailed,
-                   "FcFontSetAdd");
+            ass_msg(library, MSGL_WARN, "%s failed", "FcFontSetAdd");
             FT_Done_Face(face);
             return;
         }
@@ -435,8 +439,8 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
     int i;
 
     if (!fc) {
-        ass_msg(MSGL_WARN,
-               MSGTR_LIBASS_FontconfigDisabledDefaultFontWillBeUsed);
+        ass_msg(library, MSGL_WARN,
+               "Fontconfig disabled, only default font will be used.");
         goto exit;
     }
 
@@ -453,8 +457,7 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
     }
 
     if (!rc || !priv->config) {
-        ass_msg(MSGL_FATAL,
-               MSGTR_LIBASS_FcInitLoadConfigAndFontsFailed);
+        ass_msg(library, MSGL_FATAL, "%s failed", "FcInitLoadConfigAndFonts");
         goto exit;
     }
 
@@ -463,10 +466,10 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
 
     if (dir) {
         if (FcDirCacheValid((const FcChar8 *) dir) == FcFalse) {
-            ass_msg(MSGL_INFO, MSGTR_LIBASS_UpdatingFontCache);
+            ass_msg(library, MSGL_INFO, "Updating font cache");
             if (FcGetVersion() >= 20390 && FcGetVersion() < 20400)
-                ass_msg(MSGL_WARN,
-                       MSGTR_LIBASS_BetaVersionsOfFontconfigAreNotSupported);
+                ass_msg(library, MSGL_WARN, "Beta versions of fontconfig"
+                        "are not supported. Update before reporting any bugs");
             // FontConfig >= 2.4.0 updates cache automatically in FcConfigAppFontAddDir()
             if (FcGetVersion() < 20390) {
                 FcFontSet *fcs;
@@ -475,8 +478,7 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
                 fss = FcStrSetCreate();
                 rc = FcStrSetAdd(fss, (const FcChar8 *) dir);
                 if (!rc) {
-                    ass_msg(MSGL_WARN,
-                           MSGTR_LIBASS_FcStrSetAddFailed);
+                    ass_msg(library, MSGL_WARN, "%s failed", "FcStrSetAdd");
                     goto ErrorFontCache;
                 }
 
@@ -484,14 +486,13 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
                                FcConfigGetBlanks(priv->config),
                                (const FcChar8 *) dir, FcFalse);
                 if (!rc) {
-                    ass_msg(MSGL_WARN,
-                           MSGTR_LIBASS_FcDirScanFailed);
+                    ass_msg(library, MSGL_WARN, "%s failed", "FcDirScan");
                     goto ErrorFontCache;
                 }
 
                 rc = FcDirSave(fcs, fss, (const FcChar8 *) dir);
                 if (!rc) {
-                    ass_msg(MSGL_WARN, MSGTR_LIBASS_FcDirSave);
+                    ass_msg(library, MSGL_WARN, "%s failed", "FcDirSave");
                     goto ErrorFontCache;
                 }
               ErrorFontCache:
@@ -501,8 +502,7 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
 
         rc = FcConfigAppFontAddDir(priv->config, (const FcChar8 *) dir);
         if (!rc) {
-            ass_msg(MSGL_WARN,
-                   MSGTR_LIBASS_FcConfigAppFontAddDirFailed);
+            ass_msg(library, MSGL_WARN, "%s failed", "FcConfigAppFontAddDir");
         }
     }
 
@@ -530,8 +530,8 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
 {
     fc_instance_t *priv;
 
-    ass_msg(MSGL_WARN,
-           MSGTR_LIBASS_FontconfigDisabledDefaultFontWillBeUsed);
+    ass_msg(library, MSGL_WARN,
+        "Fontconfig disabled, only default font will be used.");
 
     priv = calloc(1, sizeof(fc_instance_t));
 

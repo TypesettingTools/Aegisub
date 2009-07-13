@@ -58,6 +58,7 @@ typedef struct ass_drawing_s {
 
     // private
     FT_Library ftlibrary;   // FT library instance, needed for font ops
+    ass_library_t *library;
     int size;           // current buffer size
     ass_drawing_token_t *tokens;    // tokenized drawing
     int max_points;     // current maximum size

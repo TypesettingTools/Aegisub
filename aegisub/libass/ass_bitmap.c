@@ -165,7 +165,7 @@ static bitmap_t *copy_bitmap(const bitmap_t *src)
     return dst;
 }
 
-static int check_glyph_area(FT_Glyph glyph)
+static int check_glyph_area(ass_library_t *library, FT_Glyph glyph)
 {
     FT_BBox bbox;
     long long dx, dy;
@@ -173,14 +173,15 @@ static int check_glyph_area(FT_Glyph glyph)
     dx = bbox.xMax - bbox.xMin;
     dy = bbox.yMax - bbox.yMin;
     if (dx * dy > 8000000) {
-        ass_msg(MSGL_WARN, MSGTR_LIBASS_GlyphBBoxTooLarge,
+        ass_msg(library, MSGL_WARN, "Glyph bounding box too large: %dx%dpx",
                (int) dx, (int) dy);
         return 1;
     } else
         return 0;
 }
 
-static bitmap_t *glyph_to_bitmap_internal(FT_Glyph glyph, int bord)
+static bitmap_t *glyph_to_bitmap_internal(ass_library_t *library,
+                                          FT_Glyph glyph, int bord)
 {
     FT_BitmapGlyph bg;
     FT_Bitmap *bit;
@@ -191,11 +192,11 @@ static bitmap_t *glyph_to_bitmap_internal(FT_Glyph glyph, int bord)
     int i;
     int error;
 
-    if (check_glyph_area(glyph))
+    if (check_glyph_area(library, glyph))
         return 0;
     error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 0);
     if (error) {
-        ass_msg(MSGL_WARN, MSGTR_LIBASS_FT_Glyph_To_BitmapError,
+        ass_msg(library, MSGL_WARN, "FT_Glyph_To_Bitmap error %d",
                error);
         return 0;
     }
@@ -203,7 +204,7 @@ static bitmap_t *glyph_to_bitmap_internal(FT_Glyph glyph, int bord)
     bg = (FT_BitmapGlyph) glyph;
     bit = &(bg->bitmap);
     if (bit->pixel_mode != FT_PIXEL_MODE_GRAY) {
-        ass_msg(MSGL_WARN, MSGTR_LIBASS_UnsupportedPixelMode,
+        ass_msg(library, MSGL_WARN, "Unsupported pixel mode: %d",
                (int) (bit->pixel_mode));
         FT_Done_Glyph(glyph);
         return 0;
@@ -260,7 +261,7 @@ static bitmap_t *fix_outline_and_shadow(bitmap_t *bm_g, bitmap_t *bm_o)
             unsigned char c_g, c_o;
             c_g = g[x];
             c_o = o[x];
-            o[x] = (c_o > c_g) ? c_o - (c_g / 2) : 0;
+            o[x] = (c_o > (3 * c_g) / 5) ? c_o - (3 * c_g) / 5 : 0;
             s[x] = (c_o < 0xFF - c_g) ? c_o + c_g : 0xFF;
         }
         g += bm_g->w;
@@ -322,6 +323,127 @@ static void shift_bitmap(unsigned char *buf, int w, int h, int shift_x,
     }
 }
 
+/*
+ * Gaussian blur.  An fast pure C implementation from MPlayer.
+ */
+static void ass_gauss_blur(unsigned char *buffer, unsigned short *tmp2,
+                           int width, int height, int stride, int *m2,
+                           int r, int mwidth)
+{
+
+    int x, y;
+
+    unsigned char *s = buffer;
+    unsigned short *t = tmp2 + 1;
+    for (y = 0; y < height; y++) {
+        memset(t - 1, 0, (width + 1) * sizeof(short));
+
+        for (x = 0; x < r; x++) {
+            const int src = s[x];
+            if (src) {
+                register unsigned short *dstp = t + x - r;
+                int mx;
+                unsigned *m3 = (unsigned *) (m2 + src * mwidth);
+                for (mx = r - x; mx < mwidth; mx++) {
+                    dstp[mx] += m3[mx];
+                }
+            }
+        }
+
+        for (; x < width - r; x++) {
+            const int src = s[x];
+            if (src) {
+                register unsigned short *dstp = t + x - r;
+                int mx;
+                unsigned *m3 = (unsigned *) (m2 + src * mwidth);
+                for (mx = 0; mx < mwidth; mx++) {
+                    dstp[mx] += m3[mx];
+                }
+            }
+        }
+
+        for (; x < width; x++) {
+            const int src = s[x];
+            if (src) {
+                register unsigned short *dstp = t + x - r;
+                int mx;
+                const int x2 = r + width - x;
+                unsigned *m3 = (unsigned *) (m2 + src * mwidth);
+                for (mx = 0; mx < x2; mx++) {
+                    dstp[mx] += m3[mx];
+                }
+            }
+        }
+
+        s += stride;
+        t += width + 1;
+    }
+
+    t = tmp2;
+    for (x = 0; x < width; x++) {
+        for (y = 0; y < r; y++) {
+            unsigned short *srcp = t + y * (width + 1) + 1;
+            int src = *srcp;
+            if (src) {
+                register unsigned short *dstp = srcp - 1 + width + 1;
+                const int src2 = (src + 128) >> 8;
+                unsigned *m3 = (unsigned *) (m2 + src2 * mwidth);
+
+                int mx;
+                *srcp = 128;
+                for (mx = r - 1; mx < mwidth; mx++) {
+                    *dstp += m3[mx];
+                    dstp += width + 1;
+                }
+            }
+        }
+        for (; y < height - r; y++) {
+            unsigned short *srcp = t + y * (width + 1) + 1;
+            int src = *srcp;
+            if (src) {
+                register unsigned short *dstp = srcp - 1 - r * (width + 1);
+                const int src2 = (src + 128) >> 8;
+                unsigned *m3 = (unsigned *) (m2 + src2 * mwidth);
+
+                int mx;
+                *srcp = 128;
+                for (mx = 0; mx < mwidth; mx++) {
+                    *dstp += m3[mx];
+                    dstp += width + 1;
+                }
+            }
+        }
+        for (; y < height; y++) {
+            unsigned short *srcp = t + y * (width + 1) + 1;
+            int src = *srcp;
+            if (src) {
+                const int y2 = r + height - y;
+                register unsigned short *dstp = srcp - 1 - r * (width + 1);
+                const int src2 = (src + 128) >> 8;
+                unsigned *m3 = (unsigned *) (m2 + src2 * mwidth);
+
+                int mx;
+                *srcp = 128;
+                for (mx = 0; mx < y2; mx++) {
+                    *dstp += m3[mx];
+                    dstp += width + 1;
+                }
+            }
+        }
+        t++;
+    }
+
+    t = tmp2;
+    s = buffer;
+    for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
+            s[x] = t[x] >> 8;
+        }
+        s += stride;
+        t += width + 1;
+    }
+}
+
 /**
  * \brief Blur with [[1,2,1]. [2,4,2], [1,2,1]] kernel
  * This blur is the same as the one employed by vsfilter.
@@ -350,14 +472,15 @@ static void be_blur(unsigned char *buf, int w, int h)
     }
 }
 
-int glyph_to_bitmap(ass_synth_priv_t *priv_blur,
+int glyph_to_bitmap(ass_library_t *library, ass_synth_priv_t *priv_blur,
                     FT_Glyph glyph, FT_Glyph outline_glyph,
                     bitmap_t **bm_g, bitmap_t **bm_o, bitmap_t **bm_s,
                     int be, double blur_radius, FT_Vector shadow_offset)
 {
-    int bord = be ? (be / 4 + 1) : 0;
     blur_radius *= 2;
-    bord = (blur_radius > 0.0) ? blur_radius + 1 : bord;
+    int bbord = be > 0 ? sqrt(2 * be) : 0;
+    int gbord = blur_radius > 0.0 ? blur_radius + 1 : 0;
+    int bord = FFMAX(bbord, gbord);
     if (bord == 0 && (shadow_offset.x || shadow_offset.y))
         bord = 1;
 
@@ -366,43 +489,45 @@ int glyph_to_bitmap(ass_synth_priv_t *priv_blur,
     *bm_g = *bm_o = *bm_s = 0;
 
     if (glyph)
-        *bm_g = glyph_to_bitmap_internal(glyph, bord);
+        *bm_g = glyph_to_bitmap_internal(library, glyph, bord);
     if (!*bm_g)
         return 1;
 
     if (outline_glyph) {
-        *bm_o = glyph_to_bitmap_internal(outline_glyph, bord);
+        *bm_o = glyph_to_bitmap_internal(library, outline_glyph, bord);
         if (!*bm_o) {
             ass_free_bitmap(*bm_g);
             return 1;
         }
     }
-    if (*bm_o)
-        resize_tmp(priv_blur, (*bm_o)->w, (*bm_o)->h);
-    resize_tmp(priv_blur, (*bm_g)->w, (*bm_g)->h);
 
-    if (be) {
-        while (be--) {
-            if (*bm_o)
-                be_blur((*bm_o)->buffer, (*bm_o)->w, (*bm_o)->h);
-            else
-                be_blur((*bm_g)->buffer, (*bm_g)->w, (*bm_g)->h);
-        }
-    } else {
-        if (blur_radius > 0.0) {
-            generate_tables(priv_blur, blur_radius);
-            if (*bm_o)
-                ass_gauss_blur((*bm_o)->buffer, priv_blur->tmp,
-                               (*bm_o)->w, (*bm_o)->h, (*bm_o)->w,
-                               (int *) priv_blur->gt2, priv_blur->g_r,
-                               priv_blur->g_w);
-            else
-                ass_gauss_blur((*bm_g)->buffer, priv_blur->tmp,
-                               (*bm_g)->w, (*bm_g)->h, (*bm_g)->w,
-                               (int *) priv_blur->gt2, priv_blur->g_r,
-                               priv_blur->g_w);
-        }
+    // Apply box blur (multiple passes, if requested)
+    while (be--) {
+        if (*bm_o)
+            be_blur((*bm_o)->buffer, (*bm_o)->w, (*bm_o)->h);
+        else
+            be_blur((*bm_g)->buffer, (*bm_g)->w, (*bm_g)->h);
     }
+
+    // Apply gaussian blur
+    if (blur_radius > 0.0) {
+        if (*bm_o)
+            resize_tmp(priv_blur, (*bm_o)->w, (*bm_o)->h);
+        else
+            resize_tmp(priv_blur, (*bm_g)->w, (*bm_g)->h);
+        generate_tables(priv_blur, blur_radius);
+        if (*bm_o)
+            ass_gauss_blur((*bm_o)->buffer, priv_blur->tmp,
+                           (*bm_o)->w, (*bm_o)->h, (*bm_o)->w,
+                           (int *) priv_blur->gt2, priv_blur->g_r,
+                           priv_blur->g_w);
+        else
+            ass_gauss_blur((*bm_g)->buffer, priv_blur->tmp,
+                           (*bm_g)->w, (*bm_g)->h, (*bm_g)->w,
+                           (int *) priv_blur->gt2, priv_blur->g_r,
+                           priv_blur->g_w);
+    }
+
     if (*bm_o)
         *bm_s = fix_outline_and_shadow(*bm_g, *bm_o);
     else

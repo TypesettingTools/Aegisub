@@ -19,6 +19,3 @@ libass_aegisub_a_SOURCES = \
 
 libass_aegisub_a_SOURCES += \
 	*.h
-
-EXTRA_DIST= \
-	ass_cache_template.c
