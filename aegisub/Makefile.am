@@ -10,7 +10,7 @@ libass = libass
 endif
 
 if HAVE_PROVIDER_FFMPEGSOURCE
-ffmpegsource = FFmpegSource2
+ffmpegsource = libffms
 endif
 
 SUBDIRS = \

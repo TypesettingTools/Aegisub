@@ -18,7 +18,7 @@ SUBDIRS = \
 	$(libauto3) \
 	$(libosxutil_subdir)
 
-AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ -I../FFmpegSource2
+AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ -I../libffms/include
 
 bin_PROGRAMS = aegisub-2.1
 aegisub_2_1_LDADD = libresrc/libresrc.a $(libosxutil_lib)
@@ -81,7 +81,7 @@ if HAVE_PROVIDER_FFMPEGSOURCE
 noinst_LIBRARIES += libaudiovideo_ffmpegsource.a
 libaudiovideo_ffmpegsource_a_SOURCES = audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 libaudiovideo_ffmpegsource_a_CPPFLAGS = @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ @LIBPOSTPROC_CFLAGS@
-aegisub_2_1_LDADD += libaudiovideo_ffmpegsource.a ../FFmpegSource2/libffmpegsource2_aegisub.a
+aegisub_2_1_LDADD += libaudiovideo_ffmpegsource.a ../libffms/libffmpegsource_aegisub.a
 aegisub_2_1_LDFLAGS += @LIBPOSTPROC_LIBS@
 endif
 
