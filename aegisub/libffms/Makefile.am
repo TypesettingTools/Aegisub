@@ -1,32 +1,28 @@
-noinst_LIBRARIES = libffmpegsource2_aegisub.a
+AUTOMAKE_OPTIONS = subdir-objects
 
-AM_CPPFLAGS = -I../src -D__UNIX__ -DFFMS_EXPORTS -DHAVE_STRLCPY @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ @LIBPOSTPROC_CFLAGS@
+noinst_LIBRARIES = libffmpegsource_aegisub.a
 
-
-libffmpegsource2_aegisub_a_SOURCES = \
-	ffaudiosource.cpp \
-	ffms.cpp \
-	ffvideosource.cpp \
-	indexing.cpp \
-	MatroskaParser.c \
-	stdiostream.c \
-	utils.cpp \
-	wave64writer.cpp
+AM_CPPFLAGS = -I../src -Icore -Iinclude -D__UNIX__ -DFFMS_EXPORTS -DHAVE_STRLCPY @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ @LIBPOSTPROC_CFLAGS@
 
 
-libffmpegsource2_aegisub_a_SOURCES += \
-	MatroskaParser.h \
-	avisynth.h \
-	ffaudiosource.h \
-	ffavisynth.h \
-	ffms.h \
-	ffpp.h \
-	ffswscale.h \
-	ffvideosource.h \
-	indexing.h \
-	stdiostream.h \
-	utils.h \
-	wave64writer.h
+libffmpegsource_aegisub_a_SOURCES = \
+	src/core/ffaudiosource.cpp \
+	src/core/ffhaaliaudio.cpp \
+	src/core/ffhaaliindexer.cpp \
+	src/core/ffhaalivideo.cpp \
+	src/core/fflavfaudio.cpp \
+	src/core/fflavfindexer.cpp \
+	src/core/fflavfvideo.cpp \
+	src/core/ffmatroskaaudio.cpp \
+	src/core/ffmatroskaindexer.cpp \
+	src/core/ffmatroskavideo.cpp \
+	src/core/ffms.cpp \
+	src/core/ffvideosource.cpp \
+	src/core/indexing.cpp \
+	src/core/matroskaparser.c \
+	src/core/stdiostream.c \
+	src/core/utils.cpp \
+	src/core/wave64writer.cpp
 
-EXTRA_DIST = \
-	ffms2.html
+libffmpegsource_aegisub_a_SOURCES += \
+	core/*.h

@@ -41,7 +41,7 @@ AM_INIT_AUTOMAKE
 AC_CONFIG_HEADER([acconf.h])
 AC_GNU_SOURCE
 AC_CANONICAL_HOST
-
+AM_PROG_CC_C_O
 
 ###########################
 # Check target architecture
@@ -1288,7 +1288,7 @@ src/libresrc/Makefile
 src/libauto3/Makefile
 src/libosxutil/Makefile
 universalchardet/Makefile
-FFmpegSource2/Makefile
+libffms/Makefile
 libass/Makefile
 automation/Makefile
 po/Makefile.in
