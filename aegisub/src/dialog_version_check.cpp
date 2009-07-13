@@ -162,8 +162,8 @@ VersionCheckThread::VersionCheckThread(DialogVersionCheck *par)
 wxThread::ExitCode VersionCheckThread::Entry() {
 	// List of paths
 	wxArrayString paths;
+	paths.Add(_T("http://updates.aegisub.org/latest.txt"));
 	paths.Add(_T("http://files.aegisub.net/latest.txt"));
-	paths.Add(_T("http://aegisub.cellosoft.com/latest.txt"));
 	wxFSFile *fp = NULL;
 	
 	// Try each path until it finds one that works
