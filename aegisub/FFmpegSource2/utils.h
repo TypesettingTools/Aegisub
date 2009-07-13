@@ -49,6 +49,8 @@ extern "C" {
 // Compatibility with older/newer ffmpegs
 #if (LIBAVFORMAT_VERSION_INT) > (AV_VERSION_INT(52,34,0)) 
 #define codec_bmp_tags ff_codec_bmp_tags 
+#define codec_movvideo_tags ff_codec_movvideo_tags
+#define codec_wav_tags ff_codec_wav_tags
 #endif
 #ifndef AV_PKT_FLAG_KEY
 #define AV_PKT_FLAG_KEY PKT_FLAG_KEY
