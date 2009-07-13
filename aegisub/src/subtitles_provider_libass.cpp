@@ -51,8 +51,8 @@
 extern "C" {
 #include "libosxutil/libosxutil.h"
 #include <sys/param.h>
-#endif
 }
+#endif
 
 ///////////////
 // Constructor
