@@ -114,7 +114,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddCheckBox(generalPage,genSizer4,_("Show Splash Screen"),_T("Show splash"));
 #ifdef __WXMSW__
 		AddCheckBox(generalPage,genSizer4,_("Auto Check for Updates"),_T("Auto check for updates"));
-		AddCheckBox(generalPage,genSizer4,_("Save config.dat locally"),_T("Local config"));
 #endif
 		genSizer4->AddGrowableCol(0,1);
 
@@ -904,15 +903,7 @@ void DialogOptions::WriteToOptions(bool justApply) {
 	}
 
 	// Save options
-#ifdef __WXMSW__
-	if (Options.AsBool(_T("Local config"))) Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
-	else {
-#endif
-		Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
-#ifdef __WXMSW__
-		wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
-	}
-#endif
+	Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
 	Options.Save();
 
 	// Need restart?

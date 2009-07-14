@@ -147,27 +147,27 @@ bool AegisubApp::OnInit() {
 		StartupLog(_T("Load configuration"));
 		Options.LoadDefaults();
 #ifdef __WXMSW__
-		// TODO: Display a messagebox about permission being needed to write to local config once the string freeze is over with
-		if (wxFileName::IsFileWritable(StandardPaths::DecodePath(_T("?data/config.dat"))))
+		// Try loading configuration from the install dir if one exists there
+		if (wxFileName::FileExists(StandardPaths::DecodePath(_T("?data/config.dat")))) {
 			Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
-		else 
-			Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
-		Options.Load();
-		if (!Options.AsBool(_T("Local config")) && Options.GetFile() != StandardPaths::DecodePath(_T("?user/config.dat")))
-#endif
-		{
-			Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
 			Options.Load();
-#ifdef __WXMSW__
-			wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
-#endif
+
+			if (Options.AsBool(_T("Local config"))) {
+				// Local config, make ?user mean ?data so all user settings are placed in install dir
+				StandardPaths::SetPathValue(_T("?user"), StandardPaths::DecodePath(_T("?data")));
+			}
+			else {
+				// Not local config, we don't want that config.dat file here any more
+				// It might be a leftover from a really old install
+				wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
+			}
 		}
-#ifdef __WXMSW__
-		// Change ?user to point to ?data if we have local config
-		if (Options.AsBool(_T("Local config"))) {
-			StandardPaths::SetPathValue(_T("?user"), StandardPaths::DecodePath(_T("?data")));
-		}
 #endif
+		// TODO: Check if we can write to config.dat and warn the user if we can't
+		// If we had local config, ?user now means ?data so this will still be loaded from the correct location
+		Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
+		Options.Load();
+
 		StartupLog(_T("Store options back"));
 		Options.SetInt(_T("Last Version"),GetSVNRevision());
 		Options.LoadDefaults(false,true);	// Override options based on version number
@@ -207,7 +207,8 @@ bool AegisubApp::OnInit() {
 		// Set association
 #ifndef _DEBUG
 		StartupLog(_T("Install file type associations"));
-		RegistryAssociate();
+		if (!Options.AsBool(_T("Local config")))
+			RegistryAssociate();
 #endif
 
 		// Get parameter subs
