@@ -60,8 +60,8 @@ void AssLimitToVisibleFilter::Init() {
 	initialized = true;
 	autoExporter = true;
 	hidden = false;
-	Register(_T("Limit to Visible Lines"),1000000);
-	description = _T("Limit to Visible Lines");
+	Register(_("Limit to Visible Lines"),1000000);
+	description = _("Limit to Visible Lines");
 }
 
 
