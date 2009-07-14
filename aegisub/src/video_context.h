@@ -85,6 +85,7 @@ private:
 	GLuint lastTex;
 	GLhandleARB yv12shader;
 	int lastFrame;
+	bool ownGlContext;
 	wxGLContext *glContext;
 	VideoFrameFormat vidFormat;
 	AegiVideoFrame tempFrame;
