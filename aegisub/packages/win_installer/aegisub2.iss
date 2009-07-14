@@ -221,7 +221,7 @@ Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: ful
 Name: main/icons; Description: Start menu icon; Types: custom compact full
 Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
-Name: codec/vsfilter; Description: VSFilter 2.39 MPC-HC; Types: compact full custom; Flags: fixed
+Name: codec/vsfilter; Description: VSFilter 2.39e; Types: compact full custom; Flags: fixed
 ; Automation
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages: 

@@ -1,9 +1,14 @@
 Aegisub.exe
 Aegisub.pdb
+aegisub32.exe
+aegisub32.pdb
 aegisub-auto3.dll
+libauto3_32.dll
+libauto3_32.pdb
 changelog.txt
 ffms2.html
 FFMS2.dll
+ffms2.pdb
 avcodec-51.dll
 avformat-51.dll
 avutil-49.dll
@@ -13,6 +18,7 @@ postproc-51.dll
 swscale-0.dll
 ASSDraw3.exe
 ASSDraw3.chm
+VSFilter.dll
 automation\include\Aegisub\PerlConsole.pm
 automation\include\Aegisub\Progress.pm
 automation\include\Aegisub\Script.pm
