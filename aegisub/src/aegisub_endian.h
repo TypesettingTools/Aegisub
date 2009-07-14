@@ -98,14 +98,14 @@ namespace Endian {
 	inline uint64_t Reverse(uint64_t val)
 	{
 		return
-			((val & 0x00000000000000FF) << 56) |
-			((val & 0x000000000000FF00) << 40) |
-			((val & 0x0000000000FF0000) << 24) |
-			((val & 0x00000000FF000000) <<  8) |
-			((val & 0x000000FF00000000) >>  8) |
-			((val & 0x0000FF0000000000) >> 24) |
-			((val & 0x00FF000000000000) >> 40) |
-			((val & 0xFF00000000000000) >> 56);
+			((val & 0x00000000000000FFULL) << 56) |
+			((val & 0x000000000000FF00ULL) << 40) |
+			((val & 0x0000000000FF0000ULL) << 24) |
+			((val & 0x00000000FF000000ULL) <<  8) |
+			((val & 0x000000FF00000000ULL) >>  8) |
+			((val & 0x0000FF0000000000ULL) >> 24) |
+			((val & 0x00FF000000000000ULL) >> 40) |
+			((val & 0xFF00000000000000ULL) >> 56);
 	}
 
 
@@ -283,28 +283,28 @@ namespace Endian {
 	inline uint64_t MachineToBig(uint64_t val)
 	{
 		bytes64 pack;
-		pack.byte[0] = (val & 0xFF00000000000000) >> 56;
-		pack.byte[1] = (val & 0x00FF000000000000) >> 48;
-		pack.byte[2] = (val & 0x0000FF0000000000) >> 40;
-		pack.byte[3] = (val & 0x000000FF00000000) >> 32;
-		pack.byte[4] = (val & 0x00000000FF000000) >> 24;
-		pack.byte[5] = (val & 0x0000000000FF0000) >> 16;
-		pack.byte[6] = (val & 0x000000000000FF00) >>  8;
-		pack.byte[7] =  val & 0x00000000000000FF       ;
+		pack.byte[0] = (val & 0xFF00000000000000ULL) >> 56;
+		pack.byte[1] = (val & 0x00FF000000000000ULL) >> 48;
+		pack.byte[2] = (val & 0x0000FF0000000000ULL) >> 40;
+		pack.byte[3] = (val & 0x000000FF00000000ULL) >> 32;
+		pack.byte[4] = (val & 0x00000000FF000000ULL) >> 24;
+		pack.byte[5] = (val & 0x0000000000FF0000ULL) >> 16;
+		pack.byte[6] = (val & 0x000000000000FF00ULL) >>  8;
+		pack.byte[7] =  val & 0x00000000000000FFULL       ;
 		return pack.word;
 	}
 
 	inline uint64_t MachineToLittle(uint64_t val)
 	{
 		bytes64 pack;
-		pack.byte[0] =  val & 0x00000000000000FF       ;
-		pack.byte[1] = (val & 0x000000000000FF00) >>  8;
-		pack.byte[2] = (val & 0x0000000000FF0000) >> 16;
-		pack.byte[3] = (val & 0x00000000FF000000) >> 24;
-		pack.byte[4] = (val & 0x000000FF00000000) >> 32;
-		pack.byte[5] = (val & 0x0000FF0000000000) >> 40;
-		pack.byte[6] = (val & 0x00FF000000000000) >> 48;
-		pack.byte[7] = (val & 0xFF00000000000000) >> 56;
+		pack.byte[0] =  val & 0x00000000000000FFULL       ;
+		pack.byte[1] = (val & 0x000000000000FF00ULL) >>  8;
+		pack.byte[2] = (val & 0x0000000000FF0000ULL) >> 16;
+		pack.byte[3] = (val & 0x00000000FF000000ULL) >> 24;
+		pack.byte[4] = (val & 0x000000FF00000000ULL) >> 32;
+		pack.byte[5] = (val & 0x0000FF0000000000ULL) >> 40;
+		pack.byte[6] = (val & 0x00FF000000000000ULL) >> 48;
+		pack.byte[7] = (val & 0xFF00000000000000ULL) >> 56;
 		return pack.word;
 	}
 

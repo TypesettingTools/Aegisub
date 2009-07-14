@@ -55,6 +55,7 @@
 #include "utils.h"
 #include "ass_override.h"
 #include "dialog_paste_over.h"
+#include "charset_conv.h"
 
 
 ///////////////
@@ -693,7 +694,7 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 	wxString filename = wxFileSelector(_("Save audio clip"),_T(""),_T(""),_T("wav"),_T(""),wxFD_SAVE|wxFD_OVERWRITE_PROMPT,this);
 
 	if (!filename.empty()) {
-		std::ofstream outfile(filename.mb_str(wxConvLocal),std::ios::binary);
+		std::ofstream outfile(filename.mb_str(csConvLocal),std::ios::binary);
 		
 		size_t bufsize=(end-start)*provider->GetChannels()*provider->GetBytesPerSample();
 		int intval;

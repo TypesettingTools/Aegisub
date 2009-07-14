@@ -189,7 +189,7 @@ void Spline::InsertCurve(SplineCurve &curve,int index) {
 	else {
 		std::list<SplineCurve>::iterator cur;
 		int i=0;
-		for (cur=curves.begin();cur!=curves.end() && i < index;cur++,i++);
+		for (cur=curves.begin();cur!=curves.end() && i < index;cur++,i++) ;
 		curves.insert(cur,curve);
 	}
 }

@@ -55,6 +55,7 @@
 #include "subs_edit_box.h"
 #include "utils.h"
 #include "help_button.h"
+#include "charset_conv.h"
 
 
 ///////////////
@@ -329,7 +330,7 @@ void DialogShiftTimes::AppendToHistory(wxString text) {
 	if (HistoryFile.IsEmpty()) return;
 	using namespace std;
 	ofstream file;
-	file.open(HistoryFile.mb_str(wxConvLocal),ios::out | ios::app);
+	file.open(HistoryFile.mb_str(csConvLocal),ios::out | ios::app);
 	if (!file.is_open()) {
 		return;
 	}
@@ -349,7 +350,7 @@ void DialogShiftTimes::LoadHistory(wxString filename) {
 	using namespace std;
 	HistoryFile = filename;
 	ifstream file;
-	file.open(filename.mb_str(wxConvLocal));
+	file.open(filename.mb_str(csConvLocal));
 	if (!file.is_open()) {
 		return;
 	}

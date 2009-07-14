@@ -45,6 +45,7 @@
 #include "audio_provider_manager.h"
 #include "options.h"
 #include "utils.h"
+#include "charset_conv.h"
 
 // Uncomment to enable debug features.
 //#define PORTAUDIO_DEBUG
@@ -120,7 +121,7 @@ void PortAudioPlayer::OpenStream() {
 		if (pa_err->errorCode != 0) {
 			wxLogDebug(_T("PortAudioPlayer::OpenStream HostError: API: %d, %s (%ld)\n"), pa_err->hostApiType, pa_err->errorText, pa_err->errorCode);
 		}
-		throw wxString(_T("Failed initializing PortAudio stream with error: ") + wxString(Pa_GetErrorText(err),wxConvLocal));
+		throw wxString(_T("Failed initializing PortAudio stream with error: ") + wxString(Pa_GetErrorText(err),csConvLocal));
 	}
 }
 

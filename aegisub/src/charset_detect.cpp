@@ -57,14 +57,22 @@ struct CharDetResult {
 ////////////////
 // Get encoding
 wxString CharSetDetect::GetEncoding(wxString filename) {
-	// Open file
-	TextFileReader reader(filename,_T("Local"));
+	std::ifstream file;
+#ifdef __WINDOWS__
+	file.open(filename.wc_str(),std::ios::in | std::ios::binary);
+#else
+	file.open(wxFNCONV(filename),std::ios::in | std::ios::binary);
+#endif
+	if (!file.is_open()) {
+		throw _T("Failed opening file for reading.");
+	}
 
 	// Loop through it until it finds interesting lines
-	while (reader.HasMoreLines() && !done()) {
-		wxString line = reader.ReadLineFromFile();
-		wxCharBuffer buffer = line.mb_str(wxConvLocal);
-		HandleData(buffer,line.Length());
+	while (!file.eof() && !done()) {
+		char buffer[512];
+		file.read(buffer, 512);
+		size_t bytesRead = file.gcount();
+		HandleData(buffer, bytesRead);
 	}
 
 	// Flag as finished

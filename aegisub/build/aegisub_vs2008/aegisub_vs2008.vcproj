@@ -824,6 +824,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\charset_conv.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\charset_conv.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\charset_detect.cpp"
 				>
 			</File>

@@ -41,6 +41,7 @@
 #include <wx/wxprec.h>
 #ifndef WIN32
 #include "font_file_lister_fontconfig.h"
+#include "charset_conv.h"
 
 
 ///////////////////////////////////
@@ -69,7 +70,7 @@ wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 	if (FcPatternGetString(final, FC_FILE, 0, &filename) == FcResultMatch && FcPatternGetInteger(final, FC_INDEX, 0, &fontindex) == FcResultMatch) {
 		FcPatternGetString(final, FC_FAMILY, fontindex, &gotfamily);
 		if (strcmp(gotfamily,buffer) == 0) {
-			results.Add(wxString((char*) filename,wxConvLocal));
+			results.Add(wxString((char*) filename,csConvLocal));
 		}
 	}
 	FcPatternDestroy(final);

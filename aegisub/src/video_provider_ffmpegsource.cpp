@@ -45,6 +45,7 @@
 #include "video_context.h"
 #include "options.h"
 #include "aegisub_endian.h"
+#include "charset_conv.h"
 #ifdef WIN32
 #include <objbase.h>
 #endif
@@ -167,7 +168,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 		throw ErrorMsg;
 	}
 
-	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvUTF8), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
+	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(csConvLocal), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (VideoSource == NULL) {

@@ -701,7 +701,7 @@ void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
 // Open subtitles with specific charset
 void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 	// Initialize charsets
-	wxArrayString choices = GetEncodings();
+	wxArrayString choices = AegisubCSConv::GetEncodingsList();
 	wxString path = Options.AsText(_T("Last open subtitles path"));
 
 	// Get options and load

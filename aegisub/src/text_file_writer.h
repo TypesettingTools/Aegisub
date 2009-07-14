@@ -37,40 +37,21 @@
 #ifndef TEXT_FILE_WRITER_H
 #define TEXT_FILE_WRITER_H
 
-
-///////////
-// Headers
 #include <wx/wxprec.h>
 #include <wx/string.h>
-#include <wx/intl.h>
 #include <fstream>
+#include <memory>
 
+#include "charset_conv.h"
 
-/////////
-// Class
 class TextFileWriter {
 private:
-	wxString filename;
-	wxString encoding;
 	std::ofstream file;
-
-	wxMBConv *conv;
-	bool customConv;
-	bool open;
-	bool Is16;
-	bool IsFirst;
-	bool IsUnicode;
-
-	void Open();
-	void Close();
-	void SetEncoding();
+	std::auto_ptr<AegisubCSConv> conv;
 
 public:
-	TextFileWriter(wxString filename,wxString encoding=_T(""));
-	~TextFileWriter();
-
-	void WriteLineToFile(wxString line,bool addLineBreak=true);
+	TextFileWriter(wxString filename, wxString encoding=_T(""));
+	void WriteLineToFile(wxString line, bool addLineBreak=true);
 };
-
 
 #endif

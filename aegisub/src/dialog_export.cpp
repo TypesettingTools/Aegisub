@@ -46,7 +46,7 @@
 #include "dialog_export.h"
 #include "ass_file.h"
 #include "ass_exporter.h"
-#include "frame_main.h"
+#include "charset_conv.h"
 #include "help_button.h"
 
 
@@ -97,12 +97,12 @@ DialogExport::DialogExport (wxWindow *parent)
 
 	// Charset dropdown list
 	wxStaticText *charset_list_label = new wxStaticText(this, -1, _("Text encoding:"));
-	CharsetList = new wxChoice(this, Charset_List_Box, wxDefaultPosition, wxDefaultSize, FrameMain::GetEncodings());
+	CharsetList = new wxChoice(this, Charset_List_Box, wxDefaultPosition, wxDefaultSize, AegisubCSConv::GetEncodingsList());
 	wxSizer *charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
 	charset_list_sizer->Add(charset_list_label, 0, wxALIGN_CENTER | wxRIGHT, 5);
 	charset_list_sizer->Add(CharsetList, 1, wxEXPAND);
 	if (!CharsetList->SetStringSelection(Export->GetOriginalSubs()->GetScriptInfo(_T("Export Encoding")))) {
-		CharsetList->SetStringSelection(_T("UTF-8"));
+		CharsetList->SetStringSelection(_T("Unicode (UTF-8)"));
 	}
 
 	// Top sizer

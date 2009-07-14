@@ -80,6 +80,7 @@
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
+#include "charset_conv.h"
 
 
 
@@ -674,16 +675,22 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			if (!fileCheck.FileExists()) throw _T("Selected file does not exist.");
 
 			// Make sure that file isn't actually a timecode file
-			TextFileReader testSubs(filename,charset);
-			charset = testSubs.GetCurrentEncoding();
-			isBinary = charset == _T("binary");
-			if (!isBinary && testSubs.HasMoreLines()) {
-				wxString cur = testSubs.ReadLineFromFile();
-				if (cur.Left(10) == _T("# timecode")) {
-					LoadVFR(filename);
-					Options.SetText(_T("Last open timecodes path"), fileCheck.GetPath());
-					return;
+			try {
+				TextFileReader testSubs(filename,charset);
+				charset = testSubs.GetCurrentEncoding();
+				isBinary = charset == _T("binary");
+				if (!isBinary && testSubs.HasMoreLines()) {
+					wxString cur = testSubs.ReadLineFromFile();
+					if (cur.Left(10) == _T("# timecode")) {
+						LoadVFR(filename);
+						Options.SetText(_T("Last open timecodes path"), fileCheck.GetPath());
+						return;
+					}
 				}
+			}
+			catch (...) {
+				// if trying to load the file as timecodes fails it's fairly safe to assume that
+				// it is in fact not a timecode file
 			}
 		}
 
@@ -704,6 +711,10 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	}
 	catch (const wchar_t *err) {
 		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
+		return;
+	}
+	catch (wxString err) {
+		wxMessageBox(err, _T("Error"), wxOK | wxICON_ERROR, NULL);
 		return;
 	}
 	catch (...) {
@@ -766,7 +777,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 		// Get charset
 		wxString charset = _T("");
 		if (withCharset) {
-			wxArrayString choices = GetEncodings();
+			wxArrayString choices = AegisubCSConv::GetEncodingsList();
 			charset = wxGetSingleChoice(_("Choose charset code:"), _T("Charset"),choices,this,-1, -1,true,250,200);
 			if (charset.IsEmpty()) return false;
 		}
@@ -1230,53 +1241,6 @@ void FrameMain::DetachVideo(bool detach) {
 			detachedVideo = NULL;
 		}
 	}
-}
-
-
-/////////////////
-// Get encodings
-wxArrayString FrameMain::GetEncodings() {
-	wxArrayString choices;
-	choices.Add(_T("UTF-8"));
-	choices.Add(_T("UTF-16"));
-	choices.Add(_T("UTF-16BE"));
-	choices.Add(_T("UTF-16LE"));
-	choices.Add(_T("UTF-7"));
-	choices.Add(_T("Local"));
-	choices.Add(_T("US-ASCII"));
-	choices.Add(_T("SHIFT_JIS"));
-	choices.Add(_T("GB2312"));
-	choices.Add(_T("BIG5"));
-	choices.Add(_T("EUC-JP"));
-	choices.Add(_T("KOI8-R"));
-	choices.Add(_T("KOI8-RU"));
-	choices.Add(_T("KOI8-U"));
-	choices.Add(_T("ISO-8859-1"));
-	choices.Add(_T("ISO-8859-2"));
-	choices.Add(_T("ISO-8859-3"));
-	choices.Add(_T("ISO-8859-4"));
-	choices.Add(_T("ISO-8859-5"));
-	choices.Add(_T("ISO-8859-6"));
-	choices.Add(_T("ISO-8859-7"));
-	choices.Add(_T("ISO-8859-8"));
-	choices.Add(_T("ISO-8859-9"));
-	choices.Add(_T("ISO-8859-13"));
-	choices.Add(_T("ISO-8859-15"));
-	choices.Add(_T("WINDOWS-1250"));
-	choices.Add(_T("WINDOWS-1251"));
-	choices.Add(_T("WINDOWS-1252"));
-	choices.Add(_T("WINDOWS-1253"));
-	choices.Add(_T("WINDOWS-1254"));
-	choices.Add(_T("WINDOWS-1255"));
-	choices.Add(_T("WINDOWS-1256"));
-	choices.Add(_T("WINDOWS-1257"));
-	choices.Add(_T("WINDOWS-1258"));
-	choices.Add(_T("WINDOWS-874"));
-	choices.Add(_T("WINDOWS-932"));
-	choices.Add(_T("WINDOWS-936"));
-	choices.Add(_T("WINDOWS-949"));
-	choices.Add(_T("WINDOWS-950"));
-	return choices;
 }
 
 

@@ -273,7 +273,14 @@ void HotkeyManager::Load() {
 	// Open file
 	using namespace std;
 	TextFileReader file(filename);
-	wxString header = file.ReadLineFromFile();
+	wxString header;
+	try {
+		if (file.GetCurrentEncoding() != _T("binary"))
+			header = file.ReadLineFromFile();
+	}
+	catch (wxString e) {
+		header = _T("");
+	}
 	if (header != _T("[Hotkeys]")) {
 		wxFileName backupfn(filename);
 		backupfn.SetFullName(_T("hotkeys.bak"));
@@ -289,7 +296,18 @@ void HotkeyManager::Load() {
 	map<wxString,HotkeyType>::iterator cur;
 	while (file.HasMoreLines()) {
 		// Parse line
-		curLine = file.ReadLineFromFile();
+		try {
+			curLine = file.ReadLineFromFile();
+		}
+		catch (wxString e) {
+			wxFileName backupfn(filename);
+			backupfn.SetFullName(_T("hotkeys.bak"));
+			wxCopyFile(filename, backupfn.GetFullPath());
+			modified = true;
+			Save();
+			wxLogWarning(_T("Hotkeys file corrupted, defaults restored.\nA backup of the corrupted file was made."));
+			return;
+		}
 		if (curLine.IsEmpty()) continue;
 		size_t pos = curLine.Find(_T("="));
 		if (pos == wxString::npos) continue;

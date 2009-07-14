@@ -455,7 +455,14 @@ void OptionsManager::Load() {
 
 	// Read header
 	TextFileReader file(filename);
-	wxString header = file.ReadLineFromFile();
+	wxString header;
+	try {
+		if (file.GetCurrentEncoding() != _T("binary"))
+			header = file.ReadLineFromFile();
+	}
+	catch (wxString e) {
+		header = _T("");
+	}
 	if (header != _T("[Config]")) {
 		wxMessageBox(_("Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."),_("Error"),wxCENTRE|wxICON_WARNING);
 		wxRenameFile(filename,filename + wxString::Format(_T(".%i.backup"),wxGetUTCTime()));
@@ -468,7 +475,15 @@ void OptionsManager::Load() {
 	wxString curLine;
 	while (file.HasMoreLines()) {
 		// Parse line
-		curLine = file.ReadLineFromFile();
+		try {
+			curLine = file.ReadLineFromFile();
+		}
+		catch (wxString e) {
+			wxMessageBox(_("Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."),_("Error"),wxCENTRE|wxICON_WARNING);
+			wxRenameFile(filename,filename + wxString::Format(_T(".%i.backup"),wxGetUTCTime()));
+			modified = true;
+			return;
+		}
 		if (curLine.IsEmpty()) continue;
 		size_t pos = curLine.Find(_T("="));
 		if (pos == wxString::npos) continue;

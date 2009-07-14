@@ -57,6 +57,7 @@
 #include "utils.h"
 #include "md5.h"
 #include "dialog_progress.h"
+#include "charset_conv.h"
 #include "../prs/prs.h"
 
 
@@ -114,7 +115,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	AVSValue script1 = env1->Invoke("Eval",AVSValue(wxString(val + _T(",color=$000000)")).mb_str(wxConvUTF8)));
 	AVSValue script2 = env2->Invoke("Eval",AVSValue(wxString(val + _T(",color=$FFFFFF)")).mb_str(wxConvUTF8)));
 	char temp[512];
-	strcpy(temp,tempFile.mb_str(wxConvLocal));
+	strcpy(temp,tempFile.mb_str(csConvLocal));
 	AVSValue args1[2] = { script1.AsClip(), temp };
 	AVSValue args2[2] = { script2.AsClip(), temp };
 	try {
@@ -122,7 +123,7 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		script2 = env2->Invoke("TextSub", AVSValue(args2,2));
 	}
 	catch (AvisynthError &err) {
-		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
+		throw _T("AviSynth error: ") + wxString(err.msg,csConvLocal);
 	}
 	PClip clip1 = script1.AsClip();
 	PClip clip2 = script2.AsClip();
@@ -203,9 +204,9 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	else return;
 
 	// Save file
-	file.Save((const char*)filename.mb_str(wxConvLocal));
+	file.Save((const char*)filename.mb_str(csConvLocal));
 	wxString filename2 = filename + _T(".prsa");
-	file.SaveText((const char*)filename2.mb_str(wxConvLocal));
+	file.SaveText((const char*)filename2.mb_str(csConvLocal));
 
 	// Delete temp file
 	wxRemoveFile(tempFile);
@@ -243,7 +244,7 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 		}
 
 		// Read file back
-		FILE *fp = fopen(tempOut.mb_str(wxConvLocal),"rb");
+		FILE *fp = fopen(tempOut.mb_str(csConvLocal),"rb");
 		fseek(fp,0,SEEK_END);
 		datasize = ftell(fp);
 		data.resize(datasize);

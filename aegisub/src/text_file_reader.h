@@ -33,46 +33,36 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-
 #pragma once
 
-
-///////////
-// Headers
 #include <wx/wxprec.h>
 #include <wx/dynarray.h>
 #include <wx/string.h>
-#ifdef TEXT_READER_USE_STDIO
-#include <stdio.h>
-#else
 #include <fstream>
-#endif
 
+#include "charset_conv.h"
 
-/////////
-// Class
 class TextFileReader {
 private:
-	wxString filename;
 	wxString encoding;
-#ifdef TEXT_READER_USE_STDIO
-	FILE *file;
-#else
 	std::ifstream file;
-#endif
-	wxMBConv *conv;
-	bool Is16;
-	bool swap;
-	bool open;
-	bool customConv;
+	iconv_t conv;
 	bool trim;
+	bool readComplete;
+
+	wchar_t outbuf[256];
+	wchar_t *currout;
+	wchar_t *outptr;
+	size_t  outbytesleft;
+
+	unsigned int currentLine;
 
 	void Open();
 	void Close();
-	void SetEncodingConfiguration();
+	wchar_t GetWChar();
 
 public:
-	TextFileReader(wxString filename,wxString encoding=_T(""),bool trim=true);
+	TextFileReader(wxString filename,wxString encoding=_T(""), bool trim=true);
 	~TextFileReader();
 
 	wxString ReadLineFromFile();
@@ -82,5 +72,3 @@ public:
 	wxString GetCurrentEncoding();
 	static wxString GetEncoding(const wxString filename);
 };
-
-

@@ -50,7 +50,7 @@
 class HunspellSpellChecker : public SpellChecker {
 private:
 	Hunspell *hunspell;
-	wxCSConv *conv;
+	wxMBConv *conv;
 	wxString affpath;
 	wxString dicpath;
 	wxString usrdicpath;

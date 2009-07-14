@@ -47,6 +47,7 @@
 #include "utils.h"
 #include "options.h"
 #include "standard_paths.h"
+#include "charset_conv.h"
 
 
 //////////////
@@ -92,7 +93,7 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 		// Include
 		if (filename.EndsWith(_T(".avs"))) {
 			wxFileName fn(filename);
-			char *fname = env->SaveString(fn.GetShortPath().mb_str(wxConvLocal));
+			char *fname = env->SaveString(fn.GetShortPath().mb_str(csConvLocal));
 			script = env->Invoke("Import", fname);
 		}
 
@@ -100,12 +101,12 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 		else {
 			wxFileName fn(filename);
 			const char * argnames[3] = { 0, "video", "audio" };
-			AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(wxConvLocal)), false, true };
+			AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(csConvLocal)), false, true };
 
 			// Load DirectShowSource.dll from app dir if it exists
 			wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
 			if (dsspath.FileExists()) {
-				env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(wxConvLocal)));
+				env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(csConvLocal)));
 			}
 
 			// Load audio with DSS if it exists
@@ -122,7 +123,7 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 	}
 	
 	catch (AvisynthError &err) {
-		throw wxString::Format(_T("AviSynth error: %s"), wxString(err.msg,wxConvLocal));
+		throw wxString::Format(_T("AviSynth error: %s"), wxString(err.msg,csConvLocal));
 	}
 }
 
@@ -139,7 +140,7 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 
 	// Convert to one channel
 	char buffer[1024];
-	strcpy(buffer,Options.AsText(_T("Audio Downmixer")).mb_str(wxConvLocal));
+	strcpy(buffer,Options.AsText(_T("Audio Downmixer")).mb_str(csConvLocal));
 	script = env->Invoke(buffer, _clip);
 
 	// Convert to 16 bits per sample

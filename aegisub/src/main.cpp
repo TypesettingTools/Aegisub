@@ -69,6 +69,7 @@
 #endif
 #include "version.h"
 #include "plugin_manager.h"
+#include "charset_conv.h"
 
 
 ///////////////////
@@ -327,7 +328,7 @@ StackWalker::StackWalker(wxString cause) {
 		wxDateTime time = wxDateTime::Now();
 		wxString timeStr = _T("---") + time.FormatISODate() + _T(" ") + time.FormatISOTime() + _T("------------------");
 		formatLen = timeStr.Length();
-		file << std::endl << timeStr.mb_str(wxConvLocal);
+		file << std::endl << timeStr.mb_str(csConvLocal);
 		file << "\nVER - " << GetAegisubLongVersionString().mb_str(wxConvUTF8);
 		file << "\nFTL - Begining stack dump for \"" << cause.mb_str(wxConvUTF8) <<"\":\n";
 	}
@@ -373,9 +374,9 @@ int AegisubApp::OnRun() {
 		if (file.is_open()) {
 			wxDateTime time = wxDateTime::Now();
 			wxString timeStr = _T("---") + time.FormatISODate() + _T(" ") + time.FormatISOTime() + _T("------------------");
-			file << std::endl << timeStr.mb_str(wxConvLocal);
+			file << std::endl << timeStr.mb_str(csConvLocal);
 			file << "\nVER - " << GetAegisubLongVersionString().mb_str(wxConvUTF8);
-			file << "\nEXC - Aegisub has crashed with unhandled exception \"" << error.mb_str(wxConvLocal) <<"\".\n";
+			file << "\nEXC - Aegisub has crashed with unhandled exception \"" << error.mb_str(csConvLocal) <<"\".\n";
 			int formatLen = timeStr.Length();
 			char dashes[1024];
 			int i = 0;

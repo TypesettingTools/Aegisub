@@ -247,6 +247,7 @@ aegisub_2_1_SOURCES = \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
 	browse_button.cpp \
+	charset_conv.cpp \
 	colorspace.cpp \
 	colour_button.cpp \
 	dialog_about.cpp \

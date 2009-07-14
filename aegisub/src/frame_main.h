@@ -281,7 +281,6 @@ public:
 
 	bool LoadList(wxArrayString list);
 	static void OpenHelp(wxString page=_T(""));
-	static wxArrayString GetEncodings();
 	void UpdateTitle();
 	void StatusTimeout(wxString text,int ms=10000);
 	void DetachVideo(bool detach=true);

@@ -45,6 +45,7 @@
 #include "standard_paths.h"
 #include "utils.h"
 #include "options.h"
+#include "charset_conv.h"
 #include <hunspell/hunspell.hxx>
 #include <wx/wxprec.h>
 #include <wx/wxprec.h>
@@ -254,10 +255,10 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;
 
 	// Load
-	hunspell = new Hunspell(affpath.mb_str(wxConvLocal),dicpath.mb_str(wxConvLocal));
+	hunspell = new Hunspell(affpath.mb_str(csConvLocal),dicpath.mb_str(csConvLocal));
 	conv = NULL;
 	if (hunspell) {
-		conv = new wxCSConv(wxString(hunspell->get_dic_encoding(),wxConvUTF8));
+		conv = new AegisubCSConv(wxString(hunspell->get_dic_encoding(),wxConvUTF8));
 
 		// Load user dictionary
 		if (wxFileExists(usrdicpath)) {

@@ -51,6 +51,7 @@
 #include "gl_wrap.h"
 #include "mkv_wrap.h"
 #include "vfw_wrap.h"
+#include "charset_conv.h"
 
 
 ///////////////
@@ -111,7 +112,7 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 		// Prepare filename
 		//char *videoFilename = env->SaveString(_filename.mb_str(wxConvLocal));
 		wxFileName fname(_filename);
-		char *videoFilename = env->SaveString(fname.GetShortPath().mb_str(wxConvLocal));
+		char *videoFilename = env->SaveString(fname.GetShortPath().mb_str(csConvLocal));
 
 		// Avisynth file, just import it
 		if (extension == _T(".avs")) { 
@@ -183,7 +184,7 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 				wxFileName ffsourcepath(StandardPaths::DecodePath(_T("?data/ffms2.dll")));
 				if (ffsourcepath.FileExists()) {
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading FFMpegSource2"));
-					env->Invoke("LoadPlugin",env->SaveString(ffsourcepath.GetFullPath().mb_str(wxConvLocal)));
+					env->Invoke("LoadPlugin",env->SaveString(ffsourcepath.GetFullPath().mb_str(csConvLocal)));
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded FFMpegSource2"));
 					byFrame = true;
 				}
@@ -213,7 +214,7 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 					wxFileName dss2path(StandardPaths::DecodePath(_T("?data/avss.dll")));
 					if (dss2path.FileExists()) {
 						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource2"));
-						env->Invoke("LoadPlugin",env->SaveString(dss2path.GetFullPath().mb_str(wxConvLocal)));
+						env->Invoke("LoadPlugin",env->SaveString(dss2path.GetFullPath().mb_str(csConvLocal)));
 						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource2"));
 					}
 				}
@@ -239,7 +240,7 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 					wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
 					if (dsspath.FileExists()) {
 						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource"));
-						env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(wxConvLocal)));
+						env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(csConvLocal)));
 						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource"));
 					}
 
@@ -272,8 +273,8 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 	
 	// Catch errors
 	catch (AvisynthError &err) {
-		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Avisynth error: ") + wxString(err.msg,wxConvLocal));
-		throw _T("AviSynth error: ") + wxString(err.msg,wxConvLocal);
+		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Avisynth error: ") + wxString(err.msg,csConvLocal));
+		throw _T("AviSynth error: ") + wxString(err.msg,csConvLocal);
 	}
 
 	// Check if video was loaded properly

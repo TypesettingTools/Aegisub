@@ -49,6 +49,7 @@
 # include <shlobj.h>
 #endif
 #include <wx/dir.h>
+#include "charset_conv.h"
 
 
 ///////////////
@@ -80,7 +81,7 @@ wxArrayString GetName(FT_Face &face,int id) {
 			memcpy(str,name.string,name.string_len);
 			str[name.string_len] = 0;
 			str[name.string_len+1] = 0;
-			if (name.encoding_id == 0) final.Add(wxString(str, wxConvLocal));
+			if (name.encoding_id == 0) final.Add(wxString(str, csConvLocal));
 			else if (name.encoding_id == 1) {
 				wxMBConvUTF16BE conv;
 				wxString string(str,conv);
@@ -155,10 +156,10 @@ void FreetypeFontFileLister::DoInitialize() {
 			// Ordinary fonts
 			else {
 				if (face->style_name) {
-					AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal) + _T(" ") + wxString(face->style_name, wxConvLocal));
-					AddFont(fontfiles[i],_T("*")+wxString(face->family_name, wxConvLocal));
+					AddFont(fontfiles[i],wxString(face->family_name, csConvLocal) + _T(" ") + wxString(face->style_name, csConvLocal));
+					AddFont(fontfiles[i],_T("*")+wxString(face->family_name, csConvLocal));
 				}
-				else AddFont(fontfiles[i],wxString(face->family_name, wxConvLocal));
+				else AddFont(fontfiles[i],wxString(face->family_name, csConvLocal));
 			}
 			FT_Done_Face(face);
 		}

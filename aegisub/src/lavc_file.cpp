@@ -60,7 +60,7 @@ LAVCFile::LAVCFile(Aegisub::String _filename)
 	filename = fn.GetShortPath();
 #endif
 
-	result = av_open_input_file(&fctx,filename.mb_str(wxConvLocal),NULL,0,NULL);
+	result = av_open_input_file(&fctx,filename.mb_str(csConvLocal),NULL,0,NULL);
 	if (result != 0) throw _T("Failed opening file.");
 
 	// Get stream info
