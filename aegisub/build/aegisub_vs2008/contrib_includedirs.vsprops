@@ -6,6 +6,6 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="&quot;$(ProjectDir)../../../contrib/hunspell/src/&quot;;&quot;$(ProjectDir)../../src/msvc/&quot;"
+		AdditionalIncludeDirectories="&quot;$(ProjectDir)../../../contrib/hunspell/src/&quot;;&quot;$(ProjectDir)../../src/msvc/&quot;;&quot;$(ProjectDir)../../../contrib/iconv/include/&quot;"
 	/>
 </VisualStudioPropertySheet>
