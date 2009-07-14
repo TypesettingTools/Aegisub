@@ -106,10 +106,10 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetModificationType(MOD_RESTART);
 	SetInt(_T("Auto save every seconds"),60); // FIXME: this shouldn't need to require a restart
 	SetModificationType(MOD_AUTOMATIC);
-	SetText(_T("Auto save path"),_T("autosave")); // what does this mean on linux? actually this should be under $HOME on any OS
+	SetText(_T("Auto save path"),_T("?user/autosave"));
 	SetBool(_T("Auto backup"),true);
-	SetText(_T("Auto backup path"),_T("autoback"));
-	SetText(_T("Auto recovery path"),_T("recovered"));
+	SetText(_T("Auto backup path"),_T("?user/autoback"));
+	SetText(_T("Auto recovery path"),_T("?user/recovered"));
 	SetInt(_T("Autoload linked files"),2);
 	SetText(_T("Text actor separator"),_T(":"));
 	SetText(_T("Text comment starter"),_T("#"));
@@ -119,7 +119,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 
 	// Edit Box
 	SetModificationType(MOD_RESTART);
-	SetText(_T("Dictionaries path"),_T("dictionaries"));
+	SetText(_T("Dictionaries path"),_T("?data/dictionaries"));
 	SetText(_T("Spell Checker"),_T("hunspell"));
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Link time boxes commit"),true);

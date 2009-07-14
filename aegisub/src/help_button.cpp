@@ -88,7 +88,7 @@ void HelpButton::OpenPage(const wxString pageID) {
 		docsPath.Replace(_T("\\"),_T("/"));
 		docsPath = _T("/") + docsPath;
 #endif
-		wxString path = StandardPaths::DecodePath(wxString::Format(_T("file://%s/%s.html"),docsPath.c_str(),page.c_str()));
+		wxString path = wxString::Format(_T("file://%s/%s.html"),docsPath.c_str(),page.c_str());
 		wxLaunchDefaultBrowser(path);
 	}
 }
