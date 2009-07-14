@@ -546,7 +546,7 @@ int FontsCollectorThread::CopyFont(wxString filename) {
 	wxFileName fn(filename);
 	wxString dstName = destFolder + _T("//") + fn.GetFullName();
 	if (wxFileName::FileExists(dstName)) return 2;
-	return CopyFile(filename,dstName) ? 1 : 0;
+	return wxCopyFile(filename,dstName,true) ? 1 : 0;
 }
 
 
