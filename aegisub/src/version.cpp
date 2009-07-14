@@ -97,7 +97,7 @@ struct VersionInfoStruct {
 
 #ifdef FINAL_RELEASE
 		IsRelease = true;
-		VersionNumber = _T("2.1.7");
+		VersionNumber = _T("2.1.8");
 #else
 		IsRelease = false;
 		VersionNumber = _T("r") _T_int(BUILD_SVN_REVISION)
