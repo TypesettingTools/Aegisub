@@ -97,6 +97,7 @@ VideoContext *VideoContext::instance = NULL;
 VideoContext::VideoContext() {
 	// Set GL context
 	glContext = NULL;
+	ownGlContext = false;
 	lastTex = 0;
 	lastFrame = -1;
 	yv12shader = 0;
@@ -130,7 +131,8 @@ VideoContext::VideoContext() {
 // Destructor
 VideoContext::~VideoContext () {
 	Reset();
-	delete glContext;
+	if (ownGlContext)
+		delete glContext;
 	glContext = NULL;
 }
 
@@ -483,10 +485,16 @@ wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
 	// Also see bug #850.
 #if wxCHECK_VERSION(2,9,0)
 #else
-	if (!glContext) glContext = canvas->GetContext();
+	if (!glContext) {
+		glContext = canvas->GetContext();
+		ownGlContext = false;
+	}
 #endif
 #ifndef __WXMAC__
-	if (!glContext) glContext = new wxGLContext(canvas);
+	if (!glContext) {
+		glContext = new wxGLContext(canvas);
+		ownGlContext = true;
+	}
 #endif
 	return glContext;
 }
