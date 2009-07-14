@@ -169,7 +169,7 @@ wxThread::ExitCode VersionCheckThread::Entry() {
 	// Try each path until it finds one that works
 	for (unsigned int i=0;i<paths.Count();i++) {
 		// Get path and make sure that it has a handle for it
-		wxString path = paths[i];
+		wxString path = wxString::Format(_T("%s?current=%d"), paths[i].c_str(), GetSVNRevision());
 		wxMutexGuiEnter();
 		if (!alive) goto endThread;
 		if (!wxFileSystem::HasHandlerForPath(path)) {
