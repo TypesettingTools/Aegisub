@@ -95,7 +95,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 # endif
 #endif
 #ifdef WITH_LIBASS
-	libString += _T("    libass - Copyright (c) Evgeniy Stepanov, greg_;\n");
+	libString += _T("    libass - Copyright (c) Evgeniy Stepanov, Grigori Goronzy;\n");
 #endif
 #ifdef WITH_UNIVCHARDET
 	libString += _T("    UniversalCharDet - Copyright (c) Netscape Communications Corp.;\n");
