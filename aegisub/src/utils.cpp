@@ -74,24 +74,6 @@ int CountMatches(wxString parent,wxString child) {
 }
 
 
-///////////////
-// Copy a file
-bool CopyFile(wxString src,wxString dst) {
-	// Windows
-	#if defined(__WINDOWS__)
-	BOOL result = CopyFile(src.wc_str(),dst.wc_str(),false);
-	return (result != 0);
-
-	// Linux
-	#elif defined(__UNIX__)
-	return link(src.mb_str(),dst.mb_str()) != 0;
-
-	// Error
-	#else
-	#error "don't know how to backup files"
-	#endif
-}
-
 /////////////////////////////////////
 // Make a path relative to reference
 wxString MakeRelativePath(wxString _path,wxString reference) {
