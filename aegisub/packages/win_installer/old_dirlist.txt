@@ -1,1 +1,6 @@
+automation\autoload\
+automation\auto3\
+automation\docs\
+automation\demos\
 automation\include\Aegisub\
+automation\include\
