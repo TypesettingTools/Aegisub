@@ -56,11 +56,12 @@ private:
 	StandardPaths& operator=(StandardPaths const&);
 
 	wxString DoDecodePath(wxString path);
-	wxString DoEncodePath(wxString path);
-	void DoSetPathValue(wxString path,wxString value);
+	wxString DoEncodePath(const wxString &path);
+	void DoSetPathValue(const wxString &path, const wxString &value);
 
 public:
-	static wxString DecodePath(wxString path) { return GetInstance().DoDecodePath(path); }
-	static wxString EncodePath(wxString path) { return GetInstance().DoEncodePath(path); }
-	static void SetPathValue(wxString path,wxString value) { GetInstance().DoSetPathValue(path,value); }
+	static wxString DecodePath(const wxString &path) { return GetInstance().DoDecodePath(path); }
+	static wxString DecodePathMaybeRelative(const wxString &path, const wxString &relativeTo);
+	static wxString EncodePath(const wxString &path) { return GetInstance().DoEncodePath(path); }
+	static void SetPathValue(const wxString &path, const wxString &value) { GetInstance().DoSetPathValue(path,value); }
 };

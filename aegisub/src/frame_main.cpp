@@ -718,7 +718,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		wxString path = Options.AsText(_T("Auto backup path"));
 		if (path.IsEmpty()) path = origfile.GetPath();
 		wxFileName dstpath(path);
-		if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePath(_T("?user/") + path);
+		if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
 		path += _T("/");
 		dstpath.Assign(path);
 		if (!dstpath.DirExists()) wxMkdir(path);

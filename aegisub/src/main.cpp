@@ -162,6 +162,12 @@ bool AegisubApp::OnInit() {
 			wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
 #endif
 		}
+#ifdef __WXMSW__
+		// Change ?user to point to ?data if we have local config
+		if (Options.AsBool(_T("Local config"))) {
+			StandardPaths::SetPathValue(_T("?user"), StandardPaths::DecodePath(_T("?data")));
+		}
+#endif
 		StartupLog(_T("Store options back"));
 		Options.SetInt(_T("Last Version"),GetSVNRevision());
 		Options.LoadDefaults(false,true);	// Override options based on version number
@@ -260,7 +266,7 @@ void AegisubApp::OnUnhandledException() {
 	wxString path = Options.AsText(_T("Auto recovery path"));
 	if (path.IsEmpty()) path = StandardPaths::DecodePath(_T("?user/"));
 	wxFileName dstpath(path);
-	if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePath(_T("?user/")) + path;
+	if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
 	path += _T("/");
 	dstpath.Assign(path);
 	if (!dstpath.DirExists()) wxMkdir(path);
@@ -280,7 +286,7 @@ void AegisubApp::OnFatalException() {
 	wxString path = Options.AsText(_T("Auto recovery path"));
 	if (path.IsEmpty()) path = StandardPaths::DecodePath(_T("?user/"));
 	wxFileName dstpath(path);
-	if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePath(_T("?user/")) + path;
+	if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
 	path += _T("/");
 	dstpath.Assign(path);
 	if (!dstpath.DirExists()) wxMkdir(path);

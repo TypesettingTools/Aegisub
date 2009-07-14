@@ -119,7 +119,7 @@ wxString StandardPaths::DoDecodePath(wxString path) {
 
 ///////////////
 // Encode path
-wxString StandardPaths::DoEncodePath(wxString path) {
+wxString StandardPaths::DoEncodePath(const wxString &path) {
 	// TODO
 	return path;
 }
@@ -127,6 +127,16 @@ wxString StandardPaths::DoEncodePath(wxString path) {
 
 /////////////////////////
 // Set value of a ? path
-void StandardPaths::DoSetPathValue(wxString path,wxString value) {
+void StandardPaths::DoSetPathValue(const wxString &path, const wxString &value) {
 	paths[path] = value;
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// Decode a path that for legacy reasons might be relative to another path
+wxString StandardPaths::DecodePathMaybeRelative(const wxString &path, const wxString &relativeTo) {
+	wxFileName res(DecodePath(path));
+	if (res.IsRelative())
+		res.Assign(DecodePath(relativeTo + _T("/") + path));
+	return res.GetFullPath();
 }
