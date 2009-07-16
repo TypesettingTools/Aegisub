@@ -133,6 +133,8 @@ wchar_t TextFileReader::GetWChar() {
 
 	file.read(inbuf, inbytesleft);
 	inbytesleft = file.gcount();
+	if (inbytesleft == 0)
+		return 0;
 
 	do {
 		size_t ret = iconv(conv, &inptr, &inbytesleft, reinterpret_cast<char **>(&outptr), &outbytesleft);
