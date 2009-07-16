@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Karl Blomster
+// Copyright (c) 2008-2009, Karl Blomster
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@
 #include <map>
 
 
-// lookit dis here static shit
+// lookit dis here static storage
 wxMutex FFmpegSourceProvider::CleaningInProgress;
 
 
@@ -62,8 +62,8 @@ int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int64_t Current, int64_
 	if (Progress->IndexingCanceled)
 		return 1;
 
-	// noone cares about a little bit of a rounding error here anyway
-	Progress->ProgressDialog->SetProgress((1000*Current)/Total, 1000);
+	// no one cares about a little bit of a rounding error here anyway
+	Progress->ProgressDialog->SetProgress(((int64_t)1000*Current)/Total, 1000);
 	
 	return 0;
 }
@@ -71,7 +71,7 @@ int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int64_t Current, int64_
 
 ///////////
 // Do indexing
-FFIndex *FFmpegSourceProvider::DoIndexing(FFIndex *Index, wxString FileNameWX, wxString CacheName, int Trackmask, bool IgnoreDecodeErrors) {
+FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &CacheName, int Trackmask, bool IgnoreDecodeErrors) {
 	char FFMSErrMsg[1024];
 	unsigned MsgSize = sizeof(FFMSErrMsg);
 	wxString MsgString;
@@ -79,16 +79,17 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndex *Index, wxString FileNameWX, w
 	// set up progress dialog callback
 	IndexingProgressDialog Progress;
 	Progress.IndexingCanceled = false;
-	Progress.ProgressDialog = new DialogProgress(AegisubApp::Get()->frame, _("Indexing"), &Progress.IndexingCanceled, _("Reading timecodes and frame/sample data"), 0, 1);
+	Progress.ProgressDialog = new DialogProgress(AegisubApp::Get()->frame, _("Indexing"), &Progress.IndexingCanceled,
+		_("Reading timecodes and frame/sample data"), 0, 1);
 	Progress.ProgressDialog->Show();
 	Progress.ProgressDialog->SetProgress(0,1);
 
 	// index all audio tracks
-	Index = FFMS_MakeIndex(FileNameWX.mb_str(wxConvUTF8), Trackmask, FFMSTrackMaskNone, NULL, NULL, IgnoreDecodeErrors, FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrMsg, MsgSize);
-	if (!Index) {
+	FFIndex *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMSTrackMaskNone, NULL, NULL, IgnoreDecodeErrors,
+		FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrMsg, MsgSize);
+	if (Index == NULL) {
 		Progress.ProgressDialog->Destroy();
-		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << _T("Failed to index: ") << temp;
+		MsgString.Append(_T("Failed to index: ")).Append(wxString(FFMSErrMsg, wxConvUTF8));
 		throw MsgString;
 	}
 	Progress.ProgressDialog->Destroy();
@@ -103,6 +104,47 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndex *Index, wxString FileNameWX, w
 	} */
 
 	return Index;
+}
+
+///////////
+// Find all tracks of the given typo and return their track numbers and respective codec names
+std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFIndexer *Indexer, FFMS_TrackType Type) {
+	std::map<int,wxString> TrackList;
+	int NumTracks = FFMS_GetNumTracksI(Indexer);
+
+	for (int i=0; i<NumTracks; i++) {
+		if (FFMS_GetTrackTypeI(Indexer, i) == Type) {
+			wxString CodecName(FFMS_GetCodecNameI(Indexer, i), wxConvUTF8);
+			TrackList.insert(std::pair<int,wxString>(i, CodecName));
+		}
+	}
+	
+	return TrackList;
+}
+
+///////////
+// Ask user for which track he wants to load
+int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &TrackList, FFMS_TrackType Type) {
+	std::vector<int> TrackNumbers;
+	wxArrayString Choices;
+	wxString TypeName = _T("");
+	if (Type == FFMS_TYPE_VIDEO)
+		TypeName = _("video");
+	else if (Type == FFMS_TYPE_AUDIO)
+		TypeName = _("audio");
+	
+	for (std::map<int,wxString>::const_iterator i = TrackList.begin(); i != TrackList.end(); i++) {
+		Choices.Add(wxString::Format(_("Track %02d: %s"), i->first, i->second.c_str()));
+		TrackNumbers.push_back(i->first);
+	}
+	
+	int Choice = wxGetSingleChoiceIndex(wxString::Format(_("Multiple %s tracks detected, please choose the one you wish to load:"), TypeName.c_str()),
+		wxString::Format(_("Choose %s track"), TypeName.c_str()), Choices);
+
+	if (Choice < 0)
+		return Choice;
+	else
+		return TrackNumbers[Choice];
 }
 
 /////////////////////

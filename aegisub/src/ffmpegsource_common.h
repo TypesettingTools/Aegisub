@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Karl Blomster
+// Copyright (c) 2008-2009, Karl Blomster
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,10 @@ public:
 	bool CleanCache();
 
 	static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private);
-	FFIndex *DoIndexing(FFIndex *Index, wxString Filename, wxString Cachename, int Trackmask, bool IgnoreDecodeErrors);
+	
+	FFIndex *DoIndexing(FFIndexer *Indexer, const wxString& Cachename, int Trackmask, bool IgnoreDecodeErrors);
+	std::map<int,wxString> GetTracksOfType(FFIndexer *Indexer, FFMS_TrackType Type);
+	int AskForTrackSelection(const std::map<int,wxString>& TrackList, FFMS_TrackType Type);
 	wxString GetCacheFilename(const wxString& filename);
 
 	virtual FFmpegSourceProvider::~FFmpegSourceProvider() {}
