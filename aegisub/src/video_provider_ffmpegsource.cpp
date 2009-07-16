@@ -298,17 +298,17 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	AegiVideoFrame &DstFrame = CurFrame;
 	
 	// choose output format
-	if (FormatType & FORMAT_RGB32) {
+	if (0 /*FormatType & FORMAT_RGB32*/) {
 		DstFormat		= FFMS_GetPixFmt("bgra");
 		DstFrame.format	= FORMAT_RGB32;
 	} else if (FormatType & FORMAT_RGB24) {
 		DstFormat		= FFMS_GetPixFmt("bgr24");
 		DstFrame.format	= FORMAT_RGB24;
 	} else if (FormatType & FORMAT_YV12) {
-		DstFormat		= FFMS_GetPixFmt("yuv420p"); // may or may not work
+		DstFormat		= FFMS_GetPixFmt("yuv420p");
 		DstFrame.format	= FORMAT_YV12;
 	} else if (FormatType & FORMAT_YUY2) {
-		DstFormat		= FFMS_GetPixFmt("yuyv422");
+		DstFormat		= FFMS_GetPixFmt("yuyv422"); // may or may not work
 		DstFrame.format	= FORMAT_YUY2;
 	} else 
 		throw _T("FFmpegSource video provider: upstream provider requested unknown or unsupported pixel format");
@@ -343,10 +343,14 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 		DstFrame.pitch[i] = SrcFrame->Linesize[i];
 	DstFrame.Allocate();
 
-	// copy data to destination, skipping planes with no data in them
-	for (int j = 0; j < 4; j++) {
-		if (SrcFrame->Linesize[j] > 0)
-			memcpy(DstFrame.data[j], SrcFrame->Data[j], DstFrame.pitch[j] * DstFrame.h);
+	// copy data to destination
+	memcpy(DstFrame.data[0], SrcFrame->Data[0], DstFrame.pitch[0] * DstFrame.h);
+	// if we're dealing with YUV formats we need to copy the U and V planes as well
+	if (DstFrame.format == FORMAT_YUY2 || DstFrame.format == FORMAT_YV12) {
+		// YV12 has half the vertical U/V resolution too because of the subsampling
+		int UVHeight = DstFrame.format == FORMAT_YUY2 ? DstFrame.h : DstFrame.h / 2;
+		memcpy(DstFrame.data[1], SrcFrame->Data[1], DstFrame.pitch[1] * UVHeight);
+		memcpy(DstFrame.data[2], SrcFrame->Data[2], DstFrame.pitch[2] * UVHeight);
 	}
 
 	return DstFrame;
