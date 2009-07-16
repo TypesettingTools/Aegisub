@@ -178,7 +178,6 @@ EXTRA_aegisub_2_1_SOURCES = \
 	audio_player_portaudio.cpp \
 	audio_player_pulse.cpp \
 	audio_provider_avs.cpp \
-	audio_provider_lavc.cpp \
 	auto4_auto3.cpp \
 	auto4_lua.cpp \
 	auto4_lua_assfile.cpp \
@@ -189,8 +188,6 @@ EXTRA_aegisub_2_1_SOURCES = \
 	auto4_ruby_dialog.cpp \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
-	lavc_file.cpp \
-	lavc_keyframes.cpp \
 	osx_bevelButton.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
@@ -199,8 +196,7 @@ EXTRA_aegisub_2_1_SOURCES = \
 	subtitles_provider_csri.cpp \
 	subtitles_provider_libass.cpp \
 	video_provider_avs.cpp \
-	video_provider_dshow.cpp \
-	video_provider_lavc.cpp
+	video_provider_dshow.cpp
 
 
 aegisub_2_1_SOURCES = \
