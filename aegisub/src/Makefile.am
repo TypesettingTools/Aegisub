@@ -70,13 +70,6 @@ if HAVE_FFMPEG
 aegisub_2_1_LDFLAGS += @LIBAVFORMAT_LIBS@ @LIBAVCODEC_LIBS@ @LIBSWSCALE_LIBS@ @LIBAVUTIL_LIBS@
 endif
 
-if HAVE_PROVIDER_FFMPEG
-noinst_LIBRARIES += libaudiovideo_ffmpeg.a
-libaudiovideo_ffmpeg_a_SOURCES = audio_provider_lavc.cpp lavc_file.cpp video_provider_lavc.cpp lavc_keyframes.cpp
-libaudiovideo_ffmpeg_a_CPPFLAGS = @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
-aegisub_2_1_LDADD += libaudiovideo_ffmpeg.a
-endif
-
 if HAVE_PROVIDER_FFMPEGSOURCE
 noinst_LIBRARIES += libaudiovideo_ffmpegsource.a
 libaudiovideo_ffmpegsource_a_SOURCES = audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
