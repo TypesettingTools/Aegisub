@@ -45,12 +45,13 @@
 #include "dialog_progress.h"
 
 
+#define FFMS_TRACKMASK_ALL		0
+#define FFMS_TRACKMASK_NONE		-1
+
+
 class FFmpegSourceProvider {
 	friend class FFmpegSourceCacheCleaner;
 public:
-	static const int FFMSTrackMaskAll		= -1;
-	static const int FFMSTrackMaskNone		= 0;
-
 	struct IndexingProgressDialog {
 		volatile bool IndexingCanceled;
 		DialogProgress *ProgressDialog;
