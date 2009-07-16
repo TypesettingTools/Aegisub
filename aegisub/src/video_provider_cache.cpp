@@ -74,7 +74,7 @@ const AegiVideoFrame VideoProviderCache::GetFrame(int n,int format) {
 	}
 
 	// Not cached, retrieve it
-	const AegiVideoFrame frame = master->GetFrame(n,FORMAT_RGB32);
+	const AegiVideoFrame frame = master->GetFrame(n, format);
 	const AegiVideoFrame *srcFrame = &frame;
 
 	// Convert to compatible format
