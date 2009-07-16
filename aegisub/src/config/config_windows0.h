@@ -75,6 +75,12 @@
 #define WITH_AVISYNTH
 
 
+// Enable ffmpegsource video and audio providers
+// Requires: FFmpegSource2 headers (in repository), loader library and DLL
+//#define WITH_FFMPEGSOURCE
+
+
+
 
 ///////////// MEDIUM PRIORITY ////////////
 
@@ -138,19 +144,6 @@
 // Enable libass
 // Requires: libass
 //#define WITH_LIBASS
-
-
-// Enable FFmpeg video and audio decoders
-// Requires: libavcodec, libavformat, libswscale, libavutil
-// If you compiled static libraries (yes, by default), uncomment the second line as well,
-// and remember to add the correct .a files to the linker's additional dependencies.
-// #define WITH_FFMPEG
-// #define WITH_STATIC_FFMPEG
-
-
-// Enable ffmpegsource video and audio providers
-// Requires: ffmpegsource version 2
-//#define WITH_FFMPEGSOURCE
 
 
 // Enable Ruby support for Automation

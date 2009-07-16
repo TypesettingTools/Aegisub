@@ -48,9 +48,6 @@
 #ifdef WITH_DIRECTSHOW
 #include "video_provider_dshow.h"
 #endif
-#ifdef WITH_FFMPEG
-#include "video_provider_lavc.h"
-#endif
 #ifdef WITH_FFMPEGSOURCE
 #include "video_provider_ffmpegsource.h"
 #endif
@@ -112,9 +109,6 @@ void VideoProviderFactoryManager::RegisterProviders() {
 #endif
 #ifdef WITH_DIRECTSHOW
 	RegisterFactory(new DirectShowVideoProviderFactory(),_T("DirectShow"));
-#endif
-#ifdef WITH_FFMPEG
-	RegisterFactory(new LAVCVideoProviderFactory(),_T("FFMPEG"));
 #endif
 #ifdef WITH_FFMPEGSOURCE
 	RegisterFactory(new FFmpegSourceVideoProviderFactory(),_T("FFmpegSource"));

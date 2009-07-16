@@ -47,9 +47,6 @@
 #ifdef WITH_AVISYNTH
 #include "audio_provider_avs.h"
 #endif
-#ifdef WITH_FFMPEG
-#include "audio_provider_lavc.h"
-#endif
 #ifdef WITH_FFMPEGSOURCE
 #include "audio_provider_ffmpegsource.h"
 #endif
@@ -282,9 +279,6 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 void AudioProviderFactoryManager::RegisterProviders() {
 #ifdef WITH_AVISYNTH
 	RegisterFactory(new AvisynthAudioProviderFactory(),_T("Avisynth"));
-#endif
-#ifdef WITH_FFMPEG
-	RegisterFactory(new LAVCAudioProviderFactory(),_T("FFMPEG"));
 #endif
 #ifdef WITH_FFMPEGSOURCE
 	RegisterFactory(new FFmpegSourceAudioProviderFactory(),_T("FFmpegSource"));
