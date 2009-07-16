@@ -298,7 +298,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	AegiVideoFrame &DstFrame = CurFrame;
 	
 	// choose output format
-	if (0 /*FormatType & FORMAT_RGB32*/) {
+	if (FormatType & FORMAT_RGB32) {
 		DstFormat		= FFMS_GetPixFmt("bgra");
 		DstFrame.format	= FORMAT_RGB32;
 	} else if (FormatType & FORMAT_RGB24) {
