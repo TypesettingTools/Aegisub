@@ -95,7 +95,7 @@ echo "---- Binaries ----"
 if test src/${AEGISUB_BIN} -nt src/.libs/${AEGISUB_BIN}; then
   cp -v src/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub"
 else
-  cp -v src/.libs/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub"
+  cp -v src/.libs/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub" || exit $?
 fi
 
 echo cc -o "${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c"
