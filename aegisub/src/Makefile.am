@@ -20,7 +20,7 @@ SUBDIRS = \
 
 AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ -I../libffms/include
 
-bin_PROGRAMS = aegisub-2.1
+bin_PROGRAMS = aegisub-2.2
 aegisub_2_2_LDADD = libresrc/libresrc.a $(libosxutil_lib)
 aegisub_2_2_CPPFLAGS = @FREETYPE_CFLAGS@
 aegisub_2_2_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags) @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
@@ -126,16 +126,16 @@ aegisub_2_2_LDADD += libauto4_ruby.a
 endif
 
 if BUILD_DARWIN
-AUTO3_LIB = $(srcdir)/libauto3/.libs/libaegisub-auto3-2.1.0.dylib
+AUTO3_LIB = $(srcdir)/libauto3/.libs/libaegisub-auto3-2.2.0.dylib
 else
-AUTO3_LIB = $(srcdir)/libauto3/.libs/libaegisub-auto3-2.1.so
+AUTO3_LIB = $(srcdir)/libauto3/.libs/libaegisub-auto3-2.2.so
 endif
 
 if HAVE_AUTO3_LUA
 AUTO3_LUA = auto4_auto3.cpp
 # This is a workaround top stop libtool from binging in dependency_libs which
 # causes many link errors due to auto4 (lua 5.1) support.
-#aegisub_2_1_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3-2.1
+#aegisub_2_1_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3-2.2
 aegisub_2_2_LDADD += ${AUTO3_LIB}
 endif
 
