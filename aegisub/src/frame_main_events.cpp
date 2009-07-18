@@ -88,6 +88,7 @@
 #include "standard_paths.h"
 #include "dialog_video_details.h"
 #include "keyframe.h"
+#include "charset_conv.h"
 
 
 ////////////////////

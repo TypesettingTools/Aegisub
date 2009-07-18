@@ -39,8 +39,7 @@
 #include <wx/dynarray.h>
 #include <wx/string.h>
 #include <fstream>
-
-#include "charset_conv.h"
+#include <iconv.h>
 
 class TextFileReader {
 private:
@@ -57,9 +56,10 @@ private:
 
 	unsigned int currentLine;
 
-	void Open();
-	void Close();
 	wchar_t GetWChar();
+
+	TextFileReader(const TextFileReader&);
+	TextFileReader& operator=(const TextFileReader&);
 
 public:
 	TextFileReader(wxString filename,wxString encoding=_T(""), bool trim=true);

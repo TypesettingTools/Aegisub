@@ -42,15 +42,20 @@
 #include <fstream>
 #include <memory>
 
-#include "charset_conv.h"
+class AegisubCSConv;
 
 class TextFileWriter {
 private:
 	std::ofstream file;
 	std::auto_ptr<AegisubCSConv> conv;
 
+	TextFileWriter(const TextFileWriter&);
+	TextFileWriter& operator=(const TextFileWriter&);
+
 public:
 	TextFileWriter(wxString filename, wxString encoding=_T(""));
+	~TextFileWriter();
+
 	void WriteLineToFile(wxString line, bool addLineBreak=true);
 };
 

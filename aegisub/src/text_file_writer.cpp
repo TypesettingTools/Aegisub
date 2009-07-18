@@ -39,6 +39,7 @@
 #include "text_file_writer.h"
 #include "options.h"
 #include "aegisub_endian.h"
+#include "charset_conv.h"
 
 TextFileWriter::TextFileWriter(wxString filename, wxString encoding)
 : conv() {
@@ -61,6 +62,10 @@ TextFileWriter::TextFileWriter(wxString filename, wxString encoding)
 	catch (wxString ignore) {
 		// If the BOM could not be converted to the target encoding it isn't needed
 	}
+}
+
+TextFileWriter::~TextFileWriter() {
+	// Explicit empty destructor required with an auto_ptr to an incomplete class
 }
 
 void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {

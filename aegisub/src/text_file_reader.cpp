@@ -39,7 +39,10 @@
 #include <algorithm>
 #include <string>
 #include <assert.h>
+#include <errno.h>
 #include "text_file_reader.h"
+#include "charset_conv.h"
+
 
 #ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
@@ -66,7 +69,7 @@ TextFileReader::~TextFileReader() {
 	if (conv != (iconv_t)-1) iconv_close(conv);
 }
 
-wxString TextFileReader::GetEncoding(const wxString _filename) {
+wxString TextFileReader::GetEncoding(const wxString filename) {
 	// Prepare
 	unsigned char b[4];
 	memset(b, 0, sizeof(b));
@@ -74,9 +77,9 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 	// Read four bytes from file
 	std::ifstream ifile;
 #ifdef __WINDOWS__
-	ifile.open(_filename.wc_str());
+	ifile.open(filename.wc_str());
 #else
-	ifile.open(wxFNCONV(_filename));
+	ifile.open(wxFNCONV(filename));
 #endif
 	if (!ifile.is_open()) {
 		return _T("unknown");
@@ -105,7 +108,7 @@ wxString TextFileReader::GetEncoding(const wxString _filename) {
 #ifdef WITH_UNIVCHARDET
 	// Use universalchardet library to detect charset
 	CharSetDetect det;
-	return det.GetEncoding(_filename);
+	return det.GetEncoding(filename);
 #else
 	// Fall back to local
 	return _T("Local");
@@ -153,7 +156,7 @@ wchar_t TextFileReader::GetWChar() {
 
 		file.read(inptr + inbytesleft, 1);
 		inbytesleft++;
-	} while (!file.eof());
+	} while (!file.eof() && file.gcount());
 
 	if (outptr > outbuf)
 		return *currout;
@@ -172,6 +175,8 @@ wxString TextFileReader::ReadLineFromFile() {
 	size_t len = 0;
 	for (ch = GetWChar(); ch != L'\n' && ch != 0; ch = GetWChar()) {
 		if (ch == L'\r') continue;
+		// Skip the BOM -- we don't need it as the encoding is already known
+		// and it sometimes causes conversion problems
 		if (ch == 0xFEFF && len == 0) continue;
 
 		if (len >= bufAlloc - 1) {

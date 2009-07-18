@@ -34,7 +34,13 @@
 //
 
 #include "charset_conv.h"
+
 #include <stdint.h>
+#include <errno.h>
+#include <wx/hashmap.h>
+#include <wx/intl.h>
+
+WX_DECLARE_STRING_HASH_MAP(wxString, PrettyNamesHash);
 
 #if wxUSE_THREADS
 static wxMutex encodingListMutex;

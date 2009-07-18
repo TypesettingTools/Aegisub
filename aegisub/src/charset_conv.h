@@ -33,20 +33,17 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
-#ifndef AEGISUB_STRCONV
-#define AEGISUB_STRCONV
+#ifndef AEGISUB_CHARSET_CONV_H
+#define AEGISUB_CHARSET_CONV_H
 
 #include <iconv.h>
 #include <wchar.h>
-#include <wx/intl.h>
-#include <wx/hashmap.h>
-#include <wx/thread.h>
 #include <wx/arrstr.h>
-#include <errno.h>
+#include <wx/thread.h>
+#include <wx/string.h>
+#include <wx/strconv.h>
 
 #include "aegisub_endian.h"
-
-WX_DECLARE_STRING_HASH_MAP(wxString, PrettyNamesHash);
 
 #if !defined(_LIBICONV_VERSION) || _LIBICONV_VERSION < 0x010A || defined(LIBICONV_PLUG)
 #define ICONV_POSIX
@@ -56,7 +53,7 @@ class AegisubCSConv : public wxMBConv {
 public:
 	// By default, any conversion that would be lossy will fail
 	// When enableSubst is true, conversions to multibyte with a sufficiently large buffer
-	// are guarunteed to succeed, with characters dropped or changed as needed to fit the
+	// are guaranteed to succeed, with characters dropped or changed as needed to fit the
 	// string into the target encoding.
 	AegisubCSConv(const wxChar *mbEncName, bool enableSubst = false);
 	virtual ~AegisubCSConv();
@@ -76,8 +73,6 @@ public:
 	static wxArrayString GetAllSupportedEncodings();
 	// Map a user-friendly encoding name to iconv's name
 	static wxString GetRealEncodingName(wxString name);
-
-	static iconv_t IconvOpen(const char *toEncoding);
 
 protected:
 	iconv_t m2w, w2m;
