@@ -1084,17 +1084,17 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		}
 
 		// Get sorted list
-		wxArrayString stylNames;
-		for (int i=0;i<nStyles;i++) stylNames.Add(srcStyls->at(i)->name.Lower());
-		stylNames.Sort();
-		AssStyle *curStyl;
+		wxArrayString styleNames;
+		for (int i=0; i < nStyles; i++) styleNames.Add(srcStyls->at(i)->name);
+		styleNames.Sort();
 
-		// Find each and copy it
-		for (int i=0;i<nStyles;i++) {
-			for (int j=0;j<nStyles;j++) {
-				curStyl = srcStyls->at(j);
-				if (curStyl->name.Lower() == stylNames[i]) {
-					styls.push_back(curStyl);
+		std::list<AssStyle *> styles(srcStyls->begin(), srcStyls->end());
+		for (int i = 0; i < nStyles; i++) {
+			for (std::list<AssStyle *>::iterator style = styles.begin(); style != styles.end(); style++) {
+				if ((*style)->name == styleNames[i]) {
+					styls.push_back(*style);
+					styles.erase(style);
+					break;
 				}
 			}
 		}
