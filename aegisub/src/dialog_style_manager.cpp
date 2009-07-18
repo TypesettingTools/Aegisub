@@ -559,26 +559,22 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &event) {
 
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
-	AssStyle *temp;
-	for (int i=0;i<n;i++) {
-		int test = StorageList->FindString(CurrentList->GetString(selections[i]), true);
-		if (test == wxNOT_FOUND) {
-			temp = new AssStyle;
-			*temp = *styleMap.at(selections[i]);
-			Store.style.push_back(temp);
-		}
-		else {
-			int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?"),CurrentList->GetString(selections[i]).c_str()),_T("Style name collision."),wxYES_NO);
-			if (answer == wxYES) {
-				// Remove the old style
-				temp = styleStorageMap.at(selections[i]);
-				Store.style.remove(temp);
-				// And save the new one instead
-				temp = new AssStyle;
-				*temp = *styleMap.at(selections[i]);
-				Store.style.push_back(temp);
+	for (int i = 0; i < n; i++) {
+		wxString styleName = CurrentList->GetString(selections[i]);
+		bool addStyle = true;
+		
+		for (std::list<AssStyle *>::iterator style = Store.style.begin(); style != Store.style.end(); ++style) {
+			if ((*style)->name.CmpNoCase(styleName) == 0) {
+				addStyle = false;
+				if (wxYES == wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?"),styleName), _T("Style name collision."), wxYES_NO)) {
+					**style = *styleMap.at(selections[i]);
+				}
+				break;
 			}
-			// else do nothing
+		}
+		if (addStyle) {
+			AssStyle *temp = new AssStyle(*styleMap.at(selections[i]));
+			Store.style.push_back(temp);
 		}
 	}
 	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
@@ -592,29 +588,23 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &event) {
 void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
-	AssStyle *temp;
-	for (int i=0;i<n;i++) {
-		// Check if there is already a style with that name
-		int test = CurrentList->FindString(StorageList->GetString(selections[i]), false);
-		bool proceed = false;
-		if (test == wxNOT_FOUND)
-			proceed = true;
-		if (!proceed) {
-			int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed anyway?"),StorageList->GetString(selections[i]).c_str()),_T("Style name collision."),wxYES_NO);
-			if (answer == wxYES) proceed = true;
+	for (int i = 0; i < n; i++) {
+		wxString styleName = StorageList->GetString(selections[i]);
+		bool addStyle = true;
+		
+		for (std::vector<AssStyle *>::iterator style = styleMap.begin(); style != styleMap.end(); ++style) {
+			if ((*style)->name.CmpNoCase(styleName) == 0) {
+				addStyle = false;
+				if (wxYES == wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed and overwrite anyway?"),styleName), _T("Style name collision."), wxYES_NO)) {
+					**style = *styleStorageMap.at(selections[i]);
+				}
+				break;
+			}
 		}
-
-		// Copy
-		// FIXME: this doesn't overwrite the old style like most of the rest of the style copying functions do,
-		// it just inserts a new one with the same name. Bad usability.
-		if (proceed) {
-			temp = new AssStyle;
-			*temp = *styleStorageMap.at(selections[i]);
+		if (addStyle) {
+			AssStyle *temp = new AssStyle(*styleStorageMap.at(selections[i]));
 			AssFile::top->InsertStyle(temp);
 		}
-
-		// Return
-		else return;
 	}
 	LoadCurrentStyles(AssFile::top);
 	grid->ass->FlagAsModified(_("style copy"));
@@ -628,9 +618,8 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 void DialogStyleManager::OnStorageCopy (wxCommandEvent &event) {
 	wxArrayInt selections;
 	StorageList->GetSelections(selections);
-	AssStyle *temp = new AssStyle;
+	AssStyle *temp = new AssStyle(*(styleStorageMap.at(selections[0])));
 
-	*temp = *(styleStorageMap.at(selections[0]));
 	wxString newName = _("Copy of ");
 	newName += temp->name;
 	temp->name = newName;
