@@ -437,7 +437,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Check if style name is unique
 		for (unsigned int i=0;i<styles.Count();i++) {
 			if (newStyleName.CmpNoCase(styles[i]) == 0) {
-				if ((isLocal && grid->ass->GetStyle(styles[i]) != style) || (!isLocal && store->GetStyle(styles[i]) != style)) {
+				if ((isLocal && (grid->ass->GetStyle(styles[i]) != style)) || (!isLocal && (store->GetStyle(styles[i]) != style))) {
 					wxMessageBox(_T("There is already a style with this name. Please choose another name."),_T("Style name conflict."),wxICON_ERROR);
 					return;
 				}
