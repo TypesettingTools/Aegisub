@@ -1318,6 +1318,8 @@ bool FrameMain::LoadList(wxArrayString list) {
 	videoList.Add(_T("asf"));
 	videoList.Add(_T("mov"));
 	videoList.Add(_T("rm"));
+	videoList.Add(_T("y4m"));
+	videoList.Add(_T("yuv"));
 
 	// Subtitle formats
 	wxArrayString subsList;

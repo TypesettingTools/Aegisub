@@ -53,6 +53,7 @@
 #endif
 #include "video_provider_dummy.h"
 #include "video_provider_cache.h"
+#include "video_provider_yuv4mpeg.h"
 
 
 ////////////////
@@ -65,6 +66,19 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video,double fp
 #else
 		return new DummyVideoProvider(video.c_str(), fps);
 #endif
+	}
+
+	try {
+		VideoProvider *y4m_provider = new YUV4MPEGVideoProvider(video.c_str(), fps);
+		if (y4m_provider)
+			y4m_provider = new VideoProviderCache(y4m_provider);
+		return y4m_provider;
+	}
+	catch (wxString temp) {
+		wxLogDebug(_T("YUV4MPEG provider creation failed with reason: %s; trying other providers"), temp.c_str());
+	}
+	catch (...) {
+		wxLogDebug(_T("YUV4MPEG provider creation failed for unknown reasons, trying other providers"));
 	}
 
 	// List of providers

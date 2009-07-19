@@ -1538,6 +1538,14 @@
 			<File
 				RelativePath="..\..\src\video_provider_manager.h"
 				>
+			</File>			
+			<File
+				RelativePath="..\..\src\video_provider_yuv4mpeg.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_provider_yuv4mpeg.h"
+				>
 			</File>
 		</Filter>
 		<Filter
