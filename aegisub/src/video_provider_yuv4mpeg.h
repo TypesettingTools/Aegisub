@@ -51,9 +51,9 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 private:
 	enum Y4M_PixelFormat {
 		Y4M_PIXFMT_NONE		= -1,
-		Y4M_PIXFMT_420JPEG,
-		Y4M_PIXFMT_420MPEG2,
-		Y4M_PIXFMT_420PALDV,
+		Y4M_PIXFMT_420JPEG,			// afaict the only difference between
+		Y4M_PIXFMT_420MPEG2,		// these three is the chroma sample location,
+		Y4M_PIXFMT_420PALDV,		// and nobody cares about that.
 		Y4M_PIXFMT_411,
 		Y4M_PIXFMT_422,
 		Y4M_PIXFMT_444,

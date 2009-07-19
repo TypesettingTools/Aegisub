@@ -216,7 +216,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 	int t_fps_num	= -1;
 	int t_fps_den	= -1;
 	Y4M_InterlacingMode t_imode	= Y4M_ILACE_NOTSET;
-	Y4M_PixelFormat t_pixfmt		= Y4M_PIXFMT_NONE;
+	Y4M_PixelFormat t_pixfmt	= Y4M_PIXFMT_NONE;
 
 	for (unsigned i = 1; i < tags.size(); i++) {
 		wxString tag = _T("");
@@ -242,8 +242,8 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 		else if (tags.at(i).StartsWith(_T("C"), &tag)) {
 			// technically this should probably be case sensitive,
 			// but being liberal in what you accept doesn't hurt
-			if (!tag.CmpNoCase(_T("420jpeg")))			t_pixfmt = Y4M_PIXFMT_420JPEG;
-			else if (!tag.CmpNoCase(_T("420")))			t_pixfmt = Y4M_PIXFMT_420JPEG; // is this really correct?
+			if (!tag.CmpNoCase(_T("420")))				t_pixfmt = Y4M_PIXFMT_420JPEG; // is this really correct?
+			else if (!tag.CmpNoCase(_T("420jpeg")))		t_pixfmt = Y4M_PIXFMT_420JPEG; 
 			else if (!tag.CmpNoCase(_T("420mpeg2")))	t_pixfmt = Y4M_PIXFMT_420MPEG2;
 			else if (!tag.CmpNoCase(_T("420paldv")))	t_pixfmt = Y4M_PIXFMT_420PALDV;
 			else if (!tag.CmpNoCase(_T("411")))			t_pixfmt = Y4M_PIXFMT_411;
