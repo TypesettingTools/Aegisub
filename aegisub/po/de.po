@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Aegisub CVS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-27 22:39-0200\n"
-"PO-Revision-Date: 2009-03-09 13:25+0100\n"
+"PO-Revision-Date: 2009-07-18 22:21+0100\n"
 "Last-Translator: Sebastian Billau <sebastian_billau@web.de>\n"
 "Language-Team: David Lamparter <dl@diac24.net>\n"
 "MIME-Version: 1.0\n"
@@ -210,7 +210,7 @@ msgstr "Split annehmen"
 
 #: audio_box.cpp:556
 msgid "Commit splits and leave split-mode"
-msgstr "Speichere alle Splits und verlasse Split-Modus"
+msgstr "Übernehme alle Splits und verlasse Split-Modus"
 
 #: audio_box.cpp:558
 msgid "Join"
@@ -463,7 +463,7 @@ msgstr "SVN gehostet von:"
 
 #: dialog_about.cpp:131
 msgid "Bug tracker hosting by:"
-msgstr "Forum, Wiki und Bugtracker gehosted durch:"
+msgstr "Bugtracker gehosted durch:"
 
 #: dialog_about.cpp:135
 msgid ""
@@ -508,7 +508,7 @@ msgstr "&Löschen"
 
 #: dialog_attachments.cpp:73
 msgid "Attach &Font"
-msgstr "&Schrift anhängen"
+msgstr "&Schriftart anhängen"
 
 #: dialog_attachments.cpp:74
 msgid "Attach &Graphics"
@@ -534,7 +534,7 @@ msgstr "Gruppe"
 #: dialog_attachments.cpp:143
 #: dialog_attachments.cpp:176
 msgid "Choose file to be attached"
-msgstr "Anzhängende Datei auswählen"
+msgstr "Anzuhängende Datei auswählen"
 
 #: dialog_attachments.cpp:214
 msgid "Select the path to save the files to:"
@@ -805,7 +805,7 @@ msgstr "Untertitel exportieren"
 #: dialog_fonts_collector.cpp:77
 #: frame_main.cpp:247
 msgid "Fonts Collector"
-msgstr "Schriftensammlung"
+msgstr "Schriftartensammlung"
 
 #: dialog_fonts_collector.cpp:93
 msgid "&Browse..."
@@ -890,7 +890,7 @@ msgstr "Achrivdatei wählen"
 
 #: dialog_fonts_collector.cpp:256
 msgid "Zip Archives (*.zip)|*.zip"
-msgstr "Zip Archive (*.zip)|*.zip"
+msgstr "Zip Archiv (*.zip)|*.zip"
 
 #: dialog_fonts_collector.cpp:264
 msgid "Select folder to save fonts on"
@@ -959,7 +959,7 @@ msgstr "Fertig. Alle Schriftarten kopiert"
 
 #: dialog_fonts_collector.cpp:474
 msgid "font attachment"
-msgstr "Schriftart angehangen"
+msgstr "Schriftartanhang"
 
 #: dialog_fonts_collector.cpp:481
 msgid "Done. Some fonts could not be found."
@@ -1407,7 +1407,7 @@ msgstr "Ersetze Override-Tags durch:"
 #: dialog_options.cpp:356
 #: dialog_options.cpp:533
 msgid "Advanced - EXPERT USERS ONLY"
-msgstr "Erweitert - Nur für fortgeschrittene Benutzer"
+msgstr "Erweitert - NUR FÜR FORTGESCHRITTENE BENUTZER"
 
 #: dialog_options.cpp:362
 msgid "Match video resolution on open: "
@@ -1456,7 +1456,7 @@ msgid ""
 "crashes, glitches and/or movax.\n"
 "Don't touch these unless you know what you're doing."
 msgstr ""
-"WARNING: Wenn Sie diese Einstellungen ändern kann es zu Bugs,\n"
+"WARNUNG: Wenn Sie diese Einstellungen ändern kann es zu Bugs,\n"
 "Crashs, Glitches und/oder Movax führen.\n"
 "Wenn Sie nicht wissen was sie da ändern, ändern Sie diese Einstellungen nicht."
 
