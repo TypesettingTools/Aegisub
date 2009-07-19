@@ -38,6 +38,8 @@
 
 #include "include/aegisub/video_provider.h"
 #include <wx/wxprec.h>
+#include <wx/filename.h>
+#include <wx/log.h>
 #include <stdio.h>
 #include <vector>
 
